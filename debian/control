@@ -1,0 +1,16 @@
+Source: deepin-movie-reborn
+Section: misc
+Priority: extra
+Maintainer: Deepin Sysdev <sysdev@deepin.com>
+Build-Depends: debhelper, pkg-config, qttools5-dev-tools,
+                qt5-default, libqt5svg5-dev, qtmultimedia5-dev,
+                libdtkbase-0.2-dev, libdtkutil-0.2-dev, libdtkwidget-0.2-dev,
+                libdtksettings-dev, libdtksettingsview-dev
+Standards-Version: 3.9.2
+Homepage: http://www.deepin.com/
+
+Package: deepin-movie-reborn
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Deepin movie player for linuxdeepin desktop environment
+ Deepin movie player for linuxdeepin desktop environment.

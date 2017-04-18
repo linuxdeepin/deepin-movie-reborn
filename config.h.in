@@ -1,0 +1,2 @@
+#define DMR_VERSION "@PROJECT_VERSION@"
+
