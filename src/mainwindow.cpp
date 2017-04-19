@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "mpv_proxy.h"
 #include "titlebar_proxy.h"
+#include "toolbox_proxy.h"
 #include "actions.h"
 
 #include <QtWidgets>
@@ -14,6 +15,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     setWindowFlags(Qt::FramelessWindowHint);
     setContentsMargins(0, 0, 0, 0);
+    setMouseTracking(true);
 
     if (DApplication::isDXcbPlatform()) {
         _handle = new DPlatformWindowHandle(this, this);
@@ -28,11 +30,16 @@ MainWindow::MainWindow(QWidget *parent)
     _titlebar = new TitlebarProxy(this);
     _titlebar->populateMenu();
 
+    _toolbox = new ToolboxProxy(this);
+
     _center = new QWidget(this);
 
 
     connect(this, &MainWindow::frameMarginsChanged, &MainWindow::updateProxyGeometry);
     connect(_titlebar->titlebar()->menu(), &QMenu::triggered, this, &MainWindow::menuItemInvoked);
+
+    connect(&_timer, &QTimer::timeout, this, &MainWindow::timeout);
+    _timer.start(1000);
 }
 
 MainWindow::~MainWindow()
@@ -40,6 +47,12 @@ MainWindow::~MainWindow()
     delete _titlebar;
 }
 
+void MainWindow::timeout()
+{
+    if (_proxy) {
+        _toolbox->updateTimeInfo(_proxy->duration(), _proxy->ellapsed());
+    }
+}
 
 void MainWindow::menuItemInvoked(QAction *action)
 {
@@ -71,7 +84,6 @@ void MainWindow::play(const QFileInfo& fi)
 
     updateProxyGeometry();
     _proxy->show();
-
     _proxy->play();
 }
 
@@ -88,7 +100,7 @@ void MainWindow::updateProxyGeometry()
         r.translate(QPoint(frameMargins().left(), frameMargins().top()));
         _proxy->setGeometry(r);
         qDebug() << "window frame " << frameGeometry();
-        qDebug() << "proxy " << _proxy->geometry();
+        qDebug() << "proxy " << geometry();
     }
 
     if (_titlebar) {
@@ -96,6 +108,13 @@ void MainWindow::updateProxyGeometry()
         r.setHeight(40);
         _titlebar->resize(r.size());
         qDebug() << "_titlebar " << _titlebar->frameGeometry();
+    }
+
+    if (_toolbox) {
+        QRect r(frameGeometry().topLeft(), geometry().size());
+        r.setHeight(80);
+        _toolbox->resize(r.size());
+        qDebug() << "_toolbox " << _toolbox->frameGeometry();
     }
 }
 
@@ -121,8 +140,12 @@ void MainWindow::showEvent(QShowEvent *event)
     if (_titlebar) {
         _titlebar->show();
         _titlebar->raise();
-        QTimer::singleShot(1000, this, [&]() {
-            //_titleBar()->hide();
+
+        _toolbox->show();
+        _toolbox->raise();
+        QTimer::singleShot(2000, this, [&]() {
+            _titlebar->hide();
+            _toolbox->hide();
         });
     }
 }
@@ -133,14 +156,35 @@ void MainWindow::resizeEvent(QResizeEvent *ev)
     updateProxyGeometry();
 }
 
-void MainWindow::moveEvent(QMoveEvent *ev)
+void MainWindow::enterEvent(QEvent *ev)
 {
-    if (ev->spontaneous()) {
-        QPoint p = ev->pos();
-        p.rx() += frameMargins().left();
-        p.ry() += frameMargins().top();
-        _titlebar->move(p);
+    qDebug() << __func__;
+    _titlebar->show();
+    _toolbox->show();
+}
+
+void MainWindow::leaveEvent(QEvent *ev)
+{
+    qDebug() << __func__;
+    //_titlebar->hide();
+    //_toolbox->hide();
+}
+
+void MainWindow::keyPressEvent(QKeyEvent *ev)
+{
+    qDebug() << __func__;
+    if (ev->modifiers() == 0) {
+        if (ev->key() == Qt::Key_Left) {
+            _proxy->seekBackward(20);
+        } else if (ev->key() == Qt::Key_Right) {
+            _proxy->seekForward(20);
+        }
     }
+}
+
+void MainWindow::mouseMoveEvent(QMouseEvent *ev)
+{
+    qDebug() << __func__;
 }
 
 #include "moc_mainwindow.cpp"

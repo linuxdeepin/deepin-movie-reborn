@@ -1,74 +1,21 @@
-
-#include <QtWidgets>
-#include <QX11Info>
-
-#include <xcb/xproto.h>
-#include <xcb/xcb_aux.h>
-
 #include "dmr_titlebar.h"
 #include "titlebar_proxy.h"
 #include "actions.h"
 #ifdef Q_OS_LINUX
 #include "xutil.h"
 #endif
+#include "event_monitor.h"
+#include "event_relayer.h"
+#include "mainwindow.h"
+#include <QtWidgets>
 
 namespace dmr {
-
-class EventRelayer: public QAbstractNativeEventFilter 
-{
-public:
-    friend class TitlebarProxy;
-    QWindow *_source, *_target;
-
-    EventRelayer(QWindow* src, QWindow *dest)
-        :QAbstractNativeEventFilter(), _source(src), _target(dest) {
-        int screen = 0;
-        xcb_screen_t *s = xcb_aux_get_screen (QX11Info::connection(), screen);
-        const uint32_t data[] = { 
-            XCB_EVENT_MASK_PROPERTY_CHANGE | XCB_EVENT_MASK_STRUCTURE_NOTIFY
-        };
-        xcb_change_window_attributes (QX11Info::connection(), _source->winId(),
-                XCB_CW_EVENT_MASK, data);
-
-        qApp->installNativeEventFilter(this);
-    }
-
-    virtual ~EventRelayer() {
-        qApp->removeNativeEventFilter(this);
-    }
-
-    bool nativeEventFilter(const QByteArray &eventType, void *message, long *) override {
-        if(Q_LIKELY(eventType == "xcb_generic_event_t")) {
-            xcb_generic_event_t* event = static_cast<xcb_generic_event_t *>(message);
-            switch (event->response_type & ~0x80) {
-                case XCB_CONFIGURE_NOTIFY: {
-                    xcb_configure_notify_event_t *cne = (xcb_configure_notify_event_t*)event;
-                    if (cne->window != _source->winId())
-                        return false;
-
-                    QPoint p(cne->x, cne->y);
-                    if (p != _target->framePosition()) {
-                        qDebug() << "cne: " << QRect(cne->x, cne->y, cne->width, cne->height)
-                            << "origin: " << _source->framePosition()
-                            << "dest: " << _target->framePosition();
-                        _target->setFramePosition(QPoint(cne->x, cne->y));
-                    }
-                    break;
-                }
-                default:
-                    break;
-            }
-        }
-
-        return false;
-    }
-};
 
 TitlebarProxy::TitlebarProxy(QWidget *mainWindow)
     :DBlurEffectWidget(nullptr),
     _mainWindow(mainWindow)
 {
-    setWindowFlags(Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint);
+    setWindowFlags(Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint|Qt::BypassWindowManagerHint);
     setContentsMargins(0, 0, 0, 0);
 
     setAttribute(Qt::WA_TranslucentBackground);
@@ -87,15 +34,19 @@ TitlebarProxy::TitlebarProxy(QWidget *mainWindow)
 
     l->addWidget(_titlebar);
     _titlebar->show();
-    //_titlebar->installEventFilter(this);
 
     (void)winId();
 
-    new EventRelayer(this->windowHandle(), _mainWindow->windowHandle());
+    _evRelay = new EventRelayer(_mainWindow->windowHandle(), this->windowHandle()); 
+    connect(_evRelay, &EventRelayer::targetNeedsUpdatePosition, this, &TitlebarProxy::updatePosition);
+
+    _evMonitor = new EventMonitor;
 }
 
 TitlebarProxy::~TitlebarProxy()
 {
+    delete _evMonitor;
+    delete _evRelay;
 }
 
 void TitlebarProxy::closeWindow()
@@ -148,18 +99,31 @@ void TitlebarProxy::showEvent(QShowEvent* ev)
     DBlurEffectWidget::showEvent(ev);
 }
 
+void TitlebarProxy::updatePosition(const QPoint& p)
+{
+    QPoint pos(p);
+    auto *mw = static_cast<MainWindow*>(_mainWindow);
+    pos.rx() += mw->frameMargins().left();
+    pos.ry() += mw->frameMargins().top();
+    windowHandle()->setFramePosition(pos);
+}
 
+static QPoint last_proxy_pos;
+static QPoint last_wm_pos;
 void TitlebarProxy::mousePressEvent(QMouseEvent *event)
 {
+    qDebug() << __func__;
+    last_wm_pos = event->globalPos();
+    last_proxy_pos = _mainWindow->windowHandle()->framePosition();
     DBlurEffectWidget::mousePressEvent(event);
 }
 
 void TitlebarProxy::mouseMoveEvent(QMouseEvent *event)
 {
-#ifdef Q_OS_LINUX
-    XUtils::MoveWindow(this, event->button());
-#endif
-    qDebug() << __func__ << event->globalPos();
+    QPoint d = event->globalPos() - last_wm_pos;
+    qDebug() << __func__ << d;
+
+    _mainWindow->windowHandle()->setFramePosition(last_proxy_pos + d);
 
     DBlurEffectWidget::mouseMoveEvent(event);
 }

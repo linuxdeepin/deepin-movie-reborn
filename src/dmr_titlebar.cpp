@@ -234,10 +234,8 @@ void DMRTitlebar::mousePressEvent(QMouseEvent *event)
     D_D(DMRTitlebar);
     d->mousePressed = (event->buttons() == Qt::LeftButton);
 
-#ifdef Q_OS_WIN
-    emit mousePosPressed(event->buttons(), event->globalPos());
-#endif
     emit mousePressed(event->buttons());
+    QWidget::mousePressEvent(event);
 }
 
 void DMRTitlebar::mouseReleaseEvent(QMouseEvent *event)
@@ -246,6 +244,7 @@ void DMRTitlebar::mouseReleaseEvent(QMouseEvent *event)
     if (event->buttons() == Qt::LeftButton) {
         d->mousePressed = false;
     }
+    QWidget::mouseReleaseEvent(event);
 }
 
 bool DMRTitlebar::eventFilter(QObject *obj, QEvent *event)
@@ -407,11 +406,6 @@ void DMRTitlebar::mouseMoveEvent(QMouseEvent *event)
         emit mouseMoving(button);
     }
 
-#ifdef Q_OS_WIN
-    if (d->mousePressed) {
-        emit mousePosMoving(button, event->globalPos());
-    }
-#endif
     QWidget::mouseMoveEvent(event);
 }
 
