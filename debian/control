@@ -4,8 +4,10 @@ Priority: extra
 Maintainer: Deepin Sysdev <sysdev@deepin.com>
 Build-Depends: debhelper, pkg-config, qttools5-dev-tools,
                 qt5-default, libqt5svg5-dev, qtmultimedia5-dev,
-                libdtkbase-0.2-dev, libdtkutil-0.2-dev, libdtkwidget-0.2-dev,
-                libdtksettings-dev, libdtksettingsview-dev
+                libqt5x11extras5-dev,
+                libdtkbase-dev, libdtkutil-dev, libdtkwidget-dev,
+                libdtksettings-dev, libdtksettingsview-dev,
+                libmpv-dev, libxcb1-dev, libxcb-util0-dev
 Standards-Version: 3.9.2
 Homepage: http://www.deepin.com/
 
