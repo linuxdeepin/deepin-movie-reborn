@@ -15,7 +15,7 @@ TitlebarProxy::TitlebarProxy(QWidget *mainWindow)
     :DBlurEffectWidget(nullptr),
     _mainWindow(mainWindow)
 {
-    setWindowFlags(Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint|Qt::BypassWindowManagerHint);
+    setWindowFlags(Qt::FramelessWindowHint|Qt::BypassWindowManagerHint);
     setContentsMargins(0, 0, 0, 0);
 
     setAttribute(Qt::WA_TranslucentBackground);
@@ -121,7 +121,7 @@ void TitlebarProxy::mousePressEvent(QMouseEvent *event)
 void TitlebarProxy::mouseMoveEvent(QMouseEvent *event)
 {
     QPoint d = event->globalPos() - last_wm_pos;
-    qDebug() << __func__ << d;
+    //qDebug() << __func__ << d;
 
     _mainWindow->windowHandle()->setFramePosition(last_proxy_pos + d);
 

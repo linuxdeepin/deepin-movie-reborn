@@ -28,9 +28,11 @@ MainWindow::MainWindow(QWidget *parent)
     _proxy->installEventFilter(this);
 
     _titlebar = new TitlebarProxy(this);
+    _titlebar->setFocusPolicy(Qt::NoFocus);
     _titlebar->populateMenu();
 
     _toolbox = new ToolboxProxy(this);
+    _toolbox->setFocusPolicy(Qt::NoFocus);
 
     _center = new QWidget(this);
 
@@ -40,6 +42,13 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(&_timer, &QTimer::timeout, this, &MainWindow::timeout);
     _timer.start(1000);
+
+    connect(qApp, &QGuiApplication::focusWindowChanged, [=](QWindow *w) {
+        if (w) qDebug() << QString("focus window 0x%1").arg(w->winId(), 0, 16);
+    });
+
+    connect(qApp, &QGuiApplication::applicationStateChanged,
+            this, &MainWindow::onApplicationStateChanged);
 }
 
 MainWindow::~MainWindow()
@@ -47,10 +56,41 @@ MainWindow::~MainWindow()
     delete _titlebar;
 }
 
+bool MainWindow::eventFilter(QObject *watched, QEvent *event)
+{
+    if (watched == _proxy) {
+        if (event->type() == QEvent::MouseMove) {
+            qDebug() << "player mouse move";
+        }
+    }
+
+    return QWidget::eventFilter(watched, event);
+}
+
 void MainWindow::timeout()
 {
     if (_proxy) {
         _toolbox->updateTimeInfo(_proxy->duration(), _proxy->ellapsed());
+    }
+}
+
+void MainWindow::onApplicationStateChanged(Qt::ApplicationState e)
+{
+    switch (e) {
+        case Qt::ApplicationActive:
+            if (qApp->focusWindow())
+            qDebug() << QString("focus window 0x%1").arg(qApp->focusWindow()->winId(), 0, 16);
+            qApp->setActiveWindow(this);
+            resumeToolsWindow();
+            break;
+
+        case Qt::ApplicationInactive:
+            if (qApp->focusWindow())
+            qDebug() << QString("focus window 0x%1").arg(qApp->focusWindow()->winId(), 0, 16);
+            suspendToolsWindow();
+            break;
+
+        default: break;
     }
 }
 
@@ -118,35 +158,29 @@ void MainWindow::updateProxyGeometry()
     }
 }
 
+void MainWindow::suspendToolsWindow()
+{
+    _titlebar->hide();
+    _toolbox->hide();
+}
+
+void MainWindow::resumeToolsWindow()
+{
+    _titlebar->show();
+    _toolbox->show();
+}
+
 QMargins MainWindow::frameMargins() const
 {
     return _cachedMargins;
-}
-
-bool MainWindow::eventFilter(QObject *watched, QEvent *event)
-{
-    if (watched == _proxy) {
-        if (event->type() == QEvent::WinIdChange) {
-            qDebug() << "winid inited";
-        }
-    }
-
-    return QWidget::eventFilter(watched, event);
 }
 
 void MainWindow::showEvent(QShowEvent *event)
 {
     qDebug() << __func__;
     if (_titlebar) {
-        _titlebar->show();
-        _titlebar->raise();
-
-        _toolbox->show();
-        _toolbox->raise();
-        QTimer::singleShot(2000, this, [&]() {
-            _titlebar->hide();
-            _toolbox->hide();
-        });
+        resumeToolsWindow();
+        QTimer::singleShot(2000, this, &MainWindow::suspendToolsWindow);
     }
 }
 
@@ -159,15 +193,24 @@ void MainWindow::resizeEvent(QResizeEvent *ev)
 void MainWindow::enterEvent(QEvent *ev)
 {
     qDebug() << __func__;
-    _titlebar->show();
-    _toolbox->show();
+    resumeToolsWindow();
 }
 
 void MainWindow::leaveEvent(QEvent *ev)
 {
     qDebug() << __func__;
-    //_titlebar->hide();
-    //_toolbox->hide();
+    bool leave = true;
+    if (qApp->topLevelAt(QCursor::pos())) {
+        leave =false;
+        qDebug() << __func__ << "underMouse " 
+            << QString("0x%1").arg(qApp->topLevelAt(QCursor::pos())->winId());
+    }
+
+    if (leave) {
+        suspendToolsWindow();
+    } else {
+        resumeToolsWindow();
+    }
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *ev)

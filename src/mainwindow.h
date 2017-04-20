@@ -41,6 +41,10 @@ protected:
 protected slots:
     void menuItemInvoked(QAction *action);
     void timeout();
+    void onApplicationStateChanged(Qt::ApplicationState e);
+
+    void suspendToolsWindow();
+    void resumeToolsWindow();
 
 private:
     MpvProxy *_proxy {nullptr};

@@ -10,7 +10,7 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow)
     :DBlurEffectWidget(nullptr),
     _mainWindow(mainWindow)
 {
-    setWindowFlags(Qt::FramelessWindowHint|Qt::WindowStaysOnTopHint|Qt::BypassWindowManagerHint);
+    setWindowFlags(Qt::FramelessWindowHint|Qt::BypassWindowManagerHint);
     setContentsMargins(0, 0, 0, 0);
 
     setAttribute(Qt::WA_TranslucentBackground);
@@ -55,10 +55,7 @@ void ToolboxProxy::updateTimeInfo(qint64 duration, qint64 pos)
     QTime d(0, 0), t(0, 0);
     d = d.addSecs(duration);
     t = t.addSecs(pos);
-    qDebug() << __func__ << duration << pos
-        << d.toString("hh:mm:ss") 
-        << (t.toString("hh:mm:ss"));
-    _timeLabel->setText(QString("%1/%2").arg(d.toString("hh:mm:ss")).arg(t.toString("hh:mm:ss")));
+    _timeLabel->setText(QString("%2/%1").arg(d.toString("hh:mm:ss")).arg(t.toString("hh:mm:ss")));
 }
 
 void ToolboxProxy::buttonClicked(QString id)
@@ -90,7 +87,7 @@ void ToolboxProxy::mousePressEvent(QMouseEvent *event)
 void ToolboxProxy::mouseMoveEvent(QMouseEvent *event)
 {
     QPoint d = event->globalPos() - last_wm_pos;
-    qDebug() << __func__ << d;
+    //qDebug() << __func__ << d;
 
     _mainWindow->windowHandle()->setFramePosition(last_proxy_pos + d);
 
