@@ -12,6 +12,7 @@ namespace dmr {
 class MpvProxy;
 class TitlebarProxy;
 class ToolboxProxy;
+class EventMonitor;
 
 class MainWindow: public QWidget {
     Q_OBJECT
@@ -31,9 +32,9 @@ public slots:
 
 protected:
     void showEvent(QShowEvent *event) override;
-    bool eventFilter(QObject *watched, QEvent *event) override;
     void resizeEvent(QResizeEvent *ev) override;
     void mouseMoveEvent(QMouseEvent *ev) override;
+    void mousePressEvent(QMouseEvent *ev) override;
     void enterEvent(QEvent *ev) override;
     void leaveEvent(QEvent *ev) override;
     void keyPressEvent(QKeyEvent *ev) override;
@@ -46,6 +47,11 @@ protected slots:
     void suspendToolsWindow();
     void resumeToolsWindow();
 
+    void onMonitorButtonPressed(int x, int y);
+    void onMonitorMotionNotify(int x, int y);
+    void onMonitorButtonReleased(int x, int y);
+
+
 private:
     MpvProxy *_proxy {nullptr};
     TitlebarProxy *_titlebar {nullptr};
@@ -54,6 +60,7 @@ private:
     DPlatformWindowHandle *_handle {nullptr};
     QMargins _cachedMargins;
     QTimer _timer;
+    EventMonitor *_evm {nullptr};
 };
 };
 

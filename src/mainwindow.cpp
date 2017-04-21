@@ -3,19 +3,21 @@
 #include "titlebar_proxy.h"
 #include "toolbox_proxy.h"
 #include "actions.h"
+#include "event_monitor.h"
 
 #include <QtWidgets>
 #include <DApplication>
 
+
 DWIDGET_USE_NAMESPACE
 using namespace dmr;
+
 
 MainWindow::MainWindow(QWidget *parent) 
     : QWidget(NULL)
 {
     setWindowFlags(Qt::FramelessWindowHint);
     setContentsMargins(0, 0, 0, 0);
-    setMouseTracking(true);
 
     if (DApplication::isDXcbPlatform()) {
         _handle = new DPlatformWindowHandle(this, this);
@@ -25,7 +27,6 @@ MainWindow::MainWindow(QWidget *parent)
     }
    
     _proxy = new MpvProxy(this);
-    _proxy->installEventFilter(this);
 
     _titlebar = new TitlebarProxy(this);
     _titlebar->setFocusPolicy(Qt::NoFocus);
@@ -49,22 +50,53 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(qApp, &QGuiApplication::applicationStateChanged,
             this, &MainWindow::onApplicationStateChanged);
+
+    _evm = new EventMonitor(this);
+    connect(_evm, &EventMonitor::buttonedPress, this, &MainWindow::onMonitorButtonPressed);
+    connect(_evm, &EventMonitor::buttonedDrag, this, &MainWindow::onMonitorMotionNotify);
+    connect(_evm, &EventMonitor::buttonedRelease, this, &MainWindow::onMonitorButtonReleased);
+    _evm->start();
+}
+
+static QPoint last_proxy_pos;
+static QPoint last_wm_pos;
+static bool clicked = false;
+void MainWindow::onMonitorButtonPressed(int x, int y)
+{
+    QPoint p(x, y);
+    int d = 2;
+    QMargins m(d, d, d, d);
+    if (geometry().marginsRemoved(m).contains(p)) {
+        auto w = qApp->topLevelAt(p);
+        if (w && w == this) {
+            qDebug() << __func__ << "click inside main window";
+            last_wm_pos = QPoint(x, y);
+            last_proxy_pos = windowHandle()->framePosition();
+            clicked = true;
+        }
+    }
+}
+
+void MainWindow::onMonitorButtonReleased(int x, int y)
+{
+    if (clicked) {
+        qDebug() << __func__;
+        clicked = false;
+    }
+}
+
+void MainWindow::onMonitorMotionNotify(int x, int y)
+{
+    if (clicked) {
+        QPoint d = QPoint(x, y) - last_wm_pos;
+        windowHandle()->setFramePosition(last_proxy_pos + d);
+    }
 }
 
 MainWindow::~MainWindow()
 {
     delete _titlebar;
-}
-
-bool MainWindow::eventFilter(QObject *watched, QEvent *event)
-{
-    if (watched == _proxy) {
-        if (event->type() == QEvent::MouseMove) {
-            qDebug() << "player mouse move";
-        }
-    }
-
-    return QWidget::eventFilter(watched, event);
+    delete _evm;
 }
 
 void MainWindow::timeout()
@@ -79,14 +111,14 @@ void MainWindow::onApplicationStateChanged(Qt::ApplicationState e)
     switch (e) {
         case Qt::ApplicationActive:
             if (qApp->focusWindow())
-            qDebug() << QString("focus window 0x%1").arg(qApp->focusWindow()->winId(), 0, 16);
+                qDebug() << QString("focus window 0x%1").arg(qApp->focusWindow()->winId(), 0, 16);
             qApp->setActiveWindow(this);
+            _evm->resumeRecording();
             resumeToolsWindow();
             break;
 
         case Qt::ApplicationInactive:
-            if (qApp->focusWindow())
-            qDebug() << QString("focus window 0x%1").arg(qApp->focusWindow()->winId(), 0, 16);
+            _evm->suspendRecording();
             suspendToolsWindow();
             break;
 
@@ -180,7 +212,7 @@ void MainWindow::showEvent(QShowEvent *event)
     qDebug() << __func__;
     if (_titlebar) {
         resumeToolsWindow();
-        QTimer::singleShot(2000, this, &MainWindow::suspendToolsWindow);
+        QTimer::singleShot(4000, this, &MainWindow::suspendToolsWindow);
     }
 }
 
@@ -228,6 +260,13 @@ void MainWindow::keyPressEvent(QKeyEvent *ev)
 void MainWindow::mouseMoveEvent(QMouseEvent *ev)
 {
     qDebug() << __func__;
+    QWidget::mouseMoveEvent(ev);
+}
+
+void MainWindow::mousePressEvent(QMouseEvent *ev) 
+{
+    qDebug() << __func__;
+    QWidget::mousePressEvent(ev);
 }
 
 #include "moc_mainwindow.cpp"

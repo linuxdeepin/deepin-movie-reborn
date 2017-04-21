@@ -23,6 +23,7 @@
 DWIDGET_USE_NAMESPACE
 DUTIL_USE_NAMESPACE
 
+
 int main(int argc, char *argv[])
 {
     DApplication::loadDXcbPlugin();
@@ -69,6 +70,7 @@ int main(int argc, char *argv[])
     //app.setWindowIcon(QIcon(":/common/image/deepin-movie.svg"));
     app.setApplicationDisplayName(QObject::tr("Deepin Movie"));
     app.setAttribute(Qt::AA_DontCreateNativeWidgetSiblings, true);
+
 
     dmr::MainWindow mw;
     mw.resize(850, 600);

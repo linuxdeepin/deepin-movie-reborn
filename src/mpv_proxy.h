@@ -2,6 +2,7 @@
 #define _DMR_MPV_PROXY_H 
 
 #include <QtWidgets>
+#include <xcb/xproto.h>
 #undef Bool
 #include <mpv/qthelper.hpp>
 
@@ -11,6 +12,7 @@ class MpvProxy: public QWidget {
     Q_OBJECT
     Q_PROPERTY(qint64 duration READ duration)
     Q_PROPERTY(qint64 ellapsed READ ellapsed)
+    Q_PROPERTY(bool paused READ paused NOTIFY pauseChanged)
 public:
     MpvProxy(QWidget *parent = 0);
     virtual ~MpvProxy();
@@ -18,9 +20,11 @@ public:
     void addPlayFile(const QFileInfo& fi);
     qint64 duration() const;
     qint64 ellapsed() const;
+    bool paused();
 
 signals:
     void has_mpv_events();
+    void pauseChanged();
 
 public slots:
     void play();
@@ -31,6 +35,8 @@ public slots:
 
 protected slots:
     void handle_mpv_events();
+    void onSubwindowCreated(xcb_window_t winid);
+    void onSubwindowMapped(xcb_window_t winid);
 
 private:
     Handle _handle;

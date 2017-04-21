@@ -4,7 +4,6 @@
 #ifdef Q_OS_LINUX
 #include "xutil.h"
 #endif
-#include "event_monitor.h"
 #include "event_relayer.h"
 #include "mainwindow.h"
 #include <QtWidgets>
@@ -39,13 +38,10 @@ TitlebarProxy::TitlebarProxy(QWidget *mainWindow)
 
     _evRelay = new EventRelayer(_mainWindow->windowHandle(), this->windowHandle()); 
     connect(_evRelay, &EventRelayer::targetNeedsUpdatePosition, this, &TitlebarProxy::updatePosition);
-
-    _evMonitor = new EventMonitor;
 }
 
 TitlebarProxy::~TitlebarProxy()
 {
-    delete _evMonitor;
     delete _evRelay;
 }
 
@@ -78,25 +74,6 @@ void TitlebarProxy::showMinimized()
         parentWindow->showMinimized();
 #endif
     }
-}
-
-bool TitlebarProxy::eventFilter(QObject *watched, QEvent *event)
-{
-    return DBlurEffectWidget::eventFilter(watched, event);
-}
-
-void TitlebarProxy::resizeEvent(QResizeEvent* ev)
-{
-    DBlurEffectWidget::resizeEvent(ev);
-}
-
-void TitlebarProxy::showEvent(QShowEvent* ev)
-{
-#ifdef Q_OS_LINUX
-    //QTimer::singleShot(0, this, [&]() { XUtils::SetStayOnTop(this, true); });
-#endif
-
-    DBlurEffectWidget::showEvent(ev);
 }
 
 void TitlebarProxy::updatePosition(const QPoint& p)

@@ -21,6 +21,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */ 
 
+#include <QCursor>
+
 #include "event_monitor.h"
 #include <X11/Xlibint.h>
 #include <X11/extensions/record.h>
@@ -49,12 +51,9 @@ void EventMonitor::run()
         return;
     }
 
-    // Receive KeyPress, KeyRelease, ButtonPress, ButtonRelease and MotionNotify events.
     memset(range, 0, sizeof(XRecordRange));
     range->device_events.first = ButtonPress;
     range->device_events.last  = MotionNotify;
-    //range->delivered_events.first = KeyPress;
-    //range->delivered_events.last = MotionNotify;
     
     // And create the XRECORD context.
     XRecordContext context = XRecordCreateContext (display, 0, &clients, 1, &range, 1);
@@ -85,6 +84,11 @@ void EventMonitor::callback(XPointer ptr, XRecordInterceptData* data)
 
 void EventMonitor::handleRecordEvent(XRecordInterceptData* data)
 {
+    if (!_recording) {
+        XRecordFreeData(data);
+        return;
+    }
+
     if (data->category == XRecordFromServer) {
         xEvent * event = (xEvent *)data->data;
         switch (event->u.u.type) {
@@ -116,8 +120,27 @@ void EventMonitor::handleRecordEvent(XRecordInterceptData* data)
         }
     }
 
-    fflush(stdout);
     XRecordFreeData(data);
 }
+
+void EventMonitor::resumeRecording()
+{
+    if (!_recording) {
+        _recording = 1;
+    }
+}
+
+void EventMonitor::suspendRecording()
+{
+    if (_recording) {
+        if (isPress) {
+            isPress = false;
+            auto p = QCursor::pos();
+            emit buttonedRelease(p.x(), p.y());
+        }
+        _recording = 0;
+    }
+}
+
 }
 

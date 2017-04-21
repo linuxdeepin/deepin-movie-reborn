@@ -9,7 +9,6 @@ DWIDGET_USE_NAMESPACE
 
 namespace dmr {
 
-class EventMonitor;
 class EventRelayer;
 
 /**
@@ -33,17 +32,13 @@ protected slots:
     void updatePosition(const QPoint& p);
 
 protected:
-    void resizeEvent(QResizeEvent* ev) override;
-    void showEvent(QShowEvent*) override;
     void mousePressEvent(QMouseEvent *event) override;
-    bool eventFilter(QObject *watched, QEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
 
 private:
     DPlatformWindowHandle *_handle {nullptr};
     DMRTitlebar *_titlebar {nullptr};
     QWidget *_mainWindow {nullptr};
-    EventMonitor *_evMonitor {nullptr};
     EventRelayer *_evRelay {nullptr};
 };
 }

@@ -3,3 +3,8 @@
 .*~
 build
 .zcache
+debian/debhelper-build-stamp
+debian/deepin-movie-reborn.debhelper.log
+debian/deepin-movie-reborn.substvars
+debian/deepin-movie-reborn/
+debian/files
