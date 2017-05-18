@@ -8,6 +8,8 @@
 
 namespace dmr {
 using namespace mpv::qt;
+class MpvGLWidget;
+
 class MpvProxy: public QWidget {
     Q_OBJECT
     Q_PROPERTY(qint64 duration READ duration)
@@ -40,6 +42,8 @@ protected slots:
 
 private:
     Handle _handle;
+    MpvGLWidget *_gl_widget{nullptr};
+
     QList<QFileInfo> _playlist;
 
     mpv_handle* mpv_init();

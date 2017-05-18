@@ -1,4 +1,6 @@
 #include "mpv_proxy.h"
+#include "mpv_glwidget.h"
+#include "compositing_manager.h"
 #include <mpv/client.h>
 
 #include <xcb/xproto.h>
@@ -108,21 +110,32 @@ static void mpv_callback(void *d)
 MpvProxy::MpvProxy(QWidget *parent)
     :QWidget(parent)
 {
-    setWindowFlags(Qt::FramelessWindowHint);
-    //setAttribute(Qt::WA_DontCreateNativeAncestors);
-    setAttribute(Qt::WA_NativeWindow);
+    if (!CompositingManager::get().composited()) {
+        setWindowFlags(Qt::FramelessWindowHint);
+        setAttribute(Qt::WA_NativeWindow);
+        qDebug() << "proxy hook winId " << this->winId();
 
-    qDebug() << "proxy hook winId " << this->winId();
-    //auto evRelay = new EventRelayer2(windowHandle(), nullptr);
-    //connect(evRelay, &EventRelayer2::subwindowCreated, this, &MpvProxy::onSubwindowCreated);
-    //connect(evRelay, &EventRelayer2::subwindowMapped, this, &MpvProxy::onSubwindowMapped);
+        //auto evRelay = new EventRelayer2(windowHandle(), nullptr);
+        //connect(evRelay, &EventRelayer2::subwindowCreated, this, &MpvProxy::onSubwindowCreated);
+        //connect(evRelay, &EventRelayer2::subwindowMapped, this, &MpvProxy::onSubwindowMapped);
+    }
 
     _handle = Handle::FromRawHandle(mpv_init());
+    if (CompositingManager::get().composited()) {
+        _gl_widget = new MpvGLWidget(this, _handle);
+        auto *layout = new QHBoxLayout(this);
+        layout->setContentsMargins(0, 0, 0, 0);
+        layout->addWidget(_gl_widget);
+        setLayout(layout);
+    }
     connect(this, &MpvProxy::has_mpv_events, this, &MpvProxy::handle_mpv_events, Qt::QueuedConnection);
 }
 
 MpvProxy::~MpvProxy()
 {
+    if (CompositingManager::get().composited()) {
+        delete _gl_widget;
+    }
 }
 
 void MpvProxy::onSubwindowMapped(xcb_window_t winid)
@@ -150,21 +163,25 @@ void MpvProxy::onSubwindowCreated(xcb_window_t winid)
 mpv_handle* MpvProxy::mpv_init()
 {
     mpv_handle *h = mpv_create();
-    /*        - config
-     *        - config-dir
-     *        - input-conf
-     *        - load-scripts
-     *        - script
-     *        - player-operation-mode
-     *        - input-app-events (OSX)
-     *      - all encoding mode options
-     */
 
-    set_property(h, "vo", "opengl");
-    set_property(h, "wid", this->winId());
-    mpv_initialize(h);
+    bool composited = CompositingManager::get().composited();
+    
+    //set_property(h, "terminal", "yes");
+    //set_property(h, "msg-level", "all=v");
 
-    mpv_set_wakeup_callback(h, mpv_callback, this);
+    if (mpv_initialize(h) < 0) {
+        std::runtime_error("mpv init failed");
+    }
+
+    if (composited) {
+        set_property(h, "vo", "opengl-cb");
+        set_property(h, "hwdec", "auto");
+
+    } else {
+        set_property(h, "vo", "opengl");
+        set_property(h, "hwdec", "auto");
+        set_property(h, "wid", this->winId());
+    }
 
     mpv_observe_property(h, 0, "time-pos", MPV_FORMAT_DOUBLE);
     mpv_observe_property(h, 0, "track-list", MPV_FORMAT_NODE);
@@ -173,7 +190,8 @@ mpv_handle* MpvProxy::mpv_init()
     mpv_observe_property(h, 0, "pause", MPV_FORMAT_NODE);
     mpv_observe_property(h, 0, "core-idle", MPV_FORMAT_NODE);
 
-    mpv_request_log_messages(h, "info");
+    //mpv_request_log_messages(h, "info");
+    mpv_set_wakeup_callback(h, mpv_callback, this);
     return h;
 }
 
@@ -265,7 +283,10 @@ void MpvProxy::seekBackward(int secs)
 
 void MpvProxy::addPlayFile(const QFileInfo& fi)
 {
-    if (fi.exists()) _playlist.append(fi);
+    if (fi.exists()) {
+        if (!_playlist.isEmpty()) _playlist.removeFirst();
+        _playlist.prepend(fi);
+    }
 }
 
 qint64 MpvProxy::duration() const

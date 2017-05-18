@@ -3,6 +3,7 @@
 #include "toolbox_proxy.h"
 #include "actions.h"
 #include "event_monitor.h"
+#include "compositing_manager.h"
 
 #include <QtWidgets>
 #include <DApplication>
@@ -12,28 +13,47 @@
 DWIDGET_USE_NAMESPACE
 using namespace dmr;
 
+/// shadow
+#define SHADOW_COLOR_NORMAL QColor(0, 0, 0, 255 * 0.35)
+#define SHADOW_COLOR_ACTIVE QColor(0, 0, 0, 255 * 0.6)
 
 MainWindow::MainWindow(QWidget *parent) 
     : QWidget(NULL)
 {
     setWindowFlags(Qt::FramelessWindowHint);
-    setContentsMargins(0, 0, 0, 0);
-
-    if (DApplication::isDXcbPlatform()) {
+    //setContentsMargins(9, 9, 9, 9);
+    
+    bool composited = CompositingManager::get().composited();
+    if (DApplication::isDXcbPlatform() && composited) {
         _handle = new DPlatformWindowHandle(this, this);
         connect(_handle, &DPlatformWindowHandle::frameMarginsChanged, 
                 this, &MainWindow::frameMarginsChanged);
+        setAttribute(Qt::WA_TranslucentBackground, true);
+        _handle->setTranslucentBackground(true);
         _cachedMargins = _handle->frameMargins();
+
+        connect(qApp, &QGuiApplication::focusWindowChanged, this, [=] {
+            if (this->isActiveWindow()) {
+                _handle->setShadowColor(SHADOW_COLOR_ACTIVE);
+            } else {
+                _handle->setShadowColor(SHADOW_COLOR_NORMAL);
+            }
+        });
     }
-   
+
+    qDebug() << "composited = " << composited;
 
     _titlebar = new DTitlebar(this);
-    _titlebar->setAttribute(Qt::WA_NativeWindow);
-    _titlebar->move(0, 0);
-    //_titlebar->populateMenu();
+    if (!composited) {
+        _titlebar->setAttribute(Qt::WA_NativeWindow);
+        _titlebar->winId();
+    }
+    //_titlebar->setStyleSheet("background: rgba(0, 0, 0, 0.6);");
+    _titlebar->setMenu(ActionFactory::get().titlebarMenu());
 
     _toolbox = new ToolboxProxy(this);
     _toolbox->setFocusPolicy(Qt::NoFocus);
+    _toolbox->move(0, 0);
 
     _center = new QWidget(this);
     _center->move(0, 0);
@@ -42,6 +62,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(this, &MainWindow::frameMarginsChanged, &MainWindow::updateProxyGeometry);
     connect(_titlebar->menu(), &QMenu::triggered, this, &MainWindow::menuItemInvoked);
+
+    updateProxyGeometry();
 
     connect(&_timer, &QTimer::timeout, this, &MainWindow::timeout);
     //_timer.start(1000);
@@ -140,6 +162,15 @@ void MainWindow::menuItemInvoked(QAction *action)
         case ActionFactory::ActionKind::LightTheme:
             qApp->setTheme(action->isChecked() ? "light":"dark");
             break;
+        case ActionFactory::OpenFile: {
+            QString filename = QFileDialog::getOpenFileName(this, tr("Open File"),
+                    QDir::currentPath(),
+                    tr("Movies (*.mkv *.mov *.mp4 *.rmvb)"));
+            if (QFileInfo(filename).exists()) {
+                play(QFileInfo(filename));
+            }
+            break;
+        }
         default:
             break;
     }
@@ -151,9 +182,6 @@ void MainWindow::play(const QFileInfo& fi)
         return;
 
     _proxy->addPlayFile(fi);
-
-    updateProxyGeometry();
-    _proxy->show();
     _proxy->play();
 }
 
@@ -165,29 +193,26 @@ void MainWindow::updateProxyGeometry()
 
     _center->resize(size());
 
-    _titlebar->resize(size());
+    //auto tl = QPoint(frameMargins().left(), frameMargins().top());
+    auto tl = QPoint();
+
+    if (_titlebar) {
+        QSize sz(size().width(), _titlebar->height());
+        _titlebar->setGeometry(QRect(tl, sz));
+    }
 
     if (_proxy) {
-        QRect r = geometry();
-        r.translate(QPoint(frameMargins().left(), frameMargins().top()));
-        _proxy->setGeometry(r);
+        _proxy->setGeometry(QRect(tl, size()));
     }
-
-    //if (_titlebar) {
-        //QRect r(frameGeometry().topLeft(), geometry().size());
-        //r.setHeight(40);
-        //_titlebar->resize(r.size());
-        //qDebug() << "_titlebar " << _titlebar->frameGeometry();
-    //}
 
     if (_toolbox) {
-        QRect r = _center->geometry();
-        r.setY(r.height() - 80);
-        r.setHeight(80);
-        //_toolbox->resize(r.size());
+        QRect r(0, size().height() - 80, size().width(), 80);
         _toolbox->setGeometry(r);
     }
+
+    qDebug() << "margins " << frameMargins();
     qDebug() << "window frame " << frameGeometry();
+    qDebug() << "window geom " << geometry();
     qDebug() << "_center " << _center->geometry();
     qDebug() << "_titlebar " << _titlebar->geometry();
     qDebug() << "proxy " << _proxy->geometry();
@@ -215,9 +240,6 @@ void MainWindow::showEvent(QShowEvent *event)
 {
     qDebug() << __func__;
 
-    //_titlebar->show();
-    //_toolbox->show();
-
     _titlebar->raise();
     _toolbox->raise();
     if (_titlebar) {
@@ -234,19 +256,14 @@ void MainWindow::resizeEvent(QResizeEvent *ev)
 
 void MainWindow::enterEvent(QEvent *ev)
 {
-    qDebug() << __func__;
+    //qDebug() << __func__;
     //resumeToolsWindow();
 }
 
 void MainWindow::leaveEvent(QEvent *ev)
 {
-    qDebug() << __func__;
+    //qDebug() << __func__;
     bool leave = true;
-    if (qApp->topLevelAt(QCursor::pos())) {
-        leave =false;
-        qDebug() << __func__ << "underMouse " 
-            << QString("0x%1").arg(qApp->topLevelAt(QCursor::pos())->winId());
-    }
 
     //suspendToolsWindow();
 }
@@ -265,7 +282,7 @@ void MainWindow::keyPressEvent(QKeyEvent *ev)
 
 void MainWindow::mouseMoveEvent(QMouseEvent *ev)
 {
-    qDebug() << __func__;
+    //qDebug() << __func__;
     QWidget::mouseMoveEvent(ev);
 }
 

@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
     app.setApplicationName("deepin-movie");
     app.setApplicationVersion(DMR_VERSION);
 
-    app.setTheme("dark");
+    app.setTheme("semidark");
 
     DLogManager::registerConsoleAppender();
     DLogManager::registerFileAppender();
@@ -73,7 +73,8 @@ int main(int argc, char *argv[])
 
 
     dmr::MainWindow mw;
-    mw.resize(850, 600);
+    //mw.resize(850, 600);
+    mw.resize(720, 404);
     DUtility::moveToCenter(&mw);
     mw.show();
 

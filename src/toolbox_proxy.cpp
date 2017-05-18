@@ -1,6 +1,7 @@
 #include "toolbox_proxy.h"
 #include "mainwindow.h"
 #include "event_relayer.h"
+#include "compositing_manager.h"
 
 #include <QtWidgets>
 
@@ -12,9 +13,13 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow)
 {
     setWindowFlags(Qt::FramelessWindowHint|Qt::BypassWindowManagerHint);
     setContentsMargins(0, 0, 0, 0);
-    winId();
 
-    setAttribute(Qt::WA_TranslucentBackground);
+    bool composited = CompositingManager::get().composited();
+    setStyleSheet("background: rgba(0, 0, 0, 0.6);");
+    //setAttribute(Qt::WA_TranslucentBackground);
+    if (!composited) {
+        setAttribute(Qt::WA_NativeWindow);
+    }
 
     auto *l = new QHBoxLayout(this);
     l->setContentsMargins(0, 0, 0, 0);
@@ -22,7 +27,6 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow)
 
     _timeLabel = new QLabel("");
     l->addWidget(_timeLabel);
-
 
     auto *signalMapper = new QSignalMapper(this);
     connect(signalMapper, static_cast<void(QSignalMapper::*)(const QString&)>(&QSignalMapper::mapped),
@@ -66,8 +70,15 @@ void ToolboxProxy::updatePosition(const QPoint& p)
 
 void ToolboxProxy::paintEvent(QPaintEvent *pe)
 {
-    QPainter p(this);
-    p.fillRect(this->geometry(), QColor::fromRgb(255, 0, 0, 200));
+    //QPainter p(this);
+    //QPainterPath pp;
+    //pp.addRoundedRect(rect(), 5, 5);
+    //p.setClipPath(pp);
+
+    //auto clr = QColor::fromRgb(0, 0, 0, 128);
+    //p.fillRect(rect(), clr);
+
+    QWidget::paintEvent(pe);
 }
 
 }

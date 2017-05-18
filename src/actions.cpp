@@ -31,10 +31,11 @@ QMenu* ActionFactory::titlebarMenu()
     DEF_ACTION("Open File", ActionKind::OpenFile);
     DEF_ACTION("Settings", ActionKind::Settings);
     DEF_ACTION_CHECKED("Light Theme", ActionKind::LightTheme);
-    menu->addSeparator();
-    DEF_ACTION("About", ActionKind::About);
-    DEF_ACTION("Help", ActionKind::Help);
-    DEF_ACTION("Exit", ActionKind::Exit);
+    // these seems added by titlebar itself
+    //menu->addSeparator();
+    //DEF_ACTION("About", ActionKind::About);
+    //DEF_ACTION("Help", ActionKind::Help);
+    //DEF_ACTION("Exit", ActionKind::Exit);
 
     return menu;
 }

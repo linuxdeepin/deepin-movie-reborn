@@ -9,7 +9,8 @@ class ActionFactory: public QObject {
     Q_OBJECT
 public:
     enum ActionKind {
-        OpenFile,
+        Invalid = 0,
+        OpenFile = 1,
         Settings,
         LightTheme,
         About,
