@@ -1,12 +1,12 @@
 #include "mainwindow.h"
 #include "mpv_proxy.h"
-#include "titlebar_proxy.h"
 #include "toolbox_proxy.h"
 #include "actions.h"
 #include "event_monitor.h"
 
 #include <QtWidgets>
 #include <DApplication>
+#include <DTitlebar>
 
 
 DWIDGET_USE_NAMESPACE
@@ -26,36 +26,34 @@ MainWindow::MainWindow(QWidget *parent)
         _cachedMargins = _handle->frameMargins();
     }
    
-    _proxy = new MpvProxy(this);
 
-    _titlebar = new TitlebarProxy(this);
-    _titlebar->setFocusPolicy(Qt::NoFocus);
-    _titlebar->populateMenu();
+    _titlebar = new DTitlebar(this);
+    _titlebar->setAttribute(Qt::WA_NativeWindow);
+    _titlebar->move(0, 0);
+    //_titlebar->populateMenu();
 
     _toolbox = new ToolboxProxy(this);
     _toolbox->setFocusPolicy(Qt::NoFocus);
 
     _center = new QWidget(this);
+    _center->move(0, 0);
 
+    _proxy = new MpvProxy(_center);
 
     connect(this, &MainWindow::frameMarginsChanged, &MainWindow::updateProxyGeometry);
-    connect(_titlebar->titlebar()->menu(), &QMenu::triggered, this, &MainWindow::menuItemInvoked);
+    connect(_titlebar->menu(), &QMenu::triggered, this, &MainWindow::menuItemInvoked);
 
     connect(&_timer, &QTimer::timeout, this, &MainWindow::timeout);
-    _timer.start(1000);
+    //_timer.start(1000);
 
-    connect(qApp, &QGuiApplication::focusWindowChanged, [=](QWindow *w) {
-        if (w) qDebug() << QString("focus window 0x%1").arg(w->winId(), 0, 16);
-    });
+    //connect(qApp, &QGuiApplication::applicationStateChanged,
+            //this, &MainWindow::onApplicationStateChanged);
 
-    connect(qApp, &QGuiApplication::applicationStateChanged,
-            this, &MainWindow::onApplicationStateChanged);
-
-    _evm = new EventMonitor(this);
-    connect(_evm, &EventMonitor::buttonedPress, this, &MainWindow::onMonitorButtonPressed);
-    connect(_evm, &EventMonitor::buttonedDrag, this, &MainWindow::onMonitorMotionNotify);
-    connect(_evm, &EventMonitor::buttonedRelease, this, &MainWindow::onMonitorButtonReleased);
-    _evm->start();
+    //_evm = new EventMonitor(this);
+    //connect(_evm, &EventMonitor::buttonedPress, this, &MainWindow::onMonitorButtonPressed);
+    //connect(_evm, &EventMonitor::buttonedDrag, this, &MainWindow::onMonitorMotionNotify);
+    //connect(_evm, &EventMonitor::buttonedRelease, this, &MainWindow::onMonitorButtonReleased);
+    //_evm->start();
 }
 
 static QPoint last_proxy_pos;
@@ -95,8 +93,8 @@ void MainWindow::onMonitorMotionNotify(int x, int y)
 
 MainWindow::~MainWindow()
 {
-    delete _titlebar;
-    delete _evm;
+    //delete _titlebar;
+    //delete _evm;
 }
 
 void MainWindow::timeout()
@@ -167,27 +165,33 @@ void MainWindow::updateProxyGeometry()
 
     _center->resize(size());
 
+    _titlebar->resize(size());
+
     if (_proxy) {
-        QRect r = _center->geometry();
+        QRect r = geometry();
         r.translate(QPoint(frameMargins().left(), frameMargins().top()));
         _proxy->setGeometry(r);
-        qDebug() << "window frame " << frameGeometry();
-        qDebug() << "proxy " << geometry();
     }
 
-    if (_titlebar) {
-        QRect r(frameGeometry().topLeft(), geometry().size());
-        r.setHeight(40);
-        _titlebar->resize(r.size());
-        qDebug() << "_titlebar " << _titlebar->frameGeometry();
-    }
+    //if (_titlebar) {
+        //QRect r(frameGeometry().topLeft(), geometry().size());
+        //r.setHeight(40);
+        //_titlebar->resize(r.size());
+        //qDebug() << "_titlebar " << _titlebar->frameGeometry();
+    //}
 
     if (_toolbox) {
-        QRect r(frameGeometry().topLeft(), geometry().size());
+        QRect r = _center->geometry();
+        r.setY(r.height() - 80);
         r.setHeight(80);
-        _toolbox->resize(r.size());
-        qDebug() << "_toolbox " << _toolbox->frameGeometry();
+        //_toolbox->resize(r.size());
+        _toolbox->setGeometry(r);
     }
+    qDebug() << "window frame " << frameGeometry();
+    qDebug() << "_center " << _center->geometry();
+    qDebug() << "_titlebar " << _titlebar->geometry();
+    qDebug() << "proxy " << _proxy->geometry();
+    qDebug() << "_toolbox " << _toolbox->geometry();
 }
 
 void MainWindow::suspendToolsWindow()
@@ -210,9 +214,15 @@ QMargins MainWindow::frameMargins() const
 void MainWindow::showEvent(QShowEvent *event)
 {
     qDebug() << __func__;
+
+    //_titlebar->show();
+    //_toolbox->show();
+
+    _titlebar->raise();
+    _toolbox->raise();
     if (_titlebar) {
         resumeToolsWindow();
-        QTimer::singleShot(4000, this, &MainWindow::suspendToolsWindow);
+        //QTimer::singleShot(4000, this, &MainWindow::suspendToolsWindow);
     }
 }
 
@@ -225,7 +235,7 @@ void MainWindow::resizeEvent(QResizeEvent *ev)
 void MainWindow::enterEvent(QEvent *ev)
 {
     qDebug() << __func__;
-    resumeToolsWindow();
+    //resumeToolsWindow();
 }
 
 void MainWindow::leaveEvent(QEvent *ev)
@@ -238,11 +248,7 @@ void MainWindow::leaveEvent(QEvent *ev)
             << QString("0x%1").arg(qApp->topLevelAt(QCursor::pos())->winId());
     }
 
-    if (leave) {
-        suspendToolsWindow();
-    } else {
-        resumeToolsWindow();
-    }
+    //suspendToolsWindow();
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *ev)

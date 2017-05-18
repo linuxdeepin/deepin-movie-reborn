@@ -109,13 +109,13 @@ MpvProxy::MpvProxy(QWidget *parent)
     :QWidget(parent)
 {
     setWindowFlags(Qt::FramelessWindowHint);
-    setAttribute(Qt::WA_DontCreateNativeAncestors);
+    //setAttribute(Qt::WA_DontCreateNativeAncestors);
     setAttribute(Qt::WA_NativeWindow);
 
     qDebug() << "proxy hook winId " << this->winId();
-    auto evRelay = new EventRelayer2(windowHandle(), nullptr);
-    connect(evRelay, &EventRelayer2::subwindowCreated, this, &MpvProxy::onSubwindowCreated);
-    connect(evRelay, &EventRelayer2::subwindowMapped, this, &MpvProxy::onSubwindowMapped);
+    //auto evRelay = new EventRelayer2(windowHandle(), nullptr);
+    //connect(evRelay, &EventRelayer2::subwindowCreated, this, &MpvProxy::onSubwindowCreated);
+    //connect(evRelay, &EventRelayer2::subwindowMapped, this, &MpvProxy::onSubwindowMapped);
 
     _handle = Handle::FromRawHandle(mpv_init());
     connect(this, &MpvProxy::has_mpv_events, this, &MpvProxy::handle_mpv_events, Qt::QueuedConnection);

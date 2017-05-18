@@ -4,7 +4,6 @@
 #include <DPlatformWindowHandle>
 #include <DBlurEffectWidget>
 #include <QtWidgets>
-#include "dmr_titlebar.h"
 
 DWIDGET_USE_NAMESPACE
 
@@ -12,12 +11,7 @@ namespace dmr {
 
 class EventRelayer;
 
-/**
- * TitlebarProxy is a toplevel blurred window that should be bound with main 
- * window. It needs to keep as top level to utilize deepin-wm's blurring 
- * facility.
- */
-class ToolboxProxy: public DBlurEffectWidget {
+class ToolboxProxy: public QWidget {
     Q_OBJECT
 public:
     ToolboxProxy(QWidget *mainWindow);
@@ -36,13 +30,10 @@ protected slots:
     void buttonClicked(QString id);
 
 protected:
-    void mousePressEvent(QMouseEvent *event) override;
-    void mouseMoveEvent(QMouseEvent *event) override;
+    void paintEvent(QPaintEvent *pe) override;
 
 private:
-    DPlatformWindowHandle *_handle {nullptr};
     QWidget *_mainWindow {nullptr};
-    EventRelayer *_evRelay {nullptr};
     QLabel *_timeLabel {nullptr};
 };
 }

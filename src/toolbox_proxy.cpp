@@ -7,16 +7,14 @@
 namespace dmr {
 
 ToolboxProxy::ToolboxProxy(QWidget *mainWindow)
-    :DBlurEffectWidget(nullptr),
+    :QWidget(mainWindow),
     _mainWindow(mainWindow)
 {
     setWindowFlags(Qt::FramelessWindowHint|Qt::BypassWindowManagerHint);
     setContentsMargins(0, 0, 0, 0);
+    winId();
 
     setAttribute(Qt::WA_TranslucentBackground);
-    setMaskColor(Qt::black);
-
-    setBlendMode(DBlurEffectWidget::BehindWindowBlend);
 
     auto *l = new QHBoxLayout(this);
     l->setContentsMargins(0, 0, 0, 0);
@@ -36,18 +34,10 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow)
 
     l->addWidget(pb);
     l->setAlignment(pb, Qt::AlignHCenter);
-
-
-    (void)winId();
-
-    _evRelay = new EventRelayer(_mainWindow->windowHandle(), this->windowHandle()); 
-    connect(_evRelay, &EventRelayer::targetNeedsUpdatePosition, this, &ToolboxProxy::updatePosition);
-
 }
 
 ToolboxProxy::~ToolboxProxy()
 {
-    delete _evRelay;
 }
 
 void ToolboxProxy::updateTimeInfo(qint64 duration, qint64 pos)
@@ -74,24 +64,10 @@ void ToolboxProxy::updatePosition(const QPoint& p)
     windowHandle()->setFramePosition(pos);
 }
 
-static QPoint last_proxy_pos;
-static QPoint last_wm_pos;
-void ToolboxProxy::mousePressEvent(QMouseEvent *event)
+void ToolboxProxy::paintEvent(QPaintEvent *pe)
 {
-    qDebug() << __func__;
-    last_wm_pos = event->globalPos();
-    last_proxy_pos = _mainWindow->windowHandle()->framePosition();
-    DBlurEffectWidget::mousePressEvent(event);
-}
-
-void ToolboxProxy::mouseMoveEvent(QMouseEvent *event)
-{
-    QPoint d = event->globalPos() - last_wm_pos;
-    //qDebug() << __func__ << d;
-
-    _mainWindow->windowHandle()->setFramePosition(last_proxy_pos + d);
-
-    DBlurEffectWidget::mouseMoveEvent(event);
+    QPainter p(this);
+    p.fillRect(this->geometry(), QColor::fromRgb(255, 0, 0, 200));
 }
 
 }

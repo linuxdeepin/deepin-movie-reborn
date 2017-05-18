@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <DMainWindow>
+#include <DTitlebar>
 #include <DPlatformWindowHandle>
 #include <QtWidgets>
 
@@ -10,7 +11,6 @@ DWIDGET_USE_NAMESPACE
 
 namespace dmr {
 class MpvProxy;
-class TitlebarProxy;
 class ToolboxProxy;
 class EventMonitor;
 
@@ -54,7 +54,7 @@ protected slots:
 
 private:
     MpvProxy *_proxy {nullptr};
-    TitlebarProxy *_titlebar {nullptr};
+    DTitlebar *_titlebar {nullptr};
     ToolboxProxy *_toolbox {nullptr};
     QWidget *_center {nullptr};
     DPlatformWindowHandle *_handle {nullptr};
