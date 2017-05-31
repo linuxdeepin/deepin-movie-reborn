@@ -4,6 +4,7 @@
 #include "actions.h"
 #include "event_monitor.h"
 #include "compositing_manager.h"
+#include "shortcut_manager.h"
 
 #include <QtWidgets>
 #include <DApplication>
@@ -21,7 +22,6 @@ MainWindow::MainWindow(QWidget *parent)
     : QWidget(NULL)
 {
     setWindowFlags(Qt::FramelessWindowHint);
-    //setContentsMargins(9, 9, 9, 9);
     
     bool composited = CompositingManager::get().composited();
     if (DApplication::isDXcbPlatform() && composited) {
@@ -44,16 +44,16 @@ MainWindow::MainWindow(QWidget *parent)
     qDebug() << "composited = " << composited;
 
     _titlebar = new DTitlebar(this);
+    _titlebar->setFocusPolicy(Qt::NoFocus);
     if (!composited) {
         _titlebar->setAttribute(Qt::WA_NativeWindow);
         _titlebar->winId();
     }
-    //_titlebar->setStyleSheet("background: rgba(0, 0, 0, 0.6);");
+    _titlebar->setStyleSheet("background: rgba(0, 0, 0, 0.6);");
     _titlebar->setMenu(ActionFactory::get().titlebarMenu());
 
     _toolbox = new ToolboxProxy(this);
     _toolbox->setFocusPolicy(Qt::NoFocus);
-    _toolbox->move(0, 0);
 
     _center = new QWidget(this);
     _center->move(0, 0);
@@ -65,17 +65,27 @@ MainWindow::MainWindow(QWidget *parent)
 
     updateProxyGeometry();
 
-    connect(&_timer, &QTimer::timeout, this, &MainWindow::timeout);
+    //connect(&_timer, &QTimer::timeout, this, &MainWindow::timeout);
     //_timer.start(1000);
 
-    //connect(qApp, &QGuiApplication::applicationStateChanged,
-            //this, &MainWindow::onApplicationStateChanged);
+    connect(&ShortcutManager::get(), &ShortcutManager::bindingsChanged,
+            this, &MainWindow::onBindingsChanged);
+    ShortcutManager::get().buildBindings();
 
-    //_evm = new EventMonitor(this);
-    //connect(_evm, &EventMonitor::buttonedPress, this, &MainWindow::onMonitorButtonPressed);
-    //connect(_evm, &EventMonitor::buttonedDrag, this, &MainWindow::onMonitorMotionNotify);
-    //connect(_evm, &EventMonitor::buttonedRelease, this, &MainWindow::onMonitorButtonReleased);
-    //_evm->start();
+    connect(_proxy, &MpvProxy::ellapsedChanged, [=]() {
+        _toolbox->updateTimeInfo(_proxy->duration(), _proxy->ellapsed());
+    });
+
+    if (!composited) {
+        connect(qApp, &QGuiApplication::applicationStateChanged,
+                this, &MainWindow::onApplicationStateChanged);
+
+        _evm = new EventMonitor(this);
+        connect(_evm, &EventMonitor::buttonedPress, this, &MainWindow::onMonitorButtonPressed);
+        connect(_evm, &EventMonitor::buttonedDrag, this, &MainWindow::onMonitorMotionNotify);
+        connect(_evm, &EventMonitor::buttonedRelease, this, &MainWindow::onMonitorButtonReleased);
+        _evm->start();
+    }
 }
 
 static QPoint last_proxy_pos;
@@ -115,15 +125,12 @@ void MainWindow::onMonitorMotionNotify(int x, int y)
 
 MainWindow::~MainWindow()
 {
-    //delete _titlebar;
     //delete _evm;
 }
 
 void MainWindow::timeout()
 {
-    if (_proxy) {
-        _toolbox->updateTimeInfo(_proxy->duration(), _proxy->ellapsed());
-    }
+    _toolbox->updateTimeInfo(_proxy->duration(), _proxy->ellapsed());
 }
 
 void MainWindow::onApplicationStateChanged(Qt::ApplicationState e)
@@ -146,23 +153,42 @@ void MainWindow::onApplicationStateChanged(Qt::ApplicationState e)
     }
 }
 
+void MainWindow::onBindingsChanged()
+{
+    qDebug() << __func__;
+    {
+        auto actions = this->actions();
+        this->actions().clear();
+        for (auto* act: actions) {
+            delete act;
+        }
+    }
+
+    auto& scmgr = ShortcutManager::get();
+    auto actions = scmgr.actionsForBindings();
+    for (auto* act: actions) {
+        this->addAction(act);
+        connect(act, &QAction::triggered, [=]() { this->menuItemInvoked(act); });
+    }
+}
+
 void MainWindow::menuItemInvoked(QAction *action)
 {
     auto prop = action->property("kind");
 #if QT_VERSION < QT_VERSION_CHECK(5, 6, 2)
-    auto kd = (ActionFactory::ActionKind)action->property("kind").value<int>();
+    auto kd = (ActionKind)action->property("kind").value<int>();
 #else
-    auto kd = action->property("kind").value<ActionFactory::ActionKind>();
+    auto kd = action->property("kind").value<ActionKind>();
 #endif
     qDebug() << "prop = " << prop << ", kd = " << kd;
     switch (kd) {
-        case ActionFactory::ActionKind::Exit:
+        case ActionKind::Exit:
             qApp->quit(); 
             break;
-        case ActionFactory::ActionKind::LightTheme:
+        case ActionKind::LightTheme:
             qApp->setTheme(action->isChecked() ? "light":"dark");
             break;
-        case ActionFactory::OpenFile: {
+        case OpenFile: {
             QString filename = QFileDialog::getOpenFileName(this, tr("Open File"),
                     QDir::currentPath(),
                     tr("Movies (*.mkv *.mov *.mp4 *.rmvb)"));
@@ -171,6 +197,22 @@ void MainWindow::menuItemInvoked(QAction *action)
             }
             break;
         }
+
+        case TogglePause: {
+            _proxy->pauseResume();
+            break;
+        }
+
+        case SeekBackward: {
+            _proxy->seekBackward(20);
+            break;
+        }
+
+        case SeekForward: {
+            _proxy->seekForward(20);
+            break;
+        }
+
         default:
             break;
     }
@@ -236,6 +278,15 @@ QMargins MainWindow::frameMargins() const
     return _cachedMargins;
 }
 
+bool MainWindow::event(QEvent* e)
+{
+    if (e->type() == QEvent::Shortcut) {
+        qDebug() << __func__;
+    }
+
+    return QWidget::event(e);
+}
+
 void MainWindow::showEvent(QShowEvent *event)
 {
     qDebug() << __func__;
@@ -266,18 +317,6 @@ void MainWindow::leaveEvent(QEvent *ev)
     bool leave = true;
 
     //suspendToolsWindow();
-}
-
-void MainWindow::keyPressEvent(QKeyEvent *ev)
-{
-    qDebug() << __func__;
-    if (ev->modifiers() == 0) {
-        if (ev->key() == Qt::Key_Left) {
-            _proxy->seekBackward(20);
-        } else if (ev->key() == Qt::Key_Right) {
-            _proxy->seekForward(20);
-        }
-    }
 }
 
 void MainWindow::mouseMoveEvent(QMouseEvent *ev)

@@ -13,7 +13,7 @@ namespace dmr {
     static void gl_update_callback(void *cb_ctx)
     {
         MpvGLWidget *w = static_cast<MpvGLWidget*>(cb_ctx);
-        QMetaObject::invokeMethod(w, "onNewFrame");
+        QMetaObject::invokeMethod(w, "onNewFrame", Qt::DirectConnection);
     }
 
     void MpvGLWidget::onNewFrame()
@@ -56,10 +56,8 @@ namespace dmr {
 
     void MpvGLWidget::initializeGL() 
     {
-        //QOpenGLWidget::initializeGL();
-
         QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
-        f->glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+        f->glClearColor(1.0f, 0.0f, 0.0f, 0.5f);
         if (mpv_opengl_cb_init_gl(_gl_ctx, NULL, get_proc_address, NULL) < 0)
             throw std::runtime_error("could not initialize OpenGL");
     }
@@ -71,10 +69,20 @@ namespace dmr {
 
     void MpvGLWidget::paintGL() 
     {
-        //QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
-        //f->glClear(GL_COLOR_BUFFER_BIT);
-        mpv_opengl_cb_draw(_gl_ctx, defaultFramebufferObject(), width(), -height());
+        QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
+        if (_playing) {
+            mpv_opengl_cb_draw(_gl_ctx, defaultFramebufferObject(), width(), -height());
+        } else {
+            f->glClear(GL_COLOR_BUFFER_BIT);
+        }
     }
 
+    void MpvGLWidget::setPlaying(bool val)
+    {
+        if (_playing != val) {
+            _playing = val;
+            update();
+        }
+    }
 }
 

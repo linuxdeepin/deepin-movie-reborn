@@ -12,8 +12,8 @@ class MpvGLWidget;
 
 class MpvProxy: public QWidget {
     Q_OBJECT
-    Q_PROPERTY(qint64 duration READ duration)
-    Q_PROPERTY(qint64 ellapsed READ ellapsed)
+    Q_PROPERTY(qint64 duration READ duration NOTIFY durationChanged)
+    Q_PROPERTY(qint64 ellapsed READ ellapsed NOTIFY ellapsedChanged)
     Q_PROPERTY(bool paused READ paused NOTIFY pauseChanged)
 public:
     MpvProxy(QWidget *parent = 0);
@@ -27,10 +27,12 @@ public:
 signals:
     void has_mpv_events();
     void pauseChanged();
+    void durationChanged();
+    void ellapsedChanged();
 
 public slots:
     void play();
-    void pause();
+    void pauseResume();
     void stop();
     void seekForward(int secs);
     void seekBackward(int secs);

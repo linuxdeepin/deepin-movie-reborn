@@ -6,18 +6,35 @@
 #include <QtWidgets>
 
 namespace dmr {
+class KeyPressBubbler: public QObject {
+    public:
+        KeyPressBubbler(QObject *parent): QObject(parent) {}
+
+    protected:
+        bool eventFilter(QObject *obj, QEvent *event) {
+            if (event->type() == QEvent::KeyPress) {
+                QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
+                event->setAccepted(false);
+                return false;
+            } else {
+                // standard event processing
+                return QObject::eventFilter(obj, event);
+            }
+        }
+};
+
 
 ToolboxProxy::ToolboxProxy(QWidget *mainWindow)
     :QWidget(mainWindow),
     _mainWindow(mainWindow)
 {
-    setWindowFlags(Qt::FramelessWindowHint|Qt::BypassWindowManagerHint);
-    setContentsMargins(0, 0, 0, 0);
 
     bool composited = CompositingManager::get().composited();
     setStyleSheet("background: rgba(0, 0, 0, 0.6);");
     //setAttribute(Qt::WA_TranslucentBackground);
     if (!composited) {
+        setWindowFlags(Qt::FramelessWindowHint|Qt::BypassWindowManagerHint);
+        setContentsMargins(0, 0, 0, 0);
         setAttribute(Qt::WA_NativeWindow);
     }
 
@@ -38,6 +55,10 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow)
 
     l->addWidget(pb);
     l->setAlignment(pb, Qt::AlignHCenter);
+
+    auto bubbler = new KeyPressBubbler(this);
+    this->installEventFilter(bubbler);
+    pb->installEventFilter(bubbler);
 }
 
 ToolboxProxy::~ToolboxProxy()

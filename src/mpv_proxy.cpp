@@ -104,7 +104,7 @@ protected:
 static void mpv_callback(void *d)
 {
     MpvProxy *mpv = static_cast<MpvProxy*>(d);
-    emit mpv->has_mpv_events();
+    QMetaObject::invokeMethod(mpv, "has_mpv_events", Qt::QueuedConnection);
 }
 
 MpvProxy::MpvProxy(QWidget *parent)
@@ -128,7 +128,6 @@ MpvProxy::MpvProxy(QWidget *parent)
         layout->addWidget(_gl_widget);
         setLayout(layout);
     }
-    connect(this, &MpvProxy::has_mpv_events, this, &MpvProxy::handle_mpv_events, Qt::QueuedConnection);
 }
 
 MpvProxy::~MpvProxy()
@@ -169,10 +168,6 @@ mpv_handle* MpvProxy::mpv_init()
     //set_property(h, "terminal", "yes");
     //set_property(h, "msg-level", "all=v");
 
-    if (mpv_initialize(h) < 0) {
-        std::runtime_error("mpv init failed");
-    }
-
     if (composited) {
         set_property(h, "vo", "opengl-cb");
         set_property(h, "hwdec", "auto");
@@ -183,15 +178,18 @@ mpv_handle* MpvProxy::mpv_init()
         set_property(h, "wid", this->winId());
     }
 
-    mpv_observe_property(h, 0, "time-pos", MPV_FORMAT_DOUBLE);
-    mpv_observe_property(h, 0, "track-list", MPV_FORMAT_NODE);
-    mpv_observe_property(h, 0, "chapter-list", MPV_FORMAT_NODE);
-
-    mpv_observe_property(h, 0, "pause", MPV_FORMAT_NODE);
+    //only to get notification without data
+    mpv_observe_property(h, 0, "time-pos", MPV_FORMAT_NONE);
     mpv_observe_property(h, 0, "core-idle", MPV_FORMAT_NODE);
 
     //mpv_request_log_messages(h, "info");
     mpv_set_wakeup_callback(h, mpv_callback, this);
+    connect(this, &MpvProxy::has_mpv_events, this, &MpvProxy::handle_mpv_events,
+            Qt::QueuedConnection);
+    if (mpv_initialize(h) < 0) {
+        std::runtime_error("mpv init failed");
+    }
+
     return h;
 }
 
@@ -204,15 +202,27 @@ void MpvProxy::handle_mpv_events()
 
         switch (ev->event_id) {
             case MPV_EVENT_LOG_MESSAGE:
-                process_log_message((mpv_event_log_message*)ev);
+                process_log_message((mpv_event_log_message*)ev->data);
                 break;
 
             case MPV_EVENT_PROPERTY_CHANGE:
-                process_property_change((mpv_event_property*)ev);
+                process_property_change((mpv_event_property*)ev->data);
                 break;
 
+            case MPV_EVENT_FILE_LOADED:
+                if (_gl_widget) {
+                    _gl_widget->setPlaying(true);
+                }
+                break;
+
+            case MPV_EVENT_END_FILE:
+                if (_gl_widget) {
+                    _gl_widget->setPlaying(false);
+                }
+                break;
 
             default:
+                fprintf(stderr, "%s %s\n", __func__, mpv_event_name(ev->event_id));
                 break;
         }
     }
@@ -225,15 +235,11 @@ void MpvProxy::process_log_message(mpv_event_log_message* ev)
 
 void MpvProxy::process_property_change(mpv_event_property* ev)
 {
-    if (ev->format == MPV_FORMAT_NONE || ev->data == NULL)
-        return;
+    //if (ev->data == NULL) return;
 
     QString name = QString::fromUtf8(ev->name);
     if (name == "time-pos") {
-        double time = *(double *)ev->data;
-        qDebug() << "time pos " << time;
-    } else if (name == "pause") {
-        //this->setProperty("paused", ev->data)
+        emit ellapsedChanged();
     } else if (name == "core-idle") {
     }
 }
@@ -247,11 +253,9 @@ void MpvProxy::play()
     }
 }
 
-void MpvProxy::pause()
+void MpvProxy::pauseResume()
 {
-    QList<QVariant> args = { "pause" };
-    qDebug () << args;
-    command(_handle, args);
+    set_property(_handle, "pause", !paused());
 }
 
 void MpvProxy::stop()

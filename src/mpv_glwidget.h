@@ -11,6 +11,8 @@ class MpvGLWidget : public QOpenGLWidget
 {
     Q_OBJECT
 public:
+    friend class MpvProxy;
+
     MpvGLWidget(QWidget *parent, mpv::qt::Handle h);
     virtual ~MpvGLWidget();
 
@@ -19,12 +21,15 @@ protected:
     void resizeGL(int w, int h) override;
     void paintGL() override;
 
+    void setPlaying(bool);
+
 public slots:
     void onNewFrame();
 
 private:
     mpv::qt::Handle _handle;
     mpv_opengl_cb_context *_gl_ctx {nullptr};
+    bool _playing;
 };
 
 }

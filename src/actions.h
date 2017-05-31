@@ -4,21 +4,28 @@
 #include <QtWidgets>
 
 namespace dmr {
+enum ActionKind {
+    Invalid = 0,
+    OpenFile = 1,
+    Settings,
+    LightTheme,
+    About,
+    Help,
+    Exit,
+
+    SeekForward,
+    SeekForwardLarge,
+    SeekBackward,
+    SeekBackwardLarge,
+    TogglePause,
+    Stop,
+    GotoPlaylistNext,
+    GotoPlaylistPrev,
+};
 
 class ActionFactory: public QObject {
     Q_OBJECT
 public:
-    enum ActionKind {
-        Invalid = 0,
-        OpenFile = 1,
-        Settings,
-        LightTheme,
-        About,
-        Help,
-        Exit,
-    };
-
-    Q_ENUM(ActionKind)
 
     static ActionFactory& get();
 
@@ -30,5 +37,7 @@ private:
 };
 
 }
+
+Q_DECLARE_METATYPE(dmr::ActionKind)
 
 #endif /* ifndef _DMR_ACTIONS_H */

@@ -31,18 +31,19 @@ public slots:
     void updateProxyGeometry();
 
 protected:
+    bool event(QEvent* e) override;
     void showEvent(QShowEvent *event) override;
     void resizeEvent(QResizeEvent *ev) override;
     void mouseMoveEvent(QMouseEvent *ev) override;
     void mousePressEvent(QMouseEvent *ev) override;
     void enterEvent(QEvent *ev) override;
     void leaveEvent(QEvent *ev) override;
-    void keyPressEvent(QKeyEvent *ev) override;
 
 protected slots:
     void menuItemInvoked(QAction *action);
     void timeout();
     void onApplicationStateChanged(Qt::ApplicationState e);
+    void onBindingsChanged();
 
     void suspendToolsWindow();
     void resumeToolsWindow();
