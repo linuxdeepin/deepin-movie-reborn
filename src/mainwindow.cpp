@@ -5,13 +5,16 @@
 #include "event_monitor.h"
 #include "compositing_manager.h"
 #include "shortcut_manager.h"
+#include "dmr_settings.h"
 
 #include <QtWidgets>
 #include <DApplication>
 #include <DTitlebar>
+#include <dsettingsdialog.h>
 
 
 DWIDGET_USE_NAMESPACE
+
 using namespace dmr;
 
 /// shadow
@@ -62,6 +65,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(this, &MainWindow::frameMarginsChanged, &MainWindow::updateProxyGeometry);
     connect(_titlebar->menu(), &QMenu::triggered, this, &MainWindow::menuItemInvoked);
+    connect(ActionFactory::get().mainContextMenu(), &QMenu::triggered, 
+            this, &MainWindow::menuItemInvoked);
 
     updateProxyGeometry();
 
@@ -213,9 +218,21 @@ void MainWindow::menuItemInvoked(QAction *action)
             break;
         }
 
+        case Settings: {
+            handleSettings();
+            break;
+        }
+
         default:
             break;
     }
+}
+
+void MainWindow::handleSettings()
+{
+    DSettingsDialog dsd(this);
+    dsd.updateSettings(Settings::get().settings());
+    dsd.exec();
 }
 
 void MainWindow::play(const QFileInfo& fi)
@@ -329,6 +346,12 @@ void MainWindow::mousePressEvent(QMouseEvent *ev)
 {
     qDebug() << __func__;
     QWidget::mousePressEvent(ev);
+}
+
+void MainWindow::contextMenuEvent(QContextMenuEvent *cme)
+{
+    qDebug() << __func__;
+    ActionFactory::get().mainContextMenu()->popup(cme->globalPos());
 }
 
 #include "moc_mainwindow.cpp"

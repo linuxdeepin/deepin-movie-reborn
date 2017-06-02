@@ -1,0 +1,106 @@
+{
+    "groups": [
+        {
+            "key": "base",
+            "name": "Basic settings",
+            "groups": [
+                {
+                    "key": "play",
+                    "name": "Play",
+                    "options": [
+                        {
+                            "key": "emptylist",
+                            "name": "Empty playlist when quit",
+                            "type": "checkbox",
+                            "default": ""
+                        },
+                        {
+                            "key": "resumelast",
+                            "name": "Auto resume from last stop",
+                            "type": "checkbox",
+                            "default": ""
+                        }
+                    ]
+                },
+                {
+                    "key": "screenshot",
+                    "name": "Screenshot",
+                    "options": [
+                        {
+                            "key": "location",
+                            "name": "Location",
+                            "type": "lineedit",
+                            "default": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "key": "shortcuts",
+            "name": "Shortcuts",
+            "groups": [
+                {
+                    "key": "play",
+                    "name": "Play",
+                    "options": [
+                        {
+                            "key": "seek_backward",
+                            "name": "Seek Backward",
+                            "type": "shortcut",
+                            "default":  ["0", "16777234"]
+                        },
+                        {
+                            "key": "seek_forward",
+                            "name": "Seek Forward",
+                            "type": "shortcut",
+                            "default":  ["0", "16777236"]
+                        },
+                        {
+                            "key": "pause_play",
+                            "name": "Pause/Play",
+                            "type": "shortcut",
+                            "default":  ["0", "32"]
+                        }
+                    ]
+                },
+                {
+                    "key": "file",
+                    "name": "File",
+                    "options": [
+                        {
+                            "key": "open_file",
+                            "name": "Open File",
+                            "type": "shortcut",
+                            "default": ["67108864", "79"]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "key": "subtitle",
+            "name": "Subtitle",
+            "groups": [
+                {
+                    "key": "font",
+                    "name": "Font Style",
+                    "options": [
+                        {
+                            "key": "family",
+                            "name": "Font",
+                            "type": "combobox",
+                            "default": ""
+                        },
+                        {
+                            "key": "size",
+                            "name": "Font Size",
+                            "type": "spinbutton",
+                            "default": 12
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

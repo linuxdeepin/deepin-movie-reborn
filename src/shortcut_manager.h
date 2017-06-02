@@ -9,11 +9,16 @@
 
 DWIDGET_USE_NAMESPACE
 
+namespace Dtk {
+class Group;
+}
+
 namespace dmr {
 
 using namespace std;
 
 using BindingMap = QHash<QKeySequence, ActionKind>;
+using ActionMap = QHash<QString, ActionKind>;
 
     // keys comes from profiles, user configurations etc
 class ShortcutManager: public QObject {
@@ -24,6 +29,7 @@ class ShortcutManager: public QObject {
         BindingMap& map() { return _map; }
         const BindingMap& map() const { return _map; }
         vector<QAction*> actionsForBindings();
+        void buildBindingsFromSettings();
 
     public slots:
         void buildBindings();
@@ -32,9 +38,10 @@ class ShortcutManager: public QObject {
         void bindingsChanged();
 
     private:
-        ShortcutManager() {}
+        ShortcutManager();
 
         BindingMap _map;
+        ActionMap _keyToAction;
 };
 
 }

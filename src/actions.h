@@ -13,6 +13,17 @@ enum ActionKind {
     Help,
     Exit,
 
+    ShowPlaylist,
+    MovieInfo,
+    OpenUrl,
+    Fullscreen,
+    ToggleMiniMode,
+    WindowAbove,
+    LoadSubtitle,
+    SelectSubtitle,
+    Screenshot,
+    BurstScreenshot,
+
     SeekForward,
     SeekForwardLarge,
     SeekBackward,
@@ -34,6 +45,8 @@ public:
 
 private:
     ActionFactory() {}
+    QMenu *_titlebarMenu {nullptr};
+    QMenu *_contextMenu {nullptr};
 };
 
 }

@@ -14,6 +14,7 @@ class MpvProxy;
 class ToolboxProxy;
 class EventMonitor;
 
+
 class MainWindow: public QWidget {
     Q_OBJECT
     Q_PROPERTY(QMargins frameMargins READ frameMargins NOTIFY frameMarginsChanged)
@@ -38,6 +39,7 @@ protected:
     void mousePressEvent(QMouseEvent *ev) override;
     void enterEvent(QEvent *ev) override;
     void leaveEvent(QEvent *ev) override;
+    void contextMenuEvent(QContextMenuEvent *cme) override;
 
 protected slots:
     void menuItemInvoked(QAction *action);
@@ -52,6 +54,8 @@ protected slots:
     void onMonitorMotionNotify(int x, int y);
     void onMonitorButtonReleased(int x, int y);
 
+private:
+    void handleSettings();
 
 private:
     MpvProxy *_proxy {nullptr};

@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>resources/data/settings.json</file>
+    </qresource>
+</RCC>
+

@@ -26,34 +26,56 @@ ActionFactory& ActionFactory::get()
 
 QMenu* ActionFactory::titlebarMenu()
 {
-    auto *menu = new QMenu();
+    if (!_titlebarMenu) {
+        auto *menu = new QMenu();
 
-    DEF_ACTION("Open File", ActionKind::OpenFile);
-    DEF_ACTION("Settings", ActionKind::Settings);
-    DEF_ACTION_CHECKED("Light Theme", ActionKind::LightTheme);
-    // these seems added by titlebar itself
-    //menu->addSeparator();
-    //DEF_ACTION("About", ActionKind::About);
-    //DEF_ACTION("Help", ActionKind::Help);
-    //DEF_ACTION("Exit", ActionKind::Exit);
+        DEF_ACTION("Open File", ActionKind::OpenFile);
+        DEF_ACTION("Settings", ActionKind::Settings);
+        DEF_ACTION_CHECKED("Light Theme", ActionKind::LightTheme);
+        // these seems added by titlebar itself
+        //menu->addSeparator();
+        //DEF_ACTION("About", ActionKind::About);
+        //DEF_ACTION("Help", ActionKind::Help);
+        //DEF_ACTION("Exit", ActionKind::Exit);
 
-    return menu;
+        _titlebarMenu = menu;
+    }
+    return _titlebarMenu;
 }
 
 QMenu* ActionFactory::mainContextMenu()
 {
-    auto *menu = new QMenu();
+    if (!_contextMenu) {
+        auto *menu = new QMenu();
 
-    menu->addAction(tr("Open File"));
-    menu->addAction(tr("Settings"));
-    auto *act = menu->addAction(tr("Light Theme"));
-    act->setCheckable(true);
-    menu->addSeparator();
-    menu->addAction(tr("About"));
-    menu->addAction(tr("Help"));
-    menu->addAction(tr("Exit"));
+        DEF_ACTION("Open File", ActionKind::OpenFile);
+        DEF_ACTION("Open Url", ActionKind::OpenUrl);
+        menu->addSeparator();
 
-    return menu;
+        DEF_ACTION("Fullscreen", ActionKind::Fullscreen);
+        DEF_ACTION_CHECKED("Compact Mode", ActionKind::ToggleMiniMode);
+        DEF_ACTION_CHECKED("Above", ActionKind::WindowAbove);
+        menu->addSeparator();
+
+        { //sub menu
+            auto *parent = menu;
+            auto *menu = new QMenu(tr("Subtitle"));
+            DEF_ACTION("Load Subtitle", ActionKind::LoadSubtitle);
+            DEF_ACTION("Select Subtitle", ActionKind::SelectSubtitle);
+
+            parent->addMenu(menu);
+        }
+
+        menu->addSeparator();
+
+        DEF_ACTION("Playlist", ActionKind::ShowPlaylist);
+        DEF_ACTION("Movie Info", ActionKind::MovieInfo);
+        DEF_ACTION("Settings", ActionKind::Settings);
+
+        _contextMenu = menu;
+    }
+
+    return _contextMenu;
 }
 
 #undef DEF_ACTION
