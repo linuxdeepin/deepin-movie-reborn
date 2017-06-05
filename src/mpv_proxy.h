@@ -36,6 +36,8 @@ public slots:
     void stop();
     void seekForward(int secs);
     void seekBackward(int secs);
+    void takeScreenshot();
+    void burstScreenshot();
 
 protected slots:
     void handle_mpv_events();

@@ -165,8 +165,8 @@ mpv_handle* MpvProxy::mpv_init()
 
     bool composited = CompositingManager::get().composited();
     
-    //set_property(h, "terminal", "yes");
-    //set_property(h, "msg-level", "all=v");
+    set_property(h, "terminal", "yes");
+    set_property(h, "msg-level", "all=v");
 
     if (composited) {
         set_property(h, "vo", "opengl-cb");
@@ -177,6 +177,10 @@ mpv_handle* MpvProxy::mpv_init()
         set_property(h, "hwdec", "auto");
         set_property(h, "wid", this->winId());
     }
+
+    set_property(h, "screenshot-template", "deepin-movie-shot%n");
+    set_property(h, "screenshot-directory", "/tmp");
+    
 
     //only to get notification without data
     mpv_observe_property(h, 0, "time-pos", MPV_FORMAT_NONE);
@@ -268,6 +272,17 @@ void MpvProxy::stop()
 bool MpvProxy::paused()
 {
     return get_property(_handle, "pause").toBool();
+}
+
+void MpvProxy::takeScreenshot()
+{
+    QList<QVariant> args = { "screenshot", "video" };
+    qDebug () << args;
+    command(_handle, args);
+}
+
+void MpvProxy::burstScreenshot()
+{
 }
 
 void MpvProxy::seekForward(int secs)

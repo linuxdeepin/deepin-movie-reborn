@@ -4,6 +4,9 @@
 #include "compositing_manager.h"
 
 #include <QtWidgets>
+#include <dbasebutton.h>
+
+DWIDGET_USE_NAMESPACE
 
 namespace dmr {
 class KeyPressBubbler: public QObject {
@@ -31,7 +34,7 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow)
 
     bool composited = CompositingManager::get().composited();
     setStyleSheet("background: rgba(0, 0, 0, 0.6);");
-    //setAttribute(Qt::WA_TranslucentBackground);
+    setAttribute(Qt::WA_TranslucentBackground);
     if (!composited) {
         setWindowFlags(Qt::FramelessWindowHint|Qt::BypassWindowManagerHint);
         setContentsMargins(0, 0, 0, 0);

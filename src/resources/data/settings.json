@@ -73,6 +73,18 @@
                             "name": "Open File",
                             "type": "shortcut",
                             "default": ["67108864", "79"]
+                        },
+                        {
+                            "key": "screenshot",
+                            "name": "Screenshot",
+                            "type": "shortcut",
+                            "default": ["134217728", "65"]
+                        },
+                        {
+                            "key": "burst_screenshot",
+                            "name": "Burst Screenshot",
+                            "type": "shortcut",
+                            "default": ["134217728", "83"]
                         }
                     ]
                 }

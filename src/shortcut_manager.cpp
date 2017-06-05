@@ -30,6 +30,8 @@ ShortcutManager::ShortcutManager()
         {"seek_backward", ActionKind::SeekBackward},
         {"seek_backward_large", ActionKind::SeekBackwardLarge},
         {"open_file", ActionKind::OpenFile},
+        {"screenshot", ActionKind::Screenshot},
+        {"burst_screenshot", ActionKind::BurstScreenshot},
     };
 
     connect(Settings::get().settings(), &Dtk::Settings::valueChanged,

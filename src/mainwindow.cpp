@@ -223,6 +223,16 @@ void MainWindow::menuItemInvoked(QAction *action)
             break;
         }
 
+        case Screenshot: {
+            _proxy->takeScreenshot();
+            break;
+        }
+
+        case BurstScreenshot: {
+            _proxy->burstScreenshot();
+            break;
+        }
+
         default:
             break;
     }
