@@ -165,8 +165,8 @@ mpv_handle* MpvProxy::mpv_init()
 
     bool composited = CompositingManager::get().composited();
     
-    set_property(h, "terminal", "yes");
-    set_property(h, "msg-level", "all=v");
+    //set_property(h, "terminal", "yes");
+    //set_property(h, "msg-level", "all=v");
 
     if (composited) {
         set_property(h, "vo", "opengl-cb");

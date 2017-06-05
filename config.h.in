@@ -1,2 +1,3 @@
 #define DMR_VERSION "@PROJECT_VERSION@"
+#cmakedefine USE_DXCB
 

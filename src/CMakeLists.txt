@@ -14,14 +14,14 @@ find_package(Qt5X11Extras)
 pkg_check_modules(Dtk REQUIRED IMPORTED_TARGET
     dtkbase dtkutil dtkwidget dtksettings dtksettingsview)
 pkg_check_modules(Mpv REQUIRED IMPORTED_TARGET mpv)
-pkg_check_modules(Xcb REQUIRED IMPORTED_TARGET xcb xcb-aux)
+pkg_check_modules(Xcb REQUIRED IMPORTED_TARGET xcb xcb-aux xcb-proto xcb-ewmh xcb-shape)
 
 qt5_add_resources(RCS resources.qrc)
 
 add_executable(${CMD_NAME} main.cpp mainwindow.cpp mpv_proxy.cpp
     actions.cpp xutil.cpp event_monitor.cpp toolbox_proxy.cpp event_relayer.cpp
     compositing_manager.cpp mpv_glwidget.cpp shortcut_manager.cpp
-    dmr_settings.cpp
+    dmr_settings.cpp utility_x11.cpp
     ${RCS})
 target_include_directories(${CMD_NAME} PUBLIC ${PROJECT_INCLUDE})
 

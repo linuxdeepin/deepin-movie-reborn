@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.0)
 
 project(deepin-movie-reborn VERSION 3.0.0)
 
+option(USE_DXCB "integration with dxcb platform plugin" OFF)
+
 set(CMAKE_EXPORT_COMPILE_COMMANDS on)
 
 find_package(PkgConfig REQUIRED)

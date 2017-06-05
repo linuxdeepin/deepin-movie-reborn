@@ -73,8 +73,8 @@ int main(int argc, char *argv[])
 
 
     dmr::MainWindow mw;
-    //mw.resize(850, 600);
-    mw.resize(720, 404);
+    mw.setMinimumSize(QSize(528, 400));
+    mw.resize(850, 600);
     DUtility::moveToCenter(&mw);
     mw.show();
 
