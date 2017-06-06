@@ -118,7 +118,6 @@ set_cursor:
 
                         if (qApp->mouseButtons() == Qt::LeftButton) {
                             Utility::startWindowSystemResize(window->winId(), mouseCorner, e->globalPos());
-
                             cancelAdsorbCursor();
                         } else {
                             adsorbCursor(mouseCorner);
@@ -319,6 +318,7 @@ MainWindow::MainWindow(QWidget *parent)
         _toolbox->updateTimeInfo(_proxy->duration(), _proxy->ellapsed());
     });
 
+
     if (!composited) {
         connect(qApp, &QGuiApplication::applicationStateChanged,
                 this, &MainWindow::onApplicationStateChanged);
@@ -496,6 +496,19 @@ void MainWindow::updateProxyGeometry()
 {
     if (_handle) {
         _cachedMargins = _handle->frameMargins();
+    }
+
+    {
+        QPixmap shape(size());
+        shape.fill(Qt::transparent);
+
+        QPainter p(&shape);
+        QPainterPath pp;
+        pp.addRoundedRect(QRect(QPoint(), size()), 4, 4);
+        p.fillPath(pp, QBrush(Qt::white));
+        p.end();
+
+        setMask(shape.mask());
     }
 
     _center->resize(size());
