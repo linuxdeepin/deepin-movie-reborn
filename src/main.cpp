@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
     app.setApplicationName("deepin-movie");
     app.setApplicationVersion(DMR_VERSION);
 
-    app.setTheme("semidark");
+    app.setTheme("dark");
 
     DLogManager::registerConsoleAppender();
     DLogManager::registerFileAppender();

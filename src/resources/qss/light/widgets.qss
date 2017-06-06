@@ -1,0 +1,23 @@
+Dtk--Widget--DImageButton#ListBtn {
+    qproperty-normalPic: url(:/resources/icons/light/normal/list-normal.png);
+    qproperty-hoverPic: url(:/resources/icons/light/normal/list-hover.png);
+    qproperty-pressPic: url(:/resources/icons/light/normal/list-press.png);
+}
+
+dmr--ToolButton#PlayBtn {
+    qproperty-normalPic: url(:/resources/icons/light/normal/play-normal.png);
+    qproperty-hoverPic: url(:/resources/icons/light/normal/play-hover.png);
+    qproperty-pressPic: url(:/resources/icons/light/normal/play-press.png);
+}
+
+Dtk--Widget--DTitlebar {
+    background-color: #ffffff;
+}
+
+dmr--ToolboxProxy {
+    background-color: rgba(255, 255, 255, 0.92);
+}
+
+dmr--ToolboxProxy * {
+    background-color: rgba(255, 255, 255, 0.92);
+}

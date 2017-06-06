@@ -21,7 +21,7 @@ qt5_add_resources(RCS resources.qrc)
 add_executable(${CMD_NAME} main.cpp mainwindow.cpp mpv_proxy.cpp
     actions.cpp xutil.cpp event_monitor.cpp toolbox_proxy.cpp event_relayer.cpp
     compositing_manager.cpp mpv_glwidget.cpp shortcut_manager.cpp
-    dmr_settings.cpp utility_x11.cpp
+    dmr_settings.cpp utility_x11.cpp toolbutton.cpp
     ${RCS})
 target_include_directories(${CMD_NAME} PUBLIC ${PROJECT_INCLUDE})
 

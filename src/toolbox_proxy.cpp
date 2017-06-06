@@ -2,9 +2,11 @@
 #include "mainwindow.h"
 #include "event_relayer.h"
 #include "compositing_manager.h"
+#include "mpv_proxy.h"
+#include "toolbutton.h"
 
 #include <QtWidgets>
-#include <dbasebutton.h>
+#include <dimagebutton.h>
 
 DWIDGET_USE_NAMESPACE
 
@@ -27,22 +29,30 @@ class KeyPressBubbler: public QObject {
 };
 
 
-ToolboxProxy::ToolboxProxy(QWidget *mainWindow)
+ToolboxProxy::ToolboxProxy(QWidget *mainWindow, MpvProxy *proxy)
     :QWidget(mainWindow),
-    _mainWindow(mainWindow)
+    _mainWindow(mainWindow),
+    _mpv(proxy)
 {
-
     bool composited = CompositingManager::get().composited();
-    setStyleSheet("background: rgba(0, 0, 0, 0.6);");
-    setAttribute(Qt::WA_TranslucentBackground);
+    //setAttribute(Qt::WA_TranslucentBackground);
     if (!composited) {
         setWindowFlags(Qt::FramelessWindowHint|Qt::BypassWindowManagerHint);
         setContentsMargins(0, 0, 0, 0);
         setAttribute(Qt::WA_NativeWindow);
     }
 
+    setup();
+}
+
+ToolboxProxy::~ToolboxProxy()
+{
+}
+
+void ToolboxProxy::setup()
+{
     auto *l = new QHBoxLayout(this);
-    l->setContentsMargins(0, 0, 0, 0);
+    l->setContentsMargins(10, 0, 10, 0);
     setLayout(l);
 
     _timeLabel = new QLabel("");
@@ -52,20 +62,75 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow)
     connect(signalMapper, static_cast<void(QSignalMapper::*)(const QString&)>(&QSignalMapper::mapped),
             this, &ToolboxProxy::buttonClicked);
 
-    auto *pb = new QPushButton("Play");
-    connect(pb, SIGNAL(clicked()), signalMapper, SLOT(map()));
-    signalMapper->setMapping(pb, "play");
+    l->addStretch();
 
-    l->addWidget(pb);
-    l->setAlignment(pb, Qt::AlignHCenter);
+    auto *mid = new QHBoxLayout(this);
+    l->addLayout(mid);
+    
+    _prevBtn = new DImageButton();
+    _prevBtn->setObjectName("PrevBtn");
+    connect(_prevBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
+    signalMapper->setMapping(_prevBtn, "prev");
+    mid->addWidget(_prevBtn);
+
+    _playBtn = new DImageButton();
+    connect(_playBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
+    signalMapper->setMapping(_playBtn, "play");
+    mid->addWidget(_playBtn);
+
+    _nextBtn = new DImageButton();
+    _nextBtn->setObjectName("NextBtn");
+    connect(_nextBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
+    signalMapper->setMapping(_nextBtn, "next");
+    mid->addWidget(_nextBtn);
+
+    l->addStretch();
+
+    auto *right = new QHBoxLayout(this);
+    l->addLayout(right);
+
+    _fsBtn = new DImageButton();
+    connect(_fsBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
+    signalMapper->setMapping(_fsBtn, "fs");
+    right->addWidget(_fsBtn);
+
+    _listBtn = new DImageButton();
+    _listBtn->setObjectName("ListBtn");
+    connect(_listBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
+    signalMapper->setMapping(_listBtn, "list");
+    right->addWidget(_listBtn);
+
+
+    connect(_mpv, &MpvProxy::pauseChanged, this, &ToolboxProxy::updatePlayState);
+    connect(window()->windowHandle(), &QWindow::windowStateChanged, this, 
+            &ToolboxProxy::updateFullState);
+    updatePlayState();
+    updateFullState();
 
     auto bubbler = new KeyPressBubbler(this);
     this->installEventFilter(bubbler);
-    pb->installEventFilter(bubbler);
+    _playBtn->installEventFilter(bubbler);
 }
 
-ToolboxProxy::~ToolboxProxy()
+void ToolboxProxy::updateFullState()
 {
+    bool isFullscreen = window()->windowHandle()->windowState() == Qt::WindowFullScreen;
+    if (isFullscreen) {
+        _fsBtn->setObjectName("UnfsBtn");
+    } else {
+        _fsBtn->setObjectName("FsBtn");
+    }
+    _fsBtn->setStyleSheet(_playBtn->styleSheet());
+}
+
+void ToolboxProxy::updatePlayState()
+{
+    if (_mpv->paused()) {
+        _playBtn->setObjectName("PlayBtn");
+    } else {
+        _playBtn->setObjectName("PauseBtn");
+    }
+    _playBtn->setStyleSheet(_playBtn->styleSheet());
 }
 
 void ToolboxProxy::updateTimeInfo(qint64 duration, qint64 pos)
@@ -78,8 +143,17 @@ void ToolboxProxy::updateTimeInfo(qint64 duration, qint64 pos)
 
 void ToolboxProxy::buttonClicked(QString id)
 {
+    qDebug() << __func__ << id;
     if (id == "play") {
-        emit requestPlay(); // FIXME: may pause
+        _mpv->pauseResume();
+    } else if (id == "fs") {
+        bool isFullscreen = window()->windowHandle()->windowState() == Qt::WindowFullScreen;
+        if (isFullscreen) {
+            //FIXME: restore to orignal state
+            window()->windowHandle()->setWindowState(Qt::WindowNoState);
+        } else {
+            window()->windowHandle()->setWindowState(Qt::WindowFullScreen);
+        }
     }
 }
 

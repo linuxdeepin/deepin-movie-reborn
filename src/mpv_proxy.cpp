@@ -260,6 +260,7 @@ void MpvProxy::play()
 void MpvProxy::pauseResume()
 {
     set_property(_handle, "pause", !paused());
+    emit pauseChanged();
 }
 
 void MpvProxy::stop()

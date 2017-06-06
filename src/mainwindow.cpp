@@ -14,6 +14,7 @@
 #include <DApplication>
 #include <DTitlebar>
 #include <dsettingsdialog.h>
+#include <dthememanager.h>
 
 DWIDGET_USE_NAMESPACE
 
@@ -289,16 +290,14 @@ MainWindow::MainWindow(QWidget *parent)
         _titlebar->setAttribute(Qt::WA_NativeWindow);
         _titlebar->winId();
     }
-    _titlebar->setStyleSheet("background: rgba(0, 0, 0, 0.6);");
     _titlebar->setMenu(ActionFactory::get().titlebarMenu());
-
-    _toolbox = new ToolboxProxy(this);
-    _toolbox->setFocusPolicy(Qt::NoFocus);
 
     _center = new QWidget(this);
     _center->move(0, 0);
-
     _proxy = new MpvProxy(_center);
+
+    _toolbox = new ToolboxProxy(this, _proxy);
+    _toolbox->setFocusPolicy(Qt::NoFocus);
 
     connect(this, &MainWindow::frameMarginsChanged, &MainWindow::updateProxyGeometry);
     connect(_titlebar->menu(), &QMenu::triggered, this, &MainWindow::menuItemInvoked);
@@ -318,6 +317,10 @@ MainWindow::MainWindow(QWidget *parent)
         _toolbox->updateTimeInfo(_proxy->duration(), _proxy->ellapsed());
     });
 
+
+    connect(DThemeManager::instance(), &DThemeManager::themeChanged,
+            this, &MainWindow::onThemeChanged);
+    onThemeChanged();
 
     if (!composited) {
         connect(qApp, &QGuiApplication::applicationStateChanged,
@@ -393,6 +396,25 @@ void MainWindow::onApplicationStateChanged(Qt::ApplicationState e)
             break;
 
         default: break;
+    }
+}
+
+void MainWindow::onThemeChanged()
+{
+    qDebug() << __func__ << qApp->theme();
+    QFile darkF(":/resources/qss/dark/widgets.qss"),
+          lightF(":/resources/qss/light/widgets.qss");
+
+    if ("dark" == qApp->theme()) {
+        if (darkF.open(QIODevice::ReadOnly)) {
+            setStyleSheet(darkF.readAll());
+            darkF.close();
+        }
+    } else {
+        if (lightF.open(QIODevice::ReadOnly)) {
+            setStyleSheet(lightF.readAll());
+            lightF.close();
+        }
     }
 }
 
@@ -513,7 +535,6 @@ void MainWindow::updateProxyGeometry()
 
     _center->resize(size());
 
-    //auto tl = QPoint(frameMargins().left(), frameMargins().top());
     auto tl = QPoint();
 
     if (_titlebar) {
@@ -526,7 +547,7 @@ void MainWindow::updateProxyGeometry()
     }
 
     if (_toolbox) {
-        QRect r(0, size().height() - 80, size().width(), 80);
+        QRect r(0, size().height() - 50, size().width(), 50);
         _toolbox->setGeometry(r);
     }
 

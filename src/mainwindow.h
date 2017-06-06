@@ -46,6 +46,7 @@ protected slots:
     void timeout();
     void onApplicationStateChanged(Qt::ApplicationState e);
     void onBindingsChanged();
+    void onThemeChanged();
 
     void suspendToolsWindow();
     void resumeToolsWindow();

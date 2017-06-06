@@ -1,0 +1,53 @@
+Dtk--Widget--DImageButton#ListBtn {
+    qproperty-normalPic: url(:/resources/icons/dark/normal/list-normal.png);
+    qproperty-hoverPic: url(:/resources/icons/dark/normal/list-hover.png);
+    qproperty-pressPic: url(:/resources/icons/dark/normal/list-press.png);
+}
+
+Dtk--Widget--DImageButton#PrevBtn {
+    qproperty-normalPic: url(:/resources/icons/dark/normal/previous-normal.png);
+    qproperty-hoverPic: url(:/resources/icons/dark/normal/previous-hover.png);
+    qproperty-pressPic: url(:/resources/icons/dark/normal/previous-press.png);
+}
+
+Dtk--Widget--DImageButton#NextBtn {
+    qproperty-normalPic: url(:/resources/icons/dark/normal/next-normal.png);
+    qproperty-hoverPic: url(:/resources/icons/dark/normal/next-hover.png);
+    qproperty-pressPic: url(:/resources/icons/dark/normal/next-press.png);
+}
+
+Dtk--Widget--DImageButton#PlayBtn {
+    qproperty-normalPic: url(:/resources/icons/dark/normal/play-normal.png);
+    qproperty-hoverPic: url(:/resources/icons/dark/normal/play-hover.png);
+    qproperty-pressPic: url(:/resources/icons/dark/normal/play-press.png);
+}
+
+Dtk--Widget--DImageButton#PauseBtn {
+    qproperty-normalPic: url(:/resources/icons/dark/normal/pause-normal.png);
+    qproperty-hoverPic: url(:/resources/icons/dark/normal/pause-hover.png);
+    qproperty-pressPic: url(:/resources/icons/dark/normal/pause-press.png);
+}
+
+Dtk--Widget--DImageButton#FsBtn {
+    qproperty-normalPic: url(:/resources/icons/dark/normal/fullscreen-normal.png);
+    qproperty-hoverPic: url(:/resources/icons/dark/normal/fullscreen-hover.png);
+    qproperty-pressPic: url(:/resources/icons/dark/normal/fullscreen-press.png);
+}
+
+Dtk--Widget--DImageButton#UnfsBtn {
+    qproperty-normalPic: url(:/resources/icons/dark/normal/exit-fullscreen-normal.png);
+    qproperty-hoverPic: url(:/resources/icons/dark/normal/exit-fullscreen-hover.png);
+    qproperty-pressPic: url(:/resources/icons/dark/normal/exit-fullscreen-press.png);
+}
+
+Dtk--Widget--DTitlebar {
+    background-color: #171717;
+}
+
+dmr--ToolboxProxy {
+    background-color: rgba(255, 23, 23, 0.92);
+}
+
+dmr--ToolboxProxy * {
+    background-color: rgba(23, 23, 23, 0.92);
+}
