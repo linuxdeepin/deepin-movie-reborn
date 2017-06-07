@@ -10,25 +10,49 @@ namespace dmr {
 using namespace mpv::qt;
 class MpvGLWidget;
 
+struct MovieInfo {
+    QString title;
+    QString fileType;
+    QString fileSize;
+    QString resolution;
+    QString duration;
+    QString filePath;
+    QString creation;
+
+};
+
 class MpvProxy: public QWidget {
     Q_OBJECT
-    Q_PROPERTY(qint64 duration READ duration NOTIFY durationChanged)
+    Q_PROPERTY(qint64 duration READ duration)
     Q_PROPERTY(qint64 ellapsed READ ellapsed NOTIFY ellapsedChanged)
-    Q_PROPERTY(bool paused READ paused NOTIFY pauseChanged)
+    Q_PROPERTY(bool paused READ paused)
+    Q_PROPERTY(CoreState state READ state WRITE setState NOTIFY stateChanged)
 public:
+    enum CoreState {
+        Idle,
+        Playing,
+        Paused,
+    };
+    Q_ENUM(CoreState)
+
     MpvProxy(QWidget *parent = 0);
     virtual ~MpvProxy();
 
     void addPlayFile(const QFileInfo& fi);
+
     qint64 duration() const;
     qint64 ellapsed() const;
+    const struct MovieInfo& movieInfo(); 
+
     bool paused();
+    CoreState state() const { return _state; }
+    void setState(CoreState s);
 
 signals:
     void has_mpv_events();
-    void pauseChanged();
-    void durationChanged();
     void ellapsedChanged();
+    void stateChanged();
+    void fileLoaded();
 
 public slots:
     void play();
@@ -49,6 +73,9 @@ private:
     MpvGLWidget *_gl_widget{nullptr};
 
     QList<QFileInfo> _playlist;
+    CoreState _state { CoreState::Idle };
+    struct MovieInfo _movieInfo;
+    bool _movieInfoNeedsUpdate {true};
 
     mpv_handle* mpv_init();
     void process_property_change(mpv_event_property* ev);

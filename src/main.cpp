@@ -38,7 +38,6 @@ int main(int argc, char *argv[])
     setlocale(LC_NUMERIC, "C");
 
     QCommandLineParser parser;
-    parser.setApplicationDescription("Deepin movie player.");
     parser.addHelpOption();
     parser.addVersionOption();
 
@@ -53,6 +52,13 @@ int main(int argc, char *argv[])
     app.setOrganizationName("deepin");
     app.setApplicationName("deepin-movie");
     app.setApplicationVersion(DMR_VERSION);
+    app.setProductIcon(QPixmap(":/resources/icons/logo-big.svg"));
+    app.setProductName(QT_TR_NOOP("Deepin Movie"));
+    app.setApplicationLicense(QT_TR_NOOP("GPL v3"));
+    app.setApplicationDescription(QT_TR_NOOP(
+                "Deepin Movie is a well-designed and full-featured"
+                " video player with simple borderless design. It supports local and"
+                " streaming media play with multiple video formats."));
 
     app.setTheme("dark");
 
@@ -67,7 +73,7 @@ int main(int argc, char *argv[])
 
     app.loadTranslator();
 
-    //app.setWindowIcon(QIcon(":/common/image/deepin-movie.svg"));
+    app.setWindowIcon(QIcon(":/resources/icons/logo.svg"));
     app.setApplicationDisplayName(QObject::tr("Deepin Movie"));
     app.setAttribute(Qt::AA_DontCreateNativeWidgetSiblings, true);
 

@@ -184,6 +184,7 @@ mpv_handle* MpvProxy::mpv_init()
 
     //only to get notification without data
     mpv_observe_property(h, 0, "time-pos", MPV_FORMAT_NONE);
+    mpv_observe_property(h, 0, "pause", MPV_FORMAT_NONE);
     mpv_observe_property(h, 0, "core-idle", MPV_FORMAT_NODE);
 
     //mpv_request_log_messages(h, "info");
@@ -195,6 +196,14 @@ mpv_handle* MpvProxy::mpv_init()
     }
 
     return h;
+}
+
+void MpvProxy::setState(MpvProxy::CoreState s)
+{
+    if (_state != s) {
+        _state = s;
+        emit stateChanged();
+    }
 }
 
 void MpvProxy::handle_mpv_events()
@@ -214,19 +223,30 @@ void MpvProxy::handle_mpv_events()
                 break;
 
             case MPV_EVENT_FILE_LOADED:
+                qDebug() << __func__ << mpv_event_name(ev->event_id);
                 if (_gl_widget) {
                     _gl_widget->setPlaying(true);
                 }
+                setState(CoreState::Playing); //might paused immediately
+                _movieInfoNeedsUpdate = true;
+                emit fileLoaded();
                 break;
 
             case MPV_EVENT_END_FILE:
+                qDebug() << __func__ << mpv_event_name(ev->event_id);
                 if (_gl_widget) {
                     _gl_widget->setPlaying(false);
                 }
+                setState(CoreState::Idle);
+                break;
+
+            case MPV_EVENT_IDLE:
+                qDebug() << __func__ << mpv_event_name(ev->event_id);
+                setState(CoreState::Idle);
                 break;
 
             default:
-                fprintf(stderr, "%s %s\n", __func__, mpv_event_name(ev->event_id));
+                qDebug() << __func__ << mpv_event_name(ev->event_id);
                 break;
         }
     }
@@ -244,8 +264,40 @@ void MpvProxy::process_property_change(mpv_event_property* ev)
     QString name = QString::fromUtf8(ev->name);
     if (name == "time-pos") {
         emit ellapsedChanged();
+    } else if (name == "pause") {
+        if (get_property(_handle, "pause").toBool()) {
+            setState(CoreState::Paused);
+        } else {
+            if (state() != CoreState::Idle)
+                setState(CoreState::Playing);
+        }
     } else if (name == "core-idle") {
     }
+}
+
+const struct MovieInfo& MpvProxy::movieInfo()
+{
+    if (state() != CoreState::Idle && _movieInfoNeedsUpdate) {
+        _movieInfoNeedsUpdate = false;
+
+        int w = get_property(_handle, "width").toInt();
+        int h = get_property(_handle, "height").toInt();
+        QTime d(0, 0);
+        d = d.addSecs(duration());
+
+        _movieInfo.resolution = QString("%1x%2").arg(w).arg(h);
+        _movieInfo.fileType = get_property(_handle, "video-format").toString();
+        _movieInfo.duration = d.toString("hh:mm::ss");
+        _movieInfo.fileSize = QString("%1").arg(get_property(_handle, "file-size").toInt());
+        _movieInfo.title = get_property(_handle, "media-title").toString();
+        qDebug() << __func__ << get_property(_handle, "path").toString();
+        //FIXME: fix this
+        _movieInfo.filePath = _playlist[0].canonicalFilePath();
+        QFileInfo fi(_playlist[0].canonicalFilePath());
+        _movieInfo.creation = fi.created().toString();
+    }
+
+    return _movieInfo;
 }
 
 void MpvProxy::play()
@@ -259,8 +311,10 @@ void MpvProxy::play()
 
 void MpvProxy::pauseResume()
 {
+    if (_state == CoreState::Idle)
+        return;
+
     set_property(_handle, "pause", !paused());
-    emit pauseChanged();
 }
 
 void MpvProxy::stop()
@@ -272,7 +326,7 @@ void MpvProxy::stop()
 
 bool MpvProxy::paused()
 {
-    return get_property(_handle, "pause").toBool();
+    return _state == CoreState::Paused;
 }
 
 void MpvProxy::takeScreenshot()

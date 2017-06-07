@@ -4,6 +4,7 @@
 #include "compositing_manager.h"
 #include "mpv_proxy.h"
 #include "toolbutton.h"
+#include "actions.h"
 
 #include <QtWidgets>
 #include <dimagebutton.h>
@@ -101,7 +102,7 @@ void ToolboxProxy::setup()
     right->addWidget(_listBtn);
 
 
-    connect(_mpv, &MpvProxy::pauseChanged, this, &ToolboxProxy::updatePlayState);
+    connect(_mpv, &MpvProxy::stateChanged, this, &ToolboxProxy::updatePlayState);
     connect(window()->windowHandle(), &QWindow::windowStateChanged, this, 
             &ToolboxProxy::updateFullState);
     updatePlayState();
@@ -125,10 +126,11 @@ void ToolboxProxy::updateFullState()
 
 void ToolboxProxy::updatePlayState()
 {
-    if (_mpv->paused()) {
-        _playBtn->setObjectName("PlayBtn");
-    } else {
+    qDebug() << __func__ << _mpv->state();
+    if (_mpv->state() == MpvProxy::CoreState::Playing) {
         _playBtn->setObjectName("PauseBtn");
+    } else {
+        _playBtn->setObjectName("PlayBtn");
     }
     _playBtn->setStyleSheet(_playBtn->styleSheet());
 }
@@ -145,7 +147,12 @@ void ToolboxProxy::buttonClicked(QString id)
 {
     qDebug() << __func__ << id;
     if (id == "play") {
-        _mpv->pauseResume();
+        if (_mpv->state() == MpvProxy::CoreState::Idle) {
+            static_cast<MainWindow*>(_mainWindow)->requestAction(ActionKind::OpenFile);
+        } else {
+            static_cast<MainWindow*>(_mainWindow)->requestAction(ActionKind::TogglePause);
+        }
+        //QTimer::singleShot(0, this, &ToolboxProxy::updatePlayState);
     } else if (id == "fs") {
         bool isFullscreen = window()->windowHandle()->windowState() == Qt::WindowFullScreen;
         if (isFullscreen) {

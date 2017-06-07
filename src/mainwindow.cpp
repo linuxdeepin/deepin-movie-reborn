@@ -9,12 +9,14 @@
 #include "shortcut_manager.h"
 #include "dmr_settings.h"
 #include "utility.h"
+#include "movieinfo_dialog.h"
 
 #include <QtWidgets>
 #include <DApplication>
 #include <DTitlebar>
 #include <dsettingsdialog.h>
 #include <dthememanager.h>
+#include <daboutdialog.h>
 
 DWIDGET_USE_NAMESPACE
 
@@ -33,14 +35,14 @@ class MainWindowEventListener : public QObject
             cursorAnimation.setDuration(50);
             cursorAnimation.setEasingCurve(QEasingCurve::InExpo);
 
-            connect(&cursorAnimation, &QVariantAnimation::valueChanged,
-                    this, &MainWindowEventListener::onAnimationValueChanged);
+            //connect(&cursorAnimation, &QVariantAnimation::valueChanged,
+                    //this, &MainWindowEventListener::onAnimationValueChanged);
 
             startAnimationTimer.setSingleShot(true);
             startAnimationTimer.setInterval(300);
 
-            connect(&startAnimationTimer, &QTimer::timeout,
-                    this, &MainWindowEventListener::startAnimation);
+            //connect(&startAnimationTimer, &QTimer::timeout,
+                    //this, &MainWindowEventListener::startAnimation);
         }
 
         ~MainWindowEventListener()
@@ -192,7 +194,7 @@ skip_set_cursor:
         void startAnimation() {
             QPoint cursorPos = QCursor::pos();
             QPoint toPos = cursorPos;
-            const QRect geometry = _window->frameGeometry().adjusted(-1, -1, 1, 1);
+            const QRect geometry = _window->frameGeometry();
 
             switch (lastCornerEdge) {
                 case Utility::TopLeftCorner:
@@ -255,7 +257,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QWidget(NULL)
 {
     setWindowFlags(Qt::FramelessWindowHint);
-    setContentsMargins(0, 0, 0, 0);
+    //setContentsMargins(0, 0, 0, 0);
     
     bool composited = CompositingManager::get().composited();
 #ifdef USE_DXCB
@@ -291,6 +293,7 @@ MainWindow::MainWindow(QWidget *parent)
         _titlebar->winId();
     }
     _titlebar->setMenu(ActionFactory::get().titlebarMenu());
+    _titlebar->setIcon(QPixmap(":/resources/icons/logo.svg"));
 
     _center = new QWidget(this);
     _center->move(0, 0);
@@ -306,9 +309,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     updateProxyGeometry();
 
-    //connect(&_timer, &QTimer::timeout, this, &MainWindow::timeout);
-    //_timer.start(1000);
-
     connect(&ShortcutManager::get(), &ShortcutManager::bindingsChanged,
             this, &MainWindow::onBindingsChanged);
     ShortcutManager::get().buildBindings();
@@ -317,11 +317,15 @@ MainWindow::MainWindow(QWidget *parent)
         _toolbox->updateTimeInfo(_proxy->duration(), _proxy->ellapsed());
     });
 
+    connect(_proxy, &MpvProxy::fileLoaded, [=]() {
+        _titlebar->setTitle(QFileInfo(_proxy->movieInfo().filePath).fileName());
+    });
 
     connect(DThemeManager::instance(), &DThemeManager::themeChanged,
             this, &MainWindow::onThemeChanged);
     onThemeChanged();
 
+#ifdef USE_DXCB
     if (!composited) {
         connect(qApp, &QGuiApplication::applicationStateChanged,
                 this, &MainWindow::onApplicationStateChanged);
@@ -332,8 +336,10 @@ MainWindow::MainWindow(QWidget *parent)
         connect(_evm, &EventMonitor::buttonedRelease, this, &MainWindow::onMonitorButtonReleased);
         _evm->start();
     }
+#endif
 }
 
+#ifdef USE_DXCB
 static QPoint last_proxy_pos;
 static QPoint last_wm_pos;
 static bool clicked = false;
@@ -369,14 +375,11 @@ void MainWindow::onMonitorMotionNotify(int x, int y)
     }
 }
 
+#endif
+
 MainWindow::~MainWindow()
 {
     //delete _evm;
-}
-
-void MainWindow::timeout()
-{
-    _toolbox->updateTimeInfo(_proxy->duration(), _proxy->ellapsed());
 }
 
 void MainWindow::onApplicationStateChanged(Qt::ApplicationState e)
@@ -446,12 +449,17 @@ void MainWindow::menuItemInvoked(QAction *action)
     auto kd = action->property("kind").value<ActionKind>();
 #endif
     qDebug() << "prop = " << prop << ", kd = " << kd;
+    requestAction(kd, action->isChecked());
+}
+
+void MainWindow::requestAction(ActionKind kd, const QVariant& arg)
+{
     switch (kd) {
         case ActionKind::Exit:
             qApp->quit(); 
             break;
         case ActionKind::LightTheme:
-            qApp->setTheme(action->isChecked() ? "light":"dark");
+            qApp->setTheme(arg.toBool() ? "light":"dark");
             break;
         case OpenFile: {
             QString filename = QFileDialog::getOpenFileName(this, tr("Open File"),
@@ -460,6 +468,12 @@ void MainWindow::menuItemInvoked(QAction *action)
             if (QFileInfo(filename).exists()) {
                 play(QFileInfo(filename));
             }
+            break;
+        }
+
+        case ActionKind::MovieInfo: {
+            MovieInfoDialog mid(_proxy->movieInfo());
+            mid.exec();
             break;
         }
 
@@ -551,6 +565,7 @@ void MainWindow::updateProxyGeometry()
         _toolbox->setGeometry(r);
     }
 
+#ifdef DEBUG
     qDebug() << "margins " << frameMargins();
     qDebug() << "window frame " << frameGeometry();
     qDebug() << "window geom " << geometry();
@@ -558,6 +573,7 @@ void MainWindow::updateProxyGeometry()
     qDebug() << "_titlebar " << _titlebar->geometry();
     qDebug() << "proxy " << _proxy->geometry();
     qDebug() << "_toolbox " << _toolbox->geometry();
+#endif
 }
 
 void MainWindow::suspendToolsWindow()
@@ -577,15 +593,6 @@ QMargins MainWindow::frameMargins() const
     return _cachedMargins;
 }
 
-bool MainWindow::event(QEvent* e)
-{
-    if (e->type() == QEvent::Shortcut) {
-        qDebug() << __func__;
-    }
-
-    return QWidget::event(e);
-}
-
 void MainWindow::showEvent(QShowEvent *event)
 {
     qDebug() << __func__;
@@ -600,7 +607,7 @@ void MainWindow::showEvent(QShowEvent *event)
 
 // 若长≥高,则长≤528px　　　若长≤高,则高≤528px.
 // 简而言之,只看最长的那个最大为528px.
-void MainWindow::resizeEvent(QResizeEvent *ev)
+void MainWindow::updateSizeConstraints()
 {
     //qDebug() << __func__;
     //if (size().width() > size().height()) {
@@ -608,6 +615,12 @@ void MainWindow::resizeEvent(QResizeEvent *ev)
     //} else {
         //this->setMinimumSize(QSize(0, 528));
     //}
+}
+
+void MainWindow::resizeEvent(QResizeEvent *ev)
+{
+    updateSizeConstraints();
+
     updateProxyGeometry();
 }
 
@@ -634,13 +647,12 @@ void MainWindow::mouseMoveEvent(QMouseEvent *ev)
 
 void MainWindow::mousePressEvent(QMouseEvent *ev) 
 {
-    qDebug() << __func__;
+    //qDebug() << __func__;
     QWidget::mousePressEvent(ev);
 }
 
 void MainWindow::contextMenuEvent(QContextMenuEvent *cme)
 {
-    qDebug() << __func__;
     ActionFactory::get().mainContextMenu()->popup(cme->globalPos());
 }
 

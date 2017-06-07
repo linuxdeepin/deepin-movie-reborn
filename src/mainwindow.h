@@ -6,6 +6,7 @@
 #include <DTitlebar>
 #include <DPlatformWindowHandle>
 #include <QtWidgets>
+#include "actions.h"
 
 DWIDGET_USE_NAMESPACE
 
@@ -23,6 +24,7 @@ public:
     ~MainWindow();
 
     QMargins frameMargins() const;
+    void requestAction(ActionKind, const QVariant& arg = QVariant());
 
 signals:
     void frameMarginsChanged();
@@ -32,7 +34,6 @@ public slots:
     void updateProxyGeometry();
 
 protected:
-    bool event(QEvent* e) override;
     void showEvent(QShowEvent *event) override;
     void resizeEvent(QResizeEvent *ev) override;
     void mouseMoveEvent(QMouseEvent *ev) override;
@@ -43,7 +44,6 @@ protected:
 
 protected slots:
     void menuItemInvoked(QAction *action);
-    void timeout();
     void onApplicationStateChanged(Qt::ApplicationState e);
     void onBindingsChanged();
     void onThemeChanged();
@@ -51,12 +51,15 @@ protected slots:
     void suspendToolsWindow();
     void resumeToolsWindow();
 
+#ifdef USE_DXCB
     void onMonitorButtonPressed(int x, int y);
     void onMonitorMotionNotify(int x, int y);
     void onMonitorButtonReleased(int x, int y);
+#endif
 
 private:
     void handleSettings();
+    void updateSizeConstraints();
 
 private:
     MpvProxy *_proxy {nullptr};
@@ -65,7 +68,6 @@ private:
     QWidget *_center {nullptr};
     DPlatformWindowHandle *_handle {nullptr};
     QMargins _cachedMargins;
-    QTimer _timer;
     EventMonitor *_evm {nullptr};
 };
 };
