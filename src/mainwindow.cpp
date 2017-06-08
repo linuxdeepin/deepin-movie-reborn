@@ -32,17 +32,6 @@ class MainWindowEventListener : public QObject
             : QObject(target), _window(target->windowHandle())
 
         {
-            cursorAnimation.setDuration(50);
-            cursorAnimation.setEasingCurve(QEasingCurve::InExpo);
-
-            //connect(&cursorAnimation, &QVariantAnimation::valueChanged,
-                    //this, &MainWindowEventListener::onAnimationValueChanged);
-
-            startAnimationTimer.setSingleShot(true);
-            startAnimationTimer.setInterval(300);
-
-            //connect(&startAnimationTimer, &QTimer::timeout,
-                    //this, &MainWindowEventListener::startAnimation);
         }
 
         ~MainWindowEventListener()
@@ -50,29 +39,40 @@ class MainWindowEventListener : public QObject
         }
 
     protected:
+        enum State {
+            Idle,
+            Pressed,
+            Resizing,
+        };
+
         bool eventFilter(QObject *obj, QEvent *event) Q_DECL_OVERRIDE {
             QWindow *window = qobject_cast<QWindow*>(obj);
-
-            if (!window)
-                return false;
-
-            const QRect &window_geometry = window->geometry();
+            if (!window) return false;
 
             switch ((int)event->type()) {
-            case QEvent::MouseMove:
-            case QEvent::MouseButtonDblClick:
-            case QEvent::MouseButtonPress:
+            case QEvent::MouseButtonPress: {
+                QMouseEvent *e = static_cast<QMouseEvent*>(event);
+                setLeftButtonPressed(true);
+                if (insideResizeArea(e)) startResizing = true;
+                break;
+            }
             case QEvent::MouseButtonRelease: {
                 QMouseEvent *e = static_cast<QMouseEvent*>(event);
-
-                const QMargins margins(MOUSE_MARGINS, MOUSE_MARGINS, MOUSE_MARGINS, MOUSE_MARGINS);
+                setLeftButtonPressed(false);
+                qApp->setOverrideCursor(window->cursor());
+                startResizing = false;
+                break;
+            }
+            case QEvent::MouseMove: {
+                QMouseEvent *e = static_cast<QMouseEvent*>(event);
                 const QRect window_visible_rect = _window->frameGeometry() - margins;
-                if (!leftButtonPressed && !window_visible_rect.contains(e->globalPos())) {
-                    if (event->type() == QEvent::MouseMove) {
+                //qDebug() << "mouse move" << "press" << leftButtonPressed
+                    //<< "insideResizeArea" << insideResizeArea(e);
+
+                if (!leftButtonPressed) {
+                    if (insideResizeArea(e)) {
                         Utility::CornerEdge mouseCorner;
                         QRect cornerRect;
-                        qDebug() << window_visible_rect << _window->frameGeometry()
-                            << e->globalPos();
 
                         /// begin set cursor corner type
                         cornerRect.setSize(QSize(MOUSE_MARGINS * 2, MOUSE_MARGINS * 2));
@@ -120,34 +120,25 @@ set_cursor:
                         Utility::setWindowCursor(window->winId(), mouseCorner);
 
                         if (qApp->mouseButtons() == Qt::LeftButton) {
-                            Utility::startWindowSystemResize(window->winId(), mouseCorner, e->globalPos());
-                            cancelAdsorbCursor();
-                        } else {
-                            adsorbCursor(mouseCorner);
+                            updateGeometry(mouseCorner, e);
                         }
-                    } else if (event->type() == QEvent::MouseButtonRelease) {
-                        Utility::cancelWindowMoveResize(window->winId());
-                    }
+                        lastCornerEdge = mouseCorner;
 
-                    return true;
+                        return true;
+                    } else {
+                        qApp->setOverrideCursor(window->cursor());
+                    }
+                } else {
+                    if (startResizing) {
+                        updateGeometry(lastCornerEdge, e);
+                        return true;
+                    }
                 }
+                
 skip_set_cursor:
-                if (e->buttons() == Qt::LeftButton && e->type() == QEvent::MouseButtonPress)
-                    setLeftButtonPressed(true);
-                else
-                    setLeftButtonPressed(false);
-                qApp->setOverrideCursor(window->cursor());
-                cancelAdsorbCursor();
-                canAdsorbCursor = true;
                 break;
             }
-            case QEvent::Enter:
-                 canAdsorbCursor = true;
-                 break;
-            case QEvent::Leave:
-                 canAdsorbCursor = false;
-                 cancelAdsorbCursor();
-                 break;
+
             default: break;
             }
 
@@ -165,85 +156,47 @@ skip_set_cursor:
             leftButtonPressed = pressed;
         }
 
-        void adsorbCursor(Utility::CornerEdge cornerEdge)
-        {
-            lastCornerEdge = cornerEdge;
-
-            if (!canAdsorbCursor)
-                return;
-
-            if (cursorAnimation.state() == QVariantAnimation::Running)
-                return;
-
-            startAnimationTimer.start();
+        bool insideResizeArea(QMouseEvent *e) {
+            const QRect window_visible_rect = _window->frameGeometry() - margins;
+            return !window_visible_rect.contains(e->globalPos());
         }
 
-        void cancelAdsorbCursor()
-        {
-            QSignalBlocker blocker(&startAnimationTimer);
-            Q_UNUSED(blocker)
-                startAnimationTimer.stop();
-            cursorAnimation.stop();
+        void updateGeometry(Utility::CornerEdge edge, QMouseEvent* e) {
+                auto mw = static_cast<MainWindow*>(parent());
+                auto mi = mw->proxy()->movieInfo();
+                qreal ratio = mi.width / (qreal)mi.height;
+                auto old_geom = mw->frameGeometry();
+                auto geom = mw->frameGeometry();
+
+                switch (edge) {
+                    case Utility::BottomLeftCorner:
+                    case Utility::TopLeftCorner:
+                    case Utility::LeftEdge:
+                        geom.setLeft(e->globalX());
+                        geom.setHeight(geom.width() / ratio);
+                        break;
+                    case Utility::BottomRightCorner:
+                    case Utility::RightEdge:
+                        geom.setRight(e->globalX());
+                        geom.setHeight(geom.width() / ratio);
+                        break;
+                    case Utility::TopRightCorner:
+                    case Utility::TopEdge:
+                        geom.setTop(e->globalY());
+                        geom.setWidth(geom.height() * ratio);
+                        break;
+                    case Utility::BottomEdge:
+                        geom.setBottom(e->globalY());
+                        geom.setWidth(geom.height() * ratio);
+                        break;
+                }
+            mw->setGeometry(geom);
         }
 
-        void onAnimationValueChanged(const QVariant &value)
-        {
-            QCursor::setPos(value.toPoint());
-        }
-
-        void startAnimation() {
-            QPoint cursorPos = QCursor::pos();
-            QPoint toPos = cursorPos;
-            const QRect geometry = _window->frameGeometry();
-
-            switch (lastCornerEdge) {
-                case Utility::TopLeftCorner:
-                    toPos = geometry.topLeft();
-                    break;
-                case Utility::TopEdge:
-                    toPos.setY(geometry.y());
-                    break;
-                case Utility::TopRightCorner:
-                    toPos = geometry.topRight();
-                    break;
-                case Utility::RightEdge:
-                    toPos.setX(geometry.right());
-                    break;
-                case Utility::BottomRightCorner:
-                    toPos = geometry.bottomRight();
-                    break;
-                case Utility::BottomEdge:
-                    toPos.setY(geometry.bottom());
-                    break;
-                case Utility::BottomLeftCorner:
-                    toPos = geometry.bottomLeft();
-                    break;
-                case Utility::LeftEdge:
-                    toPos.setX(geometry.x());
-                    break;
-                default:
-                    break;
-            }
-
-            const QPoint &tmp = toPos - cursorPos;
-
-            if (qAbs(tmp.x()) < 3 && qAbs(tmp.y()) < 3)
-                return;
-
-            canAdsorbCursor = false;
-
-            cursorAnimation.setStartValue(cursorPos);
-            cursorAnimation.setEndValue(toPos);
-            cursorAnimation.start();
-        }
-
-        /// mouse left button is pressed in window vaild geometry
-        bool leftButtonPressed = false;
-
-        bool canAdsorbCursor = false;
+        const QMargins margins{MOUSE_MARGINS, MOUSE_MARGINS, MOUSE_MARGINS, MOUSE_MARGINS};
+        bool leftButtonPressed {false};
+        bool startResizing {false};
         Utility::CornerEdge lastCornerEdge;
-        QTimer startAnimationTimer;
-        QVariantAnimation cursorAnimation;
         QWindow* _window;
 };
 
@@ -284,6 +237,10 @@ MainWindow::MainWindow(QWidget *parent)
     qDebug() << "event listener";
 #endif
 
+    QSizePolicy sp(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    sp.setHeightForWidth(true);
+    setSizePolicy(sp);
+
     qDebug() << "composited = " << composited;
 
     _titlebar = new DTitlebar(this);
@@ -319,6 +276,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(_proxy, &MpvProxy::fileLoaded, [=]() {
         _titlebar->setTitle(QFileInfo(_proxy->movieInfo().filePath).fileName());
+        resize(_proxy->movieInfo().width, _proxy->movieInfo().height);
+        updateSizeConstraints();
     });
 
     connect(DThemeManager::instance(), &DThemeManager::themeChanged,
@@ -609,30 +568,46 @@ void MainWindow::showEvent(QShowEvent *event)
 // 简而言之,只看最长的那个最大为528px.
 void MainWindow::updateSizeConstraints()
 {
-    //qDebug() << __func__;
-    //if (size().width() > size().height()) {
-        //this->setMinimumSize(QSize(528, 0));
-    //} else {
-        //this->setMinimumSize(QSize(0, 528));
-    //}
+    if (_proxy->state() != MpvProxy::CoreState::Idle) {
+        auto mi = _proxy->movieInfo();
+        qreal ratio = mi.width / (qreal)mi.height;
+        int h = 528 / ratio;
+        if (size().width() > size().height()) {
+            setMinimumSize(QSize(528, h));
+        } else {
+            setMinimumSize(QSize(h, 528));
+        }
+    } else {
+        setMinimumSize(QSize(528, 400));
+    }
 }
 
 void MainWindow::resizeEvent(QResizeEvent *ev)
 {
     updateSizeConstraints();
-
+    //if (_proxy->state() != MpvProxy::CoreState::Idle) {
+        //auto mi = _proxy->movieInfo();
+        //if (ev->oldSize().width() == ev->size().width()) {
+            //qDebug() << "resize height";
+        //} else if (ev->oldSize().height() == ev->size().height()) {
+            //qDebug() << "resize width";
+            //qreal ratio = mi.width / (qreal)mi.height;
+            //int h = size().width() / ratio;
+            //resize(size().width(), h);
+        //}
+    //}
     updateProxyGeometry();
 }
 
 void MainWindow::enterEvent(QEvent *ev)
 {
-    //qDebug() << __func__;
+    qDebug() << __func__;
     //resumeToolsWindow();
 }
 
 void MainWindow::leaveEvent(QEvent *ev)
 {
-    //qDebug() << __func__;
+    qDebug() << __func__;
     bool leave = true;
 
     //suspendToolsWindow();
@@ -649,6 +624,10 @@ void MainWindow::mousePressEvent(QMouseEvent *ev)
 {
     //qDebug() << __func__;
     QWidget::mousePressEvent(ev);
+}
+
+void MainWindow::mouseReleaseEvent(QMouseEvent *ev)
+{
 }
 
 void MainWindow::contextMenuEvent(QContextMenuEvent *cme)

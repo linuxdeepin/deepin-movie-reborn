@@ -24,6 +24,7 @@ public:
     ~MainWindow();
 
     QMargins frameMargins() const;
+    MpvProxy* proxy() { return _proxy; }
     void requestAction(ActionKind, const QVariant& arg = QVariant());
 
 signals:
@@ -38,6 +39,7 @@ protected:
     void resizeEvent(QResizeEvent *ev) override;
     void mouseMoveEvent(QMouseEvent *ev) override;
     void mousePressEvent(QMouseEvent *ev) override;
+    void mouseReleaseEvent(QMouseEvent *ev) override;
     void enterEvent(QEvent *ev) override;
     void leaveEvent(QEvent *ev) override;
     void contextMenuEvent(QContextMenuEvent *cme) override;

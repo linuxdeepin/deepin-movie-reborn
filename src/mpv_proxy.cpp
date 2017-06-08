@@ -286,6 +286,9 @@ const struct MovieInfo& MpvProxy::movieInfo()
         d = d.addSecs(duration());
 
         _movieInfo.resolution = QString("%1x%2").arg(w).arg(h);
+        _movieInfo.width = w;
+        _movieInfo.height = h;
+
         _movieInfo.fileType = get_property(_handle, "video-format").toString();
         _movieInfo.duration = d.toString("hh:mm::ss");
         _movieInfo.fileSize = QString("%1").arg(get_property(_handle, "file-size").toInt());

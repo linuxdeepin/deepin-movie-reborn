@@ -19,6 +19,7 @@ struct MovieInfo {
     QString filePath;
     QString creation;
 
+    int width, height;
 };
 
 class MpvProxy: public QWidget {
