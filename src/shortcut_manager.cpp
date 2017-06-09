@@ -34,9 +34,8 @@ ShortcutManager::ShortcutManager()
         {"burst_screenshot", ActionKind::BurstScreenshot},
     };
 
-    connect(Settings::get().settings(), &Dtk::Settings::valueChanged,
-        [=](QString sk, QVariant val) {
-
+    connect(&Settings::get(), &Settings::shortcutsChanged,
+        [=](QString sk, const QVariant& val) {
             sk.remove(0, sk.lastIndexOf('.') + 1);
 
             QStringList keyseqs = val.toStringList();
@@ -69,7 +68,7 @@ void ShortcutManager::buildBindingsFromSettings()
     _map.insert(QKeySequence(Qt::Key_Right + Qt::SHIFT), ActionKind::SeekForwardLarge);
     _map.insert(QKeySequence(Qt::Key_Space), ActionKind::TogglePause);
 
-    QPointer<Dtk::Group> shortcuts = Settings::get().settings()->group("shortcuts");
+    QPointer<Dtk::Group> shortcuts = Settings::get().shortcuts();
 
     auto subgroups = shortcuts->childGroups();
     std::for_each(subgroups.begin(), subgroups.end(), [=](Dtk::GroupPtr grp) {

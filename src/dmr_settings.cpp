@@ -35,8 +35,15 @@ Settings::Settings()
 
     connect(_settings, &Dtk::Settings::valueChanged,
             [=](const QString& key, const QVariant& value) {
-                qDebug() << key << value;
+                if (key.startsWith("shortcuts."))
+                    emit shortcutsChanged(key, value);
+                else if (key.startsWith("base."))
+                    emit baseChanged(key, value);
+                else if (key.startsWith("subtitle."))
+                    emit baseChanged(key, value);
             });
+
+    //qDebug() << "keys" << _settings->keys();
 
     QFontDatabase fontDatabase;
     auto fontFamliy = _settings->option("subtitle.font.family");

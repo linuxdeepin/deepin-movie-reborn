@@ -12,6 +12,17 @@ class Settings: public QObject {
         static Settings& get();
         QString configPath() const { return _configPath; }
         QPointer<Dtk::Settings> settings() { return _settings; }
+        
+        QPointer<Dtk::Group> group(const QString& name) {
+            return settings()->group(name);
+        }
+        QPointer<Dtk::Group> shortcuts() { return group("shortcuts"); }
+        QPointer<Dtk::Group> base() { return group("base"); }
+        QPointer<Dtk::Group> subtitle() { return group("subtitle"); }
+
+    signals:
+        void shortcutsChanged(const QString&, const QVariant&);
+        void baseChanged(const QString&, const QVariant&);
 
     private:
         Settings();

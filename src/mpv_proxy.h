@@ -49,6 +49,10 @@ public:
     CoreState state() const { return _state; }
     void setState(CoreState s);
 
+    QPixmap takeScreenshot();
+    void burstScreenshot(); //initial the start of burst screenshotting
+    void stopBurstScreenshot();
+
 signals:
     void has_mpv_events();
     void ellapsedChanged();
@@ -64,9 +68,6 @@ public slots:
     void stop();
     void seekForward(int secs);
     void seekBackward(int secs);
-    void takeScreenshot();
-    void burstScreenshot(); //initial the start of burst screenshotting
-    void stopBurstScreenshot();
 
 protected slots:
     void handle_mpv_events();
@@ -89,6 +90,7 @@ private:
     mpv_handle* mpv_init();
     void process_property_change(mpv_event_property* ev);
     void process_log_message(mpv_event_log_message* ev);
+    QPixmap takeOneScreenshot();
 };
 }
 

@@ -9,6 +9,7 @@ include_directories(${CMAKE_INCLUDE_CURRENT_DIR})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 find_package(Qt5Widgets)
+find_package(Qt5DBus)
 find_package(Qt5X11Extras)
 
 pkg_check_modules(Dtk REQUIRED IMPORTED_TARGET
@@ -27,5 +28,5 @@ add_executable(${CMD_NAME} main.cpp mainwindow.cpp mpv_proxy.cpp
 target_include_directories(${CMD_NAME} PUBLIC ${PROJECT_INCLUDE})
 
 target_link_libraries(${CMD_NAME} X11 Xext Xtst PkgConfig::Xcb
-    Qt5::Widgets Qt5::X11Extras PkgConfig::Dtk PkgConfig::Mpv)
+    Qt5::Widgets Qt5::X11Extras Qt5::DBus PkgConfig::Dtk PkgConfig::Mpv)
 

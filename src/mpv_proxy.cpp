@@ -3,6 +3,8 @@
 #include "compositing_manager.h"
 #include <mpv/client.h>
 
+#include <QtWidgets>
+
 #include <xcb/xproto.h>
 #include <xcb/xcb_aux.h>
 #include <QX11Info>
@@ -336,11 +338,9 @@ bool MpvProxy::paused()
     return _state == CoreState::Paused;
 }
 
-void MpvProxy::takeScreenshot()
+QPixmap MpvProxy::takeScreenshot()
 {
-    QList<QVariant> args = { "screenshot", "video" };
-    qDebug () << args;
-    command(_handle, args);
+    return takeOneScreenshot();
 }
 
 void MpvProxy::burstScreenshot()
@@ -358,20 +358,15 @@ void MpvProxy::burstScreenshot()
     _burstScreenshotTimer->start();
 }
 
-void MpvProxy::stepBurstScreenshot()
+QPixmap MpvProxy::takeOneScreenshot()
 {
-    if (!_inBurstShotting) {
-        return;
-    }
-
     QList<QVariant> args = {"screenshot-raw"};
     node_builder node(args);
     mpv_node res;
     int err = mpv_command_node(_handle, node.node(), &res);
     if (err < 0) {
-        qWarning() << "burstScreenshot failed";
-        stopBurstScreenshot();
-        return;
+        qWarning() << "screenshot raw failed";
+        return QPixmap();
     }
 
     node_autofree f(&res);
@@ -401,10 +396,26 @@ void MpvProxy::stepBurstScreenshot()
 
     if (data) {
         //alpha should be ignored
-        QImage img(data, w, h, stride, QImage::Format_ARGB32);
-        //qDebug() << "send one screenshot" << w << h << stride;
-        emit notifyScreenshot(QPixmap::fromImage(img));
+        auto img = QPixmap::fromImage(QImage(data, w, h, stride, QImage::Format_ARGB32));
+        return img;
     }
+
+    return QPixmap();
+}
+
+void MpvProxy::stepBurstScreenshot()
+{
+    if (!_inBurstShotting) {
+        return;
+    }
+
+    QPixmap img = takeOneScreenshot();
+    if (img.isNull()) {
+        stopBurstScreenshot();
+        return;
+    }
+
+    emit notifyScreenshot(img);
 
     {
         QList<QVariant> args = {"frame-step"};

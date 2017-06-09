@@ -13,6 +13,7 @@
 #include "burst_screenshots_dialog.h"
 
 #include <QtWidgets>
+#include <QtDBus>
 #include <DApplication>
 #include <DTitlebar>
 #include <dsettingsdialog.h>
@@ -468,7 +469,40 @@ void MainWindow::requestAction(ActionKind kd, const QVariant& arg)
         }
 
         case Screenshot: {
-            _proxy->takeScreenshot();
+            auto img = _proxy->takeScreenshot();
+            QString savePath = Settings::get().settings()->value("base.screenshot.location").toString();
+            if (!QFileInfo(savePath).exists()) {
+                savePath = "/tmp";
+            }
+
+            QString filePath = QString("%1/deepin-movie-shot %2.jpg")
+                .arg(savePath).arg(QDateTime::currentDateTime().toString(Qt::ISODate));
+            img.save(filePath);
+
+            // Popup notify.
+            QDBusInterface notification("org.freedesktop.Notifications",
+                    "/org/freedesktop/Notifications",
+                    "org.freedesktop.Notifications",
+                    QDBusConnection::sessionBus());
+
+            QStringList actions;
+            actions << "_open" << tr("View");
+
+
+            QVariantMap hints;
+            hints["x-deepin-action-_open"] = QString("xdg-open,%1").arg(filePath);
+
+
+            QList<QVariant> arg;
+            arg << (QCoreApplication::applicationName())                 // appname
+                << ((unsigned int) 0)                                    // id
+                << QString("deepin-movie")                               // icon
+                << tr("Movie Screenshot")                                // summary
+                << QString("%1 %2").arg(tr("Saved to")).arg(filePath) // body
+                << actions                                               // actions
+                << hints                                                 // hints
+                << (int) -1;                                             // timeout
+            notification.callWithArgumentList(QDBus::AutoDetect, "Notify", arg);
             break;
         }
 
