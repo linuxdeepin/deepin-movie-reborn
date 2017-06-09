@@ -10,6 +10,7 @@
 #include "dmr_settings.h"
 #include "utility.h"
 #include "movieinfo_dialog.h"
+#include "burst_screenshots_dialog.h"
 
 #include <QtWidgets>
 #include <DApplication>
@@ -462,7 +463,10 @@ void MainWindow::requestAction(ActionKind kd, const QVariant& arg)
         }
 
         case BurstScreenshot: {
-            _proxy->burstScreenshot();
+            BurstScreenshotsDialog bsd(_proxy);
+            bsd.exec();
+            qDebug() << "BurstScreenshot done";
+            _proxy->pauseResume();
             break;
         }
 

@@ -128,6 +128,10 @@ MpvProxy::MpvProxy(QWidget *parent)
         layout->addWidget(_gl_widget);
         setLayout(layout);
     }
+
+    _burstScreenshotTimer = new QTimer(this);
+    _burstScreenshotTimer->setSingleShot(true);
+    connect(_burstScreenshotTimer, &QTimer::timeout, this, &MpvProxy::stepBurstScreenshot);
 }
 
 MpvProxy::~MpvProxy()
@@ -165,8 +169,8 @@ mpv_handle* MpvProxy::mpv_init()
 
     bool composited = CompositingManager::get().composited();
     
-    //set_property(h, "terminal", "yes");
-    //set_property(h, "msg-level", "all=v");
+    set_property(h, "terminal", "yes");
+    set_property(h, "msg-level", "all=v");
 
     if (composited) {
         set_property(h, "vo", "opengl-cb");
@@ -341,6 +345,79 @@ void MpvProxy::takeScreenshot()
 
 void MpvProxy::burstScreenshot()
 {
+    if (_inBurstShotting) {
+        qWarning() << "already in burst screenshotting mode";
+        return;
+    }
+
+    if (state() == CoreState::Idle)
+        return;
+
+    if (!paused()) pauseResume();
+    _inBurstShotting = true;
+    _burstScreenshotTimer->start();
+}
+
+void MpvProxy::stepBurstScreenshot()
+{
+    if (!_inBurstShotting) {
+        return;
+    }
+
+    QList<QVariant> args = {"screenshot-raw"};
+    node_builder node(args);
+    mpv_node res;
+    int err = mpv_command_node(_handle, node.node(), &res);
+    if (err < 0) {
+        qWarning() << "burstScreenshot failed";
+        stopBurstScreenshot();
+        return;
+    }
+
+    node_autofree f(&res);
+
+    Q_ASSERT(res.format == MPV_FORMAT_NODE_MAP);
+
+    int w,h,stride;
+
+    mpv_node_list *list = res.u.list;
+    uchar *data = NULL;
+
+    for (int n = 0; n < list->num; n++) {
+        auto key = QString::fromUtf8(list->keys[n]);
+        if (key == "w") {
+            w = list->values[n].u.int64;
+        } else if (key == "h") {
+            h = list->values[n].u.int64;
+        } else if (key == "stride") {
+            stride = list->values[n].u.int64;
+        } else if (key == "format") {
+            auto format = QString::fromUtf8(list->values[n].u.string);
+            qDebug() << "format" << format;
+        } else if (key == "data") {
+            data = (uchar*)list->values[n].u.ba->data;
+        }
+    }
+
+    if (data) {
+        //alpha should be ignored
+        QImage img(data, w, h, stride, QImage::Format_ARGB32);
+        //qDebug() << "send one screenshot" << w << h << stride;
+        emit notifyScreenshot(QPixmap::fromImage(img));
+    }
+
+    {
+        QList<QVariant> args = {"frame-step"};
+        command(_handle, args);
+    }
+
+    _burstScreenshotTimer->start();
+}
+
+void MpvProxy::stopBurstScreenshot()
+{
+    _inBurstShotting = false;
+    _burstScreenshotTimer->stop();
 }
 
 void MpvProxy::seekForward(int secs)

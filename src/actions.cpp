@@ -66,6 +66,15 @@ QMenu* ActionFactory::mainContextMenu()
             parent->addMenu(menu);
         }
 
+        { //sub menu
+            auto *parent = menu;
+            auto *menu = new QMenu(tr("Screenshot"));
+            DEF_ACTION("Single Screenshot", ActionKind::Screenshot);
+            DEF_ACTION("Burst Screenshot", ActionKind::BurstScreenshot);
+
+            parent->addMenu(menu);
+        }
+
         menu->addSeparator();
 
         DEF_ACTION("Playlist", ActionKind::ShowPlaylist);

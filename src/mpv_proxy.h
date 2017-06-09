@@ -55,6 +55,9 @@ signals:
     void stateChanged();
     void fileLoaded();
 
+    //emit during burst screenshotting
+    void notifyScreenshot(const QPixmap& frame);
+
 public slots:
     void play();
     void pauseResume();
@@ -62,12 +65,14 @@ public slots:
     void seekForward(int secs);
     void seekBackward(int secs);
     void takeScreenshot();
-    void burstScreenshot();
+    void burstScreenshot(); //initial the start of burst screenshotting
+    void stopBurstScreenshot();
 
 protected slots:
     void handle_mpv_events();
     void onSubwindowCreated(xcb_window_t winid);
     void onSubwindowMapped(xcb_window_t winid);
+    void stepBurstScreenshot();
 
 private:
     Handle _handle;
@@ -77,6 +82,9 @@ private:
     CoreState _state { CoreState::Idle };
     struct MovieInfo _movieInfo;
     bool _movieInfoNeedsUpdate {true};
+
+    bool _inBurstShotting {false};
+    QTimer *_burstScreenshotTimer {nullptr};
 
     mpv_handle* mpv_init();
     void process_property_change(mpv_event_property* ev);
