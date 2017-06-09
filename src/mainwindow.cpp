@@ -437,6 +437,16 @@ void MainWindow::requestAction(ActionKind kd, const QVariant& arg)
             break;
         }
 
+        case ActionKind::WindowAbove: {
+            Utility::setStayOnTop(this, arg.toBool());
+            break;
+        }
+
+        case Fullscreen: {
+            windowHandle()->setWindowState(Qt::WindowFullScreen);
+            break;
+        }
+
         case TogglePause: {
             _proxy->pauseResume();
             break;
