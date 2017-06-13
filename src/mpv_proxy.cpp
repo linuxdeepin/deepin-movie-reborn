@@ -191,6 +191,8 @@ mpv_handle* MpvProxy::mpv_init()
     //only to get notification without data
     mpv_observe_property(h, 0, "time-pos", MPV_FORMAT_NONE);
     mpv_observe_property(h, 0, "pause", MPV_FORMAT_NONE);
+    mpv_observe_property(h, 0, "mute", MPV_FORMAT_NONE);
+    mpv_observe_property(h, 0, "volume", MPV_FORMAT_NONE);
     mpv_observe_property(h, 0, "core-idle", MPV_FORMAT_NODE);
 
     //mpv_request_log_messages(h, "info");
@@ -221,11 +223,11 @@ void MpvProxy::handle_mpv_events()
 
         switch (ev->event_id) {
             case MPV_EVENT_LOG_MESSAGE:
-                process_log_message((mpv_event_log_message*)ev->data);
+                processLogMessage((mpv_event_log_message*)ev->data);
                 break;
 
             case MPV_EVENT_PROPERTY_CHANGE:
-                process_property_change((mpv_event_property*)ev->data);
+                processPropertyChange((mpv_event_property*)ev->data);
                 break;
 
             case MPV_EVENT_FILE_LOADED:
@@ -258,18 +260,22 @@ void MpvProxy::handle_mpv_events()
     }
 }
 
-void MpvProxy::process_log_message(mpv_event_log_message* ev)
+void MpvProxy::processLogMessage(mpv_event_log_message* ev)
 {
     qDebug() << QString("%1:%2: %3").arg(ev->prefix).arg(ev->level).arg(ev->text);
 }
 
-void MpvProxy::process_property_change(mpv_event_property* ev)
+void MpvProxy::processPropertyChange(mpv_event_property* ev)
 {
     //if (ev->data == NULL) return;
 
     QString name = QString::fromUtf8(ev->name);
     if (name == "time-pos") {
         emit ellapsedChanged();
+    } else if (name == "volume") {
+        emit volumeChanged();
+    } else if (name == "mute") {
+        emit muteChanged();
     } else if (name == "pause") {
         if (get_property(_handle, "pause").toBool()) {
             setState(CoreState::Paused);
@@ -307,6 +313,37 @@ const struct MovieInfo& MpvProxy::movieInfo()
     }
 
     return _movieInfo;
+}
+
+void MpvProxy::volumeUp()
+{
+    QList<QVariant> args = { "add", "volume", 2 };
+    qDebug () << args;
+    command(_handle, args);
+}
+
+void MpvProxy::volumeDown()
+{
+    QList<QVariant> args = { "add", "volume", -2 };
+    qDebug () << args;
+    command(_handle, args);
+}
+
+int MpvProxy::volume() const
+{
+    return get_property(_handle, "volume").toInt();
+}
+
+bool MpvProxy::muted() const
+{
+    return get_property(_handle, "mute").toBool();
+}
+
+void MpvProxy::toggleMute()
+{
+    QList<QVariant> args = { "cycle", "mute" };
+    qDebug () << args;
+    command(_handle, args);
 }
 
 void MpvProxy::play()
@@ -463,6 +500,10 @@ qint64 MpvProxy::duration() const
 qint64 MpvProxy::ellapsed() const
 {
     return get_property(_handle, "time-pos").value<qint64>();
+}
+
+void MpvProxy::changeProperty(const QString& name, const QVariant& v)
+{
 }
 
 } // end of namespace dmr

@@ -3,34 +3,29 @@
 #include <DApplication>
 
 namespace dmr {
-ToolButton::ToolButton(const QString& name, QWidget* parent)
-    : DImageButton(parent), _name{name}
+VolumeButton::VolumeButton(QWidget* parent)
+    : DImageButton(parent) 
 {
-    connect(DThemeManager::instance(), &DThemeManager::themeChanged,
-            this, &ToolButton::onThemeChanged);
-
+    changeLevel(Level::High);
 }
 
-void ToolButton::onThemeChanged()
+void VolumeButton::changeLevel(Level lv)
 {
-    qDebug() << "theme " << qApp->theme();
-    QFile darkF(":/resources/qss/dark/widgets.qss"),
-          lightF(":/resources/qss/light/widgets.qss");
-
-    if ("dark" == qApp->theme()) {
-        if (darkF.open(QIODevice::ReadOnly)) {
-            setStyleSheet(darkF.readAll());
-            darkF.close();
-        } else {
-            qDebug() << "Set dark style sheet for ImageButton failed";
+    if (_lv != lv) {
+        switch (lv) {
+            case Level::Off:
+                setObjectName("VolOff"); break;
+            case Level::Mute:
+                setObjectName("VolMute"); break;
+            case Level::Low:
+                setObjectName("VolLow"); break;
+            case Level::Mid:
+                setObjectName("VolMid"); break;
+            case Level::High:
+                setObjectName("VolHigh"); break;
         }
-    } else {
-        if (lightF.open(QIODevice::ReadOnly)) {
-            setStyleSheet(lightF.readAll());
-            lightF.close();
-        } else {
-            qDebug() << "Set light style sheet for ImageButton failed";
-        }
+        setStyleSheet(styleSheet());
+        _lv = lv;
     }
 }
 

@@ -32,6 +32,10 @@ ShortcutManager::ShortcutManager()
         {"open_file", ActionKind::OpenFile},
         {"screenshot", ActionKind::Screenshot},
         {"burst_screenshot", ActionKind::BurstScreenshot},
+        {"mini", ActionKind::ToggleMiniMode},
+        {"vol_up", ActionKind::VolumeUp},
+        {"vol_down", ActionKind::VolumeDown},
+        {"mute", ActionKind::ToggleMute},
     };
 
     connect(&Settings::get(), &Settings::shortcutsChanged,

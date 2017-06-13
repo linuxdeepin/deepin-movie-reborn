@@ -8,17 +8,24 @@ DWIDGET_USE_NAMESPACE
 
 namespace dmr {
 
-class ToolButton: public DImageButton {
+class VolumeButton: public DImageButton {
     Q_OBJECT
 public:
-    // name is the base, all states build from this, such as name-press, name-hover etc
-    ToolButton(const QString& name, QWidget* parent = 0);
+    enum Level {
+        Off,
+        Low,
+        Mid,
+        High,
+        Mute
+    };
 
-protected slots:
-    void onThemeChanged();
+    VolumeButton(QWidget* parent = 0);
+    void changeLevel(Level lv);
+
 
 private:
     QString _name;
+    Level _lv {Mute};
 };
 
 }

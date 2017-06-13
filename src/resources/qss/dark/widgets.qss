@@ -48,3 +48,33 @@ dmr--ToolboxProxy {
     background-color: rgba(23, 23, 23, 0.92);
 }
 
+dmr--VolumeButton#VolHigh {
+    qproperty-normalPic: url(:/resources/icons/dark/normal/audio-volume-high-normal.png);
+    qproperty-hoverPic: url(:/resources/icons/dark/normal/audio-volume-high-hover.png);
+    qproperty-pressPic: url(:/resources/icons/dark/normal/audio-volume-high-press.png);
+}
+
+dmr--VolumeButton#VolMid {
+    qproperty-normalPic: url(:/resources/icons/dark/normal/audio-volume-medium-normal.png);
+    qproperty-hoverPic: url(:/resources/icons/dark/normal/audio-volume-medium-hover.png);
+    qproperty-pressPic: url(:/resources/icons/dark/normal/audio-volume-medium-press.png);
+}
+
+
+dmr--VolumeButton#VolLow {
+    qproperty-normalPic: url(:/resources/icons/dark/normal/audio-volume-low-normal.png);
+    qproperty-hoverPic: url(:/resources/icons/dark/normal/audio-volume-low-hover.png);
+    qproperty-pressPic: url(:/resources/icons/dark/normal/audio-volume-low-press.png);
+}
+
+dmr--VolumeButton#VolOff {
+    qproperty-normalPic: url(:/resources/icons/dark/normal/audio-volume-off-normal.png);
+    qproperty-hoverPic: url(:/resources/icons/dark/normal/audio-volume-off-hover.png);
+    qproperty-pressPic: url(:/resources/icons/dark/normal/audio-volume-off-press.png);
+}
+
+dmr--VolumeButton#VolMute {
+    qproperty-normalPic: url(:/resources/icons/dark/normal/audio-volume-muted-blocked-panel-normal.png);
+    qproperty-hoverPic: url(:/resources/icons/dark/normal/audio-volume-muted-blocked-panel-hover.png);
+    qproperty-pressPic: url(:/resources/icons/dark/normal/audio-volume-muted-blocked-panel-press.png);
+}

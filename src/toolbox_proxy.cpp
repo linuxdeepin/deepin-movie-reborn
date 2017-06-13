@@ -92,6 +92,11 @@ void ToolboxProxy::setup()
     auto *right = new QHBoxLayout();
     l->addLayout(right);
 
+    _volBtn = new VolumeButton();
+    connect(_volBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
+    signalMapper->setMapping(_volBtn, "vol");
+    right->addWidget(_volBtn);
+
     _fsBtn = new DImageButton();
     connect(_fsBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_fsBtn, "fs");
@@ -105,8 +110,14 @@ void ToolboxProxy::setup()
 
 
     connect(_mpv, &MpvProxy::stateChanged, this, &ToolboxProxy::updatePlayState);
+    connect(_mpv, &MpvProxy::ellapsedChanged, [=]() {
+        updateTimeInfo(_mpv->duration(), _mpv->ellapsed());
+    });
     connect(window()->windowHandle(), &QWindow::windowStateChanged, this, 
             &ToolboxProxy::updateFullState);
+    connect(_mpv, &MpvProxy::muteChanged, this, &ToolboxProxy::updateVolumeState);
+    connect(_mpv, &MpvProxy::volumeChanged, this, &ToolboxProxy::updateVolumeState);
+
     updatePlayState();
     updateFullState();
 
@@ -115,9 +126,27 @@ void ToolboxProxy::setup()
     _playBtn->installEventFilter(bubbler);
 }
 
+void ToolboxProxy::updateVolumeState()
+{
+    if (_mpv->muted()) {
+        _volBtn->changeLevel(VolumeButton::Mute);
+    } else {
+        auto v = _mpv->volume();
+        qDebug() << __func__ << v;
+        if (v >= 80)
+            _volBtn->changeLevel(VolumeButton::High);
+        else if (v >= 40)
+            _volBtn->changeLevel(VolumeButton::Mid);
+        else if (v == 0)
+            _volBtn->changeLevel(VolumeButton::Off);
+        else 
+            _volBtn->changeLevel(VolumeButton::Low);
+    }
+}
+
 void ToolboxProxy::updateFullState()
 {
-    bool isFullscreen = window()->windowHandle()->windowState() == Qt::WindowFullScreen;
+    bool isFullscreen = window()->isFullScreen();
     if (isFullscreen) {
         _fsBtn->setObjectName("UnfsBtn");
     } else {
@@ -148,20 +177,19 @@ void ToolboxProxy::updateTimeInfo(qint64 duration, qint64 pos)
 void ToolboxProxy::buttonClicked(QString id)
 {
     qDebug() << __func__ << id;
+    auto mw = static_cast<MainWindow*>(_mainWindow);
     if (id == "play") {
         if (_mpv->state() == MpvProxy::CoreState::Idle) {
-            static_cast<MainWindow*>(_mainWindow)->requestAction(ActionKind::OpenFile);
+            mw->requestAction(ActionKind::OpenFile);
         } else {
-            static_cast<MainWindow*>(_mainWindow)->requestAction(ActionKind::TogglePause);
+            mw->requestAction(ActionKind::TogglePause);
         }
     } else if (id == "fs") {
-        bool isFullscreen = window()->windowHandle()->windowState() == Qt::WindowFullScreen;
-        if (isFullscreen) {
-            //FIXME: restore to orignal state
-            window()->windowHandle()->setWindowState(Qt::WindowNoState);
-        } else {
-            window()->windowHandle()->setWindowState(Qt::WindowFullScreen);
-        }
+        mw->requestAction(ActionKind::Fullscreen);
+    } else if (id == "vol") {
+    } else if (id == "prev") {
+    } else if (id == "next") {
+    } else if (id == "list") {
     }
 }
 
@@ -176,14 +204,6 @@ void ToolboxProxy::updatePosition(const QPoint& p)
 
 void ToolboxProxy::paintEvent(QPaintEvent *pe)
 {
-    //QPainter p(this);
-    //QPainterPath pp;
-    //pp.addRoundedRect(rect(), 5, 5);
-    //p.setClipPath(pp);
-
-    //auto clr = QColor::fromRgb(0, 0, 0, 128);
-    //p.fillRect(rect(), clr);
-
     QWidget::paintEvent(pe);
 }
 

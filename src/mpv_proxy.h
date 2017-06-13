@@ -49,6 +49,9 @@ public:
     CoreState state() const { return _state; }
     void setState(CoreState s);
 
+    int volume() const;
+    bool muted() const;
+
     QPixmap takeScreenshot();
     void burstScreenshot(); //initial the start of burst screenshotting
     void stopBurstScreenshot();
@@ -58,6 +61,8 @@ signals:
     void ellapsedChanged();
     void stateChanged();
     void fileLoaded();
+    void muteChanged();
+    void volumeChanged();
 
     //emit during burst screenshotting
     void notifyScreenshot(const QPixmap& frame);
@@ -68,6 +73,9 @@ public slots:
     void stop();
     void seekForward(int secs);
     void seekBackward(int secs);
+    void volumeUp();
+    void volumeDown();
+    void toggleMute();
 
 protected slots:
     void handle_mpv_events();
@@ -88,9 +96,10 @@ private:
     QTimer *_burstScreenshotTimer {nullptr};
 
     mpv_handle* mpv_init();
-    void process_property_change(mpv_event_property* ev);
-    void process_log_message(mpv_event_log_message* ev);
+    void processPropertyChange(mpv_event_property* ev);
+    void processLogMessage(mpv_event_log_message* ev);
     QPixmap takeOneScreenshot();
+    void changeProperty(const QString& name, const QVariant& v);
 };
 }
 

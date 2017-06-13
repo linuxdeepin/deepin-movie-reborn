@@ -32,6 +32,9 @@ enum ActionKind {
     Stop,
     GotoPlaylistNext,
     GotoPlaylistPrev,
+    VolumeUp,
+    VolumeDown,
+    ToggleMute,
 };
 
 class ActionFactory: public QObject {
@@ -42,11 +45,13 @@ public:
 
     QMenu* titlebarMenu();
     QMenu* mainContextMenu();
+    QList<QAction*> findActionsByKind(ActionKind kd);
 
 private:
     ActionFactory() {}
     QMenu *_titlebarMenu {nullptr};
     QMenu *_contextMenu {nullptr};
+    QList<QAction*> _contextMenuActions;
 };
 
 }

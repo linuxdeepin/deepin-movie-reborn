@@ -16,12 +16,14 @@ ActionFactory& ActionFactory::get()
 #define DEF_ACTION(NAME, KD) do { \
     auto *act = menu->addAction(tr(NAME)); \
     act->setProperty("kind", KD); \
+    _contextMenuActions.append(act); \
 } while (0) 
 
 #define DEF_ACTION_CHECKED(NAME, KD) do { \
     auto *act = menu->addAction(tr(NAME)); \
     act->setCheckable(true); \
     act->setProperty("kind", KD); \
+    _contextMenuActions.append(act); \
 } while (0) 
 
 QMenu* ActionFactory::titlebarMenu()
@@ -52,7 +54,7 @@ QMenu* ActionFactory::mainContextMenu()
         DEF_ACTION("Open Url", ActionKind::OpenUrl);
         menu->addSeparator();
 
-        DEF_ACTION("Fullscreen", ActionKind::Fullscreen);
+        DEF_ACTION_CHECKED("Fullscreen", ActionKind::Fullscreen);
         DEF_ACTION_CHECKED("Compact Mode", ActionKind::ToggleMiniMode);
         DEF_ACTION_CHECKED("Above", ActionKind::WindowAbove);
         menu->addSeparator();
@@ -85,6 +87,25 @@ QMenu* ActionFactory::mainContextMenu()
     }
 
     return _contextMenu;
+}
+
+QList<QAction*> ActionFactory::findActionsByKind(ActionKind target_kd)
+{
+    QList<QAction*> res;
+    auto p = _contextMenuActions.begin();
+    while (p != _contextMenuActions.end()) {
+        auto prop = (*p)->property("kind");
+#if QT_VERSION < QT_VERSION_CHECK(5, 6, 2)
+        auto kd = (ActionKind)(*p)->property("kind").value<int>();
+#else
+        auto kd = p->property("kind").value<ActionKind>();
+#endif
+        if (kd == target_kd) {
+            res.append(*p);
+        }
+        ++p;
+    }
+    return res;
 }
 
 #undef DEF_ACTION

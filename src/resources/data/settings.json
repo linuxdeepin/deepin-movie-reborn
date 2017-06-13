@@ -42,17 +42,17 @@
             "groups": [
                 {
                     "key": "play",
-                    "name": "Play",
+                    "name": "Playback",
                     "options": [
                         {
                             "key": "seek_backward",
-                            "name": "Seek Backward",
+                            "name": "Backward",
                             "type": "shortcut",
                             "default":  ["0", "16777234"]
                         },
                         {
                             "key": "seek_forward",
-                            "name": "Seek Forward",
+                            "name": "Forward",
                             "type": "shortcut",
                             "default":  ["0", "16777236"]
                         },
@@ -65,12 +65,42 @@
                     ]
                 },
                 {
+                    "key": "frame_sound",
+                    "name": "Frame/Sound",
+                    "options": [
+                        {
+                            "key": "mini",
+                            "name": "Mini mode",
+                            "type": "shortcut",
+                            "default": ["0", "16777265"]
+                        },
+                        {
+                            "key": "vol_up",
+                            "name": "Volume up",
+                            "type": "shortcut",
+                            "default": ["0", "16777235"]
+                        },
+                        {
+                            "key": "vol_down",
+                            "name": "volume down",
+                            "type": "shortcut",
+                            "default": ["0", "16777237"]
+                        },
+                        {
+                            "key": "mute",
+                            "name": "Mute",
+                            "type": "shortcut",
+                            "default": ["0", "77"]
+                        }
+                    ]
+                },
+                {
                     "key": "file",
-                    "name": "File",
+                    "name": "Files",
                     "options": [
                         {
                             "key": "open_file",
-                            "name": "Open File",
+                            "name": "Open a file",
                             "type": "shortcut",
                             "default": ["67108864", "79"]
                         },
@@ -82,7 +112,7 @@
                         },
                         {
                             "key": "burst_screenshot",
-                            "name": "Burst Screenshot",
+                            "name": "Burst screenshot",
                             "type": "shortcut",
                             "default": ["134217728", "83"]
                         }

@@ -265,16 +265,14 @@ MainWindow::MainWindow(QWidget *parent)
     connect(_titlebar->menu(), &QMenu::triggered, this, &MainWindow::menuItemInvoked);
     connect(ActionFactory::get().mainContextMenu(), &QMenu::triggered, 
             this, &MainWindow::menuItemInvoked);
+    connect(ActionFactory::get().mainContextMenu(), &QMenu::aboutToShow, [=]() {
+    });
 
     updateProxyGeometry();
 
     connect(&ShortcutManager::get(), &ShortcutManager::bindingsChanged,
             this, &MainWindow::onBindingsChanged);
     ShortcutManager::get().buildBindings();
-
-    connect(_proxy, &MpvProxy::ellapsedChanged, [=]() {
-        _toolbox->updateTimeInfo(_proxy->duration(), _proxy->ellapsed());
-    });
 
     connect(_proxy, &MpvProxy::fileLoaded, [=]() {
         _titlebar->setTitle(QFileInfo(_proxy->movieInfo().filePath).fileName());
@@ -397,7 +395,37 @@ void MainWindow::onBindingsChanged()
     auto actions = scmgr.actionsForBindings();
     for (auto* act: actions) {
         this->addAction(act);
-        connect(act, &QAction::triggered, [=]() { this->menuItemInvoked(act); });
+        connect(act, &QAction::triggered, [=]() { 
+            this->menuItemInvoked(act); 
+            auto prop = act->property("kind");
+#if QT_VERSION < QT_VERSION_CHECK(5, 6, 2)
+            auto kd = (ActionKind)act->property("kind").value<int>();
+#else
+            auto kd = act->property("kind").value<ActionKind>();
+#endif
+            reflectActionToUI(kd);
+        });
+    }
+}
+
+void MainWindow::reflectActionToUI(ActionKind kd)
+{
+    QList<QAction*> acts;
+    switch(kd) {
+        case ActionKind::WindowAbove:
+        case ActionKind::Fullscreen:
+        case ActionKind::ToggleMiniMode:
+            qDebug() << __func__ << kd;
+            acts = ActionFactory::get().findActionsByKind(kd);
+        default: break;
+    }
+
+    auto p = acts.begin();
+    while (p != acts.end()) {
+        (*p)->setEnabled(false);
+        (*p)->setChecked(!(*p)->isChecked());
+        (*p)->setEnabled(true);
+        ++p;
     }
 }
 
@@ -410,18 +438,22 @@ void MainWindow::menuItemInvoked(QAction *action)
     auto kd = action->property("kind").value<ActionKind>();
 #endif
     qDebug() << "prop = " << prop << ", kd = " << kd;
-    requestAction(kd, action->isChecked());
+    //requestAction(kd, action->isChecked());
+    requestAction(kd, true);
 }
 
-void MainWindow::requestAction(ActionKind kd, const QVariant& arg)
+void MainWindow::requestAction(ActionKind kd, bool fromUI)
 {
     switch (kd) {
         case ActionKind::Exit:
             qApp->quit(); 
             break;
+
         case ActionKind::LightTheme:
-            qApp->setTheme(arg.toBool() ? "light":"dark");
+            _lightTheme = !_lightTheme;
+            qApp->setTheme(_lightTheme? "light":"dark");
             break;
+
         case OpenFile: {
             QString filename = QFileDialog::getOpenFileName(this, tr("Open File"),
                     QDir::currentPath(),
@@ -432,19 +464,51 @@ void MainWindow::requestAction(ActionKind kd, const QVariant& arg)
             break;
         }
 
+        case ActionKind::ToggleMiniMode: {
+            if (!fromUI) {
+                reflectActionToUI(kd);
+            }
+            break;
+        }
+
         case ActionKind::MovieInfo: {
             MovieInfoDialog mid(_proxy->movieInfo());
             mid.exec();
             break;
         }
 
-        case ActionKind::WindowAbove: {
-            Utility::setStayOnTop(this, arg.toBool());
+        case ActionKind::WindowAbove:
+            _windowAbove = !_windowAbove;
+            Utility::setStayOnTop(this, _windowAbove);
+            if (!fromUI) {
+                reflectActionToUI(kd);
+            }
+            break;
+
+        case Fullscreen: {
+            if (isFullScreen()) {
+                showNormal();
+            } else {
+                showFullScreen();
+            }
+            if (!fromUI) {
+                reflectActionToUI(kd);
+            }
             break;
         }
 
-        case Fullscreen: {
-            windowHandle()->setWindowState(Qt::WindowFullScreen);
+        case ToggleMute: {
+            _proxy->toggleMute();
+            break;
+        }
+
+        case VolumeUp: {
+            _proxy->volumeUp();
+            break;
+        }
+
+        case VolumeDown: {
+            _proxy->volumeDown();
             break;
         }
 

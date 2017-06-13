@@ -25,7 +25,7 @@ public:
 
     QMargins frameMargins() const;
     MpvProxy* proxy() { return _proxy; }
-    void requestAction(ActionKind, const QVariant& arg = QVariant());
+    void requestAction(ActionKind, bool fromUI = false);
 
 signals:
     void frameMarginsChanged();
@@ -62,6 +62,7 @@ protected slots:
 private:
     void handleSettings();
     void updateSizeConstraints();
+    void reflectActionToUI(ActionKind);
 
 private:
     MpvProxy *_proxy {nullptr};
@@ -71,6 +72,10 @@ private:
     DPlatformWindowHandle *_handle {nullptr};
     QMargins _cachedMargins;
     EventMonitor *_evm {nullptr};
+
+    //toggle-able states
+    bool _lightTheme {false};
+    bool _windowAbove {false};
 };
 };
 

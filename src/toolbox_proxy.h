@@ -19,7 +19,7 @@ namespace dmr {
 
 class MpvProxy;
 class EventRelayer;
-class ToolButton;
+class VolumeButton;
 
 class ToolboxProxy: public QFrame {
     Q_OBJECT
@@ -40,6 +40,7 @@ protected slots:
     void buttonClicked(QString id);
     void updatePlayState();
     void updateFullState();
+    void updateVolumeState();
 
 protected:
     void paintEvent(QPaintEvent *pe) override;
@@ -55,7 +56,7 @@ private:
     DImageButton *_prevBtn {nullptr};
     DImageButton *_nextBtn {nullptr};
 
-    DImageButton *_volBtn {nullptr};
+    VolumeButton *_volBtn {nullptr};
     DImageButton *_listBtn {nullptr};
     DImageButton *_fsBtn {nullptr};
 };
