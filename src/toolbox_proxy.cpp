@@ -31,12 +31,14 @@ class KeyPressBubbler: public QObject {
 
 
 ToolboxProxy::ToolboxProxy(QWidget *mainWindow, MpvProxy *proxy)
-    :QWidget(mainWindow),
+    :QFrame(mainWindow),
     _mainWindow(mainWindow),
     _mpv(proxy)
 {
     bool composited = CompositingManager::get().composited();
-    //setAttribute(Qt::WA_TranslucentBackground);
+    setFrameShape(QFrame::NoFrame);
+    setAutoFillBackground(false);
+    setAttribute(Qt::WA_TranslucentBackground, false);
     if (!composited) {
         setWindowFlags(Qt::FramelessWindowHint|Qt::BypassWindowManagerHint);
         setContentsMargins(0, 0, 0, 0);
@@ -65,7 +67,7 @@ void ToolboxProxy::setup()
 
     l->addStretch();
 
-    auto *mid = new QHBoxLayout(this);
+    auto *mid = new QHBoxLayout();
     l->addLayout(mid);
     
     _prevBtn = new DImageButton();
@@ -87,7 +89,7 @@ void ToolboxProxy::setup()
 
     l->addStretch();
 
-    auto *right = new QHBoxLayout(this);
+    auto *right = new QHBoxLayout();
     l->addLayout(right);
 
     _fsBtn = new DImageButton();
@@ -152,7 +154,6 @@ void ToolboxProxy::buttonClicked(QString id)
         } else {
             static_cast<MainWindow*>(_mainWindow)->requestAction(ActionKind::TogglePause);
         }
-        //QTimer::singleShot(0, this, &ToolboxProxy::updatePlayState);
     } else if (id == "fs") {
         bool isFullscreen = window()->windowHandle()->windowState() == Qt::WindowFullScreen;
         if (isFullscreen) {

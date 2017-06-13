@@ -40,14 +40,11 @@ Dtk--Widget--DImageButton#UnfsBtn {
     qproperty-pressPic: url(:/resources/icons/dark/normal/exit-fullscreen-press.png);
 }
 
-Dtk--Widget--DTitlebar {
+Dtk--Widget--DTitlebar * {
     background-color: #171717;
 }
 
 dmr--ToolboxProxy {
-    background-color: rgba(255, 23, 23, 0.92);
-}
-
-dmr--ToolboxProxy * {
     background-color: rgba(23, 23, 23, 0.92);
 }
+

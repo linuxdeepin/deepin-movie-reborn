@@ -21,7 +21,7 @@ class MpvProxy;
 class EventRelayer;
 class ToolButton;
 
-class ToolboxProxy: public QWidget {
+class ToolboxProxy: public QFrame {
     Q_OBJECT
 public:
     ToolboxProxy(QWidget *mainWindow, MpvProxy*);
