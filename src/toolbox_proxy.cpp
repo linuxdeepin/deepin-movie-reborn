@@ -118,21 +118,32 @@ ToolboxProxy::~ToolboxProxy()
 
 void ToolboxProxy::setup()
 {
-    auto *l = new QHBoxLayout(this);
-    l->setContentsMargins(10, 0, 10, 0);
+    auto *l = new QVBoxLayout(this);
+    l->setContentsMargins(0, 0, 0, 0);
     setLayout(l);
 
+    _progBar = new QProgressBar();
+    _progBar->setTextVisible(false);
+    _progBar->setFixedHeight(2);
+    _progBar->setRange(0, 1000);
+    _progBar->setValue(0);
+    l->addWidget(_progBar, 0);
+
+    auto *bot = new QHBoxLayout();
+    bot->setContentsMargins(10, 0, 10, 0);
+    l->addLayout(bot, 1);
+
     _timeLabel = new QLabel("");
-    l->addWidget(_timeLabel);
+    bot->addWidget(_timeLabel);
 
     auto *signalMapper = new QSignalMapper(this);
     connect(signalMapper, static_cast<void(QSignalMapper::*)(const QString&)>(&QSignalMapper::mapped),
             this, &ToolboxProxy::buttonClicked);
 
-    l->addStretch();
+    bot->addStretch();
 
     auto *mid = new QHBoxLayout();
-    l->addLayout(mid);
+    bot->addLayout(mid);
     
     _prevBtn = new DImageButton();
     _prevBtn->setObjectName("PrevBtn");
@@ -151,10 +162,10 @@ void ToolboxProxy::setup()
     signalMapper->setMapping(_nextBtn, "next");
     mid->addWidget(_nextBtn);
 
-    l->addStretch();
+    bot->addStretch();
 
     auto *right = new QHBoxLayout();
-    l->addLayout(right);
+    bot->addLayout(right);
 
     _volBtn = new VolumeButton();
     connect(_volBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
@@ -181,6 +192,7 @@ void ToolboxProxy::setup()
             &ToolboxProxy::updateFullState);
     connect(_mpv, &MpvProxy::muteChanged, this, &ToolboxProxy::updateVolumeState);
     connect(_mpv, &MpvProxy::volumeChanged, this, &ToolboxProxy::updateVolumeState);
+    connect(_mpv, &MpvProxy::ellapsedChanged, this, &ToolboxProxy::updateMovieProgress);
 
     updatePlayState();
     updateFullState();
@@ -188,6 +200,14 @@ void ToolboxProxy::setup()
     auto bubbler = new KeyPressBubbler(this);
     this->installEventFilter(bubbler);
     _playBtn->installEventFilter(bubbler);
+}
+
+void ToolboxProxy::updateMovieProgress()
+{
+    auto d = _mpv->duration();
+    auto e = _mpv->ellapsed();
+    int v = 1000 * ((double)e / d);
+    _progBar->setValue(v);
 }
 
 void ToolboxProxy::updateVolumeState()

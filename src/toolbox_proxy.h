@@ -41,6 +41,7 @@ protected slots:
     void updatePlayState();
     void updateFullState();
     void updateVolumeState();
+    void updateMovieProgress();
 
 protected:
     void paintEvent(QPaintEvent *pe) override;
@@ -59,6 +60,8 @@ private:
     VolumeButton *_volBtn {nullptr};
     DImageButton *_listBtn {nullptr};
     DImageButton *_fsBtn {nullptr};
+
+    QProgressBar *_progBar {nullptr};
 };
 }
 

@@ -79,3 +79,12 @@ dmr--VolumeButton#VolMute {
     qproperty-pressPic: url(:/resources/icons/dark/normal/audio-volume-muted-blocked-panel-press.png);
 }
 
+QProgressBar::chunk {
+    background-color: #2EACFF;
+}
+
+QProgressBar {
+    background-color: rgba(23, 23, 23, 0.92);
+    border: 0px;
+}
+
