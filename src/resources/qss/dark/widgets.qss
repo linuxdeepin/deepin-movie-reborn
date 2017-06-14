@@ -78,3 +78,4 @@ dmr--VolumeButton#VolMute {
     qproperty-hoverPic: url(:/resources/icons/dark/normal/audio-volume-muted-blocked-panel-hover.png);
     qproperty-pressPic: url(:/resources/icons/dark/normal/audio-volume-muted-blocked-panel-press.png);
 }
+

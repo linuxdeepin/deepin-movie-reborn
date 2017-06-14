@@ -8,27 +8,91 @@
 
 #include <QtWidgets>
 #include <dimagebutton.h>
+#include <dthememanager.h>
+#include <DApplication>
 
 DWIDGET_USE_NAMESPACE
 
 namespace dmr {
 class KeyPressBubbler: public QObject {
-    public:
-        KeyPressBubbler(QObject *parent): QObject(parent) {}
+public:
+    KeyPressBubbler(QObject *parent): QObject(parent) {}
 
-    protected:
-        bool eventFilter(QObject *obj, QEvent *event) {
-            if (event->type() == QEvent::KeyPress) {
-                QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
-                event->setAccepted(false);
-                return false;
-            } else {
-                // standard event processing
-                return QObject::eventFilter(obj, event);
-            }
+protected:
+    bool eventFilter(QObject *obj, QEvent *event) {
+        if (event->type() == QEvent::KeyPress) {
+            QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
+            event->setAccepted(false);
+            return false;
+        } else {
+            // standard event processing
+            return QObject::eventFilter(obj, event);
         }
+    }
 };
 
+class VolumeSlider: public QWidget {
+    Q_OBJECT
+public:
+    VolumeSlider(MpvProxy* mpv): QWidget(nullptr, Qt::Popup), _mpv(mpv) {
+        setFixedSize(QSize(24, 105));
+        setAttribute(Qt::WA_DeleteOnClose);
+        setWindowOpacity(0.92);
+
+        //auto img = QImage(":/resources/icons/volume-slider-shape.png");
+        ////img = img.convertToFormat(QImage::Format_Alpha8);
+        //img = img.createHeuristicMask();
+        //setMask(QPixmap::fromImage(img).mask());
+
+        //QRegion maskedRegion(1, 1, 22, 103, QRegion::Ellipse);
+        //setMask(maskedRegion);
+        
+        auto *l = new QVBoxLayout;
+        l->setContentsMargins(0, 0, 0, 0);
+        setLayout(l);
+
+        _slider = new QSlider(this);
+        _slider->show();
+        _slider->setRange(0, 100);
+        _slider->setOrientation(Qt::Vertical);
+
+        _slider->setValue(_mpv->volume());
+        l->addWidget(_slider);
+
+        connect(DThemeManager::instance(), &DThemeManager::themeChanged, 
+                this, &VolumeSlider::onThemeChanged);
+        onThemeChanged();
+
+        connect(_slider, &QSlider::valueChanged, [=]() { _mpv->changeVolume(_slider->value()); });
+    }
+
+    ~VolumeSlider() {
+        disconnect(DThemeManager::instance(), &DThemeManager::themeChanged, 
+                this, &VolumeSlider::onThemeChanged);
+    }
+        
+public slots:
+    void onThemeChanged() {
+        QFile darkF(":/resources/qss/dark/widgets.qss"),
+              lightF(":/resources/qss/light/widgets.qss");
+
+        if ("dark" == qApp->theme()) {
+            if (darkF.open(QIODevice::ReadOnly)) {
+                setStyleSheet(darkF.readAll());
+                darkF.close();
+            }
+        } else {
+            if (lightF.open(QIODevice::ReadOnly)) {
+                setStyleSheet(lightF.readAll());
+                lightF.close();
+            }
+        }
+    }
+
+private:
+    MpvProxy *_mpv;
+    QSlider *_slider;
+};
 
 ToolboxProxy::ToolboxProxy(QWidget *mainWindow, MpvProxy *proxy)
     :QFrame(mainWindow),
@@ -187,6 +251,15 @@ void ToolboxProxy::buttonClicked(QString id)
     } else if (id == "fs") {
         mw->requestAction(ActionKind::Fullscreen);
     } else if (id == "vol") {
+        auto *w = new VolumeSlider(_mpv);
+        connect(w, &QObject::destroyed, [=]() {
+                qDebug() << "slider destroyed";
+        });
+        QPoint pos = _volBtn->parentWidget()->mapToGlobal(_volBtn->pos());
+        pos.ry() -= w->height();
+        w->move(pos);
+        w->show();
+
     } else if (id == "prev") {
     } else if (id == "next") {
     } else if (id == "list") {
@@ -210,3 +283,4 @@ void ToolboxProxy::paintEvent(QPaintEvent *pe)
 }
 
 
+#include "toolbox_proxy.moc"

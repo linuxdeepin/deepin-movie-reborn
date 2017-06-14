@@ -322,6 +322,12 @@ void MpvProxy::volumeUp()
     command(_handle, args);
 }
 
+void MpvProxy::changeVolume(int val)
+{
+    val = qMin(qMax(val, 0), 100);
+    set_property(_handle, "volume", val);
+}
+
 void MpvProxy::volumeDown()
 {
     QList<QVariant> args = { "add", "volume", -2 };

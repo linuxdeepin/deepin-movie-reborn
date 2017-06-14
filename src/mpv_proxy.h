@@ -75,6 +75,7 @@ public slots:
     void seekBackward(int secs);
     void volumeUp();
     void volumeDown();
+    void changeVolume(int val);
     void toggleMute();
 
 protected slots:
