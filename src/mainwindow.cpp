@@ -11,6 +11,7 @@
 #include "utility.h"
 #include "movieinfo_dialog.h"
 #include "burst_screenshots_dialog.h"
+#include "playlist_widget.h"
 
 #include <QtWidgets>
 #include <QtDBus>
@@ -212,7 +213,6 @@ MainWindow::MainWindow(QWidget *parent)
     : QWidget(NULL)
 {
     setWindowFlags(Qt::FramelessWindowHint);
-    //setContentsMargins(0, 0, 0, 0);
     
     bool composited = CompositingManager::get().composited();
 #ifdef USE_DXCB
@@ -265,8 +265,12 @@ MainWindow::MainWindow(QWidget *parent)
     connect(_titlebar->menu(), &QMenu::triggered, this, &MainWindow::menuItemInvoked);
     connect(ActionFactory::get().mainContextMenu(), &QMenu::triggered, 
             this, &MainWindow::menuItemInvoked);
-    connect(ActionFactory::get().mainContextMenu(), &QMenu::aboutToShow, [=]() {
-    });
+
+    _playlist = new PlaylistWidget(this, _proxy);
+    _playlist->hide();
+    _playlist->setFixedWidth(220);
+
+    _playState = new QLabel(this);
 
     updateProxyGeometry();
 
@@ -279,6 +283,8 @@ MainWindow::MainWindow(QWidget *parent)
         resize(_proxy->movieInfo().width, _proxy->movieInfo().height);
         updateSizeConstraints();
     });
+
+    connect(_proxy, &MpvProxy::stateChanged, this, &MainWindow::updatePlayState);
 
     connect(DThemeManager::instance(), &DThemeManager::themeChanged,
             this, &MainWindow::onThemeChanged);
@@ -380,6 +386,30 @@ void MainWindow::onThemeChanged()
     }
 }
 
+void MainWindow::updatePlayState()
+{
+    if (_proxy->state() != MpvProxy::CoreState::Idle) {
+        qDebug() << __func__ << _proxy->state();
+        QPixmap pm;
+        if (_proxy->state() == MpvProxy::CoreState::Playing) {
+            pm = QPixmap(QString(":/resources/icons/%1/normal/pause-big.png")
+                    .arg(qApp->theme()));
+            QTimer::singleShot(100, [=]() { _playState->setVisible(false); });
+        } else {
+            pm = QPixmap(QString(":/resources/icons/%1/normal/play-big.png")
+                    .arg(qApp->theme()));
+        }
+        _playState->setPixmap(pm);
+
+        auto r = QRect(QPoint(0, 0), QSize(128, 128));
+        r.moveCenter(rect().center());
+        _playState->move(r.topLeft());
+
+        _playState->setVisible(true);
+        _playState->raise();
+    }
+}
+
 void MainWindow::onBindingsChanged()
 {
     qDebug() << __func__;
@@ -415,6 +445,7 @@ void MainWindow::reflectActionToUI(ActionKind kd)
         case ActionKind::WindowAbove:
         case ActionKind::Fullscreen:
         case ActionKind::ToggleMiniMode:
+        case ActionKind::TogglePlaylist:
             qDebug() << __func__ << kd;
             acts = ActionFactory::get().findActionsByKind(kd);
         default: break;
@@ -464,6 +495,14 @@ void MainWindow::requestAction(ActionKind kd, bool fromUI)
             break;
         }
 
+        case ActionKind::TogglePlaylist: {
+            _playlist->togglePopup();
+            if (!fromUI) {
+                reflectActionToUI(kd);
+            }
+            break;
+        }
+
         case ActionKind::ToggleMiniMode: {
             if (!fromUI) {
                 reflectActionToUI(kd);
@@ -509,6 +548,16 @@ void MainWindow::requestAction(ActionKind kd, bool fromUI)
 
         case VolumeDown: {
             _proxy->volumeDown();
+            break;
+        }
+
+        case GotoPlaylistNext: {
+            _proxy->next();
+            break;
+        }
+
+        case GotoPlaylistPrev: {
+            _proxy->prev();
             break;
         }
 
@@ -636,6 +685,17 @@ void MainWindow::updateProxyGeometry()
         _toolbox->setGeometry(r);
     }
 
+    if (_playlist) {
+        QRect r(size().width() - _playlist->width(), 0, _playlist->width(), size().height());
+        _playlist->setGeometry(r);
+    }
+
+    if (_playState) {
+        auto r = QRect(QPoint(0, 0), QSize(128, 128));
+        r.moveCenter(rect().center());
+        _playState->move(r.topLeft());
+    }
+
 #ifdef DEBUG
     qDebug() << "margins " << frameMargins();
     qDebug() << "window frame " << frameGeometry();
@@ -697,17 +757,6 @@ void MainWindow::updateSizeConstraints()
 void MainWindow::resizeEvent(QResizeEvent *ev)
 {
     updateSizeConstraints();
-    //if (_proxy->state() != MpvProxy::CoreState::Idle) {
-        //auto mi = _proxy->movieInfo();
-        //if (ev->oldSize().width() == ev->size().width()) {
-            //qDebug() << "resize height";
-        //} else if (ev->oldSize().height() == ev->size().height()) {
-            //qDebug() << "resize width";
-            //qreal ratio = mi.width / (qreal)mi.height;
-            //int h = size().width() / ratio;
-            //resize(size().width(), h);
-        //}
-    //}
     updateProxyGeometry();
 }
 

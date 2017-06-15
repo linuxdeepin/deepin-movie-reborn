@@ -96,7 +96,7 @@ private:
 
 ToolboxProxy::ToolboxProxy(QWidget *mainWindow, MpvProxy *proxy)
     :QFrame(mainWindow),
-    _mainWindow(mainWindow),
+    _mainWindow(static_cast<MainWindow*>(mainWindow)),
     _mpv(proxy)
 {
     bool composited = CompositingManager::get().composited();
@@ -188,8 +188,7 @@ void ToolboxProxy::setup()
     connect(_mpv, &MpvProxy::ellapsedChanged, [=]() {
         updateTimeInfo(_mpv->duration(), _mpv->ellapsed());
     });
-    connect(window()->windowHandle(), &QWindow::windowStateChanged, this, 
-            &ToolboxProxy::updateFullState);
+    connect(window()->windowHandle(), &QWindow::windowStateChanged, this, &ToolboxProxy::updateFullState);
     connect(_mpv, &MpvProxy::muteChanged, this, &ToolboxProxy::updateVolumeState);
     connect(_mpv, &MpvProxy::volumeChanged, this, &ToolboxProxy::updateVolumeState);
     connect(_mpv, &MpvProxy::ellapsedChanged, this, &ToolboxProxy::updateMovieProgress);
@@ -261,15 +260,14 @@ void ToolboxProxy::updateTimeInfo(qint64 duration, qint64 pos)
 void ToolboxProxy::buttonClicked(QString id)
 {
     qDebug() << __func__ << id;
-    auto mw = static_cast<MainWindow*>(_mainWindow);
     if (id == "play") {
         if (_mpv->state() == MpvProxy::CoreState::Idle) {
-            mw->requestAction(ActionKind::OpenFile);
+            _mainWindow->requestAction(ActionKind::OpenFile);
         } else {
-            mw->requestAction(ActionKind::TogglePause);
+            _mainWindow->requestAction(ActionKind::TogglePause);
         }
     } else if (id == "fs") {
-        mw->requestAction(ActionKind::Fullscreen);
+        _mainWindow->requestAction(ActionKind::Fullscreen);
     } else if (id == "vol") {
         auto *w = new VolumeSlider(_mpv);
         connect(w, &QObject::destroyed, [=]() {
@@ -281,17 +279,19 @@ void ToolboxProxy::buttonClicked(QString id)
         w->show();
 
     } else if (id == "prev") {
+        _mainWindow->requestAction(ActionKind::GotoPlaylistPrev);
     } else if (id == "next") {
+        _mainWindow->requestAction(ActionKind::GotoPlaylistNext);
     } else if (id == "list") {
+        _mainWindow->requestAction(ActionKind::TogglePlaylist);
     }
 }
 
 void ToolboxProxy::updatePosition(const QPoint& p)
 {
     QPoint pos(p);
-    auto *mw = static_cast<MainWindow*>(_mainWindow);
-    pos.rx() += mw->frameMargins().left();
-    pos.ry() += mw->frameMargins().top() + mw->height() - height();
+    pos.rx() += _mainWindow->frameMargins().left();
+    pos.ry() += _mainWindow->frameMargins().top() + _mainWindow->height() - height();
     windowHandle()->setFramePosition(pos);
 }
 

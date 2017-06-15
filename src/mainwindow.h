@@ -14,7 +14,7 @@ namespace dmr {
 class MpvProxy;
 class ToolboxProxy;
 class EventMonitor;
-
+class PlaylistWidget;
 
 class MainWindow: public QWidget {
     Q_OBJECT
@@ -49,6 +49,7 @@ protected slots:
     void onApplicationStateChanged(Qt::ApplicationState e);
     void onBindingsChanged();
     void onThemeChanged();
+    void updatePlayState();
 
     void suspendToolsWindow();
     void resumeToolsWindow();
@@ -68,7 +69,10 @@ private:
     MpvProxy *_proxy {nullptr};
     DTitlebar *_titlebar {nullptr};
     ToolboxProxy *_toolbox {nullptr};
+    PlaylistWidget *_playlist {nullptr};
     QWidget *_center {nullptr};
+    QLabel *_playState {nullptr};
+
     DPlatformWindowHandle *_handle {nullptr};
     QMargins _cachedMargins;
     EventMonitor *_evm {nullptr};

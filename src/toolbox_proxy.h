@@ -2,7 +2,6 @@
 #define _DMR_TOOLBOX_PROXY_H 
 
 #include <DPlatformWindowHandle>
-#include <DBlurEffectWidget>
 #include <QtWidgets>
 
 namespace Dtk
@@ -20,6 +19,7 @@ namespace dmr {
 class MpvProxy;
 class EventRelayer;
 class VolumeButton;
+class MainWindow;
 
 class ToolboxProxy: public QFrame {
     Q_OBJECT
@@ -49,7 +49,7 @@ protected:
 private:
     void setup();
 
-    QWidget *_mainWindow {nullptr};
+    MainWindow *_mainWindow {nullptr};
     MpvProxy *_mpv {nullptr};
     QLabel *_timeLabel {nullptr};
 

@@ -13,7 +13,7 @@ enum ActionKind {
     Help,
     Exit,
 
-    ShowPlaylist,
+    TogglePlaylist,
     MovieInfo,
     OpenUrl,
     Fullscreen,

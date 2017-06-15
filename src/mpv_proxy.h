@@ -9,6 +9,7 @@
 namespace dmr {
 using namespace mpv::qt;
 class MpvGLWidget;
+class PlaylistModel;
 
 struct MovieInfo {
     QString title;
@@ -52,12 +53,15 @@ public:
     int volume() const;
     bool muted() const;
 
+    const PlaylistModel& playlist() const { return *_playlist; }
+
     QPixmap takeScreenshot();
     void burstScreenshot(); //initial the start of burst screenshotting
     void stopBurstScreenshot();
 
 signals:
     void has_mpv_events();
+
     void ellapsedChanged();
     void stateChanged();
     void fileLoaded();
@@ -67,10 +71,14 @@ signals:
     //emit during burst screenshotting
     void notifyScreenshot(const QPixmap& frame);
 
+    void playlistChanged();
+
 public slots:
     void play();
     void pauseResume();
     void stop();
+    void prev();
+    void next();
     void seekForward(int secs);
     void seekBackward(int secs);
     void volumeUp();
@@ -88,7 +96,8 @@ private:
     Handle _handle;
     MpvGLWidget *_gl_widget{nullptr};
 
-    QList<QFileInfo> _playlist;
+    //QList<QFileInfo> _playlist;
+    PlaylistModel *_playlist {nullptr};
     CoreState _state { CoreState::Idle };
     struct MovieInfo _movieInfo;
     bool _movieInfoNeedsUpdate {true};

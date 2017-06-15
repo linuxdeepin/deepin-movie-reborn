@@ -79,7 +79,7 @@ QMenu* ActionFactory::mainContextMenu()
 
         menu->addSeparator();
 
-        DEF_ACTION("Playlist", ActionKind::ShowPlaylist);
+        DEF_ACTION_CHECKED("Playlist", ActionKind::TogglePlaylist);
         DEF_ACTION("Movie Info", ActionKind::MovieInfo);
         DEF_ACTION("Settings", ActionKind::Settings);
 

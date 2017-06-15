@@ -1,6 +1,7 @@
 #include "mpv_proxy.h"
 #include "mpv_glwidget.h"
 #include "compositing_manager.h"
+#include "playlist_model.h"
 #include <mpv/client.h>
 
 #include <QtWidgets>
@@ -131,6 +132,8 @@ MpvProxy::MpvProxy(QWidget *parent)
         setLayout(layout);
     }
 
+    _playlist = new PlaylistModel(_handle);
+
     _burstScreenshotTimer = new QTimer(this);
     _burstScreenshotTimer->setSingleShot(true);
     connect(_burstScreenshotTimer, &QTimer::timeout, this, &MpvProxy::stepBurstScreenshot);
@@ -193,6 +196,8 @@ mpv_handle* MpvProxy::mpv_init()
     mpv_observe_property(h, 0, "pause", MPV_FORMAT_NONE);
     mpv_observe_property(h, 0, "mute", MPV_FORMAT_NONE);
     mpv_observe_property(h, 0, "volume", MPV_FORMAT_NONE);
+    mpv_observe_property(h, 0, "playlist-pos", MPV_FORMAT_NONE);
+    mpv_observe_property(h, 0, "playlist-count", MPV_FORMAT_NONE);
     mpv_observe_property(h, 0, "core-idle", MPV_FORMAT_NODE);
 
     //mpv_request_log_messages(h, "info");
@@ -284,6 +289,12 @@ void MpvProxy::processPropertyChange(mpv_event_property* ev)
                 setState(CoreState::Playing);
         }
     } else if (name == "core-idle") {
+    } else if (name == "playlist-pos") {
+        _playlist->_current = get_property(_handle, "playlist-pos").toInt();
+        emit _playlist->currentChanged();
+    } else if (name == "playlist-count") {
+        Q_ASSERT(_playlist->_infos.count() == get_property(_handle, "playlist-count").toInt());
+        emit _playlist->countChanged();
     }
 }
 
@@ -307,9 +318,8 @@ const struct MovieInfo& MpvProxy::movieInfo()
         _movieInfo.title = get_property(_handle, "media-title").toString();
         qDebug() << __func__ << get_property(_handle, "path").toString();
         //FIXME: fix this
-        _movieInfo.filePath = _playlist[0].canonicalFilePath();
-        QFileInfo fi(_playlist[0].canonicalFilePath());
-        _movieInfo.creation = fi.created().toString();
+        _movieInfo.filePath = _playlist->currentInfo().info.canonicalFilePath();
+        _movieInfo.creation = _playlist->currentInfo().info.created().toString();
     }
 
     return _movieInfo;
@@ -354,11 +364,25 @@ void MpvProxy::toggleMute()
 
 void MpvProxy::play()
 {
-    if (_playlist.size()) {
-        QList<QVariant> args = { "loadfile", _playlist[0].canonicalFilePath() };
-        qDebug () << args;
-        command(_handle, args);
+    if (!_playlist->count()) return;
+
+    if (state() == CoreState::Idle) {
+        _playlist->changeCurrent(0);
     }
+}
+
+void MpvProxy::prev()
+{
+    if (!_playlist->count()) return;
+
+    _playlist->playPrev();
+}
+
+void MpvProxy::next()
+{
+    if (!_playlist->count()) return;
+
+    _playlist->playNext();
 }
 
 void MpvProxy::pauseResume()
@@ -491,10 +515,7 @@ void MpvProxy::seekBackward(int secs)
 
 void MpvProxy::addPlayFile(const QFileInfo& fi)
 {
-    if (fi.exists()) {
-        if (!_playlist.isEmpty()) _playlist.removeFirst();
-        _playlist.prepend(fi);
-    }
+    _playlist->append(fi);
 }
 
 qint64 MpvProxy::duration() const
