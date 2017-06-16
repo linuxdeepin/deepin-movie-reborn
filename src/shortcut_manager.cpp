@@ -36,6 +36,10 @@ ShortcutManager::ShortcutManager()
         {"vol_up", ActionKind::VolumeUp},
         {"vol_down", ActionKind::VolumeDown},
         {"mute", ActionKind::ToggleMute},
+        {"fullscreen", ActionKind::Fullscreen},
+        {"playlist", ActionKind::TogglePlaylist},
+        {"playlist_next", ActionKind::GotoPlaylistNext},
+        {"playlist_prev", ActionKind::GotoPlaylistPrev},
     };
 
     connect(&Settings::get(), &Settings::shortcutsChanged,

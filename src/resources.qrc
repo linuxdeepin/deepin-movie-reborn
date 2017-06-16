@@ -20,7 +20,8 @@
         <file>resources/icons/light/mini/pause-hover-mini.png</file>
         <file>resources/icons/light/mini/fullscreen-press-mini.png</file>
         <file>resources/icons/light/normal/audio-volume-medium-hover.png</file>
-        <file>resources/icons/light/normal/film.png</file>
+        <file>resources/icons/light/normal/film-top.png</file>
+        <file>resources/icons/light/normal/film-bg.png</file>
         <file>resources/icons/light/normal/previous-normal.png</file>
         <file>resources/icons/light/normal/Subtitle-press.png</file>
         <file>resources/icons/light/normal/play-normal.png</file>
@@ -74,7 +75,8 @@
         <file>resources/icons/dark/mini/pause-hover-mini.png</file>
         <file>resources/icons/dark/mini/fullscreen-press-mini.png</file>
         <file>resources/icons/dark/normal/audio-volume-medium-hover.png</file>
-        <file>resources/icons/dark/normal/film.png</file>
+        <file>resources/icons/dark/normal/film-top.png</file>
+        <file>resources/icons/dark/normal/film-bg.png</file>
         <file>resources/icons/dark/normal/previous-normal.png</file>
         <file>resources/icons/dark/normal/Subtitle-press.png</file>
         <file>resources/icons/dark/normal/play-normal.png</file>

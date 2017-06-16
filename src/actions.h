@@ -14,6 +14,9 @@ enum ActionKind {
     Exit,
 
     TogglePlaylist,
+    EmptyPlaylist,
+    PlaylistRemoveItem,
+    PlaylistOpenItemInFM,
     MovieInfo,
     OpenUrl,
     Fullscreen,
@@ -30,6 +33,7 @@ enum ActionKind {
     SeekBackwardLarge,
     TogglePause,
     Stop,
+
     GotoPlaylistNext,
     GotoPlaylistPrev,
     VolumeUp,
@@ -45,12 +49,14 @@ public:
 
     QMenu* titlebarMenu();
     QMenu* mainContextMenu();
+    QMenu* playlistContextMenu();
     QList<QAction*> findActionsByKind(ActionKind kd);
 
 private:
     ActionFactory() {}
     QMenu *_titlebarMenu {nullptr};
     QMenu *_contextMenu {nullptr};
+    QMenu *_playlistMenu {nullptr};
     QList<QAction*> _contextMenuActions;
 };
 

@@ -29,6 +29,9 @@ public slots:
     void togglePopup();
     void loadPlaylist();
 
+protected:
+    void contextMenuEvent(QContextMenuEvent *cme);
+
 private:
     MpvProxy *_mpv {nullptr};
     MainWindow *_mw {nullptr};

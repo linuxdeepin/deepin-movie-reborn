@@ -8,6 +8,7 @@ Build-Depends: debhelper, pkg-config, qttools5-dev-tools,
                 libdtkbase-dev, libdtkutil-dev, libdtkwidget-dev,
                 libdtksettings-dev, libdtksettingsview-dev,
                 libmpv-dev, libxcb1-dev, libxcb-util0-dev,
+                libffmpegthumbnailer-dev,
                 libxcb-shape0-dev,libxcb-ewmh-dev, xcb-proto
 Standards-Version: 3.9.2
 Homepage: http://www.deepin.com/

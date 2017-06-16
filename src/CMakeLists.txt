@@ -16,6 +16,7 @@ pkg_check_modules(Dtk REQUIRED IMPORTED_TARGET
     dtkbase dtkutil dtkwidget dtksettings dtksettingsview)
 pkg_check_modules(Mpv REQUIRED IMPORTED_TARGET mpv)
 pkg_check_modules(Xcb REQUIRED IMPORTED_TARGET xcb xcb-aux xcb-proto xcb-ewmh xcb-shape)
+pkg_check_modules(Other REQUIRED IMPORTED_TARGET libffmpegthumbnailer)
 
 qt5_add_resources(RCS resources.qrc)
 
@@ -28,5 +29,6 @@ add_executable(${CMD_NAME} main.cpp mainwindow.cpp mpv_proxy.cpp
 target_include_directories(${CMD_NAME} PUBLIC ${PROJECT_INCLUDE})
 
 target_link_libraries(${CMD_NAME} X11 Xext Xtst PkgConfig::Xcb
-    Qt5::Widgets Qt5::X11Extras Qt5::DBus PkgConfig::Dtk PkgConfig::Mpv)
+    Qt5::Widgets Qt5::X11Extras Qt5::DBus PkgConfig::Dtk PkgConfig::Mpv 
+    PkgConfig::Other)
 

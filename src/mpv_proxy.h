@@ -77,8 +77,11 @@ public slots:
     void play();
     void pauseResume();
     void stop();
+
     void prev();
     void next();
+    void clearPlaylist();
+
     void seekForward(int secs);
     void seekBackward(int secs);
     void volumeUp();

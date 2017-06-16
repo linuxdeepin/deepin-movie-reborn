@@ -5,9 +5,11 @@
 #include <QtWidgets>
 #undef Bool
 #include <mpv/qthelper.hpp>
+#include <libffmpegthumbnailer/videothumbnailer.h>
 
 namespace dmr {
 using namespace mpv::qt;
+using namespace ffmpegthumbnailer;
 class MpvProxy;
 
 struct PlayItemInfo {
@@ -52,6 +54,7 @@ private:
     int _current {-1};
     QList<PlayItemInfo> _infos;
     Handle _handle;
+    VideoThumbnailer _thumbnailer;
 
     struct PlayItemInfo calculatePlayInfo(const QFileInfo& fi);
 };

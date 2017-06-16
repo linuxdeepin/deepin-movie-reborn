@@ -293,7 +293,6 @@ void MpvProxy::processPropertyChange(mpv_event_property* ev)
         _playlist->_current = get_property(_handle, "playlist-pos").toInt();
         emit _playlist->currentChanged();
     } else if (name == "playlist-count") {
-        Q_ASSERT(_playlist->_infos.count() == get_property(_handle, "playlist-count").toInt());
         emit _playlist->countChanged();
     }
 }
@@ -383,6 +382,13 @@ void MpvProxy::next()
     if (!_playlist->count()) return;
 
     _playlist->playNext();
+}
+
+void MpvProxy::clearPlaylist()
+{
+    if (!_playlist->count()) return;
+
+    _playlist->clear();
 }
 
 void MpvProxy::pauseResume()

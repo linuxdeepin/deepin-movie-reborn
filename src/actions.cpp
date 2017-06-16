@@ -89,6 +89,22 @@ QMenu* ActionFactory::mainContextMenu()
     return _contextMenu;
 }
 
+QMenu* ActionFactory::playlistContextMenu()
+{
+    if (!_playlistMenu) {
+        auto *menu = new QMenu();
+
+        DEF_ACTION("Clear Playlist", ActionKind::EmptyPlaylist);
+        DEF_ACTION("Open File In File Manager", ActionKind::PlaylistOpenItemInFM);
+        DEF_ACTION("Movie Info", ActionKind::MovieInfo);
+
+        _playlistMenu = menu;
+    }
+
+    return _playlistMenu;
+
+}
+
 QList<QAction*> ActionFactory::findActionsByKind(ActionKind target_kd)
 {
     QList<QAction*> res;

@@ -33,7 +33,6 @@ class MainWindowEventListener : public QObject
     public:
         explicit MainWindowEventListener(QWidget *target)
             : QObject(target), _window(target->windowHandle())
-
         {
         }
 
@@ -265,6 +264,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(_titlebar->menu(), &QMenu::triggered, this, &MainWindow::menuItemInvoked);
     connect(ActionFactory::get().mainContextMenu(), &QMenu::triggered, 
             this, &MainWindow::menuItemInvoked);
+    connect(ActionFactory::get().playlistContextMenu(), &QMenu::triggered, 
+            this, &MainWindow::menuItemInvoked);
 
     _playlist = new PlaylistWidget(this, _proxy);
     _playlist->hide();
@@ -370,8 +371,8 @@ void MainWindow::onApplicationStateChanged(Qt::ApplicationState e)
 void MainWindow::onThemeChanged()
 {
     qDebug() << __func__ << qApp->theme();
-    QFile darkF(":/resources/qss/dark/widgets.qss"),
-          lightF(":/resources/qss/light/widgets.qss");
+    static QFile darkF(":/resources/qss/dark/widgets.qss");
+    static QFile lightF(":/resources/qss/light/widgets.qss");
 
     if ("dark" == qApp->theme()) {
         if (darkF.open(QIODevice::ReadOnly)) {
@@ -492,6 +493,11 @@ void MainWindow::requestAction(ActionKind kd, bool fromUI)
             if (QFileInfo(filename).exists()) {
                 play(QFileInfo(filename));
             }
+            break;
+        }
+
+        case ActionKind::EmptyPlaylist: {
+            _proxy->clearPlaylist();
             break;
         }
 
@@ -686,7 +692,8 @@ void MainWindow::updateProxyGeometry()
     }
 
     if (_playlist) {
-        QRect r(size().width() - _playlist->width(), 0, _playlist->width(), size().height());
+        QRect r(size().width() - _playlist->width(), _titlebar->geometry().bottom(),
+                _playlist->width(), _toolbox->geometry().top() - _titlebar->geometry().bottom());
         _playlist->setGeometry(r);
     }
 

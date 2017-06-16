@@ -92,3 +92,8 @@ dmr--PlaylistWidget {
     background-color: rgba(23, 23, 23, 0.80);
 }
 
+*[PlayItemThumb="true"] {
+    qproperty-bg: url(:/resources/icons/dark/normal/film-bg.png);
+    background-color: rgba(0, 0, 0, 0.1);
+}
+

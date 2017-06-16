@@ -61,6 +61,18 @@
                             "name": "Pause/Play",
                             "type": "shortcut",
                             "default":  ["0", "32"]
+                        },
+                        {
+                            "key": "fullscreen",
+                            "name": "Fullscreen",
+                            "type": "shortcut",
+                            "default":  ["0", "16777220"]
+                        },
+                        {
+                            "key": "playlist",
+                            "name": "Playlist",
+                            "type": "shortcut",
+                            "default":  ["0", "16777266"]
                         }
                     ]
                 },
@@ -103,6 +115,18 @@
                             "name": "Open a file",
                             "type": "shortcut",
                             "default": ["67108864", "79"]
+                        },
+                        {
+                            "key": "playlist_next",
+                            "name": "Open next",
+                            "type": "shortcut",
+                            "default": ["0", "16777239"]
+                        },
+                        {
+                            "key": "playlist_prev",
+                            "name": "Open previous",
+                            "type": "shortcut",
+                            "default": ["0", "16777238"]
                         },
                         {
                             "key": "screenshot",

@@ -1,16 +1,22 @@
 #include "playlist_model.h"
+#include <libffmpegthumbnailer/videothumbnailer.h>
 
 namespace dmr {
 
 PlaylistModel::PlaylistModel(Handle h)
     :_handle{h}
 {
+    _thumbnailer.setThumbnailSize(44);
 }
 
 void PlaylistModel::clear()
 {
     _infos.clear();
     QList<QVariant> args = { "playlist-clear" };
+    qDebug () << args;
+    command(_handle, args);
+
+    args = { "playlist-remove", "current" };
     qDebug () << args;
     command(_handle, args);
 }
@@ -97,9 +103,21 @@ int PlaylistModel::current() const
 
 struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QFileInfo& fi)
 {
+    std::vector<uint8_t> buf;
+    _thumbnailer.generateThumbnail(fi.canonicalFilePath().toUtf8().toStdString(),
+            ThumbnailerImageType::Png, buf);
+
+    auto img = QImage::fromData(buf.data(), buf.size(), "png");
+
+    QPixmap pm = QPixmap::fromImage(img);
+
     PlayItemInfo pif = {
-        .info = fi
+        .info = fi,
+        .thumbnail = pm.scaled(24, 44),
+        .duration = 3600
     };
+
+    Q_ASSERT(!pif.thumbnail.isNull());
 
     return pif;
 }
