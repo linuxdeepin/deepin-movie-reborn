@@ -33,6 +33,9 @@ public slots:
 protected:
     void contextMenuEvent(QContextMenuEvent *cme);
 
+protected slots:
+    void updateItemStates();
+
 private:
     MpvProxy *_mpv {nullptr};
     MainWindow *_mw {nullptr};

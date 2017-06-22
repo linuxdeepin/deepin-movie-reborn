@@ -10,6 +10,12 @@
 #include <dimagebutton.h>
 
 namespace dmr {
+enum ItemState {
+    Normal,
+    Playing,
+    Hover,
+};
+
 class PlayItemWidget: public QFrame {
     Q_OBJECT
     Q_PROPERTY(QString bg READ getBg WRITE setBg DESIGNABLE true)
@@ -39,12 +45,18 @@ public:
         l->addLayout(vl, 1);
 
         auto w = new QLabel(this);
+        w->setProperty("Name", true);
         w->setText(pif.info.fileName());
         vl->addWidget(w);
 
         w = new QLabel(this);
+        w->setProperty("Time", true);
         w->setText(_pif.mi.durationStr());
         vl->addWidget(w);
+    }
+
+    void setState(ItemState is) {
+        setProperty("ItemState", is);
     }
 
     QString getBg() const { return _bg; }
@@ -103,10 +115,33 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, MpvProxy *mpv)
     setLayout(l);
 
     connect(&_mpv->playlist(), &PlaylistModel::countChanged, this, &PlaylistWidget::loadPlaylist);
+    connect(&_mpv->playlist(), &PlaylistModel::currentChanged, this, &PlaylistWidget::updateItemStates);
 }
 
 PlaylistWidget::~PlaylistWidget()
 {
+}
+
+void PlaylistWidget::updateItemStates()
+{
+    qDebug() << __func__;
+    for (int i = 0; i < _items.size(); i++) {
+        auto item = dynamic_cast<PlayItemWidget*>(_items.at(i));
+        item->setState(ItemState::Normal);
+
+        if (_mouseItem == item) {
+            item->setState(ItemState::Hover);
+        }
+
+        if (i == _mpv->playlist().current()) {
+            item->setState(ItemState::Playing);
+        }
+
+        //TODO: optimize, check if state is really updated
+        item->style()->unpolish(item);
+        item->style()->polish(item);
+    }
+
 }
 
 void PlaylistWidget::openItemInFM()
@@ -131,6 +166,8 @@ void PlaylistWidget::contextMenuEvent(QContextMenuEvent *cme)
             break;
         }
     }
+
+    updateItemStates();
 
     auto menu = ActionFactory::get().playlistContextMenu();
     for (auto act: menu->actions()) {
@@ -167,6 +204,8 @@ void PlaylistWidget::loadPlaylist()
         ++p;
     }
     static_cast<QVBoxLayout*>(layout())->addStretch(1);
+
+    updateItemStates();
 }
 
 void PlaylistWidget::togglePopup()

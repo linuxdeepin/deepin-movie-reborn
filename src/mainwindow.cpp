@@ -250,6 +250,7 @@ MainWindow::MainWindow(QWidget *parent)
     qDebug() << "composited = " << composited;
 
     _titlebar = new DTitlebar(this);
+    _titlebar->layout()->setContentsMargins(0, 0, 0, 0);
     _titlebar->setFocusPolicy(Qt::NoFocus);
     if (!composited) {
         _titlebar->setAttribute(Qt::WA_NativeWindow);

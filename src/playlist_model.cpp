@@ -171,6 +171,7 @@ void PlaylistModel::changeCurrent(int pos)
 {
     if (pos < 0 || pos >= count()) return;
 
+    emit currentChanged();
     set_property(_handle, "playlist-pos", pos);
 }
 
