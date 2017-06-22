@@ -192,9 +192,11 @@ void ToolboxProxy::setup()
     connect(_mpv, &MpvProxy::muteChanged, this, &ToolboxProxy::updateVolumeState);
     connect(_mpv, &MpvProxy::volumeChanged, this, &ToolboxProxy::updateVolumeState);
     connect(_mpv, &MpvProxy::ellapsedChanged, this, &ToolboxProxy::updateMovieProgress);
+    connect(&_mpv->playlist(), &PlaylistModel::countChanged, this, &ToolboxProxy::updateButtonStates);
 
     updatePlayState();
     updateFullState();
+    updateButtonStates();
 
     auto bubbler = new KeyPressBubbler(this);
     this->installEventFilter(bubbler);
@@ -207,6 +209,13 @@ void ToolboxProxy::updateMovieProgress()
     auto e = _mpv->ellapsed();
     int v = 1000 * ((double)e / d);
     _progBar->setValue(v);
+}
+
+void ToolboxProxy::updateButtonStates()
+{
+    bool vis = _mpv->playlist().count() > 1;
+    _prevBtn->setVisible(vis);
+    _nextBtn->setVisible(vis);
 }
 
 void ToolboxProxy::updateVolumeState()

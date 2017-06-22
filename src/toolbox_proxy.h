@@ -42,6 +42,7 @@ protected slots:
     void updateFullState();
     void updateVolumeState();
     void updateMovieProgress();
+    void updateButtonStates();
 
 protected:
     void paintEvent(QPaintEvent *pe) override;
