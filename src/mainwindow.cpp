@@ -12,6 +12,7 @@
 #include "movieinfo_dialog.h"
 #include "burst_screenshots_dialog.h"
 #include "playlist_widget.h"
+#include "notification_widget.h"
 
 #include <QtWidgets>
 #include <QtDBus>
@@ -613,6 +614,7 @@ void MainWindow::requestAction(ActionKind kd, bool fromUI)
                 .arg(savePath).arg(QDateTime::currentDateTime().toString(Qt::ISODate));
             img.save(filePath);
 
+#ifdef USE_SYSTEM_NOTIFY
             // Popup notify.
             QDBusInterface notification("org.freedesktop.Notifications",
                     "/org/freedesktop/Notifications",
@@ -637,6 +639,13 @@ void MainWindow::requestAction(ActionKind kd, bool fromUI)
                 << hints                                                 // hints
                 << (int) -1;                                             // timeout
             notification.callWithArgumentList(QDBus::AutoDetect, "Notify", arg);
+
+#else
+
+            NotificationWidget *nw = new NotificationWidget(this); 
+            auto msg = QString("%1 %2").arg(tr("Saved to")).arg(filePath);
+            nw->popup(msg);
+#endif
             break;
         }
 

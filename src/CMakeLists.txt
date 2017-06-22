@@ -26,7 +26,7 @@ add_executable(${CMD_NAME} main.cpp mainwindow.cpp mpv_proxy.cpp
     compositing_manager.cpp mpv_glwidget.cpp shortcut_manager.cpp
     dmr_settings.cpp utility_x11.cpp toolbutton.cpp movieinfo_dialog.cpp
     burst_screenshots_dialog.cpp playlist_widget.cpp playlist_model.cpp
-    utils.cpp
+    utils.cpp notification_widget.cpp
     ${RCS})
 target_include_directories(${CMD_NAME} PUBLIC ${PROJECT_INCLUDE})
 
