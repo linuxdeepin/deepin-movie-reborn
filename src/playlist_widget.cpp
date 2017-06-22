@@ -40,7 +40,7 @@ public:
         vl->addWidget(w);
 
         w = new QLabel(this);
-        w->setText("21:00");
+        w->setText(_pif.mi.durationStr());
         vl->addWidget(w);
     }
 
@@ -100,10 +100,6 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, MpvProxy *mpv)
     setLayout(l);
 
     connect(&_mpv->playlist(), &PlaylistModel::countChanged, this, &PlaylistWidget::loadPlaylist);
-
-    //auto aboutToShow = [=]() {
-    //};
-    //connect(ActionFactory::get().playlistContextMenu(), &QMenu::aboutToShow, aboutToShow); 
 }
 
 PlaylistWidget::~PlaylistWidget()

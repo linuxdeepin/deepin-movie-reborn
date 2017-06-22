@@ -16,7 +16,8 @@ pkg_check_modules(Dtk REQUIRED IMPORTED_TARGET
     dtkbase dtkutil dtkwidget dtksettings dtksettingsview)
 pkg_check_modules(Mpv REQUIRED IMPORTED_TARGET mpv)
 pkg_check_modules(Xcb REQUIRED IMPORTED_TARGET xcb xcb-aux xcb-proto xcb-ewmh xcb-shape)
-pkg_check_modules(Other REQUIRED IMPORTED_TARGET libffmpegthumbnailer)
+pkg_check_modules(Other REQUIRED IMPORTED_TARGET libffmpegthumbnailer 
+    libavformat libavutil libavcodec)
 
 qt5_add_resources(RCS resources.qrc)
 

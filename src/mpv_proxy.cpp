@@ -241,7 +241,6 @@ void MpvProxy::handle_mpv_events()
                     _gl_widget->setPlaying(true);
                 }
                 setState(CoreState::Playing); //might paused immediately
-                _movieInfoNeedsUpdate = true;
                 emit fileLoaded();
                 break;
 
@@ -295,33 +294,6 @@ void MpvProxy::processPropertyChange(mpv_event_property* ev)
     } else if (name == "playlist-count") {
         emit _playlist->countChanged();
     }
-}
-
-const struct MovieInfo& MpvProxy::movieInfo()
-{
-    if (state() != CoreState::Idle && _movieInfoNeedsUpdate) {
-        _movieInfoNeedsUpdate = false;
-
-        int w = get_property(_handle, "width").toInt();
-        int h = get_property(_handle, "height").toInt();
-        QTime d(0, 0);
-        d = d.addSecs(duration());
-
-        _movieInfo.resolution = QString("%1x%2").arg(w).arg(h);
-        _movieInfo.width = w;
-        _movieInfo.height = h;
-
-        _movieInfo.fileType = get_property(_handle, "video-format").toString();
-        _movieInfo.duration = d.toString("hh:mm::ss");
-        _movieInfo.fileSize = QString("%1").arg(get_property(_handle, "file-size").toInt());
-        _movieInfo.title = get_property(_handle, "media-title").toString();
-        qDebug() << __func__ << get_property(_handle, "path").toString();
-        //FIXME: fix this
-        _movieInfo.filePath = _playlist->currentInfo().info.canonicalFilePath();
-        _movieInfo.creation = _playlist->currentInfo().info.created().toString();
-    }
-
-    return _movieInfo;
 }
 
 void MpvProxy::volumeUp()

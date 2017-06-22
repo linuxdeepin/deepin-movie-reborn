@@ -251,10 +251,13 @@ void ToolboxProxy::updatePlayState()
 
 void ToolboxProxy::updateTimeInfo(qint64 duration, qint64 pos)
 {
-    QTime d(0, 0), t(0, 0);
-    d = d.addSecs(duration);
-    t = t.addSecs(pos);
-    _timeLabel->setText(QString("%2/%1").arg(d.toString("hh:mm:ss")).arg(t.toString("hh:mm:ss")));
+    auto fn = [](qint64 d) -> QString {
+        auto secs = d % 60;
+        auto minutes = d / 60;
+        return QString("%1:%2").arg(minutes).arg(secs);
+    };
+
+    _timeLabel->setText(QString("%2/%1").arg(fn(duration)).arg(fn(pos)));
 }
 
 void ToolboxProxy::buttonClicked(QString id)

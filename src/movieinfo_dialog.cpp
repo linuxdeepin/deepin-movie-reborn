@@ -24,7 +24,7 @@ MovieInfoDialog::MovieInfoDialog(const struct MovieInfo& mi)
     sp->setStyleSheet("background-color: rgba(0, 0, 0, 0.5)");
     ml->addWidget(sp);
 
-    auto *form = new QFormLayout(this);
+    auto *form = new QFormLayout();
     ml->addLayout(form);
     
     form->setSpacing(3);
@@ -35,8 +35,8 @@ MovieInfoDialog::MovieInfoDialog(const struct MovieInfo& mi)
 
     ADD_ROW("File Type", mi.fileType);
     ADD_ROW("Resolution", mi.resolution);
-    ADD_ROW("File Size", mi.fileSize);
-    ADD_ROW("Duration", mi.duration);
+    ADD_ROW("File Size", mi.sizeStr());
+    ADD_ROW("Duration", mi.durationStr());
     ADD_ROW("Path", mi.filePath);
     ADD_ROW("Creation Time", mi.creation);
 

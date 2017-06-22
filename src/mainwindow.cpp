@@ -164,34 +164,39 @@ skip_set_cursor:
         }
 
         void updateGeometry(Utility::CornerEdge edge, QMouseEvent* e) {
-                auto mw = static_cast<MainWindow*>(parent());
-                auto mi = mw->proxy()->movieInfo();
-                qreal ratio = mi.width / (qreal)mi.height;
-                auto old_geom = mw->frameGeometry();
-                auto geom = mw->frameGeometry();
+            auto mw = static_cast<MainWindow*>(parent());
+            bool keep_ratio = mw->proxy()->state() != MpvProxy::CoreState::Idle;
 
-                switch (edge) {
-                    case Utility::BottomLeftCorner:
-                    case Utility::TopLeftCorner:
-                    case Utility::LeftEdge:
-                        geom.setLeft(e->globalX());
-                        geom.setHeight(geom.width() / ratio);
-                        break;
-                    case Utility::BottomRightCorner:
-                    case Utility::RightEdge:
-                        geom.setRight(e->globalX());
-                        geom.setHeight(geom.width() / ratio);
-                        break;
-                    case Utility::TopRightCorner:
-                    case Utility::TopEdge:
-                        geom.setTop(e->globalY());
-                        geom.setWidth(geom.height() * ratio);
-                        break;
-                    case Utility::BottomEdge:
-                        geom.setBottom(e->globalY());
-                        geom.setWidth(geom.height() * ratio);
-                        break;
-                }
+            if (!keep_ratio) {
+                return;
+            }
+            const auto& mi = mw->proxy()->playlist().currentInfo().mi;
+            qreal ratio = mi.width / (qreal)mi.height;
+            auto old_geom = mw->frameGeometry();
+            auto geom = mw->frameGeometry();
+
+            switch (edge) {
+                case Utility::BottomLeftCorner:
+                case Utility::TopLeftCorner:
+                case Utility::LeftEdge:
+                    geom.setLeft(e->globalX());
+                    geom.setHeight(geom.width() / ratio);
+                    break;
+                case Utility::BottomRightCorner:
+                case Utility::RightEdge:
+                    geom.setRight(e->globalX());
+                    geom.setHeight(geom.width() / ratio);
+                    break;
+                case Utility::TopRightCorner:
+                case Utility::TopEdge:
+                    geom.setTop(e->globalY());
+                    geom.setWidth(geom.height() * ratio);
+                    break;
+                case Utility::BottomEdge:
+                    geom.setBottom(e->globalY());
+                    geom.setWidth(geom.height() * ratio);
+                    break;
+            }
             mw->setGeometry(geom);
         }
 
@@ -279,9 +284,11 @@ MainWindow::MainWindow(QWidget *parent)
             this, &MainWindow::onBindingsChanged);
     ShortcutManager::get().buildBindings();
 
+    //FIXME: fileLoaded may be issued for all items in playlist, not just current
     connect(_proxy, &MpvProxy::fileLoaded, [=]() {
-        _titlebar->setTitle(QFileInfo(_proxy->movieInfo().filePath).fileName());
-        resize(_proxy->movieInfo().width, _proxy->movieInfo().height);
+        const auto& mi = _proxy->playlist().currentInfo().mi;
+        _titlebar->setTitle(QFileInfo(mi.filePath).fileName());
+        resize(mi.width, mi.height);
         updateSizeConstraints();
     });
 
@@ -517,8 +524,10 @@ void MainWindow::requestAction(ActionKind kd, bool fromUI)
         }
 
         case ActionKind::MovieInfo: {
-            MovieInfoDialog mid(_proxy->movieInfo());
-            mid.exec();
+            if (_proxy->state() != MpvProxy::CoreState::Idle) {
+                MovieInfoDialog mid(_proxy->playlist().currentInfo().mi);
+                mid.exec();
+            }
             break;
         }
 
@@ -748,7 +757,7 @@ void MainWindow::showEvent(QShowEvent *event)
 void MainWindow::updateSizeConstraints()
 {
     if (_proxy->state() != MpvProxy::CoreState::Idle) {
-        auto mi = _proxy->movieInfo();
+        const auto& mi = _proxy->playlist().currentInfo().mi;
         qreal ratio = mi.width / (qreal)mi.height;
         int h = 528 / ratio;
         if (size().width() > size().height()) {

@@ -3,6 +3,7 @@
 
 #include <QtWidgets>
 #include <xcb/xproto.h>
+#include "playlist_model.h"
 #undef Bool
 #include <mpv/qthelper.hpp>
 
@@ -10,18 +11,6 @@ namespace dmr {
 using namespace mpv::qt;
 class MpvGLWidget;
 class PlaylistModel;
-
-struct MovieInfo {
-    QString title;
-    QString fileType;
-    QString fileSize;
-    QString resolution;
-    QString duration;
-    QString filePath;
-    QString creation;
-
-    int width, height;
-};
 
 class MpvProxy: public QWidget {
     Q_OBJECT
@@ -102,8 +91,6 @@ private:
     //QList<QFileInfo> _playlist;
     PlaylistModel *_playlist {nullptr};
     CoreState _state { CoreState::Idle };
-    struct MovieInfo _movieInfo;
-    bool _movieInfoNeedsUpdate {true};
 
     bool _inBurstShotting {false};
     QTimer *_burstScreenshotTimer {nullptr};

@@ -8,7 +8,7 @@ namespace dmr {
 BurstScreenshotsDialog::BurstScreenshotsDialog(MpvProxy* mpv)
     :DDialog(nullptr), _mpv(mpv)
 {
-    auto mi = mpv->movieInfo();
+    auto mi = mpv->playlist().currentInfo().mi;
 
     auto *ml = new QVBoxLayout;
     ml->setContentsMargins(0, 0, 0, 0);

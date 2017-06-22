@@ -12,10 +12,44 @@ using namespace mpv::qt;
 using namespace ffmpegthumbnailer;
 class MpvProxy;
 
+struct MovieInfo {
+    QString title;
+    QString fileType;
+    QString resolution;
+    QString filePath;
+    QString creation;
+
+    qint64 fileSize;
+    qint64 duration;
+    int width, height;
+
+    static struct MovieInfo parseFromFile(const QFileInfo& fi);
+    QString durationStr() const {
+        auto secs = duration % 60;
+        auto minutes = duration / 60;
+        return QString("%1:%2").arg(minutes).arg(secs);
+    }
+
+    QString sizeStr() const {
+        auto K = 1024;
+        auto M = 1024 * K;
+        auto G = 1024 * M;
+        if (fileSize > G) {
+            return QString(QT_TR_NOOP("%1G")).arg(fileSize / G);
+        } else if (fileSize > M) {
+            return QString(QT_TR_NOOP("%1M")).arg(fileSize / M);
+        } else if (fileSize > K) {
+            return QString(QT_TR_NOOP("%1K")).arg(fileSize / K);
+        }
+        return QString(QT_TR_NOOP("%1")).arg(fileSize);
+    }
+};
+
+
 struct PlayItemInfo {
     QFileInfo info;
     QPixmap thumbnail;
-    int duration;
+    struct MovieInfo mi;
 };
 
 class PlaylistModel: public QObject {
