@@ -286,7 +286,8 @@ void ToolboxProxy::buttonClicked(QString id)
                 qDebug() << "slider destroyed";
         });
         QPoint pos = _volBtn->parentWidget()->mapToGlobal(_volBtn->pos());
-        pos.ry() -= w->height();
+
+        pos.ry() = parentWidget()->mapToGlobal(this->pos()).y() - w->height();
         w->move(pos);
         w->show();
 
