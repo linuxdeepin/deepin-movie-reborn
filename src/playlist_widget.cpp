@@ -4,6 +4,7 @@
 #include "mpv_proxy.h"
 #include "actions.h"
 #include "mainwindow.h"
+#include "utils.h"
 
 #include <DApplication>
 #include <dimagebutton.h>
@@ -13,6 +14,8 @@ class PlayItemWidget: public QFrame {
     Q_OBJECT
     Q_PROPERTY(QString bg READ getBg WRITE setBg DESIGNABLE true)
 public:
+    friend class PlaylistWidget;
+
     //FIXME: what if item destroyed
     PlayItemWidget(PlayItemInfo pif, QWidget* parent = 0)
         : QFrame(parent), _pif {pif} 
@@ -106,13 +109,24 @@ PlaylistWidget::~PlaylistWidget()
 {
 }
 
+void PlaylistWidget::openItemInFM()
+{
+    if (!_mouseItem) return;
+    auto item = dynamic_cast<PlayItemWidget*>(_mouseItem);
+    if (item) {
+        utils::ShowInFileManager(item->_pif.mi.filePath);
+    }
+}
+
 void PlaylistWidget::contextMenuEvent(QContextMenuEvent *cme)
 {
     bool on_item = false;
+    _mouseItem = nullptr;
 
     QPoint p = cme->pos();
     for (auto w: _items) {
         if (w->geometry().contains(p)) {
+            _mouseItem = w;
             on_item = true;
             break;
         }

@@ -551,6 +551,11 @@ void MainWindow::requestAction(ActionKind kd, bool fromUI)
             break;
         }
 
+        case ActionKind::PlaylistOpenItemInFM: {
+            _playlist->openItemInFM();
+            break;
+        }
+
         case ToggleMute: {
             _proxy->toggleMute();
             break;

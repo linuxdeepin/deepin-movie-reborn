@@ -28,6 +28,7 @@ public:
 public slots:
     void togglePopup();
     void loadPlaylist();
+    void openItemInFM();
 
 protected:
     void contextMenuEvent(QContextMenuEvent *cme);
@@ -36,6 +37,7 @@ private:
     MpvProxy *_mpv {nullptr};
     MainWindow *_mw {nullptr};
     QList<QWidget*> _items;
+    QWidget *_mouseItem {nullptr};
 };
 }
 
