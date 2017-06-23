@@ -287,6 +287,8 @@ MainWindow::MainWindow(QWidget *parent)
     ShortcutManager::get().buildBindings();
 
     connect(&_proxy->playlist(), &PlaylistModel::currentChanged, [=]() {
+        if (_proxy->state() == MpvProxy::Idle) return;
+
         const auto& mi = _proxy->playlist().currentInfo().mi;
         _titlebar->setTitle(QFileInfo(mi.filePath).fileName());
         resize(mi.width, mi.height);
@@ -552,6 +554,11 @@ void MainWindow::requestAction(ActionKind kd, bool fromUI)
             break;
         }
 
+        case ActionKind::PlaylistRemoveItem: {
+            _playlist->removeClickedItem();
+            break;
+        }
+
         case ActionKind::PlaylistOpenItemInFM: {
             _playlist->openItemInFM();
             break;
@@ -611,10 +618,11 @@ void MainWindow::requestAction(ActionKind kd, bool fromUI)
 
             QString filePath = QString("%1/deepin-movie-shot %2.jpg")
                 .arg(savePath).arg(QDateTime::currentDateTime().toString(Qt::ISODate));
+            bool success = false;
             if (img.isNull()) 
                 qDebug()<< __func__ << "pixmap is null";
             else
-                img.save(filePath);
+                success = img.save(filePath);
 
 #ifdef USE_SYSTEM_NOTIFY
             // Popup notify.
@@ -646,7 +654,7 @@ void MainWindow::requestAction(ActionKind kd, bool fromUI)
 
             NotificationWidget *nw = new NotificationWidget(this); 
             auto msg = QString("%1 %2").arg(tr("Saved to")).arg(filePath);
-            nw->popup(msg);
+            nw->popup(msg, success);
 #endif
             break;
         }

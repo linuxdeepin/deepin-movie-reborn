@@ -94,6 +94,12 @@ dmr--PlaylistWidget {
     background-color: rgba(23, 23, 23, 0.80);
 }
 
+Dtk--Widget--DImageButton#CloseBtn {
+    qproperty-normalPic: url(:/resources/icons/dark/normal/close-normal.png);
+    qproperty-hoverPic: url(:/resources/icons/dark/normal/close-hover.png);
+    qproperty-pressPic: url(:/resources/icons/dark/normal/close-press.png);
+}
+
 /* state Hover*/
 *[PlayItemThumb="true"][ItemState="2"] {
     qproperty-bg: url(:/resources/icons/dark/normal/film-bg.png);

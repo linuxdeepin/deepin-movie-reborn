@@ -29,6 +29,7 @@ public slots:
     void togglePopup();
     void loadPlaylist();
     void openItemInFM();
+    void removeClickedItem();
 
 protected:
     void contextMenuEvent(QContextMenuEvent *cme);
@@ -41,6 +42,8 @@ private:
     MainWindow *_mw {nullptr};
     QList<QWidget*> _items;
     QWidget *_mouseItem {nullptr};
+    QWidget *_clickedItem {nullptr};
+    QSignalMapper *_mapper {nullptr};
 };
 }
 

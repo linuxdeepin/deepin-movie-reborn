@@ -42,7 +42,7 @@ public:
     int volume() const;
     bool muted() const;
 
-    const PlaylistModel& playlist() const { return *_playlist; }
+    PlaylistModel& playlist() const { return *_playlist; }
 
     QPixmap takeScreenshot();
     void burstScreenshot(); //initial the start of burst screenshotting

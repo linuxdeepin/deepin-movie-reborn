@@ -47,12 +47,19 @@ public:
         auto w = new QLabel(this);
         w->setProperty("Name", true);
         w->setText(pif.info.fileName());
+        w->setWordWrap(true);
         vl->addWidget(w);
 
         w = new QLabel(this);
         w->setProperty("Time", true);
         w->setText(_pif.mi.durationStr());
         vl->addWidget(w);
+
+        _closeBtn = new DImageButton(this);
+        _closeBtn->setObjectName("CloseBtn");
+        _closeBtn->show();
+        _closeBtn->raise();
+        connect(_closeBtn, &DImageButton::clicked, this, &PlayItemWidget::closeButtonClicked);
     }
 
     void setState(ItemState is) {
@@ -78,10 +85,21 @@ public:
         _thumb->setPixmap(pm);
     }
 
+signals:
+    void closeButtonClicked();
+
 protected:
     void mouseReleaseEvent(QMouseEvent* me) override 
     {
         qDebug() << __func__;
+    }
+
+    void resizeEvent(QResizeEvent* se) override
+    {
+        qDebug() << __func__;
+        auto sz = this->size();
+        _closeBtn->move(sz.width() - _closeBtn->width(), (sz.height() - _closeBtn->height())/2);
+        //_closeBtn->move(sz.width() - 20, (sz.height() - _closeBtn->height())/2);
     }
 
     void mouseDoubleClickEvent(QMouseEvent* me) override
@@ -94,6 +112,7 @@ private:
     QLabel *_thumb;
     QPixmap _play;
     PlayItemInfo _pif;
+    DImageButton *_closeBtn;
 
 
 };
@@ -153,6 +172,16 @@ void PlaylistWidget::openItemInFM()
     }
 }
 
+void PlaylistWidget::removeClickedItem()
+{
+    if (!_clickedItem) return;
+    auto item = dynamic_cast<PlayItemWidget*>(_clickedItem);
+    if (item) {
+        qDebug() << __func__;
+        _mpv->playlist().remove(_items.indexOf(_clickedItem));
+    }
+}
+
 void PlaylistWidget::contextMenuEvent(QContextMenuEvent *cme)
 {
     bool on_item = false;
@@ -195,12 +224,25 @@ void PlaylistWidget::loadPlaylist()
         }
     }
 
+    if (!_mapper) {
+        _mapper = new QSignalMapper(this);
+        connect(_mapper, static_cast<void(QSignalMapper::*)(QWidget*)>(&QSignalMapper::mapped),
+            [=](QWidget* w) {
+                qDebug() << "item close clicked";
+                _clickedItem = w;
+                _mw->requestAction(ActionKind::PlaylistRemoveItem);
+            });
+    }
+
     auto items = _mpv->playlist().items();
     auto p = items.begin();
     while (p != items.end()) {
         auto w = new PlayItemWidget(*p, this);
         _items.append(w);
         layout()->addWidget(w);
+
+        connect(w, SIGNAL(closeButtonClicked()), _mapper, SLOT(map()));
+        _mapper->setMapping(w, w);
         ++p;
     }
     static_cast<QVBoxLayout*>(layout())->addStretch(1);
