@@ -286,8 +286,7 @@ MainWindow::MainWindow(QWidget *parent)
             this, &MainWindow::onBindingsChanged);
     ShortcutManager::get().buildBindings();
 
-    //FIXME: fileLoaded may be issued for all items in playlist, not just current
-    connect(_proxy, &MpvProxy::fileLoaded, [=]() {
+    connect(&_proxy->playlist(), &PlaylistModel::currentChanged, [=]() {
         const auto& mi = _proxy->playlist().currentInfo().mi;
         _titlebar->setTitle(QFileInfo(mi.filePath).fileName());
         resize(mi.width, mi.height);
@@ -612,7 +611,10 @@ void MainWindow::requestAction(ActionKind kd, bool fromUI)
 
             QString filePath = QString("%1/deepin-movie-shot %2.jpg")
                 .arg(savePath).arg(QDateTime::currentDateTime().toString(Qt::ISODate));
-            img.save(filePath);
+            if (img.isNull()) 
+                qDebug()<< __func__ << "pixmap is null";
+            else
+                img.save(filePath);
 
 #ifdef USE_SYSTEM_NOTIFY
             // Popup notify.

@@ -441,10 +441,11 @@ QPixmap MpvProxy::takeOneScreenshot()
 
     if (data) {
         //alpha should be ignored
-        auto img = QPixmap::fromImage(QImage(data, w, h, stride, QImage::Format_ARGB32));
+        auto img = QPixmap::fromImage(QImage(data, w, h, stride, QImage::Format_RGB32));
         return img;
     }
 
+    qDebug() << __func__ << "failed";
     return QPixmap();
 }
 
