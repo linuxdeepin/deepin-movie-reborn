@@ -22,6 +22,10 @@ static int open_codec_context(int *stream_idx,
 
     stream_index = ret;
     st = fmt_ctx->streams[stream_index];
+#if LIBAVFORMAT_VERSION_MAJOR >= 57 && LIBAVFORMAT_VERSION_MINOR <= 25
+    *dec_ctx = st->codec;
+    dec = avcodec_find_decoder((*dec_ctx)->codec_id);
+#else
     /* find decoder for the stream */
     dec = avcodec_find_decoder(st->codecpar->codec_id);
     if (!dec) {
@@ -42,6 +46,8 @@ static int open_codec_context(int *stream_idx,
                 av_get_media_type_string(type));
         return ret;
     }
+#endif
+
     *stream_idx = stream_index;
     return 0;
 }
