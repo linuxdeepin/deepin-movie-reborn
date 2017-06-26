@@ -276,7 +276,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     _playlist = new PlaylistWidget(this, _proxy);
     _playlist->hide();
-    _playlist->setFixedWidth(220);
 
     _playState = new QLabel(this);
 
@@ -288,6 +287,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(&_proxy->playlist(), &PlaylistModel::currentChanged, [=]() {
         if (_proxy->state() == MpvProxy::Idle) return;
+        if (_proxy->playlist().count() == 0) return;
 
         const auto& mi = _proxy->playlist().currentInfo().mi;
         _titlebar->setTitle(QFileInfo(mi.filePath).fileName());
@@ -480,7 +480,6 @@ void MainWindow::menuItemInvoked(QAction *action)
     auto kd = action->property("kind").value<ActionKind>();
 #endif
     qDebug() << "prop = " << prop << ", kd = " << kd;
-    //requestAction(kd, action->isChecked());
     requestAction(kd, true);
 }
 

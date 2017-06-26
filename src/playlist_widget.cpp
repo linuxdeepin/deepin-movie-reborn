@@ -2,6 +2,7 @@
 #include "playlist_model.h"
 #include "compositing_manager.h"
 #include "mpv_proxy.h"
+#include "toolbox_proxy.h"
 #include "actions.h"
 #include "mainwindow.h"
 #include "utils.h"
@@ -96,10 +97,9 @@ protected:
 
     void resizeEvent(QResizeEvent* se) override
     {
-        qDebug() << __func__;
+        qDebug() << __func__ << _closeBtn->width();
         auto sz = this->size();
         _closeBtn->move(sz.width() - _closeBtn->width(), (sz.height() - _closeBtn->height())/2);
-        //_closeBtn->move(sz.width() - 20, (sz.height() - _closeBtn->height())/2);
     }
 
     void mouseDoubleClickEvent(QMouseEvent* me) override
@@ -113,8 +113,29 @@ private:
     QPixmap _play;
     PlayItemInfo _pif;
     DImageButton *_closeBtn;
+};
 
+class MainWindowListener: public QObject {
+public:
+    MainWindowListener(QObject *parent): QObject(parent) {}
 
+protected:
+    bool eventFilter(QObject *obj, QEvent *event) {
+        if (event->type() == QEvent::MouseButtonPress) {
+            QMouseEvent *me = static_cast<QMouseEvent*>(event);
+            if (me->buttons() == Qt::LeftButton) {
+                auto *plw = dynamic_cast<PlaylistWidget*>(parent());
+                auto *mw = dynamic_cast<MainWindow*>(plw->parent());
+                if (plw->isVisible()) {
+                    mw->requestAction(ActionKind::TogglePlaylist);
+                }
+            }
+            return false;
+        } else {
+            // standard event processing
+            return QObject::eventFilter(obj, event);
+        }
+    }
 };
 
 PlaylistWidget::PlaylistWidget(QWidget *mw, MpvProxy *mpv)
@@ -124,6 +145,8 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, MpvProxy *mpv)
     setFrameShape(QFrame::NoFrame);
     setAutoFillBackground(false);
     setAttribute(Qt::WA_TranslucentBackground, false);
+    setFixedWidth(220);
+
     if (!composited) {
         setWindowFlags(Qt::FramelessWindowHint|Qt::BypassWindowManagerHint);
         setContentsMargins(0, 0, 0, 0);
@@ -132,6 +155,9 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, MpvProxy *mpv)
 
     auto *l = new QVBoxLayout(this);
     setLayout(l);
+
+    auto *mwl = new MainWindowListener(this);
+    mw->installEventFilter(mwl);
 
     connect(&_mpv->playlist(), &PlaylistModel::countChanged, this, &PlaylistWidget::loadPlaylist);
     connect(&_mpv->playlist(), &PlaylistModel::currentChanged, this, &PlaylistWidget::updateItemStates);
@@ -252,9 +278,35 @@ void PlaylistWidget::loadPlaylist()
 
 void PlaylistWidget::togglePopup()
 {
-    this->setVisible(!isVisible());
-}
+    QRect fixed(_mw->size().width() - width(),
+            _mw->titlebar()->geometry().bottom(),
+            width(),
+            _mw->toolbox()->geometry().top() - _mw->titlebar()->geometry().bottom());
 
+    if (isVisible()) {
+        QPropertyAnimation *pa = new QPropertyAnimation(this, "geometry");
+        pa->setDuration(300);
+        pa->setStartValue(fixed);
+        pa->setEndValue(QRect(fixed.right(), fixed.top(), 0, fixed.height()));
+
+        pa->start();
+        connect(pa, &QPropertyAnimation::finished, [=]() {
+            pa->deleteLater();
+            setVisible(!isVisible());
+        });
+    } else {
+        setVisible(!isVisible());
+        QPropertyAnimation *pa = new QPropertyAnimation(this, "geometry");
+        pa->setDuration(300);
+        pa->setStartValue(QRect(fixed.right(), fixed.top(), 0, fixed.height()));
+        pa->setEndValue(fixed);
+
+        pa->start();
+        connect(pa, &QPropertyAnimation::finished, [=]() {
+            pa->deleteLater();
+        });
+    }
+}
 
 }
 

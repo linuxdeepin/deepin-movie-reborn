@@ -25,6 +25,8 @@ public:
 
     QMargins frameMargins() const;
     MpvProxy* proxy() { return _proxy; }
+    DTitlebar* titlebar() { return _titlebar; }
+    ToolboxProxy* toolbox() { return _toolbox; }
     void requestAction(ActionKind, bool fromUI = false);
 
 signals:
