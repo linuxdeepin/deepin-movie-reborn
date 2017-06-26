@@ -4,20 +4,33 @@
 #include <QtCore>
 
 namespace dmr {
-    class CompositingManager: public QObject {
-        public:
-            static CompositingManager& get();
-            virtual ~CompositingManager();
-            bool composited() const { return _composited; }
+enum Platform {
+    Unknown,
+    X86,  // intel & amd
+    Mips, // loongson
+    Alpha // sunway
+};
 
-        signals:
-            void compositingChanged(bool);
+class CompositingManager: public QObject {
+    public:
+        static CompositingManager& get();
+        virtual ~CompositingManager();
 
-        private:
-            CompositingManager();
+        // this actually means opengl rendering is capable
+        bool composited() const { return _composited; }
+        Platform platform() const { return _platform; }
 
-            bool _composited {false};
-    };
+    signals:
+        void compositingChanged(bool);
+
+    private:
+        CompositingManager();
+        bool isDriverLoadedCorrectly();
+        bool isDirectRendered();
+
+        bool _composited {false};
+        Platform _platform {Platform::Unknown};
+};
 }
 
 #endif /* ifndef _DMR_COMPOSITING_MANAGER */
