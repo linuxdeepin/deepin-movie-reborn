@@ -94,6 +94,7 @@ private:
 
     bool _inBurstShotting {false};
     QTimer *_burstScreenshotTimer {nullptr};
+    bool _pendingSeek {false};
 
     mpv_handle* mpv_init();
     void processPropertyChange(mpv_event_property* ev);

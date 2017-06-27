@@ -594,12 +594,12 @@ void MainWindow::requestAction(ActionKind kd, bool fromUI)
         }
 
         case SeekBackward: {
-            _proxy->seekBackward(20);
+            _proxy->seekBackward(5);
             break;
         }
 
         case SeekForward: {
-            _proxy->seekForward(20);
+            _proxy->seekForward(5);
             break;
         }
 

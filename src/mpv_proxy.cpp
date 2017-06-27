@@ -13,6 +13,18 @@
 namespace dmr {
 using namespace mpv::qt;
 
+enum AsyncReplyTag {
+    SEEK,
+};
+
+
+static inline bool command_async(mpv_handle *ctx, const QVariant &args, uint64_t tag)
+{
+    node_builder node(args);
+    int err = mpv_command_node_async(ctx, tag, node.node());
+    return err == 0;
+}
+
 class EventRelayer2: public QObject, public QAbstractNativeEventFilter {
     Q_OBJECT
 public:
@@ -161,7 +173,7 @@ void MpvProxy::onSubwindowCreated(xcb_window_t winid)
     auto l = qApp->allWindows();
     auto it = std::find_if(l.begin(), l.end(), [=](QWindow* w) { return w->winId() == winid; });
     if (it == l.end()) {
-        qDebug() << __func__ << QString("wrap 0x%1 into QWindow").arg(winid, 0, 16);
+        qDebug() << QString("wrap 0x%1 into QWindow").arg(winid, 0, 16);
         auto *w = QWindow::fromWinId(winid);
         w->setParent(windowHandle());
         new EventRelayer2(w, nullptr);
@@ -179,10 +191,11 @@ mpv_handle* MpvProxy::mpv_init()
 
     if (composited) {
         set_property(h, "vo", "opengl-cb");
+        set_property(h, "hwdec-preload", "auto");
         set_property(h, "hwdec", "auto");
 
     } else {
-        set_property(h, "vo", "opengl");
+        set_property(h, "vo", "opengl,xv");
         set_property(h, "hwdec", "auto");
         set_property(h, "wid", this->winId());
     }
@@ -203,7 +216,7 @@ mpv_handle* MpvProxy::mpv_init()
     //mpv_request_log_messages(h, "info");
     mpv_set_wakeup_callback(h, mpv_callback, this);
     connect(this, &MpvProxy::has_mpv_events, this, &MpvProxy::handle_mpv_events,
-            Qt::QueuedConnection);
+            Qt::DirectConnection);
     if (mpv_initialize(h) < 0) {
         std::runtime_error("mpv init failed");
     }
@@ -222,7 +235,7 @@ void MpvProxy::setState(MpvProxy::CoreState s)
 void MpvProxy::handle_mpv_events()
 {
     while (1) {
-        mpv_event* ev = mpv_wait_event(_handle, 0);
+        mpv_event* ev = mpv_wait_event(_handle, 0.005);
         if (ev->event_id == MPV_EVENT_NONE) 
             break;
 
@@ -235,8 +248,22 @@ void MpvProxy::handle_mpv_events()
                 processPropertyChange((mpv_event_property*)ev->data);
                 break;
 
+            case MPV_EVENT_COMMAND_REPLY:
+                if (ev->error < 0) {
+                    qDebug() << "command error";
+                }
+
+                if (ev->reply_userdata == AsyncReplyTag::SEEK) {
+                    this->_pendingSeek = false;
+                }
+                break;
+
+            case MPV_EVENT_PLAYBACK_RESTART:
+                // caused by seek or just playing
+                break;
+
             case MPV_EVENT_FILE_LOADED:
-                qDebug() << __func__ << mpv_event_name(ev->event_id);
+                qDebug() << mpv_event_name(ev->event_id);
                 if (_gl_widget) {
                     _gl_widget->setPlaying(true);
                 }
@@ -245,7 +272,7 @@ void MpvProxy::handle_mpv_events()
                 break;
 
             case MPV_EVENT_END_FILE:
-                qDebug() << __func__ << mpv_event_name(ev->event_id);
+                qDebug() << mpv_event_name(ev->event_id);
                 if (_gl_widget) {
                     _gl_widget->setPlaying(false);
                 }
@@ -253,12 +280,12 @@ void MpvProxy::handle_mpv_events()
                 break;
 
             case MPV_EVENT_IDLE:
-                qDebug() << __func__ << mpv_event_name(ev->event_id);
+                qDebug() << mpv_event_name(ev->event_id);
                 setState(CoreState::Idle);
                 break;
 
             default:
-                qDebug() << __func__ << mpv_event_name(ev->event_id);
+                qDebug() << mpv_event_name(ev->event_id);
                 break;
         }
     }
@@ -405,6 +432,8 @@ void MpvProxy::burstScreenshot()
 
 QPixmap MpvProxy::takeOneScreenshot()
 {
+    if (state() == CoreState::Idle) return QPixmap();
+
     QList<QVariant> args = {"screenshot-raw"};
     node_builder node(args);
     mpv_node res;
@@ -445,7 +474,7 @@ QPixmap MpvProxy::takeOneScreenshot()
         return img;
     }
 
-    qDebug() << __func__ << "failed";
+    qDebug() << "failed";
     return QPixmap();
 }
 
@@ -479,17 +508,25 @@ void MpvProxy::stopBurstScreenshot()
 
 void MpvProxy::seekForward(int secs)
 {
-    QList<QVariant> args = { "seek", QVariant(secs) };
+    if (state() == CoreState::Idle) return;
+
+    //if (_pendingSeek) return;
+    QList<QVariant> args = { "seek", QVariant(secs), "relative+keyframes" };
     qDebug () << args;
-    command(_handle, args);
+    command_async(_handle, args, AsyncReplyTag::SEEK);
+    _pendingSeek = true;
 }
 
 void MpvProxy::seekBackward(int secs)
 {
+    if (state() == CoreState::Idle) return;
+
+    //if (_pendingSeek) return;
     if (secs > 0) secs = -secs;
-    QList<QVariant> args = { "seek", QVariant(secs) };
+    QList<QVariant> args = { "seek", QVariant(secs), "relative+keyframes" };
     qDebug () << args;
-    command(_handle, args);
+    command_async(_handle, args, AsyncReplyTag::SEEK);
+    _pendingSeek = true;
 }
 
 void MpvProxy::addPlayFile(const QFileInfo& fi)

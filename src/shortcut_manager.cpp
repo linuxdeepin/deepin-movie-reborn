@@ -104,6 +104,17 @@ vector<QAction*> ShortcutManager::actionsForBindings()
     auto p = _map.constBegin();
     while (p != _map.constEnd()) {
         auto *act = new QAction(this);
+        switch (p.value()) {
+            case ActionKind::SeekForward:
+            case ActionKind::SeekForwardLarge:
+            case ActionKind::SeekBackward:
+            case ActionKind::SeekBackwardLarge:
+                act->setAutoRepeat(true);
+                break;
+            default:
+                act->setAutoRepeat(false);
+                break;
+        }
         act->setShortcut(p.key());
         //act->setShortcutContext(Qt::ApplicationShortcut);
         act->setProperty("kind", p.value());

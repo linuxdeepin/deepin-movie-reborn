@@ -13,7 +13,7 @@ namespace dmr {
     static void gl_update_callback(void *cb_ctx)
     {
         MpvGLWidget *w = static_cast<MpvGLWidget*>(cb_ctx);
-        QMetaObject::invokeMethod(w, "onNewFrame", Qt::DirectConnection);
+        w->onNewFrame();
     }
 
     void MpvGLWidget::onNewFrame()
@@ -57,7 +57,7 @@ namespace dmr {
     void MpvGLWidget::initializeGL() 
     {
         QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
-        f->glClearColor(1.0f, 0.0f, 0.0f, 0.5f);
+        f->glClearColor(0.0f, 0.0f, 0.0f, 0.5f);
         if (mpv_opengl_cb_init_gl(_gl_ctx, NULL, get_proc_address, NULL) < 0)
             throw std::runtime_error("could not initialize OpenGL");
     }
