@@ -80,8 +80,6 @@ public slots:
 
 protected slots:
     void handle_mpv_events();
-    void onSubwindowCreated(xcb_window_t winid);
-    void onSubwindowMapped(xcb_window_t winid);
     void stepBurstScreenshot();
 
 private:

@@ -25,97 +25,6 @@ static inline bool command_async(mpv_handle *ctx, const QVariant &args, uint64_t
     return err == 0;
 }
 
-class EventRelayer2: public QObject, public QAbstractNativeEventFilter {
-    Q_OBJECT
-public:
-    EventRelayer2(QWindow* src, QWindow *dest)
-        :QObject(), QAbstractNativeEventFilter(), _source(src), _target(dest) {
-            xcb_connection_t *conn = QX11Info::connection();
-            int screen = 0;
-            xcb_screen_t *s = xcb_aux_get_screen(conn, screen);
-
-            auto cookie = xcb_get_window_attributes(conn, _source->winId());
-            auto reply = xcb_get_window_attributes_reply(conn, cookie, NULL);
-
-            const uint32_t data[] = { 
-                reply->your_event_mask |
-                    XCB_EVENT_MASK_PROPERTY_CHANGE | XCB_EVENT_MASK_SUBSTRUCTURE_NOTIFY |
-                        XCB_EVENT_MASK_BUTTON_MOTION | XCB_EVENT_MASK_BUTTON_PRESS |
-                        XCB_EVENT_MASK_POINTER_MOTION
-
-            };
-            xcb_change_window_attributes (QX11Info::connection(), _source->winId(),
-                    XCB_CW_EVENT_MASK, data);
-
-            xcb_aux_sync(QX11Info::connection());
-            qApp->installNativeEventFilter(this);
-        }
-
-    ~EventRelayer2() {
-        qApp->removeNativeEventFilter(this);
-    }
-
-    QWindow *_source, *_target;
-
-signals:
-    void subwindowCreated(xcb_window_t winid);
-    void subwindowMapped(xcb_window_t winid);
-
-protected:
-    bool nativeEventFilter(const QByteArray &eventType, void *message, long *data) {
-        if(Q_LIKELY(eventType == "xcb_generic_event_t")) {
-            xcb_generic_event_t* event = static_cast<xcb_generic_event_t *>(message);
-            switch (event->response_type & ~0x80) {
-                case XCB_CREATE_NOTIFY:
-                    {
-                        xcb_create_notify_event_t *cne = (xcb_create_notify_event_t*)event;
-                        if (cne->parent == _source->winId()) {
-                            qDebug() << "create notify " 
-                                << QString("0x%1").arg(cne->window, 0, 16)
-                                << QString("0x%1").arg(cne->parent, 0, 16);
-                            emit subwindowCreated(cne->window);
-                        }
-
-                        break;
-                    }
-                case XCB_MAP_NOTIFY:
-                    {
-                        xcb_map_notify_event_t *mne = (xcb_map_notify_event_t*)event;
-                        if (mne->event == _source->winId()) {
-                            qDebug() << "map notify " 
-                                << QString("0x%1").arg(mne->window, 0, 16)
-                                << QString("0x%1").arg(mne->event, 0, 16);
-                            emit subwindowMapped(mne->window);
-                        }
-
-                        break;
-                    }
-                case XCB_MOTION_NOTIFY:
-                    {
-                        xcb_motion_notify_event_t *cne = (xcb_motion_notify_event_t*)event;
-                        qDebug() << "motion notify " 
-                            << QString("0x%1").arg(cne->event, 0, 16);
-
-                        break;
-                    }
-                case XCB_BUTTON_PRESS:
-                    {
-                        xcb_button_press_event_t *cne = (xcb_button_press_event_t*)event;
-                        qDebug() << "btn press " 
-                            << QString("0x%1").arg(cne->event, 0, 16);
-
-                        break;
-                    }
-
-                default:
-                    break;
-            }
-        }
-
-        return false;
-    }
-};
-
 static void mpv_callback(void *d)
 {
     MpvProxy *mpv = static_cast<MpvProxy*>(d);
@@ -129,10 +38,6 @@ MpvProxy::MpvProxy(QWidget *parent)
         setWindowFlags(Qt::FramelessWindowHint);
         setAttribute(Qt::WA_NativeWindow);
         qDebug() << "proxy hook winId " << this->winId();
-
-        //auto evRelay = new EventRelayer2(windowHandle(), nullptr);
-        //connect(evRelay, &EventRelayer2::subwindowCreated, this, &MpvProxy::onSubwindowCreated);
-        //connect(evRelay, &EventRelayer2::subwindowMapped, this, &MpvProxy::onSubwindowMapped);
     }
 
     _handle = Handle::FromRawHandle(mpv_init());
@@ -153,30 +58,10 @@ MpvProxy::MpvProxy(QWidget *parent)
 
 MpvProxy::~MpvProxy()
 {
+    disconnect(this, &MpvProxy::has_mpv_events, this, &MpvProxy::handle_mpv_events);
+    mpv_terminate_destroy(_handle);
     if (CompositingManager::get().composited()) {
         delete _gl_widget;
-    }
-}
-
-void MpvProxy::onSubwindowMapped(xcb_window_t winid)
-{
-    qDebug() << __func__;
-    auto l = qApp->allWindows();
-    auto it = std::find_if(l.begin(), l.end(), [=](QWindow* w) { return w->winId() == winid; });
-    if (it != l.end()) {
-        qDebug() << "------- found child window";
-    }
-}
-
-void MpvProxy::onSubwindowCreated(xcb_window_t winid)
-{
-    auto l = qApp->allWindows();
-    auto it = std::find_if(l.begin(), l.end(), [=](QWindow* w) { return w->winId() == winid; });
-    if (it == l.end()) {
-        qDebug() << QString("wrap 0x%1 into QWindow").arg(winid, 0, 16);
-        auto *w = QWindow::fromWinId(winid);
-        w->setParent(windowHandle());
-        new EventRelayer2(w, nullptr);
     }
 }
 
@@ -200,6 +85,9 @@ mpv_handle* MpvProxy::mpv_init()
         set_property(h, "wid", this->winId());
     }
 
+    set_property(h, "input-cursor", "no");
+    set_property(h, "cursor-autohide", "no");
+
     set_property(h, "screenshot-template", "deepin-movie-shot%n");
     set_property(h, "screenshot-directory", "/tmp");
     
@@ -213,7 +101,7 @@ mpv_handle* MpvProxy::mpv_init()
     mpv_observe_property(h, 0, "playlist-count", MPV_FORMAT_NONE);
     mpv_observe_property(h, 0, "core-idle", MPV_FORMAT_NODE);
 
-    //mpv_request_log_messages(h, "info");
+    mpv_request_log_messages(h, "info");
     mpv_set_wakeup_callback(h, mpv_callback, this);
     connect(this, &MpvProxy::has_mpv_events, this, &MpvProxy::handle_mpv_events,
             Qt::DirectConnection);

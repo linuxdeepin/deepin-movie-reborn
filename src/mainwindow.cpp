@@ -26,7 +26,7 @@ DWIDGET_USE_NAMESPACE
 
 using namespace dmr;
 
-#define MOUSE_MARGINS 8
+#define MOUSE_MARGINS 6
 
 class MainWindowEventListener : public QObject
 {
@@ -225,9 +225,12 @@ MainWindow::MainWindow(QWidget *parent)
         _handle = new DPlatformWindowHandle(this, this);
         connect(_handle, &DPlatformWindowHandle::frameMarginsChanged, 
                 this, &MainWindow::frameMarginsChanged);
-        setAttribute(Qt::WA_TranslucentBackground, true);
-        _handle->setTranslucentBackground(true);
+        //setAttribute(Qt::WA_TranslucentBackground, true);
+        //_handle->setTranslucentBackground(true);
         _cachedMargins = _handle->frameMargins();
+        _handle->enableSystemResize();
+        _handle->enableSystemMove();
+        _handle->setWindowRadius(5);
 
         connect(qApp, &QGuiApplication::focusWindowChanged, this, [=] {
             if (this->isActiveWindow()) {
@@ -239,9 +242,6 @@ MainWindow::MainWindow(QWidget *parent)
     }
 #else
     winId();
-    auto listener = new MainWindowEventListener(this);
-    this->windowHandle()->installEventFilter(listener);
-    qDebug() << "event listener";
 #endif
 
     QSizePolicy sp(QSizePolicy::Preferred, QSizePolicy::Preferred);
@@ -312,6 +312,16 @@ MainWindow::MainWindow(QWidget *parent)
         connect(_evm, &EventMonitor::buttonedRelease, this, &MainWindow::onMonitorButtonReleased);
         _evm->start();
     }
+#else
+    auto listener = new MainWindowEventListener(this);
+    this->windowHandle()->installEventFilter(listener);
+
+    if (!composited) {
+        _proxy->windowHandle()->installEventFilter(listener);
+        _titlebar->windowHandle()->installEventFilter(listener);
+        _toolbox->windowHandle()->installEventFilter(listener);
+    }
+    qDebug() << "event listener";
 #endif
 }
 
@@ -693,6 +703,7 @@ void MainWindow::updateProxyGeometry()
         _cachedMargins = _handle->frameMargins();
     }
 
+#ifndef USE_DXCB
     {
         QPixmap shape(size());
         shape.fill(Qt::transparent);
@@ -705,6 +716,7 @@ void MainWindow::updateProxyGeometry()
 
         setMask(shape.mask());
     }
+#endif
 
     _center->resize(size());
 
@@ -816,14 +828,14 @@ void MainWindow::leaveEvent(QEvent *ev)
 
 void MainWindow::mouseMoveEvent(QMouseEvent *ev)
 {
-    //qDebug() << __func__;
+#ifndef USE_DXCB
     Utility::startWindowSystemMove(this->winId());
-    //QWidget::mouseMoveEvent(ev);
+#endif
+    QWidget::mouseMoveEvent(ev);
 }
 
 void MainWindow::mousePressEvent(QMouseEvent *ev) 
 {
-    //qDebug() << __func__;
     QWidget::mousePressEvent(ev);
 }
 

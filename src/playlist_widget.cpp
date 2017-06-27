@@ -156,8 +156,10 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, MpvProxy *mpv)
     auto *l = new QVBoxLayout(this);
     setLayout(l);
 
+#ifndef USE_DXCB
     auto *mwl = new MainWindowListener(this);
     mw->installEventFilter(mwl);
+#endif
 
     connect(&_mpv->playlist(), &PlaylistModel::countChanged, this, &PlaylistWidget::loadPlaylist);
     connect(&_mpv->playlist(), &PlaylistModel::currentChanged, this, &PlaylistWidget::updateItemStates);
