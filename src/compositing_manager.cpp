@@ -1,4 +1,6 @@
 #include "compositing_manager.h"
+#include "options.h"
+
 #include <iostream>
 #include <QtCore>
 #include <QX11Info>
@@ -68,6 +70,12 @@ CompositingManager::CompositingManager() {
         _composited = true;
     }
 
+    auto v = CommandLineManager::get().value("c");
+    if (v == "off") {
+        _composited = false;
+    } else if (v == "on") {
+        _composited = true;
+    }
     qDebug() << "composited:" << _composited;
 }
 

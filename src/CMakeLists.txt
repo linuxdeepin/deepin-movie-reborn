@@ -3,6 +3,7 @@ set(CMD_NAME deepin-movie)
 
 add_compile_options("-std=c++1y")
 set(PROJECT_INCLUDE ${PROJECT_SOURCE_DIR}/src/include)
+set(PROJECT_INCLUDE ${PROJECT_SOURCE_DIR}/src/widgets)
 include_directories(${PROJECT_INCLUDE})
 
 include_directories(${CMAKE_INCLUDE_CURRENT_DIR})
@@ -20,14 +21,9 @@ pkg_check_modules(Other REQUIRED IMPORTED_TARGET libffmpegthumbnailer
     libavformat libavutil libavcodec)
 
 qt5_add_resources(RCS resources.qrc)
+file(GLOB_RECURSE SRCS *.cpp)
 
-add_executable(${CMD_NAME} main.cpp mainwindow.cpp mpv_proxy.cpp
-    actions.cpp xutil.cpp event_monitor.cpp toolbox_proxy.cpp event_relayer.cpp
-    compositing_manager.cpp mpv_glwidget.cpp shortcut_manager.cpp
-    dmr_settings.cpp utility_x11.cpp toolbutton.cpp movieinfo_dialog.cpp
-    burst_screenshots_dialog.cpp playlist_widget.cpp playlist_model.cpp
-    utils.cpp notification_widget.cpp
-    ${RCS})
+add_executable(${CMD_NAME} ${SRCS} ${RCS})
 target_include_directories(${CMD_NAME} PUBLIC ${PROJECT_INCLUDE})
 
 target_link_libraries(${CMD_NAME} X11 Xext Xtst PkgConfig::Xcb

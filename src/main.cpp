@@ -18,6 +18,7 @@
 
 #include "config.h"
 
+#include "options.h"
 #include "mainwindow.h"
 
 DWIDGET_USE_NAMESPACE
@@ -37,16 +38,12 @@ int main(int argc, char *argv[])
     // required by mpv
     setlocale(LC_NUMERIC, "C");
 
-    QCommandLineParser parser;
-    parser.addHelpOption();
-    parser.addVersionOption();
-
-    parser.addPositionalArgument("file", QCoreApplication::tr("Movie file path"));
-    parser.process(app);
+    auto& clm = dmr::CommandLineManager::get();
+    clm.process(app);
 
     QString toOpenFile;
-    if (1 == parser.positionalArguments().length()) {
-        toOpenFile = parser.positionalArguments().first();
+    if (1 == clm.positionalArguments().length()) {
+        toOpenFile = clm.positionalArguments().first();
     }
 
     app.setOrganizationName("deepin");
