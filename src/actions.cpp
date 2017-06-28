@@ -14,13 +14,13 @@ ActionFactory& ActionFactory::get()
 }
 
 #define DEF_ACTION(NAME, KD) do { \
-    auto *act = menu->addAction(tr(NAME)); \
+    auto *act = menu->addAction((NAME)); \
     act->setProperty("kind", KD); \
     _contextMenuActions.append(act); \
 } while (0) 
 
 #define DEF_ACTION_CHECKED(NAME, KD) do { \
-    auto *act = menu->addAction(tr(NAME)); \
+    auto *act = menu->addAction((NAME)); \
     act->setCheckable(true); \
     act->setProperty("kind", KD); \
     _contextMenuActions.append(act); \
@@ -31,9 +31,9 @@ QMenu* ActionFactory::titlebarMenu()
     if (!_titlebarMenu) {
         auto *menu = new QMenu();
 
-        DEF_ACTION("Open File", ActionKind::OpenFile);
-        DEF_ACTION("Settings", ActionKind::Settings);
-        DEF_ACTION_CHECKED("Light Theme", ActionKind::LightTheme);
+        DEF_ACTION(tr("Open File"), ActionKind::OpenFile);
+        DEF_ACTION(tr("Settings"), ActionKind::Settings);
+        DEF_ACTION_CHECKED(tr("Light Theme"), ActionKind::LightTheme);
         // these seems added by titlebar itself
         //menu->addSeparator();
         //DEF_ACTION("About", ActionKind::About);
@@ -50,20 +50,20 @@ QMenu* ActionFactory::mainContextMenu()
     if (!_contextMenu) {
         auto *menu = new QMenu();
 
-        DEF_ACTION("Open File", ActionKind::OpenFile);
-        DEF_ACTION("Open Url", ActionKind::OpenUrl);
+        DEF_ACTION(tr("Open File"), ActionKind::OpenFile);
+        DEF_ACTION(tr("Open Url"), ActionKind::OpenUrl);
         menu->addSeparator();
 
-        DEF_ACTION_CHECKED("Fullscreen", ActionKind::Fullscreen);
-        DEF_ACTION_CHECKED("Compact Mode", ActionKind::ToggleMiniMode);
-        DEF_ACTION_CHECKED("Above", ActionKind::WindowAbove);
+        DEF_ACTION_CHECKED(tr("Fullscreen"), ActionKind::Fullscreen);
+        DEF_ACTION_CHECKED(tr("Compact Mode"), ActionKind::ToggleMiniMode);
+        DEF_ACTION_CHECKED(tr("Above"), ActionKind::WindowAbove);
         menu->addSeparator();
 
         { //sub menu
             auto *parent = menu;
             auto *menu = new QMenu(tr("Subtitle"));
-            DEF_ACTION("Load Subtitle", ActionKind::LoadSubtitle);
-            DEF_ACTION("Select Subtitle", ActionKind::SelectSubtitle);
+            DEF_ACTION(tr("Load Subtitle"), ActionKind::LoadSubtitle);
+            DEF_ACTION(tr("Select Subtitle"), ActionKind::SelectSubtitle);
 
             parent->addMenu(menu);
         }
@@ -71,17 +71,17 @@ QMenu* ActionFactory::mainContextMenu()
         { //sub menu
             auto *parent = menu;
             auto *menu = new QMenu(tr("Screenshot"));
-            DEF_ACTION("Single Screenshot", ActionKind::Screenshot);
-            DEF_ACTION("Burst Screenshot", ActionKind::BurstScreenshot);
+            DEF_ACTION(tr("Single Screenshot"), ActionKind::Screenshot);
+            DEF_ACTION(tr("Burst Screenshot"), ActionKind::BurstScreenshot);
 
             parent->addMenu(menu);
         }
 
         menu->addSeparator();
 
-        DEF_ACTION_CHECKED("Playlist", ActionKind::TogglePlaylist);
-        DEF_ACTION("Movie Info", ActionKind::MovieInfo);
-        DEF_ACTION("Settings", ActionKind::Settings);
+        DEF_ACTION_CHECKED(tr("Playlist"), ActionKind::TogglePlaylist);
+        DEF_ACTION(tr("Movie Info"), ActionKind::MovieInfo);
+        DEF_ACTION(tr("Settings"), ActionKind::Settings);
 
         _contextMenu = menu;
     }
@@ -94,9 +94,9 @@ QMenu* ActionFactory::playlistContextMenu()
     if (!_playlistMenu) {
         auto *menu = new QMenu();
 
-        DEF_ACTION("Clear Playlist", ActionKind::EmptyPlaylist);
-        DEF_ACTION("Open File In File Manager", ActionKind::PlaylistOpenItemInFM);
-        DEF_ACTION("Movie Info", ActionKind::MovieInfo);
+        DEF_ACTION(tr("Clear Playlist"), ActionKind::EmptyPlaylist);
+        DEF_ACTION(tr("Open File In File Manager"), ActionKind::PlaylistOpenItemInFM);
+        DEF_ACTION(tr("Movie Info"), ActionKind::MovieInfo);
 
         _playlistMenu = menu;
     }

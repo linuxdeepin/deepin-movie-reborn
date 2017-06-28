@@ -50,9 +50,9 @@ int main(int argc, char *argv[])
     app.setApplicationName("deepin-movie");
     app.setApplicationVersion(DMR_VERSION);
     app.setProductIcon(QPixmap(":/resources/icons/logo-big.svg"));
-    app.setProductName(QT_TR_NOOP("Deepin Movie"));
-    app.setApplicationLicense(QT_TR_NOOP("GPL v3"));
-    app.setApplicationDescription(QT_TR_NOOP(
+    app.setProductName(QObject::tr("Deepin Movie"));
+    app.setApplicationLicense("GPL v3");
+    app.setApplicationDescription(QObject::tr(
                 "Deepin Movie is a well-designed and full-featured"
                 " video player with simple borderless design. It supports local and"
                 " streaming media play with multiple video formats."));

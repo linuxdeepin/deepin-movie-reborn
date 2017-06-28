@@ -125,7 +125,7 @@ void ToolboxProxy::setup()
     _progBar = new QProgressBar();
     _progBar->setTextVisible(false);
     _progBar->setFixedHeight(2);
-    _progBar->setRange(0, 1000);
+    _progBar->setRange(0, 100);
     _progBar->setValue(0);
     l->addWidget(_progBar, 0);
 
@@ -207,7 +207,7 @@ void ToolboxProxy::updateMovieProgress()
 {
     auto d = _mpv->duration();
     auto e = _mpv->ellapsed();
-    int v = 1000 * ((double)e / d);
+    int v = 100 * ((double)e / d);
     _progBar->setValue(v);
 }
 
