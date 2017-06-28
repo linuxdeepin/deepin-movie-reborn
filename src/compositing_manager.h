@@ -11,6 +11,9 @@ enum Platform {
     Alpha // sunway
 };
 
+using PlayerOption = QPair<QString, QString>;
+using PlayerOptionList = QList<PlayerOption>;
+
 class CompositingManager: public QObject {
     public:
         static CompositingManager& get();
@@ -19,6 +22,9 @@ class CompositingManager: public QObject {
         // this actually means opengl rendering is capable
         bool composited() const { return _composited; }
         Platform platform() const { return _platform; }
+
+        PlayerOptionList getProfile(const QString& name);
+        PlayerOptionList getBestProfile(); // best for current platform and env
 
     signals:
         void compositingChanged(bool);

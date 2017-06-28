@@ -70,7 +70,7 @@ CompositingManager::CompositingManager() {
         _composited = true;
     }
 
-    auto v = CommandLineManager::get().value("c");
+    auto v = CommandLineManager::get().openglMode();
     if (v == "off") {
         _composited = false;
     } else if (v == "on") {
@@ -127,6 +127,68 @@ bool CompositingManager::isDirectRendered() {
     }
 
     return true;
+}
+
+//FIXME: what about merge options from both config
+PlayerOptionList CompositingManager::getProfile(const QString& name)
+{
+    auto localPath = QString("%1/%2/%3/%4.profile")
+        .arg(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation))
+        .arg(qApp->organizationName())
+        .arg(qApp->applicationName())
+        .arg(name);
+    auto defaultPath = QString(":/resources/profiles/%1.profile").arg(name);
+    auto oc = CommandLineManager::get().overrideConfig();
+
+    PlayerOptionList ol;
+
+    QList<QString> files = {oc, localPath, defaultPath};
+    auto p = files.begin();
+    while (p != files.end()) {
+        QFileInfo fi(*p);
+        if (fi.exists()) {
+            qDebug() << "load" << fi.absoluteFilePath();
+            QFile f(fi.absoluteFilePath());
+            f.open(QIODevice::ReadOnly);
+            QTextStream ts(&f);
+            while (!ts.atEnd()) {
+                auto l = ts.readLine().trimmed();
+                if (l.isEmpty()) continue;
+
+                auto kv = l.split("=");
+                qDebug() << l << kv;
+                if (kv.size() == 1) {
+                    ol.push_back(qMakePair(kv[0], QString::fromUtf8("")));
+                } else {
+                    ol.push_back(qMakePair(kv[0], kv[1]));
+                }
+            }
+
+            return ol;
+        }
+        ++p;
+    }
+
+    return ol;
+}
+
+PlayerOptionList CompositingManager::getBestProfile()
+{
+    QString profile_name = "default";
+    switch (_platform) {
+        case Platform::Alpha:
+        case Platform::Mips:
+            profile_name = _composited ? "composited" : "failsafe";
+            break;
+
+        case Platform::X86:
+            profile_name = _composited ? "composited" : "default";
+            break;
+        case Platform::Unknown:
+            break;
+    }
+
+    return getProfile(profile_name);
 }
 
 #undef C2Q

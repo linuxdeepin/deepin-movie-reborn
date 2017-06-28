@@ -7,6 +7,10 @@ namespace dmr {
 class CommandLineManager: public QCommandLineParser {
 public:
     static CommandLineManager& get();
+    bool verbose() const;
+    QString openglMode() const;
+    QString overrideConfig() const;
+
 private:
     CommandLineManager();
 };

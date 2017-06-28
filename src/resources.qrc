@@ -3,6 +3,11 @@
         <file>resources/data/settings.json</file>
     </qresource>
     <qresource>
+        <file>resources/profiles/default.profile</file>
+        <file>resources/profiles/failsafe.profile</file>
+        <file>resources/profiles/composited.profile</file>
+    </qresource>
+    <qresource>
         <file>resources/qss/dark/widgets.qss</file>
         <file>resources/qss/light/widgets.qss</file>
     </qresource>

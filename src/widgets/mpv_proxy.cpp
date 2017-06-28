@@ -1,6 +1,7 @@
 #include "mpv_proxy.h"
 #include "mpv_glwidget.h"
 #include "compositing_manager.h"
+#include "options.h"
 #include "playlist_model.h"
 #include <mpv/client.h>
 
@@ -71,17 +72,16 @@ mpv_handle* MpvProxy::mpv_init()
 
     bool composited = CompositingManager::get().composited();
     
-    set_property(h, "terminal", "yes");
-    set_property(h, "msg-level", "all=v");
+    if (CommandLineManager::get().verbose()) {
+        set_property(h, "terminal", "yes");
+        set_property(h, "msg-level", "all=v");
+    }
 
     if (composited) {
         set_property(h, "vo", "opengl-cb");
-        set_property(h, "hwdec-preload", "auto");
-        set_property(h, "hwdec", "auto");
 
     } else {
-        set_property(h, "vo", "opengl,xv");
-        set_property(h, "hwdec", "auto");
+        set_property(h, "vo", "opengl,xv,x11");
         set_property(h, "wid", this->winId());
     }
 
@@ -107,6 +107,15 @@ mpv_handle* MpvProxy::mpv_init()
             Qt::DirectConnection);
     if (mpv_initialize(h) < 0) {
         std::runtime_error("mpv init failed");
+    }
+
+    //load profile
+    auto ol = CompositingManager::get().getBestProfile();
+    auto p = ol.begin();
+    while (p != ol.end()) {
+        set_property(h, p->first.toUtf8().constData(), p->second.toUtf8().constData());
+        qDebug() << "apply" << p->first << "=" << p->second;
+        ++p;
     }
 
     return h;
@@ -439,4 +448,3 @@ void MpvProxy::changeProperty(const QString& name, const QVariant& v)
 
 } // end of namespace dmr
 
-#include "mpv_proxy.moc"

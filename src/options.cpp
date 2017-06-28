@@ -22,7 +22,22 @@ CommandLineManager::CommandLineManager()
     addOptions({
         {"l", QCoreApplication::tr("show detail log message")},
         {{"c", "opengl-cb"}, QCoreApplication::tr("use opengl-cb interface [on/off/auto]"), "bool", "auto"},
+        {{"o", "override-config"}, QCoreApplication::tr("override config for libmpv"), "file", ""},
     });
 }
 
+bool CommandLineManager::verbose() const
+{
+    return this->isSet("l");
+}
+
+QString CommandLineManager::openglMode() const
+{
+    return this->value("c");
+}
+
+QString CommandLineManager::overrideConfig() const
+{
+    return this->value("o");
+}
 }
