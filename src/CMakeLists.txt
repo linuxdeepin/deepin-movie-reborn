@@ -24,16 +24,24 @@ pkg_check_modules(Other REQUIRED IMPORTED_TARGET libffmpegthumbnailer
 qt5_add_resources(RCS resources.qrc)
 file(GLOB_RECURSE SRCS *.cpp)
 
+add_custom_target(json_i18n ALL 
+    COMMAND dtk-settings-tool resources/data/settings.json > settings_translation.cpp
+    SOURCES resources/data/settings.json
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/src)
+
+## translations 
 set(TS 
     ${PROJECT_SOURCE_DIR}/src/translations/${CMD_NAME}.ts
     ${PROJECT_SOURCE_DIR}/src/translations/${CMD_NAME}_zh_CN.ts)
 
-set_source_files_properties( ${TS}
+set_source_files_properties(${TS}
     PROPERTIES OUTPUT_LOCATION ${PROJECT_SOURCE_DIR}/src/translations)
 
 qt5_create_translation(QM ${SRCS} ${TS})
+# ~
 
 add_executable(${CMD_NAME} ${SRCS} ${RCS} ${QM})
+add_dependencies(${CMD_NAME} json_i18n)
 target_include_directories(${CMD_NAME} PUBLIC ${PROJECT_INCLUDE})
 
 target_link_libraries(${CMD_NAME} X11 Xext Xtst PkgConfig::Xcb

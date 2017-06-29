@@ -51,19 +51,19 @@ QMenu* ActionFactory::mainContextMenu()
         auto *menu = new QMenu();
 
         DEF_ACTION(tr("Open File"), ActionKind::OpenFile);
-        DEF_ACTION(tr("Open Url"), ActionKind::OpenUrl);
+        DEF_ACTION(tr("Open URL"), ActionKind::OpenUrl);
         menu->addSeparator();
 
         DEF_ACTION_CHECKED(tr("Fullscreen"), ActionKind::Fullscreen);
-        DEF_ACTION_CHECKED(tr("Compact Mode"), ActionKind::ToggleMiniMode);
-        DEF_ACTION_CHECKED(tr("Above"), ActionKind::WindowAbove);
+        DEF_ACTION_CHECKED(tr("Mini Mode"), ActionKind::ToggleMiniMode);
+        DEF_ACTION_CHECKED(tr("Always on Top"), ActionKind::WindowAbove);
         menu->addSeparator();
 
         { //sub menu
             auto *parent = menu;
             auto *menu = new QMenu(tr("Subtitle"));
-            DEF_ACTION(tr("Load Subtitle"), ActionKind::LoadSubtitle);
-            DEF_ACTION(tr("Select Subtitle"), ActionKind::SelectSubtitle);
+            DEF_ACTION(tr("Load"), ActionKind::LoadSubtitle);
+            DEF_ACTION(tr("Select"), ActionKind::SelectSubtitle);
 
             parent->addMenu(menu);
         }
@@ -71,8 +71,8 @@ QMenu* ActionFactory::mainContextMenu()
         { //sub menu
             auto *parent = menu;
             auto *menu = new QMenu(tr("Screenshot"));
-            DEF_ACTION(tr("Single Screenshot"), ActionKind::Screenshot);
-            DEF_ACTION(tr("Burst Screenshot"), ActionKind::BurstScreenshot);
+            DEF_ACTION(tr("Film Screenshot"), ActionKind::Screenshot);
+            DEF_ACTION(tr("Burst Shooting"), ActionKind::BurstScreenshot);
 
             parent->addMenu(menu);
         }
@@ -80,7 +80,7 @@ QMenu* ActionFactory::mainContextMenu()
         menu->addSeparator();
 
         DEF_ACTION_CHECKED(tr("Playlist"), ActionKind::TogglePlaylist);
-        DEF_ACTION(tr("Movie Info"), ActionKind::MovieInfo);
+        DEF_ACTION(tr("Film Info"), ActionKind::MovieInfo);
         DEF_ACTION(tr("Settings"), ActionKind::Settings);
 
         _contextMenu = menu;
@@ -96,7 +96,7 @@ QMenu* ActionFactory::playlistContextMenu()
 
         DEF_ACTION(tr("Clear Playlist"), ActionKind::EmptyPlaylist);
         DEF_ACTION(tr("Open File In File Manager"), ActionKind::PlaylistOpenItemInFM);
-        DEF_ACTION(tr("Movie Info"), ActionKind::MovieInfo);
+        DEF_ACTION(tr("Film Info"), ActionKind::MovieInfo);
 
         _playlistMenu = menu;
     }

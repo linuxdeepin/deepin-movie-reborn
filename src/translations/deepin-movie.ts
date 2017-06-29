@@ -37,6 +37,147 @@
         <source>Deepin Movie is a well-designed and full-featured video player with simple borderless design. It supports local and streaming media play with multiple video formats.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../settings_translation.cpp" line="5"/>
+        <source>Empty playlist when quit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../settings_translation.cpp" line="6"/>
+        <source>Auto resume from last stop</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../settings_translation.cpp" line="7"/>
+        <source>Location</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../settings_translation.cpp" line="8"/>
+        <source>Basic settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../settings_translation.cpp" line="9"/>
+        <source>Play</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../settings_translation.cpp" line="10"/>
+        <location filename="../settings_translation.cpp" line="22"/>
+        <source>Screenshot</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../settings_translation.cpp" line="11"/>
+        <source>Shortcuts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../settings_translation.cpp" line="12"/>
+        <source>Files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../settings_translation.cpp" line="13"/>
+        <source>Frame/Sound</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../settings_translation.cpp" line="14"/>
+        <source>Playback</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../settings_translation.cpp" line="15"/>
+        <source>Subtitle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../settings_translation.cpp" line="16"/>
+        <source>Font Style</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../settings_translation.cpp" line="17"/>
+        <source>Restore to default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../settings_translation.cpp" line="18"/>
+        <source>Burst screenshot</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../settings_translation.cpp" line="19"/>
+        <source>Open a file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../settings_translation.cpp" line="20"/>
+        <source>Open next</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../settings_translation.cpp" line="21"/>
+        <source>Open previous</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../settings_translation.cpp" line="23"/>
+        <source>Mini mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../settings_translation.cpp" line="24"/>
+        <source>Mute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../settings_translation.cpp" line="25"/>
+        <source>volume down</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../settings_translation.cpp" line="26"/>
+        <source>Volume up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../settings_translation.cpp" line="27"/>
+        <source>Fullscreen</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../settings_translation.cpp" line="28"/>
+        <source>Pause/Play</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../settings_translation.cpp" line="29"/>
+        <source>Playlist</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../settings_translation.cpp" line="30"/>
+        <source>Backward</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../settings_translation.cpp" line="31"/>
+        <source>Forward</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../settings_translation.cpp" line="32"/>
+        <source>Font</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../settings_translation.cpp" line="33"/>
+        <source>Font Size</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>dmr::ActionFactory</name>
@@ -59,7 +200,43 @@
     </message>
     <message>
         <location filename="../actions.cpp" line="54"/>
-        <source>Open Url</source>
+        <source>Open URL</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../actions.cpp" line="58"/>
+        <source>Mini Mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../actions.cpp" line="59"/>
+        <source>Always on Top</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../actions.cpp" line="65"/>
+        <source>Load</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../actions.cpp" line="66"/>
+        <source>Select</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../actions.cpp" line="74"/>
+        <source>Film Screenshot</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../actions.cpp" line="75"/>
+        <source>Burst Shooting</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../actions.cpp" line="83"/>
+        <location filename="../actions.cpp" line="99"/>
+        <source>Film Info</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -68,28 +245,8 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../actions.cpp" line="58"/>
-        <source>Compact Mode</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../actions.cpp" line="59"/>
-        <source>Above</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../actions.cpp" line="64"/>
         <source>Subtitle</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../actions.cpp" line="65"/>
-        <source>Load Subtitle</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../actions.cpp" line="66"/>
-        <source>Select Subtitle</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -98,24 +255,8 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../actions.cpp" line="74"/>
-        <source>Single Screenshot</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../actions.cpp" line="75"/>
-        <source>Burst Screenshot</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../actions.cpp" line="82"/>
         <source>Playlist</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../actions.cpp" line="83"/>
-        <location filename="../actions.cpp" line="99"/>
-        <source>Movie Info</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

@@ -37,6 +37,147 @@
         <source>Deepin Movie is a well-designed and full-featured video player with simple borderless design. It supports local and streaming media play with multiple video formats.</source>
         <translation></translation>
     </message>
+    <message>
+        <location filename="../settings_translation.cpp" line="5"/>
+        <source>Empty playlist when quit</source>
+        <translation>退出深度影院时清空播放列表</translation>
+    </message>
+    <message>
+        <location filename="../settings_translation.cpp" line="6"/>
+        <source>Auto resume from last stop</source>
+        <translation>自动从上次停止位置播放</translation>
+    </message>
+    <message>
+        <location filename="../settings_translation.cpp" line="7"/>
+        <source>Location</source>
+        <translation>保存路径</translation>
+    </message>
+    <message>
+        <location filename="../settings_translation.cpp" line="8"/>
+        <source>Basic settings</source>
+        <translation>基础设置</translation>
+    </message>
+    <message>
+        <location filename="../settings_translation.cpp" line="9"/>
+        <source>Play</source>
+        <translation>播放</translation>
+    </message>
+    <message>
+        <location filename="../settings_translation.cpp" line="10"/>
+        <location filename="../settings_translation.cpp" line="22"/>
+        <source>Screenshot</source>
+        <translation>截图</translation>
+    </message>
+    <message>
+        <location filename="../settings_translation.cpp" line="11"/>
+        <source>Shortcuts</source>
+        <translation>快捷键</translation>
+    </message>
+    <message>
+        <location filename="../settings_translation.cpp" line="12"/>
+        <source>Files</source>
+        <translation>文件</translation>
+    </message>
+    <message>
+        <location filename="../settings_translation.cpp" line="13"/>
+        <source>Frame/Sound</source>
+        <translation>画面/声音</translation>
+    </message>
+    <message>
+        <location filename="../settings_translation.cpp" line="14"/>
+        <source>Playback</source>
+        <translation>播放</translation>
+    </message>
+    <message>
+        <location filename="../settings_translation.cpp" line="15"/>
+        <source>Subtitle</source>
+        <translation>字幕</translation>
+    </message>
+    <message>
+        <location filename="../settings_translation.cpp" line="16"/>
+        <source>Font Style</source>
+        <translation>字体样式</translation>
+    </message>
+    <message>
+        <location filename="../settings_translation.cpp" line="17"/>
+        <source>Restore to default</source>
+        <translation>恢复默认</translation>
+    </message>
+    <message>
+        <location filename="../settings_translation.cpp" line="18"/>
+        <source>Burst screenshot</source>
+        <translation>连拍截图</translation>
+    </message>
+    <message>
+        <location filename="../settings_translation.cpp" line="19"/>
+        <source>Open a file</source>
+        <translation>打开文件</translation>
+    </message>
+    <message>
+        <location filename="../settings_translation.cpp" line="20"/>
+        <source>Open next</source>
+        <translation>打开下一个</translation>
+    </message>
+    <message>
+        <location filename="../settings_translation.cpp" line="21"/>
+        <source>Open previous</source>
+        <translation>打开上一个</translation>
+    </message>
+    <message>
+        <location filename="../settings_translation.cpp" line="23"/>
+        <source>Mini mode</source>
+        <translation>迷你模式</translation>
+    </message>
+    <message>
+        <location filename="../settings_translation.cpp" line="24"/>
+        <source>Mute</source>
+        <translation>静音</translation>
+    </message>
+    <message>
+        <location filename="../settings_translation.cpp" line="25"/>
+        <source>volume down</source>
+        <translation>减小音量</translation>
+    </message>
+    <message>
+        <location filename="../settings_translation.cpp" line="26"/>
+        <source>Volume up</source>
+        <translation>增大音量</translation>
+    </message>
+    <message>
+        <location filename="../settings_translation.cpp" line="27"/>
+        <source>Fullscreen</source>
+        <translation>全屏</translation>
+    </message>
+    <message>
+        <location filename="../settings_translation.cpp" line="28"/>
+        <source>Pause/Play</source>
+        <translation>暂停/播放</translation>
+    </message>
+    <message>
+        <location filename="../settings_translation.cpp" line="29"/>
+        <source>Playlist</source>
+        <translation>播放列表</translation>
+    </message>
+    <message>
+        <location filename="../settings_translation.cpp" line="30"/>
+        <source>Backward</source>
+        <translation>快退</translation>
+    </message>
+    <message>
+        <location filename="../settings_translation.cpp" line="31"/>
+        <source>Forward</source>
+        <translation>快进</translation>
+    </message>
+    <message>
+        <location filename="../settings_translation.cpp" line="32"/>
+        <source>Font</source>
+        <translation>字体</translation>
+    </message>
+    <message>
+        <location filename="../settings_translation.cpp" line="33"/>
+        <source>Font Size</source>
+        <translation>字号</translation>
+    </message>
 </context>
 <context>
     <name>dmr::ActionFactory</name>
@@ -59,8 +200,48 @@
     </message>
     <message>
         <location filename="../actions.cpp" line="54"/>
+        <source>Open URL</source>
+        <translation>打开URL</translation>
+    </message>
+    <message>
+        <location filename="../actions.cpp" line="58"/>
+        <source>Mini Mode</source>
+        <translation>迷你模式</translation>
+    </message>
+    <message>
+        <location filename="../actions.cpp" line="59"/>
+        <source>Always on Top</source>
+        <translation>置顶窗口</translation>
+    </message>
+    <message>
+        <location filename="../actions.cpp" line="65"/>
+        <source>Load</source>
+        <translation>载入字幕</translation>
+    </message>
+    <message>
+        <location filename="../actions.cpp" line="66"/>
+        <source>Select</source>
+        <translation>选择字幕</translation>
+    </message>
+    <message>
+        <location filename="../actions.cpp" line="74"/>
+        <source>Film Screenshot</source>
+        <translation>截图</translation>
+    </message>
+    <message>
+        <location filename="../actions.cpp" line="75"/>
+        <source>Burst Shooting</source>
+        <translation>连拍截图</translation>
+    </message>
+    <message>
+        <location filename="../actions.cpp" line="83"/>
+        <location filename="../actions.cpp" line="99"/>
+        <source>Film Info</source>
+        <translation>电影信息</translation>
+    </message>
+    <message>
         <source>Open Url</source>
-        <translation>打开Url</translation>
+        <translation type="vanished">打开Url</translation>
     </message>
     <message>
         <location filename="../actions.cpp" line="57"/>
@@ -68,14 +249,12 @@
         <translation>全屏</translation>
     </message>
     <message>
-        <location filename="../actions.cpp" line="58"/>
         <source>Compact Mode</source>
-        <translation>迷你模式</translation>
+        <translation type="vanished">迷你模式</translation>
     </message>
     <message>
-        <location filename="../actions.cpp" line="59"/>
         <source>Above</source>
-        <translation>置顶</translation>
+        <translation type="vanished">置顶</translation>
     </message>
     <message>
         <location filename="../actions.cpp" line="64"/>
@@ -83,14 +262,12 @@
         <translation>字幕</translation>
     </message>
     <message>
-        <location filename="../actions.cpp" line="65"/>
         <source>Load Subtitle</source>
-        <translation>加载字幕</translation>
+        <translation type="vanished">加载字幕</translation>
     </message>
     <message>
-        <location filename="../actions.cpp" line="66"/>
         <source>Select Subtitle</source>
-        <translation>选择字幕</translation>
+        <translation type="vanished">选择字幕</translation>
     </message>
     <message>
         <location filename="../actions.cpp" line="73"/>
@@ -98,14 +275,12 @@
         <translation>截图</translation>
     </message>
     <message>
-        <location filename="../actions.cpp" line="74"/>
         <source>Single Screenshot</source>
-        <translation>截图</translation>
+        <translation type="vanished">截图</translation>
     </message>
     <message>
-        <location filename="../actions.cpp" line="75"/>
         <source>Burst Screenshot</source>
-        <translation>连续截图</translation>
+        <translation type="vanished">连拍截图</translation>
     </message>
     <message>
         <location filename="../actions.cpp" line="82"/>
@@ -113,10 +288,8 @@
         <translation>播放列表</translation>
     </message>
     <message>
-        <location filename="../actions.cpp" line="83"/>
-        <location filename="../actions.cpp" line="99"/>
         <source>Movie Info</source>
-        <translation>电影信息</translation>
+        <translation type="vanished">电影信息</translation>
     </message>
     <message>
         <location filename="../actions.cpp" line="97"/>
