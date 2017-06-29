@@ -28,6 +28,50 @@ using namespace dmr;
 
 #define MOUSE_MARGINS 6
 
+class MainWindowFocusMonitor: public QAbstractNativeEventFilter {
+public:
+    MainWindowFocusMonitor(MainWindow* src) :QAbstractNativeEventFilter(), _source(src) {
+        qApp->installNativeEventFilter(this);
+    }
+
+    ~MainWindowFocusMonitor() {
+        qApp->removeNativeEventFilter(this);
+    }
+
+    bool nativeEventFilter(const QByteArray &eventType, void *message, long *) {
+        if(Q_LIKELY(eventType == "xcb_generic_event_t")) {
+            xcb_generic_event_t* event = static_cast<xcb_generic_event_t *>(message);
+            switch (event->response_type & ~0x80) {
+                case XCB_LEAVE_NOTIFY: {
+                    xcb_leave_notify_event_t *dne = (xcb_leave_notify_event_t*)event;
+                    auto w = _source->windowHandle();
+                    if (dne->event == w->winId()) {
+                        //qDebug() << "---------  leave " << dne->event << dne->child;
+                        emit _source->windowLeaved();
+                    }
+                    break;
+                }
+
+                case XCB_ENTER_NOTIFY: {
+                    xcb_enter_notify_event_t *dne = (xcb_enter_notify_event_t*)event;
+                    auto w = _source->windowHandle();
+                    if (dne->event == w->winId()) {
+                        //qDebug() << "---------  enter " << dne->event << dne->child;
+                        emit _source->windowEntered();
+                    }
+                    break;
+                }
+                default:
+                    break;
+            }
+        }
+
+        return false;
+    }
+
+    MainWindow *_source;
+};
+
 class MainWindowEventListener : public QObject
 {
     Q_OBJECT
@@ -319,6 +363,10 @@ MainWindow::MainWindow(QWidget *parent)
 #else
     auto listener = new MainWindowEventListener(this);
     this->windowHandle()->installEventFilter(listener);
+
+    auto mwfm = new MainWindowFocusMonitor(this);
+    connect(this, &MainWindow::windowEntered, &MainWindow::resumeToolsWindow);
+    connect(this, &MainWindow::windowLeaved, &MainWindow::suspendToolsWindow);
 
     if (!composited) {
         _proxy->windowHandle()->installEventFilter(listener);
@@ -816,8 +864,10 @@ void MainWindow::updateProxyGeometry()
 
 void MainWindow::suspendToolsWindow()
 {
-    _titlebar->hide();
-    _toolbox->hide();
+    if (!this->frameGeometry().contains(QCursor::pos())) {
+        _titlebar->hide();
+        _toolbox->hide();
+    }
 }
 
 void MainWindow::resumeToolsWindow()
@@ -839,7 +889,7 @@ void MainWindow::showEvent(QShowEvent *event)
     _toolbox->raise();
     if (_titlebar) {
         resumeToolsWindow();
-        //QTimer::singleShot(4000, this, &MainWindow::suspendToolsWindow);
+        QTimer::singleShot(4000, this, &MainWindow::suspendToolsWindow);
     }
 }
 
@@ -865,20 +915,6 @@ void MainWindow::resizeEvent(QResizeEvent *ev)
 {
     updateSizeConstraints();
     updateProxyGeometry();
-}
-
-void MainWindow::enterEvent(QEvent *ev)
-{
-    qDebug() << __func__;
-    //resumeToolsWindow();
-}
-
-void MainWindow::leaveEvent(QEvent *ev)
-{
-    qDebug() << __func__;
-    bool leave = true;
-
-    //suspendToolsWindow();
 }
 
 void MainWindow::mouseMoveEvent(QMouseEvent *ev)

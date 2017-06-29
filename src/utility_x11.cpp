@@ -242,6 +242,7 @@ QByteArray Utility::windowProperty(quint32 WId, xcb_atom_t propAtom, xcb_atom_t 
     }
 
     if (err != nullptr) {
+        qDebug() << "get property error";
         free(err);
     }
 

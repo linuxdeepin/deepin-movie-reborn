@@ -97,6 +97,8 @@ protected slots:
     void handle_mpv_events();
     void stepBurstScreenshot();
 
+protected:
+
 private:
     Handle _handle;
     MpvGLWidget *_gl_widget{nullptr};

@@ -3,6 +3,7 @@
 #include "compositing_manager.h"
 #include "options.h"
 #include "playlist_model.h"
+#include "utility.h"
 #include <mpv/client.h>
 
 #include <QtWidgets>
@@ -79,7 +80,7 @@ mpv_handle* MpvProxy::mpv_init()
     } else if (CommandLineManager::get().verbose()) {
         set_property(h, "terminal", "yes");
         set_property(h, "msg-level", "all=v");
-        //mpv_request_log_messages(h, "v");
+        mpv_request_log_messages(h, "v");
 
     } else {
         mpv_request_log_messages(h, "info");

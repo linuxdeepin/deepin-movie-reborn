@@ -32,6 +32,10 @@ public:
 signals:
     void frameMarginsChanged();
 
+    
+    void windowEntered();
+    void windowLeaved();
+
 public slots:
     void play(const QFileInfo& fi);
     void updateProxyGeometry();
@@ -40,8 +44,6 @@ protected:
     void showEvent(QShowEvent *event) override;
     void resizeEvent(QResizeEvent *ev) override;
     void mouseMoveEvent(QMouseEvent *ev) override;
-    void enterEvent(QEvent *ev) override;
-    void leaveEvent(QEvent *ev) override;
     void contextMenuEvent(QContextMenuEvent *cme) override;
 
 protected slots:

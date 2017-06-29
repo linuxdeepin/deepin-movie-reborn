@@ -17,7 +17,6 @@ DWIDGET_USE_NAMESPACE
 namespace dmr {
 
 class MpvProxy;
-class EventRelayer;
 class VolumeButton;
 class MainWindow;
 
