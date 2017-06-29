@@ -15,11 +15,16 @@
     </message>
     <message>
         <location filename="../options.cpp" line="24"/>
+        <source>dump all debug message</source>
+        <translation>输出详细的调试日志</translation>
+    </message>
+    <message>
+        <location filename="../options.cpp" line="25"/>
         <source>use opengl-cb interface [on/off/auto]</source>
         <translation>使用openg-cb接口[on/off/auto]</translation>
     </message>
     <message>
-        <location filename="../options.cpp" line="25"/>
+        <location filename="../options.cpp" line="26"/>
         <source>override config for libmpv</source>
         <translation>覆盖内置的libmpv配置</translation>
     </message>
@@ -189,7 +194,7 @@
     </message>
     <message>
         <location filename="../actions.cpp" line="35"/>
-        <location filename="../actions.cpp" line="84"/>
+        <location filename="../actions.cpp" line="85"/>
         <source>Settings</source>
         <translation>设置</translation>
     </message>
@@ -224,18 +229,23 @@
         <translation>选择字幕</translation>
     </message>
     <message>
-        <location filename="../actions.cpp" line="74"/>
+        <location filename="../actions.cpp" line="67"/>
+        <source>Hide</source>
+        <translation>隐藏字幕</translation>
+    </message>
+    <message>
+        <location filename="../actions.cpp" line="75"/>
         <source>Film Screenshot</source>
         <translation>截图</translation>
     </message>
     <message>
-        <location filename="../actions.cpp" line="75"/>
+        <location filename="../actions.cpp" line="76"/>
         <source>Burst Shooting</source>
         <translation>连拍截图</translation>
     </message>
     <message>
-        <location filename="../actions.cpp" line="83"/>
-        <location filename="../actions.cpp" line="99"/>
+        <location filename="../actions.cpp" line="84"/>
+        <location filename="../actions.cpp" line="100"/>
         <source>Film Info</source>
         <translation>电影信息</translation>
     </message>
@@ -270,7 +280,7 @@
         <translation type="vanished">选择字幕</translation>
     </message>
     <message>
-        <location filename="../actions.cpp" line="73"/>
+        <location filename="../actions.cpp" line="74"/>
         <source>Screenshot</source>
         <translation>截图</translation>
     </message>
@@ -283,7 +293,7 @@
         <translation type="vanished">连拍截图</translation>
     </message>
     <message>
-        <location filename="../actions.cpp" line="82"/>
+        <location filename="../actions.cpp" line="83"/>
         <source>Playlist</source>
         <translation>播放列表</translation>
     </message>
@@ -292,12 +302,12 @@
         <translation type="vanished">电影信息</translation>
     </message>
     <message>
-        <location filename="../actions.cpp" line="97"/>
+        <location filename="../actions.cpp" line="98"/>
         <source>Clear Playlist</source>
         <translation>清空播放列表</translation>
     </message>
     <message>
-        <location filename="../actions.cpp" line="98"/>
+        <location filename="../actions.cpp" line="99"/>
         <source>Open File In File Manager</source>
         <translation>在文件管理器打开文件</translation>
     </message>
@@ -305,28 +315,34 @@
 <context>
     <name>dmr::MainWindow</name>
     <message>
-        <location filename="../mainwindow.cpp" line="509"/>
+        <location filename="../mainwindow.cpp" line="544"/>
+        <location filename="../mainwindow.cpp" line="646"/>
         <source>Open File</source>
         <translation>打开文件</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="511"/>
+        <location filename="../mainwindow.cpp" line="546"/>
         <source>Movies (*.mkv *.mov *.mp4 *.rmvb)</source>
         <translation>视频文件(*.mkv *.mov *.mp4 *.rmvb)</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="644"/>
+        <location filename="../mainwindow.cpp" line="648"/>
+        <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</source>
+        <translation>字幕文件 (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="699"/>
         <source>View</source>
         <translation>查看</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="655"/>
+        <location filename="../mainwindow.cpp" line="710"/>
         <source>Movie Screenshot</source>
         <translation>视频截图</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="656"/>
-        <location filename="../mainwindow.cpp" line="665"/>
+        <location filename="../mainwindow.cpp" line="711"/>
+        <location filename="../mainwindow.cpp" line="720"/>
         <source>Saved to</source>
         <translation>保存到</translation>
     </message>

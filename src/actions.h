@@ -24,6 +24,7 @@ enum ActionKind {
     WindowAbove,
     LoadSubtitle,
     SelectSubtitle,
+    HideSubtitle,
     Screenshot,
     BurstScreenshot,
 
@@ -49,6 +50,8 @@ public:
 
     QMenu* titlebarMenu();
     QMenu* mainContextMenu();
+    template<class UnaryFunction> 
+    void forEachInMainMenu(UnaryFunction f);
     QMenu* playlistContextMenu();
     QList<QAction*> findActionsByKind(ActionKind kd);
 
@@ -59,6 +62,17 @@ private:
     QMenu *_playlistMenu {nullptr};
     QList<QAction*> _contextMenuActions;
 };
+
+template<class UnaryFunction>
+void ActionFactory::forEachInMainMenu(UnaryFunction f)
+{
+    auto p = _contextMenuActions.begin();
+    while (p != _contextMenuActions.end()) {
+        f(*p);
+        ++p;
+    }
+}
+
 
 }
 

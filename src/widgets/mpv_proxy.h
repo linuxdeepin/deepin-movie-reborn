@@ -12,6 +12,15 @@ using namespace mpv::qt;
 class MpvGLWidget;
 class PlaylistModel;
 
+using SubtitleInfo = QMap<QString, QVariant>;
+using AudioInfo = QMap<QString, QVariant>;
+
+struct PlayingMovieInfo 
+{
+    QList<SubtitleInfo> subs;
+    QList<AudioInfo> audios;
+};
+
 class MpvProxy: public QWidget {
     Q_OBJECT
     Q_PROPERTY(qint64 duration READ duration)
@@ -38,6 +47,11 @@ public:
     bool paused();
     CoreState state() const { return _state; }
     void setState(CoreState s);
+    const PlayingMovieInfo& playingMovieInfo() { return _pmf; }
+
+    void loadSubtitle(const QFileInfo& fi);
+    void toggleSubtitle();
+    bool isSubVisible();
 
     int volume() const;
     bool muted() const;
@@ -51,6 +65,7 @@ public:
 signals:
     void has_mpv_events();
 
+    void tracksChanged();
     void ellapsedChanged();
     void stateChanged();
     void fileLoaded();
@@ -93,12 +108,14 @@ private:
     bool _inBurstShotting {false};
     QTimer *_burstScreenshotTimer {nullptr};
     bool _pendingSeek {false};
+    PlayingMovieInfo _pmf;
 
     mpv_handle* mpv_init();
     void processPropertyChange(mpv_event_property* ev);
     void processLogMessage(mpv_event_log_message* ev);
     QPixmap takeOneScreenshot();
     void changeProperty(const QString& name, const QVariant& v);
+    void updatePlayingMovieInfo();
 };
 }
 

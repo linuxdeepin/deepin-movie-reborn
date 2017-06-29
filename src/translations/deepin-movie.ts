@@ -15,11 +15,16 @@
     </message>
     <message>
         <location filename="../options.cpp" line="24"/>
-        <source>use opengl-cb interface [on/off/auto]</source>
+        <source>dump all debug message</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../options.cpp" line="25"/>
+        <source>use opengl-cb interface [on/off/auto]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../options.cpp" line="26"/>
         <source>override config for libmpv</source>
         <translation type="unfinished"></translation>
     </message>
@@ -189,7 +194,7 @@
     </message>
     <message>
         <location filename="../actions.cpp" line="35"/>
-        <location filename="../actions.cpp" line="84"/>
+        <location filename="../actions.cpp" line="85"/>
         <source>Settings</source>
         <translation type="unfinished"></translation>
     </message>
@@ -224,18 +229,23 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../actions.cpp" line="74"/>
-        <source>Film Screenshot</source>
+        <location filename="../actions.cpp" line="67"/>
+        <source>Hide</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../actions.cpp" line="75"/>
+        <source>Film Screenshot</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../actions.cpp" line="76"/>
         <source>Burst Shooting</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../actions.cpp" line="83"/>
-        <location filename="../actions.cpp" line="99"/>
+        <location filename="../actions.cpp" line="84"/>
+        <location filename="../actions.cpp" line="100"/>
         <source>Film Info</source>
         <translation type="unfinished"></translation>
     </message>
@@ -250,22 +260,22 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../actions.cpp" line="73"/>
+        <location filename="../actions.cpp" line="74"/>
         <source>Screenshot</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../actions.cpp" line="82"/>
+        <location filename="../actions.cpp" line="83"/>
         <source>Playlist</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../actions.cpp" line="97"/>
+        <location filename="../actions.cpp" line="98"/>
         <source>Clear Playlist</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../actions.cpp" line="98"/>
+        <location filename="../actions.cpp" line="99"/>
         <source>Open File In File Manager</source>
         <translation type="unfinished"></translation>
     </message>
@@ -273,28 +283,34 @@
 <context>
     <name>dmr::MainWindow</name>
     <message>
-        <location filename="../mainwindow.cpp" line="509"/>
+        <location filename="../mainwindow.cpp" line="544"/>
+        <location filename="../mainwindow.cpp" line="646"/>
         <source>Open File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="511"/>
+        <location filename="../mainwindow.cpp" line="546"/>
         <source>Movies (*.mkv *.mov *.mp4 *.rmvb)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="644"/>
+        <location filename="../mainwindow.cpp" line="648"/>
+        <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="699"/>
         <source>View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="655"/>
+        <location filename="../mainwindow.cpp" line="710"/>
         <source>Movie Screenshot</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="656"/>
-        <location filename="../mainwindow.cpp" line="665"/>
+        <location filename="../mainwindow.cpp" line="711"/>
+        <location filename="../mainwindow.cpp" line="720"/>
         <source>Saved to</source>
         <translation type="unfinished"></translation>
     </message>

@@ -60,10 +60,10 @@ MpvProxy::MpvProxy(QWidget *parent)
 MpvProxy::~MpvProxy()
 {
     disconnect(this, &MpvProxy::has_mpv_events, this, &MpvProxy::handle_mpv_events);
-    mpv_terminate_destroy(_handle);
     if (CompositingManager::get().composited()) {
         delete _gl_widget;
     }
+    mpv_terminate_destroy(_handle);
 }
 
 mpv_handle* MpvProxy::mpv_init()
@@ -72,9 +72,17 @@ mpv_handle* MpvProxy::mpv_init()
 
     bool composited = CompositingManager::get().composited();
     
-    if (CommandLineManager::get().verbose()) {
+    if (CommandLineManager::get().debug()) {
+        set_property(h, "terminal", "yes");
+        mpv_request_log_messages(h, "debug");
+
+    } else if (CommandLineManager::get().verbose()) {
         set_property(h, "terminal", "yes");
         set_property(h, "msg-level", "all=v");
+        //mpv_request_log_messages(h, "v");
+
+    } else {
+        mpv_request_log_messages(h, "info");
     }
 
     if (composited) {
@@ -87,6 +95,9 @@ mpv_handle* MpvProxy::mpv_init()
 
     set_property(h, "input-cursor", "no");
     set_property(h, "cursor-autohide", "no");
+
+    //set_property(h, "sub-auto", "fuzzy");
+    set_property(h, "sub-visibility", "true");
 
     set_property(h, "screenshot-template", "deepin-movie-shot%n");
     set_property(h, "screenshot-directory", "/tmp");
@@ -101,7 +112,6 @@ mpv_handle* MpvProxy::mpv_init()
     mpv_observe_property(h, 0, "playlist-count", MPV_FORMAT_NONE);
     mpv_observe_property(h, 0, "core-idle", MPV_FORMAT_NODE);
 
-    mpv_request_log_messages(h, "info");
     mpv_set_wakeup_callback(h, mpv_callback, this);
     connect(this, &MpvProxy::has_mpv_events, this, &MpvProxy::handle_mpv_events,
             Qt::DirectConnection);
@@ -159,8 +169,15 @@ void MpvProxy::handle_mpv_events()
                 // caused by seek or just playing
                 break;
 
+            case MPV_EVENT_TRACKS_CHANGED:
+                qDebug() << mpv_event_name(ev->event_id);
+                updatePlayingMovieInfo();
+                emit tracksChanged();
+                break;
+
             case MPV_EVENT_FILE_LOADED:
                 qDebug() << mpv_event_name(ev->event_id);
+
                 if (_gl_widget) {
                     _gl_widget->setPlaying(true);
                 }
@@ -190,7 +207,24 @@ void MpvProxy::handle_mpv_events()
 
 void MpvProxy::processLogMessage(mpv_event_log_message* ev)
 {
-    qDebug() << QString("%1:%2: %3").arg(ev->prefix).arg(ev->level).arg(ev->text);
+    switch (ev->log_level) {
+        case MPV_LOG_LEVEL_WARN: 
+            qWarning() << QString("%1: %2").arg(ev->prefix).arg(ev->text);
+            break;
+
+        case MPV_LOG_LEVEL_ERROR: 
+        case MPV_LOG_LEVEL_FATAL: 
+            qCritical() << QString("%1: %2").arg(ev->prefix).arg(ev->text);
+            break;
+
+        case MPV_LOG_LEVEL_INFO: 
+            qInfo() << QString("%1: %2").arg(ev->prefix).arg(ev->text);
+            break;
+
+        default:
+            qDebug() << QString("%1: %2").arg(ev->prefix).arg(ev->text);
+            break;
+    }
 }
 
 void MpvProxy::processPropertyChange(mpv_event_property* ev)
@@ -204,6 +238,8 @@ void MpvProxy::processPropertyChange(mpv_event_property* ev)
         emit volumeChanged();
     } else if (name == "mute") {
         emit muteChanged();
+    } else if (name == "sub-visibility") {
+        //_hideSub = get_property(_handle, "sub-visibility")
     } else if (name == "pause") {
         if (get_property(_handle, "pause").toBool()) {
             setState(CoreState::Paused);
@@ -218,6 +254,31 @@ void MpvProxy::processPropertyChange(mpv_event_property* ev)
     } else if (name == "playlist-count") {
         emit _playlist->countChanged();
     }
+}
+
+void MpvProxy::loadSubtitle(const QFileInfo& fi)
+{
+    if (state() == CoreState::Idle) {
+        return;
+    }
+
+    QList<QVariant> args = { "sub-add", fi.absoluteFilePath() };
+    qDebug () << args;
+    command(_handle, args);
+}
+
+bool MpvProxy::isSubVisible()
+{
+    return get_property(_handle, "sub-visibility").toBool();
+}
+
+void MpvProxy::toggleSubtitle()
+{
+    if (state() == CoreState::Idle) {
+        return;
+    }
+
+    set_property(_handle, "sub-visibility", !isSubVisible());
 }
 
 void MpvProxy::volumeUp()
@@ -444,6 +505,37 @@ qint64 MpvProxy::ellapsed() const
 
 void MpvProxy::changeProperty(const QString& name, const QVariant& v)
 {
+}
+
+void MpvProxy::updatePlayingMovieInfo()
+{
+    _pmf.subs.clear();
+    _pmf.audios.clear();
+
+    auto v = get_property(_handle, "track-list").toList();
+    auto p = v.begin();
+    while (p != v.end()) {
+        const auto& t = p->toMap();
+        if (t["type"] == "audio") {
+            AudioInfo ai;
+            ai["type"] = t["type"];
+            ai["id"] = t["id"];
+            ai["external"] = t["external"];
+            ai["selected"] = t["selected"];
+            _pmf.audios.append(ai);
+        } else if (t["type"] == "sub") {
+            SubtitleInfo si;
+            si["type"] = t["type"];
+            si["id"] = t["id"];
+            si["external"] = t["external"];
+            si["selected"] = t["selected"];
+            _pmf.subs.append(si);
+        }
+        ++p;
+    }
+
+    qDebug() << _pmf.subs;
+    qDebug() << _pmf.audios;
 }
 
 } // end of namespace dmr

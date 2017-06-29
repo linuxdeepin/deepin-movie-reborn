@@ -40,8 +40,6 @@ protected:
     void showEvent(QShowEvent *event) override;
     void resizeEvent(QResizeEvent *ev) override;
     void mouseMoveEvent(QMouseEvent *ev) override;
-    void mousePressEvent(QMouseEvent *ev) override;
-    void mouseReleaseEvent(QMouseEvent *ev) override;
     void enterEvent(QEvent *ev) override;
     void leaveEvent(QEvent *ev) override;
     void contextMenuEvent(QContextMenuEvent *cme) override;
@@ -50,6 +48,7 @@ protected slots:
     void menuItemInvoked(QAction *action);
     void onApplicationStateChanged(Qt::ApplicationState e);
     void onBindingsChanged();
+    void updateActionsState();
     void onThemeChanged();
     void updatePlayState();
 

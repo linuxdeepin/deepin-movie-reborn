@@ -285,6 +285,10 @@ MainWindow::MainWindow(QWidget *parent)
             this, &MainWindow::onBindingsChanged);
     ShortcutManager::get().buildBindings();
 
+    connect(_proxy, &MpvProxy::tracksChanged, this, &MainWindow::updateActionsState);
+    connect(_proxy, &MpvProxy::fileLoaded, this, &MainWindow::updateActionsState);
+    updateActionsState();
+
     connect(&_proxy->playlist(), &PlaylistModel::currentChanged, [=]() {
         if (_proxy->state() == MpvProxy::Idle) return;
         if (_proxy->playlist().count() == 0) return;
@@ -459,6 +463,35 @@ void MainWindow::onBindingsChanged()
     }
 }
 
+void MainWindow::updateActionsState()
+{
+    auto pmf = _proxy->playingMovieInfo();
+    auto update = [=](QAction* act) {
+        auto prop = act->property("kind");
+#if QT_VERSION < QT_VERSION_CHECK(5, 6, 2)
+        auto kd = (ActionKind)act->property("kind").value<int>();
+#else
+        auto kd = act->property("kind").value<ActionKind>();
+#endif
+        bool v = true;
+        switch(kd) {
+            case ActionKind::MovieInfo:
+            case ActionKind::Screenshot:
+            case ActionKind::BurstScreenshot:
+                v = _proxy->state() != MpvProxy::Idle;
+                break;
+
+            case ActionKind::HideSubtitle:
+            case ActionKind::SelectSubtitle:
+                v = pmf.subs.size() > 0;
+            default: break;
+        }
+        act->setEnabled(v);
+    };
+
+    ActionFactory::get().forEachInMainMenu(update);
+}
+
 void MainWindow::reflectActionToUI(ActionKind kd)
 {
     QList<QAction*> acts;
@@ -467,6 +500,7 @@ void MainWindow::reflectActionToUI(ActionKind kd)
         case ActionKind::Fullscreen:
         case ActionKind::ToggleMiniMode:
         case ActionKind::TogglePlaylist:
+        case ActionKind::HideSubtitle:
             qDebug() << __func__ << kd;
             acts = ActionFactory::get().findActionsByKind(kd);
         default: break;
@@ -474,9 +508,10 @@ void MainWindow::reflectActionToUI(ActionKind kd)
 
     auto p = acts.begin();
     while (p != acts.end()) {
+        auto old = (*p)->isEnabled();
         (*p)->setEnabled(false);
         (*p)->setChecked(!(*p)->isChecked());
-        (*p)->setEnabled(true);
+        (*p)->setEnabled(old);
         ++p;
     }
 }
@@ -595,6 +630,26 @@ void MainWindow::requestAction(ActionKind kd, bool fromUI)
 
         case GotoPlaylistPrev: {
             _proxy->prev();
+            break;
+        }
+
+        case SelectSubtitle: {
+            break;
+        }
+
+        case HideSubtitle: {
+            _proxy->toggleSubtitle();
+            break;
+        }
+
+        case LoadSubtitle: {
+            QString filename = QFileDialog::getOpenFileName(this, tr("Open File"),
+                    QDir::currentPath(),
+                    tr("Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)"));
+            if (QFileInfo(filename).exists()) {
+                _proxy->loadSubtitle(QFileInfo(filename));
+            }
+            break;
             break;
         }
 
@@ -832,15 +887,6 @@ void MainWindow::mouseMoveEvent(QMouseEvent *ev)
     Utility::startWindowSystemMove(this->winId());
 #endif
     QWidget::mouseMoveEvent(ev);
-}
-
-void MainWindow::mousePressEvent(QMouseEvent *ev) 
-{
-    QWidget::mousePressEvent(ev);
-}
-
-void MainWindow::mouseReleaseEvent(QMouseEvent *ev)
-{
 }
 
 void MainWindow::contextMenuEvent(QContextMenuEvent *cme)

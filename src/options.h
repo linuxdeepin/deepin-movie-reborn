@@ -8,6 +8,7 @@ class CommandLineManager: public QCommandLineParser {
 public:
     static CommandLineManager& get();
     bool verbose() const;
+    bool debug() const;
     QString openglMode() const;
     QString overrideConfig() const;
 

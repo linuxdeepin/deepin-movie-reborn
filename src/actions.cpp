@@ -64,6 +64,7 @@ QMenu* ActionFactory::mainContextMenu()
             auto *menu = new QMenu(tr("Subtitle"));
             DEF_ACTION(tr("Load"), ActionKind::LoadSubtitle);
             DEF_ACTION(tr("Select"), ActionKind::SelectSubtitle);
+            DEF_ACTION_CHECKED(tr("Hide"), ActionKind::HideSubtitle);
 
             parent->addMenu(menu);
         }
@@ -123,6 +124,7 @@ QList<QAction*> ActionFactory::findActionsByKind(ActionKind target_kd)
     }
     return res;
 }
+
 
 #undef DEF_ACTION
 #undef DEF_ACTION_CHECKED
