@@ -45,7 +45,7 @@ MpvProxy::MpvProxy(QWidget *parent)
     _handle = Handle::FromRawHandle(mpv_init());
     if (CompositingManager::get().composited()) {
         _gl_widget = new MpvGLWidget(this, _handle);
-        _gl_widget->setVisible(_state != CoreState::Idle);
+
         auto *layout = new QHBoxLayout(this);
         layout->setContentsMargins(0, 0, 0, 0);
         layout->addWidget(_gl_widget);
@@ -137,10 +137,8 @@ void MpvProxy::setState(MpvProxy::CoreState s)
 {
     if (_state != s) {
         _state = s;
+        if (_gl_widget) { _gl_widget->setPlaying(s != CoreState::Idle); }
         emit stateChanged();
-        if (CompositingManager::get().composited()) {
-            _gl_widget->setVisible(_state != CoreState::Idle);
-        }
     }
 }
 
@@ -183,18 +181,12 @@ void MpvProxy::handle_mpv_events()
             case MPV_EVENT_FILE_LOADED:
                 qDebug() << mpv_event_name(ev->event_id);
 
-                if (_gl_widget) {
-                    _gl_widget->setPlaying(true);
-                }
                 setState(CoreState::Playing); //might paused immediately
                 emit fileLoaded();
                 break;
 
             case MPV_EVENT_END_FILE:
                 qDebug() << mpv_event_name(ev->event_id);
-                if (_gl_widget) {
-                    _gl_widget->setPlaying(false);
-                }
                 setState(CoreState::Idle);
                 break;
 

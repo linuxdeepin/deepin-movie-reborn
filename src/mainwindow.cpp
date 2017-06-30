@@ -211,14 +211,14 @@ skip_set_cursor:
         void updateGeometry(Utility::CornerEdge edge, QMouseEvent* e) {
             auto mw = static_cast<MainWindow*>(parent());
             bool keep_ratio = mw->proxy()->state() != MpvProxy::CoreState::Idle;
-
-            if (!keep_ratio) {
-                return;
-            }
-            const auto& mi = mw->proxy()->playlist().currentInfo().mi;
-            qreal ratio = mi.width / (qreal)mi.height;
             auto old_geom = mw->frameGeometry();
             auto geom = mw->frameGeometry();
+            qreal ratio = (qreal)geom.width() / geom.height();
+
+            if (keep_ratio) {
+                const auto& mi = mw->proxy()->playlist().currentInfo().mi;
+                ratio = mi.width / (qreal)mi.height;
+            }
 
             switch (edge) {
                 case Utility::BottomLeftCorner:

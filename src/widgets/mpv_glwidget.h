@@ -22,6 +22,7 @@ protected:
     void paintGL() override;
 
     void setPlaying(bool);
+    void updateVbo(const QSize& vp, const QSize& tex_sz);
 
 public slots:
     void onNewFrame();
@@ -30,6 +31,12 @@ private:
     mpv::qt::Handle _handle;
     mpv_opengl_cb_context *_gl_ctx {nullptr};
     bool _playing;
+
+    QOpenGLVertexArrayObject _vao;
+    QOpenGLBuffer _vbo;
+    QOpenGLTexture *_darkTex;
+    QOpenGLTexture *_lightTex;
+    QOpenGLShaderProgram *_glProg;
 };
 
 }
