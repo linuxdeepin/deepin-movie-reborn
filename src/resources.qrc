@@ -15,6 +15,8 @@
         <file>resources/icons/volume-slider-shape.png</file>
         <file>resources/icons/logo.svg</file>
         <file>resources/icons/logo-big.svg</file>
+        <file>resources/icons/light/init-splash.png</file>
+        <file>resources/icons/dark/init-splash.png</file>
         <file>resources/icons/light/mini/fullscreen-normal-mini.png</file>
         <file>resources/icons/light/mini/play-normal-mini.png</file>
         <file>resources/icons/light/mini/play-press-mini.png</file>

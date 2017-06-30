@@ -40,10 +40,6 @@ Dtk--Widget--DImageButton#UnfsBtn {
     qproperty-pressPic: url(:/resources/icons/light/normal/exit-fullscreen-press.png);
 }
 
-Dtk--Widget--DTitlebar * {
-    background-color: #f4f6f7;
-}
-
 dmr--ToolboxProxy {
     background-color: rgba(252, 252, 252, 0.92);
 }
@@ -88,11 +84,83 @@ QProgressBar {
     border: 0px;
 }
 
+/* -------- Play list ----------------*/
+
 dmr--PlaylistWidget {
     background-color: rgba(255, 255, 255, 0.80);
 }
 
-*[PlayItemThumb="true"] {
-    qproperty-bg: url(:/resources/icons/light/normal/film-bg.png);
-    background-color: rgba(255, 255, 255, 0.1);
+Dtk--Widget--DImageButton#CloseBtn {
+    qproperty-normalPic: url(:/resources/icons/light/normal/close-normal.png);
+    qproperty-hoverPic: url(:/resources/icons/light/normal/close-hover.png);
+    qproperty-pressPic: url(:/resources/icons/light/normal/close-press.png);
 }
+
+
+/* state Hover*/
+*[PlayItemThumb="true"][ItemState="2"] {
+    qproperty-bg: url(:/resources/icons/light/normal/film-bg.png);
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+
+*[PlayItemThumb="true"][ItemState="2"] *[Name="true"] {
+    font-size: 12px;
+    line-height: 1.5;
+    color: #ffffff;
+}
+
+*[PlayItemThumb="true"][ItemState="2"] *[Time="true"] {
+    font-size: 10px;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+/* state Playing */
+*[PlayItemThumb="true"][ItemState="1"] {
+    qproperty-bg: url(:/resources/icons/light/normal/film-bg.png);
+}
+
+
+*[PlayItemThumb="true"][ItemState="1"] *[Name="true"] {
+  font-size: 12px;
+  line-height: 1.5;
+  color: #01bdff;
+}
+
+*[PlayItemThumb="true"][ItemState="1"] *[Time="true"] {
+    font-size: 10px;
+    line-height: 1.5;
+    color: rgba(1, 189, 255, 0.6);
+}
+
+/* state Normal */
+*[PlayItemThumb="true"][ItemState="0"] {
+    qproperty-bg: url(:/resources/icons/light/normal/film-bg.png);
+}
+
+
+*[PlayItemThumb="true"][ItemState="0"] *[Name="true"] {
+    font-size: 12px;
+    line-height: 1.5;
+    color: #ffffff;
+}
+
+*[PlayItemThumb="true"][ItemState="0"] *[Time="true"] {
+    font-size: 10px;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+/* -------- End of Play list ----------------*/
+
+dmr--MainWindow {
+    background-color: rgb(252, 252, 252);
+}
+
+Dtk--Widget--DTitlebar * {
+    background-color: #f4f6f7;
+}
+
+/* ---------------------------------------- */
+

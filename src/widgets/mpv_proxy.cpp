@@ -45,6 +45,7 @@ MpvProxy::MpvProxy(QWidget *parent)
     _handle = Handle::FromRawHandle(mpv_init());
     if (CompositingManager::get().composited()) {
         _gl_widget = new MpvGLWidget(this, _handle);
+        _gl_widget->setVisible(_state != CoreState::Idle);
         auto *layout = new QHBoxLayout(this);
         layout->setContentsMargins(0, 0, 0, 0);
         layout->addWidget(_gl_widget);
@@ -137,6 +138,9 @@ void MpvProxy::setState(MpvProxy::CoreState s)
     if (_state != s) {
         _state = s;
         emit stateChanged();
+        if (CompositingManager::get().composited()) {
+            _gl_widget->setVisible(_state != CoreState::Idle);
+        }
     }
 }
 

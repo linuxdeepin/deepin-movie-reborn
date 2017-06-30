@@ -45,6 +45,7 @@ protected:
     void resizeEvent(QResizeEvent *ev) override;
     void mouseMoveEvent(QMouseEvent *ev) override;
     void contextMenuEvent(QContextMenuEvent *cme) override;
+    void paintEvent(QPaintEvent*) override;
 
 protected slots:
     void menuItemInvoked(QAction *action);

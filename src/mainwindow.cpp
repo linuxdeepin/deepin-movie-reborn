@@ -930,4 +930,18 @@ void MainWindow::contextMenuEvent(QContextMenuEvent *cme)
     ActionFactory::get().mainContextMenu()->popup(cme->globalPos());
 }
 
+void MainWindow::paintEvent(QPaintEvent* pe)
+{
+    QPainter p(this);
+    static QImage bg_dark(":/resources/icons/dark/init-splash.png");
+    static QImage bg_light(":/resources/icons/light/init-splash.png");
+
+    QImage bg = bg_dark;
+    if ("light" == qApp->theme()) {
+        bg = bg_light;
+    }
+    auto pt = rect().center() - QPoint(bg.width()/2, bg.height()/2);
+    p.drawImage(pt, bg);
+}
+
 #include "mainwindow.moc"

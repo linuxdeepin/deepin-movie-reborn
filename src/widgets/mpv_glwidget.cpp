@@ -31,7 +31,6 @@ namespace dmr {
 
     MpvGLWidget::MpvGLWidget(QWidget *parent, mpv::qt::Handle h)
         :QOpenGLWidget(parent), _handle(h) { 
-
         _gl_ctx = (mpv_opengl_cb_context*) mpv_get_sub_api(h, MPV_SUB_API_OPENGL_CB);
         if (!_gl_ctx) {
             std::runtime_error("can not init mpv gl");
@@ -57,7 +56,7 @@ namespace dmr {
     void MpvGLWidget::initializeGL() 
     {
         QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
-        f->glClearColor(0.0f, 0.0f, 0.0f, 0.5f);
+        f->glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         if (mpv_opengl_cb_init_gl(_gl_ctx, NULL, get_proc_address, NULL) < 0)
             throw std::runtime_error("could not initialize OpenGL");
     }
