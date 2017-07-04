@@ -1,10 +1,9 @@
 set(CMAKE_AUTOMOC ON)
 set(CMD_NAME deepin-movie)
 
-add_compile_options("-std=c++1y")
-set(PROJECT_INCLUDE ${PROJECT_SOURCE_DIR}/src/include)
+set(CMAKE_CXX_FLAGS "-std=c++1y -fpermissive -Wno-error -mieee")
+set(CMAKE_C_FLAGS "-Wno-error -mieee")
 set(PROJECT_INCLUDE ${PROJECT_SOURCE_DIR}/src/widgets)
-include_directories(${PROJECT_INCLUDE})
 
 include_directories(${CMAKE_INCLUDE_CURRENT_DIR})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
@@ -22,7 +21,19 @@ pkg_check_modules(Other REQUIRED IMPORTED_TARGET libffmpegthumbnailer
     libavformat libavutil libavcodec)
 
 qt5_add_resources(RCS resources.qrc)
-file(GLOB_RECURSE SRCS *.cpp)
+file(GLOB_RECURSE SRCS LIST_DIRECTORIES false *.cpp)
+
+if (ENABLE_VPU_PLATFORM)
+    list(APPEND PROJECT_INCLUDE ${PROJECT_SOURCE_DIR}/src/backends/vpu/gal/include)
+    list(APPEND PROJECT_INCLUDE ${PROJECT_SOURCE_DIR}/src/backends/vpu/include)
+    list(APPEND PROJECT_INCLUDE ${PROJECT_SOURCE_DIR}/src/backends/vpu/)
+    list(APPEND PROJECT_INCLUDE ${PROJECT_SOURCE_DIR}/src/backends/vpu/vpuapi)
+    #FIXME: change this!
+    link_directories(backends/vpu/gal/lib)
+
+    file(GLOB_RECURSE VPU_SRCS LIST_DIRECTORIES false *.c)
+    list(APPEND SRCS ${VPU_SRCS})
+endif()
 
 add_custom_target(json_i18n ALL 
     COMMAND dtk-settings-tool resources/data/settings.json > settings_translation.cpp
@@ -46,7 +57,8 @@ target_include_directories(${CMD_NAME} PUBLIC ${PROJECT_INCLUDE})
 
 target_link_libraries(${CMD_NAME} X11 Xext Xtst PkgConfig::Xcb
     Qt5::Widgets Qt5::X11Extras Qt5::DBus PkgConfig::Dtk PkgConfig::Mpv 
-    PkgConfig::Other)
+    PkgConfig::Other GAL pthread)
+
 
 install(TARGETS ${CMD_NAME} DESTINATION bin)
 install(DIRECTORY ${PROJECT_SOURCE_DIR}/src/translations

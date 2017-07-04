@@ -1,3 +1,43 @@
+#ifndef __CONFIG_H__
+#define __CONFIG_H__
+
+/* configured by cmake, do not edit */
+
 #define DMR_VERSION "@PROJECT_VERSION@"
 #cmakedefine USE_DXCB 1
+#cmakedefine01 ENABLE_VPU_PLATFORM
+// ~
 
+#ifdef ENABLE_VPU_PLATFORM
+
+#if defined(_WIN32) || defined(__WIN32__) || defined(_WIN64) || defined(WIN32) || defined(__MINGW32__)
+#       define PLATFORM_WIN32
+#elif defined(linux) || defined(__linux) || defined(ANDROID)
+#       define PLATFORM_LINUX
+#else
+#       define PLATFORM_NON_OS
+#endif
+
+#define API_VERSION 330
+
+#define SUPPORT_FFMPEG_DEMUX
+//#define REPORT_PERFORMANCE
+//#define SUPPORT_MEM_PROTECT
+
+#define BIT_CODE_FILE_PATH "/home/lily/sonald/vpu-tocao/vpu-coda851/firmware/Magellan_v1327/Magellan.h"
+
+#define CODA851
+
+// #define SUPPORT_INFINITE_INSTANCE
+ #define SUPPORT_INFINITE_INSTANCE_IN_CODA7L
+
+ #define SUPPORT_DEC_JPEG_GDI_HOST
+ #define SUPPORT_GDI
+ #define SUPPORT_ENC_COARSE_ME
+ #define SUPPORT_DEC_RESOLUTION_CHANGE
+ #define SUPPORT_DEC_SLICE_BUFFER
+ #define SUPPORT_SW_RESET
+
+#endif /* ENABLE_VPU_PLATFORM */
+
+#endif  /* __CONFIG_H__ */

@@ -32,17 +32,6 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../main.cpp" line="53"/>
-        <location filename="../main.cpp" line="74"/>
-        <source>Deepin Movie</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../main.cpp" line="55"/>
-        <source>Deepin Movie is a well-designed and full-featured video player with simple borderless design. It supports local and streaming media play with multiple video formats.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../settings_translation.cpp" line="5"/>
         <source>Empty playlist when quit</source>
         <translation type="unfinished"></translation>
@@ -183,6 +172,17 @@
         <source>Font Size</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../main.cpp" line="53"/>
+        <location filename="../main.cpp" line="74"/>
+        <source>Deepin Movie</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../main.cpp" line="55"/>
+        <source>Deepin Movie is a well-designed and full-featured video player with simple borderless design. It supports local and streaming media play with multiple video formats.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>dmr::ActionFactory</name>
@@ -209,6 +209,11 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../actions.cpp" line="57"/>
+        <source>Fullscreen</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../actions.cpp" line="58"/>
         <source>Mini Mode</source>
         <translation type="unfinished"></translation>
@@ -216,6 +221,11 @@
     <message>
         <location filename="../actions.cpp" line="59"/>
         <source>Always on Top</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../actions.cpp" line="64"/>
+        <source>Subtitle</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -234,6 +244,11 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../actions.cpp" line="74"/>
+        <source>Screenshot</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../actions.cpp" line="75"/>
         <source>Film Screenshot</source>
         <translation type="unfinished"></translation>
@@ -244,29 +259,14 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../actions.cpp" line="83"/>
+        <source>Playlist</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../actions.cpp" line="84"/>
         <location filename="../actions.cpp" line="100"/>
         <source>Film Info</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../actions.cpp" line="57"/>
-        <source>Fullscreen</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../actions.cpp" line="64"/>
-        <source>Subtitle</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../actions.cpp" line="74"/>
-        <source>Screenshot</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../actions.cpp" line="83"/>
-        <source>Playlist</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
