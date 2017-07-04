@@ -116,7 +116,7 @@ void LogMsg(int level, const char *format, ...)
   }
 	fputs(logBuf, stdout);
 #else
-	fputs(logBuf, stdout);
+	fputs(logBuf, stderr);
 #endif
 		
 		

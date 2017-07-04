@@ -90,14 +90,6 @@ enum {
 #define TEST_MULTIPLE_CALL_REGISTER_FRAME_BUFFER
 #endif
 
-//#undef DEBUG
-#define DEBUG
-#ifdef DEBUG
-#define debug(format, args...)  printf("%s,%s:%d" format "\n", __FILE__, __func__, __LINE__, ##args)
-#else
-#define debug(format, args...)
-#endif
-
 static unsigned long rpcc()
 {
         unsigned long result;
@@ -116,7 +108,7 @@ bool VpuProxy::init()
 {
     InitLog();
 
-    memset( &decConfig, 0x00, sizeof( decConfig) );
+    memset(&decConfig, 0x00, sizeof( decConfig) );
     decConfig.coreIdx = 0;
 
     strcpy(decConfig.bitstreamFileName, "/home/lily/mindenki.mkv");
@@ -180,13 +172,12 @@ int VpuProxy::loop()
 	int				instIdx, coreIdx;
 	TiledMapConfig mapCfg;
 	DRAMConfig dramCfg = {0};
-	DecConfigParam decConfig;
 	Rect		   rcPrevDisp;
 	frame_queue_item_t* display_queue = NULL;
 
-	AVFormatContext *ic;
+	AVFormatContext *ic = NULL;
 	AVPacket pkt1, *pkt=&pkt1;
-	AVCodecContext *ctxVideo;
+	AVCodecContext *ctxVideo = NULL;
 	int idxVideo;
 	int	chunkIdx = 0;
 
@@ -211,12 +202,6 @@ int VpuProxy::loop()
 	instIdx = decConfig.instNum;
 	coreIdx = decConfig.coreIdx;
 
-		
-	ic = avformat_alloc_context();
-	if (!ic)
-		return 0;
-
-	ic->flags |= CODEC_FLAG_TRUNCATED; /* we do not send complete frames */
 	err = avformat_open_input(&ic, filename, NULL,  NULL);
 	if (err < 0)
 	{
@@ -224,6 +209,7 @@ int VpuProxy::loop()
 		av_free(ic);
 		return 0;
 	}
+	ic->flags |= CODEC_FLAG_TRUNCATED; /* we do not send complete frames */
 
 	err = avformat_find_stream_info(ic,  NULL);
 	if (err < 0) 

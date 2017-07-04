@@ -20,6 +20,9 @@
 
 #include "options.h"
 #include "mainwindow.h"
+#ifdef ENABLE_VPU_PLATFORM
+#include "vpu_proxy.h"
+#endif
 
 DWIDGET_USE_NAMESPACE
 DUTIL_USE_NAMESPACE
@@ -74,6 +77,14 @@ int main(int argc, char *argv[])
     app.setApplicationDisplayName(QObject::tr("Deepin Movie"));
     app.setAttribute(Qt::AA_DontCreateNativeWidgetSiblings, true);
 
+#ifdef ENABLE_VPU_PLATFORM
+    dmr::VpuProxy mw;
+    mw.setMinimumSize(QSize(528, 400));
+    mw.resize(850, 600);
+    DUtility::moveToCenter(&mw);
+    mw.show();
+    mw.play();
+#else
 
     dmr::MainWindow mw;
     mw.setMinimumSize(QSize(528, 400));
@@ -85,6 +96,7 @@ int main(int argc, char *argv[])
         auto fi = QFileInfo(toOpenFile);
         mw.play(fi);
     }
+#endif
     return app.exec();
 }
 
