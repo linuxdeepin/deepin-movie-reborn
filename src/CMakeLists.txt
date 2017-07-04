@@ -24,9 +24,10 @@ qt5_add_resources(RCS resources.qrc)
 file(GLOB_RECURSE SRCS LIST_DIRECTORIES false *.cpp)
 
 if (ENABLE_VPU_PLATFORM)
+    list(APPEND PROJECT_INCLUDE ${PROJECT_SOURCE_DIR}/src/backends/)
+    list(APPEND PROJECT_INCLUDE ${PROJECT_SOURCE_DIR}/src/backends/vpu/)
     list(APPEND PROJECT_INCLUDE ${PROJECT_SOURCE_DIR}/src/backends/vpu/gal/include)
     list(APPEND PROJECT_INCLUDE ${PROJECT_SOURCE_DIR}/src/backends/vpu/include)
-    list(APPEND PROJECT_INCLUDE ${PROJECT_SOURCE_DIR}/src/backends/vpu/)
     list(APPEND PROJECT_INCLUDE ${PROJECT_SOURCE_DIR}/src/backends/vpu/vpuapi)
     #FIXME: change this!
     link_directories(backends/vpu/gal/lib)

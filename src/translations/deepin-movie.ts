@@ -173,13 +173,13 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="53"/>
-        <location filename="../main.cpp" line="74"/>
+        <location filename="../main.cpp" line="56"/>
+        <location filename="../main.cpp" line="77"/>
         <source>Deepin Movie</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="55"/>
+        <location filename="../main.cpp" line="58"/>
         <source>Deepin Movie is a well-designed and full-featured video player with simple borderless design. It supports local and streaming media play with multiple video formats.</source>
         <translation type="unfinished"></translation>
     </message>
