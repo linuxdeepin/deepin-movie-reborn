@@ -45,23 +45,37 @@ typedef struct
 
 namespace dmr {
 
+class VpuDecoder : public QThread
+{
+    Q_OBJECT
+public:
+    VpuDecoder();
+    ~VpuDecoder();
+
+protected:
+    void run() override;
+    bool init();
+    int loop();
+
+signals:
+    void frame(const QImage &);
+
+private:
+	DecConfigParam	decConfig;
+};
+
+
 class VpuProxy: public QWidget {
     Q_OBJECT
 public:
     VpuProxy(QWidget *parent = 0);
 
-    bool init();
 
 public slots:
     void play();
 
-protected:
-    int loop();
-
 private:
-    Uint32 core_idx {0};
-	//VpuReportConfig_t reportCfg;
-	DecConfigParam	decConfig;
+    QLabel *_canvas {0};
 };
 }
 

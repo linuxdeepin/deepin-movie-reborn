@@ -29,7 +29,9 @@ extern "C" {
 
 #include <time.h>
 
-
+#ifdef CNM_FPGA_PLATFORM
+#error "--------------------------------"
+#endif
 
 enum {
         STD_AVC_DEC = 0,
@@ -97,14 +99,377 @@ static unsigned long rpcc()
         return result;
 } 
 
+typedef enum {
+    YUV444, YUV422, YUV420, NV12, NV21, YUV400, YUYV, YVYU, UYVY, VYUY, YYY, RGB_PLANAR, RGB32, RGB24, RGB16, YUV2RGB_COLOR_FORMAT_MAX 
+} yuv2rgb_color_format;
+
+// inteleave : 0 (chroma separate mode), 1 (cbcr interleave mode), 2 (crcb interleave mode)
+static yuv2rgb_color_format convert_vpuapi_format_to_yuv2rgb_color_format(int yuv_format, int interleave) 
+{
+	//typedef enum { YUV444, YUV422, YUV420, NV12, NV21,  YUV400, YUYV, YVYU, UYVY, VYUY, YYY, RGB_PLANAR, RGB32, RGB24, RGB16 } yuv2rgb_color_format;
+	yuv2rgb_color_format format;
+
+	switch(yuv_format)
+	{
+	case FORMAT_400: format = YUV400; break;
+	case FORMAT_444: format = YUV444; break;
+	case FORMAT_224:
+	case FORMAT_422: format = YUV422; break;
+	case FORMAT_420: 
+		if (interleave == 0)
+			format = YUV420; 
+		else if (interleave == 1)
+			format = NV12;				
+		else
+			format = NV21; 
+		break;
+	default:
+		format = YUV2RGB_COLOR_FORMAT_MAX; 
+	}
+
+	return format;
+}
+
+static void vpu_yuv2rgb(int width, int height, yuv2rgb_color_format format,
+        unsigned char *src, unsigned char *rgba, int cbcr_reverse)
+{
+#define vpu_clip(var) ((var>=255)?255:(var<=0)?0:var)
+	int j, i;
+	int c, d, e;
+
+	unsigned char* line = rgba;
+	unsigned char* cur;
+	unsigned char* y = NULL;
+	unsigned char* u = NULL;
+	unsigned char* v = NULL;
+	unsigned char* misc = NULL;
+
+	int frame_size_y;
+	int frame_size_uv;
+	int frame_size;
+	int t_width;
+
+	frame_size_y = width*height;
+
+	if( format == YUV444 || format == RGB_PLANAR)
+		frame_size_uv = width*height;
+	else if( format == YUV422 )
+		frame_size_uv = (width*height)>>1;
+	else if( format == YUV420 || format == NV12 || format == NV21 )
+		frame_size_uv = (width*height)>>2;
+	else 
+		frame_size_uv = 0;
+
+	if( format == YUYV || format == YVYU  || format == UYVY  || format == VYUY )
+		frame_size = frame_size_y*2;
+	else if( format == RGB32 )
+		frame_size = frame_size_y*4;
+	else if( format == RGB24 )
+		frame_size = frame_size_y*3;
+	else if( format == RGB16 )
+		frame_size = frame_size_y*2;
+	else
+		frame_size = frame_size_y + frame_size_uv*2; 
+
+	t_width = width;
+
+
+	if( format == YUYV || format == YVYU  || format == UYVY  || format == VYUY ) {
+		misc = src;
+	}
+	else if( format == NV12 || format == NV21) {	
+		y = src;
+		misc = src + frame_size_y;
+	}
+	else if( format == RGB32 || format == RGB24 || format == RGB16 ) {
+		misc = src;
+	}
+	else {
+		y = src;
+		u = src + frame_size_y;
+		v = src + frame_size_y + frame_size_uv;		
+	}
+
+	if( format == YUV444 ){
+
+		for( j = 0 ; j < height ; j++ ){
+			cur = line;
+			for( i = 0 ; i < width ; i++ ){
+				c = y[j*width+i] - 16;
+				d = u[j*width+i] - 128;
+				e = v[j*width+i] - 128;
+
+				if (!cbcr_reverse) {
+					d = u[j*width+i] - 128;
+					e = v[j*width+i] - 128;
+				} else {
+					e = u[j*width+i] - 128;
+					e = v[j*width+i] - 128;
+				}
+				(*cur) = vpu_clip(( 298 * c           + 409 * e + 128) >> 8);cur++;
+				(*cur) = vpu_clip(( 298 * c - 100 * d - 208 * e + 128) >> 8);cur++;
+				(*cur) = vpu_clip(( 298 * c + 516 * d           + 128) >> 8);cur++;
+				(*cur) = 0; cur++;
+			}
+			line += t_width<<2;
+		}
+	}
+	else if( format == YUV422){
+		for( j = 0 ; j < height ; j++ ){
+			cur = line;
+			for( i = 0 ; i < width ; i++ ){
+				c = y[j*width+i] - 16;
+				d = u[j*(width>>1)+(i>>1)] - 128;
+				e = v[j*(width>>1)+(i>>1)] - 128;
+
+				if (!cbcr_reverse) {
+					d = u[j*(width>>1)+(i>>1)] - 128;
+					e = v[j*(width>>1)+(i>>1)] - 128;
+				} else {
+					e = u[j*(width>>1)+(i>>1)] - 128;
+					d = v[j*(width>>1)+(i>>1)] - 128;
+				}
+
+				(*cur) = vpu_clip(( 298 * c           + 409 * e + 128) >> 8);cur++;
+				(*cur) = vpu_clip(( 298 * c - 100 * d - 208 * e + 128) >> 8);cur++;
+				(*cur) = vpu_clip(( 298 * c + 516 * d           + 128) >> 8);cur++;
+				(*cur) = 0; cur++;
+			}
+			line += t_width<<2;
+		}
+	}
+	else if( format == YUYV || format == YVYU  || format == UYVY  || format == VYUY )
+	{
+		unsigned char* t = misc;
+		for( j = 0 ; j < height ; j++ ){
+			cur = line;
+			for( i = 0 ; i < width ; i+=2 ){
+				switch( format) {
+				case YUYV:
+					c = *(t  ) - 16;
+					if (!cbcr_reverse) {
+						d = *(t+1) - 128;
+						e = *(t+3) - 128;
+					} else {
+						e = *(t+1) - 128;
+						d = *(t+3) - 128;
+					}
+					break;
+				case YVYU:
+					c = *(t  ) - 16;
+					if (!cbcr_reverse) {
+						d = *(t+3) - 128;
+						e = *(t+1) - 128;
+					} else {
+						e = *(t+3) - 128;
+						d = *(t+1) - 128;
+					}
+					break;
+				case UYVY:
+					c = *(t+1) - 16;
+					if (!cbcr_reverse) {
+						d = *(t  ) - 128;
+						e = *(t+2) - 128;
+					} else {
+						e = *(t  ) - 128;
+						d = *(t+2) - 128;
+					}
+					break;
+				case VYUY:
+					c = *(t+1) - 16;
+					if (!cbcr_reverse) {
+						d = *(t+2) - 128;
+						e = *(t  ) - 128;
+					} else {
+						e = *(t+2) - 128;
+						d = *(t  ) - 128;
+					}
+					break;
+				default: // like YUYV
+					c = *(t  ) - 16;
+					if (!cbcr_reverse) {
+						d = *(t+1) - 128;
+						e = *(t+3) - 128;
+					} else {
+						e = *(t+1) - 128;
+						d = *(t+3) - 128;
+					}
+					break;
+				}
+
+				(*cur) = vpu_clip(( 298 * c           + 409 * e + 128) >> 8);cur++;
+				(*cur) = vpu_clip(( 298 * c - 100 * d - 208 * e + 128) >> 8);cur++;
+				(*cur) = vpu_clip(( 298 * c + 516 * d           + 128) >> 8);cur++;
+				(*cur) = 0;cur++;
+
+				switch( format) {
+				case YUYV:
+				case YVYU:
+					c = *(t+2) - 16;
+					break;
+
+				case VYUY:
+				case UYVY:
+					c = *(t+3) - 16;
+					break;
+				default: // like YUYV
+					c = *(t+2) - 16;
+					break;
+				}
+
+				(*cur) = vpu_clip(( 298 * c           + 409 * e + 128) >> 8);cur++;
+				(*cur) = vpu_clip(( 298 * c - 100 * d - 208 * e + 128) >> 8);cur++;
+				(*cur) = vpu_clip(( 298 * c + 516 * d           + 128) >> 8);cur++;
+				(*cur) = 0; cur++;
+
+				t += 4;
+			}
+			line += t_width<<2;
+		}
+	}
+	else if( format == YUV420 || format == NV12 || format == NV21){
+		for( j = 0 ; j < height ; j++ ){
+			cur = line;
+			for( i = 0 ; i < width ; i++ ){
+				c = y[j*width+i] - 16;
+				if (format == YUV420) {
+					if (!cbcr_reverse) {
+						d = u[(j>>1)*(width>>1)+(i>>1)] - 128;
+						e = v[(j>>1)*(width>>1)+(i>>1)] - 128;					
+					} else {
+						e = u[(j>>1)*(width>>1)+(i>>1)] - 128;
+						d = v[(j>>1)*(width>>1)+(i>>1)] - 128;	
+					}
+				}
+				else if (format == NV12) {
+					if (!cbcr_reverse) {
+						d = misc[(j>>1)*width+(i>>1<<1)  ] - 128;
+						e = misc[(j>>1)*width+(i>>1<<1)+1] - 128;					
+					} else {
+						e = misc[(j>>1)*width+(i>>1<<1)  ] - 128;
+						d = misc[(j>>1)*width+(i>>1<<1)+1] - 128;	
+					}
+				}
+				else { // if (m_color == NV21)
+					if (!cbcr_reverse) {
+						d = misc[(j>>1)*width+(i>>1<<1)+1] - 128;
+						e = misc[(j>>1)*width+(i>>1<<1)  ] - 128;					
+					} else {
+						e = misc[(j>>1)*width+(i>>1<<1)+1] - 128;
+						d = misc[(j>>1)*width+(i>>1<<1)  ] - 128;		
+					}
+				}
+				(*cur) = vpu_clip(( 298 * c           + 409 * e + 128) >> 8);cur++;
+				(*cur) = vpu_clip(( 298 * c - 100 * d - 208 * e + 128) >> 8);cur++;
+				(*cur) = vpu_clip(( 298 * c + 516 * d           + 128) >> 8);cur++;
+				(*cur) = 0; cur++;
+			}
+			line += t_width<<2;
+		}
+	}
+	else if( format == RGB_PLANAR ){
+		for( j = 0 ; j < height ; j++ ){
+			cur = line;
+			for( i = 0 ; i < width ; i++ ){
+				(*cur) = y[j*width+i];cur++;
+				(*cur) = u[j*width+i];cur++;
+				(*cur) = v[j*width+i];cur++;
+				(*cur) = 0; cur++;
+			}
+			line += t_width<<2;
+		}
+	}
+	else if( format == RGB32 ){
+		for( j = 0 ; j < height ; j++ ){
+			cur = line;
+			for( i = 0 ; i < width ; i++ ){
+				(*cur) = misc[j*width*4+i];cur++;	// R
+				(*cur) = misc[j*width*4+i+1];cur++;	// G
+				(*cur) = misc[j*width*4+i+2];cur++;	// B
+				(*cur) = misc[j*width*4+i+3];cur++;	// A
+			}
+			line += t_width<<2;
+		}
+	}
+	else if( format == RGB24 ){
+		for( j = 0 ; j < height ; j++ ){
+			cur = line;
+			for( i = 0 ; i < width ; i++ ){
+				(*cur) = misc[j*width*3+i];cur++;	// R
+				(*cur) = misc[j*width*3+i+1];cur++;	// G
+				(*cur) = misc[j*width*3+i+2];cur++;	// B
+				(*cur) = 0; cur++;
+			}
+			line += t_width<<2;
+		}
+	}
+	else if( format == RGB16 ){
+		for( j = 0 ; j < height ; j++ ){
+			cur = line;
+			for( i = 0 ; i < width ; i++ ){
+				int tmp = misc[j*width*2+i]<<8 | misc[j*width*2+i+1];
+				(*cur) = ((tmp>>11)&0x1F<<3);cur++; // R(5bit)
+				(*cur) = ((tmp>>5 )&0x3F<<2);cur++; // G(6bit)
+				(*cur) = ((tmp    )&0x1F<<3);cur++; // B(5bit)
+				(*cur) = 0; cur++;
+			}
+			line += t_width<<2;
+		}
+	}
+	else { // YYY
+		for( j = 0 ; j < height ; j++ ){
+			cur = line;
+			for( i = 0 ; i < width ; i++ ){
+				(*cur) = y[j*width+i]; cur++;
+				(*cur) = y[j*width+i]; cur++;
+				(*cur) = y[j*width+i]; cur++;
+				(*cur) = 0; cur++;
+			}
+			line += t_width<<2;
+		}	
+	}
+}
 
 namespace dmr {
+
 VpuProxy::VpuProxy(QWidget *parent)
 {
+    auto *l = new QVBoxLayout(this);
+    _canvas = new QLabel(this);
+    l->addWidget(_canvas);
+    setLayout(l);
 }
 
 
-bool VpuProxy::init()
+void VpuProxy::play()
+{
+    VpuDecoder *d = new VpuDecoder;
+    connect(d, &VpuDecoder::frame, [=](const QImage& img) {
+        _canvas->setPixmap(QPixmap::fromImage(img));
+        this->update();
+    });
+    connect(d, &VpuDecoder::finished, d, &QObject::deleteLater);
+
+    d->start();
+}
+
+VpuDecoder::VpuDecoder() 
+{
+    init();
+}
+
+VpuDecoder::~VpuDecoder() 
+{
+    qDebug() << "release VpuDecoder";
+}
+
+void VpuDecoder::run() 
+{
+    loop();
+    qDebug() << "decoder quit";
+}
+
+bool VpuDecoder::init()
 {
     InitLog();
 
@@ -134,13 +499,7 @@ bool VpuProxy::init()
     }
 }
 
-void VpuProxy::play()
-{
-    init();
-    loop();
-}
-
-int VpuProxy::loop()
+int VpuDecoder::loop()
 {
 	DecHandle		handle		= {0};
 	DecOpenParam	decOP		= {0};
@@ -252,6 +611,7 @@ int VpuProxy::loop()
 		saveImage = 1;
 	else
 		saveImage = 0;
+    saveImage = 1;
 
 	if (strlen(decConfig.yuvFileName)) 
 	{
@@ -769,7 +1129,8 @@ int VpuProxy::loop()
 
 FLUSH_BUFFER:		
 		
-		if((int_reason & (1<<INT_BIT_BIT_BUF_EMPTY)) != (1<<INT_BIT_BIT_BUF_EMPTY) && (int_reason & (1<<INT_BIT_DEC_FIELD)) != (1<<INT_BIT_DEC_FIELD))
+		if((int_reason & (1<<INT_BIT_BIT_BUF_EMPTY)) != (1<<INT_BIT_BIT_BUF_EMPTY) &&
+                (int_reason & (1<<INT_BIT_DEC_FIELD)) != (1<<INT_BIT_DEC_FIELD))
 		{
 			if (ppuEnable) 
 			{
@@ -993,12 +1354,29 @@ FLUSH_BUFFER:
 			if (ppuEnable) 
 				ppIdx = (ppIdx+1)%MAX_ROT_BUF_NUM;
 
-			if (!SaveYuvImageHelperFormat(coreIdx, fpYuv, &outputInfo.dispFrame, mapCfg, pYuv, 
-				(ppuEnable)?rcPrevDisp:outputInfo.rcDisplay, decOP.cbcrInterleave, framebufFormat, decOP.frameEndian))
-				goto ERR_DEC_OPEN;
+            if (frameIdx > 200 && frameIdx < 210) {
+            if (!SaveYuvImageHelperFormat(coreIdx, fpYuv, &outputInfo.dispFrame, mapCfg, pYuv, 
+                (ppuEnable)?rcPrevDisp:outputInfo.rcDisplay, decOP.cbcrInterleave, framebufFormat, decOP.frameEndian))
+                goto ERR_DEC_OPEN;
 
-		
-			sw_mixer_draw((coreIdx*MAX_NUM_VPU_CORE)+instIdx, 0, 0, outputInfo.dispFrame.stride, outputInfo.dispFrame.height, framebufFormat, pYuv, 0);	
+            QImage img(outputInfo.dispFrame.stride, outputInfo.dispFrame.height, 
+                    QImage::Format_RGB32);
+
+            yuv2rgb_color_format color_format = 
+                convert_vpuapi_format_to_yuv2rgb_color_format(framebufFormat, 0);
+            vpu_yuv2rgb(outputInfo.dispFrame.stride, outputInfo.dispFrame.height,
+                    color_format, pYuv, img.bits(), 1);
+    
+            emit frame(img);
+            }
+
+            //if (frameIdx > 100 && frameIdx < 110) {
+            //QString name = QString("%1.png").arg(QTime::currentTime().toString("ss:zzz"));
+            //img.save(name);
+            //}
+
+            if (frameIdx > 210) break;
+
 #ifdef FORCE_SET_VSYNC_FLAG
 			set_VSYNC_flag();
 #endif
