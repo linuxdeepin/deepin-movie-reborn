@@ -7,9 +7,9 @@
 #include "vpuhelper.h"
 #include "vdi/vdi.h"
 #include "vdi/vdi_osal.h"
-#include "mixer.h"
 #include "vpuio.h"
 #include "vpuapifunc.h"
+#include <galUtil.h>
 #include <stdio.h>
 #include <memory.h>
 
@@ -130,6 +130,7 @@ static yuv2rgb_color_format convert_vpuapi_format_to_yuv2rgb_color_format(int yu
 	return format;
 }
 
+//software convert
 static void vpu_yuv2rgb(int width, int height, yuv2rgb_color_format format,
         unsigned char *src, unsigned char *rgba, int cbcr_reverse)
 {
@@ -432,6 +433,352 @@ static void vpu_yuv2rgb(int width, int height, yuv2rgb_color_format format,
 
 namespace dmr {
 
+struct GALSurface {
+    gcoSURF                 surf {0};
+    gceSURF_FORMAT          format {0};
+    gctUINT                 width {0};
+    gctUINT                 height {0};
+    gctINT                  stride {0};
+    gctUINT32               phyAddr[3];
+    gctPOINTER              lgcAddr[3];
+
+    static GALSurface* create(gcoHAL hal, int w, int h, gceSURF_FORMAT fmt)
+    {
+        GALSurface *s = new GALSurface;
+        memset(s->phyAddr, 0, sizeof(s->phyAddr));
+        memset(s->lgcAddr, 0, sizeof(s->lgcAddr));
+
+        gcoSURF surf = gcvNULL;
+        gceSTATUS status;
+        status = gcoSURF_Construct(hal, w, h, 1, gcvSURF_BITMAP, fmt, gcvPOOL_DEFAULT, &surf);
+        if (status < 0) {
+            fprintf(stderr, "*ERROR* Failed to construct SURFACE object (status = %d)\n", status);
+            return NULL;
+        }
+        s->surf = surf;
+
+        gcmVERIFY_OK(gcoSURF_GetAlignedSize(s->surf, gcvNULL, gcvNULL, &s->stride)); 
+        gcmVERIFY_OK(gcoSURF_GetAlignedSize(s->surf, &s->width, &s->height, gcvNULL)); 
+        gcmVERIFY_OK(gcoSURF_GetFormat(s->surf, gcvNULL, &s->format));
+
+        qDebug() << "create surface " << s->width << s->stride << s->height;
+        return s;
+    }
+
+    void copyFromFb(int width, int height, FrameBuffer fb)
+    {
+        Q_ASSERT (_locked);
+
+        if (this->format == gcvSURF_I420)  {
+            unsigned long yaddr = fb.bufY;
+            unsigned long cbaddr = fb.bufCb;
+            unsigned long craddr = fb.bufCr;
+
+            fprintf(stderr, "%s: (%x, %x, %x) -> (%x, %x, %x)\n", __func__,
+                    phyAddr[0], phyAddr[1], phyAddr[2],
+                    yaddr, cbaddr, craddr);
+
+            dma_copy_in_vmem(phyAddr[0], (gctUINT32)yaddr, width*height);
+            dma_copy_in_vmem(phyAddr[1], (gctUINT32)cbaddr, width*height/4);
+            dma_copy_in_vmem(phyAddr[2], (gctUINT32)craddr, width*height/4);
+        }
+    }
+
+    void lock()
+    {
+        gceSTATUS status;
+        if (!_locked) {
+            gcmVERIFY_OK(gcoSURF_Lock(surf, phyAddr, lgcAddr));
+            qDebug() << __func__ << "phy" << phyAddr[0] << lgcAddr[0];
+            qDebug() << __func__ << "phy" << phyAddr[1] << lgcAddr[1];
+            qDebug() << __func__ << "phy" << phyAddr[2] << lgcAddr[2];
+        }
+    }
+
+    void unlock()
+    {
+        gceSTATUS status;
+        if (_locked && lgcAddr[0]) {
+            gcmVERIFY_OK(gcoSURF_Unlock(surf, lgcAddr[0]));
+            memset(lgcAddr, 0, sizeof(lgcAddr));
+            memset(phyAddr, 0, sizeof(phyAddr));
+            _locked = false;
+        }
+    }
+
+    ~GALSurface() 
+    {
+        unlock();
+
+        gceSTATUS status;
+        if (gcmIS_ERROR(gcoSURF_Destroy(surf))) {
+            fprintf(stderr, "Destroy Surf failed:%#x\n", status);
+        }
+    }
+
+private:
+    bool _locked {false};
+
+};
+
+class SurfaceScopedLock
+{
+public:
+    GALSurface *s;
+    SurfaceScopedLock(GALSurface *s): s{s} {
+        s->lock();
+    }
+
+    ~SurfaceScopedLock() {
+        s->unlock();
+    }
+};
+
+class GALConverter: public QObject 
+{
+public:
+    GALConverter() 
+    {
+        if (!init()) {
+            qDebug() << "init failed";
+        }
+    }
+
+    ~GALConverter()
+    {
+        if (g_hal != gcvNULL) {
+            gcoHAL_Commit(g_hal, gcvTRUE);
+        }
+
+        if (_dstSurf) delete _dstSurf;
+        if (_srcSurf) delete _srcSurf;
+
+        if (g_Internal != gcvNULL)
+        {
+            /* Unmap the local internal memory. */
+            gcmVERIFY_OK(gcoHAL_UnmapMemory(g_hal,
+                        g_InternalPhysical, g_InternalSize,
+                        g_Internal));
+        }
+
+        if (g_External != gcvNULL)
+        {
+            /* Unmap the local external memory. */
+            gcmVERIFY_OK(gcoHAL_UnmapMemory(g_hal,
+                        g_ExternalPhysical, g_ExternalSize,
+                        g_External));
+        }
+
+        if (g_Contiguous != gcvNULL) {
+            /* Unmap the contiguous memory. */
+            gcmVERIFY_OK(gcoHAL_UnmapMemory(g_hal,
+                        g_ContiguousPhysical, g_ContiguousSize,
+                        g_Contiguous));
+        }
+
+        if (g_hal != gcvNULL) {
+            gcoHAL_Commit(g_hal, gcvTRUE);
+            gcoHAL_Destroy(g_hal);
+            g_hal = NULL;
+        }
+
+        if (g_os != gcvNULL) {
+            gcoOS_Destroy(g_os);
+            g_os = NULL;
+        }
+    }
+
+    bool init() 
+    {
+        if (_init) return true;
+
+        gceSTATUS status;
+
+        /* Construct the gcoOS object. */
+        status = gcoOS_Construct(gcvNULL, &g_os);
+        if (status < 0) {
+            fprintf(stderr, "*ERROR* Failed to construct OS object (status = %d)\n", status);
+            return gcvFALSE;
+        }
+
+        /* Construct the gcoHAL object. */
+        status = gcoHAL_Construct(gcvNULL, g_os, &g_hal);
+        if (status < 0) {
+            fprintf(stderr, "*ERROR* Failed to construct GAL object (status = %d)\n", status);
+            return gcvFALSE;
+        }
+
+        gceCHIPMODEL model;
+        gctUINT32 revision, features, minor_features;
+        gcoHAL_QueryChipIdentity(g_hal, &model, &revision, &features, &minor_features);
+        qDebug("GAL model: %#x, revision: %u, features: %u:%u", model, revision, features, minor_features);
+
+
+        status = gcoHAL_QueryVideoMemory(g_hal,
+                &g_InternalPhysical, &g_InternalSize,
+                &g_ExternalPhysical, &g_ExternalSize,
+                &g_ContiguousPhysical, &g_ContiguousSize);
+        if (gcmIS_ERROR(status)) {
+            fprintf(stderr, "gcoHAL_QueryVideoMemory failed %d.", status);
+            return gcvFALSE;
+        }
+
+        /* Map the local internal memory. */
+        if (g_InternalSize > 0)
+        {
+            status = gcoHAL_MapMemory(g_hal,
+                    g_InternalPhysical, g_InternalSize,
+                    &g_Internal);
+            if (gcmIS_ERROR(status))
+            {
+                fprintf(stderr, "gcoHAL_MapMemory failed %d.", status);
+                return gcvFALSE;
+            }
+        }
+
+        /* Map the local external memory. */
+        if (g_ExternalSize > 0)
+        {
+            status = gcoHAL_MapMemory(g_hal,
+                    g_ExternalPhysical, g_ExternalSize,
+                    &g_External);
+            if (gcmIS_ERROR(status))
+            {
+                fprintf(stderr, "gcoHAL_MapMemory failed %d.", status);
+                return gcvFALSE;
+            }
+        }
+
+
+        /* Map the contiguous memory. */
+        if (g_ContiguousSize > 0) {
+            status = gcoHAL_MapMemory(g_hal, g_ContiguousPhysical, g_ContiguousSize, &g_Contiguous);
+            if (gcmIS_ERROR(status)) {
+                fprintf(stderr, "gcoHAL_MapMemory failed %d.", status);
+                return gcvFALSE;
+            }
+        }
+
+        status = gcoHAL_Get2DEngine(g_hal, &g_2d);
+        if (status < 0) {
+            fprintf(stderr, "*ERROR* Failed to get 2D engine object (status = %d)\n", status);
+            return gcvFALSE;
+        }
+
+        if (!gcoHAL_IsFeatureAvailable(g_hal, gcvFEATURE_YUV420_SCALER)) {
+            fprintf(stderr, "YUV420 scaler is not supported.\n");
+            return gcvFALSE;
+        }
+
+
+        qDebug() << __func__;
+        _init = true;
+        return gcvTRUE;
+    }
+
+    //FIXME: what if original format is not I420
+    gctBOOL convert(int width,int height,int format, const FrameBuffer& fb)
+    {
+        updateDestSurface(width, height, gcvSURF_A8R8G8B8); //do this once, and update only screen changed
+        if (_srcSurf == nullptr) {
+            _srcSurf = GALSurface::create(g_hal, fb.stride, fb.height, gcvSURF_I420);
+        }
+
+        gctUINT8 horKernel = 1, verKernel = 1;
+        gcsRECT srcRect;
+        gceSTATUS status;
+        gcsRECT dstRect = {0, 0, _dstSurf->width, _dstSurf->height};
+
+        srcRect.left = 0;
+        srcRect.top = 0;
+        srcRect.right = _srcSurf->width;
+        srcRect.bottom = _srcSurf->height;
+
+        fprintf(stderr, "%s: (%d, %d, %d, %d) dst (%d, %d, %d, %d)\n", __func__,
+                dstRect.left, dstRect.top, dstRect.right, dstRect.bottom,
+                srcRect.left, srcRect.top, srcRect.right, srcRect.bottom);
+
+        SurfaceScopedLock dstLock(_dstSurf);
+
+        SurfaceScopedLock scoped(_srcSurf);
+        _srcSurf->copyFromFb(width, height, fb);
+
+
+        // set clippint rect
+        gcmONERROR(gco2D_SetClipping(g_2d, &dstRect));
+        gcmONERROR(gcoSURF_SetDither(_dstSurf->surf, gcvTRUE));
+
+        // set kernel size
+        status = gco2D_SetKernelSize(g_2d, horKernel, verKernel);
+        if (status != gcvSTATUS_OK) {
+            fprintf(stderr, "2D set kernel size failed:%#x\n", status);
+            return gcvFALSE;
+        }
+
+        status = gco2D_EnableDither(g_2d, gcvTRUE);
+        if (status != gcvSTATUS_OK) {
+            fprintf(stderr, "enable gco2D_EnableDither failed:%#x\n", status);
+            return gcvFALSE;
+        }
+
+        status = gcoSURF_FilterBlit(_srcSurf->surf, _dstSurf->surf, &srcRect, &dstRect, &dstRect);
+        if (status != gcvSTATUS_OK) {
+            fprintf(stderr, "2D FilterBlit failed:%#x\n", status);
+            return gcvFALSE;
+        }
+
+        status = gco2D_EnableDither(g_2d, gcvFALSE);
+        if (status != gcvSTATUS_OK) {
+            fprintf(stderr, "disable gco2D_EnableDither failed:%#x\n", status);
+            return gcvFALSE;
+        }
+
+        gcmONERROR(gco2D_Flush(g_2d));
+        qDebug() << __func__ << "flushed";
+        gcmONERROR(gcoHAL_Commit(g_hal, gcvTRUE));
+        qDebug() << __func__ << "committed";
+
+        return gcvTRUE;
+
+OnError:
+        qDebug() << __func__ << "convert error";
+        return gcvFALSE;
+    }
+
+    bool updateDestSurface(int w, int h, gceSURF_FORMAT fmt)
+    {
+        if (_dstSurf == nullptr) {
+            _dstSurf = GALSurface::create(g_hal, w, h, fmt);
+        } else {
+            //update
+        }
+    }
+
+    void copyRGBData(uchar* bits)
+    {
+        qDebug() << __func__;
+        SurfaceScopedLock lock(_dstSurf);
+        dma_copy_from_vmem(bits, _dstSurf->phyAddr[0], _dstSurf->stride * _dstSurf->height);
+    }
+
+
+public:
+    bool _init {false};
+    GALSurface *_dstSurf {0};
+    GALSurface *_srcSurf {0};
+
+    gcoOS       g_os {gcvNULL};
+    gcoHAL      g_hal{gcvNULL};
+    gco2D       g_2d {gcvNULL};
+
+    gctPHYS_ADDR g_ContiguousPhysical, g_InternalPhysical, g_ExternalPhysical;
+    gctSIZE_T    g_ContiguousSize, g_InternalSize, g_ExternalSize;
+    gctPOINTER   g_Contiguous, g_Internal, g_External;
+
+};
+
+static GALConverter *galConverter = NULL;
+
 VpuProxy::VpuProxy(QWidget *parent)
 {
     auto *l = new QVBoxLayout(this);
@@ -441,9 +788,9 @@ VpuProxy::VpuProxy(QWidget *parent)
 }
 
 
-void VpuProxy::play()
+void VpuProxy::play(const QString& filename)
 {
-    VpuDecoder *d = new VpuDecoder;
+    VpuDecoder *d = new VpuDecoder(filename);
     connect(d, &VpuDecoder::frame, [=](const QImage& img) {
         _canvas->setPixmap(QPixmap::fromImage(img));
         this->update();
@@ -453,13 +800,15 @@ void VpuProxy::play()
     d->start();
 }
 
-VpuDecoder::VpuDecoder() 
+VpuDecoder::VpuDecoder(const QString& name) 
+    :_filename(name)
 {
     init();
 }
 
 VpuDecoder::~VpuDecoder() 
 {
+    delete galConverter;
     qDebug() << "release VpuDecoder";
 }
 
@@ -476,7 +825,8 @@ bool VpuDecoder::init()
     memset(&decConfig, 0x00, sizeof( decConfig) );
     decConfig.coreIdx = 0;
 
-    strcpy(decConfig.bitstreamFileName, "/home/lily/mindenki.mkv");
+    //strcpy(decConfig.bitstreamFileName, "/home/lily/mindenki.mkv");
+    strcpy(decConfig.bitstreamFileName, _filename.toUtf8().constData());
     decConfig.outNum = 0;
 
     //printf("Enter Bitstream Mode(0: Interrupt mode, 1: Rollback mode, 2: PicEnd mode): ");
@@ -513,14 +863,13 @@ int VpuDecoder::loop()
 	FrameBufferAllocInfo fbAllocInfo;
 	SecAxiUse		secAxiUse = {0};
 	RetCode			ret = RETCODE_SUCCESS;		
-	int				i = 0, saveImage = 0, decodefinish = 0, err=0;
+	int				i = 0, decodefinish = 0, err=0;
 	int				framebufSize = 0, framebufWidth = 0, framebufHeight = 0, rotbufWidth = 0, rotbufHeight = 0, framebufFormat = FORMAT_420, mapType;
 	int				framebufStride = 0, rotStride = 0, regFrameBufCount = 0;
 	int				frameIdx = 0, ppIdx=0, decodeIdx=0;
 	int				kbhitRet = 0,  totalNumofErrMbs = 0;
 	int				dispDoneIdx = -1;
 	BYTE *			pYuv	 =	NULL;
-	osal_file_t		fpYuv	 =	NULL;
 	int				seqInited, seqFilled, reUseChunk;
 	int				hScaleFactor, vScaleFactor, scaledWidth, scaledHeight;
 	int			 randomAccess = 0, randomAccessPos = 0;
@@ -557,7 +906,7 @@ int VpuDecoder::loop()
 	VLOG(INFO, "ffmpeg library version is codec=0x%x, format=0x%x\n", avcodec_version(), avformat_version());
 	
 
-	filename = decConfig.bitstreamFileName;
+    filename = decConfig.bitstreamFileName;
 	instIdx = decConfig.instNum;
 	coreIdx = decConfig.coreIdx;
 
@@ -606,23 +955,6 @@ int VpuDecoder::loop()
 		goto ERR_DEC_INIT;
 	}
 	memset(picHeader, 0x00, MAX_CHUNK_HEADER_SIZE);
-
-	if (strlen(decConfig.yuvFileName))
-		saveImage = 1;
-	else
-		saveImage = 0;
-    saveImage = 1;
-
-	if (strlen(decConfig.yuvFileName)) 
-	{
-		fpYuv = osal_fopen(decConfig.yuvFileName, "wb");
-		if (!fpYuv) 
-		{
-			VLOG(ERR, "Can't open %s \n", decConfig.yuvFileName);
-			goto ERR_DEC_INIT;
-		}
-	}
-
 
 	ret = VPU_Init(coreIdx);
 	if (ret != RETCODE_SUCCESS && 
@@ -706,6 +1038,8 @@ int VpuDecoder::loop()
 		VLOG(ERR, "VPU_DecGiveCommand[GET_DRAM_CONFIG] failed Error code is 0x%x \n", ret );
 		goto ERR_DEC_OPEN;
 	}
+
+    galConverter = new GALConverter;
 
 	seqInited = 0;
 	seqFilled = 0;
@@ -1039,11 +1373,6 @@ int VpuDecoder::loop()
 			framebufStride = framebufWidth;
 			framebufFormat = FORMAT_420;	
 			framebufSize = VPU_GetFrameBufSize(framebufStride, framebufHeight, mapType, framebufFormat, &dramCfg);
-			sw_mixer_close((coreIdx*MAX_NUM_VPU_CORE)+instIdx);
-			if (!ppuEnable)
-				sw_mixer_open((coreIdx*MAX_NUM_VPU_CORE)+instIdx, framebufStride, framebufHeight);
-			else
-				sw_mixer_open((coreIdx*MAX_NUM_VPU_CORE)+instIdx, rotStride, rotbufHeight);
 
 			// the size of pYuv should be aligned 8 byte. because of C&M HPI bus system constraint.
 			pYuv = (BYTE*)osal_malloc(framebufSize);
@@ -1120,8 +1449,7 @@ int VpuDecoder::loop()
 			
 			}
 
-
-			InitMixerInt();
+			//InitMixerInt();
 
 			seqInited = 1;			
 
@@ -1336,46 +1664,50 @@ FLUSH_BUFFER:
 		if (outputInfo.indexFrameDisplay >= 0)
 			frame_queue_enqueue(display_queue, outputInfo.indexFrameDisplay);
 
-		if (!saveImage)
-		{			
-			if (!ppuEnable) 
-				DisplayMixer(&outputInfo.dispFrame, framebufStride, framebufHeight);
-			else
-			{
-				ppIdx = (ppIdx+1)%MAX_ROT_BUF_NUM;	
-				DisplayMixer(&outputInfo.dispFrame, rotStride, rotbufHeight);
-			}
-#ifdef FORCE_SET_VSYNC_FLAG
-			set_VSYNC_flag();
-#endif
-		}
-		else // store image
 		{
 			if (ppuEnable) 
 				ppIdx = (ppIdx+1)%MAX_ROT_BUF_NUM;
 
-            if (frameIdx > 200 && frameIdx < 210) {
-            if (!SaveYuvImageHelperFormat(coreIdx, fpYuv, &outputInfo.dispFrame, mapCfg, pYuv, 
-                (ppuEnable)?rcPrevDisp:outputInfo.rcDisplay, decOP.cbcrInterleave, framebufFormat, decOP.frameEndian))
-                goto ERR_DEC_OPEN;
-
+#if 0
+            //QImage img(850, 600, QImage::Format_RGB32);
             QImage img(outputInfo.dispFrame.stride, outputInfo.dispFrame.height, 
                     QImage::Format_RGB32);
+            galConverter->convert(img.width(), img.height(), gcvSURF_I420, outputInfo.dispFrame);
+            galConverter->copyRGBData(img.bits());
+            
+#if 0
+            QImage img(outputInfo.dispFrame.stride, outputInfo.dispFrame.height, 
+                    QImage::Format_RGB32);
+            galConverter->_srcSurf = GALSurface::create(galConverter->g_hal,
+                    outputInfo.dispFrame.stride, outputInfo.dispFrame.height, gcvSURF_I420);
+            {
+                SurfaceScopedLock scoped(galConverter->_srcSurf);
+                galConverter->_srcSurf->copyFromFb(
+                        outputInfo.dispFrame.stride, outputInfo.dispFrame.height, outputInfo.dispFrame);
 
+                vdi_read_memory(coreIdx, galConverter->_srcSurf->phyAddr[0], 
+                        pYuv, framebufSize, decOP.frameEndian);
+                yuv2rgb_color_format color_format = 
+                    convert_vpuapi_format_to_yuv2rgb_color_format(framebufFormat, 0);
+                vpu_yuv2rgb(outputInfo.dispFrame.stride, outputInfo.dispFrame.height,
+                        color_format, pYuv, img.bits(), 1);
+            }
+#endif
+#else
+            QImage img(outputInfo.dispFrame.stride, outputInfo.dispFrame.height, 
+                    QImage::Format_RGB32);
+            //sw coversion
+            vdi_read_memory(coreIdx, outputInfo.dispFrame.bufY, pYuv, framebufSize, decOP.frameEndian);
             yuv2rgb_color_format color_format = 
                 convert_vpuapi_format_to_yuv2rgb_color_format(framebufFormat, 0);
             vpu_yuv2rgb(outputInfo.dispFrame.stride, outputInfo.dispFrame.height,
                     color_format, pYuv, img.bits(), 1);
+#endif
     
             emit frame(img);
-            }
 
-            //if (frameIdx > 100 && frameIdx < 110) {
-            //QString name = QString("%1.png").arg(QTime::currentTime().toString("ss:zzz"));
-            //img.save(name);
-            //}
-
-            if (frameIdx > 210) break;
+            qDebug() << QTime::currentTime().toString("ss.zzz");
+            if (frameIdx > 100) break;
 
 #ifdef FORCE_SET_VSYNC_FLAG
 			set_VSYNC_flag();
@@ -1438,15 +1770,12 @@ ERR_DEC_INIT:
 	if( pYuv )
 		free( pYuv );
 
-	if( fpYuv )
-		osal_fclose( fpYuv );
-
 	if ( picHeader )
 		free(picHeader);
 	
 //	avformat_close_input(&ic);	
 
-	sw_mixer_close((coreIdx*MAX_NUM_VPU_CORE)+instIdx);
+	//sw_mixer_close((coreIdx*MAX_NUM_VPU_CORE)+instIdx);
 
 	VPU_DeInit(coreIdx);
 	return 1;

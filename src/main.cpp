@@ -83,7 +83,10 @@ int main(int argc, char *argv[])
     mw.resize(850, 600);
     DUtility::moveToCenter(&mw);
     mw.show();
-    mw.play();
+    auto fi = QFileInfo(toOpenFile);
+    if (fi.exists()) {
+        mw.play(fi.absoluteFilePath());
+    }
 #else
 
     dmr::MainWindow mw;

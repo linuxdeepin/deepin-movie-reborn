@@ -49,7 +49,7 @@ class VpuDecoder : public QThread
 {
     Q_OBJECT
 public:
-    VpuDecoder();
+    VpuDecoder(const QString& name);
     ~VpuDecoder();
 
 protected:
@@ -62,6 +62,7 @@ signals:
 
 private:
 	DecConfigParam	decConfig;
+    QString _filename;
 };
 
 
@@ -72,7 +73,7 @@ public:
 
 
 public slots:
-    void play();
+    void play(const QString& filename);
 
 private:
     QLabel *_canvas {0};

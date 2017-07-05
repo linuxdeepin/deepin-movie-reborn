@@ -132,6 +132,9 @@ extern "C" {
 	int vdi_close_instance(unsigned long coreIdx, unsigned long instIdx);
 	int vdi_set_bit_firmware_to_pm(unsigned long coreIdx, const unsigned short *code);
 
+    void dma_copy_in_vmem(unsigned int dst, unsigned int src, int len);
+    void dma_copy_from_vmem(unsigned char* dst, unsigned int src, int len);
+
 #if 0
 	int dma_enable(void);
 #endif	

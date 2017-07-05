@@ -30,7 +30,7 @@ if (ENABLE_VPU_PLATFORM)
     list(APPEND PROJECT_INCLUDE ${PROJECT_SOURCE_DIR}/src/backends/vpu/include)
     list(APPEND PROJECT_INCLUDE ${PROJECT_SOURCE_DIR}/src/backends/vpu/vpuapi)
     #FIXME: change this!
-    link_directories(backends/vpu/gal/lib)
+    #link_directories(backends/vpu/gal/lib)
 
     file(GLOB_RECURSE VPU_SRCS LIST_DIRECTORIES false *.c)
     list(APPEND SRCS ${VPU_SRCS})
