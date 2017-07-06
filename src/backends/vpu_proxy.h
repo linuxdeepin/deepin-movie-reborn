@@ -88,6 +88,8 @@ private:
 	AVPacket  *pkt {0};
 	AVCodecContext *ctxVideo {0};
 	int idxVideo;
+    int idxAudio;
+    int idxSubtitle;
 	int	chunkIdx {0};
 	BYTE *seqHeader {0};
 	int seqHeaderSize {0};
