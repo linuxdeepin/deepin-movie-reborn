@@ -458,10 +458,10 @@ struct GALSurface {
         s->surf = surf;
 
         gcmVERIFY_OK(gcoSURF_GetAlignedSize(s->surf, gcvNULL, gcvNULL, &s->stride)); 
-        gcmVERIFY_OK(gcoSURF_GetAlignedSize(s->surf, &s->width, &s->height, gcvNULL)); 
+        gcmVERIFY_OK(gcoSURF_GetSize(s->surf, &s->width, &s->height, gcvNULL)); 
         gcmVERIFY_OK(gcoSURF_GetFormat(s->surf, gcvNULL, &s->format));
 
-        qDebug() << "create surface " << s->width << s->stride << s->height;
+        fprintf(stderr, "create surface w %d stride %d  h %d\n", s->width, s->stride, s->height);
         return s;
     }
 
@@ -489,9 +489,9 @@ struct GALSurface {
         gceSTATUS status;
         if (!_locked) {
             gcmVERIFY_OK(gcoSURF_Lock(surf, phyAddr, lgcAddr));
-            qDebug() << __func__ << "phy" << phyAddr[0] << lgcAddr[0];
-            qDebug() << __func__ << "phy" << phyAddr[1] << lgcAddr[1];
-            qDebug() << __func__ << "phy" << phyAddr[2] << lgcAddr[2];
+            fprintf(stderr, "%s: %s %x %x\n", __func__, "phy", phyAddr[0], lgcAddr[0]);
+            fprintf(stderr, "%s: %s %x %x\n", __func__, "phy", phyAddr[1], lgcAddr[1]);
+            fprintf(stderr, "%s: %s %x %x\n", __func__, "phy", phyAddr[2], lgcAddr[2]);
         }
     }
 
@@ -540,7 +540,7 @@ public:
     GALConverter() 
     {
         if (!init()) {
-            qDebug() << "init failed";
+            fprintf(stderr, "GALConverter init failed\n");
         }
     }
 
@@ -608,11 +608,6 @@ public:
             return gcvFALSE;
         }
 
-        gceCHIPMODEL model;
-        gctUINT32 revision, features, minor_features;
-        gcoHAL_QueryChipIdentity(g_hal, &model, &revision, &features, &minor_features);
-        qDebug("GAL model: %#x, revision: %u, features: %u:%u", model, revision, features, minor_features);
-
 
         status = gcoHAL_QueryVideoMemory(g_hal,
                 &g_InternalPhysical, &g_InternalSize,
@@ -671,7 +666,7 @@ public:
         }
 
 
-        qDebug() << __func__;
+        fprintf(stderr, "%s\n", __func__);
         _init = true;
         return gcvTRUE;
     }
@@ -734,14 +729,14 @@ public:
         }
 
         gcmONERROR(gco2D_Flush(g_2d));
-        qDebug() << __func__ << "flushed";
+        fprintf(stderr, "%s: flushed\n", __func__);
         gcmONERROR(gcoHAL_Commit(g_hal, gcvTRUE));
-        qDebug() << __func__ << "committed";
+        fprintf(stderr, "%s: commit done\n", __func__);
 
         return gcvTRUE;
 
 OnError:
-        qDebug() << __func__ << "convert error";
+        fprintf(stderr, "%s: convert failed\n", __func__);
         return gcvFALSE;
     }
 
@@ -756,7 +751,7 @@ OnError:
 
     void copyRGBData(uchar* bits)
     {
-        qDebug() << __func__;
+        fprintf(stderr, "%s\n", __func__);
         SurfaceScopedLock lock(_dstSurf);
         dma_copy_from_vmem(bits, _dstSurf->phyAddr[0], _dstSurf->stride * _dstSurf->height);
     }
@@ -809,13 +804,13 @@ VpuDecoder::VpuDecoder(const QString& name)
 VpuDecoder::~VpuDecoder() 
 {
     delete galConverter;
-    qDebug() << "release VpuDecoder";
+    fprintf(stderr, "%s: release gal\n", __func__);
 }
 
 void VpuDecoder::run() 
 {
     loop();
-    qDebug() << "decoder quit";
+    fprintf(stderr, "%s: decoder quit\n", __func__);
 }
 
 bool VpuDecoder::init()
@@ -849,38 +844,258 @@ bool VpuDecoder::init()
     }
 }
 
+// return -1 = error, 0 = continue, 1 = success
+int VpuDecoder::seqInit()
+{
+    if (_seqInited)
+        return 1;
+
+	RetCode			ret =  RETCODE_SUCCESS;		
+	int				int_reason = 0;
+	SecAxiUse		secAxiUse = {0};
+
+    ConfigSeqReport(coreIdx, handle, decOP.bitstreamFormat);
+    if (decOP.bitstreamMode == BS_MODE_PIC_END)
+    {
+        ret = VPU_DecGetInitialInfo(handle, &initialInfo);
+        if (ret != RETCODE_SUCCESS) 
+        {
+            if (ret == RETCODE_MEMORY_ACCESS_VIOLATION)
+                PrintMemoryAccessViolationReason(coreIdx, NULL);
+            VLOG(ERR, "VPU_DecGetInitialInfo failed Error code is 0x%x \n", ret);
+            return -1;
+        }
+        VPU_ClearInterrupt(coreIdx);
+    }
+    else
+    {
+        if((int_reason & (1<<INT_BIT_BIT_BUF_EMPTY)) != (1<<INT_BIT_BIT_BUF_EMPTY))
+        {
+            ret = VPU_DecIssueSeqInit(handle);
+            if (ret != RETCODE_SUCCESS)
+            {
+                VLOG(ERR, "VPU_DecIssueSeqInit failed Error code is 0x%x \n", ret);
+                return -1;
+            }
+        }
+        else
+        {
+            // After VPU generate the BIT_EMPTY interrupt. HOST should feed the bitstream up to 1024 in case of seq_init
+            if (bsfillSize < VPU_GBU_SIZE*2)
+                return 0;
+                //continue;
+        }
+
+        while (1)
+        {
+            int_reason = VPU_WaitInterrupt(coreIdx, VPU_DEC_TIMEOUT);
+
+            if (int_reason)
+                VPU_ClearInterrupt(coreIdx);
+
+            if(int_reason & (1<<INT_BIT_BIT_BUF_EMPTY)) 
+                break;
+
+
+            CheckUserDataInterrupt(coreIdx, handle, 1, decOP.bitstreamFormat, int_reason);
+
+            if (int_reason)
+            {
+                if (int_reason & (1<<INT_BIT_SEQ_INIT)) 
+                {
+                    _seqInited = 1;
+                    break;
+                }
+            }
+        }
+
+        if(int_reason & (1<<INT_BIT_BIT_BUF_EMPTY) || int_reason == -1) 
+        {
+            bsfillSize = 0;
+            return 0;
+            //continue; // go to take next chunk.
+        }
+        if (_seqInited)
+        {
+            ret = VPU_DecCompleteSeqInit(handle, &initialInfo);	
+            if (ret != RETCODE_SUCCESS)
+            {
+                if (ret == RETCODE_MEMORY_ACCESS_VIOLATION)
+                    PrintMemoryAccessViolationReason(coreIdx, NULL);
+                if (initialInfo.seqInitErrReason & (1<<31)) // this case happened only ROLLBACK mode
+                    VLOG(ERR, "Not enough header : Parser has to feed right size of a sequence header  \n");
+                VLOG(ERR, "VPU_DecCompleteSeqInit failed Error code is 0x%x \n", ret );
+                return -1;
+            }			
+        }
+        else
+        {
+            VLOG(ERR, "VPU_DecGetInitialInfo failed Error code is 0x%x \n", ret);
+            return -1;
+        }
+    }
+
+
+    SaveSeqReport(coreIdx, handle, &initialInfo, decOP.bitstreamFormat);	
+
+    if (decOP.bitstreamFormat == STD_VP8)		
+    {
+        // For VP8 frame upsampling infomration
+        static const int scale_factor_mul[4] = {1, 5, 5, 2};
+        static const int scale_factor_div[4] = {1, 4, 3, 1};
+        hScaleFactor = initialInfo.vp8ScaleInfo.hScaleFactor;
+        vScaleFactor = initialInfo.vp8ScaleInfo.vScaleFactor;
+        scaledWidth = initialInfo.picWidth * scale_factor_mul[hScaleFactor] / scale_factor_div[hScaleFactor];
+        scaledHeight = initialInfo.picHeight * scale_factor_mul[vScaleFactor] / scale_factor_div[vScaleFactor];
+        framebufWidth = ((scaledWidth+15)&~15);
+        if (IsSupportInterlaceMode(decOP.bitstreamFormat, &initialInfo))
+            framebufHeight = ((scaledHeight+31)&~31); // framebufheight must be aligned by 31 because of the number of MB height would be odd in each filed picture.
+        else
+            framebufHeight = ((scaledHeight+15)&~15);
+
+        rotbufWidth = (decConfig.rotAngle == 90 || decConfig.rotAngle == 270) ?
+            ((scaledHeight+15)&~15) : ((scaledWidth+15)&~15);
+        rotbufHeight = (decConfig.rotAngle == 90 || decConfig.rotAngle == 270) ?
+            ((scaledWidth+15)&~15) : ((scaledHeight+15)&~15);				
+    }
+    else
+    {
+        if (decConfig.maxWidth)
+        {
+            if (decConfig.maxWidth < initialInfo.picWidth)
+            {
+                VLOG(ERR, "maxWidth is too small\n");
+                return -1;
+            }
+            framebufWidth = ((decConfig.maxWidth+15)&~15);
+        }
+        else
+            framebufWidth = ((initialInfo.picWidth+15)&~15);
+
+        if (decConfig.maxHeight)
+        {
+            if (decConfig.maxHeight < initialInfo.picHeight)
+            {
+                VLOG(ERR, "maxHeight is too small\n");
+                return -1;
+            }
+
+            if (IsSupportInterlaceMode(decOP.bitstreamFormat, &initialInfo))
+                framebufHeight = ((decConfig.maxHeight+31)&~31); // framebufheight must be aligned by 31 because of the number of MB height would be odd in each filed picture.
+            else
+                framebufHeight = ((decConfig.maxHeight+15)&~15);
+        }
+        else
+        {
+            if (IsSupportInterlaceMode(decOP.bitstreamFormat, &initialInfo))
+                framebufHeight = ((initialInfo.picHeight+31)&~31); // framebufheight must be aligned by 31 because of the number of MB height would be odd in each filed picture.
+            else
+                framebufHeight = ((initialInfo.picHeight+15)&~15);
+        }
+        rotbufWidth = (decConfig.rotAngle == 90 || decConfig.rotAngle == 270) ? 
+            ((initialInfo.picHeight+15)&~15) : ((initialInfo.picWidth+15)&~15);
+        rotbufHeight = (decConfig.rotAngle == 90 || decConfig.rotAngle == 270) ? 
+            ((initialInfo.picWidth+15)&~15) : ((initialInfo.picHeight+15)&~15);
+    }
+
+    rotStride = rotbufWidth;
+    framebufStride = framebufWidth;
+    framebufFormat = FORMAT_420;	
+    framebufSize = VPU_GetFrameBufSize(framebufStride, framebufHeight, mapType, framebufFormat, &dramCfg);
+
+    // the size of pYuv should be aligned 8 byte. because of C&M HPI bus system constraint.
+    pYuv = (BYTE*)osal_malloc(framebufSize);
+    if (!pYuv) 
+    {
+        VLOG(ERR, "Fail to allocation memory for display buffer\n");
+        return -1;
+    }
+
+    secAxiUse.useBitEnable  = USE_BIT_INTERNAL_BUF;
+    secAxiUse.useIpEnable   = USE_IP_INTERNAL_BUF;
+    secAxiUse.useDbkYEnable = USE_DBKY_INTERNAL_BUF;
+    secAxiUse.useDbkCEnable = USE_DBKC_INTERNAL_BUF;
+    secAxiUse.useBtpEnable  = USE_BTP_INTERNAL_BUF;
+    secAxiUse.useOvlEnable  = USE_OVL_INTERNAL_BUF;
+
+    VPU_DecGiveCommand(handle, SET_SEC_AXI, &secAxiUse);
+
+
+    regFrameBufCount = initialInfo.minFrameBufferCount + EXTRA_FRAME_BUFFER_NUM;
+
+#ifdef SUPPORT_DEC_RESOLUTION_CHANGE
+    decBufInfo.maxDecMbX = framebufWidth/16;
+    decBufInfo.maxDecMbY = ((framebufHeight + 31 ) & ~31)/16;
+    decBufInfo.maxDecMbNum = decBufInfo.maxDecMbX*decBufInfo.maxDecMbY;
+#endif
+#if defined(SUPPORT_DEC_SLICE_BUFFER) || defined(SUPPORT_DEC_RESOLUTION_CHANGE)
+    // Register frame buffers requested by the decoder.
+    ret = VPU_DecRegisterFrameBuffer(handle, NULL, regFrameBufCount, framebufStride, framebufHeight, mapType, &decBufInfo); // frame map type (can be changed before register frame buffer)
+#else
+    // Register frame buffers requested by the decoder.
+    ret = VPU_DecRegisterFrameBuffer(handle, NULL, regFrameBufCount, framebufStride, framebufHeight, mapType); // frame map type (can be changed before register frame buffer)
+#endif
+    if (ret != RETCODE_SUCCESS) 
+    {
+        VLOG(ERR, "VPU_DecRegisterFrameBuffer failed Error code is 0x%x \n", ret);
+        return -1;
+    }
+
+    VPU_DecGiveCommand(handle, GET_TILEDMAP_CONFIG, &mapCfg);
+
+    if (ppuEnable) 
+    {
+        ppIdx = 0;
+
+        fbAllocInfo.format          = framebufFormat;
+        fbAllocInfo.cbcrInterleave  = decOP.cbcrInterleave;
+        if (decOP.tiled2LinearEnable)
+            fbAllocInfo.mapType = LINEAR_FRAME_MAP;
+        else
+            fbAllocInfo.mapType = mapType;
+
+        fbAllocInfo.stride  = rotStride;
+        fbAllocInfo.height  = rotbufHeight;
+        fbAllocInfo.num     = MAX_ROT_BUF_NUM;
+        fbAllocInfo.endian  = decOP.frameEndian;
+        fbAllocInfo.type    = FB_TYPE_PPU;
+        ret = VPU_DecAllocateFrameBuffer(handle, fbAllocInfo, fbPPU);
+        if( ret != RETCODE_SUCCESS )
+        {
+            VLOG(ERR, "VPU_DecAllocateFrameBuffer fail to allocate source frame buffer is 0x%x \n", ret );
+            return -1;
+        }
+
+        ppIdx = 0;
+
+        if (decConfig.useRot)
+        {
+            VPU_DecGiveCommand(handle, SET_ROTATION_ANGLE, &(decConfig.rotAngle));
+            VPU_DecGiveCommand(handle, SET_MIRROR_DIRECTION, &(decConfig.mirDir));
+        }
+
+        VPU_DecGiveCommand(handle, SET_ROTATOR_STRIDE, &rotStride);
+
+    }
+
+    _seqInited = 1;			
+    return 1;
+}
+
 int VpuDecoder::loop()
 {
-	DecHandle		handle		= {0};
-	DecOpenParam	decOP		= {0};
-	DecInitialInfo	initialInfo = {0};
-	DecOutputInfo	outputInfo	= {0};
-	DecParam		decParam	= {0};
-	BufInfo			bufInfo	 = {0};
-	vpu_buffer_t	vbStream	= {0};
-
-	FrameBuffer		fbPPU[MAX_ROT_BUF_NUM];
-	FrameBufferAllocInfo fbAllocInfo;
-	SecAxiUse		secAxiUse = {0};
-	RetCode			ret = RETCODE_SUCCESS;		
-	int				i = 0, decodefinish = 0, err=0;
-	int				framebufSize = 0, framebufWidth = 0, framebufHeight = 0, rotbufWidth = 0, rotbufHeight = 0, framebufFormat = FORMAT_420, mapType;
-	int				framebufStride = 0, rotStride = 0, regFrameBufCount = 0;
-	int				frameIdx = 0, ppIdx=0, decodeIdx=0;
-	int				kbhitRet = 0,  totalNumofErrMbs = 0;
+    int i = 0;
+	RetCode			ret =  RETCODE_SUCCESS;		
+	int				decodefinish = 0;
+	int				seqFilled, reUseChunk;
+	int				totalNumofErrMbs = 0;
 	int				dispDoneIdx = -1;
-	BYTE *			pYuv	 =	NULL;
-	int				seqInited, seqFilled, reUseChunk;
-	int				hScaleFactor, vScaleFactor, scaledWidth, scaledHeight;
-	int			 randomAccess = 0, randomAccessPos = 0;
-	int				ppuEnable = 0;
 	int				int_reason = 0;
-	int				bsfillSize = 0;
 	int				size;
-	int				instIdx, coreIdx;
-	TiledMapConfig mapCfg;
-	DRAMConfig dramCfg = {0};
+	int			    randomAccess = 0, randomAccessPos = 0;
+    int             err;
 	Rect		   rcPrevDisp;
+
 	frame_queue_item_t* display_queue = NULL;
 
 	AVFormatContext *ic = NULL;
@@ -897,9 +1112,6 @@ int VpuDecoder::loop()
 	int picHeaderSize = 0;
 
 	const char *filename;
-#if defined(SUPPORT_DEC_SLICE_BUFFER) || defined(SUPPORT_DEC_RESOLUTION_CHANGE)
-	DecBufInfo decBufInfo;
-#endif
 
 	av_register_all();
 
@@ -907,8 +1119,6 @@ int VpuDecoder::loop()
 	
 
     filename = decConfig.bitstreamFileName;
-	instIdx = decConfig.instNum;
-	coreIdx = decConfig.coreIdx;
 
 	err = avformat_open_input(&ic, filename, NULL,  NULL);
 	if (err < 0)
@@ -977,7 +1187,7 @@ int VpuDecoder::loop()
 		goto ERR_DEC_INIT;
 	}
 
-	vbStream.size = STREAM_BUF_SIZE; //STREAM_BUF_SIZE;	
+	vbStream.size = STREAM_BUF_SIZE; 
 	vbStream.size = ((vbStream.size+1023)&~1023);
 	if (vdi_allocate_dma_memory(coreIdx, &vbStream) < 0)
 	{
@@ -995,21 +1205,8 @@ int VpuDecoder::loop()
         decOP.mp4Class = codecIdToMp4Class(ctxVideo->codec_id);
 
 
-	decOP.tiled2LinearEnable = (decConfig.mapType>>4)&0x1;
-	mapType = decConfig.mapType & 0xf;
-	if (mapType) 
-	{
-		decOP.wtlEnable = decConfig.wtlEnable;
-		if (decOP.wtlEnable)
-		{
-            decConfig.rotAngle;
-            decConfig.mirDir;
-            decConfig.useRot = 0;
-            decConfig.useDering = 0;
-			decOP.mp4DeblkEnable = 0;
-            decOP.tiled2LinearEnable = 0;
-		}
-	}
+	decOP.tiled2LinearEnable = 0;
+	mapType = LINEAR_FRAME_MAP;
 
 	decOP.cbcrInterleave = CBCR_INTERLEAVE;
 	if (mapType == TILED_FRAME_MB_RASTER_MAP ||
@@ -1041,7 +1238,6 @@ int VpuDecoder::loop()
 
     galConverter = new GALConverter;
 
-	seqInited = 0;
 	seqFilled = 0;
 	bsfillSize = 0;
 	reUseChunk = 0;
@@ -1121,7 +1317,7 @@ int VpuDecoder::loop()
 		chunkSize = pkt->size;
 
 		
-		if (!seqInited && !seqFilled)
+		if (!_seqInited && !seqFilled)
 		{
 			seqHeaderSize = BuildSeqHeader(seqHeader, decOP.bitstreamFormat, ic->streams[idxVideo]);	// make sequence data as reference file header to support VPU decoder.
 			switch(decOP.bitstreamFormat)
@@ -1192,268 +1388,16 @@ int VpuDecoder::loop()
 			break;
 		}		
 		
-//#define DUMP_ES_DATA
-//#define DUMP_ES_WITH_SIZE
-#ifdef DUMP_ES_DATA
-		{
-			osal_file_t fpDump;
-			if (chunkIdx == 0)
-				fpDump = osal_fopen("dump.dat", "wb");
-			else
-				fpDump = osal_fopen("dump.dat", "a+b");
-			if (fpDump)
-			{
-				if (chunkIdx == 0) 
-				{
-					osal_fwrite(&seqHeaderSize, 4, 1, fpDump);
-					osal_fwrite(seqHeader, seqHeaderSize, 1, fpDump);
-				}
-				if (picHeaderSize) 
-				{
-					osal_fwrite(&picHeaderSize, 4, 1, fpDump);
-					osal_fwrite(picHeader, picHeaderSize, 1, fpDump);	
-				}
-				osal_fwrite(&chunkSize, 4, 1, fpDump);
-				osal_fwrite(chunkData, chunkSize, 1, fpDump);					
-				osal_fclose(fpDump);
-			}
-		}
-#endif
 		av_free_packet(pkt);
 
 		chunkIdx++;
 
 
-		if (!seqInited)
-		{ 
-			ConfigSeqReport(coreIdx, handle, decOP.bitstreamFormat);
-			if (decOP.bitstreamMode == BS_MODE_PIC_END)
-			{
-				ret = VPU_DecGetInitialInfo(handle, &initialInfo);
-				if (ret != RETCODE_SUCCESS) 
-				{
-					if (ret == RETCODE_MEMORY_ACCESS_VIOLATION)
-						PrintMemoryAccessViolationReason(coreIdx, NULL);
-					VLOG(ERR, "VPU_DecGetInitialInfo failed Error code is 0x%x \n", ret);
-					goto ERR_DEC_OPEN;					
-				}
-				VPU_ClearInterrupt(coreIdx);
-			}
-			else
-			{
-				if((int_reason & (1<<INT_BIT_BIT_BUF_EMPTY)) != (1<<INT_BIT_BIT_BUF_EMPTY))
-				{
-					ret = VPU_DecIssueSeqInit(handle);
-					if (ret != RETCODE_SUCCESS)
-					{
-						VLOG(ERR, "VPU_DecIssueSeqInit failed Error code is 0x%x \n", ret);
-						goto ERR_DEC_OPEN;
-					}
-				}
-				else
-				{
-					// After VPU generate the BIT_EMPTY interrupt. HOST should feed the bitstream up to 1024 in case of seq_init
-					if (bsfillSize < VPU_GBU_SIZE*2)
-						continue;
-				}
-				//while((kbhitRet = osal_kbhit()) == 0) 
-                while (1)
-				{	
-					int_reason = VPU_WaitInterrupt(coreIdx, VPU_DEC_TIMEOUT);
-
-					if (int_reason)
-						VPU_ClearInterrupt(coreIdx);
-
-					if(int_reason & (1<<INT_BIT_BIT_BUF_EMPTY)) 
-						break;
-				
-
-					CheckUserDataInterrupt(coreIdx, handle, 1, decOP.bitstreamFormat, int_reason);
-
-					if (int_reason)
-					{
-						if (int_reason & (1<<INT_BIT_SEQ_INIT)) 
-						{
-							seqInited = 1;
-							break;
-						}
-					}
-				}
-				if(int_reason & (1<<INT_BIT_BIT_BUF_EMPTY) || int_reason == -1) 
-				{
-					bsfillSize = 0;
-					continue; // go to take next chunk.
-				}
-				if (seqInited)
-				{
-					ret = VPU_DecCompleteSeqInit(handle, &initialInfo);	
-					if (ret != RETCODE_SUCCESS)
-					{
-						if (ret == RETCODE_MEMORY_ACCESS_VIOLATION)
-							PrintMemoryAccessViolationReason(coreIdx, NULL);
-						if (initialInfo.seqInitErrReason & (1<<31)) // this case happened only ROLLBACK mode
-							VLOG(ERR, "Not enough header : Parser has to feed right size of a sequence header  \n");
-						VLOG(ERR, "VPU_DecCompleteSeqInit failed Error code is 0x%x \n", ret );
-						goto ERR_DEC_OPEN;
-					}			
-				}
-				else
-				{
-					VLOG(ERR, "VPU_DecGetInitialInfo failed Error code is 0x%x \n", ret);
-					goto ERR_DEC_OPEN;
-				}
-			}
-
-
-
-
-			SaveSeqReport(coreIdx, handle, &initialInfo, decOP.bitstreamFormat);	
-
-			if (decOP.bitstreamFormat == STD_VP8)		
-			{
-				// For VP8 frame upsampling infomration
-				static const int scale_factor_mul[4] = {1, 5, 5, 2};
-				static const int scale_factor_div[4] = {1, 4, 3, 1};
-				hScaleFactor = initialInfo.vp8ScaleInfo.hScaleFactor;
-				vScaleFactor = initialInfo.vp8ScaleInfo.vScaleFactor;
-				scaledWidth = initialInfo.picWidth * scale_factor_mul[hScaleFactor] / scale_factor_div[hScaleFactor];
-				scaledHeight = initialInfo.picHeight * scale_factor_mul[vScaleFactor] / scale_factor_div[vScaleFactor];
-				framebufWidth = ((scaledWidth+15)&~15);
-				if (IsSupportInterlaceMode(decOP.bitstreamFormat, &initialInfo))
-					framebufHeight = ((scaledHeight+31)&~31); // framebufheight must be aligned by 31 because of the number of MB height would be odd in each filed picture.
-				else
-					framebufHeight = ((scaledHeight+15)&~15);
-
-				rotbufWidth = (decConfig.rotAngle == 90 || decConfig.rotAngle == 270) ?
-					((scaledHeight+15)&~15) : ((scaledWidth+15)&~15);
-				rotbufHeight = (decConfig.rotAngle == 90 || decConfig.rotAngle == 270) ?
-					((scaledWidth+15)&~15) : ((scaledHeight+15)&~15);				
-			}
-			else
-			{
-				if (decConfig.maxWidth)
-				{
-					if (decConfig.maxWidth < initialInfo.picWidth)
-					{
-						VLOG(ERR, "maxWidth is too small\n");
-						goto ERR_DEC_INIT;
-					}
-					framebufWidth = ((decConfig.maxWidth+15)&~15);
-				}
-				else
-					framebufWidth = ((initialInfo.picWidth+15)&~15);
-
-				if (decConfig.maxHeight)
-				{
-					if (decConfig.maxHeight < initialInfo.picHeight)
-					{
-						VLOG(ERR, "maxHeight is too small\n");
-						goto ERR_DEC_INIT;
-					}
-
-					if (IsSupportInterlaceMode(decOP.bitstreamFormat, &initialInfo))
-						framebufHeight = ((decConfig.maxHeight+31)&~31); // framebufheight must be aligned by 31 because of the number of MB height would be odd in each filed picture.
-					else
-						framebufHeight = ((decConfig.maxHeight+15)&~15);
-				}
-				else
-				{
-					if (IsSupportInterlaceMode(decOP.bitstreamFormat, &initialInfo))
-						framebufHeight = ((initialInfo.picHeight+31)&~31); // framebufheight must be aligned by 31 because of the number of MB height would be odd in each filed picture.
-					else
-						framebufHeight = ((initialInfo.picHeight+15)&~15);
-				}
-				rotbufWidth = (decConfig.rotAngle == 90 || decConfig.rotAngle == 270) ? 
-					((initialInfo.picHeight+15)&~15) : ((initialInfo.picWidth+15)&~15);
-				rotbufHeight = (decConfig.rotAngle == 90 || decConfig.rotAngle == 270) ? 
-					((initialInfo.picWidth+15)&~15) : ((initialInfo.picHeight+15)&~15);
-			}
-
-			rotStride = rotbufWidth;
-			framebufStride = framebufWidth;
-			framebufFormat = FORMAT_420;	
-			framebufSize = VPU_GetFrameBufSize(framebufStride, framebufHeight, mapType, framebufFormat, &dramCfg);
-
-			// the size of pYuv should be aligned 8 byte. because of C&M HPI bus system constraint.
-			pYuv = (BYTE*)osal_malloc(framebufSize);
-			if (!pYuv) 
-			{
-				VLOG(ERR, "Fail to allocation memory for display buffer\n");
-				goto ERR_DEC_INIT;
-			}
-
-			secAxiUse.useBitEnable  = USE_BIT_INTERNAL_BUF;
-			secAxiUse.useIpEnable   = USE_IP_INTERNAL_BUF;
-			secAxiUse.useDbkYEnable = USE_DBKY_INTERNAL_BUF;
-			secAxiUse.useDbkCEnable = USE_DBKC_INTERNAL_BUF;
-			secAxiUse.useBtpEnable  = USE_BTP_INTERNAL_BUF;
-			secAxiUse.useOvlEnable  = USE_OVL_INTERNAL_BUF;
-
-			VPU_DecGiveCommand(handle, SET_SEC_AXI, &secAxiUse);
-
-			
-			regFrameBufCount = initialInfo.minFrameBufferCount + EXTRA_FRAME_BUFFER_NUM;
-
-#ifdef SUPPORT_DEC_RESOLUTION_CHANGE
-        	decBufInfo.maxDecMbX = framebufWidth/16;
-	        decBufInfo.maxDecMbY = ((framebufHeight + 31 ) & ~31)/16;
-    	    decBufInfo.maxDecMbNum = decBufInfo.maxDecMbX*decBufInfo.maxDecMbY;
-#endif
-#if defined(SUPPORT_DEC_SLICE_BUFFER) || defined(SUPPORT_DEC_RESOLUTION_CHANGE)
-			// Register frame buffers requested by the decoder.
-			ret = VPU_DecRegisterFrameBuffer(handle, NULL, regFrameBufCount, framebufStride, framebufHeight, mapType, &decBufInfo); // frame map type (can be changed before register frame buffer)
-#else
-			// Register frame buffers requested by the decoder.
-			ret = VPU_DecRegisterFrameBuffer(handle, NULL, regFrameBufCount, framebufStride, framebufHeight, mapType); // frame map type (can be changed before register frame buffer)
-#endif
-			if (ret != RETCODE_SUCCESS) 
-			{
-				VLOG(ERR, "VPU_DecRegisterFrameBuffer failed Error code is 0x%x \n", ret);
-				goto ERR_DEC_OPEN;
-			}
-
-			VPU_DecGiveCommand(handle, GET_TILEDMAP_CONFIG, &mapCfg);
-
-			if (ppuEnable) 
-			{
-				ppIdx = 0;
-
-				fbAllocInfo.format          = framebufFormat;
-				fbAllocInfo.cbcrInterleave  = decOP.cbcrInterleave;
-				if (decOP.tiled2LinearEnable)
-					fbAllocInfo.mapType = LINEAR_FRAME_MAP;
-				else
-					fbAllocInfo.mapType = mapType;
-
-				fbAllocInfo.stride  = rotStride;
-				fbAllocInfo.height  = rotbufHeight;
-				fbAllocInfo.num     = MAX_ROT_BUF_NUM;
-				fbAllocInfo.endian  = decOP.frameEndian;
-				fbAllocInfo.type    = FB_TYPE_PPU;
-				ret = VPU_DecAllocateFrameBuffer(handle, fbAllocInfo, fbPPU);
-				if( ret != RETCODE_SUCCESS )
-				{
-					VLOG(ERR, "VPU_DecAllocateFrameBuffer fail to allocate source frame buffer is 0x%x \n", ret );
-					goto ERR_DEC_OPEN;
-				}
-
-				ppIdx = 0;
-
-				if (decConfig.useRot)
-				{
-					VPU_DecGiveCommand(handle, SET_ROTATION_ANGLE, &(decConfig.rotAngle));
-					VPU_DecGiveCommand(handle, SET_MIRROR_DIRECTION, &(decConfig.mirDir));
-				}
-
-				VPU_DecGiveCommand(handle, SET_ROTATOR_STRIDE, &rotStride);
-			
-			}
-
-			//InitMixerInt();
-
-			seqInited = 1;			
-
-		}
+        switch (seqInit()) {
+            case 1: break;
+            case -1: goto ERR_DEC_INIT;
+            case 0: continue;
+        }
 
 FLUSH_BUFFER:		
 		
@@ -1475,7 +1419,6 @@ FLUSH_BUFFER:
 			}
 
             ConfigDecReport(coreIdx, handle, decOP.bitstreamFormat);
-
 
 			// Start decoding a frame.
 			ret = VPU_DecStartOneFrame(handle, &decParam);
@@ -1500,9 +1443,6 @@ FLUSH_BUFFER:
 			}
 		}
 
-
-
-		//while((kbhitRet = osal_kbhit()) == 0) 
         while (1)
 		{
 			int_reason = VPU_WaitInterrupt(coreIdx, VPU_DEC_TIMEOUT);
@@ -1579,7 +1519,7 @@ FLUSH_BUFFER:
 		VLOG(TRACE, "#%d:%d, indexDisplay %d || picType %d || indexDecoded %d || rdPtr=0x%x || wrPtr=0x%x || chunkSize = %d, consume=%d\n", 
 			instIdx, frameIdx, outputInfo.indexFrameDisplay, outputInfo.picType, outputInfo.indexFrameDecoded, outputInfo.rdPtr, outputInfo.wrPtr, chunkSize+picHeaderSize, outputInfo.consumedByte);
 
-		SaveDecReport(coreIdx, handle, &outputInfo, decOP.bitstreamFormat, ((initialInfo.picWidth+15)&~15)/16);
+		//SaveDecReport(coreIdx, handle, &outputInfo, decOP.bitstreamFormat, ((initialInfo.picWidth+15)&~15)/16);
 		if (outputInfo.chunkReuseRequired) // reuse previous chunk. that would be 1 once framebuffer is full.
 			reUseChunk = 1;		
 
@@ -1706,7 +1646,8 @@ FLUSH_BUFFER:
     
             emit frame(img);
 
-            qDebug() << QTime::currentTime().toString("ss.zzz");
+            //qDebug() << QTime::currentTime().toString("ss.zzz");
+            fprintf(stderr, "%s: timestamp %s\n", __func__, QTime::currentTime().toString("ss.zzz").toUtf8().constData());
             if (frameIdx > 100) break;
 
 #ifdef FORCE_SET_VSYNC_FLAG

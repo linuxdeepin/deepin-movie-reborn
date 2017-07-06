@@ -5,6 +5,7 @@
 #include "vpuhelper.h"
 
 #define MAX_FILE_PATH   256
+#define MAX_ROT_BUF_NUM			2
 
 typedef struct
 {
@@ -56,6 +57,7 @@ protected:
     void run() override;
     bool init();
     int loop();
+    int seqInit();
 
 signals:
     void frame(const QImage &);
@@ -63,6 +65,34 @@ signals:
 private:
 	DecConfigParam	decConfig;
     QString _filename;
+    int _seqInited {0};
+
+	DecHandle		handle		{0};
+	DecOpenParam	decOP		{0};
+	DecInitialInfo	initialInfo {0};
+	DecOutputInfo	outputInfo	{0};
+	DecParam		decParam	{0};
+	BufInfo			bufInfo	    {0};
+	vpu_buffer_t	vbStream	{0};
+
+#if defined(SUPPORT_DEC_SLICE_BUFFER) || defined(SUPPORT_DEC_RESOLUTION_CHANGE)
+	DecBufInfo decBufInfo;
+#endif
+	BYTE *			pYuv {0};
+	FrameBuffer		fbPPU[MAX_ROT_BUF_NUM];
+	FrameBufferAllocInfo fbAllocInfo;
+	int				framebufSize  {0}, framebufWidth  {0};
+    int             framebufHeight  {0}, rotbufWidth  {0}, rotbufHeight  {0};
+    int             framebufFormat  {FORMAT_420}, mapType;
+	int				framebufStride  {0}, rotStride  {0}, regFrameBufCount  {0};
+	int				frameIdx  {0};
+    int ppIdx {0}, decodeIdx {0};
+	int				hScaleFactor, vScaleFactor, scaledWidth, scaledHeight;
+	int				ppuEnable  {0};
+	int				bsfillSize  {0};
+	int				instIdx {0}, coreIdx {0};
+	TiledMapConfig mapCfg;
+	DRAMConfig dramCfg  {0};
 };
 
 
