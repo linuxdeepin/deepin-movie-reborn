@@ -1082,12 +1082,148 @@ int VpuDecoder::seqInit()
     return 1;
 }
 
+// return -1 to quit
+int VpuDecoder::sendFrame()
+{
+#if 0
+    //QImage img(850, 600, QImage::Format_RGB32);
+    QImage img(outputInfo.dispFrame.stride, outputInfo.dispFrame.height, 
+            QImage::Format_RGB32);
+    galConverter->convert(img.width(), img.height(), gcvSURF_I420, outputInfo.dispFrame);
+    galConverter->copyRGBData(img.bits());
+
+#if 0
+    QImage img(outputInfo.dispFrame.stride, outputInfo.dispFrame.height, 
+            QImage::Format_RGB32);
+    galConverter->_srcSurf = GALSurface::create(galConverter->g_hal,
+            outputInfo.dispFrame.stride, outputInfo.dispFrame.height, gcvSURF_I420);
+    {
+        SurfaceScopedLock scoped(galConverter->_srcSurf);
+        galConverter->_srcSurf->copyFromFb(
+                outputInfo.dispFrame.stride, outputInfo.dispFrame.height, outputInfo.dispFrame);
+
+        vdi_read_memory(coreIdx, galConverter->_srcSurf->phyAddr[0], 
+                pYuv, framebufSize, decOP.frameEndian);
+        yuv2rgb_color_format color_format = 
+            convert_vpuapi_format_to_yuv2rgb_color_format(framebufFormat, 0);
+        vpu_yuv2rgb(outputInfo.dispFrame.stride, outputInfo.dispFrame.height,
+                color_format, pYuv, img.bits(), 1);
+    }
+#endif
+#else
+    QImage img(outputInfo.dispFrame.stride, outputInfo.dispFrame.height, 
+            QImage::Format_RGB32);
+    //sw coversion
+    vdi_read_memory(coreIdx, outputInfo.dispFrame.bufY, pYuv, framebufSize, decOP.frameEndian);
+    yuv2rgb_color_format color_format = 
+        convert_vpuapi_format_to_yuv2rgb_color_format(framebufFormat, 0);
+    vpu_yuv2rgb(outputInfo.dispFrame.stride, outputInfo.dispFrame.height,
+            color_format, pYuv, img.bits(), 1);
+#endif
+
+    emit frame(img);
+
+    //qDebug() << QTime::currentTime().toString("ss.zzz");
+    fprintf(stderr, "%s: timestamp %s\n", __func__, QTime::currentTime().toString("ss.zzz").toUtf8().constData());
+    if (frameIdx > 100) return -1;
+
+#ifdef FORCE_SET_VSYNC_FLAG
+    set_VSYNC_flag();
+#endif
+
+    return 0;
+}
+
+/// build video packet for vpu
+int VpuDecoder::buildVideoPacket()
+{
+    int size;
+
+    if (!_seqInited && !seqFilled)
+    {
+        seqHeaderSize = BuildSeqHeader(seqHeader, decOP.bitstreamFormat, ic->streams[idxVideo]);	// make sequence data as reference file header to support VPU decoder.
+        switch(decOP.bitstreamFormat)
+        {
+        case STD_THO:
+        case STD_VP3:
+            break;
+        default:
+            {
+                size = WriteBsBufFromBufHelper(coreIdx, handle, &vbStream, seqHeader, seqHeaderSize, decOP.streamEndian);
+                if (size < 0)
+                {
+                    VLOG(ERR, "WriteBsBufFromBufHelper failed Error code is 0x%x \n", size );
+                    return -1;
+                }
+                    
+                bsfillSize += size;
+            }
+            break;
+        }
+        seqFilled = 1;
+    }
+		
+    // Build and Fill picture Header data which is dedicated for VPU 
+    picHeaderSize = BuildPicHeader(picHeader, decOP.bitstreamFormat, ic->streams[idxVideo], pkt);				
+    switch(decOP.bitstreamFormat)
+    {
+    case STD_THO:
+    case STD_VP3:
+        break;
+    default:
+        size = WriteBsBufFromBufHelper(coreIdx, handle, &vbStream, picHeader, picHeaderSize, decOP.streamEndian);
+        if (size < 0)
+        {
+            VLOG(ERR, "WriteBsBufFromBufHelper failed Error code is 0x%x \n", size );
+            return -1;
+        }	
+        bsfillSize += size;
+        break;
+    }
+
+    switch(decOP.bitstreamFormat)
+    {
+    case STD_VP3:
+    case STD_THO:
+        break;
+    default:
+        {
+            if (decOP.bitstreamFormat == STD_RV)
+            {
+                int cSlice = chunkData[0] + 1;
+                int nSlice =  chunkSize - 1 - (cSlice * 8);
+                chunkData += (1+(cSlice*8));
+                chunkSize = nSlice;
+            }
+
+            size = WriteBsBufFromBufHelper(coreIdx, handle, &vbStream, chunkData, chunkSize, decOP.streamEndian);
+            if (size <0)
+            {
+                VLOG(ERR, "WriteBsBufFromBufHelper failed Error code is 0x%x \n", size );
+                return -1;
+            }
+
+            bsfillSize += size;
+        }
+        break;
+    }		
+}
+
+int VpuDecoder::flushVideoBuffer()
+{
+}
+
+int VpuDecoder::decodeVideo()
+{
+}
+
+
 int VpuDecoder::loop()
 {
     int i = 0;
 	RetCode			ret =  RETCODE_SUCCESS;		
 	int				decodefinish = 0;
-	int				seqFilled, reUseChunk;
+	int				reUseChunk;
 	int				totalNumofErrMbs = 0;
 	int				dispDoneIdx = -1;
 	int				int_reason = 0;
@@ -1098,18 +1234,8 @@ int VpuDecoder::loop()
 
 	frame_queue_item_t* display_queue = NULL;
 
-	AVFormatContext *ic = NULL;
-	AVPacket pkt1, *pkt=&pkt1;
-	AVCodecContext *ctxVideo = NULL;
-	int idxVideo;
-	int	chunkIdx = 0;
-
-	BYTE *chunkData = NULL;
-	int chunkSize = 0;
-	BYTE *seqHeader = NULL;
-	int seqHeaderSize = 0;
-	BYTE *picHeader = NULL;
-	int picHeaderSize = 0;
+	AVPacket pkt1; 
+    pkt=&pkt1;
 
 	const char *filename;
 
@@ -1243,10 +1369,9 @@ int VpuDecoder::loop()
 	reUseChunk = 0;
 	display_queue = frame_queue_init(MAX_REG_FRAME);
 	init_VSYNC_flag();
-	while(1)
-	{
-        //FIXME: quit when flag set
 
+	while(!_quitFlags.load())
+	{
 		seqHeaderSize = 0;
 		picHeaderSize = 0;
 
@@ -1316,77 +1441,8 @@ int VpuDecoder::loop()
 		chunkData = pkt->data;
 		chunkSize = pkt->size;
 
-		
-		if (!_seqInited && !seqFilled)
-		{
-			seqHeaderSize = BuildSeqHeader(seqHeader, decOP.bitstreamFormat, ic->streams[idxVideo]);	// make sequence data as reference file header to support VPU decoder.
-			switch(decOP.bitstreamFormat)
-			{
-			case STD_THO:
-			case STD_VP3:
-				break;
-			default:
-				{
-					size = WriteBsBufFromBufHelper(coreIdx, handle, &vbStream, seqHeader, seqHeaderSize, decOP.streamEndian);
-					if (size < 0)
-					{
-						VLOG(ERR, "WriteBsBufFromBufHelper failed Error code is 0x%x \n", size );
-						goto ERR_DEC_OPEN;
-					}
-						
-					bsfillSize += size;
-				}
-				break;
-			}
-			seqFilled = 1;
-		}
-
-		
-		// Build and Fill picture Header data which is dedicated for VPU 
-		picHeaderSize = BuildPicHeader(picHeader, decOP.bitstreamFormat, ic->streams[idxVideo], pkt);				
-		switch(decOP.bitstreamFormat)
-		{
-		case STD_THO:
-		case STD_VP3:
-			break;
-		default:
-			size = WriteBsBufFromBufHelper(coreIdx, handle, &vbStream, picHeader, picHeaderSize, decOP.streamEndian);
-			if (size < 0)
-			{
-				VLOG(ERR, "WriteBsBufFromBufHelper failed Error code is 0x%x \n", size );
-				goto ERR_DEC_OPEN;
-			}	
-			bsfillSize += size;
-			break;
-		}
-
-
-		switch(decOP.bitstreamFormat)
-		{
-		case STD_VP3:
-		case STD_THO:
-			break;
-		default:
-			{
-				if (decOP.bitstreamFormat == STD_RV)
-				{
-					int cSlice = chunkData[0] + 1;
-					int nSlice =  chunkSize - 1 - (cSlice * 8);
-					chunkData += (1+(cSlice*8));
-					chunkSize = nSlice;
-				}
-
-				size = WriteBsBufFromBufHelper(coreIdx, handle, &vbStream, chunkData, chunkSize, decOP.streamEndian);
-				if (size <0)
-				{
-					VLOG(ERR, "WriteBsBufFromBufHelper failed Error code is 0x%x \n", size );
-					goto ERR_DEC_OPEN;
-				}
-
-				bsfillSize += size;
-			}
-			break;
-		}		
+        if (buildVideoPacket() < 0)
+            goto ERR_DEC_OPEN;
 		
 		av_free_packet(pkt);
 
@@ -1400,6 +1456,7 @@ int VpuDecoder::loop()
         }
 
 FLUSH_BUFFER:		
+        //flushVideoBuffer();
 		
 		if((int_reason & (1<<INT_BIT_BIT_BUF_EMPTY)) != (1<<INT_BIT_BIT_BUF_EMPTY) &&
                 (int_reason & (1<<INT_BIT_DEC_FIELD)) != (1<<INT_BIT_DEC_FIELD))
@@ -1445,6 +1502,9 @@ FLUSH_BUFFER:
 
         while (1)
 		{
+            if (_quitFlags.load()) 
+                break;
+
 			int_reason = VPU_WaitInterrupt(coreIdx, VPU_DEC_TIMEOUT);
 			if (int_reason == (Uint32)-1 ) // timeout
 			{
@@ -1608,51 +1668,8 @@ FLUSH_BUFFER:
 			if (ppuEnable) 
 				ppIdx = (ppIdx+1)%MAX_ROT_BUF_NUM;
 
-#if 0
-            //QImage img(850, 600, QImage::Format_RGB32);
-            QImage img(outputInfo.dispFrame.stride, outputInfo.dispFrame.height, 
-                    QImage::Format_RGB32);
-            galConverter->convert(img.width(), img.height(), gcvSURF_I420, outputInfo.dispFrame);
-            galConverter->copyRGBData(img.bits());
-            
-#if 0
-            QImage img(outputInfo.dispFrame.stride, outputInfo.dispFrame.height, 
-                    QImage::Format_RGB32);
-            galConverter->_srcSurf = GALSurface::create(galConverter->g_hal,
-                    outputInfo.dispFrame.stride, outputInfo.dispFrame.height, gcvSURF_I420);
-            {
-                SurfaceScopedLock scoped(galConverter->_srcSurf);
-                galConverter->_srcSurf->copyFromFb(
-                        outputInfo.dispFrame.stride, outputInfo.dispFrame.height, outputInfo.dispFrame);
-
-                vdi_read_memory(coreIdx, galConverter->_srcSurf->phyAddr[0], 
-                        pYuv, framebufSize, decOP.frameEndian);
-                yuv2rgb_color_format color_format = 
-                    convert_vpuapi_format_to_yuv2rgb_color_format(framebufFormat, 0);
-                vpu_yuv2rgb(outputInfo.dispFrame.stride, outputInfo.dispFrame.height,
-                        color_format, pYuv, img.bits(), 1);
-            }
-#endif
-#else
-            QImage img(outputInfo.dispFrame.stride, outputInfo.dispFrame.height, 
-                    QImage::Format_RGB32);
-            //sw coversion
-            vdi_read_memory(coreIdx, outputInfo.dispFrame.bufY, pYuv, framebufSize, decOP.frameEndian);
-            yuv2rgb_color_format color_format = 
-                convert_vpuapi_format_to_yuv2rgb_color_format(framebufFormat, 0);
-            vpu_yuv2rgb(outputInfo.dispFrame.stride, outputInfo.dispFrame.height,
-                    color_format, pYuv, img.bits(), 1);
-#endif
-    
-            emit frame(img);
-
-            //qDebug() << QTime::currentTime().toString("ss.zzz");
-            fprintf(stderr, "%s: timestamp %s\n", __func__, QTime::currentTime().toString("ss.zzz").toUtf8().constData());
-            if (frameIdx > 100) break;
-
-#ifdef FORCE_SET_VSYNC_FLAG
-			set_VSYNC_flag();
-#endif
+            if (sendFrame() < 0) 
+                break;
 		}
 		
 		if (check_VSYNC_flag())
@@ -1714,10 +1731,6 @@ ERR_DEC_INIT:
 	if ( picHeader )
 		free(picHeader);
 	
-//	avformat_close_input(&ic);	
-
-	//sw_mixer_close((coreIdx*MAX_NUM_VPU_CORE)+instIdx);
-
 	VPU_DeInit(coreIdx);
 	return 1;
 }

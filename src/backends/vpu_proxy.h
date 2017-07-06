@@ -52,6 +52,7 @@ class VpuDecoder : public QThread
 public:
     VpuDecoder(const QString& name);
     ~VpuDecoder();
+    quit() { _quitFlags.storeRelease(1); }
 
 protected:
     void run() override;
@@ -59,13 +60,21 @@ protected:
     int loop();
     int seqInit();
 
+    int decodeVideo();
+
+    int flushVideoBuffer();
+    int buildVideoPacket();
+    int sendFrame();
+
 signals:
     void frame(const QImage &);
 
 private:
 	DecConfigParam	decConfig;
     QString _filename;
+    QAtomicInt _quitFlags {0};
     int _seqInited {0};
+    int seqFilled {0};
 
 	DecHandle		handle		{0};
 	DecOpenParam	decOP		{0};
@@ -74,6 +83,18 @@ private:
 	DecParam		decParam	{0};
 	BufInfo			bufInfo	    {0};
 	vpu_buffer_t	vbStream	{0};
+
+	AVFormatContext *ic {0};
+	AVPacket  *pkt {0};
+	AVCodecContext *ctxVideo {0};
+	int idxVideo;
+	int	chunkIdx {0};
+	BYTE *seqHeader {0};
+	int seqHeaderSize {0};
+	BYTE *picHeader {0};
+	int picHeaderSize {0};
+	BYTE *chunkData {0};
+	int chunkSize {0};
 
 #if defined(SUPPORT_DEC_SLICE_BUFFER) || defined(SUPPORT_DEC_RESOLUTION_CHANGE)
 	DecBufInfo decBufInfo;
