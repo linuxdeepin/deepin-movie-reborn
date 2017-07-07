@@ -52,7 +52,7 @@ class VpuDecoder : public QThread
 public:
     VpuDecoder(const QString& name);
     ~VpuDecoder();
-    void quit() { _quitFlags.storeRelease(1); }
+    void stop() { _quitFlags.storeRelease(1); }
     void updateViewportSize(QSize sz);
 
 
@@ -132,8 +132,14 @@ public:
 public slots:
     void play(const QString& filename);
 
+protected:
+    void closeEvent(QCloseEvent *) override;
+    void paintEvent(QPaintEvent *) override;
+
 private:
     QLabel *_canvas {0};
+    QImage _img;
+    VpuDecoder *_d {0};
 };
 }
 

@@ -816,25 +816,38 @@ static GALConverter *galConverter = NULL;
 
 VpuProxy::VpuProxy(QWidget *parent)
 {
-    auto *l = new QVBoxLayout(this);
-    _canvas = new QLabel(this);
-    l->addWidget(_canvas);
-    setLayout(l);
+}
+
+void VpuProxy::closeEvent(QCloseEvent *ce)
+{
+    if (_d) {
+        _d->stop();
+        disconnect(_d, 0, 0, 0);
+        _d->wait(1000);
+        delete _d;
+        _d = 0;
+    }
+    ce->accept();
+}
+
+void VpuProxy::paintEvent(QPaintEvent *pe)
+{
+    QPainter p(this);
+    p.drawImage(0, 0, _img);
 }
 
 
 void VpuProxy::play(const QString& filename)
 {
-    VpuDecoder *d = new VpuDecoder(filename);
-    d->updateViewportSize(QSize(864, 608));
+    _d = new VpuDecoder(filename);
+    _d->updateViewportSize(QSize(864, 608));
 
-    connect(d, &VpuDecoder::frame, [=](const QImage& img) {
-        _canvas->setPixmap(QPixmap::fromImage(img));
+    connect(_d, &VpuDecoder::frame, [=](const QImage& img) {
+        _img = img;
         this->update();
     });
-    connect(d, &VpuDecoder::finished, d, &QObject::deleteLater);
 
-    d->start();
+    _d->start();
 }
 
 VpuDecoder::VpuDecoder(const QString& name) 
@@ -1142,8 +1155,6 @@ int VpuDecoder::sendFrame()
 {
 #if 1
     QImage img(_viewportSize.width(), _viewportSize.height(), QImage::Format_RGB32);
-    //QImage img(outputInfo.dispFrame.stride, outputInfo.dispFrame.height, 
-            //QImage::Format_RGB32);
 
     galConverter->updateDestSurface(_viewportSize.width(), _viewportSize.height());
     galConverter->updateSrcSurface(outputInfo.dispFrame.stride, outputInfo.dispFrame.height);
@@ -1411,8 +1422,12 @@ int VpuDecoder::loop()
 	display_queue = frame_queue_init(MAX_REG_FRAME);
 	init_VSYNC_flag();
 
-	while(!_quitFlags.load())
+	while(1)
 	{
+        if (_quitFlags.load()) {
+            break;
+        }
+
 		seqHeaderSize = 0;
 		picHeaderSize = 0;
 
