@@ -816,6 +816,8 @@ static GALConverter *galConverter = NULL;
 
 VpuProxy::VpuProxy(QWidget *parent)
 {
+    setAttribute(Qt::WA_OpaquePaintEvent);
+    //setAttribute(Qt::WA_PaintOnScreen);
 }
 
 void VpuProxy::closeEvent(QCloseEvent *ce)
@@ -907,7 +909,6 @@ int VpuDecoder::seqInit()
         return 1;
 
 	RetCode			ret =  RETCODE_SUCCESS;		
-	int				int_reason = 0;
 	SecAxiUse		secAxiUse = {0};
 
     ConfigSeqReport(coreIdx, handle, decOP.bitstreamFormat);
@@ -1264,6 +1265,251 @@ int VpuDecoder::buildVideoPacket()
 
 int VpuDecoder::flushVideoBuffer()
 {
+	int				decodefinish = 0;
+	int				dispDoneIdx = -1;
+	Rect		   rcPrevDisp;
+	RetCode			ret =  RETCODE_SUCCESS;		
+
+    if((int_reason & (1<<INT_BIT_BIT_BUF_EMPTY)) != (1<<INT_BIT_BIT_BUF_EMPTY) &&
+            (int_reason & (1<<INT_BIT_DEC_FIELD)) != (1<<INT_BIT_DEC_FIELD))
+    {
+        if (ppuEnable) 
+        {
+            VPU_DecGiveCommand(handle, SET_ROTATOR_OUTPUT, &fbPPU[ppIdx]);
+
+            if (decConfig.useRot)
+            {
+                VPU_DecGiveCommand(handle, ENABLE_ROTATION, 0);
+                VPU_DecGiveCommand(handle, ENABLE_MIRRORING, 0);
+            }
+
+            if (decConfig.useDering)
+                VPU_DecGiveCommand(handle, ENABLE_DERING, 0);			
+        }
+
+        ConfigDecReport(coreIdx, handle, decOP.bitstreamFormat);
+
+        // Start decoding a frame.
+        ret = VPU_DecStartOneFrame(handle, &decParam);
+        if (ret != RETCODE_SUCCESS) 
+        {
+            VLOG(ERR,  "VPU_DecStartOneFrame failed Error code is 0x%x \n", ret);
+            return -1;
+        }
+    }
+    else
+    {
+        if(int_reason & (1<<INT_BIT_DEC_FIELD))
+        {
+            VPU_ClearInterrupt(coreIdx);
+            int_reason = 0;
+        }
+        // After VPU generate the BIT_EMPTY interrupt. HOST should feed the bitstreams than 512 byte.
+        if (decOP.bitstreamMode != BS_MODE_PIC_END)
+        {
+            if (bsfillSize < VPU_GBU_SIZE)
+                return 0;// continue;
+        }
+    }
+
+    while (1)
+    {
+        if (_quitFlags.load()) 
+            break;
+
+        int_reason = VPU_WaitInterrupt(coreIdx, VPU_DEC_TIMEOUT);
+        if (int_reason == (Uint32)-1 ) // timeout
+        {
+            VPU_SWReset(coreIdx, SW_RESET_SAFETY, handle);				
+            break;
+        }		
+
+        CheckUserDataInterrupt(coreIdx, handle, outputInfo.indexFrameDecoded, decOP.bitstreamFormat, int_reason);
+        if(int_reason & (1<<INT_BIT_DEC_FIELD))	
+        {
+            if (decOP.bitstreamMode == BS_MODE_PIC_END)
+            {
+                PhysicalAddress rdPtr, wrPtr;
+                int room;
+                VPU_DecGetBitstreamBuffer(handle, &rdPtr, &wrPtr, &room);
+                if (rdPtr-decOP.bitstreamBuffer < (PhysicalAddress)(chunkSize+picHeaderSize+seqHeaderSize-8))	// there is full frame data in chunk data.
+                    VPU_DecSetRdPtr(handle, rdPtr, 0);		//set rdPtr to the position of next field data.
+                else
+                {
+                    // do not clear interrupt until feeding next field picture.
+                    break;
+                }
+            }
+        }
+
+        if (int_reason)
+            VPU_ClearInterrupt(coreIdx);
+
+        if(int_reason & (1<<INT_BIT_BIT_BUF_EMPTY)) 
+        {
+            if (decOP.bitstreamMode == BS_MODE_PIC_END)
+            {
+                VLOG(ERR, "Invalid operation is occurred in pic_end mode \n");
+                return -1;
+            }
+            break;
+        }
+
+
+        if (int_reason & (1<<INT_BIT_PIC_RUN)) 
+            break;				
+    }			
+
+    if(int_reason & (1<<INT_BIT_BIT_BUF_EMPTY)) 
+    {
+        bsfillSize = 0;
+        return 0; // continue; // go to take next chunk.
+    }
+    if(int_reason & (1<<INT_BIT_DEC_FIELD)) 
+    {
+        bsfillSize = 0;
+        return 0; // continue; // go to take next chunk.
+    }
+
+
+    ret = VPU_DecGetOutputInfo(handle, &outputInfo);
+    if (ret != RETCODE_SUCCESS) 
+    {
+        VLOG(ERR,  "VPU_DecGetOutputInfo failed Error code is 0x%x \n", ret);
+        if (ret == RETCODE_MEMORY_ACCESS_VIOLATION)
+            PrintMemoryAccessViolationReason(coreIdx, &outputInfo);
+        return -1;
+    }
+
+    if ((outputInfo.decodingSuccess & 0x01) == 0)
+    {
+        VLOG(ERR, "VPU_DecGetOutputInfo decode fail framdIdx %d \n", frameIdx);
+        VLOG(TRACE, "#%d, indexFrameDisplay %d || picType %d || indexFrameDecoded %d\n", 
+            frameIdx, outputInfo.indexFrameDisplay, outputInfo.picType, outputInfo.indexFrameDecoded );
+    }		
+
+    VLOG(TRACE, "#%d:%d, indexDisplay %d || picType %d || indexDecoded %d || rdPtr=0x%x || wrPtr=0x%x || chunkSize = %d, consume=%d\n", 
+        instIdx, frameIdx, outputInfo.indexFrameDisplay, outputInfo.picType, outputInfo.indexFrameDecoded, outputInfo.rdPtr, outputInfo.wrPtr, chunkSize+picHeaderSize, outputInfo.consumedByte);
+
+    //SaveDecReport(coreIdx, handle, &outputInfo, decOP.bitstreamFormat, ((initialInfo.picWidth+15)&~15)/16);
+    if (outputInfo.chunkReuseRequired) // reuse previous chunk. that would be 1 once framebuffer is full.
+        reUseChunk = 1;		
+
+    if (outputInfo.indexFrameDisplay == -1)
+        decodefinish = 1;
+
+
+    if (!ppuEnable) 
+    {
+        if (decodefinish)
+            _quitFlags.store(1); // break;
+
+        if (outputInfo.indexFrameDisplay == -3 ||
+            outputInfo.indexFrameDisplay == -2 ) // BIT doesn't have picture to be displayed 
+        {
+            if (check_VSYNC_flag())
+            {
+                clear_VSYNC_flag();
+
+                if (frame_queue_dequeue(display_queue, &dispDoneIdx) == 0)
+                    VPU_DecClrDispFlag(handle, dispDoneIdx);					
+            }
+#if defined(CNM_FPGA_PLATFORM) && defined(FPGA_LX_330)
+#else
+            if (outputInfo.indexFrameDecoded == -1)	// VPU did not decode a picture because there is not enough frame buffer to continue decoding
+            {
+                // if you can't get VSYN interrupt on your sw layer. this point is reasonable line to set VSYN flag.
+                // but you need fine tune EXTRA_FRAME_BUFFER_NUM value not decoder to write being display buffer.
+                if (frame_queue_count(display_queue) > 0)
+                    set_VSYNC_flag();
+            }
+#endif			
+            return 0; // continue;
+        }
+    }
+    else
+    {
+        if (decodefinish)
+        {
+            if (decodeIdx ==  0)
+                _quitFlags.store(1); // break;
+            // if PP feature has been enabled. the last picture is in PP output framebuffer.									
+        }
+
+        if (outputInfo.indexFrameDisplay == -3 ||
+            outputInfo.indexFrameDisplay == -2 ) // BIT doesn't have picture to be displayed
+        {
+            if (check_VSYNC_flag())
+            {
+                clear_VSYNC_flag();
+
+                if (frame_queue_dequeue(display_queue, &dispDoneIdx) == 0)
+                    VPU_DecClrDispFlag(handle, dispDoneIdx);					
+            }
+#if defined(CNM_FPGA_PLATFORM) && defined(FPGA_LX_330)
+#else
+            if (outputInfo.indexFrameDecoded == -1)	// VPU did not decode a picture because there is not enough frame buffer to continue decoding
+            {
+                // if you can't get VSYN interrupt on your sw layer. this point is reasonable line to set VSYN flag.
+                // but you need fine tuning EXTRA_FRAME_BUFFER_NUM value not decoder to write being display buffer.
+                if (frame_queue_count(display_queue) > 0)
+                    set_VSYNC_flag();
+            }
+#endif			
+            return 0; // continue;
+        }
+
+        if (decodeIdx == 0) // if PP has been enabled, the first picture is saved at next time.
+        {
+            // save rotated dec width, height to display next decoding time.
+            if (outputInfo.indexFrameDisplay >= 0)
+                frame_queue_enqueue(display_queue, outputInfo.indexFrameDisplay);
+            rcPrevDisp = outputInfo.rcDisplay;
+            decodeIdx++;
+            return 0; // continue;
+
+        }
+    }
+
+    decodeIdx++;
+
+    if (outputInfo.indexFrameDisplay >= 0)
+        frame_queue_enqueue(display_queue, outputInfo.indexFrameDisplay);
+
+    {
+        if (ppuEnable) 
+            ppIdx = (ppIdx+1)%MAX_ROT_BUF_NUM;
+
+        if (sendFrame() < 0) 
+            _quitFlags.store(1); // break;
+    }
+    
+    if (check_VSYNC_flag())
+    {
+        clear_VSYNC_flag();
+
+        if (frame_queue_dequeue(display_queue, &dispDoneIdx) == 0)
+            VPU_DecClrDispFlag(handle, dispDoneIdx);			
+    }
+
+    // save rotated dec width, height to display next decoding time.
+    rcPrevDisp = outputInfo.rcDisplay;
+
+    if (outputInfo.numOfErrMBs) 
+    {
+        totalNumofErrMbs += outputInfo.numOfErrMBs;
+        VLOG(ERR, "Num of Error Mbs : %d, in Frame : %d \n", outputInfo.numOfErrMBs, frameIdx);
+    }
+
+    frameIdx++;
+
+    if (decConfig.outNum && frameIdx == (decConfig.outNum-1)) 
+        _quitFlags.store(1); // break;
+
+    if (decodefinish)
+        _quitFlags.store(1); // break;
+
+    return 0;
 }
 
 int VpuDecoder::decodeVideo()
@@ -1275,17 +1521,10 @@ int VpuDecoder::loop()
 {
     int i = 0;
 	RetCode			ret =  RETCODE_SUCCESS;		
-	int				decodefinish = 0;
-	int				reUseChunk;
-	int				totalNumofErrMbs = 0;
-	int				dispDoneIdx = -1;
-	int				int_reason = 0;
-	int				size;
+
 	int			    randomAccess = 0, randomAccessPos = 0;
     int             err;
-	Rect		   rcPrevDisp;
 
-	frame_queue_item_t* display_queue = NULL;
 
 	AVPacket pkt1; 
     pkt=&pkt1;
@@ -1512,246 +1751,10 @@ int VpuDecoder::loop()
         }
 
 FLUSH_BUFFER:		
-        //flushVideoBuffer();
+        if (flushVideoBuffer() < 0) {
+            goto ERR_DEC_OPEN;
+        }
 		
-		if((int_reason & (1<<INT_BIT_BIT_BUF_EMPTY)) != (1<<INT_BIT_BIT_BUF_EMPTY) &&
-                (int_reason & (1<<INT_BIT_DEC_FIELD)) != (1<<INT_BIT_DEC_FIELD))
-		{
-			if (ppuEnable) 
-			{
-				VPU_DecGiveCommand(handle, SET_ROTATOR_OUTPUT, &fbPPU[ppIdx]);
-
-				if (decConfig.useRot)
-				{
-					VPU_DecGiveCommand(handle, ENABLE_ROTATION, 0);
-					VPU_DecGiveCommand(handle, ENABLE_MIRRORING, 0);
-				}
-
-				if (decConfig.useDering)
-					VPU_DecGiveCommand(handle, ENABLE_DERING, 0);			
-			}
-
-            ConfigDecReport(coreIdx, handle, decOP.bitstreamFormat);
-
-			// Start decoding a frame.
-			ret = VPU_DecStartOneFrame(handle, &decParam);
-			if (ret != RETCODE_SUCCESS) 
-			{
-				VLOG(ERR,  "VPU_DecStartOneFrame failed Error code is 0x%x \n", ret);
-				goto ERR_DEC_OPEN;
-			}
-		}
-		else
-		{
-			if(int_reason & (1<<INT_BIT_DEC_FIELD))
-			{
-				VPU_ClearInterrupt(coreIdx);
-				int_reason = 0;
-			}
-			// After VPU generate the BIT_EMPTY interrupt. HOST should feed the bitstreams than 512 byte.
-			if (decOP.bitstreamMode != BS_MODE_PIC_END)
-			{
-				if (bsfillSize < VPU_GBU_SIZE)
-					continue;
-			}
-		}
-
-        while (1)
-		{
-            if (_quitFlags.load()) 
-                break;
-
-			int_reason = VPU_WaitInterrupt(coreIdx, VPU_DEC_TIMEOUT);
-			if (int_reason == (Uint32)-1 ) // timeout
-			{
-				VPU_SWReset(coreIdx, SW_RESET_SAFETY, handle);				
-				break;
-			}		
-
-			CheckUserDataInterrupt(coreIdx, handle, outputInfo.indexFrameDecoded, decOP.bitstreamFormat, int_reason);
-			if(int_reason & (1<<INT_BIT_DEC_FIELD))	
-			{
-				if (decOP.bitstreamMode == BS_MODE_PIC_END)
-				{
-					PhysicalAddress rdPtr, wrPtr;
-					int room;
-					VPU_DecGetBitstreamBuffer(handle, &rdPtr, &wrPtr, &room);
-					if (rdPtr-decOP.bitstreamBuffer < (PhysicalAddress)(chunkSize+picHeaderSize+seqHeaderSize-8))	// there is full frame data in chunk data.
-						VPU_DecSetRdPtr(handle, rdPtr, 0);		//set rdPtr to the position of next field data.
-					else
-					{
-						// do not clear interrupt until feeding next field picture.
-						break;
-					}
-				}
-			}
-
-			if (int_reason)
-				VPU_ClearInterrupt(coreIdx);
-
-			if(int_reason & (1<<INT_BIT_BIT_BUF_EMPTY)) 
-			{
-				if (decOP.bitstreamMode == BS_MODE_PIC_END)
-				{
-					VLOG(ERR, "Invalid operation is occurred in pic_end mode \n");
-					goto ERR_DEC_OPEN;
-				}
-				break;
-			}
-
-
-			if (int_reason & (1<<INT_BIT_PIC_RUN)) 
-				break;				
-		}			
-
-		if(int_reason & (1<<INT_BIT_BIT_BUF_EMPTY)) 
-		{
-			bsfillSize = 0;
-			continue; // go to take next chunk.
-		}
-		if(int_reason & (1<<INT_BIT_DEC_FIELD)) 
-		{
-			bsfillSize = 0;
-			continue; // go to take next chunk.
-		}		
-
-
-		ret = VPU_DecGetOutputInfo(handle, &outputInfo);
-		if (ret != RETCODE_SUCCESS) 
-		{
-			VLOG(ERR,  "VPU_DecGetOutputInfo failed Error code is 0x%x \n", ret);
-			if (ret == RETCODE_MEMORY_ACCESS_VIOLATION)
-				PrintMemoryAccessViolationReason(coreIdx, &outputInfo);
-			goto ERR_DEC_OPEN;
-		}
-
-		if ((outputInfo.decodingSuccess & 0x01) == 0)
-		{
-			VLOG(ERR, "VPU_DecGetOutputInfo decode fail framdIdx %d \n", frameIdx);
-			VLOG(TRACE, "#%d, indexFrameDisplay %d || picType %d || indexFrameDecoded %d\n", 
-				frameIdx, outputInfo.indexFrameDisplay, outputInfo.picType, outputInfo.indexFrameDecoded );
-		}		
-
-		VLOG(TRACE, "#%d:%d, indexDisplay %d || picType %d || indexDecoded %d || rdPtr=0x%x || wrPtr=0x%x || chunkSize = %d, consume=%d\n", 
-			instIdx, frameIdx, outputInfo.indexFrameDisplay, outputInfo.picType, outputInfo.indexFrameDecoded, outputInfo.rdPtr, outputInfo.wrPtr, chunkSize+picHeaderSize, outputInfo.consumedByte);
-
-		//SaveDecReport(coreIdx, handle, &outputInfo, decOP.bitstreamFormat, ((initialInfo.picWidth+15)&~15)/16);
-		if (outputInfo.chunkReuseRequired) // reuse previous chunk. that would be 1 once framebuffer is full.
-			reUseChunk = 1;		
-
-		if (outputInfo.indexFrameDisplay == -1)
-			decodefinish = 1;
-
-
-		if (!ppuEnable) 
-		{
-			if (decodefinish)
-				break;		
-
-			if (outputInfo.indexFrameDisplay == -3 ||
-				outputInfo.indexFrameDisplay == -2 ) // BIT doesn't have picture to be displayed 
-			{
-				if (check_VSYNC_flag())
-				{
-					clear_VSYNC_flag();
-
-					if (frame_queue_dequeue(display_queue, &dispDoneIdx) == 0)
-						VPU_DecClrDispFlag(handle, dispDoneIdx);					
-				}
-#if defined(CNM_FPGA_PLATFORM) && defined(FPGA_LX_330)
-#else
-				if (outputInfo.indexFrameDecoded == -1)	// VPU did not decode a picture because there is not enough frame buffer to continue decoding
-				{
-					// if you can't get VSYN interrupt on your sw layer. this point is reasonable line to set VSYN flag.
-					// but you need fine tune EXTRA_FRAME_BUFFER_NUM value not decoder to write being display buffer.
-					if (frame_queue_count(display_queue) > 0)
-						set_VSYNC_flag();
-				}
-#endif			
-				continue;
-			}
-		}
-		else
-		{
-			if (decodefinish)
-			{
-				if (decodeIdx ==  0)
-					break;
-				// if PP feature has been enabled. the last picture is in PP output framebuffer.									
-			}
-
-			if (outputInfo.indexFrameDisplay == -3 ||
-				outputInfo.indexFrameDisplay == -2 ) // BIT doesn't have picture to be displayed
-			{
-				if (check_VSYNC_flag())
-				{
-					clear_VSYNC_flag();
-
-					if (frame_queue_dequeue(display_queue, &dispDoneIdx) == 0)
-						VPU_DecClrDispFlag(handle, dispDoneIdx);					
-				}
-#if defined(CNM_FPGA_PLATFORM) && defined(FPGA_LX_330)
-#else
-				if (outputInfo.indexFrameDecoded == -1)	// VPU did not decode a picture because there is not enough frame buffer to continue decoding
-				{
-					// if you can't get VSYN interrupt on your sw layer. this point is reasonable line to set VSYN flag.
-					// but you need fine tuning EXTRA_FRAME_BUFFER_NUM value not decoder to write being display buffer.
-					if (frame_queue_count(display_queue) > 0)
-						set_VSYNC_flag();
-				}
-#endif			
-				continue;
-			}
-
-			if (decodeIdx == 0) // if PP has been enabled, the first picture is saved at next time.
-			{
-				// save rotated dec width, height to display next decoding time.
-				if (outputInfo.indexFrameDisplay >= 0)
-					frame_queue_enqueue(display_queue, outputInfo.indexFrameDisplay);
-				rcPrevDisp = outputInfo.rcDisplay;
-				decodeIdx++;
-				continue;
-
-			}
-		}
-
-		decodeIdx++;
-
-		if (outputInfo.indexFrameDisplay >= 0)
-			frame_queue_enqueue(display_queue, outputInfo.indexFrameDisplay);
-
-		{
-			if (ppuEnable) 
-				ppIdx = (ppIdx+1)%MAX_ROT_BUF_NUM;
-
-            if (sendFrame() < 0) 
-                break;
-		}
-		
-		if (check_VSYNC_flag())
-		{
-			clear_VSYNC_flag();
-
-			if (frame_queue_dequeue(display_queue, &dispDoneIdx) == 0)
-				VPU_DecClrDispFlag(handle, dispDoneIdx);			
-		}
-
-		// save rotated dec width, height to display next decoding time.
-		rcPrevDisp = outputInfo.rcDisplay;
-
-		if (outputInfo.numOfErrMBs) 
-		{
-			totalNumofErrMbs += outputInfo.numOfErrMBs;
-			VLOG(ERR, "Num of Error Mbs : %d, in Frame : %d \n", outputInfo.numOfErrMBs, frameIdx);
-		}
-
-		frameIdx++;
-
-		if (decConfig.outNum && frameIdx == (decConfig.outNum-1)) 
-			break;
-
-		if (decodefinish)
-			break;		
 	}	// end of while
 
 	if (totalNumofErrMbs) 

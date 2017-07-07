@@ -60,10 +60,11 @@ protected:
     void run() override;
     bool init();
     int loop();
-    int seqInit();
+
 
     int decodeVideo();
 
+    int seqInit();
     int flushVideoBuffer();
     int buildVideoPacket();
     int sendFrame();
@@ -80,6 +81,7 @@ private:
     int _seqInited {0};
     int seqFilled {0};
 
+	frame_queue_item_t* display_queue {0};
 	DecHandle		handle		{0};
 	DecOpenParam	decOP		{0};
 	DecInitialInfo	initialInfo {0};
@@ -101,6 +103,9 @@ private:
 	int picHeaderSize {0};
 	BYTE *chunkData {0};
 	int chunkSize {0};
+	int				reUseChunk;
+	int				totalNumofErrMbs {0};
+	int				int_reason {0};
 
 #if defined(SUPPORT_DEC_SLICE_BUFFER) || defined(SUPPORT_DEC_RESOLUTION_CHANGE)
 	DecBufInfo decBufInfo;
