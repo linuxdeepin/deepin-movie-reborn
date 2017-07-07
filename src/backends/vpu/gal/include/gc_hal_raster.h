@@ -1,14 +1,14 @@
-/******************************************************************************\
-|*                                                                            *|
-|* Copyright (c) 2005 - 2011 by Vivante Corp.  All rights reserved.           *|
-|*                                                                            *|
-|* The material in this file is confidential and contains trade secrets of    *|
-|* Vivante Corporation.  This is proprietary information owned by Vivante     *|
-|* Corporation.                                                               *|
-|*                                                                            *|
-\******************************************************************************/
-
-
+/****************************************************************************
+*
+*    Copyright (c) 2005 - 2013 by Vivante Corp.  All rights reserved.
+*
+*    The material in this file is confidential and contains trade secrets
+*    of Vivante Corporation. This is proprietary information owned by
+*    Vivante Corporation. No part of this work may be disclosed,
+*    reproduced, copied, transmitted, or used in any way for any purpose,
+*    without the express written permission of Vivante Corporation.
+*
+*****************************************************************************/
 
 
 #ifndef __gc_hal_raster_h_
@@ -308,7 +308,7 @@ gco2D_SetColorSource(
 gceSTATUS
 gco2D_SetColorSourceEx(
 	IN gco2D Engine,
-	IN gctUINT64 Address,
+	IN gctUINT32 Address,
 	IN gctUINT32 Stride,
 	IN gceSURF_FORMAT Format,
 	IN gceSURF_ROTATION Rotation,
@@ -323,7 +323,7 @@ gco2D_SetColorSourceEx(
 gceSTATUS
 gco2D_SetColorSourceAdvanced(
 	IN gco2D Engine,
-	IN gctUINT64 Address,
+	IN gctUINT32 Address,
 	IN gctUINT32 Stride,
 	IN gceSURF_FORMAT Format,
 	IN gceSURF_ROTATION Rotation,
@@ -359,7 +359,7 @@ gco2D_SetMaskedSource(
 gceSTATUS
 gco2D_SetMaskedSourceEx(
 	IN gco2D Engine,
-	IN gctUINT64 Address,
+	IN gctUINT32 Address,
 	IN gctUINT32 Stride,
 	IN gceSURF_FORMAT Format,
 	IN gctBOOL CoordRelative,
@@ -397,7 +397,7 @@ gco2D_SetTarget(
 gceSTATUS
 gco2D_SetTargetEx(
 	IN gco2D Engine,
-	IN gctUINT64 Address,
+	IN gctUINT32 Address,
 	IN gctUINT32 Stride,
 	IN gceSURF_ROTATION Rotation,
 	IN gctUINT32 SurfaceWidth,
@@ -405,6 +405,14 @@ gco2D_SetTargetEx(
 	);
 
 /* Calculate and program the stretch factors. */
+gceSTATUS
+gco2D_CalcStretchFactor(
+    IN gco2D Engine,
+    IN gctINT32 SrcSize,
+    IN gctINT32 DestSize,
+    OUT gctUINT32_PTR Factor
+    );
+
 gceSTATUS
 gco2D_SetStretchFactors(
 	IN gco2D Engine,
@@ -551,6 +559,23 @@ gco2D_MonoBlit(
 	IN gctUINT32 BgRop,
 	IN gceSURF_FORMAT DestFormat
 	);
+
+gceSTATUS
+gco2D_MonoBlitEx(
+    IN gco2D        Engine,
+    IN gctPOINTER   StreamBits,
+    IN gctINT32     StreamStride,
+    IN gctINT32     StreamWidth,
+    IN gctINT32     StreamHeight,
+    IN gctINT32     StreamX,
+    IN gctINT32     StreamY,
+    IN gctUINT32    FgColor,
+    IN gctUINT32    BgColor,
+    IN gcsRECT_PTR  SrcRect,
+    IN gcsRECT_PTR  DstRect,
+    IN gctUINT8     FgRop,
+    IN gctUINT8     BgRop
+    );
 
 /* Set kernel size. */
 gceSTATUS
@@ -923,6 +948,51 @@ gco2D_SetSourceTileStatus(
     IN gceSURF_FORMAT CompressedFormat,
     IN gctUINT32 ClearValue,
     IN gctUINT32 GpuAddress
+    );
+
+gceSTATUS
+gco2D_SetTargetTileStatus(
+    IN gco2D Engine,
+    IN gce2D_TILE_STATUS_CONFIG TileStatusConfig,
+    IN gceSURF_FORMAT CompressedFormat,
+    IN gctUINT32 ClearValue,
+    IN gctUINT32 GpuAddress
+    );
+
+gceSTATUS
+gco2D_QueryU32(
+    IN gco2D Engine,
+    IN gce2D_QUERY Item,
+    OUT gctUINT32_PTR Value
+    );
+
+gceSTATUS
+gco2D_SetStateU32(
+    IN gco2D Engine,
+    IN gce2D_STATE State,
+    IN gctUINT32 Value
+    );
+
+gceSTATUS
+gco2D_SetStateArrayI32(
+    IN gco2D Engine,
+    IN gce2D_STATE State,
+    IN gctINT32_PTR Array,
+    IN gctINT32 ArraySize
+    );
+
+gceSTATUS
+gco2D_SetStateArrayU32(
+    IN gco2D Engine,
+    IN gce2D_STATE State,
+    IN gctUINT32_PTR Array,
+    IN gctINT32 ArraySize
+    );
+
+gceSTATUS
+gco2D_SetTargetRect(
+    IN gco2D Engine,
+    IN gcsRECT_PTR Rect
     );
 
 #ifdef __cplusplus

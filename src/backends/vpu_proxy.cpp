@@ -457,7 +457,16 @@ struct GALSurface {
         }
         s->surf = surf;
 
-        gcmVERIFY_OK(gcoSURF_GetAlignedSize(s->surf, gcvNULL, gcvNULL, &s->stride)); 
+        gctUINT aligned_w, aligned_h;
+        gcmVERIFY_OK(gcoSURF_GetAlignedSize(s->surf, &aligned_w, &aligned_h, &s->stride)); 
+        if (w != aligned_w || h != aligned_h) {
+            fprintf(stderr, "gcoSURF width and height is not aligned !\n");
+            s->surf = NULL;
+            gcoSURF_Destroy(surf);
+            delete s;
+            return NULL;
+        }
+        
         gcmVERIFY_OK(gcoSURF_GetSize(s->surf, &s->width, &s->height, gcvNULL)); 
         gcmVERIFY_OK(gcoSURF_GetFormat(s->surf, gcvNULL, &s->format));
 
@@ -508,11 +517,13 @@ struct GALSurface {
 
     ~GALSurface() 
     {
-        unlock();
+        if (surf) {
+            unlock();
 
-        gceSTATUS status;
-        if (gcmIS_ERROR(gcoSURF_Destroy(surf))) {
-            fprintf(stderr, "Destroy Surf failed:%#x\n", status);
+            gceSTATUS status;
+            if (gcmIS_ERROR(gcoSURF_Destroy(surf))) {
+                fprintf(stderr, "Destroy Surf failed:%#x\n", status);
+            }
         }
     }
 
@@ -552,22 +563,6 @@ public:
 
         if (_dstSurf) delete _dstSurf;
         if (_srcSurf) delete _srcSurf;
-
-        if (g_Internal != gcvNULL)
-        {
-            /* Unmap the local internal memory. */
-            gcmVERIFY_OK(gcoHAL_UnmapMemory(g_hal,
-                        g_InternalPhysical, g_InternalSize,
-                        g_Internal));
-        }
-
-        if (g_External != gcvNULL)
-        {
-            /* Unmap the local external memory. */
-            gcmVERIFY_OK(gcoHAL_UnmapMemory(g_hal,
-                        g_ExternalPhysical, g_ExternalSize,
-                        g_External));
-        }
 
         if (g_Contiguous != gcvNULL) {
             /* Unmap the contiguous memory. */
@@ -610,38 +605,12 @@ public:
 
 
         status = gcoHAL_QueryVideoMemory(g_hal,
-                &g_InternalPhysical, &g_InternalSize,
-                &g_ExternalPhysical, &g_ExternalSize,
+                NULL, NULL,
+                NULL, NULL,
                 &g_ContiguousPhysical, &g_ContiguousSize);
         if (gcmIS_ERROR(status)) {
             fprintf(stderr, "gcoHAL_QueryVideoMemory failed %d.", status);
             return gcvFALSE;
-        }
-
-        /* Map the local internal memory. */
-        if (g_InternalSize > 0)
-        {
-            status = gcoHAL_MapMemory(g_hal,
-                    g_InternalPhysical, g_InternalSize,
-                    &g_Internal);
-            if (gcmIS_ERROR(status))
-            {
-                fprintf(stderr, "gcoHAL_MapMemory failed %d.", status);
-                return gcvFALSE;
-            }
-        }
-
-        /* Map the local external memory. */
-        if (g_ExternalSize > 0)
-        {
-            status = gcoHAL_MapMemory(g_hal,
-                    g_ExternalPhysical, g_ExternalSize,
-                    &g_External);
-            if (gcmIS_ERROR(status))
-            {
-                fprintf(stderr, "gcoHAL_MapMemory failed %d.", status);
-                return gcvFALSE;
-            }
         }
 
 
@@ -671,14 +640,71 @@ public:
         return gcvTRUE;
     }
 
-    //FIXME: what if original format is not I420
-    gctBOOL convert(int width,int height,int format, const FrameBuffer& fb)
+    gctBOOL fake_convert()
     {
-        updateDestSurface(width, height, gcvSURF_A8R8G8B8); //do this once, and update only screen changed
-        if (_srcSurf == nullptr) {
-            _srcSurf = GALSurface::create(g_hal, fb.stride, fb.height, gcvSURF_I420);
+        gctUINT8 horKernel = 1, verKernel = 1;
+        gcsRECT srcRect;
+        gceSTATUS status;
+        gcsRECT dstRect = {0, 0, _dstSurf->width, _dstSurf->height};
+
+        srcRect.left = 0;
+        srcRect.top = 0;
+        srcRect.right = _srcSurf->width;
+        srcRect.bottom = _srcSurf->height;
+
+        fprintf(stderr, "%s: (%d, %d, %d, %d) dst (%d, %d, %d, %d)\n", __func__,
+                dstRect.left, dstRect.top, dstRect.right, dstRect.bottom,
+                srcRect.left, srcRect.top, srcRect.right, srcRect.bottom);
+
+        {
+            SurfaceScopedLock dstLock(_dstSurf);
+            SurfaceScopedLock scoped(_srcSurf);
+
+            // set clippint rect
+            gcmONERROR(gco2D_SetClipping(g_2d, &dstRect));
+            gcmONERROR(gcoSURF_SetDither(_dstSurf->surf, gcvTRUE));
+
+            // set kernel size
+            status = gco2D_SetKernelSize(g_2d, horKernel, verKernel);
+            if (status != gcvSTATUS_OK) {
+                fprintf(stderr, "2D set kernel size failed:%#x\n", status);
+                return gcvFALSE;
+            }
+
+            status = gco2D_EnableDither(g_2d, gcvTRUE);
+            if (status != gcvSTATUS_OK) {
+                fprintf(stderr, "enable gco2D_EnableDither failed:%#x\n", status);
+                return gcvFALSE;
+            }
+
+            status = gcoSURF_FilterBlit(_srcSurf->surf, _dstSurf->surf, &srcRect, &dstRect, &dstRect);
+            if (status != gcvSTATUS_OK) {
+                fprintf(stderr, "2D FilterBlit failed:%#x\n", status);
+                return gcvFALSE;
+            }
+
+            status = gco2D_EnableDither(g_2d, gcvFALSE);
+            if (status != gcvSTATUS_OK) {
+                fprintf(stderr, "disable gco2D_EnableDither failed:%#x\n", status);
+                return gcvFALSE;
+            }
+
+            //gcmONERROR(gco2D_Flush(g_2d));
+            fprintf(stderr, "%s: flushed\n", __func__);
+            gcmONERROR(gcoHAL_Commit(g_hal, gcvTRUE));
+            fprintf(stderr, "%s: commit done\n", __func__);
         }
 
+        return gcvTRUE;
+
+OnError:
+        fprintf(stderr, "%s: convert failed\n", __func__);
+        return gcvFALSE;
+    }
+
+    //FIXME: what if original format is not I420
+    gctBOOL convertYUV2RGBScaled(const FrameBuffer& fb)
+    {
         gctUINT8 horKernel = 1, verKernel = 1;
         gcsRECT srcRect;
         gceSTATUS status;
@@ -696,7 +722,7 @@ public:
         SurfaceScopedLock dstLock(_dstSurf);
 
         SurfaceScopedLock scoped(_srcSurf);
-        _srcSurf->copyFromFb(width, height, fb);
+        _srcSurf->copyFromFb(fb.stride, fb.height, fb);
 
 
         // set clippint rect
@@ -728,8 +754,7 @@ public:
             return gcvFALSE;
         }
 
-        gcmONERROR(gco2D_Flush(g_2d));
-        fprintf(stderr, "%s: flushed\n", __func__);
+        //gcmONERROR(gco2D_Flush(g_2d));
         gcmONERROR(gcoHAL_Commit(g_hal, gcvTRUE));
         fprintf(stderr, "%s: commit done\n", __func__);
 
@@ -740,20 +765,35 @@ OnError:
         return gcvFALSE;
     }
 
-    bool updateDestSurface(int w, int h, gceSURF_FORMAT fmt)
+    bool updateDestSurface(int w, int h)
     {
         if (_dstSurf == nullptr) {
-            _dstSurf = GALSurface::create(g_hal, w, h, fmt);
+            _dstSurf = GALSurface::create(g_hal, w, h, gcvSURF_A8R8G8B8);
         } else {
             //update
         }
     }
 
-    void copyRGBData(uchar* bits)
+    bool updateSrcSurface(int w, int h)
     {
-        fprintf(stderr, "%s\n", __func__);
+        if (_srcSurf == nullptr) {
+            _srcSurf = GALSurface::create(g_hal, w, h, gcvSURF_I420);
+        } else {
+            //update
+        }
+    }
+
+    void copyRGBData(uchar* bits, gctUINT stride, gctUINT height)
+    {
         SurfaceScopedLock lock(_dstSurf);
-        dma_copy_from_vmem(bits, _dstSurf->phyAddr[0], _dstSurf->stride * _dstSurf->height);
+        fprintf(stderr, "%s copy (%d, %d)\n", __func__, _dstSurf->stride, _dstSurf->height);
+        if (stride == _dstSurf->stride) {
+            gctUINT h = min(height, _dstSurf->height);
+            dma_copy_from_vmem(bits, _dstSurf->phyAddr[0], stride * h);
+        } else {
+            fprintf(stderr, "%s: unmatched stride\n", __func__);
+            //TODO:
+        }
     }
 
 
@@ -766,9 +806,9 @@ public:
     gcoHAL      g_hal{gcvNULL};
     gco2D       g_2d {gcvNULL};
 
-    gctPHYS_ADDR g_ContiguousPhysical, g_InternalPhysical, g_ExternalPhysical;
-    gctSIZE_T    g_ContiguousSize, g_InternalSize, g_ExternalSize;
-    gctPOINTER   g_Contiguous, g_Internal, g_External;
+    gctPHYS_ADDR g_ContiguousPhysical;
+    gctSIZE_T    g_ContiguousSize;
+    gctPOINTER   g_Contiguous;
 
 };
 
@@ -786,6 +826,8 @@ VpuProxy::VpuProxy(QWidget *parent)
 void VpuProxy::play(const QString& filename)
 {
     VpuDecoder *d = new VpuDecoder(filename);
+    d->updateViewportSize(QSize(864, 608));
+
     connect(d, &VpuDecoder::frame, [=](const QImage& img) {
         _canvas->setPixmap(QPixmap::fromImage(img));
         this->update();
@@ -798,6 +840,7 @@ void VpuProxy::play(const QString& filename)
 VpuDecoder::VpuDecoder(const QString& name) 
     :_filename(name)
 {
+    
     init();
 }
 
@@ -1003,6 +1046,11 @@ int VpuDecoder::seqInit()
     framebufFormat = FORMAT_420;	
     framebufSize = VPU_GetFrameBufSize(framebufStride, framebufHeight, mapType, framebufFormat, &dramCfg);
 
+    galConverter = new GALConverter;
+    //galConverter->updateDestSurface(850, 600, gcvSURF_A8R8G8B8);
+    //galConverter->updateSrcSurface(framebufWidth, framebufHeight);
+    //galConverter->fake_convert();
+
     // the size of pYuv should be aligned 8 byte. because of C&M HPI bus system constraint.
     pYuv = (BYTE*)osal_malloc(framebufSize);
     if (!pYuv) 
@@ -1082,34 +1130,28 @@ int VpuDecoder::seqInit()
     return 1;
 }
 
+void VpuDecoder::updateViewportSize(QSize sz)
+{
+    if (_viewportSize != sz) {
+        _viewportSize = sz;
+    }
+}
+
 // return -1 to quit
 int VpuDecoder::sendFrame()
 {
-#if 0
-    //QImage img(850, 600, QImage::Format_RGB32);
-    QImage img(outputInfo.dispFrame.stride, outputInfo.dispFrame.height, 
-            QImage::Format_RGB32);
-    galConverter->convert(img.width(), img.height(), gcvSURF_I420, outputInfo.dispFrame);
-    galConverter->copyRGBData(img.bits());
+#if 1
+    QImage img(_viewportSize.width(), _viewportSize.height(), QImage::Format_RGB32);
+    //QImage img(outputInfo.dispFrame.stride, outputInfo.dispFrame.height, 
+            //QImage::Format_RGB32);
 
-#if 0
-    QImage img(outputInfo.dispFrame.stride, outputInfo.dispFrame.height, 
-            QImage::Format_RGB32);
-    galConverter->_srcSurf = GALSurface::create(galConverter->g_hal,
-            outputInfo.dispFrame.stride, outputInfo.dispFrame.height, gcvSURF_I420);
-    {
-        SurfaceScopedLock scoped(galConverter->_srcSurf);
-        galConverter->_srcSurf->copyFromFb(
-                outputInfo.dispFrame.stride, outputInfo.dispFrame.height, outputInfo.dispFrame);
+    galConverter->updateDestSurface(_viewportSize.width(), _viewportSize.height());
+    galConverter->updateSrcSurface(outputInfo.dispFrame.stride, outputInfo.dispFrame.height);
 
-        vdi_read_memory(coreIdx, galConverter->_srcSurf->phyAddr[0], 
-                pYuv, framebufSize, decOP.frameEndian);
-        yuv2rgb_color_format color_format = 
-            convert_vpuapi_format_to_yuv2rgb_color_format(framebufFormat, 0);
-        vpu_yuv2rgb(outputInfo.dispFrame.stride, outputInfo.dispFrame.height,
-                color_format, pYuv, img.bits(), 1);
-    }
-#endif
+    galConverter->convertYUV2RGBScaled(outputInfo.dispFrame);
+    auto stride = galConverter->_dstSurf->stride;
+    galConverter->copyRGBData(img.bits(), img.bytesPerLine(), img.height());
+
 #else
     QImage img(outputInfo.dispFrame.stride, outputInfo.dispFrame.height, 
             QImage::Format_RGB32);
@@ -1125,7 +1167,7 @@ int VpuDecoder::sendFrame()
 
     //qDebug() << QTime::currentTime().toString("ss.zzz");
     fprintf(stderr, "%s: timestamp %s\n", __func__, QTime::currentTime().toString("ss.zzz").toUtf8().constData());
-    if (frameIdx > 100) return -1;
+    if (frameIdx > 600) return -1;
 
 #ifdef FORCE_SET_VSYNC_FLAG
     set_VSYNC_flag();
@@ -1362,7 +1404,6 @@ int VpuDecoder::loop()
 		goto ERR_DEC_OPEN;
 	}
 
-    galConverter = new GALConverter;
 
 	seqFilled = 0;
 	bsfillSize = 0;

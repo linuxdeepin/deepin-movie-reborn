@@ -52,7 +52,9 @@ class VpuDecoder : public QThread
 public:
     VpuDecoder(const QString& name);
     ~VpuDecoder();
-    quit() { _quitFlags.storeRelease(1); }
+    void quit() { _quitFlags.storeRelease(1); }
+    void updateViewportSize(QSize sz);
+
 
 protected:
     void run() override;
@@ -70,6 +72,8 @@ signals:
     void frame(const QImage &);
 
 private:
+    QSize _viewportSize;
+
 	DecConfigParam	decConfig;
     QString _filename;
     QAtomicInt _quitFlags {0};

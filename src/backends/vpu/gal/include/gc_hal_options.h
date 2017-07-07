@@ -1,14 +1,14 @@
-/******************************************************************************\
-|*                                                                            *|
-|* Copyright (c) 2005 - 2011 by Vivante Corp.  All rights reserved.           *|
-|*                                                                            *|
-|* The material in this file is confidential and contains trade secrets of    *|
-|* Vivante Corporation.  This is proprietary information owned by Vivante     *|
-|* Corporation.                                                               *|
-|*                                                                            *|
-\******************************************************************************/
-
-
+/****************************************************************************
+*
+*    Copyright (c) 2005 - 2013 by Vivante Corp.  All rights reserved.
+*
+*    The material in this file is confidential and contains trade secrets
+*    of Vivante Corporation. This is proprietary information owned by
+*    Vivante Corporation. No part of this work may be disclosed,
+*    reproduced, copied, transmitted, or used in any way for any purpose,
+*    without the express written permission of Vivante Corporation.
+*
+*****************************************************************************/
 
 
 #ifndef __gc_hal_options_h_
@@ -33,21 +33,25 @@
 #endif
 
 /*
-    NO_USER_DIRECT_ACCESS_FROM_KERNEL
-
-        This define enables the Linux kernel behavior accessing user memory.
-*/
-#ifndef NO_USER_DIRECT_ACCESS_FROM_KERNEL
-#   define NO_USER_DIRECT_ACCESS_FROM_KERNEL    0
-#endif
-
-/*
     VIVANTE_PROFILER
 
         This define enables the profiler.
 */
 #ifndef VIVANTE_PROFILER
-#   define VIVANTE_PROFILER                     0
+#   define VIVANTE_PROFILER                     1
+#endif
+
+#ifndef VIVANTE_PROFILER_PERDRAW
+#   define  VIVANTE_PROFILER_PERDRAW    0
+#endif
+
+/*
+    VIVANTE_PROFILER_CONTEXT
+
+        This define enables the profiler according to each hw context.
+*/
+#ifndef VIVANTE_PROFILER_CONTEXT
+#   define VIVANTE_PROFILER_CONTEXT             1
 #endif
 
 /*
@@ -111,6 +115,30 @@
 #define COMMAND_PROCESSOR_VERSION               1
 
 /*
+    gcdDUMP_KEY
+
+        Set this to a string that appears in 'cat /proc/<pid>/cmdline'. E.g. 'camera'.
+        HAL will create dumps for the processes matching this key.
+*/
+#ifndef gcdDUMP_KEY
+#   define gcdDUMP_KEY                          "process"
+#endif
+
+/*
+    gcdDUMP_PATH
+
+        The dump file location. Some processes cannot write to the sdcard.
+        Try apps' data dir, e.g. /data/data/com.android.launcher
+*/
+#ifndef gcdDUMP_PATH
+#if defined(ANDROID)
+#   define gcdDUMP_PATH                         "/mnt/sdcard/"
+#else
+#   define gcdDUMP_PATH                         "./"
+#endif
+#endif
+
+/*
     gcdDUMP
 
         When set to 1, a dump of all states and memory uploads, as well as other
@@ -142,8 +170,21 @@
 #   define gcdDUMP_FRAMERATE					0
 #endif
 
+/*
+    gcdVIRTUAL_COMMAND_BUFFER
+        When set to 1, user command buffer and context buffer will be allocated
+        from gcvPOOL_VIRTUAL.
+*/
 #ifndef gcdVIRTUAL_COMMAND_BUFFER
-#   define gcdVIRTUAL_COMMAND_BUFFER               1
+#   define gcdVIRTUAL_COMMAND_BUFFER            1
+#endif
+
+/*
+    gcdENABLE_FSCALE_VAL_ADJUST
+        When non-zero, FSCALE_VAL when gcvPOWER_ON can be adjusted externally.
+ */
+#ifndef gcdENABLE_FSCALE_VAL_ADJUST
+#   define gcdENABLE_FSCALE_VAL_ADJUST          1
 #endif
 
 /*
@@ -245,13 +286,27 @@
 #endif
 
 /*
+    gcdMIRROR_PAGETABLE
+
+        Enable it when GPUs with old MMU and new MMU exist at same SoC. It makes
+        each GPU use same virtual address to access same physical memory.
+*/
+#ifndef gcdMIRROR_PAGETABLE
+#   define gcdMIRROR_PAGETABLE                  0
+#endif
+
+/*
     gcdMMU_SIZE
 
         Size of the MMU page table in bytes.  Each 4 bytes can hold 4kB worth of
         virtual data.
 */
 #ifndef gcdMMU_SIZE
-#   define gcdMMU_SIZE                          (128 << 10)
+#if gcdMIRROR_PAGETABLE
+#   define gcdMMU_SIZE                          0x200000
+#else
+#   define gcdMMU_SIZE                          (1024 << 10)
+#endif
 #endif
 
 /*
@@ -312,6 +367,17 @@
 #endif
 
 /*
+    gcdUSER_HEAP_ALLOCATOR
+
+        Set to 1 to enable user mode heap allocator for fast memory allocation
+        and destroying. Otherwise, memory allocation/destroying in user mode
+        will be directly managed by system. Only for linux for now.
+*/
+#ifndef gcdUSER_HEAP_ALLOCATOR
+#   define gcdUSER_HEAP_ALLOCATOR               1
+#endif
+
+/*
     gcdHEAP_SIZE
 
         Set the allocation size for the internal heaps.  Each time a heap is
@@ -323,15 +389,6 @@
 */
 #ifndef gcdHEAP_SIZE
 #   define gcdHEAP_SIZE                         (64 << 10)
-#endif
-
-/*
-    gcdPOWER_MANAGEMENT
-
-        This define enables the power management code.
-*/
-#ifndef gcdPOWER_MANAGEMENT
-#   define gcdPOWER_MANAGEMENT                  1
 #endif
 
 /*
@@ -363,10 +420,10 @@
         If the value is 0, no timeout will be checked for.
 */
 #ifndef gcdGPU_TIMEOUT
-#   if gcdFPGA_BUILD
+#if gcdFPGA_BUILD
 #       define gcdGPU_TIMEOUT                   0
 #   else
-#       define gcdGPU_TIMEOUT                   (2000 * 5)
+#       define gcdGPU_TIMEOUT                   20000
 #   endif
 #endif
 
@@ -661,28 +718,10 @@
 
         Support swap with a specific rectangle.
 
-        Set the rectangle with eglSetSwapRectangleANDROID api.
+        Set the rectangle with eglSetSwapRectangleVIV api.
 */
 #ifndef gcdSUPPORT_SWAP_RECTANGLE
 #   define gcdSUPPORT_SWAP_RECTANGLE            0
-#endif
-
-/*
-    gcdDEFER_RESOLVES
-
-        Support deferred resolves for 3D apps.
-*/
-#ifndef gcdDEFER_RESOLVES
-#   define gcdDEFER_RESOLVES                    0
-#endif
-
-/*
-    gcdCOPYBLT_OPTIMIZATION
-
-        Combine dirty areas resulting from Android's copyBlt.
-*/
-#ifndef gcdCOPYBLT_OPTIMIZATION
-#   define gcdCOPYBLT_OPTIMIZATION              0
 #endif
 
 /*
@@ -691,7 +730,24 @@
         Use linear buffer for GPU apps so HWC can do 2D composition.
 */
 #ifndef gcdGPU_LINEAR_BUFFER_ENABLED
-#   define gcdGPU_LINEAR_BUFFER_ENABLED         0
+#   define gcdGPU_LINEAR_BUFFER_ENABLED         1
+#endif
+
+/*
+    gcdENABLE_RENDER_INTO_WINDOW
+
+        Enable Render-Into-Window (ie, No-Resolve) feature on android.
+        NOTE that even if enabled, it still depends on hardware feature and
+        android application behavior. When hardware feature or application
+        behavior can not support render into window mode, it will fail back
+        to normal mode.
+        When Render-Into-Window is finally used, window back buffer of android
+        applications will be allocated matching render target tiling format.
+        Otherwise buffer tiling is decided by the above option
+        'gcdGPU_LINEAR_BUFFER_ENABLED'.
+*/
+#ifndef gcdENABLE_RENDER_INTO_WINDOW
+#   define gcdENABLE_RENDER_INTO_WINDOW         1
 #endif
 
 /*
@@ -720,21 +776,22 @@
 #endif
 
 #ifndef gcdANDROID_UNALIGNED_LINEAR_COMPOSITION_ADJUST
-#   define  gcdANDROID_UNALIGNED_LINEAR_COMPOSITION_ADJUST    0
+#ifdef ANDROID
+#      define  gcdANDROID_UNALIGNED_LINEAR_COMPOSITION_ADJUST    1
+#   else
+#      define  gcdANDROID_UNALIGNED_LINEAR_COMPOSITION_ADJUST    0
+#   endif
+#endif
+
+#ifndef gcdENABLE_PE_DITHER_FIX
+#   define gcdENABLE_PE_DITHER_FIX              1
 #endif
 
 #ifndef gcdSHARED_PAGETABLE
 #   define gcdSHARED_PAGETABLE                  1
 #endif
-
-/*
-    gcdBLOB_CACHE_ENABLED
-        When non-zero, Android blob cache extension will be enabled.
-        Otherwise, caching will be by-passed.
- */
-
-#ifndef gcdBLOB_CACHE_ENABLED
-#   define gcdBLOB_CACHE_ENABLED                0
+#ifndef gcdUSE_PVR
+#   define gcdUSE_PVR			                1
 #endif
 
 /*
@@ -752,6 +809,33 @@
 #   define gcdRATIO_FOR_SMALL_MEMORY            32
 #endif
 
+/*
+    gcdCONTIGUOUS_SIZE_LIMIT
+        When non-zero, size of video node from gcvPOOL_CONTIGUOUS is
+        limited by gcdCONTIGUOUS_SIZE_LIMIT.
+ */
+#ifndef gcdCONTIGUOUS_SIZE_LIMIT
+#   define gcdCONTIGUOUS_SIZE_LIMIT             0
+#endif
+
+#ifndef gcdDISALBE_EARLY_EARLY_Z
+#   define gcdDISALBE_EARLY_EARLY_Z             1
+#endif
+
+#ifndef gcdSHADER_SRC_BY_MACHINECODE
+#   define gcdSHADER_SRC_BY_MACHINECODE         1
+#endif
+
+/*
+    gcdLINK_QUEUE_SIZE
+
+        When non-zero, driver maintains a queue to record information of
+        latest lined context buffer and command buffer. Data in this queue
+        is be used to debug.
+*/
+#ifndef gcdLINK_QUEUE_SIZE
+#   define gcdLINK_QUEUE_SIZE                  0
+#endif
 
 /*  gcdALPHA_KILL_IN_SHADER
  *
@@ -763,7 +847,88 @@
 #endif
 
 #ifndef gcdUSE_WCLIP_PATCH
-#   define gcdUSE_WCLIP_PATCH                   0
+#   define gcdUSE_WCLIP_PATCH                   1
+#endif
+
+#ifndef gcdHZ_L2_DISALBE
+#   define gcdHZ_L2_DISALBE                     1
+#endif
+
+#ifndef gcdBUGFIX15_DISABLE
+#   define gcdBUGFIX15_DISABLE                  1
+#endif
+
+#ifndef gcdDISABLE_HZ_FAST_CLEAR
+#   define gcdDISABLE_HZ_FAST_CLEAR             1
+#endif
+
+#ifndef gcdUSE_NPOT_PATCH
+#define gcdUSE_NPOT_PATCH                       1
+#endif
+
+#ifndef gcdSYNC
+#   define gcdSYNC                              1
+#endif
+
+#ifndef gcdENABLE_SPECIAL_HINT3
+#   define gcdENABLE_SPECIAL_HINT3               1
+#endif
+
+#if defined(ANDROID)
+#ifndef gcdPRE_ROTATION
+#   define gcdPRE_ROTATION                      1
+#endif
+#endif
+
+/*
+    gcdDVFS
+
+        When non-zero, software will make use of dynamic voltage and
+        frequency feature.
+ */
+#ifndef gcdDVFS
+#   define gcdDVFS                               0
+#   define gcdDVFS_ANAYLSE_WINDOW                4
+#   define gcdDVFS_POLLING_TIME                  (gcdDVFS_ANAYLSE_WINDOW * 4)
+#endif
+
+#ifndef gcdPRINT_SWAP_TIME
+#   define gcdPRINT_SWAP_TIME                    0
+#endif
+
+/*
+    gcdANDROID_NATIVE_FENCE_SYNC
+
+        Enable android native fence sync. It is introduced since jellybean-4.2.
+        Depends on linux kernel option: CONFIG_SYNC.
+
+        0: Disabled
+        1: Build framework for native fence sync feature, and EGL extension
+        2: Enable async swap buffers for client
+           * Native fence sync for client 'queueBuffer' in EGL, which is
+             'acquireFenceFd' for layer in compositor side.
+        3. Enable async hwcomposer composition.
+           * 'releaseFenceFd' for layer in compositor side, which is native
+             fence sync when client 'dequeueBuffer'
+           * Native fence sync for compositor 'queueBuffer' in EGL, which is
+             'acquireFenceFd' for framebuffer target for DC
+ */
+#ifndef gcdANDROID_NATIVE_FENCE_SYNC
+#   define gcdANDROID_NATIVE_FENCE_SYNC        0
+#endif
+
+#ifndef gcdFORCE_MIPMAP
+#   define gcdFORCE_MIPMAP                     0
+#endif
+
+/*
+    gcdFORCE_GAL_LOAD_TWICE
+
+        When non-zero, each thread except the main one will load libGAL.so twice to avoid potential segmetantion fault when app using dlopen/dlclose.
+        If threads exit arbitrarily, libGAL.so may not unload until the process quit.
+ */
+#ifndef gcdFORCE_GAL_LOAD_TWICE
+#   define gcdFORCE_GAL_LOAD_TWICE             0
 #endif
 
 #endif /* __gc_hal_options_h_ */

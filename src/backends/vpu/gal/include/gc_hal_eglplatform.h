@@ -1,6 +1,6 @@
 /****************************************************************************
 *
-*    Copyright (c) 2005 - 2012 by Vivante Corp.  All rights reserved.
+*    Copyright (c) 2005 - 2013 by Vivante Corp.  All rights reserved.
 *
 *    The material in this file is confidential and contains trade secrets
 *    of Vivante Corporation. This is proprietary information owned by
@@ -11,224 +11,17 @@
 *****************************************************************************/
 
 
-
-
 #ifndef __gc_hal_eglplatform_h_
 #define __gc_hal_eglplatform_h_
 
 /* Include VDK types. */
 #include "gc_hal_types.h"
 #include "gc_hal_base.h"
+#include "gc_hal_eglplatform_type.h"
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-/*******************************************************************************
-** Events. *********************************************************************
-*/
-
-typedef enum _halEventType
-{
-	/* Keyboard event. */
-    HAL_KEYBOARD,
-
-	/* Mouse move event. */
-    HAL_POINTER,
-
-	/* Mouse button event. */
-    HAL_BUTTON,
-
-	/* Application close event. */
-	HAL_CLOSE,
-
-	/* Application window has been updated. */
-	HAL_WINDOW_UPDATE
-}
-halEventType;
-
-/* Scancodes for keyboard. */
-typedef enum _halKeys
-{
-    HAL_UNKNOWN = -1,
-
-    HAL_BACKSPACE = 0x08,
-    HAL_TAB,
-    HAL_ENTER = 0x0D,
-    HAL_ESCAPE = 0x1B,
-
-    HAL_SPACE = 0x20,
-    HAL_SINGLEQUOTE = 0x27,
-    HAL_PAD_ASTERISK = 0x2A,
-    HAL_COMMA = 0x2C,
-    HAL_HYPHEN,
-    HAL_PERIOD,
-    HAL_SLASH,
-    HAL_0,
-    HAL_1,
-    HAL_2,
-    HAL_3,
-    HAL_4,
-    HAL_5,
-    HAL_6,
-    HAL_7,
-    HAL_8,
-    HAL_9,
-    HAL_SEMICOLON = 0x3B,
-    HAL_EQUAL = 0x3D,
-    HAL_A = 0x41,
-    HAL_B,
-    HAL_C,
-    HAL_D,
-    HAL_E,
-    HAL_F,
-    HAL_G,
-    HAL_H,
-    HAL_I,
-    HAL_J,
-    HAL_K,
-    HAL_L,
-    HAL_M,
-    HAL_N,
-    HAL_O,
-    HAL_P,
-    HAL_Q,
-    HAL_R,
-    HAL_S,
-    HAL_T,
-    HAL_U,
-    HAL_V,
-    HAL_W,
-    HAL_X,
-    HAL_Y,
-    HAL_Z,
-    HAL_LBRACKET,
-    HAL_BACKSLASH,
-    HAL_RBRACKET,
-    HAL_BACKQUOTE = 0x60,
-
-    HAL_F1 = 0x80,
-    HAL_F2,
-    HAL_F3,
-    HAL_F4,
-    HAL_F5,
-    HAL_F6,
-    HAL_F7,
-    HAL_F8,
-    HAL_F9,
-    HAL_F10,
-    HAL_F11,
-    HAL_F12,
-
-    HAL_LCTRL,
-    HAL_RCTRL,
-    HAL_LSHIFT,
-    HAL_RSHIFT,
-    HAL_LALT,
-    HAL_RALT,
-    HAL_CAPSLOCK,
-    HAL_NUMLOCK,
-    HAL_SCROLLLOCK,
-    HAL_PAD_0,
-    HAL_PAD_1,
-    HAL_PAD_2,
-    HAL_PAD_3,
-    HAL_PAD_4,
-    HAL_PAD_5,
-    HAL_PAD_6,
-    HAL_PAD_7,
-    HAL_PAD_8,
-    HAL_PAD_9,
-    HAL_PAD_HYPHEN,
-    HAL_PAD_PLUS,
-    HAL_PAD_SLASH,
-    HAL_PAD_PERIOD,
-    HAL_PAD_ENTER,
-    HAL_SYSRQ,
-    HAL_PRNTSCRN,
-    HAL_BREAK,
-    HAL_UP,
-    HAL_LEFT,
-    HAL_RIGHT,
-    HAL_DOWN,
-    HAL_HOME,
-    HAL_END,
-    HAL_PGUP,
-    HAL_PGDN,
-    HAL_INSERT,
-    HAL_DELETE,
-    HAL_LWINDOW,
-    HAL_RWINDOW,
-    HAL_MENU,
-    HAL_POWER,
-    HAL_SLEEP,
-    HAL_WAKE
-}
-halKeys;
-
-/* Structure that defined keyboard mapping. */
-typedef struct _halKeyMap
-{
-	/* Normal key. */
-    halKeys normal;
-
-	/* Extended key. */
-    halKeys extended;
-}
-halKeyMap;
-
-/* Event structure. */
-typedef struct _halEvent
-{
-	/* Event type. */
-    halEventType type;
-
-	/* Event data union. */
-    union _halEventData
-    {
-		/* Event data for keyboard. */
-        struct _halKeyboard
-        {
-			/* Scancode. */
-            halKeys	scancode;
-
-			/* ASCII characte of the key pressed. */
-            gctCHAR	key;
-
-			/* Flag whether the key was pressed (1) or released (0). */
-            gctCHAR	pressed;
-        }
-        keyboard;
-
-		/* Event data for pointer. */
-        struct _halPointer
-        {
-			/* Current pointer coordinate. */
-            gctINT		x;
-            gctINT		y;
-        }
-        pointer;
-
-		/* Event data for mouse buttons. */
-        struct _halButton
-        {
-			/* Left button state. */
-            gctINT		left;
-
-			/* Middle button state. */
-            gctINT		middle;
-
-			/* Right button state. */
-            gctINT		right;
-
-			/* Current pointer coordinate. */
-			gctINT		x;
-			gctINT		y;
-        }
-        button;
-    }
-    data;
-}
-halEvent;
 
 #if defined(_WIN32) || defined(__VC32__) && !defined(__CYGWIN__) && !defined(__SCITECH_SNAP__)
 /* Win32 and Windows CE platforms. */
@@ -242,54 +35,67 @@ typedef struct __BITFIELDINFO{
     RGBQUAD       bmiColors[2];
 } BITFIELDINFO;
 
+#elif defined(LINUX) && defined(EGL_API_DFB) && !defined(__APPLE__)
+#include <directfb.h>
+typedef struct _DFBDisplay * HALNativeDisplayType;
+typedef IDirectFBWindow *  HALNativeWindowType;
+typedef struct _DFBPixmap *  HALNativePixmapType;
+
 #elif defined(LINUX) && defined(EGL_API_FB) && !defined(__APPLE__)
 
 #if defined(EGL_API_WL)
 /* Wayland platform. */
-
+#include "wayland-server.h"
 #include <wayland-egl.h>
 
 #define WL_EGL_NUM_BACKBUFFERS 2
 
-struct wl_egl_buffer_info
+typedef struct _gcsWL_VIV_BUFFER
+{
+   struct wl_buffer wl_buffer;
+   gcoSURF surface;
+} gcsWL_VIV_BUFFER;
+
+typedef struct _gcsWL_EGL_DISPLAY
+{
+   struct wl_display* wl_display;
+   struct wl_viv* wl_viv;
+} gcsWL_EGL_DISPLAY;
+
+typedef struct _gcsWL_EGL_BUFFER_INFO
 {
    gctINT32 width;
    gctINT32 height;
    gctINT32 stride;
-   gctUINT32 physical;
-   gctPOINTER logical;
    gceSURF_FORMAT format;
+   gcuVIDMEM_NODE_PTR node;
+   gcePOOL pool;
+   gctUINT bytes;
    gcoSURF surface;
-};
+} gcsWL_EGL_BUFFER_INFO;
 
-struct wl_egl_buffer
+typedef struct _gcsWL_EGL_BUFFER
 {
    struct wl_buffer* wl_buffer;
-   struct wl_egl_buffer_info info;
-};
+   gcsWL_EGL_BUFFER_INFO info;
+} gcsWL_EGL_BUFFER;
 
-struct wl_egl_window_info
+typedef struct _gcsWL_EGL_WINDOW_INFO
 {
    gctUINT width;
    gctUINT height;
    gceSURF_FORMAT format;
    gctUINT bpp;
-};
+} gcsWL_EGL_WINDOW_INFO;
 
 struct wl_egl_window
 {
-/*   struct wl_egl_display *display;*/
-   struct wl_surface* surface;
-   struct wl_egl_window_info info;
-   struct wl_egl_buffer backbuffers[WL_EGL_NUM_BACKBUFFERS];
+   gcsWL_EGL_BUFFER backbuffers[WL_EGL_NUM_BACKBUFFERS];
+   gcsWL_EGL_WINDOW_INFO info;
    gctUINT current;
-   /*
-   int backbuffer;
-   int dx;
-   int dy;
-*/
+   struct wl_surface* surface;
+   struct wl_callback* pending;
 };
-
 
 typedef void*   HALNativeDisplayType;
 typedef void*   HALNativeWindowType;
@@ -364,7 +170,16 @@ typedef void *  HALNativePixmapType;
 
 #endif
 
-
+/* define DUMMY according to the system */
+#if defined(EGL_API_WL)
+#   define WL_DUMMY (31415926)
+#   define EGL_DUMMY WL_DUMMY
+#elif defined(__ANDROID__) || defined(ANDROID)
+#   define ANDROID_DUMMY (31415926)
+#   define EGL_DUMMY ANDROID_DUMMY
+#else
+#   define EGL_DUMMY (31415926)
+#endif
 
 /*******************************************************************************
 ** Display. ********************************************************************
@@ -372,13 +187,15 @@ typedef void *  HALNativePixmapType;
 
 gceSTATUS
 gcoOS_GetDisplay(
-    OUT HALNativeDisplayType * Display
+    OUT HALNativeDisplayType * Display,
+    IN gctPOINTER Context
     );
 
 gceSTATUS
 gcoOS_GetDisplayByIndex(
     IN gctINT DisplayIndex,
-    OUT HALNativeDisplayType * Display
+    OUT HALNativeDisplayType * Display,
+    IN gctPOINTER Context
     );
 
 gceSTATUS
@@ -391,51 +208,7 @@ gcoOS_GetDisplayInfo(
     OUT gctINT * BitsPerPixel
     );
 
-/* VFK_DISPLAY_INFO structure defining information returned by
-   vdkGetDisplayInfoEx. */
-typedef struct _halDISPLAY_INFO
-{
-    /* The size of the display in pixels. */
-    gctINT                         width;
-    gctINT                         height;
 
-    /* The stride of the dispay. -1 is returned if the stride is not known
-    ** for the specified display.*/
-    gctINT                         stride;
-
-    /* The color depth of the display in bits per pixel. */
-    gctINT                         bitsPerPixel;
-
-    /* The logical pointer to the display memory buffer. NULL is returned
-    ** if the pointer is not known for the specified display. */
-    gctPOINTER                      logical;
-
-    /* The physical address of the display memory buffer. ~0 is returned
-    ** if the address is not known for the specified display. */
-    gctSIZE_T               physical;
-
-    gctBOOL                isCompositor;   /* true if compositor, false otherwise. */
-
-#ifndef __QNXNTO__
-    /* 355_FB_MULTI_BUFFER */
-    gctINT                      multiBuffer;
-    gctINT                      backBufferY;
-#endif
-
-    /* The color info of the display. */
-    gctUINT                alphaLength;
-    gctUINT                alphaOffset;
-    gctUINT                redLength;
-    gctUINT                redOffset;
-    gctUINT                greenLength;
-    gctUINT                greenOffset;
-    gctUINT                blueLength;
-    gctUINT                blueOffset;
-
-    /* Display flip support. */
-    gctINT                         flip;
-}
-halDISPLAY_INFO;
 
 gceSTATUS
 gcoOS_GetDisplayInfoEx(
@@ -446,7 +219,8 @@ gcoOS_GetDisplayInfoEx(
     );
 
 gceSTATUS
-gcoOS_GetNextDisplayInfoEx(
+gcoOS_GetNextDisplayInfoExByIndex(
+    IN gctINT Index,
     IN HALNativeDisplayType Display,
     IN HALNativeWindowType Window,
     IN gctUINT DisplayInfoSize,
@@ -481,6 +255,30 @@ gcoOS_SetDisplayVirtual(
     );
 
 gceSTATUS
+gcoOS_SetDisplayVirtualEx(
+    IN HALNativeDisplayType Display,
+    IN HALNativeWindowType Window,
+    IN gctPOINTER Context,
+    IN gcoSURF Surface,
+    IN gctUINT Offset,
+    IN gctINT X,
+    IN gctINT Y
+    );
+
+gceSTATUS
+gcoOS_SetSwapInterval(
+    IN HALNativeDisplayType Display,
+    IN gctINT Interval
+);
+
+gceSTATUS
+gcoOS_GetSwapInterval(
+    IN HALNativeDisplayType Display,
+    IN gctINT_PTR Min,
+    IN gctINT_PTR Max
+);
+
+gceSTATUS
 gcoOS_DisplayBufferRegions(
     IN HALNativeDisplayType Display,
     IN HALNativeWindowType Window,
@@ -495,11 +293,13 @@ gcoOS_DestroyDisplay(
 
 gceSTATUS
 gcoOS_InitLocalDisplayInfo(
+    IN HALNativeDisplayType Display,
     IN OUT gctPOINTER * localDisplay
     );
 
 gceSTATUS
 gcoOS_DeinitLocalDisplayInfo(
+    IN HALNativeDisplayType Display,
     IN OUT gctPOINTER * localDisplay
     );
 
@@ -535,6 +335,10 @@ gcoOS_GetNativeVisualId(
     OUT gctINT* nativeVisualId
     );
 
+gctBOOL
+gcoOS_SynchronousFlip(
+    IN HALNativeDisplayType Display
+    );
 
 /*******************************************************************************
 ** Windows. ********************************************************************
@@ -756,7 +560,48 @@ gcoOS_DestroyClientBuffer(
     IN gctPOINTER ClientBuffer
     );
 
+gceSTATUS
+gcoOS_DestroyContext(
+    IN gctPOINTER Display,
+    IN gctPOINTER Context
+    );
 
+gceSTATUS
+gcoOS_CreateContext(
+    IN gctPOINTER LocalDisplay,
+    IN gctPOINTER Context
+    );
+
+gceSTATUS
+gcoOS_MakeCurrent(
+    IN gctPOINTER LocalDisplay,
+    IN HALNativeWindowType DrawDrawable,
+    IN HALNativeWindowType ReadDrawable,
+    IN gctPOINTER Context,
+    IN gcoSURF ResolveTarget
+    );
+
+gceSTATUS
+gcoOS_CreateDrawable(
+    IN gctPOINTER LocalDisplay,
+    IN HALNativeWindowType Drawable
+    );
+
+gceSTATUS
+gcoOS_DestroyDrawable(
+    IN gctPOINTER LocalDisplay,
+    IN HALNativeWindowType Drawable
+    );
+gceSTATUS
+gcoOS_SwapBuffers(
+    IN gctPOINTER LocalDisplay,
+    IN HALNativeWindowType Drawable,
+    IN gcoSURF RenderTarget,
+    IN gcoSURF ResolveTarget,
+    IN gctPOINTER ResolveBits,
+    OUT gctUINT *Width,
+    OUT gctUINT *Height
+    );
 #ifdef __cplusplus
 }
 #endif
