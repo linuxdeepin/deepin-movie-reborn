@@ -3,21 +3,22 @@
 
 #include <QtWidgets>
 #include <ddialog.h>
-#include "mpv_proxy.h"
 
 DWIDGET_USE_NAMESPACE
 
 namespace dmr {
+class PlayerEngine;
+
 class BurstScreenshotsDialog: public DDialog {
 public:
-    BurstScreenshotsDialog(MpvProxy*);
+    BurstScreenshotsDialog(PlayerEngine*);
 
 public slots:
     int exec() override;
     void OnScreenshot(const QPixmap& frame);
 
 private:
-    MpvProxy *_mpv {nullptr};
+    PlayerEngine *_engine {nullptr};
     int _count {0};
     QGridLayout *_grid {nullptr};
 };

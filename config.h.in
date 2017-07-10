@@ -6,6 +6,8 @@
 #define DMR_VERSION "@PROJECT_VERSION@"
 #cmakedefine USE_DXCB 1
 #cmakedefine ENABLE_VPU_PLATFORM
+#cmakedefine DMR_DEBUG
+
 // ~
 
 #ifdef ENABLE_VPU_PLATFORM

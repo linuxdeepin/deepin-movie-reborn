@@ -11,10 +11,10 @@
 DWIDGET_USE_NAMESPACE
 
 namespace dmr {
-class MpvProxy;
 class ToolboxProxy;
 class EventMonitor;
 class PlaylistWidget;
+class PlayerEngine;
 
 class MainWindow: public QWidget {
     Q_OBJECT
@@ -24,7 +24,7 @@ public:
     ~MainWindow();
 
     QMargins frameMargins() const;
-    MpvProxy* proxy() { return _proxy; }
+    PlayerEngine* engine() { return _engine; }
     DTitlebar* titlebar() { return _titlebar; }
     ToolboxProxy* toolbox() { return _toolbox; }
     void requestAction(ActionKind, bool fromUI = false);
@@ -70,11 +70,10 @@ private:
     void reflectActionToUI(ActionKind);
 
 private:
-    MpvProxy *_proxy {nullptr};
     DTitlebar *_titlebar {nullptr};
     ToolboxProxy *_toolbox {nullptr};
     PlaylistWidget *_playlist {nullptr};
-    QWidget *_center {nullptr};
+    PlayerEngine *_engine {nullptr};
     QLabel *_playState {nullptr};
 
     DPlatformWindowHandle *_handle {nullptr};

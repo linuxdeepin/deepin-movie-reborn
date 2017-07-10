@@ -16,13 +16,13 @@ DWIDGET_USE_NAMESPACE
 
 namespace dmr {
 
-class MpvProxy;
+class PlayerEngine;
 class MainWindow;
 
 class PlaylistWidget: public QFrame {
     Q_OBJECT
 public:
-    PlaylistWidget(QWidget *, MpvProxy*);
+    PlaylistWidget(QWidget *, PlayerEngine*);
     virtual ~PlaylistWidget();
 
 public slots:
@@ -38,7 +38,7 @@ protected slots:
     void updateItemStates();
 
 private:
-    MpvProxy *_mpv {nullptr};
+    PlayerEngine *_engine {nullptr};
     MainWindow *_mw {nullptr};
     QList<QWidget*> _items;
     QWidget *_mouseItem {nullptr};

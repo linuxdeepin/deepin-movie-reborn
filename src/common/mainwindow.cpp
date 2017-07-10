@@ -1,7 +1,6 @@
 #include "config.h"
 
 #include "mainwindow.h"
-#include "mpv_proxy.h"
 #include "toolbox_proxy.h"
 #include "actions.h"
 #include "event_monitor.h"
@@ -13,6 +12,7 @@
 #include "burst_screenshots_dialog.h"
 #include "playlist_widget.h"
 #include "notification_widget.h"
+#include "player_engine.h"
 
 #include <QtWidgets>
 #include <QtDBus>
@@ -210,13 +210,13 @@ skip_set_cursor:
 
         void updateGeometry(Utility::CornerEdge edge, QMouseEvent* e) {
             auto mw = static_cast<MainWindow*>(parent());
-            bool keep_ratio = mw->proxy()->state() != MpvProxy::CoreState::Idle;
+            bool keep_ratio = mw->engine()->state() != PlayerEngine::CoreState::Idle;
             auto old_geom = mw->frameGeometry();
             auto geom = mw->frameGeometry();
             qreal ratio = (qreal)geom.width() / geom.height();
 
             if (keep_ratio) {
-                const auto& mi = mw->proxy()->playlist().currentInfo().mi;
+                const auto& mi = mw->engine()->playlist().currentInfo().mi;
                 ratio = mi.width / (qreal)mi.height;
             }
 
@@ -304,11 +304,10 @@ MainWindow::MainWindow(QWidget *parent)
     _titlebar->setMenu(ActionFactory::get().titlebarMenu());
     _titlebar->setIcon(QPixmap(":/resources/icons/logo.svg"));
 
-    _center = new QWidget(this);
-    _center->move(0, 0);
-    _proxy = new MpvProxy(_center);
+    _engine = new PlayerEngine(this);
+    _engine->move(0, 0);
 
-    _toolbox = new ToolboxProxy(this, _proxy);
+    _toolbox = new ToolboxProxy(this, _engine);
     _toolbox->setFocusPolicy(Qt::NoFocus);
 
     connect(this, &MainWindow::frameMarginsChanged, &MainWindow::updateProxyGeometry);
@@ -318,7 +317,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ActionFactory::get().playlistContextMenu(), &QMenu::triggered, 
             this, &MainWindow::menuItemInvoked);
 
-    _playlist = new PlaylistWidget(this, _proxy);
+    _playlist = new PlaylistWidget(this, _engine);
     _playlist->hide();
 
     _playState = new QLabel(this);
@@ -329,21 +328,21 @@ MainWindow::MainWindow(QWidget *parent)
             this, &MainWindow::onBindingsChanged);
     ShortcutManager::get().buildBindings();
 
-    connect(_proxy, &MpvProxy::tracksChanged, this, &MainWindow::updateActionsState);
-    connect(_proxy, &MpvProxy::fileLoaded, this, &MainWindow::updateActionsState);
+    connect(_engine, &PlayerEngine::tracksChanged, this, &MainWindow::updateActionsState);
+    connect(_engine, &PlayerEngine::fileLoaded, this, &MainWindow::updateActionsState);
     updateActionsState();
 
-    connect(&_proxy->playlist(), &PlaylistModel::currentChanged, [=]() {
-        if (_proxy->state() == MpvProxy::Idle) return;
-        if (_proxy->playlist().count() == 0) return;
+    connect(&_engine->playlist(), &PlaylistModel::currentChanged, [=]() {
+        if (_engine->state() == PlayerEngine::Idle) return;
+        if (_engine->playlist().count() == 0) return;
 
-        const auto& mi = _proxy->playlist().currentInfo().mi;
+        const auto& mi = _engine->playlist().currentInfo().mi;
         _titlebar->setTitle(QFileInfo(mi.filePath).fileName());
         resize(mi.width, mi.height);
         updateSizeConstraints();
     });
 
-    connect(_proxy, &MpvProxy::stateChanged, this, &MainWindow::updatePlayState);
+    connect(_engine, &PlayerEngine::stateChanged, this, &MainWindow::updatePlayState);
 
     connect(DThemeManager::instance(), &DThemeManager::themeChanged,
             this, &MainWindow::onThemeChanged);
@@ -369,7 +368,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(this, &MainWindow::windowLeaved, &MainWindow::suspendToolsWindow);
 
     if (!composited) {
-        _proxy->windowHandle()->installEventFilter(listener);
+        _engine->windowHandle()->installEventFilter(listener);
         _titlebar->windowHandle()->installEventFilter(listener);
         _toolbox->windowHandle()->installEventFilter(listener);
     }
@@ -378,7 +377,7 @@ MainWindow::MainWindow(QWidget *parent)
 }
 
 #ifdef USE_DXCB
-static QPoint last_proxy_pos;
+static QPoint last_engine_pos;
 static QPoint last_wm_pos;
 static bool clicked = false;
 void MainWindow::onMonitorButtonPressed(int x, int y)
@@ -391,7 +390,7 @@ void MainWindow::onMonitorButtonPressed(int x, int y)
         if (w && w == this) {
             qDebug() << __func__ << "click inside main window";
             last_wm_pos = QPoint(x, y);
-            last_proxy_pos = windowHandle()->framePosition();
+            last_engine_pos = windowHandle()->framePosition();
             clicked = true;
         }
     }
@@ -409,7 +408,7 @@ void MainWindow::onMonitorMotionNotify(int x, int y)
 {
     if (clicked) {
         QPoint d = QPoint(x, y) - last_wm_pos;
-        windowHandle()->setFramePosition(last_proxy_pos + d);
+        windowHandle()->setFramePosition(last_engine_pos + d);
     }
 }
 
@@ -461,10 +460,10 @@ void MainWindow::onThemeChanged()
 
 void MainWindow::updatePlayState()
 {
-    if (_proxy->state() != MpvProxy::CoreState::Idle) {
-        qDebug() << __func__ << _proxy->state();
+    if (_engine->state() != PlayerEngine::CoreState::Idle) {
+        qDebug() << __func__ << _engine->state();
         QPixmap pm;
-        if (_proxy->state() == MpvProxy::CoreState::Playing) {
+        if (_engine->state() == PlayerEngine::CoreState::Playing) {
             pm = QPixmap(QString(":/resources/icons/%1/normal/pause-big.png")
                     .arg(qApp->theme()));
             QTimer::singleShot(100, [=]() { _playState->setVisible(false); });
@@ -513,7 +512,7 @@ void MainWindow::onBindingsChanged()
 
 void MainWindow::updateActionsState()
 {
-    auto pmf = _proxy->playingMovieInfo();
+    auto pmf = _engine->playingMovieInfo();
     auto update = [=](QAction* act) {
         auto prop = act->property("kind");
 #if QT_VERSION < QT_VERSION_CHECK(5, 6, 2)
@@ -526,7 +525,7 @@ void MainWindow::updateActionsState()
             case ActionKind::MovieInfo:
             case ActionKind::Screenshot:
             case ActionKind::BurstScreenshot:
-                v = _proxy->state() != MpvProxy::Idle;
+                v = _engine->state() != PlayerEngine::Idle;
                 break;
 
             case ActionKind::HideSubtitle:
@@ -599,7 +598,7 @@ void MainWindow::requestAction(ActionKind kd, bool fromUI)
         }
 
         case ActionKind::EmptyPlaylist: {
-            _proxy->clearPlaylist();
+            _engine->clearPlaylist();
             break;
         }
 
@@ -619,8 +618,8 @@ void MainWindow::requestAction(ActionKind kd, bool fromUI)
         }
 
         case ActionKind::MovieInfo: {
-            if (_proxy->state() != MpvProxy::CoreState::Idle) {
-                MovieInfoDialog mid(_proxy->playlist().currentInfo().mi);
+            if (_engine->state() != PlayerEngine::CoreState::Idle) {
+                MovieInfoDialog mid(_engine->playlist().currentInfo().mi);
                 mid.exec();
             }
             break;
@@ -657,27 +656,27 @@ void MainWindow::requestAction(ActionKind kd, bool fromUI)
         }
 
         case ToggleMute: {
-            _proxy->toggleMute();
+            _engine->toggleMute();
             break;
         }
 
         case VolumeUp: {
-            _proxy->volumeUp();
+            _engine->volumeUp();
             break;
         }
 
         case VolumeDown: {
-            _proxy->volumeDown();
+            _engine->volumeDown();
             break;
         }
 
         case GotoPlaylistNext: {
-            _proxy->next();
+            _engine->next();
             break;
         }
 
         case GotoPlaylistPrev: {
-            _proxy->prev();
+            _engine->prev();
             break;
         }
 
@@ -686,7 +685,7 @@ void MainWindow::requestAction(ActionKind kd, bool fromUI)
         }
 
         case HideSubtitle: {
-            _proxy->toggleSubtitle();
+            _engine->toggleSubtitle();
             break;
         }
 
@@ -695,24 +694,24 @@ void MainWindow::requestAction(ActionKind kd, bool fromUI)
                     QDir::currentPath(),
                     tr("Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)"));
             if (QFileInfo(filename).exists()) {
-                _proxy->loadSubtitle(QFileInfo(filename));
+                _engine->loadSubtitle(QFileInfo(filename));
             }
             break;
             break;
         }
 
         case TogglePause: {
-            _proxy->pauseResume();
+            _engine->pauseResume();
             break;
         }
 
         case SeekBackward: {
-            _proxy->seekBackward(5);
+            _engine->seekBackward(5);
             break;
         }
 
         case SeekForward: {
-            _proxy->seekForward(5);
+            _engine->seekForward(5);
             break;
         }
 
@@ -722,7 +721,7 @@ void MainWindow::requestAction(ActionKind kd, bool fromUI)
         }
 
         case Screenshot: {
-            auto img = _proxy->takeScreenshot();
+            auto img = _engine->takeScreenshot();
             QString savePath = Settings::get().settings()->value("base.screenshot.location").toString();
             if (!QFileInfo(savePath).exists()) {
                 savePath = "/tmp";
@@ -772,10 +771,10 @@ void MainWindow::requestAction(ActionKind kd, bool fromUI)
         }
 
         case BurstScreenshot: {
-            BurstScreenshotsDialog bsd(_proxy);
+            BurstScreenshotsDialog bsd(_engine);
             bsd.exec();
             qDebug() << "BurstScreenshot done";
-            _proxy->pauseResume();
+            _engine->pauseResume();
             break;
         }
 
@@ -796,8 +795,8 @@ void MainWindow::play(const QFileInfo& fi)
     if (!fi.exists()) 
         return;
 
-    _proxy->addPlayFile(fi);
-    _proxy->play();
+    _engine->addPlayFile(fi);
+    _engine->play();
 }
 
 void MainWindow::updateProxyGeometry()
@@ -821,17 +820,12 @@ void MainWindow::updateProxyGeometry()
     }
 #endif
 
-    _center->resize(size());
-
     auto tl = QPoint();
+    _engine->setGeometry(QRect(tl, size()));
 
     if (_titlebar) {
         QSize sz(size().width(), _titlebar->height());
         _titlebar->setGeometry(QRect(tl, sz));
-    }
-
-    if (_proxy) {
-        _proxy->setGeometry(QRect(tl, size()));
     }
 
     if (_toolbox) {
@@ -851,13 +845,12 @@ void MainWindow::updateProxyGeometry()
         _playState->move(r.topLeft());
     }
 
-#ifdef DEBUG
+#ifdef DMR_DEBUG
     qDebug() << "margins " << frameMargins();
     qDebug() << "window frame " << frameGeometry();
     qDebug() << "window geom " << geometry();
-    qDebug() << "_center " << _center->geometry();
+    qDebug() << "_engine " << _engine->geometry();
     qDebug() << "_titlebar " << _titlebar->geometry();
-    qDebug() << "proxy " << _proxy->geometry();
     qDebug() << "_toolbox " << _toolbox->geometry();
 #endif
 }
@@ -897,8 +890,8 @@ void MainWindow::showEvent(QShowEvent *event)
 // 简而言之,只看最长的那个最大为528px.
 void MainWindow::updateSizeConstraints()
 {
-    if (_proxy->state() != MpvProxy::CoreState::Idle) {
-        const auto& mi = _proxy->playlist().currentInfo().mi;
+    if (_engine->state() != PlayerEngine::CoreState::Idle) {
+        const auto& mi = _engine->playlist().currentInfo().mi;
         qreal ratio = mi.width / (qreal)mi.height;
         int h = 528 / ratio;
         if (size().width() > size().height()) {

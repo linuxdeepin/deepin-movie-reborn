@@ -1,16 +1,12 @@
 #ifndef _DMR_PLAYLIST_MODEL_H
 #define _DMR_PLAYLIST_MODEL_H 
 
-
 #include <QtWidgets>
-#undef Bool
-#include <mpv/qthelper.hpp>
 #include <libffmpegthumbnailer/videothumbnailer.h>
 
 namespace dmr {
-using namespace mpv::qt;
 using namespace ffmpegthumbnailer;
-class MpvProxy;
+class PlayerEngine;
 
 struct MovieInfo {
     QString title;
@@ -56,14 +52,14 @@ class PlaylistModel: public QObject {
     Q_OBJECT
     Q_PROPERTY(int count READ count NOTIFY countChanged)
     Q_PROPERTY(int current READ current WRITE changeCurrent NOTIFY currentChanged)
-public:
-    friend class MpvProxy;
 
-    PlaylistModel(Handle h);
+public:
+    friend class PlayerEngine;
+
+    PlaylistModel(PlayerEngine* engine);
     void clear();
     void remove(int pos);
     void append(const QFileInfo&);
-    void appendAndPlay(const QFileInfo&);
 
     void playNext();
     void playPrev();
@@ -87,8 +83,8 @@ private:
     int _count {0};
     int _current {-1};
     QList<PlayItemInfo> _infos;
-    Handle _handle;
     VideoThumbnailer _thumbnailer;
+    PlayerEngine *_engine {nullptr};
 
     struct PlayItemInfo calculatePlayInfo(const QFileInfo& fi);
 };
