@@ -21,9 +21,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */ 
 
+#undef Bool
 #include <QCursor>
 
 #include "event_monitor.h"
+#define Bool int
 #include <X11/Xlibint.h>
 #include <X11/extensions/record.h>
 

@@ -1,9 +1,14 @@
 set(CMAKE_AUTOMOC ON)
 set(CMD_NAME deepin-movie)
 
-set(CMAKE_CXX_FLAGS "-std=c++1y -fpermissive -Wno-error -mieee")
-set(CMAKE_C_FLAGS "-Wno-error -mieee")
-set(PROJECT_INCLUDE ${PROJECT_SOURCE_DIR}/src/widgets)
+set(CMAKE_CXX_FLAGS "-std=c++1y -fpermissive -Wno-error")
+set(CMAKE_C_FLAGS "-Wno-error")
+if (ENABLE_VPU_PLATFORM) 
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mieee")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mieee")
+endif()
+
+set(PROJECT_INCLUDE ${PROJECT_SOURCE_DIR}/src/widgets ${PROJECT_SOURCE_DIR}/src/common)
 
 include_directories(${CMAKE_INCLUDE_CURRENT_DIR})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
@@ -21,10 +26,17 @@ pkg_check_modules(Other REQUIRED IMPORTED_TARGET libffmpegthumbnailer
     libavformat libavutil libavcodec)
 
 qt5_add_resources(RCS resources.qrc)
-file(GLOB_RECURSE SRCS LIST_DIRECTORIES false *.cpp)
+
+file(GLOB_RECURSE SRCS LIST_DIRECTORIES false common/*.cpp widgets/*.cpp)
+list(APPEND SRCS main.cpp)
+
+# mpv backend
+file(GLOB_RECURSE MPV_SRCS LIST_DIRECTORIES false backends/mpv/*.cpp)
+list(APPEND SRCS ${MPV_SRCS})
+list(APPEND PROJECT_INCLUDE ${PROJECT_SOURCE_DIR}/src/backends/mpv)
+#~ 
 
 if (ENABLE_VPU_PLATFORM)
-    list(APPEND PROJECT_INCLUDE ${PROJECT_SOURCE_DIR}/src/backends/)
     list(APPEND PROJECT_INCLUDE ${PROJECT_SOURCE_DIR}/src/backends/vpu/)
     list(APPEND PROJECT_INCLUDE ${PROJECT_SOURCE_DIR}/src/backends/vpu/gal/include)
     list(APPEND PROJECT_INCLUDE ${PROJECT_SOURCE_DIR}/src/backends/vpu/include)
@@ -32,7 +44,9 @@ if (ENABLE_VPU_PLATFORM)
     #FIXME: change this!
     #link_directories(backends/vpu/gal/lib)
 
-    file(GLOB_RECURSE VPU_SRCS LIST_DIRECTORIES false *.c)
+    file(GLOB_RECURSE VPU_SRCS LIST_DIRECTORIES false 
+        backends/vpu/*.c
+        backends/vpu/*.cpp)
     list(APPEND SRCS ${VPU_SRCS})
 endif()
 
@@ -56,9 +70,12 @@ add_executable(${CMD_NAME} ${SRCS} ${RCS} ${QM})
 add_dependencies(${CMD_NAME} json_i18n)
 target_include_directories(${CMD_NAME} PUBLIC ${PROJECT_INCLUDE})
 
-target_link_libraries(${CMD_NAME} X11 Xext Xtst PkgConfig::Xcb
-    Qt5::Widgets Qt5::X11Extras Qt5::DBus PkgConfig::Dtk PkgConfig::Mpv 
-    PkgConfig::Other GAL pthread)
+set(TARGET_LIBS X11 Xext Xtst PkgConfig::Xcb Qt5::Widgets Qt5::X11Extras
+    Qt5::DBus PkgConfig::Dtk PkgConfig::Mpv PkgConfig::Other pthread)
+if (ENABLE_VPU_PLATFORM) 
+    list(APPEND TARGET_LIBS GAL)
+endif()
+target_link_libraries(${CMD_NAME} ${TARGET_LIBS})
 
 
 install(TARGETS ${CMD_NAME} DESTINATION bin)
