@@ -262,6 +262,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QWidget(NULL)
 {
     setWindowFlags(Qt::FramelessWindowHint);
+    setAttribute(Qt::WA_DeleteOnClose);
     
     bool composited = CompositingManager::get().composited();
 #ifdef USE_DXCB
@@ -416,6 +417,7 @@ void MainWindow::onMonitorMotionNotify(int x, int y)
 
 MainWindow::~MainWindow()
 {
+    qDebug() << __func__;
     //delete _evm;
 }
 

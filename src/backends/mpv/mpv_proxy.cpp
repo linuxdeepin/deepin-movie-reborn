@@ -319,7 +319,6 @@ void MpvProxy::toggleMute()
 
 void MpvProxy::play()
 {
-    Q_ASSERT (state() == PlayState::Stopped);
     QList<QVariant> args = { "loadfile", _file.absoluteFilePath() };
     qDebug () << args;
     command(_handle, args);
@@ -341,7 +340,7 @@ void MpvProxy::stop()
     command(_handle, args);
 }
 
-QPixmap MpvProxy::takeScreenshot()
+QImage MpvProxy::takeScreenshot()
 {
     return takeOneScreenshot();
 }
@@ -361,9 +360,9 @@ void MpvProxy::burstScreenshot()
     _burstScreenshotTimer->start();
 }
 
-QPixmap MpvProxy::takeOneScreenshot()
+QImage MpvProxy::takeOneScreenshot()
 {
-    if (state() == PlayState::Stopped) return QPixmap();
+    if (state() == PlayState::Stopped) return QImage();
 
     QList<QVariant> args = {"screenshot-raw"};
     node_builder node(args);
@@ -371,7 +370,7 @@ QPixmap MpvProxy::takeOneScreenshot()
     int err = mpv_command_node(_handle, node.node(), &res);
     if (err < 0) {
         qWarning() << "screenshot raw failed";
-        return QPixmap();
+        return QImage();
     }
 
     node_autofree f(&res);
@@ -401,12 +400,13 @@ QPixmap MpvProxy::takeOneScreenshot()
 
     if (data) {
         //alpha should be ignored
-        auto img = QPixmap::fromImage(QImage(data, w, h, stride, QImage::Format_RGB32));
+        auto img = QImage((const uchar*)data, w, h, stride, QImage::Format_RGB32);
+        img.bits();
         return img;
     }
 
     qDebug() << "failed";
-    return QPixmap();
+    return QImage();
 }
 
 void MpvProxy::stepBurstScreenshot()
@@ -415,7 +415,7 @@ void MpvProxy::stepBurstScreenshot()
         return;
     }
 
-    QPixmap img = takeOneScreenshot();
+    QImage img = takeOneScreenshot();
     if (img.isNull()) {
         stopBurstScreenshot();
         return;

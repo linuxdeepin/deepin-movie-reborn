@@ -15,7 +15,7 @@ public:
 
 public slots:
     int exec() override;
-    void OnScreenshot(const QPixmap& frame);
+    void OnScreenshot(const QImage& frame);
 
 private:
     PlayerEngine *_engine {nullptr};

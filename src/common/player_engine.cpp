@@ -39,6 +39,7 @@ PlayerEngine::PlayerEngine(QWidget *parent)
 
 PlayerEngine::~PlayerEngine()
 {
+    qDebug() << __func__;
 }
 
 void PlayerEngine::onBackendStateChanged()
@@ -179,7 +180,7 @@ bool PlayerEngine::paused()
     return _state == CoreState::Paused;
 }
 
-QPixmap PlayerEngine::takeScreenshot()
+QImage PlayerEngine::takeScreenshot()
 {
     return _current->takeScreenshot();
 }
