@@ -25,8 +25,11 @@
 #define EVENTMONITOR_H
 
 #include <QThread>
+#define Bool int
 #include <X11/Xlib.h>
 #include <X11/extensions/record.h>
+#undef Bool
+
 
 namespace dmr {
 
