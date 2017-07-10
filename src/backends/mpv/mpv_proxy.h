@@ -32,7 +32,7 @@ public:
     int volume() const override;
     bool muted() const override;
 
-    QPixmap takeScreenshot() override;
+    QImage takeScreenshot() override;
     void burstScreenshot() override; //initial the start of burst screenshotting
     void stopBurstScreenshot() override;
 
@@ -67,7 +67,7 @@ private:
     mpv_handle* mpv_init();
     void processPropertyChange(mpv_event_property* ev);
     void processLogMessage(mpv_event_log_message* ev);
-    QPixmap takeOneScreenshot();
+    QImage takeOneScreenshot();
     void changeProperty(const QString& name, const QVariant& v);
     void updatePlayingMovieInfo();
     void setState(PlayState s);

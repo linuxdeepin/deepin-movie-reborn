@@ -58,7 +58,7 @@ public:
 
     PlaylistModel& playlist() const { return *_playlist; }
 
-    QPixmap takeScreenshot();
+    QImage takeScreenshot();
     void burstScreenshot(); //initial the start of burst screenshotting
     void stopBurstScreenshot();
 
@@ -71,7 +71,7 @@ signals:
     void volumeChanged();
 
     //emit during burst screenshotting
-    void notifyScreenshot(const QPixmap& frame);
+    void notifyScreenshot(const QImage& frame);
 
     void playlistChanged();
 

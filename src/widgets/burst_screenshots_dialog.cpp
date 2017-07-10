@@ -39,7 +39,7 @@ BurstScreenshotsDialog::BurstScreenshotsDialog(PlayerEngine* mpv)
     connect(_engine, &PlayerEngine::notifyScreenshot, this, &BurstScreenshotsDialog::OnScreenshot);
 }
 
-void BurstScreenshotsDialog::OnScreenshot(const QPixmap& frame)
+void BurstScreenshotsDialog::OnScreenshot(const QImage& frame)
 {
     qDebug() << __func__ << _count;
     if (frame.isNull()) {
@@ -51,7 +51,7 @@ void BurstScreenshotsDialog::OnScreenshot(const QPixmap& frame)
     auto *l = new QLabel(this);
     int r = _count / 3;
     int c = _count % 3;
-    l->setPixmap(scaled);
+    l->setPixmap(QPixmap::fromImage(scaled));
     _grid->addWidget(l, r, c);
     _count++;
     if (_count >= 15) {

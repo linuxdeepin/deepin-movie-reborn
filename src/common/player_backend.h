@@ -48,7 +48,7 @@ public:
     virtual int volume() const = 0;
     virtual bool muted() const = 0;
 
-    virtual QPixmap takeScreenshot() = 0;
+    virtual QImage takeScreenshot() = 0;
     virtual void burstScreenshot() = 0; //initial the start of burst screenshotting
     virtual void stopBurstScreenshot() = 0;
 
@@ -61,7 +61,7 @@ Q_SIGNALS:
     void volumeChanged();
 
     //emit during burst screenshotting
-    void notifyScreenshot(const QPixmap& frame);
+    void notifyScreenshot(const QImage& frame);
 
 public slots:
     virtual void play() = 0;
