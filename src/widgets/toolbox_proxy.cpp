@@ -2,7 +2,7 @@
 #include "mainwindow.h"
 #include "event_relayer.h"
 #include "compositing_manager.h"
-#include "mpv_proxy.h"
+#include "player_engine.h"
 #include "toolbutton.h"
 #include "actions.h"
 
@@ -34,7 +34,7 @@ protected:
 class VolumeSlider: public QWidget {
     Q_OBJECT
 public:
-    VolumeSlider(MpvProxy* mpv): QWidget(nullptr, Qt::Popup), _mpv(mpv) {
+    VolumeSlider(PlayerEngine* eng): QWidget(nullptr, Qt::Popup), _engine(eng) {
         setFixedSize(QSize(24, 105));
         setAttribute(Qt::WA_DeleteOnClose);
         setWindowOpacity(0.92);
@@ -56,14 +56,14 @@ public:
         _slider->setRange(0, 100);
         _slider->setOrientation(Qt::Vertical);
 
-        _slider->setValue(_mpv->volume());
+        _slider->setValue(_engine->volume());
         l->addWidget(_slider);
 
         connect(DThemeManager::instance(), &DThemeManager::themeChanged, 
                 this, &VolumeSlider::onThemeChanged);
         onThemeChanged();
 
-        connect(_slider, &QSlider::valueChanged, [=]() { _mpv->changeVolume(_slider->value()); });
+        connect(_slider, &QSlider::valueChanged, [=]() { _engine->changeVolume(_slider->value()); });
     }
 
     ~VolumeSlider() {
@@ -90,14 +90,14 @@ public slots:
     }
 
 private:
-    MpvProxy *_mpv;
+    PlayerEngine *_engine;
     QSlider *_slider;
 };
 
-ToolboxProxy::ToolboxProxy(QWidget *mainWindow, MpvProxy *proxy)
+ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
     :QFrame(mainWindow),
     _mainWindow(static_cast<MainWindow*>(mainWindow)),
-    _mpv(proxy)
+    _engine(proxy)
 {
     bool composited = CompositingManager::get().composited();
     setFrameShape(QFrame::NoFrame);
@@ -184,15 +184,15 @@ void ToolboxProxy::setup()
     right->addWidget(_listBtn);
 
 
-    connect(_mpv, &MpvProxy::stateChanged, this, &ToolboxProxy::updatePlayState);
-    connect(_mpv, &MpvProxy::ellapsedChanged, [=]() {
-        updateTimeInfo(_mpv->duration(), _mpv->ellapsed());
+    connect(_engine, &PlayerEngine::stateChanged, this, &ToolboxProxy::updatePlayState);
+    connect(_engine, &PlayerEngine::ellapsedChanged, [=]() {
+        updateTimeInfo(_engine->duration(), _engine->ellapsed());
     });
     connect(window()->windowHandle(), &QWindow::windowStateChanged, this, &ToolboxProxy::updateFullState);
-    connect(_mpv, &MpvProxy::muteChanged, this, &ToolboxProxy::updateVolumeState);
-    connect(_mpv, &MpvProxy::volumeChanged, this, &ToolboxProxy::updateVolumeState);
-    connect(_mpv, &MpvProxy::ellapsedChanged, this, &ToolboxProxy::updateMovieProgress);
-    connect(&_mpv->playlist(), &PlaylistModel::countChanged, this, &ToolboxProxy::updateButtonStates);
+    connect(_engine, &PlayerEngine::muteChanged, this, &ToolboxProxy::updateVolumeState);
+    connect(_engine, &PlayerEngine::volumeChanged, this, &ToolboxProxy::updateVolumeState);
+    connect(_engine, &PlayerEngine::ellapsedChanged, this, &ToolboxProxy::updateMovieProgress);
+    connect(&_engine->playlist(), &PlaylistModel::countChanged, this, &ToolboxProxy::updateButtonStates);
 
     updatePlayState();
     updateFullState();
@@ -205,25 +205,25 @@ void ToolboxProxy::setup()
 
 void ToolboxProxy::updateMovieProgress()
 {
-    auto d = _mpv->duration();
-    auto e = _mpv->ellapsed();
+    auto d = _engine->duration();
+    auto e = _engine->ellapsed();
     int v = 100 * ((double)e / d);
     _progBar->setValue(v);
 }
 
 void ToolboxProxy::updateButtonStates()
 {
-    bool vis = _mpv->playlist().count() > 1;
+    bool vis = _engine->playlist().count() > 1;
     _prevBtn->setVisible(vis);
     _nextBtn->setVisible(vis);
 }
 
 void ToolboxProxy::updateVolumeState()
 {
-    if (_mpv->muted()) {
+    if (_engine->muted()) {
         _volBtn->changeLevel(VolumeButton::Mute);
     } else {
-        auto v = _mpv->volume();
+        auto v = _engine->volume();
         qDebug() << __func__ << v;
         if (v >= 80)
             _volBtn->changeLevel(VolumeButton::High);
@@ -249,8 +249,8 @@ void ToolboxProxy::updateFullState()
 
 void ToolboxProxy::updatePlayState()
 {
-    qDebug() << __func__ << _mpv->state();
-    if (_mpv->state() == MpvProxy::CoreState::Playing) {
+    qDebug() << __func__ << _engine->state();
+    if (_engine->state() == PlayerEngine::CoreState::Playing) {
         _playBtn->setObjectName("PauseBtn");
     } else {
         _playBtn->setObjectName("PlayBtn");
@@ -273,7 +273,7 @@ void ToolboxProxy::buttonClicked(QString id)
 {
     qDebug() << __func__ << id;
     if (id == "play") {
-        if (_mpv->state() == MpvProxy::CoreState::Idle) {
+        if (_engine->state() == PlayerEngine::CoreState::Idle) {
             _mainWindow->requestAction(ActionKind::OpenFile);
         } else {
             _mainWindow->requestAction(ActionKind::TogglePause);
@@ -281,7 +281,7 @@ void ToolboxProxy::buttonClicked(QString id)
     } else if (id == "fs") {
         _mainWindow->requestAction(ActionKind::Fullscreen);
     } else if (id == "vol") {
-        auto *w = new VolumeSlider(_mpv);
+        auto *w = new VolumeSlider(_engine);
         connect(w, &QObject::destroyed, [=]() {
                 qDebug() << "slider destroyed";
         });

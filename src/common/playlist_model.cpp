@@ -1,4 +1,6 @@
 #include "playlist_model.h"
+#include "player_engine.h"
+
 #include <libffmpegthumbnailer/videothumbnailer.h>
 extern "C" {
 #include <libavformat/avformat.h>
@@ -102,8 +104,8 @@ struct MovieInfo MovieInfo::parseFromFile(const QFileInfo& fi)
     return mi;
 }
 
-PlaylistModel::PlaylistModel(Handle h)
-    :_handle{h}
+PlaylistModel::PlaylistModel(PlayerEngine *e)
+    :_engine{e}
 {
     _thumbnailer.setThumbnailSize(44);
     av_register_all();
@@ -112,13 +114,8 @@ PlaylistModel::PlaylistModel(Handle h)
 void PlaylistModel::clear()
 {
     _infos.clear();
-    QList<QVariant> args = { "playlist-clear" };
-    qDebug () << args;
-    command(_handle, args);
-
-    args = { "playlist-remove", "current" };
-    qDebug () << args;
-    command(_handle, args);
+    //emit currentChanged();
+    emit countChanged();
 }
 
 void PlaylistModel::remove(int pos)
@@ -127,28 +124,24 @@ void PlaylistModel::remove(int pos)
 
     _infos.removeAt(pos);
     emit itemRemoved(pos);
-
-    QList<QVariant> args = { "playlist-remove", pos };
-    qDebug () << args;
-    command(_handle, args);
 }
 
 void PlaylistModel::playNext()
 {
-    if (!count()) return;
-
-    QList<QVariant> args = { "playlist-next", "weak" };
-    qDebug () << args;
-    command(_handle, args);
+    if (_current + 1 < count()) {
+        _current = _current + 1;
+        _engine->requestPlay(_current);
+        emit currentChanged();
+    }
 }
 
 void PlaylistModel::playPrev()
 {
-    if (!count()) return;
-
-    QList<QVariant> args = { "playlist-prev", "weak" };
-    qDebug () << args;
-    command(_handle, args);
+    if (count() && _current > 0) {
+        _current = _current - 1;
+        _engine->requestPlay(_current);
+        emit currentChanged();
+    }
 }
 
 //TODO: what if loadfile failed
@@ -157,37 +150,26 @@ void PlaylistModel::append(const QFileInfo& fi)
     if (!fi.exists()) return;
 
     _infos.append(calculatePlayInfo(fi));
-
-    QList<QVariant> args = { "loadfile", fi.canonicalFilePath(), "append" };
-    qDebug () << args;
-    command(_handle, args);
-}
-
-void PlaylistModel::appendAndPlay(const QFileInfo& fi)
-{
-    if (!fi.exists()) return;
-    _infos.append(calculatePlayInfo(fi));
-
-    QList<QVariant> args = { "loadfile", fi.canonicalFilePath(), "append-play" };
-    qDebug () << args;
-    command(_handle, args);
+    emit countChanged();
 }
 
 void PlaylistModel::changeCurrent(int pos)
 {
     if (pos < 0 || pos >= count()) return;
 
-    set_property(_handle, "playlist-pos", pos);
+    _current = pos;
+    Q_ASSERT_X(0, "playlist", "not implemented");
+    emit countChanged();
 }
 
 void PlaylistModel::switchPosition(int p1, int p2)
 {
+    Q_ASSERT_X(0, "playlist", "not implemented");
 }
 
 const PlayItemInfo& PlaylistModel::currentInfo() const
 {
-    Q_ASSERT (_infos.size() > 0);
-
+    Q_ASSERT (_infos.size() > 0 && _current >= 0);
     return _infos[_current];
 }
 

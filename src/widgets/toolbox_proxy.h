@@ -16,14 +16,14 @@ DWIDGET_USE_NAMESPACE
 
 namespace dmr {
 
-class MpvProxy;
+class PlayerEngine;
 class VolumeButton;
 class MainWindow;
 
 class ToolboxProxy: public QFrame {
     Q_OBJECT
 public:
-    ToolboxProxy(QWidget *mainWindow, MpvProxy*);
+    ToolboxProxy(QWidget *mainWindow, PlayerEngine*);
     virtual ~ToolboxProxy();
 
     void updateTimeInfo(qint64 duration, qint64 pos);
@@ -50,7 +50,7 @@ private:
     void setup();
 
     MainWindow *_mainWindow {nullptr};
-    MpvProxy *_mpv {nullptr};
+    PlayerEngine *_engine {nullptr};
     QLabel *_timeLabel {nullptr};
 
     DImageButton *_playBtn {nullptr};

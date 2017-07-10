@@ -109,6 +109,8 @@ vector<QAction*> ShortcutManager::actionsForBindings()
             case ActionKind::SeekForwardLarge:
             case ActionKind::SeekBackward:
             case ActionKind::SeekBackwardLarge:
+            case ActionKind::VolumeUp:
+            case ActionKind::VolumeDown:
                 act->setAutoRepeat(true);
                 break;
             default:

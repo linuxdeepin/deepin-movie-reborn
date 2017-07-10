@@ -1,12 +1,12 @@
-#include "mpv_proxy.h"
+#include "player_engine.h"
 #include "burst_screenshots_dialog.h"
 
 DWIDGET_USE_NAMESPACE
 
 namespace dmr {
 
-BurstScreenshotsDialog::BurstScreenshotsDialog(MpvProxy* mpv)
-    :DDialog(nullptr), _mpv(mpv)
+BurstScreenshotsDialog::BurstScreenshotsDialog(PlayerEngine* mpv)
+    :DDialog(nullptr), _engine(mpv)
 {
     auto mi = mpv->playlist().currentInfo().mi;
 
@@ -36,7 +36,7 @@ BurstScreenshotsDialog::BurstScreenshotsDialog(MpvProxy* mpv)
     mainContent->setLayout(ml);
     addContent(mainContent, Qt::AlignCenter);
 
-    connect(_mpv, &MpvProxy::notifyScreenshot, this, &BurstScreenshotsDialog::OnScreenshot);
+    connect(_engine, &PlayerEngine::notifyScreenshot, this, &BurstScreenshotsDialog::OnScreenshot);
 }
 
 void BurstScreenshotsDialog::OnScreenshot(const QPixmap& frame)
@@ -55,13 +55,13 @@ void BurstScreenshotsDialog::OnScreenshot(const QPixmap& frame)
     _grid->addWidget(l, r, c);
     _count++;
     if (_count >= 15) {
-        _mpv->stopBurstScreenshot();
+        _engine->stopBurstScreenshot();
     }
 }
 
 int BurstScreenshotsDialog::exec()
 {
-    _mpv->burstScreenshot();
+    _engine->burstScreenshot();
     return DDialog::exec();
 }
 

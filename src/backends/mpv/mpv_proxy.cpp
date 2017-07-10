@@ -2,8 +2,8 @@
 #include "mpv_glwidget.h"
 #include "compositing_manager.h"
 #include "options.h"
-#include "playlist_model.h"
 #include "utility.h"
+#include "player_engine.h"
 #include <mpv/client.h>
 
 #include <QtWidgets>
@@ -34,7 +34,7 @@ static void mpv_callback(void *d)
 }
 
 MpvProxy::MpvProxy(QWidget *parent)
-    :QWidget(parent)
+    :Backend(parent)
 {
     if (!CompositingManager::get().composited()) {
         setWindowFlags(Qt::FramelessWindowHint);
@@ -45,14 +45,15 @@ MpvProxy::MpvProxy(QWidget *parent)
     _handle = Handle::FromRawHandle(mpv_init());
     if (CompositingManager::get().composited()) {
         _gl_widget = new MpvGLWidget(this, _handle);
+        connect(this, &MpvProxy::stateChanged, [=]() {
+            _gl_widget->setPlaying(state() != Backend::PlayState::Paused);
+        });
 
         auto *layout = new QHBoxLayout(this);
         layout->setContentsMargins(0, 0, 0, 0);
         layout->addWidget(_gl_widget);
         setLayout(layout);
     }
-
-    _playlist = new PlaylistModel(_handle);
 
     _burstScreenshotTimer = new QTimer(this);
     _burstScreenshotTimer->setSingleShot(true);
@@ -110,8 +111,9 @@ mpv_handle* MpvProxy::mpv_init()
     mpv_observe_property(h, 0, "pause", MPV_FORMAT_NONE);
     mpv_observe_property(h, 0, "mute", MPV_FORMAT_NONE);
     mpv_observe_property(h, 0, "volume", MPV_FORMAT_NONE);
-    mpv_observe_property(h, 0, "playlist-pos", MPV_FORMAT_NONE);
-    mpv_observe_property(h, 0, "playlist-count", MPV_FORMAT_NONE);
+    // because of vpu, we need to implement playlist w/o mpv 
+    //mpv_observe_property(h, 0, "playlist-pos", MPV_FORMAT_NONE);
+    //mpv_observe_property(h, 0, "playlist-count", MPV_FORMAT_NONE);
     mpv_observe_property(h, 0, "core-idle", MPV_FORMAT_NODE);
 
     mpv_set_wakeup_callback(h, mpv_callback, this);
@@ -133,13 +135,18 @@ mpv_handle* MpvProxy::mpv_init()
     return h;
 }
 
-void MpvProxy::setState(MpvProxy::CoreState s)
+void MpvProxy::setState(PlayState s)
 {
     if (_state != s) {
         _state = s;
-        if (_gl_widget) { _gl_widget->setPlaying(s != CoreState::Idle); }
+        if (_gl_widget) { _gl_widget->setPlaying(s != PlayState::Stopped); }
         emit stateChanged();
     }
+}
+
+const PlayingMovieInfo& MpvProxy::playingMovieInfo()
+{
+    return _pmf;
 }
 
 void MpvProxy::handle_mpv_events()
@@ -181,18 +188,18 @@ void MpvProxy::handle_mpv_events()
             case MPV_EVENT_FILE_LOADED:
                 qDebug() << mpv_event_name(ev->event_id);
 
-                setState(CoreState::Playing); //might paused immediately
+                setState(PlayState::Playing); //might paused immediately
                 emit fileLoaded();
                 break;
 
             case MPV_EVENT_END_FILE:
                 qDebug() << mpv_event_name(ev->event_id);
-                setState(CoreState::Idle);
+                setState(PlayState::Stopped);
                 break;
 
             case MPV_EVENT_IDLE:
                 qDebug() << mpv_event_name(ev->event_id);
-                setState(CoreState::Idle);
+                setState(PlayState::Stopped);
                 break;
 
             default:
@@ -239,23 +246,18 @@ void MpvProxy::processPropertyChange(mpv_event_property* ev)
         //_hideSub = get_property(_handle, "sub-visibility")
     } else if (name == "pause") {
         if (get_property(_handle, "pause").toBool()) {
-            setState(CoreState::Paused);
+            setState(PlayState::Paused);
         } else {
-            if (state() != CoreState::Idle)
-                setState(CoreState::Playing);
+            if (state() != PlayState::Stopped)
+                setState(PlayState::Playing);
         }
     } else if (name == "core-idle") {
-    } else if (name == "playlist-pos") {
-        _playlist->_current = get_property(_handle, "playlist-pos").toInt();
-        emit _playlist->currentChanged();
-    } else if (name == "playlist-count") {
-        emit _playlist->countChanged();
     }
 }
 
 void MpvProxy::loadSubtitle(const QFileInfo& fi)
 {
-    if (state() == CoreState::Idle) {
+    if (state() == PlayState::Stopped) {
         return;
     }
 
@@ -271,7 +273,7 @@ bool MpvProxy::isSubVisible()
 
 void MpvProxy::toggleSubtitle()
 {
-    if (state() == CoreState::Idle) {
+    if (state() == PlayState::Stopped) {
         return;
     }
 
@@ -317,37 +319,16 @@ void MpvProxy::toggleMute()
 
 void MpvProxy::play()
 {
-    if (!_playlist->count()) return;
-
-    if (state() == CoreState::Idle) {
-        _playlist->changeCurrent(0);
-    }
+    Q_ASSERT (state() == PlayState::Stopped);
+    QList<QVariant> args = { "loadfile", _file.absoluteFilePath() };
+    qDebug () << args;
+    command(_handle, args);
 }
 
-void MpvProxy::prev()
-{
-    if (!_playlist->count()) return;
-
-    _playlist->playPrev();
-}
-
-void MpvProxy::next()
-{
-    if (!_playlist->count()) return;
-
-    _playlist->playNext();
-}
-
-void MpvProxy::clearPlaylist()
-{
-    if (!_playlist->count()) return;
-
-    _playlist->clear();
-}
 
 void MpvProxy::pauseResume()
 {
-    if (_state == CoreState::Idle)
+    if (_state == PlayState::Stopped)
         return;
 
     set_property(_handle, "pause", !paused());
@@ -358,11 +339,6 @@ void MpvProxy::stop()
     QList<QVariant> args = { "stop" };
     qDebug () << args;
     command(_handle, args);
-}
-
-bool MpvProxy::paused()
-{
-    return _state == CoreState::Paused;
 }
 
 QPixmap MpvProxy::takeScreenshot()
@@ -377,7 +353,7 @@ void MpvProxy::burstScreenshot()
         return;
     }
 
-    if (state() == CoreState::Idle)
+    if (state() == PlayState::Stopped)
         return;
 
     if (!paused()) pauseResume();
@@ -387,7 +363,7 @@ void MpvProxy::burstScreenshot()
 
 QPixmap MpvProxy::takeOneScreenshot()
 {
-    if (state() == CoreState::Idle) return QPixmap();
+    if (state() == PlayState::Stopped) return QPixmap();
 
     QList<QVariant> args = {"screenshot-raw"};
     node_builder node(args);
@@ -463,7 +439,7 @@ void MpvProxy::stopBurstScreenshot()
 
 void MpvProxy::seekForward(int secs)
 {
-    if (state() == CoreState::Idle) return;
+    if (state() == PlayState::Stopped) return;
 
     //if (_pendingSeek) return;
     QList<QVariant> args = { "seek", QVariant(secs), "relative+keyframes" };
@@ -474,7 +450,7 @@ void MpvProxy::seekForward(int secs)
 
 void MpvProxy::seekBackward(int secs)
 {
-    if (state() == CoreState::Idle) return;
+    if (state() == PlayState::Stopped) return;
 
     //if (_pendingSeek) return;
     if (secs > 0) secs = -secs;
@@ -482,11 +458,6 @@ void MpvProxy::seekBackward(int secs)
     qDebug () << args;
     command_async(_handle, args, AsyncReplyTag::SEEK);
     _pendingSeek = true;
-}
-
-void MpvProxy::addPlayFile(const QFileInfo& fi)
-{
-    _playlist->append(fi);
 }
 
 qint64 MpvProxy::duration() const

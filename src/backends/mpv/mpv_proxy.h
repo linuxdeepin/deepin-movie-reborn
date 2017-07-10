@@ -1,111 +1,63 @@
 #ifndef _DMR_MPV_PROXY_H
 #define _DMR_MPV_PROXY_H 
 
-#include <QtWidgets>
+#include "player_backend.h"
+#include "player_engine.h"
 #include <xcb/xproto.h>
-#include "playlist_model.h"
 #undef Bool
 #include <mpv/qthelper.hpp>
 
 namespace dmr {
 using namespace mpv::qt;
 class MpvGLWidget;
-class PlaylistModel;
 
-using SubtitleInfo = QMap<QString, QVariant>;
-using AudioInfo = QMap<QString, QVariant>;
-
-struct PlayingMovieInfo 
-{
-    QList<SubtitleInfo> subs;
-    QList<AudioInfo> audios;
-};
-
-class MpvProxy: public QWidget {
+class MpvProxy: public Backend {
     Q_OBJECT
-    Q_PROPERTY(qint64 duration READ duration)
-    Q_PROPERTY(qint64 ellapsed READ ellapsed NOTIFY ellapsedChanged)
-    Q_PROPERTY(bool paused READ paused)
-    Q_PROPERTY(CoreState state READ state WRITE setState NOTIFY stateChanged)
-public:
-    enum CoreState {
-        Idle,
-        Playing,
-        Paused,
-    };
-    Q_ENUM(CoreState)
 
+public:
     MpvProxy(QWidget *parent = 0);
     virtual ~MpvProxy();
 
-    void addPlayFile(const QFileInfo& fi);
+    const PlayingMovieInfo& playingMovieInfo() override;
+    // mpv plays all files by default  (I hope)
+    bool isPlayable() const override { return true; }
 
-    qint64 duration() const;
-    qint64 ellapsed() const;
-    const struct MovieInfo& movieInfo(); 
+    qint64 duration() const override;
+    qint64 ellapsed() const override;
 
-    bool paused();
-    CoreState state() const { return _state; }
-    void setState(CoreState s);
-    const PlayingMovieInfo& playingMovieInfo() { return _pmf; }
+    void loadSubtitle(const QFileInfo& fi) override;
+    void toggleSubtitle() override;
+    bool isSubVisible() override;
 
-    void loadSubtitle(const QFileInfo& fi);
-    void toggleSubtitle();
-    bool isSubVisible();
+    int volume() const override;
+    bool muted() const override;
 
-    int volume() const;
-    bool muted() const;
-
-    PlaylistModel& playlist() const { return *_playlist; }
-
-    QPixmap takeScreenshot();
-    void burstScreenshot(); //initial the start of burst screenshotting
-    void stopBurstScreenshot();
-
-signals:
-    void has_mpv_events();
-
-    void tracksChanged();
-    void ellapsedChanged();
-    void stateChanged();
-    void fileLoaded();
-    void muteChanged();
-    void volumeChanged();
-
-    //emit during burst screenshotting
-    void notifyScreenshot(const QPixmap& frame);
-
-    void playlistChanged();
+    QPixmap takeScreenshot() override;
+    void burstScreenshot() override; //initial the start of burst screenshotting
+    void stopBurstScreenshot() override;
 
 public slots:
-    void play();
-    void pauseResume();
-    void stop();
+    void play() override;
+    void pauseResume() override;
+    void stop() override;
 
-    void prev();
-    void next();
-    void clearPlaylist();
-
-    void seekForward(int secs);
-    void seekBackward(int secs);
-    void volumeUp();
-    void volumeDown();
-    void changeVolume(int val);
-    void toggleMute();
+    void seekForward(int secs) override;
+    void seekBackward(int secs) override;
+    void volumeUp() override;
+    void volumeDown() override;
+    void changeVolume(int val) override;
+    void toggleMute() override;
 
 protected slots:
     void handle_mpv_events();
     void stepBurstScreenshot();
 
-protected:
+signals:
+    void has_mpv_events();
 
 private:
     Handle _handle;
     MpvGLWidget *_gl_widget{nullptr};
-
-    //QList<QFileInfo> _playlist;
-    PlaylistModel *_playlist {nullptr};
-    CoreState _state { CoreState::Idle };
 
     bool _inBurstShotting {false};
     QTimer *_burstScreenshotTimer {nullptr};
@@ -118,10 +70,11 @@ private:
     QPixmap takeOneScreenshot();
     void changeProperty(const QString& name, const QVariant& v);
     void updatePlayingMovieInfo();
+    void setState(PlayState s);
 };
 }
 
-#endif /* ifndef _MAIN_WINDOW_H */
+#endif /* ifndef _DMR_MPV_PROXY_H */
 
 
 

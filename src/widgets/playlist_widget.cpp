@@ -1,7 +1,7 @@
 #include "playlist_widget.h"
 #include "playlist_model.h"
 #include "compositing_manager.h"
-#include "mpv_proxy.h"
+#include "player_engine.h"
 #include "toolbox_proxy.h"
 #include "actions.h"
 #include "mainwindow.h"
@@ -138,8 +138,8 @@ protected:
     }
 };
 
-PlaylistWidget::PlaylistWidget(QWidget *mw, MpvProxy *mpv)
-    :QFrame(mw), _mpv(mpv), _mw(static_cast<MainWindow*>(mw))
+PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
+    :QFrame(mw), _engine(mpv), _mw(static_cast<MainWindow*>(mw))
 {
     bool composited = CompositingManager::get().composited();
     setFrameShape(QFrame::NoFrame);
@@ -161,8 +161,8 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, MpvProxy *mpv)
     mw->installEventFilter(mwl);
 #endif
 
-    connect(&_mpv->playlist(), &PlaylistModel::countChanged, this, &PlaylistWidget::loadPlaylist);
-    connect(&_mpv->playlist(), &PlaylistModel::currentChanged, this, &PlaylistWidget::updateItemStates);
+    connect(&_engine->playlist(), &PlaylistModel::countChanged, this, &PlaylistWidget::loadPlaylist);
+    connect(&_engine->playlist(), &PlaylistModel::currentChanged, this, &PlaylistWidget::updateItemStates);
 }
 
 PlaylistWidget::~PlaylistWidget()
@@ -180,7 +180,7 @@ void PlaylistWidget::updateItemStates()
             item->setState(ItemState::Hover);
         }
 
-        if (i == _mpv->playlist().current()) {
+        if (i == _engine->playlist().current()) {
             item->setState(ItemState::Playing);
         }
 
@@ -206,7 +206,7 @@ void PlaylistWidget::removeClickedItem()
     auto item = dynamic_cast<PlayItemWidget*>(_clickedItem);
     if (item) {
         qDebug() << __func__;
-        _mpv->playlist().remove(_items.indexOf(_clickedItem));
+        _engine->playlist().remove(_items.indexOf(_clickedItem));
     }
 }
 
@@ -262,7 +262,7 @@ void PlaylistWidget::loadPlaylist()
             });
     }
 
-    auto items = _mpv->playlist().items();
+    auto items = _engine->playlist().items();
     auto p = items.begin();
     while (p != items.end()) {
         auto w = new PlayItemWidget(*p, this);
