@@ -2,6 +2,8 @@
 #define _DMR_VPU_DECODER_H 
 
 #include <QtGui>
+#include <pulse/simple.h>
+#include <pulse/pulseaudio.h>
 
 #include "vpuhelper.h"
 
@@ -47,12 +49,76 @@ typedef struct
 
 namespace dmr {
 
-class VpuDecoder : public QThread
+template<class T>
+struct PacketQueue: QObject {
+    QQueue<T> data;
+    QMutex lock;
+    int capacity {10}; //right now, measure as number of pakcets, maybe should be measured
+                        // as duration or data size
+    QWaitCondition empty_cond;
+    QWaitCondition full_cond;
+
+    T deque();
+    void put(const T& v);
+};
+
+template<class T>
+T PacketQueue<T>::deque()
+{
+    T ret;
+    {
+        QMutexLocker l(&lock);
+        if (data.count() == 0) {
+            empty_cond.wait(l.mutex());
+        }
+        ret = data.dequeue();
+    }
+
+    full_cond.wakeAll();
+    return ret;
+}
+
+template<class T>
+void PacketQueue<T>::put(const T& v)
+{
+    {
+        QMutexLocker l(&lock);
+        if (data.count() >= capacity) {
+            full_cond.wait(l.mutex());
+        }
+        data.enqueue(v);
+    }
+    empty_cond.wakeAll();
+}
+
+class AudioDecoder: public QThread
+{
+public:
+    AudioDecoder(AVCodecContext *ctx);
+
+    void stop() { _quitFlags.storeRelease(1); }
+
+protected:
+    void run() override;
+
+private:
+    AVCodecContext *_audioCtx {nullptr};
+    QAtomicInt _quitFlags {0};
+    pa_simple *_pa {nullptr};
+
+    int decodeFrames(AVPacket *pkt, uint8_t *audio_buf, int buf_size);
+};
+
+class VpuDecoder: public QThread
 {
     Q_OBJECT
 public:
     VpuDecoder(const QString& name);
     ~VpuDecoder();
+
+    //return if video stream of the file can be hardware decoded
+    bool isHardwareSupported();
+
     void stop() { _quitFlags.storeRelease(1); }
     void updateViewportSize(QSize sz);
 
@@ -62,22 +128,23 @@ protected:
     bool init();
     int loop();
 
-
-    int decodeVideo();
+    int decodeAudio(AVPacket* pkt);
 
     int seqInit();
     int flushVideoBuffer();
-    int buildVideoPacket();
+    int buildVideoPacket(AVPacket* pkt);
     int sendFrame();
+
+    int openMediaFile();
 
 signals:
     void frame(const QImage &);
 
 private:
     QSize _viewportSize;
+    QFileInfo _fileInfo;
 
 	DecConfigParam	decConfig;
-    QString _filename;
     QAtomicInt _quitFlags {0};
     int _seqInited {0};
     int seqFilled {0};
@@ -92,11 +159,13 @@ private:
 	vpu_buffer_t	vbStream	{0};
 
 	AVFormatContext *ic {0};
-	AVPacket  *pkt {0};
 	AVCodecContext *ctxVideo {0};
-	int idxVideo;
-    int idxAudio;
-    int idxSubtitle;
+	AVCodecContext *ctxAudio {0};
+	AVCodecContext *ctxSubtitle {0};
+	int idxVideo {-1};
+    int idxAudio {-1};
+    int idxSubtitle {-1};
+
 	int	chunkIdx {0};
 	BYTE *seqHeader {0};
 	int seqHeaderSize {0};
@@ -104,9 +173,9 @@ private:
 	int picHeaderSize {0};
 	BYTE *chunkData {0};
 	int chunkSize {0};
-	int				reUseChunk;
-	int				totalNumofErrMbs {0};
-	int				int_reason {0};
+	int	reUseChunk;
+	int	totalNumofErrMbs {0};
+	int	int_reason {0};
 
 #if defined(SUPPORT_DEC_SLICE_BUFFER) || defined(SUPPORT_DEC_RESOLUTION_CHANGE)
 	DecBufInfo decBufInfo;

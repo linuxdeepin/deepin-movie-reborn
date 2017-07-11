@@ -29,6 +29,7 @@ extern "C" {
 
 #include <time.h>
 
+#define Q2C(qstr) ((qstr).toUtf8().constData())
 
 enum {
         STD_AVC_DEC = 0,
@@ -431,6 +432,9 @@ static void vpu_yuv2rgb(int width, int height, yuv2rgb_color_format format,
 
 namespace dmr {
 
+using AudioPacketQueue = PacketQueue<AVPacket*>;
+static AudioPacketQueue audioPackets;
+
 struct GALSurface {
     gcoSURF                 surf {0};
     gceSURF_FORMAT          format {0};
@@ -814,9 +818,8 @@ static GALConverter *galConverter = NULL;
 
 
 VpuDecoder::VpuDecoder(const QString& name) 
-    :_filename(name)
+    :_fileInfo(name)
 {
-    
     init();
 }
 
@@ -839,7 +842,6 @@ bool VpuDecoder::init()
     memset(&decConfig, 0x00, sizeof( decConfig) );
     decConfig.coreIdx = 0;
 
-    strcpy(decConfig.bitstreamFileName, _filename.toUtf8().constData());
     decConfig.outNum = 0;
 
     //printf("Enter Bitstream Mode(0: Interrupt mode, 1: Rollback mode, 2: PicEnd mode): ");
@@ -860,7 +862,16 @@ bool VpuDecoder::init()
     {
         decConfig.checkeos = 1;
     }
+
+    openMediaFile();
 }
+
+//FIXME: need impl!
+bool VpuDecoder::isHardwareSupported()
+{
+    return true;
+}
+
 
 // return -1 = error, 0 = continue, 1 = success
 int VpuDecoder::seqInit()
@@ -1139,7 +1150,7 @@ int VpuDecoder::sendFrame()
 
     //qDebug() << QTime::currentTime().toString("ss.zzz");
     fprintf(stderr, "%s: timestamp %s\n", __func__, QTime::currentTime().toString("ss.zzz").toUtf8().constData());
-    if (frameIdx > 600) return -1;
+    if (frameIdx > 100) return -1;
 
 #ifdef FORCE_SET_VSYNC_FLAG
     set_VSYNC_flag();
@@ -1149,7 +1160,7 @@ int VpuDecoder::sendFrame()
 }
 
 /// build video packet for vpu
-int VpuDecoder::buildVideoPacket()
+int VpuDecoder::buildVideoPacket(AVPacket* pkt)
 {
     int size;
 
@@ -1178,7 +1189,7 @@ int VpuDecoder::buildVideoPacket()
     }
 		
     // Build and Fill picture Header data which is dedicated for VPU 
-    picHeaderSize = BuildPicHeader(picHeader, decOP.bitstreamFormat, ic->streams[idxVideo], pkt);				
+    picHeaderSize = BuildPicHeader(picHeader, decOP.bitstreamFormat, ic->streams[idxVideo], pkt);
     switch(decOP.bitstreamFormat)
     {
     case STD_THO:
@@ -1472,61 +1483,121 @@ int VpuDecoder::flushVideoBuffer()
     return 0;
 }
 
-int VpuDecoder::decodeVideo()
+
+
+int VpuDecoder::decodeAudio(AVPacket* pkt)
 {
 }
 
-
-int VpuDecoder::loop()
+static int open_codec_context(int *stream_idx,
+        AVCodecContext **dec_ctx, AVFormatContext *fmt_ctx, enum AVMediaType type)
 {
-    int i = 0;
-	RetCode			ret =  RETCODE_SUCCESS;		
+    int ret, stream_index;
+    AVStream *st;
+    AVCodec *dec = NULL;
+    AVDictionary *opts = NULL;
+    ret = av_find_best_stream(fmt_ctx, type, -1, -1, NULL, 0);
+    if (ret < 0) {
+        qWarning() << "Could not find " << av_get_media_type_string(type)
+            << " stream in input file";
+        return ret;
+    }
 
-	int			    randomAccess = 0, randomAccessPos = 0;
-    int             err;
+    stream_index = ret;
+    st = fmt_ctx->streams[stream_index];
+#if LIBAVFORMAT_VERSION_MAJOR >= 57 && LIBAVFORMAT_VERSION_MINOR <= 25
+    *dec_ctx = st->codec;
+    dec = avcodec_find_decoder((*dec_ctx)->codec_id);
+#else
+    /* find decoder for the stream */
+    dec = avcodec_find_decoder(st->codecpar->codec_id);
+    if (!dec) {
+        fprintf(stderr, "Failed to find %s codec\n",
+                av_get_media_type_string(type));
+        return AVERROR(EINVAL);
+    }
+    /* Allocate a codec context for the decoder */
+    *dec_ctx = avcodec_alloc_context3(dec);
+    if (!*dec_ctx) {
+        fprintf(stderr, "Failed to allocate the %s codec context\n",
+                av_get_media_type_string(type));
+        return AVERROR(ENOMEM);
+    }
+    /* Copy codec parameters from input stream to output codec context */
+    if ((ret = avcodec_parameters_to_context(*dec_ctx, st->codecpar)) < 0) {
+        fprintf(stderr, "Failed to copy %s codec parameters to decoder context\n",
+                av_get_media_type_string(type));
+        return ret;
+    }
+#endif
 
+    *stream_idx = stream_index;
+    return 0;
+}
 
-	AVPacket pkt1; 
-    pkt=&pkt1;
-
-	const char *filename;
+int VpuDecoder::openMediaFile()
+{
+    int err;
 
 	av_register_all();
-
-	VLOG(INFO, "ffmpeg library version is codec=0x%x, format=0x%x\n", avcodec_version(), avformat_version());
 	
-
-    filename = decConfig.bitstreamFileName;
-
-	err = avformat_open_input(&ic, filename, NULL,  NULL);
-	if (err < 0)
-	{
-		VLOG(ERR, "%s: could not open file\n", filename);
+	err = avformat_open_input(&ic, Q2C(_fileInfo.absoluteFilePath()), NULL,  NULL);
+	if (err < 0) {
+		VLOG(ERR, "%s: could not open file\n", Q2C(_fileInfo.absoluteFilePath()));
 		av_free(ic);
 		return 0;
 	}
 	ic->flags |= CODEC_FLAG_TRUNCATED; /* we do not send complete frames */
 
 	err = avformat_find_stream_info(ic,  NULL);
-	if (err < 0) 
-	{
-		VLOG(ERR, "%s: could not find stream information\n", filename);
-		goto ERR_DEC_INIT;
+	if (err < 0) {
+		VLOG(ERR, "%s: could not find stream information\n", Q2C(_fileInfo.absoluteFilePath()));
+        goto _error;
 	}
 
-	av_dump_format(ic, 0, filename, 0);
+	av_dump_format(ic, 0, Q2C(_fileInfo.absoluteFilePath()), 0);
 
 	// find video stream index
-	idxVideo = -1;
-	idxVideo = av_find_best_stream(ic, AVMEDIA_TYPE_VIDEO, -1, -1, NULL, 0);
-	if (idxVideo < 0) 
-	{
+    if (open_codec_context(&idxVideo, &ctxVideo, ic, AVMEDIA_TYPE_VIDEO) < 0) {
 		err = -1;
-		VLOG(ERR, "%s: could not find video stream information\n", filename);
-		goto ERR_DEC_INIT;
+		VLOG(ERR, "%s: could not find video stream information\n", Q2C(_fileInfo.absoluteFilePath()));
+        goto _error;
 	}
 
-	ctxVideo = ic->streams[idxVideo]->codec;  
+    if (open_codec_context(&idxAudio, &ctxAudio, ic, AVMEDIA_TYPE_AUDIO) < 0) {
+		err = -1;
+		VLOG(ERR, "%s: could not find audio stream information\n", Q2C(_fileInfo.absoluteFilePath()));
+        goto _error;
+	}
+
+    if (open_codec_context(&idxSubtitle, &ctxSubtitle, ic, AVMEDIA_TYPE_SUBTITLE) < 0) {
+		err = -1;
+		VLOG(ERR, "%s: could not find sub stream information\n", Q2C(_fileInfo.absoluteFilePath()));
+        goto _error;
+	}
+    return 0;
+
+_error:
+    if (ctxVideo) avcodec_close(ctxVideo);
+    if (ctxAudio) avcodec_close(ctxAudio);
+    if (ctxSubtitle) avcodec_close(ctxSubtitle);
+    if (ic) avformat_close_input(&ic);
+
+    return -1;
+}
+
+int VpuDecoder::loop()
+{
+    int i = 0;
+	RetCode			ret =  RETCODE_SUCCESS;		
+	int			    randomAccess = 0, randomAccessPos = 0;
+    int             err;
+	AVPacket  *pkt = 0;
+
+
+	AVPacket pkt1; 
+    pkt=&pkt1;
+
 
 	seqHeader = osal_malloc(ctxVideo->extradata_size+MAX_CHUNK_HEADER_SIZE);	// allocate more buffer to fill the vpu specific header.
 	if (!seqHeader)
@@ -1561,7 +1632,9 @@ int VpuDecoder::loop()
 
 	if (decOP.bitstreamFormat == -1)
 	{
-		VLOG(ERR, "can not support video format in VPU tag=%c%c%c%c, codec_id=0x%x \n", ctxVideo->codec_tag>>0, ctxVideo->codec_tag>>8, ctxVideo->codec_tag>>16, ctxVideo->codec_tag>>24, ctxVideo->codec_id );
+		VLOG(ERR, "can not support video format in VPU tag=%c%c%c%c, codec_id=0x%x \n",
+                ctxVideo->codec_tag>>0, ctxVideo->codec_tag>>8, ctxVideo->codec_tag>>16,
+                ctxVideo->codec_tag>>24, ctxVideo->codec_id );
 		goto ERR_DEC_INIT;
 	}
 
@@ -1621,8 +1694,7 @@ int VpuDecoder::loop()
 	display_queue = frame_queue_init(MAX_REG_FRAME);
 	init_VSYNC_flag();
 
-	while(1)
-	{
+	while(1) {
         if (_quitFlags.load()) {
             break;
         }
@@ -1643,13 +1715,11 @@ int VpuDecoder::loop()
 		av_init_packet(pkt);
 
 		err = av_read_frame(ic, pkt);
-		if (err < 0) 
-		{
+		if (err < 0) {
 			if (pkt->stream_index == idxVideo)
 				chunkIdx++;	
 
-			if (err==AVERROR_EOF || url_feof(ic->pb)) 
-			{
+			if (err==AVERROR_EOF || url_feof(ic->pb)) {
 				bsfillSize = VPU_GBU_SIZE*2;
 				chunkSize = 0;					
 				VPU_DecUpdateBitstreamBuffer(handle, STREAM_END_SIZE);	//tell VPU to reach the end of stream. starting flush decoded output in VPU
@@ -1658,9 +1728,14 @@ int VpuDecoder::loop()
 			continue;
 		}
 
-		if (pkt->stream_index != idxVideo)
+		if (pkt->stream_index == idxAudio) {
+            decodeAudio(pkt);
 			continue;
+        }
 
+		if (pkt->stream_index != idxVideo) {
+            continue;
+        }
 		
 		if (randomAccess)
 		{
@@ -1696,7 +1771,7 @@ int VpuDecoder::loop()
 		chunkData = pkt->data;
 		chunkSize = pkt->size;
 
-        if (buildVideoPacket() < 0)
+        if (buildVideoPacket(pkt) < 0)
             goto ERR_DEC_OPEN;
 		
 		av_free_packet(pkt);
@@ -1751,7 +1826,89 @@ ERR_DEC_INIT:
 		free(picHeader);
 	
 	VPU_DeInit(coreIdx);
+
+    if (ctxVideo) avcodec_close(ctxVideo);
+    if (ctxAudio) avcodec_close(ctxAudio);
+    if (ctxSubtitle) avcodec_close(ctxSubtitle);
+    if (ic) avformat_close_input(&ic);
 	return 1;
 }
+
+//----------------------------------------------------------------------
+
+//-------------------------------------------
+//
+int AudioDecoder::decodeFrames(AVPacket* pkt, uint8_t *audio_buf, int buf_size) 
+{
+
+    static uint8_t *audio_pkt_data = NULL;
+    static int audio_pkt_size = 0;
+    static AVFrame frame;
+
+    int len1, data_size = 0;
+
+    audio_pkt_data = pkt->data;
+    audio_pkt_size = pkt->size;
+    while(audio_pkt_size > 0) {
+        int got_frame = 0;
+        len1 = avcodec_decode_audio4(_audioCtx, &frame, &got_frame, pkt);
+        if(len1 < 0) {
+            /* if error, skip frame */
+            audio_pkt_size = 0;
+            break;
+        }
+        audio_pkt_data += len1;
+        audio_pkt_size -= len1;
+        data_size = 0;
+        if(got_frame) {
+            data_size = av_samples_get_buffer_size(NULL, _audioCtx->channels,
+                    frame.nb_samples, _audioCtx->sample_fmt, 1);
+            assert(data_size <= buf_size);
+            //memcpy(audio_buf, frame.data[0], data_size);
+
+            int error = 0;
+            if (pa_simple_write(_pa, frame.data[0], (size_t)data_size, &error) < 0) {
+                fprintf(stderr, __FILE__": pa_simple_write() failed: %s\n", pa_strerror(error));
+            }
+        }
+
+        if(data_size <= 0) {
+            /* No data yet, get more frames */
+            continue;
+        }
+    }
+
+    av_packet_unref(pkt);
+    //if(pkt->data) av_free_packet(pkt);
+}
+
+AudioDecoder::AudioDecoder(AVCodecContext *ctx)
+    :QThread(0), _audioCtx(ctx)
+{
+    pa_sample_spec ss;
+    ss.format = PA_SAMPLE_S16NE;
+    ss.channels = ctx->channels;
+    ss.rate = ctx->sample_rate;
+
+    int error = 0;
+    /* Create a new playback stream */
+    if (!(_pa = pa_simple_new(NULL, Q2C(tr("Deepin Movie")), PA_STREAM_PLAYBACK, NULL, "playback",
+                    &ss, NULL, NULL, &error))) {
+        fprintf(stderr, __FILE__": pa_simple_new() failed: %s\n", pa_strerror(error));
+        _pa = nullptr;
+    }
+}
+
+void AudioDecoder::run()
+{
+    for (;;) {
+        if (_quitFlags.load()) break;
+
+        auto* pkt = audioPackets.deque();
+
+        decodeFrames(pkt, 0, 0);
+    }
+}
+
 
 }

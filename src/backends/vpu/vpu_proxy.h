@@ -15,7 +15,7 @@ public:
     virtual ~VpuProxy();
 
     const PlayingMovieInfo& playingMovieInfo() override;
-    virtual void setPlayFile(const QFileInfo& fi);
+    virtual void setPlayFile(const QFileInfo& fi) override;
     bool isPlayable() const override { return true; }
 
     qint64 duration() const override;
