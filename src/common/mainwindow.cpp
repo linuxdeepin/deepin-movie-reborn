@@ -304,6 +304,7 @@ MainWindow::MainWindow(QWidget *parent)
     }
     _titlebar->setMenu(ActionFactory::get().titlebarMenu());
     _titlebar->setIcon(QPixmap(":/resources/icons/logo.svg"));
+    _titlebar->setTitle(tr("Deepin Movie"));
 
     _engine = new PlayerEngine(this);
     _engine->move(0, 0);
@@ -334,9 +335,10 @@ MainWindow::MainWindow(QWidget *parent)
     updateActionsState();
 
     auto updateConstraints = [=]() {
-        qDebug() << "on currentChanged";
-        if (_engine->state() == PlayerEngine::Idle) return;
-        if (_engine->playlist().count() == 0) return;
+        if (_engine->state() == PlayerEngine::Idle || _engine->playlist().count() == 0) {
+            _titlebar->setTitle(tr("Deepin Movie"));
+            return;
+        }
 
         const auto& mi = _engine->playlist().currentInfo().mi;
         _titlebar->setTitle(QFileInfo(mi.filePath).fileName());

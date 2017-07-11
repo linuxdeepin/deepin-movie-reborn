@@ -283,34 +283,40 @@
 <context>
     <name>dmr::MainWindow</name>
     <message>
-        <location filename="../common/mainwindow.cpp" line="596"/>
-        <location filename="../common/mainwindow.cpp" line="698"/>
-        <source>Open File</source>
+        <location filename="../common/mainwindow.cpp" line="307"/>
+        <location filename="../common/mainwindow.cpp" line="339"/>
+        <source>Deepin Movie</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="598"/>
+        <location filename="../common/mainwindow.cpp" line="700"/>
+        <source>Open File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../common/mainwindow.cpp" line="600"/>
         <source>Movies (*.mkv *.mov *.mp4 *.rmvb)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="700"/>
+        <location filename="../common/mainwindow.cpp" line="702"/>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="751"/>
+        <location filename="../common/mainwindow.cpp" line="753"/>
         <source>View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="762"/>
+        <location filename="../common/mainwindow.cpp" line="764"/>
         <source>Movie Screenshot</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="763"/>
-        <location filename="../common/mainwindow.cpp" line="772"/>
+        <location filename="../common/mainwindow.cpp" line="765"/>
+        <location filename="../common/mainwindow.cpp" line="774"/>
         <source>Saved to</source>
         <translation type="unfinished"></translation>
     </message>

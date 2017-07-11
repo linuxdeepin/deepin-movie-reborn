@@ -28,6 +28,7 @@ public:
         : QFrame(parent), _pif {pif} 
     {
         setProperty("PlayItemThumb", "true");
+        setState(ItemState::Normal); 
         setFrameShape(QFrame::NoFrame);
 
         // it's the same for all themes
@@ -65,6 +66,10 @@ public:
 
     void setState(ItemState is) {
         setProperty("ItemState", is);
+    }
+
+    ItemState state() const {
+        return (ItemState)property("ItemState").toInt();
     }
 
     QString getBg() const { return _bg; }
@@ -174,6 +179,8 @@ void PlaylistWidget::updateItemStates()
     qDebug() << __func__ << _items.size() << "current = " << _engine->playlist().current();
     for (int i = 0; i < _items.size(); i++) {
         auto item = dynamic_cast<PlayItemWidget*>(_items.at(i));
+
+        auto old = item->state();
         item->setState(ItemState::Normal);
 
         if (_mouseItem == item) {
@@ -181,13 +188,14 @@ void PlaylistWidget::updateItemStates()
         }
 
         if (i == _engine->playlist().current()) {
-            qDebug() << "----- set playing" << i;
             item->setState(ItemState::Playing);
         }
 
-        //TODO: optimize, check if state is really updated
-        item->style()->unpolish(item);
-        item->style()->polish(item);
+        if (old != item->state()) {
+            //item->style()->unpolish(item);
+            //item->style()->polish(item);
+            item->setStyleSheet(item->styleSheet());
+        }
     }
 
 }

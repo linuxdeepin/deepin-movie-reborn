@@ -114,8 +114,10 @@ PlaylistModel::PlaylistModel(PlayerEngine *e)
 void PlaylistModel::clear()
 {
     _infos.clear();
+    _engine->stop();
+
     _current = -1;
-    //emit currentChanged();
+    emit currentChanged();
     emit countChanged();
 }
 
@@ -123,16 +125,26 @@ void PlaylistModel::remove(int pos)
 {
     if (pos < 0 || pos >= count()) return;
 
+    bool update_current = false;
+
     _infos.removeAt(pos);
-    emit itemRemoved(pos);
+
     if (_current == pos) {
-        if (pos + 1 < count()) {
-            playNext();
+        if (pos < count()) {
+            _engine->requestPlay(_current);
         } else {
             _current = -1;
-            emit currentChanged();
+            _engine->stop();
+            update_current = true;
         }
+    } else if (pos < _current) {
+        _current--;
+        update_current = true;
     }
+
+    emit itemRemoved(pos);
+    if (update_current)
+        emit currentChanged();
     emit countChanged();
 }
 
