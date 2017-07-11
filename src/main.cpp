@@ -85,7 +85,8 @@ int main(int argc, char *argv[])
     mw.show();
     auto fi = QFileInfo(toOpenFile);
     if (fi.exists()) {
-        mw.play(fi.absoluteFilePath());
+        mw.setPlayFile(fi);
+        mw.play();
     }
 #else
 
