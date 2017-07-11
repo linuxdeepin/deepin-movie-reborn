@@ -48,6 +48,7 @@ struct PlayItemInfo {
     struct MovieInfo mi;
 };
 
+
 class PlaylistModel: public QObject {
     Q_OBJECT
     Q_PROPERTY(int count READ count NOTIFY countChanged)
