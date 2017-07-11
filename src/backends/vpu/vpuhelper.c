@@ -1876,14 +1876,14 @@ int SaveYuvImageHelperFormat(Uint32 core_idx,
         interLeave,
         format,
         endian);
-    /*if (yuvFp)*/
-    /*{*/
-        /*if( !osal_fwrite(pYuv, sizeof(Uint8), frameSize , yuvFp) )*/
-        /*{*/
-            /*VLOG(ERR, "Frame Data osal_fwrite failed file handle is 0x%x \n", yuvFp );*/
-            /*return 0;*/
-        /*}*/
-    /*}*/
+    if (yuvFp)
+    {
+        if( !osal_fwrite(pYuv, sizeof(Uint8), frameSize , yuvFp) )
+        {
+            VLOG(ERR, "Frame Data osal_fwrite failed file handle is 0x%x \n", yuvFp );
+            return 0;
+        }
+    }
     return 1;
 } 
 

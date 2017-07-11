@@ -1155,14 +1155,29 @@ void VpuDecoder::updateViewportSize(QSize sz)
 int VpuDecoder::sendFrame()
 {
 #if 1
+    auto yuvFileName = QString("%1.yuv").arg(QTime::currentTime().toString("ss.zzz"));
+
+    osal_file_t* fpYuv = osal_fopen(yuvFileName.toUtf8().constData(), "wb");
+    if (!fpYuv) {
+        VLOG(ERR, "Can't open yuv file\n");
+        return -1;
+    }		
+
+    if (!SaveYuvImageHelperFormat(coreIdx, fpYuv, &outputInfo.dispFrame, mapCfg, pYuv, 
+                outputInfo.rcDisplay, decOP.cbcrInterleave, framebufFormat, decOP.frameEndian))
+        return -1;
+
+    osal_fclose(fpYuv);
+    fprintf(stderr, "dump yuv to %s\n", yuvFileName.toUtf8().constData());
+
     QImage img(_viewportSize.width(), _viewportSize.height(), QImage::Format_RGB32);
 
-    galConverter->updateDestSurface(_viewportSize.width(), _viewportSize.height());
-    galConverter->updateSrcSurface(outputInfo.dispFrame.stride, outputInfo.dispFrame.height);
+    //galConverter->updateDestSurface(_viewportSize.width(), _viewportSize.height());
+    //galConverter->updateSrcSurface(outputInfo.dispFrame.stride, outputInfo.dispFrame.height);
 
-    galConverter->convertYUV2RGBScaled(outputInfo.dispFrame);
-    auto stride = galConverter->_dstSurf->stride;
-    galConverter->copyRGBData(img.bits(), img.bytesPerLine(), img.height());
+    //galConverter->convertYUV2RGBScaled(outputInfo.dispFrame);
+    //auto stride = galConverter->_dstSurf->stride;
+    //galConverter->copyRGBData(img.bits(), img.bytesPerLine(), img.height());
 
 #else
     QImage img(outputInfo.dispFrame.stride, outputInfo.dispFrame.height, 
@@ -1179,6 +1194,7 @@ int VpuDecoder::sendFrame()
 
     //qDebug() << QTime::currentTime().toString("ss.zzz");
     fprintf(stderr, "%s: timestamp %s\n", __func__, QTime::currentTime().toString("ss.zzz").toUtf8().constData());
+    return -1;
     if (frameIdx > 600) return -1;
 
 #ifdef FORCE_SET_VSYNC_FLAG
