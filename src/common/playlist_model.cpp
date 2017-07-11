@@ -114,6 +114,7 @@ PlaylistModel::PlaylistModel(PlayerEngine *e)
 void PlaylistModel::clear()
 {
     _infos.clear();
+    _current = -1;
     //emit currentChanged();
     emit countChanged();
 }
@@ -124,10 +125,21 @@ void PlaylistModel::remove(int pos)
 
     _infos.removeAt(pos);
     emit itemRemoved(pos);
+    if (_current == pos) {
+        if (pos + 1 < count()) {
+            playNext();
+        } else {
+            _current = -1;
+            emit currentChanged();
+        }
+    }
+    emit countChanged();
 }
 
 void PlaylistModel::playNext()
 {
+    if (count() == 0) return;
+
     if (_current + 1 < count()) {
         _current = _current + 1;
         _engine->requestPlay(_current);
@@ -137,6 +149,8 @@ void PlaylistModel::playNext()
 
 void PlaylistModel::playPrev()
 {
+    if (count() == 0) return;
+
     if (count() && _current > 0) {
         _current = _current - 1;
         _engine->requestPlay(_current);
@@ -159,7 +173,7 @@ void PlaylistModel::changeCurrent(int pos)
 
     _current = pos;
     Q_ASSERT_X(0, "playlist", "not implemented");
-    emit countChanged();
+    emit currentChanged();
 }
 
 void PlaylistModel::switchPosition(int p1, int p2)
