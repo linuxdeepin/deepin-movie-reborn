@@ -283,34 +283,34 @@
 <context>
     <name>dmr::MainWindow</name>
     <message>
-        <location filename="../common/mainwindow.cpp" line="593"/>
-        <location filename="../common/mainwindow.cpp" line="695"/>
+        <location filename="../common/mainwindow.cpp" line="596"/>
+        <location filename="../common/mainwindow.cpp" line="698"/>
         <source>Open File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="595"/>
+        <location filename="../common/mainwindow.cpp" line="598"/>
         <source>Movies (*.mkv *.mov *.mp4 *.rmvb)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="697"/>
+        <location filename="../common/mainwindow.cpp" line="700"/>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="748"/>
+        <location filename="../common/mainwindow.cpp" line="751"/>
         <source>View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="759"/>
+        <location filename="../common/mainwindow.cpp" line="762"/>
         <source>Movie Screenshot</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="760"/>
-        <location filename="../common/mainwindow.cpp" line="769"/>
+        <location filename="../common/mainwindow.cpp" line="763"/>
+        <location filename="../common/mainwindow.cpp" line="772"/>
         <source>Saved to</source>
         <translation type="unfinished"></translation>
     </message>

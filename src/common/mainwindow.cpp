@@ -333,7 +333,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(_engine, &PlayerEngine::fileLoaded, this, &MainWindow::updateActionsState);
     updateActionsState();
 
-    connect(&_engine->playlist(), &PlaylistModel::currentChanged, [=]() {
+    auto updateConstraints = [=]() {
+        qDebug() << "on currentChanged";
         if (_engine->state() == PlayerEngine::Idle) return;
         if (_engine->playlist().count() == 0) return;
 
@@ -341,7 +342,9 @@ MainWindow::MainWindow(QWidget *parent)
         _titlebar->setTitle(QFileInfo(mi.filePath).fileName());
         resize(mi.width, mi.height);
         updateSizeConstraints();
-    });
+    };
+    connect(_engine, &PlayerEngine::fileLoaded, updateConstraints);
+    connect(&_engine->playlist(), &PlaylistModel::currentChanged, updateConstraints);
 
     connect(_engine, &PlayerEngine::stateChanged, this, &MainWindow::updatePlayState);
 
@@ -847,6 +850,7 @@ void MainWindow::updateProxyGeometry()
         _playState->move(r.topLeft());
     }
 
+#if 0
 #ifdef DMR_DEBUG
     qDebug() << "margins " << frameMargins();
     qDebug() << "window frame " << frameGeometry();
@@ -854,6 +858,7 @@ void MainWindow::updateProxyGeometry()
     qDebug() << "_engine " << _engine->geometry();
     qDebug() << "_titlebar " << _titlebar->geometry();
     qDebug() << "_toolbox " << _toolbox->geometry();
+#endif
 #endif
 }
 

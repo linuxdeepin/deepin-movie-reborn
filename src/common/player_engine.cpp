@@ -117,8 +117,11 @@ void PlayerEngine::toggleMute()
 //FIXME: TODO: update _current according to file 
 void PlayerEngine::requestPlay(int id)
 {
-    auto info = _playlist->currentInfo();
-    _current->setPlayFile(info.info.absoluteFilePath());
+    if (state() != CoreState::Idle) {
+        stop();
+    }
+    const auto& item = _playlist->items()[id];
+    _current->setPlayFile(item.info.absoluteFilePath());
     if (_current->isPlayable()) {
         _current->play();
     } else {
@@ -128,8 +131,6 @@ void PlayerEngine::requestPlay(int id)
 
 void PlayerEngine::play()
 {
-    if (!_playlist->count()) return;
-
     if (state() == CoreState::Idle) {
         next();
     }
@@ -137,28 +138,16 @@ void PlayerEngine::play()
 
 void PlayerEngine::prev()
 {
-    if (!_playlist->count()) return;
-
-    if (state() != CoreState::Idle) {
-        stop();
-    }
     _playlist->playPrev();
 }
 
 void PlayerEngine::next()
 {
-    if (!_playlist->count()) return;
-
-    if (state() != CoreState::Idle) {
-        stop();
-    }
     _playlist->playNext();
 }
 
 void PlayerEngine::clearPlaylist()
 {
-    if (!_playlist->count()) return;
-
     _playlist->clear();
 }
 

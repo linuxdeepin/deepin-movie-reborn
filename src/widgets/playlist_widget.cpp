@@ -171,7 +171,7 @@ PlaylistWidget::~PlaylistWidget()
 
 void PlaylistWidget::updateItemStates()
 {
-    qDebug() << __func__;
+    qDebug() << __func__ << _items.size() << "current = " << _engine->playlist().current();
     for (int i = 0; i < _items.size(); i++) {
         auto item = dynamic_cast<PlayItemWidget*>(_items.at(i));
         item->setState(ItemState::Normal);
@@ -181,6 +181,7 @@ void PlaylistWidget::updateItemStates()
         }
 
         if (i == _engine->playlist().current()) {
+            qDebug() << "----- set playing" << i;
             item->setState(ItemState::Playing);
         }
 
@@ -240,6 +241,7 @@ void PlaylistWidget::contextMenuEvent(QContextMenuEvent *cme)
 
 void PlaylistWidget::loadPlaylist()
 {
+    qDebug() << __func__;
     {
         for(auto p: _items) {
             p->deleteLater();
