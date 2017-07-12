@@ -73,7 +73,7 @@ target_include_directories(${CMD_NAME} PUBLIC ${PROJECT_INCLUDE})
 set(TARGET_LIBS X11 Xext Xtst PkgConfig::Xcb Qt5::Widgets Qt5::X11Extras
     Qt5::DBus PkgConfig::Dtk PkgConfig::Mpv PkgConfig::Other pthread)
 if (ENABLE_VPU_PLATFORM) 
-    list(APPEND TARGET_LIBS GAL)
+    list(APPEND TARGET_LIBS GAL pulse pulse-simple)
 endif()
 target_link_libraries(${CMD_NAME} ${TARGET_LIBS})
 
