@@ -60,7 +60,13 @@ struct PacketQueue: QObject {
 
     T deque();
     void put(const T& v);
+    void flush();
 };
+
+template<class T>
+void PacketQueue<T>::flush()
+{
+}
 
 template<class T>
 T PacketQueue<T>::deque()
@@ -69,6 +75,7 @@ T PacketQueue<T>::deque()
     {
         QMutexLocker l(&lock);
         if (data.count() == 0) {
+            fprintf(stderr, "queue is empty, block and wait\n");
             empty_cond.wait(l.mutex());
         }
         ret = data.dequeue();
@@ -84,6 +91,7 @@ void PacketQueue<T>::put(const T& v)
     {
         QMutexLocker l(&lock);
         if (data.count() >= capacity) {
+            fprintf(stderr, "queue is full, block and wait\n");
             full_cond.wait(l.mutex());
         }
         data.enqueue(v);
@@ -95,8 +103,9 @@ class AudioDecoder: public QThread
 {
 public:
     AudioDecoder(AVCodecContext *ctx);
+    virtual ~AudioDecoder();
 
-    void stop() { _quitFlags.storeRelease(1); }
+    void stop();
 
 protected:
     void run() override;
@@ -143,6 +152,7 @@ signals:
 private:
     QSize _viewportSize;
     QFileInfo _fileInfo;
+    AudioDecoder *_audioThread {0};
 
 	DecConfigParam	decConfig;
     QAtomicInt _quitFlags {0};

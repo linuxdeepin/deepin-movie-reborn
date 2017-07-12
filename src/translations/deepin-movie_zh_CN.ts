@@ -315,7 +315,7 @@
 <context>
     <name>dmr::AudioDecoder</name>
     <message>
-        <location filename="../backends/vpu/vpu_decoder.cpp" line="1895"/>
+        <location filename="../backends/vpu/vpu_decoder.cpp" line="1906"/>
         <source>Deepin Movie</source>
         <translation type="unfinished">深度影院</translation>
     </message>

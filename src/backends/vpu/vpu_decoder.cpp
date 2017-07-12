@@ -864,6 +864,8 @@ bool VpuDecoder::init()
     }
 
     openMediaFile();
+
+    _audioThread = new AudioDecoder(ctxAudio);
 }
 
 //FIXME: need impl!
@@ -1487,6 +1489,9 @@ int VpuDecoder::flushVideoBuffer()
 
 int VpuDecoder::decodeAudio(AVPacket* pkt)
 {
+    AVPacket *dst = av_packet_alloc();
+    av_packet_ref(dst, pkt);
+    audioPackets.put(dst);
 }
 
 static int open_codec_context(int *stream_idx,
@@ -1827,6 +1832,13 @@ ERR_DEC_INIT:
 	
 	VPU_DeInit(coreIdx);
 
+    if (_audioThread) {
+        _audioThread->stop();
+        //FIXME: connect finished signal?
+        _audioThread->deleteLater();
+        //delete _audioThread;
+    }
+
     if (ctxVideo) avcodec_close(ctxVideo);
     if (ctxAudio) avcodec_close(ctxAudio);
     if (ctxSubtitle) avcodec_close(ctxSubtitle);
@@ -1878,8 +1890,7 @@ int AudioDecoder::decodeFrames(AVPacket* pkt, uint8_t *audio_buf, int buf_size)
         }
     }
 
-    av_packet_unref(pkt);
-    //if(pkt->data) av_free_packet(pkt);
+    av_packet_free(&pkt);
 }
 
 AudioDecoder::AudioDecoder(AVCodecContext *ctx)
@@ -1899,6 +1910,12 @@ AudioDecoder::AudioDecoder(AVCodecContext *ctx)
     }
 }
 
+void AudioDecoder::stop() 
+{ 
+    _quitFlags.storeRelease(1); 
+    audioPackets.flush();
+}
+
 void AudioDecoder::run()
 {
     for (;;) {
@@ -1910,5 +1927,12 @@ void AudioDecoder::run()
     }
 }
 
+AudioDecoder::~AudioDecoder()
+{
+    if (_pa) {
+        pa_simple_flush(_pa, NULL);
+        pa_simple_free(_pa);
+    }
+}
 
 }
