@@ -134,6 +134,7 @@ extern "C" {
 
     void dma_copy_in_vmem(unsigned int dst, unsigned int src, int len);
     void dma_copy_from_vmem(unsigned char* dst, unsigned int src, int len);
+    void dma_copy_to_vmem(unsigned int dst, unsigned char* src, int len);
 
 #if 0
 	int dma_enable(void);
