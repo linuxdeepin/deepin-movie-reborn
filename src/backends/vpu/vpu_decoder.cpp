@@ -1,6 +1,7 @@
 #include "config.h"
 
 #include "vpu_decoder.h"
+#include "options.h"
 
 #include "vpuapi.h"
 #include "regdefine.h"
@@ -1137,32 +1138,38 @@ void VpuDecoder::updateViewportSize(QSize sz)
 // return -1 to quit
 int VpuDecoder::sendFrame()
 {
-#if 0
-    QImage img(_viewportSize.width(), _viewportSize.height(), QImage::Format_RGB32);
+    bool use_gal = CommandLineManager::get().useGAL();
 
-    galConverter->updateDestSurface(_viewportSize.width(), _viewportSize.height());
-    galConverter->updateSrcSurface(outputInfo.dispFrame.stride, outputInfo.dispFrame.height);
+    QImage img;
 
-    galConverter->convertYUV2RGBScaled(outputInfo.dispFrame);
-    auto stride = galConverter->_dstSurf->stride;
-    galConverter->copyRGBData(img.bits(), img.bytesPerLine(), img.height());
+    if (use_gal) {
+        img = QImage(_viewportSize.width(), _viewportSize.height(), QImage::Format_RGB32);
 
-#else
-    QImage img(outputInfo.dispFrame.stride, outputInfo.dispFrame.height, 
-            QImage::Format_RGB32);
-    //sw coversion
-    vdi_read_memory(coreIdx, outputInfo.dispFrame.bufY, pYuv, framebufSize, decOP.frameEndian);
-    yuv2rgb_color_format color_format = 
-        convert_vpuapi_format_to_yuv2rgb_color_format(framebufFormat, 0);
-    vpu_yuv2rgb(outputInfo.dispFrame.stride, outputInfo.dispFrame.height,
-            color_format, pYuv, img.bits(), 1);
-#endif
+        galConverter->updateDestSurface(_viewportSize.width(), _viewportSize.height());
+        galConverter->updateSrcSurface(outputInfo.dispFrame.stride, outputInfo.dispFrame.height);
+
+        galConverter->convertYUV2RGBScaled(outputInfo.dispFrame);
+        auto stride = galConverter->_dstSurf->stride;
+        galConverter->copyRGBData(img.bits(), img.bytesPerLine(), img.height());
+
+    } else {
+        img = QImage(outputInfo.dispFrame.stride, outputInfo.dispFrame.height, 
+                QImage::Format_RGB32);
+        //sw coversion
+        vdi_read_memory(coreIdx, outputInfo.dispFrame.bufY, pYuv, framebufSize, decOP.frameEndian);
+        yuv2rgb_color_format color_format = 
+            convert_vpuapi_format_to_yuv2rgb_color_format(framebufFormat, 0);
+        vpu_yuv2rgb(outputInfo.dispFrame.stride, outputInfo.dispFrame.height,
+                color_format, pYuv, img.bits(), 1);
+    }
 
     emit frame(img);
 
     //qDebug() << QTime::currentTime().toString("ss.zzz");
     fprintf(stderr, "%s: timestamp %s\n", __func__, QTime::currentTime().toString("ss.zzz").toUtf8().constData());
-    if (frameIdx > 100) return -1;
+
+    auto total = CommandLineManager::get().debugFrameCount();
+    if (total > 0 && frameIdx > total) return -1;
 
 #ifdef FORCE_SET_VSYNC_FLAG
     set_VSYNC_flag();
