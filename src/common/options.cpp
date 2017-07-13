@@ -24,6 +24,8 @@ CommandLineManager::CommandLineManager()
         {"VV", QCoreApplication::tr("dump all debug message")},
         {{"c", "opengl-cb"}, QCoreApplication::tr("use opengl-cb interface [on/off/auto]"), "bool", "auto"},
         {{"o", "override-config"}, QCoreApplication::tr("override config for libmpv"), "file", ""},
+        {"frames", QCoreApplication::tr("play only count number of frames"), "count", "0"},
+        {"gal", QCoreApplication::tr("use gal or not"), "bool", "on"},
     });
 }
 
@@ -46,4 +48,17 @@ QString CommandLineManager::overrideConfig() const
 {
     return this->value("o");
 }
+
+int CommandLineManager::debugFrameCount() const
+{
+    return value("frames").toInt();
+}
+
+bool CommandLineManager::useGAL() const
+{
+    auto v = value("gal");
+    return v == "on" || v == "1";
+}
+
+
 }

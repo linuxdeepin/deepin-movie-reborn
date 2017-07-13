@@ -11,6 +11,10 @@ public:
     bool debug() const;
     QString openglMode() const;
     QString overrideConfig() const;
+    
+    // for vpu level debug
+    int debugFrameCount() const; 
+    bool useGAL() const;
 
 private:
     CommandLineManager();

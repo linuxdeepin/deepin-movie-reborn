@@ -28,6 +28,16 @@
         <source>override config for libmpv</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../common/options.cpp" line="27"/>
+        <source>play only count number of frames</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../common/options.cpp" line="28"/>
+        <source>use gal or not</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QObject</name>
@@ -283,7 +293,7 @@
 <context>
     <name>dmr::AudioDecoder</name>
     <message>
-        <location filename="../backends/vpu/vpu_decoder.cpp" line="1960"/>
+        <location filename="../backends/vpu/vpu_decoder.cpp" line="1966"/>
         <source>Deepin Movie</source>
         <translation type="unfinished"></translation>
     </message>
