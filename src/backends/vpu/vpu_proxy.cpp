@@ -9,7 +9,7 @@
 #include "vdi/vdi_osal.h"
 #include "vpuio.h"
 #include "vpuapifunc.h"
-#include <galUtil.h>
+#include <HAL/galUtil.h>
 #include <stdio.h>
 #include <memory.h>
 
@@ -457,7 +457,7 @@ struct GALSurface {
         }
         s->surf = surf;
 
-        gctUINT aligned_w, aligned_h;
+        gctUINT aligned_w = 0, aligned_h = 0;
         gcmVERIFY_OK(gcoSURF_GetAlignedSize(s->surf, &aligned_w, &aligned_h, &s->stride)); 
         if (w != aligned_w || h != aligned_h) {
             fprintf(stderr, "gcoSURF width and height is not aligned !\n");
@@ -497,7 +497,14 @@ struct GALSurface {
     {
         gceSTATUS status;
         if (!_locked) {
-            gcmVERIFY_OK(gcoSURF_Lock(surf, phyAddr, lgcAddr));
+            if (this->format == gcvSURF_A8R8G8B8) {
+                gctUINT32 dstPhyAddr = 0;
+                gctPOINTER dstLgcAddr = 0;
+                gcoSURF_Lock(surf, &dstPhyAddr, &dstLgcAddr);
+                phyAddr[0] = dstPhyAddr;
+                lgcAddr[0] = dstLgcAddr;
+            } else 
+                gcmVERIFY_OK(gcoSURF_Lock(surf, phyAddr, lgcAddr));
             fprintf(stderr, "%s: %s %x %x\n", __func__, "phy", phyAddr[0], lgcAddr[0]);
             fprintf(stderr, "%s: %s %x %x\n", __func__, "phy", phyAddr[1], lgcAddr[1]);
             fprintf(stderr, "%s: %s %x %x\n", __func__, "phy", phyAddr[2], lgcAddr[2]);
@@ -640,67 +647,6 @@ public:
         return gcvTRUE;
     }
 
-    gctBOOL fake_convert()
-    {
-        gctUINT8 horKernel = 1, verKernel = 1;
-        gcsRECT srcRect;
-        gceSTATUS status;
-        gcsRECT dstRect = {0, 0, _dstSurf->width, _dstSurf->height};
-
-        srcRect.left = 0;
-        srcRect.top = 0;
-        srcRect.right = _srcSurf->width;
-        srcRect.bottom = _srcSurf->height;
-
-        fprintf(stderr, "%s: (%d, %d, %d, %d) dst (%d, %d, %d, %d)\n", __func__,
-                dstRect.left, dstRect.top, dstRect.right, dstRect.bottom,
-                srcRect.left, srcRect.top, srcRect.right, srcRect.bottom);
-
-        {
-            SurfaceScopedLock dstLock(_dstSurf);
-            SurfaceScopedLock scoped(_srcSurf);
-
-            // set clippint rect
-            gcmONERROR(gco2D_SetClipping(g_2d, &dstRect));
-            gcmONERROR(gcoSURF_SetDither(_dstSurf->surf, gcvTRUE));
-
-            // set kernel size
-            status = gco2D_SetKernelSize(g_2d, horKernel, verKernel);
-            if (status != gcvSTATUS_OK) {
-                fprintf(stderr, "2D set kernel size failed:%#x\n", status);
-                return gcvFALSE;
-            }
-
-            status = gco2D_EnableDither(g_2d, gcvTRUE);
-            if (status != gcvSTATUS_OK) {
-                fprintf(stderr, "enable gco2D_EnableDither failed:%#x\n", status);
-                return gcvFALSE;
-            }
-
-            status = gcoSURF_FilterBlit(_srcSurf->surf, _dstSurf->surf, &srcRect, &dstRect, &dstRect);
-            if (status != gcvSTATUS_OK) {
-                fprintf(stderr, "2D FilterBlit failed:%#x\n", status);
-                return gcvFALSE;
-            }
-
-            status = gco2D_EnableDither(g_2d, gcvFALSE);
-            if (status != gcvSTATUS_OK) {
-                fprintf(stderr, "disable gco2D_EnableDither failed:%#x\n", status);
-                return gcvFALSE;
-            }
-
-            //gcmONERROR(gco2D_Flush(g_2d));
-            fprintf(stderr, "%s: flushed\n", __func__);
-            gcmONERROR(gcoHAL_Commit(g_hal, gcvTRUE));
-            fprintf(stderr, "%s: commit done\n", __func__);
-        }
-
-        return gcvTRUE;
-
-OnError:
-        fprintf(stderr, "%s: convert failed\n", __func__);
-        return gcvFALSE;
-    }
     gctBOOL convertYUV2RGBScaledFromFile(const QByteArray& bytes)
     {
         gctUINT8 horKernel = 1, verKernel = 1;
@@ -1143,7 +1089,6 @@ int VpuDecoder::seqInit()
     galConverter = new GALConverter;
     //galConverter->updateDestSurface(850, 600, gcvSURF_A8R8G8B8);
     //galConverter->updateSrcSurface(framebufWidth, framebufHeight);
-    //galConverter->fake_convert();
 
     // the size of pYuv should be aligned 8 byte. because of C&M HPI bus system constraint.
     pYuv = (BYTE*)osal_malloc(framebufSize);

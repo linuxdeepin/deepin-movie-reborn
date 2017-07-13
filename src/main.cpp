@@ -78,6 +78,7 @@ int main(int argc, char *argv[])
     app.setAttribute(Qt::AA_DontCreateNativeWidgetSiblings, true);
 
 #ifdef ENABLE_VPU_PLATFORM
+#if 1
     dmr::VpuProxy mw;
     mw.setMinimumSize(QSize(528, 400));
     mw.resize(850, 600);
@@ -87,6 +88,7 @@ int main(int argc, char *argv[])
     if (fi.exists()) {
         mw.play(fi.absoluteFilePath());
     }
+#endif
 #else
 
     dmr::MainWindow mw;
