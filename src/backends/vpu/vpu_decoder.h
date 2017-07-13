@@ -14,6 +14,10 @@ extern "C" {
 #define MAX_FILE_PATH   256
 #define MAX_ROT_BUF_NUM			2
 
+#define AV_SYNC_THRESHOLD 0.01
+#define AV_NOSYNC_THRESHOLD 10.0
+
+
 typedef struct
 {
         char yuvFileName[MAX_FILE_PATH];
@@ -60,7 +64,6 @@ struct PacketQueue: QObject {
     int capacity {100}; //right now, measure as number of pakcets, maybe should be measured
                         // as duration or data size
     QWaitCondition empty_cond;
-    QWaitCondition full_cond;
 
     T deque();
     void put(const T& v);
@@ -70,6 +73,10 @@ struct PacketQueue: QObject {
 template<class T>
 void PacketQueue<T>::flush()
 {
+    T v;
+    //QMutexLocker l(&lock);
+    //data.enqueue(v);
+    //empty_cond.wakeAll();
 }
 
 template<class T>
@@ -81,27 +88,27 @@ T PacketQueue<T>::deque()
         if (data.count() == 0) {
             fprintf(stderr, "queue is empty, block and wait\n");
             empty_cond.wait(l.mutex());
+            //FIXME: check quit signal
         }
         ret = data.dequeue();
     }
 
-    full_cond.wakeAll();
     return ret;
 }
 
 template<class T>
 void PacketQueue<T>::put(const T& v)
 {
-    {
-        QMutexLocker l(&lock);
-        if (data.count() >= capacity) {
-            fprintf(stderr, "queue is full, block and wait\n");
-            full_cond.wait(l.mutex());
-        }
-        data.enqueue(v);
-    }
+    QMutexLocker l(&lock);
+    data.enqueue(v);
     empty_cond.wakeAll();
 }
+
+struct VideoFrame
+{
+    QImage img;
+    double pts;
+};
 
 class AudioDecoder: public QThread
 {
@@ -138,27 +145,41 @@ public:
     void updateViewportSize(QSize sz);
 
 
+
 protected:
     void run() override;
     bool init();
     int loop();
 
+    double synchronize_video(AVFrame *src_frame, double pts);
+
     int decodeAudio(AVPacket* pkt);
 
     int seqInit();
-    int flushVideoBuffer();
+    int flushVideoBuffer(AVPacket* pkt);
     int buildVideoPacket(AVPacket* pkt);
-    int sendFrame();
+    int sendFrame(AVPacket* pkt);
 
     int openMediaFile();
 
+public slots:
+    void video_refresh_timer();
+
 signals:
     void frame(const QImage &);
+    void schedule_refresh(int delay); 
 
 private:
     QSize _viewportSize;
     QFileInfo _fileInfo;
     AudioDecoder *_audioThread {0};
+
+    double _audioClock {0.0};
+    double _videoClock {0.0};
+    double _frameLastPts {0.0};
+    double _frameLastDelay {0.0};
+    double _frameTimer {0.0};
+
 
 	DecConfigParam	decConfig;
     QAtomicInt _quitFlags {0};

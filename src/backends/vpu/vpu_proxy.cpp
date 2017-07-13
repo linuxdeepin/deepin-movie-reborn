@@ -19,8 +19,8 @@ VpuProxy::~VpuProxy()
 void VpuProxy::closeEvent(QCloseEvent *ce)
 {
     if (_d) {
-        _d->stop();
         disconnect(_d, 0, 0, 0);
+        _d->stop();
         _d->wait(1000);
         delete _d;
         _d = 0;
@@ -44,7 +44,13 @@ void VpuProxy::setPlayFile(const QFileInfo& fi)
     }
     _d->updateViewportSize(QSize(864, 608));
 
+    connect(_d, &VpuDecoder::schedule_refresh, [=](int delay) {
+        //fprintf(stderr, "schedule_refresh after %g\n", (double)delay / 1000.0);
+        QTimer::singleShot(delay, _d, &VpuDecoder::video_refresh_timer);
+    });
+
     connect(_d, &VpuDecoder::frame, [=](const QImage& img) {
+        fprintf(stderr, "update display\n");
         _img = img;
         this->update();
     });

@@ -444,6 +444,10 @@ namespace dmr {
 using AudioPacketQueue = PacketQueue<AVPacket*>;
 static AudioPacketQueue audioPackets;
 
+using VideoPacketQueue = PacketQueue<VideoFrame>;
+static VideoPacketQueue videoFrames;
+
+
 struct GALSurface {
     gcoSURF                 surf {0};
     gceSURF_FORMAT          format {0};
@@ -875,6 +879,9 @@ bool VpuDecoder::init()
     openMediaFile();
     fprintf(stderr, "init done\n");
 
+    _frameTimer = (double)av_gettime() / 1000000.0;
+    _frameLastDelay = 40e-3;
+
     _audioThread = new AudioDecoder(ctxAudio);
     _audioThread->start();
 }
@@ -1136,7 +1143,7 @@ void VpuDecoder::updateViewportSize(QSize sz)
 }
 
 // return -1 to quit
-int VpuDecoder::sendFrame()
+int VpuDecoder::sendFrame(AVPacket *pkt)
 {
     bool use_gal = CommandLineManager::get().useGAL();
 
@@ -1163,7 +1170,24 @@ int VpuDecoder::sendFrame()
                 color_format, pYuv, img.bits(), 1);
     }
 
-    emit frame(img);
+    double pts = 0.0;
+
+    if(pkt->dts != AV_NOPTS_VALUE) {
+        pts = pkt->pts;
+        //pts = av_frame_get_best_effort_timestamp(pFrame);
+    } else {
+        pts = 0;
+    }
+    pts *= av_q2d(ic->streams[idxVideo]->time_base);
+    pts = synchronize_video(NULL, pts);
+
+    VideoFrame vf;
+    vf.img = img;
+    vf.pts = pts;
+    videoFrames.put(vf);
+    if (frameIdx == 0) 
+        emit schedule_refresh(0);
+    //emit frame(img);
 
     //qDebug() << QTime::currentTime().toString("ss.zzz");
     fprintf(stderr, "%s: timestamp %s\n", __func__, QTime::currentTime().toString("ss.zzz").toUtf8().constData());
@@ -1253,7 +1277,7 @@ int VpuDecoder::buildVideoPacket(AVPacket* pkt)
     }		
 }
 
-int VpuDecoder::flushVideoBuffer()
+int VpuDecoder::flushVideoBuffer(AVPacket *pkt)
 {
 	int				decodefinish = 0;
 	int				dispDoneIdx = -1;
@@ -1470,7 +1494,7 @@ int VpuDecoder::flushVideoBuffer()
         if (ppuEnable) 
             ppIdx = (ppIdx+1)%MAX_ROT_BUF_NUM;
 
-        if (sendFrame() < 0) 
+        if (sendFrame(pkt) < 0) 
             _quitFlags.store(1); // break;
     }
     
@@ -1625,6 +1649,84 @@ _error:
     return -1;
 }
 
+double VpuDecoder::synchronize_video(AVFrame *src_frame, double pts) 
+{
+
+    double frame_delay;
+
+    if(pts != 0) {
+        /* if we have pts, set video clock to it */
+        _videoClock = pts;
+    } else {
+        /* if we aren't given a pts, set it to the clock */
+        pts = _videoClock;
+    }
+#if 0
+    /* update the video clock */
+    frame_delay = av_q2d(ctxVideo->time_base);
+    /* if we are repeating a frame, adjust clock accordingly */
+    frame_delay += src_frame->repeat_pict * (frame_delay * 0.5);
+    _videoClock += frame_delay;
+#endif
+    fprintf(stderr, "%s: pts = %f\n", __func__, pts);
+    return pts;
+}
+
+void VpuDecoder::video_refresh_timer() 
+{
+    double actual_delay, delay, sync_threshold, ref_clock, diff;
+
+    if (_quitFlags.load()) return;
+
+    if(ctxVideo) {
+        if(videoFrames.data.size() == 0) {
+            emit schedule_refresh(1);
+        } else {
+            auto vp = videoFrames.deque();
+
+            delay = vp.pts - _frameLastPts; /* the pts from last time */
+            if(delay <= 0 || delay >= 1.0) {
+                /* if incorrect delay, use previous one */
+                delay = _frameLastDelay;
+            }
+            /* save for next time */
+            _frameLastDelay = delay;
+            _frameLastPts = vp.pts;
+
+            /* update delay to sync to audio */
+            //ref_clock = get_audio_clock(is);
+            ref_clock = _audioClock;
+            diff = vp.pts - ref_clock;
+
+            /* Skip or repeat the frame. Take delay into account
+               FFPlay still doesn't "know if this is the best guess." */
+            sync_threshold = (delay > AV_SYNC_THRESHOLD) ? delay : AV_SYNC_THRESHOLD;
+            if(fabs(diff) < AV_NOSYNC_THRESHOLD) {
+                if(diff <= -sync_threshold) {
+                    delay = 0;
+                } else if(diff >= sync_threshold) {
+                    delay = 2 * delay;
+                }
+            }
+            _frameTimer += delay;
+            /* computer the REAL delay */
+            actual_delay = _frameTimer - (av_gettime() / 1000000.0);
+            if(actual_delay < 0.010) {
+                /* Really it should skip the picture instead */
+                actual_delay = 0.010;
+            }
+            fprintf(stderr, "%s: audio clock %f, actual_delay = %f, _frameTimer = %f\n", __func__, 
+                    _audioClock, actual_delay, _frameTimer);
+            emit schedule_refresh((int)(actual_delay * 1000 + 0.5));
+
+            /* show the picture! */
+            emit frame(vp.img);
+        }
+    } else {
+        emit schedule_refresh(100);
+    }
+}
+
 int VpuDecoder::loop()
 {
     int i = 0;
@@ -1633,32 +1735,25 @@ int VpuDecoder::loop()
     int             err;
 	AVPacket  *pkt = 0;
 
-
 	AVPacket pkt1; 
     pkt=&pkt1;
 
-    fprintf(stderr, "loop --------------\n");
-
 	seqHeader = osal_malloc(ctxVideo->extradata_size+MAX_CHUNK_HEADER_SIZE);	// allocate more buffer to fill the vpu specific header.
-	if (!seqHeader)
-	{
+	if (!seqHeader) {
 		VLOG(ERR, "fail to allocate the seqHeader buffer\n");
 		goto ERR_DEC_INIT;
 	}
 	memset(seqHeader, 0x00, ctxVideo->extradata_size+MAX_CHUNK_HEADER_SIZE);
 
 	picHeader = osal_malloc(MAX_CHUNK_HEADER_SIZE);
-	if (!picHeader)
-	{
+	if (!picHeader) {
 		VLOG(ERR, "fail to allocate the picHeader buffer\n");
 		goto ERR_DEC_INIT;
 	}
 	memset(picHeader, 0x00, MAX_CHUNK_HEADER_SIZE);
 
 	ret = VPU_Init(coreIdx);
-	if (ret != RETCODE_SUCCESS && 
-		ret != RETCODE_CALLED_BEFORE) 
-	{
+	if (ret != RETCODE_SUCCESS && ret != RETCODE_CALLED_BEFORE) {
 		VLOG(ERR, "VPU_Init failed Error code is 0x%x \n", ret );
 		goto ERR_DEC_INIT;
 	}
@@ -1769,6 +1864,9 @@ int VpuDecoder::loop()
 		}
 
 		if (pkt->stream_index == idxAudio) {
+            if(pkt->pts != AV_NOPTS_VALUE) {
+                _audioClock = av_q2d(ic->streams[idxAudio]->time_base) * pkt->pts;
+            }
             decodeAudio(pkt);
 			continue;
         }
@@ -1826,7 +1924,7 @@ int VpuDecoder::loop()
         }
 
 FLUSH_BUFFER:		
-        if (flushVideoBuffer() < 0) {
+        if (flushVideoBuffer(pkt) < 0) {
             goto ERR_DEC_OPEN;
         }
 		
