@@ -874,27 +874,9 @@ VpuDecoder::~VpuDecoder()
 
 void VpuDecoder::run() 
 {
-    galConverter = new GALConverter;
-    QImage img(_viewportSize.width(), _viewportSize.height(), QImage::Format_RGB32);
-    
-    QSize yuv(1920, 800);
-    galConverter->updateDestSurface(_viewportSize.width(), _viewportSize.height());
-    galConverter->updateSrcSurface(yuv.width(), yuv.height());
 
-    QFile f(_filename);
-    f.open(QIODevice::ReadOnly);
-    auto data = f.readAll();
-
-    galConverter->convertYUV2RGBScaledFromFile(data);
-    auto stride = galConverter->_dstSurf->stride;
-    galConverter->copyRGBData(img.bits(), img.bytesPerLine(), img.height());
-
-
-    auto jpgFileName = QString("gal_%1.jpg").arg(QTime::currentTime().toString("ss.zzz"));
-    img.save(jpgFileName);
-
-    //loop();
-    fprintf(stderr, "%s: save %s, decoder quit\n", __func__, jpgFileName.toUtf8().constData());
+    loop();
+    //fprintf(stderr, "%s: save %s, decoder quit\n", __func__, jpgFileName.toUtf8().constData());
 }
 
 bool VpuDecoder::init()
@@ -1180,22 +1162,43 @@ void VpuDecoder::updateViewportSize(QSize sz)
 int VpuDecoder::sendFrame()
 {
 #if 1
-    auto yuvFileName = QString("%1.yuv").arg(QTime::currentTime().toString("ss.zzz"));
+    //auto yuvFileName = QString("%1.yuv").arg(QTime::currentTime().toString("ss.zzz"));
 
-    osal_file_t* fpYuv = osal_fopen(yuvFileName.toUtf8().constData(), "wb");
-    if (!fpYuv) {
-        VLOG(ERR, "Can't open yuv file\n");
-        return -1;
-    }		
+    //osal_file_t* fpYuv = osal_fopen(yuvFileName.toUtf8().constData(), "wb");
+    //if (!fpYuv) {
+        //VLOG(ERR, "Can't open yuv file\n");
+        //return -1;
+    //}		
 
-    if (!SaveYuvImageHelperFormat(coreIdx, fpYuv, &outputInfo.dispFrame, mapCfg, pYuv, 
-                outputInfo.rcDisplay, decOP.cbcrInterleave, framebufFormat, decOP.frameEndian))
-        return -1;
+    //if (!SaveYuvImageHelperFormat(coreIdx, fpYuv, &outputInfo.dispFrame, mapCfg, pYuv, 
+                //outputInfo.rcDisplay, decOP.cbcrInterleave, framebufFormat, decOP.frameEndian))
+        //return -1;
 
-    osal_fclose(fpYuv);
-    fprintf(stderr, "dump yuv to %s\n", yuvFileName.toUtf8().constData());
+    //osal_fclose(fpYuv);
+    //fprintf(stderr, "dump yuv to %s\n", yuvFileName.toUtf8().constData());
 
+    //QImage img(_viewportSize.width(), _viewportSize.height(), QImage::Format_RGB32);
+
+    //galConverter = new GALConverter;
+    
     QImage img(_viewportSize.width(), _viewportSize.height(), QImage::Format_RGB32);
+    
+    QSize yuv(1920, 800);
+    galConverter->updateDestSurface(_viewportSize.width(), _viewportSize.height());
+    galConverter->updateSrcSurface(yuv.width(), yuv.height());
+
+    //QFile f(_filename);
+    QFile f("/home/lily/1.yuv");
+    f.open(QIODevice::ReadOnly);
+    auto data = f.readAll();
+
+    galConverter->convertYUV2RGBScaledFromFile(data);
+    auto stride = galConverter->_dstSurf->stride;
+    galConverter->copyRGBData(img.bits(), img.bytesPerLine(), img.height());
+
+
+    auto jpgFileName = QString("gal_%1.jpg").arg(QTime::currentTime().toString("ss.zzz"));
+    img.save(jpgFileName);
 
     //galConverter->updateDestSurface(_viewportSize.width(), _viewportSize.height());
     //galConverter->updateSrcSurface(outputInfo.dispFrame.stride, outputInfo.dispFrame.height);
