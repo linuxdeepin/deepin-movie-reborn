@@ -20,7 +20,15 @@ extern "C" {
 
 #include <libavformat/avformat.h>
 #include <libavutil/dict.h>
+#include <libavcodec/avcodec.h>
 #include <libavutil/avutil.h>
+#include <libavutil/imgutils.h>
+#include <libavutil/opt.h>
+#include <libavutil/time.h>
+#include <libavutil/timestamp.h>
+#include <libavformat/avformat.h>
+#include <libavresample/avresample.h>
+
 
 #if defined (__cplusplus)
 }
@@ -864,8 +872,10 @@ bool VpuDecoder::init()
     }
 
     openMediaFile();
+    fprintf(stderr, "init done\n");
 
     _audioThread = new AudioDecoder(ctxAudio);
+    _audioThread->start();
 }
 
 //FIXME: need impl!
@@ -1127,7 +1137,7 @@ void VpuDecoder::updateViewportSize(QSize sz)
 // return -1 to quit
 int VpuDecoder::sendFrame()
 {
-#if 1
+#if 0
     QImage img(_viewportSize.width(), _viewportSize.height(), QImage::Format_RGB32);
 
     galConverter->updateDestSurface(_viewportSize.width(), _viewportSize.height());
@@ -1510,6 +1520,13 @@ static int open_codec_context(int *stream_idx,
 
     stream_index = ret;
     st = fmt_ctx->streams[stream_index];
+    *dec_ctx = st->codec;
+    dec = avcodec_find_decoder((*dec_ctx)->codec_id);
+    if(avcodec_open2(*dec_ctx, dec, NULL) < 0) {
+        fprintf(stderr, "Unsupported codec!\n");
+        return -1;
+    }
+#if 0
 #if LIBAVFORMAT_VERSION_MAJOR >= 57 && LIBAVFORMAT_VERSION_MINOR <= 25
     *dec_ctx = st->codec;
     dec = avcodec_find_decoder((*dec_ctx)->codec_id);
@@ -1517,8 +1534,7 @@ static int open_codec_context(int *stream_idx,
     /* find decoder for the stream */
     dec = avcodec_find_decoder(st->codecpar->codec_id);
     if (!dec) {
-        fprintf(stderr, "Failed to find %s codec\n",
-                av_get_media_type_string(type));
+        fprintf(stderr, "Failed to find %s codec\n", av_get_media_type_string(type));
         return AVERROR(EINVAL);
     }
     /* Allocate a codec context for the decoder */
@@ -1528,6 +1544,16 @@ static int open_codec_context(int *stream_idx,
                 av_get_media_type_string(type));
         return AVERROR(ENOMEM);
     }
+
+    if(avcodec_copy_context(*dec_ctx, fmt_ctx->streams[stream_index]->codec) != 0) {
+        fprintf(stderr, "Couldn't copy codec context");
+        return -1; // Error copying codec context
+    }
+
+    if(avcodec_open2(*dec_ctx, dec, NULL) < 0) {
+        fprintf(stderr, "Unsupported codec!\n");
+        return -1;
+    }
     /* Copy codec parameters from input stream to output codec context */
     if ((ret = avcodec_parameters_to_context(*dec_ctx, st->codecpar)) < 0) {
         fprintf(stderr, "Failed to copy %s codec parameters to decoder context\n",
@@ -1535,7 +1561,7 @@ static int open_codec_context(int *stream_idx,
         return ret;
     }
 #endif
-
+#endif
     *stream_idx = stream_index;
     return 0;
 }
@@ -1575,14 +1601,15 @@ int VpuDecoder::openMediaFile()
         goto _error;
 	}
 
-    if (open_codec_context(&idxSubtitle, &ctxSubtitle, ic, AVMEDIA_TYPE_SUBTITLE) < 0) {
-		err = -1;
-		VLOG(ERR, "%s: could not find sub stream information\n", Q2C(_fileInfo.absoluteFilePath()));
-        goto _error;
-	}
+    //if (open_codec_context(&idxSubtitle, &ctxSubtitle, ic, AVMEDIA_TYPE_SUBTITLE) < 0) {
+		//err = -1;
+		//VLOG(ERR, "%s: could not find sub stream information\n", Q2C(_fileInfo.absoluteFilePath()));
+        //goto _error;
+	//}
     return 0;
 
 _error:
+    //FIXME: should not free ctxVideo
     if (ctxVideo) avcodec_close(ctxVideo);
     if (ctxAudio) avcodec_close(ctxAudio);
     if (ctxSubtitle) avcodec_close(ctxSubtitle);
@@ -1603,6 +1630,7 @@ int VpuDecoder::loop()
 	AVPacket pkt1; 
     pkt=&pkt1;
 
+    fprintf(stderr, "loop --------------\n");
 
 	seqHeader = osal_malloc(ctxVideo->extradata_size+MAX_CHUNK_HEADER_SIZE);	// allocate more buffer to fill the vpu specific header.
 	if (!seqHeader)
@@ -1836,7 +1864,6 @@ ERR_DEC_INIT:
         _audioThread->stop();
         //FIXME: connect finished signal?
         _audioThread->deleteLater();
-        //delete _audioThread;
     }
 
     if (ctxVideo) avcodec_close(ctxVideo);
@@ -1848,11 +1875,8 @@ ERR_DEC_INIT:
 
 //----------------------------------------------------------------------
 
-//-------------------------------------------
-//
 int AudioDecoder::decodeFrames(AVPacket* pkt, uint8_t *audio_buf, int buf_size) 
 {
-
     static uint8_t *audio_pkt_data = NULL;
     static int audio_pkt_size = 0;
     static AVFrame frame;
@@ -1863,9 +1887,13 @@ int AudioDecoder::decodeFrames(AVPacket* pkt, uint8_t *audio_buf, int buf_size)
     audio_pkt_size = pkt->size;
     while(audio_pkt_size > 0) {
         int got_frame = 0;
+        fprintf(stderr, "%s: decode audio\n", __func__);
         len1 = avcodec_decode_audio4(_audioCtx, &frame, &got_frame, pkt);
         if(len1 < 0) {
+            char buf[1024] = {0,};
+            av_make_error_string(buf, 1023, len1);
             /* if error, skip frame */
+            fprintf(stderr, "%s: decode audio error %s\n", __func__,  buf);
             audio_pkt_size = 0;
             break;
         }
@@ -1873,15 +1901,29 @@ int AudioDecoder::decodeFrames(AVPacket* pkt, uint8_t *audio_buf, int buf_size)
         audio_pkt_size -= len1;
         data_size = 0;
         if(got_frame) {
-            data_size = av_samples_get_buffer_size(NULL, _audioCtx->channels,
-                    frame.nb_samples, _audioCtx->sample_fmt, 1);
-            assert(data_size <= buf_size);
-            //memcpy(audio_buf, frame.data[0], data_size);
+            int out_nb_samples = avresample_available(_avrCtx)
+                + (avresample_get_delay(_avrCtx) + frame.nb_samples); // upper bound
+            uint8_t *out_data = NULL;
+            int out_linesize = 0;
+            av_samples_alloc(&out_data, &out_linesize, frame.channels, out_nb_samples, AV_SAMPLE_FMT_S16, 0);
+            int nr_read_samples = avresample_convert(_avrCtx, &out_data, out_linesize,
+                    out_nb_samples, frame.data, frame.linesize[0], frame.nb_samples);
+            if (nr_read_samples < out_nb_samples) {
+                fprintf(stderr, "still has samples needs to be read\n");
+            }
 
+            assert(out_linesize == nr_read_samples*4);
+            char *inbuf = (char*)out_data;
+
+            //assert(data_size <= buf_size);
+            //memcpy(audio_buf, frame.data[0], data_size);
+            fprintf(stderr, "%s: play audio\n", __func__);
             int error = 0;
-            if (pa_simple_write(_pa, frame.data[0], (size_t)data_size, &error) < 0) {
+            if (pa_simple_write(_pa, inbuf, out_linesize, &error) < 0) {
                 fprintf(stderr, __FILE__": pa_simple_write() failed: %s\n", pa_strerror(error));
             }
+
+            av_freep(&out_data);
         }
 
         if(data_size <= 0) {
@@ -1901,6 +1943,17 @@ AudioDecoder::AudioDecoder(AVCodecContext *ctx)
     ss.channels = ctx->channels;
     ss.rate = ctx->sample_rate;
 
+    _avrCtx = avresample_alloc_context();
+    av_opt_set_int(_avrCtx, "in_channel_layout", _audioCtx->channel_layout, 0);
+    av_opt_set_int(_avrCtx, "in_sample_fmt", _audioCtx->sample_fmt, 0);
+    av_opt_set_int(_avrCtx, "in_sample_rate", _audioCtx->sample_rate, 0);
+    av_opt_set_int(_avrCtx, "out_channel_layout", _audioCtx->channel_layout, 0);
+    av_opt_set_int(_avrCtx, "out_sample_fmt", AV_SAMPLE_FMT_S16, 0);
+    av_opt_set_int(_avrCtx, "out_sample_rate", _audioCtx->sample_rate, 0);
+    avresample_open(_avrCtx);
+
+    fprintf(stderr, "channels %d, rate %d, fmt %d\n", _audioCtx->channels,
+                    ss.rate, _audioCtx->sample_fmt);
     int error = 0;
     /* Create a new playback stream */
     if (!(_pa = pa_simple_new(NULL, Q2C(tr("Deepin Movie")), PA_STREAM_PLAYBACK, NULL, "playback",
@@ -1922,13 +1975,15 @@ void AudioDecoder::run()
         if (_quitFlags.load()) break;
 
         auto* pkt = audioPackets.deque();
-
         decodeFrames(pkt, 0, 0);
     }
 }
 
 AudioDecoder::~AudioDecoder()
 {
+    avresample_close(_avrCtx);
+    avresample_free(&_avrCtx);
+
     if (_pa) {
         pa_simple_flush(_pa, NULL);
         pa_simple_free(_pa);

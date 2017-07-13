@@ -49,6 +49,7 @@ void VpuProxy::setPlayFile(const QFileInfo& fi)
         this->update();
     });
 
+    fprintf(stderr, "%s\n", __func__);
 }
 
 

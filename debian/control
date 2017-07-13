@@ -12,7 +12,7 @@ Build-Depends: debhelper, pkg-config, qttools5-dev-tools,
                 libxcb-shape0-dev,libxcb-ewmh-dev, xcb-proto,
                 x11proto-record-dev, libxtst-dev,
                 libavcodec-dev, libavformat-dev,libavutil-dev,
-                libpulse-dev
+                libavresample-dev, libpulse-dev
 Standards-Version: 3.9.2
 Homepage: http://www.deepin.com/
 

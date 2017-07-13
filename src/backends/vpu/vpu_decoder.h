@@ -7,6 +7,10 @@
 
 #include "vpuhelper.h"
 
+extern "C" {
+#include <libavresample/avresample.h>
+}
+
 #define MAX_FILE_PATH   256
 #define MAX_ROT_BUF_NUM			2
 
@@ -53,7 +57,7 @@ template<class T>
 struct PacketQueue: QObject {
     QQueue<T> data;
     QMutex lock;
-    int capacity {10}; //right now, measure as number of pakcets, maybe should be measured
+    int capacity {100}; //right now, measure as number of pakcets, maybe should be measured
                         // as duration or data size
     QWaitCondition empty_cond;
     QWaitCondition full_cond;
@@ -114,6 +118,8 @@ private:
     AVCodecContext *_audioCtx {nullptr};
     QAtomicInt _quitFlags {0};
     pa_simple *_pa {nullptr};
+    AVAudioResampleContext *_avrCtx {nullptr};
+
 
     int decodeFrames(AVPacket *pkt, uint8_t *audio_buf, int buf_size);
 };
