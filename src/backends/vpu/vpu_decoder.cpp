@@ -448,6 +448,89 @@ static AVPacketQueue videoPackets;
 
 static VideoPacketQueue videoFrames;
 
+int AVPacketQueue::size()
+{
+    QMutexLocker l(&lock);
+    return data.size();
+}
+
+void AVPacketQueue::flush()
+{
+    QMutexLocker l(&lock);
+    while (data.count() > 0) {
+        auto pkt = data.dequeue();
+        av_free_packet(&pkt);
+    }
+    empty_cond.wakeAll();
+    full_cond.wakeAll();
+}
+
+AVPacket AVPacketQueue::deque()
+{
+    QMutexLocker l(&lock);
+    if (data.count() == 0) {
+        fprintf(stderr, "queue is empty, block and wait\n");
+        empty_cond.wait(l.mutex());
+        //FIXME: check quit signal
+    }
+    full_cond.wakeAll();
+    if (data.count() == 0) {
+        AVPacket pkt = {0,};
+        return pkt;
+    }
+    return data.dequeue();
+}
+
+void AVPacketQueue::put(AVPacket v)
+{
+    QMutexLocker l(&lock);
+    if (data.count() >= capacity) {
+        full_cond.wait(l.mutex());
+    }
+    data.enqueue(v);
+    empty_cond.wakeAll();
+}
+
+//-------------------------------------------------------
+//
+int VideoPacketQueue::size()
+{
+    QMutexLocker l(&lock);
+    return data.size();
+}
+
+void VideoPacketQueue::flush()
+{
+    QMutexLocker l(&lock);
+    while (data.count() > 0) {
+        data.dequeue();
+    }
+    empty_cond.wakeAll();
+    full_cond.wakeAll();
+}
+
+VideoFrame VideoPacketQueue::deque()
+{
+    QMutexLocker l(&lock);
+    if (data.count() == 0) {
+        fprintf(stderr, "video frame queue is empty, block and wait\n");
+        empty_cond.wait(l.mutex());
+    }
+    full_cond.wakeAll();
+    return data.dequeue();
+}
+
+void VideoPacketQueue::put(VideoFrame v)
+{
+    QMutexLocker l(&lock);
+    if (data.count() >= capacity) {
+        full_cond.wait(l.mutex());
+    }
+    data.enqueue(v);
+    empty_cond.wakeAll();
+}
+
+//-------------------------------------------------------
 
 struct GALSurface {
     gcoSURF                 surf {0};
@@ -1634,6 +1717,10 @@ int VpuDecoder::loop()
 
         AVPacket pkt = videoPackets.deque();
 
+        if (_quitFlags.load()) {
+            break;
+        }
+
 		seqHeaderSize = 0;
 		picHeaderSize = 0;
 
@@ -1793,19 +1880,29 @@ int AudioDecoder::decodeFrames(AVPacket* pkt, uint8_t *audio_buf, int buf_size)
                 fprintf(stderr, "still has samples needs to be read\n");
             }
 
-
             if(pkt->pts != AV_NOPTS_VALUE) {
                 _audioClock = av_q2d(_audioSt->time_base) * pkt->pts;
             }
-            fprintf(stderr, "%s: update audio clock %f\n", __func__, _audioClock);
+            double delay = (av_gettime() / 1000000.0) - _audioCurrentTime;
+            _audioCurrentTime = (av_gettime() / 1000000.0);
 
-            //assert(out_linesize == nr_read_samples*4);
+            fprintf(stderr, "%s: update audio clock %f, delay %f, lastPts %f\n", __func__, 
+                    _audioClock, delay, _lastPts);
+
             char *inbuf = (char*)out_data;
             int error = 0;
+
+            if (delay < _audioClock - _lastPts) {
+                int ms = (_audioClock - _lastPts - delay) * 1000.0;
+                QThread::msleep(ms);
+            }
+
             if (pa_simple_write(_pa, inbuf, out_linesize, &error) < 0) {
                 fprintf(stderr, __FILE__": pa_simple_write() failed: %s\n", pa_strerror(error));
             }
+            _lastPts = _audioClock;
 
+            //QThread::yieldCurrentThread();
             av_freep(&out_data);
         }
         av_frame_unref(&frame);
@@ -1848,6 +1945,7 @@ void AudioDecoder::stop()
 
 void AudioDecoder::run()
 {
+    _audioCurrentTime = (av_gettime() / 1000000.0);
     for (;;) {
         if (_quitFlags.load()) break;
 
@@ -2036,18 +2134,16 @@ void VpuMainThread::run()
     connect(_videoThread, &QThread::finished, [=]() { _quitFlags.store(1); });
 
     bool audio_started = false;
-    _videoThread->start();
-    _audioThread->start();
 
-    QTime tm;
-    tm.start();
+    audioPackets.capacity = 400;
+    videoPackets.capacity = 50;
+    _videoThread->start();
+    //_audioThread->start();
 
 	while(1) {
         if (_quitFlags.load()) {
             break;
         }
-        fprintf(stderr, "%s: qtimer %f\n", __func__, tm.elapsed() / 1000.0);
-
 
         av_init_packet(pkt);
 		err = av_read_frame(ic, pkt);
@@ -2062,6 +2158,9 @@ void VpuMainThread::run()
 
 		if (pkt->stream_index == idxVideo) {
             videoPackets.put(*pkt);
+            if (!_audioThread->isRunning() && _videoThread->firstFrameStarted()) {
+                _audioThread->start();
+            }
             continue;
         }
 
@@ -2071,23 +2170,26 @@ void VpuMainThread::run()
 
     if (_audioThread) {
         _audioThread->stop();
+        audioPackets.flush();
+
         int tries = 10;
         while (tries--) {
             _audioThread->wait(100);
         }
-        //FIXME: connect finished signal?
-        _audioThread->deleteLater();
+        delete _audioThread;
     }
 
     if (_videoThread) {
         _videoThread->stop();
+        videoPackets.flush();
+
         int tries = 10;
         while (tries--) {
             _videoThread->wait(100);
         }
-        _videoThread->deleteLater();
+        delete _videoThread;
     }
-    fprintf(stderr, "%s: decoder quit\n", __func__);
+    fprintf(stderr, "%s: decoder main thread quit\n", __func__);
 }
 
 }

@@ -57,60 +57,19 @@ typedef struct
 
 namespace dmr {
 
-template<class T>
-struct PacketQueue: QObject {
-    QQueue<T> data;
+struct AVPacketQueue {
+    QQueue<AVPacket> data;
     QMutex lock;
     int capacity {100}; //right now, measure as number of pakcets, maybe should be measured
                         // as duration or data size
     QWaitCondition empty_cond;
     QWaitCondition full_cond;
 
-    T deque();
-    void put(T v);
+    AVPacket deque();
+    void put(AVPacket v);
     void flush();
     int size();
 };
-
-template<class T>
-int PacketQueue<T>::size()
-{
-    QMutexLocker l(&lock);
-    return data.size();
-}
-
-template<class T>
-void PacketQueue<T>::flush()
-{
-    T v;
-    //QMutexLocker l(&lock);
-    //data.enqueue(v);
-    //empty_cond.wakeAll();
-}
-
-template<class T>
-T PacketQueue<T>::deque()
-{
-    QMutexLocker l(&lock);
-    if (data.count() == 0) {
-        fprintf(stderr, "queue is empty, block and wait\n");
-        empty_cond.wait(l.mutex());
-        //FIXME: check quit signal
-    }
-    full_cond.wakeAll();
-    return data.dequeue();
-}
-
-template<class T>
-void PacketQueue<T>::put(T v)
-{
-    QMutexLocker l(&lock);
-    if (data.count() >= capacity) {
-        full_cond.wait(l.mutex());
-    }
-    data.enqueue(v);
-    empty_cond.wakeAll();
-}
 
 struct VideoFrame
 {
@@ -118,8 +77,18 @@ struct VideoFrame
     double pts;
 };
 
-using AVPacketQueue = PacketQueue<AVPacket>;
-using VideoPacketQueue = PacketQueue<VideoFrame>;
+struct VideoPacketQueue {
+    QQueue<VideoFrame> data;
+    QMutex lock;
+    int capacity {10}; 
+    QWaitCondition empty_cond;
+    QWaitCondition full_cond;
+
+    VideoFrame deque();
+    void put(VideoFrame v);
+    void flush();
+    int size();
+};
 
 class AudioDecoder: public QThread
 {
@@ -138,7 +107,9 @@ private:
     QAtomicInt _quitFlags {0};
     pa_simple *_pa {nullptr};
     AVAudioResampleContext *_avrCtx {nullptr};
-
+    
+    double _audioCurrentTime {0.0};
+    double _lastPts {0.0};
 
     int decodeFrames(AVPacket *pkt, uint8_t *audio_buf, int buf_size);
 };

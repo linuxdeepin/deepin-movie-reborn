@@ -40,7 +40,10 @@ void VpuProxy::closeEvent(QCloseEvent *ce)
     if (_d) {
         disconnect(_d, 0, 0, 0);
         _d->stop();
-        _d->wait(1000);
+
+        int tries = 10;
+        while (tries--) 
+            _d->wait(500);
         delete _d;
         _d = 0;
     }
@@ -94,7 +97,7 @@ void VpuProxy::video_refresh_timer()
         actual_delay = _frameTimer - (av_gettime() / 1000000.0);
         if(actual_delay < 0.010) {
             /* Really it should skip the picture instead */
-            actual_delay = 0.010;
+            actual_delay = 0.000;
         }
         fprintf(stderr, "%s: audio clock %f, vp.pts %f, delay %f, actual_delay %f, _frameTimer %f\n",
                 __func__, ref_clock, vp.pts, delay, actual_delay, _frameTimer);
