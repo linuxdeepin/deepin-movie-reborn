@@ -2,6 +2,25 @@
 
 #include "vpu_proxy.h"
 #include "vpu_decoder.h"
+#if defined (__cplusplus)
+extern "C" {
+#endif
+
+#include <libavformat/avformat.h>
+#include <libavutil/dict.h>
+#include <libavcodec/avcodec.h>
+#include <libavutil/avutil.h>
+#include <libavutil/imgutils.h>
+#include <libavutil/opt.h>
+#include <libavutil/time.h>
+#include <libavutil/timestamp.h>
+#include <libavformat/avformat.h>
+#include <libavresample/avresample.h>
+
+
+#if defined (__cplusplus)
+}
+#endif
 
 namespace dmr {
 
@@ -34,26 +53,70 @@ void VpuProxy::paintEvent(QPaintEvent *pe)
     p.drawImage(0, 0, _img);
 }
 
+void VpuProxy::video_refresh_timer() 
+{
+    double actual_delay, delay, sync_threshold, ref_clock, diff;
+
+    if (_d == nullptr || _d->isFinished()) 
+        return;
+
+    if(_d->frames().data.size() == 0) {
+        //emit schedule_refresh(1);
+        QTimer::singleShot(1, this, &VpuProxy::video_refresh_timer);
+    } else {
+        auto vp = _d->frames().deque();
+
+        delay = vp.pts - _frameLastPts; /* the pts from last time */
+        if(delay <= 0 || delay >= 1.0) {
+            /* if incorrect delay, use previous one */
+            delay = _frameLastDelay;
+        }
+        /* save for next time */
+        _frameLastDelay = delay;
+        _frameLastPts = vp.pts;
+
+        /* update delay to sync to audio */
+        //ref_clock = get_audio_clock(is);
+        ref_clock = _d->getClock();
+        diff = vp.pts - ref_clock;
+
+        /* Skip or repeat the frame. Take delay into account
+           FFPlay still doesn't "know if this is the best guess." */
+        sync_threshold = (delay > AV_SYNC_THRESHOLD) ? delay : AV_SYNC_THRESHOLD;
+        if(fabs(diff) < AV_NOSYNC_THRESHOLD) {
+            if(diff <= -sync_threshold) {
+                delay = 0;
+            } else if(diff >= sync_threshold) {
+                delay = 2 * delay;
+            }
+        }
+        _frameTimer += delay;
+        /* computer the REAL delay */
+        actual_delay = _frameTimer - (av_gettime() / 1000000.0);
+        if(actual_delay < 0.010) {
+            /* Really it should skip the picture instead */
+            actual_delay = 0.010;
+        }
+        fprintf(stderr, "%s: audio clock %f, vp.pts %f, actual_delay %f, _frameTimer %f\n",
+                __func__, ref_clock, vp.pts, actual_delay, _frameTimer);
+        //emit schedule_refresh((int)(actual_delay * 1000 + 0.5));
+        QTimer::singleShot((int)(actual_delay * 1000 + 0.5), this, &VpuProxy::video_refresh_timer);
+
+        /* show the picture! */
+        //emit frame(vp.img);
+        _img = vp.img;
+        this->update();
+    }
+}
 
 void VpuProxy::setPlayFile(const QFileInfo& fi)
 {
     _file = fi;
 
     if (_d == nullptr) {
-        _d = new VpuDecoder(fi.absoluteFilePath());
+        _d = new VpuMainThread(fi.absoluteFilePath());
+        _d->videoThread()->updateViewportSize(QSize(864, 608));
     }
-    _d->updateViewportSize(QSize(864, 608));
-
-    connect(_d, &VpuDecoder::schedule_refresh, [=](int delay) {
-        //fprintf(stderr, "schedule_refresh after %g\n", (double)delay / 1000.0);
-        QTimer::singleShot(delay, _d, &VpuDecoder::video_refresh_timer);
-    });
-
-    connect(_d, &VpuDecoder::frame, [=](const QImage& img) {
-        fprintf(stderr, "update display\n");
-        _img = img;
-        this->update();
-    });
 
     fprintf(stderr, "%s\n", __func__);
 }
@@ -121,6 +184,9 @@ void VpuProxy::toggleMute()
 
 void VpuProxy::play()
 {
+    _frameTimer = (double)av_gettime() / 1000000.0;
+    _frameLastDelay = 40e-3;
+    video_refresh_timer();
     _d->start();
 }
 

@@ -110,6 +110,9 @@ struct VideoFrame
     double pts;
 };
 
+using AVPacketQueue = PacketQueue<AVPacket*>;
+using VideoPacketQueue = PacketQueue<VideoFrame>;
+
 class AudioDecoder: public QThread
 {
 public:
@@ -133,18 +136,13 @@ private:
 
 class VpuDecoder: public QThread
 {
-    Q_OBJECT
 public:
-    VpuDecoder(const QString& name);
+    VpuDecoder(AVStream *st, AVCodecContext *ctx);
     ~VpuDecoder();
-
-    //return if video stream of the file can be hardware decoded
-    bool isHardwareSupported();
 
     void stop() { _quitFlags.storeRelease(1); }
     void updateViewportSize(QSize sz);
-
-
+    bool firstFrameStarted();
 
 protected:
     void run() override;
@@ -153,32 +151,19 @@ protected:
 
     double synchronize_video(AVFrame *src_frame, double pts);
 
-    int decodeAudio(AVPacket* pkt);
-
     int seqInit();
     int flushVideoBuffer(AVPacket* pkt);
     int buildVideoPacket(AVPacket* pkt);
     int sendFrame(AVPacket* pkt);
 
-    int openMediaFile();
-
-public slots:
-    void video_refresh_timer();
-
-signals:
-    void frame(const QImage &);
-    void schedule_refresh(int delay); 
-
 private:
     QSize _viewportSize;
-    QFileInfo _fileInfo;
-    AudioDecoder *_audioThread {0};
 
-    double _audioClock {0.0};
+	AVCodecContext *ctxVideo {0};
+    AVStream *videoSt {0};
+    bool _firstFrameSent {false};
+
     double _videoClock {0.0};
-    double _frameLastPts {0.0};
-    double _frameLastDelay {0.0};
-    double _frameTimer {0.0};
 
 
 	DecConfigParam	decConfig;
@@ -194,14 +179,6 @@ private:
 	DecParam		decParam	{0};
 	BufInfo			bufInfo	    {0};
 	vpu_buffer_t	vbStream	{0};
-
-	AVFormatContext *ic {0};
-	AVCodecContext *ctxVideo {0};
-	AVCodecContext *ctxAudio {0};
-	AVCodecContext *ctxSubtitle {0};
-	int idxVideo {-1};
-    int idxAudio {-1};
-    int idxSubtitle {-1};
 
 	int	chunkIdx {0};
 	BYTE *seqHeader {0};
@@ -232,6 +209,44 @@ private:
 	int				instIdx {0}, coreIdx {0};
 	TiledMapConfig mapCfg;
 	DRAMConfig dramCfg  {0};
+};
+
+class VpuMainThread: public QThread
+{
+public:
+    VpuMainThread(const QString& name);
+    ~VpuMainThread();
+
+    //return if video stream of the file can be hardware decoded
+    bool isHardwareSupported();
+    int decodeAudio(AVPacket* pkt);
+
+    // get referencing clock (right now is audio clock)
+    double getClock();
+    VideoPacketQueue& frames();
+
+    AudioDecoder* audioThread() { return _audioThread; }
+    VpuDecoder* videoThread() { return _videoThread; }
+    void stop() { _quitFlags.storeRelease(1); }
+
+protected:
+	AVFormatContext *ic {0};
+	AVCodecContext *ctxVideo {0};
+	AVCodecContext *ctxAudio {0};
+	AVCodecContext *ctxSubtitle {0};
+	int idxVideo {-1};
+    int idxAudio {-1};
+    int idxSubtitle {-1};
+
+    AudioDecoder *_audioThread {0};
+    VpuDecoder *_videoThread {0};
+    QAtomicInt _quitFlags {0};
+
+    QFileInfo _fileInfo;
+
+    void run() override;
+    void close();
+    int openMediaFile();
 };
 
 }

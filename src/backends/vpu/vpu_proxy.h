@@ -6,7 +6,7 @@
 
 namespace dmr {
 
-class VpuDecoder;
+class VpuMainThread;
 
 class VpuProxy: public Backend {
     Q_OBJECT
@@ -49,10 +49,16 @@ protected:
     void closeEvent(QCloseEvent *) override;
     void paintEvent(QPaintEvent *) override;
 
+    void video_refresh_timer();
+
 private:
     QLabel *_canvas {0};
     QImage _img;
-    VpuDecoder *_d {0};
+    VpuMainThread *_d {0};
+
+    double _frameLastPts {0.0};
+    double _frameLastDelay {0.0};
+    double _frameTimer {0.0};
 
     PlayingMovieInfo _pmf;
     void updatePlayingMovieInfo();
