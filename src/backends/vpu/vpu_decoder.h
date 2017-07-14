@@ -64,9 +64,10 @@ struct PacketQueue: QObject {
     int capacity {100}; //right now, measure as number of pakcets, maybe should be measured
                         // as duration or data size
     QWaitCondition empty_cond;
+    QWaitCondition full_cond;
 
     T deque();
-    void put(const T& v);
+    void put(T v);
     void flush();
     int size();
 };
@@ -90,24 +91,23 @@ void PacketQueue<T>::flush()
 template<class T>
 T PacketQueue<T>::deque()
 {
-    T ret;
-    {
-        QMutexLocker l(&lock);
-        if (data.count() == 0) {
-            fprintf(stderr, "queue is empty, block and wait\n");
-            empty_cond.wait(l.mutex());
-            //FIXME: check quit signal
-        }
-        ret = data.dequeue();
+    QMutexLocker l(&lock);
+    if (data.count() == 0) {
+        fprintf(stderr, "queue is empty, block and wait\n");
+        empty_cond.wait(l.mutex());
+        //FIXME: check quit signal
     }
-
-    return ret;
+    full_cond.wakeAll();
+    return data.dequeue();
 }
 
 template<class T>
-void PacketQueue<T>::put(const T& v)
+void PacketQueue<T>::put(T v)
 {
     QMutexLocker l(&lock);
+    if (data.count() >= capacity) {
+        full_cond.wait(l.mutex());
+    }
     data.enqueue(v);
     empty_cond.wakeAll();
 }
@@ -118,7 +118,7 @@ struct VideoFrame
     double pts;
 };
 
-using AVPacketQueue = PacketQueue<AVPacket*>;
+using AVPacketQueue = PacketQueue<AVPacket>;
 using VideoPacketQueue = PacketQueue<VideoFrame>;
 
 class AudioDecoder: public QThread

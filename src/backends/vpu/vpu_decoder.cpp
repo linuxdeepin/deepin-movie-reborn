@@ -1535,7 +1535,6 @@ int VpuDecoder::loop()
     int i = 0;
 	RetCode			ret =  RETCODE_SUCCESS;		
 	int			    randomAccess = 0, randomAccessPos = 0;
-    AVPacket *pkt = 0;
 
 	seqHeader = osal_malloc(ctxVideo->extradata_size+MAX_CHUNK_HEADER_SIZE);	// allocate more buffer to fill the vpu specific header.
 	if (!seqHeader) {
@@ -1633,6 +1632,8 @@ int VpuDecoder::loop()
             break;
         }
 
+        AVPacket pkt = videoPackets.deque();
+
 		seqHeaderSize = 0;
 		picHeaderSize = 0;
 
@@ -1645,8 +1646,6 @@ int VpuDecoder::loop()
 			}
 			VPU_DecSetRdPtr(handle, decOP.bitstreamBuffer, 1);	
 		}
-
-        pkt = videoPackets.deque();
 
         //FIXME:
 #if 0
@@ -1696,14 +1695,12 @@ int VpuDecoder::loop()
 		}
 #endif
 
-		chunkData = pkt->data;
-		chunkSize = pkt->size;
+		chunkData = pkt.data;
+		chunkSize = pkt.size;
 
-        if (buildVideoPacket(pkt) < 0)
+        if (buildVideoPacket(&pkt) < 0)
             goto ERR_DEC_OPEN;
 		
-        av_packet_free(&pkt);
-		//av_free_packet(pkt);
 
 		chunkIdx++;
 
@@ -1715,9 +1712,10 @@ int VpuDecoder::loop()
         }
 
 FLUSH_BUFFER:		
-        if (flushVideoBuffer(pkt) < 0) {
+        if (flushVideoBuffer(&pkt) < 0) {
             goto ERR_DEC_OPEN;
         }
+        av_free_packet(&pkt);
 		
 	}	// end of while
 
@@ -1763,17 +1761,15 @@ ERR_DEC_INIT:
 
 int AudioDecoder::decodeFrames(AVPacket* pkt, uint8_t *audio_buf, int buf_size) 
 {
-    static uint8_t *audio_pkt_data = NULL;
     static int audio_pkt_size = 0;
     static AVFrame frame;
-
     int len1;
 
-    audio_pkt_data = pkt->data;
     audio_pkt_size = pkt->size;
     while(audio_pkt_size > 0) {
         int got_frame = 0;
         fprintf(stderr, "%s: decode audio\n", __func__);
+
         len1 = avcodec_decode_audio4(_audioCtx, &frame, &got_frame, pkt);
         if(len1 < 0) {
             char buf[1024] = {0,};
@@ -1783,8 +1779,8 @@ int AudioDecoder::decodeFrames(AVPacket* pkt, uint8_t *audio_buf, int buf_size)
             audio_pkt_size = 0;
             break;
         }
-        audio_pkt_data += len1;
         audio_pkt_size -= len1;
+
         if(got_frame) {
             int out_nb_samples = avresample_available(_avrCtx)
                 + (avresample_get_delay(_avrCtx) + frame.nb_samples); // upper bound
@@ -1811,17 +1807,10 @@ int AudioDecoder::decodeFrames(AVPacket* pkt, uint8_t *audio_buf, int buf_size)
                 fprintf(stderr, __FILE__": pa_simple_write() failed: %s\n", pa_strerror(error));
             }
 
-            av_frame_unref(&frame);
-            //int data_size = av_samples_get_buffer_size(NULL, _audioCtx->channels,
-                    //frame.nb_samples, _audioCtx->sample_fmt, 1);
-            //int n = 2 * _audioCtx->channels;
-            //_audioClock += (double)data_size / (double)(n * _audioCtx->sample_rate);
-            //fprintf(stderr, "%s: play audio, audio clock %f\n", __func__, _audioClock);
             av_freep(&out_data);
         }
+        av_frame_unref(&frame);
     }
-
-    av_packet_free(&pkt);
 }
 
 AudioDecoder::AudioDecoder(AVCodecContext *ctx)
@@ -1863,8 +1852,10 @@ void AudioDecoder::run()
     for (;;) {
         if (_quitFlags.load()) break;
 
-        auto* pkt = audioPackets.deque();
-        decodeFrames(pkt, 0, 0);
+        AVPacket pkt = audioPackets.deque();
+        AVPacket copy = pkt;
+        decodeFrames(&copy, 0, 0);
+        av_free_packet(&pkt);
     }
 }
 
@@ -2020,10 +2011,8 @@ bool VpuMainThread::isHardwareSupported()
 
 int VpuMainThread::decodeAudio(AVPacket* pkt)
 {
-    AVPacket *dst = av_packet_alloc();
-    av_packet_ref(dst, pkt);
+    AVPacket dst = *pkt;
     audioPackets.put(dst);
-    av_free_packet(pkt);
 }
 
 double VpuMainThread::getClock()
@@ -2063,16 +2052,12 @@ void VpuMainThread::run()
         }
 
 		if (pkt->stream_index == idxAudio) {
-            decodeAudio(pkt);
+            audioPackets.put(*pkt);
 			continue;
         }
 
 		if (pkt->stream_index == idxVideo) {
-            AVPacket *dst = av_packet_alloc();
-            av_packet_ref(dst, pkt);
-            videoPackets.put(dst);
-            av_free_packet(pkt);
-
+            videoPackets.put(*pkt);
             continue;
         }
 
