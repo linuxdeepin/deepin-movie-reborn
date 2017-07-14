@@ -1793,10 +1793,9 @@ int AudioDecoder::decodeFrames(AVPacket* pkt, uint8_t *audio_buf, int buf_size)
                 fprintf(stderr, "still has samples needs to be read\n");
             }
 
-            if (frame.pts != AV_NOPTS_VALUE) {
-                _audioClock = av_q2d(_audioCtx->time_base) * frame.pts;
-            } else if(pkt->pts != AV_NOPTS_VALUE) {
-                _audioClock = av_q2d(_audioCtx->time_base) * pkt->pts;
+
+            if(pkt->pts != AV_NOPTS_VALUE) {
+                _audioClock = av_q2d(_audioSt->time_base) * pkt->pts;
             }
             fprintf(stderr, "%s: update audio clock %f\n", __func__, _audioClock);
 
@@ -1813,8 +1812,8 @@ int AudioDecoder::decodeFrames(AVPacket* pkt, uint8_t *audio_buf, int buf_size)
     }
 }
 
-AudioDecoder::AudioDecoder(AVCodecContext *ctx)
-    :QThread(0), _audioCtx(ctx)
+AudioDecoder::AudioDecoder(AVStream *st, AVCodecContext *ctx)
+    :QThread(0), _audioCtx(ctx), _audioSt(st)
 {
     pa_sample_spec ss;
     ss.format = PA_SAMPLE_S16NE;
@@ -1939,7 +1938,7 @@ VpuMainThread::VpuMainThread(const QString& name)
     :QThread(0), _fileInfo(name)
 {
     if (openMediaFile() >= 0) {
-        _audioThread = new AudioDecoder(ctxAudio);
+        _audioThread = new AudioDecoder(ic->streams[idxAudio], ctxAudio);
         _videoThread = new VpuDecoder(ic->streams[idxVideo], ctxVideo);
     }
 }
@@ -2040,10 +2039,15 @@ void VpuMainThread::run()
     _videoThread->start();
     _audioThread->start();
 
+    QTime tm;
+    tm.start();
+
 	while(1) {
         if (_quitFlags.load()) {
             break;
         }
+        fprintf(stderr, "%s: qtimer %f\n", __func__, tm.elapsed() / 1000.0);
+
 
         av_init_packet(pkt);
 		err = av_read_frame(ic, pkt);

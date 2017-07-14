@@ -124,7 +124,7 @@ using VideoPacketQueue = PacketQueue<VideoFrame>;
 class AudioDecoder: public QThread
 {
 public:
-    AudioDecoder(AVCodecContext *ctx);
+    AudioDecoder(AVStream* st, AVCodecContext *ctx);
     virtual ~AudioDecoder();
 
     void stop();
@@ -134,6 +134,7 @@ protected:
 
 private:
     AVCodecContext *_audioCtx {nullptr};
+    AVStream *_audioSt {nullptr};
     QAtomicInt _quitFlags {0};
     pa_simple *_pa {nullptr};
     AVAudioResampleContext *_avrCtx {nullptr};
