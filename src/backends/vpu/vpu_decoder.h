@@ -68,7 +68,15 @@ struct PacketQueue: QObject {
     T deque();
     void put(const T& v);
     void flush();
+    int size();
 };
+
+template<class T>
+int PacketQueue<T>::size()
+{
+    QMutexLocker l(&lock);
+    return data.size();
+}
 
 template<class T>
 void PacketQueue<T>::flush()

@@ -60,8 +60,7 @@ void VpuProxy::video_refresh_timer()
     if (_d == nullptr || _d->isFinished()) 
         return;
 
-    if(_d->frames().data.size() == 0) {
-        //emit schedule_refresh(1);
+    if(_d->frames().size() == 0) {
         QTimer::singleShot(1, this, &VpuProxy::video_refresh_timer);
     } else {
         auto vp = _d->frames().deque();
@@ -97,13 +96,11 @@ void VpuProxy::video_refresh_timer()
             /* Really it should skip the picture instead */
             actual_delay = 0.010;
         }
-        fprintf(stderr, "%s: audio clock %f, vp.pts %f, actual_delay %f, _frameTimer %f\n",
-                __func__, ref_clock, vp.pts, actual_delay, _frameTimer);
-        //emit schedule_refresh((int)(actual_delay * 1000 + 0.5));
+        fprintf(stderr, "%s: audio clock %f, vp.pts %f, delay %f, actual_delay %f, _frameTimer %f\n",
+                __func__, ref_clock, vp.pts, delay, actual_delay, _frameTimer);
         QTimer::singleShot((int)(actual_delay * 1000 + 0.5), this, &VpuProxy::video_refresh_timer);
 
         /* show the picture! */
-        //emit frame(vp.img);
         _img = vp.img;
         this->update();
     }

@@ -499,9 +499,9 @@ struct GALSurface {
             unsigned long cbaddr = fb.bufCb;
             unsigned long craddr = fb.bufCr;
 
-            fprintf(stderr, "%s: (%x, %x, %x) -> (%x, %x, %x)\n", __func__,
-                    phyAddr[0], phyAddr[1], phyAddr[2],
-                    yaddr, cbaddr, craddr);
+            //fprintf(stderr, "%s: (%x, %x, %x) -> (%x, %x, %x)\n", __func__,
+                    //phyAddr[0], phyAddr[1], phyAddr[2],
+                    //yaddr, cbaddr, craddr);
 
             dma_copy_in_vmem(phyAddr[0], (gctUINT32)yaddr, width*height);
             dma_copy_in_vmem(phyAddr[1], (gctUINT32)cbaddr, width*height/4);
@@ -514,9 +514,9 @@ struct GALSurface {
         gceSTATUS status;
         if (!_locked) {
             gcmVERIFY_OK(gcoSURF_Lock(surf, phyAddr, lgcAddr));
-            fprintf(stderr, "%s: %s %x %x\n", __func__, "phy", phyAddr[0], lgcAddr[0]);
-            fprintf(stderr, "%s: %s %x %x\n", __func__, "phy", phyAddr[1], lgcAddr[1]);
-            fprintf(stderr, "%s: %s %x %x\n", __func__, "phy", phyAddr[2], lgcAddr[2]);
+            //fprintf(stderr, "%s: %s %x %x\n", __func__, "phy", phyAddr[0], lgcAddr[0]);
+            //fprintf(stderr, "%s: %s %x %x\n", __func__, "phy", phyAddr[1], lgcAddr[1]);
+            //fprintf(stderr, "%s: %s %x %x\n", __func__, "phy", phyAddr[2], lgcAddr[2]);
         }
     }
 
@@ -856,7 +856,6 @@ bool VpuDecoder::init()
     memset(&decConfig, 0x00, sizeof( decConfig) );
     decConfig.coreIdx = 0;
 
-    decConfig.outNum = 0;
 
     //printf("Enter Bitstream Mode(0: Interrupt mode, 1: Rollback mode, 2: PicEnd mode): ");
     decConfig.bitstreamMode = 0;
@@ -866,16 +865,7 @@ bool VpuDecoder::init()
     decConfig.mp4DeblkEnable = 0;
     decConfig.iframeSearchEnable = 0;
     decConfig.skipframeMode = 0; // 1:PB skip, 2:B skip
-
-    if( decConfig.outNum < 0 )
-    {
-        decConfig.checkeos = 0;
-        decConfig.outNum = 0;
-    }
-    else
-    {
-        decConfig.checkeos = 1;
-    }
+    decConfig.checkeos = 1;
 
     fprintf(stderr, "init done\n");
 
@@ -1511,9 +1501,6 @@ int VpuDecoder::flushVideoBuffer(AVPacket *pkt)
 
     frameIdx++;
 
-    if (decConfig.outNum && frameIdx == (decConfig.outNum-1)) 
-        _quitFlags.store(1); // break;
-
     if (decodefinish)
         _quitFlags.store(1); // break;
 
@@ -1659,8 +1646,6 @@ int VpuDecoder::loop()
 			VPU_DecSetRdPtr(handle, decOP.bitstreamBuffer, 1);	
 		}
 
-		//av_init_packet(pkt);
-		//err = av_read_frame(ic, pkt);
         pkt = videoPackets.deque();
 
         //FIXME:
@@ -1717,7 +1702,8 @@ int VpuDecoder::loop()
         if (buildVideoPacket(pkt) < 0)
             goto ERR_DEC_OPEN;
 		
-		av_free_packet(pkt);
+        av_packet_free(&pkt);
+		//av_free_packet(pkt);
 
 		chunkIdx++;
 
@@ -1781,7 +1767,7 @@ int AudioDecoder::decodeFrames(AVPacket* pkt, uint8_t *audio_buf, int buf_size)
     static int audio_pkt_size = 0;
     static AVFrame frame;
 
-    int len1, data_size = 0;
+    int len1;
 
     audio_pkt_data = pkt->data;
     audio_pkt_size = pkt->size;
@@ -1799,7 +1785,6 @@ int AudioDecoder::decodeFrames(AVPacket* pkt, uint8_t *audio_buf, int buf_size)
         }
         audio_pkt_data += len1;
         audio_pkt_size -= len1;
-        data_size = 0;
         if(got_frame) {
             int out_nb_samples = avresample_available(_avrCtx)
                 + (avresample_get_delay(_avrCtx) + frame.nb_samples); // upper bound
@@ -1812,22 +1797,27 @@ int AudioDecoder::decodeFrames(AVPacket* pkt, uint8_t *audio_buf, int buf_size)
                 fprintf(stderr, "still has samples needs to be read\n");
             }
 
-            assert(out_linesize == nr_read_samples*4);
-            char *inbuf = (char*)out_data;
+            if (frame.pts != AV_NOPTS_VALUE) {
+                _audioClock = av_q2d(_audioCtx->time_base) * frame.pts;
+            } else if(pkt->pts != AV_NOPTS_VALUE) {
+                _audioClock = av_q2d(_audioCtx->time_base) * pkt->pts;
+            }
+            fprintf(stderr, "%s: update audio clock %f\n", __func__, _audioClock);
 
+            //assert(out_linesize == nr_read_samples*4);
+            char *inbuf = (char*)out_data;
             int error = 0;
             if (pa_simple_write(_pa, inbuf, out_linesize, &error) < 0) {
                 fprintf(stderr, __FILE__": pa_simple_write() failed: %s\n", pa_strerror(error));
             }
 
-            //_audioClock += (double)out_linesize / (double)(4 * _audioCtx->sample_rate);
+            av_frame_unref(&frame);
+            //int data_size = av_samples_get_buffer_size(NULL, _audioCtx->channels,
+                    //frame.nb_samples, _audioCtx->sample_fmt, 1);
+            //int n = 2 * _audioCtx->channels;
+            //_audioClock += (double)data_size / (double)(n * _audioCtx->sample_rate);
             //fprintf(stderr, "%s: play audio, audio clock %f\n", __func__, _audioClock);
             av_freep(&out_data);
-        }
-
-        if(data_size <= 0) {
-            /* No data yet, get more frames */
-            continue;
         }
     }
 
@@ -2033,6 +2023,7 @@ int VpuMainThread::decodeAudio(AVPacket* pkt)
     AVPacket *dst = av_packet_alloc();
     av_packet_ref(dst, pkt);
     audioPackets.put(dst);
+    av_free_packet(pkt);
 }
 
 double VpuMainThread::getClock()
@@ -2058,6 +2049,7 @@ void VpuMainThread::run()
 
     bool audio_started = false;
     _videoThread->start();
+    _audioThread->start();
 
 	while(1) {
         if (_quitFlags.load()) {
@@ -2071,10 +2063,6 @@ void VpuMainThread::run()
         }
 
 		if (pkt->stream_index == idxAudio) {
-            if(pkt->pts != AV_NOPTS_VALUE) {
-                _audioClock = av_q2d(ic->streams[idxAudio]->time_base) * pkt->pts;
-            }
-            fprintf(stderr, "%s: update audio clock %f\n", __func__, _audioClock);
             decodeAudio(pkt);
 			continue;
         }
@@ -2083,11 +2071,7 @@ void VpuMainThread::run()
             AVPacket *dst = av_packet_alloc();
             av_packet_ref(dst, pkt);
             videoPackets.put(dst);
-
-            if (!audio_started && _videoThread->firstFrameStarted()) {
-                audio_started = true;
-                _audioThread->start();
-            }
+            av_free_packet(pkt);
 
             continue;
         }
