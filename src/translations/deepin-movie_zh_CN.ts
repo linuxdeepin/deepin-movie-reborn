@@ -293,7 +293,7 @@
 <context>
     <name>dmr::AudioDecoder</name>
     <message>
-        <location filename="../backends/vpu/vpu_decoder.cpp" line="1858"/>
+        <location filename="../backends/vpu/vpu_decoder.cpp" line="1848"/>
         <source>Deepin Movie</source>
         <translation type="unfinished"></translation>
     </message>
