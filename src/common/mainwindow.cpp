@@ -374,7 +374,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(this, &MainWindow::windowLeaved, &MainWindow::suspendToolsWindow);
 
     if (!composited) {
-        _engine->windowHandle()->installEventFilter(listener);
+        if (_engine->windowHandle())
+            _engine->windowHandle()->installEventFilter(listener);
         _titlebar->windowHandle()->installEventFilter(listener);
         _toolbox->windowHandle()->installEventFilter(listener);
     }

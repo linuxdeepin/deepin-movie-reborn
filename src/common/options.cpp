@@ -26,6 +26,7 @@ CommandLineManager::CommandLineManager()
         {{"o", "override-config"}, QCoreApplication::tr("override config for libmpv"), "file", ""},
         {"frames", QCoreApplication::tr("play only count number of frames"), "count", "0"},
         {"gal", QCoreApplication::tr("use gal or not"), "bool", "on"},
+        {"vpudemo", QCoreApplication::tr("play in vpu demo mode")},
     });
 }
 
@@ -60,5 +61,9 @@ bool CommandLineManager::useGAL() const
     return v == "on" || v == "1";
 }
 
+bool CommandLineManager::vpuDemoMode() const
+{
+    return this->isSet("vpudemo");
+}
 
 }

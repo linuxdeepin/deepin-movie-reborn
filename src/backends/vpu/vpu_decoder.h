@@ -209,6 +209,7 @@ private:
 
 class VpuMainThread: public QThread
 {
+    Q_OBJECT
 public:
     VpuMainThread(const QString& name);
     ~VpuMainThread();
@@ -225,6 +226,14 @@ public:
     VpuDecoder* videoThread() { return _videoThread; }
     void stop() { _quitFlags.storeRelease(1); }
 
+    void seekForward(int secs);
+    void seekBackward(int secs);
+
+signals:
+    void ellapsedChanged();
+    void volumeChanged();
+    void muteChanged();
+
 protected:
 	AVFormatContext *ic {0};
 	AVCodecContext *ctxVideo {0};
@@ -233,6 +242,10 @@ protected:
 	int idxVideo {-1};
     int idxAudio {-1};
     int idxSubtitle {-1};
+
+    bool _seekPending {false};
+    int64_t _seekPos {0};
+    int _seekFlags {0};
 
     AudioDecoder *_audioThread {0};
     VpuDecoder *_videoThread {0};

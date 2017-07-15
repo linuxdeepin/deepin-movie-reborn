@@ -33,7 +33,6 @@ public:
     void stopBurstScreenshot() override;
 
 public slots:
-    //void play(const QString& filename);
     void play() override;
     void pauseResume() override;
     void stop() override;
@@ -56,7 +55,7 @@ private:
     QImage _img;
     VpuMainThread *_d {0};
 
-    double _frameLastPts {0.0};
+    double _frameLastPts {-1.0};
     double _frameLastDelay {0.0};
     double _frameTimer {0.0};
 

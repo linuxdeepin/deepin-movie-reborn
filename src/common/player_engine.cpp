@@ -18,7 +18,7 @@ PlayerEngine::PlayerEngine(QWidget *parent)
 
     //FIXME: need to dynamically change this
 #ifdef ENABLE_VPU_PLATFORM
-    //_current = new VpuProxy(this);
+    _current = new VpuProxy(this);
 #else
     _current = new MpvProxy(this);
 #endif

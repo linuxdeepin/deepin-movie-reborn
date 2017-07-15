@@ -565,7 +565,8 @@ struct GALSurface {
         gctUINT aligned_w, aligned_h;
         gcmVERIFY_OK(gcoSURF_GetAlignedSize(s->surf, &aligned_w, &aligned_h, &s->stride)); 
         if (w != aligned_w || h != aligned_h) {
-            fprintf(stderr, "gcoSURF width and height is not aligned !\n");
+            fprintf(stderr, "gcoSURF width %d and height %d is not aligned !\n", 
+                    aligned_w, aligned_h);
             s->surf = NULL;
             gcoSURF_Destroy(surf);
             delete s;
@@ -745,67 +746,6 @@ public:
         return gcvTRUE;
     }
 
-    gctBOOL fake_convert()
-    {
-        gctUINT8 horKernel = 1, verKernel = 1;
-        gcsRECT srcRect;
-        gceSTATUS status;
-        gcsRECT dstRect = {0, 0, _dstSurf->width, _dstSurf->height};
-
-        srcRect.left = 0;
-        srcRect.top = 0;
-        srcRect.right = _srcSurf->width;
-        srcRect.bottom = _srcSurf->height;
-
-        fprintf(stderr, "%s: (%d, %d, %d, %d) dst (%d, %d, %d, %d)\n", __func__,
-                dstRect.left, dstRect.top, dstRect.right, dstRect.bottom,
-                srcRect.left, srcRect.top, srcRect.right, srcRect.bottom);
-
-        {
-            SurfaceScopedLock dstLock(_dstSurf);
-            SurfaceScopedLock scoped(_srcSurf);
-
-            // set clippint rect
-            gcmONERROR(gco2D_SetClipping(g_2d, &dstRect));
-            gcmONERROR(gcoSURF_SetDither(_dstSurf->surf, gcvTRUE));
-
-            // set kernel size
-            status = gco2D_SetKernelSize(g_2d, horKernel, verKernel);
-            if (status != gcvSTATUS_OK) {
-                fprintf(stderr, "2D set kernel size failed:%#x\n", status);
-                return gcvFALSE;
-            }
-
-            status = gco2D_EnableDither(g_2d, gcvTRUE);
-            if (status != gcvSTATUS_OK) {
-                fprintf(stderr, "enable gco2D_EnableDither failed:%#x\n", status);
-                return gcvFALSE;
-            }
-
-            status = gcoSURF_FilterBlit(_srcSurf->surf, _dstSurf->surf, &srcRect, &dstRect, &dstRect);
-            if (status != gcvSTATUS_OK) {
-                fprintf(stderr, "2D FilterBlit failed:%#x\n", status);
-                return gcvFALSE;
-            }
-
-            status = gco2D_EnableDither(g_2d, gcvFALSE);
-            if (status != gcvSTATUS_OK) {
-                fprintf(stderr, "disable gco2D_EnableDither failed:%#x\n", status);
-                return gcvFALSE;
-            }
-
-            //gcmONERROR(gco2D_Flush(g_2d));
-            fprintf(stderr, "%s: flushed\n", __func__);
-            gcmONERROR(gcoHAL_Commit(g_hal, gcvTRUE));
-            fprintf(stderr, "%s: commit done\n", __func__);
-        }
-
-        return gcvTRUE;
-
-OnError:
-        fprintf(stderr, "%s: convert failed\n", __func__);
-        return gcvFALSE;
-    }
 
     //FIXME: what if original format is not I420
     gctBOOL convertYUV2RGBScaled(const FrameBuffer& fb)
@@ -1123,7 +1063,6 @@ int VpuDecoder::seqInit()
     galConverter = new GALConverter;
     //galConverter->updateDestSurface(850, 600, gcvSURF_A8R8G8B8);
     //galConverter->updateSrcSurface(framebufWidth, framebufHeight);
-    //galConverter->fake_convert();
 
     // the size of pYuv should be aligned 8 byte. because of C&M HPI bus system constraint.
     pYuv = (BYTE*)osal_malloc(framebufSize);
@@ -1207,7 +1146,7 @@ int VpuDecoder::seqInit()
 void VpuDecoder::updateViewportSize(QSize sz)
 {
     if (_viewportSize != sz) {
-        _viewportSize = sz;
+        _viewportSize = QSize((sz.width()+31)&~31, (sz.height()+31)&~31);
         _frameImage = QImage(_viewportSize.width(), _viewportSize.height(), QImage::Format_RGB32);
     }
 }
@@ -1918,8 +1857,8 @@ int AudioDecoder::decodeFrames(AVPacket* pkt, uint8_t *audio_buf, int buf_size)
             {
                 ScopedPALocker lock(_pa_loop);
                 pa_stream_write(_pa_stream, inbuf, out_linesize, NULL, 0, PA_SEEK_RELATIVE);
-                _pulse_available_size -= out_linesize;
-                //_pulse_available_size = 0;
+                //_pulse_available_size -= out_linesize;
+                _pulse_available_size = 0;
             }
             _lastPts = _audioClock;
 
@@ -2314,6 +2253,29 @@ VideoPacketQueue& VpuMainThread::frames()
     return videoFrames;
 }
 
+void VpuMainThread::seekForward(int secs)
+{
+    if (_seekPending) 
+        return;
+
+    _seekPending = true;
+    _seekFlags = AVSEEK_FLAG_BACKWARD;
+    _seekPos = (getClock() + (double)secs) * AV_TIME_BASE;
+    fprintf(stderr, "%s: pos %f\n", __func__, _seekPos);
+}
+
+void VpuMainThread::seekBackward(int secs)
+{
+    if (_seekPending) 
+        return;
+
+    _seekPending = true;
+    _seekFlags = 0;
+    _seekPos = (getClock() + (double)secs) * AV_TIME_BASE;
+    fprintf(stderr, "%s: pos %f\n", __func__, _seekPos);
+}
+
+
 void VpuMainThread::run() 
 {
     int err;
@@ -2335,6 +2297,32 @@ void VpuMainThread::run()
 	while(1) {
         if (_quitFlags.load()) {
             break;
+        }
+
+        if (_seekPending) {
+            int stream_index = -1;
+            int64_t seek_target = _seekPos;
+
+            if (idxVideo != -1) stream_index = idxVideo;
+            else if (idxAudio != -1) stream_index = idxAudio;
+
+            if(stream_index >= 0){
+                seek_target = av_rescale_q(seek_target, AV_TIME_BASE_Q,
+                        ic->streams[stream_index]->time_base);
+            }
+
+            if(av_seek_frame(ic, stream_index, seek_target, _seekFlags) < 0) {
+                fprintf(stderr, "%s: error while seeking\n");
+            } else {
+                fprintf(stderr, "flush all by seek\n");
+                videoPackets.flush();
+                audioPackets.flush();
+                videoFrames.flush();
+
+                avcodec_flush_buffers(ctxVideo);
+                avcodec_flush_buffers(ctxAudio);
+            }
+            _seekPending = false;
         }
 
         if (audioPackets.full() || videoPackets.full()) {

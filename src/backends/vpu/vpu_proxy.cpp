@@ -29,6 +29,7 @@ VpuProxy::VpuProxy(QWidget *parent)
 {
     setAttribute(Qt::WA_OpaquePaintEvent);
     //setAttribute(Qt::WA_PaintOnScreen);
+    setState(PlayState::Stopped);
 }
 
 VpuProxy::~VpuProxy()
@@ -93,18 +94,21 @@ void VpuProxy::video_refresh_timer()
                 delay = 2 * delay;
             }
         }
+
         _frameTimer += delay;
         /* computer the REAL delay */
         actual_delay = _frameTimer - (av_gettime() / 1000000.0);
+        fprintf(stderr, "actual_delay orig = %f\n", actual_delay);
         if(actual_delay < 0.010) {
             /* Really it should skip the picture instead */
-            actual_delay = 0.000;
+            actual_delay = 0.010;
         }
-        fprintf(stderr, "%s: audio clock %f, vp.pts %f, delay %f, actual_delay %f, _frameTimer %f\n",
-                __func__, ref_clock, vp.pts, delay, actual_delay, _frameTimer);
-        QTimer::singleShot((int)(actual_delay * 1000 + 0.5), this, &VpuProxy::video_refresh_timer);
+        fprintf(stderr, "%s: audio clock %f, vp.pts %f, delay %f, diff %f, actual_delay %f, _frameTimer %f\n",
+                __func__, ref_clock, vp.pts, delay, diff, actual_delay, _frameTimer);
 
-        /* show the picture! */
+
+        QTimer::singleShot((int)(actual_delay * 1000 + 0.5), this, &VpuProxy::video_refresh_timer);
+        
         _img = vp.img;
         this->update();
     }
@@ -116,9 +120,12 @@ void VpuProxy::setPlayFile(const QFileInfo& fi)
 
     if (_d == nullptr) {
         _d = new VpuMainThread(fi.absoluteFilePath());
-        _d->videoThread()->updateViewportSize(QSize(864, 608));
+        _d->videoThread()->updateViewportSize(size());
     }
 
+    updatePlayingMovieInfo();
+    emit tracksChanged();
+    emit fileLoaded();
     fprintf(stderr, "%s\n", __func__);
 }
 
@@ -185,9 +192,14 @@ void VpuProxy::toggleMute()
 
 void VpuProxy::play()
 {
+    _d->start();
+    connect(_d, &QThread::finished, [=]() {
+        setState(PlayState::Stopped);
+    });
+
+    setState(PlayState::Playing);
     _frameTimer = (double)av_gettime() / 1000000.0;
     _frameLastDelay = 40e-3;
-    _d->start();
     video_refresh_timer();
 }
 
@@ -219,11 +231,14 @@ void VpuProxy::seekForward(int secs)
 {
     if (state() == PlayState::Stopped) return;
 
+    _d->seekForward(secs);
 }
 
 void VpuProxy::seekBackward(int secs)
 {
     if (state() == PlayState::Stopped) return;
+
+    _d->seekBackward(secs);
 }
 
 qint64 VpuProxy::duration() const
