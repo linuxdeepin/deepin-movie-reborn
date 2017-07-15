@@ -63,9 +63,10 @@ void VpuProxy::video_refresh_timer()
     if (_d == nullptr || _d->isFinished()) 
         return;
 
-    if(_d->frames().size() == 0) {
-        QTimer::singleShot(1, this, &VpuProxy::video_refresh_timer);
-    } else {
+    //if(_d->frames().size() == 0) {
+        //QTimer::singleShot(0, this, &VpuProxy::video_refresh_timer);
+    //} else 
+    {
         auto vp = _d->frames().deque();
 
         delay = vp.pts - _frameLastPts; /* the pts from last time */
@@ -186,8 +187,8 @@ void VpuProxy::play()
 {
     _frameTimer = (double)av_gettime() / 1000000.0;
     _frameLastDelay = 40e-3;
-    video_refresh_timer();
     _d->start();
+    video_refresh_timer();
 }
 
 

@@ -69,6 +69,7 @@ struct AVPacketQueue {
     void put(AVPacket v);
     void flush();
     int size();
+    bool full();
 };
 
 struct VideoFrame
@@ -80,7 +81,7 @@ struct VideoFrame
 struct VideoPacketQueue {
     QQueue<VideoFrame> data;
     QMutex lock;
-    int capacity {10}; 
+    int capacity {25}; 
     QWaitCondition empty_cond;
     QWaitCondition full_cond;
 
@@ -97,6 +98,10 @@ public:
     virtual ~AudioDecoder();
 
     void stop();
+    static void context_state_callback(pa_context *c, void *userdata);
+    static void stream_state_callback(pa_stream *s, void *userdata);
+    static void stream_write_callback(pa_stream *s, size_t length, void *userdata);
+    static void success_callback(pa_stream *s, int success, void *userdata);
 
 protected:
     void run() override;
@@ -108,10 +113,19 @@ private:
     pa_simple *_pa {nullptr};
     AVAudioResampleContext *_avrCtx {nullptr};
     
+    pa_threaded_mainloop *_pa_loop {0};
+    pa_context *_pa_ctx {0};
+    pa_stream *_pa_stream {0};
+    size_t _pulse_available_size {0};
+
     double _audioCurrentTime {0.0};
     double _lastPts {0.0};
 
     int decodeFrames(AVPacket *pkt, uint8_t *audio_buf, int buf_size);
+	bool init(); //init pulse
+    void deinit();
+
+    bool waitToFinished(pa_operation *op);
 };
 
 class VpuDecoder: public QThread
@@ -138,6 +152,8 @@ protected:
 
 private:
     QSize _viewportSize;
+    QByteArray _frameData;
+    QImage _frameImage;
 
 	AVCodecContext *ctxVideo {0};
     AVStream *videoSt {0};

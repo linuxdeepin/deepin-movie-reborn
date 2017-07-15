@@ -448,6 +448,12 @@ static AVPacketQueue videoPackets;
 
 static VideoPacketQueue videoFrames;
 
+bool AVPacketQueue::full()
+{
+    QMutexLocker l(&lock);
+    return data.size() >= capacity;
+}
+
 int AVPacketQueue::size()
 {
     QMutexLocker l(&lock);
@@ -1202,6 +1208,7 @@ void VpuDecoder::updateViewportSize(QSize sz)
 {
     if (_viewportSize != sz) {
         _viewportSize = sz;
+        _frameImage = QImage(_viewportSize.width(), _viewportSize.height(), QImage::Format_RGB32);
     }
 }
 
@@ -1218,7 +1225,7 @@ int VpuDecoder::sendFrame(AVPacket *pkt)
     QImage img;
 
     if (use_gal) {
-        img = QImage(_viewportSize.width(), _viewportSize.height(), QImage::Format_RGB32);
+        img = _frameImage;
 
         galConverter->updateDestSurface(_viewportSize.width(), _viewportSize.height());
         galConverter->updateSrcSurface(outputInfo.dispFrame.stride, outputInfo.dispFrame.height);
@@ -1845,9 +1852,21 @@ ERR_DEC_INIT:
 }
 
 //----------------------------------------------------------------------
+struct ScopedPALocker {
+    pa_threaded_mainloop *pa_loop;
+    ScopedPALocker(pa_threaded_mainloop *loop) : pa_loop(loop) {
+        pa_threaded_mainloop_lock(pa_loop);
+    }
+
+    ~ScopedPALocker() {
+        pa_threaded_mainloop_unlock(pa_loop);
+    }
+};
+
 
 int AudioDecoder::decodeFrames(AVPacket* pkt, uint8_t *audio_buf, int buf_size) 
 {
+    fprintf(stderr, "%s: decode audio frame\n", __func__);
     static int audio_pkt_size = 0;
     static AVFrame frame;
     int len1;
@@ -1855,7 +1874,7 @@ int AudioDecoder::decodeFrames(AVPacket* pkt, uint8_t *audio_buf, int buf_size)
     audio_pkt_size = pkt->size;
     while(audio_pkt_size > 0) {
         int got_frame = 0;
-        fprintf(stderr, "%s: decode audio\n", __func__);
+        int error = 0;
 
         len1 = avcodec_decode_audio4(_audioCtx, &frame, &got_frame, pkt);
         if(len1 < 0) {
@@ -1880,43 +1899,41 @@ int AudioDecoder::decodeFrames(AVPacket* pkt, uint8_t *audio_buf, int buf_size)
                 fprintf(stderr, "still has samples needs to be read\n");
             }
 
+            while (_pulse_available_size <= 0) {
+                QThread::yieldCurrentThread();
+            }
+
             if(pkt->pts != AV_NOPTS_VALUE) {
                 _audioClock = av_q2d(_audioSt->time_base) * pkt->pts;
             }
             double delay = (av_gettime() / 1000000.0) - _audioCurrentTime;
             _audioCurrentTime = (av_gettime() / 1000000.0);
 
-            fprintf(stderr, "%s: update audio clock %f, delay %f, lastPts %f\n", __func__, 
-                    _audioClock, delay, _lastPts);
+            fprintf(stderr, "%s: update audio clock %f, actual delay %f, delay %f,"
+                    " outsize %d, _pulse_available_size %d\n",
+                    __func__, _audioClock, delay,  _audioClock - _lastPts,
+                    out_linesize, _pulse_available_size);
 
             char *inbuf = (char*)out_data;
-            int error = 0;
-
-            if (delay < _audioClock - _lastPts) {
-                int ms = (_audioClock - _lastPts - delay) * 1000.0;
-                QThread::msleep(ms);
-            }
-
-            if (pa_simple_write(_pa, inbuf, out_linesize, &error) < 0) {
-                fprintf(stderr, __FILE__": pa_simple_write() failed: %s\n", pa_strerror(error));
+            {
+                ScopedPALocker lock(_pa_loop);
+                pa_stream_write(_pa_stream, inbuf, out_linesize, NULL, 0, PA_SEEK_RELATIVE);
+                _pulse_available_size -= out_linesize;
+                //_pulse_available_size = 0;
             }
             _lastPts = _audioClock;
 
-            //QThread::yieldCurrentThread();
             av_freep(&out_data);
         }
         av_frame_unref(&frame);
     }
+    QThread::yieldCurrentThread();
 }
+
 
 AudioDecoder::AudioDecoder(AVStream *st, AVCodecContext *ctx)
     :QThread(0), _audioCtx(ctx), _audioSt(st)
 {
-    pa_sample_spec ss;
-    ss.format = PA_SAMPLE_S16NE;
-    ss.channels = ctx->channels;
-    ss.rate = ctx->sample_rate;
-
     _avrCtx = avresample_alloc_context();
     av_opt_set_int(_avrCtx, "in_channel_layout", _audioCtx->channel_layout, 0);
     av_opt_set_int(_avrCtx, "in_sample_fmt", _audioCtx->sample_fmt, 0);
@@ -1925,16 +1942,184 @@ AudioDecoder::AudioDecoder(AVStream *st, AVCodecContext *ctx)
     av_opt_set_int(_avrCtx, "out_sample_fmt", AV_SAMPLE_FMT_S16, 0);
     av_opt_set_int(_avrCtx, "out_sample_rate", _audioCtx->sample_rate, 0);
     avresample_open(_avrCtx);
+}
 
-    fprintf(stderr, "channels %d, rate %d, fmt %d\n", _audioCtx->channels,
-                    ss.rate, _audioCtx->sample_fmt);
-    int error = 0;
-    /* Create a new playback stream */
-    if (!(_pa = pa_simple_new(NULL, Q2C(tr("Deepin Movie")), PA_STREAM_PLAYBACK, NULL, "playback",
-                    &ss, NULL, NULL, &error))) {
-        fprintf(stderr, __FILE__": pa_simple_new() failed: %s\n", pa_strerror(error));
-        _pa = nullptr;
+void AudioDecoder::context_state_callback(pa_context *c, void *userdata)
+{
+    AudioDecoder *self = reinterpret_cast<AudioDecoder*>(userdata);
+    switch (pa_context_get_state(c)) {
+        case PA_CONTEXT_FAILED:
+        case PA_CONTEXT_TERMINATED:
+        case PA_CONTEXT_READY:
+            pa_threaded_mainloop_signal(self->_pa_loop, 0);
+            break;
+        default:
+            break;
     }
+
+}
+
+void AudioDecoder::stream_state_callback(pa_stream *s, void *userdata)
+{
+    AudioDecoder *self = reinterpret_cast<AudioDecoder*>(userdata);
+    switch (pa_stream_get_state(s)) {
+        case PA_STREAM_FAILED:
+            qWarning("PA_STREAM_FAILED");
+            pa_threaded_mainloop_signal(self->_pa_loop, 0);
+            break;
+        case PA_STREAM_READY:
+        case PA_STREAM_TERMINATED:
+            pa_threaded_mainloop_signal(self->_pa_loop, 0);
+            break;
+        default:
+            break;
+    }
+
+}
+
+void AudioDecoder::stream_write_callback(pa_stream *s, size_t length, void *userdata)
+{
+    AudioDecoder *self = reinterpret_cast<AudioDecoder*>(userdata);
+    fprintf(stderr, "%s: length %lu\n", __func__, length);
+    self->_pulse_available_size = length;
+    pa_threaded_mainloop_signal(self->_pa_loop, 0);
+}
+
+void AudioDecoder::success_callback(pa_stream *s, int success, void *userdata)
+{
+    AudioDecoder *self = reinterpret_cast<AudioDecoder*>(userdata);
+    pa_threaded_mainloop_signal(self->_pa_loop, 0);
+}
+
+bool AudioDecoder::waitToFinished(pa_operation *op)
+{
+    if (op) {
+        while (pa_operation_get_state(op) == PA_OPERATION_RUNNING)
+            pa_threaded_mainloop_wait(_pa_loop);
+        pa_operation_unref(op);
+    }
+    return true;
+}
+
+bool AudioDecoder::init()
+{
+    _pa_loop = pa_threaded_mainloop_new();
+    if (pa_threaded_mainloop_start(_pa_loop) < 0) {
+        qWarning("PulseAudio failed to start mainloop");
+        return false;
+    }
+
+    ScopedPALocker lock(_pa_loop);
+
+    pa_mainloop_api *api = pa_threaded_mainloop_get_api(_pa_loop);
+    _pa_ctx = pa_context_new(api, qApp->applicationName().toUtf8().constData());
+    if (!_pa_ctx) {
+        qWarning("PulseAudio failed to allocate a context");
+        return false;
+    }
+
+    qDebug() << tr("PulseAudio %1, protocol: %2, server protocol: %3")
+        .arg(QString::fromLatin1(pa_get_library_version()))
+        .arg(pa_context_get_protocol_version(_pa_ctx))
+        .arg(pa_context_get_server_protocol_version(_pa_ctx));
+
+    pa_context_set_state_callback(_pa_ctx, AudioDecoder::context_state_callback, this);
+
+    pa_context_connect(_pa_ctx, NULL, PA_CONTEXT_NOFLAGS, NULL);
+    while (true) {
+        const pa_context_state_t st = pa_context_get_state(_pa_ctx);
+        if (st == PA_CONTEXT_READY)
+            break;
+
+        if (!PA_CONTEXT_IS_GOOD(st)) {
+            qWarning("PulseAudio context init failed");
+            return false;
+        }
+        pa_threaded_mainloop_wait(_pa_loop);
+    }
+
+    //pa_context_set_subscribe_callback(_pa_ctx, AudioDecoder::contextSubscribeCallback, this);
+    //pa_context_subscribe(_pa_ctx, pa_subscription_mask_t(
+                                 //PA_SUBSCRIPTION_MASK_CARD |
+                                 //PA_SUBSCRIPTION_MASK_SINK |
+                                 //PA_SUBSCRIPTION_MASK_SINK_INPUT),
+                         //NULL, NULL);
+
+    pa_format_info *fi = pa_format_info_new();
+    fi->encoding = PA_ENCODING_PCM;
+    pa_format_info_set_sample_format(fi, PA_SAMPLE_S16NE);
+    pa_format_info_set_channels(fi, _audioCtx->channels);
+    pa_format_info_set_rate(fi, _audioCtx->sample_rate);
+    if (!pa_format_info_valid(fi)) {
+        qWarning("PulseAudio: invalid format");
+        return false;
+    }
+    _pa_stream = pa_stream_new_extended(_pa_ctx, "audio stream", &fi, 1, NULL);
+    if (!_pa_stream) {
+        pa_format_info_free(fi);
+        qWarning("PulseAudio: failed to create a stream");
+        return false;
+    }
+    pa_format_info_free(fi);
+
+    pa_stream_set_write_callback(_pa_stream, AudioDecoder::stream_write_callback, this);
+    pa_stream_set_state_callback(_pa_stream, AudioDecoder::stream_state_callback, this);
+    //pa_stream_set_latency_update_callback(_pa_stream, AudioDecoder::latencyUpdateCallback, this);
+
+    pa_buffer_attr ba;
+    ba.maxlength = 65536; // max buffer size on the server
+    ba.tlength = (uint32_t)-1; // ?
+    ba.prebuf = 1;//(uint32_t)-1; // play as soon as possible
+    ba.minreq = (uint32_t)-1;
+    ba.fragsize = (uint32_t)-1;
+    pa_stream_flags_t flags = pa_stream_flags_t(PA_STREAM_NOT_MONOTONIC|
+            PA_STREAM_INTERPOLATE_TIMING|PA_STREAM_AUTO_TIMING_UPDATE);
+    if (pa_stream_connect_playback(_pa_stream, NULL /*sink*/, &ba, flags, NULL, NULL) < 0) {
+        qWarning("PulseAudio failed: pa_stream_connect_playback");
+        return false;
+    }
+
+    while (true) {
+        const pa_stream_state_t st = pa_stream_get_state(_pa_stream);
+        if (st == PA_STREAM_READY)
+            break;
+        if (!PA_STREAM_IS_GOOD(st)) {
+            qWarning("PulseAudio stream init failed");
+            return false;
+        }
+        pa_threaded_mainloop_wait(_pa_loop);
+    }
+    if (pa_stream_is_suspended(_pa_stream)) {
+        qWarning("PulseAudio stream is suspende");
+        return false;
+    }
+    return true;
+}
+
+void AudioDecoder::deinit()
+{
+    if (_pa_stream) {
+        waitToFinished(pa_stream_drain(_pa_stream,  AudioDecoder::success_callback, this));
+    }
+    if (_pa_loop) {
+        pa_threaded_mainloop_stop(_pa_loop);
+    }
+    if (_pa_stream) {
+        pa_stream_disconnect(_pa_stream);
+        pa_stream_unref(_pa_stream);
+        _pa_stream = NULL;
+    }
+    if (_pa_ctx) {
+        pa_context_disconnect(_pa_ctx);
+        pa_context_unref(_pa_ctx);
+        _pa_ctx = NULL;
+    }
+    if (_pa_loop) {
+        pa_threaded_mainloop_free(_pa_loop);
+        _pa_loop = NULL;
+    }
+    return true;
+
 }
 
 void AudioDecoder::stop() 
@@ -1945,6 +2130,11 @@ void AudioDecoder::stop()
 
 void AudioDecoder::run()
 {
+    if (!init()) {
+        deinit();
+        return;
+    }
+
     _audioCurrentTime = (av_gettime() / 1000000.0);
     for (;;) {
         if (_quitFlags.load()) break;
@@ -1954,6 +2144,8 @@ void AudioDecoder::run()
         decodeFrames(&copy, 0, 0);
         av_free_packet(&pkt);
     }
+
+    deinit();
 }
 
 AudioDecoder::~AudioDecoder()
@@ -2135,7 +2327,7 @@ void VpuMainThread::run()
 
     bool audio_started = false;
 
-    audioPackets.capacity = 400;
+    audioPackets.capacity = 600;
     videoPackets.capacity = 50;
     _videoThread->start();
     //_audioThread->start();
@@ -2143,6 +2335,11 @@ void VpuMainThread::run()
 	while(1) {
         if (_quitFlags.load()) {
             break;
+        }
+
+        if (audioPackets.full() || videoPackets.full()) {
+            QThread::msleep(10);
+            continue;
         }
 
         av_init_packet(pkt);
@@ -2158,7 +2355,7 @@ void VpuMainThread::run()
 
 		if (pkt->stream_index == idxVideo) {
             videoPackets.put(*pkt);
-            if (!_audioThread->isRunning() && _videoThread->firstFrameStarted()) {
+            if (!_audioThread->isRunning()) {
                 _audioThread->start();
             }
             continue;
