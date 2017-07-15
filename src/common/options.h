@@ -15,6 +15,7 @@ public:
     // for vpu level debug
     int debugFrameCount() const; 
     bool useGAL() const;
+    bool vpuDemoMode() const;
 
 private:
     CommandLineManager();

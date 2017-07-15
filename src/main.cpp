@@ -78,17 +78,21 @@ int main(int argc, char *argv[])
     app.setAttribute(Qt::AA_DontCreateNativeWidgetSiblings, true);
 
 #ifdef ENABLE_VPU_PLATFORM
-    dmr::VpuProxy mw;
-    mw.setMinimumSize(QSize(528, 400));
-    mw.resize(850, 600);
-    DUtility::moveToCenter(&mw);
-    mw.show();
-    auto fi = QFileInfo(toOpenFile);
-    if (fi.exists()) {
-        mw.setPlayFile(fi);
-        mw.play();
+    if (dmr::CommandLineManager::get().vpuDemoMode()) {
+        dmr::VpuProxy mw;
+        mw.setMinimumSize(QSize(528, 400));
+        mw.resize(850, 600);
+        DUtility::moveToCenter(&mw);
+        mw.show();
+        auto fi = QFileInfo(toOpenFile);
+        if (fi.exists()) {
+            mw.setPlayFile(fi);
+            mw.play();
+        }
+
+        return app.exec();
     }
-#else
+#endif
 
     dmr::MainWindow mw;
     mw.setMinimumSize(QSize(528, 400));
@@ -100,7 +104,6 @@ int main(int argc, char *argv[])
         auto fi = QFileInfo(toOpenFile);
         mw.play(fi);
     }
-#endif
     return app.exec();
 }
 

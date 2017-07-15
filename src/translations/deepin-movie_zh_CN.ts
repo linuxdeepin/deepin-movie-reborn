@@ -38,6 +38,11 @@
         <source>use gal or not</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../common/options.cpp" line="29"/>
+        <source>play in vpu demo mode</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QObject</name>
@@ -293,7 +298,7 @@
 <context>
     <name>dmr::AudioDecoder</name>
     <message>
-        <location filename="../backends/vpu/vpu_decoder.cpp" line="2021"/>
+        <location filename="../backends/vpu/vpu_decoder.cpp" line="1960"/>
         <source>PulseAudio %1, protocol: %2, server protocol: %3</source>
         <translation type="unfinished"></translation>
     </message>
@@ -307,34 +312,34 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="598"/>
-        <location filename="../common/mainwindow.cpp" line="700"/>
+        <location filename="../common/mainwindow.cpp" line="599"/>
+        <location filename="../common/mainwindow.cpp" line="701"/>
         <source>Open File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="600"/>
+        <location filename="../common/mainwindow.cpp" line="601"/>
         <source>Movies (*.mkv *.mov *.mp4 *.rmvb)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="702"/>
+        <location filename="../common/mainwindow.cpp" line="703"/>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="753"/>
+        <location filename="../common/mainwindow.cpp" line="754"/>
         <source>View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="764"/>
+        <location filename="../common/mainwindow.cpp" line="765"/>
         <source>Movie Screenshot</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="765"/>
-        <location filename="../common/mainwindow.cpp" line="774"/>
+        <location filename="../common/mainwindow.cpp" line="766"/>
+        <location filename="../common/mainwindow.cpp" line="775"/>
         <source>Saved to</source>
         <translation type="unfinished"></translation>
     </message>
