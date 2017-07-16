@@ -24,7 +24,7 @@ PlayerEngine::PlayerEngine(QWidget *parent)
 #endif
     connect(_current, &Backend::stateChanged, this, &PlayerEngine::onBackendStateChanged);
     connect(_current, &Backend::tracksChanged, this, &PlayerEngine::tracksChanged);
-    connect(_current, &Backend::ellapsedChanged, this, &PlayerEngine::ellapsedChanged);
+    connect(_current, &Backend::elapsedChanged, this, &PlayerEngine::elapsedChanged);
     connect(_current, &Backend::fileLoaded, this, &PlayerEngine::fileLoaded);
     connect(_current, &Backend::muteChanged, this, &PlayerEngine::muteChanged);
     connect(_current, &Backend::volumeChanged, this, &PlayerEngine::volumeChanged);
@@ -39,6 +39,10 @@ PlayerEngine::PlayerEngine(QWidget *parent)
 
 PlayerEngine::~PlayerEngine()
 {
+    if (_current) {
+        delete _current;
+        _current = nullptr;
+    }
     qDebug() << __func__;
 }
 
@@ -206,9 +210,9 @@ qint64 PlayerEngine::duration() const
 }
 
 
-qint64 PlayerEngine::ellapsed() const
+qint64 PlayerEngine::elapsed() const
 {
-    return _current->ellapsed();
+    return _current->elapsed();
 }
 
 

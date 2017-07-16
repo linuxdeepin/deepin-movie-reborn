@@ -23,7 +23,7 @@ public:
     bool isPlayable() const override { return true; }
 
     qint64 duration() const override;
-    qint64 ellapsed() const override;
+    qint64 elapsed() const override;
 
     void loadSubtitle(const QFileInfo& fi) override;
     void toggleSubtitle() override;

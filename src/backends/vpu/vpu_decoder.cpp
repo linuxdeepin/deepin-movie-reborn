@@ -1,4 +1,7 @@
 #include "config.h"
+#include <sys/types.h>
+#include <unistd.h>
+#include <sys/syscall.h>
 
 #include "vpu_decoder.h"
 #include "options.h"
@@ -445,6 +448,8 @@ namespace dmr {
 
 static AVPacketQueue audioPackets;
 static AVPacketQueue videoPackets;
+static AVPacket eofPkt;
+static AVPacket flushPkt; // by seek
 
 static VideoPacketQueue videoFrames;
 
@@ -467,7 +472,6 @@ void AVPacketQueue::flush()
         auto pkt = data.dequeue();
         av_free_packet(&pkt);
     }
-    empty_cond.wakeAll();
     full_cond.wakeAll();
 }
 
@@ -481,7 +485,8 @@ AVPacket AVPacketQueue::deque()
     }
     full_cond.wakeAll();
     if (data.count() == 0) {
-        AVPacket pkt = {0,};
+        AVPacket pkt;
+        av_init_packet(&pkt);
         return pkt;
     }
     return data.dequeue();
@@ -509,9 +514,9 @@ void VideoPacketQueue::flush()
 {
     QMutexLocker l(&lock);
     while (data.count() > 0) {
-        data.dequeue();
+        auto vp = data.dequeue();
+        free(vp.data);
     }
-    empty_cond.wakeAll();
     full_cond.wakeAll();
 }
 
@@ -523,6 +528,10 @@ VideoFrame VideoPacketQueue::deque()
         empty_cond.wait(l.mutex());
     }
     full_cond.wakeAll();
+    if (data.count() == 0) {
+        VideoFrame vp = {0, 0};
+        return vp;
+    }
     return data.dequeue();
 }
 
@@ -817,6 +826,10 @@ OnError:
             _dstSurf = GALSurface::create(g_hal, w, h, gcvSURF_A8R8G8B8);
         } else {
             //update
+            if (_dstSurf->width != w || _dstSurf->height != h) {
+                delete _dstSurf;
+                _dstSurf = GALSurface::create(g_hal, w, h, gcvSURF_A8R8G8B8);
+            }
         }
     }
 
@@ -875,6 +888,8 @@ VpuDecoder::~VpuDecoder()
 
 void VpuDecoder::run() 
 {
+    pid_t tid = syscall(SYS_gettid);
+    fprintf(stderr, "VpuDecoder tid %d\n", tid);
     loop();
     fprintf(stderr, "%s: decoder quit\n", __func__);
 }
@@ -1163,13 +1178,15 @@ int VpuDecoder::sendFrame(AVPacket *pkt)
     QTime tm;
     tm.start();
 
+    uchar *data = osal_malloc(_frameImage.bytesPerLine() * _frameImage.height());
     if (use_gal) {
         galConverter->updateDestSurface(_viewportSize.width(), _viewportSize.height());
         galConverter->updateSrcSurface(outputInfo.dispFrame.stride, outputInfo.dispFrame.height);
 
         galConverter->convertYUV2RGBScaled(outputInfo.dispFrame);
         auto stride = galConverter->_dstSurf->stride;
-        galConverter->copyRGBData(_frameImage.bits(), _frameImage.bytesPerLine(), _frameImage.height());
+        galConverter->copyRGBData(data, _frameImage.bytesPerLine(), _frameImage.height());
+
     } else {
         _frameImage = QImage(outputInfo.dispFrame.stride, outputInfo.dispFrame.height, 
                 QImage::Format_RGB32);
@@ -1193,7 +1210,7 @@ int VpuDecoder::sendFrame(AVPacket *pkt)
     pts = synchronize_video(NULL, pts);
 
     VideoFrame vf;
-    vf.img = _frameImage;
+    vf.data = data;
     vf.pts = pts;
     videoFrames.put(vf);
 
@@ -1501,10 +1518,10 @@ int VpuDecoder::flushVideoBuffer(AVPacket *pkt)
     if (outputInfo.indexFrameDisplay >= 0)
         frame_queue_enqueue(display_queue, outputInfo.indexFrameDisplay);
 
-    {
-        if (ppuEnable) 
-            ppIdx = (ppIdx+1)%MAX_ROT_BUF_NUM;
+    if (ppuEnable) 
+        ppIdx = (ppIdx+1)%MAX_ROT_BUF_NUM;
 
+    if (pkt->data != eofPkt.data && pkt->data != flushPkt.data) {
         if (sendFrame(pkt) < 0) 
             _quitFlags.store(1); // break;
     }
@@ -1661,7 +1678,28 @@ int VpuDecoder::loop()
 
         AVPacket pkt = videoPackets.deque();
 
-        if (_quitFlags.load()) {
+        if (pkt.data == eofPkt.data) {
+            fprintf(stderr, "%s: eof received\n", __func__);
+            bsfillSize = VPU_GBU_SIZE*2;
+            chunkSize = 0;					
+            VPU_DecUpdateBitstreamBuffer(handle, STREAM_END_SIZE);	//tell VPU to reach the end of stream. starting flush decoded output in VPU
+            if (flushVideoBuffer(&pkt) < 0) {
+                break;
+            }
+            break;
+        } else if (pkt.data == flushPkt.data) {
+            if (decOP.bitstreamMode != BS_MODE_PIC_END) {
+                //clear all frame buffer except current frame
+                if (frame_queue_check_in_queue(display_queue, i) == 0)
+                    VPU_DecClrDispFlag(handle, i);
+
+                //Clear all display buffer before Bitstream & Frame buffer flush
+                ret = VPU_DecFrameBufferFlush(handle);
+                if( ret != RETCODE_SUCCESS ) {
+                    VLOG(ERR, "VPU_DecGetBitstreamBuffer failed Error code is 0x%x \n", ret );
+                }
+
+            }
             break;
         }
 
@@ -1837,7 +1875,8 @@ int AudioDecoder::decodeFrames(AVPacket* pkt, uint8_t *audio_buf, int buf_size)
             }
 
             while (_pulse_available_size <= 0) {
-                QThread::yieldCurrentThread();
+                QThread::msleep(10);
+                //QThread::yieldCurrentThread();
             }
 
             if(pkt->pts != AV_NOPTS_VALUE) {
@@ -1847,9 +1886,10 @@ int AudioDecoder::decodeFrames(AVPacket* pkt, uint8_t *audio_buf, int buf_size)
             _audioCurrentTime = (av_gettime() / 1000000.0);
 
             fprintf(stderr, "%s: update audio clock %f, actual delay %f, delay %f,"
-                    " outsize %d, _pulse_available_size %d\n",
+                    " outsize %d, _pulse_available_size %d, writable %d\n",
                     __func__, _audioClock, delay,  _audioClock - _lastPts,
-                    out_linesize, _pulse_available_size);
+                    out_linesize, _pulse_available_size,
+                        pa_stream_writable_size(_pa_stream));
 
             char *inbuf = (char*)out_data;
             {
@@ -1864,7 +1904,7 @@ int AudioDecoder::decodeFrames(AVPacket* pkt, uint8_t *audio_buf, int buf_size)
         }
         av_frame_unref(&frame);
     }
-    QThread::yieldCurrentThread();
+    //QThread::yieldCurrentThread();
 }
 
 
@@ -2035,6 +2075,7 @@ bool AudioDecoder::init()
 
 void AudioDecoder::deinit()
 {
+    fprintf(stderr, "AudioDecoder: %s\n", __func__);
     if (_pa_stream) {
         waitToFinished(pa_stream_drain(_pa_stream,  AudioDecoder::success_callback, this));
     }
@@ -2059,24 +2100,24 @@ void AudioDecoder::deinit()
 
 }
 
-void AudioDecoder::stop() 
-{ 
-    _quitFlags.storeRelease(1); 
-    audioPackets.flush();
-}
-
 void AudioDecoder::run()
 {
     if (!init()) {
         deinit();
         return;
     }
+    pid_t tid = syscall(SYS_gettid);
+    fprintf(stderr, "AudioDecoder tid %d\n", tid);
 
     _audioCurrentTime = (av_gettime() / 1000000.0);
     for (;;) {
-        if (_quitFlags.load()) break;
 
         AVPacket pkt = audioPackets.deque();
+        if (pkt.data == eofPkt.data) {
+            fprintf(stderr, "%s: eof received\n", __func__);
+            break;
+        }
+
         AVPacket copy = pkt;
         decodeFrames(&copy, 0, 0);
         av_free_packet(&pkt);
@@ -2214,6 +2255,11 @@ int VpuMainThread::openMediaFile()
 		//VLOG(ERR, "%s: could not find sub stream information\n", Q2C(_fileInfo.absoluteFilePath()));
         //goto _error;
 	//}
+   
+    auto duration = ic->duration == AV_NOPTS_VALUE ? 0 : ic->duration;
+    duration = duration + (duration <= INT64_MAX - 5000 ? 5000 : 0);
+    _duration = duration / AV_TIME_BASE;
+    
     return 0;
 
 _error:
@@ -2253,26 +2299,37 @@ VideoPacketQueue& VpuMainThread::frames()
 
 void VpuMainThread::seekForward(int secs)
 {
-    if (_seekPending) 
+    if (_seekPending.load()) 
         return;
 
-    _seekPending = true;
     _seekFlags = AVSEEK_FLAG_BACKWARD;
     _seekPos = (getClock() + (double)secs) * AV_TIME_BASE;
-    fprintf(stderr, "%s: pos %f\n", __func__, _seekPos);
+    fprintf(stderr, "%s: pos %lld\n", __func__, _seekPos);
+    _seekPending.store(1);
 }
 
 void VpuMainThread::seekBackward(int secs)
 {
-    if (_seekPending) 
+    if (_seekPending.load()) 
         return;
 
-    _seekPending = true;
     _seekFlags = 0;
     _seekPos = (getClock() + (double)secs) * AV_TIME_BASE;
-    fprintf(stderr, "%s: pos %f\n", __func__, _seekPos);
+    fprintf(stderr, "%s: pos %lld\n", __func__, _seekPos);
+    _seekPending.store(1);
 }
 
+void VpuMainThread::stop()
+{
+    if (!_quitFlags.load()) {
+        audioPackets.flush();
+        audioPackets.put(eofPkt);
+        videoPackets.flush();
+        videoPackets.put(eofPkt);
+        videoFrames.flush();
+        _quitFlags.store(1);
+    }
+}
 
 void VpuMainThread::run() 
 {
@@ -2282,22 +2339,27 @@ void VpuMainThread::run()
 	AVPacket pkt1; 
     pkt=&pkt1;
 
-    connect(_audioThread, &QThread::finished, [=]() { _quitFlags.store(1); });
-    connect(_videoThread, &QThread::finished, [=]() { _quitFlags.store(1); });
+    pid_t tid = syscall(SYS_gettid);
+    fprintf(stderr, "VpuMainThread tid %d\n", tid);
 
     bool audio_started = false;
 
-    audioPackets.capacity = 600;
-    videoPackets.capacity = 200;
+    audioPackets.capacity = 200;
+    videoPackets.capacity = 50;
+    videoFrames.capacity = 1;
+
+    av_init_packet(&eofPkt);
+    eofPkt.data = "EOF";
+
     _videoThread->start();
-    //_audioThread->start();
+    _audioThread->start();
 
 	while(1) {
         if (_quitFlags.load()) {
             break;
         }
 
-        if (_seekPending) {
+        if (_seekPending.load()) {
             int stream_index = -1;
             int64_t seek_target = _seekPos;
 
@@ -2314,17 +2376,20 @@ void VpuMainThread::run()
             } else {
                 fprintf(stderr, "flush all by seek\n");
                 videoPackets.flush();
-                audioPackets.flush();
+                videoPackets.put(flushPkt);
                 videoFrames.flush();
+                audioPackets.flush();
+                //audioPackets.put(&flushPkt);
 
                 avcodec_flush_buffers(ctxVideo);
                 avcodec_flush_buffers(ctxAudio);
             }
-            _seekPending = false;
+            _seekPending.store(0);
+            continue;
         }
 
         if (audioPackets.full() || videoPackets.full()) {
-            QThread::msleep(10);
+            QThread::msleep(20);
             continue;
         }
 
@@ -2341,9 +2406,9 @@ void VpuMainThread::run()
 
 		if (pkt->stream_index == idxVideo) {
             videoPackets.put(*pkt);
-            if (!_audioThread->isRunning()) {
-                _audioThread->start();
-            }
+            //if (!_audioThread->isRunning()) {
+                //_audioThread->start();
+            //}
             continue;
         }
 
@@ -2352,23 +2417,17 @@ void VpuMainThread::run()
     }
 
     if (_audioThread) {
-        _audioThread->stop();
-        audioPackets.flush();
-
         int tries = 10;
         while (tries--) {
-            _audioThread->wait(100);
+            _audioThread->wait(1000);
         }
         delete _audioThread;
     }
 
     if (_videoThread) {
-        _videoThread->stop();
-        videoPackets.flush();
-
         int tries = 10;
         while (tries--) {
-            _videoThread->wait(100);
+            _videoThread->wait(1000);
         }
         delete _videoThread;
     }

@@ -22,7 +22,7 @@ struct PlayingMovieInfo
 class PlayerEngine: public QWidget {
     Q_OBJECT
     Q_PROPERTY(qint64 duration READ duration)
-    Q_PROPERTY(qint64 ellapsed READ ellapsed NOTIFY ellapsedChanged)
+    Q_PROPERTY(qint64 elapsed READ elapsed NOTIFY elapsedChanged)
     Q_PROPERTY(bool paused READ paused)
 
     Q_PROPERTY(CoreState state READ state NOTIFY stateChanged)
@@ -42,7 +42,7 @@ public:
     void addPlayFile(const QFileInfo& fi);
 
     qint64 duration() const;
-    qint64 ellapsed() const;
+    qint64 elapsed() const;
     const struct MovieInfo& movieInfo(); 
 
     bool paused();
@@ -64,7 +64,7 @@ public:
 
 signals:
     void tracksChanged();
-    void ellapsedChanged();
+    void elapsedChanged();
     void stateChanged();
     void fileLoaded();
     void muteChanged();

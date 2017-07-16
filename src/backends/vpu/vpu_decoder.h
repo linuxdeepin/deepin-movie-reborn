@@ -74,7 +74,7 @@ struct AVPacketQueue {
 
 struct VideoFrame
 {
-    QImage img;
+    uchar *data;
     double pts;
 };
 
@@ -97,7 +97,6 @@ public:
     AudioDecoder(AVStream* st, AVCodecContext *ctx);
     virtual ~AudioDecoder();
 
-    void stop();
     static void context_state_callback(pa_context *c, void *userdata);
     static void stream_state_callback(pa_stream *s, void *userdata);
     static void stream_write_callback(pa_stream *s, size_t length, void *userdata);
@@ -109,7 +108,6 @@ protected:
 private:
     AVCodecContext *_audioCtx {nullptr};
     AVStream *_audioSt {nullptr};
-    QAtomicInt _quitFlags {0};
     pa_simple *_pa {nullptr};
     AVAudioResampleContext *_avrCtx {nullptr};
     
@@ -134,8 +132,8 @@ public:
     VpuDecoder(AVStream *st, AVCodecContext *ctx);
     ~VpuDecoder();
 
-    void stop() { _quitFlags.storeRelease(1); }
     void updateViewportSize(QSize sz);
+    QSize viewportSize() const { return _viewportSize; }
     bool firstFrameStarted();
 
 protected:
@@ -223,13 +221,16 @@ public:
 
     AudioDecoder* audioThread() { return _audioThread; }
     VpuDecoder* videoThread() { return _videoThread; }
-    void stop() { _quitFlags.storeRelease(1); }
+    void stop(); 
 
     void seekForward(int secs);
     void seekBackward(int secs);
 
+    int64_t duration() const { return _duration; }
+    int64_t elapsed() const { return _elapsed; }
+
 signals:
-    void ellapsedChanged();
+    void elapsedChanged();
     void volumeChanged();
     void muteChanged();
 
@@ -242,7 +243,10 @@ protected:
     int idxAudio {-1};
     int idxSubtitle {-1};
 
-    bool _seekPending {false};
+    int64_t _duration {0};
+    int64_t _elapsed {0};
+
+    QAtomicInt _seekPending {0};
     int64_t _seekPos {0};
     int _seekFlags {0};
 

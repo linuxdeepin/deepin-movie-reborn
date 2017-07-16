@@ -21,6 +21,9 @@ extern "C" {
 #if defined (__cplusplus)
 }
 #endif
+#include <sys/types.h>
+#include <unistd.h>
+#include <sys/syscall.h>
 
 namespace dmr {
 
@@ -34,27 +37,32 @@ VpuProxy::VpuProxy(QWidget *parent)
 
 VpuProxy::~VpuProxy()
 {
+    stop();
+}
+
+void VpuProxy::resizeEvent(QResizeEvent *re)
+{
+    if (_d) {
+        _d->videoThread()->updateViewportSize(size());
+    }
 }
 
 void VpuProxy::closeEvent(QCloseEvent *ce)
 {
-    if (_d) {
-        disconnect(_d, 0, 0, 0);
-        _d->stop();
-
-        int tries = 10;
-        while (tries--) 
-            _d->wait(500);
-        delete _d;
-        _d = 0;
-    }
+    stop();
     ce->accept();
 }
 
 void VpuProxy::paintEvent(QPaintEvent *pe)
 {
-    QPainter p(this);
-    p.drawImage(0, 0, _img);
+    if (_imgData) {
+        QPainter p(this);
+        auto vpsz = _d->videoThread()->viewportSize();
+        auto img = QImage(_imgData, vpsz.width(), vpsz.height(), QImage::Format_RGB32);
+        p.drawImage(0, 0, img);
+        free(_imgData);
+        _imgData = 0;
+    }
 }
 
 void VpuProxy::video_refresh_timer() 
@@ -64,11 +72,20 @@ void VpuProxy::video_refresh_timer()
     if (_d == nullptr || _d->isFinished()) 
         return;
 
+    if (_reqQuit)
+        return;
+
     //if(_d->frames().size() == 0) {
         //QTimer::singleShot(0, this, &VpuProxy::video_refresh_timer);
     //} else 
     {
+retry:
         auto vp = _d->frames().deque();
+        //if (_imgData) {
+            //free(_imgData);
+            //_imgData = 0;
+        //}
+        _imgData = vp.data;
 
         delay = vp.pts - _frameLastPts; /* the pts from last time */
         if(delay <= 0 || delay >= 1.0) {
@@ -101,16 +118,20 @@ void VpuProxy::video_refresh_timer()
         fprintf(stderr, "actual_delay orig = %f\n", actual_delay);
         if(actual_delay < 0.010) {
             /* Really it should skip the picture instead */
+            free(vp.data);
+            _imgData = nullptr;
             actual_delay = 0.010;
+            fprintf(stderr, "%s: drop and retry\n", __func__);
+            goto retry;
         }
         fprintf(stderr, "%s: audio clock %f, vp.pts %f, delay %f, diff %f, actual_delay %f, _frameTimer %f\n",
                 __func__, ref_clock, vp.pts, delay, diff, actual_delay, _frameTimer);
 
-
         QTimer::singleShot((int)(actual_delay * 1000 + 0.5), this, &VpuProxy::video_refresh_timer);
         
-        _img = vp.img;
         this->update();
+        _elapsed = vp.pts * 1000;
+        emit elapsedChanged();
     }
 }
 
@@ -193,16 +214,16 @@ void VpuProxy::toggleMute()
 void VpuProxy::play()
 {
     _d->start();
-    connect(_d, &QThread::finished, [=]() {
-        setState(PlayState::Stopped);
-    });
 
     setState(PlayState::Playing);
     _frameTimer = (double)av_gettime() / 1000000.0;
     _frameLastDelay = 40e-3;
+
+    pid_t tid = syscall(SYS_gettid);
+    fprintf(stderr, "VpuProxy tid %d\n", tid);
+
     video_refresh_timer();
 }
-
 
 void VpuProxy::pauseResume()
 {
@@ -212,6 +233,20 @@ void VpuProxy::pauseResume()
 
 void VpuProxy::stop()
 {
+    if (_d) {
+        disconnect(_d, 0, 0, 0);
+        _d->stop();
+        _reqQuit = true;
+
+        int tries = 10;
+        while (tries--) 
+            _d->wait(500);
+
+        setState(PlayState::Stopped);
+        delete _d;
+        _d = 0;
+    }
+
 }
 
 QImage VpuProxy::takeScreenshot()
@@ -243,13 +278,13 @@ void VpuProxy::seekBackward(int secs)
 
 qint64 VpuProxy::duration() const
 {
-    return 0;
+    return _d?_d->duration():0;
 }
 
 
-qint64 VpuProxy::ellapsed() const
+qint64 VpuProxy::elapsed() const
 {
-    return 0;
+    return _elapsed;
 }
 
 void VpuProxy::updatePlayingMovieInfo()

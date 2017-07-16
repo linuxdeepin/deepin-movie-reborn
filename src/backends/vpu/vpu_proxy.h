@@ -19,7 +19,7 @@ public:
     bool isPlayable() const override { return true; }
 
     qint64 duration() const override;
-    qint64 ellapsed() const override;
+    qint64 elapsed() const override;
 
     void loadSubtitle(const QFileInfo& fi) override;
     void toggleSubtitle() override;
@@ -47,14 +47,16 @@ public slots:
 protected:
     void closeEvent(QCloseEvent *) override;
     void paintEvent(QPaintEvent *) override;
+    void resizeEvent(QResizeEvent *) override;
 
     void video_refresh_timer();
 
 private:
-    QLabel *_canvas {0};
-    QImage _img;
+    uchar *_imgData {0};
     VpuMainThread *_d {0};
+    bool _reqQuit {false};
 
+    int64_t _elapsed {0};
     double _frameLastPts {-1.0};
     double _frameLastDelay {0.0};
     double _frameTimer {0.0};
