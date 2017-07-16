@@ -3,6 +3,7 @@
 
 #include "player_backend.h"
 #include "player_engine.h"
+#include "vpu_decoder.h"
 
 namespace dmr {
 
@@ -52,7 +53,8 @@ protected:
     void video_refresh_timer();
 
 private:
-    uchar *_imgData {0};
+    VideoFrame _lastFrame {0};
+
     VpuMainThread *_d {0};
     bool _reqQuit {false};
 

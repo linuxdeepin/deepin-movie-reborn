@@ -75,6 +75,9 @@ struct AVPacketQueue {
 struct VideoFrame
 {
     uchar *data;
+    int stride;
+    int height;
+    int width;
     double pts;
 };
 

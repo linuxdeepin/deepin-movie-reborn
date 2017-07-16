@@ -827,6 +827,7 @@ OnError:
         } else {
             //update
             if (_dstSurf->width != w || _dstSurf->height != h) {
+                fprintf(stderr, "%s: (%d, %d) -> (%d, %d)\n", __func__, _dstSurf->width, _dstSurf->height, w, h);
                 delete _dstSurf;
                 _dstSurf = GALSurface::create(g_hal, w, h, gcvSURF_A8R8G8B8);
             }
@@ -845,12 +846,14 @@ OnError:
     void copyRGBData(uchar* bits, gctUINT stride, gctUINT height)
     {
         SurfaceScopedLock lock(_dstSurf);
-        fprintf(stderr, "%s copy (%d, %d)\n", __func__, _dstSurf->stride, _dstSurf->height);
+        fprintf(stderr, "%s copy ask (%d, %d), surf (%d, %d)\n", __func__,
+                stride, height,
+                _dstSurf->stride, _dstSurf->height);
         if (stride == _dstSurf->stride) {
             gctUINT h = min(height, _dstSurf->height);
             dma_copy_from_vmem(bits, _dstSurf->phyAddr[0], stride * h);
         } else {
-            fprintf(stderr, "%s: unmatched stride\n", __func__);
+            fprintf(stderr, "%s: unmatched stride %d\n", __func__, stride);
             //TODO:
         }
     }
@@ -1211,6 +1214,9 @@ int VpuDecoder::sendFrame(AVPacket *pkt)
 
     VideoFrame vf;
     vf.data = data;
+    vf.width = _frameImage.width();
+    vf.stride = _frameImage.bytesPerLine();
+    vf.height = _frameImage.height();
     vf.pts = pts;
     videoFrames.put(vf);
 
@@ -1690,17 +1696,17 @@ int VpuDecoder::loop()
         } else if (pkt.data == flushPkt.data) {
             if (decOP.bitstreamMode != BS_MODE_PIC_END) {
                 //clear all frame buffer except current frame
-                if (frame_queue_check_in_queue(display_queue, i) == 0)
-                    VPU_DecClrDispFlag(handle, i);
+                frame_queue_dequeue_all(display_queue);
+                //if (frame_queue_check_in_queue(display_queue, i) == 0)
+                    //VPU_DecClrDispFlag(handle, i);
 
                 //Clear all display buffer before Bitstream & Frame buffer flush
                 ret = VPU_DecFrameBufferFlush(handle);
                 if( ret != RETCODE_SUCCESS ) {
                     VLOG(ERR, "VPU_DecGetBitstreamBuffer failed Error code is 0x%x \n", ret );
                 }
-
             }
-            break;
+            continue;
         }
 
 		seqHeaderSize = 0;
