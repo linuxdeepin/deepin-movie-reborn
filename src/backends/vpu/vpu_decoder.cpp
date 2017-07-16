@@ -580,7 +580,7 @@ struct GALSurface {
         return s;
     }
 
-    void copyFromFb(int width, int height, FrameBuffer fb)
+    void copyFromFb(int w, int h, FrameBuffer fb)
     {
         Q_ASSERT (_locked);
 
@@ -593,9 +593,10 @@ struct GALSurface {
                     //phyAddr[0], phyAddr[1], phyAddr[2],
                     //yaddr, cbaddr, craddr);
 
-            dma_copy_in_vmem(phyAddr[0], (gctUINT32)yaddr, width*height);
-            dma_copy_in_vmem(phyAddr[1], (gctUINT32)cbaddr, width*height/4);
-            dma_copy_in_vmem(phyAddr[2], (gctUINT32)craddr, width*height/4);
+            dma_copy_in_vmem(phyAddr[0], (gctUINT32)yaddr, w*h + w*h/2);
+            //dma_copy_in_vmem(phyAddr[0], (gctUINT32)yaddr, w*h);
+            //dma_copy_in_vmem(phyAddr[1], (gctUINT32)cbaddr, w*h/4);
+            //dma_copy_in_vmem(phyAddr[2], (gctUINT32)craddr, w*h/4);
         }
     }
 
@@ -1061,8 +1062,6 @@ int VpuDecoder::seqInit()
     framebufSize = VPU_GetFrameBufSize(framebufStride, framebufHeight, mapType, framebufFormat, &dramCfg);
 
     galConverter = new GALConverter;
-    //galConverter->updateDestSurface(850, 600, gcvSURF_A8R8G8B8);
-    //galConverter->updateSrcSurface(framebufWidth, framebufHeight);
 
     // the size of pYuv should be aligned 8 byte. because of C&M HPI bus system constraint.
     pYuv = (BYTE*)osal_malloc(framebufSize);
@@ -1161,27 +1160,25 @@ int VpuDecoder::sendFrame(AVPacket *pkt)
 {
     bool use_gal = CommandLineManager::get().useGAL();
 
-    QImage img;
+    QTime tm;
+    tm.start();
 
     if (use_gal) {
-        img = _frameImage;
-
         galConverter->updateDestSurface(_viewportSize.width(), _viewportSize.height());
         galConverter->updateSrcSurface(outputInfo.dispFrame.stride, outputInfo.dispFrame.height);
 
         galConverter->convertYUV2RGBScaled(outputInfo.dispFrame);
         auto stride = galConverter->_dstSurf->stride;
-        galConverter->copyRGBData(img.bits(), img.bytesPerLine(), img.height());
-
+        galConverter->copyRGBData(_frameImage.bits(), _frameImage.bytesPerLine(), _frameImage.height());
     } else {
-        img = QImage(outputInfo.dispFrame.stride, outputInfo.dispFrame.height, 
+        _frameImage = QImage(outputInfo.dispFrame.stride, outputInfo.dispFrame.height, 
                 QImage::Format_RGB32);
         //sw coversion
         vdi_read_memory(coreIdx, outputInfo.dispFrame.bufY, pYuv, framebufSize, decOP.frameEndian);
         yuv2rgb_color_format color_format = 
             convert_vpuapi_format_to_yuv2rgb_color_format(framebufFormat, 0);
         vpu_yuv2rgb(outputInfo.dispFrame.stride, outputInfo.dispFrame.height,
-                color_format, pYuv, img.bits(), 1);
+                color_format, pYuv, _frameImage.bits(), 1);
     }
 
     double pts = 0.0;
@@ -1196,14 +1193,15 @@ int VpuDecoder::sendFrame(AVPacket *pkt)
     pts = synchronize_video(NULL, pts);
 
     VideoFrame vf;
-    vf.img = img;
+    vf.img = _frameImage;
     vf.pts = pts;
     videoFrames.put(vf);
 
     if (!_firstFrameSent) _firstFrameSent = true;
 
     //qDebug() << QTime::currentTime().toString("ss.zzz");
-    fprintf(stderr, "%s: timestamp %s\n", __func__, QTime::currentTime().toString("ss.zzz").toUtf8().constData());
+    fprintf(stderr, "%s: timestamp %s, convert time %d\n", __func__,
+            QTime::currentTime().toString("ss.zzz").toUtf8().constData(), tm.elapsed());
 
     auto total = CommandLineManager::get().debugFrameCount();
     if (total > 0 && frameIdx > total) return -1;
@@ -2290,7 +2288,7 @@ void VpuMainThread::run()
     bool audio_started = false;
 
     audioPackets.capacity = 600;
-    videoPackets.capacity = 50;
+    videoPackets.capacity = 200;
     _videoThread->start();
     //_audioThread->start();
 

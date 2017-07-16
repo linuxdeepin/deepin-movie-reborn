@@ -152,7 +152,6 @@ protected:
 
 private:
     QSize _viewportSize;
-    QByteArray _frameData;
     QImage _frameImage;
 
 	AVCodecContext *ctxVideo {0};
