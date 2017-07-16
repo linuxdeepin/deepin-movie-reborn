@@ -237,7 +237,7 @@ void MpvProxy::processPropertyChange(mpv_event_property* ev)
 
     QString name = QString::fromUtf8(ev->name);
     if (name == "time-pos") {
-        emit ellapsedChanged();
+        emit elapsedChanged();
     } else if (name == "volume") {
         emit volumeChanged();
     } else if (name == "mute") {
@@ -466,7 +466,7 @@ qint64 MpvProxy::duration() const
 }
 
 
-qint64 MpvProxy::ellapsed() const
+qint64 MpvProxy::elapsed() const
 {
     return get_property(_handle, "time-pos").value<qint64>();
 }

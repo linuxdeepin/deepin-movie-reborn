@@ -298,7 +298,7 @@
 <context>
     <name>dmr::AudioDecoder</name>
     <message>
-        <location filename="../backends/vpu/vpu_decoder.cpp" line="1959"/>
+        <location filename="../backends/vpu/vpu_decoder.cpp" line="1998"/>
         <source>PulseAudio %1, protocol: %2, server protocol: %3</source>
         <translation type="unfinished"></translation>
     </message>

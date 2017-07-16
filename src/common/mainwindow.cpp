@@ -714,12 +714,12 @@ void MainWindow::requestAction(ActionKind kd, bool fromUI)
         }
 
         case SeekBackward: {
-            _engine->seekBackward(5);
+            _engine->seekBackward(10);
             break;
         }
 
         case SeekForward: {
-            _engine->seekForward(5);
+            _engine->seekForward(10);
             break;
         }
 
@@ -853,7 +853,8 @@ void MainWindow::updateProxyGeometry()
         _playState->move(r.topLeft());
     }
 
-#if 0
+#if 1
+    qDebug() << "_engine " << _engine->geometry();
 #ifdef DMR_DEBUG
     qDebug() << "margins " << frameMargins();
     qDebug() << "window frame " << frameGeometry();
