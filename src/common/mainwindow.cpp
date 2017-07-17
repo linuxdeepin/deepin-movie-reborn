@@ -714,12 +714,12 @@ void MainWindow::requestAction(ActionKind kd, bool fromUI)
         }
 
         case SeekBackward: {
-            _engine->seekBackward(10);
+            _engine->seekBackward(20);
             break;
         }
 
         case SeekForward: {
-            _engine->seekForward(10);
+            _engine->seekForward(20);
             break;
         }
 

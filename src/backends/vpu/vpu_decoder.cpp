@@ -1222,7 +1222,6 @@ int VpuDecoder::sendFrame(AVPacket *pkt)
 
     if (!_firstFrameSent) _firstFrameSent = true;
 
-    //qDebug() << QTime::currentTime().toString("ss.zzz");
     fprintf(stderr, "%s: timestamp %s, convert time %d\n", __func__,
             QTime::currentTime().toString("ss.zzz").toUtf8().constData(), tm.elapsed());
 
@@ -1880,8 +1879,14 @@ int AudioDecoder::decodeFrames(AVPacket* pkt, uint8_t *audio_buf, int buf_size)
                 fprintf(stderr, "still has samples needs to be read\n");
             }
 
-            while (_pulse_available_size <= 0) {
-                QThread::msleep(10);
+            qint64 kHz = 1000000LL;
+            qint64 bytesPerFrame = 2 * frame.channels;
+            auto duration = qint64(kHz * (out_linesize / bytesPerFrame)) / _audioCtx->sample_rate;
+            //auto duration = qint64(kHz * nr_read_samples) / _audioCtx->sample_rate;
+
+            while (_pulse_available_size < out_linesize) {
+                auto us = qint64(kHz * ((out_linesize - _pulse_available_size) / bytesPerFrame)) / _audioCtx->sample_rate;
+                QThread::msleep(us/1000);
                 //QThread::yieldCurrentThread();
             }
 
@@ -1892,17 +1897,18 @@ int AudioDecoder::decodeFrames(AVPacket* pkt, uint8_t *audio_buf, int buf_size)
             _audioCurrentTime = (av_gettime() / 1000000.0);
 
             fprintf(stderr, "%s: update audio clock %f, actual delay %f, delay %f,"
-                    " outsize %d, _pulse_available_size %d, writable %d\n",
+                    " outsize %d, duration %lld, _pulse_available_size %d, writable %d\n",
                     __func__, _audioClock, delay,  _audioClock - _lastPts,
-                    out_linesize, _pulse_available_size,
+                    out_linesize, duration, _pulse_available_size,
                         pa_stream_writable_size(_pa_stream));
 
             char *inbuf = (char*)out_data;
             {
                 ScopedPALocker lock(_pa_loop);
                 pa_stream_write(_pa_stream, inbuf, out_linesize, NULL, 0, PA_SEEK_RELATIVE);
-                //_pulse_available_size -= out_linesize;
-                _pulse_available_size = 0;
+                _pulse_available_size -= out_linesize;
+                //_pulse_available_size = 0;
+                //QThread::msleep(10);
             }
             _lastPts = _audioClock;
 
@@ -1959,6 +1965,54 @@ void AudioDecoder::stream_state_callback(pa_stream *s, void *userdata)
     }
 
 }
+
+static void sink_input_info_cb(pa_context *c, const pa_sink_input_info *i, int eol, void *userdata)
+{
+    if (eol) return;
+    AudioDecoder *self = reinterpret_cast<AudioDecoder*>(userdata);
+
+    QMetaObject::invokeMethod(self,  "volumeChanged", Q_ARG(qreal, (qreal)pa_cvolume_avg(&i->volume)/qreal(PA_VOLUME_NORM)));
+    QMetaObject::invokeMethod(self, "muteChanged", Q_ARG(bool, i->mute));
+}
+
+static void sink_input_event(pa_context* c, pa_subscription_event_type_t t, uint32_t idx, 
+        AudioDecoder* self)
+{
+    switch (t) {
+        case PA_SUBSCRIPTION_EVENT_REMOVE:
+            qWarning("PulseAudio sink killed");
+            break;
+        default:
+            fprintf(stderr, "%s\n", __func__);
+            pa_operation *op = pa_context_get_sink_input_info(c, idx, sink_input_info_cb, self);
+            if (Q_LIKELY(!!op))
+                pa_operation_unref(op);
+            break;
+    }
+}
+
+void AudioDecoder::context_subscribe_callback(pa_context *c, pa_subscription_event_type_t type,
+        uint32_t idx, void *userdata)
+{
+    AudioDecoder *self = reinterpret_cast<AudioDecoder*>(userdata);
+
+    unsigned facility = type & PA_SUBSCRIPTION_EVENT_FACILITY_MASK;
+    pa_subscription_event_type_t t = pa_subscription_event_type_t(type & PA_SUBSCRIPTION_EVENT_TYPE_MASK);
+    switch (facility) {
+        case PA_SUBSCRIPTION_EVENT_SINK:
+            break;
+        case PA_SUBSCRIPTION_EVENT_SINK_INPUT:
+            if (self->_pa_stream && idx == pa_stream_get_index(self->_pa_stream))
+                sink_input_event(c, t, idx, self);
+            break;
+        case  PA_SUBSCRIPTION_EVENT_CARD:
+            qDebug("PA_SUBSCRIPTION_EVENT_CARD");
+            break;
+        default:
+            break;
+    }
+}
+
 
 void AudioDecoder::stream_write_callback(pa_stream *s, size_t length, void *userdata)
 {
@@ -2021,12 +2075,10 @@ bool AudioDecoder::init()
         pa_threaded_mainloop_wait(_pa_loop);
     }
 
-    //pa_context_set_subscribe_callback(_pa_ctx, AudioDecoder::contextSubscribeCallback, this);
-    //pa_context_subscribe(_pa_ctx, pa_subscription_mask_t(
-                                 //PA_SUBSCRIPTION_MASK_CARD |
-                                 //PA_SUBSCRIPTION_MASK_SINK |
-                                 //PA_SUBSCRIPTION_MASK_SINK_INPUT),
-                         //NULL, NULL);
+    pa_context_set_subscribe_callback(_pa_ctx, AudioDecoder::context_subscribe_callback, this);
+    pa_context_subscribe(_pa_ctx, pa_subscription_mask_t( PA_SUBSCRIPTION_MASK_CARD |
+                PA_SUBSCRIPTION_MASK_SINK | PA_SUBSCRIPTION_MASK_SINK_INPUT),
+            NULL, NULL);
 
     pa_format_info *fi = pa_format_info_new();
     fi->encoding = PA_ENCODING_PCM;
@@ -2102,8 +2154,66 @@ void AudioDecoder::deinit()
         pa_threaded_mainloop_free(_pa_loop);
         _pa_loop = NULL;
     }
-    return true;
+}
 
+void AudioDecoder::sink_info_callback(pa_context *c, const pa_sink_input_info *i,
+        int is_last, void *userdata)
+{
+    AudioDecoder *self = reinterpret_cast<AudioDecoder*>(userdata);
+    if (is_last < 0) {
+        qWarning("Failed to get sink input info");
+        return;
+    }
+    if (!i) return;
+    self->_info = *i;
+    pa_threaded_mainloop_signal(self->_pa_loop, 0);
+}
+
+bool AudioDecoder::setVolume(qreal value)
+{
+    if (!_pa_loop) return false;
+
+    ScopedPALocker palock(_pa_loop);
+    uint32_t stream_idx = pa_stream_get_index(_pa_stream);
+    struct pa_cvolume vol; // TODO: per-channel volume
+    pa_cvolume_reset(&vol, _audioCtx->channels);
+    pa_cvolume_set(&vol, _audioCtx->channels, pa_volume_t(value*qreal(PA_VOLUME_NORM)));
+    pa_operation *o = pa_context_set_sink_input_volume(_pa_ctx, stream_idx, &vol, NULL, NULL);
+    pa_operation_unref(o);
+    return true;
+}
+
+qreal AudioDecoder::getVolume() const
+{
+    if (!_pa_loop) return 1.0;
+
+    ScopedPALocker palock(_pa_loop);
+    uint32_t stream_idx = pa_stream_get_index(_pa_stream);
+    waitToFinished(pa_context_get_sink_input_info(_pa_ctx, stream_idx, 
+                AudioDecoder::sink_info_callback, this));
+    return (qreal)pa_cvolume_avg(&_info.volume)/qreal(PA_VOLUME_NORM);
+}
+
+bool AudioDecoder::setMute(bool value)
+{
+    if (!_pa_loop) return true;
+
+    ScopedPALocker palock(_pa_loop);
+    uint32_t stream_idx = pa_stream_get_index(_pa_stream);
+    pa_operation *o = pa_context_set_sink_input_mute(_pa_ctx, stream_idx, value, NULL, NULL);
+    pa_operation_unref(o);
+    return true;
+}
+
+bool AudioDecoder::isMuted()
+{
+    if (!_pa_loop) return false;
+
+    ScopedPALocker palock(_pa_loop);
+    uint32_t stream_idx = pa_stream_get_index(_pa_stream);
+    waitToFinished(pa_context_get_sink_input_info(_pa_ctx, stream_idx, 
+                AudioDecoder::sink_info_callback, this));
+    return pa_cvolume_is_muted(&_info.volume);
 }
 
 void AudioDecoder::run()
@@ -2120,7 +2230,7 @@ void AudioDecoder::run()
 
         AVPacket pkt = audioPackets.deque();
         if (pkt.data == eofPkt.data) {
-            fprintf(stderr, "%s: eof received\n", __func__);
+            fprintf(stderr, "AudioDecoder:%s: eof received\n", __func__);
             break;
         }
 
@@ -2136,11 +2246,6 @@ AudioDecoder::~AudioDecoder()
 {
     avresample_close(_avrCtx);
     avresample_free(&_avrCtx);
-
-    if (_pa) {
-        pa_simple_flush(_pa, NULL);
-        pa_simple_free(_pa);
-    }
 }
 
 //------------------------------------------------------------------------
@@ -2287,12 +2392,6 @@ bool VpuMainThread::isHardwareSupported()
     return true;
 }
 
-int VpuMainThread::decodeAudio(AVPacket* pkt)
-{
-    AVPacket dst = *pkt;
-    audioPackets.put(dst);
-}
-
 double VpuMainThread::getClock()
 {
     return _audioClock;
@@ -2324,6 +2423,7 @@ void VpuMainThread::seekBackward(int secs)
     fprintf(stderr, "%s: pos %lld\n", __func__, _seekPos);
     _seekPending.store(1);
 }
+
 
 void VpuMainThread::stop()
 {

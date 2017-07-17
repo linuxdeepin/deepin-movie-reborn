@@ -96,14 +96,28 @@ struct VideoPacketQueue {
 
 class AudioDecoder: public QThread
 {
+    Q_OBJECT
 public:
     AudioDecoder(AVStream* st, AVCodecContext *ctx);
     virtual ~AudioDecoder();
+
+    qreal getVolume() const;
+    bool setVolume(qreal value);
+    bool setMute(bool value);
+    bool isMuted();
 
     static void context_state_callback(pa_context *c, void *userdata);
     static void stream_state_callback(pa_stream *s, void *userdata);
     static void stream_write_callback(pa_stream *s, size_t length, void *userdata);
     static void success_callback(pa_stream *s, int success, void *userdata);
+    static void sink_info_callback(pa_context *c, const pa_sink_input_info *i, 
+            int is_last, void *userdata);
+    static void context_subscribe_callback(pa_context *c, pa_subscription_event_type_t type,
+            uint32_t idx, void *userdata);
+
+signals:
+    void muteChanged(bool muted);
+    void volumeChanged(qreal val);
 
 protected:
     void run() override;
@@ -111,9 +125,9 @@ protected:
 private:
     AVCodecContext *_audioCtx {nullptr};
     AVStream *_audioSt {nullptr};
-    pa_simple *_pa {nullptr};
     AVAudioResampleContext *_avrCtx {nullptr};
     
+    pa_sink_input_info _info {0};
     pa_threaded_mainloop *_pa_loop {0};
     pa_context *_pa_ctx {0};
     pa_stream *_pa_stream {0};
@@ -216,7 +230,6 @@ public:
 
     //return if video stream of the file can be hardware decoded
     bool isHardwareSupported();
-    int decodeAudio(AVPacket* pkt);
 
     // get referencing clock (right now is audio clock)
     double getClock();

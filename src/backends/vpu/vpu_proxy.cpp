@@ -120,7 +120,8 @@ void VpuProxy::video_refresh_timer()
         fprintf(stderr, "%s: audio clock %f, vp.pts %f, delay %f, diff %f, actual_delay %f, _frameTimer %f\n",
                 __func__, ref_clock, vp.pts, delay, diff, actual_delay, _frameTimer);
 
-        QTimer::singleShot((int)(actual_delay * 1000 + 0.5), this, &VpuProxy::video_refresh_timer);
+        //QTimer::singleShot((int)(actual_delay * 1000 + 0.5), this, &VpuProxy::video_refresh_timer);
+        QTimer::singleShot(0, this, &VpuProxy::video_refresh_timer);
         
         this->update();
         _elapsed = vp.pts;
@@ -135,6 +136,9 @@ void VpuProxy::setPlayFile(const QFileInfo& fi)
     if (_d == nullptr) {
         _d = new VpuMainThread(fi.absoluteFilePath());
         _d->videoThread()->updateViewportSize(size());
+
+        connect(_d->audioThread(), &AudioDecoder::muteChanged, this, &Backend::muteChanged);
+        connect(_d->audioThread(), &AudioDecoder::volumeChanged, this, &Backend::volumeChanged);
     }
 
     updatePlayingMovieInfo();
@@ -180,32 +184,52 @@ void VpuProxy::toggleSubtitle()
 
 void VpuProxy::volumeUp()
 {
+    if (_d) {
+        auto ad = _d->audioThread();
+        auto vol = qMin(1.0, ad->getVolume() + 0.1);
+        ad->setVolume(vol);
+    }
 }
 
 void VpuProxy::changeVolume(int val)
 {
+    if (_d) {
+        auto ad = _d->audioThread();
+        qreal vol = qMin(qMax(val, 0), 100) / 100.0;
+        ad->setVolume(vol);
+    }
 }
 
 void VpuProxy::volumeDown()
 {
+    if (_d) {
+        auto ad = _d->audioThread();
+        auto vol = qMax(0.0, ad->getVolume() - 0.1);
+        ad->setVolume(vol);
+    }
 }
 
 int VpuProxy::volume() const
 {
-    return 100;
+    auto vol = _d ? _d->audioThread()->getVolume() : 1.0;
+    fprintf(stderr, "%s: vol = %f\n", __func__, vol);
+    return vol * 100;
 }
 
 bool VpuProxy::muted() const
 {
-    return false;
+    return _d ? _d->audioThread()->isMuted() : false;
 }
 
 void VpuProxy::toggleMute()
 {
+    if (_d) _d->audioThread()->setMute(!muted());
 }
 
 void VpuProxy::play()
 {
+    if (!_d) return;
+
     _d->start();
 
     setState(PlayState::Playing);
@@ -228,11 +252,10 @@ void VpuProxy::stop()
 {
     fprintf(stderr, "VpuProxy stop\n");
     if (_d) {
+        _reqQuit = true;
         setState(PlayState::Stopped);
         disconnect(_d, 0, 0, 0);
         _d->stop();
-        _reqQuit = true;
-
         int tries = 10;
         while (tries--) 
             _d->wait(500);
