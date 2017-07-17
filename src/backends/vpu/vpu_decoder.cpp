@@ -1839,15 +1839,42 @@ int AudioDecoder::decodeFrames(AVPacket* pkt, uint8_t *audio_buf, int buf_size)
             auto duration = qint64(kHz * (out_linesize / bytesPerFrame)) / _audioCtx->sample_rate;
 
             while (pa_stream_writable_size(_pa_stream) < out_linesize) {
-                auto us = qint64(kHz * ((out_linesize - _pulse_available_size) / bytesPerFrame)) / _audioCtx->sample_rate;
-                fprintf(stderr, "%s: sleep %dms\n", __func__, (int)(us/1000));
-                msleep(us/1000);
+                auto us = qint64(kHz * ((out_linesize - pa_stream_writable_size(_pa_stream)) / bytesPerFrame)) / _audioCtx->sample_rate;
+                us = qMax(us / 1000, 2LL);
+                fprintf(stderr, "%s: sleep %dms\n", __func__, (int)(us));
+                if (us > 0) msleep(us);
                 //QMutexLocker l(&_lock);
                 //_cond.wait(l.mutex(), us/1000);
             }
-            if(pkt->pts != AV_NOPTS_VALUE) {
-                _audioClock = av_q2d(_audioSt->time_base) * pkt->pts;
+
+
+            if (_last_available_size < _pulse_available_size) {
+                if (_frames.size()) {
+                    AudioFrame af;
+                    while (_frames.size())
+                        af = _frames.dequeue();
+                    int delta = _pulse_available_size - _last_available_size;
+
+                    auto us = qint64(kHz * (delta / bytesPerFrame)) / _audioCtx->sample_rate;
+                    qreal inc = (qreal)us / 1000000.0;
+                    _audioClock = af.pts;
+                    _audioClock += inc;
+                    fprintf(stderr, "%s: last - current = %d, update audio clock %f, inc %f, frames %d\n", __func__,
+                            delta, _audioClock, inc, _frames.size());
+                }
+                
             }
+
+            AudioFrame af;
+            af.size = out_linesize;
+            if(pkt->pts != AV_NOPTS_VALUE) {
+                af.pts = av_q2d(_audioSt->time_base) * pkt->pts;
+            }
+            {
+                QMutexLocker l(&_lock);
+                _frames.enqueue(af);
+            }
+
             double delay = (av_gettime() / 1000000.0) - _audioCurrentTime;
             _audioCurrentTime = (av_gettime() / 1000000.0);
 
@@ -1855,16 +1882,17 @@ int AudioDecoder::decodeFrames(AVPacket* pkt, uint8_t *audio_buf, int buf_size)
             {
                 ScopedPALocker lock(_pa_loop);
                 pa_stream_write(_pa_stream, inbuf, out_linesize, NULL, 0, PA_SEEK_RELATIVE);
+                _last_available_size = _pulse_available_size;
                 _pulse_available_size -= out_linesize;
                 //_pulse_available_size = 0;
             }
 
-            fprintf(stderr, "%s: update audio clock %f, actual delay %f, delay %f,"
+            fprintf(stderr, "%s: update audio clock %f, decoded %f, actual delay %f, delay %f,"
                     " outsize %d, writable %d\n",
-                    __func__, _audioClock, delay,  _audioClock - _lastPts,
+                    __func__, _audioClock, af.pts, delay,  af.pts - _lastPts,
                     out_linesize, pa_stream_writable_size(_pa_stream));
 
-            _lastPts = _audioClock;
+            _lastPts = af.pts;
             av_freep(&out_data);
         }
         av_frame_unref(&frame);
@@ -1968,9 +1996,15 @@ void AudioDecoder::context_subscribe_callback(pa_context *c, pa_subscription_eve
 
 void AudioDecoder::stream_write_callback(pa_stream *s, size_t length, void *userdata)
 {
+    static double _timer = (av_gettime() / 1000000.0);
+
     AudioDecoder *self = reinterpret_cast<AudioDecoder*>(userdata);
-    fprintf(stderr, "%s: length %lu\n", __func__, length);
-    self->_pulse_available_size = length;
+    {
+        QMutexLocker l(&self->_lock);
+        self->_pulse_available_size = length;
+    }
+    fprintf(stderr, "%s: length %lu, last %lu\n", __func__, length, self->_last_available_size);
+
     pa_threaded_mainloop_signal(self->_pa_loop, 0);
 }
 
@@ -2034,6 +2068,7 @@ bool AudioDecoder::init()
 
     pa_format_info *fi = pa_format_info_new();
     fi->encoding = PA_ENCODING_PCM;
+
     pa_format_info_set_sample_format(fi, PA_SAMPLE_S16NE);
     pa_format_info_set_channels(fi, _audioCtx->channels);
     pa_format_info_set_rate(fi, _audioCtx->sample_rate);

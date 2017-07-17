@@ -94,6 +94,11 @@ struct VideoPacketQueue {
     int size();
 };
 
+struct AudioFrame {
+    double pts;
+    int size;
+};
+
 class AudioDecoder: public QThread
 {
     Q_OBJECT
@@ -134,7 +139,11 @@ private:
     pa_threaded_mainloop *_pa_loop {0};
     pa_context *_pa_ctx {0};
     pa_stream *_pa_stream {0};
+
     size_t _pulse_available_size {0};
+    size_t _last_available_size {0};
+
+    QQueue<AudioFrame> _frames; // pending frames to be written out
 
     double _audioCurrentTime {0.0};
     double _lastPts {0.0};
