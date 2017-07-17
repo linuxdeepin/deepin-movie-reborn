@@ -40,6 +40,7 @@ PlayerEngine::PlayerEngine(QWidget *parent)
 PlayerEngine::~PlayerEngine()
 {
     if (_current) {
+        disconnect(_current, 0, 0, 0);
         delete _current;
         _current = nullptr;
     }

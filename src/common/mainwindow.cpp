@@ -424,6 +424,9 @@ void MainWindow::onMonitorMotionNotify(int x, int y)
 MainWindow::~MainWindow()
 {
     qDebug() << __func__;
+    disconnect(_engine, 0, 0, 0);
+    disconnect(&_engine->playlist(), 0, 0, 0);
+
     //delete _evm;
 }
 

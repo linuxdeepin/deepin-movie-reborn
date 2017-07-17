@@ -57,7 +57,8 @@ void VpuProxy::paintEvent(QPaintEvent *pe)
 {
     if (_lastFrame.data) {
         QPainter p(this);
-        auto img = QImage(_lastFrame.data, _lastFrame.width, _lastFrame.height, QImage::Format_RGB32);
+        auto img = QImage(_lastFrame.data, _lastFrame.width,
+                qMin(_lastFrame.height, height()), QImage::Format_RGB32);
         p.drawImage(0, 0, img);
         p.end();
 
@@ -120,8 +121,7 @@ void VpuProxy::video_refresh_timer()
         fprintf(stderr, "%s: audio clock %f, vp.pts %f, delay %f, diff %f, actual_delay %f, _frameTimer %f\n",
                 __func__, ref_clock, vp.pts, delay, diff, actual_delay, _frameTimer);
 
-        //QTimer::singleShot((int)(actual_delay * 1000 + 0.5), this, &VpuProxy::video_refresh_timer);
-        QTimer::singleShot(0, this, &VpuProxy::video_refresh_timer);
+        QTimer::singleShot((int)(actual_delay * 1000 + 0.5), this, &VpuProxy::video_refresh_timer);
         
         this->update();
         _elapsed = vp.pts;

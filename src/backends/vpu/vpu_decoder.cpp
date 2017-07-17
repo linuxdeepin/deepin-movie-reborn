@@ -614,6 +614,7 @@ struct GALSurface {
         gceSTATUS status;
         if (!_locked) {
             gcmVERIFY_OK(gcoSURF_Lock(surf, phyAddr, lgcAddr));
+            _locked = true;
             //fprintf(stderr, "%s: %s %x %x\n", __func__, "phy", phyAddr[0], lgcAddr[0]);
             //fprintf(stderr, "%s: %s %x %x\n", __func__, "phy", phyAddr[1], lgcAddr[1]);
             //fprintf(stderr, "%s: %s %x %x\n", __func__, "phy", phyAddr[2], lgcAddr[2]);
@@ -1581,7 +1582,6 @@ double VpuDecoder::synchronize_video(AVFrame *src_frame, double pts)
 
 int VpuDecoder::loop()
 {
-    int i = 0;
 	RetCode			ret =  RETCODE_SUCCESS;		
 	int			    randomAccess = 0, randomAccessPos = 0;
 
@@ -1692,18 +1692,21 @@ int VpuDecoder::loop()
                 break;
             }
             break;
+
         } else if (pkt.data == flushPkt.data) {
             if (decOP.bitstreamMode != BS_MODE_PIC_END) {
-                //clear all frame buffer except current frame
-                frame_queue_dequeue_all(display_queue);
-                //if (frame_queue_check_in_queue(display_queue, i) == 0)
-                    //VPU_DecClrDispFlag(handle, i);
+                //clear all frame buffers
+                int i = 0;
+                do {
+                    ret = frame_queue_dequeue(display_queue, &i);
+                    if (ret >=0) VPU_DecClrDispFlag(handle, i);
+                } while (ret >= 0);	
 
                 //Clear all display buffer before Bitstream & Frame buffer flush
-                ret = VPU_DecFrameBufferFlush(handle);
-                if( ret != RETCODE_SUCCESS ) {
-                    VLOG(ERR, "VPU_DecGetBitstreamBuffer failed Error code is 0x%x \n", ret );
-                }
+                //ret = VPU_DecFrameBufferFlush(handle);
+                //if( ret != RETCODE_SUCCESS ) {
+                    //VLOG(ERR, "VPU_DecGetBitstreamBuffer failed Error code is 0x%x \n", ret );
+                //}
             }
             continue;
         }
@@ -1720,54 +1723,6 @@ int VpuDecoder::loop()
 			}
 			VPU_DecSetRdPtr(handle, decOP.bitstreamBuffer, 1);	
 		}
-
-        //FIXME:
-#if 0
-        if (err < 0) {
-            if (pkt->stream_index == idxVideo)
-                chunkIdx++;	
-
-            if (err==AVERROR_EOF || url_feof(ic->pb)) {
-                bsfillSize = VPU_GBU_SIZE*2;
-                chunkSize = 0;					
-                VPU_DecUpdateBitstreamBuffer(handle, STREAM_END_SIZE);	//tell VPU to reach the end of stream. starting flush decoded output in VPU
-                goto FLUSH_BUFFER;
-            }
-            continue;
-        }
-
-		
-		if (randomAccess)
-		{
-			int tot_frame;
-			int pos_frame;
-
-			tot_frame = (int)videoSt->nb_frames;
-			pos_frame = (tot_frame/100) * randomAccessPos;
-			if (pos_frame < ctxVideo->frame_number)
-				continue;			
-			else
-			{
-				randomAccess = 0;
-
-				if (decOP.bitstreamMode != BS_MODE_PIC_END)
-				{
-					//clear all frame buffer except current frame
-					if (frame_queue_check_in_queue(display_queue, i) == 0)
-						VPU_DecClrDispFlag(handle, i);
-									
-					//Clear all display buffer before Bitstream & Frame buffer flush
-					ret = VPU_DecFrameBufferFlush(handle);
-					if( ret != RETCODE_SUCCESS )
-					{
-						VLOG(ERR, "VPU_DecGetBitstreamBuffer failed Error code is 0x%x \n", ret );
-						goto ERR_DEC_OPEN;
-					}
-
-				}
-			}
-		}
-#endif
 
 		chunkData = pkt.data;
 		chunkSize = pkt.size;
@@ -1882,25 +1837,19 @@ int AudioDecoder::decodeFrames(AVPacket* pkt, uint8_t *audio_buf, int buf_size)
             qint64 kHz = 1000000LL;
             qint64 bytesPerFrame = 2 * frame.channels;
             auto duration = qint64(kHz * (out_linesize / bytesPerFrame)) / _audioCtx->sample_rate;
-            //auto duration = qint64(kHz * nr_read_samples) / _audioCtx->sample_rate;
 
-            while (_pulse_available_size < out_linesize) {
+            while (pa_stream_writable_size(_pa_stream) < out_linesize) {
                 auto us = qint64(kHz * ((out_linesize - _pulse_available_size) / bytesPerFrame)) / _audioCtx->sample_rate;
-                QThread::msleep(us/1000);
-                //QThread::yieldCurrentThread();
+                fprintf(stderr, "%s: sleep %dms\n", __func__, (int)(us/1000));
+                msleep(us/1000);
+                //QMutexLocker l(&_lock);
+                //_cond.wait(l.mutex(), us/1000);
             }
-
             if(pkt->pts != AV_NOPTS_VALUE) {
                 _audioClock = av_q2d(_audioSt->time_base) * pkt->pts;
             }
             double delay = (av_gettime() / 1000000.0) - _audioCurrentTime;
             _audioCurrentTime = (av_gettime() / 1000000.0);
-
-            fprintf(stderr, "%s: update audio clock %f, actual delay %f, delay %f,"
-                    " outsize %d, duration %lld, _pulse_available_size %d, writable %d\n",
-                    __func__, _audioClock, delay,  _audioClock - _lastPts,
-                    out_linesize, duration, _pulse_available_size,
-                        pa_stream_writable_size(_pa_stream));
 
             char *inbuf = (char*)out_data;
             {
@@ -1908,15 +1857,18 @@ int AudioDecoder::decodeFrames(AVPacket* pkt, uint8_t *audio_buf, int buf_size)
                 pa_stream_write(_pa_stream, inbuf, out_linesize, NULL, 0, PA_SEEK_RELATIVE);
                 _pulse_available_size -= out_linesize;
                 //_pulse_available_size = 0;
-                //QThread::msleep(10);
             }
-            _lastPts = _audioClock;
 
+            fprintf(stderr, "%s: update audio clock %f, actual delay %f, delay %f,"
+                    " outsize %d, writable %d\n",
+                    __func__, _audioClock, delay,  _audioClock - _lastPts,
+                    out_linesize, pa_stream_writable_size(_pa_stream));
+
+            _lastPts = _audioClock;
             av_freep(&out_data);
         }
         av_frame_unref(&frame);
     }
-    //QThread::yieldCurrentThread();
 }
 
 
@@ -2101,10 +2053,18 @@ bool AudioDecoder::init()
     pa_stream_set_state_callback(_pa_stream, AudioDecoder::stream_state_callback, this);
     //pa_stream_set_latency_update_callback(_pa_stream, AudioDecoder::latencyUpdateCallback, this);
 
+    pa_sample_spec ss = {
+        .format = PA_SAMPLE_S16NE,
+        .rate = _audioCtx->sample_rate,
+        .channels = _audioCtx->channels,
+    };
+    auto bytes = pa_usec_to_bytes(10*1000, &ss);
+
+
     pa_buffer_attr ba;
     ba.maxlength = 65536; // max buffer size on the server
     ba.tlength = (uint32_t)-1; // ?
-    ba.prebuf = 1;//(uint32_t)-1; // play as soon as possible
+    ba.prebuf = -1;
     ba.minreq = (uint32_t)-1;
     ba.fragsize = (uint32_t)-1;
     pa_stream_flags_t flags = pa_stream_flags_t(PA_STREAM_NOT_MONOTONIC|
@@ -2234,6 +2194,16 @@ void AudioDecoder::run()
             break;
         }
 
+        if (pkt.data == flushPkt.data) {
+            _audioCurrentTime = 0.0;
+            waitToFinished(pa_stream_flush(_pa_stream,  AudioDecoder::success_callback, this));
+            continue;
+        }
+
+        if (_audioCurrentTime == 0.0) {
+            _audioCurrentTime = av_q2d(_audioSt->time_base) * pkt.pts;
+            _audioClock = pkt.pts;
+        }
         AVPacket copy = pkt;
         decodeFrames(&copy, 0, 0);
         av_free_packet(&pkt);
@@ -2456,6 +2426,8 @@ void VpuMainThread::run()
 
     av_init_packet(&eofPkt);
     eofPkt.data = "EOF";
+    av_init_packet(&flushPkt);
+    eofPkt.data = "FLUSH";
 
     _videoThread->start();
     _audioThread->start();
@@ -2485,7 +2457,7 @@ void VpuMainThread::run()
                 videoPackets.put(flushPkt);
                 videoFrames.flush();
                 audioPackets.flush();
-                //audioPackets.put(&flushPkt);
+                audioPackets.put(flushPkt);
 
                 avcodec_flush_buffers(ctxVideo);
                 avcodec_flush_buffers(ctxAudio);

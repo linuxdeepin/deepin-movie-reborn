@@ -127,6 +127,9 @@ private:
     AVStream *_audioSt {nullptr};
     AVAudioResampleContext *_avrCtx {nullptr};
     
+    QMutex _lock;
+    QWaitCondition _cond;
+
     pa_sink_input_info _info {0};
     pa_threaded_mainloop *_pa_loop {0};
     pa_context *_pa_ctx {0};
