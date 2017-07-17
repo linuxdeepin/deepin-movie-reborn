@@ -99,28 +99,14 @@ static void pci_read_memory(unsigned int addr, unsigned char *buf, int size);
 
 #endif 
 
-#ifdef CNM_FPGA_PLATFORM
-//#define SUPPORT_ALLOCATE_MEMORY_FROM_DRIVER
-//#define SUPPORT_INTERRUPT
-#	define VPU_BIT_REG_SIZE		(0x4000*MAX_NUM_VPU_CORE)
-#	define VPU_BIT_REG_BASE		0x10000000
-#	define VDI_SRAM_BASE_ADDR	0x00
-#	define VDI_SRAM_SIZE		0x20000
-#	define VDI_SYSTEM_ENDIAN	VDI_BIG_ENDIAN
-#	define VDI_DRAM_PHYSICAL_BASE	0x80000000
-#	define VDI_DRAM_PHYSICAL_SIZE	(128*1024*1024)
-#else
-#	define SUPPORT_ALLOCATE_MEMORY_FROM_DRIVER
-#	define SUPPORT_INTERRUPT
-#	define VPU_BIT_REG_SIZE	(0x4000*MAX_NUM_VPU_CORE)
-#		define VDI_SRAM_BASE_ADDR	0x00000000	// if we can know the sram address in SOC directly for vdi layer. it is possible to set in vdi layer without allocation from driver
-#		define VDI_SRAM_SIZE		0x20000		// FHD MAX size, 0x17D00  4K MAX size 0x34600
-#	define VDI_SYSTEM_ENDIAN VDI_LITTLE_ENDIAN
-#endif
+#define SUPPORT_ALLOCATE_MEMORY_FROM_DRIVER
+#define SUPPORT_INTERRUPT
+#define VPU_BIT_REG_SIZE	(0x4000*MAX_NUM_VPU_CORE)
+#define VDI_SRAM_BASE_ADDR	0x00000000	// if we can know the sram address in SOC directly for vdi layer. it is possible to set in vdi layer without allocation from driver
+#define VDI_SRAM_SIZE		0x20000		// FHD MAX size, 0x17D00  4K MAX size 0x34600
+#define VDI_SYSTEM_ENDIAN VDI_LITTLE_ENDIAN
 
-#ifdef SUPPORT_MULTI_CORE_IN_ONE_DRIVER
 #define VPU_CORE_BASE_OFFSET 0x4000
-#endif
 
 #define VPU_DEVICE_NAME "/dev/vpu"
 
@@ -277,21 +263,14 @@ void dma_copy_to_vmem(unsigned int dst, unsigned char* src, int len)
 {
         struct dma_info *dma_info;
         dma_info = malloc(sizeof(struct dma_info));
-//      printf("malloc dma_info: %p\n", dma_info);
-//	void *buf;
-//	buf = malloc(len);
-//	memcpy(buf,src,len);
+
         dma_info->vsrc          = (unsigned long)src;
-//        dma_info->vsrc          = (unsigned long)buf;
         dma_info->vdst          = (unsigned long)dst;
         dma_info->size          = len;
         dma_info->direction     = DMAR;
 //        printf("before dma_info.vsrc=%#lx ,dma_info.vdst=%#lx,dma_info.size=%#lx dma_info.direction=%#x\n",
 //                        dma_info->vsrc,dma_info->vdst,dma_info->size,dma_info->direction);
         ioctl(dma_fd, DMA_TRANSFER, dma_info);
-//      printf("after dma_transfer\n");
-//      printf("free dma_info: %p\n", dma_info);
-//	free(buf);
         free(dma_info);
 }
 
@@ -308,8 +287,6 @@ void dma_copy_from_vmem(unsigned char* dst, unsigned int src, int len)
 //        printf("before dma_info.vsrc=%#lx ,dma_info.vdst=%#lx,dma_info.size=%#lx dma_info.direction=%#x\n",
 //                dma_info->vsrc,dma_info->vdst,dma_info->size,dma_info->direction);
         ioctl(dma_fd, DMA_TRANSFER, dma_info);
-//      printf("after dma_transfer\n");
-//      printf("free dma_info: %p\n", dma_info);
         free(dma_info);
 }
 
@@ -324,7 +301,6 @@ void dma_copy_in_vmem(unsigned int dst, unsigned int src, int len)
 //        printf("before dma_info.vsrc=%#lx ,dma_info.vdst=%#lx,dma_info.size=%#lx dma_info.direction=%#x\n",
 //                      dma_info->vsrc,dma_info->vdst,dma_info->size,dma_info->direction);
         ioctl(dma_fd, DMA_TRANSFER, dma_info);
-//      printf("after dma_transfer\n");
         free(dma_info);
 }
 
@@ -477,13 +453,11 @@ int vdi_init(unsigned long coreIdx)
 		goto ERR_VDI_INIT;
 	}
 
-#if 1
 	if (vdi_read_register(coreIdx, BIT_CUR_PC) == 0) // if BIT processor is not running.
 	{
 		for (i=0; i<64; i++)
 			vdi_write_register(coreIdx, (i*4) + 0x100, 0x0); 
 	}
-#endif
 	vdi_set_clock_gate(coreIdx, 1);
 //	memset(&vdi->vpu_buffer_pool, 0x00, sizeof(vpudrv_buffer_pool_t)*MAX_VPU_BUFFER_POOL);
 	VLOG(INFO, "[VDI] map vdb_register coreIdx=%d, virtaddr=0x%lx, size=%d\n", coreIdx, vdi->vdb_register.virt_addr, vdi->vdb_register.size);
@@ -493,14 +467,12 @@ int vdi_init(unsigned long coreIdx)
 	vdi_unlock(coreIdx);
 
 	
-	VLOG(INFO, "[VDI] success to init driver \n");	
-//#ifdef USE_DMA	
-        if(dma_enable() < 0)
-        {
+	VLOG(INFO, "[VDI] success to init driver \n");
+
+        if(dma_enable() < 0){
                 VLOG(ERR, "[VDI] fail to open swich dma dev\n");
                 goto ERR_VDI_INIT;
         }
-//#endif
 	return 0;
 
 ERR_VDI_INIT:
@@ -603,11 +575,9 @@ int vdi_release(unsigned long coreIdx)
 
 	
 	memset(vdi, 0x00, sizeof(vdi_info_t));
-#if 1
         if (dma_fd > 0) {
                 close(dma_fd);
         }
-#endif
 	return 0;
 }
 
@@ -878,7 +848,6 @@ int vdi_lock(unsigned long coreIdx)
 				if (vdi_read_register(coreIdx, BIT_BUSY_FLAG) == 1)
 				{
 					vdi_write_register(coreIdx, BIT_BIT_STREAM_PARAM, (1 << 2));
-					printf("BIT_INT_REASON writen to 0\n");
 					vdi_write_register(coreIdx, BIT_INT_REASON, 0);
 					vdi_write_register(coreIdx, BIT_INT_CLEAR, 1);					
 				}
@@ -986,7 +955,7 @@ unsigned int vdi_read_register(unsigned long coreIdx, unsigned int addr)
 {
 	vdi_info_t *vdi = &s_vdi_info[coreIdx];
 	unsigned int *reg_addr = NULL;
-    reg_addr = reg_addr;
+	reg_addr = reg_addr;
 
 #ifdef CNM_FPGA_PLATFORM
 #ifdef SUPPORT_MULTI_CORE_IN_ONE_DRIVER
@@ -1046,12 +1015,12 @@ int vdi_write_memory(unsigned long coreIdx, unsigned int addr, unsigned char *da
 	swap_endian(data, len, endian);
 //	osal_memcpy((void *)((unsigned long)vdb.virt_addr+offset), data, len);	
 #ifndef USE_DMA
-//	printf("io_write_video_mem addr=%#lx, data=%p, len=%d\n",((unsigned long)vdb.virt_addr+offset), data, len);
-//        printf("vdi_write_memory phy=%#lx, virt=%#lx, offset=%#lx\n",(unsigned long)vdb.phys_addr,((unsigned long)vdb.virt_addr+offset), offset);
 	io_write_video_mem((const void *)((unsigned long)vdb.virt_addr+offset), data, len);
 #else
-//	printf("********************************dma_copy_to_vmem\n");
-        dma_copy_to_vmem(addr, data, len);
+	if(len < 0x200)
+		io_write_video_mem((const void *)((unsigned long)vdb.virt_addr+offset), data, len);
+	else
+        	dma_copy_to_vmem(addr, data, len);
 #endif
 
 	return len;
@@ -1091,11 +1060,12 @@ int vdi_read_memory(unsigned long coreIdx, unsigned int addr, unsigned char *dat
 
 //	osal_memcpy(data, (const void *)((unsigned long)vdb.virt_addr+offset), len);
 #ifndef USE_DMA
-//        printf("io_read_video_mem\n");
 	io_read_video_mem(data, (const void *)((unsigned long)vdb.virt_addr+offset), len);
 #else
-//	printf("******************************dma_copy_from_vmem\n");
-        dma_copy_from_vmem(data, addr, len);
+	if(len < 0x200)
+		io_read_video_mem(data, (const void *)((unsigned long)vdb.virt_addr+offset), len);
+	else
+        	dma_copy_from_vmem(data, addr, len);
 #endif
 
 	swap_endian(data, len,  endian);
@@ -1145,9 +1115,6 @@ int vdi_allocate_dma_memory(unsigned long coreIdx, vpu_buffer_t *vb)
 	vb->phys_addr = (unsigned long)vdb.phys_addr;
 	vb->base = (unsigned long)vdb.base;
 	
-#ifdef CNM_FPGA_PLATFORM	
-	vb->virt_addr = (unsigned long)vb->phys_addr;
-#else
 	//map to virtual address
 	vdb.virt_addr = (unsigned long)mmap(NULL, vdb.size, PROT_READ | PROT_WRITE,
 		MAP_SHARED, vdi->vpu_fd, virt_to_phys(vdb.base));
@@ -1157,7 +1124,6 @@ int vdi_allocate_dma_memory(unsigned long coreIdx, vpu_buffer_t *vb)
 		return -1;
 	}
 	vb->virt_addr = vdb.virt_addr;
-#endif
 
 	for (i=0; i<MAX_VPU_BUFFER_POOL; i++)
 	{

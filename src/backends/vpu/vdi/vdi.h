@@ -12,7 +12,7 @@
 #include "mm.h"
 
 
-#define SUPPORT_MULTI_CORE_IN_ONE_DRIVER
+//#define SUPPORT_MULTI_CORE_IN_ONE_DRIVER
 #define MAX_VPU_CORE_NUM MAX_NUM_VPU_CORE
 #define MAX_VPU_BUFFER_POOL (64*MAX_NUM_INSTANCE)
 
@@ -135,7 +135,7 @@ extern "C" {
     void dma_copy_in_vmem(unsigned int dst, unsigned int src, int len);
     void dma_copy_from_vmem(unsigned char* dst, unsigned int src, int len);
 
-#if 0
+#if 1
 	int dma_enable(void);
 #endif	
 #ifdef CNM_FPGA_PLATFORM

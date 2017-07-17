@@ -195,6 +195,8 @@ extern "C"{
 	int frame_queue_count(frame_queue_item_t* queue);
 	int frame_queue_check_in_queue(frame_queue_item_t* queue, int val);
 /* make container */
+#define MAX_HEADER_CNT 3
+#define CONTAINER_HEADER_SIZE (50*MAX_HEADER_CNT)
 #if defined (__cplusplus)
 }
 #endif 

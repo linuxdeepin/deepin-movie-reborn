@@ -26,7 +26,7 @@
 
 
 #ifdef BIT_CODE_FILE_PATH
-#include BIT_CODE_FILE_PATH
+#include "../firmware/Magellan_v1327/Magellan.h"
 #endif
 
 static const Uint16* s_pusBitCode[MAX_NUM_VPU_CORE] = {NULL,};
@@ -3324,7 +3324,7 @@ RetCode VPU_EncOpen(EncHandle * pHandle, EncOpenParam * pop)
 
 	pEncInfo->vbScratch.base    = pEncInfo->vbScratch.virt_addr = pEncInfo->vbScratch.size = 0;
 
-	for (i=0; i<6; i++)
+	for (i=0; i<5; i++)
 		pEncInfo->writeMemProtectCfg.encRegion[i].enable = 0;
 
 
