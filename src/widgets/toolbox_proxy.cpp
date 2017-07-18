@@ -1,3 +1,5 @@
+#include "config.h"
+
 #include "toolbox_proxy.h"
 #include "mainwindow.h"
 #include "event_relayer.h"
@@ -177,12 +179,13 @@ void ToolboxProxy::setup()
     signalMapper->setMapping(_fsBtn, "fs");
     right->addWidget(_fsBtn);
 
+#ifndef ENABLE_VPU_PLATFORM
     _listBtn = new DImageButton();
     _listBtn->setObjectName("ListBtn");
     connect(_listBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_listBtn, "list");
     right->addWidget(_listBtn);
-
+#endif
 
     connect(_engine, &PlayerEngine::stateChanged, this, &ToolboxProxy::updatePlayState);
     connect(_engine, &PlayerEngine::elapsedChanged, [=]() {

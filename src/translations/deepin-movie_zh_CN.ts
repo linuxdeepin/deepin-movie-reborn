@@ -202,65 +202,69 @@
 <context>
     <name>dmr::ActionFactory</name>
     <message>
-        <location filename="../common/actions.cpp" line="34"/>
-        <location filename="../common/actions.cpp" line="53"/>
+        <location filename="../common/actions.cpp" line="35"/>
+        <location filename="../common/actions.cpp" line="54"/>
+        <location filename="../common/actions.cpp" line="64"/>
         <source>Open File</source>
         <translation>打开文件</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="35"/>
-        <location filename="../common/actions.cpp" line="85"/>
+        <location filename="../common/actions.cpp" line="36"/>
+        <location filename="../common/actions.cpp" line="60"/>
+        <location filename="../common/actions.cpp" line="96"/>
         <source>Settings</source>
         <translation>设置</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="36"/>
+        <location filename="../common/actions.cpp" line="37"/>
         <source>Light Theme</source>
         <translation>浅色主题</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="54"/>
+        <location filename="../common/actions.cpp" line="65"/>
         <source>Open URL</source>
         <translation>打开URL</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="58"/>
+        <location filename="../common/actions.cpp" line="69"/>
         <source>Mini Mode</source>
         <translation>迷你模式</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="59"/>
+        <location filename="../common/actions.cpp" line="58"/>
+        <location filename="../common/actions.cpp" line="70"/>
         <source>Always on Top</source>
         <translation>置顶窗口</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="65"/>
+        <location filename="../common/actions.cpp" line="76"/>
         <source>Load</source>
         <translation>载入字幕</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="66"/>
+        <location filename="../common/actions.cpp" line="77"/>
         <source>Select</source>
         <translation>选择字幕</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="67"/>
+        <location filename="../common/actions.cpp" line="78"/>
         <source>Hide</source>
         <translation>隐藏字幕</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="75"/>
+        <location filename="../common/actions.cpp" line="86"/>
         <source>Film Screenshot</source>
         <translation>截图</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="76"/>
+        <location filename="../common/actions.cpp" line="87"/>
         <source>Burst Shooting</source>
         <translation>连拍截图</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="84"/>
-        <location filename="../common/actions.cpp" line="100"/>
+        <location filename="../common/actions.cpp" line="59"/>
+        <location filename="../common/actions.cpp" line="95"/>
+        <location filename="../common/actions.cpp" line="112"/>
         <source>Film Info</source>
         <translation>电影信息</translation>
     </message>
@@ -270,6 +274,7 @@
     </message>
     <message>
         <location filename="../common/actions.cpp" line="57"/>
+        <location filename="../common/actions.cpp" line="68"/>
         <source>Fullscreen</source>
         <translation>全屏</translation>
     </message>
@@ -282,7 +287,7 @@
         <translation type="vanished">置顶</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="64"/>
+        <location filename="../common/actions.cpp" line="75"/>
         <source>Subtitle</source>
         <translation>字幕</translation>
     </message>
@@ -295,7 +300,7 @@
         <translation type="vanished">选择字幕</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="74"/>
+        <location filename="../common/actions.cpp" line="85"/>
         <source>Screenshot</source>
         <translation>截图</translation>
     </message>
@@ -308,7 +313,7 @@
         <translation type="vanished">连拍截图</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="83"/>
+        <location filename="../common/actions.cpp" line="94"/>
         <source>Playlist</source>
         <translation>播放列表</translation>
     </message>
@@ -317,12 +322,12 @@
         <translation type="vanished">电影信息</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="98"/>
+        <location filename="../common/actions.cpp" line="110"/>
         <source>Clear Playlist</source>
         <translation>清空播放列表</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="99"/>
+        <location filename="../common/actions.cpp" line="111"/>
         <source>Open File In File Manager</source>
         <translation>在文件管理器打开文件</translation>
     </message>

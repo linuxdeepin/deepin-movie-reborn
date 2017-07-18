@@ -202,95 +202,100 @@
 <context>
     <name>dmr::ActionFactory</name>
     <message>
-        <location filename="../common/actions.cpp" line="34"/>
-        <location filename="../common/actions.cpp" line="53"/>
+        <location filename="../common/actions.cpp" line="35"/>
+        <location filename="../common/actions.cpp" line="54"/>
+        <location filename="../common/actions.cpp" line="64"/>
         <source>Open File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="35"/>
-        <location filename="../common/actions.cpp" line="85"/>
+        <location filename="../common/actions.cpp" line="36"/>
+        <location filename="../common/actions.cpp" line="60"/>
+        <location filename="../common/actions.cpp" line="96"/>
         <source>Settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="36"/>
+        <location filename="../common/actions.cpp" line="37"/>
         <source>Light Theme</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="54"/>
+        <location filename="../common/actions.cpp" line="65"/>
         <source>Open URL</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="57"/>
+        <location filename="../common/actions.cpp" line="68"/>
         <source>Fullscreen</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="58"/>
+        <location filename="../common/actions.cpp" line="69"/>
         <source>Mini Mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="59"/>
+        <location filename="../common/actions.cpp" line="58"/>
+        <location filename="../common/actions.cpp" line="70"/>
         <source>Always on Top</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="64"/>
+        <location filename="../common/actions.cpp" line="75"/>
         <source>Subtitle</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="65"/>
+        <location filename="../common/actions.cpp" line="76"/>
         <source>Load</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="66"/>
+        <location filename="../common/actions.cpp" line="77"/>
         <source>Select</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="67"/>
+        <location filename="../common/actions.cpp" line="78"/>
         <source>Hide</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="74"/>
+        <location filename="../common/actions.cpp" line="85"/>
         <source>Screenshot</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="75"/>
+        <location filename="../common/actions.cpp" line="86"/>
         <source>Film Screenshot</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="76"/>
+        <location filename="../common/actions.cpp" line="87"/>
         <source>Burst Shooting</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="83"/>
+        <location filename="../common/actions.cpp" line="94"/>
         <source>Playlist</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="84"/>
-        <location filename="../common/actions.cpp" line="100"/>
+        <location filename="../common/actions.cpp" line="59"/>
+        <location filename="../common/actions.cpp" line="95"/>
+        <location filename="../common/actions.cpp" line="112"/>
         <source>Film Info</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="98"/>
+        <location filename="../common/actions.cpp" line="110"/>
         <source>Clear Playlist</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="99"/>
+        <location filename="../common/actions.cpp" line="111"/>
         <source>Open File In File Manager</source>
         <translation type="unfinished"></translation>
     </message>
