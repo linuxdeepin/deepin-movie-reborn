@@ -17,6 +17,7 @@ extern "C" {
 #include <libavformat/avformat.h>
 #include <libavresample/avresample.h>
 
+#define DEBUG
 
 #if defined (__cplusplus)
 }
@@ -33,6 +34,7 @@ VpuProxy::VpuProxy(QWidget *parent)
     setAttribute(Qt::WA_OpaquePaintEvent);
     //setAttribute(Qt::WA_PaintOnScreen);
     setState(PlayState::Stopped);
+    _lastFrame.data = 0;
 }
 
 VpuProxy::~VpuProxy()
@@ -49,6 +51,7 @@ void VpuProxy::resizeEvent(QResizeEvent *re)
 
 void VpuProxy::closeEvent(QCloseEvent *ce)
 {
+    qDebug() << __func__;
     stop();
     ce->accept();
 }
@@ -73,10 +76,7 @@ void VpuProxy::video_refresh_timer()
 
     double actual_delay, delay, sync_threshold, ref_clock, diff;
 
-    if (_d == nullptr || _d->isFinished()) 
-        return;
-
-    if (_reqQuit)
+    if (_reqQuit || _d == nullptr || _d->isFinished()) 
         return;
 
     if(_d->frames().size() == 0) {
@@ -113,13 +113,15 @@ void VpuProxy::video_refresh_timer()
         _frameTimer += delay;
         /* computer the REAL delay */
         actual_delay = _frameTimer - (av_gettime() / 1000000.0);
-        fprintf(stderr, "actual_delay orig = %f\n", actual_delay);
         if(actual_delay < 0.010) {
             /* Really it should skip the picture instead */
             actual_delay = 0.010;
         }
+
+#ifdef DEBUG
         fprintf(stderr, "%s: audio clock %f, vp.pts %f, delay %f, diff %f, actual_delay %f, _frameTimer %f\n",
                 __func__, ref_clock, vp.pts, delay, diff, actual_delay, _frameTimer);
+#endif
 
         QTimer::singleShot((int)(actual_delay * 1000 + 0.5), this, &VpuProxy::video_refresh_timer);
         
@@ -251,17 +253,22 @@ void VpuProxy::pauseResume()
 void VpuProxy::stop()
 {
     fprintf(stderr, "VpuProxy stop\n");
-    if (_d) {
+    if (_d && !_reqQuit) {
         _reqQuit = true;
         setState(PlayState::Stopped);
         disconnect(_d, 0, 0, 0);
         _d->stop();
         int tries = 10;
         while (tries--) 
-            _d->wait(500);
+            _d->wait(1000);
 
         delete _d;
         _d = 0;
+
+        if (_lastFrame.data) {
+            free(_lastFrame.data);
+            _lastFrame.data = 0;
+        }
     }
 
 }

@@ -22,14 +22,16 @@ PlayerEngine::PlayerEngine(QWidget *parent)
 #else
     _current = new MpvProxy(this);
 #endif
-    connect(_current, &Backend::stateChanged, this, &PlayerEngine::onBackendStateChanged);
-    connect(_current, &Backend::tracksChanged, this, &PlayerEngine::tracksChanged);
-    connect(_current, &Backend::elapsedChanged, this, &PlayerEngine::elapsedChanged);
-    connect(_current, &Backend::fileLoaded, this, &PlayerEngine::fileLoaded);
-    connect(_current, &Backend::muteChanged, this, &PlayerEngine::muteChanged);
-    connect(_current, &Backend::volumeChanged, this, &PlayerEngine::volumeChanged);
-    connect(_current, &Backend::notifyScreenshot, this, &PlayerEngine::notifyScreenshot);
-    l->addWidget(_current);
+    if (_current) {
+        connect(_current, &Backend::stateChanged, this, &PlayerEngine::onBackendStateChanged);
+        connect(_current, &Backend::tracksChanged, this, &PlayerEngine::tracksChanged);
+        connect(_current, &Backend::elapsedChanged, this, &PlayerEngine::elapsedChanged);
+        connect(_current, &Backend::fileLoaded, this, &PlayerEngine::fileLoaded);
+        connect(_current, &Backend::muteChanged, this, &PlayerEngine::muteChanged);
+        connect(_current, &Backend::volumeChanged, this, &PlayerEngine::volumeChanged);
+        connect(_current, &Backend::notifyScreenshot, this, &PlayerEngine::notifyScreenshot);
+        l->addWidget(_current);
+    }
 
     setLayout(l);
 
@@ -39,6 +41,9 @@ PlayerEngine::PlayerEngine(QWidget *parent)
 
 PlayerEngine::~PlayerEngine()
 {
+    delete _playlist;
+    _playlist = nullptr;
+
     if (_current) {
         disconnect(_current, 0, 0, 0);
         delete _current;
@@ -49,6 +54,8 @@ PlayerEngine::~PlayerEngine()
 
 void PlayerEngine::onBackendStateChanged()
 {
+    if (!_current) return;
+
     switch (_current->state()) {
         case Backend::PlayState::Playing:
             _state = CoreState::Playing;
@@ -66,12 +73,16 @@ void PlayerEngine::onBackendStateChanged()
 
 const PlayingMovieInfo& PlayerEngine::playingMovieInfo()
 {
+    static PlayingMovieInfo empty;
+
+    if (!_current) return empty;
     return _current->playingMovieInfo();
 }
 
 void PlayerEngine::loadSubtitle(const QFileInfo& fi)
 {
     if (state() == CoreState::Idle) { return; }
+    if (!_current) return;
 
     _current->loadSubtitle(fi);
 }
@@ -79,49 +90,58 @@ void PlayerEngine::loadSubtitle(const QFileInfo& fi)
 bool PlayerEngine::isSubVisible()
 {
     if (state() == CoreState::Idle) { return false; }
+    if (!_current) return false;
 
     return _current->isSubVisible();
 }
 
 void PlayerEngine::toggleSubtitle()
 {
+    if (!_current) return;
     _current->toggleSubtitle();
 
 }
 
 void PlayerEngine::volumeUp()
 {
+    if (!_current) return;
     _current->volumeUp();
 }
 
 void PlayerEngine::changeVolume(int val)
 {
+    if (!_current) return;
     _current->changeVolume(val);
 }
 
 void PlayerEngine::volumeDown()
 {
+    if (!_current) return;
     _current->volumeDown();
 }
 
 int PlayerEngine::volume() const
 {
+    if (!_current) return 100;
     return _current->volume();
 }
 
 bool PlayerEngine::muted() const
 {
+    if (!_current) return false;
     return _current->muted();
 }
 
 void PlayerEngine::toggleMute()
 {
+    if (!_current) return;
     _current->toggleMute();
 }
 
 //FIXME: TODO: update _current according to file 
 void PlayerEngine::requestPlay(int id)
 {
+    if (!_current) return;
     const auto& item = _playlist->items()[id];
     _current->setPlayFile(item.info.absoluteFilePath());
     if (_current->isPlayable()) {
@@ -155,6 +175,7 @@ void PlayerEngine::clearPlaylist()
 
 void PlayerEngine::pauseResume()
 {
+    if (!_current) return;
     if (_state == CoreState::Idle)
         return;
 
@@ -163,6 +184,7 @@ void PlayerEngine::pauseResume()
 
 void PlayerEngine::stop()
 {
+    if (!_current) return;
     _current->stop();
 }
 
@@ -207,12 +229,14 @@ void PlayerEngine::addPlayFile(const QFileInfo& fi)
 
 qint64 PlayerEngine::duration() const
 {
+    if (!_current) return 0;
     return _current->duration();
 }
 
 
 qint64 PlayerEngine::elapsed() const
 {
+    if (!_current) return 0;
     return _current->elapsed();
 }
 

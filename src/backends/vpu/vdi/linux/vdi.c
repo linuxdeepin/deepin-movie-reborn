@@ -1017,7 +1017,7 @@ int vdi_write_memory(unsigned long coreIdx, unsigned int addr, unsigned char *da
 #ifndef USE_DMA
 	io_write_video_mem((const void *)((unsigned long)vdb.virt_addr+offset), data, len);
 #else
-	if(len < 0x200)
+	if(len < 0x20)
 		io_write_video_mem((const void *)((unsigned long)vdb.virt_addr+offset), data, len);
 	else
         	dma_copy_to_vmem(addr, data, len);
@@ -1062,7 +1062,7 @@ int vdi_read_memory(unsigned long coreIdx, unsigned int addr, unsigned char *dat
 #ifndef USE_DMA
 	io_read_video_mem(data, (const void *)((unsigned long)vdb.virt_addr+offset), len);
 #else
-	if(len < 0x200)
+	if(len < 0x20)
 		io_read_video_mem(data, (const void *)((unsigned long)vdb.virt_addr+offset), len);
 	else
         	dma_copy_from_vmem(data, addr, len);

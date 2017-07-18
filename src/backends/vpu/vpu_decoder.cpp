@@ -33,6 +33,7 @@ extern "C" {
 #include <libavformat/avformat.h>
 #include <libavresample/avresample.h>
 
+#define DEBUG
 
 #if defined (__cplusplus)
 }
@@ -771,9 +772,9 @@ public:
         srcRect.right = _srcSurf->width;
         srcRect.bottom = _srcSurf->height;
 
-        fprintf(stderr, "%s: (%d, %d, %d, %d) dst (%d, %d, %d, %d)\n", __func__,
-                dstRect.left, dstRect.top, dstRect.right, dstRect.bottom,
-                srcRect.left, srcRect.top, srcRect.right, srcRect.bottom);
+        //fprintf(stderr, "%s: (%d, %d, %d, %d) dst (%d, %d, %d, %d)\n", __func__,
+                //dstRect.left, dstRect.top, dstRect.right, dstRect.bottom,
+                //srcRect.left, srcRect.top, srcRect.right, srcRect.bottom);
 
         SurfaceScopedLock dstLock(_dstSurf);
 
@@ -878,10 +879,32 @@ public:
 static GALConverter *galConverter = NULL;
 
 
+
+static int current_coreIdx = -1;
+static void exit_handler(int sig) {
+    if (current_coreIdx < 0)
+        goto stop;
+    fprintf(stderr, "exit_handler deinit\n");
+    VPU_DeInit(current_coreIdx);
+    current_coreIdx = -1;
+stop:
+    signal(sig, 0);
+    ::abort();
+}
+
+static void install_exit_handler() {
+    static const int s[] = {
+            SIGABRT, SIGFPE, SIGILL, SIGSEGV, SIGKILL, SIGINT, 0
+        };
+    for (int i = 0; s[i]; ++i)
+        signal(s[i], exit_handler);
+}
+
 VpuDecoder::VpuDecoder(AVStream *st, AVCodecContext *ctx)
     :QThread(0), videoSt(st), ctxVideo(ctx)
 {
     init();
+    _timePassed = (av_gettime() / 1000000.0);
 }
 
 VpuDecoder::~VpuDecoder() 
@@ -1081,14 +1104,15 @@ int VpuDecoder::seqInit()
     framebufSize = VPU_GetFrameBufSize(framebufStride, framebufHeight, mapType, framebufFormat, &dramCfg);
 
     galConverter = new GALConverter;
+    galConverter->updateSrcSurface(framebufStride, framebufHeight);
 
     // the size of pYuv should be aligned 8 byte. because of C&M HPI bus system constraint.
-    pYuv = (BYTE*)osal_malloc(framebufSize);
-    if (!pYuv) 
-    {
-        VLOG(ERR, "Fail to allocation memory for display buffer\n");
-        return -1;
-    }
+    //pYuv = (BYTE*)osal_malloc(framebufSize);
+    //if (!pYuv) 
+    //{
+        //VLOG(ERR, "Fail to allocation memory for display buffer\n");
+        //return -1;
+    //}
 
     secAxiUse.useBitEnable  = USE_BIT_INTERNAL_BUF;
     secAxiUse.useIpEnable   = USE_IP_INTERNAL_BUF;
@@ -1184,8 +1208,10 @@ int VpuDecoder::sendFrame(AVPacket *pkt)
 
     uchar *data = osal_malloc(_frameImage.bytesPerLine() * _frameImage.height());
     if (use_gal) {
+        QMutexLocker l(&_convertLock);
+
         galConverter->updateDestSurface(_viewportSize.width(), _viewportSize.height());
-        galConverter->updateSrcSurface(outputInfo.dispFrame.stride, outputInfo.dispFrame.height);
+        //galConverter->updateSrcSurface(outputInfo.dispFrame.stride, outputInfo.dispFrame.height);
 
         galConverter->convertYUV2RGBScaled(outputInfo.dispFrame);
         auto stride = galConverter->_dstSurf->stride;
@@ -1223,8 +1249,12 @@ int VpuDecoder::sendFrame(AVPacket *pkt)
 
     if (!_firstFrameSent) _firstFrameSent = true;
 
-    fprintf(stderr, "%s: timestamp %s, convert time %d\n", __func__,
-            QTime::currentTime().toString("ss.zzz").toUtf8().constData(), tm.elapsed());
+    auto now = (av_gettime() / 1000000.0);
+#ifdef DEBUG
+    fprintf(stderr, "%s: timestamp %s, convert time %d, send at %f\n", __func__,
+            QTime::currentTime().toString("ss.zzz").toUtf8().constData(), tm.elapsed(),
+            now - _timePassed);
+#endif
 
     auto total = CommandLineManager::get().debugFrameCount();
     if (total > 0 && frameIdx > total) return -1;
@@ -1436,8 +1466,8 @@ int VpuDecoder::flushVideoBuffer(AVPacket *pkt)
             frameIdx, outputInfo.indexFrameDisplay, outputInfo.picType, outputInfo.indexFrameDecoded );
     }		
 
-    VLOG(TRACE, "#%d:%d, indexDisplay %d || picType %d || indexDecoded %d || rdPtr=0x%x || wrPtr=0x%x || chunkSize = %d, consume=%d\n", 
-        instIdx, frameIdx, outputInfo.indexFrameDisplay, outputInfo.picType, outputInfo.indexFrameDecoded, outputInfo.rdPtr, outputInfo.wrPtr, chunkSize+picHeaderSize, outputInfo.consumedByte);
+    //VLOG(TRACE, "#%d:%d, indexDisplay %d || picType %d || indexDecoded %d || rdPtr=0x%x || wrPtr=0x%x || chunkSize = %d, consume=%d\n", 
+        //instIdx, frameIdx, outputInfo.indexFrameDisplay, outputInfo.picType, outputInfo.indexFrameDecoded, outputInfo.rdPtr, outputInfo.wrPtr, chunkSize+picHeaderSize, outputInfo.consumedByte);
 
     //SaveDecReport(coreIdx, handle, &outputInfo, decOP.bitstreamFormat, ((initialInfo.picWidth+15)&~15)/16);
     if (outputInfo.chunkReuseRequired) // reuse previous chunk. that would be 1 once framebuffer is full.
@@ -1528,8 +1558,30 @@ int VpuDecoder::flushVideoBuffer(AVPacket *pkt)
         ppIdx = (ppIdx+1)%MAX_ROT_BUF_NUM;
 
     if (pkt->data != eofPkt.data && pkt->data != flushPkt.data) {
-        if (sendFrame(pkt) < 0) 
+#if 0
+                double tm = _audioClock;
+                if(pkt->dts != AV_NOPTS_VALUE) {
+                    tm = pkt->dts * av_q2d(videoSt->time_base);
+                }
+
+                auto delta = (_audioClock - tm);
+                if (delta > 0.16) {
+                    fprintf(stderr, "%s: clock %f, last drop %f, drop video frame at %f, \
+                            drop_count %d\n",
+                            __func__, _audioClock, last_drop_pts, tm, drop_count);
+                    drop_count++;
+                    last_drop_pts = tm;
+                    last_dropped = true;
+                    //av_free_packet(pkt);
+                }
+#endif
+
+        auto now = (av_gettime() / 1000000.0);
+        fprintf(stderr, "decoding done at %f\n", now - _timePassed);
+
+        if (!last_dropped && sendFrame(pkt) < 0) 
             _quitFlags.store(1); // break;
+        last_dropped = false;
     }
     
     if (check_VSYNC_flag())
@@ -1606,6 +1658,8 @@ int VpuDecoder::loop()
 	}
 
 	CheckVersion(coreIdx);
+    current_coreIdx = coreIdx;
+    install_exit_handler();
 
 
 	decOP.bitstreamFormat = fourCCToCodStd(ctxVideo->codec_tag);
@@ -1694,6 +1748,8 @@ int VpuDecoder::loop()
             break;
 
         } else if (pkt.data == flushPkt.data) {
+            avcodec_flush_buffers(ctxVideo);
+
             if (decOP.bitstreamMode != BS_MODE_PIC_END) {
                 //clear all frame buffers
                 int i = 0;
@@ -1782,6 +1838,7 @@ ERR_DEC_INIT:
 		free(picHeader);
 	
 	VPU_DeInit(coreIdx);
+    fprintf(stderr, "VPU_DeInit done\n");
 
 	return 1;
 }
@@ -1801,7 +1858,7 @@ struct ScopedPALocker {
 
 int AudioDecoder::decodeFrames(AVPacket* pkt, uint8_t *audio_buf, int buf_size) 
 {
-    fprintf(stderr, "%s: decode audio frame\n", __func__);
+    //fprintf(stderr, "%s: decode audio frame\n", __func__);
     static int audio_pkt_size = 0;
     static AVFrame frame;
     int len1;
@@ -1827,6 +1884,7 @@ int AudioDecoder::decodeFrames(AVPacket* pkt, uint8_t *audio_buf, int buf_size)
                 + (avresample_get_delay(_avrCtx) + frame.nb_samples); // upper bound
             uint8_t *out_data = NULL;
             int out_linesize = 0;
+
             av_samples_alloc(&out_data, &out_linesize, frame.channels, out_nb_samples, AV_SAMPLE_FMT_S16, 0);
             int nr_read_samples = avresample_convert(_avrCtx, &out_data, out_linesize,
                     out_nb_samples, frame.data, frame.linesize[0], frame.nb_samples);
@@ -1841,7 +1899,8 @@ int AudioDecoder::decodeFrames(AVPacket* pkt, uint8_t *audio_buf, int buf_size)
             while (pa_stream_writable_size(_pa_stream) < out_linesize) {
                 auto us = qint64(kHz * ((out_linesize - _pulse_available_size) / bytesPerFrame)) / _audioCtx->sample_rate;
                 fprintf(stderr, "%s: sleep %dms\n", __func__, (int)(us/1000));
-                msleep(us/1000);
+                int ms = us > 1000 ? us / 1000 : 10;
+                msleep(ms);
                 //QMutexLocker l(&_lock);
                 //_cond.wait(l.mutex(), us/1000);
             }
@@ -1852,6 +1911,13 @@ int AudioDecoder::decodeFrames(AVPacket* pkt, uint8_t *audio_buf, int buf_size)
             _audioCurrentTime = (av_gettime() / 1000000.0);
 
             char *inbuf = (char*)out_data;
+
+            pa_usec_t st_usec = 0, st_latency = 0;
+            int neg = 0;
+            pa_stream_get_time(_pa_stream, &st_usec);
+            pa_stream_get_latency(_pa_stream, &st_latency, &neg);
+            //_audioClock = (qreal)st_usec / 1000000.0;
+
             {
                 ScopedPALocker lock(_pa_loop);
                 pa_stream_write(_pa_stream, inbuf, out_linesize, NULL, 0, PA_SEEK_RELATIVE);
@@ -1859,10 +1925,13 @@ int AudioDecoder::decodeFrames(AVPacket* pkt, uint8_t *audio_buf, int buf_size)
                 //_pulse_available_size = 0;
             }
 
-            fprintf(stderr, "%s: update audio clock %f, actual delay %f, delay %f,"
+#ifdef DEBUG
+            fprintf(stderr, "%s: update audio clock %f, timing %f, latency %f, actual delay %f, delay %f,"
                     " outsize %d, writable %d\n",
-                    __func__, _audioClock, delay,  _audioClock - _lastPts,
+                    __func__, _audioClock, (qreal)st_usec/1000000.0, (qreal)st_latency/1000000.0,
+                    delay,  _audioClock - _lastPts,
                     out_linesize, pa_stream_writable_size(_pa_stream));
+#endif
 
             _lastPts = _audioClock;
             av_freep(&out_data);
@@ -2058,16 +2127,17 @@ bool AudioDecoder::init()
         .rate = _audioCtx->sample_rate,
         .channels = _audioCtx->channels,
     };
-    auto bytes = pa_usec_to_bytes(10*1000, &ss);
+    auto latency = pa_usec_to_bytes(200*1000, &ss);
 
 
     pa_buffer_attr ba;
-    ba.maxlength = 65536; // max buffer size on the server
+    ba.maxlength = 32768; // max buffer size on the server
     ba.tlength = (uint32_t)-1; // ?
-    ba.prebuf = -1;
+    //ba.tlength = latency;
+    ba.prebuf = 1;
     ba.minreq = (uint32_t)-1;
     ba.fragsize = (uint32_t)-1;
-    pa_stream_flags_t flags = pa_stream_flags_t(PA_STREAM_NOT_MONOTONIC|
+    pa_stream_flags_t flags = pa_stream_flags_t(
             PA_STREAM_INTERPOLATE_TIMING|PA_STREAM_AUTO_TIMING_UPDATE);
     if (pa_stream_connect_playback(_pa_stream, NULL /*sink*/, &ba, flags, NULL, NULL) < 0) {
         qWarning("PulseAudio failed: pa_stream_connect_playback");
@@ -2182,6 +2252,15 @@ void AudioDecoder::run()
         deinit();
         return;
     }
+
+    {
+        char inbuf[4096*8];
+        memset(inbuf, 0, sizeof inbuf);
+        ScopedPALocker lock(_pa_loop);
+        pa_stream_write(_pa_stream, inbuf, sizeof inbuf, NULL, 0, PA_SEEK_RELATIVE);
+        waitToFinished(pa_stream_drain(_pa_stream,  AudioDecoder::success_callback, this));
+    }
+
     pid_t tid = syscall(SYS_gettid);
     fprintf(stderr, "AudioDecoder tid %d\n", tid);
 
@@ -2196,6 +2275,7 @@ void AudioDecoder::run()
 
         if (pkt.data == flushPkt.data) {
             _audioCurrentTime = 0.0;
+            avcodec_flush_buffers(_audioCtx);
             waitToFinished(pa_stream_flush(_pa_stream,  AudioDecoder::success_callback, this));
             continue;
         }
@@ -2294,6 +2374,7 @@ VpuMainThread::VpuMainThread(const QString& name)
 
 VpuMainThread::~VpuMainThread()
 {
+    close();
 }
 
 int VpuMainThread::openMediaFile()
@@ -2353,7 +2434,9 @@ void VpuMainThread::close()
     if (ctxVideo) avcodec_close(ctxVideo);
     if (ctxAudio) avcodec_close(ctxAudio);
     if (ctxSubtitle) avcodec_close(ctxSubtitle);
-    if (ic) avformat_close_input(&ic);
+    if (ic) {
+        avformat_close_input(&ic);
+    }
 }
 
 //FIXME: need impl!
@@ -2377,6 +2460,11 @@ void VpuMainThread::seekForward(int secs)
     if (_seekPending.load()) 
         return;
 
+    double now = (av_gettime() / 1000000.0);
+    if (now - _lastSeekTime < 0.500) {
+        return;
+    }
+
     _seekFlags = AVSEEK_FLAG_BACKWARD;
     _seekPos = (getClock() + (double)secs) * AV_TIME_BASE;
     fprintf(stderr, "%s: pos %lld\n", __func__, _seekPos);
@@ -2388,6 +2476,10 @@ void VpuMainThread::seekBackward(int secs)
     if (_seekPending.load()) 
         return;
 
+    double now = (av_gettime() / 1000000.0);
+    if (now - _lastSeekTime < 0.500) {
+        return;
+    }
     _seekFlags = 0;
     _seekPos = (getClock() + (double)secs) * AV_TIME_BASE;
     fprintf(stderr, "%s: pos %lld\n", __func__, _seekPos);
@@ -2398,11 +2490,15 @@ void VpuMainThread::seekBackward(int secs)
 void VpuMainThread::stop()
 {
     if (!_quitFlags.load()) {
+        qDebug() << __func__;
+        QMutexLocker l(&_lock);
+
         audioPackets.flush();
         audioPackets.put(eofPkt);
         videoPackets.flush();
         videoPackets.put(eofPkt);
         videoFrames.flush();
+
         _quitFlags.store(1);
     }
 }
@@ -2420,8 +2516,8 @@ void VpuMainThread::run()
 
     bool audio_started = false;
 
-    audioPackets.capacity = 200;
-    videoPackets.capacity = 50;
+    audioPackets.capacity = 50;
+    videoPackets.capacity = 20;
     videoFrames.capacity = 1;
 
     av_init_packet(&eofPkt);
@@ -2430,7 +2526,11 @@ void VpuMainThread::run()
     eofPkt.data = "FLUSH";
 
     _videoThread->start();
-    _audioThread->start();
+    _audioThread->start(QThread::HighPriority);
+
+    int drop_count = 0;
+    bool last_dropped = false;
+    double last_drop_pts = 0.0;
 
 	while(1) {
         if (_quitFlags.load()) {
@@ -2452,22 +2552,25 @@ void VpuMainThread::run()
             if(av_seek_frame(ic, stream_index, seek_target, _seekFlags) < 0) {
                 fprintf(stderr, "%s: error while seeking\n");
             } else {
-                fprintf(stderr, "flush all by seek\n");
                 videoPackets.flush();
                 videoPackets.put(flushPkt);
-                videoFrames.flush();
                 audioPackets.flush();
                 audioPackets.put(flushPkt);
+                videoFrames.flush();
 
-                avcodec_flush_buffers(ctxVideo);
-                avcodec_flush_buffers(ctxAudio);
+
+                _lastSeekTime = av_gettime() / 1000000.0;
+
+                fprintf(stderr, "flush all by seek\n");
+
+                //avcodec_flush_buffers(ctxVideo);
+                //avcodec_flush_buffers(ctxAudio);
             }
             _seekPending.store(0);
-            continue;
         }
 
         if (audioPackets.full() || videoPackets.full()) {
-            QThread::msleep(20);
+            QThread::msleep(10);
             continue;
         }
 
@@ -2483,9 +2586,28 @@ void VpuMainThread::run()
         }
 
 		if (pkt->stream_index == idxVideo) {
+#if 0
+                double tm = _audioClock;
+                if(pkt->dts != AV_NOPTS_VALUE) {
+                    tm = pkt->dts * av_q2d(ctxVideo->time_base);
+                }
+                auto delta = (_audioClock - tm);
+                if (delta > 0.16) {
+                    fprintf(stderr, "%s: clock %f, last drop %f, drop video frame at %f \
+                            drop_count %d\n",
+                            __func__, _audioClock, last_drop_pts, tm, drop_count);
+                    drop_count++;
+                    last_drop_pts = tm;
+                    last_dropped = true;
+                    av_free_packet(pkt);
+                    continue;
+                }
+#endif
+
             videoPackets.put(*pkt);
-            //if (!_audioThread->isRunning()) {
-                //_audioThread->start();
+            last_dropped = false;
+            //if (!_audioThread->isRunning() && videoFrames.size() > 25) {
+                //_audioThread->start(QThread::HighPriority);
             //}
             continue;
         }

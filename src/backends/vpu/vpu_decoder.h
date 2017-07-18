@@ -172,11 +172,18 @@ private:
     QSize _viewportSize;
     QImage _frameImage;
 
+    QMutex _convertLock;
+
 	AVCodecContext *ctxVideo {0};
     AVStream *videoSt {0};
     bool _firstFrameSent {false};
 
+    double _timePassed {0.0};
     double _videoClock {0.0};
+
+    int drop_count {0};
+    bool last_dropped {false};
+    double last_drop_pts {0.0};
 
 
 	DecConfigParam	decConfig;
@@ -240,13 +247,15 @@ public:
 
     AudioDecoder* audioThread() { return _audioThread; }
     VpuDecoder* videoThread() { return _videoThread; }
-    void stop(); 
 
     void seekForward(int secs);
     void seekBackward(int secs);
 
     int64_t duration() const { return _duration; }
     int64_t elapsed() const { return _elapsed; }
+
+public slots:
+    void stop(); 
 
 signals:
     void elapsedChanged();
@@ -268,6 +277,9 @@ protected:
     QAtomicInt _seekPending {0};
     int64_t _seekPos {0};
     int _seekFlags {0};
+    double _lastSeekTime {0.0};
+
+    QMutex _lock;
 
     AudioDecoder *_audioThread {0};
     VpuDecoder *_videoThread {0};
