@@ -74,14 +74,19 @@ struct AVPacketQueue {
 
 struct VideoFrame
 {
-    uchar *data;
+    uchar *data {0};
     int stride;
     int height;
     int width;
     double pts;
+
+    FrameBuffer fb;
+    int fbIdx {-1};
 };
 
 struct VideoPacketQueue {
+    DecHandle _handle;
+
     QQueue<VideoFrame> data;
     QMutex lock;
     int capacity {25}; 
@@ -91,6 +96,7 @@ struct VideoPacketQueue {
     VideoFrame deque();
     void put(VideoFrame v);
     void flush();
+    void flushAndClear();
     int size();
 };
 
@@ -155,6 +161,7 @@ public:
     void updateViewportSize(QSize sz);
     QSize viewportSize() const { return _viewportSize; }
     bool firstFrameStarted();
+    void convertFrame(VideoFrame* vf);
 
 protected:
     void run() override;
@@ -183,6 +190,7 @@ private:
 
     int drop_count {0};
     bool last_dropped {false};
+    int drop_times {0};
     double last_drop_pts {0.0};
 
 

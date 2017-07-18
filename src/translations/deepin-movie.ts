@@ -221,25 +221,32 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="65"/>
-        <source>Open URL</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../common/actions.cpp" line="57"/>
         <location filename="../common/actions.cpp" line="68"/>
         <source>Fullscreen</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="69"/>
-        <source>Mini Mode</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../common/actions.cpp" line="58"/>
         <location filename="../common/actions.cpp" line="70"/>
         <source>Always on Top</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../common/actions.cpp" line="59"/>
+        <location filename="../common/actions.cpp" line="95"/>
+        <location filename="../common/actions.cpp" line="112"/>
+        <source>Film Info</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../common/actions.cpp" line="65"/>
+        <source>Open URL</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../common/actions.cpp" line="69"/>
+        <source>Mini Mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -283,13 +290,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="59"/>
-        <location filename="../common/actions.cpp" line="95"/>
-        <location filename="../common/actions.cpp" line="112"/>
-        <source>Film Info</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../common/actions.cpp" line="110"/>
         <source>Clear Playlist</source>
         <translation type="unfinished"></translation>
@@ -303,7 +303,7 @@
 <context>
     <name>dmr::AudioDecoder</name>
     <message>
-        <location filename="../backends/vpu/vpu_decoder.cpp" line="2079"/>
+        <location filename="../backends/vpu/vpu_decoder.cpp" line="2159"/>
         <source>PulseAudio %1, protocol: %2, server protocol: %3</source>
         <translation type="unfinished"></translation>
     </message>

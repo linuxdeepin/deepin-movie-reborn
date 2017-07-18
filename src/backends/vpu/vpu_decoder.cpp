@@ -511,12 +511,22 @@ int VideoPacketQueue::size()
     return data.size();
 }
 
+void VideoPacketQueue::flushAndClear()
+{
+    QMutexLocker l(&lock);
+    while (data.count() > 0) {
+        auto vp = data.dequeue();
+        if (vp.data) free(vp.data);
+        VPU_DecClrDispFlag(_handle, vp.fbIdx);
+    }
+}
+
 void VideoPacketQueue::flush()
 {
     QMutexLocker l(&lock);
     while (data.count() > 0) {
         auto vp = data.dequeue();
-        free(vp.data);
+        if (vp.data) free(vp.data);
     }
     full_cond.wakeAll();
 }
@@ -529,10 +539,10 @@ VideoFrame VideoPacketQueue::deque()
         empty_cond.wait(l.mutex());
     }
     full_cond.wakeAll();
-    if (data.count() == 0) {
-        VideoFrame vp = {0, 0};
-        return vp;
-    }
+    //if (data.count() == 0) {
+        //VideoFrame vp = {0, 0};
+        //return vp;
+    //}
     return data.dequeue();
 }
 
@@ -540,6 +550,7 @@ void VideoPacketQueue::put(VideoFrame v)
 {
     QMutexLocker l(&lock);
     if (data.count() >= capacity) {
+        fprintf(stderr, "video frame queue is full, block and wait\n");
         full_cond.wait(l.mutex());
     }
     data.enqueue(v);
@@ -1125,6 +1136,8 @@ int VpuDecoder::seqInit()
 
 
     regFrameBufCount = initialInfo.minFrameBufferCount + EXTRA_FRAME_BUFFER_NUM;
+    videoFrames.capacity = regFrameBufCount;
+    fprintf(stderr, "%s: set video frame buffer capacity: %d\n", __func__, regFrameBufCount);
 
 #ifdef SUPPORT_DEC_RESOLUTION_CHANGE
     decBufInfo.maxDecMbX = framebufWidth/16;
@@ -1198,6 +1211,35 @@ bool VpuDecoder::firstFrameStarted()
     return _firstFrameSent;
 }
 
+void VpuDecoder::convertFrame(VideoFrame* vf)
+{
+    QMutexLocker l(&_convertLock);
+    fprintf(stderr, "%s: vf %f, idx %d\n", __func__, vf->pts, vf->fbIdx);
+    bool use_gal = CommandLineManager::get().useGAL();
+
+    clear_VSYNC_flag();
+    VPU_DecClrDispFlag(handle, vf->fbIdx);
+
+    uchar *data = osal_malloc(vf->stride * vf->height);
+    if (use_gal) {
+        galConverter->updateDestSurface(_viewportSize.width(), _viewportSize.height());
+        galConverter->convertYUV2RGBScaled(outputInfo.dispFrame);
+        galConverter->copyRGBData(data, vf->stride, vf->height);
+
+    } else {
+        _frameImage = QImage(outputInfo.dispFrame.stride, outputInfo.dispFrame.height, 
+                QImage::Format_RGB32);
+        //sw coversion
+        vdi_read_memory(coreIdx, outputInfo.dispFrame.bufY, pYuv, framebufSize, decOP.frameEndian);
+        yuv2rgb_color_format color_format = 
+            convert_vpuapi_format_to_yuv2rgb_color_format(framebufFormat, 0);
+        vpu_yuv2rgb(outputInfo.dispFrame.stride, outputInfo.dispFrame.height,
+                color_format, pYuv, _frameImage.bits(), 1);
+    }
+
+    vf->data = data;
+}
+
 // return -1 to quit
 int VpuDecoder::sendFrame(AVPacket *pkt)
 {
@@ -1205,7 +1247,7 @@ int VpuDecoder::sendFrame(AVPacket *pkt)
 
     QTime tm;
     tm.start();
-
+#if 0
     uchar *data = osal_malloc(_frameImage.bytesPerLine() * _frameImage.height());
     if (use_gal) {
         QMutexLocker l(&_convertLock);
@@ -1214,7 +1256,6 @@ int VpuDecoder::sendFrame(AVPacket *pkt)
         //galConverter->updateSrcSurface(outputInfo.dispFrame.stride, outputInfo.dispFrame.height);
 
         galConverter->convertYUV2RGBScaled(outputInfo.dispFrame);
-        auto stride = galConverter->_dstSurf->stride;
         galConverter->copyRGBData(data, _frameImage.bytesPerLine(), _frameImage.height());
 
     } else {
@@ -1227,6 +1268,7 @@ int VpuDecoder::sendFrame(AVPacket *pkt)
         vpu_yuv2rgb(outputInfo.dispFrame.stride, outputInfo.dispFrame.height,
                 color_format, pYuv, _frameImage.bits(), 1);
     }
+#endif 
 
     double pts = 0.0;
 
@@ -1240,20 +1282,22 @@ int VpuDecoder::sendFrame(AVPacket *pkt)
     pts = synchronize_video(NULL, pts);
 
     VideoFrame vf;
-    vf.data = data;
+    //vf.data = data;
     vf.width = _frameImage.width();
     vf.stride = _frameImage.bytesPerLine();
     vf.height = _frameImage.height();
     vf.pts = pts;
+    vf.fbIdx = outputInfo.indexFrameDisplay;
+    vf.fb = outputInfo.dispFrame;
+    vf.data = 0;
+
     videoFrames.put(vf);
 
     if (!_firstFrameSent) _firstFrameSent = true;
 
     auto now = (av_gettime() / 1000000.0);
 #ifdef DEBUG
-    fprintf(stderr, "%s: timestamp %s, convert time %d, send at %f\n", __func__,
-            QTime::currentTime().toString("ss.zzz").toUtf8().constData(), tm.elapsed(),
-            now - _timePassed);
+    fprintf(stderr, "%s: send %f at %f\n", __func__, pts, now - _timePassed);
 #endif
 
     auto total = CommandLineManager::get().debugFrameCount();
@@ -1366,6 +1410,30 @@ int VpuDecoder::flushVideoBuffer(AVPacket *pkt)
         }
 
         ConfigDecReport(coreIdx, handle, decOP.bitstreamFormat);
+#if 0
+        if (drop_times <= 0) {
+                double tm = _audioClock;
+                if(pkt->dts != AV_NOPTS_VALUE) {
+                    tm = pkt->dts * av_q2d(videoSt->time_base);
+                }
+
+                auto delta = (_audioClock - tm);
+                if (delta > 0.04) {
+                    fprintf(stderr, "%s: clock %f, last drop %f, drop video frame at %f, \
+                            drop_count %d\n",
+                            __func__, _audioClock, last_drop_pts, tm, drop_count);
+                    drop_times = delta / 0.04;
+                    drop_count+=drop_times;
+                    last_drop_pts = tm;
+                    last_dropped = true;
+
+                    decParam.skipframeMode = 2;
+                    decParam.iframeSearchEnable = 0;
+                    //decParam.skipframeNum = 4;
+                }
+        }
+#endif
+
 
         // Start decoding a frame.
         ret = VPU_DecStartOneFrame(handle, &decParam);
@@ -1374,6 +1442,11 @@ int VpuDecoder::flushVideoBuffer(AVPacket *pkt)
             VLOG(ERR,  "VPU_DecStartOneFrame failed Error code is 0x%x \n", ret);
             return -1;
         }
+
+        //drop_times--;
+        //if (drop_times <= 0) {
+            //decParam.skipframeMode = 0;
+        //}
     }
     else
     {
@@ -1466,8 +1539,8 @@ int VpuDecoder::flushVideoBuffer(AVPacket *pkt)
             frameIdx, outputInfo.indexFrameDisplay, outputInfo.picType, outputInfo.indexFrameDecoded );
     }		
 
-    //VLOG(TRACE, "#%d:%d, indexDisplay %d || picType %d || indexDecoded %d || rdPtr=0x%x || wrPtr=0x%x || chunkSize = %d, consume=%d\n", 
-        //instIdx, frameIdx, outputInfo.indexFrameDisplay, outputInfo.picType, outputInfo.indexFrameDecoded, outputInfo.rdPtr, outputInfo.wrPtr, chunkSize+picHeaderSize, outputInfo.consumedByte);
+    VLOG(TRACE, "#%d:%d, indexDisplay %d || picType %d || indexDecoded %d || rdPtr=0x%x || wrPtr=0x%x || chunkSize = %d, consume=%d\n", 
+        instIdx, frameIdx, outputInfo.indexFrameDisplay, outputInfo.picType, outputInfo.indexFrameDecoded, outputInfo.rdPtr, outputInfo.wrPtr, chunkSize+picHeaderSize, outputInfo.consumedByte);
 
     //SaveDecReport(coreIdx, handle, &outputInfo, decOP.bitstreamFormat, ((initialInfo.picWidth+15)&~15)/16);
     if (outputInfo.chunkReuseRequired) // reuse previous chunk. that would be 1 once framebuffer is full.
@@ -1489,8 +1562,16 @@ int VpuDecoder::flushVideoBuffer(AVPacket *pkt)
             {
                 clear_VSYNC_flag();
 
-                if (frame_queue_dequeue(display_queue, &dispDoneIdx) == 0)
-                    VPU_DecClrDispFlag(handle, dispDoneIdx);					
+                fprintf(stderr, "index == -3 or -2\n");
+
+                //if (videoFrames.size()) {
+                    //auto vf = videoFrames.deque();
+                    //if (vf.data) free(vf.data);
+                    //VPU_DecClrDispFlag(handle, vf.fbIdx);
+                //}
+
+                //if (frame_queue_dequeue(display_queue, &dispDoneIdx) == 0)
+                    //VPU_DecClrDispFlag(handle, dispDoneIdx);					
             }
 #if defined(CNM_FPGA_PLATFORM) && defined(FPGA_LX_330)
 #else
@@ -1498,8 +1579,11 @@ int VpuDecoder::flushVideoBuffer(AVPacket *pkt)
             {
                 // if you can't get VSYN interrupt on your sw layer. this point is reasonable line to set VSYN flag.
                 // but you need fine tune EXTRA_FRAME_BUFFER_NUM value not decoder to write being display buffer.
-                if (frame_queue_count(display_queue) > 0)
+                if (videoFrames.size() > 0)
                     set_VSYNC_flag();
+
+                //if (frame_queue_count(display_queue) > 0)
+                    //set_VSYNC_flag();
             }
 #endif			
             return 0; // continue;
@@ -1521,8 +1605,13 @@ int VpuDecoder::flushVideoBuffer(AVPacket *pkt)
             {
                 clear_VSYNC_flag();
 
-                if (frame_queue_dequeue(display_queue, &dispDoneIdx) == 0)
-                    VPU_DecClrDispFlag(handle, dispDoneIdx);					
+                //if (videoFrames.size()) {
+                    //auto vf = videoFrames.deque();
+                    //if (vf.data) free(vf.data);
+                    //VPU_DecClrDispFlag(handle, vf.fbIdx);
+                //}
+                //if (frame_queue_dequeue(display_queue, &dispDoneIdx) == 0)
+                    //VPU_DecClrDispFlag(handle, dispDoneIdx);					
             }
 #if defined(CNM_FPGA_PLATFORM) && defined(FPGA_LX_330)
 #else
@@ -1530,7 +1619,8 @@ int VpuDecoder::flushVideoBuffer(AVPacket *pkt)
             {
                 // if you can't get VSYN interrupt on your sw layer. this point is reasonable line to set VSYN flag.
                 // but you need fine tuning EXTRA_FRAME_BUFFER_NUM value not decoder to write being display buffer.
-                if (frame_queue_count(display_queue) > 0)
+                //if (frame_queue_count(display_queue) > 0)
+                if (videoFrames.size() > 0)
                     set_VSYNC_flag();
             }
 #endif			
@@ -1540,8 +1630,9 @@ int VpuDecoder::flushVideoBuffer(AVPacket *pkt)
         if (decodeIdx == 0) // if PP has been enabled, the first picture is saved at next time.
         {
             // save rotated dec width, height to display next decoding time.
-            if (outputInfo.indexFrameDisplay >= 0)
-                frame_queue_enqueue(display_queue, outputInfo.indexFrameDisplay);
+            //if (outputInfo.indexFrameDisplay >= 0)
+                //frame_queue_enqueue(display_queue, outputInfo.indexFrameDisplay);
+            assert (0);
             rcPrevDisp = outputInfo.rcDisplay;
             decodeIdx++;
             return 0; // continue;
@@ -1551,46 +1642,29 @@ int VpuDecoder::flushVideoBuffer(AVPacket *pkt)
 
     decodeIdx++;
 
-    if (outputInfo.indexFrameDisplay >= 0)
-        frame_queue_enqueue(display_queue, outputInfo.indexFrameDisplay);
+    //if (outputInfo.indexFrameDisplay >= 0)
+        //frame_queue_enqueue(display_queue, outputInfo.indexFrameDisplay);
 
     if (ppuEnable) 
         ppIdx = (ppIdx+1)%MAX_ROT_BUF_NUM;
 
     if (pkt->data != eofPkt.data && pkt->data != flushPkt.data) {
-#if 0
-                double tm = _audioClock;
-                if(pkt->dts != AV_NOPTS_VALUE) {
-                    tm = pkt->dts * av_q2d(videoSt->time_base);
-                }
+        if (outputInfo.indexFrameDisplay >= 0) {
+            auto now = (av_gettime() / 1000000.0);
+            fprintf(stderr, "decoding done at %f\n", now - _timePassed);
 
-                auto delta = (_audioClock - tm);
-                if (delta > 0.16) {
-                    fprintf(stderr, "%s: clock %f, last drop %f, drop video frame at %f, \
-                            drop_count %d\n",
-                            __func__, _audioClock, last_drop_pts, tm, drop_count);
-                    drop_count++;
-                    last_drop_pts = tm;
-                    last_dropped = true;
-                    //av_free_packet(pkt);
-                }
-#endif
-
-        auto now = (av_gettime() / 1000000.0);
-        fprintf(stderr, "decoding done at %f\n", now - _timePassed);
-
-        if (!last_dropped && sendFrame(pkt) < 0) 
-            _quitFlags.store(1); // break;
-        last_dropped = false;
+            if (sendFrame(pkt) < 0) 
+                _quitFlags.store(1); // break;
+        }
     }
     
-    if (check_VSYNC_flag())
-    {
-        clear_VSYNC_flag();
+    //if (check_VSYNC_flag())
+    //{
+        //clear_VSYNC_flag();
 
-        if (frame_queue_dequeue(display_queue, &dispDoneIdx) == 0)
-            VPU_DecClrDispFlag(handle, dispDoneIdx);			
-    }
+        //if (frame_queue_dequeue(display_queue, &dispDoneIdx) == 0)
+            //VPU_DecClrDispFlag(handle, dispDoneIdx);			
+    //}
 
     // save rotated dec width, height to display next decoding time.
     rcPrevDisp = outputInfo.rcDisplay;
@@ -1723,11 +1797,12 @@ int VpuDecoder::loop()
 		goto ERR_DEC_OPEN;
 	}
 
+    videoFrames._handle = handle;
 
 	seqFilled = 0;
 	bsfillSize = 0;
 	reUseChunk = 0;
-	display_queue = frame_queue_init(MAX_REG_FRAME);
+	//display_queue = frame_queue_init(MAX_REG_FRAME);
 	init_VSYNC_flag();
 
 	while(1) {
@@ -1752,11 +1827,13 @@ int VpuDecoder::loop()
 
             if (decOP.bitstreamMode != BS_MODE_PIC_END) {
                 //clear all frame buffers
-                int i = 0;
-                do {
-                    ret = frame_queue_dequeue(display_queue, &i);
-                    if (ret >=0) VPU_DecClrDispFlag(handle, i);
-                } while (ret >= 0);	
+                videoFrames.flushAndClear();
+
+                //int i = 0;
+                //do {
+                    //ret = frame_queue_dequeue(display_queue, &i);
+                    //if (ret >=0) VPU_DecClrDispFlag(handle, i);
+                //} while (ret >= 0);	
 
                 //Clear all display buffer before Bitstream & Frame buffer flush
                 //ret = VPU_DecFrameBufferFlush(handle);
@@ -1814,13 +1891,16 @@ ERR_DEC_OPEN:
 		while(VPU_IsBusy(coreIdx)) 
 			;
 	}
+
+    videoFrames.flushAndClear();
+
 	// Now that we are done with decoding, close the open instance.
 	VPU_DecClose(handle);
-	if (display_queue)
-	{
-		frame_queue_dequeue_all(display_queue);
-		frame_queue_deinit(display_queue);
-	}
+	//if (display_queue)
+	//{
+		//frame_queue_dequeue_all(display_queue);
+		//frame_queue_deinit(display_queue);
+	//}
 
 	VLOG(INFO, "\nDec End. Tot Frame %d\n", frameIdx);
 
@@ -2516,9 +2596,9 @@ void VpuMainThread::run()
 
     bool audio_started = false;
 
-    audioPackets.capacity = 50;
-    videoPackets.capacity = 20;
-    videoFrames.capacity = 1;
+    audioPackets.capacity = 100;
+    videoPackets.capacity = 23;
+    videoFrames.capacity = 6; // will be changed for vpu
 
     av_init_packet(&eofPkt);
     eofPkt.data = "EOF";
@@ -2529,8 +2609,8 @@ void VpuMainThread::run()
     _audioThread->start(QThread::HighPriority);
 
     int drop_count = 0;
-    bool last_dropped = false;
     double last_drop_pts = 0.0;
+    int drop_times = 0;
 
 	while(1) {
         if (_quitFlags.load()) {
@@ -2577,6 +2657,7 @@ void VpuMainThread::run()
         av_init_packet(pkt);
 		err = av_read_frame(ic, pkt);
         if (err < 0) {
+            stop();
             break;
         }
 
@@ -2587,28 +2668,33 @@ void VpuMainThread::run()
 
 		if (pkt->stream_index == idxVideo) {
 #if 0
+            if (drop_times <= 0) {
                 double tm = _audioClock;
                 if(pkt->dts != AV_NOPTS_VALUE) {
                     tm = pkt->dts * av_q2d(ctxVideo->time_base);
                 }
                 auto delta = (_audioClock - tm);
-                if (delta > 0.16) {
-                    fprintf(stderr, "%s: clock %f, last drop %f, drop video frame at %f \
+                if (delta > 0.32) {
+                    fprintf(stderr, "%s: clock %f, last drop %f, drop video frame at %f(%f) \
                             drop_count %d\n",
-                            __func__, _audioClock, last_drop_pts, tm, drop_count);
-                    drop_count++;
+                            __func__, _audioClock, last_drop_pts, tm,
+                            pkt->pts * av_q2d(ctxVideo->time_base),
+                            drop_count);
                     last_drop_pts = tm;
-                    last_dropped = true;
+                    drop_times = delta / 0.04;
+                    drop_count+=drop_times;
                     av_free_packet(pkt);
                     continue;
                 }
+            } else {
+                av_free_packet(pkt);
+                drop_times--;
+                continue;
+            }
+
 #endif
 
             videoPackets.put(*pkt);
-            last_dropped = false;
-            //if (!_audioThread->isRunning() && videoFrames.size() > 25) {
-                //_audioThread->start(QThread::HighPriority);
-            //}
             continue;
         }
 

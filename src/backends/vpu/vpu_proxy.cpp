@@ -80,9 +80,10 @@ void VpuProxy::video_refresh_timer()
         return;
 
     if(_d->frames().size() == 0) {
-        QTimer::singleShot(10, this, &VpuProxy::video_refresh_timer);
+        QTimer::singleShot(0, this, &VpuProxy::video_refresh_timer);
     } else {
         auto vp = _d->frames().deque();
+        _d->videoThread()->convertFrame(&vp);
         _lastFrame = vp;
 
         delay = vp.pts - _frameLastPts; /* the pts from last time */
@@ -115,7 +116,7 @@ void VpuProxy::video_refresh_timer()
         actual_delay = _frameTimer - (av_gettime() / 1000000.0);
         if(actual_delay < 0.010) {
             /* Really it should skip the picture instead */
-            actual_delay = 0.010;
+            actual_delay = 0.00;
         }
 
 #ifdef DEBUG
@@ -271,6 +272,7 @@ void VpuProxy::stop()
         }
     }
 
+    qApp->quit();
 }
 
 QImage VpuProxy::takeScreenshot()
