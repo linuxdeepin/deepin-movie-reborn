@@ -1,3 +1,4 @@
+#include "config.h"
 #include "actions.h"
 
 namespace dmr {
@@ -49,6 +50,16 @@ QMenu* ActionFactory::mainContextMenu()
 {
     if (!_contextMenu) {
         auto *menu = new QMenu();
+#ifdef ENABLE_VPU_PLATFORM
+        DEF_ACTION(tr("Open File"), ActionKind::OpenFile);
+        menu->addSeparator();
+
+        DEF_ACTION_CHECKED(tr("Fullscreen"), ActionKind::Fullscreen);
+        DEF_ACTION_CHECKED(tr("Always on Top"), ActionKind::WindowAbove);
+        DEF_ACTION(tr("Film Info"), ActionKind::MovieInfo);
+        DEF_ACTION(tr("Settings"), ActionKind::Settings);
+#else
+
 
         DEF_ACTION(tr("Open File"), ActionKind::OpenFile);
         DEF_ACTION(tr("Open URL"), ActionKind::OpenUrl);
@@ -84,6 +95,7 @@ QMenu* ActionFactory::mainContextMenu()
         DEF_ACTION(tr("Film Info"), ActionKind::MovieInfo);
         DEF_ACTION(tr("Settings"), ActionKind::Settings);
 
+#endif
         _contextMenu = menu;
     }
 
