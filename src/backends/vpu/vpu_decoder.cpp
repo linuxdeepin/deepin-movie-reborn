@@ -1293,7 +1293,7 @@ int VpuDecoder::sendFrame(AVPacket *pkt)
 
     videoFrames.put(vf);
 
-    if (!_firstFrameSent) _firstFrameSent = true;
+    //if (!_firstFrameSent) _firstFrameSent = true;
 
     auto now = (av_gettime() / 1000000.0);
 #ifdef DEBUG
@@ -1539,8 +1539,10 @@ int VpuDecoder::flushVideoBuffer(AVPacket *pkt)
             frameIdx, outputInfo.indexFrameDisplay, outputInfo.picType, outputInfo.indexFrameDecoded );
     }		
 
-    VLOG(TRACE, "#%d:%d, indexDisplay %d || picType %d || indexDecoded %d || rdPtr=0x%x || wrPtr=0x%x || chunkSize = %d, consume=%d\n", 
-        instIdx, frameIdx, outputInfo.indexFrameDisplay, outputInfo.picType, outputInfo.indexFrameDecoded, outputInfo.rdPtr, outputInfo.wrPtr, chunkSize+picHeaderSize, outputInfo.consumedByte);
+    //VLOG(TRACE, "#%d:%d, indexDisplay %d || picType %d || indexDecoded %d || rdPtr=0x%x || wrPtr=0x%x || chunkSize = %d, consume=%d\n", 
+        //instIdx, frameIdx, outputInfo.indexFrameDisplay, outputInfo.picType, outputInfo.indexFrameDecoded, outputInfo.rdPtr, outputInfo.wrPtr, chunkSize+picHeaderSize, outputInfo.consumedByte);
+    fprintf(stderr, "#%d:%d, indexDisplay %d || picType %d || indexDecoded %d\n", 
+        instIdx, frameIdx, outputInfo.indexFrameDisplay, outputInfo.picType, outputInfo.indexFrameDecoded);
 
     //SaveDecReport(coreIdx, handle, &outputInfo, decOP.bitstreamFormat, ((initialInfo.picWidth+15)&~15)/16);
     if (outputInfo.chunkReuseRequired) // reuse previous chunk. that would be 1 once framebuffer is full.
@@ -1564,11 +1566,11 @@ int VpuDecoder::flushVideoBuffer(AVPacket *pkt)
 
                 fprintf(stderr, "index == -3 or -2\n");
 
-                //if (videoFrames.size()) {
-                    //auto vf = videoFrames.deque();
-                    //if (vf.data) free(vf.data);
-                    //VPU_DecClrDispFlag(handle, vf.fbIdx);
-                //}
+                if (videoFrames.size()) {
+                    auto vf = videoFrames.deque();
+                    if (vf.data) free(vf.data);
+                    VPU_DecClrDispFlag(handle, vf.fbIdx);
+                }
 
                 //if (frame_queue_dequeue(display_queue, &dispDoneIdx) == 0)
                     //VPU_DecClrDispFlag(handle, dispDoneIdx);					
@@ -1655,6 +1657,14 @@ int VpuDecoder::flushVideoBuffer(AVPacket *pkt)
 
             if (sendFrame(pkt) < 0) 
                 _quitFlags.store(1); // break;
+
+            if (_firstFrameSent || videoFrames.size() > 5) {
+                auto vp = videoFrames.deque();
+                convertFrame(&vp);
+                emit send2Display(vp);
+                if (!_firstFrameSent) _firstFrameSent = true;
+            }
+
         }
     }
     

@@ -45,6 +45,8 @@ public slots:
     void changeVolume(int val) override;
     void toggleMute() override;
 
+    void receiveFrame(VideoFrame vp);
+
 protected:
     void closeEvent(QCloseEvent *) override;
     void paintEvent(QPaintEvent *) override;

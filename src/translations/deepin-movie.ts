@@ -303,7 +303,7 @@
 <context>
     <name>dmr::AudioDecoder</name>
     <message>
-        <location filename="../backends/vpu/vpu_decoder.cpp" line="2159"/>
+        <location filename="../backends/vpu/vpu_decoder.cpp" line="2169"/>
         <source>PulseAudio %1, protocol: %2, server protocol: %3</source>
         <translation type="unfinished"></translation>
     </message>

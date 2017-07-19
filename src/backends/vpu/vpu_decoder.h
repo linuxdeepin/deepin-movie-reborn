@@ -154,6 +154,7 @@ private:
 
 class VpuDecoder: public QThread
 {
+    Q_OBJECT
 public:
     VpuDecoder(AVStream *st, AVCodecContext *ctx);
     ~VpuDecoder();
@@ -162,6 +163,9 @@ public:
     QSize viewportSize() const { return _viewportSize; }
     bool firstFrameStarted();
     void convertFrame(VideoFrame* vf);
+
+signals:
+    void send2Display(VideoFrame vp);
 
 protected:
     void run() override;

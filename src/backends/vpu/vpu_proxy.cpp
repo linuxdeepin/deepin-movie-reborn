@@ -70,6 +70,13 @@ void VpuProxy::paintEvent(QPaintEvent *pe)
     }
 }
 
+void VpuProxy::receiveFrame(VideoFrame vp)
+{
+    fprintf(stderr, "%s: %f\n", __func__, vp.pts);
+    _lastFrame = vp;
+    repaint();
+}
+
 void VpuProxy::video_refresh_timer() 
 {
     static int drop_count = 0;
@@ -80,13 +87,17 @@ void VpuProxy::video_refresh_timer()
         return;
 
     if(_d->frames().size() == 0) {
-        QTimer::singleShot(0, this, &VpuProxy::video_refresh_timer);
+        QTimer::singleShot(40, this, &VpuProxy::video_refresh_timer);
     } else {
-        auto vp = _d->frames().deque();
-        _d->videoThread()->convertFrame(&vp);
-        _lastFrame = vp;
+        //auto vp = _d->frames().deque();
+        //_d->videoThread()->convertFrame(&vp);
+        //_lastFrame = vp;
 
-        delay = vp.pts - _frameLastPts; /* the pts from last time */
+        VideoFrame vp;
+        vp.pts = _frameLastPts + 0.04;
+        vp.data = 0;
+
+        delay = vp.pts - _frameLastPts; 
         if(delay <= 0 || delay >= 1.0) {
             /* if incorrect delay, use previous one */
             delay = _frameLastDelay;
@@ -116,7 +127,7 @@ void VpuProxy::video_refresh_timer()
         actual_delay = _frameTimer - (av_gettime() / 1000000.0);
         if(actual_delay < 0.010) {
             /* Really it should skip the picture instead */
-            actual_delay = 0.00;
+            actual_delay = 0.04;
         }
 
 #ifdef DEBUG
@@ -242,7 +253,9 @@ void VpuProxy::play()
     pid_t tid = syscall(SYS_gettid);
     fprintf(stderr, "VpuProxy tid %d\n", tid);
 
-    video_refresh_timer();
+    connect(_d->videoThread(), &VpuDecoder::send2Display, this, 
+            &VpuProxy::receiveFrame);
+    //video_refresh_timer();
 }
 
 void VpuProxy::pauseResume()
