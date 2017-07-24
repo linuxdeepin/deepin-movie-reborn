@@ -46,7 +46,7 @@ MpvProxy::MpvProxy(QWidget *parent)
     if (CompositingManager::get().composited()) {
         _gl_widget = new MpvGLWidget(this, _handle);
         connect(this, &MpvProxy::stateChanged, [=]() {
-            _gl_widget->setPlaying(state() != Backend::PlayState::Paused);
+            _gl_widget->setPlaying(state() == Backend::PlayState::Playing);
         });
 
         auto *layout = new QHBoxLayout(this);
@@ -67,7 +67,6 @@ MpvProxy::~MpvProxy()
     if (CompositingManager::get().composited()) {
         delete _gl_widget;
     }
-    //mpv_terminate_destroy(_handle);
 }
 
 mpv_handle* MpvProxy::mpv_init()
