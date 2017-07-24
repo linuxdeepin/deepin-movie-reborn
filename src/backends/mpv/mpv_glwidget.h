@@ -30,13 +30,13 @@ public slots:
 private:
     mpv::qt::Handle _handle;
     mpv_opengl_cb_context *_gl_ctx {nullptr};
-    bool _playing;
+    bool _playing {false};
 
     QOpenGLVertexArrayObject _vao;
     QOpenGLBuffer _vbo;
-    QOpenGLTexture *_darkTex;
-    QOpenGLTexture *_lightTex;
-    QOpenGLShaderProgram *_glProg;
+    QOpenGLTexture *_darkTex {nullptr};
+    QOpenGLTexture *_lightTex {nullptr};
+    QOpenGLShaderProgram *_glProg {nullptr};
 };
 
 }
