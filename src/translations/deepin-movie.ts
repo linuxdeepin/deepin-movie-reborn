@@ -303,40 +303,40 @@
 <context>
     <name>dmr::MainWindow</name>
     <message>
-        <location filename="../common/mainwindow.cpp" line="307"/>
-        <location filename="../common/mainwindow.cpp" line="339"/>
+        <location filename="../common/mainwindow.cpp" line="309"/>
+        <location filename="../common/mainwindow.cpp" line="378"/>
         <source>Deepin Movie</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="607"/>
-        <location filename="../common/mainwindow.cpp" line="709"/>
+        <location filename="../common/mainwindow.cpp" line="647"/>
+        <location filename="../common/mainwindow.cpp" line="750"/>
         <source>Open File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="609"/>
+        <location filename="../common/mainwindow.cpp" line="649"/>
         <source>Movies (*.mkv *.mov *.mp4 *.rmvb)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="711"/>
+        <location filename="../common/mainwindow.cpp" line="752"/>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="762"/>
+        <location filename="../common/mainwindow.cpp" line="803"/>
         <source>View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="773"/>
+        <location filename="../common/mainwindow.cpp" line="814"/>
         <source>Movie Screenshot</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="774"/>
-        <location filename="../common/mainwindow.cpp" line="783"/>
+        <location filename="../common/mainwindow.cpp" line="815"/>
+        <location filename="../common/mainwindow.cpp" line="824"/>
         <source>Saved to</source>
         <translation type="unfinished"></translation>
     </message>

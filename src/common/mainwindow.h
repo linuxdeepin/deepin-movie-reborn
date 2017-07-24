@@ -8,6 +8,14 @@
 #include <QtWidgets>
 #include "actions.h"
 
+namespace Dtk
+{
+namespace Widget
+{
+    class DImageButton;
+}
+}
+
 DWIDGET_USE_NAMESPACE
 
 namespace dmr {
@@ -58,6 +66,8 @@ protected slots:
     void suspendToolsWindow();
     void resumeToolsWindow();
 
+    void miniButtonClicked(QString id);
+
 #ifdef USE_DXCB
     void onMonitorButtonPressed(int x, int y);
     void onMonitorMotionNotify(int x, int y);
@@ -67,6 +77,7 @@ protected slots:
 private:
     void handleSettings();
     void updateSizeConstraints();
+    void toggleUIMode();
     void reflectActionToUI(ActionKind);
 
 private:
@@ -75,6 +86,13 @@ private:
     PlaylistWidget *_playlist {nullptr};
     PlayerEngine *_engine {nullptr};
     QLabel *_playState {nullptr};
+
+    DImageButton *_miniPlayBtn {nullptr};
+    DImageButton *_miniCloseBtn {nullptr};
+    DImageButton *_miniQuitMiniBtn {nullptr};
+
+    bool _miniMode {false};
+    QSize _lastSizeInNormalMode;
 
     DPlatformWindowHandle *_handle {nullptr};
     QMargins _cachedMargins;

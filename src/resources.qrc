@@ -17,15 +17,15 @@
         <file>resources/icons/logo-big.svg</file>
         <file>resources/icons/light/init-splash.png</file>
         <file>resources/icons/dark/init-splash.png</file>
-        <file>resources/icons/light/mini/fullscreen-normal-mini.png</file>
+        <file>resources/icons/light/mini/restore-normal-mini.png</file>
         <file>resources/icons/light/mini/play-normal-mini.png</file>
         <file>resources/icons/light/mini/play-press-mini.png</file>
         <file>resources/icons/light/mini/pause-normal-mini.png</file>
-        <file>resources/icons/light/mini/fullscreen-hover-mini.png</file>
+        <file>resources/icons/light/mini/restore-hover-mini.png</file>
         <file>resources/icons/light/mini/pause-press-mini.png</file>
         <file>resources/icons/light/mini/play-hover-mini.png</file>
         <file>resources/icons/light/mini/pause-hover-mini.png</file>
-        <file>resources/icons/light/mini/fullscreen-press-mini.png</file>
+        <file>resources/icons/light/mini/restore-press-mini.png</file>
         <file>resources/icons/light/normal/audio-volume-medium-hover.png</file>
         <file>resources/icons/light/normal/film-top.png</file>
         <file>resources/icons/light/normal/film-bg.png</file>
@@ -72,15 +72,15 @@
         <file>resources/icons/light/normal/next-hover.png</file>
         <file>resources/icons/light/normal/play-hover.png</file>
         <file>resources/icons/light/normal/close-normal.png</file>
-        <file>resources/icons/dark/mini/fullscreen-normal-mini.png</file>
+        <file>resources/icons/dark/mini/restore-normal-mini.png</file>
         <file>resources/icons/dark/mini/play-normal-mini.png</file>
         <file>resources/icons/dark/mini/play-press-mini.png</file>
         <file>resources/icons/dark/mini/pause-normal-mini.png</file>
-        <file>resources/icons/dark/mini/fullscreen-hover-mini.png</file>
+        <file>resources/icons/dark/mini/restore-hover-mini.png</file>
         <file>resources/icons/dark/mini/pause-press-mini.png</file>
         <file>resources/icons/dark/mini/play-hover-mini.png</file>
         <file>resources/icons/dark/mini/pause-hover-mini.png</file>
-        <file>resources/icons/dark/mini/fullscreen-press-mini.png</file>
+        <file>resources/icons/dark/mini/restore-press-mini.png</file>
         <file>resources/icons/dark/normal/audio-volume-medium-hover.png</file>
         <file>resources/icons/dark/normal/film-top.png</file>
         <file>resources/icons/dark/normal/film-bg.png</file>

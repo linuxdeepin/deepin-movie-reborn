@@ -335,40 +335,40 @@
 <context>
     <name>dmr::MainWindow</name>
     <message>
-        <location filename="../common/mainwindow.cpp" line="307"/>
-        <location filename="../common/mainwindow.cpp" line="339"/>
+        <location filename="../common/mainwindow.cpp" line="309"/>
+        <location filename="../common/mainwindow.cpp" line="378"/>
         <source>Deepin Movie</source>
         <translation type="unfinished">深度影院</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="607"/>
-        <location filename="../common/mainwindow.cpp" line="709"/>
+        <location filename="../common/mainwindow.cpp" line="647"/>
+        <location filename="../common/mainwindow.cpp" line="750"/>
         <source>Open File</source>
         <translation>打开文件</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="609"/>
+        <location filename="../common/mainwindow.cpp" line="649"/>
         <source>Movies (*.mkv *.mov *.mp4 *.rmvb)</source>
         <translation>视频文件(*.mkv *.mov *.mp4 *.rmvb)</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="711"/>
+        <location filename="../common/mainwindow.cpp" line="752"/>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</source>
         <translation>字幕文件 (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="762"/>
+        <location filename="../common/mainwindow.cpp" line="803"/>
         <source>View</source>
         <translation>查看</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="773"/>
+        <location filename="../common/mainwindow.cpp" line="814"/>
         <source>Movie Screenshot</source>
         <translation>视频截图</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="774"/>
-        <location filename="../common/mainwindow.cpp" line="783"/>
+        <location filename="../common/mainwindow.cpp" line="815"/>
+        <location filename="../common/mainwindow.cpp" line="824"/>
         <source>Saved to</source>
         <translation>保存到</translation>
     </message>

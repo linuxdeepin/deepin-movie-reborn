@@ -21,6 +21,7 @@
 #include <dsettingsdialog.h>
 #include <dthememanager.h>
 #include <daboutdialog.h>
+#include <dimagebutton.h>
 
 DWIDGET_USE_NAMESPACE
 
@@ -325,6 +326,43 @@ MainWindow::MainWindow(QWidget *parent)
 
     _playState = new QLabel(this);
 
+
+    // mini ui
+    auto *signalMapper = new QSignalMapper(this);
+    connect(signalMapper,
+            static_cast<void(QSignalMapper::*)(const QString&)>(&QSignalMapper::mapped),
+            this, &MainWindow::miniButtonClicked);
+
+    _miniPlayBtn = new DImageButton(this);
+    _miniPlayBtn->setObjectName("MiniPlayBtn");
+    connect(_miniPlayBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
+    signalMapper->setMapping(_miniPlayBtn, "play");
+
+    connect(_engine, &PlayerEngine::stateChanged, [=]() {
+        qDebug() << __func__ << _engine->state();
+        if (_engine->state() == PlayerEngine::CoreState::Playing) {
+            _miniPlayBtn->setObjectName("MiniPauseBtn");
+        } else {
+            _miniPlayBtn->setObjectName("MiniPlayBtn");
+        }
+        _miniPlayBtn->setStyleSheet(_miniPlayBtn->styleSheet());
+    });
+
+    _miniCloseBtn = new DImageButton(this);
+    _miniCloseBtn->setObjectName("MiniCloseBtn");
+    connect(_miniCloseBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
+    signalMapper->setMapping(_miniCloseBtn, "close");
+
+    _miniQuitMiniBtn = new DImageButton(this);
+    _miniQuitMiniBtn->setObjectName("MiniQuitMiniBtn");
+    connect(_miniQuitMiniBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
+    signalMapper->setMapping(_miniQuitMiniBtn, "quit_mini");
+
+    _miniPlayBtn->setVisible(_miniMode);
+    _miniCloseBtn->setVisible(_miniMode);
+    _miniQuitMiniBtn->setVisible(_miniMode);
+    // ~ 
+ 
     updateProxyGeometry();
 
     connect(&ShortcutManager::get(), &ShortcutManager::bindingsChanged,
@@ -594,6 +632,7 @@ void MainWindow::menuItemInvoked(QAction *action)
 
 void MainWindow::requestAction(ActionKind kd, bool fromUI)
 {
+    qDebug() << "kd = " << kd << "fromUI " << fromUI;
     switch (kd) {
         case ActionKind::Exit:
             qApp->quit(); 
@@ -631,6 +670,7 @@ void MainWindow::requestAction(ActionKind kd, bool fromUI)
             if (!fromUI) {
                 reflectActionToUI(kd);
             }
+            toggleUIMode();
             break;
         }
 
@@ -837,34 +877,34 @@ void MainWindow::updateProxyGeometry()
     }
 #endif
 
-    auto tl = QPoint();
-    _engine->setGeometry(QRect(tl, size()));
+    if (!_miniMode) {
+        auto tl = QPoint();
+        _engine->setGeometry(QRect(tl, size()));
 
-    if (_titlebar) {
-        QSize sz(size().width(), _titlebar->height());
-        _titlebar->setGeometry(QRect(tl, sz));
+        if (_titlebar) {
+            QSize sz(size().width(), _titlebar->height());
+            _titlebar->setGeometry(QRect(tl, sz));
+        }
+
+        if (_toolbox) {
+            QRect r(0, size().height() - 50, size().width(), 50);
+            _toolbox->setGeometry(r);
+        }
+
+        if (_playlist) {
+            QRect r(size().width() - _playlist->width(), _titlebar->geometry().bottom(),
+                    _playlist->width(), _toolbox->geometry().top() - _titlebar->geometry().bottom());
+            _playlist->setGeometry(r);
+        }
+
+        if (_playState) {
+            auto r = QRect(QPoint(0, 0), QSize(128, 128));
+            r.moveCenter(rect().center());
+            _playState->move(r.topLeft());
+        }
     }
 
-    if (_toolbox) {
-        QRect r(0, size().height() - 50, size().width(), 50);
-        _toolbox->setGeometry(r);
-    }
-
-    if (_playlist) {
-        QRect r(size().width() - _playlist->width(), _titlebar->geometry().bottom(),
-                _playlist->width(), _toolbox->geometry().top() - _titlebar->geometry().bottom());
-        _playlist->setGeometry(r);
-    }
-
-    if (_playState) {
-        auto r = QRect(QPoint(0, 0), QSize(128, 128));
-        r.moveCenter(rect().center());
-        _playState->move(r.topLeft());
-    }
-
-#if 1
-    qDebug() << "_engine " << _engine->geometry();
-#ifdef DMR_DEBUG
+#if 0
     qDebug() << "margins " << frameMargins();
     qDebug() << "window frame " << frameGeometry();
     qDebug() << "window geom " << geometry();
@@ -872,12 +912,11 @@ void MainWindow::updateProxyGeometry()
     qDebug() << "_titlebar " << _titlebar->geometry();
     qDebug() << "_toolbox " << _toolbox->geometry();
 #endif
-#endif
 }
 
 void MainWindow::suspendToolsWindow()
 {
-    if (!this->frameGeometry().contains(QCursor::pos())) {
+    if (!_miniMode && !this->frameGeometry().contains(QCursor::pos())) {
         _titlebar->hide();
         _toolbox->hide();
     }
@@ -885,8 +924,10 @@ void MainWindow::suspendToolsWindow()
 
 void MainWindow::resumeToolsWindow()
 {
-    _titlebar->show();
-    _toolbox->show();
+    if (!_miniMode) {
+        _titlebar->show();
+        _toolbox->show();
+    }
 }
 
 QMargins MainWindow::frameMargins() const
@@ -912,17 +953,21 @@ void MainWindow::updateSizeConstraints()
 {
     auto m = size();
 
-    if (_engine->state() != PlayerEngine::CoreState::Idle) {
-        const auto& mi = _engine->playlist().currentInfo().mi;
-        qreal ratio = mi.width / (qreal)mi.height;
-        int h = 528 / ratio;
-        if (size().width() > size().height()) {
-            m = QSize(528, h);
-        } else {
-            m = QSize(h, 528);
-        }
+    if (_miniMode) {
+        m = QSize(0, 0);
     } else {
-        m = QSize(528, 0);
+        if (_engine->state() != PlayerEngine::CoreState::Idle) {
+            const auto& mi = _engine->playlist().currentInfo().mi;
+            qreal ratio = mi.width / (qreal)mi.height;
+            int h = 528 / ratio;
+            if (size().width() > size().height()) {
+                m = QSize(528, h);
+            } else {
+                m = QSize(h, 528);
+            }
+        } else {
+            m = QSize(528, 0);
+        }
     }
 
     qDebug() << __func__ << m;
@@ -946,7 +991,8 @@ void MainWindow::mouseMoveEvent(QMouseEvent *ev)
 
 void MainWindow::contextMenuEvent(QContextMenuEvent *cme)
 {
-    ActionFactory::get().mainContextMenu()->popup(cme->globalPos());
+    if (!_miniMode)
+        ActionFactory::get().mainContextMenu()->popup(cme->globalPos());
 }
 
 void MainWindow::paintEvent(QPaintEvent* pe)
@@ -961,6 +1007,63 @@ void MainWindow::paintEvent(QPaintEvent* pe)
     }
     auto pt = rect().center() - QPoint(bg.width()/2, bg.height()/2);
     p.drawImage(pt, bg);
+}
+
+void MainWindow::toggleUIMode()
+{
+    _miniMode = !_miniMode;
+    qDebug() << __func__ << _miniMode;
+
+    updateSizeConstraints();
+
+    _titlebar->setVisible(!_miniMode);
+    _toolbox->setVisible(!_miniMode);
+
+
+    _miniPlayBtn->setVisible(_miniMode);
+    _miniCloseBtn->setVisible(_miniMode);
+    _miniQuitMiniBtn->setVisible(_miniMode);
+
+    _miniPlayBtn->setEnabled(_miniMode);
+    _miniCloseBtn->setEnabled(_miniMode);
+    _miniQuitMiniBtn->setEnabled(_miniMode);
+
+    if (_miniMode) {
+        _lastSizeInNormalMode = size();
+        auto sz = QSize(380, 380);
+        if (_engine->state() != PlayerEngine::CoreState::Idle) {
+            const auto& mi = _engine->playlist().currentInfo().mi;
+            qreal ratio = mi.width / (qreal)mi.height;
+
+            if (mi.width > mi.height) {
+                sz = QSize(380, 380 / ratio);
+            } else {
+                sz = QSize(380 * ratio, 380);
+            }
+        }
+        resize(sz);
+        _miniQuitMiniBtn->move(sz.width() - 14 - _miniQuitMiniBtn->width(),
+                sz.height() - 10 - _miniQuitMiniBtn->height()); 
+        _miniCloseBtn->move(sz.width() - 4 - _miniCloseBtn->width(), 4);
+        _miniPlayBtn->move(14, sz.height() - 10 - _miniPlayBtn->height()); 
+
+    } else {
+        resize(_lastSizeInNormalMode);
+    }
+}
+
+void MainWindow::miniButtonClicked(QString id)
+{
+    qDebug() << id;
+    if (id == "play") {
+        requestAction(ActionKind::TogglePause);
+
+    } else if (id == "close") {
+        close();
+
+    } else if (id == "quit_mini") {
+        requestAction(ActionKind::ToggleMiniMode);
+    }
 }
 
 #include "mainwindow.moc"
