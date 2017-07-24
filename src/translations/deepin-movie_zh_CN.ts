@@ -55,7 +55,7 @@
     <message>
         <location filename="../main.cpp" line="58"/>
         <source>Deepin Movie is a well-designed and full-featured video player with simple borderless design. It supports local and streaming media play with multiple video formats.</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="5"/>
@@ -333,14 +333,6 @@
     </message>
 </context>
 <context>
-    <name>dmr::AudioDecoder</name>
-    <message>
-        <location filename="../backends/vpu/vpu_decoder.cpp" line="2079"/>
-        <source>PulseAudio %1, protocol: %2, server protocol: %3</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>dmr::MainWindow</name>
     <message>
         <location filename="../common/mainwindow.cpp" line="307"/>
@@ -349,34 +341,34 @@
         <translation type="unfinished">深度影院</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="602"/>
-        <location filename="../common/mainwindow.cpp" line="704"/>
+        <location filename="../common/mainwindow.cpp" line="607"/>
+        <location filename="../common/mainwindow.cpp" line="709"/>
         <source>Open File</source>
         <translation>打开文件</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="604"/>
+        <location filename="../common/mainwindow.cpp" line="609"/>
         <source>Movies (*.mkv *.mov *.mp4 *.rmvb)</source>
         <translation>视频文件(*.mkv *.mov *.mp4 *.rmvb)</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="706"/>
+        <location filename="../common/mainwindow.cpp" line="711"/>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</source>
         <translation>字幕文件 (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="757"/>
+        <location filename="../common/mainwindow.cpp" line="762"/>
         <source>View</source>
         <translation>查看</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="768"/>
+        <location filename="../common/mainwindow.cpp" line="773"/>
         <source>Movie Screenshot</source>
         <translation>视频截图</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="769"/>
-        <location filename="../common/mainwindow.cpp" line="778"/>
+        <location filename="../common/mainwindow.cpp" line="774"/>
+        <location filename="../common/mainwindow.cpp" line="783"/>
         <source>Saved to</source>
         <translation>保存到</translation>
     </message>
