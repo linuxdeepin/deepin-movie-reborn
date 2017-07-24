@@ -274,6 +274,8 @@ void ToolboxProxy::updateTimeInfo(qint64 duration, qint64 pos)
 
 void ToolboxProxy::buttonClicked(QString id)
 {
+    if (!isVisible()) return;
+
     qDebug() << __func__ << id;
     if (id == "play") {
         if (_engine->state() == PlayerEngine::CoreState::Idle) {
