@@ -40,7 +40,7 @@ namespace dmr {
     static void gl_update_callback(void *cb_ctx)
     {
         MpvGLWidget *w = static_cast<MpvGLWidget*>(cb_ctx);
-        w->onNewFrame();
+        QMetaObject::invokeMethod(w, "onNewFrame");
     }
 
     void MpvGLWidget::onNewFrame()
