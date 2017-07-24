@@ -41,6 +41,7 @@ PlayerEngine::PlayerEngine(QWidget *parent)
 
 PlayerEngine::~PlayerEngine()
 {
+    disconnect(_playlist, 0, 0, 0);
     delete _playlist;
     _playlist = nullptr;
 

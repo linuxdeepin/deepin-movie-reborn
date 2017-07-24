@@ -262,7 +262,8 @@ MainWindow::MainWindow(QWidget *parent)
     : QWidget(NULL)
 {
     setWindowFlags(Qt::FramelessWindowHint);
-    setAttribute(Qt::WA_DeleteOnClose);
+    //this'll crash MainWindow while desstruction
+    //setAttribute(Qt::WA_DeleteOnClose);
     
     bool composited = CompositingManager::get().composited();
 #ifdef USE_DXCB
@@ -427,7 +428,12 @@ MainWindow::~MainWindow()
     disconnect(_engine, 0, 0, 0);
     disconnect(&_engine->playlist(), 0, 0, 0);
 
-    //delete _evm;
+#ifdef USE_DXCB
+    if (_evm) {
+        disconnect(_evm, 0, 0, 0);
+        delete _evm;
+    }
+#endif
 }
 
 void MainWindow::onApplicationStateChanged(Qt::ApplicationState e)

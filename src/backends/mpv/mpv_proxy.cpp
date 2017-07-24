@@ -62,11 +62,12 @@ MpvProxy::MpvProxy(QWidget *parent)
 
 MpvProxy::~MpvProxy()
 {
+    disconnect(_burstScreenshotTimer, &QTimer::timeout, this, &MpvProxy::stepBurstScreenshot);
     disconnect(this, &MpvProxy::has_mpv_events, this, &MpvProxy::handle_mpv_events);
     if (CompositingManager::get().composited()) {
         delete _gl_widget;
     }
-    mpv_terminate_destroy(_handle);
+    //mpv_terminate_destroy(_handle);
 }
 
 mpv_handle* MpvProxy::mpv_init()
