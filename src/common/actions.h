@@ -35,6 +35,29 @@ enum ActionKind {
     TogglePause,
     Stop,
 
+    //play mode
+    OrderPlay,
+    ShufflePlay,
+    SinglePlay,
+    SingleLoop,
+    ListLoop,
+
+    //frame
+    DefaultFrame,
+    Ratio4x3Frame,
+    Ratio16x9Frame,
+    Ratio16x10Frame,
+    Ratio185x1Frame,
+    Ratio235x1Frame,
+    ClockwiseFrame,
+    CounterclockwiseFrame,
+
+    //sound
+    Stereo,
+    LeftChannel,
+    RightChannel,
+    LoadTrack,
+
     GotoPlaylistNext,
     GotoPlaylistPrev,
     VolumeUp,

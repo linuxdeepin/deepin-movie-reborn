@@ -72,6 +72,54 @@ QMenu* ActionFactory::mainContextMenu()
 
         { //sub menu
             auto *parent = menu;
+            auto *menu = new QMenu(tr("Play Mode"));
+            DEF_ACTION(tr("Order Play"), ActionKind::OrderPlay);
+            DEF_ACTION(tr("Shuffle Play"), ActionKind::ShufflePlay);
+            DEF_ACTION(tr("Single Play"), ActionKind::SinglePlay);
+            DEF_ACTION(tr("Single Loop"), ActionKind::SingleLoop);
+            DEF_ACTION(tr("List Loop"), ActionKind::ListLoop);
+
+            parent->addMenu(menu);
+        }
+
+        { //sub menu
+            auto *parent = menu;
+            auto *menu = new QMenu(tr("Frame"));
+            DEF_ACTION(tr("Default"), ActionKind::DefaultFrame);
+            DEF_ACTION(("4:3"), ActionKind::Ratio4x3Frame);
+            DEF_ACTION(("16:9"), ActionKind::Ratio16x9Frame);
+            DEF_ACTION(("16:10"), ActionKind::Ratio16x10Frame);
+            DEF_ACTION(("1.85:1"), ActionKind::Ratio185x1Frame);
+            DEF_ACTION(("2.35:1"), ActionKind::Ratio235x1Frame);
+            DEF_ACTION(tr("Clockwise"), ActionKind::ClockwiseFrame);
+            DEF_ACTION(tr("Counterclockwise"), ActionKind::CounterclockwiseFrame);
+
+            parent->addMenu(menu);
+        }
+
+        { //sub menu
+            auto *parent = menu;
+            auto *menu = new QMenu(tr("Sound"));
+            {
+                auto *parent = menu;
+                auto *menu = new QMenu(tr("Sound"));
+                DEF_ACTION(tr("Stereo"), ActionKind::Stereo);
+                DEF_ACTION(tr("Left channel"), ActionKind::LeftChannel);
+                DEF_ACTION(tr("Right channel"), ActionKind::RightChannel);
+                parent->addMenu(menu);
+            }
+
+            {
+                auto *parent = menu;
+                auto *menu = new QMenu(tr("Track"));
+                DEF_ACTION(tr("Load Track"), ActionKind::LoadTrack);
+                parent->addMenu(menu);
+            }
+            parent->addMenu(menu);
+        }
+
+        { //sub menu
+            auto *parent = menu;
             auto *menu = new QMenu(tr("Subtitle"));
             DEF_ACTION(tr("Load"), ActionKind::LoadSubtitle);
             DEF_ACTION(tr("Select"), ActionKind::SelectSubtitle);
