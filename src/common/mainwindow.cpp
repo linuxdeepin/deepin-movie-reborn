@@ -343,8 +343,8 @@ MainWindow::MainWindow(QWidget *parent)
 
         const auto& mi = _engine->playlist().currentInfo().mi;
         _titlebar->setTitle(QFileInfo(mi.filePath).fileName());
+        qDebug() << "updateConstraints: " << mi.width << mi.height;
         resize(mi.width, mi.height);
-        updateSizeConstraints();
     };
     connect(_engine, &PlayerEngine::fileLoaded, updateConstraints);
     connect(&_engine->playlist(), &PlaylistModel::currentChanged, updateConstraints);
@@ -910,22 +910,28 @@ void MainWindow::showEvent(QShowEvent *event)
 // 简而言之,只看最长的那个最大为528px.
 void MainWindow::updateSizeConstraints()
 {
+    auto m = size();
+
     if (_engine->state() != PlayerEngine::CoreState::Idle) {
         const auto& mi = _engine->playlist().currentInfo().mi;
         qreal ratio = mi.width / (qreal)mi.height;
         int h = 528 / ratio;
         if (size().width() > size().height()) {
-            setMinimumSize(QSize(528, h));
+            m = QSize(528, h);
         } else {
-            setMinimumSize(QSize(h, 528));
+            m = QSize(h, 528);
         }
     } else {
-        setMinimumSize(QSize(528, 400));
+        m = QSize(528, 0);
     }
+
+    qDebug() << __func__ << m;
+    this->setMinimumSize(m);
 }
 
 void MainWindow::resizeEvent(QResizeEvent *ev)
 {
+    qDebug() << __func__ << geometry();
     updateSizeConstraints();
     updateProxyGeometry();
 }

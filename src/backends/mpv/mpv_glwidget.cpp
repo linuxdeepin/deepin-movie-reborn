@@ -164,6 +164,7 @@ namespace dmr {
     {
         QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
 
+        qDebug() << size() << w << h;
         static QImage bg_dark(":/resources/icons/dark/init-splash.png");
         updateVbo(QSize(w, h), bg_dark.size());
 
