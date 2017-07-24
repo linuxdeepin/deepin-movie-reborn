@@ -579,6 +579,8 @@ void MainWindow::updateActionsState()
         switch(kd) {
             case ActionKind::MovieInfo:
             case ActionKind::Screenshot:
+            case ActionKind::ToggleMiniMode:
+            case ActionKind::Fullscreen:
             case ActionKind::BurstScreenshot:
                 v = _engine->state() != PlayerEngine::Idle;
                 break;
