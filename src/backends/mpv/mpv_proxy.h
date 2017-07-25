@@ -28,6 +28,11 @@ public:
     void loadSubtitle(const QFileInfo& fi) override;
     void toggleSubtitle() override;
     bool isSubVisible() override;
+    void selectSubtitle(int id) override;
+    int sid() const override;
+
+    void selectTrack(int id) override;
+    int aid() const override;
 
     int volume() const override;
     bool muted() const override;
