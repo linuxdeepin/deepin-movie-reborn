@@ -14,6 +14,7 @@ class Backend: public QWidget {
     Q_OBJECT
     Q_PROPERTY(qint64 duration READ duration)
     Q_PROPERTY(qint64 elapsed READ elapsed NOTIFY elapsedChanged)
+    Q_PROPERTY(QSize videoSize READ videoSize NOTIFY videoSizeChanged)
     Q_PROPERTY(bool paused READ paused)
 
     Q_PROPERTY(PlayState state READ state NOTIFY stateChanged)
@@ -36,6 +37,7 @@ public:
 
     virtual qint64 duration() const { return 0; }
     virtual qint64 elapsed() const { return 0; }
+    virtual QSize videoSize() const = 0;
 
     virtual bool paused() { return _state == PlayState::Paused; }
     virtual PlayState state() const { return _state; }
@@ -56,6 +58,9 @@ public:
     virtual void setVideoAspect(double r) = 0;
     virtual double videoAspect() const = 0;
 
+    virtual int videoRotation() const = 0;
+    virtual void setVideoRotation(int degree) = 0;
+
     virtual QImage takeScreenshot() = 0;
     virtual void burstScreenshot() = 0; //initial the start of burst screenshotting
     virtual void stopBurstScreenshot() = 0;
@@ -63,6 +68,7 @@ public:
 Q_SIGNALS:
     void tracksChanged();
     void elapsedChanged();
+    void videoSizeChanged();
     void stateChanged();
     void fileLoaded();
     void muteChanged();

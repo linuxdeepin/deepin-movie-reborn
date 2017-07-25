@@ -217,8 +217,8 @@ skip_set_cursor:
             qreal ratio = (qreal)geom.width() / geom.height();
 
             if (keep_ratio) {
-                const auto& mi = mw->engine()->playlist().currentInfo().mi;
-                ratio = mi.width / (qreal)mi.height;
+                auto sz = mw->engine()->videoSize();
+                ratio = sz.width() / (qreal)sz.height();
             }
 
             switch (edge) {
@@ -374,11 +374,9 @@ MainWindow::MainWindow(QWidget *parent)
     updateActionsState();
 
     connect(_engine, &PlayerEngine::sidChanged, [=]() {
-        qDebug() << "updateActionsUI";
         reflectActionToUI(ActionKind::SelectSubtitle);
     });
     connect(_engine, &PlayerEngine::aidChanged, [=]() {
-        qDebug() << "updateActionsUI";
         reflectActionToUI(ActionKind::SelectTrack);
     });
 
@@ -390,10 +388,12 @@ MainWindow::MainWindow(QWidget *parent)
 
         const auto& mi = _engine->playlist().currentInfo().mi;
         _titlebar->setTitle(QFileInfo(mi.filePath).fileName());
-        qDebug() << "updateConstraints: " << mi.width << mi.height;
-        resize(mi.width, mi.height);
+        auto sz = _engine->videoSize();
+        qDebug() << "updateConstraints: " << sz;
+        resize(sz);
     };
     connect(_engine, &PlayerEngine::fileLoaded, updateConstraints);
+    connect(_engine, &PlayerEngine::videoSizeChanged, updateConstraints);
     connect(&_engine->playlist(), &PlaylistModel::currentChanged, updateConstraints);
 
     connect(_engine, &PlayerEngine::stateChanged, this, &MainWindow::updatePlayState);
@@ -771,6 +771,17 @@ void MainWindow::requestAction(ActionKind kd, bool fromUI, QList<QVariant> args)
             break;
         }
 
+        case ClockwiseFrame: {
+            auto old = _engine->videoRotation();
+            _engine->setVideoRotation((old + 90) % 360);
+            break;
+        }
+        case CounterclockwiseFrame: {
+            auto old = _engine->videoRotation();
+            _engine->setVideoRotation(((old - 90) + 360) % 360);
+            break;
+        }
+
         case DefaultFrame: {
             _engine->setVideoAspect(-1.0);
             break;
@@ -1049,8 +1060,8 @@ void MainWindow::updateSizeConstraints()
         m = QSize(0, 0);
     } else {
         if (_engine->state() != PlayerEngine::CoreState::Idle) {
-            const auto& mi = _engine->playlist().currentInfo().mi;
-            qreal ratio = mi.width / (qreal)mi.height;
+            auto sz = _engine->videoSize();
+            qreal ratio = (qreal)sz.width() / sz.height();
             int h = 528 / ratio;
             if (size().width() > size().height()) {
                 m = QSize(528, h);
@@ -1124,10 +1135,10 @@ void MainWindow::toggleUIMode()
         _lastSizeInNormalMode = size();
         auto sz = QSize(380, 380);
         if (_engine->state() != PlayerEngine::CoreState::Idle) {
-            const auto& mi = _engine->playlist().currentInfo().mi;
-            qreal ratio = mi.width / (qreal)mi.height;
+            auto vid_size = _engine->videoSize();
+            qreal ratio = vid_size.width() / (qreal)vid_size.height();
 
-            if (mi.width > mi.height) {
+            if (vid_size.width() > vid_size.height()) {
                 sz = QSize(380, 380 / ratio);
             } else {
                 sz = QSize(380 * ratio, 380);

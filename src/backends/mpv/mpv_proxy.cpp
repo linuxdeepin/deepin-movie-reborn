@@ -113,6 +113,8 @@ mpv_handle* MpvProxy::mpv_init()
     mpv_observe_property(h, 0, "volume", MPV_FORMAT_NONE); //ao-volume ?
     mpv_observe_property(h, 0, "sid", MPV_FORMAT_NONE);
     mpv_observe_property(h, 0, "aid", MPV_FORMAT_NODE);
+    mpv_observe_property(h, 0, "dwidth", MPV_FORMAT_NODE);
+    mpv_observe_property(h, 0, "dheight", MPV_FORMAT_NODE);
 
     // because of vpu, we need to implement playlist w/o mpv 
     //mpv_observe_property(h, 0, "playlist-pos", MPV_FORMAT_NONE);
@@ -245,6 +247,8 @@ void MpvProxy::processPropertyChange(mpv_event_property* ev)
         emit elapsedChanged();
     } else if (name == "volume") {
         emit volumeChanged();
+    } else if (name == "dwidth" || name == "dheight") {
+        emit videoSizeChanged();
     } else if (name == "aid") {
         emit aidChanged();
     } else if (name == "sid") {
@@ -336,6 +340,16 @@ void MpvProxy::volumeDown()
 int MpvProxy::volume() const
 {
     return get_property(_handle, "volume").toInt();
+}
+
+int MpvProxy::videoRotation() const
+{
+    return get_property(_handle, "video-rotate").toInt();
+}
+
+void MpvProxy::setVideoRotation(int degree)
+{
+    set_property(_handle, "video-rotate", degree);
 }
 
 void MpvProxy::setVideoAspect(double r)
@@ -501,6 +515,13 @@ void MpvProxy::seekBackward(int secs)
     qDebug () << args;
     command_async(_handle, args, AsyncReplyTag::SEEK);
     _pendingSeek = true;
+}
+
+QSize MpvProxy::videoSize() const
+{
+    return QSize(get_property(_handle, "dwidth").toInt(),
+            get_property(_handle, "dheight").toInt());
+
 }
 
 qint64 MpvProxy::duration() const
