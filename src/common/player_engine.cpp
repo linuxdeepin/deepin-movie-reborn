@@ -271,5 +271,16 @@ qint64 PlayerEngine::elapsed() const
     return _current->elapsed();
 }
 
+void PlayerEngine::setVideoAspect(double r)
+{
+    if (_current)
+        _current->setVideoAspect(r);
+}
+
+double PlayerEngine::videoAspect() const
+{
+    if (!_current) return 0.0;
+    return _current->videoAspect();
+}
 
 } // end of namespace dmr

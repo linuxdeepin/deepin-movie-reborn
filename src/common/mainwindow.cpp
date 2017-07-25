@@ -594,6 +594,7 @@ void MainWindow::updateActionsState()
         act->setEnabled(v);
     };
 
+    reflectActionToUI(ActionKind::DefaultFrame);
     ActionFactory::get().updateMainActionsForMovie(pmf);
     ActionFactory::get().forEachInMainMenu(update);
 }
@@ -617,6 +618,17 @@ void MainWindow::reflectActionToUI(ActionKind kd)
                 (*p)->setEnabled(old);
                 ++p;
             }
+            break;
+        }
+
+        case ActionKind::DefaultFrame: {
+            qDebug() << __func__ << kd;
+            acts = ActionFactory::get().findActionsByKind(kd);
+            auto p = acts.begin();
+            auto old = (*p)->isEnabled();
+            (*p)->setEnabled(false);
+            (*p)->setChecked(!(*p)->isChecked());
+            (*p)->setEnabled(old);
             break;
         }
 
@@ -756,6 +768,31 @@ void MainWindow::requestAction(ActionKind kd, bool fromUI, QList<QVariant> args)
 
         case ActionKind::PlaylistOpenItemInFM: {
             _playlist->openItemInFM();
+            break;
+        }
+
+        case DefaultFrame: {
+            _engine->setVideoAspect(-1.0);
+            break;
+        }
+        case Ratio4x3Frame: {
+            _engine->setVideoAspect(4.0 / 3.0);
+            break;
+        }
+        case Ratio16x9Frame: {
+            _engine->setVideoAspect(16.0 / 9.0);
+            break;
+        }
+        case Ratio16x10Frame: {
+            _engine->setVideoAspect(16.0 / 10.0);
+            break;
+        }
+        case Ratio185x1Frame: {
+            _engine->setVideoAspect(1.85);
+            break;
+        }
+        case Ratio235x1Frame: {
+            _engine->setVideoAspect(2.35);
             break;
         }
 
