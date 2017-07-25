@@ -37,6 +37,9 @@ public:
     int volume() const override;
     bool muted() const override;
 
+    void setVideoAspect(double r) override;
+    double videoAspect() const override;
+
     QImage takeScreenshot() override;
     void burstScreenshot() override; //initial the start of burst screenshotting
     void stopBurstScreenshot() override;

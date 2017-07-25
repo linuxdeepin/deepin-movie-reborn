@@ -41,6 +41,9 @@ public:
 
     void addPlayFile(const QFileInfo& fi);
 
+    void setVideoAspect(double r);
+    double videoAspect() const;
+
     qint64 duration() const;
     qint64 elapsed() const;
     const struct MovieInfo& movieInfo(); 

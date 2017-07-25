@@ -222,7 +222,7 @@ void ActionFactory::updateMainActionsForMovie(const PlayingMovieInfo& pmf)
         auto menu = _subtitleMenu;
         menu->clear();
 
-        auto group = new QActionGroup(menu);
+        auto group = new QActionGroup(menu); // mem leak ?
         for (int i = 0; i < pmf.subs.size(); i++) {
             DEF_ACTION_CHECKED(pmf.subs[i]["title"].toString(), ActionKind::SelectSubtitle);
             auto act = menu->actions().last();
@@ -237,7 +237,7 @@ void ActionFactory::updateMainActionsForMovie(const PlayingMovieInfo& pmf)
 
         DEF_ACTION(tr("Load Track"), ActionKind::LoadTrack);
 
-        auto group = new QActionGroup(menu);
+        auto group = new QActionGroup(menu); // mem leak ?
         for (int i = 0; i < pmf.audios.size(); i++) {
             DEF_ACTION_CHECKED(pmf.audios[i]["title"].toString(), ActionKind::SelectTrack);
             auto act = menu->actions().last();

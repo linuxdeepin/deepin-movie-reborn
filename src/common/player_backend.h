@@ -53,6 +53,9 @@ public:
     virtual int volume() const = 0;
     virtual bool muted() const = 0;
 
+    virtual void setVideoAspect(double r) = 0;
+    virtual double videoAspect() const = 0;
+
     virtual QImage takeScreenshot() = 0;
     virtual void burstScreenshot() = 0; //initial the start of burst screenshotting
     virtual void stopBurstScreenshot() = 0;

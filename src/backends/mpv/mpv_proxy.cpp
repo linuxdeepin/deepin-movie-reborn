@@ -338,6 +338,16 @@ int MpvProxy::volume() const
     return get_property(_handle, "volume").toInt();
 }
 
+void MpvProxy::setVideoAspect(double r)
+{
+    set_property(_handle, "video-aspect", r);
+}
+
+double MpvProxy::videoAspect() const
+{
+    return get_property(_handle, "video-aspect").toDouble();
+}
+
 bool MpvProxy::muted() const
 {
     return get_property(_handle, "mute").toBool();
