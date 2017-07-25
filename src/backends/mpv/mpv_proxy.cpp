@@ -107,10 +107,13 @@ mpv_handle* MpvProxy::mpv_init()
     
 
     //only to get notification without data
-    mpv_observe_property(h, 0, "time-pos", MPV_FORMAT_NONE);
+    mpv_observe_property(h, 0, "time-pos", MPV_FORMAT_NONE); //playback-time ?
     mpv_observe_property(h, 0, "pause", MPV_FORMAT_NONE);
     mpv_observe_property(h, 0, "mute", MPV_FORMAT_NONE);
-    mpv_observe_property(h, 0, "volume", MPV_FORMAT_NONE);
+    mpv_observe_property(h, 0, "volume", MPV_FORMAT_NONE); //ao-volume ?
+    mpv_observe_property(h, 0, "sid", MPV_FORMAT_NONE);
+    mpv_observe_property(h, 0, "aid", MPV_FORMAT_NODE);
+
     // because of vpu, we need to implement playlist w/o mpv 
     //mpv_observe_property(h, 0, "playlist-pos", MPV_FORMAT_NONE);
     //mpv_observe_property(h, 0, "playlist-count", MPV_FORMAT_NONE);
@@ -236,10 +239,16 @@ void MpvProxy::processPropertyChange(mpv_event_property* ev)
     //if (ev->data == NULL) return;
 
     QString name = QString::fromUtf8(ev->name);
+    if (name != "time-pos") qDebug() << name;
+
     if (name == "time-pos") {
         emit elapsedChanged();
     } else if (name == "volume") {
         emit volumeChanged();
+    } else if (name == "aid") {
+        emit aidChanged();
+    } else if (name == "sid") {
+        emit sidChanged();
     } else if (name == "mute") {
         emit muteChanged();
     } else if (name == "sub-visibility") {
@@ -271,6 +280,13 @@ bool MpvProxy::isSubVisible()
     return get_property(_handle, "sub-visibility").toBool();
 }
 
+void MpvProxy::selectSubtitle(int id)
+{
+    if (id >= _pmf.subs.size()) return;
+    auto sid = _pmf.subs[id]["id"];
+    set_property(_handle, "sid", sid);
+}
+
 void MpvProxy::toggleSubtitle()
 {
     if (state() == PlayState::Stopped) {
@@ -278,6 +294,23 @@ void MpvProxy::toggleSubtitle()
     }
 
     set_property(_handle, "sub-visibility", !isSubVisible());
+}
+
+int MpvProxy::aid() const
+{
+    return get_property(_handle, "aid").toInt();
+}
+
+int MpvProxy::sid() const
+{
+    return get_property(_handle, "sid").toInt();
+}
+
+void MpvProxy::selectTrack(int id)
+{
+    if (id >= _pmf.audios.size()) return;
+    auto sid = _pmf.audios[id]["id"];
+    set_property(_handle, "aid", sid);
 }
 
 void MpvProxy::volumeUp()
@@ -490,6 +523,7 @@ void MpvProxy::updatePlayingMovieInfo()
             ai["id"] = t["id"];
             ai["external"] = t["external"];
             ai["selected"] = t["selected"];
+            ai["title"] = t["title"];
             _pmf.audios.append(ai);
         } else if (t["type"] == "sub") {
             SubtitleInfo si;
@@ -497,6 +531,7 @@ void MpvProxy::updatePlayingMovieInfo()
             si["id"] = t["id"];
             si["external"] = t["external"];
             si["selected"] = t["selected"];
+            si["title"] = t["title"];
             _pmf.subs.append(si);
         }
         ++p;

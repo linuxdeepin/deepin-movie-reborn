@@ -29,6 +29,8 @@ PlayerEngine::PlayerEngine(QWidget *parent)
         connect(_current, &Backend::fileLoaded, this, &PlayerEngine::fileLoaded);
         connect(_current, &Backend::muteChanged, this, &PlayerEngine::muteChanged);
         connect(_current, &Backend::volumeChanged, this, &PlayerEngine::volumeChanged);
+        connect(_current, &Backend::sidChanged, this, &PlayerEngine::sidChanged);
+        connect(_current, &Backend::aidChanged, this, &PlayerEngine::aidChanged);
         connect(_current, &Backend::notifyScreenshot, this, &PlayerEngine::notifyScreenshot);
         l->addWidget(_current);
     }
@@ -80,12 +82,34 @@ const PlayingMovieInfo& PlayerEngine::playingMovieInfo()
     return _current->playingMovieInfo();
 }
 
+int PlayerEngine::aid() const
+{
+    if (state() == CoreState::Idle) { return 0; }
+    if (!_current) return 0;
+
+    return _current->aid();
+}
+
+int PlayerEngine::sid() const
+{
+    if (state() == CoreState::Idle) { return 0; }
+    if (!_current) return 0;
+
+    return _current->sid();
+}
+
 void PlayerEngine::loadSubtitle(const QFileInfo& fi)
 {
     if (state() == CoreState::Idle) { return; }
     if (!_current) return;
 
     _current->loadSubtitle(fi);
+}
+
+void PlayerEngine::selectSubtitle(int id)
+{
+    if (!_current) return;
+    _current->selectSubtitle(id);
 }
 
 bool PlayerEngine::isSubVisible()
@@ -101,6 +125,12 @@ void PlayerEngine::toggleSubtitle()
     if (!_current) return;
     _current->toggleSubtitle();
 
+}
+
+void PlayerEngine::selectTrack(int id)
+{
+    if (!_current) return;
+    _current->selectTrack(id);
 }
 
 void PlayerEngine::volumeUp()

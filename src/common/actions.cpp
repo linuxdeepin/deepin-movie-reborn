@@ -1,5 +1,6 @@
 #include "config.h"
 #include "actions.h"
+#include "player_engine.h"
 
 namespace dmr {
 
@@ -18,6 +19,9 @@ ActionFactory& ActionFactory::get()
     auto *act = menu->addAction((NAME)); \
     act->setProperty("kind", KD); \
     _contextMenuActions.append(act); \
+    connect(act, &QObject::destroyed, [=](QObject* o) { \
+        _contextMenuActions.removeOne((QAction*)o); \
+    }); \
 } while (0) 
 
 #define DEF_ACTION_CHECKED(NAME, KD) do { \
@@ -25,6 +29,20 @@ ActionFactory& ActionFactory::get()
     act->setCheckable(true); \
     act->setProperty("kind", KD); \
     _contextMenuActions.append(act); \
+    connect(act, &QObject::destroyed, [=](QObject* o) { \
+        _contextMenuActions.removeOne((QAction*)o); \
+    }); \
+} while (0) 
+
+#define DEF_ACTION_CHECKED_GROUP(NAME, KD, GROUP) do { \
+    auto *act = menu->addAction((NAME)); \
+    act->setCheckable(true); \
+    act->setProperty("kind", KD); \
+    act->setActionGroup(GROUP); \
+    _contextMenuActions.append(act); \
+    connect(act, &QObject::destroyed, [=](QObject* o) { \
+        _contextMenuActions.removeOne((QAction*)o); \
+    }); \
 } while (0) 
 
 QMenu* ActionFactory::titlebarMenu()
@@ -85,12 +103,16 @@ QMenu* ActionFactory::mainContextMenu()
         { //sub menu
             auto *parent = menu;
             auto *menu = new QMenu(tr("Frame"));
-            DEF_ACTION(tr("Default"), ActionKind::DefaultFrame);
-            DEF_ACTION(("4:3"), ActionKind::Ratio4x3Frame);
-            DEF_ACTION(("16:9"), ActionKind::Ratio16x9Frame);
-            DEF_ACTION(("16:10"), ActionKind::Ratio16x10Frame);
-            DEF_ACTION(("1.85:1"), ActionKind::Ratio185x1Frame);
-            DEF_ACTION(("2.35:1"), ActionKind::Ratio235x1Frame);
+            auto group = new QActionGroup(menu);
+
+            DEF_ACTION_CHECKED_GROUP(tr("Default"), ActionKind::DefaultFrame, group);
+            DEF_ACTION_CHECKED_GROUP(("4:3"), ActionKind::Ratio4x3Frame, group);
+            DEF_ACTION_CHECKED_GROUP(("16:9"), ActionKind::Ratio16x9Frame, group);
+            DEF_ACTION_CHECKED_GROUP(("16:10"), ActionKind::Ratio16x10Frame, group);
+            DEF_ACTION_CHECKED_GROUP(("1.85:1"), ActionKind::Ratio185x1Frame, group);
+            DEF_ACTION_CHECKED_GROUP(("2.35:1"), ActionKind::Ratio235x1Frame, group);
+            menu->addSeparator();
+
             DEF_ACTION(tr("Clockwise"), ActionKind::ClockwiseFrame);
             DEF_ACTION(tr("Counterclockwise"), ActionKind::CounterclockwiseFrame);
 
@@ -112,7 +134,9 @@ QMenu* ActionFactory::mainContextMenu()
             {
                 auto *parent = menu;
                 auto *menu = new QMenu(tr("Track"));
-                DEF_ACTION(tr("Load Track"), ActionKind::LoadTrack);
+                _tracksMenu = menu;
+                //DEF_ACTION(tr("Load Track"), ActionKind::LoadTrack);
+                //DEF_ACTION(tr("Select Track"), ActionKind::SelectTrack);
                 parent->addMenu(menu);
             }
             parent->addMenu(menu);
@@ -122,7 +146,13 @@ QMenu* ActionFactory::mainContextMenu()
             auto *parent = menu;
             auto *menu = new QMenu(tr("Subtitle"));
             DEF_ACTION(tr("Load"), ActionKind::LoadSubtitle);
-            DEF_ACTION(tr("Select"), ActionKind::SelectSubtitle);
+            //DEF_ACTION(tr("Select"), ActionKind::SelectSubtitle);
+            {
+                auto *parent = menu;
+                auto *menu = new QMenu(tr("Select"));
+                _subtitleMenu = menu;
+                parent->addMenu(menu);
+            }
             DEF_ACTION_CHECKED(tr("Hide"), ActionKind::HideSubtitle);
 
             parent->addMenu(menu);
@@ -185,6 +215,37 @@ QList<QAction*> ActionFactory::findActionsByKind(ActionKind target_kd)
     return res;
 }
 
+void ActionFactory::updateMainActionsForMovie(const PlayingMovieInfo& pmf)
+{
+    qDebug() << __func__;
+    if (_subtitleMenu) {
+        auto menu = _subtitleMenu;
+        menu->clear();
+
+        auto group = new QActionGroup(menu);
+        for (int i = 0; i < pmf.subs.size(); i++) {
+            DEF_ACTION_CHECKED(pmf.subs[i]["title"].toString(), ActionKind::SelectSubtitle);
+            auto act = menu->actions().last();
+            act->setActionGroup(group);
+            act->setProperty("args", QList<QVariant>() << i);
+        }
+    }
+
+    if (_subtitleMenu) {
+        auto menu = _tracksMenu;
+        menu->clear();
+
+        DEF_ACTION(tr("Load Track"), ActionKind::LoadTrack);
+
+        auto group = new QActionGroup(menu);
+        for (int i = 0; i < pmf.audios.size(); i++) {
+            DEF_ACTION_CHECKED(pmf.audios[i]["title"].toString(), ActionKind::SelectTrack);
+            auto act = menu->actions().last();
+            act->setActionGroup(group);
+            act->setProperty("args", QList<QVariant>() << i);
+        }
+    }
+}
 
 #undef DEF_ACTION
 #undef DEF_ACTION_CHECKED

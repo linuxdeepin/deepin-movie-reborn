@@ -44,6 +44,11 @@ public:
     virtual void loadSubtitle(const QFileInfo& fi) = 0;
     virtual void toggleSubtitle() = 0;
     virtual bool isSubVisible() = 0;
+    virtual void selectSubtitle(int id) = 0;
+    virtual void selectTrack(int id) = 0;
+
+    virtual int aid() const = 0;
+    virtual int sid() const = 0;
 
     virtual int volume() const = 0;
     virtual bool muted() const = 0;
@@ -59,6 +64,8 @@ Q_SIGNALS:
     void fileLoaded();
     void muteChanged();
     void volumeChanged();
+    void sidChanged();
+    void aidChanged();
 
     //emit during burst screenshotting
     void notifyScreenshot(const QImage& frame);

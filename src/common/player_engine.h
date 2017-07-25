@@ -52,6 +52,11 @@ public:
     void loadSubtitle(const QFileInfo& fi);
     void toggleSubtitle();
     bool isSubVisible();
+    void selectSubtitle(int id); // id into PlayingMovieInfo.subs
+    int sid() const;
+
+    void selectTrack(int id); // id into PlayingMovieInfo.audios
+    int aid() const;
 
     int volume() const;
     bool muted() const;
@@ -69,6 +74,8 @@ signals:
     void fileLoaded();
     void muteChanged();
     void volumeChanged();
+    void sidChanged();
+    void aidChanged();
 
     //emit during burst screenshotting
     void notifyScreenshot(const QImage& frame);

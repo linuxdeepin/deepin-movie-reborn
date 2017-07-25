@@ -35,7 +35,7 @@ public:
     PlayerEngine* engine() { return _engine; }
     DTitlebar* titlebar() { return _titlebar; }
     ToolboxProxy* toolbox() { return _toolbox; }
-    void requestAction(ActionKind, bool fromUI = false);
+    void requestAction(ActionKind, bool fromUI = false, QList<QVariant> args = {});
 
 signals:
     void frameMarginsChanged();

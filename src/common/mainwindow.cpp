@@ -373,6 +373,15 @@ MainWindow::MainWindow(QWidget *parent)
     connect(_engine, &PlayerEngine::fileLoaded, this, &MainWindow::updateActionsState);
     updateActionsState();
 
+    connect(_engine, &PlayerEngine::sidChanged, [=]() {
+        qDebug() << "updateActionsUI";
+        reflectActionToUI(ActionKind::SelectSubtitle);
+    });
+    connect(_engine, &PlayerEngine::aidChanged, [=]() {
+        qDebug() << "updateActionsUI";
+        reflectActionToUI(ActionKind::SelectTrack);
+    });
+
     auto updateConstraints = [=]() {
         if (_engine->state() == PlayerEngine::Idle || _engine->playlist().count() == 0) {
             _titlebar->setTitle(tr("Deepin Movie"));
@@ -555,11 +564,7 @@ void MainWindow::onBindingsChanged()
         connect(act, &QAction::triggered, [=]() { 
             this->menuItemInvoked(act); 
             auto prop = act->property("kind");
-#if QT_VERSION < QT_VERSION_CHECK(5, 6, 2)
-            auto kd = (ActionKind)act->property("kind").value<int>();
-#else
-            auto kd = act->property("kind").value<ActionKind>();
-#endif
+            auto kd = ActionFactory::actionKind(act);
             reflectActionToUI(kd);
         });
     }
@@ -570,11 +575,7 @@ void MainWindow::updateActionsState()
     auto pmf = _engine->playingMovieInfo();
     auto update = [=](QAction* act) {
         auto prop = act->property("kind");
-#if QT_VERSION < QT_VERSION_CHECK(5, 6, 2)
-        auto kd = (ActionKind)act->property("kind").value<int>();
-#else
-        auto kd = act->property("kind").value<ActionKind>();
-#endif
+        auto kd = ActionFactory::actionKind(act);
         bool v = true;
         switch(kd) {
             case ActionKind::MovieInfo:
@@ -593,6 +594,7 @@ void MainWindow::updateActionsState()
         act->setEnabled(v);
     };
 
+    ActionFactory::get().updateMainActionsForMovie(pmf);
     ActionFactory::get().forEachInMainMenu(update);
 }
 
@@ -604,35 +606,78 @@ void MainWindow::reflectActionToUI(ActionKind kd)
         case ActionKind::Fullscreen:
         case ActionKind::ToggleMiniMode:
         case ActionKind::TogglePlaylist:
-        case ActionKind::HideSubtitle:
+        case ActionKind::HideSubtitle: {
             qDebug() << __func__ << kd;
             acts = ActionFactory::get().findActionsByKind(kd);
+            auto p = acts.begin();
+            while (p != acts.end()) {
+                auto old = (*p)->isEnabled();
+                (*p)->setEnabled(false);
+                (*p)->setChecked(!(*p)->isChecked());
+                (*p)->setEnabled(old);
+                ++p;
+            }
+            break;
+        }
+
+        case ActionKind::SelectTrack:
+        case ActionKind::SelectSubtitle: {
+            if (_engine->state() == PlayerEngine::Idle)
+                break;
+
+            auto pmf = _engine->playingMovieInfo();
+            int id = -1;
+            int idx = -1;
+            if (kd == ActionKind::SelectTrack) {
+                id = _engine->aid();
+                for (idx = 0; idx < pmf.audios.size(); idx++) {
+                    if (id == pmf.audios[idx]["id"].toInt()) {
+                        break;
+                    }
+                }
+            } else if (kd == ActionKind::SelectSubtitle) {
+                id = _engine->sid();
+                for (idx = 0; idx < pmf.subs.size(); idx++) {
+                    if (id == pmf.subs[idx]["id"].toInt()) {
+                        break;
+                    }
+                }
+            }
+
+            acts = ActionFactory::get().findActionsByKind(kd);
+            auto p = acts.begin();
+            while (p != acts.end()) {
+                auto args = ActionFactory::actionArgs(*p);
+                if (args[0].toInt() == idx) {
+                    (*p)->setEnabled(false);
+                    (*p)->setChecked(!(*p)->isChecked());
+                    (*p)->setEnabled(true);
+                    break;
+                }
+
+                ++p;
+            }
+            break;
+        }
         default: break;
     }
 
-    auto p = acts.begin();
-    while (p != acts.end()) {
-        auto old = (*p)->isEnabled();
-        (*p)->setEnabled(false);
-        (*p)->setChecked(!(*p)->isChecked());
-        (*p)->setEnabled(old);
-        ++p;
-    }
 }
 
 void MainWindow::menuItemInvoked(QAction *action)
 {
     auto prop = action->property("kind");
-#if QT_VERSION < QT_VERSION_CHECK(5, 6, 2)
-    auto kd = (ActionKind)action->property("kind").value<int>();
-#else
-    auto kd = action->property("kind").value<ActionKind>();
-#endif
+    auto kd = ActionFactory::actionKind(action);
+
     qDebug() << "prop = " << prop << ", kd = " << kd;
-    requestAction(kd, true);
+    if (ActionFactory::actionHasArgs(action)) {
+        requestAction(kd, true, ActionFactory::actionArgs(action));
+    } else {
+        requestAction(kd, true);
+    }
 }
 
-void MainWindow::requestAction(ActionKind kd, bool fromUI)
+void MainWindow::requestAction(ActionKind kd, bool fromUI, QList<QVariant> args)
 {
     qDebug() << "kd = " << kd << "fromUI " << fromUI;
     switch (kd) {
@@ -739,7 +784,15 @@ void MainWindow::requestAction(ActionKind kd, bool fromUI)
             break;
         }
 
+        case SelectTrack: {
+            Q_ASSERT(args.size() == 1);
+            _engine->selectTrack(args[0].toInt());
+            break;
+        }
+
         case SelectSubtitle: {
+            Q_ASSERT(args.size() == 1);
+            _engine->selectSubtitle(args[0].toInt());
             break;
         }
 
