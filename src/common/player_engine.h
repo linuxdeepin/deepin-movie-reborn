@@ -23,6 +23,7 @@ class PlayerEngine: public QWidget {
     Q_OBJECT
     Q_PROPERTY(qint64 duration READ duration)
     Q_PROPERTY(qint64 elapsed READ elapsed NOTIFY elapsedChanged)
+    Q_PROPERTY(QSize videoSize READ videoSize NOTIFY videoSizeChanged)
     Q_PROPERTY(bool paused READ paused)
 
     Q_PROPERTY(CoreState state READ state NOTIFY stateChanged)
@@ -41,11 +42,16 @@ public:
 
     void addPlayFile(const QFileInfo& fi);
 
+    // only supports (+/-) 0, 90, 180, 270
+    int videoRotation() const;
+    void setVideoRotation(int degree);
+
     void setVideoAspect(double r);
     double videoAspect() const;
 
     qint64 duration() const;
     qint64 elapsed() const;
+    QSize videoSize() const;
     const struct MovieInfo& movieInfo(); 
 
     bool paused();
@@ -73,6 +79,7 @@ public:
 signals:
     void tracksChanged();
     void elapsedChanged();
+    void videoSizeChanged();
     void stateChanged();
     void fileLoaded();
     void muteChanged();

@@ -31,6 +31,7 @@ PlayerEngine::PlayerEngine(QWidget *parent)
         connect(_current, &Backend::volumeChanged, this, &PlayerEngine::volumeChanged);
         connect(_current, &Backend::sidChanged, this, &PlayerEngine::sidChanged);
         connect(_current, &Backend::aidChanged, this, &PlayerEngine::aidChanged);
+        connect(_current, &Backend::videoSizeChanged, this, &PlayerEngine::videoSizeChanged);
         connect(_current, &Backend::notifyScreenshot, this, &PlayerEngine::notifyScreenshot);
         l->addWidget(_current);
     }
@@ -264,6 +265,11 @@ qint64 PlayerEngine::duration() const
     return _current->duration();
 }
 
+QSize PlayerEngine::videoSize() const
+{
+    if (!_current) return {0, 0};
+    return _current->videoSize();
+}
 
 qint64 PlayerEngine::elapsed() const
 {
@@ -281,6 +287,18 @@ double PlayerEngine::videoAspect() const
 {
     if (!_current) return 0.0;
     return _current->videoAspect();
+}
+
+int PlayerEngine::videoRotation() const
+{
+    if (!_current) return 0;
+    return _current->videoRotation();
+}
+
+void PlayerEngine::setVideoRotation(int degree)
+{
+    if (_current) 
+        _current->setVideoRotation(degree);
 }
 
 } // end of namespace dmr
