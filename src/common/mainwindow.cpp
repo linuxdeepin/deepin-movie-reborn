@@ -218,6 +218,14 @@ skip_set_cursor:
 
             if (keep_ratio) {
                 auto sz = mw->engine()->videoSize();
+                if (sz.isEmpty()) {
+                    const auto& mi = mw->engine()->playlist().currentInfo().mi;
+                    sz = QSize(mi.width, mi.height);
+                }
+        
+                auto geom = qApp->desktop()->availableGeometry(mw);
+                sz.scale(geom.width(), geom.height(), Qt::KeepAspectRatio);
+
                 ratio = sz.width() / (qreal)sz.height();
             }
 
@@ -389,6 +397,13 @@ MainWindow::MainWindow(QWidget *parent)
         const auto& mi = _engine->playlist().currentInfo().mi;
         _titlebar->setTitle(QFileInfo(mi.filePath).fileName());
         auto sz = _engine->videoSize();
+        if (sz.isEmpty()) {
+            sz = QSize(mi.width, mi.height);
+        }
+        
+        auto geom = qApp->desktop()->availableGeometry(this);
+        sz.scale(geom.width(), geom.height(), Qt::KeepAspectRatio);
+
         qDebug() << "updateConstraints: " << sz;
         resize(sz);
     };
@@ -595,6 +610,8 @@ void MainWindow::updateActionsState()
     };
 
     reflectActionToUI(ActionKind::DefaultFrame);
+    reflectActionToUI(ActionKind::OrderPlay);
+
     ActionFactory::get().updateMainActionsForMovie(pmf);
     ActionFactory::get().forEachInMainMenu(update);
 }

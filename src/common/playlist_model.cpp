@@ -119,7 +119,11 @@ PlaylistModel::PlaylistModel(PlayerEngine *e)
             case PlayerEngine::Paused:
                 break;
             case PlayerEngine::Idle:
-                playNext(false);
+                if (!_userRequestedItem) {
+                    playNext(false);
+                } else {
+                    _userRequestedItem = false;
+                }
                 break;
         }
     });
@@ -204,6 +208,8 @@ void PlaylistModel::playNext(bool fromUser)
     qDebug() << "playmode" << _playMode << "fromUser" << fromUser
         << "last" << _last << "current" << _current;
 
+    _userRequestedItem = fromUser;
+
     switch (_playMode) {
         case SinglePlay:
             if (fromUser) {
@@ -266,6 +272,8 @@ void PlaylistModel::playNext(bool fromUser)
             if (_last == count()) {
                 if (_playMode == OrderPlay) {
                     clear();
+                    break;
+
                 } else {
                     _loopCount++;
                     _last = 0;
@@ -277,7 +285,6 @@ void PlaylistModel::playNext(bool fromUser)
             emit currentChanged();
             break;
     }
-
 }
 
 void PlaylistModel::playPrev(bool fromUser)

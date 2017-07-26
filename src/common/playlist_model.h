@@ -103,6 +103,8 @@ private:
     QList<int> _playOrder; // for shuffle mode
     int _loopCount {0}; // loop count
 
+    bool _userRequestedItem {false};
+
     VideoThumbnailer _thumbnailer;
     PlayerEngine *_engine {nullptr};
 
