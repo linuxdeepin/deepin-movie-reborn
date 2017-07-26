@@ -91,11 +91,13 @@ QMenu* ActionFactory::mainContextMenu()
         { //sub menu
             auto *parent = menu;
             auto *menu = new QMenu(tr("Play Mode"));
-            DEF_ACTION(tr("Order Play"), ActionKind::OrderPlay);
-            DEF_ACTION(tr("Shuffle Play"), ActionKind::ShufflePlay);
-            DEF_ACTION(tr("Single Play"), ActionKind::SinglePlay);
-            DEF_ACTION(tr("Single Loop"), ActionKind::SingleLoop);
-            DEF_ACTION(tr("List Loop"), ActionKind::ListLoop);
+            auto group = new QActionGroup(menu);
+
+            DEF_ACTION_CHECKED_GROUP(tr("Order Play"), ActionKind::OrderPlay, group);
+            DEF_ACTION_CHECKED_GROUP(tr("Shuffle Play"), ActionKind::ShufflePlay, group);
+            DEF_ACTION_CHECKED_GROUP(tr("Single Play"), ActionKind::SinglePlay, group);
+            DEF_ACTION_CHECKED_GROUP(tr("Single Loop"), ActionKind::SingleLoop, group);
+            DEF_ACTION_CHECKED_GROUP(tr("List Loop"), ActionKind::ListLoop, group);
 
             parent->addMenu(menu);
         }

@@ -279,7 +279,7 @@ void ToolboxProxy::buttonClicked(QString id)
     qDebug() << __func__ << id;
     if (id == "play") {
         if (_engine->state() == PlayerEngine::CoreState::Idle) {
-            _mainWindow->requestAction(ActionKind::OpenFile);
+            _mainWindow->requestAction(ActionKind::StartPlay);
         } else {
             _mainWindow->requestAction(ActionKind::TogglePause);
         }

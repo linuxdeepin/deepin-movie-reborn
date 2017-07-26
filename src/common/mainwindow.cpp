@@ -712,6 +712,20 @@ void MainWindow::requestAction(ActionKind kd, bool fromUI, QList<QVariant> args)
             break;
         }
 
+        case StartPlay: {
+            if (_engine->playlist().count() == 0) {
+                QString filename = QFileDialog::getOpenFileName(this, tr("Open File"),
+                        QDir::currentPath(),
+                        tr("Movies (*.mkv *.mov *.mp4 *.rmvb)"));
+                if (QFileInfo(filename).exists()) {
+                    play(QFileInfo(filename));
+                }
+            } else {
+                _engine->play();
+            }
+            break;
+        }
+
         case ActionKind::EmptyPlaylist: {
             _engine->clearPlaylist();
             break;
@@ -779,6 +793,27 @@ void MainWindow::requestAction(ActionKind kd, bool fromUI, QList<QVariant> args)
         case CounterclockwiseFrame: {
             auto old = _engine->videoRotation();
             _engine->setVideoRotation(((old - 90) + 360) % 360);
+            break;
+        }
+
+        case ActionKind::OrderPlay: {
+            _engine->playlist().setPlayMode(PlaylistModel::OrderPlay);
+            break;
+        }
+        case ActionKind::ShufflePlay: {
+            _engine->playlist().setPlayMode(PlaylistModel::ShufflePlay);
+            break;
+        }
+        case ActionKind::SinglePlay: {
+            _engine->playlist().setPlayMode(PlaylistModel::SinglePlay);
+            break;
+        }
+        case ActionKind::SingleLoop: {
+            _engine->playlist().setPlayMode(PlaylistModel::SingleLoop);
+            break;
+        }
+        case ActionKind::ListLoop: {
+            _engine->playlist().setPlayMode(PlaylistModel::ListLoop);
             break;
         }
 

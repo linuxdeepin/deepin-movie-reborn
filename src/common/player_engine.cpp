@@ -192,12 +192,12 @@ void PlayerEngine::play()
 
 void PlayerEngine::prev()
 {
-    _playlist->playPrev();
+    _playlist->playPrev(true);
 }
 
 void PlayerEngine::next()
 {
-    _playlist->playNext();
+    _playlist->playNext(true);
 }
 
 void PlayerEngine::clearPlaylist()
