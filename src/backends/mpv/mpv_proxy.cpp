@@ -149,6 +149,23 @@ void MpvProxy::setState(PlayState s)
     }
 }
 
+void MpvProxy::pollingEndOfPlayback()
+{
+    if (_state != Backend::Stopped) stop();
+
+    while (_state != Backend::Stopped) {
+        mpv_event* ev = mpv_wait_event(_handle, 0.005);
+        if (ev->event_id == MPV_EVENT_NONE) 
+            continue;
+
+        if (ev->event_id == MPV_EVENT_END_FILE) {
+            qDebug() << "end of playback";
+            setState(Backend::Stopped);
+            break;
+        }
+    }
+}
+
 const PlayingMovieInfo& MpvProxy::playingMovieInfo()
 {
     return _pmf;
@@ -249,7 +266,7 @@ void MpvProxy::processPropertyChange(mpv_event_property* ev)
         emit volumeChanged();
     } else if (name == "dwidth" || name == "dheight") {
         auto sz = videoSize();
-        if (sz.isEmpty())
+        if (!sz.isEmpty())
             emit videoSizeChanged();
     } else if (name == "aid") {
         emit aidChanged();
@@ -521,7 +538,7 @@ void MpvProxy::seekBackward(int secs)
 
 QSize MpvProxy::videoSize() const
 {
-    if (state() == PlayState::Stopped) return QSize();
+    if (state() == PlayState::Stopped) return QSize(-1, -1);
     return QSize(get_property(_handle, "dwidth").toInt(),
             get_property(_handle, "dheight").toInt());
 

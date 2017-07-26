@@ -151,6 +151,7 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     setAutoFillBackground(false);
     setAttribute(Qt::WA_TranslucentBackground, false);
     setFixedWidth(220);
+    setAcceptDrops(true);
 
     if (!composited) {
         setWindowFlags(Qt::FramelessWindowHint|Qt::BypassWindowManagerHint);
@@ -218,6 +219,29 @@ void PlaylistWidget::removeClickedItem()
         _engine->playlist().remove(_items.indexOf(_clickedItem));
     }
 }
+
+void PlaylistWidget::dragEnterEvent(QDragEnterEvent *ev)
+{
+    if (ev->mimeData()->hasUrls()) {
+        ev->acceptProposedAction();
+    }
+}
+
+void PlaylistWidget::dropEvent(QDropEvent *ev)
+{
+    if (ev->mimeData()->hasUrls()) {
+        auto urls = ev->mimeData()->urls();
+        for (const auto& url: urls) {
+            if (url.isLocalFile()) {
+                QFileInfo fi(url.toLocalFile());
+                _engine->addPlayFile(fi);
+            }
+        }
+
+        ev->acceptProposedAction();
+    }
+}
+
 
 void PlaylistWidget::contextMenuEvent(QContextMenuEvent *cme)
 {

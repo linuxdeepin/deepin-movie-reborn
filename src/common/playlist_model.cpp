@@ -113,18 +113,16 @@ PlaylistModel::PlaylistModel(PlayerEngine *e)
     av_register_all();
 
     connect(e, &PlayerEngine::stateChanged, [=]() {
-        qDebug() << "model" << "_userRequestedItem" << _userRequestedItem;
+        qDebug() << "model" << "_userRequestingItem" << _userRequestingItem << "state" << e->state();
         switch (e->state()) {
             case PlayerEngine::Playing:
-                break;
             case PlayerEngine::Paused:
                 break;
+
             case PlayerEngine::Idle:
-                stop();
-                if (!_userRequestedItem) {
+                if (!_userRequestingItem) {
+                    stop();
                     playNext(false);
-                } else {
-                    _userRequestedItem = false;
                 }
                 break;
         }
@@ -215,12 +213,13 @@ void PlaylistModel::playNext(bool fromUser)
     qDebug() << "playmode" << _playMode << "fromUser" << fromUser
         << "last" << _last << "current" << _current;
 
-    _userRequestedItem = fromUser;
+    _userRequestingItem = fromUser;
 
     switch (_playMode) {
         case SinglePlay:
             if (fromUser) {
                 if (_last + 1 < count()) {
+                    _engine->waitLastEnd();
                     _current = _last + 1;
                     _last = _current;
                     _engine->requestPlay(_current);
@@ -236,12 +235,13 @@ void PlaylistModel::playNext(bool fromUser)
         case SingleLoop:
             if (fromUser) {
                 if (_engine->state() == PlayerEngine::Idle) {
-                    Q_ASSERT(_last != -1);
+                    _last = _last == -1 ? 0: _last;
                     _current = _last;
                     _engine->requestPlay(_current);
 
                 } else {
                     if (_last + 1 < count()) {
+                        _engine->waitLastEnd();
                         _current = _last + 1;
                         _last = _current;
                         _engine->requestPlay(_current);
@@ -252,7 +252,8 @@ void PlaylistModel::playNext(bool fromUser)
                 }
             } else {
                 if (_engine->state() == PlayerEngine::Idle) {
-                    _current = _last < 0 ? 0 : _last;
+                    _last = _last < 0 ? 0 : _last;
+                    _current = _last;
                     _engine->requestPlay(_current);
                     emit currentChanged();
                 } else {
@@ -267,16 +268,18 @@ void PlaylistModel::playNext(bool fromUser)
             for (i = 0; i < _playOrder.size(); ++i) {
                 if (_playOrder[i] == _last) {
                     i = i + 1;
+                    if (i >= _playOrder.size()) {
+                        i = 0;
+                    }
                     break;
                 }
             }
-            if (i < _playOrder.size()) {
-                _last = _current = _playOrder[i];
-                _engine->requestPlay(_current);
-                emit currentChanged();
-            } else {
-                _engine->stop();
-            }
+
+            qDebug() << "shuffle next " << i;
+            _engine->waitLastEnd();
+            _last = _current = _playOrder[i];
+            _engine->requestPlay(_current);
+            emit currentChanged();
             break;
         }
 
@@ -294,22 +297,114 @@ void PlaylistModel::playNext(bool fromUser)
                 } 
             }
 
+            _engine->waitLastEnd();
             _current = _last;
             _engine->requestPlay(_current);
             emit currentChanged();
             break;
     }
+
+    _userRequestingItem = false;
 }
 
 void PlaylistModel::playPrev(bool fromUser)
 {
     if (count() == 0) return;
+    qDebug() << "playmode" << _playMode << "fromUser" << fromUser
+        << "last" << _last << "current" << _current;
 
-    if (count() && _current > 0) {
-        _current = _current - 1;
-        _engine->requestPlay(_current);
-        emit currentChanged();
+    _userRequestingItem = fromUser;
+
+    switch (_playMode) {
+        case SinglePlay:
+            if (fromUser) {
+                if (_last - 1 >= 0) {
+                    _engine->waitLastEnd();
+                    _current = _last - 1;
+                    _last = _current;
+                    _engine->requestPlay(_current);
+                    emit currentChanged();
+                } else {
+                    //ignore
+                }
+            } else {
+                clear();
+            }
+            break;
+
+        case SingleLoop:
+            if (fromUser) {
+                if (_engine->state() == PlayerEngine::Idle) {
+                    _last = _last == -1 ? 0: _last;
+                    _current = _last;
+                    _engine->requestPlay(_current);
+
+                } else {
+                    if (_last - 1 >= 0) {
+                        _engine->waitLastEnd();
+                        _current = _last - 1;
+                        _last = _current;
+                        _engine->requestPlay(_current);
+                        emit currentChanged();
+                    } else {
+                        _engine->stop();
+                    }
+                }
+            } else {
+                if (_engine->state() == PlayerEngine::Idle) {
+                    _last = _last < 0 ? 0 : _last;
+                    _current = _last;
+                    _engine->requestPlay(_current);
+                    emit currentChanged();
+                } else {
+                    // replay current
+                    _engine->requestPlay(_current);
+                }
+            }
+            break;
+
+        case ShufflePlay: {
+            int i;
+            for (i = 0; i < _playOrder.size(); ++i) {
+                if (_playOrder[i] == _last) {
+                    i = i - 1;
+                    if (i < 0) {
+                        i = _playOrder.size()-1;
+                    }
+                    break;
+                }
+            }
+
+            qDebug() << "shuffle next " << i;
+            _engine->waitLastEnd();
+            _last = _current = _playOrder[i];
+            _engine->requestPlay(_current);
+            emit currentChanged();
+            break;
+        }
+
+        case OrderPlay:
+        case ListLoop:
+            _last--;
+            if (_last < 0) {
+                if (_playMode == OrderPlay) {
+                    _last = 0;
+                    break;
+                } else {
+                    _loopCount++;
+                    _last = count()-1;
+                } 
+            }
+
+            _engine->waitLastEnd();
+            _current = _last;
+            _engine->requestPlay(_current);
+            emit currentChanged();
+            break;
     }
+
+    _userRequestingItem = false;
+
 }
 
 //TODO: what if loadfile failed

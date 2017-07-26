@@ -399,6 +399,7 @@ MainWindow::MainWindow(QWidget *parent)
         auto sz = _engine->videoSize();
         if (sz.isEmpty()) {
             sz = QSize(mi.width, mi.height);
+            qDebug() << mi.width << mi.height;
         }
         
         auto geom = qApp->desktop()->availableGeometry(this);

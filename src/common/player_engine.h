@@ -35,6 +35,12 @@ public:
     };
     Q_ENUM(CoreState)
 
+    /* backend like mpv will asynchronously report end of playback. 
+     * there are situations when we need to see the end-event before 
+     * proceed (e.g playlist next)
+     */
+    void waitLastEnd();
+
     friend class PlaylistModel;
 
     PlayerEngine(QWidget *parent = 0);
