@@ -195,7 +195,7 @@ void PlayerEngine::requestPlay(int id)
 void PlayerEngine::play()
 {
     if (state() == CoreState::Idle && _playlist->count()) {
-        _playlist->firstPlay();
+        next();
     }
 }
 
