@@ -22,6 +22,9 @@ public:
     // mpv plays all files by default  (I hope)
     bool isPlayable() const override { return true; }
 
+    // polling until current playback ended
+    void pollingEndOfPlayback();
+
     qint64 duration() const override;
     qint64 elapsed() const override;
     QSize videoSize() const override;

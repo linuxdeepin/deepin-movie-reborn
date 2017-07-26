@@ -33,6 +33,8 @@ public slots:
 
 protected:
     void contextMenuEvent(QContextMenuEvent *cme);
+    void dragEnterEvent(QDragEnterEvent *event);
+    void dropEvent(QDropEvent *event);
 
 protected slots:
     void updateItemStates();

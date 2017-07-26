@@ -56,10 +56,18 @@ PlayerEngine::~PlayerEngine()
     qDebug() << __func__;
 }
 
+void PlayerEngine::waitLastEnd()
+{
+    if (auto *mpv = dynamic_cast<MpvProxy*>(_current)) {
+        mpv->pollingEndOfPlayback();
+    }
+}
+
 void PlayerEngine::onBackendStateChanged()
 {
     if (!_current) return;
 
+    auto old = _state;
     switch (_current->state()) {
         case Backend::PlayState::Playing:
             _state = CoreState::Playing;
@@ -72,7 +80,8 @@ void PlayerEngine::onBackendStateChanged()
             break;
     }
 
-    emit stateChanged();
+    if (old != _state)
+        emit stateChanged();
 }
 
 const PlayingMovieInfo& PlayerEngine::playingMovieInfo()
