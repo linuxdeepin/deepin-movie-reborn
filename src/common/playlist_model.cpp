@@ -178,33 +178,41 @@ void PlaylistModel::remove(int pos)
 {
     if (pos < 0 || pos >= count()) return;
 
+    _userRequestingItem = true;
+
     _infos.removeAt(pos);
     reshuffle();
 
-    if (_current == pos) {
-        _last = _current;
-        _current = -1;
-        _engine->stop();
+    _last = -1;
+    if (_engine->state() != PlayerEngine::Idle) {
+        if (_current == pos) {
+            _last = _current;
+            _current = -1;
+            _engine->stop();
+            _engine->waitLastEnd();
 
-    } else if (pos < _current) {
-        _current--;
-        _last = _current;
+        } else if (pos < _current) {
+            _current--;
+            _last = _current;
+        }
     }
+
+    if (_last >= count())
+        _last = -1;
 
     emit itemRemoved(pos);
     emit currentChanged();
     emit countChanged();
+
+
+    qDebug() << _last << _current;
+    _userRequestingItem = false;
 }
 
 void PlaylistModel::stop()
 {
     _current = -1;
     emit currentChanged();
-}
-
-void PlaylistModel::firstPlay()
-{
-    playNext(false);
 }
 
 void PlaylistModel::playNext(bool fromUser)

@@ -74,7 +74,6 @@ public:
     void remove(int pos);
     void append(const QFileInfo&);
 
-    void firstPlay();
     void playNext(bool fromUser);
     void playPrev(bool fromUser);
 
