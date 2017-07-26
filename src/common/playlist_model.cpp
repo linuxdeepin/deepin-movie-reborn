@@ -113,12 +113,14 @@ PlaylistModel::PlaylistModel(PlayerEngine *e)
     av_register_all();
 
     connect(e, &PlayerEngine::stateChanged, [=]() {
+        qDebug() << "model" << "_userRequestedItem" << _userRequestedItem;
         switch (e->state()) {
             case PlayerEngine::Playing:
                 break;
             case PlayerEngine::Paused:
                 break;
             case PlayerEngine::Idle:
+                stop();
                 if (!_userRequestedItem) {
                     playNext(false);
                 } else {
@@ -202,6 +204,11 @@ void PlaylistModel::stop()
     emit currentChanged();
 }
 
+void PlaylistModel::firstPlay()
+{
+    playNext(false);
+}
+
 void PlaylistModel::playNext(bool fromUser)
 {
     if (count() == 0) return;
@@ -228,13 +235,20 @@ void PlaylistModel::playNext(bool fromUser)
 
         case SingleLoop:
             if (fromUser) {
-                if (_last + 1 < count()) {
-                    _current = _last + 1;
-                    _last = _current;
+                if (_engine->state() == PlayerEngine::Idle) {
+                    Q_ASSERT(_last != -1);
+                    _current = _last;
                     _engine->requestPlay(_current);
-                    emit currentChanged();
+
                 } else {
-                    _engine->stop();
+                    if (_last + 1 < count()) {
+                        _current = _last + 1;
+                        _last = _current;
+                        _engine->requestPlay(_current);
+                        emit currentChanged();
+                    } else {
+                        _engine->stop();
+                    }
                 }
             } else {
                 if (_engine->state() == PlayerEngine::Idle) {
