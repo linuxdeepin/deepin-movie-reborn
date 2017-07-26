@@ -9,6 +9,7 @@ class PlayingMovieInfo;
 enum ActionKind {
     Invalid = 0,
     OpenFile = 1,
+    StartPlay,
     Settings,
     LightTheme,
     About,

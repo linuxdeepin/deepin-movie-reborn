@@ -8,6 +8,8 @@ extern "C" {
 #include <libavutil/avutil.h>
 }
 
+#include <random>
+
 static int open_codec_context(int *stream_idx,
         AVCodecContext **dec_ctx, AVFormatContext *fmt_ctx, enum AVMediaType type)
 {
@@ -109,6 +111,52 @@ PlaylistModel::PlaylistModel(PlayerEngine *e)
 {
     _thumbnailer.setThumbnailSize(44);
     av_register_all();
+
+    connect(e, &PlayerEngine::stateChanged, [=]() {
+        switch (e->state()) {
+            case PlayerEngine::Playing:
+                break;
+            case PlayerEngine::Paused:
+                break;
+            case PlayerEngine::Idle:
+                playNext(false);
+                break;
+        }
+    });
+
+    stop();
+}
+
+PlaylistModel::PlayMode PlaylistModel::playMode() const
+{
+    return _playMode;
+}
+
+void PlaylistModel::setPlayMode(PlaylistModel::PlayMode pm)
+{
+    if (_playMode != pm) {
+        _playMode = pm;
+        reshuffle();
+        emit playModeChanged(pm);
+    }
+}
+
+void PlaylistModel::reshuffle()
+{
+    if (_playMode != PlayMode::ShufflePlay || _infos.size() == 0) {
+        return;
+    }
+
+    _playOrder.clear();
+    for (int i = 0, sz = _infos.size(); i < sz; ++i) {
+        _playOrder.append(i);
+    }
+
+    std::random_device rd;
+    std::mt19937 g(rd());
+
+    std::shuffle(_playOrder.begin(), _playOrder.end(), g);
+    qDebug() << _playOrder;
 }
 
 void PlaylistModel::clear()
@@ -117,6 +165,7 @@ void PlaylistModel::clear()
     _engine->stop();
 
     _current = -1;
+    _last = -1;
     emit currentChanged();
     emit countChanged();
 }
@@ -125,41 +174,113 @@ void PlaylistModel::remove(int pos)
 {
     if (pos < 0 || pos >= count()) return;
 
-    bool update_current = false;
-
     _infos.removeAt(pos);
+    reshuffle();
 
     if (_current == pos) {
-        if (pos < count()) {
-            _engine->requestPlay(_current);
-        } else {
-            _current = -1;
-            _engine->stop();
-            update_current = true;
-        }
+        _last = _current;
+        _current = -1;
+        _engine->stop();
+
     } else if (pos < _current) {
         _current--;
-        update_current = true;
+        _last = _current;
     }
 
     emit itemRemoved(pos);
-    if (update_current)
-        emit currentChanged();
+    emit currentChanged();
     emit countChanged();
 }
 
-void PlaylistModel::playNext()
+void PlaylistModel::stop()
 {
-    if (count() == 0) return;
-
-    if (_current + 1 < count()) {
-        _current = _current + 1;
-        _engine->requestPlay(_current);
-        emit currentChanged();
-    }
+    _current = -1;
+    emit currentChanged();
 }
 
-void PlaylistModel::playPrev()
+void PlaylistModel::playNext(bool fromUser)
+{
+    if (count() == 0) return;
+    qDebug() << "playmode" << _playMode << "fromUser" << fromUser
+        << "last" << _last << "current" << _current;
+
+    switch (_playMode) {
+        case SinglePlay:
+            if (fromUser) {
+                if (_last + 1 < count()) {
+                    _current = _last + 1;
+                    _last = _current;
+                    _engine->requestPlay(_current);
+                    emit currentChanged();
+                } else {
+                    //ignore
+                }
+            } else {
+                clear();
+            }
+            break;
+
+        case SingleLoop:
+            if (fromUser) {
+                if (_last + 1 < count()) {
+                    _current = _last + 1;
+                    _last = _current;
+                    _engine->requestPlay(_current);
+                    emit currentChanged();
+                } else {
+                    _engine->stop();
+                }
+            } else {
+                if (_engine->state() == PlayerEngine::Idle) {
+                    _current = _last < 0 ? 0 : _last;
+                    _engine->requestPlay(_current);
+                    emit currentChanged();
+                } else {
+                    // replay current
+                    _engine->requestPlay(_current);
+                }
+            }
+            break;
+
+        case ShufflePlay: {
+            int i;
+            for (i = 0; i < _playOrder.size(); ++i) {
+                if (_playOrder[i] == _last) {
+                    i = i + 1;
+                    break;
+                }
+            }
+            if (i < _playOrder.size()) {
+                _last = _current = _playOrder[i];
+                _engine->requestPlay(_current);
+                emit currentChanged();
+            } else {
+                _engine->stop();
+            }
+            break;
+        }
+
+        case OrderPlay:
+        case ListLoop:
+            _last++;
+            if (_last == count()) {
+                if (_playMode == OrderPlay) {
+                    clear();
+                } else {
+                    _loopCount++;
+                    _last = 0;
+                } 
+            }
+
+            _current = _last;
+            _engine->requestPlay(_current);
+            emit currentChanged();
+            break;
+    }
+
+}
+
+void PlaylistModel::playPrev(bool fromUser)
 {
     if (count() == 0) return;
 
@@ -183,6 +304,7 @@ void PlaylistModel::changeCurrent(int pos)
 {
     if (pos < 0 || pos >= count()) return;
 
+    _last = _current;
     _current = pos;
     Q_ASSERT_X(0, "playlist", "not implemented");
     emit currentChanged();

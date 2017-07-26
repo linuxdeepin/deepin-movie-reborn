@@ -56,14 +56,26 @@ class PlaylistModel: public QObject {
 
 public:
     friend class PlayerEngine;
+    enum PlayMode {
+        OrderPlay,
+        ShufflePlay,
+        SinglePlay,
+        SingleLoop,
+        ListLoop,
+    };
+
+    void stop();
+
+    PlayMode playMode() const;
+    void setPlayMode(PlayMode pm);
 
     PlaylistModel(PlayerEngine* engine);
     void clear();
     void remove(int pos);
     void append(const QFileInfo&);
 
-    void playNext();
-    void playPrev();
+    void playNext(bool fromUser);
+    void playPrev(bool fromUser);
 
     int count() const;
     const QList<PlayItemInfo>& items() const { return _infos; }
@@ -79,15 +91,23 @@ signals:
     void countChanged();
     void currentChanged();
     void itemRemoved(int);
+    void playModeChanged(PlayMode);
 
 private:
     int _count {0};
     int _current {-1};
+    int _last {-1};
+    PlayMode _playMode {PlayMode::OrderPlay};
     QList<PlayItemInfo> _infos;
+
+    QList<int> _playOrder; // for shuffle mode
+    int _loopCount {0}; // loop count
+
     VideoThumbnailer _thumbnailer;
     PlayerEngine *_engine {nullptr};
 
     struct PlayItemInfo calculatePlayInfo(const QFileInfo& fi);
+    void reshuffle();
 };
 
 }
