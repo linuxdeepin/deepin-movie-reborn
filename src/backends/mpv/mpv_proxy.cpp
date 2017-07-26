@@ -248,7 +248,9 @@ void MpvProxy::processPropertyChange(mpv_event_property* ev)
     } else if (name == "volume") {
         emit volumeChanged();
     } else if (name == "dwidth" || name == "dheight") {
-        emit videoSizeChanged();
+        auto sz = videoSize();
+        if (sz.isEmpty())
+            emit videoSizeChanged();
     } else if (name == "aid") {
         emit aidChanged();
     } else if (name == "sid") {
@@ -519,6 +521,7 @@ void MpvProxy::seekBackward(int secs)
 
 QSize MpvProxy::videoSize() const
 {
+    if (state() == PlayState::Stopped) return QSize();
     return QSize(get_property(_handle, "dwidth").toInt(),
             get_property(_handle, "dheight").toInt());
 
