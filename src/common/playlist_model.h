@@ -9,6 +9,7 @@ using namespace ffmpegthumbnailer;
 class PlayerEngine;
 
 struct MovieInfo {
+    QUrl url;
     QString title;
     QString fileType;
     QString resolution;
@@ -43,6 +44,8 @@ struct MovieInfo {
 
 
 struct PlayItemInfo {
+    bool loaded;  // if url is network, this is false until playback started
+    QUrl url;
     QFileInfo info;
     QPixmap thumbnail;
     struct MovieInfo mi;
@@ -72,7 +75,7 @@ public:
     PlaylistModel(PlayerEngine* engine);
     void clear();
     void remove(int pos);
-    void append(const QFileInfo&);
+    void append(const QUrl&);
 
     void playNext(bool fromUser);
     void playPrev(bool fromUser);
@@ -108,7 +111,7 @@ private:
     VideoThumbnailer _thumbnailer;
     PlayerEngine *_engine {nullptr};
 
-    struct PlayItemInfo calculatePlayInfo(const QFileInfo& fi);
+    struct PlayItemInfo calculatePlayInfo(const QUrl&, const QFileInfo& fi);
     void reshuffle();
 };
 

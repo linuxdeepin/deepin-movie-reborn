@@ -36,7 +36,7 @@ public:
     Backend(QWidget *parent = 0) {}
     virtual ~Backend() {}
 
-    virtual void setPlayFile(const QFileInfo& fi) { _file = fi; }
+    virtual void setPlayFile(const QUrl& url) { _file = url; }
 
     // NOTE: need to check if file is playable by this backend, 
     // this is important especially for vpu
@@ -101,7 +101,7 @@ public slots:
 
 protected:
     PlayState _state { PlayState::Stopped };
-    QFileInfo _file;
+    QUrl _file;
 };
 }
 

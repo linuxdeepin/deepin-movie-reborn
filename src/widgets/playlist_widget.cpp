@@ -48,7 +48,10 @@ public:
 
         auto w = new QLabel(this);
         w->setProperty("Name", true);
-        w->setText(pif.info.fileName());
+        if (pif.url.isLocalFile())
+            w->setText(pif.info.fileName());
+        else 
+            w->setText(pif.url.fileName());
         w->setWordWrap(true);
         vl->addWidget(w);
 
@@ -232,10 +235,13 @@ void PlaylistWidget::dropEvent(QDropEvent *ev)
     if (ev->mimeData()->hasUrls()) {
         auto urls = ev->mimeData()->urls();
         for (const auto& url: urls) {
+            if (!url.isValid()) continue;
+
             if (url.isLocalFile()) {
                 QFileInfo fi(url.toLocalFile());
-                _engine->addPlayFile(fi);
+                if (!fi.exists()) continue;
             }
+            _engine->addPlayFile(url);
         }
 
         ev->acceptProposedAction();

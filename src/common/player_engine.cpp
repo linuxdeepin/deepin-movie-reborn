@@ -184,7 +184,11 @@ void PlayerEngine::requestPlay(int id)
 {
     if (!_current) return;
     const auto& item = _playlist->items()[id];
-    _current->setPlayFile(item.info.absoluteFilePath());
+    if (item.url.isLocalFile()) 
+        _current->setPlayFile(item.info.absoluteFilePath());
+    else
+        _current->setPlayFile(item.url.url());
+
     if (_current->isPlayable()) {
         _current->play();
     } else {
@@ -196,15 +200,6 @@ void PlayerEngine::play()
 {
     if (state() == CoreState::Idle && _playlist->count()) {
         next();
-    }
-}
-
-void PlayerEngine::playUrl(QUrl url)
-{
-    if (!_current) return;
-
-    if (auto *mpv = dynamic_cast<MpvProxy*>(_current)) {
-        mpv->playUrl(url);
     }
 }
 
@@ -272,9 +267,9 @@ void PlayerEngine::seekBackward(int secs)
     _current->seekBackward(secs);
 }
 
-void PlayerEngine::addPlayFile(const QFileInfo& fi)
+void PlayerEngine::addPlayFile(const QUrl& url)
 {
-    _playlist->append(fi);
+    _playlist->append(url);
 }
 
 qint64 PlayerEngine::duration() const

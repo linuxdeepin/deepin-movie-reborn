@@ -52,8 +52,6 @@ public:
     void stopBurstScreenshot() override;
 
 public slots:
-    void playUrl(QUrl url);
-
     void play() override;
     void pauseResume() override;
     void stop() override;
