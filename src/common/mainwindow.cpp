@@ -13,6 +13,7 @@
 #include "playlist_widget.h"
 #include "notification_widget.h"
 #include "player_engine.h"
+#include "url_dialog.h"
 
 #include <QtWidgets>
 #include <QtDBus>
@@ -21,6 +22,7 @@
 #include <dsettingsdialog.h>
 #include <dthememanager.h>
 #include <daboutdialog.h>
+#include <dinputdialog.h>
 #include <dimagebutton.h>
 
 DWIDGET_USE_NAMESPACE
@@ -221,9 +223,6 @@ skip_set_cursor:
                     const auto& mi = mw->engine()->playlist().currentInfo().mi;
                     sz = QSize(mi.width, mi.height);
                 }
-        
-                auto geom = qApp->desktop()->availableGeometry(mw);
-                sz.scale(geom.width(), geom.height(), Qt::KeepAspectRatio);
 
                 ratio = sz.width() / (qreal)sz.height();
             }
@@ -381,15 +380,15 @@ MainWindow::MainWindow(QWidget *parent)
     connect(_engine, &PlayerEngine::fileLoaded, this, &MainWindow::updateActionsState);
     updateActionsState();
 
-    reflectActionToUI(ActionKind::DefaultFrame);
-    reflectActionToUI(ActionKind::OrderPlay);
-    reflectActionToUI(ActionKind::Stereo);
+    reflectActionToUI(ActionFactory::ActionKind::DefaultFrame);
+    reflectActionToUI(ActionFactory::ActionKind::OrderPlay);
+    reflectActionToUI(ActionFactory::ActionKind::Stereo);
 
     connect(_engine, &PlayerEngine::sidChanged, [=]() {
-        reflectActionToUI(ActionKind::SelectSubtitle);
+        reflectActionToUI(ActionFactory::ActionKind::SelectSubtitle);
     });
     connect(_engine, &PlayerEngine::aidChanged, [=]() {
-        reflectActionToUI(ActionKind::SelectTrack);
+        reflectActionToUI(ActionFactory::ActionKind::SelectTrack);
     });
 
     auto updateConstraints = [=]() {
@@ -407,7 +406,8 @@ MainWindow::MainWindow(QWidget *parent)
         }
         
         auto geom = qApp->desktop()->availableGeometry(this);
-        sz.scale(geom.width(), geom.height(), Qt::KeepAspectRatio);
+        if (sz.width() > geom.width() || sz.height() > geom.height()) 
+            sz.scale(geom.width(), geom.height(), Qt::KeepAspectRatio);
 
         qDebug() << "updateConstraints: " << sz;
         resize(sz);
@@ -598,16 +598,16 @@ void MainWindow::updateActionsState()
         auto kd = ActionFactory::actionKind(act);
         bool v = true;
         switch(kd) {
-            case ActionKind::MovieInfo:
-            case ActionKind::Screenshot:
-            case ActionKind::ToggleMiniMode:
-            case ActionKind::Fullscreen:
-            case ActionKind::BurstScreenshot:
+            case ActionFactory::ActionKind::MovieInfo:
+            case ActionFactory::ActionKind::Screenshot:
+            case ActionFactory::ActionKind::ToggleMiniMode:
+            case ActionFactory::ActionKind::Fullscreen:
+            case ActionFactory::ActionKind::BurstScreenshot:
                 v = _engine->state() != PlayerEngine::Idle;
                 break;
 
-            case ActionKind::HideSubtitle:
-            case ActionKind::SelectSubtitle:
+            case ActionFactory::ActionKind::HideSubtitle:
+            case ActionFactory::ActionKind::SelectSubtitle:
                 v = pmf.subs.size() > 0;
             default: break;
         }
@@ -618,15 +618,15 @@ void MainWindow::updateActionsState()
     ActionFactory::get().forEachInMainMenu(update);
 }
 
-void MainWindow::reflectActionToUI(ActionKind kd)
+void MainWindow::reflectActionToUI(ActionFactory::ActionKind kd)
 {
     QList<QAction*> acts;
     switch(kd) {
-        case ActionKind::WindowAbove:
-        case ActionKind::Fullscreen:
-        case ActionKind::ToggleMiniMode:
-        case ActionKind::TogglePlaylist:
-        case ActionKind::HideSubtitle: {
+        case ActionFactory::ActionKind::WindowAbove:
+        case ActionFactory::ActionKind::Fullscreen:
+        case ActionFactory::ActionKind::ToggleMiniMode:
+        case ActionFactory::ActionKind::TogglePlaylist:
+        case ActionFactory::ActionKind::HideSubtitle: {
             qDebug() << __func__ << kd;
             acts = ActionFactory::get().findActionsByKind(kd);
             auto p = acts.begin();
@@ -640,22 +640,22 @@ void MainWindow::reflectActionToUI(ActionKind kd)
             break;
         }
 
-        case ActionKind::SelectTrack:
-        case ActionKind::SelectSubtitle: {
+        case ActionFactory::ActionKind::SelectTrack:
+        case ActionFactory::ActionKind::SelectSubtitle: {
             if (_engine->state() == PlayerEngine::Idle)
                 break;
 
             auto pmf = _engine->playingMovieInfo();
             int id = -1;
             int idx = -1;
-            if (kd == ActionKind::SelectTrack) {
+            if (kd == ActionFactory::ActionKind::SelectTrack) {
                 id = _engine->aid();
                 for (idx = 0; idx < pmf.audios.size(); idx++) {
                     if (id == pmf.audios[idx]["id"].toInt()) {
                         break;
                     }
                 }
-            } else if (kd == ActionKind::SelectSubtitle) {
+            } else if (kd == ActionFactory::ActionKind::SelectSubtitle) {
                 id = _engine->sid();
                 for (idx = 0; idx < pmf.subs.size(); idx++) {
                     if (id == pmf.subs[idx]["id"].toInt()) {
@@ -680,10 +680,9 @@ void MainWindow::reflectActionToUI(ActionKind kd)
             break;
         }
 
-        case ActionKind::Stereo:
-        case ActionKind::OrderPlay:
-        case ActionKind::DefaultFrame: 
-        default: {
+        case ActionFactory::ActionKind::Stereo:
+        case ActionFactory::ActionKind::OrderPlay:
+        case ActionFactory::ActionKind::DefaultFrame: {
             qDebug() << __func__ << kd;
             acts = ActionFactory::get().findActionsByKind(kd);
             auto p = acts.begin();
@@ -710,20 +709,31 @@ void MainWindow::menuItemInvoked(QAction *action)
     }
 }
 
-void MainWindow::requestAction(ActionKind kd, bool fromUI, QList<QVariant> args)
+void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI, QList<QVariant> args)
 {
     qDebug() << "kd = " << kd << "fromUI " << fromUI;
     switch (kd) {
-        case ActionKind::Exit:
+        case ActionFactory::ActionKind::Exit:
             qApp->quit(); 
             break;
 
-        case ActionKind::LightTheme:
+        case ActionFactory::ActionKind::LightTheme:
             _lightTheme = !_lightTheme;
             qApp->setTheme(_lightTheme? "light":"dark");
             break;
 
-        case OpenFile: {
+        case ActionFactory::ActionKind::OpenUrl: {
+            UrlDialog dlg;
+            if (dlg.exec() == QDialog::Accepted) {
+                auto url = dlg.url();
+                if (url.isValid()) {
+                    _engine->playUrl(url);
+                }
+            }
+            break;
+        }
+
+        case ActionFactory::ActionKind::OpenFile: {
             QString filename = QFileDialog::getOpenFileName(this, tr("Open File"),
                     QDir::currentPath(),
                     tr("Movies (*.mkv *.mov *.mp4 *.rmvb)"));
@@ -733,7 +743,7 @@ void MainWindow::requestAction(ActionKind kd, bool fromUI, QList<QVariant> args)
             break;
         }
 
-        case StartPlay: {
+        case ActionFactory::ActionKind::StartPlay: {
             if (_engine->playlist().count() == 0) {
                 QString filename = QFileDialog::getOpenFileName(this, tr("Open File"),
                         QDir::currentPath(),
@@ -747,12 +757,12 @@ void MainWindow::requestAction(ActionKind kd, bool fromUI, QList<QVariant> args)
             break;
         }
 
-        case ActionKind::EmptyPlaylist: {
+        case ActionFactory::ActionKind::EmptyPlaylist: {
             _engine->clearPlaylist();
             break;
         }
 
-        case ActionKind::TogglePlaylist: {
+        case ActionFactory::ActionKind::TogglePlaylist: {
             _playlist->togglePopup();
             if (!fromUI) {
                 reflectActionToUI(kd);
@@ -760,7 +770,7 @@ void MainWindow::requestAction(ActionKind kd, bool fromUI, QList<QVariant> args)
             break;
         }
 
-        case ActionKind::ToggleMiniMode: {
+        case ActionFactory::ActionKind::ToggleMiniMode: {
             if (!fromUI) {
                 reflectActionToUI(kd);
             }
@@ -768,7 +778,7 @@ void MainWindow::requestAction(ActionKind kd, bool fromUI, QList<QVariant> args)
             break;
         }
 
-        case ActionKind::MovieInfo: {
+        case ActionFactory::ActionKind::MovieInfo: {
             if (_engine->state() != PlayerEngine::CoreState::Idle) {
                 MovieInfoDialog mid(_engine->playlist().currentInfo().mi);
                 mid.exec();
@@ -776,7 +786,7 @@ void MainWindow::requestAction(ActionKind kd, bool fromUI, QList<QVariant> args)
             break;
         }
 
-        case ActionKind::WindowAbove:
+        case ActionFactory::ActionKind::WindowAbove:
             _windowAbove = !_windowAbove;
             Utility::setStayOnTop(this, _windowAbove);
             if (!fromUI) {
@@ -784,7 +794,7 @@ void MainWindow::requestAction(ActionKind kd, bool fromUI, QList<QVariant> args)
             }
             break;
 
-        case Fullscreen: {
+        case ActionFactory::ActionKind::Fullscreen: {
             if (isFullScreen()) {
                 showNormal();
             } else {
@@ -796,129 +806,129 @@ void MainWindow::requestAction(ActionKind kd, bool fromUI, QList<QVariant> args)
             break;
         }
 
-        case ActionKind::PlaylistRemoveItem: {
+        case ActionFactory::ActionKind::PlaylistRemoveItem: {
             _playlist->removeClickedItem();
             break;
         }
 
-        case ActionKind::PlaylistOpenItemInFM: {
+        case ActionFactory::ActionKind::PlaylistOpenItemInFM: {
             _playlist->openItemInFM();
             break;
         }
 
-        case ClockwiseFrame: {
+        case ActionFactory::ActionKind::ClockwiseFrame: {
             auto old = _engine->videoRotation();
             _engine->setVideoRotation((old + 90) % 360);
             break;
         }
-        case CounterclockwiseFrame: {
+        case ActionFactory::ActionKind::CounterclockwiseFrame: {
             auto old = _engine->videoRotation();
             _engine->setVideoRotation(((old - 90) + 360) % 360);
             break;
         }
 
-        case ActionKind::OrderPlay: {
+        case ActionFactory::ActionKind::OrderPlay: {
             _engine->playlist().setPlayMode(PlaylistModel::OrderPlay);
             break;
         }
-        case ActionKind::ShufflePlay: {
+        case ActionFactory::ActionKind::ShufflePlay: {
             _engine->playlist().setPlayMode(PlaylistModel::ShufflePlay);
             break;
         }
-        case ActionKind::SinglePlay: {
+        case ActionFactory::ActionKind::SinglePlay: {
             _engine->playlist().setPlayMode(PlaylistModel::SinglePlay);
             break;
         }
-        case ActionKind::SingleLoop: {
+        case ActionFactory::ActionKind::SingleLoop: {
             _engine->playlist().setPlayMode(PlaylistModel::SingleLoop);
             break;
         }
-        case ActionKind::ListLoop: {
+        case ActionFactory::ActionKind::ListLoop: {
             _engine->playlist().setPlayMode(PlaylistModel::ListLoop);
             break;
         }
 
-        case ActionKind::Stereo: {
+        case ActionFactory::ActionKind::Stereo: {
             _engine->changeSoundMode(Backend::SoundMode::Stereo);
             break;
         }
-        case ActionKind::LeftChannel: {
+        case ActionFactory::ActionKind::LeftChannel: {
             _engine->changeSoundMode(Backend::SoundMode::Left);
             break;
         }
-        case ActionKind::RightChannel: {
+        case ActionFactory::ActionKind::RightChannel: {
             _engine->changeSoundMode(Backend::SoundMode::Right);
             break;
         }
 
-        case DefaultFrame: {
+        case ActionFactory::ActionKind::DefaultFrame: {
             _engine->setVideoAspect(-1.0);
             break;
         }
-        case Ratio4x3Frame: {
+        case ActionFactory::ActionKind::Ratio4x3Frame: {
             _engine->setVideoAspect(4.0 / 3.0);
             break;
         }
-        case Ratio16x9Frame: {
+        case ActionFactory::ActionKind::Ratio16x9Frame: {
             _engine->setVideoAspect(16.0 / 9.0);
             break;
         }
-        case Ratio16x10Frame: {
+        case ActionFactory::ActionKind::Ratio16x10Frame: {
             _engine->setVideoAspect(16.0 / 10.0);
             break;
         }
-        case Ratio185x1Frame: {
+        case ActionFactory::ActionKind::Ratio185x1Frame: {
             _engine->setVideoAspect(1.85);
             break;
         }
-        case Ratio235x1Frame: {
+        case ActionFactory::ActionKind::Ratio235x1Frame: {
             _engine->setVideoAspect(2.35);
             break;
         }
 
-        case ToggleMute: {
+        case ActionFactory::ActionKind::ToggleMute: {
             _engine->toggleMute();
             break;
         }
 
-        case VolumeUp: {
+        case ActionFactory::ActionKind::VolumeUp: {
             _engine->volumeUp();
             break;
         }
 
-        case VolumeDown: {
+        case ActionFactory::ActionKind::VolumeDown: {
             _engine->volumeDown();
             break;
         }
 
-        case GotoPlaylistNext: {
+        case ActionFactory::ActionKind::GotoPlaylistNext: {
             _engine->next();
             break;
         }
 
-        case GotoPlaylistPrev: {
+        case ActionFactory::ActionKind::GotoPlaylistPrev: {
             _engine->prev();
             break;
         }
 
-        case SelectTrack: {
+        case ActionFactory::ActionKind::SelectTrack: {
             Q_ASSERT(args.size() == 1);
             _engine->selectTrack(args[0].toInt());
             break;
         }
 
-        case SelectSubtitle: {
+        case ActionFactory::ActionKind::SelectSubtitle: {
             Q_ASSERT(args.size() == 1);
             _engine->selectSubtitle(args[0].toInt());
             break;
         }
 
-        case HideSubtitle: {
+        case ActionFactory::ActionKind::HideSubtitle: {
             _engine->toggleSubtitle();
             break;
         }
 
-        case LoadSubtitle: {
+        case ActionFactory::ActionKind::LoadSubtitle: {
             QString filename = QFileDialog::getOpenFileName(this, tr("Open File"),
                     QDir::currentPath(),
                     tr("Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)"));
@@ -929,27 +939,27 @@ void MainWindow::requestAction(ActionKind kd, bool fromUI, QList<QVariant> args)
             break;
         }
 
-        case TogglePause: {
+        case ActionFactory::ActionKind::TogglePause: {
             _engine->pauseResume();
             break;
         }
 
-        case SeekBackward: {
+        case ActionFactory::ActionKind::SeekBackward: {
             _engine->seekBackward(20);
             break;
         }
 
-        case SeekForward: {
+        case ActionFactory::ActionKind::SeekForward: {
             _engine->seekForward(20);
             break;
         }
 
-        case Settings: {
+        case ActionFactory::ActionKind::Settings: {
             handleSettings();
             break;
         }
 
-        case Screenshot: {
+        case ActionFactory::ActionKind::Screenshot: {
             auto img = _engine->takeScreenshot();
             QString savePath = Settings::get().settings()->value("base.screenshot.location").toString();
             if (!QFileInfo(savePath).exists()) {
@@ -999,7 +1009,7 @@ void MainWindow::requestAction(ActionKind kd, bool fromUI, QList<QVariant> args)
             break;
         }
 
-        case BurstScreenshot: {
+        case ActionFactory::ActionKind::BurstScreenshot: {
             BurstScreenshotsDialog bsd(_engine);
             bsd.exec();
             qDebug() << "BurstScreenshot done";
@@ -1230,13 +1240,13 @@ void MainWindow::miniButtonClicked(QString id)
 {
     qDebug() << id;
     if (id == "play") {
-        requestAction(ActionKind::TogglePause);
+        requestAction(ActionFactory::ActionKind::TogglePause);
 
     } else if (id == "close") {
         close();
 
     } else if (id == "quit_mini") {
-        requestAction(ActionKind::ToggleMiniMode);
+        requestAction(ActionFactory::ActionKind::ToggleMiniMode);
     }
 }
 

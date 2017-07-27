@@ -25,22 +25,22 @@ ShortcutManager::ShortcutManager()
     :QObject(0)
 {
     _keyToAction = {
-        {"pause_play", ActionKind::TogglePause},
-        {"seek_forward", ActionKind::SeekForward},
-        {"seek_forward_large", ActionKind::SeekForwardLarge},
-        {"seek_backward", ActionKind::SeekBackward},
-        {"seek_backward_large", ActionKind::SeekBackwardLarge},
-        {"open_file", ActionKind::OpenFile},
-        {"screenshot", ActionKind::Screenshot},
-        {"burst_screenshot", ActionKind::BurstScreenshot},
-        {"mini", ActionKind::ToggleMiniMode},
-        {"vol_up", ActionKind::VolumeUp},
-        {"vol_down", ActionKind::VolumeDown},
-        {"mute", ActionKind::ToggleMute},
-        {"fullscreen", ActionKind::Fullscreen},
-        {"playlist", ActionKind::TogglePlaylist},
-        {"playlist_next", ActionKind::GotoPlaylistNext},
-        {"playlist_prev", ActionKind::GotoPlaylistPrev},
+        {"pause_play", ActionFactory::ActionKind::TogglePause},
+        {"seek_forward", ActionFactory::ActionKind::SeekForward},
+        {"seek_forward_large", ActionFactory::ActionKind::SeekForwardLarge},
+        {"seek_backward", ActionFactory::ActionKind::SeekBackward},
+        {"seek_backward_large", ActionFactory::ActionKind::SeekBackwardLarge},
+        {"open_file", ActionFactory::ActionKind::OpenFile},
+        {"screenshot", ActionFactory::ActionKind::Screenshot},
+        {"burst_screenshot", ActionFactory::ActionKind::BurstScreenshot},
+        {"mini", ActionFactory::ActionKind::ToggleMiniMode},
+        {"vol_up", ActionFactory::ActionKind::VolumeUp},
+        {"vol_down", ActionFactory::ActionKind::VolumeDown},
+        {"mute", ActionFactory::ActionKind::ToggleMute},
+        {"fullscreen", ActionFactory::ActionKind::Fullscreen},
+        {"playlist", ActionFactory::ActionKind::TogglePlaylist},
+        {"playlist_next", ActionFactory::ActionKind::GotoPlaylistNext},
+        {"playlist_prev", ActionFactory::ActionKind::GotoPlaylistPrev},
     };
 
     connect(&Settings::get(), &Settings::shortcutsChanged,
@@ -71,11 +71,11 @@ void ShortcutManager::buildBindingsFromSettings()
 {
     _map.clear();
     // default builtins 
-    _map.insert(QKeySequence(Qt::Key_Left), ActionKind::SeekBackward);
-    _map.insert(QKeySequence(Qt::Key_Left + Qt::SHIFT), ActionKind::SeekBackwardLarge);
-    _map.insert(QKeySequence(Qt::Key_Right), ActionKind::SeekForward);
-    _map.insert(QKeySequence(Qt::Key_Right + Qt::SHIFT), ActionKind::SeekForwardLarge);
-    _map.insert(QKeySequence(Qt::Key_Space), ActionKind::TogglePause);
+    _map.insert(QKeySequence(Qt::Key_Left), ActionFactory::ActionKind::SeekBackward);
+    _map.insert(QKeySequence(Qt::Key_Left + Qt::SHIFT), ActionFactory::ActionKind::SeekBackwardLarge);
+    _map.insert(QKeySequence(Qt::Key_Right), ActionFactory::ActionKind::SeekForward);
+    _map.insert(QKeySequence(Qt::Key_Right + Qt::SHIFT), ActionFactory::ActionKind::SeekForwardLarge);
+    _map.insert(QKeySequence(Qt::Key_Space), ActionFactory::ActionKind::TogglePause);
 
     QPointer<DSettingsGroup> shortcuts = Settings::get().shortcuts();
 
@@ -106,12 +106,12 @@ vector<QAction*> ShortcutManager::actionsForBindings()
     while (p != _map.constEnd()) {
         auto *act = new QAction(this);
         switch (p.value()) {
-            case ActionKind::SeekForward:
-            case ActionKind::SeekForwardLarge:
-            case ActionKind::SeekBackward:
-            case ActionKind::SeekBackwardLarge:
-            case ActionKind::VolumeUp:
-            case ActionKind::VolumeDown:
+            case ActionFactory::ActionKind::SeekForward:
+            case ActionFactory::ActionKind::SeekForwardLarge:
+            case ActionFactory::ActionKind::SeekBackward:
+            case ActionFactory::ActionKind::SeekBackwardLarge:
+            case ActionFactory::ActionKind::VolumeUp:
+            case ActionFactory::ActionKind::VolumeDown:
                 act->setAutoRepeat(true);
                 break;
             default:

@@ -37,7 +37,7 @@ public:
     PlayerEngine* engine() { return _engine; }
     DTitlebar* titlebar() { return _titlebar; }
     ToolboxProxy* toolbox() { return _toolbox; }
-    void requestAction(ActionKind, bool fromUI = false, QList<QVariant> args = {});
+    void requestAction(ActionFactory::ActionKind, bool fromUI = false, QList<QVariant> args = {});
 
 signals:
     void frameMarginsChanged();
@@ -80,7 +80,7 @@ private:
     void handleSettings();
     void updateSizeConstraints();
     void toggleUIMode();
-    void reflectActionToUI(ActionKind);
+    void reflectActionToUI(ActionFactory::ActionKind);
 
 private:
     DTitlebar *_titlebar {nullptr};

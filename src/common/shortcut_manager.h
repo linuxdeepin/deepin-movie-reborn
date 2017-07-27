@@ -10,8 +10,8 @@ namespace dmr {
 
 using namespace std;
 
-using BindingMap = QHash<QKeySequence, ActionKind>;
-using ActionMap = QHash<QString, ActionKind>;
+using BindingMap = QHash<QKeySequence, ActionFactory::ActionKind>;
+using ActionMap = QHash<QString, ActionFactory::ActionKind>;
 
     // keys comes from profiles, user configurations etc
 class ShortcutManager: public QObject {

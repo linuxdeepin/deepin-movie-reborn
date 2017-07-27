@@ -132,7 +132,7 @@ protected:
                 auto *plw = dynamic_cast<PlaylistWidget*>(parent());
                 auto *mw = dynamic_cast<MainWindow*>(plw->parent());
                 if (plw->isVisible()) {
-                    mw->requestAction(ActionKind::TogglePlaylist);
+                    mw->requestAction(ActionFactory::ActionKind::TogglePlaylist);
                 }
             }
             return false;
@@ -261,9 +261,9 @@ void PlaylistWidget::contextMenuEvent(QContextMenuEvent *cme)
 
     auto menu = ActionFactory::get().playlistContextMenu();
     for (auto act: menu->actions()) {
-        auto prop = (ActionKind)act->property("kind").toInt();
-        if (prop == ActionKind::MovieInfo || 
-                prop == ActionKind::PlaylistOpenItemInFM) {
+        auto prop = (ActionFactory::ActionKind)act->property("kind").toInt();
+        if (prop == ActionFactory::ActionKind::MovieInfo || 
+                prop == ActionFactory::ActionKind::PlaylistOpenItemInFM) {
             act->setEnabled(on_item);
         }
     }
@@ -292,7 +292,7 @@ void PlaylistWidget::loadPlaylist()
             [=](QWidget* w) {
                 qDebug() << "item close clicked";
                 _clickedItem = w;
-                _mw->requestAction(ActionKind::PlaylistRemoveItem);
+                _mw->requestAction(ActionFactory::ActionKind::PlaylistRemoveItem);
             });
     }
 

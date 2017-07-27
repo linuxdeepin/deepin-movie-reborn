@@ -101,6 +101,8 @@ signals:
     void playlistChanged();
 
 public slots:
+    void playUrl(QUrl url);
+
     void play();
     void pauseResume();
     void stop();
