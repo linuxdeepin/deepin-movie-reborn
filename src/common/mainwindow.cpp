@@ -383,6 +383,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     reflectActionToUI(ActionKind::DefaultFrame);
     reflectActionToUI(ActionKind::OrderPlay);
+    reflectActionToUI(ActionKind::Stereo);
 
     connect(_engine, &PlayerEngine::sidChanged, [=]() {
         reflectActionToUI(ActionKind::SelectSubtitle);
@@ -679,8 +680,10 @@ void MainWindow::reflectActionToUI(ActionKind kd)
             break;
         }
 
+        case ActionKind::Stereo:
         case ActionKind::OrderPlay:
-        case ActionKind::DefaultFrame: {
+        case ActionKind::DefaultFrame: 
+        default: {
             qDebug() << __func__ << kd;
             acts = ActionFactory::get().findActionsByKind(kd);
             auto p = acts.begin();
@@ -690,8 +693,6 @@ void MainWindow::reflectActionToUI(ActionKind kd)
             (*p)->setEnabled(old);
             break;
         }
-
-        default: break;
     }
 
 }
@@ -834,6 +835,19 @@ void MainWindow::requestAction(ActionKind kd, bool fromUI, QList<QVariant> args)
         }
         case ActionKind::ListLoop: {
             _engine->playlist().setPlayMode(PlaylistModel::ListLoop);
+            break;
+        }
+
+        case ActionKind::Stereo: {
+            _engine->changeSoundMode(Backend::SoundMode::Stereo);
+            break;
+        }
+        case ActionKind::LeftChannel: {
+            _engine->changeSoundMode(Backend::SoundMode::Left);
+            break;
+        }
+        case ActionKind::RightChannel: {
+            _engine->changeSoundMode(Backend::SoundMode::Right);
             break;
         }
 

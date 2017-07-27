@@ -38,6 +38,7 @@ public:
     void selectTrack(int id) override;
     int aid() const override;
 
+    void changeSoundMode(SoundMode sm) override;
     int volume() const override;
     bool muted() const override;
 

@@ -26,6 +26,13 @@ public:
     };
     Q_ENUM(PlayState)
 
+    enum SoundMode {
+        Stereo,
+        Left,
+        Right
+    };
+    Q_ENUM(SoundMode)
+
     Backend(QWidget *parent = 0) {}
     virtual ~Backend() {}
 
@@ -52,6 +59,7 @@ public:
     virtual int aid() const = 0;
     virtual int sid() const = 0;
 
+    virtual void changeSoundMode(SoundMode sm) {}
     virtual int volume() const = 0;
     virtual bool muted() const = 0;
 

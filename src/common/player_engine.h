@@ -5,10 +5,10 @@
 
 #include <QtWidgets>
 #include "playlist_model.h"
+#include "player_backend.h"
 
 namespace dmr {
 class PlaylistModel;
-class Backend;
 
 using SubtitleInfo = QMap<QString, QVariant>;
 using AudioInfo = QMap<QString, QVariant>;
@@ -34,6 +34,7 @@ public:
         Paused,
     };
     Q_ENUM(CoreState)
+
 
     /* backend like mpv will asynchronously report end of playback. 
      * there are situations when we need to see the end-event before 
@@ -73,6 +74,7 @@ public:
     void selectTrack(int id); // id into PlayingMovieInfo.audios
     int aid() const;
 
+    void changeSoundMode(Backend::SoundMode sm);
     int volume() const;
     bool muted() const;
 

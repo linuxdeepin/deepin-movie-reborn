@@ -310,4 +310,10 @@ void PlayerEngine::setVideoRotation(int degree)
         _current->setVideoRotation(degree);
 }
 
+void PlayerEngine::changeSoundMode(Backend::SoundMode sm)
+{
+    if (_current) 
+        _current->changeSoundMode(sm);
+}
+
 } // end of namespace dmr
