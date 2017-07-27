@@ -416,12 +416,23 @@ void PlaylistModel::playPrev(bool fromUser)
 }
 
 //TODO: what if loadfile failed
-void PlaylistModel::append(const QFileInfo& fi)
+void PlaylistModel::append(const QUrl& url)
 {
-    if (!fi.exists()) return;
+    if (!url.isValid()) return;
 
-    _infos.append(calculatePlayInfo(fi));
-    emit countChanged();
+    if (url.isLocalFile()) {
+        QFileInfo fi(url.toLocalFile());
+        if (!fi.exists()) return;
+        _infos.append(calculatePlayInfo(url, fi));
+        emit countChanged();
+    } else {
+        PlayItemInfo pif = {
+            .loaded = false,
+            .url = url,
+        };
+        _infos.append(pif);
+        emit countChanged();
+    }
 }
 
 void PlaylistModel::changeCurrent(int pos)
@@ -455,7 +466,7 @@ int PlaylistModel::current() const
     return _current;
 }
 
-struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QFileInfo& fi)
+struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl& url, const QFileInfo& fi)
 {
     std::vector<uint8_t> buf;
     _thumbnailer.generateThumbnail(fi.canonicalFilePath().toUtf8().toStdString(),
@@ -468,6 +479,8 @@ struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QFileInfo& fi)
     auto mi = MovieInfo::parseFromFile(fi);
 
     PlayItemInfo pif = {
+        .loaded = true,
+        .url = url,
         .info = fi,
         .thumbnail = pm.scaled(24, 44),
         .mi = mi

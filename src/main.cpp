@@ -76,6 +76,8 @@ int main(int argc, char *argv[])
     app.setApplicationDisplayName(QObject::tr("Deepin Movie"));
     app.setAttribute(Qt::AA_DontCreateNativeWidgetSiblings, true);
 
+    QRegExp url_re("\\w+://");
+
 #ifdef ENABLE_VPU_PLATFORM
     if (dmr::CommandLineManager::get().vpuDemoMode()) {
         dmr::VpuProxy mw;
@@ -100,8 +102,15 @@ int main(int argc, char *argv[])
     mw.show();
 
     if (!toOpenFile.isEmpty()) {
-        auto fi = QFileInfo(toOpenFile);
-        mw.play(fi);
+        QUrl url;
+        if (url_re.indexIn(toOpenFile) == 0) {
+            url = QUrl(toOpenFile);
+        } else {
+            url = QUrl::fromLocalFile(toOpenFile);
+        }
+
+        qDebug() << url;
+        mw.play(url);
     }
     return app.exec();
 }

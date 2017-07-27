@@ -212,7 +212,7 @@ void ToolboxProxy::updateMovieProgress()
     auto e = _engine->elapsed();
     int v = 0;
     if (d != 0 && e != 0) {
-        int v = 100 * ((double)e / d);
+        v = 100 * ((double)e / d);
     }
     _progBar->setValue(v);
 }

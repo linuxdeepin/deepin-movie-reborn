@@ -6,12 +6,12 @@
     <message>
         <location filename="../widgets/url_dialog.cpp" line="10"/>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>取消</translation>
     </message>
     <message>
         <location filename="../widgets/url_dialog.cpp" line="11"/>
         <source>Confirm</source>
-        <translation type="unfinished"></translation>
+        <translation>确认</translation>
     </message>
 </context>
 <context>
@@ -435,36 +435,36 @@
         <translation>深度影院</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="737"/>
-        <location filename="../common/mainwindow.cpp" line="748"/>
-        <location filename="../common/mainwindow.cpp" line="932"/>
+        <location filename="../common/mainwindow.cpp" line="747"/>
+        <location filename="../common/mainwindow.cpp" line="759"/>
+        <location filename="../common/mainwindow.cpp" line="943"/>
         <source>Open File</source>
         <translation>打开文件</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="739"/>
-        <location filename="../common/mainwindow.cpp" line="750"/>
+        <location filename="../common/mainwindow.cpp" line="749"/>
+        <location filename="../common/mainwindow.cpp" line="761"/>
         <source>Movies (*.mkv *.mov *.mp4 *.rmvb)</source>
         <translation>视频文件(*.mkv *.mov *.mp4 *.rmvb)</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="934"/>
+        <location filename="../common/mainwindow.cpp" line="945"/>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</source>
         <translation>字幕文件 (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="985"/>
+        <location filename="../common/mainwindow.cpp" line="996"/>
         <source>View</source>
         <translation>查看</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="996"/>
+        <location filename="../common/mainwindow.cpp" line="1007"/>
         <source>Movie Screenshot</source>
         <translation>视频截图</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="997"/>
-        <location filename="../common/mainwindow.cpp" line="1006"/>
+        <location filename="../common/mainwindow.cpp" line="1008"/>
+        <location filename="../common/mainwindow.cpp" line="1017"/>
         <source>Saved to</source>
         <translation>保存到</translation>
     </message>
@@ -474,7 +474,7 @@
     <message>
         <location filename="../widgets/url_dialog.cpp" line="15"/>
         <source>Please input the url of file to play</source>
-        <translation type="unfinished"></translation>
+        <translation>请输入您要播放的文件的网络地址</translation>
     </message>
 </context>
 </TS>

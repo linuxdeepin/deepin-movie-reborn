@@ -47,7 +47,7 @@ public:
     PlayerEngine(QWidget *parent = 0);
     virtual ~PlayerEngine();
 
-    void addPlayFile(const QFileInfo& fi);
+    void addPlayFile(const QUrl& url);
 
     // only supports (+/-) 0, 90, 180, 270
     int videoRotation() const;
@@ -101,8 +101,6 @@ signals:
     void playlistChanged();
 
 public slots:
-    void playUrl(QUrl url);
-
     void play();
     void pauseResume();
     void stop();

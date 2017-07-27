@@ -47,7 +47,7 @@ signals:
     void windowLeaved();
 
 public slots:
-    void play(const QFileInfo& fi);
+    void play(const QUrl& url);
     void updateProxyGeometry();
 
 protected:

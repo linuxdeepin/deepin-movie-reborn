@@ -377,7 +377,7 @@ MainWindow::MainWindow(QWidget *parent)
     ShortcutManager::get().buildBindings();
 
     connect(_engine, &PlayerEngine::tracksChanged, this, &MainWindow::updateActionsState);
-    connect(_engine, &PlayerEngine::fileLoaded, this, &MainWindow::updateActionsState);
+    connect(_engine, &PlayerEngine::stateChanged, this, &MainWindow::updateActionsState);
     updateActionsState();
 
     reflectActionToUI(ActionFactory::ActionKind::DefaultFrame);
@@ -598,12 +598,22 @@ void MainWindow::updateActionsState()
         auto kd = ActionFactory::actionKind(act);
         bool v = true;
         switch(kd) {
-            case ActionFactory::ActionKind::MovieInfo:
             case ActionFactory::ActionKind::Screenshot:
             case ActionFactory::ActionKind::ToggleMiniMode:
             case ActionFactory::ActionKind::Fullscreen:
             case ActionFactory::ActionKind::BurstScreenshot:
                 v = _engine->state() != PlayerEngine::Idle;
+                break;
+
+            case ActionFactory::ActionKind::MovieInfo:
+                v = _engine->state() != PlayerEngine::Idle;
+                if (v) {
+                    v = v && _engine->playlist().count();
+                    if (v) {
+                        auto pif =_engine->playlist().currentInfo();
+                        v = v && pif.loaded && pif.url.isLocalFile();
+                    }
+                }
                 break;
 
             case ActionFactory::ActionKind::HideSubtitle:
@@ -727,7 +737,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI, QList<
             if (dlg.exec() == QDialog::Accepted) {
                 auto url = dlg.url();
                 if (url.isValid()) {
-                    _engine->playUrl(url);
+                    play(url);
                 }
             }
             break;
@@ -738,7 +748,8 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI, QList<
                     QDir::currentPath(),
                     tr("Movies (*.mkv *.mov *.mp4 *.rmvb)"));
             if (QFileInfo(filename).exists()) {
-                play(QFileInfo(filename));
+                play(QUrl::fromLocalFile(filename));
+                _engine->next();
             }
             break;
         }
@@ -749,7 +760,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI, QList<
                         QDir::currentPath(),
                         tr("Movies (*.mkv *.mov *.mp4 *.rmvb)"));
                 if (QFileInfo(filename).exists()) {
-                    play(QFileInfo(filename));
+                    play(QUrl::fromLocalFile(filename));
                 }
             } else {
                 _engine->play();
@@ -1029,12 +1040,12 @@ void MainWindow::handleSettings()
     dsd.exec();
 }
 
-void MainWindow::play(const QFileInfo& fi)
+void MainWindow::play(const QUrl& url)
 {
-    if (!fi.exists()) 
+    if (!url.isValid()) 
         return;
 
-    _engine->addPlayFile(fi);
+    _engine->addPlayFile(url);
     _engine->play();
 }
 
