@@ -18,6 +18,8 @@ namespace Widget
 
 DWIDGET_USE_NAMESPACE
 
+class MainWindowEventListener;
+
 namespace dmr {
 class ToolboxProxy;
 class EventMonitor;
@@ -101,6 +103,8 @@ private:
     //toggle-able states
     bool _lightTheme {false};
     bool _windowAbove {false};
+    
+    MainWindowEventListener *_listener {nullptr};
 };
 };
 

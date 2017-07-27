@@ -86,16 +86,15 @@ class MainWindowEventListener : public QObject
         {
         }
 
-    protected:
-        enum State {
-            Idle,
-            Pressed,
-            Resizing,
-        };
+        void setEnabled(bool v) 
+        {
+            enabled = v;
+        }
 
+    protected:
         bool eventFilter(QObject *obj, QEvent *event) Q_DECL_OVERRIDE {
             QWindow *window = qobject_cast<QWindow*>(obj);
-            if (!window) return false;
+            if (!window || !enabled) return false;
 
             switch ((int)event->type()) {
             case QEvent::MouseButtonPress: {
@@ -257,6 +256,7 @@ skip_set_cursor:
         const QMargins margins{MOUSE_MARGINS, MOUSE_MARGINS, MOUSE_MARGINS, MOUSE_MARGINS};
         bool leftButtonPressed {false};
         bool startResizing {false};
+        bool enabled {true};
         Utility::CornerEdge lastCornerEdge;
         QWindow* _window;
 };
@@ -381,6 +381,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(_engine, &PlayerEngine::fileLoaded, this, &MainWindow::updateActionsState);
     updateActionsState();
 
+    reflectActionToUI(ActionKind::DefaultFrame);
+    reflectActionToUI(ActionKind::OrderPlay);
+
     connect(_engine, &PlayerEngine::sidChanged, [=]() {
         reflectActionToUI(ActionKind::SelectSubtitle);
     });
@@ -430,8 +433,8 @@ MainWindow::MainWindow(QWidget *parent)
         _evm->start();
     }
 #else
-    auto listener = new MainWindowEventListener(this);
-    this->windowHandle()->installEventFilter(listener);
+    _listener = new MainWindowEventListener(this);
+    this->windowHandle()->installEventFilter(_listener);
 
     auto mwfm = new MainWindowFocusMonitor(this);
     connect(this, &MainWindow::windowEntered, &MainWindow::resumeToolsWindow);
@@ -439,9 +442,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     if (!composited) {
         if (_engine->windowHandle())
-            _engine->windowHandle()->installEventFilter(listener);
-        _titlebar->windowHandle()->installEventFilter(listener);
-        _toolbox->windowHandle()->installEventFilter(listener);
+            _engine->windowHandle()->installEventFilter(_listener);
+        _titlebar->windowHandle()->installEventFilter(_listener);
+        _toolbox->windowHandle()->installEventFilter(_listener);
     }
     qDebug() << "event listener";
 #endif
@@ -610,9 +613,6 @@ void MainWindow::updateActionsState()
         act->setEnabled(v);
     };
 
-    reflectActionToUI(ActionKind::DefaultFrame);
-    reflectActionToUI(ActionKind::OrderPlay);
-
     ActionFactory::get().updateMainActionsForMovie(pmf);
     ActionFactory::get().forEachInMainMenu(update);
 }
@@ -636,17 +636,6 @@ void MainWindow::reflectActionToUI(ActionKind kd)
                 (*p)->setEnabled(old);
                 ++p;
             }
-            break;
-        }
-
-        case ActionKind::DefaultFrame: {
-            qDebug() << __func__ << kd;
-            acts = ActionFactory::get().findActionsByKind(kd);
-            auto p = acts.begin();
-            auto old = (*p)->isEnabled();
-            (*p)->setEnabled(false);
-            (*p)->setChecked(!(*p)->isChecked());
-            (*p)->setEnabled(old);
             break;
         }
 
@@ -689,6 +678,19 @@ void MainWindow::reflectActionToUI(ActionKind kd)
             }
             break;
         }
+
+        case ActionKind::OrderPlay:
+        case ActionKind::DefaultFrame: {
+            qDebug() << __func__ << kd;
+            acts = ActionFactory::get().findActionsByKind(kd);
+            auto p = acts.begin();
+            auto old = (*p)->isEnabled();
+            (*p)->setEnabled(false);
+            (*p)->setChecked(!(*p)->isChecked());
+            (*p)->setEnabled(old);
+            break;
+        }
+
         default: break;
     }
 
@@ -1033,10 +1035,10 @@ void MainWindow::updateProxyGeometry()
     }
 #endif
 
-    if (!_miniMode) {
-        auto tl = QPoint();
-        _engine->setGeometry(QRect(tl, size()));
+    auto tl = QPoint();
+    _engine->setGeometry(QRect(tl, size()));
 
+    if (!_miniMode) {
         if (_titlebar) {
             QSize sz(size().width(), _titlebar->height());
             _titlebar->setGeometry(QRect(tl, sz));
@@ -1169,6 +1171,8 @@ void MainWindow::toggleUIMode()
 {
     _miniMode = !_miniMode;
     qDebug() << __func__ << _miniMode;
+
+    _listener->setEnabled(!_miniMode);
 
     updateSizeConstraints();
 
