@@ -17,6 +17,7 @@ using namespace mpv::qt;
 
 enum AsyncReplyTag {
     SEEK,
+    CHANNEL,
 };
 
 
@@ -335,6 +336,22 @@ void MpvProxy::selectTrack(int id)
     if (id >= _pmf.audios.size()) return;
     auto sid = _pmf.audios[id]["id"];
     set_property(_handle, "aid", sid);
+}
+
+void MpvProxy::changeSoundMode(SoundMode sm)
+{
+    QList<QVariant> args;
+
+    switch(sm) {
+        case SoundMode::Stereo:
+            args << "af" << "del" << "@sm"; break;
+        case SoundMode::Left:
+            args << "af" << "add" << "@sm:channels=2:[0-0:1-0]"; break;
+        case SoundMode::Right:
+            args << "af" << "add" << "@sm:channels=2:[0-1:1-1]"; break;
+    }
+
+    command_async(_handle, args, AsyncReplyTag::CHANNEL);
 }
 
 void MpvProxy::volumeUp()

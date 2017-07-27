@@ -127,9 +127,11 @@ QMenu* ActionFactory::mainContextMenu()
             {
                 auto *parent = menu;
                 auto *menu = new QMenu(tr("Sound"));
-                DEF_ACTION(tr("Stereo"), ActionKind::Stereo);
-                DEF_ACTION(tr("Left channel"), ActionKind::LeftChannel);
-                DEF_ACTION(tr("Right channel"), ActionKind::RightChannel);
+                auto group = new QActionGroup(menu);
+
+                DEF_ACTION_CHECKED_GROUP(tr("Stereo"), ActionKind::Stereo, group);
+                DEF_ACTION_CHECKED_GROUP(tr("Left channel"), ActionKind::LeftChannel, group);
+                DEF_ACTION_CHECKED_GROUP(tr("Right channel"), ActionKind::RightChannel, group);
                 parent->addMenu(menu);
             }
 
