@@ -6,6 +6,10 @@
 namespace dmr {
 class PlayingMovieInfo;
 
+
+class ActionFactory: public QObject {
+    Q_OBJECT
+public:
 enum ActionKind {
     Invalid = 0,
     OpenFile = 1,
@@ -68,10 +72,7 @@ enum ActionKind {
     VolumeDown,
     ToggleMute,
 };
-
-class ActionFactory: public QObject {
-    Q_OBJECT
-public:
+Q_ENUM(ActionKind)
 
     static ActionFactory& get();
 
@@ -117,7 +118,5 @@ void ActionFactory::forEachInMainMenu(UnaryFunction f)
 
 
 }
-
-Q_DECLARE_METATYPE(dmr::ActionKind)
 
 #endif /* ifndef _DMR_ACTIONS_H */

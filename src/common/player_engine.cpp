@@ -199,6 +199,15 @@ void PlayerEngine::play()
     }
 }
 
+void PlayerEngine::playUrl(QUrl url)
+{
+    if (!_current) return;
+
+    if (auto *mpv = dynamic_cast<MpvProxy*>(_current)) {
+        mpv->playUrl(url);
+    }
+}
+
 void PlayerEngine::prev()
 {
     _playlist->playPrev(true);

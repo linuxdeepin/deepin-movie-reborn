@@ -282,12 +282,12 @@ void ToolboxProxy::buttonClicked(QString id)
     qDebug() << __func__ << id;
     if (id == "play") {
         if (_engine->state() == PlayerEngine::CoreState::Idle) {
-            _mainWindow->requestAction(ActionKind::StartPlay);
+            _mainWindow->requestAction(ActionFactory::ActionKind::StartPlay);
         } else {
-            _mainWindow->requestAction(ActionKind::TogglePause);
+            _mainWindow->requestAction(ActionFactory::ActionKind::TogglePause);
         }
     } else if (id == "fs") {
-        _mainWindow->requestAction(ActionKind::Fullscreen);
+        _mainWindow->requestAction(ActionFactory::ActionKind::Fullscreen);
     } else if (id == "vol") {
         auto *w = new VolumeSlider(_engine);
         connect(w, &QObject::destroyed, [=]() {
@@ -300,11 +300,11 @@ void ToolboxProxy::buttonClicked(QString id)
         w->show();
 
     } else if (id == "prev") {
-        _mainWindow->requestAction(ActionKind::GotoPlaylistPrev);
+        _mainWindow->requestAction(ActionFactory::ActionKind::GotoPlaylistPrev);
     } else if (id == "next") {
-        _mainWindow->requestAction(ActionKind::GotoPlaylistNext);
+        _mainWindow->requestAction(ActionFactory::ActionKind::GotoPlaylistNext);
     } else if (id == "list") {
-        _mainWindow->requestAction(ActionKind::TogglePlaylist);
+        _mainWindow->requestAction(ActionFactory::ActionKind::TogglePlaylist);
     }
 }
 

@@ -411,6 +411,13 @@ void MpvProxy::toggleMute()
     command(_handle, args);
 }
 
+void MpvProxy::playUrl(QUrl url)
+{
+    QList<QVariant> args = { "loadfile", url.toString() };
+    qDebug () << args;
+    command(_handle, args);
+}
+
 void MpvProxy::play()
 {
     QList<QVariant> args = { "loadfile", _file.absoluteFilePath() };
