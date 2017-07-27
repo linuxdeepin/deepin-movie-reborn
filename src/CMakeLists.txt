@@ -18,8 +18,7 @@ find_package(Qt5DBus)
 find_package(Qt5X11Extras)
 find_package(Qt5LinguistTools)
 
-pkg_check_modules(Dtk REQUIRED IMPORTED_TARGET
-    dtkbase dtkutil dtkwidget dtksettings dtksettingsview)
+pkg_check_modules(Dtk REQUIRED IMPORTED_TARGET dtkwidget)
 pkg_check_modules(Mpv REQUIRED IMPORTED_TARGET mpv)
 pkg_check_modules(Xcb REQUIRED IMPORTED_TARGET xcb xcb-aux xcb-proto xcb-ewmh xcb-shape)
 pkg_check_modules(Other REQUIRED IMPORTED_TARGET libffmpegthumbnailer 
@@ -51,9 +50,11 @@ if (ENABLE_VPU_PLATFORM)
 endif()
 
 add_custom_target(json_i18n ALL 
-    COMMAND dtk-settings-tool resources/data/settings.json > settings_translation.cpp
+    dtk-settings-tool resources/data/settings.json > common/settings_translation.cpp
+    COMMAND sed -i "s,#include .*,#include <DSettings>," common/settings_translation.cpp
+    VERBATIM
     SOURCES resources/data/settings.json
-    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/src)
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/src/)
 
 ## translations 
 set(TS 

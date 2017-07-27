@@ -14,7 +14,7 @@
 #include <DLog>
 #include <DMainWindow>
 #include <DApplication>
-#include <dutility.h>
+#include <DWidgetUtil>
 
 #include "config.h"
 
@@ -25,7 +25,6 @@
 #endif
 
 DWIDGET_USE_NAMESPACE
-DUTIL_USE_NAMESPACE
 
 
 int main(int argc, char *argv[])
@@ -62,9 +61,9 @@ int main(int argc, char *argv[])
 
     app.setTheme("dark");
 
-    DLogManager::registerConsoleAppender();
-    DLogManager::registerFileAppender();
-    qDebug() << "log path: " << DLogManager::getlogFilePath();
+    Dtk::Core::DLogManager::registerConsoleAppender();
+    Dtk::Core::DLogManager::registerFileAppender();
+    qDebug() << "log path: " << Dtk::Core::DLogManager::getlogFilePath();
 
     if (!app.setSingleInstance("deepinmovie")) {
         qDebug() << "another deepin movie instance has started";
@@ -97,7 +96,7 @@ int main(int argc, char *argv[])
     dmr::MainWindow mw;
     mw.setMinimumSize(QSize(528, 400));
     mw.resize(850, 600);
-    DUtility::moveToCenter(&mw);
+    Dtk::Widget::moveToCenter(&mw);
     mw.show();
 
     if (!toOpenFile.isEmpty()) {

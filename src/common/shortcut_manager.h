@@ -4,14 +4,7 @@
 #include <memory>
 #include <vector>
 #include <QtCore>
-#include <dwidget_global.h>
 #include "actions.h"
-
-DWIDGET_USE_NAMESPACE
-
-namespace Dtk {
-class Group;
-}
 
 namespace dmr {
 

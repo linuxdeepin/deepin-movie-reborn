@@ -1,11 +1,12 @@
 #include "shortcut_manager.h"
 #include "dmr_settings.h"
 
-#include <option.h>
-#include <group.h>
-#include <settings.h>
+#include <DSettingsOption>
+#include <DSettingsGroup>
+#include <DSettings>
 
 namespace dmr {
+using namespace Dtk::Core;
 static ShortcutManager* _shortcutManager = nullptr;
 
 ShortcutManager& ShortcutManager::get() 
@@ -76,12 +77,12 @@ void ShortcutManager::buildBindingsFromSettings()
     _map.insert(QKeySequence(Qt::Key_Right + Qt::SHIFT), ActionKind::SeekForwardLarge);
     _map.insert(QKeySequence(Qt::Key_Space), ActionKind::TogglePause);
 
-    QPointer<Dtk::Group> shortcuts = Settings::get().shortcuts();
+    QPointer<DSettingsGroup> shortcuts = Settings::get().shortcuts();
 
     auto subgroups = shortcuts->childGroups();
-    std::for_each(subgroups.begin(), subgroups.end(), [=](Dtk::GroupPtr grp) {
+    std::for_each(subgroups.begin(), subgroups.end(), [=](GroupPtr grp) {
         auto sub = grp->childOptions();
-        std::for_each(sub.begin(), sub.end(), [=](Dtk::OptionPtr opt) {
+        std::for_each(sub.begin(), sub.end(), [=](OptionPtr opt) {
             QStringList keyseqs = opt->value().toStringList();
             Q_ASSERT (keyseqs.length() == 2);
             auto modifier = static_cast<Qt::KeyboardModifiers>(keyseqs.value(0).toInt());
