@@ -222,6 +222,7 @@ void MpvProxy::handle_mpv_events()
             case MPV_EVENT_IDLE:
                 qDebug() << mpv_event_name(ev->event_id);
                 setState(PlayState::Stopped);
+                emit elapsedChanged();
                 break;
 
             default:
@@ -552,6 +553,7 @@ qint64 MpvProxy::duration() const
 
 qint64 MpvProxy::elapsed() const
 {
+    if (state() == PlayState::Stopped) return 0;
     return get_property(_handle, "time-pos").value<qint64>();
 }
 

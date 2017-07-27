@@ -190,11 +190,11 @@ void ToolboxProxy::setup()
     connect(_engine, &PlayerEngine::stateChanged, this, &ToolboxProxy::updatePlayState);
     connect(_engine, &PlayerEngine::elapsedChanged, [=]() {
         updateTimeInfo(_engine->duration(), _engine->elapsed());
+        updateMovieProgress();
     });
     connect(window()->windowHandle(), &QWindow::windowStateChanged, this, &ToolboxProxy::updateFullState);
     connect(_engine, &PlayerEngine::muteChanged, this, &ToolboxProxy::updateVolumeState);
     connect(_engine, &PlayerEngine::volumeChanged, this, &ToolboxProxy::updateVolumeState);
-    connect(_engine, &PlayerEngine::elapsedChanged, this, &ToolboxProxy::updateMovieProgress);
     connect(&_engine->playlist(), &PlaylistModel::countChanged, this, &ToolboxProxy::updateButtonStates);
 
     updatePlayState();
@@ -210,7 +210,10 @@ void ToolboxProxy::updateMovieProgress()
 {
     auto d = _engine->duration();
     auto e = _engine->elapsed();
-    int v = 100 * ((double)e / d);
+    int v = 0;
+    if (d != 0 && e != 0) {
+        int v = 100 * ((double)e / d);
+    }
     _progBar->setValue(v);
 }
 
