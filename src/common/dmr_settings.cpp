@@ -2,13 +2,10 @@
 #include <QtGui>
 
 #include "dmr_settings.h"
-
 #include <qsettingbackend.h>
-#include <option.h>
-#include <group.h>
-#include <settings.h>
 
 namespace dmr {
+using namespace Dtk::Core;
 static Settings* _theSettings = nullptr;
 
 Settings& Settings::get() 
@@ -28,12 +25,12 @@ Settings::Settings()
         .arg(qApp->organizationName())
         .arg(qApp->applicationName());
     qDebug() << "configPath" << _configPath;
-    auto backend = new Dtk::QSettingBackend(_configPath);
+    auto backend = new QSettingBackend(_configPath);
 
-    _settings = Dtk::Settings::fromJsonFile(":/resources/data/settings.json");
+    _settings = DSettings::fromJsonFile(":/resources/data/settings.json");
     _settings->setBackend(backend);
 
-    connect(_settings, &Dtk::Settings::valueChanged,
+    connect(_settings, &DSettings::valueChanged,
             [=](const QString& key, const QVariant& value) {
                 if (key.startsWith("shortcuts."))
                     emit shortcutsChanged(key, value);

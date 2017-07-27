@@ -3,22 +3,27 @@
 
 #include <QObject>
 #include <QPointer>
-#include <settings.h>
+
+#include <DSettingsOption>
+#include <DSettingsGroup>
+#include <DSettings>
 
 namespace dmr {
+using namespace Dtk::Core;
+
 class Settings: public QObject {
     Q_OBJECT
     public:
         static Settings& get();
         QString configPath() const { return _configPath; }
-        QPointer<Dtk::Settings> settings() { return _settings; }
+        QPointer<DSettings> settings() { return _settings; }
         
-        QPointer<Dtk::Group> group(const QString& name) {
+        QPointer<DSettingsGroup> group(const QString& name) {
             return settings()->group(name);
         }
-        QPointer<Dtk::Group> shortcuts() { return group("shortcuts"); }
-        QPointer<Dtk::Group> base() { return group("base"); }
-        QPointer<Dtk::Group> subtitle() { return group("subtitle"); }
+        QPointer<DSettingsGroup> shortcuts() { return group("shortcuts"); }
+        QPointer<DSettingsGroup> base() { return group("base"); }
+        QPointer<DSettingsGroup> subtitle() { return group("subtitle"); }
 
     signals:
         void shortcutsChanged(const QString&, const QVariant&);
@@ -27,7 +32,7 @@ class Settings: public QObject {
     private:
         Settings();
 
-        QPointer<Dtk::Settings> _settings;
+        QPointer<DSettings> _settings;
         QString _configPath;
 };
 
