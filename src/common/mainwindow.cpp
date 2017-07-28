@@ -1017,7 +1017,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI, QList<
             if (!_nwShot) {
                 _nwShot = new NotificationWidget(this); 
             }
-            auto msg = QString("%1 %2").arg(tr("Saved to")).arg(filePath);
+            auto msg = tr("The screenshot is saved in %1").arg(filePath);
             auto pm = QPixmap(QString(":/resources/icons/%1.png").arg(success?"success":"fail"));
             _nwShot->popupWithIcon(msg, pm);
 #endif
@@ -1114,6 +1114,9 @@ void MainWindow::updateProxyGeometry()
 void MainWindow::suspendToolsWindow()
 {
     if (!_miniMode && !this->frameGeometry().contains(QCursor::pos())) {
+        if (_playlist && _playlist->isVisible())
+            return;
+
         _titlebar->hide();
         _toolbox->hide();
     }
