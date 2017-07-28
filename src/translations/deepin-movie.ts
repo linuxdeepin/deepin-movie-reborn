@@ -2,19 +2,6 @@
 <!DOCTYPE TS>
 <TS version="2.1">
 <context>
-    <name>DInputDialog</name>
-    <message>
-        <location filename="../widgets/url_dialog.cpp" line="10"/>
-        <source>Cancel</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../widgets/url_dialog.cpp" line="11"/>
-        <source>Confirm</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>QCoreApplication</name>
     <message>
         <location filename="../common/options.cpp" line="21"/>
@@ -213,6 +200,24 @@
     </message>
 </context>
 <context>
+    <name>UrlDialog</name>
+    <message>
+        <location filename="../widgets/url_dialog.cpp" line="10"/>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../widgets/url_dialog.cpp" line="11"/>
+        <source>Confirm</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../widgets/url_dialog.cpp" line="15"/>
+        <source>Please input the url of file to play</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>dmr::ActionFactory</name>
     <message>
         <location filename="../common/actions.cpp" line="53"/>
@@ -253,6 +258,12 @@
         <location filename="../common/actions.cpp" line="76"/>
         <location filename="../common/actions.cpp" line="88"/>
         <source>Always on Top</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../common/actions.cpp" line="77"/>
+        <location filename="../common/actions.cpp" line="194"/>
+        <source>Film info</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -332,6 +343,16 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../common/actions.cpp" line="192"/>
+        <source>Clear playlist</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../common/actions.cpp" line="193"/>
+        <source>Display in file manager</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../common/actions.cpp" line="242"/>
         <source>Load Track</source>
         <translation type="unfinished"></translation>
@@ -377,20 +398,8 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="77"/>
         <location filename="../common/actions.cpp" line="177"/>
-        <location filename="../common/actions.cpp" line="194"/>
         <source>Film Info</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../common/actions.cpp" line="192"/>
-        <source>Clear Playlist</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../common/actions.cpp" line="193"/>
-        <source>Open File In File Manager</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -432,16 +441,12 @@
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1009"/>
-        <location filename="../common/mainwindow.cpp" line="1020"/>
         <source>Saved to</source>
         <translation type="unfinished"></translation>
     </message>
-</context>
-<context>
-    <name>dmr::UrlDialog</name>
     <message>
-        <location filename="../widgets/url_dialog.cpp" line="15"/>
-        <source>Please input the url of file to play</source>
+        <location filename="../common/mainwindow.cpp" line="1020"/>
+        <source>The screenshot is saved in %1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

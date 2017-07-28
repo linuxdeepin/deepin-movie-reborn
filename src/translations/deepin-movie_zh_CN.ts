@@ -4,14 +4,12 @@
 <context>
     <name>DInputDialog</name>
     <message>
-        <location filename="../widgets/url_dialog.cpp" line="10"/>
         <source>Cancel</source>
-        <translation>取消</translation>
+        <translation type="vanished">取消</translation>
     </message>
     <message>
-        <location filename="../widgets/url_dialog.cpp" line="11"/>
         <source>Confirm</source>
-        <translation>确认</translation>
+        <translation type="vanished">确认</translation>
     </message>
 </context>
 <context>
@@ -213,6 +211,24 @@
     </message>
 </context>
 <context>
+    <name>UrlDialog</name>
+    <message>
+        <location filename="../widgets/url_dialog.cpp" line="10"/>
+        <source>Cancel</source>
+        <translation>取消</translation>
+    </message>
+    <message>
+        <location filename="../widgets/url_dialog.cpp" line="11"/>
+        <source>Confirm</source>
+        <translation>确认</translation>
+    </message>
+    <message>
+        <location filename="../widgets/url_dialog.cpp" line="15"/>
+        <source>Please input the url of file to play</source>
+        <translation>请输入您要播放的文件的网络地址</translation>
+    </message>
+</context>
+<context>
     <name>dmr::ActionFactory</name>
     <message>
         <location filename="../common/actions.cpp" line="53"/>
@@ -248,6 +264,12 @@
         <location filename="../common/actions.cpp" line="88"/>
         <source>Always on Top</source>
         <translation>置顶窗口</translation>
+    </message>
+    <message>
+        <location filename="../common/actions.cpp" line="77"/>
+        <location filename="../common/actions.cpp" line="194"/>
+        <source>Film info</source>
+        <translation>电影信息</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="93"/>
@@ -326,6 +348,16 @@
         <translation>音轨</translation>
     </message>
     <message>
+        <location filename="../common/actions.cpp" line="192"/>
+        <source>Clear playlist</source>
+        <translation>清空播放列表</translation>
+    </message>
+    <message>
+        <location filename="../common/actions.cpp" line="193"/>
+        <source>Display in file manager</source>
+        <translation>在文件管理器中显示</translation>
+    </message>
+    <message>
         <location filename="../common/actions.cpp" line="242"/>
         <source>Load Track</source>
         <translation>载入音轨</translation>
@@ -356,9 +388,7 @@
         <translation>连拍截图</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="77"/>
         <location filename="../common/actions.cpp" line="177"/>
-        <location filename="../common/actions.cpp" line="194"/>
         <source>Film Info</source>
         <translation>电影信息</translation>
     </message>
@@ -416,14 +446,12 @@
         <translation type="vanished">电影信息</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="192"/>
         <source>Clear Playlist</source>
-        <translation>清空播放列表</translation>
+        <translation type="vanished">清空播放列表</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="193"/>
         <source>Open File In File Manager</source>
-        <translation>在文件管理器打开文件</translation>
+        <translation type="vanished">在文件管理器打开文件</translation>
     </message>
 </context>
 <context>
@@ -464,17 +492,20 @@
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1009"/>
-        <location filename="../common/mainwindow.cpp" line="1020"/>
         <source>Saved to</source>
         <translation>保存到</translation>
+    </message>
+    <message>
+        <location filename="../common/mainwindow.cpp" line="1020"/>
+        <source>The screenshot is saved in %1</source>
+        <translation>您的截图已保存到%1</translation>
     </message>
 </context>
 <context>
     <name>dmr::UrlDialog</name>
     <message>
-        <location filename="../widgets/url_dialog.cpp" line="15"/>
         <source>Please input the url of file to play</source>
-        <translation>请输入您要播放的文件的网络地址</translation>
+        <translation type="vanished">请输入您要播放的文件的网络地址</translation>
     </message>
 </context>
 </TS>
