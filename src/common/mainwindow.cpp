@@ -250,6 +250,7 @@ skip_set_cursor:
                     break;
             }
             mw->setGeometry(geom);
+
         }
 
         const QMargins margins{MOUSE_MARGINS, MOUSE_MARGINS, MOUSE_MARGINS, MOUSE_MARGINS};
@@ -1013,9 +1014,12 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI, QList<
 
 #else
 
-            NotificationWidget *nw = new NotificationWidget(this); 
+            if (!_nwShot) {
+                _nwShot = new NotificationWidget(this); 
+            }
             auto msg = QString("%1 %2").arg(tr("Saved to")).arg(filePath);
-            nw->popup(msg, success);
+            auto pm = QPixmap(QString(":/resources/icons/%1.png").arg(success?"success":"fail"));
+            _nwShot->popupWithIcon(msg, pm);
 #endif
             break;
         }
@@ -1170,8 +1174,26 @@ void MainWindow::updateSizeConstraints()
 void MainWindow::resizeEvent(QResizeEvent *ev)
 {
     qDebug() << __func__ << geometry();
+    if (!_nwSize) {
+        _nwSize = new NotificationWidget(this); 
+    }
+
+    auto msg = QString("%1x%2").arg(width()) .arg(height());
+    if (_nwSize->isVisible()) {
+        _nwSize->updateWithMessage(msg);
+    } else {
+        _nwSize->popup(msg);
+    }
+
     updateSizeConstraints();
     updateProxyGeometry();
+}
+
+void MainWindow::moveEvent(QMoveEvent *ev)
+{
+    if (_nwSize && _nwSize->isVisible()) {
+        _nwSize->hide();
+    }
 }
 
 void MainWindow::mouseMoveEvent(QMouseEvent *ev)
