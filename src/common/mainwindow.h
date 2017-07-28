@@ -25,6 +25,7 @@ class ToolboxProxy;
 class EventMonitor;
 class PlaylistWidget;
 class PlayerEngine;
+class NotificationWidget;
 
 class MainWindow: public QWidget {
     Q_OBJECT
@@ -54,6 +55,7 @@ protected:
     void showEvent(QShowEvent *event) override;
     void resizeEvent(QResizeEvent *ev) override;
     void mouseMoveEvent(QMouseEvent *ev) override;
+    void moveEvent(QMoveEvent *ev) override;
     void contextMenuEvent(QContextMenuEvent *cme) override;
     void paintEvent(QPaintEvent*) override;
 
@@ -105,6 +107,8 @@ private:
     bool _windowAbove {false};
     
     MainWindowEventListener *_listener {nullptr};
+    NotificationWidget *_nwShot {nullptr};
+    NotificationWidget *_nwSize {nullptr};
 };
 };
 

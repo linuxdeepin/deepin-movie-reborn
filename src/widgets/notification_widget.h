@@ -17,12 +17,15 @@ public:
     NotificationWidget(QWidget *parent = 0);
 
 public slots:
-    void popup(const QString& msg, bool success);
+    void popupWithIcon(const QString& msg, const QPixmap&);
+    void popup(const QString& msg);
+    void updateWithMessage(const QString& newMsg);
 
 private:
     QWidget *_mw {nullptr};
     QLabel *_msgLabel {nullptr};
     QLabel *_icon {nullptr};
+    QTimer *_timer {nullptr};
 };
 
 }

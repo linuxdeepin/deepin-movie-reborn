@@ -429,42 +429,42 @@
 <context>
     <name>dmr::MainWindow</name>
     <message>
-        <location filename="../common/mainwindow.cpp" line="316"/>
-        <location filename="../common/mainwindow.cpp" line="396"/>
+        <location filename="../common/mainwindow.cpp" line="317"/>
+        <location filename="../common/mainwindow.cpp" line="397"/>
         <source>Deepin Movie</source>
         <translation>深度影院</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="747"/>
-        <location filename="../common/mainwindow.cpp" line="759"/>
-        <location filename="../common/mainwindow.cpp" line="943"/>
+        <location filename="../common/mainwindow.cpp" line="748"/>
+        <location filename="../common/mainwindow.cpp" line="760"/>
+        <location filename="../common/mainwindow.cpp" line="944"/>
         <source>Open File</source>
         <translation>打开文件</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="749"/>
-        <location filename="../common/mainwindow.cpp" line="761"/>
+        <location filename="../common/mainwindow.cpp" line="750"/>
+        <location filename="../common/mainwindow.cpp" line="762"/>
         <source>Movies (*.mkv *.mov *.mp4 *.rmvb)</source>
         <translation>视频文件(*.mkv *.mov *.mp4 *.rmvb)</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="945"/>
+        <location filename="../common/mainwindow.cpp" line="946"/>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</source>
         <translation>字幕文件 (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="996"/>
+        <location filename="../common/mainwindow.cpp" line="997"/>
         <source>View</source>
         <translation>查看</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1007"/>
+        <location filename="../common/mainwindow.cpp" line="1008"/>
         <source>Movie Screenshot</source>
         <translation>视频截图</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1008"/>
-        <location filename="../common/mainwindow.cpp" line="1017"/>
+        <location filename="../common/mainwindow.cpp" line="1009"/>
+        <location filename="../common/mainwindow.cpp" line="1020"/>
         <source>Saved to</source>
         <translation>保存到</translation>
     </message>
