@@ -62,8 +62,7 @@ public:
 
         _closeBtn = new DImageButton(this);
         _closeBtn->setObjectName("CloseBtn");
-        _closeBtn->show();
-        _closeBtn->raise();
+        _closeBtn->hide();
         connect(_closeBtn, &DImageButton::clicked, this, &PlayItemWidget::closeButtonClicked);
     }
 
@@ -98,6 +97,17 @@ signals:
     void closeButtonClicked();
 
 protected:
+    void leaveEvent(QEvent* e) override
+    {
+        _closeBtn->hide();
+    }
+
+    void enterEvent(QEvent* e) override
+    {
+        _closeBtn->show();
+        _closeBtn->raise();
+    }
+
     void mouseReleaseEvent(QMouseEvent* me) override 
     {
         qDebug() << __func__;
@@ -131,10 +141,12 @@ protected:
     bool eventFilter(QObject *obj, QEvent *event) {
         if (event->type() == QEvent::MouseButtonPress) {
             QMouseEvent *me = static_cast<QMouseEvent*>(event);
+
             if (me->buttons() == Qt::LeftButton) {
                 auto *plw = dynamic_cast<PlaylistWidget*>(parent());
                 auto *mw = dynamic_cast<MainWindow*>(plw->parent());
-                if (plw->isVisible()) {
+                
+                if (plw->isVisible() && !plw->underMouse()) {
                     mw->requestAction(ActionFactory::ActionKind::TogglePlaylist);
                 }
             }
