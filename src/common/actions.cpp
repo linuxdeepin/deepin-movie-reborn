@@ -74,7 +74,7 @@ QMenu* ActionFactory::mainContextMenu()
 
         DEF_ACTION_CHECKED(tr("Fullscreen"), ActionKind::Fullscreen);
         DEF_ACTION_CHECKED(tr("Always on Top"), ActionKind::WindowAbove);
-        DEF_ACTION(tr("Film Info"), ActionKind::MovieInfo);
+        DEF_ACTION(tr("Film info"), ActionKind::MovieInfo);
         DEF_ACTION(tr("Settings"), ActionKind::Settings);
 #else
 
@@ -189,9 +189,9 @@ QMenu* ActionFactory::playlistContextMenu()
     if (!_playlistMenu) {
         auto *menu = new QMenu();
 
-        DEF_ACTION(tr("Clear Playlist"), ActionKind::EmptyPlaylist);
-        DEF_ACTION(tr("Open File In File Manager"), ActionKind::PlaylistOpenItemInFM);
-        DEF_ACTION(tr("Film Info"), ActionKind::MovieInfo);
+        DEF_ACTION(tr("Clear playlist"), ActionKind::EmptyPlaylist);
+        DEF_ACTION(tr("Display in file manager"), ActionKind::PlaylistOpenItemInFM);
+        DEF_ACTION(tr("Film info"), ActionKind::MovieInfo);
 
         _playlistMenu = menu;
     }

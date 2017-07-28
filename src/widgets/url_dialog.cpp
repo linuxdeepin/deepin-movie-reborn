@@ -7,12 +7,12 @@ namespace dmr {
 UrlDialog::UrlDialog()
     :DDialog(nullptr)
 {
-    addButtons(QStringList() << QApplication::translate("DInputDialog", "Cancel")
-                                << QApplication::translate("DInputDialog", "Confirm"));
+    addButtons(QStringList() << QApplication::translate("UrlDialog", "Cancel")
+                                << QApplication::translate("UrlDialog", "Confirm"));
     setOnButtonClickedClose(false);
     setDefaultButton(1);
     setIcon(QIcon(":/resources/icons/logo-big.svg"));
-    setMessage(tr("Please input the url of file to play"));
+    setMessage(QApplication::translate("UrlDialog", "Please input the url of file to play"));
 
     _le = new DLineEdit;
     addContent(_le);
