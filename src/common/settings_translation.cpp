@@ -2,7 +2,7 @@
 
 void GenerateSettingTranslate()
 {
-    auto base_play_contnextName = QObject::tr("Continue to next video automatically");
+    auto base_play_addsimilarName = QObject::tr("Auto add similar files to play");
     auto base_play_emptylistName = QObject::tr("Clear playlist when exit");
     auto base_play_hwaccelName = QObject::tr("Enable hardware acceleration");
     auto base_play_mousepreviewName = QObject::tr("Show video preview on mouseover");

@@ -105,7 +105,7 @@
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="5"/>
-        <source>Continue to next video automatically</source>
+        <source>Auto add similar files to play</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
