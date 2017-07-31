@@ -131,8 +131,12 @@
         <translation type="vanished">恢复默认</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="5"/>
         <source>Continue to next video automatically</source>
+        <translation type="vanished">自动查找相似文件连续播放</translation>
+    </message>
+    <message>
+        <location filename="../common/settings_translation.cpp" line="5"/>
+        <source>Auto add similar files to play</source>
         <translation>自动查找相似文件连续播放</translation>
     </message>
     <message>

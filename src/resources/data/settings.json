@@ -21,8 +21,8 @@
                             "default": ""
                         },
                         {
-                            "key": "contnext",
-                            "name": "Continue to next video automatically",
+                            "key": "addsimilar",
+                            "name": "Auto add similar files to play",
                             "type": "checkbox",
                             "default": ""
                         },
