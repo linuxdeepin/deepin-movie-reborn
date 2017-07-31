@@ -14,6 +14,16 @@ using namespace Dtk::Core;
 class Settings: public QObject {
     Q_OBJECT
     public:
+        enum Flag {
+            ClearWhenQuit,
+            ResumeFromLast,
+            AutoSearchSimilar,
+            PreviewOnMouseover,
+            MultipleInstance,
+            PauseOnMinimize,
+            HWAccel,
+        };
+
         static Settings& get();
         QString configPath() const { return _configPath; }
         QPointer<DSettings> settings() { return _settings; }
@@ -24,6 +34,8 @@ class Settings: public QObject {
         QPointer<DSettingsGroup> shortcuts() { return group("shortcuts"); }
         QPointer<DSettingsGroup> base() { return group("base"); }
         QPointer<DSettingsGroup> subtitle() { return group("subtitle"); }
+
+        bool isSet(Flag f) const;
 
     signals:
         void shortcutsChanged(const QString&, const QVariant&);

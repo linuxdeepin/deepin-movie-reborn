@@ -2,7 +2,7 @@
     "groups": [
         {
             "key": "base",
-            "name": "Basic settings",
+            "name": "Basic",
             "groups": [
                 {
                     "key": "play",
@@ -10,13 +10,43 @@
                     "options": [
                         {
                             "key": "emptylist",
-                            "name": "Empty playlist when quit",
+                            "name": "Clear playlist when exit",
                             "type": "checkbox",
                             "default": ""
                         },
                         {
                             "key": "resumelast",
-                            "name": "Auto resume from last stop",
+                            "name": "Remember playback position",
+                            "type": "checkbox",
+                            "default": ""
+                        },
+                        {
+                            "key": "contnext",
+                            "name": "Continue to next video automatically",
+                            "type": "checkbox",
+                            "default": ""
+                        },
+                        {
+                            "key": "mousepreview",
+                            "name": "Show video preview on mouseover",
+                            "type": "checkbox",
+                            "default": ""
+                        },
+                        {
+                            "key": "multiinstance",
+                            "name": "Run multiple Deepin Movie",
+                            "type": "checkbox",
+                            "default": ""
+                        },
+                        {
+                            "key": "pauseonmin",
+                            "name": "Pause when minimized",
+                            "type": "checkbox",
+                            "default": ""
+                        },
+                        {
+                            "key": "hwaccel",
+                            "name": "Enable hardware acceleration",
                             "type": "checkbox",
                             "default": ""
                         }

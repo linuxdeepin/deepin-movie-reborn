@@ -19,6 +19,7 @@
 #include "config.h"
 
 #include "options.h"
+#include "dmr_settings.h"
 #include "mainwindow.h"
 #ifdef ENABLE_VPU_PLATFORM
 #include "vpu_proxy.h"
@@ -65,7 +66,8 @@ int main(int argc, char *argv[])
     Dtk::Core::DLogManager::registerFileAppender();
     qDebug() << "log path: " << Dtk::Core::DLogManager::getlogFilePath();
 
-    if (!app.setSingleInstance("deepinmovie")) {
+    bool singleton = !dmr::Settings::get().isSet(dmr::Settings::MultipleInstance);
+    if (singleton && !app.setSingleInstance("deepinmovie")) {
         qDebug() << "another deepin movie instance has started";
         exit(0);
     }
@@ -75,6 +77,7 @@ int main(int argc, char *argv[])
     app.setWindowIcon(QIcon(":/resources/icons/logo.svg"));
     app.setApplicationDisplayName(QObject::tr("Deepin Movie"));
     app.setAttribute(Qt::AA_DontCreateNativeWidgetSiblings, true);
+
 
     QRegExp url_re("\\w+://");
 
