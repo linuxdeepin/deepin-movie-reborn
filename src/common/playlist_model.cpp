@@ -60,7 +60,7 @@ static int open_codec_context(int *stream_idx,
 
 namespace dmr {
 
-struct MovieInfo MovieInfo::parseFromFile(const QFileInfo& fi)
+struct MovieInfo MovieInfo::parseFromFile(const QFileInfo& fi, bool *ok)
 {
     struct MovieInfo mi;
     AVFormatContext *av_ctx = NULL;
@@ -70,14 +70,22 @@ struct MovieInfo MovieInfo::parseFromFile(const QFileInfo& fi)
     auto ret = avformat_open_input(&av_ctx, fi.filePath().toUtf8().constData(), NULL, NULL);
     if (ret < 0) {
         qWarning() << "avformat: could not open input";
+        if (ok) *ok = false;
+        return mi;
     }
 
     if (avformat_find_stream_info(av_ctx, NULL) < 0) {
         qWarning() << "av_find_stream_info failed";
+        if (ok) *ok = false;
+        return mi;
     }
 
-    if (av_ctx->nb_streams == 0) return mi;
+    if (av_ctx->nb_streams == 0) {
+        if (ok) *ok = false;
+        return mi;
+    } 
     if (open_codec_context(&stream_id, &dec_ctx, av_ctx, AVMEDIA_TYPE_VIDEO) < 0) {
+        if (ok) *ok = false;
         return mi;
     }
 
@@ -105,6 +113,7 @@ struct MovieInfo MovieInfo::parseFromFile(const QFileInfo& fi)
     }
     avformat_close_input(&av_ctx);
 
+    if (ok) *ok = true;
     return mi;
 }
 
@@ -431,13 +440,16 @@ void PlaylistModel::append(const QUrl& url)
     if (url.isLocalFile()) {
         QFileInfo fi(url.toLocalFile());
         if (!fi.exists()) return;
-        _infos.append(calculatePlayInfo(url, fi));
+        auto pif = calculatePlayInfo(url, fi);
+        if (!pif.valid) return;
+        _infos.append(pif);
 
         if (Settings::get().isSet(Settings::AutoSearchSimilar)) {
             auto fil = utils::FindSimilarFiles(fi);
             qDebug() << "auto search similar files" << fil;
-            std::for_each(fil.begin(), fil.end(), [&](const QFileInfo& fi) {
-                _infos.append(calculatePlayInfo(QUrl::fromLocalFile(fi.absoluteFilePath()), fi));
+            std::for_each(fil.begin(), fil.end(), [=](const QFileInfo& fi) {
+                auto pif = calculatePlayInfo(QUrl::fromLocalFile(fi.absoluteFilePath()), fi);
+                if (pif.valid) _infos.append(pif);
             });
         }
         emit countChanged();
@@ -484,25 +496,33 @@ int PlaylistModel::current() const
 
 struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl& url, const QFileInfo& fi)
 {
-    std::vector<uint8_t> buf;
-    _thumbnailer.generateThumbnail(fi.canonicalFilePath().toUtf8().toStdString(),
-            ThumbnailerImageType::Png, buf);
+    bool ok = false;
+    auto mi = MovieInfo::parseFromFile(fi, &ok);
 
-    auto img = QImage::fromData(buf.data(), buf.size(), "png");
+    QPixmap pm;
+    if (ok) {
+        try {
+            std::vector<uint8_t> buf;
+            _thumbnailer.generateThumbnail(fi.canonicalFilePath().toUtf8().toStdString(),
+                    ThumbnailerImageType::Png, buf);
 
-    QPixmap pm = QPixmap::fromImage(img);
+            auto img = QImage::fromData(buf.data(), buf.size(), "png");
 
-    auto mi = MovieInfo::parseFromFile(fi);
+            pm = QPixmap::fromImage(img);
+        } catch (const std::logic_error&) {
+        }
+    }
 
     PlayItemInfo pif = {
-        .loaded = true,
+        .valid = ok,
+        .loaded = ok,
         .url = url,
         .info = fi,
         .thumbnail = pm.scaled(24, 44),
         .mi = mi
     };
 
-    Q_ASSERT(!pif.thumbnail.isNull());
+    //Q_ASSERT(!pif.thumbnail.isNull());
 
     return pif;
 }

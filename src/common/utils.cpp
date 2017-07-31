@@ -86,12 +86,36 @@ QFileInfoList FindSimilarFiles(const QFileInfo& fi)
 
         auto dist = minDistance(fi.fileName(), it.fileInfo().fileName());
         qDebug() << it.fileInfo().fileName() << "=" << dist;
-        if (dist > 0 && dist < 4) { //TODO: check ext.
+        if (dist > 0 && dist <= 4) { //TODO: check ext.
             fil.append(it.fileInfo());
         }
         
     }
 
+    //sort names by digits inside, take care of such a possible:
+    //S01N04, S02N05, S01N12, S02N04, etc...
+    struct {
+        bool operator()(const QFileInfo& fi1, const QFileInfo& fi2) const {
+            QRegExp rd("\\d+");
+            int pos = 0;
+            while ((pos = rd.indexIn(fi1.fileName(), pos)) != -1) {
+                auto id1 = fi1.fileName().mid(pos, rd.matchedLength());
+
+                auto pos2 = rd.indexIn(fi2.fileName(), pos);
+                if (pos == pos2) {
+                    auto id2 = fi2.fileName().mid(pos, rd.matchedLength());
+                    qDebug() << "id compare " << id1 << id2;
+                    if (id1 != id2) 
+                        return id1.compare(id2) < 0;
+                }
+
+                pos += rd.matchedLength();
+            }
+            return fi1.fileName().compare(fi2.fileName()) < 0;
+        }
+    } SortByDigits;
+    std::sort(fil.begin(), fil.end(), SortByDigits);
+    
     return fil;
 }
 
