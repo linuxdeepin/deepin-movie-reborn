@@ -6,6 +6,7 @@
 namespace dmr {
 namespace utils {
     void ShowInFileManager(const QString &path);
+    QFileInfoList FindSimilarFiles(const QFileInfo& fi);
 }
 }
 

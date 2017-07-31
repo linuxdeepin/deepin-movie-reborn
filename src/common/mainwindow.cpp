@@ -750,7 +750,6 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI, QList<
                     tr("Movies (*.mkv *.mov *.mp4 *.rmvb)"));
             if (QFileInfo(filename).exists()) {
                 play(QUrl::fromLocalFile(filename));
-                _engine->next();
             }
             break;
         }
