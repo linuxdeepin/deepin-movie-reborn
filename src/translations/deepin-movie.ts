@@ -438,39 +438,39 @@
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="748"/>
-        <location filename="../common/mainwindow.cpp" line="760"/>
-        <location filename="../common/mainwindow.cpp" line="944"/>
+        <location filename="../common/mainwindow.cpp" line="759"/>
+        <location filename="../common/mainwindow.cpp" line="943"/>
         <source>Open File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="750"/>
-        <location filename="../common/mainwindow.cpp" line="762"/>
+        <location filename="../common/mainwindow.cpp" line="761"/>
         <source>Movies (*.mkv *.mov *.mp4 *.rmvb)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="946"/>
+        <location filename="../common/mainwindow.cpp" line="945"/>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="997"/>
+        <location filename="../common/mainwindow.cpp" line="996"/>
         <source>View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1008"/>
+        <location filename="../common/mainwindow.cpp" line="1007"/>
         <source>Movie Screenshot</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1009"/>
+        <location filename="../common/mainwindow.cpp" line="1008"/>
         <source>Saved to</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1020"/>
+        <location filename="../common/mainwindow.cpp" line="1019"/>
         <source>The screenshot is saved in %1</source>
         <translation type="unfinished"></translation>
     </message>

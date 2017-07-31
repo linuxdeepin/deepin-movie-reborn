@@ -1,5 +1,7 @@
 #include "playlist_model.h"
 #include "player_engine.h"
+#include "utils.h"
+#include "dmr_settings.h"
 
 #include <libffmpegthumbnailer/videothumbnailer.h>
 extern "C" {
@@ -415,6 +417,12 @@ void PlaylistModel::playPrev(bool fromUser)
 
 }
 
+static QDebug operator<<(QDebug s, const QFileInfoList& v)
+{
+    std::for_each(v.begin(), v.end(), [&](const QFileInfo& fi) {s << fi.fileName();});
+    return s;
+}
+
 //TODO: what if loadfile failed
 void PlaylistModel::append(const QUrl& url)
 {
@@ -424,6 +432,14 @@ void PlaylistModel::append(const QUrl& url)
         QFileInfo fi(url.toLocalFile());
         if (!fi.exists()) return;
         _infos.append(calculatePlayInfo(url, fi));
+
+        if (Settings::get().isSet(Settings::AutoSearchSimilar)) {
+            auto fil = utils::FindSimilarFiles(fi);
+            qDebug() << "auto search similar files" << fil;
+            std::for_each(fil.begin(), fil.end(), [&](const QFileInfo& fi) {
+                _infos.append(calculatePlayInfo(QUrl::fromLocalFile(fi.absoluteFilePath()), fi));
+            });
+        }
         emit countChanged();
     } else {
         PlayItemInfo pif = {
