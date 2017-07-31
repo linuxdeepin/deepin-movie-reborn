@@ -53,6 +53,7 @@ public slots:
 
 protected:
     void showEvent(QShowEvent *event) override;
+    void hideEvent(QHideEvent *event) override;
     void resizeEvent(QResizeEvent *ev) override;
     void mouseMoveEvent(QMouseEvent *ev) override;
     void moveEvent(QMoveEvent *ev) override;
@@ -102,10 +103,12 @@ private:
     QMargins _cachedMargins;
     EventMonitor *_evm {nullptr};
 
+    bool _pausedOnHide {false};
+
     //toggle-able states
     bool _lightTheme {false};
     bool _windowAbove {false};
-    
+
     MainWindowEventListener *_listener {nullptr};
     NotificationWidget *_nwShot {nullptr};
     NotificationWidget *_nwSize {nullptr};

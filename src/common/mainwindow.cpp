@@ -1135,9 +1135,25 @@ QMargins MainWindow::frameMargins() const
     return _cachedMargins;
 }
 
+void MainWindow::hideEvent(QHideEvent *event)
+{
+    if (Settings::get().isSet(Settings::PauseOnMinimize)) {
+        if (_engine && _engine->state() == PlayerEngine::Playing) {
+            _pausedOnHide = true;
+            requestAction(ActionFactory::TogglePause);
+        }
+    }
+}
+
 void MainWindow::showEvent(QShowEvent *event)
 {
     qDebug() << __func__;
+    if (_pausedOnHide || Settings::get().isSet(Settings::PauseOnMinimize)) {
+        if (_pausedOnHide && _engine && _engine->state() != PlayerEngine::Playing) {
+            requestAction(ActionFactory::TogglePause);
+            _pausedOnHide = false;
+        }
+    }
 
     _titlebar->raise();
     _toolbox->raise();
