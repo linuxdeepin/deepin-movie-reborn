@@ -2,10 +2,15 @@
 
 void GenerateSettingTranslate()
 {
-    auto base_play_emptylistName = QObject::tr("Empty playlist when quit");
-    auto base_play_resumelastName = QObject::tr("Auto resume from last stop");
+    auto base_play_contnextName = QObject::tr("Continue to next video automatically");
+    auto base_play_emptylistName = QObject::tr("Clear playlist when exit");
+    auto base_play_hwaccelName = QObject::tr("Enable hardware acceleration");
+    auto base_play_mousepreviewName = QObject::tr("Show video preview on mouseover");
+    auto base_play_multiinstanceName = QObject::tr("Run multiple Deepin Movie");
+    auto base_play_pauseonminName = QObject::tr("Pause when minimized");
+    auto base_play_resumelastName = QObject::tr("Remember playback position");
     auto base_screenshot_locationName = QObject::tr("Location");
-    auto group_baseName = QObject::tr("Basic settings");
+    auto group_baseName = QObject::tr("Basic");
     auto group_base_playName = QObject::tr("Play");
     auto group_base_screenshotName = QObject::tr("Screenshot");
     auto group_shortcutsName = QObject::tr("Shortcuts");
@@ -14,7 +19,7 @@ void GenerateSettingTranslate()
     auto group_shortcuts_playName = QObject::tr("Playback");
     auto group_subtitleName = QObject::tr("Subtitle");
     auto group_subtitle_fontName = QObject::tr("Font Style");
-    auto reset_button_name = QObject::tr("Restore to default");
+    auto reset_button_name = QObject::tr("Restore Defaults");
     auto shortcuts_file_burst_screenshotName = QObject::tr("Burst screenshot");
     auto shortcuts_file_open_fileName = QObject::tr("Open a file");
     auto shortcuts_file_playlist_nextName = QObject::tr("Open next");

@@ -58,154 +58,195 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../main.cpp" line="55"/>
-        <location filename="../main.cpp" line="76"/>
+        <location filename="../main.cpp" line="56"/>
+        <location filename="../main.cpp" line="78"/>
         <source>Deepin Movie</source>
         <translation>深度影院</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="57"/>
+        <location filename="../main.cpp" line="58"/>
         <source>Deepin Movie is a well-designed and full-featured video player with simple borderless design. It supports local and streaming media play with multiple video formats.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="5"/>
         <source>Empty playlist when quit</source>
-        <translation>退出深度影院时清空播放列表</translation>
+        <translation type="vanished">退出深度影院时清空播放列表</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="6"/>
         <source>Auto resume from last stop</source>
-        <translation>自动从上次停止位置播放</translation>
+        <translation type="vanished">自动从上次停止位置播放</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="7"/>
+        <location filename="../common/settings_translation.cpp" line="12"/>
         <source>Location</source>
         <translation>保存路径</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="8"/>
         <source>Basic settings</source>
-        <translation>基础设置</translation>
+        <translation type="vanished">基础设置</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="9"/>
+        <location filename="../common/settings_translation.cpp" line="14"/>
         <source>Play</source>
         <translation>播放</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="10"/>
-        <location filename="../common/settings_translation.cpp" line="22"/>
+        <location filename="../common/settings_translation.cpp" line="15"/>
+        <location filename="../common/settings_translation.cpp" line="27"/>
         <source>Screenshot</source>
         <translation>截图</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="11"/>
+        <location filename="../common/settings_translation.cpp" line="16"/>
         <source>Shortcuts</source>
         <translation>快捷键</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="12"/>
+        <location filename="../common/settings_translation.cpp" line="17"/>
         <source>Files</source>
         <translation>文件</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="13"/>
+        <location filename="../common/settings_translation.cpp" line="18"/>
         <source>Frame/Sound</source>
         <translation>画面/声音</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="14"/>
+        <location filename="../common/settings_translation.cpp" line="19"/>
         <source>Playback</source>
         <translation>播放</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="15"/>
+        <location filename="../common/settings_translation.cpp" line="20"/>
         <source>Subtitle</source>
         <translation>字幕</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="16"/>
+        <location filename="../common/settings_translation.cpp" line="21"/>
         <source>Font Style</source>
         <translation>字体样式</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="17"/>
         <source>Restore to default</source>
+        <translation type="vanished">恢复默认</translation>
+    </message>
+    <message>
+        <location filename="../common/settings_translation.cpp" line="5"/>
+        <source>Continue to next video automatically</source>
+        <translation>自动查找相似文件连续播放</translation>
+    </message>
+    <message>
+        <location filename="../common/settings_translation.cpp" line="6"/>
+        <source>Clear playlist when exit</source>
+        <translation>退出深度影院时清空播放列表</translation>
+    </message>
+    <message>
+        <location filename="../common/settings_translation.cpp" line="7"/>
+        <source>Enable hardware acceleration</source>
+        <translation>开启硬件加速</translation>
+    </message>
+    <message>
+        <location filename="../common/settings_translation.cpp" line="8"/>
+        <source>Show video preview on mouseover</source>
+        <translation>鼠标悬停进度条时显示预览</translation>
+    </message>
+    <message>
+        <location filename="../common/settings_translation.cpp" line="9"/>
+        <source>Run multiple Deepin Movie</source>
+        <translation>允许同时运行多个深度影院</translation>
+    </message>
+    <message>
+        <location filename="../common/settings_translation.cpp" line="10"/>
+        <source>Pause when minimized</source>
+        <translation>最小化时暂停</translation>
+    </message>
+    <message>
+        <location filename="../common/settings_translation.cpp" line="11"/>
+        <source>Remember playback position</source>
+        <translation>自动从上次停止位置播放</translation>
+    </message>
+    <message>
+        <location filename="../common/settings_translation.cpp" line="13"/>
+        <source>Basic</source>
+        <translation>基础设置</translation>
+    </message>
+    <message>
+        <location filename="../common/settings_translation.cpp" line="22"/>
+        <source>Restore Defaults</source>
         <translation>恢复默认</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="18"/>
+        <location filename="../common/settings_translation.cpp" line="23"/>
         <source>Burst screenshot</source>
         <translation>连拍截图</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="19"/>
+        <location filename="../common/settings_translation.cpp" line="24"/>
         <source>Open a file</source>
         <translation>打开文件</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="20"/>
+        <location filename="../common/settings_translation.cpp" line="25"/>
         <source>Open next</source>
         <translation>打开下一个</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="21"/>
+        <location filename="../common/settings_translation.cpp" line="26"/>
         <source>Open previous</source>
         <translation>打开上一个</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="23"/>
+        <location filename="../common/settings_translation.cpp" line="28"/>
         <source>Mini mode</source>
         <translation>迷你模式</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="24"/>
+        <location filename="../common/settings_translation.cpp" line="29"/>
         <source>Mute</source>
         <translation>静音</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="25"/>
+        <location filename="../common/settings_translation.cpp" line="30"/>
         <source>volume down</source>
         <translation>减小音量</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="26"/>
+        <location filename="../common/settings_translation.cpp" line="31"/>
         <source>Volume up</source>
         <translation>增大音量</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="27"/>
+        <location filename="../common/settings_translation.cpp" line="32"/>
         <source>Fullscreen</source>
         <translation>全屏</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="28"/>
+        <location filename="../common/settings_translation.cpp" line="33"/>
         <source>Pause/Play</source>
         <translation>暂停/播放</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="29"/>
+        <location filename="../common/settings_translation.cpp" line="34"/>
         <source>Playlist</source>
         <translation>播放列表</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="30"/>
+        <location filename="../common/settings_translation.cpp" line="35"/>
         <source>Backward</source>
         <translation>快退</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="31"/>
+        <location filename="../common/settings_translation.cpp" line="36"/>
         <source>Forward</source>
         <translation>快进</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="32"/>
+        <location filename="../common/settings_translation.cpp" line="37"/>
         <source>Font</source>
         <translation>字体</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="33"/>
+        <location filename="../common/settings_translation.cpp" line="38"/>
         <source>Font Size</source>
         <translation>字号</translation>
     </message>

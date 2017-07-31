@@ -47,154 +47,179 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../main.cpp" line="55"/>
-        <location filename="../main.cpp" line="76"/>
+        <location filename="../main.cpp" line="56"/>
+        <location filename="../main.cpp" line="78"/>
         <source>Deepin Movie</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="57"/>
+        <location filename="../main.cpp" line="58"/>
         <source>Deepin Movie is a well-designed and full-featured video player with simple borderless design. It supports local and streaming media play with multiple video formats.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="5"/>
-        <source>Empty playlist when quit</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../common/settings_translation.cpp" line="6"/>
-        <source>Auto resume from last stop</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../common/settings_translation.cpp" line="7"/>
+        <location filename="../common/settings_translation.cpp" line="12"/>
         <source>Location</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="8"/>
-        <source>Basic settings</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../common/settings_translation.cpp" line="9"/>
+        <location filename="../common/settings_translation.cpp" line="14"/>
         <source>Play</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="10"/>
-        <location filename="../common/settings_translation.cpp" line="22"/>
+        <location filename="../common/settings_translation.cpp" line="15"/>
+        <location filename="../common/settings_translation.cpp" line="27"/>
         <source>Screenshot</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="11"/>
+        <location filename="../common/settings_translation.cpp" line="16"/>
         <source>Shortcuts</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="12"/>
+        <location filename="../common/settings_translation.cpp" line="17"/>
         <source>Files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="13"/>
+        <location filename="../common/settings_translation.cpp" line="18"/>
         <source>Frame/Sound</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="14"/>
+        <location filename="../common/settings_translation.cpp" line="19"/>
         <source>Playback</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="15"/>
+        <location filename="../common/settings_translation.cpp" line="20"/>
         <source>Subtitle</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="16"/>
+        <location filename="../common/settings_translation.cpp" line="21"/>
         <source>Font Style</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="17"/>
-        <source>Restore to default</source>
+        <location filename="../common/settings_translation.cpp" line="5"/>
+        <source>Continue to next video automatically</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="18"/>
-        <source>Burst screenshot</source>
+        <location filename="../common/settings_translation.cpp" line="6"/>
+        <source>Clear playlist when exit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="19"/>
-        <source>Open a file</source>
+        <location filename="../common/settings_translation.cpp" line="7"/>
+        <source>Enable hardware acceleration</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="20"/>
-        <source>Open next</source>
+        <location filename="../common/settings_translation.cpp" line="8"/>
+        <source>Show video preview on mouseover</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="21"/>
-        <source>Open previous</source>
+        <location filename="../common/settings_translation.cpp" line="9"/>
+        <source>Run multiple Deepin Movie</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../common/settings_translation.cpp" line="10"/>
+        <source>Pause when minimized</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../common/settings_translation.cpp" line="11"/>
+        <source>Remember playback position</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../common/settings_translation.cpp" line="13"/>
+        <source>Basic</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../common/settings_translation.cpp" line="22"/>
+        <source>Restore Defaults</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="23"/>
-        <source>Mini mode</source>
+        <source>Burst screenshot</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="24"/>
-        <source>Mute</source>
+        <source>Open a file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="25"/>
-        <source>volume down</source>
+        <source>Open next</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="26"/>
-        <source>Volume up</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../common/settings_translation.cpp" line="27"/>
-        <source>Fullscreen</source>
+        <source>Open previous</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="28"/>
-        <source>Pause/Play</source>
+        <source>Mini mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="29"/>
-        <source>Playlist</source>
+        <source>Mute</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="30"/>
-        <source>Backward</source>
+        <source>volume down</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="31"/>
-        <source>Forward</source>
+        <source>Volume up</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="32"/>
-        <source>Font</source>
+        <source>Fullscreen</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="33"/>
+        <source>Pause/Play</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../common/settings_translation.cpp" line="34"/>
+        <source>Playlist</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../common/settings_translation.cpp" line="35"/>
+        <source>Backward</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../common/settings_translation.cpp" line="36"/>
+        <source>Forward</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../common/settings_translation.cpp" line="37"/>
+        <source>Font</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../common/settings_translation.cpp" line="38"/>
         <source>Font Size</source>
         <translation type="unfinished"></translation>
     </message>
