@@ -20,7 +20,7 @@ struct MovieInfo {
     qint64 duration;
     int width, height;
 
-    static struct MovieInfo parseFromFile(const QFileInfo& fi);
+    static struct MovieInfo parseFromFile(const QFileInfo& fi, bool *ok = nullptr);
     QString durationStr() const {
         auto secs = duration % 60;
         auto minutes = duration / 60;
@@ -44,6 +44,7 @@ struct MovieInfo {
 
 
 struct PlayItemInfo {
+    bool valid;
     bool loaded;  // if url is network, this is false until playback started
     QUrl url;
     QFileInfo info;
