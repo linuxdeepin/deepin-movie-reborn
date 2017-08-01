@@ -184,6 +184,8 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
 
     connect(&_engine->playlist(), &PlaylistModel::countChanged, this, &PlaylistWidget::loadPlaylist);
     connect(&_engine->playlist(), &PlaylistModel::currentChanged, this, &PlaylistWidget::updateItemStates);
+
+    QTimer::singleShot(10, this, &PlaylistWidget::loadPlaylist);
 }
 
 PlaylistWidget::~PlaylistWidget()

@@ -140,7 +140,82 @@ PlaylistModel::PlaylistModel(PlayerEngine *e)
     });
 
     stop();
+    if (!Settings::get().isSet(Settings::ClearWhenQuit)) {
+        loadPlaylist();
+    }
 }
+
+PlaylistModel::~PlaylistModel()
+{
+    qDebug() << __func__;
+    if (Settings::get().isSet(Settings::ClearWhenQuit)) {
+        clearPlaylist();
+    } else {
+        //persistantly save current playlist 
+        savePlaylist();
+    }
+}
+
+void PlaylistModel::clearPlaylist()
+{
+    auto fileName = QString("%1/%2/%3/playlist")
+        .arg(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation))
+        .arg(qApp->organizationName())
+        .arg(qApp->applicationName());
+    QSettings cfg(fileName, QSettings::NativeFormat);
+    cfg.beginGroup("playlist");
+    cfg.clear();
+    cfg.endGroup();
+}
+
+void PlaylistModel::savePlaylist()
+{
+    auto fileName = QString("%1/%2/%3/playlist")
+        .arg(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation))
+        .arg(qApp->organizationName())
+        .arg(qApp->applicationName());
+    QSettings cfg(fileName, QSettings::NativeFormat);
+    cfg.beginGroup("playlist");
+    for (int i = 0; i < count(); ++i) {
+        const auto& pif = _infos[i];
+        cfg.setValue(QString::number(i), pif.url);
+    }
+    cfg.endGroup();
+}
+
+void PlaylistModel::loadPlaylist()
+{
+    auto fileName = QString("%1/%2/%3/playlist")
+        .arg(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation))
+        .arg(qApp->organizationName())
+        .arg(qApp->applicationName());
+    QSettings cfg(fileName, QSettings::NativeFormat);
+    cfg.beginGroup("playlist");
+    auto keys = cfg.childKeys();
+    qDebug() << keys;
+    for (int i = 0; i < keys.size(); ++i) {
+        auto url = cfg.value(QString::number(i)).toUrl();
+
+        if (url.isLocalFile()) {
+            QFileInfo fi(url.toLocalFile());
+            if (!fi.exists()) continue;
+            auto pif = calculatePlayInfo(url, fi);
+            if (!pif.valid) continue;
+            _infos.append(pif);
+
+        } else {
+            PlayItemInfo pif = {
+                .loaded = false,
+                .url = url,
+            };
+            _infos.append(pif);
+        }
+    }
+    cfg.endGroup();
+
+    emit countChanged();
+}
+
 
 PlaylistModel::PlayMode PlaylistModel::playMode() const
 {

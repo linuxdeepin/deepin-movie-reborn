@@ -703,6 +703,7 @@ void MainWindow::reflectActionToUI(ActionFactory::ActionKind kd)
             (*p)->setEnabled(old);
             break;
         }
+        default: break;
     }
 
 }
