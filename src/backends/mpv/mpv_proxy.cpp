@@ -559,6 +559,17 @@ void MpvProxy::seekBackward(int secs)
     _pendingSeek = true;
 }
 
+void MpvProxy::seekAbsolute(int pos)
+{
+    if (state() == PlayState::Stopped) return;
+
+    //if (_pendingSeek) return;
+    QList<QVariant> args = { "seek", QVariant(pos), "absolute" };
+    qDebug () << args;
+    command_async(_handle, args, AsyncReplyTag::SEEK);
+    _pendingSeek = true;
+}
+
 QSize MpvProxy::videoSize() const
 {
     if (state() == PlayState::Stopped) return QSize(-1, -1);

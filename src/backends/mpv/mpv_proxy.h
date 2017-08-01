@@ -58,6 +58,7 @@ public slots:
 
     void seekForward(int secs) override;
     void seekBackward(int secs) override;
+    void seekAbsolute(int pos) override;
     void volumeUp() override;
     void volumeDown() override;
     void changeVolume(int val) override;

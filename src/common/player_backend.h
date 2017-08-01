@@ -94,6 +94,7 @@ public slots:
 
     virtual void seekForward(int secs) = 0;
     virtual void seekBackward(int secs) = 0;
+    virtual void seekAbsolute(int) = 0;
     virtual void volumeUp() = 0;
     virtual void volumeDown() = 0;
     virtual void changeVolume(int val) = 0;

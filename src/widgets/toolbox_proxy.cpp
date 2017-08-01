@@ -7,6 +7,7 @@
 #include "player_engine.h"
 #include "toolbutton.h"
 #include "actions.h"
+#include "slider.h"
 
 #include <QtWidgets>
 #include <dimagebutton.h>
@@ -124,11 +125,13 @@ void ToolboxProxy::setup()
     l->setContentsMargins(0, 0, 0, 0);
     setLayout(l);
 
-    _progBar = new QProgressBar();
-    _progBar->setTextVisible(false);
-    _progBar->setFixedHeight(2);
+    _progBar = new DMRSlider();
+    _progBar->setObjectName("MovieProgress");
+    _progBar->setOrientation(Qt::Horizontal);
+    _progBar->setFixedHeight(8);
     _progBar->setRange(0, 100);
     _progBar->setValue(0);
+    connect(_progBar, &QSlider::sliderMoved, this, &ToolboxProxy::setProgress);
     l->addWidget(_progBar, 0);
 
     auto *bot = new QHBoxLayout();
@@ -188,6 +191,9 @@ void ToolboxProxy::setup()
 #endif
 
     connect(_engine, &PlayerEngine::stateChanged, this, &ToolboxProxy::updatePlayState);
+    connect(_engine, &PlayerEngine::fileLoaded, [=]() {
+        _progBar->setRange(0, _engine->duration());
+    });
     connect(_engine, &PlayerEngine::elapsedChanged, [=]() {
         updateTimeInfo(_engine->duration(), _engine->elapsed());
         updateMovieProgress();
@@ -206,13 +212,26 @@ void ToolboxProxy::setup()
     _playBtn->installEventFilter(bubbler);
 }
 
+void ToolboxProxy::setProgress()
+{
+    qDebug() << _progBar->sliderPosition() << _progBar->value() << _progBar->maximum();
+    if (_engine->state() == PlayerEngine::CoreState::Idle)
+        return;
+
+    _engine->seekAbsolute(_progBar->sliderPosition());
+    
+}
+
 void ToolboxProxy::updateMovieProgress()
 {
+    if (_progBar->signalsBlocked())
+        return;
+
     auto d = _engine->duration();
     auto e = _engine->elapsed();
     int v = 0;
     if (d != 0 && e != 0) {
-        v = 100 * ((double)e / d);
+        v = _progBar->maximum() * ((double)e / d);
     }
     _progBar->setValue(v);
 }

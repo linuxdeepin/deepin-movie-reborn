@@ -19,6 +19,7 @@ namespace dmr {
 class PlayerEngine;
 class VolumeButton;
 class MainWindow;
+class DMRSlider;
 
 class ToolboxProxy: public QFrame {
     Q_OBJECT
@@ -42,6 +43,7 @@ protected slots:
     void updateVolumeState();
     void updateMovieProgress();
     void updateButtonStates();
+    void setProgress();
 
 protected:
     void paintEvent(QPaintEvent *pe) override;
@@ -61,7 +63,7 @@ private:
     DImageButton *_listBtn {nullptr};
     DImageButton *_fsBtn {nullptr};
 
-    QProgressBar *_progBar {nullptr};
+    DMRSlider *_progBar {nullptr};
 };
 }
 

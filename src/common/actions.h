@@ -39,6 +39,7 @@ enum ActionKind {
     SeekForwardLarge,
     SeekBackward,
     SeekBackwardLarge,
+    SeekAbsolute,
     TogglePause,
     Stop,
 
