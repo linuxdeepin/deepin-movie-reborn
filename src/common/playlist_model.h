@@ -119,6 +119,7 @@ private:
     void savePlaylist();
     void loadPlaylist();
     void clearPlaylist();
+    int indexOf(const QUrl& url);
 };
 
 }
