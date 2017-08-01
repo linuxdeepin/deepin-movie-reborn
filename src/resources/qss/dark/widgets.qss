@@ -75,13 +75,32 @@ dmr--VolumeButton#VolMute {
     qproperty-pressPic: url(:/resources/icons/dark/normal/audio-volume-muted-blocked-panel-press.png);
 }
 
-QProgressBar::chunk {
-    background-color: #2EACFF;
+#MovieProgress::groove:horizontal {
+    background: transparent;
+    position: absolute;
+    left: 0px; right: 0px;
 }
-
-QProgressBar {
-    background-color: rgba(23, 23, 23, 0.92);
-    border: 0px;
+#MovieProgress::handle:horizontal {
+    background:transparent;
+    margin: 5px -5px;
+}
+#MovieProgress::add-page:horizontal {
+    background: transparent;
+    background-color: qlineargradient(x1:0 y1:0, x2:0 y2:1,
+        stop:0        transparent,                  stop:0.08333 transparent,
+        stop:0.08400  rgba(255, 255, 255, 0.08),    stop:0.16666 rgba(255, 255, 255, 0.08),
+        stop:0.17000  rgba(0, 0, 0, 0.0),           stop:0.24999 rgba(0, 0, 0, 0.0),
+        stop:0.25000  rgba(0, 0, 0, 0.0),           stop:1 rgba(0, 0, 0, 0.0)
+    );
+}
+#MovieProgress::sub-page:horizontal {
+    background: #2ca7f8;
+    background-color: qlineargradient(x1:0 y1:0, x2:0 y2:1,
+        stop:0        #2eacff,              stop:0.08333 #2eacff,
+        stop:0.08333  #2eacff,              stop:0.16666 #2eacff,
+        stop:0.17000  rgba(0, 0, 0, 0.3),   stop:0.24999 rgba(0, 0, 0, 0.3),
+        stop:0.25000  rgba(0, 0, 0, 0.0), stop:1 rgba(0, 0, 0, 0.0)
+    );
 }
 
 /* -------- Play list ----------------*/

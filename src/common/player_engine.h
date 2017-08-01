@@ -111,6 +111,8 @@ public slots:
 
     void seekForward(int secs);
     void seekBackward(int secs);
+    void seekAbsolute(int pos);
+
     void volumeUp();
     void volumeDown();
     void changeVolume(int val);

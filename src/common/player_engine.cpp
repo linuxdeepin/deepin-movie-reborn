@@ -267,6 +267,13 @@ void PlayerEngine::seekBackward(int secs)
     _current->seekBackward(secs);
 }
 
+void PlayerEngine::seekAbsolute(int pos)
+{
+    if (state() == CoreState::Idle) return;
+
+    _current->seekAbsolute(pos);
+}
+
 void PlayerEngine::addPlayFile(const QUrl& url)
 {
     _playlist->append(url);

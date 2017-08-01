@@ -966,6 +966,12 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI, QList<
             break;
         }
 
+        case ActionFactory::ActionKind::SeekAbsolute: {
+            Q_ASSERT(args.size() == 1);
+            _engine->seekAbsolute(args[0].toInt());
+            break;
+        }
+
         case ActionFactory::ActionKind::Settings: {
             handleSettings();
             break;
