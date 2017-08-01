@@ -164,7 +164,7 @@ void PlaylistModel::clearPlaylist()
         .arg(qApp->applicationName());
     QSettings cfg(fileName, QSettings::NativeFormat);
     cfg.beginGroup("playlist");
-    cfg.clear();
+    cfg.remove("");
     cfg.endGroup();
 }
 
@@ -176,6 +176,8 @@ void PlaylistModel::savePlaylist()
         .arg(qApp->applicationName());
     QSettings cfg(fileName, QSettings::NativeFormat);
     cfg.beginGroup("playlist");
+    cfg.remove("");
+
     for (int i = 0; i < count(); ++i) {
         const auto& pif = _infos[i];
         cfg.setValue(QString::number(i), pif.url);
@@ -195,6 +197,7 @@ void PlaylistModel::loadPlaylist()
     qDebug() << keys;
     for (int i = 0; i < keys.size(); ++i) {
         auto url = cfg.value(QString::number(i)).toUrl();
+        if (indexOf(url) >= 0) continue;
 
         if (url.isLocalFile()) {
             QFileInfo fi(url.toLocalFile());
@@ -213,6 +216,7 @@ void PlaylistModel::loadPlaylist()
     }
     cfg.endGroup();
 
+    reshuffle();
     emit countChanged();
 }
 
@@ -512,6 +516,8 @@ void PlaylistModel::append(const QUrl& url)
 {
     if (!url.isValid()) return;
 
+    if (indexOf(url) >= 0) return;
+
     if (url.isLocalFile()) {
         QFileInfo fi(url.toLocalFile());
         if (!fi.exists()) return;
@@ -523,19 +529,23 @@ void PlaylistModel::append(const QUrl& url)
             auto fil = utils::FindSimilarFiles(fi);
             qDebug() << "auto search similar files" << fil;
             std::for_each(fil.begin(), fil.end(), [=](const QFileInfo& fi) {
-                auto pif = calculatePlayInfo(QUrl::fromLocalFile(fi.absoluteFilePath()), fi);
-                if (pif.valid) _infos.append(pif);
+                auto url = QUrl::fromLocalFile(fi.absoluteFilePath());
+                if (indexOf(url) < 0) {
+                    auto pif = calculatePlayInfo(url, fi);
+                    if (pif.valid) _infos.append(pif);
+                }
             });
         }
-        emit countChanged();
     } else {
         PlayItemInfo pif = {
             .loaded = false,
             .url = url,
         };
         _infos.append(pif);
-        emit countChanged();
     }
+
+    reshuffle();
+    emit countChanged();
 }
 
 void PlaylistModel::changeCurrent(int pos)
@@ -609,6 +619,16 @@ struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl& url, const QFil
     //Q_ASSERT(!pif.thumbnail.isNull());
 
     return pif;
+}
+
+int PlaylistModel::indexOf(const QUrl& url)
+{
+    auto p = std::find_if(_infos.begin(), _infos.end(), [&](const PlayItemInfo& pif) {
+        return pif.url == url;
+    });
+
+    if (p == _infos.end()) return -1;
+    return std::distance(_infos.begin(), p);
 }
 
 }
