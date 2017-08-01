@@ -53,7 +53,7 @@ static int min(int v1, int v2, int v3)
     return std::min(v1, std::min(v2, v3));
 }
 
-static int minDistance(QString s1, QString s2) 
+static int stringDistance(QString s1, QString s2) 
 {
     int n = s1.size(), m = s2.size();
     if (!n || !m) return std::max(n, m);
@@ -84,10 +84,10 @@ QFileInfoList FindSimilarFiles(const QFileInfo& fi)
             continue;
         }
 
-        auto dist = minDistance(fi.fileName(), it.fileInfo().fileName());
-        qDebug() << it.fileInfo().fileName() << "=" << dist;
+        auto dist = stringDistance(fi.fileName(), it.fileInfo().fileName());
         if (dist > 0 && dist <= 4) { //TODO: check ext.
             fil.append(it.fileInfo());
+            qDebug() << it.fileInfo().fileName() << "=" << dist;
         }
         
     }
@@ -96,22 +96,29 @@ QFileInfoList FindSimilarFiles(const QFileInfo& fi)
     //S01N04, S02N05, S01N12, S02N04, etc...
     struct {
         bool operator()(const QFileInfo& fi1, const QFileInfo& fi2) const {
+            auto fileName1 = fi1.fileName();
+            auto fileName2 = fi2.fileName();
+
             QRegExp rd("\\d+");
             int pos = 0;
-            while ((pos = rd.indexIn(fi1.fileName(), pos)) != -1) {
-                auto id1 = fi1.fileName().mid(pos, rd.matchedLength());
+            while ((pos = rd.indexIn(fileName1, pos)) != -1) {
+                auto id1 = fileName1.midRef(pos, rd.matchedLength());
 
-                auto pos2 = rd.indexIn(fi2.fileName(), pos);
+                auto pos2 = rd.indexIn(fileName2, pos);
                 if (pos == pos2) {
-                    auto id2 = fi2.fileName().mid(pos, rd.matchedLength());
-                    qDebug() << "id compare " << id1 << id2;
-                    if (id1 != id2) 
-                        return id1.compare(id2) < 0;
+                    auto id2 = fileName2.midRef(pos, rd.matchedLength());
+                    //qDebug() << "id compare " << id1 << id2;
+                    if (id1 != id2) {
+                        bool ok1, ok2;
+                        bool v = id1.toInt(&ok1) < id2.toInt(&ok2);
+                        if (ok1 && ok2) return v;
+                        return id1.localeAwareCompare(id2) < 0;
+                    }
                 }
 
                 pos += rd.matchedLength();
             }
-            return fi1.fileName().compare(fi2.fileName()) < 0;
+            return fileName1.localeAwareCompare(fileName2) < 0;
         }
     } SortByDigits;
     std::sort(fil.begin(), fil.end(), SortByDigits);
