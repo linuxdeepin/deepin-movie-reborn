@@ -507,18 +507,27 @@ struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl& url, const QFil
                     ThumbnailerImageType::Png, buf);
 
             auto img = QImage::fromData(buf.data(), buf.size(), "png");
+            img = img.scaled(24, 44, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
 
             pm = QPixmap::fromImage(img);
         } catch (const std::logic_error&) {
         }
     }
 
+    QPixmap thumb(24, 44);
+    QPainter p(&thumb);
+    if (!pm.isNull())
+        p.drawPixmap(0, 0, pm, (pm.width()-24)/2, (pm.height()-44)/2, 24, 44);
+    else 
+        p.drawRect(0, 0, 24, 44);
+    p.end();
+
     PlayItemInfo pif = {
         .valid = ok,
         .loaded = ok,
         .url = url,
         .info = fi,
-        .thumbnail = pm.scaled(24, 44),
+        .thumbnail = thumb,
         .mi = mi
     };
 
