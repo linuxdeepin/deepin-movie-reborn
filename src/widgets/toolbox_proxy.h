@@ -3,6 +3,8 @@
 
 #include <DPlatformWindowHandle>
 #include <QtWidgets>
+#include <libffmpegthumbnailer/videothumbnailer.h>
+
 
 namespace Dtk
 {
@@ -15,11 +17,13 @@ namespace Widget
 DWIDGET_USE_NAMESPACE
 
 namespace dmr {
+using namespace ffmpegthumbnailer;
 
 class PlayerEngine;
 class VolumeButton;
 class MainWindow;
 class DMRSlider;
+class ThumbnailPreview;
 
 class ToolboxProxy: public QFrame {
     Q_OBJECT
@@ -44,6 +48,7 @@ protected slots:
     void updateMovieProgress();
     void updateButtonStates();
     void setProgress();
+    void progressHoverChanged(int v);
 
 protected:
     void paintEvent(QPaintEvent *pe) override;
@@ -64,6 +69,8 @@ private:
     DImageButton *_fsBtn {nullptr};
 
     DMRSlider *_progBar {nullptr};
+    VideoThumbnailer thumber;
+    ThumbnailPreview *_previewer {nullptr};
 };
 }
 

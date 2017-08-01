@@ -6,6 +6,7 @@
 #include "compositing_manager.h"
 #include "player_engine.h"
 #include "toolbutton.h"
+#include "dmr_settings.h"
 #include "actions.h"
 #include "slider.h"
 
@@ -32,6 +33,36 @@ protected:
             return QObject::eventFilter(obj, event);
         }
     }
+};
+
+class ThumbnailPreview: public QWidget {
+    Q_OBJECT
+public:
+    ThumbnailPreview(): QWidget(nullptr, Qt::ToolTip) {
+        setAttribute(Qt::WA_DeleteOnClose);
+        setWindowOpacity(0.92);
+        
+        auto *l = new QVBoxLayout;
+        l->setContentsMargins(2, 2, 2, 2);
+        setLayout(l);
+
+        _thumb = new QLabel(this);
+        l->addWidget(_thumb);
+    }
+
+    void updateWithPreview(const QPoint& pos, const QPixmap& pm)
+    {
+        if (!isVisible()) show();
+
+        _thumb->setPixmap(pm);
+        auto geom = this->geometry();
+        auto c = pos - QPoint(0, 20+geom.height()/2);
+        geom.moveCenter(c);
+        this->setGeometry(geom);
+    }
+
+private:
+    QLabel *_thumb;
 };
 
 class VolumeSlider: public QWidget {
@@ -112,11 +143,14 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
         setAttribute(Qt::WA_NativeWindow);
     }
 
+    _previewer = new ThumbnailPreview;
+    _previewer->hide();
     setup();
 }
 
 ToolboxProxy::~ToolboxProxy()
 {
+    delete _previewer;
 }
 
 void ToolboxProxy::setup()
@@ -132,6 +166,10 @@ void ToolboxProxy::setup()
     _progBar->setRange(0, 100);
     _progBar->setValue(0);
     connect(_progBar, &QSlider::sliderMoved, this, &ToolboxProxy::setProgress);
+    connect(_progBar, &DMRSlider::hoverChanged, this, &ToolboxProxy::progressHoverChanged);
+    connect(_progBar, &DMRSlider::leave, [=]() {
+        _previewer->hide();
+    });
     l->addWidget(_progBar, 0);
 
     auto *bot = new QHBoxLayout();
@@ -210,6 +248,37 @@ void ToolboxProxy::setup()
     auto bubbler = new KeyPressBubbler(this);
     this->installEventFilter(bubbler);
     _playBtn->installEventFilter(bubbler);
+}
+
+void ToolboxProxy::progressHoverChanged(int v)
+{
+    if (_engine->state() == PlayerEngine::CoreState::Idle)
+        return;
+
+    if (!Settings::get().isSet(Settings::PreviewOnMouseover))
+        return;
+
+    qDebug() << v;
+    QPixmap pm;
+
+    thumber.setThumbnailSize(128);
+    QTime d(0, 0, 0);
+    d = d.addSecs(v);
+    thumber.setSeekTime(d.toString("hh:mm:ss").toStdString());
+    auto file = _engine->playlist().currentInfo().info.absoluteFilePath();
+    try {
+        std::vector<uint8_t> buf;
+        thumber.generateThumbnail(file.toUtf8().toStdString(),
+                ThumbnailerImageType::Png, buf);
+
+        auto img = QImage::fromData(buf.data(), buf.size(), "png");
+        pm = QPixmap::fromImage(img);
+    } catch (const std::logic_error&) {
+    }
+
+
+    QPoint p = {QCursor::pos().x(), _progBar->parentWidget()->mapToGlobal(_progBar->pos()).y()};
+    _previewer->updateWithPreview(p, pm);
 }
 
 void ToolboxProxy::setProgress()
