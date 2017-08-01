@@ -120,7 +120,7 @@ struct MovieInfo MovieInfo::parseFromFile(const QFileInfo& fi, bool *ok)
 PlaylistModel::PlaylistModel(PlayerEngine *e)
     :_engine(e)
 {
-    _thumbnailer.setThumbnailSize(44);
+    _thumbnailer.setThumbnailSize(100);
     av_register_all();
 
     connect(e, &PlayerEngine::stateChanged, [=]() {

@@ -5,6 +5,7 @@ namespace dmr
 DMRSlider::DMRSlider(QWidget *parent): QSlider(parent) 
 {
     setTracking(false);
+    setMouseTracking(true);
 }
 
 void DMRSlider::mouseReleaseEvent(QMouseEvent *e)
@@ -12,6 +13,7 @@ void DMRSlider::mouseReleaseEvent(QMouseEvent *e)
     blockSignals(false);
     QSlider::mouseReleaseEvent(e);
     emit sliderMoved(sliderPosition());
+    _down = false;
 }
 
 void DMRSlider::mousePressEvent(QMouseEvent *e)
@@ -26,6 +28,7 @@ void DMRSlider::mousePressEvent(QMouseEvent *e)
         v = (maximum() - minimum()) * (height() - e->y()) / height() + minimum();
     }
     setSliderPosition(v);
+    _down = true;
 }
 
 void DMRSlider::mouseMoveEvent(QMouseEvent *e)
@@ -36,7 +39,19 @@ void DMRSlider::mouseMoveEvent(QMouseEvent *e)
     } else {
         v = (maximum() - minimum()) * (height() - e->y()) / height() + minimum();
     }
-    setSliderPosition(v);
+
+    if (_down) {
+        setSliderPosition(v);
+    }
+
+    if (_lastHoverValue != v)
+        emit hoverChanged(v);
+    _lastHoverValue = v;
+}
+
+void DMRSlider::leaveEvent(QEvent *e)
+{
+    emit leave();
 }
 
 void DMRSlider::wheelEvent(QWheelEvent *e)
