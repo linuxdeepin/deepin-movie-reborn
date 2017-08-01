@@ -74,6 +74,8 @@ public:
     void setPlayMode(PlayMode pm);
 
     PlaylistModel(PlayerEngine* engine);
+    ~PlaylistModel();
+
     void clear();
     void remove(int pos);
     void append(const QUrl&);
@@ -114,6 +116,9 @@ private:
 
     struct PlayItemInfo calculatePlayInfo(const QUrl&, const QFileInfo& fi);
     void reshuffle();
+    void savePlaylist();
+    void loadPlaylist();
+    void clearPlaylist();
 };
 
 }
