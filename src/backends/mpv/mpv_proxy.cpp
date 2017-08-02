@@ -4,6 +4,7 @@
 #include "options.h"
 #include "utility.h"
 #include "player_engine.h"
+#include "dmr_settings.h"
 #include <mpv/client.h>
 
 #include <QtWidgets>
@@ -95,6 +96,15 @@ mpv_handle* MpvProxy::mpv_init()
     } else {
         set_property(h, "vo", "opengl,xv,x11");
         set_property(h, "wid", this->winId());
+    }
+
+    if (Settings::get().isSet(Settings::HWAccel)) {
+        if (composited) {
+            set_property(h, "hwdec-preload", "auto");
+        }
+        set_property(h, "hwdec", "auto");
+    } else {
+        set_property(h, "hwdec", "off");
     }
 
     set_property(h, "input-cursor", "no");
