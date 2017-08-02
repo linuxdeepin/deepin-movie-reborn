@@ -64,6 +64,7 @@ private:
     DImageButton *_prevBtn {nullptr};
     DImageButton *_nextBtn {nullptr};
 
+    DImageButton *_subBtn {nullptr};
     VolumeButton *_volBtn {nullptr};
     DImageButton *_listBtn {nullptr};
     DImageButton *_fsBtn {nullptr};

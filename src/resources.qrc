@@ -9,10 +9,14 @@
     </qresource>
     <qresource>
         <file>resources/qss/dark/widgets.qss</file>
+        <file>resources/qss/dark/subtitlesview.qss</file>
         <file>resources/qss/light/widgets.qss</file>
+        <file>resources/qss/light/subtitlesview.qss</file>
     </qresource>
     <qresource>
         <file>resources/icons/volume-slider-shape.png</file>
+        <file>resources/icons/dark/subtitle-selected.png</file>
+        <file>resources/icons/light/subtitle-selected.png</file>
         <file>resources/icons/logo.svg</file>
         <file>resources/icons/logo-big.svg</file>
         <file>resources/icons/light/init-splash.png</file>

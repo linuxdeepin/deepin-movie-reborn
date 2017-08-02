@@ -35,6 +35,135 @@ protected:
     }
 };
 
+class SubtitlesView;
+class SubtitleItemWidget: public QWidget {
+public:
+    friend class SubtitlesView;
+    SubtitleItemWidget(QWidget *parent, SubtitleInfo si): QWidget(parent) {
+        _sid = si["id"].toInt();
+
+        auto *l = new QHBoxLayout(this);
+        setLayout(l);
+        l->setContentsMargins(0, 0, 0, 0);
+
+        l->addWidget(new QLabel(si["title"].toString()), 1);
+
+        _selectedLabel = new QLabel(this);
+        l->addWidget(_selectedLabel);
+    }
+
+    int sid() const { return _sid; }
+
+    void setCurrent(bool v)
+    {
+        if (v) {
+            auto name = QString(":/resources/icons/%1/subtitle-selected.png").arg(qApp->theme());
+            _selectedLabel->setPixmap(QPixmap(name));
+        } else 
+            _selectedLabel->clear();
+
+        setProperty("current", v?"true":"false");
+        setStyleSheet(this->styleSheet());
+    }
+
+private:
+    QLabel *_selectedLabel {nullptr};
+    int _sid {-1};
+};
+
+class SubtitlesView: public QFrame {
+    Q_OBJECT
+public:
+    SubtitlesView(QWidget *p, PlayerEngine* e): QFrame{p, Qt::Popup}, _engine{e} {
+        setAttribute(Qt::WA_DeleteOnClose);
+        setWindowOpacity(0.92);
+
+        setFrameShape(QFrame::NoFrame);
+        QSizePolicy sz_policy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+        //sz_policy.setHeightForWidth(true);
+        setSizePolicy(sz_policy);
+
+        setFixedWidth(222);
+
+        auto *l = new QVBoxLayout(this);
+        l->setContentsMargins(0, 0, 0, 0);
+        setLayout(l);
+
+        _subsView = new QListWidget(this);
+        _subsView->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
+        _subsView->setSelectionMode(QListWidget::SingleSelection);
+        _subsView->setSelectionBehavior(QListWidget::SelectRows);
+        l->addWidget(_subsView);
+
+        connect(_subsView, &QListWidget::itemClicked, this, &SubtitlesView::onItemClicked);
+        connect(_engine, &PlayerEngine::tracksChanged, this, &SubtitlesView::populateSubtitles);
+        connect(_engine, &PlayerEngine::sidChanged, this, &SubtitlesView::onSidChanged);
+        populateSubtitles();
+
+        connect(DThemeManager::instance(), &DThemeManager::themeChanged, 
+                this, &SubtitlesView::onThemeChanged);
+        onThemeChanged();
+    }
+
+protected slots:
+    void onThemeChanged() 
+    {
+        QFile darkF(":/resources/qss/dark/subtitlesview.qss"),
+              lightF(":/resources/qss/light/subtitlesview.qss");
+
+        if ("dark" == qApp->theme()) {
+            if (darkF.open(QIODevice::ReadOnly)) {
+                setStyleSheet(darkF.readAll());
+                darkF.close();
+            }
+        } else {
+            if (lightF.open(QIODevice::ReadOnly)) {
+                setStyleSheet(lightF.readAll());
+                lightF.close();
+            }
+        }
+    }
+
+    void populateSubtitles()
+    {
+        _subsView->clear();
+        auto pmf = _engine->playingMovieInfo();
+        auto sid = _engine->sid();
+        qDebug() << "sid" << sid;
+
+        for (const auto& sub: pmf.subs) {
+            auto item = new QListWidgetItem();
+            auto siw = new SubtitleItemWidget(this, sub);
+            _subsView->addItem(item);
+            _subsView->setItemWidget(item, siw);
+            auto v = (sid == sub["id"].toInt());
+            siw->setCurrent(v);
+            if (v) {
+                _subsView->setCurrentItem(item);
+            }
+        }
+    }
+
+    void onSidChanged()
+    {
+        auto sid = _engine->sid();
+        for (int i = 0; i < _subsView->count(); ++i) {
+            auto siw = static_cast<SubtitleItemWidget*>(_subsView->itemWidget(_subsView->item(i)));
+            siw->setCurrent(siw->sid() == sid);
+        }
+    }
+
+    void onItemClicked(QListWidgetItem* item)
+    {
+        auto id = _subsView->row(item);
+        _engine->selectSubtitle(id);
+    }
+
+private:
+    PlayerEngine *_engine {nullptr};
+    QListWidget *_subsView {nullptr};
+};
+
 class ThumbnailPreview: public QWidget {
     Q_OBJECT
 public:
@@ -50,8 +179,7 @@ public:
         l->addWidget(_thumb);
     }
 
-    void updateWithPreview(const QPoint& pos, const QPixmap& pm)
-    {
+    void updateWithPreview(const QPoint& pos, const QPixmap& pm) {
         if (!isVisible()) show();
 
         _thumb->setPixmap(pm);
@@ -167,13 +295,11 @@ void ToolboxProxy::setup()
     _progBar->setValue(0);
     connect(_progBar, &QSlider::sliderMoved, this, &ToolboxProxy::setProgress);
     connect(_progBar, &DMRSlider::hoverChanged, this, &ToolboxProxy::progressHoverChanged);
-    connect(_progBar, &DMRSlider::leave, [=]() {
-        _previewer->hide();
-    });
+    connect(_progBar, &DMRSlider::leave, [=]() { _previewer->hide(); });
     l->addWidget(_progBar, 0);
 
     auto *bot = new QHBoxLayout();
-    bot->setContentsMargins(10, 0, 10, 0);
+    bot->setContentsMargins(10, 0, 10, 8);
     l->addLayout(bot, 1);
 
     _timeLabel = new QLabel("");
@@ -210,6 +336,12 @@ void ToolboxProxy::setup()
     auto *right = new QHBoxLayout();
     bot->addLayout(right);
 
+    _subBtn = new DImageButton();
+    _subBtn->setObjectName("SubtitleBtn");
+    connect(_subBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
+    signalMapper->setMapping(_subBtn, "sub");
+    right->addWidget(_subBtn);
+
     _volBtn = new VolumeButton();
     connect(_volBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_volBtn, "vol");
@@ -239,6 +371,9 @@ void ToolboxProxy::setup()
     connect(window()->windowHandle(), &QWindow::windowStateChanged, this, &ToolboxProxy::updateFullState);
     connect(_engine, &PlayerEngine::muteChanged, this, &ToolboxProxy::updateVolumeState);
     connect(_engine, &PlayerEngine::volumeChanged, this, &ToolboxProxy::updateVolumeState);
+
+    connect(_engine, &PlayerEngine::tracksChanged, this, &ToolboxProxy::updateButtonStates);
+    connect(_engine, &PlayerEngine::fileLoaded, this, &ToolboxProxy::updateButtonStates);
     connect(&_engine->playlist(), &PlaylistModel::countChanged, this, &ToolboxProxy::updateButtonStates);
 
     updatePlayState();
@@ -307,9 +442,16 @@ void ToolboxProxy::updateMovieProgress()
 
 void ToolboxProxy::updateButtonStates()
 {
+    qDebug() << _engine->playingMovieInfo().subs.size();
     bool vis = _engine->playlist().count() > 1;
     _prevBtn->setVisible(vis);
     _nextBtn->setVisible(vis);
+
+    vis = _engine->state() != PlayerEngine::CoreState::Idle;
+    if (vis) {
+        vis = _engine->playingMovieInfo().subs.size() > 0;
+    }
+    _subBtn->setVisible(vis);
 }
 
 void ToolboxProxy::updateVolumeState()
@@ -378,9 +520,6 @@ void ToolboxProxy::buttonClicked(QString id)
         _mainWindow->requestAction(ActionFactory::ActionKind::Fullscreen);
     } else if (id == "vol") {
         auto *w = new VolumeSlider(_engine);
-        connect(w, &QObject::destroyed, [=]() {
-                qDebug() << "slider destroyed";
-        });
         QPoint pos = _volBtn->parentWidget()->mapToGlobal(_volBtn->pos());
 
         pos.ry() = parentWidget()->mapToGlobal(this->pos()).y() - w->height();
@@ -393,6 +532,15 @@ void ToolboxProxy::buttonClicked(QString id)
         _mainWindow->requestAction(ActionFactory::ActionKind::GotoPlaylistNext);
     } else if (id == "list") {
         _mainWindow->requestAction(ActionFactory::ActionKind::TogglePlaylist);
+    } else if (id == "sub") {
+        auto *w = new SubtitlesView(0, _engine);
+        w->show();
+        w->setFixedHeight(w->minimumSize().height());
+        qDebug() << w->minimumSize() << w->sizeHint() << w->size();
+        
+        QPoint pos = _subBtn->parentWidget()->mapToGlobal(_subBtn->pos());
+        pos.ry() = parentWidget()->mapToGlobal(this->pos()).y() - w->height();
+        w->move(pos);
     }
 }
 
