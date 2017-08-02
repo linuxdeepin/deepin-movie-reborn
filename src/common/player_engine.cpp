@@ -116,6 +116,18 @@ void PlayerEngine::loadSubtitle(const QFileInfo& fi)
     _current->loadSubtitle(fi);
 }
 
+void PlayerEngine::setPlaySpeed(double times)
+{
+    if (!_current) return;
+    _current->setPlaySpeed(times);
+}
+
+void PlayerEngine::setSubDelay(double secs)
+{
+    if (!_current) return;
+    _current->setSubDelay(secs);
+}
+
 void PlayerEngine::selectSubtitle(int id)
 {
     if (!_current) return;

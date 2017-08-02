@@ -554,7 +554,7 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="749"/>
         <location filename="../common/mainwindow.cpp" line="760"/>
-        <location filename="../common/mainwindow.cpp" line="944"/>
+        <location filename="../common/mainwindow.cpp" line="969"/>
         <source>Open File</source>
         <translation>打开文件</translation>
     </message>
@@ -565,27 +565,27 @@
         <translation>视频文件(*.mkv *.mov *.mp4 *.rmvb)</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="946"/>
+        <location filename="../common/mainwindow.cpp" line="971"/>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</source>
         <translation>字幕文件 (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1003"/>
+        <location filename="../common/mainwindow.cpp" line="1028"/>
         <source>View</source>
         <translation>查看</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1014"/>
+        <location filename="../common/mainwindow.cpp" line="1039"/>
         <source>Movie Screenshot</source>
         <translation>视频截图</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1015"/>
+        <location filename="../common/mainwindow.cpp" line="1040"/>
         <source>Saved to</source>
         <translation>保存到</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1026"/>
+        <location filename="../common/mainwindow.cpp" line="1051"/>
         <source>The screenshot is saved in %1</source>
         <translation>您的截图已保存到%1</translation>
     </message>

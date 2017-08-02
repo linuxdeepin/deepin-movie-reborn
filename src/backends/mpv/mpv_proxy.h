@@ -28,12 +28,14 @@ public:
     qint64 duration() const override;
     qint64 elapsed() const override;
     QSize videoSize() const override;
+    void setPlaySpeed(double times) override;
 
     void loadSubtitle(const QFileInfo& fi) override;
     void toggleSubtitle() override;
     bool isSubVisible() override;
     void selectSubtitle(int id) override;
     int sid() const override;
+    void setSubDelay(double secs) override;
 
     void selectTrack(int id) override;
     int aid() const override;
