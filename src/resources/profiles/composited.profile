@@ -1,5 +1,3 @@
-hwdec-preload=auto
-hwdec=auto
 scale=spline36
 cscale=spline36
 dscale=mitchell

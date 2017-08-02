@@ -51,6 +51,7 @@ void DMRSlider::mouseMoveEvent(QMouseEvent *e)
 
 void DMRSlider::leaveEvent(QEvent *e)
 {
+    _lastHoverValue = 0;
     emit leave();
 }
 
