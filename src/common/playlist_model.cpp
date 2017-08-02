@@ -207,9 +207,10 @@ void PlaylistModel::loadPlaylist()
             _infos.append(pif);
 
         } else {
-            PlayItemInfo pif = {
-                .loaded = false,
-                .url = url,
+            PlayItemInfo pif {
+                true,
+                false,
+                url,
             };
             _infos.append(pif);
         }
@@ -537,9 +538,10 @@ void PlaylistModel::append(const QUrl& url)
             });
         }
     } else {
-        PlayItemInfo pif = {
-            .loaded = false,
-            .url = url,
+        PlayItemInfo pif {
+            true,
+            false,
+            url,
         };
         _infos.append(pif);
     }
@@ -607,14 +609,7 @@ struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl& url, const QFil
         p.drawRect(0, 0, 24, 44);
     p.end();
 
-    PlayItemInfo pif = {
-        .valid = ok,
-        .loaded = ok,
-        .url = url,
-        .info = fi,
-        .thumbnail = thumb,
-        .mi = mi
-    };
+    PlayItemInfo pif { ok, ok, url, fi, thumb, mi };
 
     //Q_ASSERT(!pif.thumbnail.isNull());
 
