@@ -6,6 +6,10 @@
 #include <QtCore>
 #include "actions.h"
 
+#include <DSettingsOption>
+#include <DSettingsGroup>
+#include <DSettings>
+
 namespace dmr {
 
 using namespace std;
@@ -35,6 +39,8 @@ class ShortcutManager: public QObject {
 
         BindingMap _map;
         ActionMap _keyToAction;
+
+        void toggleGroupShortcuts(Dtk::Core::GroupPtr grp, bool on);
 };
 
 }

@@ -75,10 +75,16 @@
                     "name": "Playback",
                     "options": [
                         {
-                            "key": "seek_backward",
-                            "name": "Backward",
+                            "key": "enable",
+                            "name": "Enable",
+                            "type": "checkbox",
+                            "default": "true"
+                        },
+                        {
+                            "key": "pause_play",
+                            "name": "Pause/Play",
                             "type": "shortcut",
-                            "default":  ["0", "16777234"]
+                            "default":  ["0", "32"]
                         },
                         {
                             "key": "seek_forward",
@@ -87,10 +93,10 @@
                             "default":  ["0", "16777236"]
                         },
                         {
-                            "key": "pause_play",
-                            "name": "Pause/Play",
+                            "key": "seek_backward",
+                            "name": "Backward",
                             "type": "shortcut",
-                            "default":  ["0", "32"]
+                            "default":  ["0", "16777234"]
                         },
                         {
                             "key": "fullscreen",
@@ -103,6 +109,24 @@
                             "name": "Playlist",
                             "type": "shortcut",
                             "default":  ["0", "16777266"]
+                        },
+                        {
+                            "key": "accel",
+                            "name": "Accelerate playback",
+                            "type": "shortcut",
+                            "default":  ["67108864", "16777236"]
+                        },
+                        {
+                            "key": "decel",
+                            "name": "Decelerate playback",
+                            "type": "shortcut",
+                            "default":  ["67108864", "16777234"]
+                        },
+                        {
+                            "key": "reset",
+                            "name": "Reset play speed",
+                            "type": "shortcut",
+                            "default":  ["0", "82"]
                         }
                     ]
                 },
@@ -110,6 +134,12 @@
                     "key": "frame_sound",
                     "name": "Frame/Sound",
                     "options": [
+                        {
+                            "key": "enable",
+                            "name": "Enable",
+                            "type": "checkbox",
+                            "default": "true"
+                        },
                         {
                             "key": "mini",
                             "name": "Mini mode",
@@ -138,25 +168,67 @@
                 },
                 {
                     "key": "file",
-                    "name": "Files",
+                    "name": "File",
                     "options": [
                         {
-                            "key": "open_file",
-                            "name": "Open a file",
-                            "type": "shortcut",
-                            "default": ["67108864", "79"]
+                            "key": "enable",
+                            "name": "Enable",
+                            "type": "checkbox",
+                            "default": "true"
                         },
                         {
-                            "key": "playlist_next",
-                            "name": "Open next",
+                            "key": "open_file",
+                            "name": "Open file",
                             "type": "shortcut",
-                            "default": ["0", "16777239"]
+                            "default": ["67108864", "79"]
                         },
                         {
                             "key": "playlist_prev",
                             "name": "Open previous",
                             "type": "shortcut",
                             "default": ["0", "16777238"]
+                        },
+                        {
+                            "key": "playlist_next",
+                            "name": "Open next",
+                            "type": "shortcut",
+                            "default": ["0", "16777239"]
+                        }
+                    ]
+                },
+                {
+                    "key": "sub",
+                    "name": "Subtitle",
+                    "options": [
+                        {
+                            "key": "enable",
+                            "name": "Enable",
+                            "type": "checkbox",
+                            "default": "true"
+                        },
+                        {
+                            "key": "sub_forward",
+                            "name": "0.5s forward",
+                            "type": "shortcut",
+                            "default": ["33554432", "16777236"]
+                        },
+                        {
+                            "key": "sub_backward",
+                            "name": "0.5s backward",
+                            "type": "shortcut",
+                            "default": ["33554432", "16777234"]
+                        }
+                    ]
+                },
+                {
+                    "key": "screenshot",
+                    "name": "Screenshot",
+                    "options": [
+                        {
+                            "key": "enable",
+                            "name": "Enable",
+                            "type": "checkbox",
+                            "default": "true"
                         },
                         {
                             "key": "screenshot",

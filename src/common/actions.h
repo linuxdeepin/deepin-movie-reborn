@@ -42,6 +42,11 @@ enum ActionKind {
     SeekAbsolute,
     TogglePause,
     Stop,
+    AccelPlayback,
+    DecelPlayback,
+    ResetPlayback,
+    SubDelay, //backward
+    SubForward,
 
     //play mode
     OrderPlay,
