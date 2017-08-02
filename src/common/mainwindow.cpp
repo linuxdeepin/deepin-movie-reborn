@@ -940,6 +940,31 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI, QList<
             break;
         }
 
+        case ActionFactory::ActionKind::SubDelay: {
+            _engine->setSubDelay(0.5);
+            break;
+        }
+
+        case ActionFactory::ActionKind::SubForward: {
+            _engine->setSubDelay(-0.5);
+            break;
+        }
+
+        case ActionFactory::ActionKind::AccelPlayback: {
+            _engine->setPlaySpeed(2.0);
+            break;
+        }
+
+        case ActionFactory::ActionKind::DecelPlayback: {
+            _engine->setPlaySpeed(0.5);
+            break;
+        }
+
+        case ActionFactory::ActionKind::ResetPlayback: {
+            _engine->setPlaySpeed(1.0);
+            break;
+        }
+
         case ActionFactory::ActionKind::LoadSubtitle: {
             QString filename = QFileDialog::getOpenFileName(this, tr("Open File"),
                     QDir::currentPath(),

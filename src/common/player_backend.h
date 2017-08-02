@@ -49,12 +49,14 @@ public:
     virtual bool paused() { return _state == PlayState::Paused; }
     virtual PlayState state() const { return _state; }
     virtual const PlayingMovieInfo& playingMovieInfo() = 0;
+    virtual void setPlaySpeed(double times) = 0;
 
     virtual void loadSubtitle(const QFileInfo& fi) = 0;
     virtual void toggleSubtitle() = 0;
     virtual bool isSubVisible() = 0;
     virtual void selectSubtitle(int id) = 0;
     virtual void selectTrack(int id) = 0;
+    virtual void setSubDelay(double secs) = 0;
 
     virtual int aid() const = 0;
     virtual int sid() const = 0;

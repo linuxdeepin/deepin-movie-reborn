@@ -315,6 +315,16 @@ bool MpvProxy::isSubVisible()
     return get_property(_handle, "sub-visibility").toBool();
 }
 
+void MpvProxy::setSubDelay(double secs)
+{
+    set_property(_handle, "sub-delay", secs);
+}
+
+void MpvProxy::setPlaySpeed(double times)
+{
+    set_property(_handle, "speed", times);
+}
+
 void MpvProxy::selectSubtitle(int id)
 {
     if (id >= _pmf.subs.size()) return;

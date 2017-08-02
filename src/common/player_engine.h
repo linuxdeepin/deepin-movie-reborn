@@ -64,12 +64,14 @@ public:
     bool paused();
     CoreState state() const { return _state; }
     const PlayingMovieInfo& playingMovieInfo();
+    void setPlaySpeed(double times);
 
     void loadSubtitle(const QFileInfo& fi);
     void toggleSubtitle();
     bool isSubVisible();
     void selectSubtitle(int id); // id into PlayingMovieInfo.subs
     int sid() const;
+    void setSubDelay(double secs);
 
     void selectTrack(int id); // id into PlayingMovieInfo.audios
     int aid() const;
