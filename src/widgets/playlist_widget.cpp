@@ -159,14 +159,16 @@ protected:
 };
 
 PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
-    :QFrame(mw), _engine(mpv), _mw(static_cast<MainWindow*>(mw))
+    :QScrollArea(mw), _engine(mpv), _mw(static_cast<MainWindow*>(mw))
 {
     bool composited = CompositingManager::get().composited();
     setFrameShape(QFrame::NoFrame);
-    setAutoFillBackground(false);
+    //setAutoFillBackground(false);
     setAttribute(Qt::WA_TranslucentBackground, false);
     setFixedWidth(220);
     setAcceptDrops(true);
+    setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
+    this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     if (!composited) {
         setWindowFlags(Qt::FramelessWindowHint|Qt::BypassWindowManagerHint);
@@ -174,8 +176,13 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
         setAttribute(Qt::WA_NativeWindow);
     }
 
-    auto *l = new QVBoxLayout(this);
-    setLayout(l);
+    auto w = new QWidget;
+    w->setFixedWidth(220);
+    auto *l = new QVBoxLayout(w);
+    l->setSizeConstraint(QLayout::SetMinimumSize);
+    w->setLayout(l);
+
+    setWidget(w);
 
 #ifndef USE_DXCB
     auto *mwl = new MainWindowListener(this);
@@ -301,10 +308,11 @@ void PlaylistWidget::loadPlaylist()
         _items.clear();
 
         QLayoutItem *child;
-        while ((child = layout()->takeAt(0)) != 0) {
+        while ((child = widget()->layout()->takeAt(0)) != 0) {
             delete child;
         }
     }
+    qDebug() << widget()->size() << size();
 
     if (!_mapper) {
         _mapper = new QSignalMapper(this);
@@ -321,15 +329,16 @@ void PlaylistWidget::loadPlaylist()
     while (p != items.end()) {
         auto w = new PlayItemWidget(*p, this);
         _items.append(w);
-        layout()->addWidget(w);
+        widget()->layout()->addWidget(w);
 
         connect(w, SIGNAL(closeButtonClicked()), _mapper, SLOT(map()));
         _mapper->setMapping(w, w);
         ++p;
     }
-    static_cast<QVBoxLayout*>(layout())->addStretch(1);
+    static_cast<QVBoxLayout*>(widget()->layout())->addStretch(1);
 
     updateItemStates();
+    qDebug() << widget()->size() << size();
 }
 
 void PlaylistWidget::togglePopup()

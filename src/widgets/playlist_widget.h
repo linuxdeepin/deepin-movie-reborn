@@ -19,7 +19,7 @@ namespace dmr {
 class PlayerEngine;
 class MainWindow;
 
-class PlaylistWidget: public QFrame {
+class PlaylistWidget: public QScrollArea {
     Q_OBJECT
 public:
     PlaylistWidget(QWidget *, PlayerEngine*);
