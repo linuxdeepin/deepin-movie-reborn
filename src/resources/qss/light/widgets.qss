@@ -4,6 +4,12 @@ Dtk--Widget--DImageButton#ListBtn {
     qproperty-pressPic: url(:/resources/icons/light/normal/list-press.png);
 }
 
+Dtk--Widget--DImageButton#SubtitleBtn {
+    qproperty-normalPic: url(:/resources/icons/light/normal/Subtitle-normal.png);
+    qproperty-hoverPic: url(:/resources/icons/light/normal/Subtitle-hover.png);
+    qproperty-pressPic: url(:/resources/icons/light/normal/Subtitle-press.png);
+}
+
 Dtk--Widget--DImageButton#PrevBtn {
     qproperty-normalPic: url(:/resources/icons/light/normal/previous-normal.png);
     qproperty-hoverPic: url(:/resources/icons/light/normal/previous-hover.png);

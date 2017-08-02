@@ -4,6 +4,12 @@ Dtk--Widget--DImageButton#ListBtn {
     qproperty-pressPic: url(:/resources/icons/dark/normal/list-press.png);
 }
 
+Dtk--Widget--DImageButton#SubtitleBtn {
+    qproperty-normalPic: url(:/resources/icons/dark/normal/Subtitle-normal.png);
+    qproperty-hoverPic: url(:/resources/icons/dark/normal/Subtitle-hover.png);
+    qproperty-pressPic: url(:/resources/icons/dark/normal/Subtitle-press.png);
+}
+
 Dtk--Widget--DImageButton#PrevBtn {
     qproperty-normalPic: url(:/resources/icons/dark/normal/previous-normal.png);
     qproperty-hoverPic: url(:/resources/icons/dark/normal/previous-hover.png);
@@ -205,3 +211,4 @@ Dtk--Widget--DImageButton#MiniCloseBtn {
     qproperty-hoverPic: url(:/resources/icons/dark/normal/close-hover.png);
     qproperty-pressPic: url(:/resources/icons/dark/normal/close-press.png);
 }
+
