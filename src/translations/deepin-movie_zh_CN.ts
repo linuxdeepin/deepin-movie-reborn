@@ -92,7 +92,8 @@
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="15"/>
-        <location filename="../common/settings_translation.cpp" line="27"/>
+        <location filename="../common/settings_translation.cpp" line="20"/>
+        <location filename="../common/settings_translation.cpp" line="45"/>
         <source>Screenshot</source>
         <translation>截图</translation>
     </message>
@@ -102,9 +103,8 @@
         <translation>快捷键</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="17"/>
         <source>Files</source>
-        <translation>文件</translation>
+        <translation type="vanished">文件</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="18"/>
@@ -117,12 +117,13 @@
         <translation>播放</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="20"/>
+        <location filename="../common/settings_translation.cpp" line="21"/>
+        <location filename="../common/settings_translation.cpp" line="22"/>
         <source>Subtitle</source>
         <translation>字幕</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="21"/>
+        <location filename="../common/settings_translation.cpp" line="23"/>
         <source>Font Style</source>
         <translation>字体样式</translation>
     </message>
@@ -175,82 +176,125 @@
         <translation>基础设置</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="22"/>
+        <location filename="../common/settings_translation.cpp" line="17"/>
+        <source>File</source>
+        <translation>文件</translation>
+    </message>
+    <message>
+        <location filename="../common/settings_translation.cpp" line="24"/>
         <source>Restore Defaults</source>
         <translation>恢复默认</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="23"/>
+        <location filename="../common/settings_translation.cpp" line="26"/>
+        <source>Open file</source>
+        <translation>打开文件</translation>
+    </message>
+    <message>
+        <location filename="../common/settings_translation.cpp" line="43"/>
         <source>Burst screenshot</source>
         <translation>连拍截图</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="24"/>
         <source>Open a file</source>
-        <translation>打开文件</translation>
+        <translation type="vanished">打开文件</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="25"/>
+        <location filename="../common/settings_translation.cpp" line="27"/>
         <source>Open next</source>
         <translation>打开下一个</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="26"/>
+        <location filename="../common/settings_translation.cpp" line="28"/>
         <source>Open previous</source>
         <translation>打开上一个</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="28"/>
+        <location filename="../common/settings_translation.cpp" line="30"/>
         <source>Mini mode</source>
         <translation>迷你模式</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="29"/>
+        <location filename="../common/settings_translation.cpp" line="31"/>
         <source>Mute</source>
         <translation>静音</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="30"/>
+        <location filename="../common/settings_translation.cpp" line="32"/>
         <source>volume down</source>
         <translation>减小音量</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="31"/>
+        <location filename="../common/settings_translation.cpp" line="33"/>
         <source>Volume up</source>
         <translation>增大音量</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="32"/>
+        <location filename="../common/settings_translation.cpp" line="34"/>
+        <source>Accelerate playback</source>
+        <translation>加速播放</translation>
+    </message>
+    <message>
+        <location filename="../common/settings_translation.cpp" line="35"/>
+        <source>Decelerate playback</source>
+        <translation>减速播放</translation>
+    </message>
+    <message>
+        <location filename="../common/settings_translation.cpp" line="25"/>
+        <location filename="../common/settings_translation.cpp" line="29"/>
+        <location filename="../common/settings_translation.cpp" line="36"/>
+        <location filename="../common/settings_translation.cpp" line="44"/>
+        <location filename="../common/settings_translation.cpp" line="46"/>
+        <source>Enable</source>
+        <translation>使用快捷键</translation>
+    </message>
+    <message>
+        <location filename="../common/settings_translation.cpp" line="37"/>
         <source>Fullscreen</source>
         <translation>全屏</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="33"/>
+        <location filename="../common/settings_translation.cpp" line="38"/>
         <source>Pause/Play</source>
         <translation>暂停/播放</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="34"/>
+        <location filename="../common/settings_translation.cpp" line="39"/>
         <source>Playlist</source>
         <translation>播放列表</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="35"/>
+        <location filename="../common/settings_translation.cpp" line="40"/>
+        <source>Reset play speed</source>
+        <translation>还原播放速度</translation>
+    </message>
+    <message>
+        <location filename="../common/settings_translation.cpp" line="41"/>
         <source>Backward</source>
         <translation>快退</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="36"/>
+        <location filename="../common/settings_translation.cpp" line="42"/>
         <source>Forward</source>
         <translation>快进</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="37"/>
+        <location filename="../common/settings_translation.cpp" line="47"/>
+        <source>0.5s backward</source>
+        <translation>字幕延迟0.5秒</translation>
+    </message>
+    <message>
+        <location filename="../common/settings_translation.cpp" line="48"/>
+        <source>0.5s forward</source>
+        <translation>字幕提前0.5秒</translation>
+    </message>
+    <message>
+        <location filename="../common/settings_translation.cpp" line="49"/>
         <source>Font</source>
         <translation>字体</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="38"/>
+        <location filename="../common/settings_translation.cpp" line="50"/>
         <source>Font Size</source>
         <translation>字号</translation>
     </message>

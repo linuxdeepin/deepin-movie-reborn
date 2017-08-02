@@ -30,21 +30,45 @@ ShortcutManager::ShortcutManager()
         {"seek_forward_large", ActionFactory::ActionKind::SeekForwardLarge},
         {"seek_backward", ActionFactory::ActionKind::SeekBackward},
         {"seek_backward_large", ActionFactory::ActionKind::SeekBackwardLarge},
-        {"open_file", ActionFactory::ActionKind::OpenFile},
-        {"screenshot", ActionFactory::ActionKind::Screenshot},
-        {"burst_screenshot", ActionFactory::ActionKind::BurstScreenshot},
+        {"fullscreen", ActionFactory::ActionKind::Fullscreen},
+        {"playlist", ActionFactory::ActionKind::TogglePlaylist},
+        {"accel", ActionFactory::ActionKind::AccelPlayback},
+        {"decel", ActionFactory::ActionKind::DecelPlayback},
+        {"reset", ActionFactory::ActionKind::ResetPlayback},
+
         {"mini", ActionFactory::ActionKind::ToggleMiniMode},
         {"vol_up", ActionFactory::ActionKind::VolumeUp},
         {"vol_down", ActionFactory::ActionKind::VolumeDown},
         {"mute", ActionFactory::ActionKind::ToggleMute},
-        {"fullscreen", ActionFactory::ActionKind::Fullscreen},
-        {"playlist", ActionFactory::ActionKind::TogglePlaylist},
+
+        {"open_file", ActionFactory::ActionKind::OpenFile},
         {"playlist_next", ActionFactory::ActionKind::GotoPlaylistNext},
         {"playlist_prev", ActionFactory::ActionKind::GotoPlaylistPrev},
+
+        {"sub_forward", ActionFactory::ActionKind::SubForward},
+        {"sub_backward", ActionFactory::ActionKind::SubDelay},
+
+        {"screenshot", ActionFactory::ActionKind::Screenshot},
+        {"burst_screenshot", ActionFactory::ActionKind::BurstScreenshot},
     };
 
     connect(&Settings::get(), &Settings::shortcutsChanged,
         [=](QString sk, const QVariant& val) {
+            if (sk.endsWith(".enable")) {
+                auto grp_key = sk.left(sk.lastIndexOf('.'));
+                qDebug() << "update group binding" << grp_key;
+
+                QPointer<DSettingsGroup> shortcuts = Settings::get().shortcuts();
+                auto grps = shortcuts->childGroups();
+                auto grp_ptr = std::find_if(grps.begin(), grps.end(), [=](GroupPtr grp) {
+                    return grp->key() == grp_key;
+                });
+
+                toggleGroupShortcuts(*grp_ptr, val.toBool());
+                emit bindingsChanged();
+                return;
+            }
+
             sk.remove(0, sk.lastIndexOf('.') + 1);
 
             QStringList keyseqs = val.toStringList();
@@ -67,6 +91,29 @@ void ShortcutManager::buildBindings()
     emit bindingsChanged();
 }
 
+void ShortcutManager::toggleGroupShortcuts(GroupPtr grp, bool on)
+{
+    auto sub = grp->childOptions();
+    std::for_each(sub.begin(), sub.end(), [=](OptionPtr opt) {
+        if (opt->viewType() != "shortcut") return;
+
+        QStringList keyseqs = opt->value().toStringList();
+        Q_ASSERT (keyseqs.length() == 2);
+        auto modifier = static_cast<Qt::KeyboardModifiers>(keyseqs.value(0).toInt());
+        auto key = static_cast<Qt::Key>(keyseqs.value(1).toInt());
+
+        QString sk = opt->key();
+        sk.remove(0, sk.lastIndexOf('.') + 1);
+        qDebug() << opt->name() << QKeySequence(modifier + key);
+
+        if (on) {
+            _map[QKeySequence(modifier + key)] = _keyToAction[sk];
+        } else {
+            _map.remove(QKeySequence(modifier + key));
+        }
+    });
+}
+
 void ShortcutManager::buildBindingsFromSettings()
 {
     _map.clear();
@@ -81,20 +128,13 @@ void ShortcutManager::buildBindingsFromSettings()
 
     auto subgroups = shortcuts->childGroups();
     std::for_each(subgroups.begin(), subgroups.end(), [=](GroupPtr grp) {
-        auto sub = grp->childOptions();
-        std::for_each(sub.begin(), sub.end(), [=](OptionPtr opt) {
-            QStringList keyseqs = opt->value().toStringList();
-            Q_ASSERT (keyseqs.length() == 2);
-            auto modifier = static_cast<Qt::KeyboardModifiers>(keyseqs.value(0).toInt());
-            auto key = static_cast<Qt::Key>(keyseqs.value(1).toInt());
+        auto enabled = Settings::get().settings()->option(grp->key() + ".enable");
+        qDebug() << grp->name() << enabled->value();
+        Q_ASSERT(enabled && enabled->viewType() == "checkbox");
+        if (!enabled->value().toBool()) 
+            return;
 
-            QString sk = opt->key();
-            sk.remove(0, sk.lastIndexOf('.') + 1);
-            qDebug() << sk << opt->name() << opt->viewType() << keyseqs 
-                << QKeySequence(modifier + key);
-
-            _map[QKeySequence(modifier + key)] = _keyToAction[sk];
-        });
+        toggleGroupShortcuts(grp, true);
     });
 
 }
