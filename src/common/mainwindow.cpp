@@ -225,29 +225,55 @@ skip_set_cursor:
                 }
 
                 ratio = sz.width() / (qreal)sz.height();
-            }
-
-            switch (edge) {
-                case Utility::BottomLeftCorner:
-                case Utility::TopLeftCorner:
-                case Utility::LeftEdge:
-                    geom.setLeft(e->globalX());
-                    geom.setHeight(geom.width() / ratio);
-                    break;
-                case Utility::BottomRightCorner:
-                case Utility::RightEdge:
-                    geom.setRight(e->globalX());
-                    geom.setHeight(geom.width() / ratio);
-                    break;
-                case Utility::TopRightCorner:
-                case Utility::TopEdge:
-                    geom.setTop(e->globalY());
-                    geom.setWidth(geom.height() * ratio);
-                    break;
-                case Utility::BottomEdge:
-                    geom.setBottom(e->globalY());
-                    geom.setWidth(geom.height() * ratio);
-                    break;
+                switch (edge) {
+                    case Utility::BottomLeftCorner:
+                    case Utility::TopLeftCorner:
+                    case Utility::LeftEdge:
+                        geom.setLeft(e->globalX());
+                        geom.setHeight(geom.width() / ratio);
+                        break;
+                    case Utility::BottomRightCorner:
+                    case Utility::RightEdge:
+                        geom.setRight(e->globalX());
+                        geom.setHeight(geom.width() / ratio);
+                        break;
+                    case Utility::TopRightCorner:
+                    case Utility::TopEdge:
+                        geom.setTop(e->globalY());
+                        geom.setWidth(geom.height() * ratio);
+                        break;
+                    case Utility::BottomEdge:
+                        geom.setBottom(e->globalY());
+                        geom.setWidth(geom.height() * ratio);
+                        break;
+                }
+            } else {
+                switch (edge) {
+                    case Utility::BottomLeftCorner:
+                        geom.setBottomLeft(e->globalPos());
+                        break;
+                    case Utility::TopLeftCorner:
+                        geom.setTopLeft(e->globalPos());
+                        break;
+                    case Utility::LeftEdge:
+                        geom.setLeft(e->globalX());
+                        break;
+                    case Utility::BottomRightCorner:
+                        geom.setBottomRight(e->globalPos());
+                        break;
+                    case Utility::RightEdge:
+                        geom.setRight(e->globalX());
+                        break;
+                    case Utility::TopRightCorner:
+                        geom.setTopRight(e->globalPos());
+                        break;
+                    case Utility::TopEdge:
+                        geom.setTop(e->globalY());
+                        break;
+                    case Utility::BottomEdge:
+                        geom.setBottom(e->globalY());
+                        break;
+                }
             }
             mw->setGeometry(geom);
 
@@ -1207,7 +1233,7 @@ void MainWindow::updateSizeConstraints()
     auto m = size();
 
     if (_miniMode) {
-        m = QSize(0, 0);
+        m = QSize(40, 40);
     } else {
         if (_engine->state() != PlayerEngine::CoreState::Idle) {
             auto sz = _engine->videoSize();
@@ -1219,7 +1245,7 @@ void MainWindow::updateSizeConstraints()
                 m = QSize(h, 528);
             }
         } else {
-            m = QSize(528, 0);
+            m = QSize(528, 40);
         }
     }
 
