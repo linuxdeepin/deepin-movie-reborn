@@ -6,6 +6,7 @@
 #include "actions.h"
 #include "mainwindow.h"
 #include "utils.h"
+#include "movieinfo_dialog.h"
 
 #include <DApplication>
 #include <dimagebutton.h>
@@ -115,7 +116,7 @@ protected:
 
     void resizeEvent(QResizeEvent* se) override
     {
-        qDebug() << __func__ << _closeBtn->width();
+        qDebug() << __func__ << size() << _closeBtn->width();
         auto sz = this->size();
         _closeBtn->move(sz.width() - _closeBtn->width(), (sz.height() - _closeBtn->height())/2);
     }
@@ -166,9 +167,11 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     //setAutoFillBackground(false);
     setAttribute(Qt::WA_TranslucentBackground, false);
     setFixedWidth(220);
+    setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred));
+
     setAcceptDrops(true);
     setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
-    this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     if (!composited) {
         setWindowFlags(Qt::FramelessWindowHint|Qt::BypassWindowManagerHint);
@@ -223,6 +226,16 @@ void PlaylistWidget::updateItemStates()
         }
     }
 
+}
+
+void PlaylistWidget::showItemInfo()
+{
+    if (!_mouseItem) return;
+    auto item = dynamic_cast<PlayItemWidget*>(_mouseItem);
+    if (item) {
+        MovieInfoDialog mid(item->_pif.mi);
+        mid.exec();
+    }
 }
 
 void PlaylistWidget::openItemInFM()
@@ -289,7 +302,7 @@ void PlaylistWidget::contextMenuEvent(QContextMenuEvent *cme)
     auto menu = ActionFactory::get().playlistContextMenu();
     for (auto act: menu->actions()) {
         auto prop = (ActionFactory::ActionKind)act->property("kind").toInt();
-        if (prop == ActionFactory::ActionKind::MovieInfo || 
+        if (prop == ActionFactory::ActionKind::PlaylistItemInfo || 
                 prop == ActionFactory::ActionKind::PlaylistOpenItemInFM) {
             act->setEnabled(on_item);
         }
@@ -312,7 +325,6 @@ void PlaylistWidget::loadPlaylist()
             delete child;
         }
     }
-    qDebug() << widget()->size() << size();
 
     if (!_mapper) {
         _mapper = new QSignalMapper(this);
@@ -338,7 +350,6 @@ void PlaylistWidget::loadPlaylist()
     static_cast<QVBoxLayout*>(widget()->layout())->addStretch(1);
 
     updateItemStates();
-    qDebug() << widget()->size() << size();
 }
 
 void PlaylistWidget::togglePopup()

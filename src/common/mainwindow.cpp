@@ -828,6 +828,11 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI, QList<
             break;
         }
 
+        case ActionFactory::ActionKind::PlaylistItemInfo: {
+            _playlist->showItemInfo();
+            break;
+        }
+
         case ActionFactory::ActionKind::ClockwiseFrame: {
             auto old = _engine->videoRotation();
             _engine->setVideoRotation((old + 90) % 360);

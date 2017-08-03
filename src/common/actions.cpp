@@ -191,7 +191,7 @@ QMenu* ActionFactory::playlistContextMenu()
 
         DEF_ACTION(tr("Clear playlist"), ActionKind::EmptyPlaylist);
         DEF_ACTION(tr("Display in file manager"), ActionKind::PlaylistOpenItemInFM);
-        DEF_ACTION(tr("Film info"), ActionKind::MovieInfo);
+        DEF_ACTION(tr("Film info"), ActionKind::PlaylistItemInfo);
 
         _playlistMenu = menu;
     }
