@@ -24,6 +24,7 @@ enum ActionKind {
     EmptyPlaylist,
     PlaylistRemoveItem,
     PlaylistOpenItemInFM,
+    PlaylistItemInfo,
     MovieInfo,
     OpenUrl,
     Fullscreen,

@@ -29,6 +29,7 @@ public slots:
     void togglePopup();
     void loadPlaylist();
     void openItemInFM();
+    void showItemInfo();
     void removeClickedItem();
 
 protected:
