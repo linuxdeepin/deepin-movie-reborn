@@ -46,7 +46,8 @@ private:
     MainWindow *_mw {nullptr};
     QWidget *_mouseItem {nullptr};
     QWidget *_clickedItem {nullptr};
-    QSignalMapper *_mapper {nullptr};
+    QSignalMapper *_closeMapper {nullptr};
+    QSignalMapper *_activateMapper {nullptr};
 };
 }
 

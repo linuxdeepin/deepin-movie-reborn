@@ -75,6 +75,7 @@ enum ActionKind {
 
     GotoPlaylistNext,
     GotoPlaylistPrev,
+    GotoPlaylistSelected,
     VolumeUp,
     VolumeDown,
     ToggleMute,

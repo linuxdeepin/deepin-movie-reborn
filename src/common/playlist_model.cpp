@@ -554,10 +554,14 @@ void PlaylistModel::changeCurrent(int pos)
 {
     if (pos < 0 || pos >= count()) return;
 
+    _userRequestingItem = true;
+
+    _engine->waitLastEnd();
     _last = _current;
     _current = pos;
-    Q_ASSERT_X(0, "playlist", "not implemented");
+    _engine->requestPlay(_current);
     emit currentChanged();
+    _userRequestingItem = false;
 }
 
 void PlaylistModel::switchPosition(int p1, int p2)

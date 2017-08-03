@@ -225,6 +225,11 @@ void PlayerEngine::next()
     _playlist->playNext(true);
 }
 
+void PlayerEngine::playSelected(int id)
+{
+    _playlist->changeCurrent(id);
+}
+
 void PlayerEngine::clearPlaylist()
 {
     _playlist->clear();
