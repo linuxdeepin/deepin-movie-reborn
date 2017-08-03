@@ -113,6 +113,8 @@ dmr--VolumeButton#VolMute {
 
 dmr--PlaylistWidget {
     background-color: rgba(23, 23, 23, 0.80);
+    selection-color: transparent;
+    selection-background-color: transparent;
 }
 
 dmr--PlaylistWidget * {

@@ -475,7 +475,7 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="749"/>
         <location filename="../common/mainwindow.cpp" line="760"/>
-        <location filename="../common/mainwindow.cpp" line="969"/>
+        <location filename="../common/mainwindow.cpp" line="974"/>
         <source>Open File</source>
         <translation type="unfinished"></translation>
     </message>
@@ -486,27 +486,27 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="971"/>
+        <location filename="../common/mainwindow.cpp" line="976"/>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1028"/>
+        <location filename="../common/mainwindow.cpp" line="1033"/>
         <source>View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1039"/>
+        <location filename="../common/mainwindow.cpp" line="1044"/>
         <source>Movie Screenshot</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1040"/>
+        <location filename="../common/mainwindow.cpp" line="1045"/>
         <source>Saved to</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1051"/>
+        <location filename="../common/mainwindow.cpp" line="1056"/>
         <source>The screenshot is saved in %1</source>
         <translation type="unfinished"></translation>
     </message>
