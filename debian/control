@@ -16,6 +16,8 @@ Homepage: http://www.deepin.com/
 
 Package: deepin-movie-reborn
 Architecture: any
+Conflicts: deepin-movie
+Replaces: deepin-movie
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Deepin movie player for linuxdeepin desktop environment
  Deepin movie player for linuxdeepin desktop environment.
