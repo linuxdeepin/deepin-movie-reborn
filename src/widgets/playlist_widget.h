@@ -19,7 +19,7 @@ namespace dmr {
 class PlayerEngine;
 class MainWindow;
 
-class PlaylistWidget: public QScrollArea {
+class PlaylistWidget: public QListWidget {
     Q_OBJECT
 public:
     PlaylistWidget(QWidget *, PlayerEngine*);
@@ -35,6 +35,7 @@ public slots:
 protected:
     void contextMenuEvent(QContextMenuEvent *cme);
     void dragEnterEvent(QDragEnterEvent *event);
+    void dragMoveEvent(QDragMoveEvent *event);
     void dropEvent(QDropEvent *event);
 
 protected slots:
@@ -43,7 +44,6 @@ protected slots:
 private:
     PlayerEngine *_engine {nullptr};
     MainWindow *_mw {nullptr};
-    QList<QWidget*> _items;
     QWidget *_mouseItem {nullptr};
     QWidget *_clickedItem {nullptr};
     QSignalMapper *_mapper {nullptr};

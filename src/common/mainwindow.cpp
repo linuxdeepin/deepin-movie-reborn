@@ -1143,6 +1143,7 @@ void MainWindow::updateProxyGeometry()
     qDebug() << "window geom " << geometry();
     qDebug() << "_engine " << _engine->geometry();
     qDebug() << "_titlebar " << _titlebar->geometry();
+    qDebug() << "_playlist " << _playlist->geometry();
     qDebug() << "_toolbox " << _toolbox->geometry();
 #endif
 }

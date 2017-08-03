@@ -35,9 +35,9 @@ public:
         // it's the same for all themes
         _play = QPixmap(":/resources/icons/dark/normal/film-top.png");
 
-        setFixedHeight(67);
+        setFixedWidth(220);
         auto *l = new QHBoxLayout(this);
-        l->setContentsMargins(0, 0, 0, 0);
+        l->setContentsMargins(0, 0, 10, 0);
         setLayout(l);
 
         _thumb = new QLabel(this);
@@ -62,6 +62,7 @@ public:
         vl->addWidget(w);
 
         _closeBtn = new DImageButton(this);
+        _closeBtn->setFixedSize(20, 20);
         _closeBtn->setObjectName("CloseBtn");
         _closeBtn->hide();
         connect(_closeBtn, &DImageButton::clicked, this, &PlayItemWidget::closeButtonClicked);
@@ -116,7 +117,6 @@ protected:
 
     void resizeEvent(QResizeEvent* se) override
     {
-        qDebug() << __func__ << size() << _closeBtn->width();
         auto sz = this->size();
         _closeBtn->move(sz.width() - _closeBtn->width(), (sz.height() - _closeBtn->height())/2);
     }
@@ -160,7 +160,7 @@ protected:
 };
 
 PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
-    :QScrollArea(mw), _engine(mpv), _mw(static_cast<MainWindow*>(mw))
+    :QListWidget(mw), _engine(mpv), _mw(static_cast<MainWindow*>(mw))
 {
     bool composited = CompositingManager::get().composited();
     setFrameShape(QFrame::NoFrame);
@@ -169,23 +169,19 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     setFixedWidth(220);
     setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred));
 
-    setAcceptDrops(true);
-    setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
+    setSelectionMode(QListView::SingleSelection);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setResizeMode(QListView::Adjust);
+    setDragDropMode(QListView::DropOnly);
+    setSpacing(4);
+
+    setAcceptDrops(true);
 
     if (!composited) {
         setWindowFlags(Qt::FramelessWindowHint|Qt::BypassWindowManagerHint);
         setContentsMargins(0, 0, 0, 0);
         setAttribute(Qt::WA_NativeWindow);
     }
-
-    auto w = new QWidget;
-    w->setFixedWidth(220);
-    auto *l = new QVBoxLayout(w);
-    l->setSizeConstraint(QLayout::SetMinimumSize);
-    w->setLayout(l);
-
-    setWidget(w);
 
 #ifndef USE_DXCB
     auto *mwl = new MainWindowListener(this);
@@ -204,25 +200,25 @@ PlaylistWidget::~PlaylistWidget()
 
 void PlaylistWidget::updateItemStates()
 {
-    qDebug() << __func__ << _items.size() << "current = " << _engine->playlist().current();
-    for (int i = 0; i < _items.size(); i++) {
-        auto item = dynamic_cast<PlayItemWidget*>(_items.at(i));
+    qDebug() << __func__ << count() << "current = " << _engine->playlist().current();
+    for (int i = 0; i < count(); i++) {
+        auto piw = dynamic_cast<PlayItemWidget*>(itemWidget(item(i)));
 
-        auto old = item->state();
-        item->setState(ItemState::Normal);
+        auto old = piw->state();
+        piw->setState(ItemState::Normal);
 
-        if (_mouseItem == item) {
-            item->setState(ItemState::Hover);
+        if (_mouseItem == piw) {
+            piw->setState(ItemState::Hover);
         }
 
         if (i == _engine->playlist().current()) {
-            item->setState(ItemState::Playing);
+            piw->setState(ItemState::Playing);
         }
 
-        if (old != item->state()) {
-            //item->style()->unpolish(item);
-            //item->style()->polish(item);
-            item->setStyleSheet(item->styleSheet());
+        if (old != piw->state()) {
+            //piw->style()->unpolish(piw);
+            //piw->style()->polish(piw);
+            piw->setStyleSheet(piw->styleSheet());
         }
     }
 
@@ -250,10 +246,14 @@ void PlaylistWidget::openItemInFM()
 void PlaylistWidget::removeClickedItem()
 {
     if (!_clickedItem) return;
-    auto item = dynamic_cast<PlayItemWidget*>(_clickedItem);
-    if (item) {
+    auto piw = dynamic_cast<PlayItemWidget*>(_clickedItem);
+    if (piw) {
         qDebug() << __func__;
-        _engine->playlist().remove(_items.indexOf(_clickedItem));
+        for (int i = 0; i < count(); i++) {
+            if (_clickedItem == itemWidget(item(i))) {
+                _engine->playlist().remove(i);
+            }
+        }
     }
 }
 
@@ -264,8 +264,16 @@ void PlaylistWidget::dragEnterEvent(QDragEnterEvent *ev)
     }
 }
 
+void PlaylistWidget::dragMoveEvent(QDragMoveEvent *ev)
+{
+    if (ev->mimeData()->hasUrls()) {
+        ev->acceptProposedAction();
+    }
+}
+
 void PlaylistWidget::dropEvent(QDropEvent *ev)
 {
+    qDebug() << ev->mimeData()->formats();
     if (ev->mimeData()->hasUrls()) {
         auto urls = ev->mimeData()->urls();
         for (const auto& url: urls) {
@@ -288,13 +296,9 @@ void PlaylistWidget::contextMenuEvent(QContextMenuEvent *cme)
     bool on_item = false;
     _mouseItem = nullptr;
 
-    QPoint p = cme->pos();
-    for (auto w: _items) {
-        if (w->geometry().contains(p)) {
-            _mouseItem = w;
-            on_item = true;
-            break;
-        }
+    if (itemAt(cme->pos())) {
+        _mouseItem = dynamic_cast<PlayItemWidget*>(itemWidget(itemAt(cme->pos())));
+        on_item = true;
     }
 
     updateItemStates();
@@ -314,17 +318,7 @@ void PlaylistWidget::contextMenuEvent(QContextMenuEvent *cme)
 void PlaylistWidget::loadPlaylist()
 {
     qDebug() << __func__;
-    {
-        for(auto p: _items) {
-            p->deleteLater();
-        }
-        _items.clear();
-
-        QLayoutItem *child;
-        while ((child = widget()->layout()->takeAt(0)) != 0) {
-            delete child;
-        }
-    }
+    clear();
 
     if (!_mapper) {
         _mapper = new QSignalMapper(this);
@@ -340,14 +334,15 @@ void PlaylistWidget::loadPlaylist()
     auto p = items.begin();
     while (p != items.end()) {
         auto w = new PlayItemWidget(*p, this);
-        _items.append(w);
-        widget()->layout()->addWidget(w);
+        auto item = new QListWidgetItem;
+        addItem(item);
+        item->setSizeHint(w->sizeHint());
+        setItemWidget(item, w);
 
         connect(w, SIGNAL(closeButtonClicked()), _mapper, SLOT(map()));
         _mapper->setMapping(w, w);
         ++p;
     }
-    static_cast<QVBoxLayout*>(widget()->layout())->addStretch(1);
 
     updateItemStates();
 }
