@@ -948,6 +948,11 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI, QList<
             break;
         }
 
+        case ActionFactory::ActionKind::GotoPlaylistSelected: {
+            _engine->playSelected(args[0].toInt());
+            break;
+        }
+
         case ActionFactory::ActionKind::GotoPlaylistNext: {
             _engine->next();
             break;

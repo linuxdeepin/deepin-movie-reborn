@@ -97,6 +97,7 @@ public:
 
 signals:
     void closeButtonClicked();
+    void doubleClicked();
 
 protected:
     void leaveEvent(QEvent* e) override
@@ -110,20 +111,16 @@ protected:
         _closeBtn->raise();
     }
 
-    void mouseReleaseEvent(QMouseEvent* me) override 
-    {
-        qDebug() << __func__;
-    }
-
     void resizeEvent(QResizeEvent* se) override
     {
         auto sz = this->size();
-        _closeBtn->move(sz.width() - _closeBtn->width(), (sz.height() - _closeBtn->height())/2);
+        _closeBtn->move(sz.width() - _closeBtn->width() - 10, (sz.height() - _closeBtn->height())/2);
     }
 
     void mouseDoubleClickEvent(QMouseEvent* me) override
     {
         qDebug() << __func__;
+        emit doubleClicked();
     }
 
 private:
@@ -252,6 +249,7 @@ void PlaylistWidget::removeClickedItem()
         for (int i = 0; i < count(); i++) {
             if (_clickedItem == itemWidget(item(i))) {
                 _engine->playlist().remove(i);
+                break;
             }
         }
     }
@@ -320,13 +318,32 @@ void PlaylistWidget::loadPlaylist()
     qDebug() << __func__;
     clear();
 
-    if (!_mapper) {
-        _mapper = new QSignalMapper(this);
-        connect(_mapper, static_cast<void(QSignalMapper::*)(QWidget*)>(&QSignalMapper::mapped),
+    if (!_closeMapper) {
+        _closeMapper = new QSignalMapper(this);
+        connect(_closeMapper,
+                static_cast<void(QSignalMapper::*)(QWidget*)>(&QSignalMapper::mapped),
             [=](QWidget* w) {
                 qDebug() << "item close clicked";
                 _clickedItem = w;
                 _mw->requestAction(ActionFactory::ActionKind::PlaylistRemoveItem);
+            });
+    }
+
+    if (!_activateMapper) {
+        _activateMapper = new QSignalMapper(this);
+        connect(_activateMapper,
+                static_cast<void(QSignalMapper::*)(QWidget*)>(&QSignalMapper::mapped),
+            [=](QWidget* w) {
+                qDebug() << "item double clicked";
+                QList<QVariant> args;
+                for (int i = 0; i < count(); i++) {
+                    if (w == itemWidget(item(i))) {
+                        args << i;
+                        _mw->requestAction(ActionFactory::ActionKind::GotoPlaylistSelected,
+                                false, args);
+                        break;
+                    }
+                }
             });
     }
 
@@ -339,8 +356,10 @@ void PlaylistWidget::loadPlaylist()
         item->setSizeHint(w->sizeHint());
         setItemWidget(item, w);
 
-        connect(w, SIGNAL(closeButtonClicked()), _mapper, SLOT(map()));
-        _mapper->setMapping(w, w);
+        connect(w, SIGNAL(closeButtonClicked()), _closeMapper, SLOT(map()));
+        connect(w, SIGNAL(doubleClicked()), _activateMapper, SLOT(map()));
+        _closeMapper->setMapping(w, w);
+        _activateMapper->setMapping(w, w);
         ++p;
     }
 
