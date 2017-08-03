@@ -115,8 +115,19 @@ mpv_handle* MpvProxy::mpv_init()
 
     set_property(h, "screenshot-template", "deepin-movie-shot%n");
     set_property(h, "screenshot-directory", "/tmp");
-    
 
+    if (Settings::get().isSet(Settings::ResumeFromLast)) {
+        set_property(h, "save-position-on-quit", true);
+        auto watch_later_dir = QString("%1/%2/%3/watch_later")
+            .arg(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation))
+            .arg(qApp->organizationName())
+            .arg(qApp->applicationName());
+
+        QDir d;
+        d.mkpath(watch_later_dir);
+        set_property(h, "watch-later-directory", watch_later_dir);
+    }
+    
     //only to get notification without data
     mpv_observe_property(h, 0, "time-pos", MPV_FORMAT_NONE); //playback-time ?
     mpv_observe_property(h, 0, "pause", MPV_FORMAT_NONE);
@@ -322,6 +333,17 @@ bool MpvProxy::isSubVisible()
 void MpvProxy::setSubDelay(double secs)
 {
     set_property(_handle, "sub-delay", secs);
+}
+
+void MpvProxy::savePlaybackPosition()
+{
+    if (state() == PlayState::Stopped) {
+        return;
+    }
+
+    QList<QVariant> args = { "write-watch-later-config" };
+    qDebug () << args;
+    command(_handle, args);
 }
 
 void MpvProxy::setPlaySpeed(double times)

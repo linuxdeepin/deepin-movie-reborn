@@ -1217,6 +1217,13 @@ void MainWindow::hideEvent(QHideEvent *event)
     }
 }
 
+void MainWindow::closeEvent(QCloseEvent *ev)
+{
+    qDebug() << __func__;
+    _engine->savePlaybackPosition();
+    ev->accept();
+}
+
 void MainWindow::showEvent(QShowEvent *event)
 {
     qDebug() << __func__;

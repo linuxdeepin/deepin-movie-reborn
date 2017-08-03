@@ -29,6 +29,7 @@ public:
     qint64 elapsed() const override;
     QSize videoSize() const override;
     void setPlaySpeed(double times) override;
+    void savePlaybackPosition() override;
 
     void loadSubtitle(const QFileInfo& fi) override;
     void toggleSubtitle() override;
