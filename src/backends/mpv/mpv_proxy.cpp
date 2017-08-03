@@ -289,8 +289,12 @@ void MpvProxy::processPropertyChange(mpv_event_property* ev)
     } else if (name == "sub-visibility") {
         //_hideSub = get_property(_handle, "sub-visibility")
     } else if (name == "pause") {
+        auto idle = get_property(_handle, "idle-active").toBool();
         if (get_property(_handle, "pause").toBool()) {
-            setState(PlayState::Paused);
+            if (!idle)
+                setState(PlayState::Paused);
+            else 
+                set_property(_handle, "pause", false);
         } else {
             if (state() != PlayState::Stopped)
                 setState(PlayState::Playing);
