@@ -590,6 +590,10 @@ void MainWindow::updatePlayState()
 
         _playState->setVisible(true);
         _playState->raise();
+    } else {
+        if (_playState->isVisible()) {
+            _playState->setVisible(false);
+        }
     }
 }
 
