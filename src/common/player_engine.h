@@ -86,6 +86,8 @@ public:
     void burstScreenshot(); //initial the start of burst screenshotting
     void stopBurstScreenshot();
 
+    void savePlaybackPosition();
+
 signals:
     void tracksChanged();
     void elapsedChanged();

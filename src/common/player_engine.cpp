@@ -208,6 +208,12 @@ void PlayerEngine::requestPlay(int id)
     }
 }
 
+void PlayerEngine::savePlaybackPosition()
+{
+    if (!_current) return;
+    _current->savePlaybackPosition();
+}
+
 void PlayerEngine::play()
 {
     if (state() == CoreState::Idle && _playlist->count()) {
