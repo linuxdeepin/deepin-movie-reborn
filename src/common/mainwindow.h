@@ -50,6 +50,9 @@ signals:
 public slots:
     void play(const QUrl& url);
     void updateProxyGeometry();
+    void suspendToolsWindow();
+    void resumeToolsWindow();
+
 
 protected:
     void showEvent(QShowEvent *event) override;
@@ -71,9 +74,6 @@ protected slots:
     void updateActionsState();
     void onThemeChanged();
     void updatePlayState();
-
-    void suspendToolsWindow();
-    void resumeToolsWindow();
 
     void miniButtonClicked(QString id);
 
@@ -116,6 +116,7 @@ private:
     MainWindowEventListener *_listener {nullptr};
     NotificationWidget *_nwShot {nullptr};
     NotificationWidget *_nwSize {nullptr};
+    QTimer _autoHideTimer;
 };
 };
 

@@ -25,6 +25,8 @@
 #include <dinputdialog.h>
 #include <dimagebutton.h>
 
+#define AUTOHIDE_TIMEOUT 3000
+
 DWIDGET_USE_NAMESPACE
 
 using namespace dmr;
@@ -114,6 +116,9 @@ class MainWindowEventListener : public QObject
             }
             case QEvent::MouseMove: {
                 QMouseEvent *e = static_cast<QMouseEvent*>(event);
+                auto mw = static_cast<MainWindow*>(parent());
+                mw->resumeToolsWindow();
+
                 const QRect window_visible_rect = _window->frameGeometry() - margins;
                 //qDebug() << "mouse move" << "press" << leftButtonPressed
                     //<< "insideResizeArea" << insideResizeArea(e);
@@ -449,6 +454,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(DThemeManager::instance(), &DThemeManager::themeChanged,
             this, &MainWindow::onThemeChanged);
     onThemeChanged();
+
+    connect(&_autoHideTimer, &QTimer::timeout, this, &MainWindow::suspendToolsWindow);
+    _autoHideTimer.setSingleShot(true);
 
 #ifdef USE_DXCB
     if (!composited) {
@@ -810,6 +818,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI, QList<
             if (!fromUI) {
                 reflectActionToUI(kd);
             }
+            this->resumeToolsWindow();
             break;
         }
 
@@ -1186,7 +1195,7 @@ void MainWindow::updateProxyGeometry()
 
 void MainWindow::suspendToolsWindow()
 {
-    if (!_miniMode && !this->frameGeometry().contains(QCursor::pos())) {
+    if (!_miniMode) {
         if (_playlist && _playlist->isVisible())
             return;
 
@@ -1201,6 +1210,7 @@ void MainWindow::resumeToolsWindow()
         _titlebar->show();
         _toolbox->show();
     }
+    _autoHideTimer.start(AUTOHIDE_TIMEOUT);
 }
 
 QMargins MainWindow::frameMargins() const
@@ -1237,10 +1247,7 @@ void MainWindow::showEvent(QShowEvent *event)
 
     _titlebar->raise();
     _toolbox->raise();
-    if (_titlebar) {
-        resumeToolsWindow();
-        QTimer::singleShot(4000, this, &MainWindow::suspendToolsWindow);
-    }
+    resumeToolsWindow();
 }
 
 // 若长≥高,则长≤528px　　　若长≤高,则高≤528px.
