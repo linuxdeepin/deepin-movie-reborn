@@ -60,6 +60,9 @@ protected:
     void moveEvent(QMoveEvent *ev) override;
     void contextMenuEvent(QContextMenuEvent *cme) override;
     void paintEvent(QPaintEvent*) override;
+    void dragEnterEvent(QDragEnterEvent *event) override;
+    void dragMoveEvent(QDragMoveEvent *event) override;
+    void dropEvent(QDropEvent *event) override;
 
 protected slots:
     void menuItemInvoked(QAction *action);
