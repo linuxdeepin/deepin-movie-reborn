@@ -51,6 +51,7 @@ public:
     virtual const PlayingMovieInfo& playingMovieInfo() = 0;
     virtual void setPlaySpeed(double times) = 0;
     virtual void savePlaybackPosition() = 0;
+    virtual void updateSubStyle(const QString& font, int sz) = 0;
 
     virtual void loadSubtitle(const QFileInfo& fi) = 0;
     virtual void toggleSubtitle() = 0;

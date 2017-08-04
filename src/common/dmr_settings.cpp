@@ -37,7 +37,7 @@ Settings::Settings()
                 else if (key.startsWith("base."))
                     emit baseChanged(key, value);
                 else if (key.startsWith("subtitle."))
-                    emit baseChanged(key, value);
+                    emit subtitleChanged(key, value);
             });
 
     //qDebug() << "keys" << _settings->keys();
@@ -45,7 +45,7 @@ Settings::Settings()
     QFontDatabase fontDatabase;
     auto fontFamliy = _settings->option("subtitle.font.family");
     fontFamliy->setData("items", fontDatabase.families());
-    fontFamliy->setValue(0);
+    //fontFamliy->setValue(0);
 }
 
 static QString flag2key(Settings::Flag f)

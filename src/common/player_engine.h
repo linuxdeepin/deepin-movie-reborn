@@ -72,6 +72,7 @@ public:
     void selectSubtitle(int id); // id into PlayingMovieInfo.subs
     int sid() const;
     void setSubDelay(double secs);
+    void updateSubStyle(const QString& font, int sz);
 
     void selectTrack(int id); // id into PlayingMovieInfo.audios
     int aid() const;
@@ -126,6 +127,7 @@ public slots:
 protected slots:
     void onBackendStateChanged();
     void requestPlay(int id);
+    void updateSubStyles();
 
 protected:
     PlaylistModel *_playlist {nullptr};

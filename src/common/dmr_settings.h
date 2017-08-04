@@ -40,6 +40,7 @@ class Settings: public QObject {
     signals:
         void shortcutsChanged(const QString&, const QVariant&);
         void baseChanged(const QString&, const QVariant&);
+        void subtitleChanged(const QString&, const QVariant&);
 
     private:
         Settings();

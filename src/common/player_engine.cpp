@@ -8,6 +8,8 @@
 #include "vpu_proxy.h"
 #endif
 
+#include "dmr_settings.h"
+
 namespace dmr {
 
 PlayerEngine::PlayerEngine(QWidget *parent)
@@ -37,7 +39,7 @@ PlayerEngine::PlayerEngine(QWidget *parent)
     }
 
     setLayout(l);
-
+    connect(&Settings::get(), &Settings::subtitleChanged, this, &PlayerEngine::updateSubStyles);
 
     _playlist = new PlaylistModel(this);
 }
@@ -54,6 +56,21 @@ PlayerEngine::~PlayerEngine()
         _current = nullptr;
     }
     qDebug() << __func__;
+}
+
+void PlayerEngine::updateSubStyles()
+{
+    auto font_opt = Settings::get().settings()->option("subtitle.font.family");
+    auto font_id = font_opt->value().toInt();
+    auto font = font_opt->data("items").toStringList()[font_id];
+    auto sz = Settings::get().settings()->option("subtitle.font.size")->value().toInt();
+
+    if (state() != CoreState::Idle) {
+        double scale = _playlist->currentInfo().mi.height / 720.0;
+        sz = sz / scale;
+    }
+    qDebug() << "update sub " << font << sz;
+    this->updateSubStyle(font, sz);
 }
 
 void PlayerEngine::waitLastEnd()
@@ -80,6 +97,7 @@ void PlayerEngine::onBackendStateChanged()
             break;
     }
 
+    updateSubStyles();
     if (old != _state)
         emit stateChanged();
 }
@@ -126,6 +144,12 @@ void PlayerEngine::setSubDelay(double secs)
 {
     if (!_current) return;
     _current->setSubDelay(secs);
+}
+
+void PlayerEngine::updateSubStyle(const QString& font, int sz)
+{
+    if (!_current) return;
+    _current->updateSubStyle(font, sz);
 }
 
 void PlayerEngine::selectSubtitle(int id)
