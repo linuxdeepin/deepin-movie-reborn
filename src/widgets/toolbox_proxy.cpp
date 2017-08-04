@@ -320,6 +320,7 @@ void ToolboxProxy::setup()
     l->addLayout(bot, 1);
 
     _timeLabel = new QLabel("");
+    _timeLabel->setFixedWidth(_timeLabel->fontMetrics().width("239:59/240:00"));
     bot->addWidget(_timeLabel);
 
     auto *signalMapper = new QSignalMapper(this);
