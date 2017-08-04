@@ -87,6 +87,7 @@ public:
     const QList<PlayItemInfo>& items() const { return _infos; }
     int current() const;
     const PlayItemInfo& currentInfo() const;
+    int indexOf(const QUrl& url);
 
     void switchPosition(int p1, int p2);
 
@@ -119,7 +120,6 @@ private:
     void savePlaylist();
     void loadPlaylist();
     void clearPlaylist();
-    int indexOf(const QUrl& url);
 };
 
 }

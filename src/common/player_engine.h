@@ -113,6 +113,7 @@ public slots:
     void prev();
     void next();
     void playSelected(int id); // id as in playlist indexes
+    void playByName(const QUrl& url);
     void clearPlaylist();
 
     void seekForward(int secs);

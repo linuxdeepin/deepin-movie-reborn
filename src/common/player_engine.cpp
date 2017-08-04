@@ -255,6 +255,12 @@ void PlayerEngine::next()
     _playlist->playNext(true);
 }
 
+void PlayerEngine::playByName(const QUrl& url)
+{
+    auto id = _playlist->indexOf(url);
+    _playlist->changeCurrent(id);
+}
+
 void PlayerEngine::playSelected(int id)
 {
     _playlist->changeCurrent(id);

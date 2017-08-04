@@ -299,6 +299,7 @@ MainWindow::MainWindow(QWidget *parent)
     setWindowFlags(Qt::FramelessWindowHint);
     //this'll crash MainWindow while desstruction
     //setAttribute(Qt::WA_DeleteOnClose);
+    setAcceptDrops(true);
     
     bool composited = CompositingManager::get().composited();
 #ifdef USE_DXCB
@@ -1378,6 +1379,40 @@ void MainWindow::miniButtonClicked(QString id)
 
     } else if (id == "quit_mini") {
         requestAction(ActionFactory::ActionKind::ToggleMiniMode);
+    }
+}
+
+void MainWindow::dragEnterEvent(QDragEnterEvent *ev)
+{
+    if (ev->mimeData()->hasUrls()) {
+        ev->acceptProposedAction();
+    }
+}
+
+void MainWindow::dragMoveEvent(QDragMoveEvent *ev)
+{
+    if (ev->mimeData()->hasUrls()) {
+        ev->acceptProposedAction();
+    }
+}
+
+void MainWindow::dropEvent(QDropEvent *ev)
+{
+    qDebug() << ev->mimeData()->formats();
+    if (ev->mimeData()->hasUrls()) {
+        auto urls = ev->mimeData()->urls();
+        for (const auto& url: urls) {
+            if (!url.isValid()) continue;
+
+            if (url.isLocalFile()) {
+                QFileInfo fi(url.toLocalFile());
+                if (!fi.exists()) continue;
+            }
+            _engine->addPlayFile(url);
+            _engine->playByName(url);
+        }
+
+        ev->acceptProposedAction();
     }
 }
 
