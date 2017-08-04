@@ -49,12 +49,10 @@ public:
 
         auto w = new QLabel(this);
         w->setProperty("Name", true);
-        if (pif.url.isLocalFile())
-            w->setText(pif.info.fileName());
-        else 
-            w->setText(pif.url.fileName());
+        QString msg = pif.url.fileName();
+        w->setText(w->fontMetrics().elidedText(msg, Qt::ElideMiddle, 300));
         w->setWordWrap(true);
-        vl->addWidget(w);
+        vl->addWidget(w, 1);
 
         w = new QLabel(this);
         w->setProperty("Time", true);
@@ -114,7 +112,7 @@ protected:
     void resizeEvent(QResizeEvent* se) override
     {
         auto sz = this->size();
-        _closeBtn->move(sz.width() - _closeBtn->width() - 10, (sz.height() - _closeBtn->height())/2);
+        _closeBtn->move(sz.width() - _closeBtn->width() - 20, (sz.height() - _closeBtn->height())/2);
     }
 
     void mouseDoubleClickEvent(QMouseEvent* me) override
