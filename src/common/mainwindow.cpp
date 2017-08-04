@@ -779,7 +779,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI, QList<
         case ActionFactory::ActionKind::OpenFile: {
             QString filename = QFileDialog::getOpenFileName(this, tr("Open File"),
                     QDir::currentPath(),
-                    tr("Movies (*.mkv *.mov *.mp4 *.rmvb)"));
+                    tr("Movies (%1)").arg(_engine->video_filetypes.join(" ")));
             if (QFileInfo(filename).exists()) {
                 play(QUrl::fromLocalFile(filename));
             }
@@ -790,7 +790,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI, QList<
             if (_engine->playlist().count() == 0) {
                 QString filename = QFileDialog::getOpenFileName(this, tr("Open File"),
                         QDir::currentPath(),
-                        tr("Movies (*.mkv *.mov *.mp4 *.rmvb)"));
+                        tr("Movies (%1)").arg(_engine->video_filetypes.join(" ")));
                 if (QFileInfo(filename).exists()) {
                     play(QUrl::fromLocalFile(filename));
                 }
