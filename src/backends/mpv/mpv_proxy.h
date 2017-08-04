@@ -37,6 +37,7 @@ public:
     void selectSubtitle(int id) override;
     int sid() const override;
     void setSubDelay(double secs) override;
+    void updateSubStyle(const QString& font, int sz) override;
 
     void selectTrack(int id) override;
     int aid() const override;

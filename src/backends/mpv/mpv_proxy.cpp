@@ -110,6 +110,8 @@ mpv_handle* MpvProxy::mpv_init()
     set_property(h, "input-cursor", "no");
     set_property(h, "cursor-autohide", "no");
 
+    set_property(h, "sub-ass-override", "force");
+    set_property(h, "sub-ass-style-override", "force");
     //set_property(h, "sub-auto", "fuzzy");
     set_property(h, "sub-visibility", "true");
 
@@ -333,6 +335,12 @@ bool MpvProxy::isSubVisible()
 void MpvProxy::setSubDelay(double secs)
 {
     set_property(_handle, "sub-delay", secs);
+}
+
+void MpvProxy::updateSubStyle(const QString& font, int sz)
+{
+    set_property(_handle, "sub-font", font);
+    set_property(_handle, "sub-font-size", sz);
 }
 
 void MpvProxy::savePlaybackPosition()
