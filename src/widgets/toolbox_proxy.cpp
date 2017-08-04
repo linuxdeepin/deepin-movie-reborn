@@ -13,6 +13,7 @@
 #include <QtWidgets>
 #include <dimagebutton.h>
 #include <dthememanager.h>
+#include <darrowrectangle.h>
 #include <DApplication>
 
 DWIDGET_USE_NAMESPACE
@@ -71,14 +72,22 @@ private:
     int _sid {-1};
 };
 
-class SubtitlesView: public QFrame {
+class SubtitlesView: public DArrowRectangle {
     Q_OBJECT
 public:
-    SubtitlesView(QWidget *p, PlayerEngine* e): QFrame{p, Qt::Popup}, _engine{e} {
+    SubtitlesView(QWidget *p, PlayerEngine* e)
+        : DArrowRectangle(DArrowRectangle::ArrowBottom, p), _engine{e} {
         setAttribute(Qt::WA_DeleteOnClose);
-        setWindowOpacity(0.92);
+        setWindowFlags(Qt::Popup);
 
-        setFrameShape(QFrame::NoFrame);
+        setShadowBlurRadius(4);
+        setRadius(4);
+        setShadowDistance(0);
+        setShadowYOffset(3);
+        setShadowXOffset(0);
+        setArrowWidth(8);
+        setArrowHeight(5);
+
         QSizePolicy sz_policy(QSizePolicy::Preferred, QSizePolicy::Preferred);
         //sz_policy.setHeightForWidth(true);
         setSizePolicy(sz_policy);
@@ -86,7 +95,7 @@ public:
         setFixedWidth(222);
 
         auto *l = new QVBoxLayout(this);
-        l->setContentsMargins(0, 0, 0, 0);
+        l->setContentsMargins(2, 2, 2, 2);
         setLayout(l);
 
         _subsView = new QListWidget(this);
@@ -164,12 +173,20 @@ private:
     QListWidget *_subsView {nullptr};
 };
 
-class ThumbnailPreview: public QWidget {
+class ThumbnailPreview: public DArrowRectangle {
     Q_OBJECT
 public:
-    ThumbnailPreview(): QWidget(nullptr, Qt::ToolTip) {
+    ThumbnailPreview(): DArrowRectangle(DArrowRectangle::ArrowBottom) {
         setAttribute(Qt::WA_DeleteOnClose);
-        setWindowOpacity(0.92);
+        setWindowFlags(Qt::ToolTip);
+        
+        setShadowBlurRadius(4);
+        setRadius(4);
+        setShadowDistance(0);
+        setShadowYOffset(3);
+        setShadowXOffset(0);
+        setArrowWidth(8);
+        setArrowHeight(5);
         
         auto *l = new QVBoxLayout;
         l->setContentsMargins(2, 2, 2, 2);
@@ -180,34 +197,34 @@ public:
     }
 
     void updateWithPreview(const QPoint& pos, const QPixmap& pm) {
-        if (!isVisible()) show();
+        if (!isVisible()) setVisible(true);
 
         _thumb->setPixmap(pm);
-        auto geom = this->geometry();
-        auto c = pos - QPoint(0, 20+geom.height()/2);
-        geom.moveCenter(c);
-        this->setGeometry(geom);
+        show(pos.x(), pos.y() - 5);
     }
 
 private:
     QLabel *_thumb;
 };
 
-class VolumeSlider: public QWidget {
+class VolumeSlider: public DArrowRectangle {
     Q_OBJECT
 public:
-    VolumeSlider(PlayerEngine* eng): QWidget(nullptr, Qt::Popup), _engine(eng) {
+    VolumeSlider(PlayerEngine* eng): DArrowRectangle(DArrowRectangle::ArrowBottom), _engine(eng) {
         setFixedSize(QSize(24, 105));
         setAttribute(Qt::WA_DeleteOnClose);
-        setWindowOpacity(0.92);
+        //setWindowOpacity(0.92);
+        setWindowFlags(Qt::Popup);
 
-        //auto img = QImage(":/resources/icons/volume-slider-shape.png");
-        ////img = img.convertToFormat(QImage::Format_Alpha8);
-        //img = img.createHeuristicMask();
-        //setMask(QPixmap::fromImage(img).mask());
-
-        //QRegion maskedRegion(1, 1, 22, 103, QRegion::Ellipse);
-        //setMask(maskedRegion);
+        setShadowBlurRadius(4);
+        //setBorderWidth(1);
+        //setBorderColor(qRgba(255, 255, 255, 26));
+        setRadius(4);
+        setShadowDistance(0);
+        setShadowYOffset(3);
+        setShadowXOffset(0);
+        setArrowWidth(8);
+        setArrowHeight(5);
         
         auto *l = new QVBoxLayout;
         l->setContentsMargins(0, 0, 0, 0);
@@ -396,7 +413,7 @@ void ToolboxProxy::progressHoverChanged(int v)
     qDebug() << v;
     QPixmap pm;
 
-    thumber.setThumbnailSize(128);
+    thumber.setThumbnailSize(160);
     QTime d(0, 0, 0);
     d = d.addSecs(v);
     thumber.setSeekTime(d.toString("hh:mm:ss").toStdString());
@@ -521,10 +538,8 @@ void ToolboxProxy::buttonClicked(QString id)
     } else if (id == "vol") {
         auto *w = new VolumeSlider(_engine);
         QPoint pos = _volBtn->parentWidget()->mapToGlobal(_volBtn->pos());
-
-        pos.ry() = parentWidget()->mapToGlobal(this->pos()).y() - w->height();
-        w->move(pos);
-        w->show();
+        pos.ry() = parentWidget()->mapToGlobal(this->pos()).y();
+        w->show(pos.x() + w->width()/2, pos.y() - 5);
 
     } else if (id == "prev") {
         _mainWindow->requestAction(ActionFactory::ActionKind::GotoPlaylistPrev);
@@ -534,13 +549,13 @@ void ToolboxProxy::buttonClicked(QString id)
         _mainWindow->requestAction(ActionFactory::ActionKind::TogglePlaylist);
     } else if (id == "sub") {
         auto *w = new SubtitlesView(0, _engine);
-        w->show();
+        w->setVisible(true);
         w->setFixedHeight(w->minimumSize().height());
         qDebug() << w->minimumSize() << w->sizeHint() << w->size();
         
         QPoint pos = _subBtn->parentWidget()->mapToGlobal(_subBtn->pos());
-        pos.ry() = parentWidget()->mapToGlobal(this->pos()).y() - w->height();
-        w->move(pos);
+        pos.ry() = parentWidget()->mapToGlobal(this->pos()).y();
+        w->show(pos.x() + _subBtn->width()/2, pos.y() - 5);
     }
 }
 
