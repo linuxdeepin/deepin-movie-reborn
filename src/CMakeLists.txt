@@ -83,3 +83,9 @@ install(TARGETS ${CMD_NAME} DESTINATION bin)
 install(DIRECTORY ${PROJECT_SOURCE_DIR}/src/translations
     DESTINATION share/${CMD_NAME}
     FILES_MATCHING PATTERN "*.qm")
+install(FILES ${PROJECT_SOURCE_DIR}/src/deepin-movie.desktop 
+    DESTINATION share/applications)
+install(FILES ${PROJECT_SOURCE_DIR}/src/resources/icons/logo-big.svg
+    DESTINATION share/icons/hicolor/scalable/apps
+    RENAME deepin-movie.svg)
+

@@ -467,46 +467,46 @@
 <context>
     <name>dmr::MainWindow</name>
     <message>
-        <location filename="../common/mainwindow.cpp" line="344"/>
-        <location filename="../common/mainwindow.cpp" line="424"/>
+        <location filename="../common/mainwindow.cpp" line="349"/>
+        <location filename="../common/mainwindow.cpp" line="429"/>
         <source>Deepin Movie</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="780"/>
         <location filename="../common/mainwindow.cpp" line="791"/>
-        <location filename="../common/mainwindow.cpp" line="1010"/>
+        <location filename="../common/mainwindow.cpp" line="802"/>
+        <location filename="../common/mainwindow.cpp" line="1022"/>
         <source>Open File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="782"/>
         <location filename="../common/mainwindow.cpp" line="793"/>
+        <location filename="../common/mainwindow.cpp" line="804"/>
         <source>Movies (%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1012"/>
+        <location filename="../common/mainwindow.cpp" line="1024"/>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1069"/>
+        <location filename="../common/mainwindow.cpp" line="1081"/>
         <source>View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1080"/>
+        <location filename="../common/mainwindow.cpp" line="1092"/>
         <source>Movie Screenshot</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1081"/>
+        <location filename="../common/mainwindow.cpp" line="1093"/>
         <source>Saved to</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1092"/>
+        <location filename="../common/mainwindow.cpp" line="1104"/>
         <source>The screenshot is saved in %1</source>
         <translation type="unfinished"></translation>
     </message>
