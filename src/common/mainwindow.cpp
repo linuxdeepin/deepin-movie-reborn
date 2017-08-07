@@ -475,7 +475,10 @@ MainWindow::MainWindow(QWidget *parent)
 
     auto mwfm = new MainWindowFocusMonitor(this);
     connect(this, &MainWindow::windowEntered, &MainWindow::resumeToolsWindow);
-    connect(this, &MainWindow::windowLeaved, &MainWindow::suspendToolsWindow);
+    connect(this, &MainWindow::windowLeaved, [=]() {
+        if (!frameGeometry().contains(QCursor::pos()))
+            suspendToolsWindow(); 
+    });
 
     if (!composited) {
         if (_engine->windowHandle())
@@ -1197,6 +1200,12 @@ void MainWindow::suspendToolsWindow()
 {
     if (!_miniMode) {
         if (_playlist && _playlist->isVisible())
+            return;
+
+        if (qApp->focusWindow() != windowHandle() && frameGeometry().contains(QCursor::pos()))
+            return;
+
+        if (_toolbox->anyPopupShown())
             return;
 
         _titlebar->hide();

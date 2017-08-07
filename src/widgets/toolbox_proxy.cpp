@@ -9,6 +9,7 @@
 #include "dmr_settings.h"
 #include "actions.h"
 #include "slider.h"
+#include "thumbnail_worker.h"
 
 #include <QtWidgets>
 #include <dimagebutton.h>
@@ -77,8 +78,10 @@ class SubtitlesView: public DArrowRectangle {
 public:
     SubtitlesView(QWidget *p, PlayerEngine* e)
         : DArrowRectangle(DArrowRectangle::ArrowBottom, p), _engine{e} {
-        setAttribute(Qt::WA_DeleteOnClose);
+        //setAttribute(Qt::WA_DeleteOnClose);
         setWindowFlags(Qt::Popup);
+
+        setMinimumHeight(20);
 
         setShadowBlurRadius(4);
         setRadius(4);
@@ -88,21 +91,20 @@ public:
         setArrowWidth(8);
         setArrowHeight(5);
 
-        QSizePolicy sz_policy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-        //sz_policy.setHeightForWidth(true);
+        QSizePolicy sz_policy(QSizePolicy::Fixed, QSizePolicy::Preferred);
         setSizePolicy(sz_policy);
 
-        setFixedWidth(222);
+        setFixedWidth(220);
 
         auto *l = new QVBoxLayout(this);
-        l->setContentsMargins(2, 2, 2, 2);
+        l->setContentsMargins(8, 2, 8, 2);
         setLayout(l);
 
         _subsView = new QListWidget(this);
         _subsView->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
         _subsView->setSelectionMode(QListWidget::SingleSelection);
         _subsView->setSelectionBehavior(QListWidget::SelectRows);
-        l->addWidget(_subsView);
+        l->addWidget(_subsView, 1);
 
         connect(_subsView, &QListWidget::itemClicked, this, &SubtitlesView::onItemClicked);
         connect(_engine, &PlayerEngine::tracksChanged, this, &SubtitlesView::populateSubtitles);
@@ -144,6 +146,7 @@ protected slots:
             auto item = new QListWidgetItem();
             auto siw = new SubtitleItemWidget(this, sub);
             _subsView->addItem(item);
+            item->setSizeHint(siw->sizeHint());
             _subsView->setItemWidget(item, siw);
             auto v = (sid == sub["id"].toInt());
             siw->setCurrent(v);
@@ -151,6 +154,8 @@ protected slots:
                 _subsView->setCurrentItem(item);
             }
         }
+
+        this->setMaximumHeight(28 * pmf.subs.size());
     }
 
     void onSidChanged()
@@ -193,13 +198,15 @@ public:
         setLayout(l);
 
         _thumb = new QLabel(this);
+        _thumb->setFixedWidth(160);
         l->addWidget(_thumb);
     }
 
-    void updateWithPreview(const QPoint& pos, const QPixmap& pm) {
-        if (!isVisible()) setVisible(true);
-
+    void updateWithPreview(const QPixmap& pm) {
         _thumb->setPixmap(pm);
+    }
+
+    void updateWithPreview(const QPoint& pos) {
         show(pos.x(), pos.y() - 5);
     }
 
@@ -290,11 +297,16 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
 
     _previewer = new ThumbnailPreview;
     _previewer->hide();
+
+    _subView = new SubtitlesView(0, _engine);
+    _subView->hide();
     setup();
 }
 
 ToolboxProxy::~ToolboxProxy()
 {
+    ThumbnailWorker::get().stop();
+    delete _subView;
     delete _previewer;
 }
 
@@ -398,9 +410,27 @@ void ToolboxProxy::setup()
     updateFullState();
     updateButtonStates();
 
+    connect(&ThumbnailWorker::get(), &ThumbnailWorker::thumbGenerated,
+            this, &ToolboxProxy::updateHoverPreview);
+
     auto bubbler = new KeyPressBubbler(this);
     this->installEventFilter(bubbler);
     _playBtn->installEventFilter(bubbler);
+}
+
+bool ToolboxProxy::anyPopupShown() const
+{
+    return _previewer->isVisible() || _subView->isVisible();
+}
+
+void ToolboxProxy::updateHoverPreview(const QUrl& url, int secs)
+{
+    if (_engine->playlist().currentInfo().url != url)
+        return;
+
+    QPixmap pm = ThumbnailWorker::get().getThumb(url, secs);
+
+    _previewer->updateWithPreview(pm);
 }
 
 void ToolboxProxy::progressHoverChanged(int v)
@@ -412,26 +442,17 @@ void ToolboxProxy::progressHoverChanged(int v)
         return;
 
     qDebug() << v;
-    QPixmap pm;
+    _lastHoverValue = v;
+    ThumbnailWorker::get().requestThumb(_engine->playlist().currentInfo().url, v);
 
-    thumber.setThumbnailSize(160);
-    QTime d(0, 0, 0);
-    d = d.addSecs(v);
-    thumber.setSeekTime(d.toString("hh:mm:ss").toStdString());
-    auto file = _engine->playlist().currentInfo().info.absoluteFilePath();
-    try {
-        std::vector<uint8_t> buf;
-        thumber.generateThumbnail(file.toUtf8().toStdString(),
-                ThumbnailerImageType::Png, buf);
+    auto geom = _progBar->frameGeometry();
+    double pert = (double) _lastHoverValue / (_progBar->maximum() - _progBar->minimum());
 
-        auto img = QImage::fromData(buf.data(), buf.size(), "png");
-        pm = QPixmap::fromImage(img);
-    } catch (const std::logic_error&) {
-    }
-
-
-    QPoint p = {QCursor::pos().x(), _progBar->parentWidget()->mapToGlobal(_progBar->pos()).y()};
-    _previewer->updateWithPreview(p, pm);
+    auto pos = _progBar->mapToGlobal(QPoint(0, 0));
+    QPoint p = {
+        (int)(pos.x() + geom.width() * pert), pos.y()
+    };
+    _previewer->updateWithPreview(p);
 }
 
 void ToolboxProxy::setProgress()
@@ -549,14 +570,11 @@ void ToolboxProxy::buttonClicked(QString id)
     } else if (id == "list") {
         _mainWindow->requestAction(ActionFactory::ActionKind::TogglePlaylist);
     } else if (id == "sub") {
-        auto *w = new SubtitlesView(0, _engine);
-        w->setVisible(true);
-        w->setFixedHeight(w->minimumSize().height());
-        qDebug() << w->minimumSize() << w->sizeHint() << w->size();
+        _subView->setVisible(true);
         
         QPoint pos = _subBtn->parentWidget()->mapToGlobal(_subBtn->pos());
         pos.ry() = parentWidget()->mapToGlobal(this->pos()).y();
-        w->show(pos.x() + _subBtn->width()/2, pos.y() - 5);
+        _subView->show(pos.x() + _subBtn->width()/2, pos.y() - 5);
     }
 }
 
