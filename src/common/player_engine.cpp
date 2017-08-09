@@ -58,6 +58,18 @@ PlayerEngine::~PlayerEngine()
     qDebug() << __func__;
 }
 
+bool PlayerEngine::isPlayableFile(const QUrl& url)
+{
+    if (url.isLocalFile()) {
+        auto name = url.path();
+        auto suffix = QString("*") + name.mid(name.lastIndexOf('.'));
+        return video_filetypes.contains(suffix, Qt::CaseInsensitive);
+    } else {
+        // for a networked url, there is no way to know if it's playable right now
+        return true;
+    }
+}
+
 void PlayerEngine::updateSubStyles()
 {
     auto font_opt = Settings::get().settings()->option("subtitle.font.family");

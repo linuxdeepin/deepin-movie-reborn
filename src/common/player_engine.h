@@ -52,6 +52,7 @@ public:
     virtual ~PlayerEngine();
 
     void addPlayFile(const QUrl& url);
+    bool isPlayableFile(const QUrl& url);
 
     // only supports (+/-) 0, 90, 180, 270
     int videoRotation() const;

@@ -367,6 +367,7 @@ MainWindow::MainWindow(QWidget *parent)
     _playState = new QLabel(this);
     _playState->setPixmap(QPixmap(QString(":/resources/icons/%1/normal/play-big.png")
                 .arg(qApp->theme())));
+    _playState->setVisible(false);
 
 
     // mini ui
@@ -452,6 +453,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(&_engine->playlist(), &PlaylistModel::currentChanged, updateConstraints);
 
     connect(_engine, &PlayerEngine::stateChanged, this, &MainWindow::updatePlayState);
+    updatePlayState();
 
     connect(DThemeManager::instance(), &DThemeManager::themeChanged,
             this, &MainWindow::onThemeChanged);
@@ -779,6 +781,19 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI, QList<
             break;
         }
 
+        case ActionFactory::ActionKind::OpenFileList: {
+            QStringList filenames = QFileDialog::getOpenFileNames(this, tr("Open File"),
+                    QDir::currentPath(),
+                    tr("Movies (%1)").arg(_engine->video_filetypes.join(" ")));
+            if (filenames.size()) {
+                for (const auto& filename: filenames) {
+                    _engine->addPlayFile(QUrl::fromLocalFile(filename));
+                }
+                _engine->playByName(QUrl::fromLocalFile(filenames[0]));
+            }
+            break;
+        }
+
         case ActionFactory::ActionKind::OpenFile: {
             QString filename = QFileDialog::getOpenFileName(this, tr("Open File"),
                     QDir::currentPath(),
@@ -791,12 +806,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI, QList<
 
         case ActionFactory::ActionKind::StartPlay: {
             if (_engine->playlist().count() == 0) {
-                QString filename = QFileDialog::getOpenFileName(this, tr("Open File"),
-                        QDir::currentPath(),
-                        tr("Movies (%1)").arg(_engine->video_filetypes.join(" ")));
-                if (QFileInfo(filename).exists()) {
-                    play(QUrl::fromLocalFile(filename));
-                }
+                requestAction(ActionFactory::ActionKind::OpenFileList);
             } else {
                 _engine->play();
             }
@@ -1408,18 +1418,21 @@ void MainWindow::dropEvent(QDropEvent *ev)
 {
     qDebug() << ev->mimeData()->formats();
     if (ev->mimeData()->hasUrls()) {
+        QUrl url_play;
         auto urls = ev->mimeData()->urls();
         for (const auto& url: urls) {
-            if (!url.isValid()) continue;
+            if (!url.isValid() || !_engine->isPlayableFile(url)) {
+                continue;
+            }
 
             if (url.isLocalFile()) {
                 QFileInfo fi(url.toLocalFile());
                 if (!fi.exists()) continue;
             }
             _engine->addPlayFile(url);
-            _engine->playByName(url);
+            if (!url_play.isValid()) url_play = url;
         }
-
+        _engine->playByName(url_play);
         ev->acceptProposedAction();
     }
 }

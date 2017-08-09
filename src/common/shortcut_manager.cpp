@@ -41,7 +41,7 @@ ShortcutManager::ShortcutManager()
         {"vol_down", ActionFactory::ActionKind::VolumeDown},
         {"mute", ActionFactory::ActionKind::ToggleMute},
 
-        {"open_file", ActionFactory::ActionKind::OpenFile},
+        {"open_file", ActionFactory::ActionKind::OpenFileList},
         {"playlist_next", ActionFactory::ActionKind::GotoPlaylistNext},
         {"playlist_prev", ActionFactory::ActionKind::GotoPlaylistPrev},
 
