@@ -218,3 +218,5 @@ Dtk--Widget--DImageButton#MiniCloseBtn {
     qproperty-pressPic: url(:/resources/icons/dark/normal/close-press.png);
 }
 
+
+
