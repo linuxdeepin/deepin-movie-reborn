@@ -1102,6 +1102,8 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI, QList<
 
             if (!_nwShot) {
                 _nwShot = new NotificationWidget(this); 
+                _nwShot->setAnchor(NotificationWidget::AnchorBottom);
+                _nwShot->setAnchorDistance(110);
             }
             auto msg = tr("The screenshot is saved in %1").arg(filePath);
             auto pm = QPixmap(QString(":/resources/icons/%1.png").arg(success?"success":"fail"));
@@ -1256,6 +1258,8 @@ void MainWindow::showEvent(QShowEvent *event)
         }
     }
 
+    if (!_inited) _inited = !_inited;
+
     _titlebar->raise();
     _toolbox->raise();
     resumeToolsWindow();
@@ -1291,15 +1295,17 @@ void MainWindow::updateSizeConstraints()
 void MainWindow::resizeEvent(QResizeEvent *ev)
 {
     qDebug() << __func__ << geometry();
-    if (!_nwSize) {
-        _nwSize = new NotificationWidget(this); 
-    }
+    if (_inited) {
+        if (!_nwSize) {
+            _nwSize = new NotificationWidget(this); 
+        }
 
-    auto msg = QString("%1x%2").arg(width()) .arg(height());
-    if (_nwSize->isVisible()) {
-        _nwSize->updateWithMessage(msg);
-    } else {
-        _nwSize->popup(msg);
+        auto msg = QString("%1x%2").arg(width()) .arg(height());
+        if (_nwSize->isVisible()) {
+            _nwSize->updateWithMessage(msg);
+        } else {
+            _nwSize->popup(msg);
+        }
     }
 
     updateSizeConstraints();
@@ -1417,24 +1423,50 @@ void MainWindow::dragMoveEvent(QDragMoveEvent *ev)
 void MainWindow::dropEvent(QDropEvent *ev)
 {
     qDebug() << ev->mimeData()->formats();
-    if (ev->mimeData()->hasUrls()) {
-        QUrl url_play;
-        auto urls = ev->mimeData()->urls();
-        for (const auto& url: urls) {
+    if (!ev->mimeData()->hasUrls()) {
+        return;
+    }
+
+    QList<QString> invalids;
+    QUrl url_play;
+    auto urls = ev->mimeData()->urls();
+    for (const auto& url: urls) {
+        if (url.isLocalFile()) {
+            QFileInfo fi(url.toLocalFile());
+            if (!fi.exists()) continue;
+
             if (!url.isValid() || !_engine->isPlayableFile(url)) {
+                invalids.append(fi.fileName());
                 continue;
             }
 
-            if (url.isLocalFile()) {
-                QFileInfo fi(url.toLocalFile());
-                if (!fi.exists()) continue;
-            }
             _engine->addPlayFile(url);
             if (!url_play.isValid()) url_play = url;
         }
-        _engine->playByName(url_play);
-        ev->acceptProposedAction();
     }
+
+    int ms = 0;
+    for (const auto& name: invalids) {
+        if (!_nwInvalid) {
+            _nwInvalid = new NotificationWidget(this); 
+            _nwInvalid->setAnchor(NotificationWidget::AnchorBottom);
+            _nwInvalid->setAnchorDistance(110);
+        }
+
+        QTimer::singleShot(ms, [=]() {
+            auto msg = QString(tr("Invalid file: %1").arg(name));
+            if (_nwInvalid->isVisible()) {
+                _nwInvalid->updateWithMessage(msg);
+            } else {
+                _nwInvalid->popup(msg);
+            }
+        });
+
+        ms += 1000;
+    }
+
+    _engine->playByName(url_play);
+    ev->acceptProposedAction();
 }
 
 #include "mainwindow.moc"
