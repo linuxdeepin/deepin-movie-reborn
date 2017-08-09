@@ -13,6 +13,7 @@ public:
 enum ActionKind {
     Invalid = 0,
     OpenFile = 1,
+    OpenFileList,
     StartPlay,
     Settings,
     LightTheme,
