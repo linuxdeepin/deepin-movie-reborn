@@ -31,6 +31,16 @@ NotificationWidget::NotificationWidget(QWidget *parent)
     setMaskColor(Qt::black);
 }
 
+void NotificationWidget::showEvent(QShowEvent *event)
+{
+    auto geom = _mw->frameGeometry();
+    if (_anchor == AnchorBottom) {
+        move(geom.center().x() - size().width()/2, geom.bottom() - _anchorDist);
+    } else {
+        move(geom.center().x() - size().width()/2, geom.center().y() - size().height()/2);
+    }
+}
+
 void NotificationWidget::popupWithIcon(const QString& msg, const QPixmap& pm)
 {
     _msgLabel->setText(msg);
@@ -43,8 +53,7 @@ void NotificationWidget::popupWithIcon(const QString& msg, const QPixmap& pm)
     layout()->addWidget(_msgLabel);
 
     setFixedSize(300, 43);
-    auto geom = _mw->frameGeometry();
-    move(geom.center().x() - size().width()/2, geom.bottom() - 110);
+    
     show();
     _timer->start();
     Utility::setStayOnTop(this, true);
@@ -56,9 +65,8 @@ void NotificationWidget::popup(const QString& msg)
     if (layout()->indexOf(_msgLabel) == -1)
         layout()->addWidget(_msgLabel);
 
-    //FIXME: update pos when mw moved
-    auto geom = _mw->frameGeometry();
-    move(geom.center().x() - size().width()/2, geom.center().y() - size().height()/2);
+    this->ensurePolished();
+
     show();
     _timer->start();
     Utility::setStayOnTop(this, true);
@@ -71,7 +79,11 @@ void NotificationWidget::updateWithMessage(const QString& newMsg)
     _msgLabel->setText(newMsg);
 
     auto geom = _mw->frameGeometry();
-    move(geom.center().x() - size().width()/2, geom.center().y() - size().height()/2);
+    if (_anchor == AnchorBottom) {
+        move(geom.center().x() - size().width()/2, geom.bottom() - _anchorDist);
+    } else {
+        move(geom.center().x() - size().width()/2, geom.center().y() - size().height()/2);
+    }
 }
 
 }

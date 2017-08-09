@@ -102,6 +102,7 @@ private:
 
     bool _miniMode {false};
     QSize _lastSizeInNormalMode;
+    bool _inited {false};
 
     DPlatformWindowHandle *_handle {nullptr};
     QMargins _cachedMargins;
@@ -116,6 +117,7 @@ private:
     MainWindowEventListener *_listener {nullptr};
     NotificationWidget *_nwShot {nullptr};
     NotificationWidget *_nwSize {nullptr};
+    NotificationWidget *_nwInvalid {nullptr};
     QTimer _autoHideTimer;
 };
 };
