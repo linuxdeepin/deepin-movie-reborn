@@ -365,6 +365,8 @@ MainWindow::MainWindow(QWidget *parent)
     _playlist->hide();
 
     _playState = new QLabel(this);
+    _playState->setPixmap(QPixmap(QString(":/resources/icons/%1/normal/play-big.png")
+                .arg(qApp->theme())));
 
 
     // mini ui
@@ -579,23 +581,13 @@ void MainWindow::onThemeChanged()
             lightF.close();
         }
     }
+    _playState->setPixmap(QPixmap(QString(":/resources/icons/%1/normal/play-big.png")
+                .arg(qApp->theme())));
 }
 
 void MainWindow::updatePlayState()
 {
-    if (_engine->state() != PlayerEngine::CoreState::Idle) {
-        qDebug() << __func__ << _engine->state();
-        QPixmap pm;
-        if (_engine->state() == PlayerEngine::CoreState::Playing) {
-            pm = QPixmap(QString(":/resources/icons/%1/normal/pause-big.png")
-                    .arg(qApp->theme()));
-            QTimer::singleShot(100, [=]() { _playState->setVisible(false); });
-        } else {
-            pm = QPixmap(QString(":/resources/icons/%1/normal/play-big.png")
-                    .arg(qApp->theme()));
-        }
-        _playState->setPixmap(pm);
-
+    if (_engine->state() == PlayerEngine::CoreState::Paused) {
         auto r = QRect(QPoint(0, 0), QSize(128, 128));
         r.moveCenter(rect().center());
         _playState->move(r.topLeft());
