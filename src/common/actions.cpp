@@ -150,6 +150,7 @@ QMenu* ActionFactory::mainContextMenu()
             auto *parent = menu;
             auto *menu = new QMenu(tr("Subtitle"));
             DEF_ACTION(tr("Load"), ActionKind::LoadSubtitle);
+            DEF_ACTION(tr("Search online subtitles"), ActionKind::MatchOnlineSubtitle);
             //DEF_ACTION(tr("Select"), ActionKind::SelectSubtitle);
             {
                 auto *parent = menu;

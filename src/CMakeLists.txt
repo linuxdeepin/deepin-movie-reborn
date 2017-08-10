@@ -17,12 +17,14 @@ find_package(Qt5Widgets)
 find_package(Qt5DBus)
 find_package(Qt5X11Extras)
 find_package(Qt5LinguistTools)
+find_package(Qt5Network)
 
 pkg_check_modules(Dtk REQUIRED IMPORTED_TARGET dtkwidget)
 pkg_check_modules(Mpv REQUIRED IMPORTED_TARGET mpv)
 pkg_check_modules(Xcb REQUIRED IMPORTED_TARGET xcb xcb-aux xcb-proto xcb-ewmh xcb-shape)
 pkg_check_modules(Other REQUIRED IMPORTED_TARGET libffmpegthumbnailer 
-    libavformat libavutil libavcodec libavresample libpulse libpulse-simple)
+    libavformat libavutil libavcodec libavresample libpulse libpulse-simple
+    openssl)
 
 qt5_add_resources(RCS resources.qrc)
 
@@ -71,8 +73,8 @@ add_executable(${CMD_NAME} ${SRCS} ${RCS} ${QM})
 add_dependencies(${CMD_NAME} json_i18n)
 target_include_directories(${CMD_NAME} PUBLIC ${PROJECT_INCLUDE})
 
-set(TARGET_LIBS X11 Xext Xtst PkgConfig::Xcb Qt5::Widgets Qt5::X11Extras
-    Qt5::DBus PkgConfig::Dtk PkgConfig::Mpv PkgConfig::Other pthread)
+set(TARGET_LIBS X11 Xext Xtst PkgConfig::Xcb Qt5::Widgets Qt5::X11Extras 
+    Qt5::Network Qt5::DBus PkgConfig::Dtk PkgConfig::Mpv PkgConfig::Other pthread)
 if (ENABLE_VPU_PLATFORM) 
     list(APPEND TARGET_LIBS GAL pulse pulse-simple)
 endif()
