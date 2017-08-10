@@ -2,6 +2,7 @@
 
 #include "player_engine.h"
 #include "playlist_model.h"
+#include "online_sub.h"
 
 #include "mpv_proxy.h"
 #ifdef ENABLE_VPU_PLATFORM
@@ -40,6 +41,9 @@ PlayerEngine::PlayerEngine(QWidget *parent)
 
     setLayout(l);
     connect(&Settings::get(), &Settings::subtitleChanged, this, &PlayerEngine::updateSubStyles);
+
+    connect(&OnlineSubtitle::get(), &OnlineSubtitle::subtitlesDownloadedFor, 
+            this, &PlayerEngine::onSubtitlesDownloaded);
 
     _playlist = new PlaylistModel(this);
 }
@@ -138,12 +142,32 @@ int PlayerEngine::sid() const
     return _current->sid();
 }
 
+void PlayerEngine::onSubtitlesDownloaded(const QUrl& url, const QList<QString>& filenames)
+{
+    if (state() == CoreState::Idle) { return; }
+    if (!_current) return;
+
+    if (playlist().currentInfo().url != url) 
+        return;
+
+    for (auto& filename: filenames)
+        _current->loadSubtitle(filename);
+}
+
 void PlayerEngine::loadSubtitle(const QFileInfo& fi)
 {
     if (state() == CoreState::Idle) { return; }
     if (!_current) return;
 
     _current->loadSubtitle(fi);
+}
+
+void PlayerEngine::loadOnlineSubtitle(const QUrl& url)
+{
+    if (state() == CoreState::Idle) { return; }
+    if (!_current) return;
+
+    OnlineSubtitle::get().requestSubtitle(url);
 }
 
 void PlayerEngine::setPlaySpeed(double times)

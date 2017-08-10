@@ -329,7 +329,7 @@
     <message>
         <location filename="../common/actions.cpp" line="54"/>
         <location filename="../common/actions.cpp" line="78"/>
-        <location filename="../common/actions.cpp" line="178"/>
+        <location filename="../common/actions.cpp" line="179"/>
         <source>Settings</source>
         <translation>设置</translation>
     </message>
@@ -356,7 +356,7 @@
     </message>
     <message>
         <location filename="../common/actions.cpp" line="77"/>
-        <location filename="../common/actions.cpp" line="194"/>
+        <location filename="../common/actions.cpp" line="195"/>
         <source>Film info</source>
         <translation>电影信息</translation>
     </message>
@@ -437,17 +437,22 @@
         <translation>音轨</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="192"/>
+        <location filename="../common/actions.cpp" line="153"/>
+        <source>Search online subtitles</source>
+        <translation>查找在线字幕</translation>
+    </message>
+    <message>
+        <location filename="../common/actions.cpp" line="193"/>
         <source>Clear playlist</source>
         <translation>清空播放列表</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="193"/>
+        <location filename="../common/actions.cpp" line="194"/>
         <source>Display in file manager</source>
         <translation>在文件管理器中显示</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="242"/>
+        <location filename="../common/actions.cpp" line="243"/>
         <source>Load Track</source>
         <translation>载入音轨</translation>
     </message>
@@ -457,27 +462,27 @@
         <translation>载入字幕</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="156"/>
+        <location filename="../common/actions.cpp" line="157"/>
         <source>Select</source>
         <translation>选择字幕</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="160"/>
+        <location filename="../common/actions.cpp" line="161"/>
         <source>Hide</source>
         <translation>隐藏字幕</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="168"/>
+        <location filename="../common/actions.cpp" line="169"/>
         <source>Film Screenshot</source>
         <translation>截图</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="169"/>
+        <location filename="../common/actions.cpp" line="170"/>
         <source>Burst Shooting</source>
         <translation>连拍截图</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="177"/>
+        <location filename="../common/actions.cpp" line="178"/>
         <source>Film Info</source>
         <translation>电影信息</translation>
     </message>
@@ -513,7 +518,7 @@
         <translation type="vanished">选择字幕</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="167"/>
+        <location filename="../common/actions.cpp" line="168"/>
         <source>Screenshot</source>
         <translation>截图</translation>
     </message>
@@ -526,7 +531,7 @@
         <translation type="vanished">连拍截图</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="176"/>
+        <location filename="../common/actions.cpp" line="177"/>
         <source>Playlist</source>
         <translation>播放列表</translation>
     </message>
@@ -570,15 +575,15 @@
         <translation>深度影院</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="785"/>
-        <location filename="../common/mainwindow.cpp" line="798"/>
-        <location filename="../common/mainwindow.cpp" line="1024"/>
+        <location filename="../common/mainwindow.cpp" line="786"/>
+        <location filename="../common/mainwindow.cpp" line="799"/>
+        <location filename="../common/mainwindow.cpp" line="1030"/>
         <source>Open File</source>
         <translation>打开文件</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="787"/>
-        <location filename="../common/mainwindow.cpp" line="800"/>
+        <location filename="../common/mainwindow.cpp" line="788"/>
+        <location filename="../common/mainwindow.cpp" line="801"/>
         <source>Movies (%1)</source>
         <translation>视频文件(%1)</translation>
     </message>
@@ -587,32 +592,32 @@
         <translation type="vanished">视频文件(*.mkv *.mov *.mp4 *.rmvb)</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1026"/>
+        <location filename="../common/mainwindow.cpp" line="1032"/>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</source>
         <translation>字幕文件 (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1083"/>
+        <location filename="../common/mainwindow.cpp" line="1089"/>
         <source>View</source>
         <translation>查看</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1094"/>
+        <location filename="../common/mainwindow.cpp" line="1100"/>
         <source>Movie Screenshot</source>
         <translation>视频截图</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1095"/>
+        <location filename="../common/mainwindow.cpp" line="1101"/>
         <source>Saved to</source>
         <translation>保存到</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1108"/>
+        <location filename="../common/mainwindow.cpp" line="1114"/>
         <source>The screenshot is saved in %1</source>
         <translation>您的截图已保存到%1</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1457"/>
+        <location filename="../common/mainwindow.cpp" line="1463"/>
         <source>Invalid file: %1</source>
         <translation>无效文件：%1</translation>
     </message>

@@ -638,6 +638,7 @@ void MainWindow::updateActionsState()
             case ActionFactory::ActionKind::Screenshot:
             case ActionFactory::ActionKind::ToggleMiniMode:
             case ActionFactory::ActionKind::Fullscreen:
+            case ActionFactory::ActionKind::MatchOnlineSubtitle:
             case ActionFactory::ActionKind::BurstScreenshot:
                 v = _engine->state() != PlayerEngine::Idle;
                 break;
@@ -981,6 +982,11 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI, QList<
         case ActionFactory::ActionKind::SelectTrack: {
             Q_ASSERT(args.size() == 1);
             _engine->selectTrack(args[0].toInt());
+            break;
+        }
+
+        case ActionFactory::ActionKind::MatchOnlineSubtitle: {
+            _engine->loadOnlineSubtitle(_engine->playlist().currentInfo().url);
             break;
         }
 

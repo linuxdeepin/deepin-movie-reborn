@@ -34,6 +34,7 @@ enum ActionKind {
     LoadSubtitle,
     SelectSubtitle, // stub for subs loaded from movie
     HideSubtitle,
+    MatchOnlineSubtitle,
     Screenshot,
     BurstScreenshot,
 

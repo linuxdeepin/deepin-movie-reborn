@@ -71,6 +71,7 @@ public:
     const PlayingMovieInfo& playingMovieInfo();
     void setPlaySpeed(double times);
 
+    void loadOnlineSubtitle(const QUrl& url);
     void loadSubtitle(const QFileInfo& fi);
     void toggleSubtitle();
     bool isSubVisible();
@@ -134,6 +135,7 @@ protected slots:
     void onBackendStateChanged();
     void requestPlay(int id);
     void updateSubStyles();
+    void onSubtitlesDownloaded(const QUrl& url, const QList<QString>& filenames);
 
 protected:
     PlaylistModel *_playlist {nullptr};
