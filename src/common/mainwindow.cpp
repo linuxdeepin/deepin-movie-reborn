@@ -856,7 +856,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI, QList<
 
         case ActionFactory::ActionKind::MovieInfo: {
             if (_engine->state() != PlayerEngine::CoreState::Idle) {
-                MovieInfoDialog mid(_engine->playlist().currentInfo().mi);
+                MovieInfoDialog mid(_engine->playlist().currentInfo());
                 mid.exec();
             }
             break;
