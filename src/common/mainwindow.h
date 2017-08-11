@@ -60,6 +60,8 @@ protected:
     void closeEvent(QCloseEvent *ev) override;
     void resizeEvent(QResizeEvent *ev) override;
     void mouseMoveEvent(QMouseEvent *ev) override;
+    void keyPressEvent(QKeyEvent *ev) override;
+    void keyReleaseEvent(QKeyEvent *ev) override;
     void moveEvent(QMoveEvent *ev) override;
     void contextMenuEvent(QContextMenuEvent *cme) override;
     void paintEvent(QPaintEvent*) override;
@@ -114,10 +116,12 @@ private:
     bool _lightTheme {false};
     bool _windowAbove {false};
 
+    double _playSpeed {1.0};
+
     MainWindowEventListener *_listener {nullptr};
     NotificationWidget *_nwShot {nullptr};
     NotificationWidget *_nwSize {nullptr};
-    NotificationWidget *_nwInvalid {nullptr};
+    NotificationWidget *_nwComm {nullptr};
     QTimer _autoHideTimer;
 };
 };

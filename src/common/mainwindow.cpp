@@ -462,6 +462,10 @@ MainWindow::MainWindow(QWidget *parent)
     connect(&_autoHideTimer, &QTimer::timeout, this, &MainWindow::suspendToolsWindow);
     _autoHideTimer.setSingleShot(true);
 
+    _nwComm = new NotificationWidget(this); 
+    _nwComm->setAnchor(NotificationWidget::AnchorBottom);
+    _nwComm->setAnchorDistance(110);
+
 #ifdef USE_DXCB
     if (!composited) {
         connect(qApp, &QGuiApplication::applicationStateChanged,
@@ -1012,17 +1016,31 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI, QList<
         }
 
         case ActionFactory::ActionKind::AccelPlayback: {
-            _engine->setPlaySpeed(2.0);
+            if (_playSpeed <= 1.0) {
+                _playSpeed = 1.0 + 0.1;
+            } else {
+                _playSpeed = qMin(2.0, _playSpeed + 0.1);
+            }
+            _engine->setPlaySpeed(_playSpeed);
+            _nwComm->updateWithMessage(tr("Speed: %1").arg(_playSpeed));
             break;
         }
 
         case ActionFactory::ActionKind::DecelPlayback: {
-            _engine->setPlaySpeed(0.5);
+            if (_playSpeed >= 1.0) {
+                _playSpeed = 1.0 - 0.1;
+            } else {
+                _playSpeed = qMax(0.1, _playSpeed - 0.1);
+            }
+            _engine->setPlaySpeed(_playSpeed);
+            _nwComm->updateWithMessage(tr("Speed: %1").arg(_playSpeed));
             break;
         }
 
         case ActionFactory::ActionKind::ResetPlayback: {
-            _engine->setPlaySpeed(1.0);
+            _playSpeed = 1.0;
+            _engine->setPlaySpeed(_playSpeed);
+            _nwComm->updateWithMessage(tr("Speed: %1").arg(_playSpeed));
             break;
         }
 
@@ -1307,11 +1325,7 @@ void MainWindow::resizeEvent(QResizeEvent *ev)
         }
 
         auto msg = QString("%1x%2").arg(width()) .arg(height());
-        if (_nwSize->isVisible()) {
-            _nwSize->updateWithMessage(msg);
-        } else {
-            _nwSize->popup(msg);
-        }
+        _nwSize->updateWithMessage(msg);
     }
 
     updateSizeConstraints();
@@ -1323,6 +1337,16 @@ void MainWindow::moveEvent(QMoveEvent *ev)
     if (_nwSize && _nwSize->isVisible()) {
         _nwSize->hide();
     }
+}
+
+void MainWindow::keyPressEvent(QKeyEvent *ev)
+{
+    QWidget::keyPressEvent(ev);
+}
+
+void MainWindow::keyReleaseEvent(QKeyEvent *ev)
+{
+    QWidget::keyReleaseEvent(ev);
 }
 
 void MainWindow::mouseMoveEvent(QMouseEvent *ev)
@@ -1453,19 +1477,9 @@ void MainWindow::dropEvent(QDropEvent *ev)
 
     int ms = 0;
     for (const auto& name: invalids) {
-        if (!_nwInvalid) {
-            _nwInvalid = new NotificationWidget(this); 
-            _nwInvalid->setAnchor(NotificationWidget::AnchorBottom);
-            _nwInvalid->setAnchorDistance(110);
-        }
-
         QTimer::singleShot(ms, [=]() {
             auto msg = QString(tr("Invalid file: %1").arg(name));
-            if (_nwInvalid->isVisible()) {
-                _nwInvalid->updateWithMessage(msg);
-            } else {
-                _nwInvalid->popup(msg);
-            }
+            _nwComm->updateWithMessage(msg);
         });
 
         ms += 1000;
