@@ -17,6 +17,7 @@
 
 #include <QtWidgets>
 #include <QtDBus>
+#include <dlabel.h>
 #include <DApplication>
 #include <DTitlebar>
 #include <dsettingsdialog.h>
@@ -340,6 +341,7 @@ MainWindow::MainWindow(QWidget *parent)
     qDebug() << "composited = " << composited;
 
     _titlebar = new DTitlebar(this);
+    _titlebar->setFixedHeight(32);
     _titlebar->layout()->setContentsMargins(0, 0, 0, 0);
     _titlebar->setFocusPolicy(Qt::NoFocus);
     if (!composited) {
@@ -349,6 +351,13 @@ MainWindow::MainWindow(QWidget *parent)
     _titlebar->setMenu(ActionFactory::get().titlebarMenu());
     _titlebar->setIcon(QPixmap(":/resources/icons/logo.svg"));
     _titlebar->setTitle(tr("Deepin Movie"));
+    {
+        auto l = _titlebar->findChildren<DLabel*>();
+        for (auto w: l) {
+            w->setStyleSheet("font-size: 12px;");
+        }
+
+    }
 
     _engine = new PlayerEngine(this);
     _engine->move(0, 0);
