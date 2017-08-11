@@ -312,24 +312,27 @@ ToolboxProxy::~ToolboxProxy()
 
 void ToolboxProxy::setup()
 {
-    auto *l = new QVBoxLayout(this);
-    l->setContentsMargins(0, 0, 0, 0);
-    setLayout(l);
+    auto *stacked = new QStackedLayout(this);
+    stacked->setContentsMargins(0, 0, 0, 0);
+    stacked->setStackingMode(QStackedLayout::StackAll);
+    setLayout(stacked);
 
     _progBar = new DMRSlider();
     _progBar->setObjectName("MovieProgress");
     _progBar->setOrientation(Qt::Horizontal);
-    _progBar->setFixedHeight(8);
+    _progBar->setFixedHeight(10);
     _progBar->setRange(0, 100);
     _progBar->setValue(0);
     connect(_progBar, &QSlider::sliderMoved, this, &ToolboxProxy::setProgress);
     connect(_progBar, &DMRSlider::hoverChanged, this, &ToolboxProxy::progressHoverChanged);
     connect(_progBar, &DMRSlider::leave, [=]() { _previewer->hide(); });
-    l->addWidget(_progBar, 0);
+    stacked->addWidget(_progBar);
 
+    auto *bot_widget = new QWidget;
     auto *bot = new QHBoxLayout();
-    bot->setContentsMargins(10, 0, 10, 8);
-    l->addLayout(bot, 1);
+    bot->setContentsMargins(15, 0, 25, 0);
+    bot_widget->setLayout(bot);
+    stacked->addWidget(bot_widget);
 
     _timeLabel = new QLabel("");
     _timeLabel->setFixedWidth(_timeLabel->fontMetrics().width("239:59/240:00"));
@@ -342,20 +345,25 @@ void ToolboxProxy::setup()
     bot->addStretch();
 
     auto *mid = new QHBoxLayout();
+    mid->setContentsMargins(0, 0, 0, 0);
+    mid->setSpacing(14);
     bot->addLayout(mid);
     
     _prevBtn = new DImageButton();
+    _prevBtn->setFixedSize(48, 50);
     _prevBtn->setObjectName("PrevBtn");
     connect(_prevBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_prevBtn, "prev");
     mid->addWidget(_prevBtn);
 
     _playBtn = new DImageButton();
+    _playBtn->setFixedSize(48, 50);
     connect(_playBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_playBtn, "play");
     mid->addWidget(_playBtn);
 
     _nextBtn = new DImageButton();
+    _nextBtn->setFixedSize(48, 50);
     _nextBtn->setObjectName("NextBtn");
     connect(_nextBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_nextBtn, "next");
@@ -364,26 +372,32 @@ void ToolboxProxy::setup()
     bot->addStretch();
 
     auto *right = new QHBoxLayout();
+    right->setContentsMargins(0, 0, 0, 0);
+    right->setSpacing(0);
     bot->addLayout(right);
 
     _subBtn = new DImageButton();
+    _subBtn->setFixedSize(48, 50);
     _subBtn->setObjectName("SubtitleBtn");
     connect(_subBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_subBtn, "sub");
     right->addWidget(_subBtn);
 
     _volBtn = new VolumeButton();
+    _volBtn->setFixedSize(48, 50);
     connect(_volBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_volBtn, "vol");
     right->addWidget(_volBtn);
 
     _fsBtn = new DImageButton();
+    _fsBtn->setFixedSize(48, 50);
     connect(_fsBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_fsBtn, "fs");
     right->addWidget(_fsBtn);
 
 #ifndef ENABLE_VPU_PLATFORM
     _listBtn = new DImageButton();
+    _listBtn->setFixedSize(48, 50);
     _listBtn->setObjectName("ListBtn");
     connect(_listBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_listBtn, "list");
