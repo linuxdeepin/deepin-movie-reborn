@@ -60,6 +60,9 @@ protected:
     void closeEvent(QCloseEvent *ev) override;
     void resizeEvent(QResizeEvent *ev) override;
     void mouseMoveEvent(QMouseEvent *ev) override;
+    void mousePressEvent(QMouseEvent *ev) override;
+    void mouseReleaseEvent(QMouseEvent *ev) override;
+
     void keyPressEvent(QKeyEvent *ev) override;
     void keyReleaseEvent(QKeyEvent *ev) override;
     void moveEvent(QMoveEvent *ev) override;
@@ -90,6 +93,7 @@ private:
     void updateSizeConstraints();
     void toggleUIMode();
     void reflectActionToUI(ActionFactory::ActionKind);
+    bool insideToolsArea(const QPoint& p);
 
 private:
     DTitlebar *_titlebar {nullptr};
@@ -115,6 +119,8 @@ private:
     //toggle-able states
     bool _lightTheme {false};
     bool _windowAbove {false};
+
+    bool _mouseMoved {false};
 
     double _playSpeed {1.0};
 
