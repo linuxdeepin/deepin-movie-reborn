@@ -206,8 +206,7 @@ QList<QAction*> ActionFactory::findActionsByKind(ActionKind target_kd)
     QList<QAction*> res;
     auto p = _contextMenuActions.begin();
     while (p != _contextMenuActions.end()) {
-        auto prop = (*p)->property("kind");
-#if QT_VERSION < QT_VERSION_CHECK(5, 6, 2)
+#if QT_VERSION < QT_VERSION_CHECK(5, 7, 0)
         auto kd = (ActionKind)(*p)->property("kind").value<int>();
 #else
         auto kd = p->property("kind").value<ActionKind>();
