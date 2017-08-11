@@ -188,7 +188,7 @@ dmr--MainWindow {
     background-color: rgb(10, 10, 10);
 }
 
-Dtk--Widget--DTitlebar * {
+Dtk--Widget--DTitlebar, Dtk--Widget--DTitlebar * {
     background-color: #171717;
 }
 

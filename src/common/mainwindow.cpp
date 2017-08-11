@@ -585,20 +585,22 @@ void MainWindow::onApplicationStateChanged(Qt::ApplicationState e)
 void MainWindow::onThemeChanged()
 {
     qDebug() << __func__ << qApp->theme();
-    static QFile darkF(":/resources/qss/dark/widgets.qss");
-    static QFile lightF(":/resources/qss/light/widgets.qss");
 
-    if ("dark" == qApp->theme()) {
-        if (darkF.open(QIODevice::ReadOnly)) {
-            setStyleSheet(darkF.readAll());
-            darkF.close();
-        }
-    } else {
-        if (lightF.open(QIODevice::ReadOnly)) {
-            setStyleSheet(lightF.readAll());
-            lightF.close();
+    auto theme = qApp->theme();
+    if (!_styles.contains(theme)) {
+        if ("dark" == qApp->theme()) {
+            QFile darkF(":/resources/qss/dark/widgets.qss");
+            if (darkF.open(QIODevice::ReadOnly)) {
+                _styles[theme] = QString::fromUtf8(darkF.readAll());
+            }
+        } else {
+            QFile lightF(":/resources/qss/light/widgets.qss");
+            if (lightF.open(QIODevice::ReadOnly)) {
+                _styles[theme] = QString::fromUtf8(lightF.readAll());
+            }
         }
     }
+    setStyleSheet(_styles[theme]);
     _playState->setPixmap(QPixmap(QString(":/resources/icons/%1/normal/play-big.png")
                 .arg(qApp->theme())));
 }

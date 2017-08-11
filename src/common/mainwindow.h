@@ -119,10 +119,11 @@ private:
     //toggle-able states
     bool _lightTheme {false};
     bool _windowAbove {false};
-
     bool _mouseMoved {false};
-
     double _playSpeed {1.0};
+
+    QHash<QString, QString> _styles;
+
 
     MainWindowEventListener *_listener {nullptr};
     NotificationWidget *_nwShot {nullptr};
