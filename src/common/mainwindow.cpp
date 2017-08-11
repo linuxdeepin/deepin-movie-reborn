@@ -111,7 +111,12 @@ class MainWindowEventListener : public QObject
                 QMouseEvent *e = static_cast<QMouseEvent*>(event);
                 setLeftButtonPressed(false);
                 qApp->setOverrideCursor(window->cursor());
+
+                auto mw = static_cast<MainWindow*>(parent());
+                if (!startResizing && !mouseMoved) 
+                    mw->requestAction(ActionFactory::TogglePause);
                 startResizing = false;
+                mouseMoved = false;
                 break;
             }
             case QEvent::MouseMove: {
@@ -183,6 +188,7 @@ set_cursor:
                         qApp->setOverrideCursor(window->cursor());
                     }
                 } else {
+                    mouseMoved = true;
                     if (startResizing) {
                         updateGeometry(lastCornerEdge, e);
                         return true;
@@ -287,6 +293,7 @@ skip_set_cursor:
         const QMargins margins{MOUSE_MARGINS, MOUSE_MARGINS, MOUSE_MARGINS, MOUSE_MARGINS};
         bool leftButtonPressed {false};
         bool startResizing {false};
+        bool mouseMoved {false};
         bool enabled {true};
         Utility::CornerEdge lastCornerEdge;
         QWindow* _window;
