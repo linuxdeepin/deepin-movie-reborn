@@ -83,8 +83,10 @@ public:
         QPainter p(&pm);
 
         if (!_pif.thumbnail.isNull()) {
-            p.drawPixmap((pm.width() - _pif.thumbnail.width())/2, 
-                    (pm.height() - _pif.thumbnail.height())/2, _pif.thumbnail);
+            auto img = _pif.thumbnail.scaledToHeight(44, Qt::SmoothTransformation);
+            p.drawPixmap((pm.width() - 24)/2, (pm.height() - 44)/2, img, 
+                    (img.width()-24)/2, (img.height()-44)/2, 24, 44);
+
         }
         p.drawPixmap((pm.width() - _play.width())/2, 
                 (pm.height() - _play.height())/2, _play);
@@ -211,8 +213,6 @@ void PlaylistWidget::updateItemStates()
         }
 
         if (old != piw->state()) {
-            //piw->style()->unpolish(piw);
-            //piw->style()->polish(piw);
             piw->setStyleSheet(piw->styleSheet());
         }
     }
@@ -224,7 +224,7 @@ void PlaylistWidget::showItemInfo()
     if (!_mouseItem) return;
     auto item = dynamic_cast<PlayItemWidget*>(_mouseItem);
     if (item) {
-        MovieInfoDialog mid(item->_pif.mi);
+        MovieInfoDialog mid(item->_pif);
         mid.exec();
     }
 }
