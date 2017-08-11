@@ -8,7 +8,7 @@ namespace dmr {
 NotificationWidget::NotificationWidget(QWidget *parent)
     :DBlurEffectWidget(NULL), _mw(parent)
 {
-    setWindowFlags(Qt::FramelessWindowHint);
+    setWindowFlags(Qt::ToolTip);
     setAttribute(Qt::WA_TranslucentBackground, true);
 
     auto hl = new QHBoxLayout;
@@ -74,15 +74,18 @@ void NotificationWidget::popup(const QString& msg)
 
 void NotificationWidget::updateWithMessage(const QString& newMsg)
 {
-    _timer->stop();
-    _timer->start();
-    _msgLabel->setText(newMsg);
+    if (isVisible()) {
+        _timer->start();
+        _msgLabel->setText(newMsg);
 
-    auto geom = _mw->frameGeometry();
-    if (_anchor == AnchorBottom) {
-        move(geom.center().x() - size().width()/2, geom.bottom() - _anchorDist);
+        auto geom = _mw->frameGeometry();
+        //if (_anchor == AnchorBottom) {
+            //move(geom.center().x() - size().width()/2, geom.bottom() - _anchorDist);
+        //} else {
+            //move(geom.center().x() - size().width()/2, geom.center().y() - size().height()/2);
+        //}
     } else {
-        move(geom.center().x() - size().width()/2, geom.center().y() - size().height()/2);
+        popup(newMsg);
     }
 }
 

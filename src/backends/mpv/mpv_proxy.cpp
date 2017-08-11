@@ -19,6 +19,7 @@ using namespace mpv::qt;
 enum AsyncReplyTag {
     SEEK,
     CHANNEL,
+    SPEED
 };
 
 
@@ -27,6 +28,13 @@ static inline bool command_async(mpv_handle *ctx, const QVariant &args, uint64_t
     node_builder node(args);
     int err = mpv_command_node_async(ctx, tag, node.node());
     return err == 0;
+}
+
+static inline int set_property_async(mpv_handle *ctx, const QString &name,
+                                       const QVariant &v, uint64_t tag)
+{
+    node_builder node(v);
+    return mpv_set_property_async(ctx, tag, name.toUtf8().data(), MPV_FORMAT_NODE, node.node());
 }
 
 static void mpv_callback(void *d)
@@ -356,7 +364,8 @@ void MpvProxy::savePlaybackPosition()
 
 void MpvProxy::setPlaySpeed(double times)
 {
-    set_property(_handle, "speed", times);
+    //set_property(_handle, "speed", times);
+    set_property_async(_handle, "speed", times, AsyncReplyTag::SPEED);
 }
 
 void MpvProxy::selectSubtitle(int id)
