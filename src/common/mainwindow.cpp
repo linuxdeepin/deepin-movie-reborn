@@ -113,10 +113,7 @@ class MainWindowEventListener : public QObject
                 qApp->setOverrideCursor(window->cursor());
 
                 auto mw = static_cast<MainWindow*>(parent());
-                if (!startResizing && !mouseMoved) 
-                    mw->requestAction(ActionFactory::TogglePause);
                 startResizing = false;
-                mouseMoved = false;
                 break;
             }
             case QEvent::MouseMove: {
@@ -188,7 +185,6 @@ set_cursor:
                         qApp->setOverrideCursor(window->cursor());
                     }
                 } else {
-                    mouseMoved = true;
                     if (startResizing) {
                         updateGeometry(lastCornerEdge, e);
                         return true;
@@ -293,7 +289,6 @@ skip_set_cursor:
         const QMargins margins{MOUSE_MARGINS, MOUSE_MARGINS, MOUSE_MARGINS, MOUSE_MARGINS};
         bool leftButtonPressed {false};
         bool startResizing {false};
-        bool mouseMoved {false};
         bool enabled {true};
         Utility::CornerEdge lastCornerEdge;
         QWindow* _window;
@@ -360,6 +355,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     _toolbox = new ToolboxProxy(this, _engine);
     _toolbox->setFocusPolicy(Qt::NoFocus);
+    connect(_engine, &PlayerEngine::stateChanged, [=]() { resumeToolsWindow(); });
 
     connect(this, &MainWindow::frameMarginsChanged, &MainWindow::updateProxyGeometry);
     connect(_titlebar->menu(), &QMenu::triggered, this, &MainWindow::menuItemInvoked);
@@ -1240,7 +1236,13 @@ void MainWindow::suspendToolsWindow()
         if (qApp->focusWindow() != windowHandle() && frameGeometry().contains(QCursor::pos()))
             return;
 
+        if (insideToolsArea(mapFromGlobal(QCursor::pos())))
+            return;
+
         if (_toolbox->anyPopupShown())
+            return;
+
+        if (_engine->state() == PlayerEngine::Idle)
             return;
 
         _titlebar->hide();
@@ -1254,6 +1256,7 @@ void MainWindow::resumeToolsWindow()
         _titlebar->show();
         _toolbox->show();
     }
+
     _autoHideTimer.start(AUTOHIDE_TIMEOUT);
 }
 
@@ -1288,8 +1291,6 @@ void MainWindow::showEvent(QShowEvent *event)
             _pausedOnHide = false;
         }
     }
-
-    if (!_inited) _inited = !_inited;
 
     _titlebar->raise();
     _toolbox->raise();
@@ -1356,8 +1357,27 @@ void MainWindow::keyReleaseEvent(QKeyEvent *ev)
     QWidget::keyReleaseEvent(ev);
 }
 
+void MainWindow::mousePressEvent(QMouseEvent *ev)
+{
+    _mouseMoved = false;
+}
+
+bool MainWindow::insideToolsArea(const QPoint& p)
+{
+    return _titlebar->geometry().contains(p) || _toolbox->geometry().contains(p);
+}
+
+void MainWindow::mouseReleaseEvent(QMouseEvent *ev)
+{
+    if (!_mouseMoved && !insideToolsArea(ev->pos()))
+        requestAction(ActionFactory::TogglePause);
+    _mouseMoved = false;
+}
+
+
 void MainWindow::mouseMoveEvent(QMouseEvent *ev)
 {
+    _mouseMoved = true;
 #ifndef USE_DXCB
     Utility::startWindowSystemMove(this->winId());
 #endif
