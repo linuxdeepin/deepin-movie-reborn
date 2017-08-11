@@ -1369,6 +1369,7 @@ bool MainWindow::insideToolsArea(const QPoint& p)
 
 void MainWindow::mouseReleaseEvent(QMouseEvent *ev)
 {
+    // dtk has a bug, DImageButton propagates mouseReleaseEvent event when it responsed to.
     if (!_mouseMoved && !insideToolsArea(ev->pos()))
         requestAction(ActionFactory::TogglePause);
     _mouseMoved = false;
