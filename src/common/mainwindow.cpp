@@ -1369,7 +1369,7 @@ void MainWindow::updateSizeConstraints()
 void MainWindow::resizeEvent(QResizeEvent *ev)
 {
     qDebug() << __func__ << geometry();
-    if (_inited) {
+    if (_mousePressed) {
         if (!_nwSize) {
             _nwSize = new NotificationWidget(this); 
         }
@@ -1402,6 +1402,7 @@ void MainWindow::keyReleaseEvent(QKeyEvent *ev)
 void MainWindow::mousePressEvent(QMouseEvent *ev)
 {
     _mouseMoved = false;
+    _mousePressed = true;
 }
 
 bool MainWindow::insideToolsArea(const QPoint& p)
@@ -1415,6 +1416,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *ev)
     if (!_mouseMoved && !insideToolsArea(ev->pos()))
         requestAction(ActionFactory::TogglePause);
     _mouseMoved = false;
+    _mousePressed = false;
 }
 
 
