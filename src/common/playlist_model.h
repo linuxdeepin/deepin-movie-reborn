@@ -79,6 +79,7 @@ public:
     void clear();
     void remove(int pos);
     void append(const QUrl&);
+    void append(const QList<QUrl>&);
 
     void playNext(bool fromUser);
     void playPrev(bool fromUser);
@@ -120,6 +121,7 @@ private:
     void savePlaylist();
     void loadPlaylist();
     void clearPlaylist();
+    void appendSingle(const QUrl&);
 };
 
 }

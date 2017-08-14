@@ -52,7 +52,12 @@ public:
     virtual ~PlayerEngine();
 
     void addPlayFile(const QUrl& url);
+    QList<QUrl> addPlayDir(const QDir& dir); // return collected valid urls
+    //returned list contains only accepted valid items
+    QList<QUrl> addPlayFiles(const QList<QUrl>& urls);
+
     bool isPlayableFile(const QUrl& url);
+    bool isPlayableFile(const QString& name);
 
     // only supports (+/-) 0, 90, 180, 270
     int videoRotation() const;

@@ -65,13 +65,17 @@ PlayerEngine::~PlayerEngine()
 bool PlayerEngine::isPlayableFile(const QUrl& url)
 {
     if (url.isLocalFile()) {
-        auto name = url.path();
-        auto suffix = QString("*") + name.mid(name.lastIndexOf('.'));
-        return video_filetypes.contains(suffix, Qt::CaseInsensitive);
+        return isPlayableFile(url.path());
     } else {
         // for a networked url, there is no way to know if it's playable right now
         return true;
     }
+}
+
+bool PlayerEngine::isPlayableFile(const QString& name)
+{
+        auto suffix = QString("*") + name.mid(name.lastIndexOf('.'));
+        return video_filetypes.contains(suffix, Qt::CaseInsensitive);
 }
 
 void PlayerEngine::updateSubStyles()
@@ -366,6 +370,49 @@ void PlayerEngine::seekAbsolute(int pos)
 void PlayerEngine::addPlayFile(const QUrl& url)
 {
     _playlist->append(url);
+}
+
+QList<QUrl> PlayerEngine::addPlayDir(const QDir& dir)
+{
+    QList<QUrl> urls;
+
+    QDirIterator di(dir);
+    while (di.hasNext()) {
+        di.next();
+        if (di.fileInfo().isFile() && isPlayableFile(di.fileName())) {
+            urls.append(QUrl::fromLocalFile(di.filePath()));
+        }
+    }
+
+    return addPlayFiles(urls);
+}
+
+QList<QUrl> PlayerEngine::addPlayFiles(const QList<QUrl>& urls)
+{
+    //NOTE: take care of loop, we dont recursive, it seems safe now
+    QList<QUrl> valids;
+    for (const auto& url: urls) {
+        if (url.isLocalFile()) {
+            QFileInfo fi(url.toLocalFile());
+            if (!fi.exists()) continue;
+
+            if (fi.isDir()) {
+                auto subs = addPlayDir(fi.absoluteFilePath());
+                valids += subs;
+                valids += url;
+                continue;
+            } 
+            
+            if (!url.isValid() || !isPlayableFile(url)) {
+                continue;
+            }
+
+            valids.append(url);
+        }
+    }
+
+    _playlist->append(valids);
+    return valids;
 }
 
 qint64 PlayerEngine::duration() const

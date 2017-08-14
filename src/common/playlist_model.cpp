@@ -512,11 +512,8 @@ static QDebug operator<<(QDebug s, const QFileInfoList& v)
     return s;
 }
 
-//TODO: what if loadfile failed
-void PlaylistModel::append(const QUrl& url)
+void PlaylistModel::appendSingle(const QUrl& url)
 {
-    if (!url.isValid()) return;
-
     if (indexOf(url) >= 0) return;
 
     if (url.isLocalFile()) {
@@ -531,7 +528,7 @@ void PlaylistModel::append(const QUrl& url)
             qDebug() << "auto search similar files" << fil;
             std::for_each(fil.begin(), fil.end(), [=](const QFileInfo& fi) {
                 auto url = QUrl::fromLocalFile(fi.absoluteFilePath());
-                if (indexOf(url) < 0) {
+                if (indexOf(url) < 0 && _engine->isPlayableFile(fi.fileName())) {
                     auto pif = calculatePlayInfo(url, fi);
                     if (pif.valid) _infos.append(pif);
                 }
@@ -545,7 +542,24 @@ void PlaylistModel::append(const QUrl& url)
         };
         _infos.append(pif);
     }
+}
 
+void PlaylistModel::append(const QList<QUrl>& urls)
+{
+    for (const auto& url: urls) {
+        if (!url.isValid()) return;
+        appendSingle(url);
+    }
+    reshuffle();
+    emit countChanged();
+}
+
+//TODO: what if loadfile failed
+void PlaylistModel::append(const QUrl& url)
+{
+    if (!url.isValid()) return;
+
+    appendSingle(url);
     reshuffle();
     emit countChanged();
 }
