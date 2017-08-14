@@ -364,7 +364,10 @@ MainWindow::MainWindow(QWidget *parent)
 
     _toolbox = new ToolboxProxy(this, _engine);
     _toolbox->setFocusPolicy(Qt::NoFocus);
-    connect(_engine, &PlayerEngine::stateChanged, [=]() { resumeToolsWindow(); });
+    connect(_engine, &PlayerEngine::stateChanged, [=]() {
+        _inited = true; // the first time a play happens, we consider it inited.
+        resumeToolsWindow();
+    });
 
     connect(this, &MainWindow::frameMarginsChanged, &MainWindow::updateProxyGeometry);
     connect(_titlebar->menu(), &QMenu::triggered, this, &MainWindow::menuItemInvoked);
