@@ -4,6 +4,7 @@
 
 namespace dmr {
 namespace utils {
+using namespace std;
 
 void ShowInFileManager(const QString &path)
 {
@@ -53,24 +54,32 @@ static int min(int v1, int v2, int v3)
     return std::min(v1, std::min(v2, v3));
 }
 
-static int stringDistance(QString s1, QString s2) 
-{
+static int stringDistance(const QString& s1, const QString& s2) {
     int n = s1.size(), m = s2.size();
-    if (!n || !m) return std::max(n, m);
-    std::vector<std::vector<int>> dp(n+1, std::vector<int>(m+1, 0)); // augmented
-    for (int i = 0; i <= m; i++) dp[0][i] = i;
-    for (int i = 0; i <= n; i++) dp[i][0] = i;  
+    if (!n || !m) return max(n, m);
 
-    for (int i = 1; i <= n; i++) {
-        for (int j = 1; j <= m; j++) {
-            if (s1[i-1] == s2[j-1]) {
-                dp[i][j] = dp[i-1][j-1];
-            } else 
-                dp[i][j] = min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]) + 1; 
+    vector<int> dp(n+1);
+    for (int i = 0; i < n+1; i++) dp[i] = i;
+    int pred = 0;
+    int curr = 0;
+
+    for (int i = 0; i < m; i++) {
+        dp[0] = i;
+        pred = i+1;
+        for (int j = 0; j < n; j++) {
+            if (s1[j] == s2[i]) {
+                curr = dp[j];
+            } else {
+                curr = min(dp[j], dp[j+1], pred) + 1;
+            }
+            dp[j] = pred;
+            pred = curr;
+
         }
+        dp[n] = pred;
     }
 
-    return dp[n][m];
+    return curr;
 }
 
 QFileInfoList FindSimilarFiles(const QFileInfo& fi)
