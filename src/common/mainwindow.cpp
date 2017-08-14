@@ -1175,11 +1175,27 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI, QList<
     }
 }
 
+static void workaround_updateStyle(QWidget *parent, const QString &theme)
+{
+    parent->setStyle(QStyleFactory::create(theme));
+    for (auto obj : parent->children()) {
+        auto w = qobject_cast<QWidget *>(obj);
+        if (w) {
+            workaround_updateStyle(w, theme);
+        }
+    }
+}
+
 void MainWindow::handleSettings()
 {
-    DSettingsDialog dsd(this);
-    dsd.updateSettings(Settings::get().settings());
-    dsd.exec();
+    auto dsd = new DSettingsDialog(this);
+    dsd->updateSettings(Settings::get().settings());
+    workaround_updateStyle(dsd, "dlight");
+    auto qss = DThemeManager::instance()->getQssForWidget("dialogs/DSettingsDialog", "light");
+    dsd->setStyleSheet(qss);
+    dsd->exec();
+    delete dsd;
+    Settings::get().settings()->sync();
 }
 
 void MainWindow::play(const QUrl& url)
