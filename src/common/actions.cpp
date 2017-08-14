@@ -51,6 +51,7 @@ QMenu* ActionFactory::titlebarMenu()
         auto *menu = new QMenu();
 
         DEF_ACTION(tr("Open File"), ActionKind::OpenFileList);
+        DEF_ACTION(tr("Open Directory"), ActionKind::OpenDirectory);
         DEF_ACTION(tr("Settings"), ActionKind::Settings);
         DEF_ACTION_CHECKED(tr("Light Theme"), ActionKind::LightTheme);
         // these seems added by titlebar itself
@@ -70,6 +71,7 @@ QMenu* ActionFactory::mainContextMenu()
         auto *menu = new QMenu();
 #ifdef ENABLE_VPU_PLATFORM
         DEF_ACTION(tr("Open File"), ActionKind::OpenFileList);
+        DEF_ACTION(tr("Open Directory"), ActionKind::OpenDirectory);
         menu->addSeparator();
 
         DEF_ACTION_CHECKED(tr("Fullscreen"), ActionKind::Fullscreen);
@@ -80,6 +82,7 @@ QMenu* ActionFactory::mainContextMenu()
 
 
         DEF_ACTION(tr("Open File"), ActionKind::OpenFileList);
+        DEF_ACTION(tr("Open Directory"), ActionKind::OpenDirectory);
         DEF_ACTION(tr("Open URL"), ActionKind::OpenUrl);
         menu->addSeparator();
 

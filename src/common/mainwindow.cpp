@@ -800,6 +800,18 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI, QList<
             break;
         }
 
+        case ActionFactory::ActionKind::OpenDirectory: {
+            QString name = QFileDialog::getExistingDirectory(this, tr("Open Directory"),
+                    QDir::currentPath(),
+                    QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+
+            const auto& urls = _engine->addPlayDir(name);
+            if (urls.size()) {
+                _engine->playByName(urls[0]);
+            }
+            break;
+        }
+
         case ActionFactory::ActionKind::OpenFileList: {
             QStringList filenames = QFileDialog::getOpenFileNames(this, tr("Open File"),
                     QDir::currentPath(),
@@ -1496,35 +1508,31 @@ void MainWindow::dropEvent(QDropEvent *ev)
         return;
     }
 
-    QList<QString> invalids;
-    QUrl url_play;
     auto urls = ev->mimeData()->urls();
-    for (const auto& url: urls) {
-        if (url.isLocalFile()) {
-            QFileInfo fi(url.toLocalFile());
-            if (!fi.exists()) continue;
+    auto valids = _engine->addPlayFiles(urls);
 
-            if (!url.isValid() || !_engine->isPlayableFile(url)) {
-                invalids.append(fi.fileName());
-                continue;
-            }
+    {
+        auto all = urls.toSet();
+        auto accepted = valids.toSet();
+        auto invalids = all.subtract(accepted).toList();
+        int ms = 0;
+        for (const auto& url: invalids) {
+            QTimer::singleShot(ms, [=]() {
+                auto msg = QString(tr("Invalid file: %1").arg(url.fileName()));
+                _nwComm->updateWithMessage(msg);
+            });
 
-            _engine->addPlayFile(url);
-            if (!url_play.isValid()) url_play = url;
+            ms += 1000;
         }
     }
 
-    int ms = 0;
-    for (const auto& name: invalids) {
-        QTimer::singleShot(ms, [=]() {
-            auto msg = QString(tr("Invalid file: %1").arg(name));
-            _nwComm->updateWithMessage(msg);
-        });
-
-        ms += 1000;
+    for (const auto& url: valids) {
+        // url could a dir, so need to do check again. 
+        if (_engine->isPlayableFile(url)) {
+            _engine->playByName(url);
+            break;
+        }
     }
-
-    _engine->playByName(url_play);
     ev->acceptProposedAction();
 }
 

@@ -14,6 +14,7 @@ enum ActionKind {
     Invalid = 0,
     OpenFile = 1,
     OpenFileList,
+    OpenDirectory,
     StartPlay,
     Settings,
     LightTheme,
