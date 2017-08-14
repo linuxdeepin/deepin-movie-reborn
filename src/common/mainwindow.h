@@ -42,8 +42,6 @@ public:
 
 signals:
     void frameMarginsChanged();
-
-    
     void windowEntered();
     void windowLeaved();
 
@@ -120,6 +118,7 @@ private:
     bool _lightTheme {false};
     bool _windowAbove {false};
     bool _mouseMoved {false};
+    bool _mousePressed {false};
     double _playSpeed {1.0};
 
     QHash<QString, QString> _styles;
