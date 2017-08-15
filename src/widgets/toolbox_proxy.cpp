@@ -573,7 +573,10 @@ void ToolboxProxy::updateTimeInfo(qint64 duration, qint64 pos)
         auto fn = [](qint64 d) -> QString {
             auto secs = d % 60;
             auto minutes = d / 60;
-            return QString("%1:%2").arg(minutes).arg(secs);
+
+            auto ss = QString("%1%2").arg(secs < 10 ? "0":"").arg(secs);
+            auto ms = QString("%1%2").arg(minutes < 10 ? "0":"").arg(minutes);
+            return QString("%1:%2").arg(ms).arg(ss);
         };
 
         _timeLabel->setText(QString("%2/%1").arg(fn(duration)).arg(fn(pos)));
