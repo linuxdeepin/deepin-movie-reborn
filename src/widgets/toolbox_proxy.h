@@ -51,6 +51,7 @@ protected slots:
 
 protected:
     void paintEvent(QPaintEvent *pe) override;
+    void showEvent(QShowEvent *event) override;
 
 private:
     void setup();
@@ -67,6 +68,9 @@ private:
     VolumeButton *_volBtn {nullptr};
     DImageButton *_listBtn {nullptr};
     DImageButton *_fsBtn {nullptr};
+
+    QHBoxLayout *_mid{nullptr};
+    QHBoxLayout *_right{nullptr};
 
     DMRSlider *_progBar {nullptr};
     ThumbnailPreview *_previewer {nullptr};
