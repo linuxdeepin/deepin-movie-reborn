@@ -57,6 +57,9 @@ void DMRSlider::leaveEvent(QEvent *e)
 
 void DMRSlider::wheelEvent(QWheelEvent *e)
 {
+    if (e->buttons() == Qt::MiddleButton && e->modifiers() == Qt::NoModifier) {
+        qDebug() << "angleDelta" << e->angleDelta();
+    }
     e->accept();
 }
 
