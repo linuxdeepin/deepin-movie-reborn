@@ -473,7 +473,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(_engine, &PlayerEngine::volumeChanged, [=]() {
         qDebug() << "current vol: " << _engine->volume();
         double pert = _engine->volume();
-        _nwComm->updateWithMessage(tr("Volume: %1%").arg(pert));
+        if (_inited) _nwComm->updateWithMessage(tr("Volume: %1%").arg(pert));
     });
 
     connect(DThemeManager::instance(), &DThemeManager::themeChanged,
@@ -1376,12 +1376,8 @@ void MainWindow::resizeEvent(QResizeEvent *ev)
 {
     qDebug() << __func__ << geometry();
     if (_mousePressed) {
-        if (!_nwSize) {
-            _nwSize = new NotificationWidget(this); 
-        }
-
         auto msg = QString("%1x%2").arg(width()) .arg(height());
-        _nwSize->updateWithMessage(msg);
+        _nwComm->updateWithMessage(msg);
     }
 
     updateSizeConstraints();
@@ -1390,9 +1386,9 @@ void MainWindow::resizeEvent(QResizeEvent *ev)
 
 void MainWindow::moveEvent(QMoveEvent *ev)
 {
-    if (_nwSize && _nwSize->isVisible()) {
-        _nwSize->hide();
-    }
+    //if (_nwComm->isVisible()) {
+        //_nwComm->hide();
+    //}
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *ev)

@@ -35,6 +35,8 @@ private:
     QLabel *_msgLabel {nullptr};
     QLabel *_icon {nullptr};
     QTimer *_timer {nullptr};
+    QFrame *_frame {nullptr};
+    QHBoxLayout *_layout {nullptr};
     MessageAnchor _anchor {AnchorNone};
     int _anchorDist {10};
 };

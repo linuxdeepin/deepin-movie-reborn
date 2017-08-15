@@ -126,7 +126,6 @@ private:
 
     MainWindowEventListener *_listener {nullptr};
     NotificationWidget *_nwShot {nullptr};
-    NotificationWidget *_nwSize {nullptr};
     NotificationWidget *_nwComm {nullptr};
     QTimer _autoHideTimer;
 };

@@ -558,7 +558,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1548"/>
+        <location filename="../common/mainwindow.cpp" line="1544"/>
         <source>Invalid file: %1</source>
         <translation type="unfinished"></translation>
     </message>
