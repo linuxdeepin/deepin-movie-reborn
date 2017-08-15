@@ -470,6 +470,12 @@ MainWindow::MainWindow(QWidget *parent)
     connect(_engine, &PlayerEngine::stateChanged, this, &MainWindow::updatePlayState);
     updatePlayState();
 
+    connect(_engine, &PlayerEngine::volumeChanged, [=]() {
+        qDebug() << "current vol: " << _engine->volume();
+        double pert = _engine->volume();
+        _nwComm->updateWithMessage(tr("Volume: %1%").arg(pert));
+    });
+
     connect(DThemeManager::instance(), &DThemeManager::themeChanged,
             this, &MainWindow::onThemeChanged);
     onThemeChanged();

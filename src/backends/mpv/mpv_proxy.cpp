@@ -115,6 +115,7 @@ mpv_handle* MpvProxy::mpv_init()
         set_property(h, "hwdec", "off");
     }
 
+    set_property(h, "volume-max", 200.0);
     set_property(h, "input-cursor", "no");
     set_property(h, "cursor-autohide", "no");
 
@@ -426,7 +427,7 @@ void MpvProxy::volumeUp()
 
 void MpvProxy::changeVolume(int val)
 {
-    val = qMin(qMax(val, 0), 100);
+    val = qMin(qMax(val, 0), 200);
     set_property(_handle, "volume", val);
 }
 

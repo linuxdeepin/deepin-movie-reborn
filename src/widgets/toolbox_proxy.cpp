@@ -238,6 +238,7 @@ public:
         setLayout(l);
 
         _slider = new QSlider(this);
+        _slider->installEventFilter(this);
         _slider->show();
         _slider->setRange(0, 100);
         _slider->setOrientation(Qt::Vertical);
@@ -257,7 +258,23 @@ public:
                 this, &VolumeSlider::onThemeChanged);
     }
         
-public slots:
+private slots:
+    bool eventFilter(QObject *obj, QEvent *e) {
+    if (e->type() == QEvent::Wheel) {
+        QWheelEvent *we = static_cast<QWheelEvent*>(e);
+        qDebug() << we->angleDelta() << we->modifiers() << we->buttons();
+        if (we->buttons() == Qt::NoButton && we->modifiers() == Qt::NoModifier) {
+            if (_slider->value() == _slider->maximum() && we->angleDelta().y() > 0) {
+                //keep increasing volume
+                _engine->volumeUp();
+            }
+        }
+        return false;
+    } else {
+        return QObject::eventFilter(obj, e);
+    }
+}
+
     void onThemeChanged() {
         QFile darkF(":/resources/qss/dark/widgets.qss"),
               lightF(":/resources/qss/light/widgets.qss");
