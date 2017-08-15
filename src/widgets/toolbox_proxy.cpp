@@ -223,12 +223,9 @@ public:
     VolumeSlider(PlayerEngine* eng): DArrowRectangle(DArrowRectangle::ArrowBottom), _engine(eng) {
         setFixedSize(QSize(24, 105));
         setAttribute(Qt::WA_DeleteOnClose);
-        //setWindowOpacity(0.92);
         setWindowFlags(Qt::Popup);
 
         setShadowBlurRadius(4);
-        //setBorderWidth(1);
-        //setBorderColor(qRgba(255, 255, 255, 26));
         setRadius(4);
         setShadowDistance(0);
         setShadowYOffset(3);

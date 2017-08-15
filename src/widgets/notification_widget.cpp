@@ -11,12 +11,23 @@ NotificationWidget::NotificationWidget(QWidget *parent)
     setWindowFlags(Qt::ToolTip);
     setAttribute(Qt::WA_TranslucentBackground, true);
 
+    _frame = new QFrame(this);
+    _frame->setObjectName("NotificationFrame");
+    setStyleSheet(R"( 
+        #NotificationFrame {
+            background-color: rgba(23, 23, 23, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+        })");
+    _layout = new QHBoxLayout;
+    _frame->setLayout(_layout);
+
     auto hl = new QHBoxLayout;
-    hl->setContentsMargins(12, 8, 12, 8);
+    hl->setContentsMargins(0, 0, 0, 0);
     setLayout(hl);
+    hl->addWidget(_frame);
 
     _icon = new QLabel;
-
     _msgLabel = new QLabel();
 
     _timer = new QTimer(this);
@@ -29,13 +40,14 @@ NotificationWidget::NotificationWidget(QWidget *parent)
     setBlurRectXRadius(4);
     setBlurRectYRadius(4);
     setMaskColor(Qt::black);
+
 }
 
 void NotificationWidget::showEvent(QShowEvent *event)
 {
     auto geom = _mw->frameGeometry();
     if (_anchor == AnchorBottom) {
-        move(geom.center().x() - size().width()/2, geom.bottom() - _anchorDist);
+        move(geom.center().x() - size().width()/2, geom.bottom() - _anchorDist - height());
     } else {
         move(geom.center().x() - size().width()/2, geom.center().y() - size().height()/2);
     }
@@ -44,13 +56,13 @@ void NotificationWidget::showEvent(QShowEvent *event)
 void NotificationWidget::popupWithIcon(const QString& msg, const QPixmap& pm)
 {
     _msgLabel->setText(msg);
-
     _icon->setPixmap(pm);
 
-    if (layout()->indexOf(_icon) == -1)
-        layout()->addWidget(_icon);
-    if (layout()->indexOf(_msgLabel) == -1)
-    layout()->addWidget(_msgLabel);
+    _layout->setContentsMargins(12, 8, 12, 8);
+    if (_layout->indexOf(_icon) == -1)
+        _layout->addWidget(_icon);
+    if (_layout->indexOf(_msgLabel) == -1)
+        _layout->addWidget(_msgLabel);
 
     setFixedSize(300, 43);
     
@@ -61,9 +73,11 @@ void NotificationWidget::popupWithIcon(const QString& msg, const QPixmap& pm)
 
 void NotificationWidget::popup(const QString& msg)
 {
+    _msgLabel->setStyleSheet("font-size: 14px");
     _msgLabel->setText(msg);
-    if (layout()->indexOf(_msgLabel) == -1)
-        layout()->addWidget(_msgLabel);
+    _layout->setContentsMargins(16, 9, 16, 9);
+    if (_layout->indexOf(_msgLabel) == -1)
+        _layout->addWidget(_msgLabel);
 
     this->ensurePolished();
 
