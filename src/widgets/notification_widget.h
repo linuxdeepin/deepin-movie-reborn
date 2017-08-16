@@ -29,6 +29,7 @@ public slots:
 
 private slots:
     void updateBg();
+    void onMainWindowMoved(const QPoint& p);
 
 protected:
     void showEvent(QShowEvent *event) override;

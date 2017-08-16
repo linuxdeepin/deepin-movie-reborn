@@ -121,9 +121,6 @@ private:
     bool _mousePressed {false};
     double _playSpeed {1.0};
 
-    QHash<QString, QString> _styles;
-
-
     MainWindowEventListener *_listener {nullptr};
     NotificationWidget *_nwShot {nullptr};
     NotificationWidget *_nwComm {nullptr};
