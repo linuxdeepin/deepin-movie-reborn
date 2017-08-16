@@ -19,6 +19,7 @@
 
 static const int LEFT_MARGIN = 15;
 static const int RIGHT_MARGIN = 25;
+static const int TOOLBOX_HEIGHT = 60;
 
 DWIDGET_USE_NAMESPACE
 
@@ -387,20 +388,20 @@ void ToolboxProxy::setup()
     bot->addLayout(_mid);
     
     _prevBtn = new DImageButton();
-    _prevBtn->setFixedSize(48, 50);
+    _prevBtn->setFixedSize(48, TOOLBOX_HEIGHT);
     _prevBtn->setObjectName("PrevBtn");
     connect(_prevBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_prevBtn, "prev");
     _mid->addWidget(_prevBtn);
 
     _playBtn = new DImageButton();
-    _playBtn->setFixedSize(48, 50);
+    _playBtn->setFixedSize(48, TOOLBOX_HEIGHT);
     connect(_playBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_playBtn, "play");
     _mid->addWidget(_playBtn);
 
     _nextBtn = new DImageButton();
-    _nextBtn->setFixedSize(48, 50);
+    _nextBtn->setFixedSize(48, TOOLBOX_HEIGHT);
     _nextBtn->setObjectName("NextBtn");
     connect(_nextBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_nextBtn, "next");
@@ -415,27 +416,27 @@ void ToolboxProxy::setup()
     bot->addLayout(_right);
 
     _subBtn = new DImageButton();
-    _subBtn->setFixedSize(48, 50);
+    _subBtn->setFixedSize(48, TOOLBOX_HEIGHT);
     _subBtn->setObjectName("SubtitleBtn");
     connect(_subBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_subBtn, "sub");
     _right->addWidget(_subBtn);
 
     _volBtn = new VolumeButton();
-    _volBtn->setFixedSize(48, 50);
+    _volBtn->setFixedSize(48, TOOLBOX_HEIGHT);
     connect(_volBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_volBtn, "vol");
     _right->addWidget(_volBtn);
 
     _fsBtn = new DImageButton();
-    _fsBtn->setFixedSize(48, 50);
+    _fsBtn->setFixedSize(48, TOOLBOX_HEIGHT);
     connect(_fsBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_fsBtn, "fs");
     _right->addWidget(_fsBtn);
 
 #ifndef ENABLE_VPU_PLATFORM
     _listBtn = new DImageButton();
-    _listBtn->setFixedSize(48, 50);
+    _listBtn->setFixedSize(48, TOOLBOX_HEIGHT);
     _listBtn->setObjectName("ListBtn");
     connect(_listBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_listBtn, "list");

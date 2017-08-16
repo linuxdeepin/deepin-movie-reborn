@@ -1,5 +1,6 @@
 #include "notification_widget.h"
 #include "utility.h"
+#include "event_relayer.h"
 
 #include <DPlatformWindowHandle>
 #include <dthememanager.h>
@@ -42,6 +43,24 @@ NotificationWidget::NotificationWidget(QWidget *parent)
     connect(DThemeManager::instance(), &DThemeManager::themeChanged, 
             this, &NotificationWidget::updateBg);
     updateBg();
+
+    winId();
+    auto relay = new EventRelayer(_mw->windowHandle(), windowHandle());
+    connect(relay, &EventRelayer::targetNeedsUpdatePosition, 
+            this, &NotificationWidget::onMainWindowMoved);
+}
+
+void NotificationWidget::onMainWindowMoved(const QPoint& p)
+{
+    if (isVisible()) {
+        auto geom = _mw->frameGeometry();
+        qDebug() << p << geom;
+        if (_anchor == AnchorBottom) {
+            move(geom.center().x() - size().width()/2, geom.bottom() - _anchorDist - height());
+        } else {
+            move(geom.center().x() - size().width()/2, geom.center().y() - size().height()/2);
+        }
+    }
 }
 
 void NotificationWidget::updateBg() 
@@ -61,6 +80,9 @@ void NotificationWidget::resizeEvent(QResizeEvent *ev)
 
 void NotificationWidget::showEvent(QShowEvent *event)
 {
+    ensurePolished();
+    updateGeometry();
+
     auto geom = _mw->frameGeometry();
     if (_anchor == AnchorBottom) {
         move(geom.center().x() - size().width()/2, geom.bottom() - _anchorDist - height());
@@ -89,13 +111,12 @@ void NotificationWidget::popupWithIcon(const QString& msg, const QPixmap& pm)
 
 void NotificationWidget::popup(const QString& msg)
 {
-    _msgLabel->setStyleSheet("font-size: 14px");
     _msgLabel->setText(msg);
     _layout->setContentsMargins(16, 9, 16, 9);
-    if (_layout->indexOf(_msgLabel) == -1)
+    if (_layout->indexOf(_msgLabel) == -1) {
         _layout->addWidget(_msgLabel);
-
-    this->ensurePolished();
+        _msgLabel->setStyleSheet("font-size: 14px");
+    }
 
     show();
     _timer->start();
@@ -106,15 +127,12 @@ void NotificationWidget::updateWithMessage(const QString& newMsg)
 {
     if (isVisible()) {
         _timer->start();
+        resize(1, size().height());
         _msgLabel->setText(newMsg);
 
         auto geom = _mw->frameGeometry();
-        //if (_anchor == AnchorBottom) {
-            //move(geom.center().x() - size().width()/2, geom.bottom() - _anchorDist);
-        //} else {
-            //move(geom.center().x() - size().width()/2, geom.center().y() - size().height()/2);
-        //}
     } else {
+        resize(1, size().height());
         popup(newMsg);
     }
 }
