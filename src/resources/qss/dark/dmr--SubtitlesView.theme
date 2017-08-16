@@ -1,29 +1,14 @@
-/*
-dmr--SubtitlesView {
-    background-color: rgba(23, 23, 23, 0.8);
-    border: solid 1px rgba(255, 255, 255, 0.1);
-}
-*/
-
 dmr--SubtitlesView QListWidget {
     selection-color: transparent;
     selection-background-color: transparent;
 }
 
+dmr--SubtitlesView QListWidget::item:selected * {
+    color: #ffffff;
+}
+
 dmr--SubtitlesView QListWidget::item {
     color: rgba(255, 255, 255, 0.6);
     font-size: 12px;
-}
-
-dmr--SubtitlesView QListWidget::item:selected:!active * {
-    color: #ffffff;
-}
-
-dmr--SubtitlesView SubtitleItemWidget[current="false"] * {
-    color: rgba(255, 255, 255, 0.6);
-}
-
-dmr--SubtitlesView SubtitleItemWidget[current="true"] * {
-    color: #ffffff;
 }
 

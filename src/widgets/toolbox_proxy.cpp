@@ -42,19 +42,32 @@ protected:
 
 class SubtitlesView;
 class SubtitleItemWidget: public QWidget {
+    Q_OBJECT
 public:
     friend class SubtitlesView;
     SubtitleItemWidget(QWidget *parent, SubtitleInfo si): QWidget(parent) {
         _sid = si["id"].toInt();
 
+        DThemeManager::instance()->registerWidget(this, QStringList() << "current");
+        
+        setFixedWidth(200);
+
         auto *l = new QHBoxLayout(this);
         setLayout(l);
         l->setContentsMargins(0, 0, 0, 0);
 
-        l->addWidget(new QLabel(si["title"].toString()), 1);
+        auto msg = si["title"].toString();
+        fontMetrics().elidedText(msg, Qt::ElideMiddle, 160*2);
+        _title = new QLabel(msg);
+        _title->setWordWrap(true);
+        l->addWidget(_title, 1);
 
         _selectedLabel = new QLabel(this);
         l->addWidget(_selectedLabel);
+
+        connect(DThemeManager::instance(), &DThemeManager::themeChanged, 
+                this, &SubtitleItemWidget::onThemeChanged);
+        onThemeChanged();
     }
 
     int sid() const { return _sid; }
@@ -64,15 +77,27 @@ public:
         if (v) {
             auto name = QString(":/resources/icons/%1/subtitle-selected.png").arg(qApp->theme());
             _selectedLabel->setPixmap(QPixmap(name));
-        } else 
+        } else {
             _selectedLabel->clear();
+        }
 
         setProperty("current", v?"true":"false");
         setStyleSheet(this->styleSheet());
+        style()->unpolish(_title);
+        style()->polish(_title);
+    }
+
+private slots:
+    void onThemeChanged() {
+        if (property("current").toBool()) {
+            auto name = QString(":/resources/icons/%1/subtitle-selected.png").arg(qApp->theme());
+            _selectedLabel->setPixmap(QPixmap(name));
+        }
     }
 
 private:
     QLabel *_selectedLabel {nullptr};
+    QLabel *_title {nullptr};
     int _sid {-1};
 };
 
@@ -93,7 +118,6 @@ public:
         setShadowXOffset(0);
         setArrowWidth(8);
         setArrowHeight(6);
-        //setBorderWidth(1);
 
         QSizePolicy sz_policy(QSizePolicy::Fixed, QSizePolicy::Preferred);
         setSizePolicy(sz_policy);
@@ -105,19 +129,27 @@ public:
         setLayout(l);
 
         _subsView = new QListWidget(this);
+        _subsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        _subsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         _subsView->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
         _subsView->setSelectionMode(QListWidget::SingleSelection);
-        _subsView->setSelectionBehavior(QListWidget::SelectRows);
+        _subsView->setSelectionBehavior(QListWidget::SelectItems);
         l->addWidget(_subsView, 1);
 
         connect(_subsView, &QListWidget::itemClicked, this, &SubtitlesView::onItemClicked);
         connect(_engine, &PlayerEngine::tracksChanged, this, &SubtitlesView::populateSubtitles);
         connect(_engine, &PlayerEngine::sidChanged, this, &SubtitlesView::onSidChanged);
-        populateSubtitles();
 
         connect(DThemeManager::instance(), &DThemeManager::themeChanged, 
                 this, &SubtitlesView::onThemeChanged);
         onThemeChanged();
+    }
+
+protected:
+    void showEvent(QShowEvent *se) override 
+    {
+        ensurePolished();
+        populateSubtitles();
     }
 
 protected slots:
@@ -125,10 +157,8 @@ protected slots:
     {
         if (qApp->theme() == "dark") {
             setBackgroundColor(DBlurEffectWidget::DarkColor);
-            //setBorderColor(qRgba(252, 252, 252, 255 / 10));
         } else {
             setBackgroundColor(DBlurEffectWidget::LightColor);
-            //setBorderColor(qRgba(23, 23, 23, 255 / 10));
         }
     }
 
@@ -143,7 +173,8 @@ protected slots:
             auto item = new QListWidgetItem();
             auto siw = new SubtitleItemWidget(this, sub);
             _subsView->addItem(item);
-            item->setSizeHint(siw->sizeHint());
+            auto sh = siw->sizeHint();
+            item->setSizeHint(sh);
             _subsView->setItemWidget(item, siw);
             auto v = (sid == sub["id"].toInt());
             siw->setCurrent(v);
@@ -151,8 +182,6 @@ protected slots:
                 _subsView->setCurrentItem(item);
             }
         }
-
-        this->setMaximumHeight(28 * pmf.subs.size());
     }
 
     void onSidChanged()
@@ -162,6 +191,8 @@ protected slots:
             auto siw = static_cast<SubtitleItemWidget*>(_subsView->itemWidget(_subsView->item(i)));
             siw->setCurrent(siw->sid() == sid);
         }
+
+        qDebug() << "current " << _subsView->currentRow();
     }
 
     void onItemClicked(QListWidgetItem* item)
@@ -292,12 +323,14 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
     bool composited = CompositingManager::get().composited();
     setFrameShape(QFrame::NoFrame);
     setAutoFillBackground(false);
-    setAttribute(Qt::WA_TranslucentBackground, false);
+    setAttribute(Qt::WA_TranslucentBackground);
     if (!composited) {
         setWindowFlags(Qt::FramelessWindowHint|Qt::BypassWindowManagerHint);
         setContentsMargins(0, 0, 0, 0);
         setAttribute(Qt::WA_NativeWindow);
     }
+
+    DThemeManager::instance()->registerWidget(this);
 
     _previewer = new ThumbnailPreview;
     _previewer->hide();
