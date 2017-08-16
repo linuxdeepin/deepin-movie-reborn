@@ -671,17 +671,34 @@ void MpvProxy::updatePlayingMovieInfo()
             AudioInfo ai;
             ai["type"] = t["type"];
             ai["id"] = t["id"];
+            ai["lang"] = t["lang"];
             ai["external"] = t["external"];
             ai["selected"] = t["selected"];
             ai["title"] = t["title"];
+
+            if (t["title"].toString().size() == 0) {
+                if (t["lang"].toString() != "und")
+                    ai["title"] = t["lang"];
+                else if (!t["external"].toBool())
+                    ai["title"] = tr("[internal]");
+            }
+
+
             _pmf.audios.append(ai);
         } else if (t["type"] == "sub") {
             SubtitleInfo si;
             si["type"] = t["type"];
             si["id"] = t["id"];
+            si["lang"] = t["lang"];
             si["external"] = t["external"];
             si["selected"] = t["selected"];
             si["title"] = t["title"];
+            if (t["title"].toString().size() == 0) {
+                if (t["lang"].toString() != "und")
+                    si["title"] = t["lang"];
+                else if (!t["external"].toBool())
+                    si["title"] = tr("[internal]");
+            }
             _pmf.subs.append(si);
         }
         ++p;
