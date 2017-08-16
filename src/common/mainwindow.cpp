@@ -305,8 +305,6 @@ MainWindow::MainWindow(QWidget *parent)
     : QWidget(NULL)
 {
     setWindowFlags(Qt::FramelessWindowHint);
-    //this'll crash MainWindow while desstruction
-    //setAttribute(Qt::WA_DeleteOnClose);
     setAcceptDrops(true);
     
     bool composited = CompositingManager::get().composited();
@@ -337,6 +335,8 @@ MainWindow::MainWindow(QWidget *parent)
     QSizePolicy sp(QSizePolicy::Preferred, QSizePolicy::Preferred);
     sp.setHeightForWidth(true);
     setSizePolicy(sp);
+
+    DThemeManager::instance()->registerWidget(this);
 
     qDebug() << "composited = " << composited;
 
@@ -596,20 +596,20 @@ void MainWindow::onThemeChanged()
     qDebug() << __func__ << qApp->theme();
 
     auto theme = qApp->theme();
-    if (!_styles.contains(theme)) {
-        if ("dark" == qApp->theme()) {
-            QFile darkF(":/resources/qss/dark/widgets.qss");
-            if (darkF.open(QIODevice::ReadOnly)) {
-                _styles[theme] = QString::fromUtf8(darkF.readAll());
-            }
-        } else {
-            QFile lightF(":/resources/qss/light/widgets.qss");
-            if (lightF.open(QIODevice::ReadOnly)) {
-                _styles[theme] = QString::fromUtf8(lightF.readAll());
-            }
-        }
-    }
-    setStyleSheet(_styles[theme]);
+    //if (!_styles.contains(theme)) {
+        //if ("dark" == qApp->theme()) {
+            //QFile darkF(":/resources/qss/dark/widgets.qss");
+            //if (darkF.open(QIODevice::ReadOnly)) {
+                //_styles[theme] = QString::fromUtf8(darkF.readAll());
+            //}
+        //} else {
+            //QFile lightF(":/resources/qss/light/widgets.qss");
+            //if (lightF.open(QIODevice::ReadOnly)) {
+                //_styles[theme] = QString::fromUtf8(lightF.readAll());
+            //}
+        //}
+    //}
+    //setStyleSheet(_styles[theme]);
     _playState->setPixmap(QPixmap(QString(":/resources/icons/%1/normal/play-big.png")
                 .arg(qApp->theme())));
 }

@@ -8,21 +8,28 @@
         <file>resources/profiles/composited.profile</file>
     </qresource>
 
-    <qresource>
-        <file>resources/qss/dark/widgets.qss</file>
-        <file>resources/qss/light/widgets.qss</file>
-    </qresource>
-
     <qresource prefix="/dark">
         <file alias="dmr::NotificationWidget.theme">resources/qss/dark/dmr--NotificationWidget.theme</file>
         <file alias="dmr::VolumeSlider.theme">resources/qss/dark/dmr--VolumeSlider.theme</file>
         <file alias="dmr::SubtitlesView.theme">resources/qss/dark/dmr--SubtitlesView.theme</file>
+        <file alias="dmr::SubtitleItemWidget.theme">resources/qss/dark/dmr--SubtitleItemWidget.theme</file>
+
+        <file alias="dmr::PlayItemWidget.theme">resources/qss/dark/dmr--PlayItemWidget.theme</file>
+        <file alias="dmr::PlaylistWidget.theme">resources/qss/dark/dmr--PlaylistWidget.theme</file>
+        <file alias="dmr::MainWindow.theme">resources/qss/dark/dmr--MainWindow.theme</file>
+        <file alias="dmr::ToolboxProxy.theme">resources/qss/dark/dmr--ToolboxProxy.theme</file>
     </qresource>
 
     <qresource prefix="/light">
         <file alias="dmr::NotificationWidget.theme">resources/qss/light/dmr--NotificationWidget.theme</file>
         <file alias="dmr::VolumeSlider.theme">resources/qss/light/dmr--VolumeSlider.theme</file>
         <file alias="dmr::SubtitlesView.theme">resources/qss/light/dmr--SubtitlesView.theme</file>
+        <file alias="dmr::SubtitleItemWidget.theme">resources/qss/light/dmr--SubtitleItemWidget.theme</file>
+
+        <file alias="dmr::PlayItemWidget.theme">resources/qss/light/dmr--PlayItemWidget.theme</file>
+        <file alias="dmr::PlaylistWidget.theme">resources/qss/light/dmr--PlaylistWidget.theme</file>
+        <file alias="dmr::MainWindow.theme">resources/qss/light/dmr--MainWindow.theme</file>
+        <file alias="dmr::ToolboxProxy.theme">resources/qss/light/dmr--ToolboxProxy.theme</file>
     </qresource>
 
     <qresource>

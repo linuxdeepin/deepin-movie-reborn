@@ -1,3 +1,15 @@
+dmr--ToolboxProxy, dmr--ToolboxProxy * {
+    background-color: rgba(252, 252, 252, 0.92);
+}
+
+QLabel, Dtk--Widget--DImageButton {
+    background: transparent;
+}
+
+#MovieProgress {
+    background: transparent;
+}
+
 Dtk--Widget--DImageButton#ListBtn {
     qproperty-normalPic: url(:/resources/icons/light/normal/list-normal.png);
     qproperty-hoverPic: url(:/resources/icons/light/normal/list-hover.png);
@@ -44,10 +56,6 @@ Dtk--Widget--DImageButton#UnfsBtn {
     qproperty-normalPic: url(:/resources/icons/light/normal/exit-fullscreen-normal.png);
     qproperty-hoverPic: url(:/resources/icons/light/normal/exit-fullscreen-hover.png);
     qproperty-pressPic: url(:/resources/icons/light/normal/exit-fullscreen-press.png);
-}
-
-dmr--ToolboxProxy {
-    background-color: rgba(252, 252, 252, 0.92);
 }
 
 dmr--VolumeButton#VolHigh {
@@ -107,115 +115,5 @@ dmr--VolumeButton#VolMute {
         stop:0.17000  rgba(0, 0, 0, 0.3),   stop:0.24999 rgba(0, 0, 0, 0.3),
         stop:0.25000  rgba(0, 0, 0, 0.0), stop:1 rgba(0, 0, 0, 0.0)
     );
-}
-
-/* -------- Play list ----------------*/
-
-dmr--PlaylistWidget {
-    background-color: rgba(255, 255, 255, 0.80);
-    selection-color: transparent;
-    selection-background-color: transparent;
-}
-
-dmr--PlaylistWidget * {
-    background-color: transparent;
-}
-
-Dtk--Widget--DImageButton#CloseBtn {
-    qproperty-normalPic: url(:/resources/icons/light/normal/close-normal.png);
-    qproperty-hoverPic: url(:/resources/icons/light/normal/close-hover.png);
-    qproperty-pressPic: url(:/resources/icons/light/normal/close-press.png);
-}
-
-
-/* state Hover*/
-*[PlayItemThumb="true"][ItemState="2"] {
-    qproperty-bg: url(:/resources/icons/light/normal/film-bg.png);
-    background-color: rgba(0, 0, 0, 0.1);
-}
-
-
-*[PlayItemThumb="true"][ItemState="2"] *[Name="true"] {
-    font-size: 12px;
-    line-height: 1.5;
-    color: #ffffff;
-}
-
-*[PlayItemThumb="true"][ItemState="2"] *[Time="true"] {
-    font-size: 10px;
-    line-height: 1.5;
-    color: rgba(255, 255, 255, 0.6);
-}
-
-/* state Playing */
-*[PlayItemThumb="true"][ItemState="1"] {
-    qproperty-bg: url(:/resources/icons/light/normal/film-bg.png);
-}
-
-
-*[PlayItemThumb="true"][ItemState="1"] *[Name="true"] {
-  font-size: 12px;
-  line-height: 1.5;
-  color: #01bdff;
-}
-
-*[PlayItemThumb="true"][ItemState="1"] *[Time="true"] {
-    font-size: 10px;
-    line-height: 1.5;
-    color: rgba(1, 189, 255, 0.6);
-}
-
-/* state Normal */
-*[PlayItemThumb="true"][ItemState="0"] {
-    qproperty-bg: url(:/resources/icons/light/normal/film-bg.png);
-}
-
-
-*[PlayItemThumb="true"][ItemState="0"] *[Name="true"] {
-    font-size: 12px;
-    line-height: 1.5;
-    color: #ffffff;
-}
-
-*[PlayItemThumb="true"][ItemState="0"] *[Time="true"] {
-    font-size: 10px;
-    line-height: 1.5;
-    color: rgba(255, 255, 255, 0.6);
-}
-
-/* -------- End of Play list ----------------*/
-
-dmr--MainWindow {
-    background-color: rgb(252, 252, 252);
-}
-
-Dtk--Widget--DTitlebar, Dtk--Widget--DTitlebar * {
-    background-color: #f4f6f7;
-}
-
-/* ---------- Mini Mode ----------------------------- */
-
-Dtk--Widget--DImageButton#MiniPlayBtn {
-    qproperty-normalPic: url(:/resources/icons/light/mini/play-normal-mini.png);
-    qproperty-hoverPic: url(:/resources/icons/light/mini/play-hover-mini.png);
-    qproperty-pressPic: url(:/resources/icons/light/mini/play-press-mini.png);
-}
-
-Dtk--Widget--DImageButton#MiniPauseBtn {
-    qproperty-normalPic: url(:/resources/icons/light/mini/pause-normal-mini.png);
-    qproperty-hoverPic: url(:/resources/icons/light/mini/pause-hover-mini.png);
-    qproperty-pressPic: url(:/resources/icons/light/mini/pause-press-mini.png);
-}
-
-Dtk--Widget--DImageButton#MiniQuitMiniBtn {
-    qproperty-normalPic: url(:/resources/icons/light/mini/restore-normal-mini.png);
-    qproperty-hoverPic: url(:/resources/icons/light/mini/restore-hover-mini.png);
-    qproperty-pressPic: url(:/resources/icons/light/mini/restore-press-mini.png);
-}
-
-Dtk--Widget--DImageButton#MiniCloseBtn {
-    qproperty-normalPic: url(:/resources/icons/light/normal/close-normal.png);
-    qproperty-hoverPic: url(:/resources/icons/light/normal/close-hover.png);
-    qproperty-pressPic: url(:/resources/icons/light/normal/close-press.png);
 }
 

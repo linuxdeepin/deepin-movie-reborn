@@ -10,6 +10,8 @@
 
 #include <DApplication>
 #include <dimagebutton.h>
+#include <dthememanager.h>
+#include <dscrollbar.h>
 
 namespace dmr {
 enum ItemState {
@@ -28,6 +30,8 @@ public:
     PlayItemWidget(PlayItemInfo pif, QWidget* parent = 0)
         : QFrame(parent), _pif {pif} 
     {
+        DThemeManager::instance()->registerWidget(this, QStringList() << "PlayItemThumb");
+        
         setProperty("PlayItemThumb", "true");
         setState(ItemState::Normal); 
         setFrameShape(QFrame::NoFrame);
@@ -166,11 +170,16 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     setFixedWidth(220);
     setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred));
 
+    DThemeManager::instance()->registerWidget(this);
+
     setSelectionMode(QListView::SingleSelection);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setResizeMode(QListView::Adjust);
     setDragDropMode(QListView::DropOnly);
     setSpacing(4);
+
+    this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+    //this->setVerticalScrollBar(new DScrollBar(this));
 
     setAcceptDrops(true);
 
@@ -362,6 +371,7 @@ void PlaylistWidget::loadPlaylist()
     }
 
     updateItemStates();
+    setStyleSheet(styleSheet());
 }
 
 void PlaylistWidget::togglePopup()
