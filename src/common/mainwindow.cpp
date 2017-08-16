@@ -739,6 +739,7 @@ void MainWindow::reflectActionToUI(ActionFactory::ActionKind kd)
                 }
             }
 
+            qDebug() << __func__ << kd << "idx = " << idx;
             acts = ActionFactory::get().findActionsByKind(kd);
             auto p = acts.begin();
             while (p != acts.end()) {
