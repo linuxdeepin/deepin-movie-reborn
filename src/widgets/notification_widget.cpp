@@ -132,7 +132,6 @@ void NotificationWidget::updateWithMessage(const QString& newMsg)
 
         auto geom = _mw->frameGeometry();
     } else {
-        resize(1, size().height());
         popup(newMsg);
     }
 }
