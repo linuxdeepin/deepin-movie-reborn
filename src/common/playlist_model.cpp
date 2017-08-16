@@ -101,6 +101,7 @@ struct MovieInfo MovieInfo::parseFromFile(const QFileInfo& fi, bool *ok)
     mi.filePath = fi.canonicalFilePath();
     mi.creation = fi.created().toString();
     mi.fileSize = fi.size();
+    mi.fileType = fi.suffix();
 
     AVDictionaryEntry *tag = NULL;
     while ((tag = av_dict_get(av_ctx->metadata, "", tag, AV_DICT_IGNORE_SUFFIX)) != NULL) {
