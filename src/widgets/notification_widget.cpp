@@ -2,24 +2,24 @@
 #include "utility.h"
 
 #include <DPlatformWindowHandle>
+#include <dthememanager.h>
+#include <dapplication.h>
 
 namespace dmr {
 
 NotificationWidget::NotificationWidget(QWidget *parent)
-    :DBlurEffectWidget(NULL), _mw(parent)
+    :QWidget(nullptr), _mw(parent)
 {
     setWindowFlags(Qt::ToolTip);
     setAttribute(Qt::WA_TranslucentBackground, true);
 
+    DThemeManager::instance()->registerWidget(this);
+
+    _blur = new DBlurEffectWidget(this);
+
     _frame = new QFrame(this);
-    _frame->setObjectName("NotificationFrame");
-    setStyleSheet(R"( 
-        #NotificationFrame {
-            background-color: rgba(23, 23, 23, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 4px;
-        })");
     _layout = new QHBoxLayout;
+    _frame->setObjectName("NotificationFrame");
     _frame->setLayout(_layout);
 
     auto hl = new QHBoxLayout;
@@ -35,12 +35,28 @@ NotificationWidget::NotificationWidget(QWidget *parent)
     _timer->setSingleShot(true);
     connect(_timer, &QTimer::timeout, [=]() {this->hide();});
 
-    setBlendMode(DBlurEffectWidget::BehindWindowBlend);
-    setRadius(30);
-    setBlurRectXRadius(4);
-    setBlurRectYRadius(4);
-    setMaskColor(Qt::black);
+    _blur->setBlurRectXRadius(4);
+    _blur->setBlurRectYRadius(4);
+    _blur->setBlendMode(DBlurEffectWidget::BehindWindowBlend);
 
+    connect(DThemeManager::instance(), &DThemeManager::themeChanged, 
+            this, &NotificationWidget::updateBg);
+    updateBg();
+}
+
+void NotificationWidget::updateBg() 
+{
+    if (qApp->theme() == "dark") {
+        _blur->setMaskColor(DBlurEffectWidget::DarkColor);
+    } else {
+        _blur->setMaskColor(DBlurEffectWidget::LightColor);
+    }
+}
+
+void NotificationWidget::resizeEvent(QResizeEvent *ev)
+{
+    QWidget::resizeEvent(ev);
+    _blur->resize(size());
 }
 
 void NotificationWidget::showEvent(QShowEvent *event)

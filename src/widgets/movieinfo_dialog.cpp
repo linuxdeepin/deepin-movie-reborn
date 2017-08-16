@@ -13,7 +13,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo& pif)
     const auto& mi = pif.mi;
 
     auto *ml = new QVBoxLayout;
-    ml->setContentsMargins(0, 50, 0, 0);
+    ml->setContentsMargins(10, 50, 10, 0);
     ml->setSpacing(4);
 
     auto *pm = new QLabel(this);
@@ -31,17 +31,20 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo& pif)
     nm->setText(nm->fontMetrics().elidedText(QFileInfo(mi.filePath).fileName(), Qt::ElideMiddle, 280));
     ml->addWidget(nm);
     ml->setAlignment(nm, Qt::AlignHCenter);
+    ml->addSpacing(19);
 
     auto *sp = new QFrame(this);
-    sp->setFixedHeight(1);
-    sp->setStyleSheet("background-color: rgba(0, 0, 0, 0.5)");
+    sp->setFixedHeight(2);
+    //sp->setStyleSheet("background-color: rgba(0, 0, 0, 0.1)");
+    sp->setStyleSheet("border: 1px solid rgba(0, 0, 0, 0.1);");
     ml->addWidget(sp);
+    ml->addSpacing(10);
 
     auto *form = new QFormLayout();
     ml->addLayout(form);
     
-    form->setVerticalSpacing(16);
-    form->setHorizontalSpacing(11);
+    form->setVerticalSpacing(5);
+    form->setHorizontalSpacing(5);
     form->setLabelAlignment(Qt::AlignRight);
     form->setFormAlignment(Qt::AlignCenter);
 
@@ -58,7 +61,6 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo& pif)
 
     auto fp = nm->fontMetrics().elidedText(mi.filePath, Qt::ElideMiddle, 320);
     ADD_ROW("Path", fp);
-    ADD_ROW("Creation Time", mi.creation);
 
 #undef ADD_ROW
 

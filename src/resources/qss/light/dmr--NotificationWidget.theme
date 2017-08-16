@@ -1,0 +1,5 @@
+#NotificationFrame {
+    border: 1px solid rgba(23, 23, 23, 0.2);
+    border-radius: 4px;
+}
+

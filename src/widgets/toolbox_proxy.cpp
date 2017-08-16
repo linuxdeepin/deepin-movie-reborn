@@ -81,18 +81,19 @@ class SubtitlesView: public DArrowRectangle {
 public:
     SubtitlesView(QWidget *p, PlayerEngine* e)
         : DArrowRectangle(DArrowRectangle::ArrowBottom, p), _engine{e} {
-        //setAttribute(Qt::WA_DeleteOnClose);
         setWindowFlags(Qt::Popup);
 
-        setMinimumHeight(20);
+        DThemeManager::instance()->registerWidget(this);
 
+        setMinimumHeight(20);
         setShadowBlurRadius(4);
         setRadius(4);
         setShadowDistance(0);
         setShadowYOffset(3);
         setShadowXOffset(0);
         setArrowWidth(8);
-        setArrowHeight(5);
+        setArrowHeight(6);
+        //setBorderWidth(1);
 
         QSizePolicy sz_policy(QSizePolicy::Fixed, QSizePolicy::Preferred);
         setSizePolicy(sz_policy);
@@ -122,19 +123,12 @@ public:
 protected slots:
     void onThemeChanged() 
     {
-        QFile darkF(":/resources/qss/dark/subtitlesview.qss"),
-              lightF(":/resources/qss/light/subtitlesview.qss");
-
-        if ("dark" == qApp->theme()) {
-            if (darkF.open(QIODevice::ReadOnly)) {
-                setStyleSheet(darkF.readAll());
-                darkF.close();
-            }
+        if (qApp->theme() == "dark") {
+            setBackgroundColor(DBlurEffectWidget::DarkColor);
+            //setBorderColor(qRgba(252, 252, 252, 255 / 10));
         } else {
-            if (lightF.open(QIODevice::ReadOnly)) {
-                setStyleSheet(lightF.readAll());
-                lightF.close();
-            }
+            setBackgroundColor(DBlurEffectWidget::LightColor);
+            //setBorderColor(qRgba(23, 23, 23, 255 / 10));
         }
     }
 
@@ -231,7 +225,12 @@ public:
         setShadowYOffset(3);
         setShadowXOffset(0);
         setArrowWidth(8);
-        setArrowHeight(5);
+        setArrowHeight(6);
+
+        connect(DThemeManager::instance(), &DThemeManager::themeChanged, 
+                this, &VolumeSlider::updateBg);
+
+        updateBg();
         
         auto *l = new QVBoxLayout;
         l->setContentsMargins(0, 0, 0, 0);
@@ -246,19 +245,24 @@ public:
         _slider->setValue(_engine->volume());
         l->addWidget(_slider);
 
-        connect(DThemeManager::instance(), &DThemeManager::themeChanged, 
-                this, &VolumeSlider::onThemeChanged);
-        onThemeChanged();
-
         connect(_slider, &QSlider::valueChanged, [=]() { _engine->changeVolume(_slider->value()); });
     }
 
+
     ~VolumeSlider() {
         disconnect(DThemeManager::instance(), &DThemeManager::themeChanged, 
-                this, &VolumeSlider::onThemeChanged);
+                this, &VolumeSlider::updateBg);
     }
         
 private slots:
+    void updateBg() {
+        if (qApp->theme() == "dark") {
+            setBackgroundColor(DBlurEffectWidget::DarkColor);
+        } else {
+            setBackgroundColor(DBlurEffectWidget::LightColor);
+        }
+    }
+
     bool eventFilter(QObject *obj, QEvent *e) {
     if (e->type() == QEvent::Wheel) {
         QWheelEvent *we = static_cast<QWheelEvent*>(e);
@@ -274,23 +278,6 @@ private slots:
         return QObject::eventFilter(obj, e);
     }
 }
-
-    void onThemeChanged() {
-        QFile darkF(":/resources/qss/dark/widgets.qss"),
-              lightF(":/resources/qss/light/widgets.qss");
-
-        if ("dark" == qApp->theme()) {
-            if (darkF.open(QIODevice::ReadOnly)) {
-                setStyleSheet(darkF.readAll());
-                darkF.close();
-            }
-        } else {
-            if (lightF.open(QIODevice::ReadOnly)) {
-                setStyleSheet(lightF.readAll());
-                lightF.close();
-            }
-        }
-    }
 
 private:
     PlayerEngine *_engine;
@@ -601,7 +588,7 @@ void ToolboxProxy::buttonClicked(QString id)
         auto *w = new VolumeSlider(_engine);
         QPoint pos = _volBtn->parentWidget()->mapToGlobal(_volBtn->pos());
         pos.ry() = parentWidget()->mapToGlobal(this->pos()).y();
-        w->show(pos.x() + w->width()/2, pos.y() - 5);
+        w->show(pos.x() + w->width(), pos.y() - 5);
 
     } else if (id == "prev") {
         _mainWindow->requestAction(ActionFactory::ActionKind::GotoPlaylistPrev);
