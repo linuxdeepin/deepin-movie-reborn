@@ -677,7 +677,7 @@ void MpvProxy::updatePlayingMovieInfo()
             ai["title"] = t["title"];
 
             if (t["title"].toString().size() == 0) {
-                if (t["lang"].toString() != "und")
+                if (t["lang"].isValid() && t["lang"].toString().size() && t["lang"].toString() != "und")
                     ai["title"] = t["lang"];
                 else if (!t["external"].toBool())
                     ai["title"] = tr("[internal]");
@@ -694,7 +694,7 @@ void MpvProxy::updatePlayingMovieInfo()
             si["selected"] = t["selected"];
             si["title"] = t["title"];
             if (t["title"].toString().size() == 0) {
-                if (t["lang"].toString() != "und")
+                if (t["lang"].isValid() && t["lang"].toString().size() && t["lang"].toString() != "und")
                     si["title"] = t["lang"];
                 else if (!t["external"].toBool())
                     si["title"] = tr("[internal]");

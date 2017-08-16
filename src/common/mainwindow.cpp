@@ -438,6 +438,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(_engine, &PlayerEngine::sidChanged, [=]() {
         reflectActionToUI(ActionFactory::ActionKind::SelectSubtitle);
     });
+    //NOTE: mpv does not always send a aid-change signal the first time movie is loaded.
     connect(_engine, &PlayerEngine::aidChanged, [=]() {
         reflectActionToUI(ActionFactory::ActionKind::SelectTrack);
     });
@@ -691,6 +692,10 @@ void MainWindow::updateActionsState()
 
     ActionFactory::get().updateMainActionsForMovie(pmf);
     ActionFactory::get().forEachInMainMenu(update);
+
+    //NOTE: mpv does not always send a aid-change signal the first time movie is loaded.
+    //so we need to workaround it.
+    reflectActionToUI(ActionFactory::ActionKind::SelectTrack);
 }
 
 void MainWindow::reflectActionToUI(ActionFactory::ActionKind kd)
