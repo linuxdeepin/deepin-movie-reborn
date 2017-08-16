@@ -745,7 +745,7 @@ void MainWindow::reflectActionToUI(ActionFactory::ActionKind kd)
                 auto args = ActionFactory::actionArgs(*p);
                 if (args[0].toInt() == idx) {
                     (*p)->setEnabled(false);
-                    (*p)->setChecked(!(*p)->isChecked());
+                    if (!(*p)->isChecked()) (*p)->setChecked(true);
                     (*p)->setEnabled(true);
                     break;
                 }
@@ -1021,6 +1021,9 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI, QList<
         case ActionFactory::ActionKind::SelectTrack: {
             Q_ASSERT(args.size() == 1);
             _engine->selectTrack(args[0].toInt());
+            if (!fromUI) {
+                reflectActionToUI(kd);
+            }
             break;
         }
 
@@ -1032,6 +1035,9 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI, QList<
         case ActionFactory::ActionKind::SelectSubtitle: {
             Q_ASSERT(args.size() == 1);
             _engine->selectSubtitle(args[0].toInt());
+            if (!fromUI) {
+                reflectActionToUI(kd);
+            }
             break;
         }
 

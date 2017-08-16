@@ -231,9 +231,8 @@ void ActionFactory::updateMainActionsForMovie(const PlayingMovieInfo& pmf)
 
         auto group = new QActionGroup(menu); // mem leak ?
         for (int i = 0; i < pmf.subs.size(); i++) {
-            DEF_ACTION_CHECKED(pmf.subs[i]["title"].toString(), ActionKind::SelectSubtitle);
+            DEF_ACTION_CHECKED_GROUP(pmf.subs[i]["title"].toString(), ActionKind::SelectSubtitle, group);
             auto act = menu->actions().last();
-            act->setActionGroup(group);
             act->setProperty("args", QList<QVariant>() << i);
         }
     }
@@ -246,9 +245,8 @@ void ActionFactory::updateMainActionsForMovie(const PlayingMovieInfo& pmf)
 
         auto group = new QActionGroup(menu); // mem leak ?
         for (int i = 0; i < pmf.audios.size(); i++) {
-            DEF_ACTION_CHECKED(pmf.audios[i]["title"].toString(), ActionKind::SelectTrack);
+            DEF_ACTION_CHECKED_GROUP(pmf.audios[i]["title"].toString(), ActionKind::SelectTrack, group);
             auto act = menu->actions().last();
-            act->setActionGroup(group);
             act->setProperty("args", QList<QVariant>() << i);
         }
     }
