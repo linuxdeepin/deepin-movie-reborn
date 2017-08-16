@@ -235,6 +235,8 @@ void ActionFactory::updateMainActionsForMovie(const PlayingMovieInfo& pmf)
             auto act = menu->actions().last();
             act->setProperty("args", QList<QVariant>() << i);
         }
+
+        _subtitleMenu->setEnabled(pmf.subs.size() > 0);
     }
 
     if (_subtitleMenu) {
@@ -249,6 +251,8 @@ void ActionFactory::updateMainActionsForMovie(const PlayingMovieInfo& pmf)
             auto act = menu->actions().last();
             act->setProperty("args", QList<QVariant>() << i);
         }
+
+        _tracksMenu->setEnabled(pmf.audios.size() > 0);
     }
 }
 
