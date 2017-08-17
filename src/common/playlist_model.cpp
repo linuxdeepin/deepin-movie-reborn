@@ -3,6 +3,7 @@
 #include "utils.h"
 #include "dmr_settings.h"
 
+
 #include <libffmpegthumbnailer/videothumbnailer.h>
 extern "C" {
 #include <libavformat/avformat.h>
@@ -140,6 +141,10 @@ PlaylistModel::PlaylistModel(PlayerEngine *e)
         }
     });
 
+    _jobWatcher = new QFutureWatcher<PlayItemInfo>();
+    connect(_jobWatcher, &QFutureWatcher<PlayItemInfo>::finished,
+            this, &PlaylistModel::onAsyncAppendFinished);
+
     stop();
     if (!Settings::get().isSet(Settings::ClearWhenQuit)) {
         loadPlaylist();
@@ -149,6 +154,8 @@ PlaylistModel::PlaylistModel(PlayerEngine *e)
 PlaylistModel::~PlaylistModel()
 {
     qDebug() << __func__;
+    delete _jobWatcher;
+
     if (Settings::get().isSet(Settings::ClearWhenQuit)) {
         clearPlaylist();
     } else {
@@ -537,6 +544,76 @@ void PlaylistModel::append(const QList<QUrl>& urls)
     }
     reshuffle();
     emit countChanged();
+}
+
+void PlaylistModel::collectionJob(const QList<QUrl>& urls)
+{
+    for (const auto& url: urls) {
+        if (!url.isValid() || indexOf(url) >= 0 || !url.isLocalFile() || _urlsInJob.contains(url))
+            continue;
+
+        QFileInfo fi(url.toLocalFile());
+        if (!fi.exists() || !fi.isFile()) continue;
+
+        _pendingJob.append(qMakePair(url, fi));
+        _urlsInJob.insert(url);
+        qDebug() << "append " << url.fileName();
+
+        if (Settings::get().isSet(Settings::AutoSearchSimilar)) {
+            auto fil = utils::FindSimilarFiles(fi);
+            qDebug() << "auto search similar files" << fil;
+            std::for_each(fil.begin(), fil.end(), [=](const QFileInfo& fi) {
+                if (!fi.isFile()) {
+                    auto url = QUrl::fromLocalFile(fi.absoluteFilePath());
+
+                    if (!_urlsInJob.contains(url) && indexOf(url) < 0 &&
+                            _engine->isPlayableFile(fi.fileName())) {
+                        _pendingJob.append(qMakePair(url, fi));
+                        _urlsInJob.insert(url);
+                    }
+                }
+            });
+        }
+    }
+}
+
+void PlaylistModel::appendAsync(const QList<QUrl>& urls)
+{
+    if (_pendingJob.size() > 0) {
+        //TODO: may be automatically schedule later
+        qWarning() << "there is a pending append going on";
+        return;
+    }
+
+    collectionJob(urls);
+    if (!_pendingJob.size()) return;
+
+    struct MapFunctor {
+        PlaylistModel *_model = 0;
+        using result_type = PlayItemInfo;
+        MapFunctor(PlaylistModel* model): _model(model) {}
+
+        struct PlayItemInfo operator()(const AppendJob& a) {
+            qDebug() << "mapping " << a.first.fileName();
+            return _model->calculatePlayInfo(a.first, a.second);
+        };
+    };
+
+    auto future = QtConcurrent::mapped(_pendingJob, MapFunctor(this));
+    _jobWatcher->setFuture(future);
+}
+
+void PlaylistModel::onAsyncAppendFinished()
+{
+    auto f = _jobWatcher->future();
+    _pendingJob.clear();
+    _urlsInJob.clear();
+
+    qDebug() << "collected items" << f.results().count();
+    //since _infos are modified only at the same thread, the lock is not necessary
+    _infos += f.results();
+    emit countChanged();
+    emit asyncAppendFinished();
 }
 
 //TODO: what if loadfile failed

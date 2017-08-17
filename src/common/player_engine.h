@@ -141,11 +141,17 @@ protected slots:
     void requestPlay(int id);
     void updateSubStyles();
     void onSubtitlesDownloaded(const QUrl& url, const QList<QString>& filenames);
+    void onPlaylistAsyncAppendFinished();
 
 protected:
     PlaylistModel *_playlist {nullptr};
     CoreState _state { CoreState::Idle };
     Backend *_current {nullptr};
+
+    QUrl _pendingPlayReq;
+
+    QList<QUrl> collectPlayFiles(const QList<QUrl>& urls);
+    QList<QUrl> collectPlayDir(const QDir& dir);
 };
 }
 

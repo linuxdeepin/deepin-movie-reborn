@@ -46,6 +46,8 @@ PlayerEngine::PlayerEngine(QWidget *parent)
             this, &PlayerEngine::onSubtitlesDownloaded);
 
     _playlist = new PlaylistModel(this);
+    connect(_playlist, &PlaylistModel::asyncAppendFinished, this, 
+            &PlayerEngine::onPlaylistAsyncAppendFinished);
 }
 
 PlayerEngine::~PlayerEngine()
@@ -297,10 +299,18 @@ void PlayerEngine::next()
     _playlist->playNext(true);
 }
 
+void PlayerEngine::onPlaylistAsyncAppendFinished()
+{
+    if (_pendingPlayReq.isValid()) {
+        auto id = _playlist->indexOf(_pendingPlayReq);
+        _playlist->changeCurrent(id);
+        _pendingPlayReq = QUrl();
+    }
+}
+
 void PlayerEngine::playByName(const QUrl& url)
 {
-    auto id = _playlist->indexOf(url);
-    _playlist->changeCurrent(id);
+    _pendingPlayReq = url;
 }
 
 void PlayerEngine::playSelected(int id)
@@ -374,7 +384,7 @@ void PlayerEngine::addPlayFile(const QUrl& url)
     _playlist->append(url);
 }
 
-QList<QUrl> PlayerEngine::addPlayDir(const QDir& dir)
+QList<QUrl> PlayerEngine::collectPlayDir(const QDir& dir)
 {
     QList<QUrl> urls;
 
@@ -386,10 +396,25 @@ QList<QUrl> PlayerEngine::addPlayDir(const QDir& dir)
         }
     }
 
-    return addPlayFiles(urls);
+    return urls;
 }
 
+QList<QUrl> PlayerEngine::addPlayDir(const QDir& dir)
+{
+    auto valids = collectPlayDir(dir);
+    _playlist->appendAsync(valids);
+    return valids;
+}
+
+
 QList<QUrl> PlayerEngine::addPlayFiles(const QList<QUrl>& urls)
+{
+    QList<QUrl> valids = collectPlayFiles(urls);
+    _playlist->appendAsync(valids);
+    return valids;
+}
+
+QList<QUrl> PlayerEngine::collectPlayFiles(const QList<QUrl>& urls)
 {
     //NOTE: take care of loop, we dont recursive, it seems safe now
     QList<QUrl> valids;
@@ -399,7 +424,7 @@ QList<QUrl> PlayerEngine::addPlayFiles(const QList<QUrl>& urls)
             if (!fi.exists()) continue;
 
             if (fi.isDir()) {
-                auto subs = addPlayDir(fi.absoluteFilePath());
+                auto subs = collectPlayDir(fi.absoluteFilePath());
                 valids += subs;
                 valids += url;
                 continue;
@@ -413,7 +438,6 @@ QList<QUrl> PlayerEngine::addPlayFiles(const QList<QUrl>& urls)
         }
     }
 
-    _playlist->append(valids);
     return valids;
 }
 

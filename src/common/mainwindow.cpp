@@ -26,7 +26,7 @@
 #include <dinputdialog.h>
 #include <dimagebutton.h>
 
-#define AUTOHIDE_TIMEOUT 3000
+#define AUTOHIDE_TIMEOUT 2000
 
 DWIDGET_USE_NAMESPACE
 
@@ -805,11 +805,14 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI, QList<
             QStringList filenames = QFileDialog::getOpenFileNames(this, tr("Open File"),
                     QDir::currentPath(),
                     tr("Movies (%1)").arg(_engine->video_filetypes.join(" ")));
+            
+            QList<QUrl> urls;
             if (filenames.size()) {
                 for (const auto& filename: filenames) {
-                    _engine->addPlayFile(QUrl::fromLocalFile(filename));
+                    urls.append(QUrl::fromLocalFile(filename));
                 }
-                _engine->playByName(QUrl::fromLocalFile(filenames[0]));
+                const auto& valids = _engine->addPlayFiles(urls);
+                _engine->playByName(valids[0]);
             }
             break;
         }
@@ -1356,7 +1359,7 @@ void MainWindow::updateSizeConstraints()
                 m = QSize(h, 528);
             }
         } else {
-            m = QSize(528, 40);
+            m = QSize(630, 376);
         }
     }
 

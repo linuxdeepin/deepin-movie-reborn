@@ -2,6 +2,7 @@
 #define _DMR_PLAYLIST_MODEL_H 
 
 #include <QtWidgets>
+#include <QtConcurrent>
 #include <libffmpegthumbnailer/videothumbnailer.h>
 
 namespace dmr {
@@ -52,6 +53,8 @@ struct PlayItemInfo {
     struct MovieInfo mi;
 };
 
+using AppendJob = QPair<QUrl, QFileInfo>; // async job
+using PlayItemInfoList = QList<PlayItemInfo>;
 
 class PlaylistModel: public QObject {
     Q_OBJECT
@@ -81,6 +84,9 @@ public:
     void append(const QUrl&);
     void append(const QList<QUrl>&);
 
+    void appendAsync(const QList<QUrl>&);
+    void collectionJob(const QList<QUrl>&);
+
     void playNext(bool fromUser);
     void playPrev(bool fromUser);
 
@@ -95,11 +101,15 @@ public:
 public slots:
     void changeCurrent(int);
 
+private slots:
+    void onAsyncAppendFinished();
+
 signals:
     void countChanged();
     void currentChanged();
     void itemRemoved(int);
     void playModeChanged(PlayMode);
+    void asyncAppendFinished();
 
 private:
     int _count {0};
@@ -111,6 +121,10 @@ private:
     QList<int> _playOrder; // for shuffle mode
     int _shufflePlayed {0}; // count currently played items in shuffle mode
     int _loopCount {0}; // loop count
+
+    QList<AppendJob> _pendingJob; // async job
+    QSet<QUrl> _urlsInJob;
+    QFutureWatcher<PlayItemInfo> *_jobWatcher {nullptr};
 
     bool _userRequestingItem {false};
 
