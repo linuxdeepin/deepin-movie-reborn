@@ -16,11 +16,13 @@ class NotificationWidget: public QWidget {
 public:
     enum MessageAnchor {
         AnchorNone,
-        AnchorBottom
+        AnchorBottom,
+        AnchorNorthWest
     };
     NotificationWidget(QWidget *parent = 0);
     void setAnchor(MessageAnchor ma) { _anchor = ma; }
     void setAnchorDistance(int v) { _anchorDist = v; }
+    void setAnchorPoint(const QPoint& p) { _anchorPoint = p; }
 
 public slots:
     void popupWithIcon(const QString& msg, const QPixmap&);
@@ -45,6 +47,9 @@ private:
     QHBoxLayout *_layout {nullptr};
     MessageAnchor _anchor {AnchorNone};
     int _anchorDist {10};
+    QPoint _anchorPoint;
+
+    void syncPosition();
 };
 
 }

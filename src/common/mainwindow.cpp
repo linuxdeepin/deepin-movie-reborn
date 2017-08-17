@@ -473,8 +473,8 @@ MainWindow::MainWindow(QWidget *parent)
     _autoHideTimer.setSingleShot(true);
 
     _nwComm = new NotificationWidget(this); 
-    _nwComm->setAnchor(NotificationWidget::AnchorBottom);
-    _nwComm->setAnchorDistance(110);
+    _nwComm->setAnchor(NotificationWidget::AnchorNorthWest);
+    _nwComm->setAnchorPoint(QPoint(30, 38));
 
 #ifdef USE_DXCB
     if (!composited) {
@@ -974,21 +974,28 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI, QList<
         case ActionFactory::ActionKind::ToggleMute: {
             _engine->toggleMute();
             double pert = _engine->volume();
-            if (_inited) _nwComm->updateWithMessage(tr("Volume: %1%").arg(pert));
+            _nwComm->updateWithMessage(tr("Volume: %1%").arg(pert));
+            break;
+        }
+
+        case ActionFactory::ActionKind::ChangeVolume: {
+            _engine->changeVolume(args[0].toInt()); 
+            double pert = _engine->volume();
+            _nwComm->updateWithMessage(tr("Volume: %1%").arg(pert));
             break;
         }
 
         case ActionFactory::ActionKind::VolumeUp: {
             _engine->volumeUp();
             double pert = _engine->volume();
-            if (_inited) _nwComm->updateWithMessage(tr("Volume: %1%").arg(pert));
+            _nwComm->updateWithMessage(tr("Volume: %1%").arg(pert));
             break;
         }
 
         case ActionFactory::ActionKind::VolumeDown: {
             _engine->volumeDown();
             double pert = _engine->volume();
-            if (_inited) _nwComm->updateWithMessage(tr("Volume: %1%").arg(pert));
+            _nwComm->updateWithMessage(tr("Volume: %1%").arg(pert));
             break;
         }
 
@@ -1156,8 +1163,8 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI, QList<
 
             if (!_nwShot) {
                 _nwShot = new NotificationWidget(this); 
-                _nwShot->setAnchor(NotificationWidget::AnchorBottom);
-                _nwShot->setAnchorDistance(110);
+                _nwShot->setAnchor(NotificationWidget::AnchorNorthWest);
+                _nwShot->setAnchorPoint(QPoint(30, 38));
             }
             auto msg = tr("The screenshot is saved in %1").arg(filePath);
             auto pm = QPixmap(QString(":/resources/icons/%1.png").arg(success?"success":"fail"));

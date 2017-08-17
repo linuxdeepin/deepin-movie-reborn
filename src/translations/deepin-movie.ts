@@ -506,6 +506,7 @@
         <location filename="../common/mainwindow.cpp" line="977"/>
         <location filename="../common/mainwindow.cpp" line="984"/>
         <location filename="../common/mainwindow.cpp" line="991"/>
+        <location filename="../common/mainwindow.cpp" line="998"/>
         <source>Volume: %1%</source>
         <translation type="unfinished"></translation>
     </message>
@@ -517,7 +518,7 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="805"/>
         <location filename="../common/mainwindow.cpp" line="821"/>
-        <location filename="../common/mainwindow.cpp" line="1078"/>
+        <location filename="../common/mainwindow.cpp" line="1085"/>
         <source>Open File</source>
         <translation type="unfinished"></translation>
     </message>
@@ -528,39 +529,39 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1055"/>
-        <location filename="../common/mainwindow.cpp" line="1066"/>
+        <location filename="../common/mainwindow.cpp" line="1062"/>
         <location filename="../common/mainwindow.cpp" line="1073"/>
+        <location filename="../common/mainwindow.cpp" line="1080"/>
         <source>Speed: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1080"/>
+        <location filename="../common/mainwindow.cpp" line="1087"/>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1137"/>
+        <location filename="../common/mainwindow.cpp" line="1144"/>
         <source>View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1148"/>
+        <location filename="../common/mainwindow.cpp" line="1155"/>
         <source>Movie Screenshot</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1149"/>
+        <location filename="../common/mainwindow.cpp" line="1156"/>
         <source>Saved to</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1162"/>
+        <location filename="../common/mainwindow.cpp" line="1169"/>
         <source>The screenshot is saved in %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1550"/>
+        <location filename="../common/mainwindow.cpp" line="1557"/>
         <source>Invalid file: %1</source>
         <translation type="unfinished"></translation>
     </message>
