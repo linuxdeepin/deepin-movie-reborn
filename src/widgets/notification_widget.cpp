@@ -53,12 +53,7 @@ NotificationWidget::NotificationWidget(QWidget *parent)
 void NotificationWidget::onMainWindowMoved(const QPoint& p)
 {
     if (isVisible()) {
-        auto geom = _mw->frameGeometry();
-        if (_anchor == AnchorBottom) {
-            move(geom.center().x() - size().width()/2, geom.bottom() - _anchorDist - height());
-        } else {
-            move(geom.center().x() - size().width()/2, geom.center().y() - size().height()/2);
-        }
+        syncPosition();
     }
 }
 
@@ -81,12 +76,24 @@ void NotificationWidget::showEvent(QShowEvent *event)
 {
     ensurePolished();
     updateGeometry();
+    syncPosition();
+}
 
+void NotificationWidget::syncPosition()
+{
     auto geom = _mw->frameGeometry();
-    if (_anchor == AnchorBottom) {
-        move(geom.center().x() - size().width()/2, geom.bottom() - _anchorDist - height());
-    } else {
-        move(geom.center().x() - size().width()/2, geom.center().y() - size().height()/2);
+    switch (_anchor) {
+        case AnchorBottom:
+            move(geom.center().x() - size().width()/2, geom.bottom() - _anchorDist - height());
+            break;
+
+        case AnchorNorthWest:
+            move(_mw->mapToGlobal(_anchorPoint));
+            break;
+
+        case AnchorNone:
+            move(geom.center().x() - size().width()/2, geom.center().y() - size().height()/2);
+            break;
     }
 }
 

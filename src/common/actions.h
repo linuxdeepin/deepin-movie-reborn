@@ -82,6 +82,7 @@ enum ActionKind {
     VolumeUp,
     VolumeDown,
     ToggleMute,
+    ChangeVolume,
 };
 Q_ENUM(ActionKind)
 

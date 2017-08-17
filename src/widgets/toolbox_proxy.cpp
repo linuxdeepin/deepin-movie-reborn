@@ -245,7 +245,8 @@ private:
 class VolumeSlider: public DArrowRectangle {
     Q_OBJECT
 public:
-    VolumeSlider(PlayerEngine* eng): DArrowRectangle(DArrowRectangle::ArrowBottom), _engine(eng) {
+    VolumeSlider(PlayerEngine* eng, MainWindow* mw)
+        :DArrowRectangle(DArrowRectangle::ArrowBottom), _engine(eng), _mw(mw) {
         setFixedSize(QSize(24, 105));
         setAttribute(Qt::WA_DeleteOnClose);
         setWindowFlags(Qt::Popup);
@@ -276,7 +277,9 @@ public:
         _slider->setValue(_engine->volume());
         l->addWidget(_slider);
 
-        connect(_slider, &QSlider::valueChanged, [=]() { _engine->changeVolume(_slider->value()); });
+        connect(_slider, &QSlider::valueChanged, [=]() {
+            _mw->requestAction(ActionFactory::ChangeVolume, false, QList<QVariant>() << _slider->value());
+        });
     }
 
 
@@ -301,7 +304,7 @@ private slots:
         if (we->buttons() == Qt::NoButton && we->modifiers() == Qt::NoModifier) {
             if (_slider->value() == _slider->maximum() && we->angleDelta().y() > 0) {
                 //keep increasing volume
-                _engine->volumeUp();
+                _mw->requestAction(ActionFactory::VolumeUp);
             }
         }
         return false;
@@ -313,6 +316,7 @@ private slots:
 private:
     PlayerEngine *_engine;
     QSlider *_slider;
+    MainWindow *_mw;
 };
 
 ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
@@ -618,7 +622,7 @@ void ToolboxProxy::buttonClicked(QString id)
     } else if (id == "fs") {
         _mainWindow->requestAction(ActionFactory::ActionKind::Fullscreen);
     } else if (id == "vol") {
-        auto *w = new VolumeSlider(_engine);
+        auto *w = new VolumeSlider(_engine, _mainWindow);
         QPoint pos = _volBtn->parentWidget()->mapToGlobal(_volBtn->pos());
         pos.ry() = parentWidget()->mapToGlobal(this->pos()).y();
         w->show(pos.x() + w->width(), pos.y() - 5);
