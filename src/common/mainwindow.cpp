@@ -306,6 +306,8 @@ MainWindow::MainWindow(QWidget *parent)
 {
     setWindowFlags(Qt::FramelessWindowHint);
     setAcceptDrops(true);
+
+    DThemeManager::instance()->registerWidget(this);
     
     bool composited = CompositingManager::get().composited();
 #ifdef USE_DXCB
@@ -336,7 +338,6 @@ MainWindow::MainWindow(QWidget *parent)
     sp.setHeightForWidth(true);
     setSizePolicy(sp);
 
-    DThemeManager::instance()->registerWidget(this);
 
     qDebug() << "composited = " << composited;
 
