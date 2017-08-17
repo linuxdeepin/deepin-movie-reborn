@@ -134,7 +134,7 @@ namespace dmr {
         }
 
         auto r = QRect(0, 0, vp.width(), vp.height());
-        auto r2 = QRect(r.center() - QPoint(tex_sz.width()/2, tex_sz.height()/2+10), tex_sz);
+        auto r2 = QRect(r.center() - QPoint(tex_sz.width()/2, tex_sz.height()/2+26), tex_sz);
 
         GLfloat x1 = (float)r2.left() / r.width();
         GLfloat x2 = (float)r2.right() / r.width();

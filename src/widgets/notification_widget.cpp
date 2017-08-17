@@ -54,7 +54,6 @@ void NotificationWidget::onMainWindowMoved(const QPoint& p)
 {
     if (isVisible()) {
         auto geom = _mw->frameGeometry();
-        qDebug() << p << geom;
         if (_anchor == AnchorBottom) {
             move(geom.center().x() - size().width()/2, geom.bottom() - _anchorDist - height());
         } else {
