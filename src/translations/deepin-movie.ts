@@ -568,8 +568,8 @@
 <context>
     <name>dmr::MpvProxy</name>
     <message>
-        <location filename="../backends/mpv/mpv_proxy.cpp" line="683"/>
-        <location filename="../backends/mpv/mpv_proxy.cpp" line="700"/>
+        <location filename="../backends/mpv/mpv_proxy.cpp" line="684"/>
+        <location filename="../backends/mpv/mpv_proxy.cpp" line="701"/>
         <source>[internal]</source>
         <translation type="unfinished"></translation>
     </message>

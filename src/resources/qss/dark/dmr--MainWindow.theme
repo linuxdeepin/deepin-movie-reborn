@@ -1,5 +1,5 @@
 dmr--MainWindow {
-    background-color: rgb(10, 10, 10);
+    background-color: rgb(16, 16, 16);
 }
 
 Dtk--Widget--DTitlebar, Dtk--Widget--DTitlebar * {

@@ -57,6 +57,7 @@ MpvProxy::MpvProxy(QWidget *parent)
         _gl_widget = new MpvGLWidget(this, _handle);
         connect(this, &MpvProxy::stateChanged, [=]() {
             _gl_widget->setPlaying(state() != Backend::PlayState::Stopped);
+            _gl_widget->update();
         });
 
         auto *layout = new QHBoxLayout(this);
