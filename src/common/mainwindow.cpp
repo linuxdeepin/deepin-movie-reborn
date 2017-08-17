@@ -1450,7 +1450,7 @@ void MainWindow::paintEvent(QPaintEvent* pe)
     if ("light" == qApp->theme()) {
         bg = bg_light;
     }
-    auto pt = rect().center() - QPoint(bg.width()/2, bg.height()/2 - 10);
+    auto pt = rect().center() - QPoint(bg.width()/2, bg.height()/2 - 26);
     p.drawImage(pt, bg);
 }
 
