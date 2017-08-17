@@ -80,5 +80,6 @@ private:
 };
 }
 
+static const int TOOLBOX_HEIGHT = 60;
 
 #endif /* ifndef _DMR_TOOLBOX_PROXY_H */

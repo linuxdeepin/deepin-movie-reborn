@@ -1245,7 +1245,7 @@ void MainWindow::updateProxyGeometry()
         }
 
         if (_toolbox) {
-            QRect r(0, size().height() - 50, size().width(), 50);
+            QRect r(0, size().height() - TOOLBOX_HEIGHT, size().width(), TOOLBOX_HEIGHT);
             _toolbox->setGeometry(r);
         }
 
