@@ -35,10 +35,16 @@ public:
     ~MainWindow();
 
     QMargins frameMargins() const;
+
     PlayerEngine* engine() { return _engine; }
     DTitlebar* titlebar() { return _titlebar; }
     ToolboxProxy* toolbox() { return _toolbox; }
+    PlaylistWidget* playlist() { return _playlist; }
+
     void requestAction(ActionFactory::ActionKind, bool fromUI = false, QList<QVariant> args = {});
+
+    bool insideResizeArea(const QPoint& global_p);
+    QMargins dragMargins() const;
 
 signals:
     void frameMarginsChanged();

@@ -105,7 +105,8 @@ class MainWindowEventListener : public QObject
             case QEvent::MouseButtonPress: {
                 QMouseEvent *e = static_cast<QMouseEvent*>(event);
                 setLeftButtonPressed(true);
-                if (insideResizeArea(e)) startResizing = true;
+                auto mw = static_cast<MainWindow*>(parent());
+                if (mw->insideResizeArea(e->globalPos())) startResizing = true;
                 break;
             }
             case QEvent::MouseButtonRelease: {
@@ -122,12 +123,10 @@ class MainWindowEventListener : public QObject
                 auto mw = static_cast<MainWindow*>(parent());
                 mw->resumeToolsWindow();
 
-                const QRect window_visible_rect = _window->frameGeometry() - margins;
-                //qDebug() << "mouse move" << "press" << leftButtonPressed
-                    //<< "insideResizeArea" << insideResizeArea(e);
+                const QRect window_visible_rect = _window->frameGeometry() - mw->dragMargins();
 
                 if (!leftButtonPressed) {
-                    if (insideResizeArea(e)) {
+                    if (!mw->playlist()->isVisible() && mw->insideResizeArea(e->globalPos())) {
                         Utility::CornerEdge mouseCorner;
                         QRect cornerRect;
 
@@ -213,11 +212,6 @@ skip_set_cursor:
             leftButtonPressed = pressed;
         }
 
-        bool insideResizeArea(QMouseEvent *e) {
-            const QRect window_visible_rect = _window->frameGeometry() - margins;
-            return !window_visible_rect.contains(e->globalPos());
-        }
-
         void updateGeometry(Utility::CornerEdge edge, QMouseEvent* e) {
             auto mw = static_cast<MainWindow*>(parent());
             bool keep_ratio = mw->engine()->state() != PlayerEngine::CoreState::Idle;
@@ -287,7 +281,6 @@ skip_set_cursor:
 
         }
 
-        const QMargins margins{MOUSE_MARGINS, MOUSE_MARGINS, MOUSE_MARGINS, MOUSE_MARGINS};
         bool leftButtonPressed {false};
         bool startResizing {false};
         bool enabled {true};
@@ -471,12 +464,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(_engine, &PlayerEngine::stateChanged, this, &MainWindow::updatePlayState);
     updatePlayState();
-
-    connect(_engine, &PlayerEngine::volumeChanged, [=]() {
-        qDebug() << "current vol: " << _engine->volume();
-        double pert = _engine->volume();
-        if (_inited) _nwComm->updateWithMessage(tr("Volume: %1%").arg(pert));
-    });
 
     connect(DThemeManager::instance(), &DThemeManager::themeChanged,
             this, &MainWindow::onThemeChanged);
@@ -983,16 +970,22 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI, QList<
 
         case ActionFactory::ActionKind::ToggleMute: {
             _engine->toggleMute();
+            double pert = _engine->volume();
+            if (_inited) _nwComm->updateWithMessage(tr("Volume: %1%").arg(pert));
             break;
         }
 
         case ActionFactory::ActionKind::VolumeUp: {
             _engine->volumeUp();
+            double pert = _engine->volume();
+            if (_inited) _nwComm->updateWithMessage(tr("Volume: %1%").arg(pert));
             break;
         }
 
         case ActionFactory::ActionKind::VolumeDown: {
             _engine->volumeDown();
+            double pert = _engine->volume();
+            if (_inited) _nwComm->updateWithMessage(tr("Volume: %1%").arg(pert));
             break;
         }
 
@@ -1411,10 +1404,21 @@ bool MainWindow::insideToolsArea(const QPoint& p)
     return _titlebar->geometry().contains(p) || _toolbox->geometry().contains(p);
 }
 
+QMargins MainWindow::dragMargins() const
+{
+    return QMargins {MOUSE_MARGINS, MOUSE_MARGINS, MOUSE_MARGINS, MOUSE_MARGINS};
+}
+
+bool MainWindow::insideResizeArea(const QPoint& global_p)
+{
+    const QRect window_visible_rect = frameGeometry() - dragMargins();
+    return !window_visible_rect.contains(global_p);
+}
+
 void MainWindow::mouseReleaseEvent(QMouseEvent *ev)
 {
     // dtk has a bug, DImageButton propagates mouseReleaseEvent event when it responsed to.
-    if (!_mouseMoved && !insideToolsArea(ev->pos()))
+    if (!insideResizeArea(ev->globalPos()) && !_mouseMoved && !insideToolsArea(ev->pos()))
         requestAction(ActionFactory::TogglePause);
     _mouseMoved = false;
     _mousePressed = false;
