@@ -18,7 +18,7 @@
 #include <DApplication>
 
 static const int LEFT_MARGIN = 15;
-static const int RIGHT_MARGIN = 25;
+static const int RIGHT_MARGIN = 10;
 
 DWIDGET_USE_NAMESPACE
 
