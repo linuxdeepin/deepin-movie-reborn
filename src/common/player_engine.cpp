@@ -259,6 +259,8 @@ void PlayerEngine::toggleMute()
 void PlayerEngine::requestPlay(int id)
 {
     if (!_current) return;
+    if (id >= _playlist->count()) return;
+
     const auto& item = _playlist->items()[id];
     if (item.url.isLocalFile()) 
         _current->setPlayFile(item.info.absoluteFilePath());

@@ -109,6 +109,7 @@ private:
     QList<PlayItemInfo> _infos;
 
     QList<int> _playOrder; // for shuffle mode
+    int _shufflePlayed {0}; // count currently played items in shuffle mode
     int _loopCount {0}; // loop count
 
     bool _userRequestingItem {false};

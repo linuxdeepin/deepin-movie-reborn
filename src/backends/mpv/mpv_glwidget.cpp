@@ -89,9 +89,9 @@ namespace dmr {
     void MpvGLWidget::initializeGL() 
     {
         QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
-        f->glEnable(GL_BLEND);
+        //f->glEnable(GL_BLEND);
         f->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        float a = 10.0 / 255.0;
+        float a = 16.0 / 255.0;
         if (qApp->theme() != "dark") a = 252.0 / 255.0;
         f->glClearColor(a, a, a, 1.0);
 
@@ -177,12 +177,13 @@ namespace dmr {
         if (_playing) {
             mpv_opengl_cb_draw(_gl_ctx, defaultFramebufferObject(), width(), -height());
         } else {
-            float a = 10.0 / 255.0;
+            f->glEnable(GL_BLEND);
+            float a = 16.0 / 255.0;
             if (qApp->theme() != "dark")
                 a = 252.0 / 255.0;
             f->glClearColor(a, a, a, 1.0);
-
             f->glClear(GL_COLOR_BUFFER_BIT);
+
             _vao.bind();
             _vbo.bind();
             _glProg->bind();
@@ -194,6 +195,7 @@ namespace dmr {
             tex->bind();
             f->glDrawArrays(GL_TRIANGLES, 0, 6);
             tex->release();
+            f->glDisable(GL_BLEND);
         }
     }
 
@@ -201,8 +203,8 @@ namespace dmr {
     {
         if (_playing != val) {
             _playing = val;
-            update();
         }
+        update();
     }
 }
 

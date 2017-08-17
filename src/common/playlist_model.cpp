@@ -243,6 +243,7 @@ void PlaylistModel::reshuffle()
         return;
     }
 
+    _shufflePlayed = 0;
     _playOrder.clear();
     for (int i = 0, sz = _infos.size(); i < sz; ++i) {
         _playOrder.append(i);
@@ -275,7 +276,7 @@ void PlaylistModel::remove(int pos)
     _infos.removeAt(pos);
     reshuffle();
 
-    _last = -1;
+    _last = _current;
     if (_engine->state() != PlayerEngine::Idle) {
         if (_current == pos) {
             _last = _current;
@@ -327,8 +328,6 @@ void PlaylistModel::playNext(bool fromUser)
                 } else {
                     //ignore
                 }
-            } else {
-                clear();
             }
             break;
 
@@ -364,20 +363,14 @@ void PlaylistModel::playNext(bool fromUser)
             break;
 
         case ShufflePlay: {
-            int i;
-            for (i = 0; i < _playOrder.size(); ++i) {
-                if (_playOrder[i] == _last) {
-                    i = i + 1;
-                    if (i >= _playOrder.size()) {
-                        i = 0;
-                    }
-                    break;
-                }
+            if (_shufflePlayed >= _playOrder.size()) {
+                _shufflePlayed = 0;
+                reshuffle();
             }
-
-            qDebug() << "shuffle next " << i;
+            _shufflePlayed++;
+            qDebug() << "shuffle next " << _shufflePlayed-1;
             _engine->waitLastEnd();
-            _last = _current = _playOrder[i];
+            _last = _current = _playOrder[_shufflePlayed-1];
             _engine->requestPlay(_current);
             emit currentChanged();
             break;
@@ -388,7 +381,7 @@ void PlaylistModel::playNext(bool fromUser)
             _last++;
             if (_last == count()) {
                 if (_playMode == OrderPlay) {
-                    clear();
+                    _last--;
                     break;
 
                 } else {
@@ -427,8 +420,6 @@ void PlaylistModel::playPrev(bool fromUser)
                 } else {
                     //ignore
                 }
-            } else {
-                clear();
             }
             break;
 
@@ -463,23 +454,16 @@ void PlaylistModel::playPrev(bool fromUser)
             }
             break;
 
-        case ShufflePlay: {
-            int i;
-            for (i = 0; i < _playOrder.size(); ++i) {
-                if (_playOrder[i] == _last) {
-                    i = i - 1;
-                    if (i < 0) {
-                        i = _playOrder.size()-1;
-                    }
-                    break;
-                }
-            }
+        case ShufflePlay: { // this must comes from user
+            if (_shufflePlayed > 1) {
+                _shufflePlayed--;
 
-            qDebug() << "shuffle next " << i;
-            _engine->waitLastEnd();
-            _last = _current = _playOrder[i];
-            _engine->requestPlay(_current);
-            emit currentChanged();
+                qDebug() << "shuffle prev " << _shufflePlayed-1;
+                _engine->waitLastEnd();
+                _last = _current = _playOrder[_shufflePlayed-1];
+                _engine->requestPlay(_current);
+                emit currentChanged();
+            }
             break;
         }
 
@@ -572,8 +556,8 @@ void PlaylistModel::changeCurrent(int pos)
     _userRequestingItem = true;
 
     _engine->waitLastEnd();
-    _last = _current;
     _current = pos;
+    _last = _current;
     _engine->requestPlay(_current);
     emit currentChanged();
     _userRequestingItem = false;
