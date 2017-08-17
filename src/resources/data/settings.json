@@ -18,19 +18,19 @@
                             "key": "resumelast",
                             "name": "Remember playback position",
                             "type": "checkbox",
-                            "default": ""
+                            "default": true
                         },
                         {
                             "key": "addsimilar",
                             "name": "Auto add similar files to play",
                             "type": "checkbox",
-                            "default": ""
+                            "default": true
                         },
                         {
                             "key": "mousepreview",
                             "name": "Show video preview on mouseover",
                             "type": "checkbox",
-                            "default": ""
+                            "default": true
                         },
                         {
                             "key": "multiinstance",
@@ -42,7 +42,7 @@
                             "key": "pauseonmin",
                             "name": "Pause when minimized",
                             "type": "checkbox",
-                            "default": ""
+                            "default": true
                         },
                         {
                             "key": "hwaccel",
