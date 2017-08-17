@@ -18,6 +18,7 @@ find_package(Qt5DBus)
 find_package(Qt5X11Extras)
 find_package(Qt5LinguistTools)
 find_package(Qt5Network)
+find_package(Qt5Concurrent)
 
 pkg_check_modules(Dtk REQUIRED IMPORTED_TARGET dtkwidget)
 pkg_check_modules(Mpv REQUIRED IMPORTED_TARGET mpv)
@@ -73,8 +74,8 @@ add_executable(${CMD_NAME} ${SRCS} ${RCS} ${QM})
 add_dependencies(${CMD_NAME} json_i18n)
 target_include_directories(${CMD_NAME} PUBLIC ${PROJECT_INCLUDE})
 
-set(TARGET_LIBS X11 Xext Xtst PkgConfig::Xcb Qt5::Widgets Qt5::X11Extras 
-    Qt5::Network Qt5::DBus PkgConfig::Dtk PkgConfig::Mpv PkgConfig::Other pthread)
+set(TARGET_LIBS X11 Xext Xtst PkgConfig::Xcb Qt5::Widgets Qt5::X11Extras Qt5::Network
+    Qt5::Concurrent Qt5::DBus PkgConfig::Dtk PkgConfig::Mpv PkgConfig::Other pthread)
 if (ENABLE_VPU_PLATFORM) 
     list(APPEND TARGET_LIBS GAL pulse pulse-simple)
 endif()

@@ -582,9 +582,9 @@
         <translation>深度影院</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="974"/>
-        <location filename="../common/mainwindow.cpp" line="981"/>
-        <location filename="../common/mainwindow.cpp" line="988"/>
+        <location filename="../common/mainwindow.cpp" line="977"/>
+        <location filename="../common/mainwindow.cpp" line="984"/>
+        <location filename="../common/mainwindow.cpp" line="991"/>
         <source>Volume: %1%</source>
         <translation>音量：%1%</translation>
     </message>
@@ -595,14 +595,14 @@
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="805"/>
-        <location filename="../common/mainwindow.cpp" line="818"/>
-        <location filename="../common/mainwindow.cpp" line="1075"/>
+        <location filename="../common/mainwindow.cpp" line="821"/>
+        <location filename="../common/mainwindow.cpp" line="1078"/>
         <source>Open File</source>
         <translation>打开文件</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="807"/>
-        <location filename="../common/mainwindow.cpp" line="820"/>
+        <location filename="../common/mainwindow.cpp" line="823"/>
         <source>Movies (%1)</source>
         <translation>视频文件(%1)</translation>
     </message>
@@ -611,39 +611,39 @@
         <translation type="vanished">视频文件(*.mkv *.mov *.mp4 *.rmvb)</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1052"/>
-        <location filename="../common/mainwindow.cpp" line="1063"/>
-        <location filename="../common/mainwindow.cpp" line="1070"/>
+        <location filename="../common/mainwindow.cpp" line="1055"/>
+        <location filename="../common/mainwindow.cpp" line="1066"/>
+        <location filename="../common/mainwindow.cpp" line="1073"/>
         <source>Speed: %1</source>
         <translation>播放速度：%1倍</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1077"/>
+        <location filename="../common/mainwindow.cpp" line="1080"/>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</source>
         <translation>字幕文件 (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1134"/>
+        <location filename="../common/mainwindow.cpp" line="1137"/>
         <source>View</source>
         <translation>查看</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1145"/>
+        <location filename="../common/mainwindow.cpp" line="1148"/>
         <source>Movie Screenshot</source>
         <translation>视频截图</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1146"/>
+        <location filename="../common/mainwindow.cpp" line="1149"/>
         <source>Saved to</source>
         <translation>保存到</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1159"/>
+        <location filename="../common/mainwindow.cpp" line="1162"/>
         <source>The screenshot is saved in %1</source>
         <translation>您的截图已保存到%1</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1547"/>
+        <location filename="../common/mainwindow.cpp" line="1550"/>
         <source>Invalid file: %1</source>
         <translation>无效文件：%1</translation>
     </message>
