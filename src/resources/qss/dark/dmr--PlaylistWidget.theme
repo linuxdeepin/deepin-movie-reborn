@@ -4,36 +4,9 @@ dmr--PlaylistWidget {
     selection-background-color: transparent;
 }
 
-dmr--PlaylistWidget * {
-    background-color: transparent;
-}
-
 Dtk--Widget--DImageButton#CloseBtn {
     qproperty-normalPic: url(:/resources/icons/dark/normal/close-normal.png);
     qproperty-hoverPic: url(:/resources/icons/dark/normal/close-hover.png);
     qproperty-pressPic: url(:/resources/icons/dark/normal/close-press.png);
 }
 
-QScrollBar::handle:vertical {
-  border: 1px inset rgba(255, 255, 255, 0.05);
-  border-radius: 2px;
-  background: rgba(255, 255, 255, 0.2);
-  width: 4px;
-  margin-right: 3px;
-}
-
-QScrollBar::handle:vertical:hover {
-  border: 1px inset rgba(255, 255, 255, 0.05);
-  border-radius: 3px;
-  background: rgba(255, 255, 255, 0.3);
-  width: 6px;
-  margin-right: 1px;
-}
-
-QScrollBar::handle:vertical:pressed {
-  border: 1px inset rgba(255, 255, 255, 0.05);
-  border-radius: 3px;
-  background: rgba(96, 96, 96, 0.3);
-  width: 6px;
-  margin-right: 1px;
-}

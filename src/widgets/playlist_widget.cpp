@@ -163,23 +163,18 @@ protected:
 PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     :QListWidget(mw), _engine(mpv), _mw(static_cast<MainWindow*>(mw))
 {
+    DThemeManager::instance()->registerWidget(this);
+
     bool composited = CompositingManager::get().composited();
-    setFrameShape(QFrame::NoFrame);
-    //setAutoFillBackground(false);
     setAttribute(Qt::WA_TranslucentBackground, false);
     setFixedWidth(220);
     setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred));
-
-    DThemeManager::instance()->registerWidget(this);
 
     setSelectionMode(QListView::SingleSelection);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setResizeMode(QListView::Adjust);
     setDragDropMode(QListView::DropOnly);
     setSpacing(4);
-
-    this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-    //this->setVerticalScrollBar(new DScrollBar(this));
 
     setAcceptDrops(true);
 
