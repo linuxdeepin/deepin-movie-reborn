@@ -1,7 +1,7 @@
 /* state Hover*/
 *[PlayItemThumb="true"][ItemState="2"] {
     qproperty-bg: url(:/resources/icons/dark/normal/film-bg.png);
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
 

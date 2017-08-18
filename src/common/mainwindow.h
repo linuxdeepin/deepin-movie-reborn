@@ -83,6 +83,7 @@ protected slots:
     void updateActionsState();
     void onThemeChanged();
     void updatePlayState();
+    void resizeByConstraints();
 
     void miniButtonClicked(QString id);
 
