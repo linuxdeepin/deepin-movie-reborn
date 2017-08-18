@@ -1,5 +1,10 @@
 #NotificationFrame {
-    border: 1px solid rgba(23, 23, 23, 0.2);
+    border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: 4px;
+    background-color: rgba(252, 252, 252, 0.8);
 }
 
+#NotificationFrame QLabel {
+    font-size: 12px;
+    color: 0;
+}
