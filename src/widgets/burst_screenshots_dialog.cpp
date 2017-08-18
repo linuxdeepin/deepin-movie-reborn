@@ -1,13 +1,15 @@
 #include "player_engine.h"
 #include "burst_screenshots_dialog.h"
 
+#include <dthememanager.h>
+
 DWIDGET_USE_NAMESPACE
 
 namespace dmr {
-BurstScreenshotsDialog::BurstScreenshotsDialog(PlayerEngine* mpv)
-    :DDialog(nullptr), _engine(mpv)
+BurstScreenshotsDialog::BurstScreenshotsDialog(const PlayItemInfo& pif)
+    :DDialog(nullptr)
 {
-    auto mi = mpv->playlist().currentInfo().mi;
+    auto mi = pif.mi;
 
     auto *ml = new QVBoxLayout;
     ml->setContentsMargins(0, 0, 0, 0);
@@ -49,12 +51,27 @@ BurstScreenshotsDialog::BurstScreenshotsDialog(PlayerEngine* mpv)
     _grid->setColumnMinimumWidth(1, 160);
     _grid->setColumnMinimumWidth(2, 160);
 
+    auto *bl = new QHBoxLayout;
+    bl->addStretch(1);
+
+    _saveBtn = new DTextButton(tr("save"));
+    _saveBtn->setFixedSize(61, 24);
+
+    QString addition = R"(
+    Dtk--Widget--DTextButton {
+        line-height: 1;
+        font-size: 12px;
+        color: #0599ff;
+    }
+    )";
+    auto qss = DThemeManager::instance()->getQssForWidget("DTextButton", "light");
+    _saveBtn->setStyleSheet(qss + addition);
+    bl->addWidget(_saveBtn);
+    ml->addLayout(bl);
 
     QWidget  *mainContent = new QWidget;
     mainContent->setLayout(ml);
     addContent(mainContent, Qt::AlignCenter);
-
-    connect(_engine, &PlayerEngine::notifyScreenshot, this, &BurstScreenshotsDialog::OnScreenshot);
 }
 
 static QPixmap makeRounded(QPixmap pm)
@@ -73,31 +90,25 @@ static QPixmap makeRounded(QPixmap pm)
     return dest;
 }
 
-void BurstScreenshotsDialog::OnScreenshot(const QImage& frame)
+void BurstScreenshotsDialog::updateWithFrames(const QList<QImage>& frames)
 {
-    qDebug() << __func__ << _count;
-    if (frame.isNull()) {
-        return;
-    }
+    int count = 0;
+    for (auto frame: frames) {
+        auto scaled = frame.scaled(178, 100, Qt::KeepAspectRatio);
+        auto *l = new ThumbnailFrame(this);
 
-    auto scaled = frame.scaled(178, 100, Qt::KeepAspectRatio);
-    auto *l = new ThumbnailFrame(this);
+        int r = count / 3;
+        int c = count % 3;
 
-    int r = _count / 3;
-    int c = _count % 3;
-
-    auto pm = makeRounded(QPixmap::fromImage(scaled));
-    l->setPixmap(pm);
-    _grid->addWidget(l, r, c);
-    _count++;
-    if (_count >= 15) {
-        _engine->stopBurstScreenshot();
+        auto pm = makeRounded(QPixmap::fromImage(scaled));
+        l->setPixmap(pm);
+        _grid->addWidget(l, r, c);
+        count++;
     }
 }
 
 int BurstScreenshotsDialog::exec()
 {
-    _engine->burstScreenshot();
     return DDialog::exec();
 }
 

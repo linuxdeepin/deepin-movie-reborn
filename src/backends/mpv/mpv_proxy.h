@@ -81,6 +81,8 @@ private:
 
     bool _inBurstShotting {false};
     QTimer *_burstScreenshotTimer {nullptr};
+    QVariant _posBeforeBurst;
+
     bool _pendingSeek {false};
     PlayingMovieInfo _pmf;
     int _videoRotation {0};

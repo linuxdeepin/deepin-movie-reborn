@@ -87,6 +87,9 @@ protected slots:
 
     void miniButtonClicked(QString id);
 
+    void startBurstShooting();
+    void onBurstScreenshot(const QImage& frame);
+
 #ifdef USE_DXCB
     void onMonitorButtonPressed(int x, int y);
     void onMonitorMotionNotify(int x, int y);
@@ -107,6 +110,8 @@ private:
     PlaylistWidget *_playlist {nullptr};
     PlayerEngine *_engine {nullptr};
     QLabel *_playState {nullptr};
+
+    QList<QImage> _burstShoots;
 
     DImageButton *_miniPlayBtn {nullptr};
     DImageButton *_miniCloseBtn {nullptr};
