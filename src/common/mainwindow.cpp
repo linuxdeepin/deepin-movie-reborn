@@ -429,6 +429,9 @@ MainWindow::MainWindow(QWidget *parent)
     reflectActionToUI(ActionFactory::ActionKind::OrderPlay);
     reflectActionToUI(ActionFactory::ActionKind::Stereo);
 
+    _lightTheme = Settings::get().settings()->getOption("internal.light_theme").toBool();
+    if (_lightTheme) reflectActionToUI(ActionFactory::LightTheme);
+
     connect(_engine, &PlayerEngine::sidChanged, [=]() {
         reflectActionToUI(ActionFactory::ActionKind::SelectSubtitle);
     });
@@ -678,6 +681,7 @@ void MainWindow::reflectActionToUI(ActionFactory::ActionKind kd)
     switch(kd) {
         case ActionFactory::ActionKind::WindowAbove:
         case ActionFactory::ActionKind::Fullscreen:
+        case ActionFactory::ActionKind::LightTheme:
         case ActionFactory::ActionKind::ToggleMiniMode:
         case ActionFactory::ActionKind::TogglePlaylist:
         case ActionFactory::ActionKind::HideSubtitle: {
@@ -765,6 +769,13 @@ void MainWindow::menuItemInvoked(QAction *action)
     }
 }
 
+void MainWindow::switchTheme()
+{
+    _lightTheme = !_lightTheme;
+    qApp->setTheme(_lightTheme? "light":"dark");
+    Settings::get().settings()->setOption("internal.light_theme", _lightTheme);
+}
+
 void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI, QList<QVariant> args)
 {
     qDebug() << "kd = " << kd << "fromUI " << fromUI;
@@ -774,8 +785,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI, QList<
             break;
 
         case ActionFactory::ActionKind::LightTheme:
-            _lightTheme = !_lightTheme;
-            qApp->setTheme(_lightTheme? "light":"dark");
+            if (fromUI) switchTheme();
             break;
 
         case ActionFactory::ActionKind::OpenUrl: {

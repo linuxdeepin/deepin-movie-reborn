@@ -13,6 +13,7 @@ void GenerateSettingTranslate()
     auto group_baseName = QObject::tr("Basic");
     auto group_base_playName = QObject::tr("Play");
     auto group_base_screenshotName = QObject::tr("Screenshot");
+    auto group_internalName = QObject::tr("Internal");
     auto group_shortcutsName = QObject::tr("Shortcuts");
     auto group_shortcuts_fileName = QObject::tr("File");
     auto group_shortcuts_frame_soundName = QObject::tr("Frame/Sound");
@@ -21,6 +22,7 @@ void GenerateSettingTranslate()
     auto group_shortcuts_subName = QObject::tr("Subtitle");
     auto group_subtitleName = QObject::tr("Subtitle");
     auto group_subtitle_fontName = QObject::tr("Font Style");
+    auto internal_light_themeName = QObject::tr("is light theme");
     auto reset_button_name = QObject::tr("Restore Defaults");
     auto shortcuts_file_enableName = QObject::tr("Enable");
     auto shortcuts_file_open_fileName = QObject::tr("Open file");
