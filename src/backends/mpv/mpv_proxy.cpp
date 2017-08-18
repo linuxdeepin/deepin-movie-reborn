@@ -520,6 +520,10 @@ void MpvProxy::burstScreenshot()
         return;
 
     if (!paused()) pauseResume();
+
+    //command(_handle, QList<QVariant> {"revert-seek", "mark"});
+     _posBeforeBurst = get_property(_handle, "time-pos");
+
     _inBurstShotting = true;
     _burstScreenshotTimer->start();
 }
@@ -579,18 +583,13 @@ void MpvProxy::stepBurstScreenshot()
         return;
     }
 
+    command(_handle, QList<QVariant> {"seek", 10});
     QImage img = takeOneScreenshot();
     if (img.isNull()) {
         stopBurstScreenshot();
         return;
     }
-
     emit notifyScreenshot(img);
-
-    {
-        QList<QVariant> args = {"frame-step"};
-        command(_handle, args);
-    }
 
     _burstScreenshotTimer->start();
 }
@@ -599,6 +598,9 @@ void MpvProxy::stopBurstScreenshot()
 {
     _inBurstShotting = false;
     _burstScreenshotTimer->stop();
+
+    //command(_handle, QList<QVariant> {"revert-seek", "mark"});
+    set_property(_handle, "time-pos", _posBeforeBurst);
 }
 
 void MpvProxy::seekForward(int secs)

@@ -308,8 +308,8 @@ MainWindow::MainWindow(QWidget *parent)
         _handle = new DPlatformWindowHandle(this, this);
         connect(_handle, &DPlatformWindowHandle::frameMarginsChanged, 
                 this, &MainWindow::frameMarginsChanged);
-        //setAttribute(Qt::WA_TranslucentBackground, true);
-        //_handle->setTranslucentBackground(true);
+        setAttribute(Qt::WA_TranslucentBackground, true);
+        _handle->setTranslucentBackground(true);
         _cachedMargins = _handle->frameMargins();
         _handle->enableSystemResize();
         _handle->enableSystemMove();
@@ -1168,10 +1168,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI, QList<
         }
 
         case ActionFactory::ActionKind::BurstScreenshot: {
-            BurstScreenshotsDialog bsd(_engine);
-            bsd.exec();
-            qDebug() << "BurstScreenshot done";
-            _engine->pauseResume();
+            startBurstShooting();
             break;
         }
 
@@ -1189,6 +1186,35 @@ static void workaround_updateStyle(QWidget *parent, const QString &theme)
             workaround_updateStyle(w, theme);
         }
     }
+}
+
+void MainWindow::onBurstScreenshot(const QImage& frame)
+{
+    qDebug() << _burstShoots.size();
+    if (frame.isNull()) {
+        return;
+    }
+
+    _burstShoots.append(frame);
+
+    if (_burstShoots.size() >= 15) {
+        disconnect(_engine, &PlayerEngine::notifyScreenshot, this, &MainWindow::onBurstScreenshot);
+        _engine->stopBurstScreenshot();
+
+        BurstScreenshotsDialog bsd(_engine->playlist().currentInfo());
+        bsd.updateWithFrames(_burstShoots);
+        bsd.exec();
+        qDebug() << "BurstScreenshot done";
+
+        _burstShoots.clear();
+        _engine->pauseResume();
+    }
+}
+
+void MainWindow::startBurstShooting()
+{
+    connect(_engine, &PlayerEngine::notifyScreenshot, this, &MainWindow::onBurstScreenshot);
+    _engine->burstScreenshot();
 }
 
 void MainWindow::handleSettings()
@@ -1233,13 +1259,12 @@ void MainWindow::updateProxyGeometry()
     }
 #endif
 
-    auto tl = QPoint();
-    _engine->setGeometry(QRect(tl, size()));
+    _engine->resize(size());
 
     if (!_miniMode) {
         if (_titlebar) {
             QSize sz(size().width(), _titlebar->height());
-            _titlebar->setGeometry(QRect(tl, sz));
+            _titlebar->setFixedWidth(size().width());
         }
 
         if (_toolbox) {
@@ -1252,12 +1277,12 @@ void MainWindow::updateProxyGeometry()
                     _playlist->width(), _toolbox->geometry().top() - _titlebar->geometry().bottom());
             _playlist->setGeometry(r);
         }
+    }
 
-        if (_playState) {
-            auto r = QRect(QPoint(0, 0), QSize(128, 128));
-            r.moveCenter(rect().center());
-            _playState->move(r.topLeft());
-        }
+    if (_playState) {
+        auto r = QRect(QPoint(0, 0), QSize(128, 128));
+        r.moveCenter(rect().center());
+        _playState->move(r.topLeft());
     }
 
 #if 0
@@ -1410,9 +1435,6 @@ void MainWindow::resizeEvent(QResizeEvent *ev)
 
 void MainWindow::moveEvent(QMoveEvent *ev)
 {
-    //if (_nwComm->isVisible()) {
-        //_nwComm->hide();
-    //}
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *ev)

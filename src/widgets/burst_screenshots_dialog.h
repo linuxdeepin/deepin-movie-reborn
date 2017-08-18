@@ -3,11 +3,13 @@
 
 #include <QtWidgets>
 #include <ddialog.h>
+#include <dtextbutton.h>
 
 DWIDGET_USE_NAMESPACE
 
 namespace dmr {
 class PlayerEngine;
+class PlayItemInfo;
 
 class ThumbnailFrame: public QLabel { 
     Q_OBJECT
@@ -30,16 +32,15 @@ public:
 class BurstScreenshotsDialog: public DDialog {
     Q_OBJECT
 public:
-    BurstScreenshotsDialog(PlayerEngine*);
+    BurstScreenshotsDialog(const PlayItemInfo& pif);
+    void updateWithFrames(const QList<QImage>& frames);
 
 public slots:
     int exec() override;
-    void OnScreenshot(const QImage& frame);
 
 private:
-    PlayerEngine *_engine {nullptr};
-    int _count {0};
     QGridLayout *_grid {nullptr};
+    DTextButton *_saveBtn {nullptr};
 };
 }
 
