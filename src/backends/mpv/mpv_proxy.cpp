@@ -7,6 +7,7 @@
 #include "dmr_settings.h"
 #include <mpv/client.h>
 
+#include <random>
 #include <QtWidgets>
 
 #include <xcb/xproto.h>
@@ -66,14 +67,10 @@ MpvProxy::MpvProxy(QWidget *parent)
         setLayout(layout);
     }
 
-    _burstScreenshotTimer = new QTimer(this);
-    _burstScreenshotTimer->setSingleShot(true);
-    connect(_burstScreenshotTimer, &QTimer::timeout, this, &MpvProxy::stepBurstScreenshot);
 }
 
 MpvProxy::~MpvProxy()
 {
-    disconnect(_burstScreenshotTimer, &QTimer::timeout, this, &MpvProxy::stepBurstScreenshot);
     disconnect(this, &MpvProxy::has_mpv_events, this, &MpvProxy::handle_mpv_events);
     if (CompositingManager::get().composited()) {
         delete _gl_widget;
@@ -524,8 +521,15 @@ void MpvProxy::burstScreenshot()
     //command(_handle, QList<QVariant> {"revert-seek", "mark"});
      _posBeforeBurst = get_property(_handle, "time-pos");
 
+	std::random_device rd;
+    std::mt19937 g(rd());
+    std::uniform_int_distribution<int> uniform_dist(15, 30);
+    int d = (duration() - elapsed()) / uniform_dist(g);
+    _burstInc = qMax(d, 10);
+    qDebug() << "burst span " << _burstInc;
+
     _inBurstShotting = true;
-    _burstScreenshotTimer->start();
+    QTimer::singleShot(0, this, &MpvProxy::stepBurstScreenshot);
 }
 
 QImage MpvProxy::takeOneScreenshot()
@@ -583,7 +587,19 @@ void MpvProxy::stepBurstScreenshot()
         return;
     }
 
-    command(_handle, QList<QVariant> {"seek", 10});
+    command(_handle, QList<QVariant> {"seek", _burstInc});
+    int tries = 10;
+    while (tries) {
+        mpv_event* ev = mpv_wait_event(_handle, 0.005);
+        if (ev->event_id == MPV_EVENT_NONE) 
+            continue;
+
+        if (ev->event_id == MPV_EVENT_PLAYBACK_RESTART) {
+            qDebug() << "seek finished" << elapsed();
+            break;
+        }
+    }
+
     QImage img = takeOneScreenshot();
     if (img.isNull()) {
         stopBurstScreenshot();
@@ -591,14 +607,12 @@ void MpvProxy::stepBurstScreenshot()
     }
     emit notifyScreenshot(img);
 
-    _burstScreenshotTimer->start();
+    QTimer::singleShot(0, this, &MpvProxy::stepBurstScreenshot);
 }
 
 void MpvProxy::stopBurstScreenshot()
 {
     _inBurstShotting = false;
-    _burstScreenshotTimer->stop();
-
     //command(_handle, QList<QVariant> {"revert-seek", "mark"});
     set_property(_handle, "time-pos", _posBeforeBurst);
 }
