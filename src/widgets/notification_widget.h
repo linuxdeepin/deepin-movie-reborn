@@ -29,13 +29,8 @@ public slots:
     void popup(const QString& msg);
     void updateWithMessage(const QString& newMsg);
 
-private slots:
-    void updateBg();
-    void onMainWindowMoved(const QPoint& p);
-
 protected:
     void showEvent(QShowEvent *event) override;
-    void resizeEvent(QResizeEvent *ev) override;
 
 private:
     QWidget *_mw {nullptr};
@@ -43,7 +38,6 @@ private:
     QLabel *_icon {nullptr};
     QTimer *_timer {nullptr};
     QFrame *_frame {nullptr};
-    DBlurEffectWidget *_blur {nullptr};
     QHBoxLayout *_layout {nullptr};
     MessageAnchor _anchor {AnchorNone};
     int _anchorDist {10};

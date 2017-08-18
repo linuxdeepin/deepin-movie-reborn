@@ -9,14 +9,9 @@
 namespace dmr {
 
 NotificationWidget::NotificationWidget(QWidget *parent)
-    :QWidget(nullptr), _mw(parent)
+    :QWidget(parent), _mw(parent)
 {
-    setWindowFlags(Qt::ToolTip);
-    setAttribute(Qt::WA_TranslucentBackground, true);
-
     DThemeManager::instance()->registerWidget(this);
-
-    _blur = new DBlurEffectWidget(this);
 
     _frame = new QFrame(this);
     _layout = new QHBoxLayout;
@@ -36,59 +31,24 @@ NotificationWidget::NotificationWidget(QWidget *parent)
     _timer->setSingleShot(true);
     connect(_timer, &QTimer::timeout, [=]() {this->hide();});
 
-    _blur->setBlurRectXRadius(4);
-    _blur->setBlurRectYRadius(4);
-    _blur->setBlendMode(DBlurEffectWidget::BehindWindowBlend);
-
-    connect(DThemeManager::instance(), &DThemeManager::themeChanged, 
-            this, &NotificationWidget::updateBg);
-    updateBg();
-
-    winId();
-    auto relay = new EventRelayer(_mw->windowHandle(), windowHandle());
-    connect(relay, &EventRelayer::targetNeedsUpdatePosition, 
-            this, &NotificationWidget::onMainWindowMoved);
-}
-
-void NotificationWidget::onMainWindowMoved(const QPoint& p)
-{
-    if (isVisible()) {
-        syncPosition();
-    }
-}
-
-void NotificationWidget::updateBg() 
-{
-    if (qApp->theme() == "dark") {
-        _blur->setMaskColor(DBlurEffectWidget::DarkColor);
-    } else {
-        _blur->setMaskColor(DBlurEffectWidget::LightColor);
-    }
-}
-
-void NotificationWidget::resizeEvent(QResizeEvent *ev)
-{
-    QWidget::resizeEvent(ev);
-    _blur->resize(size());
 }
 
 void NotificationWidget::showEvent(QShowEvent *event)
 {
     ensurePolished();
-    updateGeometry();
     syncPosition();
 }
 
 void NotificationWidget::syncPosition()
 {
-    auto geom = _mw->frameGeometry();
+    auto geom = _mw->geometry();
     switch (_anchor) {
         case AnchorBottom:
             move(geom.center().x() - size().width()/2, geom.bottom() - _anchorDist - height());
             break;
 
         case AnchorNorthWest:
-            move(_mw->mapToGlobal(_anchorPoint));
+            move(_anchorPoint);
             break;
 
         case AnchorNone:
@@ -108,35 +68,33 @@ void NotificationWidget::popupWithIcon(const QString& msg, const QPixmap& pm)
     if (_layout->indexOf(_msgLabel) == -1)
         _layout->addWidget(_msgLabel);
 
-    setFixedSize(300, 43);
+    setFixedSize(300, 40);
     
     show();
+    raise();
     _timer->start();
-    Utility::setStayOnTop(this, true);
 }
 
 void NotificationWidget::popup(const QString& msg)
 {
-    _msgLabel->setText(msg);
     _layout->setContentsMargins(16, 9, 16, 9);
     if (_layout->indexOf(_msgLabel) == -1) {
         _layout->addWidget(_msgLabel);
-        _msgLabel->setStyleSheet("font-size: 14px");
     }
-
+    _msgLabel->setText(msg);
+    adjustSize();
     show();
+    raise();
     _timer->start();
-    Utility::setStayOnTop(this, true);
 }
 
 void NotificationWidget::updateWithMessage(const QString& newMsg)
 {
     if (isVisible()) {
-        _timer->start();
-        resize(1, size().height());
         _msgLabel->setText(newMsg);
+        adjustSize();
+        _timer->start();
 
-        auto geom = _mw->frameGeometry();
     } else {
         popup(newMsg);
     }

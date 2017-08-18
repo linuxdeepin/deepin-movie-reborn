@@ -476,8 +476,10 @@ MainWindow::MainWindow(QWidget *parent)
     _autoHideTimer.setSingleShot(true);
 
     _nwComm = new NotificationWidget(this); 
+    _nwComm->setFixedHeight(30);
     _nwComm->setAnchor(NotificationWidget::AnchorNorthWest);
     _nwComm->setAnchorPoint(QPoint(30, 38));
+    _nwComm->hide();
 
 #ifdef USE_DXCB
     if (!composited) {
