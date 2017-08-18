@@ -98,6 +98,7 @@ private:
     void toggleUIMode();
     void reflectActionToUI(ActionFactory::ActionKind);
     bool insideToolsArea(const QPoint& p);
+    void switchTheme();
 
 private:
     DTitlebar *_titlebar {nullptr};

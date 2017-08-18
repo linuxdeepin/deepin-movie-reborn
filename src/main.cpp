@@ -60,7 +60,8 @@ int main(int argc, char *argv[])
                 " video player with simple borderless design. It supports local and"
                 " streaming media play with multiple video formats."));
 
-    app.setTheme("dark");
+    auto light_theme = dmr::Settings::get().settings()->getOption("internal.light_theme").toBool();
+    app.setTheme(light_theme ? "light": "dark");
 
     Dtk::Core::DLogManager::registerConsoleAppender();
     Dtk::Core::DLogManager::registerFileAppender();
