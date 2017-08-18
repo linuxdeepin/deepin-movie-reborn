@@ -440,30 +440,12 @@ MainWindow::MainWindow(QWidget *parent)
         reflectActionToUI(ActionFactory::ActionKind::SelectTrack);
     });
 
-    auto updateConstraints = [=]() {
-        if (_engine->state() == PlayerEngine::Idle || _engine->playlist().count() == 0) {
-            _titlebar->setTitle(tr("Deepin Movie"));
-            return;
-        }
-
-        const auto& mi = _engine->playlist().currentInfo().mi;
-        _titlebar->setTitle(QFileInfo(mi.filePath).fileName());
-        auto sz = _engine->videoSize();
-        if (sz.isEmpty()) {
-            sz = QSize(mi.width, mi.height);
-            qDebug() << mi.width << mi.height;
-        }
-        
-        auto geom = qApp->desktop()->availableGeometry(this);
-        if (sz.width() > geom.width() || sz.height() > geom.height()) 
-            sz.scale(geom.width(), geom.height(), Qt::KeepAspectRatio);
-
-        qDebug() << "updateConstraints: " << sz;
-        resize(sz);
-    };
-    connect(_engine, &PlayerEngine::fileLoaded, updateConstraints);
-    connect(_engine, &PlayerEngine::videoSizeChanged, updateConstraints);
-    connect(&_engine->playlist(), &PlaylistModel::currentChanged, updateConstraints);
+    connect(_engine, &PlayerEngine::fileLoaded, 
+            this, &MainWindow::resizeByConstraints);
+    connect(_engine, &PlayerEngine::videoSizeChanged,
+            this, &MainWindow::resizeByConstraints);
+    connect(&_engine->playlist(), &PlaylistModel::currentChanged,
+            this, &MainWindow::resizeByConstraints);
 
     connect(_engine, &PlayerEngine::stateChanged, this, &MainWindow::updatePlayState);
     updatePlayState();
@@ -1359,6 +1341,34 @@ void MainWindow::showEvent(QShowEvent *event)
     resumeToolsWindow();
 }
 
+void MainWindow::resizeByConstraints() 
+{
+    if (_engine->state() == PlayerEngine::Idle || _engine->playlist().count() == 0) {
+        _titlebar->setTitle(tr("Deepin Movie"));
+        return;
+    }
+
+    if (_miniMode) {
+        //_lastSizeInNormalMode = QSize(-1, -1);
+        return;
+    }
+
+    const auto& mi = _engine->playlist().currentInfo().mi;
+    _titlebar->setTitle(QFileInfo(mi.filePath).fileName());
+    auto sz = _engine->videoSize();
+    if (sz.isEmpty()) {
+        sz = QSize(mi.width, mi.height);
+        qDebug() << mi.width << mi.height;
+    }
+
+    auto geom = qApp->desktop()->availableGeometry(this);
+    if (sz.width() > geom.width() || sz.height() > geom.height()) 
+        sz.scale(geom.width(), geom.height(), Qt::KeepAspectRatio);
+
+    qDebug() << sz;
+    resize(sz);
+}
+
 // 若长≥高,则长≤528px　　　若长≤高,则高≤528px.
 // 简而言之,只看最长的那个最大为528px.
 void MainWindow::updateSizeConstraints()
@@ -1460,6 +1470,7 @@ void MainWindow::contextMenuEvent(QContextMenuEvent *cme)
 {
     if (!_miniMode)
         ActionFactory::get().mainContextMenu()->popup(cme->globalPos());
+    cme->accept();
 }
 
 void MainWindow::paintEvent(QPaintEvent* pe)
@@ -1517,7 +1528,15 @@ void MainWindow::toggleUIMode()
         _miniPlayBtn->move(14, sz.height() - 10 - _miniPlayBtn->height()); 
 
     } else {
-        resize(_lastSizeInNormalMode);
+        if (_lastSizeInNormalMode.isValid()) {
+            resize(_lastSizeInNormalMode);
+        } else {
+            if (_engine->state() == PlayerEngine::CoreState::Idle) {
+                resize(850, 600);
+            } else {
+                resizeByConstraints();
+            }
+        }
     }
 }
 

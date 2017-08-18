@@ -26,13 +26,14 @@
 *[PlayItemThumb="true"][ItemState="1"] *[Name="true"] {
   font-size: 12px;
   line-height: 1.5;
-  color: #01bdff;
+  color: #2ca7f8;
+
 }
 
 *[PlayItemThumb="true"][ItemState="1"] *[Time="true"] {
     font-size: 10px;
     line-height: 1.5;
-    color: rgba(1, 189, 255, 0.6);
+    color: rgba(44, 167, 248, 0.6);
 }
 
 /* state Normal */
@@ -44,12 +45,12 @@
 *[PlayItemThumb="true"][ItemState="0"] *[Name="true"] {
     font-size: 12px;
     line-height: 1.5;
-    color: #ffffff;
+    color: #303030;
 }
 
 *[PlayItemThumb="true"][ItemState="0"] *[Time="true"] {
     font-size: 10px;
     line-height: 1.5;
-    color: rgba(255, 255, 255, 0.6);
+    color: rgba(48, 48, 48, 0.6);
 }
 

@@ -1,5 +1,5 @@
 dmr--PlaylistWidget {
-    background-color: rgba(255, 255, 255, 0.80);
+    background-color: rgba(252, 252, 252, 0.80);
     selection-color: transparent;
     selection-background-color: transparent;
 }
