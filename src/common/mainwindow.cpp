@@ -1047,31 +1047,23 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI, QList<
         }
 
         case ActionFactory::ActionKind::AccelPlayback: {
-            if (_playSpeed <= 1.0) {
-                _playSpeed = 1.0 + 0.1;
-            } else {
-                _playSpeed = qMin(2.0, _playSpeed + 0.1);
-            }
+            _playSpeed = qMin(2.0, _playSpeed + 0.1);
             _engine->setPlaySpeed(_playSpeed);
-            _nwComm->updateWithMessage(tr("Speed: %1").arg(_playSpeed));
+            _nwComm->updateWithMessage(tr("Speed: %1x").arg(_playSpeed));
             break;
         }
 
         case ActionFactory::ActionKind::DecelPlayback: {
-            if (_playSpeed >= 1.0) {
-                _playSpeed = 1.0 - 0.1;
-            } else {
-                _playSpeed = qMax(0.1, _playSpeed - 0.1);
-            }
+            _playSpeed = qMax(0.1, _playSpeed - 0.1);
             _engine->setPlaySpeed(_playSpeed);
-            _nwComm->updateWithMessage(tr("Speed: %1").arg(_playSpeed));
+            _nwComm->updateWithMessage(tr("Speed: %1x").arg(_playSpeed));
             break;
         }
 
         case ActionFactory::ActionKind::ResetPlayback: {
             _playSpeed = 1.0;
             _engine->setPlaySpeed(_playSpeed);
-            _nwComm->updateWithMessage(tr("Speed: %1").arg(_playSpeed));
+            _nwComm->updateWithMessage(tr("Speed: %1x").arg(_playSpeed));
             break;
         }
 

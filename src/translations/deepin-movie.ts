@@ -513,7 +513,7 @@
     <name>dmr::MainWindow</name>
     <message>
         <location filename="../common/mainwindow.cpp" line="347"/>
-        <location filename="../common/mainwindow.cpp" line="1372"/>
+        <location filename="../common/mainwindow.cpp" line="1364"/>
         <source>Deepin Movie</source>
         <translation type="unfinished"></translation>
     </message>
@@ -525,7 +525,7 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="799"/>
         <location filename="../common/mainwindow.cpp" line="815"/>
-        <location filename="../common/mainwindow.cpp" line="1079"/>
+        <location filename="../common/mainwindow.cpp" line="1071"/>
         <source>Open File</source>
         <translation type="unfinished"></translation>
     </message>
@@ -544,39 +544,39 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1056"/>
-        <location filename="../common/mainwindow.cpp" line="1067"/>
-        <location filename="../common/mainwindow.cpp" line="1074"/>
-        <source>Speed: %1</source>
+        <location filename="../common/mainwindow.cpp" line="1052"/>
+        <location filename="../common/mainwindow.cpp" line="1059"/>
+        <location filename="../common/mainwindow.cpp" line="1066"/>
+        <source>Speed: %1x</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1081"/>
+        <location filename="../common/mainwindow.cpp" line="1073"/>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1138"/>
+        <location filename="../common/mainwindow.cpp" line="1130"/>
         <source>View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1149"/>
+        <location filename="../common/mainwindow.cpp" line="1141"/>
         <source>Movie Screenshot</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1150"/>
+        <location filename="../common/mainwindow.cpp" line="1142"/>
         <source>Saved to</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1163"/>
+        <location filename="../common/mainwindow.cpp" line="1155"/>
         <source>The screenshot is saved in %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1610"/>
+        <location filename="../common/mainwindow.cpp" line="1602"/>
         <source>Invalid file: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -584,8 +584,8 @@
 <context>
     <name>dmr::MpvProxy</name>
     <message>
-        <location filename="../backends/mpv/mpv_proxy.cpp" line="686"/>
-        <location filename="../backends/mpv/mpv_proxy.cpp" line="703"/>
+        <location filename="../backends/mpv/mpv_proxy.cpp" line="700"/>
+        <location filename="../backends/mpv/mpv_proxy.cpp" line="717"/>
         <source>[internal]</source>
         <translation type="unfinished"></translation>
     </message>

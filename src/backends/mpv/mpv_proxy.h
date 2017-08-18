@@ -80,8 +80,8 @@ private:
     MpvGLWidget *_gl_widget{nullptr};
 
     bool _inBurstShotting {false};
-    QTimer *_burstScreenshotTimer {nullptr};
     QVariant _posBeforeBurst;
+    qint64 _burstInc {1};
 
     bool _pendingSeek {false};
     PlayingMovieInfo _pmf;
