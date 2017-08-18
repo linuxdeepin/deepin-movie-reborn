@@ -456,6 +456,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(&_autoHideTimer, &QTimer::timeout, this, &MainWindow::suspendToolsWindow);
     _autoHideTimer.setSingleShot(true);
+    connect(&_delayedMouseReleaseTimer, &QTimer::timeout, this, &MainWindow::delayedMouseReleaseHandler);
+    _delayedMouseReleaseTimer.setSingleShot(true);
 
     _nwComm = new NotificationWidget(this); 
     _nwComm->setFixedHeight(30);
@@ -1445,6 +1447,15 @@ void MainWindow::mousePressEvent(QMouseEvent *ev)
     _mousePressed = true;
 }
 
+void MainWindow::mouseDoubleClickEvent(QMouseEvent *ev)
+{
+    if (!_miniMode) {
+        _delayedMouseReleaseTimer.stop();
+        requestAction(ActionFactory::Fullscreen);
+        ev->accept();
+    }
+}
+
 bool MainWindow::insideToolsArea(const QPoint& p)
 {
     return _titlebar->geometry().contains(p) || _toolbox->geometry().contains(p);
@@ -1463,13 +1474,25 @@ bool MainWindow::insideResizeArea(const QPoint& global_p)
 
 void MainWindow::mouseReleaseEvent(QMouseEvent *ev)
 {
+    static ulong last_tm = 0;
+    if (ev->timestamp() - last_tm <= qApp->styleHints()->mouseDoubleClickInterval()) {
+        return;
+    }
+    last_tm = ev->timestamp();
+
     // dtk has a bug, DImageButton propagates mouseReleaseEvent event when it responsed to.
-    if (!insideResizeArea(ev->globalPos()) && !_mouseMoved && !insideToolsArea(ev->pos()))
-        requestAction(ActionFactory::TogglePause);
+    if (!insideResizeArea(ev->globalPos()) && !_mouseMoved && !insideToolsArea(ev->pos())) {
+        _delayedMouseReleaseTimer.start(qApp->styleHints()->mouseDoubleClickInterval());
+    }
+
     _mouseMoved = false;
     _mousePressed = false;
 }
 
+void MainWindow::delayedMouseReleaseHandler()
+{
+    requestAction(ActionFactory::TogglePause);
+}
 
 void MainWindow::mouseMoveEvent(QMouseEvent *ev)
 {

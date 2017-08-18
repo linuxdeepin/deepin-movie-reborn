@@ -65,6 +65,7 @@ protected:
     void resizeEvent(QResizeEvent *ev) override;
     void mouseMoveEvent(QMouseEvent *ev) override;
     void mousePressEvent(QMouseEvent *ev) override;
+    void mouseDoubleClickEvent(QMouseEvent *ev) override;
     void mouseReleaseEvent(QMouseEvent *ev) override;
 
     void keyPressEvent(QKeyEvent *ev) override;
@@ -89,6 +90,7 @@ protected slots:
 
     void startBurstShooting();
     void onBurstScreenshot(const QImage& frame);
+    void delayedMouseReleaseHandler();
 
 #ifdef USE_DXCB
     void onMonitorButtonPressed(int x, int y);
@@ -138,6 +140,7 @@ private:
     NotificationWidget *_nwShot {nullptr};
     NotificationWidget *_nwComm {nullptr};
     QTimer _autoHideTimer;
+    QTimer _delayedMouseReleaseTimer;
 };
 };
 
