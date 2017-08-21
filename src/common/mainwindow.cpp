@@ -581,7 +581,7 @@ void MainWindow::onThemeChanged()
 
 void MainWindow::updatePlayState()
 {
-    if (_engine->state() == PlayerEngine::CoreState::Paused) {
+    if (!_inBurstShootMode && _engine->state() == PlayerEngine::CoreState::Paused) {
         auto r = QRect(QPoint(0, 0), QSize(128, 128));
         r.moveCenter(rect().center());
         _playState->move(r.topLeft());
@@ -1223,6 +1223,7 @@ void MainWindow::onBurstScreenshot(const QImage& frame)
     if (_burstShoots.size() >= 15) {
         disconnect(_engine, &PlayerEngine::notifyScreenshot, this, &MainWindow::onBurstScreenshot);
         _engine->stopBurstScreenshot();
+        _inBurstShootMode = false;
 
         BurstScreenshotsDialog bsd(_engine->playlist().currentInfo());
         bsd.updateWithFrames(_burstShoots);
@@ -1236,6 +1237,7 @@ void MainWindow::onBurstScreenshot(const QImage& frame)
 
 void MainWindow::startBurstShooting()
 {
+    _inBurstShootMode = true;
     connect(_engine, &PlayerEngine::notifyScreenshot, this, &MainWindow::onBurstScreenshot);
     _engine->burstScreenshot();
 }
