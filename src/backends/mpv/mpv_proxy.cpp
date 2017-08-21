@@ -483,6 +483,7 @@ void MpvProxy::play()
     }
     qDebug () << args;
     command(_handle, args);
+    set_property(_handle, "pause", false);
 }
 
 
