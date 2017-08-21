@@ -344,6 +344,16 @@ void MpvProxy::setSubDelay(double secs)
     set_property(_handle, "sub-delay", secs);
 }
 
+QString MpvProxy::subCodepage()
+{
+    return get_property(_handle, "sub-codepage").toString();
+}
+
+void MpvProxy::setSubCodepage(const QString& cp)
+{
+    set_property(_handle, "sub-codepage", cp);
+}
+
 void MpvProxy::updateSubStyle(const QString& font, int sz)
 {
     set_property(_handle, "sub-font", font);

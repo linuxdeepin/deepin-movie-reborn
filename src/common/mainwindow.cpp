@@ -425,9 +425,10 @@ MainWindow::MainWindow(QWidget *parent)
     connect(_engine, &PlayerEngine::stateChanged, this, &MainWindow::updateActionsState);
     updateActionsState();
 
-    reflectActionToUI(ActionFactory::ActionKind::DefaultFrame);
-    reflectActionToUI(ActionFactory::ActionKind::OrderPlay);
-    reflectActionToUI(ActionFactory::ActionKind::Stereo);
+    reflectActionToUI(ActionFactory::DefaultFrame);
+    reflectActionToUI(ActionFactory::OrderPlay);
+    reflectActionToUI(ActionFactory::Stereo);
+    requestAction(ActionFactory::ChangeSubCodepage, false, {"auto"});
 
     _lightTheme = Settings::get().settings()->getOption("internal.light_theme").toBool();
     if (_lightTheme) reflectActionToUI(ActionFactory::LightTheme);
@@ -679,6 +680,25 @@ void MainWindow::reflectActionToUI(ActionFactory::ActionKind kd)
                 (*p)->setEnabled(false);
                 (*p)->setChecked(!(*p)->isChecked());
                 (*p)->setEnabled(old);
+                ++p;
+            }
+            break;
+        }
+
+        case ActionFactory::ActionKind::ChangeSubCodepage: {
+            auto cp = _engine->subCodepage();
+            qDebug() << "codepage" << cp;
+            acts = ActionFactory::get().findActionsByKind(kd);
+            auto p = acts.begin();
+            while (p != acts.end()) {
+                auto args = ActionFactory::actionArgs(*p);
+                if (args[0].toString() == cp) {
+                    (*p)->setEnabled(false);
+                    if (!(*p)->isChecked()) (*p)->setChecked(true);
+                    (*p)->setEnabled(true);
+                    break;
+                }
+
                 ++p;
             }
             break;
@@ -1027,6 +1047,15 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI, QList<
         case ActionFactory::ActionKind::SelectSubtitle: {
             Q_ASSERT(args.size() == 1);
             _engine->selectSubtitle(args[0].toInt());
+            if (!fromUI) {
+                reflectActionToUI(kd);
+            }
+            break;
+        }
+
+        case ActionFactory::ActionKind::ChangeSubCodepage: {
+            Q_ASSERT(args.size() == 1);
+            _engine->setSubCodepage(args[0].toString());
             if (!fromUI) {
                 reflectActionToUI(kd);
             }
