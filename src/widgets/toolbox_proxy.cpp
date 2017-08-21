@@ -376,7 +376,7 @@ void ToolboxProxy::setup()
     stacked->addWidget(bot_widget);
 
     _timeLabel = new QLabel("");
-    _timeLabel->setFixedWidth(_timeLabel->fontMetrics().width("239:59/240:00"));
+    _timeLabel->setFixedWidth(_timeLabel->fontMetrics().width("99:99:99/99:99:99"));
     bot->addWidget(_timeLabel);
 
     auto *signalMapper = new QSignalMapper(this);
@@ -596,12 +596,9 @@ void ToolboxProxy::updateTimeInfo(qint64 duration, qint64 pos)
 
     } else {
         auto fn = [](qint64 d) -> QString {
-            auto secs = d % 60;
-            auto minutes = d / 60;
-
-            auto ss = QString("%1%2").arg(secs < 10 ? "0":"").arg(secs);
-            auto ms = QString("%1%2").arg(minutes < 10 ? "0":"").arg(minutes);
-            return QString("%1:%2").arg(ms).arg(ss);
+            QTime t(0, 0, 0);
+            t = t.addSecs(d);
+            return t.toString("hh:mm:ss");
         };
 
         _timeLabel->setText(QString("%2/%1").arg(fn(duration)).arg(fn(pos)));
@@ -659,7 +656,7 @@ void ToolboxProxy::showEvent(QShowEvent *event)
 {
     // to keep left and right of the same width. which makes play button centered
     auto right_geom = _right->geometry();
-    int left_w = _timeLabel->fontMetrics().width("239:59/240:00");
+    int left_w = _timeLabel->fontMetrics().width("99:99:99/99:99:99");
     int w = qMax(left_w, right_geom.width());
     _timeLabel->setFixedWidth(w + RIGHT_MARGIN - LEFT_MARGIN); 
     right_geom.setWidth(w);
