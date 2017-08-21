@@ -1229,7 +1229,7 @@ void MainWindow::play(const QUrl& url)
         return;
 
     _engine->addPlayFile(url);
-    _engine->play();
+    _engine->playByName(url);
 }
 
 void MainWindow::updateProxyGeometry()

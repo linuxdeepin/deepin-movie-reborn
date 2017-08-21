@@ -310,7 +310,12 @@ void PlayerEngine::onPlaylistAsyncAppendFinished()
 
 void PlayerEngine::playByName(const QUrl& url)
 {
-    _pendingPlayReq = url;
+    auto id = _playlist->indexOf(url);
+    if (id >= 0) {
+        _playlist->changeCurrent(id);
+    } else {
+        _pendingPlayReq = url;
+    }
 }
 
 void PlayerEngine::playSelected(int id)
