@@ -84,6 +84,8 @@ public:
     int sid() const;
     void setSubDelay(double secs);
     void updateSubStyle(const QString& font, int sz);
+    void setSubCodepage(const QString& cp);
+    QString subCodepage();
 
     void selectTrack(int id); // id into PlayingMovieInfo.audios
     int aid() const;

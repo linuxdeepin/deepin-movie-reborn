@@ -188,6 +188,17 @@ void PlayerEngine::setSubDelay(double secs)
     _current->setSubDelay(secs);
 }
 
+QString PlayerEngine::subCodepage()
+{
+    return _current->subCodepage();
+}
+
+void PlayerEngine::setSubCodepage(const QString& cp)
+{
+    if (!_current) return;
+    _current->setSubCodepage(cp);
+}
+
 void PlayerEngine::updateSubStyle(const QString& font, int sz)
 {
     if (!_current) return;

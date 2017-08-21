@@ -52,6 +52,8 @@ public:
     virtual void setPlaySpeed(double times) = 0;
     virtual void savePlaybackPosition() = 0;
     virtual void updateSubStyle(const QString& font, int sz) = 0;
+    virtual void setSubCodepage(const QString& cp) = 0;
+    virtual QString subCodepage() = 0;
 
     virtual void loadSubtitle(const QFileInfo& fi) = 0;
     virtual void toggleSubtitle() = 0;
