@@ -37,10 +37,12 @@ public:
 
 public slots:
     int exec() override;
+    void saveShootings();
 
 private:
     QGridLayout *_grid {nullptr};
     DTextButton *_saveBtn {nullptr};
+    QList<QImage> _thumbs;
 };
 }
 

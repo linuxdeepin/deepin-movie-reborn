@@ -114,6 +114,7 @@ private:
     QLabel *_playState {nullptr};
 
     QList<QImage> _burstShoots;
+    bool _inBurstShootMode {false};
 
     DImageButton *_miniPlayBtn {nullptr};
     DImageButton *_miniCloseBtn {nullptr};

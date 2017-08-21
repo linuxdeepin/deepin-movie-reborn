@@ -1,5 +1,6 @@
 #include "player_engine.h"
 #include "burst_screenshots_dialog.h"
+#include "dmr_settings.h"
 
 #include <dthememanager.h>
 
@@ -55,6 +56,7 @@ BurstScreenshotsDialog::BurstScreenshotsDialog(const PlayItemInfo& pif)
     bl->addStretch(1);
 
     _saveBtn = new DTextButton(tr("save"));
+    connect(_saveBtn, &QPushButton::clicked, this, &BurstScreenshotsDialog::saveShootings);
     _saveBtn->setFixedSize(61, 24);
 
     QString addition = R"(
@@ -62,10 +64,28 @@ BurstScreenshotsDialog::BurstScreenshotsDialog(const PlayItemInfo& pif)
         line-height: 1;
         font-size: 12px;
         color: #0599ff;
+        font-weight: 500;
+        text-align: center;
+
+        border: 1px solid rgba(0, 132, 255, 0.4);
+        border-radius: 4px;
+
+        outline: none;
+        background-color:transparent;
+    }
+
+
+    Dtk--Widget--DTextButton:hover {
+        background-color: rgba(0, 132, 255, 0.4);
+    }
+
+    Dtk--Widget--DTextButton:pressed {
+        background-color: rgba(0, 132, 255, 0.5);
     }
     )";
     auto qss = DThemeManager::instance()->getQssForWidget("DTextButton", "light");
-    _saveBtn->setStyleSheet(qss + addition);
+    _saveBtn->setStyleSheet(addition);
+
     bl->addWidget(_saveBtn);
     ml->addLayout(bl);
 
@@ -105,11 +125,28 @@ void BurstScreenshotsDialog::updateWithFrames(const QList<QImage>& frames)
         _grid->addWidget(l, r, c);
         count++;
     }
+
+    _thumbs = frames;
 }
 
 int BurstScreenshotsDialog::exec()
 {
     return DDialog::exec();
+}
+
+void BurstScreenshotsDialog::saveShootings()
+{
+    QString savePath = Settings::get().settings()->value("base.screenshot.location").toString();
+    if (!QFileInfo(savePath).exists()) {
+        savePath = "/tmp";
+    }
+
+    int i = 1;
+    for (auto& img: _thumbs) {
+        QString filePath = QString("%1/deepin-movie-shot %2(%3).jpg")
+            .arg(savePath).arg(QDateTime::currentDateTime().toString(Qt::ISODate)).arg(i++);
+        img.save(filePath);
+    }
 }
 
 }
