@@ -1,4 +1,5 @@
 #include "url_dialog.h"
+#include "dmr_lineedit.h"
 
 
 DWIDGET_USE_NAMESPACE
@@ -14,8 +15,9 @@ UrlDialog::UrlDialog()
     setIcon(QIcon(":/resources/icons/logo-big.svg"));
     setMessage(QApplication::translate("UrlDialog", "Please input the url of file to play"));
 
-    _le = new DLineEdit;
+    _le = new LineEdit;
     addContent(_le);
+
 
     connect(getButton(0), &QAbstractButton::clicked, this, [=] {
         done(QDialog::Rejected);
@@ -23,11 +25,16 @@ UrlDialog::UrlDialog()
     connect(getButton(1), &QAbstractButton::clicked, this, [=] {
         done(QDialog::Accepted);
     });
+
 }
 
 QUrl UrlDialog::url() const
 {
     return QUrl(_le->text());
+}
+
+void UrlDialog::showEvent(QShowEvent* se)
+{
 }
 
 }

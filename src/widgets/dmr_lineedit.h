@@ -1,25 +1,23 @@
 #pragma once
 
 #include <QtWidgets>
-#include <ddialog.h>
-
 #include <dlineedit.h>
 #include <dimagebutton.h>
 
 DWIDGET_USE_NAMESPACE
 
 namespace dmr {
-class LineEdit;
 
-class UrlDialog: public DDialog {
+class LineEdit: public QLineEdit {
 public:
-    UrlDialog();
-    QUrl url() const;
+    LineEdit(QWidget* p = 0);
 
 protected:
     void showEvent(QShowEvent* se) override;
+    void resizeEvent(QResizeEvent* re) override;
 
 private:
-    LineEdit *_le {nullptr};
+    QAction *_clearAct {nullptr};
 };
 }
+
