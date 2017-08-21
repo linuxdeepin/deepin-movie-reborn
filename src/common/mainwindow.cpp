@@ -1310,6 +1310,10 @@ void MainWindow::suspendToolsWindow()
 
         _titlebar->hide();
         _toolbox->hide();
+    } else {
+        _miniPlayBtn->hide();
+        _miniCloseBtn->hide();
+        _miniQuitMiniBtn->hide();
     }
 }
 
@@ -1318,6 +1322,10 @@ void MainWindow::resumeToolsWindow()
     if (!_miniMode) {
         _titlebar->show();
         _toolbox->show();
+    } else {
+        _miniPlayBtn->show();
+        _miniCloseBtn->show();
+        _miniQuitMiniBtn->show();
     }
 
     _autoHideTimer.start(AUTOHIDE_TIMEOUT);
@@ -1536,7 +1544,6 @@ void MainWindow::toggleUIMode()
     _titlebar->setVisible(!_miniMode);
     _toolbox->setVisible(!_miniMode);
 
-
     _miniPlayBtn->setVisible(_miniMode);
     _miniCloseBtn->setVisible(_miniMode);
     _miniQuitMiniBtn->setVisible(_miniMode);
@@ -1545,7 +1552,12 @@ void MainWindow::toggleUIMode()
     _miniCloseBtn->setEnabled(_miniMode);
     _miniQuitMiniBtn->setEnabled(_miniMode);
 
+    resumeToolsWindow();
     if (_miniMode) {
+        if (!_windowAbove) {
+            requestAction(ActionFactory::WindowAbove);
+        }
+
         _lastSizeInNormalMode = size();
         auto sz = QSize(380, 380);
         if (_engine->state() != PlayerEngine::CoreState::Idle) {
@@ -1565,6 +1577,10 @@ void MainWindow::toggleUIMode()
         _miniPlayBtn->move(14, sz.height() - 10 - _miniPlayBtn->height()); 
 
     } else {
+        if (_windowAbove) {
+            requestAction(ActionFactory::WindowAbove);
+        }
+
         if (_lastSizeInNormalMode.isValid()) {
             resize(_lastSizeInNormalMode);
         } else {

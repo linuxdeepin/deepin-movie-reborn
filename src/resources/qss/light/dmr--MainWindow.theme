@@ -10,24 +10,32 @@ Dtk--Widget--DTitlebar, Dtk--Widget--DTitlebar * {
 /* ---------- Mini Mode ----------------------------- */
 
 Dtk--Widget--DImageButton#MiniPlayBtn {
+    background: transparent;
+    border: none;
     qproperty-normalPic: url(:/resources/icons/light/mini/play-normal-mini.png);
     qproperty-hoverPic: url(:/resources/icons/light/mini/play-hover-mini.png);
     qproperty-pressPic: url(:/resources/icons/light/mini/play-press-mini.png);
 }
 
 Dtk--Widget--DImageButton#MiniPauseBtn {
+    background: transparent;
+    border: none;
     qproperty-normalPic: url(:/resources/icons/light/mini/pause-normal-mini.png);
     qproperty-hoverPic: url(:/resources/icons/light/mini/pause-hover-mini.png);
     qproperty-pressPic: url(:/resources/icons/light/mini/pause-press-mini.png);
 }
 
 Dtk--Widget--DImageButton#MiniQuitMiniBtn {
+    background: transparent;
+    border: none;
     qproperty-normalPic: url(:/resources/icons/light/mini/restore-normal-mini.png);
     qproperty-hoverPic: url(:/resources/icons/light/mini/restore-hover-mini.png);
     qproperty-pressPic: url(:/resources/icons/light/mini/restore-press-mini.png);
 }
 
 Dtk--Widget--DImageButton#MiniCloseBtn {
+    background: transparent;
+    border: none;
     qproperty-normalPic: url(:/resources/icons/light/normal/close-normal.png);
     qproperty-hoverPic: url(:/resources/icons/light/normal/close-hover.png);
     qproperty-pressPic: url(:/resources/icons/light/normal/close-press.png);
