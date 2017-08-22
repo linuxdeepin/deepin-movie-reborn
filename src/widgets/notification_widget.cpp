@@ -38,6 +38,10 @@ NotificationWidget::NotificationWidget(QWidget *parent)
 void NotificationWidget::showEvent(QShowEvent *event)
 {
     ensurePolished();
+    if (_layout->indexOf(_icon) == -1) {
+        resize(_msgLabel->sizeHint().width() + _layout->contentsMargins().left() 
+                + _layout->contentsMargins().right(), height());
+    }
     adjustSize();
     syncPosition();
 }
@@ -88,8 +92,6 @@ void NotificationWidget::popup(const QString& msg)
     if (_layout->indexOf(_msgLabel) == -1) {
         _layout->addWidget(_msgLabel);
     }
-    _msgLabel->clear();
-    adjustSize();
     _msgLabel->setText(msg);
     show();
     raise();
@@ -99,9 +101,9 @@ void NotificationWidget::popup(const QString& msg)
 void NotificationWidget::updateWithMessage(const QString& newMsg)
 {
     if (isVisible()) {
-        _msgLabel->clear();
-        adjustSize();
         _msgLabel->setText(newMsg);
+        resize(_msgLabel->sizeHint().width() + _layout->contentsMargins().left() 
+                + _layout->contentsMargins().right(), height());
         adjustSize();
         _timer->start();
 
