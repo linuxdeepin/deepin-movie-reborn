@@ -563,7 +563,7 @@ void PlaylistModel::collectionJob(const QList<QUrl>& urls)
             auto fil = utils::FindSimilarFiles(fi);
             qDebug() << "auto search similar files" << fil;
             std::for_each(fil.begin(), fil.end(), [=](const QFileInfo& fi) {
-                if (!fi.isFile()) {
+                if (fi.isFile()) {
                     auto url = QUrl::fromLocalFile(fi.absoluteFilePath());
 
                     if (!_urlsInJob.contains(url) && indexOf(url) < 0 &&
