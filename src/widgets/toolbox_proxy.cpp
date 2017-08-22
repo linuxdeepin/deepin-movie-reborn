@@ -461,6 +461,7 @@ void ToolboxProxy::setup()
     connect(_engine, &PlayerEngine::tracksChanged, this, &ToolboxProxy::updateButtonStates);
     connect(_engine, &PlayerEngine::fileLoaded, this, &ToolboxProxy::updateButtonStates);
     connect(&_engine->playlist(), &PlaylistModel::countChanged, this, &ToolboxProxy::updateButtonStates);
+    connect(_mainWindow, &MainWindow::initChanged, this, &ToolboxProxy::updateButtonStates);
 
     updatePlayState();
     updateFullState();
@@ -538,7 +539,7 @@ void ToolboxProxy::updateMovieProgress()
 void ToolboxProxy::updateButtonStates()
 {
     qDebug() << _engine->playingMovieInfo().subs.size();
-    bool vis = _engine->playlist().count() > 1;
+    bool vis = _engine->playlist().count() > 1 && _mainWindow->inited();
     _prevBtn->setVisible(vis);
     _nextBtn->setVisible(vis);
 

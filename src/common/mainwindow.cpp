@@ -359,7 +359,7 @@ MainWindow::MainWindow(QWidget *parent)
     _toolbox = new ToolboxProxy(this, _engine);
     _toolbox->setFocusPolicy(Qt::NoFocus);
     connect(_engine, &PlayerEngine::stateChanged, [=]() {
-        _inited = true; // the first time a play happens, we consider it inited.
+        setInit(_engine->state() != PlayerEngine::Idle);
         resumeToolsWindow();
     });
 
@@ -1685,6 +1685,14 @@ void MainWindow::dropEvent(QDropEvent *ev)
         }
     }
     ev->acceptProposedAction();
+}
+
+void MainWindow::setInit(bool v)
+{
+    if (_inited != v) {
+        _inited = v;
+        emit initChanged();
+    }
 }
 
 #include "mainwindow.moc"
