@@ -33,10 +33,11 @@ public slots:
     void removeClickedItem();
 
 protected:
-    void contextMenuEvent(QContextMenuEvent *cme);
-    void dragEnterEvent(QDragEnterEvent *event);
-    void dragMoveEvent(QDragMoveEvent *event);
-    void dropEvent(QDropEvent *event);
+    void contextMenuEvent(QContextMenuEvent *cme) override;
+    void dragEnterEvent(QDragEnterEvent *event) override;
+    void dragMoveEvent(QDragMoveEvent *event) override;
+    void dropEvent(QDropEvent *event) override;
+    void showEvent(QShowEvent *se) override;
 
 protected slots:
     void updateItemStates();

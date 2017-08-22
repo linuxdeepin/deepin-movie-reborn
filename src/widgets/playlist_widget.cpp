@@ -51,17 +51,23 @@ public:
         auto *vl = new QVBoxLayout;
         l->addLayout(vl, 1);
 
-        auto w = new QLabel(this);
-        w->setProperty("Name", true);
-        QString msg = pif.url.fileName();
-        w->setText(w->fontMetrics().elidedText(msg, Qt::ElideMiddle, 300));
-        w->setWordWrap(true);
-        vl->addWidget(w, 1);
+        _name = new QTextEdit(this);
+        _name->setProperty("Name", true);
+        _name->setReadOnly(true);
+        _name->setAcceptRichText(false);
+        _name->setWordWrapMode(QTextOption::WrapAnywhere);
+        _name->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        _name->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        _name->setFrameShape(QFrame::NoFrame);
 
-        w = new QLabel(this);
-        w->setProperty("Time", true);
-        w->setText(_pif.mi.durationStr());
-        vl->addWidget(w);
+        QString msg = pif.url.fileName();
+        _name->setText(_name->fontMetrics().elidedText(msg, Qt::ElideMiddle, 290));
+        vl->addWidget(_name, 1);
+
+        _time = new QLabel(this);
+        _time->setProperty("Time", true);
+        _time->setText(_pif.mi.durationStr());
+        vl->addWidget(_time);
 
         _closeBtn = new DImageButton(this);
         _closeBtn->setFixedSize(20, 20);
@@ -115,10 +121,29 @@ protected:
         _closeBtn->raise();
     }
 
+    bool event(QEvent *ee) override
+    {
+        if(ee->type() == QEvent::Resize) {
+            int text_height = _name->document()->size().height();
+            _name->setFixedHeight(text_height);
+
+            resize(width(), _name->height() + _time->height() + 2);
+        }
+
+        return QFrame::event(ee);
+    }
+
     void resizeEvent(QResizeEvent* se) override
     {
         auto sz = this->size();
         _closeBtn->move(sz.width() - _closeBtn->width() - 20, (sz.height() - _closeBtn->height())/2);
+    }
+
+    void showEvent(QShowEvent *se) override
+    {
+        int text_height = _name->document()->size().height();
+        _name->setFixedHeight(text_height);
+        resize(width(), _name->height() + _time->height() + 2);
     }
 
     void mouseDoubleClickEvent(QMouseEvent* me) override
@@ -130,6 +155,8 @@ protected:
 private:
     QString _bg;
     QLabel *_thumb;
+    QTextEdit *_name;
+    QLabel *_time;
     QPixmap _play;
     PlayItemInfo _pif;
     DImageButton *_closeBtn;
@@ -315,6 +342,16 @@ void PlaylistWidget::contextMenuEvent(QContextMenuEvent *cme)
     ActionFactory::get().playlistContextMenu()->popup(cme->globalPos());
 }
 
+void PlaylistWidget::showEvent(QShowEvent *se)
+{
+    for (int i = 0; i < this->count(); i++) {
+        auto item = this->item(i);
+        auto w = this->itemWidget(item);
+        item->setSizeHint(w->size());
+    }
+    adjustSize();
+}
+
 void PlaylistWidget::loadPlaylist()
 {
     qDebug() << __func__;
@@ -353,6 +390,7 @@ void PlaylistWidget::loadPlaylist()
     auto p = items.begin();
     while (p != items.end()) {
         auto w = new PlayItemWidget(*p, this);
+        w->show();
         auto item = new QListWidgetItem;
         addItem(item);
         item->setSizeHint(w->sizeHint());

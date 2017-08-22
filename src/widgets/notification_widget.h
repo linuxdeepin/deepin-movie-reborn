@@ -31,6 +31,7 @@ public slots:
 
 protected:
     void showEvent(QShowEvent *event) override;
+    void resizeEvent(QResizeEvent *re) override;
 
 private:
     QWidget *_mw {nullptr};

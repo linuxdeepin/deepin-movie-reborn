@@ -14,6 +14,7 @@ NotificationWidget::NotificationWidget(QWidget *parent)
     DThemeManager::instance()->registerWidget(this);
 
     _frame = new QFrame(this);
+    _frame->setFrameShape(QFrame::NoFrame);
     _layout = new QHBoxLayout;
     _frame->setObjectName("NotificationFrame");
     _frame->setLayout(_layout);
@@ -24,6 +25,7 @@ NotificationWidget::NotificationWidget(QWidget *parent)
     hl->addWidget(_frame);
 
     _icon = new QLabel;
+    _icon->setFrameShape(QFrame::NoFrame);
     _msgLabel = new QLabel();
 
     _timer = new QTimer(this);
@@ -36,7 +38,12 @@ NotificationWidget::NotificationWidget(QWidget *parent)
 void NotificationWidget::showEvent(QShowEvent *event)
 {
     ensurePolished();
+    adjustSize();
     syncPosition();
+}
+
+void NotificationWidget::resizeEvent(QResizeEvent *re)
+{
 }
 
 void NotificationWidget::syncPosition()
@@ -62,7 +69,7 @@ void NotificationWidget::popupWithIcon(const QString& msg, const QPixmap& pm)
     _msgLabel->setText(msg);
     _icon->setPixmap(pm);
 
-    _layout->setContentsMargins(12, 8, 12, 8);
+    _layout->setContentsMargins(12, 6, 12, 6);
     if (_layout->indexOf(_icon) == -1)
         _layout->addWidget(_icon);
     if (_layout->indexOf(_msgLabel) == -1)
@@ -77,12 +84,13 @@ void NotificationWidget::popupWithIcon(const QString& msg, const QPixmap& pm)
 
 void NotificationWidget::popup(const QString& msg)
 {
-    _layout->setContentsMargins(16, 9, 16, 9);
+    _layout->setContentsMargins(14, 4, 14, 4);
     if (_layout->indexOf(_msgLabel) == -1) {
         _layout->addWidget(_msgLabel);
     }
-    _msgLabel->setText(msg);
+    _msgLabel->clear();
     adjustSize();
+    _msgLabel->setText(msg);
     show();
     raise();
     _timer->start();
@@ -91,6 +99,8 @@ void NotificationWidget::popup(const QString& msg)
 void NotificationWidget::updateWithMessage(const QString& newMsg)
 {
     if (isVisible()) {
+        _msgLabel->clear();
+        adjustSize();
         _msgLabel->setText(newMsg);
         adjustSize();
         _timer->start();
