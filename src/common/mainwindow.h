@@ -30,12 +30,14 @@ class NotificationWidget;
 class MainWindow: public QWidget {
     Q_OBJECT
     Q_PROPERTY(QMargins frameMargins READ frameMargins NOTIFY frameMarginsChanged)
+    Q_PROPERTY(bool inited READ inited WRITE setInit NOTIFY initChanged)
 public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
     QMargins frameMargins() const;
 
+    bool inited() const { return _inited; }
     PlayerEngine* engine() { return _engine; }
     DTitlebar* titlebar() { return _titlebar; }
     ToolboxProxy* toolbox() { return _toolbox; }
@@ -50,6 +52,7 @@ signals:
     void frameMarginsChanged();
     void windowEntered();
     void windowLeaved();
+    void initChanged();
 
 public slots:
     void play(const QUrl& url);
@@ -78,6 +81,7 @@ protected:
     void dropEvent(QDropEvent *event) override;
 
 protected slots:
+    void setInit(bool v);
     void menuItemInvoked(QAction *action);
     void onApplicationStateChanged(Qt::ApplicationState e);
     void onBindingsChanged();
@@ -122,6 +126,8 @@ private:
 
     bool _miniMode {false};
     QSize _lastSizeInNormalMode;
+
+    // the first time a play happens, we consider it inited.
     bool _inited {false};
 
     DPlatformWindowHandle *_handle {nullptr};
