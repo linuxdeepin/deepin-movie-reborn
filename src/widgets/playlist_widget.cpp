@@ -59,6 +59,8 @@ public:
         _name->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         _name->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         _name->setFrameShape(QFrame::NoFrame);
+        _name->setTextInteractionFlags(Qt::NoTextInteraction);
+        _name->installEventFilter(this);
 
         QString msg = pif.url.fileName();
         _name->setText(_name->fontMetrics().elidedText(msg, Qt::ElideMiddle, 290));
@@ -119,6 +121,15 @@ protected:
     {
         _closeBtn->show();
         _closeBtn->raise();
+    }
+
+    bool eventFilter(QObject *obj, QEvent *e) override 
+    {
+        if (e->type() == QEvent::MouseButtonDblClick) {
+            emit doubleClicked();
+            return true;
+        }
+        return QWidget::eventFilter(obj, e);
     }
 
     bool event(QEvent *ee) override
