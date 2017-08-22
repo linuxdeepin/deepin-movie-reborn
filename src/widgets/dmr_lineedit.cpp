@@ -7,8 +7,13 @@ LineEdit::LineEdit(QWidget* parent)
 {
     setFixedHeight(20);
     setStyleSheet(R"(
+	QLineEdit {
         font-size: 11px;
+		border-radius: 3px;
+		background-color: #ffffff;
+		border: 1px solid rgba(0, 0, 0, 0.08);
         color: #303030;
+	}
     )");
 
     QIcon icon;

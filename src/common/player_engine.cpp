@@ -189,6 +189,12 @@ void PlayerEngine::setSubDelay(double secs)
     _current->setSubDelay(secs);
 }
 
+double PlayerEngine::subDelay() const
+{
+    if (!_current) return 0.0;
+    return _current->subDelay();
+}
+
 QString PlayerEngine::subCodepage()
 {
     return _current->subCodepage();

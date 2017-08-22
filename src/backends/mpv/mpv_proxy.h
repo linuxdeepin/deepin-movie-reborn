@@ -37,6 +37,7 @@ public:
     void selectSubtitle(int id) override;
     int sid() const override;
     void setSubDelay(double secs) override;
+    double subDelay() const override;
     void updateSubStyle(const QString& font, int sz) override;
     void setSubCodepage(const QString& cp) override;
     QString subCodepage() override;

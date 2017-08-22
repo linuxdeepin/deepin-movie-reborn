@@ -10,43 +10,47 @@
                     "options": [
                         {
                             "key": "emptylist",
-                            "name": "Clear playlist when exit",
+                            "name": "",
                             "type": "checkbox",
+                            "text": "Clear playlist when exit",
                             "default": ""
                         },
                         {
                             "key": "resumelast",
-                            "name": "Remember playback position",
+                            "name": "",
                             "type": "checkbox",
+                            "text": "Remember playback position",
                             "default": true
                         },
                         {
                             "key": "addsimilar",
-                            "name": "Auto add similar files to play",
+                            "name": "",
                             "type": "checkbox",
+                            "text": "Auto add similar files to play",
                             "default": true
                         },
                         {
                             "key": "mousepreview",
-                            "name": "Show video preview on mouseover",
+                            "name": "",
+                            "text": "Show video preview on mouseover",
                             "type": "checkbox",
                             "default": true
                         },
                         {
                             "key": "multiinstance",
-                            "name": "Run multiple Deepin Movie",
+                            "text": "Run multiple Deepin Movie",
                             "type": "checkbox",
                             "default": ""
                         },
                         {
                             "key": "pauseonmin",
-                            "name": "Pause when minimized",
+                            "text": "Pause when minimized",
                             "type": "checkbox",
                             "default": true
                         },
                         {
                             "key": "hwaccel",
-                            "name": "Enable hardware acceleration",
+                            "text": "Enable hardware acceleration",
                             "type": "checkbox",
                             "hide": true,
                             "default": true

@@ -62,6 +62,7 @@ public:
     virtual void selectSubtitle(int id) = 0;
     virtual void selectTrack(int id) = 0;
     virtual void setSubDelay(double secs) = 0;
+    virtual double subDelay() const = 0;
 
     virtual int aid() const = 0;
     virtual int sid() const = 0;
