@@ -8,13 +8,13 @@
 *[PlayItemThumb="true"][ItemState="2"] *[Name="true"] {
     font-size: 12px;
     line-height: 1.5;
-    color: #ffffff;
+    color: #303030;
 }
 
 *[PlayItemThumb="true"][ItemState="2"] *[Time="true"] {
     font-size: 10px;
     line-height: 1.5;
-    color: rgba(255, 255, 255, 0.6);
+    color: rgba(48, 48, 48, 0.8);
 }
 
 /* state Playing */

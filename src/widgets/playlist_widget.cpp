@@ -220,7 +220,7 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
         setWindowFlags(Qt::FramelessWindowHint|Qt::BypassWindowManagerHint);
         setContentsMargins(0, 0, 0, 0);
         setAttribute(Qt::WA_NativeWindow);
-    }
+	} 
 
 #ifndef USE_DXCB
     auto *mwl = new MainWindowListener(this);
