@@ -48,7 +48,8 @@
                             "key": "hwaccel",
                             "name": "Enable hardware acceleration",
                             "type": "checkbox",
-                            "default": ""
+                            "hide": true,
+                            "default": true
                         }
                     ]
                 },

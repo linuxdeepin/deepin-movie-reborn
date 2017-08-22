@@ -10,6 +10,7 @@
 #include <locale.h>
 
 #include <QtWidgets>
+#include <QtDBus>
 
 #include <DLog>
 #include <DMainWindow>
@@ -21,6 +22,7 @@
 #include "options.h"
 #include "dmr_settings.h"
 #include "mainwindow.h"
+#include "dbus_adpator.h"
 #ifdef ENABLE_VPU_PLATFORM
 #include "vpu_proxy.h"
 #endif
@@ -70,6 +72,11 @@ int main(int argc, char *argv[])
     bool singleton = !dmr::Settings::get().isSet(dmr::Settings::MultipleInstance);
     if (singleton && !app.setSingleInstance("deepinmovie")) {
         qDebug() << "another deepin movie instance has started";
+        if (!toOpenFile.isEmpty()) {
+            QDBusInterface iface("com.deepin.movie", "/", "com.deepin.movie");
+            iface.asyncCall("openFile", toOpenFile);
+        }
+        
         exit(0);
     }
 
@@ -104,6 +111,14 @@ int main(int argc, char *argv[])
     mw.resize(850, 600);
     Dtk::Widget::moveToCenter(&mw);
     mw.show();
+
+    if (!QDBusConnection::sessionBus().isConnected()) {
+        qWarning() << "dbus disconnected";
+    }
+
+    ApplicationAdaptor adaptor(&mw);
+    QDBusConnection::sessionBus().registerService("com.deepin.movie");
+    QDBusConnection::sessionBus().registerObject("/", &mw);
 
     if (!toOpenFile.isEmpty()) {
         QUrl url;
