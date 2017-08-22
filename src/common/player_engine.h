@@ -86,6 +86,7 @@ public:
     void updateSubStyle(const QString& font, int sz);
     void setSubCodepage(const QString& cp);
     QString subCodepage();
+    void addSubSearchPath(const QString& path);
 
     void selectTrack(int id); // id into PlayingMovieInfo.audios
     int aid() const;

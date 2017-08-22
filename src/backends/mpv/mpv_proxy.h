@@ -40,6 +40,7 @@ public:
     void updateSubStyle(const QString& font, int sz) override;
     void setSubCodepage(const QString& cp) override;
     QString subCodepage() override;
+    void addSubSearchPath(const QString& path) override;
 
     void selectTrack(int id) override;
     int aid() const override;
