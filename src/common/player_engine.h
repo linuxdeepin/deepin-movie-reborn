@@ -83,6 +83,7 @@ public:
     void selectSubtitle(int id); // id into PlayingMovieInfo.subs
     int sid() const;
     void setSubDelay(double secs);
+    double subDelay() const;
     void updateSubStyle(const QString& font, int sz);
     void setSubCodepage(const QString& cp);
     QString subCodepage();

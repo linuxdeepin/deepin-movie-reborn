@@ -341,7 +341,12 @@ bool MpvProxy::isSubVisible()
 
 void MpvProxy::setSubDelay(double secs)
 {
-    set_property(_handle, "sub-delay", secs);
+    set_property(_handle, "sub-delay", subDelay() + secs);
+}
+
+double MpvProxy::subDelay() const
+{
+    return get_property(_handle, "sub-delay").toDouble();
 }
 
 QString MpvProxy::subCodepage()
