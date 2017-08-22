@@ -325,7 +325,7 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
     _engine(proxy)
 {
     bool composited = CompositingManager::get().composited();
-    setFrameShape(QFrame::NoFrame);
+	setFrameShape(QFrame::NoFrame);
     setAutoFillBackground(false);
     setAttribute(Qt::WA_TranslucentBackground);
     if (!composited) {
@@ -374,6 +374,18 @@ void ToolboxProxy::setup()
     bot->setContentsMargins(LEFT_MARGIN, 0, RIGHT_MARGIN, 0);
     bot_widget->setLayout(bot);
     stacked->addWidget(bot_widget);
+
+	auto *border_frame = new QFrame;
+    border_frame->setFixedHeight(1);
+    border_frame->setObjectName("ToolBoxTopBorder");
+
+    auto e = new QGraphicsDropShadowEffect(border_frame);
+    e->setColor(qRgba(0, 0, 0, 255 * 0.1));
+    e->setOffset(0, -1);
+    e->setBlurRadius(8);
+    border_frame->setGraphicsEffect(e);
+    stacked->addWidget(border_frame);
+
 
     _timeLabel = new QLabel("");
     _timeLabel->setFixedWidth(_timeLabel->fontMetrics().width("99:99:99/99:99:99"));
