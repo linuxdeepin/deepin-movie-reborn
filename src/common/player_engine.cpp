@@ -44,6 +44,7 @@ PlayerEngine::PlayerEngine(QWidget *parent)
 
     connect(&OnlineSubtitle::get(), &OnlineSubtitle::subtitlesDownloadedFor, 
             this, &PlayerEngine::onSubtitlesDownloaded);
+    addSubSearchPath(OnlineSubtitle::get().storeLocation());
 
     _playlist = new PlaylistModel(this);
     connect(_playlist, &PlaylistModel::asyncAppendFinished, this, 
@@ -197,6 +198,12 @@ void PlayerEngine::setSubCodepage(const QString& cp)
 {
     if (!_current) return;
     _current->setSubCodepage(cp);
+}
+
+void PlayerEngine::addSubSearchPath(const QString& path)
+{
+    if (!_current) return;
+    _current->addSubSearchPath(path);
 }
 
 void PlayerEngine::updateSubStyle(const QString& font, int sz)

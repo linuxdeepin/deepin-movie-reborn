@@ -142,7 +142,7 @@ void OnlineSubtitle::replyReceived(QNetworkReply* reply)
         reply->close();
 
         int id = reply->property("id").toInt();
-        auto name = QString("%1%2.%3").arg(_lastReqVideo.completeBaseName())
+        auto name = QString("%1[%2].%3").arg(_lastReqVideo.completeBaseName())
             .arg(id).arg(_subs[id].ext);
         if (disposition.isValid()) {
             //set name to disposition filename

@@ -119,7 +119,7 @@ mpv_handle* MpvProxy::mpv_init()
 
     set_property(h, "sub-ass-override", "force");
     set_property(h, "sub-ass-style-override", "force");
-    //set_property(h, "sub-auto", "fuzzy");
+    set_property(h, "sub-auto", "fuzzy");
     set_property(h, "sub-visibility", "true");
 
     set_property(h, "screenshot-template", "deepin-movie-shot%n");
@@ -347,6 +347,11 @@ void MpvProxy::setSubDelay(double secs)
 QString MpvProxy::subCodepage()
 {
     return get_property(_handle, "sub-codepage").toString();
+}
+
+void MpvProxy::addSubSearchPath(const QString& path)
+{
+    set_property(_handle, "sub-paths", path);
 }
 
 void MpvProxy::setSubCodepage(const QString& cp)
