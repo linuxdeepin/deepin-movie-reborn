@@ -629,7 +629,7 @@ void MainWindow::updateActionsState()
         switch(kd) {
             case ActionFactory::ActionKind::Screenshot:
             case ActionFactory::ActionKind::ToggleMiniMode:
-            case ActionFactory::ActionKind::Fullscreen:
+            case ActionFactory::ActionKind::ToggleFullscreen:
             case ActionFactory::ActionKind::MatchOnlineSubtitle:
             case ActionFactory::ActionKind::BurstScreenshot:
                 v = _engine->state() != PlayerEngine::Idle;
@@ -667,7 +667,7 @@ void MainWindow::reflectActionToUI(ActionFactory::ActionKind kd)
     QList<QAction*> acts;
     switch(kd) {
         case ActionFactory::ActionKind::WindowAbove:
-        case ActionFactory::ActionKind::Fullscreen:
+        case ActionFactory::ActionKind::ToggleFullscreen:
         case ActionFactory::ActionKind::LightTheme:
         case ActionFactory::ActionKind::ToggleMiniMode:
         case ActionFactory::ActionKind::TogglePlaylist:
@@ -892,7 +892,17 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI, QList<
             }
             break;
 
-        case ActionFactory::ActionKind::Fullscreen: {
+        case ActionFactory::ActionKind::QuitFullscreen: {
+            if (isFullScreen()) {
+                showNormal();
+                if (!fromUI) {
+                    reflectActionToUI(ActionFactory::ToggleFullscreen);
+                }
+            }
+            break;
+        }
+
+        case ActionFactory::ActionKind::ToggleFullscreen: {
             if (isFullScreen()) {
                 showNormal();
             } else {
@@ -1498,7 +1508,7 @@ void MainWindow::mouseDoubleClickEvent(QMouseEvent *ev)
 {
     if (!_miniMode) {
         _delayedMouseReleaseTimer.stop();
-        requestAction(ActionFactory::Fullscreen);
+        requestAction(ActionFactory::ToggleFullscreen);
         ev->accept();
     }
 }

@@ -30,7 +30,7 @@ ShortcutManager::ShortcutManager()
         {"seek_forward_large", ActionFactory::ActionKind::SeekForwardLarge},
         {"seek_backward", ActionFactory::ActionKind::SeekBackward},
         {"seek_backward_large", ActionFactory::ActionKind::SeekBackwardLarge},
-        {"fullscreen", ActionFactory::ActionKind::Fullscreen},
+        {"fullscreen", ActionFactory::ActionKind::ToggleFullscreen},
         {"playlist", ActionFactory::ActionKind::TogglePlaylist},
         {"accel", ActionFactory::ActionKind::AccelPlayback},
         {"decel", ActionFactory::ActionKind::DecelPlayback},
@@ -118,11 +118,12 @@ void ShortcutManager::buildBindingsFromSettings()
 {
     _map.clear();
     // default builtins 
-    _map.insert(QKeySequence(Qt::Key_Left), ActionFactory::ActionKind::SeekBackward);
-    _map.insert(QKeySequence(Qt::Key_Left + Qt::SHIFT), ActionFactory::ActionKind::SeekBackwardLarge);
-    _map.insert(QKeySequence(Qt::Key_Right), ActionFactory::ActionKind::SeekForward);
-    _map.insert(QKeySequence(Qt::Key_Right + Qt::SHIFT), ActionFactory::ActionKind::SeekForwardLarge);
-    _map.insert(QKeySequence(Qt::Key_Space), ActionFactory::ActionKind::TogglePause);
+    _map.insert(QKeySequence(Qt::Key_Left), ActionFactory::SeekBackward);
+    _map.insert(QKeySequence(Qt::Key_Left + Qt::SHIFT), ActionFactory::SeekBackwardLarge);
+    _map.insert(QKeySequence(Qt::Key_Right), ActionFactory::SeekForward);
+    _map.insert(QKeySequence(Qt::Key_Right + Qt::SHIFT), ActionFactory::SeekForwardLarge);
+    _map.insert(QKeySequence(Qt::Key_Space), ActionFactory::TogglePause);
+    _map.insert(QKeySequence(Qt::Key_Escape), ActionFactory::QuitFullscreen);
 
     QPointer<DSettingsGroup> shortcuts = Settings::get().shortcuts();
 
