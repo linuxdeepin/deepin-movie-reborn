@@ -49,6 +49,7 @@ public:
         l->addWidget(_thumb);
 
         auto *vl = new QVBoxLayout;
+        vl->setContentsMargins(0, 0, 13, 0);
         l->addLayout(vl, 1);
 
         _name = new QTextEdit(this);
@@ -62,8 +63,6 @@ public:
         _name->setTextInteractionFlags(Qt::NoTextInteraction);
         _name->installEventFilter(this);
 
-        QString msg = pif.url.fileName();
-        _name->setText(_name->fontMetrics().elidedText(msg, Qt::ElideMiddle, 290));
         vl->addWidget(_name, 1);
 
         _time = new QLabel(this);
@@ -138,7 +137,7 @@ protected:
             int text_height = _name->document()->size().height();
             _name->setFixedHeight(text_height);
 
-            resize(width(), _name->height() + _time->height() + 2);
+            resize(width(), _name->height() + _time->height() + layout()->spacing());
         }
 
         return QFrame::event(ee);
@@ -152,9 +151,15 @@ protected:
 
     void showEvent(QShowEvent *se) override
     {
+        QString msg = _pif.url.fileName();
+        if (!_pif.url.isLocalFile() && msg.isEmpty()) {
+            msg = _pif.url.toString();
+        }
+        _name->setText(_name->fontMetrics().elidedText(msg, Qt::ElideMiddle, 270));
+
         int text_height = _name->document()->size().height();
         _name->setFixedHeight(text_height);
-        resize(width(), _name->height() + _time->height() + 2);
+        resize(width(), _name->height() + _time->height() + layout()->spacing());
     }
 
     void mouseDoubleClickEvent(QMouseEvent* me) override
@@ -355,11 +360,7 @@ void PlaylistWidget::contextMenuEvent(QContextMenuEvent *cme)
 
 void PlaylistWidget::showEvent(QShowEvent *se)
 {
-    for (int i = 0; i < this->count(); i++) {
-        auto item = this->item(i);
-        auto w = this->itemWidget(item);
-        item->setSizeHint(w->size());
-    }
+    batchUpdateSizeHints();
     adjustSize();
 }
 
@@ -404,7 +405,6 @@ void PlaylistWidget::loadPlaylist()
         w->show();
         auto item = new QListWidgetItem;
         addItem(item);
-        item->setSizeHint(w->sizeHint());
         setItemWidget(item, w);
 
         connect(w, SIGNAL(closeButtonClicked()), _closeMapper, SLOT(map()));
@@ -414,8 +414,20 @@ void PlaylistWidget::loadPlaylist()
         ++p;
     }
 
+    batchUpdateSizeHints();
     updateItemStates();
     setStyleSheet(styleSheet());
+}
+
+void PlaylistWidget::batchUpdateSizeHints()
+{
+    if (isVisible()) {
+        for (int i = 0; i < this->count(); i++) {
+            auto item = this->item(i);
+            auto w = this->itemWidget(item);
+            item->setSizeHint(w->size());
+        }
+    }
 }
 
 void PlaylistWidget::togglePopup()

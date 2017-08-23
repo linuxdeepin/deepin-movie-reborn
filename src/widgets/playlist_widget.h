@@ -49,6 +49,8 @@ private:
     QWidget *_clickedItem {nullptr};
     QSignalMapper *_closeMapper {nullptr};
     QSignalMapper *_activateMapper {nullptr};
+
+    void batchUpdateSizeHints();
 };
 }
 

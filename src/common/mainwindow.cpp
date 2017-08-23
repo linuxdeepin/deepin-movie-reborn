@@ -800,6 +800,8 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI, QList<
                 auto url = dlg.url();
                 if (url.isValid()) {
                     play(url);
+                } else {
+                    _nwComm->updateWithMessage(tr("Invalid url"));
                 }
             }
             break;
@@ -1148,8 +1150,8 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI, QList<
                 savePath = "/tmp";
             }
 
-            QString filePath = QString("%1/deepin-movie-shot %2.jpg")
-                .arg(savePath).arg(QDateTime::currentDateTime().toString(Qt::ISODate));
+            QString filePath = tr("%1/DMovie%2.jpg")
+                .arg(savePath).arg(QDateTime::currentDateTime().toString("yyyyMMddhhmmss"));
             bool success = false;
             if (img.isNull()) 
                 qDebug()<< __func__ << "pixmap is null";
@@ -1189,7 +1191,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI, QList<
                 _nwShot->setAnchor(NotificationWidget::AnchorNorthWest);
                 _nwShot->setAnchorPoint(QPoint(30, 38));
             }
-            auto msg = tr("The screenshot is saved in %1").arg(filePath);
+            auto msg = tr("The screenshot is saved to %1").arg(filePath);
             auto pm = QPixmap(QString(":/resources/icons/%1.png").arg(success?"success":"fail"));
             _nwShot->popupWithIcon(msg, pm);
 #endif

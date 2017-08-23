@@ -70,16 +70,20 @@ void NotificationWidget::syncPosition()
 
 void NotificationWidget::popupWithIcon(const QString& msg, const QPixmap& pm)
 {
-    _msgLabel->setText(msg);
     _icon->setPixmap(pm);
 
     _layout->setContentsMargins(12, 6, 12, 6);
     if (_layout->indexOf(_icon) == -1)
         _layout->addWidget(_icon);
     if (_layout->indexOf(_msgLabel) == -1)
-        _layout->addWidget(_msgLabel);
+        _layout->addWidget(_msgLabel, 1);
 
     setFixedSize(300, 40);
+
+    auto fm = _msgLabel->fontMetrics();
+    auto w = 300 - _icon->width() - _layout->spacing() - _layout->contentsMargins().left()
+        - _layout->contentsMargins().right();
+    _msgLabel->setText(fm.elidedText(msg, Qt::ElideMiddle, w));
     
     show();
     raise();
@@ -103,7 +107,7 @@ void NotificationWidget::updateWithMessage(const QString& newMsg)
     if (isVisible()) {
         _msgLabel->setText(newMsg);
         resize(_msgLabel->sizeHint().width() + _layout->contentsMargins().left() 
-                + _layout->contentsMargins().right(), height());
+                + _layout->contentsMargins().right() + _layout->spacing(), height());
         adjustSize();
         _timer->start();
 
