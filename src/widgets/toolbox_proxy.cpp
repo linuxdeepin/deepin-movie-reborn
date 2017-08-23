@@ -630,7 +630,7 @@ void ToolboxProxy::buttonClicked(QString id)
             _mainWindow->requestAction(ActionFactory::ActionKind::TogglePause);
         }
     } else if (id == "fs") {
-        _mainWindow->requestAction(ActionFactory::ActionKind::Fullscreen);
+        _mainWindow->requestAction(ActionFactory::ActionKind::ToggleFullscreen);
     } else if (id == "vol") {
         auto *w = new VolumeSlider(_engine, _mainWindow);
         QPoint pos = _volBtn->parentWidget()->mapToGlobal(_volBtn->pos());

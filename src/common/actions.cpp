@@ -74,7 +74,7 @@ QMenu* ActionFactory::mainContextMenu()
         DEF_ACTION(tr("Open Directory"), ActionKind::OpenDirectory);
         menu->addSeparator();
 
-        DEF_ACTION_CHECKED(tr("Fullscreen"), ActionKind::Fullscreen);
+        DEF_ACTION_CHECKED(tr("Fullscreen"), ActionKind::ToggleFullscreen);
         DEF_ACTION_CHECKED(tr("Always on Top"), ActionKind::WindowAbove);
         DEF_ACTION(tr("Film info"), ActionKind::MovieInfo);
         DEF_ACTION(tr("Settings"), ActionKind::Settings);
@@ -86,7 +86,7 @@ QMenu* ActionFactory::mainContextMenu()
         DEF_ACTION(tr("Open URL"), ActionKind::OpenUrl);
         menu->addSeparator();
 
-        DEF_ACTION_CHECKED(tr("Fullscreen"), ActionKind::Fullscreen);
+        DEF_ACTION_CHECKED(tr("Fullscreen"), ActionKind::ToggleFullscreen);
         DEF_ACTION_CHECKED(tr("Mini Mode"), ActionKind::ToggleMiniMode);
         DEF_ACTION_CHECKED(tr("Always on Top"), ActionKind::WindowAbove);
         menu->addSeparator();
