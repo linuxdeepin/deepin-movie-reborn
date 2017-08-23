@@ -371,6 +371,14 @@ void MpvProxy::updateSubStyle(const QString& font, int sz)
     set_property(_handle, "sub-font", font);
     set_property(_handle, "sub-font-size", sz);
 
+}
+
+void MpvProxy::resizeEvent(QResizeEvent *re)
+{
+    if (state() == PlayState::Stopped) {
+        return;
+    }
+
     double y = (1.0 - 36.0 / height()) * 100.0;
     set_property(_handle, "sub-pos", (int)y);
 }

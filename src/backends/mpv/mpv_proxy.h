@@ -72,6 +72,9 @@ public slots:
     void changeVolume(int val) override;
     void toggleMute() override;
 
+protected:
+    void resizeEvent(QResizeEvent *re) override;
+
 protected slots:
     void handle_mpv_events();
     void stepBurstScreenshot();

@@ -40,6 +40,8 @@ private:
     QFileInfo _lastReqVideo;
 
     OnlineSubtitle();
+    void subtitlesDownloadComplete();
+    QString findAvailableName(const QString& tmpl, int id);
 };
 }
 
