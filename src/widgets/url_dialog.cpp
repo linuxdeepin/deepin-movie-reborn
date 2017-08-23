@@ -30,7 +30,10 @@ UrlDialog::UrlDialog()
 
 QUrl UrlDialog::url() const
 {
-    return QUrl(_le->text());
+    auto u = QUrl(_le->text(), QUrl::StrictMode);
+    if (u.isLocalFile() || u.scheme().isEmpty()) 
+        return QUrl();
+    return u;
 }
 
 void UrlDialog::showEvent(QShowEvent* se)
