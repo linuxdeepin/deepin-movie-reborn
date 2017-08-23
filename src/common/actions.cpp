@@ -277,7 +277,7 @@ QList<QAction*> ActionFactory::findActionsByKind(ActionKind target_kd)
 #if QT_VERSION < QT_VERSION_CHECK(5, 7, 0)
         auto kd = (ActionKind)(*p)->property("kind").value<int>();
 #else
-        auto kd = p->property("kind").value<ActionKind>();
+        auto kd = (*p)->property("kind").value<ActionKind>();
 #endif
         if (kd == target_kd) {
             res.append(*p);
