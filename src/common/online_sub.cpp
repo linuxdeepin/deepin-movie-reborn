@@ -92,10 +92,47 @@ OnlineSubtitle::OnlineSubtitle()
     connect(_nam, &QNetworkAccessManager::finished, this, &OnlineSubtitle::replyReceived);
 }
 
+void OnlineSubtitle::subtitlesDownloadComplete()
+{
+    QList<QString> files;
+    for (auto& sub: _subs) {
+        files.append(sub.local); // filter out some index files (idx e.g.)
+    }
+    emit subtitlesDownloadedFor(QUrl::fromLocalFile(_lastReqVideo.absoluteFilePath()), files);
+    _lastReqVideo = QFileInfo();
+}
+
+QString OnlineSubtitle::findAvailableName(const QString& tmpl, int id)
+{
+    QString name_tmpl = tmpl;
+    int i = tmpl.lastIndexOf('.');
+    if (i >= 0) {
+        name_tmpl.replace(i, 1, "[%1].");
+    } else {
+        name_tmpl = name_tmpl.append("[%1]");
+    }
+    auto c = id;
+    do {
+        auto name = name_tmpl.arg(c);
+        auto path = QString("%1/%2").arg(storeLocation()).arg(name);
+        if (!QFile::exists(path)) {
+            return path;
+        }
+        c++;
+    } while (c < (1<<16));
+    return tmpl;
+}
+
 void OnlineSubtitle::replyReceived(QNetworkReply* reply)
 {
     reply->deleteLater();
     if (reply->error() != QNetworkReply::NoError) {
+        if (reply->property("type") == "sub") {
+            _pendingDownloads--;
+            if (_pendingDownloads <= 0) {
+                subtitlesDownloadComplete();
+            }
+        }
         qDebug() << reply->errorString();
         return;
     }
@@ -136,19 +173,38 @@ void OnlineSubtitle::replyReceived(QNetworkReply* reply)
         reply->close();
 
     } else if (reply->property("type") == "sub") {
+        QString path;
+        QString name_tmpl;
+
         auto data = reply->readAll();
         auto disposition = reply->header(QNetworkRequest::ContentDispositionHeader);
-        qDebug() << disposition;
+        if (disposition.isValid()) {
+            //set name to disposition filename
+            qDebug() << disposition;
+        } else if (reply->hasRawHeader("Content-Disposition")) {
+            QByteArray name;
+            auto bytes = reply->rawHeader("Content-Disposition");
+            for (auto h: bytes.split(';')) {
+                auto kv = h.split('=');
+                if (kv.size() == 2 && kv[0].trimmed() == "filename") {
+                    name = kv[1].trimmed();
+                    break;
+                }
+            }
+            if (!name.isEmpty()) {
+                auto codec = QTextCodec::codecForName("UTF-8");
+                name_tmpl = codec->toUnicode(name);
+            }
+        } else {
+            int id = reply->property("id").toInt();
+            name_tmpl = QString("%1.%2").arg(_lastReqVideo.completeBaseName())
+                .arg(_subs[id].ext);
+        }
         reply->close();
 
         int id = reply->property("id").toInt();
-        auto name = QString("%1[%2].%3").arg(_lastReqVideo.completeBaseName())
-            .arg(id).arg(_subs[id].ext);
-        if (disposition.isValid()) {
-            //set name to disposition filename
-        }
+        path = findAvailableName(name_tmpl, id);
 
-        auto path = QString("%1/%2").arg(storeLocation()).arg(name);
         QFile f(path);
         if (f.open(QFile::WriteOnly)) {
             f.write(data);
@@ -159,11 +215,7 @@ void OnlineSubtitle::replyReceived(QNetworkReply* reply)
 
         _pendingDownloads--;
         if (_pendingDownloads <= 0) {
-            QList<QString> files;
-            for (auto& sub: _subs) {
-                files.append(sub.local); // filter out some index files (idx e.g.)
-            }
-            emit subtitlesDownloadedFor(QUrl::fromLocalFile(_lastReqVideo.absoluteFilePath()), files);
+            subtitlesDownloadComplete();
         }
     }
 }
