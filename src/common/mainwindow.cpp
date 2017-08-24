@@ -612,7 +612,6 @@ void MainWindow::onBindingsChanged()
         this->addAction(act);
         connect(act, &QAction::triggered, [=]() { 
             this->menuItemInvoked(act); 
-            auto prop = act->property("kind");
             auto kd = ActionFactory::actionKind(act);
             reflectActionToUI(kd);
         });
@@ -623,7 +622,6 @@ void MainWindow::updateActionsState()
 {
     auto pmf = _engine->playingMovieInfo();
     auto update = [=](QAction* act) {
-        auto prop = act->property("kind");
         auto kd = ActionFactory::actionKind(act);
         bool v = true;
         switch(kd) {
@@ -764,14 +762,13 @@ void MainWindow::reflectActionToUI(ActionFactory::ActionKind kd)
 
 void MainWindow::menuItemInvoked(QAction *action)
 {
-    auto prop = action->property("kind");
     auto kd = ActionFactory::actionKind(action);
 
-    qDebug() << "prop = " << prop << ", kd = " << kd;
+    auto isShortcut = ActionFactory::isActionFromShortcut(action);
     if (ActionFactory::actionHasArgs(action)) {
-        requestAction(kd, true, ActionFactory::actionArgs(action));
+        requestAction(kd, true, ActionFactory::actionArgs(action), isShortcut);
     } else {
-        requestAction(kd, true);
+        requestAction(kd, true, {}, isShortcut);
     }
 }
 
@@ -782,9 +779,62 @@ void MainWindow::switchTheme()
     Settings::get().settings()->setOption("internal.light_theme", _lightTheme);
 }
 
-void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI, QList<QVariant> args)
+bool MainWindow::isActionAllowed(ActionFactory::ActionKind kd, bool fromUI, bool isShortcut)
 {
-    qDebug() << "kd = " << kd << "fromUI " << fromUI;
+    if (_miniMode) {
+        if (fromUI || isShortcut) {
+            switch (kd) {
+                case ActionFactory::ToggleFullscreen:
+                case ActionFactory::BurstScreenshot:
+                    return false;
+                default: break;
+            }
+        }
+    }
+
+    if (isShortcut) {
+        auto pmf = _engine->playingMovieInfo();
+        bool v = true;
+        switch(kd) {
+            case ActionFactory::Screenshot:
+            case ActionFactory::ToggleMiniMode:
+            case ActionFactory::ToggleFullscreen:
+            case ActionFactory::MatchOnlineSubtitle:
+            case ActionFactory::BurstScreenshot:
+                v = _engine->state() != PlayerEngine::Idle;
+                break;
+
+            case ActionFactory::MovieInfo:
+                v = _engine->state() != PlayerEngine::Idle;
+                if (v) {
+                    v = v && _engine->playlist().count();
+                    if (v) {
+                        auto pif =_engine->playlist().currentInfo();
+                        v = v && pif.loaded && pif.url.isLocalFile();
+                    }
+                }
+                break;
+
+            case ActionFactory::HideSubtitle:
+            case ActionFactory::SelectSubtitle:
+                v = pmf.subs.size() > 0;
+            default: break;
+        }
+        if (!v) return v;
+    }
+
+    return true;
+}
+
+void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
+        QList<QVariant> args, bool isShortcut)
+{
+    qDebug() << "kd = " << kd << "fromUI " << fromUI << (isShortcut ? "shortcut":"");
+
+    if (!isActionAllowed(kd, fromUI, isShortcut)) {
+        return;
+    }
+
     switch (kd) {
         case ActionFactory::ActionKind::Exit:
             qApp->quit(); 
@@ -1610,6 +1660,8 @@ void MainWindow::toggleUIMode()
         if (_playlist->isVisible()) {
             requestAction(ActionFactory::TogglePlaylist);
         }
+
+        requestAction(ActionFactory::QuitFullscreen);
 
         _lastSizeInNormalMode = size();
         auto sz = QSize(380, 380);

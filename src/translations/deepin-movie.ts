@@ -518,98 +518,98 @@
     <name>dmr::MainWindow</name>
     <message>
         <location filename="../common/mainwindow.cpp" line="347"/>
-        <location filename="../common/mainwindow.cpp" line="1423"/>
+        <location filename="../common/mainwindow.cpp" line="1472"/>
         <source>Deepin Movie</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="804"/>
+        <location filename="../common/mainwindow.cpp" line="853"/>
         <source>Invalid url</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="811"/>
+        <location filename="../common/mainwindow.cpp" line="860"/>
         <source>Open Directory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="823"/>
-        <location filename="../common/mainwindow.cpp" line="839"/>
-        <location filename="../common/mainwindow.cpp" line="1120"/>
+        <location filename="../common/mainwindow.cpp" line="872"/>
+        <location filename="../common/mainwindow.cpp" line="888"/>
+        <location filename="../common/mainwindow.cpp" line="1169"/>
         <source>Open File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="825"/>
-        <location filename="../common/mainwindow.cpp" line="841"/>
+        <location filename="../common/mainwindow.cpp" line="874"/>
+        <location filename="../common/mainwindow.cpp" line="890"/>
         <source>Movies (%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1005"/>
-        <location filename="../common/mainwindow.cpp" line="1012"/>
-        <location filename="../common/mainwindow.cpp" line="1019"/>
-        <location filename="../common/mainwindow.cpp" line="1026"/>
+        <location filename="../common/mainwindow.cpp" line="1054"/>
+        <location filename="../common/mainwindow.cpp" line="1061"/>
+        <location filename="../common/mainwindow.cpp" line="1068"/>
+        <location filename="../common/mainwindow.cpp" line="1075"/>
         <source>Volume: %1%</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1085"/>
-        <location filename="../common/mainwindow.cpp" line="1093"/>
+        <location filename="../common/mainwindow.cpp" line="1134"/>
+        <location filename="../common/mainwindow.cpp" line="1142"/>
         <source>sub %1: %2s</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1086"/>
-        <location filename="../common/mainwindow.cpp" line="1094"/>
+        <location filename="../common/mainwindow.cpp" line="1135"/>
+        <location filename="../common/mainwindow.cpp" line="1143"/>
         <source>delay</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1086"/>
-        <location filename="../common/mainwindow.cpp" line="1094"/>
+        <location filename="../common/mainwindow.cpp" line="1135"/>
+        <location filename="../common/mainwindow.cpp" line="1143"/>
         <source>forward</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1101"/>
-        <location filename="../common/mainwindow.cpp" line="1108"/>
-        <location filename="../common/mainwindow.cpp" line="1115"/>
+        <location filename="../common/mainwindow.cpp" line="1150"/>
+        <location filename="../common/mainwindow.cpp" line="1157"/>
+        <location filename="../common/mainwindow.cpp" line="1164"/>
         <source>Speed: %1x</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1122"/>
+        <location filename="../common/mainwindow.cpp" line="1171"/>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1163"/>
+        <location filename="../common/mainwindow.cpp" line="1212"/>
         <source>%1/DMovie%2.jpg</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1204"/>
+        <location filename="../common/mainwindow.cpp" line="1253"/>
         <source>The screenshot is saved to %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1179"/>
+        <location filename="../common/mainwindow.cpp" line="1228"/>
         <source>View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1190"/>
+        <location filename="../common/mainwindow.cpp" line="1239"/>
         <source>Movie Screenshot</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1191"/>
+        <location filename="../common/mainwindow.cpp" line="1240"/>
         <source>Saved to</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1694"/>
+        <location filename="../common/mainwindow.cpp" line="1745"/>
         <source>Invalid file: %1</source>
         <translation type="unfinished"></translation>
     </message>
