@@ -190,9 +190,11 @@ void PlayerEngine::setSubDelay(double secs)
 
     _current->setSubDelay(secs + _current->subDelay());
 
-    auto pif = playlist().currentInfo();
-    MovieConfiguration::get().updateUrl(pif.url, ConfigKnownKey::SubDelay,
-            _current->subDelay());
+    if (state() != CoreState::Idle) {
+        auto pif = playlist().currentInfo();
+        MovieConfiguration::get().updateUrl(pif.url, ConfigKnownKey::SubDelay,
+                _current->subDelay());
+    }
 }
 
 double PlayerEngine::subDelay() const
