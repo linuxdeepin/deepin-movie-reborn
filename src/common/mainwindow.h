@@ -43,7 +43,8 @@ public:
     ToolboxProxy* toolbox() { return _toolbox; }
     PlaylistWidget* playlist() { return _playlist; }
 
-    void requestAction(ActionFactory::ActionKind, bool fromUI = false, QList<QVariant> args = {});
+    void requestAction(ActionFactory::ActionKind, bool fromUI = false,
+            QList<QVariant> args = {}, bool shortcut = false);
 
     bool insideResizeArea(const QPoint& global_p);
     QMargins dragMargins() const;
@@ -109,6 +110,7 @@ private:
     void reflectActionToUI(ActionFactory::ActionKind);
     bool insideToolsArea(const QPoint& p);
     void switchTheme();
+    bool isActionAllowed(ActionFactory::ActionKind kd, bool fromUI, bool isShortcut);
 
 private:
     DTitlebar *_titlebar {nullptr};

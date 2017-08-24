@@ -164,6 +164,7 @@ vector<QAction*> ShortcutManager::actionsForBindings()
         act->setShortcut(p.key());
         //act->setShortcutContext(Qt::ApplicationShortcut);
         act->setProperty("kind", p.value());
+        act->setProperty("origin", "shortcut");
         actions.push_back(act);
 
         qDebug() << "action " << p.key() << p.value();

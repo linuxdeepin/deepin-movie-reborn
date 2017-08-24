@@ -109,6 +109,11 @@ Q_ENUM(ActionKind)
         return kd;
     }
 
+    static bool isActionFromShortcut(QAction* act) {
+        auto s = act->property("origin");
+        return s.toString() == "shortcut";
+    }
+
 private:
     ActionFactory() {}
     QMenu *_titlebarMenu {nullptr};
