@@ -312,17 +312,17 @@
 <context>
     <name>UrlDialog</name>
     <message>
-        <location filename="../widgets/url_dialog.cpp" line="11"/>
+        <location filename="../widgets/url_dialog.cpp" line="12"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../widgets/url_dialog.cpp" line="12"/>
+        <location filename="../widgets/url_dialog.cpp" line="13"/>
         <source>Confirm</source>
         <translation>确认</translation>
     </message>
     <message>
-        <location filename="../widgets/url_dialog.cpp" line="16"/>
+        <location filename="../widgets/url_dialog.cpp" line="17"/>
         <source>Please input the url of file to play</source>
         <translation>请输入您要播放的文件的网络地址</translation>
     </message>

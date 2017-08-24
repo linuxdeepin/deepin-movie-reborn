@@ -37,6 +37,9 @@ class Settings: public QObject {
 
         bool isSet(Flag f) const;
 
+        QStringList commonPlayableProtocols() const;
+        bool iscommonPlayableProtocol(const QString& scheme) const;
+
     signals:
         void shortcutsChanged(const QString&, const QVariant&);
         void baseChanged(const QString&, const QVariant&);
