@@ -1,5 +1,6 @@
 #include "url_dialog.h"
 #include "dmr_lineedit.h"
+#include "dmr_settings.h"
 
 
 DWIDGET_USE_NAMESPACE
@@ -26,6 +27,8 @@ UrlDialog::UrlDialog()
         done(QDialog::Accepted);
     });
 
+    _le->setFocusPolicy(Qt::StrongFocus);
+    this->setFocusProxy(_le);
 }
 
 QUrl UrlDialog::url() const
@@ -33,11 +36,16 @@ QUrl UrlDialog::url() const
     auto u = QUrl(_le->text(), QUrl::StrictMode);
     if (u.isLocalFile() || u.scheme().isEmpty()) 
         return QUrl();
+
+    if (!Settings::get().iscommonPlayableProtocol(u.scheme()))
+        return QUrl();
+
     return u;
 }
 
 void UrlDialog::showEvent(QShowEvent* se)
 {
+    _le->setFocus();
 }
 
 }

@@ -88,5 +88,26 @@ bool Settings::isSet(Flag f) const
     return false;
 }
 
+QStringList Settings::commonPlayableProtocols() const
+{
+    //from mpv and combined with stream media protocols
+    return {
+        "http", "https", "bd", "ytdl", "smb", "dvd", "dvdread", "tv", "pvr", 
+            "dvb", "cdda", "lavf", "av", "avdevice", "fd", "fdclose", "edl",
+            "mf", "null", "memory", "hex", "rtmp", "rtsp", "hls", "mms", "rtp", 
+            "rtcp"
+    };
+}
+
+bool Settings::iscommonPlayableProtocol(const QString& scheme) const
+{
+    for (auto pro: commonPlayableProtocols()) {
+        if (pro == scheme) 
+            return true;
+    }
+
+    return false;
+}
+
 }
 
