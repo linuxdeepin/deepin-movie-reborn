@@ -58,13 +58,13 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../main.cpp" line="58"/>
-        <location filename="../main.cpp" line="86"/>
+        <location filename="../main.cpp" line="59"/>
+        <location filename="../main.cpp" line="87"/>
         <source>Deepin Movie</source>
         <translation>深度影院</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="60"/>
+        <location filename="../main.cpp" line="61"/>
         <source>Deepin Movie is a well-designed and full-featured video player with simple borderless design. It supports local and streaming media play with multiple video formats.</source>
         <translation></translation>
     </message>

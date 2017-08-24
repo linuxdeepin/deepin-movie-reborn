@@ -5,6 +5,7 @@ Maintainer: Deepin Sysdev <sysdev@deepin.com>
 Build-Depends: debhelper, cmake, pkg-config, qttools5-dev-tools,
                 qt5-default, libqt5svg5-dev, qtmultimedia5-dev,
                 libqt5x11extras5-dev, libdtkwidget-dev,
+                libqt5sql5-sqlite,
                 libmpv-dev, libxcb1-dev, libxcb-util0-dev,
                 libffmpegthumbnailer-dev,
                 libxcb-shape0-dev,libxcb-ewmh-dev, xcb-proto,

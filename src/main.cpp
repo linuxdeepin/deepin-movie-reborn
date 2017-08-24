@@ -26,6 +26,7 @@
 #ifdef ENABLE_VPU_PLATFORM
 #include "vpu_proxy.h"
 #endif
+#include "movie_configuration.h"
 
 DWIDGET_USE_NAMESPACE
 
@@ -86,6 +87,7 @@ int main(int argc, char *argv[])
     app.setApplicationDisplayName(QObject::tr("Deepin Movie"));
     app.setAttribute(Qt::AA_DontCreateNativeWidgetSiblings, true);
 
+    MovieConfiguration::get().init();
 
     QRegExp url_re("\\w+://");
 
