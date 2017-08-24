@@ -135,5 +135,33 @@ QFileInfoList FindSimilarFiles(const QFileInfo& fi)
     return fil;
 }
 
+// hash the whole file takes amount of time, so just pick some areas to be hashed
+QString FastFileHash(const QFileInfo& fi)
+{
+    auto sz = fi.size();
+    QList<qint64> offsets = {
+        4096,
+        sz - 8192
+    };
+
+    QFile f(fi.absoluteFilePath());
+    if (!f.open(QFile::ReadOnly)) {
+        return QString();
+    }
+
+    if (fi.size() < 8192) {
+        auto bytes = f.readAll();
+        return QString(QCryptographicHash::hash(bytes, QCryptographicHash::Md5).toHex());
+    }
+
+    QByteArray bytes;
+    std::for_each(offsets.begin(), offsets.end(), [&bytes, &f](qint64 v) {
+        f.seek(v);
+        bytes += f.read(4096);
+
+    });
+
+    return QString(QCryptographicHash::hash(bytes, QCryptographicHash::Md5).toHex());
+}
 }
 }

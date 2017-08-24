@@ -3,6 +3,7 @@
 #include "player_engine.h"
 #include "playlist_model.h"
 #include "online_sub.h"
+#include "movie_configuration.h"
 
 #include "mpv_proxy.h"
 #ifdef ENABLE_VPU_PLATFORM
@@ -186,7 +187,12 @@ void PlayerEngine::setPlaySpeed(double times)
 void PlayerEngine::setSubDelay(double secs)
 {
     if (!_current) return;
-    _current->setSubDelay(secs);
+
+    _current->setSubDelay(secs + _current->subDelay());
+
+    auto pif = playlist().currentInfo();
+    MovieConfiguration::get().updateUrl(pif.url, ConfigKnownKey::SubDelay,
+            _current->subDelay());
 }
 
 double PlayerEngine::subDelay() const
@@ -295,6 +301,13 @@ void PlayerEngine::requestPlay(int id)
 
     if (_current->isPlayable()) {
         _current->play();
+        auto cfg = MovieConfiguration::get().queryByUrl(item.url);
+        auto key = MovieConfiguration::knownKey2String(ConfigKnownKey::SubDelay);
+        if (cfg.contains(key)) {
+            _current->setSubDelay(cfg[key].toDouble());
+        } else {
+            _current->setSubDelay(0.0);
+        }
     } else {
         // TODO: delete and try next backend?
     }

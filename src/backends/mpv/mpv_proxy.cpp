@@ -343,7 +343,7 @@ bool MpvProxy::isSubVisible()
 
 void MpvProxy::setSubDelay(double secs)
 {
-    set_property(_handle, "sub-delay", subDelay() + secs);
+    set_property(_handle, "sub-delay", secs);
 }
 
 double MpvProxy::subDelay() const
