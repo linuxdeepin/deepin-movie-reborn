@@ -296,11 +296,7 @@ void PlayerEngine::requestPlay(int id)
     if (id >= _playlist->count()) return;
 
     const auto& item = _playlist->items()[id];
-    if (item.url.isLocalFile()) 
-        _current->setPlayFile(item.info.absoluteFilePath());
-    else
-        _current->setPlayFile(item.url.url());
-
+    _current->setPlayFile(item.url);
     if (_current->isPlayable()) {
         _current->play();
         auto cfg = MovieConfiguration::get().queryByUrl(item.url);
