@@ -1607,6 +1607,10 @@ void MainWindow::toggleUIMode()
             requestAction(ActionFactory::WindowAbove);
         }
 
+        if (_playlist->isVisible()) {
+            requestAction(ActionFactory::TogglePlaylist);
+        }
+
         _lastSizeInNormalMode = size();
         auto sz = QSize(380, 380);
         if (_engine->state() != PlayerEngine::CoreState::Idle) {

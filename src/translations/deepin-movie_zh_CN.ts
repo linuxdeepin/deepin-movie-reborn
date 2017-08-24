@@ -700,7 +700,7 @@
         <translation type="vanished">您的截图已保存到%1</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1690"/>
+        <location filename="../common/mainwindow.cpp" line="1694"/>
         <source>Invalid file: %1</source>
         <translation>无效文件：%1</translation>
     </message>
