@@ -790,6 +790,34 @@ bool MainWindow::isActionAllowed(ActionFactory::ActionKind kd, bool fromUI, bool
                 default: break;
             }
         }
+    } else {
+        if (isFullScreen()) {
+            switch (kd) {
+                case ActionFactory::ToggleMiniMode:
+                case ActionFactory::DefaultFrame:
+                case ActionFactory::Ratio4x3Frame:
+                case ActionFactory::Ratio16x9Frame:
+                case ActionFactory::Ratio16x10Frame:
+                case ActionFactory::Ratio185x1Frame:
+                case ActionFactory::Ratio235x1Frame:
+                case ActionFactory::ClockwiseFrame:
+                case ActionFactory::CounterclockwiseFrame:
+                    if (fromUI) { // which means UI has been toggled and need to reverse
+                        auto acts = ActionFactory::get().findActionsByKind(kd);
+                        auto p = acts.begin();
+                        while (p != acts.end()) {
+                            auto old = (*p)->isEnabled();
+                            (*p)->setEnabled(false);
+                            (*p)->setChecked(!(*p)->isChecked());
+                            (*p)->setEnabled(old);
+                            ++p;
+                        }
+                    }
+                    return false;
+                default: break;
+            }
+        }
+
     }
 
     if (isShortcut) {
