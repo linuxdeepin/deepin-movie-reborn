@@ -142,6 +142,7 @@ void OnlineSubtitle::replyReceived(QNetworkReply* reply)
         qDebug() << "data size " << data.size() << (int)data[0];
         if (data.size() == 1 && (int)data[0] == -1) {
             qDebug() << "no subtitle found";
+            subtitlesDownloadComplete();
             return;
         }
 
