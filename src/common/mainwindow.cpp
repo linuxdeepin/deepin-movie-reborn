@@ -451,6 +451,11 @@ MainWindow::MainWindow(QWidget *parent)
     connect(_engine, &PlayerEngine::stateChanged, this, &MainWindow::updatePlayState);
     updatePlayState();
 
+    connect(_engine, &PlayerEngine::loadOnlineSubtitlesFinished,
+        [this](const QUrl& url, bool success) {
+            _nwComm->updateWithMessage(success?tr("Load successfully"):tr("Load failed"));
+        });
+
     connect(DThemeManager::instance(), &DThemeManager::themeChanged,
             this, &MainWindow::onThemeChanged);
     onThemeChanged();

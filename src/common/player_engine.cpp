@@ -158,6 +158,7 @@ void PlayerEngine::onSubtitlesDownloaded(const QUrl& url, const QList<QString>& 
     if (playlist().currentInfo().url != url) 
         return;
 
+    emit loadOnlineSubtitlesFinished(url, filenames.size() > 0);
     for (auto& filename: filenames)
         _current->loadSubtitle(filename);
 }

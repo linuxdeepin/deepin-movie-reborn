@@ -115,6 +115,8 @@ signals:
     void sidChanged();
     void aidChanged();
 
+    void loadOnlineSubtitlesFinished(const QUrl& url, bool success);
+
     //emit during burst screenshotting
     void notifyScreenshot(const QImage& frame);
 
