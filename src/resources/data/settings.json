@@ -83,6 +83,7 @@
                             "key": "enable",
                             "name": "Enable",
                             "type": "checkbox",
+                            "hide": true,
                             "default": "true"
                         },
                         {
@@ -143,6 +144,7 @@
                             "key": "enable",
                             "name": "Enable",
                             "type": "checkbox",
+                            "hide": true,
                             "default": "true"
                         },
                         {
@@ -179,6 +181,7 @@
                             "key": "enable",
                             "name": "Enable",
                             "type": "checkbox",
+                            "hide": true,
                             "default": "true"
                         },
                         {
@@ -209,6 +212,7 @@
                             "key": "enable",
                             "name": "Enable",
                             "type": "checkbox",
+                            "hide": true,
                             "default": "true"
                         },
                         {
@@ -233,6 +237,7 @@
                             "key": "enable",
                             "name": "Enable",
                             "type": "checkbox",
+                            "hide": true,
                             "default": "true"
                         },
                         {
