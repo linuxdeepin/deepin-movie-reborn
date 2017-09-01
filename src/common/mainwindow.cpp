@@ -483,10 +483,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     auto mwfm = new MainWindowFocusMonitor(this);
     connect(this, &MainWindow::windowEntered, &MainWindow::resumeToolsWindow);
-    connect(this, &MainWindow::windowLeaved, [=]() {
-        if (!frameGeometry().contains(QCursor::pos()))
-            suspendToolsWindow(); 
-    });
+    connect(this, &MainWindow::windowLeaved, &MainWindow::suspendToolsWindow);
 
     if (!composited) {
         if (_engine->windowHandle())
@@ -1423,16 +1420,27 @@ void MainWindow::suspendToolsWindow()
         if (_playlist && _playlist->isVisible())
             return;
 
-        if (qApp->focusWindow() != windowHandle() && frameGeometry().contains(QCursor::pos()))
-            return;
+        qDebug() << qApp->applicationState();
+        if (qApp->applicationState() == Qt::ApplicationInactive) {
 
-        if (insideToolsArea(mapFromGlobal(QCursor::pos())))
-            return;
+        } else {
+            if (qApp->focusWindow() != windowHandle())
+                return;
+
+            if (frameGeometry().contains(QCursor::pos()))
+                return;
+
+            if (insideToolsArea(mapFromGlobal(QCursor::pos())))
+                return;
+        }
 
         if (_toolbox->anyPopupShown())
             return;
 
         if (_engine->state() == PlayerEngine::Idle)
+            return;
+
+        if (_autoHideTimer.isActive())
             return;
 
         _titlebar->hide();
@@ -1446,6 +1454,12 @@ void MainWindow::suspendToolsWindow()
 
 void MainWindow::resumeToolsWindow()
 {
+    if (qApp->applicationState() == Qt::ApplicationActive) {
+        if (!frameGeometry().contains(QCursor::pos())) {
+            goto _finish;
+        }
+    }
+
     if (!_miniMode) {
         _titlebar->show();
         _toolbox->show();
@@ -1455,6 +1469,7 @@ void MainWindow::resumeToolsWindow()
         _miniQuitMiniBtn->show();
     }
 
+_finish:
     _autoHideTimer.start(AUTOHIDE_TIMEOUT);
 }
 
