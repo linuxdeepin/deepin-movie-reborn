@@ -628,11 +628,14 @@ void MainWindow::updateActionsState()
         bool v = true;
         switch(kd) {
             case ActionFactory::ActionKind::Screenshot:
-            case ActionFactory::ActionKind::ToggleMiniMode:
             case ActionFactory::ActionKind::ToggleFullscreen:
             case ActionFactory::ActionKind::MatchOnlineSubtitle:
             case ActionFactory::ActionKind::BurstScreenshot:
                 v = _engine->state() != PlayerEngine::Idle;
+                break;
+
+            case ActionFactory::ActionKind::ToggleMiniMode:
+                v = _engine->state() != PlayerEngine::Idle && !isFullScreen();
                 break;
 
             case ActionFactory::ActionKind::MovieInfo:
@@ -788,6 +791,17 @@ bool MainWindow::isActionAllowed(ActionFactory::ActionKind kd, bool fromUI, bool
             switch (kd) {
                 case ActionFactory::ToggleFullscreen:
                 case ActionFactory::BurstScreenshot:
+                    if (fromUI) { // which means UI has been toggled and need to reverse
+                        auto acts = ActionFactory::get().findActionsByKind(kd);
+                        auto p = acts.begin();
+                        while (p != acts.end()) {
+                            auto old = (*p)->isEnabled();
+                            (*p)->setEnabled(false);
+                            (*p)->setChecked(!(*p)->isChecked());
+                            (*p)->setEnabled(old);
+                            ++p;
+                        }
+                    }
                     return false;
                 default: break;
             }
@@ -975,6 +989,9 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         case ActionFactory::ActionKind::QuitFullscreen: {
             if (isFullScreen()) {
                 showNormal();
+                auto acts = ActionFactory::get().findActionsByKind(ActionFactory::ToggleMiniMode);
+                auto p = acts.begin();
+                (*p)->setEnabled(!isFullScreen());
                 if (!fromUI) {
                     reflectActionToUI(ActionFactory::ToggleFullscreen);
                 }
@@ -988,6 +1005,9 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             } else {
                 showFullScreen();
             }
+            auto acts = ActionFactory::get().findActionsByKind(ActionFactory::ToggleMiniMode);
+            auto p = acts.begin();
+            (*p)->setEnabled(!isFullScreen());
             if (!fromUI) {
                 reflectActionToUI(kd);
             }
