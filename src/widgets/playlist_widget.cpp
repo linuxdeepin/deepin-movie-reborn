@@ -18,6 +18,7 @@ enum ItemState {
     Normal,
     Playing,
     Hover,
+    Invalid, // gets deleted or similar
 };
 
 class PlayItemWidget: public QFrame {
@@ -68,6 +69,10 @@ public:
         _time = new QLabel(this);
         _time->setProperty("Time", true);
         _time->setText(_pif.mi.durationStr());
+        if (!_pif.valid) {
+            setState(ItemState::Invalid);
+            _time->setText(tr("File does not exist"));
+        }
         vl->addWidget(_time);
 
         _closeBtn = new DImageButton(this);
@@ -125,7 +130,7 @@ protected:
     bool eventFilter(QObject *obj, QEvent *e) override 
     {
         if (e->type() == QEvent::MouseButtonDblClick) {
-            emit doubleClicked();
+            doDoubleClick();
             return true;
         }
         return QWidget::eventFilter(obj, e);
@@ -164,8 +169,20 @@ protected:
 
     void mouseDoubleClickEvent(QMouseEvent* me) override
     {
-        qDebug() << __func__;
-        emit doubleClicked();
+        doDoubleClick();
+    }
+
+    void doDoubleClick()
+    {
+        if (!_pif.url.isLocalFile() || QFileInfo::exists(_pif.info.absoluteFilePath())) {
+            emit doubleClicked();
+        } else {
+            if (state() != ItemState::Invalid) {
+                setState(ItemState::Invalid);
+                _time->setText(tr("File does not exist"));
+                setStyleSheet(styleSheet());
+            }
+        }
     }
 
 private:
@@ -250,6 +267,9 @@ void PlaylistWidget::updateItemStates()
 
         auto old = piw->state();
         piw->setState(ItemState::Normal);
+        if (!piw->_pif.valid) {
+            piw->setState(ItemState::Invalid);
+        }
 
         if (_mouseItem == piw) {
             piw->setState(ItemState::Hover);

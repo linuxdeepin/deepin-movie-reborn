@@ -53,3 +53,21 @@
     color: rgba(255, 255, 255, 0.6);
 }
 
+/* state Invalid */
+*[PlayItemThumb="true"][ItemState="3"] {
+    qproperty-bg: url(:/resources/icons/dark/normal/film-bg.png);
+}
+
+
+*[PlayItemThumb="true"][ItemState="3"] *[Name="true"] {
+    font-size: 12px;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+*[PlayItemThumb="true"][ItemState="3"] *[Time="true"] {
+    font-size: 10px;
+    line-height: 1.5;
+    color: rgba(249, 112, 79, 0.6);
+}
+
