@@ -1,6 +1,7 @@
 #include "movieinfo_dialog.h"
 #include "mpv_proxy.h"
 #include "playlist_model.h"
+#include "utils.h"
 
 #include <dwindowclosebutton.h>
 #include <DThemeManager>
@@ -8,21 +9,6 @@
 DWIDGET_USE_NAMESPACE
 
 namespace dmr {
-class PosterFrame: public QLabel { 
-public:
-    PosterFrame(QWidget* parent) :QLabel(parent) {
-        setStyleSheet(
-                "dmr--PosterFrame {"
-                "border-radius: 6px;"
-                "border: 1px solid rgba(255, 255, 255, 0.1); }");
-        auto e = new QGraphicsDropShadowEffect(this);
-        //box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
-        e->setColor(qRgba(0, 0, 0, 20));
-        e->setOffset(2, 2);
-        e->setBlurRadius(4);
-        setGraphicsEffect(e);
-    }
-};
 MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo& pif)
     :DAbstractDialog(nullptr)
 {
@@ -33,7 +19,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo& pif)
 
     auto layout = new QVBoxLayout(this);
     layout->setSpacing(0);
-    layout->setMargin(5);
+    layout->setContentsMargins(10, 5, 10, 10);
     setLayout(layout);
 
     auto closeBt = new DWindowCloseButton;
@@ -50,12 +36,15 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo& pif)
     layout->addLayout(ml);
 
     auto *pm = new PosterFrame(this);
+    QPixmap cover;
     if (pif.thumbnail.isNull())
-        pm->setPixmap(QPixmap(":/resources/icons/logo-big.svg"));
+        cover = (QPixmap(":/resources/icons/logo-big.svg"));
     else {
         auto img = pif.thumbnail.scaledToWidth(176, Qt::SmoothTransformation);
-        pm->setPixmap(img.copy((img.width()-100)/2, 0, 176, 118));
+        cover = (img.copy(0, (img.height()-118)/2, 176, 118));
     }
+    cover = utils::MakeRoundedPixmap(cover, 4, 4);
+    pm->setPixmap(cover);
     pm->ensurePolished();
     ml->addWidget(pm);
     ml->setAlignment(pm, Qt::AlignHCenter);
@@ -75,7 +64,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo& pif)
     ml->addSpacing(10);
 
     auto *form = new QFormLayout();
-    form->setContentsMargins(30, 0, 30, 0);
+    form->setContentsMargins(25, 0, 25, 0);
     ml->addLayout(form);
     ml->setAlignment(ml, Qt::AlignHCenter);
     

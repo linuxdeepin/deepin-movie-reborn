@@ -29,6 +29,7 @@ Dtk--Widget--DWindowCloseButton:pressed {
     font-size: 11px;
     color: #606060;
 }
+
 #MovieInfoValue {
     border: 1px solid transparent;
     qproperty-alignment: AlignLeft;

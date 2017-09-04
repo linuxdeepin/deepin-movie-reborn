@@ -494,22 +494,22 @@
 <context>
     <name>dmr::BurstScreenshotsDialog</name>
     <message>
-        <location filename="../widgets/burst_screenshots_dialog.cpp" line="41"/>
+        <location filename="../widgets/burst_screenshots_dialog.cpp" line="42"/>
         <source>duration: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/burst_screenshots_dialog.cpp" line="42"/>
+        <location filename="../widgets/burst_screenshots_dialog.cpp" line="43"/>
         <source>resolution: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/burst_screenshots_dialog.cpp" line="43"/>
+        <location filename="../widgets/burst_screenshots_dialog.cpp" line="44"/>
         <source>size: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/burst_screenshots_dialog.cpp" line="61"/>
+        <location filename="../widgets/burst_screenshots_dialog.cpp" line="62"/>
         <source>save</source>
         <translation type="unfinished"></translation>
     </message>
@@ -518,7 +518,7 @@
     <name>dmr::MainWindow</name>
     <message>
         <location filename="../common/mainwindow.cpp" line="347"/>
-        <location filename="../common/mainwindow.cpp" line="1547"/>
+        <location filename="../common/mainwindow.cpp" line="1550"/>
         <source>Deepin Movie</source>
         <translation type="unfinished"></translation>
     </message>
@@ -595,7 +595,7 @@
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1299"/>
-        <location filename="../common/mainwindow.cpp" line="1356"/>
+        <location filename="../common/mainwindow.cpp" line="1358"/>
         <source>The screenshot is saved to %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -615,7 +615,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1820"/>
+        <location filename="../common/mainwindow.cpp" line="1823"/>
         <source>Invalid file: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -623,27 +623,27 @@
 <context>
     <name>dmr::MovieInfoDialog</name>
     <message>
-        <location filename="../widgets/movieinfo_dialog.cpp" line="96"/>
+        <location filename="../widgets/movieinfo_dialog.cpp" line="85"/>
         <source>File Type:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/movieinfo_dialog.cpp" line="97"/>
+        <location filename="../widgets/movieinfo_dialog.cpp" line="86"/>
         <source>Resolution:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/movieinfo_dialog.cpp" line="98"/>
+        <location filename="../widgets/movieinfo_dialog.cpp" line="87"/>
         <source>File Size:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/movieinfo_dialog.cpp" line="99"/>
+        <location filename="../widgets/movieinfo_dialog.cpp" line="88"/>
         <source>Duration:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/movieinfo_dialog.cpp" line="102"/>
+        <location filename="../widgets/movieinfo_dialog.cpp" line="91"/>
         <source>Path:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -651,8 +651,8 @@
 <context>
     <name>dmr::MpvProxy</name>
     <message>
-        <location filename="../backends/mpv/mpv_proxy.cpp" line="734"/>
-        <location filename="../backends/mpv/mpv_proxy.cpp" line="751"/>
+        <location filename="../backends/mpv/mpv_proxy.cpp" line="740"/>
+        <location filename="../backends/mpv/mpv_proxy.cpp" line="757"/>
         <source>[internal]</source>
         <translation type="unfinished"></translation>
     </message>
