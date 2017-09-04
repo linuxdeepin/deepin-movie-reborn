@@ -163,5 +163,22 @@ QString FastFileHash(const QFileInfo& fi)
 
     return QString(QCryptographicHash::hash(bytes, QCryptographicHash::Md5).toHex());
 }
+
+QPixmap MakeRoundedPixmap(QPixmap pm, qreal rx, qreal ry)
+{
+    QPixmap dest(pm.size());
+    dest.fill(Qt::transparent);
+
+    QPainter p(&dest);
+    p.setRenderHints(QPainter::Antialiasing|QPainter::SmoothPixmapTransform);
+
+    QPainterPath path;
+    path.addRoundedRect(QRect(QPoint(), pm.size()), rx, ry);
+    p.setClipPath(path);
+    p.setClipping(true);
+    p.drawPixmap(0, 0, pm);
+
+    return dest;
+}
 }
 }

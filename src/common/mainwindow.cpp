@@ -1327,35 +1327,38 @@ static void workaround_updateStyle(QWidget *parent, const QString &theme)
 void MainWindow::onBurstScreenshot(const QImage& frame)
 {
     qDebug() << _burstShoots.size();
-    if (frame.isNull()) {
-        return;
+    if (!frame.isNull()) {
+        _burstShoots.append(frame);
     }
 
-    _burstShoots.append(frame);
-
-    if (_burstShoots.size() >= 15) {
+    if (_burstShoots.size() >= 15 || frame.isNull()) {
         disconnect(_engine, &PlayerEngine::notifyScreenshot, this, &MainWindow::onBurstScreenshot);
         _engine->stopBurstScreenshot();
         _inBurstShootMode = false;
 
+        if (frame.isNull()) {
+            return;
+        }
+
         BurstScreenshotsDialog bsd(_engine->playlist().currentInfo());
         bsd.updateWithFrames(_burstShoots);
-        bsd.exec();
+        auto ret = bsd.exec();
         qDebug() << "BurstScreenshot done";
 
         _burstShoots.clear();
         _engine->pauseResume();
 
-
-        auto poster_path = bsd.savedPosterPath();
-        if (!_nwShot) {
-            _nwShot = new NotificationWidget(this); 
-            _nwShot->setAnchor(NotificationWidget::AnchorNorthWest);
-            _nwShot->setAnchorPoint(QPoint(30, 38));
+        if (ret == QDialog::Accepted) {
+            auto poster_path = bsd.savedPosterPath();
+            if (!_nwShot) {
+                _nwShot = new NotificationWidget(this); 
+                _nwShot->setAnchor(NotificationWidget::AnchorNorthWest);
+                _nwShot->setAnchorPoint(QPoint(30, 38));
+            }
+            auto msg = tr("The screenshot is saved to %1").arg(poster_path);
+            auto pm = QPixmap(QString(":/resources/icons/%1.png").arg(QFileInfo::exists(poster_path)?"success":"fail"));
+            _nwShot->popupWithIcon(msg, pm);
         }
-        auto msg = tr("The screenshot is saved to %1").arg(poster_path);
-        auto pm = QPixmap(QString(":/resources/icons/%1.png").arg(QFileInfo::exists(poster_path)?"success":"fail"));
-        _nwShot->popupWithIcon(msg, pm);
     }
 }
 

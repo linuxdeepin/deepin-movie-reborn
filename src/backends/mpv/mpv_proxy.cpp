@@ -557,7 +557,7 @@ void MpvProxy::burstScreenshot()
 
 	std::random_device rd;
     std::mt19937 g(rd());
-    std::uniform_int_distribution<int> uniform_dist(15, 30);
+    std::uniform_int_distribution<int> uniform_dist(16, 30);
     int d = (duration() - elapsed()) / uniform_dist(g);
     _burstInc = qMax(d, 10);
     qDebug() << "burst span " << _burstInc;
@@ -632,10 +632,16 @@ void MpvProxy::stepBurstScreenshot()
             qDebug() << "seek finished" << elapsed();
             break;
         }
+
+        if (ev->event_id == MPV_EVENT_END_FILE) {
+            qDebug() << "seek finished (end of file)" << elapsed();
+            break;
+        }
     }
 
     QImage img = takeOneScreenshot();
     if (img.isNull()) {
+        emit notifyScreenshot(img);
         stopBurstScreenshot();
         return;
     }

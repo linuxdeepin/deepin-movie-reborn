@@ -1,6 +1,7 @@
 #include "player_engine.h"
 #include "burst_screenshots_dialog.h"
 #include "dmr_settings.h"
+#include "utils.h"
 
 #include <dthememanager.h>
 
@@ -97,22 +98,6 @@ BurstScreenshotsDialog::BurstScreenshotsDialog(const PlayItemInfo& pif)
     addContent(mainContent, Qt::AlignCenter);
 }
 
-static QPixmap makeRounded(QPixmap pm)
-{
-    QPixmap dest(pm.size());
-
-    QPainter p(&dest);
-    p.setRenderHints(QPainter::Antialiasing|QPainter::SmoothPixmapTransform);
-
-    QPainterPath path;
-    path.addRoundedRect(QRect(QPoint(), pm.size()), 2, 2);
-    p.setClipPath(path);
-
-    p.drawPixmap(0, 0, pm);
-
-    return dest;
-}
-
 void BurstScreenshotsDialog::updateWithFrames(const QList<QImage>& frames)
 {
     int count = 0;
@@ -123,7 +108,7 @@ void BurstScreenshotsDialog::updateWithFrames(const QList<QImage>& frames)
         int r = count / 3;
         int c = count % 3;
 
-        auto pm = makeRounded(QPixmap::fromImage(scaled));
+        auto pm = utils::MakeRoundedPixmap(QPixmap::fromImage(scaled), 2, 2);
         l->setPixmap(pm);
         _grid->addWidget(l, r, c);
         count++;
