@@ -13,11 +13,12 @@ BurstScreenshotsDialog::BurstScreenshotsDialog(const PlayItemInfo& pif)
     auto mi = pif.mi;
 
     auto *ml = new QVBoxLayout;
-    ml->setContentsMargins(0, 0, 0, 0);
+    ml->setContentsMargins(0, 10, 0, 0);
 
     // top 
     auto *hl = new QHBoxLayout();
     hl->setSpacing(16);
+    hl->setContentsMargins(0, 0, 0, 0);
     ml->addLayout(hl);
 
     auto *pm = new QLabel(this);
@@ -27,11 +28,12 @@ BurstScreenshotsDialog::BurstScreenshotsDialog(const PlayItemInfo& pif)
 
     // top right up
     auto *trl = new QVBoxLayout;
-    hl->setContentsMargins(21, 0, 0, 0);
+    hl->setContentsMargins(0, 0, 0, 0);
     hl->setSpacing(6);
     hl->addLayout(trl, 1);
 
-    auto *nm = new QLabel(QFileInfo(mi.filePath).fileName(), this);
+    auto *nm = new QLabel(this);
+    nm->setText(nm->fontMetrics().elidedText(QFileInfo(mi.filePath).fileName(), Qt::ElideMiddle, 480));
     trl->addWidget(nm);
 
     //top right bottom
@@ -46,17 +48,18 @@ BurstScreenshotsDialog::BurstScreenshotsDialog(const PlayItemInfo& pif)
     _grid = new QGridLayout();
     _grid->setHorizontalSpacing(12);
     _grid->setVerticalSpacing(15);
-    _grid->setContentsMargins(21, 0, 0, 0);
+    _grid->setContentsMargins(0, 24, 0, 0);
     ml->addLayout(_grid);
     _grid->setColumnMinimumWidth(0, 160);
     _grid->setColumnMinimumWidth(1, 160);
     _grid->setColumnMinimumWidth(2, 160);
 
     auto *bl = new QHBoxLayout;
+    bl->setContentsMargins(0, 13, 0, 0);
     bl->addStretch(1);
 
     _saveBtn = new DTextButton(tr("save"));
-    connect(_saveBtn, &QPushButton::clicked, this, &BurstScreenshotsDialog::saveShootings);
+    connect(_saveBtn, &QPushButton::clicked, this, &BurstScreenshotsDialog::savePoster);
     _saveBtn->setFixedSize(61, 24);
 
     QString addition = R"(
@@ -134,19 +137,27 @@ int BurstScreenshotsDialog::exec()
     return DDialog::exec();
 }
 
+void BurstScreenshotsDialog::savePoster()
+{
+    auto img = this->grab(rect().marginsRemoved(QMargins(10, 20, 10, 42)));
+    _posterPath = Settings::get().screenshotNameTemplate();
+    img.save(_posterPath);
+    DDialog::accept();
+}
+
 void BurstScreenshotsDialog::saveShootings()
 {
-    QString savePath = Settings::get().settings()->value("base.screenshot.location").toString();
-    if (!QFileInfo(savePath).exists()) {
-        savePath = "/tmp";
-    }
-
     int i = 1;
     for (auto& img: _thumbs) {
-        QString filePath = QString("%1/deepin-movie-shot %2(%3).jpg")
-            .arg(savePath).arg(QDateTime::currentDateTime().toString(Qt::ISODate)).arg(i++);
-        img.save(filePath);
+        auto file_path = Settings::get().screenshotNameSeqTemplate().arg(i++);
+        img.save(file_path);
     }
+    DDialog::accept();
+}
+
+QString BurstScreenshotsDialog::savedPosterPath()
+{
+    return _posterPath;
 }
 
 }

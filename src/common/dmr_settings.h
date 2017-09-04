@@ -35,10 +35,16 @@ class Settings: public QObject {
         QPointer<DSettingsGroup> base() { return group("base"); }
         QPointer<DSettingsGroup> subtitle() { return group("subtitle"); }
 
+        // convient helpers
+
         bool isSet(Flag f) const;
 
         QStringList commonPlayableProtocols() const;
         bool iscommonPlayableProtocol(const QString& scheme) const;
+
+        QString screenshotLocation();
+        QString screenshotNameTemplate();
+        QString screenshotNameSeqTemplate();
 
     signals:
         void shortcutsChanged(const QString&, const QVariant&);
