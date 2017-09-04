@@ -122,6 +122,7 @@ mpv_handle* MpvProxy::mpv_init()
     set_property(h, "sub-auto", "fuzzy");
     set_property(h, "sub-visibility", "true");
     set_property(h, "sub-scale-with-window", "no");
+    set_property(h, "sub-scale-by-window", "no");
     //set_property(h, "sub-margin-y", 36);
 
     set_property(h, "screenshot-template", "deepin-movie-shot%n");

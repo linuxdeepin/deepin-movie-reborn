@@ -26,6 +26,7 @@ class EventMonitor;
 class PlaylistWidget;
 class PlayerEngine;
 class NotificationWidget;
+class MovieProgressIndicator;
 
 class MainWindow: public QWidget {
     Q_OBJECT
@@ -118,6 +119,7 @@ private:
     PlaylistWidget *_playlist {nullptr};
     PlayerEngine *_engine {nullptr};
     QLabel *_playState {nullptr};
+    MovieProgressIndicator *_progIndicator {nullptr};
 
     QList<QImage> _burstShoots;
     bool _inBurstShootMode {false};

@@ -14,6 +14,7 @@
 #include "notification_widget.h"
 #include "player_engine.h"
 #include "url_dialog.h"
+#include "movie_progress_indicator.h"
 
 #include <QtWidgets>
 #include <QtDBus>
@@ -378,6 +379,17 @@ MainWindow::MainWindow(QWidget *parent)
                 .arg(qApp->theme())));
     _playState->setVisible(false);
 
+    _progIndicator = new MovieProgressIndicator(this);
+    _progIndicator->setVisible(false);
+    connect(windowHandle(), &QWindow::windowStateChanged, [=]() {
+        bool isFullscreen = window()->isFullScreen();
+        //WTF: this->geometry() is not size of fullscreen !
+        //_progIndicator->move(geometry().width() - _progIndicator->width() - 18, 14);
+        _progIndicator->setVisible(isFullscreen);
+    });
+    connect(_engine, &PlayerEngine::elapsedChanged, [=]() {
+        _progIndicator->updateMovieProgress(_engine->duration(), _engine->elapsed());
+    });
 
     // mini ui
     auto *signalMapper = new QSignalMapper(this);
@@ -1337,6 +1349,8 @@ void MainWindow::onBurstScreenshot(const QImage& frame)
         _inBurstShootMode = false;
 
         if (frame.isNull()) {
+            _burstShoots.clear();
+            _engine->pauseResume();
             return;
         }
 
@@ -1459,9 +1473,6 @@ void MainWindow::suspendToolsWindow()
 
         } else {
             if (qApp->focusWindow() != windowHandle())
-                return;
-
-            if (frameGeometry().contains(QCursor::pos()))
                 return;
 
             if (insideToolsArea(mapFromGlobal(QCursor::pos())))
@@ -1605,6 +1616,10 @@ void MainWindow::resizeEvent(QResizeEvent *ev)
     if (_mousePressed) {
         auto msg = QString("%1x%2").arg(width()) .arg(height());
         _nwComm->updateWithMessage(msg);
+    }
+
+    if (window()->isFullScreen()) {
+        _progIndicator->move(geometry().width() - _progIndicator->width() - 18, 14);
     }
 
     updateSizeConstraints();
