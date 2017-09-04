@@ -209,9 +209,7 @@ void PlaylistModel::loadPlaylist()
 
         if (url.isLocalFile()) {
             QFileInfo fi(url.toLocalFile());
-            if (!fi.exists()) continue;
             auto pif = calculatePlayInfo(url, fi);
-            if (!pif.valid) continue;
             _infos.append(pif);
 
         } else {
@@ -679,7 +677,7 @@ struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl& url, const QFil
         }
     }
 
-    PlayItemInfo pif { ok, ok, url, fi, pm, mi };
+    PlayItemInfo pif { fi.exists(), ok, url, fi, pm, mi };
 
     return pif;
 }
