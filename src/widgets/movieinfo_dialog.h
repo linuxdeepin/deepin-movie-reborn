@@ -9,7 +9,8 @@ DWIDGET_USE_NAMESPACE
 namespace dmr {
 struct PlayItemInfo;
 
-class MovieInfoDialog: public DDialog {
+class MovieInfoDialog: public DAbstractDialog {
+    Q_OBJECT
 public:
     MovieInfoDialog(const struct PlayItemInfo&);
 };

@@ -1,0 +1,38 @@
+dmr--MovieInfoDialog {
+    qproperty-backgroundColor: white;
+    qproperty-borderColor: rgba(0, 0, 0, 0.2);
+}
+
+Dtk--Widget--DWindowCloseButton {
+    border-image: url(:/images/light/images/window_close_normal.png);
+}
+Dtk--Widget--DWindowCloseButton:hover {
+    border-image: url(:/images/light/images/window_close_hover.png);
+}
+Dtk--Widget--DWindowCloseButton:pressed {
+    border-image: url(:/images/light/images/window_close_press.png);
+}
+
+#MovieInfoTitle {
+    qproperty-alignment: AlignCenter;
+    color: black;
+    font-size: 12px;
+}
+
+#MovieInfoSplit {
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+#MovieInfoKey {
+    border: 1px solid transparent;
+    qproperty-alignment: AlignRight;
+    font-size: 11px;
+    color: #606060;
+}
+#MovieInfoValue {
+    border: 1px solid transparent;
+    qproperty-alignment: AlignLeft;
+    font-size: 11px;
+    color: #000000;
+}
+

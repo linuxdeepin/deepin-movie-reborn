@@ -716,6 +716,34 @@
     </message>
 </context>
 <context>
+    <name>dmr::MovieInfoDialog</name>
+    <message>
+        <location filename="../widgets/movieinfo_dialog.cpp" line="96"/>
+        <source>File Type:</source>
+        <translation>文件类型：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/movieinfo_dialog.cpp" line="97"/>
+        <source>Resolution:</source>
+        <translation>分辨率：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/movieinfo_dialog.cpp" line="98"/>
+        <source>File Size:</source>
+        <translation>文件大小：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/movieinfo_dialog.cpp" line="99"/>
+        <source>Duration:</source>
+        <translation>媒体时长：</translation>
+    </message>
+    <message>
+        <location filename="../widgets/movieinfo_dialog.cpp" line="102"/>
+        <source>Path:</source>
+        <translation>文件路径：</translation>
+    </message>
+</context>
+<context>
     <name>dmr::MpvProxy</name>
     <message>
         <location filename="../backends/mpv/mpv_proxy.cpp" line="734"/>

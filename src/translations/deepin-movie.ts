@@ -621,6 +621,34 @@
     </message>
 </context>
 <context>
+    <name>dmr::MovieInfoDialog</name>
+    <message>
+        <location filename="../widgets/movieinfo_dialog.cpp" line="96"/>
+        <source>File Type:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../widgets/movieinfo_dialog.cpp" line="97"/>
+        <source>Resolution:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../widgets/movieinfo_dialog.cpp" line="98"/>
+        <source>File Size:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../widgets/movieinfo_dialog.cpp" line="99"/>
+        <source>Duration:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../widgets/movieinfo_dialog.cpp" line="102"/>
+        <source>Path:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>dmr::MpvProxy</name>
     <message>
         <location filename="../backends/mpv/mpv_proxy.cpp" line="734"/>
