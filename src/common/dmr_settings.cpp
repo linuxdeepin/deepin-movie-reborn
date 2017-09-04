@@ -109,5 +109,27 @@ bool Settings::iscommonPlayableProtocol(const QString& scheme) const
     return false;
 }
 
+QString Settings::screenshotLocation()
+{
+    QString save_path = settings()->value("base.screenshot.location").toString();
+    if (!QFileInfo(save_path).exists()) {
+        save_path = "/tmp";
+    }
+
+    return save_path;
+}
+
+QString Settings::screenshotNameTemplate()
+{
+    return tr("%1/DMovie%2.jpg").arg(screenshotLocation())
+        .arg(QDateTime::currentDateTime().toString("yyyyMMddhhmmss"));
+}
+
+QString Settings::screenshotNameSeqTemplate()
+{
+    return tr("%1/DMovie%2(%3).jpg").arg(screenshotLocation())
+        .arg(QDateTime::currentDateTime().toString("yyyyMMddhhmmss"));
+}
+
 }
 

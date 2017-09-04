@@ -35,14 +35,18 @@ public:
     BurstScreenshotsDialog(const PlayItemInfo& pif);
     void updateWithFrames(const QList<QImage>& frames);
 
+    QString savedPosterPath();
+
 public slots:
     int exec() override;
     void saveShootings();
+    void savePoster();
 
 private:
     QGridLayout *_grid {nullptr};
     DTextButton *_saveBtn {nullptr};
     QList<QImage> _thumbs;
+    QString _posterPath;
 };
 }
 

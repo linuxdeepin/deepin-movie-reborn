@@ -1255,13 +1255,8 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
 
         case ActionFactory::ActionKind::Screenshot: {
             auto img = _engine->takeScreenshot();
-            QString savePath = Settings::get().settings()->value("base.screenshot.location").toString();
-            if (!QFileInfo(savePath).exists()) {
-                savePath = "/tmp";
-            }
 
-            QString filePath = tr("%1/DMovie%2.jpg")
-                .arg(savePath).arg(QDateTime::currentDateTime().toString("yyyyMMddhhmmss"));
+            QString filePath = Settings::get().screenshotNameTemplate();
             bool success = false;
             if (img.isNull()) 
                 qDebug()<< __func__ << "pixmap is null";
@@ -1350,6 +1345,17 @@ void MainWindow::onBurstScreenshot(const QImage& frame)
 
         _burstShoots.clear();
         _engine->pauseResume();
+
+
+        auto poster_path = bsd.savedPosterPath();
+        if (!_nwShot) {
+            _nwShot = new NotificationWidget(this); 
+            _nwShot->setAnchor(NotificationWidget::AnchorNorthWest);
+            _nwShot->setAnchorPoint(QPoint(30, 38));
+        }
+        auto msg = tr("The screenshot is saved to %1").arg(poster_path);
+        auto pm = QPixmap(QString(":/resources/icons/%1.png").arg(QFileInfo::exists(poster_path)?"success":"fail"));
+        _nwShot->popupWithIcon(msg, pm);
     }
 }
 

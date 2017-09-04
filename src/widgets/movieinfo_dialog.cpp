@@ -35,7 +35,6 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo& pif)
 
     auto *sp = new QFrame(this);
     sp->setFixedHeight(2);
-    //sp->setStyleSheet("background-color: rgba(0, 0, 0, 0.1)");
     sp->setStyleSheet("border: 1px solid rgba(0, 0, 0, 0.1);");
     ml->addWidget(sp);
     ml->addSpacing(10);
