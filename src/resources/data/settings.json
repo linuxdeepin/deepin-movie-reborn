@@ -291,6 +291,12 @@
                     "reset": false,
                     "type": "checkbox",
                     "default": false
+                },
+                {
+                    "key": "codepage",
+                    "name": "Codepage",
+                    "type": "lineedit",
+                    "default": "auto"
                 }
             ]
         }

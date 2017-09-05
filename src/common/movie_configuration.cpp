@@ -198,6 +198,7 @@ QString MovieConfiguration::knownKey2String(KnownKey kk)
 {
     switch (kk) {
         case KnownKey::SubDelay: return "sub-delay";
+        case KnownKey::SubCodepage: return "sub-codepage";
         default: return "";
     }
 }

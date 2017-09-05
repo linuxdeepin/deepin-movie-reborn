@@ -131,5 +131,14 @@ QString Settings::screenshotNameSeqTemplate()
         .arg(QDateTime::currentDateTime().toString("yyyyMMddhhmmss"));
 }
 
+QVariant Settings::internalOption(const QString& opt)
+{
+    return settings()->getOption(QString("internal.%1").arg(opt));
+}
+
+void Settings::setInternalOption(const QString& opt, const QVariant& v)
+{
+    settings()->setOption(QString("internal.%1").arg(opt), v);
+}
 }
 

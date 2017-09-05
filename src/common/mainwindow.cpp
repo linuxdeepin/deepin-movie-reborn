@@ -442,7 +442,7 @@ MainWindow::MainWindow(QWidget *parent)
     reflectActionToUI(ActionFactory::Stereo);
     requestAction(ActionFactory::ChangeSubCodepage, false, {"auto"});
 
-    _lightTheme = Settings::get().settings()->getOption("internal.light_theme").toBool();
+    _lightTheme = Settings::get().internalOption("light_theme").toBool();
     if (_lightTheme) reflectActionToUI(ActionFactory::LightTheme);
 
     connect(_engine, &PlayerEngine::sidChanged, [=]() {
@@ -451,6 +451,9 @@ MainWindow::MainWindow(QWidget *parent)
     //NOTE: mpv does not always send a aid-change signal the first time movie is loaded.
     connect(_engine, &PlayerEngine::aidChanged, [=]() {
         reflectActionToUI(ActionFactory::ActionKind::SelectTrack);
+    });
+    connect(_engine, &PlayerEngine::subCodepageChanged, [=]() {
+        reflectActionToUI(ActionFactory::ActionKind::ChangeSubCodepage);
     });
 
     connect(_engine, &PlayerEngine::fileLoaded, 
@@ -793,7 +796,7 @@ void MainWindow::switchTheme()
 {
     _lightTheme = !_lightTheme;
     qApp->setTheme(_lightTheme? "light":"dark");
-    Settings::get().settings()->setOption("internal.light_theme", _lightTheme);
+    Settings::get().setInternalOption("light_theme", _lightTheme);
 }
 
 bool MainWindow::isActionAllowed(ActionFactory::ActionKind kd, bool fromUI, bool isShortcut)
@@ -1184,6 +1187,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         case ActionFactory::ActionKind::ChangeSubCodepage: {
             Q_ASSERT(args.size() == 1);
             _engine->setSubCodepage(args[0].toString());
+            Settings::get().setInternalOption("codepage", args[0]);
             if (!fromUI) {
                 reflectActionToUI(kd);
             }

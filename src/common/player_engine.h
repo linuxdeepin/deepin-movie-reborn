@@ -115,6 +115,7 @@ signals:
     void volumeChanged();
     void sidChanged();
     void aidChanged();
+    void subCodepageChanged();
 
     void loadOnlineSubtitlesFinished(const QUrl& url, bool success);
 

@@ -214,6 +214,14 @@ void PlayerEngine::setSubCodepage(const QString& cp)
 {
     if (!_current) return;
     _current->setSubCodepage(cp);
+
+    if (state() != CoreState::Idle) {
+        auto pif = playlist().currentInfo();
+        MovieConfiguration::get().updateUrl(pif.url, ConfigKnownKey::SubCodepage,
+                _current->subCodepage());
+    }
+
+    emit subCodepageChanged();
 }
 
 void PlayerEngine::addSubSearchPath(const QString& path)
@@ -302,12 +310,21 @@ void PlayerEngine::requestPlay(int id)
     if (_current->isPlayable()) {
         _current->play();
         auto cfg = MovieConfiguration::get().queryByUrl(item.url);
+
         auto key = MovieConfiguration::knownKey2String(ConfigKnownKey::SubDelay);
         if (cfg.contains(key)) {
             _current->setSubDelay(cfg[key].toDouble());
         } else {
             _current->setSubDelay(0.0);
         }
+
+        key = MovieConfiguration::knownKey2String(ConfigKnownKey::SubCodepage);
+        if (cfg.contains(key)) {
+            _current->setSubCodepage(cfg[key].toString());
+        } else {
+            _current->setSubCodepage("auto");
+        }
+        emit subCodepageChanged();
     } else {
         // TODO: delete and try next backend?
     }
