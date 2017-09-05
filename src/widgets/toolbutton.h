@@ -22,6 +22,13 @@ public:
     VolumeButton(QWidget* parent = 0);
     void changeLevel(Level lv);
 
+signals:
+    void entered();
+    void leaved();
+
+protected:
+    void enterEvent(QEvent *ev) override;
+    void leaveEvent(QEvent *ev) override;
 
 private:
     QString _name;

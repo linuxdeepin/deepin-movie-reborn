@@ -142,7 +142,6 @@ QMenu* ActionFactory::mainContextMenu()
                 auto *parent = menu;
                 auto *menu = new QMenu(tr("Track"));
                 _tracksMenu = menu;
-                //DEF_ACTION(tr("Load Track"), ActionKind::LoadTrack);
                 //DEF_ACTION(tr("Select Track"), ActionKind::SelectTrack);
                 parent->addMenu(menu);
             }
@@ -307,8 +306,6 @@ void ActionFactory::updateMainActionsForMovie(const PlayingMovieInfo& pmf)
     if (_subtitleMenu) {
         auto menu = _tracksMenu;
         menu->clear();
-
-        DEF_ACTION(tr("Load Track"), ActionKind::LoadTrack);
 
         auto group = new QActionGroup(menu); // mem leak ?
         for (int i = 0; i < pmf.audios.size(); i++) {

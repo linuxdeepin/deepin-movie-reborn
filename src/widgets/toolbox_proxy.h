@@ -21,6 +21,7 @@ class MainWindow;
 class DMRSlider;
 class ThumbnailPreview;
 class SubtitlesView;
+class VolumeSlider;
 
 class ToolboxProxy: public QFrame {
     Q_OBJECT
@@ -59,6 +60,7 @@ private:
     MainWindow *_mainWindow {nullptr};
     PlayerEngine *_engine {nullptr};
     QLabel *_timeLabel {nullptr};
+    VolumeSlider *_volSlider {nullptr};
 
     DImageButton *_playBtn {nullptr};
     DImageButton *_prevBtn {nullptr};
