@@ -18,6 +18,13 @@ struct ShooterSubtitleMeta {
 class OnlineSubtitle: public QObject {
     Q_OBJECT
 public:
+    enum FailReason {
+        NoError,
+        NetworkError,
+        NoSubFound,
+        Duplicated,  // the same hash with local cache
+    };
+
     static OnlineSubtitle& get();
     QString storeLocation();
 
@@ -29,7 +36,7 @@ private slots:
     void downloadSubtitles();
 
 signals:
-    void subtitlesDownloadedFor(const QUrl& url, const QList<QString>& filenames);
+    void subtitlesDownloadedFor(const QUrl& url, const QList<QString>& filenames, FailReason r);
 
 private:
     QString _defaultLocation;
@@ -38,10 +45,12 @@ private:
     int _pendingDownloads {0}; // this should equal to _subs.size() basically
     QList<ShooterSubtitleMeta> _subs;
     QFileInfo _lastReqVideo;
+    FailReason _lastReason {NoError};
 
     OnlineSubtitle();
     void subtitlesDownloadComplete();
     QString findAvailableName(const QString& tmpl, int id);
+    bool hasHashConflict(const QString& path, const QString& tmpl); 
 };
 }
 
