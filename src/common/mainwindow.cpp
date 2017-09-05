@@ -1619,7 +1619,7 @@ void MainWindow::resizeEvent(QResizeEvent *ev)
     }
 
     if (window()->isFullScreen()) {
-        _progIndicator->move(geometry().width() - _progIndicator->width() - 18, 14);
+        _progIndicator->move(geometry().width() - _progIndicator->width() - 18, 8);
     }
 
     updateSizeConstraints();
