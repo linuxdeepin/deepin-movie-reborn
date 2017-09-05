@@ -64,11 +64,13 @@
     font-size: 12px;
     line-height: 1.5;
     color: #303030;
+    color: rgba(48, 48, 48, 0.5);
 }
 
 *[PlayItemThumb="true"][ItemState="3"] *[Time="true"] {
     font-size: 10px;
+    font-weight: 500;
     line-height: 1.5;
-    color: rgba(249, 112, 79, 0.6);
+    color: rgba(249, 112, 79, 0.8);
 }
 

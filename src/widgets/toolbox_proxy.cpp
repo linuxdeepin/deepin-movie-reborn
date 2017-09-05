@@ -517,7 +517,7 @@ void ToolboxProxy::setup()
 
 bool ToolboxProxy::anyPopupShown() const
 {
-    return _previewer->isVisible() || _subView->isVisible() || _volBtn->isVisible();
+    return _previewer->isVisible() || _subView->isVisible() || _volSlider->isVisible();
 }
 
 void ToolboxProxy::updateHoverPreview(const QUrl& url, int secs)

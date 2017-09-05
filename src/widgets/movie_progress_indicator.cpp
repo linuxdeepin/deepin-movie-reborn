@@ -8,30 +8,26 @@ MovieProgressIndicator::MovieProgressIndicator(QWidget* parent)
 {
     QFont ft;
     ft.setPixelSize(14);
-    ft.setWeight(500);
     QFontMetrics fm(ft);
 
-    _fixedSize = QSize(qMax(52, fm.width("99:99:99")), fm.height() + 10);
+    _fixedSize = QSize(qMax(52, fm.width("99:99")), fm.height() + 10);
     this->setFixedSize(_fixedSize);
 }
 
 void MovieProgressIndicator::paintEvent(QPaintEvent* pe)
 {
-    QTime t(0, 0, 0);
-    t = t.addSecs(_elapsed);
-    auto time_text = t.toString("hh:mm:ss");
+    auto time_text = QTime::currentTime().toString("hh:mm");
 
     QPainter p(this);
+
     QFont ft;
     ft.setPixelSize(14);
-    ft.setWeight(500);
     p.setFont(ft);
     p.setPen(QColor(255, 255, 255, 255 * .4));
 
     auto fm = p.fontMetrics();
     auto fr = fm.boundingRect(time_text);
-    fr.moveCenter(QPoint(rect().center().x(), fr.center().y()));
-    fr.moveCenter(rect().center());
+    fr.moveCenter(QPoint(rect().center().x(), fr.height()/2));
     p.drawText(fr, time_text);
 
     

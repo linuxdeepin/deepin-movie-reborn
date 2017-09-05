@@ -67,6 +67,7 @@
 
 *[PlayItemThumb="true"][ItemState="3"] *[Time="true"] {
     font-size: 10px;
+    font-weight: 500;
     line-height: 1.5;
     color: rgba(249, 112, 79, 0.6);
 }
