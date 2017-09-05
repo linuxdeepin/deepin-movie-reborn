@@ -274,7 +274,7 @@
                             "key": "size",
                             "name": "Font Size",
                             "type": "spinbutton",
-                            "default": 26
+                            "default": 38
                         }
                     ]
                 }

@@ -117,13 +117,13 @@ mpv_handle* MpvProxy::mpv_init()
     set_property(h, "input-cursor", "no");
     set_property(h, "cursor-autohide", "no");
 
-    set_property(h, "sub-ass-override", "force");
-    set_property(h, "sub-ass-style-override", "force");
+    set_property(h, "sub-ass-override", "yes");
+    set_property(h, "sub-ass-style-override", "yes");
     set_property(h, "sub-auto", "fuzzy");
     set_property(h, "sub-visibility", "true");
-    set_property(h, "sub-scale-with-window", "no");
-    set_property(h, "sub-scale-by-window", "no");
-    //set_property(h, "sub-margin-y", 36);
+    //set_property(h, "sub-scale-with-window", "no");
+    //set_property(h, "sub-scale-by-window", "no");
+    set_property(h, "sub-margin-y", 36);
 
     set_property(h, "screenshot-template", "deepin-movie-shot%n");
     set_property(h, "screenshot-directory", "/tmp");
@@ -365,6 +365,7 @@ void MpvProxy::addSubSearchPath(const QString& path)
 void MpvProxy::setSubCodepage(const QString& cp)
 {
     set_property(_handle, "sub-codepage", cp);
+    command(_handle, {"sub-reload"});
 }
 
 void MpvProxy::updateSubStyle(const QString& font, int sz)
@@ -381,7 +382,7 @@ void MpvProxy::resizeEvent(QResizeEvent *re)
     }
 
     double y = (1.0 - 36.0 / height()) * 100.0;
-    set_property(_handle, "sub-pos", (int)y);
+    //set_property(_handle, "sub-pos", (int)y);
 }
 
 void MpvProxy::savePlaybackPosition()

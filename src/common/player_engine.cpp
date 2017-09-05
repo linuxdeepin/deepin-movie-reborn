@@ -87,7 +87,6 @@ void PlayerEngine::updateSubStyles()
     auto font_id = font_opt->value().toInt();
     auto font = font_opt->data("items").toStringList()[font_id];
     auto sz = Settings::get().settings()->option("subtitle.font.size")->value().toInt();
-    sz *= 2; // I assume mpv font size is almost twice the real pixel size.
 
     if (state() != CoreState::Idle) {
         double scale = _playlist->currentInfo().mi.height / 720.0;
