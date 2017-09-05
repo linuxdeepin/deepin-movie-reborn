@@ -354,7 +354,12 @@ double MpvProxy::subDelay() const
 
 QString MpvProxy::subCodepage()
 {
-    return get_property(_handle, "sub-codepage").toString();
+    auto cp = get_property(_handle, "sub-codepage").toString();
+    if (cp.startsWith("+")) {
+        cp.remove(0, 1);
+    }
+
+    return cp;
 }
 
 void MpvProxy::addSubSearchPath(const QString& path)
@@ -364,7 +369,11 @@ void MpvProxy::addSubSearchPath(const QString& path)
 
 void MpvProxy::setSubCodepage(const QString& cp)
 {
-    set_property(_handle, "sub-codepage", cp);
+    auto cp2 = cp;
+    if (!cp.startsWith("+") && cp != "auto")
+        cp2.prepend('+');
+
+    set_property(_handle, "sub-codepage", cp2);
     command(_handle, {"sub-reload"});
 }
 

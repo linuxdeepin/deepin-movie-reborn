@@ -22,6 +22,7 @@ void GenerateSettingTranslate()
     auto group_shortcuts_subName = QObject::tr("Subtitle");
     auto group_subtitleName = QObject::tr("Subtitle");
     auto group_subtitle_fontName = QObject::tr("Font Style");
+    auto internal_codepageName = QObject::tr("Codepage");
     auto internal_light_themeName = QObject::tr("is light theme");
     auto reset_button_name = QObject::tr("Restore Defaults");
     auto shortcuts_file_enableName = QObject::tr("Enable");

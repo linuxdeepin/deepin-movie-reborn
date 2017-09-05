@@ -14,7 +14,7 @@ class MovieConfiguration: public QObject
 public:
     enum KnownKey {
         SubDelay,
-
+        SubCodepage,
     };
 
     static MovieConfiguration& get();
