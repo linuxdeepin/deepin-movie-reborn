@@ -248,8 +248,8 @@ public:
     VolumeSlider(PlayerEngine* eng, MainWindow* mw)
         :DArrowRectangle(DArrowRectangle::ArrowBottom), _engine(eng), _mw(mw) {
         setFixedSize(QSize(24, 105));
-        setAttribute(Qt::WA_DeleteOnClose);
-        setWindowFlags(Qt::Popup);
+        //setAttribute(Qt::WA_DeleteOnClose);
+        setWindowFlags(Qt::ToolTip);
 
         setShadowBlurRadius(4);
         setRadius(4);
@@ -280,12 +280,29 @@ public:
         connect(_slider, &QSlider::valueChanged, [=]() {
             _mw->requestAction(ActionFactory::ChangeVolume, false, QList<QVariant>() << _slider->value());
         });
+
+        _autoHideTimer.setSingleShot(true);
+        connect(&_autoHideTimer, &QTimer::timeout, this, &VolumeSlider::hide);
     }
 
 
     ~VolumeSlider() {
         disconnect(DThemeManager::instance(), &DThemeManager::themeChanged, 
                 this, &VolumeSlider::updateBg);
+    }
+
+public slots:
+    void delayedHide() {
+        _autoHideTimer.start(800);
+    }
+
+protected:
+    void enterEvent(QEvent* e) {
+        _autoHideTimer.stop();
+    }
+
+    void leaveEvent(QEvent* e) {
+        _autoHideTimer.start(500);
     }
         
 private slots:
@@ -317,6 +334,7 @@ private:
     PlayerEngine *_engine;
     QSlider *_slider;
     MainWindow *_mw;
+    QTimer _autoHideTimer;
 };
 
 ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
@@ -443,6 +461,16 @@ void ToolboxProxy::setup()
     signalMapper->setMapping(_volBtn, "vol");
     _right->addWidget(_volBtn);
 
+    _volSlider = new VolumeSlider(_engine, _mainWindow);
+    connect(_volBtn, &VolumeButton::entered, [=]() {
+        QPoint pos = _volBtn->parentWidget()->mapToGlobal(_volBtn->pos());
+        pos.ry() = parentWidget()->mapToGlobal(this->pos()).y();
+        _volSlider->show(pos.x() + _volSlider->width(), pos.y() - 5);
+    });
+    connect(_volBtn, &VolumeButton::leaved, [=]() {
+        _volSlider->delayedHide();
+    });
+
     _fsBtn = new DImageButton();
     _fsBtn->setFixedSize(48, TOOLBOX_HEIGHT);
     connect(_fsBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
@@ -489,7 +517,7 @@ void ToolboxProxy::setup()
 
 bool ToolboxProxy::anyPopupShown() const
 {
-    return _previewer->isVisible() || _subView->isVisible();
+    return _previewer->isVisible() || _subView->isVisible() || _volBtn->isVisible();
 }
 
 void ToolboxProxy::updateHoverPreview(const QUrl& url, int secs)
@@ -632,11 +660,8 @@ void ToolboxProxy::buttonClicked(QString id)
     } else if (id == "fs") {
         _mainWindow->requestAction(ActionFactory::ActionKind::ToggleFullscreen);
     } else if (id == "vol") {
-        auto *w = new VolumeSlider(_engine, _mainWindow);
-        QPoint pos = _volBtn->parentWidget()->mapToGlobal(_volBtn->pos());
-        pos.ry() = parentWidget()->mapToGlobal(this->pos()).y();
-        w->show(pos.x() + w->width(), pos.y() - 5);
-
+        _mainWindow->requestAction(ActionFactory::ActionKind::ToggleMute);
+        _volSlider->hide();
     } else if (id == "prev") {
         _mainWindow->requestAction(ActionFactory::ActionKind::GotoPlaylistPrev);
     } else if (id == "next") {
