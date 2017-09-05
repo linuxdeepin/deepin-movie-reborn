@@ -293,11 +293,15 @@ public:
 
 public slots:
     void delayedHide() {
-        _autoHideTimer.start(800);
+        _autoHideTimer.start(500);
     }
 
 protected:
     void enterEvent(QEvent* e) {
+        _autoHideTimer.stop();
+    }
+
+    void showEvent(QShowEvent* se) {
         _autoHideTimer.stop();
     }
 
@@ -536,6 +540,9 @@ void ToolboxProxy::progressHoverChanged(int v)
         return;
 
     if (!Settings::get().isSet(Settings::PreviewOnMouseover))
+        return;
+
+    if (_volSlider->isVisible())
         return;
 
     qDebug() << v;

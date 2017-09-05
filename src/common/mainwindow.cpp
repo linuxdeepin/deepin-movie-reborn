@@ -1113,8 +1113,12 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
 
         case ActionFactory::ActionKind::ToggleMute: {
             _engine->toggleMute();
-            double pert = _engine->volume();
-            _nwComm->updateWithMessage(tr("Volume: %1%").arg(pert));
+            if (_engine->muted()) {
+                _nwComm->updateWithMessage(tr("Muted"));
+            } else {
+                double pert = _engine->volume();
+                _nwComm->updateWithMessage(tr("Volume: %1%").arg(pert));
+            }
             break;
         }
 
