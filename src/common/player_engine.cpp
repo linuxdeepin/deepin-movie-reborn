@@ -2,7 +2,6 @@
 
 #include "player_engine.h"
 #include "playlist_model.h"
-#include "online_sub.h"
 #include "movie_configuration.h"
 
 #include "mpv_proxy.h"
@@ -151,7 +150,8 @@ int PlayerEngine::sid() const
     return _current->sid();
 }
 
-void PlayerEngine::onSubtitlesDownloaded(const QUrl& url, const QList<QString>& filenames)
+void PlayerEngine::onSubtitlesDownloaded(const QUrl& url, const QList<QString>& filenames,
+        OnlineSubtitle::FailReason reason)
 {
     if (state() == CoreState::Idle) { return; }
     if (!_current) return;
@@ -159,7 +159,8 @@ void PlayerEngine::onSubtitlesDownloaded(const QUrl& url, const QList<QString>& 
     if (playlist().currentInfo().url != url) 
         return;
 
-    emit loadOnlineSubtitlesFinished(url, filenames.size() > 0);
+    emit loadOnlineSubtitlesFinished(url,
+            filenames.size() > 0 || reason == OnlineSubtitle::Duplicated);
     for (auto& filename: filenames)
         _current->loadSubtitle(filename);
 }

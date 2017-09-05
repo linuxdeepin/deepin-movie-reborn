@@ -1,5 +1,6 @@
 #include "online_sub.h"
 #include "dmr_settings.h"
+#include "utils.h"
 
 #include <functional>
 #include <openssl/md5.h>
@@ -96,10 +97,14 @@ void OnlineSubtitle::subtitlesDownloadComplete()
 {
     QList<QString> files;
     for (auto& sub: _subs) {
-        files.append(sub.local); // filter out some index files (idx e.g.)
+        if (!sub.local.isEmpty())
+            files.append(sub.local); // filter out some index files (idx e.g.)
     }
-    emit subtitlesDownloadedFor(QUrl::fromLocalFile(_lastReqVideo.absoluteFilePath()), files);
+
+    emit subtitlesDownloadedFor(QUrl::fromLocalFile(_lastReqVideo.absoluteFilePath()), files, _lastReason);
+    _subs.clear();
     _lastReqVideo = QFileInfo();
+    _lastReason = FailReason::NoError;
 }
 
 QString OnlineSubtitle::findAvailableName(const QString& tmpl, int id)
@@ -130,6 +135,7 @@ void OnlineSubtitle::replyReceived(QNetworkReply* reply)
         if (reply->property("type") == "sub") {
             _pendingDownloads--;
             if (_pendingDownloads <= 0) {
+                _lastReason = FailReason::NetworkError;
                 subtitlesDownloadComplete();
             }
         }
@@ -142,6 +148,7 @@ void OnlineSubtitle::replyReceived(QNetworkReply* reply)
         qDebug() << "data size " << data.size() << (int)data[0];
         if (data.size() == 1 && (int)data[0] == -1) {
             qDebug() << "no subtitle found";
+            _lastReason = FailReason::NoSubFound;
             subtitlesDownloadComplete();
             return;
         }
@@ -205,20 +212,52 @@ void OnlineSubtitle::replyReceived(QNetworkReply* reply)
 
         int id = reply->property("id").toInt();
         path = findAvailableName(name_tmpl, id);
-
-        QFile f(path);
-        if (f.open(QFile::WriteOnly)) {
-            f.write(data);
+        {
+            QFile f(path);
+            if (f.open(QFile::WriteOnly)) {
+                f.write(data);
+            }
+            f.flush();
         }
-        f.flush();
-        _subs[id].local = path;
-        qDebug() << "save to " << path;
 
         _pendingDownloads--;
+        if (hasHashConflict(path, name_tmpl)) {
+            _lastReason = FailReason::Duplicated;
+            QFile::remove(path);
+        } else {
+            _subs[id].local = path;
+            qDebug() << "save to " << path;
+        }
+
         if (_pendingDownloads <= 0) {
             subtitlesDownloadComplete();
         }
     }
+}
+
+bool OnlineSubtitle::hasHashConflict(const QString& path, const QString& tmpl)
+{
+    QFileInfo fi(path);
+    auto md5 = utils::FullFileHash(fi);
+    
+    QDirIterator di(fi.path());
+    while (di.hasNext()) {
+        di.next();
+        auto s = di.fileName();
+        if (fi.fileName() == di.fileName()) 
+            continue;
+
+        s = s.replace(QRegExp("\\[\\d+\\]"), "");
+        if (tmpl == s) {
+            auto h = utils::FullFileHash(di.fileInfo());
+            qDebug() << "found " << di.fileName() << h;
+            if (h == md5) {
+                return true;
+            }
+        }
+    }
+
+    return false;
 }
 
 void OnlineSubtitle::downloadSubtitles()

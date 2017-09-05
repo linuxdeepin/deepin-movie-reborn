@@ -6,6 +6,7 @@
 #include <QtWidgets>
 #include "playlist_model.h"
 #include "player_backend.h"
+#include "online_sub.h"
 
 namespace dmr {
 class PlaylistModel;
@@ -146,7 +147,8 @@ protected slots:
     void onBackendStateChanged();
     void requestPlay(int id);
     void updateSubStyles();
-    void onSubtitlesDownloaded(const QUrl& url, const QList<QString>& filenames);
+    void onSubtitlesDownloaded(const QUrl& url, const QList<QString>& filenames,
+            OnlineSubtitle::FailReason);
     void onPlaylistAsyncAppendFinished();
 
 protected:

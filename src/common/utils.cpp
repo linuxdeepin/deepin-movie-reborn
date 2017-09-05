@@ -164,6 +164,20 @@ QString FastFileHash(const QFileInfo& fi)
     return QString(QCryptographicHash::hash(bytes, QCryptographicHash::Md5).toHex());
 }
 
+// hash the entire file (hope file is small)
+QString FullFileHash(const QFileInfo& fi)
+{
+    auto sz = fi.size();
+
+    QFile f(fi.absoluteFilePath());
+    if (!f.open(QFile::ReadOnly)) {
+        return QString();
+    }
+
+    auto bytes = f.readAll();
+    return QString(QCryptographicHash::hash(bytes, QCryptographicHash::Md5).toHex());
+}
+
 QPixmap MakeRoundedPixmap(QPixmap pm, qreal rx, qreal ry)
 {
     QPixmap dest(pm.size());
