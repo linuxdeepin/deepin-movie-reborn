@@ -2,8 +2,10 @@ dmr--MainWindow {
     background-color: rgb(16, 16, 16);
 }
 
-Dtk--Widget--DTitlebar, Dtk--Widget--DTitlebar * {
-    background-color: #171717;
+dmr--Titlebar {
+    qproperty-background: #171717;
+    qproperty-borderBottom: rgba(0,0,0,100%);
+    qproperty-borderShadowTop: rgba(255,255,255,5%);
 }
 
 /* ---------- Mini Mode ----------------------------- */

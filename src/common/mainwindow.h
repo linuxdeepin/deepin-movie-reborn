@@ -112,6 +112,7 @@ private:
     bool insideToolsArea(const QPoint& p);
     void switchTheme();
     bool isActionAllowed(ActionFactory::ActionKind kd, bool fromUI, bool isShortcut);
+    QString probeCdromDevice();
 
 private:
     DTitlebar *_titlebar {nullptr};

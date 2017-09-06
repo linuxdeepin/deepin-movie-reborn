@@ -15,6 +15,7 @@
 #include "player_engine.h"
 #include "url_dialog.h"
 #include "movie_progress_indicator.h"
+#include "titlebar.h"
 
 #include <QtWidgets>
 #include <QtDBus>
@@ -338,7 +339,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     qDebug() << "composited = " << composited;
 
-    _titlebar = new DTitlebar(this);
+    _titlebar = new Titlebar(this);
     _titlebar->setFixedHeight(32);
     _titlebar->layout()->setContentsMargins(0, 0, 0, 0);
     _titlebar->setFocusPolicy(Qt::NoFocus);
@@ -354,7 +355,6 @@ MainWindow::MainWindow(QWidget *parent)
         for (auto w: l) {
             w->setStyleSheet("font-size: 12px;");
         }
-
     }
 
     _engine = new PlayerEngine(this);
@@ -905,6 +905,17 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         case ActionFactory::ActionKind::LightTheme:
             if (fromUI) switchTheme();
             break;
+
+        case ActionFactory::ActionKind::OpenCdrom: {
+            QString dev = probeCdromDevice();
+            if (dev.isEmpty()) {
+                _nwComm->updateWithMessage(tr("No device found"));
+                break;
+            }
+            QUrl url(QString("dvd://%1").arg(dev));
+            play(url);
+            break;
+        }
 
         case ActionFactory::ActionKind::OpenUrl: {
             UrlDialog dlg;
@@ -1873,6 +1884,14 @@ void MainWindow::setInit(bool v)
         _inited = v;
         emit initChanged();
     }
+}
+
+QString MainWindow::probeCdromDevice()
+{
+    QStringList cands = {
+        "/dev/sr0",
+        "/dev/cdrom"
+    };
 }
 
 #include "mainwindow.moc"
