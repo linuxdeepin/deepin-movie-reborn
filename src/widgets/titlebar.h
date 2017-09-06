@@ -28,7 +28,7 @@ public slots:
     void setBorderShadowTop(QColor borderShadowTop);
 
 protected:
-    virtual void paintEvent(QPaintEvent *e) Q_DECL_OVERRIDE;
+    virtual void paintEvent(QPaintEvent *e) override;
 
 private:
     QScopedPointer<TitlebarPrivate> d_ptr;

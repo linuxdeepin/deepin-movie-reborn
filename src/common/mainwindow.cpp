@@ -300,12 +300,13 @@ skip_set_cursor:
 #endif
 
 MainWindow::MainWindow(QWidget *parent) 
-    : QWidget(NULL)
+    : QFrame(NULL)
 {
     setWindowFlags(Qt::FramelessWindowHint);
     setAcceptDrops(true);
 
     DThemeManager::instance()->registerWidget(this);
+    setFrameShape(QFrame::NoFrame);
     
     bool composited = CompositingManager::get().composited();
 #ifdef USE_DXCB
@@ -336,10 +337,10 @@ MainWindow::MainWindow(QWidget *parent)
     sp.setHeightForWidth(true);
     setSizePolicy(sp);
 
-
     qDebug() << "composited = " << composited;
 
     _titlebar = new Titlebar(this);
+    _titlebar->move(1, 1);
     _titlebar->setFixedHeight(32);
     _titlebar->layout()->setContentsMargins(0, 0, 0, 0);
     _titlebar->setFocusPolicy(Qt::NoFocus);
@@ -348,9 +349,18 @@ MainWindow::MainWindow(QWidget *parent)
         _titlebar->winId();
     }
     _titlebar->setMenu(ActionFactory::get().titlebarMenu());
-    auto logo = QPixmap(":/resources/icons/logo-big.svg");
-    _titlebar->setIcon(logo.scaled(24, 24, Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    _titlebar->setTitle(tr("Deepin Movie"));
+    {
+        //hack: titlebar fixed icon size to (24x24), but we need (16x16)
+        auto logo = QPixmap(":/resources/icons/logo.svg")
+            .scaled(16, 16, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        QPixmap pm(24, 24);
+        pm.fill(Qt::transparent);
+        QPainter p(&pm);
+        p.drawPixmap(4, 4, logo);
+        p.end();
+        _titlebar->setIcon(pm);
+        _titlebar->setTitle(tr("Deepin Movie"));
+    }
     {
         auto l = _titlebar->findChildren<DLabel*>();
         for (auto w: l) {
@@ -359,7 +369,7 @@ MainWindow::MainWindow(QWidget *parent)
     }
 
     _engine = new PlayerEngine(this);
-    _engine->move(0, 0);
+    _engine->move(1, 1);
 
     _toolbox = new ToolboxProxy(this, _engine);
     _toolbox->setFocusPolicy(Qt::NoFocus);
@@ -1449,21 +1459,22 @@ void MainWindow::updateProxyGeometry()
     }
 #endif
 
-    _engine->resize(size());
+    // leave one pixel for border
+    auto view_rect = rect().marginsRemoved(QMargins(1, 1, 1, 1));
+    _engine->resize(view_rect.size());
 
     if (!_miniMode) {
         if (_titlebar) {
-            QSize sz(size().width(), _titlebar->height());
-            _titlebar->setFixedWidth(size().width());
+            _titlebar->setFixedWidth(view_rect.width());
         }
 
         if (_toolbox) {
-            QRect r(0, size().height() - TOOLBOX_HEIGHT, size().width(), TOOLBOX_HEIGHT);
+            QRect r(1, view_rect.height() - TOOLBOX_HEIGHT - 1, view_rect.width(), TOOLBOX_HEIGHT);
             _toolbox->setGeometry(r);
         }
 
         if (_playlist) {
-            QRect r(size().width() - _playlist->width(), _titlebar->geometry().bottom(),
+            QRect r(view_rect.width() - _playlist->width() - 1, _titlebar->geometry().bottom(),
                     _playlist->width(), _toolbox->geometry().top() - _titlebar->geometry().bottom());
             _playlist->setGeometry(r);
         }
@@ -1742,12 +1753,19 @@ void MainWindow::paintEvent(QPaintEvent* pe)
     static QImage bg_dark(":/resources/icons/dark/init-splash.png");
     static QImage bg_light(":/resources/icons/light/init-splash.png");
 
+
+    p.setPen(QColor(0, 0, 0, 255));
     QImage bg = bg_dark;
     if ("light" == qApp->theme()) {
         bg = bg_light;
+        p.setPen(QColor(0, 0, 0, 255 * 0.1));
     }
+    auto vr = rect().marginsRemoved(QMargins(1, 1, 0, 0));
+    p.drawRoundedRect(0, 0, vr.width(), vr.height(), 4, 4);
+
     auto pt = rect().center() - QPoint(bg.width()/2, bg.height()/2 - 26);
     p.drawImage(pt, bg);
+
 }
 
 void MainWindow::toggleUIMode()
@@ -1900,6 +1918,8 @@ QString MainWindow::probeCdromDevice()
             return d;
         }
     }
+
+    return QString();
 }
 
 #include "mainwindow.moc"

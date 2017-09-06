@@ -1,7 +1,7 @@
+#include "config.h"
 #include "titlebar.h"
 
-#include <QDebug>
-#include <QPainter>
+#include <QtGui>
 
 #include <dthememanager.h>
 
@@ -83,7 +83,7 @@ void Titlebar::paintEvent(QPaintEvent *)
 {
     Q_D(const Titlebar);
 
-    auto radius = 0;
+    auto radius = 4;
     QPainter titlePainter(this);
     titlePainter.setRenderHint(QPainter::Antialiasing);
     titlePainter.setRenderHint(QPainter::HighQualityAntialiasing);
@@ -92,11 +92,27 @@ void Titlebar::paintEvent(QPaintEvent *)
     QRectF r = rect();
     QPointF titleTopLeft(r.x(), r.y());
 
-    titlePainter.fillRect(r, QBrush(d->titleBackground));
+    QRectF topLeftRect(titleTopLeft,
+                       QPoint(r.x() + 2 * radius, r.y() + 2 * radius));
+    QRectF topRightRect(QPoint(r.right() - 2 * radius, r.y() + 2 * radius),
+                        QSize(2 * radius, 2 * radius));
+
+    QPainterPath titleBorder;
+    titleBorder.moveTo(r.x() + radius, r.y());
+    titleBorder.lineTo(r.x() + r.width() - radius, r.y());
+    titleBorder.arcTo(topRightRect, 90.0, 90.0);
+    titleBorder.lineTo(r.x() + r.width(), r.y() + radius);
+    titleBorder.lineTo(r.x() + r.width(), r.y() + titleBarHeight);
+    titleBorder.lineTo(r.x(), r.y() + titleBarHeight);
+    titleBorder.lineTo(r.x() , r.y() + radius);
+    titleBorder.arcTo(topLeftRect, 180.0, -90.0);
+    titleBorder.closeSubpath();
+
+    titlePainter.fillPath(titleBorder, QBrush(d->titleBackground));
+    titlePainter.setClipPath(titleBorder);
 
     QLine line(titleTopLeft.x(), r.y() + titleBarHeight,
                r.x() + r.width(), r.y() + titleBarHeight);
-
     titlePainter.setPen(QPen(d->borderBottom, 1.0));
     titlePainter.drawLine(line);
 

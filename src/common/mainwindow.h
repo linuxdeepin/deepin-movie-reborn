@@ -28,7 +28,7 @@ class PlayerEngine;
 class NotificationWidget;
 class MovieProgressIndicator;
 
-class MainWindow: public QWidget {
+class MainWindow: public QFrame {
     Q_OBJECT
     Q_PROPERTY(QMargins frameMargins READ frameMargins NOTIFY frameMarginsChanged)
     Q_PROPERTY(bool inited READ inited WRITE setInit NOTIFY initChanged)
