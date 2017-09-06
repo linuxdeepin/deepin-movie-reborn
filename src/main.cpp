@@ -56,6 +56,7 @@ int main(int argc, char *argv[])
     app.setApplicationName("deepin-movie");
     app.setApplicationVersion(DMR_VERSION);
     app.setProductIcon(QPixmap(":/resources/icons/logo-big.svg"));
+    app.setWindowIcon(QIcon(":/resources/icons/logo-big.svg"));
     app.setProductName(QObject::tr("Deepin Movie"));
     app.setApplicationLicense("GPL v3");
     app.setApplicationDescription(QObject::tr(
