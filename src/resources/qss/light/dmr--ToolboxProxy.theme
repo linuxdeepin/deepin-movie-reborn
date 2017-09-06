@@ -2,15 +2,21 @@ dmr--ToolboxProxy, dmr--ToolboxProxy * {
     background-color: rgba(252, 252, 252, 0.92);
 }
 
-dmr--ToolboxProxy {
-    border: 1px solid rgba(0, 0, 0, 0.1);
-}
-
 QLabel, Dtk--Widget--DImageButton {
     background: transparent;
 }
 
+#ToolBoxTopBorder {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+#ToolBoxTopBorderInner {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+
 #MovieProgress {
+    margin-top: 2px;
     background: transparent;
 }
 

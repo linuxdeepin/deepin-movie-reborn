@@ -407,13 +407,12 @@ void ToolboxProxy::setup()
 	auto *border_frame = new QFrame;
     border_frame->setFixedHeight(1);
     border_frame->setObjectName("ToolBoxTopBorder");
-
-    auto e = new QGraphicsDropShadowEffect(border_frame);
-    e->setColor(qRgba(0, 0, 0, 255 * 0.1));
-    e->setOffset(0, -1);
-    e->setBlurRadius(8);
-    border_frame->setGraphicsEffect(e);
     stacked->addWidget(border_frame);
+
+	auto *inner_border_frame = new QFrame;
+    inner_border_frame->setFixedHeight(2);
+    inner_border_frame->setObjectName("ToolBoxTopBorderInner");
+    stacked->addWidget(inner_border_frame);
 
 
     _timeLabel = new QLabel("");
