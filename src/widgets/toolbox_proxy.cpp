@@ -558,6 +558,9 @@ void ToolboxProxy::progressHoverChanged(int v)
     if (_volSlider->isVisible())
         return;
 
+    if (!_engine->playlist().currentInfo().url.isLocalFile())
+        return;
+
     qDebug() << v;
     _lastHoverValue = v;
     ThumbnailWorker::get().requestThumb(_engine->playlist().currentInfo().url, v);
