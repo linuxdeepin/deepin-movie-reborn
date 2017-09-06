@@ -29,6 +29,7 @@ enum ActionKind {
     PlaylistItemInfo,
     MovieInfo,
     OpenUrl,
+    OpenCdrom,
     ToggleFullscreen,
     QuitFullscreen,
     ToggleMiniMode,

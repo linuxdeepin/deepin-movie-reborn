@@ -3,8 +3,11 @@ dmr--MainWindow {
     background-color: rgb(252, 252, 252);
 }
 
-Dtk--Widget--DTitlebar, Dtk--Widget--DTitlebar * {
-    background-color: #f4f6f7;
+dmr--Titlebar {
+    qproperty-background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+        stop:0 #f4f6f7, stop:1 #f0f0f5);
+    qproperty-borderBottom: rgba(0,0,0,10%);
+    qproperty-borderShadowTop: rgba(255,255,255,5%);
 }
 
 /* ---------- Mini Mode ----------------------------- */
