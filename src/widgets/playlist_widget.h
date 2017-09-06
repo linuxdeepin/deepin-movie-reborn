@@ -41,6 +41,7 @@ protected:
 
 protected slots:
     void updateItemStates();
+    void updateItemInfo(int);
 
 private:
     PlayerEngine *_engine {nullptr};

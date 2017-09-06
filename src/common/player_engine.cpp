@@ -91,9 +91,9 @@ void PlayerEngine::updateSubStyles()
     if (state() != CoreState::Idle) {
         double scale = _playlist->currentInfo().mi.height / 720.0;
         sz = sz / scale;
+        qDebug() << "update sub " << font << sz;
+        updateSubStyle(font, sz);
     }
-    qDebug() << "update sub " << font << sz;
-    this->updateSubStyle(font, sz);
 }
 
 void PlayerEngine::waitLastEnd()

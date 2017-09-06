@@ -28,7 +28,7 @@ public:
     friend class PlaylistWidget;
 
     //FIXME: what if item destroyed
-    PlayItemWidget(PlayItemInfo pif, QWidget* parent = 0)
+    PlayItemWidget(const PlayItemInfo& pif, QWidget* parent = 0)
         : QFrame(parent), _pif {pif} 
     {
         DThemeManager::instance()->registerWidget(this, QStringList() << "PlayItemThumb");
@@ -80,6 +80,15 @@ public:
         _closeBtn->setObjectName("CloseBtn");
         _closeBtn->hide();
         connect(_closeBtn, &DImageButton::clicked, this, &PlayItemWidget::closeButtonClicked);
+    }
+
+    void updateInfo(const PlayItemInfo& pif) {
+        _pif = pif;
+        _time->setText(_pif.mi.durationStr());
+        if (!_pif.valid) {
+            setState(ItemState::Invalid);
+            _time->setText(tr("File does not exist"));
+        }
     }
 
     void setState(ItemState is) {
@@ -251,12 +260,19 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
 
     connect(&_engine->playlist(), &PlaylistModel::countChanged, this, &PlaylistWidget::loadPlaylist);
     connect(&_engine->playlist(), &PlaylistModel::currentChanged, this, &PlaylistWidget::updateItemStates);
+    connect(&_engine->playlist(), &PlaylistModel::itemInfoUpdated, this, &PlaylistWidget::updateItemInfo);
 
     QTimer::singleShot(10, this, &PlaylistWidget::loadPlaylist);
 }
 
 PlaylistWidget::~PlaylistWidget()
 {
+}
+
+void PlaylistWidget::updateItemInfo(int id)
+{
+    auto piw = dynamic_cast<PlayItemWidget*>(itemWidget(item(id)));
+    piw->updateInfo(_engine->playlist().items()[id]);
 }
 
 void PlaylistWidget::updateItemStates()
