@@ -348,7 +348,8 @@ MainWindow::MainWindow(QWidget *parent)
         _titlebar->winId();
     }
     _titlebar->setMenu(ActionFactory::get().titlebarMenu());
-    _titlebar->setIcon(QPixmap(":/resources/icons/logo.svg"));
+    auto logo = QPixmap(":/resources/icons/logo-big.svg");
+    _titlebar->setIcon(logo.scaled(24, 24, Qt::KeepAspectRatio, Qt::SmoothTransformation));
     _titlebar->setTitle(tr("Deepin Movie"));
     {
         auto l = _titlebar->findChildren<DLabel*>();
@@ -1892,6 +1893,7 @@ QString MainWindow::probeCdromDevice()
         "/dev/sr0",
         "/dev/cdrom"
     };
+
 }
 
 #include "mainwindow.moc"
