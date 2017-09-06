@@ -100,10 +100,11 @@ class MainWindowEventListener : public QObject
     protected:
         bool eventFilter(QObject *obj, QEvent *event) Q_DECL_OVERRIDE {
             QWindow *window = qobject_cast<QWindow*>(obj);
-            if (!window || !enabled) return false;
+            if (!window) return false;
 
             switch ((int)event->type()) {
             case QEvent::MouseButtonPress: {
+                if (!enabled) return false;
                 QMouseEvent *e = static_cast<QMouseEvent*>(event);
                 setLeftButtonPressed(true);
                 auto mw = static_cast<MainWindow*>(parent());
@@ -111,6 +112,7 @@ class MainWindowEventListener : public QObject
                 break;
             }
             case QEvent::MouseButtonRelease: {
+                if (!enabled) return false;
                 QMouseEvent *e = static_cast<QMouseEvent*>(event);
                 setLeftButtonPressed(false);
                 qApp->setOverrideCursor(window->cursor());
@@ -124,6 +126,7 @@ class MainWindowEventListener : public QObject
                 auto mw = static_cast<MainWindow*>(parent());
                 mw->resumeToolsWindow();
 
+                if (!enabled) return false;
                 const QRect window_visible_rect = _window->frameGeometry() - mw->dragMargins();
 
                 if (!leftButtonPressed) {
@@ -1499,6 +1502,9 @@ void MainWindow::suspendToolsWindow()
         _titlebar->hide();
         _toolbox->hide();
     } else {
+        if (_autoHideTimer.isActive())
+            return;
+
         _miniPlayBtn->hide();
         _miniCloseBtn->hide();
         _miniQuitMiniBtn->hide();
