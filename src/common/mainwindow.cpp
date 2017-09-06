@@ -913,6 +913,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                 _nwComm->updateWithMessage(tr("No device found"));
                 break;
             }
+            //FIXME: how to tell if it's bluray
             QUrl url(QString("dvd://%1").arg(dev));
             play(url);
             break;
@@ -1894,6 +1895,11 @@ QString MainWindow::probeCdromDevice()
         "/dev/cdrom"
     };
 
+    for (auto d: cands) {
+        if (QFile::exists(d)) {
+            return d;
+        }
+    }
 }
 
 #include "mainwindow.moc"
