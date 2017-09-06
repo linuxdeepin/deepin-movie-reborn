@@ -612,6 +612,11 @@ void MainWindow::onThemeChanged()
 
 void MainWindow::updatePlayState()
 {
+    if (_miniMode) {
+        _playState->setVisible(false);
+        return;
+    }
+
     if (!_inBurstShootMode && _engine->state() == PlayerEngine::CoreState::Paused) {
         auto r = QRect(QPoint(0, 0), QSize(128, 128));
         r.moveCenter(rect().center());
@@ -1787,6 +1792,8 @@ void MainWindow::toggleUIMode()
     _miniPlayBtn->setEnabled(_miniMode);
     _miniCloseBtn->setEnabled(_miniMode);
     _miniQuitMiniBtn->setEnabled(_miniMode);
+
+    updatePlayState();
 
     resumeToolsWindow();
     if (_miniMode) {
