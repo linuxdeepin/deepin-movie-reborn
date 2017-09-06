@@ -50,7 +50,8 @@ public:
         l->addWidget(_thumb);
 
         auto *vl = new QVBoxLayout;
-        vl->setContentsMargins(0, 0, 13, 0);
+        vl->setContentsMargins(0, 0, 3, 0);
+        vl->setSpacing(0);
         l->addLayout(vl, 1);
 
         _name = new QTextEdit(this);
@@ -151,7 +152,8 @@ protected:
             int text_height = _name->document()->size().height();
             _name->setFixedHeight(text_height);
 
-            resize(width(), _name->height() + _time->height() + layout()->spacing());
+            //resize(width(), _name->height() + _time->height() + layout()->spacing());
+            resize(width(), _name->height() + _time->height());
         }
 
         return QFrame::event(ee);
@@ -173,7 +175,8 @@ protected:
 
         int text_height = _name->document()->size().height();
         _name->setFixedHeight(text_height);
-        resize(width(), _name->height() + _time->height() + layout()->spacing());
+        //resize(width(), _name->height() + _time->height() + layout()->spacing());
+        resize(width(), _name->height() + _time->height());
     }
 
     void mouseDoubleClickEvent(QMouseEvent* me) override
@@ -382,13 +385,16 @@ void PlaylistWidget::contextMenuEvent(QContextMenuEvent *cme)
 
     updateItemStates();
 
+    auto piw = dynamic_cast<PlayItemWidget*>(_mouseItem);
     auto menu = ActionFactory::get().playlistContextMenu();
     for (auto act: menu->actions()) {
         auto prop = (ActionFactory::ActionKind)act->property("kind").toInt();
-        if (prop == ActionFactory::ActionKind::PlaylistItemInfo || 
-                prop == ActionFactory::ActionKind::PlaylistOpenItemInFM) {
+        if (prop == ActionFactory::ActionKind::PlaylistOpenItemInFM) {
             act->setEnabled(on_item);
+        } else if (prop == ActionFactory::ActionKind::PlaylistItemInfo) {
+            act->setEnabled(on_item && piw->_pif.url.isLocalFile());
         }
+
     }
 
     ActionFactory::get().playlistContextMenu()->popup(cme->globalPos());
