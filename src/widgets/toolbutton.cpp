@@ -39,5 +39,17 @@ void VolumeButton::leaveEvent(QEvent *ev)
     emit leaved();
 }
 
+void VolumeButton::wheelEvent(QWheelEvent* we)
+{
+    //qDebug() << we->angleDelta() << we->modifiers() << we->buttons();
+    if (we->buttons() == Qt::NoButton && we->modifiers() == Qt::NoModifier) {
+        if (we->angleDelta().y() > 0) {
+            emit requestVolumeUp();
+        } else {
+            emit requestVolumeDown();
+        }
+    }
+}
+
 }
 

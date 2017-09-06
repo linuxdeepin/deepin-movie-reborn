@@ -25,10 +25,13 @@ public:
 signals:
     void entered();
     void leaved();
+    void requestVolumeUp();
+    void requestVolumeDown();
 
 protected:
     void enterEvent(QEvent *ev) override;
     void leaveEvent(QEvent *ev) override;
+    void wheelEvent(QWheelEvent* wev) override;
 
 private:
     QString _name;

@@ -248,7 +248,6 @@ public:
     VolumeSlider(PlayerEngine* eng, MainWindow* mw)
         :DArrowRectangle(DArrowRectangle::ArrowBottom), _engine(eng), _mw(mw) {
         setFixedSize(QSize(24, 105));
-        //setAttribute(Qt::WA_DeleteOnClose);
         setWindowFlags(Qt::ToolTip);
 
         setShadowBlurRadius(4);
@@ -283,12 +282,20 @@ public:
 
         _autoHideTimer.setSingleShot(true);
         connect(&_autoHideTimer, &QTimer::timeout, this, &VolumeSlider::hide);
+
+        connect(_engine, &PlayerEngine::volumeChanged, [=]() {
+            _slider->setValue(_engine->volume());
+        });
     }
 
 
     ~VolumeSlider() {
         disconnect(DThemeManager::instance(), &DThemeManager::themeChanged, 
                 this, &VolumeSlider::updateBg);
+    }
+
+    void stopTimer() {
+        _autoHideTimer.stop();
     }
 
 public slots:
@@ -467,13 +474,20 @@ void ToolboxProxy::setup()
 
     _volSlider = new VolumeSlider(_engine, _mainWindow);
     connect(_volBtn, &VolumeButton::entered, [=]() {
+        _volSlider->stopTimer();
         QPoint pos = _volBtn->parentWidget()->mapToGlobal(_volBtn->pos());
         pos.ry() = parentWidget()->mapToGlobal(this->pos()).y();
         _volSlider->show(pos.x() + _volSlider->width(), pos.y() - 5);
     });
-    connect(_volBtn, &VolumeButton::leaved, [=]() {
-        _volSlider->delayedHide();
+    connect(_volBtn, &VolumeButton::leaved, _volSlider, &VolumeSlider::delayedHide);
+    connect(_volBtn, &VolumeButton::requestVolumeUp, [=]() {
+        _mainWindow->requestAction(ActionFactory::ActionKind::VolumeUp);
     });
+    connect(_volBtn, &VolumeButton::requestVolumeDown, [=]() {
+        _mainWindow->requestAction(ActionFactory::ActionKind::VolumeDown);
+    });
+
+
 
     _fsBtn = new DImageButton();
     _fsBtn->setFixedSize(48, TOOLBOX_HEIGHT);
