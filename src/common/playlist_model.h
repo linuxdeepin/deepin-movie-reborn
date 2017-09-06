@@ -92,8 +92,11 @@ public:
 
     int count() const;
     const QList<PlayItemInfo>& items() const { return _infos; }
+    QList<PlayItemInfo>& items() { return _infos; }
+
     int current() const;
     const PlayItemInfo& currentInfo() const;
+    PlayItemInfo& currentInfo();
     int indexOf(const QUrl& url);
 
     void switchPosition(int p1, int p2);
@@ -110,6 +113,7 @@ signals:
     void itemRemoved(int);
     void playModeChanged(PlayMode);
     void asyncAppendFinished();
+    void itemInfoUpdated(int id);
 
 private:
     int _count {0};

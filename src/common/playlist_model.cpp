@@ -129,6 +129,16 @@ PlaylistModel::PlaylistModel(PlayerEngine *e)
         qDebug() << "model" << "_userRequestingItem" << _userRequestingItem << "state" << e->state();
         switch (e->state()) {
             case PlayerEngine::Playing:
+            {
+                auto& pif = currentInfo();
+                if (!pif.url.isLocalFile() && !pif.loaded) {
+                    pif.mi.width = e->videoSize().width();
+                    pif.mi.height = e->videoSize().height();
+                    pif.mi.duration = e->duration();
+                    emit itemInfoUpdated(_current);
+                }
+                break;
+            }
             case PlayerEngine::Paused:
                 break;
 
@@ -641,6 +651,12 @@ void PlaylistModel::changeCurrent(int pos)
 void PlaylistModel::switchPosition(int p1, int p2)
 {
     Q_ASSERT_X(0, "playlist", "not implemented");
+}
+
+PlayItemInfo& PlaylistModel::currentInfo()
+{
+    Q_ASSERT (_infos.size() > 0 && _current >= 0);
+    return _infos[_current];
 }
 
 const PlayItemInfo& PlaylistModel::currentInfo() const
