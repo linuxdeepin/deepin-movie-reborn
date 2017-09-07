@@ -161,6 +161,8 @@ protected:
 
     QList<QUrl> collectPlayFiles(const QList<QUrl>& urls);
     QList<QUrl> collectPlayDir(const QDir& dir);
+
+    void resizeEvent(QResizeEvent* re) override;
 };
 }
 

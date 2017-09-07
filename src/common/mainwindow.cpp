@@ -1456,7 +1456,7 @@ void MainWindow::updateProxyGeometry()
 
         QPainter p(&shape);
         QPainterPath pp;
-        pp.addRoundedRect(QRect(QPoint(), size()), 4, 4);
+        pp.addRoundedRect(rect(), 4, 4);
         p.fillPath(pp, QBrush(Qt::white));
         p.end();
 
@@ -1474,7 +1474,7 @@ void MainWindow::updateProxyGeometry()
         }
 
         if (_toolbox) {
-            QRect r(1, view_rect.height() - TOOLBOX_HEIGHT - 1, view_rect.width(), TOOLBOX_HEIGHT);
+            QRect r(1, height() - TOOLBOX_HEIGHT - 1, view_rect.width(), TOOLBOX_HEIGHT);
             _toolbox->setGeometry(r);
         }
 
@@ -1758,15 +1758,10 @@ void MainWindow::paintEvent(QPaintEvent* pe)
     static QImage bg_dark(":/resources/icons/dark/init-splash.png");
     static QImage bg_light(":/resources/icons/light/init-splash.png");
 
-
-    p.setPen(QColor(0, 0, 0, 255));
     QImage bg = bg_dark;
     if ("light" == qApp->theme()) {
         bg = bg_light;
-        p.setPen(QColor(0, 0, 0, 255 * 0.1));
     }
-    auto vr = rect().marginsRemoved(QMargins(1, 1, 0, 0));
-    p.drawRoundedRect(0, 0, vr.width(), vr.height(), 4, 4);
 
     auto pt = rect().center() - QPoint(bg.width()/2, bg.height()/2 - 26);
     p.drawImage(pt, bg);

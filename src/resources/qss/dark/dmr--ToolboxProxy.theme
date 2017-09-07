@@ -14,11 +14,6 @@ QLabel, Dtk--Widget--DImageButton {
     background-color: rgba(255, 255, 255, 0.05);
 }
 
-#MovieProgress {
-    margin-top: 2px;
-    background: transparent;
-}
-
 Dtk--Widget--DImageButton#ListBtn {
     qproperty-normalPic: url(:/resources/icons/dark/normal/list-normal.png);
     qproperty-hoverPic: url(:/resources/icons/dark/normal/list-hover.png);
@@ -96,6 +91,10 @@ dmr--VolumeButton#VolMute {
     qproperty-normalPic: url(:/resources/icons/dark/normal/audio-volume-muted-blocked-panel-normal.png);
     qproperty-hoverPic: url(:/resources/icons/dark/normal/audio-volume-muted-blocked-panel-hover.png);
     qproperty-pressPic: url(:/resources/icons/dark/normal/audio-volume-muted-blocked-panel-press.png);
+}
+
+#MovieProgress {
+    background: transparent;
 }
 
 #MovieProgress::groove:horizontal {

@@ -84,23 +84,21 @@ void Titlebar::paintEvent(QPaintEvent *)
     Q_D(const Titlebar);
 
     auto radius = 4;
-    QPainter titlePainter(this);
-    titlePainter.setRenderHint(QPainter::Antialiasing);
-    titlePainter.setRenderHint(QPainter::HighQualityAntialiasing);
+    QPainter p(this);
+    p.setRenderHint(QPainter::Antialiasing);
+    p.setRenderHint(QPainter::HighQualityAntialiasing);
 
     auto titleBarHeight = this->height();
     QRectF r = rect();
-    QPointF titleTopLeft(r.x(), r.y());
 
-    QRectF topLeftRect(titleTopLeft,
-                       QPoint(r.x() + 2 * radius, r.y() + 2 * radius));
-    QRectF topRightRect(QPoint(r.right() - 2 * radius, r.y() + 2 * radius),
+    QRectF topLeftRect(r.topLeft(), QSize(2 * radius, 2 * radius));
+    QRectF topRightRect(QPoint(r.right() - 2 * radius, r.y()),
                         QSize(2 * radius, 2 * radius));
 
     QPainterPath titleBorder;
     titleBorder.moveTo(r.x() + radius, r.y());
     titleBorder.lineTo(r.x() + r.width() - radius, r.y());
-    titleBorder.arcTo(topRightRect, 90.0, 90.0);
+    titleBorder.arcTo(topRightRect, 90.0, -90.0);
     titleBorder.lineTo(r.x() + r.width(), r.y() + radius);
     titleBorder.lineTo(r.x() + r.width(), r.y() + titleBarHeight);
     titleBorder.lineTo(r.x(), r.y() + titleBarHeight);
@@ -108,18 +106,18 @@ void Titlebar::paintEvent(QPaintEvent *)
     titleBorder.arcTo(topLeftRect, 180.0, -90.0);
     titleBorder.closeSubpath();
 
-    titlePainter.fillPath(titleBorder, QBrush(d->titleBackground));
-    titlePainter.setClipPath(titleBorder);
+    p.setClipPath(titleBorder);
+    p.fillPath(titleBorder, QBrush(d->titleBackground));
 
-    QLine line(titleTopLeft.x(), r.y() + titleBarHeight,
+    QLine line(r.topLeft().x(), r.y() + titleBarHeight,
                r.x() + r.width(), r.y() + titleBarHeight);
-    titlePainter.setPen(QPen(d->borderBottom, 1.0));
-    titlePainter.drawLine(line);
+    p.setPen(QPen(d->borderBottom, 1.0));
+    p.drawLine(line);
 
-    QLine lineOut(titleTopLeft.x()+radius, r.y()+1,
+    QLine lineOut(r.topLeft().x()+radius, r.y()+1,
                   r.x() + r.width()-radius, r.y()+1);
-    titlePainter.setPen(QPen(d->borderShadowTop, 1.0));
-    titlePainter.drawLine(lineOut);
+    p.setPen(QPen(d->borderShadowTop, 1.0));
+    p.drawLine(lineOut);
 }
 
 }
