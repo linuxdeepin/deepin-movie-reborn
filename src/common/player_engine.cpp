@@ -548,4 +548,21 @@ void PlayerEngine::changeSoundMode(Backend::SoundMode sm)
         _current->changeSoundMode(sm);
 }
 
+void PlayerEngine::resizeEvent(QResizeEvent* re)
+{
+#ifndef USE_DXCB
+    QPixmap shape(size());
+    shape.fill(Qt::transparent);
+
+    QPainter p(&shape);
+    QPainterPath pp;
+    pp.addRoundedRect(rect(), 4, 4);
+    p.fillPath(pp, QBrush(Qt::white));
+    p.end();
+
+    setMask(shape.mask());
+#endif
+
+}
+
 } // end of namespace dmr

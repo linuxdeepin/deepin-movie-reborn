@@ -387,6 +387,16 @@ void ToolboxProxy::setup()
     stacked->setStackingMode(QStackedLayout::StackAll);
     setLayout(stacked);
 
+	auto *border_frame = new QFrame;
+    border_frame->setFixedHeight(1);
+    border_frame->setObjectName("ToolBoxTopBorder");
+    stacked->addWidget(border_frame);
+
+	auto *inner_border_frame = new QFrame;
+    inner_border_frame->setFixedHeight(2);
+    inner_border_frame->setObjectName("ToolBoxTopBorderInner");
+    stacked->addWidget(inner_border_frame);
+
     _progBar = new DMRSlider();
     _progBar->setObjectName("MovieProgress");
     _progBar->setOrientation(Qt::Horizontal);
@@ -403,16 +413,6 @@ void ToolboxProxy::setup()
     bot->setContentsMargins(LEFT_MARGIN, 0, RIGHT_MARGIN, 0);
     bot_widget->setLayout(bot);
     stacked->addWidget(bot_widget);
-
-	auto *border_frame = new QFrame;
-    border_frame->setFixedHeight(1);
-    border_frame->setObjectName("ToolBoxTopBorder");
-    stacked->addWidget(border_frame);
-
-	auto *inner_border_frame = new QFrame;
-    inner_border_frame->setFixedHeight(2);
-    inner_border_frame->setObjectName("ToolBoxTopBorderInner");
-    stacked->addWidget(inner_border_frame);
 
 
     _timeLabel = new QLabel("");
@@ -711,6 +711,42 @@ void ToolboxProxy::updatePosition(const QPoint& p)
 void ToolboxProxy::paintEvent(QPaintEvent *pe)
 {
     QWidget::paintEvent(pe);
+}
+
+void ToolboxProxy::resizeEvent(QResizeEvent* re)
+{
+#ifndef USE_DXCB
+    QPixmap shape(size());
+    shape.fill(Qt::transparent);
+
+    QPainter p(&shape);
+    p.setRenderHint(QPainter::Antialiasing);
+    p.setRenderHint(QPainter::HighQualityAntialiasing);
+
+    auto radius = 4;
+    auto titleBarHeight = this->height();
+    QRectF r = rect();
+
+    QRectF botLeftRect(r.bottomLeft() - QPoint(0, 2 * radius), QSize(2 * radius, 2 * radius));
+    QRectF botRightRect(QPoint(r.right() - 2 * radius, r.bottom() - 2 * radius),
+                        QSize(2 * radius, 2 * radius));
+
+    QPainterPath border;
+    border.moveTo(r.topLeft());
+    border.lineTo(r.topRight());
+    border.lineTo(r.right(), r.bottom() - radius);
+    border.arcTo(botRightRect, 0.0, -90.0);
+    border.lineTo(r.left() + radius, r.bottom());
+    border.arcTo(botLeftRect, 270.0, -90.0);
+    border.closeSubpath();
+
+    p.setClipPath(border);
+    p.fillPath(border, QBrush(Qt::white));
+    p.end();
+
+    setMask(shape.mask());
+#endif
+
 }
 
 void ToolboxProxy::showEvent(QShowEvent *event)

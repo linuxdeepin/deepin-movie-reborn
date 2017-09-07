@@ -11,6 +11,10 @@ dmr--Titlebar {
     border-radius: 4px;
 }
 
+dmr--PlayerEngine, dmr--PlayerEngine * {
+    background: transparent;
+}
+
 /* ---------- Mini Mode ----------------------------- */
 
 Dtk--Widget--DImageButton#MiniPlayBtn {
