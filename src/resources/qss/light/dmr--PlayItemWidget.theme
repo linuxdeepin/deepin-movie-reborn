@@ -56,7 +56,7 @@
 
 /* state Invalid */
 *[PlayItemThumb="true"][ItemState="3"] {
-    qproperty-bg: url(:/resources/icons/dark/normal/film-bg.png);
+    qproperty-bg: url(:/resources/icons/light/normal/film-bg.png);
 }
 
 
