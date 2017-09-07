@@ -46,7 +46,6 @@ public:
         setLayout(l);
 
         _thumb = new QLabel(this);
-        setBg(QString(":/resources/icons/%1/normal/film-bg.png").arg(qApp->theme())); 
         l->addWidget(_thumb);
 
         auto *vl = new QVBoxLayout;
@@ -75,6 +74,8 @@ public:
             _time->setText(tr("File does not exist"));
         }
         vl->addWidget(_time);
+
+        setBg(QString(":/resources/icons/%1/normal/film-bg.png").arg(qApp->theme())); 
 
         _closeBtn = new DImageButton(this);
         _closeBtn->setFixedSize(20, 20);
@@ -106,7 +107,16 @@ public:
         _bg = s; 
 
         QPixmap pm(s);
-        QPainter p(&pm);
+
+        QPixmap dest(pm.size());
+        dest.fill(Qt::transparent);
+        QPainter p(&dest);
+        
+        if (state() == ItemState::Invalid) {
+            p.setOpacity(0.5);
+        }
+
+        p.drawPixmap(0, 0, pm);
 
         if (!_pif.thumbnail.isNull()) {
             auto img = _pif.thumbnail.scaledToHeight(44, Qt::SmoothTransformation);
@@ -118,7 +128,7 @@ public:
                 (pm.height() - _play.height())/2, _play);
         p.end();
 
-        _thumb->setPixmap(pm);
+        _thumb->setPixmap(dest);
     }
 
 signals:
@@ -389,12 +399,13 @@ void PlaylistWidget::contextMenuEvent(QContextMenuEvent *cme)
     auto menu = ActionFactory::get().playlistContextMenu();
     for (auto act: menu->actions()) {
         auto prop = (ActionFactory::ActionKind)act->property("kind").toInt();
+        bool on = true;
         if (prop == ActionFactory::ActionKind::PlaylistOpenItemInFM) {
-            act->setEnabled(on_item);
+            on = on_item;
         } else if (prop == ActionFactory::ActionKind::PlaylistItemInfo) {
-            act->setEnabled(on_item && piw->_pif.url.isLocalFile());
+            on = on_item && piw->_pif.valid && piw->_pif.url.isLocalFile();
         }
-
+        act->setEnabled(on);
     }
 
     ActionFactory::get().playlistContextMenu()->popup(cme->globalPos());
