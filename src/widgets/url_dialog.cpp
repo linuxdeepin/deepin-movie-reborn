@@ -14,7 +14,7 @@ UrlDialog::UrlDialog()
     setOnButtonClickedClose(false);
     setDefaultButton(1);
     setIcon(QIcon(":/resources/icons/logo-big.svg"));
-    setMessage(QApplication::translate("UrlDialog", "Please input the url of file to play"));
+    setMessage(QApplication::translate("UrlDialog", "Please enter the URL:"));
 
     _le = new LineEdit;
     addContent(_le);

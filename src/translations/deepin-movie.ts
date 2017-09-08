@@ -47,13 +47,13 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../main.cpp" line="59"/>
-        <location filename="../main.cpp" line="87"/>
+        <location filename="../main.cpp" line="62"/>
+        <location filename="../main.cpp" line="88"/>
         <source>Deepin Movie</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="61"/>
+        <location filename="../main.cpp" line="63"/>
         <source>Deepin Movie is a well-designed and full-featured video player with simple borderless design. It supports local and streaming media play with multiple video formats.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -78,11 +78,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="9"/>
-        <source>Run multiple Deepin Movie</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../common/settings_translation.cpp" line="10"/>
         <source>Pause when minimized</source>
         <translation type="unfinished"></translation>
@@ -93,8 +88,13 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../common/settings_translation.cpp" line="9"/>
+        <source>Open a new player for each file played</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../common/settings_translation.cpp" line="12"/>
-        <source>Location</source>
+        <source>Path</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -110,7 +110,6 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="15"/>
         <location filename="../common/settings_translation.cpp" line="21"/>
-        <location filename="../common/settings_translation.cpp" line="47"/>
         <source>Screenshot</source>
         <translation type="unfinished"></translation>
     </message>
@@ -152,120 +151,130 @@
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="25"/>
-        <source>is light theme</source>
+        <source>Codepage</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="26"/>
-        <source>Restore Defaults</source>
+        <source>is light theme</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="27"/>
-        <location filename="../common/settings_translation.cpp" line="31"/>
-        <location filename="../common/settings_translation.cpp" line="38"/>
-        <location filename="../common/settings_translation.cpp" line="46"/>
-        <location filename="../common/settings_translation.cpp" line="48"/>
-        <source>Enable</source>
+        <source>Restore Defaults</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="28"/>
-        <source>Open file</source>
+        <location filename="../common/settings_translation.cpp" line="32"/>
+        <location filename="../common/settings_translation.cpp" line="39"/>
+        <location filename="../common/settings_translation.cpp" line="47"/>
+        <location filename="../common/settings_translation.cpp" line="49"/>
+        <source>Enable</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="29"/>
-        <source>Open next</source>
+        <source>Open file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="30"/>
+        <source>Open next</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../common/settings_translation.cpp" line="31"/>
         <source>Open previous</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="32"/>
+        <location filename="../common/settings_translation.cpp" line="33"/>
         <source>Mini mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="33"/>
+        <location filename="../common/settings_translation.cpp" line="34"/>
         <source>Mute</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="34"/>
+        <location filename="../common/settings_translation.cpp" line="35"/>
         <source>volume down</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="35"/>
+        <location filename="../common/settings_translation.cpp" line="36"/>
         <source>Volume up</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="36"/>
-        <source>Accelerate playback</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../common/settings_translation.cpp" line="37"/>
-        <source>Decelerate playback</source>
+        <source>Speed up</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="39"/>
-        <source>Fullscreen</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../common/settings_translation.cpp" line="40"/>
-        <source>Pause/Play</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../common/settings_translation.cpp" line="41"/>
-        <source>Playlist</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../common/settings_translation.cpp" line="42"/>
-        <source>Reset play speed</source>
+        <location filename="../common/settings_translation.cpp" line="38"/>
+        <source>Speed down</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="43"/>
-        <source>Backward</source>
+        <source>Reset speed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="44"/>
-        <source>Forward</source>
+        <source>Rewind</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../common/settings_translation.cpp" line="40"/>
+        <source>Fullscreen</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../common/settings_translation.cpp" line="41"/>
+        <source>Pause/Play</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../common/settings_translation.cpp" line="42"/>
+        <source>Playlist</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="45"/>
+        <source>Forward</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../common/settings_translation.cpp" line="46"/>
         <source>Burst screenshot</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="49"/>
-        <source>0.5s backward</source>
+        <location filename="../common/settings_translation.cpp" line="48"/>
+        <source>Film screenshot</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="50"/>
-        <source>0.5s forward</source>
+        <source>0.5s backward</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="51"/>
-        <source>Font</source>
+        <source>0.5s forward</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="52"/>
+        <source>Font</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../common/settings_translation.cpp" line="53"/>
         <source>Font Size</source>
         <translation type="unfinished"></translation>
     </message>
@@ -284,7 +293,7 @@
     </message>
     <message>
         <location filename="../widgets/url_dialog.cpp" line="17"/>
-        <source>Please input the url of file to play</source>
+        <source>Please enter the URL:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -300,14 +309,13 @@
     <message>
         <location filename="../common/actions.cpp" line="54"/>
         <location filename="../common/actions.cpp" line="74"/>
-        <location filename="../common/actions.cpp" line="85"/>
         <source>Open Directory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="55"/>
         <location filename="../common/actions.cpp" line="80"/>
-        <location filename="../common/actions.cpp" line="246"/>
+        <location filename="../common/actions.cpp" line="247"/>
         <source>Settings</source>
         <translation type="unfinished"></translation>
     </message>
@@ -318,20 +326,25 @@
     </message>
     <message>
         <location filename="../common/actions.cpp" line="77"/>
-        <location filename="../common/actions.cpp" line="89"/>
+        <location filename="../common/actions.cpp" line="90"/>
         <source>Fullscreen</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="78"/>
-        <location filename="../common/actions.cpp" line="91"/>
+        <location filename="../common/actions.cpp" line="92"/>
         <source>Always on Top</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="79"/>
-        <location filename="../common/actions.cpp" line="262"/>
+        <location filename="../common/actions.cpp" line="263"/>
         <source>Film info</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../common/actions.cpp" line="85"/>
+        <source>Open Folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -340,148 +353,153 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="90"/>
+        <location filename="../common/actions.cpp" line="87"/>
+        <source>Open CD/DVD</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../common/actions.cpp" line="91"/>
         <source>Mini Mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="96"/>
+        <location filename="../common/actions.cpp" line="97"/>
         <source>Play Mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="99"/>
+        <location filename="../common/actions.cpp" line="100"/>
         <source>Order Play</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="100"/>
+        <location filename="../common/actions.cpp" line="101"/>
         <source>Shuffle Play</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="101"/>
+        <location filename="../common/actions.cpp" line="102"/>
         <source>Single Play</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="102"/>
+        <location filename="../common/actions.cpp" line="103"/>
         <source>Single Loop</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="103"/>
+        <location filename="../common/actions.cpp" line="104"/>
         <source>List Loop</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="110"/>
+        <location filename="../common/actions.cpp" line="111"/>
         <source>Frame</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="113"/>
+        <location filename="../common/actions.cpp" line="114"/>
         <source>Default</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="121"/>
+        <location filename="../common/actions.cpp" line="122"/>
         <source>Clockwise</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="122"/>
+        <location filename="../common/actions.cpp" line="123"/>
         <source>Counterclockwise</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="129"/>
-        <location filename="../common/actions.cpp" line="132"/>
+        <location filename="../common/actions.cpp" line="130"/>
+        <location filename="../common/actions.cpp" line="133"/>
         <source>Sound</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="135"/>
+        <location filename="../common/actions.cpp" line="136"/>
         <source>Stereo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="136"/>
+        <location filename="../common/actions.cpp" line="137"/>
         <source>Left channel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="137"/>
+        <location filename="../common/actions.cpp" line="138"/>
         <source>Right channel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="143"/>
+        <location filename="../common/actions.cpp" line="144"/>
         <source>Track</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="153"/>
+        <location filename="../common/actions.cpp" line="154"/>
         <source>Subtitle</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="154"/>
+        <location filename="../common/actions.cpp" line="155"/>
         <source>Load</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="155"/>
-        <source>Search online subtitles</source>
+        <location filename="../common/actions.cpp" line="156"/>
+        <source>Online Search</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="159"/>
+        <location filename="../common/actions.cpp" line="160"/>
         <source>Select</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="163"/>
+        <location filename="../common/actions.cpp" line="164"/>
         <source>Hide</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="167"/>
+        <location filename="../common/actions.cpp" line="168"/>
         <source>Encodings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="235"/>
+        <location filename="../common/actions.cpp" line="236"/>
         <source>Screenshot</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="236"/>
+        <location filename="../common/actions.cpp" line="237"/>
         <source>Film Screenshot</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="237"/>
+        <location filename="../common/actions.cpp" line="238"/>
         <source>Burst Shooting</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="244"/>
+        <location filename="../common/actions.cpp" line="245"/>
         <source>Playlist</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="245"/>
+        <location filename="../common/actions.cpp" line="246"/>
         <source>Film Info</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="260"/>
+        <location filename="../common/actions.cpp" line="261"/>
         <source>Clear playlist</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="261"/>
+        <location filename="../common/actions.cpp" line="262"/>
         <source>Display in file manager</source>
         <translation type="unfinished"></translation>
     </message>
@@ -512,110 +530,115 @@
 <context>
     <name>dmr::MainWindow</name>
     <message>
-        <location filename="../common/mainwindow.cpp" line="348"/>
-        <location filename="../common/mainwindow.cpp" line="1565"/>
+        <location filename="../common/mainwindow.cpp" line="369"/>
+        <location filename="../common/mainwindow.cpp" line="1612"/>
         <source>Deepin Movie</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="468"/>
+        <location filename="../common/mainwindow.cpp" line="492"/>
         <source>Load successfully</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="468"/>
+        <location filename="../common/mainwindow.cpp" line="492"/>
         <source>Load failed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="910"/>
+        <location filename="../common/mainwindow.cpp" line="935"/>
+        <source>No device found</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../common/mainwindow.cpp" line="951"/>
         <source>Invalid url</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="917"/>
+        <location filename="../common/mainwindow.cpp" line="958"/>
         <source>Open Directory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="929"/>
-        <location filename="../common/mainwindow.cpp" line="945"/>
-        <location filename="../common/mainwindow.cpp" line="1236"/>
+        <location filename="../common/mainwindow.cpp" line="970"/>
+        <location filename="../common/mainwindow.cpp" line="986"/>
+        <location filename="../common/mainwindow.cpp" line="1278"/>
         <source>Open File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="931"/>
-        <location filename="../common/mainwindow.cpp" line="947"/>
+        <location filename="../common/mainwindow.cpp" line="972"/>
+        <location filename="../common/mainwindow.cpp" line="988"/>
         <source>Movies (%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1117"/>
+        <location filename="../common/mainwindow.cpp" line="1158"/>
         <source>Muted</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1120"/>
-        <location filename="../common/mainwindow.cpp" line="1128"/>
-        <location filename="../common/mainwindow.cpp" line="1135"/>
-        <location filename="../common/mainwindow.cpp" line="1142"/>
+        <location filename="../common/mainwindow.cpp" line="1161"/>
+        <location filename="../common/mainwindow.cpp" line="1169"/>
+        <location filename="../common/mainwindow.cpp" line="1176"/>
+        <location filename="../common/mainwindow.cpp" line="1183"/>
         <source>Volume: %1%</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1201"/>
-        <location filename="../common/mainwindow.cpp" line="1209"/>
-        <source>sub %1: %2s</source>
+        <location filename="../common/mainwindow.cpp" line="1243"/>
+        <location filename="../common/mainwindow.cpp" line="1251"/>
+        <source>Subtitle %1: %2s</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1202"/>
-        <location filename="../common/mainwindow.cpp" line="1210"/>
-        <source>delay</source>
+        <location filename="../common/mainwindow.cpp" line="1244"/>
+        <location filename="../common/mainwindow.cpp" line="1252"/>
+        <source>delayed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1202"/>
-        <location filename="../common/mainwindow.cpp" line="1210"/>
-        <source>forward</source>
+        <location filename="../common/mainwindow.cpp" line="1244"/>
+        <location filename="../common/mainwindow.cpp" line="1252"/>
+        <source>advanced</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1217"/>
-        <location filename="../common/mainwindow.cpp" line="1224"/>
-        <location filename="../common/mainwindow.cpp" line="1231"/>
+        <location filename="../common/mainwindow.cpp" line="1259"/>
+        <location filename="../common/mainwindow.cpp" line="1266"/>
+        <location filename="../common/mainwindow.cpp" line="1273"/>
         <source>Speed: %1x</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1238"/>
+        <location filename="../common/mainwindow.cpp" line="1280"/>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1315"/>
-        <location filename="../common/mainwindow.cpp" line="1376"/>
-        <source>The screenshot is saved to %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../common/mainwindow.cpp" line="1290"/>
+        <location filename="../common/mainwindow.cpp" line="1332"/>
         <source>View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1301"/>
+        <location filename="../common/mainwindow.cpp" line="1343"/>
         <source>Movie Screenshot</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1302"/>
+        <location filename="../common/mainwindow.cpp" line="1344"/>
         <source>Saved to</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1842"/>
+        <location filename="../common/mainwindow.cpp" line="1357"/>
+        <location filename="../common/mainwindow.cpp" line="1418"/>
+        <source>The screenshot is saved to %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../common/mainwindow.cpp" line="1913"/>
         <source>Invalid file: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -644,15 +667,15 @@
     </message>
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="91"/>
-        <source>Path:</source>
+        <source>File Path:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>dmr::MpvProxy</name>
     <message>
-        <location filename="../backends/mpv/mpv_proxy.cpp" line="742"/>
-        <location filename="../backends/mpv/mpv_proxy.cpp" line="759"/>
+        <location filename="../backends/mpv/mpv_proxy.cpp" line="765"/>
+        <location filename="../backends/mpv/mpv_proxy.cpp" line="782"/>
         <source>[internal]</source>
         <translation type="unfinished"></translation>
     </message>
@@ -661,7 +684,8 @@
     <name>dmr::PlayItemWidget</name>
     <message>
         <location filename="../widgets/playlist_widget.cpp" line="74"/>
-        <location filename="../widgets/playlist_widget.cpp" line="182"/>
+        <location filename="../widgets/playlist_widget.cpp" line="92"/>
+        <location filename="../widgets/playlist_widget.cpp" line="204"/>
         <source>File does not exist</source>
         <translation type="unfinished"></translation>
     </message>

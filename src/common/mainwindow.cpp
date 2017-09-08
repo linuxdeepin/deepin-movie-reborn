@@ -1240,16 +1240,16 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         case ActionFactory::ActionKind::SubDelay: {
             _engine->setSubDelay(0.5);
             auto d = _engine->subDelay();
-            _nwComm->updateWithMessage(tr("sub %1: %2s")
-                    .arg(d > 0.0?tr("delay"):tr("forward")).arg(d>0.0?d:-d));
+            _nwComm->updateWithMessage(tr("Subtitle %1: %2s")
+                    .arg(d > 0.0?tr("delayed"):tr("advanced")).arg(d>0.0?d:-d));
             break;
         }
 
         case ActionFactory::ActionKind::SubForward: {
             _engine->setSubDelay(-0.5);
             auto d = _engine->subDelay();
-            _nwComm->updateWithMessage(tr("sub %1: %2s")
-                    .arg(d > 0.0?tr("delay"):tr("forward")).arg(d>0.0?d:-d));
+            _nwComm->updateWithMessage(tr("Subtitle %1: %2s")
+                    .arg(d > 0.0?tr("delayed"):tr("advanced")).arg(d>0.0?d:-d));
             break;
         }
 

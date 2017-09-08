@@ -88,7 +88,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo& pif)
     ADD_ROW(tr("Duration:"), mi.durationStr());
 
     auto fp = nm->fontMetrics().elidedText(mi.filePath, Qt::ElideMiddle, 320);
-    ADD_ROW(tr("Path:"), fp);
+    ADD_ROW(tr("File Path:"), fp);
 
 #undef ADD_ROW
 
