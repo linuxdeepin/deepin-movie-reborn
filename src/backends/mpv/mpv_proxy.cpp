@@ -1,3 +1,5 @@
+#include "config.h"
+
 #include "mpv_proxy.h"
 #include "mpv_glwidget.h"
 #include "compositing_manager.h"
@@ -392,6 +394,18 @@ void MpvProxy::resizeEvent(QResizeEvent *re)
 
     double y = (1.0 - 36.0 / height()) * 100.0;
     //set_property(_handle, "sub-pos", (int)y);
+#if 0
+    QPixmap shape(size());
+    shape.fill(Qt::transparent);
+
+    QPainter p(&shape);
+    QPainterPath pp;
+    pp.addRoundedRect(rect(), RADIUS, RADIUS);
+    p.fillPath(pp, QBrush(Qt::white));
+    p.end();
+
+    setMask(shape.mask());
+#endif
 }
 
 void MpvProxy::savePlaybackPosition()

@@ -8,6 +8,7 @@
 #cmakedefine ENABLE_VPU_PLATFORM
 #cmakedefine DMR_DEBUG
 
+#define RADIUS 4
 // ~
 
 #ifdef ENABLE_VPU_PLATFORM

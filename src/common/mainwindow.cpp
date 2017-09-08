@@ -302,13 +302,18 @@ skip_set_cursor:
 MainWindow::MainWindow(QWidget *parent) 
     : QFrame(NULL)
 {
+    bool composited = CompositingManager::get().composited();
     setWindowFlags(Qt::FramelessWindowHint);
     setAcceptDrops(true);
+
+    if (composited) {
+        setAttribute(Qt::WA_TranslucentBackground, true);
+        setAttribute(Qt::WA_NoSystemBackground, false);
+    }
 
     DThemeManager::instance()->registerWidget(this);
     setFrameShape(QFrame::NoFrame);
     
-    bool composited = CompositingManager::get().composited();
 #ifdef USE_DXCB
     if (DApplication::isDXcbPlatform() && composited) {
         _handle = new DPlatformWindowHandle(this, this);
@@ -338,6 +343,8 @@ MainWindow::MainWindow(QWidget *parent)
     setSizePolicy(sp);
 
     qDebug() << "composited = " << composited;
+
+    setContentsMargins(0, 0, 0, 0);
 
     _titlebar = new Titlebar(this);
     _titlebar->move(1, 1);
@@ -1449,20 +1456,21 @@ void MainWindow::updateProxyGeometry()
         _cachedMargins = _handle->frameMargins();
     }
 
+    if (!CompositingManager::get().composited()) {
 #ifndef USE_DXCB
-    {
         QPixmap shape(size());
         shape.fill(Qt::transparent);
 
         QPainter p(&shape);
+        p.setRenderHint(QPainter::Antialiasing);
         QPainterPath pp;
-        pp.addRoundedRect(rect(), 4, 4);
+        pp.addRoundedRect(rect(), RADIUS, RADIUS);
         p.fillPath(pp, QBrush(Qt::white));
         p.end();
 
         setMask(shape.mask());
-    }
 #endif
+    }
 
     // leave one pixel for border
     auto view_rect = rect().marginsRemoved(QMargins(1, 1, 1, 1));
@@ -1755,13 +1763,33 @@ void MainWindow::contextMenuEvent(QContextMenuEvent *cme)
 void MainWindow::paintEvent(QPaintEvent* pe)
 {
     QPainter p(this);
+    p.setRenderHint(QPainter::Antialiasing);
+
     static QImage bg_dark(":/resources/icons/dark/init-splash.png");
     static QImage bg_light(":/resources/icons/light/init-splash.png");
+    bool light = ("light" == qApp->theme());
 
-    QImage bg = bg_dark;
-    if ("light" == qApp->theme()) {
-        bg = bg_light;
+    p.fillRect(rect(), Qt::transparent);
+    {
+        QPainterPath pp;
+        pp.addRoundedRect(rect(), RADIUS, RADIUS);
+        p.fillPath(pp, QColor(0, 0, 0, light ? 255 * 0.1: 255));
     }
+
+    auto bg_clr = QColor(16, 16, 16);
+    QImage bg = bg_dark;
+    if (light) {
+        bg = bg_light;
+        bg_clr = QColor(252, 252, 252);
+    }
+
+    /* we supposed to draw by qss background-color here, but it's conflict with 
+     * border area (border has alpha, which blends with background-color.
+     */
+    auto view_rect = rect().marginsRemoved(QMargins(1, 1, 1, 1));
+    QPainterPath pp;
+    pp.addRoundedRect(view_rect, RADIUS, RADIUS);
+    p.fillPath(pp, bg_clr);
 
     auto pt = rect().center() - QPoint(bg.width()/2, bg.height()/2 - 26);
     p.drawImage(pt, bg);

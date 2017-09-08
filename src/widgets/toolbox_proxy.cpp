@@ -721,9 +721,8 @@ void ToolboxProxy::resizeEvent(QResizeEvent* re)
 
     QPainter p(&shape);
     p.setRenderHint(QPainter::Antialiasing);
-    p.setRenderHint(QPainter::HighQualityAntialiasing);
 
-    auto radius = 4;
+    auto radius = RADIUS;
     auto titleBarHeight = this->height();
     QRectF r = rect();
 

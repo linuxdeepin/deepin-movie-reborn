@@ -22,7 +22,6 @@ protected:
     void paintGL() override;
 
     void setPlaying(bool);
-    void updateVbo(const QSize& vp, const QSize& tex_sz);
 
 public slots:
     void onNewFrame();
@@ -37,6 +36,16 @@ private:
     QOpenGLTexture *_darkTex {nullptr};
     QOpenGLTexture *_lightTex {nullptr};
     QOpenGLShaderProgram *_glProg {nullptr};
+
+    QOpenGLVertexArrayObject _vaoBlend;
+    QOpenGLBuffer _vboBlend;
+    QOpenGLShaderProgram *_glProgBlend {nullptr};
+    QOpenGLTexture *_texMask {nullptr};
+    QOpenGLFramebufferObject *_fbo {nullptr};
+
+    void updateVbo(const QSize& vp, const QSize& tex_sz);
+    void updateBlendMask();
+    void updateVboBlend();
 };
 
 }
