@@ -84,7 +84,7 @@ QMenu* ActionFactory::mainContextMenu()
         DEF_ACTION(tr("Open File"), ActionKind::OpenFileList);
         DEF_ACTION(tr("Open Directory"), ActionKind::OpenDirectory);
         DEF_ACTION(tr("Open URL"), ActionKind::OpenUrl);
-        DEF_ACTION(tr("Open CD"), ActionKind::OpenCdrom);
+        DEF_ACTION(tr("Open CD/DVD"), ActionKind::OpenCdrom);
         menu->addSeparator();
 
         DEF_ACTION_CHECKED(tr("Fullscreen"), ActionKind::ToggleFullscreen);

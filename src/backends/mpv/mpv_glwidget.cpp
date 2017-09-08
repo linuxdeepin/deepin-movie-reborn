@@ -50,9 +50,11 @@ static const char* fs_code = R"(
 varying vec2 texCoord;
 
 uniform sampler2D sampler;
+uniform vec4 bg;
 
 void main() {
-    gl_FragColor = texture2D(sampler, texCoord);
+    vec4 s = texture2D(sampler, texCoord);
+    gl_FragColor = vec4(s.rgb * s.a + bg.rgb * (1.0 - s.a), 1.0);
 }
 )";
 
@@ -334,15 +336,20 @@ namespace dmr {
 
         } else {
             f->glEnable(GL_BLEND);
+            f->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            auto clr = QColor(16, 16, 16, 255);
             float a = 16.0 / 255.0;
-            if (qApp->theme() != "dark")
+            if (qApp->theme() != "dark") {
+                clr = QColor(252, 252, 252, 255);
                 a = 252.0 / 255.0;
+            }
             f->glClearColor(a, a, a, 1.0);
             f->glClear(GL_COLOR_BUFFER_BIT);
 
             _vao.bind();
             _vbo.bind();
             _glProg->bind();
+            _glProg->setUniformValue("bg", clr);
 
             QOpenGLTexture *tex = _lightTex;
             if (qApp->theme() == "dark") {
