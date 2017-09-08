@@ -686,7 +686,6 @@ void ToolboxProxy::buttonClicked(QString id)
         _mainWindow->requestAction(ActionFactory::ActionKind::ToggleFullscreen);
     } else if (id == "vol") {
         _mainWindow->requestAction(ActionFactory::ActionKind::ToggleMute);
-        _volSlider->hide();
     } else if (id == "prev") {
         _mainWindow->requestAction(ActionFactory::ActionKind::GotoPlaylistPrev);
     } else if (id == "next") {
