@@ -11,7 +11,8 @@ QLabel, Dtk--Widget--DImageButton {
 }
 
 #ToolBoxTopBorderInner {
-    background-color: rgba(255, 255, 255, 0.05);
+    background: transparent;
+    border-bottom: 1px inset rgba(255, 255, 255, 0.05);
 }
 
 Dtk--Widget--DImageButton#ListBtn {
