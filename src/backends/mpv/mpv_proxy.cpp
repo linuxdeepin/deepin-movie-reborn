@@ -476,7 +476,7 @@ void MpvProxy::changeSoundMode(SoundMode sm)
 
 void MpvProxy::volumeUp()
 {
-    QList<QVariant> args = { "add", "volume", 2 };
+    QList<QVariant> args = { "add", "volume", 8 };
     qDebug () << args;
     command(_handle, args);
 }
@@ -489,7 +489,7 @@ void MpvProxy::changeVolume(int val)
 
 void MpvProxy::volumeDown()
 {
-    QList<QVariant> args = { "add", "volume", -2 };
+    QList<QVariant> args = { "add", "volume", -8 };
     qDebug () << args;
     command(_handle, args);
 }
@@ -575,8 +575,6 @@ void MpvProxy::burstScreenshot()
     if (state() == PlayState::Stopped)
         return;
 
-    if (!paused()) pauseResume();
-
     //command(_handle, QList<QVariant> {"revert-seek", "mark"});
      _posBeforeBurst = get_property(_handle, "time-pos");
 
@@ -584,9 +582,16 @@ void MpvProxy::burstScreenshot()
     std::mt19937 g(rd());
     std::uniform_int_distribution<int> uniform_dist(16, 30);
     int d = (duration() - elapsed()) / uniform_dist(g);
-    _burstInc = qMax(d, 10);
+    _burstStart = elapsed();
+    _burstInc = qMax(d, 1);
+    if (_burstInc * 15 + 10 >= (duration() - elapsed())) {
+        emit notifyScreenshot(QImage());
+        stopBurstScreenshot();
+        return;
+    }
     qDebug() << "burst span " << _burstInc;
 
+    if (!paused()) pauseResume();
     _inBurstShotting = true;
     QTimer::singleShot(0, this, &MpvProxy::stepBurstScreenshot);
 }
@@ -646,7 +651,8 @@ void MpvProxy::stepBurstScreenshot()
         return;
     }
 
-    command(_handle, QList<QVariant> {"seek", _burstInc});
+    _burstStart += _burstInc;
+    command(_handle, QList<QVariant> {"seek", _burstStart, "absolute"});
     int tries = 10;
     while (tries) {
         mpv_event* ev = mpv_wait_event(_handle, 0.005);

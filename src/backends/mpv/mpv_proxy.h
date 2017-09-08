@@ -89,6 +89,7 @@ private:
     bool _inBurstShotting {false};
     QVariant _posBeforeBurst;
     qint64 _burstInc {1};
+    qint64 _burstStart {0};
 
     bool _pendingSeek {false};
     PlayingMovieInfo _pmf;

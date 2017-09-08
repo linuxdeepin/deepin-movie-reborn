@@ -1399,6 +1399,8 @@ void MainWindow::onBurstScreenshot(const QImage& frame)
         disconnect(_engine, &PlayerEngine::notifyScreenshot, this, &MainWindow::onBurstScreenshot);
         _engine->stopBurstScreenshot();
         _inBurstShootMode = false;
+        _toolbox->setEnabled(true);
+        _listener->setEnabled(!_miniMode);
 
         if (frame.isNull()) {
             _burstShoots.clear();
@@ -1431,6 +1433,9 @@ void MainWindow::onBurstScreenshot(const QImage& frame)
 void MainWindow::startBurstShooting()
 {
     _inBurstShootMode = true;
+    _toolbox->setEnabled(false);
+    _listener->setEnabled(false);
+
     connect(_engine, &PlayerEngine::notifyScreenshot, this, &MainWindow::onBurstScreenshot);
     _engine->burstScreenshot();
 }
@@ -1705,7 +1710,7 @@ void MainWindow::mousePressEvent(QMouseEvent *ev)
 
 void MainWindow::mouseDoubleClickEvent(QMouseEvent *ev)
 {
-    if (!_miniMode) {
+    if (!_miniMode && !_inBurstShootMode) {
         _delayedMouseReleaseTimer.stop();
         requestAction(ActionFactory::ToggleFullscreen);
         ev->accept();
@@ -1761,8 +1766,9 @@ void MainWindow::mouseMoveEvent(QMouseEvent *ev)
 
 void MainWindow::contextMenuEvent(QContextMenuEvent *cme)
 {
-    if (!_miniMode)
-        ActionFactory::get().mainContextMenu()->popup(cme->globalPos());
+    if (_miniMode || _inBurstShootMode) 
+        return;
+    ActionFactory::get().mainContextMenu()->popup(cme->globalPos());
     cme->accept();
 }
 
