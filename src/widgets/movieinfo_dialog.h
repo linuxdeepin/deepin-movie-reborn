@@ -13,9 +13,9 @@ class PosterFrame: public QLabel {
 public:
     PosterFrame(QWidget* parent) :QLabel(parent) {
         auto e = new QGraphicsDropShadowEffect(this);
-        e->setColor(QColor(0, 0, 0, 255 * 0.2));
-        e->setOffset(2, 4);
-        e->setBlurRadius(4);
+        e->setColor(QColor(0, 0, 0, 76));
+        e->setOffset(0, 3);
+        e->setBlurRadius(6);
         setGraphicsEffect(e);
     }
 };
