@@ -112,6 +112,10 @@ bool Settings::iscommonPlayableProtocol(const QString& scheme) const
 QString Settings::screenshotLocation()
 {
     QString save_path = settings()->value("base.screenshot.location").toString();
+    if (save_path.size() && save_path[0] == '~') {
+        save_path.replace(0, 1, QDir::homePath());
+    }
+
     if (!QFileInfo(save_path).exists()) {
         save_path = "/tmp";
     }
