@@ -83,10 +83,9 @@ void Titlebar::paintEvent(QPaintEvent *)
 {
     Q_D(const Titlebar);
 
-    auto radius = 4;
+    auto radius = RADIUS-1.5f;
     QPainter p(this);
     p.setRenderHint(QPainter::Antialiasing);
-    p.setRenderHint(QPainter::HighQualityAntialiasing);
 
     auto titleBarHeight = this->height();
     QRectF r = rect();

@@ -550,17 +550,19 @@ void PlayerEngine::changeSoundMode(Backend::SoundMode sm)
 
 void PlayerEngine::resizeEvent(QResizeEvent* re)
 {
+#if 1
 #ifndef USE_DXCB
     QPixmap shape(size());
     shape.fill(Qt::transparent);
 
     QPainter p(&shape);
     QPainterPath pp;
-    pp.addRoundedRect(rect(), 4, 4);
+    pp.addRoundedRect(rect(), RADIUS, RADIUS);
     p.fillPath(pp, QBrush(Qt::white));
     p.end();
 
     setMask(shape.mask());
+#endif
 #endif
 
 }

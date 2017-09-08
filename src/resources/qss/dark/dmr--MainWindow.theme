@@ -1,5 +1,4 @@
 dmr--MainWindow {
-    background-color: rgb(16, 16, 16);
     border: 1px solid rgba(0, 0, 0, 100%);
     border-radius: 4px;
 }
