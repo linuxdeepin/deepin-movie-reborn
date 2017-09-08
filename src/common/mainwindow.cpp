@@ -1164,6 +1164,9 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         }
 
         case ActionFactory::ActionKind::ChangeVolume: {
+            if (_engine->muted()) {
+                _engine->toggleMute();
+            }
             _engine->changeVolume(args[0].toInt()); 
             double pert = _engine->volume();
             _nwComm->updateWithMessage(tr("Volume: %1%").arg(pert));
@@ -1171,6 +1174,9 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         }
 
         case ActionFactory::ActionKind::VolumeUp: {
+            if (_engine->muted()) {
+                _engine->toggleMute();
+            }
             _engine->volumeUp();
             double pert = _engine->volume();
             _nwComm->updateWithMessage(tr("Volume: %1%").arg(pert));
