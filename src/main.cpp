@@ -57,8 +57,9 @@ int main(int argc, char *argv[])
     app.setApplicationVersion(DMR_VERSION);
     app.setProductIcon(QPixmap(":/resources/icons/logo-big.svg"));
     app.setWindowIcon(QIcon(":/resources/icons/logo-big.svg"));
-    app.setProductName(QObject::tr("Deepin Movie"));
-    app.setApplicationLicense("GPL v3");
+
+    app.loadTranslator();
+    app.setApplicationDisplayName(QObject::tr("Deepin Movie"));
     app.setApplicationDescription(QObject::tr(
                 "Deepin Movie is a well-designed and full-featured"
                 " video player with simple borderless design. It supports local and"
@@ -82,7 +83,6 @@ int main(int argc, char *argv[])
         exit(0);
     }
 
-    app.loadTranslator();
 
     app.setWindowIcon(QIcon(":/resources/icons/logo.svg"));
     app.setApplicationDisplayName(QObject::tr("Deepin Movie"));

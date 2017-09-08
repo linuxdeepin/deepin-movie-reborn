@@ -38,7 +38,7 @@
                         },
                         {
                             "key": "multiinstance",
-                            "text": "Run multiple Deepin Movie",
+                            "text": "Open a new player for each file played",
                             "type": "checkbox",
                             "default": ""
                         },
@@ -63,7 +63,7 @@
                     "options": [
                         {
                             "key": "location",
-                            "name": "Location",
+                            "name": "Path",
                             "type": "lineedit",
                             "default": "/tmp"
                         }
@@ -100,7 +100,7 @@
                         },
                         {
                             "key": "seek_backward",
-                            "name": "Backward",
+                            "name": "Rewind",
                             "type": "shortcut",
                             "default":  ["0", "16777234"]
                         },
@@ -118,19 +118,19 @@
                         },
                         {
                             "key": "accel",
-                            "name": "Accelerate playback",
+                            "name": "Speed up",
                             "type": "shortcut",
                             "default":  ["67108864", "16777236"]
                         },
                         {
                             "key": "decel",
-                            "name": "Decelerate playback",
+                            "name": "Speed down",
                             "type": "shortcut",
                             "default":  ["67108864", "16777234"]
                         },
                         {
                             "key": "reset",
-                            "name": "Reset play speed",
+                            "name": "Reset speed",
                             "type": "shortcut",
                             "default":  ["0", "82"]
                         }
@@ -242,7 +242,7 @@
                         },
                         {
                             "key": "screenshot",
-                            "name": "Screenshot",
+                            "name": "Film screenshot",
                             "type": "shortcut",
                             "default": ["134217728", "65"]
                         },
