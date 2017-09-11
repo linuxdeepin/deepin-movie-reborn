@@ -676,6 +676,7 @@ void MainWindow::updateActionsState()
                 break;
 
             case ActionFactory::ActionKind::ToggleMiniMode:
+            case ActionFactory::ActionKind::WindowAbove:
                 v = _engine->state() != PlayerEngine::Idle && !isFullScreen();
                 break;
 
@@ -860,6 +861,8 @@ bool MainWindow::isActionAllowed(ActionFactory::ActionKind kd, bool fromUI, bool
     } else {
         if (isFullScreen()) {
             switch (kd) {
+                case ActionFactory::WindowAbove:
+#if 0
                 case ActionFactory::ToggleMiniMode:
                 case ActionFactory::DefaultFrame:
                 case ActionFactory::Ratio4x3Frame:
@@ -869,6 +872,7 @@ bool MainWindow::isActionAllowed(ActionFactory::ActionKind kd, bool fromUI, bool
                 case ActionFactory::Ratio235x1Frame:
                 case ActionFactory::ClockwiseFrame:
                 case ActionFactory::CounterclockwiseFrame:
+#endif
                     if (fromUI) { // which means UI has been toggled and need to reverse
                         auto acts = ActionFactory::get().findActionsByKind(kd);
                         auto p = acts.begin();
@@ -1052,6 +1056,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         case ActionFactory::ActionKind::QuitFullscreen: {
             if (isFullScreen()) {
                 showNormal();
+                resizeByConstraints();
                 auto acts = ActionFactory::get().findActionsByKind(ActionFactory::ToggleMiniMode);
                 auto p = acts.begin();
                 (*p)->setEnabled(!isFullScreen());
@@ -1068,6 +1073,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             } else {
                 showFullScreen();
             }
+            resizeByConstraints();
             auto acts = ActionFactory::get().findActionsByKind(ActionFactory::ToggleMiniMode);
             auto p = acts.begin();
             (*p)->setEnabled(!isFullScreen());
@@ -1634,7 +1640,7 @@ void MainWindow::resizeByConstraints()
         return;
     }
 
-    if (_miniMode) {
+    if (_miniMode || window()->isFullScreen()) {
         //_lastSizeInNormalMode = QSize(-1, -1);
         return;
     }
@@ -1722,7 +1728,7 @@ void MainWindow::mouseDoubleClickEvent(QMouseEvent *ev)
 {
     if (!_miniMode && !_inBurstShootMode) {
         _delayedMouseReleaseTimer.stop();
-        requestAction(ActionFactory::ToggleFullscreen);
+        requestAction(ActionFactory::ToggleFullscreen, false, {}, true);
         ev->accept();
     }
 }
@@ -1762,7 +1768,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *ev)
 
 void MainWindow::delayedMouseReleaseHandler()
 {
-    requestAction(ActionFactory::TogglePause);
+    requestAction(ActionFactory::TogglePause, false, {}, true);
 }
 
 void MainWindow::mouseMoveEvent(QMouseEvent *ev)
