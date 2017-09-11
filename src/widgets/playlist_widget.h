@@ -22,8 +22,13 @@ class MainWindow;
 class PlaylistWidget: public QListWidget {
     Q_OBJECT
 public:
+    enum State {
+        Opened,
+        Closed,
+    };
     PlaylistWidget(QWidget *, PlayerEngine*);
     virtual ~PlaylistWidget();
+    State state() const { return _state; }
 
 public slots:
     void togglePopup();
@@ -44,12 +49,15 @@ protected slots:
     void updateItemInfo(int);
 
 private:
+
     PlayerEngine *_engine {nullptr};
     MainWindow *_mw {nullptr};
     QWidget *_mouseItem {nullptr};
     QWidget *_clickedItem {nullptr};
     QSignalMapper *_closeMapper {nullptr};
     QSignalMapper *_activateMapper {nullptr};
+    State _state {Closed};
+    bool _toggling {false};
 
     void batchUpdateSizeHints();
 };
