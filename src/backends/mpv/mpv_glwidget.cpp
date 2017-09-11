@@ -355,6 +355,7 @@ namespace dmr {
             if (qApp->theme() == "dark") {
                 tex = _darkTex;
             }
+            f->glActiveTexture(GL_TEXTURE0);
             tex->bind();
             f->glDrawArrays(GL_TRIANGLES, 0, 6);
             tex->release();
