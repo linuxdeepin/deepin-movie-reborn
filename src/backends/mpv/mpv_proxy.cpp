@@ -126,6 +126,7 @@ mpv_handle* MpvProxy::mpv_init()
     //set_property(h, "sub-scale-with-window", "no");
     //set_property(h, "sub-scale-by-window", "no");
     set_property(h, "sub-margin-y", 36);
+    set_property(h, "sub-pos", 100);
 
     set_property(h, "screenshot-template", "deepin-movie-shot%n");
     set_property(h, "screenshot-directory", "/tmp");
@@ -383,7 +384,6 @@ void MpvProxy::updateSubStyle(const QString& font, int sz)
 {
     set_property(_handle, "sub-font", font);
     set_property(_handle, "sub-font-size", sz);
-
 }
 
 void MpvProxy::resizeEvent(QResizeEvent *re)
@@ -391,21 +391,6 @@ void MpvProxy::resizeEvent(QResizeEvent *re)
     if (state() == PlayState::Stopped) {
         return;
     }
-
-    double y = (1.0 - 36.0 / height()) * 100.0;
-    //set_property(_handle, "sub-pos", (int)y);
-#if 0
-    QPixmap shape(size());
-    shape.fill(Qt::transparent);
-
-    QPainter p(&shape);
-    QPainterPath pp;
-    pp.addRoundedRect(rect(), RADIUS, RADIUS);
-    p.fillPath(pp, QBrush(Qt::white));
-    p.end();
-
-    setMask(shape.mask());
-#endif
 }
 
 void MpvProxy::savePlaybackPosition()
