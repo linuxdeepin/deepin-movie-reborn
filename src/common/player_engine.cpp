@@ -120,7 +120,6 @@ void PlayerEngine::onBackendStateChanged()
             break;
     }
 
-    updateSubStyles();
     if (old != _state)
         emit stateChanged();
 }
@@ -325,6 +324,8 @@ void PlayerEngine::requestPlay(int id)
             _current->setSubCodepage("auto");
         }
         emit subCodepageChanged();
+
+        updateSubStyles();
     } else {
         // TODO: delete and try next backend?
     }

@@ -704,6 +704,7 @@ void MainWindow::updateActionsState()
     //NOTE: mpv does not always send a aid-change signal the first time movie is loaded.
     //so we need to workaround it.
     reflectActionToUI(ActionFactory::ActionKind::SelectTrack);
+    reflectActionToUI(ActionFactory::ActionKind::SelectSubtitle);
 }
 
 void MainWindow::reflectActionToUI(ActionFactory::ActionKind kd)
