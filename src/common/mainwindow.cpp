@@ -723,7 +723,12 @@ void MainWindow::reflectActionToUI(ActionFactory::ActionKind kd)
             while (p != acts.end()) {
                 auto old = (*p)->isEnabled();
                 (*p)->setEnabled(false);
-                (*p)->setChecked(!(*p)->isChecked());
+                if (kd == ActionFactory::TogglePlaylist) {
+                    // here what we read is the last state of playlist 
+                    (*p)->setChecked(_playlist->state() != PlaylistWidget::Opened);
+                } else {
+                    (*p)->setChecked(!(*p)->isChecked());
+                }
                 (*p)->setEnabled(old);
                 ++p;
             }

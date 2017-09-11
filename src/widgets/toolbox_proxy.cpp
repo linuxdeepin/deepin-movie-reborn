@@ -45,7 +45,7 @@ class SubtitleItemWidget: public QWidget {
     Q_OBJECT
 public:
     friend class SubtitlesView;
-    SubtitleItemWidget(QWidget *parent, SubtitleInfo si): QWidget(parent) {
+    SubtitleItemWidget(QWidget *parent, SubtitleInfo si): QWidget() {
         _sid = si["id"].toInt();
 
         DThemeManager::instance()->registerWidget(this, QStringList() << "current");
@@ -57,7 +57,7 @@ public:
         l->setContentsMargins(0, 0, 0, 0);
 
         auto msg = si["title"].toString();
-        fontMetrics().elidedText(msg, Qt::ElideMiddle, 160*2);
+        fontMetrics().elidedText(msg, Qt::ElideMiddle, 140*2);
         _title = new QLabel(msg);
         _title->setWordWrap(true);
         l->addWidget(_title, 1);
@@ -150,6 +150,7 @@ protected:
     {
         ensurePolished();
         populateSubtitles();
+        adjustSize();
     }
 
 protected slots:
@@ -162,9 +163,24 @@ protected slots:
         }
     }
 
+    void batchUpdateSizeHints()
+    {
+        if (isVisible()) {
+            for (int i = 0; i < _subsView->count(); i++) {
+                auto item = _subsView->item(i);
+                auto w = _subsView->itemWidget(item);
+                //item->setSizeHint(w->size());
+                item->setSizeHint(w->sizeHint());
+            }
+        }
+    }
+
     void populateSubtitles()
     {
         _subsView->clear();
+        _subsView->adjustSize();
+        adjustSize();
+
         auto pmf = _engine->playingMovieInfo();
         auto sid = _engine->sid();
         qDebug() << "sid" << sid;
@@ -173,8 +189,8 @@ protected slots:
             auto item = new QListWidgetItem();
             auto siw = new SubtitleItemWidget(this, sub);
             _subsView->addItem(item);
-            auto sh = siw->sizeHint();
-            item->setSizeHint(sh);
+            //auto sh = siw->sizeHint();
+            //item->setSizeHint(sh);
             _subsView->setItemWidget(item, siw);
             auto v = (sid == sub["id"].toInt());
             siw->setCurrent(v);
@@ -182,6 +198,8 @@ protected slots:
                 _subsView->setCurrentItem(item);
             }
         }
+
+        batchUpdateSizeHints();
     }
 
     void onSidChanged()
