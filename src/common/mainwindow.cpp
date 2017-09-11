@@ -833,6 +833,10 @@ void MainWindow::switchTheme()
 
 bool MainWindow::isActionAllowed(ActionFactory::ActionKind kd, bool fromUI, bool isShortcut)
 {
+    if (_inBurstShootMode) {
+        return false;
+    }
+
     if (_miniMode) {
         if (fromUI || isShortcut) {
             switch (kd) {
