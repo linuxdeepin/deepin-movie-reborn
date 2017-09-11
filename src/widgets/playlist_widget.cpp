@@ -27,9 +27,8 @@ class PlayItemWidget: public QFrame {
 public:
     friend class PlaylistWidget;
 
-    //FIXME: what if item destroyed
-    PlayItemWidget(const PlayItemInfo& pif, QWidget* parent = 0)
-        : QFrame(parent), _pif {pif} 
+    PlayItemWidget(const PlayItemInfo& pif, QListWidget* list = 0)
+        : QFrame(), _pif {pif}, _listWidget {list} 
     {
         DThemeManager::instance()->registerWidget(this, QStringList() << "PlayItemThumb");
         
@@ -187,6 +186,15 @@ protected:
         _name->setFixedHeight(text_height);
         //resize(width(), _name->height() + _time->height() + layout()->spacing());
         resize(width(), _name->height() + _time->height());
+        QTimer::singleShot(0, [=]() {
+            auto pos = _listWidget->mapFromGlobal(QCursor::pos());
+            auto r = QRect(mapTo(_listWidget, QPoint()), size());
+            if (r.contains(pos)) {
+                _closeBtn->show();
+                _closeBtn->raise();
+            }
+        });
+
     }
 
     void mouseDoubleClickEvent(QMouseEvent* me) override
@@ -215,6 +223,7 @@ private:
     QPixmap _play;
     PlayItemInfo _pif;
     DImageButton *_closeBtn;
+    QListWidget *_listWidget {nullptr};
 };
 
 class MainWindowListener: public QObject {
@@ -455,7 +464,7 @@ void PlaylistWidget::loadPlaylist()
     auto p = items.begin();
     while (p != items.end()) {
         auto w = new PlayItemWidget(*p, this);
-        w->show();
+        //w->show();
         auto item = new QListWidgetItem;
         addItem(item);
         setItemWidget(item, w);
