@@ -842,6 +842,7 @@ bool MainWindow::isActionAllowed(ActionFactory::ActionKind kd, bool fromUI, bool
         if (fromUI || isShortcut) {
             switch (kd) {
                 case ActionFactory::ToggleFullscreen:
+                case ActionFactory::TogglePlaylist:
                 case ActionFactory::BurstScreenshot:
                     if (fromUI) { // which means UI has been toggled and need to reverse
                         auto acts = ActionFactory::get().findActionsByKind(kd);
