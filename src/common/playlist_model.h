@@ -82,7 +82,6 @@ public:
     void clear();
     void remove(int pos);
     void append(const QUrl&);
-    void append(const QList<QUrl>&);
 
     void appendAsync(const QList<QUrl>&);
     void collectionJob(const QList<QUrl>&);
@@ -112,7 +111,7 @@ signals:
     void currentChanged();
     void itemRemoved(int);
     void playModeChanged(PlayMode);
-    void asyncAppendFinished();
+    void asyncAppendFinished(const QList<PlayItemInfo>&);
     void itemInfoUpdated(int id);
 
 private:

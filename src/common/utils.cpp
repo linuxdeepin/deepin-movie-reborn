@@ -82,6 +82,12 @@ static int stringDistance(const QString& s1, const QString& s2) {
     return curr;
 }
 
+bool IsNamesSimilar(const QString& s1, const QString& s2)
+{
+    auto dist = stringDistance(s1, s2);
+    return (dist >= 0 && dist <= 4); //TODO: check ext.
+}
+
 QFileInfoList FindSimilarFiles(const QFileInfo& fi)
 {
     QFileInfoList fil;
@@ -93,14 +99,18 @@ QFileInfoList FindSimilarFiles(const QFileInfo& fi)
             continue;
         }
 
-        auto dist = stringDistance(fi.fileName(), it.fileInfo().fileName());
-        if (dist > 0 && dist <= 4) { //TODO: check ext.
+        if (IsNamesSimilar(fi.fileName(), it.fileInfo().fileName())) {
             fil.append(it.fileInfo());
-            qDebug() << it.fileInfo().fileName() << "=" << dist;
         }
         
     }
 
+    SortSimilarFiles(fil);
+    return fil;
+}
+
+QFileInfoList& SortSimilarFiles(QFileInfoList& fil)
+{
     //sort names by digits inside, take care of such a possible:
     //S01N04, S02N05, S01N12, S02N04, etc...
     struct {
