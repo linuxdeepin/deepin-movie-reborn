@@ -544,16 +544,6 @@ void PlaylistModel::appendSingle(const QUrl& url)
     }
 }
 
-void PlaylistModel::append(const QList<QUrl>& urls)
-{
-    for (const auto& url: urls) {
-        if (!url.isValid()) return;
-        appendSingle(url);
-    }
-    reshuffle();
-    emit countChanged();
-}
-
 void PlaylistModel::collectionJob(const QList<QUrl>& urls)
 {
     for (const auto& url: urls) {
@@ -611,17 +601,64 @@ void PlaylistModel::appendAsync(const QList<QUrl>& urls)
     _jobWatcher->setFuture(future);
 }
 
+static QList<PlayItemInfo>& SortSimilarFiles(QList<PlayItemInfo>& fil)
+{
+    //sort names by digits inside, take care of such a possible:
+    //S01N04, S02N05, S01N12, S02N04, etc...
+    struct {
+        bool operator()(const PlayItemInfo& fi1, const PlayItemInfo& fi2) const {
+            if (!fi1.valid) 
+                return true;
+            if (!fi2.valid)
+                return false;
+
+            QString fileName1 = fi1.url.fileName();
+            QString fileName2 = fi2.url.fileName();
+
+            if (utils::IsNamesSimilar(fileName1, fileName2)) {
+                QRegExp rd("\\d+");
+                int pos = 0;
+                while ((pos = rd.indexIn(fileName1, pos)) != -1) {
+                    auto inc = rd.matchedLength();
+                    auto id1 = fileName1.midRef(pos, inc);
+
+                    auto pos2 = rd.indexIn(fileName2, pos);
+                    if (pos == pos2) {
+                        auto id2 = fileName2.midRef(pos, rd.matchedLength());
+                        //qDebug() << "id compare " << id1 << id2;
+                        if (id1 != id2) {
+                            bool ok1, ok2;
+                            bool v = id1.toInt(&ok1) < id2.toInt(&ok2);
+                            if (ok1 && ok2) return v;
+                            return id1.localeAwareCompare(id2) < 0;
+                        }
+                    }
+
+                    pos += inc;
+                }
+            }
+            return fileName1.localeAwareCompare(fileName2) < 0;
+        }
+    } SortByDigits;
+    std::sort(fil.begin(), fil.end(), SortByDigits);
+    
+    return fil;
+}
+
 void PlaylistModel::onAsyncAppendFinished()
 {
     auto f = _jobWatcher->future();
     _pendingJob.clear();
     _urlsInJob.clear();
 
-    qDebug() << "collected items" << f.results().count();
     //since _infos are modified only at the same thread, the lock is not necessary
-    _infos += f.results();
-    emit countChanged();
-    emit asyncAppendFinished();
+    auto fil = f.results();
+    qDebug() << "collected items" << fil.count();
+    if (fil.size()) {
+        _infos += SortSimilarFiles(fil);
+        emit countChanged();
+    }
+    emit asyncAppendFinished(fil);
 }
 
 //TODO: what if loadfile failed

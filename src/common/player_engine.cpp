@@ -377,10 +377,13 @@ void PlayerEngine::next()
     _playlist->playNext(true);
 }
 
-void PlayerEngine::onPlaylistAsyncAppendFinished()
+void PlayerEngine::onPlaylistAsyncAppendFinished(const QList<PlayItemInfo>& pil)
 {
     if (_pendingPlayReq.isValid()) {
         auto id = _playlist->indexOf(_pendingPlayReq);
+        if (pil.size() && _pendingPlayReq.scheme() == "playlist") {
+            id = _playlist->indexOf(pil[0].url);
+        }
         _playlist->changeCurrent(id);
         _pendingPlayReq = QUrl();
     }
@@ -466,7 +469,8 @@ void PlayerEngine::seekAbsolute(int pos)
 
 void PlayerEngine::addPlayFile(const QUrl& url)
 {
-    _playlist->append(url);
+    //_playlist->append(url);
+    _playlist->appendAsync({url});
 }
 
 QList<QUrl> PlayerEngine::collectPlayDir(const QDir& dir)

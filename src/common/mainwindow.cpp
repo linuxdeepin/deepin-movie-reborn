@@ -976,7 +976,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
 
             const auto& urls = _engine->addPlayDir(name);
             if (urls.size()) {
-                _engine->playByName(urls[0]);
+                _engine->playByName(QUrl("playlist://0"));
             }
             break;
         }
@@ -1947,12 +1947,8 @@ void MainWindow::dropEvent(QDropEvent *ev)
         }
     }
 
-    for (const auto& url: valids) {
-        // url could a dir, so need to do check again. 
-        if (_engine->isPlayableFile(url)) {
-            _engine->playByName(url);
-            break;
-        }
+    if (valids.size()) {
+        _engine->playByName(QUrl("playlist://0"));
     }
     ev->acceptProposedAction();
 }

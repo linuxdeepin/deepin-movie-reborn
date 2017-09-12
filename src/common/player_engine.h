@@ -150,7 +150,7 @@ protected slots:
     void updateSubStyles();
     void onSubtitlesDownloaded(const QUrl& url, const QList<QString>& filenames,
             OnlineSubtitle::FailReason);
-    void onPlaylistAsyncAppendFinished();
+    void onPlaylistAsyncAppendFinished(const QList<PlayItemInfo>&);
 
 protected:
     PlaylistModel *_playlist {nullptr};
