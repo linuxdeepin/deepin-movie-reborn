@@ -81,6 +81,10 @@ public:
     virtual void burstScreenshot() = 0; //initial the start of burst screenshotting
     virtual void stopBurstScreenshot() = 0;
 
+    // hack: used to access backend internal states
+    virtual QVariant getProperty(const QString&) = 0;
+    virtual void setProperty(const QString&, const QVariant&) = 0;
+
 Q_SIGNALS:
     void tracksChanged();
     void elapsedChanged();
