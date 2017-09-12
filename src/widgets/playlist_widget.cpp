@@ -315,6 +315,7 @@ void PlaylistWidget::updateItemStates()
 
         if (i == _engine->playlist().current()) {
             piw->setState(ItemState::Playing);
+            scrollToItem(item(i));
         }
 
         if (old != piw->state()) {
