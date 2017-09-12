@@ -375,20 +375,13 @@ void PlaylistWidget::dragMoveEvent(QDragMoveEvent *ev)
 void PlaylistWidget::dropEvent(QDropEvent *ev)
 {
     qDebug() << ev->mimeData()->formats();
-    if (ev->mimeData()->hasUrls()) {
-        auto urls = ev->mimeData()->urls();
-        for (const auto& url: urls) {
-            if (!url.isValid()) continue;
-
-            if (url.isLocalFile()) {
-                QFileInfo fi(url.toLocalFile());
-                if (!fi.exists()) continue;
-            }
-            _engine->addPlayFile(url);
-        }
-
-        ev->acceptProposedAction();
+    if (!ev->mimeData()->hasUrls()) {
+        return;
     }
+    auto urls = ev->mimeData()->urls();
+    _engine->addPlayFiles(urls);
+
+    ev->acceptProposedAction();
 }
 
 
