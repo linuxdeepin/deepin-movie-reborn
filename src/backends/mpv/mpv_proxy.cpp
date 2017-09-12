@@ -7,6 +7,7 @@
 #include "utility.h"
 #include "player_engine.h"
 #include "dmr_settings.h"
+#include "movie_configuration.h"
 #include <mpv/client.h>
 
 #include <random>
@@ -115,6 +116,9 @@ mpv_handle* MpvProxy::mpv_init()
         set_property(h, "hwdec", "off");
     }
 
+    set_property(h, "reset-on-next-file", "video-aspect,af,vf,fullscreen,speed,pause");
+    
+
     set_property(h, "volume-max", 200.0);
     set_property(h, "input-cursor", "no");
     set_property(h, "cursor-autohide", "no");
@@ -133,14 +137,6 @@ mpv_handle* MpvProxy::mpv_init()
 
     if (Settings::get().isSet(Settings::ResumeFromLast)) {
         set_property(h, "save-position-on-quit", true);
-        auto watch_later_dir = QString("%1/%2/%3/watch_later")
-            .arg(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation))
-            .arg(qApp->organizationName())
-            .arg(qApp->applicationName());
-
-        QDir d;
-        d.mkpath(watch_later_dir);
-        set_property(h, "watch-later-directory", watch_later_dir);
     }
     
     //only to get notification without data
@@ -399,9 +395,8 @@ void MpvProxy::savePlaybackPosition()
         return;
     }
 
-    QList<QVariant> args = { "write-watch-later-config" };
-    qDebug () << args;
-    command(_handle, args);
+    //MovieConfiguration::get().updateUrl(this->_file, ConfigKnownKey::SubId, sid());
+    MovieConfiguration::get().updateUrl(this->_file, ConfigKnownKey::StartPos, elapsed());
 }
 
 void MpvProxy::setPlaySpeed(double times)
@@ -412,9 +407,7 @@ void MpvProxy::setPlaySpeed(double times)
 
 void MpvProxy::selectSubtitle(int id)
 {
-    if (id >= _pmf.subs.size()) return;
-    auto sid = _pmf.subs[id]["id"];
-    set_property(_handle, "sid", sid);
+    set_property(_handle, "sid", id);
 }
 
 void MpvProxy::toggleSubtitle()
@@ -519,14 +512,19 @@ void MpvProxy::toggleMute()
 void MpvProxy::play()
 {
     QList<QVariant> args = { "loadfile" };
+
     if (_file.isLocalFile()) {
         args << QFileInfo(_file.toLocalFile()).absoluteFilePath();
     } else {
         args << _file.url();
     }
+    auto cfg = MovieConfiguration::get().queryByUrl(_file);
+    auto key = MovieConfiguration::knownKey2String(ConfigKnownKey::StartPos);
+    if (Settings::get().isSet(Settings::ResumeFromLast) && cfg.contains(key)) {
+        args << "replace" << QString("start=%1").arg(cfg[key].toInt());
+    }
     qDebug () << args;
     command(_handle, args);
-    set_property(_handle, "pause", false);
 }
 
 
@@ -779,6 +777,16 @@ void MpvProxy::updatePlayingMovieInfo()
 
     qDebug() << _pmf.subs;
     qDebug() << _pmf.audios;
+}
+
+QVariant MpvProxy::getProperty(const QString& name)
+{
+    return get_property(_handle, name.toUtf8().data());
+}
+
+void MpvProxy::setProperty(const QString& name, const QVariant& val)
+{
+    set_property(_handle, name.toUtf8().data(), val);
 }
 
 } // end of namespace dmr

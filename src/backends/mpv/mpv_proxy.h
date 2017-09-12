@@ -59,6 +59,9 @@ public:
     void burstScreenshot() override; //initial the start of burst screenshotting
     void stopBurstScreenshot() override;
 
+    QVariant getProperty(const QString&) override;
+    void setProperty(const QString&, const QVariant&) override;
+
 public slots:
     void play() override;
     void pauseResume() override;

@@ -163,6 +163,7 @@ protected:
     QList<QUrl> collectPlayDir(const QDir& dir);
 
     void resizeEvent(QResizeEvent* re) override;
+    void savePreviousMovieState();
 };
 }
 

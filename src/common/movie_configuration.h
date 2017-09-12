@@ -15,6 +15,8 @@ public:
     enum KnownKey {
         SubDelay,
         SubCodepage,
+        SubId,
+        StartPos,
     };
 
     static MovieConfiguration& get();

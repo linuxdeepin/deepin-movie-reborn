@@ -238,7 +238,16 @@ void PlayerEngine::updateSubStyle(const QString& font, int sz)
 void PlayerEngine::selectSubtitle(int id)
 {
     if (!_current) return;
-    _current->selectSubtitle(id);
+    if (state() != CoreState::Idle) {
+        const auto& pmf = _current->playingMovieInfo();
+        if (id >= pmf.subs.size()) return;
+        auto sid = pmf.subs[id]["id"].toInt();
+        _current->selectSubtitle(sid);
+
+        auto pif = playlist().currentInfo();
+        MovieConfiguration::get().updateUrl(pif.url, ConfigKnownKey::SubId, 
+                _current->sid());
+    }
 }
 
 bool PlayerEngine::isSubVisible()
@@ -298,6 +307,11 @@ void PlayerEngine::toggleMute()
     _current->toggleMute();
 }
 
+void PlayerEngine::savePreviousMovieState()
+{
+    savePlaybackPosition();
+}
+
 //FIXME: TODO: update _current according to file 
 void PlayerEngine::requestPlay(int id)
 {
@@ -307,10 +321,12 @@ void PlayerEngine::requestPlay(int id)
     const auto& item = _playlist->items()[id];
     _current->setPlayFile(item.url);
     if (_current->isPlayable()) {
-        _current->play();
+        QString key;
         auto cfg = MovieConfiguration::get().queryByUrl(item.url);
 
-        auto key = MovieConfiguration::knownKey2String(ConfigKnownKey::SubDelay);
+        _current->play();
+
+        key = MovieConfiguration::knownKey2String(ConfigKnownKey::SubDelay);
         if (cfg.contains(key)) {
             _current->setSubDelay(cfg[key].toDouble());
         } else {
@@ -324,6 +340,11 @@ void PlayerEngine::requestPlay(int id)
             _current->setSubCodepage("auto");
         }
         emit subCodepageChanged();
+
+        key = MovieConfiguration::knownKey2String(ConfigKnownKey::SubId);
+        if (cfg.contains(key)) {
+            _current->selectSubtitle(cfg[key].toInt());
+        }
 
         updateSubStyles();
     } else {
@@ -346,11 +367,13 @@ void PlayerEngine::play()
 
 void PlayerEngine::prev()
 {
+    savePreviousMovieState();
     _playlist->playPrev(true);
 }
 
 void PlayerEngine::next()
 {
+    savePreviousMovieState();
     _playlist->playNext(true);
 }
 
@@ -365,6 +388,7 @@ void PlayerEngine::onPlaylistAsyncAppendFinished()
 
 void PlayerEngine::playByName(const QUrl& url)
 {
+    savePreviousMovieState();
     auto id = _playlist->indexOf(url);
     if (id >= 0) {
         _playlist->changeCurrent(id);
@@ -375,6 +399,7 @@ void PlayerEngine::playByName(const QUrl& url)
 
 void PlayerEngine::playSelected(int id)
 {
+    savePreviousMovieState();
     _playlist->changeCurrent(id);
 }
 
