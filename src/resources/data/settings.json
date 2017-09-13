@@ -9,6 +9,14 @@
                     "name": "Play",
                     "options": [
                         {
+                            "key": "light_theme",
+                            "name": "is light theme",
+                            "hide": true,
+                            "reset": false,
+                            "type": "checkbox",
+                            "default": false
+                        },
+                        {
                             "key": "emptylist",
                             "name": "",
                             "type": "checkbox",
@@ -277,26 +285,6 @@
                             "default": 38
                         }
                     ]
-                }
-            ]
-        },
-        {
-            "key": "internal",
-            "name": "Internal",
-            "options": [
-                {
-                    "key": "light_theme",
-                    "name": "is light theme",
-                    "hide": true,
-                    "reset": false,
-                    "type": "checkbox",
-                    "default": false
-                },
-                {
-                    "key": "codepage",
-                    "name": "Codepage",
-                    "type": "lineedit",
-                    "default": "auto"
                 }
             ]
         }
