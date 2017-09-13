@@ -1244,7 +1244,6 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         case ActionFactory::ActionKind::ChangeSubCodepage: {
             Q_ASSERT(args.size() == 1);
             _engine->setSubCodepage(args[0].toString());
-            Settings::get().setInternalOption("codepage", args[0]);
             if (!fromUI) {
                 reflectActionToUI(kd);
             }
