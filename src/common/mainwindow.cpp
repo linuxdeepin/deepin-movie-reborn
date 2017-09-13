@@ -1948,7 +1948,11 @@ void MainWindow::dropEvent(QDropEvent *ev)
     }
 
     if (valids.size()) {
-        _engine->playByName(QUrl("playlist://0"));
+        if (valids.size() == 1) {
+            _engine->playByName(valids[0]);
+        } else {
+            _engine->playByName(QUrl("playlist://0"));
+        }
     }
     ev->acceptProposedAction();
 }

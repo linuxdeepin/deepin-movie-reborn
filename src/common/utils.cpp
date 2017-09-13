@@ -105,44 +105,38 @@ QFileInfoList FindSimilarFiles(const QFileInfo& fi)
         
     }
 
-    SortSimilarFiles(fil);
+    //struct {
+        //bool operator()(const QFileInfo& fi1, const QFileInfo& fi2) const {
+            //return CompareNames(fi1.fileName(), fi2.fileName());
+        //}
+    //} SortByDigits;
+    //std::sort(fil.begin(), fil.end(), SortByDigits);
     return fil;
 }
 
-QFileInfoList& SortSimilarFiles(QFileInfoList& fil)
+bool CompareNames(const QString& fileName1, const QString& fileName2) 
 {
-    //sort names by digits inside, take care of such a possible:
-    //S01N04, S02N05, S01N12, S02N04, etc...
-    struct {
-        bool operator()(const QFileInfo& fi1, const QFileInfo& fi2) const {
-            auto fileName1 = fi1.fileName();
-            auto fileName2 = fi2.fileName();
+    static QRegExp rd("\\d+");
+    int pos = 0;
+    while ((pos = rd.indexIn(fileName1, pos)) != -1) {
+        auto inc = rd.matchedLength();
+        auto id1 = fileName1.midRef(pos, inc);
 
-            QRegExp rd("\\d+");
-            int pos = 0;
-            while ((pos = rd.indexIn(fileName1, pos)) != -1) {
-                auto id1 = fileName1.midRef(pos, rd.matchedLength());
-
-                auto pos2 = rd.indexIn(fileName2, pos);
-                if (pos == pos2) {
-                    auto id2 = fileName2.midRef(pos, rd.matchedLength());
-                    //qDebug() << "id compare " << id1 << id2;
-                    if (id1 != id2) {
-                        bool ok1, ok2;
-                        bool v = id1.toInt(&ok1) < id2.toInt(&ok2);
-                        if (ok1 && ok2) return v;
-                        return id1.localeAwareCompare(id2) < 0;
-                    }
-                }
-
-                pos += rd.matchedLength();
+        auto pos2 = rd.indexIn(fileName2, pos);
+        if (pos == pos2) {
+            auto id2 = fileName2.midRef(pos, rd.matchedLength());
+            //qDebug() << "id compare " << id1 << id2;
+            if (id1 != id2) {
+                bool ok1, ok2;
+                bool v = id1.toInt(&ok1) < id2.toInt(&ok2);
+                if (ok1 && ok2) return v;
+                return id1.localeAwareCompare(id2) < 0;
             }
-            return fileName1.localeAwareCompare(fileName2) < 0;
         }
-    } SortByDigits;
-    std::sort(fil.begin(), fil.end(), SortByDigits);
-    
-    return fil;
+
+        pos += inc;
+    }
+    return fileName1.localeAwareCompare(fileName2) < 0;
 }
 
 // hash the whole file takes amount of time, so just pick some areas to be hashed
