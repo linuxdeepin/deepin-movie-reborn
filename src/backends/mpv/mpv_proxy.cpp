@@ -116,8 +116,6 @@ mpv_handle* MpvProxy::mpv_init()
         set_property(h, "hwdec", "off");
     }
 
-    set_property(h, "reset-on-next-file", "video-aspect,af,vf,fullscreen,speed,pause");
-    
 
     set_property(h, "volume-max", 200.0);
     set_property(h, "input-cursor", "no");
@@ -194,6 +192,24 @@ void MpvProxy::pollingEndOfPlayback()
         if (ev->event_id == MPV_EVENT_END_FILE) {
             qDebug() << "end of playback";
             setState(Backend::Stopped);
+            break;
+        }
+    }
+}
+
+void MpvProxy::pollingStartOfPlayback()
+{
+    if (_state != Backend::PlayState::Stopped)
+        return;
+
+    while (_state == Backend::Stopped) {
+        mpv_event* ev = mpv_wait_event(_handle, 0.005);
+        if (ev->event_id == MPV_EVENT_NONE) 
+            continue;
+
+        if (ev->event_id == MPV_EVENT_FILE_LOADED) {
+            qDebug() << "start of playback";
+            setState(Backend::Playing);
             break;
         }
     }
@@ -305,6 +321,10 @@ void MpvProxy::processPropertyChange(mpv_event_property* ev)
     } else if (name == "aid") {
         emit aidChanged();
     } else if (name == "sid") {
+        if (_externalSubJustLoaded) {
+            MovieConfiguration::get().updateUrl(this->_file, ConfigKnownKey::SubId, sid());
+            _externalSubJustLoaded = false;
+        }
         emit sidChanged();
     } else if (name == "mute") {
         emit muteChanged();
@@ -331,9 +351,13 @@ void MpvProxy::loadSubtitle(const QFileInfo& fi)
         return;
     }
 
-    QList<QVariant> args = { "sub-add", fi.absoluteFilePath() };
+    QList<QVariant> args = { "sub-add", fi.absoluteFilePath(), "select" };
     qDebug () << args;
-    command(_handle, args);
+    QVariant id = command(_handle, args);
+
+    // by settings this flag, we can match the corresponding sid change and save it 
+    // in the movie database
+    _externalSubJustLoaded = true;
 }
 
 bool MpvProxy::isSubVisible()
@@ -344,6 +368,7 @@ bool MpvProxy::isSubVisible()
 void MpvProxy::setSubDelay(double secs)
 {
     set_property(_handle, "sub-delay", secs);
+    MovieConfiguration::get().updateUrl(_file, ConfigKnownKey::SubDelay, subDelay());
 }
 
 double MpvProxy::subDelay() const
@@ -364,6 +389,7 @@ QString MpvProxy::subCodepage()
 void MpvProxy::addSubSearchPath(const QString& path)
 {
     set_property(_handle, "sub-paths", path);
+    set_property(_handle, "sub-file-paths", path);
 }
 
 void MpvProxy::setSubCodepage(const QString& cp)
@@ -374,6 +400,7 @@ void MpvProxy::setSubCodepage(const QString& cp)
 
     set_property(_handle, "sub-codepage", cp2);
     command(_handle, {"sub-reload"});
+    MovieConfiguration::get().updateUrl(_file, ConfigKnownKey::SubCodepage, subCodepage());
 }
 
 void MpvProxy::updateSubStyle(const QString& font, int sz)
@@ -395,7 +422,7 @@ void MpvProxy::savePlaybackPosition()
         return;
     }
 
-    //MovieConfiguration::get().updateUrl(this->_file, ConfigKnownKey::SubId, sid());
+    MovieConfiguration::get().updateUrl(this->_file, ConfigKnownKey::SubId, sid());
     MovieConfiguration::get().updateUrl(this->_file, ConfigKnownKey::StartPos, elapsed());
 }
 
@@ -408,6 +435,7 @@ void MpvProxy::setPlaySpeed(double times)
 void MpvProxy::selectSubtitle(int id)
 {
     set_property(_handle, "sid", id);
+    MovieConfiguration::get().updateUrl(_file, ConfigKnownKey::SubId, sid());
 }
 
 void MpvProxy::toggleSubtitle()
@@ -512,6 +540,7 @@ void MpvProxy::toggleMute()
 void MpvProxy::play()
 {
     QList<QVariant> args = { "loadfile" };
+    QStringList opts = { };
 
     if (_file.isLocalFile()) {
         args << QFileInfo(_file.toLocalFile()).absoluteFilePath();
@@ -521,10 +550,57 @@ void MpvProxy::play()
     auto cfg = MovieConfiguration::get().queryByUrl(_file);
     auto key = MovieConfiguration::knownKey2String(ConfigKnownKey::StartPos);
     if (Settings::get().isSet(Settings::ResumeFromLast) && cfg.contains(key)) {
-        args << "replace" << QString("start=%1").arg(cfg[key].toInt());
+        opts << QString("start=%1").arg(cfg[key].toInt());
     }
+
+#if 0
+    //FIXME: how to keep load order?
+    auto ext_subs = MovieConfiguration::get().getListByUrl(_file,
+            ConfigKnownKey::ExternalSubs);
+    for(const auto& sub: ext_subs) {
+        opts << QString("sub-file=%1").arg(sub);
+    }
+
+    key = MovieConfiguration::knownKey2String(ConfigKnownKey::SubId);
+    if (cfg.contains(key)) {
+        opts << QString("sid=%1").arg(cfg[key].toInt());
+    }
+#endif
+
+    key = MovieConfiguration::knownKey2String(ConfigKnownKey::SubCodepage);
+    if (cfg.contains(key)) {
+        opts << QString("sub-codepage=%1").arg(cfg[key].toString());
+    }
+
+    key = MovieConfiguration::knownKey2String(ConfigKnownKey::SubDelay);
+    if (cfg.contains(key)) {
+        opts << QString("sub-delay=%1").arg(cfg[key].toDouble());
+    }
+
+    if (opts.size()) {
+        //opts << "sub-auto=fuzzy";
+        args << "replace" << opts.join(',');
+    }
+
     qDebug () << args;
     command(_handle, args);
+
+    // by giving a period of time, movie will be loaded and auto-loaded subs are 
+    // all ready, then load extra subs from db
+    // this keeps order of subs
+    QTimer::singleShot(100, [this]() {
+        auto cfg = MovieConfiguration::get().queryByUrl(_file);
+        auto ext_subs = MovieConfiguration::get().getListByUrl(_file,
+                ConfigKnownKey::ExternalSubs);
+        for(const auto& sub: ext_subs) {
+            loadSubtitle(sub);
+        }
+
+        auto key = MovieConfiguration::knownKey2String(ConfigKnownKey::SubId);
+        if (cfg.contains(key)) {
+            selectSubtitle(cfg[key].toInt());
+        }
+    });
 }
 
 
@@ -744,6 +820,7 @@ void MpvProxy::updatePlayingMovieInfo()
             ai["id"] = t["id"];
             ai["lang"] = t["lang"];
             ai["external"] = t["external"];
+            ai["external-filename"] = t["external-filename"];
             ai["selected"] = t["selected"];
             ai["title"] = t["title"];
 
@@ -762,6 +839,7 @@ void MpvProxy::updatePlayingMovieInfo()
             si["id"] = t["id"];
             si["lang"] = t["lang"];
             si["external"] = t["external"];
+            si["external-filename"] = t["external-filename"];
             si["selected"] = t["selected"];
             si["title"] = t["title"];
             if (t["title"].toString().size() == 0) {

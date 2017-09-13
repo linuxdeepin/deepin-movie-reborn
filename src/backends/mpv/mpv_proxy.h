@@ -24,6 +24,8 @@ public:
 
     // polling until current playback ended
     void pollingEndOfPlayback();
+    // polling until current playback started
+    void pollingStartOfPlayback();
 
     qint64 duration() const override;
     qint64 elapsed() const override;
@@ -97,6 +99,8 @@ private:
     bool _pendingSeek {false};
     PlayingMovieInfo _pmf;
     int _videoRotation {0};
+
+    bool _externalSubJustLoaded {false};
 
     mpv_handle* mpv_init();
     void processPropertyChange(mpv_event_property* ev);

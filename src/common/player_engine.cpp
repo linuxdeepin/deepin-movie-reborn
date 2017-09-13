@@ -168,7 +168,20 @@ void PlayerEngine::loadSubtitle(const QFileInfo& fi)
     if (state() == CoreState::Idle) { return; }
     if (!_current) return;
 
+    const auto& pmf = _current->playingMovieInfo();
+    auto pif = playlist().currentInfo();
+    for (const auto& sub: pmf.subs) {
+        if (sub["external"].toBool()) {
+            auto path = sub["external-filename"].toString();
+            if (path == fi.canonicalFilePath()) {
+                return;
+            }
+        }
+    }
+
     _current->loadSubtitle(fi);
+    MovieConfiguration::get().append2ListUrl(pif.url, ConfigKnownKey::ExternalSubs,
+            fi.canonicalFilePath());
 }
 
 void PlayerEngine::loadOnlineSubtitle(const QUrl& url)
@@ -190,12 +203,6 @@ void PlayerEngine::setSubDelay(double secs)
     if (!_current) return;
 
     _current->setSubDelay(secs + _current->subDelay());
-
-    if (state() != CoreState::Idle) {
-        auto pif = playlist().currentInfo();
-        MovieConfiguration::get().updateUrl(pif.url, ConfigKnownKey::SubDelay,
-                _current->subDelay());
-    }
 }
 
 double PlayerEngine::subDelay() const
@@ -213,12 +220,6 @@ void PlayerEngine::setSubCodepage(const QString& cp)
 {
     if (!_current) return;
     _current->setSubCodepage(cp);
-
-    if (state() != CoreState::Idle) {
-        auto pif = playlist().currentInfo();
-        MovieConfiguration::get().updateUrl(pif.url, ConfigKnownKey::SubCodepage,
-                _current->subCodepage());
-    }
 
     emit subCodepageChanged();
 }
@@ -243,10 +244,6 @@ void PlayerEngine::selectSubtitle(int id)
         if (id >= pmf.subs.size()) return;
         auto sid = pmf.subs[id]["id"].toInt();
         _current->selectSubtitle(sid);
-
-        auto pif = playlist().currentInfo();
-        MovieConfiguration::get().updateUrl(pif.url, ConfigKnownKey::SubId, 
-                _current->sid());
     }
 }
 
@@ -321,32 +318,8 @@ void PlayerEngine::requestPlay(int id)
     const auto& item = _playlist->items()[id];
     _current->setPlayFile(item.url);
     if (_current->isPlayable()) {
-        QString key;
-        auto cfg = MovieConfiguration::get().queryByUrl(item.url);
-
         _current->play();
 
-        key = MovieConfiguration::knownKey2String(ConfigKnownKey::SubDelay);
-        if (cfg.contains(key)) {
-            _current->setSubDelay(cfg[key].toDouble());
-        } else {
-            _current->setSubDelay(0.0);
-        }
-
-        key = MovieConfiguration::knownKey2String(ConfigKnownKey::SubCodepage);
-        if (cfg.contains(key)) {
-            _current->setSubCodepage(cfg[key].toString());
-        } else {
-            _current->setSubCodepage("auto");
-        }
-        emit subCodepageChanged();
-
-        key = MovieConfiguration::knownKey2String(ConfigKnownKey::SubId);
-        if (cfg.contains(key)) {
-            _current->selectSubtitle(cfg[key].toInt());
-        }
-
-        updateSubStyles();
     } else {
         // TODO: delete and try next backend?
     }
