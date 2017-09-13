@@ -1481,6 +1481,12 @@ void MainWindow::handleSettings()
     dsd->updateSettings(Settings::get().settings());
     workaround_updateStyle(dsd, "dlight");
 
+    //hack:
+    auto subft = dsd->findChild<QSpinBox*>("OptionDSpinBox");
+    if (subft) {
+        subft->setMinimum(8);
+    }
+
     dsd->exec();
     delete dsd;
     Settings::get().settings()->sync();
