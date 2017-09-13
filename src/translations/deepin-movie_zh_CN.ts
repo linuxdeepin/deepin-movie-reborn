@@ -646,7 +646,7 @@
     <name>dmr::MainWindow</name>
     <message>
         <location filename="../common/mainwindow.cpp" line="369"/>
-        <location filename="../common/mainwindow.cpp" line="1640"/>
+        <location filename="../common/mainwindow.cpp" line="1657"/>
         <source>Deepin Movie</source>
         <translation>深度影院</translation>
     </message>
@@ -738,7 +738,7 @@
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1380"/>
-        <location filename="../common/mainwindow.cpp" line="1443"/>
+        <location filename="../common/mainwindow.cpp" line="1460"/>
         <source>The screenshot is saved to %1</source>
         <translation>截图已保存到%1</translation>
     </message>
@@ -785,7 +785,7 @@
         <translation type="vanished">您的截图已保存到%1</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1942"/>
+        <location filename="../common/mainwindow.cpp" line="1959"/>
         <source>Invalid file: %1</source>
         <translation>无效文件：%1</translation>
     </message>

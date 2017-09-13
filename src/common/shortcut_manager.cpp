@@ -124,6 +124,7 @@ void ShortcutManager::buildBindingsFromSettings()
     _map.insert(QKeySequence(Qt::Key_Right + Qt::SHIFT), ActionFactory::SeekForwardLarge);
     _map.insert(QKeySequence(Qt::Key_Space), ActionFactory::TogglePause);
     _map.insert(QKeySequence(Qt::Key_Escape), ActionFactory::QuitFullscreen);
+    _map.insert(QKeySequence(Qt::Key_Slash + Qt::CTRL + Qt::SHIFT), ActionFactory::ViewShortcut);
 
     QPointer<DSettingsGroup> shortcuts = Settings::get().shortcuts();
 
@@ -138,6 +139,45 @@ void ShortcutManager::buildBindingsFromSettings()
         toggleGroupShortcuts(grp, true);
     });
 
+}
+
+QString ShortcutManager::toJson() 
+{
+    QJsonObject shortcutObj;
+    QJsonArray jsonGroups;
+
+    QPointer<DSettingsGroup> shortcuts = Settings::get().shortcuts();
+    auto subgroups = shortcuts->childGroups();
+    std::for_each(subgroups.begin(), subgroups.end(), [&](GroupPtr grp) {
+        qDebug() << grp->name();
+
+        QJsonObject jsonGroup;
+        jsonGroup.insert("groupName", qApp->translate("QObject", grp->name().toUtf8().data()));
+        QJsonArray jsonItems;
+ 
+        auto sub = grp->childOptions();
+        std::for_each(sub.begin(), sub.end(), [&](OptionPtr opt) {
+            if (opt->viewType() != "shortcut") return;
+
+            QStringList keyseqs = opt->value().toStringList();
+            Q_ASSERT (keyseqs.length() == 2);
+            auto modifier = static_cast<Qt::KeyboardModifiers>(keyseqs.value(0).toInt());
+            auto key = static_cast<Qt::Key>(keyseqs.value(1).toInt());
+
+            QJsonObject jsonItem;
+            jsonItem.insert("name", qApp->translate("QObject", opt->name().toUtf8().data()));
+            jsonItem.insert("value", QKeySequence(modifier + key).toString(QKeySequence::PortableText));
+            jsonItems.append(jsonItem);
+
+        });
+
+        jsonGroup.insert("groupItems", jsonItems);
+        jsonGroups.append(jsonGroup);
+    });
+    shortcutObj.insert("shortcut", jsonGroups);
+
+    QJsonDocument doc(shortcutObj);
+    return doc.toJson().data();
 }
 
 vector<QAction*> ShortcutManager::actionsForBindings()
