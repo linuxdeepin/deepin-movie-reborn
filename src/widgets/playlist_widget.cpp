@@ -181,6 +181,8 @@ protected:
             msg = _pif.url.toString();
         }
         _name->setText(_name->fontMetrics().elidedText(msg, Qt::ElideMiddle, 270));
+        _name->viewport()->setCursor(Qt::ArrowCursor);
+        _name->setCursor(Qt::ArrowCursor);
 
         int text_height = _name->document()->size().height();
         _name->setFixedHeight(text_height);
