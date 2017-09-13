@@ -531,7 +531,7 @@
     <name>dmr::MainWindow</name>
     <message>
         <location filename="../common/mainwindow.cpp" line="369"/>
-        <location filename="../common/mainwindow.cpp" line="1640"/>
+        <location filename="../common/mainwindow.cpp" line="1657"/>
         <source>Deepin Movie</source>
         <translation type="unfinished"></translation>
     </message>
@@ -633,12 +633,12 @@
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1380"/>
-        <location filename="../common/mainwindow.cpp" line="1443"/>
+        <location filename="../common/mainwindow.cpp" line="1460"/>
         <source>The screenshot is saved to %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1942"/>
+        <location filename="../common/mainwindow.cpp" line="1959"/>
         <source>Invalid file: %1</source>
         <translation type="unfinished"></translation>
     </message>

@@ -1389,6 +1389,23 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             break;
         }
 
+        case ActionFactory::ActionKind::ViewShortcut: {
+            QRect rect = window()->geometry();
+            QPoint pos(rect.x() + rect.width()/2 , rect.y() + rect.height()/2);
+            QStringList shortcutString;
+            QString param1 = "-j=" + ShortcutManager::get().toJson();
+            QString param2 = "-p=" + QString::number(pos.x()) + "," + QString::number(pos.y());
+            shortcutString << param1 << param2;
+
+            QProcess* shortcutViewProcess = new QProcess();
+            shortcutViewProcess->startDetached("deepin-shortcut-viewer", shortcutString);
+
+            connect(shortcutViewProcess, SIGNAL(finished(int)),
+            shortcutViewProcess, SLOT(deleteLater()));
+
+            break;
+        }
+
         default:
             break;
     }
