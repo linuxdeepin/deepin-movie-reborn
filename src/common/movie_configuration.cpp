@@ -129,6 +129,24 @@ public:
         _db.commit();
     }
 
+    QVariant queryValueByUrlKey(const QUrl& url, const QString& key)
+    {
+        if (!urlExists(url))
+            return {};
+
+        QSqlQuery q(_db);
+        q.prepare("select value from infos where url = ? and key = ?");
+        q.addBindValue(url);
+        q.addBindValue(key);
+        CHECKED_EXEC(q);
+
+        if (q.next()) {
+            return q.value(0);
+        }
+
+        return QVariant();
+    }
+
     QMap<QString, QVariant> queryByUrl(const QUrl& url)
     {
         if (!urlExists(url))
@@ -194,6 +212,20 @@ void MovieConfiguration::updateUrl(const QUrl& url, KnownKey key, const QVariant
     updateUrl(url, knownKey2String(key), val);
 }
 
+void MovieConfiguration::append2ListUrl(const QUrl& url, KnownKey key, const QString& val)
+{
+    auto list = getByUrl(url, knownKey2String(key)).toString().split(';', QString::SkipEmptyParts);
+    auto bytes = val.toUtf8().toBase64();
+    list.append(bytes);
+    updateUrl(url, key, list.join(';'));
+}
+
+void MovieConfiguration::removeFromListUrl(const QUrl& url, KnownKey key, const QString& val)
+{
+    auto list = getListByUrl(url, key);
+
+}
+
 QString MovieConfiguration::knownKey2String(KnownKey kk)
 {
     switch (kk) {
@@ -201,18 +233,29 @@ QString MovieConfiguration::knownKey2String(KnownKey kk)
         case KnownKey::SubCodepage: return "sub-codepage";
         case KnownKey::SubId: return "sid";
         case KnownKey::StartPos: return "start";
+        case KnownKey::ExternalSubs: return "external-subs";
         default: return "";
     }
 }
 
+QStringList MovieConfiguration::getListByUrl(const QUrl& url, KnownKey key)
+{
+    return decodeList(getByUrl(url, knownKey2String(key)));
+}
+
+QStringList MovieConfiguration::decodeList(const QVariant& val)
+{
+    auto list = val.toString().split(';', QString::SkipEmptyParts);
+    std::transform(list.begin(), list.end(), list.begin(), [](const QString& s) {
+        return QByteArray::fromBase64(s.toUtf8());
+    });
+
+    return list;
+}
+
 QVariant MovieConfiguration::getByUrl(const QUrl& url, const QString& key)
 {
-    auto res = queryByUrl(key);
-    if (res.contains(key)) {
-        return res[key];
-    }
-
-    return QVariant();
+    return _backend->queryValueByUrlKey(url, key);
 }
 
 QVariant MovieConfiguration::getByUrl(const QUrl& url, KnownKey key)

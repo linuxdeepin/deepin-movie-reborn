@@ -17,6 +17,7 @@ public:
         SubCodepage,
         SubId,
         StartPos,
+        ExternalSubs
     };
 
     static MovieConfiguration& get();
@@ -27,10 +28,20 @@ public:
     bool urlExists(const QUrl& url);
     void updateUrl(const QUrl& url, const QString& key, const QVariant& val);
     void updateUrl(const QUrl& url, KnownKey key, const QVariant& val);
+    //helper for update list type entries
+    void append2ListUrl(const QUrl& url, KnownKey key, const QString& val);
+    void removeFromListUrl(const QUrl& url, KnownKey key, const QString& val);
+
+    //list all settings for url
     QMap<QString, QVariant> queryByUrl(const QUrl& url);
 
     QVariant getByUrl(const QUrl& url, const QString& key);
     QVariant getByUrl(const QUrl& url, KnownKey key);
+    //helper for get list type entries
+    QStringList getListByUrl(const QUrl& url, KnownKey key);
+
+    //helper
+    QStringList decodeList(const QVariant& val);
 
     ~MovieConfiguration();
     static QString knownKey2String(KnownKey kk);
