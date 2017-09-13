@@ -477,12 +477,8 @@ MainWindow::MainWindow(QWidget *parent)
         reflectActionToUI(ActionFactory::ActionKind::ChangeSubCodepage);
     });
 
-    connect(_engine, &PlayerEngine::fileLoaded, 
-            this, &MainWindow::resizeByConstraints);
-    connect(_engine, &PlayerEngine::videoSizeChanged,
-            this, &MainWindow::resizeByConstraints);
-    connect(&_engine->playlist(), &PlaylistModel::currentChanged,
-            this, &MainWindow::resizeByConstraints);
+    connect(_engine, &PlayerEngine::fileLoaded, this, &MainWindow::resizeByConstraints);
+    connect(_engine, &PlayerEngine::videoSizeChanged, this, &MainWindow::resizeByConstraints);
 
     connect(_engine, &PlayerEngine::stateChanged, this, &MainWindow::updatePlayState);
     updatePlayState();
@@ -1477,10 +1473,14 @@ void MainWindow::startBurstShooting()
 void MainWindow::handleSettings()
 {
     auto dsd = new DSettingsDialog(this);
+
+    dsd->setProperty("_d_QSSThemename", "dark");
+    dsd->setProperty("_d_QSSFilename", "DSettingsDialog");
+    DThemeManager::instance()->registerWidget(dsd);
+    
     dsd->updateSettings(Settings::get().settings());
     workaround_updateStyle(dsd, "dlight");
-    auto qss = DThemeManager::instance()->getQssForWidget("dialogs/DSettingsDialog", "light");
-    dsd->setStyleSheet(qss);
+
     dsd->exec();
     delete dsd;
     Settings::get().settings()->sync();
