@@ -616,26 +616,7 @@ static QList<PlayItemInfo>& SortSimilarFiles(QList<PlayItemInfo>& fil)
             QString fileName2 = fi2.url.fileName();
 
             if (utils::IsNamesSimilar(fileName1, fileName2)) {
-                QRegExp rd("\\d+");
-                int pos = 0;
-                while ((pos = rd.indexIn(fileName1, pos)) != -1) {
-                    auto inc = rd.matchedLength();
-                    auto id1 = fileName1.midRef(pos, inc);
-
-                    auto pos2 = rd.indexIn(fileName2, pos);
-                    if (pos == pos2) {
-                        auto id2 = fileName2.midRef(pos, rd.matchedLength());
-                        //qDebug() << "id compare " << id1 << id2;
-                        if (id1 != id2) {
-                            bool ok1, ok2;
-                            bool v = id1.toInt(&ok1) < id2.toInt(&ok2);
-                            if (ok1 && ok2) return v;
-                            return id1.localeAwareCompare(id2) < 0;
-                        }
-                    }
-
-                    pos += inc;
-                }
+                return utils::CompareNames(fileName1, fileName2);
             }
             return fileName1.localeAwareCompare(fileName2) < 0;
         }
