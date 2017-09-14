@@ -151,7 +151,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="8"/>
         <source>is light theme</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="9"/>
@@ -823,8 +823,8 @@
 <context>
     <name>dmr::MpvProxy</name>
     <message>
-        <location filename="../backends/mpv/mpv_proxy.cpp" line="831"/>
-        <location filename="../backends/mpv/mpv_proxy.cpp" line="849"/>
+        <location filename="../backends/mpv/mpv_proxy.cpp" line="830"/>
+        <location filename="../backends/mpv/mpv_proxy.cpp" line="848"/>
         <source>[internal]</source>
         <translation>【内部】</translation>
     </message>
@@ -850,6 +850,60 @@
         <location filename="../common/dmr_settings.cpp" line="134"/>
         <source>%1/DMovie%2(%3).jpg</source>
         <translation>%1/深度影院%2（%3）.jpg</translation>
+    </message>
+</context>
+<context>
+    <name>dmr::ToolboxProxy</name>
+    <message>
+        <location filename="../widgets/toolbox_proxy.cpp" line="526"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="683"/>
+        <source>Play</source>
+        <translation>播放</translation>
+    </message>
+    <message>
+        <location filename="../widgets/toolbox_proxy.cpp" line="527"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="652"/>
+        <source>Volume</source>
+        <translation>音量</translation>
+    </message>
+    <message>
+        <location filename="../widgets/toolbox_proxy.cpp" line="529"/>
+        <source>Previous</source>
+        <translation>上一个</translation>
+    </message>
+    <message>
+        <location filename="../widgets/toolbox_proxy.cpp" line="530"/>
+        <source>Next</source>
+        <translation>下一个</translation>
+    </message>
+    <message>
+        <location filename="../widgets/toolbox_proxy.cpp" line="531"/>
+        <source>Subtitles</source>
+        <translation>字幕</translation>
+    </message>
+    <message>
+        <location filename="../widgets/toolbox_proxy.cpp" line="532"/>
+        <source>Playlist</source>
+        <translation>播放列表</translation>
+    </message>
+    <message>
+        <location filename="../widgets/toolbox_proxy.cpp" line="533"/>
+        <source>Fullscreen</source>
+        <translation>全屏</translation>
+    </message>
+    <message>
+        <location filename="../widgets/toolbox_proxy.cpp" line="649"/>
+        <source>Mute</source>
+        <translation>静音</translation>
+    </message>
+    <message>
+        <source>Volume: %1%</source>
+        <translation type="obsolete">音量：%1%</translation>
+    </message>
+    <message>
+        <location filename="../widgets/toolbox_proxy.cpp" line="680"/>
+        <source>Pause</source>
+        <translation>暂停</translation>
     </message>
 </context>
 <context>

@@ -523,6 +523,15 @@ void ToolboxProxy::setup()
     _right->addWidget(_listBtn);
 #endif
 
+    _playBtn->setToolTip(tr("Play"));
+    _volBtn->setToolTip(tr("Volume"));
+
+    _prevBtn->setToolTip(tr("Previous"));
+    _nextBtn->setToolTip(tr("Next"));
+    _subBtn->setToolTip(tr("Subtitles"));
+    _listBtn->setToolTip(tr("Playlist"));
+    _fsBtn->setToolTip(tr("Fullscreen"));
+
     connect(_engine, &PlayerEngine::stateChanged, this, &ToolboxProxy::updatePlayState);
     connect(_engine, &PlayerEngine::fileLoaded, [=]() {
         _progBar->setRange(0, _engine->duration());
@@ -637,9 +646,10 @@ void ToolboxProxy::updateVolumeState()
 {
     if (_engine->muted()) {
         _volBtn->changeLevel(VolumeButton::Mute);
+        _volBtn->setToolTip(tr("Mute"));
     } else {
         auto v = _engine->volume();
-        qDebug() << __func__ << v;
+        _volBtn->setToolTip(tr("Volume"));
         if (v >= 80)
             _volBtn->changeLevel(VolumeButton::High);
         else if (v >= 40)
@@ -667,8 +677,10 @@ void ToolboxProxy::updatePlayState()
     qDebug() << __func__ << _engine->state();
     if (_engine->state() == PlayerEngine::CoreState::Playing) {
         _playBtn->setObjectName("PauseBtn");
+        _playBtn->setToolTip(tr("Pause"));
     } else {
         _playBtn->setObjectName("PlayBtn");
+        _playBtn->setToolTip(tr("Play"));
     }
     _playBtn->setStyleSheet(_playBtn->styleSheet());
 }

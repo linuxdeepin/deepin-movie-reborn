@@ -664,8 +664,8 @@
 <context>
     <name>dmr::MpvProxy</name>
     <message>
-        <location filename="../backends/mpv/mpv_proxy.cpp" line="831"/>
-        <location filename="../backends/mpv/mpv_proxy.cpp" line="849"/>
+        <location filename="../backends/mpv/mpv_proxy.cpp" line="830"/>
+        <location filename="../backends/mpv/mpv_proxy.cpp" line="848"/>
         <source>[internal]</source>
         <translation type="unfinished"></translation>
     </message>
@@ -690,6 +690,56 @@
     <message>
         <location filename="../common/dmr_settings.cpp" line="134"/>
         <source>%1/DMovie%2(%3).jpg</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>dmr::ToolboxProxy</name>
+    <message>
+        <location filename="../widgets/toolbox_proxy.cpp" line="526"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="683"/>
+        <source>Play</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../widgets/toolbox_proxy.cpp" line="527"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="652"/>
+        <source>Volume</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../widgets/toolbox_proxy.cpp" line="529"/>
+        <source>Previous</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../widgets/toolbox_proxy.cpp" line="530"/>
+        <source>Next</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../widgets/toolbox_proxy.cpp" line="531"/>
+        <source>Subtitles</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../widgets/toolbox_proxy.cpp" line="532"/>
+        <source>Playlist</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../widgets/toolbox_proxy.cpp" line="533"/>
+        <source>Fullscreen</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../widgets/toolbox_proxy.cpp" line="649"/>
+        <source>Mute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../widgets/toolbox_proxy.cpp" line="680"/>
+        <source>Pause</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
