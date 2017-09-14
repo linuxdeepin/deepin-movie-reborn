@@ -777,8 +777,7 @@ void MpvProxy::seekAbsolute(int pos)
     //if (_pendingSeek) return;
     QList<QVariant> args = { "seek", QVariant(pos), "absolute" };
     qDebug () << args;
-    command_async(_handle, args, AsyncReplyTag::SEEK);
-    _pendingSeek = true;
+    command(_handle, args);
 }
 
 QSize MpvProxy::videoSize() const

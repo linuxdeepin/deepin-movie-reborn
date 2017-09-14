@@ -22,6 +22,7 @@ protected:
 private:
     bool _down {false};
     int _lastHoverValue {0};
+    int position2progress(const QPoint& p);
 };
 
 }

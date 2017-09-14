@@ -16,30 +16,32 @@ void DMRSlider::mouseReleaseEvent(QMouseEvent *e)
     _down = false;
 }
 
+int DMRSlider::position2progress(const QPoint& p)
+{
+    auto total = (maximum() - minimum());
+
+    if (orientation() == Qt::Horizontal) {
+        qreal span = (qreal)total / contentsRect().width();
+        return span * (p.x()) + minimum();
+    } else {
+        qreal span = (qreal)total / contentsRect().height();
+        return span * (height() - p.y()) + minimum();
+    }
+}
+
 void DMRSlider::mousePressEvent(QMouseEvent *e)
 {
     QSlider::mousePressEvent(e);
     blockSignals(true);
 
-    int v = 0;
-    if (orientation() == Qt::Horizontal) {
-        v = (maximum() - minimum()) * e->x() / width() + minimum();
-    } else {
-        v = (maximum() - minimum()) * (height() - e->y()) / height() + minimum();
-    }
+    int v = position2progress(e->pos());;
     setSliderPosition(v);
     _down = true;
 }
 
 void DMRSlider::mouseMoveEvent(QMouseEvent *e)
 {
-    int v = 0;
-    if (orientation() == Qt::Horizontal) {
-        v = (maximum() - minimum()) * e->x() / width() + minimum();
-    } else {
-        v = (maximum() - minimum()) * (height() - e->y()) / height() + minimum();
-    }
-
+    int v = position2progress(e->pos());;
     if (_down) {
         setSliderPosition(v);
     }

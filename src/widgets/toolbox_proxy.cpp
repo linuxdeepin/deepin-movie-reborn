@@ -581,12 +581,11 @@ void ToolboxProxy::progressHoverChanged(int v)
     if (!_engine->playlist().currentInfo().url.isLocalFile())
         return;
 
-    qDebug() << v;
     _lastHoverValue = v;
     ThumbnailWorker::get().requestThumb(_engine->playlist().currentInfo().url, v);
 
     auto geom = _progBar->frameGeometry();
-    double pert = (double) _lastHoverValue / (_progBar->maximum() - _progBar->minimum());
+    double pert = (double) v / (_progBar->maximum() - _progBar->minimum());
 
     auto pos = _progBar->mapToGlobal(QPoint(0, 0));
     QPoint p = {
@@ -597,12 +596,13 @@ void ToolboxProxy::progressHoverChanged(int v)
 
 void ToolboxProxy::setProgress()
 {
-    qDebug() << _progBar->sliderPosition() << _progBar->value() << _progBar->maximum();
     if (_engine->state() == PlayerEngine::CoreState::Idle)
         return;
 
     _engine->seekAbsolute(_progBar->sliderPosition());
-    
+    if (_progBar->sliderPosition() != _lastHoverValue) {
+        progressHoverChanged(_progBar->sliderPosition());
+    }
 }
 
 void ToolboxProxy::updateMovieProgress()

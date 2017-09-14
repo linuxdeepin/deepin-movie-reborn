@@ -62,7 +62,6 @@ ThumbnailWorker::ThumbnailWorker()
 QPixmap ThumbnailWorker::genThumb(const QUrl& url, int secs)
 {
     QPixmap pm;
-
     QTime d(0, 0, 0);
     d = d.addSecs(secs);
     thumber.setSeekTime(d.toString("hh:mm:ss").toStdString());
