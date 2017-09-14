@@ -120,6 +120,7 @@ void PlayerEngine::onBackendStateChanged()
             break;
     }
 
+    updateSubStyles();
     if (old != _state)
         emit stateChanged();
 }
