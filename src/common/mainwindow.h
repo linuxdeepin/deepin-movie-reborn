@@ -148,6 +148,14 @@ private:
     bool _mousePressed {false};
     double _playSpeed {1.0};
 
+    enum StateBeforeEnterMiniMode {
+        SBEM_None = 0x0,
+        SBEM_Above = 0x01,
+        SBEM_Fullscreen = 0x02,
+        SBEM_PlaylistOpened = 0x04
+    }; 
+    int _stateBeforeMiniMode {0};
+
     MainWindowEventListener *_listener {nullptr};
     NotificationWidget *_nwShot {nullptr};
     NotificationWidget *_nwComm {nullptr};
