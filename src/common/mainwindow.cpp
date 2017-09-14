@@ -403,7 +403,7 @@ MainWindow::MainWindow(QWidget *parent)
     _progIndicator = new MovieProgressIndicator(this);
     _progIndicator->setVisible(false);
     connect(windowHandle(), &QWindow::windowStateChanged, [=]() {
-        bool isFullscreen = window()->isFullScreen();
+        bool isFullscreen = isFullScreen();
         //WTF: this->geometry() is not size of fullscreen !
         //_progIndicator->move(geometry().width() - _progIndicator->width() - 18, 14);
         _progIndicator->setVisible(isFullscreen);
@@ -668,12 +668,9 @@ void MainWindow::updateActionsState()
             case ActionFactory::ActionKind::ToggleFullscreen:
             case ActionFactory::ActionKind::MatchOnlineSubtitle:
             case ActionFactory::ActionKind::BurstScreenshot:
-                v = _engine->state() != PlayerEngine::Idle;
-                break;
-
             case ActionFactory::ActionKind::ToggleMiniMode:
             case ActionFactory::ActionKind::WindowAbove:
-                v = _engine->state() != PlayerEngine::Idle && !isFullScreen();
+                v = _engine->state() != PlayerEngine::Idle;
                 break;
 
             case ActionFactory::ActionKind::MovieInfo:
@@ -857,33 +854,6 @@ bool MainWindow::isActionAllowed(ActionFactory::ActionKind kd, bool fromUI, bool
         }
     } else {
         if (isFullScreen()) {
-            switch (kd) {
-                case ActionFactory::WindowAbove:
-#if 0
-                case ActionFactory::ToggleMiniMode:
-                case ActionFactory::DefaultFrame:
-                case ActionFactory::Ratio4x3Frame:
-                case ActionFactory::Ratio16x9Frame:
-                case ActionFactory::Ratio16x10Frame:
-                case ActionFactory::Ratio185x1Frame:
-                case ActionFactory::Ratio235x1Frame:
-                case ActionFactory::ClockwiseFrame:
-                case ActionFactory::CounterclockwiseFrame:
-#endif
-                    if (fromUI) { // which means UI has been toggled and need to reverse
-                        auto acts = ActionFactory::get().findActionsByKind(kd);
-                        auto p = acts.begin();
-                        while (p != acts.end()) {
-                            auto old = (*p)->isEnabled();
-                            (*p)->setEnabled(false);
-                            (*p)->setChecked(!(*p)->isChecked());
-                            (*p)->setEnabled(old);
-                            ++p;
-                        }
-                    }
-                    return false;
-                default: break;
-            }
         }
 
     }
@@ -1054,9 +1024,6 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             if (isFullScreen()) {
                 showNormal();
                 resizeByConstraints();
-                auto acts = ActionFactory::get().findActionsByKind(ActionFactory::ToggleMiniMode);
-                auto p = acts.begin();
-                (*p)->setEnabled(!isFullScreen());
                 if (!fromUI) {
                     reflectActionToUI(ActionFactory::ToggleFullscreen);
                 }
@@ -1071,9 +1038,6 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                 showFullScreen();
             }
             resizeByConstraints();
-            auto acts = ActionFactory::get().findActionsByKind(ActionFactory::ToggleMiniMode);
-            auto p = acts.begin();
-            (*p)->setEnabled(!isFullScreen());
             if (!fromUI) {
                 reflectActionToUI(kd);
             }
@@ -1663,7 +1627,7 @@ void MainWindow::resizeByConstraints()
         return;
     }
 
-    if (_miniMode || window()->isFullScreen()) {
+    if (_miniMode || isFullScreen()) {
         //_lastSizeInNormalMode = QSize(-1, -1);
         return;
     }
@@ -1719,7 +1683,7 @@ void MainWindow::resizeEvent(QResizeEvent *ev)
         _nwComm->updateWithMessage(msg);
     }
 
-    if (window()->isFullScreen()) {
+    if (isFullScreen()) {
         _progIndicator->move(geometry().width() - _progIndicator->width() - 18, 8);
     }
 
@@ -1870,16 +1834,24 @@ void MainWindow::toggleUIMode()
     updatePlayState();
 
     resumeToolsWindow();
+
     if (_miniMode) {
+        _stateBeforeMiniMode = SBEM_None;
+
         if (!_windowAbove) {
+            _stateBeforeMiniMode |= SBEM_Above;
             requestAction(ActionFactory::WindowAbove);
         }
 
         if (_playlist->isVisible()) {
+            _stateBeforeMiniMode |= SBEM_PlaylistOpened;
             requestAction(ActionFactory::TogglePlaylist);
         }
 
-        requestAction(ActionFactory::QuitFullscreen);
+        if (isFullScreen()) {
+            _stateBeforeMiniMode |= SBEM_Fullscreen;
+            requestAction(ActionFactory::QuitFullscreen);
+        }
 
         _lastSizeInNormalMode = size();
         auto sz = QSize(380, 380);
@@ -1900,17 +1872,20 @@ void MainWindow::toggleUIMode()
         _miniPlayBtn->move(14, sz.height() - 10 - _miniPlayBtn->height()); 
 
     } else {
-        if (_windowAbove) {
+        if (_stateBeforeMiniMode & SBEM_Above) {
             requestAction(ActionFactory::WindowAbove);
         }
-
-        if (_lastSizeInNormalMode.isValid()) {
-            resize(_lastSizeInNormalMode);
+        if (_stateBeforeMiniMode & SBEM_Fullscreen) {
+            requestAction(ActionFactory::ToggleFullscreen);
         } else {
-            if (_engine->state() == PlayerEngine::CoreState::Idle) {
-                resize(850, 600);
+            if (_lastSizeInNormalMode.isValid()) {
+                resize(_lastSizeInNormalMode);
             } else {
-                resizeByConstraints();
+                if (_engine->state() == PlayerEngine::CoreState::Idle) {
+                    resize(850, 600);
+                } else {
+                    resizeByConstraints();
+                }
             }
         }
     }
