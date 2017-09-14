@@ -1270,7 +1270,11 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         }
 
         case ActionFactory::ActionKind::TogglePause: {
-            _engine->pauseResume();
+            if (_engine->state() == PlayerEngine::CoreState::Idle) {
+                requestAction(ActionFactory::StartPlay);
+            } else {
+                _engine->pauseResume();
+            }
             break;
         }
 
