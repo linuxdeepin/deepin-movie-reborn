@@ -392,17 +392,29 @@ void PlaylistModel::playNext(bool fromUser)
         }
 
         case OrderPlay:
+            {
+                _last++;
+                if (_last == count()) {
+                    if (fromUser) 
+                        _last = 0;
+                    else {
+                        _last--;
+                        break;
+                    }
+                }
+
+                _engine->waitLastEnd();
+                _current = _last;
+                _engine->requestPlay(_current);
+                emit currentChanged();
+            }
+            break;
+
         case ListLoop:
             _last++;
             if (_last == count()) {
-                if (_playMode == OrderPlay) {
-                    _last--;
-                    break;
-
-                } else {
-                    _loopCount++;
-                    _last = 0;
-                } 
+                _loopCount++;
+                _last = 0;
             }
 
             _engine->waitLastEnd();
