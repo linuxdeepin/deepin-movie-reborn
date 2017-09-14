@@ -265,6 +265,8 @@ void MpvProxy::handle_mpv_events()
 
             case MPV_EVENT_END_FILE:
                 qDebug() << mpv_event_name(ev->event_id);
+                MovieConfiguration::get().updateUrl(this->_file,
+                        ConfigKnownKey::StartPos, 0);
                 setState(PlayState::Stopped);
                 break;
 

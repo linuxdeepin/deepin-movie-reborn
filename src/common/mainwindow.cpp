@@ -977,7 +977,9 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             if (_engine->playlist().count() == 0) {
                 requestAction(ActionFactory::ActionKind::OpenFileList);
             } else {
-                _engine->play();
+                if (_engine->state() == PlayerEngine::CoreState::Idle) {
+                    _engine->play();
+                }
             }
             break;
         }
