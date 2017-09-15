@@ -399,22 +399,20 @@ void PlaylistModel::playNext(bool fromUser)
         }
 
         case OrderPlay:
-            {
-                _last++;
-                if (_last == count()) {
-                    if (fromUser) 
-                        _last = 0;
-                    else {
-                        _last--;
-                        break;
-                    }
+            _last++;
+            if (_last == count()) {
+                if (fromUser) 
+                    _last = 0;
+                else {
+                    _last--;
+                    break;
                 }
-
-                _engine->waitLastEnd();
-                _current = _last;
-                _engine->requestPlay(_current);
-                emit currentChanged();
             }
+
+            _engine->waitLastEnd();
+            _current = _last;
+            _engine->requestPlay(_current);
+            emit currentChanged();
             break;
 
         case ListLoop:
@@ -502,16 +500,22 @@ void PlaylistModel::playPrev(bool fromUser)
         }
 
         case OrderPlay:
+            _last--;
+            if (_last < 0) {
+                _last = count()-1;
+            }
+
+            _engine->waitLastEnd();
+            _current = _last;
+            _engine->requestPlay(_current);
+            emit currentChanged();
+            break;
+
         case ListLoop:
             _last--;
             if (_last < 0) {
-                if (_playMode == OrderPlay) {
-                    _last = 0;
-                    break;
-                } else {
-                    _loopCount++;
-                    _last = count()-1;
-                } 
+                _loopCount++;
+                _last = count()-1;
             }
 
             _engine->waitLastEnd();
