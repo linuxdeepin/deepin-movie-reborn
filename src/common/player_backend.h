@@ -56,7 +56,7 @@ public:
     virtual QString subCodepage() = 0;
     virtual void addSubSearchPath(const QString& path) = 0;
 
-    virtual void loadSubtitle(const QFileInfo& fi) = 0;
+    virtual bool loadSubtitle(const QFileInfo& fi) = 0;
     virtual void toggleSubtitle() = 0;
     virtual bool isSubVisible() = 0;
     virtual void selectSubtitle(int id) = 0;
@@ -84,8 +84,6 @@ public:
     // hack: used to access backend internal states
     virtual QVariant getProperty(const QString&) = 0;
     virtual void setProperty(const QString&, const QVariant&) = 0;
-
-    bool lastCommandHasError() const { return _lastCommandError; }
 
 Q_SIGNALS:
     void tracksChanged();
@@ -116,7 +114,6 @@ public slots:
 
 protected:
     PlayState _state { PlayState::Stopped };
-    bool _lastCommandError {false};
     QUrl _file;
 };
 }

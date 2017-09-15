@@ -33,7 +33,7 @@ public:
     void setPlaySpeed(double times) override;
     void savePlaybackPosition() override;
 
-    void loadSubtitle(const QFileInfo& fi) override;
+    bool loadSubtitle(const QFileInfo& fi) override;
     void toggleSubtitle() override;
     bool isSubVisible() override;
     void selectSubtitle(int id) override;
