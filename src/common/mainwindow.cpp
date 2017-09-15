@@ -28,6 +28,7 @@
 #include <dinputdialog.h>
 #include <dimagebutton.h>
 #include <DWidgetUtil>
+#include <DSettingsWidgetFactory>
 
 #define AUTOHIDE_TIMEOUT 2000
 
@@ -36,6 +37,86 @@ DWIDGET_USE_NAMESPACE
 using namespace dmr;
 
 #define MOUSE_MARGINS 6
+
+class SelectableLineEdit: public QLineEdit
+{
+public:
+    SelectableLineEdit(const QString& text = "", QWidget *parent = 0)
+        : QLineEdit(text, parent) 
+    {
+        btn = new QPushButton(this);
+        btn->setText("...");
+        btn->setFixedSize(24, 24);
+
+        QObject::connect(btn, &QPushButton::clicked, [=]() {
+            QString name = QFileDialog::getExistingDirectory(qApp->focusWidget(),
+                    QObject::tr("Select Directory"),
+                    QDir::currentPath(),
+                    QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+            setText(name);
+        });
+
+    }
+
+
+protected:
+    void paintEvent(QPaintEvent* pe) override
+    {
+        QLineEdit::paintEvent(pe);
+#if 0
+        QPainter p(this);
+
+        QRect r{width() - 24, 0, 24, 24};
+
+        QStyleOptionButton opt;
+        opt.initFrom(this);
+        opt.text = "...";
+        opt.rect = r;
+        style()->drawControl(QStyle::CE_PushButton, &opt, &p, this);
+#endif
+    }
+
+    void resizeEvent(QResizeEvent* re) override
+    {
+        btn->move(width() - 24, 0);
+    }
+
+    QPushButton *btn;
+};
+
+static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
+{
+    auto option = qobject_cast<DTK_CORE_NAMESPACE::DSettingsOption *>(opt);
+    auto value = option->data("text").toString();
+    auto trName = QObject::tr(value.toStdString().c_str());
+
+    auto rightWidget = new QFrame();
+    rightWidget->setFixedHeight(24);
+    rightWidget->setObjectName("OptionSelectableLineEdit");
+
+    auto hl = new QHBoxLayout(rightWidget);
+    hl->setContentsMargins(0, 0, 0, 0);
+    hl->setSpacing(0);
+    rightWidget->setLayout(hl);
+
+    auto le = new SelectableLineEdit(trName);
+    le->setText(option->value().toString());
+    hl->addWidget(le);
+
+    auto optionWidget = DSettingsWidgetFactory::createTwoColumWidget(option, rightWidget);
+
+
+    option->connect(le, &QLineEdit::editingFinished, option, [ = ]() {
+        option->setValue(le->text());
+    });
+    option->connect(option, &DTK_CORE_NAMESPACE::DSettingsOption::valueChanged, le, 
+        [ = ](const QVariant & value) {
+            le->setText(value.toString());
+            le->update();
+        });
+
+    return  optionWidget;
+}
 
 class MainWindowFocusMonitor: public QAbstractNativeEventFilter {
 public:
@@ -1464,6 +1545,7 @@ void MainWindow::startBurstShooting()
 void MainWindow::handleSettings()
 {
     auto dsd = new DSettingsDialog(this);
+    dsd->widgetFactory()->registerWidget("selectableEdit", createSelectableLineEditOptionHandle);
 
     dsd->setProperty("_d_QSSThemename", "dark");
     dsd->setProperty("_d_QSSFilename", "DSettingsDialog");
