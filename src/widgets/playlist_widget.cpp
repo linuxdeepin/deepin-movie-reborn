@@ -256,6 +256,9 @@ protected:
                 auto *plw = dynamic_cast<PlaylistWidget*>(parent());
                 auto *mw = dynamic_cast<MainWindow*>(plw->parent());
                 
+                if (mw->insideResizeArea(me->globalPos()))
+                    return false;
+
                 if (plw->isVisible() && !plw->underMouse()) {
                     mw->requestAction(ActionFactory::ActionKind::TogglePlaylist);
                 }
