@@ -111,6 +111,7 @@ class MainWindowEventListener : public QObject
                 setLeftButtonPressed(true);
                 auto mw = static_cast<MainWindow*>(parent());
                 if (mw->insideResizeArea(e->globalPos())) startResizing = true;
+                mw->capturedMousePressEvent(e);
                 break;
             }
             case QEvent::MouseButtonRelease: {
@@ -121,6 +122,7 @@ class MainWindowEventListener : public QObject
 
                 auto mw = static_cast<MainWindow*>(parent());
                 startResizing = false;
+                mw->capturedMouseReleaseEvent(e);
                 break;
             }
             case QEvent::MouseMove: {
@@ -1731,6 +1733,18 @@ void MainWindow::keyPressEvent(QKeyEvent *ev)
 void MainWindow::keyReleaseEvent(QKeyEvent *ev)
 {
     QWidget::keyReleaseEvent(ev);
+}
+
+void MainWindow::capturedMousePressEvent(QMouseEvent* me)
+{
+    _mouseMoved = false;
+    if (me->buttons() == Qt::LeftButton) {
+        _mousePressed = true;
+    }
+}
+
+void MainWindow::capturedMouseReleaseEvent(QMouseEvent* me)
+{
 }
 
 void MainWindow::mousePressEvent(QMouseEvent *ev)

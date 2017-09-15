@@ -50,6 +50,9 @@ public:
     bool insideResizeArea(const QPoint& global_p);
     QMargins dragMargins() const;
 
+    void capturedMousePressEvent(QMouseEvent* me);
+    void capturedMouseReleaseEvent(QMouseEvent* me);
+
 signals:
     void frameMarginsChanged();
     void windowEntered();
