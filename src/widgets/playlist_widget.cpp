@@ -543,7 +543,8 @@ void PlaylistWidget::batchUpdateSizeHints()
 
 void PlaylistWidget::togglePopup()
 {
-    QRect fixed(_mw->size().width() - width(),
+    auto view_rect = _mw->rect().marginsRemoved(QMargins(1, 1, 1, 1));
+    QRect fixed(view_rect.width() - width() + 1,
             _mw->titlebar()->geometry().bottom(),
             width(),
             _mw->toolbox()->geometry().top() - _mw->titlebar()->geometry().bottom());
