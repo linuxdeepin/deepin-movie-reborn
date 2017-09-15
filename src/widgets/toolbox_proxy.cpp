@@ -683,6 +683,14 @@ void ToolboxProxy::updatePlayState()
         _playBtn->setToolTip(tr("Play"));
     }
     _playBtn->setStyleSheet(_playBtn->styleSheet());
+    if (_engine->state() == PlayerEngine::CoreState::Idle) {
+        if (_subView->isVisible())
+            _subView->hide();
+
+        if (_previewer->isVisible()) {
+            _previewer->hide();
+        }
+    }
 }
 
 void ToolboxProxy::updateTimeInfo(qint64 duration, qint64 pos)
