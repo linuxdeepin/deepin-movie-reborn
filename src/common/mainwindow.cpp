@@ -1470,6 +1470,10 @@ void MainWindow::play(const QUrl& url)
     if (!url.isValid()) 
         return;
 
+    if (!isHidden()) {
+        activateWindow();
+    }
+
     _engine->addPlayFile(url);
     _engine->playByName(url);
 }
