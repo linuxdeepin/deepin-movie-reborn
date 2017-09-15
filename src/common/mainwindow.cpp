@@ -419,6 +419,12 @@ MainWindow::MainWindow(QWidget *parent)
     _progIndicator->setVisible(false);
     connect(windowHandle(), &QWindow::windowStateChanged, [=]() {
         bool isFullscreen = isFullScreen();
+        Qt::WindowFlags hint = Qt::WindowCloseButtonHint | Qt::WindowTitleHint |
+            Qt::WindowSystemMenuHint;
+        if (!isFullscreen) {
+            hint |= Qt::WindowMaximizeButtonHint | Qt::WindowMinimizeButtonHint;
+        }
+        _titlebar->setWindowFlags(hint);
         //WTF: this->geometry() is not size of fullscreen !
         //_progIndicator->move(geometry().width() - _progIndicator->width() - 18, 14);
         _progIndicator->setVisible(isFullscreen);
