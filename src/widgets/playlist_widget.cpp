@@ -165,6 +165,18 @@ protected:
             resize(width(), _name->height() + _time->height());
         }
 
+        if (ee->type() == QEvent::Move) {
+            _closeBtn->hide();
+            if (isVisible()) {
+                auto pos = _listWidget->mapFromGlobal(QCursor::pos());
+                auto r = QRect(mapTo(_listWidget, QPoint()), size());
+                if (r.contains(pos)) {
+                    _closeBtn->show();
+                    _closeBtn->raise();
+                }
+            }
+        }
+
         return QFrame::event(ee);
     }
 
@@ -206,7 +218,10 @@ protected:
 
     void doDoubleClick()
     {
-        if (!_pif.url.isLocalFile() || QFileInfo::exists(_pif.info.absoluteFilePath())) {
+        //FIXME: there is an potential inconsistency with model if pif did changed 
+        //(i.e gets deleted).
+        _pif.refresh();
+        if (!_pif.url.isLocalFile() || _pif.info.exists()) {
             emit doubleClicked();
         } else {
             if (state() != ItemState::Invalid) {
@@ -282,7 +297,9 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     mw->installEventFilter(mwl);
 #endif
 
-    connect(&_engine->playlist(), &PlaylistModel::countChanged, this, &PlaylistWidget::loadPlaylist);
+    connect(&_engine->playlist(), &PlaylistModel::emptied, this, &PlaylistWidget::clear);
+    connect(&_engine->playlist(), &PlaylistModel::itemsAppended, this, &PlaylistWidget::appendItems);
+    connect(&_engine->playlist(), &PlaylistModel::itemRemoved, this, &PlaylistWidget::removeItem);
     connect(&_engine->playlist(), &PlaylistModel::currentChanged, this, &PlaylistWidget::updateItemStates);
     connect(&_engine->playlist(), &PlaylistModel::itemInfoUpdated, this, &PlaylistWidget::updateItemInfo);
 
@@ -316,8 +333,10 @@ void PlaylistWidget::updateItemStates()
         }
 
         if (i == _engine->playlist().current()) {
-            piw->setState(ItemState::Playing);
-            scrollToItem(item(i));
+            if (piw->state() != ItemState::Playing) {
+                scrollToItem(item(i));
+                piw->setState(ItemState::Playing);
+            }
         }
 
         if (old != piw->state()) {
@@ -420,6 +439,40 @@ void PlaylistWidget::showEvent(QShowEvent *se)
 {
     batchUpdateSizeHints();
     adjustSize();
+}
+
+void PlaylistWidget::removeItem(int idx)
+{
+    qDebug() << "idx = " << idx;
+    auto item = this->takeItem(idx);
+    if (item) {
+        delete item;
+    }
+}
+
+void PlaylistWidget::appendItems()
+{
+    qDebug() << __func__;
+
+    auto items = _engine->playlist().items();
+    auto p = items.begin() + this->count();
+    while (p != items.end()) {
+        auto w = new PlayItemWidget(*p, this);
+        //w->show();
+        auto item = new QListWidgetItem;
+        addItem(item);
+        setItemWidget(item, w);
+
+        connect(w, SIGNAL(closeButtonClicked()), _closeMapper, SLOT(map()));
+        connect(w, SIGNAL(doubleClicked()), _activateMapper, SLOT(map()));
+        _closeMapper->setMapping(w, w);
+        _activateMapper->setMapping(w, w);
+        ++p;
+    }
+
+    batchUpdateSizeHints();
+    updateItemStates();
+    setStyleSheet(styleSheet());
 }
 
 void PlaylistWidget::loadPlaylist()

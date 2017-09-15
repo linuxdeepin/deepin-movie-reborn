@@ -51,6 +51,8 @@ struct PlayItemInfo {
     QFileInfo info;
     QPixmap thumbnail;
     struct MovieInfo mi;
+
+    void refresh();
 };
 
 using AppendJob = QPair<QUrl, QFileInfo>; // async job
@@ -110,6 +112,8 @@ signals:
     void countChanged();
     void currentChanged();
     void itemRemoved(int);
+    void itemsAppended();
+    void emptied();
     void playModeChanged(PlayMode);
     void asyncAppendFinished(const QList<PlayItemInfo>&);
     void itemInfoUpdated(int id);
