@@ -47,6 +47,8 @@ protected:
 protected slots:
     void updateItemStates();
     void updateItemInfo(int);
+    void appendItems();
+    void removeItem(int);
 
 private:
 

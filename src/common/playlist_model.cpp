@@ -119,6 +119,12 @@ struct MovieInfo MovieInfo::parseFromFile(const QFileInfo& fi, bool *ok)
     return mi;
 }
 
+void PlayItemInfo::refresh()
+{
+    this->info.refresh();
+    this->valid = info.exists();
+}
+
 PlaylistModel::PlaylistModel(PlayerEngine *e)
     :_engine(e)
 {
@@ -278,6 +284,7 @@ void PlaylistModel::clear()
 
     _current = -1;
     _last = -1;
+    emit emptied();
     emit currentChanged();
     emit countChanged();
 }
@@ -649,6 +656,7 @@ void PlaylistModel::onAsyncAppendFinished()
     qDebug() << "collected items" << fil.count();
     if (fil.size()) {
         _infos += SortSimilarFiles(fil);
+        emit itemsAppended();
         emit countChanged();
     }
     emit asyncAppendFinished(fil);
@@ -661,6 +669,7 @@ void PlaylistModel::append(const QUrl& url)
 
     appendSingle(url);
     reshuffle();
+    emit itemsAppended();
     emit countChanged();
 }
 
