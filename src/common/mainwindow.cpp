@@ -134,7 +134,7 @@ class MainWindowEventListener : public QObject
                 const QRect window_visible_rect = _window->frameGeometry() - mw->dragMargins();
 
                 if (!leftButtonPressed) {
-                    if (!mw->playlist()->isVisible() && mw->insideResizeArea(e->globalPos())) {
+                    if (mw->insideResizeArea(e->globalPos())) {
                         Utility::CornerEdge mouseCorner;
                         QRect cornerRect;
 
@@ -163,6 +163,8 @@ class MainWindowEventListener : public QObject
                             mouseCorner = Utility::BottomLeftCorner;
                             goto set_cursor;
                         }
+
+                        goto skip_set_cursor; // disable edges
 
                         /// begin set cursor edge type
                         if (e->globalX() <= window_visible_rect.x()) {
@@ -226,6 +228,16 @@ skip_set_cursor:
             auto old_geom = mw->frameGeometry();
             auto geom = mw->frameGeometry();
             qreal ratio = (qreal)geom.width() / geom.height();
+
+            // disable edges
+            switch (edge) {
+                case Utility::BottomEdge:
+                case Utility::TopEdge:
+                case Utility::LeftEdge:
+                case Utility::RightEdge:
+                    return;
+                default: break;
+            }
 
             if (keep_ratio) {
                 auto sz = mw->engine()->videoSize();
