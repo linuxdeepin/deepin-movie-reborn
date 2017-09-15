@@ -85,6 +85,8 @@ public:
     virtual QVariant getProperty(const QString&) = 0;
     virtual void setProperty(const QString&, const QVariant&) = 0;
 
+    bool lastCommandHasError() const { return _lastCommandError; }
+
 Q_SIGNALS:
     void tracksChanged();
     void elapsedChanged();
@@ -114,6 +116,7 @@ public slots:
 
 protected:
     PlayState _state { PlayState::Stopped };
+    bool _lastCommandError {false};
     QUrl _file;
 };
 }
