@@ -113,6 +113,7 @@ private:
     void switchTheme();
     bool isActionAllowed(ActionFactory::ActionKind kd, bool fromUI, bool isShortcut);
     QString probeCdromDevice();
+    void updateWindowTitle();
 
 private:
     DTitlebar *_titlebar {nullptr};
