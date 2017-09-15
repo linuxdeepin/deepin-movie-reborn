@@ -97,7 +97,7 @@ int main(int argc, char *argv[])
         dmr::VpuProxy mw;
         mw.setMinimumSize(QSize(528, 400));
         mw.resize(850, 600);
-        DUtility::moveToCenter(&mw);
+        Dtk::Widget::moveToCenter(&mw);
         mw.show();
         auto fi = QFileInfo(toOpenFile);
         if (fi.exists()) {

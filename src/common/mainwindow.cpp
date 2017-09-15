@@ -27,6 +27,7 @@
 #include <daboutdialog.h>
 #include <dinputdialog.h>
 #include <dimagebutton.h>
+#include <DWidgetUtil>
 
 #define AUTOHIDE_TIMEOUT 2000
 
@@ -1653,6 +1654,7 @@ void MainWindow::resizeByConstraints()
 
     qDebug() << sz;
     resize(sz);
+    Dtk::Widget::moveToCenter(this);
 }
 
 // 若长≥高,则长≤528px　　　若长≤高,则高≤528px.
@@ -1726,7 +1728,9 @@ void MainWindow::keyReleaseEvent(QKeyEvent *ev)
 void MainWindow::mousePressEvent(QMouseEvent *ev)
 {
     _mouseMoved = false;
-    _mousePressed = true;
+    if (ev->buttons() == Qt::LeftButton) {
+        _mousePressed = true;
+    }
 }
 
 void MainWindow::mouseDoubleClickEvent(QMouseEvent *ev)
@@ -1756,6 +1760,7 @@ bool MainWindow::insideResizeArea(const QPoint& global_p)
 
 void MainWindow::mouseReleaseEvent(QMouseEvent *ev)
 {
+    _mousePressed = false;
     static ulong last_tm = 0;
     if (ev->timestamp() - last_tm <= qApp->styleHints()->mouseDoubleClickInterval()) {
         return;
@@ -1768,7 +1773,6 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *ev)
     }
 
     _mouseMoved = false;
-    _mousePressed = false;
 }
 
 void MainWindow::delayedMouseReleaseHandler()
@@ -1898,6 +1902,7 @@ void MainWindow::toggleUIMode()
         } else {
             if (_lastSizeInNormalMode.isValid()) {
                 resize(_lastSizeInNormalMode);
+                Dtk::Widget::moveToCenter(this);
             } else {
                 if (_engine->state() == PlayerEngine::CoreState::Idle) {
                     resize(850, 600);
