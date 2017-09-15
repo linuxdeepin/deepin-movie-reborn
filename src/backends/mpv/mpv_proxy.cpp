@@ -356,6 +356,9 @@ void MpvProxy::loadSubtitle(const QFileInfo& fi)
     QList<QVariant> args = { "sub-add", fi.absoluteFilePath(), "select" };
     qDebug () << args;
     QVariant id = command(_handle, args);
+    if (id.canConvert<ErrorReturn>()) {
+        _lastCommandError = true;
+    }
 
     // by settings this flag, we can match the corresponding sid change and save it 
     // in the movie database
@@ -642,10 +645,10 @@ void MpvProxy::burstScreenshot()
 	std::random_device rd;
     std::mt19937 g(rd());
     std::uniform_int_distribution<int> uniform_dist(16, 30);
-    int d = (duration() - elapsed()) / uniform_dist(g);
-    _burstStart = elapsed();
+    int d = duration() / uniform_dist(g);
+    _burstStart = 0;
     _burstInc = qMax(d, 1);
-    if (_burstInc * 15 + 10 >= (duration() - elapsed())) {
+    if (_burstInc * 15 + 10 >= duration()) {
         emit notifyScreenshot(QImage());
         stopBurstScreenshot();
         return;
