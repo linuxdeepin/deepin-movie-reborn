@@ -10,10 +10,12 @@ DMRSlider::DMRSlider(QWidget *parent): QSlider(parent)
 
 void DMRSlider::mouseReleaseEvent(QMouseEvent *e)
 {
-    blockSignals(false);
-    QSlider::mouseReleaseEvent(e);
-    emit sliderMoved(sliderPosition());
-    _down = false;
+    if (_down) {
+        blockSignals(false);
+        emit sliderMoved(sliderPosition());
+        _down = false;
+        QSlider::mouseReleaseEvent(e);
+    }
 }
 
 int DMRSlider::position2progress(const QPoint& p)
@@ -31,12 +33,14 @@ int DMRSlider::position2progress(const QPoint& p)
 
 void DMRSlider::mousePressEvent(QMouseEvent *e)
 {
-    QSlider::mousePressEvent(e);
-    blockSignals(true);
+    if (e->buttons() == Qt::LeftButton) {
+        QSlider::mousePressEvent(e);
+        blockSignals(true);
 
-    int v = position2progress(e->pos());;
-    setSliderPosition(v);
-    _down = true;
+        int v = position2progress(e->pos());;
+        setSliderPosition(v);
+        _down = true;
+    }
 }
 
 void DMRSlider::mouseMoveEvent(QMouseEvent *e)
