@@ -1638,8 +1638,9 @@ void MainWindow::resizeByConstraints()
         return;
     }
 
+    updateWindowTitle();
+
     const auto& mi = _engine->playlist().currentInfo().mi;
-    _titlebar->setTitle(QFileInfo(mi.filePath).fileName());
     auto sz = _engine->videoSize();
     if (sz.isEmpty()) {
         sz = QSize(mi.width, mi.height);
@@ -1695,6 +1696,17 @@ void MainWindow::resizeEvent(QResizeEvent *ev)
 
     updateSizeConstraints();
     updateProxyGeometry();
+    updateWindowTitle();
+}
+
+void MainWindow::updateWindowTitle()
+{
+    if (_engine->state() != PlayerEngine::Idle) {
+        const auto& mi = _engine->playlist().currentInfo().mi;
+        auto title = _titlebar->fontMetrics().elidedText(QFileInfo(mi.filePath).fileName(),
+                Qt::ElideMiddle, _titlebar->contentsRect().width() - 300);
+        _titlebar->setTitle(title);
+    }
 }
 
 void MainWindow::moveEvent(QMoveEvent *ev)
