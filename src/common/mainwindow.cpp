@@ -1271,7 +1271,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         }
 
         case ActionFactory::ActionKind::TogglePause: {
-            if (_engine->state() == PlayerEngine::CoreState::Idle) {
+            if (_engine->state() == PlayerEngine::Idle && fromUI) {
                 requestAction(ActionFactory::StartPlay);
             } else {
                 _engine->pauseResume();
@@ -1612,6 +1612,11 @@ void MainWindow::closeEvent(QCloseEvent *ev)
     qDebug() << __func__;
     _engine->savePlaybackPosition();
     ev->accept();
+}
+
+void MainWindow::focusInEvent(QFocusEvent *fe)
+{
+    resumeToolsWindow();
 }
 
 void MainWindow::showEvent(QShowEvent *event)
