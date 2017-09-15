@@ -347,22 +347,23 @@ void MpvProxy::processPropertyChange(mpv_event_property* ev)
     }
 }
 
-void MpvProxy::loadSubtitle(const QFileInfo& fi)
+bool MpvProxy::loadSubtitle(const QFileInfo& fi)
 {
     if (state() == PlayState::Stopped) {
-        return;
+        return true;
     }
 
     QList<QVariant> args = { "sub-add", fi.absoluteFilePath(), "select" };
     qDebug () << args;
     QVariant id = command(_handle, args);
     if (id.canConvert<ErrorReturn>()) {
-        _lastCommandError = true;
+        return false;
     }
 
     // by settings this flag, we can match the corresponding sid change and save it 
     // in the movie database
     _externalSubJustLoaded = true;
+    return true;
 }
 
 bool MpvProxy::isSubVisible()

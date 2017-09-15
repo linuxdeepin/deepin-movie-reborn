@@ -1264,7 +1264,8 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                     QDir::currentPath(),
                     tr("Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)"));
             if (QFileInfo(filename).exists()) {
-                _engine->loadSubtitle(QFileInfo(filename));
+                auto success = _engine->loadSubtitle(QFileInfo(filename));
+                _nwComm->updateWithMessage(success?tr("Load successfully"):tr("Load failed"));
             }
             break;
             break;

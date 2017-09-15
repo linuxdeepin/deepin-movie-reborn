@@ -164,10 +164,10 @@ void PlayerEngine::onSubtitlesDownloaded(const QUrl& url, const QList<QString>& 
         _current->loadSubtitle(filename);
 }
 
-void PlayerEngine::loadSubtitle(const QFileInfo& fi)
+bool PlayerEngine::loadSubtitle(const QFileInfo& fi)
 {
-    if (state() == CoreState::Idle) { return; }
-    if (!_current) return;
+    if (state() == CoreState::Idle) { return true; }
+    if (!_current) return true;
 
     const auto& pmf = _current->playingMovieInfo();
     auto pif = playlist().currentInfo();
@@ -175,14 +175,17 @@ void PlayerEngine::loadSubtitle(const QFileInfo& fi)
         if (sub["external"].toBool()) {
             auto path = sub["external-filename"].toString();
             if (path == fi.canonicalFilePath()) {
-                return;
+                return true;
             }
         }
     }
 
-    _current->loadSubtitle(fi);
-    MovieConfiguration::get().append2ListUrl(pif.url, ConfigKnownKey::ExternalSubs,
-            fi.canonicalFilePath());
+    if (_current->loadSubtitle(fi)) {
+        MovieConfiguration::get().append2ListUrl(pif.url, ConfigKnownKey::ExternalSubs,
+                fi.canonicalFilePath());
+        return true;
+    }
+    return false;
 }
 
 void PlayerEngine::loadOnlineSubtitle(const QUrl& url)

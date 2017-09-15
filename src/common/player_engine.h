@@ -78,7 +78,7 @@ public:
     void setPlaySpeed(double times);
 
     void loadOnlineSubtitle(const QUrl& url);
-    void loadSubtitle(const QFileInfo& fi);
+    bool loadSubtitle(const QFileInfo& fi);
     void toggleSubtitle();
     bool isSubVisible();
     void selectSubtitle(int id); // id into PlayingMovieInfo.subs
