@@ -341,15 +341,14 @@ void PlaylistModel::playNext(bool fromUser)
     switch (_playMode) {
         case SinglePlay:
             if (fromUser) {
-                if (_last + 1 < count()) {
-                    _engine->waitLastEnd();
-                    _current = _last + 1;
-                    _last = _current;
-                    _engine->requestPlay(_current);
-                    emit currentChanged();
-                } else {
-                    //ignore
+                if (_last + 1 >= count()) {
+                    _last = -1;
                 }
+                _engine->waitLastEnd();
+                _current = _last + 1;
+                _last = _current;
+                _engine->requestPlay(_current);
+                emit currentChanged();
             }
             break;
 
@@ -443,15 +442,14 @@ void PlaylistModel::playPrev(bool fromUser)
     switch (_playMode) {
         case SinglePlay:
             if (fromUser) {
-                if (_last - 1 >= 0) {
-                    _engine->waitLastEnd();
-                    _current = _last - 1;
-                    _last = _current;
-                    _engine->requestPlay(_current);
-                    emit currentChanged();
-                } else {
-                    //ignore
+                if (_last - 1 < 0) {
+                    _last = count();
                 }
+                _engine->waitLastEnd();
+                _current = _last - 1;
+                _last = _current;
+                _engine->requestPlay(_current);
+                emit currentChanged();
             }
             break;
 
@@ -487,15 +485,16 @@ void PlaylistModel::playPrev(bool fromUser)
             break;
 
         case ShufflePlay: { // this must comes from user
-            if (_shufflePlayed > 1) {
-                _shufflePlayed--;
-
-                qDebug() << "shuffle prev " << _shufflePlayed-1;
-                _engine->waitLastEnd();
-                _last = _current = _playOrder[_shufflePlayed-1];
-                _engine->requestPlay(_current);
-                emit currentChanged();
+            if (_shufflePlayed <= 1) {
+                reshuffle();
+                _shufflePlayed = _playOrder.size();
             }
+            _shufflePlayed--;
+            qDebug() << "shuffle prev " << _shufflePlayed-1;
+            _engine->waitLastEnd();
+            _last = _current = _playOrder[_shufflePlayed-1];
+            _engine->requestPlay(_current);
+            emit currentChanged();
             break;
         }
 
