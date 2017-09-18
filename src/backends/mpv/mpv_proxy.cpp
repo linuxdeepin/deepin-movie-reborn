@@ -590,6 +590,7 @@ void MpvProxy::play()
 
     qDebug () << args;
     command(_handle, args);
+    set_property(_handle, "pause", false);
 
     // by giving a period of time, movie will be loaded and auto-loaded subs are 
     // all ready, then load extra subs from db
