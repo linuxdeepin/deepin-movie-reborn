@@ -526,19 +526,19 @@
     <name>dmr::MainWindow</name>
     <message>
         <location filename="../common/mainwindow.cpp" line="465"/>
-        <location filename="../common/mainwindow.cpp" line="1736"/>
-        <location filename="../common/mainwindow.cpp" line="1815"/>
+        <location filename="../common/mainwindow.cpp" line="1742"/>
+        <location filename="../common/mainwindow.cpp" line="1821"/>
         <source>Deepin Movie</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="590"/>
+        <location filename="../common/mainwindow.cpp" line="593"/>
         <location filename="../common/mainwindow.cpp" line="1358"/>
         <source>Load successfully</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="590"/>
+        <location filename="../common/mainwindow.cpp" line="593"/>
         <location filename="../common/mainwindow.cpp" line="1358"/>
         <source>Load failed</source>
         <translation type="unfinished"></translation>
@@ -636,7 +636,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2086"/>
+        <location filename="../common/mainwindow.cpp" line="2094"/>
         <source>Invalid file: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -705,13 +705,13 @@
     <name>dmr::ToolboxProxy</name>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="526"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="683"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="690"/>
         <source>Play</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="527"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="652"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="659"/>
         <source>Volume</source>
         <translation type="unfinished"></translation>
     </message>
@@ -741,12 +741,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="649"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="656"/>
         <source>Mute</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="680"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="687"/>
         <source>Pause</source>
         <translation type="unfinished"></translation>
     </message>

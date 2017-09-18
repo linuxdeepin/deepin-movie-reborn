@@ -649,8 +649,8 @@
     <name>dmr::MainWindow</name>
     <message>
         <location filename="../common/mainwindow.cpp" line="465"/>
-        <location filename="../common/mainwindow.cpp" line="1736"/>
-        <location filename="../common/mainwindow.cpp" line="1815"/>
+        <location filename="../common/mainwindow.cpp" line="1742"/>
+        <location filename="../common/mainwindow.cpp" line="1821"/>
         <source>Deepin Movie</source>
         <translation>深度影院</translation>
     </message>
@@ -672,13 +672,13 @@
         <translation type="obsolete">深度影院是一款设计精良、功能全面的视频播放器，无边框简洁设计，支持多种视频格式本地播放和流媒体播放。</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="590"/>
+        <location filename="../common/mainwindow.cpp" line="593"/>
         <location filename="../common/mainwindow.cpp" line="1358"/>
         <source>Load successfully</source>
         <translation>载入字幕成功</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="590"/>
+        <location filename="../common/mainwindow.cpp" line="593"/>
         <location filename="../common/mainwindow.cpp" line="1358"/>
         <source>Load failed</source>
         <translation>载入字幕失败</translation>
@@ -791,7 +791,7 @@
         <translation type="vanished">您的截图已保存到%1</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2086"/>
+        <location filename="../common/mainwindow.cpp" line="2094"/>
         <source>Invalid file: %1</source>
         <translation>无效文件：%1</translation>
     </message>
@@ -864,13 +864,13 @@
     <name>dmr::ToolboxProxy</name>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="526"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="683"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="690"/>
         <source>Play</source>
         <translation>播放</translation>
     </message>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="527"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="652"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="659"/>
         <source>Volume</source>
         <translation>音量</translation>
     </message>
@@ -900,7 +900,7 @@
         <translation>全屏</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="649"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="656"/>
         <source>Mute</source>
         <translation>静音</translation>
     </message>
@@ -909,7 +909,7 @@
         <translation type="obsolete">音量：%1%</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="680"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="687"/>
         <source>Pause</source>
         <translation>暂停</translation>
     </message>
