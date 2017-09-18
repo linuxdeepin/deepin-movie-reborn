@@ -504,6 +504,9 @@ MainWindow::MainWindow(QWidget *parent)
             Qt::WindowSystemMenuHint;
         if (!isFullscreen) {
             hint |= Qt::WindowMaximizeButtonHint | Qt::WindowMinimizeButtonHint;
+            qApp->restoreOverrideCursor();
+        } else {
+            qApp->setOverrideCursor(Qt::BlankCursor);
         }
         _titlebar->setWindowFlags(hint);
         //WTF: this->geometry() is not size of fullscreen !
@@ -765,7 +768,6 @@ void MainWindow::updateActionsState()
         bool v = true;
         switch(kd) {
             case ActionFactory::ActionKind::Screenshot:
-            case ActionFactory::ActionKind::ToggleFullscreen:
             case ActionFactory::ActionKind::MatchOnlineSubtitle:
             case ActionFactory::ActionKind::BurstScreenshot:
             case ActionFactory::ActionKind::ToggleMiniMode:
@@ -947,7 +949,6 @@ bool MainWindow::isActionAllowed(ActionFactory::ActionKind kd, bool fromUI, bool
         }
 
     }
-    return true;
 
     if (isShortcut) {
         auto pmf = _engine->playingMovieInfo();
@@ -955,7 +956,6 @@ bool MainWindow::isActionAllowed(ActionFactory::ActionKind kd, bool fromUI, bool
         switch(kd) {
             case ActionFactory::Screenshot:
             case ActionFactory::ToggleMiniMode:
-            case ActionFactory::ToggleFullscreen:
             case ActionFactory::MatchOnlineSubtitle:
             case ActionFactory::BurstScreenshot:
                 v = _engine->state() != PlayerEngine::Idle;
@@ -1635,7 +1635,6 @@ void MainWindow::suspendToolsWindow()
         if (_playlist && _playlist->state() == PlaylistWidget::Opened)
             return;
 
-        qDebug() << qApp->applicationState();
         if (qApp->applicationState() == Qt::ApplicationInactive) {
 
         } else {
@@ -1655,6 +1654,10 @@ void MainWindow::suspendToolsWindow()
         if (_autoHideTimer.isActive())
             return;
 
+        if (isFullScreen()) {
+            qApp->setOverrideCursor(Qt::BlankCursor);
+        }
+        //setCursor(isFullScreen() ? Qt::BlankCursor : Qt::ArrowCursor);
         _titlebar->hide();
         _toolbox->hide();
     } else {
@@ -1674,6 +1677,9 @@ void MainWindow::resumeToolsWindow()
             goto _finish;
         }
     }
+
+    setCursor(Qt::ArrowCursor);
+    qApp->restoreOverrideCursor();
 
     if (!_miniMode) {
         _titlebar->show();
@@ -1910,6 +1916,8 @@ void MainWindow::contextMenuEvent(QContextMenuEvent *cme)
 {
     if (_miniMode || _inBurstShootMode) 
         return;
+
+    resumeToolsWindow();
     ActionFactory::get().mainContextMenu()->popup(cme->globalPos());
     cme->accept();
 }
