@@ -259,7 +259,7 @@ protected:
                 if (mw->insideResizeArea(me->globalPos()))
                     return false;
 
-                if (plw->isVisible() && !plw->underMouse()) {
+                if (plw->state() == PlaylistWidget::Opened && !plw->underMouse()) {
                     mw->requestAction(ActionFactory::ActionKind::TogglePlaylist);
                 }
             }
