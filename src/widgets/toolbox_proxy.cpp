@@ -587,11 +587,18 @@ void ToolboxProxy::progressHoverChanged(int v)
     if (_volSlider->isVisible())
         return;
 
-    if (!_engine->playlist().currentInfo().url.isLocalFile())
+    const auto& pif = _engine->playlist().currentInfo();
+    if (!pif.url.isLocalFile())
         return;
 
+    const auto& absPath = pif.info.canonicalFilePath();
+    if (!QFile::exists(absPath)) {
+        _previewer->hide();
+        return;
+    }
+
     _lastHoverValue = v;
-    ThumbnailWorker::get().requestThumb(_engine->playlist().currentInfo().url, v);
+    ThumbnailWorker::get().requestThumb(pif.url, v);
 
     auto geom = _progBar->frameGeometry();
     double pert = (double) v / (_progBar->maximum() - _progBar->minimum());
