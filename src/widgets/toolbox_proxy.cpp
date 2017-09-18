@@ -698,6 +698,8 @@ void ToolboxProxy::updatePlayState()
             _previewer->hide();
         }
     }
+    
+    _progBar->setEnabled(_engine->state() != PlayerEngine::CoreState::Idle);
 }
 
 void ToolboxProxy::updateTimeInfo(qint64 duration, qint64 pos)

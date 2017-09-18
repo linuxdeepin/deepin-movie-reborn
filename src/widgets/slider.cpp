@@ -33,7 +33,7 @@ int DMRSlider::position2progress(const QPoint& p)
 
 void DMRSlider::mousePressEvent(QMouseEvent *e)
 {
-    if (e->buttons() == Qt::LeftButton) {
+    if (e->buttons() == Qt::LeftButton && isEnabled()) {
         QSlider::mousePressEvent(e);
         blockSignals(true);
 
@@ -45,6 +45,8 @@ void DMRSlider::mousePressEvent(QMouseEvent *e)
 
 void DMRSlider::mouseMoveEvent(QMouseEvent *e)
 {
+    if (!isEnabled()) return;
+
     int v = position2progress(e->pos());;
     if (_down) {
         setSliderPosition(v);
