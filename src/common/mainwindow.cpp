@@ -479,6 +479,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(_engine, &PlayerEngine::stateChanged, [=]() {
         setInit(_engine->state() != PlayerEngine::Idle);
         resumeToolsWindow();
+        updateWindowTitle();
     });
 
     connect(this, &MainWindow::frameMarginsChanged, &MainWindow::updateProxyGeometry);
@@ -1563,7 +1564,10 @@ void MainWindow::play(const QUrl& url)
         activateWindow();
     }
 
-    _engine->addPlayFile(url);
+    if (!_engine->addPlayFile(url)) {
+        auto msg = QString(tr("Invalid file: %1").arg(url.fileName()));
+        _nwComm->updateWithMessage(msg);
+    }
     _engine->playByName(url);
 }
 

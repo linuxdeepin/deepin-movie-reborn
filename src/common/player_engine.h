@@ -57,7 +57,7 @@ public:
     PlayerEngine(QWidget *parent = 0);
     virtual ~PlayerEngine();
 
-    void addPlayFile(const QUrl& url);
+    bool addPlayFile(const QUrl& url);
     QList<QUrl> addPlayDir(const QDir& dir); // return collected valid urls
     //returned list contains only accepted valid items
     QList<QUrl> addPlayFiles(const QList<QUrl>& urls);
