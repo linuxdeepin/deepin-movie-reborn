@@ -1678,8 +1678,8 @@ void MainWindow::resumeToolsWindow()
         }
     }
 
-    setCursor(Qt::ArrowCursor);
     qApp->restoreOverrideCursor();
+    setCursor(Qt::ArrowCursor);
 
     if (!_miniMode) {
         _titlebar->show();

@@ -222,14 +222,14 @@ protected:
         //FIXME: there is an potential inconsistency with model if pif did changed 
         //(i.e gets deleted).
         _pif.refresh();
+        _time->setText(_pif.mi.durationStr());
+        if (!_pif.valid) {
+            setState(ItemState::Invalid);
+            _time->setText(tr("File does not exist"));
+        }
+        setStyleSheet(styleSheet());
         if (!_pif.url.isLocalFile() || _pif.info.exists()) {
             emit doubleClicked();
-        } else {
-            if (state() != ItemState::Invalid) {
-                setState(ItemState::Invalid);
-                _time->setText(tr("File does not exist"));
-                setStyleSheet(styleSheet());
-            }
         }
     }
 
