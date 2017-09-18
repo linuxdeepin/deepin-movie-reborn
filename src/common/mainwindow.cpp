@@ -753,8 +753,6 @@ void MainWindow::onBindingsChanged()
         this->addAction(act);
         connect(act, &QAction::triggered, [=]() { 
             this->menuItemInvoked(act); 
-            auto kd = ActionFactory::actionKind(act);
-            reflectActionToUI(kd);
         });
     }
 }
@@ -914,9 +912,9 @@ void MainWindow::menuItemInvoked(QAction *action)
 
     auto isShortcut = ActionFactory::isActionFromShortcut(action);
     if (ActionFactory::actionHasArgs(action)) {
-        requestAction(kd, true, ActionFactory::actionArgs(action), isShortcut);
+        requestAction(kd, !isShortcut, ActionFactory::actionArgs(action), isShortcut);
     } else {
-        requestAction(kd, true, {}, isShortcut);
+        requestAction(kd, !isShortcut, {}, isShortcut);
     }
 }
 
@@ -939,18 +937,8 @@ bool MainWindow::isActionAllowed(ActionFactory::ActionKind kd, bool fromUI, bool
                 case ActionFactory::ToggleFullscreen:
                 case ActionFactory::TogglePlaylist:
                 case ActionFactory::BurstScreenshot:
-                    if (fromUI) { // which means UI has been toggled and need to reverse
-                        auto acts = ActionFactory::get().findActionsByKind(kd);
-                        auto p = acts.begin();
-                        while (p != acts.end()) {
-                            auto old = (*p)->isEnabled();
-                            (*p)->setEnabled(false);
-                            (*p)->setChecked(!(*p)->isChecked());
-                            (*p)->setEnabled(old);
-                            ++p;
-                        }
-                    }
                     return false;
+
                 default: break;
             }
         }
@@ -959,6 +947,7 @@ bool MainWindow::isActionAllowed(ActionFactory::ActionKind kd, bool fromUI, bool
         }
 
     }
+    return true;
 
     if (isShortcut) {
         auto pmf = _engine->playingMovieInfo();
@@ -1373,7 +1362,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         }
 
         case ActionFactory::ActionKind::TogglePause: {
-            if (_engine->state() == PlayerEngine::Idle && fromUI) {
+            if (_engine->state() == PlayerEngine::Idle && isShortcut) {
                 requestAction(ActionFactory::StartPlay);
             } else {
                 _engine->pauseResume();
@@ -1643,7 +1632,7 @@ void MainWindow::updateProxyGeometry()
 void MainWindow::suspendToolsWindow()
 {
     if (!_miniMode) {
-        if (_playlist && _playlist->isVisible())
+        if (_playlist && _playlist->state() == PlaylistWidget::Opened)
             return;
 
         qDebug() << qApp->applicationState();
@@ -1822,6 +1811,8 @@ void MainWindow::updateWindowTitle()
         auto title = _titlebar->fontMetrics().elidedText(QFileInfo(mi.filePath).fileName(),
                 Qt::ElideMiddle, _titlebar->contentsRect().width() - 300);
         _titlebar->setTitle(title);
+    } else {
+        _titlebar->setTitle(tr("Deepin Movie"));
     }
 }
 
@@ -1991,7 +1982,7 @@ void MainWindow::toggleUIMode()
             requestAction(ActionFactory::WindowAbove);
         }
 
-        if (_playlist->isVisible()) {
+        if (_playlist->state() == PlaylistWidget::Opened) {
             _stateBeforeMiniMode |= SBEM_PlaylistOpened;
             requestAction(ActionFactory::TogglePlaylist);
         }
@@ -2037,6 +2028,13 @@ void MainWindow::toggleUIMode()
                 }
             }
         }
+
+        if (_stateBeforeMiniMode & SBEM_PlaylistOpened &&
+                _playlist->state() == PlaylistWidget::Closed) {
+            requestAction(ActionFactory::TogglePlaylist);
+        }
+
+        _stateBeforeMiniMode = SBEM_None;
     }
 }
 
