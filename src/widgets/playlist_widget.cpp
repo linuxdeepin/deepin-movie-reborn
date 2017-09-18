@@ -90,6 +90,7 @@ public:
             setState(ItemState::Invalid);
             _time->setText(tr("File does not exist"));
         }
+        setStyleSheet(styleSheet());
     }
 
     void setState(ItemState is) {

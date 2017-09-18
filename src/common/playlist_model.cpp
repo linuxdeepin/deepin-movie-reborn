@@ -330,6 +330,22 @@ void PlaylistModel::stop()
     emit currentChanged();
 }
 
+void PlaylistModel::tryPlayCurrent(bool next)
+{
+    auto& pif = _infos[_current];
+    pif.refresh();
+    if (pif.valid) {
+        _engine->requestPlay(_current);
+        emit currentChanged();
+    } else {
+        emit itemInfoUpdated(_current);
+        _current = -1;
+        emit currentChanged();
+        if (next) playNext(false);
+        else playPrev(false);
+    }
+}
+
 void PlaylistModel::playNext(bool fromUser)
 {
     if (count() == 0) return;
@@ -347,8 +363,7 @@ void PlaylistModel::playNext(bool fromUser)
                 _engine->waitLastEnd();
                 _current = _last + 1;
                 _last = _current;
-                _engine->requestPlay(_current);
-                emit currentChanged();
+                tryPlayCurrent(true);
             }
             break;
 
@@ -357,15 +372,14 @@ void PlaylistModel::playNext(bool fromUser)
                 if (_engine->state() == PlayerEngine::Idle) {
                     _last = _last == -1 ? 0: _last;
                     _current = _last;
-                    _engine->requestPlay(_current);
+                    tryPlayCurrent(true);
 
                 } else {
                     if (_last + 1 < count()) {
                         _engine->waitLastEnd();
                         _current = _last + 1;
                         _last = _current;
-                        _engine->requestPlay(_current);
-                        emit currentChanged();
+                        tryPlayCurrent(true);
                     } else {
                         _engine->stop();
                     }
@@ -374,11 +388,10 @@ void PlaylistModel::playNext(bool fromUser)
                 if (_engine->state() == PlayerEngine::Idle) {
                     _last = _last < 0 ? 0 : _last;
                     _current = _last;
-                    _engine->requestPlay(_current);
-                    emit currentChanged();
+                    tryPlayCurrent(true);
                 } else {
                     // replay current
-                    _engine->requestPlay(_current);
+                    tryPlayCurrent(true);
                 }
             }
             break;
@@ -392,8 +405,7 @@ void PlaylistModel::playNext(bool fromUser)
             qDebug() << "shuffle next " << _shufflePlayed-1;
             _engine->waitLastEnd();
             _last = _current = _playOrder[_shufflePlayed-1];
-            _engine->requestPlay(_current);
-            emit currentChanged();
+            tryPlayCurrent(true);
             break;
         }
 
@@ -410,8 +422,7 @@ void PlaylistModel::playNext(bool fromUser)
 
             _engine->waitLastEnd();
             _current = _last;
-            _engine->requestPlay(_current);
-            emit currentChanged();
+            tryPlayCurrent(true);
             break;
 
         case ListLoop:
@@ -423,8 +434,7 @@ void PlaylistModel::playNext(bool fromUser)
 
             _engine->waitLastEnd();
             _current = _last;
-            _engine->requestPlay(_current);
-            emit currentChanged();
+            tryPlayCurrent(true);
             break;
     }
 
@@ -448,8 +458,7 @@ void PlaylistModel::playPrev(bool fromUser)
                 _engine->waitLastEnd();
                 _current = _last - 1;
                 _last = _current;
-                _engine->requestPlay(_current);
-                emit currentChanged();
+                tryPlayCurrent(false);
             }
             break;
 
@@ -458,15 +467,14 @@ void PlaylistModel::playPrev(bool fromUser)
                 if (_engine->state() == PlayerEngine::Idle) {
                     _last = _last == -1 ? 0: _last;
                     _current = _last;
-                    _engine->requestPlay(_current);
+                    tryPlayCurrent(false);
 
                 } else {
                     if (_last - 1 >= 0) {
                         _engine->waitLastEnd();
                         _current = _last - 1;
                         _last = _current;
-                        _engine->requestPlay(_current);
-                        emit currentChanged();
+                        tryPlayCurrent(false);
                     } else {
                         _engine->stop();
                     }
@@ -475,11 +483,10 @@ void PlaylistModel::playPrev(bool fromUser)
                 if (_engine->state() == PlayerEngine::Idle) {
                     _last = _last < 0 ? 0 : _last;
                     _current = _last;
-                    _engine->requestPlay(_current);
-                    emit currentChanged();
+                    tryPlayCurrent(false);
                 } else {
                     // replay current
-                    _engine->requestPlay(_current);
+                    tryPlayCurrent(false);
                 }
             }
             break;
@@ -493,8 +500,7 @@ void PlaylistModel::playPrev(bool fromUser)
             qDebug() << "shuffle prev " << _shufflePlayed-1;
             _engine->waitLastEnd();
             _last = _current = _playOrder[_shufflePlayed-1];
-            _engine->requestPlay(_current);
-            emit currentChanged();
+            tryPlayCurrent(false);
             break;
         }
 
@@ -506,8 +512,7 @@ void PlaylistModel::playPrev(bool fromUser)
 
             _engine->waitLastEnd();
             _current = _last;
-            _engine->requestPlay(_current);
-            emit currentChanged();
+            tryPlayCurrent(false);
             break;
 
         case ListLoop:
@@ -519,8 +524,7 @@ void PlaylistModel::playPrev(bool fromUser)
 
             _engine->waitLastEnd();
             _current = _last;
-            _engine->requestPlay(_current);
-            emit currentChanged();
+            tryPlayCurrent(false);
             break;
     }
 
@@ -685,8 +689,7 @@ void PlaylistModel::changeCurrent(int pos)
     _engine->waitLastEnd();
     _current = pos;
     _last = _current;
-    _engine->requestPlay(_current);
-    emit currentChanged();
+    tryPlayCurrent(true);
     _userRequestingItem = false;
 }
 

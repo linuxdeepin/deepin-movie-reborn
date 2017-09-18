@@ -144,6 +144,7 @@ private:
     void loadPlaylist();
     void clearPlaylist();
     void appendSingle(const QUrl&);
+    void tryPlayCurrent(bool next);
 };
 
 }
