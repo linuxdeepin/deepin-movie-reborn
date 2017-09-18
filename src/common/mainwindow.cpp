@@ -1371,12 +1371,12 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         }
 
         case ActionFactory::ActionKind::SeekBackward: {
-            _engine->seekBackward(20);
+            _engine->seekBackward(5);
             break;
         }
 
         case ActionFactory::ActionKind::SeekForward: {
-            _engine->seekForward(20);
+            _engine->seekForward(5);
             break;
         }
 
