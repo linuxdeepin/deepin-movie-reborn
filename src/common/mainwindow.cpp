@@ -488,6 +488,12 @@ MainWindow::MainWindow(QWidget *parent)
             this, &MainWindow::menuItemInvoked);
     connect(ActionFactory::get().playlistContextMenu(), &QMenu::triggered, 
             this, &MainWindow::menuItemInvoked);
+    connect(qApp, &QGuiApplication::focusWindowChanged, [=]() {
+        if (qApp->focusWindow() != windowHandle())
+            suspendToolsWindow();
+        else 
+            resumeToolsWindow();
+    });
 
     _playlist = new PlaylistWidget(this, _engine);
     _playlist->hide();
@@ -918,6 +924,10 @@ void MainWindow::menuItemInvoked(QAction *action)
         requestAction(kd, !isShortcut, ActionFactory::actionArgs(action), isShortcut);
     } else {
         requestAction(kd, !isShortcut, {}, isShortcut);
+    }
+
+    if (!isShortcut) {
+        suspendToolsWindow();
     }
 }
 
@@ -1567,6 +1577,7 @@ void MainWindow::play(const QUrl& url)
     if (!_engine->addPlayFile(url)) {
         auto msg = QString(tr("Invalid file: %1").arg(url.fileName()));
         _nwComm->updateWithMessage(msg);
+        return;
     }
     _engine->playByName(url);
 }
@@ -1642,6 +1653,7 @@ void MainWindow::suspendToolsWindow()
         if (qApp->applicationState() == Qt::ApplicationInactive) {
 
         } else {
+            // menus  are popped up
             if (qApp->focusWindow() != windowHandle())
                 return;
 
@@ -1661,7 +1673,6 @@ void MainWindow::suspendToolsWindow()
         if (isFullScreen()) {
             qApp->setOverrideCursor(Qt::BlankCursor);
         }
-        //setCursor(isFullScreen() ? Qt::BlankCursor : Qt::ArrowCursor);
         _titlebar->hide();
         _toolbox->hide();
     } else {
@@ -1921,7 +1932,6 @@ void MainWindow::contextMenuEvent(QContextMenuEvent *cme)
     if (_miniMode || _inBurstShootMode) 
         return;
 
-    resumeToolsWindow();
     ActionFactory::get().mainContextMenu()->popup(cme->globalPos());
     cme->accept();
 }
