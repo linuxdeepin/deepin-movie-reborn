@@ -39,10 +39,13 @@ public:
         // filetypes supported by mpv: https://github.com/mpv-player/mpv/blob/master/player/external_files.c
     const QStringList audio_filetypes {"*.mp3","*.ogg","*.wav","*.wma","*.m4a","*.aac","*.ac3","*.ape","*.flac","*.ra","*.mka","*.dts","*.opus"};
     const QStringList video_filetypes {
-        "*.avi","*.divx","*.mpg","*.mpeg","*.m1v","*.m2v","*.mpv","*.dv","*.3gp","*.mov",
-        "*.mp4","*.m4v","*.mqv","*.dat","*.vcd","*.ogm","*.ogv","*.asf","*.wmv","*.vob",
-        "*.mkv","*.ram","*.flv","*.rm","*.ts","*.rmvb","*.dvr-ms","*.m2t","*.m2ts","*.rec",
-        "*.f4v","*.hdmov","*.webm","*.vp8","*.letv","*.hlv","*.mts"
+        "*.3ga","*.3gp","*.3gpp","*.amv","*.asf","*.avf","*.avi","*.bdm","*.bdmv","*.clpi",
+        "*.cpi","*.dat","*.divx","*.dv","*.dvr-ms","*.f4v","*.flv","*.hdmov","*.hlv","*.letv",
+        "*.lrv","*.m1v","*.m2t","*.m2ts","*.m2v","*.m3u","*.m3u8","*.m4v","*.mkv","*.moov",
+        "*.mov","*.mp2","*.mp4","*.mpe","*.mpeg","*.mpg","*.mpl","*.mpls","*.mpv","*.mqv",
+        "*.mts","*.nsv","*.ogg","*.ogm","*.ogv","*.ogx","*.qt","*.qtvr","*.ram","*.rec",
+        "*.rm","*.rmj","*.rmm","*.rms","*.rmvb","*.rmx","*.rp","*.rv","*.rvx","*.ts","*.vcd",
+        "*.vdr","*.vob","*.vp8","*.webm","*.wmv","*.xspf"
     };
     const QStringList subtitle_filetypes {"*.sub","*.srt","*.ass","*.ssa","*.smi","*.rt","*.txt","*.mks","*.vtt","*.sup"};
 
