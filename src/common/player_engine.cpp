@@ -446,9 +446,8 @@ void PlayerEngine::seekAbsolute(int pos)
 
 bool PlayerEngine::addPlayFile(const QUrl& url)
 {
-    QList<QUrl> l;
-    _playlist->appendAsync(l);
-    return l.size() > 0;
+    _playlist->appendAsync({url});
+    return isPlayableFile(url);
 }
 
 QList<QUrl> PlayerEngine::collectPlayDir(const QDir& dir)

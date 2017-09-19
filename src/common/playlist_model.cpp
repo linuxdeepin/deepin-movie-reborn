@@ -215,6 +215,9 @@ void PlaylistModel::loadPlaylist()
         .arg(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation))
         .arg(qApp->organizationName())
         .arg(qApp->applicationName());
+
+    QList<QUrl> urls;
+
     QSettings cfg(fileName, QSettings::NativeFormat);
     cfg.beginGroup("playlist");
     auto keys = cfg.childKeys();
@@ -224,9 +227,7 @@ void PlaylistModel::loadPlaylist()
         if (indexOf(url) >= 0) continue;
 
         if (url.isLocalFile()) {
-            QFileInfo fi(url.toLocalFile());
-            auto pif = calculatePlayInfo(url, fi);
-            _infos.append(pif);
+            urls.append(url);
 
         } else {
             PlayItemInfo pif {
@@ -239,8 +240,14 @@ void PlaylistModel::loadPlaylist()
     }
     cfg.endGroup();
 
-    reshuffle();
-    emit countChanged();
+    if (urls.size() == 0) {
+        reshuffle();
+        emit countChanged();
+    }
+
+    QTimer::singleShot(0, [=]() {
+        appendAsync(urls);
+    });
 }
 
 
@@ -663,6 +670,7 @@ void PlaylistModel::onAsyncAppendFinished()
     qDebug() << "collected items" << fil.count();
     if (fil.size()) {
         _infos += SortSimilarFiles(fil);
+        reshuffle();
         emit itemsAppended();
         emit countChanged();
     }
