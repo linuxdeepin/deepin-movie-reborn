@@ -52,7 +52,7 @@ struct PlayItemInfo {
     QPixmap thumbnail;
     struct MovieInfo mi;
 
-    void refresh();
+    bool refresh();
 };
 
 using AppendJob = QPair<QUrl, QFileInfo>; // async job

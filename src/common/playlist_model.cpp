@@ -119,10 +119,16 @@ struct MovieInfo MovieInfo::parseFromFile(const QFileInfo& fi, bool *ok)
     return mi;
 }
 
-void PlayItemInfo::refresh()
+bool PlayItemInfo::refresh()
 {
+    //FIXME: it seems that info.exists always gets refreshed 
+    auto o = this->info.exists();
+    auto sz = this->info.size();
+
     this->info.refresh();
-    this->valid = info.exists();
+    this->valid = this->info.exists();
+
+    return (o != this->info.exists()) || sz != this->info.size();
 }
 
 PlaylistModel::PlaylistModel(PlayerEngine *e)
@@ -340,12 +346,14 @@ void PlaylistModel::stop()
 void PlaylistModel::tryPlayCurrent(bool next)
 {
     auto& pif = _infos[_current];
-    pif.refresh();
+    if (pif.refresh()) {
+        qDebug() << pif.url.fileName() << "changed";
+    }
+    emit itemInfoUpdated(_current);
     if (pif.valid) {
         _engine->requestPlay(_current);
         emit currentChanged();
     } else {
-        emit itemInfoUpdated(_current);
         _current = -1;
         emit currentChanged();
         if (next) playNext(false);
