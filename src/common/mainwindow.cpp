@@ -1935,7 +1935,10 @@ void MainWindow::contextMenuEvent(QContextMenuEvent *cme)
     if (_miniMode || _inBurstShootMode) 
         return;
 
-    ActionFactory::get().mainContextMenu()->popup(cme->globalPos());
+    resumeToolsWindow();
+    QTimer::singleShot(0, [=]() {
+        ActionFactory::get().mainContextMenu()->popup(QCursor::pos());
+    });
     cme->accept();
 }
 
