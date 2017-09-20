@@ -93,9 +93,9 @@ public:
         setLayout(l);
         l->setContentsMargins(0, 0, 0, 0);
 
-        auto msg = si["title"].toString();
-        fontMetrics().elidedText(msg, Qt::ElideMiddle, 140*2);
-        _title = new QLabel(msg);
+        _msg = si["title"].toString();
+        auto shorted = fontMetrics().elidedText(_msg, Qt::ElideMiddle, 140*2);
+        _title = new QLabel(shorted);
         _title->setWordWrap(true);
         l->addWidget(_title, 1);
 
@@ -124,6 +124,20 @@ public:
         style()->polish(_title);
     }
 
+protected:
+    void showEvent(QShowEvent *se) override
+    {
+        auto fm = _title->fontMetrics();
+        auto shorted = fm.elidedText(_msg, Qt::ElideMiddle, 140*2);
+        int h = fm.height();
+        if (fm.width(shorted) > 140) {
+            h *= 2;
+        } else {
+        }
+        _title->setFixedHeight(h);
+        _title->setText(shorted);
+    }
+
 private slots:
     void onThemeChanged() {
         if (property("current").toBool()) {
@@ -136,6 +150,7 @@ private:
     QLabel *_selectedLabel {nullptr};
     QLabel *_title {nullptr};
     int _sid {-1};
+    QString _msg;
 };
 
 class SubtitlesView: public DArrowRectangle {
@@ -161,17 +176,19 @@ public:
 
         setFixedWidth(220);
 
-        auto *l = new QVBoxLayout(this);
+        auto *l = new QHBoxLayout(this);
         l->setContentsMargins(8, 2, 8, 2);
+        l->setSpacing(0);
         setLayout(l);
 
         _subsView = new QListWidget(this);
         _subsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         _subsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        _subsView->setResizeMode(QListView::Adjust);
         _subsView->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
         _subsView->setSelectionMode(QListWidget::SingleSelection);
         _subsView->setSelectionBehavior(QListWidget::SelectItems);
-        l->addWidget(_subsView, 1);
+        l->addWidget(_subsView);
 
         connect(_subsView, &QListWidget::itemClicked, this, &SubtitlesView::onItemClicked);
         connect(_engine, &PlayerEngine::tracksChanged, this, &SubtitlesView::populateSubtitles);
@@ -187,7 +204,7 @@ protected:
     {
         ensurePolished();
         populateSubtitles();
-        adjustSize();
+        setFixedHeight(_subsView->height() + 4);
     }
 
 protected slots:
@@ -202,14 +219,18 @@ protected slots:
 
     void batchUpdateSizeHints()
     {
+        QSize sz(0, 0);
         if (isVisible()) {
             for (int i = 0; i < _subsView->count(); i++) {
                 auto item = _subsView->item(i);
                 auto w = _subsView->itemWidget(item);
-                //item->setSizeHint(w->size());
                 item->setSizeHint(w->sizeHint());
+                sz += w->sizeHint();
+                sz += QSize(0, 2);
             }
         }
+        sz += QSize(0, 2);
+        _subsView->setFixedHeight(sz.height());
     }
 
     void populateSubtitles()
@@ -226,8 +247,6 @@ protected slots:
             auto item = new QListWidgetItem();
             auto siw = new SubtitleItemWidget(this, sub);
             _subsView->addItem(item);
-            //auto sh = siw->sizeHint();
-            //item->setSizeHint(sh);
             _subsView->setItemWidget(item, siw);
             auto v = (sid == sub["id"].toInt());
             siw->setCurrent(v);
