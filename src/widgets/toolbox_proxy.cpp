@@ -583,7 +583,7 @@ void ToolboxProxy::setup()
 
     // these tooltips is not used due to deepin ui design
     _playBtn->setToolTip(tr("Play/Pause"));
-    _volBtn->setToolTip(tr("Volume"));
+    //_volBtn->setToolTip(tr("Volume"));
     _prevBtn->setToolTip(tr("Previous"));
     _nextBtn->setToolTip(tr("Next"));
     _subBtn->setToolTip(tr("Subtitles"));
@@ -727,10 +727,10 @@ void ToolboxProxy::updateVolumeState()
 {
     if (_engine->muted()) {
         _volBtn->changeLevel(VolumeButton::Mute);
-        _volBtn->setToolTip(tr("Mute"));
+        //_volBtn->setToolTip(tr("Mute"));
     } else {
         auto v = _engine->volume();
-        _volBtn->setToolTip(tr("Volume"));
+        //_volBtn->setToolTip(tr("Volume"));
         if (v >= 80)
             _volBtn->changeLevel(VolumeButton::High);
         else if (v >= 40)
