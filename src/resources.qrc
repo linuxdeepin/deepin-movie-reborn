@@ -19,6 +19,7 @@
         <file alias="dmr::MainWindow.theme">resources/qss/dark/dmr--MainWindow.theme</file>
         <file alias="dmr::ToolboxProxy.theme">resources/qss/dark/dmr--ToolboxProxy.theme</file>
         <file alias="dmr::MovieInfoDialog.theme">resources/qss/dark/dmr--MovieInfoDialog.theme</file>
+        <file alias="dmr::Tip.theme">resources/qss/dark/dmr--Tip.theme</file>
         <file alias="Dtk::Widget::DSettingsDialog.theme">resources/qss/dark/DSettingsDialog.theme</file>
     </qresource>
 
@@ -33,6 +34,7 @@
         <file alias="dmr::MainWindow.theme">resources/qss/light/dmr--MainWindow.theme</file>
         <file alias="dmr::ToolboxProxy.theme">resources/qss/light/dmr--ToolboxProxy.theme</file>
         <file alias="dmr::MovieInfoDialog.theme">resources/qss/light/dmr--MovieInfoDialog.theme</file>
+        <file alias="dmr::Tip.theme">resources/qss/light/dmr--Tip.theme</file>
     </qresource>
 
     <qresource>

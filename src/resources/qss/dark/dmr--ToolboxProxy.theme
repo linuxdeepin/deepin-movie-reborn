@@ -1,5 +1,6 @@
 dmr--ToolboxProxy, dmr--ToolboxProxy * {
-    background-color: rgba(23, 23, 23, 0.92);
+    /*background-color: rgba(23, 23, 23, 0.92);*/
+    background-color: rgba(10, 10, 10, 0.6);
 }
 
 QLabel, Dtk--Widget--DImageButton {

@@ -121,8 +121,8 @@ mpv_handle* MpvProxy::mpv_init()
     set_property(h, "input-cursor", "no");
     set_property(h, "cursor-autohide", "no");
 
-    set_property(h, "sub-ass-override", "yes");
-    set_property(h, "sub-ass-style-override", "yes");
+    //set_property(h, "sub-ass-override", "yes");
+    //set_property(h, "sub-ass-style-override", "yes");
     set_property(h, "sub-auto", "fuzzy");
     set_property(h, "sub-visibility", "true");
     //set_property(h, "sub-scale-with-window", "no");

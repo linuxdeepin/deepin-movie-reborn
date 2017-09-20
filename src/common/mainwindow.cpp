@@ -16,6 +16,7 @@
 #include "url_dialog.h"
 #include "movie_progress_indicator.h"
 #include "titlebar.h"
+#include "utils.h"
 
 #include <QtWidgets>
 #include <QtDBus>
@@ -512,8 +513,10 @@ MainWindow::MainWindow(QWidget *parent)
         if (!isFullscreen) {
             hint |= Qt::WindowMaximizeButtonHint | Qt::WindowMinimizeButtonHint;
             qApp->restoreOverrideCursor();
+            if (_lastCookie >= 0) utils::UnInhibitStandby(_lastCookie);
         } else {
             qApp->setOverrideCursor(Qt::BlankCursor);
+            _lastCookie = utils::InhibitStandby();
         }
         _titlebar->setWindowFlags(hint);
         //WTF: this->geometry() is not size of fullscreen !

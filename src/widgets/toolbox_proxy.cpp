@@ -10,6 +10,7 @@
 #include "actions.h"
 #include "slider.h"
 #include "thumbnail_worker.h"
+#include "tip.h"
 
 #include <QtWidgets>
 #include <dimagebutton.h>
@@ -37,6 +38,42 @@ protected:
             // standard event processing
             return QObject::eventFilter(obj, event);
         }
+    }
+};
+
+class TooltipHandler: public QObject {
+public:
+    TooltipHandler(QObject *parent): QObject(parent) {}
+
+protected:
+    bool eventFilter(QObject *obj, QEvent *event) {
+        switch (event->type()) {
+            case QEvent::ToolTip: {
+                QHelpEvent *he = static_cast<QHelpEvent *>(event);
+                auto tip = obj->property("HintWidget").value<Tip*>();
+                auto btn = tip->property("for").value<QWidget*>();
+
+                auto mw = tip->parentWidget();
+                auto sz = tip->size();
+
+                QPoint pos = btn->parentWidget()->mapToParent(btn->pos());
+                pos.ry() = mw->rect().bottom() - 65 - sz.height();
+                pos.rx() = pos.x() - sz.width()/2 + btn->width()/2;
+                tip->move(pos);
+                tip->show();
+                return true;
+            }
+
+            case QEvent::Leave: {
+                auto parent = obj->property("HintWidget").value<Tip*>();
+                parent->hide();
+                event->ignore();
+
+            }
+            default: break;
+        }
+        // standard event processing
+        return QObject::eventFilter(obj, event);
     }
 };
 
@@ -523,14 +560,30 @@ void ToolboxProxy::setup()
     _right->addWidget(_listBtn);
 #endif
 
+    // these tooltips is not used due to deepin ui design
     _playBtn->setToolTip(tr("Play"));
     _volBtn->setToolTip(tr("Volume"));
-
     _prevBtn->setToolTip(tr("Previous"));
     _nextBtn->setToolTip(tr("Next"));
     _subBtn->setToolTip(tr("Subtitles"));
     _listBtn->setToolTip(tr("Playlist"));
     _fsBtn->setToolTip(tr("Fullscreen"));
+
+    auto th = new TooltipHandler(this);
+    QWidget* btns[] = {
+        _playBtn, _prevBtn, _nextBtn, _subBtn, _listBtn, _fsBtn,
+    };
+    QString hints[] = {
+        tr("Play/Pause"), tr("Previous"), tr("Next"),
+        tr("Subtitles"), tr("Playlist"), tr("Fullscreen"),
+    };
+
+    for (int i = 0; i < sizeof(btns)/sizeof(btns[0]); i++) {
+        auto t = new Tip(QPixmap(), hints[i], parentWidget());
+        t->setProperty("for", QVariant::fromValue<QWidget*>(btns[i]));
+        btns[i]->setProperty("HintWidget", QVariant::fromValue<QWidget *>(t));
+        btns[i]->installEventFilter(th);
+    }
 
     connect(_engine, &PlayerEngine::stateChanged, this, &ToolboxProxy::updatePlayState);
     connect(_engine, &PlayerEngine::fileLoaded, [=]() {
