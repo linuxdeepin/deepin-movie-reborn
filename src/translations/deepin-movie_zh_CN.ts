@@ -864,63 +864,69 @@
 <context>
     <name>dmr::ToolboxProxy</name>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="564"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="743"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="766"/>
         <source>Play</source>
         <translation>播放</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="565"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="712"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="586"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="733"/>
         <source>Volume</source>
         <translation>音量</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="566"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="577"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="587"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="598"/>
         <source>Previous</source>
         <translation>上一个</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="567"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="577"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="588"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="598"/>
         <source>Next</source>
         <translation>下一个</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="568"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="578"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="589"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="599"/>
         <source>Subtitles</source>
         <translation>字幕</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="569"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="578"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="590"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="599"/>
         <source>Playlist</source>
         <translation>播放列表</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="570"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="578"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="591"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="599"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="753"/>
         <source>Fullscreen</source>
         <translation>全屏</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="577"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="585"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="598"/>
         <source>Play/Pause</source>
         <translation>播放/暂停</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="709"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="730"/>
         <source>Mute</source>
         <translation>静音</translation>
+    </message>
+    <message>
+        <location filename="../widgets/toolbox_proxy.cpp" line="750"/>
+        <source>Exit fullscreen</source>
+        <translation>退出全屏</translation>
     </message>
     <message>
         <source>Volume: %1%</source>
         <translation type="obsolete">音量：%1%</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="740"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="763"/>
         <source>Pause</source>
         <translation>暂停</translation>
     </message>

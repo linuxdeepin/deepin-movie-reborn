@@ -705,59 +705,65 @@
 <context>
     <name>dmr::ToolboxProxy</name>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="564"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="743"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="766"/>
         <source>Play</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="565"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="712"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="586"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="733"/>
         <source>Volume</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="566"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="577"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="587"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="598"/>
         <source>Previous</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="567"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="577"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="588"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="598"/>
         <source>Next</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="568"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="578"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="589"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="599"/>
         <source>Subtitles</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="569"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="578"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="590"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="599"/>
         <source>Playlist</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="570"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="578"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="591"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="599"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="753"/>
         <source>Fullscreen</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="577"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="585"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="598"/>
         <source>Play/Pause</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="709"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="730"/>
         <source>Mute</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="740"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="750"/>
+        <source>Exit fullscreen</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../widgets/toolbox_proxy.cpp" line="763"/>
         <source>Pause</source>
         <translation type="unfinished"></translation>
     </message>

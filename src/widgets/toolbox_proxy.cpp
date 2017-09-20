@@ -52,6 +52,9 @@ protected:
                 QHelpEvent *he = static_cast<QHelpEvent *>(event);
                 auto tip = obj->property("HintWidget").value<Tip*>();
                 auto btn = tip->property("for").value<QWidget*>();
+                tip->setText(btn->toolTip());
+                tip->show();
+                tip->adjustSize();
 
                 auto mw = tip->parentWidget();
                 auto sz = tip->size();
@@ -60,7 +63,6 @@ protected:
                 pos.ry() = mw->rect().bottom() - 65 - sz.height();
                 pos.rx() = pos.x() - sz.width()/2 + btn->width()/2;
                 tip->move(pos);
-                tip->show();
                 return true;
             }
 
@@ -580,7 +582,7 @@ void ToolboxProxy::setup()
 #endif
 
     // these tooltips is not used due to deepin ui design
-    _playBtn->setToolTip(tr("Play"));
+    _playBtn->setToolTip(tr("Play/Pause"));
     _volBtn->setToolTip(tr("Volume"));
     _prevBtn->setToolTip(tr("Previous"));
     _nextBtn->setToolTip(tr("Next"));
@@ -745,8 +747,10 @@ void ToolboxProxy::updateFullState()
     bool isFullscreen = window()->isFullScreen();
     if (isFullscreen) {
         _fsBtn->setObjectName("UnfsBtn");
+        _fsBtn->setToolTip(tr("Exit fullscreen"));
     } else {
         _fsBtn->setObjectName("FsBtn");
+        _fsBtn->setToolTip(tr("Fullscreen"));
     }
     _fsBtn->setStyleSheet(_playBtn->styleSheet());
 }
