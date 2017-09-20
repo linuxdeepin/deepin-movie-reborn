@@ -6,7 +6,7 @@ dmr--MainWindow {
 
 dmr--Titlebar {
     background: transparent;
-    qproperty-background: #171717;
+    qproperty-background: rgba(10,10,10,0.6);
     qproperty-borderBottom: rgba(0,0,0,100%);
     qproperty-borderShadowTop: rgba(255,255,255,5%);
     border-radius: 4px;

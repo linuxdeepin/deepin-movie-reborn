@@ -12,6 +12,9 @@ namespace utils {
     QString FastFileHash(const QFileInfo& fi);
     QString FullFileHash(const QFileInfo& fi);
     QPixmap MakeRoundedPixmap(QPixmap pm, qreal rx, qreal ry);
+
+    int InhibitStandby();
+    void UnInhibitStandby(int cookie);
 }
 }
 
