@@ -57,6 +57,8 @@ int main(int argc, char *argv[])
     app.setApplicationVersion(DMR_VERSION);
     app.setProductIcon(QPixmap(":/resources/icons/logo-big.svg"));
     app.setWindowIcon(QIcon(":/resources/icons/logo-big.svg"));
+    QString acknowledgementLink = "https://www.deepin.org/acknowledgments/deepin-movie";
+    app.setApplicationAcknowledgementPage(acknowledgementLink);
 
     app.loadTranslator();
     app.setApplicationDisplayName(QObject::tr("Deepin Movie"));
