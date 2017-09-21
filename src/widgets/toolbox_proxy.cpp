@@ -11,6 +11,7 @@
 #include "slider.h"
 #include "thumbnail_worker.h"
 #include "tip.h"
+#include "utils.h"
 
 #include <QtWidgets>
 #include <dimagebutton.h>
@@ -289,32 +290,60 @@ public:
         setAttribute(Qt::WA_DeleteOnClose);
         setWindowFlags(Qt::ToolTip);
         
-        setShadowBlurRadius(4);
-        setRadius(4);
-        setShadowYOffset(3);
+        setShadowBlurRadius(6);
+        setRadius(6);
+        setShadowYOffset(4);
         setShadowXOffset(0);
-        setArrowWidth(8);
-        setArrowHeight(5);
+        setArrowWidth(18);
+        setArrowHeight(10);
+
+        setBackgroundColor(QColor(23, 23, 23, 255 * 8 / 10));
+        setBorderColor(QColor(255, 255 ,255, 25));
         
         auto *l = new QVBoxLayout;
-        l->setContentsMargins(2, 2, 2, 2+5);
+        l->setContentsMargins(2, 2, 2, 2+10);
         setLayout(l);
 
         _thumb = new QLabel(this);
-        _thumb->setFixedWidth(160);
+        _thumb->setFixedSize(ThumbnailWorker::thumbSize());
         l->addWidget(_thumb);
+
+        _time = new QLabel(this);
+        _time->setFixedSize(64, 18);
+        _time->setStyleSheet(R"(
+            border-radius: 3px;
+            background-color: rgba(23, 23, 23, 0.8);
+            font-size: 12px;
+            text-align: left;
+            color: #ffffff; 
+        )");
     }
 
-    void updateWithPreview(const QPixmap& pm) {
-        _thumb->setPixmap(pm);
+    void updateWithPreview(const QPixmap& pm, qint64 secs) {
+        auto rounded = utils::MakeRoundedPixmap(pm, 4, 4);
+        _thumb->setPixmap(rounded);
+
+        QTime t(0, 0, 0);
+        t = t.addSecs(secs);
+        _time->setText(t.toString("hh:mm:ss"));
+        _time->move((width() - _time->width())/2, 69);
     }
 
     void updateWithPreview(const QPoint& pos) {
+        resizeWithContent();
+        move(pos.x(), pos.y() - 5);
         show(pos.x(), pos.y() - 5);
+    }
+
+protected:
+    void showEvent(QShowEvent *se) override
+    {
+        _time->move((width() - _time->width())/2, 69);
     }
 
 private:
     QLabel *_thumb;
+    QLabel *_time;
 };
 
 class VolumeSlider: public DArrowRectangle {
@@ -646,7 +675,7 @@ void ToolboxProxy::updateHoverPreview(const QUrl& url, int secs)
 
     QPixmap pm = ThumbnailWorker::get().getThumb(url, secs);
 
-    _previewer->updateWithPreview(pm);
+    _previewer->updateWithPreview(pm, secs);
 }
 
 void ToolboxProxy::progressHoverChanged(int v)
@@ -680,6 +709,7 @@ void ToolboxProxy::progressHoverChanged(int v)
     QPoint p = {
         (int)(pos.x() + geom.width() * pert), pos.y()
     };
+
     _previewer->updateWithPreview(p);
 }
 

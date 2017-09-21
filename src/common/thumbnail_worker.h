@@ -12,6 +12,9 @@ class ThumbnailWorker: public QThread {
 public:
     static ThumbnailWorker& get();
 
+    // expected size for ui
+    static QSize thumbSize() { return {158, 89}; }
+
     bool isThumbGenerated(const QUrl& url, int secs);
     QPixmap getThumb(const QUrl& url, int secs);
 

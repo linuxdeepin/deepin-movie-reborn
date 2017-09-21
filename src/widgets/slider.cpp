@@ -6,6 +6,18 @@ DMRSlider::DMRSlider(QWidget *parent): QSlider(parent)
 {
     setTracking(false);
     setMouseTracking(true);
+    _indicator = new QWidget();
+    _indicator->setWindowFlags(Qt::ToolTip);
+    _indicator->setFixedSize(1, 4);
+    _indicator->setStyleSheet(R"(
+        background: #ffffff;
+    )");
+    _indicator->hide();
+}
+
+DMRSlider::~DMRSlider()
+{
+    delete _indicator;
 }
 
 void DMRSlider::mouseReleaseEvent(QMouseEvent *e)
@@ -52,14 +64,19 @@ void DMRSlider::mouseMoveEvent(QMouseEvent *e)
         setSliderPosition(v);
     }
 
-    if (_lastHoverValue != v)
+    if (_lastHoverValue != v) {
+        _indicator->show();
+        _indicator->move(e->globalX(), mapToGlobal(pos()).y()-1);
         emit hoverChanged(v);
+    }
+
     _lastHoverValue = v;
 }
 
 void DMRSlider::leaveEvent(QEvent *e)
 {
     _lastHoverValue = 0;
+    _indicator->hide();
     emit leave();
 }
 
