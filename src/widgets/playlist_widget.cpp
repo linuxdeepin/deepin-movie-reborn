@@ -17,7 +17,6 @@ namespace dmr {
 enum ItemState {
     Normal,
     Playing,
-    Hover,
     Invalid, // gets deleted or similar
 };
 
@@ -134,6 +133,15 @@ public:
         _thumb->setPixmap(dest);
     }
 
+    void setHovered(bool v)
+    {
+        if (_hovered != v) {
+            _hovered = v;
+            setProperty("hovered", v);
+            setStyleSheet(styleSheet());
+        }
+    }
+
 signals:
     void closeButtonClicked();
     void doubleClicked();
@@ -142,12 +150,14 @@ protected:
     void leaveEvent(QEvent* e) override
     {
         _closeBtn->hide();
+        setHovered(false);
     }
 
     void enterEvent(QEvent* e) override
     {
         _closeBtn->show();
         _closeBtn->raise();
+        setHovered(true);
     }
 
     bool eventFilter(QObject *obj, QEvent *e) override 
@@ -245,6 +255,7 @@ private:
     PlayItemInfo _pif;
     DImageButton *_closeBtn;
     QListWidget *_listWidget {nullptr};
+    bool _hovered {false};
 };
 
 class MainWindowListener: public QObject {
@@ -311,6 +322,19 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     connect(&_engine->playlist(), &PlaylistModel::itemInfoUpdated, this, &PlaylistWidget::updateItemInfo);
 
     QTimer::singleShot(10, this, &PlaylistWidget::loadPlaylist);
+
+    connect(ActionFactory::get().playlistContextMenu(), &QMenu::aboutToShow, [=]() {
+        QTimer::singleShot(20, [=]() {
+            if (_mouseItem) {
+                ((PlayItemWidget*)_mouseItem)->setHovered(true); 
+            }
+        });
+    });
+    connect(ActionFactory::get().playlistContextMenu(), &QMenu::aboutToHide, [=]() {
+        if (_mouseItem) {
+            ((PlayItemWidget*)_mouseItem)->setHovered(false); 
+        }
+    });
 }
 
 PlaylistWidget::~PlaylistWidget()
@@ -333,10 +357,6 @@ void PlaylistWidget::updateItemStates()
         piw->setState(ItemState::Normal);
         if (!piw->_pif.valid) {
             piw->setState(ItemState::Invalid);
-        }
-
-        if (_mouseItem == piw) {
-            piw->setState(ItemState::Hover);
         }
 
         if (i == _engine->playlist().current()) {
@@ -420,7 +440,7 @@ void PlaylistWidget::contextMenuEvent(QContextMenuEvent *cme)
     _mouseItem = nullptr;
 
     if (itemAt(cme->pos())) {
-        _mouseItem = dynamic_cast<PlayItemWidget*>(itemWidget(itemAt(cme->pos())));
+        _mouseItem = itemWidget(itemAt(cme->pos()));
         on_item = true;
     }
 
