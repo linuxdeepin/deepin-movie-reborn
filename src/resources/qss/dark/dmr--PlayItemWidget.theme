@@ -1,22 +1,3 @@
-/* state Hover*/
-*[PlayItemThumb="true"][ItemState="2"] {
-    qproperty-bg: url(:/resources/icons/dark/normal/film-bg.png);
-    background-color: rgba(255, 255, 255, 0.1);
-}
-
-
-*[PlayItemThumb="true"][ItemState="2"] *[Name="true"] {
-    font-size: 12px;
-    line-height: 1.5;
-    color: #ffffff;
-}
-
-*[PlayItemThumb="true"][ItemState="2"] *[Time="true"] {
-    font-size: 10px;
-    line-height: 1.5;
-    color: rgba(255, 255, 255, 0.6);
-}
-
 /* state Playing */
 *[PlayItemThumb="true"][ItemState="1"] {
     qproperty-bg: url(:/resources/icons/dark/normal/film-bg.png);
@@ -54,21 +35,26 @@
 }
 
 /* state Invalid */
-*[PlayItemThumb="true"][ItemState="3"] {
+*[PlayItemThumb="true"][ItemState="2"] {
     qproperty-bg: url(:/resources/icons/dark/normal/film-bg.png);
 }
 
 
-*[PlayItemThumb="true"][ItemState="3"] *[Name="true"] {
+*[PlayItemThumb="true"][ItemState="2"] *[Name="true"] {
     font-size: 12px;
     line-height: 1.5;
     color: rgba(255, 255, 255, 0.5);
 }
 
-*[PlayItemThumb="true"][ItemState="3"] *[Time="true"] {
+*[PlayItemThumb="true"][ItemState="2"] *[Time="true"] {
     font-size: 10px;
     font-weight: 500;
     line-height: 1.5;
     color: rgba(249, 112, 79, 0.6);
+}
+
+/* when hovered */
+*[PlayItemThumb="true"][hovered="true"] {
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
