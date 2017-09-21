@@ -56,7 +56,7 @@ void ThumbnailWorker::requestThumb(const QUrl& url, int secs)
 
 ThumbnailWorker::ThumbnailWorker()
 {
-    thumber.setThumbnailSize(160);
+    thumber.setThumbnailSize(thumbSize().width());
 }
 
 QPixmap ThumbnailWorker::genThumb(const QUrl& url, int secs)
