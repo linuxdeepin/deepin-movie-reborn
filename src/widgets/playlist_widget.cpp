@@ -124,8 +124,11 @@ public:
                     (img.width()-24)/2, (img.height()-44)/2, 24, 44);
 
         }
-        p.drawPixmap((pm.width() - _play.width())/2, 
-                (pm.height() - _play.height())/2, _play);
+
+        if (state() == ItemState::Playing) {
+            p.drawPixmap((pm.width() - _play.width())/2, 
+                    (pm.height() - _play.height())/2, _play);
+        }
         p.end();
 
         _thumb->setPixmap(dest);
