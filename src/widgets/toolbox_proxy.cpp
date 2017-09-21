@@ -463,6 +463,17 @@ void ToolboxProxy::setup()
     stacked->setStackingMode(QStackedLayout::StackAll);
     setLayout(stacked);
 
+    _progBar = new DMRSlider();
+    _progBar->setObjectName("MovieProgress");
+    _progBar->setOrientation(Qt::Horizontal);
+    _progBar->setFixedHeight(10);
+    _progBar->setRange(0, 100);
+    _progBar->setValue(0);
+    connect(_progBar, &QSlider::sliderMoved, this, &ToolboxProxy::setProgress);
+    connect(_progBar, &DMRSlider::hoverChanged, this, &ToolboxProxy::progressHoverChanged);
+    connect(_progBar, &DMRSlider::leave, [=]() { _previewer->hide(); });
+    stacked->addWidget(_progBar);
+
 	auto *border_frame = new QFrame;
     border_frame->setFrameShape(QFrame::NoFrame);
     border_frame->setFixedHeight(1);
@@ -475,16 +486,6 @@ void ToolboxProxy::setup()
     inner_border_frame->setObjectName("ToolBoxTopBorderInner");
     stacked->addWidget(inner_border_frame);
 
-    _progBar = new DMRSlider();
-    _progBar->setObjectName("MovieProgress");
-    _progBar->setOrientation(Qt::Horizontal);
-    _progBar->setFixedHeight(10);
-    _progBar->setRange(0, 100);
-    _progBar->setValue(0);
-    connect(_progBar, &QSlider::sliderMoved, this, &ToolboxProxy::setProgress);
-    connect(_progBar, &DMRSlider::hoverChanged, this, &ToolboxProxy::progressHoverChanged);
-    connect(_progBar, &DMRSlider::leave, [=]() { _previewer->hide(); });
-    stacked->addWidget(_progBar);
 
     auto *bot_widget = new QWidget;
     auto *bot = new QHBoxLayout();
