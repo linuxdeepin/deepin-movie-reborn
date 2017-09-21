@@ -328,7 +328,6 @@ public:
 
         setShadowBlurRadius(4);
         setRadius(4);
-        setShadowDistance(0);
         setShadowYOffset(3);
         setShadowXOffset(0);
         setArrowWidth(8);
@@ -395,9 +394,9 @@ protected:
 private slots:
     void updateBg() {
         if (qApp->theme() == "dark") {
-            setBackgroundColor(DBlurEffectWidget::DarkColor);
+            setBackgroundColor(QColor(49, 49, 49, 255 * 9 / 10));
         } else {
-            setBackgroundColor(DBlurEffectWidget::LightColor);
+            setBackgroundColor(QColor(255, 255, 255, 255 * 9 / 10));
         }
     }
 
