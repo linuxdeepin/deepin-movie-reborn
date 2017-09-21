@@ -1890,7 +1890,11 @@ void MainWindow::mouseDoubleClickEvent(QMouseEvent *ev)
 {
     if (!_miniMode && !_inBurstShootMode) {
         _delayedMouseReleaseTimer.stop();
-        requestAction(ActionFactory::ToggleFullscreen, false, {}, true);
+        if (_engine->state() == PlayerEngine::Idle) {
+            requestAction(ActionFactory::StartPlay);
+        } else {
+            requestAction(ActionFactory::ToggleFullscreen, false, {}, true);
+        }
         ev->accept();
     }
 }
