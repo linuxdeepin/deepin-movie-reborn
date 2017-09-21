@@ -291,14 +291,13 @@ public:
         
         setShadowBlurRadius(4);
         setRadius(4);
-        setShadowDistance(0);
         setShadowYOffset(3);
         setShadowXOffset(0);
         setArrowWidth(8);
         setArrowHeight(5);
         
         auto *l = new QVBoxLayout;
-        l->setContentsMargins(2, 2, 2, 2);
+        l->setContentsMargins(2, 2, 2, 2+5);
         setLayout(l);
 
         _thumb = new QLabel(this);
@@ -765,7 +764,7 @@ void ToolboxProxy::updatePlayState()
         _playBtn->setObjectName("PlayBtn");
         _playBtn->setToolTip(tr("Play"));
     }
-    _playBtn->setStyleSheet(_playBtn->styleSheet());
+
     if (_engine->state() == PlayerEngine::CoreState::Idle) {
         if (_subView->isVisible())
             _subView->hide();
@@ -773,9 +772,13 @@ void ToolboxProxy::updatePlayState()
         if (_previewer->isVisible()) {
             _previewer->hide();
         }
+        setProperty("idle", true);
+    } else {
+        setProperty("idle", false);
     }
     
     _progBar->setEnabled(_engine->state() != PlayerEngine::CoreState::Idle);
+    setStyleSheet(styleSheet());
 }
 
 void ToolboxProxy::updateTimeInfo(qint64 duration, qint64 pos)

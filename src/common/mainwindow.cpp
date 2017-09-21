@@ -445,7 +445,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     _titlebar = new Titlebar(this);
     _titlebar->move(1, 1);
-    _titlebar->setFixedHeight(32);
+    _titlebar->setFixedHeight(30);
     _titlebar->layout()->setContentsMargins(0, 0, 0, 0);
     _titlebar->setFocusPolicy(Qt::NoFocus);
     if (!composited) {
@@ -1848,6 +1848,8 @@ void MainWindow::updateWindowTitle()
     } else {
         _titlebar->setTitle(tr("Deepin Movie"));
     }
+    _titlebar->setProperty("idle", _engine->state() == PlayerEngine::Idle);
+    _titlebar->setStyleSheet(styleSheet());
 }
 
 void MainWindow::moveEvent(QMoveEvent *ev)
