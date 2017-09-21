@@ -138,7 +138,9 @@ namespace dmr {
         static QImage bg_dark(":/resources/icons/dark/init-splash.png");
         static QImage bg_light(":/resources/icons/light/init-splash.png");
         _darkTex = new QOpenGLTexture(bg_dark);
+        _darkTex->setMinificationFilter(QOpenGLTexture::LinearMipMapLinear);
         _lightTex = new QOpenGLTexture(bg_light);
+        _lightTex->setMinificationFilter(QOpenGLTexture::LinearMipMapLinear);
 
         updateVbo(rect().size(), bg_dark.size());
 

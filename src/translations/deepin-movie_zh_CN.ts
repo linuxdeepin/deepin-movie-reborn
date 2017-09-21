@@ -792,7 +792,7 @@
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1581"/>
-        <location filename="../common/mainwindow.cpp" line="2111"/>
+        <location filename="../common/mainwindow.cpp" line="2114"/>
         <source>Invalid file: %1</source>
         <translation>无效文件：%1</translation>
     </message>
@@ -864,60 +864,57 @@
 <context>
     <name>dmr::ToolboxProxy</name>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="766"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="767"/>
         <source>Play</source>
         <translation>播放</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="586"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="733"/>
         <source>Volume</source>
-        <translation>音量</translation>
+        <translation type="vanished">音量</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="587"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="598"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="588"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="599"/>
         <source>Previous</source>
         <translation>上一个</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="588"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="598"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="589"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="599"/>
         <source>Next</source>
         <translation>下一个</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="589"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="599"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="590"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="600"/>
         <source>Subtitles</source>
         <translation>字幕</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="590"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="599"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="591"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="600"/>
         <source>Playlist</source>
         <translation>播放列表</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="591"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="599"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="753"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="592"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="600"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="754"/>
         <source>Fullscreen</source>
         <translation>全屏</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="585"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="598"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="586"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="599"/>
         <source>Play/Pause</source>
         <translation>播放/暂停</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="730"/>
         <source>Mute</source>
-        <translation>静音</translation>
+        <translation type="vanished">静音</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="750"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="751"/>
         <source>Exit fullscreen</source>
         <translation>退出全屏</translation>
     </message>
@@ -926,7 +923,7 @@
         <translation type="obsolete">音量：%1%</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="763"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="764"/>
         <source>Pause</source>
         <translation>暂停</translation>
     </message>

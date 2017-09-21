@@ -637,7 +637,7 @@
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1581"/>
-        <location filename="../common/mainwindow.cpp" line="2111"/>
+        <location filename="../common/mainwindow.cpp" line="2114"/>
         <source>Invalid file: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -705,65 +705,54 @@
 <context>
     <name>dmr::ToolboxProxy</name>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="766"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="767"/>
         <source>Play</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="586"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="733"/>
-        <source>Volume</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="587"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="598"/>
-        <source>Previous</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="588"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="598"/>
-        <source>Next</source>
+        <location filename="../widgets/toolbox_proxy.cpp" line="599"/>
+        <source>Previous</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="589"/>
         <location filename="../widgets/toolbox_proxy.cpp" line="599"/>
-        <source>Subtitles</source>
+        <source>Next</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="590"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="599"/>
-        <source>Playlist</source>
+        <location filename="../widgets/toolbox_proxy.cpp" line="600"/>
+        <source>Subtitles</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="591"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="599"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="753"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="600"/>
+        <source>Playlist</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../widgets/toolbox_proxy.cpp" line="592"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="600"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="754"/>
         <source>Fullscreen</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="585"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="598"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="586"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="599"/>
         <source>Play/Pause</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="730"/>
-        <source>Mute</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="750"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="751"/>
         <source>Exit fullscreen</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="763"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="764"/>
         <source>Pause</source>
         <translation type="unfinished"></translation>
     </message>
