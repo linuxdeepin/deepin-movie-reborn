@@ -135,14 +135,17 @@ namespace dmr {
         _vao.create();
         _vao.bind();
 
-        static QImage bg_dark(":/resources/icons/dark/init-splash.png");
-        static QImage bg_light(":/resources/icons/light/init-splash.png");
         _darkTex = new QOpenGLTexture(bg_dark);
         _darkTex->setMinificationFilter(QOpenGLTexture::LinearMipMapLinear);
         _lightTex = new QOpenGLTexture(bg_light);
         _lightTex->setMinificationFilter(QOpenGLTexture::LinearMipMapLinear);
 
-        updateVbo(rect().size(), bg_dark.size());
+        _darkMiniTex = new QOpenGLTexture(bg_dark_mini);
+        _darkMiniTex->setMinificationFilter(QOpenGLTexture::LinearMipMapLinear);
+        _lightMiniTex = new QOpenGLTexture(bg_light_mini);
+        _lightMiniTex->setMinificationFilter(QOpenGLTexture::LinearMipMapLinear);
+
+        updateVbo();
 
         _vbo.bind();
         _glProg = new QOpenGLShaderProgram();
@@ -260,11 +263,16 @@ namespace dmr {
         _vboBlend.release();
     }
 
-    void MpvGLWidget::updateVbo(const QSize& vp, const QSize& tex_sz)
+    void MpvGLWidget::updateVbo()
     {
         if (!_vbo.isCreated()) {
             _vbo.create();
         }
+        //HACK: we assume if any of width or height is 380, then we are in mini mode
+        auto vp = rect().size();
+
+        _inMiniMode = vp.width() <= 380 || vp.height() <= 380;
+        auto tex_sz = _inMiniMode ? bg_dark_mini.size() : bg_dark.size();
 
         auto r = QRect(0, 0, vp.width(), vp.height());
         auto r2 = QRect(r.center() - QPoint(tex_sz.width()/2, tex_sz.height()/2+26), tex_sz);
@@ -299,7 +307,7 @@ namespace dmr {
 
         qDebug() << size() << w << h;
         static QImage bg_dark(":/resources/icons/dark/init-splash.png");
-        updateVbo(QSize(w, h), bg_dark.size());
+        updateVbo();
 
         updateBlendMask();
 
@@ -375,6 +383,15 @@ namespace dmr {
             _playing = val;
         }
         update();
+    }
+
+    void MpvGLWidget::setMiniMode(bool val)
+    {
+        if (_inMiniMode != val) {
+            _inMiniMode = val;
+            updateVbo();
+            update();
+        }
     }
 }
 
