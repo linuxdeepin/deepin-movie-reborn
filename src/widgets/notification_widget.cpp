@@ -78,15 +78,10 @@ void NotificationWidget::popupWithIcon(const QString& msg, const QPixmap& pm)
     if (_layout->indexOf(_msgLabel) == -1)
         _layout->addWidget(_msgLabel, 1);
 
-    setFixedSize(300, 40);
+    setFixedHeight(40);
     _layout->update();
+    _msgLabel->setText(msg);
     show();
-
-    auto fm = _msgLabel->fontMetrics();
-    auto w = 300 - _icon->width() - _layout->spacing() - _layout->contentsMargins().left()
-        - _layout->contentsMargins().right();
-    _msgLabel->setText(fm.elidedText(msg, Qt::ElideMiddle, w));
-    
     raise();
     _timer->start();
 }
