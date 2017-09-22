@@ -38,18 +38,21 @@ public:
         // it's the same for all themes
         _play = QPixmap(":/resources/icons/dark/normal/film-top.png");
 
-        setFixedWidth(220);
+        setFixedSize(220, 68);
         auto *l = new QHBoxLayout(this);
-        l->setContentsMargins(0, 0, 10, 0);
+        l->setContentsMargins(10, 0, 16, 0);
+        l->setSpacing(10);
         setLayout(l);
 
         _thumb = new QLabel(this);
         l->addWidget(_thumb);
 
         auto *vl = new QVBoxLayout;
-        vl->setContentsMargins(0, 0, 3, 0);
+        vl->setContentsMargins(0, 0, 0, 0);
         vl->setSpacing(0);
-        l->addLayout(vl, 1);
+        l->addLayout(vl, 10);
+
+        vl->addStretch();
 
         _name = new QTextEdit(this);
         _name->setProperty("Name", true);
@@ -61,8 +64,7 @@ public:
         _name->setFrameShape(QFrame::NoFrame);
         _name->setTextInteractionFlags(Qt::NoTextInteraction);
         _name->installEventFilter(this);
-
-        vl->addWidget(_name, 1);
+        vl->addWidget(_name);
 
         _time = new QLabel(this);
         _time->setProperty("Time", true);
@@ -72,6 +74,7 @@ public:
             _time->setText(tr("File does not exist"));
         }
         vl->addWidget(_time);
+        vl->addStretch();
 
         setBg(QString(":/resources/icons/%1/normal/film-bg.png").arg(qApp->theme())); 
 
@@ -157,6 +160,11 @@ protected:
     {
         _closeBtn->show();
         _closeBtn->raise();
+        auto margin = 6;
+        auto pl = dynamic_cast<PlaylistWidget*>(parentWidget()->parentWidget());
+        if (pl->verticalScrollBar()->isVisible())
+            margin = 12;
+        _closeBtn->move(width() - _closeBtn->width() - margin, (height() - _closeBtn->height())/2);
         setHovered(true);
     }
 
@@ -174,9 +182,6 @@ protected:
         if(ee->type() == QEvent::Resize) {
             int text_height = _name->document()->size().height();
             _name->setFixedHeight(text_height);
-
-            //resize(width(), _name->height() + _time->height() + layout()->spacing());
-            resize(width(), _name->height() + _time->height());
         }
 
         if (ee->type() == QEvent::Move) {
@@ -194,26 +199,19 @@ protected:
         return QFrame::event(ee);
     }
 
-    void resizeEvent(QResizeEvent* se) override
-    {
-        auto sz = this->size();
-        _closeBtn->move(sz.width() - _closeBtn->width() - 20, (sz.height() - _closeBtn->height())/2);
-    }
-
     void showEvent(QShowEvent *se) override
     {
         QString msg = _pif.url.fileName();
         if (!_pif.url.isLocalFile() && msg.isEmpty()) {
             msg = _pif.url.toString();
         }
-        _name->setText(_name->fontMetrics().elidedText(msg, Qt::ElideMiddle, 270));
+        _name->setText(_name->fontMetrics().elidedText(msg, Qt::ElideMiddle, 260));
         _name->viewport()->setCursor(Qt::ArrowCursor);
         _name->setCursor(Qt::ArrowCursor);
-
+        _name->document()->setDocumentMargin(0.0);
         int text_height = _name->document()->size().height();
         _name->setFixedHeight(text_height);
-        //resize(width(), _name->height() + _time->height() + layout()->spacing());
-        resize(width(), _name->height() + _time->height());
+
         QTimer::singleShot(0, [=]() {
             auto pos = _listWidget->mapFromGlobal(QCursor::pos());
             auto r = QRect(mapTo(_listWidget, QPoint()), size());
@@ -294,19 +292,20 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     bool composited = CompositingManager::get().composited();
     setAttribute(Qt::WA_TranslucentBackground, false);
     setFixedWidth(220);
+    setFrameShape(QFrame::NoFrame);
     setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred));
 
     setSelectionMode(QListView::SingleSelection);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setResizeMode(QListView::Adjust);
     setDragDropMode(QListView::DropOnly);
-    setSpacing(4);
+    setSpacing(2);
 
     setAcceptDrops(true);
+    setContentsMargins(0, 0, 0, 0);
 
     if (!composited) {
         setWindowFlags(Qt::FramelessWindowHint|Qt::BypassWindowManagerHint);
-        setContentsMargins(0, 0, 0, 0);
         setAttribute(Qt::WA_NativeWindow);
 	} 
 
