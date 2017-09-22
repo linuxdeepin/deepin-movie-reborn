@@ -2,49 +2,6 @@
 <!DOCTYPE TS>
 <TS version="2.1">
 <context>
-    <name>QCoreApplication</name>
-    <message>
-        <location filename="../common/options.cpp" line="21"/>
-        <source>Movie file path or directory</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../common/options.cpp" line="23"/>
-        <source>show detail log message</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../common/options.cpp" line="24"/>
-        <source>dump all debug message</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../common/options.cpp" line="25"/>
-        <source>use opengl-cb interface [on/off/auto]</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../common/options.cpp" line="26"/>
-        <source>override config for libmpv</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../common/options.cpp" line="27"/>
-        <source>play only count number of frames</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../common/options.cpp" line="28"/>
-        <source>use gal or not</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../common/options.cpp" line="29"/>
-        <source>play in vpu demo mode</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>QObject</name>
     <message>
         <location filename="../main.cpp" line="64"/>

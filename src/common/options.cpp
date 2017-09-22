@@ -1,3 +1,4 @@
+#include "config.h"
 #include "options.h"
 
 namespace dmr {
@@ -18,15 +19,17 @@ CommandLineManager::CommandLineManager()
     addHelpOption();
     addVersionOption();
 
-    addPositionalArgument("path", QCoreApplication::tr("Movie file path or directory"));
+    addPositionalArgument("path", ("Movie file path or directory"));
     addOptions({
-        {{"V", "verbose"}, QCoreApplication::tr("show detail log message")},
-        {"VV", QCoreApplication::tr("dump all debug message")},
-        {{"c", "opengl-cb"}, QCoreApplication::tr("use opengl-cb interface [on/off/auto]"), "bool", "auto"},
-        {{"o", "override-config"}, QCoreApplication::tr("override config for libmpv"), "file", ""},
-        {"frames", QCoreApplication::tr("play only count number of frames"), "count", "0"},
-        {"gal", QCoreApplication::tr("use gal or not"), "bool", "on"},
-        {"vpudemo", QCoreApplication::tr("play in vpu demo mode")},
+        {{"V", "verbose"}, ("show detail log message")},
+        {"VV", ("dump all debug message")},
+        {{"c", "opengl-cb"}, ("use opengl-cb interface [on/off/auto]"), "bool", "auto"},
+        {{"o", "override-config"}, ("override config for libmpv"), "file", ""},
+#if ENABLE_VPU_PLATFORM
+        {"frames", ("play only count number of frames"), "count", "0"},
+        {"gal", ("use gal or not"), "bool", "on"},
+#endif
+        {"vpudemo", ("play in vpu demo mode")},
     });
 }
 
