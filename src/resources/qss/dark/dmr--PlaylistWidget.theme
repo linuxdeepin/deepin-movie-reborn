@@ -2,6 +2,7 @@ dmr--PlaylistWidget {
     background-color: rgba(16, 16, 16, 0.80);
     selection-color: transparent;
     selection-background-color: transparent;
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 Dtk--Widget--DImageButton#CloseBtn {
