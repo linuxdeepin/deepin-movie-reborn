@@ -1448,9 +1448,8 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                 _nwShot->setAnchor(NotificationWidget::AnchorNorthWest);
                 _nwShot->setAnchorPoint(QPoint(30, 38));
             }
-            auto msg = tr("The screenshot is saved.");
             auto pm = QPixmap(QString(":/resources/icons/%1.png").arg(success?"success":"fail"));
-            _nwShot->popupWithIcon(msg, pm);
+            _nwShot->popupWithIcon(tr("The screenshot is saved."), pm);
 #endif
             break;
         }
@@ -1528,9 +1527,8 @@ void MainWindow::onBurstScreenshot(const QImage& frame)
                 _nwShot->setAnchor(NotificationWidget::AnchorNorthWest);
                 _nwShot->setAnchorPoint(QPoint(30, 38));
             }
-            auto msg = tr("The screenshot is saved to %1").arg(poster_path);
             auto pm = QPixmap(QString(":/resources/icons/%1.png").arg(QFileInfo::exists(poster_path)?"success":"fail"));
-            _nwShot->popupWithIcon(msg, pm);
+            _nwShot->popupWithIcon(tr("The screenshot is saved."), pm);
         }
     }
 }
