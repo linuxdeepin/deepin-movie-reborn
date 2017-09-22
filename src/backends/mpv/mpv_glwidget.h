@@ -22,6 +22,7 @@ protected:
     void paintGL() override;
 
     void setPlaying(bool);
+    void setMiniMode(bool);
 
 public slots:
     void onNewFrame();
@@ -30,11 +31,14 @@ private:
     mpv::qt::Handle _handle;
     mpv_opengl_cb_context *_gl_ctx {nullptr};
     bool _playing {false};
+    bool _inMiniMode {false};
 
     QOpenGLVertexArrayObject _vao;
     QOpenGLBuffer _vbo;
     QOpenGLTexture *_darkTex {nullptr};
     QOpenGLTexture *_lightTex {nullptr};
+    QOpenGLTexture *_darkMiniTex {nullptr};
+    QOpenGLTexture *_lightMiniTex {nullptr};
     QOpenGLShaderProgram *_glProg {nullptr};
 
     QOpenGLVertexArrayObject _vaoBlend;
@@ -43,7 +47,13 @@ private:
     QOpenGLTexture *_texMask {nullptr};
     QOpenGLFramebufferObject *_fbo {nullptr};
 
-    void updateVbo(const QSize& vp, const QSize& tex_sz);
+    QImage bg_dark {":/resources/icons/dark/init-splash.png"};
+    QImage bg_light {":/resources/icons/light/init-splash.png"};
+
+    QImage bg_dark_mini {":/resources/icons/dark/mini-init-splash.png"};
+    QImage bg_light_mini {":/resources/icons/light/mini-init-splash.png"};
+
+    void updateVbo();
     void updateBlendMask();
     void updateVboBlend();
 };

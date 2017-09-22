@@ -271,6 +271,7 @@ set_cursor:
                             updateGeometry(mouseCorner, e);
                         }
                         lastCornerEdge = mouseCorner;
+                        return true;
 
 skip_set_cursor:
                         lastCornerEdge = mouseCorner = Utility::NoneEdge;

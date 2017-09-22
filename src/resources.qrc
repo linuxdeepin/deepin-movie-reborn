@@ -50,6 +50,8 @@
         <file>resources/icons/light/subtitle-selected.png</file>
         <file>resources/icons/logo.svg</file>
         <file>resources/icons/logo-big.svg</file>
+        <file>resources/icons/light/mini-init-splash.png</file>
+        <file>resources/icons/dark/mini-init-splash.png</file>
         <file>resources/icons/light/init-splash.png</file>
         <file>resources/icons/dark/init-splash.png</file>
         <file>resources/icons/light/mini/restore-normal-mini.png</file>
