@@ -213,6 +213,7 @@ void PlaylistModel::savePlaylist()
         cfg.setValue(QString::number(i), pif.url);
     }
     cfg.endGroup();
+    cfg.sync();
 }
 
 void PlaylistModel::loadPlaylist()
