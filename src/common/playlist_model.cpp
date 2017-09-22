@@ -211,6 +211,7 @@ void PlaylistModel::savePlaylist()
     for (int i = 0; i < count(); ++i) {
         const auto& pif = _infos[i];
         cfg.setValue(QString::number(i), pif.url);
+        qDebug() << "save " << pif.url;
     }
     cfg.endGroup();
     cfg.sync();
@@ -621,7 +622,8 @@ void PlaylistModel::appendAsync(const QList<QUrl>& urls)
 {
     if (_pendingJob.size() > 0) {
         //TODO: may be automatically schedule later
-        qWarning() << "there is a pending append going on";
+        qWarning() << "there is a pending append going on, enqueue";
+        _pendingAppendReq.enqueue(urls);
         return;
     }
 
@@ -684,6 +686,13 @@ void PlaylistModel::onAsyncAppendFinished()
         emit countChanged();
     }
     emit asyncAppendFinished(fil);
+
+    if (_pendingAppendReq.size()) {
+        QTimer::singleShot(0, [=]() {
+            auto job = _pendingAppendReq.dequeue();
+            this->appendAsync(job);
+        });
+    }
 }
 
 //TODO: what if loadfile failed

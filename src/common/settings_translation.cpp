@@ -5,7 +5,6 @@ void GenerateSettingTranslate()
     auto base_play_addsimilarText = QObject::tr("Auto add similar files to play");
     auto base_play_emptylistText = QObject::tr("Clear playlist when exit");
     auto base_play_hwaccelText = QObject::tr("Enable hardware acceleration");
-    auto base_play_light_themeName = QObject::tr("is light theme");
     auto base_play_mousepreviewText = QObject::tr("Show video preview on mouseover");
     auto base_play_multiinstanceText = QObject::tr("Open a new player for each file played");
     auto base_play_pauseonminText = QObject::tr("Pause when minimized");

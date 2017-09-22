@@ -10,7 +10,7 @@
                     "options": [
                         {
                             "key": "light_theme",
-                            "name": "is light theme",
+                            "name": "",
                             "hide": true,
                             "reset": false,
                             "type": "checkbox",
