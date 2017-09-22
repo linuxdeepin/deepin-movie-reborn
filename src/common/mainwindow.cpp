@@ -217,7 +217,7 @@ class MainWindowEventListener : public QObject
 
                 if (!leftButtonPressed) {
                     if (mw->insideResizeArea(e->globalPos())) {
-                        Utility::CornerEdge mouseCorner;
+                        Utility::CornerEdge mouseCorner = Utility::NoneEdge;
                         QRect cornerRect;
 
                         /// begin set cursor corner type
@@ -272,6 +272,8 @@ set_cursor:
                         }
                         lastCornerEdge = mouseCorner;
 
+skip_set_cursor:
+                        lastCornerEdge = mouseCorner = Utility::NoneEdge;
                         return true;
                     } else {
                         qApp->setOverrideCursor(window->cursor());
@@ -283,7 +285,6 @@ set_cursor:
                     }
                 }
                 
-skip_set_cursor:
                 break;
             }
 
@@ -317,6 +318,7 @@ skip_set_cursor:
                 case Utility::TopEdge:
                 case Utility::LeftEdge:
                 case Utility::RightEdge:
+                case Utility::NoneEdge:
                     return;
                 default: break;
             }
@@ -514,9 +516,11 @@ MainWindow::MainWindow(QWidget *parent)
             hint |= Qt::WindowMaximizeButtonHint | Qt::WindowMinimizeButtonHint;
             qApp->restoreOverrideCursor();
             if (_lastCookie >= 0) utils::UnInhibitStandby(_lastCookie);
+            _listener->setEnabled(!_miniMode);
         } else {
             qApp->setOverrideCursor(Qt::BlankCursor);
             _lastCookie = utils::InhibitStandby();
+            _listener->setEnabled(false);
         }
         _titlebar->setWindowFlags(hint);
         //WTF: this->geometry() is not size of fullscreen !

@@ -22,7 +22,8 @@ public:
         BottomRightCorner = 4,
         BottomEdge = 5,
         BottomLeftCorner = 6,
-        LeftEdge = 7
+        LeftEdge = 7,
+        NoneEdge = -1
     };
 
     static xcb_atom_t internAtom(const char *name);
