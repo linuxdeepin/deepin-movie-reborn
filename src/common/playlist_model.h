@@ -57,6 +57,7 @@ struct PlayItemInfo {
 
 using AppendJob = QPair<QUrl, QFileInfo>; // async job
 using PlayItemInfoList = QList<PlayItemInfo>;
+using UrlList = QList<QUrl>;
 
 class PlaylistModel: public QObject {
     Q_OBJECT
@@ -132,6 +133,8 @@ private:
     QList<AppendJob> _pendingJob; // async job
     QSet<QUrl> _urlsInJob;
     QFutureWatcher<PlayItemInfo> *_jobWatcher {nullptr};
+
+    QQueue<UrlList> _pendingAppendReq;
 
     bool _userRequestingItem {false};
 
