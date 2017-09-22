@@ -649,8 +649,8 @@
     <name>dmr::MainWindow</name>
     <message>
         <location filename="../common/mainwindow.cpp" line="466"/>
-        <location filename="../common/mainwindow.cpp" line="1770"/>
-        <location filename="../common/mainwindow.cpp" line="1849"/>
+        <location filename="../common/mainwindow.cpp" line="1775"/>
+        <location filename="../common/mainwindow.cpp" line="1854"/>
         <source>Deepin Movie</source>
         <translation>深度影院</translation>
     </message>
@@ -663,9 +663,8 @@
         <translation>音量：%1%</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1044"/>
         <source>Open Directory</source>
-        <translation>打开文件夹</translation>
+        <translation type="vanished">打开文件夹</translation>
     </message>
     <message>
         <source>Deepin Movie is a well-designed and full-featured video player with simple borderless design. It supports local and streaming media play with multiple video formats.</source>
@@ -689,9 +688,8 @@
         <translation>没有发现可播放设备</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1037"/>
         <source>Invalid url</source>
-        <translation>无效的url</translation>
+        <translation type="vanished">无效的url</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1056"/>
@@ -743,7 +741,6 @@
         <translation type="vanished">%1/深度影院%2.jpg</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1451"/>
         <location filename="../common/mainwindow.cpp" line="1531"/>
         <source>The screenshot is saved to %1</source>
         <translation>截图已保存到%1</translation>
@@ -752,6 +749,16 @@
         <location filename="../common/mainwindow.cpp" line="1426"/>
         <source>View</source>
         <translation>查看</translation>
+    </message>
+    <message>
+        <location filename="../common/mainwindow.cpp" line="1037"/>
+        <source>Parse Failed</source>
+        <translation>解析失败</translation>
+    </message>
+    <message>
+        <location filename="../common/mainwindow.cpp" line="1044"/>
+        <source>Open Folder</source>
+        <translation>打开文件夹</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1242"/>
@@ -787,12 +794,21 @@
         <translation>保存到</translation>
     </message>
     <message>
+        <location filename="../common/mainwindow.cpp" line="1451"/>
+        <source>The screenshot is saved.</source>
+        <translation>截图已保存。</translation>
+    </message>
+    <message>
+        <source>The screenshot is saved</source>
+        <translation type="vanished">截图已保存。</translation>
+    </message>
+    <message>
         <source>The screenshot is saved in %1</source>
         <translation type="vanished">您的截图已保存到%1</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1581"/>
-        <location filename="../common/mainwindow.cpp" line="2124"/>
+        <location filename="../common/mainwindow.cpp" line="2135"/>
         <source>Invalid file: %1</source>
         <translation>无效文件：%1</translation>
     </message>
@@ -841,9 +857,9 @@
 <context>
     <name>dmr::PlayItemWidget</name>
     <message>
-        <location filename="../widgets/playlist_widget.cpp" line="73"/>
-        <location filename="../widgets/playlist_widget.cpp" line="91"/>
-        <location filename="../widgets/playlist_widget.cpp" line="228"/>
+        <location filename="../widgets/playlist_widget.cpp" line="74"/>
+        <location filename="../widgets/playlist_widget.cpp" line="93"/>
+        <location filename="../widgets/playlist_widget.cpp" line="239"/>
         <source>File does not exist</source>
         <translation>文件不存在</translation>
     </message>
@@ -864,7 +880,7 @@
 <context>
     <name>dmr::ToolboxProxy</name>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="766"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="795"/>
         <source>Play</source>
         <translation>播放</translation>
     </message>
@@ -873,39 +889,39 @@
         <translation type="vanished">音量</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="587"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="598"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="615"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="626"/>
         <source>Previous</source>
         <translation>上一个</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="588"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="598"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="616"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="626"/>
         <source>Next</source>
         <translation>下一个</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="589"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="599"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="617"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="627"/>
         <source>Subtitles</source>
         <translation>字幕</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="590"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="599"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="618"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="627"/>
         <source>Playlist</source>
         <translation>播放列表</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="591"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="599"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="753"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="619"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="627"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="782"/>
         <source>Fullscreen</source>
         <translation>全屏</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="585"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="598"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="613"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="626"/>
         <source>Play/Pause</source>
         <translation>播放/暂停</translation>
     </message>
@@ -914,7 +930,7 @@
         <translation type="vanished">静音</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="750"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="779"/>
         <source>Exit fullscreen</source>
         <translation>退出全屏</translation>
     </message>
@@ -923,7 +939,7 @@
         <translation type="obsolete">音量：%1%</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="763"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="792"/>
         <source>Pause</source>
         <translation>暂停</translation>
     </message>

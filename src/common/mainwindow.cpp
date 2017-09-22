@@ -1034,14 +1034,14 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                 if (url.isValid()) {
                     play(url);
                 } else {
-                    _nwComm->updateWithMessage(tr("Invalid url"));
+                    _nwComm->updateWithMessage(tr("Parse Failed"));
                 }
             }
             break;
         }
 
         case ActionFactory::ActionKind::OpenDirectory: {
-            QString name = QFileDialog::getExistingDirectory(this, tr("Open Directory"),
+            QString name = QFileDialog::getExistingDirectory(this, tr("Open Folder"),
                     QDir::currentPath(),
                     QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
 
@@ -1448,7 +1448,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                 _nwShot->setAnchor(NotificationWidget::AnchorNorthWest);
                 _nwShot->setAnchorPoint(QPoint(30, 38));
             }
-            auto msg = tr("The screenshot is saved to %1").arg(filePath);
+            auto msg = tr("The screenshot is saved.");
             auto pm = QPixmap(QString(":/resources/icons/%1.png").arg(success?"success":"fail"));
             _nwShot->popupWithIcon(msg, pm);
 #endif

@@ -526,8 +526,8 @@
     <name>dmr::MainWindow</name>
     <message>
         <location filename="../common/mainwindow.cpp" line="466"/>
-        <location filename="../common/mainwindow.cpp" line="1770"/>
-        <location filename="../common/mainwindow.cpp" line="1849"/>
+        <location filename="../common/mainwindow.cpp" line="1775"/>
+        <location filename="../common/mainwindow.cpp" line="1854"/>
         <source>Deepin Movie</source>
         <translation type="unfinished"></translation>
     </message>
@@ -550,12 +550,12 @@
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1037"/>
-        <source>Invalid url</source>
+        <source>Parse Failed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1044"/>
-        <source>Open Directory</source>
+        <source>Open Folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -631,13 +631,17 @@
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1451"/>
+        <source>The screenshot is saved.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../common/mainwindow.cpp" line="1531"/>
         <source>The screenshot is saved to %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1581"/>
-        <location filename="../common/mainwindow.cpp" line="2124"/>
+        <location filename="../common/mainwindow.cpp" line="2135"/>
         <source>Invalid file: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -682,9 +686,9 @@
 <context>
     <name>dmr::PlayItemWidget</name>
     <message>
-        <location filename="../widgets/playlist_widget.cpp" line="73"/>
-        <location filename="../widgets/playlist_widget.cpp" line="91"/>
-        <location filename="../widgets/playlist_widget.cpp" line="228"/>
+        <location filename="../widgets/playlist_widget.cpp" line="74"/>
+        <location filename="../widgets/playlist_widget.cpp" line="93"/>
+        <location filename="../widgets/playlist_widget.cpp" line="239"/>
         <source>File does not exist</source>
         <translation type="unfinished"></translation>
     </message>
@@ -705,54 +709,54 @@
 <context>
     <name>dmr::ToolboxProxy</name>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="766"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="795"/>
         <source>Play</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="587"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="598"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="615"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="626"/>
         <source>Previous</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="588"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="598"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="616"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="626"/>
         <source>Next</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="589"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="599"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="617"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="627"/>
         <source>Subtitles</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="590"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="599"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="618"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="627"/>
         <source>Playlist</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="591"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="599"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="753"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="619"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="627"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="782"/>
         <source>Fullscreen</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="585"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="598"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="613"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="626"/>
         <source>Play/Pause</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="750"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="779"/>
         <source>Exit fullscreen</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="763"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="792"/>
         <source>Pause</source>
         <translation type="unfinished"></translation>
     </message>
