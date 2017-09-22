@@ -118,12 +118,15 @@ public:
             p.setOpacity(0.5);
         }
 
+        // thumb size
+        QSize sz(22, 40);
+
         p.drawPixmap(0, 0, pm);
 
         if (!_pif.thumbnail.isNull()) {
-            auto img = _pif.thumbnail.scaledToHeight(44, Qt::SmoothTransformation);
-            p.drawPixmap((pm.width() - 24)/2, (pm.height() - 44)/2, img, 
-                    (img.width()-24)/2, (img.height()-44)/2, 24, 44);
+            auto img = _pif.thumbnail.scaledToHeight(sz.height(), Qt::SmoothTransformation);
+            p.drawPixmap((pm.width() - sz.width())/2, (pm.height() - sz.height())/2, img, 
+                    (img.width()-sz.width())/2, (img.height()-sz.height())/2, sz.width(), sz.height());
 
         }
 
@@ -299,7 +302,7 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setResizeMode(QListView::Adjust);
     setDragDropMode(QListView::DropOnly);
-    setSpacing(2);
+    setSpacing(0);
 
     setAcceptDrops(true);
     setContentsMargins(0, 0, 0, 0);
