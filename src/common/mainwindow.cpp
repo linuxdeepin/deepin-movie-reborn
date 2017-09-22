@@ -1739,6 +1739,11 @@ void MainWindow::wheelEvent(QWheelEvent* we)
     if (insideToolsArea(we->pos()) || insideResizeArea(we->globalPos())) 
         return;
 
+    if (_playlist->state() == PlaylistWidget::Opened) {
+        we->ignore();
+        return;
+    }
+
     if (we->buttons() == Qt::NoButton && we->modifiers() == Qt::NoModifier) {
         requestAction(we->angleDelta().y() > 0 ? ActionFactory::VolumeUp: ActionFactory::VolumeDown);
     }
