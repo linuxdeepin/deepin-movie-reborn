@@ -367,7 +367,7 @@ public:
         updateBg();
         
         auto *l = new QVBoxLayout;
-        l->setContentsMargins(0, 0, 0, 0);
+        l->setContentsMargins(0, 6, 0, 10);
         setLayout(l);
 
         _slider = new QSlider(this);

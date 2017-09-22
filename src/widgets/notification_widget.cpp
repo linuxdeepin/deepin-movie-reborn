@@ -92,6 +92,7 @@ void NotificationWidget::popup(const QString& msg)
     if (_layout->indexOf(_msgLabel) == -1) {
         _layout->addWidget(_msgLabel);
     }
+    setFixedHeight(30);
     _msgLabel->setText(msg);
     show();
     raise();

@@ -2,60 +2,6 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="zh_CN">
 <context>
-    <name>DInputDialog</name>
-    <message>
-        <source>Cancel</source>
-        <translation type="vanished">取消</translation>
-    </message>
-    <message>
-        <source>Confirm</source>
-        <translation type="vanished">确认</translation>
-    </message>
-</context>
-<context>
-    <name>QCoreApplication</name>
-    <message>
-        <location filename="../common/options.cpp" line="21"/>
-        <source>Movie file path or directory</source>
-        <translation>视频文件路径或目录</translation>
-    </message>
-    <message>
-        <location filename="../common/options.cpp" line="23"/>
-        <source>show detail log message</source>
-        <translation>显示详细的日志消息</translation>
-    </message>
-    <message>
-        <location filename="../common/options.cpp" line="24"/>
-        <source>dump all debug message</source>
-        <translation>输出详细的调试日志</translation>
-    </message>
-    <message>
-        <location filename="../common/options.cpp" line="25"/>
-        <source>use opengl-cb interface [on/off/auto]</source>
-        <translation>使用openg-cb接口[on/off/auto]</translation>
-    </message>
-    <message>
-        <location filename="../common/options.cpp" line="26"/>
-        <source>override config for libmpv</source>
-        <translation>覆盖内置的libmpv配置</translation>
-    </message>
-    <message>
-        <location filename="../common/options.cpp" line="27"/>
-        <source>play only count number of frames</source>
-        <translation>仅播放指定数量的帧数</translation>
-    </message>
-    <message>
-        <location filename="../common/options.cpp" line="28"/>
-        <source>use gal or not</source>
-        <translation>是否使用gal加速</translation>
-    </message>
-    <message>
-        <location filename="../common/options.cpp" line="29"/>
-        <source>play in vpu demo mode</source>
-        <translation>在vpu测试模式播放</translation>
-    </message>
-</context>
-<context>
     <name>QObject</name>
     <message>
         <location filename="../main.cpp" line="64"/>
@@ -67,22 +13,6 @@
         <location filename="../main.cpp" line="65"/>
         <source>Deepin Movie is a well-designed and full-featured video player with simple borderless design. It supports local and streaming media play with multiple video formats.</source>
         <translation>深度影院是一款设计精良、功能全面的视频播放器，无边框简洁设计，支持多种视频格式本地播放和流媒体播放。</translation>
-    </message>
-    <message>
-        <source>Empty playlist when quit</source>
-        <translation type="vanished">退出深度影院时清空播放列表</translation>
-    </message>
-    <message>
-        <source>Auto resume from last stop</source>
-        <translation type="vanished">自动从上次停止位置播放</translation>
-    </message>
-    <message>
-        <source>Location</source>
-        <translation type="vanished">保存路径</translation>
-    </message>
-    <message>
-        <source>Basic settings</source>
-        <translation type="vanished">基础设置</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="15"/>
@@ -99,10 +29,6 @@
         <location filename="../common/settings_translation.cpp" line="17"/>
         <source>Shortcuts</source>
         <translation>快捷键</translation>
-    </message>
-    <message>
-        <source>Files</source>
-        <translation type="vanished">文件</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="19"/>
@@ -124,14 +50,6 @@
         <location filename="../common/settings_translation.cpp" line="24"/>
         <source>Font Style</source>
         <translation>字体样式</translation>
-    </message>
-    <message>
-        <source>Restore to default</source>
-        <translation type="vanished">恢复默认</translation>
-    </message>
-    <message>
-        <source>Continue to next video automatically</source>
-        <translation type="vanished">自动查找相似文件连续播放</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="5"/>
@@ -159,10 +77,6 @@
         <translation>鼠标悬停进度条时显示预览</translation>
     </message>
     <message>
-        <source>Run multiple Deepin Movie</source>
-        <translation type="vanished">允许同时运行多个深度影院</translation>
-    </message>
-    <message>
         <location filename="../common/settings_translation.cpp" line="10"/>
         <source>Open a new player for each file played</source>
         <translation>允许同时运行多个深度影院</translation>
@@ -188,17 +102,9 @@
         <translation>基础设置</translation>
     </message>
     <message>
-        <source>Internal</source>
-        <translation type="vanished">内部</translation>
-    </message>
-    <message>
         <location filename="../common/settings_translation.cpp" line="18"/>
         <source>File</source>
         <translation>文件</translation>
-    </message>
-    <message>
-        <source>Codepage</source>
-        <translation type="vanished">编码</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="25"/>
@@ -236,10 +142,6 @@
         <translation>连拍截图</translation>
     </message>
     <message>
-        <source>Open a file</source>
-        <translation type="vanished">打开文件</translation>
-    </message>
-    <message>
         <location filename="../common/settings_translation.cpp" line="28"/>
         <source>Open next</source>
         <translation>打开下一个</translation>
@@ -270,14 +172,6 @@
         <translation>增大音量</translation>
     </message>
     <message>
-        <source>Accelerate playback</source>
-        <translation type="vanished">加速播放</translation>
-    </message>
-    <message>
-        <source>Decelerate playback</source>
-        <translation type="vanished">减速播放</translation>
-    </message>
-    <message>
         <location filename="../common/settings_translation.cpp" line="26"/>
         <location filename="../common/settings_translation.cpp" line="30"/>
         <location filename="../common/settings_translation.cpp" line="37"/>
@@ -300,14 +194,6 @@
         <location filename="../common/settings_translation.cpp" line="40"/>
         <source>Playlist</source>
         <translation>播放列表</translation>
-    </message>
-    <message>
-        <source>Reset play speed</source>
-        <translation type="vanished">还原播放速度</translation>
-    </message>
-    <message>
-        <source>Backward</source>
-        <translation type="vanished">快退</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="43"/>
@@ -361,10 +247,6 @@
         <location filename="../widgets/url_dialog.cpp" line="17"/>
         <source>Please enter the URL:</source>
         <translation>请输入您要播放文件的网络地址：</translation>
-    </message>
-    <message>
-        <source>Please input the url of file to play</source>
-        <translation type="vanished">请输入您要播放的文件的网络地址</translation>
     </message>
 </context>
 <context>
@@ -503,10 +385,6 @@
         <translation>音轨</translation>
     </message>
     <message>
-        <source>Search online subtitles</source>
-        <translation type="vanished">查找在线字幕</translation>
-    </message>
-    <message>
         <location filename="../common/actions.cpp" line="168"/>
         <source>Encodings</source>
         <translation>编码</translation>
@@ -520,10 +398,6 @@
         <location filename="../common/actions.cpp" line="262"/>
         <source>Display in file manager</source>
         <translation>在文件管理器中显示</translation>
-    </message>
-    <message>
-        <source>Load Track</source>
-        <translation type="vanished">载入音轨</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="155"/>
@@ -561,22 +435,10 @@
         <translation>电影信息</translation>
     </message>
     <message>
-        <source>Open Url</source>
-        <translation type="vanished">打开Url</translation>
-    </message>
-    <message>
         <location filename="../common/actions.cpp" line="77"/>
         <location filename="../common/actions.cpp" line="90"/>
         <source>Fullscreen</source>
         <translation>全屏</translation>
-    </message>
-    <message>
-        <source>Compact Mode</source>
-        <translation type="vanished">迷你模式</translation>
-    </message>
-    <message>
-        <source>Above</source>
-        <translation type="vanished">置顶</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="154"/>
@@ -584,42 +446,14 @@
         <translation>字幕</translation>
     </message>
     <message>
-        <source>Load Subtitle</source>
-        <translation type="vanished">加载字幕</translation>
-    </message>
-    <message>
-        <source>Select Subtitle</source>
-        <translation type="vanished">选择字幕</translation>
-    </message>
-    <message>
         <location filename="../common/actions.cpp" line="236"/>
         <source>Screenshot</source>
         <translation>截图</translation>
     </message>
     <message>
-        <source>Single Screenshot</source>
-        <translation type="vanished">截图</translation>
-    </message>
-    <message>
-        <source>Burst Screenshot</source>
-        <translation type="vanished">连拍截图</translation>
-    </message>
-    <message>
         <location filename="../common/actions.cpp" line="245"/>
         <source>Playlist</source>
         <translation>播放列表</translation>
-    </message>
-    <message>
-        <source>Movie Info</source>
-        <translation type="vanished">电影信息</translation>
-    </message>
-    <message>
-        <source>Clear Playlist</source>
-        <translation type="vanished">清空播放列表</translation>
-    </message>
-    <message>
-        <source>Open File In File Manager</source>
-        <translation type="vanished">在文件管理器打开文件</translation>
     </message>
 </context>
 <context>
@@ -663,10 +497,6 @@
         <translation>音量：%1%</translation>
     </message>
     <message>
-        <source>Open Directory</source>
-        <translation type="vanished">打开文件夹</translation>
-    </message>
-    <message>
         <source>Deepin Movie is a well-designed and full-featured video player with simple borderless design. It supports local and streaming media play with multiple video formats.</source>
         <translation type="obsolete">深度影院是一款设计精良、功能全面的视频播放器，无边框简洁设计，支持多种视频格式本地播放和流媒体播放。</translation>
     </message>
@@ -688,10 +518,6 @@
         <translation>没有发现可播放设备</translation>
     </message>
     <message>
-        <source>Invalid url</source>
-        <translation type="vanished">无效的url</translation>
-    </message>
-    <message>
         <location filename="../common/mainwindow.cpp" line="1056"/>
         <location filename="../common/mainwindow.cpp" line="1072"/>
         <location filename="../common/mainwindow.cpp" line="1367"/>
@@ -705,26 +531,6 @@
         <translation>视频文件(%1)</translation>
     </message>
     <message>
-        <source>Movies (*.mkv *.mov *.mp4 *.rmvb)</source>
-        <translation type="vanished">视频文件(*.mkv *.mov *.mp4 *.rmvb)</translation>
-    </message>
-    <message>
-        <source>Speed: %1</source>
-        <translation type="vanished">播放速度：%1倍</translation>
-    </message>
-    <message>
-        <source>sub %1: %2s</source>
-        <translation type="vanished">字幕%1：%2秒</translation>
-    </message>
-    <message>
-        <source>delay</source>
-        <translation type="vanished">延迟</translation>
-    </message>
-    <message>
-        <source>forward</source>
-        <translation type="vanished">提前</translation>
-    </message>
-    <message>
         <location filename="../common/mainwindow.cpp" line="1348"/>
         <location filename="../common/mainwindow.cpp" line="1355"/>
         <location filename="../common/mainwindow.cpp" line="1362"/>
@@ -735,14 +541,6 @@
         <location filename="../common/mainwindow.cpp" line="1369"/>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</source>
         <translation>字幕文件 (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</translation>
-    </message>
-    <message>
-        <source>%1/DMovie%2.jpg</source>
-        <translation type="vanished">%1/深度影院%2.jpg</translation>
-    </message>
-    <message>
-        <source>The screenshot is saved to %1</source>
-        <translation type="vanished">截图已保存到%1</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1426"/>
@@ -799,14 +597,6 @@
         <translation>截图已保存。</translation>
     </message>
     <message>
-        <source>The screenshot is saved</source>
-        <translation type="vanished">截图已保存。</translation>
-    </message>
-    <message>
-        <source>The screenshot is saved in %1</source>
-        <translation type="vanished">您的截图已保存到%1</translation>
-    </message>
-    <message>
         <location filename="../common/mainwindow.cpp" line="1579"/>
         <location filename="../common/mainwindow.cpp" line="2133"/>
         <source>Invalid file: %1</source>
@@ -839,10 +629,6 @@
         <location filename="../widgets/movieinfo_dialog.cpp" line="91"/>
         <source>File Path:</source>
         <translation>文件路径：</translation>
-    </message>
-    <message>
-        <source>Path:</source>
-        <translation type="vanished">文件路径：</translation>
     </message>
 </context>
 <context>
@@ -885,10 +671,6 @@
         <translation>播放</translation>
     </message>
     <message>
-        <source>Volume</source>
-        <translation type="vanished">音量</translation>
-    </message>
-    <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="615"/>
         <location filename="../widgets/toolbox_proxy.cpp" line="626"/>
         <source>Previous</source>
@@ -926,10 +708,6 @@
         <translation>播放/暂停</translation>
     </message>
     <message>
-        <source>Mute</source>
-        <translation type="vanished">静音</translation>
-    </message>
-    <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="779"/>
         <source>Exit fullscreen</source>
         <translation>退出全屏</translation>
@@ -942,13 +720,6 @@
         <location filename="../widgets/toolbox_proxy.cpp" line="792"/>
         <source>Pause</source>
         <translation>暂停</translation>
-    </message>
-</context>
-<context>
-    <name>dmr::UrlDialog</name>
-    <message>
-        <source>Please input the url of file to play</source>
-        <translation type="vanished">请输入您要播放的文件的网络地址</translation>
     </message>
 </context>
 </TS>
