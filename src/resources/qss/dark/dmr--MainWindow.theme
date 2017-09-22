@@ -52,9 +52,9 @@ Dtk--Widget--DImageButton#MiniQuitMiniBtn {
 Dtk--Widget--DImageButton#MiniCloseBtn {
     background: transparent;
     border: none;
-    qproperty-normalPic: url(:/resources/icons/dark/normal/close-normal.png);
-    qproperty-hoverPic: url(:/resources/icons/dark/normal/close-hover.png);
-    qproperty-pressPic: url(:/resources/icons/dark/normal/close-press.png);
+    qproperty-normalPic: url(:/resources/icons/dark/mini/close-normal.png);
+    qproperty-hoverPic: url(:/resources/icons/dark/mini/close-hover.png);
+    qproperty-pressPic: url(:/resources/icons/dark/mini/close-press.png);
 }
 
 

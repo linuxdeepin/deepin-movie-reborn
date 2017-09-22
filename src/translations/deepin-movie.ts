@@ -641,7 +641,7 @@
     <message>
         <location filename="../widgets/playlist_widget.cpp" line="74"/>
         <location filename="../widgets/playlist_widget.cpp" line="93"/>
-        <location filename="../widgets/playlist_widget.cpp" line="239"/>
+        <location filename="../widgets/playlist_widget.cpp" line="242"/>
         <source>File does not exist</source>
         <translation type="unfinished"></translation>
     </message>

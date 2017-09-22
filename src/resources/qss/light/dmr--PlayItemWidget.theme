@@ -1,3 +1,7 @@
+*[PlayItemThumb="true"] {
+    margin-bottom: 2px;
+}
+
 /* state Playing */
 *[PlayItemThumb="true"][ItemState="1"] {
     qproperty-bg: url(:/resources/icons/light/normal/film-bg.png);
