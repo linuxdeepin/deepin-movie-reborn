@@ -506,7 +506,10 @@ void PlayerEngine::seekAbsolute(int pos)
 bool PlayerEngine::addPlayFile(const QUrl& url)
 {
     if (isPlayableFile(url)) {
-        _playlist->appendAsync({url});
+        if (url.isLocalFile())
+            _playlist->appendAsync({url});
+        else 
+            _playlist->append(url);
         return true;
     }
     return false;

@@ -62,6 +62,8 @@ ThumbnailWorker::ThumbnailWorker()
 QPixmap ThumbnailWorker::genThumb(const QUrl& url, int secs)
 {
     QPixmap pm;
+    pm.fill(Qt::transparent);
+
     QTime d(0, 0, 0);
     d = d.addSecs(secs);
     thumber.setSeekTime(d.toString("hh:mm:ss").toStdString());
@@ -72,7 +74,8 @@ QPixmap ThumbnailWorker::genThumb(const QUrl& url, int secs)
                 ThumbnailerImageType::Png, buf);
 
         auto img = QImage::fromData(buf.data(), buf.size(), "png");
-        pm = QPixmap::fromImage(img);
+
+        pm = QPixmap::fromImage(img.scaled(thumbSize(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
     } catch (const std::logic_error&) {
     }
 

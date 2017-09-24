@@ -290,6 +290,10 @@ public:
         setAttribute(Qt::WA_DeleteOnClose);
         setWindowFlags(Qt::ToolTip);
         
+        setObjectName("ThumbnailPreview");
+
+        setFixedSize(162, 103);
+
         setShadowBlurRadius(6);
         setRadius(6);
         setShadowYOffset(4);
@@ -297,9 +301,6 @@ public:
         setArrowWidth(18);
         setArrowHeight(10);
 
-        setBackgroundColor(QColor(23, 23, 23, 255 * 8 / 10));
-        setBorderColor(QColor(255, 255 ,255, 25));
-        
         auto *l = new QVBoxLayout;
         l->setContentsMargins(2, 2, 2, 2+10);
         setLayout(l);
@@ -309,14 +310,12 @@ public:
         l->addWidget(_thumb);
 
         _time = new QLabel(this);
+        _time->setAlignment(Qt::AlignCenter);
         _time->setFixedSize(64, 18);
-        _time->setStyleSheet(R"(
-            border-radius: 3px;
-            background-color: rgba(23, 23, 23, 0.8);
-            font-size: 12px;
-            text-align: left;
-            color: #ffffff; 
-        )");
+
+        connect(DThemeManager::instance(), &DThemeManager::themeChanged, 
+                this, &ThumbnailPreview::updateTheme);
+        updateTheme();
     }
 
     void updateWithPreview(const QPixmap& pm, qint64 secs) {
@@ -333,6 +332,30 @@ public:
         resizeWithContent();
         move(pos.x(), pos.y() - 5);
         show(pos.x(), pos.y() - 5);
+    }
+
+protected slots:
+    void updateTheme()
+    {
+        if (qApp->theme() == "dark") {
+            setBackgroundColor(QColor(23, 23, 23, 255 * 8 / 10));
+            setBorderColor(QColor(255, 255 ,255, 25));
+            _time->setStyleSheet(R"(
+                border-radius: 3px;
+                background-color: rgba(23, 23, 23, 0.8);
+                font-size: 12px;
+                color: #ffffff; 
+            )");
+        } else {
+            setBackgroundColor(QColor(255, 255, 255, 255 * 8 / 10));
+            setBorderColor(QColor(0, 0 ,0, 25));
+            _time->setStyleSheet(R"(
+                border-radius: 3px;
+                background-color: rgba(255, 255, 255, 0.8);
+                font-size: 12px;
+                color: #ffffff; 
+            )");
+        }
     }
 
 protected:
