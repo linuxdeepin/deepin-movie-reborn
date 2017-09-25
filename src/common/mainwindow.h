@@ -61,6 +61,7 @@ signals:
 
 public slots:
     void play(const QUrl& url);
+    void playList(const QList<QString>& l);
     void updateProxyGeometry();
     void suspendToolsWindow();
     void resumeToolsWindow();

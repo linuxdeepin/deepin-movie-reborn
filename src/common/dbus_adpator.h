@@ -15,6 +15,7 @@ public:
 
 public slots:
     void openFile(const QString& url);
+    void openFiles(const QStringList& list);
 
 private:
     MainWindow *_mw {nullptr};

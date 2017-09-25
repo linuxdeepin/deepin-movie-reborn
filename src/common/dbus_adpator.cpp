@@ -5,6 +5,11 @@ ApplicationAdaptor::ApplicationAdaptor(MainWindow* mw)
 {
 }
 
+void ApplicationAdaptor::openFiles(const QStringList& list)
+{
+    _mw->playList(list);
+}
+
 void ApplicationAdaptor::openFile(const QString& file) 
 {
     QRegExp url_re("\\w+://");

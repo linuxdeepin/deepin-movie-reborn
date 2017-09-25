@@ -1571,6 +1571,21 @@ void MainWindow::handleSettings()
     Settings::get().settings()->sync();
 }
 
+void MainWindow::playList(const QList<QString>& l)
+{
+    QList<QUrl> urls;
+    for (const auto& filename: l) {
+        urls.append(QUrl::fromLocalFile(filename));
+    }
+    const auto& valids = _engine->addPlayFiles(urls);
+    if (valids.size()) {
+        if (!isHidden()) {
+            activateWindow();
+        }
+        _engine->playByName(valids[0]);
+    }
+}
+
 void MainWindow::play(const QUrl& url)
 {
     if (!url.isValid()) 

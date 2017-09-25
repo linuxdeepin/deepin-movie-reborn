@@ -47,9 +47,9 @@ int main(int argc, char *argv[])
     auto& clm = dmr::CommandLineManager::get();
     clm.process(app);
 
-    QString toOpenFile;
-    if (1 == clm.positionalArguments().length()) {
-        toOpenFile = clm.positionalArguments().first();
+    QStringList toOpenFiles;
+    if (clm.positionalArguments().length() > 0) {
+        toOpenFiles = clm.positionalArguments();
     }
 
     app.setOrganizationName("deepin");
@@ -77,9 +77,13 @@ int main(int argc, char *argv[])
     bool singleton = !dmr::Settings::get().isSet(dmr::Settings::MultipleInstance);
     if (singleton && !app.setSingleInstance("deepinmovie")) {
         qDebug() << "another deepin movie instance has started";
-        if (!toOpenFile.isEmpty()) {
+        if (!toOpenFiles.isEmpty()) {
             QDBusInterface iface("com.deepin.movie", "/", "com.deepin.movie");
-            iface.asyncCall("openFile", toOpenFile);
+            if (toOpenFiles.size() == 1) {
+                iface.asyncCall("openFile", toOpenFiles[0]);
+            } else {
+                iface.asyncCall("openFiles", toOpenFiles);
+            }
         }
         
         exit(0);
@@ -101,7 +105,7 @@ int main(int argc, char *argv[])
         mw.resize(850, 600);
         Dtk::Widget::moveToCenter(&mw);
         mw.show();
-        auto fi = QFileInfo(toOpenFile);
+        auto fi = QFileInfo(toOpenFiles[0]);
         if (fi.exists()) {
             mw.setPlayFile(fi);
             mw.play();
@@ -125,16 +129,8 @@ int main(int argc, char *argv[])
     QDBusConnection::sessionBus().registerService("com.deepin.movie");
     QDBusConnection::sessionBus().registerObject("/", &mw);
 
-    if (!toOpenFile.isEmpty()) {
-        QUrl url;
-        if (url_re.indexIn(toOpenFile) == 0) {
-            url = QUrl(toOpenFile);
-        } else {
-            url = QUrl::fromLocalFile(toOpenFile);
-        }
-
-        qDebug() << url;
-        mw.play(url);
+    if (!toOpenFiles.isEmpty()) {
+        mw.playList(toOpenFiles);
     }
     return app.exec();
 }
