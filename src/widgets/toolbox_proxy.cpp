@@ -353,7 +353,7 @@ protected slots:
                 border-radius: 3px;
                 background-color: rgba(255, 255, 255, 0.8);
                 font-size: 12px;
-                color: #ffffff; 
+                color: #303030; 
             )");
         }
     }

@@ -1,5 +1,10 @@
 #include "slider.h"
 
+#include <dthememanager.h>
+#include <DApplication>
+
+DWIDGET_USE_NAMESPACE
+
 namespace dmr
 {
 DMRSlider::DMRSlider(QWidget *parent): QSlider(parent) 
@@ -9,9 +14,21 @@ DMRSlider::DMRSlider(QWidget *parent): QSlider(parent)
     _indicator = new QWidget();
     _indicator->setWindowFlags(Qt::ToolTip);
     _indicator->setFixedSize(1, 4);
-    _indicator->setStyleSheet(R"(
-        background: #ffffff;
-    )");
+
+    auto updateTheme = [=]() {
+        if (qApp->theme() == "dark") {
+            _indicator->setStyleSheet(R"(
+                background: #ffffff;
+            )");
+        } else {
+            _indicator->setStyleSheet(R"(
+                background: #303030;
+            )");
+        }
+    };
+    connect(DThemeManager::instance(), &DThemeManager::themeChanged, updateTheme);
+    updateTheme();
+
     _indicator->hide();
 }
 
