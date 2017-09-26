@@ -254,6 +254,7 @@ void PlaylistModel::loadPlaylist()
     cfg.endGroup();
 
     if (urls.size() == 0) {
+        _firstLoad = false;
         reshuffle();
         emit countChanged();
     }
@@ -336,7 +337,8 @@ void PlaylistModel::remove(int pos)
         _last = -1;
 
     emit itemRemoved(pos);
-    emit currentChanged();
+    if (_last != _current)
+        emit currentChanged();
     emit countChanged();
 
 

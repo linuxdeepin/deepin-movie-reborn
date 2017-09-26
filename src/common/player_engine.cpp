@@ -520,7 +520,7 @@ QList<QUrl> PlayerEngine::collectPlayDir(const QDir& dir)
 {
     QList<QUrl> urls;
 
-    QDirIterator di(dir);
+    QDirIterator di(dir, QDirIterator::Subdirectories);
     while (di.hasNext()) {
         di.next();
         if (di.fileInfo().isFile() && isPlayableFile(di.fileName())) {

@@ -156,6 +156,16 @@ signals:
     void doubleClicked();
 
 protected:
+    void updateClosePosition()
+    {
+        auto margin = 6;
+        auto pl = dynamic_cast<PlaylistWidget*>(parentWidget()->parentWidget());
+        if (pl->verticalScrollBar()->isVisible())
+            margin = 12;
+        _closeBtn->move(PLAYLIST_FIXED_WIDTH - _closeBtn->width() - margin,
+                (height() - _closeBtn->height())/2);
+    }
+
     void leaveEvent(QEvent* e) override
     {
         _closeBtn->hide();
@@ -166,11 +176,8 @@ protected:
     {
         _closeBtn->show();
         _closeBtn->raise();
-        auto margin = 6;
-        auto pl = dynamic_cast<PlaylistWidget*>(parentWidget()->parentWidget());
-        if (pl->verticalScrollBar()->isVisible())
-            margin = 12;
-        _closeBtn->move(width() - _closeBtn->width() - margin, (height() - _closeBtn->height())/2);
+
+        updateClosePosition();
         setHovered(true);
     }
 
@@ -181,6 +188,11 @@ protected:
             return true;
         }
         return QWidget::eventFilter(obj, e);
+    }
+
+    void resizeEvent(QResizeEvent* re) override
+    {
+        updateClosePosition();
     }
 
     bool event(QEvent *ee) override
@@ -224,6 +236,7 @@ protected:
             if (r.contains(pos)) {
                 _closeBtn->show();
                 _closeBtn->raise();
+                updateClosePosition();
             }
         });
 
@@ -491,7 +504,6 @@ void PlaylistWidget::appendItems()
     auto p = items.begin() + this->count();
     while (p != items.end()) {
         auto w = new PlayItemWidget(*p, this);
-        //w->show();
         auto item = new QListWidgetItem;
         addItem(item);
         setItemWidget(item, w);
@@ -546,7 +558,6 @@ void PlaylistWidget::loadPlaylist()
     auto p = items.begin();
     while (p != items.end()) {
         auto w = new PlayItemWidget(*p, this);
-        //w->show();
         auto item = new QListWidgetItem;
         addItem(item);
         setItemWidget(item, w);
