@@ -193,7 +193,11 @@ class MainWindowEventListener : public QObject
                 setLeftButtonPressed(true);
                 auto mw = static_cast<MainWindow*>(parent());
                 if (mw->insideResizeArea(e->globalPos())) startResizing = true;
+
                 mw->capturedMousePressEvent(e);
+                if (startResizing) {
+                    return true;
+                }
                 break;
             }
             case QEvent::MouseButtonRelease: {
@@ -203,8 +207,12 @@ class MainWindowEventListener : public QObject
                 qApp->setOverrideCursor(window->cursor());
 
                 auto mw = static_cast<MainWindow*>(parent());
-                startResizing = false;
                 mw->capturedMouseReleaseEvent(e);
+                if (startResizing) {
+                    startResizing = false;
+                    return true;
+                }
+                startResizing = false;
                 break;
             }
             case QEvent::MouseMove: {
@@ -353,6 +361,7 @@ skip_set_cursor:
                         geom.setBottom(e->globalY());
                         geom.setWidth(geom.height() * ratio);
                         break;
+                    default: break;
                 }
             } else {
                 switch (edge) {
@@ -380,8 +389,20 @@ skip_set_cursor:
                     case Utility::BottomEdge:
                         geom.setBottom(e->globalY());
                         break;
+                    default: break;
                 }
             }
+
+            auto min = mw->minimumSize();
+            if (old_geom.width() <= min.width() && geom.left() > old_geom.left()) {
+                geom.setLeft(old_geom.left());
+            }
+            if (old_geom.height() <= min.height() && geom.top() > old_geom.top()) {
+                geom.setTop(old_geom.top());
+            }
+
+            geom.setWidth(qMax(geom.width(), min.width()));
+            geom.setHeight(qMax(geom.height(), min.height()));
             mw->setGeometry(geom);
 
         }
