@@ -64,6 +64,7 @@ namespace dmr {
 struct MovieInfo MovieInfo::parseFromFile(const QFileInfo& fi, bool *ok)
 {
     struct MovieInfo mi;
+    mi.valid = false;
     AVFormatContext *av_ctx = NULL;
     int stream_id = -1;
     AVCodecContext *dec_ctx = NULL;
@@ -114,6 +115,7 @@ struct MovieInfo MovieInfo::parseFromFile(const QFileInfo& fi, bool *ok)
         qDebug() << "tag:" << tag->key << tag->value;
     }
     avformat_close_input(&av_ctx);
+    mi.valid = true;
 
     if (ok) *ok = true;
     return mi;
@@ -597,7 +599,7 @@ void PlaylistModel::collectionJob(const QList<QUrl>& urls)
             continue;
 
         QFileInfo fi(url.toLocalFile());
-        if (!fi.exists() || !fi.isFile()) continue;
+        if (!_firstLoad && (!fi.exists() || !fi.isFile())) continue;
 
         _pendingJob.append(qMakePair(url, fi));
         _urlsInJob.insert(url);
@@ -679,8 +681,16 @@ void PlaylistModel::onAsyncAppendFinished()
     _pendingJob.clear();
     _urlsInJob.clear();
 
-    //since _infos are modified only at the same thread, the lock is not necessary
     auto fil = f.results();
+    if (!_firstLoad) {
+        //since _infos are modified only at the same thread, the lock is not necessary
+        auto last = std::remove_if(fil.begin(), fil.end(), [](const PlayItemInfo& pif) {
+                return !pif.mi.valid;
+                });
+        fil.erase(last, fil.end());
+    }
+    _firstLoad = false;
+
     qDebug() << "collected items" << fil.count();
     if (fil.size()) {
         _infos += SortSimilarFiles(fil);

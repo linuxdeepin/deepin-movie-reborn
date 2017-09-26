@@ -420,8 +420,9 @@ void PlayerEngine::onPlaylistAsyncAppendFinished(const QList<PlayItemInfo>& pil)
         if (pil.size() && _pendingPlayReq.scheme() == "playlist") {
             id = _playlist->indexOf(pil[0].url);
         }
-        _playlist->changeCurrent(id);
+
         _pendingPlayReq = QUrl();
+        if (id >= 0) _playlist->changeCurrent(id);
     }
 }
 
