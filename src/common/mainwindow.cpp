@@ -1640,7 +1640,7 @@ void MainWindow::updateProxyGeometry()
         }
 
         if (_playlist) {
-            QRect r(view_rect.width() - _playlist->width() + 1,
+            QRect r(rect().right() - _playlist->width() - 1,
                     _titlebar->geometry().bottom(),
                     _playlist->width(),
                     _toolbox->geometry().top() - _titlebar->geometry().bottom());

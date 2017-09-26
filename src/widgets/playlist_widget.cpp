@@ -13,6 +13,9 @@
 #include <dthememanager.h>
 #include <dscrollbar.h>
 
+#define PLAYLIST_FIXED_WIDTH 220
+#define POPUP_DURATION 300
+
 namespace dmr {
 enum ItemState {
     Normal,
@@ -38,7 +41,7 @@ public:
         // it's the same for all themes
         _play = QPixmap(":/resources/icons/dark/normal/film-top.png");
 
-        setFixedSize(220, 68);
+        setFixedSize(PLAYLIST_FIXED_WIDTH, 68);
         auto *l = new QHBoxLayout(this);
         l->setContentsMargins(10, 0, 16, 0);
         l->setSpacing(10);
@@ -294,7 +297,8 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
 
     bool composited = CompositingManager::get().composited();
     setAttribute(Qt::WA_TranslucentBackground, false);
-    setFixedWidth(220);
+    //NOTE: set fixed will affect geometry animation
+    //setFixedWidth(220);
     setFrameShape(QFrame::NoFrame);
     setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred));
 
@@ -572,11 +576,15 @@ void PlaylistWidget::batchUpdateSizeHints()
 
 void PlaylistWidget::togglePopup()
 {
-    auto view_rect = _mw->rect().marginsRemoved(QMargins(1, 1, 1, 1));
-    QRect fixed(view_rect.width() - width() + 1,
-            _mw->titlebar()->geometry().bottom(),
-            width(),
+    auto main_rect = _mw->rect();
+    auto view_rect = main_rect.marginsRemoved(QMargins(1, 1, 1, 1));
+    QRect fixed(0, _mw->titlebar()->geometry().bottom(),
+            PLAYLIST_FIXED_WIDTH,
             _mw->toolbox()->geometry().top() - _mw->titlebar()->geometry().bottom());
+    fixed.moveRight(view_rect.right());
+    QRect shrinked = fixed;
+    shrinked.setWidth(0);
+    shrinked.moveRight(fixed.right());
 
     if (_toggling) return;
 
@@ -585,9 +593,9 @@ void PlaylistWidget::togglePopup()
 
         _toggling = true;
         QPropertyAnimation *pa = new QPropertyAnimation(this, "geometry");
-        pa->setDuration(300);
+        pa->setDuration(POPUP_DURATION);
         pa->setStartValue(fixed);
-        pa->setEndValue(QRect(fixed.right(), fixed.top(), 0, fixed.height()));
+        pa->setEndValue(shrinked);;
 
         pa->start();
         connect(pa, &QPropertyAnimation::finished, [=]() {
@@ -600,8 +608,8 @@ void PlaylistWidget::togglePopup()
         setVisible(!isVisible());
         _toggling = true;
         QPropertyAnimation *pa = new QPropertyAnimation(this, "geometry");
-        pa->setDuration(300);
-        pa->setStartValue(QRect(fixed.right(), fixed.top(), 0, fixed.height()));
+        pa->setDuration(POPUP_DURATION);
+        pa->setStartValue(shrinked);
         pa->setEndValue(fixed);
 
         pa->start();
