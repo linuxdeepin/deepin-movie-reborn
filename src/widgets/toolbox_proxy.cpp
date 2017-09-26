@@ -168,7 +168,6 @@ public:
         setMinimumHeight(20);
         setShadowBlurRadius(4);
         setRadius(4);
-        setShadowDistance(0);
         setShadowYOffset(3);
         setShadowXOffset(0);
         setArrowWidth(8);

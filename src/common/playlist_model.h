@@ -10,6 +10,7 @@ using namespace ffmpegthumbnailer;
 class PlayerEngine;
 
 struct MovieInfo {
+    bool valid;
     QUrl url;
     QString title;
     QString fileType;
@@ -120,6 +121,8 @@ signals:
     void itemInfoUpdated(int id);
 
 private:
+    // when app starts, and the first time to load playlist
+    bool _firstLoad {true};
     int _count {0};
     int _current {-1};
     int _last {-1};
