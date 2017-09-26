@@ -39,6 +39,9 @@
 
     <qresource>
         <file>resources/icons/volume-slider-shape.png</file>
+		<file>resources/icons/select-hover.png</file>
+		<file>resources/icons/select-normal.png</file>
+		<file>resources/icons/select-press.png</file>
 		<file>resources/icons/input_clear_hover.png</file>
 		<file>resources/icons/input_clear_normal.png</file>
 		<file>resources/icons/input_clear_press.png</file>
