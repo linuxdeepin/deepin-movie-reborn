@@ -11,7 +11,7 @@ namespace dmr {
 
 class MainWindow;
 
-class NotificationWidget: public QWidget {
+class NotificationWidget: public QFrame {
     Q_OBJECT
 public:
     enum MessageAnchor {

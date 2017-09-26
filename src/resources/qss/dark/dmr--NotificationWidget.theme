@@ -1,8 +1,12 @@
 #NotificationFrame {
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 4px;
+    background: transparent;
     background-color: rgba(23, 23, 23, 0.8);
-    background-clip: padding;
+}
+
+#NotificationFrame * {
+    background: transparent;
 }
 
 #NotificationFrame QLabel {
