@@ -607,7 +607,7 @@ void PlaylistModel::collectionJob(const QList<QUrl>& urls)
         _urlsInJob.insert(url);
         qDebug() << "append " << url.fileName();
 
-        if (Settings::get().isSet(Settings::AutoSearchSimilar)) {
+        if (!_firstLoad && Settings::get().isSet(Settings::AutoSearchSimilar)) {
             auto fil = utils::FindSimilarFiles(fi);
             qDebug() << "auto search similar files" << fil;
             std::for_each(fil.begin(), fil.end(), [=](const QFileInfo& fi) {
