@@ -1843,7 +1843,7 @@ void MainWindow::updateSizeConstraints()
                 m = QSize(h, 528);
             }
         } else {
-            m = QSize(630, 376);
+            m = QSize(630, 386);
         }
     }
 
