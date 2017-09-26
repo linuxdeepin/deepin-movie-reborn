@@ -30,6 +30,7 @@
 #include <dimagebutton.h>
 #include <DWidgetUtil>
 #include <DSettingsWidgetFactory>
+#include <dlineedit.h>
 
 #define AUTOHIDE_TIMEOUT 2000
 
@@ -39,51 +40,17 @@ using namespace dmr;
 
 #define MOUSE_MARGINS 6
 
-class SelectableLineEdit: public QLineEdit
+static void workaround_updateStyle(QWidget *parent, const QString &theme)
 {
-public:
-    SelectableLineEdit(const QString& text = "", QWidget *parent = 0)
-        : QLineEdit(text, parent) 
-    {
-        btn = new QPushButton(this);
-        btn->setText("...");
-        btn->setFixedSize(24, 24);
-
-        QObject::connect(btn, &QPushButton::clicked, [=]() {
-            QString name = QFileDialog::getExistingDirectory(qApp->focusWidget(),
-                    QObject::tr("Select Directory"),
-                    QDir::currentPath(),
-                    QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
-            setText(name);
-        });
-
+    parent->setStyle(QStyleFactory::create(theme));
+    for (auto obj : parent->children()) {
+        auto w = qobject_cast<QWidget *>(obj);
+        if (w) {
+            workaround_updateStyle(w, theme);
+        }
     }
+}
 
-
-protected:
-    void paintEvent(QPaintEvent* pe) override
-    {
-        QLineEdit::paintEvent(pe);
-#if 0
-        QPainter p(this);
-
-        QRect r{width() - 24, 0, 24, 24};
-
-        QStyleOptionButton opt;
-        opt.initFrom(this);
-        opt.text = "...";
-        opt.rect = r;
-        style()->drawControl(QStyle::CE_PushButton, &opt, &p, this);
-#endif
-    }
-
-    void resizeEvent(QResizeEvent* re) override
-    {
-        btn->move(width() - 24, 0);
-    }
-
-    QPushButton *btn;
-};
 
 static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
 {
@@ -91,20 +58,19 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
     auto value = option->data("text").toString();
     auto trName = QObject::tr(value.toStdString().c_str());
 
-    auto rightWidget = new QFrame();
-    rightWidget->setFixedHeight(24);
-    rightWidget->setObjectName("OptionSelectableLineEdit");
-
-    auto hl = new QHBoxLayout(rightWidget);
-    hl->setContentsMargins(0, 0, 0, 0);
-    hl->setSpacing(0);
-    rightWidget->setLayout(hl);
-
-    auto le = new SelectableLineEdit(trName);
+    auto le = new DLineEdit();
+    workaround_updateStyle(le, "dlight");
+    le->setFixedHeight(24);
+    le->setObjectName("OptionSelectableLineEdit");
+    le->setText(trName);
     le->setText(option->value().toString());
-    hl->addWidget(le);
 
-    auto optionWidget = DSettingsWidgetFactory::createTwoColumWidget(option, rightWidget);
+    le->setIconVisible(true);
+    le->setNormalIcon(":resources/icons/light/normal/list-normal.png");
+    le->setHoverIcon(":resources/icons/light/normal/list-hover.png");
+    le->setPressIcon(":resources/icons/light/normal/list-press.png");
+
+    auto optionWidget = DSettingsWidgetFactory::createTwoColumWidget(option, le);
 
 
     option->connect(le, &QLineEdit::editingFinished, option, [ = ]() {
@@ -1507,17 +1473,6 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     }
 }
 
-static void workaround_updateStyle(QWidget *parent, const QString &theme)
-{
-    parent->setStyle(QStyleFactory::create(theme));
-    for (auto obj : parent->children()) {
-        auto w = qobject_cast<QWidget *>(obj);
-        if (w) {
-            workaround_updateStyle(w, theme);
-        }
-    }
-}
-
 void MainWindow::onBurstScreenshot(const QImage& frame)
 {
     qDebug() << _burstShoots.size();
@@ -2033,7 +1988,7 @@ void MainWindow::paintEvent(QPaintEvent* pe)
     pp.addRoundedRect(view_rect, RADIUS, RADIUS);
     p.fillPath(pp, bg_clr);
 
-    auto pt = rect().center() - QPoint(bg.width()/2, bg.height()/2 - 26);
+    auto pt = rect().center() - QPoint(bg.width()/2, bg.height()/2);
     p.drawImage(pt, bg);
 
 }

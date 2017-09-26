@@ -55,6 +55,7 @@ protected:
                 auto btn = tip->property("for").value<QWidget*>();
                 tip->setText(btn->toolTip());
                 tip->show();
+                tip->raise();
                 tip->adjustSize();
 
                 auto mw = tip->parentWidget();
