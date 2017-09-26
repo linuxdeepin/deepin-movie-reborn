@@ -9,24 +9,21 @@
 namespace dmr {
 
 NotificationWidget::NotificationWidget(QWidget *parent)
-    :QWidget(parent), _mw(parent)
+    :QFrame(parent), _mw(parent)
 {
     DThemeManager::instance()->registerWidget(this);
 
-    _frame = new QFrame(this);
-    _frame->setFrameShape(QFrame::NoFrame);
-    _layout = new QHBoxLayout;
-    _frame->setObjectName("NotificationFrame");
-    _frame->setLayout(_layout);
+    setFrameShape(QFrame::NoFrame);
+    setObjectName("NotificationFrame");
 
-    auto hl = new QHBoxLayout;
-    hl->setContentsMargins(0, 0, 0, 0);
-    setLayout(hl);
-    hl->addWidget(_frame);
+    _layout = new QHBoxLayout;
+    _layout->setContentsMargins(0, 0, 0, 0);
+    setLayout(_layout);
 
     _icon = new QLabel;
     _icon->setFrameShape(QFrame::NoFrame);
     _msgLabel = new QLabel();
+    _msgLabel->setFrameShape(QFrame::NoFrame);
 
     _timer = new QTimer(this);
     _timer->setInterval(2000);
