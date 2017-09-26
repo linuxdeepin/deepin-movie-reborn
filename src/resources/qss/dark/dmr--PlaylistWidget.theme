@@ -2,7 +2,7 @@ dmr--PlaylistWidget {
     background-color: rgba(16, 16, 16, 0.80);
     selection-color: transparent;
     selection-background-color: transparent;
-    border-left: 1px outset rgba(255, 255, 255, 0.03);
+    border-left: 1px outset rgba(255, 255, 255, 0.04);
     background-clip: padding;
 }
 

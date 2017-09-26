@@ -3,10 +3,12 @@
     border-radius: 4px;
     background-color: rgba(252, 252, 252, 0.8);
     margin: 0px;
+    background-clip: padding;
 }
 
 #NotificationFrame QLabel {
     font-size: 12px;
+    background: transparent;
     color: 0;
     margin: 0px;
 }

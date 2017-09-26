@@ -29,6 +29,7 @@ public:
     PlaylistWidget(QWidget *, PlayerEngine*);
     virtual ~PlaylistWidget();
     State state() const { return _state; }
+    bool toggling() const { return _toggling; }
 
 public slots:
     void togglePopup();

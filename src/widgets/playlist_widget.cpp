@@ -14,7 +14,7 @@
 #include <dscrollbar.h>
 
 #define PLAYLIST_FIXED_WIDTH 220
-#define POPUP_DURATION 300
+#define POPUP_DURATION 200
 
 namespace dmr {
 enum ItemState {
@@ -593,6 +593,7 @@ void PlaylistWidget::togglePopup()
 
         _toggling = true;
         QPropertyAnimation *pa = new QPropertyAnimation(this, "geometry");
+        pa->setEasingCurve(QEasingCurve::InOutCubic);
         pa->setDuration(POPUP_DURATION);
         pa->setStartValue(fixed);
         pa->setEndValue(shrinked);;
@@ -608,6 +609,7 @@ void PlaylistWidget::togglePopup()
         setVisible(!isVisible());
         _toggling = true;
         QPropertyAnimation *pa = new QPropertyAnimation(this, "geometry");
+        pa->setEasingCurve(QEasingCurve::InOutCubic);
         pa->setDuration(POPUP_DURATION);
         pa->setStartValue(shrinked);
         pa->setEndValue(fixed);

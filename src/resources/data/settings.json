@@ -73,7 +73,7 @@
                             "key": "location",
                             "name": "Path",
                             "type": "selectableEdit",
-                            "default": "/tmp"
+                            "default": "~/Pictures/DMovie"
                         }
                     ]
                 }

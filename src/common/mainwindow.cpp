@@ -56,25 +56,56 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
 {
     auto option = qobject_cast<DTK_CORE_NAMESPACE::DSettingsOption *>(opt);
     auto value = option->data("text").toString();
-    auto trName = QObject::tr(value.toStdString().c_str());
 
     auto le = new DLineEdit();
     workaround_updateStyle(le, "dlight");
     le->setFixedHeight(24);
     le->setObjectName("OptionSelectableLineEdit");
-    le->setText(trName);
-    le->setText(option->value().toString());
+    le->setText(value);
+    le->setMaxLength(255);
+    le->setAlert(true);
 
     le->setIconVisible(true);
-    le->setNormalIcon(":resources/icons/light/normal/list-normal.png");
-    le->setHoverIcon(":resources/icons/light/normal/list-hover.png");
-    le->setPressIcon(":resources/icons/light/normal/list-press.png");
+    le->setNormalIcon(":resources/icons/select-normal.png");
+    le->setHoverIcon(":resources/icons/select-hover.png");
+    le->setPressIcon(":resources/icons/select-press.png");
 
     auto optionWidget = DSettingsWidgetFactory::createTwoColumWidget(option, le);
+    auto validate = [=](QString name) -> bool {
+        if (name.size() && name[0] == '~') {
+            name.replace(0, 1, QDir::homePath());
+        }
 
+        QFileInfo fi(name);
+        if (fi.exists()) {
+            if (!fi.isDir()) {
+                le->showAlertMessage(QObject::tr("Not a dir"));
+                return false;
+            }
 
-    option->connect(le, &QLineEdit::editingFinished, option, [ = ]() {
-        option->setValue(le->text());
+            if (!fi.isReadable()) {
+                le->showAlertMessage(QObject::tr("You don't have permission to operate this folder"));
+                return false;
+            }
+        }
+
+        return true;
+    };
+
+    option->connect(le, &DLineEdit::iconClicked, [=]() {
+        QString name = QFileDialog::getExistingDirectory(0, QObject::tr("Open Folder"),
+                QDir::currentPath(),
+                QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+        if (validate(name)) {
+            option->setValue(name);
+        }
+    });
+
+    option->connect(le, &QLineEdit::editingFinished, option, [=]() {
+            qDebug() << "--------- editingFinished" << le->text();
+        if (validate(le->text())) {
+            option->setValue(le->text());
+        }
     });
     option->connect(option, &DTK_CORE_NAMESPACE::DSettingsOption::valueChanged, le, 
         [ = ](const QVariant & value) {
@@ -1615,12 +1646,12 @@ void MainWindow::updateProxyGeometry()
             _toolbox->setGeometry(r);
         }
 
-        if (_playlist) {
-            QRect r(rect().right() - _playlist->width() - 1,
-                    _titlebar->geometry().bottom(),
-                    _playlist->width(),
-                    _toolbox->geometry().top() - _titlebar->geometry().bottom());
-            _playlist->setGeometry(r);
+        if (_playlist && !_playlist->toggling()) {
+            QRect fixed(0, titlebar()->geometry().bottom(),
+                    220,
+                    toolbox()->geometry().top() - titlebar()->geometry().bottom());
+            fixed.moveRight(view_rect.right());
+            _playlist->setGeometry(fixed);
         }
     }
 

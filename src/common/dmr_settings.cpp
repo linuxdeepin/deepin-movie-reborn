@@ -117,7 +117,8 @@ QString Settings::screenshotLocation()
     }
 
     if (!QFileInfo(save_path).exists()) {
-        save_path = "/tmp";
+        QDir d;
+        d.mkpath(save_path);
     }
 
     return save_path;
