@@ -519,9 +519,17 @@ void ToolboxProxy::setup()
     _progBar->setFixedHeight(10);
     _progBar->setRange(0, 100);
     _progBar->setValue(0);
+    _progBar->setEnableIndication(Settings::get().isSet(Settings::PreviewOnMouseover));
+
     connect(_progBar, &QSlider::sliderMoved, this, &ToolboxProxy::setProgress);
     connect(_progBar, &DMRSlider::hoverChanged, this, &ToolboxProxy::progressHoverChanged);
     connect(_progBar, &DMRSlider::leave, [=]() { _previewer->hide(); });
+    connect(&Settings::get(), &Settings::baseChanged,
+        [=](QString sk, const QVariant& val) {
+            if (sk == "base.play.mousepreview") {
+                _progBar->setEnableIndication(val.toBool());
+            }
+        });
     stacked->addWidget(_progBar);
 
 	auto *border_frame = new QFrame;
@@ -730,7 +738,7 @@ void ToolboxProxy::progressHoverChanged(int v)
 
     auto pos = _progBar->mapToGlobal(QPoint(0, 0));
     QPoint p = {
-        (int)(pos.x() + geom.width() * pert), pos.y()
+        (int)(pos.x() + geom.width() * pert + 2), pos.y()
     };
 
     _previewer->updateWithPreview(p);

@@ -32,6 +32,16 @@ DMRSlider::DMRSlider(QWidget *parent): QSlider(parent)
     _indicator->hide();
 }
 
+void DMRSlider::setEnableIndication(bool on)
+{
+    if (_showIndicator != on) {
+        _showIndicator = on;
+        if (!on) {
+            _indicator->hide();
+        }
+    }
+}
+
 DMRSlider::~DMRSlider()
 {
     delete _indicator;
@@ -82,8 +92,10 @@ void DMRSlider::mouseMoveEvent(QMouseEvent *e)
     }
 
     if (_lastHoverValue != v) {
-        _indicator->show();
-        _indicator->move(e->globalX(), mapToGlobal(pos()).y()-1);
+        if (_showIndicator) {
+            _indicator->show();
+            _indicator->move(e->globalX(), mapToGlobal(pos()).y()-1);
+        }
         emit hoverChanged(v);
     }
 

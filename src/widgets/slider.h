@@ -8,6 +8,7 @@ class DMRSlider: public QSlider {
 public:
     DMRSlider(QWidget *parent = 0);
     virtual ~DMRSlider();
+    void setEnableIndication(bool on);
 
 signals:
     void hoverChanged(int);
@@ -22,6 +23,7 @@ protected:
 
 private:
     bool _down {false};
+    bool _showIndicator {false};
     int _lastHoverValue {0};
     QWidget *_indicator {nullptr};
     int position2progress(const QPoint& p);
