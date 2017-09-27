@@ -1961,7 +1961,8 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *ev)
 
     // dtk has a bug, DImageButton propagates mouseReleaseEvent event when it responsed to.
     if (!insideResizeArea(ev->globalPos()) && !_mouseMoved && !insideToolsArea(ev->pos())) {
-        _delayedMouseReleaseTimer.start(qApp->styleHints()->mouseDoubleClickInterval());
+        if (_playlist->state() != PlaylistWidget::Opened)
+            _delayedMouseReleaseTimer.start(qApp->styleHints()->mouseDoubleClickInterval());
     }
 
     _mouseMoved = false;
@@ -1969,7 +1970,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *ev)
 
 void MainWindow::delayedMouseReleaseHandler()
 {
-    requestAction(ActionFactory::TogglePause, false, {}, true);
+        requestAction(ActionFactory::TogglePause, false, {}, true);
 }
 
 void MainWindow::mouseMoveEvent(QMouseEvent *ev)
