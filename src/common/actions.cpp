@@ -51,7 +51,7 @@ QMenu* ActionFactory::titlebarMenu()
         auto *menu = new QMenu();
 
         DEF_ACTION(tr("Open File"), ActionKind::OpenFileList);
-        DEF_ACTION(tr("Open Directory"), ActionKind::OpenDirectory);
+        DEF_ACTION(tr("Open Folder"), ActionKind::OpenDirectory);
         DEF_ACTION(tr("Settings"), ActionKind::Settings);
         DEF_ACTION_CHECKED(tr("Light Theme"), ActionKind::LightTheme);
         menu->addSeparator();
@@ -71,7 +71,7 @@ QMenu* ActionFactory::mainContextMenu()
         auto *menu = new QMenu();
 #ifdef ENABLE_VPU_PLATFORM
         DEF_ACTION(tr("Open File"), ActionKind::OpenFileList);
-        DEF_ACTION(tr("Open Directory"), ActionKind::OpenDirectory);
+        DEF_ACTION(tr("Open Folder"), ActionKind::OpenDirectory);
         menu->addSeparator();
 
         DEF_ACTION_CHECKED(tr("Fullscreen"), ActionKind::ToggleFullscreen);
@@ -130,7 +130,7 @@ QMenu* ActionFactory::mainContextMenu()
             auto *menu = new QMenu(tr("Sound"));
             {
                 auto *parent = menu;
-                auto *menu = new QMenu(tr("Sound"));
+                auto *menu = new QMenu(tr("Channel"));
                 auto group = new QActionGroup(menu);
 
                 DEF_ACTION_CHECKED_GROUP(tr("Stereo"), ActionKind::Stereo, group);

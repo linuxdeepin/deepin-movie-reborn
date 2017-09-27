@@ -4,7 +4,6 @@ void GenerateSettingTranslate()
 {
     auto base_play_addsimilarText = QObject::tr("Auto add similar files to play");
     auto base_play_emptylistText = QObject::tr("Clear playlist when exit");
-    auto base_play_hwaccelText = QObject::tr("Enable hardware acceleration");
     auto base_play_mousepreviewText = QObject::tr("Show video preview on mouseover");
     auto base_play_multiinstanceText = QObject::tr("Open a new player for each file played");
     auto base_play_pauseonminText = QObject::tr("Pause when minimized");
@@ -22,18 +21,15 @@ void GenerateSettingTranslate()
     auto group_subtitleName = QObject::tr("Subtitle");
     auto group_subtitle_fontName = QObject::tr("Font Style");
     auto reset_button_name = QObject::tr("Restore Defaults");
-    auto shortcuts_file_enableName = QObject::tr("Enable");
     auto shortcuts_file_open_fileName = QObject::tr("Open file");
     auto shortcuts_file_playlist_nextName = QObject::tr("Open next");
     auto shortcuts_file_playlist_prevName = QObject::tr("Open previous");
-    auto shortcuts_frame_sound_enableName = QObject::tr("Enable");
     auto shortcuts_frame_sound_miniName = QObject::tr("Mini mode");
     auto shortcuts_frame_sound_muteName = QObject::tr("Mute");
     auto shortcuts_frame_sound_vol_downName = QObject::tr("volume down");
     auto shortcuts_frame_sound_vol_upName = QObject::tr("Volume up");
     auto shortcuts_play_accelName = QObject::tr("Speed up");
     auto shortcuts_play_decelName = QObject::tr("Speed down");
-    auto shortcuts_play_enableName = QObject::tr("Enable");
     auto shortcuts_play_fullscreenName = QObject::tr("Fullscreen");
     auto shortcuts_play_pause_playName = QObject::tr("Pause/Play");
     auto shortcuts_play_playlistName = QObject::tr("Playlist");
@@ -41,9 +37,7 @@ void GenerateSettingTranslate()
     auto shortcuts_play_seek_backwardName = QObject::tr("Rewind");
     auto shortcuts_play_seek_forwardName = QObject::tr("Forward");
     auto shortcuts_screenshot_burst_screenshotName = QObject::tr("Burst screenshot");
-    auto shortcuts_screenshot_enableName = QObject::tr("Enable");
     auto shortcuts_screenshot_screenshotName = QObject::tr("Film screenshot");
-    auto shortcuts_sub_enableName = QObject::tr("Enable");
     auto shortcuts_sub_sub_backwardName = QObject::tr("0.5s backward");
     auto shortcuts_sub_sub_forwardName = QObject::tr("0.5s forward");
     auto subtitle_font_familyName = QObject::tr("Font");
