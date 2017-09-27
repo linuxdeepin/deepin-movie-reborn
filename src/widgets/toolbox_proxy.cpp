@@ -316,6 +316,8 @@ public:
         connect(DThemeManager::instance(), &DThemeManager::themeChanged, 
                 this, &ThumbnailPreview::updateTheme);
         updateTheme();
+
+        winId(); // force backed window to be created
     }
 
     void updateWithPreview(const QPixmap& pm, qint64 secs) {

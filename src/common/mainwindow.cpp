@@ -498,6 +498,10 @@ MainWindow::MainWindow(QWidget *parent)
 
     _toolbox = new ToolboxProxy(this, _engine);
     _toolbox->setFocusPolicy(Qt::NoFocus);
+
+    int volume = Settings::get().internalOption("global_volume").toInt();
+    _engine->changeVolume(volume);
+
     connect(_engine, &PlayerEngine::stateChanged, [=]() {
         setInit(_engine->state() != PlayerEngine::Idle);
         resumeToolsWindow();
@@ -603,9 +607,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     _lightTheme = Settings::get().internalOption("light_theme").toBool();
     if (_lightTheme) reflectActionToUI(ActionFactory::LightTheme);
-
-    int volume = Settings::get().internalOption("global_volume").toInt();
-    _engine->changeVolume(volume);
 
     connect(_engine, &PlayerEngine::sidChanged, [=]() {
         reflectActionToUI(ActionFactory::ActionKind::SelectSubtitle);
