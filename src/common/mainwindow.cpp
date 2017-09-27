@@ -79,7 +79,7 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
         QFileInfo fi(name);
         if (fi.exists()) {
             if (!fi.isDir()) {
-                le->showAlertMessage(QObject::tr("Not a dir"));
+                le->showAlertMessage(QObject::tr("Invalid folder"));
                 return false;
             }
 

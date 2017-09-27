@@ -58,7 +58,6 @@
                         },
                         {
                             "key": "hwaccel",
-                            "text": "Enable hardware acceleration",
                             "type": "checkbox",
                             "hide": true,
                             "default": true
@@ -89,7 +88,6 @@
                     "options": [
                         {
                             "key": "enable",
-                            "name": "Enable",
                             "type": "checkbox",
                             "hide": true,
                             "default": "true"
@@ -150,7 +148,6 @@
                     "options": [
                         {
                             "key": "enable",
-                            "name": "Enable",
                             "type": "checkbox",
                             "hide": true,
                             "default": "true"
@@ -187,7 +184,6 @@
                     "options": [
                         {
                             "key": "enable",
-                            "name": "Enable",
                             "type": "checkbox",
                             "hide": true,
                             "default": "true"
@@ -218,7 +214,6 @@
                     "options": [
                         {
                             "key": "enable",
-                            "name": "Enable",
                             "type": "checkbox",
                             "hide": true,
                             "default": "true"
@@ -243,7 +238,6 @@
                     "options": [
                         {
                             "key": "enable",
-                            "name": "Enable",
                             "type": "checkbox",
                             "hide": true,
                             "default": "true"
