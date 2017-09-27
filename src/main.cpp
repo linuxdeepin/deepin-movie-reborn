@@ -44,14 +44,6 @@ int main(int argc, char *argv[])
     // required by mpv
     setlocale(LC_NUMERIC, "C");
 
-    auto& clm = dmr::CommandLineManager::get();
-    clm.process(app);
-
-    QStringList toOpenFiles;
-    if (clm.positionalArguments().length() > 0) {
-        toOpenFiles = clm.positionalArguments();
-    }
-
     app.setOrganizationName("deepin");
     app.setApplicationName("deepin-movie");
     app.setApplicationVersion(DMR_VERSION);
@@ -59,6 +51,14 @@ int main(int argc, char *argv[])
     app.setWindowIcon(QIcon(":/resources/icons/logo-big.svg"));
     QString acknowledgementLink = "https://www.deepin.org/acknowledgments/deepin-movie";
     app.setApplicationAcknowledgementPage(acknowledgementLink);
+
+    auto& clm = dmr::CommandLineManager::get();
+    clm.process(app);
+
+    QStringList toOpenFiles;
+    if (clm.positionalArguments().length() > 0) {
+        toOpenFiles = clm.positionalArguments();
+    }
 
     app.loadTranslator();
     app.setApplicationDisplayName(QObject::tr("Deepin Movie"));
