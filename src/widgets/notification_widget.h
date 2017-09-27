@@ -9,8 +9,6 @@ DWIDGET_USE_NAMESPACE
 
 namespace dmr {
 
-class MainWindow;
-
 class NotificationWidget: public QFrame {
     Q_OBJECT
 public:
