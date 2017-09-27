@@ -328,6 +328,10 @@ public:
         t = t.addSecs(secs);
         _time->setText(t.toString("hh:mm:ss"));
         _time->move((width() - _time->width())/2, 69);
+
+        if (isVisible()) {
+            move(QCursor::pos().x(), frameGeometry().y() + height());
+        }
     }
 
     void updateWithPreview(const QPoint& pos) {
