@@ -982,13 +982,12 @@ bool MainWindow::isActionAllowed(ActionFactory::ActionKind kd, bool fromUI, bool
                 case ActionFactory::BurstScreenshot:
                     return false;
 
+                case ActionFactory::ToggleMiniMode:
+                    return true;
+
                 default: break;
             }
         }
-    } else {
-        if (isFullScreen()) {
-        }
-
     }
 
     if (isShortcut) {
@@ -1030,6 +1029,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     qDebug() << "kd = " << kd << "fromUI " << fromUI << (isShortcut ? "shortcut":"");
 
     if (!isActionAllowed(kd, fromUI, isShortcut)) {
+        qDebug() << kd << "disallowed";
         return;
     }
 
@@ -2123,7 +2123,11 @@ void MainWindow::miniButtonClicked(QString id)
 {
     qDebug() << id;
     if (id == "play") {
-        requestAction(ActionFactory::ActionKind::TogglePause);
+        if (_engine->state() == PlayerEngine::CoreState::Idle) {
+            requestAction(ActionFactory::ActionKind::StartPlay);
+        } else {
+            requestAction(ActionFactory::ActionKind::TogglePause);
+        }
 
     } else if (id == "close") {
         close();
