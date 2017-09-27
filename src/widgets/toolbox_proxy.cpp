@@ -735,12 +735,9 @@ void ToolboxProxy::progressHoverChanged(int v)
     _lastHoverValue = v;
     ThumbnailWorker::get().requestThumb(pif.url, v);
 
-    auto geom = _progBar->frameGeometry();
-    double pert = (double) v / (_progBar->maximum() - _progBar->minimum());
-
     auto pos = _progBar->mapToGlobal(QPoint(0, 0));
     QPoint p = {
-        (int)(pos.x() + geom.width() * pert + 2), pos.y()
+        QCursor::pos().x(), pos.y()
     };
 
     _previewer->updateWithPreview(p);
