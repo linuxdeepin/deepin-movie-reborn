@@ -916,12 +916,13 @@ void MainWindow::reflectActionToUI(ActionFactory::ActionKind kd)
             auto p = acts.begin();
             while (p != acts.end()) {
                 auto args = ActionFactory::actionArgs(*p);
+                (*p)->setEnabled(false);
                 if (args[0].toInt() == idx) {
-                    (*p)->setEnabled(false);
                     if (!(*p)->isChecked()) (*p)->setChecked(true);
-                    (*p)->setEnabled(true);
-                    break;
+                } else {
+                    (*p)->setChecked(false);
                 }
+                (*p)->setEnabled(true);
 
                 ++p;
             }
@@ -1477,7 +1478,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                 _nwShot->setAnchorPoint(QPoint(30, 38));
             }
             auto pm = QPixmap(QString(":/resources/icons/%1.png").arg(success?"success":"fail"));
-            _nwShot->popupWithIcon(tr("The screenshot is saved."), pm);
+            _nwShot->popupWithIcon(tr("The screenshot is saved"), pm);
 #endif
             break;
         }
@@ -1545,7 +1546,7 @@ void MainWindow::onBurstScreenshot(const QImage& frame)
                 _nwShot->setAnchorPoint(QPoint(30, 38));
             }
             auto pm = QPixmap(QString(":/resources/icons/%1.png").arg(QFileInfo::exists(poster_path)?"success":"fail"));
-            _nwShot->popupWithIcon(tr("The screenshot is saved."), pm);
+            _nwShot->popupWithIcon(tr("The screenshot is saved"), pm);
         }
     }
 }

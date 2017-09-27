@@ -353,6 +353,9 @@ bool MpvProxy::loadSubtitle(const QFileInfo& fi)
         return true;
     }
 
+    if (!fi.exists())
+        return false;
+
     QList<QVariant> args = { "sub-add", fi.absoluteFilePath(), "select" };
     qDebug () << args;
     QVariant id = command(_handle, args);
@@ -440,6 +443,10 @@ void MpvProxy::setPlaySpeed(double times)
 
 void MpvProxy::selectSubtitle(int id)
 {
+    if (id > _pmf.subs.size()) {
+        id = _pmf.subs.size() == 0? -1: _pmf.subs[0]["id"].toInt();
+    }
+
     set_property(_handle, "sid", id);
     MovieConfiguration::get().updateUrl(_file, ConfigKnownKey::SubId, sid());
 }
@@ -600,7 +607,11 @@ void MpvProxy::play()
         auto ext_subs = MovieConfiguration::get().getListByUrl(_file,
                 ConfigKnownKey::ExternalSubs);
         for(const auto& sub: ext_subs) {
-            loadSubtitle(sub);
+            if (!QFile::exists(sub)) {
+                MovieConfiguration::get().removeFromListUrl(_file, ConfigKnownKey::ExternalSubs, sub);
+            } else {
+                loadSubtitle(sub);
+            }
         }
 
         auto key = MovieConfiguration::knownKey2String(ConfigKnownKey::SubId);
