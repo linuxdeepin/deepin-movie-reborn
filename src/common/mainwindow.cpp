@@ -539,7 +539,7 @@ MainWindow::MainWindow(QWidget *parent)
             hint |= Qt::WindowMaximizeButtonHint | Qt::WindowMinimizeButtonHint;
             qApp->restoreOverrideCursor();
             if (_lastCookie >= 0) utils::UnInhibitStandby(_lastCookie);
-            _listener->setEnabled(!_miniMode);
+            _listener->setEnabled(!isMaximized() && !_miniMode);
         } else {
             qApp->setOverrideCursor(Qt::BlankCursor);
             _lastCookie = utils::InhibitStandby();
@@ -1806,7 +1806,7 @@ void MainWindow::resizeByConstraints()
         return;
     }
 
-    if (_miniMode || isFullScreen()) {
+    if (_miniMode || isFullScreen() || isMaximized()) {
         //_lastSizeInNormalMode = QSize(-1, -1);
         return;
     }
@@ -1988,6 +1988,7 @@ void MainWindow::contextMenuEvent(QContextMenuEvent *cme)
 
     resumeToolsWindow();
     QTimer::singleShot(0, [=]() {
+        qApp->restoreOverrideCursor();
         ActionFactory::get().mainContextMenu()->popup(QCursor::pos());
     });
     cme->accept();
