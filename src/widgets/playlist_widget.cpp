@@ -471,7 +471,7 @@ void PlaylistWidget::contextMenuEvent(QContextMenuEvent *cme)
         auto prop = (ActionFactory::ActionKind)act->property("kind").toInt();
         bool on = true;
         if (prop == ActionFactory::ActionKind::PlaylistOpenItemInFM) {
-            on = on_item;
+            on = on_item && piw->_pif.url.isLocalFile();
         } else if (prop == ActionFactory::ActionKind::PlaylistItemInfo) {
             on = on_item && piw->_pif.valid && piw->_pif.url.isLocalFile();
         }
