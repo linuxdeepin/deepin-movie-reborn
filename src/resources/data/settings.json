@@ -17,6 +17,14 @@
                             "default": false
                         },
                         {
+                            "key": "global_volume",
+                            "name": "",
+                            "hide": true,
+                            "reset": false,
+                            "type": "spinbutton",
+                            "default": 100
+                        },
+                        {
                             "key": "emptylist",
                             "name": "",
                             "type": "checkbox",

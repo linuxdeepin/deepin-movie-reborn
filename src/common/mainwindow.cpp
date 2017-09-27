@@ -604,6 +604,9 @@ MainWindow::MainWindow(QWidget *parent)
     _lightTheme = Settings::get().internalOption("light_theme").toBool();
     if (_lightTheme) reflectActionToUI(ActionFactory::LightTheme);
 
+    int volume = Settings::get().internalOption("global_volume").toInt();
+    _engine->changeVolume(volume);
+
     connect(_engine, &PlayerEngine::sidChanged, [=]() {
         reflectActionToUI(ActionFactory::ActionKind::SelectSubtitle);
     });
@@ -1275,6 +1278,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                 _engine->toggleMute();
             }
             _engine->changeVolume(args[0].toInt()); 
+            Settings::get().setInternalOption("global_volume", qMin(_engine->volume(), 100));
             double pert = _engine->volume();
             _nwComm->updateWithMessage(tr("Volume: %1%").arg(pert));
             break;
