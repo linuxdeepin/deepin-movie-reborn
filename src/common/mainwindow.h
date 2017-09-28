@@ -101,7 +101,7 @@ protected slots:
     void miniButtonClicked(QString id);
 
     void startBurstShooting();
-    void onBurstScreenshot(const QImage& frame);
+    void onBurstScreenshot(const QImage& frame, qint64 timestamp);
     void delayedMouseReleaseHandler();
 
 #ifdef USE_DXCB
@@ -129,7 +129,7 @@ private:
     QLabel *_playState {nullptr};
     MovieProgressIndicator *_progIndicator {nullptr};
 
-    QList<QImage> _burstShoots;
+    QList<QPair<QImage, qint64>> _burstShoots;
     bool _inBurstShootMode {false};
 
     DImageButton *_miniPlayBtn {nullptr};

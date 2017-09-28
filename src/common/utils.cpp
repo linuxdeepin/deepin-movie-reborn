@@ -193,8 +193,39 @@ QPixmap MakeRoundedPixmap(QPixmap pm, qreal rx, qreal ry)
     QPainterPath path;
     path.addRoundedRect(QRect(QPoint(), pm.size()), rx, ry);
     p.setClipPath(path);
-    p.setClipping(true);
     p.drawPixmap(0, 0, pm);
+
+    return dest;
+}
+
+QPixmap MakeRoundedPixmap(QSize sz, QPixmap pm, qreal rx, qreal ry, qint64 time)
+{
+    QPixmap dest(sz);
+    dest.fill(Qt::transparent);
+
+    QPainter p(&dest);
+    p.setRenderHints(QPainter::Antialiasing|QPainter::SmoothPixmapTransform);
+
+    p.setPen(QColor(0, 0, 0, 255 / 10));
+    p.drawRoundedRect(dest.rect(), rx, ry);
+
+    QPainterPath path;
+    auto r = dest.rect().marginsRemoved({1, 1, 1, 1});
+    path.addRoundedRect(r, rx, ry);
+    p.setClipPath(path);
+    p.drawPixmap(1, 1, pm);
+
+    p.setPen(Qt::white);
+    QFont ft;
+    ft.setPixelSize(12);
+    ft.setWeight(QFont::Medium);
+    p.setFont(ft);
+
+    auto tm_str = QTime(0, 0, 0).addSecs(time).toString("hh:mm:ss");
+    QRect bounding = p.fontMetrics().boundingRect(tm_str);
+    bounding.moveTopLeft({dest.width() - 5 - bounding.width(),
+            dest.height() - 5 - bounding.height()});
+    p.drawText(bounding, tm_str);
 
     return dest;
 }

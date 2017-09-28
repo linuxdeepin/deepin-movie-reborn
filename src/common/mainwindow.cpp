@@ -1510,11 +1510,11 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     }
 }
 
-void MainWindow::onBurstScreenshot(const QImage& frame)
+void MainWindow::onBurstScreenshot(const QImage& frame, qint64 timestamp)
 {
     qDebug() << _burstShoots.size();
     if (!frame.isNull()) {
-        _burstShoots.append(frame);
+        _burstShoots.append(qMakePair(frame, timestamp));
     }
 
     if (_burstShoots.size() >= 15 || frame.isNull()) {

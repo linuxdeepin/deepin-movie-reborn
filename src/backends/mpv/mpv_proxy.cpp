@@ -662,7 +662,7 @@ void MpvProxy::burstScreenshot()
     _burstStart = 0;
     _burstInc = qMax(d, 1);
     if (_burstInc * 15 + 10 >= duration()) {
-        emit notifyScreenshot(QImage());
+        emit notifyScreenshot(QImage(), 0);
         stopBurstScreenshot();
         return;
     }
@@ -749,11 +749,11 @@ void MpvProxy::stepBurstScreenshot()
 
     QImage img = takeOneScreenshot();
     if (img.isNull()) {
-        emit notifyScreenshot(img);
+        emit notifyScreenshot(img, elapsed());
         stopBurstScreenshot();
         return;
     }
-    emit notifyScreenshot(img);
+    emit notifyScreenshot(img, elapsed());
 
     QTimer::singleShot(0, this, &MpvProxy::stepBurstScreenshot);
 }

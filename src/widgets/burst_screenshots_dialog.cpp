@@ -15,10 +15,12 @@ BurstScreenshotsDialog::BurstScreenshotsDialog(const PlayItemInfo& pif)
 
     auto *ml = new QVBoxLayout;
     ml->setContentsMargins(0, 10, 0, 0);
+    ml->setSpacing(0);
+
+    setFixedSize(600, 704);
 
     // top 
     auto *hl = new QHBoxLayout();
-    hl->setSpacing(16);
     hl->setContentsMargins(0, 0, 0, 0);
     ml->addLayout(hl);
 
@@ -27,10 +29,12 @@ BurstScreenshotsDialog::BurstScreenshotsDialog(const PlayItemInfo& pif)
     hl->setAlignment(pm, Qt::AlignCenter);
     hl->addWidget(pm);
 
+    hl->addSpacing(16);
+
     // top right up
     auto *trl = new QVBoxLayout;
+    trl->setSpacing(0);
     hl->setContentsMargins(0, 0, 0, 0);
-    hl->setSpacing(6);
     hl->addLayout(trl, 1);
 
     auto *nm = new QLabel(this);
@@ -38,18 +42,36 @@ BurstScreenshotsDialog::BurstScreenshotsDialog(const PlayItemInfo& pif)
     trl->addWidget(nm);
 
     //top right bottom
-    auto *trb = new QGridLayout;
-    trb->addWidget(new QLabel(tr("duration: %1").arg(mi.durationStr()), this), 0, 0);
-    trb->addWidget(new QLabel(tr("resolution: %1").arg(mi.resolution), this), 0, 1);
-    trb->addWidget(new QLabel(tr("size: %1").arg(mi.sizeStr()), this), 0, 2);
+    auto *trb = new QHBoxLayout;
+    trb->setContentsMargins(0, 0, 0, 0);
+    trb->setSpacing(0);
+    {
+        auto lb = new QLabel(tr("duration: %1").arg(mi.durationStr()), this);
+        lb->setStyleSheet("color: rgba(48, 48, 48, 30%)");
+        trb->addWidget(lb);
+        trb->addSpacing(36);
+    }
+    {
+        auto lb = new QLabel(tr("resolution: %1").arg(mi.resolution), this);
+        lb->setStyleSheet("color: rgba(48, 48, 48, 30%)");
+        trb->addWidget(lb);
+        trb->addSpacing(36);
+    }
+    {
+        auto lb = new QLabel(tr("size: %1").arg(mi.sizeStr()), this);
+        lb->setStyleSheet("color: rgba(48, 48, 48, 30%)");
+        trb->addWidget(lb);
+        trb->addSpacing(36);
+    }
+    trb->addStretch(1);
     trl->addLayout(trb);
 
-
+    ml->addSpacing(20);
 
     _grid = new QGridLayout();
     _grid->setHorizontalSpacing(12);
     _grid->setVerticalSpacing(15);
-    _grid->setContentsMargins(0, 24, 0, 0);
+    _grid->setContentsMargins(0, 0, 0, 0);
     ml->addLayout(_grid);
     _grid->setColumnMinimumWidth(0, 160);
     _grid->setColumnMinimumWidth(1, 160);
@@ -98,17 +120,17 @@ BurstScreenshotsDialog::BurstScreenshotsDialog(const PlayItemInfo& pif)
     addContent(mainContent, Qt::AlignCenter);
 }
 
-void BurstScreenshotsDialog::updateWithFrames(const QList<QImage>& frames)
+void BurstScreenshotsDialog::updateWithFrames(const QList<QPair<QImage, qint64>>& frames)
 {
     int count = 0;
     for (auto frame: frames) {
-        auto scaled = frame.scaled(178, 100, Qt::KeepAspectRatio);
+        auto scaled = frame.first.scaled(178-2, 100-2, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
         auto *l = new ThumbnailFrame(this);
 
         int r = count / 3;
         int c = count % 3;
 
-        auto pm = utils::MakeRoundedPixmap(QPixmap::fromImage(scaled), 2, 2);
+        auto pm = utils::MakeRoundedPixmap({178, 100}, QPixmap::fromImage(scaled), 2, 2, frame.second);
         l->setPixmap(pm);
         _grid->addWidget(l, r, c);
         count++;
@@ -135,7 +157,7 @@ void BurstScreenshotsDialog::saveShootings()
     int i = 1;
     for (auto& img: _thumbs) {
         auto file_path = Settings::get().screenshotNameSeqTemplate().arg(i++);
-        img.save(file_path);
+        img.first.save(file_path);
     }
     DDialog::accept();
 }

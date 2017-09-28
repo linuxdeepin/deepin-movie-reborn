@@ -217,13 +217,60 @@ protected:
         return QFrame::event(ee);
     }
 
+    QString elideText(const QString &text, const QSize &size,
+            QTextOption::WrapMode wordWrap, const QFont &font,
+            Qt::TextElideMode mode, int lineHeight)
+    {
+        int height = 0;
+
+        QTextLayout textLayout(text);
+        QString str;
+        QFontMetrics fontMetrics(font);
+
+        textLayout.setFont(font);
+        const_cast<QTextOption*>(&textLayout.textOption())->setWrapMode(wordWrap);
+
+        textLayout.beginLayout();
+
+        QTextLine line = textLayout.createLine();
+
+        while (line.isValid()) {
+            height += lineHeight;
+
+            if(height + lineHeight >= size.height()) {
+                str += fontMetrics.elidedText(text.mid(line.textStart() + line.textLength() + 1), mode, size.width());
+
+                break;
+            }
+
+            line.setLineWidth(size.width());
+
+            const QString &tmp_str = text.mid(line.textStart(), line.textLength());
+
+            if (tmp_str.indexOf('\n'))
+                height += lineHeight;
+
+            str += tmp_str;
+
+            line = textLayout.createLine();
+
+            if(line.isValid())
+                str.append("\n");
+        }
+
+        textLayout.endLayout();
+
+        return str;
+    }
+
     void showEvent(QShowEvent *se) override
     {
         QString msg = _pif.url.fileName();
         if (!_pif.url.isLocalFile() && msg.isEmpty()) {
             msg = _pif.url.toString();
         }
-        _name->setText(_name->fontMetrics().elidedText(msg, Qt::ElideMiddle, 260));
+        _name->setText(elideText(msg, {136, 40}, QTextOption::WrapAnywhere,
+                    _name->font(), Qt::ElideMiddle, 18));
         _name->viewport()->setCursor(Qt::ArrowCursor);
         _name->setCursor(Qt::ArrowCursor);
         _name->document()->setDocumentMargin(0.0);
