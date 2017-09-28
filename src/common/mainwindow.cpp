@@ -189,7 +189,8 @@ class MainWindowEventListener : public QObject
                 QMouseEvent *e = static_cast<QMouseEvent*>(event);
                 setLeftButtonPressed(true);
                 auto mw = static_cast<MainWindow*>(parent());
-                if (mw->insideResizeArea(e->globalPos())) startResizing = true;
+                if (mw->insideResizeArea(e->globalPos()) && lastCornerEdge != Utility::NoneEdge) 
+                    startResizing = true;
 
                 mw->capturedMousePressEvent(e);
                 if (startResizing) {
@@ -280,7 +281,7 @@ set_cursor:
 
 skip_set_cursor:
                         lastCornerEdge = mouseCorner = Utility::NoneEdge;
-                        return true;
+                        return false;
                     } else {
                         qApp->setOverrideCursor(window->cursor());
                     }
