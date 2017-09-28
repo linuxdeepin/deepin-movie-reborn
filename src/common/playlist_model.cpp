@@ -256,9 +256,7 @@ void PlaylistModel::loadPlaylist()
         emit countChanged();
     }
 
-    QTimer::singleShot(0, [=]() {
-        appendAsync(urls);
-    });
+    QTimer::singleShot(0, [=]() { delayedAppendAsync(urls); });
 }
 
 
@@ -624,6 +622,11 @@ void PlaylistModel::collectionJob(const QList<QUrl>& urls)
 
 void PlaylistModel::appendAsync(const QList<QUrl>& urls)
 {
+    QTimer::singleShot(10, [=]() { delayedAppendAsync(urls); });
+}
+
+void PlaylistModel::delayedAppendAsync(const QList<QUrl>& urls)
+{
     if (_pendingJob.size() > 0) {
         //TODO: may be automatically schedule later
         qWarning() << "there is a pending append going on, enqueue";
@@ -702,9 +705,14 @@ void PlaylistModel::onAsyncAppendFinished()
     if (_pendingAppendReq.size()) {
         QTimer::singleShot(0, [=]() {
             auto job = _pendingAppendReq.dequeue();
-            this->appendAsync(job);
+            delayedAppendAsync(job);
         });
     }
+}
+
+bool PlaylistModel::hasPendingAppends()
+{
+    return _pendingAppendReq.size() > 0 || _pendingJob.size() > 0;
 }
 
 //TODO: what if loadfile failed

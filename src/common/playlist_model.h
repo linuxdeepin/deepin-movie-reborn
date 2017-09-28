@@ -104,11 +104,14 @@ public:
 
     void switchPosition(int p1, int p2);
 
+    bool hasPendingAppends();
+
 public slots:
     void changeCurrent(int);
 
 private slots:
     void onAsyncAppendFinished();
+    void delayedAppendAsync(const QList<QUrl>&);
 
 signals:
     void countChanged();
