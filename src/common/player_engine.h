@@ -123,7 +123,7 @@ signals:
     void loadOnlineSubtitlesFinished(const QUrl& url, bool success);
 
     //emit during burst screenshotting
-    void notifyScreenshot(const QImage& frame);
+    void notifyScreenshot(const QImage& frame, qint64 time);
 
     void playlistChanged();
 

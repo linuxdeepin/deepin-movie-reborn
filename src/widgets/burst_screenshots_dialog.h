@@ -15,12 +15,9 @@ class ThumbnailFrame: public QLabel {
     Q_OBJECT
 public:
     ThumbnailFrame(QWidget* parent) :QLabel(parent) {
-        setStyleSheet(
-                "dmr--ThumbnailFrame {"
-                "border-radius: 4px;"
-                "border: 1px solid rgba(255, 255, 255, 0.1); }");
+        setFixedSize(178, 100);
         auto e = new QGraphicsDropShadowEffect(this);
-        e->setColor(QColor(0, 0, 0, 128));
+        e->setColor(QColor(0, 0, 0, 255 * 8 / 10));
         e->setOffset(0, 2);
         e->setBlurRadius(4);
         setGraphicsEffect(e);
@@ -32,7 +29,7 @@ class BurstScreenshotsDialog: public DDialog {
     Q_OBJECT
 public:
     BurstScreenshotsDialog(const PlayItemInfo& pif);
-    void updateWithFrames(const QList<QImage>& frames);
+    void updateWithFrames(const QList<QPair<QImage, qint64>>& frames);
 
     QString savedPosterPath();
 
@@ -44,7 +41,7 @@ public slots:
 private:
     QGridLayout *_grid {nullptr};
     DTextButton *_saveBtn {nullptr};
-    QList<QImage> _thumbs;
+    QList<QPair<QImage, qint64>> _thumbs;
     QString _posterPath;
 };
 }

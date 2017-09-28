@@ -97,7 +97,7 @@ Q_SIGNALS:
     void aidChanged();
 
     //emit during burst screenshotting
-    void notifyScreenshot(const QImage& frame);
+    void notifyScreenshot(const QImage& frame, qint64 time);
 
 public slots:
     virtual void play() = 0;

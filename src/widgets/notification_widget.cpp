@@ -18,7 +18,6 @@ NotificationWidget::NotificationWidget(QWidget *parent)
 
     _layout = new QHBoxLayout;
     _layout->setContentsMargins(0, 0, 0, 0);
-    _layout->setSpacing(0);
     setLayout(_layout);
 
     _msgLabel = new QLabel();
@@ -34,7 +33,7 @@ NotificationWidget::NotificationWidget(QWidget *parent)
 void NotificationWidget::showEvent(QShowEvent *event)
 {
     ensurePolished();
-    if (_icon && _layout->indexOf(_icon) == -1) {
+    if (_layout->indexOf(_icon) == -1) {
         resize(_msgLabel->sizeHint().width() + _layout->contentsMargins().left() 
                 + _layout->contentsMargins().right(), height());
         adjustSize();
@@ -103,7 +102,8 @@ void NotificationWidget::updateWithMessage(const QString& newMsg)
 {
     if (isVisible()) {
         _msgLabel->setText(newMsg);
-        resize(_msgLabel->sizeHint().width(), height());
+        resize(_msgLabel->sizeHint().width() + _layout->contentsMargins().left() 
+                + _layout->contentsMargins().right(), height());
         adjustSize();
         _timer->start();
 
