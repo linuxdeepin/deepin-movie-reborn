@@ -173,9 +173,7 @@ PlaylistModel::PlaylistModel(PlayerEngine *e)
             this, &PlaylistModel::onAsyncAppendFinished);
 
     stop();
-    if (!Settings::get().isSet(Settings::ClearWhenQuit)) {
-        loadPlaylist();
-    }
+    loadPlaylist();
 }
 
 PlaylistModel::~PlaylistModel()
@@ -234,7 +232,6 @@ void PlaylistModel::loadPlaylist()
     QSettings cfg(fileName, QSettings::NativeFormat);
     cfg.beginGroup("playlist");
     auto keys = cfg.childKeys();
-    qDebug() << keys;
     for (int i = 0; i < keys.size(); ++i) {
         auto url = cfg.value(QString::number(i)).toUrl();
         if (indexOf(url) >= 0) continue;
