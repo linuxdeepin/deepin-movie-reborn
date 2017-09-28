@@ -421,8 +421,14 @@ void PlayerEngine::onPlaylistAsyncAppendFinished(const QList<PlayItemInfo>& pil)
             id = _playlist->indexOf(pil[0].url);
         }
 
-        _pendingPlayReq = QUrl();
-        if (id >= 0) _playlist->changeCurrent(id);
+        if (id >= 0) {
+            _playlist->changeCurrent(id);
+            _pendingPlayReq = QUrl();
+        } else {
+            if (!_playlist->hasPendingAppends()) {
+                _pendingPlayReq = QUrl();
+            } // else, wait for another signal
+        }
     }
 }
 
