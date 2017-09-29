@@ -55,15 +55,12 @@ static void workaround_updateStyle(QWidget *parent, const QString &theme)
 static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
 {
     auto option = qobject_cast<DTK_CORE_NAMESPACE::DSettingsOption *>(opt);
-    auto value = option->data("text").toString();
 
     auto le = new DLineEdit();
-    workaround_updateStyle(le, "dlight");
     le->setFixedHeight(24);
     le->setObjectName("OptionSelectableLineEdit");
-    le->setText(value);
+    le->setText(option->value().toString());
     le->setMaxLength(255);
-    le->setAlert(true);
 
     le->setIconVisible(true);
     le->setNormalIcon(":resources/icons/select-normal.png");
@@ -72,6 +69,9 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
 
     auto optionWidget = DSettingsWidgetFactory::createTwoColumWidget(option, le);
     auto validate = [=](QString name) -> bool {
+        name = name.trimmed();
+        if (name.isEmpty()) return false;
+
         if (name.size() && name[0] == '~') {
             name.replace(0, 1, QDir::homePath());
         }
@@ -102,15 +102,14 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
     });
 
     option->connect(le, &QLineEdit::editingFinished, option, [=]() {
-            qDebug() << "--------- editingFinished" << le->text();
         if (validate(le->text())) {
             option->setValue(le->text());
         }
     });
+
     option->connect(option, &DTK_CORE_NAMESPACE::DSettingsOption::valueChanged, le, 
         [ = ](const QVariant & value) {
             le->setText(value.toString());
-            le->update();
         });
 
     return  optionWidget;
@@ -1074,9 +1073,12 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                     QDir::currentPath(),
                     QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
 
-            const auto& urls = _engine->addPlayDir(name);
-            if (urls.size()) {
-                _engine->playByName(QUrl("playlist://0"));
+            QFileInfo fi(name);
+            if (fi.isDir() && fi.exists()) {
+                const auto& urls = _engine->addPlayDir(name);
+                if (urls.size()) {
+                    _engine->playByName(QUrl("playlist://0"));
+                }
             }
             break;
         }
