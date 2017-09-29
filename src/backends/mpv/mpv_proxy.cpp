@@ -655,22 +655,37 @@ void MpvProxy::burstScreenshot()
     //command(_handle, QList<QVariant> {"revert-seek", "mark"});
      _posBeforeBurst = get_property(_handle, "time-pos");
 
+    int d = duration() / 15;
+
 	std::random_device rd;
     std::mt19937 g(rd());
-    std::uniform_int_distribution<int> uniform_dist(16, 30);
-    int d = duration() / uniform_dist(g);
+    std::uniform_int_distribution<int> uniform_dist(0, d);
+    _burstPoints.clear();
+    for (int i = 0; i < 15; i++) {
+        _burstPoints.append(d*i + uniform_dist(g));
+    }
     _burstStart = 0;
-    _burstInc = qMax(d, 1);
-    if (_burstInc * 15 + 10 >= duration()) {
+
+    if (duration() < 35) {
         emit notifyScreenshot(QImage(), 0);
         stopBurstScreenshot();
         return;
     }
-    qDebug() << "burst span " << _burstInc;
+    qDebug() << "burst span " << _burstPoints;
 
     if (!paused()) pauseResume();
     _inBurstShotting = true;
     QTimer::singleShot(0, this, &MpvProxy::stepBurstScreenshot);
+}
+
+qint64 MpvProxy::nextBurstShootPoint()
+{
+    auto next = _burstPoints[_burstStart++];
+    if (next >= duration()) {
+        next = duration() - 5;
+    }
+
+    return next;
 }
 
 QImage MpvProxy::takeOneScreenshot()
@@ -728,8 +743,8 @@ void MpvProxy::stepBurstScreenshot()
         return;
     }
 
-    _burstStart += _burstInc;
-    command(_handle, QList<QVariant> {"seek", _burstStart, "absolute"});
+    auto pos = nextBurstShootPoint();
+    command(_handle, QList<QVariant> {"seek", pos, "absolute"});
     int tries = 10;
     while (tries) {
         mpv_event* ev = mpv_wait_event(_handle, 0.005);
