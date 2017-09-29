@@ -1828,7 +1828,7 @@ void MainWindow::resizeByConstraints()
 
     qDebug() << sz;
     resize(sz);
-    Dtk::Widget::moveToCenter(this);
+    utils::MoveToCenter(this);
 }
 
 // 若长≥高,则长≤528px　　　若长≤高,则高≤528px.
@@ -2101,7 +2101,7 @@ void MainWindow::toggleUIMode()
         } else {
             if (_lastSizeInNormalMode.isValid()) {
                 resize(_lastSizeInNormalMode);
-                Dtk::Widget::moveToCenter(this);
+                utils::MoveToCenter(this);
             } else {
                 if (_engine->state() == PlayerEngine::CoreState::Idle) {
                     resize(850, 600);

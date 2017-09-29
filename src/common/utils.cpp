@@ -248,5 +248,13 @@ void UnInhibitStandby(int cookie)
     iface.call("UnInhibit", cookie);
 }
 
+void MoveToCenter(QWidget* w)
+{
+    QDesktopWidget *dw = QApplication::desktop();
+    QRect r = dw->availableGeometry(w);
+
+    w->move(r.center() - w->rect().center());
+}
+
 }
 }
