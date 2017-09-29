@@ -688,7 +688,7 @@ void PlaylistModel::onAsyncAppendFinished()
         //since _infos are modified only at the same thread, the lock is not necessary
         auto last = std::remove_if(fil.begin(), fil.end(), [](const PlayItemInfo& pif) {
                 return !pif.mi.valid;
-                });
+            });
         fil.erase(last, fil.end());
     }
     _firstLoad = false;
@@ -702,12 +702,12 @@ void PlaylistModel::onAsyncAppendFinished()
     }
     emit asyncAppendFinished(fil);
 
-    if (_pendingAppendReq.size()) {
-        QTimer::singleShot(0, [=]() {
+    QTimer::singleShot(0, [&]() {
+        if (_pendingAppendReq.size()) {
             auto job = _pendingAppendReq.dequeue();
             delayedAppendAsync(job);
-        });
-    }
+        }
+    });
 }
 
 bool PlaylistModel::hasPendingAppends()
