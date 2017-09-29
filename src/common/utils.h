@@ -17,6 +17,8 @@ namespace utils {
 
     int InhibitStandby();
     void UnInhibitStandby(int cookie);
+
+    void MoveToCenter(QWidget* w);
 }
 }
 

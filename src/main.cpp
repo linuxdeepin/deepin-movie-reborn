@@ -23,6 +23,7 @@
 #include "dmr_settings.h"
 #include "mainwindow.h"
 #include "dbus_adpator.h"
+#include "utils.h"
 #ifdef ENABLE_VPU_PLATFORM
 #include "vpu_proxy.h"
 #endif
@@ -103,7 +104,7 @@ int main(int argc, char *argv[])
         dmr::VpuProxy mw;
         mw.setMinimumSize(QSize(528, 400));
         mw.resize(850, 600);
-        Dtk::Widget::moveToCenter(&mw);
+        utils::MoveToCenter(&mw);
         mw.show();
         auto fi = QFileInfo(toOpenFiles[0]);
         if (fi.exists()) {
@@ -118,7 +119,7 @@ int main(int argc, char *argv[])
     dmr::MainWindow mw;
     mw.setMinimumSize(QSize(528, 400));
     mw.resize(850, 600);
-    Dtk::Widget::moveToCenter(&mw);
+    utils::MoveToCenter(&mw);
     mw.show();
 
     if (!QDBusConnection::sessionBus().isConnected()) {
