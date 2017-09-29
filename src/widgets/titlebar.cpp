@@ -113,8 +113,8 @@ void Titlebar::paintEvent(QPaintEvent *)
     p.setPen(QPen(d->borderBottom, 1.0));
     p.drawLine(line);
 
-    QLine lineOut(r.topLeft().x()+radius, r.y()+1,
-                  r.x() + r.width()-radius, r.y()+1);
+    QLine lineOut(r.topLeft().x()+radius, r.y(),
+                  r.x() + r.width()-radius, r.y());
     p.setPen(QPen(d->borderShadowTop, 1.0));
     p.drawLine(lineOut);
 }
