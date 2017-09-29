@@ -30,6 +30,7 @@ public slots:
 protected:
     void showEvent(QShowEvent *event) override;
     void resizeEvent(QResizeEvent *re) override;
+    void paintEvent(QPaintEvent* pe) override;
 
 private:
     QWidget *_mw {nullptr};
