@@ -119,3 +119,4 @@ Dtk--Widget--DLineEdit #ClearButton {
 #AlertTooltip QLabel {
     color: #FF8F00;
 }
+
