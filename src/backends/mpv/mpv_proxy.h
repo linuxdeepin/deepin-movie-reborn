@@ -93,8 +93,8 @@ private:
 
     bool _inBurstShotting {false};
     QVariant _posBeforeBurst;
-    qint64 _burstInc {1};
     qint64 _burstStart {0};
+    QList<qint64> _burstPoints;
 
     bool _pendingSeek {false};
     PlayingMovieInfo _pmf;
@@ -109,6 +109,7 @@ private:
     void changeProperty(const QString& name, const QVariant& v);
     void updatePlayingMovieInfo();
     void setState(PlayState s);
+    qint64 nextBurstShootPoint();
 };
 }
 
