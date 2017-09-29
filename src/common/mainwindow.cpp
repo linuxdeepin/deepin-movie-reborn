@@ -1915,6 +1915,7 @@ void MainWindow::capturedMouseReleaseEvent(QMouseEvent* me)
 {
 }
 
+static bool _afterDblClick = false;
 void MainWindow::mousePressEvent(QMouseEvent *ev)
 {
     _mouseMoved = false;
@@ -1922,6 +1923,7 @@ void MainWindow::mousePressEvent(QMouseEvent *ev)
         _mousePressed = true;
     }
 }
+
 
 void MainWindow::mouseDoubleClickEvent(QMouseEvent *ev)
 {
@@ -1933,6 +1935,7 @@ void MainWindow::mouseDoubleClickEvent(QMouseEvent *ev)
             requestAction(ActionFactory::ToggleFullscreen, false, {}, true);
         }
         ev->accept();
+        _afterDblClick = true;
     }
 }
 
@@ -1955,16 +1958,10 @@ bool MainWindow::insideResizeArea(const QPoint& global_p)
 void MainWindow::mouseReleaseEvent(QMouseEvent *ev)
 {
     _mousePressed = false;
-    static ulong last_tm = 0;
-    if (ev->timestamp() - last_tm <= qApp->styleHints()->mouseDoubleClickInterval()) {
-        return;
-    }
-    last_tm = ev->timestamp();
-
     // dtk has a bug, DImageButton propagates mouseReleaseEvent event when it responsed to.
     if (!insideResizeArea(ev->globalPos()) && !_mouseMoved && !insideToolsArea(ev->pos())) {
         if (_playlist->state() != PlaylistWidget::Opened)
-            _delayedMouseReleaseTimer.start(qApp->styleHints()->mouseDoubleClickInterval());
+            _delayedMouseReleaseTimer.start(120);
     }
 
     _mouseMoved = false;
@@ -1972,7 +1969,9 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *ev)
 
 void MainWindow::delayedMouseReleaseHandler()
 {
+    if (!_afterDblClick)
         requestAction(ActionFactory::TogglePause, false, {}, true);
+    _afterDblClick = false;
 }
 
 void MainWindow::mouseMoveEvent(QMouseEvent *ev)
