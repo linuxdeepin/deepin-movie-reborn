@@ -112,4 +112,32 @@ void NotificationWidget::updateWithMessage(const QString& newMsg)
     }
 }
 
+void NotificationWidget::paintEvent(QPaintEvent* pe)
+{
+    float RADIUS = 4;
+    QPainter p(this);
+    p.setRenderHint(QPainter::Antialiasing);
+    
+    bool light = ("light" == qApp->theme());
+    auto bg_clr = QColor(23, 23, 23, 255 * 8 / 10);
+    auto border_clr = QColor(255, 255, 255, 25);
+    if (light) {
+        bg_clr = QColor(252, 252, 252, 255 * 8 / 10);
+        border_clr = QColor(0, 0, 0, 25);
+    }
+
+    p.fillRect(rect(), Qt::transparent);
+    {
+        QPainterPath pp;
+        pp.addRoundedRect(rect(), RADIUS, RADIUS);
+        p.setPen(border_clr);
+        p.drawPath(pp);
+    }
+
+    auto view_rect = rect().marginsRemoved(QMargins(1, 1, 1, 1));
+    QPainterPath pp;
+    pp.addRoundedRect(view_rect, RADIUS, RADIUS);
+    p.fillPath(pp, bg_clr);
+}
+
 }
