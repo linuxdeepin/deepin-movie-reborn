@@ -39,6 +39,7 @@ BurstScreenshotsDialog::BurstScreenshotsDialog(const PlayItemInfo& pif)
 
     auto *nm = new QLabel(this);
     nm->setText(nm->fontMetrics().elidedText(QFileInfo(mi.filePath).fileName(), Qt::ElideMiddle, 480));
+    nm->setStyleSheet("color: #303030; font-size: 14px;");
     trl->addWidget(nm);
 
     //top right bottom
@@ -47,19 +48,19 @@ BurstScreenshotsDialog::BurstScreenshotsDialog(const PlayItemInfo& pif)
     trb->setSpacing(0);
     {
         auto lb = new QLabel(tr("duration: %1").arg(mi.durationStr()), this);
-        lb->setStyleSheet("color: rgba(48, 48, 48, 60%)");
+        lb->setStyleSheet("color: rgba(48, 48, 48, 60%); font-size: 12px;");
         trb->addWidget(lb);
         trb->addSpacing(36);
     }
     {
         auto lb = new QLabel(tr("resolution: %1").arg(mi.resolution), this);
-        lb->setStyleSheet("color: rgba(48, 48, 48, 60%)");
+        lb->setStyleSheet("color: rgba(48, 48, 48, 60%); font-size: 12px;");
         trb->addWidget(lb);
         trb->addSpacing(36);
     }
     {
         auto lb = new QLabel(tr("size: %1").arg(mi.sizeStr()), this);
-        lb->setStyleSheet("color: rgba(48, 48, 48, 60%)");
+        lb->setStyleSheet("color: rgba(48, 48, 48, 60%); font-size: 12px;");
         trb->addWidget(lb);
         trb->addSpacing(36);
     }
