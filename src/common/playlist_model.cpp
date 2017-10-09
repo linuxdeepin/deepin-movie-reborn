@@ -691,15 +691,19 @@ void PlaylistModel::onAsyncAppendFinished()
             });
         fil.erase(last, fil.end());
     }
-    _firstLoad = false;
 
     qDebug() << "collected items" << fil.count();
     if (fil.size()) {
-        _infos += SortSimilarFiles(fil);
+        if (!_firstLoad)
+            _infos += SortSimilarFiles(fil);
+        else
+            _infos += fil;
         reshuffle();
+        _firstLoad = false;
         emit itemsAppended();
         emit countChanged();
     }
+    _firstLoad = false;
     emit asyncAppendFinished(fil);
 
     QTimer::singleShot(0, [&]() {
