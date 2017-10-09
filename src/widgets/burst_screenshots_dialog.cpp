@@ -47,19 +47,19 @@ BurstScreenshotsDialog::BurstScreenshotsDialog(const PlayItemInfo& pif)
     trb->setSpacing(0);
     {
         auto lb = new QLabel(tr("duration: %1").arg(mi.durationStr()), this);
-        lb->setStyleSheet("color: rgba(48, 48, 48, 30%)");
+        lb->setStyleSheet("color: rgba(48, 48, 48, 60%)");
         trb->addWidget(lb);
         trb->addSpacing(36);
     }
     {
         auto lb = new QLabel(tr("resolution: %1").arg(mi.resolution), this);
-        lb->setStyleSheet("color: rgba(48, 48, 48, 30%)");
+        lb->setStyleSheet("color: rgba(48, 48, 48, 60%)");
         trb->addWidget(lb);
         trb->addSpacing(36);
     }
     {
         auto lb = new QLabel(tr("size: %1").arg(mi.sizeStr()), this);
-        lb->setStyleSheet("color: rgba(48, 48, 48, 30%)");
+        lb->setStyleSheet("color: rgba(48, 48, 48, 60%)");
         trb->addWidget(lb);
         trb->addSpacing(36);
     }

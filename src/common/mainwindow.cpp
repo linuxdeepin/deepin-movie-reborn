@@ -549,6 +549,8 @@ MainWindow::MainWindow(QWidget *parent)
         //WTF: this->geometry() is not size of fullscreen !
         //_progIndicator->move(geometry().width() - _progIndicator->width() - 18, 14);
         _progIndicator->setVisible(isFullscreen);
+        toggleShapeMask();
+        update();
     });
     connect(_engine, &PlayerEngine::elapsedChanged, [=]() {
         _progIndicator->updateMovieProgress(_engine->duration(), _engine->elapsed());
@@ -1619,14 +1621,16 @@ void MainWindow::play(const QUrl& url)
     _engine->playByName(url);
 }
 
-void MainWindow::updateProxyGeometry()
+void MainWindow::toggleShapeMask()
 {
-    if (_handle) {
-        _cachedMargins = _handle->frameMargins();
+    if (CompositingManager::get().composited()) {
+        return;
     }
 
-    if (!CompositingManager::get().composited()) {
 #ifndef USE_DXCB
+    if (isFullScreen() || isMaximized()) {
+        clearMask();
+    } else if (mask().isEmpty()) {
         QPixmap shape(size());
         shape.fill(Qt::transparent);
 
@@ -1638,8 +1642,17 @@ void MainWindow::updateProxyGeometry()
         p.end();
 
         setMask(shape.mask());
-#endif
     }
+#endif
+}
+
+void MainWindow::updateProxyGeometry()
+{
+    if (_handle) {
+        _cachedMargins = _handle->frameMargins();
+    }
+
+    toggleShapeMask();
 
     // leave one pixel for border
     auto view_rect = rect().marginsRemoved(QMargins(1, 1, 1, 1));
@@ -2006,12 +2019,17 @@ void MainWindow::paintEvent(QPaintEvent* pe)
     static QImage bg_dark(":/resources/icons/dark/init-splash.png");
     static QImage bg_light(":/resources/icons/light/init-splash.png");
     bool light = ("light" == qApp->theme());
+    bool rounded = !isFullScreen() && !isMaximized();
 
     p.fillRect(rect(), Qt::transparent);
     {
         QPainterPath pp;
-        pp.addRoundedRect(rect(), RADIUS, RADIUS);
-        p.fillPath(pp, QColor(0, 0, 0, light ? 255 * 0.1: 255));
+        if (rounded)
+            pp.addRoundedRect(rect(), RADIUS, RADIUS);
+        else
+            pp.addRect(rect());
+        //p.fillPath(pp, QColor(0, 0, 0, light ? 255 * 0.1: 255));
+        p.strokePath(pp, QColor(0, 0, 0, light ? 255 * 0.1: 255));
     }
 
     auto bg_clr = QColor(16, 16, 16);
@@ -2026,7 +2044,10 @@ void MainWindow::paintEvent(QPaintEvent* pe)
      */
     auto view_rect = rect().marginsRemoved(QMargins(1, 1, 1, 1));
     QPainterPath pp;
-    pp.addRoundedRect(view_rect, RADIUS, RADIUS);
+    if (rounded)
+        pp.addRoundedRect(view_rect, RADIUS, RADIUS);
+    else 
+        pp.addRect(view_rect);
     p.fillPath(pp, bg_clr);
 
     auto pt = rect().center() - QPoint(bg.width()/2, bg.height()/2);

@@ -17,7 +17,7 @@ public:
     ThumbnailFrame(QWidget* parent) :QLabel(parent) {
         setFixedSize(178, 100);
         auto e = new QGraphicsDropShadowEffect(this);
-        e->setColor(QColor(0, 0, 0, 255 * 8 / 10));
+        e->setColor(QColor(0, 0, 0, 255 * 2 / 10));
         e->setOffset(0, 2);
         e->setBlurRadius(4);
         setGraphicsEffect(e);
