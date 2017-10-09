@@ -215,17 +215,26 @@ QPixmap MakeRoundedPixmap(QSize sz, QPixmap pm, qreal rx, qreal ry, qint64 time)
     p.setClipPath(path);
     p.drawPixmap(1, 1, pm);
 
-    p.setPen(Qt::white);
     QFont ft;
     ft.setPixelSize(12);
     ft.setWeight(QFont::Medium);
     p.setFont(ft);
+    //p.setPen(Qt::white);
 
     auto tm_str = QTime(0, 0, 0).addSecs(time).toString("hh:mm:ss");
-    QRect bounding = p.fontMetrics().boundingRect(tm_str);
+    QRect bounding = QFontMetrics(ft).boundingRect(tm_str);
     bounding.moveTopLeft({dest.width() - 5 - bounding.width(),
             dest.height() - 5 - bounding.height()});
-    p.drawText(bounding, tm_str);
+
+    p.setCompositionMode(QPainter::CompositionMode_SourceOver);
+
+    QPainterPath pp;
+    pp.addText(bounding.bottomLeft(), ft, tm_str);
+    p.setPen(QColor(48, 48, 48));
+    p.setBrush(Qt::white);
+    p.drawPath(pp);
+
+    //p.drawText(bounding, tm_str);
 
     return dest;
 }

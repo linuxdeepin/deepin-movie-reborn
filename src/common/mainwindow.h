@@ -120,6 +120,7 @@ private:
     bool isActionAllowed(ActionFactory::ActionKind kd, bool fromUI, bool isShortcut);
     QString probeCdromDevice();
     void updateWindowTitle();
+    void toggleShapeMask();
 
 private:
     DTitlebar *_titlebar {nullptr};

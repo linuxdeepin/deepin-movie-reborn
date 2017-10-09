@@ -89,6 +89,7 @@ void Titlebar::paintEvent(QPaintEvent *)
 
     auto titleBarHeight = this->height();
     QRectF r = rect();
+    p.fillRect(r, Qt::transparent);
 
     QRectF topLeftRect(r.topLeft(), QSize(2 * radius, 2 * radius));
     QRectF topRightRect(QPoint(r.right() - 2 * radius, r.y()),
