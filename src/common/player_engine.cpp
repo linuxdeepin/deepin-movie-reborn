@@ -629,21 +629,24 @@ void PlayerEngine::changeSoundMode(Backend::SoundMode sm)
 
 void PlayerEngine::resizeEvent(QResizeEvent* re)
 {
-#if 1
+    bool rounded = !window()->isFullScreen() && !window()->isMaximized();
+
 #ifndef USE_DXCB
-    QPixmap shape(size());
-    shape.fill(Qt::transparent);
+    if (rounded) {
+        QPixmap shape(size());
+        shape.fill(Qt::transparent);
 
-    QPainter p(&shape);
-    QPainterPath pp;
-    pp.addRoundedRect(rect(), RADIUS, RADIUS);
-    p.fillPath(pp, QBrush(Qt::white));
-    p.end();
+        QPainter p(&shape);
+        QPainterPath pp;
+        pp.addRoundedRect(rect(), RADIUS, RADIUS);
+        p.fillPath(pp, QBrush(Qt::white));
+        p.end();
 
-    setMask(shape.mask());
+        setMask(shape.mask());
+    } else {
+        clearMask();
+    }
 #endif
-#endif
-
 }
 
 } // end of namespace dmr
