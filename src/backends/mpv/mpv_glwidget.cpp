@@ -194,6 +194,11 @@ namespace dmr {
         _glProgBlend->release();
         _vaoBlend.release();
 
+        connect(window()->windowHandle(), &QWindow::windowStateChanged, [=]() {
+                makeCurrent();
+                updateBlendMask();
+                update();
+        });
 
         if (mpv_opengl_cb_init_gl(_gl_ctx, NULL, get_proc_address, NULL) < 0)
             throw std::runtime_error("could not initialize OpenGL");
@@ -201,13 +206,18 @@ namespace dmr {
 
     void MpvGLWidget::updateBlendMask()
     {
+        bool rounded = !window()->isFullScreen() && !window()->isMaximized();
+
         QImage img(size(), QImage::Format_ARGB32);
         img.fill(0);
         QPainter p(&img);
         p.setRenderHint(QPainter::Antialiasing);
         QPainterPath pp;
         auto d = 0.0f;
-        pp.addRoundedRect(rect(), RADIUS+d, RADIUS+d);
+        if (rounded)
+            pp.addRoundedRect(rect(), RADIUS+d, RADIUS+d);
+        else
+            pp.addRect(rect());
         p.fillPath(pp, Qt::white);
         p.end();
 

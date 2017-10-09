@@ -532,10 +532,9 @@ MainWindow::MainWindow(QWidget *parent)
     _progIndicator = new MovieProgressIndicator(this);
     _progIndicator->setVisible(false);
     connect(windowHandle(), &QWindow::windowStateChanged, [=]() {
-        bool isFullscreen = isFullScreen();
         Qt::WindowFlags hint = Qt::WindowCloseButtonHint | Qt::WindowTitleHint |
             Qt::WindowSystemMenuHint;
-        if (!isFullscreen) {
+        if (!isFullScreen()) {
             hint |= Qt::WindowMaximizeButtonHint | Qt::WindowMinimizeButtonHint;
             qApp->restoreOverrideCursor();
             if (_lastCookie >= 0) utils::UnInhibitStandby(_lastCookie);
@@ -548,8 +547,16 @@ MainWindow::MainWindow(QWidget *parent)
         _titlebar->setWindowFlags(hint);
         //WTF: this->geometry() is not size of fullscreen !
         //_progIndicator->move(geometry().width() - _progIndicator->width() - 18, 14);
-        _progIndicator->setVisible(isFullscreen);
+        _progIndicator->setVisible(isFullScreen());
         toggleShapeMask();
+
+        if (isFullScreen()) {
+            _titlebar->move(0, 0);
+            _engine->move(0, 0);
+        } else {
+            _titlebar->move(1, 1);
+            _engine->move(1, 1);
+        }
         update();
     });
     connect(_engine, &PlayerEngine::elapsedChanged, [=]() {
@@ -1656,6 +1663,7 @@ void MainWindow::updateProxyGeometry()
 
     // leave one pixel for border
     auto view_rect = rect().marginsRemoved(QMargins(1, 1, 1, 1));
+    if (isFullScreen()) view_rect = rect();
     _engine->resize(view_rect.size());
 
     if (!_miniMode) {
@@ -1665,6 +1673,9 @@ void MainWindow::updateProxyGeometry()
 
         if (_toolbox) {
             QRect r(1, height() - TOOLBOX_HEIGHT - 1, view_rect.width(), TOOLBOX_HEIGHT);
+            if (isFullScreen()) {
+                r.moveTopLeft({0, height() - TOOLBOX_HEIGHT});
+            }
             _toolbox->setGeometry(r);
         }
 
@@ -2022,15 +2033,6 @@ void MainWindow::paintEvent(QPaintEvent* pe)
     bool rounded = !isFullScreen() && !isMaximized();
 
     p.fillRect(rect(), Qt::transparent);
-    {
-        QPainterPath pp;
-        if (rounded)
-            pp.addRoundedRect(rect(), RADIUS, RADIUS);
-        else
-            pp.addRect(rect());
-        //p.fillPath(pp, QColor(0, 0, 0, light ? 255 * 0.1: 255));
-        p.strokePath(pp, QColor(0, 0, 0, light ? 255 * 0.1: 255));
-    }
 
     auto bg_clr = QColor(16, 16, 16);
     QImage bg = bg_dark;
@@ -2039,16 +2041,25 @@ void MainWindow::paintEvent(QPaintEvent* pe)
         bg_clr = QColor(252, 252, 252);
     }
 
-    /* we supposed to draw by qss background-color here, but it's conflict with 
-     * border area (border has alpha, which blends with background-color.
-     */
-    auto view_rect = rect().marginsRemoved(QMargins(1, 1, 1, 1));
-    QPainterPath pp;
-    if (rounded)
-        pp.addRoundedRect(view_rect, RADIUS, RADIUS);
-    else 
-        pp.addRect(view_rect);
-    p.fillPath(pp, bg_clr);
+    if (rounded) {
+        QPainterPath pp;
+        pp.addRoundedRect(rect(), RADIUS, RADIUS);
+        p.fillPath(pp, QColor(0, 0, 0, light ? 255 * 0.1: 255));
+
+        {
+            /* we supposed to draw by qss background-color here, but it's conflict with 
+             * border area (border has alpha, which blends with background-color.
+             */
+            auto view_rect = rect().marginsRemoved(QMargins(1, 1, 1, 1));
+            QPainterPath pp;
+            pp.addRoundedRect(view_rect, RADIUS, RADIUS);
+            p.fillPath(pp, bg_clr);
+        }
+    } else {
+        QPainterPath pp;
+        pp.addRect(rect());
+        p.fillPath(pp, bg_clr);
+    }
 
     auto pt = rect().center() - QPoint(bg.width()/2, bg.height()/2);
     p.drawImage(pt, bg);
