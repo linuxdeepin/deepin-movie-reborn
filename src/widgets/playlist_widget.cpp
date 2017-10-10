@@ -510,8 +510,6 @@ void PlaylistWidget::contextMenuEvent(QContextMenuEvent *cme)
         on_item = true;
     }
 
-    updateItemStates();
-
     auto piw = dynamic_cast<PlayItemWidget*>(_mouseItem);
     auto menu = ActionFactory::get().playlistContextMenu();
     for (auto act: menu->actions()) {
