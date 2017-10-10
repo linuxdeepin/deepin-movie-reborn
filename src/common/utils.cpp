@@ -272,5 +272,12 @@ void MoveToCenter(QWidget* w)
     w->move(r.center() - w->rect().center());
 }
 
+QString Time2str(qint64 seconds)
+{
+    QTime d(0, 0, 0);
+    d = d.addSecs(seconds);
+    return d.toString("hh:mm:ss");
+}
+
 }
 }

@@ -182,17 +182,21 @@ void MpvProxy::setState(PlayState s)
 
 void MpvProxy::pollingEndOfPlayback()
 {
-    if (_state != Backend::Stopped) stop();
+    if (_state != Backend::Stopped) {
+        //this->blockSignals(true);
+        stop();
 
-    while (_state != Backend::Stopped) {
-        mpv_event* ev = mpv_wait_event(_handle, 0.005);
-        if (ev->event_id == MPV_EVENT_NONE) 
-            continue;
+        while (_state != Backend::Stopped) {
+            mpv_event* ev = mpv_wait_event(_handle, 0.005);
+            if (ev->event_id == MPV_EVENT_NONE) 
+                continue;
 
-        if (ev->event_id == MPV_EVENT_END_FILE) {
-            qDebug() << "end of playback";
-            setState(Backend::Stopped);
-            break;
+            if (ev->event_id == MPV_EVENT_END_FILE) {
+                qDebug() << "end of playback";
+                //this->blockSignals(false);
+                setState(Backend::Stopped);
+                break;
+            }
         }
     }
 }
