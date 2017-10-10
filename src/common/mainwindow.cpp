@@ -1538,7 +1538,8 @@ void MainWindow::onBurstScreenshot(const QImage& frame, qint64 timestamp)
 
         if (frame.isNull()) {
             _burstShoots.clear();
-            _engine->pauseResume();
+            if (!_pausedBeforeBurst)
+                _engine->pauseResume();
             return;
         }
 
@@ -1548,7 +1549,8 @@ void MainWindow::onBurstScreenshot(const QImage& frame, qint64 timestamp)
         qDebug() << "BurstScreenshot done";
 
         _burstShoots.clear();
-        _engine->pauseResume();
+        if (!_pausedBeforeBurst)
+            _engine->pauseResume();
 
         if (ret == QDialog::Accepted) {
             auto poster_path = bsd.savedPosterPath();
@@ -1568,6 +1570,8 @@ void MainWindow::startBurstShooting()
     _inBurstShootMode = true;
     _toolbox->setEnabled(false);
     _listener->setEnabled(false);
+
+    _pausedBeforeBurst = _engine->paused();
 
     connect(_engine, &PlayerEngine::notifyScreenshot, this, &MainWindow::onBurstScreenshot);
     _engine->burstScreenshot();

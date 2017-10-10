@@ -82,35 +82,40 @@ BurstScreenshotsDialog::BurstScreenshotsDialog(const PlayItemInfo& pif)
     bl->setContentsMargins(0, 13, 0, 0);
     bl->addStretch(1);
 
-    _saveBtn = new DTextButton(tr("save"));
+    _saveBtn = new QPushButton(tr("save"));
+    _saveBtn->setObjectName("SaveBtn");
     connect(_saveBtn, &QPushButton::clicked, this, &BurstScreenshotsDialog::savePoster);
     _saveBtn->setFixedSize(61, 24);
 
     QString addition = R"(
-    Dtk--Widget--DTextButton {
-        line-height: 1;
+    QPushButton#SaveBtn {
         font-size: 12px;
-        color: #0599ff;
-        font-weight: 500;
-        text-align: center;
-
-        border: 1px solid rgba(0, 132, 255, 0.4);
+        color: #2ca7f8;
+        border: 1px solid #2ca7f8;
         border-radius: 4px;
-
-        outline: none;
-        background-color:transparent;
+        background: qlineargradient(x1: 0, y1: 0 x2: 0, y2: 1, stop:0 rgba(255, 255, 255, 0.4), stop:1 rgba(253, 253, 253, 0.4));
     }
 
-
-    Dtk--Widget--DTextButton:hover {
-        background-color: rgba(0, 132, 255, 0.4);
+    QPushButton#SaveBtn:hover {
+        background: qlineargradient(x1: 0, y1: 0 x2: 0, y2: 1, stop:0 "#8ccfff", stop:1 "#4bb8ff");
+        color: "#fff";
+        border: 1px solid rgba(0, 117, 243, 0.2);
     }
 
-    Dtk--Widget--DTextButton:pressed {
-        background-color: rgba(0, 132, 255, 0.5);
+    QPushButton#SaveBtn:pressed {
+        background: qlineargradient(x1: 0, y1: 0 x2: 0, y2: 1, stop:0 "#0b8cff", stop:1 "#0aa1ff");
+        color: "#fff";
+        border: 1px solid rgba(29, 129, 255, 0.3);
+    }
+
+    QPushButton#SaveBtn:disabled {
+        background: qlineargradient(x1: 0, y1: 0 x2: 0, y2: 1, stop:0 rgba(255, 255, 255, 0.4), stop:1 rgba(253, 253, 253, 0.4));
+        color: "#AEAEAE";
+        border: 1px solid rgba(0,0,0,0.04);
     }
     )";
-    auto qss = DThemeManager::instance()->getQssForWidget("DTextButton", "light");
+    _saveBtn->setDefault(true);
+    //auto qss = DThemeManager::instance()->getQssForWidget("DTextButton", "light");
     _saveBtn->setStyleSheet(addition);
 
     bl->addWidget(_saveBtn);
