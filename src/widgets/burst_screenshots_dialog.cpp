@@ -115,7 +115,6 @@ BurstScreenshotsDialog::BurstScreenshotsDialog(const PlayItemInfo& pif)
     }
     )";
     _saveBtn->setDefault(true);
-    //auto qss = DThemeManager::instance()->getQssForWidget("DTextButton", "light");
     _saveBtn->setStyleSheet(addition);
 
     bl->addWidget(_saveBtn);
