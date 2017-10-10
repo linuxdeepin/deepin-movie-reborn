@@ -148,6 +148,8 @@ void PlayerEngine::updateSubStyles()
     auto sz = Settings::get().settings()->option("subtitle.font.size")->value().toInt();
 
     if (state() != CoreState::Idle) {
+        if (_playlist->current() < 0) return;
+
         double scale = _playlist->currentInfo().mi.height / 720.0;
         sz = sz / scale;
         qDebug() << "update sub " << font << sz;
@@ -184,6 +186,27 @@ void PlayerEngine::onBackendStateChanged()
         emit stateChanged();
 }
 
+PlayerEngine::CoreState PlayerEngine::state()
+{
+    auto old = _state;
+    switch (_current->state()) {
+        case Backend::PlayState::Playing:
+            _state = CoreState::Playing;
+            break;
+        case Backend::PlayState::Paused:
+            _state = CoreState::Paused;
+            break;
+        case Backend::PlayState::Stopped:
+            _state = CoreState::Idle;
+            break;
+    }
+
+    if (old != _state) {
+        qDebug() << "----------########### mismatch" << old << _state;
+    }
+    return _state;
+}
+
 const PlayingMovieInfo& PlayerEngine::playingMovieInfo()
 {
     static PlayingMovieInfo empty;
@@ -192,7 +215,7 @@ const PlayingMovieInfo& PlayerEngine::playingMovieInfo()
     return _current->playingMovieInfo();
 }
 
-int PlayerEngine::aid() const
+int PlayerEngine::aid()
 {
     if (state() == CoreState::Idle) { return 0; }
     if (!_current) return 0;
@@ -200,7 +223,7 @@ int PlayerEngine::aid() const
     return _current->aid();
 }
 
-int PlayerEngine::sid() const
+int PlayerEngine::sid()
 {
     if (state() == CoreState::Idle) { return 0; }
     if (!_current) return 0;
@@ -403,14 +426,20 @@ void PlayerEngine::play()
 
 void PlayerEngine::prev()
 {
+    if (_playingRequest) return;
+    _playingRequest = true;
     savePreviousMovieState();
     _playlist->playPrev(true);
+    _playingRequest = false;
 }
 
 void PlayerEngine::next()
 {
+    if (_playingRequest) return;
+    _playingRequest = true;
     savePreviousMovieState();
     _playlist->playNext(true);
+    _playingRequest = false;
 }
 
 void PlayerEngine::onPlaylistAsyncAppendFinished(const QList<PlayItemInfo>& pil)

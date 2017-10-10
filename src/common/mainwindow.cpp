@@ -62,7 +62,7 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
     le->setText(option->value().toString());
     le->setMaxLength(255);
 
-    le->setIconVisible(true);
+    //le->setIconVisible(true);
     le->setNormalIcon(":resources/icons/select-normal.png");
     le->setHoverIcon(":resources/icons/select-hover.png");
     le->setPressIcon(":resources/icons/select-press.png");

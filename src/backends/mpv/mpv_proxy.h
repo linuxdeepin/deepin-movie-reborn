@@ -100,6 +100,8 @@ private:
     PlayingMovieInfo _pmf;
     int _videoRotation {0};
 
+    bool _polling {false};
+
     bool _externalSubJustLoaded {false};
 
     mpv_handle* mpv_init();
