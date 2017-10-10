@@ -40,7 +40,7 @@ public slots:
 
 private:
     QGridLayout *_grid {nullptr};
-    DTextButton *_saveBtn {nullptr};
+    QPushButton *_saveBtn {nullptr};
     QList<QPair<QImage, qint64>> _thumbs;
     QString _posterPath;
 };

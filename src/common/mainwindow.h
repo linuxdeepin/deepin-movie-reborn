@@ -132,6 +132,7 @@ private:
 
     QList<QPair<QImage, qint64>> _burstShoots;
     bool _inBurstShootMode {false};
+    bool _pausedBeforeBurst {false};
 
     DImageButton *_miniPlayBtn {nullptr};
     DImageButton *_miniCloseBtn {nullptr};
