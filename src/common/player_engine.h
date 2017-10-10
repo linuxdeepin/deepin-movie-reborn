@@ -76,7 +76,7 @@ public:
     const struct MovieInfo& movieInfo(); 
 
     bool paused();
-    CoreState state() const { return _state; }
+    CoreState state();
     const PlayingMovieInfo& playingMovieInfo();
     void setPlaySpeed(double times);
 
@@ -85,7 +85,7 @@ public:
     void toggleSubtitle();
     bool isSubVisible();
     void selectSubtitle(int id); // id into PlayingMovieInfo.subs
-    int sid() const;
+    int sid();
     void setSubDelay(double secs);
     double subDelay() const;
     void updateSubStyle(const QString& font, int sz);
@@ -94,7 +94,7 @@ public:
     void addSubSearchPath(const QString& path);
 
     void selectTrack(int id); // id into PlayingMovieInfo.audios
-    int aid() const;
+    int aid();
 
     void changeSoundMode(Backend::SoundMode sm);
     int volume() const;
@@ -161,6 +161,8 @@ protected:
     Backend *_current {nullptr};
 
     QUrl _pendingPlayReq;
+
+    bool _playingRequest {false};
 
     QList<QUrl> collectPlayFiles(const QList<QUrl>& urls);
     QList<QUrl> collectPlayDir(const QDir& dir);

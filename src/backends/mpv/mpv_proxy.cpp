@@ -180,11 +180,20 @@ void MpvProxy::setState(PlayState s)
     }
 }
 
+
 void MpvProxy::pollingEndOfPlayback()
 {
     if (_state != Backend::Stopped) {
-        //this->blockSignals(true);
+        _polling = true;
+        blockSignals(true);
         stop();
+        //auto idle = get_property(_handle, "idle-active").toBool();
+        //if (idle) {
+            //setState(Backend::Stopped);
+            //blockSignals(false);
+            //_polling = false;
+            //return;
+        //}
 
         while (_state != Backend::Stopped) {
             mpv_event* ev = mpv_wait_event(_handle, 0.005);
@@ -193,29 +202,34 @@ void MpvProxy::pollingEndOfPlayback()
 
             if (ev->event_id == MPV_EVENT_END_FILE) {
                 qDebug() << "end of playback";
-                //this->blockSignals(false);
                 setState(Backend::Stopped);
                 break;
             }
         }
+        blockSignals(false);
+
+        _polling = false;
     }
 }
 
 void MpvProxy::pollingStartOfPlayback()
 {
-    if (_state != Backend::PlayState::Stopped)
-        return;
+    if (_state == Backend::PlayState::Stopped) {
+        _polling = true;
 
-    while (_state == Backend::Stopped) {
-        mpv_event* ev = mpv_wait_event(_handle, 0.005);
-        if (ev->event_id == MPV_EVENT_NONE) 
-            continue;
+        while (_state == Backend::Stopped) {
+            mpv_event* ev = mpv_wait_event(_handle, 0.005);
+            if (ev->event_id == MPV_EVENT_NONE) 
+                continue;
 
-        if (ev->event_id == MPV_EVENT_FILE_LOADED) {
-            qDebug() << "start of playback";
-            setState(Backend::Playing);
-            break;
+            if (ev->event_id == MPV_EVENT_FILE_LOADED) {
+                qDebug() << "start of playback";
+                setState(Backend::Playing);
+                break;
+            }
         }
+
+        _polling = false;
     }
 }
 
@@ -267,12 +281,15 @@ void MpvProxy::handle_mpv_events()
                 emit fileLoaded();
                 break;
 
-            case MPV_EVENT_END_FILE:
-                qDebug() << mpv_event_name(ev->event_id);
+            case MPV_EVENT_END_FILE: {
                 MovieConfiguration::get().updateUrl(this->_file,
                         ConfigKnownKey::StartPos, 0);
+                mpv_event_end_file *ev_ef = (mpv_event_end_file*)ev->data;
+                qDebug() << mpv_event_name(ev->event_id) << 
+                    "reason " << ev_ef->reason;
                 setState(PlayState::Stopped);
                 break;
+            }
 
             case MPV_EVENT_IDLE:
                 qDebug() << mpv_event_name(ev->event_id);

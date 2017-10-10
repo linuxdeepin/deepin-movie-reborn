@@ -297,6 +297,7 @@ void PlaylistModel::clear()
 {
     _infos.clear();
     _engine->stop();
+    _engine->waitLastEnd();
 
     _current = -1;
     _last = -1;
@@ -750,8 +751,14 @@ void PlaylistModel::switchPosition(int p1, int p2)
 
 PlayItemInfo& PlaylistModel::currentInfo()
 {
-    Q_ASSERT (_infos.size() > 0 && _current >= 0);
-    return _infos[_current];
+    //Q_ASSERT (_infos.size() > 0 && _current >= 0);
+    Q_ASSERT (_infos.size() > 0);
+    
+    if (_current >= 0)
+        return _infos[_current];
+    if (_last >= 0)
+        return _infos[_last];
+    return _infos[0];
 }
 
 const PlayItemInfo& PlaylistModel::currentInfo() const
