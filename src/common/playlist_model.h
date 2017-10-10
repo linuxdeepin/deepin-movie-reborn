@@ -5,6 +5,8 @@
 #include <QtConcurrent>
 #include <libffmpegthumbnailer/videothumbnailer.h>
 
+#include "utils.h"
+
 namespace dmr {
 using namespace ffmpegthumbnailer;
 class PlayerEngine;
@@ -24,9 +26,7 @@ struct MovieInfo {
 
     static struct MovieInfo parseFromFile(const QFileInfo& fi, bool *ok = nullptr);
     QString durationStr() const {
-        QTime d(0, 0, 0);
-        d = d.addSecs(duration);
-        return d.toString("hh:mm:ss");
+        return utils::Time2str(duration);
     }
 
     QString sizeStr() const {

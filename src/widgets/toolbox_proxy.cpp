@@ -851,13 +851,12 @@ void ToolboxProxy::updateTimeInfo(qint64 duration, qint64 pos)
         _timeLabel->setText("");
 
     } else {
-        auto fn = [](qint64 d) -> QString {
-            QTime t(0, 0, 0);
-            t = t.addSecs(d);
-            return t.toString("hh:mm:ss");
-        };
-
-        _timeLabel->setText(QString("%2/%1").arg(fn(duration)).arg(fn(pos)));
+        //mpv returns a slightly different duration from movieinfo.duration
+        //_timeLabel->setText(QString("%2/%1").arg(utils::Time2str(duration))
+                //.arg(utils::Time2str(pos)));
+        _timeLabel->setText(QString("%2/%1")
+                .arg(_engine->playlist().currentInfo().mi.durationStr())
+                .arg(utils::Time2str(pos)));
     }
 }
 

@@ -19,6 +19,8 @@ namespace utils {
     void UnInhibitStandby(int cookie);
 
     void MoveToCenter(QWidget* w);
+
+    QString Time2str(qint64 seconds);
 }
 }
 
