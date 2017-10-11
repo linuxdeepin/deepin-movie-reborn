@@ -296,7 +296,6 @@ void PlaylistModel::reshuffle()
 void PlaylistModel::clear()
 {
     _infos.clear();
-    _engine->stop();
     _engine->waitLastEnd();
 
     _current = -1;
@@ -320,7 +319,6 @@ void PlaylistModel::remove(int pos)
         if (_current == pos) {
             _last = _current;
             _current = -1;
-            _engine->stop();
             _engine->waitLastEnd();
 
         } else if (pos < _current) {
@@ -401,7 +399,7 @@ void PlaylistModel::playNext(bool fromUser)
                         _last = _current;
                         tryPlayCurrent(true);
                     } else {
-                        _engine->stop();
+                        _engine->waitLastEnd();
                     }
                 }
             } else {
@@ -496,7 +494,7 @@ void PlaylistModel::playPrev(bool fromUser)
                         _last = _current;
                         tryPlayCurrent(false);
                     } else {
-                        _engine->stop();
+                        _engine->waitLastEnd();
                     }
                 }
             } else {

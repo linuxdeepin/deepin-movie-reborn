@@ -187,13 +187,13 @@ void MpvProxy::pollingEndOfPlayback()
         _polling = true;
         blockSignals(true);
         stop();
-        //auto idle = get_property(_handle, "idle-active").toBool();
-        //if (idle) {
-            //setState(Backend::Stopped);
-            //blockSignals(false);
-            //_polling = false;
-            //return;
-        //}
+        auto idle = get_property(_handle, "idle-active").toBool();
+        if (idle) {
+            blockSignals(false);
+            setState(Backend::Stopped);
+            _polling = false;
+            return;
+        }
 
         while (_state != Backend::Stopped) {
             mpv_event* ev = mpv_wait_event(_handle, 0.005);
@@ -202,11 +202,11 @@ void MpvProxy::pollingEndOfPlayback()
 
             if (ev->event_id == MPV_EVENT_END_FILE) {
                 qDebug() << "end of playback";
+                blockSignals(false);
                 setState(Backend::Stopped);
                 break;
             }
         }
-        blockSignals(false);
 
         _polling = false;
     }
