@@ -29,7 +29,6 @@
 #include <dinputdialog.h>
 #include <dimagebutton.h>
 #include <DWidgetUtil>
-#include <DSettingsWidgetFactory>
 #include <dlineedit.h>
 
 #define AUTOHIDE_TIMEOUT 2000
@@ -51,69 +50,6 @@ static void workaround_updateStyle(QWidget *parent, const QString &theme)
     }
 }
 
-
-static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
-{
-    auto option = qobject_cast<DTK_CORE_NAMESPACE::DSettingsOption *>(opt);
-
-    auto le = new DLineEdit();
-    le->setFixedHeight(24);
-    le->setObjectName("OptionSelectableLineEdit");
-    le->setText(option->value().toString());
-    le->setMaxLength(255);
-
-    //le->setIconVisible(true);
-    le->setNormalIcon(":resources/icons/select-normal.png");
-    le->setHoverIcon(":resources/icons/select-hover.png");
-    le->setPressIcon(":resources/icons/select-press.png");
-
-    auto optionWidget = DSettingsWidgetFactory::createTwoColumWidget(option, le);
-    auto validate = [=](QString name) -> bool {
-        name = name.trimmed();
-        if (name.isEmpty()) return false;
-
-        if (name.size() && name[0] == '~') {
-            name.replace(0, 1, QDir::homePath());
-        }
-
-        QFileInfo fi(name);
-        if (fi.exists()) {
-            if (!fi.isDir()) {
-                le->showAlertMessage(QObject::tr("Invalid folder"));
-                return false;
-            }
-
-            if (!fi.isReadable()) {
-                le->showAlertMessage(QObject::tr("You don't have permission to operate this folder"));
-                return false;
-            }
-        }
-
-        return true;
-    };
-
-    option->connect(le, &DLineEdit::iconClicked, [=]() {
-        QString name = QFileDialog::getExistingDirectory(0, QObject::tr("Open Folder"),
-                QDir::currentPath(),
-                QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
-        if (validate(name)) {
-            option->setValue(name);
-        }
-    });
-
-    option->connect(le, &QLineEdit::editingFinished, option, [=]() {
-        if (validate(le->text())) {
-            option->setValue(le->text());
-        }
-    });
-
-    option->connect(option, &DTK_CORE_NAMESPACE::DSettingsOption::valueChanged, le, 
-        [ = ](const QVariant & value) {
-            le->setText(value.toString());
-        });
-
-    return  optionWidget;
-}
 
 class MainWindowFocusMonitor: public QAbstractNativeEventFilter {
 public:
@@ -1580,7 +1516,6 @@ void MainWindow::startBurstShooting()
 void MainWindow::handleSettings()
 {
     auto dsd = new DSettingsDialog(this);
-    dsd->widgetFactory()->registerWidget("selectableEdit", createSelectableLineEditOptionHandle);
 
     dsd->setProperty("_d_QSSThemename", "dark");
     dsd->setProperty("_d_QSSFilename", "DSettingsDialog");
