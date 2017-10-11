@@ -79,7 +79,7 @@
                         {
                             "key": "location",
                             "name": "Path",
-                            "type": "lineedit",
+                            "type": "selectableEdit",
                             "default": "~/Pictures/DMovie"
                         }
                     ]
