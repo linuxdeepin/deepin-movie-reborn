@@ -147,7 +147,7 @@ void PlayerEngine::updateSubStyles()
     auto font = font_opt->data("items").toStringList()[font_id];
     auto sz = Settings::get().settings()->option("subtitle.font.size")->value().toInt();
 
-    if (state() != CoreState::Idle) {
+    if (_state != CoreState::Idle) {
         if (_playlist->current() < 0) return;
 
         double scale = _playlist->currentInfo().mi.height / 720.0;
@@ -202,7 +202,8 @@ PlayerEngine::CoreState PlayerEngine::state()
     }
 
     if (old != _state) {
-        qDebug() << "----------########### mismatch" << old << _state;
+        qWarning() << "###### state mismatch" << old << _state;
+        emit stateChanged();
     }
     return _state;
 }
