@@ -37,6 +37,7 @@ public:
     virtual ~Backend() {}
 
     virtual void setPlayFile(const QUrl& url) { _file = url; }
+    virtual void setDVDDevice(const QString& path) { _dvdDevice = path; }
 
     // NOTE: need to check if file is playable by this backend, 
     // this is important especially for vpu
@@ -114,6 +115,7 @@ public slots:
 
 protected:
     PlayState _state { PlayState::Stopped };
+    QString _dvdDevice {"/dev/sr0"};
     QUrl _file;
 };
 }

@@ -28,8 +28,9 @@ CommandLineManager::CommandLineManager()
 #if ENABLE_VPU_PLATFORM
         {"frames", ("play only count number of frames"), "count", "0"},
         {"gal", ("use gal or not"), "bool", "on"},
-#endif
         {"vpudemo", ("play in vpu demo mode")},
+#endif
+        {"dvd-device", ("specify dvd playing device or file"), "device", "/dev/sr0"},
     });
 }
 
@@ -67,6 +68,15 @@ bool CommandLineManager::useGAL() const
 bool CommandLineManager::vpuDemoMode() const
 {
     return this->isSet("vpudemo");
+}
+
+QString CommandLineManager::dvdDevice() const
+{
+    if (this->isSet("dvd-device")) {
+        return this->value("dvd-device").trimmed();
+    }
+
+    return "";
 }
 
 }

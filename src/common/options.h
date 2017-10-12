@@ -17,6 +17,8 @@ public:
     bool useGAL() const;
     bool vpuDemoMode() const;
 
+    QString dvdDevice() const;
+
 private:
     CommandLineManager();
 };

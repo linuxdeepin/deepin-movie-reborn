@@ -15,6 +15,7 @@
 #include "player_engine.h"
 #include "url_dialog.h"
 #include "movie_progress_indicator.h"
+#include "options.h"
 #include "titlebar.h"
 #include "utils.h"
 
@@ -62,12 +63,14 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
     le->setText(option->value().toString());
     le->setMaxLength(255);
 
-    //le->setIconVisible(true);
+    le->setIconVisible(true);
     le->setNormalIcon(":resources/icons/select-normal.png");
     le->setHoverIcon(":resources/icons/select-hover.png");
     le->setPressIcon(":resources/icons/select-press.png");
 
     auto optionWidget = DSettingsWidgetFactory::createTwoColumWidget(option, le);
+    workaround_updateStyle(optionWidget, "dlight");
+
     auto validate = [=](QString name) -> bool {
         name = name.trimmed();
         if (name.isEmpty()) return false;
@@ -83,7 +86,7 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
                 return false;
             }
 
-            if (!fi.isReadable()) {
+            if (!fi.isReadable() || !fi.isWritable()) {
                 le->showAlertMessage(QObject::tr("You don't have permission to operate this folder"));
                 return false;
             }
@@ -1053,13 +1056,18 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             break;
 
         case ActionFactory::ActionKind::OpenCdrom: {
-            QString dev = probeCdromDevice();
+            auto dev = dmr::CommandLineManager::get().dvdDevice();
+            if (dev.isEmpty()) {
+                dev = probeCdromDevice();
+            }
             if (dev.isEmpty()) {
                 _nwComm->updateWithMessage(tr("No device found"));
                 break;
             }
+            _engine->setDVDDevice(dev);
             //FIXME: how to tell if it's bluray
-            QUrl url(QString("dvd://%1").arg(dev));
+            QUrl url(QString("dvdnav:///%1").arg(dev));
+            //QUrl url(QString("dvdnav://"));
             play(url);
             break;
         }
