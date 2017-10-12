@@ -611,6 +611,10 @@ void MpvProxy::play()
         opts << QString("sub-delay=%1").arg(cfg[key].toDouble());
     }
 
+    if (!_dvdDevice.isEmpty()) {
+        opts << QString("dvd-device=%1").arg(_dvdDevice);
+    }
+
     if (opts.size()) {
         //opts << "sub-auto=fuzzy";
         args << "replace" << opts.join(',');

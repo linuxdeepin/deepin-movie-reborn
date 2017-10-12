@@ -540,6 +540,12 @@ void PlayerEngine::seekAbsolute(int pos)
     _current->seekAbsolute(pos);
 }
 
+void PlayerEngine::setDVDDevice(const QString& path)
+{
+    if (!_current) { return; }
+    _current->setDVDDevice(path);
+}
+
 bool PlayerEngine::addPlayFile(const QUrl& url)
 {
     if (isPlayableFile(url)) {
