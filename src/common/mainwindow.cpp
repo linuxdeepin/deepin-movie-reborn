@@ -1924,7 +1924,7 @@ void MainWindow::updateWindowTitle()
 {
     if (_engine->state() != PlayerEngine::Idle) {
         const auto& mi = _engine->playlist().currentInfo().mi;
-        auto title = _titlebar->fontMetrics().elidedText(QFileInfo(mi.filePath).fileName(),
+        auto title = _titlebar->fontMetrics().elidedText(mi.title,
                 Qt::ElideMiddle, _titlebar->contentsRect().width() - 300);
         _titlebar->setTitle(title);
     } else {

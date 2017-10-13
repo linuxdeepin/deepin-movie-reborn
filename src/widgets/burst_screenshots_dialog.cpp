@@ -38,7 +38,7 @@ BurstScreenshotsDialog::BurstScreenshotsDialog(const PlayItemInfo& pif)
     hl->addLayout(trl, 1);
 
     auto *nm = new QLabel(this);
-    nm->setText(nm->fontMetrics().elidedText(QFileInfo(mi.filePath).fileName(), Qt::ElideMiddle, 480));
+    nm->setText(nm->fontMetrics().elidedText(mi.title, Qt::ElideMiddle, 480));
     nm->setStyleSheet("color: #303030; font-size: 14px;");
     trl->addWidget(nm);
 

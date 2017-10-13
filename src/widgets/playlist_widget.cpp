@@ -91,6 +91,8 @@ public:
     void updateInfo(const PlayItemInfo& pif) {
         _pif = pif;
         _time->setText(_pif.mi.durationStr());
+        updateNameText();
+
         if (!_pif.valid) {
             setState(ItemState::Invalid);
             _time->setText(tr("File does not exist"));
@@ -263,24 +265,20 @@ protected:
         return str;
     }
 
-    void showEvent(QShowEvent *se) override
+    void updateNameText() 
     {
-        QString msg = _pif.url.fileName();
-        if (!_pif.url.isLocalFile() && msg.isEmpty()) {
-            if (_pif.url.scheme().startsWith("dvd")) {
-                msg = _pif.mi.title;
-                if (msg.isEmpty()) { msg = "DVD"; }
-            } else {
-                msg = _pif.url.toString();
-            }
-        }
-        _name->setText(elideText(msg, {136, 40}, QTextOption::WrapAnywhere,
+        _name->setText(elideText(_pif.mi.title, {136, 40}, QTextOption::WrapAnywhere,
                     _name->font(), Qt::ElideMiddle, 18));
         _name->viewport()->setCursor(Qt::ArrowCursor);
         _name->setCursor(Qt::ArrowCursor);
         _name->document()->setDocumentMargin(0.0);
         int text_height = _name->document()->size().height();
         _name->setFixedHeight(text_height);
+    }
+
+    void showEvent(QShowEvent *se) override
+    {
+        updateNameText();
 
         QTimer::singleShot(0, [=]() {
             auto pos = _listWidget->mapFromGlobal(QCursor::pos());
