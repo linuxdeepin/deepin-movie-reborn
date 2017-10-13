@@ -70,6 +70,11 @@ struct MovieInfo MovieInfo::parseFromFile(const QFileInfo& fi, bool *ok)
     int stream_id = -1;
     AVCodecContext *dec_ctx = NULL;
 
+    if (!fi.exists()) {
+        if (ok) *ok = false;
+        return mi;
+    }
+
     auto ret = avformat_open_input(&av_ctx, fi.filePath().toUtf8().constData(), NULL, NULL);
     if (ret < 0) {
         qWarning() << "avformat: could not open input";
@@ -153,6 +158,7 @@ PlaylistModel::PlaylistModel(PlayerEngine *e)
                     pif.mi.width = e->videoSize().width();
                     pif.mi.height = e->videoSize().height();
                     pif.mi.duration = e->duration();
+                    pif.loaded = true;
                     emit itemInfoUpdated(_current);
                 }
                 break;
@@ -241,11 +247,7 @@ void PlaylistModel::loadPlaylist()
             urls.append(url);
 
         } else {
-            PlayItemInfo pif {
-                true,
-                false,
-                url,
-            };
+            auto pif = calculatePlayInfo(url, QFileInfo());
             _infos.append(pif);
         }
     }
@@ -580,11 +582,7 @@ void PlaylistModel::appendSingle(const QUrl& url)
             });
         }
     } else {
-        PlayItemInfo pif {
-            true,
-            false,
-            url,
-        };
+        auto pif = calculatePlayInfo(url, QFileInfo());
         _infos.append(pif);
     }
 }
@@ -779,13 +777,20 @@ int PlaylistModel::current() const
 struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl& url, const QFileInfo& fi)
 {
     bool ok = false;
-    MovieInfo mi;
+    auto mi = MovieInfo::parseFromFile(fi, &ok);
     if (url.scheme().startsWith("dvd")) {
         QString dev = url.path();
         if (dev.isEmpty()) dev = "/dev/sr0";
         mi.title = dmr::dvd::RetrieveDVDTitle(dev);
-    } else {
-        mi = MovieInfo::parseFromFile(fi, &ok);
+        if (mi.title.isEmpty()) {
+            mi.title = "DVD";
+        }
+        mi.valid = true;
+    } else if (!url.isLocalFile()) {
+        QString msg = url.fileName();
+        if (msg.isEmpty()) msg = url.path();
+        mi.title = msg;
+        mi.valid = true;
     }
 
     QPixmap pm;
@@ -801,7 +806,7 @@ struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl& url, const QFil
         }
     }
 
-    PlayItemInfo pif { fi.exists(), ok, url, fi, pm, mi };
+    PlayItemInfo pif { fi.exists() || !url.isLocalFile(), ok, url, fi, pm, mi };
 
     return pif;
 }
