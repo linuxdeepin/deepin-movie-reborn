@@ -267,7 +267,12 @@ protected:
     {
         QString msg = _pif.url.fileName();
         if (!_pif.url.isLocalFile() && msg.isEmpty()) {
-            msg = _pif.url.toString();
+            if (_pif.url.scheme().startsWith("dvd")) {
+                msg = _pif.mi.title;
+                if (msg.isEmpty()) { msg = "DVD"; }
+            } else {
+                msg = _pif.url.toString();
+            }
         }
         _name->setText(elideText(msg, {136, 40}, QTextOption::WrapAnywhere,
                     _name->font(), Qt::ElideMiddle, 18));
