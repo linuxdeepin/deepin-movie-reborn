@@ -2,6 +2,7 @@
 #include "player_engine.h"
 #include "utils.h"
 #include "dmr_settings.h"
+#include "dvd_utils.h"
 
 
 #include <libffmpegthumbnailer/videothumbnailer.h>
@@ -778,7 +779,14 @@ int PlaylistModel::current() const
 struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl& url, const QFileInfo& fi)
 {
     bool ok = false;
-    auto mi = MovieInfo::parseFromFile(fi, &ok);
+    MovieInfo mi;
+    if (url.scheme().startsWith("dvd")) {
+        QString dev = url.path();
+        if (dev.isEmpty()) dev = "/dev/sr0";
+        mi.title = dmr::dvd::RetrieveDVDTitle(dev);
+    } else {
+        mi = MovieInfo::parseFromFile(fi, &ok);
+    }
 
     QPixmap pm;
     if (ok) {

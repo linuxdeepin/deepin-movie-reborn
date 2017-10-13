@@ -55,6 +55,7 @@ public:
     PlayerEngine(QWidget *parent = 0);
     virtual ~PlayerEngine();
 
+    // only the last dvd device set 
     void setDVDDevice(const QString& path);
 
     bool addPlayFile(const QUrl& url);
