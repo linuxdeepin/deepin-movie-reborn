@@ -50,7 +50,6 @@ DMRSlider::~DMRSlider()
 void DMRSlider::mouseReleaseEvent(QMouseEvent *e)
 {
     if (_down) {
-        blockSignals(false);
         emit sliderMoved(sliderPosition());
         _down = false;
         QSlider::mouseReleaseEvent(e);
@@ -74,7 +73,6 @@ void DMRSlider::mousePressEvent(QMouseEvent *e)
 {
     if (e->buttons() == Qt::LeftButton && isEnabled()) {
         QSlider::mousePressEvent(e);
-        blockSignals(true);
 
         int v = position2progress(e->pos());;
         setSliderPosition(v);
@@ -89,17 +87,17 @@ void DMRSlider::mouseMoveEvent(QMouseEvent *e)
     int v = position2progress(e->pos());;
     if (_down) {
         setSliderPosition(v);
-    }
-
-    if (_lastHoverValue != v) {
-        if (_showIndicator) {
-            _indicator->show();
-            _indicator->move(e->globalX(), mapToGlobal(pos()).y()-1);
+    } else {
+        if (_lastHoverValue != v) {
+            if (_showIndicator) {
+                _indicator->show();
+                _indicator->move(e->globalX(), mapToGlobal(pos()).y()-1);
+            }
+            emit hoverChanged(v);
         }
-        emit hoverChanged(v);
-    }
 
-    _lastHoverValue = v;
+        _lastHoverValue = v;
+    }
 }
 
 void DMRSlider::leaveEvent(QEvent *e)

@@ -769,7 +769,9 @@ void ToolboxProxy::updateMovieProgress()
     if (d != 0 && e != 0) {
         v = _progBar->maximum() * ((double)e / d);
     }
+    _progBar->blockSignals(true);
     _progBar->setValue(v);
+    _progBar->blockSignals(false);
 }
 
 void ToolboxProxy::updateButtonStates()
