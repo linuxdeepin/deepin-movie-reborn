@@ -104,15 +104,21 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
         }
     });
 
-    option->connect(le, &QLineEdit::editingFinished, option, [=]() {
+    //option->connect(le, &QLineEdit::editingFinished, option, [=]() {
+    option->connect(le, &DLineEdit::focusChanged, option, [=](bool focus) {
+        if (focus) return;
         if (validate(le->text())) {
             option->setValue(le->text());
+        } else {
+            option->setValue(option->defaultValue());
+            le->setText(option->defaultValue().toString());
         }
     });
 
     option->connect(option, &DTK_CORE_NAMESPACE::DSettingsOption::valueChanged, le, 
         [ = ](const QVariant & value) {
             le->setText(value.toString());
+            le->update();
         });
 
     return  optionWidget;
@@ -1066,7 +1072,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             }
             _engine->setDVDDevice(dev);
             //FIXME: how to tell if it's bluray
-            QUrl url(QString("dvdnav:///%1").arg(dev));
+            QUrl url(QString("dvdread:///%1").arg(dev));
             //QUrl url(QString("dvdnav://"));
             play(url);
             break;
@@ -1498,7 +1504,8 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                 _nwShot->setAnchorPoint(QPoint(30, 38));
             }
             auto pm = QPixmap(QString(":/resources/icons/%1.png").arg(success?"success":"fail"));
-            _nwShot->popupWithIcon(tr("The screenshot is saved"), pm);
+            auto msg = success?tr("The screenshot is saved"):tr("The screenshot is failed to save");
+            _nwShot->popupWithIcon(msg, pm);
 #endif
             break;
         }

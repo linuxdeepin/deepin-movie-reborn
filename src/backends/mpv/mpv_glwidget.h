@@ -16,6 +16,11 @@ public:
     MpvGLWidget(QWidget *parent, mpv::qt::Handle h);
     virtual ~MpvGLWidget();
 
+    /*
+     * rounded clipping consumes a lot of resources, and performs bad on 4K video
+     */
+    void toggleRoundedClip(bool val);
+
 protected:
     void initializeGL() override;
     void resizeGL(int w, int h) override;
@@ -32,6 +37,7 @@ private:
     mpv_opengl_cb_context *_gl_ctx {nullptr};
     bool _playing {false};
     bool _inMiniMode {false};
+    bool _doRoundedClipping {true};
 
     QOpenGLVertexArrayObject _vao;
     QOpenGLBuffer _vbo;

@@ -279,5 +279,27 @@ QString Time2str(qint64 seconds)
     return d.toString("hh:mm:ss");
 }
 
+bool ValidateScreenshotPath(const QString& path)
+{
+    auto name = path.trimmed();
+    if (name.isEmpty()) return false;
+
+    if (name.size() && name[0] == '~') {
+        name.replace(0, 1, QDir::homePath());
+    }
+
+    QFileInfo fi(name);
+    if (fi.exists()) {
+        if (!fi.isDir()) {
+            return false;
+        }
+
+        if (!fi.isReadable() || !fi.isWritable()) {
+            return false;
+        }
+    }
+
+    return true;
+}
 }
 }
