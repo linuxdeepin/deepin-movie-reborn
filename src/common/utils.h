@@ -21,6 +21,8 @@ namespace utils {
     void MoveToCenter(QWidget* w);
 
     QString Time2str(qint64 seconds);
+
+    bool ValidateScreenshotPath(const QString& path);
 }
 }
 

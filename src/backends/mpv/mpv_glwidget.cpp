@@ -3,6 +3,8 @@
 #include "mpv_proxy.h"
 #include "mpv_glwidget.h"
 
+#include <QtX11Extras/QX11Info>
+
 #include <dthememanager.h>
 #include <DApplication>
 DWIDGET_USE_NAMESPACE
@@ -59,12 +61,22 @@ void main() {
 )";
 
 namespace dmr {
+    static void* GLAPIENTRY glMPGetNativeDisplay(const char* name) {
+        if (!strcmp(name, "x11") || !strcmp(name, "X11")) {
+            return (void*)QX11Info::display();
+        }
+        return NULL;
+    }
 
     static void *get_proc_address(void *ctx, const char *name) {
         Q_UNUSED(ctx);
         QOpenGLContext *glctx = QOpenGLContext::currentContext();
         if (!glctx)
             return NULL;
+
+        if (!strcmp(name, "glMPGetNativeDisplay")) {
+            return (void*)glMPGetNativeDisplay;
+        }
         return (void *)glctx->getProcAddress(QByteArray(name));
     }
 
@@ -200,7 +212,8 @@ namespace dmr {
                 update();
         });
 
-        if (mpv_opengl_cb_init_gl(_gl_ctx, NULL, get_proc_address, NULL) < 0)
+        //if (mpv_opengl_cb_init_gl(_gl_ctx, NULL, get_proc_address, NULL) < 0)
+        if (mpv_opengl_cb_init_gl(_gl_ctx, "GL_MP_MPGetNativeDisplay", get_proc_address, NULL) < 0)
             throw std::runtime_error("could not initialize OpenGL");
     }
 
@@ -324,35 +337,47 @@ namespace dmr {
         QOpenGLWidget::resizeGL(w, h);
     }
 
+    void MpvGLWidget::toggleRoundedClip(bool val)
+    {
+        _doRoundedClipping = val;
+        makeCurrent();
+        updateBlendMask();
+        update();
+    }
+
     void MpvGLWidget::paintGL() 
     {
         QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
         if (_playing) {
-            f->glClearColor(0.0, 0, 0, 0.0);
-            f->glClear(GL_COLOR_BUFFER_BIT);
+            if (!_doRoundedClipping) {
+                mpv_opengl_cb_draw(_gl_ctx, defaultFramebufferObject(), width(), -height());
+            } else {
+                f->glClearColor(0.0, 0, 0, 0.0);
+                f->glClear(GL_COLOR_BUFFER_BIT);
 
-            _fbo->bind();
-            mpv_opengl_cb_draw(_gl_ctx, _fbo->handle(), width(), -height());
-            _fbo->release();
+                _fbo->bind();
+                mpv_opengl_cb_draw(_gl_ctx, _fbo->handle(), width(), -height());
+                _fbo->release();
 
-            _vaoBlend.bind();
-            _vboBlend.bind();
-            _glProgBlend->bind();
+                _vaoBlend.bind();
+                _vboBlend.bind();
+                _glProgBlend->bind();
 
-            f->glActiveTexture(GL_TEXTURE0);
-            f->glBindTexture(GL_TEXTURE_2D, _fbo->texture());
-            f->glActiveTexture(GL_TEXTURE1);
-            _texMask->bind();
+                f->glActiveTexture(GL_TEXTURE0);
+                f->glBindTexture(GL_TEXTURE_2D, _fbo->texture());
+                f->glActiveTexture(GL_TEXTURE1);
+                _texMask->bind();
 
-            //already set when inited
-            //_glProgBlend->setUniformValue("movie", 0);
-            //_glProgBlend->setUniformValue("mask", 1);
+                //already set when inited
+                //_glProgBlend->setUniformValue("movie", 0);
+                //_glProgBlend->setUniformValue("mask", 1);
 
-            f->glDrawArrays(GL_TRIANGLES, 0, 6);
+                f->glDrawArrays(GL_TRIANGLES, 0, 6);
 
-            _glProgBlend->release();
-            _vboBlend.release();
-            _vaoBlend.release();
+                _glProgBlend->release();
+                _vboBlend.release();
+                _vaoBlend.release();
+            }
 
         } else {
             f->glEnable(GL_BLEND);
