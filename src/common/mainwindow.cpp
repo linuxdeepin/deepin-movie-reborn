@@ -71,7 +71,7 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
     auto optionWidget = DSettingsWidgetFactory::createTwoColumWidget(option, le);
     workaround_updateStyle(optionWidget, "dlight");
 
-    auto validate = [=](QString name) -> bool {
+    auto validate = [=](QString name, bool alert = true) -> bool {
         name = name.trimmed();
         if (name.isEmpty()) return false;
 
@@ -82,12 +82,12 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
         QFileInfo fi(name);
         if (fi.exists()) {
             if (!fi.isDir()) {
-                le->showAlertMessage(QObject::tr("Invalid folder"));
+                if (alert) le->showAlertMessage(QObject::tr("Invalid folder"));
                 return false;
             }
 
             if (!fi.isReadable() || !fi.isWritable()) {
-                le->showAlertMessage(QObject::tr("You don't have permission to operate this folder"));
+                if (alert) le->showAlertMessage(QObject::tr("You don't have permission to operate this folder"));
                 return false;
             }
         }
@@ -99,20 +99,22 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
         QString name = QFileDialog::getExistingDirectory(0, QObject::tr("Open Folder"),
                 QDir::currentPath(),
                 QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
-        if (validate(name)) {
+        if (validate(name, false)) {
             option->setValue(name);
         }
     });
 
-    //option->connect(le, &QLineEdit::editingFinished, option, [=]() {
-    option->connect(le, &DLineEdit::focusChanged, option, [=](bool focus) {
-        if (focus) return;
-        if (validate(le->text())) {
+    option->connect(le, &QLineEdit::editingFinished, option, [=]() {
+        if (validate(le->text(), false)) {
             option->setValue(le->text());
         } else {
             option->setValue(option->defaultValue());
             le->setText(option->defaultValue().toString());
         }
+    });
+
+    option->connect(le, &DLineEdit::textEdited, option, [=](const QString& newStr) {
+        validate(newStr);
     });
 
     option->connect(option, &DTK_CORE_NAMESPACE::DSettingsOption::valueChanged, le, 
@@ -1609,6 +1611,12 @@ void MainWindow::handleSettings()
     if (subft) {
         subft->setMinimum(8);
     }
+
+    // hack: reset is set to default by QDialog, which makes lineedit's enter
+    // press is responsed by reset button
+    auto reset = dsd->findChild<QPushButton*>("SettingsContentReset");
+    reset->setDefault(false);
+    reset->setAutoDefault(false);
 
     dsd->exec();
     delete dsd;
