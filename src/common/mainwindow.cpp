@@ -1986,6 +1986,7 @@ void MainWindow::mouseDoubleClickEvent(QMouseEvent *ev)
 {
     if (!_miniMode && !_inBurstShootMode) {
         _delayedMouseReleaseTimer.stop();
+        _mousePressed = false;
         if (_engine->state() == PlayerEngine::Idle) {
             requestAction(ActionFactory::StartPlay);
         } else {
