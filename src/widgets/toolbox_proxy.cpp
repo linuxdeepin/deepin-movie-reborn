@@ -320,8 +320,8 @@ public:
         winId(); // force backed window to be created
     }
 
-    void updateWithPreview(const QPixmap& pm, qint64 secs) {
-        auto rounded = utils::MakeRoundedPixmap(pm, 4, 4);
+    void updateWithPreview(const QPixmap& pm, qint64 secs, int rotation) {
+        auto rounded = utils::MakeRoundedPixmap(pm, 4, 4, rotation);
         _thumb->setPixmap(rounded);
 
         QTime t(0, 0, 0);
@@ -712,7 +712,7 @@ void ToolboxProxy::updateHoverPreview(const QUrl& url, int secs)
 
     QPixmap pm = ThumbnailWorker::get().getThumb(url, secs);
 
-    _previewer->updateWithPreview(pm, secs);
+    _previewer->updateWithPreview(pm, secs, _engine->videoRotation());
 }
 
 void ToolboxProxy::progressHoverChanged(int v)

@@ -75,7 +75,7 @@ QPixmap ThumbnailWorker::genThumb(const QUrl& url, int secs)
 
         auto img = QImage::fromData(buf.data(), buf.size(), "png");
 
-        pm = QPixmap::fromImage(img.scaled(thumbSize(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+        pm = QPixmap::fromImage(img.scaled(thumbSize(), Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
     } catch (const std::logic_error&) {
     }
 

@@ -12,7 +12,7 @@ namespace utils {
     QString FastFileHash(const QFileInfo& fi);
     QString FullFileHash(const QFileInfo& fi);
 
-    QPixmap MakeRoundedPixmap(QPixmap pm, qreal rx, qreal ry);
+    QPixmap MakeRoundedPixmap(QPixmap pm, qreal rx, qreal ry, int rotation = 0);
     QPixmap MakeRoundedPixmap(QSize sz, QPixmap pm, qreal rx, qreal ry, qint64 time);
 
     int InhibitStandby();
