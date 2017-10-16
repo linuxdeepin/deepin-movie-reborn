@@ -182,7 +182,7 @@ QString FullFileHash(const QFileInfo& fi)
     return QString(QCryptographicHash::hash(bytes, QCryptographicHash::Md5).toHex());
 }
 
-QPixmap MakeRoundedPixmap(QPixmap pm, qreal rx, qreal ry)
+QPixmap MakeRoundedPixmap(QPixmap pm, qreal rx, qreal ry, int rotation)
 {
     QPixmap dest(pm.size());
     dest.fill(Qt::transparent);
@@ -193,7 +193,14 @@ QPixmap MakeRoundedPixmap(QPixmap pm, qreal rx, qreal ry)
     QPainterPath path;
     path.addRoundedRect(QRect(QPoint(), pm.size()), rx, ry);
     p.setClipPath(path);
-    p.drawPixmap(0, 0, pm);
+
+    QTransform transform;
+    transform.translate(pm.width()/2, pm.height()/2);
+    transform.rotate(rotation);
+    transform.translate(-pm.width()/2, -pm.height()/2);
+    p.setTransform(transform);
+
+    p.drawPixmap(pm.rect(), pm);
 
     return dest;
 }
