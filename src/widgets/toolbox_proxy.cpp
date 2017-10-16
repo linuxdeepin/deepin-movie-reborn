@@ -608,6 +608,8 @@ void ToolboxProxy::setup()
     signalMapper->setMapping(_subBtn, "sub");
     _right->addWidget(_subBtn);
 
+    _subBtn->hide();
+
     _volBtn = new VolumeButton();
     _volBtn->setFixedSize(48, TOOLBOX_HEIGHT);
     connect(_volBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
@@ -786,7 +788,7 @@ void ToolboxProxy::updateButtonStates()
     if (vis) {
         vis = _engine->playingMovieInfo().subs.size() > 0;
     }
-    _subBtn->setVisible(vis);
+    //_subBtn->setVisible(vis);
 }
 
 void ToolboxProxy::updateVolumeState()
