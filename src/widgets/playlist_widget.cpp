@@ -63,12 +63,19 @@ protected:
                 auto item = tip->property("for").value<QWidget*>();
                 auto lb = tip->findChild<QLabel*>("TipText");
                 lb->setAlignment(Qt::AlignLeft);
-                auto msg = splitText(item->toolTip(), 200, QTextOption::WordWrap, lb->font(), 18);
+
+                auto msg = splitText(item->toolTip(), 200, QTextOption::WordWrap, lb->font(), 
+                        lb->fontMetrics().height());
                 lb->setText(msg);
                 tip->show();
                 tip->adjustSize();
                 tip->raise();
-                tip->move(he->globalPos() + QPoint{0, 10});
+                auto pos = he->globalPos() + QPoint{0, 10};
+                auto dw = qApp->desktop()->availableGeometry(item).width();
+                if (pos.x() + tip->width() > dw) {
+                    pos.rx() = dw - tip->width() - 5;
+                }
+                tip->move(pos);
                 return true;
             }
 
