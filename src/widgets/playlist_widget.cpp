@@ -7,6 +7,7 @@
 #include "mainwindow.h"
 #include "utils.h"
 #include "movieinfo_dialog.h"
+#include "tip.h"
 
 #include <DApplication>
 #include <dimagebutton.h>
@@ -17,6 +18,73 @@
 #define POPUP_DURATION 200
 
 namespace dmr {
+    QString splitText(const QString &text, int width,
+            QTextOption::WrapMode wordWrap, const QFont& font, int lineHeight)
+    {
+        int height = 0;
+
+        QTextLayout textLayout(text);
+        QString str;
+
+        textLayout.setFont(font);
+        const_cast<QTextOption*>(&textLayout.textOption())->setWrapMode(wordWrap);
+
+        textLayout.beginLayout();
+        QTextLine line = textLayout.createLine();
+        while (line.isValid()) {
+            height += lineHeight;
+
+            line.setLineWidth(width);
+            const QString &tmp_str = text.mid(line.textStart(), line.textLength());
+            if (tmp_str.indexOf('\n'))
+                height += lineHeight;
+
+            str += tmp_str;
+            line = textLayout.createLine();
+
+            if(line.isValid())
+                str.append("\n");
+        }
+
+        textLayout.endLayout();
+
+        return str;
+    }
+class PlayItemTooltipHandler: public QObject {
+public:
+    PlayItemTooltipHandler(QObject *parent): QObject(parent) {}
+
+protected:
+    bool eventFilter(QObject *obj, QEvent *event) {
+        switch (event->type()) {
+            case QEvent::ToolTip: {
+                QHelpEvent *he = static_cast<QHelpEvent *>(event);
+                auto tip = obj->property("HintWidget").value<Tip*>();
+                auto item = tip->property("for").value<QWidget*>();
+                auto lb = tip->findChild<QLabel*>("TipText");
+                lb->setAlignment(Qt::AlignLeft);
+                auto msg = splitText(item->toolTip(), 200, QTextOption::WordWrap, lb->font(), 18);
+                lb->setText(msg);
+                tip->show();
+                tip->adjustSize();
+                tip->raise();
+                tip->move(he->globalPos() + QPoint{0, 10});
+                return true;
+            }
+
+            case QEvent::Leave: {
+                auto tip = obj->property("HintWidget").value<Tip*>();
+                tip->hide();
+                event->ignore();
+
+            }
+            default: break;
+        }
+        // standard event processing
+        return QObject::eventFilter(obj, event);
+    }
+};
+
 enum ItemState {
     Normal,
     Playing,
@@ -86,11 +154,25 @@ public:
         _closeBtn->setObjectName("CloseBtn");
         _closeBtn->hide();
         connect(_closeBtn, &DImageButton::clicked, this, &PlayItemWidget::closeButtonClicked);
+
+
+        setToolTip(_pif.mi.title);
+        auto th = new PlayItemTooltipHandler(this);
+        auto t = new Tip(QPixmap(), _pif.mi.title, NULL);
+        t->setWindowFlags(Qt::ToolTip|Qt::CustomizeWindowHint);
+        t->setAttribute(Qt::WA_TranslucentBackground);
+        t->setMaximumWidth(200);
+        t->setProperty("for", QVariant::fromValue<QWidget*>(this));
+        t->layout()->setContentsMargins(0, 7, 0, 7);
+        t->hide();
+        setProperty("HintWidget", QVariant::fromValue<QWidget *>(t));
+        installEventFilter(th);
     }
 
     void updateInfo(const PlayItemInfo& pif) {
         _pif = pif;
         _time->setText(_pif.mi.durationStr());
+        setToolTip(_pif.mi.title);
         updateNameText();
 
         if (!_pif.valid) {

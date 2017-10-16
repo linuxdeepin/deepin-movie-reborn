@@ -666,6 +666,7 @@ void ToolboxProxy::setup()
 
     for (int i = 0; i < sizeof(btns)/sizeof(btns[0]); i++) {
         auto t = new Tip(QPixmap(), hints[i], parentWidget());
+        t->setFixedHeight(32);
         t->setProperty("for", QVariant::fromValue<QWidget*>(btns[i]));
         btns[i]->setProperty("HintWidget", QVariant::fromValue<QWidget *>(t));
         btns[i]->installEventFilter(th);
