@@ -642,8 +642,12 @@ MainWindow::MainWindow(QWidget *parent)
         reflectActionToUI(ActionFactory::ActionKind::ChangeSubCodepage);
     });
 
-    connect(_engine, &PlayerEngine::fileLoaded, this, &MainWindow::resizeByConstraints);
-    connect(_engine, &PlayerEngine::videoSizeChanged, this, &MainWindow::resizeByConstraints);
+    connect(_engine, &PlayerEngine::fileLoaded, [=]() {
+        this->resizeByConstraints();
+    });
+    connect(_engine, &PlayerEngine::videoSizeChanged, [=]() {
+        this->resizeByConstraints();
+    });
 
     connect(_engine, &PlayerEngine::stateChanged, this, &MainWindow::updatePlayState);
     updatePlayState();
@@ -1189,7 +1193,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         case ActionFactory::ActionKind::QuitFullscreen: {
             if (isFullScreen()) {
                 showNormal();
-                resizeByConstraints();
+                resizeByConstraints(true);
                 if (!fromUI) {
                     reflectActionToUI(ActionFactory::ToggleFullscreen);
                 }
@@ -1203,7 +1207,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             } else {
                 showFullScreen();
             }
-            resizeByConstraints();
+            resizeByConstraints(true);
             if (!fromUI) {
                 reflectActionToUI(kd);
             }
@@ -1857,7 +1861,7 @@ void MainWindow::showEvent(QShowEvent *event)
     resumeToolsWindow();
 }
 
-void MainWindow::resizeByConstraints() 
+void MainWindow::resizeByConstraints(bool forceCentered) 
 {
     if (_engine->state() == PlayerEngine::Idle || _engine->playlist().count() == 0) {
         _titlebar->setTitle(tr("Deepin Movie"));
@@ -1883,8 +1887,15 @@ void MainWindow::resizeByConstraints()
         sz.scale(geom.width(), geom.height(), Qt::KeepAspectRatio);
 
     qDebug() << sz;
-    resize(sz);
-    utils::MoveToCenter(this);
+    if (forceCentered) {
+        QRect r;
+        r.setSize(sz);
+        r.setTopLeft({(geom.width() - r.width()) /2, (geom.height() - r.height())/2});
+        this->setGeometry(r);
+        //utils::MoveToCenter(this);
+    } else {
+        resize(sz);
+    }
 }
 
 // 若长≥高,则长≤528px　　　若长≤高,则高≤528px.
@@ -2167,7 +2178,7 @@ void MainWindow::toggleUIMode()
         } else {
             if (_lastSizeInNormalMode.isValid()) {
                 resize(_lastSizeInNormalMode);
-                utils::MoveToCenter(this);
+                //utils::MoveToCenter(this);
             } else {
                 if (_engine->state() == PlayerEngine::CoreState::Idle) {
                     resize(850, 600);

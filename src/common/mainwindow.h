@@ -96,7 +96,7 @@ protected slots:
     void updateActionsState();
     void onThemeChanged();
     void updatePlayState();
-    void resizeByConstraints();
+    void resizeByConstraints(bool forceCentered = false);
 
     void miniButtonClicked(QString id);
 
