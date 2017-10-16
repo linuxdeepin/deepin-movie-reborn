@@ -1193,7 +1193,6 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         case ActionFactory::ActionKind::QuitFullscreen: {
             if (isFullScreen()) {
                 showNormal();
-                resizeByConstraints(true);
                 if (!fromUI) {
                     reflectActionToUI(ActionFactory::ToggleFullscreen);
                 }
@@ -1207,7 +1206,6 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             } else {
                 showFullScreen();
             }
-            resizeByConstraints(true);
             if (!fromUI) {
                 reflectActionToUI(kd);
             }
@@ -1883,8 +1881,9 @@ void MainWindow::resizeByConstraints(bool forceCentered)
     }
 
     auto geom = qApp->desktop()->availableGeometry(this);
-    if (sz.width() > geom.width() || sz.height() > geom.height()) 
+    if (sz.width() > geom.width() || sz.height() > geom.height()) {
         sz.scale(geom.width(), geom.height(), Qt::KeepAspectRatio);
+    }
 
     qDebug() << sz;
     if (forceCentered) {
@@ -1892,7 +1891,6 @@ void MainWindow::resizeByConstraints(bool forceCentered)
         r.setSize(sz);
         r.setTopLeft({(geom.width() - r.width()) /2, (geom.height() - r.height())/2});
         this->setGeometry(r);
-        //utils::MoveToCenter(this);
     } else {
         resize(sz);
     }
