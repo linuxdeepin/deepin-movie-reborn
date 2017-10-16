@@ -50,7 +50,7 @@ DMRSlider::~DMRSlider()
 void DMRSlider::mouseReleaseEvent(QMouseEvent *e)
 {
     if (_down) {
-        emit sliderMoved(sliderPosition());
+        //emit sliderMoved(sliderPosition());
         _down = false;
         QSlider::mouseReleaseEvent(e);
     }

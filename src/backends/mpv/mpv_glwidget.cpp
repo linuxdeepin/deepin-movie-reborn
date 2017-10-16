@@ -219,6 +219,8 @@ namespace dmr {
 
     void MpvGLWidget::updateBlendMask()
     {
+        if (!_doRoundedClipping) return;
+
         bool rounded = !window()->isFullScreen() && !window()->isMaximized();
 
         QImage img(size(), QImage::Format_ARGB32);
