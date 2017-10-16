@@ -349,8 +349,11 @@ skip_set_cursor:
 
                 ratio = sz.width() / (qreal)sz.height();
                 switch (edge) {
-                    case Utility::BottomLeftCorner:
                     case Utility::TopLeftCorner:
+                        geom.setLeft(e->globalX());
+                        geom.setTop(geom.bottom() - geom.width() / ratio);
+                        break;
+                    case Utility::BottomLeftCorner:
                     case Utility::LeftEdge:
                         geom.setLeft(e->globalX());
                         geom.setHeight(geom.width() / ratio);
@@ -1966,6 +1969,7 @@ void MainWindow::capturedMousePressEvent(QMouseEvent* me)
 
 void MainWindow::capturedMouseReleaseEvent(QMouseEvent* me)
 {
+    _mousePressed = false;
 }
 
 static bool _afterDblClick = false;
