@@ -510,11 +510,11 @@ MainWindow::MainWindow(QWidget *parent)
     _engine = new PlayerEngine(this);
     _engine->move(1, 1);
 
-    _toolbox = new ToolboxProxy(this, _engine);
-    _toolbox->setFocusPolicy(Qt::NoFocus);
-
     int volume = Settings::get().internalOption("global_volume").toInt();
     _engine->changeVolume(volume);
+
+    _toolbox = new ToolboxProxy(this, _engine);
+    _toolbox->setFocusPolicy(Qt::NoFocus);
 
     connect(_engine, &PlayerEngine::stateChanged, [=]() {
         setInit(_engine->state() != PlayerEngine::Idle);
