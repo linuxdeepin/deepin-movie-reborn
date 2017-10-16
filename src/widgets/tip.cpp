@@ -82,12 +82,17 @@ Tip::Tip(const QPixmap &icon, const QString &text, QWidget *parent)
     this->setGraphicsEffect(bodyShadow);
     hide();
 
-    setFixedHeight(32);
+    //setFixedHeight(32);
 }
 
 Tip::~Tip()
 {
 
+}
+
+void Tip::enterEvent(QEvent* e)
+{
+    hide();
 }
 
 QBrush Tip::background() const

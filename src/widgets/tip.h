@@ -31,6 +31,7 @@ public slots:
 
 protected:
     virtual void paintEvent(QPaintEvent *) Q_DECL_OVERRIDE;
+    void enterEvent(QEvent* e) override;
 
 private:
     QScopedPointer<TipPrivate> d_ptr;
