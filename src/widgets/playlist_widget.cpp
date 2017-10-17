@@ -73,7 +73,7 @@ protected:
                 auto pos = he->globalPos() + QPoint{0, 10};
                 auto dw = qApp->desktop()->availableGeometry(item).width();
                 if (pos.x() + tip->width() > dw) {
-                    pos.rx() = dw - tip->width() - 5;
+                    pos.rx() = dw - tip->width();
                 }
                 tip->move(pos);
                 return true;
