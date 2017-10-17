@@ -147,10 +147,11 @@ namespace dmr {
         _vao.create();
         _vao.bind();
 
-        _darkTex = new QOpenGLTexture(bg_dark);
-        _darkTex->setMinificationFilter(QOpenGLTexture::LinearMipMapLinear);
-        _lightTex = new QOpenGLTexture(bg_light);
-        _lightTex->setMinificationFilter(QOpenGLTexture::LinearMipMapLinear);
+        _darkTex = new QOpenGLTexture(bg_dark, QOpenGLTexture::DontGenerateMipMaps);
+        _darkTex->setMinificationFilter(QOpenGLTexture::Linear);
+        _lightTex = new QOpenGLTexture(bg_light, QOpenGLTexture::DontGenerateMipMaps);
+        _lightTex->setMinificationFilter(QOpenGLTexture::Linear);
+
 
         _darkMiniTex = new QOpenGLTexture(bg_dark_mini);
         _darkMiniTex->setMinificationFilter(QOpenGLTexture::LinearMipMapLinear);
@@ -303,9 +304,9 @@ namespace dmr {
         auto r2 = QRect(r.center() - QPoint(tex_sz.width()/2, tex_sz.height()/2), tex_sz);
 
         GLfloat x1 = (float)r2.left() / r.width();
-        GLfloat x2 = (float)r2.right() / r.width();
+        GLfloat x2 = (float)(r2.right()+1) / r.width();
         GLfloat y1 = (float)r2.top() / r.height();
-        GLfloat y2 = (float)r2.bottom() / r.height();
+        GLfloat y2 = (float)(r2.bottom()+1) / r.height();
 
         x1 = x1 * 2.0 - 1.0;
         x2 = x2 * 2.0 - 1.0;
