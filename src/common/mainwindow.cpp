@@ -481,7 +481,7 @@ MainWindow::MainWindow(QWidget *parent)
     _titlebar = new Titlebar(this);
     _titlebar->move(1, 1);
     _titlebar->setFixedHeight(30);
-    _titlebar->layout()->setContentsMargins(0, 0, 0, 0);
+    _titlebar->layout()->setContentsMargins(0, 0, 6, 0);
     _titlebar->setFocusPolicy(Qt::NoFocus);
     if (!composited) {
         _titlebar->setAttribute(Qt::WA_NativeWindow);
