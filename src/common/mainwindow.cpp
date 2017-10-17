@@ -1909,11 +1909,12 @@ void MainWindow::updateSizeConstraints()
         if (_engine->state() != PlayerEngine::CoreState::Idle) {
             auto sz = _engine->videoSize();
             qreal ratio = (qreal)sz.width() / sz.height();
-            int h = 528 / ratio;
             if (size().width() > size().height()) {
+                int h = 528 / ratio;
                 m = QSize(528, h);
             } else {
-                m = QSize(h, 528);
+                int w = 528 * ratio;
+                m = QSize(w, 528);
             }
         } else {
             m = QSize(630, 386);
