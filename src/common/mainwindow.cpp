@@ -546,6 +546,7 @@ MainWindow::MainWindow(QWidget *parent)
     _progIndicator = new MovieProgressIndicator(this);
     _progIndicator->setVisible(false);
     connect(windowHandle(), &QWindow::windowStateChanged, [=]() {
+        qDebug() << windowHandle()->windowState();
         Qt::WindowFlags hint = Qt::WindowCloseButtonHint | Qt::WindowTitleHint |
             Qt::WindowSystemMenuHint;
         if (!isFullScreen()) {
@@ -1926,9 +1927,15 @@ void MainWindow::updateSizeConstraints()
 void MainWindow::resizeEvent(QResizeEvent *ev)
 {
     qDebug() << __func__ << geometry();
-    if (_mousePressed) {
+    if (_mousePressed && !_mouseMoved) {
         auto msg = QString("%1x%2").arg(width()) .arg(height());
         _nwComm->updateWithMessage(msg);
+    } else if (_mouseMoved) {
+        //when in maximized state, drag to resize don't issue state change 
+        //we need to change manually
+        if (windowHandle()->windowState() == Qt::WindowMaximized) {
+            this->setWindowState(Qt::WindowNoState);
+        }
     }
 
     if (isFullScreen()) {
