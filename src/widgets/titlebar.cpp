@@ -83,7 +83,7 @@ void Titlebar::paintEvent(QPaintEvent *)
 {
     Q_D(const Titlebar);
 
-    auto radius = RADIUS-1.5f;
+    auto radius = RADIUS;
     QPainter p(this);
     p.setRenderHint(QPainter::Antialiasing);
 
