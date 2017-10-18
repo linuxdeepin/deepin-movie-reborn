@@ -53,6 +53,12 @@ private:
     QOpenGLTexture *_texMask {nullptr};
     QOpenGLFramebufferObject *_fbo {nullptr};
 
+    //textures for corner
+    QOpenGLVertexArrayObject _vaoCorner;
+    QOpenGLTexture *_cornerMasks[4] {nullptr,};
+    QOpenGLBuffer _vboCorners[4];
+    QOpenGLShaderProgram *_glProgCorner {nullptr};
+
     QImage bg_dark {":/resources/icons/dark/init-splash.png"};
     QImage bg_light {":/resources/icons/light/init-splash.png"};
 
@@ -60,8 +66,15 @@ private:
     QImage bg_light_mini {":/resources/icons/light/mini-init-splash.png"};
 
     void updateVbo();
-    void updateBlendMask();
+    void updateVboCorners();
     void updateVboBlend();
+
+    void updateBlendMask();
+    void updateCornerMasks();
+
+    void setupBlendPipe();
+    void setupIdlePipe();
+
 };
 
 }
