@@ -910,13 +910,28 @@ void ToolboxProxy::paintEvent(QPaintEvent *pe)
 
 void ToolboxProxy::showEvent(QShowEvent *event)
 {
+    updateTimeLabel();
+}
+
+void ToolboxProxy::resizeEvent(QResizeEvent *event)
+{
+    updateTimeLabel();
+}
+
+void ToolboxProxy::updateTimeLabel()
+{
     // to keep left and right of the same width. which makes play button centered
-    auto right_geom = _right->geometry();
-    int left_w = _timeLabel->fontMetrics().width("99:99:99/99:99:99");
-    int w = qMax(left_w, right_geom.width());
-    _timeLabel->setFixedWidth(w + RIGHT_MARGIN - LEFT_MARGIN); 
-    right_geom.setWidth(w);
-    _right->setGeometry(right_geom);
+    _listBtn->setVisible(width() > 280);
+    _timeLabel->setVisible(width() > 350);
+    if (width() > 350) {
+        auto right_geom = _right->geometry();
+        int left_w = _timeLabel->fontMetrics().width("99:99:99/99:99:99");
+        _timeLabel->show();
+        int w = qMax(left_w, right_geom.width());
+        _timeLabel->setFixedWidth(w + RIGHT_MARGIN - LEFT_MARGIN); 
+        right_geom.setWidth(w);
+        _right->setGeometry(right_geom);
+    }
 }
 
 }
