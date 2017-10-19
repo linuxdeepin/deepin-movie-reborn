@@ -572,6 +572,7 @@ MainWindow::MainWindow(QWidget *parent)
             _titlebar->move(1, 1);
             _engine->move(1, 1);
         }
+        resizeByConstraints();
         update();
     });
     connect(_engine, &PlayerEngine::elapsedChanged, [=]() {
