@@ -791,6 +791,8 @@ struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl& url, const QFil
         if (msg.isEmpty()) msg = url.path();
         mi.title = msg;
         mi.valid = true;
+    } else {
+        mi.title = fi.fileName();
     }
 
     QPixmap pm;
