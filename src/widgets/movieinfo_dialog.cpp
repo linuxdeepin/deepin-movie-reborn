@@ -19,7 +19,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo& pif)
 
     auto layout = new QVBoxLayout(this);
     layout->setSpacing(0);
-    layout->setContentsMargins(10, 5, 10, 10);
+    layout->setContentsMargins(0, 0, 0, 10);
     setLayout(layout);
 
     auto closeBt = new DWindowCloseButton;
@@ -27,11 +27,12 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo& pif)
     layout->addWidget(closeBt, 0, Qt::AlignTop | Qt::AlignRight);
     layout->addSpacing(26);
     connect(closeBt, &DWindowCloseButton::clicked, this, &DAbstractDialog::hide);
+    closeBt->setStyleSheet(DThemeManager::instance()->getQssForWidget("DWindowCloseButton", "light"));
 
     const auto& mi = pif.mi;
 
     auto *ml = new QVBoxLayout;
-    ml->setContentsMargins(0, 0, 0, 0);
+    ml->setContentsMargins(10, 0, 10, 0);
     ml->setSpacing(0);
     layout->addLayout(ml);
 
