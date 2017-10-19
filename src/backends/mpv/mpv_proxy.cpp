@@ -281,13 +281,6 @@ void MpvProxy::handle_mpv_events()
                 if (_gl_widget) {
                     auto w = get_property(_handle, "width").toInt();
                     auto h = get_property(_handle, "height").toInt();
-                    bool use_clip = true;
-                    //probably 4k video and turn off rounded clipping
-                    if (w > 3800 && h > 2000) {
-                        qWarning() << "video size " << QSize(w, h) << "disable rounded clipping";
-                        use_clip = false;
-                    }
-                    _gl_widget->toggleRoundedClip(use_clip);
 
                     qDebug() << "---------------- hwdec-interop" << get_property(_handle, "hwdec-interop");
                 }
