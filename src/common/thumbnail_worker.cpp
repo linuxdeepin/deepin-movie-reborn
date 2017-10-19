@@ -49,13 +49,16 @@ QPixmap ThumbnailWorker::getThumb(const QUrl& url, int secs)
 
 void ThumbnailWorker::requestThumb(const QUrl& url, int secs)
 {
-    QMutexLocker lock(&_thumbLock);
-    _wq.push_front(qMakePair(url, secs));
-    cond.wakeOne();
+    if (_thumbLock.tryLock()) {
+        _wq.push_front(qMakePair(url, secs));
+        cond.wakeOne();
+        _thumbLock.unlock();
+    } 
 }
 
 ThumbnailWorker::ThumbnailWorker()
 {
+    this->setPriority(QThread::IdlePriority);
     thumber.setThumbnailSize(thumbSize().width());
     thumber.setMaintainAspectRatio(true);
 }

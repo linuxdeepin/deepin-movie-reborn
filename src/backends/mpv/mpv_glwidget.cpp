@@ -511,10 +511,6 @@ namespace dmr {
                 f->glEnable(GL_BLEND);
                 f->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-                auto w = get_property(_handle, "width").toDouble();
-                auto h = get_property(_handle, "height").toDouble();
-                auto ratio = w / h;
-
                 _fbo->bind();
                 mpv_opengl_cb_draw(_gl_ctx, _fbo->handle(), width(), -height());
                 _fbo->release();
