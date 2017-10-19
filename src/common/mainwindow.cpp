@@ -572,7 +572,6 @@ MainWindow::MainWindow(QWidget *parent)
             _titlebar->move(1, 1);
             _engine->move(1, 1);
         }
-        resizeByConstraints();
         update();
     });
     connect(_engine, &PlayerEngine::elapsedChanged, [=]() {
@@ -1195,6 +1194,8 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         case ActionFactory::ActionKind::QuitFullscreen: {
             if (isFullScreen()) {
                 showNormal();
+                setMinimumSize({0, 0});
+                resizeByConstraints(true);
                 if (!fromUI) {
                     reflectActionToUI(ActionFactory::ToggleFullscreen);
                 }
@@ -1205,6 +1206,8 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         case ActionFactory::ActionKind::ToggleFullscreen: {
             if (isFullScreen()) {
                 showNormal();
+                setMinimumSize({0, 0});
+                resizeByConstraints(true);
             } else {
                 showFullScreen();
             }
@@ -1891,7 +1894,7 @@ void MainWindow::resizeByConstraints(bool forceCentered)
     if (forceCentered) {
         QRect r;
         r.setSize(sz);
-        r.setTopLeft({(geom.width() - r.width()) /2, (geom.height() - r.height())/2});
+        r.moveTopLeft({(geom.width() - r.width()) /2, (geom.height() - r.height())/2});
         this->setGeometry(r);
     } else {
         resize(sz);
@@ -1928,7 +1931,7 @@ void MainWindow::updateSizeConstraints()
 
 void MainWindow::resizeEvent(QResizeEvent *ev)
 {
-    //qDebug() << __func__ << geometry();
+    qDebug() << __func__ << geometry();
     if (_mousePressed && !_mouseMoved) {
         auto msg = QString("%1x%2").arg(width()) .arg(height());
         _nwComm->updateWithMessage(msg);
