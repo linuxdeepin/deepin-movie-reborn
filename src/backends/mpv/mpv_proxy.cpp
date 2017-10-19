@@ -242,7 +242,7 @@ const PlayingMovieInfo& MpvProxy::playingMovieInfo()
 void MpvProxy::handle_mpv_events()
 {
     while (1) {
-        mpv_event* ev = mpv_wait_event(_handle, 0.005);
+        mpv_event* ev = mpv_wait_event(_handle, 0.0005);
         if (ev->event_id == MPV_EVENT_NONE) 
             break;
 
@@ -839,10 +839,12 @@ void MpvProxy::seekAbsolute(int pos)
 {
     if (state() == PlayState::Stopped) return;
 
-    //if (_pendingSeek) return;
+    if (_pendingSeek) return;
     QList<QVariant> args = { "seek", QVariant(pos), "absolute" };
     qDebug () << args;
-    command(_handle, args);
+    //command(_handle, args);
+    _pendingSeek = true;
+    command_async(_handle, args, AsyncReplyTag::SEEK);
 }
 
 QSize MpvProxy::videoSize() const

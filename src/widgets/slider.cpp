@@ -87,6 +87,10 @@ void DMRSlider::mouseMoveEvent(QMouseEvent *e)
     int v = position2progress(e->pos());;
     if (_down) {
         setSliderPosition(v);
+        if (_showIndicator) {
+            _indicator->show();
+            _indicator->move(e->globalX(), mapToGlobal(pos()).y()-1);
+        }
     } else {
         if (_lastHoverValue != v) {
             if (_showIndicator) {
