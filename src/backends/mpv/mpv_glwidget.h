@@ -50,8 +50,8 @@ private:
     QOpenGLVertexArrayObject _vaoBlend;
     QOpenGLBuffer _vboBlend;
     QOpenGLShaderProgram *_glProgBlend {nullptr};
-    QOpenGLTexture *_texMask {nullptr};
     QOpenGLFramebufferObject *_fbo {nullptr};
+    QOpenGLShaderProgram *_glProgBlendCorners {nullptr};
 
     //textures for corner
     QOpenGLVertexArrayObject _vaoCorner;

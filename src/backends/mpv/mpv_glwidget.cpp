@@ -9,13 +9,36 @@
 #include <DApplication>
 DWIDGET_USE_NAMESPACE
 
+
 static const char* vs_blend = R"(
 attribute vec2 position;
 attribute vec2 vTexCoord;
-attribute vec2 maskTexCoord;
 
 varying vec2 texCoord;
+
+void main() {
+    gl_Position = vec4(position, 0.0, 1.0);
+    texCoord = vTexCoord;
+}
+)";
+
+static const char* fs_blend = R"(
+varying vec2 texCoord;
+
+uniform sampler2D movie;
+
+void main() {
+     gl_FragColor = texture2D(movie, texCoord); 
+}
+)";
+
+static const char* vs_blend_corner = R"(
+attribute vec2 position;
+attribute vec2 maskTexCoord;
+attribute vec2 vTexCoord;
+
 varying vec2 maskCoord;
+varying vec2 texCoord;
 
 void main() {
     gl_Position = vec4(position, 0.0, 1.0);
@@ -24,9 +47,9 @@ void main() {
 }
 )";
 
-static const char* fs_blend = R"(
-varying vec2 texCoord;
+static const char* fs_blend_corner = R"(
 varying vec2 maskCoord;
+varying vec2 texCoord;
 
 uniform sampler2D movie;
 uniform sampler2D mask;
@@ -35,6 +58,8 @@ void main() {
      gl_FragColor = texture2D(movie, texCoord) * texture2D(mask, maskCoord).a; 
 }
 )";
+
+
 
 static const char* vs_code = R"(
 attribute vec2 position;
@@ -63,11 +88,11 @@ void main() {
 static const char* fs_corner_code = R"(
 varying vec2 texCoord;
 
-uniform sampler2D topLeftCorner;
+uniform sampler2D corner;
 uniform vec4 bg;
 
 void main() {
-    vec4 s = texture2D(topLeftCorner, texCoord);
+    vec4 s = texture2D(corner, texCoord);
     gl_FragColor = s.a * bg;
 }
 )";
@@ -149,11 +174,12 @@ namespace dmr {
 
     void MpvGLWidget::setupBlendPipe()
     {
+        updateBlendMask();
+
         _vaoBlend.create();
         _vaoBlend.bind();
         updateVboBlend();
 
-        _vboBlend.bind();
         _glProgBlend = new QOpenGLShaderProgram();
         _glProgBlend->addShaderFromSourceCode(QOpenGLShader::Vertex, vs_blend);
         _glProgBlend->addShaderFromSourceCode(QOpenGLShader::Fragment, fs_blend);
@@ -161,21 +187,24 @@ namespace dmr {
             qDebug() << "link failed";
         }
         _glProgBlend->bind();
+        _vboBlend.bind();
 
         int vLocBlend = _glProgBlend->attributeLocation("position");
         int coordLocBlend = _glProgBlend->attributeLocation("vTexCoord");
-        int maskLocBlend = _glProgBlend->attributeLocation("maskTexCoord");
         _glProgBlend->enableAttributeArray(vLocBlend);
         _glProgBlend->setAttributeBuffer(vLocBlend, GL_FLOAT, 0, 2, 6*sizeof(GLfloat));
         _glProgBlend->enableAttributeArray(coordLocBlend);
         _glProgBlend->setAttributeBuffer(coordLocBlend, GL_FLOAT, 2*sizeof(GLfloat), 2, 6*sizeof(GLfloat));
-        _glProgBlend->enableAttributeArray(maskLocBlend);
-        _glProgBlend->setAttributeBuffer(maskLocBlend, GL_FLOAT, 4*sizeof(GLfloat), 2, 6*sizeof(GLfloat));
         _glProgBlend->setUniformValue("movie", 0);
-        _glProgBlend->setUniformValue("mask", 1);
-        updateBlendMask();
         _glProgBlend->release();
         _vaoBlend.release();
+
+        _glProgBlendCorners = new QOpenGLShaderProgram();
+        _glProgBlendCorners->addShaderFromSourceCode(QOpenGLShader::Vertex, vs_blend_corner);
+        _glProgBlendCorners->addShaderFromSourceCode(QOpenGLShader::Fragment, fs_blend_corner);
+        if (!_glProgBlendCorners->link()) {
+            qDebug() << "link failed";
+        }
     }
 
     void MpvGLWidget::setupIdlePipe()
@@ -262,32 +291,6 @@ namespace dmr {
     {
         if (!_doRoundedClipping) return;
 
-        bool rounded = !window()->isFullScreen() && !window()->isMaximized();
-
-        QImage img(size(), QImage::Format_ARGB32);
-        img.fill(0);
-        QPainter p(&img);
-        p.setRenderHint(QPainter::Antialiasing);
-        QPainterPath pp;
-        auto d = 0.0f;
-        if (rounded)
-            pp.addRoundedRect(rect(), RADIUS+d, RADIUS+d);
-        else
-            pp.addRect(rect());
-        //p.fillPath(pp, Qt::white);
-        p.setPen(Qt::transparent);
-        p.setBrush(Qt::white);
-        p.drawPath(pp);
-        p.end();
-
-        if (_texMask) {
-            _texMask->release();
-            _texMask->destroy();
-            delete _texMask;
-        }
-        _texMask = new QOpenGLTexture(img);
-        _texMask->setMinificationFilter(QOpenGLTexture::LinearMipMapLinear);
-
         if (_fbo) {
             _fbo->release();
             delete _fbo;
@@ -347,6 +350,7 @@ namespace dmr {
             if (_cornerMasks[i] == nullptr) {
                 _cornerMasks[i] = new QOpenGLTexture(img, QOpenGLTexture::DontGenerateMipMaps);
                 _cornerMasks[i]->setMinificationFilter(QOpenGLTexture::Linear);
+                _cornerMasks[i]->setWrapMode(QOpenGLTexture::ClampToEdge);
             }
         }
     }
@@ -366,12 +370,6 @@ namespace dmr {
         GLfloat t1 = 1.0f;
         GLfloat s2 = 1.0f;
         GLfloat t2 = 0.0f;
-
-        //hack: remove one pixel vertical black line (which I can not figure how to emerge)
-        GLfloat s = 1.0f - 2.0f/width();
-        s = 2.0f/width();
-        s1+=s;
-        s2-=s;
 
         GLfloat vdata[] = {
             x1, y1, s1, t1, 0.0f, 1.0f,
@@ -418,14 +416,21 @@ namespace dmr {
             y1 = y1 * 2.0 - 1.0;
             y2 = y2 * 2.0 - 1.0;
 
+            // for video tex coord
+            GLfloat s1 = (float)r2.left() / r.width();
+            GLfloat s2 = (float)(r2.right()+1) / r.width();
+            GLfloat t2 = (float)(r2.top()) / r.height();
+            GLfloat t1 = (float)(r2.bottom()+1) / r.height();
+            
+            // corner(and video) coord, corner-tex-coord, and video-as-tex-coord
             GLfloat vdata[] = {
-                x1, y1, 0.0f, 1.0f,
-                x2, y1, 1.0f, 1.0f,
-                x2, y2, 1.0f, 0.0f,
-
-                x1, y1, 0.0f, 1.0f,
-                x2, y2, 1.0f, 0.0f,
-                x1, y2, 0.0f, 0.0f
+                x1, y1,  0.0f, 1.0f,  s1, t2,
+                x2, y1,  1.0f, 1.0f,  s2, t2,
+                x2, y2,  1.0f, 0.0f,  s2, t1,
+                                             
+                x1, y1,  0.0f, 1.0f,  s1, t2,
+                x2, y2,  1.0f, 0.0f,  s2, t1,
+                x1, y2,  0.0f, 0.0f,  s1, t1,
             };
             _vboCorners[i].bind();
             _vboCorners[i].allocate(vdata, sizeof(vdata));
@@ -476,7 +481,6 @@ namespace dmr {
         QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
 
         qDebug() << size() << w << h;
-        static QImage bg_dark(":/resources/icons/dark/init-splash.png");
 
         if (_playing) {
             updateBlendMask();
@@ -500,31 +504,68 @@ namespace dmr {
     {
         QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
         if (_playing) {
+
             if (!_doRoundedClipping) {
                 mpv_opengl_cb_draw(_gl_ctx, defaultFramebufferObject(), width(), -height());
             } else {
-                f->glClearColor(0.0, 0, 0, 0.0);
-                f->glClear(GL_COLOR_BUFFER_BIT);
+                f->glEnable(GL_BLEND);
+                f->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+                auto w = get_property(_handle, "width").toDouble();
+                auto h = get_property(_handle, "height").toDouble();
+                auto ratio = w / h;
 
                 _fbo->bind();
                 mpv_opengl_cb_draw(_gl_ctx, _fbo->handle(), width(), -height());
                 _fbo->release();
 
-                QOpenGLVertexArrayObject::Binder vaoBind(&_vaoBlend);
-                _glProgBlend->bind();
+                {
+                    QOpenGLVertexArrayObject::Binder vaoBind(&_vaoBlend);
+                    _glProgBlend->bind();
+                    f->glActiveTexture(GL_TEXTURE0);
+                    f->glBindTexture(GL_TEXTURE_2D, _fbo->texture());
+                    f->glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+                    f->glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+                    f->glDrawArrays(GL_TRIANGLES, 0, 6);
+                    _glProgBlend->release();
+                }
 
-                f->glActiveTexture(GL_TEXTURE0);
-                f->glBindTexture(GL_TEXTURE_2D, _fbo->texture());
-                f->glActiveTexture(GL_TEXTURE1);
-                _texMask->bind();
+                if (_doRoundedClipping) {
+                    f->glBlendFunc(GL_SRC_ALPHA, GL_ZERO);
+                    // blend corners
+                    //QOpenGLVertexArrayObject::Binder vaoBind(&_vaoCorner);
 
-                //already set when inited
-                //_glProgBlend->setUniformValue("movie", 0);
-                //_glProgBlend->setUniformValue("mask", 1);
+                    for (int i = 0; i < 4; i++) {
+                        _glProgBlendCorners->bind();
+                        _vboCorners[i].bind();
 
-                f->glDrawArrays(GL_TRIANGLES, 0, 6);
+                        int vertexLoc = _glProgBlendCorners->attributeLocation("position");
+                        int maskLoc = _glProgBlendCorners->attributeLocation("maskTexCoord");
+                        int coordLoc = _glProgBlendCorners->attributeLocation("vTexCoord");
+                        _glProgBlendCorners->enableAttributeArray(vertexLoc);
+                        _glProgBlendCorners->setAttributeBuffer(vertexLoc, GL_FLOAT, 0, 2, 6*sizeof(GLfloat));
+                        _glProgBlendCorners->enableAttributeArray(maskLoc);
+                        _glProgBlendCorners->setAttributeBuffer(maskLoc, GL_FLOAT, 2*sizeof(GLfloat), 2, 6*sizeof(GLfloat));
+                        _glProgBlendCorners->enableAttributeArray(coordLoc);
+                        _glProgBlendCorners->setAttributeBuffer(coordLoc, GL_FLOAT, 4*sizeof(GLfloat), 2, 6*sizeof(GLfloat));
+                        _glProgBlendCorners->setUniformValue("movie", 0);
+                        _glProgBlendCorners->setUniformValue("mask", 1);
 
-                _glProgBlend->release();
+                        f->glActiveTexture(GL_TEXTURE0);
+                        f->glBindTexture(GL_TEXTURE_2D, _fbo->texture());
+
+                        f->glActiveTexture(GL_TEXTURE1);
+                        _cornerMasks[i]->bind();
+
+                        f->glDrawArrays(GL_TRIANGLES, 0, 6);
+
+                        _cornerMasks[i]->release();
+                        _glProgBlendCorners->release();
+                        _vboCorners[i].release();
+                    }
+                }
+
+                f->glDisable(GL_BLEND);
             }
 
         } else {
@@ -569,9 +610,9 @@ namespace dmr {
                     int vertexLoc = _glProgCorner->attributeLocation("position");
                     int coordLoc = _glProgCorner->attributeLocation("vTexCoord");
                     _glProgCorner->enableAttributeArray(vertexLoc);
-                    _glProgCorner->setAttributeBuffer(vertexLoc, GL_FLOAT, 0, 2, 4*sizeof(GLfloat));
+                    _glProgCorner->setAttributeBuffer(vertexLoc, GL_FLOAT, 0, 2, 6*sizeof(GLfloat));
                     _glProgCorner->enableAttributeArray(coordLoc);
-                    _glProgCorner->setAttributeBuffer(coordLoc, GL_FLOAT, 2*sizeof(GLfloat), 2, 4*sizeof(GLfloat));
+                    _glProgCorner->setAttributeBuffer(coordLoc, GL_FLOAT, 2*sizeof(GLfloat), 2, 6*sizeof(GLfloat));
                     _glProgCorner->setUniformValue("bg", clr);
                     
                     f->glActiveTexture(GL_TEXTURE0);
@@ -595,6 +636,8 @@ namespace dmr {
         if (_playing != val) {
             _playing = val;
         }
+        updateVbo();
+        updateVboCorners();
         update();
     }
 
@@ -603,6 +646,7 @@ namespace dmr {
         if (_inMiniMode != val) {
             _inMiniMode = val;
             updateVbo();
+            updateVboCorners();
             update();
         }
     }
