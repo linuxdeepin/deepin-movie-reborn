@@ -3,16 +3,6 @@ dmr--MovieInfoDialog {
     qproperty-borderColor: rgba(0, 0, 0, 0.2);
 }
 
-Dtk--Widget--DWindowCloseButton {
-    border-image: url(:/images/light/images/window_close_normal.png);
-}
-Dtk--Widget--DWindowCloseButton:hover {
-    border-image: url(:/images/light/images/window_close_hover.png);
-}
-Dtk--Widget--DWindowCloseButton:pressed {
-    border-image: url(:/images/light/images/window_close_press.png);
-}
-
 #MovieInfoTitle {
     qproperty-alignment: AlignCenter;
     color: black;
