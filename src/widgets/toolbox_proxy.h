@@ -53,7 +53,6 @@ protected slots:
 protected:
     void paintEvent(QPaintEvent *pe) override;
     void showEvent(QShowEvent *event) override;
-    void resizeEvent(QResizeEvent* re) override;
 
 private:
     void setup();

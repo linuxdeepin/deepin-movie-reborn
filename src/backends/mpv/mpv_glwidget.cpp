@@ -277,9 +277,9 @@ namespace dmr {
 
 
         connect(window()->windowHandle(), &QWindow::windowStateChanged, [=]() {
-                makeCurrent();
-                updateBlendMask();
-                update();
+            auto top = this->topLevelWidget();
+            bool rounded = !top->isFullScreen() && !top->isMaximized();
+            toggleRoundedClip(rounded);
         });
 
         //if (mpv_opengl_cb_init_gl(_gl_ctx, NULL, get_proc_address, NULL) < 0)
@@ -480,7 +480,7 @@ namespace dmr {
     {
         QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
 
-        qDebug() << size() << w << h;
+        //qDebug() << size() << w << h;
 
         if (_playing) {
             updateBlendMask();

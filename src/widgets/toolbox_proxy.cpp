@@ -908,41 +908,6 @@ void ToolboxProxy::paintEvent(QPaintEvent *pe)
     QWidget::paintEvent(pe);
 }
 
-void ToolboxProxy::resizeEvent(QResizeEvent* re)
-{
-#ifndef USE_DXCB
-    QPixmap shape(size());
-    shape.fill(Qt::transparent);
-
-    QPainter p(&shape);
-    p.setRenderHint(QPainter::Antialiasing);
-
-    auto radius = RADIUS;
-    auto titleBarHeight = this->height();
-    QRectF r = rect();
-
-    QRectF botLeftRect(r.bottomLeft() - QPoint(0, 2 * radius), QSize(2 * radius, 2 * radius));
-    QRectF botRightRect(QPoint(r.right() - 2 * radius, r.bottom() - 2 * radius),
-                        QSize(2 * radius, 2 * radius));
-
-    QPainterPath border;
-    border.moveTo(r.topLeft());
-    border.lineTo(r.topRight());
-    border.lineTo(r.right(), r.bottom() - radius);
-    border.arcTo(botRightRect, 0.0, -90.0);
-    border.lineTo(r.left() + radius, r.bottom());
-    border.arcTo(botLeftRect, 270.0, -90.0);
-    border.closeSubpath();
-
-    p.setClipPath(border);
-    p.fillPath(border, QBrush(Qt::white));
-    p.end();
-
-    setMask(shape.mask());
-#endif
-
-}
-
 void ToolboxProxy::showEvent(QShowEvent *event)
 {
     // to keep left and right of the same width. which makes play button centered
