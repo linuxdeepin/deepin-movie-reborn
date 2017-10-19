@@ -1921,13 +1921,13 @@ void MainWindow::updateSizeConstraints()
         }
     }
 
-    qDebug() << __func__ << m;
+    //qDebug() << __func__ << m;
     this->setMinimumSize(m);
 }
 
 void MainWindow::resizeEvent(QResizeEvent *ev)
 {
-    qDebug() << __func__ << geometry();
+    //qDebug() << __func__ << geometry();
     if (_mousePressed && !_mouseMoved) {
         auto msg = QString("%1x%2").arg(width()) .arg(height());
         _nwComm->updateWithMessage(msg);
@@ -1945,7 +1945,7 @@ void MainWindow::resizeEvent(QResizeEvent *ev)
 
     updateSizeConstraints();
     updateProxyGeometry();
-    updateWindowTitle();
+    QTimer::singleShot(0, [=]() { updateWindowTitle(); });
 }
 
 void MainWindow::updateWindowTitle()
