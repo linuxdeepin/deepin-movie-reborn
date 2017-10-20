@@ -546,7 +546,7 @@ MainWindow::MainWindow(QWidget *parent)
     _progIndicator = new MovieProgressIndicator(this);
     _progIndicator->setVisible(false);
     connect(windowHandle(), &QWindow::windowStateChanged, [=]() {
-        qDebug() << windowHandle()->windowState();
+        qDebug() << windowState();
         Qt::WindowFlags hint = Qt::WindowCloseButtonHint | Qt::WindowTitleHint |
             Qt::WindowSystemMenuHint;
         if (!isFullScreen()) {
@@ -571,6 +571,14 @@ MainWindow::MainWindow(QWidget *parent)
         } else {
             _titlebar->move(1, 1);
             _engine->move(1, 1);
+        }
+
+        if (!isFullScreen() && !isMaximized()) {
+            if (_movieSwitchedInFsOrMaxed && !_hasPendingResizeByConstraint) {
+                setMinimumSize({0, 0});
+                resizeByConstraints(true);
+            }
+            _movieSwitchedInFsOrMaxed = false;
         }
         update();
     });
@@ -1194,8 +1202,6 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         case ActionFactory::ActionKind::QuitFullscreen: {
             if (isFullScreen()) {
                 showNormal();
-                setMinimumSize({0, 0});
-                resizeByConstraints(true);
                 if (!fromUI) {
                     reflectActionToUI(ActionFactory::ToggleFullscreen);
                 }
@@ -1206,8 +1212,6 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         case ActionFactory::ActionKind::ToggleFullscreen: {
             if (isFullScreen()) {
                 showNormal();
-                setMinimumSize({0, 0});
-                resizeByConstraints(true);
             } else {
                 showFullScreen();
             }
@@ -1347,11 +1351,17 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         }
 
         case ActionFactory::ActionKind::GotoPlaylistNext: {
+            if (isFullScreen() || isMaximized()) {
+                _movieSwitchedInFsOrMaxed = true;
+            }
             _engine->next();
             break;
         }
 
         case ActionFactory::ActionKind::GotoPlaylistPrev: {
+            if (isFullScreen() || isMaximized()) {
+                _movieSwitchedInFsOrMaxed = true;
+            }
             _engine->prev();
             break;
         }
@@ -1897,7 +1907,9 @@ void MainWindow::resizeByConstraints(bool forceCentered)
         r.moveTopLeft({(geom.width() - r.width()) /2, (geom.height() - r.height())/2});
         this->setGeometry(r);
     } else {
-        resize(sz);
+        QRect r = this->geometry();
+        r.setSize(sz);
+        this->setGeometry(r);
     }
 }
 
@@ -1913,7 +1925,7 @@ void MainWindow::updateSizeConstraints()
         if (_engine->state() != PlayerEngine::CoreState::Idle) {
             auto sz = _engine->videoSize();
             qreal ratio = (qreal)sz.width() / sz.height();
-            if (size().width() > size().height()) {
+            if (sz.width() > sz.height()) {
                 int h = 528 / ratio;
                 m = QSize(528, h);
             } else {
@@ -1925,7 +1937,7 @@ void MainWindow::updateSizeConstraints()
         }
     }
 
-    //qDebug() << __func__ << m;
+    qDebug() << __func__ << m;
     this->setMinimumSize(m);
 }
 
@@ -1938,11 +1950,15 @@ void MainWindow::resizeEvent(QResizeEvent *ev)
     } else if (_mouseMoved) {
         //when in maximized state, drag to resize don't issue state change 
         //we need to change manually
-        if (windowHandle()->windowState() == Qt::WindowMaximized) {
-            this->setWindowState(Qt::WindowNoState);
+        if (windowState() == Qt::WindowMaximized) {
+            setWindowState(Qt::WindowNoState);
+            //FIXME: I can not resize at this situation. it seems that
+            //qt forbids me to do correct resizing while holding press.
+            _hasPendingResizeByConstraint = true;
+            return;
         }
     }
-
+    
     if (isFullScreen()) {
         _progIndicator->move(geometry().width() - _progIndicator->width() - 18, 8);
     }
@@ -1991,6 +2007,15 @@ void MainWindow::capturedMousePressEvent(QMouseEvent* me)
 void MainWindow::capturedMouseReleaseEvent(QMouseEvent* me)
 {
     _mousePressed = false;
+    if (_hasPendingResizeByConstraint) {
+        QTimer::singleShot(100, [=]() {
+            _movieSwitchedInFsOrMaxed = false;
+            _hasPendingResizeByConstraint = false;
+            setMinimumSize({0, 0});
+            resizeByConstraints(false);
+            update();
+        });
+    }
 }
 
 static bool _afterDblClick = false;
@@ -2041,6 +2066,16 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *ev)
     if (!insideResizeArea(ev->globalPos()) && !_mouseMoved && !insideToolsArea(ev->pos())) {
         if (_playlist->state() != PlaylistWidget::Opened)
             _delayedMouseReleaseTimer.start(120);
+    } else if (_mouseMoved) {
+        if (_hasPendingResizeByConstraint) {
+            QTimer::singleShot(100, [=]() {
+                _movieSwitchedInFsOrMaxed = false;
+                _hasPendingResizeByConstraint = false;
+                setMinimumSize({0, 0});
+                resizeByConstraints(false);
+                update();
+            });
+        }
     }
 
     _mouseMoved = false;
@@ -2057,7 +2092,9 @@ void MainWindow::mouseMoveEvent(QMouseEvent *ev)
 {
     _mouseMoved = true;
 #ifndef USE_DXCB
-    Utility::startWindowSystemMove(this->winId());
+    if (windowState() == Qt::WindowNoState) {
+        Utility::startWindowSystemMove(this->winId());
+    }
 #endif
     QWidget::mouseMoveEvent(ev);
 }
