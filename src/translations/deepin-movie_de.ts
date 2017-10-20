@@ -422,7 +422,7 @@
     <message>
         <location filename="../common/actions.cpp" line="238"/>
         <source>Burst Shooting</source>
-        <translation type="unfinished"/>
+        <translation>Screenshot</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="245"/>

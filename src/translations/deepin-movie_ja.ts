@@ -50,7 +50,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="12"/>
         <source>Basic</source>
-        <translation type="unfinished"/>
+        <translation>ベーシック</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="13"/>
