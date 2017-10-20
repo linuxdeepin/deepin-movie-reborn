@@ -93,3 +93,5 @@ install(FILES ${PROJECT_SOURCE_DIR}/src/resources/icons/logo-big.svg
     DESTINATION share/icons/hicolor/scalable/apps
     RENAME deepin-movie.svg)
 
+install(DIRECTORY ${PROJECT_SOURCE_DIR}/src/dman/deepin-movie DESTINATION share/dman)
+
