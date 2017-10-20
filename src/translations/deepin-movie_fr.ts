@@ -10,12 +10,12 @@
     <message>
         <location filename="../main.cpp" line="65"/>
         <source>Deepin Movie is a well-designed and full-featured video player with simple borderless design. It supports local and streaming media play with multiple video formats.</source>
-        <translation>Deepin film est un lecteur vidéo visuellement agréable et très complet. Il prends en charge la lecture ainsi que le streaming de fichiers en différents formats.</translation>
+        <translation>Deepin film est un lecteur vidéo visuellement agréable et très complet. Il prend en charge la lecture ainsi que le « streaming » de fichiers en différents formats.</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="5"/>
         <source>Auto add similar files to play</source>
-        <translation type="unfinished"/>
+        <translation>Ajouter automatiquement des fichiers similaires à la liste de lecture</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="6"/>
@@ -25,7 +25,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="7"/>
         <source>Show video preview on mouseover</source>
-        <translation type="unfinished"/>
+        <translation>Prévisualiser au passage de la souris</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="8"/>
@@ -127,7 +127,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="29"/>
         <source>volume down</source>
-        <translation type="unfinished"/>
+        <translation>baisser le volume</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="30"/>
@@ -142,7 +142,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="32"/>
         <source>Speed down</source>
-        <translation type="unfinished"/>
+        <translation>Ralentir</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="33"/>
@@ -187,12 +187,12 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="41"/>
         <source>0.5s backward</source>
-        <translation type="unfinished"/>
+        <translation>0,5 s en arrière</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="42"/>
         <source>0.5s forward</source>
-        <translation type="unfinished"/>
+        <translation>0,5 s en avant</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="43"/>
@@ -217,7 +217,7 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="87"/>
         <source>You don&apos;t have permission to operate this folder</source>
-        <translation type="unfinished"/>
+        <translation>Vous n&apos;avez pas la permission d&apos;agir sur ce dossier</translation>
     </message>
 </context>
 <context>
@@ -257,7 +257,7 @@
     <message>
         <location filename="../common/actions.cpp" line="56"/>
         <source>Light Theme</source>
-        <translation type="unfinished"/>
+        <translation>Thème léger</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="77"/>
@@ -317,7 +317,7 @@
     <message>
         <location filename="../common/actions.cpp" line="102"/>
         <source>Single Play</source>
-        <translation type="unfinished"/>
+        <translation>Lecture seule</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="103"/>
@@ -347,7 +347,7 @@
     <message>
         <location filename="../common/actions.cpp" line="123"/>
         <source>Counterclockwise</source>
-        <translation type="unfinished"/>
+        <translation>Sens antihoraire</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="130"/>
@@ -540,7 +540,7 @@
         <location filename="../common/mainwindow.cpp" line="1356"/>
         <location filename="../common/mainwindow.cpp" line="1364"/>
         <source>delayed</source>
-        <translation type="unfinished"/>
+        <translation>Retardé</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1356"/>
@@ -573,7 +573,7 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="1461"/>
         <source>Saved to</source>
-        <translation type="unfinished"/>
+        <translation>Sauvegardé sur</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1475"/>
@@ -608,7 +608,7 @@
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="88"/>
         <source>Duration:</source>
-        <translation>Durée:</translation>
+        <translation>Durée :</translation>
     </message>
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="91"/>
@@ -640,12 +640,12 @@
     <message>
         <location filename="../common/dmr_settings.cpp" line="129"/>
         <source>%1/DMovie%2.jpg</source>
-        <translation type="unfinished"/>
+        <translation>%1/DMovie%2.jpg</translation>
     </message>
     <message>
         <location filename="../common/dmr_settings.cpp" line="135"/>
         <source>%1/DMovie%2(%3).jpg</source>
-        <translation type="unfinished"/>
+        <translation>%1/DMovie%2(%3).jpg</translation>
     </message>
 </context>
 <context>
