@@ -249,10 +249,10 @@ signals:
 protected:
     void updateClosePosition()
     {
-        auto margin = 6;
+        auto margin = 4;
         auto pl = dynamic_cast<PlaylistWidget*>(parentWidget()->parentWidget());
         if (pl->verticalScrollBar()->isVisible())
-            margin = 12;
+            margin = 10;
         _closeBtn->move(PLAYLIST_FIXED_WIDTH - _closeBtn->width() - margin,
                 (height() - _closeBtn->height())/2);
     }
@@ -310,7 +310,7 @@ protected:
 
     QString elideText(const QString &text, const QSize &size,
             QTextOption::WrapMode wordWrap, const QFont &font,
-            Qt::TextElideMode mode, int lineHeight)
+            Qt::TextElideMode mode, int lineHeight, int lastLineWidth)
     {
         int height = 0;
 
@@ -329,7 +329,8 @@ protected:
             height += lineHeight;
 
             if(height + lineHeight >= size.height()) {
-                str += fontMetrics.elidedText(text.mid(line.textStart() + line.textLength() + 1), mode, size.width());
+                str += fontMetrics.elidedText(text.mid(line.textStart() + line.textLength() + 1),
+                        mode, lastLineWidth);
 
                 break;
             }
@@ -351,13 +352,17 @@ protected:
 
         textLayout.endLayout();
 
+        if (textLayout.lineCount() == 1) {
+            str = fontMetrics.elidedText(str, mode, lastLineWidth);
+        }
+
         return str;
     }
 
     void updateNameText() 
     {
         _name->setText(elideText(_pif.mi.title, {136, 40}, QTextOption::WrapAnywhere,
-                    _name->font(), Qt::ElideMiddle, 18));
+                    _name->font(), Qt::ElideMiddle, 18, 136-10));
         _name->viewport()->setCursor(Qt::ArrowCursor);
         _name->setCursor(Qt::ArrowCursor);
         _name->document()->setDocumentMargin(0.0);
