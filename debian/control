@@ -16,7 +16,7 @@ Build-Depends: debhelper, cmake, pkg-config, qttools5-dev-tools,
 Standards-Version: 3.9.2
 Homepage: http://www.deepin.com/
 
-Package: deepin-movie-reborn
+Package: deepin-movie
 Architecture: any
 Conflicts: deepin-movie
 Replaces: deepin-movie
