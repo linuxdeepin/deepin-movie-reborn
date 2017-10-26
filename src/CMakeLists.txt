@@ -54,7 +54,7 @@ if (ENABLE_VPU_PLATFORM)
 endif()
 
 add_custom_target(json_i18n ALL 
-    /usr/lib/dtk2/dtk-settings-tool resources/data/settings.json > common/settings_translation.cpp
+    /usr/lib/dtk2/dtk-settings-tool resources/data/settings.json -o common/settings_translation.cpp
     COMMAND sed -i "s,#include .*,#include <DSettings>," common/settings_translation.cpp
     VERBATIM
     SOURCES resources/data/settings.json
