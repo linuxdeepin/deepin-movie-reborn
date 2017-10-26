@@ -1,5 +1,6 @@
 .vim-undo
 *~
+*.qm
 *.swp
 .*~
 build
