@@ -177,12 +177,12 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="39"/>
         <source>Burst screenshot</source>
-        <translation>Screenshot de explosão</translation>
+        <translation>Captura de tela de explosão</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="40"/>
         <source>Film screenshot</source>
-        <translation>Screenshot do filme</translation>
+        <translation>Captura de tela do filme</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="41"/>
@@ -417,7 +417,7 @@
     <message>
         <location filename="../common/actions.cpp" line="237"/>
         <source>Film Screenshot</source>
-        <translation>Screenshot do filme</translation>
+        <translation>Captura de tela do filme</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="238"/>
@@ -579,12 +579,12 @@
         <location filename="../common/mainwindow.cpp" line="1515"/>
         <location filename="../common/mainwindow.cpp" line="1586"/>
         <source>The screenshot is saved</source>
-        <translation type="unfinished"/>
+        <translation>A captura de tela foi salva </translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1515"/>
         <source>The screenshot is failed to save</source>
-        <translation type="unfinished"/>
+        <translation>Não foi possível salvar a captura de tela </translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1657"/>

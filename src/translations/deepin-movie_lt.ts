@@ -402,7 +402,7 @@
     <message>
         <location filename="../common/actions.cpp" line="164"/>
         <source>Hide</source>
-        <translation type="unfinished"/>
+        <translation>Slėpti</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="168"/>
