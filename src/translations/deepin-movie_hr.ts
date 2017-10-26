@@ -1,4 +1,6 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS language="hr" version="2.1">
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.1" language="hr">
 <context>
     <name>QObject</name>
     <message>
@@ -25,12 +27,12 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="7"/>
         <source>Show video preview on mouseover</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="8"/>
         <source>Open a new player for each file played</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="9"/>
@@ -162,7 +164,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="36"/>
         <source>Reset speed</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="37"/>
@@ -182,7 +184,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="40"/>
         <source>Film screenshot</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="41"/>
@@ -217,7 +219,7 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="90"/>
         <source>You don&apos;t have permission to operate this folder</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -312,22 +314,22 @@
     <message>
         <location filename="../common/actions.cpp" line="101"/>
         <source>Shuffle Play</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="102"/>
         <source>Single Play</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="103"/>
         <source>Single Loop</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="104"/>
         <source>List Loop</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="111"/>
@@ -407,7 +409,7 @@
     <message>
         <location filename="../common/actions.cpp" line="168"/>
         <source>Encodings</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="236"/>
@@ -417,12 +419,12 @@
     <message>
         <location filename="../common/actions.cpp" line="237"/>
         <source>Film Screenshot</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="238"/>
         <source>Burst Shooting</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="245"/>
@@ -472,123 +474,123 @@
     <name>dmr::MainWindow</name>
     <message>
         <location filename="../common/mainwindow.cpp" line="501"/>
-        <location filename="../common/mainwindow.cpp" line="1866"/>
-        <location filename="../common/mainwindow.cpp" line="1959"/>
+        <location filename="../common/mainwindow.cpp" line="1880"/>
+        <location filename="../common/mainwindow.cpp" line="1979"/>
         <source>Deepin Movie</source>
         <translation>Deepin film</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="658"/>
-        <location filename="../common/mainwindow.cpp" line="1435"/>
+        <location filename="../common/mainwindow.cpp" line="666"/>
+        <location filename="../common/mainwindow.cpp" line="1449"/>
         <source>Load successfully</source>
         <translation>Uspješno učitano</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="658"/>
-        <location filename="../common/mainwindow.cpp" line="1435"/>
+        <location filename="../common/mainwindow.cpp" line="666"/>
+        <location filename="../common/mainwindow.cpp" line="1449"/>
         <source>Load failed</source>
         <translation>Neuspjelo učitavanje</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1080"/>
+        <location filename="../common/mainwindow.cpp" line="1088"/>
         <source>No device found</source>
         <translation>NIje pronađen uređaj</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1098"/>
+        <location filename="../common/mainwindow.cpp" line="1106"/>
         <source>Parse Failed</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1105"/>
+        <location filename="../common/mainwindow.cpp" line="1113"/>
         <source>Open Folder</source>
         <translation>Otvori mapu</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1120"/>
-        <location filename="../common/mainwindow.cpp" line="1136"/>
-        <location filename="../common/mainwindow.cpp" line="1430"/>
+        <location filename="../common/mainwindow.cpp" line="1128"/>
+        <location filename="../common/mainwindow.cpp" line="1144"/>
+        <location filename="../common/mainwindow.cpp" line="1444"/>
         <source>Open File</source>
         <translation>Otvori datoteku</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1122"/>
-        <location filename="../common/mainwindow.cpp" line="1138"/>
+        <location filename="../common/mainwindow.cpp" line="1130"/>
+        <location filename="../common/mainwindow.cpp" line="1146"/>
         <source>Movies (%1)</source>
         <translation>Filmovi (%1)</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1304"/>
+        <location filename="../common/mainwindow.cpp" line="1312"/>
         <source>Muted</source>
         <translation>Utišano</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1307"/>
-        <location filename="../common/mainwindow.cpp" line="1319"/>
-        <location filename="../common/mainwindow.cpp" line="1329"/>
-        <location filename="../common/mainwindow.cpp" line="1336"/>
+        <location filename="../common/mainwindow.cpp" line="1315"/>
+        <location filename="../common/mainwindow.cpp" line="1327"/>
+        <location filename="../common/mainwindow.cpp" line="1337"/>
+        <location filename="../common/mainwindow.cpp" line="1344"/>
         <source>Volume: %1%</source>
         <translation>Glasnoća: %1%</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1395"/>
-        <location filename="../common/mainwindow.cpp" line="1403"/>
+        <location filename="../common/mainwindow.cpp" line="1409"/>
+        <location filename="../common/mainwindow.cpp" line="1417"/>
         <source>Subtitle %1: %2s</source>
         <translation>Podnapis %1: %2s</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1396"/>
-        <location filename="../common/mainwindow.cpp" line="1404"/>
+        <location filename="../common/mainwindow.cpp" line="1410"/>
+        <location filename="../common/mainwindow.cpp" line="1418"/>
         <source>delayed</source>
         <translation>odgođeno</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1396"/>
-        <location filename="../common/mainwindow.cpp" line="1404"/>
+        <location filename="../common/mainwindow.cpp" line="1410"/>
+        <location filename="../common/mainwindow.cpp" line="1418"/>
         <source>advanced</source>
         <translation>napredno</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1411"/>
-        <location filename="../common/mainwindow.cpp" line="1418"/>
         <location filename="../common/mainwindow.cpp" line="1425"/>
+        <location filename="../common/mainwindow.cpp" line="1432"/>
+        <location filename="../common/mainwindow.cpp" line="1439"/>
         <source>Speed: %1x</source>
         <translation>Brzina: %1x</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1432"/>
+        <location filename="../common/mainwindow.cpp" line="1446"/>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</source>
         <translation>Podnapis (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1489"/>
+        <location filename="../common/mainwindow.cpp" line="1503"/>
         <source>View</source>
         <translation>Pogled</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1500"/>
+        <location filename="../common/mainwindow.cpp" line="1514"/>
         <source>Movie Screenshot</source>
         <translation>Snimka zaslona filma</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1501"/>
+        <location filename="../common/mainwindow.cpp" line="1515"/>
         <source>Saved to</source>
         <translation>Spremljeno u</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1515"/>
-        <location filename="../common/mainwindow.cpp" line="1586"/>
+        <location filename="../common/mainwindow.cpp" line="1529"/>
+        <location filename="../common/mainwindow.cpp" line="1600"/>
         <source>The screenshot is saved</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1515"/>
+        <location filename="../common/mainwindow.cpp" line="1529"/>
         <source>The screenshot is failed to save</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1657"/>
-        <location filename="../common/mainwindow.cpp" line="2255"/>
+        <location filename="../common/mainwindow.cpp" line="1671"/>
+        <location filename="../common/mainwindow.cpp" line="2296"/>
         <source>Invalid file: %1</source>
         <translation>Neispravna datoteka: %1</translation>
     </message>
@@ -596,27 +598,27 @@
 <context>
     <name>dmr::MovieInfoDialog</name>
     <message>
-        <location filename="../widgets/movieinfo_dialog.cpp" line="85"/>
+        <location filename="../widgets/movieinfo_dialog.cpp" line="86"/>
         <source>File Type:</source>
         <translation>Vrsta datoteke:</translation>
     </message>
     <message>
-        <location filename="../widgets/movieinfo_dialog.cpp" line="86"/>
+        <location filename="../widgets/movieinfo_dialog.cpp" line="87"/>
         <source>Resolution:</source>
         <translation>Razlučivost:</translation>
     </message>
     <message>
-        <location filename="../widgets/movieinfo_dialog.cpp" line="87"/>
+        <location filename="../widgets/movieinfo_dialog.cpp" line="88"/>
         <source>File Size:</source>
         <translation>Veličina datoteke:</translation>
     </message>
     <message>
-        <location filename="../widgets/movieinfo_dialog.cpp" line="88"/>
+        <location filename="../widgets/movieinfo_dialog.cpp" line="89"/>
         <source>Duration:</source>
         <translation>Trajanje:</translation>
     </message>
     <message>
-        <location filename="../widgets/movieinfo_dialog.cpp" line="91"/>
+        <location filename="../widgets/movieinfo_dialog.cpp" line="92"/>
         <source>File Path:</source>
         <translation>Putanja datoteke:</translation>
     </message>
@@ -624,10 +626,10 @@
 <context>
     <name>dmr::MpvProxy</name>
     <message>
-        <location filename="../backends/mpv/mpv_proxy.cpp" line="895"/>
-        <location filename="../backends/mpv/mpv_proxy.cpp" line="913"/>
+        <location filename="../backends/mpv/mpv_proxy.cpp" line="897"/>
+        <location filename="../backends/mpv/mpv_proxy.cpp" line="915"/>
         <source>[internal]</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -635,7 +637,7 @@
     <message>
         <location filename="../widgets/playlist_widget.cpp" line="152"/>
         <location filename="../widgets/playlist_widget.cpp" line="187"/>
-        <location filename="../widgets/playlist_widget.cpp" line="397"/>
+        <location filename="../widgets/playlist_widget.cpp" line="402"/>
         <source>File does not exist</source>
         <translation>Datoteka ne postoji</translation>
     </message>
@@ -645,12 +647,12 @@
     <message>
         <location filename="../common/dmr_settings.cpp" line="129"/>
         <source>%1/DMovie%2.jpg</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../common/dmr_settings.cpp" line="135"/>
         <source>%1/DMovie%2(%3).jpg</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

@@ -61,9 +61,7 @@ add_custom_target(json_i18n ALL
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/src/)
 
 ## translations 
-set(TS 
-    ${PROJECT_SOURCE_DIR}/src/translations/${CMD_NAME}.ts
-    ${PROJECT_SOURCE_DIR}/src/translations/${CMD_NAME}_zh_CN.ts)
+file(GLOB TS LIST_DIRECTORIES false translations/${CMD_NAME}*.ts)
 
 set_source_files_properties(${TS}
     PROPERTIES OUTPUT_LOCATION ${PROJECT_SOURCE_DIR}/src/translations)
