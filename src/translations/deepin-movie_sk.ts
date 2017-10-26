@@ -579,12 +579,12 @@
         <location filename="../common/mainwindow.cpp" line="1515"/>
         <location filename="../common/mainwindow.cpp" line="1586"/>
         <source>The screenshot is saved</source>
-        <translation type="unfinished"/>
+        <translation>Snímok obrazovky sa uložil</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1515"/>
         <source>The screenshot is failed to save</source>
-        <translation type="unfinished"/>
+        <translation>Snímok obrazovky sa nepodarilo uložiť</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1657"/>

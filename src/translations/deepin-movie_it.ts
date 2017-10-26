@@ -580,12 +580,12 @@ Localizzazione italiana a cura di Carofano Massimo Antonio.</translation>
         <location filename="../common/mainwindow.cpp" line="1515"/>
         <location filename="../common/mainwindow.cpp" line="1586"/>
         <source>The screenshot is saved</source>
-        <translation type="unfinished"/>
+        <translation>Lo screenshot è stato salvato</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1515"/>
         <source>The screenshot is failed to save</source>
-        <translation type="unfinished"/>
+        <translation>Salvataggio dello screenshot fallito</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1657"/>
