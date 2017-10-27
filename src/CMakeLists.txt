@@ -23,10 +23,13 @@ find_package(Qt5Sql)
 
 pkg_check_modules(Dtk REQUIRED IMPORTED_TARGET dtkwidget)
 pkg_check_modules(Mpv REQUIRED IMPORTED_TARGET mpv)
-pkg_check_modules(Xcb REQUIRED IMPORTED_TARGET xcb xcb-aux xcb-proto xcb-ewmh xcb-shape)
-pkg_check_modules(Other REQUIRED IMPORTED_TARGET libffmpegthumbnailer 
-    libavformat libavutil libavcodec libavresample libpulse libpulse-simple
-    openssl dvdnav)
+pkg_check_modules(Xcb REQUIRED IMPORTED_TARGET xcb xcb-aux
+    xcb-proto xcb-ewmh xcb-shape)
+pkg_check_modules(AV REQUIRED IMPORTED_TARGET libavformat
+    libavutil libavcodec libavresample)
+# IMPORTED_TARGET failed to wokr for some of libs under flatpak env
+pkg_check_modules(Other REQUIRED libffmpegthumbnailer 
+    libpulse libpulse-simple openssl dvdnav)
 
 qt5_add_resources(RCS resources.qrc)
 
@@ -74,11 +77,12 @@ add_dependencies(${CMD_NAME} json_i18n)
 target_include_directories(${CMD_NAME} PUBLIC ${PROJECT_INCLUDE})
 
 set(TARGET_LIBS X11 Xext Xtst PkgConfig::Xcb Qt5::Widgets Qt5::X11Extras Qt5::Network
-    Qt5::Concurrent Qt5::DBus Qt5::Sql PkgConfig::Dtk PkgConfig::Mpv PkgConfig::Other pthread)
+    Qt5::Concurrent Qt5::DBus Qt5::Sql PkgConfig::Dtk PkgConfig::Mpv 
+    PkgConfig::AV pthread GL)
 if (ENABLE_VPU_PLATFORM) 
     list(APPEND TARGET_LIBS GAL pulse pulse-simple)
 endif()
-target_link_libraries(${CMD_NAME} ${TARGET_LIBS})
+target_link_libraries(${CMD_NAME} ${TARGET_LIBS} ${Other_LIBRARIES})
 
 
 install(TARGETS ${CMD_NAME} DESTINATION bin)
