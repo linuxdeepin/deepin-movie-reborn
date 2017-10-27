@@ -5,6 +5,13 @@
 #include <QtCore>
 #include <QX11Info>
 
+#define GLX_GLXEXT_PROTOTYPES
+#include <GL/glx.h>
+#include <GL/glxext.h>
+
+typedef const char * glXGetScreenDriver_t (Display *dpy, int scrNum);
+
+static glXGetScreenDriver_t *GetScreenDriver;
 
 //TODO: override by user setting
 
@@ -66,8 +73,20 @@ CompositingManager::CompositingManager() {
     _platform = PlatformChecker().check();
 
     _composited = false;
-    if (isDriverLoadedCorrectly() && isDirectRendered()) {
-        _composited = true;
+
+    if (QProcessEnvironment::systemEnvironment().value("SANDBOX") == "flatpak") {
+        _composited = QFile::exists("/dev/dri/card0");
+    } else {
+        GetScreenDriver = (glXGetScreenDriver_t *)glXGetProcAddressARB ((const GLubyte *)"glXGetScreenDriver");
+        if (GetScreenDriver) {
+            const char *name = (*GetScreenDriver) (QX11Info::display(), QX11Info::appScreen());
+            qDebug() << "dri driver: " << name;
+            _composited = name != NULL;
+        } else {
+            if (isDriverLoadedCorrectly() && isDirectRendered()) {
+                _composited = true;
+            }
+        }
     }
 
     auto v = CommandLineManager::get().openglMode();
