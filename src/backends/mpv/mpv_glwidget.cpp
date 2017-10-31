@@ -174,7 +174,7 @@ namespace dmr {
 
     void MpvGLWidget::setupBlendPipe()
     {
-        updateBlendMask();
+        updateMovieFbo();
 
         _vaoBlend.create();
         _vaoBlend.bind();
@@ -281,7 +281,7 @@ namespace dmr {
             throw std::runtime_error("could not initialize OpenGL");
     }
 
-    void MpvGLWidget::updateBlendMask()
+    void MpvGLWidget::updateMovieFbo()
     {
         if (!_doRoundedClipping) return;
 
@@ -289,7 +289,7 @@ namespace dmr {
             _fbo->release();
             delete _fbo;
         }
-        _fbo = new QOpenGLFramebufferObject(size());
+        _fbo = new QOpenGLFramebufferObject(size() * qApp->devicePixelRatio());
     }
 
     void MpvGLWidget::updateCornerMasks()
@@ -474,10 +474,8 @@ namespace dmr {
     {
         QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
 
-        //qDebug() << size() << w << h;
-
         if (_playing) {
-            updateBlendMask();
+            updateMovieFbo();
         } else {
             updateVbo();
             updateVboCorners();
@@ -490,7 +488,7 @@ namespace dmr {
     {
         _doRoundedClipping = val;
         makeCurrent();
-        updateBlendMask();
+        updateMovieFbo();
         update();
     }
 
@@ -499,14 +497,17 @@ namespace dmr {
         QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
         if (_playing) {
 
+            auto dpr = qApp->devicePixelRatio();
+            QSize scaled = size() * dpr;
+
             if (!_doRoundedClipping) {
-                mpv_opengl_cb_draw(_gl_ctx, defaultFramebufferObject(), width(), -height());
+                mpv_opengl_cb_draw(_gl_ctx, defaultFramebufferObject(), scaled.width(), -scaled.height());
             } else {
                 f->glEnable(GL_BLEND);
                 f->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
                 _fbo->bind();
-                mpv_opengl_cb_draw(_gl_ctx, _fbo->handle(), width(), -height());
+                mpv_opengl_cb_draw(_gl_ctx, _fbo->handle(), scaled.width(), -scaled.height());
                 _fbo->release();
 
                 {
