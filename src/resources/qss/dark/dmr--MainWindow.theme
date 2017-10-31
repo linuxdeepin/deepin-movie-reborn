@@ -28,33 +28,33 @@ dmr--PlayerEngine, dmr--PlayerEngine * {
 Dtk--Widget--DImageButton#MiniPlayBtn {
     background: transparent;
     border: none;
-    qproperty-normalPic: url(:/resources/icons/dark/mini/play-normal-mini.png);
-    qproperty-hoverPic: url(:/resources/icons/dark/mini/play-hover-mini.png);
-    qproperty-pressPic: url(:/resources/icons/dark/mini/play-press-mini.png);
+    qproperty-normalPic: url(:/resources/icons/dark/mini/play-normal-mini.svg);
+    qproperty-hoverPic: url(:/resources/icons/dark/mini/play-hover-mini.svg);
+    qproperty-pressPic: url(:/resources/icons/dark/mini/play-press-mini.svg);
 }
 
 Dtk--Widget--DImageButton#MiniPauseBtn {
     background: transparent;
     border: none;
-    qproperty-normalPic: url(:/resources/icons/dark/mini/pause-normal-mini.png);
-    qproperty-hoverPic: url(:/resources/icons/dark/mini/pause-hover-mini.png);
-    qproperty-pressPic: url(:/resources/icons/dark/mini/pause-press-mini.png);
+    qproperty-normalPic: url(:/resources/icons/dark/mini/pause-normal-mini.svg);
+    qproperty-hoverPic: url(:/resources/icons/dark/mini/pause-hover-mini.svg);
+    qproperty-pressPic: url(:/resources/icons/dark/mini/pause-press-mini.svg);
 }
 
 Dtk--Widget--DImageButton#MiniQuitMiniBtn {
     background: transparent;
     border: none;
-    qproperty-normalPic: url(:/resources/icons/dark/mini/restore-normal-mini.png);
-    qproperty-hoverPic: url(:/resources/icons/dark/mini/restore-hover-mini.png);
-    qproperty-pressPic: url(:/resources/icons/dark/mini/restore-press-mini.png);
+    qproperty-normalPic: url(:/resources/icons/dark/mini/restore-normal-mini.svg);
+    qproperty-hoverPic: url(:/resources/icons/dark/mini/restore-hover-mini.svg);
+    qproperty-pressPic: url(:/resources/icons/dark/mini/restore-press-mini.svg);
 }
 
 Dtk--Widget--DImageButton#MiniCloseBtn {
     background: transparent;
     border: none;
-    qproperty-normalPic: url(:/resources/icons/dark/mini/close-normal.png);
-    qproperty-hoverPic: url(:/resources/icons/dark/mini/close-hover.png);
-    qproperty-pressPic: url(:/resources/icons/dark/mini/close-press.png);
+    qproperty-normalPic: url(:/resources/icons/dark/mini/close-normal.svg);
+    qproperty-hoverPic: url(:/resources/icons/dark/mini/close-hover.svg);
+    qproperty-pressPic: url(:/resources/icons/dark/mini/close-press.svg);
 }
 
 

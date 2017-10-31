@@ -114,7 +114,7 @@ public:
         setFrameShape(QFrame::NoFrame);
 
         // it's the same for all themes
-        _play = QPixmap(":/resources/icons/dark/normal/film-top.png");
+        _play = QPixmap(":/resources/icons/dark/normal/film-top.svg");
 
         setFixedSize(PLAYLIST_FIXED_WIDTH, 68);
         auto *l = new QHBoxLayout(this);
@@ -154,7 +154,7 @@ public:
         vl->addWidget(_time);
         vl->addStretch();
 
-        setBg(QString(":/resources/icons/%1/normal/film-bg.png").arg(qApp->theme())); 
+        setBg(QString(":/resources/icons/%1/normal/film-bg.svg").arg(qApp->theme())); 
 
         _closeBtn = new DImageButton(this);
         _closeBtn->setFixedSize(20, 20);

@@ -116,7 +116,7 @@ public:
     void setCurrent(bool v)
     {
         if (v) {
-            auto name = QString(":/resources/icons/%1/subtitle-selected.png").arg(qApp->theme());
+            auto name = QString(":/resources/icons/%1/subtitle-selected.svg").arg(qApp->theme());
             _selectedLabel->setPixmap(QPixmap(name));
         } else {
             _selectedLabel->clear();
@@ -145,7 +145,7 @@ protected:
 private slots:
     void onThemeChanged() {
         if (property("current").toBool()) {
-            auto name = QString(":/resources/icons/%1/subtitle-selected.png").arg(qApp->theme());
+            auto name = QString(":/resources/icons/%1/subtitle-selected.svg").arg(qApp->theme());
             _selectedLabel->setPixmap(QPixmap(name));
         }
     }

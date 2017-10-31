@@ -73,13 +73,13 @@
 }
 
 Dtk--Widget--DWindowCloseButton {
-    border-image: url(:/images/light/images/window_close_normal.png);
+    border-image: url(:/images/light/images/window_close_normal.svg);
 }
 Dtk--Widget--DWindowCloseButton:hover {
-    border-image: url(:/images/light/images/window_close_hover.png);
+    border-image: url(:/images/light/images/window_close_hover.svg);
 }
 Dtk--Widget--DWindowCloseButton:pressed {
-    border-image: url(:/images/light/images/window_close_press.png);
+    border-image: url(:/images/light/images/window_close_press.svg);
 }
 
 Dtk--Widget--DLineEdit {
@@ -110,9 +110,9 @@ Dtk--Widget--DLineEdit[alert="true"] #IconButton{
 }
 
 Dtk--Widget--DLineEdit #ClearButton {
-    qproperty-normalPic: ":/images/light/images/clear_content_normal.png";
-    qproperty-hoverPic: ":/images/light/images/clear_content_hover.png";
-    qproperty-pressPic: "/images/light/images/clear_content_press.png";
+    qproperty-normalPic: ":/images/light/images/clear_content_normal.svg";
+    qproperty-hoverPic: ":/images/light/images/clear_content_hover.svg";
+    qproperty-pressPic: "/images/light/images/clear_content_press.svg";
     margin-right: 4px;
 }
 

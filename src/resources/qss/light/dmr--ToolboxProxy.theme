@@ -18,82 +18,82 @@ QLabel, Dtk--Widget--DImageButton {
 
 
 Dtk--Widget--DImageButton#ListBtn {
-    qproperty-normalPic: url(:/resources/icons/light/normal/list-normal.png);
-    qproperty-hoverPic: url(:/resources/icons/light/normal/list-hover.png);
-    qproperty-pressPic: url(:/resources/icons/light/normal/list-press.png);
+    qproperty-normalPic: url(:/resources/icons/light/normal/list-normal.svg);
+    qproperty-hoverPic: url(:/resources/icons/light/normal/list-hover.svg);
+    qproperty-pressPic: url(:/resources/icons/light/normal/list-press.svg);
 }
 
 Dtk--Widget--DImageButton#SubtitleBtn {
-    qproperty-normalPic: url(:/resources/icons/light/normal/Subtitle-normal.png);
-    qproperty-hoverPic: url(:/resources/icons/light/normal/Subtitle-hover.png);
-    qproperty-pressPic: url(:/resources/icons/light/normal/Subtitle-press.png);
+    qproperty-normalPic: url(:/resources/icons/light/normal/Subtitle-normal.svg);
+    qproperty-hoverPic: url(:/resources/icons/light/normal/Subtitle-hover.svg);
+    qproperty-pressPic: url(:/resources/icons/light/normal/Subtitle-press.svg);
 }
 
 Dtk--Widget--DImageButton#PrevBtn {
-    qproperty-normalPic: url(:/resources/icons/light/normal/previous-normal.png);
-    qproperty-hoverPic: url(:/resources/icons/light/normal/previous-hover.png);
-    qproperty-pressPic: url(:/resources/icons/light/normal/previous-press.png);
+    qproperty-normalPic: url(:/resources/icons/light/normal/previous-normal.svg);
+    qproperty-hoverPic: url(:/resources/icons/light/normal/previous-hover.svg);
+    qproperty-pressPic: url(:/resources/icons/light/normal/previous-press.svg);
 }
 
 Dtk--Widget--DImageButton#NextBtn {
-    qproperty-normalPic: url(:/resources/icons/light/normal/next-normal.png);
-    qproperty-hoverPic: url(:/resources/icons/light/normal/next-hover.png);
-    qproperty-pressPic: url(:/resources/icons/light/normal/next-press.png);
+    qproperty-normalPic: url(:/resources/icons/light/normal/next-normal.svg);
+    qproperty-hoverPic: url(:/resources/icons/light/normal/next-hover.svg);
+    qproperty-pressPic: url(:/resources/icons/light/normal/next-press.svg);
 }
 
 Dtk--Widget--DImageButton#PlayBtn {
-    qproperty-normalPic: url(:/resources/icons/light/normal/play-normal.png);
-    qproperty-hoverPic: url(:/resources/icons/light/normal/play-hover.png);
-    qproperty-pressPic: url(:/resources/icons/light/normal/play-press.png);
+    qproperty-normalPic: url(:/resources/icons/light/normal/play-normal.svg);
+    qproperty-hoverPic: url(:/resources/icons/light/normal/play-hover.svg);
+    qproperty-pressPic: url(:/resources/icons/light/normal/play-press.svg);
 }
 
 Dtk--Widget--DImageButton#PauseBtn {
-    qproperty-normalPic: url(:/resources/icons/light/normal/pause-normal.png);
-    qproperty-hoverPic: url(:/resources/icons/light/normal/pause-hover.png);
-    qproperty-pressPic: url(:/resources/icons/light/normal/pause-press.png);
+    qproperty-normalPic: url(:/resources/icons/light/normal/pause-normal.svg);
+    qproperty-hoverPic: url(:/resources/icons/light/normal/pause-hover.svg);
+    qproperty-pressPic: url(:/resources/icons/light/normal/pause-press.svg);
 }
 
 Dtk--Widget--DImageButton#FsBtn {
-    qproperty-normalPic: url(:/resources/icons/light/normal/fullscreen-normal.png);
-    qproperty-hoverPic: url(:/resources/icons/light/normal/fullscreen-hover.png);
-    qproperty-pressPic: url(:/resources/icons/light/normal/fullscreen-press.png);
+    qproperty-normalPic: url(:/resources/icons/light/normal/fullscreen-normal.svg);
+    qproperty-hoverPic: url(:/resources/icons/light/normal/fullscreen-hover.svg);
+    qproperty-pressPic: url(:/resources/icons/light/normal/fullscreen-press.svg);
 }
 
 Dtk--Widget--DImageButton#UnfsBtn {
-    qproperty-normalPic: url(:/resources/icons/light/normal/exit-fullscreen-normal.png);
-    qproperty-hoverPic: url(:/resources/icons/light/normal/exit-fullscreen-hover.png);
-    qproperty-pressPic: url(:/resources/icons/light/normal/exit-fullscreen-press.png);
+    qproperty-normalPic: url(:/resources/icons/light/normal/exit-fullscreen-normal.svg);
+    qproperty-hoverPic: url(:/resources/icons/light/normal/exit-fullscreen-hover.svg);
+    qproperty-pressPic: url(:/resources/icons/light/normal/exit-fullscreen-press.svg);
 }
 
 dmr--VolumeButton#VolHigh {
-    qproperty-normalPic: url(:/resources/icons/light/normal/audio-volume-high-normal.png);
-    qproperty-hoverPic: url(:/resources/icons/light/normal/audio-volume-high-hover.png);
-    qproperty-pressPic: url(:/resources/icons/light/normal/audio-volume-high-press.png);
+    qproperty-normalPic: url(:/resources/icons/light/normal/audio-volume-high-normal.svg);
+    qproperty-hoverPic: url(:/resources/icons/light/normal/audio-volume-high-hover.svg);
+    qproperty-pressPic: url(:/resources/icons/light/normal/audio-volume-high-press.svg);
 }
 
 dmr--VolumeButton#VolMid {
-    qproperty-normalPic: url(:/resources/icons/light/normal/audio-volume-medium-normal.png);
-    qproperty-hoverPic: url(:/resources/icons/light/normal/audio-volume-medium-hover.png);
-    qproperty-pressPic: url(:/resources/icons/light/normal/audio-volume-medium-press.png);
+    qproperty-normalPic: url(:/resources/icons/light/normal/audio-volume-medium-normal.svg);
+    qproperty-hoverPic: url(:/resources/icons/light/normal/audio-volume-medium-hover.svg);
+    qproperty-pressPic: url(:/resources/icons/light/normal/audio-volume-medium-press.svg);
 }
 
 
 dmr--VolumeButton#VolLow {
-    qproperty-normalPic: url(:/resources/icons/light/normal/audio-volume-low-normal.png);
-    qproperty-hoverPic: url(:/resources/icons/light/normal/audio-volume-low-hover.png);
-    qproperty-pressPic: url(:/resources/icons/light/normal/audio-volume-low-press.png);
+    qproperty-normalPic: url(:/resources/icons/light/normal/audio-volume-low-normal.svg);
+    qproperty-hoverPic: url(:/resources/icons/light/normal/audio-volume-low-hover.svg);
+    qproperty-pressPic: url(:/resources/icons/light/normal/audio-volume-low-press.svg);
 }
 
 dmr--VolumeButton#VolOff {
-    qproperty-normalPic: url(:/resources/icons/light/normal/audio-volume-off-normal.png);
-    qproperty-hoverPic: url(:/resources/icons/light/normal/audio-volume-off-hover.png);
-    qproperty-pressPic: url(:/resources/icons/light/normal/audio-volume-off-press.png);
+    qproperty-normalPic: url(:/resources/icons/light/normal/audio-volume-off-normal.svg);
+    qproperty-hoverPic: url(:/resources/icons/light/normal/audio-volume-off-hover.svg);
+    qproperty-pressPic: url(:/resources/icons/light/normal/audio-volume-off-press.svg);
 }
 
 dmr--VolumeButton#VolMute {
-    qproperty-normalPic: url(:/resources/icons/light/normal/audio-volume-muted-blocked-panel-normal.png);
-    qproperty-hoverPic: url(:/resources/icons/light/normal/audio-volume-muted-blocked-panel-hover.png);
-    qproperty-pressPic: url(:/resources/icons/light/normal/audio-volume-muted-blocked-panel-press.png);
+    qproperty-normalPic: url(:/resources/icons/light/normal/audio-volume-muted-blocked-panel-normal.svg);
+    qproperty-hoverPic: url(:/resources/icons/light/normal/audio-volume-muted-blocked-panel-hover.svg);
+    qproperty-pressPic: url(:/resources/icons/light/normal/audio-volume-muted-blocked-panel-press.svg);
 }
 
 #MovieProgress {

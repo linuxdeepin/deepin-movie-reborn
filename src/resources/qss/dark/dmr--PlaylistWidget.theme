@@ -7,8 +7,8 @@ dmr--PlaylistWidget {
 }
 
 Dtk--Widget--DImageButton#CloseBtn {
-    qproperty-normalPic: url(:/resources/icons/dark/normal/close-normal.png);
-    qproperty-hoverPic: url(:/resources/icons/dark/normal/close-hover.png);
-    qproperty-pressPic: url(:/resources/icons/dark/normal/close-press.png);
+    qproperty-normalPic: url(:/resources/icons/dark/normal/close-normal.svg);
+    qproperty-hoverPic: url(:/resources/icons/dark/normal/close-hover.svg);
+    qproperty-pressPic: url(:/resources/icons/dark/normal/close-press.svg);
 }
 

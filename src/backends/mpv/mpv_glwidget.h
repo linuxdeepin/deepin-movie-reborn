@@ -59,11 +59,11 @@ private:
     QOpenGLBuffer _vboCorners[4];
     QOpenGLShaderProgram *_glProgCorner {nullptr};
 
-    QImage bg_dark {":/resources/icons/dark/init-splash.png"};
-    QImage bg_light {":/resources/icons/light/init-splash.png"};
+    QImage bg_dark {":/resources/icons/dark/init-splash.svg"};
+    QImage bg_light {":/resources/icons/light/init-splash.svg"};
 
-    QImage bg_dark_mini {":/resources/icons/dark/mini-init-splash.png"};
-    QImage bg_light_mini {":/resources/icons/light/mini-init-splash.png"};
+    QImage bg_dark_mini {":/resources/icons/dark/mini-init-splash.svg"};
+    QImage bg_light_mini {":/resources/icons/light/mini-init-splash.svg"};
 
     void updateVbo();
     void updateVboCorners();
