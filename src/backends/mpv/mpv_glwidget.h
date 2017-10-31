@@ -64,7 +64,7 @@ private:
     void updateVboCorners();
     void updateVboBlend();
 
-    void updateBlendMask();
+    void updateMovieFbo();
     void updateCornerMasks();
 
     void setupBlendPipe();
