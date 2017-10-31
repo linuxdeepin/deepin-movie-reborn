@@ -64,9 +64,9 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
     le->setMaxLength(255);
 
     le->setIconVisible(true);
-    le->setNormalIcon(":resources/icons/select-normal.png");
-    le->setHoverIcon(":resources/icons/select-hover.png");
-    le->setPressIcon(":resources/icons/select-press.png");
+    le->setNormalIcon(":resources/icons/select-normal.svg");
+    le->setHoverIcon(":resources/icons/select-hover.svg");
+    le->setPressIcon(":resources/icons/select-press.svg");
 
     auto optionWidget = DSettingsWidgetFactory::createTwoColumWidget(option, le);
     workaround_updateStyle(optionWidget, "dlight");
@@ -489,13 +489,15 @@ MainWindow::MainWindow(QWidget *parent)
     }
     _titlebar->setMenu(ActionFactory::get().titlebarMenu());
     {
+        int w2 = 24 * qApp->devicePixelRatio();
+        int w = 16 * qApp->devicePixelRatio();
         //hack: titlebar fixed icon size to (24x24), but we need (16x16)
         auto logo = QPixmap(":/resources/icons/logo.svg")
-            .scaled(16, 16, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-        QPixmap pm(24, 24);
+            .scaled(w, w, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        QPixmap pm(w2, w2);
         pm.fill(Qt::transparent);
         QPainter p(&pm);
-        p.drawPixmap(4, 4, logo);
+        p.drawPixmap((w2-w)/2, (w2-w)/2, logo);
         p.end();
         _titlebar->setIcon(pm);
         _titlebar->setTitle(tr("Deepin Movie"));
@@ -539,7 +541,7 @@ MainWindow::MainWindow(QWidget *parent)
     _playlist->hide();
 
     _playState = new QLabel(this);
-    _playState->setPixmap(QPixmap(QString(":/resources/icons/%1/normal/play-big.png")
+    _playState->setPixmap(QPixmap(QString(":/resources/icons/%1/normal/play-big.svg")
                 .arg(qApp->theme())));
     _playState->setVisible(false);
 
@@ -787,7 +789,7 @@ void MainWindow::onThemeChanged()
     qDebug() << __func__ << qApp->theme();
 
     auto theme = qApp->theme();
-    _playState->setPixmap(QPixmap(QString(":/resources/icons/%1/normal/play-big.png")
+    _playState->setPixmap(QPixmap(QString(":/resources/icons/%1/normal/play-big.svg")
                 .arg(qApp->theme())));
 }
 
@@ -1525,7 +1527,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                 _nwShot->setAnchor(NotificationWidget::AnchorNorthWest);
                 _nwShot->setAnchorPoint(QPoint(30, 38));
             }
-            auto pm = QPixmap(QString(":/resources/icons/%1.png").arg(success?"success":"fail"));
+            auto pm = QPixmap(QString(":/resources/icons/%1.svg").arg(success?"success":"fail"));
             auto msg = success?tr("The screenshot is saved"):tr("The screenshot is failed to save");
             _nwShot->popupWithIcon(msg, pm);
 #endif
@@ -1596,7 +1598,7 @@ void MainWindow::onBurstScreenshot(const QImage& frame, qint64 timestamp)
                 _nwShot->setAnchor(NotificationWidget::AnchorNorthWest);
                 _nwShot->setAnchorPoint(QPoint(30, 38));
             }
-            auto pm = QPixmap(QString(":/resources/icons/%1.png").arg(QFileInfo::exists(poster_path)?"success":"fail"));
+            auto pm = QPixmap(QString(":/resources/icons/%1.svg").arg(QFileInfo::exists(poster_path)?"success":"fail"));
             _nwShot->popupWithIcon(tr("The screenshot is saved"), pm);
         }
     }
@@ -2117,8 +2119,8 @@ void MainWindow::paintEvent(QPaintEvent* pe)
     QPainter p(this);
     p.setRenderHint(QPainter::Antialiasing);
 
-    static QImage bg_dark(":/resources/icons/dark/init-splash.png");
-    static QImage bg_light(":/resources/icons/light/init-splash.png");
+    static QImage bg_dark(":/resources/icons/dark/init-splash.svg");
+    static QImage bg_light(":/resources/icons/light/init-splash.svg");
     bool light = ("light" == qApp->theme());
     bool rounded = !isFullScreen() && !isMaximized();
 

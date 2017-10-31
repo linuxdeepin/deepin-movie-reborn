@@ -4,7 +4,7 @@
 
 /* state Playing */
 *[PlayItemThumb="true"][ItemState="1"] {
-    qproperty-bg: url(:/resources/icons/light/normal/film-bg.png);
+    qproperty-bg: url(:/resources/icons/light/normal/film-bg.svg);
 }
 
 
@@ -21,7 +21,7 @@
 
 /* state Normal */
 *[PlayItemThumb="true"][ItemState="0"] {
-    qproperty-bg: url(:/resources/icons/light/normal/film-bg.png);
+    qproperty-bg: url(:/resources/icons/light/normal/film-bg.svg);
 }
 
 
@@ -37,7 +37,7 @@
 
 /* state Invalid */
 *[PlayItemThumb="true"][ItemState="2"] {
-    qproperty-bg: url(:/resources/icons/light/normal/film-bg.png);
+    qproperty-bg: url(:/resources/icons/light/normal/film-bg.svg);
 }
 
 
