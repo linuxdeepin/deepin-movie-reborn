@@ -184,40 +184,48 @@ QString FullFileHash(const QFileInfo& fi)
 
 QPixmap MakeRoundedPixmap(QPixmap pm, qreal rx, qreal ry, int rotation)
 {
+    auto dpr = pm.devicePixelRatio();
     QPixmap dest(pm.size());
+    dest.setDevicePixelRatio(dpr);
+
+    auto scaled_rect = QRectF({0, 0}, QSizeF(dest.size() / dpr));
     dest.fill(Qt::transparent);
 
     QPainter p(&dest);
     p.setRenderHints(QPainter::Antialiasing|QPainter::SmoothPixmapTransform);
 
     QPainterPath path;
-    path.addRoundedRect(QRect(QPoint(), pm.size()), rx, ry);
+    path.addRoundedRect(QRect(QPoint(), scaled_rect.size().toSize()), rx, ry);
     p.setClipPath(path);
 
     QTransform transform;
-    transform.translate(pm.width()/2, pm.height()/2);
+    transform.translate(scaled_rect.width()/2, scaled_rect.height()/2);
     transform.rotate(rotation);
-    transform.translate(-pm.width()/2, -pm.height()/2);
+    transform.translate(-scaled_rect.width()/2, -scaled_rect.height()/2);
     p.setTransform(transform);
 
-    p.drawPixmap(pm.rect(), pm);
+    p.drawPixmap(scaled_rect.toRect(), pm);
 
     return dest;
 }
 
 QPixmap MakeRoundedPixmap(QSize sz, QPixmap pm, qreal rx, qreal ry, qint64 time)
 {
+    auto dpr = pm.devicePixelRatio();
     QPixmap dest(sz);
+    dest.setDevicePixelRatio(dpr);
     dest.fill(Qt::transparent);
+
+    auto scaled_rect = QRectF({0, 0}, QSizeF(dest.size() / dpr));
 
     QPainter p(&dest);
     p.setRenderHints(QPainter::Antialiasing|QPainter::SmoothPixmapTransform);
 
     p.setPen(QColor(0, 0, 0, 255 / 10));
-    p.drawRoundedRect(dest.rect(), rx, ry);
+    p.drawRoundedRect(scaled_rect, rx, ry);
 
     QPainterPath path;
-    auto r = dest.rect().marginsRemoved({1, 1, 1, 1});
+    auto r = scaled_rect.marginsRemoved({1, 1, 1, 1});
     path.addRoundedRect(r, rx, ry);
     p.setClipPath(path);
     p.drawPixmap(1, 1, pm);
@@ -231,8 +239,8 @@ QPixmap MakeRoundedPixmap(QSize sz, QPixmap pm, qreal rx, qreal ry, qint64 time)
 
     auto tm_str = QTime(0, 0, 0).addSecs(time).toString("hh:mm:ss");
     QRect bounding = QFontMetrics(ft).boundingRect(tm_str);
-    bounding.moveTopLeft({dest.width() - 5 - bounding.width(),
-            dest.height() - 5 - bounding.height()});
+    bounding.moveTopLeft({((int)(dest.width() / dpr)) - 5 - bounding.width(),
+            ((int)(dest.height() / dpr)) - 5 - bounding.height()});
 
     {
         QPainterPath pp;

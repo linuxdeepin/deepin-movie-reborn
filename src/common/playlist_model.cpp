@@ -145,7 +145,7 @@ bool PlayItemInfo::refresh()
 PlaylistModel::PlaylistModel(PlayerEngine *e)
     :_engine(e)
 {
-    _thumbnailer.setThumbnailSize(400);
+    _thumbnailer.setThumbnailSize(400 * qApp->devicePixelRatio());
     av_register_all();
 
     connect(e, &PlayerEngine::stateChanged, [=]() {
@@ -804,6 +804,7 @@ struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl& url, const QFil
 
             auto img = QImage::fromData(buf.data(), buf.size(), "png");
             pm = QPixmap::fromImage(img);
+            pm.setDevicePixelRatio(qApp->devicePixelRatio());
         } catch (const std::logic_error&) {
         }
     }

@@ -115,6 +115,7 @@ public:
 
         // it's the same for all themes
         _play = QPixmap(":/resources/icons/dark/normal/film-top.svg");
+        _play.setDevicePixelRatio(qApp->devicePixelRatio());
 
         setFixedSize(PLAYLIST_FIXED_WIDTH, 68);
         auto *l = new QHBoxLayout(this);
@@ -202,9 +203,14 @@ public:
     { 
         _bg = s; 
 
+        auto dpr = qApp->devicePixelRatio();
+
         QPixmap pm(s);
+        pm = pm.scaled(pm.size() * dpr, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        pm.setDevicePixelRatio(dpr);
 
         QPixmap dest(pm.size());
+        dest.setDevicePixelRatio(dpr);
         dest.fill(Qt::transparent);
         QPainter p(&dest);
         
@@ -214,19 +220,27 @@ public:
 
         // thumb size
         QSize sz(22, 40);
+        sz *= dpr;
 
         p.drawPixmap(0, 0, pm);
 
         if (!_pif.thumbnail.isNull()) {
             auto img = _pif.thumbnail.scaledToHeight(sz.height(), Qt::SmoothTransformation);
-            p.drawPixmap((pm.width() - sz.width())/2, (pm.height() - sz.height())/2, img, 
-                    (img.width()-sz.width())/2, (img.height()-sz.height())/2, sz.width(), sz.height());
+            img.setDevicePixelRatio(dpr);
+
+            QPointF target_pos((pm.width() - sz.width())/2, (pm.height() - sz.height())/2);
+            target_pos /= dpr;
+
+            QRectF src_rect((img.width()-sz.width())/2, (img.height()-sz.height())/2,
+                    sz.width(), sz.height());
+            p.drawPixmap(target_pos, img, src_rect);
 
         }
 
         if (state() == ItemState::Playing) {
-            p.drawPixmap((pm.width() - _play.width())/2, 
-                    (pm.height() - _play.height())/2, _play);
+            QPointF pos((pm.width() - _play.width())/2, (pm.height() - _play.height())/2);
+            pos /= dpr;
+            p.drawPixmap(pos, _play);
         }
         p.end();
 

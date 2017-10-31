@@ -25,7 +25,11 @@ BurstScreenshotsDialog::BurstScreenshotsDialog(const PlayItemInfo& pif)
     ml->addLayout(hl);
 
     auto *pm = new QLabel(this);
-    pm->setPixmap(QPixmap(":/resources/icons/logo-big.svg").scaled(44, 44));
+    auto dpr = qApp->devicePixelRatio();
+    QPixmap img(":/resources/icons/logo-big.svg");
+    img = img.scaled(44 * dpr, 44 * dpr);
+    img.setDevicePixelRatio(dpr);
+    pm->setPixmap(img);
     hl->setAlignment(pm, Qt::AlignCenter);
     hl->addWidget(pm);
 
@@ -127,15 +131,21 @@ BurstScreenshotsDialog::BurstScreenshotsDialog(const PlayItemInfo& pif)
 
 void BurstScreenshotsDialog::updateWithFrames(const QList<QPair<QImage, qint64>>& frames)
 {
+    auto dpr = qApp->devicePixelRatio();
+    QSize sz(178 * dpr, 100 * dpr);
+    
     int count = 0;
     for (auto frame: frames) {
-        auto scaled = frame.first.scaled(178-2, 100-2, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+        auto scaled = frame.first.scaled(sz.width()-2, sz.height()-2,
+                Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
         auto *l = new ThumbnailFrame(this);
 
         int r = count / 3;
         int c = count % 3;
 
-        auto pm = utils::MakeRoundedPixmap({178, 100}, QPixmap::fromImage(scaled), 2, 2, frame.second);
+        auto pm = QPixmap::fromImage(scaled);
+        pm.setDevicePixelRatio(dpr);
+        pm = utils::MakeRoundedPixmap(sz, pm, 2, 2, frame.second);
         l->setPixmap(pm);
         _grid->addWidget(l, r, c);
         count++;

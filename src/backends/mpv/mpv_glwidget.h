@@ -43,8 +43,6 @@ private:
     QOpenGLBuffer _vbo;
     QOpenGLTexture *_darkTex {nullptr};
     QOpenGLTexture *_lightTex {nullptr};
-    QOpenGLTexture *_darkMiniTex {nullptr};
-    QOpenGLTexture *_lightMiniTex {nullptr};
     QOpenGLShaderProgram *_glProg {nullptr};
 
     QOpenGLVertexArrayObject _vaoBlend;
@@ -61,9 +59,6 @@ private:
 
     QImage bg_dark {":/resources/icons/dark/init-splash.svg"};
     QImage bg_light {":/resources/icons/light/init-splash.svg"};
-
-    QImage bg_dark_mini {":/resources/icons/dark/mini-init-splash.svg"};
-    QImage bg_light_mini {":/resources/icons/light/mini-init-splash.svg"};
 
     void updateVbo();
     void updateVboCorners();
