@@ -217,12 +217,6 @@ namespace dmr {
         _lightTex = new QOpenGLTexture(bg_light, QOpenGLTexture::DontGenerateMipMaps);
         _lightTex->setMinificationFilter(QOpenGLTexture::Linear);
 
-
-        _darkMiniTex = new QOpenGLTexture(bg_dark_mini);
-        _darkMiniTex->setMinificationFilter(QOpenGLTexture::LinearMipMapLinear);
-        _lightMiniTex = new QOpenGLTexture(bg_light_mini);
-        _lightMiniTex->setMinificationFilter(QOpenGLTexture::LinearMipMapLinear);
-
         updateVbo();
         _vbo.bind();
 
@@ -447,7 +441,7 @@ namespace dmr {
         auto vp = rect().size();
 
         _inMiniMode = vp.width() <= 380 || vp.height() <= 380;
-        auto tex_sz = _inMiniMode ? bg_dark_mini.size() : bg_dark.size();
+        auto tex_sz = _inMiniMode ? bg_dark.size()/2 : bg_dark.size();
 
         auto r = QRect(0, 0, vp.width(), vp.height());
         auto r2 = QRect(r.center() - QPoint(tex_sz.width()/2, tex_sz.height()/2), tex_sz);

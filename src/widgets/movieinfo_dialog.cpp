@@ -37,13 +37,19 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo& pif)
     layout->addLayout(ml);
 
     auto *pm = new PosterFrame(this);
+    pm->setFixedSize(176, 118);
+
+    auto dpr = qApp->devicePixelRatio();
     QPixmap cover;
-    if (pif.thumbnail.isNull())
+    if (pif.thumbnail.isNull()) {
         cover = (QPixmap(":/resources/icons/logo-big.svg"));
-    else {
-        auto img = pif.thumbnail.scaledToWidth(176, Qt::SmoothTransformation);
-        cover = (img.copy(0, (img.height()-118)/2, 176, 118));
+    } else {
+        QSize sz(176, 118);
+        sz *= dpr;
+        auto img = pif.thumbnail.scaledToWidth(sz.width(), Qt::SmoothTransformation);
+        cover = img.copy(0, (img.height()-sz.height())/2, sz.width(), sz.height());
     }
+    cover.setDevicePixelRatio(dpr);
     cover = utils::MakeRoundedPixmap(cover, 4, 4);
     pm->setPixmap(cover);
     pm->ensurePolished();
