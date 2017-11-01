@@ -489,12 +489,15 @@ MainWindow::MainWindow(QWidget *parent)
     }
     _titlebar->setMenu(ActionFactory::get().titlebarMenu());
     {
-        int w2 = 24 * qApp->devicePixelRatio();
-        int w = 16 * qApp->devicePixelRatio();
+        auto dpr = qApp->devicePixelRatio();
+        int w2 = 24 * dpr;
+        int w = 16 * dpr;
         //hack: titlebar fixed icon size to (24x24), but we need (16x16)
         auto logo = QPixmap(":/resources/icons/logo.svg")
             .scaled(w, w, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        logo.setDevicePixelRatio(dpr);
         QPixmap pm(w2, w2);
+        pm.setDevicePixelRatio(dpr);
         pm.fill(Qt::transparent);
         QPainter p(&pm);
         p.drawPixmap((w2-w)/2, (w2-w)/2, logo);
@@ -541,8 +544,7 @@ MainWindow::MainWindow(QWidget *parent)
     _playlist->hide();
 
     _playState = new QLabel(this);
-    _playState->setPixmap(QPixmap(QString(":/resources/icons/%1/normal/play-big.svg")
-                .arg(qApp->theme())));
+    _playState->setFixedSize(128, 128);
     _playState->setVisible(false);
 
     _progIndicator = new MovieProgressIndicator(this);
@@ -789,8 +791,12 @@ void MainWindow::onThemeChanged()
     qDebug() << __func__ << qApp->theme();
 
     auto theme = qApp->theme();
-    _playState->setPixmap(QPixmap(QString(":/resources/icons/%1/normal/play-big.svg")
-                .arg(qApp->theme())));
+    auto pm = QPixmap(QString(":/resources/icons/%1/normal/play-big.svg")
+            .arg(qApp->theme()));
+    pm = pm.scaled(pm.size() * qApp->devicePixelRatio(), Qt::KeepAspectRatio, 
+            Qt::SmoothTransformation);
+    pm.setDevicePixelRatio(qApp->devicePixelRatio());
+    _playState->setPixmap(pm);
 }
 
 void MainWindow::updatePlayState()
@@ -1528,6 +1534,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                 _nwShot->setAnchorPoint(QPoint(30, 38));
             }
             auto pm = QPixmap(QString(":/resources/icons/%1.svg").arg(success?"success":"fail"));
+            pm.setDevicePixelRatio(windowHandle()->devicePixelRatio());
             auto msg = success?tr("The screenshot is saved"):tr("The screenshot is failed to save");
             _nwShot->popupWithIcon(msg, pm);
 #endif
@@ -1599,6 +1606,7 @@ void MainWindow::onBurstScreenshot(const QImage& frame, qint64 timestamp)
                 _nwShot->setAnchorPoint(QPoint(30, 38));
             }
             auto pm = QPixmap(QString(":/resources/icons/%1.svg").arg(QFileInfo::exists(poster_path)?"success":"fail"));
+            pm.setDevicePixelRatio(windowHandle()->devicePixelRatio());
             _nwShot->popupWithIcon(tr("The screenshot is saved"), pm);
         }
     }
@@ -1688,6 +1696,7 @@ void MainWindow::toggleShapeMask()
         clearMask();
     } else if (mask().isEmpty()) {
         QPixmap shape(size());
+        shape.setDevicePixelRatio(windowHandle()->devicePixelRatio());
         shape.fill(Qt::transparent);
 
         QPainter p(&shape);

@@ -112,7 +112,8 @@ mpv_handle* MpvProxy::mpv_init()
             set_property(h, "hwdec-preload", "auto");
             set_property(h, "opengl-hwdec-interop", "vaapi-egl");
         }
-        set_property(h, "hwdec", "auto");
+        //set_property(h, "hwdec", "auto");
+        set_property(h, "hwdec", "vaapi-copy");
     } else {
         set_property(h, "hwdec", "off");
     }
