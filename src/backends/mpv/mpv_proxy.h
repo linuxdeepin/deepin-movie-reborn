@@ -93,6 +93,9 @@ public:
     QVariant getProperty(const QString&) override;
     void setProperty(const QString&, const QVariant&) override;
 
+    void nextFrame() override;
+    void previousFrame() override;
+
 public slots:
     void play() override;
     void pauseResume() override;

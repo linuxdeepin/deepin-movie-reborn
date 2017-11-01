@@ -139,6 +139,10 @@ QMenu* ActionFactory::mainContextMenu()
 
             DEF_ACTION(tr("Clockwise"), ActionKind::ClockwiseFrame);
             DEF_ACTION(tr("Counterclockwise"), ActionKind::CounterclockwiseFrame);
+            menu->addSeparator();
+
+            DEF_ACTION(tr("Next frame"), ActionKind::NextFrame);
+            DEF_ACTION(tr("Previous frame"), ActionKind::PreviousFrame);
 
             parent->addMenu(menu);
         }

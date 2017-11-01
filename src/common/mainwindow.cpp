@@ -1909,6 +1909,18 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             break;
         }
 
+        case ActionFactory::ActionKind::NextFrame: {
+            _engine->nextFrame();
+
+            break;
+        }
+
+        case ActionFactory::ActionKind::PreviousFrame: {
+            _engine->previousFrame();
+
+            break;
+        }
+
         default:
             break;
     }

@@ -207,6 +207,18 @@
                             "name": "Mute",
                             "type": "shortcut",
                             "default": ["0", "77"]
+                        },
+                        {
+                            "key": "next_frame",
+                            "name": "Next frame",
+                            "type": "shortcut",
+                            "default": ["0", "78"]
+                        },
+                        {
+                            "key": "previous_frame",
+                            "name": "Previous frame",
+                            "type": "shortcut",
+                            "default": ["0", "66"]
                         }
                     ]
                 },

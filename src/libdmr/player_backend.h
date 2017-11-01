@@ -122,6 +122,9 @@ public:
     virtual QVariant getProperty(const QString&) = 0;
     virtual void setProperty(const QString&, const QVariant&) = 0;
 
+    virtual void nextFrame() = 0;
+    virtual void previousFrame() = 0;
+
     static void setDebugLevel(DebugLevel lvl) { _debugLevel = lvl; }
 
 Q_SIGNALS:

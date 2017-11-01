@@ -1,4 +1,6 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS language="bg" version="2.1">
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.1" language="bg">
 <context>
     <name>QObject</name>
     <message>
@@ -141,81 +143,91 @@
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="29"/>
+        <source>Next frame</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../common/settings_translation.cpp" line="30"/>
+        <source>Previous frame</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../common/settings_translation.cpp" line="31"/>
         <source>volume down</source>
         <translation>Намаляване на звука</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="30"/>
+        <location filename="../common/settings_translation.cpp" line="32"/>
         <source>Volume up</source>
         <translation>Увеличаване</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="31"/>
+        <location filename="../common/settings_translation.cpp" line="33"/>
         <source>Speed up</source>
         <translation>по-бързо</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="32"/>
+        <location filename="../common/settings_translation.cpp" line="34"/>
         <source>Speed down</source>
         <translation>по-бавно</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="33"/>
+        <location filename="../common/settings_translation.cpp" line="35"/>
         <source>Fullscreen</source>
         <translation>Цял екран</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="34"/>
+        <location filename="../common/settings_translation.cpp" line="36"/>
         <source>Pause/Play</source>
         <translation>Пауза/Изпълнение</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="35"/>
+        <location filename="../common/settings_translation.cpp" line="37"/>
         <source>Playlist</source>
         <translation>Списък</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="36"/>
+        <location filename="../common/settings_translation.cpp" line="38"/>
         <source>Reset speed</source>
         <translation>Нормална скорост</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="37"/>
+        <location filename="../common/settings_translation.cpp" line="39"/>
         <source>Rewind</source>
         <translation>Връщане</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="38"/>
+        <location filename="../common/settings_translation.cpp" line="40"/>
         <source>Forward</source>
         <translation>Напред</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="39"/>
+        <location filename="../common/settings_translation.cpp" line="41"/>
         <source>Burst screenshot</source>
         <translation>Burst screenshot</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="40"/>
+        <location filename="../common/settings_translation.cpp" line="42"/>
         <source>Film screenshot</source>
         <translation>Кадър от филма</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="41"/>
+        <location filename="../common/settings_translation.cpp" line="43"/>
         <source>0.5s backward</source>
         <translation>Назад с 0.5s</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="42"/>
+        <location filename="../common/settings_translation.cpp" line="44"/>
         <source>0.5s forward</source>
         <translation>Напред с 0.5s</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="43"/>
+        <location filename="../common/settings_translation.cpp" line="45"/>
         <source>Font</source>
         <translation>Шрифт</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="44"/>
+        <location filename="../common/settings_translation.cpp" line="46"/>
         <source>Font Size</source>
         <translation>Размер на шрифта</translation>
     </message>
@@ -248,7 +260,7 @@
     </message>
     <message>
         <location filename="../common/actions.cpp" line="84"/>
-        <location filename="../common/actions.cpp" line="265"/>
+        <location filename="../common/actions.cpp" line="269"/>
         <source>Settings</source>
         <translation>Настройки</translation>
     </message>
@@ -268,7 +280,7 @@
         <translation>Винаги отгоре</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="280"/>
+        <location filename="../common/actions.cpp" line="284"/>
         <source>Film info</source>
         <translation>Информация за филм</translation>
     </message>
@@ -344,97 +356,107 @@
         <translation>Обратно на часовниковата</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="148"/>
+        <location filename="../common/actions.cpp" line="144"/>
+        <source>Next frame</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../common/actions.cpp" line="145"/>
+        <source>Previous frame</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../common/actions.cpp" line="152"/>
         <source>Sound</source>
         <translation>Звук</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="151"/>
+        <location filename="../common/actions.cpp" line="155"/>
         <source>Channel</source>
         <translation>Канал</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="154"/>
+        <location filename="../common/actions.cpp" line="158"/>
         <source>Stereo</source>
         <translation>Стерео</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="155"/>
+        <location filename="../common/actions.cpp" line="159"/>
         <source>Left channel</source>
         <translation>Ляв канал</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="156"/>
+        <location filename="../common/actions.cpp" line="160"/>
         <source>Right channel</source>
         <translation>Десен канал</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="162"/>
+        <location filename="../common/actions.cpp" line="166"/>
         <source>Track</source>
         <translation>Трак</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="172"/>
+        <location filename="../common/actions.cpp" line="176"/>
         <source>Subtitle</source>
         <translation>Субтитри</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="173"/>
+        <location filename="../common/actions.cpp" line="177"/>
         <source>Load</source>
         <translation>Зареди</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="174"/>
+        <location filename="../common/actions.cpp" line="178"/>
         <source>Online Search</source>
         <translation>Търсене онлайн</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="178"/>
+        <location filename="../common/actions.cpp" line="182"/>
         <source>Select</source>
         <translation>Избери</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="182"/>
+        <location filename="../common/actions.cpp" line="186"/>
         <source>Hide</source>
         <translation>Скриване</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="186"/>
+        <location filename="../common/actions.cpp" line="190"/>
         <source>Encodings</source>
         <translation>Кодиране</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="254"/>
+        <location filename="../common/actions.cpp" line="258"/>
         <source>Screenshot</source>
         <translation>Снимка на екрана</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="255"/>
+        <location filename="../common/actions.cpp" line="259"/>
         <source>Film Screenshot</source>
         <translation>Кадър от филма</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="256"/>
+        <location filename="../common/actions.cpp" line="260"/>
         <source>Burst Shooting</source>
         <translation>Последователно снимане</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="263"/>
+        <location filename="../common/actions.cpp" line="267"/>
         <source>Playlist</source>
         <translation>Списък</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="264"/>
+        <location filename="../common/actions.cpp" line="268"/>
         <source>Film Info</source>
         <translation>Информация за филм</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="278"/>
+        <location filename="../common/actions.cpp" line="282"/>
         <source>Clear playlist</source>
         <translation>Изчистване на списъка</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="279"/>
+        <location filename="../common/actions.cpp" line="283"/>
         <source>Display in file manager</source>
         <translation>Покажи във файловия мениджър</translation>
     </message>
@@ -466,20 +488,20 @@
     <name>dmr::MainWindow</name>
     <message>
         <location filename="../common/mainwindow.cpp" line="785"/>
-        <location filename="../common/mainwindow.cpp" line="2279"/>
-        <location filename="../common/mainwindow.cpp" line="2374"/>
+        <location filename="../common/mainwindow.cpp" line="2294"/>
+        <location filename="../common/mainwindow.cpp" line="2391"/>
         <source>Deepin Movie</source>
         <translation>Deepin Филми</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="698"/>
-        <location filename="../common/mainwindow.cpp" line="1796"/>
+        <location filename="../common/mainwindow.cpp" line="1799"/>
         <source>Load successfully</source>
         <translation>Успешно зареждане</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="698"/>
-        <location filename="../common/mainwindow.cpp" line="1796"/>
+        <location filename="../common/mainwindow.cpp" line="1799"/>
         <source>Load failed</source>
         <translation>Неуспешно зареждане</translation>
     </message>
@@ -501,7 +523,7 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="1442"/>
         <location filename="../common/mainwindow.cpp" line="1459"/>
-        <location filename="../common/mainwindow.cpp" line="1791"/>
+        <location filename="../common/mainwindow.cpp" line="1794"/>
         <source>Open File</source>
         <translation>Отвори файл</translation>
     </message>
@@ -512,77 +534,77 @@
         <translation>Всички видеа (%1)</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1659"/>
+        <location filename="../common/mainwindow.cpp" line="1662"/>
         <source>Muted</source>
         <translation>Заглушаване</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1662"/>
-        <location filename="../common/mainwindow.cpp" line="1674"/>
-        <location filename="../common/mainwindow.cpp" line="1684"/>
-        <location filename="../common/mainwindow.cpp" line="1691"/>
+        <location filename="../common/mainwindow.cpp" line="1665"/>
+        <location filename="../common/mainwindow.cpp" line="1677"/>
+        <location filename="../common/mainwindow.cpp" line="1687"/>
+        <location filename="../common/mainwindow.cpp" line="1694"/>
         <source>Volume: %1%</source>
         <translation>Сила на звука: %1</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1756"/>
-        <location filename="../common/mainwindow.cpp" line="1764"/>
+        <location filename="../common/mainwindow.cpp" line="1759"/>
+        <location filename="../common/mainwindow.cpp" line="1767"/>
         <source>Subtitle %1: %2s</source>
         <translation>Субтитри %1: %2s</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1757"/>
-        <location filename="../common/mainwindow.cpp" line="1765"/>
+        <location filename="../common/mainwindow.cpp" line="1760"/>
+        <location filename="../common/mainwindow.cpp" line="1768"/>
         <source>delayed</source>
         <translation>забавен</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1757"/>
-        <location filename="../common/mainwindow.cpp" line="1765"/>
+        <location filename="../common/mainwindow.cpp" line="1760"/>
+        <location filename="../common/mainwindow.cpp" line="1768"/>
         <source>advanced</source>
         <translation>разпирен</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1772"/>
-        <location filename="../common/mainwindow.cpp" line="1779"/>
-        <location filename="../common/mainwindow.cpp" line="1786"/>
+        <location filename="../common/mainwindow.cpp" line="1775"/>
+        <location filename="../common/mainwindow.cpp" line="1782"/>
+        <location filename="../common/mainwindow.cpp" line="1789"/>
         <source>Speed: %1x</source>
         <translation>Скорост: %1x</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1793"/>
+        <location filename="../common/mainwindow.cpp" line="1796"/>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</source>
         <translation>Субтитри (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1855"/>
+        <location filename="../common/mainwindow.cpp" line="1858"/>
         <source>View</source>
         <translation>Изглед</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1866"/>
+        <location filename="../common/mainwindow.cpp" line="1869"/>
         <source>Movie Screenshot</source>
         <translation>Снимка на филма</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1867"/>
+        <location filename="../common/mainwindow.cpp" line="1870"/>
         <source>Saved to</source>
         <translation>Запази в</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1881"/>
-        <location filename="../common/mainwindow.cpp" line="1952"/>
+        <location filename="../common/mainwindow.cpp" line="1884"/>
+        <location filename="../common/mainwindow.cpp" line="1967"/>
         <source>The screenshot is saved</source>
         <translation>Снимка на екрана е запазена.</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1881"/>
+        <location filename="../common/mainwindow.cpp" line="1884"/>
         <source>The screenshot is failed to save</source>
         <translation>Снимка на екрана не е запазена.</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2039"/>
-        <location filename="../common/mainwindow.cpp" line="2728"/>
+        <location filename="../common/mainwindow.cpp" line="2054"/>
+        <location filename="../common/mainwindow.cpp" line="2751"/>
         <source>Invalid file: %1</source>
         <translation>Невалиден файл: %1</translation>
     </message>
@@ -618,8 +640,8 @@
 <context>
     <name>dmr::MpvProxy</name>
     <message>
-        <location filename="../backends/mpv/mpv_proxy.cpp" line="1017"/>
-        <location filename="../backends/mpv/mpv_proxy.cpp" line="1035"/>
+        <location filename="../backends/mpv/mpv_proxy.cpp" line="1029"/>
+        <location filename="../backends/mpv/mpv_proxy.cpp" line="1047"/>
         <source>[internal]</source>
         <translation>[вътрешен]</translation>
     </message>

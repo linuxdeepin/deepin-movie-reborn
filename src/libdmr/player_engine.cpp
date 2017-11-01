@@ -453,6 +453,18 @@ void PlayerEngine::savePlaybackPosition()
     _current->savePlaybackPosition();
 }
 
+void PlayerEngine::nextFrame()
+{
+    if (!_current) return;
+    _current->nextFrame();
+}
+
+void PlayerEngine::previousFrame()
+{
+    if (!_current) return;
+    _current->previousFrame();
+}
+
 void PlayerEngine::play()
 {
     if (!_current || !_playlist->count()) return;

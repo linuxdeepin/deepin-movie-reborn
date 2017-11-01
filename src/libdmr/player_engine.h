@@ -139,6 +139,9 @@ public:
 
     void savePlaybackPosition();
 
+    void nextFrame();
+    void previousFrame();
+
     // use with caution
     void setBackendProperty(const QString&, const QVariant&);
     QVariant getBackendProperty(const QString&);

@@ -1055,6 +1055,22 @@ void MpvProxy::updatePlayingMovieInfo()
     qDebug() << _pmf.audios;
 }
 
+void MpvProxy::nextFrame()
+{
+    if (state() == PlayState::Stopped) return;
+
+    QList<QVariant> args = { "frame-step"};
+    command(_handle, args);
+}
+
+void MpvProxy::previousFrame()
+{
+    if (state() == PlayState::Stopped) return;
+
+    QList<QVariant> args = { "frame-back-step"};
+    command(_handle, args);
+}
+
 QVariant MpvProxy::getProperty(const QString& name)
 {
     return get_property(_handle, name.toUtf8().data());

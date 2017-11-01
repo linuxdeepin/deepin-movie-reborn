@@ -100,6 +100,8 @@ enum ActionKind {
     Ratio235x1Frame,
     ClockwiseFrame,
     CounterclockwiseFrame,
+    NextFrame,
+    PreviousFrame,
 
     //sound
     Stereo,

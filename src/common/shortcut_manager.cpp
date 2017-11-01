@@ -79,6 +79,9 @@ ShortcutManager::ShortcutManager()
 
         {"screenshot", ActionFactory::ActionKind::Screenshot},
         {"burst_screenshot", ActionFactory::ActionKind::BurstScreenshot},
+
+        {"next_frame", ActionFactory::ActionKind::NextFrame},
+        {"previous_frame", ActionFactory::ActionKind::PreviousFrame},
     };
 
     connect(&Settings::get(), &Settings::shortcutsChanged,
