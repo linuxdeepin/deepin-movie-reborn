@@ -99,23 +99,21 @@ mpv_handle* MpvProxy::mpv_init()
         mpv_request_log_messages(h, "info");
     }
 
+    if (Settings::get().isSet(Settings::HWAccel)) {
+        if (composited) {
+            set_property(h, "opengl-hwdec-interop", "auto");
+        }
+        set_property(h, "hwdec", "auto");
+    } else {
+        set_property(h, "hwdec", "off");
+    }
+
     if (composited) {
         set_property(h, "vo", "opengl-cb");
 
     } else {
         set_property(h, "vo", "opengl,xv,x11");
         set_property(h, "wid", this->winId());
-    }
-
-    if (Settings::get().isSet(Settings::HWAccel)) {
-        if (composited) {
-            set_property(h, "hwdec-preload", "auto");
-            set_property(h, "opengl-hwdec-interop", "vaapi-egl");
-        }
-        //set_property(h, "hwdec", "auto");
-        set_property(h, "hwdec", "vaapi-copy");
-    } else {
-        set_property(h, "hwdec", "off");
     }
 
 
