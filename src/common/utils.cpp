@@ -265,10 +265,12 @@ int InhibitStandby()
 {
     QDBusInterface iface("org.freedesktop.ScreenSaver", "/org/freedesktop/ScreenSaver",
             "org.freedesktop.ScreenSaver");
-    QDBusReply<int> reply = iface.call("Inhibit", "deepin-movie", "playing in fullscreen");
+    QDBusReply<unsigned int> reply = iface.call("Inhibit", "deepin-movie", "playing in fullscreen");
     if (reply.isValid()) {
         return reply.value();
     }
+
+    qDebug() << reply.error().message();
     return -1;
 }
 
