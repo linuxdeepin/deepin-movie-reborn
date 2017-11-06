@@ -556,10 +556,10 @@ MainWindow::MainWindow(QWidget *parent)
         if (!isFullScreen()) {
             hint |= Qt::WindowMaximizeButtonHint | Qt::WindowMinimizeButtonHint;
             qApp->restoreOverrideCursor();
-            if (_lastCookie >= 0) {
+            if (_lastCookie > 0) {
                 utils::UnInhibitStandby(_lastCookie);
                 qDebug() << "uninhibit cookie" << _lastCookie;
-                _lastCookie = -1;
+                _lastCookie = 0;
             }
             _listener->setEnabled(!isMaximized() && !_miniMode);
         } else {
@@ -1851,10 +1851,10 @@ void MainWindow::hideEvent(QHideEvent *event)
 void MainWindow::closeEvent(QCloseEvent *ev)
 {
     qDebug() << __func__;
-    if (_lastCookie >= 0) {
+    if (_lastCookie > 0) {
         utils::UnInhibitStandby(_lastCookie);
         qDebug() << "uninhibit cookie" << _lastCookie;
-        _lastCookie = -1;
+        _lastCookie = 0;
     }
     _engine->savePlaybackPosition();
     ev->accept();

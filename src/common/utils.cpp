@@ -261,11 +261,11 @@ QPixmap MakeRoundedPixmap(QSize sz, QPixmap pm, qreal rx, qreal ry, qint64 time)
     return dest;
 }
 
-int InhibitStandby()
+uint32_t InhibitStandby()
 {
     QDBusInterface iface("org.freedesktop.ScreenSaver", "/org/freedesktop/ScreenSaver",
             "org.freedesktop.ScreenSaver");
-    QDBusReply<unsigned int> reply = iface.call("Inhibit", "deepin-movie", "playing in fullscreen");
+    QDBusReply<uint32_t> reply = iface.call("Inhibit", "deepin-movie", "playing in fullscreen");
     if (reply.isValid()) {
         return reply.value();
     }
@@ -274,7 +274,7 @@ int InhibitStandby()
     return -1;
 }
 
-void UnInhibitStandby(int cookie)
+void UnInhibitStandby(uint32_t cookie)
 {
     QDBusInterface iface("org.freedesktop.ScreenSaver", "/org/freedesktop/ScreenSaver",
             "org.freedesktop.ScreenSaver");

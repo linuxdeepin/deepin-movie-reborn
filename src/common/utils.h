@@ -15,8 +15,8 @@ namespace utils {
     QPixmap MakeRoundedPixmap(QPixmap pm, qreal rx, qreal ry, int rotation = 0);
     QPixmap MakeRoundedPixmap(QSize sz, QPixmap pm, qreal rx, qreal ry, qint64 time);
 
-    int InhibitStandby();
-    void UnInhibitStandby(int cookie);
+    uint32_t InhibitStandby();
+    void UnInhibitStandby(uint32_t cookie);
 
     void MoveToCenter(QWidget* w);
 
