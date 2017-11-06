@@ -564,6 +564,12 @@ MainWindow::MainWindow(QWidget *parent)
             _listener->setEnabled(!isMaximized() && !_miniMode);
         } else {
             qApp->setOverrideCursor(Qt::BlankCursor);
+
+            if (_lastCookie > 0) {
+                utils::UnInhibitStandby(_lastCookie);
+                qDebug() << "uninhibit cookie" << _lastCookie;
+                _lastCookie = 0;
+            }
             _lastCookie = utils::InhibitStandby();
             qDebug() << "inhibit cookie" << _lastCookie;
             _listener->setEnabled(false);
