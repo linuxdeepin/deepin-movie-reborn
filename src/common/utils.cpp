@@ -271,7 +271,7 @@ uint32_t InhibitStandby()
     }
 
     qDebug() << reply.error().message();
-    return -1;
+    return 0;
 }
 
 void UnInhibitStandby(uint32_t cookie)
