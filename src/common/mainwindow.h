@@ -168,7 +168,7 @@ private:
     }; 
     int _stateBeforeMiniMode {0};
 
-    int _lastCookie {-1};
+    uint32_t _lastCookie {0};
 
     MainWindowEventListener *_listener {nullptr};
     NotificationWidget *_nwShot {nullptr};
