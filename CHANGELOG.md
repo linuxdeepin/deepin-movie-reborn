@@ -1,3 +1,14 @@
+##  2.9.96 (2017-11-09)
+
+
+#### Bug Fixes
+
+*   check cookie before inhibit ([573ba280](573ba280))
+*   cookie should be unsigned int ([220231a6](220231a6))
+*   check and do UnInhibit when window closed ([81110c29](81110c29))
+
+
+
 ## 2.9.95 (2017-11-02)
 
 
