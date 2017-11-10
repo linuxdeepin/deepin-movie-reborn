@@ -3,7 +3,7 @@ set(CMD_NAME deepin-movie)
 
 set(CMAKE_CXX_FLAGS "-std=c++1y -fpermissive -Wno-error")
 set(CMAKE_C_FLAGS "-Wno-error")
-if (ENABLE_VPU_PLATFORM) 
+if (ENABLE_VPU_PLATFORM)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mieee")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mieee")
 endif()
@@ -27,8 +27,8 @@ pkg_check_modules(Xcb REQUIRED IMPORTED_TARGET xcb xcb-aux
     xcb-proto xcb-ewmh xcb-shape)
 pkg_check_modules(AV REQUIRED IMPORTED_TARGET libavformat
     libavutil libavcodec libavresample)
-# IMPORTED_TARGET failed to wokr for some of libs under flatpak env
-pkg_check_modules(Other REQUIRED libffmpegthumbnailer 
+# IMPORTED_TARGET failed to work for some of libs under flatpak env
+pkg_check_modules(Other REQUIRED libffmpegthumbnailer
     libpulse libpulse-simple openssl dvdnav)
 
 qt5_add_resources(RCS resources.qrc)
@@ -40,7 +40,7 @@ list(APPEND SRCS main.cpp)
 file(GLOB_RECURSE MPV_SRCS LIST_DIRECTORIES false backends/mpv/*.cpp)
 list(APPEND SRCS ${MPV_SRCS})
 list(APPEND PROJECT_INCLUDE ${PROJECT_SOURCE_DIR}/src/backends/mpv)
-#~ 
+#~
 
 if (ENABLE_VPU_PLATFORM)
     list(APPEND PROJECT_INCLUDE ${PROJECT_SOURCE_DIR}/src/backends/vpu/)
@@ -50,20 +50,20 @@ if (ENABLE_VPU_PLATFORM)
     #FIXME: change this!
     #link_directories(backends/vpu/gal/lib)
 
-    file(GLOB_RECURSE VPU_SRCS LIST_DIRECTORIES false 
+    file(GLOB_RECURSE VPU_SRCS LIST_DIRECTORIES false
         backends/vpu/*.c
         backends/vpu/*.cpp)
     list(APPEND SRCS ${VPU_SRCS})
 endif()
 
-add_custom_target(json_i18n ALL 
+add_custom_target(json_i18n ALL
     /usr/lib/dtk2/dtk-settings-tool resources/data/settings.json -o common/settings_translation.cpp
     COMMAND sed -i "s,#include .*,#include <DSettings>," common/settings_translation.cpp
     VERBATIM
     SOURCES resources/data/settings.json
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/src/)
 
-## translations 
+## translations
 file(GLOB TS LIST_DIRECTORIES false translations/${CMD_NAME}*.ts)
 
 set_source_files_properties(${TS}
@@ -77,9 +77,9 @@ add_dependencies(${CMD_NAME} json_i18n)
 target_include_directories(${CMD_NAME} PUBLIC ${PROJECT_INCLUDE})
 
 set(TARGET_LIBS X11 Xext Xtst PkgConfig::Xcb Qt5::Widgets Qt5::X11Extras Qt5::Network
-    Qt5::Concurrent Qt5::DBus Qt5::Sql PkgConfig::Dtk PkgConfig::Mpv 
+    Qt5::Concurrent Qt5::DBus Qt5::Sql PkgConfig::Dtk PkgConfig::Mpv
     PkgConfig::AV pthread GL)
-if (ENABLE_VPU_PLATFORM) 
+if (ENABLE_VPU_PLATFORM)
     list(APPEND TARGET_LIBS GAL pulse pulse-simple)
 endif()
 target_link_libraries(${CMD_NAME} ${TARGET_LIBS} ${Other_LIBRARIES})
@@ -89,7 +89,7 @@ install(TARGETS ${CMD_NAME} DESTINATION bin)
 install(DIRECTORY ${PROJECT_SOURCE_DIR}/src/translations
     DESTINATION share/${CMD_NAME}
     FILES_MATCHING PATTERN "*.qm")
-install(FILES ${PROJECT_SOURCE_DIR}/src/deepin-movie.desktop 
+install(FILES ${PROJECT_SOURCE_DIR}/src/deepin-movie.desktop
     DESTINATION share/applications)
 install(FILES ${PROJECT_SOURCE_DIR}/src/resources/icons/logo-big.svg
     DESTINATION share/icons/hicolor/scalable/apps
