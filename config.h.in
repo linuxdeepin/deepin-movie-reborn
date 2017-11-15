@@ -8,6 +8,9 @@
 #cmakedefine ENABLE_VPU_PLATFORM
 #cmakedefine DMR_DEBUG
 
+/* only defined when build with flatpak */
+#cmakedefine DTK_DMAN_PORTAL
+
 #define RADIUS 4
 // ~
 
