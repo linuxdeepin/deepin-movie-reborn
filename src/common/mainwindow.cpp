@@ -512,6 +512,13 @@ MainWindow::MainWindow(QWidget *parent)
         }
     }
 
+    {
+        auto help = new QShortcut(QKeySequence(Qt::Key_F1), this);
+        help->setContext(Qt::ApplicationShortcut);
+        connect(help, &QShortcut::activated, this, &MainWindow::handleHelpAction);
+    }
+
+
     _engine = new PlayerEngine(this);
     _engine->move(1, 1);
 
@@ -722,6 +729,30 @@ MainWindow::MainWindow(QWidget *parent)
         _toolbox->windowHandle()->installEventFilter(_listener);
     }
     qDebug() << "event listener";
+#endif
+} 
+
+void MainWindow::handleHelpAction()
+{
+    QString appid = qApp->applicationName();
+#ifdef DTK_DMAN_PORTAL
+    if (!qgetenv("FLATPAK_APPID").isEmpty()) {
+        appid = qgetenv("FLATPAK_APPID");
+    }
+
+    QDBusInterface dmanInterface("com.deepin.dman",
+                                 "/com/deepin/dman",
+                                 "com.deepin.dman");
+    if (dmanInterface.isValid()) {
+        auto reply = dmanInterface.call("ShowManual", appid);
+        if (dmanInterface.lastError().isValid()) {
+            qCritical() << "failed call ShowManual" << appid << dmanInterface.lastError();
+        }
+    } else {
+        qCritical() << "can not create dman dbus interface";
+    }
+#else
+    QProcess::startDetached("dman", QStringList() << appid);
 #endif
 }
 

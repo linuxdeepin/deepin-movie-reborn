@@ -110,6 +110,8 @@ protected slots:
     void onMonitorButtonReleased(int x, int y);
 #endif
 
+    void handleHelpAction();
+
 private:
     void handleSettings();
     void updateSizeConstraints();
