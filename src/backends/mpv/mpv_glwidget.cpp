@@ -99,6 +99,7 @@ void main() {
 
 namespace dmr {
     static void* GLAPIENTRY glMPGetNativeDisplay(const char* name) {
+        qWarning() << __func__ << name;
         if (!strcmp(name, "x11") || !strcmp(name, "X11")) {
             return (void*)QX11Info::display();
         }

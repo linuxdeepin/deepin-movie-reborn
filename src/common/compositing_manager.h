@@ -19,6 +19,8 @@ class CompositingManager: public QObject {
         static CompositingManager& get();
         virtual ~CompositingManager();
 
+        static void detectOpenGLEarly();
+
         // this actually means opengl rendering is capable
         bool composited() const { return _composited; }
         Platform platform() const { return _platform; }
