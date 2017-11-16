@@ -187,12 +187,12 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="41"/>
         <source>0.5s backward</source>
-        <translation type="unfinished"/>
+        <translation>0,5 s do tyłu</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="42"/>
         <source>0.5s forward</source>
-        <translation type="unfinished"/>
+        <translation>0,5 s do przodu</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="43"/>
@@ -207,7 +207,7 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="85"/>
         <source>Invalid folder</source>
-        <translation type="unfinished"/>
+        <translation>Nieprawidłowy katalog</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="99"/>
@@ -217,7 +217,7 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="90"/>
         <source>You don&apos;t have permission to operate this folder</source>
-        <translation type="unfinished"/>
+        <translation>Nie masz uprawnień do działań na tym katalogu</translation>
     </message>
 </context>
 <context>
@@ -257,7 +257,7 @@
     <message>
         <location filename="../common/actions.cpp" line="56"/>
         <source>Light Theme</source>
-        <translation type="unfinished"/>
+        <translation>Motyw jasny</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="77"/>
@@ -417,12 +417,12 @@
     <message>
         <location filename="../common/actions.cpp" line="237"/>
         <source>Film Screenshot</source>
-        <translation type="unfinished"/>
+        <translation>Zrzut ekranu z filmu</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="238"/>
         <source>Burst Shooting</source>
-        <translation type="unfinished"/>
+        <translation>Seria ujęć</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="245"/>
@@ -579,12 +579,12 @@
         <location filename="../common/mainwindow.cpp" line="1515"/>
         <location filename="../common/mainwindow.cpp" line="1586"/>
         <source>The screenshot is saved</source>
-        <translation type="unfinished"/>
+        <translation>Zrzut ekranu został zapisany</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1515"/>
         <source>The screenshot is failed to save</source>
-        <translation type="unfinished"/>
+        <translation>Błąd zapisu zrzutu ekranu</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1657"/>

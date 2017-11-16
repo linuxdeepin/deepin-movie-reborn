@@ -92,7 +92,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="22"/>
         <source>Font Style</source>
-        <translation>Yazı Tipi Stili</translation>
+        <translation>Yazı Tipi Sitili</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="23"/>
@@ -202,7 +202,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="44"/>
         <source>Font Size</source>
-        <translation>Yazı Tipi Boyutu</translation>
+        <translation>Yazı tipi boyutu</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="85"/>

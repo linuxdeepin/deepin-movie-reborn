@@ -177,7 +177,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="39"/>
         <source>Burst screenshot</source>
-        <translation>Capture d&apos;écran burst</translation>
+        <translation>Capture d&apos;écran en rafale</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="40"/>
@@ -257,7 +257,7 @@
     <message>
         <location filename="../common/actions.cpp" line="56"/>
         <source>Light Theme</source>
-        <translation>Thème léger</translation>
+        <translation>Thème Clair</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="77"/>
@@ -573,7 +573,7 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="1501"/>
         <source>Saved to</source>
-        <translation>Sauvegardé sur</translation>
+        <translation>Sauvegardé dans</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1515"/>
