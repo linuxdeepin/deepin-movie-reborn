@@ -579,12 +579,12 @@
         <location filename="../common/mainwindow.cpp" line="1515"/>
         <location filename="../common/mainwindow.cpp" line="1586"/>
         <source>The screenshot is saved</source>
-        <translation type="unfinished"/>
+        <translation>A captura de ecrã foi guardada.</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1515"/>
         <source>The screenshot is failed to save</source>
-        <translation type="unfinished"/>
+        <translation>Falha a gravar captura de ecrã</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1657"/>

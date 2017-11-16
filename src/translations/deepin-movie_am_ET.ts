@@ -97,7 +97,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="23"/>
         <source>Restore Defaults</source>
-        <translation type="unfinished"/>
+        <translation>ነባር እንደ ነበር መመለሻ</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="24"/>

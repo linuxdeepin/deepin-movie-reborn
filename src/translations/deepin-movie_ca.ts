@@ -5,219 +5,219 @@
         <location filename="../main.cpp" line="65"/>
         <location filename="../main.cpp" line="95"/>
         <source>Deepin Movie</source>
-        <translation type="unfinished"/>
+        <translation>Pel·lícula del Deepin</translation>
     </message>
     <message>
         <location filename="../main.cpp" line="66"/>
         <source>Deepin Movie is a well-designed and full-featured video player with simple borderless design. It supports local and streaming media play with multiple video formats.</source>
-        <translation type="unfinished"/>
+        <translation>La Pel·lícula del Deepin és un reproductor de vídeo ben dissenyat i ple de funcionalitats amb un disseny simple sense vores. Admet la reproducció local i remota de diversos formats de vídeo.</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="5"/>
         <source>Auto add similar files to play</source>
-        <translation type="unfinished"/>
+        <translation>Afegeix automàticament fitxers semblants per reproduir.</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="6"/>
         <source>Clear playlist when exit</source>
-        <translation type="unfinished"/>
+        <translation>Neteja la llista de reproducció en sortir.</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="7"/>
         <source>Show video preview on mouseover</source>
-        <translation type="unfinished"/>
+        <translation>Mostra una previsualització en passar-hi el ratolí.</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="8"/>
         <source>Open a new player for each file played</source>
-        <translation type="unfinished"/>
+        <translation>Obre un reproductor nou per a cada fitxer reproduït.</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="9"/>
         <source>Pause when minimized</source>
-        <translation type="unfinished"/>
+        <translation>Pausa quan estigui minimitzat.</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="10"/>
         <source>Remember playback position</source>
-        <translation type="unfinished"/>
+        <translation>Recorda el punt de reproducció.</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="11"/>
         <source>Path</source>
-        <translation type="unfinished"/>
+        <translation>Camí</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="12"/>
         <source>Basic</source>
-        <translation type="unfinished"/>
+        <translation>Bàsic</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="13"/>
         <source>Play</source>
-        <translation>Reproduir</translation>
+        <translation>Reprodueix</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="14"/>
         <location filename="../common/settings_translation.cpp" line="19"/>
         <source>Screenshot</source>
-        <translation type="unfinished"/>
+        <translation>Captura de pantalla</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="15"/>
         <source>Shortcuts</source>
-        <translation type="unfinished"/>
+        <translation>Dreceres</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="16"/>
         <source>File</source>
-        <translation type="unfinished"/>
+        <translation>Fitxer</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="17"/>
         <source>Frame/Sound</source>
-        <translation type="unfinished"/>
+        <translation>Fotograma / So</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="18"/>
         <source>Playback</source>
-        <translation type="unfinished"/>
+        <translation>Reproducció</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="20"/>
         <location filename="../common/settings_translation.cpp" line="21"/>
         <source>Subtitle</source>
-        <translation type="unfinished"/>
+        <translation>Subtítol</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="22"/>
         <source>Font Style</source>
-        <translation type="unfinished"/>
+        <translation>Tipus de lletra</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="23"/>
         <source>Restore Defaults</source>
-        <translation type="unfinished"/>
+        <translation>Restaura els valors per defecte</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="24"/>
         <source>Open file</source>
-        <translation type="unfinished"/>
+        <translation>Obre un fitxer</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="25"/>
         <source>Open next</source>
-        <translation type="unfinished"/>
+        <translation>Obre el següent</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="26"/>
         <source>Open previous</source>
-        <translation type="unfinished"/>
+        <translation>Obre l&apos;anterior</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="27"/>
         <source>Mini mode</source>
-        <translation type="unfinished"/>
+        <translation>Mode mini</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="28"/>
         <source>Mute</source>
-        <translation type="unfinished"/>
+        <translation>Silencia</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="29"/>
         <source>volume down</source>
-        <translation type="unfinished"/>
+        <translation>volum avall</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="30"/>
         <source>Volume up</source>
-        <translation type="unfinished"/>
+        <translation>Volum amunt</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="31"/>
         <source>Speed up</source>
-        <translation type="unfinished"/>
+        <translation>Accelera</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="32"/>
         <source>Speed down</source>
-        <translation type="unfinished"/>
+        <translation>Frena</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="33"/>
         <source>Fullscreen</source>
-        <translation type="unfinished"/>
+        <translation>Pantalla completa</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="34"/>
         <source>Pause/Play</source>
-        <translation type="unfinished"/>
+        <translation>Pausa / Reprodueix</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="35"/>
         <source>Playlist</source>
-        <translation type="unfinished"/>
+        <translation>Llista de reproducció</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="36"/>
         <source>Reset speed</source>
-        <translation type="unfinished"/>
+        <translation>Restableix la velocitat</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="37"/>
         <source>Rewind</source>
-        <translation type="unfinished"/>
+        <translation>Rebobina</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="38"/>
         <source>Forward</source>
-        <translation type="unfinished"/>
+        <translation>Avança</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="39"/>
         <source>Burst screenshot</source>
-        <translation type="unfinished"/>
+        <translation>Captura de pantalla explosiva</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="40"/>
         <source>Film screenshot</source>
-        <translation type="unfinished"/>
+        <translation>Captura de pantalla de la pel·lícula</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="41"/>
         <source>0.5s backward</source>
-        <translation type="unfinished"/>
+        <translation>0.5 s enrere</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="42"/>
         <source>0.5s forward</source>
-        <translation type="unfinished"/>
+        <translation>0.5 s endavant</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="43"/>
         <source>Font</source>
-        <translation type="unfinished"/>
+        <translation>Lletra</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="44"/>
         <source>Font Size</source>
-        <translation type="unfinished"/>
+        <translation>Mida de la lletra</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="85"/>
         <source>Invalid folder</source>
-        <translation type="unfinished"/>
+        <translation>Carpeta no vàlida</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="99"/>
         <source>Open Folder</source>
-        <translation type="unfinished"/>
+        <translation>Obre una carpeta</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="90"/>
         <source>You don&apos;t have permission to operate this folder</source>
-        <translation type="unfinished"/>
+        <translation>No teniu permís per usar aquesta carpeta.</translation>
     </message>
 </context>
 <context>
@@ -230,12 +230,12 @@
     <message>
         <location filename="../widgets/url_dialog.cpp" line="13"/>
         <source>Confirm</source>
-        <translation>Confirmar</translation>
+        <translation>Confirmeu-ho</translation>
     </message>
     <message>
         <location filename="../widgets/url_dialog.cpp" line="17"/>
         <source>Please enter the URL:</source>
-        <translation type="unfinished"/>
+        <translation>Introduïu l&apos;URL:</translation>
     </message>
 </context>
 <context>
@@ -245,109 +245,109 @@
         <location filename="../common/actions.cpp" line="73"/>
         <location filename="../common/actions.cpp" line="84"/>
         <source>Open File</source>
-        <translation type="unfinished"/>
+        <translation>Obre un fitxer</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="55"/>
         <location filename="../common/actions.cpp" line="80"/>
         <location filename="../common/actions.cpp" line="247"/>
         <source>Settings</source>
-        <translation type="unfinished"/>
+        <translation>Configuració</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="56"/>
         <source>Light Theme</source>
-        <translation type="unfinished"/>
+        <translation>Tema clar</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="77"/>
         <location filename="../common/actions.cpp" line="90"/>
         <source>Fullscreen</source>
-        <translation type="unfinished"/>
+        <translation>Pantalla completa</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="78"/>
         <location filename="../common/actions.cpp" line="92"/>
         <source>Always on Top</source>
-        <translation type="unfinished"/>
+        <translation>Sempre a dalt</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="79"/>
         <location filename="../common/actions.cpp" line="263"/>
         <source>Film info</source>
-        <translation type="unfinished"/>
+        <translation>Informació de la pel·lícula</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="54"/>
         <location filename="../common/actions.cpp" line="74"/>
         <location filename="../common/actions.cpp" line="85"/>
         <source>Open Folder</source>
-        <translation type="unfinished"/>
+        <translation>Obre una carpeta</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="86"/>
         <source>Open URL</source>
-        <translation type="unfinished"/>
+        <translation>Obre un URL</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="87"/>
         <source>Open CD/DVD</source>
-        <translation type="unfinished"/>
+        <translation>Obre un CD / DVD</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="91"/>
         <source>Mini Mode</source>
-        <translation type="unfinished"/>
+        <translation>Mode mini</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="97"/>
         <source>Play Mode</source>
-        <translation type="unfinished"/>
+        <translation>Mode de reproducció</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="100"/>
         <source>Order Play</source>
-        <translation type="unfinished"/>
+        <translation>Reproducció ordenada</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="101"/>
         <source>Shuffle Play</source>
-        <translation type="unfinished"/>
+        <translation>Reproducció aleatòria</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="102"/>
         <source>Single Play</source>
-        <translation type="unfinished"/>
+        <translation>Reproducció simple</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="103"/>
         <source>Single Loop</source>
-        <translation type="unfinished"/>
+        <translation>Repetició simple</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="104"/>
         <source>List Loop</source>
-        <translation type="unfinished"/>
+        <translation>Repetició de la llista</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="111"/>
         <source>Frame</source>
-        <translation type="unfinished"/>
+        <translation>Fotograma</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="114"/>
         <source>Default</source>
-        <translation type="unfinished"/>
+        <translation>Per defecte</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="122"/>
         <source>Clockwise</source>
-        <translation type="unfinished"/>
+        <translation>Cap a la dreta</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="123"/>
         <source>Counterclockwise</source>
-        <translation type="unfinished"/>
+        <translation>Cap a l&apos;esquerra</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="130"/>
@@ -362,62 +362,62 @@
     <message>
         <location filename="../common/actions.cpp" line="136"/>
         <source>Stereo</source>
-        <translation type="unfinished"/>
+        <translation>Estèreo</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="137"/>
         <source>Left channel</source>
-        <translation type="unfinished"/>
+        <translation>Canal de l&apos;esquerra</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="138"/>
         <source>Right channel</source>
-        <translation type="unfinished"/>
+        <translation>Canal de la dreta</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="144"/>
         <source>Track</source>
-        <translation type="unfinished"/>
+        <translation>Pista</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="154"/>
         <source>Subtitle</source>
-        <translation type="unfinished"/>
+        <translation>Subtítol</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="155"/>
         <source>Load</source>
-        <translation type="unfinished"/>
+        <translation>Carrega</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="156"/>
         <source>Online Search</source>
-        <translation type="unfinished"/>
+        <translation>Cerca en línia</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="160"/>
         <source>Select</source>
-        <translation type="unfinished"/>
+        <translation>Selecciona</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="164"/>
         <source>Hide</source>
-        <translation type="unfinished"/>
+        <translation>Oculta</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="168"/>
         <source>Encodings</source>
-        <translation type="unfinished"/>
+        <translation>Codificacions</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="236"/>
         <source>Screenshot</source>
-        <translation type="unfinished"/>
+        <translation>Captura de pantalla</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="237"/>
         <source>Film Screenshot</source>
-        <translation type="unfinished"/>
+        <translation>Captura de pantalla de la pel·lícula</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="238"/>
@@ -427,22 +427,22 @@
     <message>
         <location filename="../common/actions.cpp" line="245"/>
         <source>Playlist</source>
-        <translation type="unfinished"/>
+        <translation>Llista de reproducció</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="246"/>
         <source>Film Info</source>
-        <translation type="unfinished"/>
+        <translation>Informació de la pel·lícula</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="261"/>
         <source>Clear playlist</source>
-        <translation type="unfinished"/>
+        <translation>Neteja la llista de reproducció</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="262"/>
         <source>Display in file manager</source>
-        <translation type="unfinished"/>
+        <translation>Mostra al gestor de fitxers</translation>
     </message>
 </context>
 <context>
@@ -450,22 +450,22 @@
     <message>
         <location filename="../widgets/burst_screenshots_dialog.cpp" line="50"/>
         <source>duration: %1</source>
-        <translation type="unfinished"/>
+        <translation>durada: %1</translation>
     </message>
     <message>
         <location filename="../widgets/burst_screenshots_dialog.cpp" line="56"/>
         <source>resolution: %1</source>
-        <translation type="unfinished"/>
+        <translation>resolució: %1</translation>
     </message>
     <message>
         <location filename="../widgets/burst_screenshots_dialog.cpp" line="62"/>
         <source>size: %1</source>
-        <translation type="unfinished"/>
+        <translation>mida: %1</translation>
     </message>
     <message>
         <location filename="../widgets/burst_screenshots_dialog.cpp" line="85"/>
         <source>save</source>
-        <translation type="unfinished"/>
+        <translation>desa</translation>
     </message>
 </context>
 <context>
@@ -475,24 +475,24 @@
         <location filename="../common/mainwindow.cpp" line="1866"/>
         <location filename="../common/mainwindow.cpp" line="1959"/>
         <source>Deepin Movie</source>
-        <translation type="unfinished"/>
+        <translation>Pel·lícula del Deepin</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="658"/>
         <location filename="../common/mainwindow.cpp" line="1435"/>
         <source>Load successfully</source>
-        <translation type="unfinished"/>
+        <translation>Càrrega correcta</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="658"/>
         <location filename="../common/mainwindow.cpp" line="1435"/>
         <source>Load failed</source>
-        <translation type="unfinished"/>
+        <translation>Ha fallat la càrrega.</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1080"/>
         <source>No device found</source>
-        <translation type="unfinished"/>
+        <translation>No s&apos;ha trobat cap dispositiu.</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1098"/>
@@ -502,14 +502,14 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="1105"/>
         <source>Open Folder</source>
-        <translation type="unfinished"/>
+        <translation>Obre una carpeta</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1120"/>
         <location filename="../common/mainwindow.cpp" line="1136"/>
         <location filename="../common/mainwindow.cpp" line="1430"/>
         <source>Open File</source>
-        <translation type="unfinished"/>
+        <translation>Obre un fitxer</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1122"/>
@@ -613,7 +613,7 @@
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="88"/>
         <source>Duration:</source>
-        <translation type="unfinished"/>
+        <translation>Durada:</translation>
     </message>
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="91"/>
@@ -658,13 +658,13 @@
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="834"/>
         <source>Play</source>
-        <translation>Reproduir</translation>
+        <translation>Reprodueix</translation>
     </message>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="654"/>
         <location filename="../widgets/toolbox_proxy.cpp" line="665"/>
         <source>Previous</source>
-        <translation type="unfinished"/>
+        <translation>Anterior</translation>
     </message>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="655"/>
@@ -682,20 +682,20 @@
         <location filename="../widgets/toolbox_proxy.cpp" line="657"/>
         <location filename="../widgets/toolbox_proxy.cpp" line="666"/>
         <source>Playlist</source>
-        <translation type="unfinished"/>
+        <translation>Llista de reproducció</translation>
     </message>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="658"/>
         <location filename="../widgets/toolbox_proxy.cpp" line="666"/>
         <location filename="../widgets/toolbox_proxy.cpp" line="821"/>
         <source>Fullscreen</source>
-        <translation type="unfinished"/>
+        <translation>Pantalla completa</translation>
     </message>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="652"/>
         <location filename="../widgets/toolbox_proxy.cpp" line="665"/>
         <source>Play/Pause</source>
-        <translation type="unfinished"/>
+        <translation>Reprodueix / Pausa</translation>
     </message>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="818"/>
@@ -705,7 +705,7 @@
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="831"/>
         <source>Pause</source>
-        <translation>Pausar</translation>
+        <translation>Pausa</translation>
     </message>
 </context>
 </TS>
