@@ -1,3 +1,16 @@
+##  2.9.97 (2017-11-16)
+
+
+#### Bug Fixes
+
+*   correct shape mask in non-composited mode ([86397bf2](86397bf2))
+
+#### Features
+
+*   use vaapi_egl opengl interop when possible ([632afdf9](632afdf9))
+*   support build with DTK_DMAN_PORTAL ([05a19b86](05a19b86))
+*   support dman activation from flatpak env ([eb548afc](eb548afc))
+
 ##  2.9.96 (2017-11-09)
 
 
