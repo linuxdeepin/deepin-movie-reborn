@@ -101,7 +101,7 @@ mpv_handle* MpvProxy::mpv_init()
 
     if (Settings::get().isSet(Settings::HWAccel)) {
         if (composited) {
-            set_property(h, "opengl-hwdec-interop", "auto");
+            set_property(h, "opengl-hwdec-interop", "vaapi-egl");
         }
         set_property(h, "hwdec", "auto");
     } else {

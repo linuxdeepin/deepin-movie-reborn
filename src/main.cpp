@@ -23,6 +23,7 @@
 #include "dmr_settings.h"
 #include "mainwindow.h"
 #include "dbus_adpator.h"
+#include "compositing_manager.h"
 #include "utils.h"
 #ifdef ENABLE_VPU_PLATFORM
 #include "vpu_proxy.h"
@@ -34,6 +35,8 @@ DWIDGET_USE_NAMESPACE
 
 int main(int argc, char *argv[])
 {
+    CompositingManager::detectOpenGLEarly();
+
     DApplication::loadDXcbPlugin();
 
 #if defined(STATIC_LIB)
