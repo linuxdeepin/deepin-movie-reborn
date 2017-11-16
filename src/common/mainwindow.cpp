@@ -1736,7 +1736,7 @@ void MainWindow::toggleShapeMask()
 #ifndef USE_DXCB
     if (isFullScreen() || isMaximized()) {
         clearMask();
-    } else if (mask().isEmpty()) {
+    } else {
         QPixmap shape(size());
         shape.setDevicePixelRatio(windowHandle()->devicePixelRatio());
         shape.fill(Qt::transparent);
