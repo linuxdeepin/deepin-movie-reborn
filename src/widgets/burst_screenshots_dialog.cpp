@@ -26,9 +26,9 @@ BurstScreenshotsDialog::BurstScreenshotsDialog(const PlayItemInfo& pif)
 
     auto *pm = new QLabel(this);
     auto dpr = qApp->devicePixelRatio();
-    QPixmap img(":/resources/icons/logo-big.svg");
-    img = img.scaled(44 * dpr, 44 * dpr);
-    img.setDevicePixelRatio(dpr);
+    pm->setFixedSize(44, 44);
+    pm->setScaledContents(true);
+    QPixmap img = QPixmap::fromImage(utils::LoadHiDPIImage(":/resources/icons/logo-big.svg"));
     pm->setPixmap(img);
     hl->setAlignment(pm, Qt::AlignCenter);
     hl->addWidget(pm);

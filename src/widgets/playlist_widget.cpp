@@ -205,9 +205,7 @@ public:
 
         auto dpr = qApp->devicePixelRatio();
 
-        QPixmap pm(s);
-        pm = pm.scaled(pm.size() * dpr, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-        pm.setDevicePixelRatio(dpr);
+        QPixmap pm = QPixmap::fromImage(utils::LoadHiDPIImage(s));
 
         QPixmap dest(pm.size());
         dest.setDevicePixelRatio(dpr);

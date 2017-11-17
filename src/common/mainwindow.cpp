@@ -661,6 +661,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     _lightTheme = Settings::get().internalOption("light_theme").toBool();
     if (_lightTheme) reflectActionToUI(ActionFactory::LightTheme);
+    prepareSplashImages();
 
     connect(_engine, &PlayerEngine::sidChanged, [=]() {
         reflectActionToUI(ActionFactory::ActionKind::SelectSubtitle);
@@ -2170,20 +2171,28 @@ void MainWindow::contextMenuEvent(QContextMenuEvent *cme)
     cme->accept();
 }
 
+void MainWindow::prepareSplashImages()
+{
+    auto dpr = devicePixelRatioF();
+
+    if (dpr > 1.0) {
+        bg_dark = utils::LoadHiDPIImage(":/resources/icons/dark/init-splash.svg");
+        bg_light = utils::LoadHiDPIImage(":/resources/icons/light/init-splash.svg");
+    }
+}
+
 void MainWindow::paintEvent(QPaintEvent* pe)
 {
     QPainter p(this);
     p.setRenderHint(QPainter::Antialiasing);
 
-    static QImage bg_dark(":/resources/icons/dark/init-splash.svg");
-    static QImage bg_light(":/resources/icons/light/init-splash.svg");
     bool light = ("light" == qApp->theme());
     bool rounded = !isFullScreen() && !isMaximized();
 
     p.fillRect(rect(), Qt::transparent);
 
     auto bg_clr = QColor(16, 16, 16);
-    QImage bg = bg_dark;
+    QImage& bg = bg_dark;
     if (light) {
         bg = bg_light;
         bg_clr = QColor(252, 252, 252);
@@ -2209,7 +2218,7 @@ void MainWindow::paintEvent(QPaintEvent* pe)
         p.fillPath(pp, bg_clr);
     }
 
-    auto pt = rect().center() - QPoint(bg.width()/2, bg.height()/2);
+    auto pt = rect().center() - QPoint(bg.width()/2, bg.height()/2)/devicePixelRatioF();
     p.drawImage(pt, bg);
 
 }
