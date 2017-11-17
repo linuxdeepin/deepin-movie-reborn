@@ -29,8 +29,9 @@ protected:
     void setPlaying(bool);
     void setMiniMode(bool);
 
-public slots:
+protected slots:
     void onNewFrame();
+    void onFrameSwapped();
 
 private:
     mpv::qt::Handle _handle;

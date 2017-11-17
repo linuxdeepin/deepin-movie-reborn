@@ -137,6 +137,12 @@ namespace dmr {
         }
     }
 
+    void MpvGLWidget::onFrameSwapped()
+    {
+        //qDebug() << "frame swapped";
+        mpv_opengl_cb_report_flip(_gl_ctx, 0);
+    }
+
     MpvGLWidget::MpvGLWidget(QWidget *parent, mpv::qt::Handle h)
         :QOpenGLWidget(parent), _handle(h) { 
         setUpdateBehavior(QOpenGLWidget::NoPartialUpdate);
@@ -146,10 +152,8 @@ namespace dmr {
             std::runtime_error("can not init mpv gl");
         }
         mpv_opengl_cb_set_update_callback(_gl_ctx, gl_update_callback, this);
-        connect(this, &QOpenGLWidget::frameSwapped, [=]() {
-            //qDebug() << "frame swapped";
-            mpv_opengl_cb_report_flip(_gl_ctx, 0);
-        });
+        connect(this, &QOpenGLWidget::frameSwapped, 
+                this, &MpvGLWidget::onFrameSwapped, Qt::DirectConnection);
 
         auto fmt = QSurfaceFormat::defaultFormat();
         fmt.setAlphaBufferSize(8);
