@@ -2173,12 +2173,8 @@ void MainWindow::contextMenuEvent(QContextMenuEvent *cme)
 
 void MainWindow::prepareSplashImages()
 {
-    auto dpr = devicePixelRatioF();
-
-    if (dpr > 1.0) {
-        bg_dark = utils::LoadHiDPIImage(":/resources/icons/dark/init-splash.svg");
-        bg_light = utils::LoadHiDPIImage(":/resources/icons/light/init-splash.svg");
-    }
+    bg_dark = utils::LoadHiDPIImage(":/resources/icons/dark/init-splash.svg");
+    bg_light = utils::LoadHiDPIImage(":/resources/icons/light/init-splash.svg");
 }
 
 void MainWindow::paintEvent(QPaintEvent* pe)

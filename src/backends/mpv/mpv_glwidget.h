@@ -57,8 +57,8 @@ private:
     QOpenGLBuffer _vboCorners[4];
     QOpenGLShaderProgram *_glProgCorner {nullptr};
 
-    QImage bg_dark {":/resources/icons/dark/init-splash.svg"};
-    QImage bg_light {":/resources/icons/light/init-splash.svg"};
+    QImage bg_dark;
+    QImage bg_light;
 
     void updateVbo();
     void updateVboCorners();
@@ -69,6 +69,8 @@ private:
 
     void setupBlendPipe();
     void setupIdlePipe();
+
+    void prepareSplashImages();
 
 };
 

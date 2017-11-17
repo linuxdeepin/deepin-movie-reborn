@@ -257,6 +257,12 @@ namespace dmr {
         }
     }
 
+    void MpvGLWidget::prepareSplashImages()
+    {
+        bg_dark = utils::LoadHiDPIImage(":/resources/icons/dark/init-splash.svg");
+        bg_light = utils::LoadHiDPIImage(":/resources/icons/light/init-splash.svg");
+    }
+
     void MpvGLWidget::initializeGL() 
     {
         QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
@@ -267,6 +273,7 @@ namespace dmr {
         f->glClearColor(a, a, a, 1.0);
 
 
+        prepareSplashImages();
         setupIdlePipe();
         setupBlendPipe();
 
@@ -441,8 +448,9 @@ namespace dmr {
         //HACK: we assume if any of width or height is 380, then we are in mini mode
         auto vp = rect().size();
 
+        auto bg_size = bg_dark.size() / devicePixelRatioF();
         _inMiniMode = vp.width() <= 380 || vp.height() <= 380;
-        auto tex_sz = _inMiniMode ? bg_dark.size()/2 : bg_dark.size();
+        auto tex_sz = _inMiniMode ? bg_size/2 : bg_size;
 
         auto r = QRect(0, 0, vp.width(), vp.height());
         auto r2 = QRect(r.center() - QPoint(tex_sz.width()/2, tex_sz.height()/2), tex_sz);
