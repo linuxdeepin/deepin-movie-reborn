@@ -163,8 +163,12 @@ mpv_handle* MpvProxy::mpv_init()
     auto ol = CompositingManager::get().getBestProfile();
     auto p = ol.begin();
     while (p != ol.end()) {
-        set_property(h, p->first.toUtf8().constData(), p->second.toUtf8().constData());
-        qDebug() << "apply" << p->first << "=" << p->second;
+        if (!p->first.startsWith("#")) {
+            set_property(h, p->first.toUtf8().constData(), p->second.toUtf8().constData());
+            qDebug() << "apply" << p->first << "=" << p->second;
+        } else {
+            qDebug() << "ignore(commented out)" << p->first << "=" << p->second;
+        }
         ++p;
     }
 
