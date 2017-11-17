@@ -123,6 +123,7 @@ private:
     QString probeCdromDevice();
     void updateWindowTitle();
     void toggleShapeMask();
+    void prepareSplashImages();
 
 private:
     DTitlebar *_titlebar {nullptr};
@@ -139,6 +140,9 @@ private:
     DImageButton *_miniPlayBtn {nullptr};
     DImageButton *_miniCloseBtn {nullptr};
     DImageButton *_miniQuitMiniBtn {nullptr};
+
+    QImage bg_dark;
+    QImage bg_light;
 
     bool _miniMode {false};
     QSize _lastSizeInNormalMode;

@@ -318,5 +318,15 @@ bool ValidateScreenshotPath(const QString& path)
 
     return true;
 }
+
+QImage LoadHiDPIImage(const QString& filename)
+{
+    QImageReader reader(filename);
+    reader.setScaledSize(reader.size() * qApp->devicePixelRatio());
+    auto img =  reader.read();
+    img.setDevicePixelRatio(qApp->devicePixelRatio());
+    return img;
+}
+
 }
 }
