@@ -834,11 +834,8 @@ void MainWindow::onThemeChanged()
     qDebug() << __func__ << qApp->theme();
 
     auto theme = qApp->theme();
-    auto pm = QPixmap(QString(":/resources/icons/%1/normal/play-big.svg")
+    auto pm = utils::LoadHiDPIPixmap(QString(":/resources/icons/%1/normal/play-big.svg")
             .arg(qApp->theme()));
-    pm = pm.scaled(pm.size() * qApp->devicePixelRatio(), Qt::KeepAspectRatio, 
-            Qt::SmoothTransformation);
-    pm.setDevicePixelRatio(qApp->devicePixelRatio());
     _playState->setPixmap(pm);
 }
 
@@ -1576,8 +1573,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                 _nwShot->setAnchor(NotificationWidget::AnchorNorthWest);
                 _nwShot->setAnchorPoint(QPoint(30, 38));
             }
-            auto pm = QPixmap(QString(":/resources/icons/%1.svg").arg(success?"success":"fail"));
-            pm.setDevicePixelRatio(windowHandle()->devicePixelRatio());
+            auto pm = utils::LoadHiDPIPixmap(QString(":/resources/icons/%1.svg").arg(success?"success":"fail"));
             auto msg = success?tr("The screenshot is saved"):tr("The screenshot is failed to save");
             _nwShot->popupWithIcon(msg, pm);
 #endif
@@ -1648,8 +1644,7 @@ void MainWindow::onBurstScreenshot(const QImage& frame, qint64 timestamp)
                 _nwShot->setAnchor(NotificationWidget::AnchorNorthWest);
                 _nwShot->setAnchorPoint(QPoint(30, 38));
             }
-            auto pm = QPixmap(QString(":/resources/icons/%1.svg").arg(QFileInfo::exists(poster_path)?"success":"fail"));
-            pm.setDevicePixelRatio(windowHandle()->devicePixelRatio());
+            auto pm = utils::LoadHiDPIPixmap(QString(":/resources/icons/%1.svg").arg(QFileInfo::exists(poster_path)?"success":"fail"));
             _nwShot->popupWithIcon(tr("The screenshot is saved"), pm);
         }
     }
