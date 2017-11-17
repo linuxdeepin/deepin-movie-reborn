@@ -42,14 +42,14 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo& pif)
     auto dpr = qApp->devicePixelRatio();
     QPixmap cover;
     if (pif.thumbnail.isNull()) {
-        cover = (QPixmap(":/resources/icons/logo-big.svg"));
+        cover = (utils::LoadHiDPIPixmap(":/resources/icons/logo-big.svg"));
     } else {
         QSize sz(176, 118);
         sz *= dpr;
         auto img = pif.thumbnail.scaledToWidth(sz.width(), Qt::SmoothTransformation);
         cover = img.copy(0, (img.height()-sz.height())/2, sz.width(), sz.height());
+        cover.setDevicePixelRatio(dpr);
     }
-    cover.setDevicePixelRatio(dpr);
     cover = utils::MakeRoundedPixmap(cover, 4, 4);
     pm->setPixmap(cover);
     pm->ensurePolished();

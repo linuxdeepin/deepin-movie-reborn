@@ -328,5 +328,10 @@ QImage LoadHiDPIImage(const QString& filename)
     return img;
 }
 
+QPixmap LoadHiDPIPixmap(const QString& filename)
+{
+    return QPixmap::fromImage(LoadHiDPIImage(filename));
+}
+
 }
 }

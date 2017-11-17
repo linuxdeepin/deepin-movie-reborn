@@ -448,12 +448,12 @@ namespace dmr {
         //HACK: we assume if any of width or height is 380, then we are in mini mode
         auto vp = rect().size();
 
-        auto bg_size = bg_dark.size() / devicePixelRatioF();
+        auto bg_size = QSizeF(bg_dark.size()) / devicePixelRatioF();
         _inMiniMode = vp.width() <= 380 || vp.height() <= 380;
         auto tex_sz = _inMiniMode ? bg_size/2 : bg_size;
 
-        auto r = QRect(0, 0, vp.width(), vp.height());
-        auto r2 = QRect(r.center() - QPoint(tex_sz.width()/2, tex_sz.height()/2), tex_sz);
+        auto r = QRectF(0, 0, vp.width(), vp.height());
+        auto r2 = QRectF(r.center() - QPointF(tex_sz.width()/2, tex_sz.height()/2), tex_sz);
 
         GLfloat x1 = (float)r2.left() / r.width();
         GLfloat x2 = (float)(r2.right()+1) / r.width();
