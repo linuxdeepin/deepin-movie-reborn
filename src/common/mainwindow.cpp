@@ -558,10 +558,7 @@ MainWindow::MainWindow(QWidget *parent)
     _progIndicator->setVisible(false);
     connect(windowHandle(), &QWindow::windowStateChanged, [=]() {
         qDebug() << windowState();
-        Qt::WindowFlags hint = Qt::WindowCloseButtonHint | Qt::WindowTitleHint |
-            Qt::WindowSystemMenuHint;
         if (!isFullScreen()) {
-            hint |= Qt::WindowMaximizeButtonHint | Qt::WindowMinimizeButtonHint;
             qApp->restoreOverrideCursor();
             if (_lastCookie > 0) {
                 utils::UnInhibitStandby(_lastCookie);
@@ -581,7 +578,7 @@ MainWindow::MainWindow(QWidget *parent)
             qDebug() << "inhibit cookie" << _lastCookie;
             _listener->setEnabled(false);
         }
-        _titlebar->setWindowFlags(hint);
+        _titlebar->setVisible(!isFullScreen());
         //WTF: this->geometry() is not size of fullscreen !
         //_progIndicator->move(geometry().width() - _progIndicator->width() - 18, 14);
         _progIndicator->setVisible(isFullScreen());
@@ -1854,7 +1851,7 @@ void MainWindow::resumeToolsWindow()
     setCursor(Qt::ArrowCursor);
 
     if (!_miniMode) {
-        _titlebar->show();
+        _titlebar->setVisible(!isFullScreen());
         _toolbox->show();
     } else {
         _miniPlayBtn->show();
