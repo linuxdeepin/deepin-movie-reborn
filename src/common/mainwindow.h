@@ -94,7 +94,6 @@ protected slots:
     void onApplicationStateChanged(Qt::ApplicationState e);
     void onBindingsChanged();
     void updateActionsState();
-    void onThemeChanged();
     void updatePlayState();
     void resizeByConstraints(bool forceCentered = false);
 
@@ -130,7 +129,7 @@ private:
     ToolboxProxy *_toolbox {nullptr};
     PlaylistWidget *_playlist {nullptr};
     PlayerEngine *_engine {nullptr};
-    QLabel *_playState {nullptr};
+    DImageButton *_playState {nullptr};
     MovieProgressIndicator *_progIndicator {nullptr};
 
     QList<QPair<QImage, qint64>> _burstShoots;

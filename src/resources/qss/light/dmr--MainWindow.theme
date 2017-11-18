@@ -57,3 +57,12 @@ Dtk--Widget--DImageButton#MiniCloseBtn {
     qproperty-pressPic: url(:/resources/icons/light/mini/close-press.svg);
 }
 
+Dtk--Widget--DImageButton#PlayState {
+    background: transparent;
+    border: none;
+    qproperty-normalPic: url(:/resources/icons/light/normal/play-big_normal.svg);
+    qproperty-hoverPic: url(:/resources/icons/light/normal/play-big_hover.svg);
+    qproperty-pressPic: url(:/resources/icons/light/normal/play-big_press.svg);
+}
+
+
