@@ -170,6 +170,7 @@ public:
     MainWindow *_source;
 };
 
+
 class MainWindowEventListener : public QObject
 {
     Q_OBJECT
@@ -550,9 +551,13 @@ MainWindow::MainWindow(QWidget *parent)
     _playlist = new PlaylistWidget(this, _engine);
     _playlist->hide();
 
-    _playState = new QLabel(this);
+    _playState = new DImageButton(this);
+    _playState->setObjectName("PlayState");
     _playState->setFixedSize(128, 128);
     _playState->setVisible(false);
+    connect(_playState, &DImageButton::clicked, [=]() {
+        requestAction(ActionFactory::TogglePause, false, {}, true);
+    });
 
     _progIndicator = new MovieProgressIndicator(this);
     _progIndicator->setVisible(false);
@@ -685,10 +690,6 @@ MainWindow::MainWindow(QWidget *parent)
         [this](const QUrl& url, bool success) {
             _nwComm->updateWithMessage(success?tr("Load successfully"):tr("Load failed"));
         });
-
-    connect(DThemeManager::instance(), &DThemeManager::themeChanged,
-            this, &MainWindow::onThemeChanged);
-    onThemeChanged();
 
     connect(&_autoHideTimer, &QTimer::timeout, this, &MainWindow::suspendToolsWindow);
     _autoHideTimer.setSingleShot(true);
@@ -824,16 +825,6 @@ void MainWindow::onApplicationStateChanged(Qt::ApplicationState e)
 
         default: break;
     }
-}
-
-void MainWindow::onThemeChanged()
-{
-    qDebug() << __func__ << qApp->theme();
-
-    auto theme = qApp->theme();
-    auto pm = utils::LoadHiDPIPixmap(QString(":/resources/icons/%1/normal/play-big.svg")
-            .arg(qApp->theme()));
-    _playState->setPixmap(pm);
 }
 
 void MainWindow::updatePlayState()
@@ -2075,6 +2066,11 @@ void MainWindow::mousePressEvent(QMouseEvent *ev)
     _mouseMoved = false;
     if (ev->buttons() == Qt::LeftButton) {
         _mousePressed = true;
+        if (_playState->isVisible()) {
+            //_playState->setState(DImageButton::Press);
+            QMouseEvent me(QEvent::MouseButtonPress, {}, ev->button(), ev->buttons(), ev->modifiers());
+            qApp->sendEvent(_playState, &me);
+        }
     }
 }
 
@@ -2113,6 +2109,12 @@ bool MainWindow::insideResizeArea(const QPoint& global_p)
 void MainWindow::mouseReleaseEvent(QMouseEvent *ev)
 {
     _mousePressed = false;
+    if (_playState->isVisible()) {
+        //QMouseEvent me(QEvent::MouseButtonRelease, {}, ev->button(), ev->buttons(), ev->modifiers());
+        //qApp->sendEvent(_playState, &me);
+        _playState->setState(DImageButton::Normal);
+    }
+
     // dtk has a bug, DImageButton propagates mouseReleaseEvent event when it responsed to.
     if (!insideResizeArea(ev->globalPos()) && !_mouseMoved && !insideToolsArea(ev->pos())) {
         if (_playlist->state() != PlaylistWidget::Opened)
