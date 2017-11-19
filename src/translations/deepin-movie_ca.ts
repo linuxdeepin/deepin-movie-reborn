@@ -177,7 +177,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="39"/>
         <source>Burst screenshot</source>
-        <translation>Captura de pantalla explosiva</translation>
+        <translation>Captura de pantalla d&apos;esclat</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="40"/>
@@ -422,7 +422,7 @@
     <message>
         <location filename="../common/actions.cpp" line="238"/>
         <source>Burst Shooting</source>
-        <translation type="unfinished"/>
+        <translation>Esclat de ràfegues</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="245"/>
@@ -497,7 +497,7 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="1098"/>
         <source>Parse Failed</source>
-        <translation type="unfinished"/>
+        <translation>Ha fallat l&apos;anàlisi</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1105"/>
@@ -515,12 +515,12 @@
         <location filename="../common/mainwindow.cpp" line="1122"/>
         <location filename="../common/mainwindow.cpp" line="1138"/>
         <source>Movies (%1)</source>
-        <translation type="unfinished"/>
+        <translation>Pel·lícules (%1)</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1304"/>
         <source>Muted</source>
-        <translation type="unfinished"/>
+        <translation>Silenciat</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1307"/>
@@ -528,69 +528,69 @@
         <location filename="../common/mainwindow.cpp" line="1329"/>
         <location filename="../common/mainwindow.cpp" line="1336"/>
         <source>Volume: %1%</source>
-        <translation type="unfinished"/>
+        <translation>Volum: %1%</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1395"/>
         <location filename="../common/mainwindow.cpp" line="1403"/>
         <source>Subtitle %1: %2s</source>
-        <translation type="unfinished"/>
+        <translation>Subtítol %1: %2s</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1396"/>
         <location filename="../common/mainwindow.cpp" line="1404"/>
         <source>delayed</source>
-        <translation type="unfinished"/>
+        <translation>ajornat</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1396"/>
         <location filename="../common/mainwindow.cpp" line="1404"/>
         <source>advanced</source>
-        <translation type="unfinished"/>
+        <translation>avançat</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1411"/>
         <location filename="../common/mainwindow.cpp" line="1418"/>
         <location filename="../common/mainwindow.cpp" line="1425"/>
         <source>Speed: %1x</source>
-        <translation type="unfinished"/>
+        <translation>Velocitat: %1x</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1432"/>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</source>
-        <translation type="unfinished"/>
+        <translation>Subtítol (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1489"/>
         <source>View</source>
-        <translation type="unfinished"/>
+        <translation>Visualització</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1500"/>
         <source>Movie Screenshot</source>
-        <translation type="unfinished"/>
+        <translation>Captura de pantalla de la pel·lícula</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1501"/>
         <source>Saved to</source>
-        <translation type="unfinished"/>
+        <translation>Desada a</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1515"/>
         <location filename="../common/mainwindow.cpp" line="1586"/>
         <source>The screenshot is saved</source>
-        <translation type="unfinished"/>
+        <translation>La captura s&apos;ha desat.</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1515"/>
         <source>The screenshot is failed to save</source>
-        <translation type="unfinished"/>
+        <translation>Ha fallat desar la captura.</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1657"/>
         <location filename="../common/mainwindow.cpp" line="2255"/>
         <source>Invalid file: %1</source>
-        <translation type="unfinished"/>
+        <translation>Fitxer no vàlid: %1</translation>
     </message>
 </context>
 <context>
@@ -598,17 +598,17 @@
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="85"/>
         <source>File Type:</source>
-        <translation type="unfinished"/>
+        <translation>Tipus de fitxer:</translation>
     </message>
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="86"/>
         <source>Resolution:</source>
-        <translation type="unfinished"/>
+        <translation>Resolució:</translation>
     </message>
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="87"/>
         <source>File Size:</source>
-        <translation type="unfinished"/>
+        <translation>Mida del fitxer:</translation>
     </message>
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="88"/>
@@ -618,7 +618,7 @@
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="91"/>
         <source>File Path:</source>
-        <translation type="unfinished"/>
+        <translation>Camí del fitxer:</translation>
     </message>
 </context>
 <context>
@@ -627,7 +627,7 @@
         <location filename="../backends/mpv/mpv_proxy.cpp" line="895"/>
         <location filename="../backends/mpv/mpv_proxy.cpp" line="913"/>
         <source>[internal]</source>
-        <translation type="unfinished"/>
+        <translation>[intern]</translation>
     </message>
 </context>
 <context>
@@ -637,7 +637,7 @@
         <location filename="../widgets/playlist_widget.cpp" line="187"/>
         <location filename="../widgets/playlist_widget.cpp" line="397"/>
         <source>File does not exist</source>
-        <translation type="unfinished"/>
+        <translation>El fitxer no existeix.</translation>
     </message>
 </context>
 <context>
@@ -645,12 +645,12 @@
     <message>
         <location filename="../common/dmr_settings.cpp" line="129"/>
         <source>%1/DMovie%2.jpg</source>
-        <translation type="unfinished"/>
+        <translation>%1/DMovie%2.jpg</translation>
     </message>
     <message>
         <location filename="../common/dmr_settings.cpp" line="135"/>
         <source>%1/DMovie%2(%3).jpg</source>
-        <translation type="unfinished"/>
+        <translation>%1/DMovie%2(%3).jpg</translation>
     </message>
 </context>
 <context>
@@ -676,7 +676,7 @@
         <location filename="../widgets/toolbox_proxy.cpp" line="656"/>
         <location filename="../widgets/toolbox_proxy.cpp" line="666"/>
         <source>Subtitles</source>
-        <translation type="unfinished"/>
+        <translation>Subtítols</translation>
     </message>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="657"/>
@@ -700,7 +700,7 @@
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="818"/>
         <source>Exit fullscreen</source>
-        <translation type="unfinished"/>
+        <translation>Surt de la pantalla completa</translation>
     </message>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="831"/>
