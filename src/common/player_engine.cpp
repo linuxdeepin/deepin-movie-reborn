@@ -150,9 +150,10 @@ void PlayerEngine::updateSubStyles()
     if (_state != CoreState::Idle) {
         if (_playlist->current() < 0) return;
 
-        sz *= devicePixelRatioF();
-        //double scale = _playlist->currentInfo().mi.height / 720.0;
-        //sz = sz / scale;
+        double scale = _playlist->currentInfo().mi.height / 720.0;
+        sz /= scale;
+        /* magic scale number 2.0 comes from my mind, test with my eyes... */
+        sz *= 2.0;
         qDebug() << "update sub " << font << sz;
         updateSubStyle(font, sz);
     }
