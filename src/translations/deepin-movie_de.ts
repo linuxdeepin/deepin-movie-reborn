@@ -10,7 +10,7 @@
     <message>
         <location filename="../main.cpp" line="66"/>
         <source>Deepin Movie is a well-designed and full-featured video player with simple borderless design. It supports local and streaming media play with multiple video formats.</source>
-        <translation>Deepin Film ist ein gut gestalteter und voll ausgestatteter Videoabspieler mit einem einfachen, randlosen Design. Er unterstützt lokale und gestreamte Medien mit mehreren Videoformaten.</translation>
+        <translation>Deepin Film ist ein gut gestalteter und voll ausgestatteter Videoabspieler mit einem einfachen, randlosen Design. Er unterstützt lokale und gestreamte Medien mit vielen Videoformaten.</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="5"/>
