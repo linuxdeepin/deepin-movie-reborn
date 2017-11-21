@@ -1,3 +1,20 @@
+##  2.9.98 (2017-11-21)
+
+
+#### Bug Fixes
+
+*   improve 4k playback by disable opengl-hq ([d3f222a7](d3f222a7))
+*   update svgs and more QImageReader migration ([93fa0caa](93fa0caa))
+
+#### Features
+
+*   make play state button clickable ([26b25be8](26b25be8))
+*   hide titlebar in fullscreen playback ([1a86fbd3](1a86fbd3))
+*   render HiDPI texture by QImageReader ([2dfe3c0d](2dfe3c0d))
+*   use QImageReader to render HiDPI images ([a8afaa64](a8afaa64))
+
+
+
 ##  2.9.97 (2017-11-16)
 
 
