@@ -1,3 +1,12 @@
+##  3.0 (2017-11-21)
+
+
+#### Features
+
+*   make sub font size approximate pixel size ([977f6733](977f6733))
+
+
+
 ##  2.9.98 (2017-11-21)
 
 
