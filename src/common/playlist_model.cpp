@@ -616,6 +616,8 @@ void PlaylistModel::collectionJob(const QList<QUrl>& urls)
             });
         }
     }
+
+    qDebug() << "input size" << urls.size() << "output size" << _urlsInJob.size();
 }
 
 void PlaylistModel::appendAsync(const QList<QUrl>& urls)
