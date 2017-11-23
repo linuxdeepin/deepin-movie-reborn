@@ -710,6 +710,9 @@ bool ToolboxProxy::anyPopupShown() const
 
 void ToolboxProxy::updateHoverPreview(const QUrl& url, int secs)
 {
+    if (_engine->state() == PlayerEngine::CoreState::Idle)
+        return;
+
     if (_engine->playlist().currentInfo().url != url)
         return;
 
