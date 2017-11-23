@@ -605,6 +605,12 @@ MainWindow::MainWindow(QWidget *parent)
             _movieSwitchedInFsOrMaxed = false;
         }
         update();
+
+        if (isMinimized()) {
+            if (_playlist->state() == PlaylistWidget::Opened) {
+                _playlist->togglePopup();
+            }
+        }
     });
     connect(_engine, &PlayerEngine::elapsedChanged, [=]() {
         _progIndicator->updateMovieProgress(_engine->duration(), _engine->elapsed());
@@ -1683,6 +1689,7 @@ void MainWindow::playList(const QList<QString>& l)
 {
     QList<QUrl> urls;
     for (const auto& filename: l) {
+        qDebug() << filename;
         urls.append(QUrl::fromLocalFile(filename));
     }
     const auto& valids = _engine->addPlayFiles(urls);
@@ -1914,6 +1921,12 @@ void MainWindow::showEvent(QShowEvent *event)
     _titlebar->raise();
     _toolbox->raise();
     resumeToolsWindow();
+
+    if (!qgetenv("FLATPAK_APPID").isEmpty()) {
+        qDebug() << "workaround for flatpak";
+        if (_playlist->isVisible())
+            updateProxyGeometry();
+    }
 }
 
 void MainWindow::resizeByConstraints(bool forceCentered) 

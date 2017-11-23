@@ -58,7 +58,6 @@ void ThumbnailWorker::requestThumb(const QUrl& url, int secs)
 
 ThumbnailWorker::ThumbnailWorker()
 {
-    this->setPriority(QThread::IdlePriority);
     thumber.setThumbnailSize(thumbSize().width() * qApp->devicePixelRatio());
     thumber.setMaintainAspectRatio(true);
 }
@@ -90,6 +89,7 @@ QPixmap ThumbnailWorker::genThumb(const QUrl& url, int secs)
 
 void ThumbnailWorker::run()
 {
+    setPriority(QThread::IdlePriority);
     while (!_quit.load()) {
 
         QPair<QUrl, int> w;
