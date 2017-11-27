@@ -4,13 +4,13 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../main.cpp" line="68"/>
-        <location filename="../main.cpp" line="98"/>
+        <location filename="../main.cpp" line="69"/>
+        <location filename="../main.cpp" line="99"/>
         <source>Deepin Movie</source>
         <translation>Pel·lícula del Deepin</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="69"/>
+        <location filename="../main.cpp" line="70"/>
         <source>Deepin Movie is a well-designed and full-featured video player with simple borderless design. It supports local and streaming media play with multiple video formats.</source>
         <translation>La Pel·lícula del Deepin és un reproductor de vídeo ben dissenyat i ple de funcionalitats amb un disseny simple sense vores. Admet la reproducció local i remota de diversos formats de vídeo.</translation>
     </message>
@@ -474,8 +474,8 @@
     <name>dmr::MainWindow</name>
     <message>
         <location filename="../common/mainwindow.cpp" line="507"/>
-        <location filename="../common/mainwindow.cpp" line="1922"/>
-        <location filename="../common/mainwindow.cpp" line="2021"/>
+        <location filename="../common/mainwindow.cpp" line="1923"/>
+        <location filename="../common/mainwindow.cpp" line="2022"/>
         <source>Deepin Movie</source>
         <translation>Pel·lícula del Deepin</translation>
     </message>
@@ -589,8 +589,8 @@
         <translation>Ha fallat desar la captura.</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1707"/>
-        <location filename="../common/mainwindow.cpp" line="2353"/>
+        <location filename="../common/mainwindow.cpp" line="1708"/>
+        <location filename="../common/mainwindow.cpp" line="2354"/>
         <source>Invalid file: %1</source>
         <translation>Fitxer no vàlid: %1</translation>
     </message>
@@ -658,7 +658,7 @@
 <context>
     <name>dmr::ToolboxProxy</name>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="834"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="837"/>
         <source>Play</source>
         <translation>Reprodueix</translation>
     </message>
@@ -689,7 +689,7 @@
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="658"/>
         <location filename="../widgets/toolbox_proxy.cpp" line="666"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="821"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="824"/>
         <source>Fullscreen</source>
         <translation>Pantalla completa</translation>
     </message>
@@ -700,12 +700,12 @@
         <translation>Reprodueix / Pausa</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="818"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="821"/>
         <source>Exit fullscreen</source>
         <translation>Surt de la pantalla completa</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="831"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="834"/>
         <source>Pause</source>
         <translation>Pausa</translation>
     </message>

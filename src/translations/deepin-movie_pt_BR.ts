@@ -4,13 +4,13 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../main.cpp" line="68"/>
-        <location filename="../main.cpp" line="98"/>
+        <location filename="../main.cpp" line="69"/>
+        <location filename="../main.cpp" line="99"/>
         <source>Deepin Movie</source>
         <translation>Deepin Movie</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="69"/>
+        <location filename="../main.cpp" line="70"/>
         <source>Deepin Movie is a well-designed and full-featured video player with simple borderless design. It supports local and streaming media play with multiple video formats.</source>
         <translation>Deepin Movie é um reprodutor de vídeo bem desenhado cheio de recursos com um design simples sem bordas. Ele suporta a reprodução de mídia local e via streaming para vários formatos de vídeo.</translation>
     </message>
@@ -474,8 +474,8 @@
     <name>dmr::MainWindow</name>
     <message>
         <location filename="../common/mainwindow.cpp" line="507"/>
-        <location filename="../common/mainwindow.cpp" line="1922"/>
-        <location filename="../common/mainwindow.cpp" line="2021"/>
+        <location filename="../common/mainwindow.cpp" line="1923"/>
+        <location filename="../common/mainwindow.cpp" line="2022"/>
         <source>Deepin Movie</source>
         <translation>Deepin Movie</translation>
     </message>
@@ -589,8 +589,8 @@
         <translation>Não foi possível salvar a captura de tela </translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1707"/>
-        <location filename="../common/mainwindow.cpp" line="2353"/>
+        <location filename="../common/mainwindow.cpp" line="1708"/>
+        <location filename="../common/mainwindow.cpp" line="2354"/>
         <source>Invalid file: %1</source>
         <translation>Arquivo inválido: %1</translation>
     </message>
@@ -658,7 +658,7 @@
 <context>
     <name>dmr::ToolboxProxy</name>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="834"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="837"/>
         <source>Play</source>
         <translation>Play</translation>
     </message>
@@ -689,7 +689,7 @@
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="658"/>
         <location filename="../widgets/toolbox_proxy.cpp" line="666"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="821"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="824"/>
         <source>Fullscreen</source>
         <translation>Tela cheia </translation>
     </message>
@@ -700,12 +700,12 @@
         <translation>Play/Pause</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="818"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="821"/>
         <source>Exit fullscreen</source>
         <translation>Sair da tela cheia</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="831"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="834"/>
         <source>Pause</source>
         <translation>Pause</translation>
     </message>
