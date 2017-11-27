@@ -4,13 +4,13 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../main.cpp" line="68"/>
-        <location filename="../main.cpp" line="98"/>
+        <location filename="../main.cpp" line="69"/>
+        <location filename="../main.cpp" line="99"/>
         <source>Deepin Movie</source>
         <translation>深度影院</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="69"/>
+        <location filename="../main.cpp" line="70"/>
         <source>Deepin Movie is a well-designed and full-featured video player with simple borderless design. It supports local and streaming media play with multiple video formats.</source>
         <translation>深度影院是一款设计精良、功能全面的视频播放器，无边框简洁设计，支持多种视频格式本地播放和流媒体播放。</translation>
     </message>
@@ -474,8 +474,8 @@
     <name>dmr::MainWindow</name>
     <message>
         <location filename="../common/mainwindow.cpp" line="507"/>
-        <location filename="../common/mainwindow.cpp" line="1922"/>
-        <location filename="../common/mainwindow.cpp" line="2021"/>
+        <location filename="../common/mainwindow.cpp" line="1923"/>
+        <location filename="../common/mainwindow.cpp" line="2022"/>
         <source>Deepin Movie</source>
         <translation>深度影院</translation>
     </message>
@@ -589,8 +589,8 @@
         <translation>截图保存失败</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1707"/>
-        <location filename="../common/mainwindow.cpp" line="2353"/>
+        <location filename="../common/mainwindow.cpp" line="1708"/>
+        <location filename="../common/mainwindow.cpp" line="2354"/>
         <source>Invalid file: %1</source>
         <translation>无效文件：%1</translation>
     </message>
@@ -658,7 +658,7 @@
 <context>
     <name>dmr::ToolboxProxy</name>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="834"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="837"/>
         <source>Play</source>
         <translation>播放</translation>
     </message>
@@ -689,7 +689,7 @@
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="658"/>
         <location filename="../widgets/toolbox_proxy.cpp" line="666"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="821"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="824"/>
         <source>Fullscreen</source>
         <translation>全屏</translation>
     </message>
@@ -700,12 +700,12 @@
         <translation>播放/暂停</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="818"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="821"/>
         <source>Exit fullscreen</source>
         <translation>退出全屏</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="831"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="834"/>
         <source>Pause</source>
         <translation>暂停</translation>
     </message>

@@ -1,3 +1,16 @@
+##  3.0.1 (2017-11-27)
+
+
+#### Bug Fixes
+
+*   potential crash when closing a smb shared video ([0318ec7e](0318ec7e))
+
+#### Features
+
+*   update playlist geometry under flatpak env ([ecf257c9](ecf257c9))
+
+
+
 ##  3.0 (2017-11-21)
 
 

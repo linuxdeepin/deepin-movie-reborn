@@ -4,13 +4,13 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../main.cpp" line="68"/>
-        <location filename="../main.cpp" line="98"/>
+        <location filename="../main.cpp" line="69"/>
+        <location filename="../main.cpp" line="99"/>
         <source>Deepin Movie</source>
         <translation>Deepin Movie0,5</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="69"/>
+        <location filename="../main.cpp" line="70"/>
         <source>Deepin Movie is a well-designed and full-featured video player with simple borderless design. It supports local and streaming media play with multiple video formats.</source>
         <translation>Deepin Movie è un meraviglioso e funzionale player video dal design borderless. Offre il supporto per riproduzioni video locali e streaming, inoltre riconosce diversi formati video.
 Localizzazione italiana a cura di Carofano Massimo Antonio.</translation>
@@ -475,8 +475,8 @@ Localizzazione italiana a cura di Carofano Massimo Antonio.</translation>
     <name>dmr::MainWindow</name>
     <message>
         <location filename="../common/mainwindow.cpp" line="507"/>
-        <location filename="../common/mainwindow.cpp" line="1922"/>
-        <location filename="../common/mainwindow.cpp" line="2021"/>
+        <location filename="../common/mainwindow.cpp" line="1923"/>
+        <location filename="../common/mainwindow.cpp" line="2022"/>
         <source>Deepin Movie</source>
         <translation>Deepin Movie</translation>
     </message>
@@ -590,8 +590,8 @@ Localizzazione italiana a cura di Carofano Massimo Antonio.</translation>
         <translation>Salvataggio dello screenshot fallito</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1707"/>
-        <location filename="../common/mainwindow.cpp" line="2353"/>
+        <location filename="../common/mainwindow.cpp" line="1708"/>
+        <location filename="../common/mainwindow.cpp" line="2354"/>
         <source>Invalid file: %1</source>
         <translation>File non valido: %1</translation>
     </message>
@@ -659,7 +659,7 @@ Localizzazione italiana a cura di Carofano Massimo Antonio.</translation>
 <context>
     <name>dmr::ToolboxProxy</name>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="834"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="837"/>
         <source>Play</source>
         <translation>Play</translation>
     </message>
@@ -690,7 +690,7 @@ Localizzazione italiana a cura di Carofano Massimo Antonio.</translation>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="658"/>
         <location filename="../widgets/toolbox_proxy.cpp" line="666"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="821"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="824"/>
         <source>Fullscreen</source>
         <translation>Schermo intero</translation>
     </message>
@@ -701,12 +701,12 @@ Localizzazione italiana a cura di Carofano Massimo Antonio.</translation>
         <translation>Play/Pausa</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="818"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="821"/>
         <source>Exit fullscreen</source>
         <translation>Esci dalla modalità fullscreen</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="831"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="834"/>
         <source>Pause</source>
         <translation>Pausa</translation>
     </message>

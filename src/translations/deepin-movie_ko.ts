@@ -4,13 +4,13 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../main.cpp" line="68"/>
-        <location filename="../main.cpp" line="98"/>
+        <location filename="../main.cpp" line="69"/>
+        <location filename="../main.cpp" line="99"/>
         <source>Deepin Movie</source>
         <translation>Deepin Movie </translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="69"/>
+        <location filename="../main.cpp" line="70"/>
         <source>Deepin Movie is a well-designed and full-featured video player with simple borderless design. It supports local and streaming media play with multiple video formats.</source>
         <translation>Deepin Movie는 경계 없는 간단한 디자인을 자랑하는 최고의 비디오 플레이어입니다. 본 플레이어는 다양한 비디오 포맷의 로컬 및 스트리밍 미디어 플레이를 지원합니다.</translation>
     </message>
@@ -474,8 +474,8 @@
     <name>dmr::MainWindow</name>
     <message>
         <location filename="../common/mainwindow.cpp" line="507"/>
-        <location filename="../common/mainwindow.cpp" line="1922"/>
-        <location filename="../common/mainwindow.cpp" line="2021"/>
+        <location filename="../common/mainwindow.cpp" line="1923"/>
+        <location filename="../common/mainwindow.cpp" line="2022"/>
         <source>Deepin Movie</source>
         <translation>Deepin Movie </translation>
     </message>
@@ -589,8 +589,8 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1707"/>
-        <location filename="../common/mainwindow.cpp" line="2353"/>
+        <location filename="../common/mainwindow.cpp" line="1708"/>
+        <location filename="../common/mainwindow.cpp" line="2354"/>
         <source>Invalid file: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -658,7 +658,7 @@
 <context>
     <name>dmr::ToolboxProxy</name>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="834"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="837"/>
         <source>Play</source>
         <translation>재생</translation>
     </message>
@@ -689,7 +689,7 @@
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="658"/>
         <location filename="../widgets/toolbox_proxy.cpp" line="666"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="821"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="824"/>
         <source>Fullscreen</source>
         <translation>전체 화면</translation>
     </message>
@@ -700,12 +700,12 @@
         <translation>재생/일시정지</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="818"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="821"/>
         <source>Exit fullscreen</source>
         <translation>전체화면에서 나가기 </translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="831"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="834"/>
         <source>Pause</source>
         <translation>일시 정지</translation>
     </message>
