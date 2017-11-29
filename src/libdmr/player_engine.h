@@ -1,12 +1,11 @@
 #ifndef _DMR_PLAYER_ENINE_H
 #define _DMR_PLAYER_ENINE_H 
 
-#include "config.h"
 
 #include <QtWidgets>
-#include "playlist_model.h"
-#include "player_backend.h"
-#include "online_sub.h"
+#include <playlist_model.h>
+#include <player_backend.h>
+#include <online_sub.h>
 
 namespace dmr {
 class PlaylistModel;
@@ -110,6 +109,8 @@ public:
     void stopBurstScreenshot();
 
     void savePlaybackPosition();
+
+    void setDebugLevel();
 
 signals:
     void tracksChanged();

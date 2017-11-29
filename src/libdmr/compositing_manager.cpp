@@ -1,5 +1,7 @@
 #include "compositing_manager.h"
+#ifndef _LIBDMR_
 #include "options.h"
+#endif
 
 #include <iostream>
 #include <QtCore>
@@ -91,12 +93,14 @@ CompositingManager::CompositingManager() {
         }
     }
 
+#ifndef _LIBDMR_
     auto v = CommandLineManager::get().openglMode();
     if (v == "off") {
         _composited = false;
     } else if (v == "on") {
         _composited = true;
     }
+#endif
     qDebug() << "composited:" << _composited;
 }
 
@@ -190,7 +194,11 @@ PlayerOptionList CompositingManager::getProfile(const QString& name)
         .arg(qApp->applicationName())
         .arg(name);
     auto defaultPath = QString(":/resources/profiles/%1.profile").arg(name);
+#ifdef _LIBDMR_
+    QString oc;
+#else
     auto oc = CommandLineManager::get().overrideConfig();
+#endif
 
     PlayerOptionList ol;
 
