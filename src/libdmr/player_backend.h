@@ -33,6 +33,13 @@ public:
     };
     Q_ENUM(SoundMode)
 
+    enum DebugLevel {
+        Info,
+        Debug,  // some normal debug info
+        Verbose // very verbosed output from backend
+    };
+    Q_ENUM(DebugLevel)
+
     Backend(QWidget *parent = 0) {}
     virtual ~Backend() {}
 
@@ -86,6 +93,8 @@ public:
     virtual QVariant getProperty(const QString&) = 0;
     virtual void setProperty(const QString&, const QVariant&) = 0;
 
+    void setDebugLevel(DebugLevel lvl) { _debugLevel = lvl; }
+
 Q_SIGNALS:
     void tracksChanged();
     void elapsedChanged();
@@ -117,6 +126,7 @@ protected:
     PlayState _state { PlayState::Stopped };
     QString _dvdDevice {"/dev/sr0"};
     QUrl _file;
+    DebugLevel _debugLevel { DebugLevel::Info };
 };
 }
 

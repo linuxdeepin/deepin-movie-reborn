@@ -19,6 +19,10 @@ class CompositingManager: public QObject {
         static CompositingManager& get();
         virtual ~CompositingManager();
 
+        /**
+         * should call this before any other qt functions get exec'ed.
+         * this makes sure mpv openglcb-interop to work correctly
+         */
         static void detectOpenGLEarly();
 
         // this actually means opengl rendering is capable

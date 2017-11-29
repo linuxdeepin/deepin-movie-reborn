@@ -1,8 +1,8 @@
 #ifndef _DMR_MPV_PROXY_H
 #define _DMR_MPV_PROXY_H 
 
-#include "player_backend.h"
-#include "player_engine.h"
+#include <player_backend.h>
+#include <player_engine.h>
 #include <xcb/xproto.h>
 #undef Bool
 #include <mpv/qthelper.hpp>

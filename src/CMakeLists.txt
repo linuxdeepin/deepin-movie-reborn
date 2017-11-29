@@ -8,7 +8,9 @@ if (ENABLE_VPU_PLATFORM)
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mieee")
 endif()
 
-set(PROJECT_INCLUDE ${PROJECT_SOURCE_DIR}/src/widgets ${PROJECT_SOURCE_DIR}/src/common)
+set(PROJECT_INCLUDE ${PROJECT_SOURCE_DIR}/src/widgets
+    ${PROJECT_SOURCE_DIR}/src/common
+    ${PROJECT_SOURCE_DIR}/src/libdmr)
 
 include_directories(${CMAKE_INCLUDE_CURRENT_DIR})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
@@ -33,7 +35,7 @@ pkg_check_modules(Other REQUIRED libffmpegthumbnailer
 
 qt5_add_resources(RCS resources.qrc)
 
-file(GLOB_RECURSE SRCS LIST_DIRECTORIES false common/*.cpp widgets/*.cpp)
+file(GLOB_RECURSE SRCS LIST_DIRECTORIES false common/*.cpp widgets/*.cpp libdmr/*.cpp)
 list(APPEND SRCS main.cpp)
 
 # mpv backend
@@ -97,3 +99,5 @@ install(FILES ${PROJECT_SOURCE_DIR}/src/resources/icons/logo-big.svg
 
 install(DIRECTORY ${PROJECT_SOURCE_DIR}/src/dman/deepin-movie DESTINATION share/dman)
 
+add_subdirectory(libdmr)
+add_subdirectory(test)

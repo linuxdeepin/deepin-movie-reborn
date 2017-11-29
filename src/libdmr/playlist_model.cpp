@@ -1,7 +1,9 @@
 #include "playlist_model.h"
 #include "player_engine.h"
 #include "utils.h"
+#ifndef _LIBDMR_
 #include "dmr_settings.h"
+#endif
 #include "dvd_utils.h"
 
 
@@ -188,12 +190,14 @@ PlaylistModel::~PlaylistModel()
     qDebug() << __func__;
     delete _jobWatcher;
 
+#ifndef _LIBDMR_
     if (Settings::get().isSet(Settings::ClearWhenQuit)) {
         clearPlaylist();
     } else {
         //persistantly save current playlist 
         savePlaylist();
     }
+#endif
 }
 
 void PlaylistModel::clearPlaylist()
@@ -570,6 +574,7 @@ void PlaylistModel::appendSingle(const QUrl& url)
         if (!pif.valid) return;
         _infos.append(pif);
 
+#ifndef _LIBDMR_
         if (Settings::get().isSet(Settings::AutoSearchSimilar)) {
             auto fil = utils::FindSimilarFiles(fi);
             qDebug() << "auto search similar files" << fil;
@@ -581,6 +586,7 @@ void PlaylistModel::appendSingle(const QUrl& url)
                 }
             });
         }
+#endif
     } else {
         auto pif = calculatePlayInfo(url, QFileInfo());
         _infos.append(pif);
@@ -600,6 +606,7 @@ void PlaylistModel::collectionJob(const QList<QUrl>& urls)
         _urlsInJob.insert(url);
         qDebug() << "append " << url.fileName();
 
+#ifndef _LIBDMR_
         if (!_firstLoad && Settings::get().isSet(Settings::AutoSearchSimilar)) {
             auto fil = utils::FindSimilarFiles(fi);
             qDebug() << "auto search similar files" << fil;
@@ -615,6 +622,7 @@ void PlaylistModel::collectionJob(const QList<QUrl>& urls)
                 }
             });
         }
+#endif
     }
 
     qDebug() << "input size" << urls.size() << "output size" << _urlsInJob.size();

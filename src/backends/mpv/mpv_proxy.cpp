@@ -3,11 +3,12 @@
 #include "mpv_proxy.h"
 #include "mpv_glwidget.h"
 #include "compositing_manager.h"
-#include "options.h"
 #include "utility.h"
 #include "player_engine.h"
+#ifndef _LIBDMR_
 #include "dmr_settings.h"
 #include "movie_configuration.h"
+#endif
 #include <mpv/client.h>
 
 #include <random>
@@ -86,19 +87,31 @@ mpv_handle* MpvProxy::mpv_init()
 
     bool composited = CompositingManager::get().composited();
     
-    if (CommandLineManager::get().debug()) {
-        set_property(h, "terminal", "yes");
-        mpv_request_log_messages(h, "debug");
+    switch(_debugLevel) {
+        case DebugLevel::Info:
+            mpv_request_log_messages(h, "info");
+            break;
 
-    } else if (CommandLineManager::get().verbose()) {
-        set_property(h, "terminal", "yes");
-        set_property(h, "msg-level", "all=v");
-        mpv_request_log_messages(h, "v");
+        case DebugLevel::Debug:
+        case DebugLevel::Verbose:
+            set_property(h, "terminal", "yes");
+            if (_debugLevel == DebugLevel::Verbose) {
+                set_property(h, "msg-level", "all=v");
+                mpv_request_log_messages(h, "v");
 
-    } else {
-        mpv_request_log_messages(h, "info");
+            } else {
+                mpv_request_log_messages(h, "debug");
+            }
+            break;
     }
 
+#ifdef _LIBDMR_
+    if (composited) {
+        set_property(h, "opengl-hwdec-interop", "vaapi-egl");
+    }
+    set_property(h, "hwdec", "auto");
+
+#else
     if (Settings::get().isSet(Settings::HWAccel)) {
         if (composited) {
             set_property(h, "opengl-hwdec-interop", "vaapi-egl");
@@ -107,6 +120,7 @@ mpv_handle* MpvProxy::mpv_init()
     } else {
         set_property(h, "hwdec", "off");
     }
+#endif
 
     if (composited) {
         set_property(h, "vo", "opengl-cb");
@@ -133,9 +147,11 @@ mpv_handle* MpvProxy::mpv_init()
     set_property(h, "screenshot-template", "deepin-movie-shot%n");
     set_property(h, "screenshot-directory", "/tmp");
 
+#ifndef _LIBDMR_
     if (Settings::get().isSet(Settings::ResumeFromLast)) {
         set_property(h, "save-position-on-quit", true);
     }
+#endif
     
     //only to get notification without data
     mpv_observe_property(h, 0, "time-pos", MPV_FORMAT_NONE); //playback-time ?
@@ -292,8 +308,10 @@ void MpvProxy::handle_mpv_events()
                 break;
 
             case MPV_EVENT_END_FILE: {
+#ifndef _LIBDMR_
                 MovieConfiguration::get().updateUrl(this->_file,
                         ConfigKnownKey::StartPos, 0);
+#endif
                 mpv_event_end_file *ev_ef = (mpv_event_end_file*)ev->data;
                 qDebug() << mpv_event_name(ev->event_id) << 
                     "reason " << ev_ef->reason;
@@ -355,7 +373,9 @@ void MpvProxy::processPropertyChange(mpv_event_property* ev)
         emit aidChanged();
     } else if (name == "sid") {
         if (_externalSubJustLoaded) {
+#ifndef _LIBDMR_
             MovieConfiguration::get().updateUrl(this->_file, ConfigKnownKey::SubId, sid());
+#endif
             _externalSubJustLoaded = false;
         }
         emit sidChanged();
@@ -408,7 +428,9 @@ bool MpvProxy::isSubVisible()
 void MpvProxy::setSubDelay(double secs)
 {
     set_property(_handle, "sub-delay", secs);
+#ifndef _LIBDMR_
     MovieConfiguration::get().updateUrl(_file, ConfigKnownKey::SubDelay, subDelay());
+#endif
 }
 
 double MpvProxy::subDelay() const
@@ -440,7 +462,9 @@ void MpvProxy::setSubCodepage(const QString& cp)
 
     set_property(_handle, "sub-codepage", cp2);
     command(_handle, {"sub-reload"});
+#ifndef _LIBDMR_
     MovieConfiguration::get().updateUrl(_file, ConfigKnownKey::SubCodepage, subCodepage());
+#endif
 }
 
 void MpvProxy::updateSubStyle(const QString& font, int sz)
@@ -462,8 +486,10 @@ void MpvProxy::savePlaybackPosition()
         return;
     }
 
+#ifndef _LIBDMR_
     MovieConfiguration::get().updateUrl(this->_file, ConfigKnownKey::SubId, sid());
     MovieConfiguration::get().updateUrl(this->_file, ConfigKnownKey::StartPos, elapsed());
+#endif
 }
 
 void MpvProxy::setPlaySpeed(double times)
@@ -479,7 +505,9 @@ void MpvProxy::selectSubtitle(int id)
     }
 
     set_property(_handle, "sid", id);
+#ifndef _LIBDMR_
     MovieConfiguration::get().updateUrl(_file, ConfigKnownKey::SubId, sid());
+#endif
 }
 
 void MpvProxy::toggleSubtitle()
@@ -591,25 +619,12 @@ void MpvProxy::play()
     } else {
         args << _file.url();
     }
+#ifndef _LIBDMR_
     auto cfg = MovieConfiguration::get().queryByUrl(_file);
     auto key = MovieConfiguration::knownKey2String(ConfigKnownKey::StartPos);
     if (Settings::get().isSet(Settings::ResumeFromLast) && cfg.contains(key)) {
         opts << QString("start=%1").arg(cfg[key].toInt());
     }
-
-#if 0
-    //FIXME: how to keep load order?
-    auto ext_subs = MovieConfiguration::get().getListByUrl(_file,
-            ConfigKnownKey::ExternalSubs);
-    for(const auto& sub: ext_subs) {
-        opts << QString("sub-file=%1").arg(sub);
-    }
-
-    key = MovieConfiguration::knownKey2String(ConfigKnownKey::SubId);
-    if (cfg.contains(key)) {
-        opts << QString("sid=%1").arg(cfg[key].toInt());
-    }
-#endif
 
     key = MovieConfiguration::knownKey2String(ConfigKnownKey::SubCodepage);
     if (cfg.contains(key)) {
@@ -624,6 +639,7 @@ void MpvProxy::play()
     if (!_dvdDevice.isEmpty()) {
         opts << QString("dvd-device=%1").arg(_dvdDevice);
     }
+#endif
 
     if (opts.size()) {
         //opts << "sub-auto=fuzzy";
@@ -634,6 +650,7 @@ void MpvProxy::play()
     command(_handle, args);
     set_property(_handle, "pause", false);
 
+#ifndef _LIBDMR_
     // by giving a period of time, movie will be loaded and auto-loaded subs are 
     // all ready, then load extra subs from db
     // this keeps order of subs
@@ -654,6 +671,7 @@ void MpvProxy::play()
             selectSubtitle(cfg[key].toInt());
         }
     });
+#endif
 }
 
 

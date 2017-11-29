@@ -3,13 +3,16 @@
 #include "player_engine.h"
 #include "playlist_model.h"
 #include "movie_configuration.h"
+#include "online_sub.h"
 
 #include "mpv_proxy.h"
 #ifdef ENABLE_VPU_PLATFORM
 #include "vpu_proxy.h"
 #endif
 
+#ifndef _LIBDMR_
 #include "dmr_settings.h"
+#endif
 
 namespace dmr {
 
@@ -40,7 +43,10 @@ PlayerEngine::PlayerEngine(QWidget *parent)
     }
 
     setLayout(l);
+
+#ifndef _LIBDMR_
     connect(&Settings::get(), &Settings::subtitleChanged, this, &PlayerEngine::updateSubStyles);
+#endif
 
     connect(&OnlineSubtitle::get(), &OnlineSubtitle::subtitlesDownloadedFor, 
             this, &PlayerEngine::onSubtitlesDownloaded);
@@ -142,6 +148,7 @@ bool PlayerEngine::isPlayableFile(const QString& name)
 
 void PlayerEngine::updateSubStyles()
 {
+#ifndef _LIBDMR_
     auto font_opt = Settings::get().settings()->option("subtitle.font.family");
     auto font_id = font_opt->value().toInt();
     auto font = font_opt->data("items").toStringList()[font_id];
@@ -157,6 +164,7 @@ void PlayerEngine::updateSubStyles()
         qDebug() << "update sub " << font << sz;
         updateSubStyle(font, sz);
     }
+#endif
 }
 
 void PlayerEngine::waitLastEnd()
