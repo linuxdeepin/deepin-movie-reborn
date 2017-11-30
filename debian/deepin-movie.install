@@ -1,0 +1,5 @@
+usr/bin/deepin-movie
+usr/share/applications/deepin-movie.desktop
+usr/share/deepin-movie/translations/*.qm
+usr/share/dman/deepin-movie/*
+usr/share/icons/*

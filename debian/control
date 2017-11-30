@@ -21,3 +21,15 @@ Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Deepin movie player for linuxdeepin desktop environment
  Deepin movie player for linuxdeepin desktop environment.
+
+Package: libdmr
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libdtkbase, libdtkutil, libdtkwidget, libxcb1,
+    libmpv1, libdvdnav4
+Multi-Arch: same
+Description: deepin movie player widget library 
+
+Package: libdmr-dev
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libdmr(=${binary:Version})
+Description: deepin movie player widget library development headers
