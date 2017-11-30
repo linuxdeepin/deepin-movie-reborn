@@ -7,6 +7,7 @@ PlayerWidget::PlayerWidget(QWidget *parent)
 {
     _engine = new PlayerEngine(this);
     auto *l = new QVBoxLayout;
+    l->setContentsMargins(0, 0, 0, 0);
     l->addWidget(_engine);
     setLayout(l);
 }
