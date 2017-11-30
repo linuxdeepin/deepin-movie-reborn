@@ -10,6 +10,10 @@ public:
 
         auto l = new QVBoxLayout(this);
 
+        if (dmr::CompositingManager::get().composited()) {
+            dmr::CompositingManager::get().overrideCompositeMode(false);
+        }
+
         player = new dmr::PlayerWidget;
         l->addWidget(player);
 
@@ -58,7 +62,7 @@ private:
 
 int main(int argc, char *argv[])
 {
-    dmr::CompositingManager::detectOpenGLEarly();
+    //dmr::CompositingManager::detectOpenGLEarly();
     QApplication app(argc, argv);
 
     // required by mpv

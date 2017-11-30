@@ -173,6 +173,14 @@ bool CompositingManager::isDriverLoadedCorrectly() {
     return true;
 }
 
+void CompositingManager::overrideCompositeMode(bool useCompositing)
+{
+    if (_composited != useCompositing) {
+        qInfo() << "override composited = " << useCompositing;
+        _composited = useCompositing;
+    }
+}
+
 bool CompositingManager::isDirectRendered() {
     QProcess xdriinfo;
     xdriinfo.start("xdriinfo driver 0");
