@@ -25,6 +25,12 @@ class CompositingManager: public QObject {
          */
         static void detectOpenGLEarly();
 
+        /**
+         * override auto-detected compositing state.
+         * should call this right before player engine gets instantiated.
+         */
+        void overrideCompositeMode(bool useCompositing);
+
         // this actually means opengl rendering is capable
         bool composited() const { return _composited; }
         Platform platform() const { return _platform; }
