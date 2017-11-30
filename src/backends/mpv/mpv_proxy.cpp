@@ -121,6 +121,8 @@ mpv_handle* MpvProxy::mpv_init()
         set_property(h, "hwdec", "off");
     }
 #endif
+    set_property(h, "panscan", 1.0);
+    set_property(h, "no-keepaspect", "true");
 
     if (composited) {
         set_property(h, "vo", "opengl-cb");
