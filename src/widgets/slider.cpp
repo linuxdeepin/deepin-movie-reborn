@@ -13,7 +13,7 @@ DMRSlider::DMRSlider(QWidget *parent): QSlider(parent)
     setMouseTracking(true);
     _indicator = new QWidget();
     _indicator->setWindowFlags(Qt::ToolTip);
-    _indicator->setFixedSize(1, 4);
+    _indicator->setFixedSize(1, 6);
 
     auto updateTheme = [=]() {
         if (qApp->theme() == "dark") {
@@ -95,7 +95,7 @@ void DMRSlider::mouseMoveEvent(QMouseEvent *e)
         if (_lastHoverValue != v) {
             if (_showIndicator) {
                 _indicator->show();
-                _indicator->move(e->globalX(), mapToGlobal(pos()).y()-1);
+                _indicator->move(e->globalX(), mapToGlobal(pos()).y()-2);
             }
             emit hoverChanged(v);
         }
@@ -107,6 +107,7 @@ void DMRSlider::mouseMoveEvent(QMouseEvent *e)
 void DMRSlider::leaveEvent(QEvent *e)
 {
     _lastHoverValue = 0;
+    if (_down) _down = false;
     _indicator->hide();
     emit leave();
 }
