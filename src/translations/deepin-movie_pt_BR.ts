@@ -626,8 +626,8 @@
 <context>
     <name>dmr::MpvProxy</name>
     <message>
-        <location filename="../backends/mpv/mpv_proxy.cpp" line="918"/>
-        <location filename="../backends/mpv/mpv_proxy.cpp" line="936"/>
+        <location filename="../backends/mpv/mpv_proxy.cpp" line="920"/>
+        <location filename="../backends/mpv/mpv_proxy.cpp" line="938"/>
         <source>[internal]</source>
         <translation>[interno]</translation>
     </message>

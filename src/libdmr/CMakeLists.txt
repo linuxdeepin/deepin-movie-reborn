@@ -1,4 +1,4 @@
-project(libdmr)
+project(libdmr VERSION 0.1.0)
 
 set(CMAKE_AUTOMOC ON)
 set(CMD_NAME dmr)
@@ -24,8 +24,11 @@ target_link_libraries(${CMD_NAME} PkgConfig::Dtk Qt5::Widgets Qt5::Concurrent
     Qt5::Network Qt5::X11Extras Qt5::Sql Qt5::DBus PkgConfig::Mpv PkgConfig::AV 
     ${FFTHUMB_LIBRARIES} pthread GL)
 
+set(CMAKE_INSTALL_LIBDIR "lib${LIB_SUFFIX}")
 
-install(TARGETS ${CMD_NAME} DESTINATION lib)
+configure_file(libdmr.pc.in ${PROJECT_BINARY_DIR}/libdmr.pc @ONLY)
+
+install(TARGETS ${CMD_NAME} DESTINATION ${CMAKE_INSTALL_LIBDIR})
 install(FILES 
     player_widget.h
     player_backend.h
@@ -37,3 +40,5 @@ install(FILES
     utils.h
     online_sub.h
     DESTINATION include/libdmr)
+
+install(FILES ${PROJECT_BINARY_DIR}/libdmr.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
