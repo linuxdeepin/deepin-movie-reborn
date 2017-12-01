@@ -564,6 +564,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(windowHandle(), &QWindow::windowStateChanged, [=]() {
         qDebug() << windowState();
         if (!isFullScreen()) {
+            if (_lastSizeInNormalMode.isValid())
+                resize(_lastSizeInNormalMode);
+
             qApp->restoreOverrideCursor();
             if (_lastCookie > 0) {
                 utils::UnInhibitStandby(_lastCookie);
@@ -583,7 +586,7 @@ MainWindow::MainWindow(QWidget *parent)
             qDebug() << "inhibit cookie" << _lastCookie;
             _listener->setEnabled(false);
         }
-        _titlebar->setVisible(!isFullScreen());
+        _titlebar->setVisible(!_miniMode && !isFullScreen());
         //WTF: this->geometry() is not size of fullscreen !
         //_progIndicator->move(geometry().width() - _progIndicator->width() - 18, 14);
         _progIndicator->setVisible(isFullScreen());
@@ -1255,6 +1258,9 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             if (isFullScreen()) {
                 showNormal();
             } else {
+                if (!_miniMode && (fromUI || isShortcut)) {
+                    _lastSizeInNormalMode = size();
+                }
                 showFullScreen();
             }
             if (!fromUI) {
@@ -2266,9 +2272,10 @@ void MainWindow::toggleUIMode()
         if (isFullScreen()) {
             _stateBeforeMiniMode |= SBEM_Fullscreen;
             requestAction(ActionFactory::QuitFullscreen);
+        } else {
+            _lastSizeInNormalMode = size();
         }
 
-        _lastSizeInNormalMode = size();
         auto sz = QSize(380, 380);
         if (_engine->state() != PlayerEngine::CoreState::Idle) {
             auto vid_size = _engine->videoSize();
