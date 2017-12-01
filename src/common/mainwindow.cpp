@@ -2009,7 +2009,7 @@ void MainWindow::resizeEvent(QResizeEvent *ev)
         auto msg = QString("%1x%2").arg(width()) .arg(height());
         _nwComm->updateWithMessage(msg);
     } else if (_mouseMoved) {
-        //when in maximized state, drag to resize don't issue state change 
+        //when in maximized state, drag to resize don't issue state change.
         //we need to change manually
         if (windowState() == Qt::WindowMaximized) {
             setWindowState(Qt::WindowNoState);
@@ -2162,7 +2162,9 @@ void MainWindow::delayedMouseReleaseHandler()
 
 void MainWindow::mouseMoveEvent(QMouseEvent *ev)
 {
-    _mouseMoved = true;
+    if (windowState() == Qt::WindowMaximized)
+        _mouseMoved = true;
+
 #ifndef USE_DXCB
     if (windowState() == Qt::WindowNoState) {
         Utility::startWindowSystemMove(this->winId());

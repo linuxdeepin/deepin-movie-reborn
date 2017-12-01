@@ -474,20 +474,20 @@
     <name>dmr::MainWindow</name>
     <message>
         <location filename="../common/mainwindow.cpp" line="507"/>
-        <location filename="../common/mainwindow.cpp" line="1942"/>
+        <location filename="../common/mainwindow.cpp" line="1941"/>
         <location filename="../common/mainwindow.cpp" line="2041"/>
         <source>Deepin Movie</source>
         <translation>Deepin 電影</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="700"/>
-        <location filename="../common/mainwindow.cpp" line="1498"/>
+        <location filename="../common/mainwindow.cpp" line="1497"/>
         <source>Load successfully</source>
         <translation>載入成功</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="700"/>
-        <location filename="../common/mainwindow.cpp" line="1498"/>
+        <location filename="../common/mainwindow.cpp" line="1497"/>
         <source>Load failed</source>
         <translation>載入失敗</translation>
     </message>
@@ -509,7 +509,7 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="1173"/>
         <location filename="../common/mainwindow.cpp" line="1189"/>
-        <location filename="../common/mainwindow.cpp" line="1493"/>
+        <location filename="../common/mainwindow.cpp" line="1492"/>
         <source>Open File</source>
         <translation>開啟檔案</translation>
     </message>
@@ -520,77 +520,77 @@
         <translation>影片（%1）</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1361"/>
+        <location filename="../common/mainwindow.cpp" line="1360"/>
         <source>Muted</source>
         <translation>靜音</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1364"/>
-        <location filename="../common/mainwindow.cpp" line="1376"/>
-        <location filename="../common/mainwindow.cpp" line="1386"/>
-        <location filename="../common/mainwindow.cpp" line="1393"/>
+        <location filename="../common/mainwindow.cpp" line="1363"/>
+        <location filename="../common/mainwindow.cpp" line="1375"/>
+        <location filename="../common/mainwindow.cpp" line="1385"/>
+        <location filename="../common/mainwindow.cpp" line="1392"/>
         <source>Volume: %1%</source>
         <translation>音量：%1%</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1458"/>
-        <location filename="../common/mainwindow.cpp" line="1466"/>
+        <location filename="../common/mainwindow.cpp" line="1457"/>
+        <location filename="../common/mainwindow.cpp" line="1465"/>
         <source>Subtitle %1: %2s</source>
         <translation>字幕%1：%2 秒</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1459"/>
-        <location filename="../common/mainwindow.cpp" line="1467"/>
+        <location filename="../common/mainwindow.cpp" line="1458"/>
+        <location filename="../common/mainwindow.cpp" line="1466"/>
         <source>delayed</source>
         <translation>後退</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1459"/>
-        <location filename="../common/mainwindow.cpp" line="1467"/>
+        <location filename="../common/mainwindow.cpp" line="1458"/>
+        <location filename="../common/mainwindow.cpp" line="1466"/>
         <source>advanced</source>
         <translation>前進</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1474"/>
-        <location filename="../common/mainwindow.cpp" line="1481"/>
-        <location filename="../common/mainwindow.cpp" line="1488"/>
+        <location filename="../common/mainwindow.cpp" line="1473"/>
+        <location filename="../common/mainwindow.cpp" line="1480"/>
+        <location filename="../common/mainwindow.cpp" line="1487"/>
         <source>Speed: %1x</source>
         <translation>速度：%1 倍</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1495"/>
+        <location filename="../common/mainwindow.cpp" line="1494"/>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</source>
         <translation>字幕檔案 (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1552"/>
+        <location filename="../common/mainwindow.cpp" line="1551"/>
         <source>View</source>
         <translation>瀏覽</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1563"/>
+        <location filename="../common/mainwindow.cpp" line="1562"/>
         <source>Movie Screenshot</source>
         <translation>影片截圖</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1564"/>
+        <location filename="../common/mainwindow.cpp" line="1563"/>
         <source>Saved to</source>
         <translation>儲存到</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1578"/>
-        <location filename="../common/mainwindow.cpp" line="1649"/>
+        <location filename="../common/mainwindow.cpp" line="1577"/>
+        <location filename="../common/mainwindow.cpp" line="1648"/>
         <source>The screenshot is saved</source>
         <translation>截圖已儲存</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1578"/>
+        <location filename="../common/mainwindow.cpp" line="1577"/>
         <source>The screenshot is failed to save</source>
         <translation>截圖儲存失敗</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1721"/>
-        <location filename="../common/mainwindow.cpp" line="2374"/>
+        <location filename="../common/mainwindow.cpp" line="1720"/>
+        <location filename="../common/mainwindow.cpp" line="2375"/>
         <source>Invalid file: %1</source>
         <translation>檔案無效：%1</translation>
     </message>
