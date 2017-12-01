@@ -1,0 +1,12 @@
+prefix=/usr
+exec_prefix=${prefix}
+libdir=${prefix}/@CMAKE_INSTALL_LIBDIR@
+includedir=${prefix}/include/libdmr
+
+Name: dmr
+Description: deepin movie player widget development file
+Version: @PROJECT_VERSION@
+Libs: -ldmr
+Cflags: -I${includedir}
+Requires: Qt5Widgets Qt5X11Extras Qt5Concurrent Qt5Network gl dtkcore dtkwidget
+

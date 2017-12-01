@@ -1,1 +1,1 @@
-usr/lib/libdmr.so.*
+usr/lib/*/libdmr.so.*
