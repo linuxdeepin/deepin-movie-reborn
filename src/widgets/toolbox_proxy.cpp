@@ -540,13 +540,13 @@ void ToolboxProxy::setup()
 
 	auto *border_frame = new QFrame;
     border_frame->setFrameShape(QFrame::NoFrame);
-    border_frame->setFixedHeight(3);
+    border_frame->setFixedHeight(5);
     border_frame->setObjectName("ToolBoxTopBorder");
     stacked->addWidget(border_frame);
 
 	auto *inner_border_frame = new QFrame;
     inner_border_frame->setFrameShape(QFrame::NoFrame);
-    inner_border_frame->setFixedHeight(4);
+    inner_border_frame->setFixedHeight(6);
     inner_border_frame->setObjectName("ToolBoxTopBorderInner");
     stacked->addWidget(inner_border_frame);
 

@@ -89,13 +89,13 @@ void DMRSlider::mouseMoveEvent(QMouseEvent *e)
         setSliderPosition(v);
         if (_showIndicator) {
             _indicator->show();
-            _indicator->move(e->globalX(), mapToGlobal(pos()).y()-2);
+            _indicator->move(e->globalX(), mapToGlobal(pos()).y()+3);
         }
     } else {
         if (_lastHoverValue != v) {
             if (_showIndicator) {
                 _indicator->show();
-                _indicator->move(e->globalX(), mapToGlobal(pos()).y()-2);
+                _indicator->move(e->globalX(), mapToGlobal(pos()).y()+3);
             }
             emit hoverChanged(v);
         }

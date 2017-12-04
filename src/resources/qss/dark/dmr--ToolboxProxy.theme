@@ -1,8 +1,8 @@
 dmr--ToolboxProxy[idle="false"] * {
     background: transparent;
     background-color: qlineargradient(x1:0 y1:0, x2:0 y2:1,
-        stop:0.00000 transparent,           stop:0.03333 transparent,
-        stop:0.03334 rgba(16, 16, 16, 0.8), stop:1.00000 rgba(16, 16, 16, 0.8)
+        stop:0.00000 transparent,           stop:0.06666 transparent,
+        stop:0.06667 rgba(16, 16, 16, 0.8), stop:1.00000 rgba(16, 16, 16, 0.8)
     );
     border-bottom-left-radius: 4px;
     border-bottom-right-radius: 4px;
@@ -131,9 +131,9 @@ dmr--VolumeButton#VolMute {
 }
 #MovieProgress::sub-page:horizontal {
     background-color: qlineargradient(x1:0 y1:0, x2:0 y2:1,
-        stop:0.00000  transparent,          stop:0.16666 transparent,
-        stop:0.16667  #2eacff,              stop:0.33333 #2eacff,
-        stop:0.33334  rgba(0, 0, 0, 0.0), stop:1 rgba(0, 0, 0, 0.0)
+        stop:0.00000  transparent,          stop:0.33333 transparent,
+        stop:0.33334  #2eacff,              stop:0.50000 #2eacff,
+        stop:0.50001  rgba(0, 0, 0, 0.0), stop:1 rgba(0, 0, 0, 0.0)
     );
 }
 
