@@ -21,6 +21,8 @@
 
 #include <QtWidgets>
 #include <QtDBus>
+#include <QtX11Extras>
+#include <QX11Info>
 #include <dlabel.h>
 #include <DApplication>
 #include <DTitlebar>
@@ -168,6 +170,44 @@ public:
     }
 
     MainWindow *_source;
+};
+
+class MainWindowPropertyMonitor: public QAbstractNativeEventFilter {
+public:
+    MainWindowPropertyMonitor(MainWindow *src) 
+        :QAbstractNativeEventFilter(), _mw(src), _source(src->windowHandle()) {
+        qApp->installNativeEventFilter(this);
+
+        _atomWMState = Utility::internAtom("_NET_WM_STATE");
+    }
+
+    ~MainWindowPropertyMonitor() {
+        qApp->removeNativeEventFilter(this);
+    }
+
+    bool nativeEventFilter(const QByteArray &eventType, void *message, long *) {
+        if(Q_LIKELY(eventType == "xcb_generic_event_t")) {
+            xcb_generic_event_t* event = static_cast<xcb_generic_event_t *>(message);
+            switch (event->response_type & ~0x80) {
+                case XCB_PROPERTY_NOTIFY: {
+                    xcb_property_notify_event_t *pne = (xcb_property_notify_event_t*)(event);
+                    if (pne->atom == _atomWMState && pne->window == (xcb_window_t)_source->winId()) {
+                        _mw->syncStaysOnTop();
+                    }
+                    break;
+                }
+
+                default:
+                    break;
+            }
+        }
+
+        return false;
+    }
+
+    MainWindow *_mw {nullptr};
+    QWindow* _source {nullptr};
+    xcb_atom_t _atomWMState;
 };
 
 
@@ -731,7 +771,9 @@ MainWindow::MainWindow(QWidget *parent)
     _listener = new MainWindowEventListener(this);
     this->windowHandle()->installEventFilter(_listener);
 
-    auto mwfm = new MainWindowFocusMonitor(this);
+    //auto mwfm = new MainWindowFocusMonitor(this);
+    auto mwpm = new MainWindowPropertyMonitor(this);
+
     connect(this, &MainWindow::windowEntered, &MainWindow::resumeToolsWindow);
     connect(this, &MainWindow::windowLeaved, &MainWindow::suspendToolsWindow);
 
@@ -924,6 +966,18 @@ void MainWindow::updateActionsState()
     //so we need to workaround it.
     reflectActionToUI(ActionFactory::ActionKind::SelectTrack);
     reflectActionToUI(ActionFactory::ActionKind::SelectSubtitle);
+}
+
+void MainWindow::syncStaysOnTop()
+{
+    static xcb_atom_t atomStateAbove = Utility::internAtom("_NET_WM_STATE_ABOVE");
+
+    auto atoms = Utility::windowNetWMState(windowHandle()->winId());
+    bool window_is_above = atoms.contains(atomStateAbove);
+    if (window_is_above != _windowAbove) {
+        qDebug() << "syncStaysOnTop: window_is_above" << window_is_above;
+        requestAction(ActionFactory::WindowAbove);
+    }
 }
 
 void MainWindow::reflectActionToUI(ActionFactory::ActionKind kd)
@@ -1243,6 +1297,20 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
 
         case ActionFactory::ActionKind::WindowAbove:
             _windowAbove = !_windowAbove;
+            /** 
+             * switch above state by change windowFlags is unacceptable, since it'll
+             * toggle visibility of window.
+             * ```
+                auto flags = windowFlags();
+                if (_windowAbove) {
+                    flags |= Qt::WindowStaysOnTopHint;
+                } else {
+                    flags &= ~Qt::WindowStaysOnTopHint;
+                }
+                setWindowFlags(flags);
+                show();
+                ```
+            */
             Utility::setStayOnTop(this, _windowAbove);
             if (!fromUI) {
                 reflectActionToUI(kd);

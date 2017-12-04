@@ -249,6 +249,34 @@ QByteArray Utility::windowProperty(quint32 WId, xcb_atom_t propAtom, xcb_atom_t 
     return data;
 }
 
+QList<xcb_atom_t> Utility::windowNetWMState(quint32 WId)
+{
+    QList<xcb_atom_t> res;
+
+    const auto wmStateAtom = XInternAtom(QX11Info::display(), kAtomNameWmState, false);
+    xcb_connection_t* conn = QX11Info::connection();
+    xcb_get_property_cookie_t cookie = xcb_get_property(conn, false, WId,
+            wmStateAtom, XCB_ATOM_ATOM, 0, 1);
+    xcb_generic_error_t* err = nullptr;
+    xcb_get_property_reply_t* reply = xcb_get_property_reply(conn, cookie, &err);
+
+    if (reply != nullptr) {
+        auto len = xcb_get_property_value_length(reply);
+        uint32_t *data = static_cast<uint32_t*>(xcb_get_property_value(reply));
+        for (int i = 0; i < len; i++) {
+            res.append(data[i]);
+        }
+        free(reply);
+    }
+
+    if (err != nullptr) {
+        qDebug() << "get property error";
+        free(err);
+    }
+
+    return res;
+}
+
 void Utility::setWindowProperty(quint32 WId, xcb_atom_t propAtom, xcb_atom_t typeAtom, const void *data, quint32 len, uint8_t format)
 {
     xcb_connection_t* conn = QX11Info::connection();
