@@ -533,6 +533,11 @@ MainWindow::MainWindow(QWidget *parent)
         setInit(_engine->state() != PlayerEngine::Idle);
         resumeToolsWindow();
         updateWindowTitle();
+
+        if (_engine->state() == PlayerEngine::Idle) {
+            this->setMinimumSize(QSize(528, 400));
+            this->resize(850, 600);
+        }
     });
 
     connect(this, &MainWindow::frameMarginsChanged, &MainWindow::updateProxyGeometry);
