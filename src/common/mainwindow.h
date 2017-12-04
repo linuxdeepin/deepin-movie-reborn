@@ -18,6 +18,7 @@ namespace Widget
 
 DWIDGET_USE_NAMESPACE
 
+
 class MainWindowEventListener;
 
 namespace dmr {
@@ -52,6 +53,8 @@ public:
 
     void capturedMousePressEvent(QMouseEvent* me);
     void capturedMouseReleaseEvent(QMouseEvent* me);
+
+    void syncStaysOnTop();
 
 signals:
     void frameMarginsChanged();
