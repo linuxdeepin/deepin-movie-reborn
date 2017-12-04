@@ -2322,7 +2322,11 @@ void MainWindow::toggleUIMode()
 
         if (_stateBeforeMiniMode & SBEM_PlaylistOpened &&
                 _playlist->state() == PlaylistWidget::Closed) {
-            requestAction(ActionFactory::TogglePlaylist);
+            if (_stateBeforeMiniMode & SBEM_Fullscreen) {
+                QTimer::singleShot(100, [=]() {
+                    requestAction(ActionFactory::TogglePlaylist);
+                });
+            }
         }
 
         _stateBeforeMiniMode = SBEM_None;
