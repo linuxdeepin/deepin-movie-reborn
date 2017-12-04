@@ -522,7 +522,7 @@ void ToolboxProxy::setup()
     _progBar = new DMRSlider();
     _progBar->setObjectName("MovieProgress");
     _progBar->setOrientation(Qt::Horizontal);
-    _progBar->setFixedHeight(12);
+    _progBar->setFixedHeight(12+TOOLBOX_TOP_EXTENT);
     _progBar->setRange(0, 100);
     _progBar->setValue(0);
     _progBar->setEnableIndication(Settings::get().isSet(Settings::PreviewOnMouseover));
@@ -540,20 +540,20 @@ void ToolboxProxy::setup()
 
 	auto *border_frame = new QFrame;
     border_frame->setFrameShape(QFrame::NoFrame);
-    border_frame->setFixedHeight(5);
+    border_frame->setFixedHeight(1+TOOLBOX_TOP_EXTENT);
     border_frame->setObjectName("ToolBoxTopBorder");
     stacked->addWidget(border_frame);
 
 	auto *inner_border_frame = new QFrame;
     inner_border_frame->setFrameShape(QFrame::NoFrame);
-    inner_border_frame->setFixedHeight(6);
+    inner_border_frame->setFixedHeight(2+TOOLBOX_TOP_EXTENT);
     inner_border_frame->setObjectName("ToolBoxTopBorderInner");
     stacked->addWidget(inner_border_frame);
 
 
     auto *bot_widget = new QWidget;
     auto *bot = new QHBoxLayout();
-    bot->setContentsMargins(LEFT_MARGIN, 0, RIGHT_MARGIN, 0);
+    bot->setContentsMargins(LEFT_MARGIN, TOOLBOX_TOP_EXTENT, RIGHT_MARGIN, 0);
     bot_widget->setLayout(bot);
     stacked->addWidget(bot_widget);
 

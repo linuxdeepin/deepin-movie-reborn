@@ -1774,9 +1774,9 @@ void MainWindow::updateProxyGeometry()
         }
 
         if (_toolbox) {
-            QRect r(1, height() - TOOLBOX_HEIGHT - 1, view_rect.width(), TOOLBOX_HEIGHT);
+            QRect r(1, height() - TOOLBOX_HEIGHT_EXT - 1, view_rect.width(), TOOLBOX_HEIGHT_EXT);
             if (isFullScreen()) {
-                r.moveTopLeft({0, height() - TOOLBOX_HEIGHT});
+                r.moveTopLeft({0, height() - TOOLBOX_HEIGHT_EXT});
             }
             _toolbox->setGeometry(r);
         }

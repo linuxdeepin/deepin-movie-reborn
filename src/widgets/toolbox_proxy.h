@@ -84,6 +84,9 @@ private:
 };
 }
 
-static const int TOOLBOX_HEIGHT = 60;
+//HACK: extent area for progress slider
+#define TOOLBOX_TOP_EXTENT  12
+#define TOOLBOX_HEIGHT  60
+#define TOOLBOX_HEIGHT_EXT (TOOLBOX_HEIGHT + TOOLBOX_TOP_EXTENT)
 
 #endif /* ifndef _DMR_TOOLBOX_PROXY_H */
