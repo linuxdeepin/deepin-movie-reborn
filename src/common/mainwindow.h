@@ -162,6 +162,7 @@ private:
     bool _lightTheme {false};
     bool _windowAbove {false};
     bool _mouseMoved {false};
+    bool _mouseDraggedOnTitlebar {false};
     bool _mousePressed {false};
     double _playSpeed {1.0};
 

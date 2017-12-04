@@ -1851,7 +1851,8 @@ void MainWindow::suspendToolsWindow()
 
 void MainWindow::resumeToolsWindow()
 {
-    if (qApp->applicationState() == Qt::ApplicationActive) {
+    if (_engine->state() != PlayerEngine::Idle && 
+            qApp->applicationState() == Qt::ApplicationActive) {
         if (!frameGeometry().contains(QCursor::pos())) {
             goto _finish;
         }
@@ -2014,7 +2015,7 @@ void MainWindow::resizeEvent(QResizeEvent *ev)
     if (_mousePressed && !_mouseMoved) {
         auto msg = QString("%1x%2").arg(width()) .arg(height());
         _nwComm->updateWithMessage(msg);
-    } else if (_mouseMoved) {
+    } else if (_mouseDraggedOnTitlebar) {
         //when in maximized state, drag to resize don't issue state change.
         //we need to change manually
         if (windowState() == Qt::WindowMaximized) {
@@ -2066,6 +2067,7 @@ void MainWindow::keyReleaseEvent(QKeyEvent *ev)
 void MainWindow::capturedMousePressEvent(QMouseEvent* me)
 {
     _mouseMoved = false;
+    _mouseDraggedOnTitlebar = false;
     if (me->buttons() == Qt::LeftButton) {
         _mousePressed = true;
     }
@@ -2089,6 +2091,7 @@ static bool _afterDblClick = false;
 void MainWindow::mousePressEvent(QMouseEvent *ev)
 {
     _mouseMoved = false;
+    _mouseDraggedOnTitlebar = false;
     if (ev->buttons() == Qt::LeftButton) {
         _mousePressed = true;
         if (_playState->isVisible()) {
@@ -2144,7 +2147,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *ev)
     if (!insideResizeArea(ev->globalPos()) && !_mouseMoved && !insideToolsArea(ev->pos())) {
         if (_playlist->state() != PlaylistWidget::Opened)
             _delayedMouseReleaseTimer.start(120);
-    } else if (_mouseMoved) {
+    } else if (_mouseDraggedOnTitlebar) {
         if (_hasPendingResizeByConstraint) {
             QTimer::singleShot(100, [=]() {
                 _movieSwitchedInFsOrMaxed = false;
@@ -2157,6 +2160,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *ev)
     }
 
     _mouseMoved = false;
+    _mouseDraggedOnTitlebar = false;
 }
 
 void MainWindow::delayedMouseReleaseHandler()
@@ -2168,8 +2172,10 @@ void MainWindow::delayedMouseReleaseHandler()
 
 void MainWindow::mouseMoveEvent(QMouseEvent *ev)
 {
-    if (windowState() == Qt::WindowMaximized)
-        _mouseMoved = true;
+    if (windowState() == Qt::WindowMaximized && _titlebar->geometry().contains(ev->pos()))
+        _mouseDraggedOnTitlebar = true;
+
+    _mouseMoved = true;
 
 #ifndef USE_DXCB
     if (windowState() == Qt::WindowNoState) {
