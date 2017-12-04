@@ -621,7 +621,7 @@ void ToolboxProxy::setup()
         _volSlider->stopTimer();
         QPoint pos = _volBtn->parentWidget()->mapToGlobal(_volBtn->pos());
         pos.ry() = parentWidget()->mapToGlobal(this->pos()).y();
-        _volSlider->show(pos.x() + _volSlider->width(), pos.y() - 5);
+        _volSlider->show(pos.x() + _volSlider->width(), pos.y() - 5 + TOOLBOX_TOP_EXTENT);
     });
     connect(_volBtn, &VolumeButton::leaved, _volSlider, &VolumeSlider::delayedHide);
     connect(_volBtn, &VolumeButton::requestVolumeUp, [=]() {
@@ -768,7 +768,7 @@ void ToolboxProxy::progressHoverChanged(int v)
     _lastHoverValue = v;
     ThumbnailWorker::get().requestThumb(pif.url, v);
 
-    auto pos = _progBar->mapToGlobal(QPoint(0, 0));
+    auto pos = _progBar->mapToGlobal(QPoint(0, TOOLBOX_TOP_EXTENT));
     QPoint p = {
         QCursor::pos().x(), pos.y()
     };
@@ -917,7 +917,7 @@ void ToolboxProxy::buttonClicked(QString id)
         
         QPoint pos = _subBtn->parentWidget()->mapToGlobal(_subBtn->pos());
         pos.ry() = parentWidget()->mapToGlobal(this->pos()).y();
-        _subView->show(pos.x() + _subBtn->width()/2, pos.y() - 5);
+        _subView->show(pos.x() + _subBtn->width()/2, pos.y() - 5 + TOOLBOX_TOP_EXTENT);
     }
 }
 
