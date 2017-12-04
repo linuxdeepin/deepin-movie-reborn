@@ -31,6 +31,7 @@ public:
 
     void updateTimeInfo(qint64 duration, qint64 pos);
     bool anyPopupShown() const;
+    void closeAnyPopup();
 
 signals:
     void requestPlay();
