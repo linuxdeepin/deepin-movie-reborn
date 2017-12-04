@@ -3,6 +3,8 @@
 #include <dthememanager.h>
 #include <DApplication>
 
+#define TOOLBOX_TOP_EXTENT 12
+
 DWIDGET_USE_NAMESPACE
 
 namespace dmr
@@ -89,13 +91,13 @@ void DMRSlider::mouseMoveEvent(QMouseEvent *e)
         setSliderPosition(v);
         if (_showIndicator) {
             _indicator->show();
-            _indicator->move(e->globalX(), mapToGlobal(pos()).y()+3);
+            _indicator->move(e->globalX(), mapToGlobal(pos()).y()+TOOLBOX_TOP_EXTENT-2);
         }
     } else {
         if (_lastHoverValue != v) {
             if (_showIndicator) {
                 _indicator->show();
-                _indicator->move(e->globalX(), mapToGlobal(pos()).y()+3);
+                _indicator->move(e->globalX(), mapToGlobal(pos()).y()+TOOLBOX_TOP_EXTENT-2);
             }
             emit hoverChanged(v);
         }
