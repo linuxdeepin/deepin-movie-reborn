@@ -1784,7 +1784,8 @@ void MainWindow::updateProxyGeometry()
         if (_playlist && !_playlist->toggling()) {
             QRect fixed(0, titlebar()->geometry().bottom(),
                     220,
-                    toolbox()->geometry().top() - titlebar()->geometry().bottom());
+                    toolbox()->geometry().top() + TOOLBOX_TOP_EXTENT 
+                        - titlebar()->geometry().bottom());
             fixed.moveRight(view_rect.right());
             _playlist->setGeometry(fixed);
         }
