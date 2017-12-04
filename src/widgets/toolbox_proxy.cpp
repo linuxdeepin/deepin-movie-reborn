@@ -701,6 +701,29 @@ void ToolboxProxy::setup()
     auto bubbler = new KeyPressBubbler(this);
     this->installEventFilter(bubbler);
     _playBtn->installEventFilter(bubbler);
+
+    connect(qApp, &QGuiApplication::applicationStateChanged, [=](Qt::ApplicationState e) {
+        if (e == Qt::ApplicationInactive && anyPopupShown()) {
+            closeAnyPopup();
+        }
+    });
+}
+
+
+void ToolboxProxy::closeAnyPopup()
+{
+    if (_previewer->isVisible()) {
+        _previewer->hide();
+    }
+
+    if (_subView->isVisible()) {
+        _subView->hide();
+    }
+
+    if (_volSlider->isVisible()) {
+        _volSlider->stopTimer();
+        _volSlider->hide();
+    }
 }
 
 bool ToolboxProxy::anyPopupShown() const
