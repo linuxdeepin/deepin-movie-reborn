@@ -124,7 +124,7 @@ dmr--VolumeButton#VolMute {
 }
 #MovieProgress::handle:horizontal {
     background:transparent;
-    margin: 0;
+    margin: 5px -5px;
 }
 #MovieProgress::add-page:horizontal {
     background: transparent;
