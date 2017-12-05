@@ -456,7 +456,7 @@ skip_set_cursor:
             geom.setWidth(qMax(geom.width(), min.width()));
             geom.setHeight(qMax(geom.height(), min.height()));
             mw->setGeometry(geom);
-
+            mw->updateGeometryNotification(geom.size());
         }
 
         bool leftButtonPressed {false};
@@ -2077,13 +2077,16 @@ void MainWindow::updateSizeConstraints()
     this->setMinimumSize(m);
 }
 
+void MainWindow::updateGeometryNotification(const QSize& sz)
+{
+    auto msg = QString("%1x%2").arg(sz.width()).arg(sz.height());
+    _nwComm->updateWithMessage(msg);
+}
+
 void MainWindow::resizeEvent(QResizeEvent *ev)
 {
     qDebug() << __func__ << geometry();
-    if (_mousePressed && !_mouseMoved) {
-        auto msg = QString("%1x%2").arg(width()) .arg(height());
-        _nwComm->updateWithMessage(msg);
-    } else if (_mouseDraggedOnTitlebar) {
+    if (_mouseDraggedOnTitlebar) {
         //when in maximized state, drag to resize don't issue state change.
         //we need to change manually
         if (windowState() == Qt::WindowMaximized) {
