@@ -382,7 +382,7 @@ void MpvProxy::processPropertyChange(mpv_event_property* ev)
         auto sz = videoSize();
         if (!sz.isEmpty())
             emit videoSizeChanged();
-        qDebug() << "--------- videoSize " << sz;
+        qDebug() << "update videoSize " << sz;
     } else if (name == "aid") {
         emit aidChanged();
     } else if (name == "sid") {

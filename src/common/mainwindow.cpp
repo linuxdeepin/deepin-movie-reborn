@@ -574,7 +574,7 @@ MainWindow::MainWindow(QWidget *parent)
         resumeToolsWindow();
         updateWindowTitle();
 
-        if (_engine->state() == PlayerEngine::Idle) {
+        if (_engine->state() == PlayerEngine::Idle && windowState() == Qt::WindowNoState) {
             this->setMinimumSize(QSize(528, 400));
             this->resize(850, 600);
         }
