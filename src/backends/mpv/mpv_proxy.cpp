@@ -303,11 +303,22 @@ void MpvProxy::handle_mpv_events()
                     auto w = get_property(_handle, "width").toInt();
                     auto h = get_property(_handle, "height").toInt();
 
-                    qDebug() << "---------------- hwdec-interop" << get_property(_handle, "hwdec-interop");
+                    qDebug() << "hwdec-interop" << get_property(_handle, "hwdec-interop");
                 }
                 setState(PlayState::Playing); //might paused immediately
                 emit fileLoaded();
+                qDebug() << QString("rotate metadata: dec %1, out %2")
+                    .arg(get_property(_handle, "video-dec-params/rotate").toInt())
+                    .arg(get_property(_handle, "video-params/rotate").toInt());
                 break;
+
+            case MPV_EVENT_VIDEO_RECONFIG: {
+                auto sz = videoSize();
+                if (!sz.isEmpty())
+                    emit videoSizeChanged();
+                qDebug() << "videoSize " << sz;
+                break;
+            }
 
             case MPV_EVENT_END_FILE: {
 #ifndef _LIBDMR_
@@ -371,6 +382,7 @@ void MpvProxy::processPropertyChange(mpv_event_property* ev)
         auto sz = videoSize();
         if (!sz.isEmpty())
             emit videoSizeChanged();
+        qDebug() << "--------- videoSize " << sz;
     } else if (name == "aid") {
         emit aidChanged();
     } else if (name == "sid") {
@@ -581,7 +593,8 @@ int MpvProxy::volume() const
 
 int MpvProxy::videoRotation() const
 {
-    return get_property(_handle, "video-rotate").toInt();
+    auto vr = get_property(_handle, "video-rotate").toInt();
+    return (vr + 360) % 360;
 }
 
 void MpvProxy::setVideoRotation(int degree)
@@ -873,9 +886,15 @@ void MpvProxy::seekAbsolute(int pos)
 QSize MpvProxy::videoSize() const
 {
     if (state() == PlayState::Stopped) return QSize(-1, -1);
-    return QSize(get_property(_handle, "dwidth").toInt(),
+    auto sz = QSize(get_property(_handle, "dwidth").toInt(),
             get_property(_handle, "dheight").toInt());
 
+    auto r = get_property(_handle, "video-out-params/rotate").toInt();
+    if (r == 90 || r == 270) {
+        sz.transpose();
+    }
+
+    return sz;
 }
 
 qint64 MpvProxy::duration() const

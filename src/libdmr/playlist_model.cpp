@@ -119,9 +119,25 @@ struct MovieInfo MovieInfo::parseFromFile(const QFileInfo& fi, bool *ok)
             auto dt = QDateTime::fromString(tag->value, Qt::ISODate);
             mi.creation = dt.toString();
             qDebug() << __func__ << dt.toString();
+            break;
         }
         qDebug() << "tag:" << tag->key << tag->value;
     }
+
+    tag = NULL;
+    AVStream *st = av_ctx->streams[stream_id];
+    while ((tag = av_dict_get(st->metadata, "", tag, AV_DICT_IGNORE_SUFFIX)) != NULL) {
+        if (tag->key && strcmp(tag->key, "rotate") == 0) {
+            mi.raw_rotate = QString(tag->value).toInt();
+            auto vr = (mi.raw_rotate + 360) % 360;
+            if (vr == 90 || vr == 270) {
+                auto tmp = mi.height; mi.height = mi.width; mi.width = tmp; 
+            }
+            break;
+        }
+        qDebug() << "tag:" << tag->key << tag->value;
+    }
+
     avformat_close_input(&av_ctx);
     mi.valid = true;
 
