@@ -55,6 +55,7 @@ public:
     void capturedMouseReleaseEvent(QMouseEvent* me);
 
     void syncStaysOnTop();
+    void updateGeometryNotification(const QSize& sz);
 
 signals:
     void frameMarginsChanged();
