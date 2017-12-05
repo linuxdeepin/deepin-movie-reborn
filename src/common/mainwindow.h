@@ -148,7 +148,8 @@ private:
     QImage bg_light;
 
     bool _miniMode {false};
-    QSize _lastSizeInNormalMode;
+    /// used to restore to recent geometry when quit fullscreen or mini mode
+    QRect _lastRectInNormalMode;
 
     // the first time a play happens, we consider it inited.
     bool _inited {false};

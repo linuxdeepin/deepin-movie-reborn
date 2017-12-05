@@ -609,8 +609,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(windowHandle(), &QWindow::windowStateChanged, [=]() {
         qDebug() << windowState();
         if (!isFullScreen()) {
-            if (_lastSizeInNormalMode.isValid())
-                resize(_lastSizeInNormalMode);
+            if (_lastRectInNormalMode.isValid())
+                setGeometry(_lastRectInNormalMode);
 
             qApp->restoreOverrideCursor();
             if (_lastCookie > 0) {
@@ -1332,7 +1332,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                 showNormal();
             } else {
                 if (!_miniMode && (fromUI || isShortcut)) {
-                    _lastSizeInNormalMode = size();
+                    _lastRectInNormalMode = geometry();
                 }
                 showFullScreen();
             }
@@ -2018,7 +2018,6 @@ void MainWindow::resizeByConstraints(bool forceCentered)
     }
 
     if (_miniMode || isFullScreen() || isMaximized()) {
-        //_lastSizeInNormalMode = QSize(-1, -1);
         return;
     }
 
@@ -2358,7 +2357,7 @@ void MainWindow::toggleUIMode()
             _stateBeforeMiniMode |= SBEM_Fullscreen;
             requestAction(ActionFactory::QuitFullscreen);
         } else {
-            _lastSizeInNormalMode = size();
+            _lastRectInNormalMode = geometry();
         }
 
         auto sz = QSize(380, 380);
@@ -2372,7 +2371,14 @@ void MainWindow::toggleUIMode()
                 sz = QSize(380 * ratio, 380);
             }
         }
-        resize(sz);
+
+        QRect geom = {0, 0, 0, 0};
+        if (_lastRectInNormalMode.isValid()) {
+            geom = _lastRectInNormalMode;
+        }
+        geom.setSize(sz);
+        setGeometry(geom);
+
         _miniQuitMiniBtn->move(sz.width() - 14 - _miniQuitMiniBtn->width(),
                 sz.height() - 10 - _miniQuitMiniBtn->height()); 
         _miniCloseBtn->move(sz.width() - 4 - _miniCloseBtn->width(), 4);
@@ -2385,8 +2391,8 @@ void MainWindow::toggleUIMode()
         if (_stateBeforeMiniMode & SBEM_Fullscreen) {
             requestAction(ActionFactory::ToggleFullscreen);
         } else {
-            if (_lastSizeInNormalMode.isValid()) {
-                resize(_lastSizeInNormalMode);
+            if (_lastRectInNormalMode.isValid()) {
+                resize(_lastRectInNormalMode.size());
                 //utils::MoveToCenter(this);
             } else {
                 if (_engine->state() == PlayerEngine::CoreState::Idle) {
