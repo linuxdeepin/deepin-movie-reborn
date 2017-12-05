@@ -742,10 +742,10 @@ void PlaylistWidget::togglePopup()
 {
     auto main_rect = _mw->rect();
     auto view_rect = main_rect.marginsRemoved(QMargins(1, 1, 1, 1));
-    QRect fixed(0, _mw->titlebar()->geometry().bottom(),
+    int off = _mw->isFullScreen()? 0: _mw->titlebar()->geometry().bottom();
+    QRect fixed(0, off,
             PLAYLIST_FIXED_WIDTH,
-            _mw->toolbox()->geometry().top() + TOOLBOX_TOP_EXTENT 
-                - _mw->titlebar()->geometry().bottom());
+            _mw->toolbox()->geometry().top() + TOOLBOX_TOP_EXTENT - off);
     fixed.moveRight(view_rect.right());
     QRect shrinked = fixed;
     shrinked.setWidth(0);
