@@ -25,7 +25,7 @@ CommandLineManager::CommandLineManager()
         {"VV", ("dump all debug message")},
         {{"c", "opengl-cb"}, ("use opengl-cb interface [on/off/auto]"), "bool", "auto"},
         {{"o", "override-config"}, ("override config for libmpv"), "file", ""},
-#if ENABLE_VPU_PLATFORM
+#ifdef ENABLE_VPU_PLATFORM
         {"frames", ("play only count number of frames"), "count", "0"},
         {"gal", ("use gal or not"), "bool", "on"},
         {"vpudemo", ("play in vpu demo mode")},
