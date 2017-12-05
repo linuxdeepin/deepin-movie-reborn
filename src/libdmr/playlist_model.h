@@ -20,6 +20,8 @@ struct MovieInfo {
     QString filePath;
     QString creation;
 
+    // rotation in metadata, this affects width/height
+    int raw_rotate;
     qint64 fileSize;
     qint64 duration;
     int width, height;
