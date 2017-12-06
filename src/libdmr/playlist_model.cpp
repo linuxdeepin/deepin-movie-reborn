@@ -769,7 +769,12 @@ void PlaylistModel::changeCurrent(int pos)
 
 void PlaylistModel::switchPosition(int p1, int p2)
 {
-    Q_ASSERT_X(0, "playlist", "not implemented");
+    //Q_ASSERT_X(0, "playlist", "not implemented");
+    Q_ASSERT (p1 < _infos.size() && p2 < _infos.size());
+    _infos.move(p1, p2);
+    if (_current >= p1 && _current <= p2) {
+        emit currentChanged();
+    }
 }
 
 PlayItemInfo& PlaylistModel::currentInfo()
