@@ -18,6 +18,7 @@ namespace dmr {
 
 class PlayerEngine;
 class MainWindow;
+class PlayItemWidget;
 
 class PlaylistWidget: public QListWidget {
     Q_OBJECT
@@ -61,6 +62,8 @@ private:
     QSignalMapper *_activateMapper {nullptr};
     State _state {Closed};
     bool _toggling {false};
+    /// < original row, data>
+    QPair<int, PlayItemWidget*> _lastDragged {-1, nullptr}; 
 
     void batchUpdateSizeHints();
 };

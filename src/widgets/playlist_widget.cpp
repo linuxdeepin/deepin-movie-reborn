@@ -474,10 +474,14 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     setSelectionMode(QListView::SingleSelection);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setResizeMode(QListView::Adjust);
-    setDragDropMode(QListView::DropOnly);
+    setDragDropMode(QListView::InternalMove);
     setSpacing(0);
 
     setAcceptDrops(true);
+    viewport()->setAcceptDrops(true);
+    setDragEnabled(true);
+    setDropIndicatorShown(true);
+
     setContentsMargins(0, 0, 0, 0);
 
     if (!composited) {
@@ -508,6 +512,24 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     connect(ActionFactory::get().playlistContextMenu(), &QMenu::aboutToHide, [=]() {
         if (_mouseItem) {
             ((PlayItemWidget*)_mouseItem)->setHovered(false); 
+        }
+    });
+
+    connect(model(), &QAbstractItemModel::rowsMoved, [=]() {
+        if (_lastDragged.first >= 0) {
+            int target = -1;
+            for (int i = 0; i < count(); i++) {
+                auto piw = dynamic_cast<PlayItemWidget*>(itemWidget(item(i)));
+                if (piw == _lastDragged.second) {
+                    target = i;
+                    break;
+                }
+            }
+            qDebug() << "swap " << _lastDragged.first << target;
+            if (target >= 0 && _lastDragged.first != target) {
+                _engine->playlist().switchPosition(_lastDragged.first, target);
+                _lastDragged = {-1, nullptr};
+            }
         }
     });
 }
@@ -584,6 +606,13 @@ void PlaylistWidget::removeClickedItem()
 
 void PlaylistWidget::dragEnterEvent(QDragEnterEvent *ev)
 {
+    auto md = ev->mimeData();
+    qDebug() << md->formats();
+    if (md->formats().contains("application/x-qabstractitemmodeldatalist")) {
+        QListWidget::dragEnterEvent(ev);
+        return;
+    }
+
     if (ev->mimeData()->hasUrls()) {
         ev->acceptProposedAction();
     }
@@ -591,6 +620,12 @@ void PlaylistWidget::dragEnterEvent(QDragEnterEvent *ev)
 
 void PlaylistWidget::dragMoveEvent(QDragMoveEvent *ev)
 {
+    auto md = ev->mimeData();
+    if (md->formats().contains("application/x-qabstractitemmodeldatalist")) {
+        QListWidget::dragMoveEvent(ev);
+        return;
+    }
+
     if (ev->mimeData()->hasUrls()) {
         ev->acceptProposedAction();
     }
@@ -598,7 +633,25 @@ void PlaylistWidget::dragMoveEvent(QDragMoveEvent *ev)
 
 void PlaylistWidget::dropEvent(QDropEvent *ev)
 {
-    qDebug() << ev->mimeData()->formats();
+    auto md = ev->mimeData();
+    if (md->formats().contains("application/x-qabstractitemmodeldatalist")) {
+        auto encoded = md->data("application/x-qabstractitemmodeldatalist");
+        QDataStream stream(&encoded, QIODevice::ReadOnly);
+
+        QList<int> l;
+        while (!stream.atEnd()) {
+            int row, col;
+            QMap<int,  QVariant> roleDataMap;
+            stream >> row >> col >> roleDataMap;
+            auto piw = dynamic_cast<PlayItemWidget*>(itemWidget(item(row)));
+            _lastDragged = qMakePair(row, piw);
+            qDebug() << "drag to move " << row << piw->_pif.url;
+        }
+
+        QListWidget::dropEvent(ev);
+        return;
+    }
+
     if (!ev->mimeData()->hasUrls()) {
         return;
     }
