@@ -1770,10 +1770,19 @@ void MainWindow::handleSettings()
 
 void MainWindow::playList(const QList<QString>& l)
 {
+    static QRegExp url_re("\\w+://");
+
     QList<QUrl> urls;
     for (const auto& filename: l) {
         qDebug() << filename;
-        urls.append(QUrl::fromLocalFile(filename));
+        QUrl url;
+        if (url_re.indexIn(filename) == 0) {
+            url = QUrl(filename);
+        } else {
+            url = QUrl::fromLocalFile(filename);
+        }
+        if (url.isValid())
+            urls.append(url);
     }
     const auto& valids = _engine->addPlayFiles(urls);
     if (valids.size()) {
