@@ -731,6 +731,10 @@ MainWindow::MainWindow(QWidget *parent)
     });
 
     connect(_engine, &PlayerEngine::fileLoaded, [=]() {
+        if (windowState() == Qt::WindowNoState && _lastRectInNormalMode.isValid()) {
+            const auto& mi = _engine->playlist().currentInfo().mi;
+            _lastRectInNormalMode.setSize({mi.width, mi.height});
+        }
         this->resizeByConstraints();
     });
     connect(_engine, &PlayerEngine::videoSizeChanged, [=]() {
