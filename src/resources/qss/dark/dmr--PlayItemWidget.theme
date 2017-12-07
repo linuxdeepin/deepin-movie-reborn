@@ -2,11 +2,19 @@
     margin-bottom: 2px;
 }
 
-/* state Playing */
-*[PlayItemThumb="true"][ItemState="1"] {
+*[PlayItemThumb="true"][ItemKind="local"] {
     qproperty-bg: url(:/resources/icons/dark/normal/film-bg.svg);
 }
 
+*[PlayItemThumb="true"][ItemKind="dvd"] {
+    qproperty-bg: url(:/resources/icons/dark/normal/dvd.svg);
+}
+
+*[PlayItemThumb="true"][ItemKind="network"] {
+    qproperty-bg: url(:/resources/icons/dark/normal/url.svg);
+}
+
+/* state Playing */
 
 *[PlayItemThumb="true"][ItemState="1"] *[Name="true"] {
   font-size: 12px;
@@ -19,10 +27,6 @@
 }
 
 /* state Normal */
-*[PlayItemThumb="true"][ItemState="0"] {
-    qproperty-bg: url(:/resources/icons/dark/normal/film-bg.svg);
-}
-
 
 *[PlayItemThumb="true"][ItemState="0"] *[Name="true"] {
     font-size: 12px;
@@ -35,10 +39,6 @@
 }
 
 /* state Invalid */
-*[PlayItemThumb="true"][ItemState="2"] {
-    qproperty-bg: url(:/resources/icons/dark/normal/film-bg.svg);
-}
-
 
 *[PlayItemThumb="true"][ItemState="2"] *[Name="true"] {
     font-size: 12px;
