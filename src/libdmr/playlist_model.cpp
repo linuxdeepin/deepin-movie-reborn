@@ -767,12 +767,23 @@ void PlaylistModel::changeCurrent(int pos)
     _userRequestingItem = false;
 }
 
-void PlaylistModel::switchPosition(int p1, int p2)
+void PlaylistModel::switchPosition(int src, int target)
 {
     //Q_ASSERT_X(0, "playlist", "not implemented");
-    Q_ASSERT (p1 < _infos.size() && p2 < _infos.size());
-    _infos.move(p1, p2);
-    if (_current >= p1 && _current <= p2) {
+    Q_ASSERT (src < _infos.size() && target < _infos.size());
+    _infos.move(src, target);
+
+    int min = qMin(src, target);
+    int max = qMax(src, target);
+    if (_current >= min && _current <= max) {
+        if (_current == src) _current = target;
+        else {
+            if (src < target) {
+                _current--;
+            } else if (src > target) {
+                _current++;
+            }
+        }
         emit currentChanged();
     }
 }
