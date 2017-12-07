@@ -477,10 +477,9 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     setDragDropMode(QListView::InternalMove);
     setSpacing(0);
 
-    setAcceptDrops(true);
+    //setAcceptDrops(true);
     viewport()->setAcceptDrops(true);
     setDragEnabled(true);
-    setDropIndicatorShown(true);
 
     setContentsMargins(0, 0, 0, 0);
 
@@ -609,6 +608,9 @@ void PlaylistWidget::dragEnterEvent(QDragEnterEvent *ev)
     auto md = ev->mimeData();
     qDebug() << md->formats();
     if (md->formats().contains("application/x-qabstractitemmodeldatalist")) {
+        if (!selectedItems().contains(itemAt(ev->pos()))) {
+            setDropIndicatorShown(true);
+        }
         QListWidget::dragEnterEvent(ev);
         return;
     }
@@ -622,6 +624,9 @@ void PlaylistWidget::dragMoveEvent(QDragMoveEvent *ev)
 {
     auto md = ev->mimeData();
     if (md->formats().contains("application/x-qabstractitemmodeldatalist")) {
+        if (!selectedItems().contains(itemAt(ev->pos()))) {
+            setDropIndicatorShown(true);
+        }
         QListWidget::dragMoveEvent(ev);
         return;
     }
@@ -635,6 +640,7 @@ void PlaylistWidget::dropEvent(QDropEvent *ev)
 {
     auto md = ev->mimeData();
     if (md->formats().contains("application/x-qabstractitemmodeldatalist")) {
+        setDropIndicatorShown(false);
         auto encoded = md->data("application/x-qabstractitemmodeldatalist");
         QDataStream stream(&encoded, QIODevice::ReadOnly);
 
