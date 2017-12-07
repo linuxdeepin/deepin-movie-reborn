@@ -76,6 +76,8 @@ MpvProxy::MpvProxy(QWidget *parent)
 MpvProxy::~MpvProxy()
 {
     disconnect(this, &MpvProxy::has_mpv_events, this, &MpvProxy::handle_mpv_events);
+    _connectStateChange = false;
+    disconnect(window()->windowHandle(), &QWindow::windowStateChanged, 0, 0);
     if (CompositingManager::get().composited()) {
         delete _gl_widget;
     }
@@ -122,7 +124,7 @@ mpv_handle* MpvProxy::mpv_init()
     }
 #endif
     set_property(h, "panscan", 1.0);
-    set_property(h, "no-keepaspect", "true");
+    //set_property(h, "no-keepaspect", "true");
 
     if (composited) {
         set_property(h, "vo", "opengl-cb");
@@ -485,6 +487,18 @@ void MpvProxy::updateSubStyle(const QString& font, int sz)
 {
     set_property(_handle, "sub-font", font);
     set_property(_handle, "sub-font-size", sz);
+}
+
+void MpvProxy::showEvent(QShowEvent *re)
+{
+    if (!_connectStateChange) {
+        connect(window()->windowHandle(), &QWindow::windowStateChanged, [=](Qt::WindowState ws) {
+            set_property(_handle, "panscan",
+                (ws != Qt::WindowMaximized && ws != Qt::WindowFullScreen) ? 1.0 : 0.0);
+
+        });
+        _connectStateChange = true;
+    }
 }
 
 void MpvProxy::resizeEvent(QResizeEvent *re)
