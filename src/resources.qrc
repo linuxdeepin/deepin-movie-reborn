@@ -69,6 +69,8 @@
         <file>resources/icons/light/normal/audio-volume-medium-hover.svg</file>
         <file>resources/icons/light/normal/film-top.svg</file>
         <file>resources/icons/light/normal/film-bg.svg</file>
+        <file>resources/icons/light/normal/dvd.svg</file>
+        <file>resources/icons/light/normal/url.svg</file>
         <file>resources/icons/light/normal/previous-normal.svg</file>
         <file>resources/icons/light/normal/Subtitle-press.svg</file>
         <file>resources/icons/light/normal/play-normal.svg</file>
@@ -133,6 +135,8 @@
         <file>resources/icons/dark/normal/audio-volume-medium-hover.svg</file>
         <file>resources/icons/dark/normal/film-top.svg</file>
         <file>resources/icons/dark/normal/film-bg.svg</file>
+        <file>resources/icons/dark/normal/dvd.svg</file>
+        <file>resources/icons/dark/normal/url.svg</file>
         <file>resources/icons/dark/normal/previous-normal.svg</file>
         <file>resources/icons/dark/normal/Subtitle-press.svg</file>
         <file>resources/icons/dark/normal/play-normal.svg</file>

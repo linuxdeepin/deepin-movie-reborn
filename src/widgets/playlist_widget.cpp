@@ -113,6 +113,16 @@ public:
         setState(ItemState::Normal); 
         setFrameShape(QFrame::NoFrame);
 
+        auto kd = "local";
+        if (!_pif.url.isLocalFile()) {
+            if (_pif.url.scheme().startsWith("dvd")) {
+                kd = "dvd";
+            } else {
+                kd = "network";
+            }
+        }
+        setProperty("ItemKind", kd);
+
         // it's the same for all themes
         _play = QPixmap(":/resources/icons/dark/normal/film-top.svg");
         _play.setDevicePixelRatio(qApp->devicePixelRatio());
