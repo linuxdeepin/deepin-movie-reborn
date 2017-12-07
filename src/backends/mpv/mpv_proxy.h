@@ -79,6 +79,7 @@ public slots:
 
 protected:
     void resizeEvent(QResizeEvent *re) override;
+    void showEvent(QShowEvent *re) override;
 
 protected slots:
     void handle_mpv_events();
@@ -103,6 +104,8 @@ private:
     bool _polling {false};
 
     bool _externalSubJustLoaded {false};
+
+    bool _connectStateChange {false};
 
     mpv_handle* mpv_init();
     void processPropertyChange(mpv_event_property* ev);
