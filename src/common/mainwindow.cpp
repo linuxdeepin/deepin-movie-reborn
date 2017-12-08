@@ -2276,6 +2276,9 @@ void MainWindow::contextMenuEvent(QContextMenuEvent *cme)
     if (_miniMode || _inBurstShootMode) 
         return;
 
+    if (insideToolsArea(cme->pos()))
+        return;
+
     resumeToolsWindow();
     QTimer::singleShot(0, [=]() {
         qApp->restoreOverrideCursor();
