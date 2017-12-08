@@ -11,7 +11,7 @@
     </message>
     <message>
         <location filename="../main.cpp" line="69"/>
-        <source>Deepin Movie is a well-designed and full-featured video player with simple borderless design. It supports local and streaming media play with multiple video formats.</source>
+        <source>Deepin Movie is a well-designed and full-featured video player with a simple borderless design. It supports local and streamed media along with multiple video formats.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -26,17 +26,17 @@
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="90"/>
-        <source>You don&apos;t have permission to operate this folder</source>
+        <source>You do not have permission to operate this folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="5"/>
-        <source>Auto add similar files to play</source>
+        <source>Automatically add similar files to play</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="6"/>
-        <source>Clear playlist when exit</source>
+        <source>Clear playlist on exit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -46,7 +46,7 @@
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="8"/>
-        <source>Open a new player for each file played</source>
+        <source>Open a new window for each file played</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -143,7 +143,7 @@
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="29"/>
-        <source>volume down</source>
+        <source>Volume down</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -153,12 +153,12 @@
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="31"/>
-        <source>Speed up</source>
+        <source>Increase Speed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="32"/>
-        <source>Speed down</source>
+        <source>Decrease Speed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -188,7 +188,7 @@
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="38"/>
-        <source>Forward</source>
+        <source>Fast Forward</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -203,12 +203,12 @@
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="41"/>
-        <source>0.5s backward</source>
+        <source>Jump 0.5s backward</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="42"/>
-        <source>0.5s forward</source>
+        <source>Jump 0.5s forward</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -276,7 +276,7 @@
     <message>
         <location filename="../common/actions.cpp" line="79"/>
         <location filename="../common/actions.cpp" line="263"/>
-        <source>Film info</source>
+        <source>File info</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -343,12 +343,12 @@
     </message>
     <message>
         <location filename="../common/actions.cpp" line="122"/>
-        <source>Clockwise</source>
+        <source>Rotate Clockwise</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="123"/>
-        <source>Counterclockwise</source>
+        <source>Rotate Counterclockwise</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -393,7 +393,7 @@
     </message>
     <message>
         <location filename="../common/actions.cpp" line="156"/>
-        <source>Online Search</source>
+        <source>Search Online</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -408,7 +408,7 @@
     </message>
     <message>
         <location filename="../common/actions.cpp" line="168"/>
-        <source>Encodings</source>
+        <source>Encoding</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -423,7 +423,7 @@
     </message>
     <message>
         <location filename="../common/actions.cpp" line="238"/>
-        <source>Burst Shooting</source>
+        <source>Burst Shot</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -433,7 +433,7 @@
     </message>
     <message>
         <location filename="../common/actions.cpp" line="246"/>
-        <source>Film Info</source>
+        <source>File Info</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -443,7 +443,7 @@
     </message>
     <message>
         <location filename="../common/actions.cpp" line="262"/>
-        <source>Display in file manager</source>
+        <source>Open in file manager</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -451,22 +451,22 @@
     <name>dmr::BurstScreenshotsDialog</name>
     <message>
         <location filename="../widgets/burst_screenshots_dialog.cpp" line="54"/>
-        <source>duration: %1</source>
+        <source>Duration: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../widgets/burst_screenshots_dialog.cpp" line="60"/>
-        <source>resolution: %1</source>
+        <source>Resolution: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../widgets/burst_screenshots_dialog.cpp" line="66"/>
-        <source>size: %1</source>
+        <source>Size: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../widgets/burst_screenshots_dialog.cpp" line="89"/>
-        <source>save</source>
+        <source>Save</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -482,7 +482,7 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="700"/>
         <location filename="../common/mainwindow.cpp" line="1497"/>
-        <source>Load successfully</source>
+        <source>Load successful</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -541,13 +541,13 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="1458"/>
         <location filename="../common/mainwindow.cpp" line="1466"/>
-        <source>delayed</source>
+        <source>Delay</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1458"/>
         <location filename="../common/mainwindow.cpp" line="1466"/>
-        <source>advanced</source>
+        <source>Advanced</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -580,12 +580,12 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="1577"/>
         <location filename="../common/mainwindow.cpp" line="1648"/>
-        <source>The screenshot is saved</source>
+        <source>Screenshot saved</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1577"/>
-        <source>The screenshot is failed to save</source>
+        <source>Screenshot failed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
