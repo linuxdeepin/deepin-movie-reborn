@@ -776,12 +776,16 @@ void PlaylistModel::switchPosition(int src, int target)
     int min = qMin(src, target);
     int max = qMax(src, target);
     if (_current >= min && _current <= max) {
-        if (_current == src) _current = target;
-        else {
+        if (_current == src) {
+            _current = target;
+            _last = _current;
+        } else {
             if (src < target) {
                 _current--;
+                _last = _current;
             } else if (src > target) {
                 _current++;
+                _last = _current;
             }
         }
         emit currentChanged();
