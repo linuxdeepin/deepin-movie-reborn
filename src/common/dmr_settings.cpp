@@ -144,6 +144,7 @@ QVariant Settings::internalOption(const QString& opt)
 void Settings::setInternalOption(const QString& opt, const QVariant& v)
 {
     settings()->setOption(QString("base.play.%1").arg(opt), v);
+    settings()->sync();
 }
 }
 
