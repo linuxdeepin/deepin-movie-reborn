@@ -42,7 +42,7 @@ class LineEdit;
 
 class UrlDialog: public DDialog {
 public:
-    UrlDialog();
+    UrlDialog(QWidget* parent = 0);
     QUrl url() const;
 
 protected:

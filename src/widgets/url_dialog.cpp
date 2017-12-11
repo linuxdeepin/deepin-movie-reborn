@@ -35,8 +35,8 @@
 DWIDGET_USE_NAMESPACE
 
 namespace dmr {
-UrlDialog::UrlDialog()
-    :DDialog(nullptr)
+UrlDialog::UrlDialog(QWidget *parent)
+    :DDialog(parent)
 {
     addButtons(QStringList() << QApplication::translate("UrlDialog", "Cancel")
                                 << QApplication::translate("UrlDialog", "Confirm"));

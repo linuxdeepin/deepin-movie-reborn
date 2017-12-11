@@ -1234,7 +1234,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         }
 
         case ActionFactory::ActionKind::OpenUrl: {
-            UrlDialog dlg;
+            UrlDialog dlg(this);
             if (dlg.exec() == QDialog::Accepted) {
                 auto url = dlg.url();
                 if (url.isValid()) {
