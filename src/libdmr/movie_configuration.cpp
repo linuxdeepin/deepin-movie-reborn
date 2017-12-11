@@ -56,10 +56,15 @@ class MovieConfigurationBackend: public QObject
 public:
     MovieConfigurationBackend(MovieConfiguration* cfg): QObject(cfg)
     {
-        auto db_path = QString("%1/%2/%3/movies.db")
+        auto db_dir = QString("%1/%2/%3")
             .arg(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation))
             .arg(qApp->organizationName())
             .arg(qApp->applicationName());
+
+        QDir d;
+        d.mkpath(db_dir);
+
+        auto db_path = QString("%1/movies.db").arg(db_dir);
         _db = QSqlDatabase::addDatabase("QSQLITE");
         _db.setDatabaseName(db_path);
         _db.open();

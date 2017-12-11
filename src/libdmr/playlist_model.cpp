@@ -165,8 +165,8 @@ public:
     struct CacheInfo {
         struct MovieInfo mi;
         QPixmap thumb;
-        bool mi_valid;
-        bool thumb_valid;
+        bool mi_valid {false};
+        bool thumb_valid {false};
     };
 
     CacheInfo loadFromCache(const QUrl& url)
@@ -182,7 +182,7 @@ public:
             if (f.open(QIODevice::ReadOnly)) {
                 QDataStream ds(&f);
                 ds >> ci.mi;
-                ci.mi_valid = true;
+                ci.mi_valid = ci.mi.valid;
             } else {
                 qWarning() << f.errorString();
             }
