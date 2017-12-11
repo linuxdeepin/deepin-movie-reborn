@@ -25,11 +25,6 @@ CommandLineManager::CommandLineManager()
         {"VV", ("dump all debug message")},
         {{"c", "opengl-cb"}, ("use opengl-cb interface [on/off/auto]"), "bool", "auto"},
         {{"o", "override-config"}, ("override config for libmpv"), "file", ""},
-#ifdef ENABLE_VPU_PLATFORM
-        {"frames", ("play only count number of frames"), "count", "0"},
-        {"gal", ("use gal or not"), "bool", "on"},
-        {"vpudemo", ("play in vpu demo mode")},
-#endif
         {"dvd-device", ("specify dvd playing device or file"), "device", "/dev/sr0"},
     });
 }
@@ -52,22 +47,6 @@ QString CommandLineManager::openglMode() const
 QString CommandLineManager::overrideConfig() const
 {
     return this->value("o");
-}
-
-int CommandLineManager::debugFrameCount() const
-{
-    return value("frames").toInt();
-}
-
-bool CommandLineManager::useGAL() const
-{
-    auto v = value("gal");
-    return v == "on" || v == "1";
-}
-
-bool CommandLineManager::vpuDemoMode() const
-{
-    return this->isSet("vpudemo");
 }
 
 QString CommandLineManager::dvdDevice() const

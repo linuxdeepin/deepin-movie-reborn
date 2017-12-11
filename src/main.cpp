@@ -25,9 +25,6 @@
 #include "dbus_adpator.h"
 #include "compositing_manager.h"
 #include "utils.h"
-#ifdef ENABLE_VPU_PLATFORM
-#include "vpu_proxy.h"
-#endif
 #include "movie_configuration.h"
 
 DWIDGET_USE_NAMESPACE
@@ -103,23 +100,6 @@ int main(int argc, char *argv[])
     MovieConfiguration::get().init();
 
     QRegExp url_re("\\w+://");
-
-#ifdef ENABLE_VPU_PLATFORM
-    if (dmr::CommandLineManager::get().vpuDemoMode()) {
-        dmr::VpuProxy mw;
-        mw.setMinimumSize(QSize(528, 400));
-        mw.resize(850, 600);
-        utils::MoveToCenter(&mw);
-        mw.show();
-        auto fi = QFileInfo(toOpenFiles[0]);
-        if (fi.exists()) {
-            mw.setPlayFile(fi);
-            mw.play();
-        }
-
-        return app.exec();
-    }
-#endif
 
     dmr::MainWindow mw;
     mw.setMinimumSize(QSize(528, 400));

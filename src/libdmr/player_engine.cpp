@@ -6,9 +6,6 @@
 #include "online_sub.h"
 
 #include "mpv_proxy.h"
-#ifdef ENABLE_VPU_PLATFORM
-#include "vpu_proxy.h"
-#endif
 
 #ifndef _LIBDMR_
 #include "dmr_settings.h"
@@ -22,12 +19,7 @@ PlayerEngine::PlayerEngine(QWidget *parent)
     auto *l = new QVBoxLayout(this);
     l->setContentsMargins(0, 0, 0, 0);
 
-    //FIXME: need to dynamically change this
-#ifdef ENABLE_VPU_PLATFORM
-    _current = new VpuProxy(this);
-#else
     _current = new MpvProxy(this);
-#endif
     if (_current) {
         connect(_current, &Backend::stateChanged, this, &PlayerEngine::onBackendStateChanged);
         connect(_current, &Backend::tracksChanged, this, &PlayerEngine::tracksChanged);

@@ -1,3 +1,48 @@
+##  3.0.2 (2017-12-11)
+
+
+#### Bug Fixes
+
+*   switchPosition: reset _last if _current changed ([7448c66b](7448c66b))
+*   sync to save global state ([a99f2003](a99f2003))
+*   dont popup context menu from titlebar ([ab8bea72](ab8bea72))
+*   update _current after position switch ([892c2e75](892c2e75))
+*   workaround a drop indicator issue ([abf87d9e](abf87d9e))
+*   disable panscan in fs or maximized state ([3e04bd11](3e04bd11))
+*   take care filename input format ([6605e277](6605e277))
+*   on restore to default in normal state ([4d2377bd](4d2377bd))
+*   wrong conditional compilation ([5e69c0cc](5e69c0cc))
+*   use two variables to track mouse state ([27087d03](27087d03))
+*   adjust popup according to TOOLBOX_TOP_EXTENT ([179b5ae2](179b5ae2))
+*   delay toggling playlist when return to fs ([bd30d9b6](bd30d9b6))
+*   expand playlist into invisble extent of toolbox ([76216161](76216161))
+*   correct drag to maximize behaviour ([96d74eed](96d74eed))
+*   a few minor changes ([eb7bd68f](eb7bd68f))
+
+#### Features
+
+*   primitive caching scheme for playlist items ([30161b36](30161b36))
+*   show unique icon for different kinds of urls ([53586c03](53586c03))
+*   support playlist item repositioning ([1fcd1c26](1fcd1c26))
+*   reset last valid size when new vidoe loaded ([e6eaa49b](e6eaa49b))
+*   honor video metadata for rotation ([71f5d4e5](71f5d4e5))
+*   adjust playlist geometry when toggling fs ([f6d10a90](f6d10a90))
+*   remember both size and pos of last spot ([5d62d0f4](5d62d0f4))
+*   only show size notif for manual resizing ([ec7bf9f3](ec7bf9f3))
+*   sync above state with wm ([db49fa40](db49fa40))
+*   hide popup when turn to inactive state ([1f294ef7](1f294ef7))
+*   expand slider response area even wider ([f703dce2](f703dce2))
+*   restore to default size when idle ([fce147c2](fce147c2))
+*   make response area of slider look wider ([aca6eefd](aca6eefd))
+*   expand progress response area ([bb6f3f92](bb6f3f92))
+*   support libdmr.pc ([e16a3944](e16a3944))
+*   enable libdmr to override composite mode ([cfd1058e](cfd1058e))
+*   make video full the whole framebuffer ([1fcb45f3](1fcb45f3))
+*   libdmr interface usage demo ([88d9654b](88d9654b))
+*   split core function into libdmr ([c37f3dc1](c37f3dc1))
+
+
+
 ##  3.0.1 (2017-11-27)
 
 

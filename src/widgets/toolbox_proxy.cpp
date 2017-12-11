@@ -639,14 +639,12 @@ void ToolboxProxy::setup()
     signalMapper->setMapping(_fsBtn, "fs");
     _right->addWidget(_fsBtn);
 
-#ifndef ENABLE_VPU_PLATFORM
     _listBtn = new DImageButton();
     _listBtn->setFixedSize(48, TOOLBOX_HEIGHT);
     _listBtn->setObjectName("ListBtn");
     connect(_listBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_listBtn, "list");
     _right->addWidget(_listBtn);
-#endif
 
     // these tooltips is not used due to deepin ui design
     _playBtn->setToolTip(tr("Play/Pause"));

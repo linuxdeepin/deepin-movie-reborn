@@ -3,10 +3,6 @@ set(CMD_NAME deepin-movie)
 
 set(CMAKE_CXX_FLAGS "-std=c++1y -fpermissive -Wno-error")
 set(CMAKE_C_FLAGS "-Wno-error")
-if (ENABLE_VPU_PLATFORM)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mieee")
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mieee")
-endif()
 
 set(PROJECT_INCLUDE ${PROJECT_SOURCE_DIR}/src/widgets
     ${PROJECT_SOURCE_DIR}/src/common
@@ -44,20 +40,6 @@ list(APPEND SRCS ${MPV_SRCS})
 list(APPEND PROJECT_INCLUDE ${PROJECT_SOURCE_DIR}/src/backends/mpv)
 #~
 
-if (ENABLE_VPU_PLATFORM)
-    list(APPEND PROJECT_INCLUDE ${PROJECT_SOURCE_DIR}/src/backends/vpu/)
-    list(APPEND PROJECT_INCLUDE ${PROJECT_SOURCE_DIR}/src/backends/vpu/gal/include)
-    list(APPEND PROJECT_INCLUDE ${PROJECT_SOURCE_DIR}/src/backends/vpu/include)
-    list(APPEND PROJECT_INCLUDE ${PROJECT_SOURCE_DIR}/src/backends/vpu/vpuapi)
-    #FIXME: change this!
-    #link_directories(backends/vpu/gal/lib)
-
-    file(GLOB_RECURSE VPU_SRCS LIST_DIRECTORIES false
-        backends/vpu/*.c
-        backends/vpu/*.cpp)
-    list(APPEND SRCS ${VPU_SRCS})
-endif()
-
 add_custom_target(json_i18n ALL
     /usr/lib/dtk2/dtk-settings-tool resources/data/settings.json -o common/settings_translation.cpp
     COMMAND sed -i "s,#include .*,#include <DSettings>," common/settings_translation.cpp
@@ -81,9 +63,6 @@ target_include_directories(${CMD_NAME} PUBLIC ${PROJECT_INCLUDE})
 set(TARGET_LIBS X11 Xext Xtst PkgConfig::Xcb Qt5::Widgets Qt5::X11Extras Qt5::Network
     Qt5::Concurrent Qt5::DBus Qt5::Sql PkgConfig::Dtk PkgConfig::Mpv
     PkgConfig::AV pthread GL)
-if (ENABLE_VPU_PLATFORM)
-    list(APPEND TARGET_LIBS GAL pulse pulse-simple)
-endif()
 target_link_libraries(${CMD_NAME} ${TARGET_LIBS} ${Other_LIBRARIES})
 
 

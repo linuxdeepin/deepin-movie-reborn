@@ -12,11 +12,6 @@ public:
     QString openglMode() const;
     QString overrideConfig() const;
     
-    // for vpu level debug
-    int debugFrameCount() const; 
-    bool useGAL() const;
-    bool vpuDemoMode() const;
-
     QString dvdDevice() const;
 
 private:
