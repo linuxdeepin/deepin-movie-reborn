@@ -62,7 +62,174 @@ static int open_codec_context(int *stream_idx,
     return 0;
 }
 
+
 namespace dmr {
+QDebug operator<<(QDebug debug, const struct MovieInfo& mi)
+{
+    debug << "MovieInfo{"
+        << mi.valid
+        << mi.title
+        << mi.fileType
+        << mi.resolution
+        << mi.filePath
+        << mi.creation
+        << mi.raw_rotate
+        << mi.fileSize
+        << mi.duration
+        << mi.width
+        << mi.height
+        << "}";
+    return debug;
+}
+
+QDataStream& operator<< (QDataStream& st, const MovieInfo& mi)
+{
+    st << mi.valid;
+    st << mi.title;
+    st << mi.fileType;
+    st << mi.resolution;
+    st << mi.filePath;
+    st << mi.creation;
+    st << mi.raw_rotate;
+    st << mi.fileSize;
+    st << mi.duration;
+    st << mi.width;
+    st << mi.height;
+    return st;
+}
+
+QDataStream& operator>> (QDataStream& st, MovieInfo& mi)
+{
+    st >> mi.valid;
+    st >> mi.title;
+    st >> mi.fileType;
+    st >> mi.resolution;
+    st >> mi.filePath;
+    st >> mi.creation;
+    st >> mi.raw_rotate;
+    st >> mi.fileSize;
+    st >> mi.duration;
+    st >> mi.width;
+    st >> mi.height;
+    return st;
+}
+
+static class PersistentManager* _persistentManager = nullptr;
+
+static QString hashUrl(const QUrl& url)
+{
+    return QString(QCryptographicHash::hash(url.toEncoded(), QCryptographicHash::Sha256).toHex());
+}
+
+//TODO: clean cache periodically
+class PersistentManager: public QObject
+{
+    Q_OBJECT
+public:
+    static PersistentManager& get() {
+        if (!_persistentManager) {
+            _persistentManager = new PersistentManager;
+        }
+        return *_persistentManager;
+    }
+
+    struct CacheInfo {
+        struct MovieInfo mi;
+        QPixmap thumb;
+        bool mi_valid;
+        bool thumb_valid;
+    };
+
+    CacheInfo loadFromCache(const QUrl& url)
+    {
+        auto h = hashUrl(url);
+        CacheInfo ci;
+        
+        {
+            auto filename = QString("%1/%2").arg(_cacheInfoPath).arg(h);
+            QFile f(filename);
+            if (!f.exists()) return ci;
+
+            if (f.open(QIODevice::ReadOnly)) {
+                QDataStream ds(&f);
+                ds >> ci.mi;
+                ci.mi_valid = true;
+            } else {
+                qWarning() << f.errorString();
+            }
+        }
+        
+        if (ci.mi_valid) {
+            auto filename = QString("%1/%2").arg(_pixmapCachePath).arg(h);
+            ci.thumb = QPixmap(filename);
+            ci.thumb.setDevicePixelRatio(qApp->devicePixelRatio());
+            ci.thumb_valid = !ci.thumb.isNull();
+        }
+
+        return ci;
+    }
+
+    void save(const PlayItemInfo& pif)
+    {
+        auto h = hashUrl(pif.url);
+
+        bool mi_saved = false;
+        
+        {
+            auto filename = QString("%1/%2").arg(_cacheInfoPath).arg(h);
+            QFile f(filename);
+            if (f.open(QIODevice::WriteOnly)) {
+                QDataStream ds(&f);
+                ds << pif.mi;
+                mi_saved = true;
+                qDebug() << "cache" << pif.url << "->" << h;
+            } else {
+                qWarning() << f.errorString();
+            }
+        }
+        
+        if (mi_saved) {
+            auto filename = QString("%1/%2").arg(_pixmapCachePath).arg(h);
+            QFile f(filename);
+            if (f.open(QIODevice::WriteOnly)) {
+                QDataStream ds(&f);
+                ds << pif.thumbnail;
+            } else {
+                qWarning() << f.errorString();
+            }
+        }
+    }
+
+    bool cacheExists(const QUrl& url) 
+    {
+        auto h = hashUrl(url);
+        auto filename = QString("%1/%2").arg(_cacheInfoPath).arg(h);
+        return QFile::exists(filename);
+    }
+
+private:
+    PersistentManager() 
+    {
+        auto tmpl = QString("%1/%2/%3/%4")
+            .arg(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation))
+            .arg(qApp->organizationName())
+            .arg(qApp->applicationName());
+        {
+            _cacheInfoPath = tmpl.arg("cacheinfo");
+            QDir d;
+            d.mkpath(_cacheInfoPath);
+        }
+        {
+            _pixmapCachePath = tmpl.arg("thumbs");
+            QDir d;
+            d.mkpath(_pixmapCachePath);
+        }
+    }
+
+    QString _pixmapCachePath;
+    QString _cacheInfoPath;
+
+};
 
 struct MovieInfo MovieInfo::parseFromFile(const QFileInfo& fi, bool *ok)
 {
@@ -166,6 +333,11 @@ PlaylistModel::PlaylistModel(PlayerEngine *e)
     _thumbnailer.setThumbnailSize(400 * qApp->devicePixelRatio());
     av_register_all();
 
+    _playlistFile = QString("%1/%2/%3/playlist")
+        .arg(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation))
+        .arg(qApp->organizationName())
+        .arg(qApp->applicationName());
+
     connect(e, &PlayerEngine::stateChanged, [=]() {
         qDebug() << "model" << "_userRequestingItem" << _userRequestingItem << "state" << e->state();
         switch (e->state()) {
@@ -218,11 +390,7 @@ PlaylistModel::~PlaylistModel()
 
 void PlaylistModel::clearPlaylist()
 {
-    auto fileName = QString("%1/%2/%3/playlist")
-        .arg(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation))
-        .arg(qApp->organizationName())
-        .arg(qApp->applicationName());
-    QSettings cfg(fileName, QSettings::NativeFormat);
+    QSettings cfg(_playlistFile, QSettings::NativeFormat);
     cfg.beginGroup("playlist");
     cfg.remove("");
     cfg.endGroup();
@@ -230,11 +398,7 @@ void PlaylistModel::clearPlaylist()
 
 void PlaylistModel::savePlaylist()
 {
-    auto fileName = QString("%1/%2/%3/playlist")
-        .arg(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation))
-        .arg(qApp->organizationName())
-        .arg(qApp->applicationName());
-    QSettings cfg(fileName, QSettings::NativeFormat);
+    QSettings cfg(_playlistFile, QSettings::NativeFormat);
     cfg.beginGroup("playlist");
     cfg.remove("");
 
@@ -249,14 +413,9 @@ void PlaylistModel::savePlaylist()
 
 void PlaylistModel::loadPlaylist()
 {
-    auto fileName = QString("%1/%2/%3/playlist")
-        .arg(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation))
-        .arg(qApp->organizationName())
-        .arg(qApp->applicationName());
-
     QList<QUrl> urls;
 
-    QSettings cfg(fileName, QSettings::NativeFormat);
+    QSettings cfg(_playlistFile, QSettings::NativeFormat);
     cfg.beginGroup("playlist");
     auto keys = cfg.childKeys();
     for (int i = 0; i < keys.size(); ++i) {
@@ -823,26 +982,38 @@ int PlaylistModel::current() const
 struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl& url, const QFileInfo& fi)
 {
     bool ok = false;
-    auto mi = MovieInfo::parseFromFile(fi, &ok);
-    if (url.scheme().startsWith("dvd")) {
-        QString dev = url.path();
-        if (dev.isEmpty()) dev = "/dev/sr0";
-        mi.title = dmr::dvd::RetrieveDVDTitle(dev);
-        if (mi.title.isEmpty()) {
-            mi.title = "DVD";
-        }
-        mi.valid = true;
-    } else if (!url.isLocalFile()) {
-        QString msg = url.fileName();
-        if (msg.isEmpty()) msg = url.path();
-        mi.title = msg;
-        mi.valid = true;
+    struct MovieInfo mi;
+
+    auto ci = PersistentManager::get().loadFromCache(url);
+    if (ci.mi_valid) {
+        mi = ci.mi;
+        ok = true;
+        qDebug() << "load cached MovieInfo" << mi;
     } else {
-        mi.title = fi.fileName();
+        mi = MovieInfo::parseFromFile(fi, &ok);
+        if (url.scheme().startsWith("dvd")) {
+            QString dev = url.path();
+            if (dev.isEmpty()) dev = "/dev/sr0";
+            mi.title = dmr::dvd::RetrieveDVDTitle(dev);
+            if (mi.title.isEmpty()) {
+                mi.title = "DVD";
+            }
+            mi.valid = true;
+        } else if (!url.isLocalFile()) {
+            QString msg = url.fileName();
+            if (msg.isEmpty()) msg = url.path();
+            mi.title = msg;
+            mi.valid = true;
+        } else {
+            mi.title = fi.fileName();
+        }
     }
 
     QPixmap pm;
-    if (ok) {
+    if (ci.thumb_valid) {
+        pm = ci.thumb;
+        qDebug() << "load cached thumb" << url;
+    } else if (ok) {
         try {
             std::vector<uint8_t> buf;
             _thumbnailer.generateThumbnail(fi.canonicalFilePath().toUtf8().toStdString(),
@@ -856,6 +1027,9 @@ struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl& url, const QFil
     }
 
     PlayItemInfo pif { fi.exists() || !url.isLocalFile(), ok, url, fi, pm, mi };
+    if (ok && url.isLocalFile() && (!ci.mi_valid || !ci.thumb_valid)) {
+        PersistentManager::get().save(pif);
+    }
 
     return pif;
 }
@@ -872,4 +1046,5 @@ int PlaylistModel::indexOf(const QUrl& url)
 
 }
 
+#include "playlist_model.moc"
 

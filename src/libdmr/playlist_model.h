@@ -13,7 +13,6 @@ class PlayerEngine;
 
 struct MovieInfo {
     bool valid;
-    QUrl url;
     QString title;
     QString fileType;
     QString resolution;
@@ -148,6 +147,8 @@ private:
 
     VideoThumbnailer _thumbnailer;
     PlayerEngine *_engine {nullptr};
+
+    QString _playlistFile;
 
     struct PlayItemInfo calculatePlayInfo(const QUrl&, const QFileInfo& fi);
     void reshuffle();
