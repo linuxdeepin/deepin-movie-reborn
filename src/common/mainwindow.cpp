@@ -2091,6 +2091,13 @@ void MainWindow::resizeByConstraints(bool forceCentered)
         r.setSize(sz);
         this->setGeometry(r);
     }
+
+    // this resizeByConstraints req comes from a PendingResizeByConstraint,
+    // so size may not changed at all.
+    if (_hasPendingResizeByConstraint) {
+        updateSizeConstraints();
+        updateProxyGeometry();
+    }
 }
 
 // 若长≥高,则长≤528px　　　若长≤高,则高≤528px.
@@ -2140,6 +2147,7 @@ void MainWindow::resizeEvent(QResizeEvent *ev)
             _hasPendingResizeByConstraint = true;
             return;
         }
+
     }
     
     if (isFullScreen()) {
@@ -2190,14 +2198,14 @@ void MainWindow::capturedMousePressEvent(QMouseEvent* me)
 
 void MainWindow::capturedMouseReleaseEvent(QMouseEvent* me)
 {
-    _mousePressed = false;
+    //_mousePressed = false;
     if (_hasPendingResizeByConstraint) {
         QTimer::singleShot(100, [=]() {
             _movieSwitchedInFsOrMaxed = false;
-            _hasPendingResizeByConstraint = false;
             setMinimumSize({0, 0});
             resizeByConstraints(false);
             update();
+            _hasPendingResizeByConstraint = false;
         });
     }
 }
@@ -2266,10 +2274,10 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *ev)
         if (_hasPendingResizeByConstraint) {
             QTimer::singleShot(100, [=]() {
                 _movieSwitchedInFsOrMaxed = false;
-                _hasPendingResizeByConstraint = false;
                 setMinimumSize({0, 0});
                 resizeByConstraints(false);
                 update();
+                _hasPendingResizeByConstraint = false;
             });
         }
     }
@@ -2293,7 +2301,7 @@ void MainWindow::mouseMoveEvent(QMouseEvent *ev)
     _mouseMoved = true;
 
 #ifndef USE_DXCB
-    if (windowState() == Qt::WindowNoState) {
+    if ((windowState() == Qt::WindowNoState && !_miniMode) || isMaximized()) {
         Utility::startWindowSystemMove(this->winId());
     }
 #endif
