@@ -1968,7 +1968,9 @@ void MainWindow::resumeToolsWindow()
 {
     if (_engine->state() != PlayerEngine::Idle && 
             qApp->applicationState() == Qt::ApplicationActive) {
-        if (!frameGeometry().contains(QCursor::pos())) {
+        // playlist's previous state was Opened
+        if (_playlist->state() != PlaylistWidget::Closed && 
+                !frameGeometry().contains(QCursor::pos())) {
             goto _finish;
         }
     }
