@@ -603,10 +603,14 @@ MainWindow::MainWindow(QWidget *parent)
         resumeToolsWindow();
         updateWindowTitle();
 
-        if (_engine->state() == PlayerEngine::Idle && !_miniMode && windowState() == Qt::WindowNoState) {
-            this->setMinimumSize(QSize(528, 400));
-            this->resize(850, 600);
-        }
+        // delayed checking if engine is still idle, in case other videos are schedulered (next/prev req)
+        // and another resize event will happen after that
+        QTimer::singleShot(100, [=]() {
+            if (_engine->state() == PlayerEngine::Idle && !_miniMode && windowState() == Qt::WindowNoState) {
+                this->setMinimumSize(QSize(528, 400));
+                this->resize(850, 600);
+            }
+        });
     });
 
     connect(this, &MainWindow::frameMarginsChanged, &MainWindow::updateProxyGeometry);
