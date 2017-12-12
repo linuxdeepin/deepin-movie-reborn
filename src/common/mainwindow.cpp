@@ -603,7 +603,7 @@ MainWindow::MainWindow(QWidget *parent)
         resumeToolsWindow();
         updateWindowTitle();
 
-        if (_engine->state() == PlayerEngine::Idle && windowState() == Qt::WindowNoState) {
+        if (_engine->state() == PlayerEngine::Idle && !_miniMode && windowState() == Qt::WindowNoState) {
             this->setMinimumSize(QSize(528, 400));
             this->resize(850, 600);
         }
@@ -2066,6 +2066,7 @@ void MainWindow::resizeByConstraints(bool forceCentered)
         return;
     }
 
+    qDebug() << __func__;
     updateWindowTitle();
 
     const auto& mi = _engine->playlist().currentInfo().mi;
