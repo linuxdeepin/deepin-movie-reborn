@@ -1806,7 +1806,9 @@ void MainWindow::playList(const QList<QString>& l)
         qDebug() << filename;
         QUrl url;
         if (url_re.indexIn(filename) == 0) {
-            url = QUrl(filename);
+            url = QUrl::fromPercentEncoding(filename.toUtf8());
+            if (!url.isValid())
+                url = QUrl(filename);
         } else {
             url = QUrl::fromLocalFile(filename);
         }

@@ -508,7 +508,8 @@ void MpvProxy::setSubCodepage(const QString& cp)
     set_property(_handle, "sub-codepage", cp2);
     command(_handle, {"sub-reload"});
 #ifndef _LIBDMR_
-    MovieConfiguration::get().updateUrl(_file, ConfigKnownKey::SubCodepage, subCodepage());
+    if (_file.isValid())
+        MovieConfiguration::get().updateUrl(_file, ConfigKnownKey::SubCodepage, subCodepage());
 #endif
 }
 

@@ -465,6 +465,7 @@ void PlaylistModel::loadPlaylist()
         _firstLoad = false;
         reshuffle();
         emit countChanged();
+        return;
     }
 
     QTimer::singleShot(0, [=]() { delayedAppendAsync(urls); });
