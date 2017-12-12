@@ -671,7 +671,11 @@ MainWindow::MainWindow(QWidget *parent)
             qDebug() << "inhibit cookie" << _lastCookie;
             _listener->setEnabled(false);
         }
-        _titlebar->setVisible(!_miniMode && !isFullScreen());
+        if (!_miniMode && !isFullScreen()) {
+            _titlebar->setVisible(_toolbox->isVisible());
+        } else {
+            _titlebar->setVisible(false);
+        }
         //WTF: this->geometry() is not size of fullscreen !
         //_progIndicator->move(geometry().width() - _progIndicator->width() - 18, 14);
         _progIndicator->setVisible(isFullScreen());

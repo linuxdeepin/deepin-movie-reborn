@@ -131,7 +131,8 @@ mpv_handle* MpvProxy::mpv_init()
                 mpv_request_log_messages(h, "v");
 
             } else {
-                mpv_request_log_messages(h, "debug");
+                set_property(h, "msg-level", "all=status");
+                mpv_request_log_messages(h, "info");
             }
             break;
     }
@@ -445,9 +446,8 @@ void MpvProxy::processPropertyChange(mpv_event_property* ev)
 
 bool MpvProxy::loadSubtitle(const QFileInfo& fi)
 {
-    if (state() == PlayState::Stopped) {
-        return true;
-    }
+    //movie could be in an inner state that marked as Stopped when loadfile executes
+    //if (state() == PlayState::Stopped) { return true; }
 
     if (!fi.exists())
         return false;
@@ -715,8 +715,7 @@ void MpvProxy::play()
     // this keeps order of subs
     QTimer::singleShot(100, [this]() {
         auto cfg = MovieConfiguration::get().queryByUrl(_file);
-        auto ext_subs = MovieConfiguration::get().getListByUrl(_file,
-                ConfigKnownKey::ExternalSubs);
+        auto ext_subs = MovieConfiguration::get().getListByUrl(_file, ConfigKnownKey::ExternalSubs);
         for(const auto& sub: ext_subs) {
             if (!QFile::exists(sub)) {
                 MovieConfiguration::get().removeFromListUrl(_file, ConfigKnownKey::ExternalSubs, sub);
