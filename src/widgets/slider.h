@@ -48,13 +48,17 @@ protected:
     void mousePressEvent(QMouseEvent *e) override;
     void mouseMoveEvent(QMouseEvent *e) override;
     void leaveEvent(QEvent *e) override;
+    void enterEvent(QEvent *e) override;
     void wheelEvent(QWheelEvent *e) override;
+    void paintEvent(QPaintEvent *e) override;
 
 private:
     bool _down {false};
     bool _showIndicator {false};
     int _lastHoverValue {0};
-    QWidget *_indicator {nullptr};
+    QPoint _indicatorPos {0, 0};
+    QColor _indicatorColor;
+
     int position2progress(const QPoint& p);
 };
 

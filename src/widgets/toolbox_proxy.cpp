@@ -369,6 +369,9 @@ public:
         show(pos.x(), pos.y() - 5);
     }
 
+signals:
+    void leavePreview();
+
 protected slots:
     void updateTheme()
     {
@@ -394,6 +397,11 @@ protected slots:
     }
 
 protected:
+    void leaveEvent(QEvent *e) override
+    {
+        emit leavePreview();
+    }
+
     void showEvent(QShowEvent *se) override
     {
         _time->move((width() - _time->width())/2, 69);
@@ -555,6 +563,13 @@ void ToolboxProxy::setup()
     _progBar->setRange(0, 100);
     _progBar->setValue(0);
     _progBar->setEnableIndication(Settings::get().isSet(Settings::PreviewOnMouseover));
+
+    connect(_previewer, &ThumbnailPreview::leavePreview, [=]() {
+        auto pos = _progBar->mapFromGlobal(QCursor::pos());
+        if (!_progBar->geometry().contains(pos)) {
+            _previewer->hide();
+        }
+    });
 
     connect(_progBar, &QSlider::sliderMoved, this, &ToolboxProxy::setProgress);
     connect(_progBar, &DMRSlider::hoverChanged, this, &ToolboxProxy::progressHoverChanged);

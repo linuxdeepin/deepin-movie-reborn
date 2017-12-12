@@ -132,11 +132,21 @@ dmr--VolumeButton#VolMute {
 #MovieProgress::add-page:horizontal {
     background: transparent;
 }
-#MovieProgress::sub-page:horizontal {
+
+#MovieProgress[Hover="true"]::sub-page:horizontal {
+    background-color: qlineargradient(x1:0 y1:0, x2:0 y2:1,
+        stop:0.00000  transparent,          stop:0.41666 transparent,
+        stop:0.41667  #2eacff,              stop:0.58333 #2eacff,
+        stop:0.58334  rgba(0, 0, 0, 0.0), stop:1 rgba(0, 0, 0, 0.0)
+    );
+}
+
+#MovieProgress[Hover="false"]::sub-page:horizontal {
     background-color: qlineargradient(x1:0 y1:0, x2:0 y2:1,
         stop:0.00000  transparent,          stop:0.50000 transparent,
         stop:0.50001  #2eacff,              stop:0.58333 #2eacff,
         stop:0.58334  rgba(0, 0, 0, 0.0), stop:1 rgba(0, 0, 0, 0.0)
     );
 }
+
 

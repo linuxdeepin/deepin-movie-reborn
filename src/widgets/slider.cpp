@@ -42,40 +42,27 @@ DMRSlider::DMRSlider(QWidget *parent): QSlider(parent)
 {
     setTracking(false);
     setMouseTracking(true);
-    _indicator = new QWidget();
-    _indicator->setWindowFlags(Qt::ToolTip);
-    _indicator->setFixedSize(1, 6);
 
     auto updateTheme = [=]() {
         if (qApp->theme() == "dark") {
-            _indicator->setStyleSheet(R"(
-                background: #ffffff;
-            )");
+            _indicatorColor = QColor("#ffffff");
         } else {
-            _indicator->setStyleSheet(R"(
-                background: #303030;
-            )");
+            _indicatorColor = QColor("#303030");
         }
     };
     connect(DThemeManager::instance(), &DThemeManager::themeChanged, updateTheme);
     updateTheme();
-
-    _indicator->hide();
 }
 
 void DMRSlider::setEnableIndication(bool on)
 {
     if (_showIndicator != on) {
         _showIndicator = on;
-        if (!on) {
-            _indicator->hide();
-        }
     }
 }
 
 DMRSlider::~DMRSlider()
 {
-    delete _indicator;
 }
 
 void DMRSlider::mouseReleaseEvent(QMouseEvent *e)
@@ -119,28 +106,50 @@ void DMRSlider::mouseMoveEvent(QMouseEvent *e)
     if (_down) {
         setSliderPosition(v);
         if (_showIndicator) {
-            _indicator->show();
-            _indicator->move(e->globalX(), mapToGlobal(pos()).y()+TOOLBOX_TOP_EXTENT-2);
+            _indicatorPos = {e->x(), pos().y()+TOOLBOX_TOP_EXTENT-2};
+            update();
         }
     } else {
         if (_lastHoverValue != v) {
             if (_showIndicator) {
-                _indicator->show();
-                _indicator->move(e->globalX(), mapToGlobal(pos()).y()+TOOLBOX_TOP_EXTENT-2);
+                _indicatorPos = {e->x(), pos().y()+TOOLBOX_TOP_EXTENT-2};
+                update();
             }
+
             emit hoverChanged(v);
         }
 
         _lastHoverValue = v;
     }
+    e->accept();
 }
 
 void DMRSlider::leaveEvent(QEvent *e)
 {
+    //HACK: workaround problem that preview will make slider leave
+    auto pos = mapFromGlobal(QCursor::pos());
+    if (pos.y() > 0 && pos.y() < 6) {
+        // preview may popup
+        return;
+    }
+    setProperty("Hover", "false");
+    setStyleSheet(styleSheet());
+
     _lastHoverValue = 0;
     if (_down) _down = false;
-    _indicator->hide();
     emit leave();
+    _showIndicator = false;
+    update();
+    e->accept();
+}
+
+void DMRSlider::enterEvent(QEvent *e)
+{
+    setProperty("Hover", "true");
+    setStyleSheet(styleSheet());
+    _showIndicator = true;
+    update();
+    e->accept();
 }
 
 void DMRSlider::wheelEvent(QWheelEvent *e)
@@ -149,6 +158,17 @@ void DMRSlider::wheelEvent(QWheelEvent *e)
         qDebug() << "angleDelta" << e->angleDelta();
     }
     e->accept();
+}
+
+void DMRSlider::paintEvent(QPaintEvent *e)
+{
+    QSlider::paintEvent(e);
+
+    if (_showIndicator) {
+        QPainter p(this);
+        QRect r(_indicatorPos, QSize{1, 6});
+        p.fillRect(r, QBrush(_indicatorColor));
+    }
 }
 
 }
