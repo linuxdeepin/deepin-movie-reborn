@@ -2310,7 +2310,7 @@ void MainWindow::mouseMoveEvent(QMouseEvent *ev)
     _mouseMoved = true;
 
 #ifndef USE_DXCB
-    if ((windowState() == Qt::WindowNoState && !_miniMode) || isMaximized()) {
+    if (windowState() == Qt::WindowNoState || isMaximized()) {
         Utility::startWindowSystemMove(this->winId());
     }
 #endif
@@ -2385,6 +2385,11 @@ void MainWindow::toggleUIMode()
 {
     _miniMode = !_miniMode;
     qDebug() << __func__ << _miniMode;
+
+    if (_miniMode)
+        _titlebar->setDisableFlags(Qt::WindowMaximizeButtonHint);
+    else 
+        _titlebar->setDisableFlags(0);
 
     _listener->setEnabled(!_miniMode);
 
