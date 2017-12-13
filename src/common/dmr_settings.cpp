@@ -100,9 +100,6 @@ bool Settings::isSet(Flag f) const
 
     if (grp != subgroups.end()) {
         auto sub = (*grp)->childOptions();
-        //std::for_each(sub.begin(), sub.end(), [=](OptionPtr opt) {
-                //qDebug() << opt->key() << opt->name();
-            //});
 
         auto key = flag2key(f);
         auto p = std::find_if(sub.begin(), sub.end(), [=](OptionPtr opt) { 

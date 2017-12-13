@@ -55,6 +55,7 @@ protected:
 
 private:
     bool _down {false};
+    bool _indicatorEnabled {false};
     bool _showIndicator {false};
     int _lastHoverValue {0};
     QPoint _indicatorPos {0, 0};

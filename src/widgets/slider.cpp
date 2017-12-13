@@ -59,8 +59,9 @@ DMRSlider::DMRSlider(QWidget *parent): QSlider(parent)
 
 void DMRSlider::setEnableIndication(bool on)
 {
-    if (_showIndicator != on) {
-        _showIndicator = on;
+    if (_indicatorEnabled != on) {
+        _indicatorEnabled = on;
+        update();
     }
 }
 
@@ -129,10 +130,12 @@ void DMRSlider::mouseMoveEvent(QMouseEvent *e)
 
 void DMRSlider::leaveEvent(QEvent *e)
 {
-    setProperty("Hover", "false");
-    setStyleSheet(styleSheet());
-    _showIndicator = false;
-    update();
+    if (_indicatorEnabled) {
+        setProperty("Hover", "false");
+        setStyleSheet(styleSheet());
+        _showIndicator = false;
+        update();
+    }
 
     //HACK: workaround problem that preview will make slider leave
     auto pos = mapFromGlobal(QCursor::pos());
@@ -150,11 +153,13 @@ void DMRSlider::leaveEvent(QEvent *e)
 
 void DMRSlider::enterEvent(QEvent *e)
 {
-    setProperty("Hover", "true");
-    setStyleSheet(styleSheet());
-    _showIndicator = true;
+    if (_indicatorEnabled) {
+        setProperty("Hover", "true");
+        setStyleSheet(styleSheet());
+        _showIndicator = true;
+        update();
+    }
     emit enter();
-    update();
     e->accept();
 }
 
@@ -170,7 +175,7 @@ void DMRSlider::paintEvent(QPaintEvent *e)
 {
     QSlider::paintEvent(e);
 
-    if (_showIndicator) {
+    if (_indicatorEnabled && _showIndicator) {
         QPainter p(this);
         QRect r(_indicatorPos, QSize{1, 6});
         p.fillRect(r, QBrush(_indicatorColor));

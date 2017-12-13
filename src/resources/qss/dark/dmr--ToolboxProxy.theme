@@ -112,7 +112,6 @@ dmr--VolumeButton#VolMute {
 
 /* simulate dynamic expanding of tool proxy background */
 #MovieProgress[Hover="true"]::groove:horizontal {
-    background: transparent;
     background-color: qlineargradient(x1:0 y1:0, x2:0 y2:1,
         stop:0.00000  transparent,          stop:0.33333 transparent,
         stop:0.33334  rgba(16, 16, 16, 0.8),  stop:0.50000 rgba(16, 16, 16, 0.8),
