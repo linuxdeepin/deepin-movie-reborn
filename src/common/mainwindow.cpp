@@ -2218,6 +2218,8 @@ void MainWindow::capturedMousePressEvent(QMouseEvent* me)
 {
     _mouseMoved = false;
     _mouseDraggedOnTitlebar = false;
+    if (qApp->focusWindow() == 0) return;
+
     if (me->buttons() == Qt::LeftButton) {
         _mousePressed = true;
     }
@@ -2242,6 +2244,8 @@ void MainWindow::mousePressEvent(QMouseEvent *ev)
 {
     _mouseMoved = false;
     _mouseDraggedOnTitlebar = false;
+
+    if (qApp->focusWindow() == 0) return;
     if (ev->buttons() == Qt::LeftButton) {
         _mousePressed = true;
         if (_playState->isVisible()) {
@@ -2286,6 +2290,8 @@ bool MainWindow::insideResizeArea(const QPoint& global_p)
 
 void MainWindow::mouseReleaseEvent(QMouseEvent *ev)
 {
+    if (qApp->focusWindow() == 0 || !_mousePressed) return;
+
     _mousePressed = false;
     if (_playState->isVisible()) {
         //QMouseEvent me(QEvent::MouseButtonRelease, {}, ev->button(), ev->buttons(), ev->modifiers());
