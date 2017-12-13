@@ -1,3 +1,30 @@
+##  3.1.1 (2017-12-13)
+
+
+#### Features
+
+*   use better ElideText for movie info ([544ccc94](544ccc94))
+*   improve preview and progress bar design ([f0c70499](f0c70499))
+*   set debug log level for backend ([0315115b](0315115b))
+*   disable maximization in mini mode ([0ebc63f2](0ebc63f2))
+*   drag to restore ([06f20bfe](06f20bfe))
+
+#### Bug Fixes
+
+*   PreviewOnMouseover does not affect indicator ([8a685cc3](8a685cc3))
+*   allow suspendToolsWindow on title area in fs ([804a52e5](804a52e5))
+*   disable indicator on idle ([865a230e](865a230e))
+*   external sub loading and titlbar state ([f2d85d2f](f2d85d2f))
+*   reduce resize request ([8bb48f72](8bb48f72))
+*   allow resumeToolsWindow when playlist opened ([f69873a2](f69873a2))
+*   try fully encoded url first ([8fbde1fd](8fbde1fd))
+*   dont restore to idle size in mini mode ([3b4cd454](3b4cd454))
+*   make url dialog centered around main window ([20ded42e](20ded42e))
+*   db and cache info init ([62fe66f5](62fe66f5))
+* **workaround:**  bypass mouse event from other source ([077c110f](077c110f))
+
+
+
 ##  3.0.2 (2017-12-11)
 
 
