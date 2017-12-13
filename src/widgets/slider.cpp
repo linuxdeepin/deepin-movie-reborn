@@ -52,6 +52,9 @@ DMRSlider::DMRSlider(QWidget *parent): QSlider(parent)
     };
     connect(DThemeManager::instance(), &DThemeManager::themeChanged, updateTheme);
     updateTheme();
+
+    setProperty("Hover", "false");
+    setStyleSheet(styleSheet());
 }
 
 void DMRSlider::setEnableIndication(bool on)
@@ -106,13 +109,13 @@ void DMRSlider::mouseMoveEvent(QMouseEvent *e)
     if (_down) {
         setSliderPosition(v);
         if (_showIndicator) {
-            _indicatorPos = {e->x(), pos().y()+TOOLBOX_TOP_EXTENT-2};
+            _indicatorPos = {e->x(), pos().y()+TOOLBOX_TOP_EXTENT-4};
             update();
         }
     } else {
         if (_lastHoverValue != v) {
             if (_showIndicator) {
-                _indicatorPos = {e->x(), pos().y()+TOOLBOX_TOP_EXTENT-2};
+                _indicatorPos = {e->x(), pos().y()+TOOLBOX_TOP_EXTENT-4};
                 update();
             }
 
@@ -126,20 +129,22 @@ void DMRSlider::mouseMoveEvent(QMouseEvent *e)
 
 void DMRSlider::leaveEvent(QEvent *e)
 {
+    setProperty("Hover", "false");
+    setStyleSheet(styleSheet());
+    _showIndicator = false;
+    update();
+
     //HACK: workaround problem that preview will make slider leave
     auto pos = mapFromGlobal(QCursor::pos());
     if (pos.y() > 0 && pos.y() < 6) {
         // preview may popup
         return;
     }
-    setProperty("Hover", "false");
-    setStyleSheet(styleSheet());
 
     _lastHoverValue = 0;
     if (_down) _down = false;
+
     emit leave();
-    _showIndicator = false;
-    update();
     e->accept();
 }
 
@@ -148,6 +153,7 @@ void DMRSlider::enterEvent(QEvent *e)
     setProperty("Hover", "true");
     setStyleSheet(styleSheet());
     _showIndicator = true;
+    emit enter();
     update();
     e->accept();
 }

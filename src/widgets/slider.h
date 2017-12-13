@@ -42,6 +42,7 @@ public:
 signals:
     void hoverChanged(int);
     void leave();
+    void enter();
 
 protected:
     void mouseReleaseEvent(QMouseEvent *e) override;

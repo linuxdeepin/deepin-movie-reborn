@@ -582,18 +582,6 @@ void ToolboxProxy::setup()
         });
     stacked->addWidget(_progBar);
 
-	auto *border_frame = new QFrame;
-    border_frame->setFrameShape(QFrame::NoFrame);
-    border_frame->setFixedHeight(1+TOOLBOX_TOP_EXTENT);
-    border_frame->setObjectName("ToolBoxTopBorder");
-    stacked->addWidget(border_frame);
-
-	auto *inner_border_frame = new QFrame;
-    inner_border_frame->setFrameShape(QFrame::NoFrame);
-    inner_border_frame->setFixedHeight(2+TOOLBOX_TOP_EXTENT);
-    inner_border_frame->setObjectName("ToolBoxTopBorderInner");
-    stacked->addWidget(inner_border_frame);
-
 
     auto *bot_widget = new QWidget;
     auto *bot = new QHBoxLayout();

@@ -12,15 +12,6 @@ QLabel, Dtk--Widget--DImageButton {
     background: transparent;
 }
 
-#ToolBoxTopBorder {
-    background: transparent;
-    border-bottom: 1px inset rgba(0, 0, 0, 0.1);
-}
-
-#ToolBoxTopBorderInner {
-    background: transparent; 
-}
-
 
 Dtk--Widget--DImageButton#ListBtn {
     qproperty-normalPic: url(:/resources/icons/light/normal/list-normal.svg);
@@ -105,28 +96,53 @@ dmr--VolumeButton#VolMute {
     background: transparent;
 }
 
-#MovieProgress::groove:horizontal {
+/* simulate dynamic expanding of tool proxy background */
+#MovieProgress[Hover="true"]::groove:horizontal {
+    background: transparent;
+    background-color: qlineargradient(x1:0 y1:0, x2:0 y2:1,
+        stop:0.00000  transparent,          stop:0.33333 transparent,
+        stop:0.33334  rgba(252, 252, 252, 0.88),  stop:0.50000 rgba(252, 252, 252, 0.88),
+        stop:0.50001  rgba(0, 0, 0, 0.0), stop:1 rgba(0, 0, 0, 0.0)
+    );
+    position: absolute;
+    left: 0px; right: 0px;
+}
+#MovieProgress[Hover="false"]::groove:horizontal {
     background: transparent;
     position: absolute;
     left: 0px; right: 0px;
 }
+
 #MovieProgress::handle:horizontal {
     background:transparent;
     margin: 5px -5px;
 }
-#MovieProgress::add-page:horizontal {
+
+
+#MovieProgress[Hover="true"]::add-page:horizontal {
     background: transparent;
     background-color: qlineargradient(x1:0 y1:0, x2:0 y2:1,
-        stop:0        transparent,                  stop:0.62500 transparent,
-        stop:0.62501  rgba(255, 255, 255, 0.08),    stop:0.66666 rgba(255, 255, 255, 0.08),
-        stop:0.70833  rgba(0, 0, 0, 0.0),           stop:1 rgba(0, 0, 0, 0.0)
+        stop:0.00000  transparent,          stop:0.33333 transparent,
+        stop:0.33334  rgba(0, 0, 0, 0.1),   stop:0.45833 rgba(0, 0, 0, 0.1),
+        stop:0.45834  rgba(255, 255, 255, 0.08),  stop:0.58333 rgba(255, 255, 255, 0.08),
+        stop:0.58334  rgba(0, 0, 0, 0.0), stop:1 rgba(0, 0, 0, 0.0)
     );
 }
 
 #MovieProgress[Hover="true"]::sub-page:horizontal {
     background-color: qlineargradient(x1:0 y1:0, x2:0 y2:1,
-        stop:0.00000  transparent,          stop:0.41666 transparent,
-        stop:0.41667  #2eacff,              stop:0.58333 #2eacff,
+        stop:0.00000  transparent,          stop:0.33333 transparent,
+        stop:0.33334  #2eacff,              stop:0.58333 #2eacff,
+        stop:0.58334  rgba(0, 0, 0, 0.0), stop:1 rgba(0, 0, 0, 0.0)
+    );
+}
+
+#MovieProgress[Hover="false"]::add-page:horizontal {
+    background: transparent;
+    background-color: qlineargradient(x1:0 y1:0, x2:0 y2:1,
+        stop:0.00000  transparent,          stop:0.50000 transparent,
+        stop:0.50001  rgba(0, 0, 0, 0.1),   stop:0.54166 rgba(0, 0, 0, 0.1),
+        stop:0.54167  rgba(255, 255, 255, 0.08),  stop:0.58333 rgba(255, 255, 255, 0.08),
         stop:0.58334  rgba(0, 0, 0, 0.0), stop:1 rgba(0, 0, 0, 0.0)
     );
 }

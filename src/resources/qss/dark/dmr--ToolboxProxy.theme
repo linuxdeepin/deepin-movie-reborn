@@ -27,16 +27,6 @@ dmr--ToolboxProxy[idle="true"] QLabel {
     background: transparent;
 }
 
-#ToolBoxTopBorder {
-    background: transparent;
-    border-bottom: 1px inset rgba(0, 0, 0, 0.5);
-}
-
-#ToolBoxTopBorderInner {
-    background: transparent;
-    border-bottom: 1px inset rgba(0, 0, 0, 0.03);
-}
-
 Dtk--Widget--DImageButton#ListBtn {
     qproperty-normalPic: url(:/resources/icons/dark/normal/list-normal.svg);
     qproperty-hoverPic: url(:/resources/icons/dark/normal/list-hover.svg);
@@ -120,27 +110,52 @@ dmr--VolumeButton#VolMute {
     background: transparent;
 }
 
-#MovieProgress::groove:horizontal {
+/* simulate dynamic expanding of tool proxy background */
+#MovieProgress[Hover="true"]::groove:horizontal {
+    background: transparent;
+    background-color: qlineargradient(x1:0 y1:0, x2:0 y2:1,
+        stop:0.00000  transparent,          stop:0.33333 transparent,
+        stop:0.33334  rgba(16, 16, 16, 0.8),  stop:0.50000 rgba(16, 16, 16, 0.8),
+        stop:0.50001  rgba(0, 0, 0, 0.0), stop:1 rgba(0, 0, 0, 0.0)
+    );
+    position: absolute;
+    left: 0px; right: 0px;
+}
+#MovieProgress[Hover="false"]::groove:horizontal {
     background: transparent;
     position: absolute;
     left: 0px; right: 0px;
 }
+
 #MovieProgress::handle:horizontal {
     background:transparent;
     margin: 5px -5px;
 }
-#MovieProgress::add-page:horizontal {
-    background: transparent;
-}
 
+#MovieProgress[Hover="true"]::add-page:horizontal {
+    background-color: qlineargradient(x1:0 y1:0, x2:0 y2:1,
+        stop:0.00000  transparent,          stop:0.33333 transparent,
+        stop:0.33334  rgba(0, 0, 0, 0.5),   stop:0.45833 rgba(0, 0, 0, 0.5),
+        stop:0.45834  rgba(0, 0, 0, 0.03),  stop:0.58333 rgba(0, 0, 0, 0.03),
+        stop:0.58334  rgba(0, 0, 0, 0.0), stop:1 rgba(0, 0, 0, 0.0)
+    );
+}
 #MovieProgress[Hover="true"]::sub-page:horizontal {
     background-color: qlineargradient(x1:0 y1:0, x2:0 y2:1,
-        stop:0.00000  transparent,          stop:0.41666 transparent,
-        stop:0.41667  #2eacff,              stop:0.58333 #2eacff,
+        stop:0.00000  transparent,          stop:0.33333 transparent,
+        stop:0.33334  #2eacff,              stop:0.58333 #2eacff,
         stop:0.58334  rgba(0, 0, 0, 0.0), stop:1 rgba(0, 0, 0, 0.0)
     );
 }
 
+#MovieProgress[Hover="false"]::add-page:horizontal {
+    background-color: qlineargradient(x1:0 y1:0, x2:0 y2:1,
+        stop:0.00000  transparent,          stop:0.50000 transparent,
+        stop:0.50001  rgba(0, 0, 0, 0.5),   stop:0.54166 rgba(0, 0, 0, 0.5),
+        stop:0.54167  rgba(0, 0, 0, 0.03),  stop:0.58333 rgba(0, 0, 0, 0.03),
+        stop:0.58334  rgba(0, 0, 0, 0.0), stop:1 rgba(0, 0, 0, 0.0)
+    );
+}
 #MovieProgress[Hover="false"]::sub-page:horizontal {
     background-color: qlineargradient(x1:0 y1:0, x2:0 y2:1,
         stop:0.00000  transparent,          stop:0.50000 transparent,
