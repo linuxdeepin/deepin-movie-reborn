@@ -562,9 +562,7 @@ void ToolboxProxy::setup()
     _progBar->setFixedHeight(12+TOOLBOX_TOP_EXTENT);
     _progBar->setRange(0, 100);
     _progBar->setValue(0);
-    _progBar->setEnableIndication(
-            Settings::get().isSet(Settings::PreviewOnMouseover) &&
-            _engine->state() != PlayerEngine::Idle);
+    _progBar->setEnableIndication(_engine->state() != PlayerEngine::Idle);
 
     connect(_previewer, &ThumbnailPreview::leavePreview, [=]() {
         auto pos = _progBar->mapFromGlobal(QCursor::pos());
@@ -579,8 +577,7 @@ void ToolboxProxy::setup()
     connect(&Settings::get(), &Settings::baseChanged,
         [=](QString sk, const QVariant& val) {
             if (sk == "base.play.mousepreview") {
-                _progBar->setEnableIndication(val.toBool() &&
-                        _engine->state() != PlayerEngine::Idle);
+                _progBar->setEnableIndication(_engine->state() != PlayerEngine::Idle);
             }
         });
     stacked->addWidget(_progBar);
@@ -907,7 +904,7 @@ void ToolboxProxy::updatePlayState()
     
     auto on = (_engine->state() != PlayerEngine::CoreState::Idle);
     _progBar->setEnabled(on);
-    _progBar->setEnableIndication(Settings::get().isSet(Settings::PreviewOnMouseover) && on);
+    _progBar->setEnableIndication(on);
     setStyleSheet(styleSheet());
 }
 
