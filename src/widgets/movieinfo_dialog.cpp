@@ -38,6 +38,56 @@
 DWIDGET_USE_NAMESPACE
 
 namespace dmr {
+    QString elideText(const QString &text, const QSize &size,
+            QTextOption::WrapMode wordWrap, const QFont &font,
+            Qt::TextElideMode mode, int lineHeight, int lastLineWidth)
+    {
+        int height = 0;
+
+        QTextLayout textLayout(text);
+        QString str;
+        QFontMetrics fontMetrics(font);
+
+        textLayout.setFont(font);
+        const_cast<QTextOption*>(&textLayout.textOption())->setWrapMode(wordWrap);
+
+        textLayout.beginLayout();
+
+        QTextLine line = textLayout.createLine();
+
+        while (line.isValid()) {
+            height += lineHeight;
+
+            if(height + lineHeight >= size.height()) {
+                str += fontMetrics.elidedText(text.mid(line.textStart() + line.textLength() + 1),
+                        mode, lastLineWidth);
+
+                break;
+            }
+
+            line.setLineWidth(size.width());
+
+            const QString &tmp_str = text.mid(line.textStart(), line.textLength());
+
+            if (tmp_str.indexOf('\n'))
+                height += lineHeight;
+
+            str += tmp_str;
+
+            line = textLayout.createLine();
+
+            if(line.isValid())
+                str.append("\n");
+        }
+
+        textLayout.endLayout();
+
+        if (textLayout.lineCount() == 1) {
+            str = fontMetrics.elidedText(str, mode, lastLineWidth);
+        }
+
+        return str;
+    }
 MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo& pif)
     :DAbstractDialog(nullptr)
 {
@@ -123,7 +173,9 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo& pif)
     ADD_ROW(tr("File Size:"), mi.sizeStr());
     ADD_ROW(tr("Duration:"), mi.durationStr());
 
-    auto fp = nm->fontMetrics().elidedText(mi.filePath, Qt::ElideMiddle, 320);
+    auto fm = nm->fontMetrics();
+    auto fp = utils::ElideText(mi.filePath, {160, 40}, QTextOption::WrapAnywhere,
+            nm->font(), Qt::ElideMiddle, fm.height(), 150);
     ADD_ROW(tr("File Path:"), fp);
 
 #undef ADD_ROW

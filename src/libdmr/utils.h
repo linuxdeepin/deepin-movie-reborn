@@ -30,7 +30,7 @@
 #ifndef _DMR_UTILS_H
 #define _DMR_UTILS_H 
 
-#include <QtCore>
+#include <QtGui>
 
 namespace dmr {
 namespace utils {
@@ -55,6 +55,10 @@ namespace utils {
     QString Time2str(qint64 seconds);
 
     bool ValidateScreenshotPath(const QString& path);
+
+    QString ElideText(const QString &text, const QSize &size,
+            QTextOption::WrapMode wordWrap, const QFont &font,
+            Qt::TextElideMode mode, int lineHeight, int lastLineWidth);
 }
 }
 
