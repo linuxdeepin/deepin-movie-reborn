@@ -123,9 +123,9 @@ dmr--VolumeButton#VolMute {
     background: transparent;
     background-color: qlineargradient(x1:0 y1:0, x2:0 y2:1,
         stop:0.00000  transparent,          stop:0.33333 transparent,
-        stop:0.33334  rgba(0, 0, 0, 0.1),   stop:0.45833 rgba(0, 0, 0, 0.1),
-        stop:0.45834  rgba(255, 255, 255, 0.08),  stop:0.58333 rgba(255, 255, 255, 0.08),
-        stop:0.58334  rgba(0, 0, 0, 0.0), stop:1 rgba(0, 0, 0, 0.0)
+        stop:0.33334  rgba(0, 0, 0, 0.1),   stop:0.37500 rgba(0, 0, 0, 0.1),
+        stop:0.37501  rgba(255, 255, 255, 0.08),  stop:0.41666 rgba(255, 255, 255, 0.08),
+        stop:0.41667  rgba(0, 0, 0, 0.0), stop:1 rgba(0, 0, 0, 0.0)
     );
 }
 
