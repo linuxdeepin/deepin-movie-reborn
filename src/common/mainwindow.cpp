@@ -1951,8 +1951,15 @@ void MainWindow::suspendToolsWindow()
             if (qApp->focusWindow() != windowHandle())
                 return;
 
-            if (insideToolsArea(mapFromGlobal(QCursor::pos())))
-                return;
+
+            if (_titlebar->isVisible()) {
+                if (insideToolsArea(mapFromGlobal(QCursor::pos())))
+                    return;
+            } else {
+                if (_toolbox->geometry().contains(mapFromGlobal(QCursor::pos()))) {
+                    return;
+                }
+            }
         }
 
         if (_toolbox->anyPopupShown())
