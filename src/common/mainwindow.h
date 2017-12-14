@@ -145,6 +145,7 @@ protected slots:
     void handleHelpAction();
 
 private:
+    void startPlayStateAnimation(bool play);
     void handleSettings();
     void updateSizeConstraints();
     void toggleUIMode();

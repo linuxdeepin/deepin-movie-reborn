@@ -638,7 +638,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     _playState = new DImageButton(this);
     _playState->setObjectName("PlayState");
-    _playState->setFixedSize(128, 128);
+    //_playState->setFixedSize(128, 128);
     _playState->setVisible(false);
     connect(_playState, &DImageButton::clicked, [=]() {
         requestAction(ActionFactory::TogglePause, false, {}, true);
@@ -931,6 +931,67 @@ void MainWindow::onApplicationStateChanged(Qt::ApplicationState e)
     }
 }
 
+void MainWindow::startPlayStateAnimation(bool play)
+{
+    auto r = QRect(QPoint(0, 0), QSize(128, 128));
+    r.moveCenter(rect().center());
+
+    if (!_playState->graphicsEffect()) {
+        auto *effect = new QGraphicsOpacityEffect(_playState);
+        effect->setOpacity(1.0);
+        _playState->setGraphicsEffect(effect);
+    }
+
+    auto duration = play ? 400: 280;
+
+    auto pa = new QPropertyAnimation(_playState, "geometry");
+    if (play) {
+        QRect r2 = r;
+        pa->setStartValue(r);
+        r2.setSize({r.width() * 2, r.height() * 2});
+        r2.moveCenter(r.center());
+        pa->setEndValue(r2);
+    } else {
+        pa->setEndValue(r);
+        pa->setStartValue(QRect{r.center(), QSize{0, 0}});
+    }
+    pa->setDuration(duration);
+    pa->setEasingCurve(QEasingCurve::InOutCubic);
+
+
+    auto va = new QVariantAnimation(_playState);
+    if (play) {
+        va->setStartValue(1.0);
+        va->setEndValue(0.0);
+    } else {
+        va->setStartValue(0.0);
+        va->setEndValue(1.0);
+    }
+    va->setDuration(duration);
+    va->setEasingCurve(QEasingCurve::InOutCubic);
+
+    connect(va, &QVariantAnimation::valueChanged, [=](const QVariant& v) {
+        if (!play) _playState->setVisible(true);
+        auto effect = dynamic_cast<QGraphicsOpacityEffect*>(_playState->graphicsEffect());
+        effect->setOpacity(v.toFloat());
+        _playState->update();
+    });
+
+    if (play) {
+        connect(va, &QVariantAnimation::stateChanged, [=]() {
+            if (va->state() == QVariantAnimation::Stopped) {
+                _playState->setVisible(false);
+            }
+        });
+    }
+
+
+    auto pag = new QParallelAnimationGroup;
+    pag->addAnimation(va);
+    pag->addAnimation(pa);
+    pag->start(QVariantAnimation::DeleteWhenStopped);
+}
+
 void MainWindow::updatePlayState()
 {
     if (_miniMode) {
@@ -939,15 +1000,17 @@ void MainWindow::updatePlayState()
     }
 
     if (!_inBurstShootMode && _engine->state() == PlayerEngine::CoreState::Paused) {
+        _playState->setScaledContents(true);
         auto r = QRect(QPoint(0, 0), QSize(128, 128));
         r.moveCenter(rect().center());
         _playState->move(r.topLeft());
 
-        _playState->setVisible(true);
+        startPlayStateAnimation(false);
         _playState->raise();
+
     } else {
         if (_playState->isVisible()) {
-            _playState->setVisible(false);
+            startPlayStateAnimation(true);
         }
     }
 }
