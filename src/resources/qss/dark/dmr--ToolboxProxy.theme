@@ -111,15 +111,15 @@ dmr--VolumeButton#VolMute {
 }
 
 /* simulate dynamic expanding of tool proxy background */
-#MovieProgress[Hover="true"]::groove:horizontal {
-    background-color: qlineargradient(x1:0 y1:0, x2:0 y2:1,
-        stop:0.00000  transparent,          stop:0.33333 transparent,
-        stop:0.33334  rgba(16, 16, 16, 0.8),  stop:0.50000 rgba(16, 16, 16, 0.8),
-        stop:0.50001  rgba(0, 0, 0, 0.0), stop:1 rgba(0, 0, 0, 0.0)
-    );
-    position: absolute;
-    left: 0px; right: 0px;
-}
+/*#MovieProgress[Hover="true"]::groove:horizontal {*/
+    /*background-color: qlineargradient(x1:0 y1:0, x2:0 y2:1,*/
+        /*stop:0.00000  transparent,          stop:0.33333 transparent,*/
+        /*stop:0.33334  rgba(16, 16, 16, 0.8),  stop:0.50000 rgba(16, 16, 16, 0.8),*/
+        /*stop:0.50001  rgba(0, 0, 0, 0.0), stop:1 rgba(0, 0, 0, 0.0)*/
+    /*);*/
+    /*position: absolute;*/
+    /*left: 0px; right: 0px;*/
+/*}*/
 #MovieProgress[Hover="false"]::groove:horizontal {
     background: transparent;
     position: absolute;
@@ -131,21 +131,22 @@ dmr--VolumeButton#VolMute {
     margin: 5px -5px;
 }
 
-#MovieProgress[Hover="true"]::add-page:horizontal {
-    background-color: qlineargradient(x1:0 y1:0, x2:0 y2:1,
-        stop:0.00000  transparent,          stop:0.33333 transparent,
-        stop:0.33334  rgba(0, 0, 0, 0.5),   stop:0.37500 rgba(0, 0, 0, 0.5),
-        stop:0.37501  rgba(0, 0, 0, 0.03),  stop:0.41666 rgba(0, 0, 0, 0.03),
-        stop:0.41667  rgba(0, 0, 0, 0.0), stop:1 rgba(0, 0, 0, 0.0)
-    );
-}
-#MovieProgress[Hover="true"]::sub-page:horizontal {
-    background-color: qlineargradient(x1:0 y1:0, x2:0 y2:1,
-        stop:0.00000  transparent,          stop:0.33333 transparent,
-        stop:0.33334  #2eacff,              stop:0.58333 #2eacff,
-        stop:0.58334  rgba(0, 0, 0, 0.0), stop:1 rgba(0, 0, 0, 0.0)
-    );
-}
+/*#MovieProgress[Hover="true"]::add-page:horizontal {*/
+    /*background-color: qlineargradient(x1:0 y1:0, x2:0 y2:1,*/
+        /*stop:0.00000  transparent,          stop:0.33333 transparent,*/
+        /*stop:0.33334  rgba(0, 0, 0, 0.5),   stop:0.37500 rgba(0, 0, 0, 0.5),*/
+        /*stop:0.37501  rgba(0, 0, 0, 0.03),  stop:0.41666 rgba(0, 0, 0, 0.03),*/
+        /*stop:0.41667  rgba(0, 0, 0, 0.0), stop:1 rgba(0, 0, 0, 0.0)*/
+    /*);*/
+/*}*/
+
+/*#MovieProgress[Hover="true"]::sub-page:horizontal {*/
+    /*background-color: qlineargradient(x1:0 y1:0, x2:0 y2:1,*/
+        /*stop:0.00000  transparent,          stop:0.33333 transparent,*/
+        /*stop:0.33334  #2eacff,              stop:0.58333 #2eacff,*/
+        /*stop:0.58334  rgba(0, 0, 0, 0.0), stop:1 rgba(0, 0, 0, 0.0)*/
+    /*);*/
+/*}*/
 
 #MovieProgress[Hover="false"]::add-page:horizontal {
     background-color: qlineargradient(x1:0 y1:0, x2:0 y2:1,

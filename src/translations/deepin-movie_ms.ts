@@ -4,13 +4,13 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../main.cpp" line="68"/>
-        <location filename="../main.cpp" line="98"/>
+        <location filename="../main.cpp" line="85"/>
+        <location filename="../main.cpp" line="117"/>
         <source>Deepin Movie</source>
         <translation>Wayang Deepin</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="69"/>
+        <location filename="../main.cpp" line="86"/>
         <source>Deepin Movie is a well-designed and full-featured video player with simple borderless design. It supports local and streaming media play with multiple video formats.</source>
         <translation>Cereka Deepin adalah pemain video berfitur-penuh dengan rekabentuk tanpa-sempadan yang ringkas dan menarik. Ia dapat memainkan media setempat dan strim dengan sokongan format video berbilang.</translation>
     </message>
@@ -207,17 +207,17 @@
         <translation>Saiz Fon</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="85"/>
+        <location filename="../common/mainwindow.cpp" line="116"/>
         <source>Invalid folder</source>
         <translation>Folder tidak sah</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="99"/>
+        <location filename="../common/mainwindow.cpp" line="130"/>
         <source>Open Folder</source>
         <translation>Buka Folder</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="90"/>
+        <location filename="../common/mainwindow.cpp" line="121"/>
         <source>You don&apos;t have permission to operate this folder</source>
         <translation>Anda tidak mendapat keizinan untuk mengoperasi folder ini</translation>
     </message>
@@ -225,17 +225,17 @@
 <context>
     <name>UrlDialog</name>
     <message>
-        <location filename="../widgets/url_dialog.cpp" line="12"/>
+        <location filename="../widgets/url_dialog.cpp" line="41"/>
         <source>Cancel</source>
         <translation>Batal</translation>
     </message>
     <message>
-        <location filename="../widgets/url_dialog.cpp" line="13"/>
+        <location filename="../widgets/url_dialog.cpp" line="42"/>
         <source>Confirm</source>
         <translation>Sahkan</translation>
     </message>
     <message>
-        <location filename="../widgets/url_dialog.cpp" line="17"/>
+        <location filename="../widgets/url_dialog.cpp" line="46"/>
         <source>Please enter the URL:</source>
         <translation>Sila masukkan URL:</translation>
     </message>
@@ -243,206 +243,200 @@
 <context>
     <name>dmr::ActionFactory</name>
     <message>
-        <location filename="../common/actions.cpp" line="53"/>
-        <location filename="../common/actions.cpp" line="73"/>
-        <location filename="../common/actions.cpp" line="84"/>
+        <location filename="../common/actions.cpp" line="82"/>
+        <location filename="../common/actions.cpp" line="102"/>
         <source>Open File</source>
         <translation>Buka Fail</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="55"/>
-        <location filename="../common/actions.cpp" line="80"/>
-        <location filename="../common/actions.cpp" line="247"/>
+        <location filename="../common/actions.cpp" line="84"/>
+        <location filename="../common/actions.cpp" line="265"/>
         <source>Settings</source>
         <translation>Tetapan</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="56"/>
+        <location filename="../common/actions.cpp" line="85"/>
         <source>Light Theme</source>
         <translation>Tema Cerah</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="77"/>
-        <location filename="../common/actions.cpp" line="90"/>
+        <location filename="../common/actions.cpp" line="108"/>
         <source>Fullscreen</source>
         <translation>Skrin Penuh</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="78"/>
-        <location filename="../common/actions.cpp" line="92"/>
+        <location filename="../common/actions.cpp" line="110"/>
         <source>Always on Top</source>
         <translation>Sentiasa di Atas</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="79"/>
-        <location filename="../common/actions.cpp" line="263"/>
+        <location filename="../common/actions.cpp" line="280"/>
         <source>Film info</source>
         <translation>Maklumat filem</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="54"/>
-        <location filename="../common/actions.cpp" line="74"/>
-        <location filename="../common/actions.cpp" line="85"/>
+        <location filename="../common/actions.cpp" line="83"/>
+        <location filename="../common/actions.cpp" line="103"/>
         <source>Open Folder</source>
         <translation>Buka Folder</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="86"/>
+        <location filename="../common/actions.cpp" line="104"/>
         <source>Open URL</source>
         <translation>Buka URL</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="87"/>
+        <location filename="../common/actions.cpp" line="105"/>
         <source>Open CD/DVD</source>
         <translation>Buka CD/DVD</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="91"/>
+        <location filename="../common/actions.cpp" line="109"/>
         <source>Mini Mode</source>
         <translation>Mod Mini</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="97"/>
+        <location filename="../common/actions.cpp" line="115"/>
         <source>Play Mode</source>
         <translation>Mod Main</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="100"/>
+        <location filename="../common/actions.cpp" line="118"/>
         <source>Order Play</source>
         <translation>Tertib Main</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="101"/>
+        <location filename="../common/actions.cpp" line="119"/>
         <source>Shuffle Play</source>
         <translation>Kocok Main</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="102"/>
+        <location filename="../common/actions.cpp" line="120"/>
         <source>Single Play</source>
         <translation>Sekali Main</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="103"/>
+        <location filename="../common/actions.cpp" line="121"/>
         <source>Single Loop</source>
         <translation>Ulang Tunggal</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="104"/>
+        <location filename="../common/actions.cpp" line="122"/>
         <source>List Loop</source>
         <translation>Ulang Senarai</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="111"/>
+        <location filename="../common/actions.cpp" line="129"/>
         <source>Frame</source>
         <translation>Bingkai</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="114"/>
+        <location filename="../common/actions.cpp" line="132"/>
         <source>Default</source>
         <translation>Lalai</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="122"/>
+        <location filename="../common/actions.cpp" line="140"/>
         <source>Clockwise</source>
         <translation>Ikut Jam</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="123"/>
+        <location filename="../common/actions.cpp" line="141"/>
         <source>Counterclockwise</source>
         <translation>Lawan Jam</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="130"/>
+        <location filename="../common/actions.cpp" line="148"/>
         <source>Sound</source>
         <translation>Bunyi</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="133"/>
+        <location filename="../common/actions.cpp" line="151"/>
         <source>Channel</source>
         <translation>Saluran</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="136"/>
+        <location filename="../common/actions.cpp" line="154"/>
         <source>Stereo</source>
         <translation>Stereo</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="137"/>
+        <location filename="../common/actions.cpp" line="155"/>
         <source>Left channel</source>
         <translation>Saluran kiri</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="138"/>
+        <location filename="../common/actions.cpp" line="156"/>
         <source>Right channel</source>
         <translation>Saluran kanan</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="144"/>
+        <location filename="../common/actions.cpp" line="162"/>
         <source>Track</source>
         <translation>Trek</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="154"/>
+        <location filename="../common/actions.cpp" line="172"/>
         <source>Subtitle</source>
         <translation>Sarikata </translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="155"/>
+        <location filename="../common/actions.cpp" line="173"/>
         <source>Load</source>
         <translation>Muat</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="156"/>
+        <location filename="../common/actions.cpp" line="174"/>
         <source>Online Search</source>
         <translation>Gelintar Atas Talian</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="160"/>
+        <location filename="../common/actions.cpp" line="178"/>
         <source>Select</source>
         <translation>Pilih</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="164"/>
+        <location filename="../common/actions.cpp" line="182"/>
         <source>Hide</source>
         <translation>Sembunyi</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="168"/>
+        <location filename="../common/actions.cpp" line="186"/>
         <source>Encodings</source>
         <translation>Pengekodan</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="236"/>
+        <location filename="../common/actions.cpp" line="254"/>
         <source>Screenshot</source>
         <translation>Cekupan skrin</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="237"/>
+        <location filename="../common/actions.cpp" line="255"/>
         <source>Film Screenshot</source>
         <translation>Cekupan Skrin Filem</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="238"/>
+        <location filename="../common/actions.cpp" line="256"/>
         <source>Burst Shooting</source>
         <translation>Cekupan Ledakan</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="245"/>
+        <location filename="../common/actions.cpp" line="263"/>
         <source>Playlist</source>
         <translation>Senarai Main</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="246"/>
+        <location filename="../common/actions.cpp" line="264"/>
         <source>Film Info</source>
         <translation>Maklumat Filem</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="261"/>
+        <location filename="../common/actions.cpp" line="278"/>
         <source>Clear playlist</source>
         <translation>Kosongkan senarai main</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="262"/>
+        <location filename="../common/actions.cpp" line="279"/>
         <source>Display in file manager</source>
         <translation>Papar dalam pengurus fail</translation>
     </message>
@@ -450,22 +444,22 @@
 <context>
     <name>dmr::BurstScreenshotsDialog</name>
     <message>
-        <location filename="../widgets/burst_screenshots_dialog.cpp" line="54"/>
+        <location filename="../widgets/burst_screenshots_dialog.cpp" line="83"/>
         <source>duration: %1</source>
         <translation>tempoh: %1</translation>
     </message>
     <message>
-        <location filename="../widgets/burst_screenshots_dialog.cpp" line="60"/>
+        <location filename="../widgets/burst_screenshots_dialog.cpp" line="89"/>
         <source>resolution: %1</source>
         <translation>resolusi: %1</translation>
     </message>
     <message>
-        <location filename="../widgets/burst_screenshots_dialog.cpp" line="66"/>
+        <location filename="../widgets/burst_screenshots_dialog.cpp" line="95"/>
         <source>size: %1</source>
         <translation>saiz: %1</translation>
     </message>
     <message>
-        <location filename="../widgets/burst_screenshots_dialog.cpp" line="89"/>
+        <location filename="../widgets/burst_screenshots_dialog.cpp" line="118"/>
         <source>save</source>
         <translation>simpan</translation>
     </message>
@@ -473,124 +467,124 @@
 <context>
     <name>dmr::MainWindow</name>
     <message>
-        <location filename="../common/mainwindow.cpp" line="507"/>
-        <location filename="../common/mainwindow.cpp" line="1941"/>
-        <location filename="../common/mainwindow.cpp" line="2041"/>
+        <location filename="../common/mainwindow.cpp" line="576"/>
+        <location filename="../common/mainwindow.cpp" line="2087"/>
+        <location filename="../common/mainwindow.cpp" line="2197"/>
         <source>Deepin Movie</source>
         <translation>Wayang Deepin</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="700"/>
-        <location filename="../common/mainwindow.cpp" line="1497"/>
+        <location filename="../common/mainwindow.cpp" line="793"/>
+        <location filename="../common/mainwindow.cpp" line="1618"/>
         <source>Load successfully</source>
         <translation>Berjaya dimuatkan</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="700"/>
-        <location filename="../common/mainwindow.cpp" line="1497"/>
+        <location filename="../common/mainwindow.cpp" line="793"/>
+        <location filename="../common/mainwindow.cpp" line="1618"/>
         <source>Load failed</source>
         <translation>Gagal dimuatkan</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1133"/>
+        <location filename="../common/mainwindow.cpp" line="1240"/>
         <source>No device found</source>
         <translation>Tiada peranti ditemui</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1151"/>
+        <location filename="../common/mainwindow.cpp" line="1258"/>
         <source>Parse Failed</source>
         <translation>Gagal Dihuraikan</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1158"/>
+        <location filename="../common/mainwindow.cpp" line="1265"/>
         <source>Open Folder</source>
         <translation>Buka Folder</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1173"/>
-        <location filename="../common/mainwindow.cpp" line="1189"/>
-        <location filename="../common/mainwindow.cpp" line="1492"/>
+        <location filename="../common/mainwindow.cpp" line="1280"/>
+        <location filename="../common/mainwindow.cpp" line="1296"/>
+        <location filename="../common/mainwindow.cpp" line="1613"/>
         <source>Open File</source>
         <translation>Buka Fail</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1175"/>
-        <location filename="../common/mainwindow.cpp" line="1191"/>
+        <location filename="../common/mainwindow.cpp" line="1282"/>
+        <location filename="../common/mainwindow.cpp" line="1298"/>
         <source>Movies (%1)</source>
         <translation>Cereka (%1)</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1360"/>
+        <location filename="../common/mainwindow.cpp" line="1481"/>
         <source>Muted</source>
         <translation>Disenyapkan</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1363"/>
-        <location filename="../common/mainwindow.cpp" line="1375"/>
-        <location filename="../common/mainwindow.cpp" line="1385"/>
-        <location filename="../common/mainwindow.cpp" line="1392"/>
+        <location filename="../common/mainwindow.cpp" line="1484"/>
+        <location filename="../common/mainwindow.cpp" line="1496"/>
+        <location filename="../common/mainwindow.cpp" line="1506"/>
+        <location filename="../common/mainwindow.cpp" line="1513"/>
         <source>Volume: %1%</source>
         <translation>Volum: %1%</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1457"/>
-        <location filename="../common/mainwindow.cpp" line="1465"/>
+        <location filename="../common/mainwindow.cpp" line="1578"/>
+        <location filename="../common/mainwindow.cpp" line="1586"/>
         <source>Subtitle %1: %2s</source>
         <translation>Sarikata %1: %2s</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1458"/>
-        <location filename="../common/mainwindow.cpp" line="1466"/>
+        <location filename="../common/mainwindow.cpp" line="1579"/>
+        <location filename="../common/mainwindow.cpp" line="1587"/>
         <source>delayed</source>
         <translation>lengah</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1458"/>
-        <location filename="../common/mainwindow.cpp" line="1466"/>
+        <location filename="../common/mainwindow.cpp" line="1579"/>
+        <location filename="../common/mainwindow.cpp" line="1587"/>
         <source>advanced</source>
         <translation>lanjutan</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1473"/>
-        <location filename="../common/mainwindow.cpp" line="1480"/>
-        <location filename="../common/mainwindow.cpp" line="1487"/>
+        <location filename="../common/mainwindow.cpp" line="1594"/>
+        <location filename="../common/mainwindow.cpp" line="1601"/>
+        <location filename="../common/mainwindow.cpp" line="1608"/>
         <source>Speed: %1x</source>
         <translation>Kelajuan: %1x</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1494"/>
+        <location filename="../common/mainwindow.cpp" line="1615"/>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</source>
         <translation>Sarikata (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1551"/>
+        <location filename="../common/mainwindow.cpp" line="1672"/>
         <source>View</source>
         <translation>Lihat</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1562"/>
+        <location filename="../common/mainwindow.cpp" line="1683"/>
         <source>Movie Screenshot</source>
         <translation>Cekupan Skrin Cereka</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1563"/>
+        <location filename="../common/mainwindow.cpp" line="1684"/>
         <source>Saved to</source>
         <translation>Disimpan ke</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1577"/>
-        <location filename="../common/mainwindow.cpp" line="1648"/>
+        <location filename="../common/mainwindow.cpp" line="1698"/>
+        <location filename="../common/mainwindow.cpp" line="1769"/>
         <source>The screenshot is saved</source>
         <translation>Cekupan skrin telah disimpan</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1577"/>
+        <location filename="../common/mainwindow.cpp" line="1698"/>
         <source>The screenshot is failed to save</source>
         <translation>Cekupan skrin gagal disimpan</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1720"/>
-        <location filename="../common/mainwindow.cpp" line="2375"/>
+        <location filename="../common/mainwindow.cpp" line="1852"/>
+        <location filename="../common/mainwindow.cpp" line="2562"/>
         <source>Invalid file: %1</source>
         <translation>Fail tidak sah: %1</translation>
     </message>
@@ -598,27 +592,27 @@
 <context>
     <name>dmr::MovieInfoDialog</name>
     <message>
-        <location filename="../widgets/movieinfo_dialog.cpp" line="92"/>
+        <location filename="../widgets/movieinfo_dialog.cpp" line="171"/>
         <source>File Type:</source>
         <translation>Jenis Fail:</translation>
     </message>
     <message>
-        <location filename="../widgets/movieinfo_dialog.cpp" line="93"/>
+        <location filename="../widgets/movieinfo_dialog.cpp" line="172"/>
         <source>Resolution:</source>
         <translation>Resolusi:</translation>
     </message>
     <message>
-        <location filename="../widgets/movieinfo_dialog.cpp" line="94"/>
+        <location filename="../widgets/movieinfo_dialog.cpp" line="173"/>
         <source>File Size:</source>
         <translation>Saiz Fail:</translation>
     </message>
     <message>
-        <location filename="../widgets/movieinfo_dialog.cpp" line="95"/>
+        <location filename="../widgets/movieinfo_dialog.cpp" line="174"/>
         <source>Duration:</source>
         <translation>Tempoh:</translation>
     </message>
     <message>
-        <location filename="../widgets/movieinfo_dialog.cpp" line="98"/>
+        <location filename="../widgets/movieinfo_dialog.cpp" line="179"/>
         <source>File Path:</source>
         <translation>Laluan Fail:</translation>
     </message>
@@ -626,8 +620,8 @@
 <context>
     <name>dmr::MpvProxy</name>
     <message>
-        <location filename="../backends/mpv/mpv_proxy.cpp" line="920"/>
-        <location filename="../backends/mpv/mpv_proxy.cpp" line="938"/>
+        <location filename="../backends/mpv/mpv_proxy.cpp" line="982"/>
+        <location filename="../backends/mpv/mpv_proxy.cpp" line="1000"/>
         <source>[internal]</source>
         <translation>[dalaman]</translation>
     </message>
@@ -635,9 +629,9 @@
 <context>
     <name>dmr::PlayItemWidget</name>
     <message>
-        <location filename="../widgets/playlist_widget.cpp" line="153"/>
-        <location filename="../widgets/playlist_widget.cpp" line="188"/>
-        <location filename="../widgets/playlist_widget.cpp" line="414"/>
+        <location filename="../widgets/playlist_widget.cpp" line="192"/>
+        <location filename="../widgets/playlist_widget.cpp" line="227"/>
+        <location filename="../widgets/playlist_widget.cpp" line="402"/>
         <source>File does not exist</source>
         <translation>Fail tidak wujud</translation>
     </message>
@@ -645,12 +639,12 @@
 <context>
     <name>dmr::Settings</name>
     <message>
-        <location filename="../common/dmr_settings.cpp" line="129"/>
+        <location filename="../common/dmr_settings.cpp" line="155"/>
         <source>%1/DMovie%2.jpg</source>
         <translation>%1/DMovie%2.jpg</translation>
     </message>
     <message>
-        <location filename="../common/dmr_settings.cpp" line="135"/>
+        <location filename="../common/dmr_settings.cpp" line="161"/>
         <source>%1/DMovie%2(%3).jpg</source>
         <translation>%1/DMovie%2(%3).jpg</translation>
     </message>
@@ -658,54 +652,54 @@
 <context>
     <name>dmr::ToolboxProxy</name>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="837"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="890"/>
         <source>Play</source>
         <translation>Main</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="654"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="665"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="684"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="695"/>
         <source>Previous</source>
         <translation>Terdahulu</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="655"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="665"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="685"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="695"/>
         <source>Next</source>
         <translation>Berikutnya</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="656"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="666"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="686"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="696"/>
         <source>Subtitles</source>
         <translation>Sarikata</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="657"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="666"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="687"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="696"/>
         <source>Playlist</source>
         <translation>Senarai Main</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="658"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="666"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="824"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="688"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="696"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="877"/>
         <source>Fullscreen</source>
         <translation>Skrin Penuh</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="652"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="665"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="682"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="695"/>
         <source>Play/Pause</source>
         <translation>Main/Jeda</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="821"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="874"/>
         <source>Exit fullscreen</source>
         <translation>Keluar dari skrin penuh</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="834"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="887"/>
         <source>Pause</source>
         <translation>Jeda</translation>
     </message>

@@ -38,6 +38,64 @@ DWIDGET_USE_NAMESPACE
 
 namespace dmr
 {
+    static auto light_style = R"(
+    #MovieProgress[Hover="true"]::groove:horizontal {
+        background-color: qlineargradient(x1:0 y1:0, x2:0 y2:1,
+            stop:0.00000  transparent,          stop:%1 transparent,
+            stop:%2  rgba(252, 252, 252, 0.88),  stop:0.50000 rgba(252, 252, 252, 0.88),
+            stop:0.50001  rgba(0, 0, 0, 0.0), stop:1 rgba(0, 0, 0, 0.0)
+        );
+        position: absolute;
+        left: 0px; right: 0px;
+    }
+    
+    #MovieProgress[Hover="true"]::add-page:horizontal {
+        background-color: qlineargradient(x1:0 y1:0, x2:0 y2:1,
+            stop:0.00000  transparent,          stop:%3 transparent,
+            stop:%4  rgba(0, 0, 0, 0.1),   stop:%5 rgba(0, 0, 0, 0.1),
+            stop:%6  rgba(252, 252, 252, 0.08),  stop:%7 rgba(252, 252, 252, 0.08),
+            stop:%8  rgba(0, 0, 0, 0.0),   stop:1 rgba(0, 0, 0, 0.0)
+        );
+    }
+    
+    #MovieProgress[Hover="true"]::sub-page:horizontal {
+        background-color: qlineargradient(x1:0 y1:0, x2:0 y2:1,
+            stop:0.00000  transparent,          stop:%1 transparent,
+            stop:%2  #2eacff,              stop:0.58333 #2eacff,
+            stop:0.58334  rgba(0, 0, 0, 0.0), stop:1 rgba(0, 0, 0, 0.0)
+        );
+    }
+    )";
+
+    static auto dark_style = R"(
+    #MovieProgress[Hover="true"]::groove:horizontal {
+        background-color: qlineargradient(x1:0 y1:0, x2:0 y2:1,
+            stop:0.00000  transparent,          stop:%1 transparent,
+            stop:%2  rgba(16, 16, 16, 0.8),  stop:0.50000 rgba(16, 16, 16, 0.8),
+            stop:0.50001  rgba(0, 0, 0, 0.0), stop:1 rgba(0, 0, 0, 0.0)
+        );
+        position: absolute;
+        left: 0px; right: 0px;
+    }
+    
+    #MovieProgress[Hover="true"]::add-page:horizontal {
+        background-color: qlineargradient(x1:0 y1:0, x2:0 y2:1,
+            stop:0.00000  transparent,          stop:%3 transparent,
+            stop:%4  rgba(0, 0, 0, 0.5),   stop:%5 rgba(0, 0, 0, 0.5),
+            stop:%6  rgba(0, 0, 0, 0.03),  stop:%7 rgba(0, 0, 0, 0.03),
+            stop:%8  rgba(0, 0, 0, 0.0),   stop:1 rgba(0, 0, 0, 0.0)
+        );
+    }
+    
+    #MovieProgress[Hover="true"]::sub-page:horizontal {
+        background-color: qlineargradient(x1:0 y1:0, x2:0 y2:1,
+            stop:0.00000  transparent,          stop:%1 transparent,
+            stop:%2  #2eacff,              stop:0.58333 #2eacff,
+            stop:0.58334  rgba(0, 0, 0, 0.0), stop:1 rgba(0, 0, 0, 0.0)
+        );
+    }
+    )";
+
 DMRSlider::DMRSlider(QWidget *parent): QSlider(parent) 
 {
     setTracking(false);
@@ -46,8 +104,10 @@ DMRSlider::DMRSlider(QWidget *parent): QSlider(parent)
     auto updateTheme = [=]() {
         if (qApp->theme() == "dark") {
             _indicatorColor = QColor("#ffffff");
+            _style_tmpl = dark_style;
         } else {
             _indicatorColor = QColor("#303030");
+            _style_tmpl = light_style;
         }
     };
     connect(DThemeManager::instance(), &DThemeManager::themeChanged, updateTheme);
@@ -131,8 +191,9 @@ void DMRSlider::mouseMoveEvent(QMouseEvent *e)
 void DMRSlider::leaveEvent(QEvent *e)
 {
     if (_indicatorEnabled) {
-        setProperty("Hover", "false");
-        setStyleSheet(styleSheet());
+        //setProperty("Hover", "false");
+        startAnimation(true);
+
         _showIndicator = false;
         update();
     }
@@ -151,11 +212,66 @@ void DMRSlider::leaveEvent(QEvent *e)
     e->accept();
 }
 
+void DMRSlider::onAnimationStopped()
+{
+    // need to clear stylesheet when leave slider, since the generated sheet is a 
+    // little weird.
+    if (_hoverAni && _hoverAni->state() == QVariantAnimation::Stopped) {
+        setProperty("Hover", "false");
+        setStyleSheet("");
+        update();
+    }
+}
+
+void DMRSlider::onValueChanged(const QVariant& v)
+{
+    // see dmr--ToolProxy.theme to find out the meaning of these values
+    // v1 is for groove and sub-page
+    // v2 is for add-page
+    float v1 = (1.0 - v.toFloat()) * 0.500000 + v.toFloat() * (1 / 3.0);
+
+    float v2 = (1.0 - v.toFloat()) * 0.500000 + v.toFloat() * (1 / 3.0);
+    float v3 = v2 + (1.0 / 24.0);
+    float v4 = v2 + (2.0 / 24.0);
+
+    auto s = QString::fromUtf8(_style_tmpl)
+        .arg(v1).arg(v1+0.000001)
+        .arg(v2).arg(v2+0.000001)
+        .arg(v3).arg(v3+0.000001)
+        .arg(v4).arg(v4+0.000001);
+    //qDebug() << "-------- interpolate " << v1 << v2 << v3 << v4;
+    setStyleSheet(s);
+    update();
+
+}
+
+void DMRSlider::startAnimation(bool reverse)
+{
+    if (_hoverAni) {
+        _hoverAni->stop();
+        _hoverAni.clear();
+    }
+    _hoverAni = new QVariantAnimation(this);
+    if (reverse) {
+        _hoverAni->setStartValue(1.0);
+        _hoverAni->setEndValue(0.0);
+        _hoverAni->setEasingCurve(QEasingCurve::InCubic);
+        connect(_hoverAni, &QVariantAnimation::stateChanged, this, &DMRSlider::onAnimationStopped);
+    } else {
+        _hoverAni->setStartValue(0.0);
+        _hoverAni->setEndValue(1.0);
+        _hoverAni->setEasingCurve(QEasingCurve::OutCubic);
+    }
+    connect(_hoverAni, &QVariantAnimation::valueChanged, this, &DMRSlider::onValueChanged);
+    _hoverAni->setDuration(300);
+    _hoverAni->start(QVariantAnimation::DeleteWhenStopped);
+}
+
 void DMRSlider::enterEvent(QEvent *e)
 {
     if (_indicatorEnabled) {
         setProperty("Hover", "true");
-        setStyleSheet(styleSheet());
+        startAnimation(false);
         _showIndicator = true;
         update();
     }

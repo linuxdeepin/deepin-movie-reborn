@@ -45,6 +45,10 @@ signals:
     void enter();
 
 protected:
+    void onValueChanged(const QVariant& v);
+    void onAnimationStopped();
+
+protected:
     void mouseReleaseEvent(QMouseEvent *e) override;
     void mousePressEvent(QMouseEvent *e) override;
     void mouseMoveEvent(QMouseEvent *e) override;
@@ -61,7 +65,11 @@ private:
     QPoint _indicatorPos {0, 0};
     QColor _indicatorColor;
 
+    QPointer<QVariantAnimation> _hoverAni {nullptr};
+    const char* _style_tmpl {nullptr};
+
     int position2progress(const QPoint& p);
+    void startAnimation(bool reverse);
 };
 
 }

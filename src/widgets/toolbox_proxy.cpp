@@ -365,8 +365,8 @@ public:
 
     void updateWithPreview(const QPoint& pos) {
         resizeWithContent();
-        move(pos.x(), pos.y() - 5);
-        show(pos.x(), pos.y() - 5);
+        move(pos.x(), pos.y());
+        show(pos.x(), pos.y());
     }
 
 signals:
@@ -798,7 +798,7 @@ void ToolboxProxy::progressHoverChanged(int v)
     _lastHoverValue = v;
     ThumbnailWorker::get().requestThumb(pif.url, v);
 
-    auto pos = _progBar->mapToGlobal(QPoint(0, TOOLBOX_TOP_EXTENT));
+    auto pos = _progBar->mapToGlobal(QPoint(0, TOOLBOX_TOP_EXTENT - 10));
     QPoint p = {
         QCursor::pos().x(), pos.y()
     };
