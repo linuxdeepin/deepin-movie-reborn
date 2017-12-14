@@ -1,4 +1,5 @@
 #!/usr/bin/make -f
+export QT_SELECT=5
 DEB_HOST_MULTIARCH ?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
 
 %:
