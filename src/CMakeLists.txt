@@ -1,9 +1,6 @@
 set(CMAKE_AUTOMOC ON)
 set(CMD_NAME deepin-movie)
 
-set(CMAKE_CXX_FLAGS "-std=c++1y -fpermissive -Wno-error")
-set(CMAKE_C_FLAGS "-Wno-error")
-
 set(PROJECT_INCLUDE ${PROJECT_SOURCE_DIR}/src/widgets
     ${PROJECT_SOURCE_DIR}/src/common
     ${PROJECT_SOURCE_DIR}/src/libdmr)
