@@ -2315,6 +2315,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *ev)
         }
     }
 
+    Utility::cancelWindowMoveResize(winId());
     _mouseMoved = false;
     _mouseDraggedOnTitlebar = false;
 }
