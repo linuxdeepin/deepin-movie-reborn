@@ -158,6 +158,7 @@ void DMRSlider::mousePressEvent(QMouseEvent *e)
 
         int v = position2progress(e->pos());;
         setSliderPosition(v);
+        emit sliderMoved(v);
         _down = true;
     }
 }
