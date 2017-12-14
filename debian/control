@@ -1,9 +1,9 @@
 Source: deepin-movie-reborn
-Section: misc
+Section: libdevel
 Priority: extra
-Maintainer: Deepin Sysdev <sysdev@deepin.com>
+Maintainer: Deepin Packages Builder <packages@deepin.com>
 Build-Depends: debhelper, cmake, pkg-config, qttools5-dev-tools,
-                qt5-default, libqt5svg5-dev, qtmultimedia5-dev,
+                libqt5svg5-dev, qtmultimedia5-dev,
                 libqt5x11extras5-dev, libdtkwidget-dev,
                 libqt5sql5-sqlite,
                 libmpv-dev, libxcb1-dev, libxcb-util0-dev,
@@ -13,23 +13,25 @@ Build-Depends: debhelper, cmake, pkg-config, qttools5-dev-tools,
                 libavcodec-dev, libavformat-dev,libavutil-dev,
                 libavresample-dev, libpulse-dev, libssl-dev,
                 libdvdnav-dev
-Standards-Version: 3.9.2
-Homepage: http://www.deepin.com/
+Standards-Version: 3.9.8
+Homepage: http://www.deepin.org/
 
 Package: deepin-movie
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: Deepin movie player for linuxdeepin desktop environment
- Deepin movie player for linuxdeepin desktop environment.
+Description: movie player
+ movie player for deepin desktop environment.
 
 Package: libdmr
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libdtkbase, libdtkutil, libdtkwidget, libxcb1,
-    libmpv1, libdvdnav4
+Depends: ${shlibs:Depends}, ${misc:Depends}, libdtkbase,
+ libdtkutil, libdtkwidget, libxcb1,libmpv1, libdvdnav4
 Multi-Arch: same
-Description: deepin movie player widget library 
+Description: movie player widget library 
+ deepin movie player widget library
 
 Package: libdmr-dev
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, libdmr(=${binary:Version})
-Description: deepin movie player widget library development headers
+Description: movie player widget library development headers
+ deepin movie player widget library development headers
