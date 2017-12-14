@@ -799,9 +799,7 @@ void ToolboxProxy::progressHoverChanged(int v)
     ThumbnailWorker::get().requestThumb(pif.url, v);
 
     auto pos = _progBar->mapToGlobal(QPoint(0, TOOLBOX_TOP_EXTENT - 10));
-    QPoint p = {
-        QCursor::pos().x(), pos.y()
-    };
+    QPoint p { QCursor::pos().x(), pos.y() };
 
     _previewer->updateWithPreview(p);
 }

@@ -263,7 +263,7 @@ void DMRSlider::startAnimation(bool reverse)
         _hoverAni->setEasingCurve(QEasingCurve::OutCubic);
     }
     connect(_hoverAni, &QVariantAnimation::valueChanged, this, &DMRSlider::onValueChanged);
-    _hoverAni->setDuration(300);
+    _hoverAni->setDuration(150);
     _hoverAni->start(QVariantAnimation::DeleteWhenStopped);
 }
 
