@@ -127,7 +127,8 @@ protected slots:
     void onApplicationStateChanged(Qt::ApplicationState e);
     void onBindingsChanged();
     void updateActionsState();
-    void updatePlayState();
+    void syncPlayState();
+    void animatePlayState();
     void resizeByConstraints(bool forceCentered = false);
 
     void miniButtonClicked(QString id);

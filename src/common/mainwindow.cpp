@@ -786,8 +786,8 @@ MainWindow::MainWindow(QWidget *parent)
         this->resizeByConstraints();
     });
 
-    connect(_engine, &PlayerEngine::stateChanged, this, &MainWindow::updatePlayState);
-    updatePlayState();
+    connect(_engine, &PlayerEngine::stateChanged, this, &MainWindow::animatePlayState);
+    syncPlayState();
 
     connect(_engine, &PlayerEngine::loadOnlineSubtitlesFinished,
         [this](const QUrl& url, bool success) {
@@ -943,7 +943,8 @@ void MainWindow::startPlayStateAnimation(bool play)
         _playState->setGraphicsEffect(effect);
     }
 
-    auto duration = play ? 240: 160;
+    auto duration = 160;
+    auto curve = QEasingCurve::InOutCubic;
 
     auto pa = new QPropertyAnimation(_playState, "geometry");
     if (play) {
@@ -957,24 +958,20 @@ void MainWindow::startPlayStateAnimation(bool play)
         pa->setStartValue(QRect{r.center(), QSize{0, 0}});
     }
     pa->setDuration(duration);
-    pa->setEasingCurve(QEasingCurve::InOutCubic);
+    pa->setEasingCurve(curve);
 
 
     auto va = new QVariantAnimation(_playState);
-    if (play) {
-        va->setStartValue(1.0);
-        va->setEndValue(0.0);
-    } else {
-        va->setStartValue(0.0);
-        va->setEndValue(1.0);
-    }
+    va->setStartValue(0.0);
+    va->setEndValue(1.0);
     va->setDuration(duration);
-    va->setEasingCurve(QEasingCurve::InOutCubic);
+    va->setEasingCurve(curve);
 
     connect(va, &QVariantAnimation::valueChanged, [=](const QVariant& v) {
         if (!play) _playState->setVisible(true);
+        auto d = v.toFloat();
         auto effect = dynamic_cast<QGraphicsOpacityEffect*>(_playState->graphicsEffect());
-        effect->setOpacity(v.toFloat());
+        effect->setOpacity(play ? 1.0 - d: d);
         _playState->update();
     });
 
@@ -993,7 +990,23 @@ void MainWindow::startPlayStateAnimation(bool play)
     pag->start(QVariantAnimation::DeleteWhenStopped);
 }
 
-void MainWindow::updatePlayState()
+void MainWindow::animatePlayState()
+{
+    if (_miniMode) {
+        return;
+    }
+
+    if (!_inBurstShootMode && _engine->state() == PlayerEngine::CoreState::Paused) {
+        startPlayStateAnimation(false);
+        _playState->raise();
+
+    } else {
+        //do nothing here, startPlayStateAnimation(true) should be started before playback
+        //is restored, or animation will get slow
+    }
+}
+
+void MainWindow::syncPlayState()
 {
     auto r = QRect(QPoint(0, 0), QSize(128, 128));
     r.moveCenter(rect().center());
@@ -1005,13 +1018,13 @@ void MainWindow::updatePlayState()
     }
 
     if (!_inBurstShootMode && _engine->state() == PlayerEngine::CoreState::Paused) {
-        startPlayStateAnimation(false);
-        _playState->raise();
+        _playState->setGeometry(r);
+        _playState->setVisible(true);
+        auto effect = dynamic_cast<QGraphicsOpacityEffect*>(_playState->graphicsEffect());
+        if (effect) effect->setOpacity(1.0);
 
     } else {
-        if (_playState->isVisible()) {
-            startPlayStateAnimation(true);
-        }
+        _playState->setVisible(false);
     }
 }
 
@@ -1688,7 +1701,12 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             if (_engine->state() == PlayerEngine::Idle && isShortcut) {
                 requestAction(ActionFactory::StartPlay);
             } else {
-                _engine->pauseResume();
+                if (_engine->state() == PlayerEngine::Paused && _playState->isVisible()) {
+                    startPlayStateAnimation(true);
+                    QTimer::singleShot(160, [=]() { _engine->pauseResume(); });
+                } else {
+                    _engine->pauseResume();
+                }
             }
             break;
         }
@@ -1984,6 +2002,8 @@ void MainWindow::updateProxyGeometry()
         }
     }
 
+
+    syncPlayState();
     if (_playState) {
         auto r = QRect(QPoint(0, 0), QSize(128, 128));
         r.moveCenter(rect().center());
@@ -2244,6 +2264,7 @@ void MainWindow::resizeEvent(QResizeEvent *ev)
         _progIndicator->move(geometry().width() - _progIndicator->width() - 18, 8);
     }
 
+
     updateSizeConstraints();
     updateProxyGeometry();
     QTimer::singleShot(0, [=]() { updateWindowTitle(); });
@@ -2498,7 +2519,8 @@ void MainWindow::toggleUIMode()
     resumeToolsWindow();
 
     if (_miniMode) {
-        updatePlayState();
+        syncPlayState();
+
         _stateBeforeMiniMode = SBEM_None;
 
         if (!_windowAbove) {
@@ -2561,7 +2583,7 @@ void MainWindow::toggleUIMode()
             }
         }
 
-        updatePlayState();
+        syncPlayState();
 
         if (_stateBeforeMiniMode & SBEM_PlaylistOpened &&
                 _playlist->state() == PlaylistWidget::Closed) {
