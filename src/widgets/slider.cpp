@@ -175,6 +175,15 @@ void DMRSlider::mouseMoveEvent(QMouseEvent *e)
             update();
         }
     } else {
+        // a mouse enter from previewer happens
+        if (_indicatorEnabled && !property("Hover").toBool()) {
+            setProperty("Hover", "true");
+            startAnimation(false);
+            _showIndicator = true;
+            update();
+        }
+        emit enter();
+
         if (_lastHoverValue != v) {
             if (_showIndicator) {
                 _indicatorPos = {e->x(), pos().y()+TOOLBOX_TOP_EXTENT-4};
@@ -192,7 +201,6 @@ void DMRSlider::mouseMoveEvent(QMouseEvent *e)
 void DMRSlider::leaveEvent(QEvent *e)
 {
     if (_indicatorEnabled) {
-        //setProperty("Hover", "false");
         startAnimation(true);
 
         _showIndicator = false;
