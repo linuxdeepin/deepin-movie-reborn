@@ -637,6 +637,7 @@ MainWindow::MainWindow(QWidget *parent)
     _playlist->hide();
 
     _playState = new DImageButton(this);
+    _playState->setScaledContents(true);
     _playState->setObjectName("PlayState");
     //_playState->setFixedSize(128, 128);
     _playState->setVisible(false);
@@ -942,7 +943,7 @@ void MainWindow::startPlayStateAnimation(bool play)
         _playState->setGraphicsEffect(effect);
     }
 
-    auto duration = play ? 400: 280;
+    auto duration = play ? 240: 160;
 
     auto pa = new QPropertyAnimation(_playState, "geometry");
     if (play) {
@@ -994,17 +995,16 @@ void MainWindow::startPlayStateAnimation(bool play)
 
 void MainWindow::updatePlayState()
 {
+    auto r = QRect(QPoint(0, 0), QSize(128, 128));
+    r.moveCenter(rect().center());
+    _playState->move(r.topLeft());
+
     if (_miniMode) {
         _playState->setVisible(false);
         return;
     }
 
     if (!_inBurstShootMode && _engine->state() == PlayerEngine::CoreState::Paused) {
-        _playState->setScaledContents(true);
-        auto r = QRect(QPoint(0, 0), QSize(128, 128));
-        r.moveCenter(rect().center());
-        _playState->move(r.topLeft());
-
         startPlayStateAnimation(false);
         _playState->raise();
 
@@ -2494,11 +2494,11 @@ void MainWindow::toggleUIMode()
     _miniCloseBtn->setEnabled(_miniMode);
     _miniQuitMiniBtn->setEnabled(_miniMode);
 
-    updatePlayState();
 
     resumeToolsWindow();
 
     if (_miniMode) {
+        updatePlayState();
         _stateBeforeMiniMode = SBEM_None;
 
         if (!_windowAbove) {
@@ -2549,17 +2549,19 @@ void MainWindow::toggleUIMode()
         if (_stateBeforeMiniMode & SBEM_Fullscreen) {
             requestAction(ActionFactory::ToggleFullscreen);
         } else {
-            if (_lastRectInNormalMode.isValid()) {
-                resize(_lastRectInNormalMode.size());
-                //utils::MoveToCenter(this);
+            if (_engine->state() == PlayerEngine::Idle && windowState() == Qt::WindowNoState) {
+                this->setMinimumSize(QSize(528, 400));
+                this->resize(850, 600);
             } else {
-                if (_engine->state() == PlayerEngine::CoreState::Idle) {
-                    resize(850, 600);
+                if (_lastRectInNormalMode.isValid()) {
+                    resize(_lastRectInNormalMode.size());
                 } else {
                     resizeByConstraints();
                 }
             }
         }
+
+        updatePlayState();
 
         if (_stateBeforeMiniMode & SBEM_PlaylistOpened &&
                 _playlist->state() == PlaylistWidget::Closed) {
