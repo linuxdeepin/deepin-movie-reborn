@@ -646,64 +646,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     _progIndicator = new MovieProgressIndicator(this);
     _progIndicator->setVisible(false);
-    connect(windowHandle(), &QWindow::windowStateChanged, [=]() {
-        qDebug() << windowState();
-        if (!isFullScreen()) {
-            if (_lastRectInNormalMode.isValid())
-                setGeometry(_lastRectInNormalMode);
-
-            qApp->restoreOverrideCursor();
-            if (_lastCookie > 0) {
-                utils::UnInhibitStandby(_lastCookie);
-                qDebug() << "uninhibit cookie" << _lastCookie;
-                _lastCookie = 0;
-            }
-            _listener->setEnabled(!isMaximized() && !_miniMode);
-        } else {
-            qApp->setOverrideCursor(Qt::BlankCursor);
-
-            if (_lastCookie > 0) {
-                utils::UnInhibitStandby(_lastCookie);
-                qDebug() << "uninhibit cookie" << _lastCookie;
-                _lastCookie = 0;
-            }
-            _lastCookie = utils::InhibitStandby();
-            qDebug() << "inhibit cookie" << _lastCookie;
-            _listener->setEnabled(false);
-        }
-        if (!_miniMode && !isFullScreen()) {
-            _titlebar->setVisible(_toolbox->isVisible());
-        } else {
-            _titlebar->setVisible(false);
-        }
-        //WTF: this->geometry() is not size of fullscreen !
-        //_progIndicator->move(geometry().width() - _progIndicator->width() - 18, 14);
-        _progIndicator->setVisible(isFullScreen());
-        toggleShapeMask();
-
-        if (isFullScreen()) {
-            _titlebar->move(0, 0);
-            _engine->move(0, 0);
-        } else {
-            _titlebar->move(1, 1);
-            _engine->move(1, 1);
-        }
-
-        if (!isFullScreen() && !isMaximized()) {
-            if (_movieSwitchedInFsOrMaxed && !_hasPendingResizeByConstraint) {
-                setMinimumSize({0, 0});
-                resizeByConstraints(true);
-            }
-            _movieSwitchedInFsOrMaxed = false;
-        }
-        update();
-
-        if (isMinimized()) {
-            if (_playlist->state() == PlaylistWidget::Opened) {
-                _playlist->togglePopup();
-            }
-        }
-    });
+    connect(windowHandle(), &QWindow::windowStateChanged, this, &MainWindow::onWindowStateChanged);
     connect(_engine, &PlayerEngine::elapsedChanged, [=]() {
         _progIndicator->updateMovieProgress(_engine->duration(), _engine->elapsed());
     });
@@ -834,6 +777,67 @@ MainWindow::MainWindow(QWidget *parent)
     qDebug() << "event listener";
 #endif
 } 
+
+void MainWindow::onWindowStateChanged()
+{
+    qDebug() << windowState();
+    if (!isFullScreen()) {
+        if (_lastRectInNormalMode.isValid() && !_miniMode && !isMaximized()) {
+            setGeometry(_lastRectInNormalMode);
+        }
+
+        qApp->restoreOverrideCursor();
+        if (_lastCookie > 0) {
+            utils::UnInhibitStandby(_lastCookie);
+            qDebug() << "uninhibit cookie" << _lastCookie;
+            _lastCookie = 0;
+        }
+        _listener->setEnabled(!isMaximized() && !_miniMode);
+    } else {
+        qApp->setOverrideCursor(Qt::BlankCursor);
+
+        if (_lastCookie > 0) {
+            utils::UnInhibitStandby(_lastCookie);
+            qDebug() << "uninhibit cookie" << _lastCookie;
+            _lastCookie = 0;
+        }
+        _lastCookie = utils::InhibitStandby();
+        qDebug() << "inhibit cookie" << _lastCookie;
+        _listener->setEnabled(false);
+    }
+    if (!_miniMode && !isFullScreen()) {
+        _titlebar->setVisible(_toolbox->isVisible());
+    } else {
+        _titlebar->setVisible(false);
+    }
+    //WTF: this->geometry() is not size of fullscreen !
+    //_progIndicator->move(geometry().width() - _progIndicator->width() - 18, 14);
+    _progIndicator->setVisible(isFullScreen());
+    toggleShapeMask();
+
+    if (isFullScreen()) {
+        _titlebar->move(0, 0);
+        _engine->move(0, 0);
+    } else {
+        _titlebar->move(1, 1);
+        _engine->move(1, 1);
+    }
+
+    if (!isFullScreen() && !isMaximized()) {
+        if (_movieSwitchedInFsOrMaxed && !_hasPendingResizeByConstraint) {
+            setMinimumSize({0, 0});
+            resizeByConstraints(true);
+        }
+        _movieSwitchedInFsOrMaxed = false;
+    }
+    update();
+
+    if (isMinimized()) {
+        if (_playlist->state() == PlaylistWidget::Opened) {
+            _playlist->togglePopup();
+        }
+    }
+}
 
 void MainWindow::handleHelpAction()
 {
@@ -2241,6 +2245,10 @@ void MainWindow::updateGeometryNotification(const QSize& sz)
 {
     auto msg = QString("%1x%2").arg(sz.width()).arg(sz.height());
     _nwComm->updateWithMessage(msg);
+
+    if (windowState() == Qt::WindowNoState && !_miniMode) {
+        _lastRectInNormalMode = geometry();
+    }
 }
 
 void MainWindow::resizeEvent(QResizeEvent *ev)
@@ -2262,7 +2270,6 @@ void MainWindow::resizeEvent(QResizeEvent *ev)
     if (isFullScreen()) {
         _progIndicator->move(geometry().width() - _progIndicator->width() - 18, 8);
     }
-
 
     updateSizeConstraints();
     updateProxyGeometry();

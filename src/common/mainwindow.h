@@ -130,6 +130,7 @@ protected slots:
     void syncPlayState();
     void animatePlayState();
     void resizeByConstraints(bool forceCentered = false);
+    void onWindowStateChanged();
 
     void miniButtonClicked(QString id);
 
