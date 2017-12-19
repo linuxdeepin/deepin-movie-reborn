@@ -778,6 +778,17 @@ MainWindow::MainWindow(QWidget *parent)
 #endif
 } 
 
+bool MainWindow::event(QEvent *ev)
+{
+    if (ev->type() == QEvent::WindowStateChange) {
+        auto wse = dynamic_cast<QWindowStateChangeEvent*>(ev);
+        _lastWindowState = wse->oldState();
+        qDebug() << "------------ _lastWindowState" << _lastWindowState;
+    }
+    return QFrame::event(ev);
+}
+
+    
 void MainWindow::onWindowStateChanged()
 {
     qDebug() << windowState();
@@ -1258,6 +1269,14 @@ bool MainWindow::isActionAllowed(ActionFactory::ActionKind kd, bool fromUI, bool
         }
     }
 
+    if (isMaximized()) {
+        switch(kd) {
+            case ActionFactory::ToggleMiniMode:
+                return false;
+            default: break;
+        }
+    }
+
     if (isShortcut) {
         auto pmf = _engine->playingMovieInfo();
         bool v = true;
@@ -1452,7 +1471,11 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
 
         case ActionFactory::ActionKind::QuitFullscreen: {
             if (isFullScreen()) {
-                showNormal();
+                if (_lastWindowState == Qt::WindowMaximized) {
+                    showMaximized();
+                } else {
+                    showNormal();
+                }
                 if (!fromUI) {
                     reflectActionToUI(ActionFactory::ToggleFullscreen);
                 }
@@ -1462,7 +1485,11 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
 
         case ActionFactory::ActionKind::ToggleFullscreen: {
             if (isFullScreen()) {
-                showNormal();
+                if (_lastWindowState == Qt::WindowMaximized) {
+                    showMaximized();
+                } else {
+                    showNormal();
+                }
             } else {
                 if (!_miniMode && (fromUI || isShortcut)) {
                     _lastRectInNormalMode = geometry();

@@ -121,6 +121,8 @@ protected:
     void dragMoveEvent(QDragMoveEvent *event) override;
     void dropEvent(QDropEvent *event) override;
 
+    bool event(QEvent *event) override;
+
 protected slots:
     void setInit(bool v);
     void menuItemInvoked(QAction *action);
@@ -207,9 +209,11 @@ private:
         SBEM_None = 0x0,
         SBEM_Above = 0x01,
         SBEM_Fullscreen = 0x02,
-        SBEM_PlaylistOpened = 0x04
+        SBEM_PlaylistOpened = 0x04,
+        SBEM_Maximized = 0x02,
     }; 
     int _stateBeforeMiniMode {0};
+    Qt::WindowStates _lastWindowState {Qt::WindowNoState};
 
     uint32_t _lastCookie {0};
 
