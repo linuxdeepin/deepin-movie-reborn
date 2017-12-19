@@ -1386,7 +1386,13 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                 requestAction(ActionFactory::ActionKind::OpenFileList);
             } else {
                 if (_engine->state() == PlayerEngine::CoreState::Idle) {
-                    _engine->play();
+                    if (Settings::get().isSet(Settings::ResumeFromLast)) {
+                        int restore_pos = Settings::get().internalOption("playlist_pos").toInt();
+                        restore_pos = qMax(qMin(restore_pos, _engine->playlist().count()-1), 0);
+                        requestAction(ActionFactory::ActionKind::GotoPlaylistSelected, false, {restore_pos});
+                    } else {
+                        _engine->play();
+                    }
                 }
             }
             break;
@@ -2122,7 +2128,17 @@ void MainWindow::closeEvent(QCloseEvent *ev)
         qDebug() << "uninhibit cookie" << _lastCookie;
         _lastCookie = 0;
     }
+    
+    int cur = 0;
+    if (Settings::get().isSet(Settings::ResumeFromLast)) {
+        cur = _engine->playlist().current();
+        if (cur >= 0) {
+            Settings::get().setInternalOption("playlist_pos", cur);
+        }
+    }
+
     _engine->savePlaybackPosition();
+
     ev->accept();
 }
 

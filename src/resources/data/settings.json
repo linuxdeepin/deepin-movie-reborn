@@ -25,6 +25,14 @@
                             "default": 100
                         },
                         {
+                            "key": "playlist_pos",
+                            "name": "",
+                            "hide": true,
+                            "reset": false,
+                            "type": "spinbutton",
+                            "default": 0
+                        },
+                        {
                             "key": "emptylist",
                             "name": "",
                             "type": "checkbox",
