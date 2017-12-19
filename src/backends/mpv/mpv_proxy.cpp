@@ -127,12 +127,12 @@ mpv_handle* MpvProxy::mpv_init()
         case DebugLevel::Verbose:
             set_property(h, "terminal", "yes");
             if (_debugLevel == DebugLevel::Verbose) {
-                set_property(h, "msg-level", "all=v");
-                mpv_request_log_messages(h, "v");
-
-            } else {
                 set_property(h, "msg-level", "all=status");
                 mpv_request_log_messages(h, "info");
+
+            } else {
+                set_property(h, "msg-level", "all=v");
+                mpv_request_log_messages(h, "v");
             }
             break;
     }
@@ -177,6 +177,7 @@ mpv_handle* MpvProxy::mpv_init()
     //set_property(h, "sub-scale-by-window", "no");
     set_property(h, "sub-pos", 100);
     set_property(h, "sub-margin-y", 36);
+    set_property(h, "sub-border-size", 0);
 
     set_property(h, "screenshot-template", "deepin-movie-shot%n");
     set_property(h, "screenshot-directory", "/tmp");

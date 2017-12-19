@@ -139,10 +139,6 @@ public:
 
     void savePlaybackPosition();
 
-    void setDebugLevel(Backend::DebugLevel lvl) { 
-        if (_current) _current->setDebugLevel(lvl);
-    }
-
 signals:
     void tracksChanged();
     void elapsedChanged();

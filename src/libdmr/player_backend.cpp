@@ -29,3 +29,6 @@
  */
 #include "player_backend.h"
 
+namespace dmr {
+Backend::DebugLevel Backend::_debugLevel = Backend::DebugLevel::Info;
+}

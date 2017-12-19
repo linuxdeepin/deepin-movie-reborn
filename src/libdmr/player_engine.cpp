@@ -178,7 +178,11 @@ void PlayerEngine::updateSubStyles()
     if (_state != CoreState::Idle) {
         if (_playlist->current() < 0) return;
 
-        double scale = _playlist->currentInfo().mi.height / 720.0;
+        auto vh = videoSize().height();
+        if (vh <= 0) {
+            vh = _playlist->currentInfo().mi.height;
+        }
+        double scale = vh / 720.0;
         sz /= scale;
         /* magic scale number 2.0 comes from my mind, test with my eyes... */
         sz *= 2.0;

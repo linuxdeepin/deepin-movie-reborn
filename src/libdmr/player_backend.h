@@ -122,7 +122,7 @@ public:
     virtual QVariant getProperty(const QString&) = 0;
     virtual void setProperty(const QString&, const QVariant&) = 0;
 
-    void setDebugLevel(DebugLevel lvl) { _debugLevel = lvl; }
+    static void setDebugLevel(DebugLevel lvl) { _debugLevel = lvl; }
 
 Q_SIGNALS:
     void tracksChanged();
@@ -155,7 +155,7 @@ protected:
     PlayState _state { PlayState::Stopped };
     QString _dvdDevice {"/dev/sr0"};
     QUrl _file;
-    DebugLevel _debugLevel { DebugLevel::Info };
+    static DebugLevel _debugLevel;
 };
 }
 

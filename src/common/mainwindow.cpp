@@ -589,14 +589,13 @@ MainWindow::MainWindow(QWidget *parent)
     }
 
 
-    _engine = new PlayerEngine(this);
     auto& clm = dmr::CommandLineManager::get();
     if (clm.debug()) {
-        _engine->setDebugLevel(Backend::DebugLevel::Debug);
+        Backend::setDebugLevel(Backend::DebugLevel::Debug);
     } else if (clm.verbose()) {
-        _engine->setDebugLevel(Backend::DebugLevel::Verbose);
+        Backend::setDebugLevel(Backend::DebugLevel::Verbose);
     }
-
+    _engine = new PlayerEngine(this);
     _engine->move(1, 1);
 
     int volume = Settings::get().internalOption("global_volume").toInt();
