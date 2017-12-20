@@ -149,12 +149,22 @@ mpv_handle* MpvProxy::mpv_init()
 #else
     if (Settings::get().isSet(Settings::HWAccel)) {
         if (composited) {
-#ifdef USE_DXCB
-            //NOTE: see comment from compositing manager
-            set_property(h, "opengl-hwdec-interop", "vaapi-glx");
-#else
-            set_property(h, "opengl-hwdec-interop", "vaapi-egl");
-#endif
+            const char* interop = "auto";
+            switch (CompositingManager::get().interopKind()) {
+                case OpenGLInteropKind::INTEROP_VAAPI_EGL:
+                    interop = "vaapi-egl"; break;
+
+                case OpenGLInteropKind::INTEROP_VAAPI_GLX:
+                    interop = "vaapi-glx"; break;
+                    
+                case OpenGLInteropKind::INTEROP_VDPAU_GLX:
+                    interop = "vdpau-glx"; break;
+
+                default: break;
+
+            }
+            set_property(h, "opengl-hwdec-interop", interop);
+            qDebug() << "-------- set opengl-hwdec-interop = " << interop;
         }
         set_property(h, "hwdec", "auto");
     } else {

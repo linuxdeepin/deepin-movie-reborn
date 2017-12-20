@@ -954,8 +954,7 @@ void ToolboxProxy::buttonClicked(QString id)
 void ToolboxProxy::updatePosition(const QPoint& p)
 {
     QPoint pos(p);
-    pos.rx() += _mainWindow->frameMargins().left();
-    pos.ry() += _mainWindow->frameMargins().top() + _mainWindow->height() - height();
+    pos.ry() += _mainWindow->height() - height();
     windowHandle()->setFramePosition(pos);
 }
 

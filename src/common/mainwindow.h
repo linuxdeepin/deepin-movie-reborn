@@ -60,13 +60,10 @@ class MovieProgressIndicator;
 
 class MainWindow: public QFrame {
     Q_OBJECT
-    Q_PROPERTY(QMargins frameMargins READ frameMargins NOTIFY frameMarginsChanged)
     Q_PROPERTY(bool inited READ inited WRITE setInit NOTIFY initChanged)
 public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
-
-    QMargins frameMargins() const;
 
     bool inited() const { return _inited; }
     PlayerEngine* engine() { return _engine; }
@@ -87,7 +84,6 @@ public:
     void updateGeometryNotification(const QSize& sz);
 
 signals:
-    void frameMarginsChanged();
     void windowEntered();
     void windowLeaved();
     void initChanged();
@@ -189,7 +185,6 @@ private:
     bool _inited {false};
 
     DPlatformWindowHandle *_handle {nullptr};
-    QMargins _cachedMargins;
     EventMonitor *_evm {nullptr};
 
     bool _pausedOnHide {false};

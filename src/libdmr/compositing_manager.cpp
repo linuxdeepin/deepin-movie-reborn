@@ -159,27 +159,52 @@ static QString probeHwdecInterop()
   return mpv::qt::get_property(mpv, "hwdec-interop").toString();
 }
 
+static OpenGLInteropKind _interopKind = OpenGLInteropKind::INTEROP_NONE;
+
 void CompositingManager::detectOpenGLEarly()
 {
+    static bool detect_run = false;
+
+    if (detect_run) return;
+
     auto probed = probeHwdecInterop();
     qDebug() << "probeHwdecInterop" << probed 
         << qgetenv("QT_XCB_GL_INTERGRATION");
+
+    if (probed == "vaapi-egl") {
+        _interopKind = INTEROP_VAAPI_EGL;
+    } else if (probed == "vaapi-glx") {
+        _interopKind = INTEROP_VAAPI_GLX;
+    } else if (probed == "vdpau-glx") {
+        _interopKind = INTEROP_VDPAU_GLX;
+    }
+
     //NOTE: probed seems to be vaapi-egl, but qt use xcb_glx by default
     //dxcb is not compatible with egl yet. so when USE_DXCB activated, we 
     //should use vaapi-glx for mpv instead.
 #ifndef USE_DXCB
     // The putenv call must happen before Qt initializes its platform stuff.
-    if (probed == "vaapi-egl") {
+    if (_interopKind == INTEROP_VAAPI_EGL) {
         qInfo() << "set QT_XCB_GL_INTERGRATION to xcb_egl";
         fprintf(stderr, "set QT_XCB_GL_INTERGRATION to xcb_egl\n");
         qputenv("QT_XCB_GL_INTEGRATION", "xcb_egl");
+    } else {
+        //do nothing, this is default
+        //qputenv("QT_XCB_GL_INTEGRATION", "xcb_glx");
     }
 #else
-    if (probed == "vaapi-glx") {
-        //qputenv("QT_XCB_GL_INTEGRATION", "xcb_glx");
+    if (_interopKind == INTEROP_VAAPI_EGL) {
+        _interopKind = INTEROP_VAAPI_GLX;
     }
 
 #endif
+
+    detect_run = true;
+}
+
+OpenGLInteropKind CompositingManager::interopKind()
+{
+    return _interopKind;
 }
 
 bool CompositingManager::isDriverLoadedCorrectly() {

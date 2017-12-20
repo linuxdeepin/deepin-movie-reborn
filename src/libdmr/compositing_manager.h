@@ -40,6 +40,13 @@ enum Platform {
     Alpha // sunway
 };
 
+enum OpenGLInteropKind {
+    INTEROP_NONE,
+    INTEROP_VAAPI_EGL,
+    INTEROP_VAAPI_GLX,
+    INTEROP_VDPAU_GLX,
+};
+
 using PlayerOption = QPair<QString, QString>;
 using PlayerOptionList = QList<PlayerOption>;
 
@@ -53,6 +60,10 @@ class CompositingManager: public QObject {
          * this makes sure mpv openglcb-interop to work correctly
          */
         static void detectOpenGLEarly();
+        /**
+         * get detectOpenGLEarly result
+         */
+        static OpenGLInteropKind interopKind();
 
         /**
          * override auto-detected compositing state.

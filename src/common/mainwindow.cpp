@@ -351,7 +351,12 @@ class MainWindowEventListener : public QObject
                             goto skip_set_cursor;
                         }
 set_cursor:
-                        Utility::setWindowCursor(window->winId(), mouseCorner);
+                        if (window->property("_d_real_winId").isValid()) {
+                            auto real_wid = window->property("_d_real_winId").toUInt();
+                            Utility::setWindowCursor(real_wid, mouseCorner);
+                        } else {
+                            Utility::setWindowCursor(window->winId(), mouseCorner);
+                        }
 
                         if (qApp->mouseButtons() == Qt::LeftButton) {
                             updateGeometry(mouseCorner, e);
@@ -522,24 +527,14 @@ MainWindow::MainWindow(QWidget *parent)
     setFrameShape(QFrame::NoFrame);
     
 #ifdef USE_DXCB
-    if (DApplication::isDXcbPlatform() && composited) {
+    if (DApplication::isDXcbPlatform()) {
         _handle = new DPlatformWindowHandle(this, this);
-        connect(_handle, &DPlatformWindowHandle::frameMarginsChanged, 
-                this, &MainWindow::frameMarginsChanged);
         setAttribute(Qt::WA_TranslucentBackground, true);
-        _handle->setTranslucentBackground(true);
-        _cachedMargins = _handle->frameMargins();
+        if (composited)
+            _handle->setTranslucentBackground(true);
         _handle->setEnableSystemResize(false);
         _handle->setEnableSystemMove(false);
         _handle->setWindowRadius(4);
-
-        connect(qApp, &QGuiApplication::focusWindowChanged, this, [=] {
-            if (this->isActiveWindow()) {
-                _handle->setShadowColor(SHADOW_COLOR_ACTIVE);
-            } else {
-                _handle->setShadowColor(SHADOW_COLOR_NORMAL);
-            }
-        });
     }
 #else
     winId();
@@ -554,7 +549,11 @@ MainWindow::MainWindow(QWidget *parent)
     setContentsMargins(0, 0, 0, 0);
 
     _titlebar = new Titlebar(this);
+#ifdef USE_DXCB
+    _titlebar->move(0, 0);
+#else
     _titlebar->move(1, 1);
+#endif
     _titlebar->setFixedHeight(30);
     _titlebar->layout()->setContentsMargins(0, 0, 6, 0);
     _titlebar->setFocusPolicy(Qt::NoFocus);
@@ -580,12 +579,6 @@ MainWindow::MainWindow(QWidget *parent)
         _titlebar->setIcon(pm);
         _titlebar->setTitle(tr("Deepin Movie"));
     }
-    {
-        auto l = _titlebar->findChildren<DLabel*>();
-        for (auto w: l) {
-            w->setStyleSheet("font-size: 12px;");
-        }
-    }
 
     {
         auto help = new QShortcut(QKeySequence(Qt::Key_F1), this);
@@ -601,7 +594,9 @@ MainWindow::MainWindow(QWidget *parent)
         Backend::setDebugLevel(Backend::DebugLevel::Verbose);
     }
     _engine = new PlayerEngine(this);
+#ifndef USE_DXCB
     _engine->move(1, 1);
+#endif
 
     int volume = Settings::get().internalOption("global_volume").toInt();
     _engine->changeVolume(volume);
@@ -624,7 +619,6 @@ MainWindow::MainWindow(QWidget *parent)
         });
     });
 
-    connect(this, &MainWindow::frameMarginsChanged, &MainWindow::updateProxyGeometry);
     connect(_titlebar->menu(), &QMenu::triggered, this, &MainWindow::menuItemInvoked);
     connect(ActionFactory::get().mainContextMenu(), &QMenu::triggered, 
             this, &MainWindow::menuItemInvoked);
@@ -841,6 +835,7 @@ void MainWindow::onWindowStateChanged()
     _progIndicator->setVisible(isFullScreen());
     toggleShapeMask();
 
+#ifndef USE_DXCB
     if (isFullScreen()) {
         _titlebar->move(0, 0);
         _engine->move(0, 0);
@@ -848,6 +843,7 @@ void MainWindow::onWindowStateChanged()
         _titlebar->move(1, 1);
         _engine->move(1, 1);
     }
+#endif
 
     if (!isFullScreen() && !isMaximized()) {
         if (_movieSwitchedInFsOrMaxed && !_hasPendingResizeByConstraint) {
@@ -2016,10 +2012,6 @@ void MainWindow::toggleShapeMask()
 
 void MainWindow::updateProxyGeometry()
 {
-    if (_handle) {
-        _cachedMargins = _handle->frameMargins();
-    }
-
     toggleShapeMask();
 
 #ifdef USE_DXCB
@@ -2151,11 +2143,6 @@ void MainWindow::resumeToolsWindow()
 
 _finish:
     _autoHideTimer.start(AUTOHIDE_TIMEOUT);
-}
-
-QMargins MainWindow::frameMargins() const
-{
-    return _cachedMargins;
 }
 
 void MainWindow::hideEvent(QHideEvent *event)
