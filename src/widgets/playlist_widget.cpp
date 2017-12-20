@@ -788,7 +788,11 @@ void PlaylistWidget::batchUpdateSizeHints()
 void PlaylistWidget::togglePopup()
 {
     auto main_rect = _mw->rect();
+#ifdef USE_DXCB
+    auto view_rect = main_rect;
+#else
     auto view_rect = main_rect.marginsRemoved(QMargins(1, 1, 1, 1));
+#endif
     int off = _mw->isFullScreen()? 0: _mw->titlebar()->geometry().bottom();
     QRect fixed(0, off,
             PLAYLIST_FIXED_WIDTH,

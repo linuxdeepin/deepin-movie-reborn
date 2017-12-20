@@ -27,6 +27,8 @@
  * version.  If you delete this exception statement from all source
  * files in the program, then also delete it here.
  */
+
+#include "config.h"
 #include "compositing_manager.h"
 #ifndef _LIBDMR_
 #include "options.h"
@@ -159,12 +161,25 @@ static QString probeHwdecInterop()
 
 void CompositingManager::detectOpenGLEarly()
 {
-  // The putenv call must happen before Qt initializes its platform stuff.
-  if (probeHwdecInterop() == "vaapi-egl") {
-      qInfo() << "set QT_XCB_GL_INTERGRATION to xcb_egl";
-      fprintf(stderr, "set QT_XCB_GL_INTERGRATION to xcb_egl\n");
-      qputenv("QT_XCB_GL_INTEGRATION", "xcb_egl");
-  }
+    auto probed = probeHwdecInterop();
+    qDebug() << "probeHwdecInterop" << probed 
+        << qgetenv("QT_XCB_GL_INTERGRATION");
+    //NOTE: probed seems to be vaapi-egl, but qt use xcb_glx by default
+    //dxcb is not compatible with egl yet. so when USE_DXCB activated, we 
+    //should use vaapi-glx for mpv instead.
+#ifndef USE_DXCB
+    // The putenv call must happen before Qt initializes its platform stuff.
+    if (probed == "vaapi-egl") {
+        qInfo() << "set QT_XCB_GL_INTERGRATION to xcb_egl";
+        fprintf(stderr, "set QT_XCB_GL_INTERGRATION to xcb_egl\n");
+        qputenv("QT_XCB_GL_INTEGRATION", "xcb_egl");
+    }
+#else
+    if (probed == "vaapi-glx") {
+        //qputenv("QT_XCB_GL_INTEGRATION", "xcb_glx");
+    }
+
+#endif
 }
 
 bool CompositingManager::isDriverLoadedCorrectly() {

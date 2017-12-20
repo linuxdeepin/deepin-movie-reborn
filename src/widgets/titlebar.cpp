@@ -108,7 +108,7 @@ void Titlebar::setBorderShadowTop(QColor borderShadowTop)
     d->borderShadowTop = borderShadowTop;
 }
 
-void Titlebar::paintEvent(QPaintEvent *)
+void Titlebar::paintEvent(QPaintEvent *pe)
 {
     Q_D(const Titlebar);
 

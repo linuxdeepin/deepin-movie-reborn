@@ -505,7 +505,12 @@ MainWindow::MainWindow(QWidget *parent)
     : QFrame(NULL)
 {
     bool composited = CompositingManager::get().composited();
+#ifdef USE_DXCB
+    setWindowFlags(Qt::FramelessWindowHint | Qt::WindowTitleHint | Qt::WindowMinMaxButtonsHint |
+            Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint);
+#else
     setWindowFlags(Qt::FramelessWindowHint);
+#endif
     setAcceptDrops(true);
 
     if (composited) {
@@ -524,9 +529,9 @@ MainWindow::MainWindow(QWidget *parent)
         setAttribute(Qt::WA_TranslucentBackground, true);
         _handle->setTranslucentBackground(true);
         _cachedMargins = _handle->frameMargins();
-        _handle->enableSystemResize();
-        _handle->enableSystemMove();
-        _handle->setWindowRadius(5);
+        _handle->setEnableSystemResize(false);
+        _handle->setEnableSystemMove(false);
+        _handle->setWindowRadius(4);
 
         connect(qApp, &QGuiApplication::focusWindowChanged, this, [=] {
             if (this->isActiveWindow()) {
@@ -758,6 +763,16 @@ MainWindow::MainWindow(QWidget *parent)
         connect(_evm, &EventMonitor::buttonedRelease, this, &MainWindow::onMonitorButtonReleased);
         _evm->start();
     }
+
+    _listener = new MainWindowEventListener(this);
+    this->windowHandle()->installEventFilter(_listener);
+
+    //auto mwfm = new MainWindowFocusMonitor(this);
+    auto mwpm = new MainWindowPropertyMonitor(this);
+
+    connect(this, &MainWindow::windowEntered, &MainWindow::resumeToolsWindow);
+    connect(this, &MainWindow::windowLeaved, &MainWindow::suspendToolsWindow);
+
 #else
     _listener = new MainWindowEventListener(this);
     this->windowHandle()->installEventFilter(_listener);
@@ -803,7 +818,7 @@ void MainWindow::onWindowStateChanged()
             qDebug() << "uninhibit cookie" << _lastCookie;
             _lastCookie = 0;
         }
-        _listener->setEnabled(!isMaximized() && !_miniMode);
+        if (_listener) _listener->setEnabled(!isMaximized() && !_miniMode);
     } else {
         qApp->setOverrideCursor(Qt::BlankCursor);
 
@@ -814,7 +829,7 @@ void MainWindow::onWindowStateChanged()
         }
         _lastCookie = utils::InhibitStandby();
         qDebug() << "inhibit cookie" << _lastCookie;
-        _listener->setEnabled(false);
+        if (_listener) _listener->setEnabled(false);
     }
     if (!_miniMode && !isFullScreen()) {
         _titlebar->setVisible(_toolbox->isVisible());
@@ -1857,7 +1872,7 @@ void MainWindow::onBurstScreenshot(const QImage& frame, qint64 timestamp)
         _engine->stopBurstScreenshot();
         _inBurstShootMode = false;
         _toolbox->setEnabled(true);
-        _listener->setEnabled(!_miniMode);
+        if (_listener) _listener->setEnabled(!_miniMode);
 
         if (frame.isNull()) {
             _burstShoots.clear();
@@ -1892,7 +1907,7 @@ void MainWindow::startBurstShooting()
 {
     _inBurstShootMode = true;
     _toolbox->setEnabled(false);
-    _listener->setEnabled(false);
+    if (_listener) _listener->setEnabled(false);
 
     _pausedBeforeBurst = _engine->paused();
 
@@ -2007,9 +2022,14 @@ void MainWindow::updateProxyGeometry()
 
     toggleShapeMask();
 
+#ifdef USE_DXCB
+    // border is drawn by dxcb
+    auto view_rect = rect();
+#else
     // leave one pixel for border
     auto view_rect = rect().marginsRemoved(QMargins(1, 1, 1, 1));
     if (isFullScreen()) view_rect = rect();
+#endif
     _engine->resize(view_rect.size());
 
     if (!_miniMode) {
@@ -2018,7 +2038,8 @@ void MainWindow::updateProxyGeometry()
         }
 
         if (_toolbox) {
-            QRect r(1, height() - TOOLBOX_HEIGHT_EXT - 1, view_rect.width(), TOOLBOX_HEIGHT_EXT);
+            QRect r(view_rect.left(), height() - TOOLBOX_HEIGHT_EXT - view_rect.top(), 
+                    view_rect.width(), TOOLBOX_HEIGHT_EXT);
             if (isFullScreen()) {
                 r.moveTopLeft({0, height() - TOOLBOX_HEIGHT_EXT});
             }
@@ -2467,11 +2488,11 @@ void MainWindow::mouseMoveEvent(QMouseEvent *ev)
 
     _mouseMoved = true;
 
-#ifndef USE_DXCB
+//#ifndef USE_DXCB
     if (windowState() == Qt::WindowNoState || isMaximized()) {
         Utility::startWindowSystemMove(this->winId());
     }
-#endif
+//#endif
     QWidget::mouseMoveEvent(ev);
 }
 
@@ -2503,16 +2524,21 @@ void MainWindow::paintEvent(QPaintEvent* pe)
     p.setRenderHint(QPainter::Antialiasing);
 
     bool light = ("light" == qApp->theme());
-    bool rounded = !isFullScreen() && !isMaximized();
-
-    p.fillRect(rect(), Qt::transparent);
-
     auto bg_clr = QColor(16, 16, 16);
     QImage& bg = bg_dark;
     if (light) {
         bg = bg_light;
         bg_clr = QColor(252, 252, 252);
     }
+
+#ifdef USE_DXCB
+    QPainterPath pp;
+    pp.addRect(rect());
+    p.fillPath(pp, bg_clr);
+#else
+    bool rounded = !isFullScreen() && !isMaximized();
+
+    p.fillRect(rect(), Qt::transparent);
 
     if (rounded) {
         QPainterPath pp;
@@ -2534,6 +2560,8 @@ void MainWindow::paintEvent(QPaintEvent* pe)
         p.fillPath(pp, bg_clr);
     }
 
+#endif
+
     auto pt = rect().center() - QPoint(bg.width()/2, bg.height()/2)/devicePixelRatioF();
     p.drawImage(pt, bg);
 
@@ -2549,7 +2577,7 @@ void MainWindow::toggleUIMode()
     else 
         _titlebar->setDisableFlags(0);
 
-    _listener->setEnabled(!_miniMode);
+    if (_listener) _listener->setEnabled(!_miniMode);
 
     updateSizeConstraints();
 

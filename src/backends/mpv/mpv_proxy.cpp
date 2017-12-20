@@ -93,6 +93,9 @@ MpvProxy::MpvProxy(QWidget *parent)
             _gl_widget->setPlaying(state() != Backend::PlayState::Stopped);
             _gl_widget->update();
         });
+#ifdef USE_DXCB
+        _gl_widget->toggleRoundedClip(false);
+#endif
 
         auto *layout = new QHBoxLayout(this);
         layout->setContentsMargins(0, 0, 0, 0);
@@ -146,7 +149,12 @@ mpv_handle* MpvProxy::mpv_init()
 #else
     if (Settings::get().isSet(Settings::HWAccel)) {
         if (composited) {
+#ifdef USE_DXCB
+            //NOTE: see comment from compositing manager
+            set_property(h, "opengl-hwdec-interop", "vaapi-glx");
+#else
             set_property(h, "opengl-hwdec-interop", "vaapi-egl");
+#endif
         }
         set_property(h, "hwdec", "auto");
     } else {
