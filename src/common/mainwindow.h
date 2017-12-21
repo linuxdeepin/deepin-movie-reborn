@@ -190,13 +190,11 @@ private:
     bool _pausedOnHide {false};
     // track if next/prev is triggered in fs/maximized mode
     bool _movieSwitchedInFsOrMaxed {false};
-    bool _hasPendingResizeByConstraint {false};
 
     //toggle-able states
     bool _lightTheme {false};
     bool _windowAbove {false};
     bool _mouseMoved {false};
-    bool _mouseDraggedOnTitlebar {false};
     bool _mousePressed {false};
     double _playSpeed {1.0};
 

@@ -521,9 +521,11 @@ namespace dmr {
             updateMovieFbo();
         } else {
             updateVbo();
-            updateVboCorners();
+            if (_doRoundedClipping)
+                updateVboCorners();
         }
 
+        qDebug() << "GL resize" << w << h;
         QOpenGLWidget::resizeGL(w, h);
     }
 
