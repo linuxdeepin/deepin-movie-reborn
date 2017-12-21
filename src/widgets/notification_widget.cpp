@@ -129,15 +129,20 @@ void NotificationWidget::popup(const QString& msg)
 
 void NotificationWidget::updateWithMessage(const QString& newMsg)
 {
+    QFont ft;
+    ft.setPixelSize(12);
+    QFontMetrics fm(ft);
+    auto msg = fm.elidedText(newMsg, Qt::ElideMiddle, _mw->width() - 12 - 12 - 60);
+
     if (isVisible()) {
-        _msgLabel->setText(newMsg);
+        _msgLabel->setText(msg);
         resize(_msgLabel->sizeHint().width() + _layout->contentsMargins().left() 
                 + _layout->contentsMargins().right(), height());
         adjustSize();
         _timer->start();
 
     } else {
-        popup(newMsg);
+        popup(msg);
     }
 }
 

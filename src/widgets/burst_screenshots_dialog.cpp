@@ -70,9 +70,14 @@ BurstScreenshotsDialog::BurstScreenshotsDialog(const PlayItemInfo& pif)
     hl->setContentsMargins(0, 0, 0, 0);
     hl->addLayout(trl, 1);
 
+    QFont ft;
+    ft.setPixelSize(14);
+    QFontMetrics fm(ft);
+
     auto *nm = new QLabel(this);
-    nm->setText(nm->fontMetrics().elidedText(mi.title, Qt::ElideMiddle, 480));
     nm->setStyleSheet("color: #303030; font-size: 14px;");
+    nm->setText(fm.elidedText(mi.title, Qt::ElideMiddle, 480));
+
     trl->addWidget(nm);
 
     //top right bottom
