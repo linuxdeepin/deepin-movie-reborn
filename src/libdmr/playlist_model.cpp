@@ -945,7 +945,7 @@ void PlaylistModel::append(const QUrl& url)
 
 void PlaylistModel::changeCurrent(int pos)
 {
-    if (pos < 0 || pos >= count()) return;
+    if (pos < 0 || pos >= count() || _current == pos) return;
 
     _userRequestingItem = true;
 

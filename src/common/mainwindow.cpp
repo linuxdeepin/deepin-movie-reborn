@@ -1025,6 +1025,9 @@ void MainWindow::animatePlayState()
         startPlayStateAnimation(false);
         _playState->raise();
 
+    } else if (_engine->state() == PlayerEngine::CoreState::Idle) {
+        _playState->setVisible(false);
+
     } else {
         //do nothing here, startPlayStateAnimation(true) should be started before playback
         //is restored, or animation will get slow
