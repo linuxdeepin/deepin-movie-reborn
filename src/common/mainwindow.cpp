@@ -736,6 +736,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(&_autoHideTimer, &QTimer::timeout, this, &MainWindow::suspendToolsWindow);
     _autoHideTimer.setSingleShot(true);
+
     connect(&_delayedMouseReleaseTimer, &QTimer::timeout, this, &MainWindow::delayedMouseReleaseHandler);
     _delayedMouseReleaseTimer.setSingleShot(true);
 
@@ -2079,9 +2080,11 @@ void MainWindow::suspendToolsWindow()
 
         } else {
             // menus  are popped up
-            if (qApp->focusWindow() != windowHandle())
+            // NOTE: menu keeps focus while hidden, so focusWindow is not used
+            if (ActionFactory::get().mainContextMenu()->isVisible())
                 return;
-
+            //if (qApp->focusWindow() != windowHandle())
+                //return;
 
             if (_titlebar->isVisible()) {
                 if (insideToolsArea(mapFromGlobal(QCursor::pos())))
