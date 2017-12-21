@@ -605,14 +605,13 @@ void PlaylistModel::playNext(bool fromUser)
                     tryPlayCurrent(true);
 
                 } else {
-                    if (_last + 1 < count()) {
-                        _engine->waitLastEnd();
-                        _current = _last + 1;
-                        _last = _current;
-                        tryPlayCurrent(true);
-                    } else {
-                        _engine->waitLastEnd();
+                    if (_last + 1 >= count()) {
+                        _last = -1;
                     }
+                    _engine->waitLastEnd();
+                    _current = _last + 1;
+                    _last = _current;
+                    tryPlayCurrent(true);
                 }
             } else {
                 if (_engine->state() == PlayerEngine::Idle) {
@@ -700,14 +699,13 @@ void PlaylistModel::playPrev(bool fromUser)
                     tryPlayCurrent(false);
 
                 } else {
-                    if (_last - 1 >= 0) {
-                        _engine->waitLastEnd();
-                        _current = _last - 1;
-                        _last = _current;
-                        tryPlayCurrent(false);
-                    } else {
-                        _engine->waitLastEnd();
+                    if (_last - 1 < 0) {
+                        _last = count();
                     }
+                    _engine->waitLastEnd();
+                    _current = _last - 1;
+                    _last = _current;
+                    tryPlayCurrent(false);
                 }
             } else {
                 if (_engine->state() == PlayerEngine::Idle) {
@@ -801,14 +799,14 @@ void PlaylistModel::appendSingle(const QUrl& url)
 void PlaylistModel::collectionJob(const QList<QUrl>& urls)
 {
     for (const auto& url: urls) {
-        if (!url.isValid() || indexOf(url) >= 0 || !url.isLocalFile() || _urlsInJob.contains(url))
+        if (!url.isValid() || indexOf(url) >= 0 || !url.isLocalFile() || _urlsInJob.contains(url.toLocalFile()))
             continue;
 
         QFileInfo fi(url.toLocalFile());
         if (!_firstLoad && (!fi.exists() || !fi.isFile())) continue;
 
         _pendingJob.append(qMakePair(url, fi));
-        _urlsInJob.insert(url);
+        _urlsInJob.insert(url.toLocalFile());
         qDebug() << "append " << url.fileName();
 
 #ifndef _LIBDMR_
@@ -819,10 +817,10 @@ void PlaylistModel::collectionJob(const QList<QUrl>& urls)
                 if (fi.isFile()) {
                     auto url = QUrl::fromLocalFile(fi.absoluteFilePath());
 
-                    if (!_urlsInJob.contains(url) && indexOf(url) < 0 &&
+                    if (!_urlsInJob.contains(url.toLocalFile()) && indexOf(url) < 0 &&
                             _engine->isPlayableFile(fi.fileName())) {
                         _pendingJob.append(qMakePair(url, fi));
-                        _urlsInJob.insert(url);
+                        _urlsInJob.insert(url.toLocalFile());
                     }
                 }
             });

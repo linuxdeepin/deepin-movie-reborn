@@ -167,7 +167,7 @@ private:
     int _loopCount {0}; // loop count
 
     QList<AppendJob> _pendingJob; // async job
-    QSet<QUrl> _urlsInJob;
+    QSet<QString> _urlsInJob;  // url list
     QFutureWatcher<PlayItemInfo> *_jobWatcher {nullptr};
 
     QQueue<UrlList> _pendingAppendReq;
