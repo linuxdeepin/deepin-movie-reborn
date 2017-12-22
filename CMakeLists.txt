@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0)
 
-project(deepin-movie-reborn VERSION 3.1.1)
+project(deepin-movie-reborn VERSION 3.2.0)
 
 
 option(USE_DXCB "integration with dxcb platform plugin" OFF)
