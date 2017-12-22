@@ -520,7 +520,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     if (composited) {
         setAttribute(Qt::WA_TranslucentBackground, true);
-        setAttribute(Qt::WA_NoSystemBackground, false);
+        //setAttribute(Qt::WA_NoSystemBackground, false);
     }
 
     DThemeManager::instance()->registerWidget(this);
@@ -530,11 +530,13 @@ MainWindow::MainWindow(QWidget *parent)
     if (DApplication::isDXcbPlatform()) {
         _handle = new DPlatformWindowHandle(this, this);
         setAttribute(Qt::WA_TranslucentBackground, true);
-        if (composited)
-            _handle->setTranslucentBackground(true);
+        //if (composited)
+            //_handle->setTranslucentBackground(true);
         _handle->setEnableSystemResize(false);
         _handle->setEnableSystemMove(false);
         _handle->setWindowRadius(4);
+        connect(qApp, &QGuiApplication::focusWindowChanged, this, &MainWindow::updateShadow);
+        updateShadow();
     }
 #else
     winId();
@@ -786,6 +788,19 @@ MainWindow::MainWindow(QWidget *parent)
     qDebug() << "event listener";
 #endif
 }
+
+#ifdef USE_DXCB
+void MainWindow::updateShadow()
+{
+    if (isActiveWindow()) {
+        _handle->setShadowRadius(60);
+        _handle->setShadowColor(SHADOW_COLOR_ACTIVE);
+    } else {
+        _handle->setShadowRadius(60);
+        _handle->setShadowColor(SHADOW_COLOR_NORMAL);
+    }
+}
+#endif
 
 bool MainWindow::event(QEvent *ev)
 {

@@ -140,6 +140,8 @@ protected slots:
     void onMonitorButtonPressed(int x, int y);
     void onMonitorMotionNotify(int x, int y);
     void onMonitorButtonReleased(int x, int y);
+
+    void updateShadow();
 #endif
 
     void handleHelpAction();
