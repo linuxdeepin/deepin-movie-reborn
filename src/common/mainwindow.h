@@ -83,6 +83,8 @@ public:
     void syncStaysOnTop();
     void updateGeometryNotification(const QSize& sz);
 
+    void updateContentGeometry(const QRect& rect);
+
 signals:
     void windowEntered();
     void windowLeaved();
