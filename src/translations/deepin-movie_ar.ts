@@ -1,14 +1,16 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS language="ar" version="2.1">
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.1" language="ar">
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../main.cpp" line="65"/>
-        <location filename="../main.cpp" line="95"/>
+        <location filename="../main.cpp" line="85"/>
+        <location filename="../main.cpp" line="117"/>
         <source>Deepin Movie</source>
         <translation>أفلام دييبن</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="66"/>
+        <location filename="../main.cpp" line="86"/>
         <source>Deepin Movie is a well-designed and full-featured video player with simple borderless design. It supports local and streaming media play with multiple video formats.</source>
         <translation>مشغل أفلام ديبين : مشغل فيديو مصمم بشكل جيد وكامل المواصفات مع تصميم بسيط بلا حدود. وهو يدعم تشغيل الوسائط المتعددة المحلية والمتدفقة مع صيغ الفيديو المتنوعة.</translation>
     </message>
@@ -205,17 +207,17 @@
         <translation>حجم الخط:</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="85"/>
+        <location filename="../common/mainwindow.cpp" line="116"/>
         <source>Invalid folder</source>
         <translation>مجلد غير صالح</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="99"/>
+        <location filename="../common/mainwindow.cpp" line="130"/>
         <source>Open Folder</source>
         <translation>فتح مجلد</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="90"/>
+        <location filename="../common/mainwindow.cpp" line="121"/>
         <source>You don&apos;t have permission to operate this folder</source>
         <translation>ليس لديك إذن لتنفيذ عملية في هذا المجلد</translation>
     </message>
@@ -223,17 +225,17 @@
 <context>
     <name>UrlDialog</name>
     <message>
-        <location filename="../widgets/url_dialog.cpp" line="12"/>
+        <location filename="../widgets/url_dialog.cpp" line="41"/>
         <source>Cancel</source>
         <translation>إلغاء</translation>
     </message>
     <message>
-        <location filename="../widgets/url_dialog.cpp" line="13"/>
+        <location filename="../widgets/url_dialog.cpp" line="42"/>
         <source>Confirm</source>
         <translation>تأكيد</translation>
     </message>
     <message>
-        <location filename="../widgets/url_dialog.cpp" line="17"/>
+        <location filename="../widgets/url_dialog.cpp" line="46"/>
         <source>Please enter the URL:</source>
         <translation>يرجى إدخال الرابط :</translation>
     </message>
@@ -241,206 +243,200 @@
 <context>
     <name>dmr::ActionFactory</name>
     <message>
-        <location filename="../common/actions.cpp" line="53"/>
-        <location filename="../common/actions.cpp" line="73"/>
-        <location filename="../common/actions.cpp" line="84"/>
+        <location filename="../common/actions.cpp" line="82"/>
+        <location filename="../common/actions.cpp" line="102"/>
         <source>Open File</source>
         <translation>فتح ملف</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="55"/>
-        <location filename="../common/actions.cpp" line="80"/>
-        <location filename="../common/actions.cpp" line="247"/>
+        <location filename="../common/actions.cpp" line="84"/>
+        <location filename="../common/actions.cpp" line="265"/>
         <source>Settings</source>
         <translation>إعدادات</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="56"/>
+        <location filename="../common/actions.cpp" line="85"/>
         <source>Light Theme</source>
         <translation>سمة فاتحة</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="77"/>
-        <location filename="../common/actions.cpp" line="90"/>
+        <location filename="../common/actions.cpp" line="108"/>
         <source>Fullscreen</source>
         <translation>ملء الشاشة</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="78"/>
-        <location filename="../common/actions.cpp" line="92"/>
+        <location filename="../common/actions.cpp" line="110"/>
         <source>Always on Top</source>
         <translation>دائماً في المقدمة</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="79"/>
-        <location filename="../common/actions.cpp" line="263"/>
+        <location filename="../common/actions.cpp" line="280"/>
         <source>Film info</source>
         <translation>معلومات الفلم</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="54"/>
-        <location filename="../common/actions.cpp" line="74"/>
-        <location filename="../common/actions.cpp" line="85"/>
+        <location filename="../common/actions.cpp" line="83"/>
+        <location filename="../common/actions.cpp" line="103"/>
         <source>Open Folder</source>
         <translation>فتح مجلد</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="86"/>
+        <location filename="../common/actions.cpp" line="104"/>
         <source>Open URL</source>
         <translation>فتح رابط</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="87"/>
+        <location filename="../common/actions.cpp" line="105"/>
         <source>Open CD/DVD</source>
         <translation>فتح قرص  CD/DVD</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="91"/>
+        <location filename="../common/actions.cpp" line="109"/>
         <source>Mini Mode</source>
         <translation>الوضع المصغر</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="97"/>
+        <location filename="../common/actions.cpp" line="115"/>
         <source>Play Mode</source>
         <translation>وضع التشغيل</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="100"/>
+        <location filename="../common/actions.cpp" line="118"/>
         <source>Order Play</source>
         <translation>ترتيب التشغيل</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="101"/>
+        <location filename="../common/actions.cpp" line="119"/>
         <source>Shuffle Play</source>
         <translation>خلط التشغيل</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="102"/>
+        <location filename="../common/actions.cpp" line="120"/>
         <source>Single Play</source>
         <translation>تشغيل مفرد</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="103"/>
+        <location filename="../common/actions.cpp" line="121"/>
         <source>Single Loop</source>
         <translation>تكرار مفرد</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="104"/>
+        <location filename="../common/actions.cpp" line="122"/>
         <source>List Loop</source>
         <translation>تكرار القائمة</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="111"/>
+        <location filename="../common/actions.cpp" line="129"/>
         <source>Frame</source>
         <translation>إطار</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="114"/>
+        <location filename="../common/actions.cpp" line="132"/>
         <source>Default</source>
         <translation>افتراضي</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="122"/>
+        <location filename="../common/actions.cpp" line="140"/>
         <source>Clockwise</source>
         <translation>بإتجاه عقارب الساعة</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="123"/>
+        <location filename="../common/actions.cpp" line="141"/>
         <source>Counterclockwise</source>
         <translation>عكس عقارب الساعة</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="130"/>
+        <location filename="../common/actions.cpp" line="148"/>
         <source>Sound</source>
         <translation>الصوت</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="133"/>
+        <location filename="../common/actions.cpp" line="151"/>
         <source>Channel</source>
         <translation>القناة</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="136"/>
+        <location filename="../common/actions.cpp" line="154"/>
         <source>Stereo</source>
         <translation>استريو</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="137"/>
+        <location filename="../common/actions.cpp" line="155"/>
         <source>Left channel</source>
         <translation>القناة اليسرى</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="138"/>
+        <location filename="../common/actions.cpp" line="156"/>
         <source>Right channel</source>
         <translation>القناة اليمنى</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="144"/>
+        <location filename="../common/actions.cpp" line="162"/>
         <source>Track</source>
         <translation>المسار</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="154"/>
+        <location filename="../common/actions.cpp" line="172"/>
         <source>Subtitle</source>
         <translation>الترجمة</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="155"/>
+        <location filename="../common/actions.cpp" line="173"/>
         <source>Load</source>
         <translation>تحميل</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="156"/>
+        <location filename="../common/actions.cpp" line="174"/>
         <source>Online Search</source>
         <translation>بحث في الانترنت</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="160"/>
+        <location filename="../common/actions.cpp" line="178"/>
         <source>Select</source>
         <translation>تحديد</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="164"/>
+        <location filename="../common/actions.cpp" line="182"/>
         <source>Hide</source>
         <translation>إخفاء</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="168"/>
+        <location filename="../common/actions.cpp" line="186"/>
         <source>Encodings</source>
         <translation>الترميز</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="236"/>
+        <location filename="../common/actions.cpp" line="254"/>
         <source>Screenshot</source>
         <translation>لقطة للشاشة</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="237"/>
+        <location filename="../common/actions.cpp" line="255"/>
         <source>Film Screenshot</source>
         <translation>لقطة شاشة للفلم</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="238"/>
+        <location filename="../common/actions.cpp" line="256"/>
         <source>Burst Shooting</source>
         <translation>إطلاق التدفق </translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="245"/>
+        <location filename="../common/actions.cpp" line="263"/>
         <source>Playlist</source>
         <translation>قائمة التشغيل</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="246"/>
+        <location filename="../common/actions.cpp" line="264"/>
         <source>Film Info</source>
         <translation>معلومات الفلم</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="261"/>
+        <location filename="../common/actions.cpp" line="278"/>
         <source>Clear playlist</source>
         <translation>مسح قائمة التشغيل</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="262"/>
+        <location filename="../common/actions.cpp" line="279"/>
         <source>Display in file manager</source>
         <translation>عرض في مدير الملفات</translation>
     </message>
@@ -448,22 +444,22 @@
 <context>
     <name>dmr::BurstScreenshotsDialog</name>
     <message>
-        <location filename="../widgets/burst_screenshots_dialog.cpp" line="50"/>
+        <location filename="../widgets/burst_screenshots_dialog.cpp" line="88"/>
         <source>duration: %1</source>
         <translation>المدة:  %1</translation>
     </message>
     <message>
-        <location filename="../widgets/burst_screenshots_dialog.cpp" line="56"/>
+        <location filename="../widgets/burst_screenshots_dialog.cpp" line="94"/>
         <source>resolution: %1</source>
         <translation>الدقة :  %1</translation>
     </message>
     <message>
-        <location filename="../widgets/burst_screenshots_dialog.cpp" line="62"/>
+        <location filename="../widgets/burst_screenshots_dialog.cpp" line="100"/>
         <source>size: %1</source>
         <translation>الحجم :  %1</translation>
     </message>
     <message>
-        <location filename="../widgets/burst_screenshots_dialog.cpp" line="85"/>
+        <location filename="../widgets/burst_screenshots_dialog.cpp" line="123"/>
         <source>save</source>
         <translation>حفظ</translation>
     </message>
@@ -471,124 +467,124 @@
 <context>
     <name>dmr::MainWindow</name>
     <message>
-        <location filename="../common/mainwindow.cpp" line="501"/>
-        <location filename="../common/mainwindow.cpp" line="1866"/>
-        <location filename="../common/mainwindow.cpp" line="1959"/>
+        <location filename="../common/mainwindow.cpp" line="582"/>
+        <location filename="../common/mainwindow.cpp" line="2241"/>
+        <location filename="../common/mainwindow.cpp" line="2336"/>
         <source>Deepin Movie</source>
         <translation>أفلام دييبن</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="658"/>
-        <location filename="../common/mainwindow.cpp" line="1435"/>
+        <location filename="../common/mainwindow.cpp" line="736"/>
+        <location filename="../common/mainwindow.cpp" line="1765"/>
         <source>Load successfully</source>
         <translation>تم التحميل بنجاح</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="658"/>
-        <location filename="../common/mainwindow.cpp" line="1435"/>
+        <location filename="../common/mainwindow.cpp" line="736"/>
+        <location filename="../common/mainwindow.cpp" line="1765"/>
         <source>Load failed</source>
         <translation>فشل التحميل</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1080"/>
+        <location filename="../common/mainwindow.cpp" line="1373"/>
         <source>No device found</source>
         <translation>لم يتم العثور على جهاز</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1098"/>
+        <location filename="../common/mainwindow.cpp" line="1391"/>
         <source>Parse Failed</source>
         <translation>فشل التحليل</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1105"/>
+        <location filename="../common/mainwindow.cpp" line="1398"/>
         <source>Open Folder</source>
         <translation>فتح مجلد</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1120"/>
-        <location filename="../common/mainwindow.cpp" line="1136"/>
-        <location filename="../common/mainwindow.cpp" line="1430"/>
+        <location filename="../common/mainwindow.cpp" line="1413"/>
+        <location filename="../common/mainwindow.cpp" line="1429"/>
+        <location filename="../common/mainwindow.cpp" line="1760"/>
         <source>Open File</source>
         <translation>فتح ملف</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1122"/>
-        <location filename="../common/mainwindow.cpp" line="1138"/>
+        <location filename="../common/mainwindow.cpp" line="1415"/>
+        <location filename="../common/mainwindow.cpp" line="1431"/>
         <source>Movies (%1)</source>
         <translation>اﻷفلام (%1)</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1304"/>
+        <location filename="../common/mainwindow.cpp" line="1628"/>
         <source>Muted</source>
         <translation>صامت</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1307"/>
-        <location filename="../common/mainwindow.cpp" line="1319"/>
-        <location filename="../common/mainwindow.cpp" line="1329"/>
-        <location filename="../common/mainwindow.cpp" line="1336"/>
+        <location filename="../common/mainwindow.cpp" line="1631"/>
+        <location filename="../common/mainwindow.cpp" line="1643"/>
+        <location filename="../common/mainwindow.cpp" line="1653"/>
+        <location filename="../common/mainwindow.cpp" line="1660"/>
         <source>Volume: %1%</source>
         <translation>الصوت: %1%</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1395"/>
-        <location filename="../common/mainwindow.cpp" line="1403"/>
+        <location filename="../common/mainwindow.cpp" line="1725"/>
+        <location filename="../common/mainwindow.cpp" line="1733"/>
         <source>Subtitle %1: %2s</source>
         <translation>ترجمة %1 : %2s</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1396"/>
-        <location filename="../common/mainwindow.cpp" line="1404"/>
+        <location filename="../common/mainwindow.cpp" line="1726"/>
+        <location filename="../common/mainwindow.cpp" line="1734"/>
         <source>delayed</source>
         <translation>مؤخر</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1396"/>
-        <location filename="../common/mainwindow.cpp" line="1404"/>
+        <location filename="../common/mainwindow.cpp" line="1726"/>
+        <location filename="../common/mainwindow.cpp" line="1734"/>
         <source>advanced</source>
         <translation>متقدم</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1411"/>
-        <location filename="../common/mainwindow.cpp" line="1418"/>
-        <location filename="../common/mainwindow.cpp" line="1425"/>
+        <location filename="../common/mainwindow.cpp" line="1741"/>
+        <location filename="../common/mainwindow.cpp" line="1748"/>
+        <location filename="../common/mainwindow.cpp" line="1755"/>
         <source>Speed: %1x</source>
         <translation>السرعة: %1x</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1432"/>
+        <location filename="../common/mainwindow.cpp" line="1762"/>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</source>
         <translation>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1489"/>
+        <location filename="../common/mainwindow.cpp" line="1824"/>
         <source>View</source>
         <translation>عرض</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1500"/>
+        <location filename="../common/mainwindow.cpp" line="1835"/>
         <source>Movie Screenshot</source>
         <translation>لقطة شاشة للفيلم</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1501"/>
+        <location filename="../common/mainwindow.cpp" line="1836"/>
         <source>Saved to</source>
         <translation>حفظ في</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1515"/>
-        <location filename="../common/mainwindow.cpp" line="1586"/>
+        <location filename="../common/mainwindow.cpp" line="1850"/>
+        <location filename="../common/mainwindow.cpp" line="1921"/>
         <source>The screenshot is saved</source>
         <translation>تم حفظ لقطة الشاشة</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1515"/>
+        <location filename="../common/mainwindow.cpp" line="1850"/>
         <source>The screenshot is failed to save</source>
         <translation>تعذر حفظ لقطة الشاشة </translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1657"/>
-        <location filename="../common/mainwindow.cpp" line="2255"/>
+        <location filename="../common/mainwindow.cpp" line="2004"/>
+        <location filename="../common/mainwindow.cpp" line="2686"/>
         <source>Invalid file: %1</source>
         <translation>ملف غير صالح : %1</translation>
     </message>
@@ -596,27 +592,27 @@
 <context>
     <name>dmr::MovieInfoDialog</name>
     <message>
-        <location filename="../widgets/movieinfo_dialog.cpp" line="85"/>
+        <location filename="../widgets/movieinfo_dialog.cpp" line="121"/>
         <source>File Type:</source>
         <translation>نوع الملف:</translation>
     </message>
     <message>
-        <location filename="../widgets/movieinfo_dialog.cpp" line="86"/>
+        <location filename="../widgets/movieinfo_dialog.cpp" line="122"/>
         <source>Resolution:</source>
         <translation>الدقة :</translation>
     </message>
     <message>
-        <location filename="../widgets/movieinfo_dialog.cpp" line="87"/>
+        <location filename="../widgets/movieinfo_dialog.cpp" line="123"/>
         <source>File Size:</source>
         <translation>حجم الملف:</translation>
     </message>
     <message>
-        <location filename="../widgets/movieinfo_dialog.cpp" line="88"/>
+        <location filename="../widgets/movieinfo_dialog.cpp" line="124"/>
         <source>Duration:</source>
         <translation>المدة:</translation>
     </message>
     <message>
-        <location filename="../widgets/movieinfo_dialog.cpp" line="91"/>
+        <location filename="../widgets/movieinfo_dialog.cpp" line="129"/>
         <source>File Path:</source>
         <translation>مسار الملف:</translation>
     </message>
@@ -624,8 +620,8 @@
 <context>
     <name>dmr::MpvProxy</name>
     <message>
-        <location filename="../backends/mpv/mpv_proxy.cpp" line="895"/>
-        <location filename="../backends/mpv/mpv_proxy.cpp" line="913"/>
+        <location filename="../backends/mpv/mpv_proxy.cpp" line="1001"/>
+        <location filename="../backends/mpv/mpv_proxy.cpp" line="1019"/>
         <source>[internal]</source>
         <translation>[داخلي]</translation>
     </message>
@@ -633,9 +629,9 @@
 <context>
     <name>dmr::PlayItemWidget</name>
     <message>
-        <location filename="../widgets/playlist_widget.cpp" line="152"/>
-        <location filename="../widgets/playlist_widget.cpp" line="187"/>
-        <location filename="../widgets/playlist_widget.cpp" line="397"/>
+        <location filename="../widgets/playlist_widget.cpp" line="192"/>
+        <location filename="../widgets/playlist_widget.cpp" line="227"/>
+        <location filename="../widgets/playlist_widget.cpp" line="402"/>
         <source>File does not exist</source>
         <translation>الملف غير موجود</translation>
     </message>
@@ -643,12 +639,12 @@
 <context>
     <name>dmr::Settings</name>
     <message>
-        <location filename="../common/dmr_settings.cpp" line="129"/>
+        <location filename="../common/dmr_settings.cpp" line="155"/>
         <source>%1/DMovie%2.jpg</source>
         <translation>%1/DMovie%2.jpg</translation>
     </message>
     <message>
-        <location filename="../common/dmr_settings.cpp" line="135"/>
+        <location filename="../common/dmr_settings.cpp" line="161"/>
         <source>%1/DMovie%2(%3).jpg</source>
         <translation>%1/DMovie%2(%3).jpg</translation>
     </message>
@@ -656,54 +652,54 @@
 <context>
     <name>dmr::ToolboxProxy</name>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="834"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="889"/>
         <source>Play</source>
         <translation>تشغيل</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="654"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="665"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="685"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="696"/>
         <source>Previous</source>
         <translation>السابق</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="655"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="665"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="686"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="696"/>
         <source>Next</source>
         <translation>التالي</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="656"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="666"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="687"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="697"/>
         <source>Subtitles</source>
         <translation>الترجمات</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="657"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="666"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="688"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="697"/>
         <source>Playlist</source>
         <translation>قائمة التشغيل</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="658"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="666"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="821"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="689"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="697"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="876"/>
         <source>Fullscreen</source>
         <translation>ملء الشاشة</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="652"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="665"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="683"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="696"/>
         <source>Play/Pause</source>
         <translation>تشغيل/إيقاف مؤقت</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="818"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="873"/>
         <source>Exit fullscreen</source>
         <translation>خروج من ملء الشاشة</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="831"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="886"/>
         <source>Pause</source>
         <translation>إيقاف مؤقت</translation>
     </message>

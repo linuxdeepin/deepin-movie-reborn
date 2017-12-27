@@ -568,6 +568,7 @@ void ToolboxProxy::setup()
         auto pos = _progBar->mapFromGlobal(QCursor::pos());
         if (!_progBar->geometry().contains(pos)) {
             _previewer->hide();
+            _progBar->forceLeave();
         }
     });
 

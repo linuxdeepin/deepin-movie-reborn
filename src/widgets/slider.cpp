@@ -218,7 +218,12 @@ void DMRSlider::leaveEvent(QEvent *e)
     if (_down) _down = false;
 
     emit leave();
-    e->accept();
+    if (e) e->accept();
+}
+
+void DMRSlider::forceLeave()
+{
+    leaveEvent(NULL);
 }
 
 void DMRSlider::onAnimationStopped()
@@ -279,10 +284,12 @@ void DMRSlider::startAnimation(bool reverse)
 void DMRSlider::enterEvent(QEvent *e)
 {
     if (_indicatorEnabled) {
-        setProperty("Hover", "true");
-        startAnimation(false);
-        _showIndicator = true;
-        update();
+        if (property("Hover") != "true") {
+            setProperty("Hover", "true");
+            startAnimation(false);
+            _showIndicator = true;
+            update();
+        }
     }
     emit enter();
     e->accept();

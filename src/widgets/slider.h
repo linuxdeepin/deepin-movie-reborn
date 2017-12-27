@@ -39,6 +39,9 @@ public:
     virtual ~DMRSlider();
     void setEnableIndication(bool on);
 
+    //workaround
+    void forceLeave();
+
 signals:
     void hoverChanged(int);
     void leave();
