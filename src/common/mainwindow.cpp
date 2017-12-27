@@ -489,7 +489,7 @@ skip_set_cursor:
 
             geom.setWidth(qMax(geom.width(), min.width()));
             geom.setHeight(qMax(geom.height(), min.height()));
-            mw->setGeometry(geom);
+            mw->updateContentGeometry(geom);
             mw->updateGeometryNotification(geom.size());
         }
 
@@ -786,6 +786,30 @@ MainWindow::MainWindow(QWidget *parent)
         _toolbox->windowHandle()->installEventFilter(_listener);
     }
     qDebug() << "event listener";
+#endif
+}
+
+void MainWindow::updateContentGeometry(const QRect& rect)
+{
+#ifdef USE_DXCB
+    auto frame = QWindow::fromWinId(windowHandle()->winId());
+
+    QRect frame_rect = rect;
+    if (_handle) {
+        frame_rect += _handle->frameMargins();
+    }
+
+    const uint32_t values[] = { (uint32_t)frame_rect.x(), (uint32_t)frame_rect.y(),
+        (uint32_t)frame_rect.width(), (uint32_t)frame_rect.height() };
+    // manually configure frame window which will in turn update content window
+    xcb_configure_window(QX11Info::connection(),
+            windowHandle()->winId(),
+            XCB_CONFIG_WINDOW_WIDTH | XCB_CONFIG_WINDOW_HEIGHT |
+            XCB_CONFIG_WINDOW_Y | XCB_CONFIG_WINDOW_X, 
+            values);
+
+#else
+    setGeometry(rect);
 #endif
 }
 
