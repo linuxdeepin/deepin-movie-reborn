@@ -1,3 +1,39 @@
+##  3.2.0 (2017-12-28)
+
+
+#### Bug Fixes
+
+*   minor changes ([dc9306ab](dc9306ab))
+*   to leave progress bar when preview hide ([27b4c9a9](27b4c9a9))
+*   url comparision and signleloop mode ([1bc0f553](1bc0f553))
+*   handle context menu event correctly ([40b2e9ae](40b2e9ae))
+*   optimize drag to resize process ([0e85688f](0e85688f))
+*   use correct font to do text eliding ([172a3537](172a3537))
+*   optimize drop handling ([d4a6bcac](d4a6bcac))
+*   optimize _lastRectInNormalMode tracking ([b97246c9](b97246c9))
+*   should init debug level before instantiation ([78d432e2](78d432e2))
+*   make play state animation smooth ([d4f08feb](d4f08feb))
+*   adjust process of toggleUIMode ([bded982f](bded982f))
+*   check and emit an enter when necessary ([71ba3b88](71ba3b88))
+*   remove over-detailed CMakeLists options ([ee9fad4e](ee9fad4e))
+*   sliderMoved occasionally isn't signalled ([9b0d1047](9b0d1047))
+*   potential conflict with kwin ([bd43d2df](bd43d2df))
+*   Adapt lintian ([128cc039](128cc039))
+
+#### Features
+
+*   update shadow with focus change ([dac097c6](dac097c6))
+*   support dxcb mode ([3c97643e](3c97643e))
+*   quit fs to maximized state if it was ([fcf13d3f](fcf13d3f))
+*   remember playlist position when quit ([c7d8fe1b](c7d8fe1b))
+*   play state animation ([d2f68123](d2f68123))
+*   dynamic slider expansion animation ([e89450f7](e89450f7))
+* **dxcb:**
+  *  smooth resizing ([d68be4e7](d68be4e7))
+  *  better dxcb support ([b7171b1c](b7171b1c))
+
+
+
 ##  3.1.1 (2017-12-13)
 
 
