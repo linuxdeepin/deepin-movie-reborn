@@ -149,6 +149,8 @@ protected slots:
     void handleHelpAction();
 
 private:
+    void setupTitlebar();
+
     void startPlayStateAnimation(bool play);
     void handleSettings();
     void updateSizeConstraints();

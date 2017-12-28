@@ -550,44 +550,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     setContentsMargins(0, 0, 0, 0);
 
-    _titlebar = new Titlebar(this);
-#ifdef USE_DXCB
-    _titlebar->move(0, 0);
-#else
-    _titlebar->move(1, 1);
-#endif
-    _titlebar->setFixedHeight(30);
-    _titlebar->layout()->setContentsMargins(0, 0, 6, 0);
-    _titlebar->setFocusPolicy(Qt::NoFocus);
-    if (!composited) {
-        _titlebar->setAttribute(Qt::WA_NativeWindow);
-        _titlebar->winId();
-    }
-    _titlebar->setMenu(ActionFactory::get().titlebarMenu());
-    {
-        auto dpr = qApp->devicePixelRatio();
-        int w2 = 24 * dpr;
-        int w = 16 * dpr;
-        //hack: titlebar fixed icon size to (24x24), but we need (16x16)
-        auto logo = QPixmap(":/resources/icons/logo.svg")
-            .scaled(w, w, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-        logo.setDevicePixelRatio(dpr);
-        QPixmap pm(w2, w2);
-        pm.setDevicePixelRatio(dpr);
-        pm.fill(Qt::transparent);
-        QPainter p(&pm);
-        p.drawPixmap((w2-w)/2, (w2-w)/2, logo);
-        p.end();
-        _titlebar->setIcon(pm);
-        _titlebar->setTitle(tr("Deepin Movie"));
-    }
-
-    {
-        auto help = new QShortcut(QKeySequence(Qt::Key_F1), this);
-        help->setContext(Qt::ApplicationShortcut);
-        connect(help, &QShortcut::activated, this, &MainWindow::handleHelpAction);
-    }
-
+    setupTitlebar();
 
     auto& clm = dmr::CommandLineManager::get();
     if (clm.debug()) {
@@ -621,7 +584,6 @@ MainWindow::MainWindow(QWidget *parent)
         });
     });
 
-    connect(_titlebar->menu(), &QMenu::triggered, this, &MainWindow::menuItemInvoked);
     connect(ActionFactory::get().mainContextMenu(), &QMenu::triggered, 
             this, &MainWindow::menuItemInvoked);
     connect(ActionFactory::get().playlistContextMenu(), &QMenu::triggered, 
@@ -787,6 +749,49 @@ MainWindow::MainWindow(QWidget *parent)
     }
     qDebug() << "event listener";
 #endif
+}
+
+void MainWindow::setupTitlebar()
+{
+    _titlebar = new Titlebar(this);
+#ifdef USE_DXCB
+    _titlebar->move(0, 0);
+#else
+    _titlebar->move(1, 1);
+#endif
+    _titlebar->setFixedHeight(30);
+    _titlebar->layout()->setContentsMargins(0, 0, 6, 0);
+    _titlebar->setFocusPolicy(Qt::NoFocus);
+    if (!CompositingManager::get().composited()) {
+        _titlebar->setAttribute(Qt::WA_NativeWindow);
+        _titlebar->winId();
+    }
+    _titlebar->setMenu(ActionFactory::get().titlebarMenu());
+    {
+        auto dpr = qApp->devicePixelRatio();
+        int w2 = 24 * dpr;
+        int w = 16 * dpr;
+        //hack: titlebar fixed icon size to (24x24), but we need (16x16)
+        auto logo = QPixmap(":/resources/icons/logo.svg")
+            .scaled(w, w, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        logo.setDevicePixelRatio(dpr);
+        QPixmap pm(w2, w2);
+        pm.setDevicePixelRatio(dpr);
+        pm.fill(Qt::transparent);
+        QPainter p(&pm);
+        p.drawPixmap((w2-w)/2, (w2-w)/2, logo);
+        p.end();
+        _titlebar->setIcon(pm);
+        _titlebar->setTitle(tr("Deepin Movie"));
+    }
+
+    {
+        auto help = new QShortcut(QKeySequence(Qt::Key_F1), this);
+        help->setContext(Qt::ApplicationShortcut);
+        connect(help, &QShortcut::activated, this, &MainWindow::handleHelpAction);
+    }
+
+    connect(_titlebar->menu(), &QMenu::triggered, this, &MainWindow::menuItemInvoked);
 }
 
 void MainWindow::updateContentGeometry(const QRect& rect)
@@ -2120,7 +2125,8 @@ void MainWindow::suspendToolsWindow()
         } else {
             // menus  are popped up
             // NOTE: menu keeps focus while hidden, so focusWindow is not used
-            if (ActionFactory::get().mainContextMenu()->isVisible())
+            if (ActionFactory::get().mainContextMenu()->isVisible() ||
+                    ActionFactory::get().titlebarMenu()->isVisible())
                 return;
             //if (qApp->focusWindow() != windowHandle())
                 //return;
@@ -2412,7 +2418,6 @@ void MainWindow::mouseDoubleClickEvent(QMouseEvent *ev)
 {
     if (!_miniMode && !_inBurstShootMode) {
         _delayedMouseReleaseTimer.stop();
-        _mousePressed = false;
         if (_engine->state() == PlayerEngine::Idle) {
             requestAction(ActionFactory::StartPlay);
         } else {
@@ -2441,6 +2446,11 @@ bool MainWindow::insideResizeArea(const QPoint& global_p)
 
 void MainWindow::mouseReleaseEvent(QMouseEvent *ev)
 {
+    if (!_mousePressed) {
+        _afterDblClick = false;
+        _mouseMoved = false;
+    }
+
     if (qApp->focusWindow() == 0 || !_mousePressed) return;
 
     _mousePressed = false;
