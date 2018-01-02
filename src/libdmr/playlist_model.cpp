@@ -190,9 +190,17 @@ public:
         
         if (ci.mi_valid) {
             auto filename = QString("%1/%2").arg(_pixmapCachePath).arg(h);
-            ci.thumb = QPixmap(filename);
-            ci.thumb.setDevicePixelRatio(qApp->devicePixelRatio());
-            ci.thumb_valid = !ci.thumb.isNull();
+            QFile f(filename);
+            if (!f.exists()) return ci;
+
+            if (f.open(QIODevice::ReadOnly)) {
+                QDataStream ds(&f);
+                ds >> ci.thumb;
+                ci.thumb.setDevicePixelRatio(qApp->devicePixelRatio());
+                ci.thumb_valid = !ci.thumb.isNull();
+            } else {
+                qWarning() << f.errorString();
+            }
         }
 
         return ci;
