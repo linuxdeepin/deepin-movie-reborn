@@ -1,3 +1,12 @@
+##  3.2.0.1 (2018-01-02)
+
+
+#### Bug Fixes
+
+*   load from cached thumb stream ([b437995e](b437995e))
+
+
+
 ##  3.2.0 (2017-12-28)
 
 
