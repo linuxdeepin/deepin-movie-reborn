@@ -184,9 +184,9 @@ namespace dmr {
         connect(this, &QOpenGLWidget::frameSwapped, 
                 this, &MpvGLWidget::onFrameSwapped, Qt::DirectConnection);
 
-        auto fmt = QSurfaceFormat::defaultFormat();
-        fmt.setAlphaBufferSize(8);
-        this->setFormat(fmt);
+        //auto fmt = QSurfaceFormat::defaultFormat();
+        //fmt.setAlphaBufferSize(8);
+        //this->setFormat(fmt);
     }
 
     MpvGLWidget::~MpvGLWidget() 

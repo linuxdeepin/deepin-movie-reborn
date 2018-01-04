@@ -33,6 +33,22 @@
                             "default": 0
                         },
                         {
+                            "key": "forced_interop",
+                            "name": "",
+                            "hide": true,
+                            "reset": false,
+                            "type": "lineedit",
+                            "default": ""
+                        },
+                        {
+                            "key": "disable_interop",
+                            "name": "",
+                            "hide": true,
+                            "reset": false,
+                            "type": "checkbox",
+                            "default": false
+                        },
+                        {
                             "key": "emptylist",
                             "name": "",
                             "type": "checkbox",

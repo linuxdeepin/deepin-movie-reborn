@@ -31,8 +31,11 @@
 #define _DMR_COMPOSITING_MANAGER 
 
 #include <QtCore>
+#include <string>
+#include <vector>
 
 namespace dmr {
+
 enum Platform {
     Unknown,
     X86,  // intel & amd
@@ -85,6 +88,10 @@ class CompositingManager: public QObject {
         CompositingManager();
         bool isDriverLoadedCorrectly();
         bool isDirectRendered();
+        bool isProprietaryDriver();
+
+        bool is_device_viable(int id);
+        bool is_card_exists(const std::vector<std::string>& drivers);
 
         bool _composited {false};
         Platform _platform {Platform::Unknown};

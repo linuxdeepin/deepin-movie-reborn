@@ -35,7 +35,9 @@
 #endif
 
 #include <iostream>
+#include <unistd.h>
 #include <QtCore>
+#include <QtGui>
 #include <QX11Info>
 
 #define GLX_GLXEXT_PROTOTYPES
@@ -111,6 +113,8 @@ CompositingManager::CompositingManager() {
 
     if (QProcessEnvironment::systemEnvironment().value("SANDBOX") == "flatpak") {
         _composited = QFile::exists("/dev/dri/card0");
+    } else if (isProprietaryDriver()) {
+        _composited = true;
     } else {
         GetScreenDriver = (glXGetScreenDriver_t *)glXGetProcAddressARB ((const GLubyte *)"glXGetScreenDriver");
         if (GetScreenDriver) {
@@ -250,6 +254,65 @@ void CompositingManager::overrideCompositeMode(bool useCompositing)
     }
 }
 
+using namespace std;
+
+bool CompositingManager::is_card_exists(const vector<string>& drivers) {
+    char buf[1024] = {0};
+    int id = 0;
+    snprintf(buf, sizeof buf, "/sys/class/drm/card%d/device/driver", id);
+
+    char buf2[1024] = {0};
+    if (readlink(buf, buf2, sizeof buf2) < 0) {
+        return false;
+    }
+
+    string driver = basename(buf2);
+    qDebug() << "drm driver " << driver.c_str();
+    if (std::any_of(drivers.cbegin(), drivers.cend(), [=](string s) { return s == driver; })) {
+        return true;
+    } 
+
+    return false;
+}
+
+bool CompositingManager::is_device_viable(int id) {
+    char path[128];
+    snprintf(path, sizeof path, "/sys/class/drm/card%d", id);
+    if (access(path, F_OK) != 0) {
+        return false;
+    }
+
+    //OK, on shenwei, this file may have no read permission for group/other.
+    char buf[512];
+    snprintf(buf, sizeof buf, "%s/device/enable", path);
+    if (access(buf, R_OK) == 0) {
+        FILE* fp = fopen(buf, "r");
+        if (!fp) {
+            return false;
+        }
+
+        int enabled = 0;
+        fscanf(fp, "%d", &enabled);
+        fclose(fp);
+
+        // nouveau write 2, others 1
+        return enabled > 0;
+    }
+
+    return false;
+}
+
+bool CompositingManager::isProprietaryDriver()
+{
+    if (is_device_viable(0)) {
+        vector<string> drivers = {"nvidia", "fglrx"};
+        return is_card_exists(drivers);
+    }
+
+    return false;
+}
+
+//this is not accurate when proprietary driver used
 bool CompositingManager::isDirectRendered() {
     QProcess xdriinfo;
     xdriinfo.start("xdriinfo driver 0");

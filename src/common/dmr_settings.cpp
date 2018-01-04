@@ -172,5 +172,16 @@ void Settings::setInternalOption(const QString& opt, const QVariant& v)
     settings()->setOption(QString("base.play.%1").arg(opt), v);
     settings()->sync();
 }
+
+QString Settings::forcedInterop()
+{
+    return internalOption("forced_interop").toString();
+}
+
+bool Settings::disableInterop()
+{
+    return internalOption("disable_interop").toBool();
+}
+
 }
 
