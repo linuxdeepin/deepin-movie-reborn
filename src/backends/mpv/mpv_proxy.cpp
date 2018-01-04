@@ -149,22 +149,38 @@ mpv_handle* MpvProxy::mpv_init()
 #else
     if (Settings::get().isSet(Settings::HWAccel)) {
         if (composited) {
-            const char* interop = "auto";
+            auto disable = Settings::get().disableInterop();
+            auto forced = Settings::get().forcedInterop();
+
+            auto interop = QString::fromUtf8("auto");
             switch (CompositingManager::get().interopKind()) {
                 case OpenGLInteropKind::INTEROP_VAAPI_EGL:
-                    interop = "vaapi-egl"; break;
+                    interop = QString::fromUtf8("vaapi-egl"); break;
 
                 case OpenGLInteropKind::INTEROP_VAAPI_GLX:
-                    interop = "vaapi-glx"; break;
-                    
+                    interop = QString::fromUtf8("vaapi-glx"); break;
+
                 case OpenGLInteropKind::INTEROP_VDPAU_GLX:
-                    interop = "vdpau-glx"; break;
+                    interop = QString::fromUtf8("vdpau-glx"); break;
 
                 default: break;
 
             }
-            set_property(h, "opengl-hwdec-interop", interop);
-            qDebug() << "-------- set opengl-hwdec-interop = " << interop;
+
+            if (!forced.isEmpty()) {
+                QStringList valids {"vaapi-egl", "vaapi-glx", "vdpau-glx", "auto"};
+                if (valids.contains(forced)) {
+                    interop = forced;
+                }
+            }
+
+            if (!disable) {
+                set_property(h, "opengl-hwdec-interop", interop.toUtf8().constData());
+                qDebug() << "-------- set opengl-hwdec-interop = " << interop 
+                    << (forced.isEmpty() ? "[detected]" : "[forced]");
+            } else {
+                qDebug() << "-------- opengl-hwdec-interop is disabled by user";
+            }
         }
         set_property(h, "hwdec", "auto");
     } else {
