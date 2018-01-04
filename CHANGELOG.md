@@ -1,3 +1,12 @@
+##  3.2.0.2 (2018-01-04)
+
+
+#### Features
+
+*   provide better interop support ([78cb8159](78cb8159))
+
+
+
 ##  3.2.0.1 (2018-01-02)
 
 
