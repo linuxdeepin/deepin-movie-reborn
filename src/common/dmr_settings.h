@@ -67,6 +67,11 @@ class Settings: public QObject {
         void setInternalOption(const QString& opt, const QVariant& v);
         QVariant internalOption(const QString& opt);
 
+        // user override for mpv opengl interop
+        QString forcedInterop();
+        // disable interop at all
+        bool disableInterop();
+
         // convient helpers
 
         bool isSet(Flag f) const;

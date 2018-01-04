@@ -529,7 +529,7 @@ MainWindow::MainWindow(QWidget *parent)
 #ifdef USE_DXCB
     if (DApplication::isDXcbPlatform()) {
         _handle = new DPlatformWindowHandle(this, this);
-        setAttribute(Qt::WA_TranslucentBackground, true);
+        //setAttribute(Qt::WA_TranslucentBackground, true);
         //if (composited)
             //_handle->setTranslucentBackground(true);
         _handle->setEnableSystemResize(false);
