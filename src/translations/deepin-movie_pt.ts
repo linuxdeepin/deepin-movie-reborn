@@ -1,18 +1,31 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="pt">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="pt" version="2.1">
 <context>
     <name>QObject</name>
     <message>
         <location filename="../main.cpp" line="85"/>
         <location filename="../main.cpp" line="117"/>
         <source>Deepin Movie</source>
-        <translation>Filme Deepin</translation>
+        <translation>Deepin Movie</translation>
     </message>
     <message>
         <location filename="../main.cpp" line="86"/>
         <source>Deepin Movie is a well-designed and full-featured video player with simple borderless design. It supports local and streaming media play with multiple video formats.</source>
-        <translation>Filme Deepin é um reprodutor de vídeo completo e bem concebido, com um design simples e sem rebordo. Suporta reprodução local e streaming de mídia em múltiplos formatos de vídeo.</translation>
+        <translation>O Deepin Movie é um reprodutor de vídeo completo e bem concebido, com um design simples e sem rebordo. Suporta reprodução local e remota de média em múltiplos formatos de vídeo.</translation>
+    </message>
+    <message>
+        <location filename="../common/mainwindow.cpp" line="116"/>
+        <source>Invalid folder</source>
+        <translation>Pasta inválida</translation>
+    </message>
+    <message>
+        <location filename="../common/mainwindow.cpp" line="130"/>
+        <source>Open Folder</source>
+        <translation>Abrir Pasta</translation>
+    </message>
+    <message>
+        <location filename="../common/mainwindow.cpp" line="121"/>
+        <source>You don&apos;t have permission to operate this folder</source>
+        <translation>Não tem permissão para interagir com esta pasta</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="5"/>
@@ -205,21 +218,6 @@
         <location filename="../common/settings_translation.cpp" line="44"/>
         <source>Font Size</source>
         <translation>Tamanho da Letra</translation>
-    </message>
-    <message>
-        <location filename="../common/mainwindow.cpp" line="116"/>
-        <source>Invalid folder</source>
-        <translation>Pasta inválida</translation>
-    </message>
-    <message>
-        <location filename="../common/mainwindow.cpp" line="130"/>
-        <source>Open Folder</source>
-        <translation>Abrir Pasta</translation>
-    </message>
-    <message>
-        <location filename="../common/mainwindow.cpp" line="121"/>
-        <source>You don&apos;t have permission to operate this folder</source>
-        <translation>Não tem permissão para interagir com esta pasta</translation>
     </message>
 </context>
 <context>
@@ -471,7 +469,7 @@
         <location filename="../common/mainwindow.cpp" line="2271"/>
         <location filename="../common/mainwindow.cpp" line="2366"/>
         <source>Deepin Movie</source>
-        <translation>Filme Deepin</translation>
+        <translation>Deepin Movie</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="698"/>

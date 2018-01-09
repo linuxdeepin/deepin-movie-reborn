@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="uk">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="uk" version="2.1">
 <context>
     <name>QObject</name>
     <message>
@@ -13,6 +11,21 @@
         <location filename="../main.cpp" line="86"/>
         <source>Deepin Movie is a well-designed and full-featured video player with simple borderless design. It supports local and streaming media play with multiple video formats.</source>
         <translation>Deepin Movie це добре спроектований повністю оснащений відео програвач з простим безмежним дизайном. Він підтримує локальне та потокове відтворення мультимедіа у кількох відео форматах.</translation>
+    </message>
+    <message>
+        <location filename="../common/mainwindow.cpp" line="116"/>
+        <source>Invalid folder</source>
+        <translation>Недійсна тека</translation>
+    </message>
+    <message>
+        <location filename="../common/mainwindow.cpp" line="130"/>
+        <source>Open Folder</source>
+        <translation>Відкрити теку</translation>
+    </message>
+    <message>
+        <location filename="../common/mainwindow.cpp" line="121"/>
+        <source>You don&apos;t have permission to operate this folder</source>
+        <translation>Ви не маєте права керувати цією текою</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="5"/>
@@ -205,21 +218,6 @@
         <location filename="../common/settings_translation.cpp" line="44"/>
         <source>Font Size</source>
         <translation>Розмір шрифту</translation>
-    </message>
-    <message>
-        <location filename="../common/mainwindow.cpp" line="116"/>
-        <source>Invalid folder</source>
-        <translation>Недійсна тека</translation>
-    </message>
-    <message>
-        <location filename="../common/mainwindow.cpp" line="130"/>
-        <source>Open Folder</source>
-        <translation>Відкрити теку</translation>
-    </message>
-    <message>
-        <location filename="../common/mainwindow.cpp" line="121"/>
-        <source>You don&apos;t have permission to operate this folder</source>
-        <translation>Ви не маєте права керувати цією текою</translation>
     </message>
 </context>
 <context>

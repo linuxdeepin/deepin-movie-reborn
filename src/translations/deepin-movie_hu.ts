@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="hu">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="hu" version="2.1">
 <context>
     <name>QObject</name>
     <message>
@@ -13,6 +11,21 @@
         <location filename="../main.cpp" line="86"/>
         <source>Deepin Movie is a well-designed and full-featured video player with simple borderless design. It supports local and streaming media play with multiple video formats.</source>
         <translation>A Deepin Film egy jól megtervezett és funkciókban gazdag lejátszó, keret nélküli megjelenéssel. Számos videó formátum lejátszását támogatja helyi lejátszás és streaming formájában is.</translation>
+    </message>
+    <message>
+        <location filename="../common/mainwindow.cpp" line="116"/>
+        <source>Invalid folder</source>
+        <translation>Érvénytelen könyvtár</translation>
+    </message>
+    <message>
+        <location filename="../common/mainwindow.cpp" line="130"/>
+        <source>Open Folder</source>
+        <translation>Mappa megnyitása</translation>
+    </message>
+    <message>
+        <location filename="../common/mainwindow.cpp" line="121"/>
+        <source>You don&apos;t have permission to operate this folder</source>
+        <translation>Nincs engedélye a mappa használatához</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="5"/>
@@ -205,21 +218,6 @@
         <location filename="../common/settings_translation.cpp" line="44"/>
         <source>Font Size</source>
         <translation>Betű méret</translation>
-    </message>
-    <message>
-        <location filename="../common/mainwindow.cpp" line="116"/>
-        <source>Invalid folder</source>
-        <translation>Érvénytelen könyvtár</translation>
-    </message>
-    <message>
-        <location filename="../common/mainwindow.cpp" line="130"/>
-        <source>Open Folder</source>
-        <translation>Mappa megnyitása</translation>
-    </message>
-    <message>
-        <location filename="../common/mainwindow.cpp" line="121"/>
-        <source>You don&apos;t have permission to operate this folder</source>
-        <translation>Nincs engedélye a mappa használatához</translation>
     </message>
 </context>
 <context>

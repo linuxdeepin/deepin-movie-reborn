@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="it">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="it" version="2.1">
 <context>
     <name>QObject</name>
     <message>
@@ -14,6 +12,21 @@
         <source>Deepin Movie is a well-designed and full-featured video player with simple borderless design. It supports local and streaming media play with multiple video formats.</source>
         <translation>Deepin Movie è un meraviglioso e funzionale player video dal design borderless. Offre il supporto per riproduzioni video locali e streaming, inoltre riconosce diversi formati video.
 Localizzazione italiana a cura di Carofano Massimo Antonio.</translation>
+    </message>
+    <message>
+        <location filename="../common/mainwindow.cpp" line="116"/>
+        <source>Invalid folder</source>
+        <translation>Cartella non valida</translation>
+    </message>
+    <message>
+        <location filename="../common/mainwindow.cpp" line="130"/>
+        <source>Open Folder</source>
+        <translation>Apri cartella</translation>
+    </message>
+    <message>
+        <location filename="../common/mainwindow.cpp" line="121"/>
+        <source>You don&apos;t have permission to operate this folder</source>
+        <translation>Non hai i permessi per utilizzare questa cartella</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="5"/>
@@ -206,21 +219,6 @@ Localizzazione italiana a cura di Carofano Massimo Antonio.</translation>
         <location filename="../common/settings_translation.cpp" line="44"/>
         <source>Font Size</source>
         <translation>Dimensione font</translation>
-    </message>
-    <message>
-        <location filename="../common/mainwindow.cpp" line="116"/>
-        <source>Invalid folder</source>
-        <translation>Cartella non valida</translation>
-    </message>
-    <message>
-        <location filename="../common/mainwindow.cpp" line="130"/>
-        <source>Open Folder</source>
-        <translation>Apri cartella</translation>
-    </message>
-    <message>
-        <location filename="../common/mainwindow.cpp" line="121"/>
-        <source>You don&apos;t have permission to operate this folder</source>
-        <translation>Non hai i permessi per utilizzare questa cartella</translation>
     </message>
 </context>
 <context>

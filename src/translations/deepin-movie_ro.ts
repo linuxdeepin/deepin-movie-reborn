@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="ro">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="ro" version="2.1">
 <context>
     <name>QObject</name>
     <message>
@@ -12,27 +10,42 @@
     <message>
         <location filename="../main.cpp" line="86"/>
         <source>Deepin Movie is a well-designed and full-featured video player with simple borderless design. It supports local and streaming media play with multiple video formats.</source>
-        <translation>Player-ul video Deepin este un player video bine gândit, cu un design simplu fără margini împrejur. Suportă redarea fişierelor media atât locale cât  şi cele on-line  de diferite formate video.</translation>
+        <translation>Player-ul video Deepin este un player video bine proiectat, cu o suită completă de opțiuni și un design simplu fără margini. Suportă redarea fişierelor media de diferite formate video, atât locale cât şi din rețea.</translation>
+    </message>
+    <message>
+        <location filename="../common/mainwindow.cpp" line="116"/>
+        <source>Invalid folder</source>
+        <translation>Dosar invalid</translation>
+    </message>
+    <message>
+        <location filename="../common/mainwindow.cpp" line="130"/>
+        <source>Open Folder</source>
+        <translation>Deschidere Dosar</translation>
+    </message>
+    <message>
+        <location filename="../common/mainwindow.cpp" line="121"/>
+        <source>You don&apos;t have permission to operate this folder</source>
+        <translation>Nu aveți permisiunea necesară pentru a efectua operațiuni în acest dosar.</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="5"/>
         <source>Auto add similar files to play</source>
-        <translation type="unfinished"></translation>
+        <translation>Adaugă automat fișiere similare în lista de redare</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="6"/>
         <source>Clear playlist when exit</source>
-        <translation type="unfinished"></translation>
+        <translation>Golire lista de redare la ieșire</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="7"/>
         <source>Show video preview on mouseover</source>
-        <translation type="unfinished"></translation>
+        <translation>Arată o previzualizare a video-ului când se trece cu mouse-ul peste</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="8"/>
         <source>Open a new player for each file played</source>
-        <translation type="unfinished"></translation>
+        <translation>Deschide o fereastră nouă pentru fiecare fișier redat</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="9"/>
@@ -42,17 +55,17 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="10"/>
         <source>Remember playback position</source>
-        <translation type="unfinished"></translation>
+        <translation>Memorare poziție redare</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="11"/>
         <source>Path</source>
-        <translation type="unfinished"></translation>
+        <translation>Cale fișier</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="12"/>
         <source>Basic</source>
-        <translation type="unfinished"></translation>
+        <translation>Simplu</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="13"/>
@@ -68,7 +81,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="15"/>
         <source>Shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Scurtături</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="16"/>
@@ -89,17 +102,17 @@
         <location filename="../common/settings_translation.cpp" line="20"/>
         <location filename="../common/settings_translation.cpp" line="21"/>
         <source>Subtitle</source>
-        <translation type="unfinished"></translation>
+        <translation>Subtitrări</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="22"/>
         <source>Font Style</source>
-        <translation type="unfinished"></translation>
+        <translation>Stil font</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="23"/>
         <source>Restore Defaults</source>
-        <translation type="unfinished"></translation>
+        <translation>Restaurare setări implicite</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="24"/>
@@ -119,37 +132,37 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="27"/>
         <source>Mini mode</source>
-        <translation>Minimizare fereastra</translation>
+        <translation>Minimalizare fereastră</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="28"/>
         <source>Mute</source>
-        <translation>Mut</translation>
+        <translation>Mute</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="29"/>
         <source>volume down</source>
-        <translation type="unfinished"></translation>
+        <translation>Scade volumul</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="30"/>
         <source>Volume up</source>
-        <translation>Mărirea volumului</translation>
+        <translation>Crește volumul</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="31"/>
         <source>Speed up</source>
-        <translation type="unfinished"></translation>
+        <translation>Mărește viteza de redare</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="32"/>
         <source>Speed down</source>
-        <translation type="unfinished"></translation>
+        <translation>Scade viteza de redare</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="33"/>
         <source>Fullscreen</source>
-        <translation>Tot ecranul</translation>
+        <translation>Redare ecran complet</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="34"/>
@@ -164,7 +177,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="36"/>
         <source>Reset speed</source>
-        <translation type="unfinished"></translation>
+        <translation>Resetează viteza de redare</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="37"/>
@@ -184,17 +197,17 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="40"/>
         <source>Film screenshot</source>
-        <translation type="unfinished"></translation>
+        <translation>Captură ecran video</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="41"/>
         <source>0.5s backward</source>
-        <translation type="unfinished"></translation>
+        <translation>0.5s înapoi</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="42"/>
         <source>0.5s forward</source>
-        <translation type="unfinished"></translation>
+        <translation>0.5s înainte</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="43"/>
@@ -204,22 +217,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="44"/>
         <source>Font Size</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../common/mainwindow.cpp" line="116"/>
-        <source>Invalid folder</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../common/mainwindow.cpp" line="130"/>
-        <source>Open Folder</source>
-        <translation>Deschidere Fişier</translation>
-    </message>
-    <message>
-        <location filename="../common/mainwindow.cpp" line="121"/>
-        <source>You don&apos;t have permission to operate this folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Mărime font</translation>
     </message>
 </context>
 <context>
@@ -227,17 +225,17 @@
     <message>
         <location filename="../widgets/url_dialog.cpp" line="41"/>
         <source>Cancel</source>
-        <translation>Anulează</translation>
+        <translation>Anulare</translation>
     </message>
     <message>
         <location filename="../widgets/url_dialog.cpp" line="42"/>
         <source>Confirm</source>
-        <translation>Confirmă</translation>
+        <translation>Confirmare</translation>
     </message>
     <message>
         <location filename="../widgets/url_dialog.cpp" line="46"/>
         <source>Please enter the URL:</source>
-        <translation type="unfinished"></translation>
+        <translation>Introduceți adresă URL</translation>
     </message>
 </context>
 <context>
@@ -246,7 +244,7 @@
         <location filename="../common/actions.cpp" line="82"/>
         <location filename="../common/actions.cpp" line="102"/>
         <source>Open File</source>
-        <translation type="unfinished"></translation>
+        <translation>Deschide fișier</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="84"/>
@@ -257,28 +255,28 @@
     <message>
         <location filename="../common/actions.cpp" line="85"/>
         <source>Light Theme</source>
-        <translation type="unfinished"></translation>
+        <translation>Fundal alb</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="108"/>
         <source>Fullscreen</source>
-        <translation>Tot ecranul</translation>
+        <translation>Redare ecran complet</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="110"/>
         <source>Always on Top</source>
-        <translation type="unfinished"></translation>
+        <translation>Mereu deasupra programelor</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="280"/>
         <source>Film info</source>
-        <translation type="unfinished"></translation>
+        <translation>Informație video</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="83"/>
         <location filename="../common/actions.cpp" line="103"/>
         <source>Open Folder</source>
-        <translation>Deschidere Fişier</translation>
+        <translation>Deschidere dosar</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="104"/>
@@ -288,7 +286,7 @@
     <message>
         <location filename="../common/actions.cpp" line="105"/>
         <source>Open CD/DVD</source>
-        <translation type="unfinished"></translation>
+        <translation>Deschide CD/DVD</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="109"/>
@@ -298,32 +296,32 @@
     <message>
         <location filename="../common/actions.cpp" line="115"/>
         <source>Play Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Mod redare</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="118"/>
         <source>Order Play</source>
-        <translation type="unfinished"></translation>
+        <translation>Redare în ordine</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="119"/>
         <source>Shuffle Play</source>
-        <translation type="unfinished"></translation>
+        <translation>Redare aleatorie</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="120"/>
         <source>Single Play</source>
-        <translation type="unfinished"></translation>
+        <translation>Redă un singur fisier</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="121"/>
         <source>Single Loop</source>
-        <translation type="unfinished"></translation>
+        <translation>Redă video-ul fără pauză</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="122"/>
         <source>List Loop</source>
-        <translation type="unfinished"></translation>
+        <translation>Redă lista fără pauză</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="129"/>
@@ -338,12 +336,12 @@
     <message>
         <location filename="../common/actions.cpp" line="140"/>
         <source>Clockwise</source>
-        <translation type="unfinished"></translation>
+        <translation>Rotire la dreapta</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="141"/>
         <source>Counterclockwise</source>
-        <translation type="unfinished"></translation>
+        <translation>Rotire la stânga</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="148"/>
@@ -363,12 +361,12 @@
     <message>
         <location filename="../common/actions.cpp" line="155"/>
         <source>Left channel</source>
-        <translation type="unfinished"></translation>
+        <translation>Canal audio stanga</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="156"/>
         <source>Right channel</source>
-        <translation type="unfinished"></translation>
+        <translation>Canal audio dreapta</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="162"/>
@@ -378,17 +376,17 @@
     <message>
         <location filename="../common/actions.cpp" line="172"/>
         <source>Subtitle</source>
-        <translation type="unfinished"></translation>
+        <translation>Subtitrări</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="173"/>
         <source>Load</source>
-        <translation type="unfinished"></translation>
+        <translation>Încarcare</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="174"/>
         <source>Online Search</source>
-        <translation type="unfinished"></translation>
+        <translation>Căutare online</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="178"/>
@@ -398,12 +396,12 @@
     <message>
         <location filename="../common/actions.cpp" line="182"/>
         <source>Hide</source>
-        <translation type="unfinished"></translation>
+        <translation>Ascundere</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="186"/>
         <source>Encodings</source>
-        <translation type="unfinished"></translation>
+        <translation>Compresie</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="254"/>
@@ -413,12 +411,12 @@
     <message>
         <location filename="../common/actions.cpp" line="255"/>
         <source>Film Screenshot</source>
-        <translation type="unfinished"></translation>
+        <translation>Captură ecran video</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="256"/>
         <source>Burst Shooting</source>
-        <translation type="unfinished"></translation>
+        <translation>Captură ecran rafală</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="263"/>
@@ -428,17 +426,17 @@
     <message>
         <location filename="../common/actions.cpp" line="264"/>
         <source>Film Info</source>
-        <translation type="unfinished"></translation>
+        <translation>Informație video</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="278"/>
         <source>Clear playlist</source>
-        <translation>Golire lista de redare</translation>
+        <translation>Golire listă de redare</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="279"/>
         <source>Display in file manager</source>
-        <translation type="unfinished"></translation>
+        <translation>Deschide în managerul de fișiere</translation>
     </message>
 </context>
 <context>
@@ -446,22 +444,22 @@
     <message>
         <location filename="../widgets/burst_screenshots_dialog.cpp" line="88"/>
         <source>duration: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>durată: %1</translation>
     </message>
     <message>
         <location filename="../widgets/burst_screenshots_dialog.cpp" line="94"/>
         <source>resolution: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>rezoluție: %1</translation>
     </message>
     <message>
         <location filename="../widgets/burst_screenshots_dialog.cpp" line="100"/>
         <source>size: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>mărime: %1</translation>
     </message>
     <message>
         <location filename="../widgets/burst_screenshots_dialog.cpp" line="123"/>
         <source>save</source>
-        <translation type="unfinished"></translation>
+        <translation>salvare</translation>
     </message>
 </context>
 <context>
@@ -477,46 +475,46 @@
         <location filename="../common/mainwindow.cpp" line="698"/>
         <location filename="../common/mainwindow.cpp" line="1794"/>
         <source>Load successfully</source>
-        <translation type="unfinished"></translation>
+        <translation>Încărcare efectuată cu succes</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="698"/>
         <location filename="../common/mainwindow.cpp" line="1794"/>
         <source>Load failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Încărcare eșuată</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1402"/>
         <source>No device found</source>
-        <translation type="unfinished"></translation>
+        <translation>Nu s-a găsit un dispozitiv</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1420"/>
         <source>Parse Failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Analizarea a eșuat</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1427"/>
         <source>Open Folder</source>
-        <translation>Deschidere Fişier</translation>
+        <translation>Deschidere dosar</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1442"/>
         <location filename="../common/mainwindow.cpp" line="1458"/>
         <location filename="../common/mainwindow.cpp" line="1789"/>
         <source>Open File</source>
-        <translation type="unfinished"></translation>
+        <translation>Deschide fișier</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1444"/>
         <location filename="../common/mainwindow.cpp" line="1460"/>
         <source>Movies (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Video (%1)</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1657"/>
         <source>Muted</source>
-        <translation>Mut:</translation>
+        <translation>Mute</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1660"/>
@@ -524,37 +522,37 @@
         <location filename="../common/mainwindow.cpp" line="1682"/>
         <location filename="../common/mainwindow.cpp" line="1689"/>
         <source>Volume: %1%</source>
-        <translation type="unfinished"></translation>
+        <translation>Volum: %1%</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1754"/>
         <location filename="../common/mainwindow.cpp" line="1762"/>
         <source>Subtitle %1: %2s</source>
-        <translation type="unfinished"></translation>
+        <translation>Subtitrare %1 %2s</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1755"/>
         <location filename="../common/mainwindow.cpp" line="1763"/>
         <source>delayed</source>
-        <translation type="unfinished"></translation>
+        <translation>întârziere</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1755"/>
         <location filename="../common/mainwindow.cpp" line="1763"/>
         <source>advanced</source>
-        <translation type="unfinished"></translation>
+        <translation>avansare</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1770"/>
         <location filename="../common/mainwindow.cpp" line="1777"/>
         <location filename="../common/mainwindow.cpp" line="1784"/>
         <source>Speed: %1x</source>
-        <translation type="unfinished"></translation>
+        <translation>Viteză: %1x</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1791"/>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</source>
-        <translation type="unfinished"></translation>
+        <translation>Subtitrare (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1853"/>
@@ -569,24 +567,24 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="1865"/>
         <source>Saved to</source>
-        <translation type="unfinished"></translation>
+        <translation>Salvare la</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1879"/>
         <location filename="../common/mainwindow.cpp" line="1950"/>
         <source>The screenshot is saved</source>
-        <translation type="unfinished"></translation>
+        <translation>Salvare captura de ecran efectuată</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1879"/>
         <source>The screenshot is failed to save</source>
-        <translation type="unfinished"></translation>
+        <translation>Salvare captura de ecran eșuată</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2033"/>
         <location filename="../common/mainwindow.cpp" line="2720"/>
         <source>Invalid file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Fișier invalid: %1</translation>
     </message>
 </context>
 <context>
@@ -594,27 +592,27 @@
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="121"/>
         <source>File Type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tip fișier:</translation>
     </message>
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="122"/>
         <source>Resolution:</source>
-        <translation type="unfinished"></translation>
+        <translation>Rezoluție:</translation>
     </message>
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="123"/>
         <source>File Size:</source>
-        <translation type="unfinished"></translation>
+        <translation>Mărime fișier:</translation>
     </message>
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="124"/>
         <source>Duration:</source>
-        <translation type="unfinished"></translation>
+        <translation>Durată:</translation>
     </message>
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="129"/>
         <source>File Path:</source>
-        <translation type="unfinished"></translation>
+        <translation>Cale fișier:</translation>
     </message>
 </context>
 <context>
@@ -623,7 +621,7 @@
         <location filename="../backends/mpv/mpv_proxy.cpp" line="1001"/>
         <location filename="../backends/mpv/mpv_proxy.cpp" line="1019"/>
         <source>[internal]</source>
-        <translation type="unfinished"></translation>
+        <translation>[intern]</translation>
     </message>
 </context>
 <context>
@@ -633,7 +631,7 @@
         <location filename="../widgets/playlist_widget.cpp" line="227"/>
         <location filename="../widgets/playlist_widget.cpp" line="402"/>
         <source>File does not exist</source>
-        <translation type="unfinished"></translation>
+        <translation>Fișierul nu există</translation>
     </message>
 </context>
 <context>
@@ -641,12 +639,12 @@
     <message>
         <location filename="../common/dmr_settings.cpp" line="155"/>
         <source>%1/DMovie%2.jpg</source>
-        <translation type="unfinished"></translation>
+        <translation>%1/DMovie%2.jpg</translation>
     </message>
     <message>
         <location filename="../common/dmr_settings.cpp" line="161"/>
         <source>%1/DMovie%2(%3).jpg</source>
-        <translation type="unfinished"></translation>
+        <translation>%1/DMovie%2(%3).jpg</translation>
     </message>
 </context>
 <context>
@@ -672,7 +670,7 @@
         <location filename="../widgets/toolbox_proxy.cpp" line="687"/>
         <location filename="../widgets/toolbox_proxy.cpp" line="697"/>
         <source>Subtitles</source>
-        <translation>Subtitluri</translation>
+        <translation>Subtitrări</translation>
     </message>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="688"/>
@@ -685,7 +683,7 @@
         <location filename="../widgets/toolbox_proxy.cpp" line="697"/>
         <location filename="../widgets/toolbox_proxy.cpp" line="876"/>
         <source>Fullscreen</source>
-        <translation>Tot ecranul</translation>
+        <translation>Redare ecran complet</translation>
     </message>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="683"/>
@@ -696,7 +694,7 @@
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="873"/>
         <source>Exit fullscreen</source>
-        <translation>Ieșire ecran complet</translation>
+        <translation>Ieșire redare ecran complet</translation>
     </message>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="886"/>

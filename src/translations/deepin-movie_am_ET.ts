@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="am_ET">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="am_ET" version="2.1">
 <context>
     <name>QObject</name>
     <message>
@@ -13,6 +11,21 @@
         <location filename="../main.cpp" line="86"/>
         <source>Deepin Movie is a well-designed and full-featured video player with simple borderless design. It supports local and streaming media play with multiple video formats.</source>
         <translation>ዲፕኢን ሙቪ በ ጥሩ-የ ተዘጋጀ እና የ ሙሉ-ገጽታ ቪዲዮ ማጫወቻ ነው: ድንበሮቹ በ ቀላሉ የ ተዘጋጁ ናቸው: የ አካባቢ እና በርካታ የ ቪዲዮ አቀራረቦችን ይደግፋል</translation>
+    </message>
+    <message>
+        <location filename="../common/mainwindow.cpp" line="116"/>
+        <source>Invalid folder</source>
+        <translation>ዋጋ የሌለው ፎልደር</translation>
+    </message>
+    <message>
+        <location filename="../common/mainwindow.cpp" line="130"/>
+        <source>Open Folder</source>
+        <translation>ፎልደር መክፋቻ</translation>
+    </message>
+    <message>
+        <location filename="../common/mainwindow.cpp" line="121"/>
+        <source>You don&apos;t have permission to operate this folder</source>
+        <translation>እርስዎ ይህን ፎልደር ለ መጠቀም በቂ ፍቃድ የለዎትም </translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="5"/>
@@ -179,7 +192,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="39"/>
         <source>Burst screenshot</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="40"/>
@@ -205,21 +218,6 @@
         <location filename="../common/settings_translation.cpp" line="44"/>
         <source>Font Size</source>
         <translation>የ ፊደል መጠን:</translation>
-    </message>
-    <message>
-        <location filename="../common/mainwindow.cpp" line="116"/>
-        <source>Invalid folder</source>
-        <translation>ዋጋ የሌለው ፎልደር</translation>
-    </message>
-    <message>
-        <location filename="../common/mainwindow.cpp" line="130"/>
-        <source>Open Folder</source>
-        <translation>ፎልደር መክፋቻ</translation>
-    </message>
-    <message>
-        <location filename="../common/mainwindow.cpp" line="121"/>
-        <source>You don&apos;t have permission to operate this folder</source>
-        <translation>እርስዎ ይህን ፎልደር ለ መጠቀም በቂ ፍቃድ የለዎትም </translation>
     </message>
 </context>
 <context>
@@ -418,7 +416,7 @@
     <message>
         <location filename="../common/actions.cpp" line="256"/>
         <source>Burst Shooting</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="263"/>

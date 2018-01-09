@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="hr">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="hr" version="2.1">
 <context>
     <name>QObject</name>
     <message>
@@ -15,6 +13,21 @@
         <translation>Deepin Movie dobro je dizajnirani video player sa svim značajkama i jednostavnim dizajnom bez okvira. Podržava lokalnu reprodukciju medija i streaming s više videoformata.</translation>
     </message>
     <message>
+        <location filename="../common/mainwindow.cpp" line="116"/>
+        <source>Invalid folder</source>
+        <translation>Neispravna mapa</translation>
+    </message>
+    <message>
+        <location filename="../common/mainwindow.cpp" line="130"/>
+        <source>Open Folder</source>
+        <translation>Otvori mapu</translation>
+    </message>
+    <message>
+        <location filename="../common/mainwindow.cpp" line="121"/>
+        <source>You don&apos;t have permission to operate this folder</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
         <location filename="../common/settings_translation.cpp" line="5"/>
         <source>Auto add similar files to play</source>
         <translation>Dodaj slične datoteke za izvođenje</translation>
@@ -27,12 +40,12 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="7"/>
         <source>Show video preview on mouseover</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="8"/>
         <source>Open a new player for each file played</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="9"/>
@@ -164,7 +177,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="36"/>
         <source>Reset speed</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="37"/>
@@ -184,7 +197,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="40"/>
         <source>Film screenshot</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="41"/>
@@ -205,21 +218,6 @@
         <location filename="../common/settings_translation.cpp" line="44"/>
         <source>Font Size</source>
         <translation>Veličina fonta</translation>
-    </message>
-    <message>
-        <location filename="../common/mainwindow.cpp" line="116"/>
-        <source>Invalid folder</source>
-        <translation>Neispravna mapa</translation>
-    </message>
-    <message>
-        <location filename="../common/mainwindow.cpp" line="130"/>
-        <source>Open Folder</source>
-        <translation>Otvori mapu</translation>
-    </message>
-    <message>
-        <location filename="../common/mainwindow.cpp" line="121"/>
-        <source>You don&apos;t have permission to operate this folder</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -308,22 +306,22 @@
     <message>
         <location filename="../common/actions.cpp" line="119"/>
         <source>Shuffle Play</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="120"/>
         <source>Single Play</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="121"/>
         <source>Single Loop</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="122"/>
         <source>List Loop</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="129"/>
@@ -403,7 +401,7 @@
     <message>
         <location filename="../common/actions.cpp" line="186"/>
         <source>Encodings</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="254"/>
@@ -413,12 +411,12 @@
     <message>
         <location filename="../common/actions.cpp" line="255"/>
         <source>Film Screenshot</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="256"/>
         <source>Burst Shooting</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="263"/>
@@ -493,7 +491,7 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="1420"/>
         <source>Parse Failed</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1427"/>
@@ -575,12 +573,12 @@
         <location filename="../common/mainwindow.cpp" line="1879"/>
         <location filename="../common/mainwindow.cpp" line="1950"/>
         <source>The screenshot is saved</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1879"/>
         <source>The screenshot is failed to save</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2033"/>
@@ -623,7 +621,7 @@
         <location filename="../backends/mpv/mpv_proxy.cpp" line="1001"/>
         <location filename="../backends/mpv/mpv_proxy.cpp" line="1019"/>
         <source>[internal]</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -641,12 +639,12 @@
     <message>
         <location filename="../common/dmr_settings.cpp" line="155"/>
         <source>%1/DMovie%2.jpg</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../common/dmr_settings.cpp" line="161"/>
         <source>%1/DMovie%2(%3).jpg</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
