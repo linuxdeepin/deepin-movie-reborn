@@ -8,6 +8,8 @@ MimeType=application/ogg;application/vnd.apple.mpegurl;application/vnd.rn-realme
 Name=Deepin Movie
 StartupNotify=true
 Type=Application
+X-Deepin-ManualID=deepin-movie
+
 Comment[am]=የ እርስዎን የ ቪዲዮ ስብስብ ያጫውቱ
 GenericName[am]=መገናኛ ማጫወቻ
 Name[am]=ሙቪ
