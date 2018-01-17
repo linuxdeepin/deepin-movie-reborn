@@ -112,7 +112,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="23"/>
         <source>Restore Defaults</source>
-        <translation type="unfinished"/>
+        <translation>Restablecer o predefinido</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="24"/>

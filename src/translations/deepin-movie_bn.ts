@@ -10,12 +10,12 @@
     <message>
         <location filename="../main.cpp" line="86"/>
         <source>Deepin Movie is a well-designed and full-featured video player with simple borderless design. It supports local and streaming media play with multiple video formats.</source>
-        <translation type="unfinished"/>
+        <translation>ডিপিন মুভি একটি বর্ডার বিহীন সুন্দর ডিজাইনের এবং পরিপূর্ণ বৈশিষ্টযুক্ত ভিডিও প্লেয়ার। এটা দিয়ে বিভিন্ন ফরম্যাটের ভিডিও স্থানীয়ভাবে এবং স্ট্রিমিং করে চালানো যায়। </translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="116"/>
         <source>Invalid folder</source>
-        <translation type="unfinished"/>
+        <translation>ফোল্ডারটি অবৈধ</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="130"/>
@@ -25,32 +25,32 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="121"/>
         <source>You don&apos;t have permission to operate this folder</source>
-        <translation type="unfinished"/>
+        <translation>আপনার কাছে এই ফোল্ডারটি পরিচালনা করার অনুমতি নেই</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="5"/>
         <source>Auto add similar files to play</source>
-        <translation type="unfinished"/>
+        <translation>একই ধরণের ফাইলগুলো অটোমেটিক চলার জন্য যুক্ত করুন</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="6"/>
         <source>Clear playlist when exit</source>
-        <translation type="unfinished"/>
+        <translation>বের হয়ে যাবার সময় চলার তালিকা মুছে ফেলুন</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="7"/>
         <source>Show video preview on mouseover</source>
-        <translation type="unfinished"/>
+        <translation>মাউস নেওয়ার সাথে সাথেই ভিডিওর প্রিভিউ দেখান। </translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="8"/>
         <source>Open a new player for each file played</source>
-        <translation type="unfinished"/>
+        <translation>প্রত্যেকটি ফাইল চলতে নতুন প্লেয়ার খুলুন</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="9"/>
         <source>Pause when minimized</source>
-        <translation type="unfinished"/>
+        <translation>মিনিমাইজ করলে বিরতি দিন</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="10"/>
