@@ -38,7 +38,7 @@ list(APPEND PROJECT_INCLUDE ${PROJECT_SOURCE_DIR}/src/backends/mpv)
 #~
 
 add_custom_target(json_i18n ALL
-    /usr/lib/dtk2/dtk-settings-tool resources/data/settings.json -o common/settings_translation.cpp
+    /usr/lib/dtk2/dtk-settings resources/data/settings.json -o common/settings_translation.cpp
     COMMAND sed -i "s,#include .*,#include <DSettings>," common/settings_translation.cpp
     VERBATIM
     SOURCES resources/data/settings.json
