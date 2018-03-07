@@ -112,7 +112,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="23"/>
         <source>Restore Defaults</source>
-        <translation type="unfinished"/>
+        <translation>سۈكۈتتىكى ھالىتىگە قايتۇرۇش</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="24"/>
@@ -172,7 +172,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="35"/>
         <source>Playlist</source>
-        <translation type="unfinished"/>
+        <translation>تىزىملىك</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="36"/>
@@ -296,7 +296,7 @@
     <message>
         <location filename="../common/actions.cpp" line="115"/>
         <source>Play Mode</source>
-        <translation type="unfinished"/>
+        <translation>ھالىتى</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="118"/>
@@ -421,7 +421,7 @@
     <message>
         <location filename="../common/actions.cpp" line="263"/>
         <source>Playlist</source>
-        <translation type="unfinished"/>
+        <translation>تىزىملىك</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="264"/>
@@ -676,7 +676,7 @@
         <location filename="../widgets/toolbox_proxy.cpp" line="688"/>
         <location filename="../widgets/toolbox_proxy.cpp" line="697"/>
         <source>Playlist</source>
-        <translation type="unfinished"/>
+        <translation>تىزىملىك</translation>
     </message>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="689"/>
@@ -689,7 +689,7 @@
         <location filename="../widgets/toolbox_proxy.cpp" line="683"/>
         <location filename="../widgets/toolbox_proxy.cpp" line="696"/>
         <source>Play/Pause</source>
-        <translation type="unfinished"/>
+        <translation>قويۇش\توختۇتۇش</translation>
     </message>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="873"/>

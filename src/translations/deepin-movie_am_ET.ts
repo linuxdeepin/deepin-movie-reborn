@@ -192,7 +192,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="39"/>
         <source>Burst screenshot</source>
-        <translation type="unfinished"/>
+        <translation>ፍንዳታ የ መመልከቻ ፎቶ</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="40"/>
@@ -416,7 +416,7 @@
     <message>
         <location filename="../common/actions.cpp" line="256"/>
         <source>Burst Shooting</source>
-        <translation type="unfinished"/>
+        <translation>ፍንዳታ ፎቶ ማንሻ</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="263"/>

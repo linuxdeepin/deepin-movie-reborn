@@ -15,7 +15,7 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="116"/>
         <source>Invalid folder</source>
-        <translation type="unfinished"/>
+        <translation>Ongeldige map</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="130"/>
@@ -25,7 +25,7 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="121"/>
         <source>You don&apos;t have permission to operate this folder</source>
-        <translation type="unfinished"/>
+        <translation>U bent niet gemachtigd om deze map te gebruiken</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="5"/>
@@ -76,7 +76,7 @@
         <location filename="../common/settings_translation.cpp" line="14"/>
         <location filename="../common/settings_translation.cpp" line="19"/>
         <source>Screenshot</source>
-        <translation>Schermopname</translation>
+        <translation>Schermafdruk</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="15"/>
@@ -192,7 +192,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="39"/>
         <source>Burst screenshot</source>
-        <translation>Burst screenshot</translation>
+        <translation>Schermafdruk barsten</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="40"/>
@@ -406,17 +406,17 @@
     <message>
         <location filename="../common/actions.cpp" line="254"/>
         <source>Screenshot</source>
-        <translation>Schermopname</translation>
+        <translation>Schermafdruk</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="255"/>
         <source>Film Screenshot</source>
-        <translation>Schermafbeelding film</translation>
+        <translation>Schermafdruk film</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="256"/>
         <source>Burst Shooting</source>
-        <translation>Burst Shooting</translation>
+        <translation>Burst Opname</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="263"/>
@@ -562,7 +562,7 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="1864"/>
         <source>Movie Screenshot</source>
-        <translation>Film Schermopname</translation>
+        <translation>Film Schermafdruk</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1865"/>
@@ -573,12 +573,12 @@
         <location filename="../common/mainwindow.cpp" line="1879"/>
         <location filename="../common/mainwindow.cpp" line="1950"/>
         <source>The screenshot is saved</source>
-        <translation type="unfinished"/>
+        <translation>De schermafdruk is opgelagen</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1879"/>
         <source>The screenshot is failed to save</source>
-        <translation type="unfinished"/>
+        <translation>Het schermafdruk kan niet worden opgeslagen</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2033"/>
