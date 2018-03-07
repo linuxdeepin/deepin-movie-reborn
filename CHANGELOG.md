@@ -1,3 +1,17 @@
+##  3.2.1 (2018-03-07)
+
+
+#### Bug Fixes
+
+*   the close button is invisible of the settings dialog ([f581a3fd](f581a3fd))
+*   update dtkcore build depends ([d3751cff](d3751cff))
+
+#### Features
+
+*   add manual id ([8ab9f188](8ab9f188))
+
+
+
 ##  3.2.0.3 (2018-01-16)
 
 
