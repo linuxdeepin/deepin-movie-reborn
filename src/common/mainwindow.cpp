@@ -2155,8 +2155,10 @@ void MainWindow::suspendToolsWindow()
             return;
 
         if (isFullScreen()) {
-            qApp->setOverrideCursor(Qt::BlankCursor);
+            if (qApp->focusWindow() == this->windowHandle())
+                qApp->setOverrideCursor(Qt::BlankCursor);
         }
+
         _titlebar->hide();
         _toolbox->hide();
     } else {
