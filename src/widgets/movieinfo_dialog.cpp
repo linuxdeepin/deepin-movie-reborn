@@ -44,8 +44,6 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo& pif)
     setFixedWidth(320);
     setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint);
 
-    DThemeManager::instance()->registerWidget(this);
-
     auto layout = new QVBoxLayout(this);
     layout->setSpacing(0);
     layout->setContentsMargins(0, 0, 0, 10);
@@ -56,7 +54,6 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo& pif)
     layout->addWidget(closeBt, 0, Qt::AlignTop | Qt::AlignRight);
     layout->addSpacing(26);
     connect(closeBt, &DWindowCloseButton::clicked, this, &DAbstractDialog::hide);
-    closeBt->setStyleSheet(DThemeManager::instance()->getQssForWidget("DWindowCloseButton", "light"));
 
     const auto& mi = pif.mi;
 
@@ -131,5 +128,13 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo& pif)
 #undef ADD_ROW
 
     ml->addSpacing(16);
+
+#if DTK_VERSION > DTK_VERSION_CHECK(2, 0, 6, 0)
+    DThemeManager::instance()->setTheme(this, "light");
+    DThemeManager::instance()->setTheme(closeBt, "light");
+#else
+    DThemeManager::instance()->registerWidget(this);
+    closeBt->setStyleSheet(DThemeManager::instance()->getQssForWidget("DWindowCloseButton", "light"));
+#endif
 }
 }
