@@ -1,3 +1,14 @@
+##  3.2.3 (2018-03-14)
+
+
+#### Bug Fixes
+
+*   keep pending url until related signal recieved ([4a720619](4a720619))
+*   hide cursor only main window is focused ([f9714f2a](f9714f2a))
+*   movieinfo style ([64f6d4d7](64f6d4d7))
+
+
+
 ##  3.2.2 (2018-03-09)
 
 
