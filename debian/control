@@ -24,8 +24,8 @@ Description: movie player
 
 Package: libdmr
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libdtkbase,
- libdtkutil, libdtkwidget, libxcb1,libmpv1, libdvdnav4
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Build-Depends: libdtkwidget-dev, libxcb1-dev, libmpv-dev, libdvdnav-dev
 Multi-Arch: same
 Description: movie player widget library 
  deepin movie player widget library
