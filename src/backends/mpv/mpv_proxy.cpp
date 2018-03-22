@@ -93,7 +93,7 @@ MpvProxy::MpvProxy(QWidget *parent)
             _gl_widget->setPlaying(state() != Backend::PlayState::Stopped);
             _gl_widget->update();
         });
-#ifdef USE_DXCB
+#if defined(USE_DXCB) || defined(_LIBDMR_)
         _gl_widget->toggleRoundedClip(false);
 #endif
 

@@ -310,12 +310,16 @@ namespace dmr {
         setupIdlePipe();
         setupBlendPipe();
 
+#ifdef _LIBDMR_
+        toggleRoundedClip(false);
+#else
 #ifndef USE_DXCB
         connect(window()->windowHandle(), &QWindow::windowStateChanged, [=]() {
             auto top = this->topLevelWidget();
             bool rounded = !top->isFullScreen() && !top->isMaximized();
             toggleRoundedClip(rounded);
         });
+#endif
 #endif
 
         //if (mpv_opengl_cb_init_gl(_gl_ctx, NULL, get_proc_address, NULL) < 0)
