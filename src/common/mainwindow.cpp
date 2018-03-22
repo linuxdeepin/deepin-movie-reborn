@@ -1441,7 +1441,8 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         case ActionFactory::ActionKind::OpenFileList: {
             QStringList filenames = QFileDialog::getOpenFileNames(this, tr("Open File"),
                     QDir::currentPath(),
-                    tr("Movies (%1)").arg(_engine->video_filetypes.join(" ")));
+                    tr("All videos (%1)").arg(_engine->video_filetypes.join(" ")), 0,
+                    QFileDialog::HideNameFilterDetails);
             
             QList<QUrl> urls;
             if (filenames.size()) {
@@ -1457,7 +1458,8 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         case ActionFactory::ActionKind::OpenFile: {
             QString filename = QFileDialog::getOpenFileName(this, tr("Open File"),
                     QDir::currentPath(),
-                    tr("Movies (%1)").arg(_engine->video_filetypes.join(" ")));
+                    tr("All videos (%1)").arg(_engine->video_filetypes.join(" ")), 0,
+                    QFileDialog::HideNameFilterDetails);
             if (QFileInfo(filename).exists()) {
                 play(QUrl::fromLocalFile(filename));
             }

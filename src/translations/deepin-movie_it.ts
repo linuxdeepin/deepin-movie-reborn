@@ -1,14 +1,16 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS language="it" version="2.1">
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.1" language="it">
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../main.cpp" line="85"/>
-        <location filename="../main.cpp" line="117"/>
+        <location filename="../main.cpp" line="86"/>
+        <location filename="../main.cpp" line="118"/>
         <source>Deepin Movie</source>
         <translation>Deepin Movie0,5</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="86"/>
+        <location filename="../main.cpp" line="87"/>
         <source>Deepin Movie is a well-designed and full-featured video player with simple borderless design. It supports local and streaming media play with multiple video formats.</source>
         <translation>Deepin Movie è un meraviglioso e funzionale player video dal design borderless. Offre il supporto per riproduzioni video locali e streaming, inoltre riconosce diversi formati video.
 Localizzazione italiana a cura di Carofano Massimo Antonio.</translation>
@@ -467,20 +469,20 @@ Localizzazione italiana a cura di Carofano Massimo Antonio.</translation>
     <name>dmr::MainWindow</name>
     <message>
         <location filename="../common/mainwindow.cpp" line="785"/>
-        <location filename="../common/mainwindow.cpp" line="2271"/>
-        <location filename="../common/mainwindow.cpp" line="2366"/>
+        <location filename="../common/mainwindow.cpp" line="2279"/>
+        <location filename="../common/mainwindow.cpp" line="2374"/>
         <source>Deepin Movie</source>
         <translation>Deepin Movie</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="698"/>
-        <location filename="../common/mainwindow.cpp" line="1794"/>
+        <location filename="../common/mainwindow.cpp" line="1796"/>
         <source>Load successfully</source>
         <translation>Caricamento riuscito</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="698"/>
-        <location filename="../common/mainwindow.cpp" line="1794"/>
+        <location filename="../common/mainwindow.cpp" line="1796"/>
         <source>Load failed</source>
         <translation>Caricamento fallito</translation>
     </message>
@@ -501,89 +503,93 @@ Localizzazione italiana a cura di Carofano Massimo Antonio.</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1442"/>
-        <location filename="../common/mainwindow.cpp" line="1458"/>
-        <location filename="../common/mainwindow.cpp" line="1789"/>
+        <location filename="../common/mainwindow.cpp" line="1459"/>
+        <location filename="../common/mainwindow.cpp" line="1791"/>
         <source>Open File</source>
         <translation>Apri file</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1444"/>
-        <location filename="../common/mainwindow.cpp" line="1460"/>
         <source>Movies (%1)</source>
-        <translation>Video (%1)</translation>
+        <translation type="vanished">Video (%1)</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1657"/>
+        <location filename="../common/mainwindow.cpp" line="1444"/>
+        <location filename="../common/mainwindow.cpp" line="1461"/>
+        <source>All videos (%1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../common/mainwindow.cpp" line="1659"/>
         <source>Muted</source>
         <translation>Muto</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1660"/>
-        <location filename="../common/mainwindow.cpp" line="1672"/>
-        <location filename="../common/mainwindow.cpp" line="1682"/>
-        <location filename="../common/mainwindow.cpp" line="1689"/>
+        <location filename="../common/mainwindow.cpp" line="1662"/>
+        <location filename="../common/mainwindow.cpp" line="1674"/>
+        <location filename="../common/mainwindow.cpp" line="1684"/>
+        <location filename="../common/mainwindow.cpp" line="1691"/>
         <source>Volume: %1%</source>
         <translation>Volume: %1%</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1754"/>
-        <location filename="../common/mainwindow.cpp" line="1762"/>
+        <location filename="../common/mainwindow.cpp" line="1756"/>
+        <location filename="../common/mainwindow.cpp" line="1764"/>
         <source>Subtitle %1: %2s</source>
         <translation>Sottotitoli: %1: %2s</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1755"/>
-        <location filename="../common/mainwindow.cpp" line="1763"/>
+        <location filename="../common/mainwindow.cpp" line="1757"/>
+        <location filename="../common/mainwindow.cpp" line="1765"/>
         <source>delayed</source>
         <translation>ritardato</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1755"/>
-        <location filename="../common/mainwindow.cpp" line="1763"/>
+        <location filename="../common/mainwindow.cpp" line="1757"/>
+        <location filename="../common/mainwindow.cpp" line="1765"/>
         <source>advanced</source>
         <translation>posticipare</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1770"/>
-        <location filename="../common/mainwindow.cpp" line="1777"/>
-        <location filename="../common/mainwindow.cpp" line="1784"/>
+        <location filename="../common/mainwindow.cpp" line="1772"/>
+        <location filename="../common/mainwindow.cpp" line="1779"/>
+        <location filename="../common/mainwindow.cpp" line="1786"/>
         <source>Speed: %1x</source>
         <translation>Velocità: %1x</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1791"/>
+        <location filename="../common/mainwindow.cpp" line="1793"/>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</source>
         <translation>Sottotitoli (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1853"/>
+        <location filename="../common/mainwindow.cpp" line="1855"/>
         <source>View</source>
         <translation>Visualizza</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1864"/>
+        <location filename="../common/mainwindow.cpp" line="1866"/>
         <source>Movie Screenshot</source>
         <translation>Screenshot film</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1865"/>
+        <location filename="../common/mainwindow.cpp" line="1867"/>
         <source>Saved to</source>
         <translation>Salva in</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1879"/>
-        <location filename="../common/mainwindow.cpp" line="1950"/>
+        <location filename="../common/mainwindow.cpp" line="1881"/>
+        <location filename="../common/mainwindow.cpp" line="1952"/>
         <source>The screenshot is saved</source>
         <translation>Lo screenshot è stato salvato</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1879"/>
+        <location filename="../common/mainwindow.cpp" line="1881"/>
         <source>The screenshot is failed to save</source>
         <translation>Salvataggio dello screenshot fallito</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2033"/>
-        <location filename="../common/mainwindow.cpp" line="2720"/>
+        <location filename="../common/mainwindow.cpp" line="2039"/>
+        <location filename="../common/mainwindow.cpp" line="2728"/>
         <source>Invalid file: %1</source>
         <translation>File non valido: %1</translation>
     </message>
@@ -591,27 +597,27 @@ Localizzazione italiana a cura di Carofano Massimo Antonio.</translation>
 <context>
     <name>dmr::MovieInfoDialog</name>
     <message>
-        <location filename="../widgets/movieinfo_dialog.cpp" line="121"/>
+        <location filename="../widgets/movieinfo_dialog.cpp" line="118"/>
         <source>File Type:</source>
         <translation>Tipo file:</translation>
     </message>
     <message>
-        <location filename="../widgets/movieinfo_dialog.cpp" line="122"/>
+        <location filename="../widgets/movieinfo_dialog.cpp" line="119"/>
         <source>Resolution:</source>
         <translation>Risoluzione:</translation>
     </message>
     <message>
-        <location filename="../widgets/movieinfo_dialog.cpp" line="123"/>
+        <location filename="../widgets/movieinfo_dialog.cpp" line="120"/>
         <source>File Size:</source>
         <translation>Dimensioni file:</translation>
     </message>
     <message>
-        <location filename="../widgets/movieinfo_dialog.cpp" line="124"/>
+        <location filename="../widgets/movieinfo_dialog.cpp" line="121"/>
         <source>Duration:</source>
         <translation>Durata:</translation>
     </message>
     <message>
-        <location filename="../widgets/movieinfo_dialog.cpp" line="129"/>
+        <location filename="../widgets/movieinfo_dialog.cpp" line="126"/>
         <source>File Path:</source>
         <translation>Percorso file:</translation>
     </message>
@@ -619,8 +625,8 @@ Localizzazione italiana a cura di Carofano Massimo Antonio.</translation>
 <context>
     <name>dmr::MpvProxy</name>
     <message>
-        <location filename="../backends/mpv/mpv_proxy.cpp" line="1001"/>
-        <location filename="../backends/mpv/mpv_proxy.cpp" line="1019"/>
+        <location filename="../backends/mpv/mpv_proxy.cpp" line="1017"/>
+        <location filename="../backends/mpv/mpv_proxy.cpp" line="1035"/>
         <source>[internal]</source>
         <translation>[interno]</translation>
     </message>
