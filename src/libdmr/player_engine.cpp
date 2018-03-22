@@ -704,7 +704,7 @@ void PlayerEngine::resizeEvent(QResizeEvent* re)
 {
     bool rounded = !window()->isFullScreen() && !window()->isMaximized();
 
-#ifndef USE_DXCB
+#if !defined(USE_DXCB) && !defined(_LIBDMR_)
     if (rounded) {
         QPixmap shape(size());
         shape.fill(Qt::transparent);

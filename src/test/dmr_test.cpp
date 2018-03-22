@@ -97,7 +97,8 @@ int main(int argc, char *argv[])
     // required by mpv
     setlocale(LC_NUMERIC, "C");
     
-    auto mw = new Window;
+    //auto mw = new Window;
+    auto mw = new dmr::PlayerWidget;
     mw->resize(400, 300);
     mw->show();
 
