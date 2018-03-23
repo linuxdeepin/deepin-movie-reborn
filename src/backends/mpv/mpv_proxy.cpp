@@ -42,6 +42,7 @@
 
 #include <random>
 #include <QtWidgets>
+#include <QtGlobal>
 
 #include <xcb/xproto.h>
 #include <xcb/xcb_aux.h>
@@ -142,7 +143,17 @@ mpv_handle* MpvProxy::mpv_init()
 
 #ifdef _LIBDMR_
     if (composited) {
-        set_property(h, "opengl-hwdec-interop", "vaapi-egl");
+        auto interop = QString::fromUtf8("vaapi-glx");
+        if (!qEnvironmentVariableIsEmpty("QT_XCB_GL_INTERGRATION")) {
+            auto gl_int = qgetenv("QT_XCB_GL_INTERGRATION");
+            if (gl_int == "xcb_egl") {
+                interop = "vaapi-egl";
+            } else {
+                interop = "vaapi-glx";
+            }
+        }
+        set_property(h, "opengl-hwdec-interop", interop.toUtf8().constData());
+        qDebug() << "set opengl-hwdec-interop = " << interop;
     }
     set_property(h, "hwdec", "auto");
 
