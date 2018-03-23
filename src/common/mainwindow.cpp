@@ -852,7 +852,8 @@ void MainWindow::onWindowStateChanged()
     qDebug() << windowState();
 
     if (!isFullScreen()) {
-        //if (_lastRectInNormalMode.isValid() && !_miniMode && !isMaximized()) {
+        //if (_lastRectInNormalMode.isValid() && !_miniMode && !isMaximized() &&
+                //_lastWindowState == Qt::WindowFullScreen) {
             //setGeometry(_lastRectInNormalMode);
         //}
 
@@ -1554,7 +1555,10 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                 if (_lastWindowState == Qt::WindowMaximized) {
                     showMaximized();
                 } else {
-                    showNormal();
+                    setWindowState(windowState() & ~Qt::WindowFullScreen);
+                    if (_lastRectInNormalMode.isValid() && !_miniMode && !isMaximized()) {
+                        setGeometry(_lastRectInNormalMode);
+                    }
                 }
             } else {
                 if (!_miniMode && (fromUI || isShortcut)) {
@@ -2353,7 +2357,6 @@ void MainWindow::updateGeometryNotification(const QSize& sz)
 void MainWindow::resizeEvent(QResizeEvent *ev)
 {
     qDebug() << __func__ << geometry();
-    
     if (isFullScreen()) {
         _progIndicator->move(geometry().width() - _progIndicator->width() - 18, 8);
     }
