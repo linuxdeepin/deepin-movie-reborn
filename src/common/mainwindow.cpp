@@ -897,7 +897,7 @@ void MainWindow::onWindowStateChanged()
 #endif
 
     if (!isFullScreen() && !isMaximized()) {
-        if (_movieSwitchedInFsOrMaxed) {
+        if (_movieSwitchedInFsOrMaxed || !_lastRectInNormalMode.isValid()) {
             setMinimumSize({0, 0});
             resizeByConstraints(true);
         }
