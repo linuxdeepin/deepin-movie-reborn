@@ -322,7 +322,6 @@ namespace dmr {
 #endif
 #endif
 
-        //if (mpv_opengl_cb_init_gl(_gl_ctx, NULL, get_proc_address, NULL) < 0)
         if (mpv_opengl_cb_init_gl(_gl_ctx, "GL_MP_MPGetNativeDisplay", get_proc_address, NULL) < 0)
             throw std::runtime_error("could not initialize OpenGL");
     }
@@ -331,11 +330,16 @@ namespace dmr {
     {
         if (!_doRoundedClipping) return;
 
+        auto desiredSize = size() * qApp->devicePixelRatio();
+
         if (_fbo) {
+            if (_fbo->size() == desiredSize) {
+                return;
+            }
             _fbo->release();
             delete _fbo;
         }
-        _fbo = new QOpenGLFramebufferObject(size() * qApp->devicePixelRatio());
+        _fbo = new QOpenGLFramebufferObject(desiredSize);
     }
 
     void MpvGLWidget::updateCornerMasks()
@@ -521,13 +525,10 @@ namespace dmr {
     {
         QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
 
-        if (_playing) {
-            updateMovieFbo();
-        } else {
-            updateVbo();
-            if (_doRoundedClipping)
-                updateVboCorners();
-        }
+        updateMovieFbo();
+        updateVbo();
+        if (_doRoundedClipping)
+            updateVboCorners();
 
         qDebug() << "GL resize" << w << h;
         QOpenGLWidget::resizeGL(w, h);
@@ -570,7 +571,7 @@ namespace dmr {
                     _glProgBlend->release();
                 }
 
-                if (_doRoundedClipping) {
+                {
                     f->glBlendFunc(GL_SRC_ALPHA, GL_ZERO);
                     // blend corners
                     //QOpenGLVertexArrayObject::Binder vaoBind(&_vaoCorner);
@@ -678,6 +679,7 @@ namespace dmr {
         }
         updateVbo();
         updateVboCorners();
+        updateMovieFbo();
         update();
     }
 
