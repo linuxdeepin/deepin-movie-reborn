@@ -852,11 +852,6 @@ void MainWindow::onWindowStateChanged()
     qDebug() << windowState();
 
     if (!isFullScreen()) {
-        //if (_lastRectInNormalMode.isValid() && !_miniMode && !isMaximized() &&
-                //_lastWindowState == Qt::WindowFullScreen) {
-            //setGeometry(_lastRectInNormalMode);
-        //}
-
         qApp->restoreOverrideCursor();
         if (_lastCookie > 0) {
             utils::UnInhibitStandby(_lastCookie);
@@ -898,8 +893,12 @@ void MainWindow::onWindowStateChanged()
 
     if (!isFullScreen() && !isMaximized()) {
         if (_movieSwitchedInFsOrMaxed || !_lastRectInNormalMode.isValid()) {
-            setMinimumSize({0, 0});
-            resizeByConstraints(true);
+            if (_mousePressed || _mouseMoved) {
+                _delayedResizeByConstraint = true;
+            } else {
+                setMinimumSize({0, 0});
+                resizeByConstraints(true);
+            }
         }
         _movieSwitchedInFsOrMaxed = false;
     }
@@ -2303,7 +2302,10 @@ void MainWindow::resizeByConstraints(bool forceCentered)
         sz.scale(geom.width(), geom.height(), Qt::KeepAspectRatio);
     }
 
-    qDebug() << sz;
+    qDebug() << "original: " << size() << "requested: " << sz;
+    if (size() == sz) 
+        return;
+
     if (forceCentered) {
         QRect r;
         r.setSize(sz);
@@ -2406,6 +2408,14 @@ void MainWindow::capturedMousePressEvent(QMouseEvent* me)
 
 void MainWindow::capturedMouseReleaseEvent(QMouseEvent* me)
 {
+    if (_delayedResizeByConstraint) {
+        _delayedResizeByConstraint = false;
+
+        QTimer::singleShot(0, [=]() {
+            this->setMinimumSize({0, 0});
+            this->resizeByConstraints(true);
+        });
+    }
 }
 
 static bool _afterDblClick = false;
@@ -2492,11 +2502,9 @@ void MainWindow::mouseMoveEvent(QMouseEvent *ev)
 {
     _mouseMoved = true;
 
-//#ifndef USE_DXCB
     if (windowState() == Qt::WindowNoState || isMaximized()) {
         Utility::startWindowSystemMove(this->winId());
     }
-//#endif
     QWidget::mouseMoveEvent(ev);
 }
 
