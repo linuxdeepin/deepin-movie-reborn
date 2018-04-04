@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="zh_CN">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="zh_CN" version="2.1">
 <context>
     <name>QObject</name>
     <message>
@@ -506,10 +504,6 @@
         <location filename="../common/mainwindow.cpp" line="1791"/>
         <source>Open File</source>
         <translation>打开文件</translation>
-    </message>
-    <message>
-        <source>Movies (%1)</source>
-        <translation type="vanished">视频文件(%1)</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1444"/>

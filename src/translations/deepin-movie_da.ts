@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="da">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="da" version="2.1">
 <context>
     <name>QObject</name>
     <message>
@@ -508,14 +506,10 @@
         <translation>Åbn fil</translation>
     </message>
     <message>
-        <source>Movies (%1)</source>
-        <translation type="vanished">Film (%1)</translation>
-    </message>
-    <message>
         <location filename="../common/mainwindow.cpp" line="1444"/>
         <location filename="../common/mainwindow.cpp" line="1461"/>
         <source>All videos (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Alle videoer (%1)</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1659"/>
