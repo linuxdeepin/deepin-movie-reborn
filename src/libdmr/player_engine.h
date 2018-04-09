@@ -139,6 +139,9 @@ public:
 
     void savePlaybackPosition();
 
+    // use with caution
+    void setBackendProperty(const QString&, const QVariant&);
+
 signals:
     void tracksChanged();
     void elapsedChanged();

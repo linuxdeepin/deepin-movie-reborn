@@ -63,7 +63,7 @@ public:
 
         auto forward = new QPushButton("forward");
         connect(forward, &QPushButton::clicked, [=]() {
-                player->engine().seekForward(20);
+                player->engine().seekForward(90);
         });
         h->addWidget(forward);
 
@@ -74,6 +74,12 @@ public:
         auto volumeDown = new QPushButton("volDown");
         connect(volumeDown, &QPushButton::clicked, &player->engine(), &dmr::PlayerEngine::volumeDown);
         h->addWidget(volumeDown);
+
+        auto keep = new QPushButton("KeepOpen");
+        connect(keep, &QPushButton::clicked, &player->engine(), [this]() {
+                this->player->engine().setBackendProperty("keep-open", "yes");
+        });
+        h->addWidget(keep);
 
         l->addLayout(h);
         setLayout(l);

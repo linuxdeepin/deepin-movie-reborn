@@ -722,4 +722,11 @@ void PlayerEngine::resizeEvent(QResizeEvent* re)
 #endif
 }
 
+void PlayerEngine::setBackendProperty(const QString& name, const QVariant& val)
+{
+    if (_current) {
+        _current->setProperty(name, val);
+    }
+}
+
 } // end of namespace dmr
