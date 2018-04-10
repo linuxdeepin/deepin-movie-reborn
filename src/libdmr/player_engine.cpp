@@ -455,7 +455,14 @@ void PlayerEngine::savePlaybackPosition()
 
 void PlayerEngine::play()
 {
-    if (state() == CoreState::Idle && _playlist->count()) {
+    if (!_current || !_playlist->count()) return;
+
+    if (state() == CoreState::Paused && 
+            getBackendProperty("keep-open").toBool() &&
+            getBackendProperty("eof-reached").toBool()) {
+        stop();
+        next();
+    } else if (state() == CoreState::Idle) {
         next();
     }
 }
@@ -727,6 +734,14 @@ void PlayerEngine::setBackendProperty(const QString& name, const QVariant& val)
     if (_current) {
         _current->setProperty(name, val);
     }
+}
+
+QVariant PlayerEngine::getBackendProperty(const QString& name)
+{
+    if (_current) {
+        return _current->getProperty(name);
+    }
+    return QVariant();
 }
 
 } // end of namespace dmr

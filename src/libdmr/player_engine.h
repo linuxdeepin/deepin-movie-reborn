@@ -141,6 +141,7 @@ public:
 
     // use with caution
     void setBackendProperty(const QString&, const QVariant&);
+    QVariant getBackendProperty(const QString&);
 
 signals:
     void tracksChanged();

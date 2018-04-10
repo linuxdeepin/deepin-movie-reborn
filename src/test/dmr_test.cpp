@@ -53,6 +53,10 @@ public:
 
         auto h = new QHBoxLayout(this);
 
+        auto play = new QPushButton("Play");
+        connect(play, &QPushButton::clicked, &player->engine(), &dmr::PlayerEngine::play);
+        h->addWidget(play);
+
         auto pause = new QPushButton("Pause");
         connect(pause, &QPushButton::clicked, &player->engine(), &dmr::PlayerEngine::pauseResume);
         h->addWidget(pause);
@@ -63,7 +67,7 @@ public:
 
         auto forward = new QPushButton("forward");
         connect(forward, &QPushButton::clicked, [=]() {
-                player->engine().seekForward(90);
+                player->engine().seekForward(60);
         });
         h->addWidget(forward);
 
@@ -77,7 +81,7 @@ public:
 
         auto keep = new QPushButton("KeepOpen");
         connect(keep, &QPushButton::clicked, &player->engine(), [this]() {
-                this->player->engine().setBackendProperty("keep-open", "yes");
+            this->player->engine().setBackendProperty("keep-open", "yes");
         });
         h->addWidget(keep);
 
@@ -102,6 +106,7 @@ int main(int argc, char *argv[])
 
     // required by mpv
     setlocale(LC_NUMERIC, "C");
+    dmr::Backend::setDebugLevel(dmr::Backend::DebugLevel::Debug);
     
     auto mw = new Window;
     mw->resize(400, 300);
