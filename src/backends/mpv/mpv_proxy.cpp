@@ -112,6 +112,7 @@ MpvProxy::~MpvProxy()
     _connectStateChange = false;
     disconnect(window()->windowHandle(), &QWindow::windowStateChanged, 0, 0);
     if (CompositingManager::get().composited()) {
+        disconnect(this, &MpvProxy::stateChanged, 0, 0);
         delete _gl_widget;
     }
 }

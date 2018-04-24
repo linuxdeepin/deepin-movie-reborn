@@ -192,10 +192,26 @@ namespace dmr {
     MpvGLWidget::~MpvGLWidget() 
     {
         makeCurrent();
+        _darkTex->destroy();
+        _lightTex->destroy();
         delete _darkTex;
         delete _lightTex;
+
+        for (auto mask: _cornerMasks) {
+            if (mask) mask->destroy();
+        }
+
         _vbo.destroy();
+
+        for (int i = 0; i < 4; i++) {
+            _vboCorners[i].destroy();
+        }
+
         _vao.destroy();
+        _vaoBlend.destroy();
+        _vaoCorner.destroy();
+
+        if (_fbo) delete _fbo;
 
         if (_gl_ctx)
             mpv_opengl_cb_set_update_callback(_gl_ctx, NULL, NULL);

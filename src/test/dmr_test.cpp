@@ -116,6 +116,8 @@ int main(int argc, char *argv[])
         mw->play(QString::fromUtf8(argv[1]));
     
     app.exec();
+
+    delete mw;
     return 0;
 }
 
