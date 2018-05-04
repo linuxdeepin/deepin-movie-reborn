@@ -192,10 +192,14 @@ namespace dmr {
     MpvGLWidget::~MpvGLWidget() 
     {
         makeCurrent();
-        _darkTex->destroy();
-        _lightTex->destroy();
-        delete _darkTex;
-        delete _lightTex;
+        if (_darkTex) {
+            _darkTex->destroy();
+            delete _darkTex;
+        }
+        if (_lightTex) {
+            _lightTex->destroy();
+            delete _lightTex;
+        }
 
         for (auto mask: _cornerMasks) {
             if (mask) mask->destroy();
