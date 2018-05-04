@@ -1,3 +1,27 @@
+##  3.2.4 (2018-05-04)
+
+
+#### Features
+
+*   expose setProperty from player engine ([6258d3a7](6258d3a7))
+*   dont show filter details ([3f16112f](3f16112f))
+* **engine:**  disable rounding for libdmr ([6b0f9e83](6b0f9e83))
+* **libdmr:**
+  *  allow replay if keep-open and eof reached ([4bbbf829](4bbbf829))
+  *  set interop from variable ([6ddcebee](6ddcebee))
+  *  disable rounding by default ([ac925cb3](ac925cb3))
+
+#### Bug Fixes
+
+*   release gl resources ([be91122c](be91122c))
+*   handle drag back to normal resizing ([d5d8511a](d5d8511a))
+*   update fbo correctly ([28e84e43](28e84e43))
+*   do resize by constraints properly ([78609381](78609381))
+*   restore size correctly after quiting fs ([8c802ef8](8c802ef8))
+*   remove Build-Depends ([568d26ce](568d26ce))
+
+
+
 ##  3.2.3 (2018-03-14)
 
 
