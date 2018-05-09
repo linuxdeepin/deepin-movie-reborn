@@ -335,7 +335,7 @@ You can add film to playlist by the following ways:
 2. Select **Settings** > **Basic settings**.
 3. In the option **Play**, you can:
  - Check the box of **Clear playlist when exit**, the playlist will be cleared when you exit Deepin Movie.
- - Check the box of **Remember playback position**, the film will be played automatically from last positon played when Deepin Movie runs.
+ - Check the box of **Remember playback position**, the film will be played automatically from last position played when Deepin Movie runs.
  - Check the box of **Auto add similar files to play**,the related film files will be played one by one after the current film played.
  - Check the box of **Show video preview on mouseover**, the film preview will be shown when hovering on the progress bar.
  - Check the box of **Open a new player for each file played**, a new player will be opened when playing a film file.

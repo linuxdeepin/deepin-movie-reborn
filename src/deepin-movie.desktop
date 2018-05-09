@@ -8,6 +8,7 @@ MimeType=application/ogg;application/vnd.apple.mpegurl;application/vnd.rn-realme
 Name=Deepin Movie
 StartupNotify=true
 Type=Application
+Keywords=Player;Movie;Theater;Theatre;Video;
 X-Deepin-ManualID=deepin-movie
 
 Comment[am]=የ እርስዎን የ ቪዲዮ ስብስብ ያጫውቱ
@@ -94,6 +95,7 @@ Comment[zh_CN]=为您播放本地及网络视频
 GenericName[zh_CN]=多媒体播放器
 Name[zh_CN]=深度影院
 Comment[zh_TW]=為您播放本機和網路的影片
+Keywords[zh_CN]=Player;Movie;Theater;Theatre;Video;播放器;电影;影院;视频;
 GenericName[zh_TW]=多媒體播放器
 Name[zh_TW]=深度劇院
 Comment[es_AR]=Reproducir colección de Videos

@@ -14,7 +14,7 @@
 #### Features
 
 *   expose setProperty from player engine ([6258d3a7](6258d3a7))
-*   dont show filter details ([3f16112f](3f16112f))
+*   do not show filter details ([3f16112f](3f16112f))
 * **engine:**  disable rounding for libdmr ([6b0f9e83](6b0f9e83))
 * **libdmr:**
   *  allow replay if keep-open and eof reached ([4bbbf829](4bbbf829))
@@ -27,7 +27,7 @@
 *   handle drag back to normal resizing ([d5d8511a](d5d8511a))
 *   update fbo correctly ([28e84e43](28e84e43))
 *   do resize by constraints properly ([78609381](78609381))
-*   restore size correctly after quiting fs ([8c802ef8](8c802ef8))
+*   restore size correctly after quitting fs ([8c802ef8](8c802ef8))
 *   remove Build-Depends ([568d26ce](568d26ce))
 
 
@@ -37,7 +37,7 @@
 
 #### Bug Fixes
 
-*   keep pending url until related signal recieved ([4a720619](4a720619))
+*   keep pending url until related signal received ([4a720619](4a720619))
 *   hide cursor only main window is focused ([f9714f2a](f9714f2a))
 *   movieinfo style ([64f6d4d7](64f6d4d7))
 
@@ -94,7 +94,7 @@
 
 *   minor changes ([dc9306ab](dc9306ab))
 *   to leave progress bar when preview hide ([27b4c9a9](27b4c9a9))
-*   url comparision and signleloop mode ([1bc0f553](1bc0f553))
+*   url comparison and signleloop mode ([1bc0f553](1bc0f553))
 *   handle context menu event correctly ([40b2e9ae](40b2e9ae))
 *   optimize drag to resize process ([0e85688f](0e85688f))
 *   use correct font to do text eliding ([172a3537](172a3537))
@@ -143,7 +143,7 @@
 *   reduce resize request ([8bb48f72](8bb48f72))
 *   allow resumeToolsWindow when playlist opened ([f69873a2](f69873a2))
 *   try fully encoded url first ([8fbde1fd](8fbde1fd))
-*   dont restore to idle size in mini mode ([3b4cd454](3b4cd454))
+*   do not restore to idle size in mini mode ([3b4cd454](3b4cd454))
 *   make url dialog centered around main window ([20ded42e](20ded42e))
 *   db and cache info init ([62fe66f5](62fe66f5))
 * **workaround:**  bypass mouse event from other source ([077c110f](077c110f))
@@ -157,7 +157,7 @@
 
 *   switchPosition: reset _last if _current changed ([7448c66b](7448c66b))
 *   sync to save global state ([a99f2003](a99f2003))
-*   dont popup context menu from titlebar ([ab8bea72](ab8bea72))
+*   do not popup context menu from titlebar ([ab8bea72](ab8bea72))
 *   update _current after position switch ([892c2e75](892c2e75))
 *   workaround a drop indicator issue ([abf87d9e](abf87d9e))
 *   disable panscan in fs or maximized state ([3e04bd11](3e04bd11))

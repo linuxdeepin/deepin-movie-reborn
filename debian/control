@@ -14,7 +14,7 @@ Build-Depends: debhelper, cmake, pkg-config, qttools5-dev-tools,
                 libavresample-dev, libpulse-dev, libssl-dev,
                 libdvdnav-dev
 Standards-Version: 3.9.8
-Homepage: http://www.deepin.org/
+Homepage: https://www.deepin.org/
 
 Package: deepin-movie
 Architecture: any

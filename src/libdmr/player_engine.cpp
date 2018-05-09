@@ -630,13 +630,13 @@ QList<QUrl> PlayerEngine::addPlayFiles(const QList<QUrl>& urls)
 QList<QUrl> PlayerEngine::collectPlayFiles(const QList<QUrl>& urls)
 {
     qDebug() << urls;
-    //NOTE: take care of loop, we dont recursive, it seems safe now
+    //NOTE: take care of loop, we don't recursive, it seems safe now
     QList<QUrl> valids;
     for (const auto& url: urls) {
         if (url.isLocalFile()) {
             QFileInfo fi(url.toLocalFile());
             if (!fi.exists()) {
-                qDebug() << url << "dont exists";
+                qDebug() << url << "don't exist";
                 continue;
             }
 

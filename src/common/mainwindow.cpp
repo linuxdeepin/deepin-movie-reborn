@@ -1992,7 +1992,7 @@ void MainWindow::handleSettings()
     }
 
     // hack: reset is set to default by QDialog, which makes lineedit's enter
-    // press is responsed by reset button
+    // press is responded by reset button
     auto reset = dsd->findChild<QPushButton*>("SettingsContentReset");
     reset->setDefault(false);
     reset->setAutoDefault(false);
@@ -2481,7 +2481,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *ev)
         _playState->setState(DImageButton::Normal);
     }
 
-    // dtk has a bug, DImageButton propagates mouseReleaseEvent event when it responsed to.
+    // dtk has a bug, DImageButton propagates mouseReleaseEvent event when it responded to.
     if (!insideResizeArea(ev->globalPos()) && !_mouseMoved && !insideToolsArea(ev->pos())) {
         if (_playlist->state() != PlaylistWidget::Opened)
             _delayedMouseReleaseTimer.start(120);
