@@ -754,7 +754,7 @@ void MpvProxy::play()
 
     qDebug () << args;
     command(_handle, args);
-    set_property(_handle, "pause", false);
+    set_property(_handle, "pause", _pauseOnStart);
 
 #ifndef _LIBDMR_
     // by giving a period of time, movie will be loaded and auto-loaded subs are 
@@ -1062,7 +1062,11 @@ QVariant MpvProxy::getProperty(const QString& name)
 
 void MpvProxy::setProperty(const QString& name, const QVariant& val)
 {
-    set_property(_handle, name.toUtf8().data(), val);
+    if (name == "pause-on-start") {
+        _pauseOnStart = val.toBool();
+    } else {
+        set_property(_handle, name.toUtf8().data(), val);
+    }
 }
 
 } // end of namespace dmr

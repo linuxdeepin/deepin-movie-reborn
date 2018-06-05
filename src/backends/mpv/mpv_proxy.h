@@ -136,6 +136,8 @@ private:
 
     bool _connectStateChange {false};
 
+    bool _pauseOnStart {false};
+
     mpv_handle* mpv_init();
     void processPropertyChange(mpv_event_property* ev);
     void processLogMessage(mpv_event_log_message* ev);

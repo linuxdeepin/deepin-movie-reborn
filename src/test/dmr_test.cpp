@@ -83,6 +83,7 @@ public:
         connect(keep, &QPushButton::clicked, &player->engine(), [this]() {
             this->player->engine().setBackendProperty("keep-open", "yes");
         });
+        this->player->engine().setBackendProperty("pause-on-start", "true");
         h->addWidget(keep);
 
         l->addLayout(h);
