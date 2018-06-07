@@ -836,7 +836,8 @@ void PlaylistModel::collectionJob(const QList<QUrl>& urls)
 #endif
     }
 
-    qDebug() << "input size" << urls.size() << "output size" << _urlsInJob.size();
+    qDebug() << "input size" << urls.size() << "output size" << _urlsInJob.size()
+        << "_pendingJob: " << _pendingJob.size();
 }
 
 void PlaylistModel::appendAsync(const QList<QUrl>& urls)
@@ -867,8 +868,19 @@ void PlaylistModel::delayedAppendAsync(const QList<QUrl>& urls)
         };
     };
 
-    auto future = QtConcurrent::mapped(_pendingJob, MapFunctor(this));
-    _jobWatcher->setFuture(future);
+    if (QThread::idealThreadCount() > 1) {
+        auto future = QtConcurrent::mapped(_pendingJob, MapFunctor(this));
+        _jobWatcher->setFuture(future);
+    } else {
+        PlayItemInfoList pil;
+        for (const auto& a: _pendingJob) {
+            qDebug() << "sync mapping " << a.first.fileName();
+            pil.append(calculatePlayInfo(a.first, a.second));
+        }
+        _pendingJob.clear();
+        _urlsInJob.clear();
+        handleAsyncAppendResults(pil);
+    }
 }
 
 static QList<PlayItemInfo>& SortSimilarFiles(QList<PlayItemInfo>& fil)
@@ -898,11 +910,18 @@ static QList<PlayItemInfo>& SortSimilarFiles(QList<PlayItemInfo>& fil)
 
 void PlaylistModel::onAsyncAppendFinished()
 {
+    qDebug() << __func__;
     auto f = _jobWatcher->future();
     _pendingJob.clear();
     _urlsInJob.clear();
 
     auto fil = f.results();
+    handleAsyncAppendResults(fil);
+}
+
+void PlaylistModel::handleAsyncAppendResults(QList<PlayItemInfo>& fil)
+{
+    qDebug() << __func__ << fil.size();
     if (!_firstLoad) {
         //since _infos are modified only at the same thread, the lock is not necessary
         auto last = std::remove_if(fil.begin(), fil.end(), [](const PlayItemInfo& pif) {

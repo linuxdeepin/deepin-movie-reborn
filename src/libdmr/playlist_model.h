@@ -186,6 +186,7 @@ private:
     void clearPlaylist();
     void appendSingle(const QUrl&);
     void tryPlayCurrent(bool next);
+    void handleAsyncAppendResults(QList<PlayItemInfo>& pil);
 };
 
 }

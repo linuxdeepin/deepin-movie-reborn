@@ -481,6 +481,35 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     mw->installEventFilter(mwl);
 #endif
 
+    if (!_closeMapper) {
+        _closeMapper = new QSignalMapper(this);
+        connect(_closeMapper,
+                static_cast<void(QSignalMapper::*)(QWidget*)>(&QSignalMapper::mapped),
+            [=](QWidget* w) {
+                qDebug() << "item close clicked";
+                _clickedItem = w;
+                _mw->requestAction(ActionFactory::ActionKind::PlaylistRemoveItem);
+            });
+    }
+
+    if (!_activateMapper) {
+        _activateMapper = new QSignalMapper(this);
+        connect(_activateMapper,
+                static_cast<void(QSignalMapper::*)(QWidget*)>(&QSignalMapper::mapped),
+            [=](QWidget* w) {
+                qDebug() << "item double clicked";
+                QList<QVariant> args;
+                for (int i = 0; i < count(); i++) {
+                    if (w == itemWidget(item(i))) {
+                        args << i;
+                        _mw->requestAction(ActionFactory::ActionKind::GotoPlaylistSelected,
+                                false, args);
+                        break;
+                    }
+                }
+            });
+    }
+
     connect(&_engine->playlist(), &PlaylistModel::emptied, this, &PlaylistWidget::clear);
     connect(&_engine->playlist(), &PlaylistModel::itemsAppended, this, &PlaylistWidget::appendItems);
     connect(&_engine->playlist(), &PlaylistModel::itemRemoved, this, &PlaylistWidget::removeItem);
@@ -725,34 +754,6 @@ void PlaylistWidget::loadPlaylist()
     qDebug() << __func__;
     clear();
 
-    if (!_closeMapper) {
-        _closeMapper = new QSignalMapper(this);
-        connect(_closeMapper,
-                static_cast<void(QSignalMapper::*)(QWidget*)>(&QSignalMapper::mapped),
-            [=](QWidget* w) {
-                qDebug() << "item close clicked";
-                _clickedItem = w;
-                _mw->requestAction(ActionFactory::ActionKind::PlaylistRemoveItem);
-            });
-    }
-
-    if (!_activateMapper) {
-        _activateMapper = new QSignalMapper(this);
-        connect(_activateMapper,
-                static_cast<void(QSignalMapper::*)(QWidget*)>(&QSignalMapper::mapped),
-            [=](QWidget* w) {
-                qDebug() << "item double clicked";
-                QList<QVariant> args;
-                for (int i = 0; i < count(); i++) {
-                    if (w == itemWidget(item(i))) {
-                        args << i;
-                        _mw->requestAction(ActionFactory::ActionKind::GotoPlaylistSelected,
-                                false, args);
-                        break;
-                    }
-                }
-            });
-    }
 
     auto items = _engine->playlist().items();
     auto p = items.begin();
