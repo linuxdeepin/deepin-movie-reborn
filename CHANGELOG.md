@@ -1,4 +1,15 @@
 <a name=""></a>
+##  3.2.7 (2018-06-07)
+
+
+#### Features
+
+*   run async append job conditionally ([d2d9528a](d2d9528a))
+* **libdmr:**  support pause on start ([518d453f](518d453f))
+
+
+
+<a name=""></a>
 ##  3.2.5 (2018-05-04)
 
 
