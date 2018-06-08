@@ -142,7 +142,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="29"/>
         <source>volume down</source>
-        <translation type="unfinished"/>
+        <translation>Turunkan volume</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="30"/>

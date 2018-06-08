@@ -60,12 +60,12 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="11"/>
         <source>Path</source>
-        <translation type="unfinished"/>
+        <translation>Polku</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="12"/>
         <source>Basic</source>
-        <translation type="unfinished"/>
+        <translation>Perusasetukset</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="13"/>
@@ -81,7 +81,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="15"/>
         <source>Shortcuts</source>
-        <translation type="unfinished"/>
+        <translation>Pikanäppäimet</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="16"/>
@@ -112,7 +112,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="23"/>
         <source>Restore Defaults</source>
-        <translation type="unfinished"/>
+        <translation>Palauta Oletusasetukset</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="24"/>

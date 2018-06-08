@@ -5,7 +5,7 @@
         <location filename="../main.cpp" line="86"/>
         <location filename="../main.cpp" line="118"/>
         <source>Deepin Movie</source>
-        <translation>Deepin Филм</translation>
+        <translation>Дипин Филм</translation>
     </message>
     <message>
         <location filename="../main.cpp" line="87"/>
@@ -60,12 +60,12 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="11"/>
         <source>Path</source>
-        <translation type="unfinished"/>
+        <translation>Путања</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="12"/>
         <source>Basic</source>
-        <translation type="unfinished"/>
+        <translation>Основно</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="13"/>
@@ -147,7 +147,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="30"/>
         <source>Volume up</source>
-        <translation type="unfinished"/>
+        <translation>Појачај звук</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="31"/>
@@ -694,7 +694,7 @@
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="873"/>
         <source>Exit fullscreen</source>
-        <translation type="unfinished"/>
+        <translation>Напусти пун екран</translation>
     </message>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="886"/>

@@ -509,7 +509,7 @@
         <location filename="../common/mainwindow.cpp" line="1444"/>
         <location filename="../common/mainwindow.cpp" line="1461"/>
         <source>All videos (%1)</source>
-        <translation type="unfinished"/>
+        <translation>Todos os vídeos (%1)</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1659"/>

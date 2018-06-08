@@ -81,7 +81,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="15"/>
         <source>Shortcuts</source>
-        <translation type="unfinished"/>
+        <translation>Qısayollar</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="16"/>

@@ -5,17 +5,17 @@
         <location filename="../main.cpp" line="86"/>
         <location filename="../main.cpp" line="118"/>
         <source>Deepin Movie</source>
-        <translation>Deepin Film</translation>
+        <translation>Deepin Sinema</translation>
     </message>
     <message>
         <location filename="../main.cpp" line="87"/>
         <source>Deepin Movie is a well-designed and full-featured video player with simple borderless design. It supports local and streaming media play with multiple video formats.</source>
-        <translation>Deepin Film basit çerçevesiz tasarımı ile iyi tasarlanmış ve tam özellikli bir video oynatıcısıdır. Yerel ve çoklu video biçimleriyle veri akışı ortamı oynatmayı destekler.</translation>
+        <translation>Deepin Sinema uygulaması basit çerçevesiz tasarımı ile iyi tasarlanmış, tam özellikli bir görüntü oynatıcısıdır. Pek çok yerel ve akış görüntü biçimini destekler.</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="116"/>
         <source>Invalid folder</source>
-        <translation>Geçersiz klasör</translation>
+        <translation>Klasör geçersiz</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="130"/>
@@ -25,37 +25,37 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="121"/>
         <source>You don&apos;t have permission to operate this folder</source>
-        <translation>Bu klasörü çalıştırma izniniz yok</translation>
+        <translation>Bu klasörde işlem yapma izniniz yok</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="5"/>
         <source>Auto add similar files to play</source>
-        <translation>Otomatik olarak oynatmak için benzer dosyalar ekleyiniz</translation>
+        <translation>Benzer dosyalar oynatılmak üzere otomatik olarak eklensin</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="6"/>
         <source>Clear playlist when exit</source>
-        <translation>Çıkarken oynatma listesini temizle</translation>
+        <translation>Çıkışta oynatma listesi temizlensin</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="7"/>
         <source>Show video preview on mouseover</source>
-        <translation>Fareyle üzerine video önizleme göster</translation>
+        <translation>Fare ile üzerine gelindiğinde ön izleme görüntülensin</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="8"/>
         <source>Open a new player for each file played</source>
-        <translation>Oynatılan her dosya için yeni bir oynatıcı açınız</translation>
+        <translation>Oynatılan her dosya için yeni bir oynatıcı açılsın</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="9"/>
         <source>Pause when minimized</source>
-        <translation>Küçültüldükten sonra duraklat</translation>
+        <translation>Küçültüldüğünde duraklatılsın</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="10"/>
         <source>Remember playback position</source>
-        <translation>Oynatma konumunu hatırla</translation>
+        <translation>Oynatma konumu hatırlansın</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="11"/>
@@ -91,7 +91,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="17"/>
         <source>Frame/Sound</source>
-        <translation>Resim Karesi/Ses</translation>
+        <translation>Kare/Ses</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="18"/>
@@ -102,12 +102,12 @@
         <location filename="../common/settings_translation.cpp" line="20"/>
         <location filename="../common/settings_translation.cpp" line="21"/>
         <source>Subtitle</source>
-        <translation>Altyazı</translation>
+        <translation>Alt yazı</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="22"/>
         <source>Font Style</source>
-        <translation>Yazı Tipi Sitili</translation>
+        <translation>Yazı Biçemi</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="23"/>
@@ -147,7 +147,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="30"/>
         <source>Volume up</source>
-        <translation>Sesi yükselt</translation>
+        <translation>Sesi arttır</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="31"/>
@@ -187,7 +187,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="38"/>
         <source>Forward</source>
-        <translation>İleri</translation>
+        <translation>İleri sar</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="39"/>
@@ -217,7 +217,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="44"/>
         <source>Font Size</source>
-        <translation>Yazı tipi boyutu</translation>
+        <translation>Yazı boyutu</translation>
     </message>
 </context>
 <context>
@@ -225,7 +225,7 @@
     <message>
         <location filename="../widgets/url_dialog.cpp" line="41"/>
         <source>Cancel</source>
-        <translation>İptal et</translation>
+        <translation>İptal</translation>
     </message>
     <message>
         <location filename="../widgets/url_dialog.cpp" line="42"/>
@@ -235,7 +235,7 @@
     <message>
         <location filename="../widgets/url_dialog.cpp" line="46"/>
         <source>Please enter the URL:</source>
-        <translation>Lütfen URL griniz:</translation>
+        <translation>Lütfen adresi yazın:</translation>
     </message>
 </context>
 <context>
@@ -270,7 +270,7 @@
     <message>
         <location filename="../common/actions.cpp" line="280"/>
         <source>Film info</source>
-        <translation>Film bilgisi</translation>
+        <translation>Film bilgileri</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="83"/>
@@ -281,7 +281,7 @@
     <message>
         <location filename="../common/actions.cpp" line="104"/>
         <source>Open URL</source>
-        <translation>URL Aç</translation>
+        <translation>Adres Aç</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="105"/>
@@ -326,7 +326,7 @@
     <message>
         <location filename="../common/actions.cpp" line="129"/>
         <source>Frame</source>
-        <translation>Resim Karesi</translation>
+        <translation>Kare</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="132"/>
@@ -356,7 +356,7 @@
     <message>
         <location filename="../common/actions.cpp" line="154"/>
         <source>Stereo</source>
-        <translation>Çiftli</translation>
+        <translation>Çift Kanal</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="155"/>
@@ -376,7 +376,7 @@
     <message>
         <location filename="../common/actions.cpp" line="172"/>
         <source>Subtitle</source>
-        <translation>Altyazı</translation>
+        <translation>Alt yazı</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="173"/>
@@ -386,12 +386,12 @@
     <message>
         <location filename="../common/actions.cpp" line="174"/>
         <source>Online Search</source>
-        <translation>Çevrimiçi Ara</translation>
+        <translation>Çevrimiçi Arama</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="178"/>
         <source>Select</source>
-        <translation>Seç</translation>
+        <translation>Seçin</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="182"/>
@@ -401,7 +401,7 @@
     <message>
         <location filename="../common/actions.cpp" line="186"/>
         <source>Encodings</source>
-        <translation>Kodlama</translation>
+        <translation>Kodlamalar</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="254"/>
@@ -426,7 +426,7 @@
     <message>
         <location filename="../common/actions.cpp" line="264"/>
         <source>Film Info</source>
-        <translation>Film Bilgisi</translation>
+        <translation>Film bilgileri</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="278"/>
@@ -436,7 +436,7 @@
     <message>
         <location filename="../common/actions.cpp" line="279"/>
         <source>Display in file manager</source>
-        <translation>Dosya yöneticide göster</translation>
+        <translation>Dosya yöneticisinde görüntüle</translation>
     </message>
 </context>
 <context>
@@ -469,29 +469,29 @@
         <location filename="../common/mainwindow.cpp" line="2279"/>
         <location filename="../common/mainwindow.cpp" line="2374"/>
         <source>Deepin Movie</source>
-        <translation>Deepin Film</translation>
+        <translation>Deepin Sinema</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="698"/>
         <location filename="../common/mainwindow.cpp" line="1796"/>
         <source>Load successfully</source>
-        <translation>Yükleme başarılı</translation>
+        <translation>Yüklendi</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="698"/>
         <location filename="../common/mainwindow.cpp" line="1796"/>
         <source>Load failed</source>
-        <translation>Yükleme başarısız</translation>
+        <translation>Yüklenemedi</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1402"/>
         <source>No device found</source>
-        <translation>Cihaz bulunamadı</translation>
+        <translation>Herhangi bir aygıt bulunamadı</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1420"/>
         <source>Parse Failed</source>
-        <translation>Çözümleme Başarısız</translation>
+        <translation>İşlenemedi</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1427"/>
@@ -509,7 +509,7 @@
         <location filename="../common/mainwindow.cpp" line="1444"/>
         <location filename="../common/mainwindow.cpp" line="1461"/>
         <source>All videos (%1)</source>
-        <translation type="unfinished"/>
+        <translation>Tüm görüntüler (%1)</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1659"/>
@@ -528,7 +528,7 @@
         <location filename="../common/mainwindow.cpp" line="1756"/>
         <location filename="../common/mainwindow.cpp" line="1764"/>
         <source>Subtitle %1: %2s</source>
-        <translation>Altyazı %1: %2lar</translation>
+        <translation>Alt yazı %1: %2s</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1757"/>
@@ -552,12 +552,12 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="1793"/>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</source>
-        <translation>Altyazı (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</translation>
+        <translation>Alt yazı (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1855"/>
         <source>View</source>
-        <translation>Göster</translation>
+        <translation>Görünüm</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1866"/>
@@ -567,7 +567,7 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="1867"/>
         <source>Saved to</source>
-        <translation>Kaydedildi</translation>
+        <translation>Şuraya kaydedildi</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1881"/>
@@ -578,13 +578,13 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="1881"/>
         <source>The screenshot is failed to save</source>
-        <translation>Ekran görüntüsü kaydı başarısız</translation>
+        <translation>Ekran görüntüsü kaydedilemedi</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2039"/>
         <location filename="../common/mainwindow.cpp" line="2728"/>
         <source>Invalid file: %1</source>
-        <translation>Geçersiz dosya: %1</translation>
+        <translation>Dosya geçersiz: %1</translation>
     </message>
 </context>
 <context>
@@ -621,7 +621,7 @@
         <location filename="../backends/mpv/mpv_proxy.cpp" line="1017"/>
         <location filename="../backends/mpv/mpv_proxy.cpp" line="1035"/>
         <source>[internal]</source>
-        <translation>[dahili]</translation>
+        <translation>[iç]</translation>
     </message>
 </context>
 <context>
@@ -631,7 +631,7 @@
         <location filename="../widgets/playlist_widget.cpp" line="227"/>
         <location filename="../widgets/playlist_widget.cpp" line="402"/>
         <source>File does not exist</source>
-        <translation>Dosya bulunmuyor</translation>
+        <translation>Dosya bulunamadı</translation>
     </message>
 </context>
 <context>
@@ -639,12 +639,12 @@
     <message>
         <location filename="../common/dmr_settings.cpp" line="155"/>
         <source>%1/DMovie%2.jpg</source>
-        <translation>%1/DMovie%2.jpg</translation>
+        <translation>%1/DFilm%2.jpg</translation>
     </message>
     <message>
         <location filename="../common/dmr_settings.cpp" line="161"/>
         <source>%1/DMovie%2(%3).jpg</source>
-        <translation>%1/DMovie%2(%3).jpg</translation>
+        <translation>%1/DFilm%2(%3).jpg</translation>
     </message>
 </context>
 <context>
@@ -670,7 +670,7 @@
         <location filename="../widgets/toolbox_proxy.cpp" line="687"/>
         <location filename="../widgets/toolbox_proxy.cpp" line="697"/>
         <source>Subtitles</source>
-        <translation>Altyazılar</translation>
+        <translation>Alt yazılar</translation>
     </message>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="688"/>

@@ -112,7 +112,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="23"/>
         <source>Restore Defaults</source>
-        <translation type="unfinished"/>
+        <translation>Ανάκτηση Προεπιλογών</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="24"/>

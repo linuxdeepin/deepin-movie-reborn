@@ -81,7 +81,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="15"/>
         <source>Shortcuts</source>
-        <translation type="unfinished"/>
+        <translation>میانبر</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="16"/>
@@ -316,12 +316,12 @@
     <message>
         <location filename="../common/actions.cpp" line="121"/>
         <source>Single Loop</source>
-        <translation type="unfinished"/>
+        <translation>تکرار یک مورد</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="122"/>
         <source>List Loop</source>
-        <translation type="unfinished"/>
+        <translation>لیست تکرار</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="129"/>
@@ -436,7 +436,7 @@
     <message>
         <location filename="../common/actions.cpp" line="279"/>
         <source>Display in file manager</source>
-        <translation type="unfinished"/>
+        <translation>نمایش درمدیریت فایل</translation>
     </message>
 </context>
 <context>
