@@ -1,4 +1,14 @@
 <a name=""></a>
+##  3.2.8 (2018-07-20)
+
+
+#### Features
+
+*   add frame-by-frame navigation support ([57e07793](57e07793))
+
+
+
+<a name=""></a>
 ##  3.2.7 (2018-06-07)
 
 
