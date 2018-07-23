@@ -299,8 +299,10 @@ bool PlayerEngine::loadSubtitle(const QFileInfo& fi)
     }
 
     if (_current->loadSubtitle(fi)) {
+#ifndef _LIBDMR_
         MovieConfiguration::get().append2ListUrl(pif.url, ConfigKnownKey::ExternalSubs,
                 fi.canonicalFilePath());
+#endif
         return true;
     }
     return false;
