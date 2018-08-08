@@ -1,4 +1,8 @@
 <a name=""></a>
+##  3.2.9 (2018-08-08)
+
+*   fix(libdmr): bypass sub saving and compilation
+
 ##  3.2.8 (2018-07-20)
 
 
