@@ -2,13 +2,13 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../main.cpp" line="86"/>
-        <location filename="../main.cpp" line="118"/>
+        <location filename="../main.cpp" line="88"/>
+        <location filename="../main.cpp" line="120"/>
         <source>Deepin Movie</source>
         <translation>Deepin film</translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="87"/>
+        <location filename="../main.cpp" line="89"/>
         <source>Deepin Movie is a well-designed and full-featured video player with simple borderless design. It supports local and streaming media play with multiple video formats.</source>
         <translation>Deepin film er veldesignet og har alle funktioner der kræves af en videoafspiller med et enkelt design uden rammer. Det understøtter lokal og strømning medieafspilning med flere videoformater.</translation>
     </message>
@@ -141,81 +141,91 @@
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="29"/>
+        <source>Next frame</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../common/settings_translation.cpp" line="30"/>
+        <source>Previous frame</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../common/settings_translation.cpp" line="31"/>
         <source>volume down</source>
         <translation>Lavere</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="30"/>
+        <location filename="../common/settings_translation.cpp" line="32"/>
         <source>Volume up</source>
         <translation>Højere</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="31"/>
+        <location filename="../common/settings_translation.cpp" line="33"/>
         <source>Speed up</source>
         <translation>Hurtigere</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="32"/>
+        <location filename="../common/settings_translation.cpp" line="34"/>
         <source>Speed down</source>
         <translation>Langsommere</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="33"/>
+        <location filename="../common/settings_translation.cpp" line="35"/>
         <source>Fullscreen</source>
         <translation>Fuldskærm</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="34"/>
+        <location filename="../common/settings_translation.cpp" line="36"/>
         <source>Pause/Play</source>
         <translation>Pause/afspil</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="35"/>
+        <location filename="../common/settings_translation.cpp" line="37"/>
         <source>Playlist</source>
         <translation>Afspilningsliste</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="36"/>
+        <location filename="../common/settings_translation.cpp" line="38"/>
         <source>Reset speed</source>
         <translation>Nulstil hastighed</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="37"/>
+        <location filename="../common/settings_translation.cpp" line="39"/>
         <source>Rewind</source>
         <translation>Bagud</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="38"/>
+        <location filename="../common/settings_translation.cpp" line="40"/>
         <source>Forward</source>
         <translation>Fremad</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="39"/>
+        <location filename="../common/settings_translation.cpp" line="41"/>
         <source>Burst screenshot</source>
         <translation>Burst skærmbillede</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="40"/>
+        <location filename="../common/settings_translation.cpp" line="42"/>
         <source>Film screenshot</source>
         <translation>Film skærmbillede</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="41"/>
+        <location filename="../common/settings_translation.cpp" line="43"/>
         <source>0.5s backward</source>
         <translation>0,5 s baglæns</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="42"/>
+        <location filename="../common/settings_translation.cpp" line="44"/>
         <source>0.5s forward</source>
         <translation>0,5 s fremad</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="43"/>
+        <location filename="../common/settings_translation.cpp" line="45"/>
         <source>Font</source>
         <translation>Skrifttype</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="44"/>
+        <location filename="../common/settings_translation.cpp" line="46"/>
         <source>Font Size</source>
         <translation>Skriftstørrelse</translation>
     </message>
@@ -248,7 +258,7 @@
     </message>
     <message>
         <location filename="../common/actions.cpp" line="84"/>
-        <location filename="../common/actions.cpp" line="265"/>
+        <location filename="../common/actions.cpp" line="269"/>
         <source>Settings</source>
         <translation>Indstillinger</translation>
     </message>
@@ -268,7 +278,7 @@
         <translation>Altid øverst</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="280"/>
+        <location filename="../common/actions.cpp" line="284"/>
         <source>Film info</source>
         <translation>Filminfo</translation>
     </message>
@@ -344,97 +354,107 @@
         <translation>Mod uret</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="148"/>
+        <location filename="../common/actions.cpp" line="144"/>
+        <source>Next frame</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../common/actions.cpp" line="145"/>
+        <source>Previous frame</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../common/actions.cpp" line="152"/>
         <source>Sound</source>
         <translation>Lyd</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="151"/>
+        <location filename="../common/actions.cpp" line="155"/>
         <source>Channel</source>
         <translation>Kanal</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="154"/>
+        <location filename="../common/actions.cpp" line="158"/>
         <source>Stereo</source>
         <translation>Stereo</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="155"/>
+        <location filename="../common/actions.cpp" line="159"/>
         <source>Left channel</source>
         <translation>Venstre kanal</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="156"/>
+        <location filename="../common/actions.cpp" line="160"/>
         <source>Right channel</source>
         <translation>Højre kanal</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="162"/>
+        <location filename="../common/actions.cpp" line="166"/>
         <source>Track</source>
         <translation>Spor</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="172"/>
+        <location filename="../common/actions.cpp" line="176"/>
         <source>Subtitle</source>
         <translation>Undertekst</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="173"/>
+        <location filename="../common/actions.cpp" line="177"/>
         <source>Load</source>
         <translation>Indlæs</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="174"/>
+        <location filename="../common/actions.cpp" line="178"/>
         <source>Online Search</source>
         <translation>Onlinesøgning</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="178"/>
+        <location filename="../common/actions.cpp" line="182"/>
         <source>Select</source>
         <translation>Vælg</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="182"/>
+        <location filename="../common/actions.cpp" line="186"/>
         <source>Hide</source>
         <translation>Skjul</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="186"/>
+        <location filename="../common/actions.cpp" line="190"/>
         <source>Encodings</source>
         <translation>Kodninger</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="254"/>
+        <location filename="../common/actions.cpp" line="258"/>
         <source>Screenshot</source>
         <translation>Skærmbillede</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="255"/>
+        <location filename="../common/actions.cpp" line="259"/>
         <source>Film Screenshot</source>
         <translation>Film-skærmbillede</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="256"/>
+        <location filename="../common/actions.cpp" line="260"/>
         <source>Burst Shooting</source>
         <translation>Burst-skydning</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="263"/>
+        <location filename="../common/actions.cpp" line="267"/>
         <source>Playlist</source>
         <translation>Afspilningsliste</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="264"/>
+        <location filename="../common/actions.cpp" line="268"/>
         <source>Film Info</source>
         <translation>Filminfo</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="278"/>
+        <location filename="../common/actions.cpp" line="282"/>
         <source>Clear playlist</source>
         <translation>Ryd afspilningsliste</translation>
     </message>
     <message>
-        <location filename="../common/actions.cpp" line="279"/>
+        <location filename="../common/actions.cpp" line="283"/>
         <source>Display in file manager</source>
         <translation>Vis i filhåndtering</translation>
     </message>
@@ -466,123 +486,123 @@
     <name>dmr::MainWindow</name>
     <message>
         <location filename="../common/mainwindow.cpp" line="785"/>
-        <location filename="../common/mainwindow.cpp" line="2279"/>
-        <location filename="../common/mainwindow.cpp" line="2374"/>
+        <location filename="../common/mainwindow.cpp" line="2284"/>
+        <location filename="../common/mainwindow.cpp" line="2381"/>
         <source>Deepin Movie</source>
         <translation>Deepin film</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="698"/>
-        <location filename="../common/mainwindow.cpp" line="1796"/>
+        <location filename="../common/mainwindow.cpp" line="1789"/>
         <source>Load successfully</source>
         <translation>Indlæsning lykkedes</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="698"/>
-        <location filename="../common/mainwindow.cpp" line="1796"/>
+        <location filename="../common/mainwindow.cpp" line="1789"/>
         <source>Load failed</source>
         <translation>Indlæsning mislykkedes</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1402"/>
+        <location filename="../common/mainwindow.cpp" line="1392"/>
         <source>No device found</source>
         <translation>Ingen enhed fundet</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1420"/>
+        <location filename="../common/mainwindow.cpp" line="1410"/>
         <source>Parse Failed</source>
         <translation>Fortolkning mislykkedes</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1427"/>
+        <location filename="../common/mainwindow.cpp" line="1417"/>
         <source>Open Folder</source>
         <translation>Åbn mappe</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1442"/>
-        <location filename="../common/mainwindow.cpp" line="1459"/>
-        <location filename="../common/mainwindow.cpp" line="1791"/>
+        <location filename="../common/mainwindow.cpp" line="1432"/>
+        <location filename="../common/mainwindow.cpp" line="1449"/>
+        <location filename="../common/mainwindow.cpp" line="1784"/>
         <source>Open File</source>
         <translation>Åbn fil</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1444"/>
-        <location filename="../common/mainwindow.cpp" line="1461"/>
+        <location filename="../common/mainwindow.cpp" line="1434"/>
+        <location filename="../common/mainwindow.cpp" line="1451"/>
         <source>All videos (%1)</source>
         <translation>Alle videoer (%1)</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1659"/>
+        <location filename="../common/mainwindow.cpp" line="1652"/>
         <source>Muted</source>
         <translation>Lydløst</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1662"/>
-        <location filename="../common/mainwindow.cpp" line="1674"/>
+        <location filename="../common/mainwindow.cpp" line="1655"/>
+        <location filename="../common/mainwindow.cpp" line="1667"/>
+        <location filename="../common/mainwindow.cpp" line="1677"/>
         <location filename="../common/mainwindow.cpp" line="1684"/>
-        <location filename="../common/mainwindow.cpp" line="1691"/>
         <source>Volume: %1%</source>
         <translation>Lydstyrke: %1%</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1756"/>
-        <location filename="../common/mainwindow.cpp" line="1764"/>
+        <location filename="../common/mainwindow.cpp" line="1749"/>
+        <location filename="../common/mainwindow.cpp" line="1757"/>
         <source>Subtitle %1: %2s</source>
         <translation>Undertekst %1: %2s</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1757"/>
-        <location filename="../common/mainwindow.cpp" line="1765"/>
+        <location filename="../common/mainwindow.cpp" line="1750"/>
+        <location filename="../common/mainwindow.cpp" line="1758"/>
         <source>delayed</source>
         <translation>forsinket</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1757"/>
-        <location filename="../common/mainwindow.cpp" line="1765"/>
+        <location filename="../common/mainwindow.cpp" line="1750"/>
+        <location filename="../common/mainwindow.cpp" line="1758"/>
         <source>advanced</source>
         <translation>fremskudt</translation>
     </message>
     <message>
+        <location filename="../common/mainwindow.cpp" line="1765"/>
         <location filename="../common/mainwindow.cpp" line="1772"/>
         <location filename="../common/mainwindow.cpp" line="1779"/>
-        <location filename="../common/mainwindow.cpp" line="1786"/>
         <source>Speed: %1x</source>
         <translation>Hastighed: %1x</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1793"/>
+        <location filename="../common/mainwindow.cpp" line="1786"/>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</source>
         <translation>Undertekst (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1855"/>
+        <location filename="../common/mainwindow.cpp" line="1848"/>
         <source>View</source>
         <translation>Vis</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1866"/>
+        <location filename="../common/mainwindow.cpp" line="1859"/>
         <source>Movie Screenshot</source>
         <translation>film skærmbillede</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1867"/>
+        <location filename="../common/mainwindow.cpp" line="1860"/>
         <source>Saved to</source>
         <translation>Gemt til</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1881"/>
-        <location filename="../common/mainwindow.cpp" line="1952"/>
+        <location filename="../common/mainwindow.cpp" line="1874"/>
+        <location filename="../common/mainwindow.cpp" line="1957"/>
         <source>The screenshot is saved</source>
         <translation>Skærmbilledet er gemt</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1881"/>
+        <location filename="../common/mainwindow.cpp" line="1874"/>
         <source>The screenshot is failed to save</source>
         <translation>Skærmbilledet kunne ikke gemmes</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2039"/>
-        <location filename="../common/mainwindow.cpp" line="2728"/>
+        <location filename="../common/mainwindow.cpp" line="2044"/>
+        <location filename="../common/mainwindow.cpp" line="2741"/>
         <source>Invalid file: %1</source>
         <translation>Ugyldig fil: %1</translation>
     </message>
@@ -618,8 +638,8 @@
 <context>
     <name>dmr::MpvProxy</name>
     <message>
-        <location filename="../backends/mpv/mpv_proxy.cpp" line="1017"/>
-        <location filename="../backends/mpv/mpv_proxy.cpp" line="1035"/>
+        <location filename="../backends/mpv/mpv_proxy.cpp" line="1029"/>
+        <location filename="../backends/mpv/mpv_proxy.cpp" line="1047"/>
         <source>[internal]</source>
         <translation>[intern]</translation>
     </message>
