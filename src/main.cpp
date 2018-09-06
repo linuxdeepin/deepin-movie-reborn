@@ -66,6 +66,8 @@ int main(int argc, char *argv[])
     setlocale(LC_NUMERIC, "C");
 
     app.setAttribute(Qt::AA_UseHighDpiPixmaps);
+    // overwrite DApplication default value
+    app.setAttribute(Qt::AA_ForceRasterWidgets, false);
     app.setOrganizationName("deepin");
     app.setApplicationName("deepin-movie");
     app.setApplicationVersion(DMR_VERSION);
