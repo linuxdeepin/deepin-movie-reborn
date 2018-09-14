@@ -1,4 +1,10 @@
 <a name=""></a>
+##  3.2.10 (2018-09-14)
+
+* maintainance tag
+
+
+<a name=""></a>
 ##  3.2.9 (2018-08-08)
 
 *   fix(libdmr): bypass sub saving and compilation
