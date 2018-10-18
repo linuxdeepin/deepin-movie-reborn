@@ -760,7 +760,7 @@ void MainWindow::setupTitlebar()
     _titlebar->move(1, 1);
 #endif
     _titlebar->setFixedHeight(30);
-    _titlebar->layout()->setContentsMargins(0, 0, 6, 0);
+    _titlebar->layout()->setContentsMargins(0, 0, 0, 0);
     _titlebar->setFocusPolicy(Qt::NoFocus);
     if (!CompositingManager::get().composited()) {
         _titlebar->setAttribute(Qt::WA_NativeWindow);
