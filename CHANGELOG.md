@@ -1,3 +1,13 @@
+<a name="3.2.11"></a>
+## 3.2.11 (2018-10-25)
+
+
+#### Bug Fixes
+
+*   remove the TitleBar right margin ([17de875f](17de875f))
+
+
+
 <a name=""></a>
 ##  3.2.10 (2018-09-14)
 
