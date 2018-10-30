@@ -1,4 +1,8 @@
-<a name="3.2.11"></a>
+<a name="3.2.12"></a>
+## 3.2.12 (2018-10-26)
+
+*   refactor: use DApplication::handleHelpAction to open help document
+
 ## 3.2.11 (2018-10-25)
 
 
