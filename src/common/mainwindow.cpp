@@ -917,13 +917,12 @@ void MainWindow::handleHelpAction()
     {
     public:
         inline void showHelp() {
-            handleHelpAction();
+            DApplication::handleHelpAction();
         }
-
-        friend class MainWindow;
     };
 
-    static_cast<_DApplication*>(qApp)->showHelp();
+    DApplication *dapp = qApp;
+    reinterpret_cast<_DApplication*>(dapp)->_DApplication::showHelp();
 }
 
 #ifdef USE_DXCB
