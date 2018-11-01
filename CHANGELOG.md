@@ -1,3 +1,14 @@
+<a name="3.2.14"></a>
+## 3.2.14 (2018-11-01)
+
+
+#### Bug Fixes
+
+*   no transifex ([dbfe0115](dbfe0115))
+*   build error with libavresample deprecated ([9797db07](9797db07))
+
+
+
 <a name="3.2.13"></a>
 ## 3.2.13 (2018-10-30)
 
