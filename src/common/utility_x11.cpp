@@ -87,6 +87,27 @@ void Utility::cancelWindowMoveResize(quint32 WId)
     sendMoveResizeMessage(WId, _NET_WM_MOVERESIZE_CANCEL);
 }
 
+void Utility::updateMousePointForWindowMove(quint32 WId, const QPoint &globalPos)
+{
+    xcb_client_message_event_t xev;
+
+    xev.response_type = XCB_CLIENT_MESSAGE;
+    xev.type = internAtom("_DEEPIN_MOVE_UPDATE");
+    xev.window = WId;
+    xev.format = 32;
+    xev.data.data32[0] = globalPos.x();
+    xev.data.data32[1] = globalPos.y();
+    xev.data.data32[2] = 0;
+    xev.data.data32[3] = 0;
+    xev.data.data32[4] = 0;
+
+    xcb_send_event(QX11Info::connection(), false, QX11Info::appRootWindow(),
+                   XCB_EVENT_MASK_SUBSTRUCTURE_REDIRECT | XCB_EVENT_MASK_SUBSTRUCTURE_NOTIFY,
+                   (const char *)&xev);
+
+    xcb_flush(QX11Info::connection());
+}
+
 void Utility::setFrameExtents(quint32 WId, const QMargins &margins)
 {
     xcb_atom_t frameExtents = internAtom("_GTK_FRAME_EXTENTS");

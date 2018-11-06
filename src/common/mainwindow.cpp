@@ -2502,6 +2502,10 @@ void MainWindow::delayedMouseReleaseHandler()
 
 void MainWindow::mouseMoveEvent(QMouseEvent *ev)
 {
+    if (_mouseMoved) {
+        return Utility::updateMousePointForWindowMove(this->winId(), ev->globalPos() * devicePixelRatio());
+    }
+
     _mouseMoved = true;
 
     if (windowState() == Qt::WindowNoState || isMaximized()) {
