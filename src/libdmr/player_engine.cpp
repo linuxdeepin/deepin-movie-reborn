@@ -40,6 +40,9 @@
 #include "dmr_settings.h"
 #endif
 
+#include "drecentmanager.h"
+DCORE_USE_NAMESPACE
+
 namespace dmr {
 
 PlayerEngine::PlayerEngine(QWidget *parent)
@@ -441,9 +444,14 @@ void PlayerEngine::requestPlay(int id)
 
     const auto& item = _playlist->items()[id];
     _current->setPlayFile(item.url);
+
+    DRecentData data;
+    data.appName = "Deepin Movie";
+    data.appExec = "deepin-movie";
+    DRecentManager::addItem(item.url.toLocalFile(), data);
+
     if (_current->isPlayable()) {
         _current->play();
-
     } else {
         // TODO: delete and try next backend?
     }
