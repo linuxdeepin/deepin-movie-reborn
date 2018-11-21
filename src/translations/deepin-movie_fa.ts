@@ -55,7 +55,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="10"/>
         <source>Remember playback position</source>
-        <translation type="unfinished"/>
+        <translation>بازیابی موقعیت پخش</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="11"/>
@@ -65,7 +65,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="12"/>
         <source>Basic</source>
-        <translation type="unfinished"/>
+        <translation>پایه ای</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="13"/>
@@ -112,7 +112,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="23"/>
         <source>Restore Defaults</source>
-        <translation type="unfinished"/>
+        <translation>بازگرداندن پیش فرض ها</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="24"/>

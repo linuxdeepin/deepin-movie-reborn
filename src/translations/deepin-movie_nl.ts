@@ -152,7 +152,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="31"/>
         <source>volume down</source>
-        <translation>volume omlaag</translation>
+        <translation>Volume omlaag</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="32"/>

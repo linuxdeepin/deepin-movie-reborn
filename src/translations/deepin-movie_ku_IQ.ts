@@ -5,229 +5,229 @@
         <location filename="../main.cpp" line="88"/>
         <location filename="../main.cpp" line="120"/>
         <source>Deepin Movie</source>
-        <translation type="unfinished"/>
+        <translation>Deepin Fîlm</translation>
     </message>
     <message>
         <location filename="../main.cpp" line="89"/>
         <source>Deepin Movie is a well-designed and full-featured video player with simple borderless design. It supports local and streaming media play with multiple video formats.</source>
-        <translation type="unfinished"/>
+        <translation>Sepana Deepin Fîlm, lêderek têrtaybetî ya dîmenê ye û bi sêwira xwe ya sade ya bêçarçoveyê baş hatiye sêwirandin. Piştevaniya gelek cureyên medyayê yên xwecihî û weşaniyê dike.</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="116"/>
         <source>Invalid folder</source>
-        <translation type="unfinished"/>
+        <translation>Peldanka nederbasdar</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="130"/>
         <source>Open Folder</source>
-        <translation type="unfinished"/>
+        <translation>Peldankê Veke</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="121"/>
         <source>You don&apos;t have permission to operate this folder</source>
-        <translation type="unfinished"/>
+        <translation>Destûra te tune ye ku di peldankê de guherînê bike</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="5"/>
         <source>Auto add similar files to play</source>
-        <translation type="unfinished"/>
+        <translation>Ji bo lêdanê pelên wekhev bira jixweber bêne tevlîkirin</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="6"/>
         <source>Clear playlist when exit</source>
-        <translation type="unfinished"/>
+        <translation>Dema derketinê lîsteya lêdanê jê bibe</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="7"/>
         <source>Show video preview on mouseover</source>
-        <translation type="unfinished"/>
+        <translation>Dema mişk li ser wê be, bira pêşdîtina vîdyo bê lîstin</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="8"/>
         <source>Open a new player for each file played</source>
-        <translation type="unfinished"/>
+        <translation>Bira her pel di lêderekî din bê lîstin</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="9"/>
         <source>Pause when minimized</source>
-        <translation type="unfinished"/>
+        <translation>Di biçûkkirinê de bisekinîne</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="10"/>
         <source>Remember playback position</source>
-        <translation type="unfinished"/>
+        <translation>Cihê lêdanê bi bîr bîne</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="11"/>
         <source>Path</source>
-        <translation type="unfinished"/>
+        <translation>Rê</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="12"/>
         <source>Basic</source>
-        <translation type="unfinished"/>
+        <translation>Bingehîn</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="13"/>
         <source>Play</source>
-        <translation type="unfinished"/>
+        <translation>Lê Bide</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="14"/>
         <location filename="../common/settings_translation.cpp" line="19"/>
         <source>Screenshot</source>
-        <translation type="unfinished"/>
+        <translation>Dîmena dîmenderê</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="15"/>
         <source>Shortcuts</source>
-        <translation type="unfinished"/>
+        <translation>Kurtebirî</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="16"/>
         <source>File</source>
-        <translation type="unfinished"/>
+        <translation>Pel</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="17"/>
         <source>Frame/Sound</source>
-        <translation type="unfinished"/>
+        <translation>Sehne/Deng</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="18"/>
         <source>Playback</source>
-        <translation type="unfinished"/>
+        <translation>Lîstin</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="20"/>
         <location filename="../common/settings_translation.cpp" line="21"/>
         <source>Subtitle</source>
-        <translation type="unfinished"/>
+        <translation>Binnivîs</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="22"/>
         <source>Font Style</source>
-        <translation type="unfinished"/>
+        <translation>Şêwaza Tîpa Nivîsê</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="23"/>
         <source>Restore Defaults</source>
-        <translation type="unfinished"/>
+        <translation>Mîhengên Destpêkê Dîsa Bîne</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="24"/>
         <source>Open file</source>
-        <translation type="unfinished"/>
+        <translation>Pelê veke</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="25"/>
         <source>Open next</source>
-        <translation type="unfinished"/>
+        <translation>Ya pêşve veke</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="26"/>
         <source>Open previous</source>
-        <translation type="unfinished"/>
+        <translation>Ya paşve veke</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="27"/>
         <source>Mini mode</source>
-        <translation type="unfinished"/>
+        <translation>Moda biçûk</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="28"/>
         <source>Mute</source>
-        <translation type="unfinished"/>
+        <translation>Bêdeng</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="29"/>
         <source>Next frame</source>
-        <translation type="unfinished"/>
+        <translation>Sehneya pêşve</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="30"/>
         <source>Previous frame</source>
-        <translation type="unfinished"/>
+        <translation>Sehneya paşve</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="31"/>
         <source>volume down</source>
-        <translation type="unfinished"/>
+        <translation>Deng dîne</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="32"/>
         <source>Volume up</source>
-        <translation type="unfinished"/>
+        <translation>Deng rake</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="33"/>
         <source>Speed up</source>
-        <translation type="unfinished"/>
+        <translation>Lezê zêde bike</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="34"/>
         <source>Speed down</source>
-        <translation type="unfinished"/>
+        <translation>Lezê kêm bike</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="35"/>
         <source>Fullscreen</source>
-        <translation type="unfinished"/>
+        <translation>Dîmentêr</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="36"/>
         <source>Pause/Play</source>
-        <translation type="unfinished"/>
+        <translation>Bisekinîne/Lê Bide</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="37"/>
         <source>Playlist</source>
-        <translation type="unfinished"/>
+        <translation>Lîsteya Lêxistinê</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="38"/>
         <source>Reset speed</source>
-        <translation type="unfinished"/>
+        <translation>Lezê sifir bike</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="39"/>
         <source>Rewind</source>
-        <translation type="unfinished"/>
+        <translation>Paşve bibe</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="40"/>
         <source>Forward</source>
-        <translation type="unfinished"/>
+        <translation>Pêşve bibe</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="41"/>
         <source>Burst screenshot</source>
-        <translation type="unfinished"/>
+        <translation>Rêzedîmena dîmenderê</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="42"/>
         <source>Film screenshot</source>
-        <translation type="unfinished"/>
+        <translation>Dîmena dîmenderê ya fîlmê</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="43"/>
         <source>0.5s backward</source>
-        <translation type="unfinished"/>
+        <translation>0.5s paşve</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="44"/>
         <source>0.5s forward</source>
-        <translation type="unfinished"/>
+        <translation>0.5s pêşve</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="45"/>
         <source>Font</source>
-        <translation type="unfinished"/>
+        <translation>Tîpa Nivîsê</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="46"/>
         <source>Font Size</source>
-        <translation type="unfinished"/>
+        <translation>Mezinahiya Tîpa Nivîsê</translation>
     </message>
 </context>
 <context>
@@ -235,17 +235,17 @@
     <message>
         <location filename="../widgets/url_dialog.cpp" line="41"/>
         <source>Cancel</source>
-        <translation>پاشگەزبوونەوە</translation>
+        <translation>Betal Bike</translation>
     </message>
     <message>
         <location filename="../widgets/url_dialog.cpp" line="42"/>
         <source>Confirm</source>
-        <translation type="unfinished"/>
+        <translation>Bipejirîne</translation>
     </message>
     <message>
         <location filename="../widgets/url_dialog.cpp" line="46"/>
         <source>Please enter the URL:</source>
-        <translation type="unfinished"/>
+        <translation>Ji kerema xwe pê li URLym bike:</translation>
     </message>
 </context>
 <context>
@@ -254,209 +254,209 @@
         <location filename="../common/actions.cpp" line="82"/>
         <location filename="../common/actions.cpp" line="102"/>
         <source>Open File</source>
-        <translation type="unfinished"/>
+        <translation>Pelê Veke</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="84"/>
         <location filename="../common/actions.cpp" line="269"/>
         <source>Settings</source>
-        <translation type="unfinished"/>
+        <translation>Mîheng</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="85"/>
         <source>Light Theme</source>
-        <translation type="unfinished"/>
+        <translation>Temaya Ronî</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="108"/>
         <source>Fullscreen</source>
-        <translation type="unfinished"/>
+        <translation>Dîmentêr</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="110"/>
         <source>Always on Top</source>
-        <translation type="unfinished"/>
+        <translation>Her tim li ser</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="284"/>
         <source>Film info</source>
-        <translation type="unfinished"/>
+        <translation>Agahiya Fîlmê</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="83"/>
         <location filename="../common/actions.cpp" line="103"/>
         <source>Open Folder</source>
-        <translation type="unfinished"/>
+        <translation>Peldankê Veke</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="104"/>
         <source>Open URL</source>
-        <translation type="unfinished"/>
+        <translation>URLyê Veke</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="105"/>
         <source>Open CD/DVD</source>
-        <translation type="unfinished"/>
+        <translation>CD/DVDyê veke</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="109"/>
         <source>Mini Mode</source>
-        <translation type="unfinished"/>
+        <translation>Moda Biçûk</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="115"/>
         <source>Play Mode</source>
-        <translation type="unfinished"/>
+        <translation>Moda Lêxistinê</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="118"/>
         <source>Order Play</source>
-        <translation type="unfinished"/>
+        <translation>Dora Lêdanê</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="119"/>
         <source>Shuffle Play</source>
-        <translation type="unfinished"/>
+        <translation>Lêdana Tevlihev</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="120"/>
         <source>Single Play</source>
-        <translation type="unfinished"/>
+        <translation>Bi Tenê Lê Bide</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="121"/>
         <source>Single Loop</source>
-        <translation type="unfinished"/>
+        <translation>Çerxa Stranê</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="122"/>
         <source>List Loop</source>
-        <translation type="unfinished"/>
+        <translation>Çerxa Lîsteyê</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="129"/>
         <source>Frame</source>
-        <translation type="unfinished"/>
+        <translation>Sehne</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="132"/>
         <source>Default</source>
-        <translation type="unfinished"/>
+        <translation>Destpêkî</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="140"/>
         <source>Clockwise</source>
-        <translation type="unfinished"/>
+        <translation>Ber bi hêla saetê ve</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="141"/>
         <source>Counterclockwise</source>
-        <translation type="unfinished"/>
+        <translation>Ber bi berevajiya hêla saetê ve</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="144"/>
         <source>Next frame</source>
-        <translation type="unfinished"/>
+        <translation>Sehneya pêşve</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="145"/>
         <source>Previous frame</source>
-        <translation type="unfinished"/>
+        <translation>Sehneya paşve</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="152"/>
         <source>Sound</source>
-        <translation type="unfinished"/>
+        <translation>Deng</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="155"/>
         <source>Channel</source>
-        <translation type="unfinished"/>
+        <translation>Kanal</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="158"/>
         <source>Stereo</source>
-        <translation type="unfinished"/>
+        <translation>Cotekanal</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="159"/>
         <source>Left channel</source>
-        <translation type="unfinished"/>
+        <translation>Kanala çep</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="160"/>
         <source>Right channel</source>
-        <translation type="unfinished"/>
+        <translation>Kanala rast</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="166"/>
         <source>Track</source>
-        <translation type="unfinished"/>
+        <translation>Stran</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="176"/>
         <source>Subtitle</source>
-        <translation type="unfinished"/>
+        <translation>Binnivîs</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="177"/>
         <source>Load</source>
-        <translation type="unfinished"/>
+        <translation>Bar Bike</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="178"/>
         <source>Online Search</source>
-        <translation type="unfinished"/>
+        <translation>Lêgerîna Serxet</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="182"/>
         <source>Select</source>
-        <translation type="unfinished"/>
+        <translation>Hilbijêre</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="186"/>
         <source>Hide</source>
-        <translation type="unfinished"/>
+        <translation>Veşêre</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="190"/>
         <source>Encodings</source>
-        <translation type="unfinished"/>
+        <translation>Kodkirî</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="258"/>
         <source>Screenshot</source>
-        <translation type="unfinished"/>
+        <translation>Dîmena dîmenderê</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="259"/>
         <source>Film Screenshot</source>
-        <translation type="unfinished"/>
+        <translation>Dîmendera Fîlmê</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="260"/>
         <source>Burst Shooting</source>
-        <translation type="unfinished"/>
+        <translation>Rêzegirtin</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="267"/>
         <source>Playlist</source>
-        <translation type="unfinished"/>
+        <translation>Lîsteya Lêxistinê</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="268"/>
         <source>Film Info</source>
-        <translation type="unfinished"/>
+        <translation>Agahiya Fîlmê</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="282"/>
         <source>Clear playlist</source>
-        <translation type="unfinished"/>
+        <translation>Lîsteya lêdanê jê bibe</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="283"/>
         <source>Display in file manager</source>
-        <translation type="unfinished"/>
+        <translation>Di rêvebira dosyeyê de rê bide</translation>
     </message>
 </context>
 <context>
@@ -464,22 +464,22 @@
     <message>
         <location filename="../widgets/burst_screenshots_dialog.cpp" line="88"/>
         <source>duration: %1</source>
-        <translation type="unfinished"/>
+        <translation>mawe: %1</translation>
     </message>
     <message>
         <location filename="../widgets/burst_screenshots_dialog.cpp" line="94"/>
         <source>resolution: %1</source>
-        <translation type="unfinished"/>
+        <translation>hûrbînî: %1</translation>
     </message>
     <message>
         <location filename="../widgets/burst_screenshots_dialog.cpp" line="100"/>
         <source>size: %1</source>
-        <translation type="unfinished"/>
+        <translation>mezinahî: %1</translation>
     </message>
     <message>
         <location filename="../widgets/burst_screenshots_dialog.cpp" line="123"/>
         <source>save</source>
-        <translation type="unfinished"/>
+        <translation>Qeyd bike</translation>
     </message>
 </context>
 <context>
@@ -489,52 +489,52 @@
         <location filename="../common/mainwindow.cpp" line="2284"/>
         <location filename="../common/mainwindow.cpp" line="2381"/>
         <source>Deepin Movie</source>
-        <translation type="unfinished"/>
+        <translation>Deepin Movie</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="698"/>
         <location filename="../common/mainwindow.cpp" line="1789"/>
         <source>Load successfully</source>
-        <translation type="unfinished"/>
+        <translation>Barkirin bi ser ket</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="698"/>
         <location filename="../common/mainwindow.cpp" line="1789"/>
         <source>Load failed</source>
-        <translation type="unfinished"/>
+        <translation>Barkirin bi ser neket</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1392"/>
         <source>No device found</source>
-        <translation type="unfinished"/>
+        <translation>Amûr nehat dîtin</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1410"/>
         <source>Parse Failed</source>
-        <translation type="unfinished"/>
+        <translation>Guherîn bi ser neket</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1417"/>
         <source>Open Folder</source>
-        <translation type="unfinished"/>
+        <translation>Peldankê Veke</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1432"/>
         <location filename="../common/mainwindow.cpp" line="1449"/>
         <location filename="../common/mainwindow.cpp" line="1784"/>
         <source>Open File</source>
-        <translation type="unfinished"/>
+        <translation>Pelê Veke</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1434"/>
         <location filename="../common/mainwindow.cpp" line="1451"/>
         <source>All videos (%1)</source>
-        <translation type="unfinished"/>
+        <translation>Hemû vîdyo (%1)</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1652"/>
         <source>Muted</source>
-        <translation type="unfinished"/>
+        <translation>Hat bêdengkirin</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1655"/>
@@ -542,69 +542,69 @@
         <location filename="../common/mainwindow.cpp" line="1677"/>
         <location filename="../common/mainwindow.cpp" line="1684"/>
         <source>Volume: %1%</source>
-        <translation type="unfinished"/>
+        <translation>Deng: %1%</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1749"/>
         <location filename="../common/mainwindow.cpp" line="1757"/>
         <source>Subtitle %1: %2s</source>
-        <translation type="unfinished"/>
+        <translation>Binnivîs %1: %2s</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1750"/>
         <location filename="../common/mainwindow.cpp" line="1758"/>
         <source>delayed</source>
-        <translation type="unfinished"/>
+        <translation>derengman</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1750"/>
         <location filename="../common/mainwindow.cpp" line="1758"/>
         <source>advanced</source>
-        <translation type="unfinished"/>
+        <translation>pêşketî</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1765"/>
         <location filename="../common/mainwindow.cpp" line="1772"/>
         <location filename="../common/mainwindow.cpp" line="1779"/>
         <source>Speed: %1x</source>
-        <translation type="unfinished"/>
+        <translation>Lez: %1x</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1786"/>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</source>
-        <translation type="unfinished"/>
+        <translation>Binnivîs (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1848"/>
         <source>View</source>
-        <translation type="unfinished"/>
+        <translation>Dîtin</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1859"/>
         <source>Movie Screenshot</source>
-        <translation type="unfinished"/>
+        <translation>Dîmena Dîmenderê ya Sînemayê</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1860"/>
         <source>Saved to</source>
-        <translation type="unfinished"/>
+        <translation>Hat qeydkirin li</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1874"/>
         <location filename="../common/mainwindow.cpp" line="1957"/>
         <source>The screenshot is saved</source>
-        <translation type="unfinished"/>
+        <translation>Dîmena dîmenderê hat qeydkirin</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1874"/>
         <source>The screenshot is failed to save</source>
-        <translation type="unfinished"/>
+        <translation>Qeydkirina dîmena dîmenderê bi serneket.</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2044"/>
         <location filename="../common/mainwindow.cpp" line="2741"/>
         <source>Invalid file: %1</source>
-        <translation type="unfinished"/>
+        <translation>Pelê nederbasdar: %1</translation>
     </message>
 </context>
 <context>
@@ -612,27 +612,27 @@
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="118"/>
         <source>File Type:</source>
-        <translation type="unfinished"/>
+        <translation>Tîpa Pelê:</translation>
     </message>
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="119"/>
         <source>Resolution:</source>
-        <translation type="unfinished"/>
+        <translation>Hûrbînî:</translation>
     </message>
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="120"/>
         <source>File Size:</source>
-        <translation type="unfinished"/>
+        <translation>Mezinahiya Pelê:</translation>
     </message>
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="121"/>
         <source>Duration:</source>
-        <translation type="unfinished"/>
+        <translation>Dirîjahî:</translation>
     </message>
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="126"/>
         <source>File Path:</source>
-        <translation type="unfinished"/>
+        <translation>Riya Pelê:</translation>
     </message>
 </context>
 <context>
@@ -641,7 +641,7 @@
         <location filename="../backends/mpv/mpv_proxy.cpp" line="1029"/>
         <location filename="../backends/mpv/mpv_proxy.cpp" line="1047"/>
         <source>[internal]</source>
-        <translation type="unfinished"/>
+        <translation>[nav]</translation>
     </message>
 </context>
 <context>
@@ -651,7 +651,7 @@
         <location filename="../widgets/playlist_widget.cpp" line="227"/>
         <location filename="../widgets/playlist_widget.cpp" line="402"/>
         <source>File does not exist</source>
-        <translation type="unfinished"/>
+        <translation>Pel nehat dîtin</translation>
     </message>
 </context>
 <context>
@@ -659,12 +659,12 @@
     <message>
         <location filename="../common/dmr_settings.cpp" line="155"/>
         <source>%1/DMovie%2.jpg</source>
-        <translation type="unfinished"/>
+        <translation>%1/DSînema%2.jpg</translation>
     </message>
     <message>
         <location filename="../common/dmr_settings.cpp" line="161"/>
         <source>%1/DMovie%2(%3).jpg</source>
-        <translation type="unfinished"/>
+        <translation>%1/DSînema%2(%3).jpg</translation>
     </message>
 </context>
 <context>
@@ -672,54 +672,54 @@
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="889"/>
         <source>Play</source>
-        <translation type="unfinished"/>
+        <translation>Lê Bide</translation>
     </message>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="685"/>
         <location filename="../widgets/toolbox_proxy.cpp" line="696"/>
         <source>Previous</source>
-        <translation type="unfinished"/>
+        <translation>Paşve</translation>
     </message>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="686"/>
         <location filename="../widgets/toolbox_proxy.cpp" line="696"/>
         <source>Next</source>
-        <translation type="unfinished"/>
+        <translation>Pêşve</translation>
     </message>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="687"/>
         <location filename="../widgets/toolbox_proxy.cpp" line="697"/>
         <source>Subtitles</source>
-        <translation type="unfinished"/>
+        <translation>Binnivîs</translation>
     </message>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="688"/>
         <location filename="../widgets/toolbox_proxy.cpp" line="697"/>
         <source>Playlist</source>
-        <translation type="unfinished"/>
+        <translation>Lîsteya Lêxistinê</translation>
     </message>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="689"/>
         <location filename="../widgets/toolbox_proxy.cpp" line="697"/>
         <location filename="../widgets/toolbox_proxy.cpp" line="876"/>
         <source>Fullscreen</source>
-        <translation type="unfinished"/>
+        <translation>Dîmentêr</translation>
     </message>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="683"/>
         <location filename="../widgets/toolbox_proxy.cpp" line="696"/>
         <source>Play/Pause</source>
-        <translation type="unfinished"/>
+        <translation>Lêxe/Bisekinîne</translation>
     </message>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="873"/>
         <source>Exit fullscreen</source>
-        <translation type="unfinished"/>
+        <translation>Ji dîmentêrê derkeve</translation>
     </message>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="886"/>
         <source>Pause</source>
-        <translation type="unfinished"/>
+        <translation>Bisekine</translation>
     </message>
 </context>
 </TS>

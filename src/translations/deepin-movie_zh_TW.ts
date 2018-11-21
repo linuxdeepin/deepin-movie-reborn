@@ -142,12 +142,12 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="29"/>
         <source>Next frame</source>
-        <translation type="unfinished"/>
+        <translation>下一影格</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="30"/>
         <source>Previous frame</source>
-        <translation type="unfinished"/>
+        <translation>上一影格</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="31"/>
@@ -356,12 +356,12 @@
     <message>
         <location filename="../common/actions.cpp" line="144"/>
         <source>Next frame</source>
-        <translation type="unfinished"/>
+        <translation>下一影格</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="145"/>
         <source>Previous frame</source>
-        <translation type="unfinished"/>
+        <translation>上一影格</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="152"/>
@@ -529,7 +529,7 @@
         <location filename="../common/mainwindow.cpp" line="1434"/>
         <location filename="../common/mainwindow.cpp" line="1451"/>
         <source>All videos (%1)</source>
-        <translation type="unfinished"/>
+        <translation>所有影片 (%1)</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1652"/>

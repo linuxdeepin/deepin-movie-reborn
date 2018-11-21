@@ -162,7 +162,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="33"/>
         <source>Speed up</source>
-        <translation type="unfinished"/>
+        <translation>Percepat</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="34"/>
@@ -207,12 +207,12 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="42"/>
         <source>Film screenshot</source>
-        <translation type="unfinished"/>
+        <translation>Tangkapan layar Film</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="43"/>
         <source>0.5s backward</source>
-        <translation type="unfinished"/>
+        <translation>Putar Awal 0.5s</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="44"/>
@@ -227,7 +227,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="46"/>
         <source>Font Size</source>
-        <translation type="unfinished"/>
+        <translation>Ukuran Huruf</translation>
     </message>
 </context>
 <context>
@@ -254,7 +254,7 @@
         <location filename="../common/actions.cpp" line="82"/>
         <location filename="../common/actions.cpp" line="102"/>
         <source>Open File</source>
-        <translation type="unfinished"/>
+        <translation>Buka Berkas</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="84"/>
@@ -265,7 +265,7 @@
     <message>
         <location filename="../common/actions.cpp" line="85"/>
         <source>Light Theme</source>
-        <translation type="unfinished"/>
+        <translation>Tema Ringan</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="108"/>
@@ -280,7 +280,7 @@
     <message>
         <location filename="../common/actions.cpp" line="284"/>
         <source>Film info</source>
-        <translation type="unfinished"/>
+        <translation>Info Film</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="83"/>
@@ -346,7 +346,7 @@
     <message>
         <location filename="../common/actions.cpp" line="140"/>
         <source>Clockwise</source>
-        <translation type="unfinished"/>
+        <translation>Searah jarum jam</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="141"/>
@@ -446,7 +446,7 @@
     <message>
         <location filename="../common/actions.cpp" line="268"/>
         <source>Film Info</source>
-        <translation type="unfinished"/>
+        <translation>Info Film</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="282"/>
@@ -479,7 +479,7 @@
     <message>
         <location filename="../widgets/burst_screenshots_dialog.cpp" line="123"/>
         <source>save</source>
-        <translation type="unfinished"/>
+        <translation>Simpan</translation>
     </message>
 </context>
 <context>
@@ -523,7 +523,7 @@
         <location filename="../common/mainwindow.cpp" line="1449"/>
         <location filename="../common/mainwindow.cpp" line="1784"/>
         <source>Open File</source>
-        <translation type="unfinished"/>
+        <translation>Buka Berkas</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1434"/>
@@ -554,20 +554,20 @@
         <location filename="../common/mainwindow.cpp" line="1750"/>
         <location filename="../common/mainwindow.cpp" line="1758"/>
         <source>delayed</source>
-        <translation type="unfinished"/>
+        <translation>Penundaan</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1750"/>
         <location filename="../common/mainwindow.cpp" line="1758"/>
         <source>advanced</source>
-        <translation type="unfinished"/>
+        <translation>Terkini</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1765"/>
         <location filename="../common/mainwindow.cpp" line="1772"/>
         <location filename="../common/mainwindow.cpp" line="1779"/>
         <source>Speed: %1x</source>
-        <translation type="unfinished"/>
+        <translation>Cepat: %1x</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1786"/>
@@ -587,7 +587,7 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="1860"/>
         <source>Saved to</source>
-        <translation type="unfinished"/>
+        <translation>Disimpan ke</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1874"/>
@@ -651,7 +651,7 @@
         <location filename="../widgets/playlist_widget.cpp" line="227"/>
         <location filename="../widgets/playlist_widget.cpp" line="402"/>
         <source>File does not exist</source>
-        <translation type="unfinished"/>
+        <translation>Berkas tidak ada</translation>
     </message>
 </context>
 <context>
@@ -719,7 +719,7 @@
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="886"/>
         <source>Pause</source>
-        <translation>Pause</translation>
+        <translation>Jeda</translation>
     </message>
 </context>
 </TS>

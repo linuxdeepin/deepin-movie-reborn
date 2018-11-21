@@ -50,7 +50,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="9"/>
         <source>Pause when minimized</source>
-        <translation>Пауза кад минимизујем</translation>
+        <translation>Пауза кад минимализујем</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="10"/>
