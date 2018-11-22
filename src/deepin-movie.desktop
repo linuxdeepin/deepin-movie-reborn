@@ -10,6 +10,7 @@ StartupNotify=true
 Type=Application
 Keywords=Player;Movie;Theater;Theatre;Video;
 X-Deepin-ManualID=deepin-movie
+X-Deepin-Vendor=deepin
 
 Comment[am]=የ እርስዎን የ ቪዲዮ ስብስብ ያጫውቱ
 GenericName[am]=መገናኛ ማጫወቻ
