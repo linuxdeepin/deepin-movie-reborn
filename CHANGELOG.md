@@ -1,3 +1,15 @@
+<a name="3.2.15"></a>
+## 3.2.15 (2018-11-26)
+
+
+#### Features
+
+*   Deepin vendor support ([7c0e2088](https://github.com/linuxdeepin/deepin-movie-reborn/commit/7c0e208832624d27cb340c6cebfefc0dbbc4c064))
+*   support the recent file spec. ([b278820e](https://github.com/linuxdeepin/deepin-movie-reborn/commit/b278820eef209d1fe485304d31f00766e0fdc0e8))
+*   support touch move window ([e443a7b6](https://github.com/linuxdeepin/deepin-movie-reborn/commit/e443a7b6f4e5f9c5828f05786d6fa4ff5b680e18))
+
+
+
 <a name="3.2.14"></a>
 ## 3.2.14 (2018-11-01)
 
