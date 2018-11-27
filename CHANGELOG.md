@@ -1,3 +1,17 @@
+<a name="3.2.16"></a>
+## 3.2.16 (2018-11-27)
+
+
+#### Bug Fixes
+
+*   set the generic name to "Movie" ([704c7a78](https://github.com/linuxdeepin/deepin-movie-reborn/commit/704c7a78e7efe505d511704a158f20c38ee534cb))
+
+#### Features
+
+*   support auto translate the dekstop file ([2b8a971a](https://github.com/linuxdeepin/deepin-movie-reborn/commit/2b8a971ad4c46853b3b24da92a1c6432a4cd04b1))
+
+
+
 <a name="3.2.15"></a>
 ## 3.2.15 (2018-11-26)
 
