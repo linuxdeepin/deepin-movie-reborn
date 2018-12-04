@@ -1,4 +1,4 @@
-/* 
+/*
  * (c) 2017, Deepin Technology Co., Ltd. <support@deepin.org>
  *
  * This program is free software; you can redistribute it and/or
@@ -148,7 +148,7 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
         validate(newStr);
     });
 
-    option->connect(option, &DTK_CORE_NAMESPACE::DSettingsOption::valueChanged, le, 
+    option->connect(option, &DTK_CORE_NAMESPACE::DSettingsOption::valueChanged, le,
         [ = ](const QVariant & value) {
             le->setText(value.toString());
             le->update();
@@ -203,7 +203,7 @@ public:
 
 class MainWindowPropertyMonitor: public QAbstractNativeEventFilter {
 public:
-    MainWindowPropertyMonitor(MainWindow *src) 
+    MainWindowPropertyMonitor(MainWindow *src)
         :QAbstractNativeEventFilter(), _mw(src), _source(src->windowHandle()) {
         qApp->installNativeEventFilter(this);
 
@@ -253,7 +253,7 @@ class MainWindowEventListener : public QObject
         {
         }
 
-        void setEnabled(bool v) 
+        void setEnabled(bool v)
         {
             enabled = v;
         }
@@ -269,7 +269,7 @@ class MainWindowEventListener : public QObject
                 QMouseEvent *e = static_cast<QMouseEvent*>(event);
                 setLeftButtonPressed(true);
                 auto mw = static_cast<MainWindow*>(parent());
-                if (mw->insideResizeArea(e->globalPos()) && lastCornerEdge != Utility::NoneEdge) 
+                if (mw->insideResizeArea(e->globalPos()) && lastCornerEdge != Utility::NoneEdge)
                     startResizing = true;
 
                 mw->capturedMousePressEvent(e);
@@ -376,7 +376,7 @@ skip_set_cursor:
                         return true;
                     }
                 }
-                
+
                 break;
             }
 
@@ -506,7 +506,7 @@ skip_set_cursor:
 #define SHADOW_COLOR_ACTIVE QColor(0, 0, 0, 255 * 0.6)
 #endif
 
-MainWindow::MainWindow(QWidget *parent) 
+MainWindow::MainWindow(QWidget *parent)
     : QFrame(NULL)
 {
     bool composited = CompositingManager::get().composited();
@@ -525,7 +525,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     DThemeManager::instance()->registerWidget(this);
     setFrameShape(QFrame::NoFrame);
-    
+
 #ifdef USE_DXCB
     if (DApplication::isDXcbPlatform()) {
         _handle = new DPlatformWindowHandle(this, this);
@@ -584,14 +584,14 @@ MainWindow::MainWindow(QWidget *parent)
         });
     });
 
-    connect(ActionFactory::get().mainContextMenu(), &QMenu::triggered, 
+    connect(ActionFactory::get().mainContextMenu(), &QMenu::triggered,
             this, &MainWindow::menuItemInvoked);
-    connect(ActionFactory::get().playlistContextMenu(), &QMenu::triggered, 
+    connect(ActionFactory::get().playlistContextMenu(), &QMenu::triggered,
             this, &MainWindow::menuItemInvoked);
     connect(qApp, &QGuiApplication::focusWindowChanged, [=]() {
         if (qApp->focusWindow() != windowHandle())
             suspendToolsWindow();
-        else 
+        else
             resumeToolsWindow();
     });
 
@@ -647,8 +647,8 @@ MainWindow::MainWindow(QWidget *parent)
     _miniPlayBtn->setVisible(_miniMode);
     _miniCloseBtn->setVisible(_miniMode);
     _miniQuitMiniBtn->setVisible(_miniMode);
-    // ~ 
- 
+    // ~
+
     updateProxyGeometry();
 
     connect(&ShortcutManager::get(), &ShortcutManager::bindingsChanged,
@@ -704,7 +704,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(&_delayedMouseReleaseTimer, &QTimer::timeout, this, &MainWindow::delayedMouseReleaseHandler);
     _delayedMouseReleaseTimer.setSingleShot(true);
 
-    _nwComm = new NotificationWidget(this); 
+    _nwComm = new NotificationWidget(this);
     _nwComm->setFixedHeight(30);
     _nwComm->setAnchor(NotificationWidget::AnchorNorthWest);
     _nwComm->setAnchorPoint(QPoint(30, 38));
@@ -782,7 +782,7 @@ void MainWindow::setupTitlebar()
         p.drawPixmap((w2-w)/2, (w2-w)/2, logo);
         p.end();
         _titlebar->setIcon(pm);
-        _titlebar->setTitle(tr("Deepin Movie"));
+        _titlebar->setTitle(QString());
     }
 
     {
@@ -810,7 +810,7 @@ void MainWindow::updateContentGeometry(const QRect& rect)
     xcb_configure_window(QX11Info::connection(),
             windowHandle()->winId(),
             XCB_CONFIG_WINDOW_WIDTH | XCB_CONFIG_WINDOW_HEIGHT |
-            XCB_CONFIG_WINDOW_Y | XCB_CONFIG_WINDOW_X, 
+            XCB_CONFIG_WINDOW_Y | XCB_CONFIG_WINDOW_X,
             values);
 
 #else
@@ -838,7 +838,7 @@ bool MainWindow::event(QEvent *ev)
         _lastWindowState = wse->oldState();
         qDebug() << "------------ _lastWindowState" << _lastWindowState
             << "current " << windowState();
-        //NOTE: windowStateChanged won't be emitted if by draggint to restore. so we need to 
+        //NOTE: windowStateChanged won't be emitted if by draggint to restore. so we need to
         //check window state here.
         //connect(windowHandle(), &QWindow::windowStateChanged, this, &MainWindow::onWindowStateChanged);
         onWindowStateChanged();
@@ -846,7 +846,7 @@ bool MainWindow::event(QEvent *ev)
     return QFrame::event(ev);
 }
 
-    
+
 void MainWindow::onWindowStateChanged()
 {
     qDebug() << windowState();
@@ -1111,8 +1111,8 @@ void MainWindow::onBindingsChanged()
     auto actions = scmgr.actionsForBindings();
     for (auto* act: actions) {
         this->addAction(act);
-        connect(act, &QAction::triggered, [=]() { 
-            this->menuItemInvoked(act); 
+        connect(act, &QAction::triggered, [=]() {
+            this->menuItemInvoked(act);
         });
     }
 }
@@ -1189,7 +1189,7 @@ void MainWindow::reflectActionToUI(ActionFactory::ActionKind kd)
                 auto old = (*p)->isEnabled();
                 (*p)->setEnabled(false);
                 if (kd == ActionFactory::TogglePlaylist) {
-                    // here what we read is the last state of playlist 
+                    // here what we read is the last state of playlist
                     (*p)->setChecked(_playlist->state() != PlaylistWidget::Opened);
                 } else {
                     (*p)->setChecked(!(*p)->isChecked());
@@ -1376,7 +1376,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
 
     switch (kd) {
         case ActionFactory::ActionKind::Exit:
-            qApp->quit(); 
+            qApp->quit();
             break;
 
         case ActionFactory::ActionKind::LightTheme:
@@ -1433,7 +1433,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                     QDir::currentPath(),
                     tr("All videos (%1)").arg(_engine->video_filetypes.join(" ")), 0,
                     QFileDialog::HideNameFilterDetails);
-            
+
             QList<QUrl> urls;
             if (filenames.size()) {
                 for (const auto& filename: filenames) {
@@ -1505,7 +1505,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
 
         case ActionFactory::ActionKind::WindowAbove:
             _windowAbove = !_windowAbove;
-            /** 
+            /**
              * switch above state by change windowFlags is unacceptable, since it'll
              * toggle visibility of window.
              * ```
@@ -1661,7 +1661,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             if (_engine->muted()) {
                 _engine->toggleMute();
             }
-            _engine->changeVolume(args[0].toInt()); 
+            _engine->changeVolume(args[0].toInt());
             Settings::get().setInternalOption("global_volume", qMin(_engine->volume(), 100));
             double pert = _engine->volume();
             _nwComm->updateWithMessage(tr("Volume: %1%").arg(pert));
@@ -1832,7 +1832,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
 
             QString filePath = Settings::get().screenshotNameTemplate();
             bool success = false;
-            if (img.isNull()) 
+            if (img.isNull())
                 qDebug()<< __func__ << "pixmap is null";
             else
                 success = img.save(filePath);
@@ -1866,7 +1866,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
 #else
 
             if (!_nwShot) {
-                _nwShot = new NotificationWidget(this); 
+                _nwShot = new NotificationWidget(this);
                 _nwShot->setAnchor(NotificationWidget::AnchorNorthWest);
                 _nwShot->setAnchorPoint(QPoint(30, 38));
             }
@@ -1949,7 +1949,7 @@ void MainWindow::onBurstScreenshot(const QImage& frame, qint64 timestamp)
         if (ret == QDialog::Accepted) {
             auto poster_path = bsd.savedPosterPath();
             if (!_nwShot) {
-                _nwShot = new NotificationWidget(this); 
+                _nwShot = new NotificationWidget(this);
                 _nwShot->setAnchor(NotificationWidget::AnchorNorthWest);
                 _nwShot->setAnchorPoint(QPoint(30, 38));
             }
@@ -2033,7 +2033,7 @@ void MainWindow::playList(const QList<QString>& l)
 
 void MainWindow::play(const QUrl& url)
 {
-    if (!url.isValid()) 
+    if (!url.isValid())
         return;
 
     if (!isHidden()) {
@@ -2094,7 +2094,7 @@ void MainWindow::updateProxyGeometry()
         }
 
         if (_toolbox) {
-            QRect r(view_rect.left(), height() - TOOLBOX_HEIGHT_EXT - view_rect.top(), 
+            QRect r(view_rect.left(), height() - TOOLBOX_HEIGHT_EXT - view_rect.top(),
                     view_rect.width(), TOOLBOX_HEIGHT_EXT);
             if (isFullScreen()) {
                 r.moveTopLeft({0, height() - TOOLBOX_HEIGHT_EXT});
@@ -2180,10 +2180,10 @@ void MainWindow::suspendToolsWindow()
 
 void MainWindow::resumeToolsWindow()
 {
-    if (_engine->state() != PlayerEngine::Idle && 
+    if (_engine->state() != PlayerEngine::Idle &&
             qApp->applicationState() == Qt::ApplicationActive) {
         // playlist's previous state was Opened
-        if (_playlist->state() != PlaylistWidget::Closed && 
+        if (_playlist->state() != PlaylistWidget::Closed &&
                 !frameGeometry().contains(QCursor::pos())) {
             goto _finish;
         }
@@ -2223,7 +2223,7 @@ void MainWindow::closeEvent(QCloseEvent *ev)
         qDebug() << "uninhibit cookie" << _lastCookie;
         _lastCookie = 0;
     }
-    
+
     int cur = 0;
     if (Settings::get().isSet(Settings::ResumeFromLast)) {
         cur = _engine->playlist().current();
@@ -2239,7 +2239,7 @@ void MainWindow::closeEvent(QCloseEvent *ev)
 
 void MainWindow::wheelEvent(QWheelEvent* we)
 {
-    if (insideToolsArea(we->pos()) || insideResizeArea(we->globalPos())) 
+    if (insideToolsArea(we->pos()) || insideResizeArea(we->globalPos()))
         return;
 
     if (_playlist->state() == PlaylistWidget::Opened) {
@@ -2278,10 +2278,10 @@ void MainWindow::showEvent(QShowEvent *event)
     }
 }
 
-void MainWindow::resizeByConstraints(bool forceCentered) 
+void MainWindow::resizeByConstraints(bool forceCentered)
 {
     if (_engine->state() == PlayerEngine::Idle || _engine->playlist().count() == 0) {
-        _titlebar->setTitle(tr("Deepin Movie"));
+        _titlebar->setTitle(QString());
         return;
     }
 
@@ -2305,7 +2305,7 @@ void MainWindow::resizeByConstraints(bool forceCentered)
     }
 
     qDebug() << "original: " << size() << "requested: " << sz;
-    if (size() == sz) 
+    if (size() == sz)
         return;
 
     if (forceCentered) {
@@ -2378,7 +2378,7 @@ void MainWindow::updateWindowTitle()
                 Qt::ElideMiddle, _titlebar->contentsRect().width() - 300);
         _titlebar->setTitle(title);
     } else {
-        _titlebar->setTitle(tr("Deepin Movie"));
+        _titlebar->setTitle(QString());
     }
     _titlebar->setProperty("idle", _engine->state() == PlayerEngine::Idle);
     _titlebar->setStyleSheet(styleSheet());
@@ -2516,7 +2516,7 @@ void MainWindow::mouseMoveEvent(QMouseEvent *ev)
 
 void MainWindow::contextMenuEvent(QContextMenuEvent *cme)
 {
-    if (_miniMode || _inBurstShootMode) 
+    if (_miniMode || _inBurstShootMode)
         return;
 
     if (insideToolsArea(cme->pos()))
@@ -2564,7 +2564,7 @@ void MainWindow::paintEvent(QPaintEvent* pe)
         p.fillPath(pp, QColor(0, 0, 0, light ? 255 * 0.1: 255));
 
         {
-            /* we supposed to draw by qss background-color here, but it's conflict with 
+            /* we supposed to draw by qss background-color here, but it's conflict with
              * border area (border has alpha, which blends with background-color.
              */
             auto view_rect = rect().marginsRemoved(QMargins(1, 1, 1, 1));
@@ -2592,7 +2592,7 @@ void MainWindow::toggleUIMode()
 
     if (_miniMode)
         _titlebar->setDisableFlags(Qt::WindowMaximizeButtonHint);
-    else 
+    else
         _titlebar->setDisableFlags(0);
 
     if (_listener) _listener->setEnabled(!_miniMode);
@@ -2655,9 +2655,9 @@ void MainWindow::toggleUIMode()
         setGeometry(geom);
 
         _miniQuitMiniBtn->move(sz.width() - 14 - _miniQuitMiniBtn->width(),
-                sz.height() - 10 - _miniQuitMiniBtn->height()); 
+                sz.height() - 10 - _miniQuitMiniBtn->height());
         _miniCloseBtn->move(sz.width() - 4 - _miniCloseBtn->width(), 4);
-        _miniPlayBtn->move(14, sz.height() - 10 - _miniPlayBtn->height()); 
+        _miniPlayBtn->move(14, sz.height() - 10 - _miniPlayBtn->height());
 
     } else {
         if (_stateBeforeMiniMode & SBEM_Above) {
