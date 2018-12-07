@@ -1,3 +1,13 @@
+<a name="3.2.16.1"></a>
+## 3.2.16.1 (2018-12-07)
+
+
+#### Bug Fixes
+
+*   remove application name in titlebar ([5c290d6c](https://github.com/linuxdeepin/deepin-movie-reborn/commit/5c290d6c85a2810f0437e4fc5ab01a09eb6fa91b))
+
+
+
 <a name="3.2.16"></a>
 ## 3.2.16 (2018-11-27)
 
