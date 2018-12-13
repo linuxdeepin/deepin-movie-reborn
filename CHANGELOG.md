@@ -1,3 +1,13 @@
+<a name="3.2.17"></a>
+## 3.2.17 (2018-12-13)
+
+
+#### Bug Fixes
+
+*   the window point not follow touch point on touch screen and enable hi-DPI ([ec17cf18](https://github.com/linuxdeepin/deepin-movie-reborn/commit/ec17cf18464727df3d31ab404ca1e169bc8fe046))
+
+
+
 <a name="3.2.16.1"></a>
 ## 3.2.16.1 (2018-12-07)
 
