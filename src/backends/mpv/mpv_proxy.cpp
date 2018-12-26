@@ -564,6 +564,11 @@ void MpvProxy::updateSubStyle(const QString& font, int sz)
 {
     set_property(_handle, "sub-font", font);
     set_property(_handle, "sub-font-size", sz);
+    set_property(_handle, "sub-color", "#FFFFFF");
+    set_property(_handle, "sub-border-size", 1);
+    set_property(_handle, "sub-border-color", "0.0/0.0/0.0/0.50");
+    set_property(_handle, "sub-shadow-offset", 1);
+    set_property(_handle, "sub-shadow-color", "0.0/0.0/0.0/0.50");
 }
 
 void MpvProxy::showEvent(QShowEvent *re)
