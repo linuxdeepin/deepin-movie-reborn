@@ -50,6 +50,9 @@ namespace utils {
     uint32_t InhibitStandby();
     void UnInhibitStandby(uint32_t cookie);
 
+    uint32_t InhibitPower();
+    void UnInhibitPower(uint32_t cookie);
+
     void MoveToCenter(QWidget* w);
 
     QString Time2str(qint64 seconds);

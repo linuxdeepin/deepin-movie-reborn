@@ -628,8 +628,30 @@ MainWindow::MainWindow(QWidget *parent)
         qDebug() << __func__ << _engine->state();
         if (_engine->state() == PlayerEngine::CoreState::Playing) {
             _miniPlayBtn->setObjectName("MiniPauseBtn");
+
+            if (_lastCookie > 0) {
+                utils::UnInhibitStandby(_lastCookie);
+                qDebug() << "uninhibit cookie" << _lastCookie;
+                _lastCookie = 0;
+            }
+            if (_powerCookie > 0) {
+                utils::UnInhibitPower(_powerCookie);
+                _powerCookie = 0;
+            }
+            _lastCookie = utils::InhibitStandby();
+            _powerCookie = utils::InhibitPower();
         } else {
             _miniPlayBtn->setObjectName("MiniPlayBtn");
+
+            if (_lastCookie > 0) {
+                utils::UnInhibitStandby(_lastCookie);
+                qDebug() << "uninhibit cookie" << _lastCookie;
+                _lastCookie = 0;
+            }
+            if (_powerCookie > 0) {
+                utils::UnInhibitPower(_powerCookie);
+                _powerCookie = 0;
+            }
         }
         _miniPlayBtn->setStyleSheet(_miniPlayBtn->styleSheet());
     });
@@ -851,26 +873,26 @@ void MainWindow::onWindowStateChanged()
 {
     qDebug() << windowState();
 
-    if (!isFullScreen()) {
-        qApp->restoreOverrideCursor();
-        if (_lastCookie > 0) {
-            utils::UnInhibitStandby(_lastCookie);
-            qDebug() << "uninhibit cookie" << _lastCookie;
-            _lastCookie = 0;
-        }
-        if (_listener) _listener->setEnabled(!isMaximized() && !_miniMode);
-    } else {
-        qApp->setOverrideCursor(Qt::BlankCursor);
+//    if (!isFullScreen()) {
+//        qApp->restoreOverrideCursor();
+//        if (_lastCookie > 0) {
+//            utils::UnInhibitStandby(_lastCookie);
+//            qDebug() << "uninhibit cookie" << _lastCookie;
+//            _lastCookie = 0;
+//        }
+//        if (_listener) _listener->setEnabled(!isMaximized() && !_miniMode);
+//    } else {
+//        qApp->setOverrideCursor(Qt::BlankCursor);
 
-        if (_lastCookie > 0) {
-            utils::UnInhibitStandby(_lastCookie);
-            qDebug() << "uninhibit cookie" << _lastCookie;
-            _lastCookie = 0;
-        }
-        _lastCookie = utils::InhibitStandby();
-        qDebug() << "inhibit cookie" << _lastCookie;
-        if (_listener) _listener->setEnabled(false);
-    }
+//        if (_lastCookie > 0) {
+//            utils::UnInhibitStandby(_lastCookie);
+//            qDebug() << "uninhibit cookie" << _lastCookie;
+//            _lastCookie = 0;
+//        }
+//        _lastCookie = utils::InhibitStandby();
+//        qDebug() << "inhibit cookie" << _lastCookie;
+//        if (_listener) _listener->setEnabled(false);
+//    }
     if (!_miniMode && !isFullScreen()) {
         _titlebar->setVisible(_toolbox->isVisible());
     } else {
@@ -968,6 +990,16 @@ MainWindow::~MainWindow()
     qDebug() << __func__;
     disconnect(_engine, 0, 0, 0);
     disconnect(&_engine->playlist(), 0, 0, 0);
+
+    if (_lastCookie > 0) {
+        utils::UnInhibitStandby(_lastCookie);
+        qDebug() << "uninhibit cookie" << _lastCookie;
+        _lastCookie = 0;
+    }
+    if (_powerCookie > 0) {
+        utils::UnInhibitPower(_powerCookie);
+        _powerCookie = 0;
+    }
 
 #ifdef USE_DXCB
     if (_evm) {

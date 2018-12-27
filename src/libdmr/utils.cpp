@@ -292,9 +292,11 @@ QPixmap MakeRoundedPixmap(QSize sz, QPixmap pm, qreal rx, qreal ry, qint64 time)
 
 uint32_t InhibitStandby()
 {
-    QDBusInterface iface("org.freedesktop.ScreenSaver", "/org/freedesktop/ScreenSaver",
-            "org.freedesktop.ScreenSaver");
+    QDBusInterface iface("org.freedesktop.ScreenSaver",
+                         "/org/freedesktop/ScreenSaver",
+                         "org.freedesktop.ScreenSaver");
     QDBusReply<uint32_t> reply = iface.call("Inhibit", "deepin-movie", "playing in fullscreen");
+
     if (reply.isValid()) {
         return reply.value();
     }
@@ -305,8 +307,32 @@ uint32_t InhibitStandby()
 
 void UnInhibitStandby(uint32_t cookie)
 {
-    QDBusInterface iface("org.freedesktop.ScreenSaver", "/org/freedesktop/ScreenSaver",
-            "org.freedesktop.ScreenSaver");
+    QDBusInterface iface("org.freedesktop.ScreenSaver",
+                         "/org/freedesktop/ScreenSaver",
+                         "org.freedesktop.ScreenSaver");
+    iface.call("UnInhibit", cookie);
+}
+
+uint32_t InhibitPower()
+{
+    QDBusInterface iface("org.freedesktop.PowerManagement",
+                         "/org/freedesktop/PowerManagement",
+                         "org.freedesktop.PowerManagement");
+    QDBusReply<uint32_t> reply = iface.call("Inhibit", "deepin-movie", "playing in fullscreen");
+
+    if (reply.isValid()) {
+        return reply.value();
+    }
+
+    qDebug() << reply.error().message();
+    return 0;
+}
+
+void UnInhibitPower(uint32_t cookie)
+{
+    QDBusInterface iface("org.freedesktop.PowerManagement",
+                         "/org/freedesktop/PowerManagement",
+                         "org.freedesktop.PowerManagement");
     iface.call("UnInhibit", cookie);
 }
 

@@ -216,6 +216,7 @@ private:
     Qt::WindowStates _lastWindowState {Qt::WindowNoState};
 
     uint32_t _lastCookie {0};
+    uint32_t _powerCookie {0};
 
     MainWindowEventListener *_listener {nullptr};
     NotificationWidget *_nwShot {nullptr};
