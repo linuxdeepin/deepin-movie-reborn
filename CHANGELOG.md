@@ -1,3 +1,17 @@
+<a name=""></a>
+##  3.2.18 (2019-01-03)
+
+
+#### Bug Fixes
+
+*   don't sleep while playing. ([0f478021](https://github.com/linuxdeepin/deepin-movie-reborn/commit/0f478021e4830a0fc88f671f8e12015d68bcc292))
+
+#### Features
+
+*   new subtitle font style. ([ebf1a19b](https://github.com/linuxdeepin/deepin-movie-reborn/commit/ebf1a19bc08c1499dcb59d2fcf0e28c9fa5f7e31))
+
+
+
 <a name="3.2.17"></a>
 ## 3.2.17 (2018-12-13)
 
