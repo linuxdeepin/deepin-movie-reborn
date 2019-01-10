@@ -15,7 +15,7 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="116"/>
         <source>Invalid folder</source>
-        <translation type="unfinished"/>
+        <translation>Folder tidak valid</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="130"/>
@@ -25,17 +25,17 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="121"/>
         <source>You don&apos;t have permission to operate this folder</source>
-        <translation type="unfinished"/>
+        <translation>Anda tidak mempunyai ijin untuk beroperasi di folder ini</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="5"/>
         <source>Auto add similar files to play</source>
-        <translation type="unfinished"/>
+        <translation>Otomatis tambah berkas yang sama untuk dimainkan</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="6"/>
         <source>Clear playlist when exit</source>
-        <translation type="unfinished"/>
+        <translation>Bersih playlist ketika keluar</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="7"/>
@@ -45,7 +45,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="8"/>
         <source>Open a new player for each file played</source>
-        <translation type="unfinished"/>
+        <translation>Buka pemutar baru untuk setiap berkas yang dimainkan</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="9"/>
@@ -55,7 +55,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="10"/>
         <source>Remember playback position</source>
-        <translation type="unfinished"/>
+        <translation>Mengingat posisi playback</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="11"/>
@@ -102,17 +102,17 @@
         <location filename="../common/settings_translation.cpp" line="20"/>
         <location filename="../common/settings_translation.cpp" line="21"/>
         <source>Subtitle</source>
-        <translation type="unfinished"/>
+        <translation>Subtitle</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="22"/>
         <source>Font Style</source>
-        <translation type="unfinished"/>
+        <translation>Jenis Huruf</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="23"/>
         <source>Restore Defaults</source>
-        <translation type="unfinished"/>
+        <translation>Pulihkan baku</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="24"/>
@@ -142,12 +142,12 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="29"/>
         <source>Next frame</source>
-        <translation type="unfinished"/>
+        <translation>Frame sesudah</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="30"/>
         <source>Previous frame</source>
-        <translation type="unfinished"/>
+        <translation>Frame sebelum</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="31"/>
@@ -167,7 +167,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="34"/>
         <source>Speed down</source>
-        <translation type="unfinished"/>
+        <translation>Turun cepat</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="35"/>
@@ -212,12 +212,12 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="43"/>
         <source>0.5s backward</source>
-        <translation>Putar Awal 0.5s</translation>
+        <translation>Putar awal 0.5s</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="44"/>
         <source>0.5s forward</source>
-        <translation type="unfinished"/>
+        <translation>Putar maju 0.5s</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="45"/>
@@ -245,7 +245,7 @@
     <message>
         <location filename="../widgets/url_dialog.cpp" line="46"/>
         <source>Please enter the URL:</source>
-        <translation type="unfinished"/>
+        <translation>Mohon masukan URL:</translation>
     </message>
 </context>
 <context>
@@ -275,7 +275,7 @@
     <message>
         <location filename="../common/actions.cpp" line="110"/>
         <source>Always on Top</source>
-        <translation type="unfinished"/>
+        <translation>Selalu di atas</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="284"/>
@@ -296,7 +296,7 @@
     <message>
         <location filename="../common/actions.cpp" line="105"/>
         <source>Open CD/DVD</source>
-        <translation type="unfinished"/>
+        <translation>Buka CD/DVD</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="109"/>
@@ -326,7 +326,7 @@
     <message>
         <location filename="../common/actions.cpp" line="121"/>
         <source>Single Loop</source>
-        <translation type="unfinished"/>
+        <translation>Putar sekali</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="122"/>
@@ -351,17 +351,17 @@
     <message>
         <location filename="../common/actions.cpp" line="141"/>
         <source>Counterclockwise</source>
-        <translation type="unfinished"/>
+        <translation>Searah jarum jam</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="144"/>
         <source>Next frame</source>
-        <translation type="unfinished"/>
+        <translation>Frame sesudah</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="145"/>
         <source>Previous frame</source>
-        <translation type="unfinished"/>
+        <translation>Frame sebelum</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="152"/>
@@ -396,7 +396,7 @@
     <message>
         <location filename="../common/actions.cpp" line="176"/>
         <source>Subtitle</source>
-        <translation type="unfinished"/>
+        <translation>Subtitle</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="177"/>
@@ -406,7 +406,7 @@
     <message>
         <location filename="../common/actions.cpp" line="178"/>
         <source>Online Search</source>
-        <translation type="unfinished"/>
+        <translation>Cari Online</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="182"/>
@@ -416,7 +416,7 @@
     <message>
         <location filename="../common/actions.cpp" line="186"/>
         <source>Hide</source>
-        <translation type="unfinished"/>
+        <translation>Sembunyi</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="190"/>
@@ -431,7 +431,7 @@
     <message>
         <location filename="../common/actions.cpp" line="259"/>
         <source>Film Screenshot</source>
-        <translation type="unfinished"/>
+        <translation>Tangkapan layar Film</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="260"/>
@@ -506,7 +506,7 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="1392"/>
         <source>No device found</source>
-        <translation type="unfinished"/>
+        <translation>Alat tidak di temukan</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1410"/>
@@ -529,7 +529,7 @@
         <location filename="../common/mainwindow.cpp" line="1434"/>
         <location filename="../common/mainwindow.cpp" line="1451"/>
         <source>All videos (%1)</source>
-        <translation type="unfinished"/>
+        <translation>Semua video (%1)</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1652"/>
@@ -593,18 +593,18 @@
         <location filename="../common/mainwindow.cpp" line="1874"/>
         <location filename="../common/mainwindow.cpp" line="1957"/>
         <source>The screenshot is saved</source>
-        <translation type="unfinished"/>
+        <translation>Tangkapan layar di simpan</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1874"/>
         <source>The screenshot is failed to save</source>
-        <translation type="unfinished"/>
+        <translation>Tangkapan layar gagal di simpan</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2044"/>
         <location filename="../common/mainwindow.cpp" line="2741"/>
         <source>Invalid file: %1</source>
-        <translation type="unfinished"/>
+        <translation>Berkas tidak valid: %1</translation>
     </message>
 </context>
 <context>
@@ -612,17 +612,17 @@
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="118"/>
         <source>File Type:</source>
-        <translation type="unfinished"/>
+        <translation>Jenis Berkas:</translation>
     </message>
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="119"/>
         <source>Resolution:</source>
-        <translation type="unfinished"/>
+        <translation>Resolusi:</translation>
     </message>
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="120"/>
         <source>File Size:</source>
-        <translation type="unfinished"/>
+        <translation>Ukuran Berkas:</translation>
     </message>
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="121"/>

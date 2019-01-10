@@ -55,17 +55,17 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="10"/>
         <source>Remember playback position</source>
-        <translation>記憶播放位置</translation>
+        <translation>記住播放位置</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="11"/>
         <source>Path</source>
-        <translation>檔案儲存位置</translation>
+        <translation>位置</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="12"/>
         <source>Basic</source>
-        <translation>基本設定</translation>
+        <translation>基本</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="13"/>
@@ -91,7 +91,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="17"/>
         <source>Frame/Sound</source>
-        <translation>畫面／聲音</translation>
+        <translation>畫格／聲音</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="18"/>
@@ -142,12 +142,12 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="29"/>
         <source>Next frame</source>
-        <translation>下一影格</translation>
+        <translation>下一畫格</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="30"/>
         <source>Previous frame</source>
-        <translation>上一影格</translation>
+        <translation>上一畫格</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="31"/>
@@ -212,12 +212,12 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="43"/>
         <source>0.5s backward</source>
-        <translation>前進 0.5 秒</translation>
+        <translation>後退 0.5 秒</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="44"/>
         <source>0.5s forward</source>
-        <translation>後退 0.5 秒</translation>
+        <translation>前進 0.5 秒</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="45"/>
@@ -245,7 +245,7 @@
     <message>
         <location filename="../widgets/url_dialog.cpp" line="46"/>
         <source>Please enter the URL:</source>
-        <translation>輸入影片檔案網址：</translation>
+        <translation>輸入 URL：</translation>
     </message>
 </context>
 <context>
@@ -275,7 +275,7 @@
     <message>
         <location filename="../common/actions.cpp" line="110"/>
         <source>Always on Top</source>
-        <translation>畫面置頂</translation>
+        <translation>永遠置頂</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="284"/>
@@ -336,7 +336,7 @@
     <message>
         <location filename="../common/actions.cpp" line="129"/>
         <source>Frame</source>
-        <translation>畫面</translation>
+        <translation>畫格</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="132"/>
@@ -356,12 +356,12 @@
     <message>
         <location filename="../common/actions.cpp" line="144"/>
         <source>Next frame</source>
-        <translation>下一影格</translation>
+        <translation>下一畫格</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="145"/>
         <source>Previous frame</source>
-        <translation>上一影格</translation>
+        <translation>上一畫格</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="152"/>
@@ -401,7 +401,7 @@
     <message>
         <location filename="../common/actions.cpp" line="177"/>
         <source>Load</source>
-        <translation>手動載入</translation>
+        <translation>載入</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="178"/>
@@ -416,7 +416,7 @@
     <message>
         <location filename="../common/actions.cpp" line="186"/>
         <source>Hide</source>
-        <translation>隱藏字幕</translation>
+        <translation>隱藏</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="190"/>
@@ -456,7 +456,7 @@
     <message>
         <location filename="../common/actions.cpp" line="283"/>
         <source>Display in file manager</source>
-        <translation>開啟檔案位置</translation>
+        <translation>在檔案管理器中顯示</translation>
     </message>
 </context>
 <context>
@@ -548,7 +548,7 @@
         <location filename="../common/mainwindow.cpp" line="1749"/>
         <location filename="../common/mainwindow.cpp" line="1757"/>
         <source>Subtitle %1: %2s</source>
-        <translation>字幕%1：%2 秒</translation>
+        <translation>字幕 %1：%2 秒</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1750"/>
@@ -632,7 +632,7 @@
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="126"/>
         <source>File Path:</source>
-        <translation>影片位置：</translation>
+        <translation>檔案位置：</translation>
     </message>
 </context>
 <context>
@@ -641,7 +641,7 @@
         <location filename="../backends/mpv/mpv_proxy.cpp" line="1029"/>
         <location filename="../backends/mpv/mpv_proxy.cpp" line="1047"/>
         <source>[internal]</source>
-        <translation>「內嵌」</translation>
+        <translation>[內嵌]</translation>
     </message>
 </context>
 <context>

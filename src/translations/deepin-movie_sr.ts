@@ -35,7 +35,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="6"/>
         <source>Clear playlist when exit</source>
-        <translation>Очисти листу за пуштање кад изађем</translation>
+        <translation>Очисти листу пуштања кад изађем</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="7"/>
@@ -182,7 +182,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="37"/>
         <source>Playlist</source>
-        <translation>Листа за пуштање</translation>
+        <translation>Листа пуштања</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="38"/>
@@ -391,7 +391,7 @@
     <message>
         <location filename="../common/actions.cpp" line="166"/>
         <source>Track</source>
-        <translation>Трака</translation>
+        <translation> Снимак</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="176"/>
@@ -441,7 +441,7 @@
     <message>
         <location filename="../common/actions.cpp" line="267"/>
         <source>Playlist</source>
-        <translation>Листа за пуштање</translation>
+        <translation>Листа пуштања</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="268"/>
@@ -451,7 +451,7 @@
     <message>
         <location filename="../common/actions.cpp" line="282"/>
         <source>Clear playlist</source>
-        <translation>Очисти листу за пуштање</translation>
+        <translation>Очисти листу пуштања</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="283"/>
@@ -501,7 +501,7 @@
         <location filename="../common/mainwindow.cpp" line="698"/>
         <location filename="../common/mainwindow.cpp" line="1789"/>
         <source>Load failed</source>
-        <translation>Неуспело учитавање</translation>
+        <translation>Неуспешно учитавање</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1392"/>
@@ -511,7 +511,7 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="1410"/>
         <source>Parse Failed</source>
-        <translation>Неуспело анализирање</translation>
+        <translation>Неуспешно анализирање</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1417"/>
@@ -641,7 +641,7 @@
         <location filename="../backends/mpv/mpv_proxy.cpp" line="1029"/>
         <location filename="../backends/mpv/mpv_proxy.cpp" line="1047"/>
         <source>[internal]</source>
-        <translation>[унутрашња]</translation>
+        <translation>[унутрашњи]</translation>
     </message>
 </context>
 <context>
@@ -672,7 +672,7 @@
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="889"/>
         <source>Play</source>
-        <translation>Репродукција</translation>
+        <translation>Пусти</translation>
     </message>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="685"/>
@@ -696,7 +696,7 @@
         <location filename="../widgets/toolbox_proxy.cpp" line="688"/>
         <location filename="../widgets/toolbox_proxy.cpp" line="697"/>
         <source>Playlist</source>
-        <translation>Листа за пуштање</translation>
+        <translation>Листа пуштања</translation>
     </message>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="689"/>
