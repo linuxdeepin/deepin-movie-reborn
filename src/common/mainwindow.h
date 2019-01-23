@@ -210,7 +210,7 @@ private:
         SBEM_Above = 0x01,
         SBEM_Fullscreen = 0x02,
         SBEM_PlaylistOpened = 0x04,
-        SBEM_Maximized = 0x02,
+        SBEM_Maximized = 0x08,
     }; 
     int _stateBeforeMiniMode {0};
     Qt::WindowStates _lastWindowState {Qt::WindowNoState};

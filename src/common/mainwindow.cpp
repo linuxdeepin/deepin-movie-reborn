@@ -1358,7 +1358,7 @@ bool MainWindow::isActionAllowed(ActionFactory::ActionKind kd, bool fromUI, bool
     if (isMaximized()) {
         switch(kd) {
             case ActionFactory::ToggleMiniMode:
-                return false;
+                return true;
             default: break;
         }
     }
@@ -2663,6 +2663,9 @@ void MainWindow::toggleUIMode()
         if (isFullScreen()) {
             _stateBeforeMiniMode |= SBEM_Fullscreen;
             requestAction(ActionFactory::QuitFullscreen);
+        } else if (isMaximized()) {
+            _stateBeforeMiniMode |= SBEM_Maximized;
+            showNormal();
         } else {
             _lastRectInNormalMode = geometry();
         }
@@ -2695,7 +2698,9 @@ void MainWindow::toggleUIMode()
         if (_stateBeforeMiniMode & SBEM_Above) {
             requestAction(ActionFactory::WindowAbove);
         }
-        if (_stateBeforeMiniMode & SBEM_Fullscreen) {
+        if (_stateBeforeMiniMode & SBEM_Maximized) {
+            showMaximized();
+        } else if (_stateBeforeMiniMode & SBEM_Fullscreen) {
             requestAction(ActionFactory::ToggleFullscreen);
         } else {
             if (_engine->state() == PlayerEngine::Idle && windowState() == Qt::WindowNoState) {
