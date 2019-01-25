@@ -1,3 +1,13 @@
+<a name="3.2.19"></a>
+## 3.2.19 (2019-01-25)
+
+
+#### Bug Fixes
+
+*   can not toggle mini mode when window maximized ([b70157f9](https://github.com/linuxdeepin/deepin-movie-reborn/commit/b70157f952108f712499b61e33d65931fac3d263))
+
+
+
 <a name=""></a>
 ##  3.2.18 (2019-01-03)
 
