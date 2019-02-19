@@ -55,7 +55,9 @@ file(GLOB TS LIST_DIRECTORIES false translations/${CMD_NAME}*.ts)
 set_source_files_properties(${TS}
     PROPERTIES OUTPUT_LOCATION ${PROJECT_SOURCE_DIR}/src/translations)
 
-qt5_create_translation(QM ${SRCS} ${TS})
+if (NOT (${CMAKE_BUILD_TYPE} MATCHES "Debug"))
+    qt5_create_translation(QM ${SRCS} ${TS})
+endif ()
 # ~
 
 add_executable(${CMD_NAME} ${SRCS} ${RCS} ${QM})
