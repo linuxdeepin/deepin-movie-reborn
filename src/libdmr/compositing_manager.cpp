@@ -84,6 +84,9 @@ public:
                 } else if (machine.find("mips") != string::npos) { // loongson
                     qDebug() << "match loongson";
                     _pf = Platform::Alpha;
+                } else if (machine.find("aarch64") != string::npos) { // ARM64
+                    qDebug() << "match arm";
+                    _pf = Platform::Arm64;
                 }
             }
         }
@@ -120,7 +123,7 @@ CompositingManager::CompositingManager() {
         if (GetScreenDriver) {
             const char *name = (*GetScreenDriver) (QX11Info::display(), QX11Info::appScreen());
             qDebug() << "dri driver: " << name;
-            _composited = name != NULL;
+            _composited = name != nullptr;
         } else {
             if (isDriverLoadedCorrectly() && isDirectRendered()) {
                 _composited = true;
@@ -305,7 +308,7 @@ bool CompositingManager::is_device_viable(int id) {
 bool CompositingManager::isProprietaryDriver()
 {
     if (is_device_viable(0)) {
-        vector<string> drivers = {"nvidia", "fglrx"};
+        vector<string> drivers = {"nvidia", "fglrx", "hibmc-drm"};
         return is_card_exists(drivers);
     }
 
@@ -378,9 +381,9 @@ PlayerOptionList CompositingManager::getBestProfile()
     switch (_platform) {
         case Platform::Alpha:
         case Platform::Mips:
+        case Platform::Arm64:
             profile_name = _composited ? "composited" : "failsafe";
             break;
-
         case Platform::X86:
             profile_name = _composited ? "composited" : "default";
             break;

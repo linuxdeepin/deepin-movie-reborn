@@ -40,7 +40,8 @@ enum Platform {
     Unknown,
     X86,  // intel & amd
     Mips, // loongson
-    Alpha // sunway
+    Alpha, // sunway
+    Arm64
 };
 
 enum OpenGLInteropKind {
