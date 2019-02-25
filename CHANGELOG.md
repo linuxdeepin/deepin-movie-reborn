@@ -1,3 +1,13 @@
+<a name="3.2.20"></a>
+## 3.2.20 (2019-02-25)
+
+
+#### Bug Fixes
+
+*   buttons not shwon in mini mode on arm64 platform ([572d7b37](https://github.com/linuxdeepin/deepin-movie-reborn/commit/572d7b37034ec8940160692755cfbe6f56cb6802))
+
+
+
 <a name="3.2.19"></a>
 ## 3.2.19 (2019-01-25)
 
