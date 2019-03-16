@@ -1815,7 +1815,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         case ActionFactory::ActionKind::LoadSubtitle: {
             QString filename = QFileDialog::getOpenFileName(this, tr("Open File"),
                     QDir::currentPath(),
-                    tr("Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)"));
+                    tr("Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)"));
             if (QFileInfo(filename).exists()) {
                 auto success = _engine->loadSubtitle(QFileInfo(filename));
                 _nwComm->updateWithMessage(success?tr("Load successfully"):tr("Load failed"));
