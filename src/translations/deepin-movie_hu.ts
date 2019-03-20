@@ -1,4 +1,6 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS language="hu" version="2.1">
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.1" language="hu">
 <context>
     <name>QObject</name>
     <message>
@@ -142,12 +144,12 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="29"/>
         <source>Next frame</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="30"/>
         <source>Previous frame</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="31"/>
@@ -356,12 +358,12 @@
     <message>
         <location filename="../common/actions.cpp" line="144"/>
         <source>Next frame</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="145"/>
         <source>Previous frame</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="152"/>
@@ -485,124 +487,125 @@
 <context>
     <name>dmr::MainWindow</name>
     <message>
-        <location filename="../common/mainwindow.cpp" line="785"/>
-        <location filename="../common/mainwindow.cpp" line="2284"/>
-        <location filename="../common/mainwindow.cpp" line="2381"/>
         <source>Deepin Movie</source>
-        <translation>Deepin Film</translation>
+        <translation type="vanished">Deepin Film</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="698"/>
-        <location filename="../common/mainwindow.cpp" line="1789"/>
+        <location filename="../common/mainwindow.cpp" line="720"/>
+        <location filename="../common/mainwindow.cpp" line="1821"/>
         <source>Load successfully</source>
         <translation>Sikeres betöltés</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="698"/>
-        <location filename="../common/mainwindow.cpp" line="1789"/>
+        <location filename="../common/mainwindow.cpp" line="720"/>
+        <location filename="../common/mainwindow.cpp" line="1821"/>
         <source>Load failed</source>
         <translation>Sikertelen betöltés</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1392"/>
+        <location filename="../common/mainwindow.cpp" line="1424"/>
         <source>No device found</source>
         <translation>Nem található az eszköz</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1410"/>
+        <location filename="../common/mainwindow.cpp" line="1442"/>
         <source>Parse Failed</source>
         <translation>Sikertelen elemzés</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1417"/>
+        <location filename="../common/mainwindow.cpp" line="1449"/>
         <source>Open Folder</source>
         <translation>Mappa megnyitása</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1432"/>
-        <location filename="../common/mainwindow.cpp" line="1449"/>
-        <location filename="../common/mainwindow.cpp" line="1784"/>
+        <location filename="../common/mainwindow.cpp" line="1464"/>
+        <location filename="../common/mainwindow.cpp" line="1481"/>
+        <location filename="../common/mainwindow.cpp" line="1816"/>
         <source>Open File</source>
         <translation>Fálj megnyitása</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1434"/>
-        <location filename="../common/mainwindow.cpp" line="1451"/>
+        <location filename="../common/mainwindow.cpp" line="1466"/>
+        <location filename="../common/mainwindow.cpp" line="1483"/>
         <source>All videos (%1)</source>
         <translation>Összes videó (%1)</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1652"/>
+        <location filename="../common/mainwindow.cpp" line="1684"/>
         <source>Muted</source>
         <translation>Némítva</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1655"/>
-        <location filename="../common/mainwindow.cpp" line="1667"/>
-        <location filename="../common/mainwindow.cpp" line="1677"/>
-        <location filename="../common/mainwindow.cpp" line="1684"/>
+        <location filename="../common/mainwindow.cpp" line="1687"/>
+        <location filename="../common/mainwindow.cpp" line="1699"/>
+        <location filename="../common/mainwindow.cpp" line="1709"/>
+        <location filename="../common/mainwindow.cpp" line="1716"/>
         <source>Volume: %1%</source>
         <translation>Hangerő: %1%</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1749"/>
-        <location filename="../common/mainwindow.cpp" line="1757"/>
+        <location filename="../common/mainwindow.cpp" line="1781"/>
+        <location filename="../common/mainwindow.cpp" line="1789"/>
         <source>Subtitle %1: %2s</source>
         <translation>Felirat %1: %2s</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1750"/>
-        <location filename="../common/mainwindow.cpp" line="1758"/>
+        <location filename="../common/mainwindow.cpp" line="1782"/>
+        <location filename="../common/mainwindow.cpp" line="1790"/>
         <source>delayed</source>
         <translation>időzítve</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1750"/>
-        <location filename="../common/mainwindow.cpp" line="1758"/>
+        <location filename="../common/mainwindow.cpp" line="1782"/>
+        <location filename="../common/mainwindow.cpp" line="1790"/>
         <source>advanced</source>
         <translation>Kibővített</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1765"/>
-        <location filename="../common/mainwindow.cpp" line="1772"/>
-        <location filename="../common/mainwindow.cpp" line="1779"/>
+        <location filename="../common/mainwindow.cpp" line="1797"/>
+        <location filename="../common/mainwindow.cpp" line="1804"/>
+        <location filename="../common/mainwindow.cpp" line="1811"/>
         <source>Speed: %1x</source>
         <translation>Sebesség: %1x</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1786"/>
-        <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</source>
-        <translation>Felirat (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</translation>
+        <location filename="../common/mainwindow.cpp" line="1818"/>
+        <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1848"/>
+        <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</source>
+        <translation type="vanished">Felirat (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</translation>
+    </message>
+    <message>
+        <location filename="../common/mainwindow.cpp" line="1880"/>
         <source>View</source>
         <translation>Megtekintés</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1859"/>
+        <location filename="../common/mainwindow.cpp" line="1891"/>
         <source>Movie Screenshot</source>
         <translation>Film pillanatkép</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1860"/>
+        <location filename="../common/mainwindow.cpp" line="1892"/>
         <source>Saved to</source>
         <translation>Elmentve</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1874"/>
-        <location filename="../common/mainwindow.cpp" line="1957"/>
+        <location filename="../common/mainwindow.cpp" line="1906"/>
+        <location filename="../common/mainwindow.cpp" line="1989"/>
         <source>The screenshot is saved</source>
         <translation>A képernyőkép mentése sikeres</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1874"/>
+        <location filename="../common/mainwindow.cpp" line="1906"/>
         <source>The screenshot is failed to save</source>
         <translation>Nem sikerült a képernyőkép mentése</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2044"/>
-        <location filename="../common/mainwindow.cpp" line="2741"/>
+        <location filename="../common/mainwindow.cpp" line="2076"/>
+        <location filename="../common/mainwindow.cpp" line="2782"/>
         <source>Invalid file: %1</source>
         <translation>Érvénytelen fájl: %1</translation>
     </message>
@@ -638,8 +641,8 @@
 <context>
     <name>dmr::MpvProxy</name>
     <message>
-        <location filename="../backends/mpv/mpv_proxy.cpp" line="1029"/>
-        <location filename="../backends/mpv/mpv_proxy.cpp" line="1047"/>
+        <location filename="../backends/mpv/mpv_proxy.cpp" line="1034"/>
+        <location filename="../backends/mpv/mpv_proxy.cpp" line="1052"/>
         <source>[internal]</source>
         <translation>[belső]</translation>
     </message>

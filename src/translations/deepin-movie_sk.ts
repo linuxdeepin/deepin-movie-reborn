@@ -1,4 +1,6 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS language="sk" version="2.1">
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.1" language="sk">
 <context>
     <name>QObject</name>
     <message>
@@ -485,124 +487,125 @@
 <context>
     <name>dmr::MainWindow</name>
     <message>
-        <location filename="../common/mainwindow.cpp" line="785"/>
-        <location filename="../common/mainwindow.cpp" line="2284"/>
-        <location filename="../common/mainwindow.cpp" line="2381"/>
         <source>Deepin Movie</source>
-        <translation>Deepin Filmy</translation>
+        <translation type="vanished">Deepin Filmy</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="698"/>
-        <location filename="../common/mainwindow.cpp" line="1789"/>
+        <location filename="../common/mainwindow.cpp" line="720"/>
+        <location filename="../common/mainwindow.cpp" line="1821"/>
         <source>Load successfully</source>
         <translation>Nahrávanie úspešné</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="698"/>
-        <location filename="../common/mainwindow.cpp" line="1789"/>
+        <location filename="../common/mainwindow.cpp" line="720"/>
+        <location filename="../common/mainwindow.cpp" line="1821"/>
         <source>Load failed</source>
         <translation>Nahrávanie zlyhalo</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1392"/>
+        <location filename="../common/mainwindow.cpp" line="1424"/>
         <source>No device found</source>
         <translation>Nebolo nájdené žiadne zariadenie</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1410"/>
+        <location filename="../common/mainwindow.cpp" line="1442"/>
         <source>Parse Failed</source>
         <translation>Spracovanie zlyhalo</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1417"/>
+        <location filename="../common/mainwindow.cpp" line="1449"/>
         <source>Open Folder</source>
         <translation>Otvoriť adresár</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1432"/>
-        <location filename="../common/mainwindow.cpp" line="1449"/>
-        <location filename="../common/mainwindow.cpp" line="1784"/>
+        <location filename="../common/mainwindow.cpp" line="1464"/>
+        <location filename="../common/mainwindow.cpp" line="1481"/>
+        <location filename="../common/mainwindow.cpp" line="1816"/>
         <source>Open File</source>
         <translation>Otvoriť súbor</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1434"/>
-        <location filename="../common/mainwindow.cpp" line="1451"/>
+        <location filename="../common/mainwindow.cpp" line="1466"/>
+        <location filename="../common/mainwindow.cpp" line="1483"/>
         <source>All videos (%1)</source>
         <translation>Všetky videá (%1)</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1652"/>
+        <location filename="../common/mainwindow.cpp" line="1684"/>
         <source>Muted</source>
         <translation>Stlmené</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1655"/>
-        <location filename="../common/mainwindow.cpp" line="1667"/>
-        <location filename="../common/mainwindow.cpp" line="1677"/>
-        <location filename="../common/mainwindow.cpp" line="1684"/>
+        <location filename="../common/mainwindow.cpp" line="1687"/>
+        <location filename="../common/mainwindow.cpp" line="1699"/>
+        <location filename="../common/mainwindow.cpp" line="1709"/>
+        <location filename="../common/mainwindow.cpp" line="1716"/>
         <source>Volume: %1%</source>
         <translation>Hlasitosť: %1%</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1749"/>
-        <location filename="../common/mainwindow.cpp" line="1757"/>
+        <location filename="../common/mainwindow.cpp" line="1781"/>
+        <location filename="../common/mainwindow.cpp" line="1789"/>
         <source>Subtitle %1: %2s</source>
         <translation>Titulky %1: %2s</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1750"/>
-        <location filename="../common/mainwindow.cpp" line="1758"/>
+        <location filename="../common/mainwindow.cpp" line="1782"/>
+        <location filename="../common/mainwindow.cpp" line="1790"/>
         <source>delayed</source>
         <translation>oneskorené</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1750"/>
-        <location filename="../common/mainwindow.cpp" line="1758"/>
+        <location filename="../common/mainwindow.cpp" line="1782"/>
+        <location filename="../common/mainwindow.cpp" line="1790"/>
         <source>advanced</source>
         <translation>pokročilé</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1765"/>
-        <location filename="../common/mainwindow.cpp" line="1772"/>
-        <location filename="../common/mainwindow.cpp" line="1779"/>
+        <location filename="../common/mainwindow.cpp" line="1797"/>
+        <location filename="../common/mainwindow.cpp" line="1804"/>
+        <location filename="../common/mainwindow.cpp" line="1811"/>
         <source>Speed: %1x</source>
         <translation>Rýchlosť: %1x</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1786"/>
-        <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</source>
-        <translation>Titulky (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</translation>
+        <location filename="../common/mainwindow.cpp" line="1818"/>
+        <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1848"/>
+        <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</source>
+        <translation type="vanished">Titulky (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</translation>
+    </message>
+    <message>
+        <location filename="../common/mainwindow.cpp" line="1880"/>
         <source>View</source>
         <translation>Náhľad</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1859"/>
+        <location filename="../common/mainwindow.cpp" line="1891"/>
         <source>Movie Screenshot</source>
         <translation>Snímka obrazovky filmu</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1860"/>
+        <location filename="../common/mainwindow.cpp" line="1892"/>
         <source>Saved to</source>
         <translation>Uložené na</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1874"/>
-        <location filename="../common/mainwindow.cpp" line="1957"/>
+        <location filename="../common/mainwindow.cpp" line="1906"/>
+        <location filename="../common/mainwindow.cpp" line="1989"/>
         <source>The screenshot is saved</source>
         <translation>Snímok obrazovky sa uložil</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1874"/>
+        <location filename="../common/mainwindow.cpp" line="1906"/>
         <source>The screenshot is failed to save</source>
         <translation>Snímok obrazovky sa nepodarilo uložiť</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2044"/>
-        <location filename="../common/mainwindow.cpp" line="2741"/>
+        <location filename="../common/mainwindow.cpp" line="2076"/>
+        <location filename="../common/mainwindow.cpp" line="2782"/>
         <source>Invalid file: %1</source>
         <translation>Neplatný súbor: %1</translation>
     </message>
@@ -638,8 +641,8 @@
 <context>
     <name>dmr::MpvProxy</name>
     <message>
-        <location filename="../backends/mpv/mpv_proxy.cpp" line="1029"/>
-        <location filename="../backends/mpv/mpv_proxy.cpp" line="1047"/>
+        <location filename="../backends/mpv/mpv_proxy.cpp" line="1034"/>
+        <location filename="../backends/mpv/mpv_proxy.cpp" line="1052"/>
         <source>[internal]</source>
         <translation>[vnútorné]</translation>
     </message>
