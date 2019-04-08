@@ -85,19 +85,19 @@ BurstScreenshotsDialog::BurstScreenshotsDialog(const PlayItemInfo& pif)
     trb->setContentsMargins(0, 0, 0, 0);
     trb->setSpacing(0);
     {
-        auto lb = new QLabel(tr("duration: %1").arg(mi.durationStr()), this);
+        auto lb = new QLabel(tr("Duration: %1").arg(mi.durationStr()), this);
         lb->setStyleSheet("color: rgba(48, 48, 48, 60%); font-size: 12px;");
         trb->addWidget(lb);
         trb->addSpacing(36);
     }
     {
-        auto lb = new QLabel(tr("resolution: %1").arg(mi.resolution), this);
+        auto lb = new QLabel(tr("Resolution: %1").arg(mi.resolution), this);
         lb->setStyleSheet("color: rgba(48, 48, 48, 60%); font-size: 12px;");
         trb->addWidget(lb);
         trb->addSpacing(36);
     }
     {
-        auto lb = new QLabel(tr("size: %1").arg(mi.sizeStr()), this);
+        auto lb = new QLabel(tr("Size: %1").arg(mi.sizeStr()), this);
         lb->setStyleSheet("color: rgba(48, 48, 48, 60%); font-size: 12px;");
         trb->addWidget(lb);
         trb->addSpacing(36);
@@ -120,7 +120,7 @@ BurstScreenshotsDialog::BurstScreenshotsDialog(const PlayItemInfo& pif)
     bl->setContentsMargins(0, 13, 0, 0);
     bl->addStretch(1);
 
-    _saveBtn = new QPushButton(tr("save"));
+    _saveBtn = new QPushButton(tr("Save"));
     _saveBtn->setObjectName("SaveBtn");
     connect(_saveBtn, &QPushButton::clicked, this, &BurstScreenshotsDialog::savePoster);
     _saveBtn->setFixedSize(61, 24);

@@ -127,7 +127,7 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
     };
 
     option->connect(le, &DLineEdit::iconClicked, [=]() {
-        QString name = QFileDialog::getExistingDirectory(0, QObject::tr("Open Folder"),
+        QString name = QFileDialog::getExistingDirectory(0, QObject::tr("Open folder"),
                 QDir::currentPath(),
                 QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
         if (validate(name, false)) {
@@ -1446,7 +1446,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         }
 
         case ActionFactory::ActionKind::OpenDirectory: {
-            QString name = QFileDialog::getExistingDirectory(this, tr("Open Folder"),
+            QString name = QFileDialog::getExistingDirectory(this, tr("Open folder"),
                     QDir::currentPath(),
                     QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
 
@@ -1461,7 +1461,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         }
 
         case ActionFactory::ActionKind::OpenFileList: {
-            QStringList filenames = QFileDialog::getOpenFileNames(this, tr("Open File"),
+            QStringList filenames = QFileDialog::getOpenFileNames(this, tr("Open file"),
                     QDir::currentPath(),
                     tr("All videos (%1)").arg(_engine->video_filetypes.join(" ")), 0,
                     QFileDialog::HideNameFilterDetails);
@@ -1478,7 +1478,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         }
 
         case ActionFactory::ActionKind::OpenFile: {
-            QString filename = QFileDialog::getOpenFileName(this, tr("Open File"),
+            QString filename = QFileDialog::getOpenFileName(this, tr("Open file"),
                     QDir::currentPath(),
                     tr("All videos (%1)").arg(_engine->video_filetypes.join(" ")), 0,
                     QFileDialog::HideNameFilterDetails);
@@ -1813,7 +1813,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         }
 
         case ActionFactory::ActionKind::LoadSubtitle: {
-            QString filename = QFileDialog::getOpenFileName(this, tr("Open File"),
+            QString filename = QFileDialog::getOpenFileName(this, tr("Open file"),
                     QDir::currentPath(),
                     tr("Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)"));
             if (QFileInfo(filename).exists()) {
@@ -1903,7 +1903,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                 _nwShot->setAnchorPoint(QPoint(30, 38));
             }
             auto pm = utils::LoadHiDPIPixmap(QString(":/resources/icons/%1.svg").arg(success?"success":"fail"));
-            auto msg = success?tr("The screenshot is saved"):tr("The screenshot is failed to save");
+            auto msg = success?tr("The screenshot is saved"):tr("Failed to save the screenshot");
             _nwShot->popupWithIcon(msg, pm);
 #endif
             break;

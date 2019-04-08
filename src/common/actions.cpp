@@ -79,10 +79,10 @@ QMenu* ActionFactory::titlebarMenu()
     if (!_titlebarMenu) {
         auto *menu = new QMenu();
 
-        DEF_ACTION(tr("Open File"), ActionKind::OpenFileList);
-        DEF_ACTION(tr("Open Folder"), ActionKind::OpenDirectory);
+        DEF_ACTION(tr("Open file"), ActionKind::OpenFileList);
+        DEF_ACTION(tr("Open folder"), ActionKind::OpenDirectory);
         DEF_ACTION(tr("Settings"), ActionKind::Settings);
-        DEF_ACTION_CHECKED(tr("Light Theme"), ActionKind::LightTheme);
+        DEF_ACTION_CHECKED(tr("Light theme"), ActionKind::LightTheme);
         menu->addSeparator();
         // these seems added by titlebar itself
         //DEF_ACTION("About", ActionKind::About);
@@ -99,8 +99,8 @@ QMenu* ActionFactory::mainContextMenu()
     if (!_contextMenu) {
         auto *menu = new QMenu();
 
-        DEF_ACTION(tr("Open File"), ActionKind::OpenFileList);
-        DEF_ACTION(tr("Open Folder"), ActionKind::OpenDirectory);
+        DEF_ACTION(tr("Open file"), ActionKind::OpenFileList);
+        DEF_ACTION(tr("Open folder"), ActionKind::OpenDirectory);
         DEF_ACTION(tr("Open URL"), ActionKind::OpenUrl);
         DEF_ACTION(tr("Open CD/DVD"), ActionKind::OpenCdrom);
         menu->addSeparator();
