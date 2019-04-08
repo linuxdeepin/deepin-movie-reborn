@@ -419,7 +419,7 @@ PlaylistModel::~PlaylistModel()
     if (Settings::get().isSet(Settings::ClearWhenQuit)) {
         clearPlaylist();
     } else {
-        //persistantly save current playlist 
+        //persistently save current playlist 
         savePlaylist();
     }
 #endif
