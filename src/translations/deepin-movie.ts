@@ -21,7 +21,7 @@
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="130"/>
-        <source>Open Folder</source>
+        <source>Open folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -153,7 +153,7 @@
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="31"/>
-        <source>volume down</source>
+        <source>Volume down</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -253,20 +253,9 @@
 <context>
     <name>dmr::ActionFactory</name>
     <message>
-        <location filename="../common/actions.cpp" line="82"/>
-        <location filename="../common/actions.cpp" line="102"/>
-        <source>Open File</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../common/actions.cpp" line="84"/>
         <location filename="../common/actions.cpp" line="269"/>
         <source>Settings</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../common/actions.cpp" line="85"/>
-        <source>Light Theme</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -285,9 +274,20 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../common/actions.cpp" line="82"/>
+        <location filename="../common/actions.cpp" line="102"/>
+        <source>Open file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../common/actions.cpp" line="83"/>
         <location filename="../common/actions.cpp" line="103"/>
-        <source>Open Folder</source>
+        <source>Open folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../common/actions.cpp" line="85"/>
+        <source>Light theme</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -465,22 +465,22 @@
     <name>dmr::BurstScreenshotsDialog</name>
     <message>
         <location filename="../widgets/burst_screenshots_dialog.cpp" line="88"/>
-        <source>duration: %1</source>
+        <source>Duration: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../widgets/burst_screenshots_dialog.cpp" line="94"/>
-        <source>resolution: %1</source>
+        <source>Resolution: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../widgets/burst_screenshots_dialog.cpp" line="100"/>
-        <source>size: %1</source>
+        <source>Size: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../widgets/burst_screenshots_dialog.cpp" line="123"/>
-        <source>save</source>
+        <source>Save</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -510,14 +510,14 @@
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1449"/>
-        <source>Open Folder</source>
+        <source>Open folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1464"/>
         <location filename="../common/mainwindow.cpp" line="1481"/>
         <location filename="../common/mainwindow.cpp" line="1816"/>
-        <source>Open File</source>
+        <source>Open file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -592,13 +592,36 @@
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1906"/>
-        <source>The screenshot is failed to save</source>
+        <source>Failed to save the screenshot</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2076"/>
         <location filename="../common/mainwindow.cpp" line="2782"/>
         <source>Invalid file: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>dmr::MovieInfo</name>
+    <message>
+        <location filename="../libdmr/playlist_model.h" line="67"/>
+        <source>%1G</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../libdmr/playlist_model.h" line="69"/>
+        <source>%1M</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../libdmr/playlist_model.h" line="71"/>
+        <source>%1K</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../libdmr/playlist_model.h" line="73"/>
+        <source>%1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

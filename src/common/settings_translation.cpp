@@ -28,7 +28,7 @@ void GenerateSettingTranslate()
     auto shortcuts_frame_sound_muteName = QObject::tr("Mute");
     auto shortcuts_frame_sound_next_frameName = QObject::tr("Next frame");
     auto shortcuts_frame_sound_previous_frameName = QObject::tr("Previous frame");
-    auto shortcuts_frame_sound_vol_downName = QObject::tr("volume down");
+    auto shortcuts_frame_sound_vol_downName = QObject::tr("Volume down");
     auto shortcuts_frame_sound_vol_upName = QObject::tr("Volume up");
     auto shortcuts_play_accelName = QObject::tr("Speed up");
     auto shortcuts_play_decelName = QObject::tr("Speed down");
