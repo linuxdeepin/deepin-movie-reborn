@@ -799,9 +799,9 @@ void PlaylistWidget::togglePopup()
             PLAYLIST_FIXED_WIDTH,
             _mw->toolbox()->geometry().top() + TOOLBOX_TOP_EXTENT - off);
     fixed.moveRight(view_rect.right());
-    QRect shrinked = fixed;
-    shrinked.setWidth(0);
-    shrinked.moveRight(fixed.right());
+    QRect shrunk = fixed;
+    shrunk.setWidth(0);
+    shrunk.moveRight(fixed.right());
 
     if (_toggling) return;
 
@@ -813,7 +813,7 @@ void PlaylistWidget::togglePopup()
         pa->setEasingCurve(QEasingCurve::InOutCubic);
         pa->setDuration(POPUP_DURATION);
         pa->setStartValue(fixed);
-        pa->setEndValue(shrinked);;
+        pa->setEndValue(shrunk);;
 
         pa->start();
         connect(pa, &QPropertyAnimation::finished, [=]() {
@@ -828,7 +828,7 @@ void PlaylistWidget::togglePopup()
         QPropertyAnimation *pa = new QPropertyAnimation(this, "geometry");
         pa->setEasingCurve(QEasingCurve::InOutCubic);
         pa->setDuration(POPUP_DURATION);
-        pa->setStartValue(shrinked);
+        pa->setStartValue(shrunk);
         pa->setEndValue(fixed);
 
         pa->start();
