@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="sr">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="sr" version="2.1">
 <context>
     <name>QObject</name>
     <message>
@@ -21,7 +19,7 @@
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="130"/>
-        <source>Open Folder</source>
+        <source>Open folder</source>
         <translation>Отвори фасциклу</translation>
     </message>
     <message>
@@ -114,7 +112,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="23"/>
         <source>Restore Defaults</source>
-        <translation>Врати подразумевано</translation>
+        <translation>Врати Подразумевано</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="24"/>
@@ -153,7 +151,7 @@
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="31"/>
-        <source>volume down</source>
+        <source>Volume down</source>
         <translation>Утишај</translation>
     </message>
     <message>
@@ -253,21 +251,10 @@
 <context>
     <name>dmr::ActionFactory</name>
     <message>
-        <location filename="../common/actions.cpp" line="82"/>
-        <location filename="../common/actions.cpp" line="102"/>
-        <source>Open File</source>
-        <translation>Отвори датотеку</translation>
-    </message>
-    <message>
         <location filename="../common/actions.cpp" line="84"/>
         <location filename="../common/actions.cpp" line="269"/>
         <source>Settings</source>
         <translation>Подешавања</translation>
-    </message>
-    <message>
-        <location filename="../common/actions.cpp" line="85"/>
-        <source>Light Theme</source>
-        <translation>Светла тема</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="108"/>
@@ -285,10 +272,21 @@
         <translation>Својства видеа</translation>
     </message>
     <message>
+        <location filename="../common/actions.cpp" line="82"/>
+        <location filename="../common/actions.cpp" line="102"/>
+        <source>Open file</source>
+        <translation>Отвори датотеку</translation>
+    </message>
+    <message>
         <location filename="../common/actions.cpp" line="83"/>
         <location filename="../common/actions.cpp" line="103"/>
-        <source>Open Folder</source>
+        <source>Open folder</source>
         <translation>Отвори фасциклу</translation>
+    </message>
+    <message>
+        <location filename="../common/actions.cpp" line="85"/>
+        <source>Light theme</source>
+        <translation>Светла тема</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="104"/>
@@ -393,7 +391,7 @@
     <message>
         <location filename="../common/actions.cpp" line="166"/>
         <source>Track</source>
-        <translation> Снимак</translation>
+        <translation>Снимак</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="176"/>
@@ -465,31 +463,27 @@
     <name>dmr::BurstScreenshotsDialog</name>
     <message>
         <location filename="../widgets/burst_screenshots_dialog.cpp" line="88"/>
-        <source>duration: %1</source>
-        <translation>трајање: %1</translation>
+        <source>Duration: %1</source>
+        <translation>Трајање: %1</translation>
     </message>
     <message>
         <location filename="../widgets/burst_screenshots_dialog.cpp" line="94"/>
-        <source>resolution: %1</source>
-        <translation>резолуција: %1</translation>
+        <source>Resolution: %1</source>
+        <translation>Резолуција: %1</translation>
     </message>
     <message>
         <location filename="../widgets/burst_screenshots_dialog.cpp" line="100"/>
-        <source>size: %1</source>
-        <translation>величина: %1</translation>
+        <source>Size: %1</source>
+        <translation>Величина: %1</translation>
     </message>
     <message>
         <location filename="../widgets/burst_screenshots_dialog.cpp" line="123"/>
-        <source>save</source>
-        <translation>сачувај</translation>
+        <source>Save</source>
+        <translation>Сачувај</translation>
     </message>
 </context>
 <context>
     <name>dmr::MainWindow</name>
-    <message>
-        <source>Deepin Movie</source>
-        <translation type="vanished">Дипин Филм</translation>
-    </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="720"/>
         <location filename="../common/mainwindow.cpp" line="1821"/>
@@ -514,14 +508,14 @@
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1449"/>
-        <source>Open Folder</source>
+        <source>Open folder</source>
         <translation>Отвори фасциклу</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1464"/>
         <location filename="../common/mainwindow.cpp" line="1481"/>
         <location filename="../common/mainwindow.cpp" line="1816"/>
-        <source>Open File</source>
+        <source>Open file</source>
         <translation>Отвори датотеку</translation>
     </message>
     <message>
@@ -571,11 +565,7 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="1818"/>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</source>
-        <translation type="vanished">Титл (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.usf *.idx)</translation>
+        <translation>Титл (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1880"/>
@@ -600,14 +590,37 @@
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1906"/>
-        <source>The screenshot is failed to save</source>
-        <translation>Слика екрана није сачувана</translation>
+        <source>Failed to save the screenshot</source>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2076"/>
         <location filename="../common/mainwindow.cpp" line="2782"/>
         <source>Invalid file: %1</source>
         <translation>Неисправна датотека: %1</translation>
+    </message>
+</context>
+<context>
+    <name>dmr::MovieInfo</name>
+    <message>
+        <location filename="../libdmr/playlist_model.h" line="67"/>
+        <source>%1G</source>
+        <translation>%1G</translation>
+    </message>
+    <message>
+        <location filename="../libdmr/playlist_model.h" line="69"/>
+        <source>%1M</source>
+        <translation>%1M</translation>
+    </message>
+    <message>
+        <location filename="../libdmr/playlist_model.h" line="71"/>
+        <source>%1K</source>
+        <translation>%1K</translation>
+    </message>
+    <message>
+        <location filename="../libdmr/playlist_model.h" line="73"/>
+        <source>%1</source>
+        <translation>%1</translation>
     </message>
 </context>
 <context>
