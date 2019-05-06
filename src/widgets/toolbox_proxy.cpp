@@ -317,7 +317,9 @@ class ThumbnailPreview: public DArrowRectangle {
 public:
     ThumbnailPreview(): DArrowRectangle(DArrowRectangle::ArrowBottom) {
         setAttribute(Qt::WA_DeleteOnClose);
-        setWindowFlags(Qt::ToolTip);
+        // FIXME(hualet): Qt::Tooltip will cause Dock to show up even
+        // the player is in fullscreen mode.
+        setWindowFlags(Qt::Tool);
         
         setObjectName("ThumbnailPreview");
 
@@ -418,7 +420,7 @@ public:
     VolumeSlider(PlayerEngine* eng, MainWindow* mw)
         :DArrowRectangle(DArrowRectangle::ArrowBottom), _engine(eng), _mw(mw) {
         setFixedSize(QSize(24, 105));
-        setWindowFlags(Qt::ToolTip);
+        setWindowFlags(Qt::Tool);
 
         setShadowBlurRadius(4);
         setRadius(4);
