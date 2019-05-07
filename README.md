@@ -25,7 +25,7 @@ Deepin movie is Deepin Desktop Environment Movie Player.
 
 2. Build:
 ```
-$ cd deepin-viewer
+$ cd deepin-movie-reborn(tab)
 $ mkdir Build
 $ cd Build
 $ cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=/usr ..
