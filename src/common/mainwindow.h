@@ -85,6 +85,8 @@ public:
 
     void updateContentGeometry(const QRect& rect);
 
+    static QString lastOpenedPath();
+
 signals:
     void windowEntered();
     void windowLeaved();
