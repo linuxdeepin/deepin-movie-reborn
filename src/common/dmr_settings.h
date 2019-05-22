@@ -64,6 +64,9 @@ class Settings: public QObject {
         QPointer<DSettingsGroup> base() { return group("base"); }
         QPointer<DSettingsGroup> subtitle() { return group("subtitle"); }
 
+        void setGeneralOption(const QString& opt, const QVariant& v);
+        QVariant generalOption(const QString& opt);
+
         void setInternalOption(const QString& opt, const QVariant& v);
         QVariant internalOption(const QString& opt);
 

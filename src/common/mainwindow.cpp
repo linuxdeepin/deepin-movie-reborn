@@ -128,7 +128,7 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
 
     option->connect(le, &DLineEdit::iconClicked, [=]() {
         QString name = QFileDialog::getExistingDirectory(0, QObject::tr("Open folder"),
-                QDir::currentPath(),
+                MainWindow::lastOpenedPath(),
                 QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
         if (validate(name, false)) {
             option->setValue(name);
@@ -1447,11 +1447,13 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
 
         case ActionFactory::ActionKind::OpenDirectory: {
             QString name = QFileDialog::getExistingDirectory(this, tr("Open folder"),
-                    QDir::currentPath(),
+                    lastOpenedPath(),
                     QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
 
             QFileInfo fi(name);
             if (fi.isDir() && fi.exists()) {
+                Settings::get().setGeneralOption("last_open_path", fi.path());
+
                 const auto& urls = _engine->addPlayDir(name);
                 if (urls.size()) {
                     _engine->playByName(QUrl("playlist://0"));
@@ -1462,12 +1464,17 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
 
         case ActionFactory::ActionKind::OpenFileList: {
             QStringList filenames = QFileDialog::getOpenFileNames(this, tr("Open file"),
-                    QDir::currentPath(),
+                    lastOpenedPath(),
                     tr("All videos (%1)").arg(_engine->video_filetypes.join(" ")), 0,
                     QFileDialog::HideNameFilterDetails);
 
             QList<QUrl> urls;
             if (filenames.size()) {
+                QFileInfo fileInfo(filenames[0]);
+                if (fileInfo.exists()) {
+                    Settings::get().setGeneralOption("last_open_path", fileInfo.path());
+                }
+
                 for (const auto& filename: filenames) {
                     urls.append(QUrl::fromLocalFile(filename));
                 }
@@ -1479,10 +1486,13 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
 
         case ActionFactory::ActionKind::OpenFile: {
             QString filename = QFileDialog::getOpenFileName(this, tr("Open file"),
-                    QDir::currentPath(),
+                    lastOpenedPath(),
                     tr("All videos (%1)").arg(_engine->video_filetypes.join(" ")), 0,
                     QFileDialog::HideNameFilterDetails);
-            if (QFileInfo(filename).exists()) {
+            QFileInfo fileInfo(filename);
+            if (fileInfo.exists()) {
+                Settings::get().setGeneralOption("last_open_path", fileInfo.path());
+
                 play(QUrl::fromLocalFile(filename));
             }
             break;
@@ -1814,7 +1824,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
 
         case ActionFactory::ActionKind::LoadSubtitle: {
             QString filename = QFileDialog::getOpenFileName(this, tr("Open file"),
-                    QDir::currentPath(),
+                    lastOpenedPath(),
                     tr("Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)"));
             if (QFileInfo(filename).exists()) {
                 auto success = _engine->loadSubtitle(QFileInfo(filename));
@@ -2566,6 +2576,21 @@ void MainWindow::prepareSplashImages()
 {
     bg_dark = utils::LoadHiDPIImage(":/resources/icons/dark/init-splash.svg");
     bg_light = utils::LoadHiDPIImage(":/resources/icons/light/init-splash.svg");
+}
+
+QString MainWindow::lastOpenedPath()
+{
+    QString lastPath = Settings::get().generalOption("last_open_path").toString();
+    QDir lastDir(lastPath);
+    if (lastPath.isEmpty() || !lastDir.exists()) {
+        lastPath = QStandardPaths::writableLocation(QStandardPaths::MoviesLocation);
+        QDir newLastDir(lastPath);
+        if (!newLastDir.exists()) {
+            lastPath = QDir::currentPath();
+        }
+    }
+
+    return lastPath;
 }
 
 void MainWindow::paintEvent(QPaintEvent* pe)
