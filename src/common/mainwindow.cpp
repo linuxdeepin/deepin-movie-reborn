@@ -2794,8 +2794,30 @@ void MainWindow::dropEvent(QDropEvent *ev)
         return;
     }
 
-    auto urls = ev->mimeData()->urls();
-    auto valids = _engine->addPlayFiles(urls);
+    QList<QUrl> urls = ev->mimeData()->urls();
+    QList<QUrl> valids = _engine->addPlayFiles(urls);
+
+    if (urls.count() == 1 && valids.count() == 0) {
+        // check if the dropped file is a subtitle.
+        QFileInfo fileInfo(urls.first().toLocalFile());
+        if (_engine->subtitle_suffixs.contains(fileInfo.suffix())) {
+            bool succ = _engine->loadSubtitle(fileInfo);
+            // notice that the file loaded but won't automatically selected.
+            const PlayingMovieInfo& pmf = _engine->playingMovieInfo();
+            for (const SubtitleInfo& sub: pmf.subs) {
+                if (sub["external"].toBool()) {
+                    QString path = sub["external-filename"].toString();
+                    if (path == fileInfo.canonicalFilePath()) {
+                        _engine->selectSubtitle(pmf.subs.indexOf(sub));
+                        break;
+                    }
+                }
+            }
+            QPixmap icon = utils::LoadHiDPIPixmap(QString(":/resources/icons/%1.svg").arg(succ ? "success" : "fail"));
+            _nwComm->popupWithIcon(succ ? tr("Load successfully") : tr("Load failed"), icon);
+        }
+        return;
+    }
 
     {
         auto all = urls.toSet();
