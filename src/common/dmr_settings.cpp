@@ -162,6 +162,17 @@ QString Settings::screenshotNameSeqTemplate()
         .arg(QDateTime::currentDateTime().toString("yyyyMMddhhmmss"));
 }
 
+void Settings::setGeneralOption(const QString &opt, const QVariant &v)
+{
+    settings()->setOption(QString("base.general.%1").arg(opt), v);
+    settings()->sync();
+}
+
+QVariant Settings::generalOption(const QString &opt)
+{
+    return settings()->getOption(QString("base.general.%1").arg(opt));
+}
+
 QVariant Settings::internalOption(const QString& opt)
 {
     return settings()->getOption(QString("base.play.%1").arg(opt));
