@@ -1,3 +1,18 @@
+<a name="3.2.23"></a>
+## 3.2.23 (2019-05-23)
+
+
+#### Bug Fixes
+
+*   thumbnail previewer caused dock show up ([b4e511dc](https://github.com/linuxdeepin/deepin-movie-reborn/commit/b4e511dcef19f2d614939eb9914f23d6a4ee69e9))
+
+#### Features
+
+*   Drag and drop to load subtitle ([13b8166d](https://github.com/linuxdeepin/deepin-movie-reborn/commit/13b8166d36e04216e302e44fd69bf3d7f7c93b9f))
+*   remember last opened path ([46a7c66e](https://github.com/linuxdeepin/deepin-movie-reborn/commit/46a7c66e1676a1f24e385590fd58065efb64c9d3))
+
+
+
 <a name="3.2.22.1"></a>
 ## 3.2.22.1 (2019-04-19)
 
