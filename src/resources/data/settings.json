@@ -107,6 +107,19 @@
                             "default": "~/Pictures/DMovie"
                         }
                     ]
+                },
+                {
+                    "key": "general",
+                    "name": "",
+                    "hide": true,
+                    "options": [
+                        {
+                            "key": "last_open_path",
+                            "name": "",
+                            "type": "selectableEdit",
+                            "default": ""
+                        }
+                    ]
                 }
             ]
         },
