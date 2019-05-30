@@ -175,8 +175,15 @@ void Utility::sendMoveResizeMessage(quint32 WId, uint32_t action, QPoint globalP
                qbutton == Qt::RightButton ? XCB_BUTTON_INDEX_3 :
                XCB_BUTTON_INDEX_ANY;
 
-    if (globalPos.isNull())
-        globalPos = QCursor::pos();
+    if (globalPos.isNull()) {
+        //QTBUG-76114
+        //globalPos = QCursor::pos();
+        xcb_query_pointer_reply_t* p = xcb_query_pointer_reply(QX11Info::connection(),
+                                                              xcb_query_pointer(QX11Info::connection(),
+                                                                                QX11Info::appRootWindow(QX11Info::appScreen())),
+                                                              nullptr);
+        globalPos = QPoint(p->root_x, p->root_y);
+    }
 
     xcb_client_message_event_t xev;
 
@@ -184,8 +191,8 @@ void Utility::sendMoveResizeMessage(quint32 WId, uint32_t action, QPoint globalP
     xev.type = internAtom(XATOM_MOVE_RESIZE);
     xev.window = WId;
     xev.format = 32;
-    xev.data.data32[0] = globalPos.x() * qApp->devicePixelRatio();
-    xev.data.data32[1] = globalPos.y() * qApp->devicePixelRatio();
+    xev.data.data32[0] = globalPos.x();
+    xev.data.data32[1] = globalPos.y();
     xev.data.data32[2] = action;
     xev.data.data32[3] = xbtn;
     xev.data.data32[4] = 0;
