@@ -1,3 +1,13 @@
+<a name="3.2.23.2"></a>
+## 3.2.23.2 (2019-06-01)
+
+
+#### Bug Fixes
+
+*   Should free xcb_query_pointer_reply return pointer ([5541d969](https://github.com/linuxdeepin/deepin-movie-reborn/commit/5541d96916fe8fbb04835e507f935718f2530d08))
+
+
+
 <a name="3.2.23.1"></a>
 ## 3.2.23.1 (2019-06-01)
 
