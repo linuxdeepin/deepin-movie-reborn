@@ -178,11 +178,18 @@ void Utility::sendMoveResizeMessage(quint32 WId, uint32_t action, QPoint globalP
     if (globalPos.isNull()) {
         //QTBUG-76114
         //globalPos = QCursor::pos();
+        xcb_generic_error_t** err = nullptr;
         xcb_query_pointer_reply_t* p = xcb_query_pointer_reply(QX11Info::connection(),
                                                               xcb_query_pointer(QX11Info::connection(),
                                                                                 QX11Info::appRootWindow(QX11Info::appScreen())),
-                                                              nullptr);
-        globalPos = QPoint(p->root_x, p->root_y);
+                                                              err);
+        if (p && err == nullptr) {
+            globalPos = QPoint(p->root_x, p->root_y);
+        }
+
+        if (p) {
+            free(p);
+        }
     }
 
     xcb_client_message_event_t xev;
