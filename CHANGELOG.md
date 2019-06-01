@@ -1,3 +1,14 @@
+<a name="3.2.23.1"></a>
+## 3.2.23.1 (2019-06-01)
+
+
+#### Bug Fixes
+
+*   workaround for QTBUG-76114. ([bfeb745f](https://github.com/linuxdeepin/deepin-movie-reborn/commit/bfeb745f3832e64b29488db9cad884348dd5b531))
+*   missing settings item added. Fixes crash on file open. ([c2ed22ce](https://github.com/linuxdeepin/deepin-movie-reborn/commit/c2ed22ce85e7b8a4b7e225bf84ca3c5c6862a4a3))
+
+
+
 <a name="3.2.23"></a>
 ## 3.2.23 (2019-05-23)
 
