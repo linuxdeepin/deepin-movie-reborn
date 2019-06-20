@@ -259,9 +259,8 @@ void CompositingManager::overrideCompositeMode(bool useCompositing)
 
 using namespace std;
 
-bool CompositingManager::is_card_exists(const vector<string>& drivers) {
+bool CompositingManager::is_card_exists(int id, const vector<string>& drivers) {
     char buf[1024] = {0};
-    int id = 0;
     snprintf(buf, sizeof buf, "/sys/class/drm/card%d/device/driver", id);
 
     char buf2[1024] = {0};
@@ -307,9 +306,12 @@ bool CompositingManager::is_device_viable(int id) {
 
 bool CompositingManager::isProprietaryDriver()
 {
-    if (is_device_viable(0)) {
-        vector<string> drivers = {"nvidia", "fglrx", "hibmc-drm"};
-        return is_card_exists(drivers);
+    for (int id = 0; id <= 10; id++) {
+        if (!QFile::exists(QString("/sys/class/drm/card%1").arg(id))) break;
+        if (is_device_viable(id)) {
+            vector<string> drivers = {"nvidia", "fglrx", "hibmc-drm"};
+            return is_card_exists(id, drivers);
+        }
     }
 
     return false;
