@@ -92,7 +92,7 @@ class CompositingManager: public QObject {
         bool isProprietaryDriver();
 
         bool is_device_viable(int id);
-        bool is_card_exists(const std::vector<std::string>& drivers);
+        bool is_card_exists(int id, const std::vector<std::string>& drivers);
 
         bool _composited {false};
         Platform _platform {Platform::Unknown};
