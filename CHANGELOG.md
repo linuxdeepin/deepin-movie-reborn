@@ -1,3 +1,13 @@
+<a name="3.2.24"></a>
+## 3.2.24 (2019-06-20)
+
+
+#### Bug Fixes
+
+*   card0 may not enabled/usable ([d71a0a60](https://github.com/linuxdeepin/deepin-movie-reborn/commit/d71a0a606a3f7c9ac27cbe2c05698b9adba39cec))
+
+
+
 <a name="3.2.23.2"></a>
 ## 3.2.23.2 (2019-06-01)
 
