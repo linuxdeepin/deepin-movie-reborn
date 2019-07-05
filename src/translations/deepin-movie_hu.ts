@@ -479,7 +479,7 @@
     <message>
         <location filename="../widgets/burst_screenshots_dialog.cpp" line="123"/>
         <source>Save</source>
-        <translation>Elment</translation>
+        <translation>Ment</translation>
     </message>
 </context>
 <context>

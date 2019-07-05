@@ -306,7 +306,7 @@
     <message>
         <location filename="../common/actions.cpp" line="115"/>
         <source>Play Mode</source>
-        <translation type="unfinished"/>
+        <translation>Λειτουργία αναπαραγωγής</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="118"/>
@@ -456,7 +456,7 @@
     <message>
         <location filename="../common/actions.cpp" line="283"/>
         <source>Display in file manager</source>
-        <translation type="unfinished"/>
+        <translation>Προβολή στη διαχείριση αρχείων</translation>
     </message>
 </context>
 <context>
@@ -643,7 +643,7 @@
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="121"/>
         <source>Duration:</source>
-        <translation type="unfinished"/>
+        <translation>Διάρκεια:</translation>
     </message>
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="126"/>

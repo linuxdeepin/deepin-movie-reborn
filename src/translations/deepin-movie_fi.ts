@@ -5,12 +5,12 @@
         <location filename="../main.cpp" line="88"/>
         <location filename="../main.cpp" line="120"/>
         <source>Deepin Movie</source>
-        <translation>Deepin Elokuva</translation>
+        <translation>Deepin Elokuvat</translation>
     </message>
     <message>
         <location filename="../main.cpp" line="89"/>
         <source>Deepin Movie is a well-designed and full-featured video player with simple borderless design. It supports local and streaming media play with multiple video formats.</source>
-        <translation>Deepin Movie on erinomaisesti suunniteltu ja kattavilla ominaisuuksilla varusteltu simppeli ja rajaton videosoitin. Se tulee useiden eri videoalustojen paikallis- ja suoratoistosoittoa.</translation>
+        <translation>Deepin Elokuva on erinomaisesti suunniteltu ja kattavilla ominaisuuksilla varusteltu yksinkertainen ja tyylikäs videosoitin. Se tukee useiden eri videoformaattien paikallis- ja suoratoistosoittoa.</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="116"/>
@@ -30,17 +30,17 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="5"/>
         <source>Auto add similar files to play</source>
-        <translation>Lisää vastaavia tiedostoja soittolistaan</translation>
+        <translation>Lisää samankaltaisia tiedostoja automaattisesti</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="6"/>
         <source>Clear playlist when exit</source>
-        <translation>Tyhjennä soittolista, kun poistut</translation>
+        <translation>Tyhjennä soittolista lopettaessasi</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="7"/>
         <source>Show video preview on mouseover</source>
-        <translation>Näytä videon esikatselu hiirellä</translation>
+        <translation>Näytä videon esikatselukuva hiirellä</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="8"/>
@@ -76,7 +76,7 @@
         <location filename="../common/settings_translation.cpp" line="14"/>
         <location filename="../common/settings_translation.cpp" line="19"/>
         <source>Screenshot</source>
-        <translation>Ruudunkaappaus</translation>
+        <translation>Kuvakaappaus</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="15"/>
@@ -91,7 +91,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="17"/>
         <source>Frame/Sound</source>
-        <translation>Kehykset/Äänet</translation>
+        <translation>Kuvaruudut/Ääni</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="18"/>
@@ -137,27 +137,27 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="28"/>
         <source>Mute</source>
-        <translation>Mykistä</translation>
+        <translation>Vaienna</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="29"/>
         <source>Next frame</source>
-        <translation>Seuraava kappale</translation>
+        <translation>Seuraava kuvaruutu</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="30"/>
         <source>Previous frame</source>
-        <translation>Edellinen kappale</translation>
+        <translation>Edellinen kuvaruutu</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="31"/>
         <source>Volume down</source>
-        <translation>Volyymi alas</translation>
+        <translation>Äänitaso alas</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="32"/>
         <source>Volume up</source>
-        <translation>Volyymi ylös</translation>
+        <translation>Äänitaso ylös</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="33"/>
@@ -192,7 +192,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="39"/>
         <source>Rewind</source>
-        <translation>Kelaa taaksepäin</translation>
+        <translation>Taaksepäin</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="40"/>
@@ -202,12 +202,12 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="41"/>
         <source>Burst screenshot</source>
-        <translation>Purske kuvankaappaus</translation>
+        <translation>Kuvakaappaus sarja</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="42"/>
         <source>Film screenshot</source>
-        <translation>Filmin kuvankaappaus</translation>
+        <translation>Filmin kuvakaappaus</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="43"/>
@@ -227,7 +227,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="46"/>
         <source>Font Size</source>
-        <translation>Fonttin koko</translation>
+        <translation>Fonttikoko</translation>
     </message>
 </context>
 <context>
@@ -245,7 +245,7 @@
     <message>
         <location filename="../widgets/url_dialog.cpp" line="46"/>
         <source>Please enter the URL:</source>
-        <translation>Anna www-osoite:</translation>
+        <translation>Syötä URL:</translation>
     </message>
 </context>
 <context>
@@ -264,12 +264,12 @@
     <message>
         <location filename="../common/actions.cpp" line="110"/>
         <source>Always on Top</source>
-        <translation>Aina ylhäällä</translation>
+        <translation>Aina päällimmäisenä</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="284"/>
         <source>Film info</source>
-        <translation>Filmin tiedot</translation>
+        <translation>Tiedoston info</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="82"/>
@@ -301,7 +301,7 @@
     <message>
         <location filename="../common/actions.cpp" line="109"/>
         <source>Mini Mode</source>
-        <translation>Mini-tila</translation>
+        <translation>Minitila</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="115"/>
@@ -316,27 +316,27 @@
     <message>
         <location filename="../common/actions.cpp" line="119"/>
         <source>Shuffle Play</source>
-        <translation>Sekoitta soittojärjestys</translation>
+        <translation>Sekoita soittojärjestys</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="120"/>
         <source>Single Play</source>
-        <translation>Soita yksi</translation>
+        <translation>Toista yksi</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="121"/>
         <source>Single Loop</source>
-        <translation>Silmukka</translation>
+        <translation>Yhden jatkuva toisto</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="122"/>
         <source>List Loop</source>
-        <translation>Musiikkilistan silmukka</translation>
+        <translation>Listan jatkuva toisto</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="129"/>
         <source>Frame</source>
-        <translation>Kehystä</translation>
+        <translation>Kuvasuhde</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="132"/>
@@ -356,12 +356,12 @@
     <message>
         <location filename="../common/actions.cpp" line="144"/>
         <source>Next frame</source>
-        <translation>Seuraava kehys</translation>
+        <translation>Seuraava kuvaruutu</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="145"/>
         <source>Previous frame</source>
-        <translation>Edellinen kappale</translation>
+        <translation>Edellinen kuvaruutu</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="152"/>
@@ -391,7 +391,7 @@
     <message>
         <location filename="../common/actions.cpp" line="166"/>
         <source>Track</source>
-        <translation>Kappale</translation>
+        <translation>Ääniraita</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="176"/>
@@ -426,12 +426,12 @@
     <message>
         <location filename="../common/actions.cpp" line="258"/>
         <source>Screenshot</source>
-        <translation>Ruudunkaappaus</translation>
+        <translation>Kuvakaappaus</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="259"/>
         <source>Film Screenshot</source>
-        <translation>Filmin kuvankaappaus</translation>
+        <translation>Filmin kuvakaappaus</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="260"/>
@@ -446,7 +446,7 @@
     <message>
         <location filename="../common/actions.cpp" line="268"/>
         <source>Film Info</source>
-        <translation>Filmin tiedot</translation>
+        <translation>Tiedoston info</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="282"/>
@@ -488,7 +488,7 @@
         <location filename="../common/mainwindow.cpp" line="720"/>
         <location filename="../common/mainwindow.cpp" line="1821"/>
         <source>Load successfully</source>
-        <translation>Ladattu onnistuneesti</translation>
+        <translation>Lataus onnistui</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="720"/>
@@ -535,7 +535,7 @@
         <location filename="../common/mainwindow.cpp" line="1709"/>
         <location filename="../common/mainwindow.cpp" line="1716"/>
         <source>Volume: %1%</source>
-        <translation>Volyymi: %1%</translation>
+        <translation>Äänitaso: %1%</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1781"/>
@@ -570,12 +570,12 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="1880"/>
         <source>View</source>
-        <translation>Katsele</translation>
+        <translation>Näytä</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1891"/>
         <source>Movie Screenshot</source>
-        <translation>Elokuvan ruudunkaappaus</translation>
+        <translation>Elokuvan kuvakaappaus</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1892"/>
@@ -633,7 +633,7 @@
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="119"/>
         <source>Resolution:</source>
-        <translation>Tarkkuus:</translation>
+        <translation>Resoluutio:</translation>
     </message>
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="120"/>

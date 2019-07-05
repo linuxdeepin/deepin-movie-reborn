@@ -15,7 +15,7 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="116"/>
         <source>Invalid folder</source>
-        <translation>Klasör geçersiz</translation>
+        <translation>Geçersiz klasör</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="130"/>
@@ -245,7 +245,7 @@
     <message>
         <location filename="../widgets/url_dialog.cpp" line="46"/>
         <source>Please enter the URL:</source>
-        <translation>Lütfen adresi yazın:</translation>
+        <translation>Lütfen adresi yazınız:</translation>
     </message>
 </context>
 <context>
@@ -406,7 +406,7 @@
     <message>
         <location filename="../common/actions.cpp" line="178"/>
         <source>Online Search</source>
-        <translation>Çevrimiçi Arama</translation>
+        <translation>Çevrimiçi Ara</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="182"/>
@@ -499,7 +499,7 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="1424"/>
         <source>No device found</source>
-        <translation>Herhangi bir aygıt bulunamadı</translation>
+        <translation>Aygıt bulunamadı</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1442"/>
@@ -657,7 +657,7 @@
         <location filename="../backends/mpv/mpv_proxy.cpp" line="1034"/>
         <location filename="../backends/mpv/mpv_proxy.cpp" line="1052"/>
         <source>[internal]</source>
-        <translation>[iç]</translation>
+        <translation>[dahili]</translation>
     </message>
 </context>
 <context>

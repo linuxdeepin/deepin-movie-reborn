@@ -5,67 +5,67 @@
         <location filename="../main.cpp" line="88"/>
         <location filename="../main.cpp" line="120"/>
         <source>Deepin Movie</source>
-        <translation>Deepin Movie </translation>
+        <translation>Deepin 동영상 </translation>
     </message>
     <message>
         <location filename="../main.cpp" line="89"/>
         <source>Deepin Movie is a well-designed and full-featured video player with simple borderless design. It supports local and streaming media play with multiple video formats.</source>
-        <translation>Deepin Movie는 경계 없는 간단한 디자인을 자랑하는 최고의 비디오 플레이어입니다. 본 플레이어는 다양한 비디오 포맷의 로컬 및 스트리밍 미디어 플레이를 지원합니다.</translation>
+        <translation>Deepin 동영상은 단순한 테두리 없는 디자인으로 디자인도 잘 되어 있고, 모든 기능을 갖춘 비디오 플레이어입니다. 여러 비디오 형식으로 로컬 및 스트리밍 미디어 재생을 지원합니다.</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="116"/>
         <source>Invalid folder</source>
-        <translation type="unfinished"/>
+        <translation>잘못된 폴더</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="130"/>
         <source>Open folder</source>
-        <translation type="unfinished"/>
+        <translation>폴더 열기</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="121"/>
         <source>You don&apos;t have permission to operate this folder</source>
-        <translation type="unfinished"/>
+        <translation>이 폴더를 조작할 수 있는 권한이 없습니다</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="5"/>
         <source>Auto add similar files to play</source>
-        <translation type="unfinished"/>
+        <translation>재생할 유사한 파일 자동 추가</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="6"/>
         <source>Clear playlist when exit</source>
-        <translation type="unfinished"/>
+        <translation>종료시 재생 목록 지우기</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="7"/>
         <source>Show video preview on mouseover</source>
-        <translation type="unfinished"/>
+        <translation>마우스 오버시 비디오 미리보기 표시</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="8"/>
         <source>Open a new player for each file played</source>
-        <translation type="unfinished"/>
+        <translation>재생되는 각 파일에 대해 새 플레이어 열기</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="9"/>
         <source>Pause when minimized</source>
-        <translation>최소화됐을 때 일시정지</translation>
+        <translation>최소화된 경우 일시 중지</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="10"/>
         <source>Remember playback position</source>
-        <translation type="unfinished"/>
+        <translation>재생 위치 기억</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="11"/>
         <source>Path</source>
-        <translation type="unfinished"/>
+        <translation>경로</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="12"/>
         <source>Basic</source>
-        <translation type="unfinished"/>
+        <translation>기본</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="13"/>
@@ -102,17 +102,17 @@
         <location filename="../common/settings_translation.cpp" line="20"/>
         <location filename="../common/settings_translation.cpp" line="21"/>
         <source>Subtitle</source>
-        <translation type="unfinished"/>
+        <translation>자막</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="22"/>
         <source>Font Style</source>
-        <translation type="unfinished"/>
+        <translation>글꼴 스타일</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="23"/>
         <source>Restore Defaults</source>
-        <translation type="unfinished"/>
+        <translation>기본값 복원</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="24"/>
@@ -142,17 +142,17 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="29"/>
         <source>Next frame</source>
-        <translation type="unfinished"/>
+        <translation>다음 프레임</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="30"/>
         <source>Previous frame</source>
-        <translation type="unfinished"/>
+        <translation>이전 프레임</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="31"/>
         <source>Volume down</source>
-        <translation>볼륨 다운</translation>
+        <translation>볼륨 낮추기</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="32"/>
@@ -162,12 +162,12 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="33"/>
         <source>Speed up</source>
-        <translation type="unfinished"/>
+        <translation>속도 올리기</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="34"/>
         <source>Speed down</source>
-        <translation type="unfinished"/>
+        <translation>속도 낮추기</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="35"/>
@@ -187,7 +187,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="38"/>
         <source>Reset speed</source>
-        <translation type="unfinished"/>
+        <translation>속도 재설정</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="39"/>
@@ -202,32 +202,32 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="41"/>
         <source>Burst screenshot</source>
-        <translation>스크린 숏 나타내기 </translation>
+        <translation>버스트 스크린샷</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="42"/>
         <source>Film screenshot</source>
-        <translation type="unfinished"/>
+        <translation>필름 스크린샷</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="43"/>
         <source>0.5s backward</source>
-        <translation type="unfinished"/>
+        <translation>0.5초 뒤로</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="44"/>
         <source>0.5s forward</source>
-        <translation type="unfinished"/>
+        <translation>0.5초 앞으로</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="45"/>
         <source>Font</source>
-        <translation>폰트</translation>
+        <translation>글꼴</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="46"/>
         <source>Font Size</source>
-        <translation type="unfinished"/>
+        <translation>글꼴 크기:</translation>
     </message>
 </context>
 <context>
@@ -245,7 +245,7 @@
     <message>
         <location filename="../widgets/url_dialog.cpp" line="46"/>
         <source>Please enter the URL:</source>
-        <translation type="unfinished"/>
+        <translation>URL을 입력해 주세요.</translation>
     </message>
 </context>
 <context>
@@ -259,17 +259,17 @@
     <message>
         <location filename="../common/actions.cpp" line="108"/>
         <source>Fullscreen</source>
-        <translation>전체 화면</translation>
+        <translation>전체화면</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="110"/>
         <source>Always on Top</source>
-        <translation type="unfinished"/>
+        <translation>항상 위에</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="284"/>
         <source>Film info</source>
-        <translation type="unfinished"/>
+        <translation>필름 정보</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="82"/>
@@ -281,12 +281,12 @@
         <location filename="../common/actions.cpp" line="83"/>
         <location filename="../common/actions.cpp" line="103"/>
         <source>Open folder</source>
-        <translation type="unfinished"/>
+        <translation>폴더 열기</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="85"/>
         <source>Light theme</source>
-        <translation type="unfinished"/>
+        <translation>밝은 테마</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="104"/>
@@ -296,7 +296,7 @@
     <message>
         <location filename="../common/actions.cpp" line="105"/>
         <source>Open CD/DVD</source>
-        <translation type="unfinished"/>
+        <translation>CD/DVD 열기</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="109"/>
@@ -306,32 +306,32 @@
     <message>
         <location filename="../common/actions.cpp" line="115"/>
         <source>Play Mode</source>
-        <translation type="unfinished"/>
+        <translation>재생 모드</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="118"/>
         <source>Order Play</source>
-        <translation type="unfinished"/>
+        <translation>재생 명령</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="119"/>
         <source>Shuffle Play</source>
-        <translation type="unfinished"/>
+        <translation>셔플 재생</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="120"/>
         <source>Single Play</source>
-        <translation type="unfinished"/>
+        <translation>한곡 재생</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="121"/>
         <source>Single Loop</source>
-        <translation type="unfinished"/>
+        <translation>한곡 반복</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="122"/>
         <source>List Loop</source>
-        <translation type="unfinished"/>
+        <translation>목록 반복</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="129"/>
@@ -341,32 +341,32 @@
     <message>
         <location filename="../common/actions.cpp" line="132"/>
         <source>Default</source>
-        <translation>ㄷㅣ폴트.</translation>
+        <translation>기본값</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="140"/>
         <source>Clockwise</source>
-        <translation type="unfinished"/>
+        <translation>시계 방향으로</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="141"/>
         <source>Counterclockwise</source>
-        <translation type="unfinished"/>
+        <translation>반시계 방향으로</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="144"/>
         <source>Next frame</source>
-        <translation type="unfinished"/>
+        <translation>다음 프레임</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="145"/>
         <source>Previous frame</source>
-        <translation type="unfinished"/>
+        <translation>이전 프레임</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="152"/>
         <source>Sound</source>
-        <translation>소리</translation>
+        <translation>사운드</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="155"/>
@@ -381,12 +381,12 @@
     <message>
         <location filename="../common/actions.cpp" line="159"/>
         <source>Left channel</source>
-        <translation type="unfinished"/>
+        <translation>왼쪽 채널</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="160"/>
         <source>Right channel</source>
-        <translation type="unfinished"/>
+        <translation>오른쪽 채널</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="166"/>
@@ -396,17 +396,17 @@
     <message>
         <location filename="../common/actions.cpp" line="176"/>
         <source>Subtitle</source>
-        <translation type="unfinished"/>
+        <translation>자막</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="177"/>
         <source>Load</source>
-        <translation type="unfinished"/>
+        <translation>불러오기</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="178"/>
         <source>Online Search</source>
-        <translation type="unfinished"/>
+        <translation>온라인 검색</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="182"/>
@@ -416,12 +416,12 @@
     <message>
         <location filename="../common/actions.cpp" line="186"/>
         <source>Hide</source>
-        <translation type="unfinished"/>
+        <translation>숨기기</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="190"/>
         <source>Encodings</source>
-        <translation type="unfinished"/>
+        <translation>인코딩</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="258"/>
@@ -431,12 +431,12 @@
     <message>
         <location filename="../common/actions.cpp" line="259"/>
         <source>Film Screenshot</source>
-        <translation type="unfinished"/>
+        <translation>필름 스크린샷</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="260"/>
         <source>Burst Shooting</source>
-        <translation type="unfinished"/>
+        <translation>버스트 슈팅</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="267"/>
@@ -446,7 +446,7 @@
     <message>
         <location filename="../common/actions.cpp" line="268"/>
         <source>Film Info</source>
-        <translation type="unfinished"/>
+        <translation>필름 정보</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="282"/>
@@ -456,7 +456,7 @@
     <message>
         <location filename="../common/actions.cpp" line="283"/>
         <source>Display in file manager</source>
-        <translation type="unfinished"/>
+        <translation>파일 관리자에 표시</translation>
     </message>
 </context>
 <context>
@@ -464,17 +464,17 @@
     <message>
         <location filename="../widgets/burst_screenshots_dialog.cpp" line="88"/>
         <source>Duration: %1</source>
-        <translation type="unfinished"/>
+        <translation>재생 시간: %1</translation>
     </message>
     <message>
         <location filename="../widgets/burst_screenshots_dialog.cpp" line="94"/>
         <source>Resolution: %1</source>
-        <translation type="unfinished"/>
+        <translation>해상도: %1</translation>
     </message>
     <message>
         <location filename="../widgets/burst_screenshots_dialog.cpp" line="100"/>
         <source>Size: %1</source>
-        <translation type="unfinished"/>
+        <translation>크기: %1</translation>
     </message>
     <message>
         <location filename="../widgets/burst_screenshots_dialog.cpp" line="123"/>
@@ -488,28 +488,28 @@
         <location filename="../common/mainwindow.cpp" line="720"/>
         <location filename="../common/mainwindow.cpp" line="1821"/>
         <source>Load successfully</source>
-        <translation type="unfinished"/>
+        <translation>불러오기 성공</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="720"/>
         <location filename="../common/mainwindow.cpp" line="1821"/>
         <source>Load failed</source>
-        <translation type="unfinished"/>
+        <translation>불러오기 실패</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1424"/>
         <source>No device found</source>
-        <translation type="unfinished"/>
+        <translation>장치를 찾을 수 없음</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1442"/>
         <source>Parse Failed</source>
-        <translation type="unfinished"/>
+        <translation>구문분석 실패</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1449"/>
         <source>Open folder</source>
-        <translation type="unfinished"/>
+        <translation>폴더 열기</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1464"/>
@@ -522,12 +522,12 @@
         <location filename="../common/mainwindow.cpp" line="1466"/>
         <location filename="../common/mainwindow.cpp" line="1483"/>
         <source>All videos (%1)</source>
-        <translation type="unfinished"/>
+        <translation>모든 동영상 (%1)</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1684"/>
         <source>Muted</source>
-        <translation>조용히 상태</translation>
+        <translation>음소거됨</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1687"/>
@@ -535,37 +535,37 @@
         <location filename="../common/mainwindow.cpp" line="1709"/>
         <location filename="../common/mainwindow.cpp" line="1716"/>
         <source>Volume: %1%</source>
-        <translation type="unfinished"/>
+        <translation>볼륨: %1%</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1781"/>
         <location filename="../common/mainwindow.cpp" line="1789"/>
         <source>Subtitle %1: %2s</source>
-        <translation type="unfinished"/>
+        <translation>자막 %1: %2초</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1782"/>
         <location filename="../common/mainwindow.cpp" line="1790"/>
         <source>delayed</source>
-        <translation type="unfinished"/>
+        <translation>지연됨</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1782"/>
         <location filename="../common/mainwindow.cpp" line="1790"/>
         <source>advanced</source>
-        <translation type="unfinished"/>
+        <translation>고급</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1797"/>
         <location filename="../common/mainwindow.cpp" line="1804"/>
         <location filename="../common/mainwindow.cpp" line="1811"/>
         <source>Speed: %1x</source>
-        <translation type="unfinished"/>
+        <translation>속도: %1x</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1818"/>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</source>
-        <translation type="unfinished"/>
+        <translation>자막 (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1880"/>
@@ -575,29 +575,29 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="1891"/>
         <source>Movie Screenshot</source>
-        <translation>영화 스크린 숏 </translation>
+        <translation>동영상 스크린샷</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1892"/>
         <source>Saved to</source>
-        <translation type="unfinished"/>
+        <translation>저장됨:</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1906"/>
         <location filename="../common/mainwindow.cpp" line="1989"/>
         <source>The screenshot is saved</source>
-        <translation type="unfinished"/>
+        <translation>스크린샷이 저장 되었습니다</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1906"/>
         <source>Failed to save the screenshot</source>
-        <translation type="unfinished"/>
+        <translation>스크린샷을 저장하지 못했습니다</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2076"/>
         <location filename="../common/mainwindow.cpp" line="2782"/>
         <source>Invalid file: %1</source>
-        <translation type="unfinished"/>
+        <translation>잘못된 파일: %1</translation>
     </message>
 </context>
 <context>
@@ -605,22 +605,22 @@
     <message>
         <location filename="../libdmr/playlist_model.h" line="67"/>
         <source>%1G</source>
-        <translation type="unfinished"/>
+        <translation>%1G</translation>
     </message>
     <message>
         <location filename="../libdmr/playlist_model.h" line="69"/>
         <source>%1M</source>
-        <translation type="unfinished"/>
+        <translation>%1M</translation>
     </message>
     <message>
         <location filename="../libdmr/playlist_model.h" line="71"/>
         <source>%1K</source>
-        <translation type="unfinished"/>
+        <translation>%1K</translation>
     </message>
     <message>
         <location filename="../libdmr/playlist_model.h" line="73"/>
         <source>%1</source>
-        <translation type="unfinished"/>
+        <translation>%1</translation>
     </message>
 </context>
 <context>
@@ -628,27 +628,27 @@
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="118"/>
         <source>File Type:</source>
-        <translation type="unfinished"/>
+        <translation>파일 유형:</translation>
     </message>
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="119"/>
         <source>Resolution:</source>
-        <translation type="unfinished"/>
+        <translation>해상도:</translation>
     </message>
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="120"/>
         <source>File Size:</source>
-        <translation type="unfinished"/>
+        <translation>파일 크기:</translation>
     </message>
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="121"/>
         <source>Duration:</source>
-        <translation type="unfinished"/>
+        <translation>재생 시간:</translation>
     </message>
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="126"/>
         <source>File Path:</source>
-        <translation type="unfinished"/>
+        <translation>파일 경로:</translation>
     </message>
 </context>
 <context>
@@ -657,7 +657,7 @@
         <location filename="../backends/mpv/mpv_proxy.cpp" line="1034"/>
         <location filename="../backends/mpv/mpv_proxy.cpp" line="1052"/>
         <source>[internal]</source>
-        <translation type="unfinished"/>
+        <translation>[내부]</translation>
     </message>
 </context>
 <context>
@@ -667,7 +667,7 @@
         <location filename="../widgets/playlist_widget.cpp" line="227"/>
         <location filename="../widgets/playlist_widget.cpp" line="402"/>
         <source>File does not exist</source>
-        <translation type="unfinished"/>
+        <translation>파일이 없습니다</translation>
     </message>
 </context>
 <context>
@@ -675,12 +675,12 @@
     <message>
         <location filename="../common/dmr_settings.cpp" line="155"/>
         <source>%1/DMovie%2.jpg</source>
-        <translation type="unfinished"/>
+        <translation>%1/DMovie%2.jpg</translation>
     </message>
     <message>
         <location filename="../common/dmr_settings.cpp" line="161"/>
         <source>%1/DMovie%2(%3).jpg</source>
-        <translation type="unfinished"/>
+        <translation>%1/DMovie%2(%3).jpg</translation>
     </message>
 </context>
 <context>
@@ -694,7 +694,7 @@
         <location filename="../widgets/toolbox_proxy.cpp" line="685"/>
         <location filename="../widgets/toolbox_proxy.cpp" line="696"/>
         <source>Previous</source>
-        <translation>ㅇㅣㅈㅓㄴ</translation>
+        <translation>이전</translation>
     </message>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="686"/>
@@ -712,30 +712,30 @@
         <location filename="../widgets/toolbox_proxy.cpp" line="688"/>
         <location filename="../widgets/toolbox_proxy.cpp" line="697"/>
         <source>Playlist</source>
-        <translation>재생목록</translation>
+        <translation>재생 목록</translation>
     </message>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="689"/>
         <location filename="../widgets/toolbox_proxy.cpp" line="697"/>
         <location filename="../widgets/toolbox_proxy.cpp" line="876"/>
         <source>Fullscreen</source>
-        <translation>전체 화면</translation>
+        <translation>전체화면</translation>
     </message>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="683"/>
         <location filename="../widgets/toolbox_proxy.cpp" line="696"/>
         <source>Play/Pause</source>
-        <translation>재생/일시정지</translation>
+        <translation>재생 / 일시정지</translation>
     </message>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="873"/>
         <source>Exit fullscreen</source>
-        <translation>전체화면에서 나가기 </translation>
+        <translation>전체화면 종료</translation>
     </message>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="886"/>
         <source>Pause</source>
-        <translation>일시 정지</translation>
+        <translation>일시정지</translation>
     </message>
 </context>
 </TS>

@@ -286,7 +286,7 @@
     <message>
         <location filename="../common/actions.cpp" line="85"/>
         <source>Light theme</source>
-        <translation type="unfinished"/>
+        <translation>Светла тема</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="104"/>
@@ -441,7 +441,7 @@
     <message>
         <location filename="../common/actions.cpp" line="267"/>
         <source>Playlist</source>
-        <translation>Списък</translation>
+        <translation>Плейлист</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="268"/>
@@ -464,17 +464,17 @@
     <message>
         <location filename="../widgets/burst_screenshots_dialog.cpp" line="88"/>
         <source>Duration: %1</source>
-        <translation type="unfinished"/>
+        <translation>Продължителност: %1</translation>
     </message>
     <message>
         <location filename="../widgets/burst_screenshots_dialog.cpp" line="94"/>
         <source>Resolution: %1</source>
-        <translation type="unfinished"/>
+        <translation>Резолюция: %1</translation>
     </message>
     <message>
         <location filename="../widgets/burst_screenshots_dialog.cpp" line="100"/>
         <source>Size: %1</source>
-        <translation type="unfinished"/>
+        <translation>Размер: %1</translation>
     </message>
     <message>
         <location filename="../widgets/burst_screenshots_dialog.cpp" line="123"/>
@@ -553,7 +553,7 @@
         <location filename="../common/mainwindow.cpp" line="1782"/>
         <location filename="../common/mainwindow.cpp" line="1790"/>
         <source>advanced</source>
-        <translation>разпирен</translation>
+        <translation>разширен</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1797"/>
@@ -565,7 +565,7 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="1818"/>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</source>
-        <translation type="unfinished"/>
+        <translation>Субтитри (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1880"/>
@@ -591,7 +591,7 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="1906"/>
         <source>Failed to save the screenshot</source>
-        <translation type="unfinished"/>
+        <translation>Не може да се запази снимка на кадъра</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2076"/>

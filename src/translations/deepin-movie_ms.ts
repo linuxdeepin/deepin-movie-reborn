@@ -286,7 +286,7 @@
     <message>
         <location filename="../common/actions.cpp" line="85"/>
         <source>Light theme</source>
-        <translation type="unfinished"/>
+        <translation>Tema cerah</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="104"/>
@@ -464,17 +464,17 @@
     <message>
         <location filename="../widgets/burst_screenshots_dialog.cpp" line="88"/>
         <source>Duration: %1</source>
-        <translation type="unfinished"/>
+        <translation>Tempoh: %1</translation>
     </message>
     <message>
         <location filename="../widgets/burst_screenshots_dialog.cpp" line="94"/>
         <source>Resolution: %1</source>
-        <translation type="unfinished"/>
+        <translation>Resolusi: %1</translation>
     </message>
     <message>
         <location filename="../widgets/burst_screenshots_dialog.cpp" line="100"/>
         <source>Size: %1</source>
-        <translation type="unfinished"/>
+        <translation>Saiz: %1</translation>
     </message>
     <message>
         <location filename="../widgets/burst_screenshots_dialog.cpp" line="123"/>
@@ -565,7 +565,7 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="1818"/>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</source>
-        <translation type="unfinished"/>
+        <translation>Sarikata (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1880"/>
@@ -591,7 +591,7 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="1906"/>
         <source>Failed to save the screenshot</source>
-        <translation type="unfinished"/>
+        <translation>Gagal menyimpan cekupan skrin</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2076"/>
@@ -605,22 +605,22 @@
     <message>
         <location filename="../libdmr/playlist_model.h" line="67"/>
         <source>%1G</source>
-        <translation type="unfinished"/>
+        <translation>%1G</translation>
     </message>
     <message>
         <location filename="../libdmr/playlist_model.h" line="69"/>
         <source>%1M</source>
-        <translation type="unfinished"/>
+        <translation>%1M</translation>
     </message>
     <message>
         <location filename="../libdmr/playlist_model.h" line="71"/>
         <source>%1K</source>
-        <translation type="unfinished"/>
+        <translation>%1K</translation>
     </message>
     <message>
         <location filename="../libdmr/playlist_model.h" line="73"/>
         <source>%1</source>
-        <translation type="unfinished"/>
+        <translation>%1</translation>
     </message>
 </context>
 <context>

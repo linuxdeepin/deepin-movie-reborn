@@ -5,12 +5,12 @@
         <location filename="../main.cpp" line="88"/>
         <location filename="../main.cpp" line="120"/>
         <source>Deepin Movie</source>
-        <translation>Deepin Film</translation>
+        <translation>Deepin Movie</translation>
     </message>
     <message>
         <location filename="../main.cpp" line="89"/>
         <source>Deepin Movie is a well-designed and full-featured video player with simple borderless design. It supports local and streaming media play with multiple video formats.</source>
-        <translation>Deepin film est un lecteur vidéo visuellement agréable et très complet. Il prend en charge la lecture ainsi que le « streaming » de fichiers en différents formats.</translation>
+        <translation>Deepin Movie est un lecteur vidéo visuellement agréable et très complet. Il prend en charge la lecture ainsi que le « streaming » de fichiers en différents formats.</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="116"/>
@@ -20,7 +20,7 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="130"/>
         <source>Open folder</source>
-        <translation>Ouvrir le dossier</translation>
+        <translation>Ouvrir un dossier</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="121"/>
@@ -152,7 +152,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="31"/>
         <source>Volume down</source>
-        <translation>Baisser le volume</translation>
+        <translation>Diminuer le volume</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="32"/>
@@ -281,12 +281,12 @@
         <location filename="../common/actions.cpp" line="83"/>
         <location filename="../common/actions.cpp" line="103"/>
         <source>Open folder</source>
-        <translation>Ouvrir le dossier</translation>
+        <translation>Ouvrir un dossier</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="85"/>
         <source>Light theme</source>
-        <translation>Thème Clair</translation>
+        <translation>Thème clair</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="104"/>
@@ -509,7 +509,7 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="1449"/>
         <source>Open folder</source>
-        <translation>Ouvrir le dossier</translation>
+        <translation>Ouvrir un dossier</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1464"/>
@@ -565,7 +565,7 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="1818"/>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</source>
-        <translation>Sous-titre (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</translation>
+        <translation>Sous-titres (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1880"/>
