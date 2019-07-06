@@ -60,7 +60,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="11"/>
         <source>Path</source>
-        <translation type="unfinished"/>
+        <translation>パス</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="12"/>

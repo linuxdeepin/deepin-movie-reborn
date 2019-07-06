@@ -20,7 +20,7 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="130"/>
         <source>Open folder</source>
-        <translation type="unfinished"/>
+        <translation>Obre una carpeta</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="121"/>
@@ -281,12 +281,12 @@
         <location filename="../common/actions.cpp" line="83"/>
         <location filename="../common/actions.cpp" line="103"/>
         <source>Open folder</source>
-        <translation type="unfinished"/>
+        <translation>Obre una carpeta</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="85"/>
         <source>Light theme</source>
-        <translation type="unfinished"/>
+        <translation>Tema clar</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="104"/>
@@ -464,17 +464,17 @@
     <message>
         <location filename="../widgets/burst_screenshots_dialog.cpp" line="88"/>
         <source>Duration: %1</source>
-        <translation type="unfinished"/>
+        <translation>Durada: %1</translation>
     </message>
     <message>
         <location filename="../widgets/burst_screenshots_dialog.cpp" line="94"/>
         <source>Resolution: %1</source>
-        <translation type="unfinished"/>
+        <translation>Resolució: %1</translation>
     </message>
     <message>
         <location filename="../widgets/burst_screenshots_dialog.cpp" line="100"/>
         <source>Size: %1</source>
-        <translation type="unfinished"/>
+        <translation>Mida: %1</translation>
     </message>
     <message>
         <location filename="../widgets/burst_screenshots_dialog.cpp" line="123"/>
@@ -509,7 +509,7 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="1449"/>
         <source>Open folder</source>
-        <translation type="unfinished"/>
+        <translation>Obre una carpeta</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1464"/>
@@ -591,7 +591,7 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="1906"/>
         <source>Failed to save the screenshot</source>
-        <translation type="unfinished"/>
+        <translation>Ha fallat desar la captura de pantalla.</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2076"/>
@@ -605,22 +605,22 @@
     <message>
         <location filename="../libdmr/playlist_model.h" line="67"/>
         <source>%1G</source>
-        <translation type="unfinished"/>
+        <translation>%1 G</translation>
     </message>
     <message>
         <location filename="../libdmr/playlist_model.h" line="69"/>
         <source>%1M</source>
-        <translation type="unfinished"/>
+        <translation>%1 M</translation>
     </message>
     <message>
         <location filename="../libdmr/playlist_model.h" line="71"/>
         <source>%1K</source>
-        <translation type="unfinished"/>
+        <translation>%1 K</translation>
     </message>
     <message>
         <location filename="../libdmr/playlist_model.h" line="73"/>
         <source>%1</source>
-        <translation type="unfinished"/>
+        <translation>%1</translation>
     </message>
 </context>
 <context>

@@ -10,47 +10,47 @@
     <message>
         <location filename="../main.cpp" line="89"/>
         <source>Deepin Movie is a well-designed and full-featured video player with simple borderless design. It supports local and streaming media play with multiple video formats.</source>
-        <translation type="unfinished"/>
+        <translation>دیپین مووی  یک پخش کننده ویدئویی با طراحی خوب و کامل با طراحی ساده و بدون محدودیت است. این برنامه از پخش رسانه های محلی و استریم با فرمت های مختلف ویدیویی پشتیبانی می کند.</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="116"/>
         <source>Invalid folder</source>
-        <translation type="unfinished"/>
+        <translation>پوشه نامعتبر</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="130"/>
         <source>Open folder</source>
-        <translation type="unfinished"/>
+        <translation>باز کردن پوشه</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="121"/>
         <source>You don&apos;t have permission to operate this folder</source>
-        <translation type="unfinished"/>
+        <translation>شما مجوز کار با  این پوشه را ندارید</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="5"/>
         <source>Auto add similar files to play</source>
-        <translation type="unfinished"/>
+        <translation>به صورت خودکار فایل های مشابه را برای اجرا اضافه کن</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="6"/>
         <source>Clear playlist when exit</source>
-        <translation type="unfinished"/>
+        <translation>پاک کردن لیست پخش هنگام خروج</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="7"/>
         <source>Show video preview on mouseover</source>
-        <translation type="unfinished"/>
+        <translation>نمایش پیش نمایش ویدیو با اشاره ماوس</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="8"/>
         <source>Open a new player for each file played</source>
-        <translation type="unfinished"/>
+        <translation>باز کردن یک پلیر جدید برای هر فایل اجرا شده</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="9"/>
         <source>Pause when minimized</source>
-        <translation type="unfinished"/>
+        <translation>توقف در هنگام کمینه</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="10"/>
@@ -60,7 +60,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="11"/>
         <source>Path</source>
-        <translation type="unfinished"/>
+        <translation>مسیر</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="12"/>
@@ -86,28 +86,28 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="16"/>
         <source>File</source>
-        <translation type="unfinished"/>
+        <translation>فایل</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="17"/>
         <source>Frame/Sound</source>
-        <translation type="unfinished"/>
+        <translation>فریم/صدا</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="18"/>
         <source>Playback</source>
-        <translation type="unfinished"/>
+        <translation>بازنواخت</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="20"/>
         <location filename="../common/settings_translation.cpp" line="21"/>
         <source>Subtitle</source>
-        <translation type="unfinished"/>
+        <translation>زیرنویس</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="22"/>
         <source>Font Style</source>
-        <translation type="unfinished"/>
+        <translation>سبک فونت</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="23"/>
@@ -117,22 +117,22 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="24"/>
         <source>Open file</source>
-        <translation type="unfinished"/>
+        <translation>باز کردن فایل</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="25"/>
         <source>Open next</source>
-        <translation type="unfinished"/>
+        <translation>باز کردن بعدی</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="26"/>
         <source>Open previous</source>
-        <translation type="unfinished"/>
+        <translation>باز کردن قبلی</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="27"/>
         <source>Mini mode</source>
-        <translation type="unfinished"/>
+        <translation>حالت کوچک</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="28"/>
@@ -142,12 +142,12 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="29"/>
         <source>Next frame</source>
-        <translation type="unfinished"/>
+        <translation>فریم بعدی</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="30"/>
         <source>Previous frame</source>
-        <translation type="unfinished"/>
+        <translation>فریم قبلی</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="31"/>
@@ -162,12 +162,12 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="33"/>
         <source>Speed up</source>
-        <translation type="unfinished"/>
+        <translation>افزایش سرعت</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="34"/>
         <source>Speed down</source>
-        <translation type="unfinished"/>
+        <translation>کاهش سرعت</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="35"/>
@@ -177,7 +177,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="36"/>
         <source>Pause/Play</source>
-        <translation type="unfinished"/>
+        <translation>وقفه/اجرا</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="37"/>
@@ -187,37 +187,37 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="38"/>
         <source>Reset speed</source>
-        <translation type="unfinished"/>
+        <translation>برگرداندن  سرعت</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="39"/>
         <source>Rewind</source>
-        <translation type="unfinished"/>
+        <translation>به عقب</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="40"/>
         <source>Forward</source>
-        <translation type="unfinished"/>
+        <translation>به جلو</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="41"/>
         <source>Burst screenshot</source>
-        <translation type="unfinished"/>
+        <translation>عکس گرفتن</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="42"/>
         <source>Film screenshot</source>
-        <translation type="unfinished"/>
+        <translation>عکس گرفتن از فیلم</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="43"/>
         <source>0.5s backward</source>
-        <translation type="unfinished"/>
+        <translation>0.5s رو به عقب </translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="44"/>
         <source>0.5s forward</source>
-        <translation type="unfinished"/>
+        <translation>0.5s رو به جلو </translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="45"/>
@@ -227,7 +227,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="46"/>
         <source>Font Size</source>
-        <translation type="unfinished"/>
+        <translation>سایز فونت</translation>
     </message>
 </context>
 <context>
@@ -245,7 +245,7 @@
     <message>
         <location filename="../widgets/url_dialog.cpp" line="46"/>
         <source>Please enter the URL:</source>
-        <translation type="unfinished"/>
+        <translation>لطفا URL را وارد نمایید</translation>
     </message>
 </context>
 <context>
@@ -264,44 +264,44 @@
     <message>
         <location filename="../common/actions.cpp" line="110"/>
         <source>Always on Top</source>
-        <translation type="unfinished"/>
+        <translation>همیشه رو باشد</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="284"/>
         <source>Film info</source>
-        <translation type="unfinished"/>
+        <translation>دریاره فیلم</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="82"/>
         <location filename="../common/actions.cpp" line="102"/>
         <source>Open file</source>
-        <translation type="unfinished"/>
+        <translation>باز کردن فایل</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="83"/>
         <location filename="../common/actions.cpp" line="103"/>
         <source>Open folder</source>
-        <translation type="unfinished"/>
+        <translation>باز کردن پوشه</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="85"/>
         <source>Light theme</source>
-        <translation type="unfinished"/>
+        <translation>تم روشن</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="104"/>
         <source>Open URL</source>
-        <translation type="unfinished"/>
+        <translation>باز کردن URL </translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="105"/>
         <source>Open CD/DVD</source>
-        <translation type="unfinished"/>
+        <translation>باز کردن CD/DVF</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="109"/>
         <source>Mini Mode</source>
-        <translation type="unfinished"/>
+        <translation>حالت کوچک</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="115"/>
@@ -311,17 +311,17 @@
     <message>
         <location filename="../common/actions.cpp" line="118"/>
         <source>Order Play</source>
-        <translation type="unfinished"/>
+        <translation>اجرای سفارشی</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="119"/>
         <source>Shuffle Play</source>
-        <translation type="unfinished"/>
+        <translation>اجرای درهم</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="120"/>
         <source>Single Play</source>
-        <translation type="unfinished"/>
+        <translation>اجرای تک</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="121"/>
@@ -336,7 +336,7 @@
     <message>
         <location filename="../common/actions.cpp" line="129"/>
         <source>Frame</source>
-        <translation type="unfinished"/>
+        <translation>فریم</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="132"/>
@@ -346,22 +346,22 @@
     <message>
         <location filename="../common/actions.cpp" line="140"/>
         <source>Clockwise</source>
-        <translation type="unfinished"/>
+        <translation>ساعت  گرد</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="141"/>
         <source>Counterclockwise</source>
-        <translation type="unfinished"/>
+        <translation>پاد ساعتگرد</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="144"/>
         <source>Next frame</source>
-        <translation type="unfinished"/>
+        <translation>فریم بعدی</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="145"/>
         <source>Previous frame</source>
-        <translation type="unfinished"/>
+        <translation>فریم قبلی</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="152"/>
@@ -376,37 +376,37 @@
     <message>
         <location filename="../common/actions.cpp" line="158"/>
         <source>Stereo</source>
-        <translation type="unfinished"/>
+        <translation>استریو</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="159"/>
         <source>Left channel</source>
-        <translation type="unfinished"/>
+        <translation>کانال چپ</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="160"/>
         <source>Right channel</source>
-        <translation type="unfinished"/>
+        <translation>کانال راست</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="166"/>
         <source>Track</source>
-        <translation type="unfinished"/>
+        <translation>ترک</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="176"/>
         <source>Subtitle</source>
-        <translation type="unfinished"/>
+        <translation>زیرنویس</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="177"/>
         <source>Load</source>
-        <translation type="unfinished"/>
+        <translation>بارگذاری</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="178"/>
         <source>Online Search</source>
-        <translation type="unfinished"/>
+        <translation>جستجوی آنلاین</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="182"/>
@@ -416,12 +416,12 @@
     <message>
         <location filename="../common/actions.cpp" line="186"/>
         <source>Hide</source>
-        <translation type="unfinished"/>
+        <translation>مخفی</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="190"/>
         <source>Encodings</source>
-        <translation type="unfinished"/>
+        <translation>رمزگذاری</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="258"/>
@@ -431,12 +431,12 @@
     <message>
         <location filename="../common/actions.cpp" line="259"/>
         <source>Film Screenshot</source>
-        <translation type="unfinished"/>
+        <translation>عکس از فیلم</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="260"/>
         <source>Burst Shooting</source>
-        <translation type="unfinished"/>
+        <translation>عکس متوالی</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="267"/>
@@ -446,12 +446,12 @@
     <message>
         <location filename="../common/actions.cpp" line="268"/>
         <source>Film Info</source>
-        <translation type="unfinished"/>
+        <translation>درباره فیلم</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="282"/>
         <source>Clear playlist</source>
-        <translation type="unfinished"/>
+        <translation>پاک کردن لیست اجرا</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="283"/>
@@ -464,17 +464,17 @@
     <message>
         <location filename="../widgets/burst_screenshots_dialog.cpp" line="88"/>
         <source>Duration: %1</source>
-        <translation type="unfinished"/>
+        <translation>مدت زمان 1%</translation>
     </message>
     <message>
         <location filename="../widgets/burst_screenshots_dialog.cpp" line="94"/>
         <source>Resolution: %1</source>
-        <translation type="unfinished"/>
+        <translation>وضوح 1%</translation>
     </message>
     <message>
         <location filename="../widgets/burst_screenshots_dialog.cpp" line="100"/>
         <source>Size: %1</source>
-        <translation type="unfinished"/>
+        <translation>سایز 1%</translation>
     </message>
     <message>
         <location filename="../widgets/burst_screenshots_dialog.cpp" line="123"/>
@@ -488,46 +488,46 @@
         <location filename="../common/mainwindow.cpp" line="720"/>
         <location filename="../common/mainwindow.cpp" line="1821"/>
         <source>Load successfully</source>
-        <translation type="unfinished"/>
+        <translation>با موفقیت بازگذاری شد</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="720"/>
         <location filename="../common/mainwindow.cpp" line="1821"/>
         <source>Load failed</source>
-        <translation type="unfinished"/>
+        <translation>بارگذاری ناموفق بود</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1424"/>
         <source>No device found</source>
-        <translation type="unfinished"/>
+        <translation>دستگاهی پیدا نشد</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1442"/>
         <source>Parse Failed</source>
-        <translation type="unfinished"/>
+        <translation>تجزیه شکست خورد</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1449"/>
         <source>Open folder</source>
-        <translation type="unfinished"/>
+        <translation>باز کردن پوشه</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1464"/>
         <location filename="../common/mainwindow.cpp" line="1481"/>
         <location filename="../common/mainwindow.cpp" line="1816"/>
         <source>Open file</source>
-        <translation type="unfinished"/>
+        <translation>باز کردن فایل</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1466"/>
         <location filename="../common/mainwindow.cpp" line="1483"/>
         <source>All videos (%1)</source>
-        <translation type="unfinished"/>
+        <translation>همه ویدیو ها (1%)</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1684"/>
         <source>Muted</source>
-        <translation type="unfinished"/>
+        <translation>بی صدا شده</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1687"/>
@@ -535,69 +535,69 @@
         <location filename="../common/mainwindow.cpp" line="1709"/>
         <location filename="../common/mainwindow.cpp" line="1716"/>
         <source>Volume: %1%</source>
-        <translation type="unfinished"/>
+        <translation>صدا %1%</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1781"/>
         <location filename="../common/mainwindow.cpp" line="1789"/>
         <source>Subtitle %1: %2s</source>
-        <translation type="unfinished"/>
+        <translation>زیرنویس  %1:s2%</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1782"/>
         <location filename="../common/mainwindow.cpp" line="1790"/>
         <source>delayed</source>
-        <translation type="unfinished"/>
+        <translation>تعویق افتاده</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1782"/>
         <location filename="../common/mainwindow.cpp" line="1790"/>
         <source>advanced</source>
-        <translation type="unfinished"/>
+        <translation>پیشرفته</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1797"/>
         <location filename="../common/mainwindow.cpp" line="1804"/>
         <location filename="../common/mainwindow.cpp" line="1811"/>
         <source>Speed: %1x</source>
-        <translation type="unfinished"/>
+        <translation>سرعت: x1%</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1818"/>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</source>
-        <translation type="unfinished"/>
+        <translation>زیرنویس (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1880"/>
         <source>View</source>
-        <translation type="unfinished"/>
+        <translation>نما</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1891"/>
         <source>Movie Screenshot</source>
-        <translation type="unfinished"/>
+        <translation>اسکرین شات از فیلم</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1892"/>
         <source>Saved to</source>
-        <translation type="unfinished"/>
+        <translation>ذخیره شده در</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1906"/>
         <location filename="../common/mainwindow.cpp" line="1989"/>
         <source>The screenshot is saved</source>
-        <translation type="unfinished"/>
+        <translation>اسکرین شات ذخیره شد</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1906"/>
         <source>Failed to save the screenshot</source>
-        <translation type="unfinished"/>
+        <translation>اسکرین شات نتوانست ذخیره شود</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2076"/>
         <location filename="../common/mainwindow.cpp" line="2782"/>
         <source>Invalid file: %1</source>
-        <translation type="unfinished"/>
+        <translation>فابل نامعتبر : 1%</translation>
     </message>
 </context>
 <context>
@@ -605,22 +605,22 @@
     <message>
         <location filename="../libdmr/playlist_model.h" line="67"/>
         <source>%1G</source>
-        <translation type="unfinished"/>
+        <translation>%1G</translation>
     </message>
     <message>
         <location filename="../libdmr/playlist_model.h" line="69"/>
         <source>%1M</source>
-        <translation type="unfinished"/>
+        <translation>%1M</translation>
     </message>
     <message>
         <location filename="../libdmr/playlist_model.h" line="71"/>
         <source>%1K</source>
-        <translation type="unfinished"/>
+        <translation>%1K</translation>
     </message>
     <message>
         <location filename="../libdmr/playlist_model.h" line="73"/>
         <source>%1</source>
-        <translation type="unfinished"/>
+        <translation>%1</translation>
     </message>
 </context>
 <context>
@@ -628,17 +628,17 @@
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="118"/>
         <source>File Type:</source>
-        <translation type="unfinished"/>
+        <translation>نوع فایل :</translation>
     </message>
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="119"/>
         <source>Resolution:</source>
-        <translation type="unfinished"/>
+        <translation>وضوح :</translation>
     </message>
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="120"/>
         <source>File Size:</source>
-        <translation type="unfinished"/>
+        <translation>حجم فایل : </translation>
     </message>
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="121"/>
@@ -648,7 +648,7 @@
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="126"/>
         <source>File Path:</source>
-        <translation type="unfinished"/>
+        <translation>مسیر فایل :</translation>
     </message>
 </context>
 <context>
@@ -657,7 +657,7 @@
         <location filename="../backends/mpv/mpv_proxy.cpp" line="1034"/>
         <location filename="../backends/mpv/mpv_proxy.cpp" line="1052"/>
         <source>[internal]</source>
-        <translation type="unfinished"/>
+        <translation>[داخلی]</translation>
     </message>
 </context>
 <context>
@@ -667,7 +667,7 @@
         <location filename="../widgets/playlist_widget.cpp" line="227"/>
         <location filename="../widgets/playlist_widget.cpp" line="402"/>
         <source>File does not exist</source>
-        <translation type="unfinished"/>
+        <translation>فایل وجود ندارد</translation>
     </message>
 </context>
 <context>
@@ -675,12 +675,12 @@
     <message>
         <location filename="../common/dmr_settings.cpp" line="155"/>
         <source>%1/DMovie%2.jpg</source>
-        <translation type="unfinished"/>
+        <translation>%1/DMovie%2.jpg</translation>
     </message>
     <message>
         <location filename="../common/dmr_settings.cpp" line="161"/>
         <source>%1/DMovie%2(%3).jpg</source>
-        <translation type="unfinished"/>
+        <translation>%1/DMovie%2(%3).jpg</translation>
     </message>
 </context>
 <context>
@@ -706,7 +706,7 @@
         <location filename="../widgets/toolbox_proxy.cpp" line="687"/>
         <location filename="../widgets/toolbox_proxy.cpp" line="697"/>
         <source>Subtitles</source>
-        <translation type="unfinished"/>
+        <translation>زیرنویس ها</translation>
     </message>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="688"/>
@@ -730,7 +730,7 @@
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="873"/>
         <source>Exit fullscreen</source>
-        <translation type="unfinished"/>
+        <translation>خروج از تمام صفحه</translation>
     </message>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="886"/>

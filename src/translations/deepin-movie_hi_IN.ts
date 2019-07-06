@@ -55,7 +55,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="10"/>
         <source>Remember playback position</source>
-        <translation type="unfinished"/>
+        <translation>प्लेबैक स्थिति याद रखें</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="11"/>
@@ -65,7 +65,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="12"/>
         <source>Basic</source>
-        <translation type="unfinished"/>
+        <translation>मौलिक</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="13"/>
@@ -112,7 +112,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="23"/>
         <source>Restore Defaults</source>
-        <translation type="unfinished"/>
+        <translation>डिफॉल्ट्स पुनःस्थापित करें</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="24"/>
@@ -306,7 +306,7 @@
     <message>
         <location filename="../common/actions.cpp" line="115"/>
         <source>Play Mode</source>
-        <translation type="unfinished"/>
+        <translation>प्ले मोड </translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="118"/>
@@ -326,12 +326,12 @@
     <message>
         <location filename="../common/actions.cpp" line="121"/>
         <source>Single Loop</source>
-        <translation type="unfinished"/>
+        <translation>सिंगल लूप</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="122"/>
         <source>List Loop</source>
-        <translation type="unfinished"/>
+        <translation>लिस्ट लूप</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="129"/>
@@ -456,7 +456,7 @@
     <message>
         <location filename="../common/actions.cpp" line="283"/>
         <source>Display in file manager</source>
-        <translation type="unfinished"/>
+        <translation>फ़ाइल मैनेजर में प्रदर्शित करें</translation>
     </message>
 </context>
 <context>
@@ -643,7 +643,7 @@
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="121"/>
         <source>Duration:</source>
-        <translation type="unfinished"/>
+        <translation>अवधि:</translation>
     </message>
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="126"/>

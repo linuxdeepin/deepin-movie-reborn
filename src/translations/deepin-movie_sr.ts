@@ -591,7 +591,7 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="1906"/>
         <source>Failed to save the screenshot</source>
-        <translation type="unfinished"/>
+        <translation>Неуспело чување слике екрана</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2076"/>

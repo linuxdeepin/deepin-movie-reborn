@@ -20,7 +20,7 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="130"/>
         <source>Open folder</source>
-        <translation type="unfinished"/>
+        <translation>ফোল্ডার খুলুন</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="121"/>
@@ -142,17 +142,17 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="29"/>
         <source>Next frame</source>
-        <translation type="unfinished"/>
+        <translation>পরবর্তী ফ্রেম</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="30"/>
         <source>Previous frame</source>
-        <translation type="unfinished"/>
+        <translation>পূর্বের ফ্রেম</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="31"/>
         <source>Volume down</source>
-        <translation type="unfinished"/>
+        <translation>শব্দ কমান</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="32"/>
@@ -281,12 +281,12 @@
         <location filename="../common/actions.cpp" line="83"/>
         <location filename="../common/actions.cpp" line="103"/>
         <source>Open folder</source>
-        <translation type="unfinished"/>
+        <translation>ফোল্ডার খুলুন</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="85"/>
         <source>Light theme</source>
-        <translation type="unfinished"/>
+        <translation>হালকা থিম</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="104"/>
@@ -356,12 +356,12 @@
     <message>
         <location filename="../common/actions.cpp" line="144"/>
         <source>Next frame</source>
-        <translation type="unfinished"/>
+        <translation>পরের ফ্রেম</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="145"/>
         <source>Previous frame</source>
-        <translation type="unfinished"/>
+        <translation>পূর্বের ফ্রেম</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="152"/>
@@ -464,17 +464,17 @@
     <message>
         <location filename="../widgets/burst_screenshots_dialog.cpp" line="88"/>
         <source>Duration: %1</source>
-        <translation type="unfinished"/>
+        <translation>সময়কাল: %1</translation>
     </message>
     <message>
         <location filename="../widgets/burst_screenshots_dialog.cpp" line="94"/>
         <source>Resolution: %1</source>
-        <translation type="unfinished"/>
+        <translation>রেজূূলিউশন: %1</translation>
     </message>
     <message>
         <location filename="../widgets/burst_screenshots_dialog.cpp" line="100"/>
         <source>Size: %1</source>
-        <translation type="unfinished"/>
+        <translation>আকার: %1</translation>
     </message>
     <message>
         <location filename="../widgets/burst_screenshots_dialog.cpp" line="123"/>
@@ -509,7 +509,7 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="1449"/>
         <source>Open folder</source>
-        <translation type="unfinished"/>
+        <translation>ফোল্ডার খুলুন</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1464"/>
@@ -565,7 +565,7 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="1818"/>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</source>
-        <translation type="unfinished"/>
+        <translation>সাবটাইটেল (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1880"/>
@@ -591,7 +591,7 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="1906"/>
         <source>Failed to save the screenshot</source>
-        <translation type="unfinished"/>
+        <translation>স্ক্রিনশট সংরক্ষণ করতে বার্থ হয়েছে</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2076"/>
@@ -605,22 +605,22 @@
     <message>
         <location filename="../libdmr/playlist_model.h" line="67"/>
         <source>%1G</source>
-        <translation type="unfinished"/>
+        <translation>%1G</translation>
     </message>
     <message>
         <location filename="../libdmr/playlist_model.h" line="69"/>
         <source>%1M</source>
-        <translation type="unfinished"/>
+        <translation>%1M</translation>
     </message>
     <message>
         <location filename="../libdmr/playlist_model.h" line="71"/>
         <source>%1K</source>
-        <translation type="unfinished"/>
+        <translation>%1K</translation>
     </message>
     <message>
         <location filename="../libdmr/playlist_model.h" line="73"/>
         <source>%1</source>
-        <translation type="unfinished"/>
+        <translation>%1</translation>
     </message>
 </context>
 <context>
