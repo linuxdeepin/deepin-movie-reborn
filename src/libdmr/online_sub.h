@@ -30,8 +30,10 @@
 #ifndef _DMR_ONLINE_SUB_H
 #define _DMR_ONLINE_SUB_H 
 
-#include <QtWidgets>
-#include <QtNetwork>
+#include <QFileInfo>
+#include <QNetworkAccessManager>
+#include <QNetworkRequest>
+#include <QNetworkReply>
 
 
 namespace dmr {
