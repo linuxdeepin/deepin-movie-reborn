@@ -31,11 +31,6 @@
 #define EVENTMONITOR_H
 
 #include <QThread>
-#define Bool int
-#include <X11/Xlib.h>
-#include <X11/extensions/record.h>
-#undef Bool
-
 
 namespace dmr {
 
@@ -56,8 +51,7 @@ class EventMonitor : public QThread
 
 public:
     EventMonitor(QObject *parent = 0);
-    static void callback(XPointer trash, XRecordInterceptData* data);
-    void handleRecordEvent(XRecordInterceptData *);
+    void handleRecordEvent(void *);
 
     void resumeRecording();
     void suspendRecording();

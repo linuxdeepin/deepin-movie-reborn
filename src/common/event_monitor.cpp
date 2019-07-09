@@ -32,8 +32,15 @@
 
 #include "event_monitor.h"
 #define Bool int
+#include <X11/Xlib.h>
 #include <X11/Xlibint.h>
 #include <X11/extensions/record.h>
+#undef Bool
+
+void callback(XPointer ptr, XRecordInterceptData* data)
+{
+    ((dmr::EventMonitor *) ptr)->handleRecordEvent(data);
+}
 
 namespace dmr {
 
@@ -85,13 +92,9 @@ void EventMonitor::run()
     }
 }
 
-void EventMonitor::callback(XPointer ptr, XRecordInterceptData* data)
+void EventMonitor::handleRecordEvent(void* dat)
 {
-    ((EventMonitor *) ptr)->handleRecordEvent(data);
-}
-
-void EventMonitor::handleRecordEvent(XRecordInterceptData* data)
-{
+    XRecordInterceptData* data = (XRecordInterceptData*)dat;
     if (!_recording) {
         XRecordFreeData(data);
         return;
