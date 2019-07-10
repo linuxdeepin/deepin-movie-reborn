@@ -89,6 +89,7 @@ static QString flag2key(Settings::Flag f)
         case Settings::Flag::HWAccel: return "hwaccel";
     }
 
+    return "";
 }
 
 bool Settings::isSet(Flag f) const
