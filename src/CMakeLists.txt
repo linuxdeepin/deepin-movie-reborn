@@ -27,9 +27,6 @@ pkg_check_modules(Other REQUIRED libffmpegthumbnailer
     libpulse libpulse-simple openssl dvdnav)
 
 qt5_add_resources(RCS resources.qrc)
-if (${Dtk_VERSION} LESS 2.0.6.1)
-    qt5_add_resources(RCS theme.qrc)
-endif()
 
 
 file(GLOB_RECURSE SRCS LIST_DIRECTORIES false common/*.cpp widgets/*.cpp libdmr/*.cpp)
