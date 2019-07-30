@@ -15,9 +15,8 @@ find_package(Qt5LinguistTools)
 find_package(Qt5Network)
 find_package(Qt5Concurrent)
 find_package(Qt5Sql)
+find_package(Dtk REQUIRED Core Widget)
 
-pkg_check_modules(Dtk REQUIRED IMPORTED_TARGET dtkwidget)
-pkg_check_modules(Dtk REQUIRED IMPORTED_TARGET dtkcore)
 pkg_check_modules(Mpv REQUIRED IMPORTED_TARGET mpv)
 pkg_check_modules(Xcb REQUIRED IMPORTED_TARGET xcb xcb-aux
     xcb-proto xcb-ewmh xcb-shape)
