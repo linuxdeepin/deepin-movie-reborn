@@ -63,9 +63,9 @@ add_executable(${CMD_NAME} ${SRCS} ${RCS} ${QM})
 target_include_directories(${CMD_NAME} PUBLIC ${PROJECT_INCLUDE})
 
 set(TARGET_LIBS X11 Xext Xtst PkgConfig::Xcb Qt5::Widgets Qt5::X11Extras Qt5::Network
-    Qt5::Concurrent Qt5::DBus Qt5::Sql PkgConfig::Dtk PkgConfig::Mpv
+    Qt5::Concurrent Qt5::DBus Qt5::Sql PkgConfig::Mpv
     PkgConfig::AV pthread GL)
-target_link_libraries(${CMD_NAME} ${TARGET_LIBS} ${Other_LIBRARIES})
+target_link_libraries(${CMD_NAME} ${TARGET_LIBS} ${DtkWidget_LIBRARIES} ${Other_LIBRARIES})
 
 
 install(TARGETS ${CMD_NAME} DESTINATION bin)
