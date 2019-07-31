@@ -19,7 +19,7 @@ set_target_properties(${CMD_NAME} PROPERTIES VERSION 0.1.0 SOVERSION 0.1)
 target_include_directories(${CMD_NAME} PUBLIC
     ${PROJECT_SOURCE_DIR}/../common ${PROJECT_SOURCE_DIR}/../backends/mpv)
 
-target_link_libraries(${CMD_NAME} PkgConfig::Dtk Qt5::Widgets Qt5::Concurrent
+target_link_libraries(${CMD_NAME} ${DtkWidget_LIBRARIES} Qt5::Widgets Qt5::Concurrent
     Qt5::Network Qt5::X11Extras Qt5::Sql Qt5::DBus PkgConfig::Mpv PkgConfig::AV
     ${FFTHUMB_LIBRARIES} pthread GL)
 
