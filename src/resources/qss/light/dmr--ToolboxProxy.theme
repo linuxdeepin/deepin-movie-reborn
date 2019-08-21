@@ -1,4 +1,5 @@
 dmr--ToolboxProxy, dmr--ToolboxProxy * {
+/*
     background: transparent;
     background-color: qlineargradient(x1:0 y1:0, x2:0 y2:1,
         stop:0.00000 transparent,               stop:0.16666 transparent,
@@ -6,6 +7,12 @@ dmr--ToolboxProxy, dmr--ToolboxProxy * {
     );
     border-bottom-left-radius: 4px;
     border-bottom-right-radius: 4px;
+    */
+    background: transparent;
+    border: 1px solid rgba(0,0,0,0.04);
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.10);
+    border-radius: 18px;
+    border-radius: 18px;
 }
 
 QLabel, Dtk--Widget--DImageButton {

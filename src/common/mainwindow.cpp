@@ -782,6 +782,7 @@ void MainWindow::setupTitlebar()
     _titlebar->move(1, 1);
 #endif
     _titlebar->setFixedHeight(30);
+    _titlebar->setBackgroundTransparent(true);
     _titlebar->layout()->setContentsMargins(0, 0, 0, 0);
     _titlebar->setFocusPolicy(Qt::NoFocus);
     if (!CompositingManager::get().composited()) {
@@ -2136,8 +2137,10 @@ void MainWindow::updateProxyGeometry()
         }
 
         if (_toolbox) {
-            QRect r(view_rect.left(), height() - TOOLBOX_HEIGHT_EXT - view_rect.top(),
-                    view_rect.width(), TOOLBOX_HEIGHT_EXT);
+//            QRect r(view_rect.left(), height() - TOOLBOX_HEIGHT_EXT - view_rect.top(),
+//                    view_rect.width(), TOOLBOX_HEIGHT_EXT);
+            QRect r((view_rect.width()-1050)/2, height() - TOOLBOX_HEIGHT_EXT - view_rect.top(),
+                    1050, TOOLBOX_HEIGHT_EXT);
             if (isFullScreen()) {
                 r.moveTopLeft({0, height() - TOOLBOX_HEIGHT_EXT});
             }
@@ -2146,13 +2149,16 @@ void MainWindow::updateProxyGeometry()
 
         if (_playlist && !_playlist->toggling()) {
             int off = isFullScreen()? 0: titlebar()->geometry().bottom();
-            QRect fixed = {
-                0,
-                off,
-                220,
-                toolbox()->geometry().top() + TOOLBOX_TOP_EXTENT - off
-            };
-            fixed.moveRight(view_rect.right());
+//            QRect fixed = {
+//                0,
+//                off,
+//                220,
+//                toolbox()->geometry().top() + TOOLBOX_TOP_EXTENT - off
+//            };
+            QRect fixed((view_rect.width()-1050)/2, (view_rect.height()-384),
+                    1050,
+                    384 - TOOLBOX_HEIGHT_EXT);
+//            fixed.moveRight(view_rect.right());
             _playlist->setGeometry(fixed);
         }
     }

@@ -583,7 +583,7 @@ void ToolboxProxy::setup()
                 _progBar->setEnableIndication(_engine->state() != PlayerEngine::Idle);
             }
         });
-    stacked->addWidget(_progBar);
+//    stacked->addWidget(_progBar);
 
 
     auto *bot_widget = new QWidget;
@@ -594,8 +594,12 @@ void ToolboxProxy::setup()
 
 
     _timeLabel = new QLabel("");
-    _timeLabel->setFixedWidth(_timeLabel->fontMetrics().width("99:99:99/99:99:99"));
-    bot->addWidget(_timeLabel);
+//    _timeLabel->setFixedWidth(_timeLabel->fontMetrics().width("99:99:99/99:99:99"));
+    _timeLabel->setFixedWidth(_timeLabel->fontMetrics().width("99:99:99"));
+//    bot->addWidget(_timeLabel);
+    _timeLabelend = new QLabel("");
+//    _timeLabel->setFixedWidth(_timeLabel->fontMetrics().width("99:99:99/99:99:99"));
+    _timeLabelend->setFixedWidth(_timeLabelend->fontMetrics().width("99:99:99"));
 
     auto *signalMapper = new QSignalMapper(this);
     connect(signalMapper, static_cast<void(QSignalMapper::*)(const QString&)>(&QSignalMapper::mapped),
@@ -607,6 +611,10 @@ void ToolboxProxy::setup()
     _mid->setContentsMargins(0, 0, 0, 0);
     _mid->setSpacing(14);
     bot->addLayout(_mid);
+
+    bot->addWidget(_timeLabel);
+    bot->addWidget(_progBar);
+    bot->addWidget(_timeLabelend);
     
     _prevBtn = new DImageButton();
     _prevBtn->setFixedSize(48, TOOLBOX_HEIGHT);
@@ -913,14 +921,16 @@ void ToolboxProxy::updateTimeInfo(qint64 duration, qint64 pos)
 {
     if (_engine->state() == PlayerEngine::CoreState::Idle) {
         _timeLabel->setText("");
+        _timeLabelend->setText("");
 
     } else {
         //mpv returns a slightly different duration from movieinfo.duration
         //_timeLabel->setText(QString("%2/%1").arg(utils::Time2str(duration))
                 //.arg(utils::Time2str(pos)));
-        _timeLabel->setText(QString("%2/%1")
-                .arg(_engine->playlist().currentInfo().mi.durationStr())
+        _timeLabel->setText(QString("%1")
                 .arg(utils::Time2str(pos)));
+        _timeLabelend->setText(QString("%1")
+                .arg(_engine->playlist().currentInfo().mi.durationStr()));
     }
 }
 
@@ -981,13 +991,16 @@ void ToolboxProxy::updateTimeLabel()
     // to keep left and right of the same width. which makes play button centered
     _listBtn->setVisible(width() > 280);
     _timeLabel->setVisible(width() > 350);
+    _timeLabelend->setVisible(width() > 350);
     if (width() > 350) {
         auto right_geom = _right->geometry();
-        int left_w = _timeLabel->fontMetrics().width("99:99:99/99:99:99");
+        int left_w = _timeLabel->fontMetrics().width("99:99:99");
         _timeLabel->show();
+        _timeLabelend->show();
         int w = qMax(left_w, right_geom.width());
         _timeLabel->setFixedWidth(w + RIGHT_MARGIN - LEFT_MARGIN); 
-        right_geom.setWidth(w);
+        _timeLabelend->setFixedWidth(w + RIGHT_MARGIN - LEFT_MARGIN);
+        right_geom.setWidth(2*w);
         _right->setGeometry(right_geom);
     }
 }

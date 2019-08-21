@@ -92,6 +92,7 @@ private:
     MainWindow *_mainWindow {nullptr};
     PlayerEngine *_engine {nullptr};
     QLabel *_timeLabel {nullptr};
+    QLabel *_timeLabelend {nullptr};
     VolumeSlider *_volSlider {nullptr};
 
     DImageButton *_playBtn {nullptr};

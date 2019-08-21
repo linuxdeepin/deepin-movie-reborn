@@ -43,7 +43,7 @@
 #include <dthememanager.h>
 #include <dscrollbar.h>
 
-#define PLAYLIST_FIXED_WIDTH 220
+#define PLAYLIST_FIXED_WIDTH 1050
 #define POPUP_DURATION 200
 
 namespace dmr {
@@ -168,7 +168,7 @@ public:
         auto *vl = new QVBoxLayout;
         vl->setContentsMargins(0, 0, 0, 0);
         vl->setSpacing(0);
-        l->addLayout(vl, 10);
+        l->addLayout(vl, 3);
 
         vl->addStretch();
 
@@ -795,13 +795,18 @@ void PlaylistWidget::togglePopup()
     auto view_rect = main_rect.marginsRemoved(QMargins(1, 1, 1, 1));
 #endif
     int off = _mw->isFullScreen()? 0: _mw->titlebar()->geometry().bottom();
-    QRect fixed(0, off,
+//    QRect fixed(0, off,
+//            PLAYLIST_FIXED_WIDTH,
+//            _mw->toolbox()->geometry().top() + TOOLBOX_TOP_EXTENT - off);
+    QRect fixed((view_rect.width()-1050)/2, (view_rect.height()-384),
             PLAYLIST_FIXED_WIDTH,
-            _mw->toolbox()->geometry().top() + TOOLBOX_TOP_EXTENT - off);
-    fixed.moveRight(view_rect.right());
+            (384 - TOOLBOX_HEIGHT_EXT));
+//    fixed.moveRight(view_rect.right());
     QRect shrunk = fixed;
-    shrunk.setWidth(0);
-    shrunk.moveRight(fixed.right());
+//    shrunk.setWidth(0);
+    shrunk.setHeight(0);
+//    shrunk.moveRight(fixed.right());
+    shrunk.moveBottom(fixed.bottom());
 
     if (_toggling) return;
 

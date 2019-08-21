@@ -30,7 +30,8 @@
 #ifndef DMR_TITLEBAR_H
 #define DMR_TITLEBAR_H 
 #include <QScopedPointer>
-#include <dtitlebar.h>
+//#include <dtitlebar.h>
+#include <DTitlebar>
 
 namespace dmr {
 class TitlebarPrivate;

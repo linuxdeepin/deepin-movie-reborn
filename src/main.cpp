@@ -119,14 +119,14 @@ int main(int argc, char *argv[])
     app.setWindowIcon(QIcon(":/resources/icons/logo.svg"));
     app.setApplicationDisplayName(QObject::tr("Deepin Movie"));
     app.setAttribute(Qt::AA_DontCreateNativeWidgetSiblings, true);
-
+    app.setApplicationVersion(DApplication::buildVersion("20190821"));
     MovieConfiguration::get().init();
 
     QRegExp url_re("\\w+://");
 
     dmr::MainWindow mw;
-    mw.setMinimumSize(QSize(528, 400));
-    mw.resize(850, 600);
+    mw.setMinimumSize(QSize(1070, 680));
+    mw.resize(1070, 680);
     utils::MoveToCenter(&mw);
     mw.show();
 
