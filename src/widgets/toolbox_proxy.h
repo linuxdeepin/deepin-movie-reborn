@@ -79,6 +79,7 @@ protected slots:
     void setProgress();
     void progressHoverChanged(int v);
     void updateHoverPreview(const QUrl& url, int secs);
+    void setViewProgBar();
 
 protected:
     void paintEvent(QPaintEvent *pe) override;
@@ -106,6 +107,7 @@ private:
 
     QHBoxLayout *_mid{nullptr};
     QHBoxLayout *_right{nullptr};
+    QWidget *_viewProgBar{nullptr};
 
     DMRSlider *_progBar {nullptr};
     ThumbnailPreview *_previewer {nullptr};

@@ -2735,8 +2735,8 @@ void MainWindow::toggleUIMode()
             requestAction(ActionFactory::ToggleFullscreen);
         } else {
             if (_engine->state() == PlayerEngine::Idle && windowState() == Qt::WindowNoState) {
-                this->setMinimumSize(QSize(528, 400));
-                this->resize(850, 600);
+                this->setMinimumSize(QSize(1070, 680));
+                this->resize(1070, 680);
             } else {
                 if (_lastRectInNormalMode.isValid()) {
                     resize(_lastRectInNormalMode.size());

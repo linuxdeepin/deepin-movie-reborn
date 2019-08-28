@@ -562,6 +562,7 @@ void ToolboxProxy::setup()
     _progBar->setObjectName("MovieProgress");
     _progBar->setOrientation(Qt::Horizontal);
     _progBar->setFixedHeight(12+TOOLBOX_TOP_EXTENT);
+    _progBar->setFixedWidth(584);
     _progBar->setRange(0, 100);
     _progBar->setValue(0);
     _progBar->setEnableIndication(_engine->state() != PlayerEngine::Idle);
@@ -601,6 +602,11 @@ void ToolboxProxy::setup()
 //    _timeLabel->setFixedWidth(_timeLabel->fontMetrics().width("99:99:99/99:99:99"));
     _timeLabelend->setFixedWidth(_timeLabelend->fontMetrics().width("99:99:99"));
 
+    _viewProgBar = new QWidget();
+    _viewProgBar->setFixedHeight(60);
+    _viewProgBar->setFixedWidth(584);
+    _viewProgBar->hide();
+
     auto *signalMapper = new QSignalMapper(this);
     connect(signalMapper, static_cast<void(QSignalMapper::*)(const QString&)>(&QSignalMapper::mapped),
             this, &ToolboxProxy::buttonClicked);
@@ -614,6 +620,7 @@ void ToolboxProxy::setup()
 
     bot->addWidget(_timeLabel);
     bot->addWidget(_progBar);
+    bot->addWidget(_viewProgBar);
     bot->addWidget(_timeLabelend);
     
     _prevBtn = new DImageButton();
@@ -718,6 +725,8 @@ void ToolboxProxy::setup()
     connect(_engine, &PlayerEngine::stateChanged, this, &ToolboxProxy::updatePlayState);
     connect(_engine, &PlayerEngine::fileLoaded, [=]() {
         _progBar->setRange(0, _engine->duration());
+        setViewProgBar();
+
     });
     connect(_engine, &PlayerEngine::elapsedChanged, [=]() {
         updateTimeInfo(_engine->duration(), _engine->elapsed());
@@ -749,7 +758,45 @@ void ToolboxProxy::setup()
         }
     });
 }
+void ToolboxProxy::setViewProgBar(){
+    auto *viewProgBarLayout = new QHBoxLayout();
+    viewProgBarLayout->setSpacing(3);
 
+    auto tmp = _engine->duration()/80;
+    auto dpr = qApp->devicePixelRatio();
+    QPixmap pm;
+    pm.setDevicePixelRatio(dpr);
+    VideoThumbnailer thumber;
+    QTime d(0, 0, 0);
+    thumber.setThumbnailSize(8 * qApp->devicePixelRatio());
+    thumber.setMaintainAspectRatio(false);
+    thumber.setSeekTime(d.toString("hh:mm:ss").toStdString());
+    auto url = _engine->playlist().currentInfo().url;
+    auto file = QFileInfo(url.toLocalFile()).absoluteFilePath();
+    for(auto i=0;i<(_engine->duration());){
+        d = d.addSecs(i);
+        try {
+            std::vector<uint8_t> buf;
+            thumber.generateThumbnail(file.toUtf8().toStdString(),
+                    ThumbnailerImageType::Png, buf);
+
+            auto img = QImage::fromData(buf.data(), buf.size(), "png");
+
+            pm = QPixmap::fromImage(img.scaled(QSize(8,50) * dpr, Qt::IgnoreAspectRatio, Qt::FastTransformation));
+            pm.setDevicePixelRatio(dpr);
+        } catch (const std::logic_error&) {
+        }
+        QLabel *label = new QLabel();
+        label->setPixmap(pm);
+        label->setFixedSize(8,50);
+        viewProgBarLayout->addWidget(label);
+        i += tmp;
+    }
+    _viewProgBar->setLayout(viewProgBarLayout);
+    _viewProgBar->show();
+    _progBar->hide();
+
+}
 
 void ToolboxProxy::closeAnyPopup()
 {
@@ -1000,7 +1047,7 @@ void ToolboxProxy::updateTimeLabel()
         int w = qMax(left_w, right_geom.width());
         _timeLabel->setFixedWidth(w + RIGHT_MARGIN - LEFT_MARGIN); 
         _timeLabelend->setFixedWidth(w + RIGHT_MARGIN - LEFT_MARGIN);
-        right_geom.setWidth(2*w);
+        right_geom.setWidth(w);
         _right->setGeometry(right_geom);
     }
 }
