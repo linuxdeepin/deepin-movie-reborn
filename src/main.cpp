@@ -119,7 +119,7 @@ int main(int argc, char *argv[])
     app.setWindowIcon(QIcon(":/resources/icons/logo.svg"));
     app.setApplicationDisplayName(QObject::tr("Deepin Movie"));
     app.setAttribute(Qt::AA_DontCreateNativeWidgetSiblings, true);
-    app.setApplicationVersion(DApplication::buildVersion("20190821"));
+    app.setApplicationVersion(DApplication::buildVersion("20190830"));
     MovieConfiguration::get().init();
 
     QRegExp url_re("\\w+://");
