@@ -51,6 +51,8 @@ class DMRSlider;
 class ThumbnailPreview;
 class SubtitlesView;
 class VolumeSlider;
+class ViewProgBar;
+class viewProgBarLoad;
 
 class ToolboxProxy: public QFrame {
     Q_OBJECT
@@ -76,7 +78,7 @@ protected slots:
     void updateVolumeState();
     void updateMovieProgress();
     void updateButtonStates();
-    void setProgress();
+    void setProgress(int v);
     void progressHoverChanged(int v);
     void updateHoverPreview(const QUrl& url, int secs);
     void setViewProgBar();
@@ -107,7 +109,7 @@ private:
 
     QHBoxLayout *_mid{nullptr};
     QHBoxLayout *_right{nullptr};
-    QWidget *_viewProgBar{nullptr};
+    ViewProgBar *_viewProgBar{nullptr};
 
     DMRSlider *_progBar {nullptr};
     ThumbnailPreview *_previewer {nullptr};

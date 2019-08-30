@@ -31,8 +31,11 @@
 #define _DMR_SLIDER_H 
 
 #include <QtWidgets>
+#include <DSlider>
+#include <DImageButton>
+DWIDGET_USE_NAMESPACE
 namespace dmr {
-class DMRSlider: public QSlider {
+class DMRSlider: public DSlider {
     Q_OBJECT
 public:
     DMRSlider(QWidget *parent = 0);

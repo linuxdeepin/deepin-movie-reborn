@@ -47,6 +47,7 @@
 #include <dthememanager.h>
 #include <darrowrectangle.h>
 #include <DApplication>
+#include <QThread>
 
 static const int LEFT_MARGIN = 15;
 static const int RIGHT_MARGIN = 10;
@@ -311,6 +312,191 @@ private:
     PlayerEngine *_engine {nullptr};
     QListWidget *_subsView {nullptr};
 };
+class IndicatorLayout: public QHBoxLayout{
+    Q_OBJECT
+public:
+    IndicatorLayout(QWidget *parent = 0){
+
+    }
+protected:
+    void paintEvent(QPaintEvent *e)
+    {
+//        QPainter p(this);
+//        QRect r(_indicatorPos, QSize{4, 60});
+////        p.drawText(this->rect(),Qt::AlignCenter,"this is my widget");
+//        p.fillRect(r, QBrush(_indicatorColor));
+    }
+};
+class ViewProgBar: public DWidget{
+    Q_OBJECT
+public:
+    ViewProgBar(QWidget *parent = 0){
+       setFixedHeight(60);
+       setFixedWidth(584);
+       _lastHoverValue = 0;
+       _isBlockSignals=false;
+       _indicatorColor=QColor("red");
+        _indicator = new QLabel();
+        _indicator->setFixedSize({50,50});
+        QPalette palette;
+        palette.setColor(QPalette::Background, QColor(_indicatorColor));
+        _indicator->setAutoFillBackground(true);  //一定要这句，否则不行
+        _indicator->setPalette(palette);
+       setMouseTracking(true);
+    };
+//    virtual ~ViewProgBar();
+    void setIsBlockSignals(bool isBlockSignals){
+        _isBlockSignals = isBlockSignals;
+    }
+    bool getIsBlockSignals(){return _isBlockSignals;}
+    void setValue(int v){
+        _indicatorPos = {v,rect().y()};
+        update();
+    }
+
+    void setViewProgBar(PlayerEngine *engine){
+
+//        _viewProgBarLoad =new viewProgBarLoad(engine);
+        _engine = engine;
+        auto *viewProgBarLayout = new QHBoxLayout();
+    //    viewProgBarLayout->setSpacing(1);
+//        auto width = _viewProgBar->width();
+        auto tmp = _engine->duration()/62;
+        auto dpr = qApp->devicePixelRatio();
+        QPixmap pm;
+        pm.setDevicePixelRatio(dpr);
+        VideoThumbnailer thumber;
+        QTime d(0, 0, 0);
+        thumber.setThumbnailSize(8 * qApp->devicePixelRatio());
+        thumber.setMaintainAspectRatio(false);
+        thumber.setSeekTime(d.toString("hh:mm:ss").toStdString());
+        auto url = _engine->playlist().currentInfo().url;
+        auto file = QFileInfo(url.toLocalFile()).absoluteFilePath();
+    //    for(auto i=0;i<(_engine->duration() - tmp);){
+          for(auto i=0;i<63;i++){
+            d = d.addSecs(tmp);
+            try {
+                std::vector<uint8_t> buf;
+                thumber.generateThumbnail(file.toUtf8().toStdString(),
+                        ThumbnailerImageType::Png, buf);
+
+                auto img = QImage::fromData(buf.data(), buf.size(), "png");
+
+                pm = QPixmap::fromImage(img.scaled(QSize(8,50) * dpr, Qt::IgnoreAspectRatio, Qt::FastTransformation));
+                pm.setDevicePixelRatio(dpr);
+            } catch (const std::logic_error&) {
+            }
+            QLabel *label = new QLabel();
+            label->setPixmap(pm);
+            label->setFixedSize(8,50);
+            viewProgBarLayout->addWidget(label, 0 , Qt::AlignLeft );
+            viewProgBarLayout->setSpacing(1);
+
+        }
+        setLayout(viewProgBarLayout);
+//        _indicatorLayout = new QHBoxLayout();
+        _indicator = new QLabel(this);
+        _indicator->setFixedSize(25,50);
+        QPalette palette;
+        palette.setColor(QPalette::Background, QColor("red"));
+        _indicator->setAutoFillBackground(true);  //一定要这句，否则不行
+        _indicator->setPalette(palette);
+        _indicator->move(50,0);
+        _indicator->show();
+//        _indicatorLayout->addWidget(_indicator);
+//        setLayout(_indicatorLayout);
+
+
+    }
+signals:
+    void leaveViewProgBar();
+    void hoverChanged(int);
+    void sliderMoved(int);
+protected:
+
+    void leaveEvent(QEvent *e) override
+    {
+        emit leaveViewProgBar();
+    }
+
+    void showEvent(QShowEvent *se) override
+    {
+//        _time->move((width() - _time->width())/2, 69);
+    }
+    void mouseMoveEvent(QMouseEvent *e)
+    {
+        if (!isEnabled()) return;
+
+        int v = position2progress(e->pos());;
+//        if (_down) {
+//            setSliderPosition(v);
+//            if (_showIndicator) {
+//                _indicatorPos = {e->x(), pos().y()+TOOLBOX_TOP_EXTENT-4};
+//                update();
+//            }
+//        } else {
+            // a mouse enter from previewer happens
+//            if (_indicatorEnabled && !property("Hover").toBool()) {
+//                setProperty("Hover", "true");
+//                startAnimation(false);
+//                _showIndicator = true;
+//                update();
+//            }
+//            emit enter();
+
+            if (_lastHoverValue != v) {
+//                if (_showIndicator) {
+//                    _indicatorPos = {e->x(), pos().y()+TOOLBOX_TOP_EXTENT-4};
+//                    update();
+//                }
+
+                emit hoverChanged(v);
+            }
+
+            _lastHoverValue = v;
+//        }
+        e->accept();
+    }
+    void mousePressEvent(QMouseEvent *e)
+    {
+        if (e->buttons() == Qt::LeftButton && isEnabled()) {
+//            QSlider::mousePressEvent(e);
+
+            int v = position2progress(e->pos());;
+//            setSliderPosition(v);
+            emit sliderMoved(v);
+            emit hoverChanged(v);
+//            _down = true;
+        }
+    }
+    void paintEvent(QPaintEvent *e)
+    {
+        QPainter p(this);
+//        QRect r(0,0,4,60);
+        QRect r(_indicatorPos, QSize{4, 60});
+        //p.drawText(this->rect(),Qt::AlignCenter,"this is my widget");
+        p.fillRect(r, QBrush(_indicatorColor));
+               _indicator->show();
+    }
+private:
+    PlayerEngine *_engine;
+    int _lastHoverValue;
+    bool _isBlockSignals;
+    QPoint _indicatorPos {0, 0};
+    QColor _indicatorColor;
+    QLabel *_indicator;
+    viewProgBarLoad *_viewProgBarLoad;
+
+    QHBoxLayout *_indicatorLayout;
+    int position2progress(const QPoint& p)
+    {
+        auto total = _engine->duration();
+        qreal span = (qreal)total / contentsRect().width();
+        return span * (p.x());
+    }
+
+};
+
 
 class ThumbnailPreview: public DArrowRectangle {
     Q_OBJECT
@@ -518,6 +704,57 @@ private:
     MainWindow *_mw;
     QTimer _autoHideTimer;
 };
+class viewProgBarLoad: public QThread{
+    Q_OBJECT
+public:
+     viewProgBarLoad(PlayerEngine* eng){
+         _engine = eng;
+         start();
+     }
+signals:
+    void imglistloadend(QList<QLabel *>);
+private:
+//     QList<QLabel> imglist;
+     QList<QLabel *> imglist;
+     PlayerEngine *_engine;
+    void run(){
+        auto *viewProgBarLayout = new QHBoxLayout();
+    //    viewProgBarLayout->setSpacing(1);
+//        auto width = _viewProgBar->width();
+        auto tmp = _engine->duration()/62;
+        auto dpr = qApp->devicePixelRatio();
+        QPixmap pm;
+        pm.setDevicePixelRatio(dpr);
+        VideoThumbnailer thumber;
+        QTime d(0, 0, 0);
+        thumber.setThumbnailSize(8 * qApp->devicePixelRatio());
+        thumber.setMaintainAspectRatio(false);
+        thumber.setSeekTime(d.toString("hh:mm:ss").toStdString());
+        auto url = _engine->playlist().currentInfo().url;
+        auto file = QFileInfo(url.toLocalFile()).absoluteFilePath();
+    //    for(auto i=0;i<(_engine->duration() - tmp);){
+          for(auto i=0;i<63;i++){
+            d = d.addSecs(tmp);
+            try {
+                std::vector<uint8_t> buf;
+                thumber.generateThumbnail(file.toUtf8().toStdString(),
+                        ThumbnailerImageType::Png, buf);
+
+                auto img = QImage::fromData(buf.data(), buf.size(), "png");
+
+                pm = QPixmap::fromImage(img.scaled(QSize(8,50) * dpr, Qt::IgnoreAspectRatio, Qt::FastTransformation));
+                pm.setDevicePixelRatio(dpr);
+            } catch (const std::logic_error&) {
+            }
+            QLabel *label = new QLabel();
+            label->setPixmap(pm);
+            label->setFixedSize(8,50);
+            imglist.append(label);
+//            imglist.append(&label);
+        }
+          emit imglistloadend(imglist);
+    }
+};
 
 ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
     :QFrame(mainWindow),
@@ -577,13 +814,20 @@ void ToolboxProxy::setup()
 
     connect(_progBar, &QSlider::sliderMoved, this, &ToolboxProxy::setProgress);
     connect(_progBar, &DMRSlider::hoverChanged, this, &ToolboxProxy::progressHoverChanged);
-    connect(_progBar, &DMRSlider::leave, [=]() { _previewer->hide(); });
+//    connect(_progBar, &DMRSlider::leave, [=]() { _previewer->hide(); });
     connect(&Settings::get(), &Settings::baseChanged,
         [=](QString sk, const QVariant& val) {
             if (sk == "base.play.mousepreview") {
                 _progBar->setEnableIndication(_engine->state() != PlayerEngine::Idle);
             }
         });
+    connect(_progBar, &DMRSlider::enter,[=](){
+        if(_engine->state() == PlayerEngine::CoreState::Playing || _engine->state() == PlayerEngine::CoreState::Paused){
+            _viewProgBar->show();
+            _progBar->hide();
+        }
+
+    });
 //    stacked->addWidget(_progBar);
 
 
@@ -602,10 +846,16 @@ void ToolboxProxy::setup()
 //    _timeLabel->setFixedWidth(_timeLabel->fontMetrics().width("99:99:99/99:99:99"));
     _timeLabelend->setFixedWidth(_timeLabelend->fontMetrics().width("99:99:99"));
 
-    _viewProgBar = new QWidget();
-    _viewProgBar->setFixedHeight(60);
-    _viewProgBar->setFixedWidth(584);
+    _viewProgBar = new ViewProgBar();
+
     _viewProgBar->hide();
+    connect(_viewProgBar,&ViewProgBar::leaveViewProgBar,[=](){
+        _viewProgBar->hide();
+        _progBar->show();
+        _previewer->hide();
+    });
+    connect(_viewProgBar, &ViewProgBar::hoverChanged, this, &ToolboxProxy::progressHoverChanged);
+    connect(_viewProgBar, &ViewProgBar::sliderMoved, this, &ToolboxProxy::setProgress);
 
     auto *signalMapper = new QSignalMapper(this);
     connect(signalMapper, static_cast<void(QSignalMapper::*)(const QString&)>(&QSignalMapper::mapped),
@@ -725,7 +975,10 @@ void ToolboxProxy::setup()
     connect(_engine, &PlayerEngine::stateChanged, this, &ToolboxProxy::updatePlayState);
     connect(_engine, &PlayerEngine::fileLoaded, [=]() {
         _progBar->setRange(0, _engine->duration());
-        setViewProgBar();
+//        setViewProgBar();
+        _viewProgBar->setViewProgBar(_engine);
+//        _viewProgBar->show();
+//        _progBar->hide();
 
     });
     connect(_engine, &PlayerEngine::elapsedChanged, [=]() {
@@ -760,9 +1013,9 @@ void ToolboxProxy::setup()
 }
 void ToolboxProxy::setViewProgBar(){
     auto *viewProgBarLayout = new QHBoxLayout();
-    viewProgBarLayout->setSpacing(3);
-
-    auto tmp = _engine->duration()/80;
+//    viewProgBarLayout->setSpacing(1);
+    auto width = _viewProgBar->width();
+    auto tmp = _engine->duration()/62;
     auto dpr = qApp->devicePixelRatio();
     QPixmap pm;
     pm.setDevicePixelRatio(dpr);
@@ -773,8 +1026,9 @@ void ToolboxProxy::setViewProgBar(){
     thumber.setSeekTime(d.toString("hh:mm:ss").toStdString());
     auto url = _engine->playlist().currentInfo().url;
     auto file = QFileInfo(url.toLocalFile()).absoluteFilePath();
-    for(auto i=0;i<(_engine->duration());){
-        d = d.addSecs(i);
+//    for(auto i=0;i<(_engine->duration() - tmp);){
+      for(auto i=0;i<63;i++){
+        d = d.addSecs(tmp);
         try {
             std::vector<uint8_t> buf;
             thumber.generateThumbnail(file.toUtf8().toStdString(),
@@ -789,10 +1043,12 @@ void ToolboxProxy::setViewProgBar(){
         QLabel *label = new QLabel();
         label->setPixmap(pm);
         label->setFixedSize(8,50);
-        viewProgBarLayout->addWidget(label);
-        i += tmp;
+        viewProgBarLayout->addWidget(label, 0 , Qt::AlignLeft );
+        viewProgBarLayout->setSpacing(1);
+//        i += tmp;
     }
     _viewProgBar->setLayout(viewProgBarLayout);
+
     _viewProgBar->show();
     _progBar->hide();
 
@@ -856,37 +1112,51 @@ void ToolboxProxy::progressHoverChanged(int v)
     _lastHoverValue = v;
     ThumbnailWorker::get().requestThumb(pif.url, v);
 
-    auto pos = _progBar->mapToGlobal(QPoint(0, TOOLBOX_TOP_EXTENT - 10));
+//    auto pos = _progBar->mapToGlobal(QPoint(0, TOOLBOX_TOP_EXTENT - 10));
+    auto pos = _viewProgBar->mapToGlobal(QPoint(0, TOOLBOX_TOP_EXTENT - 10));
     QPoint p { QCursor::pos().x(), pos.y() };
 
     _previewer->updateWithPreview(p);
 }
 
-void ToolboxProxy::setProgress()
+void ToolboxProxy::setProgress(int v)
 {
     if (_engine->state() == PlayerEngine::CoreState::Idle)
         return;
 
-    _engine->seekAbsolute(_progBar->sliderPosition());
+//    _engine->seekAbsolute(_progBar->sliderPosition());
+    _engine->seekAbsolute(v);
     if (_progBar->sliderPosition() != _lastHoverValue) {
         progressHoverChanged(_progBar->sliderPosition());
     }
+    updateMovieProgress();
 }
 
 void ToolboxProxy::updateMovieProgress()
 {
-    if (_progBar->signalsBlocked())
-        return;
+
+
 
     auto d = _engine->duration();
     auto e = _engine->elapsed();
     int v = 0;
+    int v2 = 0;
     if (d != 0 && e != 0) {
         v = _progBar->maximum() * ((double)e / d);
+        v2 = _viewProgBar->rect().width()*((double)e / d);
     }
-    _progBar->blockSignals(true);
-    _progBar->setValue(v);
-    _progBar->blockSignals(false);
+    if (!_progBar->signalsBlocked()){
+        _progBar->blockSignals(true);
+        _progBar->setValue(v);
+        _progBar->blockSignals(false);
+    }
+    if(!_viewProgBar->getIsBlockSignals()){
+        _viewProgBar->setIsBlockSignals(true);
+        _viewProgBar->setValue(v2);
+        _viewProgBar->setIsBlockSignals(false);
+    }
+
+
 }
 
 void ToolboxProxy::updateButtonStates()
@@ -1045,8 +1315,9 @@ void ToolboxProxy::updateTimeLabel()
         _timeLabel->show();
         _timeLabelend->show();
         int w = qMax(left_w, right_geom.width());
-        _timeLabel->setFixedWidth(w + RIGHT_MARGIN - LEFT_MARGIN); 
-        _timeLabelend->setFixedWidth(w + RIGHT_MARGIN - LEFT_MARGIN);
+//        int w = left_w;
+        _timeLabel->setFixedWidth(left_w );
+        _timeLabelend->setFixedWidth(left_w );
         right_geom.setWidth(w);
         _right->setGeometry(right_geom);
     }

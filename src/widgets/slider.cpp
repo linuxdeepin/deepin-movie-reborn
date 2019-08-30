@@ -113,8 +113,8 @@ DMRSlider::DMRSlider(QWidget *parent): QSlider(parent)
     connect(DThemeManager::instance(), &DThemeManager::themeChanged, updateTheme);
     updateTheme();
 
-    setProperty("Hover", "false");
-    setStyleSheet(styleSheet());
+//    setProperty("Hover", "false");
+//    setStyleSheet(styleSheet());
 }
 
 void DMRSlider::setEnableIndication(bool on)
@@ -254,7 +254,7 @@ void DMRSlider::onValueChanged(const QVariant& v)
         .arg(v3).arg(v3+0.000001)
         .arg(v4).arg(v4+0.000001);
     //qDebug() << "-------- interpolate " << v1 << v2 << v3 << v4;
-    setStyleSheet(s);
+//    setStyleSheet(s);
     update();
 
 }
