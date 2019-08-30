@@ -31,6 +31,7 @@
 #define _DMR_PLAYLIST_WIDGET_H 
 
 #include <DPlatformWindowHandle>
+#include <QPushButton>
 #include <QtWidgets>
 
 namespace Dtk
@@ -49,7 +50,7 @@ class PlayerEngine;
 class MainWindow;
 class PlayItemWidget;
 
-class PlaylistWidget: public QListWidget {
+class PlaylistWidget: public QWidget {
     Q_OBJECT
 public:
     enum State {
@@ -60,6 +61,7 @@ public:
     virtual ~PlaylistWidget();
     State state() const { return _state; }
     bool toggling() const { return _toggling; }
+    void clear();
 
 public slots:
     void togglePopup();
@@ -89,7 +91,9 @@ private:
     QWidget *_clickedItem {nullptr};
     QSignalMapper *_closeMapper {nullptr};
     QSignalMapper *_activateMapper {nullptr};
+    QListWidget *_playlist {nullptr};
     State _state {Closed};
+    QLabel *_num {nullptr};
     bool _toggling {false};
     /// < original row, data>
     QPair<int, PlayItemWidget*> _lastDragged {-1, nullptr}; 

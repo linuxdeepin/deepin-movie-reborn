@@ -301,7 +301,7 @@ protected:
     void updateClosePosition()
     {
         auto margin = 4;
-        auto pl = dynamic_cast<PlaylistWidget*>(parentWidget()->parentWidget());
+        auto pl = dynamic_cast<QListWidget*>(parentWidget()->parentWidget());
         if (pl->verticalScrollBar()->isVisible())
             margin = 10;
         _closeBtn->move(PLAYLIST_FIXED_WIDTH - _closeBtn->width() - margin,
@@ -448,7 +448,7 @@ protected:
 };
 
 PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
-    :QListWidget(mw), _engine(mpv), _mw(static_cast<MainWindow*>(mw))
+    :QWidget(mw), _engine(mpv), _mw(static_cast<MainWindow*>(mw))
 {
     DThemeManager::instance()->registerWidget(this);
 
@@ -456,24 +456,74 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     setAttribute(Qt::WA_TranslucentBackground, false);
     //NOTE: set fixed will affect geometry animation
     //setFixedWidth(220);
-    setFrameShape(QFrame::NoFrame);
-    setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred));
 
-    setSelectionMode(QListView::SingleSelection);
-    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    setResizeMode(QListView::Adjust);
-    setDragDropMode(QListView::InternalMove);
-    setSpacing(0);
+    auto *mainLayout = new QHBoxLayout(this);
+    mainLayout->setContentsMargins(10, 0, 16, 0);
+    mainLayout->setSpacing(10);
+    setLayout(mainLayout);
+
+    QFrame *left = new QFrame();
+    left->setFrameRect(QRect(0,0,197,288));
+    left->setFixedSize(197,288);
+    left->move(0,0);
+    QLabel *title = new QLabel();
+//    title->setProperty("Name", true);
+//    title->setReadOnly(true);
+//    title->setAcceptRichText(false);
+//    title->setWordWrapMode(QTextOption::WrapAnywhere);
+//    title->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+//    title->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+//    title->setFrameShape(QFrame::NoFrame);
+//    title->setTextInteractionFlags(Qt::NoTextInteraction);
+    title->setText("播放列表");
+    title->setFixedSize(96,36);
+    _num = new QLabel();
+    _num->setText("17个视频");
+    _num->setFixedSize(96,36);
+//    title->setFont(QFont());
+    mainLayout->addWidget(left);
+    auto *leftinfo = new QVBoxLayout;
+    left->setLayout(leftinfo);
+    leftinfo->addWidget(title);
+    leftinfo->addWidget(_num);
+    QPushButton *clearButton = new QPushButton();
+    clearButton->setText("清空列表");
+    clearButton->setFixedSize(93,30);
+    leftinfo->addWidget(clearButton);
+    connect(clearButton,&QPushButton::clicked,this, &PlaylistWidget::clear);
+    left->setContentsMargins(0, 30, 0, 0);
+    title->setContentsMargins(0, 0, 0, 0);
+    clearButton->setContentsMargins(0, 0, 0, 0);
+    _num->setContentsMargins(0, 0, 0, 0);
+
+
+    auto *vl = new QVBoxLayout;
+    vl->setContentsMargins(0, 0, 0, 0);
+    vl->setSpacing(0);
+//    mainLayout->addLayout(vl, 3);
+
+    _playlist = new QListWidget();
+    _playlist->setFixedSize(853,288);
+    mainLayout->addWidget(_playlist);
+    _playlist->setAttribute(Qt::WA_TranslucentBackground, false);
+    _playlist->setFrameShape(QFrame::NoFrame);
+    _playlist->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred));
+
+    _playlist->setSelectionMode(QListView::SingleSelection);
+    _playlist->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    _playlist->setResizeMode(QListView::Adjust);
+    _playlist->setDragDropMode(QListView::InternalMove);
+    _playlist->setSpacing(0);
 
     //setAcceptDrops(true);
-    viewport()->setAcceptDrops(true);
-    setDragEnabled(true);
+    _playlist->viewport()->setAcceptDrops(true);
+    _playlist->setDragEnabled(true);
 
-    setContentsMargins(0, 0, 0, 0);
+    _playlist->setContentsMargins(0, 0, 0, 0);
 
     if (!composited) {
-        setWindowFlags(Qt::FramelessWindowHint|Qt::BypassWindowManagerHint);
-        setAttribute(Qt::WA_NativeWindow);
+        _playlist->setWindowFlags(Qt::FramelessWindowHint|Qt::BypassWindowManagerHint);
+        _playlist->setAttribute(Qt::WA_NativeWindow);
 	} 
 
 #ifndef USE_DXCB
@@ -499,8 +549,8 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
             [=](QWidget* w) {
                 qDebug() << "item double clicked";
                 QList<QVariant> args;
-                for (int i = 0; i < count(); i++) {
-                    if (w == itemWidget(item(i))) {
+                for (int i = 0; i < _playlist->count(); i++) {
+                    if (w == _playlist->itemWidget(_playlist->item(i))) {
                         args << i;
                         _mw->requestAction(ActionFactory::ActionKind::GotoPlaylistSelected,
                                 false, args);
@@ -531,11 +581,11 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
         }
     });
 
-    connect(model(), &QAbstractItemModel::rowsMoved, [=]() {
+    connect(_playlist->model(), &QAbstractItemModel::rowsMoved, [=]() {
         if (_lastDragged.first >= 0) {
             int target = -1;
-            for (int i = 0; i < count(); i++) {
-                auto piw = dynamic_cast<PlayItemWidget*>(itemWidget(item(i)));
+            for (int i = 0; i < _playlist->count(); i++) {
+                auto piw = dynamic_cast<PlayItemWidget*>(_playlist->itemWidget(_playlist->item(i)));
                 if (piw == _lastDragged.second) {
                     target = i;
                     break;
@@ -553,18 +603,21 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
 PlaylistWidget::~PlaylistWidget()
 {
 }
-
+void PlaylistWidget::clear()
+{
+    _playlist->clear();
+}
 void PlaylistWidget::updateItemInfo(int id)
 {
-    auto piw = dynamic_cast<PlayItemWidget*>(itemWidget(item(id)));
+    auto piw = dynamic_cast<PlayItemWidget*>(_playlist->itemWidget(_playlist->item(id)));
     piw->updateInfo(_engine->playlist().items()[id]);
 }
 
 void PlaylistWidget::updateItemStates()
 {
-    qDebug() << __func__ << count() << "current = " << _engine->playlist().current();
-    for (int i = 0; i < count(); i++) {
-        auto piw = dynamic_cast<PlayItemWidget*>(itemWidget(item(i)));
+    qDebug() << __func__ << _playlist->count() << "current = " << _engine->playlist().current();
+    for (int i = 0; i < _playlist->count(); i++) {
+        auto piw = dynamic_cast<PlayItemWidget*>(_playlist->itemWidget(_playlist->item(i)));
 
         auto old = piw->state();
         piw->setState(ItemState::Normal);
@@ -574,7 +627,7 @@ void PlaylistWidget::updateItemStates()
 
         if (i == _engine->playlist().current()) {
             if (piw->state() != ItemState::Playing) {
-                scrollToItem(item(i));
+                _playlist->scrollToItem(_playlist->item(i));
                 piw->setState(ItemState::Playing);
             }
         }
@@ -611,8 +664,8 @@ void PlaylistWidget::removeClickedItem()
     auto piw = dynamic_cast<PlayItemWidget*>(_clickedItem);
     if (piw) {
         qDebug() << __func__;
-        for (int i = 0; i < count(); i++) {
-            if (_clickedItem == itemWidget(item(i))) {
+        for (int i = 0; i < _playlist->count(); i++) {
+            if (_clickedItem == _playlist->itemWidget(_playlist->item(i))) {
                 _engine->playlist().remove(i);
                 break;
             }
@@ -625,10 +678,10 @@ void PlaylistWidget::dragEnterEvent(QDragEnterEvent *ev)
     auto md = ev->mimeData();
     qDebug() << md->formats();
     if (md->formats().contains("application/x-qabstractitemmodeldatalist")) {
-        if (!selectedItems().contains(itemAt(ev->pos()))) {
-            setDropIndicatorShown(true);
+        if (!_playlist->selectedItems().contains(_playlist->itemAt(ev->pos()))) {
+            _playlist->setDropIndicatorShown(true);
         }
-        QListWidget::dragEnterEvent(ev);
+        QWidget::dragEnterEvent(ev);
         return;
     }
 
@@ -641,10 +694,10 @@ void PlaylistWidget::dragMoveEvent(QDragMoveEvent *ev)
 {
     auto md = ev->mimeData();
     if (md->formats().contains("application/x-qabstractitemmodeldatalist")) {
-        if (!selectedItems().contains(itemAt(ev->pos()))) {
-            setDropIndicatorShown(true);
+        if (!_playlist->selectedItems().contains(_playlist->itemAt(ev->pos()))) {
+            _playlist->setDropIndicatorShown(true);
         }
-        QListWidget::dragMoveEvent(ev);
+        QWidget::dragMoveEvent(ev);
         return;
     }
 
@@ -657,7 +710,7 @@ void PlaylistWidget::dropEvent(QDropEvent *ev)
 {
     auto md = ev->mimeData();
     if (md->formats().contains("application/x-qabstractitemmodeldatalist")) {
-        setDropIndicatorShown(false);
+        _playlist->setDropIndicatorShown(false);
         auto encoded = md->data("application/x-qabstractitemmodeldatalist");
         QDataStream stream(&encoded, QIODevice::ReadOnly);
 
@@ -666,12 +719,12 @@ void PlaylistWidget::dropEvent(QDropEvent *ev)
             int row, col;
             QMap<int,  QVariant> roleDataMap;
             stream >> row >> col >> roleDataMap;
-            auto piw = dynamic_cast<PlayItemWidget*>(itemWidget(item(row)));
+            auto piw = dynamic_cast<PlayItemWidget*>(_playlist->itemWidget(_playlist->item(row)));
             _lastDragged = qMakePair(row, piw);
             qDebug() << "drag to move " << row << piw->_pif.url;
         }
 
-        QListWidget::dropEvent(ev);
+        QWidget::dropEvent(ev);
         return;
     }
 
@@ -690,8 +743,8 @@ void PlaylistWidget::contextMenuEvent(QContextMenuEvent *cme)
     bool on_item = false;
     _mouseItem = nullptr;
 
-    if (itemAt(cme->pos())) {
-        _mouseItem = itemWidget(itemAt(cme->pos()));
+    if (_playlist->itemAt(cme->pos())) {
+        _mouseItem = _playlist->itemWidget(_playlist->itemAt(cme->pos()));
         on_item = true;
     }
 
@@ -719,7 +772,7 @@ void PlaylistWidget::showEvent(QShowEvent *se)
 void PlaylistWidget::removeItem(int idx)
 {
     qDebug() << "idx = " << idx;
-    auto item = this->takeItem(idx);
+    auto item = this->_playlist->takeItem(idx);
     if (item) {
         delete item;
     }
@@ -730,12 +783,12 @@ void PlaylistWidget::appendItems()
     qDebug() << __func__;
 
     auto items = _engine->playlist().items();
-    auto p = items.begin() + this->count();
+    auto p = items.begin() + this->_playlist->count();
     while (p != items.end()) {
-        auto w = new PlayItemWidget(*p, this);
+        auto w = new PlayItemWidget(*p, this->_playlist);
         auto item = new QListWidgetItem;
-        addItem(item);
-        setItemWidget(item, w);
+        _playlist->addItem(item);
+        _playlist->setItemWidget(item, w);
 
         connect(w, SIGNAL(closeButtonClicked()), _closeMapper, SLOT(map()));
         connect(w, SIGNAL(doubleClicked()), _activateMapper, SLOT(map()));
@@ -746,22 +799,23 @@ void PlaylistWidget::appendItems()
 
     batchUpdateSizeHints();
     updateItemStates();
+    _playlist->setStyleSheet(styleSheet());
     setStyleSheet(styleSheet());
 }
 
 void PlaylistWidget::loadPlaylist()
 {
     qDebug() << __func__;
-    clear();
+    _playlist->clear();
 
 
     auto items = _engine->playlist().items();
     auto p = items.begin();
     while (p != items.end()) {
-        auto w = new PlayItemWidget(*p, this);
+        auto w = new PlayItemWidget(*p, this->_playlist);
         auto item = new QListWidgetItem;
-        addItem(item);
-        setItemWidget(item, w);
+        _playlist->addItem(item);
+        _playlist->setItemWidget(item, w);
 
         connect(w, SIGNAL(closeButtonClicked()), _closeMapper, SLOT(map()));
         connect(w, SIGNAL(doubleClicked()), _activateMapper, SLOT(map()));
@@ -772,15 +826,19 @@ void PlaylistWidget::loadPlaylist()
 
     batchUpdateSizeHints();
     updateItemStates();
+    _playlist->setStyleSheet(styleSheet());
+    QString s="1个视频";
+    s.arg(_playlist->count());
+    _num->setText(s);
     setStyleSheet(styleSheet());
 }
 
 void PlaylistWidget::batchUpdateSizeHints()
 {
     if (isVisible()) {
-        for (int i = 0; i < this->count(); i++) {
-            auto item = this->item(i);
-            auto w = this->itemWidget(item);
+        for (int i = 0; i < this->_playlist->count(); i++) {
+            auto item = this->_playlist->item(i);
+            auto w = this->_playlist->itemWidget(item);
             item->setSizeHint(w->size());
         }
     }
