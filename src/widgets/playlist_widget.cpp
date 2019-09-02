@@ -43,7 +43,7 @@
 #include <dthememanager.h>
 #include <dscrollbar.h>
 
-#define PLAYLIST_FIXED_WIDTH 1050
+#define PLAYLIST_FIXED_WIDTH 817
 #define POPUP_DURATION 200
 
 namespace dmr {
@@ -156,7 +156,7 @@ public:
         _play = QPixmap(":/resources/icons/dark/normal/film-top.svg");
         _play.setDevicePixelRatio(qApp->devicePixelRatio());
 
-        setFixedSize(PLAYLIST_FIXED_WIDTH, 68);
+        setFixedSize(PLAYLIST_FIXED_WIDTH, 36);
         auto *l = new QHBoxLayout(this);
         l->setContentsMargins(10, 0, 16, 0);
         l->setSpacing(10);
@@ -165,10 +165,10 @@ public:
         _thumb = new QLabel(this);
         l->addWidget(_thumb);
 
-        auto *vl = new QVBoxLayout;
+        auto *vl = new QHBoxLayout;
         vl->setContentsMargins(0, 0, 0, 0);
         vl->setSpacing(0);
-        l->addLayout(vl, 3);
+        l->addLayout(vl);
 
         vl->addStretch();
 
@@ -181,8 +181,10 @@ public:
         _name->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         _name->setFrameShape(QFrame::NoFrame);
         _name->setTextInteractionFlags(Qt::NoTextInteraction);
+        _name->setFixedWidth(700);
         _name->installEventFilter(this);
         vl->addWidget(_name);
+        vl->addStretch(1);
 
         _time = new QLabel(this);
         _time->setProperty("Time", true);
@@ -361,8 +363,8 @@ protected:
 
     void updateNameText() 
     {
-        _name->setText(utils::ElideText(_pif.mi.title, {136, 40}, QTextOption::WrapAnywhere,
-                    _name->font(), Qt::ElideMiddle, 18, 136-10));
+        _name->setText(utils::ElideText(_pif.mi.title, {700, 36}, QTextOption::WrapAnywhere,
+                    _name->font(), Qt::ElideLeft, 18, 700-10));
         _name->viewport()->setCursor(Qt::ArrowCursor);
         _name->setCursor(Qt::ArrowCursor);
         _name->document()->setDocumentMargin(0.0);
@@ -460,12 +462,21 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     auto *mainLayout = new QHBoxLayout(this);
     mainLayout->setContentsMargins(10, 0, 16, 0);
     mainLayout->setSpacing(10);
+    mainLayout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
     setLayout(mainLayout);
 
-    QFrame *left = new QFrame();
-    left->setFrameRect(QRect(0,0,197,288));
+    QWidget *left = new QWidget();
+//    left->setFrameRect(QRect(0,0,197,288));
     left->setFixedSize(197,288);
-    left->move(0,0);
+    left->setContentsMargins(0,0,0,0);
+    left->setAttribute(Qt::WA_TranslucentBackground, false);
+
+//    left->setFrameShape(QFrame::NoFrame);
+    left->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred));
+//    left-
+//    left->
+
+//    left->move(0,0);
     QLabel *title = new QLabel();
 //    title->setProperty("Name", true);
 //    title->setReadOnly(true);
@@ -477,21 +488,28 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
 //    title->setTextInteractionFlags(Qt::NoTextInteraction);
     title->setText("播放列表");
     title->setFixedSize(96,36);
+    title->setContentsMargins(0,0,0,0);
+
     _num = new QLabel();
     _num->setText("17个视频");
     _num->setFixedSize(96,36);
+    _num->setContentsMargins(0,2,0,0);
 //    title->setFont(QFont());
     mainLayout->addWidget(left);
     auto *leftinfo = new QVBoxLayout;
+    leftinfo->setContentsMargins(0, 0, 0, 0);
+    leftinfo->setSpacing(0);
     left->setLayout(leftinfo);
+    leftinfo->setAlignment(Qt::AlignLeft | Qt::AlignTop);
     leftinfo->addWidget(title);
     leftinfo->addWidget(_num);
     QPushButton *clearButton = new QPushButton();
     clearButton->setText("清空列表");
     clearButton->setFixedSize(93,30);
+    clearButton->setContentsMargins(0,0,0,0);
     leftinfo->addWidget(clearButton);
     connect(clearButton,&QPushButton::clicked,this, &PlaylistWidget::clear);
-    left->setContentsMargins(0, 30, 0, 0);
+    left->setContentsMargins(36, 30, 0, 0);
     title->setContentsMargins(0, 0, 0, 0);
     clearButton->setContentsMargins(0, 0, 0, 0);
     _num->setContentsMargins(0, 0, 0, 0);
@@ -501,10 +519,19 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     vl->setContentsMargins(0, 0, 0, 0);
     vl->setSpacing(0);
 //    mainLayout->addLayout(vl, 3);
+    QWidget *right= new QWidget();
+    auto *rightinfo = new QVBoxLayout;
+    rightinfo->setContentsMargins(0, 0, 0, 0);
+    rightinfo->setSpacing(0);
+    right->setLayout(rightinfo);
+    right->setContentsMargins(0, 30, 0, 0);
+    mainLayout->addWidget(right);
 
     _playlist = new QListWidget();
-    _playlist->setFixedSize(853,288);
-    mainLayout->addWidget(_playlist);
+    _playlist->setFixedSize(820,288);
+    _playlist->setContentsMargins(0, 30, 0, 0);
+
+    rightinfo->addWidget(_playlist);
     _playlist->setAttribute(Qt::WA_TranslucentBackground, false);
     _playlist->setFrameShape(QFrame::NoFrame);
     _playlist->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred));
@@ -519,7 +546,7 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     _playlist->viewport()->setAcceptDrops(true);
     _playlist->setDragEnabled(true);
 
-    _playlist->setContentsMargins(0, 0, 0, 0);
+    _playlist->setContentsMargins(0, 30, 0, 0);
 
     if (!composited) {
         _playlist->setWindowFlags(Qt::FramelessWindowHint|Qt::BypassWindowManagerHint);
@@ -606,6 +633,8 @@ PlaylistWidget::~PlaylistWidget()
 void PlaylistWidget::clear()
 {
     _playlist->clear();
+    QString s=QString(" %1 个视频").arg(_playlist->count());
+    _num->setText(s);
 }
 void PlaylistWidget::updateItemInfo(int id)
 {
@@ -776,6 +805,8 @@ void PlaylistWidget::removeItem(int idx)
     if (item) {
         delete item;
     }
+    QString s=QString(" %1 个视频").arg(_playlist->count());
+    _num->setText(s);
 }
 
 void PlaylistWidget::appendItems()
@@ -796,7 +827,8 @@ void PlaylistWidget::appendItems()
         _activateMapper->setMapping(w, w);
         ++p;
     }
-
+    QString s=QString(" %1 个视频").arg(_playlist->count());
+    _num->setText(s);
     batchUpdateSizeHints();
     updateItemStates();
     _playlist->setStyleSheet(styleSheet());
@@ -827,8 +859,7 @@ void PlaylistWidget::loadPlaylist()
     batchUpdateSizeHints();
     updateItemStates();
     _playlist->setStyleSheet(styleSheet());
-    QString s="1个视频";
-    s.arg(_playlist->count());
+    QString s=QString(" %1 个视频").arg(_playlist->count());
     _num->setText(s);
     setStyleSheet(styleSheet());
 }
@@ -857,7 +888,7 @@ void PlaylistWidget::togglePopup()
 //            PLAYLIST_FIXED_WIDTH,
 //            _mw->toolbox()->geometry().top() + TOOLBOX_TOP_EXTENT - off);
     QRect fixed((view_rect.width()-1050)/2, (view_rect.height()-384),
-            PLAYLIST_FIXED_WIDTH,
+            1050,
             (384 - TOOLBOX_HEIGHT_EXT));
 //    fixed.moveRight(view_rect.right());
     QRect shrunk = fixed;
