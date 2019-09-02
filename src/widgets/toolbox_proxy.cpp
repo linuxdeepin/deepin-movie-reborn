@@ -333,16 +333,22 @@ public:
     ViewProgBar(QWidget *parent = 0){
        setFixedHeight(60);
        setFixedWidth(584);
-       _lastHoverValue = 0;
+       _vlastHoverValue = 0;
        _isBlockSignals=false;
-       _indicatorColor=QColor("red");
-        _indicator = new QLabel();
-        _indicator->setFixedSize({50,50});
-        QPalette palette;
-        palette.setColor(QPalette::Background, QColor(_indicatorColor));
-        _indicator->setAutoFillBackground(true);  //一定要这句，否则不行
-        _indicator->setPalette(palette);
        setMouseTracking(true);
+       _back = new QWidget(this);
+       _back->setFixedHeight(60);
+       _back->setFixedWidth(584);
+       _back->setContentsMargins(0,0,0,0);
+       _indicator = new QWidget(this);
+       _indicator->setFixedHeight(60);
+       _indicator->setFixedWidth(4);
+       _indicator->setObjectName("indicator");
+       _indicator->setStyleSheet("QWidget#indicator{border: 1px solid #000000; border-radius: 5px;};");
+       _back->setMouseTracking(true);
+       _indicator->setMouseTracking(true);
+
+
     };
 //    virtual ~ViewProgBar();
     void setIsBlockSignals(bool isBlockSignals){
@@ -359,9 +365,8 @@ public:
 //        _viewProgBarLoad =new viewProgBarLoad(engine);
         _engine = engine;
         auto *viewProgBarLayout = new QHBoxLayout();
-    //    viewProgBarLayout->setSpacing(1);
-//        auto width = _viewProgBar->width();
-        auto tmp = _engine->duration()/62;
+        viewProgBarLayout->setContentsMargins(0,5,0,5);
+        auto tmp = _engine->duration()/64;
         auto dpr = qApp->devicePixelRatio();
         QPixmap pm;
         pm.setDevicePixelRatio(dpr);
@@ -373,7 +378,7 @@ public:
         auto url = _engine->playlist().currentInfo().url;
         auto file = QFileInfo(url.toLocalFile()).absoluteFilePath();
     //    for(auto i=0;i<(_engine->duration() - tmp);){
-          for(auto i=0;i<63;i++){
+          for(auto i=0;i<65;i++){
             d = d.addSecs(tmp);
             try {
                 std::vector<uint8_t> buf;
@@ -389,22 +394,14 @@ public:
             QLabel *label = new QLabel();
             label->setPixmap(pm);
             label->setFixedSize(8,50);
+            viewProgBarLayout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
             viewProgBarLayout->addWidget(label, 0 , Qt::AlignLeft );
             viewProgBarLayout->setSpacing(1);
 
         }
-        setLayout(viewProgBarLayout);
-//        _indicatorLayout = new QHBoxLayout();
-        _indicator = new QLabel(this);
-        _indicator->setFixedSize(25,50);
-        QPalette palette;
-        palette.setColor(QPalette::Background, QColor("red"));
-        _indicator->setAutoFillBackground(true);  //一定要这句，否则不行
-        _indicator->setPalette(palette);
-        _indicator->move(50,0);
-        _indicator->show();
-//        _indicatorLayout->addWidget(_indicator);
-//        setLayout(_indicatorLayout);
+
+        _back->setLayout(viewProgBarLayout);
+        labelList = viewProgBarLayout->findChildren<QLabel*>();
 
 
     }
@@ -412,6 +409,8 @@ signals:
     void leaveViewProgBar();
     void hoverChanged(int);
     void sliderMoved(int);
+    void indicatorMoved(int);
+
 protected:
 
     void leaveEvent(QEvent *e) override
@@ -423,38 +422,18 @@ protected:
     {
 //        _time->move((width() - _time->width())/2, 69);
     }
-    void mouseMoveEvent(QMouseEvent *e)
+    void mouseMoveEvent(QMouseEvent *e) override
     {
         if (!isEnabled()) return;
 
-        int v = position2progress(e->pos());;
-//        if (_down) {
-//            setSliderPosition(v);
-//            if (_showIndicator) {
-//                _indicatorPos = {e->x(), pos().y()+TOOLBOX_TOP_EXTENT-4};
-//                update();
-//            }
-//        } else {
-            // a mouse enter from previewer happens
-//            if (_indicatorEnabled && !property("Hover").toBool()) {
-//                setProperty("Hover", "true");
-//                startAnimation(false);
-//                _showIndicator = true;
-//                update();
-//            }
-//            emit enter();
+        int v = position2progress(e->pos());
+        qDebug() << v;
 
-            if (_lastHoverValue != v) {
-//                if (_showIndicator) {
-//                    _indicatorPos = {e->x(), pos().y()+TOOLBOX_TOP_EXTENT-4};
-//                    update();
-//                }
+            if (_vlastHoverValue != v) {
 
                 emit hoverChanged(v);
             }
-
-            _lastHoverValue = v;
-//        }
+            _vlastHoverValue = v;
         e->accept();
     }
     void mousePressEvent(QMouseEvent *e)
@@ -471,22 +450,20 @@ protected:
     }
     void paintEvent(QPaintEvent *e)
     {
-        QPainter p(this);
-//        QRect r(0,0,4,60);
-        QRect r(_indicatorPos, QSize{4, 60});
-        //p.drawText(this->rect(),Qt::AlignCenter,"this is my widget");
-        p.fillRect(r, QBrush(_indicatorColor));
-               _indicator->show();
+        _indicator->move(_indicatorPos);
     }
 private:
     PlayerEngine *_engine;
-    int _lastHoverValue;
+    int _vlastHoverValue;
     bool _isBlockSignals;
     QPoint _indicatorPos {0, 0};
     QColor _indicatorColor;
-    QLabel *_indicator;
+//    QLabel *_indicator;
     viewProgBarLoad *_viewProgBarLoad;
-
+    QWidget *_back;
+    QWidget *_indicator;
+    QGraphicsColorizeEffect *m_effect;
+    QList<QLabel*> labelList ;
     QHBoxLayout *_indicatorLayout;
     int position2progress(const QPoint& p)
     {

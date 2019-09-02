@@ -94,10 +94,10 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
     le->setText(option->value().toString());
     le->setMaxLength(255);
 
-    le->setIconVisible(true);
-    le->setNormalIcon(":resources/icons/select-normal.svg");
-    le->setHoverIcon(":resources/icons/select-hover.svg");
-    le->setPressIcon(":resources/icons/select-press.svg");
+//    le->setIconVisible(true);
+//    le->setNormalIcon(":resources/icons/select-normal.svg");
+//    le->setHoverIcon(":resources/icons/select-hover.svg");
+//    le->setPressIcon(":resources/icons/select-press.svg");
 
     auto optionWidget = DSettingsWidgetFactory::createTwoColumWidget(option, le);
     workaround_updateStyle(optionWidget, "dlight");
@@ -126,14 +126,14 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
         return true;
     };
 
-    option->connect(le, &DLineEdit::iconClicked, [=]() {
-        QString name = QFileDialog::getExistingDirectory(0, QObject::tr("Open folder"),
-                MainWindow::lastOpenedPath(),
-                QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
-        if (validate(name, false)) {
-            option->setValue(name);
-        }
-    });
+//    option->connect(le, &DLineEdit::iconClicked, [=]() {
+//        QString name = QFileDialog::getExistingDirectory(0, QObject::tr("Open folder"),
+//                MainWindow::lastOpenedPath(),
+//                QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+//        if (validate(name, false)) {
+//            option->setValue(name);
+//        }
+//    });
 
     option->connect(le, &QLineEdit::editingFinished, option, [=]() {
         if (validate(le->text(), false)) {
@@ -2139,7 +2139,7 @@ void MainWindow::updateProxyGeometry()
         if (_toolbox) {
 //            QRect r(view_rect.left(), height() - TOOLBOX_HEIGHT_EXT - view_rect.top(),
 //                    view_rect.width(), TOOLBOX_HEIGHT_EXT);
-            QRect r((view_rect.width()-1050)/2, height() - TOOLBOX_HEIGHT_EXT - view_rect.top(),
+            QRect r((view_rect.width()-1050)/2, height() - TOOLBOX_HEIGHT_EXT - view_rect.top() - 10,
                     1050, TOOLBOX_HEIGHT_EXT);
             if (isFullScreen()) {
                 r.moveTopLeft({0, height() - TOOLBOX_HEIGHT_EXT});
