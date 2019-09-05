@@ -34,7 +34,7 @@
 #include <DMainWindow>
 #include <DTitlebar>
 #include <DPlatformWindowHandle>
-#include <QtWidgets>
+//#include <QtWidgets>
 #include "actions.h"
 
 namespace Dtk

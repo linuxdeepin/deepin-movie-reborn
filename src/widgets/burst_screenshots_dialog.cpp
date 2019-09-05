@@ -32,7 +32,7 @@
 #include "dmr_settings.h"
 #include "utils.h"
 
-#include <dthememanager.h>
+#include <DThemeManager>
 
 DWIDGET_USE_NAMESPACE
 

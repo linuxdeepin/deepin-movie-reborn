@@ -29,7 +29,7 @@
  */
 #include "slider.h"
 
-#include <dthememanager.h>
+#include <DThemeManager>
 #include <DApplication>
 
 #define TOOLBOX_TOP_EXTENT 12
@@ -96,7 +96,7 @@ namespace dmr
     }
     )";
 
-DMRSlider::DMRSlider(QWidget *parent): QSlider(parent) 
+DMRSlider::DMRSlider(QWidget *parent): DSlider(parent)
 {
     setTracking(false);
     setMouseTracking(true);

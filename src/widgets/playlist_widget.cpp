@@ -41,7 +41,7 @@
 #include <DApplication>
 #include <dimagebutton.h>
 #include <dthememanager.h>
-#include <dscrollbar.h>
+#include <DScrollBar>
 
 #define PLAYLIST_FIXED_WIDTH 817
 #define POPUP_DURATION 200

@@ -42,10 +42,10 @@
 #include "tip.h"
 #include "utils.h"
 
-#include <QtWidgets>
-#include <dimagebutton.h>
-#include <dthememanager.h>
-#include <darrowrectangle.h>
+//#include <QtWidgets>
+#include <DImageButton>
+#include <DThemeManager>
+#include <DArrowRectangle>
 #include <DApplication>
 #include <QThread>
 
@@ -347,7 +347,9 @@ public:
        _indicator->setStyleSheet("QWidget#indicator{border: 1px solid #000000; border-radius: 5px;};");
        _back->setMouseTracking(true);
        _indicator->setMouseTracking(true);
-
+       _viewProgBarLayout = new QHBoxLayout();
+       _viewProgBarLayout->setContentsMargins(0,5,0,5);
+       _back->setLayout(_viewProgBarLayout);
 
     };
 //    virtual ~ViewProgBar();
@@ -364,14 +366,29 @@ public:
 
 //        _viewProgBarLoad =new viewProgBarLoad(engine);
         _engine = engine;
-        auto *viewProgBarLayout = new QHBoxLayout();
-        viewProgBarLayout->setContentsMargins(0,5,0,5);
-        auto tmp = _engine->duration()/64;
+//        _viewProgBarLayout->
+        QLayoutItem *child;
+         while ((child = _viewProgBarLayout->takeAt(0)) != 0)
+         {
+                //setParent为NULL，防止删除之后界面不消失
+                if(child->widget())
+                {
+                    child->widget()->setParent(NULL);
+                }
+
+                delete child;
+         }
+
+//        auto *viewProgBarLayout = new QHBoxLayout();
+//        viewProgBarLayout->setContentsMargins(0,5,0,5);
+//        auto tmp = _engine->duration()/64?_engine->duration()/64:1;
+        auto tmp = (_engine->duration()*1000)/64;
         auto dpr = qApp->devicePixelRatio();
         QPixmap pm;
         pm.setDevicePixelRatio(dpr);
         VideoThumbnailer thumber;
-        QTime d(0, 0, 0);
+//        QTime d(0, 0, 0);
+        QTime d(0, 0, 0,0);
         thumber.setThumbnailSize(8 * qApp->devicePixelRatio());
         thumber.setMaintainAspectRatio(false);
         thumber.setSeekTime(d.toString("hh:mm:ss").toStdString());
@@ -379,7 +396,9 @@ public:
         auto file = QFileInfo(url.toLocalFile()).absoluteFilePath();
     //    for(auto i=0;i<(_engine->duration() - tmp);){
           for(auto i=0;i<65;i++){
-            d = d.addSecs(tmp);
+//            d = d.addSecs(tmp);
+              d = d.addMSecs(tmp);
+            thumber.setSeekTime(d.toString("hh:mm:ss:ms").toStdString());
             try {
                 std::vector<uint8_t> buf;
                 thumber.generateThumbnail(file.toUtf8().toStdString(),
@@ -394,14 +413,14 @@ public:
             QLabel *label = new QLabel();
             label->setPixmap(pm);
             label->setFixedSize(8,50);
-            viewProgBarLayout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
-            viewProgBarLayout->addWidget(label, 0 , Qt::AlignLeft );
-            viewProgBarLayout->setSpacing(1);
+            _viewProgBarLayout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
+            _viewProgBarLayout->addWidget(label, 0 , Qt::AlignLeft );
+            _viewProgBarLayout->setSpacing(1);
 
         }
 
-        _back->setLayout(viewProgBarLayout);
-        labelList = viewProgBarLayout->findChildren<QLabel*>();
+//        _back->setLayout(_viewProgBarLayout);
+        labelList = _viewProgBarLayout->findChildren<QLabel*>();
 
 
     }
@@ -465,6 +484,7 @@ private:
     QGraphicsColorizeEffect *m_effect;
     QList<QLabel*> labelList ;
     QHBoxLayout *_indicatorLayout;
+    QHBoxLayout *_viewProgBarLayout;
     int position2progress(const QPoint& p)
     {
         auto total = _engine->duration();

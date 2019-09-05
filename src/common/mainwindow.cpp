@@ -48,21 +48,21 @@
 #include "titlebar.h"
 #include "utils.h"
 
-#include <QtWidgets>
+//#include <QtWidgets>
 #include <QtDBus>
 #include <QtX11Extras>
 #include <QX11Info>
-#include <dlabel.h>
+#include <DLabel>
 #include <DApplication>
 #include <DTitlebar>
-#include <dsettingsdialog.h>
-#include <dthememanager.h>
-#include <daboutdialog.h>
-#include <dinputdialog.h>
-#include <dimagebutton.h>
+#include <DSettingsDialog>
+#include <DThemeManager>
+#include <DAboutDialog>
+#include <DInputDialog>
+#include <DImageButton>
 #include <DWidgetUtil>
 #include <DSettingsWidgetFactory>
-#include <dlineedit.h>
+#include <DLineEdit>
 
 #define AUTOHIDE_TIMEOUT 2000
 
@@ -2381,14 +2381,14 @@ void MainWindow::updateSizeConstraints()
             auto sz = _engine->videoSize();
             qreal ratio = (qreal)sz.width() / sz.height();
             if (sz.width() > sz.height()) {
-                int h = 528 / ratio;
-                m = QSize(528, h);
+                int h = 1070 / ratio;
+                m = QSize(1070, h);
             } else {
                 int w = 528 * ratio;
                 m = QSize(w, 528);
             }
         } else {
-            m = QSize(630, 386);
+            m = QSize(1070, 680);
         }
     }
 

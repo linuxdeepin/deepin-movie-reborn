@@ -31,7 +31,11 @@
 #define _DMR_TOOLBOX_PROXY_H 
 
 #include <DPlatformWindowHandle>
-#include <QtWidgets>
+//#include <QtWidgets>
+#include <DWidget>
+#include <QFrame>
+#include <QHBoxLayout>
+#include <QTimer>
 
 namespace Dtk
 {

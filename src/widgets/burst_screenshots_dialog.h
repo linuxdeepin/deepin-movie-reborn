@@ -31,8 +31,7 @@
 #define _DMR_BURST_SCREENSHOTS_DIALOG_H 
 
 #include <QtWidgets>
-#include <ddialog.h>
-#include <dtextbutton.h>
+#include <DDialog>
 
 DWIDGET_USE_NAMESPACE
 

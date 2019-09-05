@@ -32,7 +32,7 @@
 
 #include <QtGui>
 
-#include <dthememanager.h>
+#include <DThemeManager>
 
 DWIDGET_USE_NAMESPACE
 
