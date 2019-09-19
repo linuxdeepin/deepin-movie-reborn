@@ -794,10 +794,10 @@ void ToolboxProxy::setup()
 
     _progBar = new DMRSlider();
     _progBar->setObjectName("MovieProgress");
-    _progBar->setOrientation(Qt::Horizontal);
+    _progBar->slider()->setOrientation(Qt::Horizontal);
     _progBar->setFixedHeight(12+TOOLBOX_TOP_EXTENT);
     _progBar->setFixedWidth(584);
-    _progBar->setRange(0, 100);
+    _progBar->slider()->setRange(0, 100);
     _progBar->setValue(0);
     _progBar->setEnableIndication(_engine->state() != PlayerEngine::Idle);
 
@@ -809,7 +809,7 @@ void ToolboxProxy::setup()
         }
     });
 
-    connect(_progBar, &QSlider::sliderMoved, this, &ToolboxProxy::setProgress);
+    connect(_progBar, &DSlider::sliderMoved, this, &ToolboxProxy::setProgress);
     connect(_progBar, &DMRSlider::hoverChanged, this, &ToolboxProxy::progressHoverChanged);
 //    connect(_progBar, &DMRSlider::leave, [=]() { _previewer->hide(); });
     connect(&Settings::get(), &Settings::baseChanged,
@@ -971,7 +971,7 @@ void ToolboxProxy::setup()
 
     connect(_engine, &PlayerEngine::stateChanged, this, &ToolboxProxy::updatePlayState);
     connect(_engine, &PlayerEngine::fileLoaded, [=]() {
-        _progBar->setRange(0, _engine->duration());
+        _progBar->slider()->setRange(0, _engine->duration());
 //        setViewProgBar();
         _viewProgBar->setViewProgBar(_engine);
 //        _viewProgBar->show();
@@ -1123,8 +1123,8 @@ void ToolboxProxy::setProgress(int v)
 
 //    _engine->seekAbsolute(_progBar->sliderPosition());
     _engine->seekAbsolute(v);
-    if (_progBar->sliderPosition() != _lastHoverValue) {
-        progressHoverChanged(_progBar->sliderPosition());
+    if (_progBar->slider()->sliderPosition() != _lastHoverValue) {
+        progressHoverChanged(_progBar->slider()->sliderPosition());
     }
     updateMovieProgress();
 }

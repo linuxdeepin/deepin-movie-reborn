@@ -96,9 +96,9 @@ namespace dmr
     }
     )";
 
-DMRSlider::DMRSlider(QWidget *parent): DSlider(parent)
+DMRSlider::DMRSlider(QWidget *parent): DSlider(Qt::Horizontal,parent)
 {
-    setTracking(false);
+    slider()->setTracking(false);
     setMouseTracking(true);
 
     auto updateTheme = [=]() {
@@ -134,7 +134,7 @@ void DMRSlider::mouseReleaseEvent(QMouseEvent *e)
     if (_down) {
         //emit sliderMoved(sliderPosition());
         _down = false;
-        QSlider::mouseReleaseEvent(e);
+        QWidget::mouseReleaseEvent(e);
     }
 }
 
@@ -154,10 +154,10 @@ int DMRSlider::position2progress(const QPoint& p)
 void DMRSlider::mousePressEvent(QMouseEvent *e)
 {
     if (e->buttons() == Qt::LeftButton && isEnabled()) {
-        QSlider::mousePressEvent(e);
+        QWidget::mousePressEvent(e);
 
         int v = position2progress(e->pos());;
-        setSliderPosition(v);
+        slider()->setSliderPosition(v);
         emit sliderMoved(v);
         _down = true;
     }
@@ -169,7 +169,7 @@ void DMRSlider::mouseMoveEvent(QMouseEvent *e)
 
     int v = position2progress(e->pos());;
     if (_down) {
-        setSliderPosition(v);
+        slider()->setSliderPosition(v);
         if (_showIndicator) {
             _indicatorPos = {e->x(), pos().y()+TOOLBOX_TOP_EXTENT-4};
             update();
@@ -305,7 +305,7 @@ void DMRSlider::wheelEvent(QWheelEvent *e)
 
 void DMRSlider::paintEvent(QPaintEvent *e)
 {
-    QSlider::paintEvent(e);
+    QWidget::paintEvent(e);
 
     if (_indicatorEnabled && _showIndicator) {
         QPainter p(this);
