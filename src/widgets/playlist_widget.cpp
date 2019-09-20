@@ -508,7 +508,9 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     clearButton->setFixedSize(93,30);
     clearButton->setContentsMargins(0,0,0,0);
     leftinfo->addWidget(clearButton);
-    connect(clearButton,&QPushButton::clicked,this, &PlaylistWidget::clear);
+    connect(clearButton,&QPushButton::clicked,this, [=]{
+        _engine->clearPlaylist();
+    });
     left->setContentsMargins(36, 30, 0, 0);
     title->setContentsMargins(0, 0, 0, 0);
     clearButton->setContentsMargins(0, 0, 0, 0);
@@ -536,7 +538,7 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     _playlist->setFrameShape(QFrame::NoFrame);
     _playlist->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred));
 
-    _playlist->setSelectionMode(QListView::SingleSelection);
+    _playlist->setSelectionMode(QListView::NoSelection);
     _playlist->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     _playlist->setResizeMode(QListView::Adjust);
     _playlist->setDragDropMode(QListView::InternalMove);
