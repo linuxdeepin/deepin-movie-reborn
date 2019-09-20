@@ -126,7 +126,7 @@ int main(int argc, char *argv[])
 
     dmr::MainWindow mw;
     mw.setMinimumSize(QSize(1070, 680));
-    mw.resize(1070, 680);
+    mw.resize(1280, 720);
     utils::MoveToCenter(&mw);
     mw.show();
 
