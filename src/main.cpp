@@ -36,6 +36,7 @@
 #include <DMainWindow>
 #include <DApplication>
 #include <DWidgetUtil>
+#include <DApplicationSettings>
 
 #include "config.h"
 
@@ -76,6 +77,8 @@ int main(int argc, char *argv[])
     QString acknowledgementLink = "https://www.deepin.org/acknowledgments/deepin-movie";
     app.setApplicationAcknowledgementPage(acknowledgementLink);
 
+    //save theme
+    DApplicationSettings saveTheme;
     auto& clm = dmr::CommandLineManager::get();
     clm.process(app);
 
