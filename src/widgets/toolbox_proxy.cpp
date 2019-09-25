@@ -421,6 +421,7 @@ public:
 
 //        _back->setLayout(_viewProgBarLayout);
         labelList = _viewProgBarLayout->findChildren<QLabel*>();
+        update();
 
 
     }
@@ -973,7 +974,8 @@ void ToolboxProxy::setup()
     connect(_engine, &PlayerEngine::fileLoaded, [=]() {
         _progBar->slider()->setRange(0, _engine->duration());
 //        setViewProgBar();
-        _viewProgBar->setViewProgBar(_engine);
+        QTimer::singleShot(100, [this]() {_viewProgBar->setViewProgBar(_engine);});
+//        _viewProgBar->setViewProgBar(_engine);
 //        _viewProgBar->show();
 //        _progBar->hide();
 
