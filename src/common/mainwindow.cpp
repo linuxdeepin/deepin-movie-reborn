@@ -92,7 +92,7 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
     le->setFixedHeight(24);
     le->setObjectName("OptionSelectableLineEdit");
     le->setText(option->value().toString());
-    le->setMaxLength(255);
+//    le->setMaxLength(255);
 
 //    le->setIconVisible(true);
 //    le->setNormalIcon(":resources/icons/select-normal.svg");
@@ -135,7 +135,7 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
 //        }
 //    });
 
-    option->connect(le, &QLineEdit::editingFinished, option, [=]() {
+    option->connect(le, &DLineEdit::editingFinished, option, [=]() {
         if (validate(le->text(), false)) {
             option->setValue(le->text());
         } else {

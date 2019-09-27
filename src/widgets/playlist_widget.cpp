@@ -526,7 +526,7 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     rightinfo->setContentsMargins(0, 0, 0, 0);
     rightinfo->setSpacing(0);
     right->setLayout(rightinfo);
-    right->setContentsMargins(0, 30, 0, 0);
+    right->setContentsMargins(0, 0, 0, 0);
     mainLayout->addWidget(right);
 
     _playlist = new QListWidget();
