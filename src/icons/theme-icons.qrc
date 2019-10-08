@@ -1,0 +1,21 @@
+<RCC>
+    <qresource prefix="/icons/deepin/builtin">
+        <file>icons/dcc_delete_36px.svg</file>
+        <file>texts/dcc_clearlist_18px.svg</file>
+        <file>texts/dcc_episodes_36px.svg</file>
+        <file>texts/dcc_last_36px.svg</file>
+        <file>texts/dcc_mute_36px.svg</file>
+        <file>texts/dcc_next_36px.svg</file>
+        <file>texts/dcc_play_36px.svg</file>
+        <file>texts/dcc_suspend_36px.svg</file>
+        <file>texts/dcc_volume_36px.svg</file>
+        <file>texts/dcc_volumeadd_12px.svg</file>
+        <file>texts/dcc_volumelessen_12px.svg</file>
+        <file>texts/dcc_zoomin_36px.svg</file>
+        <file>texts/dcc_zoomout_36px.svg</file>
+    </qresource>
+    <qresource prefix="/icons/deepin/builtin/light">
+    </qresource>
+    <qresource prefix="/icons/deepin/builtin/dark">
+    </qresource>
+</RCC>

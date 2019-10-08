@@ -33,9 +33,11 @@
 
 namespace dmr {
 VolumeButton::VolumeButton(QWidget* parent)
-    : DImageButton(parent) 
+    : DIconButton(parent)
 {
     changeLevel(Level::High);
+    setIcon(QIcon::fromTheme("dcc_volume"));
+    setIconSize(QSize(36,36));
 }
 
 void VolumeButton::changeLevel(Level lv)
@@ -43,17 +45,14 @@ void VolumeButton::changeLevel(Level lv)
     if (_lv != lv) {
         switch (lv) {
             case Level::Off:
-                setObjectName("VolOff"); break;
             case Level::Mute:
-                setObjectName("VolMute"); break;
+                setIcon(QIcon::fromTheme("dcc_mute"));; break;
             case Level::Low:
-                setObjectName("VolLow"); break;
             case Level::Mid:
-                setObjectName("VolMid"); break;
             case Level::High:
-                setObjectName("VolHigh"); break;
+                setIcon(QIcon::fromTheme("dcc_volume"));; break;
         }
-        setStyleSheet(styleSheet());
+//        setStyleSheet(styleSheet());
         _lv = lv;
     }
 }

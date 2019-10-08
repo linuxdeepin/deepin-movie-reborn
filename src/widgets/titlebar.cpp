@@ -61,10 +61,21 @@ public:
     Q_DECLARE_PUBLIC(Titlebar)
 };
 
-Titlebar::Titlebar(QWidget *parent) : DTitlebar(parent), d_ptr(new TitlebarPrivate(this))
+Titlebar::Titlebar(QWidget *parent) : DBlurEffectWidget(parent), d_ptr(new TitlebarPrivate(this))
 {
-    Q_D(Titlebar);
-    DThemeManager::instance()->registerWidget(this);
+//    Q_D(Titlebar);
+//    QPalette palette;
+//    palette.setColor(QPalette::Background, QColor(0,0,0,0)); // 最后一项为透明度
+//    setPalette(palette);
+    setMaskAlpha(102);
+//    DThemeManager::instance()->registerWidget(this);
+    QHBoxLayout *layout = new QHBoxLayout(this);
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setSpacing(0);
+    m_titlebar = new DTitlebar(this);
+    m_titlebar->setBackgroundTransparent(true);
+    layout->addWidget(m_titlebar);
+    setLayout(layout);
 }
 
 Titlebar::~Titlebar()
@@ -110,43 +121,44 @@ void Titlebar::setBorderShadowTop(QColor borderShadowTop)
 
 void Titlebar::paintEvent(QPaintEvent *pe)
 {
-    Q_D(const Titlebar);
 
-    auto radius = RADIUS;
-    QPainter p(this);
-    p.setRenderHint(QPainter::Antialiasing);
+//    Q_D(const Titlebar);
 
-    auto titleBarHeight = this->height();
-    QRectF r = rect();
-    p.fillRect(r, Qt::transparent);
+//    auto radius = RADIUS;
+//    QPainter p(this);
+//    p.setRenderHint(QPainter::Antialiasing);
 
-    QRectF topLeftRect(r.topLeft(), QSize(2 * radius, 2 * radius));
-    QRectF topRightRect(QPoint(r.right() - 2 * radius, r.y()),
-                        QSize(2 * radius, 2 * radius));
+//    auto titleBarHeight = this->height();
+//    QRectF r = rect();
+//    p.fillRect(r, Qt::transparent);
 
-    QPainterPath titleBorder;
-    titleBorder.moveTo(r.x() + radius, r.y());
-    titleBorder.lineTo(r.x() + r.width() - radius, r.y());
-    titleBorder.arcTo(topRightRect, 90.0, -90.0);
-    titleBorder.lineTo(r.x() + r.width(), r.y() + radius);
-    titleBorder.lineTo(r.x() + r.width(), r.y() + titleBarHeight);
-    titleBorder.lineTo(r.x(), r.y() + titleBarHeight);
-    titleBorder.lineTo(r.x() , r.y() + radius);
-    titleBorder.arcTo(topLeftRect, 180.0, -90.0);
-    titleBorder.closeSubpath();
+//    QRectF topLeftRect(r.topLeft(), QSize(2 * radius, 2 * radius));
+//    QRectF topRightRect(QPoint(r.right() - 2 * radius, r.y()),
+//                        QSize(2 * radius, 2 * radius));
 
-    p.setClipPath(titleBorder);
-    p.fillPath(titleBorder, QBrush(d->titleBackground));
+//    QPainterPath titleBorder;
+//    titleBorder.moveTo(r.x() + radius, r.y());
+//    titleBorder.lineTo(r.x() + r.width() - radius, r.y());
+//    titleBorder.arcTo(topRightRect, 90.0, -90.0);
+//    titleBorder.lineTo(r.x() + r.width(), r.y() + radius);
+//    titleBorder.lineTo(r.x() + r.width(), r.y() + titleBarHeight);
+//    titleBorder.lineTo(r.x(), r.y() + titleBarHeight);
+//    titleBorder.lineTo(r.x() , r.y() + radius);
+//    titleBorder.arcTo(topLeftRect, 180.0, -90.0);
+//    titleBorder.closeSubpath();
 
-    QLine line(r.topLeft().x(), r.y() + titleBarHeight,
-               r.x() + r.width(), r.y() + titleBarHeight);
-    p.setPen(QPen(d->borderBottom, 1.0));
-    p.drawLine(line);
+//    p.setClipPath(titleBorder);
+//    p.fillPath(titleBorder, QBrush(d->titleBackground));
 
-    QLine lineOut(r.topLeft().x()+radius, r.y(),
-                  r.x() + r.width()-radius, r.y());
-    p.setPen(QPen(d->borderShadowTop, 1.0));
-    p.drawLine(lineOut);
+//    QLine line(r.topLeft().x(), r.y() + titleBarHeight,
+//               r.x() + r.width(), r.y() + titleBarHeight);
+//    p.setPen(QPen(d->borderBottom, 1.0));
+//    p.drawLine(line);
+
+//    QLine lineOut(r.topLeft().x()+radius, r.y(),
+//                  r.x() + r.width()-radius, r.y());
+//    p.setPen(QPen(d->borderShadowTop, 1.0));
+//    p.drawLine(lineOut);
 }
 
 }

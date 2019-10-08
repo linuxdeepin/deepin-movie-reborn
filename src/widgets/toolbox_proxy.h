@@ -36,6 +36,7 @@
 #include <QFrame>
 #include <QHBoxLayout>
 #include <QTimer>
+#include <DIconButton>
 
 namespace Dtk
 {
@@ -102,14 +103,15 @@ private:
     QLabel *_timeLabelend {nullptr};
     VolumeSlider *_volSlider {nullptr};
 
-    DImageButton *_playBtn {nullptr};
-    DImageButton *_prevBtn {nullptr};
-    DImageButton *_nextBtn {nullptr};
+//    DImageButton *_playBtn {nullptr};
+    DIconButton *_playBtn {nullptr};
+    DIconButton *_prevBtn {nullptr};
+    DIconButton *_nextBtn {nullptr};
 
-    DImageButton *_subBtn {nullptr};
+    DIconButton *_subBtn {nullptr};
     VolumeButton *_volBtn {nullptr};
-    DImageButton *_listBtn {nullptr};
-    DImageButton *_fsBtn {nullptr};
+    DIconButton *_listBtn {nullptr};
+    DIconButton *_fsBtn {nullptr};
 
     QHBoxLayout *_mid{nullptr};
     QHBoxLayout *_right{nullptr};

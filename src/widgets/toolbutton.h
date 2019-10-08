@@ -30,14 +30,16 @@
 #ifndef _DMR_TOOLBUTTON_H
 #define _DMR_TOOLBUTTON_H 
 
-#include <QtWidgets>
+//#include <QtWidgets>
+#include <QWheelEvent>
 #include <dimagebutton.h>
+#include <DIconButton>
 
 DWIDGET_USE_NAMESPACE
 
 namespace dmr {
 
-class VolumeButton: public DImageButton {
+class VolumeButton: public DIconButton {
     Q_OBJECT
 public:
     enum Level {

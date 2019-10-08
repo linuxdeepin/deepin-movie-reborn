@@ -507,15 +507,18 @@ skip_set_cursor:
 #endif
 
 MainWindow::MainWindow(QWidget *parent)
-    : QFrame(NULL)
+    : DFrame(NULL)
 {
     bool composited = CompositingManager::get().composited();
 #ifdef USE_DXCB
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowTitleHint | Qt::WindowMinMaxButtonsHint |
             Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint);
 #else
-    setWindowFlags(Qt::FramelessWindowHint);
+//    setWindowFlags(Qt::FramelessWindowHint);
 #endif
+    QPalette palette;
+    palette.setColor(QPalette::Background, QColor(0,0,0,0)); // 最后一项为透明度
+    setPalette(palette);
     setAcceptDrops(true);
 
     if (composited) {
@@ -523,8 +526,8 @@ MainWindow::MainWindow(QWidget *parent)
         //setAttribute(Qt::WA_NoSystemBackground, false);
     }
 
-    DThemeManager::instance()->registerWidget(this);
-    setFrameShape(QFrame::NoFrame);
+//    DThemeManager::instance()->registerWidget(this);
+//    setFrameShape(QFrame::NoFrame);
 
 #ifdef USE_DXCB
     if (DApplication::isDXcbPlatform()) {
@@ -781,15 +784,15 @@ void MainWindow::setupTitlebar()
 #else
     _titlebar->move(1, 1);
 #endif
-    _titlebar->setFixedHeight(30);
-    _titlebar->setBackgroundTransparent(true);
+    _titlebar->setFixedHeight(50);
+    _titlebar->titlebar()->setBackgroundTransparent(true);
     _titlebar->layout()->setContentsMargins(0, 0, 0, 0);
     _titlebar->setFocusPolicy(Qt::NoFocus);
     if (!CompositingManager::get().composited()) {
         _titlebar->setAttribute(Qt::WA_NativeWindow);
         _titlebar->winId();
     }
-    _titlebar->setMenu(ActionFactory::get().titlebarMenu());
+    _titlebar->titlebar()->setMenu(ActionFactory::get().titlebarMenu());
     {
         auto dpr = qApp->devicePixelRatio();
         int w2 = 24 * dpr;
@@ -804,8 +807,8 @@ void MainWindow::setupTitlebar()
         QPainter p(&pm);
         p.drawPixmap((w2-w)/2, (w2-w)/2, logo);
         p.end();
-        _titlebar->setIcon(pm);
-        _titlebar->setTitle(QString());
+        _titlebar->titlebar()->setIcon(pm);
+        _titlebar->titlebar()->setTitle(QString());
     }
 
     {
@@ -814,7 +817,7 @@ void MainWindow::setupTitlebar()
         connect(help, &QShortcut::activated, this, &MainWindow::handleHelpAction);
     }
 
-    connect(_titlebar->menu(), &QMenu::triggered, this, &MainWindow::menuItemInvoked);
+    connect(_titlebar->titlebar()->menu(), &QMenu::triggered, this, &MainWindow::menuItemInvoked);
 }
 
 void MainWindow::updateContentGeometry(const QRect& rect)
@@ -866,7 +869,7 @@ bool MainWindow::event(QEvent *ev)
         //connect(windowHandle(), &QWindow::windowStateChanged, this, &MainWindow::onWindowStateChanged);
         onWindowStateChanged();
     }
-    return QFrame::event(ev);
+    return DFrame::event(ev);
 }
 
 
@@ -2329,7 +2332,7 @@ void MainWindow::showEvent(QShowEvent *event)
 void MainWindow::resizeByConstraints(bool forceCentered)
 {
     if (_engine->state() == PlayerEngine::Idle || _engine->playlist().count() == 0) {
-        _titlebar->setTitle(QString());
+        _titlebar->titlebar()->setTitle(QString());
         return;
     }
 
@@ -2424,12 +2427,12 @@ void MainWindow::updateWindowTitle()
         const auto& mi = _engine->playlist().currentInfo().mi;
         auto title = _titlebar->fontMetrics().elidedText(mi.title,
                 Qt::ElideMiddle, _titlebar->contentsRect().width() - 300);
-        _titlebar->setTitle(title);
+        _titlebar->titlebar()->setTitle(title);
     } else {
-        _titlebar->setTitle(QString());
+        _titlebar->titlebar()->setTitle(QString());
     }
     _titlebar->setProperty("idle", _engine->state() == PlayerEngine::Idle);
-    _titlebar->setStyleSheet(styleSheet());
+//    _titlebar->setStyleSheet(styleSheet());
 }
 
 void MainWindow::moveEvent(QMoveEvent *ev)
@@ -2601,6 +2604,42 @@ QString MainWindow::lastOpenedPath()
 
 void MainWindow::paintEvent(QPaintEvent* pe)
 {
+    QPainter painter(this);
+    painter.setRenderHint(QPainter::Antialiasing);
+    QRectF bgRect;
+    bgRect.setSize(size());
+    const QPalette pal = QGuiApplication::palette();//this->palette();
+    QColor bgColor = pal.color(QPalette::Background);
+
+//    QPainterPath path;
+//    path.addRoundedRect(bgRect, 18, 18);
+//    // drawbackground color
+//    painter.setRenderHint(QPainter::Antialiasing, true);
+//    painter.fillPath(path, bgColor);
+//    painter.setRenderHint(QPainter::Antialiasing, false);
+
+    QImage& bg = bg_dark;
+    bool rounded = !isFullScreen() && !isMaximized();
+    if (rounded) {
+        QPainterPath pp;
+        pp.addRoundedRect(bgRect, RADIUS, RADIUS);
+        painter.fillPath(pp, bgColor);
+
+        {
+            auto view_rect = bgRect.marginsRemoved(QMargins(1, 1, 1, 1));
+            QPainterPath pp;
+            pp.addRoundedRect(view_rect, RADIUS, RADIUS);
+            painter.fillPath(pp, bgColor);
+        }
+    } else {
+        QPainterPath pp;
+        pp.addRect(bgRect);
+        painter.fillPath(pp, bgColor);
+    }
+    auto pt = bgRect.center() - QPoint(bg.width()/2, bg.height()/2)/devicePixelRatioF();
+    painter.drawImage(pt, bg);
+
+/*
     QPainter p(this);
     p.setRenderHint(QPainter::Antialiasing);
 
@@ -2627,9 +2666,6 @@ void MainWindow::paintEvent(QPaintEvent* pe)
         p.fillPath(pp, QColor(0, 0, 0, light ? 255 * 0.1: 255));
 
         {
-            /* we supposed to draw by qss background-color here, but it's conflict with
-             * border area (border has alpha, which blends with background-color.
-             */
             auto view_rect = rect().marginsRemoved(QMargins(1, 1, 1, 1));
             QPainterPath pp;
             pp.addRoundedRect(view_rect, RADIUS, RADIUS);
@@ -2645,7 +2681,7 @@ void MainWindow::paintEvent(QPaintEvent* pe)
 
     auto pt = rect().center() - QPoint(bg.width()/2, bg.height()/2)/devicePixelRatioF();
     p.drawImage(pt, bg);
-
+*/
 }
 
 void MainWindow::toggleUIMode()
@@ -2654,9 +2690,9 @@ void MainWindow::toggleUIMode()
     qDebug() << __func__ << _miniMode;
 
     if (_miniMode)
-        _titlebar->setDisableFlags(Qt::WindowMaximizeButtonHint);
+        _titlebar->titlebar()->setDisableFlags(Qt::WindowMaximizeButtonHint);
     else
-        _titlebar->setDisableFlags(0);
+        _titlebar->titlebar()->setDisableFlags(0);
 
     if (_listener) _listener->setEnabled(!_miniMode);
 

@@ -871,22 +871,27 @@ void ToolboxProxy::setup()
     bot->addWidget(_viewProgBar);
     bot->addWidget(_timeLabelend);
     
-    _prevBtn = new DImageButton();
-    _prevBtn->setFixedSize(48, TOOLBOX_HEIGHT);
+    _prevBtn = new DIconButton(this);
+    _prevBtn->setIcon(QIcon::fromTheme("dcc_last"));
+    _prevBtn->setIconSize(QSize(36,36));
+    _prevBtn->setFixedSize(50, 50);
     _prevBtn->setObjectName("PrevBtn");
     connect(_prevBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_prevBtn, "prev");
     _mid->addWidget(_prevBtn);
 
-    _playBtn = new DImageButton();
-    _playBtn->setFixedSize(48, TOOLBOX_HEIGHT);
+    _playBtn = new DIconButton(this);
+    _playBtn->setIcon(QIcon::fromTheme("dcc_play"));
+    _playBtn->setIconSize(QSize(36,36));
+    _playBtn->setFixedSize(50, 50);
     connect(_playBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_playBtn, "play");
     _mid->addWidget(_playBtn);
 
-    _nextBtn = new DImageButton();
-    _nextBtn->setFixedSize(48, TOOLBOX_HEIGHT);
-    _nextBtn->setObjectName("NextBtn");
+    _nextBtn = new DIconButton(this);
+    _nextBtn->setIcon(QIcon::fromTheme("dcc_next"));
+    _nextBtn->setIconSize(QSize(36,36));
+    _nextBtn->setFixedSize(50, 50);
     connect(_nextBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_nextBtn, "next");
     _mid->addWidget(_nextBtn);
@@ -899,17 +904,18 @@ void ToolboxProxy::setup()
     _right->setSpacing(0);
     bot->addLayout(_right);
 
-    _subBtn = new DImageButton();
-    _subBtn->setFixedSize(48, TOOLBOX_HEIGHT);
-    _subBtn->setObjectName("SubtitleBtn");
+    _subBtn = new DIconButton(this);
+    _subBtn->setIcon(QIcon::fromTheme("dcc_episodes"));
+    _subBtn->setIconSize(QSize(36,36));
+    _subBtn->setFixedSize(50, 50);
     connect(_subBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_subBtn, "sub");
     _right->addWidget(_subBtn);
 
     _subBtn->hide();
 
-    _volBtn = new VolumeButton();
-    _volBtn->setFixedSize(48, TOOLBOX_HEIGHT);
+    _volBtn = new VolumeButton(this);
+    _volBtn->setFixedSize(50, 50);
     connect(_volBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_volBtn, "vol");
     _right->addWidget(_volBtn);
@@ -931,15 +937,18 @@ void ToolboxProxy::setup()
 
 
 
-    _fsBtn = new DImageButton();
-    _fsBtn->setFixedSize(48, TOOLBOX_HEIGHT);
+    _fsBtn = new DIconButton(this);
+    _fsBtn->setIcon(QIcon::fromTheme("dcc_zoomin"));
+    _fsBtn->setIconSize(QSize(36,36));
+    _fsBtn->setFixedSize(50, 50);
     connect(_fsBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_fsBtn, "fs");
     _right->addWidget(_fsBtn);
 
-    _listBtn = new DImageButton();
-    _listBtn->setFixedSize(48, TOOLBOX_HEIGHT);
-    _listBtn->setObjectName("ListBtn");
+    _listBtn = new DIconButton(this);
+    _listBtn->setIcon(QIcon::fromTheme("dcc_episodes"));
+    _listBtn->setIconSize(QSize(36,36));
+    _listBtn->setFixedSize(50, 50);
     connect(_listBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_listBtn, "list");
     _right->addWidget(_listBtn);
@@ -1162,8 +1171,10 @@ void ToolboxProxy::updateButtonStates()
 {
     qDebug() << _engine->playingMovieInfo().subs.size();
     bool vis = _engine->playlist().count() > 1 && _mainWindow->inited();
-    _prevBtn->setVisible(vis);
-    _nextBtn->setVisible(vis);
+//    _prevBtn->setVisible(vis);
+    _prevBtn->setDisabled(!vis);
+//    _nextBtn->setVisible(vis);
+    _nextBtn->setDisabled(!vis);
 
     vis = _engine->state() != PlayerEngine::CoreState::Idle;
     if (vis) {
@@ -1195,23 +1206,27 @@ void ToolboxProxy::updateFullState()
 {
     bool isFullscreen = window()->isFullScreen();
     if (isFullscreen) {
-        _fsBtn->setObjectName("UnfsBtn");
+//        _fsBtn->setObjectName("UnfsBtn");
+        _fsBtn->setIcon(QIcon::fromTheme("dcc_zoomout"));
         _fsBtn->setToolTip(tr("Exit fullscreen"));
     } else {
-        _fsBtn->setObjectName("FsBtn");
+//        _fsBtn->setObjectName("FsBtn");
+        _fsBtn->setIcon(QIcon::fromTheme("dcc_zoomin"));
         _fsBtn->setToolTip(tr("Fullscreen"));
     }
-    _fsBtn->setStyleSheet(_playBtn->styleSheet());
+//    _fsBtn->setStyleSheet(_playBtn->styleSheet());
 }
 
 void ToolboxProxy::updatePlayState()
 {
     qDebug() << __func__ << _engine->state();
     if (_engine->state() == PlayerEngine::CoreState::Playing) {
-        _playBtn->setObjectName("PauseBtn");
+//        _playBtn->setObjectName("PauseBtn");
+        _playBtn->setIcon(QIcon::fromTheme("dcc_suspend"));
         _playBtn->setToolTip(tr("Pause"));
     } else {
-        _playBtn->setObjectName("PlayBtn");
+//        _playBtn->setObjectName("PlayBtn");
+        _playBtn->setIcon(QIcon::fromTheme("dcc_play"));
         _playBtn->setToolTip(tr("Play"));
     }
 

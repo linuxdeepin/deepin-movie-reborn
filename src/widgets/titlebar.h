@@ -32,10 +32,13 @@
 #include <QScopedPointer>
 //#include <dtitlebar.h>
 #include <DTitlebar>
-
+#include <DWidget>
+#include <QHBoxLayout>
+#include <DBlurEffectWidget>
+DWIDGET_USE_NAMESPACE
 namespace dmr {
 class TitlebarPrivate;
-class Titlebar : public Dtk::Widget::DTitlebar {
+class Titlebar : public DBlurEffectWidget {
     Q_OBJECT
 
     Q_PROPERTY(QBrush background READ background WRITE setBackground)
@@ -50,6 +53,7 @@ public:
     QBrush background() const;
     QColor borderBottom() const;
     QColor borderShadowTop() const;
+    DTitlebar *titlebar(){return m_titlebar;};
 
 
 public slots:
@@ -64,6 +68,7 @@ private:
     QScopedPointer<TitlebarPrivate> d_ptr;
     Q_DECLARE_PRIVATE_D(qGetPtrHelper(d_ptr), Titlebar)
     QColor m_borderBottom;
+    DTitlebar *m_titlebar;
 };
 }
 #endif /* ifndef DMR_TITLEBAR_H */

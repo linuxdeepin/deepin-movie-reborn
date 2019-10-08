@@ -28,6 +28,7 @@ pkg_check_modules(Other REQUIRED libffmpegthumbnailer
     libpulse libpulse-simple openssl dvdnav)
 
 qt5_add_resources(RCS resources.qrc)
+qt5_add_resources(RCS icons/theme-icons.qrc)
 if (${Dtk_VERSION} LESS 2.0.6.1)
     qt5_add_resources(RCS theme.qrc)
 endif()

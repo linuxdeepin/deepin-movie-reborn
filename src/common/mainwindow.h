@@ -35,7 +35,9 @@
 #include <DTitlebar>
 #include <DPlatformWindowHandle>
 //#include <QtWidgets>
+#include <DFrame>
 #include "actions.h"
+#include "widgets/titlebar.h"
 
 namespace Dtk
 {
@@ -58,7 +60,7 @@ class PlayerEngine;
 class NotificationWidget;
 class MovieProgressIndicator;
 
-class MainWindow: public QFrame {
+class MainWindow: public DFrame {
     Q_OBJECT
     Q_PROPERTY(bool inited READ inited WRITE setInit NOTIFY initChanged)
 public:
@@ -67,7 +69,7 @@ public:
 
     bool inited() const { return _inited; }
     PlayerEngine* engine() { return _engine; }
-    DTitlebar* titlebar() { return _titlebar; }
+    Titlebar* titlebar() { return _titlebar; }
     ToolboxProxy* toolbox() { return _toolbox; }
     PlaylistWidget* playlist() { return _playlist; }
 
@@ -167,7 +169,7 @@ private:
     void prepareSplashImages();
 
 private:
-    DTitlebar *_titlebar {nullptr};
+    Titlebar *_titlebar {nullptr};
     ToolboxProxy *_toolbox {nullptr};
     PlaylistWidget *_playlist {nullptr};
     PlayerEngine *_engine {nullptr};

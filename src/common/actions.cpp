@@ -82,7 +82,7 @@ QMenu* ActionFactory::titlebarMenu()
         DEF_ACTION(tr("Open file"), ActionKind::OpenFileList);
         DEF_ACTION(tr("Open folder"), ActionKind::OpenDirectory);
         DEF_ACTION(tr("Settings"), ActionKind::Settings);
-        DEF_ACTION_CHECKED(tr("Light theme"), ActionKind::LightTheme);
+//        DEF_ACTION_CHECKED(tr("Light theme"), ActionKind::LightTheme);
         menu->addSeparator();
         // these seems added by titlebar itself
         //DEF_ACTION("About", ActionKind::About);
