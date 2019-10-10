@@ -798,8 +798,13 @@ void MainWindow::setupTitlebar()
         int w2 = 24 * dpr;
         int w = 16 * dpr;
         //hack: titlebar fixed icon size to (24x24), but we need (16x16)
-        auto logo = QPixmap(":/resources/icons/logo.svg")
+//        auto logo = QPixmap(":/resources/icons/logo.svg")
+//            .scaled(w, w, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+
+        QIcon icon = QIcon::fromTheme("deepin-movie");
+        auto logo = icon.pixmap(QSize(32, 32))
             .scaled(w, w, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+
         logo.setDevicePixelRatio(dpr);
         QPixmap pm(w2, w2);
         pm.setDevicePixelRatio(dpr);
