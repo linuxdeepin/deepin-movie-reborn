@@ -37,6 +37,7 @@
 #include <QHBoxLayout>
 #include <QTimer>
 #include <DIconButton>
+#include <DButtonBox>
 
 namespace Dtk
 {
@@ -104,9 +105,14 @@ private:
     VolumeSlider *_volSlider {nullptr};
 
 //    DImageButton *_playBtn {nullptr};
-    DIconButton *_playBtn {nullptr};
-    DIconButton *_prevBtn {nullptr};
-    DIconButton *_nextBtn {nullptr};
+//    DIconButton *_playBtn {nullptr};
+//    DIconButton *_prevBtn {nullptr};
+//    DIconButton *_nextBtn {nullptr};
+
+    DButtonBoxButton *_playBtn {nullptr};
+    DButtonBoxButton *_prevBtn {nullptr};
+    DButtonBoxButton *_nextBtn {nullptr};
+    DButtonBox *_palyBox{nullptr};
 
     DIconButton *_subBtn {nullptr};
     VolumeButton *_volBtn {nullptr};
@@ -118,6 +124,7 @@ private:
     ViewProgBar *_viewProgBar{nullptr};
 
     DMRSlider *_progBar {nullptr};
+    DWidget *_progBarspec {nullptr};
     ThumbnailPreview *_previewer {nullptr};
     SubtitlesView *_subView {nullptr};
     int _lastHoverValue {0};

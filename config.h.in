@@ -10,6 +10,6 @@
 /* only defined when build with flatpak */
 #cmakedefine DTK_DMAN_PORTAL
 
-#define RADIUS 4
+#define RADIUS 18
 
 #endif  /* __CONFIG_H__ */

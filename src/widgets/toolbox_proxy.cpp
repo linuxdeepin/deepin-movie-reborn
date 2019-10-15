@@ -48,6 +48,7 @@
 #include <DArrowRectangle>
 #include <DApplication>
 #include <QThread>
+#include <DSlider>
 
 static const int LEFT_MARGIN = 15;
 static const int RIGHT_MARGIN = 10;
@@ -119,7 +120,7 @@ public:
     SubtitleItemWidget(QWidget *parent, SubtitleInfo si): QWidget() {
         _sid = si["id"].toInt();
 
-        DThemeManager::instance()->registerWidget(this, QStringList() << "current");
+//        DThemeManager::instance()->registerWidget(this, QStringList() << "current");
         
         setFixedWidth(200);
 
@@ -153,7 +154,7 @@ public:
         }
 
         setProperty("current", v?"true":"false");
-        setStyleSheet(this->styleSheet());
+//        setStyleSheet(this->styleSheet());
         style()->unpolish(_title);
         style()->polish(_title);
     }
@@ -194,7 +195,7 @@ public:
         : DArrowRectangle(DArrowRectangle::ArrowBottom, p), _engine{e} {
         setWindowFlags(Qt::Popup);
 
-        DThemeManager::instance()->registerWidget(this);
+//        DThemeManager::instance()->registerWidget(this);
 
         setMinimumHeight(20);
         setShadowBlurRadius(4);
@@ -333,18 +334,20 @@ public:
     ViewProgBar(QWidget *parent = 0){
        setFixedHeight(60);
        setFixedWidth(584);
+//       setFixedWidth(1450);
        _vlastHoverValue = 0;
        _isBlockSignals=false;
        setMouseTracking(true);
        _back = new QWidget(this);
        _back->setFixedHeight(60);
        _back->setFixedWidth(584);
+//       _back->setFixedWidth(1450);
        _back->setContentsMargins(0,0,0,0);
        _indicator = new QWidget(this);
        _indicator->setFixedHeight(60);
        _indicator->setFixedWidth(4);
        _indicator->setObjectName("indicator");
-       _indicator->setStyleSheet("QWidget#indicator{border: 1px solid #000000; border-radius: 5px;};");
+       _indicator->setStyleSheet("QWidget#indicator{border: 1px solid #000000; border-radius: 5px;};");//needtomodify
        _back->setMouseTracking(true);
        _indicator->setMouseTracking(true);
        _viewProgBarLayout = new QHBoxLayout();
@@ -366,7 +369,6 @@ public:
 
 //        _viewProgBarLoad =new viewProgBarLoad(engine);
         _engine = engine;
-//        _viewProgBarLayout->
         QLayoutItem *child;
          while ((child = _viewProgBarLayout->takeAt(0)) != 0)
          {
@@ -396,6 +398,7 @@ public:
         auto file = QFileInfo(url.toLocalFile()).absoluteFilePath();
     //    for(auto i=0;i<(_engine->duration() - tmp);){
           for(auto i=0;i<65;i++){
+//          for(auto i=0;i<163;i++){
 //            d = d.addSecs(tmp);
               d = d.addMSecs(tmp);
             thumber.setSeekTime(d.toString("hh:mm:ss:ms").toStdString());
@@ -447,19 +450,28 @@ protected:
         if (!isEnabled()) return;
 
         int v = position2progress(e->pos());
-        qDebug() << v;
-
-            if (_vlastHoverValue != v) {
-
-                emit hoverChanged(v);
+        if ( e->pos().x() >= 0 && e->pos().x() <= contentsRect().width() ) {
+            if (e->buttons() & Qt::LeftButton){
+                int distance = (e->pos() - _startPos).manhattanLength();
+                if (distance >= QApplication::startDragDistance()){
+                    emit sliderMoved(v);
+                    emit hoverChanged(v);
+                }
+            }else {
+                qDebug() << v;
+                if (_vlastHoverValue != v) {
+                    emit hoverChanged(v);
+                }
+                _vlastHoverValue = v;
             }
-            _vlastHoverValue = v;
+        }
         e->accept();
     }
     void mousePressEvent(QMouseEvent *e)
     {
         if (e->buttons() == Qt::LeftButton && isEnabled()) {
 //            QSlider::mousePressEvent(e);
+            _startPos = e->pos();
 
             int v = position2progress(e->pos());;
 //            setSliderPosition(v);
@@ -475,6 +487,7 @@ protected:
 private:
     PlayerEngine *_engine;
     int _vlastHoverValue;
+    QPoint _startPos;
     bool _isBlockSignals;
     QPoint _indicatorPos {0, 0};
     QColor _indicatorColor;
@@ -564,21 +577,21 @@ protected slots:
         if (qApp->theme() == "dark") {
             setBackgroundColor(QColor(23, 23, 23, 255 * 8 / 10));
             setBorderColor(QColor(255, 255 ,255, 25));
-            _time->setStyleSheet(R"(
-                border-radius: 3px;
-                background-color: rgba(23, 23, 23, 0.8);
-                font-size: 12px;
-                color: #ffffff; 
-            )");
+//            _time->setStyleSheet(R"(
+//                border-radius: 3px;
+//                background-color: rgba(23, 23, 23, 0.8);
+//                font-size: 12px;
+//                color: #ffffff;
+//            )");
         } else {
             setBackgroundColor(QColor(255, 255, 255, 255 * 8 / 10));
             setBorderColor(QColor(0, 0 ,0, 25));
-            _time->setStyleSheet(R"(
-                border-radius: 3px;
-                background-color: rgba(255, 255, 255, 0.8);
-                font-size: 12px;
-                color: #303030; 
-            )");
+//            _time->setStyleSheet(R"(
+//                border-radius: 3px;
+//                background-color: rgba(255, 255, 255, 0.8);
+//                font-size: 12px;
+//                color: #303030;
+//            )");
         }
     }
 
@@ -603,7 +616,7 @@ class VolumeSlider: public DArrowRectangle {
 public:
     VolumeSlider(PlayerEngine* eng, MainWindow* mw)
         :DArrowRectangle(DArrowRectangle::ArrowBottom), _engine(eng), _mw(mw) {
-        setFixedSize(QSize(24, 105));
+        setFixedSize(QSize(62, 201));
         setWindowFlags(Qt::Tool);
 
         setShadowBlurRadius(4);
@@ -613,25 +626,29 @@ public:
         setArrowWidth(8);
         setArrowHeight(6);
 
-        connect(DThemeManager::instance(), &DThemeManager::themeChanged, 
-                this, &VolumeSlider::updateBg);
+//        connect(DThemeManager::instance(), &DThemeManager::themeChanged,
+//                this, &VolumeSlider::updateBg);
 
-        updateBg();
+//        updateBg();
         
-        auto *l = new QVBoxLayout;
+        auto *l = new QHBoxLayout;
         l->setContentsMargins(0, 4, 0, 10);
         setLayout(l);
 
-        _slider = new QSlider(this);
+        _slider = new DSlider(Qt::Vertical,this);
+        _slider->setLeftIcon(QIcon::fromTheme("dcc_volumeadd"));
+        _slider->setRightIcon(QIcon::fromTheme("dcc_volumelessen"));
+        _slider->setIconSize(QSize(20,20));
         _slider->installEventFilter(this);
         _slider->show();
-        _slider->setRange(0, 100);
-        _slider->setOrientation(Qt::Vertical);
+        _slider->slider()->setRange(0, 100);
+//        _slider->slider()->setOrientation(Qt::Vertical);
 
         _slider->setValue(_engine->volume());
-        l->addWidget(_slider);
+        l->addWidget(_slider,Qt::AlignHCenter);
 
-        connect(_slider, &QSlider::valueChanged, [=]() {
+
+        connect(_slider, &DSlider::valueChanged, [=]() {
             _mw->requestAction(ActionFactory::ChangeVolume, false, QList<QVariant>() << _slider->value());
         });
 
@@ -645,8 +662,8 @@ public:
 
 
     ~VolumeSlider() {
-        disconnect(DThemeManager::instance(), &DThemeManager::themeChanged, 
-                this, &VolumeSlider::updateBg);
+//        disconnect(DThemeManager::instance(), &DThemeManager::themeChanged,
+//                this, &VolumeSlider::updateBg);
     }
 
     void stopTimer() {
@@ -673,11 +690,11 @@ protected:
         
 private slots:
     void updateBg() {
-        if (qApp->theme() == "dark") {
-            setBackgroundColor(QColor(49, 49, 49, 255 * 9 / 10));
-        } else {
-            setBackgroundColor(QColor(255, 255, 255, 255 * 9 / 10));
-        }
+//        if (qApp->theme() == "dark") {
+//            setBackgroundColor(QColor(49, 49, 49, 255 * 9 / 10));
+//        } else {
+//            setBackgroundColor(QColor(255, 255, 255, 255 * 9 / 10));
+//        }
     }
 
     bool eventFilter(QObject *obj, QEvent *e) {
@@ -698,7 +715,7 @@ private slots:
 
 private:
     PlayerEngine *_engine;
-    QSlider *_slider;
+    DSlider *_slider;
     MainWindow *_mw;
     QTimer _autoHideTimer;
 };
@@ -769,7 +786,7 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
         setAttribute(Qt::WA_NativeWindow);
     }
 
-    DThemeManager::instance()->registerWidget(this);
+//    DThemeManager::instance()->registerWidget(this);
 
     _previewer = new ThumbnailPreview;
     _previewer->hide();
@@ -793,15 +810,20 @@ void ToolboxProxy::setup()
     stacked->setStackingMode(QStackedLayout::StackAll);
     setLayout(stacked);
 
+    _progBarspec = new DWidget();
+    _progBarspec->setFixedHeight(12+TOOLBOX_TOP_EXTENT);
+    _progBarspec->setFixedWidth(584);
+//    _progBarspec->setFixedWidth(1450);
     _progBar = new DMRSlider();
     _progBar->setObjectName("MovieProgress");
     _progBar->slider()->setOrientation(Qt::Horizontal);
     _progBar->setFixedHeight(12+TOOLBOX_TOP_EXTENT);
     _progBar->setFixedWidth(584);
+//    _progBar->setFixedWidth(1450);
     _progBar->slider()->setRange(0, 100);
     _progBar->setValue(0);
     _progBar->setEnableIndication(_engine->state() != PlayerEngine::Idle);
-
+    _progBar->hide();
     connect(_previewer, &ThumbnailPreview::leavePreview, [=]() {
         auto pos = _progBar->mapFromGlobal(QCursor::pos());
         if (!_progBar->geometry().contains(pos)) {
@@ -859,44 +881,100 @@ void ToolboxProxy::setup()
     connect(signalMapper, static_cast<void(QSignalMapper::*)(const QString&)>(&QSignalMapper::mapped),
             this, &ToolboxProxy::buttonClicked);
 
-    bot->addStretch();
+//    bot->addStretch();
 
     _mid = new QHBoxLayout();
     _mid->setContentsMargins(0, 0, 0, 0);
     _mid->setSpacing(14);
+    _mid->setAlignment(Qt::AlignLeft);
     bot->addLayout(_mid);
 
-    bot->addWidget(_timeLabel);
-    bot->addWidget(_progBar);
-    bot->addWidget(_viewProgBar);
-    bot->addWidget(_timeLabelend);
+
+    QHBoxLayout *time = new QHBoxLayout();
+    time->setContentsMargins(0, 0, 0, 0);
+    time->setSpacing(0);
+    time->setAlignment(Qt::AlignLeft);
+    bot->addLayout(time);
+    time->addWidget(_timeLabel);
+
+    bot->addStretch();
+
+    QHBoxLayout *progBarspec = new QHBoxLayout();
+    progBarspec->setContentsMargins(0, 0, 0, 0);
+    progBarspec->setSpacing(0);
+    progBarspec->setAlignment(Qt::AlignHCenter);
+    bot->addLayout(progBarspec);
+    progBarspec->addWidget(_progBarspec);
+
+    QHBoxLayout *progBar = new QHBoxLayout();
+    progBar->setContentsMargins(0, 0, 0, 0);
+    progBar->setSpacing(0);
+    progBar->setAlignment(Qt::AlignHCenter);
+    bot->addLayout(progBar);
+    progBar->addWidget(_progBar);
+
+    QHBoxLayout *viewProgBar = new QHBoxLayout();
+    viewProgBar->setContentsMargins(0, 0, 0, 0);
+    viewProgBar->setSpacing(0);
+    viewProgBar->setAlignment(Qt::AlignHCenter);
+    bot->addLayout(viewProgBar);
+    viewProgBar->addWidget(_viewProgBar);
+
+//    bot->addWidget(_timeLabel);
+//    bot->addWidget(_progBarspec);
+//    bot->addWidget(_progBar);
+//    bot->addWidget(_viewProgBar);
+//    bot->addWidget(_timeLabelend);
     
-    _prevBtn = new DIconButton(this);
-    _prevBtn->setIcon(QIcon::fromTheme("dcc_last"));
+    bot->addStretch();
+
+    QHBoxLayout *timeend = new QHBoxLayout();
+    timeend->setContentsMargins(10, 0, 0, 0);
+    timeend->setSpacing(0);
+    timeend->setAlignment(Qt::AlignRight);
+    bot->addLayout(timeend);
+    timeend->addWidget(_timeLabelend);
+
+    _palyBox = new DButtonBox(this);
+    _mid->addWidget(_palyBox);
+    _mid->setAlignment(_palyBox,Qt::AlignLeft);
+    QList<DButtonBoxButton*> list;
+
+
+//    _prevBtn = new DIconButton(this);
+    _prevBtn = new DButtonBoxButton(QIcon::fromTheme("dcc_last"));
+//    _prevBtn->setIcon(QIcon::fromTheme("dcc_last"));
     _prevBtn->setIconSize(QSize(36,36));
     _prevBtn->setFixedSize(50, 50);
     _prevBtn->setObjectName("PrevBtn");
     connect(_prevBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_prevBtn, "prev");
-    _mid->addWidget(_prevBtn);
-
-    _playBtn = new DIconButton(this);
-    _playBtn->setIcon(QIcon::fromTheme("dcc_play"));
+//    _mid->addWidget(_prevBtn);
+    list.append(_prevBtn);
+    _playBtn = new DButtonBoxButton(QIcon::fromTheme("dcc_play"));
+//    _playBtn->setIcon(QIcon::fromTheme("dcc_play"));
     _playBtn->setIconSize(QSize(36,36));
     _playBtn->setFixedSize(50, 50);
     connect(_playBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_playBtn, "play");
-    _mid->addWidget(_playBtn);
+//    _mid->addWidget(_playBtn);
+    list.append(_playBtn);
 
-    _nextBtn = new DIconButton(this);
-    _nextBtn->setIcon(QIcon::fromTheme("dcc_next"));
+    _nextBtn = new DButtonBoxButton(QIcon::fromTheme("dcc_next"));
+//    _nextBtn->setIcon(QIcon::fromTheme("dcc_next"));
     _nextBtn->setIconSize(QSize(36,36));
     _nextBtn->setFixedSize(50, 50);
     connect(_nextBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_nextBtn, "next");
-    _mid->addWidget(_nextBtn);
+//    _mid->addWidget(_nextBtn);
+    list.append(_nextBtn);
+    _palyBox->setButtonList(list,false);
+    _palyBox->setFocusPolicy(Qt::FocusPolicy::NoFocus);
+    _nextBtn->setFocusPolicy(Qt::FocusPolicy::NoFocus);
+    _playBtn->setFocusPolicy(Qt::FocusPolicy::NoFocus);
+    _prevBtn->setFocusPolicy(Qt::FocusPolicy::NoFocus);
 
-    bot->addStretch();
+//    bot->addStretch();
 
     _right = new QHBoxLayout();
     _right->setContentsMargins(0, 0, 0, 0);
@@ -918,14 +996,14 @@ void ToolboxProxy::setup()
     _volBtn->setFixedSize(50, 50);
     connect(_volBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_volBtn, "vol");
-    _right->addWidget(_volBtn);
+//    _right->addWidget(_volBtn);
 
     _volSlider = new VolumeSlider(_engine, _mainWindow);
     connect(_volBtn, &VolumeButton::entered, [=]() {
         _volSlider->stopTimer();
         QPoint pos = _volBtn->parentWidget()->mapToGlobal(_volBtn->pos());
         pos.ry() = parentWidget()->mapToGlobal(this->pos()).y();
-        _volSlider->show(pos.x() + _volSlider->width(), pos.y() - 5 + TOOLBOX_TOP_EXTENT);
+        _volSlider->show(pos.x() + _volSlider->width()/2-5, pos.y() - 5 + TOOLBOX_TOP_EXTENT);
     });
     connect(_volBtn, &VolumeButton::leaved, _volSlider, &VolumeSlider::delayedHide);
     connect(_volBtn, &VolumeButton::requestVolumeUp, [=]() {
@@ -944,6 +1022,7 @@ void ToolboxProxy::setup()
     connect(_fsBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_fsBtn, "fs");
     _right->addWidget(_fsBtn);
+    _right->addWidget(_volBtn);
 
     _listBtn = new DIconButton(this);
     _listBtn->setIcon(QIcon::fromTheme("dcc_episodes"));
@@ -1057,8 +1136,9 @@ void ToolboxProxy::setViewProgBar(){
     }
     _viewProgBar->setLayout(viewProgBarLayout);
 
-    _viewProgBar->show();
-    _progBar->hide();
+//    _viewProgBar->show();
+//    _progBar->hide();
+//    _progBarspec->hide();
 
 }
 
@@ -1237,15 +1317,21 @@ void ToolboxProxy::updatePlayState()
         if (_previewer->isVisible()) {
             _previewer->hide();
         }
+        if( _progBar->isVisible()){
+            _progBar->setVisible(false);
+        }
+        _progBarspec->show();
         setProperty("idle", true);
     } else {
         setProperty("idle", false);
+        _progBar->setVisible(true);
+        _progBarspec->hide();
     }
     
     auto on = (_engine->state() != PlayerEngine::CoreState::Idle);
     _progBar->setEnabled(on);
     _progBar->setEnableIndication(on);
-    setStyleSheet(styleSheet());
+//    setStyleSheet(styleSheet());
 }
 
 void ToolboxProxy::updateTimeInfo(qint64 duration, qint64 pos)
@@ -1261,7 +1347,7 @@ void ToolboxProxy::updateTimeInfo(qint64 duration, qint64 pos)
         _timeLabel->setText(QString("%1")
                 .arg(utils::Time2str(pos)));
         _timeLabelend->setText(QString("%1")
-                .arg(_engine->playlist().currentInfo().mi.durationStr()));
+                .arg(utils::Time2str(duration)));
     }
 }
 
@@ -1304,6 +1390,23 @@ void ToolboxProxy::updatePosition(const QPoint& p)
 
 void ToolboxProxy::paintEvent(QPaintEvent *pe)
 {
+    QPainter painter(this);
+    painter.setRenderHint(QPainter::Antialiasing);
+    QRectF bgRect;
+    bgRect.setSize(size());
+    const QPalette pal = QGuiApplication::palette();//this->palette();
+    QColor bgColor = pal.color(QPalette::Background);
+
+    QPainterPath pp;
+    pp.addRoundedRect(bgRect, RADIUS, RADIUS);
+    painter.fillPath(pp, bgColor);
+
+    {
+        auto view_rect = bgRect.marginsRemoved(QMargins(1, 1, 1, 1));
+        QPainterPath pp;
+        pp.addRoundedRect(view_rect, RADIUS, RADIUS);
+        painter.fillPath(pp, bgColor);
+    }
     QWidget::paintEvent(pe);
 }
 

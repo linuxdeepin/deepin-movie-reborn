@@ -75,7 +75,7 @@ BurstScreenshotsDialog::BurstScreenshotsDialog(const PlayItemInfo& pif)
     QFontMetrics fm(ft);
 
     auto *nm = new QLabel(this);
-    nm->setStyleSheet("color: #303030; font-size: 14px;");
+//    nm->setStyleSheet("color: #303030; font-size: 14px;");
     nm->setText(fm.elidedText(mi.title, Qt::ElideMiddle, 480));
 
     trl->addWidget(nm);
@@ -86,19 +86,19 @@ BurstScreenshotsDialog::BurstScreenshotsDialog(const PlayItemInfo& pif)
     trb->setSpacing(0);
     {
         auto lb = new QLabel(tr("Duration: %1").arg(mi.durationStr()), this);
-        lb->setStyleSheet("color: rgba(48, 48, 48, 60%); font-size: 12px;");
+//        lb->setStyleSheet("color: rgba(48, 48, 48, 60%); font-size: 12px;");
         trb->addWidget(lb);
         trb->addSpacing(36);
     }
     {
         auto lb = new QLabel(tr("Resolution: %1").arg(mi.resolution), this);
-        lb->setStyleSheet("color: rgba(48, 48, 48, 60%); font-size: 12px;");
+//        lb->setStyleSheet("color: rgba(48, 48, 48, 60%); font-size: 12px;");
         trb->addWidget(lb);
         trb->addSpacing(36);
     }
     {
         auto lb = new QLabel(tr("Size: %1").arg(mi.sizeStr()), this);
-        lb->setStyleSheet("color: rgba(48, 48, 48, 60%); font-size: 12px;");
+//        lb->setStyleSheet("color: rgba(48, 48, 48, 60%); font-size: 12px;");
         trb->addWidget(lb);
         trb->addSpacing(36);
     }
@@ -153,7 +153,7 @@ BurstScreenshotsDialog::BurstScreenshotsDialog(const PlayItemInfo& pif)
     }
     )";
     _saveBtn->setDefault(true);
-    _saveBtn->setStyleSheet(addition);
+//    _saveBtn->setStyleSheet(addition);
 
     bl->addWidget(_saveBtn);
     ml->addLayout(bl);

@@ -133,8 +133,8 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo& pif)
     DThemeManager::instance()->setTheme(this, "light");
     DThemeManager::instance()->setTheme(closeBt, "light");
 #else
-    DThemeManager::instance()->registerWidget(this);
-    closeBt->setStyleSheet(DThemeManager::instance()->getQssForWidget("DWindowCloseButton", "light"));
+//    DThemeManager::instance()->registerWidget(this);
+//    closeBt->setStyleSheet(DThemeManager::instance()->getQssForWidget("DWindowCloseButton", "light"));
 #endif
 }
 }

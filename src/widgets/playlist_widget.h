@@ -33,6 +33,7 @@
 #include <DPlatformWindowHandle>
 #include <QPushButton>
 #include <QtWidgets>
+#include <DFloatingButton>
 
 namespace Dtk
 {

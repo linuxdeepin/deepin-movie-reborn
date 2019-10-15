@@ -133,10 +133,10 @@ class PlayItemWidget: public QFrame {
 public:
     friend class PlaylistWidget;
 
-    PlayItemWidget(const PlayItemInfo& pif, QListWidget* list = 0)
-        : QFrame(), _pif {pif}, _listWidget {list} 
+    PlayItemWidget(const PlayItemInfo& pif, QListWidget* list = 0, int index =0)
+        : QFrame(), _pif {pif}, _listWidget {list}
     {
-        DThemeManager::instance()->registerWidget(this, QStringList() << "PlayItemThumb");
+//        DThemeManager::instance()->registerWidget(this, QStringList() << "PlayItemThumb");
         
         setProperty("PlayItemThumb", "true");
         setState(ItemState::Normal); 
@@ -162,7 +162,13 @@ public:
         l->setSpacing(10);
         setLayout(l);
 
+        _index = new QLabel(this);
+        _index->setText(QString::number(index+1));
+        _index->setFixedWidth(22);
+        l->addWidget(_index);
+
         _thumb = new QLabel(this);
+        _thumb->setPixmap(_pif.thumbnail.scaled(QSize(42,24)));
         l->addWidget(_thumb);
 
         auto *vl = new QHBoxLayout;
@@ -181,10 +187,10 @@ public:
         _name->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         _name->setFrameShape(QFrame::NoFrame);
         _name->setTextInteractionFlags(Qt::NoTextInteraction);
-        _name->setFixedWidth(700);
+        _name->setFixedWidth(620);
         _name->installEventFilter(this);
         vl->addWidget(_name);
-        vl->addStretch(1);
+//        vl->addStretch(1);
 
         _time = new QLabel(this);
         _time->setProperty("Time", true);
@@ -196,13 +202,13 @@ public:
         vl->addWidget(_time);
         vl->addStretch();
 
-        setBg(QString(":/resources/icons/%1/normal/film-bg.svg").arg(qApp->theme())); 
+//        setBg(QString(":/resources/icons/%1/normal/film-bg.svg").arg(qApp->theme()));
 
-        _closeBtn = new DImageButton(this);
+        _closeBtn = new DFloatingButton(DStyle::SP_CloseButton,this);
         _closeBtn->setFixedSize(20, 20);
         _closeBtn->setObjectName("CloseBtn");
         _closeBtn->hide();
-        connect(_closeBtn, &DImageButton::clicked, this, &PlayItemWidget::closeButtonClicked);
+        connect(_closeBtn, &DFloatingButton::clicked, this, &PlayItemWidget::closeButtonClicked);
 
 
         setToolTip(_pif.mi.title);
@@ -228,7 +234,7 @@ public:
             setState(ItemState::Invalid);
             _time->setText(tr("File does not exist"));
         }
-        setStyleSheet(styleSheet());
+//        setStyleSheet(styleSheet());
     }
 
     void setState(ItemState is) {
@@ -237,6 +243,9 @@ public:
 
     ItemState state() const {
         return (ItemState)property("ItemState").toInt();
+    }
+    void setIndex(int index){
+        _index->setText(QString::number(index+1));
     }
 
     QString getBg() const { return _bg; }
@@ -291,7 +300,7 @@ public:
         if (_hovered != v) {
             _hovered = v;
             setProperty("hovered", v);
-            setStyleSheet(styleSheet());
+//            setStyleSheet(styleSheet());
         }
     }
 
@@ -347,15 +356,15 @@ protected:
         }
 
         if (ee->type() == QEvent::Move) {
-            _closeBtn->hide();
-            if (isVisible()) {
-                auto pos = _listWidget->mapFromGlobal(QCursor::pos());
-                auto r = QRect(mapTo(_listWidget, QPoint()), size());
-                if (r.contains(pos)) {
-                    _closeBtn->show();
-                    _closeBtn->raise();
-                }
-            }
+//            _closeBtn->hide();
+//            if (isVisible()) {
+//                auto pos = _listWidget->mapFromGlobal(QCursor::pos());
+//                auto r = QRect(mapTo(_listWidget, QPoint()), size());
+//                if (r.contains(pos)) {
+//                    _closeBtn->show();
+//                    _closeBtn->raise();
+//                }
+//            }
         }
 
         return QFrame::event(ee);
@@ -376,15 +385,15 @@ protected:
     {
         updateNameText();
 
-        QTimer::singleShot(0, [=]() {
-            auto pos = _listWidget->mapFromGlobal(QCursor::pos());
-            auto r = QRect(mapTo(_listWidget, QPoint()), size());
-            if (r.contains(pos)) {
-                _closeBtn->show();
-                _closeBtn->raise();
-                updateClosePosition();
-            }
-        });
+//        QTimer::singleShot(0, [=]() {
+//            auto pos = _listWidget->mapFromGlobal(QCursor::pos());
+//            auto r = QRect(mapTo(_listWidget, QPoint()), size());
+//            if (r.contains(pos)) {
+//                _closeBtn->show();
+//                _closeBtn->raise();
+//                updateClosePosition();
+//            }
+//        });
 
     }
 
@@ -403,7 +412,7 @@ protected:
             setState(ItemState::Invalid);
             _time->setText(tr("File does not exist"));
         }
-        setStyleSheet(styleSheet());
+//        setStyleSheet(styleSheet());
         if (!_pif.url.isLocalFile() || _pif.info.exists()) {
             emit doubleClicked();
         }
@@ -411,12 +420,13 @@ protected:
 
 private:
     QString _bg;
+    QLabel *_index;
     QLabel *_thumb;
     QTextEdit *_name;
     QLabel *_time;
     QPixmap _play;
     PlayItemInfo _pif;
-    DImageButton *_closeBtn;
+    DFloatingButton *_closeBtn;
     QListWidget *_listWidget {nullptr};
     bool _hovered {false};
 };
@@ -452,7 +462,7 @@ protected:
 PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     :QWidget(mw), _engine(mpv), _mw(static_cast<MainWindow*>(mw))
 {
-    DThemeManager::instance()->registerWidget(this);
+//    DThemeManager::instance()->registerWidget(this);
 
     bool composited = CompositingManager::get().composited();
     setAttribute(Qt::WA_TranslucentBackground, false);
@@ -473,8 +483,6 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
 
 //    left->setFrameShape(QFrame::NoFrame);
     left->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred));
-//    left-
-//    left->
 
 //    left->move(0,0);
     QLabel *title = new QLabel();
@@ -486,12 +494,12 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
 //    title->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 //    title->setFrameShape(QFrame::NoFrame);
 //    title->setTextInteractionFlags(Qt::NoTextInteraction);
-    title->setText("播放列表");
+    title->setText(tr("播放列表"));
     title->setFixedSize(96,36);
     title->setContentsMargins(0,0,0,0);
 
     _num = new QLabel();
-    _num->setText("17个视频");
+    _num->setText(tr("17个视频"));
     _num->setFixedSize(96,36);
     _num->setContentsMargins(0,2,0,0);
 //    title->setFont(QFont());
@@ -504,7 +512,7 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     leftinfo->addWidget(title);
     leftinfo->addWidget(_num);
     QPushButton *clearButton = new QPushButton();
-    clearButton->setText("清空列表");
+    clearButton->setText(tr("清空列表"));
     clearButton->setFixedSize(93,30);
     clearButton->setContentsMargins(0,0,0,0);
     leftinfo->addWidget(clearButton);
@@ -583,6 +591,7 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
                         args << i;
                         _mw->requestAction(ActionFactory::ActionKind::GotoPlaylistSelected,
                                 false, args);
+                        togglePopup();
                         break;
                     }
                 }
@@ -664,7 +673,7 @@ void PlaylistWidget::updateItemStates()
         }
 
         if (old != piw->state()) {
-            piw->setStyleSheet(piw->styleSheet());
+//            piw->setStyleSheet(piw->styleSheet());
         }
     }
 
@@ -807,6 +816,13 @@ void PlaylistWidget::removeItem(int idx)
     if (item) {
         delete item;
     }
+    this->_playlist->update();
+    for (int i = 0;i < _playlist->count();i++){
+        QWidget *item =_playlist->itemWidget(_playlist->item(i));
+        if(item){
+            (dynamic_cast<PlayItemWidget*>(item))->setIndex(i);
+        }
+    }
     QString s=QString(" %1 个视频").arg(_playlist->count());
     _num->setText(s);
 }
@@ -818,7 +834,8 @@ void PlaylistWidget::appendItems()
     auto items = _engine->playlist().items();
     auto p = items.begin() + this->_playlist->count();
     while (p != items.end()) {
-        auto w = new PlayItemWidget(*p, this->_playlist);
+        auto w = new PlayItemWidget(*p, this->_playlist,p - items.begin() );
+
         auto item = new QListWidgetItem;
         _playlist->addItem(item);
         _playlist->setItemWidget(item, w);
@@ -833,8 +850,8 @@ void PlaylistWidget::appendItems()
     _num->setText(s);
     batchUpdateSizeHints();
     updateItemStates();
-    _playlist->setStyleSheet(styleSheet());
-    setStyleSheet(styleSheet());
+//    _playlist->setStyleSheet(styleSheet());
+//    setStyleSheet(styleSheet());
 }
 
 void PlaylistWidget::loadPlaylist()
@@ -846,7 +863,7 @@ void PlaylistWidget::loadPlaylist()
     auto items = _engine->playlist().items();
     auto p = items.begin();
     while (p != items.end()) {
-        auto w = new PlayItemWidget(*p, this->_playlist);
+        auto w = new PlayItemWidget(*p, this->_playlist,p-items.begin());
         auto item = new QListWidgetItem;
         _playlist->addItem(item);
         _playlist->setItemWidget(item, w);
@@ -860,10 +877,10 @@ void PlaylistWidget::loadPlaylist()
 
     batchUpdateSizeHints();
     updateItemStates();
-    _playlist->setStyleSheet(styleSheet());
+//    _playlist->setStyleSheet(styleSheet());
     QString s=QString(" %1 个视频").arg(_playlist->count());
     _num->setText(s);
-    setStyleSheet(styleSheet());
+//    setStyleSheet(styleSheet());
 }
 
 void PlaylistWidget::batchUpdateSizeHints()

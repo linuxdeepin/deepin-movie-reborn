@@ -514,7 +514,7 @@ MainWindow::MainWindow(QWidget *parent)
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowTitleHint | Qt::WindowMinMaxButtonsHint |
             Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint);
 #else
-//    setWindowFlags(Qt::FramelessWindowHint);
+    setWindowFlags(Qt::FramelessWindowHint);
 #endif
     QPalette palette;
     palette.setColor(QPalette::Background, QColor(0,0,0,0)); // 最后一项为透明度
@@ -656,7 +656,7 @@ MainWindow::MainWindow(QWidget *parent)
                 _powerCookie = 0;
             }
         }
-        _miniPlayBtn->setStyleSheet(_miniPlayBtn->styleSheet());
+//        _miniPlayBtn->setStyleSheet(_miniPlayBtn->styleSheet());
     });
 
     _miniCloseBtn = new DImageButton(this);
@@ -732,7 +732,7 @@ MainWindow::MainWindow(QWidget *parent)
     _nwComm = new NotificationWidget(this);
     _nwComm->setFixedHeight(30);
     _nwComm->setAnchor(NotificationWidget::AnchorNorthWest);
-    _nwComm->setAnchorPoint(QPoint(30, 38));
+    _nwComm->setAnchorPoint(QPoint(30, 58));
     _nwComm->hide();
 
 #ifdef USE_DXCB
@@ -795,8 +795,8 @@ void MainWindow::setupTitlebar()
     _titlebar->titlebar()->setMenu(ActionFactory::get().titlebarMenu());
     {
         auto dpr = qApp->devicePixelRatio();
-        int w2 = 24 * dpr;
-        int w = 16 * dpr;
+        int w2 = 32 * dpr;
+        int w = 32 * dpr;
         //hack: titlebar fixed icon size to (24x24), but we need (16x16)
 //        auto logo = QPixmap(":/resources/icons/logo.svg")
 //            .scaled(w, w, Qt::KeepAspectRatio, Qt::SmoothTransformation);
@@ -1919,7 +1919,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             if (!_nwShot) {
                 _nwShot = new NotificationWidget(this);
                 _nwShot->setAnchor(NotificationWidget::AnchorNorthWest);
-                _nwShot->setAnchorPoint(QPoint(30, 38));
+                _nwShot->setAnchorPoint(QPoint(30, 58));
             }
             auto pm = utils::LoadHiDPIPixmap(QString(":/resources/icons/%1.svg").arg(success?"success":"fail"));
             auto msg = success?tr("The screenshot is saved"):tr("Failed to save the screenshot");
@@ -2002,7 +2002,7 @@ void MainWindow::onBurstScreenshot(const QImage& frame, qint64 timestamp)
             if (!_nwShot) {
                 _nwShot = new NotificationWidget(this);
                 _nwShot->setAnchor(NotificationWidget::AnchorNorthWest);
-                _nwShot->setAnchorPoint(QPoint(30, 38));
+                _nwShot->setAnchorPoint(QPoint(30, 58));
             }
             auto pm = utils::LoadHiDPIPixmap(QString(":/resources/icons/%1.svg").arg(QFileInfo::exists(poster_path)?"success":"fail"));
             _nwShot->popupWithIcon(tr("The screenshot is saved"), pm);
@@ -2025,7 +2025,7 @@ void MainWindow::startBurstShooting()
 void MainWindow::handleSettings()
 {
     auto dsd = new DSettingsDialog(this);
-    dsd->widgetFactory()->registerWidget("selectableEdit", createSelectableLineEditOptionHandle);
+//    dsd->widgetFactory()->registerWidget("selectableEdit", createSelectableLineEditOptionHandle);
 
     dsd->setProperty("_d_QSSThemename", "dark");
     dsd->setProperty("_d_QSSFilename", "DSettingsDialog");
@@ -2034,7 +2034,7 @@ void MainWindow::handleSettings()
 #if DTK_VERSION > DTK_VERSION_CHECK(2, 0, 6, 0)
     DThemeManager::instance()->setTheme(dsd, "light");
 #else
-    DThemeManager::instance()->registerWidget(dsd);
+//    DThemeManager::instance()->registerWidget(dsd);
     workaround_updateStyle(dsd, "dlight");
 #endif
 
@@ -2147,12 +2147,22 @@ void MainWindow::updateProxyGeometry()
         if (_toolbox) {
 //            QRect r(view_rect.left(), height() - TOOLBOX_HEIGHT_EXT - view_rect.top(),
 //                    view_rect.width(), TOOLBOX_HEIGHT_EXT);
-            QRect r((view_rect.width()-1050)/2, height() - TOOLBOX_HEIGHT_EXT - view_rect.top() - 10,
-                    1050, TOOLBOX_HEIGHT_EXT);
+            if (isFullScreen())
+            {
+                QRect r(0, height() - TOOLBOX_HEIGHT_EXT - view_rect.top() - 10,
+                        view_rect.width(), TOOLBOX_HEIGHT_EXT);
+                _toolbox->setGeometry(r);
+            }
+            else {
+                QRect r((view_rect.width()-1050)/2, height() - TOOLBOX_HEIGHT_EXT - view_rect.top() - 10,
+                        1050, TOOLBOX_HEIGHT_EXT);
+                _toolbox->setGeometry(r);
+            }
+
 //            if (isFullScreen()) {
 //                r.moveTopLeft({0, height() - TOOLBOX_HEIGHT_EXT});
 //            }
-            _toolbox->setGeometry(r);
+//            _toolbox->setGeometry(r);
         }
 
         if (_playlist && !_playlist->toggling()) {

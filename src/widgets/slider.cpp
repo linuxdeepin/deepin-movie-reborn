@@ -232,7 +232,7 @@ void DMRSlider::onAnimationStopped()
     // little weird.
     if (_hoverAni && _hoverAni->state() == QVariantAnimation::Stopped) {
         setProperty("Hover", "false");
-        setStyleSheet("");
+//        setStyleSheet("");
         update();
     }
 }
