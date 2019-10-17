@@ -540,6 +540,8 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     _playlist = new QListWidget();
     _playlist->setFixedSize(820,288);
     _playlist->setContentsMargins(0, 30, 0, 0);
+//    _playlist->viewport()->setAutoFillBackground(false);
+//    _playlist->setAutoFillBackground(false);
 
     rightinfo->addWidget(_playlist);
     _playlist->setAttribute(Qt::WA_TranslucentBackground, false);

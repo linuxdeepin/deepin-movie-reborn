@@ -70,7 +70,8 @@ bool CommandLineManager::debug() const
 
 QString CommandLineManager::openglMode() const
 {
-    return this->value("c");
+    //return this->value("c");
+    return "on";
 }
 
 QString CommandLineManager::overrideConfig() const
