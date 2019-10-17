@@ -38,6 +38,7 @@
 #include <QTimer>
 #include <DIconButton>
 #include <DButtonBox>
+#include <DBlurEffectWidget>
 
 namespace Dtk
 {

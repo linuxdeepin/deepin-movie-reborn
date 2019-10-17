@@ -343,11 +343,26 @@ public:
        _back->setFixedWidth(584);
 //       _back->setFixedWidth(1450);
        _back->setContentsMargins(0,0,0,0);
-       _indicator = new QWidget(this);
+       _indicator = new DBlurEffectWidget(this);
        _indicator->setFixedHeight(60);
        _indicator->setFixedWidth(4);
        _indicator->setObjectName("indicator");
-       _indicator->setStyleSheet("QWidget#indicator{border: 1px solid #000000; border-radius: 5px;};");//needtomodify
+       _indicator->setMaskAlpha(153);
+       _indicator->setMaskColor(QColor(0,0,0));
+       _indicator->setBlurRectXRadius(2);
+       _indicator->setBlurRectYRadius(2);
+       DBlurEffectWidget *indin = new DBlurEffectWidget(_indicator);
+       _indicator->setContentsMargins(1,1,0,0);
+//       indin.setTopMargin(1);
+       indin->move(1,1);
+//       indin.setLeftMargin(1);
+       indin->setFixedHeight(58);
+       indin->setFixedWidth(2);
+       indin->setMaskAlpha(255);
+       indin->setMaskColor(QColor(255,255,255));
+       indin->setBlurRectXRadius(2);
+       indin->setBlurRectYRadius(2);
+//       _indicator->setStyleSheet("QWidget#indicator{border: 1px solid #000000; border-radius: 5px;};");//needtomodify
        _back->setMouseTracking(true);
        _indicator->setMouseTracking(true);
        _viewProgBarLayout = new QHBoxLayout();
@@ -494,7 +509,7 @@ private:
 //    QLabel *_indicator;
     viewProgBarLoad *_viewProgBarLoad;
     QWidget *_back;
-    QWidget *_indicator;
+    DBlurEffectWidget *_indicator;
     QGraphicsColorizeEffect *m_effect;
     QList<QLabel*> labelList ;
     QHBoxLayout *_indicatorLayout;
