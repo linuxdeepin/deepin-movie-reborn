@@ -813,7 +813,7 @@ void MainWindow::setupTitlebar()
         p.drawPixmap((w2-w)/2, (w2-w)/2, logo);
         p.end();
         _titlebar->titlebar()->setIcon(pm);
-        _titlebar->titlebar()->setTitle(QString());
+        _titlebar->setTitletxt(QString());
     }
 
     {
@@ -2173,9 +2173,9 @@ void MainWindow::updateProxyGeometry()
 //                220,
 //                toolbox()->geometry().top() + TOOLBOX_TOP_EXTENT - off
 //            };
-            QRect fixed((view_rect.width()-1050)/2, (view_rect.height()-384),
+            QRect fixed((view_rect.width()-1050)/2, (view_rect.height()-394),
                     1050,
-                    384 - TOOLBOX_HEIGHT_EXT);
+                    384 - 0);
 //            fixed.moveRight(view_rect.right());
             _playlist->setGeometry(fixed);
         }
@@ -2347,7 +2347,7 @@ void MainWindow::showEvent(QShowEvent *event)
 void MainWindow::resizeByConstraints(bool forceCentered)
 {
     if (_engine->state() == PlayerEngine::Idle || _engine->playlist().count() == 0) {
-        _titlebar->titlebar()->setTitle(QString());
+        _titlebar->setTitletxt(QString());
         return;
     }
 
@@ -2442,9 +2442,9 @@ void MainWindow::updateWindowTitle()
         const auto& mi = _engine->playlist().currentInfo().mi;
         auto title = _titlebar->fontMetrics().elidedText(mi.title,
                 Qt::ElideMiddle, _titlebar->contentsRect().width() - 300);
-        _titlebar->titlebar()->setTitle(title);
+        _titlebar->setTitletxt(title);
     } else {
-        _titlebar->titlebar()->setTitle(QString());
+        _titlebar->setTitletxt(QString());
     }
     _titlebar->setProperty("idle", _engine->state() == PlayerEngine::Idle);
 //    _titlebar->setStyleSheet(styleSheet());
@@ -2624,7 +2624,7 @@ void MainWindow::paintEvent(QPaintEvent* pe)
     QRectF bgRect;
     bgRect.setSize(size());
     const QPalette pal = QGuiApplication::palette();//this->palette();
-    QColor bgColor = pal.color(QPalette::Background);
+    QColor bgColor = pal.color(QPalette::Window);
 
 //    QPainterPath path;
 //    path.addRoundedRect(bgRect, 18, 18);
@@ -2638,21 +2638,21 @@ void MainWindow::paintEvent(QPaintEvent* pe)
     if (rounded) {
         QPainterPath pp;
         pp.addRoundedRect(bgRect, RADIUS, RADIUS);
-        painter.fillPath(pp, bgColor);
+//        painter.fillPath(pp, bgColor);
 
         {
             auto view_rect = bgRect.marginsRemoved(QMargins(1, 1, 1, 1));
             QPainterPath pp;
             pp.addRoundedRect(view_rect, RADIUS, RADIUS);
-            painter.fillPath(pp, bgColor);
+//            painter.fillPath(pp, bgColor);
         }
     } else {
         QPainterPath pp;
         pp.addRect(bgRect);
-        painter.fillPath(pp, bgColor);
+//        painter.fillPath(pp, bgColor);
     }
     auto pt = bgRect.center() - QPoint(bg.width()/2, bg.height()/2)/devicePixelRatioF();
-    painter.drawImage(pt, bg);
+//    painter.drawImage(pt, bg);
 
 /*
     QPainter p(this);

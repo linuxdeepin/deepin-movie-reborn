@@ -322,7 +322,11 @@ namespace dmr {
         //f->glEnable(GL_BLEND);
         //f->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         float a = 16.0 / 255.0;
-        if (qApp->theme() != "dark") a = 252.0 / 255.0;
+
+//        if (qApp->theme() != "dark") a = 252.0 / 255.0;
+        if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()){
+            a = 252.0 / 255.0;
+        }
         f->glClearColor(a, a, a, 1.0);
 
 
@@ -634,7 +638,11 @@ namespace dmr {
             f->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             auto clr = QColor(16, 16, 16, 255);
             float a = 16.0 / 255.0;
-            if (qApp->theme() != "dark") {
+//            if (qApp->theme() != "dark") {
+//                clr = QColor(252, 252, 252, 255);
+//                a = 252.0 / 255.0;
+//            }
+            if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()){
                 clr = QColor(252, 252, 252, 255);
                 a = 252.0 / 255.0;
             }

@@ -35,6 +35,9 @@
 #include <DWidget>
 #include <QHBoxLayout>
 #include <DBlurEffectWidget>
+#include <DLabel>
+#include <QGraphicsDropShadowEffect>
+#include <DFontSizeManager>
 DWIDGET_USE_NAMESPACE
 namespace dmr {
 class TitlebarPrivate;
@@ -54,6 +57,7 @@ public:
     QColor borderBottom() const;
     QColor borderShadowTop() const;
     DTitlebar *titlebar(){return m_titlebar;};
+    void setTitletxt(const QString &title){ m_titletxt->setText(title);};
 
 
 public slots:
@@ -69,6 +73,7 @@ private:
     Q_DECLARE_PRIVATE_D(qGetPtrHelper(d_ptr), Titlebar)
     QColor m_borderBottom;
     DTitlebar *m_titlebar;
+    DLabel *m_titletxt;
 };
 }
 #endif /* ifndef DMR_TITLEBAR_H */

@@ -43,6 +43,7 @@
 		<file>resources/icons/input_clear_hover.svg</file>
 		<file>resources/icons/input_clear_normal.svg</file>
 		<file>resources/icons/input_clear_press.svg</file>
+                <file>resources/icons/titlebar.png</file>
 
         <file>resources/icons/dark/subtitle-selected.svg</file>
         <file>resources/icons/light/subtitle-selected.svg</file>

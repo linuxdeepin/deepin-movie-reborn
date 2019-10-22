@@ -34,6 +34,9 @@
 #include <QPushButton>
 #include <QtWidgets>
 #include <DFloatingButton>
+#include <DListWidget>
+#include <DApplicationHelper>
+#include <DFontSizeManager>
 
 namespace Dtk
 {
@@ -77,6 +80,7 @@ protected:
     void dragMoveEvent(QDragMoveEvent *event) override;
     void dropEvent(QDropEvent *event) override;
     void showEvent(QShowEvent *se) override;
+    void paintEvent(QPaintEvent *pe) override;
 
 protected slots:
     void updateItemStates();
@@ -92,9 +96,10 @@ private:
     QWidget *_clickedItem {nullptr};
     QSignalMapper *_closeMapper {nullptr};
     QSignalMapper *_activateMapper {nullptr};
-    QListWidget *_playlist {nullptr};
+    DListWidget *_playlist {nullptr};
     State _state {Closed};
     QLabel *_num {nullptr};
+    QLabel *_title {nullptr};
     bool _toggling {false};
     /// < original row, data>
     QPair<int, PlayItemWidget*> _lastDragged {-1, nullptr}; 

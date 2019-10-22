@@ -43,7 +43,7 @@
 #include <dthememanager.h>
 #include <DScrollBar>
 
-#define PLAYLIST_FIXED_WIDTH 817
+#define PLAYLIST_FIXED_WIDTH 800
 #define POPUP_DURATION 200
 
 namespace dmr {
@@ -163,6 +163,7 @@ public:
         setLayout(l);
 
         _index = new QLabel(this);
+        _index->setFont(DFontSizeManager::instance()->get(DFontSizeManager::T9));
         _index->setText(QString::number(index+1));
         _index->setFixedWidth(22);
         l->addWidget(_index);
@@ -182,17 +183,21 @@ public:
         _name->setProperty("Name", true);
         _name->setReadOnly(true);
         _name->setAcceptRichText(false);
-        _name->setWordWrapMode(QTextOption::WrapAnywhere);
+        _name->setWordWrapMode(QTextOption::NoWrap);
         _name->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         _name->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         _name->setFrameShape(QFrame::NoFrame);
         _name->setTextInteractionFlags(Qt::NoTextInteraction);
         _name->setFixedWidth(620);
         _name->installEventFilter(this);
+        _name->viewport()->setAutoFillBackground(false);
+        _name->setAutoFillBackground(false);
+
         vl->addWidget(_name);
 //        vl->addStretch(1);
 
         _time = new QLabel(this);
+        _time->setFont(DFontSizeManager::instance()->get(DFontSizeManager::T9));
         _time->setProperty("Time", true);
         _time->setText(_pif.mi.durationStr());
         if (!_pif.valid) {
@@ -235,10 +240,12 @@ public:
             _time->setText(tr("File does not exist"));
         }
 //        setStyleSheet(styleSheet());
+        update();
     }
 
     void setState(ItemState is) {
         setProperty("ItemState", is);
+        update();
     }
 
     ItemState state() const {
@@ -372,8 +379,8 @@ protected:
 
     void updateNameText() 
     {
-        _name->setText(utils::ElideText(_pif.mi.title, {700, 36}, QTextOption::WrapAnywhere,
-                    _name->font(), Qt::ElideLeft, 18, 700-10));
+        _name->setText(utils::ElideText(_pif.mi.title, {620, 36}, QTextOption::NoWrap,
+                    _name->font(), Qt::ElideRight, 18, 620));
         _name->viewport()->setCursor(Qt::ArrowCursor);
         _name->setCursor(Qt::ArrowCursor);
         _name->document()->setDocumentMargin(0.0);
@@ -416,6 +423,59 @@ protected:
         if (!_pif.url.isLocalFile() || _pif.info.exists()) {
             emit doubleClicked();
         }
+    }
+
+    void paintEvent(QPaintEvent *pe)
+    {
+        QPainter painter(this);
+        painter.setRenderHint(QPainter::Antialiasing);
+        QRectF bgRect;
+        bgRect.setSize(size());
+        const DPalette pal = QGuiApplication::palette();//this->palette();
+//            DPalette pa = DApplicationHelper::instance()->palette(this);
+//            pa.setBrush(DPalette::WindowText, pa.color(DPalette::TextWarning));
+        DStyleHelper styleHelper;
+        QStyleOption option;
+        if (!(_index->text().toInt()%2)){
+
+//            QColor fillColor = styleHelper.getColor(static_cast<const QStyleOption *>(&option), pa, DPalette::ItemBackground);
+//            painter.setBrush(QBrush(fillColor));
+//            painter->fillPath(path, fillColor);
+//            QColor bgColor(0,0,0,8);
+            QColor bgColor  = pal.color(DPalette::AlternateBase);
+
+            QPainterPath pp;
+            pp.addRoundedRect(bgRect, 8, 8);
+            painter.fillPath(pp, bgColor);
+
+        }
+        if (state() == ItemState::Playing){
+            DPalette pa = DApplicationHelper::instance()->palette(this);
+            pa.setBrush(DPalette::Text, pa.color(DPalette::Highlight));
+//            setPalette(pa);
+            _name->setPalette(pa);
+            _index->setPalette(pa);
+            _time->setPalette(pa);
+//            QColor bgColor  = pal.color(DPalette::ToolTipBase);
+            QColor bgColor(255,255,255,51);
+            if(DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ){
+                bgColor = QColor(0,0,0,51);
+            }
+
+            QPainterPath pp;
+            pp.addRoundedRect(bgRect, 8, 8);
+            painter.fillPath(pp, bgColor);
+        }else {
+            DPalette pa_name = DApplicationHelper::instance()->palette(_name);
+            pa_name.setBrush(DPalette::Text, pa_name.color(DPalette::ToolTipText));
+            _name->setPalette(pa_name);
+            DPalette pa = DApplicationHelper::instance()->palette(_index);
+            pa.setBrush(DPalette::Text, pa.color(DPalette::TextTips));
+            _index->setPalette(pa);
+            _time->setPalette(pa);
+        }
+
+        QWidget::paintEvent(pe);
     }
 
 private:
@@ -469,11 +529,19 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     //NOTE: set fixed will affect geometry animation
     //setFixedWidth(220);
 
-    auto *mainLayout = new QHBoxLayout(this);
+    auto *mainVLayout = new QVBoxLayout(this);
+    mainVLayout->setContentsMargins(0, 0, 0, 0);
+    mainVLayout->setSpacing(0);
+    setLayout(mainVLayout);
+    auto *mainLayout = new QHBoxLayout();
     mainLayout->setContentsMargins(10, 0, 16, 0);
     mainLayout->setSpacing(10);
     mainLayout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
-    setLayout(mainLayout);
+//    setLayout(mainLayout);
+    QWidget *topspec = new QWidget;
+    topspec->setFixedHeight(30);
+    mainVLayout->addWidget(topspec);
+    mainVLayout->addLayout(mainLayout);
 
     QWidget *left = new QWidget();
 //    left->setFrameRect(QRect(0,0,197,288));
@@ -485,7 +553,9 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     left->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred));
 
 //    left->move(0,0);
-    QLabel *title = new QLabel();
+    _title = new QLabel();
+    _title->setFont(DFontSizeManager::instance()->get(DFontSizeManager::T3));
+//    DFontSizeManager::instance()->get(DFontSizeManager::T9);
 //    title->setProperty("Name", true);
 //    title->setReadOnly(true);
 //    title->setAcceptRichText(false);
@@ -494,11 +564,18 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
 //    title->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 //    title->setFrameShape(QFrame::NoFrame);
 //    title->setTextInteractionFlags(Qt::NoTextInteraction);
-    title->setText(tr("播放列表"));
-    title->setFixedSize(96,36);
-    title->setContentsMargins(0,0,0,0);
+    DPalette pa = DApplicationHelper::instance()->palette(_title);
+    pa.setBrush(DPalette::WindowText, pa.color(DPalette::ToolTipText));
+    _title->setPalette(pa);
+//    title->setText(DApplication::translate("QuickInstallWindow", "Installed"));
+    _title->setText(tr("播放列表"));
+    _title->setFixedSize(96,36);
+    _title->setContentsMargins(0,0,0,0);
 
     _num = new QLabel();
+    DPalette pa_num = DApplicationHelper::instance()->palette(_num);
+    pa_num.setBrush(DPalette::WindowText, pa_num.color(DPalette::TextTips));
+    _num->setPalette(pa_num);
     _num->setText(tr("17个视频"));
     _num->setFixedSize(96,36);
     _num->setContentsMargins(0,2,0,0);
@@ -509,18 +586,20 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     leftinfo->setSpacing(0);
     left->setLayout(leftinfo);
     leftinfo->setAlignment(Qt::AlignLeft | Qt::AlignTop);
-    leftinfo->addWidget(title);
+    leftinfo->addWidget(_title);
     leftinfo->addWidget(_num);
-    QPushButton *clearButton = new QPushButton();
-    clearButton->setText(tr("清空列表"));
+    QPushButton *clearButton = new QPushButton(QIcon::fromTheme("dcc_clearlist"),tr("清空列表"));
+//    clearButton->setText(tr("清空列表"));
+    DPalette pa_cb = DApplicationHelper::instance()->palette(clearButton);
+    pa_cb.setBrush(DPalette::Button, pa_num.color(DPalette::TextTips));
     clearButton->setFixedSize(93,30);
     clearButton->setContentsMargins(0,0,0,0);
     leftinfo->addWidget(clearButton);
     connect(clearButton,&QPushButton::clicked,this, [=]{
         _engine->clearPlaylist();
     });
-    left->setContentsMargins(36, 30, 0, 0);
-    title->setContentsMargins(0, 0, 0, 0);
+    left->setContentsMargins(36, 0, 0, 0);
+    _title->setContentsMargins(0, 0, 0, 0);
     clearButton->setContentsMargins(0, 0, 0, 0);
     _num->setContentsMargins(0, 0, 0, 0);
 
@@ -537,11 +616,11 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     right->setContentsMargins(0, 0, 0, 0);
     mainLayout->addWidget(right);
 
-    _playlist = new QListWidget();
+    _playlist = new DListWidget();
     _playlist->setFixedSize(820,288);
     _playlist->setContentsMargins(0, 30, 0, 0);
-//    _playlist->viewport()->setAutoFillBackground(false);
-//    _playlist->setAutoFillBackground(false);
+    _playlist->viewport()->setAutoFillBackground(false);
+    _playlist->setAutoFillBackground(false);
 
     rightinfo->addWidget(_playlist);
     _playlist->setAttribute(Qt::WA_TranslucentBackground, false);
@@ -784,9 +863,10 @@ void PlaylistWidget::contextMenuEvent(QContextMenuEvent *cme)
 {
     bool on_item = false;
     _mouseItem = nullptr;
+    QPoint itempos(cme->pos().x(),cme->pos().y()-30);
 
-    if (_playlist->itemAt(cme->pos())) {
-        _mouseItem = _playlist->itemWidget(_playlist->itemAt(cme->pos()));
+    if (_playlist->itemAt(itempos)) {
+        _mouseItem = _playlist->itemWidget(_playlist->itemAt(itempos));
         on_item = true;
     }
 
@@ -908,9 +988,9 @@ void PlaylistWidget::togglePopup()
 //    QRect fixed(0, off,
 //            PLAYLIST_FIXED_WIDTH,
 //            _mw->toolbox()->geometry().top() + TOOLBOX_TOP_EXTENT - off);
-    QRect fixed((view_rect.width()-1050)/2, (view_rect.height()-384),
+    QRect fixed((view_rect.width()-1050)/2, (view_rect.height()-394),
             1050,
-            (384 - TOOLBOX_HEIGHT_EXT));
+            (384 - 0));
 //    fixed.moveRight(view_rect.right());
     QRect shrunk = fixed;
 //    shrunk.setWidth(0);
@@ -953,6 +1033,39 @@ void PlaylistWidget::togglePopup()
             _state = State::Opened;
         });
     }
+}
+
+void PlaylistWidget::paintEvent(QPaintEvent *pe)
+{
+    QPainter painter(this);
+    painter.setRenderHint(QPainter::Antialiasing);
+    QRectF bgRect;
+    bgRect.setSize(size());
+    const QPalette pal = QGuiApplication::palette();//this->palette();
+    QColor bgColor = pal.color(QPalette::ToolTipBase);
+
+    QPainterPath pp;
+    pp.addRoundedRect(bgRect, 18, 18);
+    painter.fillPath(pp, bgColor);
+
+//    {
+//        auto view_rect = bgRect.marginsRemoved(QMargins(1, 1, 1, 1));
+//        QPainterPath pp;
+//        pp.addRoundedRect(view_rect, RADIUS, RADIUS);
+//        painter.fillPath(pp, bgColor);
+//    }
+    if(_title && _num){
+        DPalette pa = DApplicationHelper::instance()->palette(_title);
+        pa.setBrush(DPalette::WindowText, pa.color(DPalette::ToolTipText));
+        _title->setPalette(pa);
+
+        DPalette pa_num = DApplicationHelper::instance()->palette(_num);
+        pa_num.setBrush(DPalette::WindowText, pa_num.color(DPalette::TextTips));
+        _num->setPalette(pa_num);
+    }
+
+
+    QWidget::paintEvent(pe);
 }
 
 }

@@ -34,7 +34,8 @@
 #include <mpv/opengl_cb.h>
 #undef Bool
 #include <mpv/qthelper.hpp>
-
+#include <DGuiApplicationHelper>
+//DWIDGET_USE_NAMESPACE
 namespace dmr {
 class MpvGLWidget : public QOpenGLWidget
 {

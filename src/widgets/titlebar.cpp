@@ -67,15 +67,38 @@ Titlebar::Titlebar(QWidget *parent) : DBlurEffectWidget(parent), d_ptr(new Title
 //    QPalette palette;
 //    palette.setColor(QPalette::Background, QColor(0,0,0,0)); // 最后一项为透明度
 //    setPalette(palette);
-    setMaskAlpha(102);
+//    setMaskAlpha(102);
 //    DThemeManager::instance()->registerWidget(this);
+    setBlurRectXRadius(18);
+    setBlurRectYRadius(18);
+    setAttribute(Qt::WA_TranslucentBackground, true);
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
+    QPalette palette;
+    QPixmap pixmap(":resources/icons/titlebar.png");
+//    palette.setBrush(QPalette::Background,QBrush(pixmap.scaled(window()->width(),50)));
+    this->setPalette(palette);
     m_titlebar = new DTitlebar(this);
-    m_titlebar->setBackgroundTransparent(true);
+//    m_titlebar->setBackgroundTransparent(true);
     layout->addWidget(m_titlebar);
     setLayout(layout);
+
+    QPalette pa;
+    pa.setColor(QPalette::WindowText,QColor(255,255,255,255));
+    pa.setColor(QPalette::ButtonText,QColor(255,255,255,255));
+//    pa.setColor(QPalette::WindowText,Qt::red);
+    m_titlebar->setPalette(pa);
+    m_titlebar->setTitle("");
+    m_titletxt=new DLabel;
+    m_titletxt->setText("");
+    QGraphicsDropShadowEffect* shadowEffect = new QGraphicsDropShadowEffect(m_titletxt);
+    shadowEffect->setOffset(0, 1);
+    shadowEffect->setColor(QColor(0,0,0,127));
+    shadowEffect->setBlurRadius(1);
+    m_titletxt->setGraphicsEffect(shadowEffect);
+    m_titletxt->setFont(DFontSizeManager::instance()->get(DFontSizeManager::T7));
+    m_titlebar->addWidget(m_titletxt,Qt::AlignCenter);
 }
 
 Titlebar::~Titlebar()
@@ -121,6 +144,28 @@ void Titlebar::setBorderShadowTop(QColor borderShadowTop)
 
 void Titlebar::paintEvent(QPaintEvent *pe)
 {
+    QPainter painter(this);
+    painter.setRenderHint(QPainter::Antialiasing);
+    QRectF bgRect;
+    bgRect.setSize(size());
+    QPixmap pixmap(":resources/icons/titlebar.png");
+    const QPalette pal = QGuiApplication::palette();//this->palette();
+    QBrush bgColor = QBrush(pixmap);
+
+    bool rounded = !isFullScreen() && !isMaximized();
+    if (rounded) {
+        QPainterPath pp;
+//        pp.addRoundedRect(bgRect, 0, 0);
+//        painter.fillPath(pp, bgColor);
+        pp.addRoundedRect(QRectF(bgRect.x(),bgRect.y(),bgRect.width(),bgRect.height()), RADIUS, RADIUS);
+        painter.fillPath(pp, bgColor);
+    } else {
+        QPainterPath pp;
+        pp.addRect(bgRect);
+        painter.fillPath(pp, bgColor);
+    }
+
+
 
 //    Q_D(const Titlebar);
 

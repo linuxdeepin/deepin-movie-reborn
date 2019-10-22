@@ -50,7 +50,7 @@
 #include <QThread>
 #include <DSlider>
 
-static const int LEFT_MARGIN = 15;
+static const int LEFT_MARGIN = 10;
 static const int RIGHT_MARGIN = 10;
 
 DWIDGET_USE_NAMESPACE
@@ -651,8 +651,8 @@ public:
         setLayout(l);
 
         _slider = new DSlider(Qt::Vertical,this);
-        _slider->setLeftIcon(QIcon::fromTheme("dcc_volumeadd"));
-        _slider->setRightIcon(QIcon::fromTheme("dcc_volumelessen"));
+        _slider->setLeftIcon(QIcon::fromTheme("dcc_volumelessen"));
+        _slider->setRightIcon(QIcon::fromTheme("dcc_volumeadd"));
         _slider->setIconSize(QSize(20,20));
         _slider->installEventFilter(this);
         _slider->show();
@@ -792,14 +792,22 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
     _engine(proxy)
 {
     bool composited = CompositingManager::get().composited();
-	setFrameShape(QFrame::NoFrame);
-    setAutoFillBackground(false);
-    setAttribute(Qt::WA_TranslucentBackground);
+    setFrameShape(QFrame::NoFrame);
+//    setAutoFillBackground(false);
+//    setAttribute(Qt::WA_TranslucentBackground);
     if (!composited) {
         setWindowFlags(Qt::FramelessWindowHint|Qt::BypassWindowManagerHint);
         setContentsMargins(0, 0, 0, 0);
         setAttribute(Qt::WA_NativeWindow);
     }
+
+//    QGraphicsDropShadowEffect* shadowEffect = new QGraphicsDropShadowEffect(this);
+//    shadowEffect->setOffset(0, 2);
+//    shadowEffect->setColor(QPalette::Shadow);
+//    shadowEffect->setBlurRadius(4);
+//    setGraphicsEffect(shadowEffect);
+
+
 
 //    DThemeManager::instance()->registerWidget(this);
 
@@ -832,7 +840,7 @@ void ToolboxProxy::setup()
     _progBar = new DMRSlider();
     _progBar->setObjectName("MovieProgress");
     _progBar->slider()->setOrientation(Qt::Horizontal);
-    _progBar->setFixedHeight(12+TOOLBOX_TOP_EXTENT);
+    _progBar->setFixedHeight(50);
     _progBar->setFixedWidth(584);
 //    _progBar->setFixedWidth(1450);
     _progBar->slider()->setRange(0, 100);
@@ -868,18 +876,21 @@ void ToolboxProxy::setup()
 
     auto *bot_widget = new QWidget;
     auto *bot = new QHBoxLayout();
-    bot->setContentsMargins(LEFT_MARGIN, TOOLBOX_TOP_EXTENT, RIGHT_MARGIN, 0);
+    bot->setContentsMargins(LEFT_MARGIN, 0, RIGHT_MARGIN, 0);
     bot_widget->setLayout(bot);
     stacked->addWidget(bot_widget);
-
+//    QPalette palette;
+//    palette.setColor(QPalette::Background, QColor(0,0,0,255)); // 最后一项为透明度
+//    bot_widget->setPalette(palette);
 
     _timeLabel = new QLabel("");
 //    _timeLabel->setFixedWidth(_timeLabel->fontMetrics().width("99:99:99/99:99:99"));
-    _timeLabel->setFixedWidth(_timeLabel->fontMetrics().width("99:99:99"));
+    _timeLabel->setFixedWidth(54);
 //    bot->addWidget(_timeLabel);
     _timeLabelend = new QLabel("");
+    _timeLabelend->setFixedWidth(54);
 //    _timeLabel->setFixedWidth(_timeLabel->fontMetrics().width("99:99:99/99:99:99"));
-    _timeLabelend->setFixedWidth(_timeLabelend->fontMetrics().width("99:99:99"));
+//    _timeLabelend->setFixedWidth(_timeLabelend->fontMetrics().width("99:99:99"));
 
     _viewProgBar = new ViewProgBar();
 
@@ -887,6 +898,7 @@ void ToolboxProxy::setup()
     connect(_viewProgBar,&ViewProgBar::leaveViewProgBar,[=](){
         _viewProgBar->hide();
         _progBar->show();
+        _progBarspec->hide();
         _previewer->hide();
     });
     connect(_viewProgBar, &ViewProgBar::hoverChanged, this, &ToolboxProxy::progressHoverChanged);
@@ -900,13 +912,13 @@ void ToolboxProxy::setup()
 
     _mid = new QHBoxLayout();
     _mid->setContentsMargins(0, 0, 0, 0);
-    _mid->setSpacing(14);
+    _mid->setSpacing(0);
     _mid->setAlignment(Qt::AlignLeft);
     bot->addLayout(_mid);
 
 
     QHBoxLayout *time = new QHBoxLayout();
-    time->setContentsMargins(0, 0, 0, 0);
+    time->setContentsMargins(17, 0, 0, 0);
     time->setSpacing(0);
     time->setAlignment(Qt::AlignLeft);
     bot->addLayout(time);
@@ -917,14 +929,14 @@ void ToolboxProxy::setup()
     QHBoxLayout *progBarspec = new QHBoxLayout();
     progBarspec->setContentsMargins(0, 0, 0, 0);
     progBarspec->setSpacing(0);
-    progBarspec->setAlignment(Qt::AlignHCenter);
+    progBarspec->setAlignment(Qt::AlignLeft);
     bot->addLayout(progBarspec);
     progBarspec->addWidget(_progBarspec);
 
     QHBoxLayout *progBar = new QHBoxLayout();
     progBar->setContentsMargins(0, 0, 0, 0);
     progBar->setSpacing(0);
-    progBar->setAlignment(Qt::AlignHCenter);
+    progBar->setAlignment(Qt::AlignLeft);
     bot->addLayout(progBar);
     progBar->addWidget(_progBar);
 
@@ -951,6 +963,7 @@ void ToolboxProxy::setup()
     timeend->addWidget(_timeLabelend);
 
     _palyBox = new DButtonBox(this);
+    _palyBox->setFixedWidth(120);
     _mid->addWidget(_palyBox);
     _mid->setAlignment(_palyBox,Qt::AlignLeft);
     QList<DButtonBoxButton*> list;
@@ -960,7 +973,7 @@ void ToolboxProxy::setup()
     _prevBtn = new DButtonBoxButton(QIcon::fromTheme("dcc_last"));
 //    _prevBtn->setIcon(QIcon::fromTheme("dcc_last"));
     _prevBtn->setIconSize(QSize(36,36));
-    _prevBtn->setFixedSize(50, 50);
+    _prevBtn->setFixedSize(40, 50);
     _prevBtn->setObjectName("PrevBtn");
     connect(_prevBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_prevBtn, "prev");
@@ -969,7 +982,7 @@ void ToolboxProxy::setup()
     _playBtn = new DButtonBoxButton(QIcon::fromTheme("dcc_play"));
 //    _playBtn->setIcon(QIcon::fromTheme("dcc_play"));
     _playBtn->setIconSize(QSize(36,36));
-    _playBtn->setFixedSize(50, 50);
+    _playBtn->setFixedSize(40, 50);
     connect(_playBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_playBtn, "play");
 //    _mid->addWidget(_playBtn);
@@ -978,7 +991,7 @@ void ToolboxProxy::setup()
     _nextBtn = new DButtonBoxButton(QIcon::fromTheme("dcc_next"));
 //    _nextBtn->setIcon(QIcon::fromTheme("dcc_next"));
     _nextBtn->setIconSize(QSize(36,36));
-    _nextBtn->setFixedSize(50, 50);
+    _nextBtn->setFixedSize(40, 50);
     connect(_nextBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_nextBtn, "next");
 //    _mid->addWidget(_nextBtn);
@@ -1037,7 +1050,9 @@ void ToolboxProxy::setup()
     connect(_fsBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_fsBtn, "fs");
     _right->addWidget(_fsBtn);
+    _right->addSpacing(10);
     _right->addWidget(_volBtn);
+    _right->addSpacing(10);
 
     _listBtn = new DIconButton(this);
     _listBtn->setIcon(QIcon::fromTheme("dcc_episodes"));
@@ -1077,6 +1092,9 @@ void ToolboxProxy::setup()
     connect(_engine, &PlayerEngine::fileLoaded, [=]() {
         _progBar->slider()->setRange(0, _engine->duration());
 //        setViewProgBar();
+        _viewProgBar->hide();
+        _progBar->show();
+        _progBarspec->hide();
         QTimer::singleShot(100, [this]() {_viewProgBar->setViewProgBar(_engine);});
 //        _viewProgBar->setViewProgBar(_engine);
 //        _viewProgBar->show();
@@ -1336,9 +1354,11 @@ void ToolboxProxy::updatePlayState()
             _progBar->setVisible(false);
         }
         _progBarspec->show();
+        _progBar->hide();
         setProperty("idle", true);
     } else {
         setProperty("idle", false);
+        _progBar->show();
         _progBar->setVisible(true);
         _progBarspec->hide();
     }
@@ -1410,18 +1430,18 @@ void ToolboxProxy::paintEvent(QPaintEvent *pe)
     QRectF bgRect;
     bgRect.setSize(size());
     const QPalette pal = QGuiApplication::palette();//this->palette();
-    QColor bgColor = pal.color(QPalette::Background);
+    QColor bgColor = pal.color(QPalette::ToolTipBase);
 
     QPainterPath pp;
     pp.addRoundedRect(bgRect, RADIUS, RADIUS);
     painter.fillPath(pp, bgColor);
 
-    {
-        auto view_rect = bgRect.marginsRemoved(QMargins(1, 1, 1, 1));
-        QPainterPath pp;
-        pp.addRoundedRect(view_rect, RADIUS, RADIUS);
-        painter.fillPath(pp, bgColor);
-    }
+//    {
+//        auto view_rect = bgRect.marginsRemoved(QMargins(1, 1, 1, 1));
+//        QPainterPath pp;
+//        pp.addRoundedRect(view_rect, RADIUS, RADIUS);
+//        painter.fillPath(pp, bgColor);
+//    }
     QWidget::paintEvent(pe);
 }
 
@@ -1443,7 +1463,7 @@ void ToolboxProxy::updateTimeLabel()
     _timeLabelend->setVisible(width() > 350);
     if (width() > 350) {
         auto right_geom = _right->geometry();
-        int left_w = _timeLabel->fontMetrics().width("99:99:99");
+        int left_w = 54;
         _timeLabel->show();
         _timeLabelend->show();
         int w = qMax(left_w, right_geom.width());
