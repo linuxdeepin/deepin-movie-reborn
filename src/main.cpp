@@ -47,7 +47,6 @@
 #include "compositing_manager.h"
 #include "utils.h"
 #include "movie_configuration.h"
-#include "environments.h"
 
 DWIDGET_USE_NAMESPACE
 

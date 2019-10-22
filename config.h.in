@@ -4,6 +4,7 @@
 /* configured by cmake, do not edit */
 
 #define DMR_VERSION "@PROJECT_VERSION@"
+#define VERSION        "@VERSION@"
 #cmakedefine USE_DXCB 1
 #cmakedefine DMR_DEBUG
 
