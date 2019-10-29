@@ -636,8 +636,8 @@ namespace dmr {
         } else {
             f->glEnable(GL_BLEND);
             f->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-            auto clr = QColor(16, 16, 16, 255);
-            float a = 16.0 / 255.0;
+            auto clr = QColor(37, 37, 37, 255);
+            float a = 37.0 / 255.0;
 //            if (qApp->theme() != "dark") {
 //                clr = QColor(252, 252, 252, 255);
 //                a = 252.0 / 255.0;

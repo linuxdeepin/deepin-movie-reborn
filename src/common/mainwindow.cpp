@@ -507,19 +507,22 @@ skip_set_cursor:
 #endif
 
 MainWindow::MainWindow(QWidget *parent)
-    : DFrame(NULL)
+    : DMainWindow(NULL)
 {
     bool composited = CompositingManager::get().composited();
 #ifdef USE_DXCB
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowTitleHint | Qt::WindowMinMaxButtonsHint |
             Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint);
 #else
-    setWindowFlags(Qt::FramelessWindowHint);
+//    setWindowFlags(Qt::FramelessWindowHint);
+    setWindowFlags(Qt::WindowMinMaxButtonsHint |
+                                   Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint);
 #endif
-    QPalette palette;
-    palette.setColor(QPalette::Background, QColor(0,0,0,0)); // 最后一项为透明度
-    setPalette(palette);
+//    QPalette palette;
+//    palette.setColor(QPalette::Background, QColor(0,0,0,0)); // 最后一项为透明度
+//    setPalette(palette);
     setAcceptDrops(true);
+    if(titlebar()){titlebar()->setFixedHeight(0);}
 
     if (composited) {
         setAttribute(Qt::WA_TranslucentBackground, true);
@@ -563,7 +566,7 @@ MainWindow::MainWindow(QWidget *parent)
     }
     _engine = new PlayerEngine(this);
 #ifndef USE_DXCB
-    _engine->move(1, 1);
+    _engine->move(0, 0);
 #endif
 
     int volume = Settings::get().internalOption("global_volume").toInt();
@@ -571,6 +574,12 @@ MainWindow::MainWindow(QWidget *parent)
 
     _toolbox = new ToolboxProxy(this, _engine);
     _toolbox->setFocusPolicy(Qt::NoFocus);
+
+    _playlist = new PlaylistWidget(this, _engine);
+    _playlist->hide();
+//    _playlist->setParent(_toolbox);
+
+    _toolbox->setPlaylist(_playlist);
 
     connect(_engine, &PlayerEngine::stateChanged, [=]() {
         setInit(_engine->state() != PlayerEngine::Idle);
@@ -598,8 +607,21 @@ MainWindow::MainWindow(QWidget *parent)
             resumeToolsWindow();
     });
 
-    _playlist = new PlaylistWidget(this, _engine);
-    _playlist->hide();
+    connect(_playlist,&PlaylistWidget::stateChange,this,[=]{
+        if (_playlist->state() == PlaylistWidget::State::Opened){
+            QRect r(10, height() - 384 - rect().top() - 10,
+                    rect().width()-20, 384);
+            _toolbox->setGeometry(r);
+//            _toolbox->move(r.x(),r.y());
+//            _toolbox->resize(r.width(),r.height());
+        }else {
+            QRect r(10, height() - TOOLBOX_HEIGHT_EXT - rect().top() - 10,
+                    rect().width()-20, TOOLBOX_HEIGHT_EXT);
+            _toolbox->setGeometry(r);
+        }
+    });
+
+
 
     _playState = new DImageButton(this);
     _playState->setScaledContents(true);
@@ -782,7 +804,7 @@ void MainWindow::setupTitlebar()
 #ifdef USE_DXCB
     _titlebar->move(0, 0);
 #else
-    _titlebar->move(1, 1);
+    _titlebar->move(0, 0);
 #endif
     _titlebar->setFixedHeight(50);
     _titlebar->titlebar()->setBackgroundTransparent(true);
@@ -845,7 +867,9 @@ void MainWindow::updateContentGeometry(const QRect& rect)
             values);
 
 #else
-    setGeometry(rect);
+//    setGeometry(rect);
+    move(rect.x(),rect.y());
+    resize(rect.width(),rect.height());
 #endif
 }
 
@@ -874,7 +898,7 @@ bool MainWindow::event(QEvent *ev)
         //connect(windowHandle(), &QWindow::windowStateChanged, this, &MainWindow::onWindowStateChanged);
         onWindowStateChanged();
     }
-    return DFrame::event(ev);
+    return DMainWindow::event(ev);
 }
 
 
@@ -917,8 +941,8 @@ void MainWindow::onWindowStateChanged()
         _titlebar->move(0, 0);
         _engine->move(0, 0);
     } else {
-        _titlebar->move(1, 1);
-        _engine->move(1, 1);
+        _titlebar->move(0, 0);
+        _engine->move(0, 0);
     }
 #endif
 
@@ -1598,6 +1622,8 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                     setWindowState(windowState() & ~Qt::WindowFullScreen);
                     if (_lastRectInNormalMode.isValid() && !_miniMode && !isMaximized()) {
                         setGeometry(_lastRectInNormalMode);
+                        move(_lastRectInNormalMode.x(),_lastRectInNormalMode.y());
+                        resize(_lastRectInNormalMode.width(),_lastRectInNormalMode.height());
                     }
                 }
             } else {
@@ -2101,9 +2127,10 @@ void MainWindow::play(const QUrl& url)
 
 void MainWindow::toggleShapeMask()
 {
-    if (CompositingManager::get().composited()) {
-        return;
-    }
+//    if (CompositingManager::get().composited()) {
+//        return;
+//    }
+    return;
 
 #ifndef USE_DXCB
     if (isFullScreen() || isMaximized()) {
@@ -2134,8 +2161,9 @@ void MainWindow::updateProxyGeometry()
     auto view_rect = rect();
 #else
     // leave one pixel for border
-    auto view_rect = rect().marginsRemoved(QMargins(1, 1, 1, 1));
-    if (isFullScreen()) view_rect = rect();
+//    auto view_rect = rect().marginsRemoved(QMargins(1, 1, 1, 1));
+//    if (isFullScreen()) view_rect = rect();
+    auto view_rect = rect();
 #endif
     _engine->resize(view_rect.size());
 
@@ -2149,13 +2177,13 @@ void MainWindow::updateProxyGeometry()
 //                    view_rect.width(), TOOLBOX_HEIGHT_EXT);
             if (isFullScreen())
             {
-                QRect r(0, height() - TOOLBOX_HEIGHT_EXT - view_rect.top() - 10,
-                        view_rect.width(), TOOLBOX_HEIGHT_EXT);
+                QRect r(10, height() - TOOLBOX_HEIGHT_EXT - view_rect.top() - 10,
+                        view_rect.width()-20, TOOLBOX_HEIGHT_EXT);
                 _toolbox->setGeometry(r);
             }
             else {
-                QRect r((view_rect.width()-1050)/2, height() - TOOLBOX_HEIGHT_EXT - view_rect.top() - 10,
-                        1050, TOOLBOX_HEIGHT_EXT);
+                QRect r(10, height() - TOOLBOX_HEIGHT_EXT - view_rect.top() - 10,
+                        view_rect.width()-20, TOOLBOX_HEIGHT_EXT);
                 _toolbox->setGeometry(r);
             }
 
@@ -2335,6 +2363,7 @@ void MainWindow::showEvent(QShowEvent *event)
 
     _titlebar->raise();
     _toolbox->raise();
+    _playlist->raise();
     resumeToolsWindow();
 
     if (!qgetenv("FLATPAK_APPID").isEmpty()) {
@@ -2379,10 +2408,14 @@ void MainWindow::resizeByConstraints(bool forceCentered)
         r.setSize(sz);
         r.moveTopLeft({(geom.width() - r.width()) /2, (geom.height() - r.height())/2});
         this->setGeometry(r);
+        this->move(r.x(),r.y());
+        this->resize(r.width(),r.height());
     } else {
         QRect r = this->geometry();
         r.setSize(sz);
         this->setGeometry(r);
+        this->move(r.x(),r.y());
+        this->resize(r.width(),r.height());
     }
 }
 
@@ -2634,25 +2667,25 @@ void MainWindow::paintEvent(QPaintEvent* pe)
 //    painter.setRenderHint(QPainter::Antialiasing, false);
 
     QImage& bg = bg_dark;
-    bool rounded = !isFullScreen() && !isMaximized();
-    if (rounded) {
-        QPainterPath pp;
-        pp.addRoundedRect(bgRect, RADIUS, RADIUS);
+//    bool rounded = !isFullScreen() && !isMaximized();
+//    if (rounded) {
+//        QPainterPath pp;
+//        pp.addRoundedRect(bgRect, RADIUS, RADIUS);
 //        painter.fillPath(pp, bgColor);
 
-        {
-            auto view_rect = bgRect.marginsRemoved(QMargins(1, 1, 1, 1));
-            QPainterPath pp;
-            pp.addRoundedRect(view_rect, RADIUS, RADIUS);
+//        {
+//            auto view_rect = bgRect.marginsRemoved(QMargins(1, 1, 1, 1));
+//            QPainterPath pp;
+//            pp.addRoundedRect(view_rect, RADIUS, RADIUS);
 //            painter.fillPath(pp, bgColor);
-        }
-    } else {
-        QPainterPath pp;
-        pp.addRect(bgRect);
+//        }
+//    } else {
+//        QPainterPath pp;
+//        pp.addRect(bgRect);
 //        painter.fillPath(pp, bgColor);
-    }
+//    }
     auto pt = bgRect.center() - QPoint(bg.width()/2, bg.height()/2)/devicePixelRatioF();
-//    painter.drawImage(pt, bg);
+    painter.drawImage(pt, bg);
 
 /*
     QPainter p(this);
@@ -2770,6 +2803,8 @@ void MainWindow::toggleUIMode()
         }
         geom.setSize(sz);
         setGeometry(geom);
+        move(geom.x(),geom.y());
+        resize(geom.width(),geom.height());
 
         _miniQuitMiniBtn->move(sz.width() - 14 - _miniQuitMiniBtn->width(),
                 sz.height() - 10 - _miniQuitMiniBtn->height());

@@ -52,6 +52,7 @@
 
 static const int LEFT_MARGIN = 10;
 static const int RIGHT_MARGIN = 10;
+static const int PROGBAR_SPEC = 10+120+17+54+10+54+10+170+10;
 
 DWIDGET_USE_NAMESPACE
 
@@ -328,21 +329,36 @@ protected:
 //        p.fillRect(r, QBrush(_indicatorColor));
     }
 };
+class ViewProgBarItem: public QLabel{
+    Q_OBJECT
+public:
+    ViewProgBarItem(QImage *image, QWidget *parent = 0){
+
+    }
+};
 class ViewProgBar: public DWidget{
     Q_OBJECT
 public:
     ViewProgBar(QWidget *parent = 0){
+        _parent = parent;
        setFixedHeight(60);
-       setFixedWidth(584);
+//       setFixedWidth(584);
+       setFixedWidth(parent->width() - PROGBAR_SPEC);
 //       setFixedWidth(1450);
        _vlastHoverValue = 0;
        _isBlockSignals=false;
        setMouseTracking(true);
+
        _back = new QWidget(this);
        _back->setFixedHeight(60);
-       _back->setFixedWidth(584);
-//       _back->setFixedWidth(1450);
+       _back->setFixedWidth(this->width());
        _back->setContentsMargins(0,0,0,0);
+
+       _front = new QWidget(this);
+       _front->setFixedHeight(60);
+       _front->setFixedWidth(0);
+       _front->setContentsMargins(0,0,0,0);
+
        _indicator = new DBlurEffectWidget(this);
        _indicator->setFixedHeight(60);
        _indicator->setFixedWidth(4);
@@ -364,10 +380,15 @@ public:
        indin->setBlurRectYRadius(2);
 //       _indicator->setStyleSheet("QWidget#indicator{border: 1px solid #000000; border-radius: 5px;};");//needtomodify
        _back->setMouseTracking(true);
+       _front->setMouseTracking(true);
        _indicator->setMouseTracking(true);
        _viewProgBarLayout = new QHBoxLayout();
        _viewProgBarLayout->setContentsMargins(0,5,0,5);
        _back->setLayout(_viewProgBarLayout);
+
+       _viewProgBarLayout_black = new QHBoxLayout();
+       _viewProgBarLayout_black->setContentsMargins(0,5,0,5);
+       _front->setLayout(_viewProgBarLayout_black);
 
     };
 //    virtual ~ViewProgBar();
@@ -379,8 +400,27 @@ public:
         _indicatorPos = {v,rect().y()};
         update();
     }
+    QImage GraizeImage( const QImage& image ){
+        int w =image.width();
+        int h = image.height();
+        QImage iGray(w,h, QImage::Format_ARGB32);
 
-    void setViewProgBar(PlayerEngine *engine){
+        for(int i=0; i<w;i++)
+        {
+            for(int j=0; j<h;j++)
+            {
+                QRgb pixel = image.pixel(i,j);
+                int gray = qGray(pixel);
+                QRgb grayPixel = qRgb(gray,gray,gray);
+                QColor color(gray,gray,gray,qAlpha(pixel));
+                iGray.setPixel(i,j,color.rgba());
+            }
+        }
+        return iGray;
+
+    }
+
+    void setViewProgBar(PlayerEngine *engine ,QList<QPixmap>pm_list , QList<QPixmap>pm_black_list ){
 
 //        _viewProgBarLoad =new viewProgBarLoad(engine);
         _engine = engine;
@@ -396,23 +436,41 @@ public:
                 delete child;
          }
 
+         while ((child = _viewProgBarLayout_black->takeAt(0)) != 0)
+         {
+                //setParent为NULL，防止删除之后界面不消失
+                if(child->widget())
+                {
+                    child->widget()->setParent(NULL);
+                }
+
+                delete child;
+         }
+
+
 //        auto *viewProgBarLayout = new QHBoxLayout();
 //        viewProgBarLayout->setContentsMargins(0,5,0,5);
 //        auto tmp = _engine->duration()/64?_engine->duration()/64:1;
-        auto tmp = (_engine->duration()*1000)/64;
+         /*
+         int num = (_parent->width()-PROGBAR_SPEC+1)/9;
+        auto tmp = (_engine->duration()*1000)/num;
         auto dpr = qApp->devicePixelRatio();
         QPixmap pm;
         pm.setDevicePixelRatio(dpr);
+        QPixmap pm_black;
+        pm_black.setDevicePixelRatio(dpr);
         VideoThumbnailer thumber;
 //        QTime d(0, 0, 0);
         QTime d(0, 0, 0,0);
-        thumber.setThumbnailSize(8 * qApp->devicePixelRatio());
-        thumber.setMaintainAspectRatio(false);
+        thumber.setThumbnailSize(_engine->videoSize().width() * qApp->devicePixelRatio());
+        thumber.setMaintainAspectRatio(true);
         thumber.setSeekTime(d.toString("hh:mm:ss").toStdString());
         auto url = _engine->playlist().currentInfo().url;
         auto file = QFileInfo(url.toLocalFile()).absoluteFilePath();
+
     //    for(auto i=0;i<(_engine->duration() - tmp);){
-          for(auto i=0;i<65;i++){
+//          for(auto i=0;i<65;i++){
+          for(auto i=0;i<num;i++){
 //          for(auto i=0;i<163;i++){
 //            d = d.addSecs(tmp);
               d = d.addMSecs(tmp);
@@ -423,24 +481,67 @@ public:
                         ThumbnailerImageType::Png, buf);
 
                 auto img = QImage::fromData(buf.data(), buf.size(), "png");
+//                auto img_black = QImage::fromData(buf.data(), buf.size(), "png");
+                auto img_tmp = img.scaledToHeight(50);
+                img.scaledToHeight(50);
 
-                pm = QPixmap::fromImage(img.scaled(QSize(8,50) * dpr, Qt::IgnoreAspectRatio, Qt::FastTransformation));
-                pm.setDevicePixelRatio(dpr);
+                QImage img_black = GraizeImage(img_tmp);
+//                QImage img_black = img_tmp.convertToFormat(QImage::Format_Indexed8);
+
+//                    img_black.setColorCount(256);
+//                    for(int i = 0; i < 256; i++)
+//                    {
+//                        img_black.setColor(i, qRgb(i, i, i));
+//                }
+                pm = QPixmap::fromImage(img_tmp.copy(img_tmp.size().width()/2-4,0,8,50));
+//                pm.setDevicePixelRatio(dpr);
+                pm_black = QBitmap::fromImage(img_black.copy(img_black.size().width()/2-4,0,8,50));
+//                pm_black.setDevicePixelRatio(dpr);
+
+
+                ImageItem *label = new ImageItem(img_tmp);
+//                label->setPixmap(pm);
+                label->setFixedSize(8,50);
+//                label->setBackgroundRole(QPalette::ColorRole::Base);
+                _viewProgBarLayout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
+                _viewProgBarLayout->addWidget(label, 0 , Qt::AlignLeft );
+                _viewProgBarLayout->setSpacing(1);
+
+                ImageItem *label_black = new ImageItem(img_tmp,true,_front);
+                label_black->move(i*9,5);
+//                label_black->setPixmap(pm_black);
+                label_black->setFixedSize(8,50);
             } catch (const std::logic_error&) {
             }
-            QLabel *label = new QLabel();
-            label->setPixmap(pm);
-            label->setFixedSize(8,50);
-            _viewProgBarLayout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
-            _viewProgBarLayout->addWidget(label, 0 , Qt::AlignLeft );
-            _viewProgBarLayout->setSpacing(1);
+
+
+//            _viewProgBarLayout_black->setAlignment(Qt::AlignLeft | Qt::AlignTop);
+//            _viewProgBarLayout_black->addWidget(label_black, 0 , Qt::AlignLeft );
+//            _viewProgBarLayout_black->setSpacing(1);
 
         }
-
+*/
 //        _back->setLayout(_viewProgBarLayout);
+         _viewProgBarLayout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
+         _viewProgBarLayout->setSpacing(1);
+        for(int i =0; i<pm_list.count();i++){
+            ImageItem *label = new ImageItem(pm_list.at(i));
+            label->setFixedSize(8,50);
+            _viewProgBarLayout->addWidget(label, 0 , Qt::AlignLeft );
+
+            ImageItem *label_black = new ImageItem(pm_black_list.at(i),true,_front);
+            label_black->move(i*9,5);
+            label_black->setFixedSize(8,50);
+        }
+
         labelList = _viewProgBarLayout->findChildren<QLabel*>();
         update();
 
+
+    }
+    void setWidth(){
+        setFixedWidth(_parent->width()-PROGBAR_SPEC);
+        _back->setFixedWidth(_parent->width()-PROGBAR_SPEC);
 
     }
 signals:
@@ -498,22 +599,32 @@ protected:
     void paintEvent(QPaintEvent *e)
     {
         _indicator->move(_indicatorPos);
+        _front->setFixedWidth(_indicatorPos.x());
+    }
+    void resizeEvent(QResizeEvent *event){
+        auto i = _parent->width();
+        auto j = this->width();
+        setFixedWidth(_parent->width()-PROGBAR_SPEC);
+        _back->setFixedWidth(this->width());
     }
 private:
-    PlayerEngine *_engine;
+    PlayerEngine *_engine {nullptr};
+    QWidget *_parent{nullptr};
     int _vlastHoverValue;
     QPoint _startPos;
     bool _isBlockSignals;
     QPoint _indicatorPos {0, 0};
     QColor _indicatorColor;
 //    QLabel *_indicator;
-    viewProgBarLoad *_viewProgBarLoad;
-    QWidget *_back;
-    DBlurEffectWidget *_indicator;
-    QGraphicsColorizeEffect *m_effect;
+    viewProgBarLoad *_viewProgBarLoad{nullptr};
+    QWidget *_back{nullptr};
+    QWidget *_front{nullptr};
+    DBlurEffectWidget *_indicator{nullptr};
+    QGraphicsColorizeEffect *m_effect{nullptr};
     QList<QLabel*> labelList ;
-    QHBoxLayout *_indicatorLayout;
-    QHBoxLayout *_viewProgBarLayout;
+    QHBoxLayout *_indicatorLayout{nullptr};
+    QHBoxLayout *_viewProgBarLayout{nullptr};
+    QHBoxLayout *_viewProgBarLayout_black{nullptr};
     int position2progress(const QPoint& p)
     {
         auto total = _engine->duration();
@@ -531,7 +642,7 @@ public:
         setAttribute(Qt::WA_DeleteOnClose);
         // FIXME(hualet): Qt::Tooltip will cause Dock to show up even
         // the player is in fullscreen mode.
-        setWindowFlags(Qt::Tool);
+//        setWindowFlags(Qt::Tool);
         
         setObjectName("ThumbnailPreview");
 
@@ -632,7 +743,7 @@ public:
     VolumeSlider(PlayerEngine* eng, MainWindow* mw)
         :DArrowRectangle(DArrowRectangle::ArrowBottom), _engine(eng), _mw(mw) {
         setFixedSize(QSize(62, 201));
-        setWindowFlags(Qt::Tool);
+//        setWindowFlags(Qt::Tool);
 
         setShadowBlurRadius(4);
         setRadius(4);
@@ -640,6 +751,7 @@ public:
         setShadowXOffset(0);
         setArrowWidth(8);
         setArrowHeight(6);
+        setFocusPolicy(Qt::NoFocus);
 
 //        connect(DThemeManager::instance(), &DThemeManager::themeChanged,
 //                this, &VolumeSlider::updateBg);
@@ -734,57 +846,82 @@ private:
     MainWindow *_mw;
     QTimer _autoHideTimer;
 };
-class viewProgBarLoad: public QThread{
-    Q_OBJECT
-public:
-     viewProgBarLoad(PlayerEngine* eng){
-         _engine = eng;
-         start();
-     }
-signals:
-    void imglistloadend(QList<QLabel *>);
-private:
-//     QList<QLabel> imglist;
-     QList<QLabel *> imglist;
-     PlayerEngine *_engine;
-    void run(){
-        auto *viewProgBarLayout = new QHBoxLayout();
-    //    viewProgBarLayout->setSpacing(1);
-//        auto width = _viewProgBar->width();
-        auto tmp = _engine->duration()/62;
-        auto dpr = qApp->devicePixelRatio();
-        QPixmap pm;
-        pm.setDevicePixelRatio(dpr);
-        VideoThumbnailer thumber;
-        QTime d(0, 0, 0);
-        thumber.setThumbnailSize(8 * qApp->devicePixelRatio());
-        thumber.setMaintainAspectRatio(false);
-        thumber.setSeekTime(d.toString("hh:mm:ss").toStdString());
-        auto url = _engine->playlist().currentInfo().url;
-        auto file = QFileInfo(url.toLocalFile()).absoluteFilePath();
-    //    for(auto i=0;i<(_engine->duration() - tmp);){
-          for(auto i=0;i<63;i++){
-            d = d.addSecs(tmp);
-            try {
-                std::vector<uint8_t> buf;
-                thumber.generateThumbnail(file.toUtf8().toStdString(),
-                        ThumbnailerImageType::Png, buf);
 
-                auto img = QImage::fromData(buf.data(), buf.size(), "png");
+viewProgBarLoad::viewProgBarLoad(PlayerEngine *engine,ToolboxProxy *parent){
+       _parent = parent;
+       _engine = engine;
+}
 
-                pm = QPixmap::fromImage(img.scaled(QSize(8,50) * dpr, Qt::IgnoreAspectRatio, Qt::FastTransformation));
-                pm.setDevicePixelRatio(dpr);
-            } catch (const std::logic_error&) {
-            }
-            QLabel *label = new QLabel();
-            label->setPixmap(pm);
-            label->setFixedSize(8,50);
-            imglist.append(label);
-//            imglist.append(&label);
+QImage viewProgBarLoad::GraizeImage( const QImage& image ){
+    int w =image.width();
+    int h = image.height();
+    QImage iGray(w,h, QImage::Format_ARGB32);
+
+    for(int i=0; i<w;i++)
+    {
+        for(int j=0; j<h;j++)
+        {
+            QRgb pixel = image.pixel(i,j);
+            int gray = qGray(pixel);
+            QRgb grayPixel = qRgb(gray,gray,gray);
+            QColor color(gray,gray,gray,qAlpha(pixel));
+            iGray.setPixel(i,j,color.rgba());
         }
-          emit imglistloadend(imglist);
     }
-};
+    return iGray;
+}
+
+void viewProgBarLoad::loadViewProgBar(){
+
+    int num = (_parent->width()-PROGBAR_SPEC+1)/9;
+    auto tmp = (_engine->duration()*1000)/num;
+    auto dpr = qApp->devicePixelRatio();
+    QList<QPixmap> pm;
+//    pm.setDevicePixelRatio(dpr);
+    QList<QPixmap> pm_black;
+//    pm_black.setDevicePixelRatio(dpr);
+    VideoThumbnailer thumber;
+    QTime d(0, 0, 0,0);
+    thumber.setThumbnailSize(_engine->videoSize().width() * qApp->devicePixelRatio());
+    thumber.setMaintainAspectRatio(true);
+    thumber.setSeekTime(d.toString("hh:mm:ss").toStdString());
+    auto url = _engine->playlist().currentInfo().url;
+    auto file = QFileInfo(url.toLocalFile()).absoluteFilePath();
+
+      for(auto i=0;i<num;i++){
+          d = d.addMSecs(tmp);
+        thumber.setSeekTime(d.toString("hh:mm:ss:ms").toStdString());
+        try {
+            std::vector<uint8_t> buf;
+            thumber.generateThumbnail(file.toUtf8().toStdString(),
+                    ThumbnailerImageType::Png, buf);
+
+            auto img = QImage::fromData(buf.data(), buf.size(), "png");
+            auto img_tmp = img.scaledToHeight(50);
+
+
+            pm.append(QPixmap::fromImage(img_tmp.copy(img_tmp.size().width()/2-4,0,8,50)));
+            QImage img_black = GraizeImage(img_tmp);
+            pm_black.append(QPixmap::fromImage(img_black.copy(img_black.size().width()/2-4,0,8,50)));
+
+
+
+//            ImageItem *label = new ImageItem(img_tmp);
+//            label->setFixedSize(8,50);
+//            _parent->addLabel_list(label);
+
+//            ImageItem *label_black = new ImageItem(img_tmp,true,_front);
+//            label_black->setFixedSize(8,50);
+//            _parent->addLabel_black_list(label_black);
+        } catch (const std::logic_error&) {
+        }
+
+    }
+      _parent->addpm_list(pm);
+      _parent->addpm_black_list(pm_black);
+      emit sigFinishiLoad();
+
+}
 
 ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
     :QFrame(mainWindow),
@@ -793,6 +930,8 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
 {
     bool composited = CompositingManager::get().composited();
     setFrameShape(QFrame::NoFrame);
+//    setFrameShadow(QFrame::Plain);
+    setLineWidth(0);
 //    setAutoFillBackground(false);
 //    setAttribute(Qt::WA_TranslucentBackground);
     if (!composited) {
@@ -810,6 +949,10 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
 
 
 //    DThemeManager::instance()->registerWidget(this);
+    label_list.clear();
+    label_black_list.clear();
+    pm_list.clear();
+    pm_black_list.clear();
 
     _previewer = new ThumbnailPreview;
     _previewer->hide();
@@ -817,11 +960,33 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
     _subView = new SubtitlesView(0, _engine);
     _subView->hide();
     setup();
-}
 
+    _viewProgBarLoad= new viewProgBarLoad(_engine,this);
+    _loadThread = new QThread();
+
+    _viewProgBarLoad->moveToThread(_loadThread);
+    _loadThread->start();
+
+    connect(this, SIGNAL(sigstartLoad()), _viewProgBarLoad, SLOT(loadViewProgBar()));
+//    connect(this,&ToolboxProxy::sigstartLoad,this,[=]{
+//        _viewProgBarLoad->loadViewProgBar();
+//    });
+    connect(_viewProgBarLoad, SIGNAL(sigFinishiLoad()), this, SLOT(finishLoadSlot()));
+}
+void ToolboxProxy::finishLoadSlot(){
+
+    _viewProgBar->setViewProgBar(_engine,pm_list,pm_black_list);
+    if(CompositingManager::get().composited()){
+        _progBar_Widget->setCurrentIndex(2);
+    }
+
+
+}
 ToolboxProxy::~ToolboxProxy()
 {
     ThumbnailWorker::get().stop();
+//    _loadThread->exit();
+    _loadThread->quit();
     delete _subView;
     delete _previewer;
 }
@@ -835,18 +1000,18 @@ void ToolboxProxy::setup()
 
     _progBarspec = new DWidget();
     _progBarspec->setFixedHeight(12+TOOLBOX_TOP_EXTENT);
-    _progBarspec->setFixedWidth(584);
+//    _progBarspec->setFixedWidth(584);
 //    _progBarspec->setFixedWidth(1450);
     _progBar = new DMRSlider();
     _progBar->setObjectName("MovieProgress");
     _progBar->slider()->setOrientation(Qt::Horizontal);
-    _progBar->setFixedHeight(50);
-    _progBar->setFixedWidth(584);
+    _progBar->setFixedHeight(60);
+//    _progBar->setFixedWidth(584);
 //    _progBar->setFixedWidth(1450);
     _progBar->slider()->setRange(0, 100);
     _progBar->setValue(0);
     _progBar->setEnableIndication(_engine->state() != PlayerEngine::Idle);
-    _progBar->hide();
+//    _progBar->hide();
     connect(_previewer, &ThumbnailPreview::leavePreview, [=]() {
         auto pos = _progBar->mapFromGlobal(QCursor::pos());
         if (!_progBar->geometry().contains(pos)) {
@@ -856,6 +1021,7 @@ void ToolboxProxy::setup()
     });
 
     connect(_progBar, &DSlider::sliderMoved, this, &ToolboxProxy::setProgress);
+    connect(_progBar, &DSlider::valueChanged, this, &ToolboxProxy::setProgress);
     connect(_progBar, &DMRSlider::hoverChanged, this, &ToolboxProxy::progressHoverChanged);
 //    connect(_progBar, &DMRSlider::leave, [=]() { _previewer->hide(); });
     connect(&Settings::get(), &Settings::baseChanged,
@@ -866,8 +1032,10 @@ void ToolboxProxy::setup()
         });
     connect(_progBar, &DMRSlider::enter,[=](){
         if(_engine->state() == PlayerEngine::CoreState::Playing || _engine->state() == PlayerEngine::CoreState::Paused){
-            _viewProgBar->show();
-            _progBar->hide();
+//            _viewProgBar->show();
+//            _progBar->hide();
+//            _progBar_stacked->setCurrentIndex(2);
+//            _progBar_Widget->setCurrentIndex(2);
         }
 
     });
@@ -875,9 +1043,17 @@ void ToolboxProxy::setup()
 
 
     auto *bot_widget = new QWidget;
+    auto *botv = new QVBoxLayout();
+    botv->setContentsMargins(0, 0, 0, 0);
+//    auto *bot = new QHBoxLayout();
+    _bot_spec = new QWidget;
+    _bot_spec->setFixedHeight(301);
+    _bot_spec->hide();
+    botv->addWidget(_bot_spec);
     auto *bot = new QHBoxLayout();
     bot->setContentsMargins(LEFT_MARGIN, 0, RIGHT_MARGIN, 0);
-    bot_widget->setLayout(bot);
+    botv->addLayout(bot);
+    bot_widget->setLayout(botv);
     stacked->addWidget(bot_widget);
 //    QPalette palette;
 //    palette.setColor(QPalette::Background, QColor(0,0,0,255)); // 最后一项为透明度
@@ -885,20 +1061,27 @@ void ToolboxProxy::setup()
 
     _timeLabel = new QLabel("");
 //    _timeLabel->setFixedWidth(_timeLabel->fontMetrics().width("99:99:99/99:99:99"));
+    _timeLabel->setFont(DFontSizeManager::instance()->get(DFontSizeManager::T6));
     _timeLabel->setFixedWidth(54);
 //    bot->addWidget(_timeLabel);
     _timeLabelend = new QLabel("");
     _timeLabelend->setFixedWidth(54);
 //    _timeLabel->setFixedWidth(_timeLabel->fontMetrics().width("99:99:99/99:99:99"));
 //    _timeLabelend->setFixedWidth(_timeLabelend->fontMetrics().width("99:99:99"));
+    _timeLabelend->setFont(DFontSizeManager::instance()->get(DFontSizeManager::T6));
 
-    _viewProgBar = new ViewProgBar();
+    _viewProgBar = new ViewProgBar(this);
 
-    _viewProgBar->hide();
+//    _viewProgBar->hide();
+    _viewProgBar->setFocusPolicy(Qt::NoFocus);
+
+
     connect(_viewProgBar,&ViewProgBar::leaveViewProgBar,[=](){
-        _viewProgBar->hide();
-        _progBar->show();
-        _progBarspec->hide();
+//        _viewProgBar->hide();
+//        _progBar->show();
+//        _progBarspec->hide();
+//        _progBar_stacked->setCurrentIndex(1);
+//        _progBar_Widget->setCurrentIndex(1);
         _previewer->hide();
     });
     connect(_viewProgBar, &ViewProgBar::hoverChanged, this, &ToolboxProxy::progressHoverChanged);
@@ -924,36 +1107,55 @@ void ToolboxProxy::setup()
     bot->addLayout(time);
     time->addWidget(_timeLabel);
 
-    bot->addStretch();
+//    bot->addStretch();
 
     QHBoxLayout *progBarspec = new QHBoxLayout();
-    progBarspec->setContentsMargins(0, 0, 0, 0);
+    progBarspec->setContentsMargins(0, 5, 0, 0);
     progBarspec->setSpacing(0);
-    progBarspec->setAlignment(Qt::AlignLeft);
-    bot->addLayout(progBarspec);
-    progBarspec->addWidget(_progBarspec);
+    progBarspec->setAlignment(Qt::AlignHCenter);
+//    bot->addLayout(progBarspec);
+//    progBarspec->addWidget(_progBarspec);
 
     QHBoxLayout *progBar = new QHBoxLayout();
     progBar->setContentsMargins(0, 0, 0, 0);
     progBar->setSpacing(0);
-    progBar->setAlignment(Qt::AlignLeft);
-    bot->addLayout(progBar);
+    progBar->setAlignment(Qt::AlignHCenter);
+//    bot->addLayout(progBar);
     progBar->addWidget(_progBar);
 
     QHBoxLayout *viewProgBar = new QHBoxLayout();
     viewProgBar->setContentsMargins(0, 0, 0, 0);
     viewProgBar->setSpacing(0);
     viewProgBar->setAlignment(Qt::AlignHCenter);
-    bot->addLayout(viewProgBar);
+//    bot->addLayout(viewProgBar);
     viewProgBar->addWidget(_viewProgBar);
 
+    _progBar_stacked = new QStackedLayout(this);
+    _progBar_stacked->setContentsMargins(0, 0, 0, 0);
+    _progBar_stacked->setStackingMode(QStackedLayout::StackOne);
+    _progBar_stacked->setAlignment(Qt::AlignCenter);
+    _progBar_stacked->setSpacing(0);
+    _progBar_stacked->addWidget(_progBarspec);
+    _progBar_stacked->addWidget(_progBar);
+    _progBar_stacked->addWidget(_viewProgBar);
+//    _progBar_stacked->addChildLayout(viewProgBar);
+    _progBar_stacked->setCurrentIndex(0);
+//    bot->addLayout(_progBar_stacked);
+
+    _progBar_Widget = new QStackedWidget;
+    _progBar_Widget->addWidget(_progBarspec);
+    _progBar_Widget->addWidget(_progBar);
+    _progBar_Widget->addWidget(_viewProgBar);
+    _progBar_Widget->setCurrentIndex(0);
+    progBarspec->addWidget(_progBar_Widget);
+    bot->addLayout(progBarspec);
 //    bot->addWidget(_timeLabel);
 //    bot->addWidget(_progBarspec);
 //    bot->addWidget(_progBar);
 //    bot->addWidget(_viewProgBar);
 //    bot->addWidget(_timeLabelend);
     
-    bot->addStretch();
+//    bot->addStretch();
 
     QHBoxLayout *timeend = new QHBoxLayout();
     timeend->setContentsMargins(10, 0, 0, 0);
@@ -997,7 +1199,7 @@ void ToolboxProxy::setup()
 //    _mid->addWidget(_nextBtn);
     list.append(_nextBtn);
     _palyBox->setButtonList(list,false);
-    _palyBox->setFocusPolicy(Qt::FocusPolicy::NoFocus);
+//    _palyBox->setFocusPolicy(Qt::FocusPolicy::NoFocus);
     _nextBtn->setFocusPolicy(Qt::FocusPolicy::NoFocus);
     _playBtn->setFocusPolicy(Qt::FocusPolicy::NoFocus);
     _prevBtn->setFocusPolicy(Qt::FocusPolicy::NoFocus);
@@ -1058,6 +1260,17 @@ void ToolboxProxy::setup()
     _listBtn->setIcon(QIcon::fromTheme("dcc_episodes"));
     _listBtn->setIconSize(QSize(36,36));
     _listBtn->setFixedSize(50, 50);
+//    _listBtn->setFocusPolicy(Qt::FocusPolicy::TabFocus);
+    _listBtn->setCheckable(true);
+//    _listBtn->setChecked(true);
+//    connect(_playlist,&PlaylistWidget::stateChange,this,[=](){
+//        if (_playlist->state() == PlaylistWidget::State::Opened){
+//            _listBtn->setChecked(true);
+//        }else {
+//            _listBtn->setChecked(false);
+//        }
+//    });
+
     connect(_listBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_listBtn, "list");
     _right->addWidget(_listBtn);
@@ -1092,10 +1305,17 @@ void ToolboxProxy::setup()
     connect(_engine, &PlayerEngine::fileLoaded, [=]() {
         _progBar->slider()->setRange(0, _engine->duration());
 //        setViewProgBar();
-        _viewProgBar->hide();
-        _progBar->show();
-        _progBarspec->hide();
-        QTimer::singleShot(100, [this]() {_viewProgBar->setViewProgBar(_engine);});
+//        _viewProgBar->hide();
+//        _progBar->show();
+//        _progBarspec->hide();
+        _progBar_stacked->setCurrentIndex(1);
+//        _progBar_Widget->setCurrentIndex(1);
+        pm_list.clear();
+        pm_black_list.clear();
+        emit sigstartLoad();
+        update();
+        QTimer::singleShot(1000, [this]() {_progBar_Widget->setCurrentIndex(1);});
+//        QTimer::singleShot(100, [this]() {_viewProgBar->setViewProgBar(_engine);});
 //        _viewProgBar->setViewProgBar(_engine);
 //        _viewProgBar->show();
 //        _progBar->hide();
@@ -1128,6 +1348,21 @@ void ToolboxProxy::setup()
     connect(qApp, &QGuiApplication::applicationStateChanged, [=](Qt::ApplicationState e) {
         if (e == Qt::ApplicationInactive && anyPopupShown()) {
             closeAnyPopup();
+        }
+    });
+
+    _autoResizeTimer.setSingleShot(true);
+    connect(&_autoResizeTimer, &QTimer::timeout, this, [=]{
+        if(_oldsize.width()==width()){
+            _viewProgBar->setWidth();
+            if(_engine->state() != PlayerEngine::CoreState::Idle){
+//                _viewProgBar->setViewProgBar(_engine);
+                QTimer::singleShot(1000, [this]() {_progBar_Widget->setCurrentIndex(1);});
+//                _progBar_Widget->setCurrentIndex(1);
+                pm_list.clear();
+                pm_black_list.clear();
+                emit sigstartLoad();
+            }
         }
     });
 }
@@ -1353,14 +1588,18 @@ void ToolboxProxy::updatePlayState()
         if( _progBar->isVisible()){
             _progBar->setVisible(false);
         }
-        _progBarspec->show();
-        _progBar->hide();
+//        _progBarspec->show();
+//        _progBar->hide();
+        _progBar_stacked->setCurrentIndex(0);
+        _progBar_Widget->setCurrentIndex(0);
         setProperty("idle", true);
     } else {
         setProperty("idle", false);
-        _progBar->show();
-        _progBar->setVisible(true);
-        _progBarspec->hide();
+//        _progBar->show();
+//        _progBar->setVisible(true);
+//        _progBarspec->hide();
+//        _progBar_stacked->setCurrentIndex(1);
+//        _progBar_Widget->setCurrentIndex(1);
     }
     
     auto on = (_engine->state() != PlayerEngine::CoreState::Idle);
@@ -1434,14 +1673,15 @@ void ToolboxProxy::paintEvent(QPaintEvent *pe)
 
     QPainterPath pp;
     pp.addRoundedRect(bgRect, RADIUS, RADIUS);
-    painter.fillPath(pp, bgColor);
+    painter.fillPath(pp, QColor(0,0,0,22));
 
-//    {
-//        auto view_rect = bgRect.marginsRemoved(QMargins(1, 1, 1, 1));
-//        QPainterPath pp;
-//        pp.addRoundedRect(view_rect, RADIUS, RADIUS);
-//        painter.fillPath(pp, bgColor);
-//    }
+    {
+        auto view_rect = bgRect.marginsRemoved(QMargins(1, 1, 1, 1));
+        QPainterPath pp;
+        pp.addRoundedRect(view_rect, RADIUS, RADIUS);
+        painter.fillPath(pp, bgColor);
+    }
+
     QWidget::paintEvent(pe);
 }
 
@@ -1452,6 +1692,28 @@ void ToolboxProxy::showEvent(QShowEvent *event)
 
 void ToolboxProxy::resizeEvent(QResizeEvent *event)
 {
+
+    if(_autoResizeTimer.isActive()){
+        _autoResizeTimer.stop();
+    }
+    if(event->oldSize().width() != event->size().width()){
+        _autoResizeTimer.start(1000);
+        _oldsize = event->size();
+        _progBar->setFixedWidth(width()-PROGBAR_SPEC);
+    }
+
+
+
+//    _oldsize = event->size();
+//    if (!_isresize){
+//        QTimer::singleShot(2000, [this]() {
+
+//            _viewProgBar->setWidth();
+//            _isresize = false;
+//        });
+//    }
+
+
     updateTimeLabel();
 }
 
@@ -1461,6 +1723,11 @@ void ToolboxProxy::updateTimeLabel()
     _listBtn->setVisible(width() > 280);
     _timeLabel->setVisible(width() > 350);
     _timeLabelend->setVisible(width() > 350);
+//    _viewProgBar->setVisible(width() > 350);
+//    _progBar->setVisible(width() > 350);
+    if(_mainWindow->width() < 1050){
+//        _progBar->hide();
+    }
     if (width() > 350) {
         auto right_geom = _right->geometry();
         int left_w = 54;
@@ -1475,7 +1742,11 @@ void ToolboxProxy::updateTimeLabel()
     }
 }
 
+void ToolboxProxy::setViewProgBarWidth()
+{
+    _viewProgBar->setWidth();
 }
 
+}
 
 #include "toolbox_proxy.moc"

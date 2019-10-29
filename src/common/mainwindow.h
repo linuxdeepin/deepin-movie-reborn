@@ -60,7 +60,7 @@ class PlayerEngine;
 class NotificationWidget;
 class MovieProgressIndicator;
 
-class MainWindow: public DFrame {
+class MainWindow: public DMainWindow {
     Q_OBJECT
     Q_PROPERTY(bool inited READ inited WRITE setInit NOTIFY initChanged)
 public:

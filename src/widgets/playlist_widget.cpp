@@ -642,7 +642,7 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     if (!composited) {
         _playlist->setWindowFlags(Qt::FramelessWindowHint|Qt::BypassWindowManagerHint);
         _playlist->setAttribute(Qt::WA_NativeWindow);
-	} 
+    }
 
 #ifndef USE_DXCB
     auto *mwl = new MainWindowListener(this);
@@ -990,7 +990,7 @@ void PlaylistWidget::togglePopup()
 //            _mw->toolbox()->geometry().top() + TOOLBOX_TOP_EXTENT - off);
     QRect fixed((view_rect.width()-1050)/2, (view_rect.height()-394),
             1050,
-            (384 - 0));
+            (384 - 70));
 //    fixed.moveRight(view_rect.right());
     QRect shrunk = fixed;
 //    shrunk.setWidth(0);
@@ -1010,13 +1010,18 @@ void PlaylistWidget::togglePopup()
         pa->setStartValue(fixed);
         pa->setEndValue(shrunk);;
 
-        pa->start();
+//        pa->start();
         connect(pa, &QPropertyAnimation::finished, [=]() {
             pa->deleteLater();
             setVisible(!isVisible());
             _toggling = false;
             _state = State::Closed;
+            emit stateChange();
         });
+        setVisible(!isVisible());
+        _toggling = false;
+        _state = State::Closed;
+        emit stateChange();
     } else {
         setVisible(!isVisible());
         _toggling = true;
@@ -1026,12 +1031,16 @@ void PlaylistWidget::togglePopup()
         pa->setStartValue(shrunk);
         pa->setEndValue(fixed);
 
-        pa->start();
+//        pa->start();
         connect(pa, &QPropertyAnimation::finished, [=]() {
             pa->deleteLater();
             _toggling = false;
             _state = State::Opened;
+            emit stateChange();
         });
+        _toggling = false;
+        _state = State::Opened;
+        emit stateChange();
     }
 }
 
@@ -1046,7 +1055,7 @@ void PlaylistWidget::paintEvent(QPaintEvent *pe)
 
     QPainterPath pp;
     pp.addRoundedRect(bgRect, 18, 18);
-    painter.fillPath(pp, bgColor);
+//    painter.fillPath(pp, bgColor);
 
 //    {
 //        auto view_rect = bgRect.marginsRemoved(QMargins(1, 1, 1, 1));

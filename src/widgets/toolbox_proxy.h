@@ -39,6 +39,7 @@
 #include <DIconButton>
 #include <DButtonBox>
 #include <DBlurEffectWidget>
+#include "playlist_widget.h"
 
 namespace Dtk
 {
@@ -60,6 +61,64 @@ class SubtitlesView;
 class VolumeSlider;
 class ViewProgBar;
 class viewProgBarLoad;
+class PlaylistWidget;
+class ImageItem : public DLabel{
+    Q_OBJECT
+public:
+    ImageItem(QPixmap image ,bool isblack = false, QWidget *parent = 0):DLabel(parent){
+//        QImage image2 = image;
+//        if(isblack) image2 =GraizeImage(image);
+//        _pixmap=QPixmap::fromImage(image2.copy(image2.size().width()/2-4,0,8,50));
+        _pixmap = image;
+    };
+
+    QImage GraizeImage( const QImage& image ){
+        int w =image.width();
+        int h = image.height();
+        QImage iGray(w,h, QImage::Format_ARGB32);
+
+        for(int i=0; i<w;i++)
+        {
+            for(int j=0; j<h;j++)
+            {
+                QRgb pixel = image.pixel(i,j);
+                int gray = qGray(pixel);
+                QRgb grayPixel = qRgb(gray,gray,gray);
+                QColor color(gray,gray,gray,qAlpha(pixel));
+                iGray.setPixel(i,j,color.rgba());
+            }
+        }
+        return iGray;
+
+    }
+signals:
+    void imageItemclicked(int index,int indexNow);
+protected:
+    void paintEvent(QPaintEvent *event){
+        QPainter painter(this);
+//        painter.drawPixmap(rect(),QPixmap(_path).scaled(60,50));
+
+        painter.setRenderHints(QPainter::HighQualityAntialiasing |
+                                QPainter::SmoothPixmapTransform |
+                                QPainter::Antialiasing);
+
+        QRect backgroundRect = rect();
+        QRect pixmapRect;
+
+        QPainterPath bp1;
+        bp1.addRoundedRect(backgroundRect, 4, 4);
+        painter.setClipPath(bp1);
+
+        painter.drawPixmap(backgroundRect, _pixmap);
+
+    };
+private:
+    int _index;
+    int _indexNow;
+    DLabel *_image=nullptr;
+    QString _path = NULL;
+    QPixmap _pixmap;
+};
 
 class ToolboxProxy: public QFrame {
     Q_OBJECT
@@ -70,12 +129,31 @@ public:
     void updateTimeInfo(qint64 duration, qint64 pos);
     bool anyPopupShown() const;
     void closeAnyPopup();
-
+    void setViewProgBarWidth();
+    void setPlaylist(PlaylistWidget *playlist){
+        _playlist = playlist;
+        connect(_playlist,&PlaylistWidget::stateChange,this,[=](){
+            if (_playlist->state() == PlaylistWidget::State::Opened){
+                _bot_spec->show();
+                _listBtn->setChecked(true);
+            }else {
+                _listBtn->setChecked(false);
+                _bot_spec->hide();
+            }
+        });
+    }
+    void addLabel_list(ImageItem *label){ label_list.append(label);}
+    void addLabel_black_list(ImageItem *label_black){ label_black_list.append(label_black);}
+    void addpm_list(QList<QPixmap> pm){ pm_list.clear(); pm_list.append(pm);}
+    void addpm_black_list(QList<QPixmap> pm_black){ pm_black_list.clear(); pm_black_list.append(pm_black);}
+public slots:
+    void finishLoadSlot();
 signals:
     void requestPlay();
     void requestPause();
     void requestNextInList();
     void requesstPrevInList();
+    void sigstartLoad();
 
 protected slots:
     void updatePosition(const QPoint& p);
@@ -90,6 +168,7 @@ protected slots:
     void updateHoverPreview(const QUrl& url, int secs);
     void setViewProgBar();
 
+
 protected:
     void paintEvent(QPaintEvent *pe) override;
     void showEvent(QShowEvent *event) override;
@@ -101,6 +180,7 @@ private:
 
     MainWindow *_mainWindow {nullptr};
     PlayerEngine *_engine {nullptr};
+    PlaylistWidget *_playlist {nullptr};
     QLabel *_timeLabel {nullptr};
     QLabel *_timeLabelend {nullptr};
     VolumeSlider *_volSlider {nullptr};
@@ -130,6 +210,54 @@ private:
     SubtitlesView *_subView {nullptr};
     int _lastHoverValue {0};
     QTimer _previewTimer;
+    QWidget *_bot_spec {nullptr};
+    QStackedLayout *_progBar_stacked {nullptr};
+    QStackedWidget *_progBar_Widget {nullptr};
+    QTimer _autoResizeTimer;
+    QSize _oldsize;
+    bool _isresize;
+    viewProgBarLoad *_viewProgBarLoad{nullptr};
+    QThread *_loadThread{nullptr};
+    QList<ImageItem *>label_list ;
+    QList<ImageItem *>label_black_list;
+    QList<QPixmap >pm_list ;
+    QList<QPixmap >pm_black_list ;
+};
+class viewProgBarLoad: public QObject{
+    Q_OBJECT
+public:
+    explicit viewProgBarLoad(PlayerEngine *engine = nullptr,ToolboxProxy *parent = 0);
+
+public slots:
+     void loadViewProgBar();
+signals:
+    void leaveViewProgBar();
+    void hoverChanged(int);
+    void sliderMoved(int);
+    void indicatorMoved(int);
+    void sigFinishiLoad();
+
+protected:
+    QImage GraizeImage( const QImage& image );
+
+private:
+    PlayerEngine *_engine {nullptr};
+    ToolboxProxy *_parent{nullptr};
+    int _vlastHoverValue;
+    QPoint _startPos;
+    bool _isBlockSignals;
+    QPoint _indicatorPos {0, 0};
+    QColor _indicatorColor;
+
+    viewProgBarLoad *_viewProgBarLoad{nullptr};
+    QWidget *_back{nullptr};
+    QWidget *_front{nullptr};
+    DBlurEffectWidget *_indicator{nullptr};
+    QGraphicsColorizeEffect *m_effect{nullptr};
+    QList<QLabel*> labelList ;
+    QHBoxLayout *_indicatorLayout{nullptr};
+    QHBoxLayout *_viewProgBarLayout{nullptr};
+    QHBoxLayout *_viewProgBarLayout_black{nullptr};
 };
 }
 

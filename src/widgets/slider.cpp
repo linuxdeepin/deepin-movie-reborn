@@ -101,17 +101,17 @@ DMRSlider::DMRSlider(QWidget *parent): DSlider(Qt::Horizontal,parent)
     slider()->setTracking(false);
     setMouseTracking(true);
 
-    auto updateTheme = [=]() {
-        if (qApp->theme() == "dark") {
-            _indicatorColor = QColor("#ffffff");
-            _style_tmpl = dark_style;
-        } else {
-            _indicatorColor = QColor("#303030");
-            _style_tmpl = light_style;
-        }
-    };
-    connect(DThemeManager::instance(), &DThemeManager::themeChanged, updateTheme);
-    updateTheme();
+//    auto updateTheme = [=]() {
+//        if (qApp->theme() == "dark") {
+//            _indicatorColor = QColor("#ffffff");
+//            _style_tmpl = dark_style;
+//        } else {
+//            _indicatorColor = QColor("#303030");
+//            _style_tmpl = light_style;
+//        }
+//    };
+//    connect(DThemeManager::instance(), &DThemeManager::themeChanged, updateTheme);
+//    updateTheme();
 
 //    setProperty("Hover", "false");
 //    setStyleSheet(styleSheet());
@@ -178,7 +178,7 @@ void DMRSlider::mouseMoveEvent(QMouseEvent *e)
         // a mouse enter from previewer happens
         if (_indicatorEnabled && !property("Hover").toBool()) {
             setProperty("Hover", "true");
-            startAnimation(false);
+//            startAnimation(false);
             _showIndicator = true;
             update();
         }
@@ -201,7 +201,7 @@ void DMRSlider::mouseMoveEvent(QMouseEvent *e)
 void DMRSlider::leaveEvent(QEvent *e)
 {
     if (_indicatorEnabled) {
-        startAnimation(true);
+//        startAnimation(true);
 
         _showIndicator = false;
         update();
@@ -286,7 +286,7 @@ void DMRSlider::enterEvent(QEvent *e)
     if (_indicatorEnabled) {
         if (property("Hover") != "true") {
             setProperty("Hover", "true");
-            startAnimation(false);
+//            startAnimation(false);
             _showIndicator = true;
             update();
         }
@@ -307,11 +307,11 @@ void DMRSlider::paintEvent(QPaintEvent *e)
 {
     QWidget::paintEvent(e);
 
-    if (_indicatorEnabled && _showIndicator) {
-        QPainter p(this);
-        QRect r(_indicatorPos, QSize{1, 6});
-        p.fillRect(r, QBrush(_indicatorColor));
-    }
+//    if (_indicatorEnabled && _showIndicator) {
+//        QPainter p(this);
+//        QRect r(_indicatorPos, QSize{1, 6});
+//        p.fillRect(r, QBrush(_indicatorColor));
+//    }
 }
 
 }

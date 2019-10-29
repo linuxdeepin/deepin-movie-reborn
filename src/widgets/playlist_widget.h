@@ -66,7 +66,8 @@ public:
     State state() const { return _state; }
     bool toggling() const { return _toggling; }
     void clear();
-
+signals:
+    void stateChange();
 public slots:
     void togglePopup();
     void loadPlaylist();
