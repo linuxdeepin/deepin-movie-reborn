@@ -577,6 +577,7 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     pa_num.setBrush(DPalette::WindowText, pa_num.color(DPalette::TextTips));
     _num->setPalette(pa_num);
     _num->setText(tr("17个视频"));
+    _num->setFont(DFontSizeManager::instance()->get(DFontSizeManager::T6));
     _num->setFixedSize(96,36);
     _num->setContentsMargins(0,2,0,0);
 //    title->setFont(QFont());
@@ -588,12 +589,38 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     leftinfo->setAlignment(Qt::AlignLeft | Qt::AlignTop);
     leftinfo->addWidget(_title);
     leftinfo->addWidget(_num);
-    QPushButton *clearButton = new QPushButton(QIcon::fromTheme("dcc_clearlist"),tr("清空列表"));
+//    DPushButton *clearButton = new DPushButton(QIcon::fromTheme("dcc_clearlist"),tr("清空列表"),nullptr);
+    DPushButton *clearButton = new DPushButton();
+    clearButton->setIcon(QIcon::fromTheme("dcc_clearlist"));
+    clearButton->setText(tr("清空列表"));
+    clearButton->setFont(DFontSizeManager::instance()->get(DFontSizeManager::T6));
 //    clearButton->setText(tr("清空列表"));
     DPalette pa_cb = DApplicationHelper::instance()->palette(clearButton);
-    pa_cb.setBrush(DPalette::Button, pa_num.color(DPalette::TextTips));
+    if(DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ){
+        pa_cb.setBrush(QPalette::Light, QColor(100,100,100,255));
+        pa_cb.setBrush(QPalette::Dark, QColor(92,92,92,255));
+    } else {
+        pa_cb.setBrush(QPalette::Light, QColor(85,84,84,255));
+        pa_cb.setBrush(QPalette::Dark, QColor(65,65,65,255));
+    }
+    pa_cb.setBrush(QPalette::ButtonText, QColor(255,255,255,255));
+    clearButton->setPalette(pa_cb);
     clearButton->setFixedSize(93,30);
     clearButton->setContentsMargins(0,0,0,0);
+
+    QObject::connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::paletteTypeChanged,clearButton,
+                         [=] (DGuiApplicationHelper::ColorType type) {
+            DPalette pa_cb = DApplicationHelper::instance()->palette(clearButton);
+            if(DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ){
+                pa_cb.setBrush(QPalette::Light, QColor(100,100,100,255));
+                pa_cb.setBrush(QPalette::Dark, QColor(92,92,92,255));
+            } else {
+                pa_cb.setBrush(QPalette::Light, QColor(85,84,84,255));
+                pa_cb.setBrush(QPalette::Dark, QColor(65,65,65,255));
+            }
+            clearButton->setPalette(pa_cb);
+        });
+
     leftinfo->addWidget(clearButton);
     connect(clearButton,&QPushButton::clicked,this, [=]{
         _engine->clearPlaylist();

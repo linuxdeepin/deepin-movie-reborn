@@ -180,9 +180,9 @@ private:
     bool _inBurstShootMode {false};
     bool _pausedBeforeBurst {false};
 
-    DImageButton *_miniPlayBtn {nullptr};
-    DImageButton *_miniCloseBtn {nullptr};
-    DImageButton *_miniQuitMiniBtn {nullptr};
+    DIconButton *_miniPlayBtn {nullptr};
+    DIconButton *_miniCloseBtn {nullptr};
+    DIconButton *_miniQuitMiniBtn {nullptr};
 
     QImage bg_dark;
     QImage bg_light;

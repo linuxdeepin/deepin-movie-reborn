@@ -644,7 +644,10 @@ MainWindow::MainWindow(QWidget *parent)
             static_cast<void(QSignalMapper::*)(const QString&)>(&QSignalMapper::mapped),
             this, &MainWindow::miniButtonClicked);
 
-    _miniPlayBtn = new DImageButton(this);
+    _miniPlayBtn = new DIconButton(this);
+    _miniPlayBtn->setIcon(QIcon(":/resources/icons/light/mini/play-normal-mini.svg"));
+    _miniPlayBtn->setIconSize(QSize(30,30));
+    _miniPlayBtn->setFixedSize(QSize(30,30));
     _miniPlayBtn->setObjectName("MiniPlayBtn");
     connect(_miniPlayBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_miniPlayBtn, "play");
@@ -652,6 +655,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(_engine, &PlayerEngine::stateChanged, [=]() {
         qDebug() << __func__ << _engine->state();
         if (_engine->state() == PlayerEngine::CoreState::Playing) {
+            _miniPlayBtn->setIcon(QIcon(":/resources/icons/light/mini/pause-normal-mini.svg"));
             _miniPlayBtn->setObjectName("MiniPauseBtn");
 
             if (_lastCookie > 0) {
@@ -666,6 +670,7 @@ MainWindow::MainWindow(QWidget *parent)
             _lastCookie = utils::InhibitStandby();
             _powerCookie = utils::InhibitPower();
         } else {
+            _miniPlayBtn->setIcon(QIcon(":/resources/icons/light/mini/play-normal-mini.svg"));
             _miniPlayBtn->setObjectName("MiniPlayBtn");
 
             if (_lastCookie > 0) {
@@ -681,12 +686,18 @@ MainWindow::MainWindow(QWidget *parent)
 //        _miniPlayBtn->setStyleSheet(_miniPlayBtn->styleSheet());
     });
 
-    _miniCloseBtn = new DImageButton(this);
+    _miniCloseBtn = new DIconButton(this);
+    _miniCloseBtn->setIcon(QIcon(":/resources/icons/light/mini/close-normal.svg"));
+    _miniCloseBtn->setIconSize(QSize(30,30));
+    _miniCloseBtn->setFixedSize(QSize(30,30));
     _miniCloseBtn->setObjectName("MiniCloseBtn");
     connect(_miniCloseBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_miniCloseBtn, "close");
 
-    _miniQuitMiniBtn = new DImageButton(this);
+    _miniQuitMiniBtn = new DIconButton(this);
+    _miniQuitMiniBtn->setIcon(QIcon(":/resources/icons/light/mini/restore-normal-mini.svg"));
+    _miniQuitMiniBtn->setIconSize(QSize(30,30));
+    _miniQuitMiniBtn->setFixedSize(QSize(30,30));
     _miniQuitMiniBtn->setObjectName("MiniQuitMiniBtn");
     connect(_miniQuitMiniBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_miniQuitMiniBtn, "quit_mini");
@@ -2177,14 +2188,37 @@ void MainWindow::updateProxyGeometry()
 //                    view_rect.width(), TOOLBOX_HEIGHT_EXT);
             if (isFullScreen())
             {
-                QRect r(10, height() - TOOLBOX_HEIGHT_EXT - view_rect.top() - 10,
-                        view_rect.width()-20, TOOLBOX_HEIGHT_EXT);
-                _toolbox->setGeometry(r);
+                if (_playlist->state() == PlaylistWidget::State::Opened){
+                    QRect r(10, height() - 384 - rect().top() - 10,
+                            rect().width()-20, 384);
+                    _toolbox->setGeometry(r);
+        //            _toolbox->move(r.x(),r.y());
+        //            _toolbox->resize(r.width(),r.height());
+                }else {
+                    QRect r(10, height() - TOOLBOX_HEIGHT_EXT - rect().top() - 10,
+                            rect().width()-20, TOOLBOX_HEIGHT_EXT);
+                    _toolbox->setGeometry(r);
+                }
+
+//                QRect r(10, height() - TOOLBOX_HEIGHT_EXT - view_rect.top() - 10,
+//                        view_rect.width()-20, TOOLBOX_HEIGHT_EXT);
+//                _toolbox->setGeometry(r);
             }
             else {
-                QRect r(10, height() - TOOLBOX_HEIGHT_EXT - view_rect.top() - 10,
-                        view_rect.width()-20, TOOLBOX_HEIGHT_EXT);
-                _toolbox->setGeometry(r);
+                if (_playlist->state() == PlaylistWidget::State::Opened){
+                    QRect r(10, height() - 384 - rect().top() - 10,
+                            rect().width()-20, 384);
+                    _toolbox->setGeometry(r);
+        //            _toolbox->move(r.x(),r.y());
+        //            _toolbox->resize(r.width(),r.height());
+                }else {
+                    QRect r(10, height() - TOOLBOX_HEIGHT_EXT - rect().top() - 10,
+                            rect().width()-20, TOOLBOX_HEIGHT_EXT);
+                    _toolbox->setGeometry(r);
+                }
+//                QRect r(10, height() - TOOLBOX_HEIGHT_EXT - view_rect.top() - 10,
+//                        view_rect.width()-20, TOOLBOX_HEIGHT_EXT);
+//                _toolbox->setGeometry(r);
             }
 
 //            if (isFullScreen()) {

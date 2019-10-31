@@ -986,7 +986,7 @@ ToolboxProxy::~ToolboxProxy()
 {
     ThumbnailWorker::get().stop();
 //    _loadThread->exit();
-    _loadThread->quit();
+    _loadThread->terminate();
     delete _subView;
     delete _previewer;
 }
@@ -1047,7 +1047,8 @@ void ToolboxProxy::setup()
     botv->setContentsMargins(0, 0, 0, 0);
 //    auto *bot = new QHBoxLayout();
     _bot_spec = new QWidget;
-    _bot_spec->setFixedHeight(301);
+    _bot_spec->setFixedHeight(310);
+    _bot_spec->setFixedWidth(width());
     _bot_spec->hide();
     botv->addWidget(_bot_spec);
     auto *bot = new QHBoxLayout();
@@ -1110,7 +1111,7 @@ void ToolboxProxy::setup()
 //    bot->addStretch();
 
     QHBoxLayout *progBarspec = new QHBoxLayout();
-    progBarspec->setContentsMargins(0, 5, 0, 0);
+    progBarspec->setContentsMargins(0, 5, 0, 5);
     progBarspec->setSpacing(0);
     progBarspec->setAlignment(Qt::AlignHCenter);
 //    bot->addLayout(progBarspec);
@@ -1233,7 +1234,7 @@ void ToolboxProxy::setup()
         _volSlider->stopTimer();
         QPoint pos = _volBtn->parentWidget()->mapToGlobal(_volBtn->pos());
         pos.ry() = parentWidget()->mapToGlobal(this->pos()).y();
-        _volSlider->show(pos.x() + _volSlider->width()/2-5, pos.y() - 5 + TOOLBOX_TOP_EXTENT);
+        _volSlider->show(pos.x() + _volSlider->width()/2-5, pos.y() - 5 + TOOLBOX_TOP_EXTENT+(_bot_spec->isVisible()?314:0));
     });
     connect(_volBtn, &VolumeButton::leaved, _volSlider, &VolumeSlider::delayedHide);
     connect(_volBtn, &VolumeButton::requestVolumeUp, [=]() {
@@ -1312,9 +1313,9 @@ void ToolboxProxy::setup()
 //        _progBar_Widget->setCurrentIndex(1);
         pm_list.clear();
         pm_black_list.clear();
-        emit sigstartLoad();
+
         update();
-        QTimer::singleShot(1000, [this]() {_progBar_Widget->setCurrentIndex(1);});
+        QTimer::singleShot(1000, [this]() {emit sigstartLoad(); _progBar_Widget->setCurrentIndex(1);});
 //        QTimer::singleShot(100, [this]() {_viewProgBar->setViewProgBar(_engine);});
 //        _viewProgBar->setViewProgBar(_engine);
 //        _viewProgBar->show();
