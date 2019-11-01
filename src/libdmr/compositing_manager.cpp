@@ -118,16 +118,18 @@ CompositingManager::CompositingManager() {
         _composited = QFile::exists("/dev/dri/card0");
     } else if (isProprietaryDriver()) {
         _composited = true;
+    } else if (isDriverLoadedCorrectly() || isDirectRendered()) {
+        _composited = true;
     } else {
         GetScreenDriver = (glXGetScreenDriver_t *)glXGetProcAddressARB ((const GLubyte *)"glXGetScreenDriver");
         if (GetScreenDriver) {
             const char *name = (*GetScreenDriver) (QX11Info::display(), QX11Info::appScreen());
             qDebug() << "dri driver: " << name;
             _composited = name != nullptr;
-        } else {
-            if (isDriverLoadedCorrectly() && isDirectRendered()) {
-                _composited = true;
-            }
+//        } else {
+//            if (isDriverLoadedCorrectly() && isDirectRendered()) {
+//                _composited = true;
+//            }
         }
     }
 
@@ -309,7 +311,7 @@ bool CompositingManager::isProprietaryDriver()
     for (int id = 0; id <= 10; id++) {
         if (!QFile::exists(QString("/sys/class/drm/card%1").arg(id))) break;
         if (is_device_viable(id)) {
-            vector<string> drivers = {"nvidia", "fglrx", "hibmc-drm"};
+            vector<string> drivers = {"nvidia", "fglrx", "vmwgfx", "hibmc-drm"};
             return is_card_exists(id, drivers);
         }
     }
