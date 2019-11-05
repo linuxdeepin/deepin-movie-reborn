@@ -38,6 +38,7 @@
 #include <DFrame>
 #include "actions.h"
 #include "widgets/titlebar.h"
+#include <DPushButton>
 
 namespace Dtk
 {
@@ -173,7 +174,7 @@ private:
     ToolboxProxy *_toolbox {nullptr};
     PlaylistWidget *_playlist {nullptr};
     PlayerEngine *_engine {nullptr};
-    DImageButton *_playState {nullptr};
+    DIconButton *_playState {nullptr};
     MovieProgressIndicator *_progIndicator {nullptr};
 
     QList<QPair<QImage, qint64>> _burstShoots;

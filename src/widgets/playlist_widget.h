@@ -37,6 +37,7 @@
 #include <DListWidget>
 #include <DApplicationHelper>
 #include <DFontSizeManager>
+#include <QBrush>
 
 namespace Dtk
 {
@@ -52,6 +53,26 @@ namespace dmr {
 
 class PlayerEngine;
 class MainWindow;
+class ListPic:public QLabel{
+    Q_OBJECT
+public:
+    ListPic(QPixmap pic,QWidget *parent):QLabel(parent){
+        setFixedSize(QSize(42,24));
+        _pic = pic;
+    }
+protected:
+    void paintEvent(QPaintEvent *pe) override{
+        QPainter painter(this);
+        QBrush bgColor = QBrush(_pic);
+        QPainterPath pp;
+        QRectF bgRect;
+        bgRect.setSize(size());
+        pp.addRoundedRect(bgRect,4,4);
+        painter.fillPath(pp, bgColor);
+    };
+private:
+    QPixmap _pic;
+};
 class PlayItemWidget;
 
 class PlaylistWidget: public QWidget {
@@ -68,6 +89,7 @@ public:
     void clear();
 signals:
     void stateChange();
+    void sizeChange();
 public slots:
     void togglePopup();
     void loadPlaylist();
@@ -82,6 +104,7 @@ protected:
     void dropEvent(QDropEvent *event) override;
     void showEvent(QShowEvent *se) override;
     void paintEvent(QPaintEvent *pe) override;
+    void resizeEvent(QResizeEvent *ev) override;
 
 protected slots:
     void updateItemStates();

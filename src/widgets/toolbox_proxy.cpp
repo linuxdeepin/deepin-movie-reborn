@@ -897,7 +897,7 @@ void viewProgBarLoad::loadViewProgBar(){
                     ThumbnailerImageType::Png, buf);
 
             auto img = QImage::fromData(buf.data(), buf.size(), "png");
-            auto img_tmp = img.scaledToHeight(50);
+            auto img_tmp = img.scaledToHeight(_engine->videoSize().height());
 
 
             pm.append(QPixmap::fromImage(img_tmp.copy(img_tmp.size().width()/2-4,0,8,50)));
@@ -924,7 +924,7 @@ void viewProgBarLoad::loadViewProgBar(){
 }
 
 ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
-    :QFrame(mainWindow),
+    :DFrame(mainWindow),
     _mainWindow(static_cast<MainWindow*>(mainWindow)),
     _engine(proxy)
 {
@@ -1315,7 +1315,17 @@ void ToolboxProxy::setup()
         pm_black_list.clear();
 
         update();
-        QTimer::singleShot(1000, [this]() {emit sigstartLoad(); _progBar_Widget->setCurrentIndex(1);});
+        QTimer::singleShot(1000, [this]() {
+            if(_loadThread->isRunning()){
+                _loadThread->terminate();
+                _loadThread->wait();
+                _loadThread->start();
+                _loadsize = size();
+                emit sigstartLoad();
+                _progBar_Widget->setCurrentIndex(1);
+            }
+
+        });
 //        QTimer::singleShot(100, [this]() {_viewProgBar->setViewProgBar(_engine);});
 //        _viewProgBar->setViewProgBar(_engine);
 //        _viewProgBar->show();
@@ -1356,13 +1366,23 @@ void ToolboxProxy::setup()
     connect(&_autoResizeTimer, &QTimer::timeout, this, [=]{
         if(_oldsize.width()==width()){
             _viewProgBar->setWidth();
-            if(_engine->state() != PlayerEngine::CoreState::Idle){
+            if(_engine->state() != PlayerEngine::CoreState::Idle && size()!=_loadsize){
 //                _viewProgBar->setViewProgBar(_engine);
-                QTimer::singleShot(1000, [this]() {_progBar_Widget->setCurrentIndex(1);});
+                QTimer::singleShot(1000, [this]() {
+                    pm_list.clear();
+                    pm_black_list.clear();
+                    if(_loadThread->isRunning()){
+                        _loadThread->terminate();
+                        _loadThread->wait();
+                        _loadThread->start();
+                        emit sigstartLoad();
+                        _progBar_Widget->setCurrentIndex(1);
+                    }
+
+                });
 //                _progBar_Widget->setCurrentIndex(1);
-                pm_list.clear();
-                pm_black_list.clear();
-                emit sigstartLoad();
+
+                _loadsize = QSize(0,0);
             }
         }
     });
@@ -1673,13 +1693,13 @@ void ToolboxProxy::paintEvent(QPaintEvent *pe)
     QColor bgColor = pal.color(QPalette::ToolTipBase);
 
     QPainterPath pp;
-    pp.addRoundedRect(bgRect, RADIUS, RADIUS);
+    pp.addRoundedRect(bgRect, RADIUS_MV, RADIUS_MV);
     painter.fillPath(pp, QColor(0,0,0,22));
 
     {
         auto view_rect = bgRect.marginsRemoved(QMargins(1, 1, 1, 1));
         QPainterPath pp;
-        pp.addRoundedRect(view_rect, RADIUS, RADIUS);
+        pp.addRoundedRect(view_rect, RADIUS_MV, RADIUS_MV);
         painter.fillPath(pp, bgColor);
     }
 
@@ -1701,6 +1721,10 @@ void ToolboxProxy::resizeEvent(QResizeEvent *event)
         _autoResizeTimer.start(1000);
         _oldsize = event->size();
         _progBar->setFixedWidth(width()-PROGBAR_SPEC);
+        if(_engine->state()!=PlayerEngine::CoreState::Idle){
+            _progBar_Widget->setCurrentIndex(1);
+        }
+
     }
 
 
@@ -1721,26 +1745,32 @@ void ToolboxProxy::resizeEvent(QResizeEvent *event)
 void ToolboxProxy::updateTimeLabel()
 {
     // to keep left and right of the same width. which makes play button centered
-    _listBtn->setVisible(width() > 280);
-    _timeLabel->setVisible(width() > 350);
-    _timeLabelend->setVisible(width() > 350);
+    _listBtn->setVisible(width() > 300);
+    _timeLabel->setVisible(width() > 450);
+    _timeLabelend->setVisible(width() > 450);
 //    _viewProgBar->setVisible(width() > 350);
 //    _progBar->setVisible(width() > 350);
     if(_mainWindow->width() < 1050){
 //        _progBar->hide();
     }
-    if (width() > 350) {
-        auto right_geom = _right->geometry();
-        int left_w = 54;
-        _timeLabel->show();
-        _timeLabelend->show();
-        int w = qMax(left_w, right_geom.width());
-//        int w = left_w;
-        _timeLabel->setFixedWidth(left_w );
-        _timeLabelend->setFixedWidth(left_w );
-        right_geom.setWidth(w);
-        _right->setGeometry(right_geom);
+    if(width() <= 300){
+        _progBar->setFixedWidth(width()-PROGBAR_SPEC+50+54+10+54+10+10);
+    }else if (width() <= 450) {
+        _progBar->setFixedWidth(width()-PROGBAR_SPEC+54+54+10);
     }
+
+//    if (width() > 400) {
+//        auto right_geom = _right->geometry();
+//        int left_w = 54;
+//        _timeLabel->show();
+//        _timeLabelend->show();
+//        int w = qMax(left_w, right_geom.width());
+////        int w = left_w;
+//        _timeLabel->setFixedWidth(left_w );
+//        _timeLabelend->setFixedWidth(left_w );
+//        right_geom.setWidth(w);
+//        _right->setGeometry(right_geom);
+//    }
 }
 
 void ToolboxProxy::setViewProgBarWidth()

@@ -40,6 +40,7 @@
 #include <DButtonBox>
 #include <DBlurEffectWidget>
 #include "playlist_widget.h"
+#include <DFrame>
 
 namespace Dtk
 {
@@ -106,7 +107,7 @@ protected:
         QRect pixmapRect;
 
         QPainterPath bp1;
-        bp1.addRoundedRect(backgroundRect, 4, 4);
+        bp1.addRoundedRect(backgroundRect, 2, 2);
         painter.setClipPath(bp1);
 
         painter.drawPixmap(backgroundRect, _pixmap);
@@ -120,7 +121,7 @@ private:
     QPixmap _pixmap;
 };
 
-class ToolboxProxy: public QFrame {
+class ToolboxProxy: public DFrame {
     Q_OBJECT
 public:
     ToolboxProxy(QWidget *mainWindow, PlayerEngine*);
@@ -215,6 +216,7 @@ private:
     QStackedWidget *_progBar_Widget {nullptr};
     QTimer _autoResizeTimer;
     QSize _oldsize;
+    QSize _loadsize;
     bool _isresize;
     viewProgBarLoad *_viewProgBarLoad{nullptr};
     QThread *_loadThread{nullptr};

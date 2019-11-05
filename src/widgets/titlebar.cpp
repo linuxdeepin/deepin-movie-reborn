@@ -79,7 +79,7 @@ Titlebar::Titlebar(QWidget *parent) : DBlurEffectWidget(parent), d_ptr(new Title
     QPalette palette;
     QPixmap pixmap(":resources/icons/titlebar.png");
     palette.setBrush(QPalette::Background,QBrush(pixmap.scaled(window()->width(),50)));
-    this->setPalette(palette);
+//    this->setPalette(palette);
     m_titlebar = new DTitlebar(this);
     m_titlebar->setBackgroundTransparent(true);
     layout->addWidget(m_titlebar);

@@ -133,8 +133,8 @@ class PlayItemWidget: public QFrame {
 public:
     friend class PlaylistWidget;
 
-    PlayItemWidget(const PlayItemInfo& pif, QListWidget* list = 0, int index =0)
-        : QFrame(), _pif {pif}, _listWidget {list}
+    PlayItemWidget(const PlayItemInfo& pif, QListWidget* list = 0, int index =0,PlaylistWidget *parent=nullptr)
+        : QFrame(), _pif {pif}, _listWidget {list},_playlist{parent}
     {
 //        DThemeManager::instance()->registerWidget(this, QStringList() << "PlayItemThumb");
         
@@ -156,7 +156,7 @@ public:
         _play = QPixmap(":/resources/icons/dark/normal/film-top.svg");
         _play.setDevicePixelRatio(qApp->devicePixelRatio());
 
-        setFixedSize(PLAYLIST_FIXED_WIDTH, 36);
+        setFixedSize(_playlist->width()-250, 36);
         auto *l = new QHBoxLayout(this);
         l->setContentsMargins(10, 0, 16, 0);
         l->setSpacing(10);
@@ -168,8 +168,9 @@ public:
         _index->setFixedWidth(22);
         l->addWidget(_index);
 
-        _thumb = new QLabel(this);
-        _thumb->setPixmap(_pif.thumbnail.scaled(QSize(42,24)));
+
+        _thumb = new ListPic(_pif.thumbnail.scaled(QSize(42,24)),this);
+//        _thumb->setPixmap(_pif.thumbnail.scaled(QSize(42,24)));
         l->addWidget(_thumb);
 
         auto *vl = new QHBoxLayout;
@@ -177,7 +178,7 @@ public:
         vl->setSpacing(0);
         l->addLayout(vl);
 
-        vl->addStretch();
+//        vl->addStretch();
 
         _name = new QTextEdit(this);
         _name->setProperty("Name", true);
@@ -188,7 +189,8 @@ public:
         _name->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         _name->setFrameShape(QFrame::NoFrame);
         _name->setTextInteractionFlags(Qt::NoTextInteraction);
-        _name->setFixedWidth(620);
+        _name->setFixedWidth(width()-180);
+//        _name->setStyleSheet("background: red;");
         _name->installEventFilter(this);
         _name->viewport()->setAutoFillBackground(false);
         _name->setAutoFillBackground(false);
@@ -227,6 +229,10 @@ public:
         t->hide();
         setProperty("HintWidget", QVariant::fromValue<QWidget *>(t));
         installEventFilter(th);
+        connect(_playlist,&PlaylistWidget::sizeChange,this,[=]{
+            setFixedWidth(_playlist->width()-250);
+//            setFixedSize(_playlist->width(), 36);
+        });
     }
 
     void updateInfo(const PlayItemInfo& pif) {
@@ -322,7 +328,7 @@ protected:
         auto pl = dynamic_cast<QListWidget*>(parentWidget()->parentWidget());
         if (pl->verticalScrollBar()->isVisible())
             margin = 10;
-        _closeBtn->move(PLAYLIST_FIXED_WIDTH - _closeBtn->width() - margin,
+        _closeBtn->move(width() - _closeBtn->width() - margin,
                 (height() - _closeBtn->height())/2);
     }
 
@@ -353,6 +359,8 @@ protected:
     void resizeEvent(QResizeEvent* re) override
     {
         updateClosePosition();
+        _name->setFixedWidth(width()-180);
+        updateNameText();
     }
 
     bool event(QEvent *ee) override
@@ -379,8 +387,8 @@ protected:
 
     void updateNameText() 
     {
-        _name->setText(utils::ElideText(_pif.mi.title, {620, 36}, QTextOption::NoWrap,
-                    _name->font(), Qt::ElideRight, 18, 620));
+        _name->setText(utils::ElideText(_pif.mi.title, {width()-242, 36}, QTextOption::NoWrap,
+                    _name->font(), Qt::ElideRight, 18, width()-242));
         _name->viewport()->setCursor(Qt::ArrowCursor);
         _name->setCursor(Qt::ArrowCursor);
         _name->document()->setDocumentMargin(0.0);
@@ -481,7 +489,7 @@ protected:
 private:
     QString _bg;
     QLabel *_index;
-    QLabel *_thumb;
+    ListPic *_thumb;
     QTextEdit *_name;
     QLabel *_time;
     QPixmap _play;
@@ -489,6 +497,7 @@ private:
     DFloatingButton *_closeBtn;
     QListWidget *_listWidget {nullptr};
     bool _hovered {false};
+    PlaylistWidget *_playlist{nullptr};
 };
 
 class MainWindowListener: public QObject {
@@ -644,7 +653,9 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     mainLayout->addWidget(right);
 
     _playlist = new DListWidget();
-    _playlist->setFixedSize(820,288);
+//    _playlist->setFixedSize(820,288);
+    _playlist->setFixedSize(width()-230,288);
+//    _playlist->setFixedHeight(288);
     _playlist->setContentsMargins(0, 30, 0, 0);
     _playlist->viewport()->setAutoFillBackground(false);
     _playlist->setAutoFillBackground(false);
@@ -943,7 +954,7 @@ void PlaylistWidget::appendItems()
     auto items = _engine->playlist().items();
     auto p = items.begin() + this->_playlist->count();
     while (p != items.end()) {
-        auto w = new PlayItemWidget(*p, this->_playlist,p - items.begin() );
+        auto w = new PlayItemWidget(*p, this->_playlist,p - items.begin() ,this);
 
         auto item = new QListWidgetItem;
         _playlist->addItem(item);
@@ -972,7 +983,7 @@ void PlaylistWidget::loadPlaylist()
     auto items = _engine->playlist().items();
     auto p = items.begin();
     while (p != items.end()) {
-        auto w = new PlayItemWidget(*p, this->_playlist,p-items.begin());
+        auto w = new PlayItemWidget(*p, this->_playlist,p-items.begin(),this);
         auto item = new QListWidgetItem;
         _playlist->addItem(item);
         _playlist->setItemWidget(item, w);
@@ -998,6 +1009,7 @@ void PlaylistWidget::batchUpdateSizeHints()
         for (int i = 0; i < this->_playlist->count(); i++) {
             auto item = this->_playlist->item(i);
             auto w = this->_playlist->itemWidget(item);
+            auto t = w->size();
             item->setSizeHint(w->size());
         }
     }
@@ -1015,8 +1027,8 @@ void PlaylistWidget::togglePopup()
 //    QRect fixed(0, off,
 //            PLAYLIST_FIXED_WIDTH,
 //            _mw->toolbox()->geometry().top() + TOOLBOX_TOP_EXTENT - off);
-    QRect fixed((view_rect.width()-1050)/2, (view_rect.height()-394),
-            1050,
+    QRect fixed((10), (view_rect.height()-394),
+            view_rect.width()-20,
             (384 - 70));
 //    fixed.moveRight(view_rect.right());
     QRect shrunk = fixed;
@@ -1103,6 +1115,28 @@ void PlaylistWidget::paintEvent(QPaintEvent *pe)
 
     QWidget::paintEvent(pe);
 }
+
+void PlaylistWidget::resizeEvent(QResizeEvent *ev)
+{
+    auto main_rect = _mw->rect();
+#ifdef USE_DXCB
+    auto view_rect = main_rect;
+#else
+    auto view_rect = main_rect.marginsRemoved(QMargins(1, 1, 1, 1));
+#endif
+    int off = _mw->isFullScreen()? 0: _mw->titlebar()->geometry().bottom();
+//    QRect fixed(0, off,
+//            PLAYLIST_FIXED_WIDTH,
+//            _mw->toolbox()->geometry().top() + TOOLBOX_TOP_EXTENT - off);
+    QRect fixed((view_rect.width()-10), (view_rect.height()-394),
+            view_rect.width()-20,
+            (384 - 70));
+    _playlist->setFixedWidth(width()-230);
+    emit sizeChange();
+
+     QTimer::singleShot(100, this, &PlaylistWidget::batchUpdateSizeHints);
+}
+
 
 }
 

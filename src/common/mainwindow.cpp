@@ -89,17 +89,25 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
     auto option = qobject_cast<DTK_CORE_NAMESPACE::DSettingsOption *>(opt);
 
     auto le = new DLineEdit();
-    le->setFixedHeight(24);
+    auto main = new DWidget;
+    auto layout = new QHBoxLayout;
+    main->setLayout(layout);
+    DPushButton *icon = new DPushButton;
+    le->setFixedHeight(21);
     le->setObjectName("OptionSelectableLineEdit");
     le->setText(option->value().toString());
 //    le->setMaxLength(255);
 
-//    le->setIconVisible(true);
-//    le->setNormalIcon(":resources/icons/select-normal.svg");
-//    le->setHoverIcon(":resources/icons/select-hover.svg");
-//    le->setPressIcon(":resources/icons/select-press.svg");
+//    icon->setIconVisible(true);
+    icon->setIcon(QIcon(":resources/icons/select-normal.svg"));
+    icon->setFixedHeight(21);
+    layout->addWidget(le);
+    layout->addWidget(icon);
+//    icon->setNormalIcon(":resources/icons/select-normal.svg");
+//    icon->setHoverIcon(":resources/icons/select-hover.svg");
+//    icon->setPressIcon(":resources/icons/select-press.svg");
 
-    auto optionWidget = DSettingsWidgetFactory::createTwoColumWidget(option, le);
+    auto optionWidget = DSettingsWidgetFactory::createTwoColumWidget(option, main);
     workaround_updateStyle(optionWidget, "dlight");
 
     auto validate = [=](QString name, bool alert = true) -> bool {
@@ -126,14 +134,14 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
         return true;
     };
 
-//    option->connect(le, &DLineEdit::iconClicked, [=]() {
-//        QString name = QFileDialog::getExistingDirectory(0, QObject::tr("Open folder"),
-//                MainWindow::lastOpenedPath(),
-//                QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
-//        if (validate(name, false)) {
-//            option->setValue(name);
-//        }
-//    });
+    option->connect(icon, &DPushButton::clicked, [=]() {
+        QString name = QFileDialog::getExistingDirectory(0, QObject::tr("Open folder"),
+                MainWindow::lastOpenedPath(),
+                QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+        if (validate(name, false)) {
+            option->setValue(name);
+        }
+    });
 
     option->connect(le, &DLineEdit::editingFinished, option, [=]() {
         if (validate(le->text(), false)) {
@@ -590,8 +598,8 @@ MainWindow::MainWindow(QWidget *parent)
         // and another resize event will happen after that
         QTimer::singleShot(100, [=]() {
             if (_engine->state() == PlayerEngine::Idle && !_miniMode && windowState() == Qt::WindowNoState) {
-                this->setMinimumSize(QSize(1070, 680));
-                this->resize(1280, 720);
+//                this->setMinimumSize(QSize(1070, 680));
+                this->resize(850, 600);
             }
         });
     });
@@ -623,14 +631,32 @@ MainWindow::MainWindow(QWidget *parent)
 
 
 
-    _playState = new DImageButton(this);
-    _playState->setScaledContents(true);
+    _playState = new DIconButton(this);
+//    _playState->setScaledContents(true);
+    _playState->setIcon(QIcon(":/resources/icons/dark/normal/play-big_normal.svg"));
+    _playState->setIconSize(QSize(128, 128));
     _playState->setObjectName("PlayState");
-    //_playState->setFixedSize(128, 128);
+    _playState->setFixedSize(128, 128);
+    DPalette pa_cb = DApplicationHelper::instance()->palette(_playState);
+    pa_cb.setBrush(QPalette::Light, QColor(0,0,0,0));
+    pa_cb.setBrush(QPalette::Dark, QColor(0,0,0,0));
+    _playState->setPalette(pa_cb);
+    if(DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ){
+        _playState->setIcon(QIcon(":/resources/icons/light/normal/play-big_normal.svg"));
+    }
     _playState->setVisible(false);
-    connect(_playState, &DImageButton::clicked, [=]() {
+    connect(_playState, &DIconButton::clicked, [=]() {
         requestAction(ActionFactory::TogglePause, false, {}, true);
     });
+    QObject::connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::paletteTypeChanged,_playState,
+                         [=] (DGuiApplicationHelper::ColorType type) {
+
+            if(DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ){
+               _playState->setIcon(QIcon(":/resources/icons/light/normal/play-big_normal.svg"));
+            } else {
+               _playState->setIcon(QIcon(":/resources/icons/dark/normal/play-big_normal.svg"));
+            }
+        });
 
     _progIndicator = new MovieProgressIndicator(this);
     _progIndicator->setVisible(false);
@@ -2062,7 +2088,7 @@ void MainWindow::startBurstShooting()
 void MainWindow::handleSettings()
 {
     auto dsd = new DSettingsDialog(this);
-//    dsd->widgetFactory()->registerWidget("selectableEdit", createSelectableLineEditOptionHandle);
+    dsd->widgetFactory()->registerWidget("selectableEdit", createSelectableLineEditOptionHandle);
 
     dsd->setProperty("_d_QSSThemename", "dark");
     dsd->setProperty("_d_QSSFilename", "DSettingsDialog");
@@ -2235,9 +2261,9 @@ void MainWindow::updateProxyGeometry()
 //                220,
 //                toolbox()->geometry().top() + TOOLBOX_TOP_EXTENT - off
 //            };
-            QRect fixed((view_rect.width()-1050)/2, (view_rect.height()-394),
-                    1050,
-                    384 - 0);
+            QRect fixed((10), (view_rect.height()-394),
+                    view_rect.width()-20,
+                    384 - 70);
 //            fixed.moveRight(view_rect.right());
             _playlist->setGeometry(fixed);
         }
@@ -2466,14 +2492,14 @@ void MainWindow::updateSizeConstraints()
             auto sz = _engine->videoSize();
             qreal ratio = (qreal)sz.width() / sz.height();
             if (sz.width() > sz.height()) {
-                int h = 1070 / ratio;
-                m = QSize(1070, h);
+                int h = 528 / ratio;
+                m = QSize(528, h);
             } else {
                 int w = 528 * ratio;
                 m = QSize(w, 528);
             }
         } else {
-            m = QSize(1070, 680);
+            m = QSize(630, 386);
         }
     }
 
@@ -2613,7 +2639,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *ev)
     if (_playState->isVisible()) {
         //QMouseEvent me(QEvent::MouseButtonRelease, {}, ev->button(), ev->buttons(), ev->modifiers());
         //qApp->sendEvent(_playState, &me);
-        _playState->setState(DImageButton::Normal);
+//        _playState->setState(DImageButton::Normal);
     }
 
     // dtk has a bug, DImageButton propagates mouseReleaseEvent event when it responded to.
@@ -2687,7 +2713,7 @@ QString MainWindow::lastOpenedPath()
 void MainWindow::paintEvent(QPaintEvent* pe)
 {
     QPainter painter(this);
-    painter.setRenderHint(QPainter::Antialiasing);
+//    painter.setRenderHint(QPainter::Antialiasing);
     QRectF bgRect;
     bgRect.setSize(size());
     const QPalette pal = QGuiApplication::palette();//this->palette();
@@ -2855,8 +2881,8 @@ void MainWindow::toggleUIMode()
             requestAction(ActionFactory::ToggleFullscreen);
         } else {
             if (_engine->state() == PlayerEngine::Idle && windowState() == Qt::WindowNoState) {
-                this->setMinimumSize(QSize(1070, 680));
-                this->resize(1280, 720);
+//                this->setMinimumSize(QSize(1070, 680));
+                this->resize(850, 600);
             } else {
                 if (_lastRectInNormalMode.isValid()) {
                     resize(_lastRectInNormalMode.size());
