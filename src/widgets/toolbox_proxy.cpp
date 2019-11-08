@@ -579,6 +579,7 @@ protected:
                 if (distance >= QApplication::startDragDistance()){
                     emit sliderMoved(v);
                     emit hoverChanged(v);
+                    setValue(e->pos().x());
                 }
             }else {
                 qDebug() << v;
@@ -600,6 +601,7 @@ protected:
 //            setSliderPosition(v);
             emit sliderMoved(v);
             emit hoverChanged(v);
+            setValue(e->pos().x());
 //            _down = true;
         }
     }
@@ -675,8 +677,8 @@ public:
 
         setFixedSize(ThumbnailWorker::thumbSize().width(),ThumbnailWorker::thumbSize().height()+10);
 
-//        setShadowBlurRadius(8);
-//        setRadius(8);
+        setShadowBlurRadius(8);
+        setRadius(8);
         setBorderWidth(1);
         setBorderColor(QColor(0,0,0,25));
         setShadowYOffset(4);
