@@ -458,6 +458,19 @@ protected:
             painter.fillPath(pp, bgColor);
 
         }
+        if(_hovered){
+            DPalette pa = DApplicationHelper::instance()->palette(this);
+            pa.setBrush(DPalette::Text, pa.color(DPalette::Highlight));
+            QColor bgColor(255, 255, 255, 255*0.1);
+            if(DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ){
+                bgColor = QColor(0, 0, 0, 255*0.1);
+            }
+
+            QPainterPath pp;
+            pp.addRoundedRect(bgRect, 8, 8);
+            painter.fillPath(pp, bgColor);
+
+        }
         if (state() == ItemState::Playing){
             DPalette pa = DApplicationHelper::instance()->palette(this);
             pa.setBrush(DPalette::Text, pa.color(DPalette::Highlight));
@@ -579,7 +592,7 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     _title->setPalette(pa);
 //    title->setText(DApplication::translate("QuickInstallWindow", "Installed"));
     _title->setText(tr("播放列表"));
-    _title->setFixedSize(96,36);
+    _title->setFixedSize(96,33);
     _title->setContentsMargins(0,0,0,0);
 
     _num = new QLabel();
@@ -589,7 +602,7 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     _num->setText(tr("17个视频"));
     _num->setFont(DFontSizeManager::instance()->get(DFontSizeManager::T6));
     _num->setFixedSize(96,36);
-    _num->setContentsMargins(0,2,0,0);
+    _num->setContentsMargins(0,0,0,0);
 //    title->setFont(QFont());
     mainLayout->addWidget(left);
     auto *leftinfo = new QVBoxLayout;

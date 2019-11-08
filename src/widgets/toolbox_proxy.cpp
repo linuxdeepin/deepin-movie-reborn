@@ -950,7 +950,7 @@ void viewProgBarLoad::loadViewProgBar(QSize size){
                     ThumbnailerImageType::Png, buf);
 
             auto img = QImage::fromData(buf.data(), buf.size(), "png");
-            auto img_tmp = img.scaledToHeight(_engine->videoSize().height());
+            auto img_tmp = img.scaledToHeight(50);
 
 
             pm.append(QPixmap::fromImage(img_tmp.copy(img_tmp.size().width()/2-4,0,8,50)));

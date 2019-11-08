@@ -148,7 +148,7 @@ void NotificationWidget::updateWithMessage(const QString& newMsg)
 
 void NotificationWidget::paintEvent(QPaintEvent* pe)
 {
-    float RADIUS = 4;
+    float RADIUS = 8;
     QPainter p(this);
     p.setRenderHint(QPainter::Antialiasing);
     
