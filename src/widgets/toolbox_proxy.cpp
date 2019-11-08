@@ -1,4 +1,4 @@
-/* 
+/*
  * (c) 2017, Deepin Technology Co., Ltd. <support@deepin.org>
  *
  * This program is free software; you can redistribute it and/or
@@ -122,7 +122,7 @@ public:
         _sid = si["id"].toInt();
 
 //        DThemeManager::instance()->registerWidget(this, QStringList() << "current");
-        
+
         setFixedWidth(200);
 
         auto *l = new QHBoxLayout(this);
@@ -138,7 +138,7 @@ public:
         _selectedLabel = new QLabel(this);
         l->addWidget(_selectedLabel);
 
-        connect(DThemeManager::instance(), &DThemeManager::themeChanged, 
+        connect(DThemeManager::instance(), &DThemeManager::themeChanged,
                 this, &SubtitleItemWidget::onThemeChanged);
         onThemeChanged();
     }
@@ -229,13 +229,13 @@ public:
         connect(_engine, &PlayerEngine::tracksChanged, this, &SubtitlesView::populateSubtitles);
         connect(_engine, &PlayerEngine::sidChanged, this, &SubtitlesView::onSidChanged);
 
-        connect(DThemeManager::instance(), &DThemeManager::themeChanged, 
+        connect(DThemeManager::instance(), &DThemeManager::themeChanged,
                 this, &SubtitlesView::onThemeChanged);
         onThemeChanged();
     }
 
 protected:
-    void showEvent(QShowEvent *se) override 
+    void showEvent(QShowEvent *se) override
     {
         ensurePolished();
         populateSubtitles();
@@ -243,7 +243,7 @@ protected:
     }
 
 protected slots:
-    void onThemeChanged() 
+    void onThemeChanged()
     {
         if (qApp->theme() == "dark") {
             setBackgroundColor(DBlurEffectWidget::DarkColor);
@@ -341,7 +341,7 @@ class ViewProgBar: public DWidget{
 public:
     ViewProgBar(QWidget *parent = 0){
         _parent = parent;
-       setFixedHeight(60);
+       setFixedHeight(70);
 //       setFixedWidth(584);
        setFixedWidth(parent->width() - PROGBAR_SPEC);
 //       setFixedWidth(1450);
@@ -361,33 +361,36 @@ public:
 
        _indicator = new DBlurEffectWidget(this);
        _indicator->setFixedHeight(60);
-       _indicator->setFixedWidth(4);
+       _indicator->setFixedWidth(2);
        _indicator->setObjectName("indicator");
        _indicator->setMaskAlpha(153);
-       _indicator->setMaskColor(QColor(0,0,0));
+       _indicator->setMaskColor(QColor(255,138,0));
        _indicator->setBlurRectXRadius(2);
        _indicator->setBlurRectYRadius(2);
-       DBlurEffectWidget *indin = new DBlurEffectWidget(_indicator);
-       _indicator->setContentsMargins(1,1,0,0);
+       _slider = new DLabel(this);
+       _slider->setFixedSize(10,7);
+       _slider->setPixmap(QPixmap(":resources/icons/slider.svg").copy(5,0,10,7));
+//       DBlurEffectWidget *indin = new DBlurEffectWidget(_indicator);
+//       _indicator->setContentsMargins(1,1,0,0);
 //       indin.setTopMargin(1);
-       indin->move(1,1);
+//       indin->move(1,1);
 //       indin.setLeftMargin(1);
-       indin->setFixedHeight(58);
-       indin->setFixedWidth(2);
-       indin->setMaskAlpha(255);
-       indin->setMaskColor(QColor(255,255,255));
-       indin->setBlurRectXRadius(2);
-       indin->setBlurRectYRadius(2);
+//       indin->setFixedHeight(58);
+//       indin->setFixedWidth(2);
+//       indin->setMaskAlpha(255);
+//       indin->setMaskColor(QColor(255,255,255));
+//       indin->setBlurRectXRadius(2);
+//       indin->setBlurRectYRadius(2);
 //       _indicator->setStyleSheet("QWidget#indicator{border: 1px solid #000000; border-radius: 5px;};");//needtomodify
        _back->setMouseTracking(true);
        _front->setMouseTracking(true);
        _indicator->setMouseTracking(true);
        _viewProgBarLayout = new QHBoxLayout();
-       _viewProgBarLayout->setContentsMargins(0,5,0,5);
+       _viewProgBarLayout->setContentsMargins(5,5,5,5);
        _back->setLayout(_viewProgBarLayout);
 
        _viewProgBarLayout_black = new QHBoxLayout();
-       _viewProgBarLayout_black->setContentsMargins(0,5,0,5);
+       _viewProgBarLayout_black->setContentsMargins(5,5,5,5);
        _front->setLayout(_viewProgBarLayout_black);
 
     };
@@ -397,7 +400,7 @@ public:
     }
     bool getIsBlockSignals(){return _isBlockSignals;}
     void setValue(int v){
-        _indicatorPos = {v,rect().y()};
+        _indicatorPos = {v<5?5:v,rect().y()};
         update();
     }
     QImage GraizeImage( const QImage& image ){
@@ -525,12 +528,16 @@ public:
          _viewProgBarLayout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
          _viewProgBarLayout->setSpacing(1);
         for(int i =0; i<pm_list.count();i++){
-            ImageItem *label = new ImageItem(pm_list.at(i));
+//            ImageItem *label = new ImageItem(pm_list.at(i));
+//            label->setFixedSize(8,50);
+//            _viewProgBarLayout->addWidget(label, 0 , Qt::AlignLeft );
+            ImageItem *label = new ImageItem(pm_list.at(i),false,_back);
+            label->move(i*9+5,5);
             label->setFixedSize(8,50);
-            _viewProgBarLayout->addWidget(label, 0 , Qt::AlignLeft );
+
 
             ImageItem *label_black = new ImageItem(pm_black_list.at(i),true,_front);
-            label_black->move(i*9,5);
+            label_black->move(i*9+5,5);
             label_black->setFixedSize(8,50);
         }
 
@@ -599,6 +606,7 @@ protected:
     void paintEvent(QPaintEvent *e)
     {
         _indicator->move(_indicatorPos);
+        _slider->move(_indicatorPos.x()-4,56);
         _front->setFixedWidth(_indicatorPos.x());
     }
     void resizeEvent(QResizeEvent *event){
@@ -620,6 +628,7 @@ private:
     QWidget *_back{nullptr};
     QWidget *_front{nullptr};
     DBlurEffectWidget *_indicator{nullptr};
+    DLabel *_slider{nullptr};
     QGraphicsColorizeEffect *m_effect{nullptr};
     QList<QLabel*> labelList ;
     QHBoxLayout *_indicatorLayout{nullptr};
@@ -634,7 +643,25 @@ private:
 
 };
 
+class ThumbnailTime:public QLabel{
+    Q_OBJECT
+public:
+    ThumbnailTime(QWidget *parent = nullptr):QLabel(parent){
 
+    }
+protected:
+    void paintEvent(QPaintEvent *pe) override{
+        QPainter painter(this);
+        painter.setRenderHint(QPainter::Antialiasing);
+        QRectF bgRect;
+        bgRect.setSize(size());
+        const QPalette pal = QGuiApplication::palette();//this->palette();
+        QColor bgColor = pal.color(QPalette::Highlight);
+        QPainterPath pp;
+        pp.addRoundedRect(bgRect, 8, 8);
+        painter.fillPath(pp, bgColor);
+    }
+};
 class ThumbnailPreview: public DArrowRectangle {
     Q_OBJECT
 public:
@@ -643,31 +670,48 @@ public:
         // FIXME(hualet): Qt::Tooltip will cause Dock to show up even
         // the player is in fullscreen mode.
 //        setWindowFlags(Qt::Tool);
-        
+
         setObjectName("ThumbnailPreview");
 
-        setFixedSize(162, 103);
+        setFixedSize(ThumbnailWorker::thumbSize().width(),ThumbnailWorker::thumbSize().height()+10);
 
-        setShadowBlurRadius(6);
-        setRadius(6);
+//        setShadowBlurRadius(8);
+//        setRadius(8);
+        setBorderWidth(1);
+        setBorderColor(QColor(0,0,0,25));
         setShadowYOffset(4);
         setShadowXOffset(0);
         setArrowWidth(18);
         setArrowHeight(10);
+//        DPalette pa_cb = DApplicationHelper::instance()->palette(this);
+//        pa_cb.setBrush(QPalette::Background, QColor(0,129,255,1));
+//        pa_cb.setBrush(QPalette::Dark, QColor(0,129,255,1));
+//        setPalette(pa_cb);
+        setBackgroundColor(QColor(0,129,255,255));
 
         auto *l = new QVBoxLayout;
-        l->setContentsMargins(2, 2, 2, 2+10);
+        l->setContentsMargins(0, 0, 0, 10);
         setLayout(l);
 
         _thumb = new QLabel(this);
         _thumb->setFixedSize(ThumbnailWorker::thumbSize());
-        l->addWidget(_thumb);
+        l->addWidget(_thumb,Qt::AlignTop);
 
+
+        _timebg = new ThumbnailTime(this);
+        _timebg->setFixedSize(58, 20);
         _time = new QLabel(this);
         _time->setAlignment(Qt::AlignCenter);
-        _time->setFixedSize(64, 18);
+        _time->setFixedSize(58, 20);
 
-        connect(DThemeManager::instance(), &DThemeManager::themeChanged, 
+//        _time->setAutoFillBackground(true);
+        DPalette pa_cb = DApplicationHelper::instance()->palette(_time);
+        pa_cb.setBrush(QPalette::Text, QColor(255,255,255,255));
+//        pa_cb.setBrush(QPalette::Dark, QColor(0,129,255,1));
+        _time->setPalette(pa_cb);
+        _time->setFont(DFontSizeManager::instance()->get(DFontSizeManager::T8));
+
+        connect(DThemeManager::instance(), &DThemeManager::themeChanged,
                 this, &ThumbnailPreview::updateTheme);
         updateTheme();
 
@@ -681,17 +725,18 @@ public:
         QTime t(0, 0, 0);
         t = t.addSecs(secs);
         _time->setText(t.toString("hh:mm:ss"));
-        _time->move((width() - _time->width())/2, 69);
+        _time->move((width() - _time->width())/2, ThumbnailWorker::thumbSize().height()-20);
+        _timebg->move((width() - _time->width())/2, ThumbnailWorker::thumbSize().height()-20);
 
         if (isVisible()) {
-            move(QCursor::pos().x(), frameGeometry().y() + height());
+//            move(QCursor::pos().x(), frameGeometry().y() + height()+0);
         }
     }
 
     void updateWithPreview(const QPoint& pos) {
         resizeWithContent();
-        move(pos.x(), pos.y());
-        show(pos.x(), pos.y());
+//        move(pos.x(), pos.y()+0);
+        show(pos.x(), pos.y()+18);
     }
 
 signals:
@@ -701,8 +746,8 @@ protected slots:
     void updateTheme()
     {
         if (qApp->theme() == "dark") {
-            setBackgroundColor(QColor(23, 23, 23, 255 * 8 / 10));
-            setBorderColor(QColor(255, 255 ,255, 25));
+//            setBackgroundColor(QColor(23, 23, 23, 255 * 8 / 10));
+//            setBorderColor(QColor(255, 255 ,255, 25));
 //            _time->setStyleSheet(R"(
 //                border-radius: 3px;
 //                background-color: rgba(23, 23, 23, 0.8);
@@ -710,8 +755,8 @@ protected slots:
 //                color: #ffffff;
 //            )");
         } else {
-            setBackgroundColor(QColor(255, 255, 255, 255 * 8 / 10));
-            setBorderColor(QColor(0, 0 ,0, 25));
+//            setBackgroundColor(QColor(255, 255, 255, 255 * 8 / 10));
+//            setBorderColor(QColor(0, 0 ,0, 25));
 //            _time->setStyleSheet(R"(
 //                border-radius: 3px;
 //                background-color: rgba(255, 255, 255, 0.8);
@@ -729,12 +774,14 @@ protected:
 
     void showEvent(QShowEvent *se) override
     {
-        _time->move((width() - _time->width())/2, 69);
+        _time->move((width() - _time->width())/2, ThumbnailWorker::thumbSize().height()-20);
+        _timebg->move((width() - _time->width())/2, ThumbnailWorker::thumbSize().height()-20);
     }
 
 private:
     QLabel *_thumb;
     QLabel *_time;
+    ThumbnailTime *_timebg;
 };
 
 class VolumeSlider: public DArrowRectangle {
@@ -746,18 +793,18 @@ public:
 //        setWindowFlags(Qt::Tool);
 
         setShadowBlurRadius(4);
-        setRadius(4);
+        setRadius(18);
         setShadowYOffset(3);
         setShadowXOffset(0);
-        setArrowWidth(8);
-        setArrowHeight(6);
+        setArrowWidth(20);
+        setArrowHeight(15);
         setFocusPolicy(Qt::NoFocus);
 
 //        connect(DThemeManager::instance(), &DThemeManager::themeChanged,
 //                this, &VolumeSlider::updateBg);
 
 //        updateBg();
-        
+
         auto *l = new QHBoxLayout;
         l->setContentsMargins(0, 4, 0, 10);
         setLayout(l);
@@ -814,7 +861,7 @@ protected:
     void leaveEvent(QEvent* e) {
         _autoHideTimer.start(500);
     }
-        
+
 private slots:
     void updateBg() {
 //        if (qApp->theme() == "dark") {
@@ -847,9 +894,10 @@ private:
     QTimer _autoHideTimer;
 };
 
-viewProgBarLoad::viewProgBarLoad(PlayerEngine *engine,ToolboxProxy *parent){
+viewProgBarLoad::viewProgBarLoad(PlayerEngine *engine,DMRSlider *progBar,ToolboxProxy *parent){
        _parent = parent;
        _engine = engine;
+       _progBar = progBar;
 }
 
 QImage viewProgBarLoad::GraizeImage( const QImage& image ){
@@ -871,9 +919,14 @@ QImage viewProgBarLoad::GraizeImage( const QImage& image ){
     return iGray;
 }
 
-void viewProgBarLoad::loadViewProgBar(){
+void viewProgBarLoad::loadViewProgBar(QSize size){
 
-    int num = (_parent->width()-PROGBAR_SPEC+1)/9;
+    if(isLoad) {
+        emit finished();
+        return;
+    }
+    isLoad = true;
+    int num = (_progBar->width())/9;
     auto tmp = (_engine->duration()*1000)/num;
     auto dpr = qApp->devicePixelRatio();
     QList<QPixmap> pm;
@@ -919,7 +972,9 @@ void viewProgBarLoad::loadViewProgBar(){
     }
       _parent->addpm_list(pm);
       _parent->addpm_black_list(pm_black);
-      emit sigFinishiLoad();
+      emit sigFinishiLoad(size);
+      emit finished();
+
 
 }
 
@@ -961,22 +1016,22 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
     _subView->hide();
     setup();
 
-    _viewProgBarLoad= new viewProgBarLoad(_engine,this);
-    _loadThread = new QThread();
+//    _viewProgBarLoad= new viewProgBarLoad(_engine,_progBar,this);
+//    _loadThread = new QThread();
 
-    _viewProgBarLoad->moveToThread(_loadThread);
-    _loadThread->start();
+//    _viewProgBarLoad->moveToThread(_loadThread);
+//    _loadThread->start();
 
-    connect(this, SIGNAL(sigstartLoad()), _viewProgBarLoad, SLOT(loadViewProgBar()));
+//    connect(this, SIGNAL(sigstartLoad(QSize)), _viewProgBarLoad, SLOT(loadViewProgBar(QSize)));
 //    connect(this,&ToolboxProxy::sigstartLoad,this,[=]{
 //        _viewProgBarLoad->loadViewProgBar();
 //    });
-    connect(_viewProgBarLoad, SIGNAL(sigFinishiLoad()), this, SLOT(finishLoadSlot()));
+//    connect(_viewProgBarLoad, SIGNAL(sigFinishiLoad(QSize)), this, SLOT(finishLoadSlot(QSize)));
 }
-void ToolboxProxy::finishLoadSlot(){
+void ToolboxProxy::finishLoadSlot(QSize size){
 
     _viewProgBar->setViewProgBar(_engine,pm_list,pm_black_list);
-    if(CompositingManager::get().composited()){
+    if(CompositingManager::get().composited() && _loadsize == size){
         _progBar_Widget->setCurrentIndex(2);
     }
 
@@ -986,7 +1041,9 @@ ToolboxProxy::~ToolboxProxy()
 {
     ThumbnailWorker::get().stop();
 //    _loadThread->exit();
-    _loadThread->terminate();
+//    _loadThread->terminate();
+//    _loadThread->exit();
+//    delete _loadThread;
     delete _subView;
     delete _previewer;
 }
@@ -1111,7 +1168,7 @@ void ToolboxProxy::setup()
 //    bot->addStretch();
 
     QHBoxLayout *progBarspec = new QHBoxLayout();
-    progBarspec->setContentsMargins(0, 5, 0, 5);
+    progBarspec->setContentsMargins(0, 5, 0, 0);
     progBarspec->setSpacing(0);
     progBarspec->setAlignment(Qt::AlignHCenter);
 //    bot->addLayout(progBarspec);
@@ -1155,7 +1212,7 @@ void ToolboxProxy::setup()
 //    bot->addWidget(_progBar);
 //    bot->addWidget(_viewProgBar);
 //    bot->addWidget(_timeLabelend);
-    
+
 //    bot->addStretch();
 
     QHBoxLayout *timeend = new QHBoxLayout();
@@ -1316,14 +1373,29 @@ void ToolboxProxy::setup()
 
         update();
         QTimer::singleShot(1000, [this]() {
-            if(_loadThread->isRunning()){
-                _loadThread->terminate();
-                _loadThread->wait();
-                _loadThread->start();
+//            if(_loadThread->isRunning()){
+//                _loadThread->terminate();
+//                _loadThread->exit();
+//                _loadThread->deleteLater();
+//                _loadThread = new QThread();
+//                _viewProgBarLoad->moveToThread(_loadThread);
+//                _loadThread->wait();
+//                _loadThread->start();
                 _loadsize = size();
-                emit sigstartLoad();
+                QThread *thread = new QThread;
+                viewProgBarLoad *worker = new viewProgBarLoad(_engine,_progBar,this);
+
+                connect(worker,SIGNAL(finished()),thread,SLOT(quit()));//新增
+//                    connect(thread,SIGNAL(started()),worker,SLOT(doSomething()));
+                connect(thread,SIGNAL(finished()),worker,SLOT(deleteLater()));
+                connect(thread,SIGNAL(finished()),thread,SLOT(deleteLater()));
+                worker->moveToThread(thread);
+                thread->start();
+                connect(this, SIGNAL(sigstartLoad(QSize)), worker, SLOT(loadViewProgBar(QSize)));
+                connect(worker, SIGNAL(sigFinishiLoad(QSize)), this, SLOT(finishLoadSlot(QSize)));
+                emit sigstartLoad(size());
                 _progBar_Widget->setCurrentIndex(1);
-            }
+//            }
 
         });
 //        QTimer::singleShot(100, [this]() {_viewProgBar->setViewProgBar(_engine);});
@@ -1371,18 +1443,38 @@ void ToolboxProxy::setup()
                 QTimer::singleShot(1000, [this]() {
                     pm_list.clear();
                     pm_black_list.clear();
-                    if(_loadThread->isRunning()){
-                        _loadThread->terminate();
-                        _loadThread->wait();
-                        _loadThread->start();
-                        emit sigstartLoad();
-                        _progBar_Widget->setCurrentIndex(1);
-                    }
+//                    if(_loadThread->isRunning()){
+//                        _loadThread->terminate();
+//                        _loadThread->exit();
+//                    _loadThread->deleteLater();
+//                    _loadThread = new QThread();
+//                    _viewProgBarLoad->moveToThread(_loadThread);
+//                        _loadThread->wait();
+//                        _loadThread->start();
+//                    QThread *loadThread = new QThread();
+
+//                    _viewProgBarLoad->moveToThread(loadThread);
+//                    loadThread->start();
+//                    connect(loadThread, SIGNAL(finished()), loadThread, SLOT(deleteLater()));
+                    QThread *thread = new QThread;
+                    viewProgBarLoad *worker = new viewProgBarLoad(_engine,_progBar,this);
+
+                    connect(worker,SIGNAL(finished()),thread,SLOT(quit()));//新增
+//                    connect(thread,SIGNAL(started()),worker,SLOT(doSomething()));
+                    connect(thread,SIGNAL(finished()),worker,SLOT(deleteLater()));
+                    connect(thread,SIGNAL(finished()),thread,SLOT(deleteLater()));
+                    worker->moveToThread(thread);
+                    thread->start();
+                    connect(this, SIGNAL(sigstartLoad(QSize)), worker, SLOT(loadViewProgBar(QSize)));
+                    connect(worker, SIGNAL(sigFinishiLoad(QSize)), this, SLOT(finishLoadSlot(QSize)));
+                    emit sigstartLoad(size());
+                    _progBar_Widget->setCurrentIndex(1);
+//                    }
 
                 });
 //                _progBar_Widget->setCurrentIndex(1);
 
-                _loadsize = QSize(0,0);
+                _loadsize = size();
             }
         }
     });
@@ -1566,7 +1658,7 @@ void ToolboxProxy::updateVolumeState()
             _volBtn->changeLevel(VolumeButton::Mid);
         else if (v == 0)
             _volBtn->changeLevel(VolumeButton::Off);
-        else 
+        else
             _volBtn->changeLevel(VolumeButton::Low);
     }
 }
@@ -1622,7 +1714,7 @@ void ToolboxProxy::updatePlayState()
 //        _progBar_stacked->setCurrentIndex(1);
 //        _progBar_Widget->setCurrentIndex(1);
     }
-    
+
     auto on = (_engine->state() != PlayerEngine::CoreState::Idle);
     _progBar->setEnabled(on);
     _progBar->setEnableIndication(on);
@@ -1669,7 +1761,7 @@ void ToolboxProxy::buttonClicked(QString id)
         _mainWindow->requestAction(ActionFactory::ActionKind::TogglePlaylist);
     } else if (id == "sub") {
         _subView->setVisible(true);
-        
+
         QPoint pos = _subBtn->parentWidget()->mapToGlobal(_subBtn->pos());
         pos.ry() = parentWidget()->mapToGlobal(this->pos()).y();
         _subView->show(pos.x() + _subBtn->width()/2, pos.y() - 5 + TOOLBOX_TOP_EXTENT);
@@ -1755,8 +1847,10 @@ void ToolboxProxy::updateTimeLabel()
     }
     if(width() <= 300){
         _progBar->setFixedWidth(width()-PROGBAR_SPEC+50+54+10+54+10+10);
+        _progBarspec->setFixedWidth(width()-PROGBAR_SPEC+50+54+10+54+10+10);
     }else if (width() <= 450) {
         _progBar->setFixedWidth(width()-PROGBAR_SPEC+54+54+10);
+        _progBarspec->setFixedWidth(width()-PROGBAR_SPEC+54+54+10);
     }
 
 //    if (width() > 400) {

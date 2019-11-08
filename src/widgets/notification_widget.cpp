@@ -40,7 +40,7 @@ namespace dmr {
 NotificationWidget::NotificationWidget(QWidget *parent)
     :QFrame(parent), _mw(parent)
 {
-    DThemeManager::instance()->registerWidget(this);
+//    DThemeManager::instance()->registerWidget(this);
 
     //setFrameShape(QFrame::NoFrame);
     setObjectName("NotificationFrame");
@@ -152,7 +152,7 @@ void NotificationWidget::paintEvent(QPaintEvent* pe)
     QPainter p(this);
     p.setRenderHint(QPainter::Antialiasing);
     
-    bool light = ("light" == qApp->theme());
+    bool light = (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() );
     auto bg_clr = QColor(23, 23, 23, 255 * 8 / 10);
     auto border_clr = QColor(255, 255, 255, 25);
     if (light) {

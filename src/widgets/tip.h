@@ -30,6 +30,9 @@
 #ifndef _DMR_TIP_H
 #define _DMR_TIP_H 
 #include <QFrame>
+#include <QGuiApplication>
+#include <DPalette>
+#include <DApplicationHelper>
 
 namespace dmr
 {

@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="/icons/deepin/builtin">
         <file>icons/dcc_delete_36px.svg</file>
+        <file>icons/dcc_slider_10px.svg</file>
         <file>texts/dcc_clearlist_18px.svg</file>
         <file>texts/dcc_episodes_36px.svg</file>
         <file>texts/dcc_last_36px.svg</file>

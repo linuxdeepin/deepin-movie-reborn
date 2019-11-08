@@ -876,9 +876,9 @@ void MainWindow::setupTitlebar()
     }
 
     {
-        auto help = new QShortcut(QKeySequence(Qt::Key_F1), this);
-        help->setContext(Qt::ApplicationShortcut);
-        connect(help, &QShortcut::activated, this, &MainWindow::handleHelpAction);
+//        auto help = new QShortcut(QKeySequence(Qt::Key_F1), _titlebar->titlebar());
+//        help->setContext(Qt::ApplicationShortcut);
+//        connect(help, &QShortcut::activated, this, &MainWindow::handleHelpAction);
     }
 
     connect(_titlebar->titlebar()->menu(), &QMenu::triggered, this, &MainWindow::menuItemInvoked);

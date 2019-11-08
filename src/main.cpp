@@ -129,8 +129,8 @@ int main(int argc, char *argv[])
     QRegExp url_re("\\w+://");
 
     dmr::MainWindow mw;
-    mw.setMinimumSize(QSize(1070, 680));
-    mw.resize(1280, 720);
+//    mw.setMinimumSize(QSize(1070, 680));
+    mw.resize(850, 600);
     utils::MoveToCenter(&mw);
     mw.show();
 

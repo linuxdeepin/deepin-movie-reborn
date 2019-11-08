@@ -39,6 +39,7 @@
 
 #include <DUtil>
 #include <dthememanager.h>
+#include <DLabel>
 
 DWIDGET_USE_NAMESPACE
 namespace dmr
@@ -56,7 +57,7 @@ public:
     QMargins        shadowMargins       = QMargins(20, 20, 20, 20);
     QColor          borderColor         = QColor(0, 0, 0, 0.2 * 255);
 
-    QLabel          *textLable          = nullptr;
+    DLabel          *textLable          = nullptr;
     QFrame          *m_interFrame       = nullptr;
 
 
@@ -94,7 +95,7 @@ Tip::Tip(const QPixmap &icon, const QString &text, QWidget *parent)
         iconLabel->setPixmap(icon);
     }
 
-    d->textLable = new QLabel(text);
+    d->textLable = new DLabel(text);
     d->textLable->setObjectName("TipText");
     d->textLable->setAlignment(Qt::AlignCenter);
 
@@ -206,7 +207,15 @@ void Tip::paintEvent(QPaintEvent *)
     painter.setRenderHints(QPainter::Antialiasing | QPainter::HighQualityAntialiasing);
     auto radius = d->radius;
     auto penWidthf = 1.0;
-    auto background =  d->background;
+//    auto background =  d->background;
+    const QPalette pal = QGuiApplication::palette();//this->palette();
+    QColor background = pal.color(QPalette::ToolTipBase);
+    DPalette pa_name = DApplicationHelper::instance()->palette(d->textLable);
+    pa_name.setBrush(DPalette::Text, pa_name.color(DPalette::ToolTipText));
+    pa_name.setBrush(DPalette::ToolTipText, pa_name.color(DPalette::ToolTipText));
+    d->textLable->setForegroundRole(DPalette::Text);
+    d->textLable->setForegroundRole(DPalette::ToolTipText);
+    d->textLable->setPalette(pa_name);
     auto borderColor = d->borderColor;
     auto margin = 2.0;
     auto shadowMargins = QMarginsF(margin, margin, margin, margin);

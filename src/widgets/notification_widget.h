@@ -33,6 +33,7 @@
 #include <QtWidgets>
 
 #include <DBlurEffectWidget>
+#include <DGuiApplicationHelper>
 
 DWIDGET_USE_NAMESPACE
 

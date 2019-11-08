@@ -148,13 +148,13 @@ public:
     void addpm_list(QList<QPixmap> pm){ pm_list.clear(); pm_list.append(pm);}
     void addpm_black_list(QList<QPixmap> pm_black){ pm_black_list.clear(); pm_black_list.append(pm_black);}
 public slots:
-    void finishLoadSlot();
+    void finishLoadSlot(QSize size);
 signals:
     void requestPlay();
     void requestPause();
     void requestNextInList();
     void requesstPrevInList();
-    void sigstartLoad();
+    void sigstartLoad(QSize size);
 
 protected slots:
     void updatePosition(const QPoint& p);
@@ -218,8 +218,8 @@ private:
     QSize _oldsize;
     QSize _loadsize;
     bool _isresize;
-    viewProgBarLoad *_viewProgBarLoad{nullptr};
-    QThread *_loadThread{nullptr};
+//    viewProgBarLoad *_viewProgBarLoad{nullptr};
+//    QThread *_loadThread{nullptr};
     QList<ImageItem *>label_list ;
     QList<ImageItem *>label_black_list;
     QList<QPixmap >pm_list ;
@@ -228,16 +228,17 @@ private:
 class viewProgBarLoad: public QObject{
     Q_OBJECT
 public:
-    explicit viewProgBarLoad(PlayerEngine *engine = nullptr,ToolboxProxy *parent = 0);
+    explicit viewProgBarLoad(PlayerEngine *engine = nullptr,DMRSlider *progBar = nullptr,ToolboxProxy *parent = 0);
 
 public slots:
-     void loadViewProgBar();
+     void loadViewProgBar(QSize size);
 signals:
     void leaveViewProgBar();
     void hoverChanged(int);
     void sliderMoved(int);
     void indicatorMoved(int);
-    void sigFinishiLoad();
+    void sigFinishiLoad(QSize size);
+    void finished();
 
 protected:
     QImage GraizeImage( const QImage& image );
@@ -251,7 +252,7 @@ private:
     QPoint _indicatorPos {0, 0};
     QColor _indicatorColor;
 
-    viewProgBarLoad *_viewProgBarLoad{nullptr};
+//    viewProgBarLoad *_viewProgBarLoad{nullptr};
     QWidget *_back{nullptr};
     QWidget *_front{nullptr};
     DBlurEffectWidget *_indicator{nullptr};
@@ -260,6 +261,9 @@ private:
     QHBoxLayout *_indicatorLayout{nullptr};
     QHBoxLayout *_viewProgBarLayout{nullptr};
     QHBoxLayout *_viewProgBarLayout_black{nullptr};
+    DMRSlider *_progBar {nullptr};
+    QSize _size;
+    bool isLoad = false;
 };
 }
 

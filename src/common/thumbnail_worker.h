@@ -42,7 +42,7 @@ public:
     static ThumbnailWorker& get();
 
     // expected size for ui
-    static QSize thumbSize() { return {158, 89}; }
+    static QSize thumbSize() { return {106, 66}; }
 
     bool isThumbGenerated(const QUrl& url, int secs);
     QPixmap getThumb(const QUrl& url, int secs);
