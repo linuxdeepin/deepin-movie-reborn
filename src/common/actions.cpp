@@ -279,6 +279,8 @@ QMenu* ActionFactory::playlistContextMenu()
     if (!_playlistMenu) {
         auto *menu = new QMenu();
 
+
+        DEF_ACTION(tr("从列表中删除"), ActionKind::PlaylistRemoveItem);
         DEF_ACTION(tr("Clear playlist"), ActionKind::EmptyPlaylist);
         DEF_ACTION(tr("Display in file manager"), ActionKind::PlaylistOpenItemInFM);
         DEF_ACTION(tr("Film info"), ActionKind::PlaylistItemInfo);

@@ -90,10 +90,11 @@ int main(int argc, char *argv[])
     app.loadTranslator();
     app.setApplicationDisplayName(QObject::tr("Deepin Movie"));
     app.setApplicationDescription(QObject::tr(
-                "Deepin Movie is a well-designed and full-featured"
-                " video player with simple borderless design. It supports local and"
-                " streaming media play with multiple video formats."));
-
+                                      "影院是一款支持多种视频格式本地播放和流媒体播放的视频播放器。"
+                ));
+//    "Deepin Movie is a well-designed and full-featured"
+//    " video player with simple borderless design. It supports local and"
+//    " streaming media play with multiple video formats."
 //    auto light_theme = dmr::Settings::get().internalOption("light_theme").toBool();
 //    app.setTheme(light_theme ? "light": "dark");
 

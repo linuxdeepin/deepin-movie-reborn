@@ -675,8 +675,9 @@ public:
 
         setObjectName("ThumbnailPreview");
 
-        setFixedSize(ThumbnailWorker::thumbSize().width(),ThumbnailWorker::thumbSize().height()+10);
-
+//        setFixedSize(ThumbnailWorker::thumbSize().width(),ThumbnailWorker::thumbSize().height()+10);
+        setWidth(ThumbnailWorker::thumbSize().width());
+        setHeight(ThumbnailWorker::thumbSize().height()+10);
         setShadowBlurRadius(8);
         setRadius(8);
         setBorderWidth(1);
@@ -705,7 +706,7 @@ public:
         _time = new QLabel(this);
         _time->setAlignment(Qt::AlignCenter);
         _time->setFixedSize(58, 20);
-
+        _time->setForegroundRole(DPalette::Text);
 //        _time->setAutoFillBackground(true);
         DPalette pa_cb = DApplicationHelper::instance()->palette(_time);
         pa_cb.setBrush(QPalette::Text, QColor(255,255,255,255));
@@ -1033,7 +1034,13 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
 void ToolboxProxy::finishLoadSlot(QSize size){
 
     _viewProgBar->setViewProgBar(_engine,pm_list,pm_black_list);
-    if(CompositingManager::get().composited() && _loadsize == size){
+
+    if(CompositingManager::get().composited() && _loadsize == size && _engine->state() != PlayerEngine::CoreState::Idle){
+        if (!_engine->playlist().currentInfo().url.isLocalFile()) {
+            if (!_engine->playlist().currentInfo().url.scheme().startsWith("dvd")) {
+                return;
+            }
+        }
         _progBar_Widget->setCurrentIndex(2);
     }
 
@@ -1161,7 +1168,7 @@ void ToolboxProxy::setup()
 
 
     QHBoxLayout *time = new QHBoxLayout();
-    time->setContentsMargins(17, 0, 0, 0);
+    time->setContentsMargins(17, 0, 5, 0);
     time->setSpacing(0);
     time->setAlignment(Qt::AlignLeft);
     bot->addLayout(time);
@@ -1218,7 +1225,7 @@ void ToolboxProxy::setup()
 //    bot->addStretch();
 
     QHBoxLayout *timeend = new QHBoxLayout();
-    timeend->setContentsMargins(10, 0, 0, 0);
+    timeend->setContentsMargins(10, 0, 5, 0);
     timeend->setSpacing(0);
     timeend->setAlignment(Qt::AlignRight);
     bot->addLayout(timeend);

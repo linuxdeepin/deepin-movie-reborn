@@ -478,6 +478,7 @@ protected:
             _name->setPalette(pa);
             _index->setPalette(pa);
             _time->setPalette(pa);
+            _name->setFontWeight(QFont::Weight::Medium);
 //            QColor bgColor  = pal.color(DPalette::ToolTipBase);
             QColor bgColor(255,255,255,51);
             if(DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ){
@@ -491,6 +492,7 @@ protected:
             DPalette pa_name = DApplicationHelper::instance()->palette(_name);
             pa_name.setBrush(DPalette::Text, pa_name.color(DPalette::ToolTipText));
             _name->setPalette(pa_name);
+            _name->setFontWeight(QFont::Weight::Normal);
             DPalette pa = DApplicationHelper::instance()->palette(_index);
             pa.setBrush(DPalette::Text, pa.color(DPalette::TextTips));
             _index->setPalette(pa);
@@ -668,7 +670,7 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
 
     _playlist = new DListWidget();
 //    _playlist->setFixedSize(820,288);
-    _playlist->setFixedSize(width()-230,288);
+    _playlist->setFixedSize(width()-235,288);
 //    _playlist->setFixedHeight(288);
     _playlist->setContentsMargins(0, 30, 0, 0);
     _playlist->viewport()->setAutoFillBackground(false);
@@ -742,6 +744,7 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     connect(ActionFactory::get().playlistContextMenu(), &QMenu::aboutToShow, [=]() {
         QTimer::singleShot(20, [=]() {
             if (_mouseItem) {
+                _clickedItem = _mouseItem;
                 ((PlayItemWidget*)_mouseItem)->setHovered(true); 
             }
         });
@@ -1145,7 +1148,7 @@ void PlaylistWidget::resizeEvent(QResizeEvent *ev)
     QRect fixed((view_rect.width()-10), (view_rect.height()-394),
             view_rect.width()-20,
             (384 - 70));
-    _playlist->setFixedWidth(width()-230);
+    _playlist->setFixedWidth(width()-235);
     emit sizeChange();
 
      QTimer::singleShot(100, this, &PlaylistWidget::batchUpdateSizeHints);
