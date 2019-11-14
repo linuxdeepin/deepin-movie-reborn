@@ -88,7 +88,7 @@ int main(int argc, char *argv[])
     }
 
     app.loadTranslator();
-    app.setApplicationDisplayName(QObject::tr("Deepin Movie"));
+    app.setApplicationDisplayName(QObject::tr("影院"));
     app.setApplicationDescription(QObject::tr(
                                       "影院是一款支持多种视频格式本地播放和流媒体播放的视频播放器。"
                 ));
@@ -121,7 +121,7 @@ int main(int argc, char *argv[])
 
 
     app.setWindowIcon(QIcon(":/resources/icons/logo.svg"));
-    app.setApplicationDisplayName(QObject::tr("Deepin Movie"));
+    app.setApplicationDisplayName(QObject::tr("影院"));
     app.setAttribute(Qt::AA_DontCreateNativeWidgetSiblings, true);
 //    app.setApplicationVersion(DApplication::buildVersion("20190830"));
     app.setApplicationVersion(DApplication::buildVersion(VERSION));

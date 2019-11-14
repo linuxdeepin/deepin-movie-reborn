@@ -741,7 +741,7 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
 
     QTimer::singleShot(10, this, &PlaylistWidget::loadPlaylist);
 
-    connect(ActionFactory::get().playlistContextMenu(), &QMenu::aboutToShow, [=]() {
+    connect(ActionFactory::get().playlistContextMenu(), &DMenu::aboutToShow, [=]() {
         QTimer::singleShot(20, [=]() {
             if (_mouseItem) {
                 _clickedItem = _mouseItem;
@@ -749,7 +749,7 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
             }
         });
     });
-    connect(ActionFactory::get().playlistContextMenu(), &QMenu::aboutToHide, [=]() {
+    connect(ActionFactory::get().playlistContextMenu(), &DMenu::aboutToHide, [=]() {
         if (_mouseItem) {
             ((PlayItemWidget*)_mouseItem)->setHovered(false); 
         }

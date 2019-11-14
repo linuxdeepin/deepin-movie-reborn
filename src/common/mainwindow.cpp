@@ -604,9 +604,9 @@ MainWindow::MainWindow(QWidget *parent)
         });
     });
 
-    connect(ActionFactory::get().mainContextMenu(), &QMenu::triggered,
+    connect(ActionFactory::get().mainContextMenu(), &DMenu::triggered,
             this, &MainWindow::menuItemInvoked);
-    connect(ActionFactory::get().playlistContextMenu(), &QMenu::triggered,
+    connect(ActionFactory::get().playlistContextMenu(), &DMenu::triggered,
             this, &MainWindow::menuItemInvoked);
     connect(qApp, &QGuiApplication::focusWindowChanged, [=]() {
         if (qApp->focusWindow() != windowHandle())
@@ -881,7 +881,7 @@ void MainWindow::setupTitlebar()
 //        connect(help, &QShortcut::activated, this, &MainWindow::handleHelpAction);
     }
 
-    connect(_titlebar->titlebar()->menu(), &QMenu::triggered, this, &MainWindow::menuItemInvoked);
+    connect(_titlebar->titlebar()->menu(), &DMenu::triggered, this, &MainWindow::menuItemInvoked);
 }
 
 void MainWindow::updateContentGeometry(const QRect& rect)

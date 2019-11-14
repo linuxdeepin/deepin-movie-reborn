@@ -31,6 +31,9 @@
 #define _DMR_ACTIONS_H 
 
 #include <QtWidgets>
+#include <DMenu>
+
+DWIDGET_USE_NAMESPACE
 
 namespace dmr {
 class PlayingMovieInfo;
@@ -125,11 +128,11 @@ Q_ENUM(ActionKind)
 
     static ActionFactory& get();
 
-    QMenu* titlebarMenu();
-    QMenu* mainContextMenu();
+    DMenu* titlebarMenu();
+    DMenu* mainContextMenu();
     template<class UnaryFunction> 
     void forEachInMainMenu(UnaryFunction f);
-    QMenu* playlistContextMenu();
+    DMenu* playlistContextMenu();
     QList<QAction*> findActionsByKind(ActionKind kd);
     void updateMainActionsForMovie(const PlayingMovieInfo& pmf);
 
@@ -151,11 +154,11 @@ Q_ENUM(ActionKind)
 
 private:
     ActionFactory() {}
-    QMenu *_titlebarMenu {nullptr};
-    QMenu *_contextMenu {nullptr};
-    QMenu *_subtitleMenu {nullptr};
-    QMenu *_tracksMenu {nullptr};
-    QMenu *_playlistMenu {nullptr};
+    DMenu *_titlebarMenu {nullptr};
+    DMenu *_contextMenu {nullptr};
+    DMenu *_subtitleMenu {nullptr};
+    DMenu *_tracksMenu {nullptr};
+    DMenu *_playlistMenu {nullptr};
     QList<QAction*> _contextMenuActions;
 };
 

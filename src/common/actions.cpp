@@ -74,10 +74,10 @@ ActionFactory& ActionFactory::get()
     }); \
 } while (0) 
 
-QMenu* ActionFactory::titlebarMenu()
+DMenu* ActionFactory::titlebarMenu()
 {
     if (!_titlebarMenu) {
-        auto *menu = new QMenu();
+        auto *menu = new DMenu();
 
         DEF_ACTION(tr("Open file"), ActionKind::OpenFileList);
         DEF_ACTION(tr("Open folder"), ActionKind::OpenDirectory);
@@ -94,10 +94,10 @@ QMenu* ActionFactory::titlebarMenu()
     return _titlebarMenu;
 }
 
-QMenu* ActionFactory::mainContextMenu()
+DMenu* ActionFactory::mainContextMenu()
 {
     if (!_contextMenu) {
-        auto *menu = new QMenu();
+        auto *menu = new DMenu();
 
         DEF_ACTION(tr("Open file"), ActionKind::OpenFileList);
         DEF_ACTION(tr("Open folder"), ActionKind::OpenDirectory);
@@ -112,7 +112,7 @@ QMenu* ActionFactory::mainContextMenu()
 
         { //sub menu
             auto *parent = menu;
-            auto *menu = new QMenu(tr("Play Mode"));
+            auto *menu = new DMenu(tr("Play Mode"));
             auto group = new QActionGroup(menu);
 
             DEF_ACTION_CHECKED_GROUP(tr("Order Play"), ActionKind::OrderPlay, group);
@@ -126,7 +126,7 @@ QMenu* ActionFactory::mainContextMenu()
 
         { //sub menu
             auto *parent = menu;
-            auto *menu = new QMenu(tr("Frame"));
+            auto *menu = new DMenu(tr("Frame"));
             auto group = new QActionGroup(menu);
 
             DEF_ACTION_CHECKED_GROUP(tr("Default"), ActionKind::DefaultFrame, group);
@@ -149,10 +149,10 @@ QMenu* ActionFactory::mainContextMenu()
 
         { //sub menu
             auto *parent = menu;
-            auto *menu = new QMenu(tr("Sound"));
+            auto *menu = new DMenu(tr("Sound"));
             {
                 auto *parent = menu;
-                auto *menu = new QMenu(tr("Channel"));
+                auto *menu = new DMenu(tr("Channel"));
                 auto group = new QActionGroup(menu);
 
                 DEF_ACTION_CHECKED_GROUP(tr("Stereo"), ActionKind::Stereo, group);
@@ -163,7 +163,7 @@ QMenu* ActionFactory::mainContextMenu()
 
             {
                 auto *parent = menu;
-                auto *menu = new QMenu(tr("Track"));
+                auto *menu = new DMenu(tr("Track"));
                 _tracksMenu = menu;
                 //DEF_ACTION(tr("Select Track"), ActionKind::SelectTrack);
                 parent->addMenu(menu);
@@ -173,13 +173,13 @@ QMenu* ActionFactory::mainContextMenu()
 
         { //sub menu
             auto *parent = menu;
-            auto *menu = new QMenu(tr("Subtitle"));
+            auto *menu = new DMenu(tr("Subtitle"));
             DEF_ACTION(tr("Load"), ActionKind::LoadSubtitle);
             DEF_ACTION(tr("Online Search"), ActionKind::MatchOnlineSubtitle);
             //DEF_ACTION(tr("Select"), ActionKind::SelectSubtitle);
             {
                 auto *parent = menu;
-                auto *menu = new QMenu(tr("Select"));
+                auto *menu = new DMenu(tr("Select"));
                 _subtitleMenu = menu;
                 parent->addMenu(menu);
             }
@@ -187,7 +187,7 @@ QMenu* ActionFactory::mainContextMenu()
 
             {
                 auto *parent = menu;
-                auto *menu = new QMenu(tr("Encodings"));
+                auto *menu = new DMenu(tr("Encodings"));
                 auto group = new QActionGroup(menu);
 
                 //title <-> codepage
@@ -255,7 +255,7 @@ QMenu* ActionFactory::mainContextMenu()
 
         { //sub menu
             auto *parent = menu;
-            auto *menu = new QMenu(tr("Screenshot"));
+            auto *menu = new DMenu(tr("Screenshot"));
             DEF_ACTION(tr("Film Screenshot"), ActionKind::Screenshot);
             DEF_ACTION(tr("Burst Shooting"), ActionKind::BurstScreenshot);
 
@@ -274,10 +274,10 @@ QMenu* ActionFactory::mainContextMenu()
     return _contextMenu;
 }
 
-QMenu* ActionFactory::playlistContextMenu()
+DMenu* ActionFactory::playlistContextMenu()
 {
     if (!_playlistMenu) {
-        auto *menu = new QMenu();
+        auto *menu = new DMenu();
 
 
         DEF_ACTION(tr("从列表中删除"), ActionKind::PlaylistRemoveItem);
