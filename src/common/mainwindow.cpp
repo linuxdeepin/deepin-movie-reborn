@@ -2822,6 +2822,7 @@ void MainWindow::toggleUIMode()
 
     if (_miniMode) {
         syncPlayState();
+        setEnableSystemResize(false);
 
         _stateBeforeMiniMode = SBEM_None;
 
