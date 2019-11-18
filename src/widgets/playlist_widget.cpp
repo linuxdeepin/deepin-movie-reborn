@@ -355,8 +355,8 @@ protected:
     {
         auto margin = 4;
         auto pl = dynamic_cast<QListWidget*>(parentWidget()->parentWidget());
-        if (pl->verticalScrollBar()->isVisible())
-            //margin = 10;
+//        if (pl->verticalScrollBar()->isVisible())
+//            margin = 10;
         _closeBtn->move(width() - _closeBtn->width() - margin,
                 (height() - _closeBtn->height())/2);
     }
