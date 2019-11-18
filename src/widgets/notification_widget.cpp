@@ -1,4 +1,4 @@
-/* 
+/*
  * (c) 2017, Deepin Technology Co., Ltd. <support@deepin.org>
  *
  * This program is free software; you can redistribute it and/or
@@ -28,21 +28,22 @@
  * files in the program, then also delete it here.
  */
 #include "notification_widget.h"
-#include "utility.h"
 #include "event_relayer.h"
+#include "utility.h"
 
-#include <DPlatformWindowHandle>
-#include <dthememanager.h>
 #include <dapplication.h>
+#include <dthememanager.h>
+#include <DPlatformWindowHandle>
 
 namespace dmr {
 
-NotificationWidget::NotificationWidget(QWidget *parent)
-    :QFrame(parent), _mw(parent)
+NotificationWidget::NotificationWidget(QWidget* parent)
+    : QFrame(parent)
+    , _mw(parent)
 {
-//    DThemeManager::instance()->registerWidget(this);
+    //    DThemeManager::instance()->registerWidget(this);
 
-    //setFrameShape(QFrame::NoFrame);
+    // setFrameShape(QFrame::NoFrame);
     setObjectName("NotificationFrame");
 
     _layout = new QHBoxLayout;
@@ -55,31 +56,29 @@ NotificationWidget::NotificationWidget(QWidget *parent)
     _timer = new QTimer(this);
     _timer->setInterval(2000);
     _timer->setSingleShot(true);
-    connect(_timer, &QTimer::timeout, [=]() {this->hide();});
-
+    connect(_timer, &QTimer::timeout, [=]() { this->hide(); });
 }
 
-void NotificationWidget::showEvent(QShowEvent *event)
+void NotificationWidget::showEvent(QShowEvent* event)
 {
     ensurePolished();
     if (_layout->indexOf(_icon) == -1) {
-        resize(_msgLabel->sizeHint().width() + _layout->contentsMargins().left() 
-                + _layout->contentsMargins().right(), height());
+        resize(_msgLabel->sizeHint().width() + _layout->contentsMargins().left() +
+                   _layout->contentsMargins().right(),
+               height());
         adjustSize();
     }
     syncPosition();
 }
 
-void NotificationWidget::resizeEvent(QResizeEvent *re)
-{
-}
+void NotificationWidget::resizeEvent(QResizeEvent* re) {}
 
 void NotificationWidget::syncPosition()
 {
     auto geom = _mw->geometry();
     switch (_anchor) {
         case AnchorBottom:
-            move(geom.center().x() - size().width()/2, geom.bottom() - _anchorDist - height());
+            move(geom.center().x() - size().width() / 2, geom.bottom() - _anchorDist - height());
             break;
 
         case AnchorNorthWest:
@@ -87,7 +86,7 @@ void NotificationWidget::syncPosition()
             break;
 
         case AnchorNone:
-            move(geom.center().x() - size().width()/2, geom.center().y() - size().height()/2);
+            move(geom.center().x() - size().width() / 2, geom.center().y() - size().height() / 2);
             break;
     }
 }
@@ -106,7 +105,8 @@ void NotificationWidget::popupWithIcon(const QString& msg, const QPixmap& pm)
     if (_layout->indexOf(_msgLabel) == -1)
         _layout->addWidget(_msgLabel, 1);
 
-    setFixedHeight(40);
+    // setFixedHeight(40);
+    setFixedSize(QSize(125, 40));
     _layout->update();
     _msgLabel->setText(msg);
     show();
@@ -136,8 +136,9 @@ void NotificationWidget::updateWithMessage(const QString& newMsg)
 
     if (isVisible()) {
         _msgLabel->setText(msg);
-        resize(_msgLabel->sizeHint().width() + _layout->contentsMargins().left() 
-                + _layout->contentsMargins().right(), height());
+        resize(_msgLabel->sizeHint().width() + _layout->contentsMargins().left() +
+                   _layout->contentsMargins().right(),
+               height());
         adjustSize();
         _timer->start();
 
@@ -151,8 +152,9 @@ void NotificationWidget::paintEvent(QPaintEvent* pe)
     float RADIUS = 8;
     QPainter p(this);
     p.setRenderHint(QPainter::Antialiasing);
-    
-    bool light = (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() );
+
+    bool light =
+        (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType());
     auto bg_clr = QColor(23, 23, 23, 255 * 8 / 10);
     auto border_clr = QColor(255, 255, 255, 25);
     if (light) {
@@ -174,4 +176,4 @@ void NotificationWidget::paintEvent(QPaintEvent* pe)
     p.fillPath(pp, bg_clr);
 }
 
-}
+}  // namespace dmr

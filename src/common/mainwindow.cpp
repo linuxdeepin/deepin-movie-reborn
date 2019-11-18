@@ -29,40 +29,40 @@
  */
 #include "config.h"
 
-#include "mainwindow.h"
-#include "toolbox_proxy.h"
 #include "actions.h"
-#include "event_monitor.h"
-#include "compositing_manager.h"
-#include "shortcut_manager.h"
-#include "dmr_settings.h"
-#include "utility.h"
-#include "movieinfo_dialog.h"
 #include "burst_screenshots_dialog.h"
-#include "playlist_widget.h"
-#include "notification_widget.h"
-#include "player_engine.h"
-#include "url_dialog.h"
+#include "compositing_manager.h"
+#include "dmr_settings.h"
+#include "event_monitor.h"
+#include "mainwindow.h"
 #include "movie_progress_indicator.h"
+#include "movieinfo_dialog.h"
+#include "notification_widget.h"
 #include "options.h"
+#include "player_engine.h"
+#include "playlist_widget.h"
+#include "shortcut_manager.h"
 #include "titlebar.h"
+#include "toolbox_proxy.h"
+#include "url_dialog.h"
+#include "utility.h"
 #include "utils.h"
 
 //#include <QtWidgets>
+#include <DAboutDialog>
+#include <DApplication>
+#include <DImageButton>
+#include <DInputDialog>
+#include <DLabel>
+#include <DLineEdit>
+#include <DSettingsDialog>
+#include <DSettingsWidgetFactory>
+#include <DThemeManager>
+#include <DTitlebar>
+#include <DWidgetUtil>
+#include <QX11Info>
 #include <QtDBus>
 #include <QtX11Extras>
-#include <QX11Info>
-#include <DLabel>
-#include <DApplication>
-#include <DTitlebar>
-#include <DSettingsDialog>
-#include <DThemeManager>
-#include <DAboutDialog>
-#include <DInputDialog>
-#include <DImageButton>
-#include <DWidgetUtil>
-#include <DSettingsWidgetFactory>
-#include <DLineEdit>
 
 #define AUTOHIDE_TIMEOUT 2000
 
@@ -83,7 +83,6 @@ static void workaround_updateStyle(QWidget *parent, const QString &theme)
     }
 }
 
-
 static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
 {
     auto option = qobject_cast<DTK_CORE_NAMESPACE::DSettingsOption *>(opt);
@@ -96,23 +95,24 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
     le->setFixedHeight(21);
     le->setObjectName("OptionSelectableLineEdit");
     le->setText(option->value().toString());
-//    le->setMaxLength(255);
+    //    le->setMaxLength(255);
 
-//    icon->setIconVisible(true);
+    //    icon->setIconVisible(true);
     icon->setIcon(QIcon(":resources/icons/select-normal.svg"));
     icon->setFixedHeight(21);
     layout->addWidget(le);
     layout->addWidget(icon);
-//    icon->setNormalIcon(":resources/icons/select-normal.svg");
-//    icon->setHoverIcon(":resources/icons/select-hover.svg");
-//    icon->setPressIcon(":resources/icons/select-press.svg");
+    //    icon->setNormalIcon(":resources/icons/select-normal.svg");
+    //    icon->setHoverIcon(":resources/icons/select-hover.svg");
+    //    icon->setPressIcon(":resources/icons/select-press.svg");
 
     auto optionWidget = DSettingsWidgetFactory::createTwoColumWidget(option, main);
     workaround_updateStyle(optionWidget, "dlight");
 
     auto validate = [=](QString name, bool alert = true) -> bool {
         name = name.trimmed();
-        if (name.isEmpty()) return false;
+        if (name.isEmpty())
+            return false;
 
         if (name.size() && name[0] == '~') {
             name.replace(0, 1, QDir::homePath());
@@ -121,12 +121,15 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
         QFileInfo fi(name);
         if (fi.exists()) {
             if (!fi.isDir()) {
-                if (alert) le->showAlertMessage(QObject::tr("Invalid folder"));
+                if (alert)
+                    le->showAlertMessage(QObject::tr("Invalid folder"));
                 return false;
             }
 
             if (!fi.isReadable() || !fi.isWritable()) {
-                if (alert) le->showAlertMessage(QObject::tr("You don't have permission to operate this folder"));
+                if (alert)
+                    le->showAlertMessage(
+                        QObject::tr("You don't have permission to operate this folder"));
                 return false;
             }
         }
@@ -135,9 +138,9 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
     };
 
     option->connect(icon, &DPushButton::clicked, [=]() {
-        QString name = QFileDialog::getExistingDirectory(0, QObject::tr("Open folder"),
-                MainWindow::lastOpenedPath(),
-                QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+        QString name = QFileDialog::getExistingDirectory(
+            0, QObject::tr("Open folder"), MainWindow::lastOpenedPath(),
+            QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
         if (validate(name, false)) {
             option->setValue(name);
         }
@@ -152,48 +155,50 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
         }
     });
 
-    option->connect(le, &DLineEdit::textEdited, option, [=](const QString& newStr) {
-        validate(newStr);
-    });
+    option->connect(le, &DLineEdit::textEdited, option,
+                    [=](const QString &newStr) { validate(newStr); });
 
     option->connect(option, &DTK_CORE_NAMESPACE::DSettingsOption::valueChanged, le,
-        [ = ](const QVariant & value) {
-            le->setText(value.toString());
-            le->update();
-        });
+                    [=](const QVariant &value) {
+                        le->setText(value.toString());
+                        le->update();
+                    });
 
-    return  optionWidget;
+    return optionWidget;
 }
 
-class MainWindowFocusMonitor: public QAbstractNativeEventFilter {
+class MainWindowFocusMonitor : public QAbstractNativeEventFilter
+{
 public:
-    MainWindowFocusMonitor(MainWindow* src) :QAbstractNativeEventFilter(), _source(src) {
+    MainWindowFocusMonitor(MainWindow *src)
+        : QAbstractNativeEventFilter()
+        , _source(src)
+    {
         qApp->installNativeEventFilter(this);
     }
 
-    ~MainWindowFocusMonitor() {
-        qApp->removeNativeEventFilter(this);
-    }
+    ~MainWindowFocusMonitor() { qApp->removeNativeEventFilter(this); }
 
-    bool nativeEventFilter(const QByteArray &eventType, void *message, long *) {
-        if(Q_LIKELY(eventType == "xcb_generic_event_t")) {
-            xcb_generic_event_t* event = static_cast<xcb_generic_event_t *>(message);
+    bool nativeEventFilter(const QByteArray &eventType, void *message, long *)
+    {
+        if (Q_LIKELY(eventType == "xcb_generic_event_t")) {
+            xcb_generic_event_t *event = static_cast<xcb_generic_event_t *>(message);
             switch (event->response_type & ~0x80) {
                 case XCB_LEAVE_NOTIFY: {
-                    xcb_leave_notify_event_t *dne = (xcb_leave_notify_event_t*)event;
+                    xcb_leave_notify_event_t *dne = (xcb_leave_notify_event_t *)event;
                     auto w = _source->windowHandle();
                     if (dne->event == w->winId()) {
-                        //qDebug() << "---------  leave " << dne->event << dne->child;
+                        // qDebug() << "---------  leave " << dne->event << dne->child;
                         emit _source->windowLeaved();
                     }
                     break;
                 }
 
                 case XCB_ENTER_NOTIFY: {
-                    xcb_enter_notify_event_t *dne = (xcb_enter_notify_event_t*)event;
+                    xcb_enter_notify_event_t *dne = (xcb_enter_notify_event_t *)event;
                     auto w = _source->windowHandle();
                     if (dne->event == w->winId()) {
-                        //qDebug() << "---------  enter " << dne->event << dne->child;
+                        // qDebug() << "---------  enter " << dne->event << dne->child;
                         emit _source->windowEntered();
                     }
                     break;
@@ -209,26 +214,30 @@ public:
     MainWindow *_source;
 };
 
-class MainWindowPropertyMonitor: public QAbstractNativeEventFilter {
+class MainWindowPropertyMonitor : public QAbstractNativeEventFilter
+{
 public:
     MainWindowPropertyMonitor(MainWindow *src)
-        :QAbstractNativeEventFilter(), _mw(src), _source(src->windowHandle()) {
+        : QAbstractNativeEventFilter()
+        , _mw(src)
+        , _source(src->windowHandle())
+    {
         qApp->installNativeEventFilter(this);
 
         _atomWMState = Utility::internAtom("_NET_WM_STATE");
     }
 
-    ~MainWindowPropertyMonitor() {
-        qApp->removeNativeEventFilter(this);
-    }
+    ~MainWindowPropertyMonitor() { qApp->removeNativeEventFilter(this); }
 
-    bool nativeEventFilter(const QByteArray &eventType, void *message, long *) {
-        if(Q_LIKELY(eventType == "xcb_generic_event_t")) {
-            xcb_generic_event_t* event = static_cast<xcb_generic_event_t *>(message);
+    bool nativeEventFilter(const QByteArray &eventType, void *message, long *)
+    {
+        if (Q_LIKELY(eventType == "xcb_generic_event_t")) {
+            xcb_generic_event_t *event = static_cast<xcb_generic_event_t *>(message);
             switch (event->response_type & ~0x80) {
                 case XCB_PROPERTY_NOTIFY: {
-                    xcb_property_notify_event_t *pne = (xcb_property_notify_event_t*)(event);
-                    if (pne->atom == _atomWMState && pne->window == (xcb_window_t)_source->winId()) {
+                    xcb_property_notify_event_t *pne = (xcb_property_notify_event_t *)(event);
+                    if (pne->atom == _atomWMState &&
+                        pne->window == (xcb_window_t)_source->winId()) {
                         _mw->syncStaysOnTop();
                     }
                     break;
@@ -243,40 +252,38 @@ public:
     }
 
     MainWindow *_mw {nullptr};
-    QWindow* _source {nullptr};
+    QWindow *_source {nullptr};
     xcb_atom_t _atomWMState;
 };
-
 
 class MainWindowEventListener : public QObject
 {
     Q_OBJECT
-    public:
-        explicit MainWindowEventListener(QWidget *target)
-            : QObject(target), _window(target->windowHandle())
-        {
-        }
+public:
+    explicit MainWindowEventListener(QWidget *target)
+        : QObject(target)
+        , _window(target->windowHandle())
+    {
+    }
 
-        ~MainWindowEventListener()
-        {
-        }
+    ~MainWindowEventListener() {}
 
-        void setEnabled(bool v)
-        {
-            enabled = v;
-        }
+    void setEnabled(bool v) { enabled = v; }
 
-    protected:
-        bool eventFilter(QObject *obj, QEvent *event) Q_DECL_OVERRIDE {
-            QWindow *window = qobject_cast<QWindow*>(obj);
-            if (!window) return false;
+protected:
+    bool eventFilter(QObject *obj, QEvent *event) Q_DECL_OVERRIDE
+    {
+        QWindow *window = qobject_cast<QWindow *>(obj);
+        if (!window)
+            return false;
 
-            switch ((int)event->type()) {
+        switch ((int)event->type()) {
             case QEvent::MouseButtonPress: {
-                if (!enabled) return false;
-                QMouseEvent *e = static_cast<QMouseEvent*>(event);
+                if (!enabled)
+                    return false;
+                QMouseEvent *e = static_cast<QMouseEvent *>(event);
                 setLeftButtonPressed(true);
-                auto mw = static_cast<MainWindow*>(parent());
+                auto mw = static_cast<MainWindow *>(parent());
                 if (mw->insideResizeArea(e->globalPos()) && lastCornerEdge != Utility::NoneEdge)
                     startResizing = true;
 
@@ -287,12 +294,13 @@ class MainWindowEventListener : public QObject
                 break;
             }
             case QEvent::MouseButtonRelease: {
-                if (!enabled) return false;
-                QMouseEvent *e = static_cast<QMouseEvent*>(event);
+                if (!enabled)
+                    return false;
+                QMouseEvent *e = static_cast<QMouseEvent *>(event);
                 setLeftButtonPressed(false);
                 qApp->setOverrideCursor(window->cursor());
 
-                auto mw = static_cast<MainWindow*>(parent());
+                auto mw = static_cast<MainWindow *>(parent());
                 mw->capturedMouseReleaseEvent(e);
                 if (startResizing) {
                     startResizing = false;
@@ -302,11 +310,12 @@ class MainWindowEventListener : public QObject
                 break;
             }
             case QEvent::MouseMove: {
-                QMouseEvent *e = static_cast<QMouseEvent*>(event);
-                auto mw = static_cast<MainWindow*>(parent());
+                QMouseEvent *e = static_cast<QMouseEvent *>(event);
+                auto mw = static_cast<MainWindow *>(parent());
                 mw->resumeToolsWindow();
 
-                if (!enabled) return false;
+                if (!enabled)
+                    return false;
                 const QRect window_visible_rect = _window->frameGeometry() - mw->dragMargins();
 
                 if (!leftButtonPressed) {
@@ -340,7 +349,7 @@ class MainWindowEventListener : public QObject
                             goto set_cursor;
                         }
 
-                        goto skip_set_cursor; // disable edges
+                        goto skip_set_cursor;  // disable edges
 
                         /// begin set cursor edge type
                         if (e->globalX() <= window_visible_rect.x()) {
@@ -358,7 +367,7 @@ class MainWindowEventListener : public QObject
                         } else {
                             goto skip_set_cursor;
                         }
-set_cursor:
+                    set_cursor:
                         if (window->property("_d_real_winId").isValid()) {
                             auto real_wid = window->property("_d_real_winId").toUInt();
                             Utility::setWindowCursor(real_wid, mouseCorner);
@@ -372,7 +381,7 @@ set_cursor:
                         lastCornerEdge = mouseCorner;
                         return true;
 
-skip_set_cursor:
+                    skip_set_cursor:
                         lastCornerEdge = mouseCorner = Utility::NoneEdge;
                         return false;
                     } else {
@@ -388,124 +397,130 @@ skip_set_cursor:
                 break;
             }
 
-            default: break;
-            }
-
-            return false;
+            default:
+                break;
         }
 
-    private:
-        void setLeftButtonPressed(bool pressed) {
-            if (leftButtonPressed == pressed)
+        return false;
+    }
+
+private:
+    void setLeftButtonPressed(bool pressed)
+    {
+        if (leftButtonPressed == pressed)
+            return;
+
+        if (!pressed)
+            Utility::cancelWindowMoveResize(_window->winId());
+
+        leftButtonPressed = pressed;
+    }
+
+    void updateGeometry(Utility::CornerEdge edge, QMouseEvent *e)
+    {
+        auto mw = static_cast<MainWindow *>(parent());
+        bool keep_ratio = mw->engine()->state() != PlayerEngine::CoreState::Idle;
+        auto old_geom = mw->frameGeometry();
+        auto geom = mw->frameGeometry();
+        qreal ratio = (qreal)geom.width() / geom.height();
+
+        // disable edges
+        switch (edge) {
+            case Utility::BottomEdge:
+            case Utility::TopEdge:
+            case Utility::LeftEdge:
+            case Utility::RightEdge:
+            case Utility::NoneEdge:
                 return;
-
-            if (!pressed)
-                Utility::cancelWindowMoveResize(_window->winId());
-
-            leftButtonPressed = pressed;
+            default:
+                break;
         }
 
-        void updateGeometry(Utility::CornerEdge edge, QMouseEvent* e) {
-            auto mw = static_cast<MainWindow*>(parent());
-            bool keep_ratio = mw->engine()->state() != PlayerEngine::CoreState::Idle;
-            auto old_geom = mw->frameGeometry();
-            auto geom = mw->frameGeometry();
-            qreal ratio = (qreal)geom.width() / geom.height();
+        if (keep_ratio) {
+            auto sz = mw->engine()->videoSize();
+            if (sz.isEmpty()) {
+                const auto &mi = mw->engine()->playlist().currentInfo().mi;
+                sz = QSize(mi.width, mi.height);
+            }
 
-            // disable edges
+            ratio = sz.width() / (qreal)sz.height();
             switch (edge) {
-                case Utility::BottomEdge:
-                case Utility::TopEdge:
+                case Utility::TopLeftCorner:
+                    geom.setLeft(e->globalX());
+                    geom.setTop(geom.bottom() - geom.width() / ratio);
+                    break;
+                case Utility::BottomLeftCorner:
                 case Utility::LeftEdge:
+                    geom.setLeft(e->globalX());
+                    geom.setHeight(geom.width() / ratio);
+                    break;
+                case Utility::BottomRightCorner:
                 case Utility::RightEdge:
-                case Utility::NoneEdge:
-                    return;
-                default: break;
+                    geom.setRight(e->globalX());
+                    geom.setHeight(geom.width() / ratio);
+                    break;
+                case Utility::TopRightCorner:
+                case Utility::TopEdge:
+                    geom.setTop(e->globalY());
+                    geom.setWidth(geom.height() * ratio);
+                    break;
+                case Utility::BottomEdge:
+                    geom.setBottom(e->globalY());
+                    geom.setWidth(geom.height() * ratio);
+                    break;
+                default:
+                    break;
             }
-
-            if (keep_ratio) {
-                auto sz = mw->engine()->videoSize();
-                if (sz.isEmpty()) {
-                    const auto& mi = mw->engine()->playlist().currentInfo().mi;
-                    sz = QSize(mi.width, mi.height);
-                }
-
-                ratio = sz.width() / (qreal)sz.height();
-                switch (edge) {
-                    case Utility::TopLeftCorner:
-                        geom.setLeft(e->globalX());
-                        geom.setTop(geom.bottom() - geom.width() / ratio);
-                        break;
-                    case Utility::BottomLeftCorner:
-                    case Utility::LeftEdge:
-                        geom.setLeft(e->globalX());
-                        geom.setHeight(geom.width() / ratio);
-                        break;
-                    case Utility::BottomRightCorner:
-                    case Utility::RightEdge:
-                        geom.setRight(e->globalX());
-                        geom.setHeight(geom.width() / ratio);
-                        break;
-                    case Utility::TopRightCorner:
-                    case Utility::TopEdge:
-                        geom.setTop(e->globalY());
-                        geom.setWidth(geom.height() * ratio);
-                        break;
-                    case Utility::BottomEdge:
-                        geom.setBottom(e->globalY());
-                        geom.setWidth(geom.height() * ratio);
-                        break;
-                    default: break;
-                }
-            } else {
-                switch (edge) {
-                    case Utility::BottomLeftCorner:
-                        geom.setBottomLeft(e->globalPos());
-                        break;
-                    case Utility::TopLeftCorner:
-                        geom.setTopLeft(e->globalPos());
-                        break;
-                    case Utility::LeftEdge:
-                        geom.setLeft(e->globalX());
-                        break;
-                    case Utility::BottomRightCorner:
-                        geom.setBottomRight(e->globalPos());
-                        break;
-                    case Utility::RightEdge:
-                        geom.setRight(e->globalX());
-                        break;
-                    case Utility::TopRightCorner:
-                        geom.setTopRight(e->globalPos());
-                        break;
-                    case Utility::TopEdge:
-                        geom.setTop(e->globalY());
-                        break;
-                    case Utility::BottomEdge:
-                        geom.setBottom(e->globalY());
-                        break;
-                    default: break;
-                }
+        } else {
+            switch (edge) {
+                case Utility::BottomLeftCorner:
+                    geom.setBottomLeft(e->globalPos());
+                    break;
+                case Utility::TopLeftCorner:
+                    geom.setTopLeft(e->globalPos());
+                    break;
+                case Utility::LeftEdge:
+                    geom.setLeft(e->globalX());
+                    break;
+                case Utility::BottomRightCorner:
+                    geom.setBottomRight(e->globalPos());
+                    break;
+                case Utility::RightEdge:
+                    geom.setRight(e->globalX());
+                    break;
+                case Utility::TopRightCorner:
+                    geom.setTopRight(e->globalPos());
+                    break;
+                case Utility::TopEdge:
+                    geom.setTop(e->globalY());
+                    break;
+                case Utility::BottomEdge:
+                    geom.setBottom(e->globalY());
+                    break;
+                default:
+                    break;
             }
-
-            auto min = mw->minimumSize();
-            if (old_geom.width() <= min.width() && geom.left() > old_geom.left()) {
-                geom.setLeft(old_geom.left());
-            }
-            if (old_geom.height() <= min.height() && geom.top() > old_geom.top()) {
-                geom.setTop(old_geom.top());
-            }
-
-            geom.setWidth(qMax(geom.width(), min.width()));
-            geom.setHeight(qMax(geom.height(), min.height()));
-            mw->updateContentGeometry(geom);
-            mw->updateGeometryNotification(geom.size());
         }
 
-        bool leftButtonPressed {false};
-        bool startResizing {false};
-        bool enabled {true};
-        Utility::CornerEdge lastCornerEdge;
-        QWindow* _window;
+        auto min = mw->minimumSize();
+        if (old_geom.width() <= min.width() && geom.left() > old_geom.left()) {
+            geom.setLeft(old_geom.left());
+        }
+        if (old_geom.height() <= min.height() && geom.top() > old_geom.top()) {
+            geom.setTop(old_geom.top());
+        }
+
+        geom.setWidth(qMax(geom.width(), min.width()));
+        geom.setHeight(qMax(geom.height(), min.height()));
+        mw->updateContentGeometry(geom);
+        mw->updateGeometryNotification(geom.size());
+    }
+
+    bool leftButtonPressed {false};
+    bool startResizing {false};
+    bool enabled {true};
+    Utility::CornerEdge lastCornerEdge;
+    QWindow *_window;
 };
 
 #ifdef USE_DXCB
@@ -520,32 +535,34 @@ MainWindow::MainWindow(QWidget *parent)
     bool composited = CompositingManager::get().composited();
 #ifdef USE_DXCB
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowTitleHint | Qt::WindowMinMaxButtonsHint |
-            Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint);
+                   Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint);
 #else
-//    setWindowFlags(Qt::FramelessWindowHint);
-    setWindowFlags(Qt::WindowMinMaxButtonsHint |
-                                   Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint);
+    //    setWindowFlags(Qt::FramelessWindowHint);
+    setWindowFlags(Qt::WindowMinMaxButtonsHint | Qt::WindowSystemMenuHint |
+                   Qt::WindowCloseButtonHint);
 #endif
-//    QPalette palette;
-//    palette.setColor(QPalette::Background, QColor(0,0,0,0)); // 最后一项为透明度
-//    setPalette(palette);
+    //    QPalette palette;
+    //    palette.setColor(QPalette::Background, QColor(0,0,0,0)); // 最后一项为透明度
+    //    setPalette(palette);
     setAcceptDrops(true);
-    if(titlebar()){titlebar()->setFixedHeight(0);}
+    if (titlebar()) {
+        titlebar()->setFixedHeight(0);
+    }
 
     if (composited) {
         setAttribute(Qt::WA_TranslucentBackground, true);
-        //setAttribute(Qt::WA_NoSystemBackground, false);
+        // setAttribute(Qt::WA_NoSystemBackground, false);
     }
 
-//    DThemeManager::instance()->registerWidget(this);
-//    setFrameShape(QFrame::NoFrame);
+    //    DThemeManager::instance()->registerWidget(this);
+    //    setFrameShape(QFrame::NoFrame);
 
 #ifdef USE_DXCB
     if (DApplication::isDXcbPlatform()) {
         _handle = new DPlatformWindowHandle(this, this);
-        //setAttribute(Qt::WA_TranslucentBackground, true);
-        //if (composited)
-            //_handle->setTranslucentBackground(true);
+        // setAttribute(Qt::WA_TranslucentBackground, true);
+        // if (composited)
+        //_handle->setTranslucentBackground(true);
         _handle->setEnableSystemResize(false);
         _handle->setEnableSystemMove(false);
         _handle->setWindowRadius(4);
@@ -566,7 +583,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     setupTitlebar();
 
-    auto& clm = dmr::CommandLineManager::get();
+    auto &clm = dmr::CommandLineManager::get();
     if (clm.debug()) {
         Backend::setDebugLevel(Backend::DebugLevel::Debug);
     } else if (clm.verbose()) {
@@ -585,7 +602,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     _playlist = new PlaylistWidget(this, _engine);
     _playlist->hide();
-//    _playlist->setParent(_toolbox);
+    //    _playlist->setParent(_toolbox);
 
     _toolbox->setPlaylist(_playlist);
 
@@ -594,20 +611,21 @@ MainWindow::MainWindow(QWidget *parent)
         resumeToolsWindow();
         updateWindowTitle();
 
-        // delayed checking if engine is still idle, in case other videos are schedulered (next/prev req)
-        // and another resize event will happen after that
+        // delayed checking if engine is still idle, in case other videos are schedulered (next/prev
+        // req) and another resize event will happen after that
         QTimer::singleShot(100, [=]() {
-            if (_engine->state() == PlayerEngine::Idle && !_miniMode && windowState() == Qt::WindowNoState) {
-//                this->setMinimumSize(QSize(1070, 680));
+            if (_engine->state() == PlayerEngine::Idle && !_miniMode &&
+                windowState() == Qt::WindowNoState) {
+                //                this->setMinimumSize(QSize(1070, 680));
                 this->resize(850, 600);
             }
         });
     });
 
-    connect(ActionFactory::get().mainContextMenu(), &DMenu::triggered,
-            this, &MainWindow::menuItemInvoked);
-    connect(ActionFactory::get().playlistContextMenu(), &DMenu::triggered,
-            this, &MainWindow::menuItemInvoked);
+    connect(ActionFactory::get().mainContextMenu(), &DMenu::triggered, this,
+            &MainWindow::menuItemInvoked);
+    connect(ActionFactory::get().playlistContextMenu(), &DMenu::triggered, this,
+            &MainWindow::menuItemInvoked);
     connect(qApp, &QGuiApplication::focusWindowChanged, [=]() {
         if (qApp->focusWindow() != windowHandle())
             suspendToolsWindow();
@@ -615,46 +633,43 @@ MainWindow::MainWindow(QWidget *parent)
             resumeToolsWindow();
     });
 
-    connect(_playlist,&PlaylistWidget::stateChange,this,[=]{
-        if (_playlist->state() == PlaylistWidget::State::Opened){
-            QRect r(10, height() - 384 - rect().top() - 10,
-                    rect().width()-20, 384);
+    connect(_playlist, &PlaylistWidget::stateChange, this, [=] {
+        if (_playlist->state() == PlaylistWidget::State::Opened) {
+            QRect r(10, height() - 384 - rect().top() - 10, rect().width() - 20, 384);
             _toolbox->setGeometry(r);
-//            _toolbox->move(r.x(),r.y());
-//            _toolbox->resize(r.width(),r.height());
-        }else {
-            QRect r(10, height() - TOOLBOX_HEIGHT_EXT - rect().top() - 10,
-                    rect().width()-20, TOOLBOX_HEIGHT_EXT);
+            //            _toolbox->move(r.x(),r.y());
+            //            _toolbox->resize(r.width(),r.height());
+        } else {
+            QRect r(10, height() - TOOLBOX_HEIGHT_EXT - rect().top() - 10, rect().width() - 20,
+                    TOOLBOX_HEIGHT_EXT);
             _toolbox->setGeometry(r);
         }
     });
 
-
-
     _playState = new DIconButton(this);
-//    _playState->setScaledContents(true);
+    //    _playState->setScaledContents(true);
     _playState->setIcon(QIcon(":/resources/icons/dark/normal/play-big_normal.svg"));
     _playState->setIconSize(QSize(128, 128));
     _playState->setObjectName("PlayState");
     _playState->setFixedSize(128, 128);
     DPalette pa_cb = DApplicationHelper::instance()->palette(_playState);
-    pa_cb.setBrush(QPalette::Light, QColor(0,0,0,0));
-    pa_cb.setBrush(QPalette::Dark, QColor(0,0,0,0));
+    pa_cb.setBrush(QPalette::Light, QColor(0, 0, 0, 0));
+    pa_cb.setBrush(QPalette::Dark, QColor(0, 0, 0, 0));
     _playState->setPalette(pa_cb);
-    if(DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ){
+    if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
         _playState->setIcon(QIcon(":/resources/icons/light/normal/play-big_normal.svg"));
     }
     _playState->setVisible(false);
-    connect(_playState, &DIconButton::clicked, [=]() {
-        requestAction(ActionFactory::TogglePause, false, {}, true);
-    });
-    QObject::connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::paletteTypeChanged,_playState,
-                         [=] (DGuiApplicationHelper::ColorType type) {
-
-            if(DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ){
-               _playState->setIcon(QIcon(":/resources/icons/light/normal/play-big_normal.svg"));
+    connect(_playState, &DIconButton::clicked,
+            [=]() { requestAction(ActionFactory::TogglePause, false, {}, true); });
+    QObject::connect(
+        DGuiApplicationHelper::instance(), &DGuiApplicationHelper::paletteTypeChanged, _playState,
+        [=](DGuiApplicationHelper::ColorType type) {
+            if (DGuiApplicationHelper::LightType ==
+                DGuiApplicationHelper::instance()->themeType()) {
+                _playState->setIcon(QIcon(":/resources/icons/light/normal/play-big_normal.svg"));
             } else {
-               _playState->setIcon(QIcon(":/resources/icons/dark/normal/play-big_normal.svg"));
+                _playState->setIcon(QIcon(":/resources/icons/dark/normal/play-big_normal.svg"));
             }
         });
 
@@ -667,13 +682,13 @@ MainWindow::MainWindow(QWidget *parent)
     // mini ui
     auto *signalMapper = new QSignalMapper(this);
     connect(signalMapper,
-            static_cast<void(QSignalMapper::*)(const QString&)>(&QSignalMapper::mapped),
-            this, &MainWindow::miniButtonClicked);
+            static_cast<void (QSignalMapper::*)(const QString &)>(&QSignalMapper::mapped), this,
+            &MainWindow::miniButtonClicked);
 
     _miniPlayBtn = new DIconButton(this);
     _miniPlayBtn->setIcon(QIcon(":/resources/icons/light/mini/play-normal-mini.svg"));
-    _miniPlayBtn->setIconSize(QSize(30,30));
-    _miniPlayBtn->setFixedSize(QSize(30,30));
+    _miniPlayBtn->setIconSize(QSize(30, 30));
+    _miniPlayBtn->setFixedSize(QSize(30, 30));
     _miniPlayBtn->setObjectName("MiniPlayBtn");
     connect(_miniPlayBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_miniPlayBtn, "play");
@@ -709,21 +724,21 @@ MainWindow::MainWindow(QWidget *parent)
                 _powerCookie = 0;
             }
         }
-//        _miniPlayBtn->setStyleSheet(_miniPlayBtn->styleSheet());
+        //        _miniPlayBtn->setStyleSheet(_miniPlayBtn->styleSheet());
     });
 
     _miniCloseBtn = new DIconButton(this);
     _miniCloseBtn->setIcon(QIcon(":/resources/icons/light/mini/close-normal.svg"));
-    _miniCloseBtn->setIconSize(QSize(30,30));
-    _miniCloseBtn->setFixedSize(QSize(30,30));
+    _miniCloseBtn->setIconSize(QSize(30, 30));
+    _miniCloseBtn->setFixedSize(QSize(30, 30));
     _miniCloseBtn->setObjectName("MiniCloseBtn");
     connect(_miniCloseBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_miniCloseBtn, "close");
 
     _miniQuitMiniBtn = new DIconButton(this);
     _miniQuitMiniBtn->setIcon(QIcon(":/resources/icons/light/mini/restore-normal-mini.svg"));
-    _miniQuitMiniBtn->setIconSize(QSize(30,30));
-    _miniQuitMiniBtn->setFixedSize(QSize(30,30));
+    _miniQuitMiniBtn->setIconSize(QSize(30, 30));
+    _miniQuitMiniBtn->setFixedSize(QSize(30, 30));
     _miniQuitMiniBtn->setObjectName("MiniQuitMiniBtn");
     connect(_miniQuitMiniBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_miniQuitMiniBtn, "quit_mini");
@@ -735,8 +750,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     updateProxyGeometry();
 
-    connect(&ShortcutManager::get(), &ShortcutManager::bindingsChanged,
-            this, &MainWindow::onBindingsChanged);
+    connect(&ShortcutManager::get(), &ShortcutManager::bindingsChanged, this,
+            &MainWindow::onBindingsChanged);
     ShortcutManager::get().buildBindings();
 
     connect(_engine, &PlayerEngine::tracksChanged, this, &MainWindow::updateActionsState);
@@ -749,43 +764,40 @@ MainWindow::MainWindow(QWidget *parent)
     requestAction(ActionFactory::ChangeSubCodepage, false, {"auto"});
 
     _lightTheme = Settings::get().internalOption("light_theme").toBool();
-    if (_lightTheme) reflectActionToUI(ActionFactory::LightTheme);
+    if (_lightTheme)
+        reflectActionToUI(ActionFactory::LightTheme);
     prepareSplashImages();
 
-    connect(_engine, &PlayerEngine::sidChanged, [=]() {
-        reflectActionToUI(ActionFactory::ActionKind::SelectSubtitle);
-    });
-    //NOTE: mpv does not always send a aid-change signal the first time movie is loaded.
-    connect(_engine, &PlayerEngine::aidChanged, [=]() {
-        reflectActionToUI(ActionFactory::ActionKind::SelectTrack);
-    });
-    connect(_engine, &PlayerEngine::subCodepageChanged, [=]() {
-        reflectActionToUI(ActionFactory::ActionKind::ChangeSubCodepage);
-    });
+    connect(_engine, &PlayerEngine::sidChanged,
+            [=]() { reflectActionToUI(ActionFactory::ActionKind::SelectSubtitle); });
+    // NOTE: mpv does not always send a aid-change signal the first time movie is loaded.
+    connect(_engine, &PlayerEngine::aidChanged,
+            [=]() { reflectActionToUI(ActionFactory::ActionKind::SelectTrack); });
+    connect(_engine, &PlayerEngine::subCodepageChanged,
+            [=]() { reflectActionToUI(ActionFactory::ActionKind::ChangeSubCodepage); });
 
     connect(_engine, &PlayerEngine::fileLoaded, [=]() {
         if (windowState() == Qt::WindowNoState && _lastRectInNormalMode.isValid()) {
-            const auto& mi = _engine->playlist().currentInfo().mi;
+            const auto &mi = _engine->playlist().currentInfo().mi;
             _lastRectInNormalMode.setSize({mi.width, mi.height});
         }
         this->resizeByConstraints();
     });
-    connect(_engine, &PlayerEngine::videoSizeChanged, [=]() {
-        this->resizeByConstraints();
-    });
+    connect(_engine, &PlayerEngine::videoSizeChanged, [=]() { this->resizeByConstraints(); });
 
     connect(_engine, &PlayerEngine::stateChanged, this, &MainWindow::animatePlayState);
     syncPlayState();
 
     connect(_engine, &PlayerEngine::loadOnlineSubtitlesFinished,
-        [this](const QUrl& url, bool success) {
-            _nwComm->updateWithMessage(success?tr("Load successfully"):tr("Load failed"));
-        });
+            [this](const QUrl &url, bool success) {
+                _nwComm->updateWithMessage(success ? tr("Load successfully") : tr("Load failed"));
+            });
 
     connect(&_autoHideTimer, &QTimer::timeout, this, &MainWindow::suspendToolsWindow);
     _autoHideTimer.setSingleShot(true);
 
-    connect(&_delayedMouseReleaseTimer, &QTimer::timeout, this, &MainWindow::delayedMouseReleaseHandler);
+    connect(&_delayedMouseReleaseTimer, &QTimer::timeout, this,
+            &MainWindow::delayedMouseReleaseHandler);
     _delayedMouseReleaseTimer.setSingleShot(true);
 
     _nwComm = new NotificationWidget(this);
@@ -796,8 +808,8 @@ MainWindow::MainWindow(QWidget *parent)
 
 #ifdef USE_DXCB
     if (!composited) {
-        connect(qApp, &QGuiApplication::applicationStateChanged,
-                this, &MainWindow::onApplicationStateChanged);
+        connect(qApp, &QGuiApplication::applicationStateChanged, this,
+                &MainWindow::onApplicationStateChanged);
 
         _evm = new EventMonitor(this);
         connect(_evm, &EventMonitor::buttonedPress, this, &MainWindow::onMonitorButtonPressed);
@@ -809,7 +821,7 @@ MainWindow::MainWindow(QWidget *parent)
     _listener = new MainWindowEventListener(this);
     this->windowHandle()->installEventFilter(_listener);
 
-    //auto mwfm = new MainWindowFocusMonitor(this);
+    // auto mwfm = new MainWindowFocusMonitor(this);
     auto mwpm = new MainWindowPropertyMonitor(this);
 
     connect(this, &MainWindow::windowEntered, &MainWindow::resumeToolsWindow);
@@ -819,7 +831,7 @@ MainWindow::MainWindow(QWidget *parent)
     _listener = new MainWindowEventListener(this);
     this->windowHandle()->installEventFilter(_listener);
 
-    //auto mwfm = new MainWindowFocusMonitor(this);
+    // auto mwfm = new MainWindowFocusMonitor(this);
     auto mwpm = new MainWindowPropertyMonitor(this);
 
     connect(this, &MainWindow::windowEntered, &MainWindow::resumeToolsWindow);
@@ -856,35 +868,35 @@ void MainWindow::setupTitlebar()
         auto dpr = qApp->devicePixelRatio();
         int w2 = 32 * dpr;
         int w = 32 * dpr;
-        //hack: titlebar fixed icon size to (24x24), but we need (16x16)
-//        auto logo = QPixmap(":/resources/icons/logo.svg")
-//            .scaled(w, w, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        // hack: titlebar fixed icon size to (24x24), but we need (16x16)
+        //        auto logo = QPixmap(":/resources/icons/logo.svg")
+        //            .scaled(w, w, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 
         QIcon icon = QIcon::fromTheme("deepin-movie");
-        auto logo = icon.pixmap(QSize(32, 32))
-            .scaled(w, w, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        auto logo =
+            icon.pixmap(QSize(32, 32)).scaled(w, w, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 
         logo.setDevicePixelRatio(dpr);
         QPixmap pm(w2, w2);
         pm.setDevicePixelRatio(dpr);
         pm.fill(Qt::transparent);
         QPainter p(&pm);
-        p.drawPixmap((w2-w)/2, (w2-w)/2, logo);
+        p.drawPixmap((w2 - w) / 2, (w2 - w) / 2, logo);
         p.end();
         _titlebar->titlebar()->setIcon(pm);
         _titlebar->setTitletxt(QString());
     }
 
     {
-//        auto help = new QShortcut(QKeySequence(Qt::Key_F1), _titlebar->titlebar());
-//        help->setContext(Qt::ApplicationShortcut);
-//        connect(help, &QShortcut::activated, this, &MainWindow::handleHelpAction);
+        //        auto help = new QShortcut(QKeySequence(Qt::Key_F1), _titlebar->titlebar());
+        //        help->setContext(Qt::ApplicationShortcut);
+        //        connect(help, &QShortcut::activated, this, &MainWindow::handleHelpAction);
     }
 
     connect(_titlebar->titlebar()->menu(), &DMenu::triggered, this, &MainWindow::menuItemInvoked);
 }
 
-void MainWindow::updateContentGeometry(const QRect& rect)
+void MainWindow::updateContentGeometry(const QRect &rect)
 {
 #ifdef USE_DXCB
     auto frame = QWindow::fromWinId(windowHandle()->winId());
@@ -894,19 +906,18 @@ void MainWindow::updateContentGeometry(const QRect& rect)
         frame_rect += _handle->frameMargins();
     }
 
-    const uint32_t values[] = { (uint32_t)frame_rect.x(), (uint32_t)frame_rect.y(),
-        (uint32_t)frame_rect.width(), (uint32_t)frame_rect.height() };
+    const uint32_t values[] = {(uint32_t)frame_rect.x(), (uint32_t)frame_rect.y(),
+                               (uint32_t)frame_rect.width(), (uint32_t)frame_rect.height()};
     // manually configure frame window which will in turn update content window
-    xcb_configure_window(QX11Info::connection(),
-            windowHandle()->winId(),
-            XCB_CONFIG_WINDOW_WIDTH | XCB_CONFIG_WINDOW_HEIGHT |
-            XCB_CONFIG_WINDOW_Y | XCB_CONFIG_WINDOW_X,
-            values);
+    xcb_configure_window(QX11Info::connection(), windowHandle()->winId(),
+                         XCB_CONFIG_WINDOW_WIDTH | XCB_CONFIG_WINDOW_HEIGHT | XCB_CONFIG_WINDOW_Y |
+                             XCB_CONFIG_WINDOW_X,
+                         values);
 
 #else
-//    setGeometry(rect);
-    move(rect.x(),rect.y());
-    resize(rect.width(),rect.height());
+    //    setGeometry(rect);
+    move(rect.x(), rect.y());
+    resize(rect.width(), rect.height());
 #endif
 }
 
@@ -926,49 +937,49 @@ void MainWindow::updateShadow()
 bool MainWindow::event(QEvent *ev)
 {
     if (ev->type() == QEvent::WindowStateChange) {
-        auto wse = dynamic_cast<QWindowStateChangeEvent*>(ev);
+        auto wse = dynamic_cast<QWindowStateChangeEvent *>(ev);
         _lastWindowState = wse->oldState();
-        qDebug() << "------------ _lastWindowState" << _lastWindowState
-            << "current " << windowState();
-        //NOTE: windowStateChanged won't be emitted if by draggint to restore. so we need to
-        //check window state here.
-        //connect(windowHandle(), &QWindow::windowStateChanged, this, &MainWindow::onWindowStateChanged);
+        qDebug() << "------------ _lastWindowState" << _lastWindowState << "current "
+                 << windowState();
+        // NOTE: windowStateChanged won't be emitted if by draggint to restore. so we need to
+        // check window state here.
+        // connect(windowHandle(), &QWindow::windowStateChanged, this,
+        // &MainWindow::onWindowStateChanged);
         onWindowStateChanged();
     }
     return DMainWindow::event(ev);
 }
 
-
 void MainWindow::onWindowStateChanged()
 {
     qDebug() << windowState();
 
-//    if (!isFullScreen()) {
-//        qApp->restoreOverrideCursor();
-//        if (_lastCookie > 0) {
-//            utils::UnInhibitStandby(_lastCookie);
-//            qDebug() << "uninhibit cookie" << _lastCookie;
-//            _lastCookie = 0;
-//        }
-//        if (_listener) _listener->setEnabled(!isMaximized() && !_miniMode);
-//    } else {
-//        qApp->setOverrideCursor(Qt::BlankCursor);
+    //    if (!isFullScreen()) {
+    //        qApp->restoreOverrideCursor();
+    //        if (_lastCookie > 0) {
+    //            utils::UnInhibitStandby(_lastCookie);
+    //            qDebug() << "uninhibit cookie" << _lastCookie;
+    //            _lastCookie = 0;
+    //        }
+    //        if (_listener) _listener->setEnabled(!isMaximized() && !_miniMode);
+    //    } else {
+    //        qApp->setOverrideCursor(Qt::BlankCursor);
 
-//        if (_lastCookie > 0) {
-//            utils::UnInhibitStandby(_lastCookie);
-//            qDebug() << "uninhibit cookie" << _lastCookie;
-//            _lastCookie = 0;
-//        }
-//        _lastCookie = utils::InhibitStandby();
-//        qDebug() << "inhibit cookie" << _lastCookie;
-//        if (_listener) _listener->setEnabled(false);
-//    }
+    //        if (_lastCookie > 0) {
+    //            utils::UnInhibitStandby(_lastCookie);
+    //            qDebug() << "uninhibit cookie" << _lastCookie;
+    //            _lastCookie = 0;
+    //        }
+    //        _lastCookie = utils::InhibitStandby();
+    //        qDebug() << "inhibit cookie" << _lastCookie;
+    //        if (_listener) _listener->setEnabled(false);
+    //    }
     if (!_miniMode && !isFullScreen()) {
         _titlebar->setVisible(_toolbox->isVisible());
     } else {
         _titlebar->setVisible(false);
     }
-    //WTF: this->geometry() is not size of fullscreen !
+    // WTF: this->geometry() is not size of fullscreen !
     //_progIndicator->move(geometry().width() - _progIndicator->width() - 18, 14);
     _progIndicator->setVisible(isFullScreen());
     toggleShapeMask();
@@ -1008,13 +1019,11 @@ void MainWindow::handleHelpAction()
     class _DApplication : public DApplication
     {
     public:
-        inline void showHelp() {
-            DApplication::handleHelpAction();
-        }
+        inline void showHelp() { DApplication::handleHelpAction(); }
     };
 
     DApplication *dapp = qApp;
-    reinterpret_cast<_DApplication*>(dapp)->_DApplication::showHelp();
+    reinterpret_cast<_DApplication *>(dapp)->_DApplication::showHelp();
 }
 
 #ifdef USE_DXCB
@@ -1095,7 +1104,8 @@ void MainWindow::onApplicationStateChanged(Qt::ApplicationState e)
             suspendToolsWindow();
             break;
 
-        default: break;
+        default:
+            break;
     }
 }
 
@@ -1122,11 +1132,10 @@ void MainWindow::startPlayStateAnimation(bool play)
         pa->setEndValue(r2);
     } else {
         pa->setEndValue(r);
-        pa->setStartValue(QRect{r.center(), QSize{0, 0}});
+        pa->setStartValue(QRect {r.center(), QSize {0, 0}});
     }
     pa->setDuration(duration);
     pa->setEasingCurve(curve);
-
 
     auto va = new QVariantAnimation(_playState);
     va->setStartValue(0.0);
@@ -1134,11 +1143,12 @@ void MainWindow::startPlayStateAnimation(bool play)
     va->setDuration(duration);
     va->setEasingCurve(curve);
 
-    connect(va, &QVariantAnimation::valueChanged, [=](const QVariant& v) {
-        if (!play) _playState->setVisible(true);
+    connect(va, &QVariantAnimation::valueChanged, [=](const QVariant &v) {
+        if (!play)
+            _playState->setVisible(true);
         auto d = v.toFloat();
-        auto effect = dynamic_cast<QGraphicsOpacityEffect*>(_playState->graphicsEffect());
-        effect->setOpacity(play ? 1.0 - d: d);
+        auto effect = dynamic_cast<QGraphicsOpacityEffect *>(_playState->graphicsEffect());
+        effect->setOpacity(play ? 1.0 - d : d);
         _playState->update();
     });
 
@@ -1149,7 +1159,6 @@ void MainWindow::startPlayStateAnimation(bool play)
             }
         });
     }
-
 
     auto pag = new QParallelAnimationGroup;
     pag->addAnimation(va);
@@ -1171,8 +1180,8 @@ void MainWindow::animatePlayState()
         _playState->setVisible(false);
 
     } else {
-        //do nothing here, startPlayStateAnimation(true) should be started before playback
-        //is restored, or animation will get slow
+        // do nothing here, startPlayStateAnimation(true) should be started before playback
+        // is restored, or animation will get slow
     }
 }
 
@@ -1190,8 +1199,9 @@ void MainWindow::syncPlayState()
     if (!_inBurstShootMode && _engine->state() == PlayerEngine::CoreState::Paused) {
         _playState->setGeometry(r);
         _playState->setVisible(true);
-        auto effect = dynamic_cast<QGraphicsOpacityEffect*>(_playState->graphicsEffect());
-        if (effect) effect->setOpacity(1.0);
+        auto effect = dynamic_cast<QGraphicsOpacityEffect *>(_playState->graphicsEffect());
+        if (effect)
+            effect->setOpacity(1.0);
 
     } else {
         _playState->setVisible(false);
@@ -1204,28 +1214,26 @@ void MainWindow::onBindingsChanged()
     {
         auto actions = this->actions();
         this->actions().clear();
-        for (auto* act: actions) {
+        for (auto *act : actions) {
             delete act;
         }
     }
 
-    auto& scmgr = ShortcutManager::get();
+    auto &scmgr = ShortcutManager::get();
     auto actions = scmgr.actionsForBindings();
-    for (auto* act: actions) {
+    for (auto *act : actions) {
         this->addAction(act);
-        connect(act, &QAction::triggered, [=]() {
-            this->menuItemInvoked(act);
-        });
+        connect(act, &QAction::triggered, [=]() { this->menuItemInvoked(act); });
     }
 }
 
 void MainWindow::updateActionsState()
 {
     auto pmf = _engine->playingMovieInfo();
-    auto update = [=](QAction* act) {
+    auto update = [=](QAction *act) {
         auto kd = ActionFactory::actionKind(act);
         bool v = true;
-        switch(kd) {
+        switch (kd) {
             case ActionFactory::ActionKind::Screenshot:
             case ActionFactory::ActionKind::MatchOnlineSubtitle:
             case ActionFactory::ActionKind::BurstScreenshot:
@@ -1239,7 +1247,7 @@ void MainWindow::updateActionsState()
                 if (v) {
                     v = v && _engine->playlist().count();
                     if (v) {
-                        auto pif =_engine->playlist().currentInfo();
+                        auto pif = _engine->playlist().currentInfo();
                         v = v && pif.loaded && pif.url.isLocalFile();
                     }
                 }
@@ -1248,7 +1256,8 @@ void MainWindow::updateActionsState()
             case ActionFactory::ActionKind::HideSubtitle:
             case ActionFactory::ActionKind::SelectSubtitle:
                 v = pmf.subs.size() > 0;
-            default: break;
+            default:
+                break;
         }
         act->setEnabled(v);
     };
@@ -1256,8 +1265,8 @@ void MainWindow::updateActionsState()
     ActionFactory::get().updateMainActionsForMovie(pmf);
     ActionFactory::get().forEachInMainMenu(update);
 
-    //NOTE: mpv does not always send a aid-change signal the first time movie is loaded.
-    //so we need to workaround it.
+    // NOTE: mpv does not always send a aid-change signal the first time movie is loaded.
+    // so we need to workaround it.
     reflectActionToUI(ActionFactory::ActionKind::SelectTrack);
     reflectActionToUI(ActionFactory::ActionKind::SelectSubtitle);
 }
@@ -1276,8 +1285,8 @@ void MainWindow::syncStaysOnTop()
 
 void MainWindow::reflectActionToUI(ActionFactory::ActionKind kd)
 {
-    QList<QAction*> acts;
-    switch(kd) {
+    QList<QAction *> acts;
+    switch (kd) {
         case ActionFactory::ActionKind::WindowAbove:
         case ActionFactory::ActionKind::ToggleFullscreen:
         case ActionFactory::ActionKind::LightTheme:
@@ -1311,7 +1320,8 @@ void MainWindow::reflectActionToUI(ActionFactory::ActionKind kd)
                 auto args = ActionFactory::actionArgs(*p);
                 if (args[0].toString() == cp) {
                     (*p)->setEnabled(false);
-                    if (!(*p)->isChecked()) (*p)->setChecked(true);
+                    if (!(*p)->isChecked())
+                        (*p)->setChecked(true);
                     (*p)->setEnabled(true);
                     break;
                 }
@@ -1352,7 +1362,8 @@ void MainWindow::reflectActionToUI(ActionFactory::ActionKind kd)
                 auto args = ActionFactory::actionArgs(*p);
                 (*p)->setEnabled(false);
                 if (args[0].toInt() == idx) {
-                    if (!(*p)->isChecked()) (*p)->setChecked(true);
+                    if (!(*p)->isChecked())
+                        (*p)->setChecked(true);
                 } else {
                     (*p)->setChecked(false);
                 }
@@ -1375,9 +1386,9 @@ void MainWindow::reflectActionToUI(ActionFactory::ActionKind kd)
             (*p)->setEnabled(old);
             break;
         }
-        default: break;
+        default:
+            break;
     }
-
 }
 
 void MainWindow::menuItemInvoked(QAction *action)
@@ -1399,7 +1410,7 @@ void MainWindow::menuItemInvoked(QAction *action)
 void MainWindow::switchTheme()
 {
     _lightTheme = !_lightTheme;
-    qApp->setTheme(_lightTheme? "light":"dark");
+    qApp->setTheme(_lightTheme ? "light" : "dark");
     Settings::get().setInternalOption("light_theme", _lightTheme);
 }
 
@@ -1420,23 +1431,25 @@ bool MainWindow::isActionAllowed(ActionFactory::ActionKind kd, bool fromUI, bool
                 case ActionFactory::ToggleMiniMode:
                     return true;
 
-                default: break;
+                default:
+                    break;
             }
         }
     }
 
     if (isMaximized()) {
-        switch(kd) {
+        switch (kd) {
             case ActionFactory::ToggleMiniMode:
                 return true;
-            default: break;
+            default:
+                break;
         }
     }
 
     if (isShortcut) {
         auto pmf = _engine->playingMovieInfo();
         bool v = true;
-        switch(kd) {
+        switch (kd) {
             case ActionFactory::Screenshot:
             case ActionFactory::ToggleMiniMode:
             case ActionFactory::MatchOnlineSubtitle:
@@ -1449,7 +1462,7 @@ bool MainWindow::isActionAllowed(ActionFactory::ActionKind kd, bool fromUI, bool
                 if (v) {
                     v = v && _engine->playlist().count();
                     if (v) {
-                        auto pif =_engine->playlist().currentInfo();
+                        auto pif = _engine->playlist().currentInfo();
                         v = v && pif.loaded && pif.url.isLocalFile();
                     }
                 }
@@ -1458,18 +1471,20 @@ bool MainWindow::isActionAllowed(ActionFactory::ActionKind kd, bool fromUI, bool
             case ActionFactory::HideSubtitle:
             case ActionFactory::SelectSubtitle:
                 v = pmf.subs.size() > 0;
-            default: break;
+            default:
+                break;
         }
-        if (!v) return v;
+        if (!v)
+            return v;
     }
 
     return true;
 }
 
-void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
-        QList<QVariant> args, bool isShortcut)
+void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI, QList<QVariant> args,
+                               bool isShortcut)
 {
-    qDebug() << "kd = " << kd << "fromUI " << fromUI << (isShortcut ? "shortcut":"");
+    qDebug() << "kd = " << kd << "fromUI " << fromUI << (isShortcut ? "shortcut" : "");
 
     if (!isActionAllowed(kd, fromUI, isShortcut)) {
         qDebug() << kd << "disallowed";
@@ -1482,7 +1497,8 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             break;
 
         case ActionFactory::ActionKind::LightTheme:
-            if (fromUI) switchTheme();
+            if (fromUI)
+                switchTheme();
             break;
 
         case ActionFactory::ActionKind::OpenCdrom: {
@@ -1495,9 +1511,9 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                 break;
             }
             _engine->setDVDDevice(dev);
-            //FIXME: how to tell if it's bluray
+            // FIXME: how to tell if it's bluray
             QUrl url(QString("dvdread:///%1").arg(dev));
-            //QUrl url(QString("dvdnav://"));
+            // QUrl url(QString("dvdnav://"));
             play(url);
             break;
         }
@@ -1516,15 +1532,15 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         }
 
         case ActionFactory::ActionKind::OpenDirectory: {
-            QString name = QFileDialog::getExistingDirectory(this, tr("Open folder"),
-                    lastOpenedPath(),
-                    QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+            QString name = QFileDialog::getExistingDirectory(
+                this, tr("Open folder"), lastOpenedPath(),
+                QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
 
             QFileInfo fi(name);
             if (fi.isDir() && fi.exists()) {
                 Settings::get().setGeneralOption("last_open_path", fi.path());
 
-                const auto& urls = _engine->addPlayDir(name);
+                const auto &urls = _engine->addPlayDir(name);
                 if (urls.size()) {
                     _engine->playByName(QUrl("playlist://0"));
                 }
@@ -1533,10 +1549,10 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         }
 
         case ActionFactory::ActionKind::OpenFileList: {
-            QStringList filenames = QFileDialog::getOpenFileNames(this, tr("Open file"),
-                    lastOpenedPath(),
-                    tr("All videos (%1)").arg(_engine->video_filetypes.join(" ")), 0,
-                    QFileDialog::HideNameFilterDetails);
+            QStringList filenames = QFileDialog::getOpenFileNames(
+                this, tr("Open file"), lastOpenedPath(),
+                tr("All videos (%1)").arg(_engine->video_filetypes.join(" ")), 0,
+                QFileDialog::HideNameFilterDetails);
 
             QList<QUrl> urls;
             if (filenames.size()) {
@@ -1545,20 +1561,20 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                     Settings::get().setGeneralOption("last_open_path", fileInfo.path());
                 }
 
-                for (const auto& filename: filenames) {
+                for (const auto &filename : filenames) {
                     urls.append(QUrl::fromLocalFile(filename));
                 }
-                const auto& valids = _engine->addPlayFiles(urls);
+                const auto &valids = _engine->addPlayFiles(urls);
                 _engine->playByName(valids[0]);
             }
             break;
         }
 
         case ActionFactory::ActionKind::OpenFile: {
-            QString filename = QFileDialog::getOpenFileName(this, tr("Open file"),
-                    lastOpenedPath(),
-                    tr("All videos (%1)").arg(_engine->video_filetypes.join(" ")), 0,
-                    QFileDialog::HideNameFilterDetails);
+            QString filename = QFileDialog::getOpenFileName(
+                this, tr("Open file"), lastOpenedPath(),
+                tr("All videos (%1)").arg(_engine->video_filetypes.join(" ")), 0,
+                QFileDialog::HideNameFilterDetails);
             QFileInfo fileInfo(filename);
             if (fileInfo.exists()) {
                 Settings::get().setGeneralOption("last_open_path", fileInfo.path());
@@ -1575,8 +1591,9 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                 if (_engine->state() == PlayerEngine::CoreState::Idle) {
                     if (Settings::get().isSet(Settings::ResumeFromLast)) {
                         int restore_pos = Settings::get().internalOption("playlist_pos").toInt();
-                        restore_pos = qMax(qMin(restore_pos, _engine->playlist().count()-1), 0);
-                        requestAction(ActionFactory::ActionKind::GotoPlaylistSelected, false, {restore_pos});
+                        restore_pos = qMax(qMin(restore_pos, _engine->playlist().count() - 1), 0);
+                        requestAction(ActionFactory::ActionKind::GotoPlaylistSelected, false,
+                                      {restore_pos});
                     } else {
                         _engine->play();
                     }
@@ -1659,8 +1676,8 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                     setWindowState(windowState() & ~Qt::WindowFullScreen);
                     if (_lastRectInNormalMode.isValid() && !_miniMode && !isMaximized()) {
                         setGeometry(_lastRectInNormalMode);
-                        move(_lastRectInNormalMode.x(),_lastRectInNormalMode.y());
-                        resize(_lastRectInNormalMode.width(),_lastRectInNormalMode.height());
+                        move(_lastRectInNormalMode.x(), _lastRectInNormalMode.y());
+                        resize(_lastRectInNormalMode.width(), _lastRectInNormalMode.height());
                     }
                 }
             } else {
@@ -1861,7 +1878,8 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             _engine->setSubDelay(0.5);
             auto d = _engine->subDelay();
             _nwComm->updateWithMessage(tr("Subtitle %1: %2s")
-                    .arg(d > 0.0?tr("delayed"):tr("advanced")).arg(d>0.0?d:-d));
+                                           .arg(d > 0.0 ? tr("delayed") : tr("advanced"))
+                                           .arg(d > 0.0 ? d : -d));
             break;
         }
 
@@ -1869,7 +1887,8 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             _engine->setSubDelay(-0.5);
             auto d = _engine->subDelay();
             _nwComm->updateWithMessage(tr("Subtitle %1: %2s")
-                    .arg(d > 0.0?tr("delayed"):tr("advanced")).arg(d>0.0?d:-d));
+                                           .arg(d > 0.0 ? tr("delayed") : tr("advanced"))
+                                           .arg(d > 0.0 ? d : -d));
             break;
         }
 
@@ -1895,12 +1914,13 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         }
 
         case ActionFactory::ActionKind::LoadSubtitle: {
-            QString filename = QFileDialog::getOpenFileName(this, tr("Open file"),
-                    lastOpenedPath(),
-                    tr("Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)"));
+            QString filename =
+                QFileDialog::getOpenFileName(this, tr("Open file"), lastOpenedPath(),
+                                             tr("Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt "
+                                                "*.sub *.ssa *.smi *.usf *.idx)"));
             if (QFileInfo(filename).exists()) {
                 auto success = _engine->loadSubtitle(QFileInfo(filename));
-                _nwComm->updateWithMessage(success?tr("Load successfully"):tr("Load failed"));
+                _nwComm->updateWithMessage(success ? tr("Load successfully") : tr("Load failed"));
             }
             break;
             break;
@@ -1947,34 +1967,31 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             QString filePath = Settings::get().screenshotNameTemplate();
             bool success = false;
             if (img.isNull())
-                qDebug()<< __func__ << "pixmap is null";
+                qDebug() << __func__ << "pixmap is null";
             else
                 success = img.save(filePath);
 
 #ifdef USE_SYSTEM_NOTIFY
             // Popup notify.
-            QDBusInterface notification("org.freedesktop.Notifications",
-                    "/org/freedesktop/Notifications",
-                    "org.freedesktop.Notifications",
-                    QDBusConnection::sessionBus());
+            QDBusInterface notification(
+                "org.freedesktop.Notifications", "/org/freedesktop/Notifications",
+                "org.freedesktop.Notifications", QDBusConnection::sessionBus());
 
             QStringList actions;
             actions << "_open" << tr("View");
 
-
             QVariantMap hints;
             hints["x-deepin-action-_open"] = QString("xdg-open,%1").arg(filePath);
 
-
             QList<QVariant> arg;
-            arg << (QCoreApplication::applicationName())                 // appname
-                << ((unsigned int) 0)                                    // id
-                << QString("deepin-movie")                               // icon
-                << tr("Movie Screenshot")                                // summary
-                << QString("%1 %2").arg(tr("Saved to")).arg(filePath) // body
-                << actions                                               // actions
-                << hints                                                 // hints
-                << (int) -1;                                             // timeout
+            arg << (QCoreApplication::applicationName())               // appname
+                << ((unsigned int)0)                                   // id
+                << QString("deepin-movie")                             // icon
+                << tr("Movie Screenshot")                              // summary
+                << QString("%1 %2").arg(tr("Saved to")).arg(filePath)  // body
+                << actions                                             // actions
+                << hints                                               // hints
+                << (int)-1;                                            // timeout
             notification.callWithArgumentList(QDBus::AutoDetect, "Notify", arg);
 
 #else
@@ -1982,10 +1999,14 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             if (!_nwShot) {
                 _nwShot = new NotificationWidget(this);
                 _nwShot->setAnchor(NotificationWidget::AnchorNorthWest);
-                _nwShot->setAnchorPoint(QPoint(30, 58));
+                _nwShot->setAnchorPoint(QPoint(width() / 2 - 50, height() - 120));
+            } else {
+                _nwShot->setAnchorPoint(QPoint(width() / 2 - 50, height() - 120));
             }
-            auto pm = utils::LoadHiDPIPixmap(QString(":/resources/icons/%1.svg").arg(success?"success":"fail"));
-            auto msg = success?tr("The screenshot is saved"):tr("Failed to save the screenshot");
+            auto pm = utils::LoadHiDPIPixmap(
+                QString(":/resources/icons/%1.svg").arg(success ? "success" : "fail"));
+            auto msg =
+                success ? tr("The screenshot is saved") : tr("Failed to save the screenshot");
             _nwShot->popupWithIcon(msg, pm);
 #endif
             break;
@@ -1998,17 +2019,17 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
 
         case ActionFactory::ActionKind::ViewShortcut: {
             QRect rect = window()->geometry();
-            QPoint pos(rect.x() + rect.width()/2 , rect.y() + rect.height()/2);
+            QPoint pos(rect.x() + rect.width() / 2, rect.y() + rect.height() / 2);
             QStringList shortcutString;
             QString param1 = "-j=" + ShortcutManager::get().toJson();
             QString param2 = "-p=" + QString::number(pos.x()) + "," + QString::number(pos.y());
             shortcutString << param1 << param2;
 
-            QProcess* shortcutViewProcess = new QProcess();
+            QProcess *shortcutViewProcess = new QProcess();
             shortcutViewProcess->startDetached("deepin-shortcut-viewer", shortcutString);
 
-            connect(shortcutViewProcess, SIGNAL(finished(int)),
-            shortcutViewProcess, SLOT(deleteLater()));
+            connect(shortcutViewProcess, SIGNAL(finished(int)), shortcutViewProcess,
+                    SLOT(deleteLater()));
 
             break;
         }
@@ -2030,7 +2051,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     }
 }
 
-void MainWindow::onBurstScreenshot(const QImage& frame, qint64 timestamp)
+void MainWindow::onBurstScreenshot(const QImage &frame, qint64 timestamp)
 {
     qDebug() << _burstShoots.size();
     if (!frame.isNull()) {
@@ -2042,7 +2063,8 @@ void MainWindow::onBurstScreenshot(const QImage& frame, qint64 timestamp)
         _engine->stopBurstScreenshot();
         _inBurstShootMode = false;
         _toolbox->setEnabled(true);
-        if (_listener) _listener->setEnabled(!_miniMode);
+        if (_listener)
+            _listener->setEnabled(!_miniMode);
 
         if (frame.isNull()) {
             _burstShoots.clear();
@@ -2067,7 +2089,9 @@ void MainWindow::onBurstScreenshot(const QImage& frame, qint64 timestamp)
                 _nwShot->setAnchor(NotificationWidget::AnchorNorthWest);
                 _nwShot->setAnchorPoint(QPoint(30, 58));
             }
-            auto pm = utils::LoadHiDPIPixmap(QString(":/resources/icons/%1.svg").arg(QFileInfo::exists(poster_path)?"success":"fail"));
+            auto pm = utils::LoadHiDPIPixmap(
+                QString(":/resources/icons/%1.svg")
+                    .arg(QFileInfo::exists(poster_path) ? "success" : "fail"));
             _nwShot->popupWithIcon(tr("The screenshot is saved"), pm);
         }
     }
@@ -2077,7 +2101,8 @@ void MainWindow::startBurstShooting()
 {
     _inBurstShootMode = true;
     _toolbox->setEnabled(false);
-    if (_listener) _listener->setEnabled(false);
+    if (_listener)
+        _listener->setEnabled(false);
 
     _pausedBeforeBurst = _engine->paused();
 
@@ -2097,19 +2122,19 @@ void MainWindow::handleSettings()
 #if DTK_VERSION > DTK_VERSION_CHECK(2, 0, 6, 0)
     DThemeManager::instance()->setTheme(dsd, "light");
 #else
-//    DThemeManager::instance()->registerWidget(dsd);
+    //    DThemeManager::instance()->registerWidget(dsd);
     workaround_updateStyle(dsd, "dlight");
 #endif
 
-    //hack:
-    auto subft = dsd->findChild<QSpinBox*>("OptionDSpinBox");
+    // hack:
+    auto subft = dsd->findChild<QSpinBox *>("OptionDSpinBox");
     if (subft) {
         subft->setMinimum(8);
     }
 
     // hack: reset is set to default by QDialog, which makes lineedit's enter
     // press is responded by reset button
-    auto reset = dsd->findChild<QPushButton*>("SettingsContentReset");
+    auto reset = dsd->findChild<QPushButton *>("SettingsContentReset");
     reset->setDefault(false);
     reset->setAutoDefault(false);
 
@@ -2118,12 +2143,12 @@ void MainWindow::handleSettings()
     Settings::get().settings()->sync();
 }
 
-void MainWindow::playList(const QList<QString>& l)
+void MainWindow::playList(const QList<QString> &l)
 {
     static QRegExp url_re("\\w+://");
 
     QList<QUrl> urls;
-    for (const auto& filename: l) {
+    for (const auto &filename : l) {
         qDebug() << filename;
         QUrl url;
         if (url_re.indexIn(filename) == 0) {
@@ -2136,7 +2161,7 @@ void MainWindow::playList(const QList<QString>& l)
         if (url.isValid())
             urls.append(url);
     }
-    const auto& valids = _engine->addPlayFiles(urls);
+    const auto &valids = _engine->addPlayFiles(urls);
     if (valids.size()) {
         if (!isHidden()) {
             activateWindow();
@@ -2145,7 +2170,7 @@ void MainWindow::playList(const QList<QString>& l)
     }
 }
 
-void MainWindow::play(const QUrl& url)
+void MainWindow::play(const QUrl &url)
 {
     if (!url.isValid())
         return;
@@ -2164,9 +2189,9 @@ void MainWindow::play(const QUrl& url)
 
 void MainWindow::toggleShapeMask()
 {
-//    if (CompositingManager::get().composited()) {
-//        return;
-//    }
+    //    if (CompositingManager::get().composited()) {
+    //        return;
+    //    }
     return;
 
 #ifndef USE_DXCB
@@ -2198,8 +2223,8 @@ void MainWindow::updateProxyGeometry()
     auto view_rect = rect();
 #else
     // leave one pixel for border
-//    auto view_rect = rect().marginsRemoved(QMargins(1, 1, 1, 1));
-//    if (isFullScreen()) view_rect = rect();
+    //    auto view_rect = rect().marginsRemoved(QMargins(1, 1, 1, 1));
+    //    if (isFullScreen()) view_rect = rect();
     auto view_rect = rect();
 #endif
     _engine->resize(view_rect.size());
@@ -2210,65 +2235,58 @@ void MainWindow::updateProxyGeometry()
         }
 
         if (_toolbox) {
-//            QRect r(view_rect.left(), height() - TOOLBOX_HEIGHT_EXT - view_rect.top(),
-//                    view_rect.width(), TOOLBOX_HEIGHT_EXT);
-            if (isFullScreen())
-            {
-                if (_playlist->state() == PlaylistWidget::State::Opened){
-                    QRect r(10, height() - 384 - rect().top() - 10,
-                            rect().width()-20, 384);
+            //            QRect r(view_rect.left(), height() - TOOLBOX_HEIGHT_EXT - view_rect.top(),
+            //                    view_rect.width(), TOOLBOX_HEIGHT_EXT);
+            if (isFullScreen()) {
+                if (_playlist->state() == PlaylistWidget::State::Opened) {
+                    QRect r(10, height() - 384 - rect().top() - 10, rect().width() - 20, 384);
                     _toolbox->setGeometry(r);
-        //            _toolbox->move(r.x(),r.y());
-        //            _toolbox->resize(r.width(),r.height());
-                }else {
+                    //            _toolbox->move(r.x(),r.y());
+                    //            _toolbox->resize(r.width(),r.height());
+                } else {
                     QRect r(10, height() - TOOLBOX_HEIGHT_EXT - rect().top() - 10,
-                            rect().width()-20, TOOLBOX_HEIGHT_EXT);
+                            rect().width() - 20, TOOLBOX_HEIGHT_EXT);
                     _toolbox->setGeometry(r);
                 }
 
-//                QRect r(10, height() - TOOLBOX_HEIGHT_EXT - view_rect.top() - 10,
-//                        view_rect.width()-20, TOOLBOX_HEIGHT_EXT);
-//                _toolbox->setGeometry(r);
-            }
-            else {
-                if (_playlist->state() == PlaylistWidget::State::Opened){
-                    QRect r(10, height() - 384 - rect().top() - 10,
-                            rect().width()-20, 384);
+                //                QRect r(10, height() - TOOLBOX_HEIGHT_EXT - view_rect.top() - 10,
+                //                        view_rect.width()-20, TOOLBOX_HEIGHT_EXT);
+                //                _toolbox->setGeometry(r);
+            } else {
+                if (_playlist->state() == PlaylistWidget::State::Opened) {
+                    QRect r(10, height() - 384 - rect().top() - 10, rect().width() - 20, 384);
                     _toolbox->setGeometry(r);
-        //            _toolbox->move(r.x(),r.y());
-        //            _toolbox->resize(r.width(),r.height());
-                }else {
+                    //            _toolbox->move(r.x(),r.y());
+                    //            _toolbox->resize(r.width(),r.height());
+                } else {
                     QRect r(10, height() - TOOLBOX_HEIGHT_EXT - rect().top() - 10,
-                            rect().width()-20, TOOLBOX_HEIGHT_EXT);
+                            rect().width() - 20, TOOLBOX_HEIGHT_EXT);
                     _toolbox->setGeometry(r);
                 }
-//                QRect r(10, height() - TOOLBOX_HEIGHT_EXT - view_rect.top() - 10,
-//                        view_rect.width()-20, TOOLBOX_HEIGHT_EXT);
-//                _toolbox->setGeometry(r);
+                //                QRect r(10, height() - TOOLBOX_HEIGHT_EXT - view_rect.top() - 10,
+                //                        view_rect.width()-20, TOOLBOX_HEIGHT_EXT);
+                //                _toolbox->setGeometry(r);
             }
 
-//            if (isFullScreen()) {
-//                r.moveTopLeft({0, height() - TOOLBOX_HEIGHT_EXT});
-//            }
-//            _toolbox->setGeometry(r);
+            //            if (isFullScreen()) {
+            //                r.moveTopLeft({0, height() - TOOLBOX_HEIGHT_EXT});
+            //            }
+            //            _toolbox->setGeometry(r);
         }
 
         if (_playlist && !_playlist->toggling()) {
-            int off = isFullScreen()? 0: titlebar()->geometry().bottom();
-//            QRect fixed = {
-//                0,
-//                off,
-//                220,
-//                toolbox()->geometry().top() + TOOLBOX_TOP_EXTENT - off
-//            };
-            QRect fixed((10), (view_rect.height()-394),
-                    view_rect.width()-20,
-                    384 - 70);
-//            fixed.moveRight(view_rect.right());
+            int off = isFullScreen() ? 0 : titlebar()->geometry().bottom();
+            //            QRect fixed = {
+            //                0,
+            //                off,
+            //                220,
+            //                toolbox()->geometry().top() + TOOLBOX_TOP_EXTENT - off
+            //            };
+            QRect fixed((10), (view_rect.height() - 394), view_rect.width() - 20, 384 - 70);
+            //            fixed.moveRight(view_rect.right());
             _playlist->setGeometry(fixed);
         }
     }
-
 
     syncPlayState();
     if (_playState) {
@@ -2276,7 +2294,6 @@ void MainWindow::updateProxyGeometry()
         r.moveCenter(rect().center());
         _playState->move(r.topLeft());
     }
-
 }
 
 void MainWindow::suspendToolsWindow()
@@ -2286,15 +2303,14 @@ void MainWindow::suspendToolsWindow()
             return;
 
         if (qApp->applicationState() == Qt::ApplicationInactive) {
-
         } else {
             // menus  are popped up
             // NOTE: menu keeps focus while hidden, so focusWindow is not used
             if (ActionFactory::get().mainContextMenu()->isVisible() ||
-                    ActionFactory::get().titlebarMenu()->isVisible())
+                ActionFactory::get().titlebarMenu()->isVisible())
                 return;
-            //if (qApp->focusWindow() != windowHandle())
-                //return;
+            // if (qApp->focusWindow() != windowHandle())
+            // return;
 
             if (_titlebar->isVisible()) {
                 if (insideToolsArea(mapFromGlobal(QCursor::pos())))
@@ -2335,10 +2351,10 @@ void MainWindow::suspendToolsWindow()
 void MainWindow::resumeToolsWindow()
 {
     if (_engine->state() != PlayerEngine::Idle &&
-            qApp->applicationState() == Qt::ApplicationActive) {
+        qApp->applicationState() == Qt::ApplicationActive) {
         // playlist's previous state was Opened
         if (_playlist->state() != PlaylistWidget::Closed &&
-                !frameGeometry().contains(QCursor::pos())) {
+            !frameGeometry().contains(QCursor::pos())) {
             goto _finish;
         }
     }
@@ -2391,7 +2407,7 @@ void MainWindow::closeEvent(QCloseEvent *ev)
     ev->accept();
 }
 
-void MainWindow::wheelEvent(QWheelEvent* we)
+void MainWindow::wheelEvent(QWheelEvent *we)
 {
     if (insideToolsArea(we->pos()) || insideResizeArea(we->globalPos()))
         return;
@@ -2402,7 +2418,8 @@ void MainWindow::wheelEvent(QWheelEvent* we)
     }
 
     if (we->buttons() == Qt::NoButton && we->modifiers() == Qt::NoModifier) {
-        requestAction(we->angleDelta().y() > 0 ? ActionFactory::VolumeUp: ActionFactory::VolumeDown);
+        requestAction(we->angleDelta().y() > 0 ? ActionFactory::VolumeUp
+                                               : ActionFactory::VolumeDown);
     }
 }
 
@@ -2447,7 +2464,7 @@ void MainWindow::resizeByConstraints(bool forceCentered)
     qDebug() << __func__;
     updateWindowTitle();
 
-    const auto& mi = _engine->playlist().currentInfo().mi;
+    const auto &mi = _engine->playlist().currentInfo().mi;
     auto sz = _engine->videoSize();
     if (sz.isEmpty()) {
         sz = QSize(mi.width, mi.height);
@@ -2466,16 +2483,16 @@ void MainWindow::resizeByConstraints(bool forceCentered)
     if (forceCentered) {
         QRect r;
         r.setSize(sz);
-        r.moveTopLeft({(geom.width() - r.width()) /2, (geom.height() - r.height())/2});
+        r.moveTopLeft({(geom.width() - r.width()) / 2, (geom.height() - r.height()) / 2});
         this->setGeometry(r);
-        this->move(r.x(),r.y());
-        this->resize(r.width(),r.height());
+        this->move(r.x(), r.y());
+        this->resize(r.width(), r.height());
     } else {
         QRect r = this->geometry();
         r.setSize(sz);
         this->setGeometry(r);
-        this->move(r.x(),r.y());
-        this->resize(r.width(),r.height());
+        this->move(r.x(), r.y());
+        this->resize(r.width(), r.height());
     }
 }
 
@@ -2507,7 +2524,7 @@ void MainWindow::updateSizeConstraints()
     this->setMinimumSize(m);
 }
 
-void MainWindow::updateGeometryNotification(const QSize& sz)
+void MainWindow::updateGeometryNotification(const QSize &sz)
 {
     auto msg = QString("%1x%2").arg(sz.width()).arg(sz.height());
     _nwComm->updateWithMessage(msg);
@@ -2532,20 +2549,18 @@ void MainWindow::resizeEvent(QResizeEvent *ev)
 void MainWindow::updateWindowTitle()
 {
     if (_engine->state() != PlayerEngine::Idle) {
-        const auto& mi = _engine->playlist().currentInfo().mi;
-        auto title = _titlebar->fontMetrics().elidedText(mi.title,
-                Qt::ElideMiddle, _titlebar->contentsRect().width() - 300);
+        const auto &mi = _engine->playlist().currentInfo().mi;
+        auto title = _titlebar->fontMetrics().elidedText(mi.title, Qt::ElideMiddle,
+                                                         _titlebar->contentsRect().width() - 300);
         _titlebar->setTitletxt(title);
     } else {
         _titlebar->setTitletxt(QString());
     }
     _titlebar->setProperty("idle", _engine->state() == PlayerEngine::Idle);
-//    _titlebar->setStyleSheet(styleSheet());
+    //    _titlebar->setStyleSheet(styleSheet());
 }
 
-void MainWindow::moveEvent(QMoveEvent *ev)
-{
-}
+void MainWindow::moveEvent(QMoveEvent *ev) {}
 
 void MainWindow::keyPressEvent(QKeyEvent *ev)
 {
@@ -2557,17 +2572,18 @@ void MainWindow::keyReleaseEvent(QKeyEvent *ev)
     QWidget::keyReleaseEvent(ev);
 }
 
-void MainWindow::capturedMousePressEvent(QMouseEvent* me)
+void MainWindow::capturedMousePressEvent(QMouseEvent *me)
 {
     _mouseMoved = false;
-    if (qApp->focusWindow() == 0) return;
+    if (qApp->focusWindow() == 0)
+        return;
 
     if (me->buttons() == Qt::LeftButton) {
         _mousePressed = true;
     }
 }
 
-void MainWindow::capturedMouseReleaseEvent(QMouseEvent* me)
+void MainWindow::capturedMouseReleaseEvent(QMouseEvent *me)
 {
     if (_delayedResizeByConstraint) {
         _delayedResizeByConstraint = false;
@@ -2584,17 +2600,18 @@ void MainWindow::mousePressEvent(QMouseEvent *ev)
 {
     _mouseMoved = false;
 
-    if (qApp->focusWindow() == 0) return;
+    if (qApp->focusWindow() == 0)
+        return;
     if (ev->buttons() == Qt::LeftButton) {
         _mousePressed = true;
         if (_playState->isVisible()) {
             //_playState->setState(DImageButton::Press);
-            QMouseEvent me(QEvent::MouseButtonPress, {}, ev->button(), ev->buttons(), ev->modifiers());
+            QMouseEvent me(QEvent::MouseButtonPress, {}, ev->button(), ev->buttons(),
+                           ev->modifiers());
             qApp->sendEvent(_playState, &me);
         }
     }
 }
-
 
 void MainWindow::mouseDoubleClickEvent(QMouseEvent *ev)
 {
@@ -2610,7 +2627,7 @@ void MainWindow::mouseDoubleClickEvent(QMouseEvent *ev)
     }
 }
 
-bool MainWindow::insideToolsArea(const QPoint& p)
+bool MainWindow::insideToolsArea(const QPoint &p)
 {
     return _titlebar->geometry().contains(p) || _toolbox->geometry().contains(p);
 }
@@ -2620,7 +2637,7 @@ QMargins MainWindow::dragMargins() const
     return QMargins {MOUSE_MARGINS, MOUSE_MARGINS, MOUSE_MARGINS, MOUSE_MARGINS};
 }
 
-bool MainWindow::insideResizeArea(const QPoint& global_p)
+bool MainWindow::insideResizeArea(const QPoint &global_p)
 {
     const QRect window_visible_rect = frameGeometry() - dragMargins();
     return !window_visible_rect.contains(global_p);
@@ -2633,13 +2650,14 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *ev)
         _mouseMoved = false;
     }
 
-    if (qApp->focusWindow() == 0 || !_mousePressed) return;
+    if (qApp->focusWindow() == 0 || !_mousePressed)
+        return;
 
     _mousePressed = false;
     if (_playState->isVisible()) {
-        //QMouseEvent me(QEvent::MouseButtonRelease, {}, ev->button(), ev->buttons(), ev->modifiers());
-        //qApp->sendEvent(_playState, &me);
-//        _playState->setState(DImageButton::Normal);
+        // QMouseEvent me(QEvent::MouseButtonRelease, {}, ev->button(), ev->buttons(),
+        // ev->modifiers()); qApp->sendEvent(_playState, &me);
+        //        _playState->setState(DImageButton::Normal);
     }
 
     // dtk has a bug, DImageButton propagates mouseReleaseEvent event when it responded to.
@@ -2662,7 +2680,8 @@ void MainWindow::delayedMouseReleaseHandler()
 void MainWindow::mouseMoveEvent(QMouseEvent *ev)
 {
     if (_mouseMoved) {
-        return Utility::updateMousePointForWindowMove(this->winId(), ev->globalPos() * devicePixelRatioF());
+        return Utility::updateMousePointForWindowMove(this->winId(),
+                                                      ev->globalPos() * devicePixelRatioF());
     }
 
     _mouseMoved = true;
@@ -2710,86 +2729,86 @@ QString MainWindow::lastOpenedPath()
     return lastPath;
 }
 
-void MainWindow::paintEvent(QPaintEvent* pe)
+void MainWindow::paintEvent(QPaintEvent *pe)
 {
     QPainter painter(this);
-//    painter.setRenderHint(QPainter::Antialiasing);
+    //    painter.setRenderHint(QPainter::Antialiasing);
     QRectF bgRect;
     bgRect.setSize(size());
-    const QPalette pal = QGuiApplication::palette();//this->palette();
+    const QPalette pal = QGuiApplication::palette();  // this->palette();
     QColor bgColor = pal.color(QPalette::Window);
 
-//    QPainterPath path;
-//    path.addRoundedRect(bgRect, 18, 18);
-//    // drawbackground color
-//    painter.setRenderHint(QPainter::Antialiasing, true);
-//    painter.fillPath(path, bgColor);
-//    painter.setRenderHint(QPainter::Antialiasing, false);
+    //    QPainterPath path;
+    //    path.addRoundedRect(bgRect, 18, 18);
+    //    // drawbackground color
+    //    painter.setRenderHint(QPainter::Antialiasing, true);
+    //    painter.fillPath(path, bgColor);
+    //    painter.setRenderHint(QPainter::Antialiasing, false);
 
-    QImage& bg = bg_dark;
-//    bool rounded = !isFullScreen() && !isMaximized();
-//    if (rounded) {
-//        QPainterPath pp;
-//        pp.addRoundedRect(bgRect, RADIUS, RADIUS);
-//        painter.fillPath(pp, bgColor);
+    QImage &bg = bg_dark;
+    //    bool rounded = !isFullScreen() && !isMaximized();
+    //    if (rounded) {
+    //        QPainterPath pp;
+    //        pp.addRoundedRect(bgRect, RADIUS, RADIUS);
+    //        painter.fillPath(pp, bgColor);
 
-//        {
-//            auto view_rect = bgRect.marginsRemoved(QMargins(1, 1, 1, 1));
-//            QPainterPath pp;
-//            pp.addRoundedRect(view_rect, RADIUS, RADIUS);
-//            painter.fillPath(pp, bgColor);
-//        }
-//    } else {
-//        QPainterPath pp;
-//        pp.addRect(bgRect);
-//        painter.fillPath(pp, bgColor);
-//    }
-    auto pt = bgRect.center() - QPoint(bg.width()/2, bg.height()/2)/devicePixelRatioF();
+    //        {
+    //            auto view_rect = bgRect.marginsRemoved(QMargins(1, 1, 1, 1));
+    //            QPainterPath pp;
+    //            pp.addRoundedRect(view_rect, RADIUS, RADIUS);
+    //            painter.fillPath(pp, bgColor);
+    //        }
+    //    } else {
+    //        QPainterPath pp;
+    //        pp.addRect(bgRect);
+    //        painter.fillPath(pp, bgColor);
+    //    }
+    auto pt = bgRect.center() - QPoint(bg.width() / 2, bg.height() / 2) / devicePixelRatioF();
     painter.drawImage(pt, bg);
 
-/*
-    QPainter p(this);
-    p.setRenderHint(QPainter::Antialiasing);
+    /*
+        QPainter p(this);
+        p.setRenderHint(QPainter::Antialiasing);
 
-    bool light = ("light" == qApp->theme());
-    auto bg_clr = QColor(16, 16, 16);
-    QImage& bg = bg_dark;
-    if (light) {
-        bg = bg_light;
-        bg_clr = QColor(252, 252, 252);
-    }
-
-#ifdef USE_DXCB
-    QPainterPath pp;
-    pp.addRect(rect());
-    p.fillPath(pp, bg_clr);
-#else
-    bool rounded = !isFullScreen() && !isMaximized();
-
-    p.fillRect(rect(), Qt::transparent);
-
-    if (rounded) {
-        QPainterPath pp;
-        pp.addRoundedRect(rect(), RADIUS, RADIUS);
-        p.fillPath(pp, QColor(0, 0, 0, light ? 255 * 0.1: 255));
-
-        {
-            auto view_rect = rect().marginsRemoved(QMargins(1, 1, 1, 1));
-            QPainterPath pp;
-            pp.addRoundedRect(view_rect, RADIUS, RADIUS);
-            p.fillPath(pp, bg_clr);
+        bool light = ("light" == qApp->theme());
+        auto bg_clr = QColor(16, 16, 16);
+        QImage& bg = bg_dark;
+        if (light) {
+            bg = bg_light;
+            bg_clr = QColor(252, 252, 252);
         }
-    } else {
+
+    #ifdef USE_DXCB
         QPainterPath pp;
         pp.addRect(rect());
         p.fillPath(pp, bg_clr);
-    }
+    #else
+        bool rounded = !isFullScreen() && !isMaximized();
 
-#endif
+        p.fillRect(rect(), Qt::transparent);
 
-    auto pt = rect().center() - QPoint(bg.width()/2, bg.height()/2)/devicePixelRatioF();
-    p.drawImage(pt, bg);
-*/
+        if (rounded) {
+            QPainterPath pp;
+            pp.addRoundedRect(rect(), RADIUS, RADIUS);
+            p.fillPath(pp, QColor(0, 0, 0, light ? 255 * 0.1: 255));
+
+            {
+                auto view_rect = rect().marginsRemoved(QMargins(1, 1, 1, 1));
+                QPainterPath pp;
+                pp.addRoundedRect(view_rect, RADIUS, RADIUS);
+                p.fillPath(pp, bg_clr);
+            }
+        } else {
+            QPainterPath pp;
+            pp.addRect(rect());
+            p.fillPath(pp, bg_clr);
+        }
+
+    #endif
+
+        auto pt = rect().center() - QPoint(bg.width()/2, bg.height()/2)/devicePixelRatioF();
+        p.drawImage(pt, bg);
+    */
 }
 
 void MainWindow::toggleUIMode()
@@ -2802,7 +2821,8 @@ void MainWindow::toggleUIMode()
     else
         _titlebar->titlebar()->setDisableFlags(0);
 
-    if (_listener) _listener->setEnabled(!_miniMode);
+    if (_listener)
+        _listener->setEnabled(!_miniMode);
 
     updateSizeConstraints();
 
@@ -2816,7 +2836,6 @@ void MainWindow::toggleUIMode()
     _miniPlayBtn->setEnabled(_miniMode);
     _miniCloseBtn->setEnabled(_miniMode);
     _miniQuitMiniBtn->setEnabled(_miniMode);
-
 
     resumeToolsWindow();
 
@@ -2864,11 +2883,11 @@ void MainWindow::toggleUIMode()
         }
         geom.setSize(sz);
         setGeometry(geom);
-        move(geom.x(),geom.y());
-        resize(geom.width(),geom.height());
+        move(geom.x(), geom.y());
+        resize(geom.width(), geom.height());
 
         _miniQuitMiniBtn->move(sz.width() - 14 - _miniQuitMiniBtn->width(),
-                sz.height() - 10 - _miniQuitMiniBtn->height());
+                               sz.height() - 10 - _miniQuitMiniBtn->height());
         _miniCloseBtn->move(sz.width() - 4 - _miniCloseBtn->width(), 4);
         _miniPlayBtn->move(14, sz.height() - 10 - _miniPlayBtn->height());
 
@@ -2882,7 +2901,7 @@ void MainWindow::toggleUIMode()
             requestAction(ActionFactory::ToggleFullscreen);
         } else {
             if (_engine->state() == PlayerEngine::Idle && windowState() == Qt::WindowNoState) {
-//                this->setMinimumSize(QSize(1070, 680));
+                //                this->setMinimumSize(QSize(1070, 680));
                 this->resize(850, 600);
             } else {
                 if (_lastRectInNormalMode.isValid()) {
@@ -2896,11 +2915,9 @@ void MainWindow::toggleUIMode()
         syncPlayState();
 
         if (_stateBeforeMiniMode & SBEM_PlaylistOpened &&
-                _playlist->state() == PlaylistWidget::Closed) {
+            _playlist->state() == PlaylistWidget::Closed) {
             if (_stateBeforeMiniMode & SBEM_Fullscreen) {
-                QTimer::singleShot(100, [=]() {
-                    requestAction(ActionFactory::TogglePlaylist);
-                });
+                QTimer::singleShot(100, [=]() { requestAction(ActionFactory::TogglePlaylist); });
             }
         }
 
@@ -2956,8 +2973,8 @@ void MainWindow::dropEvent(QDropEvent *ev)
         if (_engine->subtitle_suffixs.contains(fileInfo.suffix())) {
             bool succ = _engine->loadSubtitle(fileInfo);
             // notice that the file loaded but won't automatically selected.
-            const PlayingMovieInfo& pmf = _engine->playingMovieInfo();
-            for (const SubtitleInfo& sub: pmf.subs) {
+            const PlayingMovieInfo &pmf = _engine->playingMovieInfo();
+            for (const SubtitleInfo &sub : pmf.subs) {
                 if (sub["external"].toBool()) {
                     QString path = sub["external-filename"].toString();
                     if (path == fileInfo.canonicalFilePath()) {
@@ -2966,7 +2983,8 @@ void MainWindow::dropEvent(QDropEvent *ev)
                     }
                 }
             }
-            QPixmap icon = utils::LoadHiDPIPixmap(QString(":/resources/icons/%1.svg").arg(succ ? "success" : "fail"));
+            QPixmap icon = utils::LoadHiDPIPixmap(
+                QString(":/resources/icons/%1.svg").arg(succ ? "success" : "fail"));
             _nwComm->popupWithIcon(succ ? tr("Load successfully") : tr("Load failed"), icon);
         }
         return;
@@ -2977,7 +2995,7 @@ void MainWindow::dropEvent(QDropEvent *ev)
         auto accepted = valids.toSet();
         auto invalids = all.subtract(accepted).toList();
         int ms = 0;
-        for (const auto& url: invalids) {
+        for (const auto &url : invalids) {
             QTimer::singleShot(ms, [=]() {
                 auto msg = QString(tr("Invalid file: %1").arg(url.fileName()));
                 _nwComm->updateWithMessage(msg);
@@ -3007,12 +3025,9 @@ void MainWindow::setInit(bool v)
 
 QString MainWindow::probeCdromDevice()
 {
-    QStringList cands = {
-        "/dev/sr0",
-        "/dev/cdrom"
-    };
+    QStringList cands = {"/dev/sr0", "/dev/cdrom"};
 
-    for (auto d: cands) {
+    for (auto d : cands) {
         if (QFile::exists(d)) {
             return d;
         }
