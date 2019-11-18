@@ -623,7 +623,7 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     _title->setPalette(pa);
 //    title->setText(DApplication::translate("QuickInstallWindow", "Installed"));
     _title->setText(tr("播放列表"));
-    _title->setFixedSize(96,33);
+    _title->setFixedSize(96+9,33);
     _title->setContentsMargins(0,0,0,0);
 
     _num = new QLabel();
@@ -659,7 +659,7 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     }
     pa_cb.setBrush(QPalette::ButtonText, QColor(255,255,255,255));
     clearButton->setPalette(pa_cb);
-    clearButton->setFixedSize(93,30);
+    clearButton->setFixedSize(93+6,30);
     clearButton->setContentsMargins(0,0,0,0);
 
     QObject::connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::paletteTypeChanged,clearButton,
