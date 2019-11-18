@@ -33,11 +33,13 @@
 #include <DPlatformWindowHandle>
 #include <QPushButton>
 #include <QtWidgets>
+#include <DIconButton>
 #include <DFloatingButton>
 #include <DListWidget>
 #include <DApplicationHelper>
 #include <DFontSizeManager>
 #include <QBrush>
+#include <DStyle>
 
 namespace Dtk
 {
@@ -73,6 +75,28 @@ protected:
 private:
     QPixmap _pic;
 };
+
+class FloatingButton: public DPushButton {
+    Q_OBJECT
+public:
+    FloatingButton(QWidget *p = nullptr){}
+    virtual ~FloatingButton(){}
+
+protected:
+    virtual void enterEvent(QEvent* e)
+    {
+        emit mouseHover(true);
+    }
+
+    virtual void leaveEvent(QEvent* e)
+    {
+        emit mouseHover(false);
+    }
+
+signals:
+    void mouseHover(bool bFlag);
+};
+
 class PlayItemWidget;
 
 class PlaylistWidget: public QWidget {

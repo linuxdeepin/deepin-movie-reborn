@@ -212,11 +212,14 @@ public:
 
 //        setBg(QString(":/resources/icons/%1/normal/film-bg.svg").arg(qApp->theme()));
 
-        _closeBtn = new DFloatingButton(DStyle::SP_CloseButton,this);
+        //_closeBtn = new FloatingButton(this);
+        _closeBtn = new DFloatingButton(DStyle::SP_CloseButton, this);
         _closeBtn->setFixedSize(20, 20);
         _closeBtn->setObjectName("CloseBtn");
         _closeBtn->hide();
         connect(_closeBtn, &DFloatingButton::clicked, this, &PlayItemWidget::closeButtonClicked);
+        //connect(_closeBtn, &FloatingButton::clicked, this, &PlayItemWidget::closeButtonClicked);
+        //connect(_closeBtn, &FloatingButton::mouseHover, this, &PlayItemWidget::closeBtnStates);
 
 
         setToolTip(_pif.mi.title);
@@ -318,9 +321,34 @@ public:
         }
     }
 
+    void setCurItemHovered(bool v)
+    {
+        if (_hovered != v) {
+            _hovered = v;
+            setProperty("hovered", v);
+        }
+
+        if (v) {
+            _closeBtn->show();
+            _closeBtn->raise();
+        }
+        else {
+            _closeBtn->hide();
+        }
+
+        updateClosePosition();
+        update();
+    }
+
 signals:
     void closeButtonClicked();
     void doubleClicked();
+
+private slots:
+    void closeBtnStates(bool bHover) {
+        setCurItemHovered(bHover);
+    }
+
 
 protected:
     void updateClosePosition()
@@ -328,7 +356,7 @@ protected:
         auto margin = 4;
         auto pl = dynamic_cast<QListWidget*>(parentWidget()->parentWidget());
         if (pl->verticalScrollBar()->isVisible())
-            margin = 10;
+            //margin = 10;
         _closeBtn->move(width() - _closeBtn->width() - margin,
                 (height() - _closeBtn->height())/2);
     }
@@ -510,6 +538,7 @@ private:
     QLabel *_time;
     QPixmap _play;
     PlayItemInfo _pif;
+    //FloatingButton *_closeBtn;
     DFloatingButton *_closeBtn;
     QListWidget *_listWidget {nullptr};
     bool _hovered {false};
@@ -953,6 +982,7 @@ void PlaylistWidget::removeItem(int idx)
     if (item) {
         delete item;
     }
+
     this->_playlist->update();
     for (int i = 0;i < _playlist->count();i++){
         QWidget *item =_playlist->itemWidget(_playlist->item(i));
@@ -960,6 +990,18 @@ void PlaylistWidget::removeItem(int idx)
             (dynamic_cast<PlayItemWidget*>(item))->setIndex(i);
         }
     }
+
+    if (_playlist->count() != 0 && _playlist->count() != idx) {
+        QWidget *item = _playlist->itemWidget(_playlist->item(idx));
+        PlayItemWidget *curItem = dynamic_cast<PlayItemWidget*>(item);
+        curItem->setCurItemHovered(true);
+    }
+    else if (_playlist->count() != 0 && _playlist->count() == idx) {
+        QWidget *item = _playlist->itemWidget(_playlist->item(--idx));
+        PlayItemWidget *curItem = dynamic_cast<PlayItemWidget*>(item);
+        curItem->setCurItemHovered(true);
+    }
+
     QString s=QString(" %1 个视频").arg(_playlist->count());
     _num->setText(s);
 }
@@ -1151,9 +1193,8 @@ void PlaylistWidget::resizeEvent(QResizeEvent *ev)
     _playlist->setFixedWidth(width()-235);
     emit sizeChange();
 
-     QTimer::singleShot(100, this, &PlaylistWidget::batchUpdateSizeHints);
+    QTimer::singleShot(100, this, &PlaylistWidget::batchUpdateSizeHints);
 }
-
 
 }
 
