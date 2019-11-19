@@ -31,9 +31,34 @@
 #define _DMR_MOVIE_INFO_DIALOG_H 
 
 #include <QtWidgets>
-#include <ddialog.h>
+#include <DDialog>
+#include <DImageButton>
+#include <DLabel>
+#include <DFontSizeManager>
+#include <DThemeManager>
+#include <DApplicationHelper>
+#include <DGuiApplicationHelper>
+#include <DApplication>
+
+#define MV_BASE_INFO "基本信息"
+#define MV_FILE_TYPE "文件类型"
+#define MV_RESOLUTION "分辨率"
+#define MV_FILE_SIZE "文件大小"
+#define MV_DURATION "时长"
+#define MV_FILE_PATH "文件路径"
+
+const QString LOGO_BIG = ":/resources/icons/logo-big.svg";
+const QString INFO_CLOSE_LIGHT = ":/resources/icons/light/info_close_light.svg";
+const QString INFO_CLOSE_DARK = ":/resources/icons/dark/info_close_dark.svg";
 
 DWIDGET_USE_NAMESPACE
+DGUI_USE_NAMESPACE
+
+enum ThemeTYpe {
+    lightTheme,
+    darkTheme,
+    defaultTheme
+};
 
 namespace dmr {
 struct PlayItemInfo;
@@ -54,6 +79,23 @@ class MovieInfoDialog: public DAbstractDialog {
 public:
     MovieInfoDialog(const struct PlayItemInfo&);
 };
+
+class InfoBottom: public QWidget {
+    Q_OBJECT
+public:
+    InfoBottom();
+
+    void setInfoBgTheme(ThemeTYpe themeType = defaultTheme);
+
+protected:
+    virtual void paintEvent(QPaintEvent *ev);
+
+private:
+    bool m_bTheme;
+    ThemeTYpe m_themeType;
+};
+
+
 }
 
 #endif /* ifndef _DMR_MOVIE_INFO_DIALOG_H */

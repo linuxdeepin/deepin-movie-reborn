@@ -31,9 +31,7 @@
 #include "mpv_proxy.h"
 #include "playlist_model.h"
 #include "utils.h"
-
-#include <dwindowclosebutton.h>
-#include <DThemeManager>
+#include <QDebug>
 
 DWIDGET_USE_NAMESPACE
 
@@ -41,7 +39,7 @@ namespace dmr {
 MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo& pif)
     :DAbstractDialog(nullptr)
 {
-    setFixedWidth(320);
+    setFixedSize(300, 441);
     setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint);
 
     auto layout = new QVBoxLayout(this);
@@ -49,11 +47,10 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo& pif)
     layout->setContentsMargins(0, 0, 0, 10);
     setLayout(layout);
 
-    auto closeBt = new DWindowCloseButton;
-    closeBt->setFixedSize(27, 23);
+    DImageButton* closeBt = new DImageButton(this);
+    closeBt->setFixedSize(50, 50);
+    connect(closeBt, &DImageButton::clicked, this, &MovieInfoDialog::close);
     layout->addWidget(closeBt, 0, Qt::AlignTop | Qt::AlignRight);
-    layout->addSpacing(26);
-    connect(closeBt, &DWindowCloseButton::clicked, this, &DAbstractDialog::hide);
 
     const auto& mi = pif.mi;
 
@@ -63,14 +60,14 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo& pif)
     layout->addLayout(ml);
 
     auto *pm = new PosterFrame(this);
-    pm->setFixedSize(176, 118);
+    pm->setFixedSize(220, 128);
 
     auto dpr = qApp->devicePixelRatio();
     QPixmap cover;
     if (pif.thumbnail.isNull()) {
-        cover = (utils::LoadHiDPIPixmap(":/resources/icons/logo-big.svg"));
+        cover = (utils::LoadHiDPIPixmap(LOGO_BIG));
     } else {
-        QSize sz(176, 118);
+        QSize sz(220, 128);
         sz *= dpr;
         auto img = pif.thumbnail.scaledToWidth(sz.width(), Qt::SmoothTransformation);
         cover = img.copy(0, (img.height()-sz.height())/2, sz.width(), sz.height());
@@ -81,53 +78,100 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo& pif)
     pm->ensurePolished();
     ml->addWidget(pm);
     ml->setAlignment(pm, Qt::AlignHCenter);
-    ml->addSpacing(19);
+    ml->addSpacing(10);
 
-    auto *nm = new QLabel(this);
-    nm->setObjectName("MovieInfoTitle");
+    auto *nm = new DLabel(this);
+    nm->setFont(DFontSizeManager::instance()->get(DFontSizeManager::T8));
+    DPalette pal_nm = DApplicationHelper::instance()->palette(nm);
+    pal_nm.setBrush(DPalette::WindowText, pal_nm.color(DPalette::TextLively));
+    nm->setPalette(pal_nm);
     nm->setText(nm->fontMetrics().elidedText(QFileInfo(mi.filePath).fileName(), Qt::ElideMiddle, 260));
     ml->addWidget(nm);
     ml->setAlignment(nm, Qt::AlignHCenter);
-    ml->addSpacing(19);
+    ml->addSpacing(44);
 
-    auto *sp = new QFrame(this);
-    sp->setObjectName("MovieInfoSplit");
-    sp->setFixedHeight(1);
-    ml->addWidget(sp);
+    InfoBottom *infoRect = new InfoBottom;
+    infoRect->setFixedSize(280, 181);
+    ml->addWidget(infoRect);
+    ml->setAlignment(infoRect, Qt::AlignHCenter);
     ml->addSpacing(10);
 
+    auto *infolyt = new QHBoxLayout(infoRect);
+    infolyt->setContentsMargins(10, 0, 0, 30);
+
     auto *form = new QFormLayout();
-    form->setContentsMargins(25, 0, 25, 0);
-    ml->addLayout(form);
-    ml->setAlignment(ml, Qt::AlignHCenter);
+    form->setContentsMargins(0, 5, 0, 0);
+    infolyt->addLayout(form);
+    infolyt->setAlignment(infolyt, Qt::AlignHCenter);
     
-    form->setVerticalSpacing(10);
+    form->setVerticalSpacing(6);
     form->setHorizontalSpacing(10);
-    form->setLabelAlignment(Qt::AlignRight);
+    form->setLabelAlignment(Qt::AlignLeft);
     form->setFormAlignment(Qt::AlignCenter);
+//    form->setRowWrapPolicy(QFormLayout::WrapLongRows);
 
 #define ADD_ROW(title, field)  do { \
-    auto f = new QLabel(field, this); \
-    f->setObjectName("MovieInfoValue"); \
-    f->setWordWrap(true); \
-    auto t = new QLabel((title), this); \
-    t->setObjectName("MovieInfoKey"); \
+    QFont font(DFontSizeManager::instance()->get(DFontSizeManager::T8)); \
+    auto f = new DLabel(field, this); \
+    f->setFont(font); \
+    DPalette pal_f = DApplicationHelper::instance()->palette(f); \
+    pal_f.setBrush(DPalette::WindowText, pal_f.color(DPalette::TextLively)); \
+    f->setPalette(pal_f); \
+    auto t = new DLabel(title, this); \
+    t->setAlignment(Qt::AlignLeft); \
+    t->setWordWrap(true); \
+    t->setFont(font); \
     form->addRow(t, f); \
 } while (0)
 
-    ADD_ROW(tr("File Type:"), mi.fileType);
-    ADD_ROW(tr("Resolution:"), mi.resolution);
-    ADD_ROW(tr("File Size:"), mi.sizeStr());
-    ADD_ROW(tr("Duration:"), mi.durationStr());
+    auto title = new DLabel(MV_BASE_INFO, this);
+    title->setFont(DFontSizeManager::instance()->get(DFontSizeManager::T6));
+    DPalette pal_title = DApplicationHelper::instance()->palette(title);
+    pal_title.setBrush(DPalette::WindowText, pal_title.color(DPalette::TextLively));
+    title->setPalette(pal_title);
+    form->addRow(title);
+
+    ADD_ROW(MV_RESOLUTION, mi.resolution);
+    ADD_ROW(MV_FILE_TYPE, mi.fileType);
+    ADD_ROW(MV_FILE_SIZE, mi.sizeStr());
+    ADD_ROW(MV_DURATION, mi.durationStr());
 
     auto fm = nm->fontMetrics();
-    auto fp = utils::ElideText(mi.filePath, {160, 40}, QTextOption::WrapAnywhere,
-            nm->font(), Qt::ElideMiddle, fm.height(), 150);
-    ADD_ROW(tr("File Path:"), fp);
+    auto fp = utils::ElideText(mi.filePath, {200, 40}, QTextOption::WordWrap,
+            nm->font(), Qt::ElideNone, fm.height(), 150);
+    ADD_ROW(MV_FILE_PATH, fp);
 
 #undef ADD_ROW
 
-    ml->addSpacing(16);
+//    QObject::connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged,this,
+//                         [=] () {
+        DPalette pal = DApplicationHelper::instance()->palette(this);
+        if(DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
+            pal.setBrush(DPalette::Window, pal.color(DPalette::ItemBackground));
+
+            closeBt->setNormalPic(INFO_CLOSE_LIGHT);
+            infoRect->setInfoBgTheme(lightTheme);
+
+            qDebug() << ".............111111";
+        }
+        else if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
+            pal.setBrush(DPalette::Window, pal.color(DPalette::ItemBackground));
+
+            closeBt->setNormalPic(INFO_CLOSE_DARK);
+            infoRect->setInfoBgTheme(darkTheme);
+
+            qDebug() << ".............222222";
+        }
+        else {
+            pal.setBrush(DPalette::Window, pal.color(DPalette::ItemBackground));
+
+            closeBt->setNormalPic(INFO_CLOSE_DARK);
+            infoRect->setInfoBgTheme(darkTheme);
+
+            qDebug() << ".............333333";
+        }
+        this->setPalette(pal);
+//    });
 
 #if DTK_VERSION > DTK_VERSION_CHECK(2, 0, 6, 0)
     DThemeManager::instance()->setTheme(this, "light");
@@ -137,4 +181,42 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo& pif)
 //    closeBt->setStyleSheet(DThemeManager::instance()->getQssForWidget("DWindowCloseButton", "light"));
 #endif
 }
+
+InfoBottom::InfoBottom()
+{
+}
+
+void InfoBottom::setInfoBgTheme(ThemeTYpe themeType)
+{
+    m_themeType = themeType;
+}
+
+void InfoBottom::paintEvent(QPaintEvent *ev)
+{
+    QPainter pt(this);
+    pt.setRenderHint(QPainter::Antialiasing);
+
+    if (lightTheme == m_themeType) {
+        pt.setPen(QColor(0, 0, 0, 5));
+        pt.setBrush(QBrush(QColor(249, 249, 249, 160)));
+    }
+    else if (darkTheme == m_themeType) {
+        pt.setPen(QColor(0, 0, 0, 5));
+        pt.setBrush(QBrush(QColor(249, 249, 249, 160)));
+    }
+    else {
+        pt.setPen(QColor(0, 0, 0, 5));
+        pt.setBrush(QBrush(QColor(249, 249, 249, 160)));
+    }
+
+    QRect rect = this->rect();
+    rect.setWidth(rect.width() - 1);
+    rect.setHeight(rect.height() - 1);
+
+    QPainterPath painterPath;
+    painterPath.addRoundedRect(rect, 10, 10);
+    pt.drawPath(painterPath);
+
+}
+
 }

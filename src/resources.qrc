@@ -1,51 +1,17 @@
 <RCC>
-    <qresource>
+    <qresource prefix="/">
         <file>resources/data/settings.json</file>
-    </qresource>
-    <qresource>
         <file>resources/profiles/default.profile</file>
         <file>resources/profiles/failsafe.profile</file>
         <file>resources/profiles/composited.profile</file>
-    </qresource>
-
-    <qresource prefix="/dark">
-        <file alias="dmr::NotificationWidget.theme">resources/qss/dark/dmr--NotificationWidget.theme</file>
-        <file alias="dmr::VolumeSlider.theme">resources/qss/dark/dmr--VolumeSlider.theme</file>
-        <file alias="dmr::SubtitlesView.theme">resources/qss/dark/dmr--SubtitlesView.theme</file>
-        <file alias="dmr::SubtitleItemWidget.theme">resources/qss/dark/dmr--SubtitleItemWidget.theme</file>
-
-        <file alias="dmr::PlayItemWidget.theme">resources/qss/dark/dmr--PlayItemWidget.theme</file>
-        <file alias="dmr::PlaylistWidget.theme">resources/qss/dark/dmr--PlaylistWidget.theme</file>
-        <file alias="dmr::MainWindow.theme">resources/qss/dark/dmr--MainWindow.theme</file>
-        <file alias="dmr::ToolboxProxy.theme">resources/qss/dark/dmr--ToolboxProxy.theme</file>
-        <file alias="dmr::MovieInfoDialog.theme">resources/qss/dark/dmr--MovieInfoDialog.theme</file>
-        <file alias="dmr::Tip.theme">resources/qss/dark/dmr--Tip.theme</file>
-    </qresource>
-
-    <qresource prefix="/light">
-        <file alias="dmr::NotificationWidget.theme">resources/qss/light/dmr--NotificationWidget.theme</file>
-        <file alias="dmr::VolumeSlider.theme">resources/qss/light/dmr--VolumeSlider.theme</file>
-        <file alias="dmr::SubtitlesView.theme">resources/qss/light/dmr--SubtitlesView.theme</file>
-        <file alias="dmr::SubtitleItemWidget.theme">resources/qss/light/dmr--SubtitleItemWidget.theme</file>
-
-        <file alias="dmr::PlayItemWidget.theme">resources/qss/light/dmr--PlayItemWidget.theme</file>
-        <file alias="dmr::PlaylistWidget.theme">resources/qss/light/dmr--PlaylistWidget.theme</file>
-        <file alias="dmr::MainWindow.theme">resources/qss/light/dmr--MainWindow.theme</file>
-        <file alias="dmr::ToolboxProxy.theme">resources/qss/light/dmr--ToolboxProxy.theme</file>
-        <file alias="dmr::MovieInfoDialog.theme">resources/qss/light/dmr--MovieInfoDialog.theme</file>
-        <file alias="dmr::Tip.theme">resources/qss/light/dmr--Tip.theme</file>
-    </qresource>
-
-    <qresource>
-		<file>resources/icons/select-hover.svg</file>
-		<file>resources/icons/select-normal.svg</file>
-		<file>resources/icons/select-press.svg</file>
-		<file>resources/icons/input_clear_hover.svg</file>
-		<file>resources/icons/input_clear_normal.svg</file>
-		<file>resources/icons/input_clear_press.svg</file>
-                <file>resources/icons/titlebar.png</file>
-                <file>resources/icons/slider.svg</file>
-
+        <file>resources/icons/select-hover.svg</file>
+        <file>resources/icons/select-normal.svg</file>
+        <file>resources/icons/select-press.svg</file>
+        <file>resources/icons/input_clear_hover.svg</file>
+        <file>resources/icons/input_clear_normal.svg</file>
+        <file>resources/icons/input_clear_press.svg</file>
+        <file>resources/icons/titlebar.png</file>
+        <file>resources/icons/slider.svg</file>
         <file>resources/icons/dark/subtitle-selected.svg</file>
         <file>resources/icons/light/subtitle-selected.svg</file>
         <file>resources/icons/logo.svg</file>
@@ -188,6 +154,31 @@
         <file>resources/icons/dark/normal/close-normal.svg</file>
         <file>resources/icons/success.svg</file>
         <file>resources/icons/fail.svg</file>
+        <file>resources/icons/dark/info_close_dark.svg</file>
+        <file>resources/icons/light/info_close_light.svg</file>
+    </qresource>
+    <qresource prefix="/dark">
+        <file alias="dmr::NotificationWidget.theme">resources/qss/dark/dmr--NotificationWidget.theme</file>
+        <file alias="dmr::VolumeSlider.theme">resources/qss/dark/dmr--VolumeSlider.theme</file>
+        <file alias="dmr::SubtitlesView.theme">resources/qss/dark/dmr--SubtitlesView.theme</file>
+        <file alias="dmr::SubtitleItemWidget.theme">resources/qss/dark/dmr--SubtitleItemWidget.theme</file>
+        <file alias="dmr::PlayItemWidget.theme">resources/qss/dark/dmr--PlayItemWidget.theme</file>
+        <file alias="dmr::PlaylistWidget.theme">resources/qss/dark/dmr--PlaylistWidget.theme</file>
+        <file alias="dmr::MainWindow.theme">resources/qss/dark/dmr--MainWindow.theme</file>
+        <file alias="dmr::ToolboxProxy.theme">resources/qss/dark/dmr--ToolboxProxy.theme</file>
+        <file alias="dmr::MovieInfoDialog.theme">resources/qss/dark/dmr--MovieInfoDialog.theme</file>
+        <file alias="dmr::Tip.theme">resources/qss/dark/dmr--Tip.theme</file>
+    </qresource>
+    <qresource prefix="/light">
+        <file alias="dmr::NotificationWidget.theme">resources/qss/light/dmr--NotificationWidget.theme</file>
+        <file alias="dmr::VolumeSlider.theme">resources/qss/light/dmr--VolumeSlider.theme</file>
+        <file alias="dmr::SubtitlesView.theme">resources/qss/light/dmr--SubtitlesView.theme</file>
+        <file alias="dmr::SubtitleItemWidget.theme">resources/qss/light/dmr--SubtitleItemWidget.theme</file>
+        <file alias="dmr::PlayItemWidget.theme">resources/qss/light/dmr--PlayItemWidget.theme</file>
+        <file alias="dmr::PlaylistWidget.theme">resources/qss/light/dmr--PlaylistWidget.theme</file>
+        <file alias="dmr::MainWindow.theme">resources/qss/light/dmr--MainWindow.theme</file>
+        <file alias="dmr::ToolboxProxy.theme">resources/qss/light/dmr--ToolboxProxy.theme</file>
+        <file alias="dmr::MovieInfoDialog.theme">resources/qss/light/dmr--MovieInfoDialog.theme</file>
+        <file alias="dmr::Tip.theme">resources/qss/light/dmr--Tip.theme</file>
     </qresource>
 </RCC>
-
