@@ -2076,6 +2076,9 @@ void MainWindow::onBurstScreenshot(const QImage &frame, qint64 timestamp)
 {
     qDebug() << _burstShoots.size();
     if (!frame.isNull()) {
+        auto msg = QString(tr("剧情连拍中，请稍候"));
+        _nwComm->updateWithMessage(msg);
+
         _burstShoots.append(qMakePair(frame, timestamp));
     }
 
