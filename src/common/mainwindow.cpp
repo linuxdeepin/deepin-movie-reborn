@@ -2601,6 +2601,8 @@ void MainWindow::resizeEvent(QResizeEvent *ev)
     QTimer::singleShot(0, [ = ]() {
         updateWindowTitle();
     });
+
+    updateGeometryNotification(geometry().size());
 }
 
 void MainWindow::updateWindowTitle()
