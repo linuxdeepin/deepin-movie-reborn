@@ -2692,9 +2692,15 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *ev)
     }
 
     // dtk has a bug, DImageButton propagates mouseReleaseEvent event when it responded to.
-    if (!insideResizeArea(ev->globalPos()) && !_mouseMoved && !insideToolsArea(ev->pos())) {
-        if (_playlist->state() != PlaylistWidget::Opened)
+    if (!insideResizeArea(ev->globalPos()) && !_mouseMoved && (_playlist->state() != PlaylistWidget::Opened) ) {
+        if (!insideToolsArea(ev->pos())) {
             _delayedMouseReleaseTimer.start(120);
+        }
+        else {
+            if (_engine->state() == PlayerEngine::CoreState::Idle ) {
+                _delayedMouseReleaseTimer.start(120);
+            }
+        }
     }
 
     Utility::cancelWindowMoveResize(winId());
