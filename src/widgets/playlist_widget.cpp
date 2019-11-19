@@ -635,7 +635,7 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     pa.setBrush(DPalette::WindowText, pa.color(DPalette::ToolTipText));
     _title->setPalette(pa);
 //    title->setText(DApplication::translate("QuickInstallWindow", "Installed"));
-    _title->setText(tr("播放列表"));
+    _title->setText(tr("Playlist"));
     _title->setFixedSize(96 + 9, 33);
     _title->setContentsMargins(0, 0, 0, 0);
 
@@ -659,7 +659,7 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
 //    DPushButton *clearButton = new DPushButton(QIcon::fromTheme("dcc_clearlist"),tr("清空列表"),nullptr);
     DPushButton *clearButton = new DPushButton();
     clearButton->setIcon(QIcon::fromTheme("dcc_clearlist"));
-    clearButton->setText(tr("清空列表"));
+    clearButton->setText(tr("Clear Playlist"));
     clearButton->setFont(DFontSizeManager::instance()->get(DFontSizeManager::T6));
 //    clearButton->setText(tr("清空列表"));
     DPalette pa_cb = DApplicationHelper::instance()->palette(clearButton);

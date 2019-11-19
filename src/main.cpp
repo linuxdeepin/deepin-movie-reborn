@@ -88,9 +88,9 @@ int main(int argc, char *argv[])
     }
 
     app.loadTranslator();
-    app.setApplicationDisplayName(QObject::tr("影院"));
+    app.setApplicationDisplayName(QObject::tr("Movie"));
     app.setApplicationDescription(QObject::tr(
-                                      "影院是一款支持多种视频格式本地播放和流媒体播放的视频播放器。"
+                                      "The theater is a video player that supports local and streaming video playback in multiple video formats."
                                   ));
 //    "Deepin Movie is a well-designed and full-featured"
 //    " video player with simple borderless design. It supports local and"
@@ -121,7 +121,7 @@ int main(int argc, char *argv[])
 
 
     app.setWindowIcon(QIcon(":/resources/icons/logo.svg"));
-    app.setApplicationDisplayName(QObject::tr("影院"));
+    app.setApplicationDisplayName(QObject::tr("Movie"));
     app.setAttribute(Qt::AA_DontCreateNativeWidgetSiblings, true);
 //    app.setApplicationVersion(DApplication::buildVersion("20190830"));
     app.setApplicationVersion(DApplication::buildVersion(VERSION));

@@ -291,7 +291,7 @@ DMenu *ActionFactory::playlistContextMenu()
         auto *menu = new DMenu();
 
 
-        DEF_ACTION(tr("从列表中删除"), ActionKind::PlaylistRemoveItem);
+        DEF_ACTION(tr("Delete from playlist"), ActionKind::PlaylistRemoveItem);
         DEF_ACTION(tr("Clear playlist"), ActionKind::EmptyPlaylist);
         DEF_ACTION(tr("Display in file manager"), ActionKind::PlaylistOpenItemInFM);
         DEF_ACTION(tr("Film info"), ActionKind::PlaylistItemInfo);

@@ -2039,7 +2039,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                 popup = new DFloatingMessage(DFloatingMessage::TransientType,this);
             }
             popup->setIcon(QIcon(QString(":/resources/icons/%1.svg").arg(success?"icon_toast_sucess":"fail")));
-            popup->setMessage(success?tr("已截图"):tr("截图保存失败"));
+            popup->setMessage(success?tr("The screenshot is saved"):tr("Failed to save the screenshot"));
             popup->setGeometry(width()/2-50,height()-125,110,48);
             popup->show();
 
@@ -2091,7 +2091,7 @@ void MainWindow::onBurstScreenshot(const QImage &frame, qint64 timestamp)
 {
     qDebug() << _burstShoots.size();
     if (!frame.isNull()) {
-        auto msg = QString(tr("剧情连拍中，请稍候"));
+        auto msg = QString(tr("Screenshot is working,please wait"));
         _nwComm->updateWithMessage(msg);
 
         _burstShoots.append(qMakePair(frame, timestamp));
@@ -2420,14 +2420,14 @@ _finish:
 void MainWindow::checkOnlineState(const bool isOnline)
 {
     if (!isOnline) {
-        this->sendMessage(QIcon(":/icons/deepin/builtin/icons/ddc_warning_30px.svg"), QObject::tr("网络已断开"));
+        this->sendMessage(QIcon(":/icons/deepin/builtin/icons/ddc_warning_30px.svg"), QObject::tr("Network disconnected"));
     }
 }
 
 void MainWindow::checkOnlineSubtitle(const OnlineSubtitle::FailReason reason)
 {
     if (OnlineSubtitle::FailReason::NoSubFound == reason) {
-        _nwComm->updateWithMessage(tr("没有匹配的在线字幕"));
+        _nwComm->updateWithMessage(tr("No matching online subtitles"));
     }
 }
 
