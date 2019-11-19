@@ -39,6 +39,7 @@
 #include "actions.h"
 #include "widgets/titlebar.h"
 #include <DPushButton>
+#include "online_sub.h"
 
 namespace Dtk {
 namespace Widget {
@@ -117,6 +118,7 @@ public slots:
     void suspendToolsWindow();
     void resumeToolsWindow();
     void checkOnlineState(const bool isOnline);
+    void checkOnlineSubtitle(const OnlineSubtitle::FailReason reason);
 
 protected:
     void showEvent(QShowEvent *event) override;

@@ -865,6 +865,7 @@ MainWindow::MainWindow(QWidget *parent)
 #endif
 
     connect(_engine, &PlayerEngine::onlineStateChanged, this, &MainWindow::checkOnlineState);
+    connect(&OnlineSubtitle::get(), &OnlineSubtitle::onlineSubtitleStateChanged, this, &MainWindow::checkOnlineSubtitle);
 }
 
 void MainWindow::setupTitlebar()
@@ -2406,6 +2407,13 @@ void MainWindow::checkOnlineState(const bool isOnline)
 {
     if (!isOnline) {
         this->sendMessage(QIcon(":/icons/deepin/builtin/icons/ddc_warning_30px.svg"), QObject::tr("网络已断开"));
+    }
+}
+
+void MainWindow::checkOnlineSubtitle(const OnlineSubtitle::FailReason reason)
+{
+    if (OnlineSubtitle::FailReason::NoSubFound == reason) {
+        _nwComm->updateWithMessage(tr("没有匹配的在线字幕"));
     }
 }
 

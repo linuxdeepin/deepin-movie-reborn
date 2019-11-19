@@ -175,10 +175,10 @@ void OnlineSubtitle::replyReceived(QNetworkReply* reply)
     if (reply->property("type") == "meta") {
         auto data = reply->readAll();
         qDebug() << "data size " << data.size() << (int)data[0];
-        if (data.size() == 1 && (int)data[0] == -1) {
+        if ((0 == data.size()) || (data.size() == 1 && (int)data[0] == -1)) {
             qDebug() << "no subtitle found";
             _lastReason = FailReason::NoSubFound;
-            subtitlesDownloadComplete();
+            emit onlineSubtitleStateChanged(_lastReason);
             return;
         }
 

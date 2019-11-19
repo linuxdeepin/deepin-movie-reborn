@@ -68,6 +68,7 @@ private slots:
 
 signals:
     void subtitlesDownloadedFor(const QUrl& url, const QList<QString>& filenames, FailReason r);
+    void onlineSubtitleStateChanged(const FailReason reason);
 
 private:
     QString _defaultLocation;
