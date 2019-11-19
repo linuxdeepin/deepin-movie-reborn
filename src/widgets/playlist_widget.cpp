@@ -1028,6 +1028,7 @@ void PlaylistWidget::appendItems()
         auto w = new PlayItemWidget(*p, this->_playlist, p - items.begin(), this);
 
         auto item = new QListWidgetItem;
+        item->setFlags(Qt::NoItemFlags);
         _playlist->addItem(item);
         _playlist->setItemWidget(item, w);
 
@@ -1056,6 +1057,7 @@ void PlaylistWidget::loadPlaylist()
     while (p != items.end()) {
         auto w = new PlayItemWidget(*p, this->_playlist, p - items.begin(), this);
         auto item = new QListWidgetItem;
+        item->setFlags(Qt::NoItemFlags);
         _playlist->addItem(item);
         _playlist->setItemWidget(item, w);
 
