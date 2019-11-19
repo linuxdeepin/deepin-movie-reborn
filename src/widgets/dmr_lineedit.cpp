@@ -34,7 +34,7 @@ namespace dmr {
 LineEdit::LineEdit(QWidget* parent)
     :QLineEdit(parent)
 {
-    setFixedHeight(20);
+    setFixedHeight(30);
 //    setStyleSheet(R"(
 //	QLineEdit {
 //        font-size: 11px;
