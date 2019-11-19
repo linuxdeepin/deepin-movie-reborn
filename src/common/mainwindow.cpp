@@ -3050,8 +3050,9 @@ void MainWindow::dropEvent(QDropEvent *ev)
             }
             QPixmap icon = utils::LoadHiDPIPixmap(QString(":/resources/icons/%1.svg").arg(succ ? "success" : "fail"));
             _nwComm->popupWithIcon(succ ? tr("Load successfully") : tr("Load failed"), icon);
+
+            return;
         }
-        return;
     }
 
     {

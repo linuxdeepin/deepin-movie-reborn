@@ -144,7 +144,11 @@ int main(int argc, char *argv[])
     QDBusConnection::sessionBus().registerObject("/", &mw);
 
     if (!toOpenFiles.isEmpty()) {
-        mw.playList(toOpenFiles);
+        if (toOpenFiles.size() == 1) {
+            mw.play(toOpenFiles[0]);
+        } else {
+            mw.playList(toOpenFiles);
+        }
     }
     return app.exec();
 }
