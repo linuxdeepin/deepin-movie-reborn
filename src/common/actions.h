@@ -1,4 +1,4 @@
-/* 
+/*
  * (c) 2017, Deepin Technology Co., Ltd. <support@deepin.org>
  *
  * This program is free software; you can redistribute it and/or
@@ -28,7 +28,7 @@
  * files in the program, then also delete it here.
  */
 #ifndef _DMR_ACTIONS_H
-#define _DMR_ACTIONS_H 
+#define _DMR_ACTIONS_H
 
 #include <QtWidgets>
 #include <DMenu>
@@ -39,106 +39,114 @@ namespace dmr {
 class PlayingMovieInfo;
 
 
-class ActionFactory: public QObject {
+class ActionFactory: public QObject
+{
     Q_OBJECT
 public:
-enum ActionKind {
-    Invalid = 0,
-    OpenFile = 1,
-    OpenFileList,
-    OpenDirectory,
-    StartPlay,
-    Settings,
-    LightTheme,
-    About,
-    Help,
-    Exit,
+    enum ActionKind {
+        Invalid = 0,
+        OpenFile = 1,
+        OpenFileList,
+        OpenDirectory,
+        StartPlay,
+        Settings,
+        LightTheme,
+        About,
+        Help,
+        Exit,
 
-    TogglePlaylist,
-    EmptyPlaylist,
-    PlaylistRemoveItem,
-    PlaylistOpenItemInFM,
-    PlaylistItemInfo,
-    MovieInfo,
-    OpenUrl,
-    OpenCdrom,
-    ToggleFullscreen,
-    QuitFullscreen,
-    ToggleMiniMode,
-    WindowAbove,
-    LoadSubtitle,
-    SelectSubtitle, // stub for subs loaded from movie
-    HideSubtitle,
-    MatchOnlineSubtitle,
-    ChangeSubCodepage,
-    Screenshot,
-    BurstScreenshot,
+        TogglePlaylist,
+        EmptyPlaylist,
+        PlaylistRemoveItem,
+        PlaylistOpenItemInFM,
+        PlaylistItemInfo,
+        MovieInfo,
+        OpenUrl,
+        OpenCdrom,
+        ToggleFullscreen,
+        QuitFullscreen,
+        ToggleMiniMode,
+        WindowAbove,
+        LoadSubtitle,
+        SelectSubtitle, // stub for subs loaded from movie
+        HideSubtitle,
+        MatchOnlineSubtitle,
+        ChangeSubCodepage,
+        Screenshot,
+        BurstScreenshot,
 
-    SeekForward,
-    SeekForwardLarge,
-    SeekBackward,
-    SeekBackwardLarge,
-    SeekAbsolute,
-    TogglePause,
-    Stop,
-    AccelPlayback,
-    DecelPlayback,
-    ResetPlayback,
-    SubDelay, //backward
-    SubForward,
+        SeekForward,
+        SeekForwardLarge,
+        SeekBackward,
+        SeekBackwardLarge,
+        SeekAbsolute,
+        TogglePause,
+        Stop,
+        AccelPlayback,
+        DecelPlayback,
+        ResetPlayback,
+        SubDelay, //backward
+        SubForward,
 
-    //play mode
-    OrderPlay,
-    ShufflePlay,
-    SinglePlay,
-    SingleLoop,
-    ListLoop,
+        //play mode
+        OrderPlay,
+        ShufflePlay,
+        SinglePlay,
+        SingleLoop,
+        ListLoop,
 
-    //frame
-    DefaultFrame,
-    Ratio4x3Frame,
-    Ratio16x9Frame,
-    Ratio16x10Frame,
-    Ratio185x1Frame,
-    Ratio235x1Frame,
-    ClockwiseFrame,
-    CounterclockwiseFrame,
-    NextFrame,
-    PreviousFrame,
+        //frame
+        DefaultFrame,
+        Ratio4x3Frame,
+        Ratio16x9Frame,
+        Ratio16x10Frame,
+        Ratio185x1Frame,
+        Ratio235x1Frame,
+        ClockwiseFrame,
+        CounterclockwiseFrame,
+        NextFrame,
+        PreviousFrame,
 
-    //sound
-    Stereo,
-    LeftChannel,
-    RightChannel,
-    LoadTrack,
-    SelectTrack, // stub for tracks loaded from movie
+        //sound
+        Stereo,
+        LeftChannel,
+        RightChannel,
+        LoadTrack,
+        SelectTrack, // stub for tracks loaded from movie
 
-    GotoPlaylistNext,
-    GotoPlaylistPrev,
-    GotoPlaylistSelected,
-    VolumeUp,
-    VolumeDown,
-    ToggleMute,
-    ChangeVolume,
+        GotoPlaylistNext,
+        GotoPlaylistPrev,
+        GotoPlaylistSelected,
+        VolumeUp,
+        VolumeDown,
+        ToggleMute,
+        ChangeVolume,
 
 
-    ViewShortcut,
-};
-Q_ENUM(ActionKind)
+        ViewShortcut,
+    };
+    Q_ENUM(ActionKind)
 
-    static ActionFactory& get();
+    static ActionFactory &get();
 
-    DMenu* titlebarMenu();
-    DMenu* mainContextMenu();
-    template<class UnaryFunction> 
+    DMenu *titlebarMenu();
+    DMenu *mainContextMenu();
+    template<class UnaryFunction>
     void forEachInMainMenu(UnaryFunction f);
-    DMenu* playlistContextMenu();
-    QList<QAction*> findActionsByKind(ActionKind kd);
-    void updateMainActionsForMovie(const PlayingMovieInfo& pmf);
+    DMenu *playlistContextMenu();
+    QList<QAction *> findActionsByKind(ActionKind kd);
+    void updateMainActionsForMovie(const PlayingMovieInfo &pmf);
 
-    static bool actionHasArgs(QAction* act) { return act->property("args").isValid(); }
-    static QList<QVariant> actionArgs(QAction* act) { return act->property("args").toList(); }
-    static ActionKind actionKind(QAction* act) {
+    static bool actionHasArgs(QAction *act)
+    {
+        return act->property("args").isValid();
+    }
+    static QList<QVariant> actionArgs(QAction *act)
+    {
+        return act->property("args").toList();
+    }
+    static ActionKind actionKind(QAction *act)
+    {
 #if QT_VERSION < QT_VERSION_CHECK(5, 6, 2)
         auto kd = (ActionKind)act->property("kind").value<int>();
 #else
@@ -147,11 +155,14 @@ Q_ENUM(ActionKind)
         return kd;
     }
 
-    static bool isActionFromShortcut(QAction* act) {
+    static bool isActionFromShortcut(QAction *act)
+    {
         auto s = act->property("origin");
         return s.toString() == "shortcut";
     }
 
+signals:
+    void frameMenuEnable(bool);
 private:
     ActionFactory() {}
     DMenu *_titlebarMenu {nullptr};
@@ -159,7 +170,7 @@ private:
     DMenu *_subtitleMenu {nullptr};
     DMenu *_tracksMenu {nullptr};
     DMenu *_playlistMenu {nullptr};
-    QList<QAction*> _contextMenuActions;
+    QList<QAction *> _contextMenuActions;
 };
 
 template<class UnaryFunction>

@@ -1,4 +1,4 @@
-/* 
+/*
  * (c) 2017, Deepin Technology Co., Ltd. <support@deepin.org>
  *
  * This program is free software; you can redistribute it and/or
@@ -33,9 +33,9 @@
 
 namespace dmr {
 
-static ActionFactory* _factory = nullptr;
+static ActionFactory *_factory = nullptr;
 
-ActionFactory& ActionFactory::get()
+ActionFactory &ActionFactory::get()
 {
     if (_factory == nullptr) {
         _factory = new ActionFactory();
@@ -51,7 +51,7 @@ ActionFactory& ActionFactory::get()
     connect(act, &QObject::destroyed, [=](QObject* o) { \
         _contextMenuActions.removeOne((QAction*)o); \
     }); \
-} while (0) 
+} while (0)
 
 #define DEF_ACTION_CHECKED(NAME, KD) do { \
     auto *act = menu->addAction((NAME)); \
@@ -61,7 +61,7 @@ ActionFactory& ActionFactory::get()
     connect(act, &QObject::destroyed, [=](QObject* o) { \
         _contextMenuActions.removeOne((QAction*)o); \
     }); \
-} while (0) 
+} while (0)
 
 #define DEF_ACTION_CHECKED_GROUP(NAME, KD, GROUP) do { \
     auto *act = menu->addAction((NAME)); \
@@ -72,9 +72,9 @@ ActionFactory& ActionFactory::get()
     connect(act, &QObject::destroyed, [=](QObject* o) { \
         _contextMenuActions.removeOne((QAction*)o); \
     }); \
-} while (0) 
+} while (0)
 
-DMenu* ActionFactory::titlebarMenu()
+DMenu *ActionFactory::titlebarMenu()
 {
     if (!_titlebarMenu) {
         auto *menu = new DMenu();
@@ -94,7 +94,7 @@ DMenu* ActionFactory::titlebarMenu()
     return _titlebarMenu;
 }
 
-DMenu* ActionFactory::mainContextMenu()
+DMenu *ActionFactory::mainContextMenu()
 {
     if (!_contextMenu) {
         auto *menu = new DMenu();
@@ -110,7 +110,8 @@ DMenu* ActionFactory::mainContextMenu()
         DEF_ACTION_CHECKED(tr("Always on Top"), ActionKind::WindowAbove);
         menu->addSeparator();
 
-        { //sub menu
+        {
+            //sub menu
             auto *parent = menu;
             auto *menu = new DMenu(tr("Play Mode"));
             auto group = new QActionGroup(menu);
@@ -124,7 +125,9 @@ DMenu* ActionFactory::mainContextMenu()
             parent->addMenu(menu);
         }
 
-        { //sub menu
+        {
+            //sub menu
+
             auto *parent = menu;
             auto *menu = new DMenu(tr("Frame"));
             auto group = new QActionGroup(menu);
@@ -145,9 +148,14 @@ DMenu* ActionFactory::mainContextMenu()
             DEF_ACTION(tr("Previous frame"), ActionKind::PreviousFrame);
 
             parent->addMenu(menu);
+            menu->setEnabled(false);
+            connect(this, &ActionFactory::frameMenuEnable, this, [ = ](bool statu) {
+                menu->setEnabled(statu);
+            });
         }
 
-        { //sub menu
+        {
+            //sub menu
             auto *parent = menu;
             auto *menu = new DMenu(tr("Sound"));
             {
@@ -171,7 +179,8 @@ DMenu* ActionFactory::mainContextMenu()
             parent->addMenu(menu);
         }
 
-        { //sub menu
+        {
+            //sub menu
             auto *parent = menu;
             auto *menu = new DMenu(tr("Subtitle"));
             DEF_ACTION(tr("Load"), ActionKind::LoadSubtitle);
@@ -253,7 +262,8 @@ DMenu* ActionFactory::mainContextMenu()
             parent->addMenu(menu);
         }
 
-        { //sub menu
+        {
+            //sub menu
             auto *parent = menu;
             auto *menu = new DMenu(tr("Screenshot"));
             DEF_ACTION(tr("Film Screenshot"), ActionKind::Screenshot);
@@ -274,7 +284,7 @@ DMenu* ActionFactory::mainContextMenu()
     return _contextMenu;
 }
 
-DMenu* ActionFactory::playlistContextMenu()
+DMenu *ActionFactory::playlistContextMenu()
 {
     if (!_playlistMenu) {
         auto *menu = new DMenu();
@@ -292,9 +302,9 @@ DMenu* ActionFactory::playlistContextMenu()
 
 }
 
-QList<QAction*> ActionFactory::findActionsByKind(ActionKind target_kd)
+QList<QAction *> ActionFactory::findActionsByKind(ActionKind target_kd)
 {
-    QList<QAction*> res;
+    QList<QAction *> res;
     auto p = _contextMenuActions.begin();
     while (p != _contextMenuActions.end()) {
 #if QT_VERSION < QT_VERSION_CHECK(5, 7, 0)
@@ -310,7 +320,7 @@ QList<QAction*> ActionFactory::findActionsByKind(ActionKind target_kd)
     return res;
 }
 
-void ActionFactory::updateMainActionsForMovie(const PlayingMovieInfo& pmf)
+void ActionFactory::updateMainActionsForMovie(const PlayingMovieInfo &pmf)
 {
     qDebug() << __func__;
     if (_subtitleMenu) {

@@ -110,16 +110,18 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
     auto optionWidget = DSettingsWidgetFactory::createTwoColumWidget(option, main);
     workaround_updateStyle(optionWidget, "dlight");
 
-    auto validate = [=](QString name, bool alert = true) -> bool {
+    auto validate = [ = ](QString name, bool alert = true) -> bool {
         name = name.trimmed();
         if (name.isEmpty()) return false;
 
-        if (name.size() && name[0] == '~') {
+        if (name.size() && name[0] == '~')
+        {
             name.replace(0, 1, QDir::homePath());
         }
 
         QFileInfo fi(name);
-        if (fi.exists()) {
+        if (fi.exists())
+        {
             if (!fi.isDir()) {
                 if (alert) le->showAlertMessage(QObject::tr("Invalid folder"));
                 return false;
@@ -134,16 +136,16 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
         return true;
     };
 
-    option->connect(icon, &DPushButton::clicked, [=]() {
+    option->connect(icon, &DPushButton::clicked, [ = ]() {
         QString name = QFileDialog::getExistingDirectory(0, QObject::tr("Open folder"),
-                MainWindow::lastOpenedPath(),
-                QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+                                                         MainWindow::lastOpenedPath(),
+                                                         QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
         if (validate(name, false)) {
             option->setValue(name);
         }
     });
 
-    option->connect(le, &DLineEdit::editingFinished, option, [=]() {
+    option->connect(le, &DLineEdit::editingFinished, option, [ = ]() {
         if (validate(le->text(), false)) {
             option->setValue(le->text());
         } else {
@@ -152,54 +154,58 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
         }
     });
 
-    option->connect(le, &DLineEdit::textEdited, option, [=](const QString& newStr) {
+    option->connect(le, &DLineEdit::textEdited, option, [ = ](const QString & newStr) {
         validate(newStr);
     });
 
     option->connect(option, &DTK_CORE_NAMESPACE::DSettingsOption::valueChanged, le,
-        [ = ](const QVariant & value) {
-            le->setText(value.toString());
-            le->update();
-        });
+    [ = ](const QVariant & value) {
+        le->setText(value.toString());
+        le->update();
+    });
 
     return  optionWidget;
 }
 
-class MainWindowFocusMonitor: public QAbstractNativeEventFilter {
+class MainWindowFocusMonitor: public QAbstractNativeEventFilter
+{
 public:
-    MainWindowFocusMonitor(MainWindow* src) :QAbstractNativeEventFilter(), _source(src) {
+    MainWindowFocusMonitor(MainWindow *src) : QAbstractNativeEventFilter(), _source(src)
+    {
         qApp->installNativeEventFilter(this);
     }
 
-    ~MainWindowFocusMonitor() {
+    ~MainWindowFocusMonitor()
+    {
         qApp->removeNativeEventFilter(this);
     }
 
-    bool nativeEventFilter(const QByteArray &eventType, void *message, long *) {
-        if(Q_LIKELY(eventType == "xcb_generic_event_t")) {
-            xcb_generic_event_t* event = static_cast<xcb_generic_event_t *>(message);
+    bool nativeEventFilter(const QByteArray &eventType, void *message, long *)
+    {
+        if (Q_LIKELY(eventType == "xcb_generic_event_t")) {
+            xcb_generic_event_t *event = static_cast<xcb_generic_event_t *>(message);
             switch (event->response_type & ~0x80) {
-                case XCB_LEAVE_NOTIFY: {
-                    xcb_leave_notify_event_t *dne = (xcb_leave_notify_event_t*)event;
-                    auto w = _source->windowHandle();
-                    if (dne->event == w->winId()) {
-                        //qDebug() << "---------  leave " << dne->event << dne->child;
-                        emit _source->windowLeaved();
-                    }
-                    break;
+            case XCB_LEAVE_NOTIFY: {
+                xcb_leave_notify_event_t *dne = (xcb_leave_notify_event_t *)event;
+                auto w = _source->windowHandle();
+                if (dne->event == w->winId()) {
+                    //qDebug() << "---------  leave " << dne->event << dne->child;
+                    emit _source->windowLeaved();
                 }
+                break;
+            }
 
-                case XCB_ENTER_NOTIFY: {
-                    xcb_enter_notify_event_t *dne = (xcb_enter_notify_event_t*)event;
-                    auto w = _source->windowHandle();
-                    if (dne->event == w->winId()) {
-                        //qDebug() << "---------  enter " << dne->event << dne->child;
-                        emit _source->windowEntered();
-                    }
-                    break;
+            case XCB_ENTER_NOTIFY: {
+                xcb_enter_notify_event_t *dne = (xcb_enter_notify_event_t *)event;
+                auto w = _source->windowHandle();
+                if (dne->event == w->winId()) {
+                    //qDebug() << "---------  enter " << dne->event << dne->child;
+                    emit _source->windowEntered();
                 }
-                default:
-                    break;
+                break;
+            }
+            default:
+                break;
             }
         }
 
@@ -209,33 +215,37 @@ public:
     MainWindow *_source;
 };
 
-class MainWindowPropertyMonitor: public QAbstractNativeEventFilter {
+class MainWindowPropertyMonitor: public QAbstractNativeEventFilter
+{
 public:
     MainWindowPropertyMonitor(MainWindow *src)
-        :QAbstractNativeEventFilter(), _mw(src), _source(src->windowHandle()) {
+        : QAbstractNativeEventFilter(), _mw(src), _source(src->windowHandle())
+    {
         qApp->installNativeEventFilter(this);
 
         _atomWMState = Utility::internAtom("_NET_WM_STATE");
     }
 
-    ~MainWindowPropertyMonitor() {
+    ~MainWindowPropertyMonitor()
+    {
         qApp->removeNativeEventFilter(this);
     }
 
-    bool nativeEventFilter(const QByteArray &eventType, void *message, long *) {
-        if(Q_LIKELY(eventType == "xcb_generic_event_t")) {
-            xcb_generic_event_t* event = static_cast<xcb_generic_event_t *>(message);
+    bool nativeEventFilter(const QByteArray &eventType, void *message, long *)
+    {
+        if (Q_LIKELY(eventType == "xcb_generic_event_t")) {
+            xcb_generic_event_t *event = static_cast<xcb_generic_event_t *>(message);
             switch (event->response_type & ~0x80) {
-                case XCB_PROPERTY_NOTIFY: {
-                    xcb_property_notify_event_t *pne = (xcb_property_notify_event_t*)(event);
-                    if (pne->atom == _atomWMState && pne->window == (xcb_window_t)_source->winId()) {
-                        _mw->syncStaysOnTop();
-                    }
-                    break;
+            case XCB_PROPERTY_NOTIFY: {
+                xcb_property_notify_event_t *pne = (xcb_property_notify_event_t *)(event);
+                if (pne->atom == _atomWMState && pne->window == (xcb_window_t)_source->winId()) {
+                    _mw->syncStaysOnTop();
                 }
+                break;
+            }
 
-                default:
-                    break;
+            default:
+                break;
             }
         }
 
@@ -243,7 +253,7 @@ public:
     }
 
     MainWindow *_mw {nullptr};
-    QWindow* _source {nullptr};
+    QWindow *_source {nullptr};
     xcb_atom_t _atomWMState;
 };
 
@@ -251,261 +261,268 @@ public:
 class MainWindowEventListener : public QObject
 {
     Q_OBJECT
-    public:
-        explicit MainWindowEventListener(QWidget *target)
-            : QObject(target), _window(target->windowHandle())
+public:
+    explicit MainWindowEventListener(QWidget *target)
+        : QObject(target), _window(target->windowHandle())
+    {
+    }
+
+    ~MainWindowEventListener()
+    {
+    }
+
+    void setEnabled(bool v)
+    {
+        enabled = v;
+    }
+
+protected:
+    bool eventFilter(QObject *obj, QEvent *event) Q_DECL_OVERRIDE {
+        QWindow *window = qobject_cast<QWindow *>(obj);
+        if (!window) return false;
+
+        switch ((int)event->type())
         {
-        }
+        case QEvent::MouseButtonPress: {
+            if (!enabled) return false;
+            QMouseEvent *e = static_cast<QMouseEvent *>(event);
+            setLeftButtonPressed(true);
+            auto mw = static_cast<MainWindow *>(parent());
+            if (mw->insideResizeArea(e->globalPos()) && lastCornerEdge != Utility::NoneEdge)
+                startResizing = true;
 
-        ~MainWindowEventListener()
-        {
-        }
-
-        void setEnabled(bool v)
-        {
-            enabled = v;
-        }
-
-    protected:
-        bool eventFilter(QObject *obj, QEvent *event) Q_DECL_OVERRIDE {
-            QWindow *window = qobject_cast<QWindow*>(obj);
-            if (!window) return false;
-
-            switch ((int)event->type()) {
-            case QEvent::MouseButtonPress: {
-                if (!enabled) return false;
-                QMouseEvent *e = static_cast<QMouseEvent*>(event);
-                setLeftButtonPressed(true);
-                auto mw = static_cast<MainWindow*>(parent());
-                if (mw->insideResizeArea(e->globalPos()) && lastCornerEdge != Utility::NoneEdge)
-                    startResizing = true;
-
-                mw->capturedMousePressEvent(e);
-                if (startResizing) {
-                    return true;
-                }
-                break;
+            mw->capturedMousePressEvent(e);
+            if (startResizing) {
+                return true;
             }
-            case QEvent::MouseButtonRelease: {
-                if (!enabled) return false;
-                QMouseEvent *e = static_cast<QMouseEvent*>(event);
-                setLeftButtonPressed(false);
-                qApp->setOverrideCursor(window->cursor());
+            break;
+        }
+        case QEvent::MouseButtonRelease: {
+            if (!enabled) return false;
+            QMouseEvent *e = static_cast<QMouseEvent *>(event);
+            setLeftButtonPressed(false);
+            qApp->setOverrideCursor(window->cursor());
 
-                auto mw = static_cast<MainWindow*>(parent());
-                mw->capturedMouseReleaseEvent(e);
-                if (startResizing) {
-                    startResizing = false;
-                    return true;
-                }
+            auto mw = static_cast<MainWindow *>(parent());
+            mw->capturedMouseReleaseEvent(e);
+            if (startResizing) {
                 startResizing = false;
-                break;
+                return true;
             }
-            case QEvent::MouseMove: {
-                QMouseEvent *e = static_cast<QMouseEvent*>(event);
-                auto mw = static_cast<MainWindow*>(parent());
-                mw->resumeToolsWindow();
+            startResizing = false;
+            break;
+        }
+        case QEvent::MouseMove: {
+            QMouseEvent *e = static_cast<QMouseEvent *>(event);
+            auto mw = static_cast<MainWindow *>(parent());
+            mw->resumeToolsWindow();
 
-                if (!enabled) return false;
-                const QRect window_visible_rect = _window->frameGeometry() - mw->dragMargins();
+            if (!enabled) return false;
+            const QRect window_visible_rect = _window->frameGeometry() - mw->dragMargins();
 
-                if (!leftButtonPressed) {
-                    if (mw->insideResizeArea(e->globalPos())) {
-                        Utility::CornerEdge mouseCorner = Utility::NoneEdge;
-                        QRect cornerRect;
+            if (!leftButtonPressed) {
+                if (mw->insideResizeArea(e->globalPos())) {
+                    Utility::CornerEdge mouseCorner = Utility::NoneEdge;
+                    QRect cornerRect;
 
-                        /// begin set cursor corner type
-                        cornerRect.setSize(QSize(MOUSE_MARGINS * 2, MOUSE_MARGINS * 2));
-                        cornerRect.moveTopLeft(_window->frameGeometry().topLeft());
-                        if (cornerRect.contains(e->globalPos())) {
-                            mouseCorner = Utility::TopLeftCorner;
-                            goto set_cursor;
-                        }
+                    /// begin set cursor corner type
+                    cornerRect.setSize(QSize(MOUSE_MARGINS * 2, MOUSE_MARGINS * 2));
+                    cornerRect.moveTopLeft(_window->frameGeometry().topLeft());
+                    if (cornerRect.contains(e->globalPos())) {
+                        mouseCorner = Utility::TopLeftCorner;
+                        goto set_cursor;
+                    }
 
-                        cornerRect.moveTopRight(_window->frameGeometry().topRight());
-                        if (cornerRect.contains(e->globalPos())) {
-                            mouseCorner = Utility::TopRightCorner;
-                            goto set_cursor;
-                        }
+                    cornerRect.moveTopRight(_window->frameGeometry().topRight());
+                    if (cornerRect.contains(e->globalPos())) {
+                        mouseCorner = Utility::TopRightCorner;
+                        goto set_cursor;
+                    }
 
-                        cornerRect.moveBottomRight(_window->frameGeometry().bottomRight());
-                        if (cornerRect.contains(e->globalPos())) {
-                            mouseCorner = Utility::BottomRightCorner;
-                            goto set_cursor;
-                        }
+                    cornerRect.moveBottomRight(_window->frameGeometry().bottomRight());
+                    if (cornerRect.contains(e->globalPos())) {
+                        mouseCorner = Utility::BottomRightCorner;
+                        goto set_cursor;
+                    }
 
-                        cornerRect.moveBottomLeft(_window->frameGeometry().bottomLeft());
-                        if (cornerRect.contains(e->globalPos())) {
-                            mouseCorner = Utility::BottomLeftCorner;
-                            goto set_cursor;
-                        }
+                    cornerRect.moveBottomLeft(_window->frameGeometry().bottomLeft());
+                    if (cornerRect.contains(e->globalPos())) {
+                        mouseCorner = Utility::BottomLeftCorner;
+                        goto set_cursor;
+                    }
 
-                        goto skip_set_cursor; // disable edges
+                    goto skip_set_cursor; // disable edges
 
-                        /// begin set cursor edge type
-                        if (e->globalX() <= window_visible_rect.x()) {
-                            mouseCorner = Utility::LeftEdge;
-                        } else if (e->globalX() < window_visible_rect.right()) {
-                            if (e->globalY() <= window_visible_rect.y()) {
-                                mouseCorner = Utility::TopEdge;
-                            } else if (e->globalY() >= window_visible_rect.bottom()) {
-                                mouseCorner = Utility::BottomEdge;
-                            } else {
-                                goto skip_set_cursor;
-                            }
-                        } else if (e->globalX() >= window_visible_rect.right()) {
-                            mouseCorner = Utility::RightEdge;
+                    /// begin set cursor edge type
+                    if (e->globalX() <= window_visible_rect.x()) {
+                        mouseCorner = Utility::LeftEdge;
+                    } else if (e->globalX() < window_visible_rect.right()) {
+                        if (e->globalY() <= window_visible_rect.y()) {
+                            mouseCorner = Utility::TopEdge;
+                        } else if (e->globalY() >= window_visible_rect.bottom()) {
+                            mouseCorner = Utility::BottomEdge;
                         } else {
                             goto skip_set_cursor;
                         }
+                    } else if (e->globalX() >= window_visible_rect.right()) {
+                        mouseCorner = Utility::RightEdge;
+                    } else {
+                        goto skip_set_cursor;
+                    }
 set_cursor:
-                        if (window->property("_d_real_winId").isValid()) {
-                            auto real_wid = window->property("_d_real_winId").toUInt();
-                            Utility::setWindowCursor(real_wid, mouseCorner);
-                        } else {
-                            Utility::setWindowCursor(window->winId(), mouseCorner);
-                        }
+                    if (window->property("_d_real_winId").isValid()) {
+                        auto real_wid = window->property("_d_real_winId").toUInt();
+                        Utility::setWindowCursor(real_wid, mouseCorner);
+                    } else {
+                        Utility::setWindowCursor(window->winId(), mouseCorner);
+                    }
 
-                        if (qApp->mouseButtons() == Qt::LeftButton) {
-                            updateGeometry(mouseCorner, e);
-                        }
-                        lastCornerEdge = mouseCorner;
-                        return true;
+                    if (qApp->mouseButtons() == Qt::LeftButton) {
+                        updateGeometry(mouseCorner, e);
+                    }
+                    lastCornerEdge = mouseCorner;
+                    return true;
 
 skip_set_cursor:
-                        lastCornerEdge = mouseCorner = Utility::NoneEdge;
-                        return false;
-                    } else {
-                        qApp->setOverrideCursor(window->cursor());
-                    }
+                    lastCornerEdge = mouseCorner = Utility::NoneEdge;
+                    return false;
                 } else {
-                    if (startResizing) {
-                        updateGeometry(lastCornerEdge, e);
-                        return true;
-                    }
-                }
-
-                break;
-            }
-
-            default: break;
-            }
-
-            return false;
-        }
-
-    private:
-        void setLeftButtonPressed(bool pressed) {
-            if (leftButtonPressed == pressed)
-                return;
-
-            if (!pressed)
-                Utility::cancelWindowMoveResize(_window->winId());
-
-            leftButtonPressed = pressed;
-        }
-
-        void updateGeometry(Utility::CornerEdge edge, QMouseEvent* e) {
-            auto mw = static_cast<MainWindow*>(parent());
-            bool keep_ratio = mw->engine()->state() != PlayerEngine::CoreState::Idle;
-            auto old_geom = mw->frameGeometry();
-            auto geom = mw->frameGeometry();
-            qreal ratio = (qreal)geom.width() / geom.height();
-
-            // disable edges
-            switch (edge) {
-                case Utility::BottomEdge:
-                case Utility::TopEdge:
-                case Utility::LeftEdge:
-                case Utility::RightEdge:
-                case Utility::NoneEdge:
-                    return;
-                default: break;
-            }
-
-            if (keep_ratio) {
-                auto sz = mw->engine()->videoSize();
-                if (sz.isEmpty()) {
-                    const auto& mi = mw->engine()->playlist().currentInfo().mi;
-                    sz = QSize(mi.width, mi.height);
-                }
-
-                ratio = sz.width() / (qreal)sz.height();
-                switch (edge) {
-                    case Utility::TopLeftCorner:
-                        geom.setLeft(e->globalX());
-                        geom.setTop(geom.bottom() - geom.width() / ratio);
-                        break;
-                    case Utility::BottomLeftCorner:
-                    case Utility::LeftEdge:
-                        geom.setLeft(e->globalX());
-                        geom.setHeight(geom.width() / ratio);
-                        break;
-                    case Utility::BottomRightCorner:
-                    case Utility::RightEdge:
-                        geom.setRight(e->globalX());
-                        geom.setHeight(geom.width() / ratio);
-                        break;
-                    case Utility::TopRightCorner:
-                    case Utility::TopEdge:
-                        geom.setTop(e->globalY());
-                        geom.setWidth(geom.height() * ratio);
-                        break;
-                    case Utility::BottomEdge:
-                        geom.setBottom(e->globalY());
-                        geom.setWidth(geom.height() * ratio);
-                        break;
-                    default: break;
+                    qApp->setOverrideCursor(window->cursor());
                 }
             } else {
-                switch (edge) {
-                    case Utility::BottomLeftCorner:
-                        geom.setBottomLeft(e->globalPos());
-                        break;
-                    case Utility::TopLeftCorner:
-                        geom.setTopLeft(e->globalPos());
-                        break;
-                    case Utility::LeftEdge:
-                        geom.setLeft(e->globalX());
-                        break;
-                    case Utility::BottomRightCorner:
-                        geom.setBottomRight(e->globalPos());
-                        break;
-                    case Utility::RightEdge:
-                        geom.setRight(e->globalX());
-                        break;
-                    case Utility::TopRightCorner:
-                        geom.setTopRight(e->globalPos());
-                        break;
-                    case Utility::TopEdge:
-                        geom.setTop(e->globalY());
-                        break;
-                    case Utility::BottomEdge:
-                        geom.setBottom(e->globalY());
-                        break;
-                    default: break;
+                if (startResizing) {
+                    updateGeometry(lastCornerEdge, e);
+                    return true;
                 }
             }
 
-            auto min = mw->minimumSize();
-            if (old_geom.width() <= min.width() && geom.left() > old_geom.left()) {
-                geom.setLeft(old_geom.left());
-            }
-            if (old_geom.height() <= min.height() && geom.top() > old_geom.top()) {
-                geom.setTop(old_geom.top());
-            }
-
-            geom.setWidth(qMax(geom.width(), min.width()));
-            geom.setHeight(qMax(geom.height(), min.height()));
-            mw->updateContentGeometry(geom);
-            mw->updateGeometryNotification(geom.size());
+            break;
         }
 
-        bool leftButtonPressed {false};
-        bool startResizing {false};
-        bool enabled {true};
-        Utility::CornerEdge lastCornerEdge;
-        QWindow* _window;
+        default:
+            break;
+        }
+
+        return false;
+    }
+
+private:
+    void setLeftButtonPressed(bool pressed)
+    {
+        if (leftButtonPressed == pressed)
+            return;
+
+        if (!pressed)
+            Utility::cancelWindowMoveResize(_window->winId());
+
+        leftButtonPressed = pressed;
+    }
+
+    void updateGeometry(Utility::CornerEdge edge, QMouseEvent *e)
+    {
+        auto mw = static_cast<MainWindow *>(parent());
+        bool keep_ratio = mw->engine()->state() != PlayerEngine::CoreState::Idle;
+        auto old_geom = mw->frameGeometry();
+        auto geom = mw->frameGeometry();
+        qreal ratio = (qreal)geom.width() / geom.height();
+
+        // disable edges
+        switch (edge) {
+        case Utility::BottomEdge:
+        case Utility::TopEdge:
+        case Utility::LeftEdge:
+        case Utility::RightEdge:
+        case Utility::NoneEdge:
+            return;
+        default:
+            break;
+        }
+
+        if (keep_ratio) {
+            auto sz = mw->engine()->videoSize();
+            if (sz.isEmpty()) {
+                const auto &mi = mw->engine()->playlist().currentInfo().mi;
+                sz = QSize(mi.width, mi.height);
+            }
+
+            ratio = sz.width() / (qreal)sz.height();
+            switch (edge) {
+            case Utility::TopLeftCorner:
+                geom.setLeft(e->globalX());
+                geom.setTop(geom.bottom() - geom.width() / ratio);
+                break;
+            case Utility::BottomLeftCorner:
+            case Utility::LeftEdge:
+                geom.setLeft(e->globalX());
+                geom.setHeight(geom.width() / ratio);
+                break;
+            case Utility::BottomRightCorner:
+            case Utility::RightEdge:
+                geom.setRight(e->globalX());
+                geom.setHeight(geom.width() / ratio);
+                break;
+            case Utility::TopRightCorner:
+            case Utility::TopEdge:
+                geom.setTop(e->globalY());
+                geom.setWidth(geom.height() * ratio);
+                break;
+            case Utility::BottomEdge:
+                geom.setBottom(e->globalY());
+                geom.setWidth(geom.height() * ratio);
+                break;
+            default:
+                break;
+            }
+        } else {
+            switch (edge) {
+            case Utility::BottomLeftCorner:
+                geom.setBottomLeft(e->globalPos());
+                break;
+            case Utility::TopLeftCorner:
+                geom.setTopLeft(e->globalPos());
+                break;
+            case Utility::LeftEdge:
+                geom.setLeft(e->globalX());
+                break;
+            case Utility::BottomRightCorner:
+                geom.setBottomRight(e->globalPos());
+                break;
+            case Utility::RightEdge:
+                geom.setRight(e->globalX());
+                break;
+            case Utility::TopRightCorner:
+                geom.setTopRight(e->globalPos());
+                break;
+            case Utility::TopEdge:
+                geom.setTop(e->globalY());
+                break;
+            case Utility::BottomEdge:
+                geom.setBottom(e->globalY());
+                break;
+            default:
+                break;
+            }
+        }
+
+        auto min = mw->minimumSize();
+        if (old_geom.width() <= min.width() && geom.left() > old_geom.left()) {
+            geom.setLeft(old_geom.left());
+        }
+        if (old_geom.height() <= min.height() && geom.top() > old_geom.top()) {
+            geom.setTop(old_geom.top());
+        }
+
+        geom.setWidth(qMax(geom.width(), min.width()));
+        geom.setHeight(qMax(geom.height(), min.height()));
+        mw->updateContentGeometry(geom);
+        mw->updateGeometryNotification(geom.size());
+    }
+
+    bool leftButtonPressed {false};
+    bool startResizing {false};
+    bool enabled {true};
+    Utility::CornerEdge lastCornerEdge;
+    QWindow *_window;
 };
 
 #ifdef USE_DXCB
@@ -520,17 +537,19 @@ MainWindow::MainWindow(QWidget *parent)
     bool composited = CompositingManager::get().composited();
 #ifdef USE_DXCB
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowTitleHint | Qt::WindowMinMaxButtonsHint |
-            Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint);
+                   Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint);
 #else
 //    setWindowFlags(Qt::FramelessWindowHint);
     setWindowFlags(Qt::WindowMinMaxButtonsHint |
-                                   Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint);
+                   Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint);
 #endif
 //    QPalette palette;
 //    palette.setColor(QPalette::Background, QColor(0,0,0,0)); // 最后一项为透明度
 //    setPalette(palette);
     setAcceptDrops(true);
-    if(titlebar()){titlebar()->setFixedHeight(0);}
+    if (titlebar()) {
+        titlebar()->setFixedHeight(0);
+    }
 
     if (composited) {
         setAttribute(Qt::WA_TranslucentBackground, true);
@@ -545,7 +564,7 @@ MainWindow::MainWindow(QWidget *parent)
         _handle = new DPlatformWindowHandle(this, this);
         //setAttribute(Qt::WA_TranslucentBackground, true);
         //if (composited)
-            //_handle->setTranslucentBackground(true);
+        //_handle->setTranslucentBackground(true);
         _handle->setEnableSystemResize(false);
         _handle->setEnableSystemMove(false);
         _handle->setWindowRadius(4);
@@ -566,7 +585,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     setupTitlebar();
 
-    auto& clm = dmr::CommandLineManager::get();
+    auto &clm = dmr::CommandLineManager::get();
     if (clm.debug()) {
         Backend::setDebugLevel(Backend::DebugLevel::Debug);
     } else if (clm.verbose()) {
@@ -589,14 +608,14 @@ MainWindow::MainWindow(QWidget *parent)
 
     _toolbox->setPlaylist(_playlist);
 
-    connect(_engine, &PlayerEngine::stateChanged, [=]() {
+    connect(_engine, &PlayerEngine::stateChanged, [ = ]() {
         setInit(_engine->state() != PlayerEngine::Idle);
         resumeToolsWindow();
         updateWindowTitle();
 
         // delayed checking if engine is still idle, in case other videos are schedulered (next/prev req)
         // and another resize event will happen after that
-        QTimer::singleShot(100, [=]() {
+        QTimer::singleShot(100, [ = ]() {
             if (_engine->state() == PlayerEngine::Idle && !_miniMode && windowState() == Qt::WindowNoState) {
 //                this->setMinimumSize(QSize(1070, 680));
                 this->resize(850, 600);
@@ -606,25 +625,29 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(ActionFactory::get().mainContextMenu(), &DMenu::triggered,
             this, &MainWindow::menuItemInvoked);
+    connect(this, &MainWindow::frameMenuEnable,
+            &ActionFactory::get(), &ActionFactory::frameMenuEnable);
     connect(ActionFactory::get().playlistContextMenu(), &DMenu::triggered,
             this, &MainWindow::menuItemInvoked);
-    connect(qApp, &QGuiApplication::focusWindowChanged, [=]() {
+    connect(qApp, &QGuiApplication::focusWindowChanged, [ = ]() {
         if (qApp->focusWindow() != windowHandle())
             suspendToolsWindow();
         else
             resumeToolsWindow();
     });
 
-    connect(_playlist,&PlaylistWidget::stateChange,this,[=]{
-        if (_playlist->state() == PlaylistWidget::State::Opened){
+    connect(_playlist, &PlaylistWidget::stateChange, this, [ = ] {
+        if (_playlist->state() == PlaylistWidget::State::Opened)
+        {
             QRect r(10, height() - 384 - rect().top() - 10,
-                    rect().width()-20, 384);
+                    rect().width() - 20, 384);
             _toolbox->setGeometry(r);
 //            _toolbox->move(r.x(),r.y());
 //            _toolbox->resize(r.width(),r.height());
-        }else {
+        } else
+        {
             QRect r(10, height() - TOOLBOX_HEIGHT_EXT - rect().top() - 10,
-                    rect().width()-20, TOOLBOX_HEIGHT_EXT);
+                    rect().width() - 20, TOOLBOX_HEIGHT_EXT);
             _toolbox->setGeometry(r);
         }
     });
@@ -638,53 +661,57 @@ MainWindow::MainWindow(QWidget *parent)
     _playState->setObjectName("PlayState");
     _playState->setFixedSize(128, 128);
     DPalette pa_cb = DApplicationHelper::instance()->palette(_playState);
-    pa_cb.setBrush(QPalette::Light, QColor(0,0,0,0));
-    pa_cb.setBrush(QPalette::Dark, QColor(0,0,0,0));
+    pa_cb.setBrush(QPalette::Light, QColor(0, 0, 0, 0));
+    pa_cb.setBrush(QPalette::Dark, QColor(0, 0, 0, 0));
     _playState->setPalette(pa_cb);
-    if(DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ){
+    if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ) {
         _playState->setIcon(QIcon(":/resources/icons/light/normal/play-big_normal.svg"));
     }
     _playState->setVisible(false);
-    connect(_playState, &DIconButton::clicked, [=]() {
+    connect(_playState, &DIconButton::clicked, [ = ]() {
         requestAction(ActionFactory::TogglePause, false, {}, true);
     });
-    QObject::connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::paletteTypeChanged,_playState,
-                         [=] (DGuiApplicationHelper::ColorType type) {
+    QObject::connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::paletteTypeChanged, _playState,
+    [ = ] (DGuiApplicationHelper::ColorType type) {
 
-            if(DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ){
-               _playState->setIcon(QIcon(":/resources/icons/light/normal/play-big_normal.svg"));
-            } else {
-               _playState->setIcon(QIcon(":/resources/icons/dark/normal/play-big_normal.svg"));
-            }
-        });
+        if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ) {
+            _playState->setIcon(QIcon(":/resources/icons/light/normal/play-big_normal.svg"));
+        } else {
+            _playState->setIcon(QIcon(":/resources/icons/dark/normal/play-big_normal.svg"));
+        }
+    });
 
     _progIndicator = new MovieProgressIndicator(this);
     _progIndicator->setVisible(false);
-    connect(_engine, &PlayerEngine::elapsedChanged, [=]() {
+    connect(_engine, &PlayerEngine::elapsedChanged, [ = ]() {
         _progIndicator->updateMovieProgress(_engine->duration(), _engine->elapsed());
     });
 
     // mini ui
     auto *signalMapper = new QSignalMapper(this);
     connect(signalMapper,
-            static_cast<void(QSignalMapper::*)(const QString&)>(&QSignalMapper::mapped),
+            static_cast<void(QSignalMapper::*)(const QString &)>(&QSignalMapper::mapped),
             this, &MainWindow::miniButtonClicked);
 
     _miniPlayBtn = new DIconButton(this);
     _miniPlayBtn->setIcon(QIcon(":/resources/icons/light/mini/play-normal-mini.svg"));
-    _miniPlayBtn->setIconSize(QSize(30,30));
-    _miniPlayBtn->setFixedSize(QSize(30,30));
+    _miniPlayBtn->setIconSize(QSize(30, 30));
+    _miniPlayBtn->setFixedSize(QSize(30, 30));
     _miniPlayBtn->setFlat(true);
     _miniPlayBtn->setObjectName("MiniPlayBtn");
     connect(_miniPlayBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_miniPlayBtn, "play");
 
-    connect(_engine, &PlayerEngine::stateChanged, [=]() {
+    connect(_engine, &PlayerEngine::stateChanged, [ = ]() {
         qDebug() << __func__ << _engine->state();
+        if (_engine->state() == PlayerEngine::CoreState::Idle) {
+            emit frameMenuEnable(false);
+        }
         if (_engine->state() == PlayerEngine::CoreState::Playing) {
             _miniPlayBtn->setIcon(QIcon(":/resources/icons/light/mini/pause-normal-mini.svg"));
             _miniPlayBtn->setObjectName("MiniPauseBtn");
 
+            emit frameMenuEnable(true);
             if (_lastCookie > 0) {
                 utils::UnInhibitStandby(_lastCookie);
                 qDebug() << "uninhibit cookie" << _lastCookie;
@@ -715,8 +742,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     _miniCloseBtn = new DIconButton(this);
     _miniCloseBtn->setIcon(QIcon(":/resources/icons/light/mini/close-normal.svg"));
-    _miniCloseBtn->setIconSize(QSize(30,30));
-    _miniCloseBtn->setFixedSize(QSize(30,30));
+    _miniCloseBtn->setIconSize(QSize(30, 30));
+    _miniCloseBtn->setFixedSize(QSize(30, 30));
     _miniCloseBtn->setFlat(true);
     _miniCloseBtn->setObjectName("MiniCloseBtn");
     connect(_miniCloseBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
@@ -724,8 +751,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     _miniQuitMiniBtn = new DIconButton(this);
     _miniQuitMiniBtn->setIcon(QIcon(":/resources/icons/light/mini/restore-normal-mini.svg"));
-    _miniQuitMiniBtn->setIconSize(QSize(30,30));
-    _miniQuitMiniBtn->setFixedSize(QSize(30,30));
+    _miniQuitMiniBtn->setIconSize(QSize(30, 30));
+    _miniQuitMiniBtn->setFixedSize(QSize(30, 30));
     _miniQuitMiniBtn->setFlat(true);
     _miniQuitMiniBtn->setObjectName("MiniQuitMiniBtn");
     connect(_miniQuitMiniBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
@@ -755,25 +782,25 @@ MainWindow::MainWindow(QWidget *parent)
     if (_lightTheme) reflectActionToUI(ActionFactory::LightTheme);
     prepareSplashImages();
 
-    connect(_engine, &PlayerEngine::sidChanged, [=]() {
+    connect(_engine, &PlayerEngine::sidChanged, [ = ]() {
         reflectActionToUI(ActionFactory::ActionKind::SelectSubtitle);
     });
     //NOTE: mpv does not always send a aid-change signal the first time movie is loaded.
-    connect(_engine, &PlayerEngine::aidChanged, [=]() {
+    connect(_engine, &PlayerEngine::aidChanged, [ = ]() {
         reflectActionToUI(ActionFactory::ActionKind::SelectTrack);
     });
-    connect(_engine, &PlayerEngine::subCodepageChanged, [=]() {
+    connect(_engine, &PlayerEngine::subCodepageChanged, [ = ]() {
         reflectActionToUI(ActionFactory::ActionKind::ChangeSubCodepage);
     });
 
-    connect(_engine, &PlayerEngine::fileLoaded, [=]() {
+    connect(_engine, &PlayerEngine::fileLoaded, [ = ]() {
         if (windowState() == Qt::WindowNoState && _lastRectInNormalMode.isValid()) {
-            const auto& mi = _engine->playlist().currentInfo().mi;
+            const auto &mi = _engine->playlist().currentInfo().mi;
             _lastRectInNormalMode.setSize({mi.width, mi.height});
         }
         this->resizeByConstraints();
     });
-    connect(_engine, &PlayerEngine::videoSizeChanged, [=]() {
+    connect(_engine, &PlayerEngine::videoSizeChanged, [ = ]() {
         this->resizeByConstraints();
     });
 
@@ -781,9 +808,9 @@ MainWindow::MainWindow(QWidget *parent)
     syncPlayState();
 
     connect(_engine, &PlayerEngine::loadOnlineSubtitlesFinished,
-        [this](const QUrl& url, bool success) {
-            _nwComm->updateWithMessage(success?tr("Load successfully"):tr("Load failed"));
-        });
+    [this](const QUrl & url, bool success) {
+        _nwComm->updateWithMessage(success ? tr("Load successfully") : tr("Load failed"));
+    });
 
     connect(&_autoHideTimer, &QTimer::timeout, this, &MainWindow::suspendToolsWindow);
     _autoHideTimer.setSingleShot(true);
@@ -865,14 +892,14 @@ void MainWindow::setupTitlebar()
 
         QIcon icon = QIcon::fromTheme("deepin-movie");
         auto logo = icon.pixmap(QSize(32, 32))
-            .scaled(w, w, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+                    .scaled(w, w, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 
         logo.setDevicePixelRatio(dpr);
         QPixmap pm(w2, w2);
         pm.setDevicePixelRatio(dpr);
         pm.fill(Qt::transparent);
         QPainter p(&pm);
-        p.drawPixmap((w2-w)/2, (w2-w)/2, logo);
+        p.drawPixmap((w2 - w) / 2, (w2 - w) / 2, logo);
         p.end();
         _titlebar->titlebar()->setIcon(pm);
         _titlebar->setTitletxt(QString());
@@ -887,7 +914,7 @@ void MainWindow::setupTitlebar()
     connect(_titlebar->titlebar()->menu(), &DMenu::triggered, this, &MainWindow::menuItemInvoked);
 }
 
-void MainWindow::updateContentGeometry(const QRect& rect)
+void MainWindow::updateContentGeometry(const QRect &rect)
 {
 #ifdef USE_DXCB
     auto frame = QWindow::fromWinId(windowHandle()->winId());
@@ -898,18 +925,19 @@ void MainWindow::updateContentGeometry(const QRect& rect)
     }
 
     const uint32_t values[] = { (uint32_t)frame_rect.x(), (uint32_t)frame_rect.y(),
-        (uint32_t)frame_rect.width(), (uint32_t)frame_rect.height() };
+                                (uint32_t)frame_rect.width(), (uint32_t)frame_rect.height()
+                              };
     // manually configure frame window which will in turn update content window
     xcb_configure_window(QX11Info::connection(),
-            windowHandle()->winId(),
-            XCB_CONFIG_WINDOW_WIDTH | XCB_CONFIG_WINDOW_HEIGHT |
-            XCB_CONFIG_WINDOW_Y | XCB_CONFIG_WINDOW_X,
-            values);
+                         windowHandle()->winId(),
+                         XCB_CONFIG_WINDOW_WIDTH | XCB_CONFIG_WINDOW_HEIGHT |
+                         XCB_CONFIG_WINDOW_Y | XCB_CONFIG_WINDOW_X,
+                         values);
 
 #else
 //    setGeometry(rect);
-    move(rect.x(),rect.y());
-    resize(rect.width(),rect.height());
+    move(rect.x(), rect.y());
+    resize(rect.width(), rect.height());
 #endif
 }
 
@@ -929,10 +957,10 @@ void MainWindow::updateShadow()
 bool MainWindow::event(QEvent *ev)
 {
     if (ev->type() == QEvent::WindowStateChange) {
-        auto wse = dynamic_cast<QWindowStateChangeEvent*>(ev);
+        auto wse = dynamic_cast<QWindowStateChangeEvent *>(ev);
         _lastWindowState = wse->oldState();
         qDebug() << "------------ _lastWindowState" << _lastWindowState
-            << "current " << windowState();
+                 << "current " << windowState();
         //NOTE: windowStateChanged won't be emitted if by draggint to restore. so we need to
         //check window state here.
         //connect(windowHandle(), &QWindow::windowStateChanged, this, &MainWindow::onWindowStateChanged);
@@ -1011,13 +1039,14 @@ void MainWindow::handleHelpAction()
     class _DApplication : public DApplication
     {
     public:
-        inline void showHelp() {
+        inline void showHelp()
+        {
             DApplication::handleHelpAction();
         }
     };
 
     DApplication *dapp = qApp;
-    reinterpret_cast<_DApplication*>(dapp)->_DApplication::showHelp();
+    reinterpret_cast<_DApplication *>(dapp)->_DApplication::showHelp();
 }
 
 #ifdef USE_DXCB
@@ -1085,20 +1114,21 @@ MainWindow::~MainWindow()
 void MainWindow::onApplicationStateChanged(Qt::ApplicationState e)
 {
     switch (e) {
-        case Qt::ApplicationActive:
-            if (qApp->focusWindow())
-                qDebug() << QString("focus window 0x%1").arg(qApp->focusWindow()->winId(), 0, 16);
-            qApp->setActiveWindow(this);
-            _evm->resumeRecording();
-            resumeToolsWindow();
-            break;
+    case Qt::ApplicationActive:
+        if (qApp->focusWindow())
+            qDebug() << QString("focus window 0x%1").arg(qApp->focusWindow()->winId(), 0, 16);
+        qApp->setActiveWindow(this);
+        _evm->resumeRecording();
+        resumeToolsWindow();
+        break;
 
-        case Qt::ApplicationInactive:
-            _evm->suspendRecording();
-            suspendToolsWindow();
-            break;
+    case Qt::ApplicationInactive:
+        _evm->suspendRecording();
+        suspendToolsWindow();
+        break;
 
-        default: break;
+    default:
+        break;
     }
 }
 
@@ -1137,16 +1167,16 @@ void MainWindow::startPlayStateAnimation(bool play)
     va->setDuration(duration);
     va->setEasingCurve(curve);
 
-    connect(va, &QVariantAnimation::valueChanged, [=](const QVariant& v) {
+    connect(va, &QVariantAnimation::valueChanged, [ = ](const QVariant & v) {
         if (!play) _playState->setVisible(true);
         auto d = v.toFloat();
-        auto effect = dynamic_cast<QGraphicsOpacityEffect*>(_playState->graphicsEffect());
-        effect->setOpacity(play ? 1.0 - d: d);
+        auto effect = dynamic_cast<QGraphicsOpacityEffect *>(_playState->graphicsEffect());
+        effect->setOpacity(play ? 1.0 - d : d);
         _playState->update();
     });
 
     if (play) {
-        connect(va, &QVariantAnimation::stateChanged, [=]() {
+        connect(va, &QVariantAnimation::stateChanged, [ = ]() {
             if (va->state() == QVariantAnimation::Stopped) {
                 _playState->setVisible(false);
             }
@@ -1193,7 +1223,7 @@ void MainWindow::syncPlayState()
     if (!_inBurstShootMode && _engine->state() == PlayerEngine::CoreState::Paused) {
         _playState->setGeometry(r);
         _playState->setVisible(true);
-        auto effect = dynamic_cast<QGraphicsOpacityEffect*>(_playState->graphicsEffect());
+        auto effect = dynamic_cast<QGraphicsOpacityEffect *>(_playState->graphicsEffect());
         if (effect) effect->setOpacity(1.0);
 
     } else {
@@ -1207,16 +1237,16 @@ void MainWindow::onBindingsChanged()
     {
         auto actions = this->actions();
         this->actions().clear();
-        for (auto* act: actions) {
+        for (auto *act : actions) {
             delete act;
         }
     }
 
-    auto& scmgr = ShortcutManager::get();
+    auto &scmgr = ShortcutManager::get();
     auto actions = scmgr.actionsForBindings();
-    for (auto* act: actions) {
+    for (auto *act : actions) {
         this->addAction(act);
-        connect(act, &QAction::triggered, [=]() {
+        connect(act, &QAction::triggered, [ = ]() {
             this->menuItemInvoked(act);
         });
     }
@@ -1225,33 +1255,34 @@ void MainWindow::onBindingsChanged()
 void MainWindow::updateActionsState()
 {
     auto pmf = _engine->playingMovieInfo();
-    auto update = [=](QAction* act) {
+    auto update = [ = ](QAction * act) {
         auto kd = ActionFactory::actionKind(act);
         bool v = true;
-        switch(kd) {
-            case ActionFactory::ActionKind::Screenshot:
-            case ActionFactory::ActionKind::MatchOnlineSubtitle:
-            case ActionFactory::ActionKind::BurstScreenshot:
-            case ActionFactory::ActionKind::ToggleMiniMode:
-            case ActionFactory::ActionKind::WindowAbove:
-                v = _engine->state() != PlayerEngine::Idle;
-                break;
+        switch (kd) {
+        case ActionFactory::ActionKind::Screenshot:
+        case ActionFactory::ActionKind::MatchOnlineSubtitle:
+        case ActionFactory::ActionKind::BurstScreenshot:
+        case ActionFactory::ActionKind::ToggleMiniMode:
+        case ActionFactory::ActionKind::WindowAbove:
+            v = _engine->state() != PlayerEngine::Idle;
+            break;
 
-            case ActionFactory::ActionKind::MovieInfo:
-                v = _engine->state() != PlayerEngine::Idle;
+        case ActionFactory::ActionKind::MovieInfo:
+            v = _engine->state() != PlayerEngine::Idle;
+            if (v) {
+                v = v && _engine->playlist().count();
                 if (v) {
-                    v = v && _engine->playlist().count();
-                    if (v) {
-                        auto pif =_engine->playlist().currentInfo();
-                        v = v && pif.loaded && pif.url.isLocalFile();
-                    }
+                    auto pif = _engine->playlist().currentInfo();
+                    v = v && pif.loaded && pif.url.isLocalFile();
                 }
-                break;
+            }
+            break;
 
-            case ActionFactory::ActionKind::HideSubtitle:
-            case ActionFactory::ActionKind::SelectSubtitle:
-                v = pmf.subs.size() > 0;
-            default: break;
+        case ActionFactory::ActionKind::HideSubtitle:
+        case ActionFactory::ActionKind::SelectSubtitle:
+            v = pmf.subs.size() > 0;
+        default:
+            break;
         }
         act->setEnabled(v);
     };
@@ -1279,106 +1310,107 @@ void MainWindow::syncStaysOnTop()
 
 void MainWindow::reflectActionToUI(ActionFactory::ActionKind kd)
 {
-    QList<QAction*> acts;
-    switch(kd) {
-        case ActionFactory::ActionKind::WindowAbove:
-        case ActionFactory::ActionKind::ToggleFullscreen:
-        case ActionFactory::ActionKind::LightTheme:
-        case ActionFactory::ActionKind::ToggleMiniMode:
-        case ActionFactory::ActionKind::TogglePlaylist:
-        case ActionFactory::ActionKind::HideSubtitle: {
-            qDebug() << __func__ << kd;
-            acts = ActionFactory::get().findActionsByKind(kd);
-            auto p = acts.begin();
-            while (p != acts.end()) {
-                auto old = (*p)->isEnabled();
-                (*p)->setEnabled(false);
-                if (kd == ActionFactory::TogglePlaylist) {
-                    // here what we read is the last state of playlist
-                    (*p)->setChecked(_playlist->state() != PlaylistWidget::Opened);
-                } else {
-                    (*p)->setChecked(!(*p)->isChecked());
-                }
-                (*p)->setEnabled(old);
-                ++p;
-            }
-            break;
-        }
-
-        case ActionFactory::ActionKind::ChangeSubCodepage: {
-            auto cp = _engine->subCodepage();
-            qDebug() << "codepage" << cp;
-            acts = ActionFactory::get().findActionsByKind(kd);
-            auto p = acts.begin();
-            while (p != acts.end()) {
-                auto args = ActionFactory::actionArgs(*p);
-                if (args[0].toString() == cp) {
-                    (*p)->setEnabled(false);
-                    if (!(*p)->isChecked()) (*p)->setChecked(true);
-                    (*p)->setEnabled(true);
-                    break;
-                }
-
-                ++p;
-            }
-            break;
-        }
-
-        case ActionFactory::ActionKind::SelectTrack:
-        case ActionFactory::ActionKind::SelectSubtitle: {
-            if (_engine->state() == PlayerEngine::Idle)
-                break;
-
-            auto pmf = _engine->playingMovieInfo();
-            int id = -1;
-            int idx = -1;
-            if (kd == ActionFactory::ActionKind::SelectTrack) {
-                id = _engine->aid();
-                for (idx = 0; idx < pmf.audios.size(); idx++) {
-                    if (id == pmf.audios[idx]["id"].toInt()) {
-                        break;
-                    }
-                }
-            } else if (kd == ActionFactory::ActionKind::SelectSubtitle) {
-                id = _engine->sid();
-                for (idx = 0; idx < pmf.subs.size(); idx++) {
-                    if (id == pmf.subs[idx]["id"].toInt()) {
-                        break;
-                    }
-                }
-            }
-
-            qDebug() << __func__ << kd << "idx = " << idx;
-            acts = ActionFactory::get().findActionsByKind(kd);
-            auto p = acts.begin();
-            while (p != acts.end()) {
-                auto args = ActionFactory::actionArgs(*p);
-                (*p)->setEnabled(false);
-                if (args[0].toInt() == idx) {
-                    if (!(*p)->isChecked()) (*p)->setChecked(true);
-                } else {
-                    (*p)->setChecked(false);
-                }
-                (*p)->setEnabled(true);
-
-                ++p;
-            }
-            break;
-        }
-
-        case ActionFactory::ActionKind::Stereo:
-        case ActionFactory::ActionKind::OrderPlay:
-        case ActionFactory::ActionKind::DefaultFrame: {
-            qDebug() << __func__ << kd;
-            acts = ActionFactory::get().findActionsByKind(kd);
-            auto p = acts.begin();
+    QList<QAction *> acts;
+    switch (kd) {
+    case ActionFactory::ActionKind::WindowAbove:
+    case ActionFactory::ActionKind::ToggleFullscreen:
+    case ActionFactory::ActionKind::LightTheme:
+    case ActionFactory::ActionKind::ToggleMiniMode:
+    case ActionFactory::ActionKind::TogglePlaylist:
+    case ActionFactory::ActionKind::HideSubtitle: {
+        qDebug() << __func__ << kd;
+        acts = ActionFactory::get().findActionsByKind(kd);
+        auto p = acts.begin();
+        while (p != acts.end()) {
             auto old = (*p)->isEnabled();
             (*p)->setEnabled(false);
-            (*p)->setChecked(!(*p)->isChecked());
+            if (kd == ActionFactory::TogglePlaylist) {
+                // here what we read is the last state of playlist
+                (*p)->setChecked(_playlist->state() != PlaylistWidget::Opened);
+            } else {
+                (*p)->setChecked(!(*p)->isChecked());
+            }
             (*p)->setEnabled(old);
-            break;
+            ++p;
         }
-        default: break;
+        break;
+    }
+
+    case ActionFactory::ActionKind::ChangeSubCodepage: {
+        auto cp = _engine->subCodepage();
+        qDebug() << "codepage" << cp;
+        acts = ActionFactory::get().findActionsByKind(kd);
+        auto p = acts.begin();
+        while (p != acts.end()) {
+            auto args = ActionFactory::actionArgs(*p);
+            if (args[0].toString() == cp) {
+                (*p)->setEnabled(false);
+                if (!(*p)->isChecked()) (*p)->setChecked(true);
+                (*p)->setEnabled(true);
+                break;
+            }
+
+            ++p;
+        }
+        break;
+    }
+
+    case ActionFactory::ActionKind::SelectTrack:
+    case ActionFactory::ActionKind::SelectSubtitle: {
+        if (_engine->state() == PlayerEngine::Idle)
+            break;
+
+        auto pmf = _engine->playingMovieInfo();
+        int id = -1;
+        int idx = -1;
+        if (kd == ActionFactory::ActionKind::SelectTrack) {
+            id = _engine->aid();
+            for (idx = 0; idx < pmf.audios.size(); idx++) {
+                if (id == pmf.audios[idx]["id"].toInt()) {
+                    break;
+                }
+            }
+        } else if (kd == ActionFactory::ActionKind::SelectSubtitle) {
+            id = _engine->sid();
+            for (idx = 0; idx < pmf.subs.size(); idx++) {
+                if (id == pmf.subs[idx]["id"].toInt()) {
+                    break;
+                }
+            }
+        }
+
+        qDebug() << __func__ << kd << "idx = " << idx;
+        acts = ActionFactory::get().findActionsByKind(kd);
+        auto p = acts.begin();
+        while (p != acts.end()) {
+            auto args = ActionFactory::actionArgs(*p);
+            (*p)->setEnabled(false);
+            if (args[0].toInt() == idx) {
+                if (!(*p)->isChecked()) (*p)->setChecked(true);
+            } else {
+                (*p)->setChecked(false);
+            }
+            (*p)->setEnabled(true);
+
+            ++p;
+        }
+        break;
+    }
+
+    case ActionFactory::ActionKind::Stereo:
+    case ActionFactory::ActionKind::OrderPlay:
+    case ActionFactory::ActionKind::DefaultFrame: {
+        qDebug() << __func__ << kd;
+        acts = ActionFactory::get().findActionsByKind(kd);
+        auto p = acts.begin();
+        auto old = (*p)->isEnabled();
+        (*p)->setEnabled(false);
+        (*p)->setChecked(!(*p)->isChecked());
+        (*p)->setEnabled(old);
+        break;
+    }
+    default:
+        break;
     }
 
 }
@@ -1402,7 +1434,7 @@ void MainWindow::menuItemInvoked(QAction *action)
 void MainWindow::switchTheme()
 {
     _lightTheme = !_lightTheme;
-    qApp->setTheme(_lightTheme? "light":"dark");
+    qApp->setTheme(_lightTheme ? "light" : "dark");
     Settings::get().setInternalOption("light_theme", _lightTheme);
 }
 
@@ -1415,53 +1447,56 @@ bool MainWindow::isActionAllowed(ActionFactory::ActionKind kd, bool fromUI, bool
     if (_miniMode) {
         if (fromUI || isShortcut) {
             switch (kd) {
-                case ActionFactory::ToggleFullscreen:
-                case ActionFactory::TogglePlaylist:
-                case ActionFactory::BurstScreenshot:
-                    return false;
+            case ActionFactory::ToggleFullscreen:
+            case ActionFactory::TogglePlaylist:
+            case ActionFactory::BurstScreenshot:
+                return false;
 
-                case ActionFactory::ToggleMiniMode:
-                    return true;
+            case ActionFactory::ToggleMiniMode:
+                return true;
 
-                default: break;
+            default:
+                break;
             }
         }
     }
 
     if (isMaximized()) {
-        switch(kd) {
-            case ActionFactory::ToggleMiniMode:
-                return true;
-            default: break;
+        switch (kd) {
+        case ActionFactory::ToggleMiniMode:
+            return true;
+        default:
+            break;
         }
     }
 
     if (isShortcut) {
         auto pmf = _engine->playingMovieInfo();
         bool v = true;
-        switch(kd) {
-            case ActionFactory::Screenshot:
-            case ActionFactory::ToggleMiniMode:
-            case ActionFactory::MatchOnlineSubtitle:
-            case ActionFactory::BurstScreenshot:
-                v = _engine->state() != PlayerEngine::Idle;
-                break;
+        switch (kd) {
+        case ActionFactory::Screenshot:
+        case ActionFactory::ToggleMiniMode:
+        case ActionFactory::MatchOnlineSubtitle:
+        case ActionFactory::BurstScreenshot:
+            v = _engine->state() != PlayerEngine::Idle;
+            break;
 
-            case ActionFactory::MovieInfo:
-                v = _engine->state() != PlayerEngine::Idle;
+        case ActionFactory::MovieInfo:
+            v = _engine->state() != PlayerEngine::Idle;
+            if (v) {
+                v = v && _engine->playlist().count();
                 if (v) {
-                    v = v && _engine->playlist().count();
-                    if (v) {
-                        auto pif =_engine->playlist().currentInfo();
-                        v = v && pif.loaded && pif.url.isLocalFile();
-                    }
+                    auto pif = _engine->playlist().currentInfo();
+                    v = v && pif.loaded && pif.url.isLocalFile();
                 }
-                break;
+            }
+            break;
 
-            case ActionFactory::HideSubtitle:
-            case ActionFactory::SelectSubtitle:
-                v = pmf.subs.size() > 0;
-            default: break;
+        case ActionFactory::HideSubtitle:
+        case ActionFactory::SelectSubtitle:
+            v = pmf.subs.size() > 0;
+        default:
+            break;
         }
         if (!v) return v;
     }
@@ -1470,9 +1505,9 @@ bool MainWindow::isActionAllowed(ActionFactory::ActionKind kd, bool fromUI, bool
 }
 
 void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
-        QList<QVariant> args, bool isShortcut)
+                               QList<QVariant> args, bool isShortcut)
 {
-    qDebug() << "kd = " << kd << "fromUI " << fromUI << (isShortcut ? "shortcut":"");
+    qDebug() << "kd = " << kd << "fromUI " << fromUI << (isShortcut ? "shortcut" : "");
 
     if (!isActionAllowed(kd, fromUI, isShortcut)) {
         qDebug() << kd << "disallowed";
@@ -1480,560 +1515,562 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     }
 
     switch (kd) {
-        case ActionFactory::ActionKind::Exit:
-            qApp->quit();
-            break;
+    case ActionFactory::ActionKind::Exit:
+        qApp->quit();
+        break;
 
-        case ActionFactory::ActionKind::LightTheme:
-            if (fromUI) switchTheme();
-            break;
+    case ActionFactory::ActionKind::LightTheme:
+        if (fromUI) switchTheme();
+        break;
 
-        case ActionFactory::ActionKind::OpenCdrom: {
-            auto dev = dmr::CommandLineManager::get().dvdDevice();
-            if (dev.isEmpty()) {
-                dev = probeCdromDevice();
-            }
-            if (dev.isEmpty()) {
-                _nwComm->updateWithMessage(tr("No device found"));
-                break;
-            }
-            _engine->setDVDDevice(dev);
-            //FIXME: how to tell if it's bluray
-            QUrl url(QString("dvdread:///%1").arg(dev));
-            //QUrl url(QString("dvdnav://"));
-            play(url);
+    case ActionFactory::ActionKind::OpenCdrom: {
+        auto dev = dmr::CommandLineManager::get().dvdDevice();
+        if (dev.isEmpty()) {
+            dev = probeCdromDevice();
+        }
+        if (dev.isEmpty()) {
+            _nwComm->updateWithMessage(tr("No device found"));
             break;
         }
+        _engine->setDVDDevice(dev);
+        //FIXME: how to tell if it's bluray
+        QUrl url(QString("dvdread:///%1").arg(dev));
+        //QUrl url(QString("dvdnav://"));
+        play(url);
+        break;
+    }
 
-        case ActionFactory::ActionKind::OpenUrl: {
-            UrlDialog dlg(this);
-            if (dlg.exec() == QDialog::Accepted) {
-                auto url = dlg.url();
-                if (url.isValid()) {
-                    play(url);
-                } else {
-                    _nwComm->updateWithMessage(tr("Parse Failed"));
-                }
+    case ActionFactory::ActionKind::OpenUrl: {
+        UrlDialog dlg(this);
+        if (dlg.exec() == QDialog::Accepted) {
+            auto url = dlg.url();
+            if (url.isValid()) {
+                play(url);
+            } else {
+                _nwComm->updateWithMessage(tr("Parse Failed"));
             }
-            break;
         }
+        break;
+    }
 
-        case ActionFactory::ActionKind::OpenDirectory: {
-            QString name = QFileDialog::getExistingDirectory(this, tr("Open folder"),
-                    lastOpenedPath(),
-                    QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+    case ActionFactory::ActionKind::OpenDirectory: {
+        QString name = QFileDialog::getExistingDirectory(this, tr("Open folder"),
+                                                         lastOpenedPath(),
+                                                         QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
 
-            QFileInfo fi(name);
-            if (fi.isDir() && fi.exists()) {
-                Settings::get().setGeneralOption("last_open_path", fi.path());
+        QFileInfo fi(name);
+        if (fi.isDir() && fi.exists()) {
+            Settings::get().setGeneralOption("last_open_path", fi.path());
 
-                const auto& urls = _engine->addPlayDir(name);
-                if (urls.size()) {
-                    _engine->playByName(QUrl("playlist://0"));
-                }
+            const auto &urls = _engine->addPlayDir(name);
+            if (urls.size()) {
+                _engine->playByName(QUrl("playlist://0"));
             }
-            break;
         }
+        break;
+    }
 
-        case ActionFactory::ActionKind::OpenFileList: {
-            QStringList filenames = QFileDialog::getOpenFileNames(this, tr("Open file"),
-                    lastOpenedPath(),
-                    tr("All videos (%1)").arg(_engine->video_filetypes.join(" ")), 0,
-                    QFileDialog::HideNameFilterDetails);
+    case ActionFactory::ActionKind::OpenFileList: {
+        QStringList filenames = QFileDialog::getOpenFileNames(this, tr("Open file"),
+                                                              lastOpenedPath(),
+                                                              tr("All videos (%1)").arg(_engine->video_filetypes.join(" ")), 0,
+                                                              QFileDialog::HideNameFilterDetails);
 
-            QList<QUrl> urls;
-            if (filenames.size()) {
-                QFileInfo fileInfo(filenames[0]);
-                if (fileInfo.exists()) {
-                    Settings::get().setGeneralOption("last_open_path", fileInfo.path());
-                }
-
-                for (const auto& filename: filenames) {
-                    urls.append(QUrl::fromLocalFile(filename));
-                }
-                const auto& valids = _engine->addPlayFiles(urls);
-                _engine->playByName(valids[0]);
-            }
-            break;
-        }
-
-        case ActionFactory::ActionKind::OpenFile: {
-            QString filename = QFileDialog::getOpenFileName(this, tr("Open file"),
-                    lastOpenedPath(),
-                    tr("All videos (%1)").arg(_engine->video_filetypes.join(" ")), 0,
-                    QFileDialog::HideNameFilterDetails);
-            QFileInfo fileInfo(filename);
+        QList<QUrl> urls;
+        if (filenames.size()) {
+            QFileInfo fileInfo(filenames[0]);
             if (fileInfo.exists()) {
                 Settings::get().setGeneralOption("last_open_path", fileInfo.path());
-
-                play(QUrl::fromLocalFile(filename));
             }
-            break;
-        }
 
-        case ActionFactory::ActionKind::StartPlay: {
-            if (_engine->playlist().count() == 0) {
-                requestAction(ActionFactory::ActionKind::OpenFileList);
+            for (const auto &filename : filenames) {
+                urls.append(QUrl::fromLocalFile(filename));
+            }
+            const auto &valids = _engine->addPlayFiles(urls);
+            _engine->playByName(valids[0]);
+        }
+        break;
+    }
+
+    case ActionFactory::ActionKind::OpenFile: {
+        QString filename = QFileDialog::getOpenFileName(this, tr("Open file"),
+                                                        lastOpenedPath(),
+                                                        tr("All videos (%1)").arg(_engine->video_filetypes.join(" ")), 0,
+                                                        QFileDialog::HideNameFilterDetails);
+        QFileInfo fileInfo(filename);
+        if (fileInfo.exists()) {
+            Settings::get().setGeneralOption("last_open_path", fileInfo.path());
+
+            play(QUrl::fromLocalFile(filename));
+        }
+        break;
+    }
+
+    case ActionFactory::ActionKind::StartPlay: {
+        if (_engine->playlist().count() == 0) {
+            requestAction(ActionFactory::ActionKind::OpenFileList);
+        } else {
+            if (_engine->state() == PlayerEngine::CoreState::Idle) {
+                if (Settings::get().isSet(Settings::ResumeFromLast)) {
+                    int restore_pos = Settings::get().internalOption("playlist_pos").toInt();
+                    restore_pos = qMax(qMin(restore_pos, _engine->playlist().count() - 1), 0);
+                    requestAction(ActionFactory::ActionKind::GotoPlaylistSelected, false, {restore_pos});
+                } else {
+                    _engine->play();
+                }
+            }
+        }
+        break;
+    }
+
+    case ActionFactory::ActionKind::EmptyPlaylist: {
+        _engine->clearPlaylist();
+        break;
+    }
+
+    case ActionFactory::ActionKind::TogglePlaylist: {
+        _playlist->togglePopup();
+        if (!fromUI) {
+            reflectActionToUI(kd);
+        }
+        this->resumeToolsWindow();
+        break;
+    }
+
+    case ActionFactory::ActionKind::ToggleMiniMode: {
+        if (!fromUI) {
+            reflectActionToUI(kd);
+        }
+        toggleUIMode();
+        break;
+    }
+
+    case ActionFactory::ActionKind::MovieInfo: {
+        if (_engine->state() != PlayerEngine::CoreState::Idle) {
+            MovieInfoDialog mid(_engine->playlist().currentInfo());
+            mid.exec();
+        }
+        break;
+    }
+
+    case ActionFactory::ActionKind::WindowAbove:
+        _windowAbove = !_windowAbove;
+        /**
+         * switch above state by change windowFlags is unacceptable, since it'll
+         * toggle visibility of window.
+         * ```
+            auto flags = windowFlags();
+            if (_windowAbove) {
+                flags |= Qt::WindowStaysOnTopHint;
             } else {
-                if (_engine->state() == PlayerEngine::CoreState::Idle) {
-                    if (Settings::get().isSet(Settings::ResumeFromLast)) {
-                        int restore_pos = Settings::get().internalOption("playlist_pos").toInt();
-                        restore_pos = qMax(qMin(restore_pos, _engine->playlist().count()-1), 0);
-                        requestAction(ActionFactory::ActionKind::GotoPlaylistSelected, false, {restore_pos});
-                    } else {
-                        _engine->play();
-                    }
-                }
+                flags &= ~Qt::WindowStaysOnTopHint;
             }
-            break;
+            setWindowFlags(flags);
+            show();
+            ```
+        */
+        Utility::setStayOnTop(this, _windowAbove);
+        if (!fromUI) {
+            reflectActionToUI(kd);
         }
+        break;
 
-        case ActionFactory::ActionKind::EmptyPlaylist: {
-            _engine->clearPlaylist();
-            break;
-        }
-
-        case ActionFactory::ActionKind::TogglePlaylist: {
-            _playlist->togglePopup();
-            if (!fromUI) {
-                reflectActionToUI(kd);
-            }
-            this->resumeToolsWindow();
-            break;
-        }
-
-        case ActionFactory::ActionKind::ToggleMiniMode: {
-            if (!fromUI) {
-                reflectActionToUI(kd);
-            }
-            toggleUIMode();
-            break;
-        }
-
-        case ActionFactory::ActionKind::MovieInfo: {
-            if (_engine->state() != PlayerEngine::CoreState::Idle) {
-                MovieInfoDialog mid(_engine->playlist().currentInfo());
-                mid.exec();
-            }
-            break;
-        }
-
-        case ActionFactory::ActionKind::WindowAbove:
-            _windowAbove = !_windowAbove;
-            /**
-             * switch above state by change windowFlags is unacceptable, since it'll
-             * toggle visibility of window.
-             * ```
-                auto flags = windowFlags();
-                if (_windowAbove) {
-                    flags |= Qt::WindowStaysOnTopHint;
-                } else {
-                    flags &= ~Qt::WindowStaysOnTopHint;
-                }
-                setWindowFlags(flags);
-                show();
-                ```
-            */
-            Utility::setStayOnTop(this, _windowAbove);
-            if (!fromUI) {
-                reflectActionToUI(kd);
-            }
-            break;
-
-        case ActionFactory::ActionKind::QuitFullscreen: {
-            if (isFullScreen()) {
-                if (_lastWindowState == Qt::WindowMaximized) {
-                    showMaximized();
-                } else {
-                    showNormal();
-                }
-                if (!fromUI) {
-                    reflectActionToUI(ActionFactory::ToggleFullscreen);
-                }
-            }
-            break;
-        }
-
-        case ActionFactory::ActionKind::ToggleFullscreen: {
-            if (isFullScreen()) {
-                if (_lastWindowState == Qt::WindowMaximized) {
-                    showMaximized();
-                } else {
-                    setWindowState(windowState() & ~Qt::WindowFullScreen);
-                    if (_lastRectInNormalMode.isValid() && !_miniMode && !isMaximized()) {
-                        setGeometry(_lastRectInNormalMode);
-                        move(_lastRectInNormalMode.x(),_lastRectInNormalMode.y());
-                        resize(_lastRectInNormalMode.width(),_lastRectInNormalMode.height());
-                    }
-                }
+    case ActionFactory::ActionKind::QuitFullscreen: {
+        if (isFullScreen()) {
+            if (_lastWindowState == Qt::WindowMaximized) {
+                showMaximized();
             } else {
-                if (!_miniMode && (fromUI || isShortcut)) {
-                    _lastRectInNormalMode = geometry();
-                }
-                showFullScreen();
+                showNormal();
             }
             if (!fromUI) {
-                reflectActionToUI(kd);
+                reflectActionToUI(ActionFactory::ToggleFullscreen);
             }
-            break;
         }
+        break;
+    }
 
-        case ActionFactory::ActionKind::PlaylistRemoveItem: {
-            _playlist->removeClickedItem();
-            break;
+    case ActionFactory::ActionKind::ToggleFullscreen: {
+        if (isFullScreen()) {
+            if (_lastWindowState == Qt::WindowMaximized) {
+                showMaximized();
+            } else {
+                setWindowState(windowState() & ~Qt::WindowFullScreen);
+                if (_lastRectInNormalMode.isValid() && !_miniMode && !isMaximized()) {
+                    setGeometry(_lastRectInNormalMode);
+                    move(_lastRectInNormalMode.x(), _lastRectInNormalMode.y());
+                    resize(_lastRectInNormalMode.width(), _lastRectInNormalMode.height());
+                }
+            }
+        } else {
+            if (!_miniMode && (fromUI || isShortcut)) {
+                _lastRectInNormalMode = geometry();
+            }
+            showFullScreen();
         }
+        if (!fromUI) {
+            reflectActionToUI(kd);
+        }
+        break;
+    }
 
-        case ActionFactory::ActionKind::PlaylistOpenItemInFM: {
-            _playlist->openItemInFM();
-            break;
-        }
+    case ActionFactory::ActionKind::PlaylistRemoveItem: {
+        _playlist->removeClickedItem();
+        break;
+    }
 
-        case ActionFactory::ActionKind::PlaylistItemInfo: {
-            _playlist->showItemInfo();
-            break;
-        }
+    case ActionFactory::ActionKind::PlaylistOpenItemInFM: {
+        _playlist->openItemInFM();
+        break;
+    }
 
-        case ActionFactory::ActionKind::ClockwiseFrame: {
-            auto old = _engine->videoRotation();
-            _engine->setVideoRotation((old + 90) % 360);
-            break;
-        }
-        case ActionFactory::ActionKind::CounterclockwiseFrame: {
-            auto old = _engine->videoRotation();
-            _engine->setVideoRotation(((old - 90) + 360) % 360);
-            break;
-        }
+    case ActionFactory::ActionKind::PlaylistItemInfo: {
+        _playlist->showItemInfo();
+        break;
+    }
 
-        case ActionFactory::ActionKind::OrderPlay: {
-            _engine->playlist().setPlayMode(PlaylistModel::OrderPlay);
-            break;
-        }
-        case ActionFactory::ActionKind::ShufflePlay: {
-            _engine->playlist().setPlayMode(PlaylistModel::ShufflePlay);
-            break;
-        }
-        case ActionFactory::ActionKind::SinglePlay: {
-            _engine->playlist().setPlayMode(PlaylistModel::SinglePlay);
-            break;
-        }
-        case ActionFactory::ActionKind::SingleLoop: {
-            _engine->playlist().setPlayMode(PlaylistModel::SingleLoop);
-            break;
-        }
-        case ActionFactory::ActionKind::ListLoop: {
-            _engine->playlist().setPlayMode(PlaylistModel::ListLoop);
-            break;
-        }
+    case ActionFactory::ActionKind::ClockwiseFrame: {
+        auto old = _engine->videoRotation();
+        _engine->setVideoRotation((old + 90) % 360);
+        break;
+    }
+    case ActionFactory::ActionKind::CounterclockwiseFrame: {
+        auto old = _engine->videoRotation();
+        _engine->setVideoRotation(((old - 90) + 360) % 360);
+        break;
+    }
 
-        case ActionFactory::ActionKind::Stereo: {
-            _engine->changeSoundMode(Backend::SoundMode::Stereo);
-            break;
-        }
-        case ActionFactory::ActionKind::LeftChannel: {
-            _engine->changeSoundMode(Backend::SoundMode::Left);
-            break;
-        }
-        case ActionFactory::ActionKind::RightChannel: {
-            _engine->changeSoundMode(Backend::SoundMode::Right);
-            break;
-        }
+    case ActionFactory::ActionKind::OrderPlay: {
+        _engine->playlist().setPlayMode(PlaylistModel::OrderPlay);
+        break;
+    }
+    case ActionFactory::ActionKind::ShufflePlay: {
+        _engine->playlist().setPlayMode(PlaylistModel::ShufflePlay);
+        break;
+    }
+    case ActionFactory::ActionKind::SinglePlay: {
+        _engine->playlist().setPlayMode(PlaylistModel::SinglePlay);
+        break;
+    }
+    case ActionFactory::ActionKind::SingleLoop: {
+        _engine->playlist().setPlayMode(PlaylistModel::SingleLoop);
+        break;
+    }
+    case ActionFactory::ActionKind::ListLoop: {
+        _engine->playlist().setPlayMode(PlaylistModel::ListLoop);
+        break;
+    }
 
-        case ActionFactory::ActionKind::DefaultFrame: {
-            _engine->setVideoAspect(-1.0);
-            break;
-        }
-        case ActionFactory::ActionKind::Ratio4x3Frame: {
-            _engine->setVideoAspect(4.0 / 3.0);
-            break;
-        }
-        case ActionFactory::ActionKind::Ratio16x9Frame: {
-            _engine->setVideoAspect(16.0 / 9.0);
-            break;
-        }
-        case ActionFactory::ActionKind::Ratio16x10Frame: {
-            _engine->setVideoAspect(16.0 / 10.0);
-            break;
-        }
-        case ActionFactory::ActionKind::Ratio185x1Frame: {
-            _engine->setVideoAspect(1.85);
-            break;
-        }
-        case ActionFactory::ActionKind::Ratio235x1Frame: {
-            _engine->setVideoAspect(2.35);
-            break;
-        }
+    case ActionFactory::ActionKind::Stereo: {
+        _engine->changeSoundMode(Backend::SoundMode::Stereo);
+        break;
+    }
+    case ActionFactory::ActionKind::LeftChannel: {
+        _engine->changeSoundMode(Backend::SoundMode::Left);
+        break;
+    }
+    case ActionFactory::ActionKind::RightChannel: {
+        _engine->changeSoundMode(Backend::SoundMode::Right);
+        break;
+    }
 
-        case ActionFactory::ActionKind::ToggleMute: {
+    case ActionFactory::ActionKind::DefaultFrame: {
+        _engine->setVideoAspect(-1.0);
+        break;
+    }
+    case ActionFactory::ActionKind::Ratio4x3Frame: {
+        _engine->setVideoAspect(4.0 / 3.0);
+        break;
+    }
+    case ActionFactory::ActionKind::Ratio16x9Frame: {
+        _engine->setVideoAspect(16.0 / 9.0);
+        break;
+    }
+    case ActionFactory::ActionKind::Ratio16x10Frame: {
+        _engine->setVideoAspect(16.0 / 10.0);
+        break;
+    }
+    case ActionFactory::ActionKind::Ratio185x1Frame: {
+        _engine->setVideoAspect(1.85);
+        break;
+    }
+    case ActionFactory::ActionKind::Ratio235x1Frame: {
+        _engine->setVideoAspect(2.35);
+        break;
+    }
+
+    case ActionFactory::ActionKind::ToggleMute: {
+        _engine->toggleMute();
+        if (_engine->muted()) {
+            _nwComm->updateWithMessage(tr("Muted"));
+        } else {
+            double pert = _engine->volume();
+            _nwComm->updateWithMessage(tr("Volume: %1%").arg(pert));
+        }
+        break;
+    }
+
+    case ActionFactory::ActionKind::ChangeVolume: {
+        if (_engine->muted()) {
             _engine->toggleMute();
-            if (_engine->muted()) {
-                _nwComm->updateWithMessage(tr("Muted"));
-            } else {
-                double pert = _engine->volume();
-                _nwComm->updateWithMessage(tr("Volume: %1%").arg(pert));
-            }
-            break;
         }
+        _engine->changeVolume(args[0].toInt());
+        Settings::get().setInternalOption("global_volume", qMin(_engine->volume(), 100));
+        double pert = _engine->volume();
+        _nwComm->updateWithMessage(tr("Volume: %1%").arg(pert));
+        break;
+    }
 
-        case ActionFactory::ActionKind::ChangeVolume: {
-            if (_engine->muted()) {
-                _engine->toggleMute();
-            }
-            _engine->changeVolume(args[0].toInt());
-            Settings::get().setInternalOption("global_volume", qMin(_engine->volume(), 100));
-            double pert = _engine->volume();
-            _nwComm->updateWithMessage(tr("Volume: %1%").arg(pert));
-            break;
+    case ActionFactory::ActionKind::VolumeUp: {
+        if (_engine->muted()) {
+            _engine->toggleMute();
         }
+        _engine->volumeUp();
+        double pert = _engine->volume();
+        _nwComm->updateWithMessage(tr("Volume: %1%").arg(pert));
+        break;
+    }
 
-        case ActionFactory::ActionKind::VolumeUp: {
-            if (_engine->muted()) {
-                _engine->toggleMute();
-            }
-            _engine->volumeUp();
-            double pert = _engine->volume();
-            _nwComm->updateWithMessage(tr("Volume: %1%").arg(pert));
-            break;
+    case ActionFactory::ActionKind::VolumeDown: {
+        _engine->volumeDown();
+        double pert = _engine->volume();
+        _nwComm->updateWithMessage(tr("Volume: %1%").arg(pert));
+        break;
+    }
+
+    case ActionFactory::ActionKind::GotoPlaylistSelected: {
+        _engine->playSelected(args[0].toInt());
+        break;
+    }
+
+    case ActionFactory::ActionKind::GotoPlaylistNext: {
+        if (isFullScreen() || isMaximized()) {
+            _movieSwitchedInFsOrMaxed = true;
         }
+        _engine->next();
+        break;
+    }
 
-        case ActionFactory::ActionKind::VolumeDown: {
-            _engine->volumeDown();
-            double pert = _engine->volume();
-            _nwComm->updateWithMessage(tr("Volume: %1%").arg(pert));
-            break;
+    case ActionFactory::ActionKind::GotoPlaylistPrev: {
+        if (isFullScreen() || isMaximized()) {
+            _movieSwitchedInFsOrMaxed = true;
         }
+        _engine->prev();
+        break;
+    }
 
-        case ActionFactory::ActionKind::GotoPlaylistSelected: {
-            _engine->playSelected(args[0].toInt());
-            break;
+    case ActionFactory::ActionKind::SelectTrack: {
+        Q_ASSERT(args.size() == 1);
+        _engine->selectTrack(args[0].toInt());
+        if (!fromUI) {
+            reflectActionToUI(kd);
         }
+        break;
+    }
 
-        case ActionFactory::ActionKind::GotoPlaylistNext: {
-            if (isFullScreen() || isMaximized()) {
-                _movieSwitchedInFsOrMaxed = true;
-            }
-            _engine->next();
-            break;
+    case ActionFactory::ActionKind::MatchOnlineSubtitle: {
+        _engine->loadOnlineSubtitle(_engine->playlist().currentInfo().url);
+        break;
+    }
+
+    case ActionFactory::ActionKind::SelectSubtitle: {
+        Q_ASSERT(args.size() == 1);
+        _engine->selectSubtitle(args[0].toInt());
+        if (!fromUI) {
+            reflectActionToUI(kd);
         }
+        break;
+    }
 
-        case ActionFactory::ActionKind::GotoPlaylistPrev: {
-            if (isFullScreen() || isMaximized()) {
-                _movieSwitchedInFsOrMaxed = true;
-            }
-            _engine->prev();
-            break;
+    case ActionFactory::ActionKind::ChangeSubCodepage: {
+        Q_ASSERT(args.size() == 1);
+        _engine->setSubCodepage(args[0].toString());
+        if (!fromUI) {
+            reflectActionToUI(kd);
         }
+        break;
+    }
 
-        case ActionFactory::ActionKind::SelectTrack: {
-            Q_ASSERT(args.size() == 1);
-            _engine->selectTrack(args[0].toInt());
-            if (!fromUI) {
-                reflectActionToUI(kd);
-            }
-            break;
+    case ActionFactory::ActionKind::HideSubtitle: {
+        _engine->toggleSubtitle();
+        break;
+    }
+
+    case ActionFactory::ActionKind::SubDelay: {
+        _engine->setSubDelay(0.5);
+        auto d = _engine->subDelay();
+        _nwComm->updateWithMessage(tr("Subtitle %1: %2s")
+                                   .arg(d > 0.0 ? tr("delayed") : tr("advanced")).arg(d > 0.0 ? d : -d));
+        break;
+    }
+
+    case ActionFactory::ActionKind::SubForward: {
+        _engine->setSubDelay(-0.5);
+        auto d = _engine->subDelay();
+        _nwComm->updateWithMessage(tr("Subtitle %1: %2s")
+                                   .arg(d > 0.0 ? tr("delayed") : tr("advanced")).arg(d > 0.0 ? d : -d));
+        break;
+    }
+
+    case ActionFactory::ActionKind::AccelPlayback: {
+        _playSpeed = qMin(2.0, _playSpeed + 0.1);
+        _engine->setPlaySpeed(_playSpeed);
+        _nwComm->updateWithMessage(tr("Speed: %1x").arg(_playSpeed));
+        break;
+    }
+
+    case ActionFactory::ActionKind::DecelPlayback: {
+        _playSpeed = qMax(0.1, _playSpeed - 0.1);
+        _engine->setPlaySpeed(_playSpeed);
+        _nwComm->updateWithMessage(tr("Speed: %1x").arg(_playSpeed));
+        break;
+    }
+
+    case ActionFactory::ActionKind::ResetPlayback: {
+        _playSpeed = 1.0;
+        _engine->setPlaySpeed(_playSpeed);
+        _nwComm->updateWithMessage(tr("Speed: %1x").arg(_playSpeed));
+        break;
+    }
+
+    case ActionFactory::ActionKind::LoadSubtitle: {
+        QString filename = QFileDialog::getOpenFileName(this, tr("Open file"),
+                                                        lastOpenedPath(),
+                                                        tr("Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)"));
+        if (QFileInfo(filename).exists()) {
+            auto success = _engine->loadSubtitle(QFileInfo(filename));
+            _nwComm->updateWithMessage(success ? tr("Load successfully") : tr("Load failed"));
         }
+        break;
+        break;
+    }
 
-        case ActionFactory::ActionKind::MatchOnlineSubtitle: {
-            _engine->loadOnlineSubtitle(_engine->playlist().currentInfo().url);
-            break;
-        }
-
-        case ActionFactory::ActionKind::SelectSubtitle: {
-            Q_ASSERT(args.size() == 1);
-            _engine->selectSubtitle(args[0].toInt());
-            if (!fromUI) {
-                reflectActionToUI(kd);
-            }
-            break;
-        }
-
-        case ActionFactory::ActionKind::ChangeSubCodepage: {
-            Q_ASSERT(args.size() == 1);
-            _engine->setSubCodepage(args[0].toString());
-            if (!fromUI) {
-                reflectActionToUI(kd);
-            }
-            break;
-        }
-
-        case ActionFactory::ActionKind::HideSubtitle: {
-            _engine->toggleSubtitle();
-            break;
-        }
-
-        case ActionFactory::ActionKind::SubDelay: {
-            _engine->setSubDelay(0.5);
-            auto d = _engine->subDelay();
-            _nwComm->updateWithMessage(tr("Subtitle %1: %2s")
-                    .arg(d > 0.0?tr("delayed"):tr("advanced")).arg(d>0.0?d:-d));
-            break;
-        }
-
-        case ActionFactory::ActionKind::SubForward: {
-            _engine->setSubDelay(-0.5);
-            auto d = _engine->subDelay();
-            _nwComm->updateWithMessage(tr("Subtitle %1: %2s")
-                    .arg(d > 0.0?tr("delayed"):tr("advanced")).arg(d>0.0?d:-d));
-            break;
-        }
-
-        case ActionFactory::ActionKind::AccelPlayback: {
-            _playSpeed = qMin(2.0, _playSpeed + 0.1);
-            _engine->setPlaySpeed(_playSpeed);
-            _nwComm->updateWithMessage(tr("Speed: %1x").arg(_playSpeed));
-            break;
-        }
-
-        case ActionFactory::ActionKind::DecelPlayback: {
-            _playSpeed = qMax(0.1, _playSpeed - 0.1);
-            _engine->setPlaySpeed(_playSpeed);
-            _nwComm->updateWithMessage(tr("Speed: %1x").arg(_playSpeed));
-            break;
-        }
-
-        case ActionFactory::ActionKind::ResetPlayback: {
-            _playSpeed = 1.0;
-            _engine->setPlaySpeed(_playSpeed);
-            _nwComm->updateWithMessage(tr("Speed: %1x").arg(_playSpeed));
-            break;
-        }
-
-        case ActionFactory::ActionKind::LoadSubtitle: {
-            QString filename = QFileDialog::getOpenFileName(this, tr("Open file"),
-                    lastOpenedPath(),
-                    tr("Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)"));
-            if (QFileInfo(filename).exists()) {
-                auto success = _engine->loadSubtitle(QFileInfo(filename));
-                _nwComm->updateWithMessage(success?tr("Load successfully"):tr("Load failed"));
-            }
-            break;
-            break;
-        }
-
-        case ActionFactory::ActionKind::TogglePause: {
-            if (_engine->state() == PlayerEngine::Idle && isShortcut) {
-                requestAction(ActionFactory::StartPlay);
-            } else {
-                if (_engine->state() == PlayerEngine::Paused && _playState->isVisible()) {
-                    startPlayStateAnimation(true);
-                    QTimer::singleShot(160, [=]() { _engine->pauseResume(); });
-                } else {
+    case ActionFactory::ActionKind::TogglePause: {
+        if (_engine->state() == PlayerEngine::Idle && isShortcut) {
+            requestAction(ActionFactory::StartPlay);
+        } else {
+            if (_engine->state() == PlayerEngine::Paused && _playState->isVisible()) {
+                startPlayStateAnimation(true);
+                QTimer::singleShot(160, [ = ]() {
                     _engine->pauseResume();
-                }
+                });
+            } else {
+                _engine->pauseResume();
             }
-            break;
         }
+        break;
+    }
 
-        case ActionFactory::ActionKind::SeekBackward: {
-            _engine->seekBackward(5);
-            break;
-        }
+    case ActionFactory::ActionKind::SeekBackward: {
+        _engine->seekBackward(5);
+        break;
+    }
 
-        case ActionFactory::ActionKind::SeekForward: {
-            _engine->seekForward(5);
-            break;
-        }
+    case ActionFactory::ActionKind::SeekForward: {
+        _engine->seekForward(5);
+        break;
+    }
 
-        case ActionFactory::ActionKind::SeekAbsolute: {
-            Q_ASSERT(args.size() == 1);
-            _engine->seekAbsolute(args[0].toInt());
-            break;
-        }
+    case ActionFactory::ActionKind::SeekAbsolute: {
+        Q_ASSERT(args.size() == 1);
+        _engine->seekAbsolute(args[0].toInt());
+        break;
+    }
 
-        case ActionFactory::ActionKind::Settings: {
-            handleSettings();
-            break;
-        }
+    case ActionFactory::ActionKind::Settings: {
+        handleSettings();
+        break;
+    }
 
-        case ActionFactory::ActionKind::Screenshot: {
-            auto img = _engine->takeScreenshot();
+    case ActionFactory::ActionKind::Screenshot: {
+        auto img = _engine->takeScreenshot();
 
-            QString filePath = Settings::get().screenshotNameTemplate();
-            bool success = false;
-            if (img.isNull())
-                qDebug()<< __func__ << "pixmap is null";
-            else
-                success = img.save(filePath);
+        QString filePath = Settings::get().screenshotNameTemplate();
+        bool success = false;
+        if (img.isNull())
+            qDebug() << __func__ << "pixmap is null";
+        else
+            success = img.save(filePath);
 
 #ifdef USE_SYSTEM_NOTIFY
-            // Popup notify.
-            QDBusInterface notification("org.freedesktop.Notifications",
-                    "/org/freedesktop/Notifications",
-                    "org.freedesktop.Notifications",
-                    QDBusConnection::sessionBus());
+        // Popup notify.
+        QDBusInterface notification("org.freedesktop.Notifications",
+                                    "/org/freedesktop/Notifications",
+                                    "org.freedesktop.Notifications",
+                                    QDBusConnection::sessionBus());
 
-            QStringList actions;
-            actions << "_open" << tr("View");
-
-
-            QVariantMap hints;
-            hints["x-deepin-action-_open"] = QString("xdg-open,%1").arg(filePath);
+        QStringList actions;
+        actions << "_open" << tr("View");
 
 
-            QList<QVariant> arg;
-            arg << (QCoreApplication::applicationName())                 // appname
-                << ((unsigned int) 0)                                    // id
-                << QString("deepin-movie")                               // icon
-                << tr("Movie Screenshot")                                // summary
-                << QString("%1 %2").arg(tr("Saved to")).arg(filePath) // body
-                << actions                                               // actions
-                << hints                                                 // hints
-                << (int) -1;                                             // timeout
-            notification.callWithArgumentList(QDBus::AutoDetect, "Notify", arg);
+        QVariantMap hints;
+        hints["x-deepin-action-_open"] = QString("xdg-open,%1").arg(filePath);
+
+
+        QList<QVariant> arg;
+        arg << (QCoreApplication::applicationName())                 // appname
+            << ((unsigned int) 0)                                    // id
+            << QString("deepin-movie")                               // icon
+            << tr("Movie Screenshot")                                // summary
+            << QString("%1 %2").arg(tr("Saved to")).arg(filePath) // body
+            << actions                                               // actions
+            << hints                                                 // hints
+            << (int) -1;                                             // timeout
+        notification.callWithArgumentList(QDBus::AutoDetect, "Notify", arg);
 
 #else
 
-            if (!_nwShot) {
-                _nwShot = new NotificationWidget(this);
-                _nwShot->setAnchor(NotificationWidget::AnchorNorthWest);
-                _nwShot->setAnchorPoint(QPoint(30, 58));
-            }
-            auto pm = utils::LoadHiDPIPixmap(QString(":/resources/icons/%1.svg").arg(success?"success":"fail"));
-            auto msg = success?tr("The screenshot is saved"):tr("Failed to save the screenshot");
-            _nwShot->popupWithIcon(msg, pm);
+        if (!_nwShot) {
+            _nwShot = new NotificationWidget(this);
+            _nwShot->setAnchor(NotificationWidget::AnchorNorthWest);
+            _nwShot->setAnchorPoint(QPoint(30, 58));
+        }
+        auto pm = utils::LoadHiDPIPixmap(QString(":/resources/icons/%1.svg").arg(success ? "success" : "fail"));
+        auto msg = success ? tr("The screenshot is saved") : tr("Failed to save the screenshot");
+        _nwShot->popupWithIcon(msg, pm);
 #endif
-            break;
-        }
+        break;
+    }
 
-        case ActionFactory::ActionKind::BurstScreenshot: {
-            startBurstShooting();
-            break;
-        }
+    case ActionFactory::ActionKind::BurstScreenshot: {
+        startBurstShooting();
+        break;
+    }
 
-        case ActionFactory::ActionKind::ViewShortcut: {
-            QRect rect = window()->geometry();
-            QPoint pos(rect.x() + rect.width()/2 , rect.y() + rect.height()/2);
-            QStringList shortcutString;
-            QString param1 = "-j=" + ShortcutManager::get().toJson();
-            QString param2 = "-p=" + QString::number(pos.x()) + "," + QString::number(pos.y());
-            shortcutString << param1 << param2;
+    case ActionFactory::ActionKind::ViewShortcut: {
+        QRect rect = window()->geometry();
+        QPoint pos(rect.x() + rect.width() / 2, rect.y() + rect.height() / 2);
+        QStringList shortcutString;
+        QString param1 = "-j=" + ShortcutManager::get().toJson();
+        QString param2 = "-p=" + QString::number(pos.x()) + "," + QString::number(pos.y());
+        shortcutString << param1 << param2;
 
-            QProcess* shortcutViewProcess = new QProcess();
-            shortcutViewProcess->startDetached("deepin-shortcut-viewer", shortcutString);
+        QProcess *shortcutViewProcess = new QProcess();
+        shortcutViewProcess->startDetached("deepin-shortcut-viewer", shortcutString);
 
-            connect(shortcutViewProcess, SIGNAL(finished(int)),
-            shortcutViewProcess, SLOT(deleteLater()));
+        connect(shortcutViewProcess, SIGNAL(finished(int)),
+                shortcutViewProcess, SLOT(deleteLater()));
 
-            break;
-        }
+        break;
+    }
 
-        case ActionFactory::ActionKind::NextFrame: {
-            _engine->nextFrame();
+    case ActionFactory::ActionKind::NextFrame: {
+        _engine->nextFrame();
 
-            break;
-        }
+        break;
+    }
 
-        case ActionFactory::ActionKind::PreviousFrame: {
-            _engine->previousFrame();
+    case ActionFactory::ActionKind::PreviousFrame: {
+        _engine->previousFrame();
 
-            break;
-        }
+        break;
+    }
 
-        default:
-            break;
+    default:
+        break;
     }
 }
 
-void MainWindow::onBurstScreenshot(const QImage& frame, qint64 timestamp)
+void MainWindow::onBurstScreenshot(const QImage &frame, qint64 timestamp)
 {
     qDebug() << _burstShoots.size();
     if (!frame.isNull()) {
@@ -2070,7 +2107,7 @@ void MainWindow::onBurstScreenshot(const QImage& frame, qint64 timestamp)
                 _nwShot->setAnchor(NotificationWidget::AnchorNorthWest);
                 _nwShot->setAnchorPoint(QPoint(30, 58));
             }
-            auto pm = utils::LoadHiDPIPixmap(QString(":/resources/icons/%1.svg").arg(QFileInfo::exists(poster_path)?"success":"fail"));
+            auto pm = utils::LoadHiDPIPixmap(QString(":/resources/icons/%1.svg").arg(QFileInfo::exists(poster_path) ? "success" : "fail"));
             _nwShot->popupWithIcon(tr("The screenshot is saved"), pm);
         }
     }
@@ -2105,14 +2142,14 @@ void MainWindow::handleSettings()
 #endif
 
     //hack:
-    auto subft = dsd->findChild<QSpinBox*>("OptionDSpinBox");
+    auto subft = dsd->findChild<QSpinBox *>("OptionDSpinBox");
     if (subft) {
         subft->setMinimum(8);
     }
 
     // hack: reset is set to default by QDialog, which makes lineedit's enter
     // press is responded by reset button
-    auto reset = dsd->findChild<QPushButton*>("SettingsContentReset");
+    auto reset = dsd->findChild<QPushButton *>("SettingsContentReset");
     reset->setDefault(false);
     reset->setAutoDefault(false);
 
@@ -2121,12 +2158,12 @@ void MainWindow::handleSettings()
     Settings::get().settings()->sync();
 }
 
-void MainWindow::playList(const QList<QString>& l)
+void MainWindow::playList(const QList<QString> &l)
 {
     static QRegExp url_re("\\w+://");
 
     QList<QUrl> urls;
-    for (const auto& filename: l) {
+    for (const auto &filename : l) {
         qDebug() << filename;
         QUrl url;
         if (url_re.indexIn(filename) == 0) {
@@ -2139,7 +2176,7 @@ void MainWindow::playList(const QList<QString>& l)
         if (url.isValid())
             urls.append(url);
     }
-    const auto& valids = _engine->addPlayFiles(urls);
+    const auto &valids = _engine->addPlayFiles(urls);
     if (valids.size()) {
         if (!isHidden()) {
             activateWindow();
@@ -2148,7 +2185,7 @@ void MainWindow::playList(const QList<QString>& l)
     }
 }
 
-void MainWindow::play(const QUrl& url)
+void MainWindow::play(const QUrl &url)
 {
     if (!url.isValid())
         return;
@@ -2215,34 +2252,32 @@ void MainWindow::updateProxyGeometry()
         if (_toolbox) {
 //            QRect r(view_rect.left(), height() - TOOLBOX_HEIGHT_EXT - view_rect.top(),
 //                    view_rect.width(), TOOLBOX_HEIGHT_EXT);
-            if (isFullScreen())
-            {
-                if (_playlist->state() == PlaylistWidget::State::Opened){
+            if (isFullScreen()) {
+                if (_playlist->state() == PlaylistWidget::State::Opened) {
                     QRect r(10, height() - 384 - rect().top() - 10,
-                            rect().width()-20, 384);
+                            rect().width() - 20, 384);
                     _toolbox->setGeometry(r);
-        //            _toolbox->move(r.x(),r.y());
-        //            _toolbox->resize(r.width(),r.height());
-                }else {
+                    //            _toolbox->move(r.x(),r.y());
+                    //            _toolbox->resize(r.width(),r.height());
+                } else {
                     QRect r(10, height() - TOOLBOX_HEIGHT_EXT - rect().top() - 10,
-                            rect().width()-20, TOOLBOX_HEIGHT_EXT);
+                            rect().width() - 20, TOOLBOX_HEIGHT_EXT);
                     _toolbox->setGeometry(r);
                 }
 
 //                QRect r(10, height() - TOOLBOX_HEIGHT_EXT - view_rect.top() - 10,
 //                        view_rect.width()-20, TOOLBOX_HEIGHT_EXT);
 //                _toolbox->setGeometry(r);
-            }
-            else {
-                if (_playlist->state() == PlaylistWidget::State::Opened){
+            } else {
+                if (_playlist->state() == PlaylistWidget::State::Opened) {
                     QRect r(10, height() - 384 - rect().top() - 10,
-                            rect().width()-20, 384);
+                            rect().width() - 20, 384);
                     _toolbox->setGeometry(r);
-        //            _toolbox->move(r.x(),r.y());
-        //            _toolbox->resize(r.width(),r.height());
-                }else {
+                    //            _toolbox->move(r.x(),r.y());
+                    //            _toolbox->resize(r.width(),r.height());
+                } else {
                     QRect r(10, height() - TOOLBOX_HEIGHT_EXT - rect().top() - 10,
-                            rect().width()-20, TOOLBOX_HEIGHT_EXT);
+                            rect().width() - 20, TOOLBOX_HEIGHT_EXT);
                     _toolbox->setGeometry(r);
                 }
 //                QRect r(10, height() - TOOLBOX_HEIGHT_EXT - view_rect.top() - 10,
@@ -2257,16 +2292,16 @@ void MainWindow::updateProxyGeometry()
         }
 
         if (_playlist && !_playlist->toggling()) {
-            int off = isFullScreen()? 0: titlebar()->geometry().bottom();
+            int off = isFullScreen() ? 0 : titlebar()->geometry().bottom();
 //            QRect fixed = {
 //                0,
 //                off,
 //                220,
 //                toolbox()->geometry().top() + TOOLBOX_TOP_EXTENT - off
 //            };
-            QRect fixed((10), (view_rect.height()-394),
-                    view_rect.width()-20,
-                    384 - 70);
+            QRect fixed((10), (view_rect.height() - 394),
+                        view_rect.width() - 20,
+                        384 - 70);
 //            fixed.moveRight(view_rect.right());
             _playlist->setGeometry(fixed);
         }
@@ -2297,7 +2332,7 @@ void MainWindow::suspendToolsWindow()
                     ActionFactory::get().titlebarMenu()->isVisible())
                 return;
             //if (qApp->focusWindow() != windowHandle())
-                //return;
+            //return;
 
             if (_titlebar->isVisible()) {
                 if (insideToolsArea(mapFromGlobal(QCursor::pos())))
@@ -2394,7 +2429,7 @@ void MainWindow::closeEvent(QCloseEvent *ev)
     ev->accept();
 }
 
-void MainWindow::wheelEvent(QWheelEvent* we)
+void MainWindow::wheelEvent(QWheelEvent *we)
 {
     if (insideToolsArea(we->pos()) || insideResizeArea(we->globalPos()))
         return;
@@ -2405,7 +2440,7 @@ void MainWindow::wheelEvent(QWheelEvent* we)
     }
 
     if (we->buttons() == Qt::NoButton && we->modifiers() == Qt::NoModifier) {
-        requestAction(we->angleDelta().y() > 0 ? ActionFactory::VolumeUp: ActionFactory::VolumeDown);
+        requestAction(we->angleDelta().y() > 0 ? ActionFactory::VolumeUp : ActionFactory::VolumeDown);
     }
 }
 
@@ -2450,7 +2485,7 @@ void MainWindow::resizeByConstraints(bool forceCentered)
     qDebug() << __func__;
     updateWindowTitle();
 
-    const auto& mi = _engine->playlist().currentInfo().mi;
+    const auto &mi = _engine->playlist().currentInfo().mi;
     auto sz = _engine->videoSize();
     if (sz.isEmpty()) {
         sz = QSize(mi.width, mi.height);
@@ -2469,16 +2504,16 @@ void MainWindow::resizeByConstraints(bool forceCentered)
     if (forceCentered) {
         QRect r;
         r.setSize(sz);
-        r.moveTopLeft({(geom.width() - r.width()) /2, (geom.height() - r.height())/2});
+        r.moveTopLeft({(geom.width() - r.width()) / 2, (geom.height() - r.height()) / 2});
         this->setGeometry(r);
-        this->move(r.x(),r.y());
-        this->resize(r.width(),r.height());
+        this->move(r.x(), r.y());
+        this->resize(r.width(), r.height());
     } else {
         QRect r = this->geometry();
         r.setSize(sz);
         this->setGeometry(r);
-        this->move(r.x(),r.y());
-        this->resize(r.width(),r.height());
+        this->move(r.x(), r.y());
+        this->resize(r.width(), r.height());
     }
 }
 
@@ -2510,7 +2545,7 @@ void MainWindow::updateSizeConstraints()
     this->setMinimumSize(m);
 }
 
-void MainWindow::updateGeometryNotification(const QSize& sz)
+void MainWindow::updateGeometryNotification(const QSize &sz)
 {
     auto msg = QString("%1x%2").arg(sz.width()).arg(sz.height());
     _nwComm->updateWithMessage(msg);
@@ -2529,15 +2564,17 @@ void MainWindow::resizeEvent(QResizeEvent *ev)
 
     updateSizeConstraints();
     updateProxyGeometry();
-    QTimer::singleShot(0, [=]() { updateWindowTitle(); });
+    QTimer::singleShot(0, [ = ]() {
+        updateWindowTitle();
+    });
 }
 
 void MainWindow::updateWindowTitle()
 {
     if (_engine->state() != PlayerEngine::Idle) {
-        const auto& mi = _engine->playlist().currentInfo().mi;
+        const auto &mi = _engine->playlist().currentInfo().mi;
         auto title = _titlebar->fontMetrics().elidedText(mi.title,
-                Qt::ElideMiddle, _titlebar->contentsRect().width() - 300);
+                                                         Qt::ElideMiddle, _titlebar->contentsRect().width() - 300);
         _titlebar->setTitletxt(title);
     } else {
         _titlebar->setTitletxt(QString());
@@ -2560,7 +2597,7 @@ void MainWindow::keyReleaseEvent(QKeyEvent *ev)
     QWidget::keyReleaseEvent(ev);
 }
 
-void MainWindow::capturedMousePressEvent(QMouseEvent* me)
+void MainWindow::capturedMousePressEvent(QMouseEvent *me)
 {
     _mouseMoved = false;
     if (qApp->focusWindow() == 0) return;
@@ -2570,12 +2607,12 @@ void MainWindow::capturedMousePressEvent(QMouseEvent* me)
     }
 }
 
-void MainWindow::capturedMouseReleaseEvent(QMouseEvent* me)
+void MainWindow::capturedMouseReleaseEvent(QMouseEvent *me)
 {
     if (_delayedResizeByConstraint) {
         _delayedResizeByConstraint = false;
 
-        QTimer::singleShot(0, [=]() {
+        QTimer::singleShot(0, [ = ]() {
             this->setMinimumSize({0, 0});
             this->resizeByConstraints(true);
         });
@@ -2613,7 +2650,7 @@ void MainWindow::mouseDoubleClickEvent(QMouseEvent *ev)
     }
 }
 
-bool MainWindow::insideToolsArea(const QPoint& p)
+bool MainWindow::insideToolsArea(const QPoint &p)
 {
     return _titlebar->geometry().contains(p) || _toolbox->geometry().contains(p);
 }
@@ -2623,7 +2660,7 @@ QMargins MainWindow::dragMargins() const
     return QMargins {MOUSE_MARGINS, MOUSE_MARGINS, MOUSE_MARGINS, MOUSE_MARGINS};
 }
 
-bool MainWindow::insideResizeArea(const QPoint& global_p)
+bool MainWindow::insideResizeArea(const QPoint &global_p)
 {
     const QRect window_visible_rect = frameGeometry() - dragMargins();
     return !window_visible_rect.contains(global_p);
@@ -2685,7 +2722,7 @@ void MainWindow::contextMenuEvent(QContextMenuEvent *cme)
         return;
 
     resumeToolsWindow();
-    QTimer::singleShot(0, [=]() {
+    QTimer::singleShot(0, [ = ]() {
         qApp->restoreOverrideCursor();
         ActionFactory::get().mainContextMenu()->popup(QCursor::pos());
     });
@@ -2713,7 +2750,7 @@ QString MainWindow::lastOpenedPath()
     return lastPath;
 }
 
-void MainWindow::paintEvent(QPaintEvent* pe)
+void MainWindow::paintEvent(QPaintEvent *pe)
 {
     QPainter painter(this);
 //    painter.setRenderHint(QPainter::Antialiasing);
@@ -2729,7 +2766,7 @@ void MainWindow::paintEvent(QPaintEvent* pe)
 //    painter.fillPath(path, bgColor);
 //    painter.setRenderHint(QPainter::Antialiasing, false);
 
-    QImage& bg = bg_dark;
+    QImage &bg = bg_dark;
 //    bool rounded = !isFullScreen() && !isMaximized();
 //    if (rounded) {
 //        QPainterPath pp;
@@ -2747,52 +2784,52 @@ void MainWindow::paintEvent(QPaintEvent* pe)
 //        pp.addRect(bgRect);
 //        painter.fillPath(pp, bgColor);
 //    }
-    auto pt = bgRect.center() - QPoint(bg.width()/2, bg.height()/2)/devicePixelRatioF();
+    auto pt = bgRect.center() - QPoint(bg.width() / 2, bg.height() / 2) / devicePixelRatioF();
     painter.drawImage(pt, bg);
 
-/*
-    QPainter p(this);
-    p.setRenderHint(QPainter::Antialiasing);
+    /*
+        QPainter p(this);
+        p.setRenderHint(QPainter::Antialiasing);
 
-    bool light = ("light" == qApp->theme());
-    auto bg_clr = QColor(16, 16, 16);
-    QImage& bg = bg_dark;
-    if (light) {
-        bg = bg_light;
-        bg_clr = QColor(252, 252, 252);
-    }
-
-#ifdef USE_DXCB
-    QPainterPath pp;
-    pp.addRect(rect());
-    p.fillPath(pp, bg_clr);
-#else
-    bool rounded = !isFullScreen() && !isMaximized();
-
-    p.fillRect(rect(), Qt::transparent);
-
-    if (rounded) {
-        QPainterPath pp;
-        pp.addRoundedRect(rect(), RADIUS, RADIUS);
-        p.fillPath(pp, QColor(0, 0, 0, light ? 255 * 0.1: 255));
-
-        {
-            auto view_rect = rect().marginsRemoved(QMargins(1, 1, 1, 1));
-            QPainterPath pp;
-            pp.addRoundedRect(view_rect, RADIUS, RADIUS);
-            p.fillPath(pp, bg_clr);
+        bool light = ("light" == qApp->theme());
+        auto bg_clr = QColor(16, 16, 16);
+        QImage& bg = bg_dark;
+        if (light) {
+            bg = bg_light;
+            bg_clr = QColor(252, 252, 252);
         }
-    } else {
+
+    #ifdef USE_DXCB
         QPainterPath pp;
         pp.addRect(rect());
         p.fillPath(pp, bg_clr);
-    }
+    #else
+        bool rounded = !isFullScreen() && !isMaximized();
 
-#endif
+        p.fillRect(rect(), Qt::transparent);
 
-    auto pt = rect().center() - QPoint(bg.width()/2, bg.height()/2)/devicePixelRatioF();
-    p.drawImage(pt, bg);
-*/
+        if (rounded) {
+            QPainterPath pp;
+            pp.addRoundedRect(rect(), RADIUS, RADIUS);
+            p.fillPath(pp, QColor(0, 0, 0, light ? 255 * 0.1: 255));
+
+            {
+                auto view_rect = rect().marginsRemoved(QMargins(1, 1, 1, 1));
+                QPainterPath pp;
+                pp.addRoundedRect(view_rect, RADIUS, RADIUS);
+                p.fillPath(pp, bg_clr);
+            }
+        } else {
+            QPainterPath pp;
+            pp.addRect(rect());
+            p.fillPath(pp, bg_clr);
+        }
+
+    #endif
+
+        auto pt = rect().center() - QPoint(bg.width()/2, bg.height()/2)/devicePixelRatioF();
+        p.drawImage(pt, bg);
+    */
 }
 
 void MainWindow::toggleUIMode()
@@ -2867,11 +2904,11 @@ void MainWindow::toggleUIMode()
         }
         geom.setSize(sz);
         setGeometry(geom);
-        move(geom.x(),geom.y());
-        resize(geom.width(),geom.height());
+        move(geom.x(), geom.y());
+        resize(geom.width(), geom.height());
 
         _miniQuitMiniBtn->move(sz.width() - 14 - _miniQuitMiniBtn->width(),
-                sz.height() - 10 - _miniQuitMiniBtn->height());
+                               sz.height() - 10 - _miniQuitMiniBtn->height());
         _miniCloseBtn->move(sz.width() - 4 - _miniCloseBtn->width(), 4);
         _miniPlayBtn->move(14, sz.height() - 10 - _miniPlayBtn->height());
 
@@ -2901,7 +2938,7 @@ void MainWindow::toggleUIMode()
         if (_stateBeforeMiniMode & SBEM_PlaylistOpened &&
                 _playlist->state() == PlaylistWidget::Closed) {
             if (_stateBeforeMiniMode & SBEM_Fullscreen) {
-                QTimer::singleShot(100, [=]() {
+                QTimer::singleShot(100, [ = ]() {
                     requestAction(ActionFactory::TogglePlaylist);
                 });
             }
@@ -2959,8 +2996,8 @@ void MainWindow::dropEvent(QDropEvent *ev)
         if (_engine->subtitle_suffixs.contains(fileInfo.suffix())) {
             bool succ = _engine->loadSubtitle(fileInfo);
             // notice that the file loaded but won't automatically selected.
-            const PlayingMovieInfo& pmf = _engine->playingMovieInfo();
-            for (const SubtitleInfo& sub: pmf.subs) {
+            const PlayingMovieInfo &pmf = _engine->playingMovieInfo();
+            for (const SubtitleInfo &sub : pmf.subs) {
                 if (sub["external"].toBool()) {
                     QString path = sub["external-filename"].toString();
                     if (path == fileInfo.canonicalFilePath()) {
@@ -2980,8 +3017,8 @@ void MainWindow::dropEvent(QDropEvent *ev)
         auto accepted = valids.toSet();
         auto invalids = all.subtract(accepted).toList();
         int ms = 0;
-        for (const auto& url: invalids) {
-            QTimer::singleShot(ms, [=]() {
+        for (const auto &url : invalids) {
+            QTimer::singleShot(ms, [ = ]() {
                 auto msg = QString(tr("Invalid file: %1").arg(url.fileName()));
                 _nwComm->updateWithMessage(msg);
             });
@@ -3015,7 +3052,7 @@ QString MainWindow::probeCdromDevice()
         "/dev/cdrom"
     };
 
-    for (auto d: cands) {
+    for (auto d : cands) {
         if (QFile::exists(d)) {
             return d;
         }

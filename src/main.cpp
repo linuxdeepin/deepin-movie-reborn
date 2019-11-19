@@ -1,4 +1,4 @@
-/* 
+/*
  * (c) 2017, Deepin Technology Co., Ltd. <support@deepin.org>
  *
  * This program is free software; you can redistribute it and/or
@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
 
     //save theme
     DApplicationSettings saveTheme;
-    auto& clm = dmr::CommandLineManager::get();
+    auto &clm = dmr::CommandLineManager::get();
     clm.process(app);
 
     QStringList toOpenFiles;
@@ -91,7 +91,7 @@ int main(int argc, char *argv[])
     app.setApplicationDisplayName(QObject::tr("影院"));
     app.setApplicationDescription(QObject::tr(
                                       "影院是一款支持多种视频格式本地播放和流媒体播放的视频播放器。"
-                ));
+                                  ));
 //    "Deepin Movie is a well-designed and full-featured"
 //    " video player with simple borderless design. It supports local and"
 //    " streaming media play with multiple video formats."
@@ -115,7 +115,7 @@ int main(int argc, char *argv[])
                 iface.asyncCall("openFiles", toOpenFiles);
             }
         }
-        
+
         exit(0);
     }
 

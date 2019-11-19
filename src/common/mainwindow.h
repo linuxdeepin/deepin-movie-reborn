@@ -1,4 +1,4 @@
-/* 
+/*
  * (c) 2017, Deepin Technology Co., Ltd. <support@deepin.org>
  *
  * This program is free software; you can redistribute it and/or
@@ -28,7 +28,7 @@
  * files in the program, then also delete it here.
  */
 #ifndef _DMR_MAIN_WINDOW_H
-#define _DMR_MAIN_WINDOW_H 
+#define _DMR_MAIN_WINDOW_H
 
 #include <QObject>
 #include <DMainWindow>
@@ -40,11 +40,9 @@
 #include "widgets/titlebar.h"
 #include <DPushButton>
 
-namespace Dtk
-{
-namespace Widget
-{
-    class DImageButton;
+namespace Dtk {
+namespace Widget {
+class DImageButton;
 }
 }
 
@@ -61,32 +59,48 @@ class PlayerEngine;
 class NotificationWidget;
 class MovieProgressIndicator;
 
-class MainWindow: public DMainWindow {
+class MainWindow: public DMainWindow
+{
     Q_OBJECT
     Q_PROPERTY(bool inited READ inited WRITE setInit NOTIFY initChanged)
 public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-    bool inited() const { return _inited; }
-    PlayerEngine* engine() { return _engine; }
-    Titlebar* titlebar() { return _titlebar; }
-    ToolboxProxy* toolbox() { return _toolbox; }
-    PlaylistWidget* playlist() { return _playlist; }
+    bool inited() const
+    {
+        return _inited;
+    }
+    PlayerEngine *engine()
+    {
+        return _engine;
+    }
+    Titlebar *titlebar()
+    {
+        return _titlebar;
+    }
+    ToolboxProxy *toolbox()
+    {
+        return _toolbox;
+    }
+    PlaylistWidget *playlist()
+    {
+        return _playlist;
+    }
 
     void requestAction(ActionFactory::ActionKind, bool fromUI = false,
-            QList<QVariant> args = {}, bool shortcut = false);
+                       QList<QVariant> args = {}, bool shortcut = false);
 
-    bool insideResizeArea(const QPoint& global_p);
+    bool insideResizeArea(const QPoint &global_p);
     QMargins dragMargins() const;
 
-    void capturedMousePressEvent(QMouseEvent* me);
-    void capturedMouseReleaseEvent(QMouseEvent* me);
+    void capturedMousePressEvent(QMouseEvent *me);
+    void capturedMouseReleaseEvent(QMouseEvent *me);
 
     void syncStaysOnTop();
-    void updateGeometryNotification(const QSize& sz);
+    void updateGeometryNotification(const QSize &sz);
 
-    void updateContentGeometry(const QRect& rect);
+    void updateContentGeometry(const QRect &rect);
 
     static QString lastOpenedPath();
 
@@ -94,10 +108,11 @@ signals:
     void windowEntered();
     void windowLeaved();
     void initChanged();
+    void frameMenuEnable(bool);
 
 public slots:
-    void play(const QUrl& url);
-    void playList(const QList<QString>& l);
+    void play(const QUrl &url);
+    void playList(const QList<QString> &l);
     void updateProxyGeometry();
     void suspendToolsWindow();
     void resumeToolsWindow();
@@ -113,13 +128,13 @@ protected:
     void mouseDoubleClickEvent(QMouseEvent *ev) override;
     void mouseReleaseEvent(QMouseEvent *ev) override;
     void focusInEvent(QFocusEvent *fe) override;
-    void wheelEvent(QWheelEvent* we) override;
+    void wheelEvent(QWheelEvent *we) override;
 
     void keyPressEvent(QKeyEvent *ev) override;
     void keyReleaseEvent(QKeyEvent *ev) override;
     void moveEvent(QMoveEvent *ev) override;
     void contextMenuEvent(QContextMenuEvent *cme) override;
-    void paintEvent(QPaintEvent*) override;
+    void paintEvent(QPaintEvent *) override;
     void dragEnterEvent(QDragEnterEvent *event) override;
     void dragMoveEvent(QDragMoveEvent *event) override;
     void dropEvent(QDropEvent *event) override;
@@ -140,7 +155,7 @@ protected slots:
     void miniButtonClicked(QString id);
 
     void startBurstShooting();
-    void onBurstScreenshot(const QImage& frame, qint64 timestamp);
+    void onBurstScreenshot(const QImage &frame, qint64 timestamp);
     void delayedMouseReleaseHandler();
 
 #ifdef USE_DXCB
@@ -161,7 +176,7 @@ private:
     void updateSizeConstraints();
     void toggleUIMode();
     void reflectActionToUI(ActionFactory::ActionKind);
-    bool insideToolsArea(const QPoint& p);
+    bool insideToolsArea(const QPoint &p);
     void switchTheme();
     bool isActionAllowed(ActionFactory::ActionKind kd, bool fromUI, bool isShortcut);
     QString probeCdromDevice();
@@ -216,7 +231,7 @@ private:
         SBEM_Fullscreen = 0x02,
         SBEM_PlaylistOpened = 0x04,
         SBEM_Maximized = 0x08,
-    }; 
+    };
     int _stateBeforeMiniMode {0};
     Qt::WindowStates _lastWindowState {Qt::WindowNoState};
 
