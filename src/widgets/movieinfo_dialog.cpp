@@ -83,7 +83,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo& pif)
     auto *nm = new DLabel(this);
     nm->setFont(DFontSizeManager::instance()->get(DFontSizeManager::T8));
     DPalette pal_nm = DApplicationHelper::instance()->palette(nm);
-    pal_nm.setBrush(DPalette::WindowText, pal_nm.color(DPalette::TextLively));
+    pal_nm.setBrush(DPalette::Text, pal_nm.color(DPalette::TextTitle));
     nm->setPalette(pal_nm);
     nm->setText(nm->fontMetrics().elidedText(QFileInfo(mi.filePath).fileName(), Qt::ElideMiddle, 260));
     ml->addWidget(nm);
@@ -91,6 +91,10 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo& pif)
     ml->addSpacing(44);
 
     InfoBottom *infoRect = new InfoBottom;
+//    DWidget *infoRect = new DWidget;
+//    DPalette pal_infoRect = DApplicationHelper::instance()->palette(infoRect);
+//    pal_infoRect.setBrush(DPalette::Background, pal_infoRect.color(DPalette::ItemBackground));
+//    infoRect->setPalette(pal_infoRect);
     infoRect->setFixedSize(280, 181);
     ml->addWidget(infoRect);
     ml->setAlignment(infoRect, Qt::AlignHCenter);
@@ -110,24 +114,31 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo& pif)
     form->setFormAlignment(Qt::AlignCenter);
 //    form->setRowWrapPolicy(QFormLayout::WrapLongRows);
 
+//        f->setFixedHeight(40);
 #define ADD_ROW(title, field)  do { \
     QFont font(DFontSizeManager::instance()->get(DFontSizeManager::T8)); \
-    auto f = new DLabel(field, this); \
+    auto f = new DLabel(title, this); \
+    f->setFixedSize(55, 45); \
+    f->setAlignment(Qt::AlignLeft | Qt::AlignTop); \
     f->setFont(font); \
     DPalette pal_f = DApplicationHelper::instance()->palette(f); \
-    pal_f.setBrush(DPalette::WindowText, pal_f.color(DPalette::TextLively)); \
+    pal_f.setBrush(DPalette::Text, pal_f.color(DPalette::TextTitle)); \
     f->setPalette(pal_f); \
-    auto t = new DLabel(title, this); \
-    t->setAlignment(Qt::AlignLeft); \
+    auto t = new DLabel(field, this); \
+    t->setFixedSize(200, 45); \
+    t->setAlignment(Qt::AlignLeft | Qt::AlignTop); \
     t->setWordWrap(true); \
     t->setFont(font); \
-    form->addRow(t, f); \
+    DPalette pal_t = DApplicationHelper::instance()->palette(t); \
+    pal_t.setBrush(DPalette::Text, pal_t.color(DPalette::TextTitle)); \
+    t->setPalette(pal_t); \
+    form->addRow(f, t); \
 } while (0)
 
     auto title = new DLabel(MV_BASE_INFO, this);
     title->setFont(DFontSizeManager::instance()->get(DFontSizeManager::T6));
     DPalette pal_title = DApplicationHelper::instance()->palette(title);
-    pal_title.setBrush(DPalette::WindowText, pal_title.color(DPalette::TextLively));
+    pal_title.setBrush(DPalette::Text, pal_title.color(DPalette::TextTitle));
     title->setPalette(pal_title);
     form->addRow(title);
 
@@ -137,49 +148,42 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo& pif)
     ADD_ROW(MV_DURATION, mi.durationStr());
 
     auto fm = nm->fontMetrics();
-    auto fp = utils::ElideText(mi.filePath, {200, 40}, QTextOption::WordWrap,
+    auto fp = utils::ElideText(mi.filePath, {220, 40}, QTextOption::WordWrap,
             nm->font(), Qt::ElideNone, fm.height(), 150);
-    ADD_ROW(MV_FILE_PATH, fp);
+    ADD_ROW(MV_FILE_PATH, mi.filePath);
 
 #undef ADD_ROW
 
-//    QObject::connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged,this,
-//                         [=] () {
-        DPalette pal = DApplicationHelper::instance()->palette(this);
-        if(DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
-            pal.setBrush(DPalette::Window, pal.color(DPalette::ItemBackground));
+    connect(DApplicationHelper::instance(), &DApplicationHelper::themeTypeChanged, this, [=]{
+        DPalette pal_nm = DApplicationHelper::instance()->palette(nm);
+        pal_nm.setBrush(DPalette::Text, pal_nm.color(DPalette::TextTitle));
+        nm->setPalette(pal_nm);
 
-            closeBt->setNormalPic(INFO_CLOSE_LIGHT);
-            infoRect->setInfoBgTheme(lightTheme);
+        DPalette pal_title = DApplicationHelper::instance()->palette(title);
+        pal_title.setBrush(DPalette::Text, pal_title.color(DPalette::TextTitle));
+        title->setPalette(pal_title);
+    });
 
-            qDebug() << ".............111111";
-        }
-        else if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
-            pal.setBrush(DPalette::Window, pal.color(DPalette::ItemBackground));
+    if(DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
+        closeBt->setNormalPic(INFO_CLOSE_LIGHT);
+        infoRect->setInfoBgTheme(lightTheme);
+    }
+    else if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
+        closeBt->setNormalPic(INFO_CLOSE_DARK);
+        infoRect->setInfoBgTheme(darkTheme);
+    }
+    else {
+        closeBt->setNormalPic(INFO_CLOSE_LIGHT);
+        infoRect->setInfoBgTheme(lightTheme);
+    }
 
-            closeBt->setNormalPic(INFO_CLOSE_DARK);
-            infoRect->setInfoBgTheme(darkTheme);
-
-            qDebug() << ".............222222";
-        }
-        else {
-            pal.setBrush(DPalette::Window, pal.color(DPalette::ItemBackground));
-
-            closeBt->setNormalPic(INFO_CLOSE_DARK);
-            infoRect->setInfoBgTheme(darkTheme);
-
-            qDebug() << ".............333333";
-        }
-        this->setPalette(pal);
-//    });
-
-#if DTK_VERSION > DTK_VERSION_CHECK(2, 0, 6, 0)
-    DThemeManager::instance()->setTheme(this, "light");
-    DThemeManager::instance()->setTheme(closeBt, "light");
-#else
-//    DThemeManager::instance()->registerWidget(this);
-//    closeBt->setStyleSheet(DThemeManager::instance()->getQssForWidget("DWindowCloseButton", "light"));
-#endif
+//#if DTK_VERSION > DTK_VERSION_CHECK(2, 0, 6, 0)
+//    DThemeManager::instance()->setTheme(this, "light");
+//    DThemeManager::instance()->setTheme(closeBt, "light");
+//#else
+////    DThemeManager::instance()->registerWidget(this);
+////    closeBt->setStyleSheet(DThemeManager::instance()->getQssForWidget("DWindowCloseButton", "light"));
+//#endif
 }
 
 InfoBottom::InfoBottom()
@@ -189,6 +193,7 @@ InfoBottom::InfoBottom()
 void InfoBottom::setInfoBgTheme(ThemeTYpe themeType)
 {
     m_themeType = themeType;
+    update();
 }
 
 void InfoBottom::paintEvent(QPaintEvent *ev)
@@ -197,16 +202,12 @@ void InfoBottom::paintEvent(QPaintEvent *ev)
     pt.setRenderHint(QPainter::Antialiasing);
 
     if (lightTheme == m_themeType) {
-        pt.setPen(QColor(0, 0, 0, 5));
-        pt.setBrush(QBrush(QColor(249, 249, 249, 160)));
+        pt.setPen(QColor(0, 0, 0, 20));
+        pt.setBrush(QBrush(QColor(250, 250, 250, 180)));
     }
     else if (darkTheme == m_themeType) {
-        pt.setPen(QColor(0, 0, 0, 5));
-        pt.setBrush(QBrush(QColor(249, 249, 249, 160)));
-    }
-    else {
-        pt.setPen(QColor(0, 0, 0, 5));
-        pt.setBrush(QBrush(QColor(249, 249, 249, 160)));
+        pt.setPen(QColor(255, 255, 255, 20));
+        pt.setBrush(QBrush(QColor(80, 80, 80, 60)));
     }
 
     QRect rect = this->rect();
