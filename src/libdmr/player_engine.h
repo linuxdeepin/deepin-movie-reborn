@@ -35,6 +35,7 @@
 #include <playlist_model.h>
 #include <player_backend.h>
 #include <online_sub.h>
+#include <QNetworkConfigurationManager>
 
 namespace dmr {
 class PlaylistModel;
@@ -165,6 +166,8 @@ signals:
 
     void playlistChanged();
 
+    void onlineStateChanged(bool isOnline);
+
 public slots:
     void play();
     void pauseResume();
@@ -207,6 +210,9 @@ protected:
 
     void resizeEvent(QResizeEvent* re) override;
     void savePreviousMovieState();
+
+private:
+    QNetworkConfigurationManager _networkConfigMng;
 };
 }
 

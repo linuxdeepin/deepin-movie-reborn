@@ -116,7 +116,7 @@ public slots:
     void updateProxyGeometry();
     void suspendToolsWindow();
     void resumeToolsWindow();
-
+    void checkOnlineState(const bool isOnline);
 
 protected:
     void showEvent(QShowEvent *event) override;

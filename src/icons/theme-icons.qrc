@@ -14,9 +14,8 @@
         <file>texts/dcc_volumelessen_12px.svg</file>
         <file>texts/dcc_zoomin_36px.svg</file>
         <file>texts/dcc_zoomout_36px.svg</file>
+        <file>icons/ddc_warning_30px.svg</file>
     </qresource>
-    <qresource prefix="/icons/deepin/builtin/light">
-    </qresource>
-    <qresource prefix="/icons/deepin/builtin/dark">
-    </qresource>
+    <qresource prefix="/icons/deepin/builtin/light"/>
+    <qresource prefix="/icons/deepin/builtin/dark"/>
 </RCC>

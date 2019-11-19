@@ -66,6 +66,8 @@ PlayerEngine::PlayerEngine(QWidget *parent)
         l->addWidget(_current);
     }
 
+    connect(&_networkConfigMng, &QNetworkConfigurationManager::onlineStateChanged, this, &PlayerEngine::onlineStateChanged);
+
     setLayout(l);
 
 #ifndef _LIBDMR_

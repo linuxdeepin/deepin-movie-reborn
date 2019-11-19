@@ -863,6 +863,8 @@ MainWindow::MainWindow(QWidget *parent)
     }
     qDebug() << "event listener";
 #endif
+
+    connect(_engine, &PlayerEngine::onlineStateChanged, this, &MainWindow::checkOnlineState);
 }
 
 void MainWindow::setupTitlebar()
@@ -2395,6 +2397,13 @@ void MainWindow::resumeToolsWindow()
 
 _finish:
     _autoHideTimer.start(AUTOHIDE_TIMEOUT);
+}
+
+void MainWindow::checkOnlineState(const bool isOnline)
+{
+    if (!isOnline) {
+        this->sendMessage(QIcon(":/icons/deepin/builtin/icons/ddc_warning_30px.svg"), QObject::tr("网络已断开"));
+    }
 }
 
 void MainWindow::hideEvent(QHideEvent *event)
