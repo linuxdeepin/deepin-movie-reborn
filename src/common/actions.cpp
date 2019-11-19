@@ -161,6 +161,7 @@ DMenu *ActionFactory::mainContextMenu()
             {
                 auto *parent = menu;
                 auto *menu = new DMenu(tr("Channel"));
+                _soundMenu = menu;
                 auto group = new QActionGroup(menu);
 
                 DEF_ACTION_CHECKED_GROUP(tr("Stereo"), ActionKind::Stereo, group);
@@ -349,6 +350,7 @@ void ActionFactory::updateMainActionsForMovie(const PlayingMovieInfo &pmf)
         }
 
         _tracksMenu->setEnabled(pmf.audios.size() > 0);
+        _soundMenu->setEnabled(pmf.audios.size() > 0);
     }
 }
 
