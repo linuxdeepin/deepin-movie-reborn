@@ -65,7 +65,7 @@
 #include <DLineEdit>
 
 #define AUTOHIDE_TIMEOUT 2000
-
+#include <DToast>
 DWIDGET_USE_NAMESPACE
 
 using namespace dmr;
@@ -2022,14 +2022,28 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
 
 #else
 
-        if (!_nwShot) {
-            _nwShot = new NotificationWidget(this);
-            _nwShot->setAnchor(NotificationWidget::AnchorNorthWest);
-            _nwShot->setAnchorPoint(QPoint(30, 58));
-        }
-        auto pm = utils::LoadHiDPIPixmap(QString(":/resources/icons/%1.svg").arg(success ? "success" : "fail"));
-        auto msg = success ? tr("The screenshot is saved") : tr("Failed to save the screenshot");
-        _nwShot->popupWithIcon(msg, pm);
+//            if (!_nwShot) {
+//                _nwShot = new NotificationWidget(this);
+//                _nwShot->setAnchor(NotificationWidget::AnchorNorthWest);
+//                _nwShot->setAnchorPoint(QPoint(width()/2-50,height()-120));
+//            }
+//            else {
+//                _nwShot->setAnchorPoint(QPoint(width()/2-50,height()-120));
+//            }
+//            auto pm = utils::LoadHiDPIPixmap(QString(":/resources/icons/%1.svg").arg(success?"success":"fail"));
+//            auto msg = success?tr("The screenshot is saved"):tr("Failed to save the screenshot");
+//            _nwShot->popupWithIcon(msg, pm);
+            //auto messageicon = new DIconButton(DStyle::SP_ArrowUp);
+
+            if(!popup){
+                popup = new DFloatingMessage(DFloatingMessage::TransientType,this);
+            }
+            popup->setIcon(QIcon(QString(":/resources/icons/%1.svg").arg(success?"icon_toast_sucess":"fail")));
+            popup->setMessage(success?tr("已截图"):tr("截图保存失败"));
+            popup->setGeometry(width()/2-50,height()-125,110,48);
+            popup->show();
+
+
 #endif
         break;
     }

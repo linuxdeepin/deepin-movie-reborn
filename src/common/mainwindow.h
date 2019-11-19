@@ -40,6 +40,7 @@
 #include "widgets/titlebar.h"
 #include <DPushButton>
 #include "online_sub.h"
+#include <DFloatingMessage>
 
 namespace Dtk {
 namespace Widget {
@@ -187,6 +188,8 @@ private:
     void prepareSplashImages();
 
 private:
+    DFloatingMessage *popup {nullptr};
+
     Titlebar *_titlebar {nullptr};
     ToolboxProxy *_toolbox {nullptr};
     PlaylistWidget *_playlist {nullptr};

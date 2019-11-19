@@ -156,6 +156,7 @@
         <file>resources/icons/fail.svg</file>
         <file>resources/icons/dark/info_close_dark.svg</file>
         <file>resources/icons/light/info_close_light.svg</file>
+        <file>resources/icons/icon_toast_sucess.svg</file>
     </qresource>
     <qresource prefix="/dark">
         <file alias="dmr::NotificationWidget.theme">resources/qss/dark/dmr--NotificationWidget.theme</file>
