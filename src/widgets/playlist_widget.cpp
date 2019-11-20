@@ -168,7 +168,7 @@ public:
         setLayout(l);
 
         _index = new QLabel(this);
-        _index->setFont(DFontSizeManager::instance()->get(DFontSizeManager::T9));
+        DFontSizeManager::instance()->bind(_index, DFontSizeManager::T9);
         _index->setText(QString::number(index + 1));
         _index->setFixedWidth(22);
         l->addWidget(_index);
@@ -204,7 +204,7 @@ public:
 //        vl->addStretch(1);
 
         _time = new QLabel(this);
-        _time->setFont(DFontSizeManager::instance()->get(DFontSizeManager::T9));
+        DFontSizeManager::instance()->bind(_time, DFontSizeManager::T9);
         _time->setProperty("Time", true);
         _time->setText(_pif.mi.durationStr());
         if (!_pif.valid) {
@@ -631,7 +631,7 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
 
 //    left->move(0,0);
     _title = new QLabel();
-    _title->setFont(DFontSizeManager::instance()->get(DFontSizeManager::T3));
+    DFontSizeManager::instance()->bind(_title, DFontSizeManager::T3);
 //    DFontSizeManager::instance()->get(DFontSizeManager::T9);
 //    title->setProperty("Name", true);
 //    title->setReadOnly(true);
@@ -646,7 +646,7 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     _title->setPalette(pa);
 //    title->setText(DApplication::translate("QuickInstallWindow", "Installed"));
     _title->setText(tr("Playlist"));
-    _title->setFixedSize(96 + 9, 33);
+    _title->setFixedSize(96 + 9, 36);
     _title->setContentsMargins(0, 0, 0, 0);
 
     _num = new QLabel();
@@ -654,10 +654,9 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     pa_num.setBrush(DPalette::WindowText, pa_num.color(DPalette::TextTips));
     _num->setPalette(pa_num);
     _num->setText(tr("17个视频"));
-    _num->setFont(DFontSizeManager::instance()->get(DFontSizeManager::T6));
-    _num->setFixedSize(96, 36);
+    DFontSizeManager::instance()->bind(_num, DFontSizeManager::T6);
+    _num->setFixedSize(96, 20);
     _num->setContentsMargins(0, 0, 0, 0);
-//    title->setFont(QFont());
     mainLayout->addWidget(left);
     auto *leftinfo = new QVBoxLayout;
     leftinfo->setContentsMargins(0, 0, 0, 0);
@@ -665,12 +664,14 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     left->setLayout(leftinfo);
     leftinfo->setAlignment(Qt::AlignLeft | Qt::AlignTop);
     leftinfo->addWidget(_title);
+    leftinfo->addSpacing(10);
     leftinfo->addWidget(_num);
+    leftinfo->addSpacing(18);
 //    DPushButton *clearButton = new DPushButton(QIcon::fromTheme("dcc_clearlist"),tr("清空列表"),nullptr);
     DPushButton *clearButton = new DPushButton();
     clearButton->setIcon(QIcon::fromTheme("dcc_clearlist"));
     clearButton->setText(tr("Clear Playlist"));
-    clearButton->setFont(DFontSizeManager::instance()->get(DFontSizeManager::T6));
+    DFontSizeManager::instance()->bind(clearButton, DFontSizeManager::T6);
 //    clearButton->setText(tr("清空列表"));
     DPalette pa_cb = DApplicationHelper::instance()->palette(clearButton);
     if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ) {
