@@ -22,7 +22,7 @@
         <translation>Buka folder</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2423"/>
+        <location filename="../common/mainwindow.cpp" line="2424"/>
         <source>Network disconnected</source>
         <translation type="unfinished"></translation>
     </message>
@@ -505,129 +505,134 @@
     <name>dmr::MainWindow</name>
     <message>
         <location filename="../common/mainwindow.cpp" line="812"/>
-        <location filename="../common/mainwindow.cpp" line="1944"/>
-        <location filename="../common/mainwindow.cpp" line="3052"/>
+        <location filename="../common/mainwindow.cpp" line="1945"/>
+        <location filename="../common/mainwindow.cpp" line="3063"/>
         <source>Load successfully</source>
         <translation>Berjaya dimuatkan</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="812"/>
-        <location filename="../common/mainwindow.cpp" line="1944"/>
-        <location filename="../common/mainwindow.cpp" line="3052"/>
+        <location filename="../common/mainwindow.cpp" line="1945"/>
+        <location filename="../common/mainwindow.cpp" line="3063"/>
         <source>Load failed</source>
         <translation>Gagal dimuatkan</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1535"/>
+        <location filename="../common/mainwindow.cpp" line="1536"/>
         <source>No device found</source>
         <translation>Tiada peranti ditemui</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1553"/>
+        <location filename="../common/mainwindow.cpp" line="1554"/>
         <source>Parse Failed</source>
         <translation>Gagal Dihuraikan</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1560"/>
+        <location filename="../common/mainwindow.cpp" line="1561"/>
         <source>Open folder</source>
         <translation>Buka folder</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1577"/>
-        <location filename="../common/mainwindow.cpp" line="1599"/>
-        <location filename="../common/mainwindow.cpp" line="1939"/>
+        <location filename="../common/mainwindow.cpp" line="1578"/>
+        <location filename="../common/mainwindow.cpp" line="1600"/>
+        <location filename="../common/mainwindow.cpp" line="1940"/>
         <source>Open file</source>
         <translation>Buka fail</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1579"/>
-        <location filename="../common/mainwindow.cpp" line="1601"/>
+        <location filename="../common/mainwindow.cpp" line="1580"/>
+        <location filename="../common/mainwindow.cpp" line="1602"/>
         <source>All videos (%1)</source>
         <translation>Semua video (%1)</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1807"/>
+        <location filename="../common/mainwindow.cpp" line="1808"/>
         <source>Muted</source>
         <translation>Disenyapkan</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1810"/>
-        <location filename="../common/mainwindow.cpp" line="1822"/>
-        <location filename="../common/mainwindow.cpp" line="1832"/>
-        <location filename="../common/mainwindow.cpp" line="1839"/>
+        <location filename="../common/mainwindow.cpp" line="1811"/>
+        <location filename="../common/mainwindow.cpp" line="1823"/>
+        <location filename="../common/mainwindow.cpp" line="1833"/>
+        <location filename="../common/mainwindow.cpp" line="1840"/>
         <source>Volume: %1%</source>
         <translation>Volum: %1%</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1904"/>
-        <location filename="../common/mainwindow.cpp" line="1912"/>
+        <location filename="../common/mainwindow.cpp" line="1905"/>
+        <location filename="../common/mainwindow.cpp" line="1913"/>
         <source>Subtitle %1: %2s</source>
         <translation>Sarikata %1: %2s</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1905"/>
-        <location filename="../common/mainwindow.cpp" line="1913"/>
+        <location filename="../common/mainwindow.cpp" line="1906"/>
+        <location filename="../common/mainwindow.cpp" line="1914"/>
         <source>delayed</source>
         <translation>lengah</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1905"/>
-        <location filename="../common/mainwindow.cpp" line="1913"/>
+        <location filename="../common/mainwindow.cpp" line="1906"/>
+        <location filename="../common/mainwindow.cpp" line="1914"/>
         <source>advanced</source>
         <translation>lanjutan</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1920"/>
-        <location filename="../common/mainwindow.cpp" line="1927"/>
-        <location filename="../common/mainwindow.cpp" line="1934"/>
+        <location filename="../common/mainwindow.cpp" line="1921"/>
+        <location filename="../common/mainwindow.cpp" line="1928"/>
+        <location filename="../common/mainwindow.cpp" line="1935"/>
         <source>Speed: %1x</source>
         <translation>Kelajuan: %1x</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1941"/>
+        <location filename="../common/mainwindow.cpp" line="1942"/>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</source>
         <translation>Sarikata (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2005"/>
+        <location filename="../common/mainwindow.cpp" line="2006"/>
         <source>View</source>
         <translation>Lihat</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2016"/>
+        <location filename="../common/mainwindow.cpp" line="2017"/>
         <source>Movie Screenshot</source>
         <translation>Cekupan Skrin Cereka</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2017"/>
+        <location filename="../common/mainwindow.cpp" line="2018"/>
         <source>Saved to</source>
         <translation>Disimpan ke</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2042"/>
-        <location filename="../common/mainwindow.cpp" line="2131"/>
+        <location filename="../common/mainwindow.cpp" line="2043"/>
+        <location filename="../common/mainwindow.cpp" line="2132"/>
         <source>The screenshot is saved</source>
         <translation>Cekupan skrin telah disimpan</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2042"/>
+        <location filename="../common/mainwindow.cpp" line="2043"/>
         <source>Failed to save the screenshot</source>
         <translation>Gagal menyimpan cekupan skrin</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2094"/>
+        <location filename="../common/mainwindow.cpp" line="2095"/>
         <source>Screenshot is working,please wait</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2218"/>
-        <location filename="../common/mainwindow.cpp" line="3064"/>
+        <location filename="../common/mainwindow.cpp" line="2219"/>
+        <location filename="../common/mainwindow.cpp" line="3076"/>
         <source>Invalid file: %1</source>
         <translation>Fail tidak sah: %1</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2430"/>
+        <location filename="../common/mainwindow.cpp" line="2431"/>
         <source>No matching online subtitles</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../common/mainwindow.cpp" line="2441"/>
+        <source>Cannot open file or stream</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -676,8 +681,8 @@
 <context>
     <name>dmr::MpvProxy</name>
     <message>
-        <location filename="../backends/mpv/mpv_proxy.cpp" line="1034"/>
-        <location filename="../backends/mpv/mpv_proxy.cpp" line="1052"/>
+        <location filename="../backends/mpv/mpv_proxy.cpp" line="1035"/>
+        <location filename="../backends/mpv/mpv_proxy.cpp" line="1053"/>
         <source>[internal]</source>
         <translation>[dalaman]</translation>
     </message>
