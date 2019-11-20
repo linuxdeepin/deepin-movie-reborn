@@ -517,7 +517,12 @@ protected:
             _name->setPalette(pa);
             _index->setPalette(pa);
             _time->setPalette(pa);
-            _name->setFontWeight(QFont::Weight::Medium);
+            //_name->setFontWeight(QFont::Weight::Medium);
+            QFont font = DFontSizeManager::instance()->get(DFontSizeManager::T6);
+            font.setWeight(QFont::DemiBold);
+            _index->setFont(font);
+            _name->setFont(font);
+            _time->setFont(font);
 //            QColor bgColor  = pal.color(DPalette::ToolTipBase);
             QColor bgColor(255, 255, 255, 51);
             if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ) {
@@ -531,11 +536,16 @@ protected:
             DPalette pa_name = DApplicationHelper::instance()->palette(_name);
             pa_name.setBrush(DPalette::Text, pa_name.color(DPalette::ToolTipText));
             _name->setPalette(pa_name);
-            _name->setFontWeight(QFont::Weight::Normal);
+            //_name->setFontWeight(QFont::Weight::Normal);
             DPalette pa = DApplicationHelper::instance()->palette(_index);
             pa.setBrush(DPalette::Text, pa.color(DPalette::TextTips));
             _index->setPalette(pa);
             _time->setPalette(pa);
+            QFont font = DFontSizeManager::instance()->get(DFontSizeManager::T6);
+            font.setWeight(QFont::Normal);
+            _index->setFont(font);
+            _name->setFont(font);
+            _time->setFont(font);
         }
 
         QWidget::paintEvent(pe);
