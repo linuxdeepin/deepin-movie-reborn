@@ -676,12 +676,13 @@ public:
         setObjectName("ThumbnailPreview");
 
 //        setFixedSize(ThumbnailWorker::thumbSize().width(),ThumbnailWorker::thumbSize().height()+10);
-        setWidth(ThumbnailWorker::thumbSize().width());
-        setHeight(ThumbnailWorker::thumbSize().height()+10);
-        setShadowBlurRadius(8);
-        setRadius(8);
+
+//        setWidth(ThumbnailWorker::thumbSize().width());
+//        setHeight(ThumbnailWorker::thumbSize().height());
+        setShadowBlurRadius(2);
+        setRadius(2);
         setBorderWidth(1);
-        setBorderColor(QColor(0,0,0,25));
+        setBorderColor(QColor(0, 0, 0, 255));
         setShadowYOffset(4);
         setShadowXOffset(0);
         setArrowWidth(18);
@@ -694,16 +695,16 @@ public:
 
         auto *l = new QVBoxLayout;
         l->setContentsMargins(0, 0, 0, 10);
-        setLayout(l);
 
         _thumb = new QLabel(this);
-        _thumb->setFixedSize(ThumbnailWorker::thumbSize());
-        l->addWidget(_thumb,Qt::AlignTop);
-
+        //_thumb->setFixedSize(ThumbnailWorker::thumbSize());
+        l->addWidget(_thumb/*,Qt::AlignTop*/);
+        setLayout(l);
 
         _timebg = new ThumbnailTime(this);
         _timebg->setFixedSize(58, 20);
-        _time = new QLabel(this);
+
+        _time = new QLabel(_timebg);
         _time->setAlignment(Qt::AlignCenter);
         _time->setFixedSize(58, 20);
         _time->setForegroundRole(DPalette::Text);
@@ -723,13 +724,30 @@ public:
 
     void updateWithPreview(const QPixmap& pm, qint64 secs, int rotation) {
         auto rounded = utils::MakeRoundedPixmap(pm, 4, 4, rotation);
+
+        if (rounded.width() > rounded.height()) {
+            static int roundedH = static_cast<int>(
+                (static_cast<double>(m_thumbnailFixed)
+                /static_cast<double>(rounded.width()))
+                *rounded.height());
+            QSize size(m_thumbnailFixed, roundedH);
+            resizeThumbnail(rounded, size);
+        }
+        else {
+            static int roundedW = static_cast<int>(
+                (static_cast<double>(m_thumbnailFixed)
+                /static_cast<double>(rounded.height()))
+                *rounded.width());
+            QSize size(roundedW, m_thumbnailFixed);
+            resizeThumbnail(rounded, size);
+        }
         _thumb->setPixmap(rounded);
 
         QTime t(0, 0, 0);
         t = t.addSecs(secs);
         _time->setText(t.toString("hh:mm:ss"));
-        _time->move((width() - _time->width())/2, ThumbnailWorker::thumbSize().height()-20);
-        _timebg->move((width() - _time->width())/2, ThumbnailWorker::thumbSize().height()-20);
+        _time->move((_timebg->width() - _time->width())/2, (_timebg->height() - _time->height())/2);
+        _timebg->move((_thumb->width() - _timebg->width())/2, this->height() - _timebg->height() - 10);
 
         if (isVisible()) {
 //            move(QCursor::pos().x(), frameGeometry().y() + height()+0);
@@ -777,14 +795,26 @@ protected:
 
     void showEvent(QShowEvent *se) override
     {
-        _time->move((width() - _time->width())/2, ThumbnailWorker::thumbSize().height()-20);
-        _timebg->move((width() - _time->width())/2, ThumbnailWorker::thumbSize().height()-20);
+        _time->move((_timebg->width() - _time->width())/2, (_timebg->height() - _time->height())/2);
+        _timebg->move((_thumb->width() - _timebg->width())/2, this->height() - _timebg->height() - 10);
+    }
+
+private:
+    void resizeThumbnail(QPixmap& pixmap, const QSize& size) {
+        auto dpr = qApp->devicePixelRatio();
+        pixmap.setDevicePixelRatio(dpr);
+        pixmap = pixmap.scaled(size * dpr, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
+        pixmap.setDevicePixelRatio(dpr);
+        _thumb->setFixedSize(size);
+        this->setFixedWidth(_thumb->width());
+        this->setFixedHeight(_thumb->height()+10);
     }
 
 private:
     QLabel *_thumb;
     QLabel *_time;
     ThumbnailTime *_timebg;
+    int m_thumbnailFixed = 178;
 };
 
 class VolumeSlider: public DArrowRectangle {
@@ -1561,6 +1591,10 @@ void ToolboxProxy::updateHoverPreview(const QUrl& url, int secs)
     if (_engine->playlist().currentInfo().url != url)
         return;
 
+    VideoThumbnailer thumber;
+    thumber.setThumbnailSize(_engine->videoSize().width() * qApp->devicePixelRatio());
+    thumber.setMaintainAspectRatio(true);
+    ThumbnailWorker::get().resetVideoThumbnailer(thumber);
     QPixmap pm = ThumbnailWorker::get().getThumb(url, secs);
 
     _previewer->updateWithPreview(pm, secs, _engine->videoRotation());
