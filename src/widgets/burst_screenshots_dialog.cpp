@@ -48,7 +48,7 @@ BurstScreenshotsDialog::BurstScreenshotsDialog(const PlayItemInfo& pif)
     m_titlebar->layout()->setContentsMargins(0, 0, 0, 0);
     m_titlebar->setMenuVisible(false);
     m_titlebar->setIcon(QIcon::fromTheme(":/resources/icons/logo-big.svg"));
-    m_titlebar->setFixedWidth(600);
+    m_titlebar->setFixedWidth(590);
     m_titlebar->setTitle(mi.title);
     m_titlebar->setBackgroundTransparent(true);
 
@@ -98,7 +98,7 @@ BurstScreenshotsDialog::BurstScreenshotsDialog(const PlayItemInfo& pif)
     _saveBtn = new QPushButton(tr("Save"));
     _saveBtn->setObjectName("SaveBtn");
     connect(_saveBtn, &QPushButton::clicked, this, &BurstScreenshotsDialog::savePoster);
-    _saveBtn->setFixedSize(61, 30);
+    _saveBtn->setFixedSize(70, 30);
 
     QString addition = R"(
     QPushButton#SaveBtn {
@@ -137,7 +137,7 @@ BurstScreenshotsDialog::BurstScreenshotsDialog(const PlayItemInfo& pif)
 //    mainContent->setLayout(ml);
 //    addContent(mainContent, Qt::AlignCenter);
     QVBoxLayout* mainlayout = new QVBoxLayout;
-    mainlayout->setContentsMargins(15, 0, 15, 20);
+    mainlayout->setContentsMargins(10, 0, 10, 15);
     mainlayout->setSpacing(0);
     mainlayout->addWidget(m_titlebar);
     mainlayout->addLayout(trb);
@@ -178,7 +178,8 @@ int BurstScreenshotsDialog::exec()
 
 void BurstScreenshotsDialog::savePoster()
 {
-    auto img = this->grab(rect().marginsRemoved(QMargins(15, 0, 15, 52)));
+    m_titlebar->setFixedWidth(610);
+    auto img = this->grab(rect().marginsRemoved(QMargins(10, 0, 10, 45)));
     _posterPath = Settings::get().screenshotNameTemplate();
     img.save(_posterPath);
     DAbstractDialog::accept();
