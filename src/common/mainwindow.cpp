@@ -2115,13 +2115,21 @@ void MainWindow::onBurstScreenshot(const QImage &frame, qint64 timestamp)
 
         if (ret == QDialog::Accepted) {
             auto poster_path = bsd.savedPosterPath();
-            if (!_nwShot) {
-                _nwShot = new NotificationWidget(this);
-                _nwShot->setAnchor(NotificationWidget::AnchorNorthWest);
-                _nwShot->setAnchorPoint(QPoint(30, 58));
+            if(!popup){
+                popup = new DFloatingMessage(DFloatingMessage::TransientType,this);
             }
-            auto pm = utils::LoadHiDPIPixmap(QString(":/resources/icons/%1.svg").arg(QFileInfo::exists(poster_path) ? "success" : "fail"));
-            _nwShot->popupWithIcon(tr("The screenshot is saved"), pm);
+            if(QFileInfo::exists(poster_path)){
+                popup->setIcon(QIcon(":/resources/icons/icon_toast_sucess.svg"));
+                popup->setMessage(tr("The screenshot is saved"));
+                popup->setGeometry(width()/2-50,height()-125,110,48);
+                popup->show();
+            }
+            else {
+                popup->setIcon(QIcon(":/resources/icons/fail.svg"));
+                popup->setMessage(tr("Failed to save the screenshot"));
+                popup->setGeometry(width()/2-50,height()-125,150,48);
+                popup->show();
+            }
         }
     }
 }
