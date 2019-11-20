@@ -2021,29 +2021,22 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         notification.callWithArgumentList(QDBus::AutoDetect, "Notify", arg);
 
 #else
-
-//            if (!_nwShot) {
-//                _nwShot = new NotificationWidget(this);
-//                _nwShot->setAnchor(NotificationWidget::AnchorNorthWest);
-//                _nwShot->setAnchorPoint(QPoint(width()/2-50,height()-120));
-//            }
-//            else {
-//                _nwShot->setAnchorPoint(QPoint(width()/2-50,height()-120));
-//            }
-//            auto pm = utils::LoadHiDPIPixmap(QString(":/resources/icons/%1.svg").arg(success?"success":"fail"));
-//            auto msg = success?tr("The screenshot is saved"):tr("Failed to save the screenshot");
-//            _nwShot->popupWithIcon(msg, pm);
-            //auto messageicon = new DIconButton(DStyle::SP_ArrowUp);
-
             if(!popup){
                 popup = new DFloatingMessage(DFloatingMessage::TransientType,this);
             }
-            popup->setIcon(QIcon(QString(":/resources/icons/%1.svg").arg(success?"icon_toast_sucess":"fail")));
-            popup->setMessage(success?tr("The screenshot is saved"):tr("Failed to save the screenshot"));
-            popup->setGeometry(width()/2-50,height()-125,110,48);
-            popup->show();
 
-
+            if(success){
+                popup->setIcon(QIcon(":/resources/icons/icon_toast_sucess.svg"));
+                popup->setMessage(tr("The screenshot is saved"));
+                popup->setGeometry(width()/2-50,height()-125,110,48);
+                popup->show();
+            }
+            else {
+                popup->setIcon(QIcon(":/resources/icons/fail.svg"));
+                popup->setMessage(tr("Failed to save the screenshot"));
+                popup->setGeometry(width()/2-50,height()-125,150,48);
+                popup->show();
+            }
 #endif
         break;
     }
@@ -2091,7 +2084,7 @@ void MainWindow::onBurstScreenshot(const QImage &frame, qint64 timestamp)
 {
     qDebug() << _burstShoots.size();
     if (!frame.isNull()) {
-        auto msg = QString(tr("Screenshot is working,please wait"));
+        auto msg = QString(tr("剧情连拍中，请稍候"));
         _nwComm->updateWithMessage(msg);
 
         _burstShoots.append(qMakePair(frame, timestamp));
@@ -2420,14 +2413,14 @@ _finish:
 void MainWindow::checkOnlineState(const bool isOnline)
 {
     if (!isOnline) {
-        this->sendMessage(QIcon(":/icons/deepin/builtin/icons/ddc_warning_30px.svg"), QObject::tr("Network disconnected"));
+        this->sendMessage(QIcon(":/icons/deepin/builtin/icons/ddc_warning_30px.svg"), QObject::tr("网络已断开"));
     }
 }
 
 void MainWindow::checkOnlineSubtitle(const OnlineSubtitle::FailReason reason)
 {
     if (OnlineSubtitle::FailReason::NoSubFound == reason) {
-        _nwComm->updateWithMessage(tr("No matching online subtitles"));
+        _nwComm->updateWithMessage(tr("没有匹配的在线字幕"));
     }
 }
 
@@ -2601,8 +2594,6 @@ void MainWindow::resizeEvent(QResizeEvent *ev)
     QTimer::singleShot(0, [ = ]() {
         updateWindowTitle();
     });
-
-    updateGeometryNotification(geometry().size());
 }
 
 void MainWindow::updateWindowTitle()
@@ -3050,9 +3041,8 @@ void MainWindow::dropEvent(QDropEvent *ev)
             }
             QPixmap icon = utils::LoadHiDPIPixmap(QString(":/resources/icons/%1.svg").arg(succ ? "success" : "fail"));
             _nwComm->popupWithIcon(succ ? tr("Load successfully") : tr("Load failed"), icon);
-
-            return;
         }
+        return;
     }
 
     {
