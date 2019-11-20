@@ -973,6 +973,10 @@ bool MainWindow::event(QEvent *ev)
     return DMainWindow::event(ev);
 }
 
+void MainWindow::leaveEvent(QEvent *) {
+    _autoHideTimer.stop();
+    this->suspendToolsWindow();
+};
 
 void MainWindow::onWindowStateChanged()
 {

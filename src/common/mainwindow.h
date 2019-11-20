@@ -145,6 +145,8 @@ protected:
 
     bool event(QEvent *event) override;
 
+    void leaveEvent(QEvent *) override;
+
 protected slots:
     void setInit(bool v);
     void menuItemInvoked(QAction *action);
