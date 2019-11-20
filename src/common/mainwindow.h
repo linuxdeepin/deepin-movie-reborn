@@ -120,6 +120,7 @@ public slots:
     void resumeToolsWindow();
     void checkOnlineState(const bool isOnline);
     void checkOnlineSubtitle(const OnlineSubtitle::FailReason reason);
+    void checkMpvLogsChanged(const QString prefix, const QString text);
 
 protected:
     void showEvent(QShowEvent *event) override;

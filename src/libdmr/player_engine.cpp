@@ -63,6 +63,7 @@ PlayerEngine::PlayerEngine(QWidget *parent)
         connect(_current, &Backend::aidChanged, this, &PlayerEngine::aidChanged);
         connect(_current, &Backend::videoSizeChanged, this, &PlayerEngine::videoSizeChanged);
         connect(_current, &Backend::notifyScreenshot, this, &PlayerEngine::notifyScreenshot);
+        connect(_current, &Backend::mpvLogsChanged, this, &PlayerEngine::mpvLogsChanged);
         l->addWidget(_current);
     }
 

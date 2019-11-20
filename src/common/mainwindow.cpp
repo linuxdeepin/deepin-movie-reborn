@@ -866,6 +866,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(_engine, &PlayerEngine::onlineStateChanged, this, &MainWindow::checkOnlineState);
     connect(&OnlineSubtitle::get(), &OnlineSubtitle::onlineSubtitleStateChanged, this, &MainWindow::checkOnlineSubtitle);
+    connect(_engine, &PlayerEngine::mpvLogsChanged, this, &MainWindow::checkMpvLogsChanged);
 }
 
 void MainWindow::setupTitlebar()
@@ -2428,6 +2429,16 @@ void MainWindow::checkOnlineSubtitle(const OnlineSubtitle::FailReason reason)
 {
     if (OnlineSubtitle::FailReason::NoSubFound == reason) {
         _nwComm->updateWithMessage(tr("No matching online subtitles"));
+    }
+}
+
+void MainWindow::checkMpvLogsChanged(const QString prefix, const QString text)
+{
+    QString errorMessage(text);
+    if (errorMessage.toLower().contains(QString("fail")) &&
+        (errorMessage.toLower().contains(QString("format")) || errorMessage.toLower().contains(QString("open")))
+    ) {
+        _nwComm->updateWithMessage(tr("Cannot open file or stream"));
     }
 }
 
