@@ -83,7 +83,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo& pif)
     ml->addSpacing(10);
 
     auto *nm = new DLabel(this);
-    nm->setFont(DFontSizeManager::instance()->get(DFontSizeManager::T8));
+    DFontSizeManager::instance()->bind(nm, DFontSizeManager::T8);
     DPalette pal_nm = DApplicationHelper::instance()->palette(nm);
     pal_nm.setBrush(DPalette::Text, pal_nm.color(DPalette::TextTitle));
     nm->setPalette(pal_nm);
@@ -110,11 +110,10 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo& pif)
     form->setFormAlignment(Qt::AlignCenter);
 
 #define ADD_ROW(title, field)  do { \
-    QFont font(DFontSizeManager::instance()->get(DFontSizeManager::T8)); \
     auto f = new DLabel(title, this); \
     f->setFixedSize(55, 45); \
     f->setAlignment(Qt::AlignLeft | Qt::AlignTop); \
-    f->setFont(font); \
+    DFontSizeManager::instance()->bind(f, DFontSizeManager::T8); \
     DPalette pal_f = DApplicationHelper::instance()->palette(f); \
     pal_f.setBrush(DPalette::Text, pal_f.color(DPalette::TextTitle)); \
     f->setPalette(pal_f); \
@@ -122,7 +121,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo& pif)
     t->setFixedSize(200, 45); \
     t->setAlignment(Qt::AlignLeft | Qt::AlignTop); \
     t->setWordWrap(true); \
-    t->setFont(font); \
+    DFontSizeManager::instance()->bind(t, DFontSizeManager::T8); \
     DPalette pal_t = DApplicationHelper::instance()->palette(t); \
     pal_t.setBrush(DPalette::Text, pal_t.color(DPalette::TextTitle)); \
     t->setPalette(pal_t); \
@@ -130,7 +129,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo& pif)
 } while (0)
 
     auto title = new DLabel(MV_BASE_INFO, this);
-    title->setFont(DFontSizeManager::instance()->get(DFontSizeManager::T6));
+    DFontSizeManager::instance()->bind(title, DFontSizeManager::T6);
     DPalette pal_title = DApplicationHelper::instance()->palette(title);
     pal_title.setBrush(DPalette::Text, pal_title.color(DPalette::TextTitle));
     title->setPalette(pal_title);
@@ -142,7 +141,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo& pif)
     ADD_ROW(MV_DURATION, mi.durationStr());
 
     DLabel *tmp = new DLabel;
-    tmp->setFont(nm->font());
+    DFontSizeManager::instance()->bind(tmp, DFontSizeManager::T8);
     tmp->setText(mi.filePath);
     auto fm = tmp->fontMetrics();
     auto w = fm.width(mi.filePath);
