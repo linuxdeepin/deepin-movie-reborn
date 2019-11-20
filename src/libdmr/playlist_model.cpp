@@ -408,6 +408,13 @@ PlaylistModel::PlaylistModel(PlayerEngine *e)
 
     stop();
     loadPlaylist();
+
+#ifndef _LIBDMR_
+    if (Settings::get().isSet(Settings::ResumeFromLast)) {
+        int restore_pos = Settings::get().internalOption("playlist_pos").toInt();
+        _last = restore_pos;
+    }
+#endif
 }
 
 PlaylistModel::~PlaylistModel()

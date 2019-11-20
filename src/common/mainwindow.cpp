@@ -1945,7 +1945,6 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             _nwComm->updateWithMessage(success ? tr("Load successfully") : tr("Load failed"));
         }
         break;
-        break;
     }
 
     case ActionFactory::ActionKind::TogglePause: {
