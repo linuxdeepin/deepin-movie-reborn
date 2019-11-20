@@ -32,6 +32,7 @@
 
 #include <QtWidgets>
 #include <DDialog>
+#include <DTitlebar>
 
 DWIDGET_USE_NAMESPACE
 
@@ -53,7 +54,7 @@ public:
 };
 
 
-class BurstScreenshotsDialog: public DDialog {
+class BurstScreenshotsDialog: public DAbstractDialog {
     Q_OBJECT
 public:
     BurstScreenshotsDialog(const PlayItemInfo& pif);
@@ -71,6 +72,7 @@ private:
     QPushButton *_saveBtn {nullptr};
     QList<QPair<QImage, qint64>> _thumbs;
     QString _posterPath;
+    DTitlebar* m_titlebar;
 };
 }
 

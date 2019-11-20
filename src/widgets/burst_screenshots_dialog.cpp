@@ -38,74 +38,49 @@ DWIDGET_USE_NAMESPACE
 
 namespace dmr {
 BurstScreenshotsDialog::BurstScreenshotsDialog(const PlayItemInfo& pif)
-    :DDialog(nullptr)
+    :DAbstractDialog(nullptr)
 {
     auto mi = pif.mi;
 
-    auto *ml = new QVBoxLayout;
-    ml->setContentsMargins(0, 10, 0, 0);
-    ml->setSpacing(0);
+    //title
+    m_titlebar = new DTitlebar(this);
+    m_titlebar->setFixedHeight(50);
+    m_titlebar->layout()->setContentsMargins(0, 0, 0, 0);
+    m_titlebar->setMenuVisible(false);
+    m_titlebar->setIcon(QIcon::fromTheme(":/resources/icons/logo-big.svg"));
+    m_titlebar->setFixedWidth(600);
+    m_titlebar->setTitle(mi.title);
+    m_titlebar->setBackgroundTransparent(true);
 
-    setFixedSize(600, 704);
+    setFixedSize(600, 700);
 
-    // top 
-    auto *hl = new QHBoxLayout();
-    hl->setContentsMargins(0, 0, 0, 0);
-    ml->addLayout(hl);
-
-    auto *pm = new QLabel(this);
-    auto dpr = qApp->devicePixelRatio();
-    pm->setFixedSize(44, 44);
-    pm->setScaledContents(true);
-    QPixmap img = QPixmap::fromImage(utils::LoadHiDPIImage(":/resources/icons/logo-big.svg"));
-    pm->setPixmap(img);
-    hl->setAlignment(pm, Qt::AlignCenter);
-    hl->addWidget(pm);
-
-    hl->addSpacing(16);
-
-    // top right up
-    auto *trl = new QVBoxLayout;
-    trl->setSpacing(0);
-    hl->setContentsMargins(0, 0, 0, 0);
-    hl->addLayout(trl, 1);
-
-    QFont ft;
-    ft.setPixelSize(14);
-    QFontMetrics fm(ft);
-
-    auto *nm = new QLabel(this);
-//    nm->setStyleSheet("color: #303030; font-size: 14px;");
-    nm->setText(fm.elidedText(mi.title, Qt::ElideMiddle, 480));
-
-    trl->addWidget(nm);
-
-    //top right bottom
+    //title bottom
     auto *trb = new QHBoxLayout;
     trb->setContentsMargins(0, 0, 0, 0);
     trb->setSpacing(0);
+    trb->addStretch(1);
     {
         auto lb = new QLabel(tr("Duration: %1").arg(mi.durationStr()), this);
 //        lb->setStyleSheet("color: rgba(48, 48, 48, 60%); font-size: 12px;");
         trb->addWidget(lb);
-        trb->addSpacing(36);
+        trb->addStretch(1);
     }
     {
         auto lb = new QLabel(tr("Resolution: %1").arg(mi.resolution), this);
 //        lb->setStyleSheet("color: rgba(48, 48, 48, 60%); font-size: 12px;");
         trb->addWidget(lb);
-        trb->addSpacing(36);
+        trb->addStretch(1);
     }
     {
         auto lb = new QLabel(tr("Size: %1").arg(mi.sizeStr()), this);
 //        lb->setStyleSheet("color: rgba(48, 48, 48, 60%); font-size: 12px;");
         trb->addWidget(lb);
-        trb->addSpacing(36);
+        trb->addStretch(1);
     }
-    trb->addStretch(1);
-    trl->addLayout(trb);
 
-    ml->addSpacing(20);
+    // main content
+    auto *ml = new QVBoxLayout;
+    ml->setContentsMargins(0, 10, 0, 0);
 
     _grid = new QGridLayout();
     _grid->setHorizontalSpacing(12);
@@ -123,7 +98,7 @@ BurstScreenshotsDialog::BurstScreenshotsDialog(const PlayItemInfo& pif)
     _saveBtn = new QPushButton(tr("Save"));
     _saveBtn->setObjectName("SaveBtn");
     connect(_saveBtn, &QPushButton::clicked, this, &BurstScreenshotsDialog::savePoster);
-    _saveBtn->setFixedSize(61, 24);
+    _saveBtn->setFixedSize(61, 30);
 
     QString addition = R"(
     QPushButton#SaveBtn {
@@ -158,9 +133,17 @@ BurstScreenshotsDialog::BurstScreenshotsDialog(const PlayItemInfo& pif)
     bl->addWidget(_saveBtn);
     ml->addLayout(bl);
 
-    QWidget  *mainContent = new QWidget;
-    mainContent->setLayout(ml);
-    addContent(mainContent, Qt::AlignCenter);
+//    QWidget  *mainContent = new QWidget;
+//    mainContent->setLayout(ml);
+//    addContent(mainContent, Qt::AlignCenter);
+    QVBoxLayout* mainlayout = new QVBoxLayout;
+    mainlayout->setContentsMargins(15, 0, 15, 20);
+    mainlayout->setSpacing(0);
+    mainlayout->addWidget(m_titlebar);
+    mainlayout->addLayout(trb);
+    mainlayout->addLayout(ml);
+
+    setLayout(mainlayout);
 }
 
 void BurstScreenshotsDialog::updateWithFrames(const QList<QPair<QImage, qint64>>& frames)
@@ -190,15 +173,15 @@ void BurstScreenshotsDialog::updateWithFrames(const QList<QPair<QImage, qint64>>
 
 int BurstScreenshotsDialog::exec()
 {
-    return DDialog::exec();
+    return DAbstractDialog::exec();
 }
 
 void BurstScreenshotsDialog::savePoster()
 {
-    auto img = this->grab(rect().marginsRemoved(QMargins(10, 20, 10, 42)));
+    auto img = this->grab(rect().marginsRemoved(QMargins(15, 0, 15, 52)));
     _posterPath = Settings::get().screenshotNameTemplate();
     img.save(_posterPath);
-    DDialog::accept();
+    DAbstractDialog::accept();
 }
 
 void BurstScreenshotsDialog::saveShootings()
@@ -208,7 +191,7 @@ void BurstScreenshotsDialog::saveShootings()
         auto file_path = Settings::get().screenshotNameSeqTemplate().arg(i++);
         img.first.save(file_path);
     }
-    DDialog::accept();
+    DAbstractDialog::accept();
 }
 
 QString BurstScreenshotsDialog::savedPosterPath()
