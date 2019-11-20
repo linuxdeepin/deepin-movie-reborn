@@ -41,6 +41,8 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo& pif)
 {
     setFixedSize(300, 441);
     setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint);
+    setWindowOpacity(0.9);
+    setAttribute(Qt::WA_TranslucentBackground, true);
 
     auto layout = new QVBoxLayout(this);
     layout->setSpacing(0);
@@ -73,7 +75,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo& pif)
         cover = img.copy(0, (img.height()-sz.height())/2, sz.width(), sz.height());
         cover.setDevicePixelRatio(dpr);
     }
-    cover = utils::MakeRoundedPixmap(cover, 4, 4);
+    cover = utils::MakeRoundedPixmap(cover, 8, 8);
     pm->setPixmap(cover);
     pm->ensurePolished();
     ml->addWidget(pm);
@@ -100,21 +102,13 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo& pif)
     ml->setAlignment(infoRect, Qt::AlignHCenter);
     ml->addSpacing(10);
 
-    auto *infolyt = new QHBoxLayout(infoRect);
-    infolyt->setContentsMargins(10, 0, 0, 30);
-
-    auto *form = new QFormLayout();
-    form->setContentsMargins(0, 5, 0, 0);
-    infolyt->addLayout(form);
-    infolyt->setAlignment(infolyt, Qt::AlignHCenter);
-    
+    auto *form = new QFormLayout(infoRect);
+    form->setContentsMargins(10, 5, 0, 30);
     form->setVerticalSpacing(6);
     form->setHorizontalSpacing(10);
     form->setLabelAlignment(Qt::AlignLeft);
     form->setFormAlignment(Qt::AlignCenter);
-//    form->setRowWrapPolicy(QFormLayout::WrapLongRows);
 
-//        f->setFixedHeight(40);
 #define ADD_ROW(title, field)  do { \
     QFont font(DFontSizeManager::instance()->get(DFontSizeManager::T8)); \
     auto f = new DLabel(title, this); \
@@ -147,10 +141,22 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo& pif)
     ADD_ROW(MV_FILE_SIZE, mi.sizeStr());
     ADD_ROW(MV_DURATION, mi.durationStr());
 
-    auto fm = nm->fontMetrics();
-    auto fp = utils::ElideText(mi.filePath, {220, 40}, QTextOption::WordWrap,
-            nm->font(), Qt::ElideNone, fm.height(), 150);
-    ADD_ROW(MV_FILE_PATH, mi.filePath);
+    DLabel *tmp = new DLabel;
+    tmp->setFont(nm->font());
+    tmp->setText(mi.filePath);
+    auto fm = tmp->fontMetrics();
+    auto w = fm.width(mi.filePath);
+    if (w > 360) {
+        auto fp = utils::ElideText(mi.filePath, {200, 40}, QTextOption::WordWrap,
+                tmp->font(), Qt::ElideMiddle, fm.height(), 150);
+        ADD_ROW(MV_FILE_PATH, fp);
+    }
+    else {
+        ADD_ROW(MV_FILE_PATH, mi.filePath);
+    }
+
+    delete tmp;
+    tmp = nullptr;
 
 #undef ADD_ROW
 
@@ -164,15 +170,22 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo& pif)
         title->setPalette(pal_title);
     });
 
+    DPalette pal_this = DApplicationHelper::instance()->palette(this);
     if(DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
+        pal_this.setBrush(DPalette::Window, QBrush(QColor(248, 248, 248, 0.8)));
+        this->setPalette(pal_this);
         closeBt->setNormalPic(INFO_CLOSE_LIGHT);
         infoRect->setInfoBgTheme(lightTheme);
     }
     else if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
+        pal_this.setBrush(DPalette::Window, QBrush(QColor(37, 37, 37, 0.8)));
+        this->setPalette(pal_this);
         closeBt->setNormalPic(INFO_CLOSE_DARK);
         infoRect->setInfoBgTheme(darkTheme);
     }
     else {
+        pal_this.setBrush(DPalette::Window, QBrush(QColor(248, 248, 248, 0.8)));
+        this->setPalette(pal_this);
         closeBt->setNormalPic(INFO_CLOSE_LIGHT);
         infoRect->setInfoBgTheme(lightTheme);
     }
@@ -183,7 +196,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo& pif)
 //#else
 ////    DThemeManager::instance()->registerWidget(this);
 ////    closeBt->setStyleSheet(DThemeManager::instance()->getQssForWidget("DWindowCloseButton", "light"));
-//#endif
+    //#endif
 }
 
 InfoBottom::InfoBottom()
@@ -203,11 +216,11 @@ void InfoBottom::paintEvent(QPaintEvent *ev)
 
     if (lightTheme == m_themeType) {
         pt.setPen(QColor(0, 0, 0, 20));
-        pt.setBrush(QBrush(QColor(250, 250, 250, 180)));
+        pt.setBrush(QBrush(QColor(255, 255, 255, 255)));
     }
     else if (darkTheme == m_themeType) {
         pt.setPen(QColor(255, 255, 255, 20));
-        pt.setBrush(QBrush(QColor(80, 80, 80, 60)));
+        pt.setBrush(QBrush(QColor(45, 45, 45, 250)));
     }
 
     QRect rect = this->rect();
