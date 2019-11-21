@@ -41,6 +41,7 @@
 #include <DBlurEffectWidget>
 #include "playlist_widget.h"
 #include <DFrame>
+#include <DLabel>
 
 namespace Dtk
 {
