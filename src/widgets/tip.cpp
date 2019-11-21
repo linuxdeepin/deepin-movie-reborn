@@ -210,12 +210,7 @@ void Tip::paintEvent(QPaintEvent *)
 //    auto background =  d->background;
     const QPalette pal = QGuiApplication::palette();//this->palette();
     QColor background = pal.color(QPalette::ToolTipBase);
-    DPalette pa_name = DApplicationHelper::instance()->palette(d->textLable);
-    pa_name.setBrush(DPalette::Text, pa_name.color(DPalette::ToolTipText));
-    pa_name.setBrush(DPalette::ToolTipText, pa_name.color(DPalette::ToolTipText));
-    d->textLable->setForegroundRole(DPalette::Text);
     d->textLable->setForegroundRole(DPalette::ToolTipText);
-    d->textLable->setPalette(pa_name);
     auto borderColor = d->borderColor;
     auto margin = 2.0;
     auto shadowMargins = QMarginsF(margin, margin, margin, margin);

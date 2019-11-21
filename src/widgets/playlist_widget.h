@@ -40,6 +40,7 @@
 #include <DFontSizeManager>
 #include <QBrush>
 #include <DStyle>
+#include <DLabel>
 
 namespace Dtk
 {
@@ -146,8 +147,8 @@ private:
     QSignalMapper *_activateMapper {nullptr};
     DListWidget *_playlist {nullptr};
     State _state {Closed};
-    QLabel *_num {nullptr};
-    QLabel *_title {nullptr};
+    DLabel *_num {nullptr};
+    DLabel *_title {nullptr};
     bool _toggling {false};
     /// < original row, data>
     QPair<int, PlayItemWidget*> _lastDragged {-1, nullptr}; 

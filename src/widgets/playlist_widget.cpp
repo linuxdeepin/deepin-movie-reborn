@@ -167,7 +167,7 @@ public:
         l->setSpacing(10);
         setLayout(l);
 
-        _index = new QLabel(this);
+        _index = new DLabel(this);
         DFontSizeManager::instance()->bind(_index, DFontSizeManager::T9);
         _index->setText(QString::number(index + 1));
         _index->setFixedWidth(22);
@@ -203,7 +203,7 @@ public:
         vl->addWidget(_name);
 //        vl->addStretch(1);
 
-        _time = new QLabel(this);
+        _time = new DLabel(this);
         DFontSizeManager::instance()->bind(_time, DFontSizeManager::T9);
         _time->setProperty("Time", true);
         _time->setText(_pif.mi.durationStr());
@@ -515,8 +515,8 @@ protected:
             pa.setBrush(DPalette::Text, pa.color(DPalette::Highlight));
 //            setPalette(pa);
             _name->setPalette(pa);
-            _index->setPalette(pa);
-            _time->setPalette(pa);
+            _index->setForegroundRole(DPalette::Highlight);
+            _time->setForegroundRole(DPalette::Highlight);
             //_name->setFontWeight(QFont::Weight::Medium);
             QFont font = DFontSizeManager::instance()->get(DFontSizeManager::T6);
             font.setWeight(QFont::DemiBold);
@@ -537,10 +537,8 @@ protected:
             pa_name.setBrush(DPalette::Text, pa_name.color(DPalette::ToolTipText));
             _name->setPalette(pa_name);
             //_name->setFontWeight(QFont::Weight::Normal);
-            DPalette pa = DApplicationHelper::instance()->palette(_index);
-            pa.setBrush(DPalette::Text, pa.color(DPalette::TextTips));
-            _index->setPalette(pa);
-            _time->setPalette(pa);
+            _index->setForegroundRole(DPalette::TextTips);
+            _time->setForegroundRole(DPalette::TextTips);
             QFont font = DFontSizeManager::instance()->get(DFontSizeManager::T6);
             font.setWeight(QFont::Normal);
             _index->setFont(font);
@@ -553,10 +551,10 @@ protected:
 
 private:
     QString _bg;
-    QLabel *_index;
+    DLabel *_index;
     ListPic *_thumb;
     QTextEdit *_name;
-    QLabel *_time;
+    DLabel *_time;
     QPixmap _play;
     PlayItemInfo _pif;
     //FloatingButton *_closeBtn;
@@ -630,7 +628,7 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     left->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred));
 
 //    left->move(0,0);
-    _title = new QLabel();
+    _title = new DLabel();
     DFontSizeManager::instance()->bind(_title, DFontSizeManager::T3);
 //    DFontSizeManager::instance()->get(DFontSizeManager::T9);
 //    title->setProperty("Name", true);
@@ -641,18 +639,14 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
 //    title->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 //    title->setFrameShape(QFrame::NoFrame);
 //    title->setTextInteractionFlags(Qt::NoTextInteraction);
-    DPalette pa = DApplicationHelper::instance()->palette(_title);
-    pa.setBrush(DPalette::WindowText, pa.color(DPalette::ToolTipText));
-    _title->setPalette(pa);
+    _title->setForegroundRole(DPalette::ToolTipText);
 //    title->setText(DApplication::translate("QuickInstallWindow", "Installed"));
     _title->setText(tr("Playlist"));
     _title->setFixedSize(96 + 9, 36);
     _title->setContentsMargins(0, 0, 0, 0);
 
-    _num = new QLabel();
-    DPalette pa_num = DApplicationHelper::instance()->palette(_num);
-    pa_num.setBrush(DPalette::WindowText, pa_num.color(DPalette::TextTips));
-    _num->setPalette(pa_num);
+    _num = new DLabel();
+    _num->setForegroundRole(DPalette::TextTips);
     _num->setText(tr("17个视频"));
     DFontSizeManager::instance()->bind(_num, DFontSizeManager::T6);
     _num->setFixedSize(96, 20);
@@ -1187,13 +1181,8 @@ void PlaylistWidget::paintEvent(QPaintEvent *pe)
 //        painter.fillPath(pp, bgColor);
 //    }
     if (_title && _num) {
-        DPalette pa = DApplicationHelper::instance()->palette(_title);
-        pa.setBrush(DPalette::WindowText, pa.color(DPalette::ToolTipText));
-        _title->setPalette(pa);
-
-        DPalette pa_num = DApplicationHelper::instance()->palette(_num);
-        pa_num.setBrush(DPalette::WindowText, pa_num.color(DPalette::TextTips));
-        _num->setPalette(pa_num);
+        _title->setForegroundRole(DPalette::ToolTipText);
+        _num->setForegroundRole(DPalette::TextTips);
     }
 
 

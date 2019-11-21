@@ -84,9 +84,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo& pif)
 
     auto *nm = new DLabel(this);
     DFontSizeManager::instance()->bind(nm, DFontSizeManager::T8);
-    DPalette pal_nm = DApplicationHelper::instance()->palette(nm);
-    pal_nm.setBrush(DPalette::Text, pal_nm.color(DPalette::TextTitle));
-    nm->setPalette(pal_nm);
+    nm->setForegroundRole(DPalette::TextTitle);
     nm->setText(nm->fontMetrics().elidedText(QFileInfo(mi.filePath).fileName(), Qt::ElideMiddle, 260));
     ml->addWidget(nm);
     ml->setAlignment(nm, Qt::AlignHCenter);
@@ -114,25 +112,19 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo& pif)
     f->setFixedSize(55, 45); \
     f->setAlignment(Qt::AlignLeft | Qt::AlignTop); \
     DFontSizeManager::instance()->bind(f, DFontSizeManager::T8); \
-    DPalette pal_f = DApplicationHelper::instance()->palette(f); \
-    pal_f.setBrush(DPalette::Text, pal_f.color(DPalette::TextTitle)); \
-    f->setPalette(pal_f); \
+    f->setForegroundRole(DPalette::TextTitle); \
     auto t = new DLabel(field, this); \
     t->setFixedSize(200, 45); \
     t->setAlignment(Qt::AlignLeft | Qt::AlignTop); \
     t->setWordWrap(true); \
     DFontSizeManager::instance()->bind(t, DFontSizeManager::T8); \
-    DPalette pal_t = DApplicationHelper::instance()->palette(t); \
-    pal_t.setBrush(DPalette::Text, pal_t.color(DPalette::TextTitle)); \
-    t->setPalette(pal_t); \
+    t->setForegroundRole(DPalette::TextTitle); \
     form->addRow(f, t); \
 } while (0)
 
     auto title = new DLabel(MV_BASE_INFO, this);
     DFontSizeManager::instance()->bind(title, DFontSizeManager::T6);
-    DPalette pal_title = DApplicationHelper::instance()->palette(title);
-    pal_title.setBrush(DPalette::Text, pal_title.color(DPalette::TextTitle));
-    title->setPalette(pal_title);
+    title->setForegroundRole(DPalette::TextTitle);
     form->addRow(title);
 
     ADD_ROW(MV_RESOLUTION, mi.resolution);
@@ -160,13 +152,8 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo& pif)
 #undef ADD_ROW
 
     connect(DApplicationHelper::instance(), &DApplicationHelper::themeTypeChanged, this, [=]{
-        DPalette pal_nm = DApplicationHelper::instance()->palette(nm);
-        pal_nm.setBrush(DPalette::Text, pal_nm.color(DPalette::TextTitle));
-        nm->setPalette(pal_nm);
-
-        DPalette pal_title = DApplicationHelper::instance()->palette(title);
-        pal_title.setBrush(DPalette::Text, pal_title.color(DPalette::TextTitle));
-        title->setPalette(pal_title);
+        nm->setForegroundRole(DPalette::TextTitle);
+        title->setForegroundRole(DPalette::TextTitle);
     });
 
     DPalette pal_this = DApplicationHelper::instance()->palette(this);
