@@ -1825,7 +1825,14 @@ void ToolboxProxy::paintEvent(QPaintEvent *pe)
     QRectF bgRect;
     bgRect.setSize(size());
     const QPalette pal = QGuiApplication::palette();//this->palette();
-    QColor bgColor = pal.color(QPalette::ToolTipBase);
+    DGuiApplicationHelper::ColorType themeType = DGuiApplicationHelper::instance()->themeType();
+    QColor* bgColor;
+    if (themeType == DGuiApplicationHelper::LightType)
+        bgColor = new QColor(247, 247, 247, 240);
+    else if (themeType == DGuiApplicationHelper::DarkType)
+        bgColor = new QColor(32, 32, 32, 230);
+    else
+        bgColor = new QColor(247, 247, 247, 240);
 
     QPainterPath pp;
     pp.addRoundedRect(bgRect, RADIUS_MV, RADIUS_MV);
@@ -1835,7 +1842,7 @@ void ToolboxProxy::paintEvent(QPaintEvent *pe)
         auto view_rect = bgRect.marginsRemoved(QMargins(1, 1, 1, 1));
         QPainterPath pp;
         pp.addRoundedRect(view_rect, RADIUS_MV, RADIUS_MV);
-        painter.fillPath(pp, bgColor);
+        painter.fillPath(pp, *bgColor);
     }
 
     QWidget::paintEvent(pe);
