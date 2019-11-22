@@ -427,24 +427,6 @@ public:
         _indicatorPos = {v < 5 ? 5 : v, rect().y()};
         update();
     }
-    QImage GraizeImage( const QImage &image )
-    {
-        int w = image.width();
-        int h = image.height();
-        QImage iGray(w, h, QImage::Format_ARGB32);
-
-        for (int i = 0; i < w; i++) {
-            for (int j = 0; j < h; j++) {
-                QRgb pixel = image.pixel(i, j);
-                int gray = qGray(pixel);
-                QRgb grayPixel = qRgb(gray, gray, gray);
-                QColor color(gray, gray, gray, qAlpha(pixel));
-                iGray.setPixel(i, j, color.rgba());
-            }
-        }
-        return iGray;
-
-    }
 
     void setViewProgBar(PlayerEngine *engine, QList<QPixmap>pm_list, QList<QPixmap>pm_black_list )
     {
@@ -976,24 +958,6 @@ viewProgBarLoad::viewProgBarLoad(PlayerEngine *engine, DMRSlider *progBar, Toolb
     _progBar = progBar;
 }
 
-QImage viewProgBarLoad::GraizeImage( const QImage &image )
-{
-    int w = image.width();
-    int h = image.height();
-    QImage iGray(w, h, QImage::Format_ARGB32);
-
-    for (int i = 0; i < w; i++) {
-        for (int j = 0; j < h; j++) {
-            QRgb pixel = image.pixel(i, j);
-            int gray = qGray(pixel);
-            QRgb grayPixel = qRgb(gray, gray, gray);
-            QColor color(gray, gray, gray, qAlpha(pixel));
-            iGray.setPixel(i, j, color.rgba());
-        }
-    }
-    return iGray;
-}
-
 void viewProgBarLoad::loadViewProgBar(QSize size)
 {
 
@@ -1011,7 +975,10 @@ void viewProgBarLoad::loadViewProgBar(QSize size)
 //    pm_black.setDevicePixelRatio(dpr);
     VideoThumbnailer thumber;
     QTime d(0, 0, 0, 0);
-    thumber.setThumbnailSize(_engine->videoSize().width() * qApp->devicePixelRatio());
+    //The thumbnail's height is 50, width is video_width / video_height * 50
+    //So thumbnail's size is 50 * (video_width / video_height * 50)
+    thumber.setThumbnailSize(50 * (_engine->videoSize().width() / _engine->videoSize().height() * 50)
+                             * qApp->devicePixelRatio());
     thumber.setMaintainAspectRatio(true);
     thumber.setSeekTime(d.toString("hh:mm:ss").toStdString());
     auto url = _engine->playlist().currentInfo().url;
@@ -1030,7 +997,7 @@ void viewProgBarLoad::loadViewProgBar(QSize size)
 
 
             pm.append(QPixmap::fromImage(img_tmp.copy(img_tmp.size().width() / 2 - 4, 0, 8, 50)));
-            QImage img_black = GraizeImage(img_tmp);
+            QImage img_black = img_tmp.convertToFormat(QImage::Format_Grayscale8);
             pm_black.append(QPixmap::fromImage(img_black.copy(img_black.size().width() / 2 - 4, 0, 8, 50)));
 
 
