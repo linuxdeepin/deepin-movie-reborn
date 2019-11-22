@@ -52,7 +52,7 @@
 
 static const int LEFT_MARGIN = 10;
 static const int RIGHT_MARGIN = 10;
-static const int PROGBAR_SPEC = 10+120+17+54+10+54+10+170+10;
+static const int PROGBAR_SPEC = 10+120+17+54+10+54+10+170+10+20;
 
 DWIDGET_USE_NAMESPACE
 
