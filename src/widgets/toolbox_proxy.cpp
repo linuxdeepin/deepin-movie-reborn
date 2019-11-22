@@ -690,7 +690,9 @@ public:
 //        setWidth(ThumbnailWorker::thumbSize().width());
 //        setHeight(ThumbnailWorker::thumbSize().height());
 //        resize(QSize(106, 66));
-        setShadowBlurRadius(8);
+//        setShadowBlurRadius(2);
+//        setRadius(2);
+        setShadowBlurRadius(6);
         setRadius(8);
         setBorderWidth(1);
         setBorderColor(QColor(255, 255, 255, 26));
@@ -706,7 +708,8 @@ public:
         setBackgroundColor(QColor(255, 255, 255, 26));
 
         auto *l = new QVBoxLayout;
-        l->setContentsMargins(0, 0, 0, 10);
+//        l->setContentsMargins(0, 0, 0, 10);
+        l->setContentsMargins(1, 0, 0, 10);
 
         _thumb = new QLabel(this);
         //_thumb->setFixedSize(ThumbnailWorker::thumbSize());
