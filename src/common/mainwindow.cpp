@@ -2956,10 +2956,10 @@ void MainWindow::toggleUIMode()
         move(geom.x(), geom.y());
         resize(geom.width(), geom.height());
 
-        _miniQuitMiniBtn->move(sz.width() - 14 - _miniQuitMiniBtn->width(),
-                               sz.height() - 10 - _miniQuitMiniBtn->height());
-        _miniCloseBtn->move(sz.width() - 4 - _miniCloseBtn->width(), 4);
-        _miniPlayBtn->move(14, sz.height() - 10 - _miniPlayBtn->height());
+        _miniPlayBtn->move(sz.width() - 12 - _miniPlayBtn->width(),
+                               sz.height() - 10 - _miniPlayBtn->height());
+        _miniCloseBtn->move(sz.width() - 15 - _miniCloseBtn->width(), 10);
+        _miniQuitMiniBtn->move(14, sz.height() - 10 - _miniQuitMiniBtn->height());
 
     } else {
         if (_stateBeforeMiniMode & SBEM_Above) {

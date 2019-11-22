@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="30px" height="30px" viewBox="0 0 30 30" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 47 (45396) - http://www.bohemiancoding.com/sketch -->
-    <title>play-normal-mini</title>
+<svg width="36px" height="36px" viewBox="0 0 36 36" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 58 (84663) - https://sketch.com -->
+    <title>polygon</title>
     <desc>Created with Sketch.</desc>
-    <defs></defs>
-    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="play-normal-mini">
-            <g id="Group" transform="translate(1.000000, 1.000000)">
-                <rect id="Rectangle-3" fill-opacity="0.5" fill="#FFFFFF" x="0" y="0" width="28" height="28" rx="6"></rect>
-                <path d="M14,23.5 C19.2467051,23.5 23.5,19.2467051 23.5,14 C23.5,8.75329488 19.2467051,4.5 14,4.5 C8.75329488,4.5 4.5,8.75329488 4.5,14 C4.5,19.2467051 8.75329488,23.5 14,23.5 Z" id="Oval-31" stroke-opacity="0.7" stroke="#000000" stroke-linecap="round" stroke-linejoin="round"></path>
-                <polygon id="polygon51-5" fill="#000000" fill-rule="nonzero" points="11 9 11 19 20 14"></polygon>
+    <g id="浅色主题" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="小窗口样式" transform="translate(-1629.000000, -744.000000)">
+            <g id="close_round备份" transform="translate(1629.000000, 744.000000)">
+                <rect id="占位" fill="#000000" opacity="0.5" x="0" y="0" width="36" height="36" rx="18"></rect>
+                <path d="M15.494033,10.9420832 C13.5643319,9.86950025 12,10.7958814 12,12.9962619 L12,23.2137388 C12,25.4208133 13.5706746,26.336975 15.494033,25.2679175 L24.8869194,20.0470835 C26.8166205,18.9745006 26.8102778,17.2319746 24.8869194,16.1629172 L15.494033,10.9420832 Z" id="polygon" fill="#FFFFFF" fill-rule="nonzero"></path>
             </g>
         </g>
     </g>
