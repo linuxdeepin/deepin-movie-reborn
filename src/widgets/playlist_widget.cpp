@@ -185,7 +185,7 @@ public:
 
 //        vl->addStretch();
 
-        _name = new QTextEdit(this);
+        _name = new DTextEdit(this);
         _name->setProperty("Name", true);
         _name->setReadOnly(true);
         _name->setAcceptRichText(false);
@@ -517,12 +517,9 @@ protected:
             _name->setPalette(pa);
             _index->setForegroundRole(DPalette::Highlight);
             _time->setForegroundRole(DPalette::Highlight);
-            //_name->setFontWeight(QFont::Weight::Medium);
-            QFont font = DFontSizeManager::instance()->get(DFontSizeManager::T6);
-            font.setWeight(QFont::DemiBold);
-            _index->setFont(font);
-            _name->setFont(font);
-            _time->setFont(font);
+            _name->setFontWeight(QFont::Weight::Medium);
+            DFontSizeManager::instance()->bind(_index, DFontSizeManager::T6, QFont::Medium);
+            DFontSizeManager::instance()->bind(_time, DFontSizeManager::T6, QFont::Medium);
 //            QColor bgColor  = pal.color(DPalette::ToolTipBase);
             QColor bgColor(255, 255, 255, 51);
             if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ) {
@@ -536,14 +533,11 @@ protected:
             DPalette pa_name = DApplicationHelper::instance()->palette(_name);
             pa_name.setBrush(DPalette::Text, pa_name.color(DPalette::ToolTipText));
             _name->setPalette(pa_name);
-            //_name->setFontWeight(QFont::Weight::Normal);
+            _name->setFontWeight(QFont::Weight::Normal);
             _index->setForegroundRole(DPalette::TextTips);
             _time->setForegroundRole(DPalette::TextTips);
-            QFont font = DFontSizeManager::instance()->get(DFontSizeManager::T6);
-            font.setWeight(QFont::Normal);
-            _index->setFont(font);
-            _name->setFont(font);
-            _time->setFont(font);
+            DFontSizeManager::instance()->bind(_index, DFontSizeManager::T6, QFont::Normal);
+            DFontSizeManager::instance()->bind(_time, DFontSizeManager::T6, QFont::Normal);
         }
 
         QWidget::paintEvent(pe);
@@ -553,7 +547,7 @@ private:
     QString _bg;
     DLabel *_index;
     ListPic *_thumb;
-    QTextEdit *_name;
+    DTextEdit *_name;
     DLabel *_time;
     QPixmap _play;
     PlayItemInfo _pif;
@@ -792,13 +786,13 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
         QTimer::singleShot(20, [ = ]() {
             if (_mouseItem) {
                 _clickedItem = _mouseItem;
-                ((PlayItemWidget *)_mouseItem)->setHovered(true);
+                ((PlayItemWidget *)_mouseItem)->setHovered(false);
             }
         });
     });
     connect(ActionFactory::get().playlistContextMenu(), &DMenu::aboutToHide, [ = ]() {
         if (_mouseItem) {
-            ((PlayItemWidget *)_mouseItem)->setHovered(false);
+            ((PlayItemWidget *)_mouseItem)->setHovered(true);
         }
     });
 
