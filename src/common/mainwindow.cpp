@@ -2578,14 +2578,14 @@ void MainWindow::updateSizeConstraints()
             auto sz = _engine->videoSize();
             qreal ratio = (qreal)sz.width() / sz.height();
             if (sz.width() > sz.height()) {
-                int h = 528 / ratio;
-                m = QSize(528, h);
+                int w = 500 * ratio;
+                m = QSize(w, 500);
             } else {
-                int w = 528 * ratio;
-                m = QSize(w, 528);
+                int h = 614 / ratio;
+                m = QSize(614, h);
             }
         } else {
-            m = QSize(630, 386);
+            m = QSize(614, 500);
         }
     }
 
