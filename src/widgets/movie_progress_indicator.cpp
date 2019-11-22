@@ -1,4 +1,4 @@
-/* 
+/*
  * (c) 2017, Deepin Technology Co., Ltd. <support@deepin.org>
  *
  * This program is free software; you can redistribute it and/or
@@ -32,8 +32,8 @@
 
 namespace dmr {
 
-MovieProgressIndicator::MovieProgressIndicator(QWidget* parent)
-    :QFrame(parent)
+MovieProgressIndicator::MovieProgressIndicator(QWidget *parent)
+    : QFrame(parent)
 {
     QFont ft;
     ft.setPixelSize(14);
@@ -44,7 +44,7 @@ MovieProgressIndicator::MovieProgressIndicator(QWidget* parent)
     this->setFixedSize(_fixedSize);
 }
 
-void MovieProgressIndicator::paintEvent(QPaintEvent* pe)
+void MovieProgressIndicator::paintEvent(QPaintEvent *pe)
 {
     auto time_text = QTime::currentTime().toString("hh:mm");
 
@@ -55,11 +55,11 @@ void MovieProgressIndicator::paintEvent(QPaintEvent* pe)
 
     QFontMetrics fm(font());
     auto fr = fm.boundingRect(time_text);
-    fr.moveCenter(QPoint(rect().center().x(), fr.height()/2));
+    fr.moveCenter(QPoint(rect().center().x(), fr.height() / 2));
     p.drawText(fr, time_text);
 
-    
-    QPoint pos((_fixedSize.width() - 48)/2, rect().height() - 5);
+
+    QPoint pos((_fixedSize.width() - 48) / 2, rect().height() - 5);
     int pert = qMin(_pert * 10, 10.0);
     for (int i = 0; i < 10; i++) {
         if (i >= pert) {

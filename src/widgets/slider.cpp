@@ -1,4 +1,4 @@
-/* 
+/*
  * (c) 2017, Deepin Technology Co., Ltd. <support@deepin.org>
  *
  * This program is free software; you can redistribute it and/or
@@ -36,9 +36,8 @@
 
 DWIDGET_USE_NAMESPACE
 
-namespace dmr
-{
-    static auto light_style = R"(
+namespace dmr {
+static auto light_style = R"(
     #MovieProgress[Hover="true"]::groove:horizontal {
         background-color: qlineargradient(x1:0 y1:0, x2:0 y2:1,
             stop:0.00000  transparent,          stop:%1 transparent,
@@ -67,7 +66,7 @@ namespace dmr
     }
     )";
 
-    static auto dark_style = R"(
+static auto dark_style = R"(
     #MovieProgress[Hover="true"]::groove:horizontal {
         background-color: qlineargradient(x1:0 y1:0, x2:0 y2:1,
             stop:0.00000  transparent,          stop:%1 transparent,
@@ -96,7 +95,7 @@ namespace dmr
     }
     )";
 
-DMRSlider::DMRSlider(QWidget *parent): DSlider(Qt::Horizontal,parent)
+DMRSlider::DMRSlider(QWidget *parent): DSlider(Qt::Horizontal, parent)
 {
     slider()->setTracking(false);
     setMouseTracking(true);
@@ -138,7 +137,7 @@ void DMRSlider::mouseReleaseEvent(QMouseEvent *e)
     }
 }
 
-int DMRSlider::position2progress(const QPoint& p)
+int DMRSlider::position2progress(const QPoint &p)
 {
     auto total = (maximum() - minimum());
 
@@ -171,7 +170,7 @@ void DMRSlider::mouseMoveEvent(QMouseEvent *e)
     if (_down) {
         slider()->setSliderPosition(v);
         if (_showIndicator) {
-            _indicatorPos = {e->x(), pos().y()+TOOLBOX_TOP_EXTENT-4};
+            _indicatorPos = {e->x(), pos().y() + TOOLBOX_TOP_EXTENT - 4};
             update();
         }
     } else {
@@ -186,7 +185,7 @@ void DMRSlider::mouseMoveEvent(QMouseEvent *e)
 
         if (_lastHoverValue != v) {
             if (_showIndicator) {
-                _indicatorPos = {e->x(), pos().y()+TOOLBOX_TOP_EXTENT-4};
+                _indicatorPos = {e->x(), pos().y() + TOOLBOX_TOP_EXTENT - 4};
                 update();
             }
 
@@ -228,7 +227,7 @@ void DMRSlider::forceLeave()
 
 void DMRSlider::onAnimationStopped()
 {
-    // need to clear stylesheet when leave slider, since the generated sheet is a 
+    // need to clear stylesheet when leave slider, since the generated sheet is a
     // little weird.
     if (_hoverAni && _hoverAni->state() == QVariantAnimation::Stopped) {
         setProperty("Hover", "false");
@@ -237,7 +236,7 @@ void DMRSlider::onAnimationStopped()
     }
 }
 
-void DMRSlider::onValueChanged(const QVariant& v)
+void DMRSlider::onValueChanged(const QVariant &v)
 {
     // see dmr--ToolProxy.theme to find out the meaning of these values
     // v1 is for groove and sub-page
@@ -249,10 +248,10 @@ void DMRSlider::onValueChanged(const QVariant& v)
     float v4 = v2 + (2.0 / 24.0);
 
     auto s = QString::fromUtf8(_style_tmpl)
-        .arg(v1).arg(v1+0.000001)
-        .arg(v2).arg(v2+0.000001)
-        .arg(v3).arg(v3+0.000001)
-        .arg(v4).arg(v4+0.000001);
+             .arg(v1).arg(v1 + 0.000001)
+             .arg(v2).arg(v2 + 0.000001)
+             .arg(v3).arg(v3 + 0.000001)
+             .arg(v4).arg(v4 + 0.000001);
     //qDebug() << "-------- interpolate " << v1 << v2 << v3 << v4;
 //    setStyleSheet(s);
     update();
