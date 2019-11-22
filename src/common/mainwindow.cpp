@@ -108,7 +108,7 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
 //    icon->setPressIcon(":resources/icons/select-press.svg");
 
     auto optionWidget = DSettingsWidgetFactory::createTwoColumWidget(option, main);
-    workaround_updateStyle(optionWidget, "dlight");
+    workaround_updateStyle(optionWidget, "light");
 
     auto validate = [ = ](QString name, bool alert = true) -> bool {
         name = name.trimmed();
@@ -2157,13 +2157,6 @@ void MainWindow::handleSettings()
     dsd->setProperty("_d_QSSThemename", "dark");
     dsd->setProperty("_d_QSSFilename", "DSettingsDialog");
     dsd->updateSettings(Settings::get().settings());
-
-#if DTK_VERSION > DTK_VERSION_CHECK(2, 0, 6, 0)
-    DThemeManager::instance()->setTheme(dsd, "light");
-#else
-//    DThemeManager::instance()->registerWidget(dsd);
-    workaround_updateStyle(dsd, "dlight");
-#endif
 
     //hack:
     auto subft = dsd->findChild<QSpinBox *>("OptionDSpinBox");
