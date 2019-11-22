@@ -120,7 +120,7 @@ public slots:
     void loadPlaylist();
     void openItemInFM();
     void showItemInfo();
-    void removeClickedItem();
+    void removeClickedItem(bool isShortcut);
 
 protected:
     void contextMenuEvent(QContextMenuEvent *cme) override;

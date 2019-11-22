@@ -159,7 +159,7 @@
                             "key": "fullscreen",
                             "name": "Fullscreen",
                             "type": "shortcut",
-                            "default":  ["0", "16777220"]
+                            "default":  ["0", "16777274"]
                         },
                         {
                             "key": "playlist",
@@ -184,6 +184,18 @@
                             "name": "Reset speed",
                             "type": "shortcut",
                             "default":  ["0", "82"]
+                        },
+                        {
+                            "key": "del_single_playlist",
+                            "name": "Delete single playlist",
+                            "type": "shortcut",
+                            "default":  ["0", "16777223"]
+                        },
+                        {
+                            "key": "movie_info",
+                            "name": "Movie info",
+                            "type": "shortcut",
+                            "default":  ["134217728", "16777220"]
                         }
                     ]
                 },

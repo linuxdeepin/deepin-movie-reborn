@@ -875,8 +875,15 @@ void PlaylistWidget::openItemInFM()
     }
 }
 
-void PlaylistWidget::removeClickedItem()
+void PlaylistWidget::removeClickedItem(bool isShortcut)
 {
+    if (isShortcut)
+    {
+        int currentIndex = _engine->playlist().current();
+        _engine->playlist().remove(currentIndex);
+        return;
+    }
+
     if (!_clickedItem) return;
     auto piw = dynamic_cast<PlayItemWidget *>(_clickedItem);
     if (piw) {

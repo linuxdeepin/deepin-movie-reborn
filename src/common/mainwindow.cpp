@@ -1722,7 +1722,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     }
 
     case ActionFactory::ActionKind::PlaylistRemoveItem: {
-        _playlist->removeClickedItem();
+        _playlist->removeClickedItem(isShortcut);
         break;
     }
 
