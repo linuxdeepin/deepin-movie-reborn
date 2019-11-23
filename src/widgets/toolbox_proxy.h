@@ -43,6 +43,7 @@
 #include <DFrame>
 #include <DLabel>
 
+
 namespace Dtk
 {
 namespace Widget
@@ -56,6 +57,7 @@ DWIDGET_USE_NAMESPACE
 namespace dmr {
 class PlayerEngine;
 class VolumeButton;
+class ToolButton;
 class MainWindow;
 class DMRSlider;
 class ThumbnailPreview;
@@ -68,9 +70,31 @@ class ImageItem : public DLabel{
     Q_OBJECT
 public:
     ImageItem(QPixmap image ,bool isblack = false, QWidget *parent = 0):DLabel(parent){
+//        QImage image2 = image;
+//        if(isblack) image2 =GraizeImage(image);
+//        _pixmap=QPixmap::fromImage(image2.copy(image2.size().width()/2-4,0,8,50));
         _pixmap = image;
     };
 
+    QImage GraizeImage( const QImage& image ){
+        int w =image.width();
+        int h = image.height();
+        QImage iGray(w,h, QImage::Format_ARGB32);
+
+        for(int i=0; i<w;i++)
+        {
+            for(int j=0; j<h;j++)
+            {
+                QRgb pixel = image.pixel(i,j);
+                int gray = qGray(pixel);
+                QRgb grayPixel = qRgb(gray,gray,gray);
+                QColor color(gray,gray,gray,qAlpha(pixel));
+                iGray.setPixel(i,j,color.rgba());
+            }
+        }
+        return iGray;
+
+    }
 signals:
     void imageItemclicked(int index,int indexNow);
 protected:
@@ -110,18 +134,7 @@ public:
     bool anyPopupShown() const;
     void closeAnyPopup();
     void setViewProgBarWidth();
-    void setPlaylist(PlaylistWidget *playlist){
-        _playlist = playlist;
-        connect(_playlist,&PlaylistWidget::stateChange,this,[=](){
-            if (_playlist->state() == PlaylistWidget::State::Opened){
-                _bot_spec->show();
-                _listBtn->setChecked(true);
-            }else {
-                _listBtn->setChecked(false);
-                _bot_spec->hide();
-            }
-        });
-    }
+    void setPlaylist(PlaylistWidget *playlist);
     void addLabel_list(ImageItem *label){ label_list.append(label);}
     void addLabel_black_list(ImageItem *label_black){ label_black_list.append(label_black);}
     void addpm_list(QList<QPixmap> pm){ pm_list.clear(); pm_list.append(pm);}
@@ -138,6 +151,8 @@ signals:
 protected slots:
     void updatePosition(const QPoint& p);
     void buttonClicked(QString id);
+    void buttonEnter();
+    void buttonLeave();
     void updatePlayState();
     void updateFullState();
     void updateVolumeState();
@@ -157,6 +172,7 @@ protected:
 private:
     void setup();
     void updateTimeLabel();
+    void updateToolTipTheme(ToolButton *btn);
 
     MainWindow *_mainWindow {nullptr};
     PlayerEngine *_engine {nullptr};
@@ -175,10 +191,13 @@ private:
     DButtonBoxButton *_nextBtn {nullptr};
     DButtonBox *_palyBox{nullptr};
 
-    DIconButton *_subBtn {nullptr};
+//    DIconButton *_subBtn {nullptr};
     VolumeButton *_volBtn {nullptr};
-    DIconButton *_listBtn {nullptr};
-    DIconButton *_fsBtn {nullptr};
+//    DIconButton *_listBtn {nullptr};
+//    DIconButton *_fsBtn {nullptr};
+    ToolButton *_subBtn {nullptr};
+    ToolButton *_listBtn {nullptr};
+    ToolButton *_fsBtn {nullptr};
 
     QHBoxLayout *_mid{nullptr};
     QHBoxLayout *_right{nullptr};
@@ -220,6 +239,7 @@ signals:
     void finished();
 
 protected:
+    QImage GraizeImage( const QImage& image );
 
 private:
     PlayerEngine *_engine {nullptr};

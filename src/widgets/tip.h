@@ -33,6 +33,7 @@
 #include <QGuiApplication>
 #include <DPalette>
 #include <DApplicationHelper>
+#include <DFontSizeManager>
 
 namespace dmr
 {
@@ -64,10 +65,15 @@ public slots:
 protected:
     virtual void paintEvent(QPaintEvent *) Q_DECL_OVERRIDE;
     void enterEvent(QEvent* e) override;
+    virtual void resizeEvent(QResizeEvent *ev) Q_DECL_OVERRIDE;
+
+private:
+    void resetSize();
 
 private:
     QScopedPointer<TipPrivate> d_ptr;
     Q_DECLARE_PRIVATE_D(qGetPtrHelper(d_ptr), Tip)
+    QString m_strText;
 };
 }
 #endif /* ifndef _DMR_TIP_H */

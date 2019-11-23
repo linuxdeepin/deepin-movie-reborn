@@ -52,7 +52,7 @@ public:
     void setBackgroundImage(const QPixmap &srcPixmap);
 
     QBrush          background;
-    int             radius              = 4;
+    int             radius              = 8;
     int             shadowWidth         = 20;
     QMargins        shadowMargins       = QMargins(20, 20, 20, 20);
     QColor          borderColor         = QColor(0, 0, 0, 0.2 * 255);
@@ -78,13 +78,13 @@ Tip::Tip(const QPixmap &icon, const QString &text, QWidget *parent)
     setContentsMargins(0, 0, 0, 0);
 
     auto layout = new QHBoxLayout(this);
-    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setContentsMargins(7, 4, 7, 4);
     layout->setSpacing(0);
 
     d->m_interFrame = new QFrame(this);
     d->m_interFrame->setContentsMargins(0, 0, 0, 0);
     auto interlayout = new QHBoxLayout(d->m_interFrame);
-    interlayout->setContentsMargins(10, 0, 10, 0);
+    interlayout->setContentsMargins(0, 0, 0, 0);
     interlayout->setSpacing(5);
     auto iconLabel = new QLabel;
     iconLabel->setObjectName("TipIcon");
@@ -98,6 +98,13 @@ Tip::Tip(const QPixmap &icon, const QString &text, QWidget *parent)
     d->textLable = new DLabel(text);
     d->textLable->setObjectName("TipText");
     d->textLable->setAlignment(Qt::AlignCenter);
+    DFontSizeManager::instance()->bind(d->textLable, DFontSizeManager::T8);
+//    DPalette pa_name = DApplicationHelper::instance()->palette(d->textLable);
+//    pa_name.setBrush(DPalette::Text, pa_name.color(DPalette::ToolTipText));
+//    pa_name.setBrush(DPalette::ToolTipText, pa_name.color(DPalette::ToolTipText));
+//    d->textLable->setForegroundRole(DPalette::Text);
+//    d->textLable->setForegroundRole(DPalette::ToolTipText);
+//    d->textLable->setPalette(pa_name);
 
     interlayout->addWidget(iconLabel, 0, Qt::AlignVCenter);
     interlayout->addWidget(d->textLable, 0, Qt::AlignVCenter);
@@ -109,8 +116,9 @@ Tip::Tip(const QPixmap &icon, const QString &text, QWidget *parent)
     bodyShadow->setBlurRadius(10.0);
     bodyShadow->setColor(QColor(0, 0, 0, 0.1 * 255));
     bodyShadow->setOffset(0, 2.0);
-    this->setGraphicsEffect(bodyShadow);
+//    this->setGraphicsEffect(bodyShadow);
     hide();
+    d->textLable->hide();
 
     //setFixedHeight(32);
 }
@@ -135,6 +143,8 @@ void Tip::setText(const QString text)
 {
     Q_D(const Tip);
     d->textLable->setText(text);
+    m_strText = text;
+    update();
 }
 
 int Tip::radius() const
@@ -174,28 +184,29 @@ void Tip::pop(QPoint center)
     center = center - QPoint(width() / 2, height() / 2);
     this->move(center);
 
-    auto topOpacity = new QGraphicsOpacityEffect(d->m_interFrame);
-    topOpacity->setOpacity(1);
-    d->m_interFrame->setGraphicsEffect(topOpacity);
+//    auto topOpacity = new QGraphicsOpacityEffect(d->m_interFrame);
+//    topOpacity->setOpacity(1);
+//    d->m_interFrame->setGraphicsEffect(topOpacity);
 
-    QPropertyAnimation *animation4 = new QPropertyAnimation(topOpacity, "opacity");
-//    animation4->setEasingCurve(QEasingCurve::InCubic);
-    animation4->setDuration(2000);
-    animation4->setStartValue(0);
-    animation4->setKeyValueAt(0.25, 1);
-    animation4->setKeyValueAt(0.5, 1);
-    animation4->setKeyValueAt(0.75, 1);
-    animation4->setEndValue(0);
-    animation4->start();
-    animation4->connect(animation4, &QPropertyAnimation::finished,
-                        animation4, &QPropertyAnimation::deleteLater);
-    animation4->connect(animation4, &QPropertyAnimation::finished,
-    this, [ = ]() {
-        d->m_interFrame->setGraphicsEffect(nullptr);
-        this->hide();
-    });
+//    QPropertyAnimation *animation4 = new QPropertyAnimation(topOpacity, "opacity");
+////    animation4->setEasingCurve(QEasingCurve::InCubic);
+//    animation4->setDuration(2000);
+//    animation4->setStartValue(0);
+//    animation4->setKeyValueAt(0.25, 1);
+//    animation4->setKeyValueAt(0.5, 1);
+//    animation4->setKeyValueAt(0.75, 1);
+//    animation4->setEndValue(0);
+//    animation4->start();
+//    animation4->connect(animation4, &QPropertyAnimation::finished,
+//                        animation4, &QPropertyAnimation::deleteLater);
+//    animation4->connect(animation4, &QPropertyAnimation::finished,
+//    this, [ = ]() {
+//        d->m_interFrame->setGraphicsEffect(nullptr);
+//        this->hide();
+//    });
 }
 
+#ifdef _OLD
 void Tip::paintEvent(QPaintEvent *)
 {
     Q_D(Tip);
@@ -210,7 +221,12 @@ void Tip::paintEvent(QPaintEvent *)
 //    auto background =  d->background;
     const QPalette pal = QGuiApplication::palette();//this->palette();
     QColor background = pal.color(QPalette::ToolTipBase);
+    DPalette pa_name = DApplicationHelper::instance()->palette(d->textLable);
+    pa_name.setBrush(DPalette::Text, pa_name.color(DPalette::ToolTipText));
+    pa_name.setBrush(DPalette::ToolTipText, pa_name.color(DPalette::ToolTipText));
+    d->textLable->setForegroundRole(DPalette::Text);
     d->textLable->setForegroundRole(DPalette::ToolTipText);
+    d->textLable->setPalette(pa_name);
     auto borderColor = d->borderColor;
     auto margin = 2.0;
     auto shadowMargins = QMarginsF(margin, margin, margin, margin);
@@ -244,3 +260,84 @@ void Tip::paintEvent(QPaintEvent *)
 }
 
 }
+#else
+void Tip::paintEvent(QPaintEvent *)
+{
+    Q_D(Tip);
+    QPainter pt(this);
+    pt.setRenderHint(QPainter::Antialiasing);
+
+//    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, [=]{
+//        DPalette pa_name = DApplicationHelper::instance()->palette(d->textLable);
+//        pa_name.setBrush(DPalette::Text, pa_name.color(DPalette::ToolTipText));
+//        pa_name.setBrush(DPalette::ToolTipText, pa_name.color(DPalette::ToolTipText));
+//        d->textLable->setForegroundRole(DPalette::Text);
+//        d->textLable->setForegroundRole(DPalette::ToolTipText);
+//        d->textLable->setPalette(pa_name);
+//    });
+
+    if(DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
+        pt.setPen(QColor(0, 0, 0, 10));
+        pt.setBrush(QBrush(QColor(247, 247, 247, 220)));
+    }
+    else if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
+        pt.setPen(QColor(255, 255, 255, 10));
+        pt.setBrush(QBrush(QColor(42, 42, 42, 220)));
+    }
+    else {
+        pt.setPen(QColor(0, 0, 0, 10));
+        pt.setBrush(QBrush(QColor(247, 247, 247, 220)));
+    }  
+
+    QRect rect = this->rect();
+    rect.setWidth(rect.width() - 1);
+    rect.setHeight(rect.height() - 1);
+    QPainterPath painterPath;
+    painterPath.addRoundedRect(rect, d->radius, d->radius);
+    pt.drawPath(painterPath);
+
+    DPalette pal_text = DApplicationHelper::instance()->palette(this);
+    pal_text.setBrush(DPalette::Text, pal_text.color(DPalette::ToolTipText));
+    this->setPalette(pal_text);
+    pt.setPen(pal_text.color(DPalette::ToolTipText));
+    if(DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
+        pt.setPen(QColor(55, 55, 55));
+    }
+    else if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
+        pt.setPen(QColor("#C0C6D4"));
+    }
+    else {
+        pt.setPen(QColor(55, 55, 55));
+    }
+
+    DFontSizeManager::instance()->bind(this, DFontSizeManager::T8);
+    QFont font = DFontSizeManager::instance()->get(DFontSizeManager::T8);
+    QFontMetrics fm(font);
+    auto w = fm.boundingRect(m_strText).width();
+    auto h = fm.height();
+    pt.drawText((rect.width() - w)/2, (rect.height() + h/2)/2, m_strText);
+}
+#endif
+
+void Tip::resizeEvent(QResizeEvent *ev)
+{
+    resetSize();
+    update();
+    return QWidget::resizeEvent(ev);
+}
+
+void Tip::resetSize()
+{
+    DFontSizeManager::instance()->bind(this, DFontSizeManager::T8);
+    QFont font = DFontSizeManager::instance()->get(DFontSizeManager::T8);
+    QFontMetrics fm(font);
+    auto w = fm.boundingRect(m_strText).width();
+    auto h = fm.height();
+    resize(w+14, h+8);
+}
+
+
+}
+
+
+
