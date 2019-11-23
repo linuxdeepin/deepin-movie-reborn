@@ -106,7 +106,6 @@ ShortcutManager::ShortcutManager()
             sk.remove(0, sk.lastIndexOf('.') + 1);
 
             QStringList keyseqs = val.toStringList();
-            Q_ASSERT (keyseqs.length() == 2);
             auto modifier = static_cast<Qt::KeyboardModifiers>(keyseqs.value(0).toInt());
             auto key = static_cast<Qt::Key>(keyseqs.value(1).toInt());
 
@@ -132,7 +131,6 @@ void ShortcutManager::toggleGroupShortcuts(GroupPtr grp, bool on)
         if (opt->viewType() != "shortcut") return;
 
         QStringList keyseqs = opt->value().toStringList();
-        Q_ASSERT (keyseqs.length() == 2);
         auto modifier = static_cast<Qt::KeyboardModifiers>(keyseqs.value(0).toInt());
         auto key = static_cast<Qt::Key>(keyseqs.value(1).toInt());
 
@@ -194,7 +192,6 @@ QString ShortcutManager::toJson()
             if (opt->viewType() != "shortcut") return;
 
             QStringList keyseqs = opt->value().toStringList();
-            Q_ASSERT (keyseqs.length() == 2);
             auto modifier = static_cast<Qt::KeyboardModifiers>(keyseqs.value(0).toInt());
             auto key = static_cast<Qt::Key>(keyseqs.value(1).toInt());
 
