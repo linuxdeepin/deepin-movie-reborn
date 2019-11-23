@@ -350,6 +350,17 @@ public:
         update();
     }
 
+    bool getBIsSelect() const
+    {
+        return m_bIsSelect;
+    }
+
+    void setBIsSelect(bool bIsSelect)
+    {
+        m_bIsSelect = bIsSelect;
+        update();
+    }
+
 signals:
     void closeButtonClicked();
     void doubleClicked();
@@ -529,7 +540,8 @@ protected:
             QPainterPath pp;
             pp.addRoundedRect(bgRect, 8, 8);
             painter.fillPath(pp, bgColor);
-        } else {
+        }
+        else {
             DPalette pa_name = DApplicationHelper::instance()->palette(_name);
             pa_name.setBrush(DPalette::Text, pa_name.color(DPalette::ToolTipText));
             _name->setPalette(pa_name);
@@ -538,6 +550,17 @@ protected:
             _time->setForegroundRole(DPalette::TextTips);
             DFontSizeManager::instance()->bind(_index, DFontSizeManager::T6, QFont::Normal);
             DFontSizeManager::instance()->bind(_time, DFontSizeManager::T6, QFont::Normal);
+        }
+
+        if (m_bIsSelect) {
+            int width = this->width();
+            int heigh = this->height();
+            int penwidth = 2;
+            QPalette p(this->palette());
+
+            painter.setPen(QPen(/*QColor(QString("#0081FF"))*/p.highlight().color(), penwidth, Qt::SolidLine));
+            QRectF rectangle(1, 1, width - 2, heigh - 2);
+            painter.drawRoundedRect(rectangle, 8, 8);
         }
 
         QWidget::paintEvent(pe);
@@ -556,6 +579,7 @@ private:
     QListWidget *_listWidget {nullptr};
     bool _hovered {false};
     PlaylistWidget *_playlist{nullptr};
+    bool m_bIsSelect = false;
 };
 
 class MainWindowListener: public QObject
@@ -710,6 +734,7 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     mainLayout->addWidget(right);
 
     _playlist = new DListWidget();
+    _playlist->setFocusPolicy(Qt::NoFocus);
 //    _playlist->setFixedSize(820,288);
     _playlist->setFixedSize(width() - 235, 288);
 //    _playlist->setFixedHeight(288);
@@ -731,6 +756,8 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     //setAcceptDrops(true);
     _playlist->viewport()->setAcceptDrops(true);
     _playlist->setDragEnabled(true);
+
+    connect(_playlist, &DListWidget::itemClicked, this, &PlaylistWidget::slotShowSelectItem);
 
     _playlist->setContentsMargins(0, 30, 0, 0);
 
@@ -1050,6 +1077,25 @@ void PlaylistWidget::appendItems()
     updateItemStates();
 //    _playlist->setStyleSheet(styleSheet());
 //    setStyleSheet(styleSheet());
+}
+
+void PlaylistWidget::slotShowSelectItem(QListWidgetItem *item)
+{
+    auto curItem = _playlist->currentItem();
+    if (curItem) {
+        auto itemWidget = reinterpret_cast<PlayItemWidget *>(_playlist->itemWidget(curItem));
+        if (itemWidget) {
+            itemWidget->setBIsSelect(false);
+        }
+    }
+
+    if (item) {
+        _playlist->setCurrentItem(item);
+        auto pWidget = reinterpret_cast<PlayItemWidget *>(_playlist->itemWidget(item));
+        if (pWidget) {
+            pWidget->setBIsSelect(true);
+        }
+    }
 }
 
 void PlaylistWidget::loadPlaylist()

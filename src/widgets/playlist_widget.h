@@ -137,6 +137,8 @@ protected slots:
     void appendItems();
     void removeItem(int);
 
+    void slotShowSelectItem(QListWidgetItem *);
+
 private:
 
     PlayerEngine *_engine {nullptr};
