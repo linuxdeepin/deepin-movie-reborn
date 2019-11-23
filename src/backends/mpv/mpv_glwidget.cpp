@@ -1,4 +1,4 @@
-/* 
+/*
  * (c) 2017, Deepin Technology Co., Ltd. <support@deepin.org>
  *
  * This program is free software; you can redistribute it and/or
@@ -39,7 +39,7 @@
 DWIDGET_USE_NAMESPACE
 
 
-static const char* vs_blend = R"(
+static const char *vs_blend = R"(
 attribute vec2 position;
 attribute vec2 vTexCoord;
 
@@ -196,6 +196,10 @@ namespace dmr {
             _darkTex->destroy();
             delete _darkTex;
         }
+//        if (_darkTexbac) {
+//            _darkTexbac->destroy();
+//            delete _darkTexbac;
+//        }
         if (_lightTex) {
             _lightTex->destroy();
             delete _lightTex;
@@ -266,6 +270,8 @@ namespace dmr {
         _vao.create();
         _vao.bind();
 
+//        _darkTexbac = new QOpenGLTexture(bg_dark_bac, QOpenGLTexture::DontGenerateMipMaps);
+//        _darkTexbac->setMinificationFilter(QOpenGLTexture::Linear);
         _darkTex = new QOpenGLTexture(bg_dark, QOpenGLTexture::DontGenerateMipMaps);
         _darkTex->setMinificationFilter(QOpenGLTexture::Linear);
         _lightTex = new QOpenGLTexture(bg_light, QOpenGLTexture::DontGenerateMipMaps);
@@ -312,8 +318,30 @@ namespace dmr {
 
     void MpvGLWidget::prepareSplashImages()
     {
-        bg_dark = utils::LoadHiDPIImage(":/resources/icons/dark/init-splash.svg");
-        bg_light = utils::LoadHiDPIImage(":/resources/icons/light/init-splash.svg");
+//        bg_dark = utils::LoadHiDPIImage(":/resources/icons/dark/init-splash.svg");
+//        bg_light = utils::LoadHiDPIImage(":/resources/icons/light/init-splash.svg");
+
+        QPixmap pixmap(":/resources/icons/dark/init-splash-bac.svg");
+//        QImage img=utils::LoadHiDPIImage(":/resources/icons/dark/init-splash-bac.svg");
+//        pixmap=pixmap.fromImage(img);
+        QPixmap pixmap2(":/resources/icons/dark/init-splash.svg");
+//        QImage img1=utils::LoadHiDPIImage(":/resources/icons/dark/init-splash.svg");
+//        pixmap2=pixmap2.fromImage(img1);
+        QPainter p(&pixmap);
+//        p.drawPixmap((pixmap.width()-pixmap2.width())/2,(pixmap.height()-pixmap2.height())/2,pixmap2);
+        p.drawPixmap(148,192,pixmap2);
+        bg_dark=pixmap.toImage();
+
+        QPixmap pixmap3;
+        QImage image(pixmap.size(),QImage::Format_Alpha8);
+        pixmap3=pixmap3.fromImage(image);
+        QPixmap pixmap4(":/resources/icons/dark/init-splash.svg");
+//        pixmap4=pixmap4.fromImage(img1);
+        QPainter p1(&pixmap3);
+//        p1.drawPixmap((pixmap.width()-pixmap4.width())/2,(pixmap.height()-pixmap4.height())/2,pixmap4);
+        p1.drawPixmap(148,192,pixmap4);
+        bg_light=pixmap3.toImage();
+//        bg_light = utils::LoadHiDPIImage(":/resources/icons/light/init-splash.svg");
     }
 
     void MpvGLWidget::initializeGL() 
@@ -656,11 +684,13 @@ namespace dmr {
                 _glProg->setUniformValue("bg", clr);
 
                 QOpenGLTexture *tex = _lightTex;
-                if (qApp->theme() == "dark") {
+                DGuiApplicationHelper::ColorType themeType = DGuiApplicationHelper::instance()->themeType();
+//                if (qApp->theme() == "dark") {
+                if (themeType == DGuiApplicationHelper::DarkType) {
                     tex = _darkTex;
                 }
-                f->glActiveTexture(GL_TEXTURE0);
                 tex->bind();
+                f->glActiveTexture(GL_TEXTURE0);
                 f->glDrawArrays(GL_TRIANGLES, 0, 6);
                 tex->release();
                 _glProg->release();

@@ -14,8 +14,6 @@
         <file>resources/icons/slider.svg</file>
         <file>resources/icons/dark/subtitle-selected.svg</file>
         <file>resources/icons/light/subtitle-selected.svg</file>
-        <file>resources/icons/logo.svg</file>
-        <file>resources/icons/logo-big.svg</file>
         <file>resources/icons/light/mini-init-splash.svg</file>
         <file>resources/icons/dark/mini-init-splash.svg</file>
         <file>resources/icons/light/init-splash.svg</file>
@@ -157,6 +155,9 @@
         <file>resources/icons/dark/info_close_dark.svg</file>
         <file>resources/icons/light/info_close_light.svg</file>
         <file>resources/icons/icon_toast_sucess.svg</file>
+        <file>resources/icons/logo-big.svg</file>
+        <file>resources/icons/logo.svg</file>
+        <file>resources/icons/dark/init-splash-bac.svg</file>
     </qresource>
     <qresource prefix="/dark">
         <file alias="dmr::NotificationWidget.theme">resources/qss/dark/dmr--NotificationWidget.theme</file>

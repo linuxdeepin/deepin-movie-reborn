@@ -1,4 +1,4 @@
-/* 
+/*
  * (c) 2017, Deepin Technology Co., Ltd. <support@deepin.org>
  *
  * This program is free software; you can redistribute it and/or
@@ -28,7 +28,7 @@
  * files in the program, then also delete it here.
  */
 #ifndef _DMR_MPV_GLWIDGET_H
-#define _DMR_MPV_GLWIDGET_H 
+#define _DMR_MPV_GLWIDGET_H
 
 #include <QtWidgets>
 #include <mpv/opengl_cb.h>
@@ -73,6 +73,7 @@ private:
     QOpenGLVertexArrayObject _vao;
     QOpenGLBuffer _vbo;
     QOpenGLTexture *_darkTex {nullptr};
+//    QOpenGLTexture *_darkTexbac {nullptr};
     QOpenGLTexture *_lightTex {nullptr};
     QOpenGLShaderProgram *_glProg {nullptr};
 
@@ -89,6 +90,7 @@ private:
     QOpenGLShaderProgram *_glProgCorner {nullptr};
 
     QImage bg_dark;
+//    QImage bg_dark_bac;
     QImage bg_light;
 
     void updateVbo();

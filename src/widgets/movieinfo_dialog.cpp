@@ -1,4 +1,4 @@
-/* 
+/*
  * (c) 2017, Deepin Technology Co., Ltd. <support@deepin.org>
  *
  * This program is free software; you can redistribute it and/or
@@ -36,8 +36,8 @@
 DWIDGET_USE_NAMESPACE
 
 namespace dmr {
-MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo& pif)
-    :DAbstractDialog(nullptr)
+MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
+    : DAbstractDialog(nullptr)
 {
     setFixedSize(300, 441);
     setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint);
@@ -49,12 +49,12 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo& pif)
     layout->setContentsMargins(0, 0, 0, 10);
     setLayout(layout);
 
-    DImageButton* closeBt = new DImageButton(this);
+    DImageButton *closeBt = new DImageButton(this);
     closeBt->setFixedSize(50, 50);
     connect(closeBt, &DImageButton::clicked, this, &MovieInfoDialog::close);
     layout->addWidget(closeBt, 0, Qt::AlignTop | Qt::AlignRight);
 
-    const auto& mi = pif.mi;
+    const auto &mi = pif.mi;
 
     auto *ml = new QVBoxLayout;
     ml->setContentsMargins(10, 0, 10, 0);
@@ -72,7 +72,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo& pif)
         QSize sz(220, 128);
         sz *= dpr;
         auto img = pif.thumbnail.scaledToWidth(sz.width(), Qt::SmoothTransformation);
-        cover = img.copy(0, (img.height()-sz.height())/2, sz.width(), sz.height());
+        cover = img.copy(0, (img.height() - sz.height()) / 2, sz.width(), sz.height());
         cover.setDevicePixelRatio(dpr);
     }
     cover = utils::MakeRoundedPixmap(cover, 8, 8);
@@ -139,10 +139,9 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo& pif)
     auto w = fm.width(mi.filePath);
     if (w > 360) {
         auto fp = utils::ElideText(mi.filePath, {200, 40}, QTextOption::WordWrap,
-                tmp->font(), Qt::ElideMiddle, fm.height(), 150);
+                                   tmp->font(), Qt::ElideMiddle, fm.height(), 150);
         ADD_ROW(MV_FILE_PATH, fp);
-    }
-    else {
+    } else {
         ADD_ROW(MV_FILE_PATH, mi.filePath);
     }
 
@@ -151,25 +150,23 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo& pif)
 
 #undef ADD_ROW
 
-    connect(DApplicationHelper::instance(), &DApplicationHelper::themeTypeChanged, this, [=]{
+    connect(DApplicationHelper::instance(), &DApplicationHelper::themeTypeChanged, this, [ = ] {
         nm->setForegroundRole(DPalette::TextTitle);
         title->setForegroundRole(DPalette::TextTitle);
     });
 
     DPalette pal_this = DApplicationHelper::instance()->palette(this);
-    if(DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
+    if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
         pal_this.setBrush(DPalette::Window, QBrush(QColor(248, 248, 248, 0.8)));
         this->setPalette(pal_this);
         closeBt->setNormalPic(INFO_CLOSE_LIGHT);
         infoRect->setInfoBgTheme(lightTheme);
-    }
-    else if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
+    } else if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
         pal_this.setBrush(DPalette::Window, QBrush(QColor(37, 37, 37, 0.8)));
         this->setPalette(pal_this);
         closeBt->setNormalPic(INFO_CLOSE_DARK);
         infoRect->setInfoBgTheme(darkTheme);
-    }
-    else {
+    } else {
         pal_this.setBrush(DPalette::Window, QBrush(QColor(248, 248, 248, 0.8)));
         this->setPalette(pal_this);
         closeBt->setNormalPic(INFO_CLOSE_LIGHT);
@@ -203,8 +200,7 @@ void InfoBottom::paintEvent(QPaintEvent *ev)
     if (lightTheme == m_themeType) {
         pt.setPen(QColor(0, 0, 0, 20));
         pt.setBrush(QBrush(QColor(255, 255, 255, 255)));
-    }
-    else if (darkTheme == m_themeType) {
+    } else if (darkTheme == m_themeType) {
         pt.setPen(QColor(255, 255, 255, 20));
         pt.setBrush(QBrush(QColor(45, 45, 45, 250)));
     }

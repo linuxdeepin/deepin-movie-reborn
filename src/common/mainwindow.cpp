@@ -623,7 +623,8 @@ MainWindow::MainWindow(QWidget *parent)
         QTimer::singleShot(100, [ = ]() {
             if (_engine->state() == PlayerEngine::Idle && !_miniMode && windowState() == Qt::WindowNoState) {
 //                this->setMinimumSize(QSize(1070, 680));
-                this->resize(850, 600);
+//                this->resize(850, 600);
+                this->resize(1070, 680);
             }
         });
     });
@@ -978,7 +979,8 @@ bool MainWindow::event(QEvent *ev)
     return DMainWindow::event(ev);
 }
 
-void MainWindow::leaveEvent(QEvent *) {
+void MainWindow::leaveEvent(QEvent *)
+{
     _autoHideTimer.stop();
     this->suspendToolsWindow();
 };
@@ -2030,19 +2032,18 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         notification.callWithArgumentList(QDBus::AutoDetect, "Notify", arg);
 
 #else
-        if(!popup){
-            popup = new DFloatingMessage(DFloatingMessage::TransientType,this);
+        if (!popup) {
+            popup = new DFloatingMessage(DFloatingMessage::TransientType, this);
         }
-        if(success){
+        if (success) {
             popup->setIcon(QIcon(":/resources/icons/icon_toast_sucess.svg"));
             popup->setMessage(tr("The screenshot is saved"));
-            popup->setGeometry(width()/2-50,height()-125,110,48);
+            popup->setGeometry(width() / 2 - 50, height() - 125, 110, 48);
             popup->show();
-        }
-        else {
+        } else {
             popup->setIcon(QIcon(":/resources/icons/fail.svg"));
             popup->setMessage(tr("Failed to save the screenshot"));
-            popup->setGeometry(width()/2-50,height()-125,150,48);
+            popup->setGeometry(width() / 2 - 50, height() - 125, 150, 48);
             popup->show();
         }
 #endif
@@ -2123,19 +2124,18 @@ void MainWindow::onBurstScreenshot(const QImage &frame, qint64 timestamp)
 
         if (ret == QDialog::Accepted) {
             auto poster_path = bsd.savedPosterPath();
-            if(!popup){
-                popup = new DFloatingMessage(DFloatingMessage::TransientType,this);
+            if (!popup) {
+                popup = new DFloatingMessage(DFloatingMessage::TransientType, this);
             }
-            if(QFileInfo::exists(poster_path)){
+            if (QFileInfo::exists(poster_path)) {
                 popup->setIcon(QIcon(":/resources/icons/icon_toast_sucess.svg"));
                 popup->setMessage(tr("The screenshot is saved"));
-                popup->setGeometry(width()/2-50,height()-125,110,48);
+                popup->setGeometry(width() / 2 - 50, height() - 125, 110, 48);
                 popup->show();
-            }
-            else {
+            } else {
                 popup->setIcon(QIcon(":/resources/icons/fail.svg"));
                 popup->setMessage(tr("Failed to save the screenshot"));
-                popup->setGeometry(width()/2-50,height()-125,150,48);
+                popup->setGeometry(width() / 2 - 50, height() - 125, 150, 48);
                 popup->show();
             }
         }
@@ -2437,8 +2437,8 @@ void MainWindow::checkMpvLogsChanged(const QString prefix, const QString text)
 {
     QString errorMessage(text);
     if (errorMessage.toLower().contains(QString("fail")) &&
-        (errorMessage.toLower().contains(QString("format")) || errorMessage.toLower().contains(QString("open")))
-    ) {
+            (errorMessage.toLower().contains(QString("format")) || errorMessage.toLower().contains(QString("open")))
+       ) {
         _nwComm->updateWithMessage(tr("Cannot open file or stream"));
     }
 }
@@ -2734,8 +2734,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *ev)
     if (!insideResizeArea(ev->globalPos()) && !_mouseMoved && (_playlist->state() != PlaylistWidget::Opened) ) {
         if (!insideToolsArea(ev->pos())) {
             _delayedMouseReleaseTimer.start(120);
-        }
-        else {
+        } else {
             if (_engine->state() == PlayerEngine::CoreState::Idle ) {
                 _delayedMouseReleaseTimer.start(120);
             }
@@ -2962,7 +2961,7 @@ void MainWindow::toggleUIMode()
         resize(geom.width(), geom.height());
 
         _miniPlayBtn->move(sz.width() - 12 - _miniPlayBtn->width(),
-                               sz.height() - 10 - _miniPlayBtn->height());
+                           sz.height() - 10 - _miniPlayBtn->height());
         _miniCloseBtn->move(sz.width() - 15 - _miniCloseBtn->width(), 10);
         _miniQuitMiniBtn->move(14, sz.height() - 10 - _miniQuitMiniBtn->height());
 

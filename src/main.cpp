@@ -120,7 +120,7 @@ int main(int argc, char *argv[])
     }
 
 
-    app.setWindowIcon(QIcon(":/resources/icons/logo.svg"));
+//    app.setWindowIcon(QIcon(":/resources/icons/logo.svg"));
     app.setApplicationDisplayName(QObject::tr("Movie"));
     app.setAttribute(Qt::AA_DontCreateNativeWidgetSiblings, true);
 //    app.setApplicationVersion(DApplication::buildVersion("20190830"));
@@ -131,7 +131,8 @@ int main(int argc, char *argv[])
 
     dmr::MainWindow mw;
 //    mw.setMinimumSize(QSize(1070, 680));
-    mw.resize(850, 600);
+//    mw.resize(850, 600);
+    mw.resize(1070, 680);
     utils::MoveToCenter(&mw);
     mw.show();
 

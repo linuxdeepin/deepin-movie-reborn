@@ -81,30 +81,30 @@ public:
 protected:
     bool eventFilter(QObject *obj, QEvent *event) {
         switch (event->type()) {
-            case QEvent::ToolTip: {
-                QHelpEvent *he = static_cast<QHelpEvent *>(event);
-                auto tip = obj->property("HintWidget").value<Tip*>();
-                auto btn = tip->property("for").value<QWidget*>();
-                tip->setText(btn->toolTip());
-                tip->show();
-                tip->raise();
-                tip->adjustSize();
+        case QEvent::ToolTip: {
+            QHelpEvent *he = static_cast<QHelpEvent *>(event);
+            auto tip = obj->property("HintWidget").value<Tip *>();
+            auto btn = tip->property("for").value<QWidget *>();
+            tip->setText(btn->toolTip());
+            tip->show();
+            tip->raise();
+            tip->adjustSize();
 
-                QPoint pos = btn->parentWidget()->mapToParent(btn->pos());
-                pos.rx() = pos.x() + (btn->width() - tip->width())/2 + 10;
-                pos.ry() = tip->parentWidget()->rect().bottom() - tip->height() - 83;
-                tip->move(pos);
-                return true;
-            }
+            QPoint pos = btn->parentWidget()->mapToParent(btn->pos());
+            pos.rx() = pos.x() + (btn->width() - tip->width()) / 2 + 10;
+            pos.ry() = tip->parentWidget()->rect().bottom() - tip->height() - 83;
+            tip->move(pos);
+            return true;
+        }
 
-            case QEvent::Leave: {
-                auto parent = obj->property("HintWidget").value<Tip *>();
-                parent->hide();
-                event->ignore();
+        case QEvent::Leave: {
+            auto parent = obj->property("HintWidget").value<Tip *>();
+            parent->hide();
+            event->ignore();
 
-            }
-            default:
-                break;
+        }
+        default:
+            break;
         }
         // standard event processing
         return QObject::eventFilter(obj, event);
@@ -677,14 +677,19 @@ public:
 
 //        setWidth(ThumbnailWorker::thumbSize().width());
 //        setHeight(ThumbnailWorker::thumbSize().height());
-        setShadowBlurRadius(2);
-        setRadius(2);
+//        resize(QSize(106, 66));
+//        setShadowBlurRadius(2);
+//        setRadius(2);
+        setShadowBlurRadius(8);
+        setRadius(8);
         setBorderWidth(1);
-        setBorderColor(QColor(0, 0, 0, 255));
+        setBorderColor(QColor(255, 255, 255, 26));
+
         setShadowYOffset(4);
         setShadowXOffset(0);
-        setArrowWidth(18);
-        setArrowHeight(10);
+        setShadowBlurRadius(6);
+//        setArrowWidth(18);
+//        setArrowHeight(10);
 //        DPalette pa_cb = DApplicationHelper::instance()->palette(this);
 //        pa_cb.setBrush(QPalette::Background, QColor(0,129,255,1));
 //        pa_cb.setBrush(QPalette::Dark, QColor(0,129,255,1));
@@ -692,7 +697,8 @@ public:
         setBackgroundColor(QColor(0,129,255,255));
 
         auto *l = new QVBoxLayout;
-        l->setContentsMargins(0, 0, 0, 10);
+//        l->setContentsMargins(0, 0, 0, 10);
+        l->setContentsMargins(0, 0, 0, 0);
 
         _thumb = new QLabel(this);
         //_thumb->setFixedSize(ThumbnailWorker::thumbSize());
@@ -786,6 +792,9 @@ protected slots:
     }
 
 protected:
+    void paintEvent(QPaintEvent *e) Q_DECL_OVERRIDE{
+        DArrowRectangle::paintEvent(e);
+    }
     void leaveEvent(QEvent *e) override
     {
         emit leavePreview();
@@ -793,8 +802,9 @@ protected:
 
     void showEvent(QShowEvent *se) override
     {
-        _time->move((_timebg->width() - _time->width())/2, (_timebg->height() - _time->height())/2);
-        _timebg->move((_thumb->width() - _timebg->width())/2, this->height() - _timebg->height() - 10);
+        _time->move((_timebg->width() - _time->width()) / 2, (_timebg->height() - _time->height()) / 2);
+        _timebg->move((_thumb->width() - _timebg->width()) / 2, this->height() - _timebg->height() - 10);
+        DArrowRectangle::showEvent(se);
     }
 
 private:
@@ -804,8 +814,10 @@ private:
         pixmap = pixmap.scaled(size * dpr, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
         pixmap.setDevicePixelRatio(dpr);
         _thumb->setFixedSize(size);
-        this->setFixedWidth(_thumb->width());
-        this->setFixedHeight(_thumb->height()+10);
+//        this->setFixedWidth(_thumb->width());
+//        this->setFixedHeight(_thumb->height() + 10);
+        this->setFixedWidth(_thumb->width() - 2);
+        this->setFixedHeight(_thumb->height());
     }
 
 private:
@@ -1382,26 +1394,25 @@ void ToolboxProxy::setup()
     _nextBtn->setToolTip(tr("Next"));
 
     auto th = new TooltipHandler(this);
-    QWidget* btns[] = {
+    QWidget *btns[] = {
         _playBtn, _prevBtn, _nextBtn, _subBtn, _fsBtn, _listBtn
     };
     QString hints[] = {
-           tr("Play/Pause"), tr("Previous"), tr("Next"),
-           tr("Subtitles"), tr("Fullscreen"), tr("Playlist")
+        tr("Play/Pause"), tr("Previous"), tr("Next"),
+        tr("Subtitles"), tr("Fullscreen"), tr("Playlist")
     };
     QString attrs[] = {
         tr("play"), tr("prev"), tr("next"),
         tr("sub"), tr("fs"), tr("list")
     };
 
-    for (unsigned int i = 0; i < sizeof(btns)/sizeof(btns[0]); i++) {
-        if (i < sizeof(btns)/sizeof(btns[0])/2) {
+    for (unsigned int i = 0; i < sizeof(btns) / sizeof(btns[0]); i++) {
+        if (i < sizeof(btns) / sizeof(btns[0]) / 2) {
             auto t = new Tip(QPixmap(), hints[i], parentWidget());
-            t->setProperty("for", QVariant::fromValue<QWidget*>(btns[i]));
+            t->setProperty("for", QVariant::fromValue<QWidget *>(btns[i]));
             btns[i]->setProperty("HintWidget", QVariant::fromValue<QWidget *>(t));
             btns[i]->installEventFilter(th);
-        }
-        else {
+        } else {
             auto *btn = dynamic_cast<ToolButton *>(btns[i]);
             btn->setTooTipText(hints[i]);
             btn->setProperty("TipId", attrs[i]);
@@ -1827,7 +1838,7 @@ void ToolboxProxy::buttonEnter()
 {
     if (!isVisible()) return;
 
-    ToolButton *btn = qobject_cast<ToolButton*>(sender());
+    ToolButton *btn = qobject_cast<ToolButton *>(sender());
     QString id = btn->property("TipId").toString();
 
     if (id == "sub" || id == "fs" || id == "list") {
@@ -1840,7 +1851,7 @@ void ToolboxProxy::buttonLeave()
 {
     if (!isVisible()) return;
 
-    ToolButton *btn = qobject_cast<ToolButton*>(sender());
+    ToolButton *btn = qobject_cast<ToolButton *>(sender());
     QString id = btn->property("TipId").toString();
 
     if (id == "sub" || id == "fs" || id == "list") {
@@ -1949,13 +1960,11 @@ void ToolboxProxy::updateTimeLabel()
 
 void ToolboxProxy::updateToolTipTheme(ToolButton *btn)
 {
-    if(DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
+    if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
         btn->changeTheme(lightTheme);
-    }
-    else if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
+    } else if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
         btn->changeTheme(darkTheme);
-    }
-    else {
+    } else {
         btn->changeTheme(lightTheme);
     }
 }
@@ -1968,11 +1977,11 @@ void ToolboxProxy::setViewProgBarWidth()
 void ToolboxProxy::setPlaylist(PlaylistWidget *playlist)
 {
     _playlist = playlist;
-    connect(_playlist,&PlaylistWidget::stateChange,this,[=](){
-        if (_playlist->state() == PlaylistWidget::State::Opened){
+    connect(_playlist, &PlaylistWidget::stateChange, this, [ = ]() {
+        if (_playlist->state() == PlaylistWidget::State::Opened) {
             _bot_spec->show();
             _listBtn->setChecked(true);
-        }else {
+        } else {
             _listBtn->setChecked(false);
             _bot_spec->hide();
         }

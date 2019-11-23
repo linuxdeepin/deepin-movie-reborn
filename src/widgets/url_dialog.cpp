@@ -1,4 +1,4 @@
-/* 
+/*
  * (c) 2017, Deepin Technology Co., Ltd. <support@deepin.org>
  *
  * This program is free software; you can redistribute it and/or
@@ -36,10 +36,10 @@ DWIDGET_USE_NAMESPACE
 
 namespace dmr {
 UrlDialog::UrlDialog(QWidget *parent)
-    :DDialog(parent)
+    : DDialog(parent)
 {
     addButtons(QStringList() << QApplication::translate("UrlDialog", "Cancel")
-                                << QApplication::translate("UrlDialog", "Confirm"));
+               << QApplication::translate("UrlDialog", "Confirm"));
     setOnButtonClickedClose(false);
     setDefaultButton(1);
     setIcon(QIcon(":/resources/icons/logo-big.svg"));
@@ -49,10 +49,10 @@ UrlDialog::UrlDialog(QWidget *parent)
     addContent(_le);
 
 
-    connect(getButton(0), &QAbstractButton::clicked, this, [=] {
+    connect(getButton(0), &QAbstractButton::clicked, this, [ = ] {
         done(QDialog::Rejected);
     });
-    connect(getButton(1), &QAbstractButton::clicked, this, [=] {
+    connect(getButton(1), &QAbstractButton::clicked, this, [ = ] {
         done(QDialog::Accepted);
     });
 
@@ -63,7 +63,7 @@ UrlDialog::UrlDialog(QWidget *parent)
 QUrl UrlDialog::url() const
 {
     auto u = QUrl(_le->text(), QUrl::StrictMode);
-    if (u.isLocalFile() || u.scheme().isEmpty()) 
+    if (u.isLocalFile() || u.scheme().isEmpty())
         return QUrl();
 
     if (!Settings::get().iscommonPlayableProtocol(u.scheme()))
@@ -72,7 +72,7 @@ QUrl UrlDialog::url() const
     return u;
 }
 
-void UrlDialog::showEvent(QShowEvent* se)
+void UrlDialog::showEvent(QShowEvent *se)
 {
     _le->setFocus();
 }

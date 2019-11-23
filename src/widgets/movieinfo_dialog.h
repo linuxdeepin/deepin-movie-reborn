@@ -1,4 +1,4 @@
-/* 
+/*
  * (c) 2017, Deepin Technology Co., Ltd. <support@deepin.org>
  *
  * This program is free software; you can redistribute it and/or
@@ -28,7 +28,7 @@
  * files in the program, then also delete it here.
  */
 #ifndef _DMR_MOVIE_INFO_DIALOG_H
-#define _DMR_MOVIE_INFO_DIALOG_H 
+#define _DMR_MOVIE_INFO_DIALOG_H
 
 #include <QtWidgets>
 #include <DDialog>
@@ -62,10 +62,12 @@ enum ThemeTYpe {
 
 namespace dmr {
 struct PlayItemInfo;
-class PosterFrame: public QLabel {
+class PosterFrame: public QLabel
+{
     Q_OBJECT
 public:
-    PosterFrame(QWidget* parent) :QLabel(parent) {
+    PosterFrame(QWidget *parent) : QLabel(parent)
+    {
         auto e = new QGraphicsDropShadowEffect(this);
         e->setColor(QColor(0, 0, 0, 76));
         e->setOffset(0, 3);
@@ -74,13 +76,15 @@ public:
     }
 };
 
-class MovieInfoDialog: public DAbstractDialog {
+class MovieInfoDialog: public DAbstractDialog
+{
     Q_OBJECT
 public:
-    MovieInfoDialog(const struct PlayItemInfo&);
+    MovieInfoDialog(const struct PlayItemInfo &);
 };
 
-class InfoBottom: public QWidget {
+class InfoBottom: public QWidget
+{
     Q_OBJECT
 public:
     InfoBottom();
