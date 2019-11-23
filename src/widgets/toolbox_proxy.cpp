@@ -1156,10 +1156,12 @@ void ToolboxProxy::setup()
     _timeLabel = new QLabel("");
 //    _timeLabel->setFixedWidth(_timeLabel->fontMetrics().width("99:99:99/99:99:99"));
     _timeLabel->setFont(DFontSizeManager::instance()->get(DFontSizeManager::T6));
-    _timeLabel->setFixedWidth(54);
+    _timeLabel->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    //_timeLabel->setFixedWidth(54);
 //    bot->addWidget(_timeLabel);
     _timeLabelend = new QLabel("");
-    _timeLabelend->setFixedWidth(54);
+    //_timeLabelend->setFixedWidth(54);
+    _timeLabelend->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 //    _timeLabel->setFixedWidth(_timeLabel->fontMetrics().width("99:99:99/99:99:99"));
 //    _timeLabelend->setFixedWidth(_timeLabelend->fontMetrics().width("99:99:99"));
     _timeLabelend->setFont(DFontSizeManager::instance()->get(DFontSizeManager::T6));
@@ -1195,7 +1197,7 @@ void ToolboxProxy::setup()
 
 
     QHBoxLayout *time = new QHBoxLayout();
-    time->setContentsMargins(17, 0, 5, 0);
+    time->setContentsMargins(10, 0, 10, 0);
     time->setSpacing(0);
     time->setAlignment(Qt::AlignLeft);
     bot->addLayout(time);
@@ -1252,7 +1254,7 @@ void ToolboxProxy::setup()
 //    bot->addStretch();
 
     QHBoxLayout *timeend = new QHBoxLayout();
-    timeend->setContentsMargins(10, 0, 5, 0);
+    timeend->setContentsMargins(10, 0, 10, 0);
     timeend->setSpacing(0);
     timeend->setAlignment(Qt::AlignRight);
     bot->addLayout(timeend);
