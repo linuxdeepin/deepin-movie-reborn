@@ -321,26 +321,30 @@ namespace dmr {
 //        bg_dark = utils::LoadHiDPIImage(":/resources/icons/dark/init-splash.svg");
 //        bg_light = utils::LoadHiDPIImage(":/resources/icons/light/init-splash.svg");
 
-        QPixmap pixmap(":/resources/icons/dark/init-splash-bac.svg");
-//        QImage img=utils::LoadHiDPIImage(":/resources/icons/dark/init-splash-bac.svg");
-//        pixmap=pixmap.fromImage(img);
-        QPixmap pixmap2(":/resources/icons/dark/init-splash.svg");
-//        QImage img1=utils::LoadHiDPIImage(":/resources/icons/dark/init-splash.svg");
-//        pixmap2=pixmap2.fromImage(img1);
+        QPixmap pixmap/*(":/resources/icons/dark/init-splash-bac.svg")*/;
+        QImage img=utils::LoadHiDPIImage(":/resources/icons/dark/init-splash-bac.svg");
+        pixmap=pixmap.fromImage(img);
+        QPixmap pixmap2/*(":/resources/icons/dark/init-splash.svg")*/;
+        QImage img1=utils::LoadHiDPIImage(":/resources/icons/dark/init-splash.svg");
+        pixmap2=pixmap2.fromImage(img1);
         QPainter p(&pixmap);
 //        p.drawPixmap((pixmap.width()-pixmap2.width())/2,(pixmap.height()-pixmap2.height())/2,pixmap2);
         p.drawPixmap(148,192,pixmap2);
         bg_dark=pixmap.toImage();
+        bg_dark.setDevicePixelRatio(qApp->devicePixelRatio());
 
         QPixmap pixmap3;
         QImage image(pixmap.size(),QImage::Format_Alpha8);
+        image.setDevicePixelRatio(qApp->devicePixelRatio());
         pixmap3=pixmap3.fromImage(image);
-        QPixmap pixmap4(":/resources/icons/dark/init-splash.svg");
-//        pixmap4=pixmap4.fromImage(img1);
+        QPixmap pixmap4/*(":/resources/icons/dark/init-splash.svg")*/;
+        QImage img2=utils::LoadHiDPIImage(":/resources/icons/dark/init-splash.svg");
+        pixmap4=pixmap4.fromImage(img2);
         QPainter p1(&pixmap3);
 //        p1.drawPixmap((pixmap.width()-pixmap4.width())/2,(pixmap.height()-pixmap4.height())/2,pixmap4);
         p1.drawPixmap(148,192,pixmap4);
         bg_light=pixmap3.toImage();
+        bg_light.setDevicePixelRatio(qApp->devicePixelRatio());
 //        bg_light = utils::LoadHiDPIImage(":/resources/icons/light/init-splash.svg");
     }
 
