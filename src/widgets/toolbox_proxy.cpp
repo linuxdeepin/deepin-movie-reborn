@@ -98,12 +98,13 @@ protected:
             }
 
             case QEvent::Leave: {
-                auto parent = obj->property("HintWidget").value<Tip*>();
+                auto parent = obj->property("HintWidget").value<Tip *>();
                 parent->hide();
                 event->ignore();
 
             }
-            default: break;
+            default:
+                break;
         }
         // standard event processing
         return QObject::eventFilter(obj, event);
@@ -1396,7 +1397,6 @@ void ToolboxProxy::setup()
     for (unsigned int i = 0; i < sizeof(btns)/sizeof(btns[0]); i++) {
         if (i < sizeof(btns)/sizeof(btns[0])/2) {
             auto t = new Tip(QPixmap(), hints[i], parentWidget());
-//            t->setFixedHeight(32);
             t->setProperty("for", QVariant::fromValue<QWidget*>(btns[i]));
             btns[i]->setProperty("HintWidget", QVariant::fromValue<QWidget *>(t));
             btns[i]->installEventFilter(th);
@@ -1530,7 +1530,9 @@ void ToolboxProxy::setup()
         }
     });
 }
-void ToolboxProxy::setViewProgBar(){
+
+void ToolboxProxy::setViewProgBar()
+{
     auto *viewProgBarLayout = new QHBoxLayout();
 //    viewProgBarLayout->setSpacing(1);
     auto width = _viewProgBar->width();
@@ -1658,9 +1660,6 @@ void ToolboxProxy::setProgress(int v)
 
 void ToolboxProxy::updateMovieProgress()
 {
-
-
-
     auto d = _engine->duration();
     auto e = _engine->elapsed();
     int v = 0;

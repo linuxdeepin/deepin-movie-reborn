@@ -43,7 +43,6 @@
 #include <DFrame>
 #include <DLabel>
 
-
 namespace Dtk
 {
 namespace Widget
