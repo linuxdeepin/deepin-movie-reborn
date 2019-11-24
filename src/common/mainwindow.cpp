@@ -872,7 +872,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(_engine, &PlayerEngine::onlineStateChanged, this, &MainWindow::checkOnlineState);
     connect(&OnlineSubtitle::get(), &OnlineSubtitle::onlineSubtitleStateChanged, this, &MainWindow::checkOnlineSubtitle);
-    connect(_engine, &PlayerEngine::mpvLogsChanged, this, &MainWindow::checkMpvLogsChanged);
+    connect(_engine, &PlayerEngine::mpvErrorLogsChanged, this, &MainWindow::checkErrorMpvLogsChanged);
 }
 
 void MainWindow::setupTitlebar()
@@ -2436,31 +2436,28 @@ void MainWindow::checkOnlineSubtitle(const OnlineSubtitle::FailReason reason)
     }
 }
 
-void MainWindow::checkMpvLogsChanged(const QString prefix, const QString text)
+void MainWindow::checkErrorMpvLogsChanged(const QString prefix, const QString text)
 {
     QString errorMessage(text);
     if (errorMessage.toLower().contains(QString("fail")) && errorMessage.toLower().contains(QString("open")))
         {
         _nwComm->updateWithMessage(tr("Cannot open file or stream"));
-        _engine->playlist().clear();
     }
     else if (errorMessage.toLower().contains(QString("fail")) &&
             (errorMessage.toLower().contains(QString("format")))
        ) {
         _nwComm->updateWithMessage(tr("File is corrupt"));
-        _engine->playlist().clear();
     }
     else if(errorMessage.toLower().contains(QString("couldn't open dvd device")))
     {
         _nwComm->updateWithMessage(tr("Please insert the CD into the drive"));
-        _engine->playlist().clear();
     }
     else if((errorMessage.toLower().contains(QString("can't")))&&
             (errorMessage.toLower().contains(QString("open"))))
     {
         _nwComm->updateWithMessage(tr("No video file found"));
-        _engine->playlist().clear();
     }
+    _engine->playlist().clear();
 }
 
 void MainWindow::hideEvent(QHideEvent *event)

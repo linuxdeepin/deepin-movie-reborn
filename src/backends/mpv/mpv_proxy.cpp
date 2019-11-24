@@ -434,7 +434,7 @@ void MpvProxy::processLogMessage(mpv_event_log_message* ev)
         case MPV_LOG_LEVEL_ERROR: 
         case MPV_LOG_LEVEL_FATAL: 
             qCritical() << QString("%1: %2").arg(ev->prefix).arg(ev->text);
-            emit mpvLogsChanged(QString(ev->prefix), QString(ev->text));
+            emit mpvErrorLogsChanged(QString(ev->prefix), QString(ev->text));
             break;
 
         case MPV_LOG_LEVEL_INFO: 

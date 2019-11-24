@@ -167,7 +167,7 @@ signals:
     void playlistChanged();
 
     void onlineStateChanged(const bool isOnline);
-    void mpvLogsChanged(const QString prefix, const QString text);
+    void mpvErrorLogsChanged(const QString prefix, const QString text);
 
 public slots:
     void play();

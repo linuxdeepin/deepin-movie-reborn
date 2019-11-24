@@ -141,7 +141,7 @@ Q_SIGNALS:
     //emit during burst screenshotting
     void notifyScreenshot(const QImage& frame, qint64 time);
 
-    void mpvLogsChanged(const QString prefix, const QString text);
+    void mpvErrorLogsChanged(const QString prefix, const QString text);
 
 public slots:
     virtual void play() = 0;
