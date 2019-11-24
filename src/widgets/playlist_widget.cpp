@@ -906,9 +906,14 @@ void PlaylistWidget::removeClickedItem(bool isShortcut)
 {
     if (isShortcut)
     {
-        int currentIndex = _engine->playlist().current();
-        _engine->playlist().remove(currentIndex);
-        return;
+        for (int i = 0; i < _playlist->count(); i++) {
+            auto piw = dynamic_cast<PlayItemWidget *>(_playlist->itemWidget(_playlist->item(i)));
+            qDebug()<<piw->getBIsSelect();
+            if(piw->getBIsSelect())
+            {
+                _engine->playlist().remove(i);
+            }
+        }
     }
 
     if (!_clickedItem) return;
