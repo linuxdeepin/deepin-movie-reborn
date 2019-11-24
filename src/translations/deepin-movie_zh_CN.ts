@@ -22,7 +22,7 @@
         <translation>打开文件夹</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2425"/>
+        <location filename="../common/mainwindow.cpp" line="2428"/>
         <source>Network disconnected</source>
         <translation>网络已断开</translation>
     </message>
@@ -515,15 +515,15 @@
     <name>dmr::MainWindow</name>
     <message>
         <location filename="../common/mainwindow.cpp" line="818"/>
-        <location filename="../common/mainwindow.cpp" line="1956"/>
-        <location filename="../common/mainwindow.cpp" line="3080"/>
+        <location filename="../common/mainwindow.cpp" line="1959"/>
+        <location filename="../common/mainwindow.cpp" line="3083"/>
         <source>Load successfully</source>
         <translation>载入字幕成功</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="818"/>
-        <location filename="../common/mainwindow.cpp" line="1956"/>
-        <location filename="../common/mainwindow.cpp" line="3080"/>
+        <location filename="../common/mainwindow.cpp" line="1959"/>
+        <location filename="../common/mainwindow.cpp" line="3083"/>
         <source>Load failed</source>
         <translation>载入字幕失败</translation>
     </message>
@@ -545,7 +545,7 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="1589"/>
         <location filename="../common/mainwindow.cpp" line="1611"/>
-        <location filename="../common/mainwindow.cpp" line="1951"/>
+        <location filename="../common/mainwindow.cpp" line="1954"/>
         <source>Open file</source>
         <translation>打开文件</translation>
     </message>
@@ -556,108 +556,123 @@
         <translation>所有视频(%1)</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1819"/>
+        <location filename="../common/mainwindow.cpp" line="1780"/>
+        <source>Stereo</source>
+        <translation>立体声</translation>
+    </message>
+    <message>
+        <location filename="../common/mainwindow.cpp" line="1785"/>
+        <source>Left channel</source>
+        <translation>左声道</translation>
+    </message>
+    <message>
+        <location filename="../common/mainwindow.cpp" line="1790"/>
+        <source>Right channel</source>
+        <translation>右声道</translation>
+    </message>
+    <message>
+        <location filename="../common/mainwindow.cpp" line="1822"/>
         <source>Muted</source>
         <translation>静音</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1822"/>
-        <location filename="../common/mainwindow.cpp" line="1834"/>
-        <location filename="../common/mainwindow.cpp" line="1844"/>
-        <location filename="../common/mainwindow.cpp" line="1851"/>
+        <location filename="../common/mainwindow.cpp" line="1825"/>
+        <location filename="../common/mainwindow.cpp" line="1837"/>
+        <location filename="../common/mainwindow.cpp" line="1847"/>
+        <location filename="../common/mainwindow.cpp" line="1854"/>
         <source>Volume: %1%</source>
         <translation>音量：%1%</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1916"/>
-        <location filename="../common/mainwindow.cpp" line="1924"/>
+        <location filename="../common/mainwindow.cpp" line="1919"/>
+        <location filename="../common/mainwindow.cpp" line="1927"/>
         <source>Subtitle %1: %2s</source>
         <translation>字幕%1：%2秒</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1917"/>
-        <location filename="../common/mainwindow.cpp" line="1925"/>
+        <location filename="../common/mainwindow.cpp" line="1920"/>
+        <location filename="../common/mainwindow.cpp" line="1928"/>
         <source>delayed</source>
         <translation>延迟</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1917"/>
-        <location filename="../common/mainwindow.cpp" line="1925"/>
+        <location filename="../common/mainwindow.cpp" line="1920"/>
+        <location filename="../common/mainwindow.cpp" line="1928"/>
         <source>advanced</source>
         <translation>提前</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1932"/>
-        <location filename="../common/mainwindow.cpp" line="1939"/>
-        <location filename="../common/mainwindow.cpp" line="1946"/>
+        <location filename="../common/mainwindow.cpp" line="1935"/>
+        <location filename="../common/mainwindow.cpp" line="1942"/>
+        <location filename="../common/mainwindow.cpp" line="1949"/>
         <source>Speed: %1x</source>
         <translation>播放速度：%1倍</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1953"/>
+        <location filename="../common/mainwindow.cpp" line="1956"/>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</source>
         <translation>字幕文件 (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2016"/>
+        <location filename="../common/mainwindow.cpp" line="2019"/>
         <source>View</source>
         <translation>查看</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2027"/>
+        <location filename="../common/mainwindow.cpp" line="2030"/>
         <source>Movie Screenshot</source>
         <translation>视频截图</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2028"/>
+        <location filename="../common/mainwindow.cpp" line="2031"/>
         <source>Saved to</source>
         <translation>保存到</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2040"/>
-        <location filename="../common/mainwindow.cpp" line="2132"/>
+        <location filename="../common/mainwindow.cpp" line="2043"/>
+        <location filename="../common/mainwindow.cpp" line="2135"/>
         <source>The screenshot is saved</source>
         <translation>已截图</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2045"/>
-        <location filename="../common/mainwindow.cpp" line="2137"/>
+        <location filename="../common/mainwindow.cpp" line="2048"/>
+        <location filename="../common/mainwindow.cpp" line="2140"/>
         <source>Failed to save the screenshot</source>
         <translation>截图失败</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2096"/>
+        <location filename="../common/mainwindow.cpp" line="2099"/>
         <source>Screenshot is working,please wait</source>
         <translation>剧情连拍中，请稍后</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2220"/>
-        <location filename="../common/mainwindow.cpp" line="3093"/>
+        <location filename="../common/mainwindow.cpp" line="2223"/>
+        <location filename="../common/mainwindow.cpp" line="3096"/>
         <source>Invalid file: %1</source>
         <translation>无效文件：%1</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2432"/>
+        <location filename="../common/mainwindow.cpp" line="2435"/>
         <source>No matching online subtitles</source>
         <translation>没有匹配的在线字幕</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2441"/>
+        <location filename="../common/mainwindow.cpp" line="2444"/>
         <source>Cannot open file or stream</source>
         <translation>无法播放</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2447"/>
+        <location filename="../common/mainwindow.cpp" line="2450"/>
         <source>File is corrupt</source>
         <translation>文件错误</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2452"/>
+        <location filename="../common/mainwindow.cpp" line="2455"/>
         <source>Please insert the CD into the drive</source>
         <translation>请将多媒体光盘插入驱动器</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2458"/>
+        <location filename="../common/mainwindow.cpp" line="2461"/>
         <source>No video file found</source>
         <translation>无视频文件</translation>
     </message>

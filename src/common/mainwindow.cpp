@@ -1777,14 +1777,17 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
 
     case ActionFactory::ActionKind::Stereo: {
         _engine->changeSoundMode(Backend::SoundMode::Stereo);
+        _nwComm->updateWithMessage(tr("Stereo"));
         break;
     }
     case ActionFactory::ActionKind::LeftChannel: {
         _engine->changeSoundMode(Backend::SoundMode::Left);
+        _nwComm->updateWithMessage(tr("Left channel"));
         break;
     }
     case ActionFactory::ActionKind::RightChannel: {
         _engine->changeSoundMode(Backend::SoundMode::Right);
+        _nwComm->updateWithMessage(tr("Right channel"));
         break;
     }
 
