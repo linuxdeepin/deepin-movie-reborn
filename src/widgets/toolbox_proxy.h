@@ -69,31 +69,9 @@ class ImageItem : public DLabel{
     Q_OBJECT
 public:
     ImageItem(QPixmap image ,bool isblack = false, QWidget *parent = 0):DLabel(parent){
-//        QImage image2 = image;
-//        if(isblack) image2 =GraizeImage(image);
-//        _pixmap=QPixmap::fromImage(image2.copy(image2.size().width()/2-4,0,8,50));
         _pixmap = image;
     };
 
-    QImage GraizeImage( const QImage& image ){
-        int w =image.width();
-        int h = image.height();
-        QImage iGray(w,h, QImage::Format_ARGB32);
-
-        for(int i=0; i<w;i++)
-        {
-            for(int j=0; j<h;j++)
-            {
-                QRgb pixel = image.pixel(i,j);
-                int gray = qGray(pixel);
-                QRgb grayPixel = qRgb(gray,gray,gray);
-                QColor color(gray,gray,gray,qAlpha(pixel));
-                iGray.setPixel(i,j,color.rgba());
-            }
-        }
-        return iGray;
-
-    }
 signals:
     void imageItemclicked(int index,int indexNow);
 protected:
@@ -238,7 +216,6 @@ signals:
     void finished();
 
 protected:
-    QImage GraizeImage( const QImage& image );
 
 private:
     PlayerEngine *_engine {nullptr};
