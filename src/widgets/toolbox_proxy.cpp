@@ -999,12 +999,28 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
         setAttribute(Qt::WA_NativeWindow);
     }
 
-//    QGraphicsDropShadowEffect* shadowEffect = new QGraphicsDropShadowEffect(this);
-//    shadowEffect->setOffset(0, 2);
-//    shadowEffect->setColor(QPalette::Shadow);
-//    shadowEffect->setBlurRadius(4);
-//    setGraphicsEffect(shadowEffect);
-
+    QGraphicsDropShadowEffect* shadowEffect = new QGraphicsDropShadowEffect(this);
+    shadowEffect->setOffset(0, 4);
+    shadowEffect->setBlurRadius(8);
+    shadowEffect->setColor(QColor(0, 0, 0, 0.1 * 255));
+    connect(DApplicationHelper::instance(), &DApplicationHelper::themeTypeChanged, this, [ = ] {
+        if (DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::LightType) {
+            shadowEffect->setColor(QColor(0, 0, 0, 0.1 * 255));
+            shadowEffect->setOffset(0, 4);
+            shadowEffect->setBlurRadius(8);
+        }
+        else if (DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::DarkType) {
+            shadowEffect->setColor(QColor(0, 0, 0, 0.2 * 255));
+            shadowEffect->setOffset(0, 2);
+            shadowEffect->setBlurRadius(4);
+        }
+        else {
+            shadowEffect->setColor(QColor(0, 0, 0, 0.1 * 255));
+            shadowEffect->setOffset(0, 4);
+            shadowEffect->setBlurRadius(8);
+        }
+    });
+    setGraphicsEffect(shadowEffect);
 
 
 //    DThemeManager::instance()->registerWidget(this);
@@ -1834,25 +1850,48 @@ void ToolboxProxy::paintEvent(QPaintEvent *pe)
     QRectF bgRect;
     bgRect.setSize(size());
     const QPalette pal = QGuiApplication::palette();//this->palette();
+    static int offset = 15;
 
     DGuiApplicationHelper::ColorType themeType = DGuiApplicationHelper::instance()->themeType();
-    QColor *bgColor;
-    if (themeType == DGuiApplicationHelper::LightType)
-        bgColor = new QColor(247, 247, 247, 240);
-    else if (themeType == DGuiApplicationHelper::DarkType)
-        bgColor = new QColor(32, 32, 32, 230);
-    else
-        bgColor = new QColor(247, 247, 247, 240);
+    QColor *bgColor, outBdColor, inBdColor;
+    if (themeType == DGuiApplicationHelper::LightType) {
+        outBdColor = QColor(0, 0, 0, 25);
+        inBdColor = QColor(247, 247, 247, 0.4 * 255);
+        bgColor = new QColor(247, 247, 247, 0.8 * 255);
+    }
+    else if (themeType == DGuiApplicationHelper::DarkType) {
+        outBdColor = QColor(0, 0, 0, 0.8 * 255);
+        inBdColor = QColor(255, 255, 255, 0.05 * 255);
+        bgColor = new QColor(32, 32, 32, 0.9 * 255);
+    }
+    else {
+        outBdColor = QColor(0, 0, 0, 25);
+        inBdColor = QColor(247, 247, 247, 0.4 * 255);
+        bgColor = new QColor(247, 247, 247, 0.8 * 255);
+    }
 
-    QPainterPath pp;
-    pp.addRoundedRect(bgRect, RADIUS_MV, RADIUS_MV);
-    painter.fillPath(pp, QColor(0,0,0,22));
+    {
+        QPainterPath pp;
+        pp.setFillRule(Qt::WindingFill);
+        QPen pen(outBdColor, 1);
+        painter.setPen(pen);
+        pp.addRoundedRect(bgRect, RADIUS_MV, RADIUS_MV);
+        painter.fillPath(pp, *bgColor);
+        painter.drawPath(pp);
+
+        painter.drawLine(offset, rect().y(), width() - offset, rect().y());
+        painter.drawLine(offset, height(), width() - offset, height());
+        painter.drawLine(rect().x(), offset, rect().x(), height() - offset);
+        painter.drawLine(width(), offset, width(), height() - offset);
+    }
 
     {
         auto view_rect = bgRect.marginsRemoved(QMargins(1, 1, 1, 1));
         QPainterPath pp;
+        pp.setFillRule(Qt::WindingFill);
+        painter.setPen(inBdColor);
         pp.addRoundedRect(view_rect, RADIUS_MV, RADIUS_MV);
-        painter.fillPath(pp, *bgColor);
+        painter.drawPath(pp);
     }
 
     QWidget::paintEvent(pe);
