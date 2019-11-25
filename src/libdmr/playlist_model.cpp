@@ -565,6 +565,7 @@ void PlaylistModel::remove(int pos)
 
     qDebug() << _last << _current;
     _userRequestingItem = false;
+    savePlaylist();
 }
 
 void PlaylistModel::stop()
@@ -957,6 +958,7 @@ void PlaylistModel::handleAsyncAppendResults(QList<PlayItemInfo>& fil)
             delayedAppendAsync(job);
         }
     });
+    savePlaylist();
 }
 
 bool PlaylistModel::hasPendingAppends()
