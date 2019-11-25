@@ -678,7 +678,7 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     leftinfo->addWidget(_title);
     leftinfo->addSpacing(4);
     leftinfo->addWidget(_num);
-    leftinfo->addSpacing(8);
+    leftinfo->addSpacing(6);
 //    DPushButton *clearButton = new DPushButton(QIcon::fromTheme("dcc_clearlist"),tr("清空列表"),nullptr);
     DPushButton *clearButton = new DPushButton();
     clearButton->setIcon(QIcon::fromTheme("dcc_clearlist"));
