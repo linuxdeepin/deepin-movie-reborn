@@ -149,14 +149,12 @@ mpv_handle* MpvProxy::mpv_init()
             auto gl_int = qgetenv("QT_XCB_GL_INTERGRATION");
             if (gl_int == "xcb_egl") {
                 interop = "vaapi-egl";
-            } else if (gl_int == "xcb_glx") {
-                interop = "vaapi-glx";
             } else {
-                interop = "auto";
+                interop = "vaapi-glx";
             }
         }
-        set_property(h, "gpu-hwdec-interop", interop.toUtf8().constData());
-        qDebug() << "set gpu-hwdec-interop = " << interop;
+        set_property(h, "opengl-hwdec-interop", interop.toUtf8().constData());
+        qDebug() << "set opengl-hwdec-interop = " << interop;
     }
     set_property(h, "hwdec", "auto");
 
@@ -168,9 +166,6 @@ mpv_handle* MpvProxy::mpv_init()
 
             auto interop = QString::fromUtf8("auto");
             switch (CompositingManager::get().interopKind()) {
-                case OpenGLInteropKind::INTEROP_AUTO:
-                    interop = QString::fromUtf8("auto"); break;
-
                 case OpenGLInteropKind::INTEROP_VAAPI_EGL:
                     interop = QString::fromUtf8("vaapi-egl"); break;
 
@@ -192,11 +187,11 @@ mpv_handle* MpvProxy::mpv_init()
             }
 
             if (!disable) {
-                set_property(h, "gpu-hwdec-interop", interop.toUtf8().constData());
-                qDebug() << "-------- set gpu-hwdec-interop = " << interop 
+                set_property(h, "opengl-hwdec-interop", interop.toUtf8().constData());
+                qDebug() << "-------- set opengl-hwdec-interop = " << interop 
                     << (forced.isEmpty() ? "[detected]" : "[forced]");
             } else {
-                qDebug() << "-------- gpu-hwdec-interop is disabled by user";
+                qDebug() << "-------- opengl-hwdec-interop is disabled by user";
             }
         }
         set_property(h, "hwdec", "auto");
@@ -208,13 +203,10 @@ mpv_handle* MpvProxy::mpv_init()
     //set_property(h, "no-keepaspect", "true");
 
     if (composited) {
-        //vo=gpu seems broken, it'll makes video output into a seperate window
-        //set_property(h, "vo", "gpu");
-        set_property(h, "vo", "libmpv");
-        set_property(h, "vd-lavc-dr", "yes");
+        set_property(h, "vo", "opengl-cb");
 
     } else {
-        set_property(h, "vo", "gpu,xv,x11");
+        set_property(h, "vo", "opengl,xv,x11");
         set_property(h, "wid", this->winId());
     }
 
@@ -390,7 +382,7 @@ void MpvProxy::handle_mpv_events()
                     auto w = get_property(_handle, "width").toInt();
                     auto h = get_property(_handle, "height").toInt();
 
-                    qDebug() << "hwdec-interop" << get_property(_handle, "gpu-hwdec-interop");
+                    qDebug() << "hwdec-interop" << get_property(_handle, "hwdec-interop");
                 }
                 setState(PlayState::Playing); //might paused immediately
                 emit fileLoaded();

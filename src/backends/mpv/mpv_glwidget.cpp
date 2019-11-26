@@ -162,7 +162,6 @@ namespace dmr {
             context()->swapBuffers(context()->surface());
             doneCurrent();
         } else {
-            mpv_render_context_update(_render_ctx);
             update();
         }
     }
@@ -170,13 +169,18 @@ namespace dmr {
     void MpvGLWidget::onFrameSwapped()
     {
         //qDebug() << "frame swapped";
-        mpv_render_context_report_swap(_render_ctx);
+        mpv_opengl_cb_report_flip(_gl_ctx, 0);
     }
 
     MpvGLWidget::MpvGLWidget(QWidget *parent, mpv::qt::Handle h)
         :QOpenGLWidget(parent), _handle(h) { 
         setUpdateBehavior(QOpenGLWidget::NoPartialUpdate);
 
+        _gl_ctx = (mpv_opengl_cb_context*) mpv_get_sub_api(h, MPV_SUB_API_OPENGL_CB);
+        if (!_gl_ctx) {
+            std::runtime_error("can not init mpv gl");
+        }
+        mpv_opengl_cb_set_update_callback(_gl_ctx, gl_update_callback, this);
         connect(this, &QOpenGLWidget::frameSwapped, 
                 this, &MpvGLWidget::onFrameSwapped, Qt::DirectConnection);
 
@@ -217,11 +221,12 @@ namespace dmr {
 
         if (_fbo) delete _fbo;
 
-        if (_render_ctx) mpv_render_context_set_update_callback(_render_ctx, NULL, NULL);
+        if (_gl_ctx)
+            mpv_opengl_cb_set_update_callback(_gl_ctx, NULL, NULL);
         // Until this call is done, we need to make sure the player remains
         // alive. This is done implicitly with the mpv::qt::Handle instance
         // in this class.
-        mpv_render_context_free(_render_ctx);
+        mpv_opengl_cb_uninit_gl(_gl_ctx);
         doneCurrent();
     }
 
@@ -373,27 +378,8 @@ namespace dmr {
 #endif
 #endif
 
-        mpv_opengl_init_params gl_init_params = { get_proc_address, NULL, NULL };
-        int adv_control = 1;
-        mpv_render_param params[] = {
-            {MPV_RENDER_PARAM_API_TYPE, const_cast<char*>(MPV_RENDER_API_TYPE_OPENGL)},
-            {MPV_RENDER_PARAM_OPENGL_INIT_PARAMS, &gl_init_params},
-
-            /*
-             *    which saves a copy per video frame ("vd-lavc-dr" option
-             *    needs to be enabled, and the rendering backend as well as the
-             *    underlying GPU API/driver needs to have support for it).
-             **/
-            {MPV_RENDER_PARAM_ADVANCED_CONTROL, &adv_control},
-            {MPV_RENDER_PARAM_X11_DISPLAY, reinterpret_cast<void*>(QX11Info::display())},
-            {MPV_RENDER_PARAM_INVALID, nullptr}
-        };
-        if (mpv_render_context_create(&_render_ctx, _handle, params) < 0) {
-            std::runtime_error("can not init mpv gl");
-        }
-
-        mpv_render_context_set_update_callback(_render_ctx, gl_update_callback,
-                reinterpret_cast<void*>(this));
+        if (mpv_opengl_cb_init_gl(_gl_ctx, "GL_MP_MPGetNativeDisplay", get_proc_address, NULL) < 0)
+            throw std::runtime_error("could not initialize OpenGL");
     }
 
     void MpvGLWidget::updateMovieFbo()
@@ -619,38 +605,15 @@ namespace dmr {
 
             auto dpr = qApp->devicePixelRatio();
             QSize scaled = size() * dpr;
-            int flip = 1;
 
             if (!_doRoundedClipping) {
-                mpv_opengl_fbo fbo {
-                    static_cast<int>(defaultFramebufferObject()), scaled.width(), scaled.height(), 0
-                };
-
-                mpv_render_param params[] = {
-                    {MPV_RENDER_PARAM_OPENGL_FBO, &fbo},
-                    {MPV_RENDER_PARAM_FLIP_Y, &flip},
-                    {MPV_RENDER_PARAM_INVALID, nullptr}
-                };
-
-                mpv_render_context_render(_render_ctx, params);
+                mpv_opengl_cb_draw(_gl_ctx, defaultFramebufferObject(), scaled.width(), -scaled.height());
             } else {
                 f->glEnable(GL_BLEND);
                 f->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
                 _fbo->bind();
-
-                mpv_opengl_fbo fbo {
-                    static_cast<int>(_fbo->handle()), scaled.width(), scaled.height(), 0
-                };
-
-                mpv_render_param params[] = {
-                    {MPV_RENDER_PARAM_OPENGL_FBO, &fbo},
-                    {MPV_RENDER_PARAM_FLIP_Y, &flip},
-                    {MPV_RENDER_PARAM_INVALID, nullptr}
-                };
-
-                mpv_render_context_render(_render_ctx, params);
-
+                mpv_opengl_cb_draw(_gl_ctx, _fbo->handle(), scaled.width(), -scaled.height());
                 _fbo->release();
 
                 {

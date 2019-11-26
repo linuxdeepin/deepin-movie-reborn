@@ -52,7 +52,7 @@ CommandLineManager::CommandLineManager()
     addOptions({
         {{"V", "verbose"}, ("show detail log message")},
         {"VV", ("dump all debug message")},
-        {{"c", "gpu"}, ("use gpu interface [on/off/auto]"), "bool", "auto"},
+        {{"c", "opengl-cb"}, ("use opengl-cb interface [on/off/auto]"), "bool", "auto"},
         {{"o", "override-config"}, ("override config for libmpv"), "file", ""},
         {"dvd-device", ("specify dvd playing device or file"), "device", "/dev/sr0"},
     });
