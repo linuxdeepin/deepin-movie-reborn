@@ -329,7 +329,7 @@ namespace dmr {
         pixmap2=pixmap2.fromImage(img1);
         QPainter p(&pixmap);
 //        p.drawPixmap((pixmap.width()-pixmap2.width())/2,(pixmap.height()-pixmap2.height())/2,pixmap2);
-        p.drawPixmap(148,192,pixmap2);
+        p.drawPixmap(98,127,pixmap2);
         bg_dark=pixmap.toImage();
         bg_dark.setDevicePixelRatio(qApp->devicePixelRatio());
 
@@ -342,7 +342,7 @@ namespace dmr {
         pixmap4=pixmap4.fromImage(img2);
         QPainter p1(&pixmap3);
 //        p1.drawPixmap((pixmap.width()-pixmap4.width())/2,(pixmap.height()-pixmap4.height())/2,pixmap4);
-        p1.drawPixmap(148,192,pixmap4);
+        p1.drawPixmap(98,127,pixmap4);
         bg_light=pixmap3.toImage();
         bg_light.setDevicePixelRatio(qApp->devicePixelRatio());
 //        bg_light = utils::LoadHiDPIImage(":/resources/icons/light/init-splash.svg");
