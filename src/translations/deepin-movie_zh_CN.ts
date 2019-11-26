@@ -201,7 +201,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="40"/>
         <source>Movie info</source>
-        <translation>电影信息</translation>
+        <translation>影片信息</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="41"/>
@@ -216,7 +216,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="43"/>
         <source>Burst screenshot</source>
-        <translation>连拍截图</translation>
+        <translation>剧情连拍</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="44"/>
@@ -265,7 +265,7 @@
     <message>
         <location filename="../widgets/url_dialog.cpp" line="42"/>
         <source>Confirm</source>
-        <translation>确认</translation>
+        <translation>确定</translation>
     </message>
     <message>
         <location filename="../widgets/url_dialog.cpp" line="46"/>
@@ -632,13 +632,13 @@
         <location filename="../common/mainwindow.cpp" line="2043"/>
         <location filename="../common/mainwindow.cpp" line="2135"/>
         <source>The screenshot is saved</source>
-        <translation>已截图</translation>
+        <translation>截图已保存</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2048"/>
         <location filename="../common/mainwindow.cpp" line="2140"/>
         <source>Failed to save the screenshot</source>
-        <translation>截图失败</translation>
+        <translation>截图保存失败</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2099"/>
@@ -664,7 +664,7 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="2450"/>
         <source>File is corrupt</source>
-        <translation>文件错误</translation>
+        <translation>无效文件</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2455"/>
