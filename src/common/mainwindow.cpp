@@ -1341,7 +1341,14 @@ void MainWindow::reflectActionToUI(ActionFactory::ActionKind kd)
             (*p)->setEnabled(false);
             if (kd == ActionFactory::TogglePlaylist) {
                 // here what we read is the last state of playlist
-                (*p)->setChecked(_playlist->state() != PlaylistWidget::Opened);
+                if(_playlist->state() != PlaylistWidget::Opened)
+                {
+                    (*p)->setChecked(false);
+                }
+                else {
+                    (*p)->setChecked(true);
+                }
+//                (*p)->setChecked(_playlist->state() != PlaylistWidget::Opened);
             } else {
                 (*p)->setChecked(!(*p)->isChecked());
             }

@@ -813,13 +813,13 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
         QTimer::singleShot(20, [ = ]() {
             if (_mouseItem) {
                 _clickedItem = _mouseItem;
-                ((PlayItemWidget *)_mouseItem)->setHovered(false);
+                ((PlayItemWidget *)_mouseItem)->setHovered(true);
             }
         });
     });
     connect(ActionFactory::get().playlistContextMenu(), &DMenu::aboutToHide, [ = ]() {
         if (_mouseItem) {
-            ((PlayItemWidget *)_mouseItem)->setHovered(true);
+            ((PlayItemWidget *)_mouseItem)->setHovered(false);
         }
     });
 
