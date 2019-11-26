@@ -1287,7 +1287,7 @@ void MainWindow::updateActionsState()
                 v = v && _engine->playlist().count();
                 if (v) {
                     auto pif = _engine->playlist().currentInfo();
-                    v = v && pif.loaded && pif.url.isLocalFile();
+                    v = v && pif.loaded;
                 }
             }
             break;

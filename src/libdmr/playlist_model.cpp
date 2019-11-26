@@ -432,6 +432,59 @@ PlaylistModel::~PlaylistModel()
 #endif
 }
 
+qint64 PlaylistModel::getUrlFileTotalSize(QUrl url, int tryTimes) const
+{
+    qint64 size = -1;
+
+    if (tryTimes <= 0)
+    {
+        tryTimes = 1;
+    }
+
+    do
+    {
+        QNetworkAccessManager manager;
+        // 事件循环，等待请求文件头信息结束;
+        QEventLoop loop;
+        // 超时，结束事件循环;
+        QTimer timer;
+
+        //发出请求，获取文件地址的头部信息;
+        QNetworkReply *reply = manager.head(QNetworkRequest(QUrl(url)));//QNetworkRequest(url)
+        if (!reply)
+            continue;
+
+        QObject::connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
+        QObject::connect(&timer, SIGNAL(timeout()), &loop, SLOT(quit()));
+
+        timer.start(5000);
+        loop.exec();
+
+        if (reply->error() != QNetworkReply::NoError)
+        {
+            qDebug() << reply->errorString();
+            continue;
+        }
+        QVariant var = reply->header(QNetworkRequest::ContentLengthHeader);
+        size = var.toLongLong();
+        reply->deleteLater();
+//        qDebug() << reply->hasRawHeader("Content-Encoding ");
+//        qDebug() << reply->hasRawHeader("Content-Language");
+//        qDebug() << reply->hasRawHeader("Content-Length");
+//        qDebug() << reply->hasRawHeader("Content-Type");
+//        qDebug() << reply->hasRawHeader("Last-Modified");
+//        qDebug() << reply->hasRawHeader("Expires");
+
+        break;
+
+
+    } while (tryTimes--);
+
+
+
+    return size;
+}
+
 void PlaylistModel::clearPlaylist()
 {
     QSettings cfg(_playlistFile, QSettings::NativeFormat);
@@ -1049,7 +1102,7 @@ struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl& url, const QFil
     struct MovieInfo mi;
 
     auto ci = PersistentManager::get().loadFromCache(url);
-    if (ci.mi_valid) {
+    if (ci.mi_valid&&url.isLocalFile()) {
         mi = ci.mi;
         ok = true;
         qDebug() << "load cached MovieInfo" << mi;
@@ -1094,7 +1147,21 @@ struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl& url, const QFil
     if (ok && url.isLocalFile() && (!ci.mi_valid || !ci.thumb_valid)) {
         PersistentManager::get().save(pif);
     }
+    if(!url.isLocalFile()&&!url.scheme().startsWith("dvd")){
+        pif.mi.filePath = pif.url.path();
 
+        pif.mi.width = _engine->_current->width();
+        pif.mi.height = _engine->_current->height();
+        pif.mi.resolution = QString::number(_engine->_current->width())+"x"
+                +QString::number(_engine->_current->height());
+
+        pif.mi.duration = _engine->_current->duration();
+        auto suffix = pif.mi.title.mid(pif.mi.title.lastIndexOf('.'));
+        suffix.replace(QString("."),QString(""));
+        pif.mi.fileType = suffix;
+        pif.mi.fileSize = getUrlFileTotalSize(url,3);
+        pif.mi.filePath = url.toDisplayString();
+    }
     return pif;
 }
 

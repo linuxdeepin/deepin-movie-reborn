@@ -35,7 +35,7 @@
 #include <libffmpegthumbnailer/videothumbnailer.h>
 
 #include "utils.h"
-
+#include <QNetworkReply>
 namespace dmr {
 using namespace ffmpegthumbnailer;
 class PlayerEngine;
@@ -112,6 +112,8 @@ public:
 
     PlaylistModel(PlayerEngine* engine);
     ~PlaylistModel();
+
+    qint64 getUrlFileTotalSize(QUrl url, int tryTimes) const;
 
     void clear();
     void remove(int pos);
