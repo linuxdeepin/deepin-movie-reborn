@@ -957,7 +957,7 @@ void MpvProxy::seekForward(int secs)
     if (state() == PlayState::Stopped) return;
 
     //if (_pendingSeek) return;
-    QList<QVariant> args = { "seek", QVariant(secs), "relative+keyframes" };
+    QList<QVariant> args = { "seek", QVariant(secs), "relative+exact" };
     qDebug () << args;
     command_async(_handle, args, AsyncReplyTag::SEEK);
     _pendingSeek = true;
@@ -969,7 +969,7 @@ void MpvProxy::seekBackward(int secs)
 
     //if (_pendingSeek) return;
     if (secs > 0) secs = -secs;
-    QList<QVariant> args = { "seek", QVariant(secs), "relative+keyframes" };
+    QList<QVariant> args = { "seek", QVariant(secs), "relative+exact" };
     qDebug () << args;
     command_async(_handle, args, AsyncReplyTag::SEEK);
     _pendingSeek = true;
