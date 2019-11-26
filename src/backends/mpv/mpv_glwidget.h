@@ -31,7 +31,8 @@
 #define _DMR_MPV_GLWIDGET_H
 
 #include <QtWidgets>
-#include <mpv/opengl_cb.h>
+#include <mpv/render.h>
+#include <mpv/render_gl.h>
 #undef Bool
 #include <mpv/qthelper.hpp>
 #include <DGuiApplicationHelper>
@@ -65,7 +66,8 @@ protected slots:
 
 private:
     mpv::qt::Handle _handle;
-    mpv_opengl_cb_context *_gl_ctx {nullptr};
+    mpv_render_context *_render_ctx {nullptr};
+
     bool _playing {false};
     bool _inMiniMode {false};
     bool _doRoundedClipping {true};

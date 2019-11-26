@@ -46,6 +46,7 @@ enum Platform {
 
 enum OpenGLInteropKind {
     INTEROP_NONE,
+    INTEROP_AUTO,
     INTEROP_VAAPI_EGL,
     INTEROP_VAAPI_GLX,
     INTEROP_VDPAU_GLX,
