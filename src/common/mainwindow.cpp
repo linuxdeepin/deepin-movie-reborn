@@ -318,9 +318,9 @@ protected:
             mw->resumeToolsWindow();
 
             //If window is maximized ,need quit maximize state when resizing
-//            if (startResizing && (mw->windowState() & Qt::WindowMaximized)) {
-//                mw->setWindowState(mw->windowState() & (~Qt::WindowMaximized));
-//            }
+            if (startResizing && (mw->windowState() & Qt::WindowMaximized)) {
+                mw->setWindowState(mw->windowState() & (~Qt::WindowMaximized));
+            }
 
             if (!enabled) return false;
             const QRect window_visible_rect = _window->frameGeometry() - mw->dragMargins();
