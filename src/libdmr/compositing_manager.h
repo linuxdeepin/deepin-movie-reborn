@@ -46,7 +46,6 @@ enum Platform {
 
 enum OpenGLInteropKind {
     INTEROP_NONE,
-    INTEROP_AUTO,
     INTEROP_VAAPI_EGL,
     INTEROP_VAAPI_GLX,
     INTEROP_VDPAU_GLX,
@@ -69,7 +68,6 @@ class CompositingManager: public QObject {
          * get detectOpenGLEarly result
          */
         static OpenGLInteropKind interopKind();
-        static bool runningOnVmwgfx();
 
         /**
          * override auto-detected compositing state.
@@ -93,8 +91,8 @@ class CompositingManager: public QObject {
         bool isDirectRendered();
         bool isProprietaryDriver();
 
-        static bool is_device_viable(int id);
-        static bool is_card_exists(int id, const std::vector<std::string>& drivers);
+        bool is_device_viable(int id);
+        bool is_card_exists(int id, const std::vector<std::string>& drivers);
 
         bool _composited {false};
         Platform _platform {Platform::Unknown};

@@ -165,30 +165,10 @@ static QString probeHwdecInterop()
   mpv::qt::set_property(mpv, "border", false);
   if (mpv_initialize(mpv) < 0)
     return "";
-  // return "auto"
-  return mpv::qt::get_property(mpv, "gpu-hwdec-interop").toString();
+  return mpv::qt::get_property(mpv, "hwdec-interop").toString();
 }
 
 static OpenGLInteropKind _interopKind = OpenGLInteropKind::INTEROP_NONE;
-
-bool CompositingManager::runningOnVmwgfx()
-{
-    static bool s_runningOnVmwgfx = false;
-    static bool s_checked = false;
-
-    if (!s_checked) {
-        for (int id = 0; id <= 10; id++) {
-            if (!QFile::exists(QString("/sys/class/drm/card%1").arg(id))) break;
-            if (is_device_viable(id)) {
-                vector<string> drivers = {"vmwgfx"};
-                s_runningOnVmwgfx = is_card_exists(id, drivers);
-                break;
-            }
-        }
-    }
-
-    return s_runningOnVmwgfx;
-}
 
 void CompositingManager::detectOpenGLEarly()
 {
@@ -200,9 +180,7 @@ void CompositingManager::detectOpenGLEarly()
     qDebug() << "probeHwdecInterop" << probed 
         << qgetenv("QT_XCB_GL_INTERGRATION");
 
-    if (probed == "auto") {
-        _interopKind = INTEROP_AUTO;
-    } else if (probed == "vaapi-egl") {
+    if (probed == "vaapi-egl") {
         _interopKind = INTEROP_VAAPI_EGL;
     } else if (probed == "vaapi-glx") {
         _interopKind = INTEROP_VAAPI_GLX;
@@ -210,20 +188,18 @@ void CompositingManager::detectOpenGLEarly()
         _interopKind = INTEROP_VDPAU_GLX;
     }
 
+    //NOTE: probed seems to be vaapi-egl, but qt use xcb_glx by default
+    //dxcb is not compatible with egl yet. so when USE_DXCB activated, we 
+    //should use vaapi-glx for mpv instead.
 #ifndef USE_DXCB
-    /*
-     * see mpv/render_gl.h for more details, below is copied verbatim:
-     *
-     * - Intel/Linux: EGL is required, and also the native display resource needs
-     *                to be provided (e.g. MPV_RENDER_PARAM_X11_DISPLAY for X11 and
-     *                MPV_RENDER_PARAM_WL_DISPLAY for Wayland)
-     * - nVidia/Linux: Both GLX and EGL should work (GLX is required if vdpau is
-     *                 used, e.g. due to old drivers.)
-     * 
-     * mpv hwdec is broken with vmwgfx and should use glx
-     */
-    if (!CompositingManager::runningOnVmwgfx()) {
+    // The putenv call must happen before Qt initializes its platform stuff.
+    if (_interopKind == INTEROP_VAAPI_EGL) {
+        qInfo() << "set QT_XCB_GL_INTERGRATION to xcb_egl";
+        fprintf(stderr, "set QT_XCB_GL_INTERGRATION to xcb_egl\n");
         qputenv("QT_XCB_GL_INTEGRATION", "xcb_egl");
+    } else {
+        //do nothing, this is default
+        //qputenv("QT_XCB_GL_INTEGRATION", "xcb_glx");
     }
 #else
     if (_interopKind == INTEROP_VAAPI_EGL) {
