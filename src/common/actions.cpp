@@ -269,8 +269,11 @@ DMenu *ActionFactory::mainContextMenu()
             auto *menu = new DMenu(tr("Screenshot"));
             DEF_ACTION(tr("Film Screenshot"), ActionKind::Screenshot);
             DEF_ACTION(tr("Burst Shooting"), ActionKind::BurstScreenshot);
-
+            menu->setEnabled(false);
             parent->addMenu(menu);
+            connect(this, &ActionFactory::frameMenuEnable, this, [ = ](bool statu) {
+                menu->setEnabled(statu);
+            });
         }
 
         menu->addSeparator();

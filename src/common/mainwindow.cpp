@@ -1280,6 +1280,7 @@ void MainWindow::updateActionsState()
         case ActionFactory::ActionKind::MatchOnlineSubtitle:
         case ActionFactory::ActionKind::BurstScreenshot:
         case ActionFactory::ActionKind::ToggleMiniMode:
+        case ActionFactory::ActionKind::ToggleFullscreen:
         case ActionFactory::ActionKind::WindowAbove:
             v = _engine->state() != PlayerEngine::Idle;
             break;
