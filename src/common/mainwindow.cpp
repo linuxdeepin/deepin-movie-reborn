@@ -1700,7 +1700,14 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         break;
 
     case ActionFactory::ActionKind::QuitFullscreen: {
-        if (isFullScreen()) {
+        if(_miniMode)
+        {
+            if (!fromUI) {
+                reflectActionToUI(kd);
+            }
+            toggleUIMode();
+        }
+        else if (isFullScreen()) {
             if (_lastWindowState == Qt::WindowMaximized) {
                 showMaximized();
             } else {
