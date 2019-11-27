@@ -348,7 +348,7 @@ public:
         auto *l = new QHBoxLayout;
         l->setContentsMargins(0, 0, 0, 0);
         _time = new DLabel(this);
-        _time->setAlignment(Qt::AlignCenter);
+        _time->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
         _time->setFixedSize(_size);
         _time->setForegroundRole(DPalette::Text);
         DPalette pa_cb = DApplicationHelper::instance()->palette(_time);
