@@ -903,6 +903,12 @@ QImage MpvProxy::takeOneScreenshot()
         //alpha should be ignored
         auto img = QImage((const uchar*)data, w, h, stride, QImage::Format_RGB32);
         img.bits();
+        int rotationdegree = videoRotation();
+        if(rotationdegree){
+            QMatrix matrix;
+            matrix.rotate(rotationdegree);
+            img = QPixmap::fromImage(img).transformed(matrix,Qt::SmoothTransformation).toImage();
+        }
         return img;
     }
 
