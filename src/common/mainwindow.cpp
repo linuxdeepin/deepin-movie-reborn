@@ -1718,6 +1718,9 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                 reflectActionToUI(ActionFactory::ToggleFullscreen);
             }
         }
+        if(!isFullScreen()){
+            _fullscreentimelable->close();
+        }
         break;
     }
 
@@ -1733,12 +1736,35 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                     resize(_lastRectInNormalMode.width(), _lastRectInNormalMode.height());
                 }
             }
+            if(!isFullScreen()){
+                _fullscreentimelable->close();
+            }
         } else {
             if (!_miniMode && (fromUI || isShortcut)) {
                 _lastRectInNormalMode = geometry();
             }
             showFullScreen();
-        }
+            if(isFullScreen()){
+                QRect deskRect = QApplication::desktop()->availableGeometry();
+                if(!_fullscreentimelable){
+                    _fullscreentimelable = new QLabel;
+                    _fullscreentimelable->setAttribute(Qt::WA_TranslucentBackground);
+                    _fullscreentimelable->setStyleSheet("background:transparent");
+                    _fullscreentimelable->setWindowFlags(Qt::FramelessWindowHint);
+                    _fullscreentimelable->setParent(this);
+                    _fullscreentimelable->setWindowFlags(_fullscreentimelable->windowFlags()|Qt::Dialog);
+                }
+                _fullscreentimelable->setGeometry(deskRect.width()-50,30,100,30);
+                if(!_fullscreentimebox){
+                    _fullscreentimebox = new QHBoxLayout;
+                }
+                _fullscreentimebox->addWidget(_toolbox->getfullscreentimeLabel());
+                _fullscreentimebox->addWidget(_toolbox->getfullscreentimeLabelend());
+                _fullscreentimelable->setLayout(_fullscreentimebox);
+                _fullscreentimelable->show();
+
+                }
+            }
         if (!fromUI) {
             reflectActionToUI(kd);
         }

@@ -192,6 +192,8 @@ private:
 
 private:
     DFloatingMessage *popup {nullptr};
+    QLabel *_fullscreentimelable {nullptr};
+    QHBoxLayout *_fullscreentimebox {nullptr};
 
     Titlebar *_titlebar {nullptr};
     ToolboxProxy *_toolbox {nullptr};

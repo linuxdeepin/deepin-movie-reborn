@@ -107,7 +107,8 @@ public:
     ToolboxProxy(QWidget *mainWindow, PlayerEngine*);
     virtual ~ToolboxProxy();
 
-    void updateTimeInfo(qint64 duration, qint64 pos);
+    void updateTimeInfo(qint64 duration, qint64 pos, QLabel *_timeLabel,
+                        QLabel *_timeLabelend ,bool flag);
     bool anyPopupShown() const;
     void closeAnyPopup();
     void setViewProgBarWidth();
@@ -116,6 +117,8 @@ public:
     void addLabel_black_list(ImageItem *label_black){ label_black_list.append(label_black);}
     void addpm_list(QList<QPixmap> pm){ pm_list.clear(); pm_list.append(pm);}
     void addpm_black_list(QList<QPixmap> pm_black){ pm_black_list.clear(); pm_black_list.append(pm_black);}
+    QLabel *getfullscreentimeLabel();
+    QLabel *getfullscreentimeLabelend();
 public slots:
     void finishLoadSlot(QSize size);
 signals:
@@ -150,6 +153,9 @@ private:
     void setup();
     void updateTimeLabel();
     void updateToolTipTheme(ToolButton *btn);
+
+    QLabel *_fullscreentimelable {nullptr};
+    QLabel *_fullscreentimelableend {nullptr};
 
     MainWindow *_mainWindow {nullptr};
     PlayerEngine *_engine {nullptr};

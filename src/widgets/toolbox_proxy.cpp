@@ -1309,18 +1309,23 @@ void ToolboxProxy::setup()
 //    bot_widget->setPalette(palette);
 
     _timeLabel = new QLabel("");
+    _fullscreentimelable = new QLabel("");
 //    _timeLabel->setFixedWidth(_timeLabel->fontMetrics().width("99:99:99/99:99:99"));
     _timeLabel->setFont(DFontSizeManager::instance()->get(DFontSizeManager::T6));
     _timeLabel->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    _fullscreentimelable->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    _fullscreentimelable->setFont(DFontSizeManager::instance()->get(DFontSizeManager::T6));
     //_timeLabel->setFixedWidth(54);
 //    bot->addWidget(_timeLabel);
     _timeLabelend = new QLabel("");
+    _fullscreentimelableend = new QLabel("");
     //_timeLabelend->setFixedWidth(54);
     _timeLabelend->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 //    _timeLabel->setFixedWidth(_timeLabel->fontMetrics().width("99:99:99/99:99:99"));
 //    _timeLabelend->setFixedWidth(_timeLabelend->fontMetrics().width("99:99:99"));
     _timeLabelend->setFont(DFontSizeManager::instance()->get(DFontSizeManager::T6));
-
+    _fullscreentimelableend->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    _fullscreentimelableend->setFont(DFontSizeManager::instance()->get(DFontSizeManager::T6));
     _viewProgBar = new ViewProgBar(this);
 
 //    _viewProgBar->hide();
@@ -1609,7 +1614,11 @@ void ToolboxProxy::setup()
 
     });
     connect(_engine, &PlayerEngine::elapsedChanged, [=]() {
-        updateTimeInfo(_engine->duration(), _engine->elapsed());
+        updateTimeInfo(_engine->duration(), _engine->elapsed(), _timeLabel, _timeLabelend, true);
+        updateMovieProgress();
+    });
+    connect(_engine, &PlayerEngine::elapsedChanged, [=]() {
+        updateTimeInfo(_engine->duration(), _engine->elapsed(), _fullscreentimelable, _fullscreentimelableend, false);
         updateMovieProgress();
     });
     connect(window()->windowHandle(), &QWindow::windowStateChanged, this, &ToolboxProxy::updateFullState);
@@ -1929,7 +1938,7 @@ void ToolboxProxy::updatePlayState()
 //    setStyleSheet(styleSheet());
 }
 
-void ToolboxProxy::updateTimeInfo(qint64 duration, qint64 pos)
+void ToolboxProxy::updateTimeInfo(qint64 duration, qint64 pos, QLabel *_timeLabel,QLabel *_timeLabelend, bool flag)
 {
     if (_engine->state() == PlayerEngine::CoreState::Idle) {
         _timeLabel->setText("");
@@ -1939,10 +1948,19 @@ void ToolboxProxy::updateTimeInfo(qint64 duration, qint64 pos)
         //mpv returns a slightly different duration from movieinfo.duration
         //_timeLabel->setText(QString("%2/%1").arg(utils::Time2str(duration))
                 //.arg(utils::Time2str(pos)));
-        _timeLabel->setText(QString("%1")
-                .arg(utils::Time2str(pos)));
-        _timeLabelend->setText(QString("%1")
-                .arg(utils::Time2str(duration)));
+        if(1 == flag){
+            _timeLabel->setText(QString("%1")
+                    .arg(utils::Time2str(pos)));
+            _timeLabelend->setText(QString("%1")
+                    .arg(utils::Time2str(duration)));
+        }else{
+            _timeLabel->setText(QString("%1 %2")
+                    .arg(utils::Time2str(pos)).arg("/"));
+            _timeLabelend->setText(QString("%1")
+                    .arg(utils::Time2str(duration)));
+        }
+
+
     }
 }
 
@@ -2160,6 +2178,15 @@ void ToolboxProxy::setPlaylist(PlaylistWidget *playlist)
             _bot_spec->hide();
         }
     });
+}
+QLabel *ToolboxProxy::getfullscreentimeLabel()
+{
+    return _fullscreentimelable;
+}
+
+QLabel *ToolboxProxy::getfullscreentimeLabelend()
+{
+    return _fullscreentimelableend;
 }
 }
 
