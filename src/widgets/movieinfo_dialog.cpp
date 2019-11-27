@@ -35,6 +35,13 @@
 
 DWIDGET_USE_NAMESPACE
 
+//#define MV_BASE_INFO tr("Film info")
+//#define MV_FILE_TYPE tr("File type")
+//#define MV_RESOLUTION tr("Resolution")
+//#define MV_FILE_SIZE tr("File size")
+//#define MV_DURATION tr("Duration")
+//#define MV_FILE_PATH tr("File path")
+
 namespace dmr {
 MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
     : DAbstractDialog(nullptr)
@@ -122,15 +129,15 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
     form->addRow(f, t); \
 } while (0)
 
-    auto title = new DLabel(MV_BASE_INFO, this);
+    auto title = new DLabel(tr("Film info"), this);
     DFontSizeManager::instance()->bind(title, DFontSizeManager::T6);
     title->setForegroundRole(DPalette::TextTitle);
     form->addRow(title);
 
-    ADD_ROW(MV_RESOLUTION, mi.resolution);
-    ADD_ROW(MV_FILE_TYPE, mi.fileType);
-    ADD_ROW(MV_FILE_SIZE, mi.sizeStr());
-    ADD_ROW(MV_DURATION, mi.durationStr());
+    ADD_ROW(tr("Resolution"), mi.resolution);
+    ADD_ROW(tr("File type"), mi.fileType);
+    ADD_ROW(tr("File size"), mi.sizeStr());
+    ADD_ROW(tr("Duration"), mi.durationStr());
 
     DLabel *tmp = new DLabel;
     DFontSizeManager::instance()->bind(tmp, DFontSizeManager::T8);
@@ -140,9 +147,9 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
     if (w > 360) {
         auto fp = utils::ElideText(mi.filePath, {200, 40}, QTextOption::WordWrap,
                                    tmp->font(), Qt::ElideMiddle, fm.height(), 150);
-        ADD_ROW(MV_FILE_PATH, fp);
+        ADD_ROW(tr("File path"), fp);
     } else {
-        ADD_ROW(MV_FILE_PATH, mi.filePath);
+        ADD_ROW(tr("File path"), mi.filePath);
     }
 
     delete tmp;

@@ -848,7 +848,7 @@ PlaylistWidget::~PlaylistWidget()
 void PlaylistWidget::clear()
 {
     _playlist->clear();
-    QString s = QString(" %1 个视频").arg(_playlist->count());
+    QString s = QString(tr("%1 videos")).arg(_playlist->count());
     _num->setText(s);
 }
 void PlaylistWidget::updateItemInfo(int id)
@@ -1051,7 +1051,7 @@ void PlaylistWidget::removeItem(int idx)
         curItem->setCurItemHovered(true);
     }
 
-    QString s = QString(" %1 个视频").arg(_playlist->count());
+    QString s = QString(tr("%1 videos")).arg(_playlist->count());
     _num->setText(s);
 }
 
@@ -1075,7 +1075,7 @@ void PlaylistWidget::appendItems()
         _activateMapper->setMapping(w, w);
         ++p;
     }
-    QString s = QString(" %1 个视频").arg(_playlist->count());
+    QString s = QString(tr("%1 videos")).arg(_playlist->count());
     _num->setText(s);
     batchUpdateSizeHints();
     updateItemStates();
@@ -1127,7 +1127,7 @@ void PlaylistWidget::loadPlaylist()
     batchUpdateSizeHints();
     updateItemStates();
 //    _playlist->setStyleSheet(styleSheet());
-    QString s = QString(" %1 个视频").arg(_playlist->count());
+    QString s = QString(tr("%1 videos")).arg(_playlist->count());
     _num->setText(s);
 //    setStyleSheet(styleSheet());
 }

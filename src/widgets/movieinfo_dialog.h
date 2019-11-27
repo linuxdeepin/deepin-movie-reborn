@@ -40,13 +40,6 @@
 #include <DGuiApplicationHelper>
 #include <DApplication>
 
-#define MV_BASE_INFO "基本信息"
-#define MV_FILE_TYPE "文件类型"
-#define MV_RESOLUTION "分辨率"
-#define MV_FILE_SIZE "文件大小"
-#define MV_DURATION "时长"
-#define MV_FILE_PATH "文件路径"
-
 const QString LOGO_BIG = ":/resources/icons/logo-big.svg";
 const QString INFO_CLOSE_LIGHT = ":/resources/icons/light/info_close_light.svg";
 const QString INFO_CLOSE_DARK = ":/resources/icons/dark/info_close_dark.svg";

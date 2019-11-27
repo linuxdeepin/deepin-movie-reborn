@@ -22,7 +22,7 @@
         <translation>ফোল্ডার খুলুন</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2434"/>
+        <location filename="../common/mainwindow.cpp" line="2444"/>
         <source>Network disconnected</source>
         <translation type="unfinished"></translation>
     </message>
@@ -514,165 +514,166 @@
 <context>
     <name>dmr::MainWindow</name>
     <message>
-        <location filename="../common/mainwindow.cpp" line="817"/>
-        <location filename="../common/mainwindow.cpp" line="1965"/>
-        <location filename="../common/mainwindow.cpp" line="3090"/>
+        <location filename="../common/mainwindow.cpp" line="820"/>
+        <location filename="../common/mainwindow.cpp" line="1975"/>
+        <location filename="../common/mainwindow.cpp" line="3106"/>
         <source>Load successfully</source>
         <translation>সফলভাবে লোড হয়েছে</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="817"/>
-        <location filename="../common/mainwindow.cpp" line="1965"/>
-        <location filename="../common/mainwindow.cpp" line="3090"/>
+        <location filename="../common/mainwindow.cpp" line="820"/>
+        <location filename="../common/mainwindow.cpp" line="1975"/>
+        <location filename="../common/mainwindow.cpp" line="3106"/>
         <source>Load failed</source>
         <translation>লোড করতে বার্থ হয়েছে</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1553"/>
+        <location filename="../common/mainwindow.cpp" line="1556"/>
         <source>No device found</source>
         <translation>কোনো ডিভাইস পাওয়া যায়নি</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1571"/>
+        <location filename="../common/mainwindow.cpp" line="1574"/>
         <source>Parse Failed</source>
         <translation>শব্দবিশ্লেষণ করতে ব্যর্থ হয়েছে</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1578"/>
+        <location filename="../common/mainwindow.cpp" line="1581"/>
         <source>Open folder</source>
         <translation>ফোল্ডার খুলুন</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1595"/>
-        <location filename="../common/mainwindow.cpp" line="1617"/>
-        <location filename="../common/mainwindow.cpp" line="1960"/>
+        <location filename="../common/mainwindow.cpp" line="1598"/>
+        <location filename="../common/mainwindow.cpp" line="1620"/>
+        <location filename="../common/mainwindow.cpp" line="1970"/>
         <source>Open file</source>
         <translation>ফাইল খুলুন</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1597"/>
-        <location filename="../common/mainwindow.cpp" line="1619"/>
+        <location filename="../common/mainwindow.cpp" line="1600"/>
+        <location filename="../common/mainwindow.cpp" line="1622"/>
         <source>All videos (%1)</source>
         <translation>সকল ভিডিওসমূহ(%1)</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1786"/>
+        <location filename="../common/mainwindow.cpp" line="1796"/>
         <source>Stereo</source>
         <translation type="unfinished">স্টেরিও</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1791"/>
+        <location filename="../common/mainwindow.cpp" line="1801"/>
         <source>Left channel</source>
         <translation type="unfinished">বামদিকের চ্যানেল</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1796"/>
+        <location filename="../common/mainwindow.cpp" line="1806"/>
         <source>Right channel</source>
         <translation type="unfinished">ডানদিকের চ্যানেল</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1828"/>
+        <location filename="../common/mainwindow.cpp" line="1838"/>
         <source>Muted</source>
         <translation>নীরব করা হয়েছে</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1831"/>
-        <location filename="../common/mainwindow.cpp" line="1843"/>
+        <location filename="../common/mainwindow.cpp" line="1841"/>
         <location filename="../common/mainwindow.cpp" line="1853"/>
-        <location filename="../common/mainwindow.cpp" line="1860"/>
+        <location filename="../common/mainwindow.cpp" line="1863"/>
+        <location filename="../common/mainwindow.cpp" line="1870"/>
         <source>Volume: %1%</source>
         <translation>শব্দ: %1%</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1925"/>
-        <location filename="../common/mainwindow.cpp" line="1933"/>
+        <location filename="../common/mainwindow.cpp" line="1935"/>
+        <location filename="../common/mainwindow.cpp" line="1943"/>
         <source>Subtitle %1: %2s</source>
         <translation>সাবটাইটেল %1: %2s</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1926"/>
-        <location filename="../common/mainwindow.cpp" line="1934"/>
+        <location filename="../common/mainwindow.cpp" line="1936"/>
+        <location filename="../common/mainwindow.cpp" line="1944"/>
         <source>delayed</source>
         <translation>বিলম্ব করা হয়েছে</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1926"/>
-        <location filename="../common/mainwindow.cpp" line="1934"/>
+        <location filename="../common/mainwindow.cpp" line="1936"/>
+        <location filename="../common/mainwindow.cpp" line="1944"/>
         <source>advanced</source>
         <translation>অ্যাডভান্সড</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1941"/>
-        <location filename="../common/mainwindow.cpp" line="1948"/>
-        <location filename="../common/mainwindow.cpp" line="1955"/>
+        <location filename="../common/mainwindow.cpp" line="1951"/>
+        <location filename="../common/mainwindow.cpp" line="1958"/>
+        <location filename="../common/mainwindow.cpp" line="1965"/>
         <source>Speed: %1x</source>
         <translation>গতি: %1x</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1962"/>
+        <location filename="../common/mainwindow.cpp" line="1972"/>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</source>
         <translation>সাবটাইটেল (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2025"/>
+        <location filename="../common/mainwindow.cpp" line="2035"/>
         <source>View</source>
         <translation>দেখুন</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2036"/>
+        <location filename="../common/mainwindow.cpp" line="2046"/>
         <source>Movie Screenshot</source>
         <translation>মুভি স্ক্রিনশট</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2037"/>
+        <location filename="../common/mainwindow.cpp" line="2047"/>
         <source>Saved to</source>
         <translation>এখানে সংরক্ষণ করুন</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2049"/>
-        <location filename="../common/mainwindow.cpp" line="2141"/>
+        <location filename="../common/mainwindow.cpp" line="2059"/>
+        <location filename="../common/mainwindow.cpp" line="2151"/>
         <source>The screenshot is saved</source>
         <translation>স্ক্রিনশটটি সংরক্ষণ করা হয়েছে</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2054"/>
-        <location filename="../common/mainwindow.cpp" line="2146"/>
+        <location filename="../common/mainwindow.cpp" line="2064"/>
+        <location filename="../common/mainwindow.cpp" line="2156"/>
         <source>Failed to save the screenshot</source>
         <translation>স্ক্রিনশট সংরক্ষণ করতে বার্থ হয়েছে</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2105"/>
+        <location filename="../common/mainwindow.cpp" line="2115"/>
         <source>Screenshot is working,please wait</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2229"/>
-        <location filename="../common/mainwindow.cpp" line="3103"/>
+        <location filename="../common/mainwindow.cpp" line="2239"/>
+        <location filename="../common/mainwindow.cpp" line="3119"/>
         <source>Invalid file: %1</source>
         <translation>অবধৈ ফাইল: %1</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2441"/>
+        <location filename="../common/mainwindow.cpp" line="2451"/>
         <source>No matching online subtitles</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2450"/>
+        <location filename="../common/mainwindow.cpp" line="2461"/>
         <source>Cannot open file or stream</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2456"/>
+        <location filename="../common/mainwindow.cpp" line="2467"/>
+        <location filename="../common/mainwindow.cpp" line="2472"/>
         <source>File is corrupt</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2461"/>
+        <location filename="../common/mainwindow.cpp" line="2477"/>
         <source>Please insert the CD into the drive</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2467"/>
+        <location filename="../common/mainwindow.cpp" line="2483"/>
         <source>No video file found</source>
         <translation type="unfinished"></translation>
     </message>
@@ -718,12 +719,43 @@
         <source>File Path:</source>
         <translation type="vanished">ফাইলের পথ:</translation>
     </message>
+    <message>
+        <location filename="../widgets/movieinfo_dialog.cpp" line="132"/>
+        <source>Film info</source>
+        <translation type="unfinished">ফিল্মের তথ্য</translation>
+    </message>
+    <message>
+        <location filename="../widgets/movieinfo_dialog.cpp" line="137"/>
+        <source>Resolution</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../widgets/movieinfo_dialog.cpp" line="138"/>
+        <source>File type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../widgets/movieinfo_dialog.cpp" line="139"/>
+        <source>File size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../widgets/movieinfo_dialog.cpp" line="140"/>
+        <source>Duration</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../widgets/movieinfo_dialog.cpp" line="150"/>
+        <location filename="../widgets/movieinfo_dialog.cpp" line="152"/>
+        <source>File path</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>dmr::MpvProxy</name>
     <message>
-        <location filename="../backends/mpv/mpv_proxy.cpp" line="1048"/>
-        <location filename="../backends/mpv/mpv_proxy.cpp" line="1066"/>
+        <location filename="../backends/mpv/mpv_proxy.cpp" line="1050"/>
+        <location filename="../backends/mpv/mpv_proxy.cpp" line="1068"/>
         <source>[internal]</source>
         <translation>[অভ্যন্তরীণ]</translation>
     </message>
@@ -755,6 +787,14 @@
         <source>Clear Playlist</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../widgets/playlist_widget.cpp" line="851"/>
+        <location filename="../widgets/playlist_widget.cpp" line="1054"/>
+        <location filename="../widgets/playlist_widget.cpp" line="1078"/>
+        <location filename="../widgets/playlist_widget.cpp" line="1130"/>
+        <source>%1 videos</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>dmr::Settings</name>
@@ -772,81 +812,81 @@
 <context>
     <name>dmr::ToolboxProxy</name>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="1733"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="1899"/>
         <source>Play</source>
         <translation>চালু করুন</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="1370"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="1378"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="1535"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="1543"/>
         <source>Previous</source>
         <translation>পূর্ববর্তী</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="1371"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="1378"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="1536"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="1543"/>
         <source>Next</source>
         <translation>পরবর্তী</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="1379"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="1544"/>
         <source>Subtitles</source>
         <translation>সাবটাইটেল সমূহ</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="1379"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="1544"/>
         <source>Playlist</source>
         <translation>চলার তালিকা</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="1379"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="1718"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="1544"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="1884"/>
         <source>Fullscreen</source>
         <translation>সম্পূর্ণ পর্দা</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="1368"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="1378"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="1533"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="1543"/>
         <source>Play/Pause</source>
         <translation>চালান/থামুন</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="1382"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="1547"/>
         <source>play</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="1382"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="1547"/>
         <source>prev</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="1382"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="1547"/>
         <source>next</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="1383"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="1548"/>
         <source>sub</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="1383"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="1548"/>
         <source>fs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="1383"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="1548"/>
         <source>list</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="1714"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="1880"/>
         <source>Exit fullscreen</source>
         <translation>সম্পূর্ণ পর্দা থেকে বের হয়ে যান</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="1729"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="1895"/>
         <source>Pause</source>
         <translation>থামুন</translation>
     </message>
