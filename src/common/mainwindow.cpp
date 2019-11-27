@@ -321,6 +321,9 @@ protected:
             if (startResizing && (mw->windowState() & Qt::WindowMaximized)) {
                 mw->setWindowState(mw->windowState() & (~Qt::WindowMaximized));
             }
+            else if (startResizing && (mw->windowState() & Qt::WindowFullScreen)){
+                mw->setWindowState(mw->windowState() & (~Qt::WindowFullScreen));
+            }
 
             if (!enabled) return false;
             const QRect window_visible_rect = _window->frameGeometry() - mw->dragMargins();
