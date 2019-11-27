@@ -327,6 +327,96 @@ protected:
 //        p.fillRect(r, QBrush(_indicatorColor));
     }
 };
+
+class SliderTime: public DArrowRectangle{
+    Q_OBJECT
+public:
+    SliderTime(): DArrowRectangle(DArrowRectangle::ArrowBottom) {
+        setFocusPolicy(Qt::NoFocus);
+        setAttribute(Qt::WA_DeleteOnClose);
+        setWindowFlag(Qt::WindowStaysOnTopHint);
+        setFixedSize(_size);
+        setRadius(4);
+        setArrowWidth(10);
+        setArrowHeight(5);
+        const QPalette pal = QGuiApplication::palette();
+        QColor bgColor = pal.color(QPalette::Highlight);
+        setBorderWidth(1);
+        setBorderColor(bgColor);
+        setBackgroundColor(bgColor);
+
+        auto *l = new QHBoxLayout;
+        l->setContentsMargins(0, 0, 0, 0);
+        _time = new DLabel(this);
+        _time->setAlignment(Qt::AlignCenter);
+        _time->setFixedSize(_size);
+        _time->setForegroundRole(DPalette::Text);
+        DPalette pa_cb = DApplicationHelper::instance()->palette(_time);
+        pa_cb.setBrush(QPalette::Text, QColor(255,255,255,255));
+        _time->setPalette(pa_cb);
+        _time->setFont(DFontSizeManager::instance()->get(DFontSizeManager::T8));
+        l->addWidget(_time, Qt::AlignCenter);
+        setLayout(l);
+    }
+
+    void setTime(const QString& time) {
+        _time->setText(time);
+    }
+
+private:
+    DLabel *_time {nullptr};
+    QSize _size = QSize(58, 25);
+};
+
+class IndicatorBar: public DBlurEffectWidget {
+    Q_OBJECT
+public:
+    IndicatorBar(QWidget *parent = nullptr){
+        resize(4, 60);
+        setObjectName("indicator");
+        repaint();
+    }
+    virtual ~IndicatorBar() override {}
+
+    void changeStyle(bool flag) {
+        _normal = !flag;
+        update();
+        repaint();
+    }
+
+protected:
+    void paintEvent(QPaintEvent *event) Q_DECL_OVERRIDE
+    {
+        QPainter painter(this);
+        painter.setRenderHint(QPainter::Antialiasing);
+        QRectF bgRect;
+        bgRect.setSize(size());
+        QColor bgColor, bdColor;
+//        const QPalette pal = QGuiApplication::palette();
+//        bgColor = pal.color(QPalette::Highlight);
+        if (_normal) {
+            bgColor = QColor(255, 255, 255);
+            bdColor = QColor(0, 0, 0, 40 * 255);
+            resize(4, 60);
+        }
+        else {
+            bgColor = QColor(255,138,0);
+            bdColor = bgColor;
+            resize(2, 60);
+        }
+        QPainterPath pp;
+        pp.setFillRule(Qt::WindingFill);
+        QPen pen(bdColor, 1);
+        painter.setPen(pen);
+        pp.addRoundedRect(bgRect, 2, 2);
+        painter.fillPath(pp, bgColor);
+        painter.drawPath(pp);
+    }
+
+private:
+    bool _normal = true;
+};
+
 class ViewProgBarItem: public QLabel{
     Q_OBJECT
 public:
@@ -357,17 +447,28 @@ public:
        _front->setFixedWidth(0);
        _front->setContentsMargins(0,0,0,0);
 
+//       _indicator = new IndicatorBar(this);
        _indicator = new DBlurEffectWidget(this);
-       _indicator->setFixedHeight(60);
-       _indicator->setFixedWidth(2);
+       _indicator->resize(4, 60);
        _indicator->setObjectName("indicator");
-       _indicator->setMaskAlpha(153);
-       _indicator->setMaskColor(QColor(255,138,0));
+       _indicator->setMaskColor(QColor(255,255,255));
        _indicator->setBlurRectXRadius(2);
        _indicator->setBlurRectYRadius(2);
-       _slider = new DLabel(this);
-       _slider->setFixedSize(10,7);
-       _slider->setPixmap(QPixmap(":resources/icons/slider.svg").copy(5,0,10,7));
+
+       _sliderTime = new SliderTime;
+       _sliderTime->hide();
+
+       QMatrix matrix;
+       matrix.rotate(180);
+       QPixmap pixmap(":resources/icons/slider.svg");
+       _sliderArrowUp = new DLabel(this);
+       _sliderArrowUp->setFixedSize(20,18);
+       _sliderArrowUp->setPixmap(pixmap);
+       _sliderArrowUp->hide();
+       _sliderArrowDown = new DLabel(this);
+       _sliderArrowDown->setFixedSize(20,18);
+       _sliderArrowDown->setPixmap(pixmap.transformed(matrix, Qt::SmoothTransformation));
+       _sliderArrowDown->hide();
 //       DBlurEffectWidget *indin = new DBlurEffectWidget(_indicator);
 //       _indicator->setContentsMargins(1,1,0,0);
 //       indin.setTopMargin(1);
@@ -400,6 +501,22 @@ public:
     void setValue(int v){
         _indicatorPos = {v<5?5:v,rect().y()};
         update();
+    }
+
+    void setTime(qint64 pos) {
+        QTime time(0, 0, 0);
+        QString strTime = time.addSecs(pos).toString("hh:mm:ss");
+        _sliderTime->setTime(strTime);
+    }
+
+    void setTimeVisible(bool visible) {
+        if (visible) {
+            auto pos = this->mapToGlobal(QPoint(0, 0));
+            _sliderTime->show(pos.x() + _indicatorPos.x(), pos.y() + _indicatorPos.y() + 5);
+        }
+        else {
+            _sliderTime->hide();
+        }
     }
 
     void setViewProgBar(PlayerEngine *engine ,QList<QPixmap>pm_list , QList<QPixmap>pm_black_list ){
@@ -530,6 +647,31 @@ public:
         _back->setFixedWidth(_parent->width()-PROGBAR_SPEC);
 
     }
+
+private:
+    void changeStyle(bool press) {
+        if (press) {
+//            _indicator->changeStyle(press);
+            _indicator->resize(2, 60);
+            _indicator->setMaskColor(QColor(255,138,0));
+            _indicator->setBlurRectXRadius(2);
+            _indicator->setBlurRectYRadius(2);
+            _sliderTime->setVisible(press);
+            _sliderArrowUp->setVisible(press);
+            _sliderArrowDown->setVisible(press);
+        }
+        else {
+//            _indicator->changeStyle(press);
+            _indicator->resize(4, 60);
+            _indicator->setMaskColor(QColor(255,255,255));
+            _indicator->setBlurRectXRadius(2);
+            _indicator->setBlurRectYRadius(2);
+            _sliderTime->setVisible(press);
+            _sliderArrowUp->setVisible(press);
+            _sliderArrowDown->setVisible(press);
+        }
+    }
+
 signals:
     void leaveViewProgBar();
     void hoverChanged(int);
@@ -559,6 +701,7 @@ protected:
                     emit sliderMoved(v);
                     emit hoverChanged(v);
                     setValue(e->pos().x());
+                    setTimeVisible(true);
                 }
             }else {
                 qDebug() << v;
@@ -572,23 +715,38 @@ protected:
     }
     void mousePressEvent(QMouseEvent *e)
     {
-        if (e->buttons() == Qt::LeftButton && isEnabled()) {
+        if (!_press && e->buttons() == Qt::LeftButton && isEnabled()) {
 //            QSlider::mousePressEvent(e);
             _startPos = e->pos();
 
-            int v = position2progress(e->pos());;
+            int v = position2progress(e->pos());
 //            setSliderPosition(v);
             emit sliderMoved(v);
             emit hoverChanged(v);
             setValue(e->pos().x());
-//            _down = true;
+            setTimeVisible(!_press);
+            changeStyle(!_press);
+            _press = !_press;
+        }
+    }
+    void mouseReleaseEvent(QMouseEvent *e)
+    {
+        if (_press && isEnabled()) {
+            changeStyle(!_press);
+            _press = !_press;
         }
     }
     void paintEvent(QPaintEvent *e)
     {
         _indicator->move(_indicatorPos);
-        _slider->move(_indicatorPos.x()-4,56);
+        _sliderArrowDown->move(_indicatorPos.x() + _indicator->width()/2 - _sliderArrowDown->width()/2,
+                               _indicatorPos.y() - 10);
+        _sliderArrowUp->move(_indicatorPos.x() + _indicator->width()/2 - _sliderArrowUp->width()/2,56);
         _front->setFixedWidth(_indicatorPos.x());
+
+        if (_press) {
+            setTimeVisible(_press);
+        }
     }
     void resizeEvent(QResizeEvent *event){
         auto i = _parent->width();
@@ -608,8 +766,12 @@ private:
     viewProgBarLoad *_viewProgBarLoad{nullptr};
     QWidget *_back{nullptr};
     QWidget *_front{nullptr};
+//    IndicatorBar *_indicator{nullptr};
     DBlurEffectWidget *_indicator{nullptr};
-    DLabel *_slider{nullptr};
+    SliderTime *_sliderTime{nullptr};
+    DLabel *_sliderArrowDown{nullptr};
+    DLabel *_sliderArrowUp{nullptr};
+    bool _press{false};
     QGraphicsColorizeEffect *m_effect{nullptr};
     QList<QLabel*> labelList ;
     QHBoxLayout *_indicatorLayout{nullptr};
@@ -668,6 +830,8 @@ public:
         setShadowYOffset(4);
         setShadowXOffset(0);
         setShadowBlurRadius(6);
+        setArrowWidth(10);
+        setArrowHeight(5);
 //        setArrowWidth(18);
 //        setArrowHeight(10);
 //        DPalette pa_cb = DApplicationHelper::instance()->palette(this);
@@ -687,6 +851,7 @@ public:
 
         _timebg = new ThumbnailTime(this);
         _timebg->setFixedSize(58, 20);
+        _timebg->hide();
 
         _time = new QLabel(_timebg);
         _time->setAlignment(Qt::AlignCenter);
@@ -727,11 +892,11 @@ public:
         }
         _thumb->setPixmap(rounded);
 
-        QTime t(0, 0, 0);
-        t = t.addSecs(secs);
-        _time->setText(t.toString("hh:mm:ss"));
-        _time->move((_timebg->width() - _time->width())/2, (_timebg->height() - _time->height())/2);
-        _timebg->move((_thumb->width() - _timebg->width())/2, this->height() - _timebg->height() - 10);
+//        QTime t(0, 0, 0);
+//        t = t.addSecs(secs);
+//        _time->setText(t.toString("hh:mm:ss"));
+//        _time->move((_timebg->width() - _time->width())/2, (_timebg->height() - _time->height())/2);
+//        _timebg->move((_thumb->width() - _timebg->width())/2, this->height() - _timebg->height() - 10);
 
         if (isVisible()) {
 //            move(QCursor::pos().x(), frameGeometry().y() + height()+0);
@@ -741,7 +906,7 @@ public:
     void updateWithPreview(const QPoint& pos) {
         resizeWithContent();
 //        move(pos.x(), pos.y()+0);
-        show(pos.x(), pos.y()+18);
+        show(pos.x(), pos.y()+15);
     }
 
 signals:
@@ -782,8 +947,8 @@ protected:
 
     void showEvent(QShowEvent *se) override
     {
-        _time->move((_timebg->width() - _time->width()) / 2, (_timebg->height() - _time->height()) / 2);
-        _timebg->move((_thumb->width() - _timebg->width()) / 2, this->height() - _timebg->height() - 10);
+//        _time->move((_timebg->width() - _time->width()) / 2, (_timebg->height() - _time->height()) / 2);
+//        _timebg->move((_thumb->width() - _timebg->width()) / 2, this->height() - _timebg->height() - 10);
         DArrowRectangle::showEvent(se);
     }
 
@@ -1664,6 +1829,7 @@ void ToolboxProxy::updateMovieProgress()
     if(!_viewProgBar->getIsBlockSignals()){
         _viewProgBar->setIsBlockSignals(true);
         _viewProgBar->setValue(v2);
+        _viewProgBar->setTime(e);
         _viewProgBar->setIsBlockSignals(false);
     }
 
