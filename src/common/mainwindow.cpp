@@ -2448,6 +2448,7 @@ void MainWindow::checkOnlineSubtitle(const OnlineSubtitle::FailReason reason)
 void MainWindow::checkErrorMpvLogsChanged(const QString prefix, const QString text)
 {
     QString errorMessage(text);
+    qDebug()<<text;
     if (errorMessage.toLower().contains(QString("fail")) && errorMessage.toLower().contains(QString("open")))
         {
         _nwComm->updateWithMessage(tr("Cannot open file or stream"));
@@ -2456,6 +2457,11 @@ void MainWindow::checkErrorMpvLogsChanged(const QString prefix, const QString te
     else if (errorMessage.toLower().contains(QString("fail")) &&
             (errorMessage.toLower().contains(QString("format")))
        ) {
+        _nwComm->updateWithMessage(tr("File is corrupt"));
+        _engine->playlist().clear();
+    }
+    else if (errorMessage.toLower().contains(QString("moov atom not found")))
+    {
         _nwComm->updateWithMessage(tr("File is corrupt"));
         _engine->playlist().clear();
     }
