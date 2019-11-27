@@ -2047,7 +2047,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         if (!popup) {
             popup = new DFloatingMessage(DFloatingMessage::TransientType, this);
         }
-        if (!success) {
+        if (success) {
             popup->setIcon(QIcon(":/resources/icons/icon_toast_sucess.svg"));
             popup->setMessage(tr("The screenshot is saved"));
             popup->setGeometry(width() / 2 - 50, height() - 125, 130, 48);

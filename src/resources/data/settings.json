@@ -219,13 +219,13 @@
                             "key": "vol_up",
                             "name": "Volume up",
                             "type": "shortcut",
-                            "default": "Up"
+                            "default": "Ctrl+Alt+Up"
                         },
                         {
                             "key": "vol_down",
                             "name": "Volume down",
                             "type": "shortcut",
-                            "default": "Down"
+                            "default": "Ctrl+Alt+Down"
                         },
                         {
                             "key": "mute",
@@ -237,13 +237,13 @@
                             "key": "next_frame",
                             "name": "Next frame",
                             "type": "shortcut",
-                            "default": "N"
+                            "default": "Ctrl+shift+Right"
                         },
                         {
                             "key": "previous_frame",
                             "name": "Previous frame",
                             "type": "shortcut",
-                            "default": "B"
+                            "default": "Ctrl+shift+Left"
                         }
                     ]
                 },

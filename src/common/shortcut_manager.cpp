@@ -105,13 +105,13 @@ ShortcutManager::ShortcutManager()
 
             sk.remove(0, sk.lastIndexOf('.') + 1);
 
-            QStringList keyseqs = val.toStringList();
-            auto modifier = static_cast<Qt::KeyboardModifiers>(keyseqs.value(0).toInt());
-            auto key = static_cast<Qt::Key>(keyseqs.value(1).toInt());
+//            QStringList keyseqs = val.toStringList();
+//            auto modifier = static_cast<Qt::KeyboardModifiers>(keyseqs.value(0).toInt());
+//            auto key = static_cast<Qt::Key>(keyseqs.value(1).toInt());
 
-            qDebug() << "update binding" << sk << QKeySequence(modifier + key);
+            qDebug() << "update binding" << sk << QKeySequence(val.toStringList().at(0));
             _map.remove(_map.key(_keyToAction[sk]));
-            _map[QKeySequence(modifier + key)] = _keyToAction[sk];
+            _map[QKeySequence(val.toStringList().at(0))] = _keyToAction[sk];
             emit bindingsChanged();
         });
 }
@@ -130,18 +130,18 @@ void ShortcutManager::toggleGroupShortcuts(GroupPtr grp, bool on)
     std::for_each(sub.begin(), sub.end(), [=](OptionPtr opt) {
         if (opt->viewType() != "shortcut") return;
 
-        QStringList keyseqs = opt->value().toStringList();
-        auto modifier = static_cast<Qt::KeyboardModifiers>(keyseqs.value(0).toInt());
-        auto key = static_cast<Qt::Key>(keyseqs.value(1).toInt());
+//        QStringList keyseqs = opt->value().toStringList();
+//        auto modifier = static_cast<Qt::KeyboardModifiers>(keyseqs.value(0).toInt());
+//        auto key = static_cast<Qt::Key>(keyseqs.value(1).toInt());
 
         QString sk = opt->key();
         sk.remove(0, sk.lastIndexOf('.') + 1);
-        qDebug() << opt->name() << QKeySequence(modifier + key);
+        qDebug() << opt->name() << QKeySequence(opt->value().toStringList().at(0));
 
         if (on) {
-            _map[QKeySequence(modifier + key)] = _keyToAction[sk];
+            _map[QKeySequence(opt->value().toStringList().at(0))] = _keyToAction[sk];
         } else {
-            _map.remove(QKeySequence(modifier + key));
+            _map.remove(QKeySequence(opt->value().toStringList().at(0)));
         }
     });
 }
@@ -192,12 +192,12 @@ QString ShortcutManager::toJson()
             if (opt->viewType() != "shortcut") return;
 
             QStringList keyseqs = opt->value().toStringList();
-            auto modifier = static_cast<Qt::KeyboardModifiers>(keyseqs.value(0).toInt());
-            auto key = static_cast<Qt::Key>(keyseqs.value(1).toInt());
+//            auto modifier = static_cast<Qt::KeyboardModifiers>(keyseqs.value(0).toInt());
+//            auto key = static_cast<Qt::Key>(keyseqs.value(1).toInt());
 
             QJsonObject jsonItem;
             jsonItem.insert("name", qApp->translate("QObject", opt->name().toUtf8().data()));
-            jsonItem.insert("value", QKeySequence(modifier + key).toString(QKeySequence::PortableText));
+            jsonItem.insert("value", QKeySequence(opt->value().toStringList().at(0)).toString(QKeySequence::PortableText));
             jsonItems.append(jsonItem);
 
         });

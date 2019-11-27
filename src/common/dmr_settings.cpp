@@ -69,7 +69,7 @@ Settings::Settings()
                     emit subtitleChanged(key, value);
             });
 
-    //qDebug() << "keys" << _settings->keys();
+    qDebug() << "keys" << _settings->keys();
 
     QFontDatabase fontDatabase;
     auto fontFamliy = _settings->option("subtitle.font.family");
