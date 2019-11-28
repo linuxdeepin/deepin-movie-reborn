@@ -890,7 +890,10 @@ public:
             QSize size(roundedW, m_thumbnailFixed);
             resizeThumbnail(rounded, size);
         }
-        _thumb->setPixmap(rounded);
+        if (!_visiblThumb) {
+            _thumb->setPixmap(rounded);
+            _visiblThumb = !_visiblThumb;
+        }
 
 //        QTime t(0, 0, 0);
 //        t = t.addSecs(secs);
@@ -906,7 +909,10 @@ public:
     void updateWithPreview(const QPoint& pos) {
         resizeWithContent();
 //        move(pos.x(), pos.y()+0);
-        show(pos.x(), pos.y()+10);
+        if (_visiblThumb) {
+            show(pos.x(), pos.y()+10);
+            _visiblThumb = !_visiblThumb;
+        }
     }
 
 signals:
@@ -970,6 +976,7 @@ private:
     QLabel *_time;
     ThumbnailTime *_timebg;
     int m_thumbnailFixed = 178;
+    bool _visiblThumb = false;
 };
 
 class VolumeSlider: public DArrowRectangle {
