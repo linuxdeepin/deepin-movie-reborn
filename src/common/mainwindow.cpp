@@ -1749,7 +1749,6 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                 if(!_fullscreentimelable){
                     _fullscreentimelable = new QLabel;
                     _fullscreentimelable->setAttribute(Qt::WA_TranslucentBackground);
-                    _fullscreentimelable->setStyleSheet("background:transparent");
                     _fullscreentimelable->setWindowFlags(Qt::FramelessWindowHint);
                     _fullscreentimelable->setParent(this);
                     _fullscreentimelable->setWindowFlags(_fullscreentimelable->windowFlags()|Qt::Dialog);
