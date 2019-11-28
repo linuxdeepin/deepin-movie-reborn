@@ -106,6 +106,7 @@ public:
 
     static QString lastOpenedPath();
 
+    void reflectActionToUI(ActionFactory::ActionKind);
 signals:
     void windowEntered();
     void windowLeaved();
@@ -181,7 +182,7 @@ private:
     void handleSettings();
     void updateSizeConstraints();
     void toggleUIMode();
-    void reflectActionToUI(ActionFactory::ActionKind);
+
     bool insideToolsArea(const QPoint &p);
     void switchTheme();
     bool isActionAllowed(ActionFactory::ActionKind kd, bool fromUI, bool isShortcut);
