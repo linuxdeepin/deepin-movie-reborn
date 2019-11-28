@@ -2082,13 +2082,25 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         }
         if (success) {
             popup->setIcon(QIcon(":/resources/icons/icon_toast_sucess.svg"));
-            popup->setMessage(tr("The screenshot is saved"));
-            popup->setGeometry(width() / 2 - 50, height() - 125, 130, 48);
+            QString strText = QString(tr("The screenshot is saved"));
+            DFontSizeManager::instance()->bind(this, DFontSizeManager::T6);
+            QFont font = DFontSizeManager::instance()->get(DFontSizeManager::T6);
+            QFontMetrics fm(font);
+            auto w = fm.boundingRect(strText).width();
+            popup->setMessage(strText);
+            popup->resize(w + 60, 48);
+            popup->move((width() - popup->width()) / 2, height() - 125);
             popup->show();
         } else {
             popup->setIcon(QIcon(":/resources/icons/fail.svg"));
-            popup->setMessage(tr("Failed to save the screenshot"));
-            popup->setGeometry(width() / 2 - 50, height() - 125, 150, 48);
+            QString strText = QString(tr("Failed to save the screenshot"));
+            DFontSizeManager::instance()->bind(this, DFontSizeManager::T6);
+            QFont font = DFontSizeManager::instance()->get(DFontSizeManager::T6);
+            QFontMetrics fm(font);
+            auto w = fm.boundingRect(strText).width();
+            popup->setMessage(strText);
+            popup->resize(w + 60, 48);
+            popup->move((width() - popup->width()) / 2, height() - 125);
             popup->show();
         }
 #endif

@@ -56,6 +56,7 @@ class ToolTip: public QFrame {
 public:
     explicit ToolTip(QWidget *parent = nullptr)
         : QFrame(parent) {
+        setAttribute(Qt::WA_DeleteOnClose);
         setWindowFlags(windowFlags() | Qt::ToolTip);
         setAttribute(Qt::WA_TranslucentBackground);
         resetSize();

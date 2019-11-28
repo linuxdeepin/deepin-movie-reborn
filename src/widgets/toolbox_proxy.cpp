@@ -1556,11 +1556,19 @@ void ToolboxProxy::setup()
     };
 
     for (unsigned int i = 0; i < sizeof(btns) / sizeof(btns[0]); i++) {
-        btns[i]->setToolTip(hints[i]);
-        auto t = new Tip(QPixmap(), hints[i], parentWidget());
-        t->setProperty("for", QVariant::fromValue<QWidget *>(btns[i]));
-        btns[i]->setProperty("HintWidget", QVariant::fromValue<QWidget *>(t));
-        btns[i]->installEventFilter(th);
+        if (i < sizeof(btns) / sizeof(btns[0]) / 2) {
+            btns[i]->setToolTip(hints[i]);
+            auto t = new Tip(QPixmap(), hints[i], parentWidget());
+            t->setProperty("for", QVariant::fromValue<QWidget *>(btns[i]));
+            btns[i]->setProperty("HintWidget", QVariant::fromValue<QWidget *>(t));
+            btns[i]->installEventFilter(th);
+        } else {
+            auto btn = dynamic_cast<ToolButton *>(btns[i]);
+            btn->setTooTipText(hints[i]);
+            btn->setProperty("TipId", attrs[i]);
+            connect(btn, &ToolButton::entered, this, &ToolboxProxy::buttonEnter);
+            connect(btn, &ToolButton::leaved, this, &ToolboxProxy::buttonLeave);
+        }
     }
 
     connect(_engine, &PlayerEngine::stateChanged, this, &ToolboxProxy::updatePlayState);
