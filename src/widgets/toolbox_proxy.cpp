@@ -830,8 +830,8 @@ public:
         setShadowYOffset(4);
         setShadowXOffset(0);
         setShadowBlurRadius(6);
-        setArrowWidth(10);
-        setArrowHeight(5);
+        setArrowWidth(0);
+        setArrowHeight(0);
 //        setArrowWidth(18);
 //        setArrowHeight(10);
 //        DPalette pa_cb = DApplicationHelper::instance()->palette(this);
@@ -906,7 +906,7 @@ public:
     void updateWithPreview(const QPoint& pos) {
         resizeWithContent();
 //        move(pos.x(), pos.y()+0);
-        show(pos.x(), pos.y()+15);
+        show(pos.x(), pos.y()+10);
     }
 
 signals:
@@ -1535,11 +1535,6 @@ void ToolboxProxy::setup()
     _right->addWidget(_listBtn);
 
     // these tooltips is not used due to deepin ui design
-    _playBtn->setToolTip(tr("Play/Pause"));
-    //_volBtn->setToolTip(tr("Volume"));
-    _prevBtn->setToolTip(tr("Previous"));
-    _nextBtn->setToolTip(tr("Next"));
-
     auto th = new TooltipHandler(this);
     QWidget *btns[] = {
         _playBtn, _prevBtn, _nextBtn, _subBtn, _fsBtn, _listBtn
@@ -1554,18 +1549,11 @@ void ToolboxProxy::setup()
     };
 
     for (unsigned int i = 0; i < sizeof(btns) / sizeof(btns[0]); i++) {
-        if (i < sizeof(btns) / sizeof(btns[0]) / 2) {
-            auto t = new Tip(QPixmap(), hints[i], parentWidget());
-            t->setProperty("for", QVariant::fromValue<QWidget *>(btns[i]));
-            btns[i]->setProperty("HintWidget", QVariant::fromValue<QWidget *>(t));
-            btns[i]->installEventFilter(th);
-        } else {
-            auto *btn = dynamic_cast<ToolButton *>(btns[i]);
-            btn->setTooTipText(hints[i]);
-            btn->setProperty("TipId", attrs[i]);
-            connect(btn, &ToolButton::entered, this, &ToolboxProxy::buttonEnter);
-            connect(btn, &ToolButton::leaved, this, &ToolboxProxy::buttonLeave);
-        }
+        btns[i]->setToolTip(hints[i]);
+        auto t = new Tip(QPixmap(), hints[i], parentWidget());
+        t->setProperty("for", QVariant::fromValue<QWidget *>(btns[i]));
+        btns[i]->setProperty("HintWidget", QVariant::fromValue<QWidget *>(t));
+        btns[i]->installEventFilter(th);
     }
 
     connect(_engine, &PlayerEngine::stateChanged, this, &ToolboxProxy::updatePlayState);
