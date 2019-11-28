@@ -74,6 +74,7 @@ Tip::Tip(const QPixmap &icon, const QString &text, QWidget *parent)
 
 //    setWindowFlags(Qt::ToolTip | Qt::FramelessWindowHint);
 //    setAttribute(Qt::WA_TranslucentBackground);
+    setMaximumWidth(_fontMinWidth);
     setObjectName("Tip");
     setContentsMargins(0, 0, 0, 0);
 
@@ -97,8 +98,13 @@ Tip::Tip(const QPixmap &icon, const QString &text, QWidget *parent)
 
     d->textLable = new DLabel(text);
     d->textLable->setObjectName("TipText");
-    d->textLable->setAlignment(Qt::AlignCenter);
+    d->textLable->setAlignment(Qt::AlignTop);
+    d->textLable->setMaximumWidth(_fontMinWidth);
+    d->textLable->setWordWrap(true);
     DFontSizeManager::instance()->bind(d->textLable, DFontSizeManager::T8);
+    DPalette pal_text = DApplicationHelper::instance()->palette(d->textLable);
+    pal_text.setBrush(DPalette::Text, pal_text.color(DPalette::ToolTipText));
+    d->textLable->setPalette(pal_text);
 //    DPalette pa_name = DApplicationHelper::instance()->palette(d->textLable);
 //    pa_name.setBrush(DPalette::Text, pa_name.color(DPalette::ToolTipText));
 //    pa_name.setBrush(DPalette::ToolTipText, pa_name.color(DPalette::ToolTipText));
@@ -118,7 +124,7 @@ Tip::Tip(const QPixmap &icon, const QString &text, QWidget *parent)
     bodyShadow->setOffset(0, 2.0);
 //    this->setGraphicsEffect(bodyShadow);
     hide();
-    d->textLable->hide();
+//    d->textLable->hide();
 
     //setFixedHeight(32);
 }
@@ -296,26 +302,6 @@ void Tip::paintEvent(QPaintEvent *)
     painterPath.addRoundedRect(rect, d->radius, d->radius);
     pt.drawPath(painterPath);
 
-    DPalette pal_text = DApplicationHelper::instance()->palette(this);
-    pal_text.setBrush(DPalette::Text, pal_text.color(DPalette::ToolTipText));
-    this->setPalette(pal_text);
-    pt.setPen(pal_text.color(DPalette::ToolTipText));
-    if(DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
-        pt.setPen(QColor(55, 55, 55));
-    }
-    else if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
-        pt.setPen(QColor("#C0C6D4"));
-    }
-    else {
-        pt.setPen(QColor(55, 55, 55));
-    }
-
-    DFontSizeManager::instance()->bind(this, DFontSizeManager::T8);
-    QFont font = DFontSizeManager::instance()->get(DFontSizeManager::T8);
-    QFontMetrics fm(font);
-    auto w = fm.boundingRect(m_strText).width();
-    auto h = fm.height();
-    pt.drawText((rect.width() - w)/2, (rect.height() + h/2)/2, m_strText);
 }
 #endif
 
@@ -333,7 +319,6 @@ void Tip::resetSize()
     QFontMetrics fm(font);
     auto w = fm.boundingRect(m_strText).width();
     auto h = fm.height();
-    resize(w+14, h+8);
 }
 
 

@@ -69,27 +69,41 @@ public:
     }
 };
 
+class InfoBottom: public QWidget
+{
+    Q_OBJECT
+public:
+    InfoBottom(){}
+
+protected:
+    virtual void paintEvent(QPaintEvent *ev) {
+        QPainter pt(this);
+        pt.setRenderHint(QPainter::Antialiasing);
+
+        if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
+            pt.setPen(QColor(0, 0, 0, 20));
+            pt.setBrush(QBrush(QColor(255, 255, 255, 255)));
+        }
+        else if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
+            pt.setPen(QColor(255, 255, 255, 20));
+            pt.setBrush(QBrush(QColor(45, 45, 45, 250)));
+        }
+
+        QRect rect = this->rect();
+        rect.setWidth(rect.width() - 1);
+        rect.setHeight(rect.height() - 1);
+
+        QPainterPath painterPath;
+        painterPath.addRoundedRect(rect, 10, 10);
+        pt.drawPath(painterPath);
+    }
+};
+
 class MovieInfoDialog: public DAbstractDialog
 {
     Q_OBJECT
 public:
     MovieInfoDialog(const struct PlayItemInfo &);
-};
-
-class InfoBottom: public QWidget
-{
-    Q_OBJECT
-public:
-    InfoBottom();
-
-    void setInfoBgTheme(ThemeTYpe themeType = defaultTheme);
-
-protected:
-    virtual void paintEvent(QPaintEvent *ev);
-
-private:
-    bool m_bTheme;
-    ThemeTYpe m_themeType;
 };
 
 

@@ -31,6 +31,7 @@
 #include "mpv_proxy.h"
 #include "playlist_model.h"
 #include "utils.h"
+#include "tip.h"
 #include <QDebug>
 
 DWIDGET_USE_NAMESPACE
@@ -43,6 +44,45 @@ DWIDGET_USE_NAMESPACE
 //#define MV_FILE_PATH tr("File path")
 
 namespace dmr {
+class ToolTipEvent: public QObject {
+public:
+    ToolTipEvent(QObject *parent): QObject(parent) {}
+
+protected:
+    bool eventFilter(QObject *obj, QEvent *event) {
+        switch (event->type()) {
+        case QEvent::Enter:
+        case QEvent::ToolTip: {
+            QHelpEvent *he = static_cast<QHelpEvent *>(event);
+            auto tip = obj->property("HintWidget").value<Tip *>();
+            auto btn = tip->property("for").value<QWidget *>();
+            tip->setText(btn->toolTip());
+            QThread::msleep(100);
+            tip->show();
+            tip->raise();
+            tip->adjustSize();
+
+            QPoint pos = btn->pos();
+            pos.rx() = tip->parentWidget()->rect().width()/2 - tip->width()/2;
+            pos.ry() = tip->parentWidget()->rect().bottom() - tip->height() - btn->height() - 15;
+            tip->move(pos);
+            return true;
+        }
+
+        case QEvent::Leave: {
+            auto parent = obj->property("HintWidget").value<Tip *>();
+            parent->hide();
+            event->ignore();
+
+        }
+        default:
+            break;
+        }
+
+        return QObject::eventFilter(obj, event);
+    }
+};
+
 MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
     : DAbstractDialog(nullptr)
 {
@@ -91,7 +131,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
 
     auto *nm = new DLabel(this);
     DFontSizeManager::instance()->bind(nm, DFontSizeManager::T8);
-    nm->setForegroundRole(DPalette::TextTitle);
+    nm->setForegroundRole(DPalette::BrightText);
     nm->setText(nm->fontMetrics().elidedText(QFileInfo(mi.filePath).fileName(), Qt::ElideMiddle, 260));
     ml->addWidget(nm);
     ml->setAlignment(nm, Qt::AlignHCenter);
@@ -114,6 +154,8 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
     form->setLabelAlignment(Qt::AlignLeft);
     form->setFormAlignment(Qt::AlignCenter);
 
+    QList<DLabel*> tipLst;
+    tipLst.clear();
 #define ADD_ROW(title, field)  do { \
     auto f = new DLabel(title, this); \
     f->setFixedSize(55, 45); \
@@ -127,6 +169,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
     DFontSizeManager::instance()->bind(t, DFontSizeManager::T8); \
     t->setForegroundRole(DPalette::TextTitle); \
     form->addRow(f, t); \
+    tipLst.append(t); \
 } while (0)
 
     auto title = new DLabel(tr("Film info"), this);
@@ -152,32 +195,32 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
         ADD_ROW(tr("File path"), mi.filePath);
     }
 
+    auto th = new ToolTipEvent(this);
+    if (tipLst.size() > 1) {
+        auto filePathLbl = tipLst.last();
+        filePathLbl->setToolTip(tmp->text());
+        auto t = new Tip(QPixmap(), tmp->text(), this);
+        t->setProperty("for", QVariant::fromValue<QWidget *>(filePathLbl));
+        filePathLbl->setProperty("HintWidget", QVariant::fromValue<QWidget *>(t));
+        filePathLbl->installEventFilter(th);
+    }
+
     delete tmp;
     tmp = nullptr;
 
 #undef ADD_ROW
 
     connect(DApplicationHelper::instance(), &DApplicationHelper::themeTypeChanged, this, [ = ] {
-        nm->setForegroundRole(DPalette::TextTitle);
-        title->setForegroundRole(DPalette::TextTitle);
+        nm->setForegroundRole(DPalette::BrightText);
+        title->setForegroundRole(DPalette::Text);
     });
 
-    DPalette pal_this = DApplicationHelper::instance()->palette(this);
     if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
-        pal_this.setBrush(DPalette::Window, QBrush(QColor(248, 248, 248, 0.8)));
-        this->setPalette(pal_this);
         closeBt->setNormalPic(INFO_CLOSE_LIGHT);
-        infoRect->setInfoBgTheme(lightTheme);
     } else if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
-        pal_this.setBrush(DPalette::Window, QBrush(QColor(37, 37, 37, 0.8)));
-        this->setPalette(pal_this);
         closeBt->setNormalPic(INFO_CLOSE_DARK);
-        infoRect->setInfoBgTheme(darkTheme);
     } else {
-        pal_this.setBrush(DPalette::Window, QBrush(QColor(248, 248, 248, 0.8)));
-        this->setPalette(pal_this);
         closeBt->setNormalPic(INFO_CLOSE_LIGHT);
-        infoRect->setInfoBgTheme(lightTheme);
     }
 
 //#if DTK_VERSION > DTK_VERSION_CHECK(2, 0, 6, 0)
@@ -187,39 +230,6 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
 ////    DThemeManager::instance()->registerWidget(this);
 ////    closeBt->setStyleSheet(DThemeManager::instance()->getQssForWidget("DWindowCloseButton", "light"));
     //#endif
-}
-
-InfoBottom::InfoBottom()
-{
-}
-
-void InfoBottom::setInfoBgTheme(ThemeTYpe themeType)
-{
-    m_themeType = themeType;
-    update();
-}
-
-void InfoBottom::paintEvent(QPaintEvent *ev)
-{
-    QPainter pt(this);
-    pt.setRenderHint(QPainter::Antialiasing);
-
-    if (lightTheme == m_themeType) {
-        pt.setPen(QColor(0, 0, 0, 20));
-        pt.setBrush(QBrush(QColor(255, 255, 255, 255)));
-    } else if (darkTheme == m_themeType) {
-        pt.setPen(QColor(255, 255, 255, 20));
-        pt.setBrush(QBrush(QColor(45, 45, 45, 250)));
-    }
-
-    QRect rect = this->rect();
-    rect.setWidth(rect.width() - 1);
-    rect.setHeight(rect.height() - 1);
-
-    QPainterPath painterPath;
-    painterPath.addRoundedRect(rect, 10, 10);
-    pt.drawPath(painterPath);
-
 }
 
 }

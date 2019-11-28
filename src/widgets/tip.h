@@ -74,6 +74,7 @@ private:
     QScopedPointer<TipPrivate> d_ptr;
     Q_DECLARE_PRIVATE_D(qGetPtrHelper(d_ptr), Tip)
     QString m_strText;
+    int _fontMinWidth = 300;
 };
 }
 #endif /* ifndef _DMR_TIP_H */
