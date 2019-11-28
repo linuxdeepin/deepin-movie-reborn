@@ -330,7 +330,9 @@ namespace dmr {
 
         QPixmap pixmap3;
         QImage image(pixmap.size(),QImage::Format_Alpha8);
+        image.fill(QColor(0, 0, 0, 0));
         image.setDevicePixelRatio(qApp->devicePixelRatio());
+//        QImage image=utils::LoadHiDPIImage(":/resources/icons/light/init-light-bac.svg");
         pixmap3=pixmap3.fromImage(image);
         QPixmap pixmap4/*(":/resources/icons/dark/init-splash.svg")*/;
         QImage img2=utils::LoadHiDPIImage(":/resources/icons/dark/init-splash.svg");
@@ -340,7 +342,6 @@ namespace dmr {
         p1.drawPixmap(98,127,pixmap4);
         bg_light=pixmap3.toImage();
         bg_light.setDevicePixelRatio(qApp->devicePixelRatio());
-//        bg_light = utils::LoadHiDPIImage(":/resources/icons/light/init-splash.svg");
     }
 
     void MpvGLWidget::initializeGL() 
