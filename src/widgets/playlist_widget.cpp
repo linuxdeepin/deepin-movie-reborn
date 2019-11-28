@@ -230,10 +230,10 @@ public:
         auto th = new PlayItemTooltipHandler(this);
         auto t = new Tip(QPixmap(), _pif.mi.title, NULL);
         t->setWindowFlags(Qt::ToolTip | Qt::CustomizeWindowHint);
+        t->setText(_pif.mi.title);
         t->setAttribute(Qt::WA_TranslucentBackground);
-        t->setMaximumWidth(200);
         t->setProperty("for", QVariant::fromValue<QWidget *>(this));
-        t->layout()->setContentsMargins(0, 7, 0, 7);
+        t->layout()->setContentsMargins(0, 20, 0, 10);
         t->hide();
         setProperty("HintWidget", QVariant::fromValue<QWidget *>(t));
         installEventFilter(th);
