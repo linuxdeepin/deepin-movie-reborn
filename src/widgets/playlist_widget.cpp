@@ -795,6 +795,7 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
                     _mw->requestAction(ActionFactory::ActionKind::GotoPlaylistSelected,
                                        false, args);
                     togglePopup();
+                    _mw->reflectActionToUI(ActionFactory::TogglePlaylist);
                     break;
                 }
             }
