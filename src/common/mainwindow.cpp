@@ -2077,32 +2077,34 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         notification.callWithArgumentList(QDBus::AutoDetect, "Notify", arg);
 
 #else
+
+#define POPUP_ADAPTER(icon, text)  do { \
+    popup->setIcon(icon);\
+    DFontSizeManager::instance()->bind(this, DFontSizeManager::T6);\
+    QFont font = DFontSizeManager::instance()->get(DFontSizeManager::T6);\
+    QFontMetrics fm(font);\
+    auto w = fm.boundingRect(text).width();\
+    popup->setMessage(text);\
+    popup->resize(w + 60, 48);\
+    popup->move((width() - popup->width()) / 2, height() - 125);\
+    popup->show();\
+} while (0)
+
         if (!popup) {
             popup = new DFloatingMessage(DFloatingMessage::TransientType, this);
         }
         if (success) {
-            popup->setIcon(QIcon(":/resources/icons/icon_toast_sucess.svg"));
-            QString strText = QString(tr("The screenshot is saved"));
-            DFontSizeManager::instance()->bind(this, DFontSizeManager::T6);
-            QFont font = DFontSizeManager::instance()->get(DFontSizeManager::T6);
-            QFontMetrics fm(font);
-            auto w = fm.boundingRect(strText).width();
-            popup->setMessage(strText);
-            popup->resize(w + 60, 48);
-            popup->move((width() - popup->width()) / 2, height() - 125);
-            popup->show();
+            const QIcon icon = QIcon(":/resources/icons/icon_toast_sucess.svg");
+            QString text = QString(tr("The screenshot is saved"));
+            POPUP_ADAPTER(icon, text);
         } else {
-            popup->setIcon(QIcon(":/resources/icons/fail.svg"));
-            QString strText = QString(tr("Failed to save the screenshot"));
-            DFontSizeManager::instance()->bind(this, DFontSizeManager::T6);
-            QFont font = DFontSizeManager::instance()->get(DFontSizeManager::T6);
-            QFontMetrics fm(font);
-            auto w = fm.boundingRect(strText).width();
-            popup->setMessage(strText);
-            popup->resize(w + 60, 48);
-            popup->move((width() - popup->width()) / 2, height() - 125);
-            popup->show();
+            const QIcon icon = QIcon(":/resources/icons/fail.svg");
+            QString text = QString(tr("Failed to save the screenshot"));
+            POPUP_ADAPTER(icon, text);
         }
+
+#undef POPUP_ADAPTER
+
 #endif
         break;
     }
