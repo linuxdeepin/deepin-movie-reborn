@@ -1278,7 +1278,7 @@ void ToolboxProxy::setup()
     connect(_progBar, &DSlider::sliderMoved, this, &ToolboxProxy::setProgress);
     connect(_progBar, &DSlider::valueChanged, this, &ToolboxProxy::setProgress);
     connect(_progBar, &DMRSlider::hoverChanged, this, &ToolboxProxy::progressHoverChanged);
-//    connect(_progBar, &DMRSlider::leave, [=]() { _previewer->hide(); });
+    connect(_progBar, &DMRSlider::leave, [=]() { _previewer->hide(); });
     connect(&Settings::get(), &Settings::baseChanged,
         [=](QString sk, const QVariant& val) {
             if (sk == "base.play.mousepreview") {
