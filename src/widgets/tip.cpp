@@ -99,7 +99,7 @@ Tip::Tip(const QPixmap &icon, const QString &text, QWidget *parent)
     d->textLable = new DLabel(text);
     d->textLable->setObjectName("TipText");
     d->textLable->setAlignment(Qt::AlignTop);
-    d->textLable->setMaximumWidth(_fontMinWidth);
+    d->textLable->setMaximumWidth(this->width());
     d->textLable->setWordWrap(true);
     DFontSizeManager::instance()->bind(d->textLable, DFontSizeManager::T8);
     DPalette pal_text = DApplicationHelper::instance()->palette(d->textLable);
@@ -307,18 +307,16 @@ void Tip::paintEvent(QPaintEvent *)
 
 void Tip::resizeEvent(QResizeEvent *ev)
 {
-    resetSize();
-    update();
+//    resetSize();
+//    update();
     return QWidget::resizeEvent(ev);
 }
 
-void Tip::resetSize()
+void Tip::resetSize(const int maxWidth)
 {
-    DFontSizeManager::instance()->bind(this, DFontSizeManager::T8);
-    QFont font = DFontSizeManager::instance()->get(DFontSizeManager::T8);
-    QFontMetrics fm(font);
-    auto w = fm.boundingRect(m_strText).width();
-    auto h = fm.height();
+    Q_D(Tip);
+    this->setMaximumWidth(maxWidth);
+    d->textLable->setMaximumWidth(maxWidth);
 }
 
 

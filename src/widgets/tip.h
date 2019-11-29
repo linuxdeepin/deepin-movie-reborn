@@ -69,8 +69,8 @@ protected:
     void enterEvent(QEvent* e) override;
     virtual void resizeEvent(QResizeEvent *ev) Q_DECL_OVERRIDE;
 
-private:
-    void resetSize();
+public:
+    void resetSize(const int maxWidth);
 
 private:
     QScopedPointer<TipPrivate> d_ptr;

@@ -40,18 +40,13 @@
 #include <DGuiApplicationHelper>
 #include <DApplication>
 
+#define TIP_MAX_WIDTH 300
 const QString LOGO_BIG = ":/resources/icons/logo-big.svg";
 const QString INFO_CLOSE_LIGHT = ":/resources/icons/light/info_close_light.svg";
 const QString INFO_CLOSE_DARK = ":/resources/icons/dark/info_close_dark.svg";
 
 DWIDGET_USE_NAMESPACE
 DGUI_USE_NAMESPACE
-
-enum ThemeTYpe {
-    lightTheme,
-    darkTheme,
-    defaultTheme
-};
 
 namespace dmr {
 struct PlayItemInfo;

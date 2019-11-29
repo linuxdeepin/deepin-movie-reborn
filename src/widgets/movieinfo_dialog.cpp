@@ -61,6 +61,7 @@ protected:
             tip->show();
             tip->raise();
             tip->adjustSize();
+            tip->resetSize(TIP_MAX_WIDTH);
 
             QPoint pos = btn->pos();
             pos.rx() = tip->parentWidget()->rect().width()/2 - tip->width()/2;
