@@ -46,4 +46,7 @@ void GenerateSettingTranslate()
     auto shortcuts_sub_sub_forwardName = QObject::tr("0.5s forward");
     auto subtitle_font_familyName = QObject::tr("Font");
     auto subtitle_font_sizeName = QObject::tr("Font Size");
+    auto group_shortcuts_fullscreen = QObject::tr("Exit fullscreen/mini mode");
+    auto group_shortcuts_help = QObject::tr("Help");
+    auto group_shortcuts_showshortcuts = QObject::tr("Display shortcuts");
 }

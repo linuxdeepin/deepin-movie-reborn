@@ -60,6 +60,7 @@ ShortcutManager::ShortcutManager()
         {"seek_backward", ActionFactory::ActionKind::SeekBackward},
         {"seek_backward_large", ActionFactory::ActionKind::SeekBackwardLarge},
         {"fullscreen", ActionFactory::ActionKind::ToggleFullscreen},
+        {"exitfullscreen", ActionFactory::ActionKind::QuitFullscreen},
         {"playlist", ActionFactory::ActionKind::TogglePlaylist},
         {"accel", ActionFactory::ActionKind::AccelPlayback},
         {"decel", ActionFactory::ActionKind::DecelPlayback},
@@ -201,6 +202,24 @@ QString ShortcutManager::toJson()
             jsonItems.append(jsonItem);
 
         });
+
+        if(grp->name() == "File")
+        {
+            QJsonObject jsonItem_space;
+            jsonItem_space.insert("name", qApp->translate("QObject", ""));
+            jsonItem_space.insert("value", "");
+            jsonItems.append(jsonItem_space);
+
+            QJsonObject jsonItem;
+            jsonItem.insert("name", qApp->translate("QObject", "Help"));
+            jsonItem.insert("value", "F1");
+            jsonItems.append(jsonItem);
+
+            QJsonObject jsonItem_show;
+            jsonItem.insert("name", qApp->translate("QObject", "Display shortcuts"));
+            jsonItem.insert("value", "Ctrl+Shift+?");
+            jsonItems.append(jsonItem);
+        }
 
         jsonGroup.insert("groupItems", jsonItems);
         jsonGroups.append(jsonGroup);

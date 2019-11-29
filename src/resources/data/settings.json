@@ -159,13 +159,25 @@
                             "key": "fullscreen",
                             "name": "Fullscreen",
                             "type": "shortcut",
-                            "default": "F11"
+                            "default": "Return"
+                        },
+                        {
+                            "key": "exitfullscreen",
+                            "name": "Exit fullscreen/mini mode",
+                            "type": "shortcut",
+                            "default": "Esc"
                         },
                         {
                             "key": "playlist",
                             "name": "Playlist",
                             "type": "shortcut",
                             "default": "F3"
+                        },
+                        {
+                            "key": "del_single_playlist",
+                            "name": "Delete single playlist",
+                            "type": "shortcut",
+                            "default": "Del"
                         },
                         {
                             "key": "accel",
@@ -184,12 +196,6 @@
                             "name": "Reset speed",
                             "type": "shortcut",
                             "default": "R"
-                        },
-                        {
-                            "key": "del_single_playlist",
-                            "name": "Delete single playlist",
-                            "type": "shortcut",
-                            "default": "Del"
                         },
                         {
                             "key": "movie_info",
@@ -234,16 +240,64 @@
                             "default": "M"
                         },
                         {
-                            "key": "next_frame",
-                            "name": "Next frame",
-                            "type": "shortcut",
-                            "default": "Ctrl+shift+Right"
-                        },
-                        {
                             "key": "previous_frame",
                             "name": "Previous frame",
                             "type": "shortcut",
                             "default": "Ctrl+shift+Left"
+                        },
+                        {
+                            "key": "next_frame",
+                            "name": "Next frame",
+                            "type": "shortcut",
+                            "default": "Ctrl+shift+Right"
+                        }
+                    ]
+                },
+                {
+                    "key": "screenshot",
+                    "name": "Screenshot",
+                    "options": [
+                        {
+                            "key": "enable",
+                            "type": "checkbox",
+                            "hide": true,
+                            "default": "true"
+                        },
+                        {
+                            "key": "screenshot",
+                            "name": "Film screenshot",
+                            "type": "shortcut",
+                            "default": "Alt+A"
+                        },
+                        {
+                            "key": "burst_screenshot",
+                            "name": "Burst screenshot",
+                            "type": "shortcut",
+                            "default": "Alt+S"
+                        }
+                    ]
+                },
+                {
+                    "key": "sub",
+                    "name": "Subtitle",
+                    "options": [
+                        {
+                            "key": "enable",
+                            "type": "checkbox",
+                            "hide": true,
+                            "default": "true"
+                        },
+                        {
+                            "key": "sub_forward",
+                            "name": "0.5s forward",
+                            "type": "shortcut",
+                            "default": "Shift+Right"
+                        },
+                        {
+                            "key": "sub_backward",
+                            "name": "0.5s backward",
+                            "type": "shortcut",
+                            "default": "Shift+Left"
                         }
                     ]
                 },
@@ -274,54 +328,6 @@
                             "name": "Open next",
                             "type": "shortcut",
                             "default": "PgDown"
-                        }
-                    ]
-                },
-                {
-                    "key": "sub",
-                    "name": "Subtitle",
-                    "options": [
-                        {
-                            "key": "enable",
-                            "type": "checkbox",
-                            "hide": true,
-                            "default": "true"
-                        },
-                        {
-                            "key": "sub_forward",
-                            "name": "0.5s forward",
-                            "type": "shortcut",
-                            "default": "Shift+Right"
-                        },
-                        {
-                            "key": "sub_backward",
-                            "name": "0.5s backward",
-                            "type": "shortcut",
-                            "default": "Shift+Left"
-                        }
-                    ]
-                },
-                {
-                    "key": "screenshot",
-                    "name": "Screenshot",
-                    "options": [
-                        {
-                            "key": "enable",
-                            "type": "checkbox",
-                            "hide": true,
-                            "default": "true"
-                        },
-                        {
-                            "key": "screenshot",
-                            "name": "Film screenshot",
-                            "type": "shortcut",
-                            "default": "Alt+A"
-                        },
-                        {
-                            "key": "burst_screenshot",
-                            "name": "Burst screenshot",
-                            "type": "shortcut",
-                            "default": "Alt+S"
                         }
                     ]
                 }
