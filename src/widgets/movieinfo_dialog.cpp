@@ -110,7 +110,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
     layout->addLayout(ml);
 
     auto *pm = new PosterFrame(this);
-    pm->setFixedSize(220, 128);
+    pm->setFixedHeight(128);
 
     auto dpr = qApp->devicePixelRatio();
     QPixmap cover;
