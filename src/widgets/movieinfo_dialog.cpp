@@ -189,8 +189,8 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
     auto fm = tmp->fontMetrics();
     auto w = fm.width(mi.filePath);
     if (w > 360) {
-        auto fp = utils::ElideText(mi.filePath, {200, 40}, QTextOption::WordWrap,
-                                   tmp->font(), Qt::ElideMiddle, fm.height(), 150);
+        auto fp = utils::ElideText(mi.filePath, {200, 40}, QTextOption::WrapAnywhere,
+                                   tmp->font(), Qt::ElideRight, fm.height(), 150);
         ADD_ROW(tr("File path"), fp);
     } else {
         ADD_ROW(tr("File path"), mi.filePath);
@@ -199,8 +199,11 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
     auto th = new ToolTipEvent(this);
     if (tipLst.size() > 1) {
         auto filePathLbl = tipLst.last();
-        filePathLbl->setToolTip(tmp->text());
-        auto t = new Tip(QPixmap(), tmp->text(), this);
+        auto fpWrap = utils::ElideText(tmp->text(), {TIP_MAX_WIDTH, 40}, QTextOption::WrapAtWordBoundaryOrAnywhere,
+                                           tmp->font(), Qt::ElideNone, fm.height(), TIP_MAX_WIDTH);
+        filePathLbl->setToolTip(fpWrap);
+        auto t = new Tip(QPixmap(), fpWrap, this);
+        t->resetSize(TIP_MAX_WIDTH);
         t->setProperty("for", QVariant::fromValue<QWidget *>(filePathLbl));
         filePathLbl->setProperty("HintWidget", QVariant::fromValue<QWidget *>(t));
         filePathLbl->installEventFilter(th);
