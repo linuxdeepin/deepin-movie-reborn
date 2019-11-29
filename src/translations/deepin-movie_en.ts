@@ -242,14 +242,20 @@
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="50"/>
-        <location filename="../common/shortcut_manager.cpp" line="214"/>
+        <location filename="../common/shortcut_manager.cpp" line="232"/>
         <source>Help</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="51"/>
-        <location filename="../common/shortcut_manager.cpp" line="219"/>
+        <location filename="../common/shortcut_manager.cpp" line="237"/>
         <source>Display shortcuts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../common/settings_translation.cpp" line="52"/>
+        <location filename="../common/shortcut_manager.cpp" line="229"/>
+        <source>Settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

@@ -49,4 +49,5 @@ void GenerateSettingTranslate()
     auto group_shortcuts_fullscreen = QObject::tr("Exit fullscreen/mini mode");
     auto group_shortcuts_help = QObject::tr("Help");
     auto group_shortcuts_showshortcuts = QObject::tr("Display shortcuts");
+    auto group_settings = QObject::tr("Settings");
 }
