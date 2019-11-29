@@ -233,7 +233,7 @@ public:
         t->setText(_pif.mi.title);
         t->setAttribute(Qt::WA_TranslucentBackground);
         t->setProperty("for", QVariant::fromValue<QWidget *>(this));
-        t->layout()->setContentsMargins(0, 20, 0, 10);
+        t->layout()->setContentsMargins(5, 10, 5, 10);
         t->hide();
         setProperty("HintWidget", QVariant::fromValue<QWidget *>(t));
         installEventFilter(th);

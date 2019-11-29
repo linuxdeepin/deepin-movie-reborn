@@ -34,6 +34,8 @@
 #include <DPalette>
 #include <DApplicationHelper>
 #include <DFontSizeManager>
+#include <QApplication>
+#include <QDesktopWidget>
 
 namespace dmr
 {
@@ -74,7 +76,7 @@ private:
     QScopedPointer<TipPrivate> d_ptr;
     Q_DECLARE_PRIVATE_D(qGetPtrHelper(d_ptr), Tip)
     QString m_strText;
-    int _fontMinWidth = 300;
+    int _fontMinWidth = QApplication::desktop()->availableGeometry().width();
 };
 }
 #endif /* ifndef _DMR_TIP_H */
