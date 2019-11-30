@@ -95,9 +95,9 @@ protected:
             auto lb = tip->findChild<DLabel *>("TipText");
             lb->setAlignment(Qt::AlignLeft);
 
-            auto msg = splitText(item->toolTip(), 200, QTextOption::WordWrap, lb->font(),
-                                 lb->fontMetrics().height());
-            lb->setText(msg);
+//            auto msg = splitText(item->toolTip(), 200, QTextOption::WordWrap, lb->font(),
+//                                 lb->fontMetrics().height());
+//            lb->setText(msg);
             tip->update();
             tip->show();
             tip->adjustSize();
