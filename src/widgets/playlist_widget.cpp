@@ -163,7 +163,7 @@ public:
 
         setFixedSize(_playlist->width() - 250, 36);
         auto *l = new QHBoxLayout(this);
-        l->setContentsMargins(10, 0, 16, 0);
+        l->setContentsMargins(17, 0, 0, 0);
         l->setSpacing(10);
         setLayout(l);
 
@@ -218,7 +218,8 @@ public:
 
         //_closeBtn = new FloatingButton(this);
         _closeBtn = new DFloatingButton(DStyle::SP_CloseButton, this);
-        _closeBtn->setFixedSize(20, 20);
+        _closeBtn->setIconSize(QSize(28, 28));
+        _closeBtn->setFixedSize(25, 25);
         _closeBtn->setObjectName("CloseBtn");
         _closeBtn->hide();
         connect(_closeBtn, &DFloatingButton::clicked, this, &PlayItemWidget::closeButtonClicked);
@@ -376,7 +377,7 @@ private slots:
 protected:
     void updateClosePosition()
     {
-        auto margin = 4;
+        auto margin = 10;
         auto pl = dynamic_cast<QListWidget *>(parentWidget()->parentWidget());
 //        if (pl->verticalScrollBar()->isVisible())
 //            margin = 10;
@@ -533,14 +534,7 @@ protected:
             DFontSizeManager::instance()->bind(_index, DFontSizeManager::T6, QFont::Medium);
             DFontSizeManager::instance()->bind(_time, DFontSizeManager::T6, QFont::Medium);
 //            QColor bgColor  = pal.color(DPalette::ToolTipBase);
-            QColor bgColor(255, 255, 255, 51);
-            if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ) {
-                bgColor = QColor(0, 0, 0, 51);
-            }
 
-            QPainterPath pp;
-            pp.addRoundedRect(bgRect, 8, 8);
-            painter.fillPath(pp, bgColor);
         }
         else {
             DPalette pa_name = DApplicationHelper::instance()->palette(_name);
@@ -554,14 +548,23 @@ protected:
         }
 
         if (m_bIsSelect) {
-            int width = this->width();
-            int heigh = this->height();
-            int penwidth = 2;
-            QPalette p(this->palette());
 
-            painter.setPen(QPen(/*QColor(QString("#0081FF"))*/p.highlight().color(), penwidth, Qt::SolidLine));
-            QRectF rectangle(1, 1, width - 2, heigh - 2);
-            painter.drawRoundedRect(rectangle, 8, 8);
+            _time->hide();
+            _closeBtn->show();
+            _closeBtn->raise();
+            QColor bgColor(255, 255, 255, 51);
+            if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ) {
+                bgColor = QColor(0, 0, 0, 51);
+            }
+
+            QPainterPath pp;
+            pp.addRoundedRect(bgRect, 8, 8);
+            painter.fillPath(pp, bgColor);
+
+        }
+        else{
+            _time->show();
+            _closeBtn->hide();
         }
 
         QWidget::paintEvent(pe);
