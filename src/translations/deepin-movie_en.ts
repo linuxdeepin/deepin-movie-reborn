@@ -82,7 +82,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="16"/>
         <source>File</source>
-        <translation type="unfinished"></translation>
+        <translation>Files</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="17"/>
@@ -241,20 +241,20 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="50"/>
         <location filename="../common/shortcut_manager.cpp" line="232"/>
+        <location filename="../common/settings_translation.cpp" line="50"/>
         <source>Help</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="51"/>
         <location filename="../common/shortcut_manager.cpp" line="237"/>
+        <location filename="../common/settings_translation.cpp" line="51"/>
         <source>Display shortcuts</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="52"/>
         <location filename="../common/shortcut_manager.cpp" line="229"/>
+        <location filename="../common/settings_translation.cpp" line="52"/>
         <source>Settings</source>
         <translation type="unfinished"></translation>
     </message>
@@ -690,29 +690,6 @@
     </message>
 </context>
 <context>
-    <name>dmr::MovieInfo</name>
-    <message>
-        <location filename="../libdmr/playlist_model.h" line="67"/>
-        <source>%1G</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../libdmr/playlist_model.h" line="69"/>
-        <source>%1M</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../libdmr/playlist_model.h" line="71"/>
-        <source>%1K</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../libdmr/playlist_model.h" line="73"/>
-        <source>%1</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>dmr::MovieInfoDialog</name>
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="176"/>
@@ -749,8 +726,8 @@
 <context>
     <name>dmr::MpvProxy</name>
     <message>
-        <location filename="../backends/mpv/mpv_proxy.cpp" line="1051"/>
-        <location filename="../backends/mpv/mpv_proxy.cpp" line="1069"/>
+        <location filename="../backends/mpv/mpv_proxy.cpp" line="1050"/>
+        <location filename="../backends/mpv/mpv_proxy.cpp" line="1068"/>
         <source>[internal]</source>
         <translation type="unfinished"></translation>
     </message>
@@ -758,9 +735,9 @@
 <context>
     <name>dmr::PlayItemWidget</name>
     <message>
-        <location filename="../widgets/playlist_widget.cpp" line="212"/>
-        <location filename="../widgets/playlist_widget.cpp" line="255"/>
-        <location filename="../widgets/playlist_widget.cpp" line="479"/>
+        <location filename="../widgets/playlist_widget.cpp" line="213"/>
+        <location filename="../widgets/playlist_widget.cpp" line="256"/>
+        <location filename="../widgets/playlist_widget.cpp" line="480"/>
         <source>File does not exist</source>
         <translation type="unfinished"></translation>
     </message>
@@ -768,25 +745,25 @@
 <context>
     <name>dmr::PlaylistWidget</name>
     <message>
-        <location filename="../widgets/playlist_widget.cpp" line="662"/>
+        <location filename="../widgets/playlist_widget.cpp" line="668"/>
         <source>Playlist</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../widgets/playlist_widget.cpp" line="668"/>
+        <location filename="../widgets/playlist_widget.cpp" line="674"/>
         <source>17个视频</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/playlist_widget.cpp" line="685"/>
+        <location filename="../widgets/playlist_widget.cpp" line="691"/>
         <source>Clear Playlist</source>
         <translation>Empty</translation>
     </message>
     <message>
-        <location filename="../widgets/playlist_widget.cpp" line="852"/>
-        <location filename="../widgets/playlist_widget.cpp" line="1055"/>
-        <location filename="../widgets/playlist_widget.cpp" line="1079"/>
-        <location filename="../widgets/playlist_widget.cpp" line="1131"/>
+        <location filename="../widgets/playlist_widget.cpp" line="858"/>
+        <location filename="../widgets/playlist_widget.cpp" line="1061"/>
+        <location filename="../widgets/playlist_widget.cpp" line="1085"/>
+        <location filename="../widgets/playlist_widget.cpp" line="1137"/>
         <source>%1 videos</source>
         <translation type="unfinished"></translation>
     </message>
