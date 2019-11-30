@@ -206,7 +206,7 @@ public:
         _time = new DLabel(this);
         DFontSizeManager::instance()->bind(_time, DFontSizeManager::T9);
         _time->setProperty("Time", true);
-        //_time->setText(_pif.mi.durationStr());
+        _time->setText(_pif.mi.durationStr());
         if (!_pif.valid) {
             setState(ItemState::Invalid);
             _time->setText(tr("File does not exist"));
@@ -247,7 +247,7 @@ public:
     void updateInfo(const PlayItemInfo &pif)
     {
         _pif = pif;
-        //_time->setText(_pif.mi.durationStr());
+        _time->setText(_pif.mi.durationStr());
         setToolTip(_pif.mi.title);
         updateNameText();
 
@@ -474,7 +474,7 @@ protected:
         //FIXME: there is an potential inconsistency with model if pif did changed
         //(i.e gets deleted).
         _pif.refresh();
-        //_time->setText(_pif.mi.durationStr());
+        _time->setText(_pif.mi.durationStr());
         if (!_pif.valid) {
             setState(ItemState::Invalid);
             _time->setText(tr("File does not exist"));
@@ -554,14 +554,14 @@ protected:
         }
 
         if (m_bIsSelect) {
-//            int width = this->width();
-//            int heigh = this->height();
-//            int penwidth = 2;
-//            QPalette p(this->palette());
+            int width = this->width();
+            int heigh = this->height();
+            int penwidth = 2;
+            QPalette p(this->palette());
 
-//            painter.setPen(QPen(/*QColor(QString("#0081FF"))*/p.highlight().color(), penwidth, Qt::SolidLine));
-//            QRectF rectangle(1, 1, width - 2, heigh - 2);
-//            painter.drawRoundedRect(rectangle, 8, 8);
+            painter.setPen(QPen(/*QColor(QString("#0081FF"))*/p.highlight().color(), penwidth, Qt::SolidLine));
+            QRectF rectangle(1, 1, width - 2, heigh - 2);
+            painter.drawRoundedRect(rectangle, 8, 8);
         }
 
         QWidget::paintEvent(pe);
