@@ -103,9 +103,7 @@ Tip::Tip(const QPixmap &icon, const QString &text, QWidget *parent)
 //    d->textLable->setMaximumWidth(this->width());
     d->textLable->setWordWrap(false);
     DFontSizeManager::instance()->bind(d->textLable, DFontSizeManager::T8);
-    DPalette pal_text = DApplicationHelper::instance()->palette(d->textLable);
-    pal_text.setBrush(DPalette::Text, pal_text.color(DPalette::ToolTipText));
-    d->textLable->setPalette(pal_text);
+    d->textLable->setForegroundRole(DPalette::ToolTipText);
 //    DPalette pa_name = DApplicationHelper::instance()->palette(d->textLable);
 //    pa_name.setBrush(DPalette::Text, pa_name.color(DPalette::ToolTipText));
 //    pa_name.setBrush(DPalette::ToolTipText, pa_name.color(DPalette::ToolTipText));

@@ -108,15 +108,15 @@ protected:
         pal_text.setBrush(DPalette::Text, pal_text.color(DPalette::ToolTipText));
         this->setPalette(pal_text);
         pt.setPen(pal_text.color(DPalette::ToolTipText));
-        if (lightTheme == m_themeType) {
-            pt.setPen(QColor(55, 55, 55));
-        }
-        else if (darkTheme == m_themeType) {
-            pt.setPen(QColor("#C0C6D4"));
-        }
-        else {
-            pt.setPen(QColor(55, 55, 55));
-        }
+//        if (lightTheme == m_themeType) {
+//            pt.setPen(QColor(55, 55, 55));
+//        }
+//        else if (darkTheme == m_themeType) {
+//            pt.setPen(QColor("#C0C6D4"));
+//        }
+//        else {
+//            pt.setPen(QColor(55, 55, 55));
+//        }
 
         DFontSizeManager::instance()->bind(this, DFontSizeManager::T8);
         QFont font = DFontSizeManager::instance()->get(DFontSizeManager::T8);

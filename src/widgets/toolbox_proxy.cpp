@@ -90,9 +90,9 @@ protected:
             tip->raise();
             tip->adjustSize();
 
-            QPoint pos = btn->parentWidget()->mapToParent(btn->pos());
-            pos.rx() = pos.x() + (btn->width() - tip->width()) / 2 + 10;
-            pos.ry() = tip->parentWidget()->rect().bottom() - tip->height() - 83;
+            QPoint pos = btn->parentWidget()->mapToGlobal(btn->pos());
+            pos.rx() = pos.x() + (btn->width() - tip->width()) / 2;
+            pos.ry() = pos.y() - 40;
             tip->move(pos);
             return true;
         }
