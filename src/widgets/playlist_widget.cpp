@@ -211,8 +211,10 @@ public:
             setState(ItemState::Invalid);
             _time->setText(tr("File does not exist"));
         }
-        vl->addWidget(_time);
+//        vl->addWidget(_time);
         vl->addStretch();
+        l->addWidget(_time);
+        l->addSpacing(10);
 
 //        setBg(QString(":/resources/icons/%1/normal/film-bg.svg").arg(qApp->theme()));
 
