@@ -70,7 +70,6 @@ protected:
     virtual void resizeEvent(QResizeEvent *ev) Q_DECL_OVERRIDE;
 
 public:
-    void resetSize(const int minWidth, const int maxWidth);
     void resetSize(const int maxWidth);
 
 private:

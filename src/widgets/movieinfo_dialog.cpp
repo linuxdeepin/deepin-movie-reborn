@@ -51,20 +51,25 @@ public:
 protected:
     bool eventFilter(QObject *obj, QEvent *event) {
         switch (event->type()) {
-        case QEvent::Enter:
+//        case QEvent::Enter:
         case QEvent::ToolTip: {
             QHelpEvent *he = static_cast<QHelpEvent *>(event);
             auto tip = obj->property("HintWidget").value<Tip *>();
             auto btn = tip->property("for").value<QWidget *>();
             tip->setText(btn->toolTip());
-            QThread::msleep(100);
             tip->show();
             tip->raise();
             tip->adjustSize();
 
-            QPoint pos = btn->pos();
-            pos.rx() = tip->parentWidget()->rect().width()/2 - tip->width()/2;
-            pos.ry() = tip->parentWidget()->rect().bottom() - tip->height() - btn->height() - 15;
+//            QPoint pos = btn->pos();
+//            pos.rx() = tip->parentWidget()->rect().width()/2 - tip->width()/2;
+//            pos.ry() = tip->parentWidget()->rect().bottom() - tip->height() - btn->height() - 15;
+            auto pos = he->globalPos() + QPoint{0, 0};
+            auto dw = qApp->desktop()->availableGeometry(btn).width();
+            if (pos.x() + tip->width() > dw) {
+                pos.rx() = dw - tip->width();
+            }
+            pos.ry() = pos.y() - tip->height();
             tip->move(pos);
             return true;
         }
@@ -198,11 +203,11 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
     auto th = new ToolTipEvent(this);
     if (tipLst.size() > 1) {
         auto filePathLbl = tipLst.last();
-        auto fpWrap = utils::ElideText(tmp->text(), {TIP_MAX_WIDTH, 40}, QTextOption::WrapAtWordBoundaryOrAnywhere,
+        auto fpWrap = utils::ElideText(tmp->text(), {TIP_MAX_WIDTH, 40}, QTextOption::WrapAnywhere,
                                            tmp->font(), Qt::ElideNone, fm.height(), TIP_MAX_WIDTH);
         filePathLbl->setToolTip(fpWrap);
-        auto t = new Tip(QPixmap(), fpWrap, this);
-        t->resetSize(TIP_MIN_WIDTH, TIP_MAX_WIDTH);
+        auto t = new Tip(QPixmap(), fpWrap, nullptr);
+        t->resetSize(QApplication::desktop()->availableGeometry().width());
         t->setProperty("for", QVariant::fromValue<QWidget *>(filePathLbl));
         filePathLbl->setProperty("HintWidget", QVariant::fromValue<QWidget *>(t));
         filePathLbl->installEventFilter(th);

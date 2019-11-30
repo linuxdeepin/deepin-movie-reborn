@@ -72,8 +72,9 @@ Tip::Tip(const QPixmap &icon, const QString &text, QWidget *parent)
     DThemeManager::instance()->registerWidget(this);
     Q_D(Tip);
 
-//    setWindowFlags(Qt::ToolTip | Qt::FramelessWindowHint);
-//    setAttribute(Qt::WA_TranslucentBackground);
+    setAttribute(Qt::WA_DeleteOnClose);
+    setWindowFlags(Qt::ToolTip | Qt::CustomizeWindowHint);
+    setAttribute(Qt::WA_TranslucentBackground);
 //    setMaximumWidth(_fontMinWidth);
     setObjectName("Tip");
     setContentsMargins(0, 0, 0, 0);
@@ -312,21 +313,6 @@ void Tip::resizeEvent(QResizeEvent *ev)
     return QWidget::resizeEvent(ev);
 }
 
-void Tip::resetSize(const int minWidth, const int maxWidth)
-{
-    Q_D(Tip);
-    QFont font = DFontSizeManager::instance()->get(DFontSizeManager::T8);
-    QFontMetrics fm(font);
-    auto w = fm.boundingRect(d->textLable->text()).width();
-//    d->textLable->setMinimumWidth(w);
-
-    d->textLable->setWordWrap(true);
-    this->setMinimumWidth(minWidth);
-    this->setMaximumWidth(maxWidth);
-    d->textLable->setMinimumWidth(minWidth - 14);
-    d->textLable->setMaximumWidth(maxWidth - 14);
-}
-
 void Tip::resetSize(const int maxWidth)
 {
     Q_D(Tip);
@@ -334,7 +320,7 @@ void Tip::resetSize(const int maxWidth)
     QFontMetrics fm(font);
     auto w = fm.boundingRect(d->textLable->text()).width();
 
-    if (w > maxWidth) {
+    if (w >= maxWidth - 14) {
         d->textLable->setWordWrap(true);
         this->setFixedWidth(maxWidth);
         d->textLable->setFixedWidth(maxWidth - 14);
