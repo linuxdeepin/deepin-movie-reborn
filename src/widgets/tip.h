@@ -70,13 +70,13 @@ protected:
     virtual void resizeEvent(QResizeEvent *ev) Q_DECL_OVERRIDE;
 
 public:
+    void resetSize(const int minWidth, const int maxWidth);
     void resetSize(const int maxWidth);
 
 private:
     QScopedPointer<TipPrivate> d_ptr;
     Q_DECLARE_PRIVATE_D(qGetPtrHelper(d_ptr), Tip)
     QString m_strText;
-    int _fontMinWidth = QApplication::desktop()->availableGeometry().width();
 };
 }
 #endif /* ifndef _DMR_TIP_H */

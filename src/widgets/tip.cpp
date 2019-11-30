@@ -74,7 +74,7 @@ Tip::Tip(const QPixmap &icon, const QString &text, QWidget *parent)
 
 //    setWindowFlags(Qt::ToolTip | Qt::FramelessWindowHint);
 //    setAttribute(Qt::WA_TranslucentBackground);
-    setMaximumWidth(_fontMinWidth);
+//    setMaximumWidth(_fontMinWidth);
     setObjectName("Tip");
     setContentsMargins(0, 0, 0, 0);
 
@@ -98,9 +98,9 @@ Tip::Tip(const QPixmap &icon, const QString &text, QWidget *parent)
 
     d->textLable = new DLabel(text);
     d->textLable->setObjectName("TipText");
-    d->textLable->setAlignment(Qt::AlignTop);
-    d->textLable->setMaximumWidth(this->width());
-    d->textLable->setWordWrap(true);
+    d->textLable->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+//    d->textLable->setMaximumWidth(this->width());
+    d->textLable->setWordWrap(false);
     DFontSizeManager::instance()->bind(d->textLable, DFontSizeManager::T8);
     DPalette pal_text = DApplicationHelper::instance()->palette(d->textLable);
     pal_text.setBrush(DPalette::Text, pal_text.color(DPalette::ToolTipText));
@@ -312,11 +312,33 @@ void Tip::resizeEvent(QResizeEvent *ev)
     return QWidget::resizeEvent(ev);
 }
 
+void Tip::resetSize(const int minWidth, const int maxWidth)
+{
+    Q_D(Tip);
+    QFont font = DFontSizeManager::instance()->get(DFontSizeManager::T8);
+    QFontMetrics fm(font);
+    auto w = fm.boundingRect(d->textLable->text()).width();
+//    d->textLable->setMinimumWidth(w);
+
+    d->textLable->setWordWrap(true);
+    this->setMinimumWidth(minWidth);
+    this->setMaximumWidth(maxWidth);
+    d->textLable->setMinimumWidth(minWidth - 14);
+    d->textLable->setMaximumWidth(maxWidth - 14);
+}
+
 void Tip::resetSize(const int maxWidth)
 {
     Q_D(Tip);
-    this->setMaximumWidth(maxWidth);
-    d->textLable->setMaximumWidth(maxWidth);
+    QFont font = DFontSizeManager::instance()->get(DFontSizeManager::T8);
+    QFontMetrics fm(font);
+    auto w = fm.boundingRect(d->textLable->text()).width();
+
+    if (w > maxWidth) {
+        d->textLable->setWordWrap(true);
+        this->setFixedWidth(maxWidth);
+        d->textLable->setFixedWidth(maxWidth - 14);
+    }
 }
 
 

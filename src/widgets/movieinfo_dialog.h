@@ -40,6 +40,7 @@
 #include <DGuiApplicationHelper>
 #include <DApplication>
 
+#define TIP_MIN_WIDTH 250
 #define TIP_MAX_WIDTH 300
 const QString LOGO_BIG = ":/resources/icons/logo-big.svg";
 const QString INFO_CLOSE_LIGHT = ":/resources/icons/light/info_close_light.svg";

@@ -61,7 +61,6 @@ protected:
             tip->show();
             tip->raise();
             tip->adjustSize();
-            tip->resetSize(TIP_MAX_WIDTH);
 
             QPoint pos = btn->pos();
             pos.rx() = tip->parentWidget()->rect().width()/2 - tip->width()/2;
@@ -203,7 +202,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
                                            tmp->font(), Qt::ElideNone, fm.height(), TIP_MAX_WIDTH);
         filePathLbl->setToolTip(fpWrap);
         auto t = new Tip(QPixmap(), fpWrap, this);
-        t->resetSize(TIP_MAX_WIDTH);
+        t->resetSize(TIP_MIN_WIDTH, TIP_MAX_WIDTH);
         t->setProperty("for", QVariant::fromValue<QWidget *>(filePathLbl));
         filePathLbl->setProperty("HintWidget", QVariant::fromValue<QWidget *>(t));
         filePathLbl->installEventFilter(th);
