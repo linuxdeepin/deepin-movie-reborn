@@ -23,7 +23,7 @@ Localizzazione italiana a cura di Carofano Massimo Antonio.</translation>
         <translation>Apri cartella</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2484"/>
+        <location filename="../common/mainwindow.cpp" line="2485"/>
         <source>Network disconnected</source>
         <translation type="unfinished"></translation>
     </message>
@@ -438,6 +438,7 @@ Localizzazione italiana a cura di Carofano Massimo Antonio.</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="175"/>
+        <location filename="../common/actions.cpp" line="350"/>
         <source>Track</source>
         <translation>Traccia</translation>
     </message>
@@ -539,15 +540,15 @@ Localizzazione italiana a cura di Carofano Massimo Antonio.</translation>
     <name>dmr::MainWindow</name>
     <message>
         <location filename="../common/mainwindow.cpp" line="820"/>
-        <location filename="../common/mainwindow.cpp" line="2001"/>
-        <location filename="../common/mainwindow.cpp" line="3146"/>
+        <location filename="../common/mainwindow.cpp" line="2002"/>
+        <location filename="../common/mainwindow.cpp" line="3147"/>
         <source>Load successfully</source>
         <translation>Caricamento riuscito</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="820"/>
-        <location filename="../common/mainwindow.cpp" line="2001"/>
-        <location filename="../common/mainwindow.cpp" line="3146"/>
+        <location filename="../common/mainwindow.cpp" line="2002"/>
+        <location filename="../common/mainwindow.cpp" line="3147"/>
         <source>Load failed</source>
         <translation>Caricamento fallito</translation>
     </message>
@@ -569,7 +570,7 @@ Localizzazione italiana a cura di Carofano Massimo Antonio.</translation>
     <message>
         <location filename="../common/mainwindow.cpp" line="1599"/>
         <location filename="../common/mainwindow.cpp" line="1621"/>
-        <location filename="../common/mainwindow.cpp" line="1996"/>
+        <location filename="../common/mainwindow.cpp" line="1997"/>
         <source>Open file</source>
         <translation>Apri file</translation>
     </message>
@@ -608,96 +609,101 @@ Localizzazione italiana a cura di Carofano Massimo Antonio.</translation>
         <translation>Volume: %1%</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1961"/>
-        <location filename="../common/mainwindow.cpp" line="1969"/>
+        <location filename="../common/mainwindow.cpp" line="1924"/>
+        <source>Track: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../common/mainwindow.cpp" line="1962"/>
+        <location filename="../common/mainwindow.cpp" line="1970"/>
         <source>Subtitle %1: %2s</source>
         <translation>Sottotitoli: %1: %2s</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1962"/>
-        <location filename="../common/mainwindow.cpp" line="1970"/>
+        <location filename="../common/mainwindow.cpp" line="1963"/>
+        <location filename="../common/mainwindow.cpp" line="1971"/>
         <source>delayed</source>
         <translation>ritardato</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1962"/>
-        <location filename="../common/mainwindow.cpp" line="1970"/>
+        <location filename="../common/mainwindow.cpp" line="1963"/>
+        <location filename="../common/mainwindow.cpp" line="1971"/>
         <source>advanced</source>
         <translation>posticipare</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1977"/>
-        <location filename="../common/mainwindow.cpp" line="1984"/>
-        <location filename="../common/mainwindow.cpp" line="1991"/>
+        <location filename="../common/mainwindow.cpp" line="1978"/>
+        <location filename="../common/mainwindow.cpp" line="1985"/>
+        <location filename="../common/mainwindow.cpp" line="1992"/>
         <source>Speed: %1x</source>
         <translation>Velocità: %1x</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1998"/>
+        <location filename="../common/mainwindow.cpp" line="1999"/>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</source>
         <translation>Sottotitoli (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2061"/>
+        <location filename="../common/mainwindow.cpp" line="2062"/>
         <source>View</source>
         <translation>Visualizza</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2072"/>
+        <location filename="../common/mainwindow.cpp" line="2073"/>
         <source>Movie Screenshot</source>
         <translation>Screenshot film</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2073"/>
+        <location filename="../common/mainwindow.cpp" line="2074"/>
         <source>Saved to</source>
         <translation>Salva in</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2098"/>
-        <location filename="../common/mainwindow.cpp" line="2191"/>
+        <location filename="../common/mainwindow.cpp" line="2099"/>
+        <location filename="../common/mainwindow.cpp" line="2192"/>
         <source>The screenshot is saved</source>
         <translation>Lo screenshot è stato salvato</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2102"/>
-        <location filename="../common/mainwindow.cpp" line="2196"/>
+        <location filename="../common/mainwindow.cpp" line="2103"/>
+        <location filename="../common/mainwindow.cpp" line="2197"/>
         <source>Failed to save the screenshot</source>
         <translation>Salvataggio screenshot fallito</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2155"/>
+        <location filename="../common/mainwindow.cpp" line="2156"/>
         <source>Screenshot is working,please wait</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2279"/>
-        <location filename="../common/mainwindow.cpp" line="3159"/>
+        <location filename="../common/mainwindow.cpp" line="2280"/>
+        <location filename="../common/mainwindow.cpp" line="3160"/>
         <source>Invalid file: %1</source>
         <translation>File non valido: %1</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2491"/>
+        <location filename="../common/mainwindow.cpp" line="2492"/>
         <source>No matching online subtitles</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2501"/>
+        <location filename="../common/mainwindow.cpp" line="2502"/>
         <source>Cannot open file or stream</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2507"/>
-        <location filename="../common/mainwindow.cpp" line="2512"/>
+        <location filename="../common/mainwindow.cpp" line="2508"/>
+        <location filename="../common/mainwindow.cpp" line="2513"/>
         <source>File is corrupt</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2517"/>
+        <location filename="../common/mainwindow.cpp" line="2518"/>
         <source>Please insert the CD into the drive</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2523"/>
+        <location filename="../common/mainwindow.cpp" line="2524"/>
         <source>No video file found</source>
         <translation type="unfinished"></translation>
     </message>
@@ -744,33 +750,33 @@ Localizzazione italiana a cura di Carofano Massimo Antonio.</translation>
         <translation type="vanished">Percorso file:</translation>
     </message>
     <message>
-        <location filename="../widgets/movieinfo_dialog.cpp" line="176"/>
+        <location filename="../widgets/movieinfo_dialog.cpp" line="180"/>
         <source>Film info</source>
         <translation type="unfinished">Info video</translation>
     </message>
     <message>
-        <location filename="../widgets/movieinfo_dialog.cpp" line="181"/>
+        <location filename="../widgets/movieinfo_dialog.cpp" line="185"/>
         <source>Resolution</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/movieinfo_dialog.cpp" line="182"/>
+        <location filename="../widgets/movieinfo_dialog.cpp" line="186"/>
         <source>File type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/movieinfo_dialog.cpp" line="183"/>
+        <location filename="../widgets/movieinfo_dialog.cpp" line="187"/>
         <source>File size</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/movieinfo_dialog.cpp" line="184"/>
+        <location filename="../widgets/movieinfo_dialog.cpp" line="188"/>
         <source>Duration</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/movieinfo_dialog.cpp" line="194"/>
-        <location filename="../widgets/movieinfo_dialog.cpp" line="196"/>
+        <location filename="../widgets/movieinfo_dialog.cpp" line="198"/>
+        <location filename="../widgets/movieinfo_dialog.cpp" line="200"/>
         <source>File path</source>
         <translation type="unfinished"></translation>
     </message>
@@ -787,9 +793,9 @@ Localizzazione italiana a cura di Carofano Massimo Antonio.</translation>
 <context>
     <name>dmr::PlayItemWidget</name>
     <message>
-        <location filename="../widgets/playlist_widget.cpp" line="213"/>
-        <location filename="../widgets/playlist_widget.cpp" line="256"/>
-        <location filename="../widgets/playlist_widget.cpp" line="480"/>
+        <location filename="../widgets/playlist_widget.cpp" line="212"/>
+        <location filename="../widgets/playlist_widget.cpp" line="259"/>
+        <location filename="../widgets/playlist_widget.cpp" line="483"/>
         <source>File does not exist</source>
         <translation>Il file non esiste</translation>
     </message>

@@ -1921,6 +1921,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     case ActionFactory::ActionKind::SelectTrack: {
         Q_ASSERT(args.size() == 1);
         _engine->selectTrack(args[0].toInt());
+        _nwComm->updateWithMessage(tr("Track: %1").arg(args[0].toInt() + 1));
         if (!fromUI) {
             reflectActionToUI(kd);
         }

@@ -347,7 +347,7 @@ void ActionFactory::updateMainActionsForMovie(const PlayingMovieInfo &pmf)
 
         auto group = new QActionGroup(menu); // mem leak ?
         for (int i = 0; i < pmf.audios.size(); i++) {
-            DEF_ACTION_CHECKED_GROUP(pmf.audios[i]["title"].toString(), ActionKind::SelectTrack, group);
+            DEF_ACTION_CHECKED_GROUP(tr("Track") + QString::number(i + 1), ActionKind::SelectTrack, group);
             auto act = menu->actions().last();
             act->setProperty("args", QList<QVariant>() << i);
         }
