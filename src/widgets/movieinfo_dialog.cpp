@@ -256,10 +256,8 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
     auto th = new ToolTipEvent(this);
     if (tipLst.size() > 1) {
         auto filePathLbl = tipLst.last();
-        auto fpWrap = ElideText(tmp->text(), {LINE_MAX_WIDTH, LINE_HEIGHT}, QTextOption::WrapAnywhere,
-                                tmp->font(), Qt::ElideRight, fm.height(), LINE_MAX_WIDTH);
-        filePathLbl->setToolTip(fpWrap);
-        auto t = new Tip(QPixmap(), fpWrap, nullptr);
+        filePathLbl->setToolTip(tmp->text());
+        auto t = new Tip(QPixmap(), tmp->text(), nullptr);
         t->resetSize(QApplication::desktop()->availableGeometry().width());
         t->setProperty("for", QVariant::fromValue<QWidget *>(filePathLbl));
         filePathLbl->setProperty("HintWidget", QVariant::fromValue<QWidget *>(t));
