@@ -44,6 +44,63 @@ DWIDGET_USE_NAMESPACE
 //#define MV_FILE_PATH tr("File path")
 
 namespace dmr {
+static QString ElideText(const QString &text, const QSize &size,
+        QTextOption::WrapMode wordWrap, const QFont &font,
+        Qt::TextElideMode mode, int lineHeight, int lastLineWidth)
+{
+    int height = 0;
+
+    QTextLayout textLayout(text);
+    QString str;
+    QFontMetrics fontMetrics(font);
+
+    textLayout.setFont(font);
+    const_cast<QTextOption*>(&textLayout.textOption())->setWrapMode(wordWrap);
+
+    textLayout.beginLayout();
+    QTextLine line = textLayout.createLine();
+    line.setLineWidth(size.width());
+
+    QString tmp_str = nullptr;
+    if (fontMetrics.boundingRect(text).width() <= line.width()) {
+        tmp_str = text.mid(line.textStart(), line.textLength());
+        str = tmp_str;
+    }else {
+        while (line.isValid()) {
+            height += lineHeight;
+            line.setLineWidth(size.width());
+
+            if (textLayout.lineCount() == 2) {
+                QStringList strLst;
+                if (!text.isEmpty()) {
+                    strLst = text.split(tmp_str);
+                }
+
+                if (fontMetrics.boundingRect(strLst.last()).width() > line.width()) {
+                    str += fontMetrics.elidedText(strLst.last(), mode, lastLineWidth);
+                    break;
+                }
+            }
+
+            tmp_str = text.mid(line.textStart(), line.textLength());
+
+            if (tmp_str.indexOf('\n'))
+                height += lineHeight;
+
+            str += tmp_str;
+
+            line = textLayout.createLine();
+
+            if(line.isValid())
+                str.append("\n");
+        }
+    }
+
+    textLayout.endLayout();
+
+    return str;
+}
+
 class ToolTipEvent: public QObject {
 public:
     ToolTipEvent(QObject *parent): QObject(parent) {}
@@ -192,19 +249,15 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
     tmp->setText(mi.filePath);
     auto fm = tmp->fontMetrics();
     auto w = fm.width(mi.filePath);
-    if (w > 360) {
-        auto fp = utils::ElideText(mi.filePath, {200, 40}, QTextOption::WrapAnywhere,
-                                   tmp->font(), Qt::ElideRight, fm.height(), 150);
-        ADD_ROW(tr("File path"), fp);
-    } else {
-        ADD_ROW(tr("File path"), mi.filePath);
-    }
+    auto fp = ElideText(mi.filePath, {LINE_MAX_WIDTH, LINE_HEIGHT}, QTextOption::WrapAnywhere,
+                               tmp->font(), Qt::ElideRight, fm.height(), LINE_MAX_WIDTH);
+    ADD_ROW(tr("File path"), fp);
 
     auto th = new ToolTipEvent(this);
     if (tipLst.size() > 1) {
         auto filePathLbl = tipLst.last();
-        auto fpWrap = utils::ElideText(tmp->text(), {TIP_MAX_WIDTH, 40}, QTextOption::WrapAnywhere,
-                                           tmp->font(), Qt::ElideNone, fm.height(), TIP_MAX_WIDTH);
+        auto fpWrap = ElideText(tmp->text(), {LINE_MAX_WIDTH, LINE_HEIGHT}, QTextOption::WrapAnywhere,
+                                tmp->font(), Qt::ElideRight, fm.height(), LINE_MAX_WIDTH);
         filePathLbl->setToolTip(fpWrap);
         auto t = new Tip(QPixmap(), fpWrap, nullptr);
         t->resetSize(QApplication::desktop()->availableGeometry().width());
