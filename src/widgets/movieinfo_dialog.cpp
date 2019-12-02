@@ -76,7 +76,7 @@ static QString ElideText(const QString &text, const QSize &size,
                     strLst = text.split(tmp_str);
                 }
 
-                if (fontMetrics.boundingRect(strLst.last()).width() > line.width()) {
+                if (fontMetrics.boundingRect(strLst.last()).width() > line.width() - 1) {
                     str += fontMetrics.elidedText(strLst.last(), mode, lastLineWidth);
                     break;
                 }
