@@ -1020,6 +1020,10 @@ void PlaylistWidget::contextMenuEvent(QContextMenuEvent *cme)
         if (prop == ActionFactory::ActionKind::PlaylistOpenItemInFM) {
             on = on_item && piw->_pif.valid && piw->_pif.url.isLocalFile();
         }
+        else if(prop == ActionFactory::ActionKind::EmptyPlaylist)
+        {
+            on = _playlist->count() > 0?true:false;
+        }
         act->setEnabled(on);
     }
 
