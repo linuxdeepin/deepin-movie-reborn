@@ -2981,7 +2981,7 @@ void MainWindow::toggleUIMode()
 
     if (_listener) _listener->setEnabled(!_miniMode);
 
-    updateSizeConstraints();
+//    updateSizeConstraints();
 
     _titlebar->setVisible(!_miniMode);
     _toolbox->setVisible(!_miniMode);
