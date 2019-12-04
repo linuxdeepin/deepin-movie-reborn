@@ -98,6 +98,7 @@ static auto dark_style = R"(
 DMRSlider::DMRSlider(QWidget *parent): DSlider(Qt::Horizontal, parent)
 {
     slider()->setTracking(false);
+    slider()->setMouseTracking(true);
     setMouseTracking(true);
 
 //    auto updateTheme = [=]() {
