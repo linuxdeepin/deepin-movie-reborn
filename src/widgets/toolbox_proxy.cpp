@@ -1348,17 +1348,18 @@ void ToolboxProxy::setup()
 //    stacked->addWidget(_progBar);
 
 
-    auto *bot_widget = new QWidget;
-    auto *botv = new QVBoxLayout();
+    auto *bot_widget = new QWidget(this);
+    auto *botv = new QVBoxLayout(bot_widget);
     botv->setContentsMargins(0, 0, 0, 0);
 //    auto *bot = new QHBoxLayout();
-    _bot_spec = new QWidget;
+    _bot_spec = new QWidget(bot_widget);
     _bot_spec->setFixedHeight(310);
     _bot_spec->setFixedWidth(width());
     _bot_spec->hide();
     botv->addWidget(_bot_spec);
-    auto *bot = new QHBoxLayout();
+    auto *bot = new QHBoxLayout(bot_widget);
     bot->setContentsMargins(LEFT_MARGIN, 0, RIGHT_MARGIN, 0);
+    bot->setSpacing(0);
     botv->addLayout(bot);
     bot_widget->setLayout(botv);
     stacked->addWidget(bot_widget);
@@ -1366,8 +1367,10 @@ void ToolboxProxy::setup()
 //    palette.setColor(QPalette::Background, QColor(0,0,0,255)); // 最后一项为透明度
 //    bot_widget->setPalette(palette);
 
-    _timeLabel = new QLabel("");
+    _timeLabel = new QLabel(bot_widget);
+    _timeLabel->setAlignment(Qt::AlignCenter);
     _fullscreentimelable = new QLabel("");
+    _fullscreentimelable->setAttribute(Qt::WA_DeleteOnClose);
 //    _timeLabel->setFixedWidth(_timeLabel->fontMetrics().width("99:99:99/99:99:99"));
     _timeLabel->setFont(DFontSizeManager::instance()->get(DFontSizeManager::T6));
     _timeLabel->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
@@ -1375,8 +1378,10 @@ void ToolboxProxy::setup()
     _fullscreentimelable->setFont(DFontSizeManager::instance()->get(DFontSizeManager::T6));
     //_timeLabel->setFixedWidth(54);
 //    bot->addWidget(_timeLabel);
-    _timeLabelend = new QLabel("");
+    _timeLabelend = new QLabel(bot_widget);
+    _timeLabelend->setAlignment(Qt::AlignCenter);
     _fullscreentimelableend = new QLabel("");
+    _fullscreentimelableend->setAttribute(Qt::WA_DeleteOnClose);
     //_timeLabelend->setFixedWidth(54);
     _timeLabelend->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 //    _timeLabel->setFixedWidth(_timeLabel->fontMetrics().width("99:99:99/99:99:99"));
@@ -1407,14 +1412,14 @@ void ToolboxProxy::setup()
 
 //    bot->addStretch();
 
-    _mid = new QHBoxLayout();
+    _mid = new QHBoxLayout(bot_widget);
     _mid->setContentsMargins(0, 0, 0, 0);
     _mid->setSpacing(0);
     _mid->setAlignment(Qt::AlignLeft);
     bot->addLayout(_mid);
 
 
-    QHBoxLayout *time = new QHBoxLayout();
+    QHBoxLayout *time = new QHBoxLayout(bot_widget);
     time->setContentsMargins(10, 0, 10, 0);
     time->setSpacing(0);
     time->setAlignment(Qt::AlignLeft);
@@ -1423,7 +1428,7 @@ void ToolboxProxy::setup()
 
 //    bot->addStretch();
 
-    QHBoxLayout *progBarspec = new QHBoxLayout();
+    QHBoxLayout *progBarspec = new QHBoxLayout(bot_widget);
     progBarspec->setContentsMargins(0, 5, 0, 0);
     progBarspec->setSpacing(0);
     progBarspec->setAlignment(Qt::AlignHCenter);
@@ -1444,7 +1449,7 @@ void ToolboxProxy::setup()
 //    bot->addLayout(viewProgBar);
     viewProgBar->addWidget(_viewProgBar);
 
-    _progBar_stacked = new QStackedLayout(this);
+    _progBar_stacked = new QStackedLayout(bot_widget);
     _progBar_stacked->setContentsMargins(0, 0, 0, 0);
     _progBar_stacked->setStackingMode(QStackedLayout::StackOne);
     _progBar_stacked->setAlignment(Qt::AlignCenter);
@@ -1456,7 +1461,8 @@ void ToolboxProxy::setup()
     _progBar_stacked->setCurrentIndex(0);
 //    bot->addLayout(_progBar_stacked);
 
-    _progBar_Widget = new QStackedWidget;
+    _progBar_Widget = new QStackedWidget(bot_widget);
+    _progBar_Widget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     _progBar_Widget->addWidget(_progBarspec);
     _progBar_Widget->addWidget(_progBar);
     _progBar_Widget->addWidget(_viewProgBar);
@@ -1471,14 +1477,14 @@ void ToolboxProxy::setup()
 
 //    bot->addStretch();
 
-    QHBoxLayout *timeend = new QHBoxLayout();
+    QHBoxLayout *timeend = new QHBoxLayout(bot_widget);
     timeend->setContentsMargins(10, 0, 10, 0);
     timeend->setSpacing(0);
     timeend->setAlignment(Qt::AlignRight);
     bot->addLayout(timeend);
     timeend->addWidget(_timeLabelend);
 
-    _palyBox = new DButtonBox(this);
+    _palyBox = new DButtonBox(bot_widget);
     _palyBox->setFixedWidth(120);
     _mid->addWidget(_palyBox);
     _mid->setAlignment(_palyBox, Qt::AlignLeft);
@@ -1486,7 +1492,7 @@ void ToolboxProxy::setup()
 
 
 //    _prevBtn = new DIconButton(this);
-    _prevBtn = new DButtonBoxButton(QIcon::fromTheme("dcc_last"));
+    _prevBtn = new DButtonBoxButton(QIcon::fromTheme("dcc_last"), nullptr, _palyBox);
 //    _prevBtn->setIcon(QIcon::fromTheme("dcc_last"));
     _prevBtn->setIconSize(QSize(36, 36));
     _prevBtn->setFixedSize(40, 50);
@@ -1495,7 +1501,7 @@ void ToolboxProxy::setup()
     signalMapper->setMapping(_prevBtn, "prev");
 //    _mid->addWidget(_prevBtn);
     list.append(_prevBtn);
-    _playBtn = new DButtonBoxButton(QIcon::fromTheme("dcc_play"));
+    _playBtn = new DButtonBoxButton(QIcon::fromTheme("dcc_play"), nullptr, _palyBox);
 //    _playBtn->setIcon(QIcon::fromTheme("dcc_play"));
     _playBtn->setIconSize(QSize(36, 36));
     _playBtn->setFixedSize(40, 50);
@@ -1504,7 +1510,7 @@ void ToolboxProxy::setup()
 //    _mid->addWidget(_playBtn);
     list.append(_playBtn);
 
-    _nextBtn = new DButtonBoxButton(QIcon::fromTheme("dcc_next"));
+    _nextBtn = new DButtonBoxButton(QIcon::fromTheme("dcc_next"), nullptr, _palyBox);
 //    _nextBtn->setIcon(QIcon::fromTheme("dcc_next"));
     _nextBtn->setIconSize(QSize(36, 36));
     _nextBtn->setFixedSize(40, 50);
@@ -1520,13 +1526,13 @@ void ToolboxProxy::setup()
 
 //    bot->addStretch();
 
-    _right = new QHBoxLayout();
+    _right = new QHBoxLayout(bot_widget);
     _right->setContentsMargins(0, 0, 0, 0);
     _right->setSizeConstraint(QLayout::SetFixedSize);
     _right->setSpacing(0);
     bot->addLayout(_right);
 
-    _subBtn = new ToolButton(this);
+    _subBtn = new ToolButton(bot_widget);
     _subBtn->setIcon(QIcon::fromTheme("dcc_episodes"));
     _subBtn->setIconSize(QSize(36, 36));
     _subBtn->setFixedSize(50, 50);
@@ -1537,7 +1543,7 @@ void ToolboxProxy::setup()
 
     _subBtn->hide();
 
-    _volBtn = new VolumeButton(this);
+    _volBtn = new VolumeButton(bot_widget);
     _volBtn->setFixedSize(50, 50);
     connect(_volBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_volBtn, "vol");
@@ -1559,7 +1565,7 @@ void ToolboxProxy::setup()
     });
 
 
-    _fsBtn = new ToolButton(this);
+    _fsBtn = new ToolButton(bot_widget);
     _fsBtn->setIcon(QIcon::fromTheme("dcc_zoomin"));
     _fsBtn->setIconSize(QSize(36, 36));
     _fsBtn->setFixedSize(50, 50);
@@ -1572,7 +1578,7 @@ void ToolboxProxy::setup()
     _right->addWidget(_volBtn);
     _right->addSpacing(10);
 
-    _listBtn = new ToolButton(this);
+    _listBtn = new ToolButton(bot_widget);
     _listBtn->setIcon(QIcon::fromTheme("dcc_episodes"));
     _listBtn->setIconSize(QSize(36, 36));
     _listBtn->setFixedSize(50, 50);
