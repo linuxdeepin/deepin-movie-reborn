@@ -875,6 +875,17 @@ MainWindow::MainWindow(QWidget *parent)
     qDebug() << "event listener";
 #endif
 
+    _fullscreentimelable = new QLabel;
+    _fullscreentimelable->setAttribute(Qt::WA_TranslucentBackground);
+    _fullscreentimelable->setWindowFlags(Qt::FramelessWindowHint);
+    _fullscreentimelable->setParent(this);
+    _fullscreentimelable->setWindowFlags(_fullscreentimelable->windowFlags()|Qt::Dialog);
+    _fullscreentimebox = new QHBoxLayout;
+    _fullscreentimebox->addWidget(_toolbox->getfullscreentimeLabel());
+    _fullscreentimebox->addWidget(_toolbox->getfullscreentimeLabelend());
+    _fullscreentimelable->setLayout(_fullscreentimebox);
+    _fullscreentimelable->close();
+
     connect(_engine, &PlayerEngine::onlineStateChanged, this, &MainWindow::checkOnlineState);
     connect(&OnlineSubtitle::get(), &OnlineSubtitle::onlineSubtitleStateChanged, this, &MainWindow::checkOnlineSubtitle);
     connect(_engine, &PlayerEngine::mpvErrorLogsChanged, this, &MainWindow::checkErrorMpvLogsChanged);
@@ -1724,9 +1735,9 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             if (!fromUI) {
                 reflectActionToUI(ActionFactory::ToggleFullscreen);
             }
-        }
-        if(!isFullScreen()){
-            _fullscreentimelable->close();
+            if(!isFullScreen()){
+                _fullscreentimelable->close();
+            }
         }
         break;
     }
@@ -1753,22 +1764,8 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             showFullScreen();
             if(isFullScreen()){
                 QRect deskRect = QApplication::desktop()->availableGeometry();
-                if(!_fullscreentimelable){
-                    _fullscreentimelable = new QLabel;
-                    _fullscreentimelable->setAttribute(Qt::WA_TranslucentBackground);
-                    _fullscreentimelable->setWindowFlags(Qt::FramelessWindowHint);
-                    _fullscreentimelable->setParent(this);
-                    _fullscreentimelable->setWindowFlags(_fullscreentimelable->windowFlags()|Qt::Dialog);
-                }
                 _fullscreentimelable->setGeometry(deskRect.width()-50,30,100,30);
-                if(!_fullscreentimebox){
-                    _fullscreentimebox = new QHBoxLayout;
-                }
-                _fullscreentimebox->addWidget(_toolbox->getfullscreentimeLabel());
-                _fullscreentimebox->addWidget(_toolbox->getfullscreentimeLabelend());
-                _fullscreentimelable->setLayout(_fullscreentimebox);
                 _fullscreentimelable->show();
-
                 }
             }
         if (!fromUI) {
