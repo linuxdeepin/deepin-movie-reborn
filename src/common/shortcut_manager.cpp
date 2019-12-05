@@ -151,12 +151,12 @@ void ShortcutManager::buildBindingsFromSettings()
 {
     _map.clear();
     // default builtins 
-    _map.insert(QKeySequence(Qt::Key_Left), ActionFactory::SeekBackward);
-    _map.insert(QKeySequence(Qt::Key_Left + Qt::SHIFT), ActionFactory::SeekBackwardLarge);
-    _map.insert(QKeySequence(Qt::Key_Right), ActionFactory::SeekForward);
-    _map.insert(QKeySequence(Qt::Key_Right + Qt::SHIFT), ActionFactory::SeekForwardLarge);
-    _map.insert(QKeySequence(Qt::Key_Space), ActionFactory::TogglePause);
-    _map.insert(QKeySequence(Qt::Key_Escape), ActionFactory::QuitFullscreen);
+//    _map.insert(QKeySequence(Qt::Key_Left), ActionFactory::SeekBackward);
+//    _map.insert(QKeySequence(Qt::Key_Left + Qt::SHIFT), ActionFactory::SeekBackwardLarge);
+//    _map.insert(QKeySequence(Qt::Key_Right), ActionFactory::SeekForward);
+//    _map.insert(QKeySequence(Qt::Key_Right + Qt::SHIFT), ActionFactory::SeekForwardLarge);
+//    _map.insert(QKeySequence(Qt::Key_Space), ActionFactory::TogglePause);
+//    _map.insert(QKeySequence(Qt::Key_Escape), ActionFactory::QuitFullscreen);
     _map.insert(QKeySequence(Qt::Key_Slash + Qt::CTRL + Qt::SHIFT), ActionFactory::ViewShortcut);
 
     QPointer<DSettingsGroup> shortcuts = Settings::get().shortcuts();
