@@ -879,10 +879,12 @@ MainWindow::MainWindow(QWidget *parent)
     _fullscreentimelable->setAttribute(Qt::WA_TranslucentBackground);
     _fullscreentimelable->setWindowFlags(Qt::FramelessWindowHint);
     _fullscreentimelable->setParent(this);
-    _fullscreentimelable->setWindowFlags(_fullscreentimelable->windowFlags()|Qt::Dialog);
+//    _fullscreentimelable->setWindowFlags(_fullscreentimelable->windowFlags()|Qt::Dialog);
     _fullscreentimebox = new QHBoxLayout;
+    _fullscreentimebox->addStretch();
     _fullscreentimebox->addWidget(_toolbox->getfullscreentimeLabel());
     _fullscreentimebox->addWidget(_toolbox->getfullscreentimeLabelend());
+    _fullscreentimebox->addStretch();
     _fullscreentimelable->setLayout(_fullscreentimebox);
     _fullscreentimelable->close();
 
@@ -1764,7 +1766,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             showFullScreen();
             if(isFullScreen()){
                 QRect deskRect = QApplication::desktop()->availableGeometry();
-                _fullscreentimelable->setGeometry(deskRect.width()-50,30,100,30);
+                _fullscreentimelable->setGeometry(deskRect.width()-150,40,150,30);
                 _fullscreentimelable->show();
                 }
             }
