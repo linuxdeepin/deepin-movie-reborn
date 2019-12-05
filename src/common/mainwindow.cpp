@@ -3006,7 +3006,7 @@ void MainWindow::toggleUIMode()
 
     if (_listener) _listener->setEnabled(!_miniMode);
 
-//    updateSizeConstraints();
+
 
     _titlebar->setVisible(!_miniMode);
     _toolbox->setVisible(!_miniMode);
@@ -3023,6 +3023,7 @@ void MainWindow::toggleUIMode()
     resumeToolsWindow();
 
     if (_miniMode) {
+        updateSizeConstraints();
         syncPlayState();
         setEnableSystemResize(false);
 
