@@ -42,6 +42,8 @@
 #include "online_sub.h"
 #include <DFloatingMessage>
 
+static const int VOLUME_OFFSET = 40;
+
 namespace Dtk {
 namespace Widget {
 class DImageButton;

@@ -1045,19 +1045,28 @@ public:
         _slider->slider()->setRange(0, 100);
 //        _slider->slider()->setOrientation(Qt::Vertical);
 
-        _slider->setValue(_engine->volume());
+        auto vol = _engine->volume();
+        if (vol != 0) {
+            vol -= VOLUME_OFFSET;
+        }
+        _slider->setValue(vol);
         l->addWidget(_slider, Qt::AlignHCenter);
 
 
         connect(_slider, &DSlider::valueChanged, [ = ]() {
-            _mw->requestAction(ActionFactory::ChangeVolume, false, QList<QVariant>() << _slider->value());
+            auto var = _slider->value() + VOLUME_OFFSET;
+            _mw->requestAction(ActionFactory::ChangeVolume, false, QList<QVariant>() << var);
         });
 
         _autoHideTimer.setSingleShot(true);
         connect(&_autoHideTimer, &QTimer::timeout, this, &VolumeSlider::hide);
 
         connect(_engine, &PlayerEngine::volumeChanged, [ = ]() {
-            _slider->setValue(_engine->volume());
+            auto vol = _engine->volume();
+            if (vol != 0) {
+                vol -= VOLUME_OFFSET;
+            }
+            _slider->setValue(vol);
         });
     }
 
@@ -1914,6 +1923,9 @@ void ToolboxProxy::updateVolumeState()
         //_volBtn->setToolTip(tr("Mute"));
     } else {
         auto v = _engine->volume();
+        if (v != 0) {
+            v -= VOLUME_OFFSET;
+        }
         //_volBtn->setToolTip(tr("Volume"));
         if (v >= 80)
             _volBtn->changeLevel(VolumeButton::High);

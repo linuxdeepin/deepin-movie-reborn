@@ -605,6 +605,9 @@ MainWindow::MainWindow(QWidget *parent)
 #endif
 
     int volume = Settings::get().internalOption("global_volume").toInt();
+    if (VOLUME_OFFSET == volume) {
+        volume = 0;
+    }
     _engine->changeVolume(volume);
 
     _toolbox = new ToolboxProxy(this, _engine);
@@ -1867,7 +1870,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         if (_engine->muted()) {
             _nwComm->updateWithMessage(tr("Muted"));
         } else {
-            double pert = _engine->volume();
+            double pert = _engine->volume() - VOLUME_OFFSET;
             _nwComm->updateWithMessage(tr("Volume: %1%").arg(pert));
         }
         break;
@@ -1877,9 +1880,16 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         if (_engine->muted()) {
             _engine->toggleMute();
         }
-        _engine->changeVolume(args[0].toInt());
-        Settings::get().setInternalOption("global_volume", qMin(_engine->volume(), 100));
+        auto vol = args[0].toInt();
+        if (vol == VOLUME_OFFSET) {
+            vol = 0;
+        }
+        _engine->changeVolume(vol);
+        Settings::get().setInternalOption("global_volume", qMin(_engine->volume(), 140));
         double pert = _engine->volume();
+        if (pert >= VOLUME_OFFSET) {
+            pert -= VOLUME_OFFSET;
+        }
         _nwComm->updateWithMessage(tr("Volume: %1%").arg(pert));
         break;
     }
@@ -1888,15 +1898,23 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         if (_engine->muted()) {
             _engine->toggleMute();
         }
-        _engine->volumeUp();
         double pert = _engine->volume();
+        if (0 == static_cast<int>(pert)) {
+            _engine->changeVolume(VOLUME_OFFSET);
+        }
+        _engine->volumeUp();
         _nwComm->updateWithMessage(tr("Volume: %1%").arg(pert));
         break;
     }
 
     case ActionFactory::ActionKind::VolumeDown: {
-        _engine->volumeDown();
         double pert = _engine->volume();
+        if (VOLUME_OFFSET == static_cast<int>(pert)) {
+            _engine->changeVolume(0);
+            pert = 0;
+        } else {
+            _engine->volumeDown();
+        }
         _nwComm->updateWithMessage(tr("Volume: %1%").arg(pert));
         break;
     }
