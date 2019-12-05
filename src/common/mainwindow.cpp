@@ -2497,7 +2497,11 @@ void MainWindow::checkErrorMpvLogsChanged(const QString prefix, const QString te
 {
     QString errorMessage(text);
     qDebug()<<text;
-    if (errorMessage.toLower().contains(QString("fail")) && errorMessage.toLower().contains(QString("open")))
+    if(errorMessage.toLower().contains(QString("avformat_open_input() failed")))
+    {
+        //do nothing
+    }
+    else if (errorMessage.toLower().contains(QString("fail")) && errorMessage.toLower().contains(QString("open")))
         {
         _nwComm->updateWithMessage(tr("Cannot open file or stream"));
         _engine->playlist().clear();
