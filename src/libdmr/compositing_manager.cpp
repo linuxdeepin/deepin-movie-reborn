@@ -335,7 +335,7 @@ bool CompositingManager::isProprietaryDriver()
     for (int id = 0; id <= 10; id++) {
         if (!QFile::exists(QString("/sys/class/drm/card%1").arg(id))) break;
         if (is_device_viable(id)) {
-            vector<string> drivers = {"nvidia", "fglrx", "vmwgfx", "hibmc-drm"};
+            vector<string> drivers = {"nvidia", "fglrx", "vmwgfx", "hibmc-drm", "radeon", "i915"};
             return is_card_exists(id, drivers);
         }
     }
