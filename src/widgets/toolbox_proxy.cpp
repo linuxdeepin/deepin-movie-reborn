@@ -655,6 +655,7 @@ public:
 
 
             ImageItem *label_black = new ImageItem(pm_black_list.at(i), true, _front);
+            label_black->setMouseTracking(true);
             label_black->move(i * 9 + 5, 5);
             label_black->setFixedSize(8, 50);
         }
@@ -1788,10 +1789,6 @@ void ToolboxProxy::updateHoverPreview(const QUrl &url, int secs)
     if (_engine->playlist().currentInfo().url != url)
         return;
 
-    VideoThumbnailer thumber;
-    thumber.setThumbnailSize(_engine->videoSize().width() * qApp->devicePixelRatio());
-    thumber.setMaintainAspectRatio(true);
-    ThumbnailWorker::get().resetVideoThumbnailer(thumber);
     QPixmap pm = ThumbnailWorker::get().getThumb(url, secs);
 
     _previewer->updateWithPreview(pm, secs, _engine->videoRotation());

@@ -91,11 +91,6 @@ ThumbnailWorker::ThumbnailWorker()
     thumber.setMaintainAspectRatio(true);
 }
 
-void ThumbnailWorker::resetVideoThumbnailer(VideoThumbnailer vthumb)
-{
-    thumber = vthumb;
-}
-
 QPixmap ThumbnailWorker::genThumb(const QUrl& url, int secs)
 {
     auto dpr = qApp->devicePixelRatio();
