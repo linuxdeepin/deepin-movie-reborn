@@ -223,20 +223,20 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
     f->setFixedSize(55, 45); \
     f->setAlignment(Qt::AlignLeft | Qt::AlignTop); \
     DFontSizeManager::instance()->bind(f, DFontSizeManager::T8); \
-    f->setForegroundRole(DPalette::TextTitle); \
+    f->setForegroundRole(DPalette::WindowText); \
     auto t = new DLabel(field, this); \
     t->setFixedSize(200, 45); \
     t->setAlignment(Qt::AlignLeft | Qt::AlignTop); \
     t->setWordWrap(true); \
     DFontSizeManager::instance()->bind(t, DFontSizeManager::T8); \
-    t->setForegroundRole(DPalette::TextTitle); \
+    t->setForegroundRole(DPalette::WindowText); \
     form->addRow(f, t); \
     tipLst.append(t); \
 } while (0)
 
     auto title = new DLabel(tr("Film info"), this);
-    DFontSizeManager::instance()->bind(title, DFontSizeManager::T6);
-    title->setForegroundRole(DPalette::TextTitle);
+    DFontSizeManager::instance()->bind(title, DFontSizeManager::T6, QFont::Weight::Medium);
+    title->setForegroundRole(DPalette::WindowText);
     form->addRow(title);
 
     ADD_ROW(tr("Resolution"), mi.resolution);
