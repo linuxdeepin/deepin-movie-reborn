@@ -141,7 +141,6 @@ protected slots:
     void setProgress(int v);
     void progressHoverChanged(int v);
     void updateHoverPreview(const QUrl& url, int secs);
-    void setViewProgBar();
 
 
 protected:
@@ -153,6 +152,7 @@ private:
     void setup();
     void updateTimeLabel();
     void updateToolTipTheme(ToolButton *btn);
+    void updateThumbnail();
 
     QLabel *_fullscreentimelable {nullptr};
     QLabel *_fullscreentimelableend {nullptr};

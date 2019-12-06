@@ -1177,6 +1177,7 @@ void viewProgBarLoad::loadViewProgBar(QSize size)
 
     for (auto i = 0; i < num; i++) {
         d = d.addMSecs(tmp);
+        qDebug()<<d;
         thumber.setSeekTime(d.toString("hh:mm:ss:ms").toStdString());
         try {
             std::vector<uint8_t> buf;
@@ -1631,47 +1632,10 @@ void ToolboxProxy::setup()
     connect(_engine, &PlayerEngine::stateChanged, this, &ToolboxProxy::updatePlayState);
     connect(_engine, &PlayerEngine::fileLoaded, [ = ]() {
         _progBar->slider()->setRange(0, _engine->duration());
-//        setViewProgBar();
-//        _viewProgBar->hide();
-//        _progBar->show();
-//        _progBarspec->hide();
         _progBar_stacked->setCurrentIndex(1);
-//        _progBar_Widget->setCurrentIndex(1);
-        pm_list.clear();
-        pm_black_list.clear();
-
+        _loadsize = size();
         update();
-        QTimer::singleShot(1000, [this]() {
-//            if(_loadThread->isRunning()){
-//                _loadThread->terminate();
-//                _loadThread->exit();
-//                _loadThread->deleteLater();
-//                _loadThread = new QThread();
-//                _viewProgBarLoad->moveToThread(_loadThread);
-//                _loadThread->wait();
-//                _loadThread->start();
-            _loadsize = size();
-            QThread *thread = new QThread;
-            viewProgBarLoad *worker = new viewProgBarLoad(_engine, _progBar, this);
-
-            connect(worker, SIGNAL(finished()), thread, SLOT(quit())); //新增
-//                    connect(thread,SIGNAL(started()),worker,SLOT(doSomething()));
-            connect(thread, SIGNAL(finished()), worker, SLOT(deleteLater()));
-            connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
-            worker->moveToThread(thread);
-            thread->start();
-            connect(this, SIGNAL(sigstartLoad(QSize)), worker, SLOT(loadViewProgBar(QSize)));
-            connect(worker, SIGNAL(sigFinishiLoad(QSize)), this, SLOT(finishLoadSlot(QSize)));
-            emit sigstartLoad(size());
-            _progBar_Widget->setCurrentIndex(1);
-//            }
-
-        });
-//        QTimer::singleShot(100, [this]() {_viewProgBar->setViewProgBar(_engine);});
-//        _viewProgBar->setViewProgBar(_engine);
-//        _viewProgBar->show();
-//        _progBar->hide();
-
+        updateThumbnail();
     });
     connect(_engine, &PlayerEngine::elapsedChanged, [ = ]() {
         updateTimeInfo(_engine->duration(), _engine->elapsed(), _timeLabel, _timeLabelend, true);
@@ -1713,91 +1677,34 @@ void ToolboxProxy::setup()
         {
             _viewProgBar->setWidth();
             if (_engine->state() != PlayerEngine::CoreState::Idle && size() != _loadsize) {
-//                _viewProgBar->setViewProgBar(_engine);
-                QTimer::singleShot(1000, [this]() {
-                    pm_list.clear();
-                    pm_black_list.clear();
-//                    if(_loadThread->isRunning()){
-//                        _loadThread->terminate();
-//                        _loadThread->exit();
-//                    _loadThread->deleteLater();
-//                    _loadThread = new QThread();
-//                    _viewProgBarLoad->moveToThread(_loadThread);
-//                        _loadThread->wait();
-//                        _loadThread->start();
-//                    QThread *loadThread = new QThread();
-
-//                    _viewProgBarLoad->moveToThread(loadThread);
-//                    loadThread->start();
-//                    connect(loadThread, SIGNAL(finished()), loadThread, SLOT(deleteLater()));
-                    QThread *thread = new QThread;
-                    viewProgBarLoad *worker = new viewProgBarLoad(_engine, _progBar, this);
-
-                    connect(worker, SIGNAL(finished()), thread, SLOT(quit())); //新增
-//                    connect(thread,SIGNAL(started()),worker,SLOT(doSomething()));
-                    connect(thread, SIGNAL(finished()), worker, SLOT(deleteLater()));
-                    connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
-                    worker->moveToThread(thread);
-                    thread->start();
-                    connect(this, SIGNAL(sigstartLoad(QSize)), worker, SLOT(loadViewProgBar(QSize)));
-                    connect(worker, SIGNAL(sigFinishiLoad(QSize)), this, SLOT(finishLoadSlot(QSize)));
-                    emit sigstartLoad(size());
-                    _progBar_Widget->setCurrentIndex(1);
-//                    }
-
-                });
-//                _progBar_Widget->setCurrentIndex(1);
-
+                updateThumbnail();
                 _loadsize = size();
             }
         }
     });
 }
 
-void ToolboxProxy::setViewProgBar()
+void ToolboxProxy::updateThumbnail()
 {
-    auto *viewProgBarLayout = new QHBoxLayout();
-//    viewProgBarLayout->setSpacing(1);
-    auto width = _viewProgBar->width();
-    auto tmp = _engine->duration() / 62;
-    auto dpr = qApp->devicePixelRatio();
-    QPixmap pm;
-    pm.setDevicePixelRatio(dpr);
-    VideoThumbnailer thumber;
-    QTime d(0, 0, 0);
-    thumber.setThumbnailSize(8 * qApp->devicePixelRatio());
-    thumber.setMaintainAspectRatio(false);
-    thumber.setSeekTime(d.toString("hh:mm:ss").toStdString());
-    auto url = _engine->playlist().currentInfo().url;
-    auto file = QFileInfo(url.toLocalFile()).absoluteFilePath();
-//    for(auto i=0;i<(_engine->duration() - tmp);){
-    for (auto i = 0; i < 63; i++) {
-        d = d.addSecs(tmp);
-        try {
-            std::vector<uint8_t> buf;
-            thumber.generateThumbnail(file.toUtf8().toStdString(),
-                                      ThumbnailerImageType::Png, buf);
+    QTimer::singleShot(1000, [this]() {
+        pm_list.clear();
+        pm_black_list.clear();
+//        QThread *thread = new QThread;
+        viewProgBarLoad *worker = new viewProgBarLoad(_engine, _progBar, this);
 
-            auto img = QImage::fromData(buf.data(), buf.size(), "png");
+        connect(worker, SIGNAL(finished()), thread, SLOT(quit())); //新增
+        connect(thread, SIGNAL(finished()), worker, SLOT(deleteLater()));
+        connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
+        worker->moveToThread(thread);
+        thread->start();
+        connect(this, SIGNAL(sigstartLoad(QSize)), worker, SLOT(loadViewProgBar(QSize)));
+        connect(worker, SIGNAL(sigFinishiLoad(QSize)), this, SLOT(finishLoadSlot(QSize)));
+        emit sigstartLoad(size());
+        _progBar_Widget->setCurrentIndex(1);
 
-            pm = QPixmap::fromImage(img.scaled(QSize(8, 50) * dpr, Qt::IgnoreAspectRatio, Qt::FastTransformation));
-            pm.setDevicePixelRatio(dpr);
-        } catch (const std::logic_error &) {
-        }
-        QLabel *label = new QLabel();
-        label->setPixmap(pm);
-        label->setFixedSize(8, 50);
-        viewProgBarLayout->addWidget(label, 0, Qt::AlignLeft);
-        viewProgBarLayout->setSpacing(1);
-//        i += tmp;
-    }
-    _viewProgBar->setLayout(viewProgBarLayout);
-
-//    _viewProgBar->show();
-//    _progBar->hide();
-//    _progBarspec->hide();
-
+    });
 }
+
 
 void ToolboxProxy::closeAnyPopup()
 {
