@@ -649,6 +649,7 @@ public:
 //            label->setFixedSize(8,50);
 //            _viewProgBarLayout->addWidget(label, 0 , Qt::AlignLeft );
             ImageItem *label = new ImageItem(pm_list.at(i), false, _back);
+            label->setMouseTracking(true);
             label->move(i * 9 + 5, 5);
             label->setFixedSize(8, 50);
 
@@ -658,7 +659,6 @@ public:
             label_black->setFixedSize(8, 50);
         }
 
-        labelList = _viewProgBarLayout->findChildren<QLabel *>();
         update();
 
 
@@ -668,6 +668,27 @@ public:
         setFixedWidth(_parent->width() - PROGBAR_SPEC);
         _back->setFixedWidth(_parent->width() - PROGBAR_SPEC);
 
+    }
+
+    void clear()
+    {
+        foreach(QLabel* label, _front->findChildren<QLabel *>())
+        {
+            if(label)
+            {
+                label->deleteLater();
+                label = nullptr;
+            }
+        }
+
+        foreach(QLabel* label, _back->findChildren<QLabel *>())
+        {
+            if(label)
+            {
+                label->deleteLater();
+                label = nullptr;
+            }
+        }
     }
 
 private:
@@ -726,7 +747,6 @@ protected:
                     setTimeVisible(true);
                 }
             } else {
-                qDebug() << v;
                 if (_vlastHoverValue != v) {
                     emit hoverChanged(v);
                 }
@@ -919,8 +939,11 @@ public:
             resizeThumbnail(rounded, size);
         }
         if (!_visiblThumb) {
+
+            _visiblThumb = true;
+        }
+        else {
             _thumb->setPixmap(rounded);
-            _visiblThumb = !_visiblThumb;
         }
 
 //        QTime t(0, 0, 0);
@@ -938,9 +961,11 @@ public:
     {
         resizeWithContent();
 //        move(pos.x(), pos.y()+0);
-        if (_visiblThumb) {
+        if (!_visiblThumb) {
+            _visiblThumb = true;
+        }
+        else{
             show(pos.x(), pos.y() + 10);
-            _visiblThumb = !_visiblThumb;
         }
     }
 
@@ -1187,7 +1212,7 @@ void viewProgBarLoad::loadViewProgBar(QSize size)
             return;
         }
         d = d.addMSecs(tmp);
-        qDebug()<<d;
+//        qDebug()<<d;
         thumber.setSeekTime(d.toString("hh:mm:ss:ms").toStdString());
         try {
             std::vector<uint8_t> buf;
@@ -1641,6 +1666,7 @@ void ToolboxProxy::setup()
 
     connect(_engine, &PlayerEngine::stateChanged, this, &ToolboxProxy::updatePlayState);
     connect(_engine, &PlayerEngine::fileLoaded, [ = ]() {
+        _viewProgBar->clear();
         _progBar->slider()->setRange(0, _engine->duration());
         _progBar_stacked->setCurrentIndex(1);
         _loadsize = size();
