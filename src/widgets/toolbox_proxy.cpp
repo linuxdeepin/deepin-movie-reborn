@@ -1145,6 +1145,11 @@ viewProgBarLoad::viewProgBarLoad(PlayerEngine *engine, DMRSlider *progBar, Toolb
     _progBar = progBar;
 }
 
+void viewProgBarLoad::run()
+{
+    loadViewProgBar(_parent->size());
+}
+
 void viewProgBarLoad::loadViewProgBar(QSize size)
 {
 
@@ -1176,6 +1181,11 @@ void viewProgBarLoad::loadViewProgBar(QSize size)
     auto file = QFileInfo(url.toLocalFile()).absoluteFilePath();
 
     for (auto i = 0; i < num; i++) {
+        if(isInterruptionRequested())
+        {
+            qDebug()<<"isInterruptionRequested";
+            return;
+        }
         d = d.addMSecs(tmp);
         qDebug()<<d;
         thumber.setSeekTime(d.toString("hh:mm:ss:ms").toStdString());
@@ -1635,7 +1645,7 @@ void ToolboxProxy::setup()
         _progBar_stacked->setCurrentIndex(1);
         _loadsize = size();
         update();
-        updateThumbnail();
+//        updateThumbnail();
     });
     connect(_engine, &PlayerEngine::elapsedChanged, [ = ]() {
         updateTimeInfo(_engine->duration(), _engine->elapsed(), _timeLabel, _timeLabelend, true);
@@ -1686,20 +1696,37 @@ void ToolboxProxy::setup()
 
 void ToolboxProxy::updateThumbnail()
 {
+    if(m_worker)
+    {
+        qDebug()<<"kill last worker";
+        m_worker->requestInterruption();
+        m_worker->quit();
+        m_worker->wait();
+        delete m_worker;
+        m_worker = nullptr;
+
+    }
+
+    qDebug()<<"worker"<<m_worker;
+
     QTimer::singleShot(1000, [this]() {
         pm_list.clear();
         pm_black_list.clear();
-//        QThread *thread = new QThread;
-        viewProgBarLoad *worker = new viewProgBarLoad(_engine, _progBar, this);
 
-        connect(worker, SIGNAL(finished()), thread, SLOT(quit())); //新增
-        connect(thread, SIGNAL(finished()), worker, SLOT(deleteLater()));
-        connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
-        worker->moveToThread(thread);
-        thread->start();
-        connect(this, SIGNAL(sigstartLoad(QSize)), worker, SLOT(loadViewProgBar(QSize)));
-        connect(worker, SIGNAL(sigFinishiLoad(QSize)), this, SLOT(finishLoadSlot(QSize)));
-        emit sigstartLoad(size());
+        m_worker = new viewProgBarLoad(_engine, _progBar, this);
+
+        connect(m_worker, &viewProgBarLoad::finished, this, [=]
+        {
+            if(m_worker)
+            {
+                m_worker->quit();
+                m_worker->wait();
+                delete m_worker;
+                m_worker = nullptr;
+            }
+        });
+        connect(m_worker, SIGNAL(sigFinishiLoad(QSize)), this, SLOT(finishLoadSlot(QSize)));
+        m_worker->start();
         _progBar_Widget->setCurrentIndex(1);
 
     });

@@ -205,8 +205,10 @@ private:
     QList<ImageItem *>label_black_list;
     QList<QPixmap >pm_list ;
     QList<QPixmap >pm_black_list ;
+
+    viewProgBarLoad *m_worker = nullptr;
 };
-class viewProgBarLoad: public QObject{
+class viewProgBarLoad: public QThread{
     Q_OBJECT
 public:
     explicit viewProgBarLoad(PlayerEngine *engine = nullptr,DMRSlider *progBar = nullptr,ToolboxProxy *parent = 0);
@@ -222,7 +224,7 @@ signals:
     void finished();
 
 protected:
-
+    void run();
 private:
     PlayerEngine *_engine {nullptr};
     ToolboxProxy *_parent{nullptr};
