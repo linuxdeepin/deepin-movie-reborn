@@ -391,7 +391,16 @@ void MpvProxy::handle_mpv_events()
                     auto w = get_property(_handle, "width").toInt();
                     auto h = get_property(_handle, "height").toInt();
 
-                    qDebug() << "hwdec-interop" << get_property(_handle, "gpu-hwdec-interop");
+                    qDebug() << "hwdec-interop" << get_property(_handle, "gpu-hwdec-interop")
+                        << "codec: " << get_property(_handle, "video-codec") 
+                        << "format: " << get_property(_handle, "video-format");
+
+#ifdef __mips__
+                    auto codec = get_property(_handle, "video-codec").toString();
+                    if (codec.toLower().contains("wmv3")) {
+                        set_property(_handle, "hwdec", "no");
+                    }
+#endif
                 }
                 setState(PlayState::Playing); //might paused immediately
                 emit fileLoaded();
@@ -760,6 +769,15 @@ void MpvProxy::play()
     if (!_dvdDevice.isEmpty()) {
         opts << QString("dvd-device=%1").arg(_dvdDevice);
     }
+
+    // hwdec could be disabled by some codecs, so we need to re-enable it
+    if (Settings::get().isSet(Settings::HWAccel)) {
+        set_property(_handle, "hwdec", "auto");
+    } else {
+        set_property(_handle, "hwdec", "off");
+    }
+#else
+    set_property(_handle, "hwdec", "auto");
 #endif
 
     if (opts.size()) {
