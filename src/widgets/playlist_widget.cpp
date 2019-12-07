@@ -185,19 +185,19 @@ public:
 
 //        vl->addStretch();
 
-        _name = new DTextEdit(this);
+        _name = new DLabel(this);
         _name->setProperty("Name", true);
-        _name->setReadOnly(true);
-        _name->setAcceptRichText(false);
-        _name->setWordWrapMode(QTextOption::NoWrap);
-        _name->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-        _name->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+//        _name->setReadOnly(true);
+//        _name->setAcceptRichText(false);
+//        _name->setWordWrapMode(QTextOption::NoWrap);
+//        _name->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+//        _name->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         _name->setFrameShape(QFrame::NoFrame);
         _name->setTextInteractionFlags(Qt::NoTextInteraction);
         _name->setFixedWidth(width() - 180);
 //        _name->setStyleSheet("background: red;");
         _name->installEventFilter(this);
-        _name->viewport()->setAutoFillBackground(false);
+//        _name->viewport()->setAutoFillBackground(false);
         _name->setAutoFillBackground(false);
 
         vl->addWidget(_name);
@@ -421,8 +421,8 @@ protected:
     bool event(QEvent *ee) override
     {
         if (ee->type() == QEvent::Resize) {
-            int text_height = _name->document()->size().height();
-            _name->setFixedHeight(text_height);
+//            int text_height = _name->document()->size().height();
+            _name->setFixedHeight(36);
         }
 
         if (ee->type() == QEvent::Move) {
@@ -444,11 +444,11 @@ protected:
     {
         _name->setText(utils::ElideText(_pif.mi.title, {width() - 242, 36}, QTextOption::NoWrap,
                                         _name->font(), Qt::ElideRight, 18, width() - 242));
-        _name->viewport()->setCursor(Qt::ArrowCursor);
+//        _name->viewport()->setCursor(Qt::ArrowCursor);
         _name->setCursor(Qt::ArrowCursor);
-        _name->document()->setDocumentMargin(0.0);
-        int text_height = _name->document()->size().height();
-        _name->setFixedHeight(text_height);
+//        _name->document()->setDocumentMargin(0.0);
+//        int text_height = _name->document()->size().height();
+        _name->setFixedHeight(36);
     }
 
     void showEvent(QShowEvent *se) override
@@ -529,22 +529,26 @@ protected:
             DPalette pa = DApplicationHelper::instance()->palette(this);
             pa.setBrush(DPalette::Text, pa.color(DPalette::Highlight));
 //            setPalette(pa);
-            _name->setPalette(pa);
+//            _name->setPalette(pa);
+            _name->setForegroundRole(DPalette::Highlight);
             _index->setForegroundRole(DPalette::Highlight);
             _time->setForegroundRole(DPalette::Highlight);
-            _name->setFontWeight(QFont::Weight::Medium);
+//            _name->setFontWeight(QFont::Weight::Medium);
+            DFontSizeManager::instance()->bind(_name, DFontSizeManager::T6, QFont::Medium);
             DFontSizeManager::instance()->bind(_index, DFontSizeManager::T6, QFont::Medium);
             DFontSizeManager::instance()->bind(_time, DFontSizeManager::T6, QFont::Medium);
 //            QColor bgColor  = pal.color(DPalette::ToolTipBase);
 
         }
         else {
-            DPalette pa_name = DApplicationHelper::instance()->palette(_name);
-            pa_name.setBrush(DPalette::Text, pa_name.color(DPalette::ToolTipText));
-            _name->setPalette(pa_name);
-            _name->setFontWeight(QFont::Weight::Normal);
+//            DPalette pa_name = DApplicationHelper::instance()->palette(_name);
+//            pa_name.setBrush(DPalette::Text, pa_name.color(DPalette::ToolTipText));
+//            _name->setPalette(pa_name);
+//            _name->setFontWeight(QFont::Weight::Normal);
+            _name->setForegroundRole(DPalette::ToolTipText);
             _index->setForegroundRole(DPalette::TextTips);
             _time->setForegroundRole(DPalette::TextTips);
+            DFontSizeManager::instance()->bind(_name, DFontSizeManager::T6, QFont::Normal);
             DFontSizeManager::instance()->bind(_index, DFontSizeManager::T6, QFont::Normal);
             DFontSizeManager::instance()->bind(_time, DFontSizeManager::T6, QFont::Normal);
         }
@@ -576,7 +580,7 @@ private:
     QString _bg;
     DLabel *_index;
     ListPic *_thumb;
-    DTextEdit *_name;
+    DLabel *_name;
     DLabel *_time;
     QPixmap _play;
     PlayItemInfo _pif;
