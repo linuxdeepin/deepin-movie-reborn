@@ -1175,7 +1175,6 @@ void viewProgBarLoad::loadViewProgBar(QSize size)
         return;
     }
     isLoad = true;
-    int a = _progBar->width();
     auto num = qreal(_progBar->width()) / 9;
     auto tmp = (_engine->duration() * 1000) / num;
     auto dpr = qApp->devicePixelRatio();
@@ -1444,7 +1443,7 @@ void ToolboxProxy::setup()
     bot->addLayout(_mid);
 
     QHBoxLayout *time = new QHBoxLayout(bot_widget);
-    time->setContentsMargins(0, 0, 0, 0);
+    time->setContentsMargins(10, 10, 10, 10);
     time->setSpacing(0);
     time->setAlignment(Qt::AlignLeft);
     bot->addLayout(time);
@@ -1503,7 +1502,7 @@ void ToolboxProxy::setup()
     bot->addLayout(progBarspec);
 
     QHBoxLayout *timeend = new QHBoxLayout(bot_widget);
-    timeend->setContentsMargins(0, 0, 0, 0);
+    timeend->setContentsMargins(10, 10, 10, 10);
     timeend->setSpacing(0);
     timeend->setAlignment(Qt::AlignRight);
     bot->addLayout(timeend);
