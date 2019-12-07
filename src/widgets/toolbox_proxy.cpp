@@ -2045,7 +2045,7 @@ void ToolboxProxy::paintEvent(QPaintEvent *pe)
     QRectF bgRect;
     bgRect.setSize(size());
     const QPalette pal = QGuiApplication::palette();//this->palette();
-    static int offset = 15;
+    static int offset = 18;
 
     DGuiApplicationHelper::ColorType themeType = DGuiApplicationHelper::instance()->themeType();
     QColor *bgColor, outBdColor, inBdColor;
@@ -2078,14 +2078,14 @@ void ToolboxProxy::paintEvent(QPaintEvent *pe)
         painter.drawLine(width(), offset, width(), height() - offset);
     }
 
-    {
-        auto view_rect = bgRect.marginsRemoved(QMargins(1, 1, 1, 1));
-        QPainterPath pp;
-        pp.setFillRule(Qt::WindingFill);
-        painter.setPen(inBdColor);
-        pp.addRoundedRect(view_rect, RADIUS_MV, RADIUS_MV);
-        painter.drawPath(pp);
-    }
+//    {
+//        auto view_rect = bgRect.marginsRemoved(QMargins(1, 1, 1, 1));
+//        QPainterPath pp;
+//        pp.setFillRule(Qt::WindingFill);
+//        painter.setPen(inBdColor);
+//        pp.addRoundedRect(view_rect, RADIUS_MV, RADIUS_MV);
+//        painter.drawPath(pp);
+//    }
 
     QWidget::paintEvent(pe);
 }
