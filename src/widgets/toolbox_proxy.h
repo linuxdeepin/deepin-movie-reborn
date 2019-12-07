@@ -193,7 +193,7 @@ private:
     int _lastHoverValue {0};
     QTimer _previewTimer;
     QWidget *_bot_spec {nullptr};
-    QStackedLayout *_progBar_stacked {nullptr};
+//    QStackedLayout *_progBar_stacked {nullptr};
     QStackedWidget *_progBar_Widget {nullptr};
     QTimer _autoResizeTimer;
     QSize _oldsize;
