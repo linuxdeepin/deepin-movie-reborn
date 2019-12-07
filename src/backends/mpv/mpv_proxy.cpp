@@ -397,7 +397,7 @@ void MpvProxy::handle_mpv_events()
 
 #ifdef __mips__
                     auto codec = get_property(_handle, "video-codec").toString();
-                    if (codec.toLower().contains("wmv3")) {
+                    if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2")) {
                         set_property(_handle, "hwdec", "no");
                     }
 #endif

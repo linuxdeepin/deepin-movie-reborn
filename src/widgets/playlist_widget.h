@@ -41,6 +41,8 @@
 #include <QBrush>
 #include <DStyle>
 #include <DLabel>
+#include <DTextEdit>
+
 
 namespace Dtk
 {
