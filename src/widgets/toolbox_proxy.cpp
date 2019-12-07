@@ -2045,7 +2045,7 @@ void ToolboxProxy::paintEvent(QPaintEvent *pe)
     QRectF bgRect;
     bgRect.setSize(size());
     const QPalette pal = QGuiApplication::palette();//this->palette();
-    static int offset = 18;
+    static int offset = 14;
 
     DGuiApplicationHelper::ColorType themeType = DGuiApplicationHelper::instance()->themeType();
     QColor *bgColor, outBdColor, inBdColor;

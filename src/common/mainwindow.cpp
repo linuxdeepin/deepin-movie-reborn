@@ -1750,8 +1750,8 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                 QRect deskRect = QApplication::desktop()->availableGeometry();
                 _fullscreentimelable->setGeometry(deskRect.width()-150,40,150,30);
                 _fullscreentimelable->show();
-                }
             }
+        }
         if (!fromUI) {
             reflectActionToUI(kd);
         }
@@ -2335,10 +2335,22 @@ void MainWindow::updateProxyGeometry()
         }
 
         if (_toolbox) {
+            QRect rfs(10, height() - 384 - rect().top() - 10,
+                      rect().width() - 20, 384);
+            QRect rct(10, height() - TOOLBOX_HEIGHT_EXT - rect().top() - 10,
+                    rect().width() - 20, TOOLBOX_HEIGHT_EXT);
             if (isFullScreen()) {
-                _toolbox->resize(rect().width() - 20, 384);
+                if (_playlist->state() == PlaylistWidget::State::Opened) {
+                    _toolbox->setGeometry(rfs);
+                } else {
+                    _toolbox->setGeometry(rct);
+                }
             } else {
-                _toolbox->resize(rect().width() - 20, TOOLBOX_HEIGHT_EXT);
+                if (_playlist->state() == PlaylistWidget::State::Opened) {
+                    _toolbox->setGeometry(rfs);
+                } else {
+                    _toolbox->setGeometry(rct);
+                }
             }
         }
 
