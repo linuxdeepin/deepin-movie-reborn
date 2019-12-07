@@ -1240,6 +1240,7 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
     setFrameShape(QFrame::NoFrame);
 //    setFrameShadow(QFrame::Plain);
     setLineWidth(0);
+    setFixedHeight(70);
 //    setAutoFillBackground(false);
 //    setAttribute(Qt::WA_TranslucentBackground);
     if (!composited) {
@@ -1333,18 +1334,27 @@ void ToolboxProxy::setup()
     setLayout(stacked);
 
     auto *bot_widget = new QWidget(this);
+    bot_widget->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
     auto *botv = new QVBoxLayout(bot_widget);
     botv->setContentsMargins(0, 0, 0, 0);
+    botv->setSpacing(0);
 //    auto *bot = new QHBoxLayout();
+
     _bot_spec = new QWidget(bot_widget);
-    _bot_spec->setFixedHeight(310);
+    _bot_spec->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
     _bot_spec->setFixedWidth(width());
-    _bot_spec->hide();
+    _bot_spec->setVisible(false);
     botv->addWidget(_bot_spec);
-    auto *bot = new QHBoxLayout(bot_widget);
-    bot->setContentsMargins(LEFT_MARGIN, 0, RIGHT_MARGIN, 0);
-    bot->setSpacing(0);
-    botv->addLayout(bot);
+
+    bot_toolWgt = new QWidget(bot_widget);
+    bot_toolWgt->setFixedHeight(70);
+    bot_toolWgt->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+    auto *bot_layout = new QHBoxLayout(bot_toolWgt);
+    bot_layout->setContentsMargins(LEFT_MARGIN, 0, RIGHT_MARGIN, 0);
+    bot_layout->setSpacing(0);
+    bot_toolWgt->setLayout(bot_layout);
+    botv->addWidget(bot_toolWgt);
+
     bot_widget->setLayout(botv);
     stacked->addWidget(bot_widget);
 //    QPalette palette;
@@ -1440,13 +1450,13 @@ void ToolboxProxy::setup()
     _mid->setContentsMargins(0, 0, 0, 0);
     _mid->setSpacing(0);
     _mid->setAlignment(Qt::AlignLeft);
-    bot->addLayout(_mid);
+    bot_layout->addLayout(_mid);
 
     QHBoxLayout *time = new QHBoxLayout(bot_widget);
     time->setContentsMargins(10, 10, 10, 10);
     time->setSpacing(0);
     time->setAlignment(Qt::AlignLeft);
-    bot->addLayout(time);
+    bot_layout->addLayout(time);
     time->addWidget(_timeLabel);
 
 //    bot->addStretch();
@@ -1499,13 +1509,13 @@ void ToolboxProxy::setup()
     _progBar_Widget->addWidget(_viewProgBar);
     _progBar_Widget->setCurrentIndex(0);
     progBarspec->addWidget(_progBar_Widget);
-    bot->addLayout(progBarspec);
+    bot_layout->addLayout(progBarspec);
 
     QHBoxLayout *timeend = new QHBoxLayout(bot_widget);
     timeend->setContentsMargins(10, 10, 10, 10);
     timeend->setSpacing(0);
     timeend->setAlignment(Qt::AlignRight);
-    bot->addLayout(timeend);
+    bot_layout->addLayout(timeend);
     timeend->addWidget(_timeLabelend);
 
     _palyBox = new DButtonBox(bot_widget);
@@ -1554,7 +1564,7 @@ void ToolboxProxy::setup()
     _right->setContentsMargins(0, 0, 0, 0);
     _right->setSizeConstraint(QLayout::SetFixedSize);
     _right->setSpacing(0);
-    bot->addLayout(_right);
+    bot_layout->addLayout(_right);
 
     _subBtn = new ToolButton(bot_widget);
     _subBtn->setIcon(QIcon::fromTheme("dcc_episodes"));
@@ -2101,17 +2111,15 @@ void ToolboxProxy::resizeEvent(QResizeEvent *event)
 
     }
 
-
-
-//    _oldsize = event->size();
-//    if (!_isresize){
-//        QTimer::singleShot(2000, [this]() {
-
-//            _viewProgBar->setWidth();
-//            _isresize = false;
-//        });
-//    }
-
+    if (_playlist->state() == PlaylistWidget::State::Opened) {
+        QRect r(10, _mainWindow->height() - 384 - _mainWindow->rect().top() - 10,
+                _mainWindow->rect().width() - 20, 384);
+        this->setGeometry(r);
+    } else {
+        QRect r(10, _mainWindow->height() - TOOLBOX_HEIGHT_EXT - _mainWindow->rect().top() - 10,
+                _mainWindow->rect().width() - 20, TOOLBOX_HEIGHT_EXT);
+        this->setGeometry(r);
+    }
 
     updateTimeLabel();
 }
@@ -2170,11 +2178,16 @@ void ToolboxProxy::setPlaylist(PlaylistWidget *playlist)
     _playlist = playlist;
     connect(_playlist, &PlaylistWidget::stateChange, this, [ = ]() {
         if (_playlist->state() == PlaylistWidget::State::Opened) {
-            _bot_spec->show();
+            this->setFixedHeight(314+70);
+            _bot_spec->setFixedHeight(314);
+            _bot_spec->setVisible(true);
             _listBtn->setChecked(true);
         } else {
             _listBtn->setChecked(false);
-            _bot_spec->hide();
+            _bot_spec->setVisible(false);
+            _bot_spec->setFixedHeight(0);
+            bot_toolWgt->setFixedHeight(70);
+            this->setFixedHeight(70);
         }
     });
 }

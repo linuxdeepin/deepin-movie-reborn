@@ -647,24 +647,6 @@ MainWindow::MainWindow(QWidget *parent)
             resumeToolsWindow();
     });
 
-    connect(_playlist, &PlaylistWidget::stateChange, this, [ = ] {
-        if (_playlist->state() == PlaylistWidget::State::Opened)
-        {
-            QRect r(10, height() - 384 - rect().top() - 10,
-                    rect().width() - 20, 384);
-            _toolbox->setGeometry(r);
-//            _toolbox->move(r.x(),r.y());
-//            _toolbox->resize(r.width(),r.height());
-        } else
-        {
-            QRect r(10, height() - TOOLBOX_HEIGHT_EXT - rect().top() - 10,
-                    rect().width() - 20, TOOLBOX_HEIGHT_EXT);
-            _toolbox->setGeometry(r);
-        }
-    });
-
-
-
     _playState = new DIconButton(this);
 //    _playState->setScaledContents(true);
     _playState->setIcon(QIcon(":/resources/icons/dark/normal/play-big_normal.svg"));
@@ -2353,45 +2335,11 @@ void MainWindow::updateProxyGeometry()
         }
 
         if (_toolbox) {
-//            QRect r(view_rect.left(), height() - TOOLBOX_HEIGHT_EXT - view_rect.top(),
-//                    view_rect.width(), TOOLBOX_HEIGHT_EXT);
             if (isFullScreen()) {
-                if (_playlist->state() == PlaylistWidget::State::Opened) {
-                    QRect r(10, height() - 384 - rect().top() - 10,
-                            rect().width() - 20, 384);
-                    _toolbox->setGeometry(r);
-                    //            _toolbox->move(r.x(),r.y());
-                    //            _toolbox->resize(r.width(),r.height());
-                } else {
-                    QRect r(10, height() - TOOLBOX_HEIGHT_EXT - rect().top() - 10,
-                            rect().width() - 20, TOOLBOX_HEIGHT_EXT);
-                    _toolbox->setGeometry(r);
-                }
-
-//                QRect r(10, height() - TOOLBOX_HEIGHT_EXT - view_rect.top() - 10,
-//                        view_rect.width()-20, TOOLBOX_HEIGHT_EXT);
-//                _toolbox->setGeometry(r);
+                _toolbox->resize(rect().width() - 20, 384);
             } else {
-                if (_playlist->state() == PlaylistWidget::State::Opened) {
-                    QRect r(10, height() - 384 - rect().top() - 10,
-                            rect().width() - 20, 384);
-                    _toolbox->setGeometry(r);
-                    //            _toolbox->move(r.x(),r.y());
-                    //            _toolbox->resize(r.width(),r.height());
-                } else {
-                    QRect r(10, height() - TOOLBOX_HEIGHT_EXT - rect().top() - 10,
-                            rect().width() - 20, TOOLBOX_HEIGHT_EXT);
-                    _toolbox->setGeometry(r);
-                }
-//                QRect r(10, height() - TOOLBOX_HEIGHT_EXT - view_rect.top() - 10,
-//                        view_rect.width()-20, TOOLBOX_HEIGHT_EXT);
-//                _toolbox->setGeometry(r);
+                _toolbox->resize(rect().width() - 20, TOOLBOX_HEIGHT_EXT);
             }
-
-//            if (isFullScreen()) {
-//                r.moveTopLeft({0, height() - TOOLBOX_HEIGHT_EXT});
-//            }
-//            _toolbox->setGeometry(r);
         }
 
         if (_playlist && !_playlist->toggling()) {
