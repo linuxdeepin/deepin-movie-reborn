@@ -460,7 +460,7 @@ public:
 
         _back = new QWidget(this);
         _back->setFixedHeight(60);
-        _back->setFixedWidth(this->width() - 5);
+        _back->setFixedWidth(this->width());
         _back->setContentsMargins(0, 0, 0, 0);
 
         _front = new QWidget(this);
@@ -512,7 +512,14 @@ public:
     bool getIsBlockSignals() {return _isBlockSignals;}
     void setValue(int v)
     {
-//        _indicatorPos = {v > 5 ? 5 : v, rect().y()};
+//        _indicatorPos = {v < 5 ? 5 : v, rect().y()};
+        if (_press) {
+            if (v < 3) {
+                v = 3;
+            }else if(v > width() - 2) {
+                v = width() - 2;
+            }
+        }
         _indicatorPos = {v, rect().y()};
         update();
     }
@@ -641,12 +648,12 @@ public:
 //            _viewProgBarLayout->addWidget(label, 0 , Qt::AlignLeft );
             ImageItem *label = new ImageItem(pm_list.at(i), false, _back);
             label->setMouseTracking(true);
-            label->move(i * 9 /*+ 5*/, 5);
+            label->move(i * 9 + 3, 5);
             label->setFixedSize(8, 50);
 
             ImageItem *label_black = new ImageItem(pm_black_list.at(i), true, _front);
             label_black->setMouseTracking(true);
-            label_black->move(i * 9 /*+ 5*/, 5);
+            label_black->move(i * 9 + 3, 5);
             label_black->setFixedSize(8, 50);
         }
 
@@ -735,7 +742,7 @@ protected:
                     emit sliderMoved(v);
                     emit hoverChanged(v);
                     setValue(e->pos().x());
-                    setTimeVisible(true);
+                    setTimeVisible(_press);
                 }
             } else {
                 if (_vlastHoverValue != v) {
@@ -766,16 +773,16 @@ protected:
     {
         if (_press && isEnabled()) {
             changeStyle(!_press);
+//            setTimeVisible(!_press);
             _press = !_press;
         }
     }
     void paintEvent(QPaintEvent *e)
     {
-        QPoint pos = {_indicatorPos.x() > width() - 4 ? width() - 4 : _indicatorPos.x() - 1, rect().y()};
-        _indicator->move(pos.x(), pos.y());
-        _sliderArrowDown->move(pos.x() + _indicator->width() / 2 - _sliderArrowDown->width() / 2,
-                               pos.y() - 10);
-        _sliderArrowUp->move(pos.x() + _indicator->width() / 2 - _sliderArrowUp->width() / 2, 56);
+        _indicator->move(_indicatorPos.x(), _indicatorPos.y());
+        _sliderArrowDown->move(_indicatorPos.x() + _indicator->width() / 2 - _sliderArrowDown->width() / 2,
+                               _indicatorPos.y() - 10);
+        _sliderArrowUp->move(_indicatorPos.x() + _indicator->width() / 2 - _sliderArrowUp->width() / 2, 56);
         _front->setFixedWidth(_indicatorPos.x());
 
         if (_press) {
@@ -815,8 +822,8 @@ private:
     int position2progress(const QPoint &p)
     {
         auto total = _engine->duration();
-        qreal span = (qreal)total / contentsRect().width();
-        return span * (p.x());
+        qreal span = (qreal)total * p.x() / (contentsRect().width()-4);
+        return span/* * (p.x())*/;
     }
 
 };
@@ -1836,7 +1843,7 @@ void ToolboxProxy::updateMovieProgress()
     int v2 = 0;
     if (d != 0 && e != 0) {
         v = _progBar->maximum() * ((double)e / d);
-        v2 = _viewProgBar->rect().width() * ((double)e / d);
+        v2 = (_viewProgBar->rect().width() - 4) * ((double)e / d);
     }
     if (!_progBar->signalsBlocked()) {
         _progBar->blockSignals(true);
