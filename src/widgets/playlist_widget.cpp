@@ -755,7 +755,7 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     rightinfo->addWidget(_playlist);
     _playlist->setAttribute(Qt::WA_TranslucentBackground, false);
     _playlist->setFrameShape(QFrame::NoFrame);
-    _playlist->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred));
+    _playlist->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred));
 
     _playlist->setSelectionMode(QListView::NoSelection);
     _playlist->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -1171,18 +1171,11 @@ void PlaylistWidget::togglePopup()
 #else
     auto view_rect = main_rect.marginsRemoved(QMargins(1, 1, 1, 1));
 #endif
-    int off = _mw->isFullScreen() ? 0 : _mw->titlebar()->geometry().bottom();
-//    QRect fixed(0, off,
-//            PLAYLIST_FIXED_WIDTH,
-//            _mw->toolbox()->geometry().top() + TOOLBOX_TOP_EXTENT - off);
     QRect fixed((10), (view_rect.height() - 394),
-                view_rect.width() - 20,
-                (384 - 70));
-//    fixed.moveRight(view_rect.right());
+                view_rect.width() - 20, (384 - 70));
+
     QRect shrunk = fixed;
-//    shrunk.setWidth(0);
     shrunk.setHeight(0);
-//    shrunk.moveRight(fixed.right());
     shrunk.moveBottom(fixed.bottom());
 
     if (_toggling) return;
@@ -1267,14 +1260,11 @@ void PlaylistWidget::resizeEvent(QResizeEvent *ev)
 #else
     auto view_rect = main_rect.marginsRemoved(QMargins(1, 1, 1, 1));
 #endif
-    int off = _mw->isFullScreen() ? 0 : _mw->titlebar()->geometry().bottom();
-//    QRect fixed(0, off,
-//            PLAYLIST_FIXED_WIDTH,
-//            _mw->toolbox()->geometry().top() + TOOLBOX_TOP_EXTENT - off);
     QRect fixed((view_rect.width() - 10), (view_rect.height() - 394),
-                view_rect.width() - 20,
-                (384 - 70));
-    _playlist->setFixedWidth(width() - 235);
+                view_rect.width() - 20, (384 - 70));
+
+//    _playlist->setFixedWidth(width() - 235);
+    _playlist->setFixedWidth(fixed.width() - 235);
     emit sizeChange();
 
     QTimer::singleShot(100, this, &PlaylistWidget::batchUpdateSizeHints);
