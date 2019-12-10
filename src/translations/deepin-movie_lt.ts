@@ -22,7 +22,7 @@
         <translation>Atverti aplanką</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2485"/>
+        <location filename="../common/mainwindow.cpp" line="2467"/>
         <source>Network disconnected</source>
         <translation type="unfinished"></translation>
     </message>
@@ -538,171 +538,183 @@
 <context>
     <name>dmr::MainWindow</name>
     <message>
-        <location filename="../common/mainwindow.cpp" line="820"/>
-        <location filename="../common/mainwindow.cpp" line="2002"/>
-        <location filename="../common/mainwindow.cpp" line="3147"/>
+        <location filename="../common/mainwindow.cpp" line="805"/>
+        <location filename="../common/mainwindow.cpp" line="2006"/>
+        <location filename="../common/mainwindow.cpp" line="3187"/>
         <source>Load successfully</source>
         <translation>Įkėlimas sėkmingas</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="820"/>
-        <location filename="../common/mainwindow.cpp" line="2002"/>
-        <location filename="../common/mainwindow.cpp" line="3147"/>
+        <location filename="../common/mainwindow.cpp" line="805"/>
+        <location filename="../common/mainwindow.cpp" line="2006"/>
+        <location filename="../common/mainwindow.cpp" line="3187"/>
         <source>Load failed</source>
         <translation>Įkėlimas nepavyko</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1557"/>
+        <location filename="../common/mainwindow.cpp" line="1560"/>
         <source>No device found</source>
         <translation>Nerasta jokio įrenginio</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1575"/>
+        <location filename="../common/mainwindow.cpp" line="1578"/>
         <source>Parse Failed</source>
         <translation>Nagrinėjimas nepavyko</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1582"/>
+        <location filename="../common/mainwindow.cpp" line="1585"/>
         <source>Open folder</source>
         <translation>Atverti aplanką</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1599"/>
-        <location filename="../common/mainwindow.cpp" line="1621"/>
-        <location filename="../common/mainwindow.cpp" line="1997"/>
+        <location filename="../common/mainwindow.cpp" line="1602"/>
+        <location filename="../common/mainwindow.cpp" line="1624"/>
+        <location filename="../common/mainwindow.cpp" line="2001"/>
         <source>Open file</source>
         <translation>Atverti failą</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1601"/>
-        <location filename="../common/mainwindow.cpp" line="1623"/>
+        <location filename="../common/mainwindow.cpp" line="1604"/>
+        <location filename="../common/mainwindow.cpp" line="1626"/>
         <source>All videos (%1)</source>
         <translation>Visi vaizdo įrašai (%1)</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1822"/>
+        <location filename="../common/mainwindow.cpp" line="1811"/>
         <source>Stereo</source>
         <translation type="unfinished">Stereo</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1827"/>
+        <location filename="../common/mainwindow.cpp" line="1816"/>
         <source>Left channel</source>
         <translation type="unfinished">Kairysis kanalas</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1832"/>
+        <location filename="../common/mainwindow.cpp" line="1821"/>
         <source>Right channel</source>
         <translation type="unfinished">Dešinysis kanalas</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1864"/>
+        <location filename="../common/mainwindow.cpp" line="1853"/>
         <source>Muted</source>
         <translation>Nutildyta</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1867"/>
-        <location filename="../common/mainwindow.cpp" line="1879"/>
-        <location filename="../common/mainwindow.cpp" line="1889"/>
-        <location filename="../common/mainwindow.cpp" line="1896"/>
+        <location filename="../common/mainwindow.cpp" line="1856"/>
+        <location filename="../common/mainwindow.cpp" line="1875"/>
+        <location filename="../common/mainwindow.cpp" line="1888"/>
+        <location filename="../common/mainwindow.cpp" line="1900"/>
         <source>Volume: %1%</source>
         <translation>Garsis: %1%</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1924"/>
+        <location filename="../common/mainwindow.cpp" line="1928"/>
         <source>Track: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1962"/>
-        <location filename="../common/mainwindow.cpp" line="1970"/>
+        <location filename="../common/mainwindow.cpp" line="1966"/>
+        <location filename="../common/mainwindow.cpp" line="1974"/>
         <source>Subtitle %1: %2s</source>
         <translation>Subtitrai %1: %2s</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1963"/>
-        <location filename="../common/mainwindow.cpp" line="1971"/>
+        <location filename="../common/mainwindow.cpp" line="1967"/>
+        <location filename="../common/mainwindow.cpp" line="1975"/>
         <source>delayed</source>
         <translation>vėluoja</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1963"/>
-        <location filename="../common/mainwindow.cpp" line="1971"/>
+        <location filename="../common/mainwindow.cpp" line="1967"/>
+        <location filename="../common/mainwindow.cpp" line="1975"/>
         <source>advanced</source>
         <translation>skuba</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1978"/>
-        <location filename="../common/mainwindow.cpp" line="1985"/>
-        <location filename="../common/mainwindow.cpp" line="1992"/>
+        <location filename="../common/mainwindow.cpp" line="1982"/>
+        <location filename="../common/mainwindow.cpp" line="1989"/>
+        <location filename="../common/mainwindow.cpp" line="1996"/>
         <source>Speed: %1x</source>
         <translation>Greitis: %1x</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1999"/>
+        <location filename="../common/mainwindow.cpp" line="2003"/>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</source>
         <translation>Subtitrai (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2062"/>
+        <location filename="../common/mainwindow.cpp" line="2066"/>
         <source>View</source>
         <translation>Žiūrėti</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2073"/>
+        <location filename="../common/mainwindow.cpp" line="2077"/>
         <source>Movie Screenshot</source>
         <translation>Filmo ekrano kopija</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2074"/>
+        <location filename="../common/mainwindow.cpp" line="2078"/>
         <source>Saved to</source>
         <translation>Įrašyta į</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2099"/>
-        <location filename="../common/mainwindow.cpp" line="2192"/>
+        <location filename="../common/mainwindow.cpp" line="2103"/>
+        <location filename="../common/mainwindow.cpp" line="2196"/>
         <source>The screenshot is saved</source>
         <translation>Ekrano kopija įrašyta</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2103"/>
-        <location filename="../common/mainwindow.cpp" line="2197"/>
+        <location filename="../common/mainwindow.cpp" line="2107"/>
+        <location filename="../common/mainwindow.cpp" line="2201"/>
         <source>Failed to save the screenshot</source>
         <translation>Nepavyko įrašyti ekrano kopijos</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2156"/>
+        <location filename="../common/mainwindow.cpp" line="2160"/>
         <source>Screenshot is working,please wait</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2280"/>
-        <location filename="../common/mainwindow.cpp" line="3160"/>
+        <location filename="../common/mainwindow.cpp" line="2284"/>
+        <location filename="../common/mainwindow.cpp" line="3200"/>
         <source>Invalid file: %1</source>
         <translation>Neteisingas failas: %1</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2492"/>
+        <location filename="../common/mainwindow.cpp" line="2474"/>
         <source>No matching online subtitles</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2502"/>
+        <location filename="../common/mainwindow.cpp" line="2491"/>
+        <location filename="../common/mainwindow.cpp" line="2552"/>
+        <source>Due to the hardware environment limitations,4K video may be stuck.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../common/mainwindow.cpp" line="2492"/>
+        <location filename="../common/mainwindow.cpp" line="2553"/>
+        <source>Confirm</source>
+        <translation type="unfinished">Patvirtinti</translation>
+    </message>
+    <message>
+        <location filename="../common/mainwindow.cpp" line="2518"/>
         <source>Cannot open file or stream</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2508"/>
-        <location filename="../common/mainwindow.cpp" line="2513"/>
+        <location filename="../common/mainwindow.cpp" line="2524"/>
+        <location filename="../common/mainwindow.cpp" line="2529"/>
         <source>File is corrupt</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2518"/>
+        <location filename="../common/mainwindow.cpp" line="2534"/>
         <source>Please insert the CD into the drive</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2524"/>
+        <location filename="../common/mainwindow.cpp" line="2540"/>
         <source>No video file found</source>
         <translation type="unfinished"></translation>
     </message>
@@ -749,33 +761,32 @@
         <translation type="vanished">Failo kelias:</translation>
     </message>
     <message>
-        <location filename="../widgets/movieinfo_dialog.cpp" line="180"/>
+        <location filename="../widgets/movieinfo_dialog.cpp" line="237"/>
         <source>Film info</source>
         <translation type="unfinished">Filmo informacija</translation>
     </message>
     <message>
-        <location filename="../widgets/movieinfo_dialog.cpp" line="185"/>
+        <location filename="../widgets/movieinfo_dialog.cpp" line="242"/>
         <source>Resolution</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/movieinfo_dialog.cpp" line="186"/>
+        <location filename="../widgets/movieinfo_dialog.cpp" line="243"/>
         <source>File type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/movieinfo_dialog.cpp" line="187"/>
+        <location filename="../widgets/movieinfo_dialog.cpp" line="244"/>
         <source>File size</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/movieinfo_dialog.cpp" line="188"/>
+        <location filename="../widgets/movieinfo_dialog.cpp" line="245"/>
         <source>Duration</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/movieinfo_dialog.cpp" line="198"/>
-        <location filename="../widgets/movieinfo_dialog.cpp" line="200"/>
+        <location filename="../widgets/movieinfo_dialog.cpp" line="254"/>
         <source>File path</source>
         <translation type="unfinished"></translation>
     </message>
@@ -783,8 +794,8 @@
 <context>
     <name>dmr::MpvProxy</name>
     <message>
-        <location filename="../backends/mpv/mpv_proxy.cpp" line="1050"/>
         <location filename="../backends/mpv/mpv_proxy.cpp" line="1068"/>
+        <location filename="../backends/mpv/mpv_proxy.cpp" line="1086"/>
         <source>[internal]</source>
         <translation>[vidinis]</translation>
     </message>
@@ -802,25 +813,25 @@
 <context>
     <name>dmr::PlaylistWidget</name>
     <message>
-        <location filename="../widgets/playlist_widget.cpp" line="668"/>
+        <location filename="../widgets/playlist_widget.cpp" line="672"/>
         <source>Playlist</source>
         <translation type="unfinished">Grojaraštis</translation>
     </message>
     <message>
-        <location filename="../widgets/playlist_widget.cpp" line="674"/>
+        <location filename="../widgets/playlist_widget.cpp" line="678"/>
         <source>17个视频</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/playlist_widget.cpp" line="691"/>
+        <location filename="../widgets/playlist_widget.cpp" line="695"/>
         <source>Clear Playlist</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/playlist_widget.cpp" line="858"/>
-        <location filename="../widgets/playlist_widget.cpp" line="1061"/>
-        <location filename="../widgets/playlist_widget.cpp" line="1085"/>
-        <location filename="../widgets/playlist_widget.cpp" line="1137"/>
+        <location filename="../widgets/playlist_widget.cpp" line="862"/>
+        <location filename="../widgets/playlist_widget.cpp" line="1073"/>
+        <location filename="../widgets/playlist_widget.cpp" line="1097"/>
+        <location filename="../widgets/playlist_widget.cpp" line="1149"/>
         <source>%1 videos</source>
         <translation type="unfinished"></translation>
     </message>
@@ -841,78 +852,78 @@
 <context>
     <name>dmr::ToolboxProxy</name>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="1911"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="1926"/>
         <source>Play</source>
         <translation>Groti</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="1550"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="1640"/>
         <source>Previous</source>
         <translation>Ankstesnis</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="1550"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="1640"/>
         <source>Next</source>
         <translation>Kitas</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="1551"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="1641"/>
         <source>Subtitles</source>
         <translation>Subtitrai</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="1551"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="1641"/>
         <source>Playlist</source>
         <translation>Grojaraštis</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="1551"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="1896"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="1641"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="1911"/>
         <source>Fullscreen</source>
         <translation>Visas ekranas</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="1550"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="1640"/>
         <source>Play/Pause</source>
         <translation>Groti/Pristabdyti</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="1554"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="1644"/>
         <source>play</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="1554"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="1644"/>
         <source>prev</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="1554"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="1644"/>
         <source>next</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="1555"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="1645"/>
         <source>sub</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="1555"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="1645"/>
         <source>fs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="1555"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="1645"/>
         <source>list</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="1892"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="1907"/>
         <source>Exit fullscreen</source>
         <translation>Išeiti iš viso ekrano</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="1907"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="1922"/>
         <source>Pause</source>
         <translation>Pristabdyti</translation>
     </message>

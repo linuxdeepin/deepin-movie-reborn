@@ -158,6 +158,7 @@
         <file>resources/icons/logo-big.svg</file>
         <file>resources/icons/logo.svg</file>
         <file>resources/icons/dark/init-splash-bac.svg</file>
+        <file>resources/icons/warning.svg</file>
     </qresource>
     <qresource prefix="/dark">
         <file alias="dmr::NotificationWidget.theme">resources/qss/dark/dmr--NotificationWidget.theme</file>

@@ -873,6 +873,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(_engine, &PlayerEngine::onlineStateChanged, this, &MainWindow::checkOnlineState);
     connect(&OnlineSubtitle::get(), &OnlineSubtitle::onlineSubtitleStateChanged, this, &MainWindow::checkOnlineSubtitle);
     connect(_engine, &PlayerEngine::mpvErrorLogsChanged, this, &MainWindow::checkErrorMpvLogsChanged);
+    connect(_engine, &PlayerEngine::mpvWarningLogsChanged, this, &MainWindow::checkWarningMpvLogsChanged);
     connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::newProcessInstance, this, [=]
     {
         this->activateWindow();
@@ -2472,6 +2473,36 @@ void MainWindow::checkOnlineSubtitle(const OnlineSubtitle::FailReason reason)
     if (OnlineSubtitle::FailReason::NoSubFound == reason) {
         _nwComm->updateWithMessage(tr("No matching online subtitles"));
     }
+}
+
+void MainWindow::checkWarningMpvLogsChanged(const QString prefix, const QString text)
+{
+    QString warningMessage(text);
+    qDebug()<<text;
+    if(warningMessage.contains(QString("Hardware does not support image size 3840x2160")))
+    {
+        requestAction(ActionFactory::TogglePause);
+
+        DDialog *dialog = new DDialog;
+        dialog->setFixedWidth(440);
+        QImage icon = utils::LoadHiDPIImage(":/resources/icons/warning.svg");
+        QPixmap pix = QPixmap::fromImage(icon);
+        dialog->setIcon(QIcon(pix));
+        dialog->setMessage(tr("Due to the hardware environment limitations,4K video may be stuck."));
+        dialog->addButton(tr("Confirm"), true, DDialog::ButtonRecommend);
+        QGraphicsDropShadowEffect *effect = new QGraphicsDropShadowEffect();
+        effect->setOffset(0, 4);
+        effect->setColor(QColor(0, 145, 255, 76));
+        effect->setBlurRadius(4);
+        dialog->getButton(0)->setFixedWidth(340);
+        dialog->getButton(0)->setGraphicsEffect(effect);
+        dialog->exec();
+        QTimer::singleShot(500, [ = ]() {
+            startPlayStateAnimation(true);
+            _engine->pauseResume();
+        });
+    }
+
 }
 
 void MainWindow::checkErrorMpvLogsChanged(const QString prefix, const QString text)

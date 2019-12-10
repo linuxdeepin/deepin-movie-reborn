@@ -142,6 +142,7 @@ Q_SIGNALS:
     void notifyScreenshot(const QImage& frame, qint64 time);
 
     void mpvErrorLogsChanged(const QString prefix, const QString text);
+    void mpvWarningLogsChanged(const QString prefix, const QString text);
 
 public slots:
     virtual void play() = 0;

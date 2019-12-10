@@ -22,7 +22,7 @@
         <translation>打开文件夹</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2485"/>
+        <location filename="../common/mainwindow.cpp" line="2467"/>
         <source>Network disconnected</source>
         <translation>网络已断开</translation>
     </message>
@@ -249,20 +249,20 @@
         <translation>退出全屏/退出迷你模式</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="50"/>
         <location filename="../common/shortcut_manager.cpp" line="232"/>
+        <location filename="../common/settings_translation.cpp" line="50"/>
         <source>Help</source>
         <translation>帮助</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="51"/>
         <location filename="../common/shortcut_manager.cpp" line="237"/>
+        <location filename="../common/settings_translation.cpp" line="51"/>
         <source>Display shortcuts</source>
         <translation>显示快捷键预览</translation>
     </message>
     <message>
-        <location filename="../common/settings_translation.cpp" line="52"/>
         <location filename="../common/shortcut_manager.cpp" line="229"/>
+        <location filename="../common/settings_translation.cpp" line="52"/>
         <source>Settings</source>
         <translation>设置</translation>
     </message>
@@ -538,171 +538,183 @@
 <context>
     <name>dmr::MainWindow</name>
     <message>
-        <location filename="../common/mainwindow.cpp" line="820"/>
-        <location filename="../common/mainwindow.cpp" line="2002"/>
-        <location filename="../common/mainwindow.cpp" line="3147"/>
+        <location filename="../common/mainwindow.cpp" line="805"/>
+        <location filename="../common/mainwindow.cpp" line="2006"/>
+        <location filename="../common/mainwindow.cpp" line="3187"/>
         <source>Load successfully</source>
         <translation>载入字幕成功</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="820"/>
-        <location filename="../common/mainwindow.cpp" line="2002"/>
-        <location filename="../common/mainwindow.cpp" line="3147"/>
+        <location filename="../common/mainwindow.cpp" line="805"/>
+        <location filename="../common/mainwindow.cpp" line="2006"/>
+        <location filename="../common/mainwindow.cpp" line="3187"/>
         <source>Load failed</source>
         <translation>载入字幕失败</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1557"/>
+        <location filename="../common/mainwindow.cpp" line="1560"/>
         <source>No device found</source>
         <translation>没有发现可播放设备</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1575"/>
+        <location filename="../common/mainwindow.cpp" line="1578"/>
         <source>Parse Failed</source>
         <translation>解析失败</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1582"/>
+        <location filename="../common/mainwindow.cpp" line="1585"/>
         <source>Open folder</source>
         <translation>打开文件夹</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1599"/>
-        <location filename="../common/mainwindow.cpp" line="1621"/>
-        <location filename="../common/mainwindow.cpp" line="1997"/>
+        <location filename="../common/mainwindow.cpp" line="1602"/>
+        <location filename="../common/mainwindow.cpp" line="1624"/>
+        <location filename="../common/mainwindow.cpp" line="2001"/>
         <source>Open file</source>
         <translation>打开文件</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1601"/>
-        <location filename="../common/mainwindow.cpp" line="1623"/>
+        <location filename="../common/mainwindow.cpp" line="1604"/>
+        <location filename="../common/mainwindow.cpp" line="1626"/>
         <source>All videos (%1)</source>
         <translation>所有视频(%1)</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1822"/>
+        <location filename="../common/mainwindow.cpp" line="1811"/>
         <source>Stereo</source>
         <translation>立体声</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1827"/>
+        <location filename="../common/mainwindow.cpp" line="1816"/>
         <source>Left channel</source>
         <translation>左声道</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1832"/>
+        <location filename="../common/mainwindow.cpp" line="1821"/>
         <source>Right channel</source>
         <translation>右声道</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1864"/>
+        <location filename="../common/mainwindow.cpp" line="1853"/>
         <source>Muted</source>
         <translation>静音</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1867"/>
-        <location filename="../common/mainwindow.cpp" line="1879"/>
-        <location filename="../common/mainwindow.cpp" line="1889"/>
-        <location filename="../common/mainwindow.cpp" line="1896"/>
+        <location filename="../common/mainwindow.cpp" line="1856"/>
+        <location filename="../common/mainwindow.cpp" line="1875"/>
+        <location filename="../common/mainwindow.cpp" line="1888"/>
+        <location filename="../common/mainwindow.cpp" line="1900"/>
         <source>Volume: %1%</source>
         <translation>音量：%1%</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1924"/>
+        <location filename="../common/mainwindow.cpp" line="1928"/>
         <source>Track: %1</source>
         <translation>音轨：%1</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1962"/>
-        <location filename="../common/mainwindow.cpp" line="1970"/>
+        <location filename="../common/mainwindow.cpp" line="1966"/>
+        <location filename="../common/mainwindow.cpp" line="1974"/>
         <source>Subtitle %1: %2s</source>
         <translation>字幕%1：%2秒</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1963"/>
-        <location filename="../common/mainwindow.cpp" line="1971"/>
+        <location filename="../common/mainwindow.cpp" line="1967"/>
+        <location filename="../common/mainwindow.cpp" line="1975"/>
         <source>delayed</source>
         <translation>延迟</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1963"/>
-        <location filename="../common/mainwindow.cpp" line="1971"/>
+        <location filename="../common/mainwindow.cpp" line="1967"/>
+        <location filename="../common/mainwindow.cpp" line="1975"/>
         <source>advanced</source>
         <translation>提前</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1978"/>
-        <location filename="../common/mainwindow.cpp" line="1985"/>
-        <location filename="../common/mainwindow.cpp" line="1992"/>
+        <location filename="../common/mainwindow.cpp" line="1982"/>
+        <location filename="../common/mainwindow.cpp" line="1989"/>
+        <location filename="../common/mainwindow.cpp" line="1996"/>
         <source>Speed: %1x</source>
         <translation>播放速度：%1倍</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1999"/>
+        <location filename="../common/mainwindow.cpp" line="2003"/>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</source>
         <translation>字幕文件 (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2062"/>
+        <location filename="../common/mainwindow.cpp" line="2066"/>
         <source>View</source>
         <translation>查看</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2073"/>
+        <location filename="../common/mainwindow.cpp" line="2077"/>
         <source>Movie Screenshot</source>
         <translation>视频截图</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2074"/>
+        <location filename="../common/mainwindow.cpp" line="2078"/>
         <source>Saved to</source>
         <translation>保存到</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2099"/>
-        <location filename="../common/mainwindow.cpp" line="2192"/>
+        <location filename="../common/mainwindow.cpp" line="2103"/>
+        <location filename="../common/mainwindow.cpp" line="2196"/>
         <source>The screenshot is saved</source>
         <translation>截图已保存</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2103"/>
-        <location filename="../common/mainwindow.cpp" line="2197"/>
+        <location filename="../common/mainwindow.cpp" line="2107"/>
+        <location filename="../common/mainwindow.cpp" line="2201"/>
         <source>Failed to save the screenshot</source>
         <translation>截图保存失败</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2156"/>
+        <location filename="../common/mainwindow.cpp" line="2160"/>
         <source>Screenshot is working,please wait</source>
         <translation>剧情连拍中，请稍后</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2280"/>
-        <location filename="../common/mainwindow.cpp" line="3160"/>
+        <location filename="../common/mainwindow.cpp" line="2284"/>
+        <location filename="../common/mainwindow.cpp" line="3200"/>
         <source>Invalid file: %1</source>
         <translation>无效文件：%1</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2492"/>
+        <location filename="../common/mainwindow.cpp" line="2474"/>
         <source>No matching online subtitles</source>
         <translation>没有匹配的在线字幕</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2502"/>
+        <location filename="../common/mainwindow.cpp" line="2491"/>
+        <location filename="../common/mainwindow.cpp" line="2552"/>
+        <source>Due to the hardware environment limitations,4K video may be stuck.</source>
+        <translation>由于当前硬件环境限制，播放4K视频有卡顿情况。</translation>
+    </message>
+    <message>
+        <location filename="../common/mainwindow.cpp" line="2492"/>
+        <location filename="../common/mainwindow.cpp" line="2553"/>
+        <source>Confirm</source>
+        <translation>确定</translation>
+    </message>
+    <message>
+        <location filename="../common/mainwindow.cpp" line="2518"/>
         <source>Cannot open file or stream</source>
         <translation>无法播放</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2508"/>
-        <location filename="../common/mainwindow.cpp" line="2513"/>
+        <location filename="../common/mainwindow.cpp" line="2524"/>
+        <location filename="../common/mainwindow.cpp" line="2529"/>
         <source>File is corrupt</source>
         <translation>无效文件</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2518"/>
+        <location filename="../common/mainwindow.cpp" line="2534"/>
         <source>Please insert the CD into the drive</source>
         <translation>请将多媒体光盘插入驱动器</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2524"/>
+        <location filename="../common/mainwindow.cpp" line="2540"/>
         <source>No video file found</source>
         <translation>无视频文件</translation>
     </message>
@@ -710,24 +722,20 @@
 <context>
     <name>dmr::MovieInfo</name>
     <message>
-        <location filename="../libdmr/playlist_model.h" line="67"/>
         <source>%1G</source>
-        <translation>%1G</translation>
+        <translation type="vanished">%1G</translation>
     </message>
     <message>
-        <location filename="../libdmr/playlist_model.h" line="69"/>
         <source>%1M</source>
-        <translation>%1M</translation>
+        <translation type="vanished">%1M</translation>
     </message>
     <message>
-        <location filename="../libdmr/playlist_model.h" line="71"/>
         <source>%1K</source>
-        <translation>%1K</translation>
+        <translation type="vanished">%1K</translation>
     </message>
     <message>
-        <location filename="../libdmr/playlist_model.h" line="73"/>
         <source>%1</source>
-        <translation>%1</translation>
+        <translation type="vanished">%1</translation>
     </message>
 </context>
 <context>
@@ -753,33 +761,32 @@
         <translation type="vanished">文件路径：</translation>
     </message>
     <message>
-        <location filename="../widgets/movieinfo_dialog.cpp" line="180"/>
+        <location filename="../widgets/movieinfo_dialog.cpp" line="237"/>
         <source>Film info</source>
         <translation>电影信息</translation>
     </message>
     <message>
-        <location filename="../widgets/movieinfo_dialog.cpp" line="185"/>
+        <location filename="../widgets/movieinfo_dialog.cpp" line="242"/>
         <source>Resolution</source>
         <translation>分辨率</translation>
     </message>
     <message>
-        <location filename="../widgets/movieinfo_dialog.cpp" line="186"/>
+        <location filename="../widgets/movieinfo_dialog.cpp" line="243"/>
         <source>File type</source>
         <translation>文件类型</translation>
     </message>
     <message>
-        <location filename="../widgets/movieinfo_dialog.cpp" line="187"/>
+        <location filename="../widgets/movieinfo_dialog.cpp" line="244"/>
         <source>File size</source>
         <translation>文件大小</translation>
     </message>
     <message>
-        <location filename="../widgets/movieinfo_dialog.cpp" line="188"/>
+        <location filename="../widgets/movieinfo_dialog.cpp" line="245"/>
         <source>Duration</source>
         <translation>媒体时长</translation>
     </message>
     <message>
-        <location filename="../widgets/movieinfo_dialog.cpp" line="198"/>
-        <location filename="../widgets/movieinfo_dialog.cpp" line="200"/>
+        <location filename="../widgets/movieinfo_dialog.cpp" line="254"/>
         <source>File path</source>
         <translation>文件路径</translation>
     </message>
@@ -787,8 +794,8 @@
 <context>
     <name>dmr::MpvProxy</name>
     <message>
-        <location filename="../backends/mpv/mpv_proxy.cpp" line="1050"/>
         <location filename="../backends/mpv/mpv_proxy.cpp" line="1068"/>
+        <location filename="../backends/mpv/mpv_proxy.cpp" line="1086"/>
         <source>[internal]</source>
         <translation>【内部】</translation>
     </message>
@@ -806,25 +813,25 @@
 <context>
     <name>dmr::PlaylistWidget</name>
     <message>
-        <location filename="../widgets/playlist_widget.cpp" line="668"/>
+        <location filename="../widgets/playlist_widget.cpp" line="672"/>
         <source>Playlist</source>
         <translation>播放列表</translation>
     </message>
     <message>
-        <location filename="../widgets/playlist_widget.cpp" line="674"/>
+        <location filename="../widgets/playlist_widget.cpp" line="678"/>
         <source>17个视频</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/playlist_widget.cpp" line="691"/>
+        <location filename="../widgets/playlist_widget.cpp" line="695"/>
         <source>Clear Playlist</source>
         <translation>清空列表</translation>
     </message>
     <message>
-        <location filename="../widgets/playlist_widget.cpp" line="858"/>
-        <location filename="../widgets/playlist_widget.cpp" line="1061"/>
-        <location filename="../widgets/playlist_widget.cpp" line="1085"/>
-        <location filename="../widgets/playlist_widget.cpp" line="1137"/>
+        <location filename="../widgets/playlist_widget.cpp" line="862"/>
+        <location filename="../widgets/playlist_widget.cpp" line="1073"/>
+        <location filename="../widgets/playlist_widget.cpp" line="1097"/>
+        <location filename="../widgets/playlist_widget.cpp" line="1149"/>
         <source>%1 videos</source>
         <translation>%1 个视频</translation>
     </message>
@@ -845,78 +852,78 @@
 <context>
     <name>dmr::ToolboxProxy</name>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="1911"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="1926"/>
         <source>Play</source>
         <translation>播放</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="1550"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="1640"/>
         <source>Previous</source>
         <translation>上一个</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="1550"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="1640"/>
         <source>Next</source>
         <translation>下一个</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="1551"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="1641"/>
         <source>Subtitles</source>
         <translation>字幕</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="1551"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="1641"/>
         <source>Playlist</source>
         <translation>播放列表</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="1551"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="1896"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="1641"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="1911"/>
         <source>Fullscreen</source>
         <translation>全屏</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="1550"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="1640"/>
         <source>Play/Pause</source>
         <translation>播放/暂停</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="1554"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="1644"/>
         <source>play</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="1554"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="1644"/>
         <source>prev</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="1554"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="1644"/>
         <source>next</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="1555"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="1645"/>
         <source>sub</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="1555"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="1645"/>
         <source>fs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="1555"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="1645"/>
         <source>list</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="1892"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="1907"/>
         <source>Exit fullscreen</source>
         <translation>退出全屏</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="1907"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="1922"/>
         <source>Pause</source>
         <translation>暂停</translation>
     </message>

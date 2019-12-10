@@ -124,6 +124,7 @@ public slots:
     void checkOnlineState(const bool isOnline);
     void checkOnlineSubtitle(const OnlineSubtitle::FailReason reason);
     void checkErrorMpvLogsChanged(const QString prefix, const QString text);
+    void checkWarningMpvLogsChanged(const QString prefix, const QString text);
 
 protected:
     void showEvent(QShowEvent *event) override;

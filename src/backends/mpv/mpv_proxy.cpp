@@ -394,7 +394,6 @@ void MpvProxy::handle_mpv_events()
                     qDebug() << "hwdec-interop" << get_property(_handle, "gpu-hwdec-interop")
                         << "codec: " << get_property(_handle, "video-codec") 
                         << "format: " << get_property(_handle, "video-format");
-
 #ifdef __mips__
                     auto codec = get_property(_handle, "video-codec").toString();
                     if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2")) {
@@ -447,6 +446,7 @@ void MpvProxy::processLogMessage(mpv_event_log_message* ev)
     switch (ev->log_level) {
         case MPV_LOG_LEVEL_WARN: 
             qWarning() << QString("%1: %2").arg(ev->prefix).arg(ev->text);
+            emit mpvWarningLogsChanged(QString(ev->prefix), QString(ev->text));
             break;
 
         case MPV_LOG_LEVEL_ERROR: 
