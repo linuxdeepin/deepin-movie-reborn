@@ -1874,7 +1874,10 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         if (_engine->muted()) {
             _nwComm->updateWithMessage(tr("Muted"));
         } else {
-            double pert = _engine->volume() - VOLUME_OFFSET;
+            double pert = _engine->volume();
+            if (pert > VOLUME_OFFSET) {
+                pert -= VOLUME_OFFSET;
+            }
             _nwComm->updateWithMessage(tr("Volume: %1%").arg(pert));
         }
         break;
@@ -1891,7 +1894,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         _engine->changeVolume(vol);
         Settings::get().setInternalOption("global_volume", qMin(_engine->volume(), 140));
         double pert = _engine->volume();
-        if (pert >= VOLUME_OFFSET) {
+        if (pert > VOLUME_OFFSET) {
             pert -= VOLUME_OFFSET;
         }
         _nwComm->updateWithMessage(tr("Volume: %1%").arg(pert));
