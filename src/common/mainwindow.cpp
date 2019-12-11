@@ -2507,7 +2507,7 @@ void MainWindow::checkOnlineSubtitle(const OnlineSubtitle::FailReason reason)
 void MainWindow::checkWarningMpvLogsChanged(const QString prefix, const QString text)
 {
     QString warningMessage(text);
-    qDebug()<<text;
+    qDebug()<<"checkWarningMpvLogsChanged"<<text;
     if(warningMessage.contains(QString("Hardware does not support image size 3840x2160")))
     {
         requestAction(ActionFactory::TogglePause);
@@ -2541,7 +2541,7 @@ void MainWindow::checkWarningMpvLogsChanged(const QString prefix, const QString 
 void MainWindow::checkErrorMpvLogsChanged(const QString prefix, const QString text)
 {
     QString errorMessage(text);
-    qDebug()<<text;
+    qDebug()<<"checkErrorMpvLogsChanged"<<text;
     if(errorMessage.toLower().contains(QString("avformat_open_input() failed")))
     {
         //do nothing
@@ -2572,6 +2572,33 @@ void MainWindow::checkErrorMpvLogsChanged(const QString prefix, const QString te
     {
         _nwComm->updateWithMessage(tr("No video file found"));
         _engine->playlist().clear();
+    }
+    else if(errorMessage.contains(QString("Hardware does not support image size 3840x2160")))
+    {
+        requestAction(ActionFactory::TogglePause);
+
+        DDialog *dialog = new DDialog;
+        dialog->setFixedWidth(440);
+        QImage icon = utils::LoadHiDPIImage(":/resources/icons/warning.svg");
+        QPixmap pix = QPixmap::fromImage(icon);
+        dialog->setIcon(QIcon(pix));
+        dialog->setMessage(tr("Due to the hardware environment limitations,4K video may be stuck."));
+        dialog->addButton(tr("Confirm"), true, DDialog::ButtonRecommend);
+        QGraphicsDropShadowEffect *effect = new QGraphicsDropShadowEffect();
+        effect->setOffset(0, 4);
+        effect->setColor(QColor(0, 145, 255, 76));
+        effect->setBlurRadius(4);
+        dialog->getButton(0)->setFixedWidth(340);
+        dialog->getButton(0)->setGraphicsEffect(effect);
+        dialog->exec();
+        QTimer::singleShot(500, [ = ]() {
+            //startPlayStateAnimation(true);
+            if(!_miniMode){
+                _animationlable->setGeometry(width()/2-100,height()/2-100,200,200);
+                _animationlable->start();
+            }
+            _engine->pauseResume();
+        });
     }
 
 }
