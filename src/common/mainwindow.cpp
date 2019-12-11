@@ -647,7 +647,7 @@ MainWindow::MainWindow(QWidget *parent)
             resumeToolsWindow();
     });
 
-    _playState = new DIconButton(this);
+    /*_playState = new DIconButton(this);
 //    _playState->setScaledContents(true);
     _playState->setIcon(QIcon(":/resources/icons/dark/normal/play-big_normal.svg"));
     _playState->setIconSize(QSize(128, 128));
@@ -672,7 +672,7 @@ MainWindow::MainWindow(QWidget *parent)
         } else {
             _playState->setIcon(QIcon(":/resources/icons/dark/normal/play-big_normal.svg"));
         }
-    });
+    });*/
 
     _progIndicator = new MovieProgressIndicator(this);
     _progIndicator->setVisible(false);
@@ -870,6 +870,12 @@ MainWindow::MainWindow(QWidget *parent)
     _fullscreentimelable->setLayout(_fullscreentimebox);
     _fullscreentimelable->close();
 
+    _animationlable = new AnimationLabel;
+    _animationlable->setAttribute(Qt::WA_TranslucentBackground);
+    _animationlable->setWindowFlags(Qt::FramelessWindowHint);
+    _animationlable->setParent(this);
+    _animationlable->setGeometry(width()/2-100,height()/2-100,200,200);
+
     connect(_engine, &PlayerEngine::onlineStateChanged, this, &MainWindow::checkOnlineState);
     connect(&OnlineSubtitle::get(), &OnlineSubtitle::onlineSubtitleStateChanged, this, &MainWindow::checkOnlineSubtitle);
     connect(_engine, &PlayerEngine::mpvErrorLogsChanged, this, &MainWindow::checkErrorMpvLogsChanged);
@@ -1052,6 +1058,10 @@ void MainWindow::onWindowStateChanged()
             _playlist->togglePopup();
         }
     }
+    if(isMaximized()){
+        _animationlable->move(QPoint(QApplication::desktop()->availableGeometry().width()/2-100
+                                     ,QApplication::desktop()->availableGeometry().height()/2-100));
+    }
 }
 
 void MainWindow::handleHelpAction()
@@ -1152,63 +1162,63 @@ void MainWindow::onApplicationStateChanged(Qt::ApplicationState e)
     }
 }
 
-void MainWindow::startPlayStateAnimation(bool play)
-{
-    auto r = QRect(QPoint(0, 0), QSize(128, 128));
-    r.moveCenter(rect().center());
+//void MainWindow::startPlayStateAnimation(bool play)
+//{
+//    auto r = QRect(QPoint(0, 0), QSize(128, 128));
+//    r.moveCenter(rect().center());
 
-    if (!_playState->graphicsEffect()) {
-        auto *effect = new QGraphicsOpacityEffect(_playState);
-        effect->setOpacity(1.0);
-        _playState->setGraphicsEffect(effect);
-    }
+//    if (!_playState->graphicsEffect()) {
+//        auto *effect = new QGraphicsOpacityEffect(_playState);
+//        effect->setOpacity(1.0);
+//        _playState->setGraphicsEffect(effect);
+//    }
 
-    auto duration = 160;
-    auto curve = QEasingCurve::InOutCubic;
+//    auto duration = 160;
+//    auto curve = QEasingCurve::InOutCubic;
 
-    auto pa = new QPropertyAnimation(_playState, "geometry");
-    if (play) {
-        QRect r2 = r;
-        pa->setStartValue(r);
-        r2.setSize({r.width() * 2, r.height() * 2});
-        r2.moveCenter(r.center());
-        pa->setEndValue(r2);
-    } else {
-        pa->setEndValue(r);
-        pa->setStartValue(QRect{r.center(), QSize{0, 0}});
-    }
-    pa->setDuration(duration);
-    pa->setEasingCurve(curve);
-
-
-    auto va = new QVariantAnimation(_playState);
-    va->setStartValue(0.0);
-    va->setEndValue(1.0);
-    va->setDuration(duration);
-    va->setEasingCurve(curve);
-
-    connect(va, &QVariantAnimation::valueChanged, [ = ](const QVariant & v) {
-        if (!play) _playState->setVisible(true);
-        auto d = v.toFloat();
-        auto effect = dynamic_cast<QGraphicsOpacityEffect *>(_playState->graphicsEffect());
-        effect->setOpacity(play ? 1.0 - d : d);
-        _playState->update();
-    });
-
-    if (play) {
-        connect(va, &QVariantAnimation::stateChanged, [ = ]() {
-            if (va->state() == QVariantAnimation::Stopped) {
-                _playState->setVisible(false);
-            }
-        });
-    }
+//    auto pa = new QPropertyAnimation(_playState, "geometry");
+//    if (play) {
+//        QRect r2 = r;
+//        pa->setStartValue(r);
+//        r2.setSize({r.width() * 2, r.height() * 2});
+//        r2.moveCenter(r.center());
+//        pa->setEndValue(r2);
+//    } else {
+//        pa->setEndValue(r);
+//        pa->setStartValue(QRect{r.center(), QSize{0, 0}});
+//    }
+//    pa->setDuration(duration);
+//    pa->setEasingCurve(curve);
 
 
-    auto pag = new QParallelAnimationGroup;
-    pag->addAnimation(va);
-    pag->addAnimation(pa);
-    pag->start(QVariantAnimation::DeleteWhenStopped);
-}
+//    auto va = new QVariantAnimation(_playState);
+//    va->setStartValue(0.0);
+//    va->setEndValue(1.0);
+//    va->setDuration(duration);
+//    va->setEasingCurve(curve);
+
+//    connect(va, &QVariantAnimation::valueChanged, [ = ](const QVariant & v) {
+//        if (!play) _playState->setVisible(true);
+//        auto d = v.toFloat();
+//        auto effect = dynamic_cast<QGraphicsOpacityEffect *>(_playState->graphicsEffect());
+//        effect->setOpacity(play ? 1.0 - d : d);
+//        _playState->update();
+//    });
+
+//    if (play) {
+//        connect(va, &QVariantAnimation::stateChanged, [ = ]() {
+//            if (va->state() == QVariantAnimation::Stopped) {
+//                _playState->setVisible(false);
+//            }
+//        });
+//    }
+
+
+//    auto pag = new QParallelAnimationGroup;
+//    pag->addAnimation(va);
+//    pag->addAnimation(pa);
+//    pag->start(QVariantAnimation::DeleteWhenStopped);
+//}
 
 void MainWindow::animatePlayState()
 {
@@ -1217,11 +1227,15 @@ void MainWindow::animatePlayState()
     }
 
     if (!_inBurstShootMode && _engine->state() == PlayerEngine::CoreState::Paused) {
-        startPlayStateAnimation(false);
-        _playState->raise();
+       // startPlayStateAnimation(false);
+        if(!_miniMode){
+            _animationlable->setGeometry(width()/2-100,height()/2-100,200,200);
+            _animationlable->stop();
+        }
+        //_playState->raise();
 
     } else if (_engine->state() == PlayerEngine::CoreState::Idle) {
-        _playState->setVisible(false);
+        //_playState->setVisible(false);
 
     } else {
         //do nothing here, startPlayStateAnimation(true) should be started before playback
@@ -1233,21 +1247,21 @@ void MainWindow::syncPlayState()
 {
     auto r = QRect(QPoint(0, 0), QSize(128, 128));
     r.moveCenter(rect().center());
-    _playState->move(r.topLeft());
+    //_playState->move(r.topLeft());
 
     if (_miniMode) {
-        _playState->setVisible(false);
+        //_playState->setVisible(false);
         return;
     }
 
     if (!_inBurstShootMode && _engine->state() == PlayerEngine::CoreState::Paused) {
-        _playState->setGeometry(r);
-        _playState->setVisible(true);
-        auto effect = dynamic_cast<QGraphicsOpacityEffect *>(_playState->graphicsEffect());
-        if (effect) effect->setOpacity(1.0);
+        //_playState->setGeometry(r);
+        //_playState->setVisible(true);
+        //auto effect = dynamic_cast<QGraphicsOpacityEffect *>(_playState->graphicsEffect());
+        //if (effect) effect->setOpacity(1.0);
 
     } else {
-        _playState->setVisible(false);
+        //_playState->setVisible(false);
     }
 }
 
@@ -1762,6 +1776,8 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         if (!fromUI) {
             reflectActionToUI(kd);
         }
+        _animationlable->move(QPoint(QApplication::desktop()->availableGeometry().width()/2-100
+                                     ,QApplication::desktop()->availableGeometry().height()/2-50));
         break;
     }
 
@@ -2019,8 +2035,12 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             if (_engine->state() == PlayerEngine::Idle && isShortcut) {
                 requestAction(ActionFactory::StartPlay);
             } else {
-                if (_engine->state() == PlayerEngine::Paused && _playState->isVisible()) {
-                    startPlayStateAnimation(true);
+                if (_engine->state() == PlayerEngine::Paused ) {
+                    //startPlayStateAnimation(true);
+                    if(!_miniMode){
+                        _animationlable->setGeometry(width()/2-100,height()/2-100,200,200);
+                        _animationlable->start();
+                    }
                     QTimer::singleShot(160, [ = ]() {
                         _engine->pauseResume();
                     });
@@ -2028,7 +2048,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                     _engine->pauseResume();
                 }
             }
-        }else{
+        }else {
             _playlistopen_clicktogglepause = false;
         }
         break;
@@ -2383,11 +2403,11 @@ void MainWindow::updateProxyGeometry()
 
 
     syncPlayState();
-    if (_playState) {
-        auto r = QRect(QPoint(0, 0), QSize(128, 128));
-        r.moveCenter(rect().center());
-        _playState->move(r.topLeft());
-    }
+//    if (_playState) {
+//        auto r = QRect(QPoint(0, 0), QSize(128, 128));
+//        r.moveCenter(rect().center());
+//        _playState->move(r.topLeft());
+//    }
 
 }
 
@@ -2508,7 +2528,11 @@ void MainWindow::checkWarningMpvLogsChanged(const QString prefix, const QString 
         dialog->getButton(0)->setGraphicsEffect(effect);
         dialog->exec();
         QTimer::singleShot(500, [ = ]() {
-            startPlayStateAnimation(true);
+            //startPlayStateAnimation(true);
+            if(!_miniMode){
+                _animationlable->setGeometry(width()/2-100,height()/2-100,200,200);
+                _animationlable->start();
+            }
             _engine->pauseResume();
         });
     }
@@ -2785,11 +2809,11 @@ void MainWindow::mousePressEvent(QMouseEvent *ev)
     if (qApp->focusWindow() == 0) return;
     if (ev->buttons() == Qt::LeftButton) {
         _mousePressed = true;
-        if (_playState->isVisible()) {
+        /*if (_playState->isVisible()) {
             //_playState->setState(DImageButton::Press);
             QMouseEvent me(QEvent::MouseButtonPress, {}, ev->button(), ev->buttons(), ev->modifiers());
             qApp->sendEvent(_playState, &me);
-        }
+        }*/
     }
 }
 
@@ -2834,11 +2858,11 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *ev)
     if (qApp->focusWindow() == 0 || !_mousePressed) return;
 
     _mousePressed = false;
-    if (_playState->isVisible()) {
+    /*if (_playState->isVisible()) {
         //QMouseEvent me(QEvent::MouseButtonRelease, {}, ev->button(), ev->buttons(), ev->modifiers());
         //qApp->sendEvent(_playState, &me);
 //        _playState->setState(DImageButton::Normal);
-    }
+    }*/
 
     // dtk has a bug, DImageButton propagates mouseReleaseEvent event when it responded to.
     if (!insideResizeArea(ev->globalPos()) && !_mouseMoved && (_playlist->state() != PlaylistWidget::Opened) ) {

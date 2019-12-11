@@ -41,6 +41,7 @@
 #include <DPushButton>
 #include "online_sub.h"
 #include <DFloatingMessage>
+#include "animationlabel.h"
 
 static const int VOLUME_OFFSET = 40;
 
@@ -205,7 +206,8 @@ private:
     ToolboxProxy *_toolbox {nullptr};
     PlaylistWidget *_playlist {nullptr};
     PlayerEngine *_engine {nullptr};
-    DIconButton *_playState {nullptr};
+    //DIconButton *_playState {nullptr};
+    AnimationLabel *_animationlable {nullptr};
     MovieProgressIndicator *_progIndicator {nullptr};
 
     QList<QPair<QImage, qint64>> _burstShoots;
