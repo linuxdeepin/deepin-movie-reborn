@@ -159,6 +159,42 @@
         <file>resources/icons/logo.svg</file>
         <file>resources/icons/dark/init-splash-bac.svg</file>
         <file>resources/icons/warning.svg</file>
+        <file>resources/icons/start/1.png</file>
+        <file>resources/icons/start/2.png</file>
+        <file>resources/icons/start/3.png</file>
+        <file>resources/icons/start/4.png</file>
+        <file>resources/icons/start/5.png</file>
+        <file>resources/icons/start/6.png</file>
+        <file>resources/icons/start/7.png</file>
+        <file>resources/icons/start/8.png</file>
+        <file>resources/icons/start/9.png</file>
+        <file>resources/icons/start/10.png</file>
+        <file>resources/icons/start/11.png</file>
+        <file>resources/icons/start/12.png</file>
+        <file>resources/icons/start/13.png</file>
+        <file>resources/icons/start/14.png</file>
+        <file>resources/icons/start/15.png</file>
+        <file>resources/icons/start/16.png</file>
+        <file>resources/icons/start/17.png</file>
+        <file>resources/icons/start/18.png</file>
+        <file>resources/icons/stop/1.png</file>
+        <file>resources/icons/stop/2.png</file>
+        <file>resources/icons/stop/3.png</file>
+        <file>resources/icons/stop/4.png</file>
+        <file>resources/icons/stop/5.png</file>
+        <file>resources/icons/stop/6.png</file>
+        <file>resources/icons/stop/7.png</file>
+        <file>resources/icons/stop/8.png</file>
+        <file>resources/icons/stop/9.png</file>
+        <file>resources/icons/stop/10.png</file>
+        <file>resources/icons/stop/11.png</file>
+        <file>resources/icons/stop/12.png</file>
+        <file>resources/icons/stop/13.png</file>
+        <file>resources/icons/stop/14.png</file>
+        <file>resources/icons/stop/15.png</file>
+        <file>resources/icons/stop/16.png</file>
+        <file>resources/icons/stop/17.png</file>
+        <file>resources/icons/stop/18.png</file>
     </qresource>
     <qresource prefix="/dark">
         <file alias="dmr::NotificationWidget.theme">resources/qss/dark/dmr--NotificationWidget.theme</file>
