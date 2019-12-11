@@ -42,6 +42,8 @@
 #include "playlist_widget.h"
 #include <DFrame>
 #include <DLabel>
+#include <DFloatingWidget>
+#include "dguiapplicationhelper.h"
 
 namespace Dtk
 {
@@ -101,7 +103,7 @@ private:
     QPixmap _pixmap;
 };
 
-class ToolboxProxy: public DFrame {
+class ToolboxProxy: public DFloatingWidget {
     Q_OBJECT
 public:
     ToolboxProxy(QWidget *mainWindow, PlayerEngine*);
@@ -144,7 +146,7 @@ protected slots:
 
 
 protected:
-    void paintEvent(QPaintEvent *pe) override;
+//    void paintEvent(QPaintEvent *pe) override;
     void showEvent(QShowEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
 
@@ -253,7 +255,8 @@ private:
 
 //HACK: extent area for progress slider
 #define TOOLBOX_TOP_EXTENT  0
-#define TOOLBOX_HEIGHT  70
+#define TOOLBOX_SPACE_HEIGHT 314
+#define TOOLBOX_HEIGHT  80
 #define TOOLBOX_HEIGHT_EXT (TOOLBOX_HEIGHT + TOOLBOX_TOP_EXTENT)
 
 #endif /* ifndef _DMR_TOOLBOX_PROXY_H */

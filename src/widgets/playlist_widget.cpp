@@ -1172,8 +1172,10 @@ void PlaylistWidget::togglePopup()
 #else
     auto view_rect = main_rect.marginsRemoved(QMargins(1, 1, 1, 1));
 #endif
-    QRect fixed((10), (view_rect.height() - 394),
-                view_rect.width() - 20, (384 - 70));
+//    QRect fixed((10), (view_rect.height() - 394),
+//                view_rect.width() - 20, (384 - 70));
+    QRect fixed((10), (view_rect.height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT + 10)),
+                view_rect.width() - 20, TOOLBOX_SPACE_HEIGHT);
 
     QRect shrunk = fixed;
     shrunk.setHeight(0);

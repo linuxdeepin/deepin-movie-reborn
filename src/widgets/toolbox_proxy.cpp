@@ -1239,15 +1239,15 @@ void viewProgBarLoad::loadViewProgBar(QSize size)
 }
 
 ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
-    : DFrame(mainWindow),
+    : DFloatingWidget(mainWindow),
       _mainWindow(static_cast<MainWindow *>(mainWindow)),
       _engine(proxy)
 {
     bool composited = CompositingManager::get().composited();
-    setFrameShape(QFrame::NoFrame);
+//    setFrameShape(QFrame::NoFrame);
 //    setFrameShadow(QFrame::Plain);
-    setLineWidth(0);
-    setFixedHeight(70);
+//    setLineWidth(0);
+    setFixedHeight(TOOLBOX_HEIGHT);
 //    setAutoFillBackground(false);
 //    setAttribute(Qt::WA_TranslucentBackground);
     if (!composited) {
@@ -1256,29 +1256,29 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
         setAttribute(Qt::WA_NativeWindow);
     }
 
-    QGraphicsDropShadowEffect *shadowEffect = new QGraphicsDropShadowEffect(this);
-    shadowEffect->setOffset(0, 4);
-    shadowEffect->setBlurRadius(8);
-    shadowEffect->setColor(QColor(0, 0, 0, 0.1 * 255));
-    connect(DApplicationHelper::instance(), &DApplicationHelper::themeTypeChanged, this, [ = ] {
-        if (DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::LightType)
-        {
-            shadowEffect->setColor(QColor(0, 0, 0, 0.1 * 255));
-            shadowEffect->setOffset(0, 4);
-            shadowEffect->setBlurRadius(8);
-        } else if (DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::DarkType)
-        {
-            shadowEffect->setColor(QColor(0, 0, 0, 0.2 * 255));
-            shadowEffect->setOffset(0, 2);
-            shadowEffect->setBlurRadius(4);
-        } else
-        {
-            shadowEffect->setColor(QColor(0, 0, 0, 0.1 * 255));
-            shadowEffect->setOffset(0, 4);
-            shadowEffect->setBlurRadius(8);
-        }
-    });
-    setGraphicsEffect(shadowEffect);
+//    QGraphicsDropShadowEffect *shadowEffect = new QGraphicsDropShadowEffect(this);
+//    shadowEffect->setOffset(0, 4);
+//    shadowEffect->setBlurRadius(8);
+//    shadowEffect->setColor(QColor(0, 0, 0, 0.1 * 255));
+//    connect(DApplicationHelper::instance(), &DApplicationHelper::themeTypeChanged, this, [ = ] {
+//        if (DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::LightType)
+//        {
+//            shadowEffect->setColor(QColor(0, 0, 0, 0.1 * 255));
+//            shadowEffect->setOffset(0, 4);
+//            shadowEffect->setBlurRadius(8);
+//        } else if (DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::DarkType)
+//        {
+//            shadowEffect->setColor(QColor(0, 0, 0, 0.2 * 255));
+//            shadowEffect->setOffset(0, 2);
+//            shadowEffect->setBlurRadius(4);
+//        } else
+//        {
+//            shadowEffect->setColor(QColor(0, 0, 0, 0.1 * 255));
+//            shadowEffect->setOffset(0, 4);
+//            shadowEffect->setBlurRadius(8);
+//        }
+//    });
+//    setGraphicsEffect(shadowEffect);
 
 
 //    DThemeManager::instance()->registerWidget(this);
@@ -1340,21 +1340,62 @@ void ToolboxProxy::setup()
     stacked->setStackingMode(QStackedLayout::StackAll);
     setLayout(stacked);
 
-    auto *bot_widget = new QWidget(this);
-    bot_widget->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+    this->setBlurBackgroundEnabled(true);
+    this->blurBackground()->setRadius(30);
+    this->blurBackground()->setBlurEnabled(true);
+    this->blurBackground()->setMode(DBlurEffectWidget::GaussianBlur);
+
+    auto bot_widget = new DBlurEffectWidget(this);
+//    bot_widget->setBlurBackgroundEnabled(true);
+    bot_widget->setBlurRectXRadius(18);
+    bot_widget->setBlurRectYRadius(18);
+    bot_widget->setRadius(30);
+    bot_widget->setBlurEnabled(true);
+    bot_widget->setMode(DBlurEffectWidget::GaussianBlur);
+
+#define THEME_TYPE(colortype) do { \
+    if (colortype == DGuiApplicationHelper::LightType){\
+        QColor backMaskColor(255, 255, 255, 140);\
+        this->blurBackground()->setMaskColor(backMaskColor);\
+        QColor maskColor(255, 255, 255, 76);\
+        bot_widget->setMaskColor(maskColor);\
+    } else if (colortype == DGuiApplicationHelper::DarkType){\
+        QColor backMaskColor(37, 37, 37, 140);\
+        blurBackground()->setMaskColor(backMaskColor);\
+        QColor maskColor(37, 37, 37, 76);\
+        bot_widget->setMaskColor(maskColor);\
+    } else {\
+        QColor backMaskColor(255, 255, 255, 140);\
+        this->blurBackground()->setMaskColor(backMaskColor);\
+        QColor maskColor(255, 255, 255, 76);\
+        bot_widget->setMaskColor(maskColor);\
+    }\
+} while(0);
+
+    auto type = DGuiApplicationHelper::instance()->themeType();
+    THEME_TYPE(type);
+    connect(DApplicationHelper::instance(), &DApplicationHelper::themeTypeChanged, this, [ = ] {
+        auto type = DGuiApplicationHelper::instance()->themeType();
+        THEME_TYPE(type);
+    });
+#undef THEME_TYPE
+
+//    auto *bot_widget = new QWidget(this);
+    bot_widget->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
     auto *botv = new QVBoxLayout(bot_widget);
     botv->setContentsMargins(0, 0, 0, 0);
-    botv->setSpacing(0);
+    botv->setSpacing(10);
 //    auto *bot = new QHBoxLayout();
 
     _bot_spec = new QWidget(bot_widget);
     _bot_spec->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
     _bot_spec->setFixedWidth(width());
+//    _bot_spec->setFixedHeight(TOOLBOX_SPACE_HEIGHT);
     _bot_spec->setVisible(false);
     botv->addWidget(_bot_spec);
 
     bot_toolWgt = new QWidget(bot_widget);
-    bot_toolWgt->setFixedHeight(70);
+    bot_toolWgt->setFixedHeight(TOOLBOX_HEIGHT - 10);
     bot_toolWgt->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
     auto *bot_layout = new QHBoxLayout(bot_toolWgt);
     bot_layout->setContentsMargins(LEFT_MARGIN, 0, RIGHT_MARGIN, 0);
@@ -1368,7 +1409,7 @@ void ToolboxProxy::setup()
 //    palette.setColor(QPalette::Background, QColor(0,0,0,255)); // 最后一项为透明度
 //    bot_widget->setPalette(palette);
 
-    _timeLabel = new QLabel(bot_widget);
+    _timeLabel = new QLabel(bot_toolWgt);
     _timeLabel->setAlignment(Qt::AlignCenter);
     _fullscreentimelable = new QLabel("");
     _fullscreentimelable->setAttribute(Qt::WA_DeleteOnClose);
@@ -1379,7 +1420,7 @@ void ToolboxProxy::setup()
     _fullscreentimelable->setFont(DFontSizeManager::instance()->get(DFontSizeManager::T6));
     //_timeLabel->setFixedWidth(54);
 //    bot->addWidget(_timeLabel);
-    _timeLabelend = new QLabel(bot_widget);
+    _timeLabelend = new QLabel(bot_toolWgt);
     _timeLabelend->setAlignment(Qt::AlignCenter);
     _fullscreentimelableend = new QLabel("");
     _fullscreentimelableend->setAttribute(Qt::WA_DeleteOnClose);
@@ -1391,7 +1432,7 @@ void ToolboxProxy::setup()
     _fullscreentimelableend->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
     _fullscreentimelableend->setFont(DFontSizeManager::instance()->get(DFontSizeManager::T6));
 
-    _progBar = new DMRSlider(bot_widget);
+    _progBar = new DMRSlider(bot_toolWgt);
     _progBar->setObjectName("MovieProgress");
     _progBar->slider()->setOrientation(Qt::Horizontal);
     _progBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
@@ -1431,7 +1472,7 @@ void ToolboxProxy::setup()
     });
 //    stacked->addWidget(_progBar);
 
-    _viewProgBar = new ViewProgBar(bot_widget);
+    _viewProgBar = new ViewProgBar(bot_toolWgt);
 //    _viewProgBar->hide();
     _viewProgBar->setFocusPolicy(Qt::NoFocus);
 //    _viewProgBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
@@ -1453,13 +1494,13 @@ void ToolboxProxy::setup()
 
 //    bot->addStretch();
 
-    _mid = new QHBoxLayout(bot_widget);
+    _mid = new QHBoxLayout(bot_toolWgt);
     _mid->setContentsMargins(0, 0, 0, 0);
     _mid->setSpacing(0);
     _mid->setAlignment(Qt::AlignLeft);
     bot_layout->addLayout(_mid);
 
-    QHBoxLayout *time = new QHBoxLayout(bot_widget);
+    QHBoxLayout *time = new QHBoxLayout(bot_toolWgt);
     time->setContentsMargins(10, 10, 10, 10);
     time->setSpacing(0);
     time->setAlignment(Qt::AlignLeft);
@@ -1469,13 +1510,13 @@ void ToolboxProxy::setup()
 //    bot->addStretch();
 
 
-    QHBoxLayout *progBarspec = new QHBoxLayout(bot_widget);
+    QHBoxLayout *progBarspec = new QHBoxLayout(bot_toolWgt);
     progBarspec->setContentsMargins(0, 5, 0, 0);
     progBarspec->setSpacing(0);
     progBarspec->setAlignment(Qt::AlignHCenter);
 //    bot->addLayout(progBarspec);
 //    progBarspec->addWidget(_progBarspec);
-    _progBar_Widget = new QStackedWidget(bot_widget);
+    _progBar_Widget = new QStackedWidget(bot_toolWgt);
     _progBar_Widget->setContentsMargins(0, 0, 0, 0);
     _progBar_Widget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 
@@ -1518,14 +1559,14 @@ void ToolboxProxy::setup()
     progBarspec->addWidget(_progBar_Widget);
     bot_layout->addLayout(progBarspec);
 
-    QHBoxLayout *timeend = new QHBoxLayout(bot_widget);
+    QHBoxLayout *timeend = new QHBoxLayout(bot_toolWgt);
     timeend->setContentsMargins(10, 10, 10, 10);
     timeend->setSpacing(0);
     timeend->setAlignment(Qt::AlignRight);
     bot_layout->addLayout(timeend);
     timeend->addWidget(_timeLabelend);
 
-    _palyBox = new DButtonBox(bot_widget);
+    _palyBox = new DButtonBox(bot_toolWgt);
     _palyBox->setFixedWidth(120);
     _mid->addWidget(_palyBox);
     _mid->setAlignment(_palyBox, Qt::AlignLeft);
@@ -1567,13 +1608,13 @@ void ToolboxProxy::setup()
 
 //    bot->addStretch();
 
-    _right = new QHBoxLayout(bot_widget);
+    _right = new QHBoxLayout(bot_toolWgt);
     _right->setContentsMargins(0, 0, 0, 0);
     _right->setSizeConstraint(QLayout::SetFixedSize);
     _right->setSpacing(0);
     bot_layout->addLayout(_right);
 
-    _subBtn = new ToolButton(bot_widget);
+    _subBtn = new ToolButton(bot_toolWgt);
     _subBtn->setIcon(QIcon::fromTheme("dcc_episodes"));
     _subBtn->setIconSize(QSize(36, 36));
     _subBtn->setFixedSize(50, 50);
@@ -1584,7 +1625,7 @@ void ToolboxProxy::setup()
 
     _subBtn->hide();
 
-    _volBtn = new VolumeButton(bot_widget);
+    _volBtn = new VolumeButton(bot_toolWgt);
     _volBtn->setFixedSize(50, 50);
     connect(_volBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_volBtn, "vol");
@@ -1606,7 +1647,7 @@ void ToolboxProxy::setup()
     });
 
 
-    _fsBtn = new ToolButton(bot_widget);
+    _fsBtn = new ToolButton(bot_toolWgt);
     _fsBtn->setIcon(QIcon::fromTheme("dcc_zoomin"));
     _fsBtn->setIconSize(QSize(36, 36));
     _fsBtn->setFixedSize(50, 50);
@@ -1619,7 +1660,7 @@ void ToolboxProxy::setup()
     _right->addWidget(_volBtn);
     _right->addSpacing(10);
 
-    _listBtn = new ToolButton(bot_widget);
+    _listBtn = new ToolButton(bot_toolWgt);
     _listBtn->setIcon(QIcon::fromTheme("dcc_episodes"));
     _listBtn->setIconSize(QSize(36, 36));
     _listBtn->setFixedSize(50, 50);
@@ -2045,6 +2086,7 @@ void ToolboxProxy::updatePosition(const QPoint &p)
     windowHandle()->setFramePosition(pos);
 }
 
+#if 0
 void ToolboxProxy::paintEvent(QPaintEvent *pe)
 {
     QPainter painter(this);
@@ -2077,7 +2119,7 @@ void ToolboxProxy::paintEvent(QPaintEvent *pe)
         painter.setPen(pen);
         pp.addRoundedRect(bgRect, RADIUS_MV, RADIUS_MV);
         painter.fillPath(pp, *bgColor);
-        painter.drawPath(pp);
+//        painter.drawPath(pp);
 
         painter.drawLine(offset, rect().y(), width() - offset, rect().y());
         painter.drawLine(offset, height(), width() - offset, height());
@@ -2096,6 +2138,7 @@ void ToolboxProxy::paintEvent(QPaintEvent *pe)
 
     QWidget::paintEvent(pe);
 }
+#endif
 
 void ToolboxProxy::showEvent(QShowEvent *event)
 {
@@ -2119,12 +2162,12 @@ void ToolboxProxy::resizeEvent(QResizeEvent *event)
     }
 
     if (_playlist->state() == PlaylistWidget::State::Opened) {
-        QRect r(10, _mainWindow->height() - 384 - _mainWindow->rect().top() - 10,
-                _mainWindow->rect().width() - 20, 384);
+        QRect r(10, _mainWindow->height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT) - _mainWindow->rect().top() - 10,
+                _mainWindow->rect().width() - 20, (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT));
         this->setGeometry(r);
     } else {
-        QRect r(10, _mainWindow->height() - TOOLBOX_HEIGHT_EXT - _mainWindow->rect().top() - 10,
-                _mainWindow->rect().width() - 20, TOOLBOX_HEIGHT_EXT);
+        QRect r(10, _mainWindow->height() - TOOLBOX_HEIGHT - _mainWindow->rect().top() - 10,
+                _mainWindow->rect().width() - 20, TOOLBOX_HEIGHT);
         this->setGeometry(r);
     }
 
@@ -2185,16 +2228,17 @@ void ToolboxProxy::setPlaylist(PlaylistWidget *playlist)
     _playlist = playlist;
     connect(_playlist, &PlaylistWidget::stateChange, this, [ = ]() {
         if (_playlist->state() == PlaylistWidget::State::Opened) {
-            this->setFixedHeight(314+70);
-            _bot_spec->setFixedHeight(314);
+            this->setFixedHeight(TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT);
+            bot_toolWgt->setFixedHeight(TOOLBOX_HEIGHT - 15);
+            _bot_spec->setFixedHeight(TOOLBOX_SPACE_HEIGHT);
             _bot_spec->setVisible(true);
             _listBtn->setChecked(true);
         } else {
             _listBtn->setChecked(false);
             _bot_spec->setVisible(false);
-            _bot_spec->setFixedHeight(0);
-            bot_toolWgt->setFixedHeight(70);
-            this->setFixedHeight(70);
+            _bot_spec->setFixedHeight(TOOLBOX_TOP_EXTENT);
+            bot_toolWgt->setFixedHeight(TOOLBOX_HEIGHT - 10);
+            this->setFixedHeight(TOOLBOX_HEIGHT);
         }
     });
 }

@@ -2366,10 +2366,10 @@ void MainWindow::updateProxyGeometry()
         }
 
         if (_toolbox) {
-            QRect rfs(10, height() - 384 - rect().top() - 10,
-                      rect().width() - 20, 384);
-            QRect rct(10, height() - TOOLBOX_HEIGHT_EXT - rect().top() - 10,
-                    rect().width() - 20, TOOLBOX_HEIGHT_EXT);
+            QRect rfs(10, height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT) - rect().top() - 10,
+                      rect().width() - 20, (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT));
+            QRect rct(10, height() - TOOLBOX_HEIGHT - rect().top() - 10,
+                    rect().width() - 20, TOOLBOX_HEIGHT);
             if (isFullScreen()) {
                 if (_playlist->state() == PlaylistWidget::State::Opened) {
                     _toolbox->setGeometry(rfs);
@@ -2393,9 +2393,8 @@ void MainWindow::updateProxyGeometry()
 //                220,
 //                toolbox()->geometry().top() + TOOLBOX_TOP_EXTENT - off
 //            };
-            QRect fixed((10), (view_rect.height() - 394),
-                        view_rect.width() - 20,
-                        384 - 70);
+            QRect fixed((10), (view_rect.height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT + 10)),
+                        view_rect.width() - 20, TOOLBOX_SPACE_HEIGHT);
 //            fixed.moveRight(view_rect.right());
             _playlist->setGeometry(fixed);
         }
