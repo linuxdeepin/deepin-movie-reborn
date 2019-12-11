@@ -68,8 +68,9 @@ QPixmap ThumbnailWorker::getThumb(const QUrl& url, int secs)
     QPixmap pm;
 
     if (_cache.contains(url)) {
-        auto p = _cache[url].find(secs);
-        pm = *p;
+//        auto p = _cache[url].find(secs);
+//        pm = *p;
+        pm = _cache[url].value(secs);
     }
 
     return pm;
