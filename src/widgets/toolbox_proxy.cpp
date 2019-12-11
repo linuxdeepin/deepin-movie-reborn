@@ -687,11 +687,17 @@ public:
                 label = nullptr;
             }
         }
+
+        _sliderTime->setVisible(false);
+        _sliderArrowDown->setVisible(false);
+        _sliderArrowUp->setVisible(false);
     }
 
 private:
     void changeStyle(bool press)
     {
+        if (!isVisible()) return;
+
         if (press) {
 //            _indicator->changeStyle(press);
             _indicator->resize(2, 60);
@@ -782,7 +788,7 @@ protected:
         _indicator->move(_indicatorPos.x(), _indicatorPos.y());
         _sliderArrowDown->move(_indicatorPos.x() + _indicator->width() / 2 - _sliderArrowDown->width() / 2,
                                _indicatorPos.y() - 10);
-        _sliderArrowUp->move(_indicatorPos.x() + _indicator->width() / 2 - _sliderArrowUp->width() / 2, 56);
+        _sliderArrowUp->move(_indicatorPos.x() + _indicator->width() / 2 - _sliderArrowUp->width() / 2, 55);
         _front->setFixedWidth(_indicatorPos.x());
 
         if (_press) {
@@ -1436,7 +1442,7 @@ void ToolboxProxy::setup()
     _progBar->setObjectName("MovieProgress");
     _progBar->slider()->setOrientation(Qt::Horizontal);
     _progBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-    _progBar->setFixedHeight(60);
+//    _progBar->setFixedHeight(60);
 //    _progBar->setFixedWidth(584);
 //    _progBar->setFixedWidth(1450);
     _progBar->slider()->setRange(0, 100);
@@ -1522,7 +1528,7 @@ void ToolboxProxy::setup()
 
     _progBarspec = new DWidget(_progBar_Widget);
     _progBarspec->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-    _progBarspec->setFixedHeight(12 + TOOLBOX_TOP_EXTENT);
+//    _progBarspec->setFixedHeight(12 + TOOLBOX_TOP_EXTENT);
 //    _progBarspec->setFixedWidth(584);
 //    _progBarspec->setFixedWidth(1450);
 
@@ -2229,7 +2235,7 @@ void ToolboxProxy::setPlaylist(PlaylistWidget *playlist)
     connect(_playlist, &PlaylistWidget::stateChange, this, [ = ]() {
         if (_playlist->state() == PlaylistWidget::State::Opened) {
             this->setFixedHeight(TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT);
-            bot_toolWgt->setFixedHeight(TOOLBOX_HEIGHT - 15);
+            bot_toolWgt->setFixedHeight(TOOLBOX_HEIGHT - 14);
             _bot_spec->setFixedHeight(TOOLBOX_SPACE_HEIGHT);
             _bot_spec->setVisible(true);
             _listBtn->setChecked(true);
