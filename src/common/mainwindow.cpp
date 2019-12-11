@@ -1443,6 +1443,12 @@ void MainWindow::reflectActionToUI(ActionFactory::ActionKind kd)
 
 }
 
+bool MainWindow::set_playlistopen_clicktogglepause(bool playlistopen)
+{
+    _playlistopen_clicktogglepause = playlistopen;
+    return _playlistopen_clicktogglepause;
+}
+
 void MainWindow::menuItemInvoked(QAction *action)
 {
     auto kd = ActionFactory::actionKind(action);
@@ -2009,17 +2015,21 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     }
 
     case ActionFactory::ActionKind::TogglePause: {
-        if (_engine->state() == PlayerEngine::Idle && isShortcut) {
-            requestAction(ActionFactory::StartPlay);
-        } else {
-            if (_engine->state() == PlayerEngine::Paused && _playState->isVisible()) {
-                startPlayStateAnimation(true);
-                QTimer::singleShot(160, [ = ]() {
-                    _engine->pauseResume();
-                });
+        if(!_playlistopen_clicktogglepause){
+            if (_engine->state() == PlayerEngine::Idle && isShortcut) {
+                requestAction(ActionFactory::StartPlay);
             } else {
-                _engine->pauseResume();
+                if (_engine->state() == PlayerEngine::Paused && _playState->isVisible()) {
+                    startPlayStateAnimation(true);
+                    QTimer::singleShot(160, [ = ]() {
+                        _engine->pauseResume();
+                    });
+                } else {
+                    _engine->pauseResume();
+                }
             }
+        }else{
+            _playlistopen_clicktogglepause = false;
         }
         break;
     }

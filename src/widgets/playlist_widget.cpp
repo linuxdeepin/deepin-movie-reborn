@@ -612,6 +612,7 @@ protected:
 
                 if (plw->state() == PlaylistWidget::Opened && !plw->underMouse()) {
                     mw->requestAction(ActionFactory::ActionKind::TogglePlaylist);
+                    mw->set_playlistopen_clicktogglepause(true);
                 }
             }
             return false;

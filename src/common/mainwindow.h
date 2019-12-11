@@ -109,6 +109,8 @@ public:
     static QString lastOpenedPath();
 
     void reflectActionToUI(ActionFactory::ActionKind);
+
+    bool set_playlistopen_clicktogglepause(bool playlistopen);
 signals:
     void windowEntered();
     void windowLeaved();
@@ -237,6 +239,7 @@ private:
     bool _windowAbove {false};
     bool _mouseMoved {false};
     bool _mousePressed {false};
+    bool _playlistopen_clicktogglepause {false};
     double _playSpeed {1.0};
 
     enum StateBeforeEnterMiniMode {
