@@ -719,24 +719,26 @@ namespace dmr {
             f->glClearColor(a, a, a, 1.0);
             f->glClear(GL_COLOR_BUFFER_BIT);
 
-            {
-                QOpenGLVertexArrayObject::Binder vaoBind(&_vao);
-                _vbo.bind();
-                _glProg->bind();
-                _glProg->setUniformValue("bg", clr);
+            for(int i = 0;i < 2 ;i ++){
+                {
+                    QOpenGLVertexArrayObject::Binder vaoBind(&_vao);
+                    _vbo.bind();
+                    _glProg->bind();
+                    _glProg->setUniformValue("bg", clr);
 
-                QOpenGLTexture *tex = _lightTex;
-                DGuiApplicationHelper::ColorType themeType = DGuiApplicationHelper::instance()->themeType();
-//                if (qApp->theme() == "dark") {
-                if (themeType == DGuiApplicationHelper::DarkType) {
-                    tex = _darkTex;
+                    QOpenGLTexture *tex = _lightTex;
+                    DGuiApplicationHelper::ColorType themeType = DGuiApplicationHelper::instance()->themeType();
+                    //                if (qApp->theme() == "dark") {
+                    if (themeType == DGuiApplicationHelper::DarkType) {
+                        tex = _darkTex;
+                    }
+                    tex->bind();
+                    f->glActiveTexture(GL_TEXTURE0);
+                    f->glDrawArrays(GL_TRIANGLES, 0, 6);
+                    tex->release();
+                    _glProg->release();
+                    _vbo.release();
                 }
-                tex->bind();
-                f->glActiveTexture(GL_TEXTURE0);
-                f->glDrawArrays(GL_TRIANGLES, 0, 6);
-                tex->release();
-                _glProg->release();
-                _vbo.release();
             }
 
             if (_doRoundedClipping) {
