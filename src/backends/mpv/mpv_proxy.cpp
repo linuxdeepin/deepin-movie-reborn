@@ -400,6 +400,12 @@ void MpvProxy::handle_mpv_events()
                         set_property(_handle, "hwdec", "no");
                     }
 #endif
+#ifdef __aarch64__
+                    auto codec = get_property(_handle, "video-codec").toString();
+                    if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") || codec.toLower().contains("mpeg2video")) {
+                        set_property(_handle, "hwdec", "no");
+                    }
+#endif
                 }
                 setState(PlayState::Playing); //might paused immediately
                 emit fileLoaded();
