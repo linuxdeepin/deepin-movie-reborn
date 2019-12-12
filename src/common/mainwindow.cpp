@@ -629,7 +629,7 @@ MainWindow::MainWindow(QWidget *parent)
         QTimer::singleShot(100, [ = ]() {
             if (_engine->state() == PlayerEngine::Idle && !_miniMode && windowState() == Qt::WindowNoState) {
 //                this->setMinimumSize(QSize(1070, 680));
-                this->setFixedSize(850, 600);
+                this->resize(850, 600);
             }
         });
     });

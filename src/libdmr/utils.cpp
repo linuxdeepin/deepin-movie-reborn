@@ -213,6 +213,10 @@ QString FullFileHash(const QFileInfo& fi)
 
 QPixmap MakeRoundedPixmap(QPixmap pm, qreal rx, qreal ry, int rotation)
 {
+    QMatrix matrix;
+    matrix.rotate(rotation);
+    pm = pm.transformed(matrix, Qt::SmoothTransformation);
+
     auto dpr = pm.devicePixelRatio();
     QPixmap dest(pm.size());
     dest.setDevicePixelRatio(dpr);
@@ -227,11 +231,11 @@ QPixmap MakeRoundedPixmap(QPixmap pm, qreal rx, qreal ry, int rotation)
     path.addRoundedRect(QRect(QPoint(), scaled_rect.size().toSize()), rx, ry);
     p.setClipPath(path);
 
-    QTransform transform;
-    transform.translate(scaled_rect.width()/2, scaled_rect.height()/2);
-    transform.rotate(rotation);
-    transform.translate(-scaled_rect.width()/2, -scaled_rect.height()/2);
-    p.setTransform(transform);
+//    QTransform transform;
+//    transform.translate(scaled_rect.width()/2, scaled_rect.height()/2);
+//    transform.rotate(rotation);
+//    transform.translate(-scaled_rect.width()/2, -scaled_rect.height()/2);
+//    p.setTransform(transform);
 
     p.drawPixmap(scaled_rect.toRect(), pm);
 
