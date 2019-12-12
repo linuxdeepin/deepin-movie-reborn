@@ -1934,9 +1934,9 @@ void ToolboxProxy::updateVolumeState()
             v -= VOLUME_OFFSET;
         }
         //_volBtn->setToolTip(tr("Volume"));
-        if (v >= 80)
+        if (v >= 66)
             _volBtn->changeLevel(VolumeButton::High);
-        else if (v >= 40)
+        else if (v >= 33)
             _volBtn->changeLevel(VolumeButton::Mid);
         else if (v == 0)
             _volBtn->changeLevel(VolumeButton::Off);
