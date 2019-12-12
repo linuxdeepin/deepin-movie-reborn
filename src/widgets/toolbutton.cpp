@@ -89,9 +89,9 @@ void VolumeButton::updatevolumeicon()
 {
     if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ){
         switch (_lv) {
-        case Level::Off:
         case Level::Mute:
             setIcon(QIcon(":/resources/icons/light/normal/mute_normal.svg")); break;
+        case Level::Off:
         case Level::Low:
             setIcon(QIcon(":/resources/icons/light/normal/volume_low_normal.svg")); break;
         case Level::Mid:
@@ -101,9 +101,9 @@ void VolumeButton::updatevolumeicon()
         }
     }else {
         switch (_lv) {
-        case Level::Off:
         case Level::Mute:
             setIcon(QIcon(":/resources/icons/dark/normal/mute_normal.svg")); break;
+        case Level::Off:
         case Level::Low:
             setIcon(QIcon(":/resources/icons/dark/normal/volume_low_normal.svg")); break;
         case Level::Mid:
