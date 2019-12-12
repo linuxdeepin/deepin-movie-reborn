@@ -224,6 +224,9 @@ signals:
     void requestVolumeUp();
     void requestVolumeDown();
 
+private slots:
+    void updatevolumeicon();
+
 protected:
     void enterEvent(QEvent *ev) override;
     void leaveEvent(QEvent *ev) override;

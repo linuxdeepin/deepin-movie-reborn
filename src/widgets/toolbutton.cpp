@@ -38,19 +38,37 @@ VolumeButton::VolumeButton(QWidget* parent)
     changeLevel(Level::High);
     setIcon(QIcon::fromTheme("dcc_volume"));
     setIconSize(QSize(36,36));
+    connect(DApplicationHelper::instance(),&DApplicationHelper::themeTypeChanged,
+            this,&VolumeButton::updatevolumeicon);
 }
 
 void VolumeButton::changeLevel(Level lv)
 {
     if (_lv != lv) {
-        switch (lv) {
+        if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ){
+            switch (lv) {
             case Level::Off:
             case Level::Mute:
-                setIcon(QIcon::fromTheme("dcc_mute"));; break;
+                setIcon(QIcon(":/resources/icons/light/normal/mute_normal.svg")); break;
             case Level::Low:
+                setIcon(QIcon(":/resources/icons/light/normal/volume_low_normal.svg")); break;
             case Level::Mid:
+                setIcon(QIcon(":/resources/icons/light/normal/volume_mid_normal.svg")); break;
             case Level::High:
-                setIcon(QIcon::fromTheme("dcc_volume"));; break;
+                setIcon(QIcon(":/resources/icons/light/normal/volume_normal.svg")); break;
+            }
+        }else {
+            switch (lv) {
+            case Level::Off:
+            case Level::Mute:
+                setIcon(QIcon(":/resources/icons/dark/normal/mute_normal.svg")); break;
+            case Level::Low:
+                setIcon(QIcon(":/resources/icons/dark/normal/volume_low_normal.svg")); break;
+            case Level::Mid:
+                setIcon(QIcon(":/resources/icons/dark/normal/volume_mid_normal.svg")); break;
+            case Level::High:
+                setIcon(QIcon(":/resources/icons/dark/normal/volume_normal.svg")); break;
+            }
         }
 //        setStyleSheet(styleSheet());
         _lv = lv;
@@ -65,6 +83,35 @@ void VolumeButton::enterEvent(QEvent *ev)
 void VolumeButton::leaveEvent(QEvent *ev)
 {
     emit leaved();
+}
+
+void VolumeButton::updatevolumeicon()
+{
+    if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ){
+        switch (_lv) {
+        case Level::Off:
+        case Level::Mute:
+            setIcon(QIcon(":/resources/icons/light/normal/mute_normal.svg")); break;
+        case Level::Low:
+            setIcon(QIcon(":/resources/icons/light/normal/volume_low_normal.svg")); break;
+        case Level::Mid:
+            setIcon(QIcon(":/resources/icons/light/normal/volume_mid_normal.svg")); break;
+        case Level::High:
+            setIcon(QIcon(":/resources/icons/light/normal/volume_normal.svg")); break;
+        }
+    }else {
+        switch (_lv) {
+        case Level::Off:
+        case Level::Mute:
+            setIcon(QIcon(":/resources/icons/dark/normal/mute_normal.svg")); break;
+        case Level::Low:
+            setIcon(QIcon(":/resources/icons/dark/normal/volume_low_normal.svg")); break;
+        case Level::Mid:
+            setIcon(QIcon(":/resources/icons/dark/normal/volume_mid_normal.svg")); break;
+        case Level::High:
+            setIcon(QIcon(":/resources/icons/dark/normal/volume_normal.svg")); break;
+        }
+    }
 }
 
 void VolumeButton::wheelEvent(QWheelEvent* we)

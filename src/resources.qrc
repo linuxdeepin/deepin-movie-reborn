@@ -195,6 +195,14 @@
         <file>resources/icons/stop/16.png</file>
         <file>resources/icons/stop/17.png</file>
         <file>resources/icons/stop/18.png</file>
+        <file>resources/icons/dark/normal/volume_normal.svg</file>
+        <file>resources/icons/dark/normal/volume_mid_normal.svg</file>
+        <file>resources/icons/dark/normal/volume_low_normal.svg</file>
+        <file>resources/icons/dark/normal/mute_normal.svg</file>
+        <file>resources/icons/light/normal/mute_normal.svg</file>
+        <file>resources/icons/light/normal/volume_normal.svg</file>
+        <file>resources/icons/light/normal/volume_mid_normal.svg</file>
+        <file>resources/icons/light/normal/volume_low_normal.svg</file>
     </qresource>
     <qresource prefix="/dark">
         <file alias="dmr::NotificationWidget.theme">resources/qss/dark/dmr--NotificationWidget.theme</file>
