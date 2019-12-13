@@ -1781,7 +1781,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             if(isFullScreen()){
                 int pixelsWidth = _toolbox->getfullscreentimeLabel()->width() + _toolbox->getfullscreentimeLabelend()->width();
                 QRect deskRect = QApplication::desktop()->availableGeometry();
-                _fullscreentimelable->setGeometry(deskRect.width()-pixelsWidth - 32,40,pixelsWidth + 32,32);
+                _fullscreentimelable->setGeometry(deskRect.width()-pixelsWidth - 32,40,pixelsWidth + 32,36);
                 _fullscreentimelable->show();
 
             }
