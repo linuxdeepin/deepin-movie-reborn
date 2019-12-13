@@ -1606,7 +1606,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             if (url.isValid()) {
                 play(url);
             } else {
-                _nwComm->updateWithMessage(tr("Parse Failed"));
+                _nwComm->updateWithMessage(tr("Parse failed"));
             }
         }
         break;
@@ -1885,7 +1885,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     case ActionFactory::ActionKind::ToggleMute: {
         _engine->toggleMute();
         if (_engine->muted()) {
-            _nwComm->updateWithMessage(tr("Muted"));
+            _nwComm->updateWithMessage(tr("Mute"));
         } else {
             double pert = _engine->volume();
             if (pert > VOLUME_OFFSET) {
@@ -2570,12 +2570,12 @@ void MainWindow::checkErrorMpvLogsChanged(const QString prefix, const QString te
     else if (errorMessage.toLower().contains(QString("fail")) &&
             (errorMessage.toLower().contains(QString("format")))
        ) {
-        _nwComm->updateWithMessage(tr("File is corrupt"));
+        _nwComm->updateWithMessage(tr("Invalid file"));
         _engine->playlist().clear();
     }
     else if (errorMessage.toLower().contains(QString("moov atom not found")))
     {
-        _nwComm->updateWithMessage(tr("File is corrupt"));
+        _nwComm->updateWithMessage(tr("Invalid file"));
         _engine->playlist().clear();
     }
     else if(errorMessage.toLower().contains(QString("couldn't open dvd device")))

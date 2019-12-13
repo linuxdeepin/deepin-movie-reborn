@@ -295,7 +295,7 @@ DMenu *ActionFactory::playlistContextMenu()
 
 
         DEF_ACTION(tr("Delete from playlist"), ActionKind::PlaylistRemoveItem);
-        DEF_ACTION(tr("Clear playlist"), ActionKind::EmptyPlaylist);
+        DEF_ACTION(tr("Empty playlist"), ActionKind::EmptyPlaylist);
         DEF_ACTION(tr("Display in file manager"), ActionKind::PlaylistOpenItemInFM);
         DEF_ACTION(tr("Film info"), ActionKind::PlaylistItemInfo);
 
