@@ -943,13 +943,13 @@ public:
             QSize size(roundedW, m_thumbnailFixed);
             resizeThumbnail(rounded, size);
         }
-        if (!_visiblThumb) {
+//        if (!_visiblThumb) {
 
-            _visiblThumb = true;
-        }
-        else {
+//            _visiblThumb = true;
+//        }
+//        else {
             _thumb->setPixmap(rounded);
-        }
+//        }
 
 //        QTime t(0, 0, 0);
 //        t = t.addSecs(secs);
@@ -966,12 +966,12 @@ public:
     {
         resizeWithContent();
 //        move(pos.x(), pos.y()+0);
-        if (!_visiblThumb) {
-            _visiblThumb = true;
-        }
-        else{
+//        if (!_visiblThumb) {
+//            _visiblThumb = true;
+//        }
+//        else{
             show(pos.x(), pos.y() + 10);
-        }
+//        }
     }
 
 signals:
@@ -1834,9 +1834,29 @@ void ToolboxProxy::updateHoverPreview(const QUrl &url, int secs)
     if (_engine->playlist().currentInfo().url != url)
         return;
 
-    QPixmap pm = ThumbnailWorker::get().getThumb(url, secs);
+    if (!Settings::get().isSet(Settings::PreviewOnMouseover))
+        return;
 
+    if (_volSlider->isVisible())
+        return;
+
+    const auto &pif = _engine->playlist().currentInfo();
+    if (!pif.url.isLocalFile())
+        return;
+
+    const auto &absPath = pif.info.canonicalFilePath();
+    if (!QFile::exists(absPath)) {
+        _previewer->hide();
+        return;
+    }
+
+    QPixmap pm = ThumbnailWorker::get().getThumb(url, secs);
     _previewer->updateWithPreview(pm, secs, _engine->videoRotation());
+
+    auto pos = _progBar->mapToGlobal(QPoint(0, TOOLBOX_TOP_EXTENT - 10));
+//    auto pos = _viewProgBar->mapToGlobal(QPoint(0, TOOLBOX_TOP_EXTENT - 10));
+    QPoint p { QCursor::pos().x(), pos.y() };
+    _previewer->updateWithPreview(p);
 }
 
 void ToolboxProxy::progressHoverChanged(int v)
@@ -1864,10 +1884,10 @@ void ToolboxProxy::progressHoverChanged(int v)
     ThumbnailWorker::get().requestThumb(pif.url, v);
 
 //    auto pos = _progBar->mapToGlobal(QPoint(0, TOOLBOX_TOP_EXTENT - 10));
-    auto pos = _viewProgBar->mapToGlobal(QPoint(0, TOOLBOX_TOP_EXTENT - 10));
-    QPoint p { QCursor::pos().x(), pos.y() };
+////    auto pos = _viewProgBar->mapToGlobal(QPoint(0, TOOLBOX_TOP_EXTENT - 10));
+//    QPoint p { QCursor::pos().x(), pos.y() };
 
-    _previewer->updateWithPreview(p);
+//    _previewer->updateWithPreview(p);
 }
 
 void ToolboxProxy::setProgress(int v)
