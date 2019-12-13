@@ -211,6 +211,7 @@ private:
     QList<QPixmap >pm_black_list ;
 
     viewProgBarLoad *m_worker = nullptr;
+    bool m_mouseFlag = false;
 };
 class viewProgBarLoad: public QThread{
     Q_OBJECT

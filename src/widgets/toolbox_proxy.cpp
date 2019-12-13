@@ -1457,7 +1457,7 @@ void ToolboxProxy::setup()
     connect(_progBar, &DSlider::sliderMoved, this, &ToolboxProxy::setProgress);
     connect(_progBar, &DSlider::valueChanged, this, &ToolboxProxy::setProgress);
     connect(_progBar, &DMRSlider::hoverChanged, this, &ToolboxProxy::progressHoverChanged);
-    connect(_progBar, &DMRSlider::leave, [ = ]() { _previewer->hide(); });
+    connect(_progBar, &DMRSlider::leave, [ = ]() { _previewer->hide(); m_mouseFlag = false;});
     connect(&Settings::get(), &Settings::baseChanged,
     [ = ](QString sk, const QVariant & val) {
         if (sk == "base.play.mousepreview") {
@@ -1487,7 +1487,9 @@ void ToolboxProxy::setup()
 //        _progBar_stacked->setCurrentIndex(1);
 //        _progBar_Widget->setCurrentIndex(1);
         _previewer->hide();
+        m_mouseFlag = false;
     });
+
     connect(_viewProgBar, &ViewProgBar::hoverChanged, this, &ToolboxProxy::progressHoverChanged);
     connect(_viewProgBar, &ViewProgBar::sliderMoved, this, &ToolboxProxy::setProgress);
 
@@ -1850,6 +1852,11 @@ void ToolboxProxy::updateHoverPreview(const QUrl &url, int secs)
         return;
     }
 
+    if(!m_mouseFlag)
+    {
+        return;
+    }
+
     QPixmap pm = ThumbnailWorker::get().getThumb(url, secs);
     _previewer->updateWithPreview(pm, secs, _engine->videoRotation());
 
@@ -1879,6 +1886,8 @@ void ToolboxProxy::progressHoverChanged(int v)
         _previewer->hide();
         return;
     }
+
+    m_mouseFlag = true;
 
     _lastHoverValue = v;
     ThumbnailWorker::get().requestThumb(pif.url, v);
