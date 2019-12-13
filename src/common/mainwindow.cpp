@@ -884,6 +884,17 @@ MainWindow::MainWindow(QWidget *parent)
     {
         this->activateWindow();
     });
+
+    connect(qApp, &QGuiApplication::fontChanged, this, [=](const QFont &font)
+    {
+        QFontMetrics fm(DFontSizeManager::instance()->get(DFontSizeManager::T6));
+        _toolbox->getfullscreentimeLabel()->setMinimumWidth(fm.width(_toolbox->getfullscreentimeLabel()->text()));
+        _toolbox->getfullscreentimeLabelend()->setMinimumWidth(fm.width(_toolbox->getfullscreentimeLabelend()->text()));
+
+        int pixelsWidth = _toolbox->getfullscreentimeLabel()->width() + _toolbox->getfullscreentimeLabelend()->width();
+        QRect deskRect = QApplication::desktop()->availableGeometry();
+        _fullscreentimelable->setGeometry(deskRect.width()-pixelsWidth - 32,40,pixelsWidth + 32,36);
+    });
 }
 
 void MainWindow::setupTitlebar()
@@ -1768,9 +1779,11 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             }
             showFullScreen();
             if(isFullScreen()){
+                int pixelsWidth = _toolbox->getfullscreentimeLabel()->width() + _toolbox->getfullscreentimeLabelend()->width();
                 QRect deskRect = QApplication::desktop()->availableGeometry();
-                _fullscreentimelable->setGeometry(deskRect.width()-150,40,150,30);
+                _fullscreentimelable->setGeometry(deskRect.width()-pixelsWidth - 32,40,pixelsWidth + 32,32);
                 _fullscreentimelable->show();
+
             }
         }
         if (!fromUI) {

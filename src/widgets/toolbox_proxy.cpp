@@ -1419,24 +1419,21 @@ void ToolboxProxy::setup()
     _timeLabel->setAlignment(Qt::AlignCenter);
     _fullscreentimelable = new QLabel("");
     _fullscreentimelable->setAttribute(Qt::WA_DeleteOnClose);
-//    _timeLabel->setFixedWidth(_timeLabel->fontMetrics().width("99:99:99/99:99:99"));
-    _timeLabel->setFont(DFontSizeManager::instance()->get(DFontSizeManager::T6));
+    _fullscreentimelable->setForegroundRole(DPalette::Text);
+
+    DFontSizeManager::instance()->bind(_timeLabel, DFontSizeManager::T6);
     _timeLabel->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
     _fullscreentimelable->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    _fullscreentimelable->setFont(DFontSizeManager::instance()->get(DFontSizeManager::T6));
-    //_timeLabel->setFixedWidth(54);
-//    bot->addWidget(_timeLabel);
+    DFontSizeManager::instance()->bind(_fullscreentimelable, DFontSizeManager::T6);
     _timeLabelend = new QLabel(bot_toolWgt);
     _timeLabelend->setAlignment(Qt::AlignCenter);
     _fullscreentimelableend = new QLabel("");
     _fullscreentimelableend->setAttribute(Qt::WA_DeleteOnClose);
-    //_timeLabelend->setFixedWidth(54);
+    _fullscreentimelableend->setForegroundRole(DPalette::Text);
     _timeLabelend->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-//    _timeLabel->setFixedWidth(_timeLabel->fontMetrics().width("99:99:99/99:99:99"));
-//    _timeLabelend->setFixedWidth(_timeLabelend->fontMetrics().width("99:99:99"));
-    _timeLabelend->setFont(DFontSizeManager::instance()->get(DFontSizeManager::T6));
+    DFontSizeManager::instance()->bind(_timeLabelend, DFontSizeManager::T6);
     _fullscreentimelableend->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    _fullscreentimelableend->setFont(DFontSizeManager::instance()->get(DFontSizeManager::T6));
+    DFontSizeManager::instance()->bind(_fullscreentimelableend, DFontSizeManager::T6);
 
     _progBar = new DMRSlider(bot_toolWgt);
     _progBar->setObjectName("MovieProgress");
@@ -1724,8 +1721,12 @@ void ToolboxProxy::setup()
     });
     connect(_engine, &PlayerEngine::elapsedChanged, [ = ]() {
         updateTimeInfo(_engine->duration(), _engine->elapsed(), _fullscreentimelable, _fullscreentimelableend, false);
+        QFontMetrics fm(DFontSizeManager::instance()->get(DFontSizeManager::T6));
+        _fullscreentimelable->setMinimumWidth(fm.width(_fullscreentimelable->text()));
+        _fullscreentimelableend->setMinimumWidth(fm.width(_fullscreentimelableend->text()));
         updateMovieProgress();
     });
+
     connect(window()->windowHandle(), &QWindow::windowStateChanged, this, &ToolboxProxy::updateFullState);
     connect(_engine, &PlayerEngine::muteChanged, this, &ToolboxProxy::updateVolumeState);
     connect(_engine, &PlayerEngine::volumeChanged, this, &ToolboxProxy::updateVolumeState);
