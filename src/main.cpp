@@ -54,6 +54,7 @@ DWIDGET_USE_NAMESPACE
 int main(int argc, char *argv[])
 {
     CompositingManager::detectOpenGLEarly();
+    CompositingManager::detectPciID();
 
     DApplication::loadDXcbPlugin();
 

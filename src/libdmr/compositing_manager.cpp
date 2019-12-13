@@ -235,6 +235,34 @@ void CompositingManager::detectOpenGLEarly()
     detect_run = true;
 }
 
+void CompositingManager::detectPciID()
+{
+    QProcess pcicheck;
+    pcicheck.start("lspci -vn");
+    if (pcicheck.waitForStarted() && pcicheck.waitForFinished()) {
+
+        auto data = pcicheck.readAllStandardOutput();
+
+        QString output(data.trimmed().constData());
+        qDebug()<<"CompositingManager::detectPciID()"<<output.split(QChar('\n')).count();
+
+        QStringList outlist = output.split(QChar('\n'));
+        foreach(QString line, outlist)
+        {
+//            qDebug()<<"CompositingManager::detectPciID():"<<line;
+            if(line.contains(QString("00:02.0")))
+            {
+                if(line.contains(QString("8086")) && line.contains(QString("1912")))
+                {
+                    qDebug()<<"CompositingManager::detectPciID():need to change to iHD";
+                    qputenv("LIBVA_DRIVER_NAME", "iHD");
+                    break;
+                }
+            }
+        }
+    }
+}
+
 OpenGLInteropKind CompositingManager::interopKind()
 {
     return _interopKind;

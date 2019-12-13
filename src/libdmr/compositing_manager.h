@@ -83,6 +83,7 @@ class CompositingManager: public QObject {
 
         PlayerOptionList getProfile(const QString& name);
         PlayerOptionList getBestProfile(); // best for current platform and env
+        static void detectPciID();
 
     signals:
         void compositingChanged(bool);
