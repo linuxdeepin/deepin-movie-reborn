@@ -220,12 +220,12 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
     tipLst.clear();
 #define ADD_ROW(title, field)  do { \
     auto f = new DLabel(title, this); \
-    f->setFixedSize(55, 45); \
+    f->setFixedHeight(45); \
     f->setAlignment(Qt::AlignLeft | Qt::AlignTop); \
     DFontSizeManager::instance()->bind(f, DFontSizeManager::T8); \
     f->setForegroundRole(DPalette::WindowText); \
     auto t = new DLabel(field, this); \
-    t->setFixedSize(200, 45); \
+    t->setFixedHeight(60); \
     t->setAlignment(Qt::AlignLeft | Qt::AlignTop); \
     t->setWordWrap(true); \
     DFontSizeManager::instance()->bind(t, DFontSizeManager::T8); \

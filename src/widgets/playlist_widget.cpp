@@ -671,14 +671,14 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     _title->setForegroundRole(DPalette::ToolTipText);
 //    title->setText(DApplication::translate("QuickInstallWindow", "Installed"));
     _title->setText(tr("Playlist"));
-    _title->setFixedSize(96 + 9, 36);
-    _title->setContentsMargins(0, 0, 0, 0);
+//    _title->setFixedSize(96 + 9, 36);
+//    _title->setContentsMargins(0, 0, 0, 0);
 
     _num = new DLabel();
     _num->setForegroundRole(DPalette::TextTips);
     _num->setText(tr("17个视频"));
     DFontSizeManager::instance()->bind(_num, DFontSizeManager::T6);
-    _num->setFixedSize(96, 20);
+//    _num->setFixedSize(96, 20);
     _num->setContentsMargins(0, 0, 0, 0);
     mainLayout->addWidget(left);
     auto *leftinfo = new QVBoxLayout;
@@ -706,7 +706,7 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     }
     pa_cb.setBrush(QPalette::ButtonText, QColor(255, 255, 255, 255));
     clearButton->setPalette(pa_cb);
-    clearButton->setFixedSize(93 + 6, 30);
+//    clearButton->setFixedSize(93 + 6, 30);
     clearButton->setContentsMargins(0, 0, 0, 0);
 
     QObject::connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::paletteTypeChanged, clearButton,
@@ -727,7 +727,7 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
         _engine->clearPlaylist();
     });
     left->setContentsMargins(36, 0, 0, 0);
-    _title->setContentsMargins(0, 0, 0, 0);
+//    _title->setContentsMargins(0, 0, 0, 0);
     clearButton->setContentsMargins(0, 0, 0, 0);
     _num->setContentsMargins(0, 0, 0, 0);
 
