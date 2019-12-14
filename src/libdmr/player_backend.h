@@ -143,6 +143,7 @@ Q_SIGNALS:
 
     void mpvErrorLogsChanged(const QString prefix, const QString text);
     void mpvWarningLogsChanged(const QString prefix, const QString text);
+    void urlpause(bool status);
 
 public slots:
     virtual void play() = 0;

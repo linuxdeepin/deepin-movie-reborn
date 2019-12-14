@@ -257,6 +257,7 @@ mpv_handle* MpvProxy::mpv_init()
     //mpv_observe_property(h, 0, "playlist-pos", MPV_FORMAT_NONE);
     //mpv_observe_property(h, 0, "playlist-count", MPV_FORMAT_NONE);
     mpv_observe_property(h, 0, "core-idle", MPV_FORMAT_NODE);
+    mpv_observe_property(h, 0, "paused-for-cache", MPV_FORMAT_NODE);
 
     mpv_set_wakeup_callback(h, mpv_callback, this);
     connect(this, &MpvProxy::has_mpv_events, this, &MpvProxy::handle_mpv_events,
@@ -513,6 +514,10 @@ void MpvProxy::processPropertyChange(mpv_event_property* ev)
                 setState(PlayState::Playing);
         }
     } else if (name == "core-idle") {
+    }
+    else if (name == "paused-for-cache") {
+        qDebug()<<"paused-for-cache"<<get_property_variant(_handle, "paused-for-cache");
+        emit urlpause(get_property_variant(_handle, "paused-for-cache").toBool());
     }
 }
 

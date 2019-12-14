@@ -880,6 +880,15 @@ MainWindow::MainWindow(QWidget *parent)
     connect(&OnlineSubtitle::get(), &OnlineSubtitle::onlineSubtitleStateChanged, this, &MainWindow::checkOnlineSubtitle);
     connect(_engine, &PlayerEngine::mpvErrorLogsChanged, this, &MainWindow::checkErrorMpvLogsChanged);
     connect(_engine, &PlayerEngine::mpvWarningLogsChanged, this, &MainWindow::checkWarningMpvLogsChanged);
+    connect(_engine, &PlayerEngine::urlpause, this, [=](bool status)
+    {
+        if(status)
+        {
+            auto msg = QString(tr("Buffering..."));
+            _nwComm->updateWithMessage(msg);
+        }
+
+    });
     connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::newProcessInstance, this, [=]
     {
         this->activateWindow();

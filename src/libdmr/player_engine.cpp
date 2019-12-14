@@ -65,6 +65,7 @@ PlayerEngine::PlayerEngine(QWidget *parent)
         connect(_current, &Backend::notifyScreenshot, this, &PlayerEngine::notifyScreenshot);
         connect(_current, &Backend::mpvErrorLogsChanged, this, &PlayerEngine::mpvErrorLogsChanged);
         connect(_current, &Backend::mpvWarningLogsChanged, this, &PlayerEngine::mpvWarningLogsChanged);
+        connect(_current, &Backend::urlpause, this, &PlayerEngine::urlpause);
         l->addWidget(_current);
     }
 

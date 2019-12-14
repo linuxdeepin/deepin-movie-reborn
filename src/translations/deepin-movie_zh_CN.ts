@@ -217,11 +217,11 @@
     </message>
     <message>
         <source>The theater is a video player that supports local and streaming video playback in multiple video formats.</source>
-        <translation type="vanished">影院是一款支持多种视频格式本地播放和流媒体播放的视频播放器。</translation>
+        <translation>影院是一款支持多种视频格式本地播放和流媒体播放的视频播放器。</translation>
     </message>
     <message>
         <source>Movie is a full-featured video player, supporting playing local and streaming media in multiple video formats.</source>
-        <translation>影院是一款支持多种视频格式本地播放和流媒体播放的视频播放器。</translation>
+        <translation type="vanished">影院是一款支持多种视频格式本地播放和流媒体播放的视频播放器。</translation>
     </message>
 </context>
 <context>
@@ -575,6 +575,10 @@
         <source>Parse failed</source>
         <translation>解析失败</translation>
     </message>
+    <message>
+        <source>Buffering...</source>
+        <translation>缓冲中...</translation>
+    </message>
 </context>
 <context>
     <name>dmr::MovieInfo</name>
@@ -664,7 +668,7 @@
     </message>
     <message>
         <source>Clear Playlist</source>
-        <translation type="vanished">清空列表</translation>
+        <translation>清空列表</translation>
     </message>
     <message>
         <source>%1 videos</source>
@@ -676,7 +680,7 @@
     </message>
     <message>
         <source>Empty</source>
-        <translation>清空列表</translation>
+        <translation type="vanished">清空列表</translation>
     </message>
 </context>
 <context>

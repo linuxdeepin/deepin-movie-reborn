@@ -169,6 +169,7 @@ signals:
     void onlineStateChanged(const bool isOnline);
     void mpvErrorLogsChanged(const QString prefix, const QString text);
     void mpvWarningLogsChanged(const QString prefix, const QString text);
+    void urlpause(bool status);
 
 public slots:
     void play();
