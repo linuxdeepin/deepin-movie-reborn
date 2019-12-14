@@ -2074,6 +2074,8 @@ void ToolboxProxy::buttonClicked(QString id)
         _mainWindow->requestAction(ActionFactory::ActionKind::ToggleFullscreen);
     } else if (id == "vol") {
         _mainWindow->requestAction(ActionFactory::ActionKind::ToggleMute);
+        _volBtn->setChecked(true);
+        _volBtn->setvolumebuttonclicked(true);
     } else if (id == "prev") {
         _mainWindow->requestAction(ActionFactory::ActionKind::GotoPlaylistPrev);
     } else if (id == "next") {
