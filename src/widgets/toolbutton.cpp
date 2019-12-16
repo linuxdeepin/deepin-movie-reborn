@@ -38,116 +38,35 @@ VolumeButton::VolumeButton(QWidget* parent)
     changeLevel(Level::High);
     setIcon(QIcon::fromTheme("dcc_volume"));
     setIconSize(QSize(36,36));
-    setCheckable(true);
-    connect(DApplicationHelper::instance(),&DApplicationHelper::themeTypeChanged,
-            this,&VolumeButton::updatevolumeicon);
 }
 
 void VolumeButton::changeLevel(Level lv)
 {
     if (_lv != lv) {
-        if(!_volumebuttonclicked){
-            if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ){
-                switch (lv) {
-                case Level::Mute:
-                    setIcon(QIcon(":/resources/icons/light/normal/mute_normal.svg")); break;
-                case Level::Off:
-                case Level::Low:
-                    setIcon(QIcon(":/resources/icons/light/normal/volume_low_normal.svg")); break;
-                case Level::Mid:
-                    setIcon(QIcon(":/resources/icons/light/normal/volume_mid_normal.svg")); break;
-                case Level::High:
-                    setIcon(QIcon(":/resources/icons/light/normal/volume_normal.svg")); break;
-                }
-            }else {
-                switch (lv) {
-                case Level::Mute:
-                    setIcon(QIcon(":/resources/icons/dark/normal/mute_normal.svg")); break;
-                case Level::Off:
-                case Level::Low:
-                    setIcon(QIcon(":/resources/icons/dark/normal/volume_low_normal.svg")); break;
-                case Level::Mid:
-                    setIcon(QIcon(":/resources/icons/dark/normal/volume_mid_normal.svg")); break;
-                case Level::High:
-                    setIcon(QIcon(":/resources/icons/dark/normal/volume_normal.svg")); break;
-                }
-            }
-        }else {
-            _volumebuttonclicked = false;
-            switch (lv) {
-            case  VolumeButton::Level::Mute:
-                setIcon(QIcon(":/resources/icons/mute_hover.svg")); break;
-            case VolumeButton::Level::Off:
-            case VolumeButton::Level::Low:
-                setIcon(QIcon(":/resources/icons/volume_low_hover.svg")); break;
-            case VolumeButton::Level::Mid:
-                setIcon(QIcon(":/resources/icons/volume_mid_hover.svg")); break;
-            case VolumeButton::Level::High:
-                setIcon(QIcon(":/resources/icons/volume_hover.svg")); break;
-            }
+        switch (lv) {
+        case Level::Mute:
+            setIcon(QIcon::fromTheme("dcc_mute")); break;
+        case Level::Off:
+        case Level::Low:
+            setIcon(QIcon::fromTheme("dcc_volumelow")); break;
+        case Level::Mid:
+            setIcon(QIcon::fromTheme("dcc_volumemid")); break;
+        case Level::High:
+            setIcon(QIcon::fromTheme("dcc_volume")); break;
         }
         //        setStyleSheet(styleSheet());
         _lv = lv;
     }
 }
 
-bool VolumeButton::setvolumebuttonclicked(bool clicked)
-{
-    _volumebuttonclicked = clicked;
-    return _volumebuttonclicked;
-}
-
 void VolumeButton::enterEvent(QEvent *ev)
 {
-    switch (_lv) {
-    case Level::Mute:
-        setIcon(QIcon(":/resources/icons/mute_hover.svg")); break;
-    case Level::Off:
-    case Level::Low:
-        setIcon(QIcon(":/resources/icons/volume_low_hover.svg")); break;
-    case Level::Mid:
-        setIcon(QIcon(":/resources/icons/volume_mid_hover.svg")); break;
-    case Level::High:
-        setIcon(QIcon(":/resources/icons/volume_hover.svg")); break;
-    }
-    setChecked(true);
     emit entered();
 }
 
 void VolumeButton::leaveEvent(QEvent *ev)
 {
-    updatevolumeicon();
-    setChecked(false);
     emit leaved();
-}
-
-void VolumeButton::updatevolumeicon()
-{
-    if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ){
-        switch (_lv) {
-        case Level::Mute:
-            setIcon(QIcon(":/resources/icons/light/normal/mute_normal.svg")); break;
-        case Level::Off:
-        case Level::Low:
-            setIcon(QIcon(":/resources/icons/light/normal/volume_low_normal.svg")); break;
-        case Level::Mid:
-            setIcon(QIcon(":/resources/icons/light/normal/volume_mid_normal.svg")); break;
-        case Level::High:
-            setIcon(QIcon(":/resources/icons/light/normal/volume_normal.svg")); break;
-        }
-    }else {
-        switch (_lv) {
-        case Level::Mute:
-            setIcon(QIcon(":/resources/icons/dark/normal/mute_normal.svg")); break;
-        case Level::Off:
-        case Level::Low:
-            setIcon(QIcon(":/resources/icons/dark/normal/volume_low_normal.svg")); break;
-        case Level::Mid:
-            setIcon(QIcon(":/resources/icons/dark/normal/volume_mid_normal.svg")); break;
-        case Level::High:
-            setIcon(QIcon(":/resources/icons/dark/normal/volume_normal.svg")); break;
-        }
-    }
 }
 
 void VolumeButton::wheelEvent(QWheelEvent* we)

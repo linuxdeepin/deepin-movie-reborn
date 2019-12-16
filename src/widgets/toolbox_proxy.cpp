@@ -1311,6 +1311,8 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
 //        _viewProgBarLoad->loadViewProgBar();
 //    });
 //    connect(_viewProgBarLoad, SIGNAL(sigFinishiLoad(QSize)), this, SLOT(finishLoadSlot(QSize)));
+    connect(DApplicationHelper::instance(),&DApplicationHelper::themeTypeChanged,
+                this,&ToolboxProxy::updatePlayState);
 }
 void ToolboxProxy::finishLoadSlot(QSize size)
 {
@@ -1579,7 +1581,9 @@ void ToolboxProxy::setup()
 
 
 //    _prevBtn = new DIconButton(this);
-    _prevBtn = new DButtonBoxButton(QIcon::fromTheme("dcc_last"), nullptr, _palyBox);
+    _prevBtn = new VideoBoxButton("",":/icons/deepin/builtin/light/normal/last_normal.svg",
+                                  ":/icons/deepin/builtin/light/normal/last_normal.svg",
+                                  ":/icons/deepin/builtin/light/press/last_press.svg");
 //    _prevBtn->setIcon(QIcon::fromTheme("dcc_last"));
     _prevBtn->setIconSize(QSize(36, 36));
     _prevBtn->setFixedSize(40, 50);
@@ -1588,7 +1592,9 @@ void ToolboxProxy::setup()
     signalMapper->setMapping(_prevBtn, "prev");
 //    _mid->addWidget(_prevBtn);
     list.append(_prevBtn);
-    _playBtn = new DButtonBoxButton(QIcon::fromTheme("dcc_play"), nullptr, _palyBox);
+    _playBtn = new VideoBoxButton("",":/resources/icons/light/normal/play_normal2.svg",
+                                  ":/resources/icons/light/normal/play_normal2.svg",
+                                  ":/icons/deepin/builtin/light/press/play_press.svg");
 //    _playBtn->setIcon(QIcon::fromTheme("dcc_play"));
     _playBtn->setIconSize(QSize(36, 36));
     _playBtn->setFixedSize(40, 50);
@@ -1597,7 +1603,9 @@ void ToolboxProxy::setup()
 //    _mid->addWidget(_playBtn);
     list.append(_playBtn);
 
-    _nextBtn = new DButtonBoxButton(QIcon::fromTheme("dcc_next"), nullptr, _palyBox);
+    _nextBtn = new VideoBoxButton("",":/icons/deepin/builtin/light/normal/next_normal.svg",
+                                  ":/icons/deepin/builtin/light/normal/next_normal.svg",
+                                  ":/icons/deepin/builtin/light/press/next_press.svg");
 //    _nextBtn->setIcon(QIcon::fromTheme("dcc_next"));
     _nextBtn->setIconSize(QSize(36, 36));
     _nextBtn->setFixedSize(40, 50);
@@ -1992,14 +2000,53 @@ void ToolboxProxy::updateFullState()
 
 void ToolboxProxy::updatePlayState()
 {
-    qDebug() << __func__ << _engine->state();
     if (_engine->state() == PlayerEngine::CoreState::Playing) {
-//        _playBtn->setObjectName("PauseBtn");
-        _playBtn->setIcon(QIcon::fromTheme("dcc_suspend"));
+        //        _playBtn->setObjectName("PauseBtn");
+        if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ){
+            _playBtn->setPropertyPic(":/icons/deepin/builtin/light/normal/suspend_normal.svg",
+                                     ":/icons/deepin/builtin/light/normal/suspend_normal.svg",
+                                     ":/icons/deepin/builtin/light/press/suspend_press.svg");
+            _prevBtn->setPropertyPic(":/icons/deepin/builtin/light/normal/last_normal.svg",
+                                     ":/icons/deepin/builtin/light/normal/last_normal.svg",
+                                     ":/icons/deepin/builtin/light/press/last_press.svg");
+            _nextBtn->setPropertyPic(":/icons/deepin/builtin/light/normal/next_normal.svg",
+                                     ":/icons/deepin/builtin/light/normal/next_normal.svg",
+                                     ":/icons/deepin/builtin/light/press/next_press.svg");
+        }else {
+            _playBtn->setPropertyPic(":/icons/deepin/builtin/dark/normal/suspend_normal.svg",
+                                     ":/icons/deepin/builtin/dark/normal/suspend_normal.svg",
+                                     ":/icons/deepin/builtin/dark/press/suspend_press.svg");
+            _prevBtn->setPropertyPic(":/icons/deepin/builtin/dark/normal/last_normal.svg",
+                                     ":/icons/deepin/builtin/dark/normal/last_normal.svg",
+                                     ":/icons/deepin/builtin/dark/press/last_press.svg");
+            _nextBtn->setPropertyPic(":/icons/deepin/builtin/dark/normal/next_normal.svg",
+                                     ":/icons/deepin/builtin/dark/normal/next_normal.svg",
+                                     ":/icons/deepin/builtin/dark/press/next_press.svg");
+        }
         _playBtn->setToolTip(tr("Pause"));
     } else {
-//        _playBtn->setObjectName("PlayBtn");
-        _playBtn->setIcon(QIcon::fromTheme("dcc_play"));
+        //        _playBtn->setObjectName("PlayBtn");
+        if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ){
+            _playBtn->setPropertyPic(":/icons/deepin/builtin/light/normal/play_normal.svg",
+                                     ":/icons/deepin/builtin/light/normal/play_normal.svg",
+                                     ":/icons/deepin/builtin/light/press/play_press.svg");
+            _prevBtn->setPropertyPic(":/icons/deepin/builtin/light/normal/last_normal.svg",
+                                     ":/icons/deepin/builtin/light/normal/last_normal.svg",
+                                     ":/icons/deepin/builtin/light/press/last_press.svg");
+            _nextBtn->setPropertyPic(":/icons/deepin/builtin/light/normal/next_normal.svg",
+                                     ":/icons/deepin/builtin/light/normal/next_normal.svg",
+                                     ":/icons/deepin/builtin/light/press/next_press.svg");
+        }else {
+            _playBtn->setPropertyPic(":/icons/deepin/builtin/dark/normal/play_normal.svg",
+                                     ":/icons/deepin/builtin/dark/normal/play_normal.svg",
+                                     ":/icons/deepin/builtin/dark/press/play_press.svg");
+            _prevBtn->setPropertyPic(":/icons/deepin/builtin/dark/normal/last_normal.svg",
+                                     ":/icons/deepin/builtin/dark/normal/last_normal.svg",
+                                     ":/icons/deepin/builtin/dark/press/last_press.svg");
+            _nextBtn->setPropertyPic(":/icons/deepin/builtin/dark/normal/next_normal.svg",
+                                     ":/icons/deepin/builtin/dark/normal/next_normal.svg",
+                                     ":/icons/deepin/builtin/dark/press/next_press.svg");
+        }
         _playBtn->setToolTip(tr("Play"));
     }
 
@@ -2074,8 +2121,6 @@ void ToolboxProxy::buttonClicked(QString id)
         _mainWindow->requestAction(ActionFactory::ActionKind::ToggleFullscreen);
     } else if (id == "vol") {
         _mainWindow->requestAction(ActionFactory::ActionKind::ToggleMute);
-        _volBtn->setChecked(true);
-        _volBtn->setvolumebuttonclicked(true);
     } else if (id == "prev") {
         _mainWindow->requestAction(ActionFactory::ActionKind::GotoPlaylistPrev);
     } else if (id == "next") {

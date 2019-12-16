@@ -217,7 +217,6 @@ public:
 
     VolumeButton(QWidget* parent = 0);
     void changeLevel(Level lv);
-    bool setvolumebuttonclicked(bool clicked);
 
 signals:
     void entered();
@@ -225,17 +224,12 @@ signals:
     void requestVolumeUp();
     void requestVolumeDown();
 
-private slots:
-    void updatevolumeicon();
-
 protected:
     void enterEvent(QEvent *ev) override;
     void leaveEvent(QEvent *ev) override;
     void wheelEvent(QWheelEvent* wev) override;
 
 private:
-    bool _volumebuttonclicked = false;
-
     QString _name;
     Level _lv {Mute};
 };

@@ -44,6 +44,7 @@
 #include <DLabel>
 #include <DFloatingWidget>
 #include "dguiapplicationhelper.h"
+#include "videoboxbutton.h"
 
 namespace Dtk
 {
@@ -171,9 +172,9 @@ private:
 //    DIconButton *_prevBtn {nullptr};
 //    DIconButton *_nextBtn {nullptr};
 
-    DButtonBoxButton *_playBtn {nullptr};
-    DButtonBoxButton *_prevBtn {nullptr};
-    DButtonBoxButton *_nextBtn {nullptr};
+    VideoBoxButton *_playBtn {nullptr};
+    VideoBoxButton *_prevBtn {nullptr};
+    VideoBoxButton *_nextBtn {nullptr};
     DButtonBox *_palyBox{nullptr};
 
 //    DIconButton *_subBtn {nullptr};
