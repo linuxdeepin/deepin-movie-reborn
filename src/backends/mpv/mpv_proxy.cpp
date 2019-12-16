@@ -682,14 +682,17 @@ void MpvProxy::changeSoundMode(SoundMode sm)
 
     switch(sm) {
         case SoundMode::Stereo:
-            args << "af" << "del" << "@sm"; break;
+            args << "af" << "set" << "stereotools=muter=false";
+            break;
         case SoundMode::Left:
-            args << "af" << "add" << "@sm:channels=2:[0-0:1-0]"; break;
+            args << "af" << "set" << "stereotools=muter=true";
+            break;
         case SoundMode::Right:
-            args << "af" << "add" << "@sm:channels=2:[0-1:1-1]"; break;
+            args << "af" << "set" << "stereotools=mutel=true";
+            break;
     }
 
-    command_async(_handle, args, AsyncReplyTag::CHANNEL);
+    command(_handle, args);
 }
 
 void MpvProxy::volumeUp()
