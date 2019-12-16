@@ -2012,6 +2012,28 @@ void ToolboxProxy::updatePlayState()
             _nextBtn->setPropertyPic(":/icons/deepin/builtin/light/normal/next_normal.svg",
                                      ":/icons/deepin/builtin/light/normal/next_normal.svg",
                                      ":/icons/deepin/builtin/light/press/next_press.svg");
+            DPalette pa;
+            pa = _palyBox->palette();
+            pa.setColor(DPalette::Light, QColor("#FFFFFF"));
+            pa.setColor(DPalette::Dark, QColor("#FFFFFF"));
+            pa.setColor(DPalette::Button, QColor("#FFFFFF"));
+            _palyBox->setPalette(pa);
+
+            pa = _volBtn->palette();
+            pa.setColor(DPalette::Light, QColor("#FFFFFF"));
+            pa.setColor(DPalette::Dark, QColor("#FFFFFF"));;
+            _volBtn->setPalette(pa);
+
+            pa = _fsBtn->palette();
+            pa.setColor(DPalette::Light, QColor("#FFFFFF"));
+            pa.setColor(DPalette::Dark, QColor("#FFFFFF"));
+            _fsBtn->setPalette(pa);
+
+            pa = _listBtn->palette();
+            pa.setColor(DPalette::Light, QColor("#FFFFFF"));
+            pa.setColor(DPalette::Dark, QColor("#FFFFFF"));
+            _listBtn->setPalette(pa);
+
         }else {
             _playBtn->setPropertyPic(":/icons/deepin/builtin/dark/normal/suspend_normal.svg",
                                      ":/icons/deepin/builtin/dark/normal/suspend_normal.svg",
@@ -2022,6 +2044,29 @@ void ToolboxProxy::updatePlayState()
             _nextBtn->setPropertyPic(":/icons/deepin/builtin/dark/normal/next_normal.svg",
                                      ":/icons/deepin/builtin/dark/normal/next_normal.svg",
                                      ":/icons/deepin/builtin/dark/press/next_press.svg");
+
+            DPalette pa;
+            pa = _palyBox->palette();
+            pa.setColor(DPalette::Light, QColor("#454545"));
+            pa.setColor(DPalette::Dark, QColor("#454545"));
+            pa.setColor(DPalette::Button, QColor("#454545"));
+            _palyBox->setPalette(pa);
+
+            pa = _volBtn->palette();
+            pa.setColor(DPalette::Light, QColor("#454545"));
+            pa.setColor(DPalette::Dark, QColor("#454545"));;
+            _volBtn->setPalette(pa);
+
+            pa = _fsBtn->palette();
+            pa.setColor(DPalette::Light, QColor("#454545"));
+            pa.setColor(DPalette::Dark, QColor("#454545"));
+            _fsBtn->setPalette(pa);
+
+            pa = _listBtn->palette();
+            pa.setColor(DPalette::Light, QColor("#454545"));
+            pa.setColor(DPalette::Dark, QColor("#454545"));
+            _listBtn->setPalette(pa);
+
         }
         _playBtn->setToolTip(tr("Pause"));
     } else {
@@ -2036,6 +2081,29 @@ void ToolboxProxy::updatePlayState()
             _nextBtn->setPropertyPic(":/icons/deepin/builtin/light/normal/next_normal.svg",
                                      ":/icons/deepin/builtin/light/normal/next_normal.svg",
                                      ":/icons/deepin/builtin/light/press/next_press.svg");
+
+            DPalette pa;
+            pa = _palyBox->palette();
+            pa.setColor(DPalette::Light, QColor("#FFFFFF"));
+            pa.setColor(DPalette::Dark, QColor("#FFFFFF"));
+            pa.setColor(DPalette::Button, QColor("#FFFFFF"));
+            _palyBox->setPalette(pa);
+
+            pa = _volBtn->palette();
+            pa.setColor(DPalette::Light, QColor("#FFFFFF"));
+            pa.setColor(DPalette::Dark, QColor("#FFFFFF"));;
+            _volBtn->setPalette(pa);
+
+            pa = _fsBtn->palette();
+            pa.setColor(DPalette::Light, QColor("#FFFFFF"));
+            pa.setColor(DPalette::Dark, QColor("#FFFFFF"));
+            _fsBtn->setPalette(pa);
+
+            pa = _listBtn->palette();
+            pa.setColor(DPalette::Light, QColor("#FFFFFF"));
+            pa.setColor(DPalette::Dark, QColor("#FFFFFF"));
+            _listBtn->setPalette(pa);
+
         }else {
             _playBtn->setPropertyPic(":/icons/deepin/builtin/dark/normal/play_normal.svg",
                                      ":/icons/deepin/builtin/dark/normal/play_normal.svg",
@@ -2046,6 +2114,28 @@ void ToolboxProxy::updatePlayState()
             _nextBtn->setPropertyPic(":/icons/deepin/builtin/dark/normal/next_normal.svg",
                                      ":/icons/deepin/builtin/dark/normal/next_normal.svg",
                                      ":/icons/deepin/builtin/dark/press/next_press.svg");
+            DPalette pa;
+            pa = _palyBox->palette();
+            pa.setColor(DPalette::Light, QColor("#454545"));
+            pa.setColor(DPalette::Dark, QColor("#454545"));
+            pa.setColor(DPalette::Button, QColor("#454545"));
+            _palyBox->setPalette(pa);
+
+            pa = _volBtn->palette();
+            pa.setColor(DPalette::Light, QColor("#454545"));
+            pa.setColor(DPalette::Dark, QColor("#454545"));;
+            _volBtn->setPalette(pa);
+
+            pa = _fsBtn->palette();
+            pa.setColor(DPalette::Light, QColor("#454545"));
+            pa.setColor(DPalette::Dark, QColor("#454545"));
+            _fsBtn->setPalette(pa);
+
+            pa = _listBtn->palette();
+            pa.setColor(DPalette::Light, QColor("#454545"));
+            pa.setColor(DPalette::Dark, QColor("#454545"));
+            _listBtn->setPalette(pa);
+
         }
         _playBtn->setToolTip(tr("Play"));
     }
