@@ -82,7 +82,7 @@ private:
     OnlineSubtitle();
     void subtitlesDownloadComplete();
     QString findAvailableName(const QString& tmpl, int id);
-    bool hasHashConflict(const QString& path, const QString& tmpl); 
+    bool hasHashConflict(const QString& path, const QString& tmpl, QString& conflictPath);
 };
 }
 

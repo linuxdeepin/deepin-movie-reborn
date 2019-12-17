@@ -250,8 +250,10 @@ void OnlineSubtitle::replyReceived(QNetworkReply* reply)
         }
 
         _pendingDownloads--;
-        if (hasHashConflict(path, name_tmpl)) {
+        QString conflictPath;
+        if (hasHashConflict(path, name_tmpl, conflictPath)) {
             _lastReason = FailReason::Duplicated;
+            _subs[id].local = conflictPath;
             QFile::remove(path);
         } else {
             _subs[id].local = path;
@@ -264,7 +266,7 @@ void OnlineSubtitle::replyReceived(QNetworkReply* reply)
     }
 }
 
-bool OnlineSubtitle::hasHashConflict(const QString& path, const QString& tmpl)
+bool OnlineSubtitle::hasHashConflict(const QString& path, const QString& tmpl, QString& conflictPath)
 {
     QFileInfo fi(path);
     auto md5 = utils::FullFileHash(fi);
@@ -280,7 +282,9 @@ bool OnlineSubtitle::hasHashConflict(const QString& path, const QString& tmpl)
         if (tmpl == s) {
             auto h = utils::FullFileHash(di.fileInfo());
             qDebug() << "found " << di.fileName() << h;
-            if (h == md5) {
+            if (h == md5)
+            {
+                conflictPath = di.filePath();
                 return true;
             }
         }

@@ -284,10 +284,22 @@ void PlayerEngine::onSubtitlesDownloaded(const QUrl& url, const QList<QString>& 
     if (playlist().currentInfo().url != url) 
         return;
 
-    emit loadOnlineSubtitlesFinished(url,
-            filenames.size() > 0 || reason == OnlineSubtitle::Duplicated);
+    bool res = false;
+
     for (auto& filename: filenames)
-        _current->loadSubtitle(filename);
+    {
+        if( true == _current->loadSubtitle(filename))
+        {
+            res = true;
+        }
+        else
+        {
+            QFile::remove(filename);
+        }
+    }
+
+    emit loadOnlineSubtitlesFinished(url, res);
+
 }
 
 bool PlayerEngine::loadSubtitle(const QFileInfo& fi)
