@@ -2335,12 +2335,12 @@ void ToolboxProxy::resizeEvent(QResizeEvent *event)
     }
 
     if (_playlist->state() == PlaylistWidget::State::Opened) {
-        QRect r(10, _mainWindow->height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT) - _mainWindow->rect().top() - 10,
-                _mainWindow->rect().width() - 20, (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT));
+        QRect r(5, _mainWindow->height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT) - _mainWindow->rect().top() - 5,
+                _mainWindow->rect().width() - 10, (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT));
         this->setGeometry(r);
     } else {
-        QRect r(10, _mainWindow->height() - TOOLBOX_HEIGHT - _mainWindow->rect().top() - 10,
-                _mainWindow->rect().width() - 20, TOOLBOX_HEIGHT);
+        QRect r(5, _mainWindow->height() - TOOLBOX_HEIGHT - _mainWindow->rect().top() - 5,
+                _mainWindow->rect().width() - 10, TOOLBOX_HEIGHT);
         this->setGeometry(r);
     }
 

@@ -2391,10 +2391,10 @@ void MainWindow::updateProxyGeometry()
         }
 
         if (_toolbox) {
-            QRect rfs(10, height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT) - rect().top() - 10,
-                      rect().width() - 20, (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT));
-            QRect rct(10, height() - TOOLBOX_HEIGHT - rect().top() - 10,
-                    rect().width() - 20, TOOLBOX_HEIGHT);
+            QRect rfs(5, height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT) - rect().top() - 5,
+                      rect().width() - 10, (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT));
+            QRect rct(5, height() - TOOLBOX_HEIGHT - rect().top() - 5,
+                    rect().width() - 10, TOOLBOX_HEIGHT);
             if (isFullScreen()) {
                 if (_playlist->state() == PlaylistWidget::State::Opened) {
                     _toolbox->setGeometry(rfs);
