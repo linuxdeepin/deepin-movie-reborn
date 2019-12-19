@@ -117,6 +117,7 @@ signals:
     void windowLeaved();
     void initChanged();
     void frameMenuEnable(bool);
+    void playlistchanged();
 
 public slots:
     void play(const QUrl &url);

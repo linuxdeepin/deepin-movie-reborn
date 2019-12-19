@@ -1069,9 +1069,9 @@ public:
         setLayout(l);
 
         _slider = new DSlider(Qt::Vertical, this);
-        _slider->setLeftIcon(QIcon::fromTheme("dcc_volumelessen"));
-        _slider->setRightIcon(QIcon::fromTheme("dcc_volumeadd"));
-        _slider->setIconSize(QSize(20, 20));
+        _slider->setLeftIcon(QIcon());
+        _slider->setRightIcon(QIcon());
+        _slider->setIconSize(QSize(12, 12));
         _slider->installEventFilter(this);
         _slider->show();
         _slider->slider()->setRange(0, 100);
@@ -1315,6 +1315,8 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
 //    connect(_viewProgBarLoad, SIGNAL(sigFinishiLoad(QSize)), this, SLOT(finishLoadSlot(QSize)));
     connect(DApplicationHelper::instance(),&DApplicationHelper::themeTypeChanged,
                 this,&ToolboxProxy::updatePlayState);
+    connect(DApplicationHelper::instance(),&DApplicationHelper::themeTypeChanged,
+                this,&ToolboxProxy::updateplaylisticon);
 }
 void ToolboxProxy::finishLoadSlot(QSize size)
 {
@@ -1331,6 +1333,15 @@ void ToolboxProxy::finishLoadSlot(QSize size)
     }
 
 
+}
+
+void ToolboxProxy::updateplaylisticon()
+{
+    if(_listBtn->isChecked() && DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()){
+        _listBtn->setIcon(QIcon(":/icons/deepin/builtin/light/checked/episodes_checked.svg"));
+    }else {
+        _listBtn->setIcon(QIcon::fromTheme("dcc_episodes"));
+    }
 }
 ToolboxProxy::~ToolboxProxy()
 {

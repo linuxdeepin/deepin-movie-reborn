@@ -124,6 +124,7 @@ public:
     QLabel *getfullscreentimeLabelend();
 public slots:
     void finishLoadSlot(QSize size);
+    void updateplaylisticon();
 signals:
     void requestPlay();
     void requestPause();

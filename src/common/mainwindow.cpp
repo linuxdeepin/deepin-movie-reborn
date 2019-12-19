@@ -876,6 +876,8 @@ MainWindow::MainWindow(QWidget *parent)
     _animationlable->setParent(this);
     _animationlable->setGeometry(width()/2-100,height()/2-100,200,200);
 
+    connect(this,&MainWindow::playlistchanged,_toolbox,&ToolboxProxy::updateplaylisticon);
+
     connect(_engine, &PlayerEngine::onlineStateChanged, this, &MainWindow::checkOnlineState);
     connect(&OnlineSubtitle::get(), &OnlineSubtitle::onlineSubtitleStateChanged, this, &MainWindow::checkOnlineSubtitle);
     connect(_engine, &PlayerEngine::mpvErrorLogsChanged, this, &MainWindow::checkErrorMpvLogsChanged);
@@ -1076,6 +1078,7 @@ void MainWindow::onWindowStateChanged()
     if (isMinimized()) {
         if (_playlist->state() == PlaylistWidget::Opened) {
             _playlist->togglePopup();
+            emit playlistchanged();
         }
     }
     if(isMaximized()){
@@ -1702,6 +1705,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             reflectActionToUI(kd);
         }
         this->resumeToolsWindow();
+        emit playlistchanged();
         break;
     }
 

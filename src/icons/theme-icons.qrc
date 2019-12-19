@@ -47,6 +47,7 @@
         <file>light/normal/suspend_normal.svg</file>
         <file>light/normal/next_normal.svg</file>
         <file>light/normal/last_normal.svg</file>
+        <file>light/checked/episodes_checked.svg</file>
     </qresource>
     <qresource prefix="/icons/deepin/builtin/light"/>
     <qresource prefix="/icons/deepin/builtin/dark"/>
