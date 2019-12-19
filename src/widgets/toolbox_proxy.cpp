@@ -54,6 +54,8 @@ static const int LEFT_MARGIN = 10;
 static const int RIGHT_MARGIN = 10;
 static const int PROGBAR_SPEC = 10 + 120 + 17 + 54 + 10 + 54 + 10 + 170 + 10 + 20;
 
+static const QString SLIDER_ARROW = ":resources/icons/slider.svg";
+
 DWIDGET_USE_NAMESPACE
 
 namespace dmr {
@@ -481,7 +483,7 @@ public:
 
         QMatrix matrix;
         matrix.rotate(180);
-        QPixmap pixmap(":resources/icons/slider.svg");
+        QPixmap pixmap = utils::LoadHiDPIPixmap(SLIDER_ARROW);
         _sliderArrowUp = new DLabel(this);
         _sliderArrowUp->setFixedSize(20, 18);
         _sliderArrowUp->setPixmap(pixmap);
@@ -535,7 +537,7 @@ public:
     {
         if (visible) {
             auto pos = this->mapToGlobal(QPoint(0, 0));
-            _sliderTime->show(pos.x() + _indicatorPos.x(), pos.y() + _indicatorPos.y() + 5);
+            _sliderTime->show(pos.x() + _indicatorPos.x() + 1, pos.y() + _indicatorPos.y() + 4);
         } else {
             _sliderTime->hide();
         }
@@ -706,7 +708,7 @@ private:
             _indicator->setBlurRectYRadius(2);
             _sliderTime->setVisible(press);
             _sliderArrowUp->setVisible(press);
-            _sliderArrowDown->setVisible(press);
+//            _sliderArrowDown->setVisible(press);
         } else {
 //            _indicator->changeStyle(press);
             _indicator->resize(4, 60);
@@ -715,7 +717,7 @@ private:
             _indicator->setBlurRectYRadius(2);
             _sliderTime->setVisible(press);
             _sliderArrowUp->setVisible(press);
-            _sliderArrowDown->setVisible(press);
+//            _sliderArrowDown->setVisible(press);
         }
     }
 
@@ -786,8 +788,8 @@ protected:
     void paintEvent(QPaintEvent *e)
     {
         _indicator->move(_indicatorPos.x(), _indicatorPos.y());
-        _sliderArrowDown->move(_indicatorPos.x() + _indicator->width() / 2 - _sliderArrowDown->width() / 2,
-                               _indicatorPos.y() - 10);
+//        _sliderArrowDown->move(_indicatorPos.x() + _indicator->width() / 2 - _sliderArrowDown->width() / 2,
+//                               _indicatorPos.y() - 10);
         _sliderArrowUp->move(_indicatorPos.x() + _indicator->width() / 2 - _sliderArrowUp->width() / 2, 55);
         _front->setFixedWidth(_indicatorPos.x());
 
