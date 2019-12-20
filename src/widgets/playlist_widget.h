@@ -115,6 +115,7 @@ public:
     bool toggling() const { return _toggling; }
     void updateSelectItem(const int key);
     void clear();
+    DListWidget *get_playlist(){return _playlist;}
 signals:
     void stateChange();
     void sizeChange();

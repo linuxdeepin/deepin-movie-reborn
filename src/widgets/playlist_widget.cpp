@@ -365,6 +365,22 @@ public:
         update();
     }
 
+    void doDoubleClick()
+    {
+        //FIXME: there is an potential inconsistency with model if pif did changed
+        //(i.e gets deleted).
+        _pif.refresh();
+        _time->setText(_pif.mi.durationStr());
+        if (!_pif.valid) {
+            setState(ItemState::Invalid);
+            _time->setText(tr("File does not exist"));
+        }
+//        setStyleSheet(styleSheet());
+        if (!_pif.url.isLocalFile() || _pif.info.exists()) {
+            emit doubleClicked();
+        }
+    }
+
 signals:
     void closeButtonClicked();
     void doubleClicked();
@@ -472,21 +488,7 @@ protected:
         doDoubleClick();
     }
 
-    void doDoubleClick()
-    {
-        //FIXME: there is an potential inconsistency with model if pif did changed
-        //(i.e gets deleted).
-        _pif.refresh();
-        _time->setText(_pif.mi.durationStr());
-        if (!_pif.valid) {
-            setState(ItemState::Invalid);
-            _time->setText(tr("File does not exist"));
-        }
-//        setStyleSheet(styleSheet());
-        if (!_pif.url.isLocalFile() || _pif.info.exists()) {
-            emit doubleClicked();
-        }
-    }
+
 
     void paintEvent(QPaintEvent *pe)
     {
@@ -616,7 +618,29 @@ protected:
                 }
             }
             return false;
-        } else {
+        }else if (event->type() == QEvent::KeyRelease) {
+            QKeyEvent *key = static_cast<QKeyEvent *>(event);
+            if(key->key() == Qt::Key_Return || key->key() == Qt::Key_Enter)
+            {
+                auto *plw = dynamic_cast<PlaylistWidget *>(parent());
+
+                if(plw->state() == PlaylistWidget::State::Opened)
+                {
+                    DListWidget* playlist = plw->get_playlist();
+                    for(int loop=0; loop < playlist->count(); loop++)
+                    {
+                        auto piw = dynamic_cast<PlayItemWidget *>(playlist->itemWidget(playlist->item(loop)));
+                        if(piw->getBIsSelect())
+                        {
+                            piw->doubleClicked();
+                        }
+                    }
+
+                }
+                return true;
+            }
+        }
+        else {
             // standard event processing
             return QObject::eventFilter(obj, event);
         }
