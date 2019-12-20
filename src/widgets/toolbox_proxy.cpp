@@ -1045,8 +1045,8 @@ class VolumeSlider: public DArrowRectangle
 {
     Q_OBJECT
 public:
-    VolumeSlider(PlayerEngine *eng, MainWindow *mw)
-        : DArrowRectangle(DArrowRectangle::ArrowBottom), _engine(eng), _mw(mw)
+    VolumeSlider(PlayerEngine *eng, MainWindow *mw, QWidget *parent = nullptr)
+        : DArrowRectangle(DArrowRectangle::ArrowBottom,DArrowRectangle::FloatWidget, parent), _engine(eng), _mw(mw)
     {
         setFixedSize(QSize(62, 201));
 //        setWindowFlags(Qt::Tool);
@@ -1058,6 +1058,7 @@ public:
         setArrowWidth(20);
         setArrowHeight(15);
         setFocusPolicy(Qt::NoFocus);
+        hide();
 
 //        connect(DThemeManager::instance(), &DThemeManager::themeChanged,
 //                this, &VolumeSlider::updateBg);
@@ -1657,12 +1658,13 @@ void ToolboxProxy::setup()
     signalMapper->setMapping(_volBtn, "vol");
 //    _right->addWidget(_volBtn);
 
-    _volSlider = new VolumeSlider(_engine, _mainWindow);
+    _volSlider = new VolumeSlider(_engine, _mainWindow, _mainWindow);
     connect(_volBtn, &VolumeButton::entered, [ = ]() {
         _volSlider->stopTimer();
-        QPoint pos = _volBtn->parentWidget()->mapToGlobal(_volBtn->pos());
-        pos.ry() = parentWidget()->mapToGlobal(this->pos()).y();
-        _volSlider->show(pos.x() + _volSlider->width() / 2 - 5, pos.y() - 5 + TOOLBOX_TOP_EXTENT + (_bot_spec->isVisible() ? 314 : 0));
+//        QPoint pos = _volBtn->parentWidget()->mapToGlobal(_volBtn->pos());
+//        pos.ry() = parentWidget()->mapToGlobal(this->pos()).y();
+        _volSlider->show(_mainWindow->width()-_volBtn->width()/2-_playBtn->width()-43,
+                         _mainWindow->height()-height()-5);
     });
     connect(_volBtn, &VolumeButton::leaved, _volSlider, &VolumeSlider::delayedHide);
     connect(_volBtn, &VolumeButton::requestVolumeUp, [ = ]() {
