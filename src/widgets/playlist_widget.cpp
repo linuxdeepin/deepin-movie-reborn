@@ -618,7 +618,7 @@ protected:
                 }
             }
             return false;
-        }else if (event->type() == QEvent::KeyRelease) {
+        }else if (event->type() == QEvent::KeyPress) {
             QKeyEvent *key = static_cast<QKeyEvent *>(event);
             if(key->key() == Qt::Key_Return || key->key() == Qt::Key_Enter)
             {
@@ -633,12 +633,13 @@ protected:
                         if(piw->getBIsSelect())
                         {
                             piw->doubleClicked();
+                            return false;
                         }
                     }
 
                 }
-                return true;
             }
+            return false;
         }
         else {
             // standard event processing
