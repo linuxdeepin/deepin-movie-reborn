@@ -2833,6 +2833,13 @@ void MainWindow::moveEvent(QMoveEvent *ev)
 
 void MainWindow::keyPressEvent(QKeyEvent *ev)
 {
+    if ((_playlist->state() == PlaylistWidget::Opened) && ev->modifiers() == Qt::NoModifier) {
+        if (ev) {
+            _playlist->updateSelectItem(ev->key());
+        }
+        ev->setAccepted(true);
+    }
+
     QWidget::keyPressEvent(ev);
 }
 

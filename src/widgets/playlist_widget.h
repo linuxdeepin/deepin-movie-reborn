@@ -113,6 +113,7 @@ public:
     virtual ~PlaylistWidget();
     State state() const { return _state; }
     bool toggling() const { return _toggling; }
+    void updateSelectItem(const int key);
     void clear();
 signals:
     void stateChange();
@@ -140,6 +141,7 @@ protected slots:
     void removeItem(int);
 
     void slotShowSelectItem(QListWidgetItem *);
+    void OnItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
 
 private:
 
@@ -156,6 +158,8 @@ private:
     bool _toggling {false};
     /// < original row, data>
     QPair<int, PlayItemWidget*> _lastDragged {-1, nullptr}; 
+    int _index {0};
+    PlayItemWidget *_selectItemWgt;
 
     void batchUpdateSizeHints();
 };

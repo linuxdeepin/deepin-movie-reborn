@@ -745,6 +745,7 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     mainLayout->addWidget(right);
 
     _playlist = new DListWidget();
+    _playlist->setAttribute(Qt::WA_DeleteOnClose);
     _playlist->setFocusPolicy(Qt::NoFocus);
 //    _playlist->setFixedSize(820,288);
     _playlist->setFixedSize(width() - 235, 288);
@@ -769,6 +770,7 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     _playlist->setDragEnabled(true);
 
     connect(_playlist, &DListWidget::itemClicked, this, &PlaylistWidget::slotShowSelectItem);
+    connect(_playlist, &DListWidget::currentItemChanged, this, &PlaylistWidget::OnItemChanged);
 
     _playlist->setContentsMargins(0, 30, 0, 0);
 
@@ -857,6 +859,54 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
 PlaylistWidget::~PlaylistWidget()
 {
 }
+
+void PlaylistWidget::updateSelectItem(const int key)
+{
+    auto curItem = _playlist->currentItem();
+        auto curRow = _playlist->row(curItem);
+        qDebug() << "prevRow..." << curRow;
+        PlayItemWidget* prevItemWgt = nullptr;
+        if (curItem) {
+            prevItemWgt = reinterpret_cast<PlayItemWidget *>(_playlist->itemWidget(curItem));
+        }
+
+        if (key == Qt::Key_Up) {
+            if (curRow == -1) {
+                _index = curRow + 1;
+            } else {
+                _index = curRow - 1;
+            }
+            if (_index < 0) {
+                return;
+            }
+
+            _playlist->setCurrentRow(_index);
+            qDebug() << "Enter Key_Up..." << _index;
+            auto curItemWgt = reinterpret_cast<PlayItemWidget *>(_playlist->itemWidget(_playlist->item(_index)));
+            if (prevItemWgt) {
+                prevItemWgt->setBIsSelect(false);
+            }
+            if (curItemWgt) {
+                curItemWgt->setBIsSelect(true);
+            }
+
+        } else if (key == Qt::Key_Down) {
+            if (_index >= _playlist->count() - 1) {
+                return;
+            }
+            _index = curRow + 1;
+            _playlist->setCurrentRow(_index);
+            qDebug() << "Enter Key_Down..." << _index;
+            auto curItemWgt = reinterpret_cast<PlayItemWidget *>(_playlist->itemWidget(_playlist->item(_index)));
+            if (prevItemWgt) {
+                prevItemWgt->setBIsSelect(false);
+            }
+            if (curItemWgt) {
+                curItemWgt->setBIsSelect(true);
+            }
+        }
+}
+
 void PlaylistWidget::clear()
 {
     _playlist->clear();
@@ -1105,19 +1155,39 @@ void PlaylistWidget::appendItems()
 
 void PlaylistWidget::slotShowSelectItem(QListWidgetItem *item)
 {
-    auto curItem = _playlist->currentItem();
-    if (curItem) {
-        auto itemWidget = reinterpret_cast<PlayItemWidget *>(_playlist->itemWidget(curItem));
-        if (itemWidget) {
-            itemWidget->setBIsSelect(false);
-        }
-    }
+//    auto curItem = _playlist->currentItem();
+//    if (curItem) {
+//        auto itemWidget = reinterpret_cast<PlayItemWidget *>(_playlist->itemWidget(curItem));
+//        if (itemWidget) {
+//            itemWidget->setBIsSelect(false);
+//        }
+//    }
 
     if (item) {
         _playlist->setCurrentItem(item);
         auto pWidget = reinterpret_cast<PlayItemWidget *>(_playlist->itemWidget(item));
         if (pWidget) {
             pWidget->setBIsSelect(true);
+        }
+    }
+}
+
+void PlaylistWidget::OnItemChanged(QListWidgetItem *current, QListWidgetItem *previous)
+{
+    auto prevRow = _playlist->row(previous);
+    qDebug() << "changed prevRow..." << prevRow;
+    if (previous) {
+        auto prevItemWgt = reinterpret_cast<PlayItemWidget *>(_playlist->itemWidget(previous));
+        if (prevItemWgt) {
+            prevItemWgt->setBIsSelect(false);
+        }
+    }
+
+    if (current) {
+        qDebug() << "changed curRow..." << _playlist->row(current);
+        auto curItemWgt = reinterpret_cast<PlayItemWidget *>(_playlist->itemWidget(current));
+        if (curItemWgt) {
+            curItemWgt->setBIsSelect(true);
         }
     }
 }
