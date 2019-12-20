@@ -1658,13 +1658,13 @@ void ToolboxProxy::setup()
     signalMapper->setMapping(_volBtn, "vol");
 //    _right->addWidget(_volBtn);
 
-    _volSlider = new VolumeSlider(_engine, _mainWindow, _mainWindow);
+    _volSlider = new VolumeSlider(_engine, _mainWindow);
+    _volSlider->setWindowFlags(Qt::FramelessWindowHint);
     connect(_volBtn, &VolumeButton::entered, [ = ]() {
         _volSlider->stopTimer();
-//        QPoint pos = _volBtn->parentWidget()->mapToGlobal(_volBtn->pos());
-//        pos.ry() = parentWidget()->mapToGlobal(this->pos()).y();
-        _volSlider->show(_mainWindow->width()-_volBtn->width()/2-_playBtn->width()-43,
-                         _mainWindow->height()-height()-5);
+        QPoint pos = _volBtn->parentWidget()->mapToGlobal(_volBtn->pos());
+        pos.ry() = parentWidget()->mapToGlobal(this->pos()).y();
+        _volSlider->show(pos.x() + _volSlider->width() / 2 - 5, pos.y() - 5 + TOOLBOX_TOP_EXTENT + (_bot_spec->isVisible() ? 314 : 0));
     });
     connect(_volBtn, &VolumeButton::leaved, _volSlider, &VolumeSlider::delayedHide);
     connect(_volBtn, &VolumeButton::requestVolumeUp, [ = ]() {
