@@ -2770,7 +2770,7 @@ void MainWindow::updateSizeConstraints()
         m = QSize(40, 40);
     } else {
         if (_engine->state() != PlayerEngine::CoreState::Idle) {
-
+            auto dRect = DApplication::desktop()->availableGeometry();
             auto sz = _engine->videoSize();
             if(sz.width() ==0 || sz.height() == 0)
             {
@@ -2780,9 +2780,15 @@ void MainWindow::updateSizeConstraints()
                 qreal ratio = (qreal)sz.width() / sz.height();
                 if (sz.width() > sz.height()) {
                     int w = 500 * ratio;
+//                    if (w > dRect.width()) {
+//                        w = dRect.width();
+//                    }
                     m = QSize(w, 500);
                 } else {
                     int h = 614 / ratio;
+                    if (h > dRect.height()) {
+                        h = dRect.height();
+                    }
                     m = QSize(614, h);
                 }
             }

@@ -618,7 +618,7 @@ protected:
                 }
             }
             return false;
-        }else if (event->type() == QEvent::KeyPress) {
+        }else if (event->type() == QEvent::KeyRelease) {
             QKeyEvent *key = static_cast<QKeyEvent *>(event);
             if(key->key() == Qt::Key_Return || key->key() == Qt::Key_Enter)
             {
