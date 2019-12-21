@@ -833,6 +833,7 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
                     _mw->requestAction(ActionFactory::ActionKind::GotoPlaylistSelected,
                                        false, args);
                     togglePopup();
+                    emit _mw->playlistchanged();
                     _mw->reflectActionToUI(ActionFactory::TogglePlaylist);
                     break;
                 }
