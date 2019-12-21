@@ -166,7 +166,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
     const auto &mi = pif.mi;
 
     auto *ml = new QVBoxLayout;
-    ml->setContentsMargins(10, 0, 10, 0);
+    ml->setContentsMargins(10, 0, 10, 10);
     ml->setSpacing(0);
     layout->addLayout(ml);
 
@@ -191,12 +191,13 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
     ml->setAlignment(pm, Qt::AlignHCenter);
     ml->addSpacing(10);
 
-    auto *nm = new DLabel(this);
-    DFontSizeManager::instance()->bind(nm, DFontSizeManager::T8);
-    nm->setForegroundRole(DPalette::BrightText);
-    nm->setText(nm->fontMetrics().elidedText(QFileInfo(mi.filePath).fileName(), Qt::ElideMiddle, 260));
-    ml->addWidget(nm);
-    ml->setAlignment(nm, Qt::AlignHCenter);
+    m_fileNameLbl = new DLabel(this);
+    qDebug() << "fileNameLbl w,h: "<< m_fileNameLbl->width() << "," << m_fileNameLbl->height();
+    DFontSizeManager::instance()->bind(m_fileNameLbl, DFontSizeManager::T8);
+    m_fileNameLbl->setForegroundRole(DPalette::BrightText);
+    m_fileNameLbl->setText(m_fileNameLbl->fontMetrics().elidedText(QFileInfo(mi.filePath).fileName(), Qt::ElideMiddle, 260));
+    ml->addWidget(m_fileNameLbl);
+    ml->setAlignment(m_fileNameLbl, Qt::AlignHCenter);
     ml->addSpacing(44);
 
     InfoBottom *infoRect = new InfoBottom;
@@ -207,7 +208,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
     infoRect->setFixedSize(280, 181);
     ml->addWidget(infoRect);
     ml->setAlignment(infoRect, Qt::AlignHCenter);
-    ml->addSpacing(10);
+//    ml->addSpacing(10);
 
     auto *form = new QFormLayout(infoRect);
     form->setContentsMargins(10, 5, 0, 30);
@@ -249,13 +250,23 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
     tmp->setText(mi.filePath);
     auto fm = tmp->fontMetrics();
     auto w = fm.width(mi.filePath);
-    auto fp = ElideText(mi.filePath, {LINE_MAX_WIDTH, LINE_HEIGHT}, QTextOption::WrapAnywhere,
-                               tmp->font(), Qt::ElideRight, fm.height(), LINE_MAX_WIDTH);
-    ADD_ROW(tr("File path"), fp);
+//    auto fp = ElideText(mi.filePath, {LINE_MAX_WIDTH, LINE_HEIGHT}, QTextOption::WrapAnywhere,
+//                               tmp->font(), Qt::ElideRight, fm.height(), LINE_MAX_WIDTH);
+    ADD_ROW(tr("File path"), mi.filePath);
+
 
     auto th = new ToolTipEvent(this);
     if (tipLst.size() > 1) {
         auto filePathLbl = tipLst.last();
+        qDebug() << "filePathLbl w,h: "<< filePathLbl->width() << "," << filePathLbl->height();
+        filePathLbl->setMinimumWidth(190);
+        qDebug() << "filePathLbl w,h: "<< filePathLbl->width() << "," << filePathLbl->height();
+        auto fp = ElideText(tmp->text(), {filePathLbl->width(), fm.height()}, QTextOption::WrapAnywhere,
+                                   filePathLbl->font(), Qt::ElideRight, fm.height(), filePathLbl->width());
+        filePathLbl->setText(fp);
+        m_filePathLbl = filePathLbl;
+        m_strFilePath = tmp->text();
+        filePathLbl->setFixedHeight(LINE_HEIGHT*2);
         filePathLbl->setToolTip(tmp->text());
         auto t = new Tip(QPixmap(), tmp->text(), nullptr);
         t->resetSize(QApplication::desktop()->availableGeometry().width());
@@ -269,8 +280,9 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
 
 #undef ADD_ROW
 
+    connect(qApp, &QGuiApplication::fontChanged, this, &MovieInfoDialog::OnFontChanged);
     connect(DApplicationHelper::instance(), &DApplicationHelper::themeTypeChanged, this, [ = ] {
-        nm->setForegroundRole(DPalette::BrightText);
+        m_fileNameLbl->setForegroundRole(DPalette::BrightText);
         title->setForegroundRole(DPalette::Text);
     });
 
@@ -289,6 +301,23 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
 ////    DThemeManager::instance()->registerWidget(this);
 ////    closeBt->setStyleSheet(DThemeManager::instance()->getQssForWidget("DWindowCloseButton", "light"));
     //#endif
+}
+
+void MovieInfoDialog::OnFontChanged(const QFont &font)
+{
+    QFontMetrics fm(font);
+
+    qDebug() << "fileNameLbl w,h: "<< m_fileNameLbl->width() << "," << m_fileNameLbl->height();
+    QString strFileName = m_fileNameLbl->fontMetrics().elidedText(QFileInfo(m_strFilePath).fileName(), Qt::ElideMiddle, m_fileNameLbl->width());
+    m_fileNameLbl->setText(strFileName);
+
+    qDebug() << "filePathLbl w,h: "<< m_filePathLbl->width() << "," << m_filePathLbl->height();
+    auto w = fm.width(m_strFilePath);
+    qDebug() << "font width: " << w;
+    auto fp = ElideText(m_strFilePath, {m_filePathLbl->width(), fm.height()}, QTextOption::WrapAnywhere,
+                               m_filePathLbl->font(), Qt::ElideRight, fm.height(), m_filePathLbl->width());
+    m_filePathLbl->setText(fp);
+
 }
 
 }

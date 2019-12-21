@@ -31,6 +31,7 @@
 #define _DMR_MOVIE_INFO_DIALOG_H
 
 #include <QtWidgets>
+#include <QGuiApplication>
 #include <DDialog>
 #include <DImageButton>
 #include <DLabel>
@@ -41,7 +42,7 @@
 #include <DApplication>
 
 #define LINE_MAX_WIDTH 200
-#define LINE_HEIGHT 40
+#define LINE_HEIGHT 30
 const QString LOGO_BIG = ":/resources/icons/logo-big.svg";
 const QString INFO_CLOSE_LIGHT = ":/resources/icons/light/info_close_light.svg";
 const QString INFO_CLOSE_DARK = ":/resources/icons/dark/info_close_dark.svg";
@@ -100,6 +101,14 @@ class MovieInfoDialog: public DAbstractDialog
     Q_OBJECT
 public:
     MovieInfoDialog(const struct PlayItemInfo &);
+
+private slots:
+    void OnFontChanged(const QFont &font);
+
+private:
+    DLabel *m_fileNameLbl {nullptr};
+    DLabel *m_filePathLbl {nullptr};
+    QString m_strFilePath {QString()};
 };
 
 
