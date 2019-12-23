@@ -84,6 +84,7 @@ class CompositingManager: public QObject {
         PlayerOptionList getProfile(const QString& name);
         PlayerOptionList getBestProfile(); // best for current platform and env
         static void detectPciID();
+        static bool runningOnNvidia();
 
     signals:
         void compositingChanged(bool);

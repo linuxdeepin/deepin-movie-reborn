@@ -190,6 +190,22 @@ bool CompositingManager::runningOnVmwgfx()
     return s_runningOnVmwgfx;
 }
 
+bool CompositingManager::runningOnNvidia()
+{
+    static bool s_runningOnNvidia = false;
+
+    for (int id = 0; id <= 10; id++) {
+        if (!QFile::exists(QString("/sys/class/drm/card%1").arg(id))) break;
+        if (is_device_viable(id)) {
+            vector<string> drivers = {"nvidia"};
+            s_runningOnNvidia = is_card_exists(id, drivers);
+            break;
+        }
+    }
+
+    return s_runningOnNvidia;
+}
+
 void CompositingManager::detectOpenGLEarly()
 {
     static bool detect_run = false;
@@ -222,7 +238,11 @@ void CompositingManager::detectOpenGLEarly()
      * 
      * mpv hwdec is broken with vmwgfx and should use glx
      */
-    if (!CompositingManager::runningOnVmwgfx()) {
+    if(CompositingManager::runningOnNvidia())
+    {
+        qputenv("QT_XCB_GL_INTEGRATION", "xcb_glx");
+    }
+    else if (!CompositingManager::runningOnVmwgfx()) {
         qputenv("QT_XCB_GL_INTEGRATION", "xcb_egl");
     }
 #else
