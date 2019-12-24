@@ -29,9 +29,9 @@
  */
 #include "config.h"
 #include "titlebar.h"
+#include "utils.h"
 
 #include <QtGui>
-
 #include <DThemeManager>
 
 DWIDGET_USE_NAMESPACE
@@ -41,67 +41,103 @@ namespace dmr
 class TitlebarPrivate
 {
 public:
-    TitlebarPrivate(Titlebar *parent) : q_ptr(parent)
-    {
-//        QLinearGradient linearGradient(QPointF(0.0, 0.0), QPointF(0.0, 1.0));
-//        linearGradient.setColorAt(0.0, QColor(255, 255, 255, 255));
-//        linearGradient.setColorAt(1.0,  QColor(0xf8, 0xf8, 0xf8, 255));
-//        titleBackground = QBrush(linearGradient);
+    TitlebarPrivate(Titlebar *parent) : q_ptr(parent) {}
 
-//        borderShadowTop =  QColor(0.05 * 255,  0.05 * 255,  0.05 * 255);
-//        borderBottom = QColor(255, 0, 0);
-    }
-
-    QBrush          titleBackground;
-    QColor          borderBottom;
-    QColor          borderShadowTop;
-    QString         viewname;
+    QColor          playColor                   = QColor(255, 255, 255, 204);
+    QColor          lightEffectColor            = QColor(200, 200, 200, 45);
+    QColor          darkEffectColor             = QColor(30, 30, 30, 50);
+    qreal           offsetX                     = 0;
+    qreal           offsetY                     = 15;
+    qreal           blurRadius                  = 50;
+    QGraphicsDropShadowEffect *m_shadowEffect   = nullptr;
+    DTitlebar       *m_titlebar                 = nullptr;
+    DLabel          *m_titletxt                 = nullptr;
+    bool            m_play                      = false;
 
     Titlebar *q_ptr;
     Q_DECLARE_PUBLIC(Titlebar)
 };
 
-Titlebar::Titlebar(QWidget *parent) : DBlurEffectWidget(parent), d_ptr(new TitlebarPrivate(this))
+Titlebar::Titlebar(QWidget *parent) : DTitlebar(parent), d_ptr(new TitlebarPrivate(this))
 {
-//    Q_D(Titlebar);
-//    QPalette palette;
-//    palette.setColor(QPalette::Background, QColor(0,0,0,0)); // 最后一项为透明度
-//    setPalette(palette);
-//    setMaskAlpha(102);
-//    DThemeManager::instance()->registerWidget(this);
-//    setBlurRectXRadius(18);
-//    setBlurRectYRadius(18);
-//    setAttribute(Qt::WA_TranslucentBackground, true);
-    setAutoFillBackground(true);
-    QHBoxLayout *layout = new QHBoxLayout(this);
-    layout->setContentsMargins(0, 0, 0, 0);
-    layout->setSpacing(0);
-    QPalette palette;
-    QPixmap pixmap(":resources/icons/titlebar.png");
-    palette.setBrush(QPalette::Background,QBrush(pixmap.scaled(window()->width(),50)));
-//    this->setPalette(palette);
-    m_titlebar = new DTitlebar(this);
-    m_titlebar->setBackgroundTransparent(true);
-    layout->addWidget(m_titlebar);
-    setLayout(layout);
-    m_titlebar->setWindowFlags(Qt::WindowMinMaxButtonsHint |
-                               Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint);
+    Q_D(Titlebar);
 
-    QPalette pa;
-    pa.setColor(QPalette::WindowText,QColor(255,255,255,255));
-    pa.setColor(QPalette::ButtonText,QColor(255,255,255,255));
-//    pa.setColor(QPalette::WindowText,Qt::red);
-    m_titlebar->setPalette(pa);
-    m_titlebar->setTitle("");
-    m_titletxt=new DLabel;
-    m_titletxt->setText("");
-    QGraphicsDropShadowEffect* shadowEffect = new QGraphicsDropShadowEffect(m_titletxt);
-    shadowEffect->setOffset(0, 1);
-    shadowEffect->setColor(QColor(0,0,0,127));
-    shadowEffect->setBlurRadius(1);
-    m_titletxt->setGraphicsEffect(shadowEffect);
-    m_titletxt->setFont(DFontSizeManager::instance()->get(DFontSizeManager::T7));
-    m_titlebar->addWidget(m_titletxt,Qt::AlignCenter);
+    setAttribute(Qt::WA_TranslucentBackground, false);
+    setFocusPolicy(Qt::NoFocus);
+//    QHBoxLayout *layout = new QHBoxLayout(this);
+//    layout->setContentsMargins(0, 0, 0, 0);
+//    layout->setSpacing(0);
+//    d->m_titlebar = new DTitlebar(this);
+//    layout->addWidget(d->m_titlebar);
+//    setLayout(layout);
+    d->m_titlebar = this;
+    d->m_titlebar->setWindowFlags(Qt::WindowMinMaxButtonsHint |
+                               Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint);
+    d->m_titlebar->setBackgroundTransparent(false);
+    d->m_titlebar->setBlurBackground(true);
+
+    {
+        auto dpr = qApp->devicePixelRatio();
+        int w2 = 32 * dpr;
+        int w = 32 * dpr;
+
+        QIcon icon = QIcon::fromTheme("deepin-movie");
+        auto logo = icon.pixmap(QSize(32, 32))
+                    .scaled(w, w, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+
+        logo.setDevicePixelRatio(dpr);
+        QPixmap pm(w2, w2);
+        pm.setDevicePixelRatio(dpr);
+        pm.fill(Qt::transparent);
+        QPainter p(&pm);
+        p.drawPixmap((w2 - w) / 2, (w2 - w) / 2, logo);
+        p.end();
+        d->m_titlebar->setIcon(pm);
+    }
+
+    d->m_titlebar->setTitle("");
+    d->m_titletxt = new DLabel(this);
+    d->m_titletxt->setText("");
+//    QGraphicsDropShadowEffect* shadowEffect = new QGraphicsDropShadowEffect(d->m_titletxt);
+//    shadowEffect->setOffset(0, 1);
+//    shadowEffect->setColor(QColor(0,0,0,127));
+//    shadowEffect->setBlurRadius(1);
+//    d->m_titletxt->setGraphicsEffect(shadowEffect);
+    d->m_titletxt->setFont(DFontSizeManager::instance()->get(DFontSizeManager::T7));
+    d->m_titlebar->addWidget(d->m_titletxt, Qt::AlignCenter);
+
+    d->m_shadowEffect = new QGraphicsDropShadowEffect(this);
+    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, [ = ] {
+        DPalette paBar = QGuiApplication::palette();
+        if (DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::DarkType)
+        {
+            if (d->m_play) {
+                paBar.setColor(DPalette::ButtonText, DPalette::TextLively);
+                d->m_titlebar->setPalette(paBar);
+                d->m_shadowEffect->setOffset(d->offsetX, d->offsetX);
+                d->m_shadowEffect->setBlurRadius(d->offsetX);
+                d->m_shadowEffect->setColor(Qt::transparent);
+            } else {
+                paBar.setColor(DPalette::ButtonText, paBar.color(DPalette::ButtonText));
+                d->m_titlebar->setPalette(paBar);
+                d->m_shadowEffect->setOffset(d->offsetX, d->offsetY);
+                d->m_shadowEffect->setBlurRadius(d->offsetY);
+                d->m_shadowEffect->setColor(d->darkEffectColor);
+            }
+        } else {
+            if (d->m_play) {
+                paBar.setColor(DPalette::ButtonText, DPalette::TextLively);
+                d->m_titlebar->setPalette(paBar);
+            } else {
+                paBar.setColor(DPalette::ButtonText, paBar.color(DPalette::ButtonText));
+                d->m_titlebar->setPalette(paBar);
+                d->m_shadowEffect->setOffset(d->offsetX, d->offsetY);
+                d->m_shadowEffect->setBlurRadius(d->blurRadius);
+                d->m_shadowEffect->setColor(d->lightEffectColor);
+            }
+        }
+        this->setGraphicsEffect(d->m_shadowEffect);
+    });   
 }
 
 Titlebar::~Titlebar()
@@ -109,113 +145,76 @@ Titlebar::~Titlebar()
 
 }
 
-QBrush Titlebar::background() const
+DTitlebar *Titlebar::titlebar()
 {
     Q_D(const Titlebar);
-    return d->titleBackground;
+    return d->m_titlebar;
 }
 
-QColor Titlebar::borderBottom() const
+void Titlebar::setTitletxt(const QString &title)
 {
     Q_D(const Titlebar);
-    return d->borderBottom;
+    d->m_titletxt->setText(title);
 }
 
-QColor Titlebar::borderShadowTop() const
-{
-    Q_D(const Titlebar);
-    return d->borderShadowTop;
-}
-
-void Titlebar::setBackground(QBrush titleBackground)
+void Titlebar::setTitleBarBackground(bool flag)
 {
     Q_D(Titlebar);
-    d->titleBackground = titleBackground;
-}
 
-void Titlebar::setBorderBottom(QColor borderBottom)
-{
-    Q_D(Titlebar);
-    d->borderBottom = borderBottom;
-}
+    DPalette paBar = QGuiApplication::palette();
+    QColor textColor = paBar.color(DPalette::ButtonText);
+    paBar.setColor(DPalette::ButtonText, textColor);
+    d->m_titlebar->setPalette(paBar);
 
-void Titlebar::setBorderShadowTop(QColor borderShadowTop)
-{
-    Q_D(Titlebar);
-    d->borderShadowTop = borderShadowTop;
+    d->m_play = flag;
+
+    if (d->m_play) {
+        d->m_titlebar->setBackgroundTransparent(d->m_play);
+        d->m_titlebar->setBlurBackground(!d->m_play);
+        paBar.setColor(DPalette::ButtonText, d->playColor);
+        paBar.setColor(DPalette::WindowText, d->playColor);
+        d->m_titlebar->setPalette(paBar);
+//        d->m_titletxt->setPalette(paBar);
+        d->m_shadowEffect->setColor(Qt::transparent);
+    } else {
+        d->m_titlebar->setBackgroundTransparent(d->m_play);
+        d->m_titlebar->setBlurBackground(d->m_play);
+        if (DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::DarkType)
+        {
+            d->m_shadowEffect->setOffset(d->offsetX, d->offsetY);
+            d->m_shadowEffect->setBlurRadius(d->offsetY);
+            d->m_shadowEffect->setColor(d->darkEffectColor);
+        } else {
+            d->m_shadowEffect->setOffset(d->offsetX, d->offsetY);
+            d->m_shadowEffect->setBlurRadius(d->blurRadius);
+            d->m_shadowEffect->setColor(d->lightEffectColor);
+        }
+    }
+    this->setGraphicsEffect(d->m_shadowEffect);
+
+    update();
 }
 
 void Titlebar::paintEvent(QPaintEvent *pe)
 {
+    Q_D(const Titlebar);
+
     QPainter painter(this);
+    QBrush bgColor;
+    if (d->m_play) {
+        QPalette palette;
+        QPixmap pixmap = QPixmap(":resources/icons/titlebar.png");
+        palette.setBrush(QPalette::Background,QBrush(pixmap.scaled(window()->width(),50)));
+        bgColor = QBrush(pixmap);
+        this->setPalette(palette);
+    } else {
+        bgColor = Qt::transparent;
+    }
 
-    QPalette palette;
-    QPixmap pixmap(":resources/icons/titlebar.png");
-    palette.setBrush(QPalette::Background,QBrush(pixmap.scaled(window()->width(),50)));
-    QBrush bgColor = QBrush(pixmap);
-    this->setPalette(palette);
     QPainterPath pp;
-    QRectF bgRect;
-    bgRect.setSize(size());
-    pp.addRect(bgRect);
+    pp.setFillRule(Qt::WindingFill);
+    pp.addRect(rect());
     painter.fillPath(pp, bgColor);
-//    painter.setRenderHint(QPainter::Antialiasing);
-//    QRectF bgRect;
-//    bgRect.setSize(size());
-//    QPixmap pixmap(":resources/icons/titlebar.png");
-//    const QPalette pal = QGuiApplication::palette();//this->palette();
-//    QBrush bgColor = QBrush(pixmap);
-
-//    bool rounded = !isFullScreen() && !isMaximized();
-//    if (rounded) {
-//        QPainterPath pp;
-//        pp.addRoundedRect(QRectF(bgRect.x(),bgRect.y(),bgRect.width(),bgRect.height()), RADIUS, RADIUS);
-//        painter.fillPath(pp, bgColor);
-//    } else {
-//        QPainterPath pp;
-//        pp.addRect(bgRect);
-//        painter.fillPath(pp, bgColor);
-//    }
-
-
-
-//    Q_D(const Titlebar);
-
-//    auto radius = RADIUS;
-//    QPainter p(this);
-//    p.setRenderHint(QPainter::Antialiasing);
-
-//    auto titleBarHeight = this->height();
-//    QRectF r = rect();
-//    p.fillRect(r, Qt::transparent);
-
-//    QRectF topLeftRect(r.topLeft(), QSize(2 * radius, 2 * radius));
-//    QRectF topRightRect(QPoint(r.right() - 2 * radius, r.y()),
-//                        QSize(2 * radius, 2 * radius));
-
-//    QPainterPath titleBorder;
-//    titleBorder.moveTo(r.x() + radius, r.y());
-//    titleBorder.lineTo(r.x() + r.width() - radius, r.y());
-//    titleBorder.arcTo(topRightRect, 90.0, -90.0);
-//    titleBorder.lineTo(r.x() + r.width(), r.y() + radius);
-//    titleBorder.lineTo(r.x() + r.width(), r.y() + titleBarHeight);
-//    titleBorder.lineTo(r.x(), r.y() + titleBarHeight);
-//    titleBorder.lineTo(r.x() , r.y() + radius);
-//    titleBorder.arcTo(topLeftRect, 180.0, -90.0);
-//    titleBorder.closeSubpath();
-
-//    p.setClipPath(titleBorder);
-//    p.fillPath(titleBorder, QBrush(d->titleBackground));
-
-//    QLine line(r.topLeft().x(), r.y() + titleBarHeight,
-//               r.x() + r.width(), r.y() + titleBarHeight);
-//    p.setPen(QPen(d->borderBottom, 1.0));
-//    p.drawLine(line);
-
-//    QLine lineOut(r.topLeft().x()+radius, r.y(),
-//                  r.x() + r.width()-radius, r.y());
-//    p.setPen(QPen(d->borderShadowTop, 1.0));
-//    p.drawLine(lineOut);
 }
 
 }

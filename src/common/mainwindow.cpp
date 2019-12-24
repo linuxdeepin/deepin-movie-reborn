@@ -551,13 +551,7 @@ MainWindow::MainWindow(QWidget *parent)
     setWindowFlags(Qt::WindowMinMaxButtonsHint |
                    Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint);
 #endif
-//    QPalette palette;
-//    palette.setColor(QPalette::Background, QColor(0,0,0,0)); // 最后一项为透明度
-//    setPalette(palette);
     setAcceptDrops(true);
-    if (titlebar()) {
-        titlebar()->setFixedHeight(0);
-    }
 
     if (composited) {
         setAttribute(Qt::WA_TranslucentBackground, true);
@@ -919,44 +913,13 @@ void MainWindow::setupTitlebar()
     _titlebar->move(0, 0);
 #endif
     _titlebar->setFixedHeight(50);
-    _titlebar->titlebar()->setBackgroundTransparent(true);
-    _titlebar->layout()->setContentsMargins(0, 0, 0, 0);
-    _titlebar->setFocusPolicy(Qt::NoFocus);
     if (!CompositingManager::get().composited()) {
         _titlebar->setAttribute(Qt::WA_NativeWindow);
         _titlebar->winId();
     }
     _titlebar->titlebar()->setMenu(ActionFactory::get().titlebarMenu());
-    {
-        auto dpr = qApp->devicePixelRatio();
-        int w2 = 32 * dpr;
-        int w = 32 * dpr;
-        //hack: titlebar fixed icon size to (24x24), but we need (16x16)
-//        auto logo = QPixmap(":/resources/icons/logo.svg")
-//            .scaled(w, w, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-
-        QIcon icon = QIcon::fromTheme("deepin-movie");
-        auto logo = icon.pixmap(QSize(32, 32))
-                    .scaled(w, w, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-
-        logo.setDevicePixelRatio(dpr);
-        QPixmap pm(w2, w2);
-        pm.setDevicePixelRatio(dpr);
-        pm.fill(Qt::transparent);
-        QPainter p(&pm);
-        p.drawPixmap((w2 - w) / 2, (w2 - w) / 2, logo);
-        p.end();
-        _titlebar->titlebar()->setIcon(pm);
-        _titlebar->setTitletxt(QString());
-    }
-
-    {
-//        auto help = new QShortcut(QKeySequence(Qt::Key_F1), _titlebar->titlebar());
-//        help->setContext(Qt::ApplicationShortcut);
-//        connect(help, &QShortcut::activated, this, &MainWindow::handleHelpAction);
-    }
-
     connect(_titlebar->titlebar()->menu(), &DMenu::triggered, this, &MainWindow::menuItemInvoked);
+
 }
 
 void MainWindow::updateContentGeometry(const QRect &rect)
@@ -1024,26 +987,6 @@ void MainWindow::onWindowStateChanged()
 {
     qDebug() << windowState();
 
-//    if (!isFullScreen()) {
-//        qApp->restoreOverrideCursor();
-//        if (_lastCookie > 0) {
-//            utils::UnInhibitStandby(_lastCookie);
-//            qDebug() << "uninhibit cookie" << _lastCookie;
-//            _lastCookie = 0;
-//        }
-//        if (_listener) _listener->setEnabled(!isMaximized() && !_miniMode);
-//    } else {
-//        qApp->setOverrideCursor(Qt::BlankCursor);
-
-//        if (_lastCookie > 0) {
-//            utils::UnInhibitStandby(_lastCookie);
-//            qDebug() << "uninhibit cookie" << _lastCookie;
-//            _lastCookie = 0;
-//        }
-//        _lastCookie = utils::InhibitStandby();
-//        qDebug() << "inhibit cookie" << _lastCookie;
-//        if (_listener) _listener->setEnabled(false);
-//    }
     if (!_miniMode && !isFullScreen()) {
         _titlebar->setVisible(_toolbox->isVisible());
     } else {
@@ -2425,16 +2368,8 @@ void MainWindow::updateProxyGeometry()
         }
 
         if (_playlist && !_playlist->toggling()) {
-            int off = isFullScreen() ? 0 : titlebar()->geometry().bottom();
-//            QRect fixed = {
-//                0,
-//                off,
-//                220,
-//                toolbox()->geometry().top() + TOOLBOX_TOP_EXTENT - off
-//            };
             QRect fixed((10), (view_rect.height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT + 10)),
                         view_rect.width() - 20, TOOLBOX_SPACE_HEIGHT);
-//            fixed.moveRight(view_rect.right());
             _playlist->setGeometry(fixed);
         }
     }
@@ -2836,8 +2771,12 @@ void MainWindow::updateWindowTitle()
         auto title = _titlebar->fontMetrics().elidedText(mi.title,
                                                          Qt::ElideMiddle, _titlebar->contentsRect().width() - 300);
         _titlebar->setTitletxt(title);
+        _titlebar->setTitleBarBackground(true);
+        setTitlebarShadowEnabled(false);
     } else {
         _titlebar->setTitletxt(QString());
+        _titlebar->setTitleBarBackground(false);
+
     }
     _titlebar->setProperty("idle", _engine->state() == PlayerEngine::Idle);
 //    _titlebar->setStyleSheet(styleSheet());
@@ -3109,11 +3048,11 @@ void MainWindow::toggleUIMode()
     _miniMode = !_miniMode;
     qDebug() << __func__ << _miniMode;
 
-    if (_miniMode)
+    if (_miniMode) {
         _titlebar->titlebar()->setDisableFlags(Qt::WindowMaximizeButtonHint);
-    else
+    } else {
         _titlebar->titlebar()->setDisableFlags(0);
-
+    }
     if (_listener) _listener->setEnabled(!_miniMode);
 
 

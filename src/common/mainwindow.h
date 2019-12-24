@@ -80,10 +80,10 @@ public:
     {
         return _engine;
     }
-    Titlebar *titlebar()
-    {
-        return _titlebar;
-    }
+//    Titlebar *titlebar()
+//    {
+//        return _titlebar;
+//    }
     ToolboxProxy *toolbox()
     {
         return _toolbox;
