@@ -189,7 +189,7 @@ public:
                 xcb_leave_notify_event_t *dne = (xcb_leave_notify_event_t *)event;
                 auto w = _source->windowHandle();
                 if (dne->event == w->winId()) {
-                    //qDebug() << "---------  leave " << dne->event << dne->child;
+                    qDebug() << "---------  leave " << dne->event << dne->child;
                     emit _source->windowLeaved();
                 }
                 break;
@@ -199,7 +199,7 @@ public:
                 xcb_enter_notify_event_t *dne = (xcb_enter_notify_event_t *)event;
                 auto w = _source->windowHandle();
                 if (dne->event == w->winId()) {
-                    //qDebug() << "---------  enter " << dne->event << dne->child;
+                    qDebug() << "---------  enter " << dne->event << dne->child;
                     emit _source->windowEntered();
                 }
                 break;
@@ -913,6 +913,7 @@ void MainWindow::setupTitlebar()
     _titlebar->move(0, 0);
 #endif
     _titlebar->setFixedHeight(50);
+    setTitlebarShadowEnabled(false);
     if (!CompositingManager::get().composited()) {
         _titlebar->setAttribute(Qt::WA_NativeWindow);
         _titlebar->winId();
@@ -2771,12 +2772,14 @@ void MainWindow::updateWindowTitle()
         auto title = _titlebar->fontMetrics().elidedText(mi.title,
                                                          Qt::ElideMiddle, _titlebar->contentsRect().width() - 300);
         _titlebar->setTitletxt(title);
-        _titlebar->setTitleBarBackground(true);
-        setTitlebarShadowEnabled(false);
+        if (!CompositingManager::get().composited()) {
+            _titlebar->setTitleBarBackground(false);
+        } else {
+            _titlebar->setTitleBarBackground(true);
+        }
     } else {
         _titlebar->setTitletxt(QString());
         _titlebar->setTitleBarBackground(false);
-
     }
     _titlebar->setProperty("idle", _engine->state() == PlayerEngine::Idle);
 //    _titlebar->setStyleSheet(styleSheet());
