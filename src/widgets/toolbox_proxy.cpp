@@ -2063,25 +2063,26 @@ void ToolboxProxy::updatePlayState()
 
             DPalette pa;
             pa = _palyBox->palette();
-            pa.setColor(DPalette::Light, QColor("#454545"));
-            pa.setColor(DPalette::Dark, QColor("#454545"));
-            pa.setColor(DPalette::Button, QColor("#454545"));
+            pa.setColor(DPalette::Light, QColor("#000000"));
+            pa.setColor(DPalette::Dark, QColor("#000000"));
+            pa.setColor(DPalette::Button, QColor("#000000"));
             _palyBox->setPalette(pa);
 
             pa = _volBtn->palette();
-            pa.setColor(DPalette::Light, QColor("#454545"));
-            pa.setColor(DPalette::Dark, QColor("#454545"));;
+            pa.setColor(DPalette::Light, QColor("#000000"));
+            pa.setColor(DPalette::Dark, QColor("#000000"));;
             _volBtn->setPalette(pa);
 
             pa = _fsBtn->palette();
-            pa.setColor(DPalette::Light, QColor("#454545"));
-            pa.setColor(DPalette::Dark, QColor("#454545"));
+            pa.setColor(DPalette::Light, QColor("#000000"));
+            pa.setColor(DPalette::Dark, QColor("#000000"));
             _fsBtn->setPalette(pa);
 
             pa = _listBtn->palette();
-            pa.setColor(DPalette::Light, QColor("#454545"));
-            pa.setColor(DPalette::Dark, QColor("#454545"));
+            pa.setColor(DPalette::Light, QColor("#000000"));
+            pa.setColor(DPalette::Dark, QColor("#000000"));
             _listBtn->setPalette(pa);
+
 
         }
         _playBtn->setToolTip(tr("Pause"));
@@ -2132,24 +2133,24 @@ void ToolboxProxy::updatePlayState()
                                      ":/icons/deepin/builtin/dark/press/next_press.svg");
             DPalette pa;
             pa = _palyBox->palette();
-            pa.setColor(DPalette::Light, QColor("#454545"));
-            pa.setColor(DPalette::Dark, QColor("#454545"));
-            pa.setColor(DPalette::Button, QColor("#454545"));
+            pa.setColor(DPalette::Light, QColor("#000000"));
+            pa.setColor(DPalette::Dark, QColor("#000000"));
+            pa.setColor(DPalette::Button, QColor("#000000"));
             _palyBox->setPalette(pa);
 
             pa = _volBtn->palette();
-            pa.setColor(DPalette::Light, QColor("#454545"));
-            pa.setColor(DPalette::Dark, QColor("#454545"));;
+            pa.setColor(DPalette::Light, QColor("#000000"));
+            pa.setColor(DPalette::Dark, QColor("#000000"));;
             _volBtn->setPalette(pa);
 
             pa = _fsBtn->palette();
-            pa.setColor(DPalette::Light, QColor("#454545"));
-            pa.setColor(DPalette::Dark, QColor("#454545"));
+            pa.setColor(DPalette::Light, QColor("#000000"));
+            pa.setColor(DPalette::Dark, QColor("#000000"));
             _fsBtn->setPalette(pa);
 
             pa = _listBtn->palette();
-            pa.setColor(DPalette::Light, QColor("#454545"));
-            pa.setColor(DPalette::Dark, QColor("#454545"));
+            pa.setColor(DPalette::Light, QColor("#000000"));
+            pa.setColor(DPalette::Dark, QColor("#000000"));
             _listBtn->setPalette(pa);
 
         }
