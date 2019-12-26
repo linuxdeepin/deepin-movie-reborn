@@ -17,7 +17,7 @@ Deepin movie is Deepin Desktop Environment Movie Player.
 * Qt5-X11extras
 * mpv
 
-## Installation
+## Installation 
 
 ### Build from source code
 
