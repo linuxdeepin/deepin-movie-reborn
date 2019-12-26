@@ -872,6 +872,8 @@ MainWindow::MainWindow(QWidget *parent)
     _animationlable->setParent(this);
     _animationlable->setGeometry(width()/2-100,height()/2-100,200,200);
 
+    popup = new DFloatingMessage(DFloatingMessage::TransientType, this);
+
     connect(this,&MainWindow::playlistchanged,_toolbox,&ToolboxProxy::updateplaylisticon);
 
     connect(_engine, &PlayerEngine::onlineStateChanged, this, &MainWindow::checkOnlineState);
@@ -2104,20 +2106,20 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     QFontMetrics fm(font);\
     auto w = fm.boundingRect(text).width();\
     popup->setMessage(text);\
-    popup->resize(w + 60, 48);\
-    popup->move((width() - popup->width()) / 2, height() - 125);\
+    popup->resize(w + 70, 52);\
+    popup->move((width() - popup->width()) / 2, height() - 127);\
     popup->show();\
 } while (0)
 
-        if (!popup) {
-            popup = new DFloatingMessage(DFloatingMessage::TransientType, this);
-        }
+//        if (!popup) {
+//            popup = new DFloatingMessage(DFloatingMessage::TransientType, this);
+//        }
         if (success) {
             const QIcon icon = QIcon(":/resources/icons/icon_toast_sucess.svg");
             QString text = QString(tr("The screenshot is saved"));
             POPUP_ADAPTER(icon, text);
         } else {
-            const QIcon icon = QIcon(":/resources/icons/fail.svg");
+            const QIcon icon = QIcon(":/resources/icons/icon_toast_fail.svg");
             QString text = QString(tr("Failed to save the screenshot"));
             POPUP_ADAPTER(icon, text);
         }
