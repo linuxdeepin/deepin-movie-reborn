@@ -141,7 +141,6 @@ CompositingManager::CompositingManager() {
         _composited = true;
     }
 #endif
-    _composited = false;
     qDebug() << "composited:" << _composited;
 }
 
