@@ -111,6 +111,23 @@ ShortcutManager::ShortcutManager()
 //            auto key = static_cast<Qt::Key>(keyseqs.value(1).toInt());
 
             qDebug() << "update binding" << sk << QKeySequence(val.toStringList().at(0));
+            QString strKey = QKeySequence(val.toStringList().at(0)).toString();
+            if (strKey.contains("Return")) {
+                _map[QKeySequence(val.toStringList().at(0))] = _keyToAction[sk];
+                strKey = QString("%1Num+Enter").arg(strKey.remove("Return"));
+                _map[strKey] = _keyToAction[sk];
+                qDebug() << val << QKeySequence(strKey) << strKey;
+
+                _map.remove(strKey);
+                _map[strKey] = _keyToAction[sk];
+
+            } else if (strKey.contains("Num+Enter")) {
+                _map[QKeySequence(val.toStringList().at(0))] = _keyToAction[sk];
+                strKey = QString("%1Return").arg(strKey.remove("Num+Enter"));
+                _map[strKey] = _keyToAction[sk];
+                qDebug() << val << QKeySequence(strKey) << strKey;
+            }
+
             _map.remove(_map.key(_keyToAction[sk]));
             _map[QKeySequence(val.toStringList().at(0))] = _keyToAction[sk];
             emit bindingsChanged();
@@ -137,9 +154,29 @@ void ShortcutManager::toggleGroupShortcuts(GroupPtr grp, bool on)
 
         QString sk = opt->key();
         sk.remove(0, sk.lastIndexOf('.') + 1);
-        qDebug() << opt->name() << QKeySequence(opt->value().toStringList().at(0));
+        qDebug() << opt->name()
+                 << QKeySequence(opt->value().toStringList().at(0))
+                 << QKeySequence(opt->value().toStringList().at(0)).toString();
+        QString strKey = QKeySequence(opt->value().toStringList().at(0)).toString();
+
+        if (strKey.contains("Return")) {
+            _map[QKeySequence(opt->value().toStringList().at(0))] = _keyToAction[sk];
+//                strKey = QString("%1Return, %1Num+Enter").arg(strKey.remove("Return"));
+            strKey = QString("%1Num+Enter").arg(strKey.remove("Return"));
+            _map[strKey] = _keyToAction[sk];
+            qDebug() << opt->name() << QKeySequence(strKey) << strKey;
+
+        } else if (strKey.contains("Num+Enter")) {
+            _map[QKeySequence(opt->value().toStringList().at(0))] = _keyToAction[sk];
+//                strKey = QString("%1Return, %1Num+Enter").arg(strKey.remove("Num+Enter"));
+            strKey = QString("%1Return").arg(strKey.remove("Num+Enter"));
+            _map[strKey] = _keyToAction[sk];
+            qDebug() << opt->name() << QKeySequence(strKey) << strKey;
+        }
 
         if (on) {
+            _map[strKey] = _keyToAction[sk];
+            qDebug() << opt->name() << QKeySequence(strKey) << strKey;
             _map[QKeySequence(opt->value().toStringList().at(0))] = _keyToAction[sk];
         } else {
             _map.remove(QKeySequence(opt->value().toStringList().at(0)));

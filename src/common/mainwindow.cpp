@@ -1721,9 +1721,10 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         if(_playlist->state() == PlaylistWidget::State::Opened)
         {
             BindingMap map = ShortcutManager::get().map();
-            if(map.value(QKeySequence("Return")) == ActionFactory::ToggleFullscreen)
+            if(map.value(QKeySequence("Return")) == ActionFactory::ToggleFullscreen
+                 || map.value(QKeySequence("Num+Enter")) == ActionFactory::ToggleFullscreen)
             {
-                 return;
+                return;
             }
         }
         if (isFullScreen()) {
