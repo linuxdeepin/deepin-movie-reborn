@@ -33,6 +33,7 @@
 #include <QtCore>
 #include <string>
 #include <vector>
+#include <QGSettings/QGSettings>
 
 namespace dmr {
 
