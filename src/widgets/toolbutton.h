@@ -39,7 +39,9 @@
 #include <DFontSizeManager>
 #include <DPalette>
 #include <DApplicationHelper>
+#include <QGuiApplication>
 #include <QThread>
+
 
 DWIDGET_USE_NAMESPACE
 
@@ -60,6 +62,9 @@ public:
         setWindowFlags(windowFlags() | Qt::ToolTip);
         setAttribute(Qt::WA_TranslucentBackground);
         resetSize();
+        connect(qApp, &QGuiApplication::fontChanged, this, [=] {
+            resetSize();
+        });
 
         auto *bodyShadow = new QGraphicsDropShadowEffect;
         bodyShadow->setBlurRadius(10.0);
