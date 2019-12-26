@@ -25,7 +25,7 @@ pkg_check_modules(AV REQUIRED IMPORTED_TARGET libavformat
     libavutil libavcodec)
 # IMPORTED_TARGET failed to work for some of libs under flatpak env
 pkg_check_modules(Other REQUIRED libffmpegthumbnailer
-    libpulse libpulse-simple openssl dvdnav)
+    libpulse libpulse-simple openssl dvdnav gsettings-qt)
 
 qt5_add_resources(RCS resources.qrc)
 qt5_add_resources(RCS icons/theme-icons.qrc)
