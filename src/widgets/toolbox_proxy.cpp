@@ -2034,6 +2034,9 @@ void ToolboxProxy::updatePlayState()
             pa.setColor(DPalette::Dark, QColor("#FFFFFF"));
             pa.setColor(DPalette::Button, QColor("#FFFFFF"));
             _palyBox->setPalette(pa);
+            QGraphicsOpacityEffect *opacityEffect=new QGraphicsOpacityEffect;
+            _palyBox->setGraphicsEffect(opacityEffect);
+            opacityEffect->setOpacity(1);
 
             pa = _volBtn->palette();
             pa.setColor(DPalette::Light, QColor("#FFFFFF"));
@@ -2067,6 +2070,9 @@ void ToolboxProxy::updatePlayState()
             pa.setColor(DPalette::Dark, QColor("#000000"));
             pa.setColor(DPalette::Button, QColor("#000000"));
             _palyBox->setPalette(pa);
+            QGraphicsOpacityEffect *opacityEffect=new QGraphicsOpacityEffect;
+            _palyBox->setGraphicsEffect(opacityEffect);
+            opacityEffect->setOpacity(0.4);
 
             pa = _volBtn->palette();
             pa.setColor(DPalette::Light, QColor("#000000"));
@@ -2105,6 +2111,9 @@ void ToolboxProxy::updatePlayState()
             pa.setColor(DPalette::Dark, QColor("#FFFFFF"));
             pa.setColor(DPalette::Button, QColor("#FFFFFF"));
             _palyBox->setPalette(pa);
+            QGraphicsOpacityEffect *opacityEffect=new QGraphicsOpacityEffect;
+            _palyBox->setGraphicsEffect(opacityEffect);
+            opacityEffect->setOpacity(1);
 
             pa = _volBtn->palette();
             pa.setColor(DPalette::Light, QColor("#FFFFFF"));
@@ -2137,6 +2146,9 @@ void ToolboxProxy::updatePlayState()
             pa.setColor(DPalette::Dark, QColor("#000000"));
             pa.setColor(DPalette::Button, QColor("#000000"));
             _palyBox->setPalette(pa);
+            QGraphicsOpacityEffect *opacityEffect=new QGraphicsOpacityEffect;
+            _palyBox->setGraphicsEffect(opacityEffect);
+            opacityEffect->setOpacity(0.4);
 
             pa = _volBtn->palette();
             pa.setColor(DPalette::Light, QColor("#000000"));
