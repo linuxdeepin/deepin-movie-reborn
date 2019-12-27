@@ -2964,18 +2964,18 @@ void MainWindow::prepareSplashImages()
 
 void MainWindow::saveWindowState()
 {
-    QSettings settings;
-    settings.beginGroup(objectName());
-    settings.setValue("geometry", saveGeometry());
-    settings.endGroup();
+//    QSettings settings;
+//    settings.beginGroup(objectName());
+//    settings.setValue("geometry", saveGeometry());
+//    settings.endGroup();
 }
 
 void MainWindow::loadWindowState()
 {
-    QSettings settings;
-    settings.beginGroup(objectName());
-    restoreGeometry(settings.value("geometry", saveGeometry()).toByteArray());
-    settings.endGroup();
+//    QSettings settings;
+//    settings.beginGroup(objectName());
+//    restoreGeometry(settings.value("geometry", saveGeometry()).toByteArray());
+//    settings.endGroup();
 }
 
 QString MainWindow::lastOpenedPath()
