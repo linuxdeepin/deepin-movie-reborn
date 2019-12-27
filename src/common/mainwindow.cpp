@@ -873,6 +873,8 @@ MainWindow::MainWindow(QWidget *parent)
     _animationlable->setGeometry(width()/2-100,height()/2-100,200,200);
 
     popup = new DFloatingMessage(DFloatingMessage::TransientType, this);
+    popup->resize(0, 0);
+//    popup->hide(); //This causes the first screenshot icon to move down
 
     connect(this,&MainWindow::playlistchanged,_toolbox,&ToolboxProxy::updateplaylisticon);
 
