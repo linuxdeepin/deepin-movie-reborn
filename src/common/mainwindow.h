@@ -197,6 +197,8 @@ private:
     void updateWindowTitle();
     void toggleShapeMask();
     void prepareSplashImages();
+    void saveWindowState();
+    void loadWindowState();
 
 private:
     DFloatingMessage *popup {nullptr};

@@ -904,6 +904,10 @@ MainWindow::MainWindow(QWidget *parent)
         QRect deskRect = QApplication::desktop()->availableGeometry();
         _fullscreentimelable->setGeometry(deskRect.width()-pixelsWidth - 32,40,pixelsWidth + 32,36);
     });
+
+    {
+        loadWindowState();
+    }
 }
 
 void MainWindow::setupTitlebar()
@@ -2610,6 +2614,10 @@ void MainWindow::closeEvent(QCloseEvent *ev)
 
     _engine->savePlaybackPosition();
 
+    {
+        saveWindowState();
+    }
+
     ev->accept();
 }
 
@@ -2950,6 +2958,22 @@ void MainWindow::prepareSplashImages()
 {
     bg_dark = utils::LoadHiDPIImage(":/resources/icons/dark/init-splash.svg");
     bg_light = utils::LoadHiDPIImage(":/resources/icons/light/init-splash.svg");
+}
+
+void MainWindow::saveWindowState()
+{
+    QSettings settings;
+    settings.beginGroup(objectName());
+    settings.setValue("geometry", saveGeometry());
+    settings.endGroup();
+}
+
+void MainWindow::loadWindowState()
+{
+    QSettings settings;
+    settings.beginGroup(objectName());
+    restoreGeometry(settings.value("geometry", saveGeometry()).toByteArray());
+    settings.endGroup();
 }
 
 QString MainWindow::lastOpenedPath()
