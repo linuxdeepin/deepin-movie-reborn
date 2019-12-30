@@ -1448,7 +1448,22 @@ void MainWindow::menuItemInvoked(QAction *action)
     if (ActionFactory::actionHasArgs(action)) {
         requestAction(kd, !isShortcut, ActionFactory::actionArgs(action), isShortcut);
     } else {
-        requestAction(kd, !isShortcut, {}, isShortcut);
+        auto var = action->property("kind");
+        if (var == ActionFactory::ActionKind::Settings) {
+            requestAction(kd, !isShortcut, {0}, isShortcut);
+        } else {
+            if(_playlist->state() == PlaylistWidget::State::Opened) {
+                QList<QKeySequence> listKey = ShortcutManager::get().map().keys();
+                for (int index = 0; index < listKey.count(); ++index) {
+                    if(listKey[index] == QKeySequence("Return")
+                            || listKey[index] == QKeySequence("Num+Enter")) {
+                        return;
+                    }
+                }
+            } else {
+                requestAction(kd, !isShortcut, {0}, isShortcut);
+            }
+        }
     }
 
     if (!isShortcut) {
@@ -1726,15 +1741,15 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     }
 
     case ActionFactory::ActionKind::ToggleFullscreen: {
-        if(_playlist->state() == PlaylistWidget::State::Opened)
-        {
-            BindingMap map = ShortcutManager::get().map();
-            if(map.value(QKeySequence("Return")) == ActionFactory::ToggleFullscreen
-                 || map.value(QKeySequence("Num+Enter")) == ActionFactory::ToggleFullscreen)
-            {
-                return;
-            }
-        }
+//        if(_playlist->state() == PlaylistWidget::State::Opened)
+//        {
+//            BindingMap map = ShortcutManager::get().map();
+//            if(map.value(QKeySequence("Return")) == ActionFactory::ToggleFullscreen
+//                 || map.value(QKeySequence("Num+Enter")) == ActionFactory::ToggleFullscreen)
+//            {
+//                return;
+//            }
+//        }
         if (isFullScreen()) {
             if (_lastWindowState == Qt::WindowMaximized) {
                 showMaximized();
