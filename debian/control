@@ -30,6 +30,6 @@ Description: movie player widget library
 
 Package: libdmr-dev
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libdmr(=${binary:Version})
+Depends: ${shlibs:Depends}, ${misc:Depends}, libdmr(=${binary:Version}), libgsettings-qt-dev
 Description: movie player widget library development headers
  deepin movie player widget library development headers
