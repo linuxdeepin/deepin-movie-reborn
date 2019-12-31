@@ -3138,6 +3138,7 @@ void MainWindow::toggleUIMode()
         if (isFullScreen()) {
             _stateBeforeMiniMode |= SBEM_Fullscreen;
             requestAction(ActionFactory::QuitFullscreen);
+            reflectActionToUI(ActionFactory::ToggleMiniMode);
         } else if (isMaximized()) {
             _stateBeforeMiniMode |= SBEM_Maximized;
             showNormal();
