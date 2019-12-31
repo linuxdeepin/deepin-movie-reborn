@@ -1453,12 +1453,22 @@ void MainWindow::menuItemInvoked(QAction *action)
             requestAction(kd, !isShortcut, {0}, isShortcut);
         } else {
             if(_playlist->state() == PlaylistWidget::State::Opened) {
-                QList<QKeySequence> listKey = ShortcutManager::get().map().keys();
-                for (int index = 0; index < listKey.count(); ++index) {
-                    if(listKey[index] == QKeySequence("Return")
-                            || listKey[index] == QKeySequence("Num+Enter")) {
-                        return;
+                BindingMap bdMap = ShortcutManager::get().map();
+                QHash<QKeySequence, ActionFactory::ActionKind>::const_iterator iter = bdMap.constBegin();
+                while (iter != bdMap.constEnd()) {
+                    if ((iter.key() == QKeySequence("Return")
+                            || iter.key() == QKeySequence("Num+Enter"))
+                            && iter.value() != kd) {
+                        break;
+                    } else {
+                        if (iter.key() != QKeySequence("Return")
+                                && iter.key() != QKeySequence("Num+Enter")
+                                && iter.value() == kd) {
+                            requestAction(kd, !isShortcut, {0}, isShortcut);
+                        }
                     }
+
+                    ++iter;
                 }
             } else {
                 requestAction(kd, !isShortcut, {0}, isShortcut);
