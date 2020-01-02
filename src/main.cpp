@@ -73,7 +73,7 @@ int main(int argc, char *argv[])
     app.setOrganizationName("deepin");
     app.setApplicationName("deepin-movie");
     app.setApplicationVersion(DMR_VERSION);
-    app.setProductIcon(QPixmap(":/resources/icons/logo-big.svg"));
+    app.setProductIcon(utils::LoadHiDPIPixmap(":/resources/icons/logo-big.svg"));
     app.setWindowIcon(QIcon(":/resources/icons/logo-big.svg"));
     QString acknowledgementLink = "https://www.deepin.org/acknowledgments/deepin-movie";
     app.setApplicationAcknowledgementPage(acknowledgementLink);
