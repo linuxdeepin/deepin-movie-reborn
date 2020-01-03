@@ -1459,7 +1459,18 @@ void MainWindow::menuItemInvoked(QAction *action)
                     if (iter.value() == kd) {
                         isiter = true;
                         if ((iter.key() == QKeySequence("Return")
-                                || iter.key() == QKeySequence("Num+Enter")) && isShortcut) {
+                             || iter.key() == QKeySequence("Num+Enter")
+                             || iter.key() == QKeySequence("Up")
+                             || iter.key() == QKeySequence("Down")) && isShortcut) {
+                            if(iter.key() == QKeySequence("Up") || iter.key() == QKeySequence("Down")){
+                                int key;
+                                if(iter.key() == QKeySequence("Up")){
+                                    key = Qt::Key_Up;
+                                }else {
+                                    key = Qt::Key_Down;
+                                }
+                                _playlist->updateSelectItem(key);
+                            }
                             break;
                         }
                         requestAction(kd, !isShortcut, {0}, isShortcut);
