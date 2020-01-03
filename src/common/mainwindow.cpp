@@ -1688,6 +1688,9 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         if (!fromUI) {
             reflectActionToUI(kd);
         }
+        if(_playlist->state() == PlaylistWidget::Opened && !isFullScreen()){
+            requestAction(ActionFactory::TogglePlaylist);
+        }
         toggleUIMode();
         break;
     }
