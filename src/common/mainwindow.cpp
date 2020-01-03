@@ -1443,7 +1443,6 @@ bool MainWindow::set_playlistopen_clicktogglepause(bool playlistopen)
 void MainWindow::menuItemInvoked(QAction *action)
 {
     auto kd = ActionFactory::actionKind(action);
-
     auto isShortcut = ActionFactory::isActionFromShortcut(action);
     if (ActionFactory::actionHasArgs(action)) {
         requestAction(kd, !isShortcut, ActionFactory::actionArgs(action), isShortcut);
@@ -1455,16 +1454,21 @@ void MainWindow::menuItemInvoked(QAction *action)
             if(_playlist->state() == PlaylistWidget::State::Opened) {
                 BindingMap bdMap = ShortcutManager::get().map();
                 QHash<QKeySequence, ActionFactory::ActionKind>::const_iterator iter = bdMap.constBegin();
+                bool isiter = false;
                 while (iter != bdMap.constEnd()) {
                     if (iter.value() == kd) {
-                        if (iter.key() == QKeySequence("Return")
-                             || iter.key() == QKeySequence("Num+Enter")) {
+                        isiter = true;
+                        if ((iter.key() == QKeySequence("Return")
+                                || iter.key() == QKeySequence("Num+Enter")) && isShortcut) {
                             break;
                         }
                         requestAction(kd, !isShortcut, {0}, isShortcut);
+                        break;
                     }
-
                     ++iter;
+                }
+                if(isiter == false){
+                    requestAction(kd, !isShortcut, {0}, isShortcut);
                 }
             } else {
                 requestAction(kd, !isShortcut, {0}, isShortcut);
