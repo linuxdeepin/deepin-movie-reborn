@@ -2185,6 +2185,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         QPoint pos(rect.x() + rect.width() / 2, rect.y() + rect.height() / 2);
         QStringList shortcutString;
         QString param1 = "-j=" + ShortcutManager::get().toJson();
+        param1.replace("Return","Enter");
         param1.replace("PgDown","PageDown");
         param1.replace("PgUp","PageUp");
         QString param2 = "-p=" + QString::number(pos.x()) + "," + QString::number(pos.y());
