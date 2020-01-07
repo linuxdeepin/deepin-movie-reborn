@@ -411,7 +411,7 @@ bool CompositingManager::isDirectRendered() {
     if (xdriinfo.waitForStarted() && xdriinfo.waitForFinished()) {
         QString drv = QString::fromUtf8(xdriinfo.readAllStandardOutput().trimmed().constData());
         qDebug() << "xdriinfo: " << drv;
-        return !drv.contains("is not direct rendering capable");
+        return !drv.contains("not direct rendering capable");
     }
 
     return true;
