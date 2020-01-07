@@ -1742,11 +1742,19 @@ void ToolboxProxy::setup()
 //        updateThumbnail();
     });
     connect(_engine, &PlayerEngine::elapsedChanged, [ = ]() {
-        updateTimeInfo(_engine->duration(), _engine->elapsed(), _timeLabel, _timeLabelend, true);
+        quint64 url = -1;
+        if(_engine->playlist().current() != -1){
+            url = _engine->playlist().items()[_engine->playlist().current()].mi.duration;
+        }
+        updateTimeInfo(url, _engine->elapsed(), _timeLabel, _timeLabelend, true);
         updateMovieProgress();
     });
     connect(_engine, &PlayerEngine::elapsedChanged, [ = ]() {
-        updateTimeInfo(_engine->duration(), _engine->elapsed(), _fullscreentimelable, _fullscreentimelableend, false);
+        quint64 _url = -1;
+        if(_engine->playlist().current() != -1){
+            _url = _engine->playlist().items()[_engine->playlist().current()].mi.duration;
+        }
+        updateTimeInfo(_url, _engine->elapsed(), _fullscreentimelable, _fullscreentimelableend, false);
         QFontMetrics fm(DFontSizeManager::instance()->get(DFontSizeManager::T6));
         _fullscreentimelable->setMinimumWidth(fm.width(_fullscreentimelable->text()));
         _fullscreentimelableend->setMinimumWidth(fm.width(_fullscreentimelableend->text()));
