@@ -63,6 +63,7 @@ class ToolButton;
 class MainWindow;
 class DMRSlider;
 class ThumbnailPreview;
+class SliderTime;
 class SubtitlesView;
 class VolumeSlider;
 class ViewProgBar;
@@ -143,6 +144,7 @@ protected slots:
     void updateMovieProgress();
     void updateButtonStates();
     void setProgress(int v);
+    void updateTimeVisible(bool visible);
     void progressHoverChanged(int v);
     void updateHoverPreview(const QUrl& url, int secs);
 
@@ -157,6 +159,7 @@ private:
     void updateTimeLabel();
     void updateToolTipTheme(ToolButton *btn);
     void updateThumbnail();
+    void updatePreviewTime(qint64 secs, const QPoint &pos);
 
     QLabel *_fullscreentimelable {nullptr};
     QLabel *_fullscreentimelableend {nullptr};
@@ -193,9 +196,9 @@ private:
     DMRSlider *_progBar {nullptr};
     DWidget *_progBarspec {nullptr};
     ThumbnailPreview *_previewer {nullptr};
+    SliderTime *_previewTime {nullptr};
     SubtitlesView *_subView {nullptr};
     int _lastHoverValue {0};
-    QTimer _previewTimer;
     QWidget *_bot_spec {nullptr};
     QWidget *bot_toolWgt {nullptr};
 

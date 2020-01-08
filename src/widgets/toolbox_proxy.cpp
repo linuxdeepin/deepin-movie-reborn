@@ -366,9 +366,11 @@ public:
         _time->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
         _time->setFixedSize(_size);
         _time->setForegroundRole(DPalette::Text);
-        DPalette pa_cb = DApplicationHelper::instance()->palette(_time);
-        pa_cb.setBrush(QPalette::Text, QColor(255, 255, 255, 255));
-        _time->setPalette(pa_cb);
+        DPalette pa = DApplicationHelper::instance()->palette(_time);
+        QColor color = pa.textLively().color();
+        qDebug() << color.name();
+        pa.setColor(DPalette::Text, color);
+        _time->setPalette(pa);
         _time->setFont(DFontSizeManager::instance()->get(DFontSizeManager::T8));
         l->addWidget(_time, Qt::AlignCenter);
         setLayout(l);
@@ -726,6 +728,7 @@ signals:
     void hoverChanged(int);
     void sliderMoved(int);
     void indicatorMoved(int);
+    void mousePressed(bool pressed);
 
 protected:
 
@@ -749,6 +752,7 @@ protected:
                 if (distance >= QApplication::startDragDistance()) {
                     emit sliderMoved(v);
                     emit hoverChanged(v);
+                    emit mousePressed(true);
                     setValue(e->pos().x());
                     setTimeVisible(_press);
                 }
@@ -771,6 +775,7 @@ protected:
 //            setSliderPosition(v);
             emit sliderMoved(v);
             emit hoverChanged(v);
+            emit mousePressed(true);
             setValue(e->pos().x());
             setTimeVisible(!_press);
             changeStyle(!_press);
@@ -779,6 +784,7 @@ protected:
     }
     void mouseReleaseEvent(QMouseEvent *e)
     {
+        emit mousePressed(false);
         if (_press && isEnabled()) {
             changeStyle(!_press);
 //            setTimeVisible(!_press);
@@ -836,28 +842,29 @@ private:
 
 };
 
-class ThumbnailTime: public QLabel
-{
-    Q_OBJECT
-public:
-    ThumbnailTime(QWidget *parent = nullptr): QLabel(parent)
-    {
+//class ThumbnailTime: public DLabel
+//{
+//    Q_OBJECT
+//public:
+//    ThumbnailTime(QWidget *parent = nullptr): DLabel(parent)
+//    {
 
-    }
-protected:
-    void paintEvent(QPaintEvent *pe) override
-    {
-        QPainter painter(this);
-        painter.setRenderHint(QPainter::Antialiasing);
-        QRectF bgRect;
-        bgRect.setSize(size());
-        const QPalette pal = QGuiApplication::palette();//this->palette();
-        QColor bgColor = pal.color(QPalette::Highlight);
-        QPainterPath pp;
-        pp.addRoundedRect(bgRect, 8, 8);
-        painter.fillPath(pp, bgColor);
-    }
-};
+//    }
+//protected:
+//    void paintEvent(QPaintEvent *pe) override
+//    {
+//        QPainter painter(this);
+//        painter.setRenderHint(QPainter::Antialiasing);
+//        QRectF bgRect;
+//        bgRect.setSize(size());
+//        const QPalette pal = QGuiApplication::palette();//this->palette();
+//        QColor bgColor = pal.color(QPalette::Highlight);
+//        QPainterPath pp;
+//        pp.addRoundedRect(bgRect, 8, 8);
+//        painter.fillPath(pp, bgColor);
+//    }
+//};
+
 class ThumbnailPreview: public DArrowRectangle
 {
     Q_OBJECT
@@ -887,13 +894,6 @@ public:
         setShadowBlurRadius(6);
         setArrowWidth(0);
         setArrowHeight(0);
-//        setArrowWidth(18);
-//        setArrowHeight(10);
-//        DPalette pa_cb = DApplicationHelper::instance()->palette(this);
-//        pa_cb.setBrush(QPalette::Background, QColor(0,129,255,1));
-//        pa_cb.setBrush(QPalette::Dark, QColor(0,129,255,1));
-//        setPalette(pa_cb);
-        //setBackgroundColor(QColor(0, 129, 255, 255));
 
         auto *l = new QVBoxLayout;
 //        l->setContentsMargins(0, 0, 0, 10);
@@ -906,24 +906,9 @@ public:
         l->addWidget(_thumb/*,Qt::AlignTop*/);
         setLayout(l);
 
-        _timebg = new ThumbnailTime(this);
-        _timebg->setFixedSize(58, 20);
-        _timebg->hide();
-
-        _time = new QLabel(_timebg);
-        _time->setAlignment(Qt::AlignCenter);
-        _time->setFixedSize(58, 20);
-        _time->setForegroundRole(DPalette::Text);
-//        _time->setAutoFillBackground(true);
-        DPalette pa_cb = DApplicationHelper::instance()->palette(_time);
-        pa_cb.setBrush(QPalette::Text, QColor(255, 255, 255, 255));
-//        pa_cb.setBrush(QPalette::Dark, QColor(0,129,255,1));
-        _time->setPalette(pa_cb);
-        _time->setFont(DFontSizeManager::instance()->get(DFontSizeManager::T8));
-
-        connect(DThemeManager::instance(), &DThemeManager::themeChanged,
-                this, &ThumbnailPreview::updateTheme);
-        updateTheme();
+//        connect(DThemeManager::instance(), &DThemeManager::themeChanged,
+//                this, &ThumbnailPreview::updateTheme);
+//        updateTheme();
 
         winId(); // force backed window to be created
     }
@@ -947,12 +932,7 @@ public:
             QSize size(roundedW, m_thumbnailFixed);
             resizeThumbnail(rounded, size);
         }
-//        if (!_visiblThumb) {
 
-//            _visiblThumb = true;
-//        }
-//        else {
-            //_thumb->setPixmap(rounded);
         QImage image;
         QPalette palette;
         image = rounded.toImage();
@@ -962,13 +942,7 @@ public:
                          Qt::IgnoreAspectRatio,
                          Qt::SmoothTransformation)));
         _thumb->setPalette(palette);
-//        }
 
-//        QTime t(0, 0, 0);
-//        t = t.addSecs(secs);
-//        _time->setText(t.toString("hh:mm:ss"));
-//        _time->move((_timebg->width() - _time->width())/2, (_timebg->height() - _time->height())/2);
-//        _timebg->move((_thumb->width() - _timebg->width())/2, this->height() - _timebg->height() - 10);
 
         if (isVisible()) {
 //            move(QCursor::pos().x(), frameGeometry().y() + height()+0);
@@ -978,22 +952,16 @@ public:
     void updateWithPreview(const QPoint &pos)
     {
         resizeWithContent();
-//        move(pos.x(), pos.y()+0);
-//        if (!_visiblThumb) {
-//            _visiblThumb = true;
-//        }
-//        else{
-            show(pos.x(), pos.y() + 10);
-//        }
+        show(pos.x(), pos.y() + 10);
     }
 
 signals:
     void leavePreview();
 
 protected slots:
-    void updateTheme()
-    {
-        if (qApp->theme() == "dark") {
+//    void updateTheme()
+//    {
+//        if (qApp->theme() == "dark") {
 //            setBackgroundColor(QColor(23, 23, 23, 255 * 8 / 10));
 //            setBorderColor(QColor(255, 255 ,255, 25));
 //            _time->setStyleSheet(R"(
@@ -1002,7 +970,7 @@ protected slots:
 //                font-size: 12px;
 //                color: #ffffff;
 //            )");
-        } else {
+//        } else {
 //            setBackgroundColor(QColor(255, 255, 255, 255 * 8 / 10));
 //            setBorderColor(QColor(0, 0 ,0, 25));
 //            _time->setStyleSheet(R"(
@@ -1011,8 +979,8 @@ protected slots:
 //                font-size: 12px;
 //                color: #303030;
 //            )");
-        }
-    }
+//        }
+//    }
 
 protected:
     void paintEvent(QPaintEvent *e) Q_DECL_OVERRIDE{
@@ -1025,8 +993,6 @@ protected:
 
     void showEvent(QShowEvent *se) override
     {
-//        _time->move((_timebg->width() - _time->width()) / 2, (_timebg->height() - _time->height()) / 2);
-//        _timebg->move((_thumb->width() - _timebg->width()) / 2, this->height() - _timebg->height() - 10);
         DArrowRectangle::showEvent(se);
     }
 
@@ -1045,11 +1011,8 @@ private:
     }
 
 private:
-    DFrame *_thumb;
-    QLabel *_time;
-    ThumbnailTime *_timebg;
+    DFrame *_thumb {nullptr};
     int m_thumbnailFixed = 178;
-    bool _visiblThumb = false;
 };
 
 class VolumeSlider: public DArrowRectangle
@@ -1310,6 +1273,9 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
     _previewer = new ThumbnailPreview;
     _previewer->hide();
 
+    _previewTime = new SliderTime;
+    _previewTime->hide();
+
     _subView = new SubtitlesView(0, _engine);
     _subView->hide();
     setup();
@@ -1364,6 +1330,7 @@ ToolboxProxy::~ToolboxProxy()
 //    delete _loadThread;
     delete _subView;
     delete _previewer;
+    delete _previewTime;
 }
 
 void ToolboxProxy::setup()
@@ -1477,6 +1444,7 @@ void ToolboxProxy::setup()
         auto pos = _progBar->mapFromGlobal(QCursor::pos());
         if (!_progBar->geometry().contains(pos)) {
             _previewer->hide();
+            _previewTime->hide();
             _progBar->forceLeave();
         }
     });
@@ -1484,7 +1452,11 @@ void ToolboxProxy::setup()
     connect(_progBar, &DSlider::sliderMoved, this, &ToolboxProxy::setProgress);
     connect(_progBar, &DSlider::valueChanged, this, &ToolboxProxy::setProgress);
     connect(_progBar, &DMRSlider::hoverChanged, this, &ToolboxProxy::progressHoverChanged);
-    connect(_progBar, &DMRSlider::leave, [ = ]() { _previewer->hide(); m_mouseFlag = false;});
+    connect(_progBar, &DMRSlider::leave, [ = ]() {
+        _previewer->hide();
+        _previewTime->hide();
+        m_mouseFlag = false;
+    });
     connect(&Settings::get(), &Settings::baseChanged,
     [ = ](QString sk, const QVariant & val) {
         if (sk == "base.play.mousepreview") {
@@ -1514,11 +1486,13 @@ void ToolboxProxy::setup()
 //        _progBar_stacked->setCurrentIndex(1);
 //        _progBar_Widget->setCurrentIndex(1);
         _previewer->hide();
+        _previewTime->hide();
         m_mouseFlag = false;
     });
 
     connect(_viewProgBar, &ViewProgBar::hoverChanged, this, &ToolboxProxy::progressHoverChanged);
     connect(_viewProgBar, &ViewProgBar::sliderMoved, this, &ToolboxProxy::setProgress);
+    connect(_viewProgBar, &ViewProgBar::mousePressed, this, &ToolboxProxy::updateTimeVisible);
 
     auto *signalMapper = new QSignalMapper(this);
     connect(signalMapper, static_cast<void(QSignalMapper::*)(const QString &)>(&QSignalMapper::mapped),
@@ -1849,11 +1823,22 @@ void ToolboxProxy::updateThumbnail()
     });
 }
 
+void ToolboxProxy::updatePreviewTime(qint64 secs, const QPoint &pos)
+{
+    QTime time(0, 0, 0);
+    QString strTime = time.addSecs(secs).toString("hh:mm:ss");
+    _previewTime->setTime(strTime);
+    _previewTime->show(pos.x(), pos.y() + 14);
+}
 
 void ToolboxProxy::closeAnyPopup()
 {
     if (_previewer->isVisible()) {
         _previewer->hide();
+    }
+
+    if (_previewTime->isVisible()) {
+        _previewTime->hide();
     }
 
     if (_subView->isVisible()) {
@@ -1868,7 +1853,7 @@ void ToolboxProxy::closeAnyPopup()
 
 bool ToolboxProxy::anyPopupShown() const
 {
-    return _previewer->isVisible() || _subView->isVisible() || _volSlider->isVisible();
+    return _previewer->isVisible() || _previewTime->isVisible() || _subView->isVisible() || _volSlider->isVisible();
 }
 
 void ToolboxProxy::updateHoverPreview(const QUrl &url, int secs)
@@ -1892,6 +1877,7 @@ void ToolboxProxy::updateHoverPreview(const QUrl &url, int secs)
     const auto &absPath = pif.info.canonicalFilePath();
     if (!QFile::exists(absPath)) {
         _previewer->hide();
+        _previewTime->hide();
         return;
     }
 
@@ -1900,13 +1886,14 @@ void ToolboxProxy::updateHoverPreview(const QUrl &url, int secs)
         return;
     }
 
-    QPixmap pm = ThumbnailWorker::get().getThumb(url, secs);
-    _previewer->updateWithPreview(pm, secs, _engine->videoRotation());
-
     auto pos = _progBar->mapToGlobal(QPoint(0, TOOLBOX_TOP_EXTENT - 10));
 //    auto pos = _viewProgBar->mapToGlobal(QPoint(0, TOOLBOX_TOP_EXTENT - 10));
     QPoint p { QCursor::pos().x(), pos.y() };
+
+    QPixmap pm = ThumbnailWorker::get().getThumb(url, secs);
+    _previewer->updateWithPreview(pm, secs, _engine->videoRotation());
     _previewer->updateWithPreview(p);
+
 }
 
 void ToolboxProxy::progressHoverChanged(int v)
@@ -1914,8 +1901,8 @@ void ToolboxProxy::progressHoverChanged(int v)
     if (_engine->state() == PlayerEngine::CoreState::Idle)
         return;
 
-    if (!Settings::get().isSet(Settings::PreviewOnMouseover))
-        return;
+//    if (!Settings::get().isSet(Settings::PreviewOnMouseover))
+//        return;
 
     if (_volSlider->isVisible())
         return;
@@ -1927,19 +1914,25 @@ void ToolboxProxy::progressHoverChanged(int v)
     const auto &absPath = pif.info.canonicalFilePath();
     if (!QFile::exists(absPath)) {
         _previewer->hide();
+        _previewTime->hide();
         return;
     }
 
     m_mouseFlag = true;
 
     _lastHoverValue = v;
+
+    auto pos = _progBar->mapToGlobal(QPoint(0, TOOLBOX_TOP_EXTENT - 10));
+//    auto pos = _viewProgBar->mapToGlobal(QPoint(0, TOOLBOX_TOP_EXTENT - 10));
+    QPoint p { QCursor::pos().x(), pos.y() };
+
+    auto proBar = qobject_cast<ViewProgBar*>(sender());
+    if (proBar == _viewProgBar && !Settings::get().isSet(Settings::PreviewOnMouseover)) {
+        updatePreviewTime(v, p);
+        return;
+    }
+
     ThumbnailWorker::get().requestThumb(pif.url, v);
-
-//    auto pos = _progBar->mapToGlobal(QPoint(0, TOOLBOX_TOP_EXTENT - 10));
-////    auto pos = _viewProgBar->mapToGlobal(QPoint(0, TOOLBOX_TOP_EXTENT - 10));
-//    QPoint p { QCursor::pos().x(), pos.y() };
-
-//    _previewer->updateWithPreview(p);
 }
 
 void ToolboxProxy::setProgress(int v)
@@ -1953,6 +1946,13 @@ void ToolboxProxy::setProgress(int v)
         progressHoverChanged(_progBar->slider()->sliderPosition());
     }
     updateMovieProgress();
+}
+
+void ToolboxProxy::updateTimeVisible(bool visible)
+{
+    if (_previewTime) {
+        _previewTime->setVisible(!visible);
+    }
 }
 
 void ToolboxProxy::updateMovieProgress()
@@ -2184,6 +2184,11 @@ void ToolboxProxy::updatePlayState()
         if (_previewer->isVisible()) {
             _previewer->hide();
         }
+
+        if (_previewTime->isVisible()) {
+            _previewTime->hide();
+        }
+
         if (_progBar->isVisible()) {
             _progBar->setVisible(false);
         }
@@ -2296,59 +2301,57 @@ void ToolboxProxy::updatePosition(const QPoint &p)
     windowHandle()->setFramePosition(pos);
 }
 
-#if 0
-void ToolboxProxy::paintEvent(QPaintEvent *pe)
-{
-    QPainter painter(this);
-    painter.setRenderHint(QPainter::Antialiasing);
-    QRectF bgRect;
-    bgRect.setSize(size());
-    const QPalette pal = QGuiApplication::palette();//this->palette();
-    static int offset = 14;
+//void ToolboxProxy::paintEvent(QPaintEvent *pe)
+//{
+//    QPainter painter(this);
+//    painter.setRenderHint(QPainter::Antialiasing);
+//    QRectF bgRect;
+//    bgRect.setSize(size());
+//    const QPalette pal = QGuiApplication::palette();//this->palette();
+//    static int offset = 14;
 
-    DGuiApplicationHelper::ColorType themeType = DGuiApplicationHelper::instance()->themeType();
-    QColor *bgColor, outBdColor, inBdColor;
-    if (themeType == DGuiApplicationHelper::LightType) {
-        outBdColor = QColor(0, 0, 0, 25);
-        inBdColor = QColor(247, 247, 247, 0.4 * 255);
-        bgColor = new QColor(247, 247, 247, 0.8 * 255);
-    } else if (themeType == DGuiApplicationHelper::DarkType) {
-        outBdColor = QColor(0, 0, 0, 0.8 * 255);
-        inBdColor = QColor(255, 255, 255, 0.05 * 255);
-        bgColor = new QColor(32, 32, 32, 0.9 * 255);
-    } else {
-        outBdColor = QColor(0, 0, 0, 25);
-        inBdColor = QColor(247, 247, 247, 0.4 * 255);
-        bgColor = new QColor(247, 247, 247, 0.8 * 255);
-    }
-
-    {
-        QPainterPath pp;
-        pp.setFillRule(Qt::WindingFill);
-        QPen pen(outBdColor, 1);
-        painter.setPen(pen);
-        pp.addRoundedRect(bgRect, RADIUS_MV, RADIUS_MV);
-        painter.fillPath(pp, *bgColor);
-//        painter.drawPath(pp);
-
-        painter.drawLine(offset, rect().y(), width() - offset, rect().y());
-        painter.drawLine(offset, height(), width() - offset, height());
-        painter.drawLine(rect().x(), offset, rect().x(), height() - offset);
-        painter.drawLine(width(), offset, width(), height() - offset);
-    }
-
-//    {
-//        auto view_rect = bgRect.marginsRemoved(QMargins(1, 1, 1, 1));
-//        QPainterPath pp;
-//        pp.setFillRule(Qt::WindingFill);
-//        painter.setPen(inBdColor);
-//        pp.addRoundedRect(view_rect, RADIUS_MV, RADIUS_MV);
-//        painter.drawPath(pp);
+//    DGuiApplicationHelper::ColorType themeType = DGuiApplicationHelper::instance()->themeType();
+//    QColor *bgColor, outBdColor, inBdColor;
+//    if (themeType == DGuiApplicationHelper::LightType) {
+//        outBdColor = QColor(0, 0, 0, 25);
+//        inBdColor = QColor(247, 247, 247, 0.4 * 255);
+//        bgColor = new QColor(247, 247, 247, 0.8 * 255);
+//    } else if (themeType == DGuiApplicationHelper::DarkType) {
+//        outBdColor = QColor(0, 0, 0, 0.8 * 255);
+//        inBdColor = QColor(255, 255, 255, 0.05 * 255);
+//        bgColor = new QColor(32, 32, 32, 0.9 * 255);
+//    } else {
+//        outBdColor = QColor(0, 0, 0, 25);
+//        inBdColor = QColor(247, 247, 247, 0.4 * 255);
+//        bgColor = new QColor(247, 247, 247, 0.8 * 255);
 //    }
 
-    QWidget::paintEvent(pe);
-}
-#endif
+//    {
+//        QPainterPath pp;
+//        pp.setFillRule(Qt::WindingFill);
+//        QPen pen(outBdColor, 1);
+//        painter.setPen(pen);
+//        pp.addRoundedRect(bgRect, RADIUS_MV, RADIUS_MV);
+//        painter.fillPath(pp, *bgColor);
+////        painter.drawPath(pp);
+
+//        painter.drawLine(offset, rect().y(), width() - offset, rect().y());
+//        painter.drawLine(offset, height(), width() - offset, height());
+//        painter.drawLine(rect().x(), offset, rect().x(), height() - offset);
+//        painter.drawLine(width(), offset, width(), height() - offset);
+//    }
+
+////    {
+////        auto view_rect = bgRect.marginsRemoved(QMargins(1, 1, 1, 1));
+////        QPainterPath pp;
+////        pp.setFillRule(Qt::WindingFill);
+////        painter.setPen(inBdColor);
+////        pp.addRoundedRect(view_rect, RADIUS_MV, RADIUS_MV);
+////        painter.drawPath(pp);
+////    }
+
+//    QWidget::paintEvent(pe);
+//}
 
 void ToolboxProxy::showEvent(QShowEvent *event)
 {
