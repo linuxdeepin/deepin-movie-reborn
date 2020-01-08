@@ -1039,6 +1039,10 @@ void MainWindow::onWindowStateChanged()
         _animationlable->move(QPoint(QApplication::desktop()->availableGeometry().width()/2-100
                                      ,QApplication::desktop()->availableGeometry().height()/2-100));
     }
+    if (!isFullScreen() && !isMaximized() && !_miniMode) {
+        _animationlable->move(QPoint((_lastRectInNormalMode.width()-_animationlable->width())/2,
+                                     (_lastRectInNormalMode.height()-_animationlable->height())/2));
+    }
 }
 
 void MainWindow::handleHelpAction()
@@ -1752,7 +1756,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             if (_lastWindowState == Qt::WindowMaximized) {
                 showMaximized();
             } else {
-                showNormal();
+                requestAction(ActionFactory::ToggleFullscreen);
             }
             if (!fromUI) {
                 reflectActionToUI(ActionFactory::ToggleFullscreen);
@@ -1804,8 +1808,13 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         if (!fromUI) {
             reflectActionToUI(kd);
         }
-        _animationlable->move(QPoint(QApplication::desktop()->availableGeometry().width()/2-100
-                                     ,QApplication::desktop()->availableGeometry().height()/2-50));
+        if(isFullScreen()){
+            _animationlable->move(QPoint(QApplication::desktop()->availableGeometry().width()/2-_animationlable->width()/2
+                                         ,QApplication::desktop()->availableGeometry().height()/2-_animationlable->height()/2));
+        }else {
+            _animationlable->move(QPoint((width()-_animationlable->width())/2,
+                                         (height()-_animationlable->height())/2));
+        }
         break;
     }
 
