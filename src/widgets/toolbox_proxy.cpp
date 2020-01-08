@@ -878,7 +878,7 @@ public:
 //        resize(QSize(106, 66));
 //        setShadowBlurRadius(2);
 //        setRadius(2);
-        setRadius(8);
+        setRadius(18);
         setBorderWidth(1);
         setBorderColor(QColor(255, 255, 255, 26));
 
@@ -893,13 +893,15 @@ public:
 //        pa_cb.setBrush(QPalette::Background, QColor(0,129,255,1));
 //        pa_cb.setBrush(QPalette::Dark, QColor(0,129,255,1));
 //        setPalette(pa_cb);
-        setBackgroundColor(QColor(0, 129, 255, 255));
+        //setBackgroundColor(QColor(0, 129, 255, 255));
 
         auto *l = new QVBoxLayout;
 //        l->setContentsMargins(0, 0, 0, 10);
-        l->setContentsMargins(0, 0, 0, 0);
+        l->setContentsMargins(1, 0, 0, 0);
 
-        _thumb = new QLabel(this);
+        _thumb = new DFrame(this);
+        DStyle::setFrameRadius(_thumb,18);
+
         //_thumb->setFixedSize(ThumbnailWorker::thumbSize());
         l->addWidget(_thumb/*,Qt::AlignTop*/);
         setLayout(l);
@@ -950,7 +952,16 @@ public:
 //            _visiblThumb = true;
 //        }
 //        else {
-            _thumb->setPixmap(rounded);
+            //_thumb->setPixmap(rounded);
+        QImage image;
+        QPalette palette;
+        image = rounded.toImage();
+        palette.setBrush(_thumb->backgroundRole(),
+                         QBrush(image.scaled(// 缩放背景图.
+                         QSize(_thumb->width(),_thumb->height()),
+                         Qt::IgnoreAspectRatio,
+                         Qt::SmoothTransformation)));
+        _thumb->setPalette(palette);
 //        }
 
 //        QTime t(0, 0, 0);
@@ -1029,12 +1040,12 @@ private:
         _thumb->setFixedSize(size);
 //        this->setFixedWidth(_thumb->width());
 //        this->setFixedHeight(_thumb->height() + 10);
-        this->setFixedWidth(_thumb->width() - 2);
-        this->setFixedHeight(_thumb->height());
+        this->setFixedWidth(_thumb->width() +2);
+        this->setFixedHeight(_thumb->height() +2);
     }
 
 private:
-    QLabel *_thumb;
+    DFrame *_thumb;
     QLabel *_time;
     ThumbnailTime *_timebg;
     int m_thumbnailFixed = 178;
