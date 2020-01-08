@@ -878,7 +878,7 @@ public:
 //        resize(QSize(106, 66));
 //        setShadowBlurRadius(2);
 //        setRadius(2);
-        setRadius(18);
+        setRadius(16);
         setBorderWidth(1);
         setBorderColor(QColor(255, 255, 255, 26));
 
@@ -900,7 +900,7 @@ public:
         l->setContentsMargins(1, 0, 0, 0);
 
         _thumb = new DFrame(this);
-        DStyle::setFrameRadius(_thumb,18);
+        DStyle::setFrameRadius(_thumb,16);
 
         //_thumb->setFixedSize(ThumbnailWorker::thumbSize());
         l->addWidget(_thumb/*,Qt::AlignTop*/);
