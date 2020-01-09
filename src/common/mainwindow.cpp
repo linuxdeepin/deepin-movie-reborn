@@ -548,8 +548,8 @@ MainWindow::MainWindow(QWidget *parent)
                    Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint);
 #else
 //    setWindowFlags(Qt::FramelessWindowHint);
-    setWindowFlags(Qt::WindowMinMaxButtonsHint |
-                   Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint);
+    setWindowFlags(Qt::Window | Qt::WindowMinMaxButtonsHint |
+                   Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint | Qt::WindowFullscreenButtonHint);
 #endif
     setAcceptDrops(true);
 
@@ -1030,6 +1030,20 @@ void MainWindow::onWindowStateChanged()
         _movieSwitchedInFsOrMaxed = false;
     }
     update();
+
+    if(!isMaximized() && !isFullScreen() && !_miniMode){
+        if(_maxfornormalflag){
+            setWindowState(windowState() & ~Qt::WindowFullScreen);
+            if (_lastRectInNormalMode.isValid() && !_miniMode && !isMaximized()) {
+                setGeometry(_lastRectInNormalMode);
+                move(_lastRectInNormalMode.x(), _lastRectInNormalMode.y());
+                resize(_lastRectInNormalMode.width(), _lastRectInNormalMode.height());
+            }
+            _maxfornormalflag = false;
+        }else {
+            _maxfornormalflag = false;
+        }
+    }
 
     if (isMinimized()) {
         if (_playlist->state() == PlaylistWidget::Opened) {
@@ -1758,11 +1772,11 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             toggleUIMode();
         }
         else if (isFullScreen()) {
-            if (_lastWindowState == Qt::WindowMaximized) {
-                showMaximized();
-            } else {
+//            if (_lastWindowState == Qt::WindowMaximized) {
+//                showMaximized();
+//            } else {
                 requestAction(ActionFactory::ToggleFullscreen);
-            }
+//            }
             if (!fromUI) {
                 reflectActionToUI(ActionFactory::ToggleFullscreen);
             }
@@ -1784,7 +1798,10 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
 //            }
 //        }
         if (isFullScreen()) {
+            _quitfullscreenstopflag = true;
             if (_lastWindowState == Qt::WindowMaximized) {
+                _maxfornormalflag = true;
+                setWindowFlags(Qt::Window);
                 showMaximized();
             } else {
                 setWindowState(windowState() & ~Qt::WindowFullScreen);
@@ -1798,11 +1815,12 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                 _fullscreentimelable->close();
             }
         } else {
-            if (!_miniMode && (fromUI || isShortcut)) {
+            if (/*!_miniMode && (fromUI || isShortcut) && */windowState() == Qt::WindowNoState) {
                 _lastRectInNormalMode = geometry();
             }
             showFullScreen();
             if(isFullScreen()){
+                _maxfornormalflag = false;
                 int pixelsWidth = _toolbox->getfullscreentimeLabel()->width() + _toolbox->getfullscreentimeLabelend()->width();
                 QRect deskRect = QApplication::desktop()->availableGeometry();
                 _fullscreentimelable->setGeometry(deskRect.width()-pixelsWidth - 32,40,pixelsWidth + 32,36);
@@ -2647,8 +2665,13 @@ void MainWindow::hideEvent(QHideEvent *event)
 {
     if (Settings::get().isSet(Settings::PauseOnMinimize)) {
         if (_engine && _engine->state() == PlayerEngine::Playing) {
-            _pausedOnHide = true;
-            requestAction(ActionFactory::TogglePause);
+            if(!_quitfullscreenstopflag){
+                _pausedOnHide = true;
+                requestAction(ActionFactory::TogglePause);
+                _quitfullscreenstopflag = false;
+            }else {
+                _quitfullscreenstopflag = false;
+            }
         }
     }
 }
@@ -2702,10 +2725,15 @@ void MainWindow::focusInEvent(QFocusEvent *fe)
 void MainWindow::showEvent(QShowEvent *event)
 {
     qDebug() << __func__;
-    if (_pausedOnHide || Settings::get().isSet(Settings::PauseOnMinimize)) {
+    if (_pausedOnHide || Settings::get().isSet(Settings::PauseOnMinimize)) {       
         if (_pausedOnHide && _engine && _engine->state() != PlayerEngine::Playing) {
-            requestAction(ActionFactory::TogglePause);
-            _pausedOnHide = false;
+            if(!_quitfullscreenstopflag){
+                requestAction(ActionFactory::TogglePause);
+                _pausedOnHide = false;
+                _quitfullscreenstopflag = false;
+            }else {
+                _quitfullscreenstopflag = false;
+            }
         }
     }
 

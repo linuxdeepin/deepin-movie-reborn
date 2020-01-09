@@ -247,6 +247,9 @@ private:
     bool _playlistopen_clicktogglepause {false};
     double _playSpeed {1.0};
 
+    bool _quitfullscreenstopflag {false};
+    bool _maxfornormalflag {false};
+
     enum StateBeforeEnterMiniMode {
         SBEM_None = 0x0,
         SBEM_Above = 0x01,
