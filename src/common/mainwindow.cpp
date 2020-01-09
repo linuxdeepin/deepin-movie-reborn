@@ -786,8 +786,10 @@ MainWindow::MainWindow(QWidget *parent)
             _lastRectInNormalMode.setSize({mi.width, mi.height});
         }
         this->resizeByConstraints();
-        auto geom = qApp->desktop()->availableGeometry(this);
-        move((geom.width() - this->width())/2, (geom.height() - this->height())/2);
+        if(!isFullScreen() && !isMaximized() && !_miniMode){
+            auto geom = qApp->desktop()->availableGeometry(this);
+            move((geom.width() - this->width())/2, (geom.height() - this->height())/2);
+        }
     });
     connect(_engine, &PlayerEngine::videoSizeChanged, [ = ]() {
         this->resizeByConstraints();
