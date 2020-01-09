@@ -2856,6 +2856,7 @@ void MainWindow::updateWindowTitle()
 
 void MainWindow::moveEvent(QMoveEvent *ev)
 {
+    updateGeometryNotification(geometry().size());
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *ev)
