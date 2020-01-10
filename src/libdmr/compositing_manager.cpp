@@ -113,17 +113,47 @@ CompositingManager::CompositingManager() {
     _platform = PlatformChecker().check();
 
     _composited = false;
-    QGSettings gsettings("com.deepin.deepin-movie", "/com/deepin/deepin-movie/");
-    if(QGSettings::isSchemaInstalled("com.deepin.deepin-movie")
-            && (gsettings.get("composited").toString() == "DisableComposited"
-                || gsettings.get("composited").toString() == "EnableComposited")){
-        if (gsettings.keys().contains("composited")){
-            if(gsettings.get("composited").toString() == "DisableComposited"){
+    if(QGSettings::isSchemaInstalled("com.deepin.deepin-movie")){
+        QGSettings gsettings("com.deepin.deepin-movie", "/com/deepin/deepin-movie/");
+        if((gsettings.get("composited").toString() == "DisableComposited"
+            || gsettings.get("composited").toString() == "EnableComposited")){
+            if (gsettings.keys().contains("composited")){
+                if(gsettings.get("composited").toString() == "DisableComposited"){
+                    _composited = false;
+                }else if(gsettings.get("composited").toString() == "EnableComposited") {
+                    _composited = true;
+                }
+            }
+        }else {
+            if (QProcessEnvironment::systemEnvironment().value("SANDBOX") == "flatpak") {
+                _composited = QFile::exists("/dev/dri/card0");
+            } else if (isProprietaryDriver()) {
+                _composited = true;
+            } else if (isDriverLoadedCorrectly() || isDirectRendered()) {
+                _composited = true;
+            } else {
+                GetScreenDriver = (glXGetScreenDriver_t *)glXGetProcAddressARB ((const GLubyte *)"glXGetScreenDriver");
+                if (GetScreenDriver) {
+                    const char *name = (*GetScreenDriver) (QX11Info::display(), QX11Info::appScreen());
+                    qDebug() << "dri driver: " << name;
+                    _composited = name != nullptr;
+                    //        } else {
+                    //            if (isDriverLoadedCorrectly() && isDirectRendered()) {
+                    //                _composited = true;
+                    //            }
+                }
+            }
+
+#ifndef _LIBDMR_
+            auto v = CommandLineManager::get().openglMode();
+            if (v == "off") {
                 _composited = false;
-            }else if(gsettings.get("composited").toString() == "EnableComposited") {
+            } else if (v == "on") {
                 _composited = true;
             }
+#endif
         }
+        qDebug() << "From gsetting, composition about opengl :" << gsettings.get("composited").toString();
     }else/* if(gsettings.get("composited").toString() == "Default")*/{
         if (QProcessEnvironment::systemEnvironment().value("SANDBOX") == "flatpak") {
             _composited = QFile::exists("/dev/dri/card0");
@@ -153,7 +183,6 @@ CompositingManager::CompositingManager() {
         }
 #endif
     }
-    qDebug() << "From gsetting, composition about opengl :" << gsettings.get("composited").toString();
     qDebug() <<"composited:" << _composited;
 }
 
