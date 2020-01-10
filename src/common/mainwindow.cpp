@@ -2251,6 +2251,18 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
 
 void MainWindow::onBurstScreenshot(const QImage &frame, qint64 timestamp)
 {
+#define POPUP_ADAPTER(icon, text)  do { \
+    popup->setIcon(icon);\
+    DFontSizeManager::instance()->bind(this, DFontSizeManager::T6);\
+    QFont font = DFontSizeManager::instance()->get(DFontSizeManager::T6);\
+    QFontMetrics fm(font);\
+    auto w = fm.boundingRect(text).width();\
+    popup->setMessage(text);\
+    popup->resize(w + 70, 52);\
+    popup->move((width() - popup->width()) / 2, height() - 127);\
+    popup->show();\
+} while (0)
+
     qDebug() << _burstShoots.size();
     if (!frame.isNull()) {
         auto msg = QString(tr("Screenshot is working,please wait"));
@@ -2284,19 +2296,14 @@ void MainWindow::onBurstScreenshot(const QImage &frame, qint64 timestamp)
 
         if (ret == QDialog::Accepted) {
             auto poster_path = bsd.savedPosterPath();
-            if (!popup) {
-                popup = new DFloatingMessage(DFloatingMessage::TransientType, this);
-            }
             if (QFileInfo::exists(poster_path)) {
-                popup->setIcon(QIcon(":/resources/icons/icon_toast_sucess.svg"));
-                popup->setMessage(tr("The screenshot is saved"));
-                popup->setGeometry(width() / 2 - 50, height() - 125, 110, 48);
-                popup->show();
+                const QIcon icon = QIcon(":/resources/icons/icon_toast_sucess.svg");
+                QString text = QString(tr("The screenshot is saved"));
+                POPUP_ADAPTER(icon, text);
             } else {
-                popup->setIcon(QIcon(":/resources/icons/fail.svg"));
-                popup->setMessage(tr("Failed to save the screenshot"));
-                popup->setGeometry(width() / 2 - 50, height() - 125, 150, 48);
-                popup->show();
+                const QIcon icon = QIcon(":/resources/icons/icon_toast_fail.svg");
+                QString text = QString(tr("Failed to save the screenshot"));
+                POPUP_ADAPTER(icon, text);
             }
         }
     }
