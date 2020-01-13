@@ -350,7 +350,7 @@ public:
         setFocusPolicy(Qt::NoFocus);
         setAttribute(Qt::WA_DeleteOnClose);
         setWindowFlag(Qt::WindowStaysOnTopHint);
-        setFixedSize(_size);
+        resize(_miniSize);
         setRadius(4);
         setArrowWidth(10);
         setArrowHeight(5);
@@ -361,10 +361,10 @@ public:
         setBackgroundColor(bgColor);
 
         auto *l = new QHBoxLayout;
-        l->setContentsMargins(0, 0, 0, 0);
+        l->setContentsMargins(0, 0, 0, 5);
         _time = new DLabel(this);
-        _time->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
-        _time->setFixedSize(_size);
+        _time->setAlignment(Qt::AlignCenter);
+//        _time->setFixedSize(_size);
         _time->setForegroundRole(DPalette::Text);
         DPalette pa = DApplicationHelper::instance()->palette(_time);
         QColor color = pa.textLively().color();
@@ -374,16 +374,35 @@ public:
         _time->setFont(DFontSizeManager::instance()->get(DFontSizeManager::T8));
         l->addWidget(_time, Qt::AlignCenter);
         setLayout(l);
+
+        connect(qApp, &QGuiApplication::fontChanged, this, [=](const QFont &font) {
+            _font = font;
+            _bFontChanged = true;
+        });
     }
 
     void setTime(const QString &time)
     {
         _time->setText(time);
+
+        if (!_bFontChanged) {
+            QFontMetrics fm(DFontSizeManager::instance()->get(DFontSizeManager::T8));
+            _time->setFixedSize(fm.width(_time->text()) + 5, fm.height());
+        } else {
+            QFontMetrics fm(_font);
+            _time->setFont(_font);
+            _time->setFixedSize(fm.width(_time->text()) + 10, fm.height());
+        }
+        this->setWidth(_time->width());
+        this->setHeight(_time->height() + 5);
+        this->setMinimumSize(_miniSize);
     }
 
 private:
     DLabel *_time {nullptr};
-    QSize _size = QSize(58, 25);
+    QSize _miniSize = QSize(58, 25);
+    QFont _font {QFont()};
+    bool _bFontChanged {false};
 };
 
 class IndicatorBar: public DBlurEffectWidget
