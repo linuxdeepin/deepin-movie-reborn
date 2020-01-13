@@ -153,13 +153,13 @@ QString Settings::screenshotLocation()
 
 QString Settings::screenshotNameTemplate()
 {
-    return tr("%1/DMovie%2.jpg").arg(screenshotLocation())
+    return tr("%1/Movie%2.jpg").arg(screenshotLocation())
         .arg(QDateTime::currentDateTime().toString("yyyyMMddhhmmss"));
 }
 
 QString Settings::screenshotNameSeqTemplate()
 {
-    return tr("%1/DMovie%2(%3).jpg").arg(screenshotLocation())
+    return tr("%1/Movie%2(%3).jpg").arg(screenshotLocation())
         .arg(QDateTime::currentDateTime().toString("yyyyMMddhhmmss"));
 }
 
