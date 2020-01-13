@@ -1927,7 +1927,7 @@ void ToolboxProxy::progressHoverChanged(int v)
     QPoint p { QCursor::pos().x(), pos.y() };
 
     auto proBar = qobject_cast<ViewProgBar*>(sender());
-    if (proBar == _viewProgBar && !Settings::get().isSet(Settings::PreviewOnMouseover)) {
+    if (/*proBar == _viewProgBar && */!Settings::get().isSet(Settings::PreviewOnMouseover)) {
         updatePreviewTime(v, p);
         return;
     }
