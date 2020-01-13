@@ -584,19 +584,19 @@
     <name>dmr::MovieInfo</name>
     <message>
         <source>%1G</source>
-        <translation>%1G</translation>
+        <translation type="vanished">%1G</translation>
     </message>
     <message>
         <source>%1M</source>
-        <translation>%1M</translation>
+        <translation type="vanished">%1M</translation>
     </message>
     <message>
         <source>%1K</source>
-        <translation>%1K</translation>
+        <translation type="vanished">%1K</translation>
     </message>
     <message>
         <source>%1</source>
-        <translation>%1</translation>
+        <translation type="vanished">%1</translation>
     </message>
 </context>
 <context>
@@ -686,12 +686,12 @@
 <context>
     <name>dmr::Settings</name>
     <message>
-        <source>%1/DMovie%2.jpg</source>
-        <translation>%1/深度影院%2.jpg</translation>
+        <source>%1/Movie%2.jpg</source>
+        <translation type="unfinished">%1/影院%2.jpg</translation>
     </message>
     <message>
-        <source>%1/DMovie%2(%3).jpg</source>
-        <translation>%1/深度影院%2（%3）.jpg</translation>
+        <source>%1/Movie%2(%3).jpg</source>
+        <translation type="unfinished">%1/影院%2（%3）.jpg</translation>
     </message>
 </context>
 <context>
