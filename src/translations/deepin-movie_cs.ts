@@ -1,16 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="cs">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="cs" version="2.1">
 <context>
     <name>QObject</name>
-    <message>
-        <source>Deepin Movie</source>
-        <translation type="vanished">Filmy</translation>
-    </message>
-    <message>
-        <source>Deepin Movie is a well-designed and full-featured video player with simple borderless design. It supports local and streaming media play with multiple video formats.</source>
-        <translation type="vanished">Deepin Movie je dobře navržený a funkcemi vybavený přehrávač obrazových záznamů s jednoduchým bezokrajovým vzhledem. Podporuje přehrávání místních a přenášených záznamů nahraných v mnoha obrazových formátech.</translation>
-    </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="126"/>
         <source>Invalid folder</source>
@@ -24,7 +14,7 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="2521"/>
         <source>Network disconnected</source>
-        <translation type="unfinished"></translation>
+        <translation>Síť odpojena</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="131"/>
@@ -196,12 +186,12 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="39"/>
         <source>Delete single playlist</source>
-        <translation type="unfinished"></translation>
+        <translation>Smazat seznam skladeb</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="40"/>
         <source>Movie info</source>
-        <translation type="unfinished"></translation>
+        <translation>Údaje o filmu</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="41"/>
@@ -246,36 +236,36 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="49"/>
         <source>Exit fullscreen/mini mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Opustit celou obrazovku/malý režim</translation>
     </message>
     <message>
         <location filename="../main.cpp" line="92"/>
         <location filename="../main.cpp" line="125"/>
         <source>Movie</source>
-        <translation type="unfinished"></translation>
+        <translation>Film</translation>
     </message>
     <message>
         <location filename="../main.cpp" line="93"/>
         <source>The theater is a video player that supports local and streaming video playback in multiple video formats.</source>
-        <translation type="unfinished"></translation>
+        <translation>Divadlo je přehrávač obrazových záznamů. Podporuje přehrávání místních a přenášených záznamů nahraných v mnoha obrazových formátech.</translation>
     </message>
     <message>
         <location filename="../common/shortcut_manager.cpp" line="229"/>
         <location filename="../common/settings_translation.cpp" line="52"/>
         <source>Settings</source>
-        <translation type="unfinished">Nastavení</translation>
+        <translation>Nastavení</translation>
     </message>
     <message>
         <location filename="../common/shortcut_manager.cpp" line="232"/>
         <location filename="../common/settings_translation.cpp" line="50"/>
         <source>Help</source>
-        <translation type="unfinished"></translation>
+        <translation>Nápověda</translation>
     </message>
     <message>
         <location filename="../common/shortcut_manager.cpp" line="237"/>
         <location filename="../common/settings_translation.cpp" line="51"/>
         <source>Display shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Zobrazit klávesové zkratky</translation>
     </message>
 </context>
 <context>
@@ -317,7 +307,7 @@
     <message>
         <location filename="../common/actions.cpp" line="298"/>
         <source>Empty playlist</source>
-        <translation type="unfinished"></translation>
+        <translation>Vyprázdnit seznam skladeb</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="300"/>
@@ -335,10 +325,6 @@
         <location filename="../common/actions.cpp" line="103"/>
         <source>Open folder</source>
         <translation>Otevřít složku</translation>
-    </message>
-    <message>
-        <source>Light theme</source>
-        <translation type="vanished">Světlý vzhled</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="104"/>
@@ -504,11 +490,7 @@
     <message>
         <location filename="../common/actions.cpp" line="297"/>
         <source>Delete from playlist</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Clear playlist</source>
-        <translation type="vanished">Vyprázdnit seznam skladeb</translation>
+        <translation>Smazat  ze seznamu skladeb</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="299"/>
@@ -558,16 +540,12 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="887"/>
         <source>Buffering...</source>
-        <translation type="unfinished"></translation>
+        <translation>Ukládá se do vyrovnávací paměti...</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1600"/>
         <source>No device found</source>
         <translation>Nenalezeno žádné zařízení</translation>
-    </message>
-    <message>
-        <source>Parse Failed</source>
-        <translation type="vanished">Nepodařilo se zpracovat</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1625"/>
@@ -590,31 +568,27 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="1855"/>
         <source>Stereo</source>
-        <translation type="unfinished">Stereo</translation>
+        <translation>Stereo</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1860"/>
         <source>Left channel</source>
-        <translation type="unfinished">Levý kanál</translation>
+        <translation>Levý kanál</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1865"/>
         <source>Right channel</source>
-        <translation type="unfinished">Pravý kanál</translation>
-    </message>
-    <message>
-        <source>Muted</source>
-        <translation type="vanished">Ztlumeno</translation>
+        <translation>Pravý kanál</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1618"/>
         <source>Parse failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Nepodařilo se zpracovat</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1897"/>
         <source>Mute</source>
-        <translation type="unfinished">Ztlumit</translation>
+        <translation>Ztlumit</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1903"/>
@@ -627,7 +601,7 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="1975"/>
         <source>Track: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Skladba: %1</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2013"/>
@@ -689,7 +663,7 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="2215"/>
         <source>Screenshot is working,please wait</source>
-        <translation type="unfinished"></translation>
+        <translation>Zachytává seí snímek obrazovky. Počkejte, prosím</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2339"/>
@@ -700,112 +674,73 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="2528"/>
         <source>No matching online subtitles</source>
-        <translation type="unfinished"></translation>
+        <translation>Žádné odpovídající titulky na internetu</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2545"/>
         <location filename="../common/mainwindow.cpp" line="2610"/>
         <source>Due to the hardware environment limitations,4K video may be stuck.</source>
-        <translation type="unfinished"></translation>
+        <translation>4K video se kvůli technickému vybavení počítače může sekat.</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2546"/>
         <location filename="../common/mainwindow.cpp" line="2611"/>
         <source>Confirm</source>
-        <translation type="unfinished">Potvrdit</translation>
+        <translation>Potvrdit</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2576"/>
         <source>Cannot open file or stream</source>
-        <translation type="unfinished"></translation>
+        <translation>Nelze otevřít soubor nebo proud</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2582"/>
         <location filename="../common/mainwindow.cpp" line="2587"/>
         <source>Invalid file</source>
-        <translation type="unfinished"></translation>
+        <translation>Neplatný soubor</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2592"/>
         <source>Please insert the CD into the drive</source>
-        <translation type="unfinished"></translation>
+        <translation>Vložte, prosím, CD do mechaniky</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2598"/>
         <source>No video file found</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>dmr::MovieInfo</name>
-    <message>
-        <source>%1G</source>
-        <translation type="vanished">%1 G</translation>
-    </message>
-    <message>
-        <source>%1M</source>
-        <translation type="vanished">%1 M</translation>
-    </message>
-    <message>
-        <source>%1K</source>
-        <translation type="vanished">%1 K</translation>
-    </message>
-    <message>
-        <source>%1</source>
-        <translation type="vanished">%1</translation>
+        <translation>Nenalezen žádný soubor se záznamem obrazu</translation>
     </message>
 </context>
 <context>
     <name>dmr::MovieInfoDialog</name>
     <message>
-        <source>File Type:</source>
-        <translation type="vanished">Typ souboru:</translation>
-    </message>
-    <message>
-        <source>Resolution:</source>
-        <translation type="vanished">Rozlišení:</translation>
-    </message>
-    <message>
-        <source>File Size:</source>
-        <translation type="vanished">Velikost souboru:</translation>
-    </message>
-    <message>
-        <source>Duration:</source>
-        <translation type="vanished">Doba trvání:</translation>
-    </message>
-    <message>
-        <source>File Path:</source>
-        <translation type="vanished">Cesta k souboru:</translation>
-    </message>
-    <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="237"/>
         <source>Film info</source>
-        <translation type="unfinished">Údaje o filmu</translation>
+        <translation>Údaje o filmu</translation>
     </message>
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="242"/>
         <source>Resolution</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozlišení</translation>
     </message>
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="243"/>
         <source>File type</source>
-        <translation type="unfinished"></translation>
+        <translation>Typ souboru</translation>
     </message>
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="244"/>
         <source>File size</source>
-        <translation type="unfinished"></translation>
+        <translation>Velikost</translation>
     </message>
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="245"/>
         <source>Duration</source>
-        <translation type="unfinished"></translation>
+        <translation>Doba trvání</translation>
     </message>
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="254"/>
         <source>File path</source>
-        <translation type="unfinished"></translation>
+        <translation>Cesta</translation>
     </message>
 </context>
 <context>
@@ -832,17 +767,17 @@
     <message>
         <location filename="../widgets/playlist_widget.cpp" line="673"/>
         <source>Playlist</source>
-        <translation type="unfinished">Seznam skladeb</translation>
+        <translation>Seznam skladeb</translation>
     </message>
     <message>
         <location filename="../widgets/playlist_widget.cpp" line="679"/>
         <source>17个视频</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../widgets/playlist_widget.cpp" line="696"/>
         <source>Clear Playlist</source>
-        <translation type="unfinished"></translation>
+        <translation>Vyprázdnit seznam skladeb</translation>
     </message>
     <message>
         <location filename="../widgets/playlist_widget.cpp" line="863"/>
@@ -850,20 +785,20 @@
         <location filename="../widgets/playlist_widget.cpp" line="1098"/>
         <location filename="../widgets/playlist_widget.cpp" line="1150"/>
         <source>%1 videos</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 obrazových záznamů</translation>
     </message>
 </context>
 <context>
     <name>dmr::Settings</name>
     <message>
         <location filename="../common/dmr_settings.cpp" line="156"/>
-        <source>%1/DMovie%2.jpg</source>
-        <translation>%1/DMovie%2.jpg</translation>
+        <source>%1/Movie%2.jpg</source>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../common/dmr_settings.cpp" line="162"/>
-        <source>%1/DMovie%2(%3).jpg</source>
-        <translation>%1/DMovie%2(%3).jpg</translation>
+        <source>%1/Movie%2(%3).jpg</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -907,32 +842,32 @@
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="1690"/>
         <source>play</source>
-        <translation type="unfinished"></translation>
+        <translation>Přehrát</translation>
     </message>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="1690"/>
         <source>prev</source>
-        <translation type="unfinished"></translation>
+        <translation>Předchozí</translation>
     </message>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="1690"/>
         <source>next</source>
-        <translation type="unfinished"></translation>
+        <translation>Další</translation>
     </message>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="1691"/>
         <source>sub</source>
-        <translation type="unfinished"></translation>
+        <translation>Titulky</translation>
     </message>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="1691"/>
         <source>fs</source>
-        <translation type="unfinished"></translation>
+        <translation>snímků</translation>
     </message>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="1691"/>
         <source>list</source>
-        <translation type="unfinished"></translation>
+        <translation>Seznam</translation>
     </message>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="1984"/>

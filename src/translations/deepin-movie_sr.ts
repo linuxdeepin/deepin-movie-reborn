@@ -1,16 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="sr">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="sr" version="2.1">
 <context>
     <name>QObject</name>
-    <message>
-        <source>Deepin Movie</source>
-        <translation type="vanished">Дипин Филм</translation>
-    </message>
-    <message>
-        <source>Deepin Movie is a well-designed and full-featured video player with simple borderless design. It supports local and streaming media play with multiple video formats.</source>
-        <translation type="vanished">Дипин Филм је квалитетно дизајниран и потпуно опремљен пуштач видеа са једноставним безрубним изгледом. Подржава пуштање локалног садржаја као и садржаја из токова разних видео формата.</translation>
-    </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="126"/>
         <source>Invalid folder</source>
@@ -24,7 +14,7 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="2521"/>
         <source>Network disconnected</source>
-        <translation type="unfinished"></translation>
+        <translation>Мрежа није повезана</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="131"/>
@@ -106,7 +96,7 @@
         <location filename="../common/settings_translation.cpp" line="20"/>
         <location filename="../common/settings_translation.cpp" line="21"/>
         <source>Subtitle</source>
-        <translation>Титл</translation>
+        <translation>Превод</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="22"/>
@@ -196,12 +186,12 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="39"/>
         <source>Delete single playlist</source>
-        <translation type="unfinished"></translation>
+        <translation>Обриши једну листу пуштања</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="40"/>
         <source>Movie info</source>
-        <translation type="unfinished"></translation>
+        <translation>Подаци филма</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="41"/>
@@ -246,36 +236,36 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="49"/>
         <source>Exit fullscreen/mini mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Напусти цео екран/мини режим</translation>
     </message>
     <message>
         <location filename="../main.cpp" line="92"/>
         <location filename="../main.cpp" line="125"/>
         <source>Movie</source>
-        <translation type="unfinished"></translation>
+        <translation>Филм</translation>
     </message>
     <message>
         <location filename="../main.cpp" line="93"/>
         <source>The theater is a video player that supports local and streaming video playback in multiple video formats.</source>
-        <translation type="unfinished"></translation>
+        <translation>Биоскоп је пуштач видеа који подржава разнолике формате локалних видеа као и видеа из токова.</translation>
     </message>
     <message>
         <location filename="../common/shortcut_manager.cpp" line="229"/>
         <location filename="../common/settings_translation.cpp" line="52"/>
         <source>Settings</source>
-        <translation type="unfinished">Подешавања</translation>
+        <translation>Подeшавања</translation>
     </message>
     <message>
         <location filename="../common/shortcut_manager.cpp" line="232"/>
         <location filename="../common/settings_translation.cpp" line="50"/>
         <source>Help</source>
-        <translation type="unfinished"></translation>
+        <translation>Помоћ</translation>
     </message>
     <message>
         <location filename="../common/shortcut_manager.cpp" line="237"/>
         <location filename="../common/settings_translation.cpp" line="51"/>
         <source>Display shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Прикажи пречице</translation>
     </message>
 </context>
 <context>
@@ -317,7 +307,7 @@
     <message>
         <location filename="../common/actions.cpp" line="298"/>
         <source>Empty playlist</source>
-        <translation type="unfinished"></translation>
+        <translation>Празна листа пуштања</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="300"/>
@@ -335,10 +325,6 @@
         <location filename="../common/actions.cpp" line="103"/>
         <source>Open folder</source>
         <translation>Отвори фасциклу</translation>
-    </message>
-    <message>
-        <source>Light theme</source>
-        <translation type="vanished">Светла тема</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="104"/>
@@ -449,7 +435,7 @@
     <message>
         <location filename="../common/actions.cpp" line="186"/>
         <source>Subtitle</source>
-        <translation>Титл</translation>
+        <translation>Превод</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="187"/>
@@ -504,11 +490,7 @@
     <message>
         <location filename="../common/actions.cpp" line="297"/>
         <source>Delete from playlist</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Clear playlist</source>
-        <translation type="vanished">Очисти листу пуштања</translation>
+        <translation>Уклони из листе пуштања</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="299"/>
@@ -558,16 +540,12 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="887"/>
         <source>Buffering...</source>
-        <translation type="unfinished"></translation>
+        <translation>Прихват...</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1600"/>
         <source>No device found</source>
         <translation>Није пронађен ниједан уређај</translation>
-    </message>
-    <message>
-        <source>Parse Failed</source>
-        <translation type="vanished">Неуспешно анализирање</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1625"/>
@@ -590,31 +568,27 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="1855"/>
         <source>Stereo</source>
-        <translation type="unfinished">Стерео</translation>
+        <translation>Стерео</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1860"/>
         <source>Left channel</source>
-        <translation type="unfinished">Леви канал</translation>
+        <translation>Леви канал</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1865"/>
         <source>Right channel</source>
-        <translation type="unfinished">Десни канал</translation>
-    </message>
-    <message>
-        <source>Muted</source>
-        <translation type="vanished">Ућуткано</translation>
+        <translation>Десни канал</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1618"/>
         <source>Parse failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Неуспешно анализирање</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1897"/>
         <source>Mute</source>
-        <translation type="unfinished">Ућуткај</translation>
+        <translation>Ућуткај</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1903"/>
@@ -627,13 +601,13 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="1975"/>
         <source>Track: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Снимак: %1</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2013"/>
         <location filename="../common/mainwindow.cpp" line="2021"/>
         <source>Subtitle %1: %2s</source>
-        <translation>Титл %1: %2s</translation>
+        <translation>Превод %1: %2s</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2014"/>
@@ -657,7 +631,7 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="2050"/>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</source>
-        <translation>Титл (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</translation>
+        <translation>Превод (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2121"/>
@@ -689,123 +663,84 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="2215"/>
         <source>Screenshot is working,please wait</source>
-        <translation type="unfinished"></translation>
+        <translation>Усликавање екрана у току, сачекајте</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2339"/>
         <location filename="../common/mainwindow.cpp" line="3262"/>
         <source>Invalid file: %1</source>
-        <translation>Неисправна датотека: %1</translation>
+        <translation>Неважећа датотека: %1</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2528"/>
         <source>No matching online subtitles</source>
-        <translation type="unfinished"></translation>
+        <translation>Нема подударних превода на мрежи</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2545"/>
         <location filename="../common/mainwindow.cpp" line="2610"/>
         <source>Due to the hardware environment limitations,4K video may be stuck.</source>
-        <translation type="unfinished"></translation>
+        <translation>Због хардверских ограничења 4К видео се може заглавити.</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2546"/>
         <location filename="../common/mainwindow.cpp" line="2611"/>
         <source>Confirm</source>
-        <translation type="unfinished">Потврди</translation>
+        <translation>Потврди</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2576"/>
         <source>Cannot open file or stream</source>
-        <translation type="unfinished"></translation>
+        <translation>Не могу да отворим датотеку или ток</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2582"/>
         <location filename="../common/mainwindow.cpp" line="2587"/>
         <source>Invalid file</source>
-        <translation type="unfinished"></translation>
+        <translation>Неважећа датотека</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2592"/>
         <source>Please insert the CD into the drive</source>
-        <translation type="unfinished"></translation>
+        <translation>Молимо убаците ЦД у уређај</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2598"/>
         <source>No video file found</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>dmr::MovieInfo</name>
-    <message>
-        <source>%1G</source>
-        <translation type="vanished">%1G</translation>
-    </message>
-    <message>
-        <source>%1M</source>
-        <translation type="vanished">%1M</translation>
-    </message>
-    <message>
-        <source>%1K</source>
-        <translation type="vanished">%1K</translation>
-    </message>
-    <message>
-        <source>%1</source>
-        <translation type="vanished">%1</translation>
+        <translation>Није пронађена датотека видеа</translation>
     </message>
 </context>
 <context>
     <name>dmr::MovieInfoDialog</name>
     <message>
-        <source>File Type:</source>
-        <translation type="vanished">Тип датотеке:</translation>
-    </message>
-    <message>
-        <source>Resolution:</source>
-        <translation type="vanished">Резолуција:</translation>
-    </message>
-    <message>
-        <source>File Size:</source>
-        <translation type="vanished">Величина датотеке:</translation>
-    </message>
-    <message>
-        <source>Duration:</source>
-        <translation type="vanished">Трајање:</translation>
-    </message>
-    <message>
-        <source>File Path:</source>
-        <translation type="vanished">Путања датотеке:</translation>
-    </message>
-    <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="237"/>
         <source>Film info</source>
-        <translation type="unfinished">Својства видеа</translation>
+        <translation>Својства видеа</translation>
     </message>
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="242"/>
         <source>Resolution</source>
-        <translation type="unfinished"></translation>
+        <translation>Резолуција</translation>
     </message>
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="243"/>
         <source>File type</source>
-        <translation type="unfinished"></translation>
+        <translation>Тип датотеке</translation>
     </message>
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="244"/>
         <source>File size</source>
-        <translation type="unfinished"></translation>
+        <translation>Величина датотеке</translation>
     </message>
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="245"/>
         <source>Duration</source>
-        <translation type="unfinished"></translation>
+        <translation>Трајање</translation>
     </message>
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="254"/>
         <source>File path</source>
-        <translation type="unfinished"></translation>
+        <translation>Путања датотеке</translation>
     </message>
 </context>
 <context>
@@ -832,17 +767,17 @@
     <message>
         <location filename="../widgets/playlist_widget.cpp" line="673"/>
         <source>Playlist</source>
-        <translation type="unfinished">Листа пуштања</translation>
+        <translation>Листа пуштања</translation>
     </message>
     <message>
         <location filename="../widgets/playlist_widget.cpp" line="679"/>
         <source>17个视频</source>
-        <translation type="unfinished"></translation>
+        <translation>17 видео</translation>
     </message>
     <message>
         <location filename="../widgets/playlist_widget.cpp" line="696"/>
         <source>Clear Playlist</source>
-        <translation type="unfinished"></translation>
+        <translation>Очисти листу пуштања</translation>
     </message>
     <message>
         <location filename="../widgets/playlist_widget.cpp" line="863"/>
@@ -850,20 +785,20 @@
         <location filename="../widgets/playlist_widget.cpp" line="1098"/>
         <location filename="../widgets/playlist_widget.cpp" line="1150"/>
         <source>%1 videos</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 видеа</translation>
     </message>
 </context>
 <context>
     <name>dmr::Settings</name>
     <message>
         <location filename="../common/dmr_settings.cpp" line="156"/>
-        <source>%1/DMovie%2.jpg</source>
-        <translation>%1/ДФилм%2.jpg</translation>
+        <source>%1/Movie%2.jpg</source>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../common/dmr_settings.cpp" line="162"/>
-        <source>%1/DMovie%2(%3).jpg</source>
-        <translation>%1/ДФилм%2(%3).jpg</translation>
+        <source>%1/Movie%2(%3).jpg</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -886,7 +821,7 @@
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="1687"/>
         <source>Subtitles</source>
-        <translation>Титлови</translation>
+        <translation>Преводи</translation>
     </message>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="1687"/>
@@ -907,32 +842,32 @@
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="1690"/>
         <source>play</source>
-        <translation type="unfinished"></translation>
+        <translation>пусти</translation>
     </message>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="1690"/>
         <source>prev</source>
-        <translation type="unfinished"></translation>
+        <translation>прет.</translation>
     </message>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="1690"/>
         <source>next</source>
-        <translation type="unfinished"></translation>
+        <translation>след.</translation>
     </message>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="1691"/>
         <source>sub</source>
-        <translation type="unfinished"></translation>
+        <translation>прев.</translation>
     </message>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="1691"/>
         <source>fs</source>
-        <translation type="unfinished"></translation>
+        <translation>сд</translation>
     </message>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="1691"/>
         <source>list</source>
-        <translation type="unfinished"></translation>
+        <translation>листа</translation>
     </message>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="1984"/>

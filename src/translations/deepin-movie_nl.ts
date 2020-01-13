@@ -1,16 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="nl">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="nl" version="2.1">
 <context>
     <name>QObject</name>
-    <message>
-        <source>Deepin Movie</source>
-        <translation type="vanished">Deepin Video&apos;s</translation>
-    </message>
-    <message>
-        <source>Deepin Movie is a well-designed and full-featured video player with simple borderless design. It supports local and streaming media play with multiple video formats.</source>
-        <translation type="vanished">Deepin Video&apos;s is een goed ontworpen, complete mediaspeler met een eenvoudig, randloos ontwerp. Deepin Video&apos;s ondersteunt het afspelen van lokale video&apos;s en streams in allerlei formaten.</translation>
-    </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="126"/>
         <source>Invalid folder</source>
@@ -24,7 +14,7 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="2521"/>
         <source>Network disconnected</source>
-        <translation type="unfinished"></translation>
+        <translation>Geen internetverbinding</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="131"/>
@@ -49,7 +39,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="8"/>
         <source>Open a new player for each file played</source>
-        <translation>Nieuwe speler openen voor elk afgespeeld bestand</translation>
+        <translation>Nieuw venster openen voor elk afgespeeld bestand</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="9"/>
@@ -80,7 +70,7 @@
         <location filename="../common/settings_translation.cpp" line="14"/>
         <location filename="../common/settings_translation.cpp" line="19"/>
         <source>Screenshot</source>
-        <translation>Schermafdruk</translation>
+        <translation>Schermfoto</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="15"/>
@@ -176,7 +166,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="35"/>
         <source>Fullscreen</source>
-        <translation>Volledig scherm</translation>
+        <translation>Beeldvullend</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="36"/>
@@ -196,12 +186,12 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="39"/>
         <source>Delete single playlist</source>
-        <translation type="unfinished"></translation>
+        <translation>Eén afspeellijst wissen</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="40"/>
         <source>Movie info</source>
-        <translation type="unfinished"></translation>
+        <translation>Filminformatie</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="41"/>
@@ -216,12 +206,12 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="43"/>
         <source>Burst screenshot</source>
-        <translation>Schermafdruk barsten</translation>
+        <translation>Schermfoto barsten</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="44"/>
         <source>Film screenshot</source>
-        <translation>Schermafdruk van film</translation>
+        <translation>Schermfoto van film</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="45"/>
@@ -241,41 +231,41 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="48"/>
         <source>Font Size</source>
-        <translation>Lettertypegrootte</translation>
+        <translation>Lettergrootte</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="49"/>
         <source>Exit fullscreen/mini mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Beeldvullende of mini-modus verlaten</translation>
     </message>
     <message>
         <location filename="../main.cpp" line="92"/>
         <location filename="../main.cpp" line="125"/>
         <source>Movie</source>
-        <translation type="unfinished"></translation>
+        <translation>Video</translation>
     </message>
     <message>
         <location filename="../main.cpp" line="93"/>
         <source>The theater is a video player that supports local and streaming video playback in multiple video formats.</source>
-        <translation type="unfinished"></translation>
+        <translation>Deepin Video&apos;s is een videospeler die lokale video&apos;s en streams in allerlei formaten afspeelt.</translation>
     </message>
     <message>
         <location filename="../common/shortcut_manager.cpp" line="229"/>
         <location filename="../common/settings_translation.cpp" line="52"/>
         <source>Settings</source>
-        <translation type="unfinished">Instellingen</translation>
+        <translation>Instellingen</translation>
     </message>
     <message>
         <location filename="../common/shortcut_manager.cpp" line="232"/>
         <location filename="../common/settings_translation.cpp" line="50"/>
         <source>Help</source>
-        <translation type="unfinished"></translation>
+        <translation>Hulp</translation>
     </message>
     <message>
         <location filename="../common/shortcut_manager.cpp" line="237"/>
         <location filename="../common/settings_translation.cpp" line="51"/>
         <source>Display shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Sneltoetsen tonen</translation>
     </message>
 </context>
 <context>
@@ -293,7 +283,7 @@
     <message>
         <location filename="../widgets/url_dialog.cpp" line="46"/>
         <source>Please enter the URL:</source>
-        <translation>Voer de URL in:</translation>
+        <translation>Voer de url in:</translation>
     </message>
 </context>
 <context>
@@ -307,7 +297,7 @@
     <message>
         <location filename="../common/actions.cpp" line="108"/>
         <source>Fullscreen</source>
-        <translation>Volledig scherm</translation>
+        <translation>Beeldvullende modus</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="110"/>
@@ -317,7 +307,7 @@
     <message>
         <location filename="../common/actions.cpp" line="298"/>
         <source>Empty playlist</source>
-        <translation type="unfinished"></translation>
+        <translation>Lege afspeellijst</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="300"/>
@@ -335,10 +325,6 @@
         <location filename="../common/actions.cpp" line="103"/>
         <source>Open folder</source>
         <translation>Map openen</translation>
-    </message>
-    <message>
-        <source>Light theme</source>
-        <translation type="vanished">Licht thema</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="104"/>
@@ -479,12 +465,12 @@
     <message>
         <location filename="../common/actions.cpp" line="269"/>
         <source>Screenshot</source>
-        <translation>Schermafdruk</translation>
+        <translation>Schermfoto</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="270"/>
         <source>Film Screenshot</source>
-        <translation>Schermafdruk van film</translation>
+        <translation>Schermfoto van film</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="271"/>
@@ -504,11 +490,7 @@
     <message>
         <location filename="../common/actions.cpp" line="297"/>
         <source>Delete from playlist</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Clear playlist</source>
-        <translation type="vanished">Afspeellijst wissen</translation>
+        <translation>Verwijderen van afspeellijst</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="299"/>
@@ -536,7 +518,7 @@
     <message>
         <location filename="../widgets/burst_screenshots_dialog.cpp" line="98"/>
         <source>Save</source>
-        <translation>Bewaren</translation>
+        <translation>Opslaan</translation>
     </message>
 </context>
 <context>
@@ -558,16 +540,12 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="887"/>
         <source>Buffering...</source>
-        <translation type="unfinished"></translation>
+        <translation>Bezig met bufferen...</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1600"/>
         <source>No device found</source>
-        <translation>Geen apparaat gevonden</translation>
-    </message>
-    <message>
-        <source>Parse Failed</source>
-        <translation type="vanished">Verwerken mislukt</translation>
+        <translation>Geen apparaat aangetroffen</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1625"/>
@@ -590,31 +568,27 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="1855"/>
         <source>Stereo</source>
-        <translation type="unfinished">Stereo</translation>
+        <translation>Stereo</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1860"/>
         <source>Left channel</source>
-        <translation type="unfinished">Linkerkanaal</translation>
+        <translation>Linkerkanaal</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1865"/>
         <source>Right channel</source>
-        <translation type="unfinished">Rechterkanaal</translation>
-    </message>
-    <message>
-        <source>Muted</source>
-        <translation type="vanished">Gedempt</translation>
+        <translation>Rechterkanaal</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1618"/>
         <source>Parse failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Verwerken mislukt</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1897"/>
         <source>Mute</source>
-        <translation type="unfinished">Dempen</translation>
+        <translation>Dempen</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1903"/>
@@ -627,7 +601,7 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="1975"/>
         <source>Track: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nummer: %1</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2013"/>
@@ -667,29 +641,29 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="2132"/>
         <source>Movie Screenshot</source>
-        <translation>Schermafdruk van film</translation>
+        <translation>Schermfoto van film</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2133"/>
         <source>Saved to</source>
-        <translation>Opgeslagen naar</translation>
+        <translation>Opgeslagen in</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2158"/>
         <location filename="../common/mainwindow.cpp" line="2251"/>
         <source>The screenshot is saved</source>
-        <translation>De schermafdruk is opgelagen</translation>
+        <translation>De schermfoto is opgelagen</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2162"/>
         <location filename="../common/mainwindow.cpp" line="2256"/>
         <source>Failed to save the screenshot</source>
-        <translation>Kan schermafdruk niet opslaan</translation>
+        <translation>De schermfoto kan niet worden opgeslagen</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2215"/>
         <source>Screenshot is working,please wait</source>
-        <translation type="unfinished"></translation>
+        <translation>Bezig met maken van schermfoto...</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2339"/>
@@ -700,112 +674,73 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="2528"/>
         <source>No matching online subtitles</source>
-        <translation type="unfinished"></translation>
+        <translation>Geen ondertiteling aangetroffen op internet</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2545"/>
         <location filename="../common/mainwindow.cpp" line="2610"/>
         <source>Due to the hardware environment limitations,4K video may be stuck.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wegens hardwarebeperkingen kunnen 4K-video&apos;s mogelijk stotteren tijdens het afspelen.</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2546"/>
         <location filename="../common/mainwindow.cpp" line="2611"/>
         <source>Confirm</source>
-        <translation type="unfinished">Bevestigen</translation>
+        <translation>Bevestigen</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2576"/>
         <source>Cannot open file or stream</source>
-        <translation type="unfinished"></translation>
+        <translation>Bestand of stream kan niet worden geopend</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2582"/>
         <location filename="../common/mainwindow.cpp" line="2587"/>
         <source>Invalid file</source>
-        <translation type="unfinished"></translation>
+        <translation>Ongeldig bestand</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2592"/>
         <source>Please insert the CD into the drive</source>
-        <translation type="unfinished"></translation>
+        <translation>Stop de cd in de lade</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2598"/>
         <source>No video file found</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>dmr::MovieInfo</name>
-    <message>
-        <source>%1G</source>
-        <translation type="vanished">%1G</translation>
-    </message>
-    <message>
-        <source>%1M</source>
-        <translation type="vanished">%1M</translation>
-    </message>
-    <message>
-        <source>%1K</source>
-        <translation type="vanished">%1K</translation>
-    </message>
-    <message>
-        <source>%1</source>
-        <translation type="vanished">%1</translation>
+        <translation>Geen videobestand aangetroffen</translation>
     </message>
 </context>
 <context>
     <name>dmr::MovieInfoDialog</name>
     <message>
-        <source>File Type:</source>
-        <translation type="vanished">Bestandstype:</translation>
-    </message>
-    <message>
-        <source>Resolution:</source>
-        <translation type="vanished">Resolutie:</translation>
-    </message>
-    <message>
-        <source>File Size:</source>
-        <translation type="vanished">Bestandsgrootte:</translation>
-    </message>
-    <message>
-        <source>Duration:</source>
-        <translation type="vanished">Duur:</translation>
-    </message>
-    <message>
-        <source>File Path:</source>
-        <translation type="vanished">Bestandspad:</translation>
-    </message>
-    <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="237"/>
         <source>Film info</source>
-        <translation type="unfinished">Filminformatie</translation>
+        <translation>Filminformatie</translation>
     </message>
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="242"/>
         <source>Resolution</source>
-        <translation type="unfinished"></translation>
+        <translation>Resolutie</translation>
     </message>
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="243"/>
         <source>File type</source>
-        <translation type="unfinished"></translation>
+        <translation>Bestandstype</translation>
     </message>
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="244"/>
         <source>File size</source>
-        <translation type="unfinished"></translation>
+        <translation>Bestandsgrootte</translation>
     </message>
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="245"/>
         <source>Duration</source>
-        <translation type="unfinished"></translation>
+        <translation>Duur</translation>
     </message>
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="254"/>
         <source>File path</source>
-        <translation type="unfinished"></translation>
+        <translation>Bestandspad</translation>
     </message>
 </context>
 <context>
@@ -832,17 +767,17 @@
     <message>
         <location filename="../widgets/playlist_widget.cpp" line="673"/>
         <source>Playlist</source>
-        <translation type="unfinished">Afspeellijst</translation>
+        <translation>Afspeellijst</translation>
     </message>
     <message>
         <location filename="../widgets/playlist_widget.cpp" line="679"/>
         <source>17个视频</source>
-        <translation type="unfinished"></translation>
+        <translation>17个视频</translation>
     </message>
     <message>
         <location filename="../widgets/playlist_widget.cpp" line="696"/>
         <source>Clear Playlist</source>
-        <translation type="unfinished"></translation>
+        <translation>Afspeellijst wissen</translation>
     </message>
     <message>
         <location filename="../widgets/playlist_widget.cpp" line="863"/>
@@ -850,20 +785,20 @@
         <location filename="../widgets/playlist_widget.cpp" line="1098"/>
         <location filename="../widgets/playlist_widget.cpp" line="1150"/>
         <source>%1 videos</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 video&apos;s</translation>
     </message>
 </context>
 <context>
     <name>dmr::Settings</name>
     <message>
         <location filename="../common/dmr_settings.cpp" line="156"/>
-        <source>%1/DMovie%2.jpg</source>
-        <translation>%1/DMovie%2.jpg</translation>
+        <source>%1/Movie%2.jpg</source>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../common/dmr_settings.cpp" line="162"/>
-        <source>%1/DMovie%2(%3).jpg</source>
-        <translation>%1/DMovie%2(%3).jpg</translation>
+        <source>%1/Movie%2(%3).jpg</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -902,37 +837,37 @@
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="1686"/>
         <source>Play/Pause</source>
-        <translation>Afspelen/pauzeren</translation>
+        <translation>Afspelen/Pauzeren</translation>
     </message>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="1690"/>
         <source>play</source>
-        <translation type="unfinished"></translation>
+        <translation>afspelen</translation>
     </message>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="1690"/>
         <source>prev</source>
-        <translation type="unfinished"></translation>
+        <translation>vorige</translation>
     </message>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="1690"/>
         <source>next</source>
-        <translation type="unfinished"></translation>
+        <translation>volgende</translation>
     </message>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="1691"/>
         <source>sub</source>
-        <translation type="unfinished"></translation>
+        <translation>ondertiteling</translation>
     </message>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="1691"/>
         <source>fs</source>
-        <translation type="unfinished"></translation>
+        <translation>fs</translation>
     </message>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="1691"/>
         <source>list</source>
-        <translation type="unfinished"></translation>
+        <translation>lijst</translation>
     </message>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="1984"/>

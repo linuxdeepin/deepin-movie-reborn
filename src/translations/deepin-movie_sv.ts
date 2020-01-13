@@ -1,55 +1,45 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="sv">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="sv" version="2.1">
 <context>
     <name>QObject</name>
     <message>
-        <source>Deepin Movie</source>
-        <translation type="vanished">Deepin-film</translation>
-    </message>
-    <message>
-        <source>Deepin Movie is a well-designed and full-featured video player with simple borderless design. It supports local and streaming media play with multiple video formats.</source>
-        <translation type="vanished">Deepin Film är en väl utformad och fullfjädrad videospelare med enkel gränslös design. Den stöder lokal och strömmand media uppspelning med flera videoformat.</translation>
-    </message>
-    <message>
         <location filename="../common/mainwindow.cpp" line="126"/>
         <source>Invalid folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Ogiltig mapp</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="140"/>
         <source>Open folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Öppna mapp</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2521"/>
         <source>Network disconnected</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="131"/>
         <source>You don&apos;t have permission to operate this folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Du har ej behörighet att använda denna mapp</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="5"/>
         <source>Auto add similar files to play</source>
-        <translation type="unfinished"></translation>
+        <translation>Lägg automatiskt till liknande filer att spela</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="6"/>
         <source>Clear playlist when exit</source>
-        <translation type="unfinished"></translation>
+        <translation>Rensa spellista vid avslut</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="7"/>
         <source>Show video preview on mouseover</source>
-        <translation type="unfinished"></translation>
+        <translation>Visa förhandsgranskning vid mouseover</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="8"/>
         <source>Open a new player for each file played</source>
-        <translation type="unfinished"></translation>
+        <translation>Öppna en ny spelare för varje fil som spelas</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="9"/>
@@ -59,17 +49,17 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="10"/>
         <source>Remember playback position</source>
-        <translation type="unfinished"></translation>
+        <translation>Kom ihåg uppspelningsposition</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="11"/>
         <source>Path</source>
-        <translation type="unfinished"></translation>
+        <translation>Sökväg</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="12"/>
         <source>Basic</source>
-        <translation type="unfinished"></translation>
+        <translation>Grundläggande</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="13"/>
@@ -106,17 +96,17 @@
         <location filename="../common/settings_translation.cpp" line="20"/>
         <location filename="../common/settings_translation.cpp" line="21"/>
         <source>Subtitle</source>
-        <translation type="unfinished"></translation>
+        <translation>Undertext</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="22"/>
         <source>Font Style</source>
-        <translation type="unfinished"></translation>
+        <translation>Font stil</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="23"/>
         <source>Restore Defaults</source>
-        <translation type="unfinished"></translation>
+        <translation>Återställ Förval</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="24"/>
@@ -146,12 +136,12 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="29"/>
         <source>Next frame</source>
-        <translation type="unfinished"></translation>
+        <translation>Nästa bildruta</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="30"/>
         <source>Previous frame</source>
-        <translation type="unfinished"></translation>
+        <translation>Föregående bildruta</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="31"/>
@@ -166,12 +156,12 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="33"/>
         <source>Speed up</source>
-        <translation type="unfinished"></translation>
+        <translation>Öka hastighet</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="34"/>
         <source>Speed down</source>
-        <translation type="unfinished"></translation>
+        <translation>Säng hastighet</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="35"/>
@@ -191,17 +181,17 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="38"/>
         <source>Reset speed</source>
-        <translation type="unfinished"></translation>
+        <translation>Återställ hastighet</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="39"/>
         <source>Delete single playlist</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="40"/>
         <source>Movie info</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="41"/>
@@ -221,17 +211,17 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="44"/>
         <source>Film screenshot</source>
-        <translation type="unfinished"></translation>
+        <translation>Ta en skärmbild</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="45"/>
         <source>0.5s backward</source>
-        <translation type="unfinished"></translation>
+        <translation>0.5s bakåt</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="46"/>
         <source>0.5s forward</source>
-        <translation type="unfinished"></translation>
+        <translation>0.5s framåt</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="47"/>
@@ -241,41 +231,41 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="48"/>
         <source>Font Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Font storlek</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="49"/>
         <source>Exit fullscreen/mini mode</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../main.cpp" line="92"/>
         <location filename="../main.cpp" line="125"/>
         <source>Movie</source>
-        <translation type="unfinished"></translation>
+        <translation>Film</translation>
     </message>
     <message>
         <location filename="../main.cpp" line="93"/>
         <source>The theater is a video player that supports local and streaming video playback in multiple video formats.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../common/shortcut_manager.cpp" line="229"/>
         <location filename="../common/settings_translation.cpp" line="52"/>
         <source>Settings</source>
-        <translation type="unfinished">Inställningar</translation>
+        <translation>Inställningar</translation>
     </message>
     <message>
         <location filename="../common/shortcut_manager.cpp" line="232"/>
         <location filename="../common/settings_translation.cpp" line="50"/>
         <source>Help</source>
-        <translation type="unfinished"></translation>
+        <translation>Hjälp</translation>
     </message>
     <message>
         <location filename="../common/shortcut_manager.cpp" line="237"/>
         <location filename="../common/settings_translation.cpp" line="51"/>
         <source>Display shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Visa genvägar</translation>
     </message>
 </context>
 <context>
@@ -293,7 +283,7 @@
     <message>
         <location filename="../widgets/url_dialog.cpp" line="46"/>
         <source>Please enter the URL:</source>
-        <translation type="unfinished"></translation>
+        <translation>Var god ange URL:</translation>
     </message>
 </context>
 <context>
@@ -312,17 +302,17 @@
     <message>
         <location filename="../common/actions.cpp" line="110"/>
         <source>Always on Top</source>
-        <translation type="unfinished"></translation>
+        <translation>Alltid överst</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="298"/>
         <source>Empty playlist</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="300"/>
         <source>Film info</source>
-        <translation type="unfinished"></translation>
+        <translation>Film info</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="82"/>
@@ -334,7 +324,7 @@
         <location filename="../common/actions.cpp" line="83"/>
         <location filename="../common/actions.cpp" line="103"/>
         <source>Open folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Öppna mapp</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="104"/>
@@ -344,7 +334,7 @@
     <message>
         <location filename="../common/actions.cpp" line="105"/>
         <source>Open CD/DVD</source>
-        <translation type="unfinished"></translation>
+        <translation>Öppna CD/DVD</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="109"/>
@@ -354,32 +344,32 @@
     <message>
         <location filename="../common/actions.cpp" line="116"/>
         <source>Play Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Uppspelningsläge</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="119"/>
         <source>Order Play</source>
-        <translation type="unfinished"></translation>
+        <translation>Spela efter ordning</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="120"/>
         <source>Shuffle Play</source>
-        <translation type="unfinished"></translation>
+        <translation>Slumpa spelning</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="121"/>
         <source>Single Play</source>
-        <translation type="unfinished"></translation>
+        <translation>Enskilt spelning</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="122"/>
         <source>Single Loop</source>
-        <translation type="unfinished"></translation>
+        <translation>Loopa låt</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="123"/>
         <source>List Loop</source>
-        <translation type="unfinished"></translation>
+        <translation>Loopa spellista</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="132"/>
@@ -394,22 +384,22 @@
     <message>
         <location filename="../common/actions.cpp" line="143"/>
         <source>Clockwise</source>
-        <translation type="unfinished"></translation>
+        <translation>Medurs</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="144"/>
         <source>Counterclockwise</source>
-        <translation type="unfinished"></translation>
+        <translation>Moturs</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="147"/>
         <source>Next frame</source>
-        <translation type="unfinished"></translation>
+        <translation>Nästa bildruta</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="148"/>
         <source>Previous frame</source>
-        <translation type="unfinished"></translation>
+        <translation>Föregående bildruta</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="160"/>
@@ -429,12 +419,12 @@
     <message>
         <location filename="../common/actions.cpp" line="168"/>
         <source>Left channel</source>
-        <translation type="unfinished"></translation>
+        <translation>Vänster kanal</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="169"/>
         <source>Right channel</source>
-        <translation type="unfinished"></translation>
+        <translation>Höger kanal</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="175"/>
@@ -445,17 +435,17 @@
     <message>
         <location filename="../common/actions.cpp" line="186"/>
         <source>Subtitle</source>
-        <translation type="unfinished"></translation>
+        <translation>Undertext</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="187"/>
         <source>Load</source>
-        <translation type="unfinished"></translation>
+        <translation>Ladda</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="188"/>
         <source>Online Search</source>
-        <translation type="unfinished"></translation>
+        <translation>Online Sök</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="192"/>
@@ -465,12 +455,12 @@
     <message>
         <location filename="../common/actions.cpp" line="196"/>
         <source>Hide</source>
-        <translation type="unfinished"></translation>
+        <translation>Göm</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="200"/>
         <source>Encodings</source>
-        <translation type="unfinished"></translation>
+        <translation>Kodningar</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="269"/>
@@ -480,12 +470,12 @@
     <message>
         <location filename="../common/actions.cpp" line="270"/>
         <source>Film Screenshot</source>
-        <translation type="unfinished"></translation>
+        <translation>Ta en skärmbild</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="271"/>
         <source>Burst Shooting</source>
-        <translation type="unfinished"></translation>
+        <translation>Burst Shooting</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="281"/>
@@ -495,21 +485,17 @@
     <message>
         <location filename="../common/actions.cpp" line="282"/>
         <source>Film Info</source>
-        <translation type="unfinished"></translation>
+        <translation>Film Info</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="297"/>
         <source>Delete from playlist</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Clear playlist</source>
-        <translation type="vanished">Rensa spellista</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="299"/>
         <source>Display in file manager</source>
-        <translation type="unfinished"></translation>
+        <translation>Visa i filhanteraren</translation>
     </message>
 </context>
 <context>
@@ -517,17 +503,17 @@
     <message>
         <location filename="../widgets/burst_screenshots_dialog.cpp" line="63"/>
         <source>Duration: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Speltid: %1</translation>
     </message>
     <message>
         <location filename="../widgets/burst_screenshots_dialog.cpp" line="69"/>
         <source>Resolution: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Upplösning: %1</translation>
     </message>
     <message>
         <location filename="../widgets/burst_screenshots_dialog.cpp" line="75"/>
         <source>Size: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Storlek: %1</translation>
     </message>
     <message>
         <location filename="../widgets/burst_screenshots_dialog.cpp" line="98"/>
@@ -542,29 +528,29 @@
         <location filename="../common/mainwindow.cpp" line="2053"/>
         <location filename="../common/mainwindow.cpp" line="3249"/>
         <source>Load successfully</source>
-        <translation type="unfinished"></translation>
+        <translation>Inläsning lyckades</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="805"/>
         <location filename="../common/mainwindow.cpp" line="2053"/>
         <location filename="../common/mainwindow.cpp" line="3249"/>
         <source>Load failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Inläsning misslyckades</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="887"/>
         <source>Buffering...</source>
-        <translation type="unfinished"></translation>
+        <translation>Buffrar...</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1600"/>
         <source>No device found</source>
-        <translation type="unfinished"></translation>
+        <translation>Ingen enhet hittades</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1625"/>
         <source>Open folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Öppna mapp</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1642"/>
@@ -577,36 +563,32 @@
         <location filename="../common/mainwindow.cpp" line="1644"/>
         <location filename="../common/mainwindow.cpp" line="1666"/>
         <source>All videos (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Alla videos (%1)</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1855"/>
         <source>Stereo</source>
-        <translation type="unfinished">Stereo</translation>
+        <translation>Stereo</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1860"/>
         <source>Left channel</source>
-        <translation type="unfinished"></translation>
+        <translation>Vänster kanal</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1865"/>
         <source>Right channel</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Muted</source>
-        <translation type="vanished">Tystad</translation>
+        <translation>Höger kanal</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1618"/>
         <source>Parse failed</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1897"/>
         <source>Mute</source>
-        <translation type="unfinished">Tysta</translation>
+        <translation>Tysta</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1903"/>
@@ -614,42 +596,42 @@
         <location filename="../common/mainwindow.cpp" line="1935"/>
         <location filename="../common/mainwindow.cpp" line="1947"/>
         <source>Volume: %1%</source>
-        <translation type="unfinished"></translation>
+        <translation>Volym: %1%</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="1975"/>
         <source>Track: %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2013"/>
         <location filename="../common/mainwindow.cpp" line="2021"/>
         <source>Subtitle %1: %2s</source>
-        <translation type="unfinished"></translation>
+        <translation>Undertext %1: %2s</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2014"/>
         <location filename="../common/mainwindow.cpp" line="2022"/>
         <source>delayed</source>
-        <translation type="unfinished"></translation>
+        <translation>fördröjd</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2014"/>
         <location filename="../common/mainwindow.cpp" line="2022"/>
         <source>advanced</source>
-        <translation type="unfinished"></translation>
+        <translation>avancerad</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2029"/>
         <location filename="../common/mainwindow.cpp" line="2036"/>
         <location filename="../common/mainwindow.cpp" line="2043"/>
         <source>Speed: %1x</source>
-        <translation type="unfinished"></translation>
+        <translation>Hastighet: %1x</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2050"/>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</source>
-        <translation type="unfinished"></translation>
+        <translation>Undertext (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2121"/>
@@ -664,68 +646,68 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="2133"/>
         <source>Saved to</source>
-        <translation type="unfinished"></translation>
+        <translation>Sparad till</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2158"/>
         <location filename="../common/mainwindow.cpp" line="2251"/>
         <source>The screenshot is saved</source>
-        <translation type="unfinished"></translation>
+        <translation>Skärmbilden har sparats</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2162"/>
         <location filename="../common/mainwindow.cpp" line="2256"/>
         <source>Failed to save the screenshot</source>
-        <translation type="unfinished"></translation>
+        <translation>Gick ej att spara skärmbilden</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2215"/>
         <source>Screenshot is working,please wait</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2339"/>
         <location filename="../common/mainwindow.cpp" line="3262"/>
         <source>Invalid file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ogiltig fil: %1</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2528"/>
         <source>No matching online subtitles</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2545"/>
         <location filename="../common/mainwindow.cpp" line="2610"/>
         <source>Due to the hardware environment limitations,4K video may be stuck.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2546"/>
         <location filename="../common/mainwindow.cpp" line="2611"/>
         <source>Confirm</source>
-        <translation type="unfinished">Bekräfta</translation>
+        <translation>Bekräfta</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2576"/>
         <source>Cannot open file or stream</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2582"/>
         <location filename="../common/mainwindow.cpp" line="2587"/>
         <source>Invalid file</source>
-        <translation type="unfinished"></translation>
+        <translation>Ogiltig fil</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2592"/>
         <source>Please insert the CD into the drive</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="2598"/>
         <source>No video file found</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -733,32 +715,32 @@
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="237"/>
         <source>Film info</source>
-        <translation type="unfinished"></translation>
+        <translation>Film info</translation>
     </message>
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="242"/>
         <source>Resolution</source>
-        <translation type="unfinished"></translation>
+        <translation>Upplösning</translation>
     </message>
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="243"/>
         <source>File type</source>
-        <translation type="unfinished"></translation>
+        <translation>Filtyp</translation>
     </message>
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="244"/>
         <source>File size</source>
-        <translation type="unfinished"></translation>
+        <translation>Filstorlek</translation>
     </message>
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="245"/>
         <source>Duration</source>
-        <translation type="unfinished"></translation>
+        <translation>Varaktighet</translation>
     </message>
     <message>
         <location filename="../widgets/movieinfo_dialog.cpp" line="254"/>
         <source>File path</source>
-        <translation type="unfinished"></translation>
+        <translation>Filsökväg</translation>
     </message>
 </context>
 <context>
@@ -767,7 +749,7 @@
         <location filename="../backends/mpv/mpv_proxy.cpp" line="1079"/>
         <location filename="../backends/mpv/mpv_proxy.cpp" line="1097"/>
         <source>[internal]</source>
-        <translation type="unfinished"></translation>
+        <translation>[internal]</translation>
     </message>
 </context>
 <context>
@@ -777,7 +759,7 @@
         <location filename="../widgets/playlist_widget.cpp" line="259"/>
         <location filename="../widgets/playlist_widget.cpp" line="483"/>
         <source>File does not exist</source>
-        <translation type="unfinished"></translation>
+        <translation>Filen existerar ej</translation>
     </message>
 </context>
 <context>
@@ -785,17 +767,17 @@
     <message>
         <location filename="../widgets/playlist_widget.cpp" line="673"/>
         <source>Playlist</source>
-        <translation type="unfinished">Spellista</translation>
+        <translation>Spellista</translation>
     </message>
     <message>
         <location filename="../widgets/playlist_widget.cpp" line="679"/>
         <source>17个视频</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../widgets/playlist_widget.cpp" line="696"/>
         <source>Clear Playlist</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../widgets/playlist_widget.cpp" line="863"/>
@@ -803,20 +785,20 @@
         <location filename="../widgets/playlist_widget.cpp" line="1098"/>
         <location filename="../widgets/playlist_widget.cpp" line="1150"/>
         <source>%1 videos</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
     <name>dmr::Settings</name>
     <message>
         <location filename="../common/dmr_settings.cpp" line="156"/>
-        <source>%1/DMovie%2.jpg</source>
-        <translation type="unfinished"></translation>
+        <source>%1/Movie%2.jpg</source>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../common/dmr_settings.cpp" line="162"/>
-        <source>%1/DMovie%2(%3).jpg</source>
-        <translation type="unfinished"></translation>
+        <source>%1/Movie%2(%3).jpg</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -860,32 +842,32 @@
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="1690"/>
         <source>play</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="1690"/>
         <source>prev</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="1690"/>
         <source>next</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="1691"/>
         <source>sub</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="1691"/>
         <source>fs</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="1691"/>
         <source>list</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../widgets/toolbox_proxy.cpp" line="1984"/>
