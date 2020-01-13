@@ -686,12 +686,12 @@
 <context>
     <name>dmr::Settings</name>
     <message>
-        <source>%1/DMovie%2.jpg</source>
-        <translation>%1/深度影院%2.jpg</translation>
+        <source>%1/Movie%2.jpg</source>
+        <translation>%1/影院%2.jpg</translation>
     </message>
     <message>
-        <source>%1/DMovie%2(%3).jpg</source>
-        <translation>%1/深度影院%2（%3）.jpg</translation>
+        <source>%1/Movie%2(%3).jpg</source>
+        <translation>%1/影院%2（%3）.jpg</translation>
     </message>
 </context>
 <context>
