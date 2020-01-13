@@ -1950,6 +1950,9 @@ void ToolboxProxy::setProgress(int v)
 
 void ToolboxProxy::updateTimeVisible(bool visible)
 {
+    if (Settings::get().isSet(Settings::PreviewOnMouseover))
+        return;
+
     if (_previewTime) {
         _previewTime->setVisible(!visible);
     }
