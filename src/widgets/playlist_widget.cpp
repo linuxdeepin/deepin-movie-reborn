@@ -555,6 +555,12 @@ protected:
             DFontSizeManager::instance()->bind(_time, DFontSizeManager::T6, QFont::Normal);
         }
 
+        if(!_pif.valid){
+            setState(ItemState::Invalid);
+            _name->setForegroundRole(DPalette::TextTips);
+            _time->setText(tr("File does not exist"));
+        }
+
         if (m_bIsSelect) {
 
             _time->hide();
