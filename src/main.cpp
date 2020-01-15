@@ -91,7 +91,7 @@ int main(int argc, char *argv[])
     app.loadTranslator();
     app.setApplicationDisplayName(QObject::tr("Movie"));
     app.setApplicationDescription(QObject::tr(
-                                      "The theater is a video player that supports local and streaming video playback in multiple video formats."
+                                      "Movie is a full-featured video player, supporting playing local and streaming media in multiple video formats."
                                   ));
 //    "Deepin Movie is a well-designed and full-featured"
 //    " video player with simple borderless design. It supports local and"

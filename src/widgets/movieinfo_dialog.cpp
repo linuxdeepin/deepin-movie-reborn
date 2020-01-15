@@ -241,8 +241,8 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
     form->addRow(title);
 
     ADD_ROW(tr("Resolution"), mi.resolution);
-    ADD_ROW(tr("File type"), mi.fileType);
-    ADD_ROW(tr("File size"), mi.sizeStr());
+    ADD_ROW(tr("Type"), mi.fileType);
+    ADD_ROW(tr("Size"), mi.sizeStr());
     ADD_ROW(tr("Duration"), mi.durationStr());
 
     DLabel *tmp = new DLabel;
@@ -252,7 +252,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
     auto w = fm.width(mi.filePath);
 //    auto fp = ElideText(mi.filePath, {LINE_MAX_WIDTH, LINE_HEIGHT}, QTextOption::WrapAnywhere,
 //                               tmp->font(), Qt::ElideRight, fm.height(), LINE_MAX_WIDTH);
-    ADD_ROW(tr("File path"), mi.filePath);
+    ADD_ROW(tr("Path"), mi.filePath);
 
 
     auto th = new ToolTipEvent(this);

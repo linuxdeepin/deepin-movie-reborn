@@ -2167,7 +2167,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         arg << (QCoreApplication::applicationName())                 // appname
             << ((unsigned int) 0)                                    // id
             << QString("deepin-movie")                               // icon
-            << tr("Movie Screenshot")                                // summary
+            << tr("Film Screenshot")                                // summary
             << QString("%1 %2").arg(tr("Saved to")).arg(filePath) // body
             << actions                                               // actions
             << hints                                                 // hints
@@ -2583,7 +2583,7 @@ void MainWindow::checkWarningMpvLogsChanged(const QString prefix, const QString 
         QPixmap pix = QPixmap::fromImage(icon);
         dialog->setIcon(QIcon(pix));
         dialog->setMessage(tr("Due to the hardware environment limitations,4K video may be stuck."));
-        dialog->addButton(tr("Confirm"), true, DDialog::ButtonRecommend);
+        dialog->addButton(tr("Ok"), true, DDialog::ButtonRecommend);
         QGraphicsDropShadowEffect *effect = new QGraphicsDropShadowEffect();
         effect->setOffset(0, 4);
         effect->setColor(QColor(0, 145, 255, 76));
@@ -2648,7 +2648,7 @@ void MainWindow::checkErrorMpvLogsChanged(const QString prefix, const QString te
         QPixmap pix = QPixmap::fromImage(icon);
         dialog->setIcon(QIcon(pix));
         dialog->setMessage(tr("Due to the hardware environment limitations,4K video may be stuck."));
-        dialog->addButton(tr("Confirm"), true, DDialog::ButtonRecommend);
+        dialog->addButton(tr("Ok"), true, DDialog::ButtonRecommend);
         QGraphicsDropShadowEffect *effect = new QGraphicsDropShadowEffect();
         effect->setOffset(0, 4);
         effect->setColor(QColor(0, 145, 255, 76));

@@ -174,8 +174,8 @@
                             "default": "F3"
                         },
                         {
-                            "key": "delete_item",
-                            "name": "Delete item",
+                            "key": "delete_from_playlist",
+                            "name": "Delete from playlist",
                             "type": "shortcut",
                             "default": "Del"
                         },
@@ -199,7 +199,7 @@
                         },
                         {
                             "key": "movie_info",
-                            "name": "Movie info",
+                            "name": "Film info",
                             "type": "shortcut",
                             "default": "Alt+Return"
                         }
@@ -271,7 +271,7 @@
                         },
                         {
                             "key": "burst_screenshot",
-                            "name": "Burst screenshot",
+                            "name": "Burst shooting",
                             "type": "shortcut",
                             "default": "Alt+S"
                         }
@@ -349,7 +349,7 @@
                         },
                         {
                             "key": "size",
-                            "name": "Font Size",
+                            "name": "Size",
                             "type": "spinbutton",
                             "default": 19
                         }

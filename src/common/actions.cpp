@@ -144,8 +144,8 @@ DMenu *ActionFactory::mainContextMenu()
             DEF_ACTION(tr("Counterclockwise"), ActionKind::CounterclockwiseFrame);
             menu->addSeparator();
 
-            DEF_ACTION(tr("Next frame"), ActionKind::NextFrame);
-            DEF_ACTION(tr("Previous frame"), ActionKind::PreviousFrame);
+            DEF_ACTION(tr("Next Frame"), ActionKind::NextFrame);
+            DEF_ACTION(tr("Previous Frame"), ActionKind::PreviousFrame);
 
             parent->addMenu(menu);
             menu->setEnabled(false);

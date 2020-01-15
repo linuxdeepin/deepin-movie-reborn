@@ -65,7 +65,7 @@ ShortcutManager::ShortcutManager()
         {"accel", ActionFactory::ActionKind::AccelPlayback},
         {"decel", ActionFactory::ActionKind::DecelPlayback},
         {"reset", ActionFactory::ActionKind::ResetPlayback},
-        {"delete_item", ActionFactory::ActionKind::PlaylistRemoveItem},
+        {"delete_from_playlist", ActionFactory::ActionKind::PlaylistRemoveItem},
         {"movie_info", ActionFactory::ActionKind::MovieInfo},
 
         {"mini", ActionFactory::ActionKind::ToggleMiniMode},

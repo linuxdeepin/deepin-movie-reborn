@@ -1101,7 +1101,7 @@ void MpvProxy::updatePlayingMovieInfo()
                 if (t["lang"].isValid() && t["lang"].toString().size() && t["lang"].toString() != "und")
                     si["title"] = t["lang"];
                 else if (!t["external"].toBool())
-                    si["title"] = tr("[internal]");
+                    si["title"] = tr("Internal");
             }
             _pmf.subs.append(si);
         }

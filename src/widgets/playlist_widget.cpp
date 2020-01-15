@@ -209,7 +209,7 @@ public:
         _time->setText(_pif.mi.durationStr());
         if (!_pif.valid) {
             setState(ItemState::Invalid);
-            _time->setText(tr("File does not exist"));
+            _time->setText(tr("The file does not exist"));
         }
 //        vl->addWidget(_time);
         vl->addStretch();
@@ -256,7 +256,7 @@ public:
 
         if (!_pif.valid) {
             setState(ItemState::Invalid);
-            _time->setText(tr("File does not exist"));
+            _time->setText(tr("The file does not exist"));
         }
 //        setStyleSheet(styleSheet());
         update();
@@ -373,7 +373,7 @@ public:
         _time->setText(_pif.mi.durationStr());
         if (!_pif.valid) {
             setState(ItemState::Invalid);
-            _time->setText(tr("File does not exist"));
+            _time->setText(tr("The file does not exist"));
         }
 //        setStyleSheet(styleSheet());
         if (!_pif.url.isLocalFile() || _pif.info.exists()) {
@@ -558,7 +558,7 @@ protected:
         if(!_pif.valid){
             setState(ItemState::Invalid);
             _name->setForegroundRole(DPalette::TextTips);
-            _time->setText(tr("File does not exist"));
+            _time->setText(tr("The file does not exist"));
         }
 
         if (m_bIsSelect) {
