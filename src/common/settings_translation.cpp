@@ -36,7 +36,7 @@ void GenerateSettingTranslate()
     auto shortcuts_play_pause_playName = QObject::tr("Pause/Play");
     auto shortcuts_play_playlistName = QObject::tr("Playlist");
     auto shortcuts_play_resetName = QObject::tr("Reset speed");
-    auto shortcuts_play_deleteOne = QObject::tr("Delete single playlist");
+    auto shortcuts_play_deleteOne = QObject::tr("Delete item");
     auto shortcuts_play_movieInfo = QObject::tr("Movie info");
     auto shortcuts_play_seek_backwardName = QObject::tr("Rewind");
     auto shortcuts_play_seek_forwardName = QObject::tr("Forward");

@@ -14,7 +14,7 @@
     <message>
         <location filename="../common/mainwindow.cpp" line="2521"/>
         <source>Network disconnected</source>
-        <translation type="unfinished"/>
+        <translation>网络已断开</translation>
     </message>
     <message>
         <location filename="../common/mainwindow.cpp" line="131"/>
@@ -185,8 +185,8 @@
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="39"/>
-        <source>Delete single playlist</source>
-        <translation type="unfinished"/>
+        <source>Delete item</source>
+        <translation>删除所选项</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="40"/>
@@ -490,7 +490,7 @@
     <message>
         <location filename="../common/actions.cpp" line="297"/>
         <source>Delete from playlist</source>
-        <translation type="unfinished"/>
+        <translation>从播放列表删除</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="299"/>

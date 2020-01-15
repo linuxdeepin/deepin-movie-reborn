@@ -185,7 +185,7 @@
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="39"/>
-        <source>Delete single playlist</source>
+        <source>Delete item</source>
         <translation type="unfinished"/>
     </message>
     <message>

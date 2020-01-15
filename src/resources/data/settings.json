@@ -174,8 +174,8 @@
                             "default": "F3"
                         },
                         {
-                            "key": "del_single_playlist",
-                            "name": "Delete single playlist",
+                            "key": "delete_item",
+                            "name": "Delete item",
                             "type": "shortcut",
                             "default": "Del"
                         },

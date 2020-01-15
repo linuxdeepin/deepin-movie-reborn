@@ -185,8 +185,8 @@
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="39"/>
-        <source>Delete single playlist</source>
-        <translation>Tek oynatma listesini sil</translation>
+        <source>Delete item</source>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="40"/>
@@ -793,12 +793,12 @@
     <message>
         <location filename="../common/dmr_settings.cpp" line="156"/>
         <source>%1/Movie%2.jpg</source>
-        <translation type="unfinished"/>
+        <translation>%1/Sinema%2.jpg</translation>
     </message>
     <message>
         <location filename="../common/dmr_settings.cpp" line="162"/>
         <source>%1/Movie%2(%3).jpg</source>
-        <translation type="unfinished"/>
+        <translation>%1/Sinema%2(%3).jpg</translation>
     </message>
 </context>
 <context>
