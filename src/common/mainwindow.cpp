@@ -1652,7 +1652,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     }
 
     case ActionFactory::ActionKind::OpenFileList: {
-        QStringList filenames = QFileDialog::getOpenFileNames(this, tr("Open file"),
+        QStringList filenames = QFileDialog::getOpenFileNames(this, tr("Open File"),
                                                               lastOpenedPath(),
                                                               tr("All videos (%1)").arg(_engine->video_filetypes.join(" ")), 0,
                                                               QFileDialog::HideNameFilterDetails);
@@ -1674,7 +1674,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     }
 
     case ActionFactory::ActionKind::OpenFile: {
-        QString filename = QFileDialog::getOpenFileName(this, tr("Open file"),
+        QString filename = QFileDialog::getOpenFileName(this, tr("Open File"),
                                                         lastOpenedPath(),
                                                         tr("All videos (%1)").arg(_engine->video_filetypes.join(" ")), 0,
                                                         QFileDialog::HideNameFilterDetails);
@@ -2083,7 +2083,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     }
 
     case ActionFactory::ActionKind::LoadSubtitle: {
-        QString filename = QFileDialog::getOpenFileName(this, tr("Open file"),
+        QString filename = QFileDialog::getOpenFileName(this, tr("Open File"),
                                                         lastOpenedPath(),
                                                         tr("Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)"));
         if (QFileInfo(filename).exists()) {

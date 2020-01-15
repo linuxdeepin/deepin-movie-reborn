@@ -1716,7 +1716,7 @@ void ToolboxProxy::setup()
     };
     QString attrs[] = {
         tr("play"), tr("prev"), tr("next"),
-        tr("sub"), tr("fs"), tr("list")
+        "sub", tr("fs"), tr("list")
     };
 
     for (unsigned int i = 0; i < sizeof(btns) / sizeof(btns[0]); i++) {

@@ -707,7 +707,7 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
 
     _num = new DLabel();
     _num->setForegroundRole(DPalette::TextTips);
-    _num->setText(tr("17个视频"));
+    _num->setText("");
     DFontSizeManager::instance()->bind(_num, DFontSizeManager::T6);
 //    _num->setFixedSize(96, 20);
     _num->setContentsMargins(0, 0, 0, 0);
@@ -724,7 +724,7 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
 //    DPushButton *clearButton = new DPushButton(QIcon::fromTheme("dcc_clearlist"),tr("清空列表"),nullptr);
     DPushButton *clearButton = new DPushButton();
     clearButton->setIcon(QIcon::fromTheme("dcc_clearlist"));
-    clearButton->setText(tr("Clear Playlist"));
+    clearButton->setText(tr("Empty Playlist"));
     DFontSizeManager::instance()->bind(clearButton, DFontSizeManager::T6);
 //    clearButton->setText(tr("清空列表"));
     DPalette pa_cb = DApplicationHelper::instance()->palette(clearButton);
