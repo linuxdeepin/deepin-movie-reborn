@@ -724,7 +724,7 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
 //    DPushButton *clearButton = new DPushButton(QIcon::fromTheme("dcc_clearlist"),tr("清空列表"),nullptr);
     DPushButton *clearButton = new DPushButton();
     clearButton->setIcon(QIcon::fromTheme("dcc_clearlist"));
-    clearButton->setText(tr("Empty Playlist"));
+    clearButton->setText(tr("Empty"));
     DFontSizeManager::instance()->bind(clearButton, DFontSizeManager::T6);
 //    clearButton->setText(tr("清空列表"));
     DPalette pa_cb = DApplicationHelper::instance()->palette(clearButton);
