@@ -526,10 +526,6 @@
         <translation>Open File</translation>
     </message>
     <message>
-        <source>Film Screenshot</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
         <source>Film screenshot</source>
         <translation>Film screenshot</translation>
     </message>
