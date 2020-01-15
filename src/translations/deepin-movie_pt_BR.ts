@@ -29,12 +29,12 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="6"/>
         <source>Clear playlist when exit</source>
-        <translation>Limpar Lista de Reprodução quando Sair</translation>
+        <translation>Limpar a lista de reprodução quando sair</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="7"/>
         <source>Show video preview on mouseover</source>
-        <translation>Mostrar a Visualização de Vídeo ao passar o cursor</translation>
+        <translation>Pré-visualizar o vídeo ao passar o cursor</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="8"/>
@@ -44,7 +44,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="9"/>
         <source>Pause when minimized</source>
-        <translation>Interromper quando Minimizado</translation>
+        <translation>Pausar quando minimizado</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="10"/>
@@ -171,7 +171,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="36"/>
         <source>Pause/Play</source>
-        <translation>Reproduzir/Interromper</translation>
+        <translation>Reproduzir/Pausar</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="37"/>
@@ -211,7 +211,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="44"/>
         <source>Film screenshot</source>
-        <translation>Captura de Tela do Vídeo</translation>
+        <translation>Capturar Quadro do Vídeo</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="45"/>
@@ -312,7 +312,7 @@
     <message>
         <location filename="../common/actions.cpp" line="300"/>
         <source>Film info</source>
-        <translation>Informação do Vídeo</translation>
+        <translation>Informações do Vídeo</translation>
     </message>
     <message>
         <location filename="../common/actions.cpp" line="82"/>
@@ -793,12 +793,12 @@
     <message>
         <location filename="../common/dmr_settings.cpp" line="156"/>
         <source>%1/Movie%2.jpg</source>
-        <translation type="unfinished"/>
+        <translation>%1/Vídeo%2.jpg</translation>
     </message>
     <message>
         <location filename="../common/dmr_settings.cpp" line="162"/>
         <source>%1/Movie%2(%3).jpg</source>
-        <translation type="unfinished"/>
+        <translation>%1/Vídeo%2(%3).jpg</translation>
     </message>
 </context>
 <context>

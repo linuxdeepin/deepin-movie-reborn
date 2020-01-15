@@ -29,7 +29,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="6"/>
         <source>Clear playlist when exit</source>
-        <translation>退出深度影院时清空播放列表</translation>
+        <translation>退出影院时清空播放列表</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="7"/>
@@ -39,7 +39,7 @@
     <message>
         <location filename="../common/settings_translation.cpp" line="8"/>
         <source>Open a new player for each file played</source>
-        <translation>允许同时运行多个深度影院</translation>
+        <translation>允许同时运行多个影院</translation>
     </message>
     <message>
         <location filename="../common/settings_translation.cpp" line="9"/>
