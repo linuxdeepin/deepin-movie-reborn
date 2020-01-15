@@ -171,6 +171,7 @@ protected slots:
     void startBurstShooting();
     void onBurstScreenshot(const QImage &frame, qint64 timestamp);
     void delayedMouseReleaseHandler();
+    void onDvdData(const QString &title);
 
 #ifdef USE_DXCB
     void onMonitorButtonPressed(int x, int y);
@@ -264,10 +265,11 @@ private:
     uint32_t _powerCookie {0};
 
     MainWindowEventListener *_listener {nullptr};
-    NotificationWidget *_nwShot {nullptr};
+    NotificationWidget *_nwDvd {nullptr};
     NotificationWidget *_nwComm {nullptr};
     QTimer _autoHideTimer;
     QTimer _delayedMouseReleaseTimer;
+    QUrl m_dvdUrl {QUrl()};
 };
 };
 

@@ -30,12 +30,45 @@
 #ifndef _DMR_DVD_UTILS_H
 #define _DMR_DVD_UTILS_H 
 
+#define _DMR_DVD_UTILS_H
+
 #include <QtCore>
+#include <QThread>
 
 namespace dmr {
 namespace dvd {
     // device could be a dev node or a iso file
     QString RetrieveDVDTitle(const QString& device);
+/*
+   class RetrieveDvdThread
+   the class function DVD thread, Retrieve DVD and get DVD message
+   todo Handle dvdnav_open blocking of the dvdnav library function
+*/
+class RetrieveDvdThread: public QThread {
+    Q_OBJECT
+
+public:
+    explicit RetrieveDvdThread();
+    ~RetrieveDvdThread();
+
+    static RetrieveDvdThread *get();
+    void startDvd(const QString &dev);
+
+    // device could be a dev node or a iso file
+    QString getDvdMsg(const QString& device);
+
+protected:
+    void run();
+
+signals:
+    void sigData(const QString &title);
+
+private:
+    QAtomicInt _quit{0};
+    QString m_dev {QString()};
+
+};
+
 }
 }
 

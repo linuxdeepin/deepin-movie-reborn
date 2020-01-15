@@ -181,7 +181,7 @@ private:
 
     QString _playlistFile;
 
-    struct PlayItemInfo calculatePlayInfo(const QUrl&, const QFileInfo& fi);
+    struct PlayItemInfo calculatePlayInfo(const QUrl&, const QFileInfo& fi, bool isDvd = false);
     void reshuffle();
     void savePlaylist();
     void loadPlaylist();

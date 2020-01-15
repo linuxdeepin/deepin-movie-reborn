@@ -54,8 +54,8 @@ public:
 
 public slots:
     void popupWithIcon(const QString& msg, const QPixmap&);
-    void popup(const QString& msg);
-    void updateWithMessage(const QString& newMsg);
+    void popup(const QString& msg, bool flag = true);
+    void updateWithMessage(const QString& newMsg, bool flag = true);
 
 protected:
     void showEvent(QShowEvent *event) override;

@@ -860,7 +860,7 @@ void PlaylistModel::appendSingle(const QUrl& url)
         }
 #endif
     } else {
-        auto pif = calculatePlayInfo(url, QFileInfo());
+        auto pif = calculatePlayInfo(url, QFileInfo(), true);
         _infos.append(pif);
     }
 }
@@ -1096,7 +1096,7 @@ int PlaylistModel::current() const
     return _current;
 }
 
-struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl& url, const QFileInfo& fi)
+struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl& url, const QFileInfo& fi, bool isDvd)
 {
     bool ok = false;
     struct MovieInfo mi;
@@ -1108,19 +1108,22 @@ struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl& url, const QFil
         qDebug() << "load cached MovieInfo" << mi;
     } else {
         mi = MovieInfo::parseFromFile(fi, &ok);
-        if (url.scheme().startsWith("dvd")) {
+        if (isDvd && url.scheme().startsWith("dvd")) {
             QString dev = url.path();
             if (dev.isEmpty()) dev = "/dev/sr0";
-            mi.title = dmr::dvd::RetrieveDVDTitle(dev);
-            if (mi.title.isEmpty()) {
-                mi.title = "DVD";
-            }
-            mi.valid = true;
+            dmr::dvd::RetrieveDvdThread::get()->startDvd(dev);
+              mi.title = dmr::dvd::RetrieveDVDTitle(dev);
+              if (mi.title.isEmpty()) {
+                  mi.title = "DVD";
+              }
+              mi.valid = true;
         } else if (!url.isLocalFile()) {
             QString msg = url.fileName();
-            if (msg.isEmpty()) msg = url.path();
-            mi.title = msg;
-            mi.valid = true;
+            if (msg != "sr0" || msg != "cdrom") {
+                if (msg.isEmpty()) msg = url.path();
+                mi.title = msg;
+                mi.valid = true;
+            }
         } else {
             mi.title = fi.fileName();
         }

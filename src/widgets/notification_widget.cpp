@@ -114,7 +114,7 @@ void NotificationWidget::popupWithIcon(const QString& msg, const QPixmap& pm)
     _timer->start();
 }
 
-void NotificationWidget::popup(const QString& msg)
+void NotificationWidget::popup(const QString& msg, bool flag)
 {
     _layout->setContentsMargins(14, 4, 14, 4);
     if (_layout->indexOf(_msgLabel) == -1) {
@@ -124,10 +124,13 @@ void NotificationWidget::popup(const QString& msg)
     _msgLabel->setText(msg);
     show();
     raise();
-    _timer->start();
+
+    if (flag) {
+        _timer->start();
+    }
 }
 
-void NotificationWidget::updateWithMessage(const QString& newMsg)
+void NotificationWidget::updateWithMessage(const QString& newMsg, bool flag)
 {
     QFont ft;
     ft.setPixelSize(12);
@@ -139,10 +142,13 @@ void NotificationWidget::updateWithMessage(const QString& newMsg)
         resize(_msgLabel->sizeHint().width() + _layout->contentsMargins().left() 
                 + _layout->contentsMargins().right(), height());
         adjustSize();
-        _timer->start();
+
+        if (flag) {
+            _timer->start();
+        }
 
     } else {
-        popup(msg);
+        popup(msg, flag);
     }
 }
 

@@ -47,6 +47,7 @@
 #include "options.h"
 #include "titlebar.h"
 #include "utils.h"
+#include "dvd_utils.h"
 
 //#include <QtWidgets>
 #include <QtDBus>
@@ -814,6 +815,11 @@ MainWindow::MainWindow(QWidget *parent)
     _nwComm->setAnchor(NotificationWidget::AnchorNorthWest);
     _nwComm->setAnchorPoint(QPoint(30, 58));
     _nwComm->hide();
+    _nwDvd = new NotificationWidget(this);
+    _nwDvd->setFixedHeight(30);
+    _nwDvd->setAnchor(NotificationWidget::AnchorNorthWest);
+    _nwDvd->setAnchorPoint(QPoint(30, 58));
+    _nwDvd->hide();
 
 #ifdef USE_DXCB
     if (!composited) {
@@ -908,6 +914,8 @@ MainWindow::MainWindow(QWidget *parent)
         QRect deskRect = QApplication::desktop()->availableGeometry();
         _fullscreentimelable->setGeometry(deskRect.width()-pixelsWidth - 32,40,pixelsWidth + 32,36);
     });
+
+    connect(dmr::dvd::RetrieveDvdThread::get(), &dmr::dvd::RetrieveDvdThread::sigData, this, &MainWindow::onDvdData);
 
     {
         loadWindowState();
@@ -2383,10 +2391,29 @@ void MainWindow::play(const QUrl &url)
         activateWindow();
     }
 
-    if (!_engine->addPlayFile(url)) {
-        auto msg = QString(tr("Invalid file: %1").arg(url.fileName()));
-        _nwComm->updateWithMessage(msg);
-        return;
+//    if (!_engine->addPlayFile(url)) {
+//        auto msg = QString(tr("Invalid file: %1").arg(url.fileName()));
+//        _nwComm->updateWithMessage(msg);
+//        return;
+    if (url.scheme().startsWith("dvd")) {
+        m_dvdUrl = url;
+        // todo 禁用工具栏工控件
+        if (!_engine->addPlayFile(url)) {
+            auto msg = QString(tr("No video file found"));
+            _nwComm->updateWithMessage(msg);
+            return;
+        } else {
+            auto msg = QString(tr("Reading DVD file..."));
+            _nwDvd->updateWithMessage(msg, false);
+//            _nwDvd->setVisible(true);
+            return;
+        }
+    } else {
+        if (!_engine->addPlayFile(url)) {
+            auto msg = QString(tr("Invalid file: %1").arg(url.fileName()));
+            _nwComm->updateWithMessage(msg);
+            return;
+        }
     }
     _engine->playByName(url);
 }
@@ -3016,6 +3043,35 @@ void MainWindow::delayedMouseReleaseHandler()
     if (!_afterDblClick)
         requestAction(ActionFactory::TogglePause, false, {}, true);
     _afterDblClick = false;
+}
+
+void MainWindow::onDvdData(const QString &title)
+{
+    auto mi = _engine->playlist().currentInfo().mi;
+
+    if ("dvd open failed" == title) {
+        mi.valid = false;
+    } else {
+        mi.title = title;
+        if (mi.title.isEmpty()) {
+            mi.title = "DVD";
+        }
+        mi.valid = true;
+    }
+
+    if (!mi.valid) {
+        _nwDvd->setVisible(false);
+        auto msg = QString(tr("No video file found"));
+        _nwComm->updateWithMessage(msg);
+
+        if (m_dvdUrl.scheme().startsWith("dvd")) {
+            int cur = _engine->playlist().indexOf(m_dvdUrl);
+            _engine->playlist().remove(cur);
+        }
+        return;
+    }
+    PlayItemInfo info = _engine->playlist().currentInfo();
+    _engine->playByName(info.url);
 }
 
 void MainWindow::mouseMoveEvent(QMouseEvent *ev)
