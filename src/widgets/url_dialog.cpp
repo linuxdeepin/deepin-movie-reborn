@@ -39,7 +39,7 @@ UrlDialog::UrlDialog(QWidget *parent)
     : DDialog(parent)
 {
     addButtons(QStringList() << QApplication::translate("UrlDialog", "Cancel")
-               << QApplication::translate("UrlDialog", "Ok"));
+               << QApplication::translate("UrlDialog", "OK"));
     setOnButtonClickedClose(false);
     setDefaultButton(1);
     setIcon(QIcon(":/resources/icons/logo-big.svg"));

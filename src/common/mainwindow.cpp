@@ -2167,7 +2167,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         arg << (QCoreApplication::applicationName())                 // appname
             << ((unsigned int) 0)                                    // id
             << QString("deepin-movie")                               // icon
-            << tr("Film Screenshot")                                // summary
+            << tr("Film screenshot")                                // summary
             << QString("%1 %2").arg(tr("Saved to")).arg(filePath) // body
             << actions                                               // actions
             << hints                                                 // hints
@@ -2265,7 +2265,7 @@ void MainWindow::onBurstScreenshot(const QImage &frame, qint64 timestamp)
 
     qDebug() << _burstShoots.size();
     if (!frame.isNull()) {
-        auto msg = QString(tr("Screenshot is working,please wait"));
+        auto msg = QString(tr("Taking the screenshots, please wait..."));
         _nwComm->updateWithMessage(msg);
 
         _burstShoots.append(qMakePair(frame, timestamp));
@@ -2582,8 +2582,8 @@ void MainWindow::checkWarningMpvLogsChanged(const QString prefix, const QString 
         QImage icon = utils::LoadHiDPIImage(":/resources/icons/warning.svg");
         QPixmap pix = QPixmap::fromImage(icon);
         dialog->setIcon(QIcon(pix));
-        dialog->setMessage(tr("Due to the hardware environment limitations,4K video may be stuck."));
-        dialog->addButton(tr("Ok"), true, DDialog::ButtonRecommend);
+        dialog->setMessage(tr("Due to hardware limitations, 4K video may be stuck"));
+        dialog->addButton(tr("OK"), true, DDialog::ButtonRecommend);
         QGraphicsDropShadowEffect *effect = new QGraphicsDropShadowEffect();
         effect->setOffset(0, 4);
         effect->setColor(QColor(0, 145, 255, 76));
@@ -2629,7 +2629,7 @@ void MainWindow::checkErrorMpvLogsChanged(const QString prefix, const QString te
     }
     else if(errorMessage.toLower().contains(QString("couldn't open dvd device")))
     {
-        _nwComm->updateWithMessage(tr("Please insert the CD into the drive"));
+        _nwComm->updateWithMessage(tr("Please insert a CD/DVD"));
         _engine->playlist().clear();
     }
     else if((errorMessage.toLower().contains(QString("can't")))&&
@@ -2647,8 +2647,8 @@ void MainWindow::checkErrorMpvLogsChanged(const QString prefix, const QString te
         QImage icon = utils::LoadHiDPIImage(":/resources/icons/warning.svg");
         QPixmap pix = QPixmap::fromImage(icon);
         dialog->setIcon(QIcon(pix));
-        dialog->setMessage(tr("Due to the hardware environment limitations,4K video may be stuck."));
-        dialog->addButton(tr("Ok"), true, DDialog::ButtonRecommend);
+        dialog->setMessage(tr("Due to hardware limitations, 4K video may be stuck"));
+        dialog->addButton(tr("OK"), true, DDialog::ButtonRecommend);
         QGraphicsDropShadowEffect *effect = new QGraphicsDropShadowEffect();
         effect->setOffset(0, 4);
         effect->setColor(QColor(0, 145, 255, 76));
