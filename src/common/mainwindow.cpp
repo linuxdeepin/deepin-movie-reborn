@@ -2395,17 +2395,17 @@ void MainWindow::play(const QUrl &url)
 //        auto msg = QString(tr("Invalid file: %1").arg(url.fileName()));
 //        _nwComm->updateWithMessage(msg);
 //        return;
+//    }
     if (url.scheme().startsWith("dvd")) {
         m_dvdUrl = url;
-        // todo 禁用工具栏工控件
         if (!_engine->addPlayFile(url)) {
             auto msg = QString(tr("No video file found"));
             _nwComm->updateWithMessage(msg);
             return;
         } else {
+            // todo: Disable toolbar buttons
             auto msg = QString(tr("Reading DVD file..."));
             _nwDvd->updateWithMessage(msg, false);
-//            _nwDvd->setVisible(true);
             return;
         }
     } else {

@@ -1112,11 +1112,11 @@ struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl& url, const QFil
             QString dev = url.path();
             if (dev.isEmpty()) dev = "/dev/sr0";
             dmr::dvd::RetrieveDvdThread::get()->startDvd(dev);
-              mi.title = dmr::dvd::RetrieveDVDTitle(dev);
-              if (mi.title.isEmpty()) {
-                  mi.title = "DVD";
-              }
-              mi.valid = true;
+//            mi.title = dmr::dvd::RetrieveDVDTitle(dev);
+//            if (mi.title.isEmpty()) {
+//              mi.title = "DVD";
+//            }
+//            mi.valid = true;
         } else if (!url.isLocalFile()) {
             QString msg = url.fileName();
             if (msg != "sr0" || msg != "cdrom") {
