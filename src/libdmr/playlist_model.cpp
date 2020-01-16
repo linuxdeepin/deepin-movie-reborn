@@ -524,7 +524,9 @@ void PlaylistModel::loadPlaylist()
 
         } else {
             auto pif = calculatePlayInfo(url, QFileInfo());
-            _infos.append(pif);
+            if (!pif.mi.title.isEmpty()) {
+                _infos.append(pif);
+            }
         }
     }
     cfg.endGroup();
@@ -861,7 +863,9 @@ void PlaylistModel::appendSingle(const QUrl& url)
 #endif
     } else {
         auto pif = calculatePlayInfo(url, QFileInfo(), true);
-        _infos.append(pif);
+        if (!pif.mi.title.isEmpty()) {
+            _infos.append(pif);
+        }
     }
 }
 
@@ -1107,8 +1111,8 @@ struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl& url, const QFil
         ok = true;
         qDebug() << "load cached MovieInfo" << mi;
     } else {
-        mi = MovieInfo::parseFromFile(fi, &ok);
-        if (isDvd && url.scheme().startsWith("dvd")) {
+//        mi = MovieInfo::parseFromFile(fi, &ok);
+        if (!url.isLocalFile() && isDvd && url.scheme().startsWith("dvd")) {
             QString dev = url.path();
             if (dev.isEmpty()) dev = "/dev/sr0";
             dmr::dvd::RetrieveDvdThread::get()->startDvd(dev);
@@ -1117,15 +1121,15 @@ struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl& url, const QFil
 //              mi.title = "DVD";
 //            }
 //            mi.valid = true;
-        } else if (!url.isLocalFile()) {
+        } else if (!url.isLocalFile() && !url.scheme().startsWith("dvd")) {
             QString msg = url.fileName();
-            if (msg != "sr0" || msg != "cdrom") {
-                if (msg.isEmpty()) msg = url.path();
-                mi.title = msg;
-                mi.valid = true;
-            }
+            if (msg.isEmpty()) msg = url.path();
+            mi.title = msg;
+            mi.valid = true;
         } else {
-            mi.title = fi.fileName();
+            if (!fi.fileName().isEmpty()) {
+                mi.title = fi.fileName();
+            }
         }
     }
 
@@ -1176,6 +1180,43 @@ int PlaylistModel::indexOf(const QUrl& url)
 
     if (p == _infos.end()) return -1;
     return std::distance(_infos.begin(), p);
+}
+
+void PlaylistModel::append(const QUrl& url, const QFileInfo& fi, const MovieInfo& mi)
+{
+    bool ok = false;
+    struct MovieInfo mInfo;
+
+    auto ci = PersistentManager::get().loadFromCache(url);
+    if (!ci.mi_valid && !url.isLocalFile()) {
+        mInfo = MovieInfo::parseFromFile(fi, &ok);
+        if (!mInfo.valid) {
+            mInfo = mi;
+        }
+    }
+
+    QPixmap pm;
+    if (ci.thumb_valid) {
+        pm = ci.thumb;
+        qDebug() << "load cached thumb" << url;
+    } else if (ok) {
+        try {
+            std::vector<uint8_t> buf;
+            _thumbnailer.generateThumbnail(fi.canonicalFilePath().toUtf8().toStdString(),
+                    ThumbnailerImageType::Png, buf);
+
+            auto img = QImage::fromData(buf.data(), buf.size(), "png");
+            pm = QPixmap::fromImage(img);
+            pm.setDevicePixelRatio(qApp->devicePixelRatio());
+        } catch (const std::logic_error&) {
+        }
+    }
+
+    PlayItemInfo pif { fi.exists() || !url.isLocalFile(), ok, url, fi, pm, mInfo};
+    _infos.append(pif);
+
+    emit itemsAppended();
+    emit countChanged();
 }
 
 }
