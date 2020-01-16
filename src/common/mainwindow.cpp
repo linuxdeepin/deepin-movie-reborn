@@ -623,7 +623,7 @@ MainWindow::MainWindow(QWidget *parent)
         // and another resize event will happen after that
         QTimer::singleShot(100, [ = ]() {
             if (_engine->state() == PlayerEngine::Idle && !_miniMode && windowState() == Qt::WindowNoState) {
-//                this->setMinimumSize(QSize(1070, 680));
+                this->setMinimumSize(QSize(614, 500));
                 this->resize(850, 600);
             }
         });
