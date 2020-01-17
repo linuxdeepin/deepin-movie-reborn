@@ -19,7 +19,7 @@ Package: deepin-movie
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, va-driver-all
 Description: movie player
- movie player for deepin desktop environment.
+ Movie is a full-featured video player, supporting playing local and streaming media in multiple video formats.
 
 Package: libdmr
 Architecture: any
