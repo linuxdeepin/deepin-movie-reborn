@@ -123,6 +123,8 @@ public:
     void addpm_black_list(QList<QPixmap> pm_black){ pm_black_list.clear(); pm_black_list.append(pm_black);}
     QLabel *getfullscreentimeLabel();
     QLabel *getfullscreentimeLabelend();
+    void setEnableButtons();
+
 public slots:
     void finishLoadSlot(QSize size);
     void updateplaylisticon();
