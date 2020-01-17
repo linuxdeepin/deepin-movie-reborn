@@ -2404,7 +2404,7 @@ void MainWindow::play(const QUrl &url)
             return;
         } else if(_engine->playlist().indexOf(url) < 0) {
             // todo: Disable toolbar buttons
-            auto msg = QString(tr("Reading DVD file..."));
+            auto msg = QString(tr("Reading DVD-ROM..."));
             _nwDvd->updateWithMessage(msg, false);
             return;
         }

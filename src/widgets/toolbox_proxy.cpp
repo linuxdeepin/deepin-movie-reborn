@@ -1317,19 +1317,20 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
 }
 void ToolboxProxy::finishLoadSlot(QSize size)
 {
+    if (pm_list.isEmpty()) return;
 
     _viewProgBar->setViewProgBar(_engine, pm_list, pm_black_list);
 
     if (CompositingManager::get().composited() && _loadsize == size && _engine->state() != PlayerEngine::CoreState::Idle) {
-        if (!_engine->playlist().currentInfo().url.isLocalFile()) {
-            if (!_engine->playlist().currentInfo().url.scheme().startsWith("dvd")) {
+        PlayItemInfo info = _engine->playlist().currentInfo();
+        if (!info.url.isLocalFile()) {
+            // Url and DVD without thumbnail
+//            if (!info.url.scheme().startsWith("dvd")) {
                 return;
-            }
+//            }
         }
         _progBar_Widget->setCurrentIndex(2);
     }
-
-
 }
 
 void ToolboxProxy::updateplaylisticon()
