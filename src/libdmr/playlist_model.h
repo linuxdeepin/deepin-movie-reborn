@@ -133,7 +133,6 @@ public:
     const PlayItemInfo& currentInfo() const;
     PlayItemInfo& currentInfo();
     int indexOf(const QUrl& url);
-    void append(const QUrl& url, const QFileInfo& fi, const MovieInfo& mi);
 
     void switchPosition(int p1, int p2);
 

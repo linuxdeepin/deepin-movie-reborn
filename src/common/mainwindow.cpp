@@ -2402,7 +2402,7 @@ void MainWindow::play(const QUrl &url)
             auto msg = QString(tr("No video file found"));
             _nwComm->updateWithMessage(msg);
             return;
-        } else if(_engine->playlist().indexOf(url) < 0) {
+        } else {
             // todo: Disable toolbar buttons
             auto msg = QString(tr("Reading DVD file..."));
             _nwDvd->updateWithMessage(msg, false);
@@ -3047,7 +3047,7 @@ void MainWindow::delayedMouseReleaseHandler()
 
 void MainWindow::onDvdData(const QString &title)
 {
-    struct MovieInfo mi;
+    auto mi = _engine->playlist().currentInfo().mi;
 
     if ("dvd open failed" == title) {
         mi.valid = false;
@@ -3058,9 +3058,9 @@ void MainWindow::onDvdData(const QString &title)
         }
         mi.valid = true;
     }
-    _nwDvd->setVisible(false);
 
     if (!mi.valid) {
+        _nwDvd->setVisible(false);
         auto msg = QString(tr("No video file found"));
         _nwComm->updateWithMessage(msg);
 
@@ -3070,9 +3070,8 @@ void MainWindow::onDvdData(const QString &title)
         }
         return;
     }
-
-    _engine->playlist().append(m_dvdUrl, QFileInfo(), mi);
-    _engine->playByName(m_dvdUrl);
+    PlayItemInfo info = _engine->playlist().currentInfo();
+    _engine->playByName(info.url);
 }
 
 void MainWindow::mouseMoveEvent(QMouseEvent *ev)
