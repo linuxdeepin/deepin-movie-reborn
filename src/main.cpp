@@ -99,9 +99,9 @@ int main(int argc, char *argv[])
 //    auto light_theme = dmr::Settings::get().internalOption("light_theme").toBool();
 //    app.setTheme(light_theme ? "light": "dark");
 
-//    if (clm.debug()) {
+    if (clm.debug()) {
         Dtk::Core::DLogManager::registerConsoleAppender();
-//    }
+    }
     Dtk::Core::DLogManager::registerFileAppender();
     qDebug() << "log path: " << Dtk::Core::DLogManager::getlogFilePath();
 

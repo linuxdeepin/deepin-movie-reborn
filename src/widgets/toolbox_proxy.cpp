@@ -2487,14 +2487,6 @@ QLabel *ToolboxProxy::getfullscreentimeLabelend()
 {
     return _fullscreentimelableend;
 }
-
-void ToolboxProxy::setEnableButtons()
-{
-    if (_playBtn){
-        _playBtn->setEnabled(!_playBtn->isEnabled());
-    //    _listBtn->setEnabled(!_listBtn->isEnabled());
-    }
-}
 }
 
 #include "toolbox_proxy.moc"

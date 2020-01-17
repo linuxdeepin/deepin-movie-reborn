@@ -1456,15 +1456,6 @@ void MainWindow::reflectActionToUI(ActionFactory::ActionKind kd)
         (*p)->setEnabled(old);
         break;
     }
-
-    case ActionFactory::ActionKind::OpenCdrom: {
-        qDebug() << __func__ << kd;
-        acts = ActionFactory::get().findActionsByKind(kd);
-        auto p = acts.begin();
-        auto old = (*p)->isEnabled();
-        (*p)->setEnabled(!old);
-        break;
-    }
     default:
         break;
     }
@@ -2412,9 +2403,7 @@ void MainWindow::play(const QUrl &url)
             _nwComm->updateWithMessage(msg);
             return;
         } else if(_engine->playlist().indexOf(url) < 0) {
-            // Disable toolbar buttons and dvd menu, will show tip.
-            reflectActionToUI(ActionFactory::ActionKind::OpenCdrom);
-            _toolbox->setEnableButtons();
+            // todo: Disable toolbar buttons
             auto msg = QString(tr("Reading DVD-ROM..."));
             _nwDvd->updateWithMessage(msg, false);
             return;
@@ -3069,11 +3058,7 @@ void MainWindow::onDvdData(const QString &title)
         }
         mi.valid = true;
     }
-
-    // Active toolbar buttons and dvd menu, will hide tip.
     _nwDvd->setVisible(false);
-    reflectActionToUI(ActionFactory::ActionKind::OpenCdrom);
-    _toolbox->setEnableButtons();
 
     if (!mi.valid) {
         auto msg = QString(tr("No video file found"));
