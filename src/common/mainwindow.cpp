@@ -1468,6 +1468,11 @@ bool MainWindow::set_playlistopen_clicktogglepause(bool playlistopen)
     return _playlistopen_clicktogglepause;
 }
 
+NotificationWidget* MainWindow::get_nwComm()
+{
+    return _nwComm;
+}
+
 void MainWindow::menuItemInvoked(QAction *action)
 {
     auto kd = ActionFactory::actionKind(action);

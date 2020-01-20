@@ -112,6 +112,7 @@ public:
     void reflectActionToUI(ActionFactory::ActionKind);
 
     bool set_playlistopen_clicktogglepause(bool playlistopen);
+    NotificationWidget* get_nwComm();
 signals:
     void windowEntered();
     void windowLeaved();

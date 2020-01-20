@@ -34,7 +34,7 @@ if (${Dtk_VERSION} LESS 2.0.6.1)
 endif()
 
 
-file(GLOB_RECURSE SRCS LIST_DIRECTORIES false common/*.cpp widgets/*.cpp libdmr/*.cpp vendor/mpris-qt/*.cpp vendor/dbusextended-qt/*.cpp)
+file(GLOB_RECURSE SRCS LIST_DIRECTORIES false common/*.cpp widgets/*.cpp libdmr/*.cpp vendor/*.cpp vendor/mpris-qt/*.cpp vendor/dbusextended-qt/*.cpp)
 list(APPEND SRCS main.cpp)
 
 include_directories(
