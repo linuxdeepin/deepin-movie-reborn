@@ -34,8 +34,13 @@ if (${Dtk_VERSION} LESS 2.0.6.1)
 endif()
 
 
-file(GLOB_RECURSE SRCS LIST_DIRECTORIES false common/*.cpp widgets/*.cpp libdmr/*.cpp)
+file(GLOB_RECURSE SRCS LIST_DIRECTORIES false common/*.cpp widgets/*.cpp libdmr/*.cpp vendor/mpris-qt/*.cpp vendor/dbusextended-qt/*.cpp)
 list(APPEND SRCS main.cpp)
+
+include_directories(
+        ${CMAKE_CURRENT_SOURCE_DIR}/vendor/mpris-qt
+        ${CMAKE_CURRENT_SOURCE_DIR}/vendor/dbusextended-qt
+)
 
 # mpv backend
 file(GLOB_RECURSE MPV_SRCS LIST_DIRECTORIES false backends/mpv/*.cpp)
