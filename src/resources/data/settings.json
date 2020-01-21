@@ -78,6 +78,7 @@
                         },
                         {
                             "key": "multiinstance",
+                            "hide": true,
                             "text": "Open a new player for each file played",
                             "type": "checkbox",
                             "default": ""

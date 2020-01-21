@@ -201,7 +201,7 @@ signals:
     void seeked(qlonglong position);
 
 private Q_SLOTS:
-    void onNameOwnerChanged(const QString &service, const QString &oldOwner, const QString& newOwner);
+    void onNameOwnerChanged(const QString &service, const QString &oldOwner, const QString &newOwner);
     void onServiceAppeared(const QString &service);
     void onServiceVanished(const QString &service);
     void onAvailableControllerPlaybackStatusChanged(const QString &service);

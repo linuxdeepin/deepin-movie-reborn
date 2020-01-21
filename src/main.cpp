@@ -48,6 +48,7 @@
 #include "utils.h"
 #include "movie_configuration.h"
 #include "vendor/movieapp.h"
+#include "vendor/presenter.h"
 
 DWIDGET_USE_NAMESPACE
 
@@ -132,7 +133,7 @@ int main(int argc, char *argv[])
     QRegExp url_re("\\w+://");
 
     dmr::MainWindow mw;
-    MovieApp* movie = new MovieApp(&mw);
+    Presenter *presenter = new Presenter(&mw);
 //    mw.setMinimumSize(QSize(1070, 680));
     mw.resize(850, 600);
     utils::MoveToCenter(&mw);

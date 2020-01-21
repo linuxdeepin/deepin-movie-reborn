@@ -321,8 +321,7 @@ protected:
             //If window is maximized ,need quit maximize state when resizing
             if (startResizing && (mw->windowState() & Qt::WindowMaximized)) {
                 mw->setWindowState(mw->windowState() & (~Qt::WindowMaximized));
-            }
-            else if (startResizing && (mw->windowState() & Qt::WindowFullScreen)){
+            } else if (startResizing && (mw->windowState() & Qt::WindowFullScreen)) {
                 mw->setWindowState(mw->windowState() & (~Qt::WindowFullScreen));
             }
 
@@ -378,7 +377,7 @@ protected:
                     } else {
                         goto skip_set_cursor;
                     }
-set_cursor:
+                set_cursor:
                     if (window->property("_d_real_winId").isValid()) {
                         auto real_wid = window->property("_d_real_winId").toUInt();
                         Utility::setWindowCursor(real_wid, mouseCorner);
@@ -392,7 +391,7 @@ set_cursor:
                     lastCornerEdge = mouseCorner;
                     return true;
 
-skip_set_cursor:
+                skip_set_cursor:
                     lastCornerEdge = mouseCorner = Utility::NoneEdge;
                     return false;
                 } else {
@@ -643,7 +642,7 @@ MainWindow::MainWindow(QWidget *parent)
     });
 
     /*_playState = new DIconButton(this);
-//    _playState->setScaledContents(true);
+    //    _playState->setScaledContents(true);
     _playState->setIcon(QIcon(":/resources/icons/dark/normal/play-big_normal.svg"));
     _playState->setIconSize(QSize(128, 128));
     _playState->setObjectName("PlayState");
@@ -787,9 +786,9 @@ MainWindow::MainWindow(QWidget *parent)
             _lastRectInNormalMode.setSize({mi.width, mi.height});
         }
         this->resizeByConstraints();
-        if(!isFullScreen() && !isMaximized() && !_miniMode){
+        if (!isFullScreen() && !isMaximized() && !_miniMode) {
             auto geom = qApp->desktop()->availableGeometry(this);
-            move((geom.width() - this->width())/2, (geom.height() - this->height())/2);
+            move((geom.width() - this->width()) / 2, (geom.height() - this->height()) / 2);
         }
     });
     connect(_engine, &PlayerEngine::videoSizeChanged, [ = ]() {
@@ -878,41 +877,37 @@ MainWindow::MainWindow(QWidget *parent)
     _animationlable->setAttribute(Qt::WA_TranslucentBackground);
     _animationlable->setWindowFlags(Qt::FramelessWindowHint);
     _animationlable->setParent(this);
-    _animationlable->setGeometry(width()/2-100,height()/2-100,200,200);
+    _animationlable->setGeometry(width() / 2 - 100, height() / 2 - 100, 200, 200);
 
     popup = new DFloatingMessage(DFloatingMessage::TransientType, this);
     popup->resize(0, 0);
 //    popup->hide(); //This causes the first screenshot icon to move down
 
-    connect(this,&MainWindow::playlistchanged,_toolbox,&ToolboxProxy::updateplaylisticon);
+    connect(this, &MainWindow::playlistchanged, _toolbox, &ToolboxProxy::updateplaylisticon);
 
     connect(_engine, &PlayerEngine::onlineStateChanged, this, &MainWindow::checkOnlineState);
     connect(&OnlineSubtitle::get(), &OnlineSubtitle::onlineSubtitleStateChanged, this, &MainWindow::checkOnlineSubtitle);
     connect(_engine, &PlayerEngine::mpvErrorLogsChanged, this, &MainWindow::checkErrorMpvLogsChanged);
     connect(_engine, &PlayerEngine::mpvWarningLogsChanged, this, &MainWindow::checkWarningMpvLogsChanged);
-    connect(_engine, &PlayerEngine::urlpause, this, [=](bool status)
-    {
-        if(status)
-        {
+    connect(_engine, &PlayerEngine::urlpause, this, [ = ](bool status) {
+        if (status) {
             auto msg = QString(tr("Buffering..."));
             _nwComm->updateWithMessage(msg);
         }
 
     });
-    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::newProcessInstance, this, [=]
-    {
+    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::newProcessInstance, this, [ = ] {
         this->activateWindow();
     });
 
-    connect(qApp, &QGuiApplication::fontChanged, this, [=](const QFont &font)
-    {
+    connect(qApp, &QGuiApplication::fontChanged, this, [ = ](const QFont & font) {
         QFontMetrics fm(DFontSizeManager::instance()->get(DFontSizeManager::T6));
         _toolbox->getfullscreentimeLabel()->setMinimumWidth(fm.width(_toolbox->getfullscreentimeLabel()->text()));
         _toolbox->getfullscreentimeLabelend()->setMinimumWidth(fm.width(_toolbox->getfullscreentimeLabelend()->text()));
 
         int pixelsWidth = _toolbox->getfullscreentimeLabel()->width() + _toolbox->getfullscreentimeLabelend()->width();
         QRect deskRect = QApplication::desktop()->availableGeometry();
-        _fullscreentimelable->setGeometry(deskRect.width()-pixelsWidth - 32,40,pixelsWidth + 32,36);
+        _fullscreentimelable->setGeometry(deskRect.width() - pixelsWidth - 32, 40, pixelsWidth + 32, 36);
     });
 
     connect(dmr::dvd::RetrieveDvdThread::get(), &dmr::dvd::RetrieveDvdThread::sigData, this, &MainWindow::onDvdData);
@@ -1039,8 +1034,8 @@ void MainWindow::onWindowStateChanged()
     }
     update();
 
-    if(!isMaximized() && !isFullScreen() && !_miniMode){
-        if(_maxfornormalflag){
+    if (!isMaximized() && !isFullScreen() && !_miniMode) {
+        if (_maxfornormalflag) {
             setWindowState(windowState() & ~Qt::WindowFullScreen);
             if (_lastRectInNormalMode.isValid() && !_miniMode && !isMaximized()) {
                 setGeometry(_lastRectInNormalMode);
@@ -1048,7 +1043,7 @@ void MainWindow::onWindowStateChanged()
                 resize(_lastRectInNormalMode.width(), _lastRectInNormalMode.height());
             }
             _maxfornormalflag = false;
-        }else {
+        } else {
             _maxfornormalflag = false;
         }
     }
@@ -1059,13 +1054,13 @@ void MainWindow::onWindowStateChanged()
             emit playlistchanged();
         }
     }
-    if(isMaximized()){
-        _animationlable->move(QPoint(QApplication::desktop()->availableGeometry().width()/2-100
-                                     ,QApplication::desktop()->availableGeometry().height()/2-100));
+    if (isMaximized()) {
+        _animationlable->move(QPoint(QApplication::desktop()->availableGeometry().width() / 2 - 100
+                                     , QApplication::desktop()->availableGeometry().height() / 2 - 100));
     }
     if (!isFullScreen() && !isMaximized() && !_miniMode) {
-        _animationlable->move(QPoint((_lastRectInNormalMode.width()-_animationlable->width())/2,
-                                     (_lastRectInNormalMode.height()-_animationlable->height())/2));
+        _animationlable->move(QPoint((_lastRectInNormalMode.width() - _animationlable->width()) / 2,
+                                     (_lastRectInNormalMode.height() - _animationlable->height()) / 2));
     }
 }
 
@@ -1232,9 +1227,9 @@ void MainWindow::animatePlayState()
     }
 
     if (!_inBurstShootMode && _engine->state() == PlayerEngine::CoreState::Paused) {
-       // startPlayStateAnimation(false);
-        if(!_miniMode){
-            _animationlable->setGeometry(width()/2-100,height()/2-100,200,200);
+        // startPlayStateAnimation(false);
+        if (!_miniMode) {
+            _animationlable->setGeometry(width() / 2 - 100, height() / 2 - 100, 200, 200);
             _animationlable->stop();
         }
         //_playState->raise();
@@ -1366,11 +1361,9 @@ void MainWindow::reflectActionToUI(ActionFactory::ActionKind kd)
             (*p)->setEnabled(false);
             if (kd == ActionFactory::TogglePlaylist) {
                 // here what we read is the last state of playlist
-                if(_playlist->state() != PlaylistWidget::Opened)
-                {
+                if (_playlist->state() != PlaylistWidget::Opened) {
                     (*p)->setChecked(false);
-                }
-                else {
+                } else {
                     (*p)->setChecked(true);
                 }
 //                (*p)->setChecked(_playlist->state() != PlaylistWidget::Opened);
@@ -1392,7 +1385,7 @@ void MainWindow::reflectActionToUI(ActionFactory::ActionKind kd)
             auto args = ActionFactory::actionArgs(*p);
             if (args[0].toString() == cp) {
                 (*p)->setEnabled(false);
-                if (!(*p)->isChecked()) (*p)->setChecked(true);
+                if (!(*p)->isChecked())(*p)->setChecked(true);
                 (*p)->setEnabled(true);
                 break;
             }
@@ -1433,7 +1426,7 @@ void MainWindow::reflectActionToUI(ActionFactory::ActionKind kd)
             auto args = ActionFactory::actionArgs(*p);
             (*p)->setEnabled(false);
             if (args[0].toInt() == idx) {
-                if (!(*p)->isChecked()) (*p)->setChecked(true);
+                if (!(*p)->isChecked())(*p)->setChecked(true);
             } else {
                 (*p)->setChecked(false);
             }
@@ -1468,7 +1461,7 @@ bool MainWindow::set_playlistopen_clicktogglepause(bool playlistopen)
     return _playlistopen_clicktogglepause;
 }
 
-NotificationWidget* MainWindow::get_nwComm()
+NotificationWidget *MainWindow::get_nwComm()
 {
     return _nwComm;
 }
@@ -1484,7 +1477,7 @@ void MainWindow::menuItemInvoked(QAction *action)
         if (var == ActionFactory::ActionKind::Settings) {
             requestAction(kd, !isShortcut, {0}, isShortcut);
         } else {
-            if(_playlist->state() == PlaylistWidget::State::Opened) {
+            if (_playlist->state() == PlaylistWidget::State::Opened) {
                 BindingMap bdMap = ShortcutManager::get().map();
                 QHash<QKeySequence, ActionFactory::ActionKind>::const_iterator iter = bdMap.constBegin();
                 bool isiter = false;
@@ -1492,14 +1485,14 @@ void MainWindow::menuItemInvoked(QAction *action)
                     if (iter.value() == kd) {
                         isiter = true;
                         if ((iter.key() == QKeySequence("Return")
-                             || iter.key() == QKeySequence("Num+Enter")
-                             || iter.key() == QKeySequence("Up")
-                             || iter.key() == QKeySequence("Down")) && isShortcut) {
-                            if(iter.key() == QKeySequence("Up") || iter.key() == QKeySequence("Down")){
+                                || iter.key() == QKeySequence("Num+Enter")
+                                || iter.key() == QKeySequence("Up")
+                                || iter.key() == QKeySequence("Down")) && isShortcut) {
+                            if (iter.key() == QKeySequence("Up") || iter.key() == QKeySequence("Down")) {
                                 int key;
-                                if(iter.key() == QKeySequence("Up")){
+                                if (iter.key() == QKeySequence("Up")) {
                                     key = Qt::Key_Up;
-                                }else {
+                                } else {
                                     key = Qt::Key_Down;
                                 }
                                 _playlist->updateSelectItem(key);
@@ -1511,7 +1504,7 @@ void MainWindow::menuItemInvoked(QAction *action)
                     }
                     ++iter;
                 }
-                if(isiter == false){
+                if (isiter == false) {
                     requestAction(kd, !isShortcut, {0}, isShortcut);
                 }
             } else {
@@ -1723,7 +1716,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     }
 
     case ActionFactory::ActionKind::TogglePlaylist: {
-        if(_playlist->state() == PlaylistWidget::Closed && !_toolbox->isVisible()){
+        if (_playlist->state() == PlaylistWidget::Closed && !_toolbox->isVisible()) {
             _toolbox->show();
         }
         _playlist->togglePopup();
@@ -1739,7 +1732,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         if (!fromUI) {
             reflectActionToUI(kd);
         }
-        if(_playlist->state() == PlaylistWidget::Opened && !isFullScreen()){
+        if (_playlist->state() == PlaylistWidget::Opened && !isFullScreen()) {
             requestAction(ActionFactory::TogglePlaylist);
         }
         toggleUIMode();
@@ -1777,23 +1770,21 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         break;
 
     case ActionFactory::ActionKind::QuitFullscreen: {
-        if(_miniMode)
-        {
+        if (_miniMode) {
             if (!fromUI) {
                 reflectActionToUI(kd);
             }
             toggleUIMode();
-        }
-        else if (isFullScreen()) {
+        } else if (isFullScreen()) {
 //            if (_lastWindowState == Qt::WindowMaximized) {
 //                showMaximized();
 //            } else {
-                requestAction(ActionFactory::ToggleFullscreen);
+            requestAction(ActionFactory::ToggleFullscreen);
 //            }
             if (!fromUI) {
                 reflectActionToUI(ActionFactory::ToggleFullscreen);
             }
-            if(!isFullScreen()){
+            if (!isFullScreen()) {
                 _fullscreentimelable->close();
             }
         }
@@ -1824,7 +1815,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                     resize(_lastRectInNormalMode.width(), _lastRectInNormalMode.height());
                 }
             }
-            if(!isFullScreen()){
+            if (!isFullScreen()) {
                 _fullscreentimelable->close();
             }
         } else {
@@ -1832,11 +1823,11 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                 _lastRectInNormalMode = geometry();
             }
             showFullScreen();
-            if(isFullScreen()){
+            if (isFullScreen()) {
                 _maxfornormalflag = false;
                 int pixelsWidth = _toolbox->getfullscreentimeLabel()->width() + _toolbox->getfullscreentimeLabelend()->width();
                 QRect deskRect = QApplication::desktop()->availableGeometry();
-                _fullscreentimelable->setGeometry(deskRect.width()-pixelsWidth - 32,40,pixelsWidth + 32,36);
+                _fullscreentimelable->setGeometry(deskRect.width() - pixelsWidth - 32, 40, pixelsWidth + 32, 36);
                 _fullscreentimelable->show();
 
             }
@@ -1844,12 +1835,12 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         if (!fromUI) {
             reflectActionToUI(kd);
         }
-        if(isFullScreen()){
-            _animationlable->move(QPoint(QApplication::desktop()->availableGeometry().width()/2-_animationlable->width()/2
-                                         ,QApplication::desktop()->availableGeometry().height()/2-_animationlable->height()/2));
-        }else {
-            _animationlable->move(QPoint((width()-_animationlable->width())/2,
-                                         (height()-_animationlable->height())/2));
+        if (isFullScreen()) {
+            _animationlable->move(QPoint(QApplication::desktop()->availableGeometry().width() / 2 - _animationlable->width() / 2
+                                         , QApplication::desktop()->availableGeometry().height() / 2 - _animationlable->height() / 2));
+        } else {
+            _animationlable->move(QPoint((width() - _animationlable->width()) / 2,
+                                         (height() - _animationlable->height()) / 2));
         }
         break;
     }
@@ -2107,14 +2098,14 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     }
 
     case ActionFactory::ActionKind::TogglePause: {
-        if(!_playlistopen_clicktogglepause){
+        if (!_playlistopen_clicktogglepause) {
             if (_engine->state() == PlayerEngine::Idle && isShortcut) {
                 requestAction(ActionFactory::StartPlay);
             } else {
-                if (_engine->state() == PlayerEngine::Paused ) {
+                if (_engine->state() == PlayerEngine::Paused) {
                     //startPlayStateAnimation(true);
-                    if(!_miniMode){
-                        _animationlable->setGeometry(width()/2-100,height()/2-100,200,200);
+                    if (!_miniMode) {
+                        _animationlable->setGeometry(width() / 2 - 100, height() / 2 - 100, 200, 200);
                         _animationlable->start();
                     }
                     QTimer::singleShot(160, [ = ]() {
@@ -2124,7 +2115,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                     _engine->pauseResume();
                 }
             }
-        }else {
+        } else {
             _playlistopen_clicktogglepause = false;
         }
         break;
@@ -2230,9 +2221,9 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         QPoint pos(rect.x() + rect.width() / 2, rect.y() + rect.height() / 2);
         QStringList shortcutString;
         QString param1 = "-j=" + ShortcutManager::get().toJson();
-        param1.replace("Return","Enter");
-        param1.replace("PgDown","PageDown");
-        param1.replace("PgUp","PageUp");
+        param1.replace("Return", "Enter");
+        param1.replace("PgDown", "PageDown");
+        param1.replace("PgUp", "PageUp");
         QString param2 = "-p=" + QString::number(pos.x()) + "," + QString::number(pos.y());
         shortcutString << param1 << param2;
 
@@ -2265,16 +2256,16 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
 void MainWindow::onBurstScreenshot(const QImage &frame, qint64 timestamp)
 {
 #define POPUP_ADAPTER(icon, text)  do { \
-    popup->setIcon(icon);\
-    DFontSizeManager::instance()->bind(this, DFontSizeManager::T6);\
-    QFont font = DFontSizeManager::instance()->get(DFontSizeManager::T6);\
-    QFontMetrics fm(font);\
-    auto w = fm.boundingRect(text).width();\
-    popup->setMessage(text);\
-    popup->resize(w + 70, 52);\
-    popup->move((width() - popup->width()) / 2, height() - 127);\
-    popup->show();\
-} while (0)
+        popup->setIcon(icon);\
+        DFontSizeManager::instance()->bind(this, DFontSizeManager::T6);\
+        QFont font = DFontSizeManager::instance()->get(DFontSizeManager::T6);\
+        QFontMetrics fm(font);\
+        auto w = fm.boundingRect(text).width();\
+        popup->setMessage(text);\
+        popup->resize(w + 70, 52);\
+        popup->move((width() - popup->width()) / 2, height() - 127);\
+        popup->show();\
+    } while (0)
 
     qDebug() << _burstShoots.size();
     if (!frame.isNull()) {
@@ -2474,7 +2465,7 @@ void MainWindow::updateProxyGeometry()
             QRect rfs(5, height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT) - rect().top() - 5,
                       rect().width() - 10, (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT));
             QRect rct(5, height() - TOOLBOX_HEIGHT - rect().top() - 5,
-                    rect().width() - 10, TOOLBOX_HEIGHT);
+                      rect().width() - 10, TOOLBOX_HEIGHT);
             if (isFullScreen()) {
                 if (_playlist->state() == PlaylistWidget::State::Opened) {
                     _toolbox->setGeometry(rfs);
@@ -2604,9 +2595,8 @@ void MainWindow::checkOnlineSubtitle(const OnlineSubtitle::FailReason reason)
 void MainWindow::checkWarningMpvLogsChanged(const QString prefix, const QString text)
 {
     QString warningMessage(text);
-    qDebug()<<"checkWarningMpvLogsChanged"<<text;
-    if(warningMessage.contains(QString("Hardware does not support image size 3840x2160")))
-    {
+    qDebug() << "checkWarningMpvLogsChanged" << text;
+    if (warningMessage.contains(QString("Hardware does not support image size 3840x2160"))) {
         requestAction(ActionFactory::TogglePause);
 
         DDialog *dialog = new DDialog;
@@ -2625,8 +2615,8 @@ void MainWindow::checkWarningMpvLogsChanged(const QString prefix, const QString 
         dialog->exec();
         QTimer::singleShot(500, [ = ]() {
             //startPlayStateAnimation(true);
-            if(!_miniMode){
-                _animationlable->setGeometry(width()/2-100,height()/2-100,200,200);
+            if (!_miniMode) {
+                _animationlable->setGeometry(width() / 2 - 100, height() / 2 - 100, 200, 200);
                 _animationlable->start();
             }
             _engine->pauseResume();
@@ -2638,40 +2628,28 @@ void MainWindow::checkWarningMpvLogsChanged(const QString prefix, const QString 
 void MainWindow::checkErrorMpvLogsChanged(const QString prefix, const QString text)
 {
     QString errorMessage(text);
-    qDebug()<<"checkErrorMpvLogsChanged"<<text;
-    if(errorMessage.toLower().contains(QString("avformat_open_input() failed")))
-    {
+    qDebug() << "checkErrorMpvLogsChanged" << text;
+    if (errorMessage.toLower().contains(QString("avformat_open_input() failed"))) {
         //do nothing
-    }
-    else if (errorMessage.toLower().contains(QString("fail")) && errorMessage.toLower().contains(QString("open")))
-        {
+    } else if (errorMessage.toLower().contains(QString("fail")) && errorMessage.toLower().contains(QString("open"))) {
         _nwComm->updateWithMessage(tr("Cannot open file or stream"));
         _engine->playlist().clear();
-    }
-    else if (errorMessage.toLower().contains(QString("fail")) &&
-            (errorMessage.toLower().contains(QString("format")))
-       ) {
+    } else if (errorMessage.toLower().contains(QString("fail")) &&
+               (errorMessage.toLower().contains(QString("format")))
+              ) {
         _nwComm->updateWithMessage(tr("Invalid file"));
         _engine->playlist().clear();
-    }
-    else if (errorMessage.toLower().contains(QString("moov atom not found")))
-    {
+    } else if (errorMessage.toLower().contains(QString("moov atom not found"))) {
         _nwComm->updateWithMessage(tr("Invalid file"));
         _engine->playlist().clear();
-    }
-    else if(errorMessage.toLower().contains(QString("couldn't open dvd device")))
-    {
+    } else if (errorMessage.toLower().contains(QString("couldn't open dvd device"))) {
         _nwComm->updateWithMessage(tr("Please insert a CD/DVD"));
         _engine->playlist().clear();
-    }
-    else if((errorMessage.toLower().contains(QString("can't")))&&
-            (errorMessage.toLower().contains(QString("open"))))
-    {
+    } else if ((errorMessage.toLower().contains(QString("can't"))) &&
+               (errorMessage.toLower().contains(QString("open")))) {
         _nwComm->updateWithMessage(tr("No video file found"));
         _engine->playlist().clear();
-    }
-    else if(errorMessage.contains(QString("Hardware does not support image size 3840x2160")))
-    {
+    } else if (errorMessage.contains(QString("Hardware does not support image size 3840x2160"))) {
         requestAction(ActionFactory::TogglePause);
 
         DDialog *dialog = new DDialog;
@@ -2690,8 +2668,8 @@ void MainWindow::checkErrorMpvLogsChanged(const QString prefix, const QString te
         dialog->exec();
         QTimer::singleShot(500, [ = ]() {
             //startPlayStateAnimation(true);
-            if(!_miniMode){
-                _animationlable->setGeometry(width()/2-100,height()/2-100,200,200);
+            if (!_miniMode) {
+                _animationlable->setGeometry(width() / 2 - 100, height() / 2 - 100, 200, 200);
                 _animationlable->start();
             }
             _engine->pauseResume();
@@ -2704,11 +2682,11 @@ void MainWindow::hideEvent(QHideEvent *event)
 {
     if (Settings::get().isSet(Settings::PauseOnMinimize)) {
         if (_engine && _engine->state() == PlayerEngine::Playing) {
-            if(!_quitfullscreenstopflag){
+            if (!_quitfullscreenstopflag) {
                 _pausedOnHide = true;
                 requestAction(ActionFactory::TogglePause);
                 _quitfullscreenstopflag = false;
-            }else {
+            } else {
                 _quitfullscreenstopflag = false;
             }
         }
@@ -2764,13 +2742,13 @@ void MainWindow::focusInEvent(QFocusEvent *fe)
 void MainWindow::showEvent(QShowEvent *event)
 {
     qDebug() << __func__;
-    if (_pausedOnHide || Settings::get().isSet(Settings::PauseOnMinimize)) {       
+    if (_pausedOnHide || Settings::get().isSet(Settings::PauseOnMinimize)) {
         if (_pausedOnHide && _engine && _engine->state() != PlayerEngine::Playing) {
-            if(!_quitfullscreenstopflag){
+            if (!_quitfullscreenstopflag) {
                 requestAction(ActionFactory::TogglePause);
                 _pausedOnHide = false;
                 _quitfullscreenstopflag = false;
-            }else {
+            } else {
                 _quitfullscreenstopflag = false;
             }
         }
@@ -2846,11 +2824,9 @@ void MainWindow::updateSizeConstraints()
         if (_engine->state() != PlayerEngine::CoreState::Idle) {
             auto dRect = DApplication::desktop()->availableGeometry();
             auto sz = _engine->videoSize();
-            if(sz.width() ==0 || sz.height() == 0)
-            {
+            if (sz.width() == 0 || sz.height() == 0) {
                 m = QSize(614, 500);
-            }
-            else {
+            } else {
                 qreal ratio = (qreal)sz.width() / sz.height();
                 if (sz.width() > sz.height()) {
                     int w = 500 * ratio;
@@ -3025,15 +3001,15 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *ev)
     /*if (_playState->isVisible()) {
         //QMouseEvent me(QEvent::MouseButtonRelease, {}, ev->button(), ev->buttons(), ev->modifiers());
         //qApp->sendEvent(_playState, &me);
-//        _playState->setState(DImageButton::Normal);
+    //        _playState->setState(DImageButton::Normal);
     }*/
 
     // dtk has a bug, DImageButton propagates mouseReleaseEvent event when it responded to.
-    if (!insideResizeArea(ev->globalPos()) && !_mouseMoved && (_playlist->state() != PlaylistWidget::Opened) ) {
+    if (!insideResizeArea(ev->globalPos()) && !_mouseMoved && (_playlist->state() != PlaylistWidget::Opened)) {
         if (!insideToolsArea(ev->pos())) {
             _delayedMouseReleaseTimer.start(120);
         } else {
-            if (_engine->state() == PlayerEngine::CoreState::Idle ) {
+            if (_engine->state() == PlayerEngine::CoreState::Idle) {
                 _delayedMouseReleaseTimer.start(120);
             }
         }

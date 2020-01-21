@@ -69,8 +69,10 @@ MprisPlayer::MprisPlayer(QObject *parent)
     QDBusConnection connection = QDBusConnection::sessionBus();
 
     if (!connection.isConnected()) {
+        qDebug() << "connection.isConnected";
 //        qmlInfo(this) << "Failed attempting to connect to DBus";
     } else if (!connection.registerObject(mprisObjectPath, this)) {
+        qDebug() << "Failed attempting to register object path. Already registered?";
 //        qmlInfo(this) << "Failed attempting to register object path. Already registered?";
     }
 }
@@ -554,7 +556,7 @@ void MprisPlayer::unregisterService()
     }
 }
 
-void MprisPlayer::notifyPropertiesChanged(const QString& interfaceName, const QVariantMap &changedProperties, const QStringList &invalidatedProperties) const
+void MprisPlayer::notifyPropertiesChanged(const QString &interfaceName, const QVariantMap &changedProperties, const QStringList &invalidatedProperties) const
 {
     if (m_serviceName.isEmpty()) {
         return;
@@ -568,8 +570,8 @@ void MprisPlayer::notifyPropertiesChanged(const QString& interfaceName, const QV
     }
 
     QDBusMessage message = QDBusMessage::createSignal(mprisObjectPath,
-                           dBusPropertiesInterface,
-                           dBusPropertiesChangedSignal);
+                                                      dBusPropertiesInterface,
+                                                      dBusPropertiesChangedSignal);
 
     QList<QVariant> arguments;
     arguments << QVariant(interfaceName) << QVariant(changedProperties) << QVariant(invalidatedProperties);

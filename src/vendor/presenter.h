@@ -19,16 +19,20 @@ public:
     explicit Presenter(MainWindow* mw, QObject *parent = nullptr);
 
     void initMpris(MprisPlayer *mprisPlayer);
-    void pause();
-    void playnext();
-    void playprev();
 
 signals:
 
 public slots:
+    void slotpause();
+    void slotplaynext();
+    void slotplayprev();
+    void slotvolumeRequested(double volume);
+    void slotopenUriRequested(const QUrl url);
+    void slotstateChanged();
 
 private:
     MainWindow* _mw = nullptr;
+    MprisPlayer* m_mprisplayer=nullptr;
 };
 
 #endif // PRESENTER_H
