@@ -158,6 +158,7 @@ DMenu *ActionFactory::mainContextMenu()
             //sub menu
             auto *parent = menu;
             auto *menu = new DMenu(tr("Sound"));
+            _sound = menu;
             {
                 auto *parent = menu;
                 auto *menu = new DMenu(tr("Channel"));
@@ -358,6 +359,7 @@ void ActionFactory::updateMainActionsForMovie(const PlayingMovieInfo &pmf)
 
         _tracksMenu->setEnabled(pmf.audios.size() > 0);
         _soundMenu->setEnabled(pmf.audios.size() > 0);
+        _sound->setEnabled(pmf.audios.size() > 0);
     }
 }
 

@@ -171,6 +171,7 @@ private:
     DMenu *_tracksMenu {nullptr};
     DMenu *_soundMenu {nullptr};
     DMenu *_playlistMenu {nullptr};
+    DMenu *_sound {nullptr};
     QList<QAction *> _contextMenuActions;
 };
 
