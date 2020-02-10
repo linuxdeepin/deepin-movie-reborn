@@ -1,5 +1,12 @@
 <?xml version="1.0" ?><!DOCTYPE TS><TS language="lt" version="2.1">
 <context>
+    <name>Presenter</name>
+    <message>
+        <source>Volume: %1%</source>
+        <translation>Garsis: %1%</translation>
+    </message>
+</context>
+<context>
     <name>QObject</name>
     <message>
         <source>Invalid folder</source>
@@ -385,11 +392,11 @@
     </message>
     <message>
         <source>Next Frame</source>
-        <translation type="unfinished"/>
+        <translation>Kitas kadras</translation>
     </message>
     <message>
         <source>Previous Frame</source>
-        <translation type="unfinished"/>
+        <translation>Ankstesnis kadras</translation>
     </message>
 </context>
 <context>
@@ -451,7 +458,7 @@
     </message>
     <message>
         <source>Parse failed</source>
-        <translation type="unfinished"/>
+        <translation>Nagrinėjimas nepavyko</translation>
     </message>
     <message>
         <source>Mute</source>
@@ -519,15 +526,11 @@
     </message>
     <message>
         <source>No video file found</source>
-        <translation type="unfinished"/>
+        <translation>Nerasta jokio vaizdo įrašo failo</translation>
     </message>
     <message>
         <source>Open File</source>
         <translation>Atverti failą</translation>
-    </message>
-    <message>
-        <source>Film Screenshot</source>
-        <translation type="unfinished"/>
     </message>
     <message>
         <source>Film screenshot</source>
@@ -535,11 +538,11 @@
     </message>
     <message>
         <source>Taking the screenshots, please wait...</source>
-        <translation type="unfinished"/>
+        <translation>Daromos ekrano kopijos, palaukite...</translation>
     </message>
     <message>
         <source>Due to hardware limitations, 4K video may be stuck</source>
-        <translation type="unfinished"/>
+        <translation>Dėl aparatinės įrangos ribotumų, 4K vaizdo įrašas gali užstrigti</translation>
     </message>
     <message>
         <source>OK</source>
@@ -547,6 +550,10 @@
     </message>
     <message>
         <source>Please insert a CD/DVD</source>
+        <translation>Įdėkite CD/DVD</translation>
+    </message>
+    <message>
+        <source>Reading DVD files...</source>
         <translation type="unfinished"/>
     </message>
 </context>
@@ -607,7 +614,7 @@
     <name>dmr::PlayItemWidget</name>
     <message>
         <source>The file does not exist</source>
-        <translation type="unfinished"/>
+        <translation>Failo nėra</translation>
     </message>
 </context>
 <context>

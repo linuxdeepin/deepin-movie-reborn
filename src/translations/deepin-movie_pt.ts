@@ -1,5 +1,12 @@
 <?xml version="1.0" ?><!DOCTYPE TS><TS language="pt" version="2.1">
 <context>
+    <name>Presenter</name>
+    <message>
+        <source>Volume: %1%</source>
+        <translation>Volume: %1%</translation>
+    </message>
+</context>
+<context>
     <name>QObject</name>
     <message>
         <source>Invalid folder</source>
@@ -35,7 +42,7 @@
     </message>
     <message>
         <source>Pause when minimized</source>
-        <translation>Pausar quando minimizado</translation>
+        <translation>Pausa quando minimizado</translation>
     </message>
     <message>
         <source>Remember playback position</source>
@@ -55,7 +62,7 @@
     </message>
     <message>
         <source>Screenshot</source>
-        <translation>Capturar Ecrã</translation>
+        <translation>Captura de ecrã</translation>
     </message>
     <message>
         <source>Shortcuts</source>
@@ -79,7 +86,7 @@
     </message>
     <message>
         <source>Font Style</source>
-        <translation>Estilo de letra</translation>
+        <translation>Estilo da fonte</translation>
     </message>
     <message>
         <source>Restore Defaults</source>
@@ -99,7 +106,7 @@
     </message>
     <message>
         <source>Mini mode</source>
-        <translation>Modo miniatura</translation>
+        <translation>Modo de miniatura</translation>
     </message>
     <message>
         <source>Mute</source>
@@ -107,11 +114,11 @@
     </message>
     <message>
         <source>Next frame</source>
-        <translation>Frame seguinte</translation>
+        <translation>Fotograma seguinte</translation>
     </message>
     <message>
         <source>Previous frame</source>
-        <translation>Frame anterior</translation>
+        <translation>Fotograma anterior</translation>
     </message>
     <message>
         <source>Volume down</source>
@@ -131,15 +138,15 @@
     </message>
     <message>
         <source>Fullscreen</source>
-        <translation>Ecrã completo</translation>
+        <translation>Ecrã inteiro</translation>
     </message>
     <message>
         <source>Pause/Play</source>
-        <translation>Pausar/Reproduzir</translation>
+        <translation>Pausa/Reproduzir</translation>
     </message>
     <message>
         <source>Playlist</source>
-        <translation>Lista de Reprodução</translation>
+        <translation>Lista de reprodução</translation>
     </message>
     <message>
         <source>Reset speed</source>
@@ -155,7 +162,7 @@
     </message>
     <message>
         <source>Film screenshot</source>
-        <translation>Captura de ecrã do filme</translation>
+        <translation>Captura de ecrã do vídeo</translation>
     </message>
     <message>
         <source>0.5s backward</source>
@@ -167,7 +174,7 @@
     </message>
     <message>
         <source>Font</source>
-        <translation>Tipo de Letra</translation>
+        <translation>Fonte</translation>
     </message>
     <message>
         <source>Exit fullscreen/mini mode</source>
@@ -175,7 +182,7 @@
     </message>
     <message>
         <source>Movie</source>
-        <translation>Filme</translation>
+        <translation>Vídeo</translation>
     </message>
     <message>
         <source>Settings</source>
@@ -195,11 +202,11 @@
     </message>
     <message>
         <source>Film info</source>
-        <translation>Informação do Filme</translation>
+        <translation>Informação do vídeo</translation>
     </message>
     <message>
         <source>Burst shooting</source>
-        <translation type="unfinished"/>
+        <translation>Disparo contínuo</translation>
     </message>
     <message>
         <source>Size</source>
@@ -207,7 +214,7 @@
     </message>
     <message>
         <source>Movie is a full-featured video player, supporting playing local and streaming media in multiple video formats.</source>
-        <translation type="unfinished"/>
+        <translation>O Vídeo é um reprodutor de vídeos com todas as funcionalidades, suporta reprodução local e transmissão de vídeo em vários formatos de vídeo.</translation>
     </message>
 </context>
 <context>
@@ -218,7 +225,7 @@
     </message>
     <message>
         <source>Please enter the URL:</source>
-        <translation>Por favor, insira o URL:</translation>
+        <translation>Introduza o URL:</translation>
     </message>
     <message>
         <source>OK</source>
@@ -233,11 +240,11 @@
     </message>
     <message>
         <source>Fullscreen</source>
-        <translation>Ecrã completo</translation>
+        <translation>Ecrã inteiro</translation>
     </message>
     <message>
         <source>Always on Top</source>
-        <translation>Sempre no Topo</translation>
+        <translation>Sempre no topo</translation>
     </message>
     <message>
         <source>Empty playlist</source>
@@ -245,7 +252,7 @@
     </message>
     <message>
         <source>Film info</source>
-        <translation>Informação do Filme</translation>
+        <translation>Informação do vídeo</translation>
     </message>
     <message>
         <source>Open file</source>
@@ -265,31 +272,31 @@
     </message>
     <message>
         <source>Mini Mode</source>
-        <translation>Modo Miniatura</translation>
+        <translation>Modo de miniatura</translation>
     </message>
     <message>
         <source>Play Mode</source>
-        <translation>Modo de Reprodução</translation>
+        <translation>Modo de reprodução</translation>
     </message>
     <message>
         <source>Order Play</source>
-        <translation>Reprodução Ordenada</translation>
+        <translation>Reprodução ordenada</translation>
     </message>
     <message>
         <source>Shuffle Play</source>
-        <translation>Reprodução Aleatória</translation>
+        <translation>Reprodução aleatória</translation>
     </message>
     <message>
         <source>Single Play</source>
-        <translation>Reprodução Única</translation>
+        <translation>Reprodução única</translation>
     </message>
     <message>
         <source>Single Loop</source>
-        <translation>Ciclo Único </translation>
+        <translation>Repetição única</translation>
     </message>
     <message>
         <source>List Loop</source>
-        <translation>Ciclo de lista</translation>
+        <translation>Repetição de lista</translation>
     </message>
     <message>
         <source>Frame</source>
@@ -301,11 +308,11 @@
     </message>
     <message>
         <source>Clockwise</source>
-        <translation>Sentido horário</translation>
+        <translation>Rodar à direita</translation>
     </message>
     <message>
         <source>Counterclockwise</source>
-        <translation>Sentido anti-horário</translation>
+        <translation>Rodar à esquerda</translation>
     </message>
     <message>
         <source>Sound</source>
@@ -357,23 +364,23 @@
     </message>
     <message>
         <source>Screenshot</source>
-        <translation>Capturar Ecrã</translation>
+        <translation>Captura de ecrã</translation>
     </message>
     <message>
         <source>Film Screenshot</source>
-        <translation>Captura de ecrã do filme</translation>
+        <translation>Captura de ecrã do vídeo</translation>
     </message>
     <message>
         <source>Burst Shooting</source>
-        <translation>Captura de ecrã em rajada</translation>
+        <translation>Disparo contínuo</translation>
     </message>
     <message>
         <source>Playlist</source>
-        <translation>Lista de Reprodução</translation>
+        <translation>Lista de reprodução</translation>
     </message>
     <message>
         <source>Film Info</source>
-        <translation>Informação do Filme</translation>
+        <translation>Informação do vídeo</translation>
     </message>
     <message>
         <source>Delete from playlist</source>
@@ -381,15 +388,15 @@
     </message>
     <message>
         <source>Display in file manager</source>
-        <translation>Exibir no gestor de ficheiros</translation>
+        <translation>Mostrar no gestor de ficheiros</translation>
     </message>
     <message>
         <source>Next Frame</source>
-        <translation type="unfinished"/>
+        <translation>Fotograma seguinte</translation>
     </message>
     <message>
         <source>Previous Frame</source>
-        <translation type="unfinished"/>
+        <translation>Fotograma anterior</translation>
     </message>
 </context>
 <context>
@@ -419,7 +426,7 @@
     </message>
     <message>
         <source>Load failed</source>
-        <translation>Carregamento falhou</translation>
+        <translation>Falha ao carregar</translation>
     </message>
     <message>
         <source>Buffering...</source>
@@ -467,15 +474,15 @@
     </message>
     <message>
         <source>Subtitle %1: %2s</source>
-        <translation>Legendas %1: %2s</translation>
+        <translation>Legenda %1: %2s</translation>
     </message>
     <message>
         <source>delayed</source>
-        <translation>Atrasado</translation>
+        <translation>Atrasada</translation>
     </message>
     <message>
         <source>advanced</source>
-        <translation>Avançado</translation>
+        <translation>Avançada</translation>
     </message>
     <message>
         <source>Speed: %1x</source>
@@ -495,11 +502,11 @@
     </message>
     <message>
         <source>The screenshot is saved</source>
-        <translation>A captura de ecrã foi guardada.</translation>
+        <translation>A captura de ecrã foi guardada</translation>
     </message>
     <message>
         <source>Failed to save the screenshot</source>
-        <translation>Falha ao guardar a imagem</translation>
+        <translation>Falha ao guardar a captura de ecrã</translation>
     </message>
     <message>
         <source>Invalid file: %1</source>
@@ -526,20 +533,16 @@
         <translation>Abrir Ficheiro</translation>
     </message>
     <message>
-        <source>Film Screenshot</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
         <source>Film screenshot</source>
-        <translation>Captura de ecrã do filme</translation>
+        <translation>Captura de ecrã do vídeo</translation>
     </message>
     <message>
         <source>Taking the screenshots, please wait...</source>
-        <translation type="unfinished"/>
+        <translation>A tirar as capturas de ecrã, aguarde...</translation>
     </message>
     <message>
         <source>Due to hardware limitations, 4K video may be stuck</source>
-        <translation type="unfinished"/>
+        <translation>Devido às limitações do hardware, o vídeo 4K pode ficar parado</translation>
     </message>
     <message>
         <source>OK</source>
@@ -547,6 +550,10 @@
     </message>
     <message>
         <source>Please insert a CD/DVD</source>
+        <translation>Introduza um CD/DVD</translation>
+    </message>
+    <message>
+        <source>Reading DVD files...</source>
         <translation type="unfinished"/>
     </message>
 </context>
@@ -573,7 +580,7 @@
     <name>dmr::MovieInfoDialog</name>
     <message>
         <source>Film info</source>
-        <translation>Informação do Filme</translation>
+        <translation>Informação do vídeo</translation>
     </message>
     <message>
         <source>Resolution</source>
@@ -600,21 +607,21 @@
     <name>dmr::MpvProxy</name>
     <message>
         <source>Internal</source>
-        <translation type="unfinished"/>
+        <translation>Interno</translation>
     </message>
 </context>
 <context>
     <name>dmr::PlayItemWidget</name>
     <message>
         <source>The file does not exist</source>
-        <translation type="unfinished"/>
+        <translation>O ficheiro não existe</translation>
     </message>
 </context>
 <context>
     <name>dmr::PlaylistWidget</name>
     <message>
         <source>Playlist</source>
-        <translation>Lista de Reprodução</translation>
+        <translation>Lista de reprodução</translation>
     </message>
     <message>
         <source>%1 videos</source>
@@ -629,11 +636,11 @@
     <name>dmr::Settings</name>
     <message>
         <source>%1/Movie%2.jpg</source>
-        <translation>%1/Movie%2.jpg</translation>
+        <translation>%1/Vídeo%2.jpg</translation>
     </message>
     <message>
         <source>%1/Movie%2(%3).jpg</source>
-        <translation>%1/Movie%2(%3).jpg</translation>
+        <translation>%1/Vídeo%2(%3).jpg</translation>
     </message>
 </context>
 <context>
@@ -656,15 +663,15 @@
     </message>
     <message>
         <source>Playlist</source>
-        <translation>Lista de Reprodução</translation>
+        <translation>Lista de reprodução</translation>
     </message>
     <message>
         <source>Fullscreen</source>
-        <translation>Ecrã completo</translation>
+        <translation>Ecrã inteiro</translation>
     </message>
     <message>
         <source>Play/Pause</source>
-        <translation>Reproduzir/Pausar</translation>
+        <translation>Reproduzir/Pausa</translation>
     </message>
     <message>
         <source>play</source>
@@ -688,11 +695,11 @@
     </message>
     <message>
         <source>Exit fullscreen</source>
-        <translation>Sair de ecrã completo</translation>
+        <translation>Sair de ecrã inteiro</translation>
     </message>
     <message>
         <source>Pause</source>
-        <translation>Pausar</translation>
+        <translation>Pausa</translation>
     </message>
 </context>
 </TS>

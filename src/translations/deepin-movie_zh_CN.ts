@@ -1,5 +1,12 @@
 <?xml version="1.0" ?><!DOCTYPE TS><TS language="zh_CN" version="2.1">
 <context>
+    <name>Presenter</name>
+    <message>
+        <source>Volume: %1%</source>
+        <translation>音量：%1%</translation>
+    </message>
+</context>
+<context>
     <name>QObject</name>
     <message>
         <source>Invalid folder</source>
@@ -526,10 +533,6 @@
         <translation>打开文件</translation>
     </message>
     <message>
-        <source>Film Screenshot</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
         <source>Film screenshot</source>
         <translation>影片截图</translation>
     </message>
@@ -548,6 +551,10 @@
     <message>
         <source>Please insert a CD/DVD</source>
         <translation>请插入CD或DVD</translation>
+    </message>
+    <message>
+        <source>Reading DVD files...</source>
+        <translation>正在读取光盘文件...</translation>
     </message>
 </context>
 <context>

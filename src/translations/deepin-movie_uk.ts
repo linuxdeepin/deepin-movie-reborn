@@ -1,5 +1,12 @@
 <?xml version="1.0" ?><!DOCTYPE TS><TS language="uk" version="2.1">
 <context>
+    <name>Presenter</name>
+    <message>
+        <source>Volume: %1%</source>
+        <translation>Гучність: %1%</translation>
+    </message>
+</context>
+<context>
     <name>QObject</name>
     <message>
         <source>Invalid folder</source>
@@ -199,7 +206,7 @@
     </message>
     <message>
         <source>Burst shooting</source>
-        <translation type="unfinished"/>
+        <translation>Серійний знімок</translation>
     </message>
     <message>
         <source>Size</source>
@@ -207,7 +214,7 @@
     </message>
     <message>
         <source>Movie is a full-featured video player, supporting playing local and streaming media in multiple video formats.</source>
-        <translation type="unfinished"/>
+        <translation>Movie - повнофункціональний відеоплеєр, що підтримує відтворення локальних і потокових мультимедіа в декількох відеоформатах.</translation>
     </message>
 </context>
 <context>
@@ -385,11 +392,11 @@
     </message>
     <message>
         <source>Next Frame</source>
-        <translation type="unfinished"/>
+        <translation>Наступний кадр</translation>
     </message>
     <message>
         <source>Previous Frame</source>
-        <translation type="unfinished"/>
+        <translation>Попередній кадр</translation>
     </message>
 </context>
 <context>
@@ -526,20 +533,16 @@
         <translation>Відкрити файл</translation>
     </message>
     <message>
-        <source>Film Screenshot</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
         <source>Film screenshot</source>
         <translation>Знімок кадру</translation>
     </message>
     <message>
         <source>Taking the screenshots, please wait...</source>
-        <translation type="unfinished"/>
+        <translation>Роблю скріншоти, будь ласка зачекайте...</translation>
     </message>
     <message>
         <source>Due to hardware limitations, 4K video may be stuck</source>
-        <translation type="unfinished"/>
+        <translation>Через обмеження апаратної частини відтворення відео у форматі 4K може відбуватися нерівномірно.</translation>
     </message>
     <message>
         <source>OK</source>
@@ -547,6 +550,10 @@
     </message>
     <message>
         <source>Please insert a CD/DVD</source>
+        <translation>Будь ласка, вставте CD/DVD</translation>
+    </message>
+    <message>
+        <source>Reading DVD files...</source>
         <translation type="unfinished"/>
     </message>
 </context>
@@ -600,14 +607,14 @@
     <name>dmr::MpvProxy</name>
     <message>
         <source>Internal</source>
-        <translation type="unfinished"/>
+        <translation>Внутрішній</translation>
     </message>
 </context>
 <context>
     <name>dmr::PlayItemWidget</name>
     <message>
         <source>The file does not exist</source>
-        <translation type="unfinished"/>
+        <translation>Файл не існує</translation>
     </message>
 </context>
 <context>

@@ -1,5 +1,12 @@
 <?xml version="1.0" ?><!DOCTYPE TS><TS language="ar" version="2.1">
 <context>
+    <name>Presenter</name>
+    <message>
+        <source>Volume: %1%</source>
+        <translation>الصوت: %1%</translation>
+    </message>
+</context>
+<context>
     <name>QObject</name>
     <message>
         <source>Invalid folder</source>
@@ -526,10 +533,6 @@
         <translation>فتح ملف</translation>
     </message>
     <message>
-        <source>Film Screenshot</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
         <source>Film screenshot</source>
         <translation>لقطة شاشة للفلم</translation>
     </message>
@@ -547,6 +550,10 @@
     </message>
     <message>
         <source>Please insert a CD/DVD</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Reading DVD files...</source>
         <translation type="unfinished"/>
     </message>
 </context>

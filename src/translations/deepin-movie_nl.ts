@@ -1,5 +1,12 @@
 <?xml version="1.0" ?><!DOCTYPE TS><TS language="nl" version="2.1">
 <context>
+    <name>Presenter</name>
+    <message>
+        <source>Volume: %1%</source>
+        <translation>Volume: %1%</translation>
+    </message>
+</context>
+<context>
     <name>QObject</name>
     <message>
         <source>Invalid folder</source>
@@ -199,7 +206,7 @@
     </message>
     <message>
         <source>Burst shooting</source>
-        <translation type="unfinished"/>
+        <translation>Meerdere schermfoto&apos;s maken</translation>
     </message>
     <message>
         <source>Size</source>
@@ -207,7 +214,7 @@
     </message>
     <message>
         <source>Movie is a full-featured video player, supporting playing local and streaming media in multiple video formats.</source>
-        <translation type="unfinished"/>
+        <translation>Video&apos;s is een videospeler vol mogelijkheden die lokale video&apos;s en streams in allerlei formaten afspeelt.</translation>
     </message>
 </context>
 <context>
@@ -365,7 +372,7 @@
     </message>
     <message>
         <source>Burst Shooting</source>
-        <translation>Burstopname</translation>
+        <translation>Meerdere schermfoto&apos;s maken</translation>
     </message>
     <message>
         <source>Playlist</source>
@@ -385,11 +392,11 @@
     </message>
     <message>
         <source>Next Frame</source>
-        <translation type="unfinished"/>
+        <translation>Volgend frame</translation>
     </message>
     <message>
         <source>Previous Frame</source>
-        <translation type="unfinished"/>
+        <translation>Vorig frame</translation>
     </message>
 </context>
 <context>
@@ -526,20 +533,16 @@
         <translation>Bestand openen</translation>
     </message>
     <message>
-        <source>Film Screenshot</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
         <source>Film screenshot</source>
         <translation>Schermfoto van film</translation>
     </message>
     <message>
         <source>Taking the screenshots, please wait...</source>
-        <translation type="unfinished"/>
+        <translation>Bezig met maken van schermfoto&apos;s...</translation>
     </message>
     <message>
         <source>Due to hardware limitations, 4K video may be stuck</source>
-        <translation type="unfinished"/>
+        <translation>Wegens hardwarebeperkingen kunnen 4K-video&apos;s mogelijk stotteren tijdens het afspelen</translation>
     </message>
     <message>
         <source>OK</source>
@@ -547,6 +550,10 @@
     </message>
     <message>
         <source>Please insert a CD/DVD</source>
+        <translation>Voer een cd of dvd in</translation>
+    </message>
+    <message>
+        <source>Reading DVD files...</source>
         <translation type="unfinished"/>
     </message>
 </context>
@@ -600,14 +607,14 @@
     <name>dmr::MpvProxy</name>
     <message>
         <source>Internal</source>
-        <translation type="unfinished"/>
+        <translation>Intern</translation>
     </message>
 </context>
 <context>
     <name>dmr::PlayItemWidget</name>
     <message>
         <source>The file does not exist</source>
-        <translation type="unfinished"/>
+        <translation>Dit bestand bestaat niet</translation>
     </message>
 </context>
 <context>

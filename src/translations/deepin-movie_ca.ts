@@ -1,5 +1,12 @@
 <?xml version="1.0" ?><!DOCTYPE TS><TS language="ca" version="2.1">
 <context>
+    <name>Presenter</name>
+    <message>
+        <source>Volume: %1%</source>
+        <translation>Volum: %1%</translation>
+    </message>
+</context>
+<context>
     <name>QObject</name>
     <message>
         <source>Invalid folder</source>
@@ -199,7 +206,7 @@
     </message>
     <message>
         <source>Burst shooting</source>
-        <translation type="unfinished"/>
+        <translation>Esclat de ràfegues</translation>
     </message>
     <message>
         <source>Size</source>
@@ -207,7 +214,7 @@
     </message>
     <message>
         <source>Movie is a full-featured video player, supporting playing local and streaming media in multiple video formats.</source>
-        <translation type="unfinished"/>
+        <translation>Pel·lícula és un reproductor de vídeo que admet reproducció de vídeo local i de transmissió en diversos formats de vídeo.</translation>
     </message>
 </context>
 <context>
@@ -385,11 +392,11 @@
     </message>
     <message>
         <source>Next Frame</source>
-        <translation type="unfinished"/>
+        <translation>Fotograma següent</translation>
     </message>
     <message>
         <source>Previous Frame</source>
-        <translation type="unfinished"/>
+        <translation>Fotograma anterior</translation>
     </message>
 </context>
 <context>
@@ -451,7 +458,7 @@
     </message>
     <message>
         <source>Parse failed</source>
-        <translation>Ha fallat l&apos;anàlisi</translation>
+        <translation>Ha fallat l&apos;anàlisi.</translation>
     </message>
     <message>
         <source>Mute</source>
@@ -507,11 +514,11 @@
     </message>
     <message>
         <source>No matching online subtitles</source>
-        <translation>No hi ha subtítols en línia coincidents</translation>
+        <translation>No hi ha subtítols en línia coincidents.</translation>
     </message>
     <message>
         <source>Cannot open file or stream</source>
-        <translation>No es pot obrir el fitxer o la transmissió</translation>
+        <translation>No es pot obrir el fitxer o la transmissió.</translation>
     </message>
     <message>
         <source>Invalid file</source>
@@ -519,15 +526,11 @@
     </message>
     <message>
         <source>No video file found</source>
-        <translation>No s&apos;ha trobat cap fitxer de vídeo</translation>
+        <translation>No s&apos;ha trobat cap fitxer de vídeo.</translation>
     </message>
     <message>
         <source>Open File</source>
         <translation>Obre un fitxer</translation>
-    </message>
-    <message>
-        <source>Film Screenshot</source>
-        <translation type="unfinished"/>
     </message>
     <message>
         <source>Film screenshot</source>
@@ -535,11 +538,11 @@
     </message>
     <message>
         <source>Taking the screenshots, please wait...</source>
-        <translation type="unfinished"/>
+        <translation>Es fan les captures; espereu, si us plau...</translation>
     </message>
     <message>
         <source>Due to hardware limitations, 4K video may be stuck</source>
-        <translation type="unfinished"/>
+        <translation>A causa de limitacions de maquinari, el vídeo de 4K pot quedar encallat.</translation>
     </message>
     <message>
         <source>OK</source>
@@ -547,6 +550,10 @@
     </message>
     <message>
         <source>Please insert a CD/DVD</source>
+        <translation>Si us plau, inseriu un CD / DVD</translation>
+    </message>
+    <message>
+        <source>Reading DVD files...</source>
         <translation type="unfinished"/>
     </message>
 </context>
@@ -600,14 +607,14 @@
     <name>dmr::MpvProxy</name>
     <message>
         <source>Internal</source>
-        <translation type="unfinished"/>
+        <translation>Intern</translation>
     </message>
 </context>
 <context>
     <name>dmr::PlayItemWidget</name>
     <message>
         <source>The file does not exist</source>
-        <translation type="unfinished"/>
+        <translation>El fitxer no existeix.</translation>
     </message>
 </context>
 <context>
@@ -629,11 +636,11 @@
     <name>dmr::Settings</name>
     <message>
         <source>%1/Movie%2.jpg</source>
-        <translation type="unfinished"/>
+        <translation>%1/Pel·lícula%2.jpg</translation>
     </message>
     <message>
         <source>%1/Movie%2(%3).jpg</source>
-        <translation type="unfinished"/>
+        <translation>%1/Pel·lícula%2(%3).jpg</translation>
     </message>
 </context>
 <context>

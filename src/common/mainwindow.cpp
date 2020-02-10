@@ -2400,7 +2400,7 @@ void MainWindow::play(const QUrl &url)
             return;
         } else {
             // todo: Disable toolbar buttons
-            auto msg = QString(tr("Reading DVD file..."));
+            auto msg = QString(tr("Reading DVD files..."));
             _nwDvd->updateWithMessage(msg, false);
             return;
         }

@@ -1,5 +1,12 @@
 <?xml version="1.0" ?><!DOCTYPE TS><TS language="en" version="2.1">
 <context>
+    <name>Presenter</name>
+    <message>
+        <source>Volume: %1%</source>
+        <translation>Volume: %1%</translation>
+    </message>
+</context>
+<context>
     <name>QObject</name>
     <message>
         <source>Invalid folder</source>
@@ -544,6 +551,10 @@
     <message>
         <source>Please insert a CD/DVD</source>
         <translation>Please insert a CD/DVD</translation>
+    </message>
+    <message>
+        <source>Reading DVD files...</source>
+        <translation>Reading DVD files...</translation>
     </message>
 </context>
 <context>

@@ -1,5 +1,12 @@
 <?xml version="1.0" ?><!DOCTYPE TS><TS language="de" version="2.1">
 <context>
+    <name>Presenter</name>
+    <message>
+        <source>Volume: %1%</source>
+        <translation>Lautstärke: %1%</translation>
+    </message>
+</context>
+<context>
     <name>QObject</name>
     <message>
         <source>Invalid folder</source>
@@ -87,7 +94,7 @@
     </message>
     <message>
         <source>Open file</source>
-        <translation>Öffne Datei</translation>
+        <translation>Datei öffnen</translation>
     </message>
     <message>
         <source>Open next</source>
@@ -199,7 +206,7 @@
     </message>
     <message>
         <source>Burst shooting</source>
-        <translation type="unfinished"/>
+        <translation>Serienbildaufnahme</translation>
     </message>
     <message>
         <source>Size</source>
@@ -207,7 +214,7 @@
     </message>
     <message>
         <source>Movie is a full-featured video player, supporting playing local and streaming media in multiple video formats.</source>
-        <translation type="unfinished"/>
+        <translation>Movie ist ein Videoplayer, der die lokale und Streaming-Videowiedergabe in mehreren Videoformaten unterstützt.</translation>
     </message>
 </context>
 <context>
@@ -249,7 +256,7 @@
     </message>
     <message>
         <source>Open file</source>
-        <translation>Öffne Datei</translation>
+        <translation>Datei öffnen</translation>
     </message>
     <message>
         <source>Open folder</source>
@@ -365,7 +372,7 @@
     </message>
     <message>
         <source>Burst Shooting</source>
-        <translation>Screenshot</translation>
+        <translation>Serienbildaufnahme</translation>
     </message>
     <message>
         <source>Playlist</source>
@@ -385,11 +392,11 @@
     </message>
     <message>
         <source>Next Frame</source>
-        <translation type="unfinished"/>
+        <translation>Ein Bild vorwärts</translation>
     </message>
     <message>
         <source>Previous Frame</source>
-        <translation type="unfinished"/>
+        <translation>Ein Bild zurück</translation>
     </message>
 </context>
 <context>
@@ -435,7 +442,7 @@
     </message>
     <message>
         <source>All videos (%1)</source>
-        <translation>Alle Filme (%1)</translation>
+        <translation>Alle Videos (%1)</translation>
     </message>
     <message>
         <source>Stereo</source>
@@ -495,7 +502,7 @@
     </message>
     <message>
         <source>The screenshot is saved</source>
-        <translation>Screenshot gespeichert</translation>
+        <translation>Das Bildschirmfoto ist gespeichert</translation>
     </message>
     <message>
         <source>Failed to save the screenshot</source>
@@ -526,20 +533,16 @@
         <translation>Datei öffnen</translation>
     </message>
     <message>
-        <source>Film Screenshot</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
         <source>Film screenshot</source>
         <translation>Film-Bildschirmfoto</translation>
     </message>
     <message>
         <source>Taking the screenshots, please wait...</source>
-        <translation type="unfinished"/>
+        <translation>Bildschirmfotos werden aufgenommen, bitte warten...</translation>
     </message>
     <message>
         <source>Due to hardware limitations, 4K video may be stuck</source>
-        <translation type="unfinished"/>
+        <translation>Aufgrund der Einschränkungen der Hardwareumgebung kann 4K-Video ruckeln.</translation>
     </message>
     <message>
         <source>OK</source>
@@ -547,6 +550,10 @@
     </message>
     <message>
         <source>Please insert a CD/DVD</source>
+        <translation>Bitte legen Sie eine CD/DVD ein</translation>
+    </message>
+    <message>
+        <source>Reading DVD files...</source>
         <translation type="unfinished"/>
     </message>
 </context>
@@ -600,14 +607,14 @@
     <name>dmr::MpvProxy</name>
     <message>
         <source>Internal</source>
-        <translation type="unfinished"/>
+        <translation>Intern</translation>
     </message>
 </context>
 <context>
     <name>dmr::PlayItemWidget</name>
     <message>
         <source>The file does not exist</source>
-        <translation type="unfinished"/>
+        <translation>Die Datei existiert nicht</translation>
     </message>
 </context>
 <context>

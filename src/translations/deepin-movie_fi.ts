@@ -1,5 +1,12 @@
 <?xml version="1.0" ?><!DOCTYPE TS><TS language="fi" version="2.1">
 <context>
+    <name>Presenter</name>
+    <message>
+        <source>Volume: %1%</source>
+        <translation>Äänitaso: %1%</translation>
+    </message>
+</context>
+<context>
     <name>QObject</name>
     <message>
         <source>Invalid folder</source>
@@ -23,15 +30,15 @@
     </message>
     <message>
         <source>Clear playlist when exit</source>
-        <translation>Tyhjennä soittolista lopettaessasi</translation>
+        <translation>Tyhjennä soittolista suljettaessa</translation>
     </message>
     <message>
         <source>Show video preview on mouseover</source>
-        <translation>Näytä videon esikatselukuva hiirellä</translation>
+        <translation>Näytä videon esikatselukuvaa hiirellä</translation>
     </message>
     <message>
         <source>Open a new player for each file played</source>
-        <translation>Avaa uusi soitin jokaiselle toistetulle tiedostolle</translation>
+        <translation>Avaa uusi soitin jokaiselle videolle erikseen</translation>
     </message>
     <message>
         <source>Pause when minimized</source>
@@ -67,7 +74,7 @@
     </message>
     <message>
         <source>Frame/Sound</source>
-        <translation>Kuvaruudut/Ääni</translation>
+        <translation>Kuva/ääni</translation>
     </message>
     <message>
         <source>Playback</source>
@@ -107,11 +114,11 @@
     </message>
     <message>
         <source>Next frame</source>
-        <translation>Seuraava kuvaruutu</translation>
+        <translation>Seuraava ruutu</translation>
     </message>
     <message>
         <source>Previous frame</source>
-        <translation>Edellinen kuvaruutu</translation>
+        <translation>Edellinen ruutu</translation>
     </message>
     <message>
         <source>Volume down</source>
@@ -131,11 +138,11 @@
     </message>
     <message>
         <source>Fullscreen</source>
-        <translation>Koko näytön tila</translation>
+        <translation>Kokoruutu</translation>
     </message>
     <message>
         <source>Pause/Play</source>
-        <translation>Keskeytä/Soita</translation>
+        <translation>Keskeytä/soita</translation>
     </message>
     <message>
         <source>Playlist</source>
@@ -195,11 +202,11 @@
     </message>
     <message>
         <source>Film info</source>
-        <translation>Tiedoston info</translation>
+        <translation>Tiedoston tiedot</translation>
     </message>
     <message>
         <source>Burst shooting</source>
-        <translation type="unfinished"/>
+        <translation>Sarjakuvaus</translation>
     </message>
     <message>
         <source>Size</source>
@@ -207,7 +214,7 @@
     </message>
     <message>
         <source>Movie is a full-featured video player, supporting playing local and streaming media in multiple video formats.</source>
-        <translation type="unfinished"/>
+        <translation>Teatteri on videotoistin, joka tukee paikallista ja suoratoistettavaa videotoistoa useissa videoformaateissa.</translation>
     </message>
 </context>
 <context>
@@ -233,7 +240,7 @@
     </message>
     <message>
         <source>Fullscreen</source>
-        <translation>Koko näytön tila</translation>
+        <translation>Kokoruutu</translation>
     </message>
     <message>
         <source>Always on Top</source>
@@ -245,7 +252,7 @@
     </message>
     <message>
         <source>Film info</source>
-        <translation>Tiedoston info</translation>
+        <translation>Tiedoston tiedot</translation>
     </message>
     <message>
         <source>Open file</source>
@@ -285,7 +292,7 @@
     </message>
     <message>
         <source>Single Loop</source>
-        <translation>Yhden jatkuva toisto</translation>
+        <translation>Jatkuva toisto</translation>
     </message>
     <message>
         <source>List Loop</source>
@@ -341,7 +348,7 @@
     </message>
     <message>
         <source>Online Search</source>
-        <translation>Online-haku</translation>
+        <translation>Haku verkosta</translation>
     </message>
     <message>
         <source>Select</source>
@@ -373,7 +380,7 @@
     </message>
     <message>
         <source>Film Info</source>
-        <translation>Tiedoston info</translation>
+        <translation>Tiedoston tiedot</translation>
     </message>
     <message>
         <source>Delete from playlist</source>
@@ -385,11 +392,11 @@
     </message>
     <message>
         <source>Next Frame</source>
-        <translation type="unfinished"/>
+        <translation>Seuraava ruutu</translation>
     </message>
     <message>
         <source>Previous Frame</source>
-        <translation type="unfinished"/>
+        <translation>Edellinen ruutu</translation>
     </message>
 </context>
 <context>
@@ -526,20 +533,16 @@
         <translation>Avaa tiedosto</translation>
     </message>
     <message>
-        <source>Film Screenshot</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
         <source>Film screenshot</source>
         <translation>Filmin kuvakaappaus</translation>
     </message>
     <message>
         <source>Taking the screenshots, please wait...</source>
-        <translation type="unfinished"/>
+        <translation>Otetaan kuvakaappausta, odota...</translation>
     </message>
     <message>
         <source>Due to hardware limitations, 4K video may be stuck</source>
-        <translation type="unfinished"/>
+        <translation>Laiteympäristön rajoitusten vuoksi 4K-video saattaa olla jumissa</translation>
     </message>
     <message>
         <source>OK</source>
@@ -547,6 +550,10 @@
     </message>
     <message>
         <source>Please insert a CD/DVD</source>
+        <translation>Aseta CD/DVD-levy asemaan</translation>
+    </message>
+    <message>
+        <source>Reading DVD files...</source>
         <translation type="unfinished"/>
     </message>
 </context>
@@ -573,7 +580,7 @@
     <name>dmr::MovieInfoDialog</name>
     <message>
         <source>Film info</source>
-        <translation>Tiedoston info</translation>
+        <translation>Tiedoston tiedot</translation>
     </message>
     <message>
         <source>Resolution</source>
@@ -600,14 +607,14 @@
     <name>dmr::MpvProxy</name>
     <message>
         <source>Internal</source>
-        <translation type="unfinished"/>
+        <translation>Sisäinen</translation>
     </message>
 </context>
 <context>
     <name>dmr::PlayItemWidget</name>
     <message>
         <source>The file does not exist</source>
-        <translation type="unfinished"/>
+        <translation>Tiedostoa ei ole</translation>
     </message>
 </context>
 <context>
@@ -664,7 +671,7 @@
     </message>
     <message>
         <source>Play/Pause</source>
-        <translation>Toista/Keskeytä</translation>
+        <translation>Toista/keskeytä</translation>
     </message>
     <message>
         <source>play</source>
