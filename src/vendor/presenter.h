@@ -9,6 +9,7 @@
 #include "dmr_settings.h"
 #include "notification_widget.h"
 #include "toolbox_proxy.h"
+#include "playlist_model.h"
 
 using namespace dmr;
 
@@ -29,7 +30,8 @@ public slots:
     void slotvolumeRequested(double volume);
     void slotopenUriRequested(const QUrl url);
     void slotstateChanged();
-
+    void slotloopStatusRequested(Mpris::LoopStatus loopStatus);
+    void slotplayModeChanged(PlaylistModel::PlayMode pm);
 private:
     MainWindow* _mw = nullptr;
     MprisPlayer* m_mprisplayer=nullptr;

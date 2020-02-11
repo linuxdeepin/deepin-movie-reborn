@@ -133,6 +133,7 @@ public:
     bool muted() const;
 
     PlaylistModel& playlist() const { return *_playlist; }
+    PlaylistModel* getplaylist() { return _playlist; };
 
     QImage takeScreenshot();
     void burstScreenshot(); //initial the start of burst screenshotting

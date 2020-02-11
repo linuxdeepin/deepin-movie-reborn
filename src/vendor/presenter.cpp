@@ -37,7 +37,16 @@ void Presenter::initMpris(MprisPlayer *mprisPlayer)
     connect(mprisPlayer, &MprisPlayer::previousRequested, this, &Presenter::slotplayprev);
     connect(mprisPlayer, &MprisPlayer::volumeRequested, this, &Presenter::slotvolumeRequested);
     connect(mprisPlayer, &MprisPlayer::openUriRequested, this, &Presenter::slotopenUriRequested);
+    connect(mprisPlayer,&MprisPlayer::loopStatusRequested,this,&Presenter::slotloopStatusRequested);
+    connect(_mw->engine()->getplaylist(),&PlaylistModel::playModeChanged,this,&Presenter::slotplayModeChanged);
     connect(mprisPlayer, &MprisPlayer::openUriRequested, this, [ = ] {_mw->requestAction(ActionFactory::Exit);});
+    connect(_mw->engine(),&PlayerEngine::volumeChanged,this,[ = ] {
+        double pert = _mw->engine()->volume();
+        if (pert > VOLUME_OFFSET) {
+            pert -= VOLUME_OFFSET;
+        }
+        mprisPlayer->setVolume(pert/100.0);
+    });
 
 //    connect(_mw->toolbox()->get_progBar(), &Presenter::progrossChanged,
 //    this, [ = ](qint64 pos, qint64) {
@@ -67,7 +76,10 @@ void Presenter::slotvolumeRequested(double volume)
         _mw->engine()->toggleMute();
     }
 
-    _mw->engine()->changeVolume(volume);
+    if (volume == VOLUME_OFFSET) {
+        volume = 0;
+    }
+    _mw->engine()->changeVolume(volume*100.0);
     Settings::get().setInternalOption("global_volume", qMin(_mw->engine()->volume(), 140));
     double pert = _mw->engine()->volume();
     if (pert > VOLUME_OFFSET) {
@@ -93,5 +105,31 @@ void Presenter::slotstateChanged()
     case PlayerEngine::CoreState::Paused:
         m_mprisplayer->setPlaybackStatus(Mpris::Paused);
         break;
+    }
+}
+
+void Presenter::slotloopStatusRequested(Mpris::LoopStatus loopStatus)
+{
+    if(loopStatus == Mpris::LoopStatus::InvalidLoopStatus){
+        return;
+    }else if (loopStatus == Mpris::LoopStatus::None) {
+        _mw->requestAction(ActionFactory::OrderPlay);
+    }else if (loopStatus == Mpris::LoopStatus::Track) {
+        _mw->requestAction(ActionFactory::SingleLoop);
+    }else if (loopStatus == Mpris::LoopStatus::Playlist) {
+        _mw->requestAction(ActionFactory::ListLoop);
+    }
+}
+
+void Presenter::slotplayModeChanged(PlaylistModel::PlayMode pm)
+{
+    if(pm == PlaylistModel::PlayMode::OrderPlay){
+        m_mprisplayer->setLoopStatus(Mpris::LoopStatus::None);
+    }else if (pm == PlaylistModel::PlayMode::SingleLoop) {
+        m_mprisplayer->setLoopStatus(Mpris::LoopStatus::Track);
+    }else if (pm == PlaylistModel::PlayMode::ListLoop) {
+        m_mprisplayer->setLoopStatus(Mpris::LoopStatus::Playlist);
+    }else {
+        m_mprisplayer->setLoopStatus(Mpris::LoopStatus::InvalidLoopStatus);
     }
 }
