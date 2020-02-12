@@ -42,10 +42,11 @@ void Presenter::initMpris(MprisPlayer *mprisPlayer)
     connect(mprisPlayer, &MprisPlayer::openUriRequested, this, [ = ] {_mw->requestAction(ActionFactory::Exit);});
     connect(_mw->engine(),&PlayerEngine::volumeChanged,this,[ = ] {
         double pert = _mw->engine()->volume();
-        if (pert > VOLUME_OFFSET) {
-            pert -= VOLUME_OFFSET;
+        if(pert == 0){
+            mprisPlayer->setVolume(pert/100.0);
+        }else {
+            mprisPlayer->setVolume((pert-40.0)/100.0);
         }
-        mprisPlayer->setVolume(pert/100.0);
     });
 
 //    connect(_mw->toolbox()->get_progBar(), &Presenter::progrossChanged,
@@ -72,20 +73,9 @@ void Presenter::slotplayprev()
 
 void Presenter::slotvolumeRequested(double volume)
 {
-    if (_mw->engine()->muted()) {
-        _mw->engine()->toggleMute();
-    }
-
-    if (volume == VOLUME_OFFSET) {
-        volume = 0;
-    }
-    _mw->engine()->changeVolume(volume*100.0);
-    Settings::get().setInternalOption("global_volume", qMin(_mw->engine()->volume(), 140));
-    double pert = _mw->engine()->volume();
-    if (pert > VOLUME_OFFSET) {
-        pert -= VOLUME_OFFSET;
-    }
-    _mw->get_nwComm()->updateWithMessage(tr("Volume: %1%").arg(pert));
+    QList<QVariant> arg;
+    arg.append((volume+0.4)*100.0);
+    _mw->requestAction(ActionFactory::ChangeVolume,1,arg);
 }
 
 void Presenter::slotopenUriRequested(const QUrl url)
@@ -114,10 +104,13 @@ void Presenter::slotloopStatusRequested(Mpris::LoopStatus loopStatus)
         return;
     }else if (loopStatus == Mpris::LoopStatus::None) {
         _mw->requestAction(ActionFactory::OrderPlay);
+        _mw->reflectActionToUI(ActionFactory::OrderPlay);
     }else if (loopStatus == Mpris::LoopStatus::Track) {
         _mw->requestAction(ActionFactory::SingleLoop);
+        _mw->reflectActionToUI(ActionFactory::SingleLoop);
     }else if (loopStatus == Mpris::LoopStatus::Playlist) {
         _mw->requestAction(ActionFactory::ListLoop);
+        _mw->reflectActionToUI(ActionFactory::ListLoop);
     }
 }
 

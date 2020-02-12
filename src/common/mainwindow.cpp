@@ -549,7 +549,10 @@ MainWindow::MainWindow(QWidget *parent)
 #else
 //    setWindowFlags(Qt::FramelessWindowHint);
     setWindowFlags(Qt::Window | Qt::WindowMinMaxButtonsHint |
-                   Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint | Qt::WindowFullscreenButtonHint);
+                   Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint);
+#ifdef Q_OS_MACOS
+    setWindowFlags(Qt::WindowFullscreenButtonHint);
+#endif
 #endif
     setAcceptDrops(true);
 
@@ -1439,6 +1442,10 @@ void MainWindow::reflectActionToUI(ActionFactory::ActionKind kd)
 
     case ActionFactory::ActionKind::Stereo:
     case ActionFactory::ActionKind::OrderPlay:
+    case ActionFactory::ActionKind::ShufflePlay:
+    case ActionFactory::ActionKind::SinglePlay:
+    case ActionFactory::ActionKind::SingleLoop:
+    case ActionFactory::ActionKind::ListLoop:
     case ActionFactory::ActionKind::DefaultFrame: {
         qDebug() << __func__ << kd;
         acts = ActionFactory::get().findActionsByKind(kd);
