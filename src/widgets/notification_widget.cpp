@@ -99,6 +99,7 @@ void NotificationWidget::popupWithIcon(const QString& msg, const QPixmap& pm)
         _icon->setFrameShape(QFrame::NoFrame);
     }
     _icon->setPixmap(pm);
+    _icon->setVisible(true);
 
     _layout->setContentsMargins(12, 6, 12, 6);
     if (_layout->indexOf(_icon) == -1)
@@ -132,6 +133,10 @@ void NotificationWidget::popup(const QString& msg, bool flag)
 
 void NotificationWidget::updateWithMessage(const QString& newMsg, bool flag)
 {
+    if (_icon) {
+        _icon->setVisible(false);
+    }
+
     QFont ft;
     ft.setPixelSize(12);
     QFontMetrics fm(ft);

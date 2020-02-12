@@ -2097,10 +2097,51 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         QString filename = QFileDialog::getOpenFileName(this, tr("Open File"),
                                                         lastOpenedPath(),
                                                         tr("Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)"));
-        if (QFileInfo(filename).exists()) {
-            auto success = _engine->loadSubtitle(QFileInfo(filename));
+        QFileInfo subfileInfo(filename);
+        if (subfileInfo.exists()) {
+            auto success = _engine->loadSubtitle(subfileInfo);
             _nwComm->updateWithMessage(success ? tr("Load successfully") : tr("Load failed"));
         }
+
+        // Search for video files with the same name as the subtitles and play the video file.
+        QDir dir(subfileInfo.canonicalPath());
+        dir.setFilter(QDir::Files | QDir::Hidden | QDir::NoSymLinks);
+        dir.setSorting(QDir::Size | QDir::Reversed);
+        QStringList videofile_suffixs = _engine->video_filetypes;
+        dir.setNameFilters(videofile_suffixs);
+
+        QFileInfoList list = dir.entryInfoList();
+        for (int i = 0; i < list.size(); ++i) {
+            QFileInfo info = list.at(i);
+            qDebug() << info.absoluteFilePath() << endl;
+            if (info.completeBaseName() == subfileInfo.completeBaseName()) {
+                filename = info.absoluteFilePath();
+            } else {
+                filename = nullptr;
+            }
+        }
+
+        QFileInfo vfileInfo(filename);
+        if (vfileInfo.exists()) {
+            Settings::get().setGeneralOption("last_open_path", vfileInfo.path());
+
+            play(QUrl::fromLocalFile(filename));
+
+            // Select the current subtitle display
+            const PlayingMovieInfo &pmf = _engine->playingMovieInfo();
+            for (const SubtitleInfo &sub : pmf.subs) {
+                if (sub["external"].toBool()) {
+                    QString path = sub["external-filename"].toString();
+                    if (path == subfileInfo.canonicalFilePath()) {
+                        _engine->selectSubtitle(pmf.subs.indexOf(sub));
+                        break;
+                    }
+                }
+            }
+        } else {
+            _nwComm->updateWithMessage(tr("Please load the video first."));
+        }
+
         break;
     }
 
@@ -3387,8 +3428,12 @@ void MainWindow::dropEvent(QDropEvent *ev)
                     }
                 }
             }
-            QPixmap icon = utils::LoadHiDPIPixmap(QString(":/resources/icons/%1.svg").arg(succ ? "success" : "fail"));
-            _nwComm->popupWithIcon(succ ? tr("Load successfully") : tr("Load failed"), icon);
+
+//            QPixmap icon = utils::LoadHiDPIPixmap(QString(":/resources/icons/%1.svg").arg(succ ? "success" : "fail"));
+//            _nwComm->popupWithIcon(succ ? tr("Load successfully") : tr("Load failed"), icon);
+            _nwComm->updateWithMessage(succ ? tr("Load successfully") : tr("Load failed"));
+
+            // Search for video files with the same name as the subtitles and play the video file.
 
             return;
         }
