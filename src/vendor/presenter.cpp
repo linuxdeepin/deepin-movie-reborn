@@ -40,14 +40,7 @@ void Presenter::initMpris(MprisPlayer *mprisPlayer)
     connect(mprisPlayer,&MprisPlayer::loopStatusRequested,this,&Presenter::slotloopStatusRequested);
     connect(_mw->engine()->getplaylist(),&PlaylistModel::playModeChanged,this,&Presenter::slotplayModeChanged);
     connect(mprisPlayer, &MprisPlayer::openUriRequested, this, [ = ] {_mw->requestAction(ActionFactory::Exit);});
-    connect(_mw->engine(),&PlayerEngine::volumeChanged,this,[ = ] {
-        double pert = _mw->engine()->volume();
-        if(pert == 0){
-            mprisPlayer->setVolume(pert/100.0);
-        }else {
-            mprisPlayer->setVolume((pert-40.0)/100.0);
-        }
-    });
+    connect(_mw->engine(),&PlayerEngine::volumeChanged,this,&Presenter::slotvolumeChanged);
 
 //    connect(_mw->toolbox()->get_progBar(), &Presenter::progrossChanged,
 //    this, [ = ](qint64 pos, qint64) {
@@ -124,5 +117,19 @@ void Presenter::slotplayModeChanged(PlaylistModel::PlayMode pm)
         m_mprisplayer->setLoopStatus(Mpris::LoopStatus::Playlist);
     }else {
         m_mprisplayer->setLoopStatus(Mpris::LoopStatus::InvalidLoopStatus);
+    }
+}
+
+void Presenter::slotvolumeChanged()
+{
+    if(_mw->engine()->muted()){
+        m_mprisplayer->setVolume(0.0);
+    }else {
+        double pert = _mw->engine()->volume();
+        if(pert == 0.0){
+            m_mprisplayer->setVolume(pert/100.0);
+        }else {
+            m_mprisplayer->setVolume((pert-40.0)/100.0);
+        }
     }
 }

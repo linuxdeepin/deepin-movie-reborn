@@ -446,6 +446,7 @@ void PlayerEngine::toggleMute()
 {
     if (!_current) return;
     _current->toggleMute();
+    emit volumeChanged();
 }
 
 void PlayerEngine::savePreviousMovieState()
