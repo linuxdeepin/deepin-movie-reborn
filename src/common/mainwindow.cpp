@@ -2681,22 +2681,22 @@ void MainWindow::checkErrorMpvLogsChanged(const QString prefix, const QString te
         //do nothing
     } else if (errorMessage.toLower().contains(QString("fail")) && errorMessage.toLower().contains(QString("open"))) {
         _nwComm->updateWithMessage(tr("Cannot open file or stream"));
-        _engine->playlist().clear();
+        _engine->playlist().remove(_engine->playlist().count()-1);
     } else if (errorMessage.toLower().contains(QString("fail")) &&
                (errorMessage.toLower().contains(QString("format")))
               ) {
         _nwComm->updateWithMessage(tr("Invalid file"));
-        _engine->playlist().clear();
+        //_engine->playlist().clear();
     } else if (errorMessage.toLower().contains(QString("moov atom not found"))) {
         _nwComm->updateWithMessage(tr("Invalid file"));
-        _engine->playlist().clear();
+        //_engine->playlist().clear();
     } else if (errorMessage.toLower().contains(QString("couldn't open dvd device"))) {
         _nwComm->updateWithMessage(tr("Please insert a CD/DVD"));
-        _engine->playlist().clear();
+        //_engine->playlist().clear();
     } else if ((errorMessage.toLower().contains(QString("can't"))) &&
                (errorMessage.toLower().contains(QString("open")))) {
         _nwComm->updateWithMessage(tr("No video file found"));
-        _engine->playlist().clear();
+        //_engine->playlist().clear();
     } else if (errorMessage.contains(QString("Hardware does not support image size 3840x2160"))) {
         requestAction(ActionFactory::TogglePause);
 
