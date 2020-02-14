@@ -790,7 +790,7 @@ void MpvProxy::play()
 
     // hwdec could be disabled by some codecs, so we need to re-enable it
     if (Settings::get().isSet(Settings::HWAccel)) {
-        set_property(_handle, "hwdec", "auto");
+        set_property(_handle, "hwdec", "auto-safe");
     } else {
         set_property(_handle, "hwdec", "off");
     }
