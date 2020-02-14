@@ -201,6 +201,7 @@ private:
     void prepareSplashImages();
     void saveWindowState();
     void loadWindowState();
+    void subtitleMatchVideo(const QString &fileName);
 
 private:
     DFloatingMessage *popup {nullptr};
