@@ -3,30 +3,30 @@
     <name>Presenter</name>
     <message>
         <source>Volume: %1%</source>
-        <translation>Volume: %1%</translation>
+        <translation type="vanished">Volume: %1%</translation>
     </message>
 </context>
 <context>
     <name>QObject</name>
     <message>
         <source>Invalid folder</source>
-        <translation>Pasta Inválida</translation>
+        <translation>Pasta inválida</translation>
     </message>
     <message>
         <source>Open folder</source>
-        <translation>Abrir Pasta</translation>
+        <translation>Abrir pasta</translation>
     </message>
     <message>
         <source>Network disconnected</source>
-        <translation>Rede Desconectada</translation>
+        <translation>Rede desconectada</translation>
     </message>
     <message>
         <source>You don&apos;t have permission to operate this folder</source>
-        <translation>O Usuário não tem Permissão para Manipular esta Pasta</translation>
+        <translation>O usuário não tem permissão para manipular esta pasta</translation>
     </message>
     <message>
         <source>Auto add similar files to play</source>
-        <translation>Adicionar automaticamente arquivos semelhantes à reprodução</translation>
+        <translation>Adicionar automaticamente os arquivos semelhantes à reprodução</translation>
     </message>
     <message>
         <source>Clear playlist when exit</source>
@@ -38,7 +38,7 @@
     </message>
     <message>
         <source>Open a new player for each file played</source>
-        <translation>Abrir novo player para cada arquivo que for reproduzido</translation>
+        <translation>Abrir um novo player para cada arquivo reproduzido</translation>
     </message>
     <message>
         <source>Pause when minimized</source>
@@ -46,7 +46,7 @@
     </message>
     <message>
         <source>Remember playback position</source>
-        <translation>Lembrar a Posição de Reprodução</translation>
+        <translation>Lembrar a posição de reprodução</translation>
     </message>
     <message>
         <source>Path</source>
@@ -94,15 +94,15 @@
     </message>
     <message>
         <source>Open file</source>
-        <translation>Abrir Arquivo</translation>
+        <translation>Abrir arquivo</translation>
     </message>
     <message>
         <source>Open next</source>
-        <translation>Abrir Próximo</translation>
+        <translation>Abrir próximo</translation>
     </message>
     <message>
         <source>Open previous</source>
-        <translation>Abrir Anterior</translation>
+        <translation>Abrir anterior</translation>
     </message>
     <message>
         <source>Mini mode</source>
@@ -114,19 +114,19 @@
     </message>
     <message>
         <source>Next frame</source>
-        <translation>Próximo Quadro</translation>
+        <translation>Próximo quadro</translation>
     </message>
     <message>
         <source>Previous frame</source>
-        <translation>Quadro Anterior</translation>
+        <translation>Quadro anterior</translation>
     </message>
     <message>
         <source>Volume down</source>
-        <translation>Reduzir Volume</translation>
+        <translation>Reduzir volume</translation>
     </message>
     <message>
         <source>Volume up</source>
-        <translation>Aumentar Volume</translation>
+        <translation>Aumentar volume</translation>
     </message>
     <message>
         <source>Speed up</source>
@@ -134,7 +134,7 @@
     </message>
     <message>
         <source>Speed down</source>
-        <translation>Reduzir Velocidade</translation>
+        <translation>Reduzir velocidade</translation>
     </message>
     <message>
         <source>Fullscreen</source>
@@ -150,7 +150,7 @@
     </message>
     <message>
         <source>Reset speed</source>
-        <translation>Redefinir Velocidade</translation>
+        <translation>Redefinir velocidade</translation>
     </message>
     <message>
         <source>Rewind</source>
@@ -162,7 +162,7 @@
     </message>
     <message>
         <source>Film screenshot</source>
-        <translation>Capturar Quadro do Vídeo</translation>
+        <translation>Capturar quadro do vídeo</translation>
     </message>
     <message>
         <source>0.5s backward</source>
@@ -178,7 +178,7 @@
     </message>
     <message>
         <source>Exit fullscreen/mini mode</source>
-        <translation>Sair da Tela Cheia / Modo Mini</translation>
+        <translation>Sair da Tela Cheia/Modo Mini</translation>
     </message>
     <message>
         <source>Movie</source>
@@ -194,19 +194,19 @@
     </message>
     <message>
         <source>Display shortcuts</source>
-        <translation>Exibir Atalhos</translation>
+        <translation>Exibir atalhos</translation>
     </message>
     <message>
         <source>Delete from playlist</source>
-        <translation>Excluir da Lista de Reprodução</translation>
+        <translation>Excluir da lista de reprodução</translation>
     </message>
     <message>
         <source>Film info</source>
-        <translation>Informações do Vídeo</translation>
+        <translation>Informação do vídeo</translation>
     </message>
     <message>
         <source>Burst shooting</source>
-        <translation>Captura Sequencial</translation>
+        <translation>Captura sequencial</translation>
     </message>
     <message>
         <source>Size</source>
@@ -248,19 +248,19 @@
     </message>
     <message>
         <source>Empty playlist</source>
-        <translation>Lista de Reprodução Vazia</translation>
+        <translation>Lista de reprodução vazia</translation>
     </message>
     <message>
         <source>Film info</source>
-        <translation>Informações do Vídeo</translation>
+        <translation>Informação do vídeo</translation>
     </message>
     <message>
         <source>Open file</source>
-        <translation>Abrir Arquivo</translation>
+        <translation>Abrir arquivo</translation>
     </message>
     <message>
         <source>Open folder</source>
-        <translation>Abrir Pasta</translation>
+        <translation>Abrir pasta</translation>
     </message>
     <message>
         <source>Open URL</source>
@@ -288,7 +288,7 @@
     </message>
     <message>
         <source>Single Play</source>
-        <translation>Reprodução Única</translation>
+        <translation>Reproduzir Uma Vez</translation>
     </message>
     <message>
         <source>Single Loop</source>
@@ -328,11 +328,11 @@
     </message>
     <message>
         <source>Left channel</source>
-        <translation>Canal Esquerdo</translation>
+        <translation>Canal esquerdo</translation>
     </message>
     <message>
         <source>Right channel</source>
-        <translation>Canal Direito</translation>
+        <translation>Canal direito</translation>
     </message>
     <message>
         <source>Track</source>
@@ -368,7 +368,7 @@
     </message>
     <message>
         <source>Film Screenshot</source>
-        <translation>Captura de Tela do Vídeo</translation>
+        <translation>Capturar Tela do Vídeo</translation>
     </message>
     <message>
         <source>Burst Shooting</source>
@@ -380,11 +380,11 @@
     </message>
     <message>
         <source>Film Info</source>
-        <translation>Informação do Vídeo</translation>
+        <translation>Informação do vídeo</translation>
     </message>
     <message>
         <source>Delete from playlist</source>
-        <translation>Excluir da Lista de Reprodução</translation>
+        <translation>Excluir da lista de reprodução</translation>
     </message>
     <message>
         <source>Display in file manager</source>
@@ -422,11 +422,11 @@
     <name>dmr::MainWindow</name>
     <message>
         <source>Load successfully</source>
-        <translation>Carregado com Sucesso</translation>
+        <translation>Carregado</translation>
     </message>
     <message>
         <source>Load failed</source>
-        <translation>Falha no Carregamento</translation>
+        <translation>Falha ao carregar</translation>
     </message>
     <message>
         <source>Buffering...</source>
@@ -434,15 +434,15 @@
     </message>
     <message>
         <source>No device found</source>
-        <translation>Nenhum Dispositivo Encontrado</translation>
+        <translation>Nenhum dispositivo encontrado</translation>
     </message>
     <message>
         <source>Open folder</source>
-        <translation>Abrir Pasta</translation>
+        <translation>Abrir pasta</translation>
     </message>
     <message>
         <source>All videos (%1)</source>
-        <translation>Todos os Vídeos (%1)</translation>
+        <translation>Todos os vídeos (%1)</translation>
     </message>
     <message>
         <source>Stereo</source>
@@ -450,15 +450,15 @@
     </message>
     <message>
         <source>Left channel</source>
-        <translation>Canal Esquerdo</translation>
+        <translation>Canal esquerdo</translation>
     </message>
     <message>
         <source>Right channel</source>
-        <translation>Canal Direito</translation>
+        <translation>Canal direito</translation>
     </message>
     <message>
         <source>Parse failed</source>
-        <translation>Falha na Análise</translation>
+        <translation>Falha na análise</translation>
     </message>
     <message>
         <source>Mute</source>
@@ -502,15 +502,15 @@
     </message>
     <message>
         <source>The screenshot is saved</source>
-        <translation>A Captura de Tela foi salva</translation>
+        <translation>A captura de tela foi salva</translation>
     </message>
     <message>
         <source>Failed to save the screenshot</source>
-        <translation>Falha ao Salvar a Captura de Tela</translation>
+        <translation>Falha ao salvar a captura de tela</translation>
     </message>
     <message>
         <source>Invalid file: %1</source>
-        <translation>Arquivo Inválido: %1</translation>
+        <translation>Arquivo inválido: %1</translation>
     </message>
     <message>
         <source>No matching online subtitles</source>
@@ -522,19 +522,19 @@
     </message>
     <message>
         <source>Invalid file</source>
-        <translation>Arquivo Inválido</translation>
+        <translation>Arquivo inválido</translation>
     </message>
     <message>
         <source>No video file found</source>
-        <translation>Nenhum Arquivo de Vídeo Encontrado</translation>
+        <translation>Nenhum vídeo encontrado</translation>
     </message>
     <message>
         <source>Open File</source>
-        <translation>Abrir Arquivo</translation>
+        <translation>Abrir arquivo</translation>
     </message>
     <message>
         <source>Film screenshot</source>
-        <translation>Capturar Quadro do Vídeo</translation>
+        <translation>Capturar quadro do vídeo</translation>
     </message>
     <message>
         <source>Taking the screenshots, please wait...</source>
@@ -554,7 +554,11 @@
     </message>
     <message>
         <source>Reading DVD files...</source>
-        <translation type="unfinished"/>
+        <translation>Lendo DVD...</translation>
+    </message>
+    <message>
+        <source>Please load the video first.</source>
+        <translation>Carregue o vídeo primeiro.</translation>
     </message>
 </context>
 <context>
@@ -580,7 +584,7 @@
     <name>dmr::MovieInfoDialog</name>
     <message>
         <source>Film info</source>
-        <translation>Informação do Vídeo</translation>
+        <translation>Informação do vídeo</translation>
     </message>
     <message>
         <source>Resolution</source>
@@ -671,7 +675,7 @@
     </message>
     <message>
         <source>Play/Pause</source>
-        <translation>Reproduzir/Interromper</translation>
+        <translation>Reproduzir/Pausar</translation>
     </message>
     <message>
         <source>play</source>

@@ -3,7 +3,7 @@
     <name>Presenter</name>
     <message>
         <source>Volume: %1%</source>
-        <translation>Volume: %1%</translation>
+        <translation type="vanished">Volume: %1%</translation>
     </message>
 </context>
 <context>
@@ -555,6 +555,10 @@
     <message>
         <source>Reading DVD files...</source>
         <translation>Reading DVD files...</translation>
+    </message>
+    <message>
+        <source>Please load the video first.</source>
+        <translation>Please load the video first.</translation>
     </message>
 </context>
 <context>

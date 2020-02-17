@@ -3,7 +3,7 @@
     <name>Presenter</name>
     <message>
         <source>Volume: %1%</source>
-        <translation>Garsis: %1%</translation>
+        <translation type="vanished">Garsis: %1%</translation>
     </message>
 </context>
 <context>
@@ -554,6 +554,10 @@
     </message>
     <message>
         <source>Reading DVD files...</source>
+        <translation>Skaitomi DVD failai...</translation>
+    </message>
+    <message>
+        <source>Please load the video first.</source>
         <translation type="unfinished"/>
     </message>
 </context>
@@ -636,11 +640,11 @@
     <name>dmr::Settings</name>
     <message>
         <source>%1/Movie%2.jpg</source>
-        <translation type="unfinished"/>
+        <translation>%1/Filmas%2.jpg</translation>
     </message>
     <message>
         <source>%1/Movie%2(%3).jpg</source>
-        <translation type="unfinished"/>
+        <translation>%1/Filmas%2(%3).jpg</translation>
     </message>
 </context>
 <context>

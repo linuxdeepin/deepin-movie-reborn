@@ -3,7 +3,7 @@
     <name>Presenter</name>
     <message>
         <source>Volume: %1%</source>
-        <translation>Lautstärke: %1%</translation>
+        <translation type="vanished">Lautstärke: %1%</translation>
     </message>
 </context>
 <context>
@@ -430,7 +430,7 @@
     </message>
     <message>
         <source>Buffering...</source>
-        <translation>Pufferung...</translation>
+        <translation>Pufferung ...</translation>
     </message>
     <message>
         <source>No device found</source>
@@ -554,6 +554,10 @@
     </message>
     <message>
         <source>Reading DVD files...</source>
+        <translation>DVD-Dateien werden gelesen ...</translation>
+    </message>
+    <message>
+        <source>Please load the video first.</source>
         <translation type="unfinished"/>
     </message>
 </context>

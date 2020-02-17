@@ -3,7 +3,7 @@
     <name>Presenter</name>
     <message>
         <source>Volume: %1%</source>
-        <translation>Јачина: %1%</translation>
+        <translation type="vanished">Јачина: %1%</translation>
     </message>
 </context>
 <context>
@@ -554,7 +554,11 @@
     </message>
     <message>
         <source>Reading DVD files...</source>
-        <translation type="unfinished"/>
+        <translation>Учитавање ДВД датотека...</translation>
+    </message>
+    <message>
+        <source>Please load the video first.</source>
+        <translation>Молимо прво учитајте видео.</translation>
     </message>
 </context>
 <context>

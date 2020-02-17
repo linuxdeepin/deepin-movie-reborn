@@ -3,7 +3,7 @@
     <name>Presenter</name>
     <message>
         <source>Volume: %1%</source>
-        <translation>音量：%1%</translation>
+        <translation type="vanished">音量：%1%</translation>
     </message>
 </context>
 <context>
@@ -555,6 +555,10 @@
     <message>
         <source>Reading DVD files...</source>
         <translation>正在读取光盘文件...</translation>
+    </message>
+    <message>
+        <source>Please load the video first.</source>
+        <translation>请先载入影片</translation>
     </message>
 </context>
 <context>
