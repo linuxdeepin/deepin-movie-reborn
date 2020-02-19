@@ -84,6 +84,56 @@ static void workaround_updateStyle(QWidget *parent, const QString &theme)
     }
 }
 
+static QString ElideText(const QString &text, const QSize &size,
+        QTextOption::WrapMode wordWrap, const QFont &font,
+        Qt::TextElideMode mode, int lineHeight, int lastLineWidth)
+{
+    int height = 0;
+
+    QTextLayout textLayout(text);
+    QString str = nullptr;
+    QFontMetrics fontMetrics(font);
+
+    textLayout.setFont(font);
+    const_cast<QTextOption*>(&textLayout.textOption())->setWrapMode(wordWrap);
+
+    textLayout.beginLayout();
+
+    QTextLine line = textLayout.createLine();
+
+    while (line.isValid()) {
+        height += lineHeight;
+
+        if(height + lineHeight >= size.height()) {
+            str += fontMetrics.elidedText(text.mid(line.textStart() + line.textLength() + 1),
+                    mode, lastLineWidth);
+
+            break;
+        }
+
+        line.setLineWidth(size.width());
+
+        const QString &tmp_str = text.mid(line.textStart(), line.textLength());
+
+        if (tmp_str.indexOf('\n'))
+            height += lineHeight;
+
+        str += tmp_str;
+
+        line = textLayout.createLine();
+
+        if(line.isValid())
+            str.append("\n");
+    }
+
+    textLayout.endLayout();
+
+    if (textLayout.lineCount() == 1) {
+        str = fontMetrics.elidedText(str, mode, lastLineWidth);
+    }
+
+    return str;
+}
 
 static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
 {
@@ -92,13 +142,25 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
     auto le = new DLineEdit();
     auto main = new DWidget;
     auto layout = new QHBoxLayout;
+
+    static QString nameLast = nullptr;
+
     main->setLayout(layout);
     DPushButton *icon = new DPushButton;
+    icon->setAutoDefault(false);
     le->setFixedHeight(21);
     le->setObjectName("OptionSelectableLineEdit");
     le->setText(option->value().toString());
-//    le->setMaxLength(255);
+    auto fm = le->fontMetrics();
+    auto pe = ElideText(le->text(),{285,fm.height()},QTextOption::WrapAnywhere,
+                        le->font(),Qt::ElideMiddle,fm.height(),285);
+    option->connect(le,&DLineEdit::focusChanged,[ = ](bool on){
+        if(on)
+            le->setText(option->value().toString());
 
+    });
+    le->setText(pe);
+    nameLast = pe;
 //    icon->setIconVisible(true);
     icon->setIcon(QIcon(":resources/icons/select-normal.svg"));
     icon->setFixedHeight(21);
@@ -111,6 +173,13 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
     auto optionWidget = DSettingsWidgetFactory::createTwoColumWidget(option, main);
     workaround_updateStyle(optionWidget, "light");
 
+    DDialog *prompt = new DDialog(optionWidget);
+    prompt->setIcon(QIcon(QObject::tr(":/resources/icons/warning.svg")));
+    //prompt->setTitle(QObject::tr("Permissions prompt"));
+    prompt->setMessage(QObject::tr("You don't have permission to operate this folder"));
+    prompt->setWindowFlags(prompt->windowFlags() | Qt::WindowStaysOnTopHint);
+    prompt->addButton(QObject::tr("OK"),true,DDialog::ButtonRecommend);
+
     auto validate = [ = ](QString name, bool alert = true) -> bool {
         name = name.trimmed();
         if (name.isEmpty()) return false;
@@ -121,6 +190,7 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
         }
 
         QFileInfo fi(name);
+        QDir dir(name);
         if (fi.exists())
         {
             if (!fi.isDir()) {
@@ -129,8 +199,14 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
             }
 
             if (!fi.isReadable() || !fi.isWritable()) {
-                if (alert) le->showAlertMessage(QObject::tr("You don't have permission to operate this folder"));
+//                if (alert) le->showAlertMessage(QObject::tr("You don't have permission to operate this folder"));
                 return false;
+            }
+        }else {
+            if(dir.cdUp()){
+                QFileInfo ch(dir.path());
+                if(!ch.isReadable() || !ch.isWritable())
+                    return false;
             }
         }
 
@@ -143,15 +219,45 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
                                                          QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
         if (validate(name, false)) {
             option->setValue(name);
+            nameLast = name;
+        }
+        QFileInfo fm(name);
+        if((!fm.isReadable() || !fm.isWritable()) && !name.isEmpty()){
+            prompt->show();
         }
     });
 
+
+
     option->connect(le, &DLineEdit::editingFinished, option, [ = ]() {
-        if (validate(le->text(), false)) {
-            option->setValue(le->text());
-        } else {
-            option->setValue(option->defaultValue());
-            le->setText(option->defaultValue().toString());
+
+        QString name = le->text();
+        QDir dir(name);
+
+        auto pn = ElideText(name,{285,fm.height()},QTextOption::WrapAnywhere,
+                            le->font(),Qt::ElideMiddle,fm.height(),285);
+        auto nmls = ElideText(nameLast,{285,fm.height()},QTextOption::WrapAnywhere,
+                              le->font(),Qt::ElideMiddle,fm.height(),285);
+
+        if(!validate(le->text(),false)){
+            QFileInfo fn(dir.path());
+            if((!fn.isReadable() || !fn.isWritable()) && !name.isEmpty()){
+                    prompt->show();
+            }
+        }
+        if (!le->lineEdit()->hasFocus()){
+            if (validate(le->text(), false)) {
+                option->setValue(le->text());
+                le->setText(pn);
+                nameLast = name;
+            } else if(pn == pe){
+                le->setText(pe);
+            }else {
+//                option->setValue(option->defaultValue());//设置为默认路径
+//                le->setText(option->defaultValue().toString());
+                option->setValue(nameLast);
+                le->setText(nmls);
+            }
         }
     });
 
@@ -161,7 +267,9 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
 
     option->connect(option, &DTK_CORE_NAMESPACE::DSettingsOption::valueChanged, le,
     [ = ](const QVariant & value) {
-        le->setText(value.toString());
+        auto pi = ElideText(value.toString(),{285,fm.height()},QTextOption::WrapAnywhere,
+                                le->font(),Qt::ElideMiddle,fm.height(),285);
+        le->setText(pi);
         le->update();
     });
 
