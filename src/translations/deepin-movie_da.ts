@@ -1,12 +1,5 @@
 <?xml version="1.0" ?><!DOCTYPE TS><TS language="da" version="2.1">
 <context>
-    <name>Presenter</name>
-    <message>
-        <source>Volume: %1%</source>
-        <translation type="vanished">Lydstyrke: %1%</translation>
-    </message>
-</context>
-<context>
     <name>QObject</name>
     <message>
         <source>Invalid folder</source>
@@ -215,6 +208,10 @@
     <message>
         <source>Movie is a full-featured video player, supporting playing local and streaming media in multiple video formats.</source>
         <translation>Film er en videoafspiller med alle funktioner som understøtter afspilning af lokale og streamingmedier i flere videoformater.</translation>
+    </message>
+    <message>
+        <source>OK</source>
+        <translation>OK</translation>
     </message>
 </context>
 <context>
@@ -541,10 +538,6 @@
         <translation>Tager skærmbilledet, vent venligst...</translation>
     </message>
     <message>
-        <source>Due to hardware limitations, 4K video may be stuck</source>
-        <translation>Pga. begrænsninger i hardwaren kan 4K-video fryse</translation>
-    </message>
-    <message>
         <source>OK</source>
         <translation>OK</translation>
     </message>
@@ -557,7 +550,11 @@
         <translation>Læser DVD-filer ...</translation>
     </message>
     <message>
-        <source>Please load the video first.</source>
+        <source>4K video may be stuck</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Please load the video first</source>
         <translation type="unfinished"/>
     </message>
 </context>

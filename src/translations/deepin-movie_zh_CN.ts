@@ -1,12 +1,5 @@
 <?xml version="1.0" ?><!DOCTYPE TS><TS language="zh_CN" version="2.1">
 <context>
-    <name>Presenter</name>
-    <message>
-        <source>Volume: %1%</source>
-        <translation type="vanished">音量：%1%</translation>
-    </message>
-</context>
-<context>
     <name>QObject</name>
     <message>
         <source>Invalid folder</source>
@@ -215,6 +208,10 @@
     <message>
         <source>Movie is a full-featured video player, supporting playing local and streaming media in multiple video formats.</source>
         <translation>影院是一款支持多种视频格式本地播放和流媒体播放的视频播放器。</translation>
+    </message>
+    <message>
+        <source>OK</source>
+        <translation>确定</translation>
     </message>
 </context>
 <context>
@@ -541,10 +538,6 @@
         <translation>正在截图，请稍候...</translation>
     </message>
     <message>
-        <source>Due to hardware limitations, 4K video may be stuck</source>
-        <translation>由于硬件环境的限制，播放4K视频可能会卡顿</translation>
-    </message>
-    <message>
         <source>OK</source>
         <translation>确定</translation>
     </message>
@@ -557,7 +550,11 @@
         <translation>正在读取光盘文件...</translation>
     </message>
     <message>
-        <source>Please load the video first.</source>
+        <source>4K video may be stuck</source>
+        <translation>播放4K视频可能会出现卡顿</translation>
+    </message>
+    <message>
+        <source>Please load the video first</source>
         <translation>请先载入影片</translation>
     </message>
 </context>

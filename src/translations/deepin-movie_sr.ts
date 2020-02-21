@@ -1,12 +1,5 @@
 <?xml version="1.0" ?><!DOCTYPE TS><TS language="sr" version="2.1">
 <context>
-    <name>Presenter</name>
-    <message>
-        <source>Volume: %1%</source>
-        <translation type="vanished">Јачина: %1%</translation>
-    </message>
-</context>
-<context>
     <name>QObject</name>
     <message>
         <source>Invalid folder</source>
@@ -214,7 +207,11 @@
     </message>
     <message>
         <source>Movie is a full-featured video player, supporting playing local and streaming media in multiple video formats.</source>
-        <translation>Филм је потпуно опремљен пуштач видеа који подржава пуштање многих локалних видео формата и видеа из токова.</translation>
+        <translation>Филм је потпуно опремљен пуштач видеа који подржава приказивање многих локалних видео формата и видеа из токова.</translation>
+    </message>
+    <message>
+        <source>OK</source>
+        <translation>У реду</translation>
     </message>
 </context>
 <context>
@@ -541,10 +538,6 @@
         <translation>Усликавање у току, молимо сачекајте...</translation>
     </message>
     <message>
-        <source>Due to hardware limitations, 4K video may be stuck</source>
-        <translation>Због хардверских ограничења 4К видео се може заглавити</translation>
-    </message>
-    <message>
         <source>OK</source>
         <translation>У реду</translation>
     </message>
@@ -557,8 +550,12 @@
         <translation>Учитавање ДВД датотека...</translation>
     </message>
     <message>
-        <source>Please load the video first.</source>
-        <translation>Молимо прво учитајте видео.</translation>
+        <source>4K video may be stuck</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Please load the video first</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>

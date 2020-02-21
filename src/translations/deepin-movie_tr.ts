@@ -1,12 +1,5 @@
 <?xml version="1.0" ?><!DOCTYPE TS><TS language="tr" version="2.1">
 <context>
-    <name>Presenter</name>
-    <message>
-        <source>Volume: %1%</source>
-        <translation type="vanished">Ses: %1%</translation>
-    </message>
-</context>
-<context>
     <name>QObject</name>
     <message>
         <source>Invalid folder</source>
@@ -215,6 +208,10 @@
     <message>
         <source>Movie is a full-featured video player, supporting playing local and streaming media in multiple video formats.</source>
         <translation>Film, yerel ve akışlı ortamların birden fazla video biçiminde oynatılmasını destekleyen tam özellikli bir video oynatıcıdır.</translation>
+    </message>
+    <message>
+        <source>OK</source>
+        <translation>Tamam</translation>
     </message>
 </context>
 <context>
@@ -541,10 +538,6 @@
         <translation>Ekran görüntüleri çekiliyor, lütfen bekleyin...</translation>
     </message>
     <message>
-        <source>Due to hardware limitations, 4K video may be stuck</source>
-        <translation>Donanım sınırlamaları nedeniyle 4K video sıkışmış olabilir</translation>
-    </message>
-    <message>
         <source>OK</source>
         <translation>Tamam</translation>
     </message>
@@ -557,7 +550,11 @@
         <translation>DVD dosyaları okunuyor...</translation>
     </message>
     <message>
-        <source>Please load the video first.</source>
+        <source>4K video may be stuck</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Please load the video first</source>
         <translation type="unfinished"/>
     </message>
 </context>

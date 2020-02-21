@@ -1,12 +1,5 @@
 <?xml version="1.0" ?><!DOCTYPE TS><TS language="en" version="2.1">
 <context>
-    <name>Presenter</name>
-    <message>
-        <source>Volume: %1%</source>
-        <translation type="vanished">Volume: %1%</translation>
-    </message>
-</context>
-<context>
     <name>QObject</name>
     <message>
         <source>Invalid folder</source>
@@ -215,6 +208,10 @@
     <message>
         <source>Movie is a full-featured video player, supporting playing local and streaming media in multiple video formats.</source>
         <translation>Movie is a full-featured video player, supporting playing local and streaming media in multiple video formats.</translation>
+    </message>
+    <message>
+        <source>OK</source>
+        <translation>OK</translation>
     </message>
 </context>
 <context>
@@ -541,10 +538,6 @@
         <translation>Taking the screenshots, please wait...</translation>
     </message>
     <message>
-        <source>Due to hardware limitations, 4K video may be stuck</source>
-        <translation>Due to hardware limitations, 4K video may be stuck</translation>
-    </message>
-    <message>
         <source>OK</source>
         <translation>OK</translation>
     </message>
@@ -557,8 +550,12 @@
         <translation>Reading DVD files...</translation>
     </message>
     <message>
-        <source>Please load the video first.</source>
-        <translation>Please load the video first.</translation>
+        <source>4K video may be stuck</source>
+        <translation>4K video may be stuck</translation>
+    </message>
+    <message>
+        <source>Please load the video first</source>
+        <translation>Please load the video first</translation>
     </message>
 </context>
 <context>

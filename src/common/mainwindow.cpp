@@ -174,7 +174,7 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
     workaround_updateStyle(optionWidget, "light");
 
     DDialog *prompt = new DDialog(optionWidget);
-    prompt->setIcon(QIcon(QObject::tr(":/resources/icons/warning.svg")));
+    prompt->setIcon(QIcon(":/resources/icons/warning.svg"));
     //prompt->setTitle(QObject::tr("Permissions prompt"));
     prompt->setMessage(QObject::tr("You don't have permission to operate this folder"));
     prompt->setWindowFlags(prompt->windowFlags() | Qt::WindowStaysOnTopHint);
@@ -2721,7 +2721,7 @@ void MainWindow::checkWarningMpvLogsChanged(const QString prefix, const QString 
         QImage icon = utils::LoadHiDPIImage(":/resources/icons/warning.svg");
         QPixmap pix = QPixmap::fromImage(icon);
         dialog->setIcon(QIcon(pix));
-        dialog->setMessage(tr("Due to hardware limitations, 4K video may be stuck"));
+        dialog->setMessage(tr("4K video may be stuck"));
         dialog->addButton(tr("OK"), true, DDialog::ButtonRecommend);
         QGraphicsDropShadowEffect *effect = new QGraphicsDropShadowEffect();
         effect->setOffset(0, 4);
@@ -2775,7 +2775,7 @@ void MainWindow::checkErrorMpvLogsChanged(const QString prefix, const QString te
         QImage icon = utils::LoadHiDPIImage(":/resources/icons/warning.svg");
         QPixmap pix = QPixmap::fromImage(icon);
         dialog->setIcon(QIcon(pix));
-        dialog->setMessage(tr("Due to hardware limitations, 4K video may be stuck"));
+        dialog->setMessage(tr("4K video may be stuck"));
         dialog->addButton(tr("OK"), true, DDialog::ButtonRecommend);
         QGraphicsDropShadowEffect *effect = new QGraphicsDropShadowEffect();
         effect->setOffset(0, 4);
@@ -3266,7 +3266,7 @@ void MainWindow::subtitleMatchVideo(const QString &fileName)
             }
         }
     } else {
-        _nwComm->updateWithMessage(tr("Please load the video first."));
+        _nwComm->updateWithMessage(tr("Please load the video first"));
     }
 }
 

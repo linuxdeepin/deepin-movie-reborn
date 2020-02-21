@@ -1,12 +1,5 @@
 <?xml version="1.0" ?><!DOCTYPE TS><TS language="pt_BR" version="2.1">
 <context>
-    <name>Presenter</name>
-    <message>
-        <source>Volume: %1%</source>
-        <translation type="vanished">Volume: %1%</translation>
-    </message>
-</context>
-<context>
     <name>QObject</name>
     <message>
         <source>Invalid folder</source>
@@ -215,6 +208,10 @@
     <message>
         <source>Movie is a full-featured video player, supporting playing local and streaming media in multiple video formats.</source>
         <translation>O Vídeo é um player de vídeo completo, compatível com a reprodução de mídia local e de streaming em vários formatos de vídeo.</translation>
+    </message>
+    <message>
+        <source>OK</source>
+        <translation>Ok</translation>
     </message>
 </context>
 <context>
@@ -541,10 +538,6 @@
         <translation>Capturando as imagens, aguarde...</translation>
     </message>
     <message>
-        <source>Due to hardware limitations, 4K video may be stuck</source>
-        <translation>Devido às limitações de hardware, o vídeo 4K poderá travar.</translation>
-    </message>
-    <message>
         <source>OK</source>
         <translation>Ok</translation>
     </message>
@@ -557,8 +550,12 @@
         <translation>Lendo DVD...</translation>
     </message>
     <message>
-        <source>Please load the video first.</source>
-        <translation>Carregue o vídeo primeiro.</translation>
+        <source>4K video may be stuck</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Please load the video first</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>

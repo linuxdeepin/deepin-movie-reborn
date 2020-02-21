@@ -1,12 +1,5 @@
 <?xml version="1.0" ?><!DOCTYPE TS><TS language="uk" version="2.1">
 <context>
-    <name>Presenter</name>
-    <message>
-        <source>Volume: %1%</source>
-        <translation type="vanished">Гучність: %1%</translation>
-    </message>
-</context>
-<context>
     <name>QObject</name>
     <message>
         <source>Invalid folder</source>
@@ -215,6 +208,10 @@
     <message>
         <source>Movie is a full-featured video player, supporting playing local and streaming media in multiple video formats.</source>
         <translation>Movie - повнофункціональний відеоплеєр, що підтримує відтворення локальних і потокових мультимедіа в декількох відеоформатах.</translation>
+    </message>
+    <message>
+        <source>OK</source>
+        <translation>Гаразд</translation>
     </message>
 </context>
 <context>
@@ -541,10 +538,6 @@
         <translation>Роблю скріншоти, будь ласка зачекайте...</translation>
     </message>
     <message>
-        <source>Due to hardware limitations, 4K video may be stuck</source>
-        <translation>Через обмеження апаратної частини відтворення відео у форматі 4K може відбуватися нерівномірно.</translation>
-    </message>
-    <message>
         <source>OK</source>
         <translation>Гаразд</translation>
     </message>
@@ -557,7 +550,11 @@
         <translation>Читаємо файли DVD…</translation>
     </message>
     <message>
-        <source>Please load the video first.</source>
+        <source>4K video may be stuck</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Please load the video first</source>
         <translation type="unfinished"/>
     </message>
 </context>

@@ -1,12 +1,5 @@
 <?xml version="1.0" ?><!DOCTYPE TS><TS language="it" version="2.1">
 <context>
-    <name>Presenter</name>
-    <message>
-        <source>Volume: %1%</source>
-        <translation type="vanished">Volume: %1%</translation>
-    </message>
-</context>
-<context>
     <name>QObject</name>
     <message>
         <source>Invalid folder</source>
@@ -216,6 +209,10 @@
         <source>Movie is a full-featured video player, supporting playing local and streaming media in multiple video formats.</source>
         <translation>Movie è un meraviglioso e funzionale player video dal design borderless. Offre il supporto per riproduzioni video locali e streaming, inoltre riconosce diversi formati video.
 Localizzazione italiana a cura di Carofano Massimo Antonio.</translation>
+    </message>
+    <message>
+        <source>OK</source>
+        <translation>OK</translation>
     </message>
 </context>
 <context>
@@ -542,10 +539,6 @@ Localizzazione italiana a cura di Carofano Massimo Antonio.</translation>
         <translation>Acquisizione screenshot, attendere...</translation>
     </message>
     <message>
-        <source>Due to hardware limitations, 4K video may be stuck</source>
-        <translation>Per via di limiti hardware, potresti avere problemi nella riproduzione video 4K.</translation>
-    </message>
-    <message>
         <source>OK</source>
         <translation>OK</translation>
     </message>
@@ -558,7 +551,11 @@ Localizzazione italiana a cura di Carofano Massimo Antonio.</translation>
         <translation>Lettura file DVD in corso...</translation>
     </message>
     <message>
-        <source>Please load the video first.</source>
+        <source>4K video may be stuck</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Please load the video first</source>
         <translation type="unfinished"/>
     </message>
 </context>
