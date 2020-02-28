@@ -215,7 +215,11 @@ mpv_handle* MpvProxy::mpv_init()
         set_property(h, "gpu-sw", "on");
 
     } else {
+#ifdef __aarch64__
+        set_property(h, "vo", "xv,gpu,x11");
+#else
         set_property(h, "vo", "gpu,xv,x11");
+#endif
         set_property(h, "wid", this->winId());
     }
 
