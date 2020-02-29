@@ -2518,8 +2518,9 @@ void MainWindow::play(const QUrl &url)
         } else {
             // todo: Disable toolbar buttons
             auto msg = QString(tr("Reading DVD files..."));
-            _nwDvd->updateWithMessage(msg, false);
-            return;
+//            _nwDvd->updateWithMessage(msg, false);
+            _nwDvd->updateWithMessage(msg, true);
+//            return;
         }
     } else {
         if (!_engine->addPlayFile(url)) {
@@ -2763,6 +2764,10 @@ void MainWindow::checkErrorMpvLogsChanged(const QString prefix, const QString te
     } else if (errorMessage.toLower().contains(QString("couldn't open dvd device"))) {
         _nwComm->updateWithMessage(tr("Please insert a CD/DVD"));
 //        _engine->playlist().clear();
+    } else if (errorMessage.toLower().contains(QString("incomplete frame")) ||
+               errorMessage.toLower().contains(QString("MVs not available"))) {
+        _nwComm->updateWithMessage(tr("The CD/DVD has popped up"));
+//        _engine->playlist().remove(_engine->playlist().current());
     } else if ((errorMessage.toLower().contains(QString("can't"))) &&
                (errorMessage.toLower().contains(QString("open")))) {
         _nwComm->updateWithMessage(tr("No video file found"));
