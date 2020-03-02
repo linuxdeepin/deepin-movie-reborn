@@ -173,6 +173,9 @@ private:
     DMenu *_playlistMenu {nullptr};
     DMenu *_sound {nullptr};
     QList<QAction *> _contextMenuActions;
+
+    QActionGroup *subgroup {nullptr};
+    QActionGroup *audiosgroup {nullptr};
 };
 
 template<class UnaryFunction>

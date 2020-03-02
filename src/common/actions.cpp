@@ -332,9 +332,11 @@ void ActionFactory::updateMainActionsForMovie(const PlayingMovieInfo &pmf)
         auto menu = _subtitleMenu;
         menu->clear();
 
-        auto group = new QActionGroup(menu); // mem leak ?
+        if(!subgroup){
+            subgroup = new QActionGroup(menu); // mem leak ?
+        }
         for (int i = 0; i < pmf.subs.size(); i++) {
-            DEF_ACTION_CHECKED_GROUP(pmf.subs[i]["title"].toString(), ActionKind::SelectSubtitle, group);
+            DEF_ACTION_CHECKED_GROUP(pmf.subs[i]["title"].toString(), ActionKind::SelectSubtitle, subgroup);
             auto act = menu->actions().last();
             act->setProperty("args", QList<QVariant>() << i);
         }
@@ -346,12 +348,14 @@ void ActionFactory::updateMainActionsForMovie(const PlayingMovieInfo &pmf)
         auto menu = _tracksMenu;
         menu->clear();
 
-        auto group = new QActionGroup(menu); // mem leak ?
+        if(!audiosgroup){
+            audiosgroup = new QActionGroup(menu); // mem leak ?
+        }
         for (int i = 0; i < pmf.audios.size(); i++) {
             if(pmf.audios[i]["title"].toString().compare("[internal]") == 0){
-                DEF_ACTION_CHECKED_GROUP(tr("Track") + QString::number(i + 1), ActionKind::SelectTrack, group);
+                DEF_ACTION_CHECKED_GROUP(tr("Track") + QString::number(i + 1), ActionKind::SelectTrack, audiosgroup);
             }else {
-                DEF_ACTION_CHECKED_GROUP(pmf.audios[i]["title"].toString(), ActionKind::SelectTrack, group);
+                DEF_ACTION_CHECKED_GROUP(pmf.audios[i]["title"].toString(), ActionKind::SelectTrack, audiosgroup);
             }
             auto act = menu->actions().last();
             act->setProperty("args", QList<QVariant>() << i);
