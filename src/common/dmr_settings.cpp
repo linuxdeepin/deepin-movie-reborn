@@ -63,6 +63,8 @@ Settings::Settings()
             [=](const QString& key, const QVariant& value) {
                 if (key.startsWith("shortcuts."))
                     emit shortcutsChanged(key, value);
+                else if (key.startsWith("base.play.playmode"))
+                    emit defaultplaymodechanged(key, value);
                 else if (key.startsWith("base."))
                     emit baseChanged(key, value);
                 else if (key.startsWith("subtitle."))
@@ -70,6 +72,15 @@ Settings::Settings()
             });
 
     qDebug() << "keys" << _settings->keys();
+
+    QStringList playmodeDatabase;
+    playmodeDatabase << tr("OrderPlay")
+                     << tr("ShufflePlay")
+                     << tr("SinglePlay")
+                     << tr("SingleLoop")
+                     << tr("ListLoop");
+    auto playmodeFamily = _settings->option("base.play.playmode");
+    playmodeFamily->setData("items",playmodeDatabase);
 
     QFontDatabase fontDatabase;
     auto fontFamliy = _settings->option("subtitle.font.family");

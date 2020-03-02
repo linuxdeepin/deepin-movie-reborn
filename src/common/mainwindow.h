@@ -130,6 +130,8 @@ public slots:
     void checkOnlineSubtitle(const OnlineSubtitle::FailReason reason);
     void checkErrorMpvLogsChanged(const QString prefix, const QString text);
     void checkWarningMpvLogsChanged(const QString prefix, const QString text);
+    void slotdefaultplaymodechanged(const QString& key, const QVariant& value);
+
 
 protected:
     void showEvent(QShowEvent *event) override;
@@ -202,6 +204,7 @@ private:
     void saveWindowState();
     void loadWindowState();
     void subtitleMatchVideo(const QString &fileName);
+    void defaultplaymodeinit();
 
 private:
     DFloatingMessage *popup {nullptr};

@@ -90,6 +90,12 @@
                             "default": true
                         },
                         {
+                            "key": "playmode",
+                            "name": "Default playmode",
+                            "type": "combobox",
+                            "default": 0
+                        },
+                        {
                             "key": "hwaccel",
                             "type": "checkbox",
                             "hide": true,

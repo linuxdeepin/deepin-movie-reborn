@@ -90,6 +90,7 @@ class Settings: public QObject {
         void shortcutsChanged(const QString&, const QVariant&);
         void baseChanged(const QString&, const QVariant&);
         void subtitleChanged(const QString&, const QVariant&);
+        void defaultplaymodechanged(const QString&, const QVariant&);
 
     private:
         Settings();

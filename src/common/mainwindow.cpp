@@ -994,6 +994,9 @@ MainWindow::MainWindow(QWidget *parent)
     popup->resize(0, 0);
 //    popup->hide(); //This causes the first screenshot icon to move down
 
+    defaultplaymodeinit();
+    connect(&Settings::get(),&Settings::defaultplaymodechanged,this,&MainWindow::slotdefaultplaymodechanged);
+
     connect(this, &MainWindow::playlistchanged, _toolbox, &ToolboxProxy::updateplaylisticon);
 
     connect(_engine, &PlayerEngine::onlineStateChanged, this, &MainWindow::checkOnlineState);
@@ -2743,6 +2746,33 @@ void MainWindow::checkWarningMpvLogsChanged(const QString prefix, const QString 
 
 }
 
+void MainWindow::slotdefaultplaymodechanged(const QString &key, const QVariant &value)
+{
+    if(key != "base.play.playmode"){
+        qDebug() << "Settings key error";
+        return;
+    }
+    auto mode_opt = Settings::get().settings()->option("base.play.playmode");
+    //auto mode_id = mode_opt->value().toInt();
+    auto mode = mode_opt->data("items").toStringList()[value.toInt()];
+    if(mode == tr("OrderPlay")){
+        requestAction(ActionFactory::OrderPlay);
+        reflectActionToUI(ActionFactory::OrderPlay);
+    }else if (mode == tr("ShufflePlay")) {
+        requestAction(ActionFactory::ShufflePlay);
+        reflectActionToUI(ActionFactory::ShufflePlay);
+    }else if (mode == tr("SinglePlay")) {
+        requestAction(ActionFactory::SinglePlay);
+        reflectActionToUI(ActionFactory::SinglePlay);
+    }else if (mode == tr("SingleLoop")) {
+        requestAction(ActionFactory::SingleLoop);
+        reflectActionToUI(ActionFactory::SingleLoop);
+    }else if (mode == tr("ListLoop")) {
+        requestAction(ActionFactory::ListLoop);
+        reflectActionToUI(ActionFactory::ListLoop);
+    }
+}
+
 void MainWindow::checkErrorMpvLogsChanged(const QString prefix, const QString text)
 {
     QString errorMessage(text);
@@ -3272,6 +3302,29 @@ void MainWindow::subtitleMatchVideo(const QString &fileName)
         }
     } else {
         _nwComm->updateWithMessage(tr("Please load the video first"));
+    }
+}
+
+void MainWindow::defaultplaymodeinit()
+{
+    auto mode_opt = Settings::get().settings()->option("base.play.playmode");
+    auto mode_id = mode_opt->value().toInt();
+    auto mode = mode_opt->data("items").toStringList()[mode_id];
+    if(mode == tr("OrderPlay")){
+        requestAction(ActionFactory::OrderPlay);
+        //reflectActionToUI(ActionFactory::OrderPlay);
+    }else if (mode == tr("ShufflePlay")) {
+        requestAction(ActionFactory::ShufflePlay);
+        reflectActionToUI(ActionFactory::ShufflePlay);
+    }else if (mode == tr("SinglePlay")) {
+        requestAction(ActionFactory::SinglePlay);
+        reflectActionToUI(ActionFactory::SinglePlay);
+    }else if (mode == tr("SingleLoop")) {
+        requestAction(ActionFactory::SingleLoop);
+        reflectActionToUI(ActionFactory::SingleLoop);
+    }else if (mode == tr("ListLoop")) {
+        requestAction(ActionFactory::ListLoop);
+        reflectActionToUI(ActionFactory::ListLoop);
     }
 }
 
