@@ -213,6 +213,10 @@
         <source>OK</source>
         <translation>OK</translation>
     </message>
+    <message>
+        <source>Default play mode</source>
+        <translation type="unfinished"/>
+    </message>
 </context>
 <context>
     <name>UrlDialog</name>
@@ -557,6 +561,30 @@
         <source>Please load the video first</source>
         <translation type="unfinished"/>
     </message>
+    <message>
+        <source>Order play</source>
+        <translation>Порядок проигрывания</translation>
+    </message>
+    <message>
+        <source>Shuffle play</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Single play</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Single loop</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>List loop</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>The CD/DVD has been ejected</source>
+        <translation type="unfinished"/>
+    </message>
 </context>
 <context>
     <name>dmr::MovieInfo</name>
@@ -641,6 +669,26 @@
     </message>
     <message>
         <source>%1/Movie%2(%3).jpg</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Order play</source>
+        <translation>Порядок проигрывания</translation>
+    </message>
+    <message>
+        <source>Shuffle play</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Single play</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Single loop</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>List loop</source>
         <translation type="unfinished"/>
     </message>
 </context>

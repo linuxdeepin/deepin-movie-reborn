@@ -213,6 +213,10 @@
         <source>OK</source>
         <translation>确定</translation>
     </message>
+    <message>
+        <source>Default play mode</source>
+        <translation>默认播放模式</translation>
+    </message>
 </context>
 <context>
     <name>UrlDialog</name>
@@ -557,6 +561,30 @@
         <source>Please load the video first</source>
         <translation>请先载入影片</translation>
     </message>
+    <message>
+        <source>Order play</source>
+        <translation>顺序播放</translation>
+    </message>
+    <message>
+        <source>Shuffle play</source>
+        <translation>随机播放</translation>
+    </message>
+    <message>
+        <source>Single play</source>
+        <translation>单个播放</translation>
+    </message>
+    <message>
+        <source>Single loop</source>
+        <translation>单个循环</translation>
+    </message>
+    <message>
+        <source>List loop</source>
+        <translation>列表循环</translation>
+    </message>
+    <message>
+        <source>The CD/DVD has been ejected</source>
+        <translation>CD/DVD已弹出</translation>
+    </message>
 </context>
 <context>
     <name>dmr::MovieInfo</name>
@@ -642,6 +670,26 @@
     <message>
         <source>%1/Movie%2(%3).jpg</source>
         <translation>%1/影院%2（%3）.jpg</translation>
+    </message>
+    <message>
+        <source>Order play</source>
+        <translation>顺序播放</translation>
+    </message>
+    <message>
+        <source>Shuffle play</source>
+        <translation>随机播放</translation>
+    </message>
+    <message>
+        <source>Single play</source>
+        <translation>单个播放</translation>
+    </message>
+    <message>
+        <source>Single loop</source>
+        <translation>单个循环</translation>
+    </message>
+    <message>
+        <source>List loop</source>
+        <translation>列表循环</translation>
     </message>
 </context>
 <context>

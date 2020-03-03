@@ -19,7 +19,7 @@
     </message>
     <message>
         <source>Auto add similar files to play</source>
-        <translation>Agregar automáticamente archivos similares para reproducir</translation>
+        <translation>Añadir automáticamente archivos similares para reproducir</translation>
     </message>
     <message>
         <source>Clear playlist when exit</source>
@@ -191,7 +191,7 @@
     </message>
     <message>
         <source>Delete from playlist</source>
-        <translation>Eliminar de la lista de reproducción</translation>
+        <translation>Borrar de la lista de reproducción</translation>
     </message>
     <message>
         <source>Film info</source>
@@ -213,6 +213,10 @@
         <source>OK</source>
         <translation>Aceptar</translation>
     </message>
+    <message>
+        <source>Default play mode</source>
+        <translation type="unfinished"/>
+    </message>
 </context>
 <context>
     <name>UrlDialog</name>
@@ -222,7 +226,7 @@
     </message>
     <message>
         <source>Please enter the URL:</source>
-        <translation>Por favor, ingrese la URL:</translation>
+        <translation>Por favor ingrese la URL:</translation>
     </message>
     <message>
         <source>OK</source>
@@ -381,7 +385,7 @@
     </message>
     <message>
         <source>Delete from playlist</source>
-        <translation>Eliminar de la lista de reproducción</translation>
+        <translation>Borrar de la lista de reproducción</translation>
     </message>
     <message>
         <source>Display in file manager</source>
@@ -389,11 +393,11 @@
     </message>
     <message>
         <source>Next Frame</source>
-        <translation>Próximo Cuadro</translation>
+        <translation>Próximo cuadro</translation>
     </message>
     <message>
         <source>Previous Frame</source>
-        <translation>Cuadro Previo</translation>
+        <translation>Cuadro previo</translation>
     </message>
 </context>
 <context>
@@ -527,7 +531,7 @@
     </message>
     <message>
         <source>Open File</source>
-        <translation>Abrir Archivo</translation>
+        <translation>Abrir archivo</translation>
     </message>
     <message>
         <source>Film screenshot</source>
@@ -551,10 +555,34 @@
     </message>
     <message>
         <source>4K video may be stuck</source>
-        <translation type="unfinished"/>
+        <translation>El video 4K estaría ralentizado</translation>
     </message>
     <message>
         <source>Please load the video first</source>
+        <translation>Por favor cargue el video primero</translation>
+    </message>
+    <message>
+        <source>Order play</source>
+        <translation>Orden de reproducción</translation>
+    </message>
+    <message>
+        <source>Shuffle play</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Single play</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Single loop</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>List loop</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>The CD/DVD has been ejected</source>
         <translation type="unfinished"/>
     </message>
 </context>
@@ -642,6 +670,26 @@
     <message>
         <source>%1/Movie%2(%3).jpg</source>
         <translation>%1/Video%2(%3).jpg</translation>
+    </message>
+    <message>
+        <source>Order play</source>
+        <translation>Orden de reproducción</translation>
+    </message>
+    <message>
+        <source>Shuffle play</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Single play</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Single loop</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>List loop</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>

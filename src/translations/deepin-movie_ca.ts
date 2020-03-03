@@ -213,6 +213,10 @@
         <source>OK</source>
         <translation>D&apos;acord</translation>
     </message>
+    <message>
+        <source>Default play mode</source>
+        <translation type="unfinished"/>
+    </message>
 </context>
 <context>
     <name>UrlDialog</name>
@@ -551,10 +555,34 @@
     </message>
     <message>
         <source>4K video may be stuck</source>
-        <translation type="unfinished"/>
+        <translation>El vídeo de 4K es pot encallar.</translation>
     </message>
     <message>
         <source>Please load the video first</source>
+        <translation>Si us plau, carregueu primer el vídeo.</translation>
+    </message>
+    <message>
+        <source>Order play</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Shuffle play</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Single play</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Single loop</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>List loop</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>The CD/DVD has been ejected</source>
         <translation type="unfinished"/>
     </message>
 </context>
@@ -642,6 +670,26 @@
     <message>
         <source>%1/Movie%2(%3).jpg</source>
         <translation>%1/Pel·lícula%2(%3).jpg</translation>
+    </message>
+    <message>
+        <source>Order play</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Shuffle play</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Single play</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Single loop</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>List loop</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>

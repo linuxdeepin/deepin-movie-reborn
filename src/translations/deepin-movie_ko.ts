@@ -11,7 +11,7 @@
     </message>
     <message>
         <source>Network disconnected</source>
-        <translation type="unfinished"/>
+        <translation>네트워크 연결 끊김</translation>
     </message>
     <message>
         <source>You don&apos;t have permission to operate this folder</source>
@@ -171,7 +171,7 @@
     </message>
     <message>
         <source>Exit fullscreen/mini mode</source>
-        <translation type="unfinished"/>
+        <translation>전체화면/미니 모드 종료</translation>
     </message>
     <message>
         <source>Movie</source>
@@ -191,7 +191,7 @@
     </message>
     <message>
         <source>Delete from playlist</source>
-        <translation type="unfinished"/>
+        <translation>재생 목록에서 삭제</translation>
     </message>
     <message>
         <source>Film info</source>
@@ -199,7 +199,7 @@
     </message>
     <message>
         <source>Burst shooting</source>
-        <translation type="unfinished"/>
+        <translation>무작위 스크린샷 미리보기</translation>
     </message>
     <message>
         <source>Size</source>
@@ -207,11 +207,15 @@
     </message>
     <message>
         <source>Movie is a full-featured video player, supporting playing local and streaming media in multiple video formats.</source>
-        <translation type="unfinished"/>
+        <translation>Movie는 다양한 비디오 형식으로 로컬 및 스트리밍 미디어 재생을 지원하는 모든 기능을 갖춘 비디오 플레이어입니다.</translation>
     </message>
     <message>
         <source>OK</source>
         <translation>확인</translation>
+    </message>
+    <message>
+        <source>Default play mode</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -245,7 +249,7 @@
     </message>
     <message>
         <source>Empty playlist</source>
-        <translation type="unfinished"/>
+        <translation>빈 재생 목록</translation>
     </message>
     <message>
         <source>Film info</source>
@@ -381,7 +385,7 @@
     </message>
     <message>
         <source>Delete from playlist</source>
-        <translation type="unfinished"/>
+        <translation>재생 목록에서 삭제</translation>
     </message>
     <message>
         <source>Display in file manager</source>
@@ -389,11 +393,11 @@
     </message>
     <message>
         <source>Next Frame</source>
-        <translation type="unfinished"/>
+        <translation>다음 프레임</translation>
     </message>
     <message>
         <source>Previous Frame</source>
-        <translation type="unfinished"/>
+        <translation>이전 프레임</translation>
     </message>
 </context>
 <context>
@@ -455,7 +459,7 @@
     </message>
     <message>
         <source>Parse failed</source>
-        <translation type="unfinished"/>
+        <translation>구문분석 실패</translation>
     </message>
     <message>
         <source>Mute</source>
@@ -467,7 +471,7 @@
     </message>
     <message>
         <source>Track: %1</source>
-        <translation type="unfinished"/>
+        <translation>트랙: %1</translation>
     </message>
     <message>
         <source>Subtitle %1: %2s</source>
@@ -511,11 +515,11 @@
     </message>
     <message>
         <source>No matching online subtitles</source>
-        <translation type="unfinished"/>
+        <translation>일치하는 온라인 자막 없음</translation>
     </message>
     <message>
         <source>Cannot open file or stream</source>
-        <translation type="unfinished"/>
+        <translation>파일 또는 스트림을 열 수 없습니다</translation>
     </message>
     <message>
         <source>Invalid file</source>
@@ -523,11 +527,11 @@
     </message>
     <message>
         <source>No video file found</source>
-        <translation type="unfinished"/>
+        <translation>비디오 파일을 찾을 수 없음</translation>
     </message>
     <message>
         <source>Open File</source>
-        <translation type="unfinished"/>
+        <translation>파일 열기</translation>
     </message>
     <message>
         <source>Film screenshot</source>
@@ -535,7 +539,7 @@
     </message>
     <message>
         <source>Taking the screenshots, please wait...</source>
-        <translation type="unfinished"/>
+        <translation>스크린 샷 찍는 중, 기다려 주십시오...</translation>
     </message>
     <message>
         <source>OK</source>
@@ -543,18 +547,42 @@
     </message>
     <message>
         <source>Please insert a CD/DVD</source>
-        <translation type="unfinished"/>
+        <translation>CD/DVD를 삽입하십시오</translation>
     </message>
     <message>
         <source>Reading DVD files...</source>
-        <translation type="unfinished"/>
+        <translation>DVD 파일 읽는 중...</translation>
     </message>
     <message>
         <source>4K video may be stuck</source>
-        <translation type="unfinished"/>
+        <translation>4K 비디오가 멈출 수 있습니다</translation>
     </message>
     <message>
         <source>Please load the video first</source>
+        <translation>먼저 비디오를 불러오십시오</translation>
+    </message>
+    <message>
+        <source>Order play</source>
+        <translation>재생 명령</translation>
+    </message>
+    <message>
+        <source>Shuffle play</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Single play</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Single loop</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>List loop</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>The CD/DVD has been ejected</source>
         <translation type="unfinished"/>
     </message>
 </context>
@@ -608,14 +636,14 @@
     <name>dmr::MpvProxy</name>
     <message>
         <source>Internal</source>
-        <translation type="unfinished"/>
+        <translation>내부</translation>
     </message>
 </context>
 <context>
     <name>dmr::PlayItemWidget</name>
     <message>
         <source>The file does not exist</source>
-        <translation type="unfinished"/>
+        <translation>파일이 존재하지 않음</translation>
     </message>
 </context>
 <context>
@@ -626,7 +654,7 @@
     </message>
     <message>
         <source>%1 videos</source>
-        <translation type="unfinished"/>
+        <translation>%1 비디오</translation>
     </message>
     <message>
         <source>Empty</source>
@@ -637,10 +665,30 @@
     <name>dmr::Settings</name>
     <message>
         <source>%1/Movie%2.jpg</source>
-        <translation type="unfinished"/>
+        <translation>%1/Movie%2.jpg</translation>
     </message>
     <message>
         <source>%1/Movie%2(%3).jpg</source>
+        <translation>%1/Movie%2(%3).jpg</translation>
+    </message>
+    <message>
+        <source>Order play</source>
+        <translation>재생 명령</translation>
+    </message>
+    <message>
+        <source>Shuffle play</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Single play</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Single loop</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>List loop</source>
         <translation type="unfinished"/>
     </message>
 </context>
@@ -676,23 +724,23 @@
     </message>
     <message>
         <source>play</source>
-        <translation type="unfinished"/>
+        <translation>재생</translation>
     </message>
     <message>
         <source>prev</source>
-        <translation type="unfinished"/>
+        <translation>이전</translation>
     </message>
     <message>
         <source>next</source>
-        <translation type="unfinished"/>
+        <translation>다음</translation>
     </message>
     <message>
         <source>fs</source>
-        <translation type="unfinished"/>
+        <translation>fs</translation>
     </message>
     <message>
         <source>list</source>
-        <translation type="unfinished"/>
+        <translation>목록</translation>
     </message>
     <message>
         <source>Exit fullscreen</source>

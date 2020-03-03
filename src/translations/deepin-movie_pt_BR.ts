@@ -213,6 +213,10 @@
         <source>OK</source>
         <translation>Ok</translation>
     </message>
+    <message>
+        <source>Default play mode</source>
+        <translation>Modo de reprodução padrão</translation>
+    </message>
 </context>
 <context>
     <name>UrlDialog</name>
@@ -551,11 +555,35 @@
     </message>
     <message>
         <source>4K video may be stuck</source>
-        <translation type="unfinished"/>
+        <translation>Vídeo em 4K poderá travar</translation>
     </message>
     <message>
         <source>Please load the video first</source>
-        <translation type="unfinished"/>
+        <translation>Primeiro, carregue o vídeo</translation>
+    </message>
+    <message>
+        <source>Order play</source>
+        <translation>Ordenar reprodução</translation>
+    </message>
+    <message>
+        <source>Shuffle play</source>
+        <translation>Reprodução aleatória</translation>
+    </message>
+    <message>
+        <source>Single play</source>
+        <translation>Reproduzir uma vez</translation>
+    </message>
+    <message>
+        <source>Single loop</source>
+        <translation>Repetir Uma Vez</translation>
+    </message>
+    <message>
+        <source>List loop</source>
+        <translation>Repetir lista</translation>
+    </message>
+    <message>
+        <source>The CD/DVD has been ejected</source>
+        <translation>O CD/DVD foi ejetado</translation>
     </message>
 </context>
 <context>
@@ -642,6 +670,26 @@
     <message>
         <source>%1/Movie%2(%3).jpg</source>
         <translation>%1/Vídeo%2(%3).jpg</translation>
+    </message>
+    <message>
+        <source>Order play</source>
+        <translation>Ordenar reprodução</translation>
+    </message>
+    <message>
+        <source>Shuffle play</source>
+        <translation>Reprodução aleatória</translation>
+    </message>
+    <message>
+        <source>Single play</source>
+        <translation>Reproduzir uma vez</translation>
+    </message>
+    <message>
+        <source>Single loop</source>
+        <translation>Repetir uma vez</translation>
+    </message>
+    <message>
+        <source>List loop</source>
+        <translation>Repetir lista</translation>
     </message>
 </context>
 <context>
