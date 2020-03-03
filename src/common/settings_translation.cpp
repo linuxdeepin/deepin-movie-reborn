@@ -8,6 +8,7 @@ void GenerateSettingTranslate()
     auto base_play_multiinstanceText = QObject::tr("Open a new player for each file played");
     auto base_play_pauseonminText = QObject::tr("Pause when minimized");
     auto base_play_resumelastText = QObject::tr("Remember playback position");
+    auto base_play_defaultplaymode = QObject::tr("Default playmode");
     auto base_screenshot_locationName = QObject::tr("Path");
     auto group_baseName = QObject::tr("Basic");
     auto group_base_playName = QObject::tr("Play");
