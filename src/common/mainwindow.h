@@ -275,6 +275,7 @@ private:
     QTimer _autoHideTimer;
     QTimer _delayedMouseReleaseTimer;
     QUrl m_dvdUrl {QUrl()};
+    QProcess *shortcutViewProcess {nullptr};
 };
 };
 

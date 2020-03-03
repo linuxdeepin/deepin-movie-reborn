@@ -897,9 +897,12 @@ MainWindow::MainWindow(QWidget *parent)
             _lastRectInNormalMode.setSize({mi.width, mi.height});
         }
         this->resizeByConstraints();
-        if (!isFullScreen() && !isMaximized() && !_miniMode) {
-            auto geom = qApp->desktop()->availableGeometry(this);
-            move((geom.width() - this->width()) / 2, (geom.height() - this->height()) / 2);
+        QDesktopWidget desktop;
+        if(desktop.screenCount() > 1){
+            if (!isFullScreen() && !isMaximized() && !_miniMode) {
+                auto geom = qApp->desktop()->availableGeometry(this);
+                move((geom.width() - this->width()) / 2, (geom.height() - this->height()) / 2);
+            }
         }
     });
     connect(_engine, &PlayerEngine::videoSizeChanged, [ = ]() {
@@ -2347,7 +2350,9 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         QString param2 = "-p=" + QString::number(pos.x()) + "," + QString::number(pos.y());
         shortcutString << param1 << param2;
 
-        QProcess *shortcutViewProcess = new QProcess();
+        if(!shortcutViewProcess){
+            shortcutViewProcess = new QProcess();
+        }
         shortcutViewProcess->startDetached("deepin-shortcut-viewer", shortcutString);
 
         connect(shortcutViewProcess, SIGNAL(finished(int)),
