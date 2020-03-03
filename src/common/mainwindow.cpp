@@ -2760,19 +2760,19 @@ void MainWindow::slotdefaultplaymodechanged(const QString &key, const QVariant &
     auto mode_opt = Settings::get().settings()->option("base.play.playmode");
     //auto mode_id = mode_opt->value().toInt();
     auto mode = mode_opt->data("items").toStringList()[value.toInt()];
-    if(mode == tr("OrderPlay")){
+    if(mode == tr("Order play")){
         requestAction(ActionFactory::OrderPlay);
         reflectActionToUI(ActionFactory::OrderPlay);
-    }else if (mode == tr("ShufflePlay")) {
+    }else if (mode == tr("Shuffle play")) {
         requestAction(ActionFactory::ShufflePlay);
         reflectActionToUI(ActionFactory::ShufflePlay);
-    }else if (mode == tr("SinglePlay")) {
+    }else if (mode == tr("Single play")) {
         requestAction(ActionFactory::SinglePlay);
         reflectActionToUI(ActionFactory::SinglePlay);
-    }else if (mode == tr("SingleLoop")) {
+    }else if (mode == tr("Single loop")) {
         requestAction(ActionFactory::SingleLoop);
         reflectActionToUI(ActionFactory::SingleLoop);
-    }else if (mode == tr("ListLoop")) {
+    }else if (mode == tr("List loop")) {
         requestAction(ActionFactory::ListLoop);
         reflectActionToUI(ActionFactory::ListLoop);
     }
@@ -2801,7 +2801,7 @@ void MainWindow::checkErrorMpvLogsChanged(const QString prefix, const QString te
 //        _engine->playlist().clear();
     } else if (errorMessage.toLower().contains(QString("incomplete frame")) ||
                errorMessage.toLower().contains(QString("MVs not available"))) {
-        _nwComm->updateWithMessage(tr("The CD/DVD has popped up"));
+        _nwComm->updateWithMessage(tr("The CD/DVD has been ejected"));
 //        _engine->playlist().remove(_engine->playlist().current());
     } else if ((errorMessage.toLower().contains(QString("can't"))) &&
                (errorMessage.toLower().contains(QString("open")))) {
@@ -3315,19 +3315,19 @@ void MainWindow::defaultplaymodeinit()
     auto mode_opt = Settings::get().settings()->option("base.play.playmode");
     auto mode_id = mode_opt->value().toInt();
     auto mode = mode_opt->data("items").toStringList()[mode_id];
-    if(mode == tr("OrderPlay")){
+    if(mode == tr("Order play")){
         requestAction(ActionFactory::OrderPlay);
         //reflectActionToUI(ActionFactory::OrderPlay);
-    }else if (mode == tr("ShufflePlay")) {
+    }else if (mode == tr("Shuffle play")) {
         requestAction(ActionFactory::ShufflePlay);
         reflectActionToUI(ActionFactory::ShufflePlay);
-    }else if (mode == tr("SinglePlay")) {
+    }else if (mode == tr("Single play")) {
         requestAction(ActionFactory::SinglePlay);
         reflectActionToUI(ActionFactory::SinglePlay);
-    }else if (mode == tr("SingleLoop")) {
+    }else if (mode == tr("Single loop")) {
         requestAction(ActionFactory::SingleLoop);
         reflectActionToUI(ActionFactory::SingleLoop);
-    }else if (mode == tr("ListLoop")) {
+    }else if (mode == tr("List loop")) {
         requestAction(ActionFactory::ListLoop);
         reflectActionToUI(ActionFactory::ListLoop);
     }

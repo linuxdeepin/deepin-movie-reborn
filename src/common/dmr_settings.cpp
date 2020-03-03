@@ -74,11 +74,11 @@ Settings::Settings()
     qDebug() << "keys" << _settings->keys();
 
     QStringList playmodeDatabase;
-    playmodeDatabase << tr("OrderPlay")
-                     << tr("ShufflePlay")
-                     << tr("SinglePlay")
-                     << tr("SingleLoop")
-                     << tr("ListLoop");
+    playmodeDatabase << tr("Order play")
+                     << tr("Shuffle play")
+                     << tr("Single play")
+                     << tr("Single loop")
+                     << tr("List loop");
     auto playmodeFamily = _settings->option("base.play.playmode");
     playmodeFamily->setData("items",playmodeDatabase);
 

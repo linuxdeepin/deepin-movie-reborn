@@ -91,7 +91,7 @@
                         },
                         {
                             "key": "playmode",
-                            "name": "Default playmode",
+                            "name": "Default play mode",
                             "type": "combobox",
                             "default": 0
                         },
