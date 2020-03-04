@@ -183,6 +183,10 @@ CompositingManager::CompositingManager() {
         }
 #endif
     }
+    QFileInfo fi("/dev/mwv206_0"); //景嘉微显卡目前只支持vo=xv，等日后升级代码需要酌情修改。
+    if(fi.exists()){
+        _composited = false;
+    }
     qDebug() <<"composited:" << _composited;
 }
 

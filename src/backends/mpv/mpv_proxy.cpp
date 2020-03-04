@@ -193,7 +193,7 @@ mpv_handle* MpvProxy::mpv_init()
 
             if (!disable) {
                 set_property(h, "gpu-hwdec-interop", interop.toUtf8().constData());
-                qDebug() << "-------- set gpu-hwdec-interop = " << interop 
+                qDebug() << "-------- set gpu-hwdec-interop = " << interop
                     << (forced.isEmpty() ? "[detected]" : "[forced]");
             } else {
                 qDebug() << "-------- gpu-hwdec-interop is disabled by user";
@@ -215,11 +215,13 @@ mpv_handle* MpvProxy::mpv_init()
         set_property(h, "gpu-sw", "on");
 
     } else {
-#ifdef __aarch64__
-        set_property(h, "vo", "xv,gpu,x11");
-#else
-        set_property(h, "vo", "gpu,xv,x11");
-#endif
+        QFileInfo fi("/dev/mwv206_0");              //景嘉微显卡目前只支持vo=xv，等日后升级代码需要酌情修改。
+        if(fi.exists()){
+            set_property(h, "vo", "xv");
+        }else {
+            set_property(h, "vo", "gpu,xv,x11");
+        }
+        //set_property(h, "vo", "gpu,xv,x11");
         set_property(h, "wid", this->winId());
     }
 
