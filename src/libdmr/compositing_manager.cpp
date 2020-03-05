@@ -189,6 +189,9 @@ CompositingManager::CompositingManager() {
         _composited = false;
     }
 #endif
+#ifdef __mips__
+    _composited = false;
+#endif
     qDebug() <<"composited:" << _composited;
 }
 

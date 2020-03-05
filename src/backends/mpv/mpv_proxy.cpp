@@ -215,6 +215,9 @@ mpv_handle* MpvProxy::mpv_init()
         set_property(h, "gpu-sw", "on");
 
     } else {
+#ifdef __mips__
+        set_property(h, "vo", "xv");
+#else
 #ifdef MWV206_0
         QFileInfo fi("/dev/mwv206_0");              //景嘉微显卡目前只支持vo=xv，等日后升级代码需要酌情修改。
         if(fi.exists()){
@@ -224,6 +227,7 @@ mpv_handle* MpvProxy::mpv_init()
         }
 #else
         set_property(h, "vo", "gpu,xv,x11");
+#endif
 #endif
         set_property(h, "wid", this->winId());
     }
