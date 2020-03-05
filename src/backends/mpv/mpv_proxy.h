@@ -30,6 +30,9 @@
 #ifndef _DMR_MPV_PROXY_H
 #define _DMR_MPV_PROXY_H 
 
+#define MWV206_0  //After Jing Jiawei's graphics card is upgraded, deal with the macro according to the situation,
+                  //This macro is also available for compositing_manager.cpp.
+
 #include <player_backend.h>
 #include <player_engine.h>
 #include <xcb/xproto.h>

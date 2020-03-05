@@ -30,6 +30,9 @@
 #ifndef _DMR_COMPOSITING_MANAGER
 #define _DMR_COMPOSITING_MANAGER 
 
+#define MWV206_0  //After Jing Jiawei's graphics card is upgraded, deal with the macro according to the situation,
+                  //This macro is also available for mpv_proxy.cpp.
+
 #include <QtCore>
 #include <string>
 #include <vector>
