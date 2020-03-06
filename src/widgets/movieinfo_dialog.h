@@ -70,18 +70,18 @@ class InfoBottom: public QWidget
 {
     Q_OBJECT
 public:
-    InfoBottom(){}
+    InfoBottom() {}
 
 protected:
-    virtual void paintEvent(QPaintEvent *ev) {
+    virtual void paintEvent(QPaintEvent *ev)
+    {
         QPainter pt(this);
         pt.setRenderHint(QPainter::Antialiasing);
 
         if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
             pt.setPen(QColor(0, 0, 0, 20));
             pt.setBrush(QBrush(QColor(255, 255, 255, 255)));
-        }
-        else if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
+        } else if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
             pt.setPen(QColor(255, 255, 255, 20));
             pt.setBrush(QBrush(QColor(45, 45, 45, 250)));
         }
@@ -104,6 +104,9 @@ public:
 
 private slots:
     void OnFontChanged(const QFont &font);
+
+private:
+    void addRow(QString, QString, QFormLayout *, QList<DLabel *>);
 
 private:
     DLabel *m_fileNameLbl {nullptr};

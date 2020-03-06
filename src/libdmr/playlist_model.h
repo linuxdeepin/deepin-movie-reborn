@@ -1,4 +1,4 @@
-/* 
+/*
  * (c) 2017, Deepin Technology Co., Ltd. <support@deepin.org>
  *
  * This program is free software; you can redistribute it and/or
@@ -28,7 +28,7 @@
  * files in the program, then also delete it here.
  */
 #ifndef _DMR_PLAYLIST_MODEL_H
-#define _DMR_PLAYLIST_MODEL_H 
+#define _DMR_PLAYLIST_MODEL_H
 
 #include <QtWidgets>
 #include <QtConcurrent>
@@ -54,12 +54,43 @@ struct MovieInfo {
     qint64 duration;
     int width, height;
 
-    static struct MovieInfo parseFromFile(const QFileInfo& fi, bool *ok = nullptr);
-    QString durationStr() const {
+    //3.4添加视频信息
+    //视频流信息
+    int vCodecID;
+    qint64 vCodeRate;
+    int fps;
+    float proportion;
+    //音频流信息
+    int aCodeID;
+    qint64 aCodeRate;
+    int aDigit;
+    int channels;
+    int sampling;
+
+    static struct MovieInfo parseFromFile(const QFileInfo &fi, bool *ok = nullptr);
+    QString durationStr() const
+    {
         return utils::Time2str(duration);
     }
 
-    QString sizeStr() const {
+    QString videoCodec() const
+    {
+        return  utils::videoIndex2str(vCodecID);
+    }
+
+    QString audioCodec() const
+    {
+        return utils::audioIndex2str(aCodeID);
+    }
+
+    //获取字幕编码格式（备用）
+    /*QString subtitleCodec() const
+    {
+        return utils::subtitleIndex2str();
+    }*/
+
+    QString sizeStr() const
+    {
         auto K = 1024;
         auto M = 1024 * K;
         auto G = 1024 * M;
@@ -90,7 +121,8 @@ using AppendJob = QPair<QUrl, QFileInfo>; // async job
 using PlayItemInfoList = QList<PlayItemInfo>;
 using UrlList = QList<QUrl>;
 
-class PlaylistModel: public QObject {
+class PlaylistModel: public QObject
+{
     Q_OBJECT
     Q_PROPERTY(int count READ count NOTIFY countChanged)
     Q_PROPERTY(int current READ current WRITE changeCurrent NOTIFY currentChanged)
@@ -110,29 +142,35 @@ public:
     PlayMode playMode() const;
     void setPlayMode(PlayMode pm);
 
-    PlaylistModel(PlayerEngine* engine);
+    PlaylistModel(PlayerEngine *engine);
     ~PlaylistModel();
 
     qint64 getUrlFileTotalSize(QUrl url, int tryTimes) const;
 
     void clear();
     void remove(int pos);
-    void append(const QUrl&);
+    void append(const QUrl &);
 
-    void appendAsync(const QList<QUrl>&);
-    void collectionJob(const QList<QUrl>&);
+    void appendAsync(const QList<QUrl> &);
+    void collectionJob(const QList<QUrl> &);
 
     void playNext(bool fromUser);
     void playPrev(bool fromUser);
 
     int count() const;
-    const QList<PlayItemInfo>& items() const { return _infos; }
-    QList<PlayItemInfo>& items() { return _infos; }
+    const QList<PlayItemInfo> &items() const
+    {
+        return _infos;
+    }
+    QList<PlayItemInfo> &items()
+    {
+        return _infos;
+    }
 
     int current() const;
-    const PlayItemInfo& currentInfo() const;
-    PlayItemInfo& currentInfo();
-    int indexOf(const QUrl& url);
+    const PlayItemInfo &currentInfo() const;
+    PlayItemInfo &currentInfo();
+    int indexOf(const QUrl &url);
 
     void switchPosition(int p1, int p2);
 
@@ -143,7 +181,7 @@ public slots:
 
 private slots:
     void onAsyncAppendFinished();
-    void delayedAppendAsync(const QList<QUrl>&);
+    void delayedAppendAsync(const QList<QUrl> &);
 
 signals:
     void countChanged();
@@ -152,7 +190,7 @@ signals:
     void itemsAppended();
     void emptied();
     void playModeChanged(PlayMode);
-    void asyncAppendFinished(const QList<PlayItemInfo>&);
+    void asyncAppendFinished(const QList<PlayItemInfo> &);
     void itemInfoUpdated(int id);
 
 private:
@@ -181,14 +219,14 @@ private:
 
     QString _playlistFile;
 
-    struct PlayItemInfo calculatePlayInfo(const QUrl&, const QFileInfo& fi, bool isDvd = false);
+    struct PlayItemInfo calculatePlayInfo(const QUrl &, const QFileInfo &fi, bool isDvd = false);
     void reshuffle();
     void savePlaylist();
     void loadPlaylist();
     void clearPlaylist();
-    void appendSingle(const QUrl&);
+    void appendSingle(const QUrl &);
     void tryPlayCurrent(bool next);
-    void handleAsyncAppendResults(QList<PlayItemInfo>& pil);
+    void handleAsyncAppendResults(QList<PlayItemInfo> &pil);
 };
 
 }

@@ -1,4 +1,4 @@
-/* 
+/*
  * (c) 2017, Deepin Technology Co., Ltd. <support@deepin.org>
  *
  * This program is free software; you can redistribute it and/or
@@ -46,7 +46,7 @@ extern "C" {
 #include <random>
 
 static int open_codec_context(int *stream_idx,
-        AVCodecContext **dec_ctx, AVFormatContext *fmt_ctx, enum AVMediaType type)
+                              AVCodecContext **dec_ctx, AVFormatContext *fmt_ctx, enum AVMediaType type)
 {
     int ret, stream_index;
     AVStream *st;
@@ -55,7 +55,7 @@ static int open_codec_context(int *stream_idx,
     ret = av_find_best_stream(fmt_ctx, type, -1, -1, NULL, 0);
     if (ret < 0) {
         qWarning() << "Could not find " << av_get_media_type_string(type)
-            << " stream in input file";
+                   << " stream in input file";
         return ret;
     }
 
@@ -93,25 +93,34 @@ static int open_codec_context(int *stream_idx,
 
 
 namespace dmr {
-QDebug operator<<(QDebug debug, const struct MovieInfo& mi)
+QDebug operator<<(QDebug debug, const struct MovieInfo &mi)
 {
     debug << "MovieInfo{"
-        << mi.valid
-        << mi.title
-        << mi.fileType
-        << mi.resolution
-        << mi.filePath
-        << mi.creation
-        << mi.raw_rotate
-        << mi.fileSize
-        << mi.duration
-        << mi.width
-        << mi.height
-        << "}";
+          << mi.valid
+          << mi.title
+          << mi.fileType
+          << mi.resolution
+          << mi.filePath
+          << mi.creation
+          << mi.raw_rotate
+          << mi.fileSize
+          << mi.duration
+          << mi.width
+          << mi.height
+          << mi.vCodecID
+          << mi.vCodeRate
+          << mi.fps
+          << mi.proportion
+          << mi.aCodeID
+          << mi.aCodeRate
+          << mi.aDigit
+          << mi.channels
+          << mi.sampling
+          << "}";
     return debug;
 }
 
-QDataStream& operator<< (QDataStream& st, const MovieInfo& mi)
+QDataStream &operator<< (QDataStream &st, const MovieInfo &mi)
 {
     st << mi.valid;
     st << mi.title;
@@ -124,10 +133,19 @@ QDataStream& operator<< (QDataStream& st, const MovieInfo& mi)
     st << mi.duration;
     st << mi.width;
     st << mi.height;
+    st << mi.vCodecID;
+    st << mi.vCodeRate;
+    st << mi.fps;
+    st << mi.proportion;
+    st << mi.aCodeID;
+    st << mi.aCodeRate;
+    st << mi.aDigit;
+    st << mi.channels;
+    st << mi.sampling;
     return st;
 }
 
-QDataStream& operator>> (QDataStream& st, MovieInfo& mi)
+QDataStream &operator>> (QDataStream &st, MovieInfo &mi)
 {
     st >> mi.valid;
     st >> mi.title;
@@ -140,12 +158,21 @@ QDataStream& operator>> (QDataStream& st, MovieInfo& mi)
     st >> mi.duration;
     st >> mi.width;
     st >> mi.height;
+    st >> mi.vCodecID;
+    st >> mi.vCodeRate;
+    st >> mi.fps;
+    st >> mi.proportion;
+    st >> mi.aCodeID;
+    st >> mi.aCodeRate;
+    st >> mi.aDigit;
+    st >> mi.channels;
+    st >> mi.sampling;
     return st;
 }
 
-static class PersistentManager* _persistentManager = nullptr;
+static class PersistentManager *_persistentManager = nullptr;
 
-static QString hashUrl(const QUrl& url)
+static QString hashUrl(const QUrl &url)
 {
     return QString(QCryptographicHash::hash(url.toEncoded(), QCryptographicHash::Sha256).toHex());
 }
@@ -155,7 +182,8 @@ class PersistentManager: public QObject
 {
     Q_OBJECT
 public:
-    static PersistentManager& get() {
+    static PersistentManager &get()
+    {
         if (!_persistentManager) {
             _persistentManager = new PersistentManager;
         }
@@ -169,11 +197,11 @@ public:
         bool thumb_valid {false};
     };
 
-    CacheInfo loadFromCache(const QUrl& url)
+    CacheInfo loadFromCache(const QUrl &url)
     {
         auto h = hashUrl(url);
         CacheInfo ci;
-        
+
         {
             auto filename = QString("%1/%2").arg(_cacheInfoPath).arg(h);
             QFile f(filename);
@@ -187,7 +215,7 @@ public:
                 qWarning() << f.errorString();
             }
         }
-        
+
         if (ci.mi_valid) {
             auto filename = QString("%1/%2").arg(_pixmapCachePath).arg(h);
             QFile f(filename);
@@ -206,12 +234,12 @@ public:
         return ci;
     }
 
-    void save(const PlayItemInfo& pif)
+    void save(const PlayItemInfo &pif)
     {
         auto h = hashUrl(pif.url);
 
         bool mi_saved = false;
-        
+
         {
             auto filename = QString("%1/%2").arg(_cacheInfoPath).arg(h);
             QFile f(filename);
@@ -224,7 +252,7 @@ public:
                 qWarning() << f.errorString();
             }
         }
-        
+
         if (mi_saved) {
             auto filename = QString("%1/%2").arg(_pixmapCachePath).arg(h);
             QFile f(filename);
@@ -237,7 +265,7 @@ public:
         }
     }
 
-    bool cacheExists(const QUrl& url) 
+    bool cacheExists(const QUrl &url)
     {
         auto h = hashUrl(url);
         auto filename = QString("%1/%2").arg(_cacheInfoPath).arg(h);
@@ -245,12 +273,12 @@ public:
     }
 
 private:
-    PersistentManager() 
+    PersistentManager()
     {
         auto tmpl = QString("%1/%2/%3/%4")
-            .arg(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation))
-            .arg(qApp->organizationName())
-            .arg(qApp->applicationName());
+                    .arg(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation))
+                    .arg(qApp->organizationName())
+                    .arg(qApp->applicationName());
         {
             _cacheInfoPath = tmpl.arg("cacheinfo");
             QDir d;
@@ -268,7 +296,7 @@ private:
 
 };
 
-struct MovieInfo MovieInfo::parseFromFile(const QFileInfo& fi, bool *ok)
+struct MovieInfo MovieInfo::parseFromFile(const QFileInfo &fi, bool *ok)
 {
     struct MovieInfo mi;
     mi.valid = false;
@@ -297,7 +325,7 @@ struct MovieInfo MovieInfo::parseFromFile(const QFileInfo& fi, bool *ok)
     if (av_ctx->nb_streams == 0) {
         if (ok) *ok = false;
         return mi;
-    } 
+    }
     if (open_codec_context(&stream_id, &dec_ctx, av_ctx, AVMEDIA_TYPE_VIDEO) < 0) {
         if (ok) *ok = false;
         return mi;
@@ -317,6 +345,21 @@ struct MovieInfo MovieInfo::parseFromFile(const QFileInfo& fi, bool *ok)
     mi.fileSize = fi.size();
     mi.fileType = fi.suffix();
 
+    mi.vCodecID = dec_ctx->codec_id;
+    mi.vCodeRate = dec_ctx->bit_rate;
+    mi.fps = dec_ctx->framerate.num / dec_ctx->framerate.den;
+    mi.proportion = mi.width / mi.height;
+
+    if (open_codec_context(&stream_id, &dec_ctx, av_ctx, AVMEDIA_TYPE_AUDIO) < 0) {
+        if (ok) *ok = false;
+        return mi;
+    }
+    mi.aCodeID = dec_ctx->codec_id;
+    mi.aCodeRate = dec_ctx->bit_rate;
+    mi.aDigit = dec_ctx->sample_fmt;
+    mi.channels = dec_ctx->channels;
+    mi.sampling = dec_ctx->sample_rate;
+
     AVDictionaryEntry *tag = NULL;
     while ((tag = av_dict_get(av_ctx->metadata, "", tag, AV_DICT_IGNORE_SUFFIX)) != NULL) {
         if (tag->key && strcmp(tag->key, "creation_time") == 0) {
@@ -335,7 +378,9 @@ struct MovieInfo MovieInfo::parseFromFile(const QFileInfo& fi, bool *ok)
             mi.raw_rotate = QString(tag->value).toInt();
             auto vr = (mi.raw_rotate + 360) % 360;
             if (vr == 90 || vr == 270) {
-                auto tmp = mi.height; mi.height = mi.width; mi.width = tmp; 
+                auto tmp = mi.height;
+                mi.height = mi.width;
+                mi.width = tmp;
             }
             break;
         }
@@ -352,7 +397,7 @@ struct MovieInfo MovieInfo::parseFromFile(const QFileInfo& fi, bool *ok)
 bool PlayItemInfo::refresh()
 {
     if (url.isLocalFile()) {
-        //FIXME: it seems that info.exists always gets refreshed 
+        //FIXME: it seems that info.exists always gets refreshed
         auto o = this->info.exists();
         auto sz = this->info.size();
 
@@ -360,45 +405,44 @@ bool PlayItemInfo::refresh()
         this->valid = this->info.exists();
 
         return (o != this->info.exists()) || sz != this->info.size();
-    } 
+    }
     return false;
 }
 
 PlaylistModel::PlaylistModel(PlayerEngine *e)
-    :_engine(e)
+    : _engine(e)
 {
     _thumbnailer.setThumbnailSize(400 * qApp->devicePixelRatio());
     av_register_all();
 
     _playlistFile = QString("%1/%2/%3/playlist")
-        .arg(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation))
-        .arg(qApp->organizationName())
-        .arg(qApp->applicationName());
+                    .arg(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation))
+                    .arg(qApp->organizationName())
+                    .arg(qApp->applicationName());
 
-    connect(e, &PlayerEngine::stateChanged, [=]() {
+    connect(e, &PlayerEngine::stateChanged, [ = ]() {
         qDebug() << "model" << "_userRequestingItem" << _userRequestingItem << "state" << e->state();
         switch (e->state()) {
-            case PlayerEngine::Playing:
-            {
-                auto& pif = currentInfo();
-                if (!pif.url.isLocalFile() && !pif.loaded) {
-                    pif.mi.width = e->videoSize().width();
-                    pif.mi.height = e->videoSize().height();
-                    pif.mi.duration = e->duration();
-                    pif.loaded = true;
-                    emit itemInfoUpdated(_current);
-                }
-                break;
+        case PlayerEngine::Playing: {
+            auto &pif = currentInfo();
+            if (!pif.url.isLocalFile() && !pif.loaded) {
+                pif.mi.width = e->videoSize().width();
+                pif.mi.height = e->videoSize().height();
+                pif.mi.duration = e->duration();
+                pif.loaded = true;
+                emit itemInfoUpdated(_current);
             }
-            case PlayerEngine::Paused:
-                break;
+            break;
+        }
+        case PlayerEngine::Paused:
+            break;
 
-            case PlayerEngine::Idle:
-                if (!_userRequestingItem) {
-                    stop();
-                    playNext(false);
-                }
-                break;
+        case PlayerEngine::Idle:
+            if (!_userRequestingItem) {
+                stop();
+                playNext(false);
+            }
+            break;
         }
     });
 
@@ -426,7 +470,7 @@ PlaylistModel::~PlaylistModel()
     if (Settings::get().isSet(Settings::ClearWhenQuit)) {
         clearPlaylist();
     } else {
-        //persistently save current playlist 
+        //persistently save current playlist
         savePlaylist();
     }
 #endif
@@ -436,13 +480,11 @@ qint64 PlaylistModel::getUrlFileTotalSize(QUrl url, int tryTimes) const
 {
     qint64 size = -1;
 
-    if (tryTimes <= 0)
-    {
+    if (tryTimes <= 0) {
         tryTimes = 1;
     }
 
-    do
-    {
+    do {
         QNetworkAccessManager manager;
         // 事件循环，等待请求文件头信息结束;
         QEventLoop loop;
@@ -460,8 +502,7 @@ qint64 PlaylistModel::getUrlFileTotalSize(QUrl url, int tryTimes) const
         timer.start(5000);
         loop.exec();
 
-        if (reply->error() != QNetworkReply::NoError)
-        {
+        if (reply->error() != QNetworkReply::NoError) {
             qDebug() << reply->errorString();
             continue;
         }
@@ -500,7 +541,7 @@ void PlaylistModel::savePlaylist()
     cfg.remove("");
 
     for (int i = 0; i < count(); ++i) {
-        const auto& pif = _infos[i];
+        const auto &pif = _infos[i];
         cfg.setValue(QString::number(i), pif.url);
         qDebug() << "save " << pif.url;
     }
@@ -536,7 +577,9 @@ void PlaylistModel::loadPlaylist()
         return;
     }
 
-    QTimer::singleShot(0, [=]() { delayedAppendAsync(urls); });
+    QTimer::singleShot(0, [ = ]() {
+        delayedAppendAsync(urls);
+    });
 }
 
 
@@ -629,7 +672,7 @@ void PlaylistModel::stop()
 
 void PlaylistModel::tryPlayCurrent(bool next)
 {
-    auto& pif = _infos[_current];
+    auto &pif = _infos[_current];
     if (pif.refresh()) {
         qDebug() << pif.url.fileName() << "changed";
     }
@@ -649,13 +692,31 @@ void PlaylistModel::playNext(bool fromUser)
 {
     if (count() == 0) return;
     qDebug() << "playmode" << _playMode << "fromUser" << fromUser
-        << "last" << _last << "current" << _current;
+             << "last" << _last << "current" << _current;
 
     _userRequestingItem = fromUser;
 
     switch (_playMode) {
-        case SinglePlay:
-            if (fromUser) {
+    case SinglePlay:
+        if (fromUser) {
+            if (_last + 1 >= count()) {
+                _last = -1;
+            }
+            _engine->waitLastEnd();
+            _current = _last + 1;
+            _last = _current;
+            tryPlayCurrent(true);
+        }
+        break;
+
+    case SingleLoop:
+        if (fromUser) {
+            if (_engine->state() == PlayerEngine::Idle) {
+                _last = _last == -1 ? 0 : _last;
+                _current = _last;
+                tryPlayCurrent(true);
+
+            } else {
                 if (_last + 1 >= count()) {
                     _last = -1;
                 }
@@ -664,76 +725,58 @@ void PlaylistModel::playNext(bool fromUser)
                 _last = _current;
                 tryPlayCurrent(true);
             }
-            break;
-
-        case SingleLoop:
-            if (fromUser) {
-                if (_engine->state() == PlayerEngine::Idle) {
-                    _last = _last == -1 ? 0: _last;
-                    _current = _last;
-                    tryPlayCurrent(true);
-
-                } else {
-                    if (_last + 1 >= count()) {
-                        _last = -1;
-                    }
-                    _engine->waitLastEnd();
-                    _current = _last + 1;
-                    _last = _current;
-                    tryPlayCurrent(true);
-                }
+        } else {
+            if (_engine->state() == PlayerEngine::Idle) {
+                _last = _last < 0 ? 0 : _last;
+                _current = _last;
+                tryPlayCurrent(true);
             } else {
-                if (_engine->state() == PlayerEngine::Idle) {
-                    _last = _last < 0 ? 0 : _last;
-                    _current = _last;
-                    tryPlayCurrent(true);
-                } else {
-                    // replay current
-                    tryPlayCurrent(true);
-                }
+                // replay current
+                tryPlayCurrent(true);
             }
-            break;
+        }
+        break;
 
-        case ShufflePlay: {
-            if (_shufflePlayed >= _playOrder.size()) {
-                _shufflePlayed = 0;
-                reshuffle();
+    case ShufflePlay: {
+        if (_shufflePlayed >= _playOrder.size()) {
+            _shufflePlayed = 0;
+            reshuffle();
+        }
+        _shufflePlayed++;
+        qDebug() << "shuffle next " << _shufflePlayed - 1;
+        _engine->waitLastEnd();
+        _last = _current = _playOrder[_shufflePlayed - 1];
+        tryPlayCurrent(true);
+        break;
+    }
+
+    case OrderPlay:
+        _last++;
+        if (_last == count()) {
+            if (fromUser)
+                _last = 0;
+            else {
+                _last--;
+                break;
             }
-            _shufflePlayed++;
-            qDebug() << "shuffle next " << _shufflePlayed-1;
-            _engine->waitLastEnd();
-            _last = _current = _playOrder[_shufflePlayed-1];
-            tryPlayCurrent(true);
-            break;
         }
 
-        case OrderPlay:
-            _last++;
-            if (_last == count()) {
-                if (fromUser) 
-                    _last = 0;
-                else {
-                    _last--;
-                    break;
-                }
-            }
+        _engine->waitLastEnd();
+        _current = _last;
+        tryPlayCurrent(true);
+        break;
 
-            _engine->waitLastEnd();
-            _current = _last;
-            tryPlayCurrent(true);
-            break;
+    case ListLoop:
+        _last++;
+        if (_last == count()) {
+            _loopCount++;
+            _last = 0;
+        }
 
-        case ListLoop:
-            _last++;
-            if (_last == count()) {
-                _loopCount++;
-                _last = 0;
-            }
-
-            _engine->waitLastEnd();
-            _current = _last;
-            tryPlayCurrent(true);
-            break;
+        _engine->waitLastEnd();
+        _current = _last;
+        tryPlayCurrent(true);
+        break;
     }
 
     _userRequestingItem = false;
@@ -743,13 +786,31 @@ void PlaylistModel::playPrev(bool fromUser)
 {
     if (count() == 0) return;
     qDebug() << "playmode" << _playMode << "fromUser" << fromUser
-        << "last" << _last << "current" << _current;
+             << "last" << _last << "current" << _current;
 
     _userRequestingItem = fromUser;
 
     switch (_playMode) {
-        case SinglePlay:
-            if (fromUser) {
+    case SinglePlay:
+        if (fromUser) {
+            if (_last - 1 < 0) {
+                _last = count();
+            }
+            _engine->waitLastEnd();
+            _current = _last - 1;
+            _last = _current;
+            tryPlayCurrent(false);
+        }
+        break;
+
+    case SingleLoop:
+        if (fromUser) {
+            if (_engine->state() == PlayerEngine::Idle) {
+                _last = _last == -1 ? 0 : _last;
+                _current = _last;
+                tryPlayCurrent(false);
+
+            } else {
                 if (_last - 1 < 0) {
                     _last = count();
                 }
@@ -758,84 +819,68 @@ void PlaylistModel::playPrev(bool fromUser)
                 _last = _current;
                 tryPlayCurrent(false);
             }
-            break;
-
-        case SingleLoop:
-            if (fromUser) {
-                if (_engine->state() == PlayerEngine::Idle) {
-                    _last = _last == -1 ? 0: _last;
-                    _current = _last;
-                    tryPlayCurrent(false);
-
-                } else {
-                    if (_last - 1 < 0) {
-                        _last = count();
-                    }
-                    _engine->waitLastEnd();
-                    _current = _last - 1;
-                    _last = _current;
-                    tryPlayCurrent(false);
-                }
+        } else {
+            if (_engine->state() == PlayerEngine::Idle) {
+                _last = _last < 0 ? 0 : _last;
+                _current = _last;
+                tryPlayCurrent(false);
             } else {
-                if (_engine->state() == PlayerEngine::Idle) {
-                    _last = _last < 0 ? 0 : _last;
-                    _current = _last;
-                    tryPlayCurrent(false);
-                } else {
-                    // replay current
-                    tryPlayCurrent(false);
-                }
+                // replay current
+                tryPlayCurrent(false);
             }
-            break;
+        }
+        break;
 
-        case ShufflePlay: { // this must comes from user
-            if (_shufflePlayed <= 1) {
-                reshuffle();
-                _shufflePlayed = _playOrder.size();
-            }
-            _shufflePlayed--;
-            qDebug() << "shuffle prev " << _shufflePlayed-1;
-            _engine->waitLastEnd();
-            _last = _current = _playOrder[_shufflePlayed-1];
-            tryPlayCurrent(false);
-            break;
+    case ShufflePlay: { // this must comes from user
+        if (_shufflePlayed <= 1) {
+            reshuffle();
+            _shufflePlayed = _playOrder.size();
+        }
+        _shufflePlayed--;
+        qDebug() << "shuffle prev " << _shufflePlayed - 1;
+        _engine->waitLastEnd();
+        _last = _current = _playOrder[_shufflePlayed - 1];
+        tryPlayCurrent(false);
+        break;
+    }
+
+    case OrderPlay:
+        _last--;
+        if (_last < 0) {
+            _last = count() - 1;
         }
 
-        case OrderPlay:
-            _last--;
-            if (_last < 0) {
-                _last = count()-1;
-            }
+        _engine->waitLastEnd();
+        _current = _last;
+        tryPlayCurrent(false);
+        break;
 
-            _engine->waitLastEnd();
-            _current = _last;
-            tryPlayCurrent(false);
-            break;
+    case ListLoop:
+        _last--;
+        if (_last < 0) {
+            _loopCount++;
+            _last = count() - 1;
+        }
 
-        case ListLoop:
-            _last--;
-            if (_last < 0) {
-                _loopCount++;
-                _last = count()-1;
-            }
-
-            _engine->waitLastEnd();
-            _current = _last;
-            tryPlayCurrent(false);
-            break;
+        _engine->waitLastEnd();
+        _current = _last;
+        tryPlayCurrent(false);
+        break;
     }
 
     _userRequestingItem = false;
 
 }
 
-static QDebug operator<<(QDebug s, const QFileInfoList& v)
+static QDebug operator<<(QDebug s, const QFileInfoList &v)
 {
-    std::for_each(v.begin(), v.end(), [&](const QFileInfo& fi) {s << fi.fileName();});
+    std::for_each(v.begin(), v.end(), [&](const QFileInfo & fi) {
+        s << fi.fileName();
+    });
     return s;
 }
 
-void PlaylistModel::appendSingle(const QUrl& url)
+void PlaylistModel::appendSingle(const QUrl &url)
 {
     if (indexOf(url) >= 0) return;
 
@@ -850,7 +895,7 @@ void PlaylistModel::appendSingle(const QUrl& url)
         if (Settings::get().isSet(Settings::AutoSearchSimilar)) {
             auto fil = utils::FindSimilarFiles(fi);
             qDebug() << "auto search similar files" << fil;
-            std::for_each(fil.begin(), fil.end(), [=](const QFileInfo& fi) {
+            std::for_each(fil.begin(), fil.end(), [ = ](const QFileInfo & fi) {
                 auto url = QUrl::fromLocalFile(fi.absoluteFilePath());
                 if (indexOf(url) < 0 && _engine->isPlayableFile(fi.fileName())) {
                     auto pif = calculatePlayInfo(url, fi);
@@ -865,9 +910,9 @@ void PlaylistModel::appendSingle(const QUrl& url)
     }
 }
 
-void PlaylistModel::collectionJob(const QList<QUrl>& urls)
+void PlaylistModel::collectionJob(const QList<QUrl> &urls)
 {
-    for (const auto& url: urls) {
+    for (const auto &url : urls) {
         if (!url.isValid() || indexOf(url) >= 0 || !url.isLocalFile() || _urlsInJob.contains(url.toLocalFile()))
             continue;
 
@@ -882,7 +927,7 @@ void PlaylistModel::collectionJob(const QList<QUrl>& urls)
         if (!_firstLoad && Settings::get().isSet(Settings::AutoSearchSimilar)) {
             auto fil = utils::FindSimilarFiles(fi);
             qDebug() << "auto search similar files" << fil;
-            std::for_each(fil.begin(), fil.end(), [=](const QFileInfo& fi) {
+            std::for_each(fil.begin(), fil.end(), [ = ](const QFileInfo & fi) {
                 if (fi.isFile()) {
                     auto url = QUrl::fromLocalFile(fi.absoluteFilePath());
 
@@ -898,15 +943,17 @@ void PlaylistModel::collectionJob(const QList<QUrl>& urls)
     }
 
     qDebug() << "input size" << urls.size() << "output size" << _urlsInJob.size()
-        << "_pendingJob: " << _pendingJob.size();
+             << "_pendingJob: " << _pendingJob.size();
 }
 
-void PlaylistModel::appendAsync(const QList<QUrl>& urls)
+void PlaylistModel::appendAsync(const QList<QUrl> &urls)
 {
-    QTimer::singleShot(10, [=]() { delayedAppendAsync(urls); });
+    QTimer::singleShot(10, [ = ]() {
+        delayedAppendAsync(urls);
+    });
 }
 
-void PlaylistModel::delayedAppendAsync(const QList<QUrl>& urls)
+void PlaylistModel::delayedAppendAsync(const QList<QUrl> &urls)
 {
     if (_pendingJob.size() > 0) {
         //TODO: may be automatically schedule later
@@ -921,9 +968,10 @@ void PlaylistModel::delayedAppendAsync(const QList<QUrl>& urls)
     struct MapFunctor {
         PlaylistModel *_model = 0;
         using result_type = PlayItemInfo;
-        MapFunctor(PlaylistModel* model): _model(model) {}
+        MapFunctor(PlaylistModel *model): _model(model) {}
 
-        struct PlayItemInfo operator()(const AppendJob& a) {
+        struct PlayItemInfo operator()(const AppendJob &a)
+        {
             qDebug() << "mapping " << a.first.fileName();
             return _model->calculatePlayInfo(a.first, a.second);
         };
@@ -934,7 +982,7 @@ void PlaylistModel::delayedAppendAsync(const QList<QUrl>& urls)
         _jobWatcher->setFuture(future);
     } else {
         PlayItemInfoList pil;
-        for (const auto& a: _pendingJob) {
+        for (const auto &a : _pendingJob) {
             qDebug() << "sync mapping " << a.first.fileName();
             pil.append(calculatePlayInfo(a.first, a.second));
         }
@@ -944,13 +992,14 @@ void PlaylistModel::delayedAppendAsync(const QList<QUrl>& urls)
     }
 }
 
-static QList<PlayItemInfo>& SortSimilarFiles(QList<PlayItemInfo>& fil)
+static QList<PlayItemInfo> &SortSimilarFiles(QList<PlayItemInfo> &fil)
 {
     //sort names by digits inside, take care of such a possible:
     //S01N04, S02N05, S01N12, S02N04, etc...
     struct {
-        bool operator()(const PlayItemInfo& fi1, const PlayItemInfo& fi2) const {
-            if (!fi1.valid) 
+        bool operator()(const PlayItemInfo &fi1, const PlayItemInfo &fi2) const
+        {
+            if (!fi1.valid)
                 return true;
             if (!fi2.valid)
                 return false;
@@ -965,7 +1014,7 @@ static QList<PlayItemInfo>& SortSimilarFiles(QList<PlayItemInfo>& fil)
         }
     } SortByDigits;
     std::sort(fil.begin(), fil.end(), SortByDigits);
-    
+
     return fil;
 }
 
@@ -980,14 +1029,14 @@ void PlaylistModel::onAsyncAppendFinished()
     handleAsyncAppendResults(fil);
 }
 
-void PlaylistModel::handleAsyncAppendResults(QList<PlayItemInfo>& fil)
+void PlaylistModel::handleAsyncAppendResults(QList<PlayItemInfo> &fil)
 {
     qDebug() << __func__ << fil.size();
     if (!_firstLoad) {
         //since _infos are modified only at the same thread, the lock is not necessary
-        auto last = std::remove_if(fil.begin(), fil.end(), [](const PlayItemInfo& pif) {
-                return !pif.mi.valid;
-            });
+        auto last = std::remove_if(fil.begin(), fil.end(), [](const PlayItemInfo & pif) {
+            return !pif.mi.valid;
+        });
         fil.erase(last, fil.end());
     }
 
@@ -1020,7 +1069,7 @@ bool PlaylistModel::hasPendingAppends()
 }
 
 //TODO: what if loadfile failed
-void PlaylistModel::append(const QUrl& url)
+void PlaylistModel::append(const QUrl &url)
 {
     if (!url.isValid()) return;
 
@@ -1068,11 +1117,11 @@ void PlaylistModel::switchPosition(int src, int target)
     }
 }
 
-PlayItemInfo& PlaylistModel::currentInfo()
+PlayItemInfo &PlaylistModel::currentInfo()
 {
     //Q_ASSERT (_infos.size() > 0 && _current >= 0);
     Q_ASSERT (_infos.size() > 0);
-    
+
     if (_current >= 0)
         return _infos[_current];
     if (_last >= 0)
@@ -1080,7 +1129,7 @@ PlayItemInfo& PlaylistModel::currentInfo()
     return _infos[0];
 }
 
-const PlayItemInfo& PlaylistModel::currentInfo() const
+const PlayItemInfo &PlaylistModel::currentInfo() const
 {
     Q_ASSERT (_infos.size() > 0 && _current >= 0);
     return _infos[_current];
@@ -1096,13 +1145,13 @@ int PlaylistModel::current() const
     return _current;
 }
 
-struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl& url, const QFileInfo& fi, bool isDvd)
+struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl &url, const QFileInfo &fi, bool isDvd)
 {
     bool ok = false;
     struct MovieInfo mi;
 
     auto ci = PersistentManager::get().loadFromCache(url);
-    if (ci.mi_valid&&url.isLocalFile()) {
+    if (ci.mi_valid && url.isLocalFile()) {
         mi = ci.mi;
         ok = true;
         qDebug() << "load cached MovieInfo" << mi;
@@ -1137,12 +1186,12 @@ struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl& url, const QFil
         try {
             std::vector<uint8_t> buf;
             _thumbnailer.generateThumbnail(fi.canonicalFilePath().toUtf8().toStdString(),
-                    ThumbnailerImageType::Png, buf);
+                                           ThumbnailerImageType::Png, buf);
 
             auto img = QImage::fromData(buf.data(), buf.size(), "png");
             pm = QPixmap::fromImage(img);
             pm.setDevicePixelRatio(qApp->devicePixelRatio());
-        } catch (const std::logic_error&) {
+        } catch (const std::logic_error &) {
         }
     }
 
@@ -1150,27 +1199,27 @@ struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl& url, const QFil
     if (ok && url.isLocalFile() && (!ci.mi_valid || !ci.thumb_valid)) {
         PersistentManager::get().save(pif);
     }
-    if(!url.isLocalFile()&&!url.scheme().startsWith("dvd")){
+    if (!url.isLocalFile() && !url.scheme().startsWith("dvd")) {
         pif.mi.filePath = pif.url.path();
 
         pif.mi.width = _engine->_current->width();
         pif.mi.height = _engine->_current->height();
-        pif.mi.resolution = QString::number(_engine->_current->width())+"x"
-                +QString::number(_engine->_current->height());
+        pif.mi.resolution = QString::number(_engine->_current->width()) + "x"
+                            + QString::number(_engine->_current->height());
 
         pif.mi.duration = _engine->_current->duration();
         auto suffix = pif.mi.title.mid(pif.mi.title.lastIndexOf('.'));
-        suffix.replace(QString("."),QString(""));
+        suffix.replace(QString("."), QString(""));
         pif.mi.fileType = suffix;
-        pif.mi.fileSize = getUrlFileTotalSize(url,3);
+        pif.mi.fileSize = getUrlFileTotalSize(url, 3);
         pif.mi.filePath = url.toDisplayString();
     }
     return pif;
 }
 
-int PlaylistModel::indexOf(const QUrl& url)
+int PlaylistModel::indexOf(const QUrl &url)
 {
-    auto p = std::find_if(_infos.begin(), _infos.end(), [&](const PlayItemInfo& pif) {
+    auto p = std::find_if(_infos.begin(), _infos.end(), [&](const PlayItemInfo & pif) {
         return pif.url == url;
     });
 

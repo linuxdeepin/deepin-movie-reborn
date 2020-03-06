@@ -1,4 +1,4 @@
-/* 
+/*
  * (c) 2017, Deepin Technology Co., Ltd. <support@deepin.org>
  *
  * This program is free software; you can redistribute it and/or
@@ -28,40 +28,43 @@
  * files in the program, then also delete it here.
  */
 #ifndef _DMR_UTILS_H
-#define _DMR_UTILS_H 
+#define _DMR_UTILS_H
 
 #include <QtGui>
 
 namespace dmr {
 namespace utils {
-    void ShowInFileManager(const QString &path);
-    bool CompareNames(const QString& fileName1, const QString& fileName2);
-    bool IsNamesSimilar(const QString& s1, const QString& s2);
-    QFileInfoList FindSimilarFiles(const QFileInfo& fi);
-    QString FastFileHash(const QFileInfo& fi);
-    QString FullFileHash(const QFileInfo& fi);
+void ShowInFileManager(const QString &path);
+bool CompareNames(const QString &fileName1, const QString &fileName2);
+bool IsNamesSimilar(const QString &s1, const QString &s2);
+QFileInfoList FindSimilarFiles(const QFileInfo &fi);
+QString FastFileHash(const QFileInfo &fi);
+QString FullFileHash(const QFileInfo &fi);
 
-    QPixmap MakeRoundedPixmap(QPixmap pm, qreal rx, qreal ry, int rotation = 0);
-    QPixmap MakeRoundedPixmap(QSize sz, QPixmap pm, qreal rx, qreal ry, qint64 time);
+QPixmap MakeRoundedPixmap(QPixmap pm, qreal rx, qreal ry, int rotation = 0);
+QPixmap MakeRoundedPixmap(QSize sz, QPixmap pm, qreal rx, qreal ry, qint64 time);
 
-    QImage LoadHiDPIImage(const QString& filename);
-    QPixmap LoadHiDPIPixmap(const QString& filename);
+QImage LoadHiDPIImage(const QString &filename);
+QPixmap LoadHiDPIPixmap(const QString &filename);
 
-    uint32_t InhibitStandby();
-    void UnInhibitStandby(uint32_t cookie);
+uint32_t InhibitStandby();
+void UnInhibitStandby(uint32_t cookie);
 
-    uint32_t InhibitPower();
-    void UnInhibitPower(uint32_t cookie);
+uint32_t InhibitPower();
+void UnInhibitPower(uint32_t cookie);
 
-    void MoveToCenter(QWidget* w);
+void MoveToCenter(QWidget *w);
 
-    QString Time2str(qint64 seconds);
+QString Time2str(qint64 seconds);
+QString videoIndex2str(int);
+QString audioIndex2str(int);
+QString subtitleIndex2str(int);
 
-    bool ValidateScreenshotPath(const QString& path);
+bool ValidateScreenshotPath(const QString &path);
 
-    QString ElideText(const QString &text, const QSize &size,
-            QTextOption::WrapMode wordWrap, const QFont &font,
-            Qt::TextElideMode mode, int lineHeight, int lastLineWidth);
+QString ElideText(const QString &text, const QSize &size,
+                  QTextOption::WrapMode wordWrap, const QFont &font,
+                  Qt::TextElideMode mode, int lineHeight, int lastLineWidth);
 }
 }
 
