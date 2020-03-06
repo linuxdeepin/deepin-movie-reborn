@@ -105,9 +105,9 @@ QPixmap ThumbnailWorker::genThumb(const QUrl& url, int secs)
     try {
         std::vector<uint8_t> buf;
         thumber.generateThumbnail(file.toUtf8().toStdString(),
-                ThumbnailerImageType::Jpeg, buf);
+                ThumbnailerImageType::Png, buf);
 
-        auto img = QImage::fromData(buf.data(), buf.size(), "jpg");
+        auto img = QImage::fromData(buf.data(), buf.size(), "png");
 
         pm = QPixmap::fromImage(img.scaled(thumbSize() * dpr, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
         pm.setDevicePixelRatio(dpr);

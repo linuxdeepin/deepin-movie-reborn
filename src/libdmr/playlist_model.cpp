@@ -1186,13 +1186,9 @@ struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl &url, const QFil
         try {
             std::vector<uint8_t> buf;
             _thumbnailer.generateThumbnail(fi.canonicalFilePath().toUtf8().toStdString(),
-<<<<<<< HEAD
                                            ThumbnailerImageType::Png, buf);
-=======
-                    ThumbnailerImageType::Jpeg, buf);
->>>>>>> Type: fix 13877
 
-            auto img = QImage::fromData(buf.data(), buf.size(), "jpg");
+            auto img = QImage::fromData(buf.data(), buf.size(), "png");
             pm = QPixmap::fromImage(img);
             pm.setDevicePixelRatio(qApp->devicePixelRatio());
         } catch (const std::logic_error &) {
