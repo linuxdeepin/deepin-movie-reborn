@@ -85,8 +85,8 @@ static void workaround_updateStyle(QWidget *parent, const QString &theme)
 }
 
 static QString ElideText(const QString &text, const QSize &size,
-        QTextOption::WrapMode wordWrap, const QFont &font,
-        Qt::TextElideMode mode, int lineHeight, int lastLineWidth)
+                         QTextOption::WrapMode wordWrap, const QFont &font,
+                         Qt::TextElideMode mode, int lineHeight, int lastLineWidth)
 {
     int height = 0;
 
@@ -95,7 +95,7 @@ static QString ElideText(const QString &text, const QSize &size,
     QFontMetrics fontMetrics(font);
 
     textLayout.setFont(font);
-    const_cast<QTextOption*>(&textLayout.textOption())->setWrapMode(wordWrap);
+    const_cast<QTextOption *>(&textLayout.textOption())->setWrapMode(wordWrap);
 
     textLayout.beginLayout();
 
@@ -104,9 +104,9 @@ static QString ElideText(const QString &text, const QSize &size,
     while (line.isValid()) {
         height += lineHeight;
 
-        if(height + lineHeight >= size.height()) {
+        if (height + lineHeight >= size.height()) {
             str += fontMetrics.elidedText(text.mid(line.textStart() + line.textLength() + 1),
-                    mode, lastLineWidth);
+                                          mode, lastLineWidth);
 
             break;
         }
@@ -122,7 +122,7 @@ static QString ElideText(const QString &text, const QSize &size,
 
         line = textLayout.createLine();
 
-        if(line.isValid())
+        if (line.isValid())
             str.append("\n");
     }
 
@@ -152,10 +152,10 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
     le->setObjectName("OptionSelectableLineEdit");
     le->setText(option->value().toString());
     auto fm = le->fontMetrics();
-    auto pe = ElideText(le->text(),{285,fm.height()},QTextOption::WrapAnywhere,
-                        le->font(),Qt::ElideMiddle,fm.height(),285);
-    option->connect(le,&DLineEdit::focusChanged,[ = ](bool on){
-        if(on)
+    auto pe = ElideText(le->text(), {285, fm.height()}, QTextOption::WrapAnywhere,
+                        le->font(), Qt::ElideMiddle, fm.height(), 285);
+    option->connect(le, &DLineEdit::focusChanged, [ = ](bool on) {
+        if (on)
             le->setText(option->value().toString());
 
     });
@@ -178,7 +178,7 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
     //prompt->setTitle(QObject::tr("Permissions prompt"));
     prompt->setMessage(QObject::tr("You don't have permission to operate this folder"));
     prompt->setWindowFlags(prompt->windowFlags() | Qt::WindowStaysOnTopHint);
-    prompt->addButton(QObject::tr("OK"),true,DDialog::ButtonRecommend);
+    prompt->addButton(QObject::tr("OK"), true, DDialog::ButtonRecommend);
 
     auto validate = [ = ](QString name, bool alert = true) -> bool {
         name = name.trimmed();
@@ -202,10 +202,11 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
 //                if (alert) le->showAlertMessage(QObject::tr("You don't have permission to operate this folder"));
                 return false;
             }
-        }else {
-            if(dir.cdUp()){
+        } else
+        {
+            if (dir.cdUp()) {
                 QFileInfo ch(dir.path());
-                if(!ch.isReadable() || !ch.isWritable())
+                if (!ch.isReadable() || !ch.isWritable())
                     return false;
             }
         }
@@ -222,7 +223,7 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
             nameLast = name;
         }
         QFileInfo fm(name);
-        if((!fm.isReadable() || !fm.isWritable()) && !name.isEmpty()){
+        if ((!fm.isReadable() || !fm.isWritable()) && !name.isEmpty()) {
             prompt->show();
         }
     });
@@ -234,25 +235,25 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
         QString name = le->text();
         QDir dir(name);
 
-        auto pn = ElideText(name,{285,fm.height()},QTextOption::WrapAnywhere,
-                            le->font(),Qt::ElideMiddle,fm.height(),285);
-        auto nmls = ElideText(nameLast,{285,fm.height()},QTextOption::WrapAnywhere,
-                              le->font(),Qt::ElideMiddle,fm.height(),285);
+        auto pn = ElideText(name, {285, fm.height()}, QTextOption::WrapAnywhere,
+                            le->font(), Qt::ElideMiddle, fm.height(), 285);
+        auto nmls = ElideText(nameLast, {285, fm.height()}, QTextOption::WrapAnywhere,
+                              le->font(), Qt::ElideMiddle, fm.height(), 285);
 
-        if(!validate(le->text(),false)){
+        if (!validate(le->text(), false)) {
             QFileInfo fn(dir.path());
-            if((!fn.isReadable() || !fn.isWritable()) && !name.isEmpty()){
-                    prompt->show();
+            if ((!fn.isReadable() || !fn.isWritable()) && !name.isEmpty()) {
+                prompt->show();
             }
         }
-        if (!le->lineEdit()->hasFocus()){
+        if (!le->lineEdit()->hasFocus()) {
             if (validate(le->text(), false)) {
                 option->setValue(le->text());
                 le->setText(pn);
                 nameLast = name;
-            } else if(pn == pe){
+            } else if (pn == pe) {
                 le->setText(pe);
-            }else {
+            } else {
 //                option->setValue(option->defaultValue());//设置为默认路径
 //                le->setText(option->defaultValue().toString());
                 option->setValue(nameLast);
@@ -267,8 +268,8 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
 
     option->connect(option, &DTK_CORE_NAMESPACE::DSettingsOption::valueChanged, le,
     [ = ](const QVariant & value) {
-        auto pi = ElideText(value.toString(),{285,fm.height()},QTextOption::WrapAnywhere,
-                                le->font(),Qt::ElideMiddle,fm.height(),285);
+        auto pi = ElideText(value.toString(), {285, fm.height()}, QTextOption::WrapAnywhere,
+                            le->font(), Qt::ElideMiddle, fm.height(), 285);
         le->setText(pi);
         le->update();
     });
@@ -485,7 +486,7 @@ protected:
                     } else {
                         goto skip_set_cursor;
                     }
-                set_cursor:
+set_cursor:
                     if (window->property("_d_real_winId").isValid()) {
                         auto real_wid = window->property("_d_real_winId").toUInt();
                         Utility::setWindowCursor(real_wid, mouseCorner);
@@ -499,7 +500,7 @@ protected:
                     lastCornerEdge = mouseCorner;
                     return true;
 
-                skip_set_cursor:
+skip_set_cursor:
                     lastCornerEdge = mouseCorner = Utility::NoneEdge;
                     return false;
                 } else {
@@ -898,7 +899,7 @@ MainWindow::MainWindow(QWidget *parent)
         }
         this->resizeByConstraints();
         QDesktopWidget desktop;
-        if(desktop.screenCount() > 1){
+        if (desktop.screenCount() > 1) {
             if (!isFullScreen() && !isMaximized() && !_miniMode) {
                 auto geom = qApp->desktop()->availableGeometry(this);
                 move((geom.width() - this->width()) / 2, (geom.height() - this->height()) / 2);
@@ -998,7 +999,7 @@ MainWindow::MainWindow(QWidget *parent)
 //    popup->hide(); //This causes the first screenshot icon to move down
 
     defaultplaymodeinit();
-    connect(&Settings::get(),&Settings::defaultplaymodechanged,this,&MainWindow::slotdefaultplaymodechanged);
+    connect(&Settings::get(), &Settings::defaultplaymodechanged, this, &MainWindow::slotdefaultplaymodechanged);
 
     connect(this, &MainWindow::playlistchanged, _toolbox, &ToolboxProxy::updateplaylisticon);
 
@@ -1948,7 +1949,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                 _maxfornormalflag = false;
                 int pixelsWidth = _toolbox->getfullscreentimeLabel()->width() + _toolbox->getfullscreentimeLabelend()->width();
                 QRect deskRect = QApplication::desktop()->availableGeometry();
-                _fullscreentimelable->setGeometry(deskRect.width() - pixelsWidth - 32, 40, pixelsWidth + 32, 36);
+                _fullscreentimelable->setGeometry(deskRect.width() - pixelsWidth - 60, 40, pixelsWidth + 60, 36);
                 _fullscreentimelable->show();
 
             }
@@ -2304,15 +2305,15 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
 #else
 
 #define POPUP_ADAPTER(icon, text)  do { \
-    popup->setIcon(icon);\
-    DFontSizeManager::instance()->bind(this, DFontSizeManager::T6);\
-    QFont font = DFontSizeManager::instance()->get(DFontSizeManager::T6);\
-    QFontMetrics fm(font);\
-    auto w = fm.boundingRect(text).width();\
-    popup->setMessage(text);\
-    popup->resize(w + 70, 52);\
-    popup->move((width() - popup->width()) / 2, height() - 127);\
-    popup->show();\
+popup->setIcon(icon);\
+DFontSizeManager::instance()->bind(this, DFontSizeManager::T6);\
+QFont font = DFontSizeManager::instance()->get(DFontSizeManager::T6);\
+QFontMetrics fm(font);\
+auto w = fm.boundingRect(text).width();\
+popup->setMessage(text);\
+popup->resize(w + 70, 52);\
+popup->move((width() - popup->width()) / 2, height() - 127);\
+popup->show();\
 } while (0)
 
 //        if (!popup) {
@@ -2350,7 +2351,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         QString param2 = "-p=" + QString::number(pos.x()) + "," + QString::number(pos.y());
         shortcutString << param1 << param2;
 
-        if(!shortcutViewProcess){
+        if (!shortcutViewProcess) {
             shortcutViewProcess = new QProcess();
         }
         shortcutViewProcess->startDetached("deepin-shortcut-viewer", shortcutString);
@@ -2753,26 +2754,26 @@ void MainWindow::checkWarningMpvLogsChanged(const QString prefix, const QString 
 
 void MainWindow::slotdefaultplaymodechanged(const QString &key, const QVariant &value)
 {
-    if(key != "base.play.playmode"){
+    if (key != "base.play.playmode") {
         qDebug() << "Settings key error";
         return;
     }
     auto mode_opt = Settings::get().settings()->option("base.play.playmode");
     //auto mode_id = mode_opt->value().toInt();
     auto mode = mode_opt->data("items").toStringList()[value.toInt()];
-    if(mode == tr("Order play")){
+    if (mode == tr("Order play")) {
         requestAction(ActionFactory::OrderPlay);
         reflectActionToUI(ActionFactory::OrderPlay);
-    }else if (mode == tr("Shuffle play")) {
+    } else if (mode == tr("Shuffle play")) {
         requestAction(ActionFactory::ShufflePlay);
         reflectActionToUI(ActionFactory::ShufflePlay);
-    }else if (mode == tr("Single play")) {
+    } else if (mode == tr("Single play")) {
         requestAction(ActionFactory::SinglePlay);
         reflectActionToUI(ActionFactory::SinglePlay);
-    }else if (mode == tr("Single loop")) {
+    } else if (mode == tr("Single loop")) {
         requestAction(ActionFactory::SingleLoop);
         reflectActionToUI(ActionFactory::SingleLoop);
-    }else if (mode == tr("List loop")) {
+    } else if (mode == tr("List loop")) {
         requestAction(ActionFactory::ListLoop);
         reflectActionToUI(ActionFactory::ListLoop);
     }
@@ -2786,12 +2787,12 @@ void MainWindow::checkErrorMpvLogsChanged(const QString prefix, const QString te
         //do nothing
     } else if (errorMessage.toLower().contains(QString("fail")) && errorMessage.toLower().contains(QString("open"))) {
         _nwComm->updateWithMessage(tr("Cannot open file or stream"));
-        _engine->playlist().remove(_engine->playlist().count()-1);
+        _engine->playlist().remove(_engine->playlist().count() - 1);
     } else if (errorMessage.toLower().contains(QString("fail")) &&
                (errorMessage.toLower().contains(QString("format")))
               ) {
         _nwComm->updateWithMessage(tr("Invalid file"));
-        _engine->playlist().remove(_engine->playlist().count()-1);
+        _engine->playlist().remove(_engine->playlist().count() - 1);
 //        _engine->playlist().clear();
     } else if (errorMessage.toLower().contains(QString("moov atom not found"))) {
         _nwComm->updateWithMessage(tr("Invalid file"));
@@ -3315,19 +3316,19 @@ void MainWindow::defaultplaymodeinit()
     auto mode_opt = Settings::get().settings()->option("base.play.playmode");
     auto mode_id = mode_opt->value().toInt();
     auto mode = mode_opt->data("items").toStringList()[mode_id];
-    if(mode == tr("Order play")){
+    if (mode == tr("Order play")) {
         requestAction(ActionFactory::OrderPlay);
         //reflectActionToUI(ActionFactory::OrderPlay);
-    }else if (mode == tr("Shuffle play")) {
+    } else if (mode == tr("Shuffle play")) {
         requestAction(ActionFactory::ShufflePlay);
         reflectActionToUI(ActionFactory::ShufflePlay);
-    }else if (mode == tr("Single play")) {
+    } else if (mode == tr("Single play")) {
         requestAction(ActionFactory::SinglePlay);
         reflectActionToUI(ActionFactory::SinglePlay);
-    }else if (mode == tr("Single loop")) {
+    } else if (mode == tr("Single loop")) {
         requestAction(ActionFactory::SingleLoop);
         reflectActionToUI(ActionFactory::SingleLoop);
-    }else if (mode == tr("List loop")) {
+    } else if (mode == tr("List loop")) {
         requestAction(ActionFactory::ListLoop);
         reflectActionToUI(ActionFactory::ListLoop);
     }
