@@ -1217,10 +1217,9 @@ void viewProgBarLoad::loadViewProgBar(QSize size)
         thumber.setSeekTime(d.toString("hh:mm:ss:ms").toStdString());
         try {
             std::vector<uint8_t> buf;
-            thumber.generateThumbnail(file.toUtf8().toStdString(),
-                                      ThumbnailerImageType::Png, buf);
+            thumber.generateThumbnail(file.toUtf8().toStdString(), ThumbnailerImageType::Jpeg, buf);
 
-            auto img = QImage::fromData(buf.data(), buf.size(), "png");
+            auto img = QImage::fromData(buf.data(), buf.size(), "jpg");
             auto img_tmp = img.scaledToHeight(50);
 
 
