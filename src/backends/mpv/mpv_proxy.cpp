@@ -284,8 +284,18 @@ mpv_handle* MpvProxy::mpv_init()
     auto p = ol.begin();
     while (p != ol.end()) {
         if (!p->first.startsWith("#")) {
+#ifndef __mips__
+#ifdef MWV206_0
+            QFileInfo fi("/dev/mwv206_0");              //景嘉微显卡目前只支持vo=xv，等日后升级代码需要酌情修改。
+            if(!fi.exists()){
+                set_property(h, p->first.toUtf8().constData(), p->second.toUtf8().constData());
+                qDebug() << "apply" << p->first << "=" << p->second;
+            }
+#else
             set_property(h, p->first.toUtf8().constData(), p->second.toUtf8().constData());
             qDebug() << "apply" << p->first << "=" << p->second;
+#endif
+#endif
         } else {
             qDebug() << "ignore(commented out)" << p->first << "=" << p->second;
         }
