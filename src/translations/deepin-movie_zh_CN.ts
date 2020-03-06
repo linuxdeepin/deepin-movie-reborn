@@ -631,6 +631,74 @@
         <source>Path</source>
         <translation>文件路径</translation>
     </message>
+    <message>
+        <source>Codec info</source>
+        <translation>编码信息</translation>
+    </message>
+    <message>
+        <source>Video CodecID</source>
+        <translation>视频流信息</translation>
+    </message>
+    <message>
+        <source>Video CodeRate</source>
+        <translation>视频码率</translation>
+    </message>
+    <message>
+        <source>%1 kbps</source>
+        <translation>%1 kbps</translation>
+    </message>
+    <message>
+        <source>FPS</source>
+        <translation>视频帧率</translation>
+    </message>
+    <message>
+        <source>%1 fps</source>
+        <translation>%1 fps</translation>
+    </message>
+    <message>
+        <source>Proportion</source>
+        <translation>显示比例</translation>
+    </message>
+    <message>
+        <source>%1</source>
+        <translation>%1</translation>
+    </message>
+    <message>
+        <source>Audio info</source>
+        <translation>音频流信息</translation>
+    </message>
+    <message>
+        <source>Audio CodecID</source>
+        <translation>编码样式</translation>
+    </message>
+    <message>
+        <source>Audio CodeRate</source>
+        <translation>编码码率</translation>
+    </message>
+    <message>
+        <source>Audio digit</source>
+        <translation>音频位数</translation>
+    </message>
+    <message>
+        <source>%1 bits</source>
+        <translation>%1 bits</translation>
+    </message>
+    <message>
+        <source>Channels</source>
+        <translation>声道数</translation>
+    </message>
+    <message>
+        <source>%1 channels</source>
+        <translation>%1 声道</translation>
+    </message>
+    <message>
+        <source>Sampling</source>
+        <translation>采样数</translation>
+    </message>
+    <message>
+        <source>%1hz</source>
+        <translation>%1hz</translation>
+    </message>
 </context>
 <context>
     <name>dmr::MpvProxy</name>

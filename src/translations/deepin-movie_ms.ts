@@ -11,7 +11,7 @@
     </message>
     <message>
         <source>Network disconnected</source>
-        <translation type="unfinished"/>
+        <translation>Rangkaian terputus</translation>
     </message>
     <message>
         <source>You don&apos;t have permission to operate this folder</source>
@@ -171,7 +171,7 @@
     </message>
     <message>
         <source>Exit fullscreen/mini mode</source>
-        <translation type="unfinished"/>
+        <translation>Keluar dari mod skrin penuh/mini</translation>
     </message>
     <message>
         <source>Movie</source>
@@ -191,7 +191,7 @@
     </message>
     <message>
         <source>Delete from playlist</source>
-        <translation type="unfinished"/>
+        <translation>Padam daripada senarai main</translation>
     </message>
     <message>
         <source>Film info</source>
@@ -199,7 +199,7 @@
     </message>
     <message>
         <source>Burst shooting</source>
-        <translation type="unfinished"/>
+        <translation>Penggambaran meledak</translation>
     </message>
     <message>
         <source>Size</source>
@@ -207,11 +207,15 @@
     </message>
     <message>
         <source>Movie is a full-featured video player, supporting playing local and streaming media in multiple video formats.</source>
-        <translation type="unfinished"/>
+        <translation>Cerak ialah sebuah pemain video berfitur-lengkap, dapat memainkan meid setempat dan penstriman dalam pelbagai format video.</translation>
     </message>
     <message>
         <source>OK</source>
         <translation>OK</translation>
+    </message>
+    <message>
+        <source>Default play mode</source>
+        <translation>Mod main lalai</translation>
     </message>
 </context>
 <context>
@@ -245,7 +249,7 @@
     </message>
     <message>
         <source>Empty playlist</source>
-        <translation type="unfinished"/>
+        <translation>Senarai main kosong</translation>
     </message>
     <message>
         <source>Film info</source>
@@ -381,7 +385,7 @@
     </message>
     <message>
         <source>Delete from playlist</source>
-        <translation type="unfinished"/>
+        <translation>Padam daripada senarai main</translation>
     </message>
     <message>
         <source>Display in file manager</source>
@@ -389,11 +393,11 @@
     </message>
     <message>
         <source>Next Frame</source>
-        <translation type="unfinished"/>
+        <translation>Bingkai Berikutnya</translation>
     </message>
     <message>
         <source>Previous Frame</source>
-        <translation type="unfinished"/>
+        <translation>Bingkai Terdahulu</translation>
     </message>
 </context>
 <context>
@@ -455,7 +459,7 @@
     </message>
     <message>
         <source>Parse failed</source>
-        <translation type="unfinished"/>
+        <translation>Hurai gagal</translation>
     </message>
     <message>
         <source>Mute</source>
@@ -467,7 +471,7 @@
     </message>
     <message>
         <source>Track: %1</source>
-        <translation type="unfinished"/>
+        <translation>Trek: %1</translation>
     </message>
     <message>
         <source>Subtitle %1: %2s</source>
@@ -511,11 +515,11 @@
     </message>
     <message>
         <source>No matching online subtitles</source>
-        <translation type="unfinished"/>
+        <translation>Tiada sari kata dalam talian yang sepadan</translation>
     </message>
     <message>
         <source>Cannot open file or stream</source>
-        <translation type="unfinished"/>
+        <translation>Tidak dapat membuka fail atau strim</translation>
     </message>
     <message>
         <source>Invalid file</source>
@@ -523,7 +527,7 @@
     </message>
     <message>
         <source>No video file found</source>
-        <translation type="unfinished"/>
+        <translation>Tiada fail video ditemui</translation>
     </message>
     <message>
         <source>Open File</source>
@@ -535,7 +539,7 @@
     </message>
     <message>
         <source>Taking the screenshots, please wait...</source>
-        <translation type="unfinished"/>
+        <translation>Mengambil tangkap layar, tunggu sebentar...</translation>
     </message>
     <message>
         <source>OK</source>
@@ -543,19 +547,43 @@
     </message>
     <message>
         <source>Please insert a CD/DVD</source>
-        <translation type="unfinished"/>
+        <translation>Sila masukkan satu CD/DVD</translation>
     </message>
     <message>
         <source>Reading DVD files...</source>
-        <translation type="unfinished"/>
+        <translation>Membaca fail DVD...</translation>
     </message>
     <message>
         <source>4K video may be stuck</source>
-        <translation type="unfinished"/>
+        <translation>Video 4K mungkin tersekat-sekat</translation>
     </message>
     <message>
         <source>Please load the video first</source>
-        <translation type="unfinished"/>
+        <translation>Sila muatkan video terlebih dahulu</translation>
+    </message>
+    <message>
+        <source>Order play</source>
+        <translation>Tertib main</translation>
+    </message>
+    <message>
+        <source>Shuffle play</source>
+        <translation>Kocok main</translation>
+    </message>
+    <message>
+        <source>Single play</source>
+        <translation>Main tunggal</translation>
+    </message>
+    <message>
+        <source>Single loop</source>
+        <translation>Gelung tunggal</translation>
+    </message>
+    <message>
+        <source>List loop</source>
+        <translation>Senarai gelung</translation>
+    </message>
+    <message>
+        <source>The CD/DVD has been ejected</source>
+        <translation>CD/DVD telah dilentingkan</translation>
     </message>
 </context>
 <context>
@@ -603,19 +631,87 @@
         <source>Path</source>
         <translation>Laluan</translation>
     </message>
+    <message>
+        <source>Codec info</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Video CodecID</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Video CodeRate</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>%1 kbps</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>FPS</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>%1 fps</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Proportion</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>%1</source>
+        <translation>%1</translation>
+    </message>
+    <message>
+        <source>Audio info</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Audio CodecID</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Audio CodeRate</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Audio digit</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>%1 bits</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Channels</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>%1 channels</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Sampling</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>%1hz</source>
+        <translation type="unfinished"/>
+    </message>
 </context>
 <context>
     <name>dmr::MpvProxy</name>
     <message>
         <source>Internal</source>
-        <translation type="unfinished"/>
+        <translation>Dalaman</translation>
     </message>
 </context>
 <context>
     <name>dmr::PlayItemWidget</name>
     <message>
         <source>The file does not exist</source>
-        <translation type="unfinished"/>
+        <translation>Fail tidak wujud</translation>
     </message>
 </context>
 <context>
@@ -626,7 +722,7 @@
     </message>
     <message>
         <source>%1 videos</source>
-        <translation type="unfinished"/>
+        <translation>%1 video</translation>
     </message>
     <message>
         <source>Empty</source>
@@ -637,11 +733,31 @@
     <name>dmr::Settings</name>
     <message>
         <source>%1/Movie%2.jpg</source>
-        <translation type="unfinished"/>
+        <translation>%1/Cereka%2.jpg</translation>
     </message>
     <message>
         <source>%1/Movie%2(%3).jpg</source>
-        <translation type="unfinished"/>
+        <translation>%1/Cereka%2(%3).jpg</translation>
+    </message>
+    <message>
+        <source>Order play</source>
+        <translation>Tertib main</translation>
+    </message>
+    <message>
+        <source>Shuffle play</source>
+        <translation>Kocok main</translation>
+    </message>
+    <message>
+        <source>Single play</source>
+        <translation>Main tunggal</translation>
+    </message>
+    <message>
+        <source>Single loop</source>
+        <translation>Gelung tunggal</translation>
+    </message>
+    <message>
+        <source>List loop</source>
+        <translation>Senarai gelung</translation>
     </message>
 </context>
 <context>
@@ -676,23 +792,23 @@
     </message>
     <message>
         <source>play</source>
-        <translation type="unfinished"/>
+        <translation>main</translation>
     </message>
     <message>
         <source>prev</source>
-        <translation type="unfinished"/>
+        <translation>undur</translation>
     </message>
     <message>
         <source>next</source>
-        <translation type="unfinished"/>
+        <translation>maju</translation>
     </message>
     <message>
         <source>fs</source>
-        <translation type="unfinished"/>
+        <translation>fs</translation>
     </message>
     <message>
         <source>list</source>
-        <translation type="unfinished"/>
+        <translation>senarai</translation>
     </message>
     <message>
         <source>Exit fullscreen</source>

@@ -215,7 +215,7 @@
     </message>
     <message>
         <source>Default play mode</source>
-        <translation type="unfinished"/>
+        <translation>Standard-Wiedergabemodus</translation>
     </message>
 </context>
 <context>
@@ -567,23 +567,23 @@
     </message>
     <message>
         <source>Shuffle play</source>
-        <translation type="unfinished"/>
+        <translation>Zufallswiedergabe</translation>
     </message>
     <message>
         <source>Single play</source>
-        <translation type="unfinished"/>
+        <translation>Einzelwiedergabe</translation>
     </message>
     <message>
         <source>Single loop</source>
-        <translation type="unfinished"/>
+        <translation>Einzelne Schleife</translation>
     </message>
     <message>
         <source>List loop</source>
-        <translation type="unfinished"/>
+        <translation>Liste wiederholen</translation>
     </message>
     <message>
         <source>The CD/DVD has been ejected</source>
-        <translation type="unfinished"/>
+        <translation>Die CD/DVD wurde ausgeworfen</translation>
     </message>
 </context>
 <context>
@@ -631,6 +631,74 @@
         <source>Path</source>
         <translation>Pfad</translation>
     </message>
+    <message>
+        <source>Codec info</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Video CodecID</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Video CodeRate</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>%1 kbps</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>FPS</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>%1 fps</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Proportion</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>%1</source>
+        <translation>%1</translation>
+    </message>
+    <message>
+        <source>Audio info</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Audio CodecID</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Audio CodeRate</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Audio digit</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>%1 bits</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Channels</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>%1 channels</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Sampling</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>%1hz</source>
+        <translation type="unfinished"/>
+    </message>
 </context>
 <context>
     <name>dmr::MpvProxy</name>
@@ -677,19 +745,19 @@
     </message>
     <message>
         <source>Shuffle play</source>
-        <translation type="unfinished"/>
+        <translation>Zufallswiedergabe</translation>
     </message>
     <message>
         <source>Single play</source>
-        <translation type="unfinished"/>
+        <translation>Einzelwiedergabe</translation>
     </message>
     <message>
         <source>Single loop</source>
-        <translation type="unfinished"/>
+        <translation>Einzelne Schleife</translation>
     </message>
     <message>
         <source>List loop</source>
-        <translation type="unfinished"/>
+        <translation>Liste wiederholen</translation>
     </message>
 </context>
 <context>

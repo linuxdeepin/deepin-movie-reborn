@@ -215,7 +215,7 @@
     </message>
     <message>
         <source>Default play mode</source>
-        <translation type="unfinished"/>
+        <translation>Modo de reproducción por defecto</translation>
     </message>
 </context>
 <context>
@@ -567,23 +567,23 @@
     </message>
     <message>
         <source>Shuffle play</source>
-        <translation type="unfinished"/>
+        <translation>Reproducción aleatoria</translation>
     </message>
     <message>
         <source>Single play</source>
-        <translation type="unfinished"/>
+        <translation>Reproducción por única vez</translation>
     </message>
     <message>
         <source>Single loop</source>
-        <translation type="unfinished"/>
+        <translation>Bucle simple</translation>
     </message>
     <message>
         <source>List loop</source>
-        <translation type="unfinished"/>
+        <translation>Bucle en lista</translation>
     </message>
     <message>
         <source>The CD/DVD has been ejected</source>
-        <translation type="unfinished"/>
+        <translation>El CD/DVD ha sido extraído</translation>
     </message>
 </context>
 <context>
@@ -631,6 +631,74 @@
         <source>Path</source>
         <translation>Ruta de acceso</translation>
     </message>
+    <message>
+        <source>Codec info</source>
+        <translation>Información de codec</translation>
+    </message>
+    <message>
+        <source>Video CodecID</source>
+        <translation>ID de codec de video</translation>
+    </message>
+    <message>
+        <source>Video CodeRate</source>
+        <translation>Tasa de codec de video</translation>
+    </message>
+    <message>
+        <source>%1 kbps</source>
+        <translation>%1 kbps</translation>
+    </message>
+    <message>
+        <source>FPS</source>
+        <translation>FPS</translation>
+    </message>
+    <message>
+        <source>%1 fps</source>
+        <translation>%1 fps</translation>
+    </message>
+    <message>
+        <source>Proportion</source>
+        <translation>Proporción</translation>
+    </message>
+    <message>
+        <source>%1</source>
+        <translation>%1</translation>
+    </message>
+    <message>
+        <source>Audio info</source>
+        <translation>Información de audio</translation>
+    </message>
+    <message>
+        <source>Audio CodecID</source>
+        <translation>ID de codec de audio</translation>
+    </message>
+    <message>
+        <source>Audio CodeRate</source>
+        <translation>Tasa de codec de audio</translation>
+    </message>
+    <message>
+        <source>Audio digit</source>
+        <translation>Dígito de audio</translation>
+    </message>
+    <message>
+        <source>%1 bits</source>
+        <translation>%1 bits</translation>
+    </message>
+    <message>
+        <source>Channels</source>
+        <translation>Canales</translation>
+    </message>
+    <message>
+        <source>%1 channels</source>
+        <translation>%1 canales</translation>
+    </message>
+    <message>
+        <source>Sampling</source>
+        <translation>Sampling</translation>
+    </message>
+    <message>
+        <source>%1hz</source>
+        <translation>%1 hz</translation>
+    </message>
 </context>
 <context>
     <name>dmr::MpvProxy</name>
@@ -677,19 +745,19 @@
     </message>
     <message>
         <source>Shuffle play</source>
-        <translation type="unfinished"/>
+        <translation>Reproducción aleatoria</translation>
     </message>
     <message>
         <source>Single play</source>
-        <translation type="unfinished"/>
+        <translation>Reproducción por única vez</translation>
     </message>
     <message>
         <source>Single loop</source>
-        <translation type="unfinished"/>
+        <translation>Bucle simple</translation>
     </message>
     <message>
         <source>List loop</source>
-        <translation type="unfinished"/>
+        <translation>Bucle en lista</translation>
     </message>
 </context>
 <context>

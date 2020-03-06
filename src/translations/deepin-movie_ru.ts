@@ -199,7 +199,7 @@
     </message>
     <message>
         <source>Burst shooting</source>
-        <translation type="unfinished"/>
+        <translation>Серия cнимков</translation>
     </message>
     <message>
         <source>Size</source>
@@ -207,7 +207,7 @@
     </message>
     <message>
         <source>Movie is a full-featured video player, supporting playing local and streaming media in multiple video formats.</source>
-        <translation type="unfinished"/>
+        <translation>Кинотеатр представляет собой видеоплеер, который поддерживает локальное и потоковое воспроизведение видео в нескольких форматах видео.</translation>
     </message>
     <message>
         <source>OK</source>
@@ -393,11 +393,11 @@
     </message>
     <message>
         <source>Next Frame</source>
-        <translation type="unfinished"/>
+        <translation>Следующий кадр</translation>
     </message>
     <message>
         <source>Previous Frame</source>
-        <translation type="unfinished"/>
+        <translation>Предыдущий кадр</translation>
     </message>
 </context>
 <context>
@@ -567,19 +567,19 @@
     </message>
     <message>
         <source>Shuffle play</source>
-        <translation type="unfinished"/>
+        <translation>Перемешать</translation>
     </message>
     <message>
         <source>Single play</source>
-        <translation type="unfinished"/>
+        <translation>Одиночный</translation>
     </message>
     <message>
         <source>Single loop</source>
-        <translation type="unfinished"/>
+        <translation>Одиночный Цикл</translation>
     </message>
     <message>
         <source>List loop</source>
-        <translation type="unfinished"/>
+        <translation>Непрерывно</translation>
     </message>
     <message>
         <source>The CD/DVD has been ejected</source>
@@ -631,19 +631,87 @@
         <source>Path</source>
         <translation>Путь</translation>
     </message>
+    <message>
+        <source>Codec info</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Video CodecID</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Video CodeRate</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>%1 kbps</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>FPS</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>%1 fps</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Proportion</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>%1</source>
+        <translation>%1</translation>
+    </message>
+    <message>
+        <source>Audio info</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Audio CodecID</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Audio CodeRate</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Audio digit</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>%1 bits</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Channels</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>%1 channels</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Sampling</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>%1hz</source>
+        <translation type="unfinished"/>
+    </message>
 </context>
 <context>
     <name>dmr::MpvProxy</name>
     <message>
         <source>Internal</source>
-        <translation type="unfinished"/>
+        <translation>внутренний</translation>
     </message>
 </context>
 <context>
     <name>dmr::PlayItemWidget</name>
     <message>
         <source>The file does not exist</source>
-        <translation type="unfinished"/>
+        <translation>Файл отсутствует</translation>
     </message>
 </context>
 <context>
@@ -665,11 +733,11 @@
     <name>dmr::Settings</name>
     <message>
         <source>%1/Movie%2.jpg</source>
-        <translation type="unfinished"/>
+        <translation>%1/Movie%2.jpg</translation>
     </message>
     <message>
         <source>%1/Movie%2(%3).jpg</source>
-        <translation type="unfinished"/>
+        <translation>%1/Movie%2(%3).jpg</translation>
     </message>
     <message>
         <source>Order play</source>
@@ -677,19 +745,19 @@
     </message>
     <message>
         <source>Shuffle play</source>
-        <translation type="unfinished"/>
+        <translation>Перемешать</translation>
     </message>
     <message>
         <source>Single play</source>
-        <translation type="unfinished"/>
+        <translation>Одиночный</translation>
     </message>
     <message>
         <source>Single loop</source>
-        <translation type="unfinished"/>
+        <translation>Одиночный Цикл</translation>
     </message>
     <message>
         <source>List loop</source>
-        <translation type="unfinished"/>
+        <translation>Непрерывно</translation>
     </message>
 </context>
 <context>

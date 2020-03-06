@@ -19,11 +19,11 @@
     </message>
     <message>
         <source>Auto add similar files to play</source>
-        <translation>Adicionar automaticamente os arquivos semelhantes à reprodução</translation>
+        <translation>Adicionar arquivos semelhantes para reproduzir</translation>
     </message>
     <message>
         <source>Clear playlist when exit</source>
-        <translation>Limpar a lista de reprodução quando sair</translation>
+        <translation>Limpar lista de reprodução quando sair</translation>
     </message>
     <message>
         <source>Show video preview on mouseover</source>
@@ -39,7 +39,7 @@
     </message>
     <message>
         <source>Remember playback position</source>
-        <translation>Lembrar a posição de reprodução</translation>
+        <translation>Lembrar posição de reprodução</translation>
     </message>
     <message>
         <source>Path</source>
@@ -215,7 +215,7 @@
     </message>
     <message>
         <source>Default play mode</source>
-        <translation>Modo de reprodução padrão</translation>
+        <translation>Modo padrão de reprodução</translation>
     </message>
 </context>
 <context>
@@ -281,11 +281,11 @@
     </message>
     <message>
         <source>Order Play</source>
-        <translation>Ordenar Reprodução</translation>
+        <translation>Ordem de Reprodução</translation>
     </message>
     <message>
         <source>Shuffle Play</source>
-        <translation>Reprodução Aleatória</translation>
+        <translation>Reproduzir Aleatoriamente</translation>
     </message>
     <message>
         <source>Single Play</source>
@@ -563,11 +563,11 @@
     </message>
     <message>
         <source>Order play</source>
-        <translation>Ordenar reprodução</translation>
+        <translation>Ordem de reprodução</translation>
     </message>
     <message>
         <source>Shuffle play</source>
-        <translation>Reprodução aleatória</translation>
+        <translation>Reproduzir aleatoriamente</translation>
     </message>
     <message>
         <source>Single play</source>
@@ -631,6 +631,74 @@
         <source>Path</source>
         <translation>Caminho</translation>
     </message>
+    <message>
+        <source>Codec info</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Video CodecID</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Video CodeRate</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>%1 kbps</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>FPS</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>%1 fps</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Proportion</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>%1</source>
+        <translation>%1</translation>
+    </message>
+    <message>
+        <source>Audio info</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Audio CodecID</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Audio CodeRate</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Audio digit</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>%1 bits</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Channels</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>%1 channels</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Sampling</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>%1hz</source>
+        <translation type="unfinished"/>
+    </message>
 </context>
 <context>
     <name>dmr::MpvProxy</name>
@@ -673,11 +741,11 @@
     </message>
     <message>
         <source>Order play</source>
-        <translation>Ordenar reprodução</translation>
+        <translation>Ordem de reprodução</translation>
     </message>
     <message>
         <source>Shuffle play</source>
-        <translation>Reprodução aleatória</translation>
+        <translation>Reproduzir aleatoriamente</translation>
     </message>
     <message>
         <source>Single play</source>
