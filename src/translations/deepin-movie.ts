@@ -1,4 +1,6 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS language="en" version="2.1">
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.1" language="en">
 <context>
     <name>QObject</name>
     <message>
@@ -630,6 +632,74 @@
     <message>
         <source>Path</source>
         <translation>Path</translation>
+    </message>
+    <message>
+        <source>Codec info</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Video CodecID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Video CodeRate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 kbps</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>FPS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 fps</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Proportion</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1</source>
+        <translation type="unfinished">%1</translation>
+    </message>
+    <message>
+        <source>Audio info</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Audio CodecID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Audio CodeRate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Audio digit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 bits</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Channels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 channels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sampling</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1hz</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
