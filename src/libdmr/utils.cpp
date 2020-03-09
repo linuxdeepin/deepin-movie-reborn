@@ -42,9 +42,10 @@ void ShowInFileManager(const QString &path)
     }
 
     QUrl url = QUrl::fromLocalFile(QFileInfo(path).dir().absolutePath());
-    QUrlQuery query;
+    //Note: The meaning of this code is unknown, use with caution
+    /*QUrlQuery query;
     query.addQueryItem("selectUrl", QUrl::fromLocalFile(path).toString());
-    url.setQuery(query);
+    url.setQuery(query);*/
 
     qDebug() << __func__ << url.toString();
 
