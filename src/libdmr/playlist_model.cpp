@@ -648,6 +648,12 @@ void PlaylistModel::remove(int pos)
             _current--;
             _last = _current;
         }
+    } else {
+        if (_current == pos) {
+            _last = _current;
+            _current = -1;
+            _engine->waitLastEnd();
+        }
     }
 
     if (_last >= count())
