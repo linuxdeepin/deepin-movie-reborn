@@ -74,6 +74,7 @@ public:
         ChangeSubCodepage,
         Screenshot,
         BurstScreenshot,
+        GoToScreenshotSolder,
 
         SeekForward,
         SeekForwardLarge,

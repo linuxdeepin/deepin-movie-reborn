@@ -270,6 +270,7 @@ DMenu *ActionFactory::mainContextMenu()
             auto *menu = new DMenu(tr("Screenshot"));
             DEF_ACTION(tr("Film Screenshot"), ActionKind::Screenshot);
             DEF_ACTION(tr("Burst Shooting"), ActionKind::BurstScreenshot);
+            DEF_ACTION(tr("Go To Screenshot Folder"), ActionKind::GoToScreenshotSolder);
             menu->setEnabled(false);
             parent->addMenu(menu);
             connect(this, &ActionFactory::frameMenuEnable, this, [ = ](bool statu) {

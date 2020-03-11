@@ -1994,22 +1994,27 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     }
 
     case ActionFactory::ActionKind::OrderPlay: {
+        //Settings::get().setInternalOption("playmode", 0);
         _engine->playlist().setPlayMode(PlaylistModel::OrderPlay);
         break;
     }
     case ActionFactory::ActionKind::ShufflePlay: {
+        //Settings::get().setInternalOption("playmode", 1);
         _engine->playlist().setPlayMode(PlaylistModel::ShufflePlay);
         break;
     }
     case ActionFactory::ActionKind::SinglePlay: {
+        //Settings::get().setInternalOption("playmode", 2);
         _engine->playlist().setPlayMode(PlaylistModel::SinglePlay);
         break;
     }
     case ActionFactory::ActionKind::SingleLoop: {
+        //Settings::get().setInternalOption("playmode", 3);
         _engine->playlist().setPlayMode(PlaylistModel::SingleLoop);
         break;
     }
     case ActionFactory::ActionKind::ListLoop: {
+        //Settings::get().setInternalOption("playmode", 4);
         _engine->playlist().setPlayMode(PlaylistModel::ListLoop);
         break;
     }
@@ -2332,6 +2337,16 @@ popup->show();\
 #undef POPUP_ADAPTER
 
 #endif
+        break;
+    }
+
+    case ActionFactory::ActionKind::GoToScreenshotSolder: {
+        QString filePath = Settings::get().screenshotLocation();
+        qDebug() << __func__ << filePath;
+        QProcess *fp = new QProcess();
+        QObject::connect(fp, SIGNAL(finished(int)), fp, SLOT(deleteLater()));
+        fp->start("dde-file-manager", QStringList(filePath));
+        fp->waitForStarted(3000);
         break;
     }
 
