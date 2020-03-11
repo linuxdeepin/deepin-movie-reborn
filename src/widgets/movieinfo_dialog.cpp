@@ -150,7 +150,7 @@ protected:
 MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
     : DAbstractDialog(nullptr)
 {
-    setFixedSize(300, 670);
+    setFixedSize(300, 700);
     setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint);
     setWindowOpacity(0.9);
     setAttribute(Qt::WA_TranslucentBackground, true);
@@ -258,7 +258,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
 
     //添加视频信息
     InfoBottom *codecRect = new InfoBottom;
-    codecRect->setFixedSize(280, 121);
+    codecRect->setFixedSize(280, 140);
     ml->addSpacing(10);
     ml->addWidget(codecRect);
     ml->setAlignment(codecRect, Qt::AlignHCenter);
@@ -283,7 +283,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
 
     //添加音频信息
     InfoBottom *audioRect = new InfoBottom;
-    audioRect->setFixedSize(280, 121);
+    audioRect->setFixedSize(280, 140);
     ml->addSpacing(10);
     ml->addWidget(audioRect);
     ml->setAlignment(audioRect, Qt::AlignHCenter);
