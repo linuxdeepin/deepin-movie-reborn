@@ -126,6 +126,7 @@ int main(int argc, char *argv[])
 //    app.setWindowIcon(QIcon(":/resources/icons/logo.svg"));
     app.setApplicationDisplayName(QObject::tr("Movie"));
     app.setAttribute(Qt::AA_DontCreateNativeWidgetSiblings, true);
+
 //    app.setApplicationVersion(DApplication::buildVersion("20190830"));
     app.setApplicationVersion(DApplication::buildVersion(VERSION));
     MovieConfiguration::get().init();
