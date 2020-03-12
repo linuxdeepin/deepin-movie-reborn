@@ -873,7 +873,7 @@ MainWindow::MainWindow(QWidget *parent)
     updateActionsState();
 
     reflectActionToUI(ActionFactory::DefaultFrame);
-    reflectActionToUI(ActionFactory::OrderPlay);
+    //reflectActionToUI(ActionFactory::OrderPlay);
     reflectActionToUI(ActionFactory::Stereo);
     requestAction(ActionFactory::ChangeSubCodepage, false, {"auto"});
 
@@ -1556,11 +1556,6 @@ void MainWindow::reflectActionToUI(ActionFactory::ActionKind kd)
     }
 
     case ActionFactory::ActionKind::Stereo:
-    case ActionFactory::ActionKind::OrderPlay:
-    case ActionFactory::ActionKind::ShufflePlay:
-    case ActionFactory::ActionKind::SinglePlay:
-    case ActionFactory::ActionKind::SingleLoop:
-    case ActionFactory::ActionKind::ListLoop:
     case ActionFactory::ActionKind::DefaultFrame: {
         qDebug() << __func__ << kd;
         acts = ActionFactory::get().findActionsByKind(kd);
@@ -1568,7 +1563,23 @@ void MainWindow::reflectActionToUI(ActionFactory::ActionKind kd)
         auto old = (*p)->isEnabled();
         (*p)->setEnabled(false);
         (*p)->setChecked(!(*p)->isChecked());
+        //(*p)->setChecked(true);
         (*p)->setEnabled(old);
+        break;
+    }
+    case ActionFactory::ActionKind::OrderPlay:
+    case ActionFactory::ActionKind::ShufflePlay:
+    case ActionFactory::ActionKind::SinglePlay:
+    case ActionFactory::ActionKind::SingleLoop:
+    case ActionFactory::ActionKind::ListLoop: {
+        qDebug() << __func__ << kd;
+        acts = ActionFactory::get().findActionsByKind(kd);
+        auto p = acts.begin();
+        //auto old = (*p)->isEnabled();
+        //(*p)->setEnabled(false);
+        //(*p)->setChecked(!(*p)->isChecked());
+        (*p)->setChecked(true);
+        //(*p)->setEnabled(old);
         break;
     }
     default:
@@ -1994,28 +2005,23 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     }
 
     case ActionFactory::ActionKind::OrderPlay: {
-        //Settings::get().setInternalOption("playmode", 0);
-        _engine->playlist().setPlayMode(PlaylistModel::OrderPlay);
+        Settings::get().setInternalOption("playmode", 0);
         break;
     }
     case ActionFactory::ActionKind::ShufflePlay: {
-        //Settings::get().setInternalOption("playmode", 1);
-        _engine->playlist().setPlayMode(PlaylistModel::ShufflePlay);
+        Settings::get().setInternalOption("playmode", 1);
         break;
     }
     case ActionFactory::ActionKind::SinglePlay: {
-        //Settings::get().setInternalOption("playmode", 2);
-        _engine->playlist().setPlayMode(PlaylistModel::SinglePlay);
+        Settings::get().setInternalOption("playmode", 2);
         break;
     }
     case ActionFactory::ActionKind::SingleLoop: {
-        //Settings::get().setInternalOption("playmode", 3);
-        _engine->playlist().setPlayMode(PlaylistModel::SingleLoop);
+        Settings::get().setInternalOption("playmode", 3);
         break;
     }
     case ActionFactory::ActionKind::ListLoop: {
-        //Settings::get().setInternalOption("playmode", 4);
-        _engine->playlist().setPlayMode(PlaylistModel::ListLoop);
+        Settings::get().setInternalOption("playmode", 4);
         break;
     }
 
@@ -2777,19 +2783,24 @@ void MainWindow::slotdefaultplaymodechanged(const QString &key, const QVariant &
     //auto mode_id = mode_opt->value().toInt();
     auto mode = mode_opt->data("items").toStringList()[value.toInt()];
     if (mode == tr("Order play")) {
-        requestAction(ActionFactory::OrderPlay);
+        //requestAction(ActionFactory::OrderPlay);
+        _engine->playlist().setPlayMode(PlaylistModel::OrderPlay);
         reflectActionToUI(ActionFactory::OrderPlay);
     } else if (mode == tr("Shuffle play")) {
-        requestAction(ActionFactory::ShufflePlay);
+        //requestAction(ActionFactory::ShufflePlay);
+        _engine->playlist().setPlayMode(PlaylistModel::ShufflePlay);
         reflectActionToUI(ActionFactory::ShufflePlay);
     } else if (mode == tr("Single play")) {
-        requestAction(ActionFactory::SinglePlay);
+        //requestAction(ActionFactory::SinglePlay);
+        _engine->playlist().setPlayMode(PlaylistModel::SinglePlay);
         reflectActionToUI(ActionFactory::SinglePlay);
     } else if (mode == tr("Single loop")) {
-        requestAction(ActionFactory::SingleLoop);
+        //requestAction(ActionFactory::SingleLoop);
+        _engine->playlist().setPlayMode(PlaylistModel::SingleLoop);
         reflectActionToUI(ActionFactory::SingleLoop);
     } else if (mode == tr("List loop")) {
-        requestAction(ActionFactory::ListLoop);
+        //requestAction(ActionFactory::ListLoop);
+        _engine->playlist().setPlayMode(PlaylistModel::ListLoop);
         reflectActionToUI(ActionFactory::ListLoop);
     }
 }
@@ -3333,7 +3344,7 @@ void MainWindow::defaultplaymodeinit()
     auto mode = mode_opt->data("items").toStringList()[mode_id];
     if (mode == tr("Order play")) {
         requestAction(ActionFactory::OrderPlay);
-        //reflectActionToUI(ActionFactory::OrderPlay);
+        reflectActionToUI(ActionFactory::OrderPlay);
     } else if (mode == tr("Shuffle play")) {
         requestAction(ActionFactory::ShufflePlay);
         reflectActionToUI(ActionFactory::ShufflePlay);
