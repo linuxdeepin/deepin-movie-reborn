@@ -3049,7 +3049,9 @@ void MainWindow::updateSizeConstraints()
 void MainWindow::updateGeometryNotification(const QSize &sz)
 {
     auto msg = QString("%1x%2").arg(sz.width()).arg(sz.height());
-    _nwComm->updateWithMessage(msg);
+    if (_engine->state() != PlayerEngine::CoreState::Idle) {
+        _nwComm->updateWithMessage(msg);
+    }
 
     if (windowState() == Qt::WindowNoState && !_miniMode) {
         _lastRectInNormalMode = geometry();
