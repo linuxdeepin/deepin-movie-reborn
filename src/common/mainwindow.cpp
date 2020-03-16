@@ -1862,6 +1862,15 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     }
 
     case ActionFactory::ActionKind::ToggleMiniMode: {
+        if (isFullScreen()) {
+            requestAction(ActionFactory::ToggleFullscreen);
+            if (!fromUI) {
+                reflectActionToUI(ActionFactory::ToggleFullscreen);
+            }
+            if (!isFullScreen()) {
+                _fullscreentimelable->close();
+            }
+        }
         if (!fromUI) {
             reflectActionToUI(kd);
         }
@@ -1905,7 +1914,8 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     case ActionFactory::ActionKind::QuitFullscreen: {
         if (_miniMode) {
             if (!fromUI) {
-                reflectActionToUI(kd);
+                reflectActionToUI(ActionFactory::ToggleMiniMode);
+                //reflectActionToUI(kd);
             }
             toggleUIMode();
         } else if (isFullScreen()) {
@@ -1914,9 +1924,9 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
 //            } else {
             requestAction(ActionFactory::ToggleFullscreen);
 //            }
-            if (!fromUI) {
+            /*if (!fromUI) {
                 reflectActionToUI(ActionFactory::ToggleFullscreen);
-            }
+            }*/
             if (!isFullScreen()) {
                 _fullscreentimelable->close();
             }
