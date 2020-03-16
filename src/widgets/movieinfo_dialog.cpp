@@ -150,14 +150,15 @@ protected:
 MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
     : DAbstractDialog(nullptr)
 {
-    setFixedSize(300, 700);
+    setFixedSize(300, 696);
     setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint);
-    setWindowOpacity(0.9);
+    //setWindowOpacity(0.8);
     setAttribute(Qt::WA_TranslucentBackground, true);
+    m_titleList.clear();
 
     auto layout = new QVBoxLayout(this);
     layout->setSpacing(0);
-    layout->setContentsMargins(0, 0, 0, 10);
+    layout->setContentsMargins(0, 0, 0, 0);
     setLayout(layout);
 
     DImageButton *closeBt = new DImageButton(this);
@@ -173,6 +174,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
     layout->addLayout(ml);
 
     auto *pm = new PosterFrame(this);
+    pm->setWindowOpacity(1);
     pm->setFixedHeight(128);
 
     auto dpr = qApp->devicePixelRatio();
@@ -191,7 +193,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
     pm->ensurePolished();
     ml->addWidget(pm);
     ml->setAlignment(pm, Qt::AlignHCenter);
-    ml->addSpacing(10);
+    ml->addSpacing(9);
 
     m_fileNameLbl = new DLabel(this);
     qDebug() << "fileNameLbl w,h: " << m_fileNameLbl->width() << "," << m_fileNameLbl->height();
@@ -200,20 +202,20 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
     m_fileNameLbl->setText(m_fileNameLbl->fontMetrics().elidedText(QFileInfo(mi.filePath).fileName(), Qt::ElideMiddle, 260));
     ml->addWidget(m_fileNameLbl);
     ml->setAlignment(m_fileNameLbl, Qt::AlignHCenter);
-    ml->addSpacing(44);
+    ml->addSpacing(45);
 
     InfoBottom *infoRect = new InfoBottom;
 //    DWidget *infoRect = new DWidget;
 //    DPalette pal_infoRect = DApplicationHelper::instance()->palette(infoRect);
 //    pal_infoRect.setBrush(DPalette::Background, pal_infoRect.color(DPalette::ItemBackground));
 //    infoRect->setPalette(pal_infoRect);
-    infoRect->setFixedSize(280, 136);
+    infoRect->setFixedSize(280, 135);
     ml->addWidget(infoRect);
     ml->setAlignment(infoRect, Qt::AlignHCenter);
 //    ml->addSpacing(10);
 
     auto *form = new QFormLayout(infoRect);
-    form->setContentsMargins(10, 5, 0, 30);
+    form->setContentsMargins(10, 10, 20, 25);
     form->setVerticalSpacing(6);
     form->setHorizontalSpacing(10);
     form->setLabelAlignment(Qt::AlignLeft);
@@ -223,8 +225,8 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
     tipLst.clear();
 #define ADD_ROW(title, field)  do { \
     auto f = new DLabel(title, this); \
-    f->setFixedHeight(45); \
-    f->setAlignment(Qt::AlignLeft | Qt::AlignTop); \
+    f->setFixedSize(60, 18); \
+    f->setAlignment(Qt::AlignLeft | Qt::AlignVCenter); \
     DFontSizeManager::instance()->bind(f, DFontSizeManager::T8); \
     f->setForegroundRole(DPalette::WindowText); \
     auto t = new DLabel(field, this); \
@@ -238,41 +240,46 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
 } while (0)
 
     auto title = new DLabel(tr("Film info"), this);
-    DFontSizeManager::instance()->bind(title, DFontSizeManager::T6, QFont::Weight::Medium);
-    title->setForegroundRole(DPalette::WindowText);
+    //title->setFixedHeight(20);
+    //DFontSizeManager::instance()->bind(title, DFontSizeManager::T7, QFont::Weight::ExtraBold);
+    //title->setForegroundRole(DPalette::WindowText);
+    QFont font = title->font();
+    font.setPixelSize(14);
+    font.setWeight(QFont::Weight::Medium);
+    font.setFamily("SourceHanSansSC");
+    title->setFont(font);
     form->addRow(title);
 
     //ADD_ROW(tr("Resolution"), mi.resolution);
-    ADD_ROW(tr("Type"), mi.fileType);
-    ADD_ROW(tr("Size"), mi.sizeStr());
-    ADD_ROW(tr("Duration"), mi.durationStr());
+    addRow(tr("Type"), mi.fileType, form, tipLst);
+    addRow(tr("Size"), mi.sizeStr(), form, tipLst);
+    addRow(tr("Duration"), mi.durationStr(), form, tipLst);
 
     DLabel *tmp = new DLabel;
     DFontSizeManager::instance()->bind(tmp, DFontSizeManager::T8);
     tmp->setText(mi.filePath);
     auto fm = tmp->fontMetrics();
     auto w = fm.width(mi.filePath);
-//    auto fp = ElideText(mi.filePath, {LINE_MAX_WIDTH, LINE_HEIGHT}, QTextOption::WrapAnywhere,
-//                               tmp->font(), Qt::ElideRight, fm.height(), LINE_MAX_WIDTH);
-    ADD_ROW(tr("Path"), mi.filePath);
+    //auto fp = ElideText(mi.filePath, {LINE_MAX_WIDTH, LINE_HEIGHT}, QTextOption::WrapAnywhere,
+    //                           tmp->font(), Qt::ElideRight, fm.height(), LINE_MAX_WIDTH);
+    addRow(tr("Path"), mi.filePath, form, tipLst);
 
     //添加视频信息
     InfoBottom *codecRect = new InfoBottom;
-    codecRect->setFixedSize(280, 140);
+    codecRect->setFixedSize(280, 145);
     ml->addSpacing(10);
     ml->addWidget(codecRect);
     ml->setAlignment(codecRect, Qt::AlignHCenter);
 
     auto *codecForm = new QFormLayout(codecRect);
-    codecForm->setContentsMargins(10, 5, 0, 15);
+    codecForm->setContentsMargins(10, 10, 20, 10);
     codecForm->setVerticalSpacing(6);
     codecForm->setHorizontalSpacing(10);
     codecForm->setLabelAlignment(Qt::AlignLeft);
     codecForm->setFormAlignment(Qt::AlignCenter);
 
     auto codecTitle = new DLabel(tr("Codec info"), this);
-    DFontSizeManager::instance()->bind(codecTitle, DFontSizeManager::T6, QFont::Weight::Medium);
-    codecTitle->setForegroundRole(DPalette::WindowText);
+    codecTitle->setFont(font);
     codecForm->addRow(codecTitle);
 
     addRow(tr("Video CodecID"), mi.videoCodec(), codecForm, tipLst);
@@ -283,22 +290,22 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
 
     //添加音频信息
     InfoBottom *audioRect = new InfoBottom;
-    audioRect->setFixedSize(280, 140);
+    audioRect->setFixedSize(280, 145);
     ml->addSpacing(10);
     ml->addWidget(audioRect);
     ml->setAlignment(audioRect, Qt::AlignHCenter);
 //    ml->addSpacing(10);
 
     auto *audioForm = new QFormLayout(audioRect);
-    audioForm->setContentsMargins(10, 5, 0, 15);
+    audioForm->setContentsMargins(10, 10, 20, 10);
     audioForm->setVerticalSpacing(6);
     audioForm->setHorizontalSpacing(10);
     audioForm->setLabelAlignment(Qt::AlignLeft);
     audioForm->setFormAlignment(Qt::AlignCenter);
 
     auto audioTitle = new DLabel(tr("Audio info"), this);
-    DFontSizeManager::instance()->bind(audioTitle, DFontSizeManager::T6, QFont::Weight::Medium);
-    audioTitle->setForegroundRole(DPalette::WindowText);
+    audioTitle->setFont(font);
+    title->setFont(font);
     audioForm->addRow(audioTitle);
 
     addRow(tr("Audio CodecID"), mi.audioCodec(), audioForm, tipLst);
@@ -307,9 +314,19 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
     addRow(tr("Channels"), QString(tr("%1 channels")).arg(mi.channels), audioForm, tipLst);
     addRow(tr("Sampling"), QString(tr("%1hz")).arg(mi.sampling), audioForm, tipLst);
 
+    if (!m_titleList.isEmpty()) {
+        auto f = m_titleList[10]->fontMetrics();
+        auto widget = f.boundingRect(m_titleList[10]->text()).width();
+        if (widget > 60) {
+            foreach(QLabel *l, m_titleList) {
+                l->setFixedWidth(widget + 3);
+            }
+        }
+    }
+
     auto th = new ToolTipEvent(this);
     if (tipLst.size() > 1) {
-        auto filePathLbl = tipLst.last();
+        auto filePathLbl = tipLst.at(3);
         qDebug() << "filePathLbl w,h: " << filePathLbl->width() << "," << filePathLbl->height();
         filePathLbl->setMinimumWidth(190);
         qDebug() << "filePathLbl w,h: " << filePathLbl->width() << "," << filePathLbl->height();
@@ -355,6 +372,13 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
     //#endif
 }
 
+void MovieInfoDialog::paintEvent(QPaintEvent *ev)
+{
+    QPainter painter(this);
+    painter.fillRect(this->rect(), QColor(0, 0, 0, 255*0.8));
+    QDialog::paintEvent(ev);
+}
+
 void MovieInfoDialog::OnFontChanged(const QFont &font)
 {
     QFontMetrics fm(font);
@@ -363,30 +387,36 @@ void MovieInfoDialog::OnFontChanged(const QFont &font)
     QString strFileName = m_fileNameLbl->fontMetrics().elidedText(QFileInfo(m_strFilePath).fileName(), Qt::ElideMiddle, m_fileNameLbl->width());
     m_fileNameLbl->setText(strFileName);
 
-    qDebug() << "filePathLbl w,h: " << m_filePathLbl->width() << "," << m_filePathLbl->height();
-    auto w = fm.width(m_strFilePath);
-    qDebug() << "font width: " << w;
-    auto fp = ElideText(m_strFilePath, {m_filePathLbl->width(), fm.height()}, QTextOption::WrapAnywhere,
-                        m_filePathLbl->font(), Qt::ElideRight, fm.height(), m_filePathLbl->width());
-    m_filePathLbl->setText(fp);
-
+    if (m_filePathLbl) {
+        qDebug() << "filePathLbl w,h: " << m_filePathLbl->width() << "," << m_filePathLbl->height();
+        auto w = fm.width(m_strFilePath);
+        qDebug() << "font width: " << w;
+        auto fp = ElideText(m_strFilePath, {m_filePathLbl->width(), fm.height()}, QTextOption::WrapAnywhere,
+                            m_filePathLbl->font(), Qt::ElideRight, fm.height(), m_filePathLbl->width());
+        m_filePathLbl->setText(fp);
+    }
 }
 
-void MovieInfoDialog::addRow(QString title, QString field, QFormLayout *form, QList<DLabel *> tipLst)
+void MovieInfoDialog::addRow(QString title, QString field, QFormLayout *form, QList<DLabel *> &tipLst)
 {
     auto f = new DLabel(title, this);
-    f->setFixedHeight(45);
+    f->setFixedSize(60, 20);
     f->setAlignment(Qt::AlignLeft | Qt::AlignTop);
-    DFontSizeManager::instance()->bind(f, DFontSizeManager::T8);
-    f->setForegroundRole(DPalette::WindowText);
+    //DFontSizeManager::instance()->bind(f, DFontSizeManager::T8, 0);
+    //f->setForegroundRole(DPalette::WindowText);
+    QFont font = f->font();
+    font.setPixelSize(12);
+    font.setWeight(QFont::Weight::Normal);
+    font.setFamily("SourceHanSansSC");
+    f->setFont(font);
     auto t = new DLabel(field, this);
     t->setFixedHeight(60);
     t->setAlignment(Qt::AlignLeft | Qt::AlignTop);
     t->setWordWrap(true);
-    DFontSizeManager::instance()->bind(t, DFontSizeManager::T8);
-    t->setForegroundRole(DPalette::WindowText);
+    t->setFont(font);
     form->addRow(f, t);
     tipLst.append(t);
+    m_titleList.append(f);
 }
 
 }

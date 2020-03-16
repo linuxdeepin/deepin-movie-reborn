@@ -79,11 +79,11 @@ protected:
         pt.setRenderHint(QPainter::Antialiasing);
 
         if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
-            pt.setPen(QColor(0, 0, 0, 20));
-            pt.setBrush(QBrush(QColor(255, 255, 255, 255)));
+            pt.setPen(QColor(0, 0, 0, 0.05*255));
+            pt.setBrush(QBrush(QColor(255, 255, 255, 255*0.7)));
         } else if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
             pt.setPen(QColor(255, 255, 255, 20));
-            pt.setBrush(QBrush(QColor(45, 45, 45, 250)));
+            pt.setBrush(QBrush(QColor(45, 45, 45, 250*0.7)));
         }
 
         QRect rect = this->rect();
@@ -102,16 +102,20 @@ class MovieInfoDialog: public DAbstractDialog
 public:
     MovieInfoDialog(const struct PlayItemInfo &);
 
+protected:
+    void paintEvent(QPaintEvent *ev);
+
 private slots:
     void OnFontChanged(const QFont &font);
 
 private:
-    void addRow(QString, QString, QFormLayout *, QList<DLabel *>);
+    void addRow(QString, QString, QFormLayout *, QList<DLabel *> &);
 
 private:
     DLabel *m_fileNameLbl {nullptr};
     DLabel *m_filePathLbl {nullptr};
     QString m_strFilePath {QString()};
+    QList<DLabel *> m_titleList;
 };
 
 
