@@ -1033,6 +1033,10 @@ MainWindow::MainWindow(QWidget *parent)
     {
         loadWindowState();
     }
+
+    if (Settings::get().isSet(Settings::ResumeFromLast)) {
+        _delayedMouseReleaseTimer.start(120);
+    }
 }
 
 void MainWindow::setupTitlebar()
