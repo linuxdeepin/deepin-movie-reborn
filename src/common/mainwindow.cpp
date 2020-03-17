@@ -3083,7 +3083,7 @@ void MainWindow::updateWindowTitle()
     if (_engine->state() != PlayerEngine::Idle) {
         const auto &mi = _engine->playlist().currentInfo().mi;
         auto title = _titlebar->fontMetrics().elidedText(mi.title,
-                                                         Qt::ElideMiddle, _titlebar->contentsRect().width() - 300);
+                                                         Qt::ElideMiddle, _titlebar->contentsRect().width() - 400);
         _titlebar->setTitletxt(title);
         if (!CompositingManager::get().composited()) {
             _titlebar->setTitleBarBackground(false);
