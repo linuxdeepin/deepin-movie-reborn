@@ -42,6 +42,7 @@
 #include "online_sub.h"
 #include <DFloatingMessage>
 #include "animationlabel.h"
+#include "volumemonitoring.h"
 
 static const int VOLUME_OFFSET = 40;
 
@@ -186,6 +187,9 @@ protected slots:
 
     void handleHelpAction();
 
+    void changedVolume(int);
+    void changedMute();
+
 private:
     void setupTitlebar();
 
@@ -205,6 +209,9 @@ private:
     void loadWindowState();
     void subtitleMatchVideo(const QString &fileName);
     void defaultplaymodeinit();
+    void readSinkInputPath();
+    void setAudioVolume(double);
+    void setMusicMuted(bool muted);
 
 private:
     DFloatingMessage *popup {nullptr};
@@ -231,7 +238,7 @@ private:
     QImage bg_light;
 
     bool _miniMode {false};
-    /// used to restore to recent geometry when quit fullscreen or mini mode
+    /// used to restore to recent geometry when quit fullscreen or minVolumeMonitoringi mode
     QRect _lastRectInNormalMode;
 
     // the first time a play happens, we consider it inited.
@@ -276,6 +283,9 @@ private:
     QTimer _delayedMouseReleaseTimer;
     QUrl m_dvdUrl {QUrl()};
     QProcess *shortcutViewProcess {nullptr};
+
+    VolumeMonitoring volumeMonitoring;
+    QString sinkInputPath;
 };
 };
 

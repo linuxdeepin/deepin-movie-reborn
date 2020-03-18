@@ -41,6 +41,8 @@ class ApplicationAdaptor: public QDBusAbstractAdaptor {
     Q_CLASSINFO("D-Bus Interface", "com.deepin.movie")
 public:
     ApplicationAdaptor(MainWindow* mw);
+    static QVariant redDBusProperty(const QString &service, const QString &path, const QString &interface = QString(), const char *propert = "");
+    static QVariant redDBusMethod(const QString &service, const QString &path, const QString &interface, const char *method);
 
 public slots:
     void openFile(const QString& url);

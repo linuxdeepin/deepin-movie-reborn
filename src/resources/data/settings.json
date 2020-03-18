@@ -25,6 +25,13 @@
                             "default": 100
                         },
                         {
+                            "key": "mute",
+                            "name": "",
+                            "type": "checkbox",
+                            "hide": true,
+                            "default": false
+                        },
+                        {
                             "key": "playlist_pos",
                             "name": "",
                             "hide": true,

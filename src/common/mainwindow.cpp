@@ -48,6 +48,8 @@
 #include "titlebar.h"
 #include "utils.h"
 #include "dvd_utils.h"
+#include "dbus_adpator.h"
+#include "threadpool.h"
 
 //#include <QtWidgets>
 #include <QtDBus>
@@ -716,6 +718,11 @@ MainWindow::MainWindow(QWidget *parent)
     }
     _engine->changeVolume(volume);
 
+    bool mute = Settings::get().internalOption("mute").toBool();
+    if (mute) {
+       _engine->toggleMute();
+    }
+
     _toolbox = new ToolboxProxy(this, _engine);
     _toolbox->setFocusPolicy(Qt::NoFocus);
 
@@ -1037,6 +1044,19 @@ MainWindow::MainWindow(QWidget *parent)
     if (Settings::get().isSet(Settings::ResumeFromLast)) {
         _delayedMouseReleaseTimer.start(120);
     }
+
+    //****************************************
+    ThreadPool::instance()->moveToNewThread(&volumeMonitoring);
+    volumeMonitoring.start();
+    connect(&volumeMonitoring, &VolumeMonitoring::volumeChanged, this, [ = ](int vol) {
+        changedVolume(vol);
+        //_engine->changeVolume(vol);
+        //requestAction(ActionFactory::ChangeVolume);
+    });
+
+    connect(&volumeMonitoring, &VolumeMonitoring::muteChanged, this, [ = ](bool mute) {
+        changedMute();
+    });
 }
 
 void MainWindow::setupTitlebar()
@@ -1199,6 +1219,30 @@ void MainWindow::handleHelpAction()
 
     DApplication *dapp = qApp;
     reinterpret_cast<_DApplication *>(dapp)->_DApplication::showHelp();
+}
+
+void MainWindow::changedVolume(int vol)
+{
+    if (_engine->muted()) {
+        _engine->toggleMute();
+    }
+    _engine->changeVolume(vol);
+    _nwComm->updateWithMessage(tr("Volume: %1%").arg(vol));
+}
+
+void MainWindow::changedMute()
+{
+    _engine->toggleMute();
+    Settings::get().setInternalOption("mute", _engine->muted());
+    if (_engine->muted()) {
+        _nwComm->updateWithMessage(tr("Mute"));
+    } else {
+        double pert = _engine->volume();
+        if (pert > VOLUME_OFFSET) {
+            pert -= VOLUME_OFFSET;
+        }
+        _nwComm->updateWithMessage(tr("Volume: %1%").arg(pert));
+    }
 }
 
 #ifdef USE_DXCB
@@ -2082,6 +2126,8 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
 
     case ActionFactory::ActionKind::ToggleMute: {
         _engine->toggleMute();
+        Settings::get().setInternalOption("mute", _engine->muted());
+        setMusicMuted(_engine->muted());
         if (_engine->muted()) {
             _nwComm->updateWithMessage(tr("Mute"));
         } else {
@@ -2098,17 +2144,20 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         if (_engine->muted()) {
             _engine->toggleMute();
         }
-        auto vol = args[0].toInt();
-        if (vol == VOLUME_OFFSET) {
-            vol = 0;
+        if (!args.isEmpty()) {
+            auto vol = args[0].toInt();
+            if (vol == VOLUME_OFFSET) {
+                vol = 0;
+            }
+            _engine->changeVolume(vol);
         }
-        _engine->changeVolume(vol);
         Settings::get().setInternalOption("global_volume", qMin(_engine->volume(), 140));
         double pert = _engine->volume();
         if (pert > VOLUME_OFFSET) {
             pert -= VOLUME_OFFSET;
         }
         _nwComm->updateWithMessage(tr("Volume: %1%").arg(pert));
+        setAudioVolume(pert / 100.0);
         break;
     }
 
@@ -3374,6 +3423,67 @@ void MainWindow::defaultplaymodeinit()
         requestAction(ActionFactory::ListLoop);
         reflectActionToUI(ActionFactory::ListLoop);
     }
+}
+
+void MainWindow::readSinkInputPath()
+{
+    QVariant v = ApplicationAdaptor::redDBusProperty("com.deepin.daemon.Audio", "/com/deepin/daemon/Audio",
+                                            "com.deepin.daemon.Audio", "SinkInputs");
+
+    if (!v.isValid())
+        return;
+
+    QList<QDBusObjectPath> allSinkInputsList = v.value<QList<QDBusObjectPath> >();
+//    qDebug() << "allSinkInputsListSize: " << allSinkInputsList.size();
+
+    for (auto curPath : allSinkInputsList) {
+//        qDebug() << "path: " << curPath.path();
+
+        QVariant nameV = ApplicationAdaptor::redDBusProperty("com.deepin.daemon.Audio", curPath.path(),
+                                                    "com.deepin.daemon.Audio.SinkInput", "Name");
+
+        if (!nameV.isValid() || !nameV.toString().contains( "mpv", Qt::CaseInsensitive))
+            continue;
+
+        sinkInputPath = curPath.path();
+        break;
+    }
+}
+
+void MainWindow::setAudioVolume(double volume)
+{
+    readSinkInputPath();
+
+    if (!sinkInputPath.isEmpty()) {
+        QDBusInterface ainterface("com.deepin.daemon.Audio", sinkInputPath,
+                                  "com.deepin.daemon.Audio.SinkInput", QDBusConnection::sessionBus());
+        if (!ainterface.isValid()) {
+            return;
+        }
+        //调用设置音量
+        ainterface.call(QLatin1String("SetVolume"), volume, false);
+
+        if (qFuzzyCompare(volume, 0.0))
+            ainterface.call(QLatin1String("SetMute"), true);
+    }
+}
+
+void MainWindow::setMusicMuted(bool muted)
+{
+    readSinkInputPath();
+    if (!sinkInputPath.isEmpty()) {
+        QDBusInterface ainterface("com.deepin.daemon.Audio", sinkInputPath,
+                                  "com.deepin.daemon.Audio.SinkInput",
+                                  QDBusConnection::sessionBus());
+        if (!ainterface.isValid()) {
+            return;
+        }
+
+        //调用设置音量
+        ainterface.call(QLatin1String("SetMute"), muted);
+    }
+
+    return;
 }
 
 QString MainWindow::lastOpenedPath()
