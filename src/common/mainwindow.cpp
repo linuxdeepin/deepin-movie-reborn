@@ -720,7 +720,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     bool mute = Settings::get().internalOption("mute").toBool();
     if (mute) {
-       _engine->toggleMute();
+        _engine->toggleMute();
     }
 
     _toolbox = new ToolboxProxy(this, _engine);
@@ -1824,7 +1824,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     case ActionFactory::ActionKind::OpenDirectory: {
         QString name = QFileDialog::getExistingDirectory(this, tr("Open folder"),
                                                          lastOpenedPath(),
-                                                         QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+                                                         QFileDialog::DontResolveSymlinks);
 
         QFileInfo fi(name);
         if (fi.isDir() && fi.exists()) {
@@ -3428,7 +3428,7 @@ void MainWindow::defaultplaymodeinit()
 void MainWindow::readSinkInputPath()
 {
     QVariant v = ApplicationAdaptor::redDBusProperty("com.deepin.daemon.Audio", "/com/deepin/daemon/Audio",
-                                            "com.deepin.daemon.Audio", "SinkInputs");
+                                                     "com.deepin.daemon.Audio", "SinkInputs");
 
     if (!v.isValid())
         return;
@@ -3440,7 +3440,7 @@ void MainWindow::readSinkInputPath()
 //        qDebug() << "path: " << curPath.path();
 
         QVariant nameV = ApplicationAdaptor::redDBusProperty("com.deepin.daemon.Audio", curPath.path(),
-                                                    "com.deepin.daemon.Audio.SinkInput", "Name");
+                                                             "com.deepin.daemon.Audio.SinkInput", "Name");
 
         if (!nameV.isValid() || !nameV.toString().contains( "mpv", Qt::CaseInsensitive))
             continue;
