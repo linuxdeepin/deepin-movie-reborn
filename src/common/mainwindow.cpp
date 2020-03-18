@@ -1041,8 +1041,15 @@ MainWindow::MainWindow(QWidget *parent)
         loadWindowState();
     }
 
-    if (Settings::get().isSet(Settings::ResumeFromLast)) {
-        _delayedMouseReleaseTimer.start(120);
+    QString playlistFile = QString("%1/%2/%3/playlist")
+                           .arg(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation))
+                           .arg(qApp->organizationName())
+                           .arg(qApp->applicationName());
+    QSettings cfg(playlistFile, QSettings::NativeFormat);
+    cfg.beginGroup("playlist");
+    auto keys = cfg.childKeys();
+    if (Settings::get().isSet(Settings::ResumeFromLast) && keys.size()) {
+        _delayedMouseReleaseTimer.start(1000);
     }
 
     //****************************************
