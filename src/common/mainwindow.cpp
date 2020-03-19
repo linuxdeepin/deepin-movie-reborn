@@ -1041,7 +1041,7 @@ MainWindow::MainWindow(QWidget *parent)
         loadWindowState();
     }
 
-    QString playlistFile = QString("%1/%2/%3/playlist")
+    /*QString playlistFile = QString("%1/%2/%3/playlist")
                            .arg(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation))
                            .arg(qApp->organizationName())
                            .arg(qApp->applicationName());
@@ -1050,7 +1050,7 @@ MainWindow::MainWindow(QWidget *parent)
     auto keys = cfg.childKeys();
     if (Settings::get().isSet(Settings::ResumeFromLast) && keys.size()) {
         _delayedMouseReleaseTimer.start(1000);
-    }
+    }*/
 
     //****************************************
     ThreadPool::instance()->moveToNewThread(&volumeMonitoring);
