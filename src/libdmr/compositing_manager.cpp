@@ -1,4 +1,4 @@
-/* 
+/*
  * (c) 2017, Deepin Technology Co., Ltd. <support@deepin.org>
  *
  * This program is free software; you can redistribute it and/or
@@ -46,7 +46,7 @@
 #undef Bool
 #include <mpv/qthelper.hpp>
 
-typedef const char * glXGetScreenDriver_t (Display *dpy, int scrNum);
+typedef const char *glXGetScreenDriver_t (Display *dpy, int scrNum);
 
 static glXGetScreenDriver_t *GetScreenDriver;
 
@@ -55,13 +55,15 @@ static glXGetScreenDriver_t *GetScreenDriver;
 namespace dmr {
 using namespace std;
 
-static CompositingManager* _compManager = nullptr;
+static CompositingManager *_compManager = nullptr;
 
 #define C2Q(cs) (QString::fromUtf8((cs).c_str()))
 
-class PlatformChecker {
+class PlatformChecker
+{
 public:
-    Platform check() {
+    Platform check()
+    {
         QProcess uname;
         uname.start("uname -m");
         if (uname.waitForStarted()) {
@@ -76,7 +78,7 @@ public:
                     _pf = Platform::X86;
 
                 } else if (machine.find("alpha") != string::npos
-                        || machine.find("sw_64") != string::npos) {
+                           || machine.find("sw_64") != string::npos) {
                     // shenwei
                     qDebug() << "match shenwei";
                     _pf = Platform::Alpha;
@@ -99,8 +101,9 @@ private:
 };
 
 
-CompositingManager& CompositingManager::get() {
-    if(!_compManager) {
+CompositingManager &CompositingManager::get()
+{
+    if (!_compManager) {
         _compManager = new CompositingManager();
     }
 
@@ -109,22 +112,23 @@ CompositingManager& CompositingManager::get() {
 
 //void compositingChanged(bool);
 
-CompositingManager::CompositingManager() {
+CompositingManager::CompositingManager()
+{
     _platform = PlatformChecker().check();
 
     _composited = false;
-    if(QGSettings::isSchemaInstalled("com.deepin.deepin-movie")){
+    if (QGSettings::isSchemaInstalled("com.deepin.deepin-movie")) {
         QGSettings gsettings("com.deepin.deepin-movie", "/com/deepin/deepin-movie/");
-        if((gsettings.get("composited").toString() == "DisableComposited"
-            || gsettings.get("composited").toString() == "EnableComposited")){
-            if (gsettings.keys().contains("composited")){
-                if(gsettings.get("composited").toString() == "DisableComposited"){
+        if ((gsettings.get("composited").toString() == "DisableComposited"
+                || gsettings.get("composited").toString() == "EnableComposited")) {
+            if (gsettings.keys().contains("composited")) {
+                if (gsettings.get("composited").toString() == "DisableComposited") {
                     _composited = false;
-                }else if(gsettings.get("composited").toString() == "EnableComposited") {
+                } else if (gsettings.get("composited").toString() == "EnableComposited") {
                     _composited = true;
                 }
             }
-        }else {
+        } else {
             if (QProcessEnvironment::systemEnvironment().value("SANDBOX") == "flatpak") {
                 _composited = QFile::exists("/dev/dri/card0");
             } else if (isProprietaryDriver()) {
@@ -154,7 +158,7 @@ CompositingManager::CompositingManager() {
 #endif
         }
         qDebug() << "From gsetting, composition about opengl :" << gsettings.get("composited").toString();
-    }else/* if(gsettings.get("composited").toString() == "Default")*/{
+    } else { /* if(gsettings.get("composited").toString() == "Default")*/
         if (QProcessEnvironment::systemEnvironment().value("SANDBOX") == "flatpak") {
             _composited = QFile::exists("/dev/dri/card0");
         } else if (isProprietaryDriver()) {
@@ -185,17 +189,18 @@ CompositingManager::CompositingManager() {
     }
 #ifdef MWV206_0
     QFileInfo fi("/dev/mwv206_0"); //景嘉微显卡目前只支持vo=xv，等日后升级代码需要酌情修改。
-    if(fi.exists()){
+    if (fi.exists()) {
         _composited = false;
     }
 #endif
 #ifdef __mips__
-    _composited = false;
+    // _composited = false;   //2020.3.19龙芯增加显卡需保留检测显卡方案
 #endif
-    qDebug() <<"composited:" << _composited;
+    qDebug() << "composited:" << _composited;
 }
 
-CompositingManager::~CompositingManager() {
+CompositingManager::~CompositingManager()
+{
 }
 
 // Attempt to reuse mpv's code for detecting whether we want GLX or EGL (which
@@ -203,21 +208,21 @@ CompositingManager::~CompositingManager() {
 // but quite effective and without having to duplicate too much GLX/EGL code.
 static QString probeHwdecInterop()
 {
-  auto mpv = mpv::qt::Handle::FromRawHandle(mpv_create());
-  if (!mpv)
-    return "";
-  mpv::qt::set_property(mpv, "hwdec-preload", "auto");
-  // Actually creating a window is required. There is currently no way to keep
-  // this window hidden or invisible.
-  mpv::qt::set_property(mpv, "force-window", true);
-  // As a mitigation, put the window in the top/right corner, and make it as
-  // small as possible by forcing 1x1 size and removing window borders.
-  mpv::qt::set_property(mpv, "geometry", "1x1+0+0");
-  mpv::qt::set_property(mpv, "border", false);
-  if (mpv_initialize(mpv) < 0)
-    return "";
-  // return "auto"
-  return mpv::qt::get_property(mpv, "gpu-hwdec-interop").toString();
+    auto mpv = mpv::qt::Handle::FromRawHandle(mpv_create());
+    if (!mpv)
+        return "";
+    mpv::qt::set_property(mpv, "hwdec-preload", "auto");
+    // Actually creating a window is required. There is currently no way to keep
+    // this window hidden or invisible.
+    mpv::qt::set_property(mpv, "force-window", true);
+    // As a mitigation, put the window in the top/right corner, and make it as
+    // small as possible by forcing 1x1 size and removing window borders.
+    mpv::qt::set_property(mpv, "geometry", "1x1+0+0");
+    mpv::qt::set_property(mpv, "border", false);
+    if (mpv_initialize(mpv) < 0)
+        return "";
+    // return "auto"
+    return mpv::qt::get_property(mpv, "gpu-hwdec-interop").toString();
 }
 
 static OpenGLInteropKind _interopKind = OpenGLInteropKind::INTEROP_NONE;
@@ -264,8 +269,8 @@ void CompositingManager::detectOpenGLEarly()
     if (detect_run) return;
 
     auto probed = probeHwdecInterop();
-    qDebug() << "probeHwdecInterop" << probed 
-        << qgetenv("QT_XCB_GL_INTERGRATION");
+    qDebug() << "probeHwdecInterop" << probed
+             << qgetenv("QT_XCB_GL_INTERGRATION");
 
     if (probed == "auto") {
         _interopKind = INTEROP_AUTO;
@@ -286,14 +291,12 @@ void CompositingManager::detectOpenGLEarly()
      *                MPV_RENDER_PARAM_WL_DISPLAY for Wayland)
      * - nVidia/Linux: Both GLX and EGL should work (GLX is required if vdpau is
      *                 used, e.g. due to old drivers.)
-     * 
+     *
      * mpv hwdec is broken with vmwgfx and should use glx
      */
-    if(CompositingManager::runningOnNvidia())
-    {
+    if (CompositingManager::runningOnNvidia()) {
         qputenv("QT_XCB_GL_INTEGRATION", "xcb_glx");
-    }
-    else if (!CompositingManager::runningOnVmwgfx()) {
+    } else if (!CompositingManager::runningOnVmwgfx()) {
         qputenv("QT_XCB_GL_INTEGRATION", "xcb_egl");
     }
 #else
@@ -315,17 +318,14 @@ void CompositingManager::detectPciID()
         auto data = pcicheck.readAllStandardOutput();
 
         QString output(data.trimmed().constData());
-        qDebug()<<"CompositingManager::detectPciID()"<<output.split(QChar('\n')).count();
+        qDebug() << "CompositingManager::detectPciID()" << output.split(QChar('\n')).count();
 
         QStringList outlist = output.split(QChar('\n'));
-        foreach(QString line, outlist)
-        {
+        foreach (QString line, outlist) {
 //            qDebug()<<"CompositingManager::detectPciID():"<<line;
-            if(line.contains(QString("00:02.0")))
-            {
-                if(line.contains(QString("8086")) && line.contains(QString("1912")))
-                {
-                    qDebug()<<"CompositingManager::detectPciID():need to change to iHD";
+            if (line.contains(QString("00:02.0"))) {
+                if (line.contains(QString("8086")) && line.contains(QString("1912"))) {
+                    qDebug() << "CompositingManager::detectPciID():need to change to iHD";
                     qputenv("LIBVA_DRIVER_NAME", "iHD");
                     break;
                 }
@@ -339,7 +339,8 @@ OpenGLInteropKind CompositingManager::interopKind()
     return _interopKind;
 }
 
-bool CompositingManager::isDriverLoadedCorrectly() {
+bool CompositingManager::isDriverLoadedCorrectly()
+{
     static QRegExp aiglx_err("\\(EE\\)\\s+AIGLX error");
     static QRegExp dri_ok("direct rendering: DRI\\d+ enabled");
     static QRegExp swrast("GLX: Initialized DRISWRAST");
@@ -384,7 +385,8 @@ void CompositingManager::overrideCompositeMode(bool useCompositing)
 
 using namespace std;
 
-bool CompositingManager::is_card_exists(int id, const vector<string>& drivers) {
+bool CompositingManager::is_card_exists(int id, const vector<string> &drivers)
+{
     char buf[1024] = {0};
     snprintf(buf, sizeof buf, "/sys/class/drm/card%d/device/driver", id);
 
@@ -395,14 +397,17 @@ bool CompositingManager::is_card_exists(int id, const vector<string>& drivers) {
 
     string driver = basename(buf2);
     qDebug() << "drm driver " << driver.c_str();
-    if (std::any_of(drivers.cbegin(), drivers.cend(), [=](string s) { return s == driver; })) {
+    if (std::any_of(drivers.cbegin(), drivers.cend(), [ = ](string s) {
+    return s == driver;
+})) {
         return true;
-    } 
+    }
 
     return false;
 }
 
-bool CompositingManager::is_device_viable(int id) {
+bool CompositingManager::is_device_viable(int id)
+{
     char path[128];
     snprintf(path, sizeof path, "/sys/class/drm/card%d", id);
     if (access(path, F_OK) != 0) {
@@ -413,7 +418,7 @@ bool CompositingManager::is_device_viable(int id) {
     char buf[512];
     snprintf(buf, sizeof buf, "%s/device/enable", path);
     if (access(buf, R_OK) == 0) {
-        FILE* fp = fopen(buf, "r");
+        FILE *fp = fopen(buf, "r");
         if (!fp) {
             return false;
         }
@@ -443,7 +448,8 @@ bool CompositingManager::isProprietaryDriver()
 }
 
 //this is not accurate when proprietary driver used
-bool CompositingManager::isDirectRendered() {
+bool CompositingManager::isDirectRendered()
+{
     QProcess xdriinfo;
     xdriinfo.start("xdriinfo driver 0");
     if (xdriinfo.waitForStarted() && xdriinfo.waitForFinished()) {
@@ -456,13 +462,13 @@ bool CompositingManager::isDirectRendered() {
 }
 
 //FIXME: what about merge options from both config
-PlayerOptionList CompositingManager::getProfile(const QString& name)
+PlayerOptionList CompositingManager::getProfile(const QString &name)
 {
     auto localPath = QString("%1/%2/%3/%4.profile")
-        .arg(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation))
-        .arg(qApp->organizationName())
-        .arg(qApp->applicationName())
-        .arg(name);
+                     .arg(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation))
+                     .arg(qApp->organizationName())
+                     .arg(qApp->applicationName())
+                     .arg(name);
     auto defaultPath = QString(":/resources/profiles/%1.profile").arg(name);
 #ifdef _LIBDMR_
     QString oc;
@@ -506,16 +512,16 @@ PlayerOptionList CompositingManager::getBestProfile()
 {
     QString profile_name = "default";
     switch (_platform) {
-        case Platform::Alpha:
-        case Platform::Mips:
-        case Platform::Arm64:
-            profile_name = _composited ? "composited" : "failsafe";
-            break;
-        case Platform::X86:
-            profile_name = _composited ? "composited" : "default";
-            break;
-        case Platform::Unknown:
-            break;
+    case Platform::Alpha:
+    case Platform::Mips:
+    case Platform::Arm64:
+        profile_name = _composited ? "composited" : "failsafe";
+        break;
+    case Platform::X86:
+        profile_name = _composited ? "composited" : "default";
+        break;
+    case Platform::Unknown:
+        break;
     }
 
     return getProfile(profile_name);

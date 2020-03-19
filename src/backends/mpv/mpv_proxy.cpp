@@ -1,4 +1,4 @@
-/* 
+/*
  * (c) 2017, Deepin Technology Co., Ltd. <support@deepin.org>
  *
  * This program is free software; you can redistribute it and/or
@@ -66,7 +66,7 @@ static inline bool command_async(mpv_handle *ctx, const QVariant &args, uint64_t
 }
 
 static inline int set_property_async(mpv_handle *ctx, const QString &name,
-                                       const QVariant &v, uint64_t tag)
+                                     const QVariant &v, uint64_t tag)
 {
     node_builder node(v);
     return mpv_set_property_async(ctx, tag, name.toUtf8().data(), MPV_FORMAT_NODE, node.node());
@@ -74,12 +74,12 @@ static inline int set_property_async(mpv_handle *ctx, const QString &name,
 
 static void mpv_callback(void *d)
 {
-    MpvProxy *mpv = static_cast<MpvProxy*>(d);
+    MpvProxy *mpv = static_cast<MpvProxy *>(d);
     QMetaObject::invokeMethod(mpv, "has_mpv_events", Qt::QueuedConnection);
 }
 
 MpvProxy::MpvProxy(QWidget *parent)
-    :Backend(parent)
+    : Backend(parent)
 {
     if (!CompositingManager::get().composited()) {
         setWindowFlags(Qt::FramelessWindowHint);
@@ -90,7 +90,7 @@ MpvProxy::MpvProxy(QWidget *parent)
     _handle = Handle::FromRawHandle(mpv_init());
     if (CompositingManager::get().composited()) {
         _gl_widget = new MpvGLWidget(this, _handle);
-        connect(this, &MpvProxy::stateChanged, [=]() {
+        connect(this, &MpvProxy::stateChanged, [ = ]() {
             _gl_widget->setPlaying(state() != Backend::PlayState::Stopped);
             _gl_widget->update();
         });
@@ -117,29 +117,29 @@ MpvProxy::~MpvProxy()
     }
 }
 
-mpv_handle* MpvProxy::mpv_init()
+mpv_handle *MpvProxy::mpv_init()
 {
     mpv_handle *h = mpv_create();
 
     bool composited = CompositingManager::get().composited();
-    
-    switch(_debugLevel) {
-        case DebugLevel::Info:
+
+    switch (_debugLevel) {
+    case DebugLevel::Info:
+        mpv_request_log_messages(h, "info");
+        break;
+
+    case DebugLevel::Debug:
+    case DebugLevel::Verbose:
+        set_property(h, "terminal", "yes");
+        if (_debugLevel == DebugLevel::Verbose) {
+            set_property(h, "msg-level", "all=status");
             mpv_request_log_messages(h, "info");
-            break;
 
-        case DebugLevel::Debug:
-        case DebugLevel::Verbose:
-            set_property(h, "terminal", "yes");
-            if (_debugLevel == DebugLevel::Verbose) {
-                set_property(h, "msg-level", "all=status");
-                mpv_request_log_messages(h, "info");
-
-            } else {
-                set_property(h, "msg-level", "all=v");
-                mpv_request_log_messages(h, "v");
-            }
-            break;
+        } else {
+            set_property(h, "msg-level", "all=v");
+            mpv_request_log_messages(h, "v");
+        }
+        break;
     }
 
 #ifdef _LIBDMR_
@@ -168,19 +168,24 @@ mpv_handle* MpvProxy::mpv_init()
 
             auto interop = QString::fromUtf8("auto");
             switch (CompositingManager::get().interopKind()) {
-                case OpenGLInteropKind::INTEROP_AUTO:
-                    interop = QString::fromUtf8("auto"); break;
+            case OpenGLInteropKind::INTEROP_AUTO:
+                interop = QString::fromUtf8("auto");
+                break;
 
-                case OpenGLInteropKind::INTEROP_VAAPI_EGL:
-                    interop = QString::fromUtf8("vaapi-egl"); break;
+            case OpenGLInteropKind::INTEROP_VAAPI_EGL:
+                interop = QString::fromUtf8("vaapi-egl");
+                break;
 
-                case OpenGLInteropKind::INTEROP_VAAPI_GLX:
-                    interop = QString::fromUtf8("vaapi-glx"); break;
+            case OpenGLInteropKind::INTEROP_VAAPI_GLX:
+                interop = QString::fromUtf8("vaapi-glx");
+                break;
 
-                case OpenGLInteropKind::INTEROP_VDPAU_GLX:
-                    interop = QString::fromUtf8("vdpau-glx"); break;
+            case OpenGLInteropKind::INTEROP_VDPAU_GLX:
+                interop = QString::fromUtf8("vdpau-glx");
+                break;
 
-                default: break;
+            default:
+                break;
 
             }
 
@@ -194,7 +199,7 @@ mpv_handle* MpvProxy::mpv_init()
             if (!disable) {
                 set_property(h, "gpu-hwdec-interop", interop.toUtf8().constData());
                 qDebug() << "-------- set gpu-hwdec-interop = " << interop
-                    << (forced.isEmpty() ? "[detected]" : "[forced]");
+                         << (forced.isEmpty() ? "[detected]" : "[forced]");
             } else {
                 qDebug() << "-------- gpu-hwdec-interop is disabled by user";
             }
@@ -210,19 +215,26 @@ mpv_handle* MpvProxy::mpv_init()
     if (composited) {
         //vo=gpu seems broken, it'll makes video output into a seperate window
         //set_property(h, "vo", "gpu");
+#ifdef __mips__
+        mpv_set_option_string(h, "vo", "opengl-cb");
+        mpv_set_option_string(h, "hwdec-preload", "auto");
+        mpv_set_option_string(h, "opengl-hwdec-interop", "auto");
+        mpv_set_option_string(h, "hwdec", "auto");
+        qDebug() << "-------- __mips__hwdec____________";
+#else
         set_property(h, "vo", "libmpv,opengl-cb");
         set_property(h, "vd-lavc-dr", "no");
         set_property(h, "gpu-sw", "on");
-
+#endif
     } else {
 #ifdef __mips__
         set_property(h, "vo", "xv");
 #else
 #ifdef MWV206_0
         QFileInfo fi("/dev/mwv206_0");              //景嘉微显卡目前只支持vo=xv，等日后升级代码需要酌情修改。
-        if(fi.exists()){
+        if (fi.exists()) {
             set_property(h, "vo", "xv");
-        }else {
+        } else {
             set_property(h, "vo", "gpu,xv,x11");
         }
 #else
@@ -255,7 +267,7 @@ mpv_handle* MpvProxy::mpv_init()
         set_property(h, "save-position-on-quit", true);
     }
 #endif
-    
+
     //only to get notification without data
     mpv_observe_property(h, 0, "time-pos", MPV_FORMAT_NONE); //playback-time ?
     mpv_observe_property(h, 0, "pause", MPV_FORMAT_NONE);
@@ -266,7 +278,7 @@ mpv_handle* MpvProxy::mpv_init()
     mpv_observe_property(h, 0, "dwidth", MPV_FORMAT_NODE);
     mpv_observe_property(h, 0, "dheight", MPV_FORMAT_NODE);
 
-    // because of vpu, we need to implement playlist w/o mpv 
+    // because of vpu, we need to implement playlist w/o mpv
     //mpv_observe_property(h, 0, "playlist-pos", MPV_FORMAT_NONE);
     //mpv_observe_property(h, 0, "playlist-count", MPV_FORMAT_NONE);
     mpv_observe_property(h, 0, "core-idle", MPV_FORMAT_NODE);
@@ -287,7 +299,7 @@ mpv_handle* MpvProxy::mpv_init()
 #ifndef __mips__
 #ifdef MWV206_0
             QFileInfo fi("/dev/mwv206_0");              //景嘉微显卡目前只支持vo=xv，等日后升级代码需要酌情修改。
-            if(!fi.exists()){
+            if (!fi.exists()) {
                 set_property(h, p->first.toUtf8().constData(), p->second.toUtf8().constData());
                 qDebug() << "apply" << p->first << "=" << p->second;
             }
@@ -309,7 +321,9 @@ void MpvProxy::setState(PlayState s)
 {
     if (_state != s) {
         _state = s;
-        if (_gl_widget) { _gl_widget->setPlaying(s != PlayState::Stopped); }
+        if (_gl_widget) {
+            _gl_widget->setPlaying(s != PlayState::Stopped);
+        }
         emit stateChanged();
     }
 }
@@ -330,8 +344,8 @@ void MpvProxy::pollingEndOfPlayback()
         }
 
         while (_state != Backend::Stopped) {
-            mpv_event* ev = mpv_wait_event(_handle, 0.005);
-            if (ev->event_id == MPV_EVENT_NONE) 
+            mpv_event *ev = mpv_wait_event(_handle, 0.005);
+            if (ev->event_id == MPV_EVENT_NONE)
                 continue;
 
             if (ev->event_id == MPV_EVENT_END_FILE) {
@@ -352,8 +366,8 @@ void MpvProxy::pollingStartOfPlayback()
         _polling = true;
 
         while (_state == Backend::Stopped) {
-            mpv_event* ev = mpv_wait_event(_handle, 0.005);
-            if (ev->event_id == MPV_EVENT_NONE) 
+            mpv_event *ev = mpv_wait_event(_handle, 0.005);
+            if (ev->event_id == MPV_EVENT_NONE)
                 continue;
 
             if (ev->event_id == MPV_EVENT_FILE_LOADED) {
@@ -367,7 +381,7 @@ void MpvProxy::pollingStartOfPlayback()
     }
 }
 
-const PlayingMovieInfo& MpvProxy::playingMovieInfo()
+const PlayingMovieInfo &MpvProxy::playingMovieInfo()
 {
     return _pmf;
 }
@@ -375,131 +389,131 @@ const PlayingMovieInfo& MpvProxy::playingMovieInfo()
 void MpvProxy::handle_mpv_events()
 {
     while (1) {
-        mpv_event* ev = mpv_wait_event(_handle, 0.0005);
-        if (ev->event_id == MPV_EVENT_NONE) 
+        mpv_event *ev = mpv_wait_event(_handle, 0.0005);
+        if (ev->event_id == MPV_EVENT_NONE)
             break;
 
         switch (ev->event_id) {
-            case MPV_EVENT_LOG_MESSAGE:
-                processLogMessage((mpv_event_log_message*)ev->data);
-                break;
+        case MPV_EVENT_LOG_MESSAGE:
+            processLogMessage((mpv_event_log_message *)ev->data);
+            break;
 
-            case MPV_EVENT_PROPERTY_CHANGE:
-                processPropertyChange((mpv_event_property*)ev->data);
-                break;
+        case MPV_EVENT_PROPERTY_CHANGE:
+            processPropertyChange((mpv_event_property *)ev->data);
+            break;
 
-            case MPV_EVENT_COMMAND_REPLY:
-                if (ev->error < 0) {
-                    qDebug() << "command error";
-                }
+        case MPV_EVENT_COMMAND_REPLY:
+            if (ev->error < 0) {
+                qDebug() << "command error";
+            }
 
-                if (ev->reply_userdata == AsyncReplyTag::SEEK) {
-                    this->_pendingSeek = false;
-                }
-                break;
+            if (ev->reply_userdata == AsyncReplyTag::SEEK) {
+                this->_pendingSeek = false;
+            }
+            break;
 
-            case MPV_EVENT_PLAYBACK_RESTART:
-                // caused by seek or just playing
-                break;
+        case MPV_EVENT_PLAYBACK_RESTART:
+            // caused by seek or just playing
+            break;
 
-            case MPV_EVENT_TRACKS_CHANGED:
-                qDebug() << mpv_event_name(ev->event_id);
-                updatePlayingMovieInfo();
-                emit tracksChanged();
-                break;
+        case MPV_EVENT_TRACKS_CHANGED:
+            qDebug() << mpv_event_name(ev->event_id);
+            updatePlayingMovieInfo();
+            emit tracksChanged();
+            break;
 
-            case MPV_EVENT_FILE_LOADED:
-                qDebug() << mpv_event_name(ev->event_id);
+        case MPV_EVENT_FILE_LOADED:
+            qDebug() << mpv_event_name(ev->event_id);
 
-                if (_gl_widget) {
-                    auto w = get_property(_handle, "width").toInt();
-                    auto h = get_property(_handle, "height").toInt();
+            if (_gl_widget) {
+                auto w = get_property(_handle, "width").toInt();
+                auto h = get_property(_handle, "height").toInt();
 
-                    qDebug() << "hwdec-interop" << get_property(_handle, "gpu-hwdec-interop")
-                        << "codec: " << get_property(_handle, "video-codec") 
-                        << "format: " << get_property(_handle, "video-format");
+                qDebug() << "hwdec-interop" << get_property(_handle, "gpu-hwdec-interop")
+                         << "codec: " << get_property(_handle, "video-codec")
+                         << "format: " << get_property(_handle, "video-format");
 #ifdef __mips__
-                    qDebug()<<"MPV_EVENT_FILE_LOADED __mips__";
-                    auto codec = get_property(_handle, "video-codec").toString();
-                    if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") || codec.toLower().contains("mpeg2video")) {
-                        qDebug()<<"set_property hwdec no";
-                        set_property(_handle, "hwdec", "no");
-                    }
+                qDebug() << "MPV_EVENT_FILE_LOADED __mips__";
+                auto codec = get_property(_handle, "video-codec").toString();
+                if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") || codec.toLower().contains("mpeg2video")) {
+                    qDebug() << "set_property hwdec no";
+                    set_property(_handle, "hwdec", "no");
+                }
 #endif
 #ifdef __aarch64__
-                    qDebug()<<"MPV_EVENT_FILE_LOADED aarch64";
-                    auto codec = get_property(_handle, "video-codec").toString();
-                    if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") || codec.toLower().contains("mpeg2video")) {
-                        qDebug()<<"set_property hwdec no";
-                        set_property(_handle, "hwdec", "no");
-                    }
-#endif
+                qDebug() << "MPV_EVENT_FILE_LOADED aarch64";
+                auto codec = get_property(_handle, "video-codec").toString();
+                if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") || codec.toLower().contains("mpeg2video")) {
+                    qDebug() << "set_property hwdec no";
+                    set_property(_handle, "hwdec", "no");
                 }
-                setState(PlayState::Playing); //might paused immediately
-                emit fileLoaded();
-                qDebug() << QString("rotate metadata: dec %1, out %2")
-                    .arg(get_property(_handle, "video-dec-params/rotate").toInt())
-                    .arg(get_property(_handle, "video-params/rotate").toInt());
-                break;
-
-            case MPV_EVENT_VIDEO_RECONFIG: {
-                auto sz = videoSize();
-                if (!sz.isEmpty())
-                    emit videoSizeChanged();
-                qDebug() << "videoSize " << sz;
-                break;
-            }
-
-            case MPV_EVENT_END_FILE: {
-#ifndef _LIBDMR_
-                MovieConfiguration::get().updateUrl(this->_file,
-                        ConfigKnownKey::StartPos, 0);
 #endif
-                mpv_event_end_file *ev_ef = (mpv_event_end_file*)ev->data;
-                qDebug() << mpv_event_name(ev->event_id) << 
-                    "reason " << ev_ef->reason;
-                setState(PlayState::Stopped);
-                break;
             }
+            setState(PlayState::Playing); //might paused immediately
+            emit fileLoaded();
+            qDebug() << QString("rotate metadata: dec %1, out %2")
+                     .arg(get_property(_handle, "video-dec-params/rotate").toInt())
+                     .arg(get_property(_handle, "video-params/rotate").toInt());
+            break;
 
-            case MPV_EVENT_IDLE:
-                qDebug() << mpv_event_name(ev->event_id);
-                setState(PlayState::Stopped);
-                emit elapsedChanged();
-                break;
+        case MPV_EVENT_VIDEO_RECONFIG: {
+            auto sz = videoSize();
+            if (!sz.isEmpty())
+                emit videoSizeChanged();
+            qDebug() << "videoSize " << sz;
+            break;
+        }
 
-            default:
-                qDebug() << mpv_event_name(ev->event_id);
-                break;
+        case MPV_EVENT_END_FILE: {
+#ifndef _LIBDMR_
+            MovieConfiguration::get().updateUrl(this->_file,
+                                                ConfigKnownKey::StartPos, 0);
+#endif
+            mpv_event_end_file *ev_ef = (mpv_event_end_file *)ev->data;
+            qDebug() << mpv_event_name(ev->event_id) <<
+                     "reason " << ev_ef->reason;
+            setState(PlayState::Stopped);
+            break;
+        }
+
+        case MPV_EVENT_IDLE:
+            qDebug() << mpv_event_name(ev->event_id);
+            setState(PlayState::Stopped);
+            emit elapsedChanged();
+            break;
+
+        default:
+            qDebug() << mpv_event_name(ev->event_id);
+            break;
         }
     }
 }
 
-void MpvProxy::processLogMessage(mpv_event_log_message* ev)
+void MpvProxy::processLogMessage(mpv_event_log_message *ev)
 {
     switch (ev->log_level) {
-        case MPV_LOG_LEVEL_WARN: 
-            qWarning() << QString("%1: %2").arg(ev->prefix).arg(ev->text);
-            emit mpvWarningLogsChanged(QString(ev->prefix), QString(ev->text));
-            break;
+    case MPV_LOG_LEVEL_WARN:
+        qWarning() << QString("%1: %2").arg(ev->prefix).arg(ev->text);
+        emit mpvWarningLogsChanged(QString(ev->prefix), QString(ev->text));
+        break;
 
-        case MPV_LOG_LEVEL_ERROR: 
-        case MPV_LOG_LEVEL_FATAL: 
-            qCritical() << QString("%1: %2").arg(ev->prefix).arg(ev->text);
-            emit mpvErrorLogsChanged(QString(ev->prefix), QString(ev->text));
-            break;
+    case MPV_LOG_LEVEL_ERROR:
+    case MPV_LOG_LEVEL_FATAL:
+        qCritical() << QString("%1: %2").arg(ev->prefix).arg(ev->text);
+        emit mpvErrorLogsChanged(QString(ev->prefix), QString(ev->text));
+        break;
 
-        case MPV_LOG_LEVEL_INFO: 
-            qInfo() << QString("%1: %2").arg(ev->prefix).arg(ev->text);
-            break;
+    case MPV_LOG_LEVEL_INFO:
+        qInfo() << QString("%1: %2").arg(ev->prefix).arg(ev->text);
+        break;
 
-        default:
-            qDebug() << QString("%1: %2").arg(ev->prefix).arg(ev->text);
-            break;
+    default:
+        qDebug() << QString("%1: %2").arg(ev->prefix).arg(ev->text);
+        break;
     }
 }
 
-void MpvProxy::processPropertyChange(mpv_event_property* ev)
+void MpvProxy::processPropertyChange(mpv_event_property *ev)
 {
     //if (ev->data == NULL) return;
 
@@ -534,21 +548,20 @@ void MpvProxy::processPropertyChange(mpv_event_property* ev)
         if (get_property(_handle, "pause").toBool()) {
             if (!idle)
                 setState(PlayState::Paused);
-            else 
+            else
                 set_property(_handle, "pause", false);
         } else {
             if (state() != PlayState::Stopped)
                 setState(PlayState::Playing);
         }
     } else if (name == "core-idle") {
-    }
-    else if (name == "paused-for-cache") {
-        qDebug()<<"paused-for-cache"<<get_property_variant(_handle, "paused-for-cache");
+    } else if (name == "paused-for-cache") {
+        qDebug() << "paused-for-cache" << get_property_variant(_handle, "paused-for-cache");
         emit urlpause(get_property_variant(_handle, "paused-for-cache").toBool());
     }
 }
 
-bool MpvProxy::loadSubtitle(const QFileInfo& fi)
+bool MpvProxy::loadSubtitle(const QFileInfo &fi)
 {
     //movie could be in an inner state that marked as Stopped when loadfile executes
     //if (state() == PlayState::Stopped) { return true; }
@@ -563,7 +576,7 @@ bool MpvProxy::loadSubtitle(const QFileInfo& fi)
         return false;
     }
 
-    // by settings this flag, we can match the corresponding sid change and save it 
+    // by settings this flag, we can match the corresponding sid change and save it
     // in the movie database
     _externalSubJustLoaded = true;
     return true;
@@ -597,13 +610,13 @@ QString MpvProxy::subCodepage()
     return cp;
 }
 
-void MpvProxy::addSubSearchPath(const QString& path)
+void MpvProxy::addSubSearchPath(const QString &path)
 {
     set_property(_handle, "sub-paths", path);
     set_property(_handle, "sub-file-paths", path);
 }
 
-void MpvProxy::setSubCodepage(const QString& cp)
+void MpvProxy::setSubCodepage(const QString &cp)
 {
     auto cp2 = cp;
     if (!cp.startsWith("+") && cp != "auto")
@@ -617,7 +630,7 @@ void MpvProxy::setSubCodepage(const QString& cp)
 #endif
 }
 
-void MpvProxy::updateSubStyle(const QString& font, int sz)
+void MpvProxy::updateSubStyle(const QString &font, int sz)
 {
     set_property(_handle, "sub-font", font);
     set_property(_handle, "sub-font-size", sz);
@@ -631,9 +644,9 @@ void MpvProxy::updateSubStyle(const QString& font, int sz)
 void MpvProxy::showEvent(QShowEvent *re)
 {
     if (!_connectStateChange) {
-        connect(window()->windowHandle(), &QWindow::windowStateChanged, [=](Qt::WindowState ws) {
+        connect(window()->windowHandle(), &QWindow::windowStateChanged, [ = ](Qt::WindowState ws) {
             set_property(_handle, "panscan",
-                (ws != Qt::WindowMaximized && ws != Qt::WindowFullScreen) ? 1.0 : 0.0);
+                         (ws != Qt::WindowMaximized && ws != Qt::WindowFullScreen) ? 1.0 : 0.0);
 
         });
         _connectStateChange = true;
@@ -668,7 +681,7 @@ void MpvProxy::setPlaySpeed(double times)
 void MpvProxy::selectSubtitle(int id)
 {
     if (id > _pmf.subs.size()) {
-        id = _pmf.subs.size() == 0? -1: _pmf.subs[0]["id"].toInt();
+        id = _pmf.subs.size() == 0 ? -1 : _pmf.subs[0]["id"].toInt();
     }
 
     set_property(_handle, "sid", id);
@@ -707,16 +720,16 @@ void MpvProxy::changeSoundMode(SoundMode sm)
 {
     QList<QVariant> args;
 
-    switch(sm) {
-        case SoundMode::Stereo:
-            args << "af" << "set" << "stereotools=muter=false";
-            break;
-        case SoundMode::Left:
-            args << "af" << "set" << "stereotools=muter=true";
-            break;
-        case SoundMode::Right:
-            args << "af" << "set" << "stereotools=mutel=true";
-            break;
+    switch (sm) {
+    case SoundMode::Stereo:
+        args << "af" << "set" << "stereotools=muter=false";
+        break;
+    case SoundMode::Left:
+        args << "af" << "set" << "stereotools=muter=true";
+        break;
+    case SoundMode::Right:
+        args << "af" << "set" << "stereotools=mutel=true";
+        break;
     }
 
     command(_handle, args);
@@ -831,13 +844,13 @@ void MpvProxy::play()
     set_property(_handle, "pause", _pauseOnStart);
 
 #ifndef _LIBDMR_
-    // by giving a period of time, movie will be loaded and auto-loaded subs are 
+    // by giving a period of time, movie will be loaded and auto-loaded subs are
     // all ready, then load extra subs from db
     // this keeps order of subs
     QTimer::singleShot(100, [this]() {
         auto cfg = MovieConfiguration::get().queryByUrl(_file);
         auto ext_subs = MovieConfiguration::get().getListByUrl(_file, ConfigKnownKey::ExternalSubs);
-        for(const auto& sub: ext_subs) {
+        for (const auto &sub : ext_subs) {
             if (!QFile::exists(sub)) {
                 MovieConfiguration::get().removeFromListUrl(_file, ConfigKnownKey::ExternalSubs, sub);
             } else {
@@ -885,16 +898,16 @@ void MpvProxy::burstScreenshot()
         return;
 
     //command(_handle, QList<QVariant> {"revert-seek", "mark"});
-     _posBeforeBurst = get_property(_handle, "time-pos");
+    _posBeforeBurst = get_property(_handle, "time-pos");
 
     int d = duration() / 15;
 
-	std::random_device rd;
+    std::random_device rd;
     std::mt19937 g(rd());
     std::uniform_int_distribution<int> uniform_dist(0, d);
     _burstPoints.clear();
     for (int i = 0; i < 15; i++) {
-        _burstPoints.append(d*i + uniform_dist(g));
+        _burstPoints.append(d * i + uniform_dist(g));
     }
     _burstStart = 0;
 
@@ -937,7 +950,7 @@ QImage MpvProxy::takeOneScreenshot()
 
     Q_ASSERT(res.format == MPV_FORMAT_NODE_MAP);
 
-    int w,h,stride;
+    int w, h, stride;
 
     mpv_node_list *list = res.u.list;
     uchar *data = NULL;
@@ -954,19 +967,19 @@ QImage MpvProxy::takeOneScreenshot()
             auto format = QString::fromUtf8(list->values[n].u.string);
             qDebug() << "format" << format;
         } else if (key == "data") {
-            data = (uchar*)list->values[n].u.ba->data;
+            data = (uchar *)list->values[n].u.ba->data;
         }
     }
 
     if (data) {
         //alpha should be ignored
-        auto img = QImage((const uchar*)data, w, h, stride, QImage::Format_RGB32);
+        auto img = QImage((const uchar *)data, w, h, stride, QImage::Format_RGB32);
         img.bits();
         int rotationdegree = videoRotation();
-        if(rotationdegree){
+        if (rotationdegree) {
             QMatrix matrix;
             matrix.rotate(rotationdegree);
-            img = QPixmap::fromImage(img).transformed(matrix,Qt::SmoothTransformation).toImage();
+            img = QPixmap::fromImage(img).transformed(matrix, Qt::SmoothTransformation).toImage();
         }
         return img;
     }
@@ -985,8 +998,8 @@ void MpvProxy::stepBurstScreenshot()
     command(_handle, QList<QVariant> {"seek", pos, "absolute"});
     int tries = 10;
     while (tries) {
-        mpv_event* ev = mpv_wait_event(_handle, 0.005);
-        if (ev->event_id == MPV_EVENT_NONE) 
+        mpv_event *ev = mpv_wait_event(_handle, 0.005);
+        if (ev->event_id == MPV_EVENT_NONE)
             continue;
 
         if (ev->event_id == MPV_EVENT_PLAYBACK_RESTART) {
@@ -1057,7 +1070,7 @@ QSize MpvProxy::videoSize() const
 {
     if (state() == PlayState::Stopped) return QSize(-1, -1);
     auto sz = QSize(get_property(_handle, "dwidth").toInt(),
-            get_property(_handle, "dheight").toInt());
+                    get_property(_handle, "dheight").toInt());
 
     auto r = get_property(_handle, "video-out-params/rotate").toInt();
     if (r == 90 || r == 270) {
@@ -1079,7 +1092,7 @@ qint64 MpvProxy::elapsed() const
     return get_property(_handle, "time-pos").value<qint64>();
 }
 
-void MpvProxy::changeProperty(const QString& name, const QVariant& v)
+void MpvProxy::changeProperty(const QString &name, const QVariant &v)
 {
 }
 
@@ -1091,7 +1104,7 @@ void MpvProxy::updatePlayingMovieInfo()
     auto v = get_property(_handle, "track-list").toList();
     auto p = v.begin();
     while (p != v.end()) {
-        const auto& t = p->toMap();
+        const auto &t = p->toMap();
         if (t["type"] == "audio") {
             AudioInfo ai;
             ai["type"] = t["type"];
@@ -1151,12 +1164,12 @@ void MpvProxy::previousFrame()
     command(_handle, args);
 }
 
-QVariant MpvProxy::getProperty(const QString& name)
+QVariant MpvProxy::getProperty(const QString &name)
 {
     return get_property(_handle, name.toUtf8().data());
 }
 
-void MpvProxy::setProperty(const QString& name, const QVariant& val)
+void MpvProxy::setProperty(const QString &name, const QVariant &val)
 {
     if (name == "pause-on-start") {
         _pauseOnStart = val.toBool();
