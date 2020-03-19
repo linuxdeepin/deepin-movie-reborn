@@ -149,7 +149,10 @@ public:
         onThemeChanged();
     }
 
-    int sid() const { return _sid; }
+    int sid() const
+    {
+        return _sid;
+    }
 
     void setCurrent(bool v)
     {
@@ -375,7 +378,7 @@ public:
         l->addWidget(_time, Qt::AlignCenter);
         setLayout(l);
 
-        connect(qApp, &QGuiApplication::fontChanged, this, [=](const QFont &font) {
+        connect(qApp, &QGuiApplication::fontChanged, this, [ = ](const QFont & font) {
             _font = font;
             _bFontChanged = true;
         });
@@ -532,14 +535,17 @@ public:
     {
         _isBlockSignals = isBlockSignals;
     }
-    bool getIsBlockSignals() {return _isBlockSignals;}
+    bool getIsBlockSignals()
+    {
+        return _isBlockSignals;
+    }
     void setValue(int v)
     {
 //        _indicatorPos = {v < 5 ? 5 : v, rect().y()};
         if (_press) {
             if (v < 3) {
                 v = 3;
-            }else if(v > width() - 2) {
+            } else if (v > width() - 2) {
                 v = width() - 2;
             }
         }
@@ -693,19 +699,15 @@ public:
 
     void clear()
     {
-        foreach(QLabel* label, _front->findChildren<QLabel *>())
-        {
-            if(label)
-            {
+        foreach (QLabel *label, _front->findChildren<QLabel *>()) {
+            if (label) {
                 label->deleteLater();
                 label = nullptr;
             }
         }
 
-        foreach(QLabel* label, _back->findChildren<QLabel *>())
-        {
-            if(label)
-            {
+        foreach (QLabel *label, _back->findChildren<QLabel *>()) {
+            if (label) {
                 label->deleteLater();
                 label = nullptr;
             }
@@ -855,7 +857,7 @@ private:
     int position2progress(const QPoint &p)
     {
         auto total = _engine->duration();
-        qreal span = (qreal)total * p.x() / (contentsRect().width()-4);
+        qreal span = (qreal)total * p.x() / (contentsRect().width() - 4);
         return span/* * (p.x())*/;
     }
 
@@ -919,7 +921,7 @@ public:
         l->setContentsMargins(1, 0, 0, 0);
 
         _thumb = new DFrame(this);
-        DStyle::setFrameRadius(_thumb,16);
+        DStyle::setFrameRadius(_thumb, 16);
 
         //_thumb->setFixedSize(ThumbnailWorker::thumbSize());
         l->addWidget(_thumb/*,Qt::AlignTop*/);
@@ -957,9 +959,9 @@ public:
         image = rounded.toImage();
         palette.setBrush(_thumb->backgroundRole(),
                          QBrush(image.scaled(// 缩放背景图.
-                         QSize(_thumb->width(),_thumb->height()),
-                         Qt::IgnoreAspectRatio,
-                         Qt::SmoothTransformation)));
+                                    QSize(_thumb->width(), _thumb->height()),
+                                    Qt::IgnoreAspectRatio,
+                                    Qt::SmoothTransformation)));
         _thumb->setPalette(palette);
 
 
@@ -1025,8 +1027,8 @@ private:
         _thumb->setFixedSize(size);
 //        this->setFixedWidth(_thumb->width());
 //        this->setFixedHeight(_thumb->height() + 10);
-        this->setFixedWidth(_thumb->width() +2);
-        this->setFixedHeight(_thumb->height() +2);
+        this->setFixedWidth(_thumb->width() + 2);
+        this->setFixedHeight(_thumb->height() + 2);
     }
 
 private:
@@ -1039,7 +1041,7 @@ class VolumeSlider: public DArrowRectangle
     Q_OBJECT
 public:
     VolumeSlider(PlayerEngine *eng, MainWindow *mw, QWidget *parent = nullptr)
-        : DArrowRectangle(DArrowRectangle::ArrowBottom,DArrowRectangle::FloatWidget, parent), _engine(eng), _mw(mw)
+        : DArrowRectangle(DArrowRectangle::ArrowBottom, DArrowRectangle::FloatWidget, parent), _engine(eng), _mw(mw)
     {
         setFixedSize(QSize(62, 201));
 //        setWindowFlags(Qt::Tool);
@@ -1207,9 +1209,8 @@ void viewProgBarLoad::loadViewProgBar(QSize size)
     auto file = QFileInfo(url.toLocalFile()).absoluteFilePath();
 
     for (auto i = 0; i < num; i++) {
-        if(isInterruptionRequested())
-        {
-            qDebug()<<"isInterruptionRequested";
+        if (isInterruptionRequested()) {
+            qDebug() << "isInterruptionRequested";
             return;
         }
         d = d.addMSecs(tmp);
@@ -1309,10 +1310,10 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
 //        _viewProgBarLoad->loadViewProgBar();
 //    });
 //    connect(_viewProgBarLoad, SIGNAL(sigFinishiLoad(QSize)), this, SLOT(finishLoadSlot(QSize)));
-    connect(DApplicationHelper::instance(),&DApplicationHelper::themeTypeChanged,
-                this,&ToolboxProxy::updatePlayState);
-    connect(DApplicationHelper::instance(),&DApplicationHelper::themeTypeChanged,
-                this,&ToolboxProxy::updateplaylisticon);
+    connect(DApplicationHelper::instance(), &DApplicationHelper::themeTypeChanged,
+            this, &ToolboxProxy::updatePlayState);
+    connect(DApplicationHelper::instance(), &DApplicationHelper::themeTypeChanged,
+            this, &ToolboxProxy::updateplaylisticon);
 }
 void ToolboxProxy::finishLoadSlot(QSize size)
 {
@@ -1325,7 +1326,7 @@ void ToolboxProxy::finishLoadSlot(QSize size)
         if (!info.url.isLocalFile()) {
             // Url and DVD without thumbnail
 //            if (!info.url.scheme().startsWith("dvd")) {
-                return;
+            return;
 //            }
         }
         _progBar_Widget->setCurrentIndex(2);
@@ -1334,9 +1335,9 @@ void ToolboxProxy::finishLoadSlot(QSize size)
 
 void ToolboxProxy::updateplaylisticon()
 {
-    if(_listBtn->isChecked() && DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()){
+    if (_listBtn->isChecked() && DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
         _listBtn->setIcon(QIcon(":/icons/deepin/builtin/light/checked/episodes_checked.svg"));
-    }else {
+    } else {
         _listBtn->setIcon(QIcon::fromTheme("dcc_episodes"));
     }
 }
@@ -1599,7 +1600,7 @@ void ToolboxProxy::setup()
 
 
 //    _prevBtn = new DIconButton(this);
-    _prevBtn = new VideoBoxButton("",":/icons/deepin/builtin/light/normal/last_normal.svg",
+    _prevBtn = new VideoBoxButton("", ":/icons/deepin/builtin/light/normal/last_normal.svg",
                                   ":/icons/deepin/builtin/light/normal/last_normal.svg",
                                   ":/icons/deepin/builtin/light/press/last_press.svg");
 //    _prevBtn->setIcon(QIcon::fromTheme("dcc_last"));
@@ -1610,7 +1611,7 @@ void ToolboxProxy::setup()
     signalMapper->setMapping(_prevBtn, "prev");
 //    _mid->addWidget(_prevBtn);
     list.append(_prevBtn);
-    _playBtn = new VideoBoxButton("",":/resources/icons/light/normal/play_normal2.svg",
+    _playBtn = new VideoBoxButton("", ":/resources/icons/light/normal/play_normal2.svg",
                                   ":/resources/icons/light/normal/play_normal2.svg",
                                   ":/icons/deepin/builtin/light/press/play_press.svg");
 //    _playBtn->setIcon(QIcon::fromTheme("dcc_play"));
@@ -1621,7 +1622,7 @@ void ToolboxProxy::setup()
 //    _mid->addWidget(_playBtn);
     list.append(_playBtn);
 
-    _nextBtn = new VideoBoxButton("",":/icons/deepin/builtin/light/normal/next_normal.svg",
+    _nextBtn = new VideoBoxButton("", ":/icons/deepin/builtin/light/normal/next_normal.svg",
                                   ":/icons/deepin/builtin/light/normal/next_normal.svg",
                                   ":/icons/deepin/builtin/light/press/next_press.svg");
 //    _nextBtn->setIcon(QIcon::fromTheme("dcc_next"));
@@ -1667,8 +1668,8 @@ void ToolboxProxy::setup()
         _volSlider->stopTimer();
 //        QPoint pos = _volBtn->parentWidget()->mapToGlobal(_volBtn->pos());
 //        pos.ry() = parentWidget()->mapToGlobal(this->pos()).y();
-        _volSlider->show(_mainWindow->width()-_volBtn->width()/2-_playBtn->width()-43,
-                         _mainWindow->height()-TOOLBOX_HEIGHT-5);
+        _volSlider->show(_mainWindow->width() - _volBtn->width() / 2 - _playBtn->width() - 43,
+                         _mainWindow->height() - TOOLBOX_HEIGHT - 5);
         _volSlider->raise();
     });
     connect(_volBtn, &VolumeButton::leaved, _volSlider, &VolumeSlider::delayedHide);
@@ -1747,7 +1748,7 @@ void ToolboxProxy::setup()
     });
     connect(_engine, &PlayerEngine::elapsedChanged, [ = ]() {
         quint64 url = -1;
-        if(_engine->playlist().current() != -1){
+        if (_engine->playlist().current() != -1) {
             url = _engine->playlist().items()[_engine->playlist().current()].mi.duration;
         }
         updateTimeInfo(url, _engine->elapsed(), _timeLabel, _timeLabelend, true);
@@ -1755,7 +1756,7 @@ void ToolboxProxy::setup()
     });
     connect(_engine, &PlayerEngine::elapsedChanged, [ = ]() {
         quint64 _url = -1;
-        if(_engine->playlist().current() != -1){
+        if (_engine->playlist().current() != -1) {
             _url = _engine->playlist().items()[_engine->playlist().current()].mi.duration;
         }
         updateTimeInfo(_url, _engine->elapsed(), _fullscreentimelable, _fullscreentimelableend, false);
@@ -1797,7 +1798,9 @@ void ToolboxProxy::setup()
         {
             _viewProgBar->setWidth();
             if (_engine->state() != PlayerEngine::CoreState::Idle && size() != _loadsize) {
+#ifndef __mips__
                 updateThumbnail();
+#endif
                 _loadsize = size();
             }
         }
@@ -1806,9 +1809,8 @@ void ToolboxProxy::setup()
 
 void ToolboxProxy::updateThumbnail()
 {
-    if(m_worker)
-    {
-        qDebug()<<"kill last worker";
+    if (m_worker) {
+        qDebug() << "kill last worker";
         m_worker->requestInterruption();
         m_worker->quit();
         m_worker->wait();
@@ -1817,7 +1819,7 @@ void ToolboxProxy::updateThumbnail()
 
     }
 
-    qDebug()<<"worker"<<m_worker;
+    qDebug() << "worker" << m_worker;
 
     QTimer::singleShot(1000, [this]() {
         pm_list.clear();
@@ -1825,9 +1827,8 @@ void ToolboxProxy::updateThumbnail()
 
         m_worker = new viewProgBarLoad(_engine, _progBar, this);
 
-        connect(m_worker, &viewProgBarLoad::finished, this, [=]
-        {
-            if(m_worker)
+        connect(m_worker, &viewProgBarLoad::finished, this, [ = ] {
+            if (m_worker)
             {
                 m_worker->quit();
                 m_worker->wait();
@@ -1900,8 +1901,7 @@ void ToolboxProxy::updateHoverPreview(const QUrl &url, int secs)
         return;
     }
 
-    if(!m_mouseFlag)
-    {
+    if (!m_mouseFlag) {
         return;
     }
 
@@ -1945,7 +1945,7 @@ void ToolboxProxy::progressHoverChanged(int v)
 //    auto pos = _viewProgBar->mapToGlobal(QPoint(0, TOOLBOX_TOP_EXTENT - 10));
     QPoint p { QCursor::pos().x(), pos.y() };
 
-    auto proBar = qobject_cast<ViewProgBar*>(sender());
+    auto proBar = qobject_cast<ViewProgBar *>(sender());
     if (/*proBar == _viewProgBar && */!Settings::get().isSet(Settings::PreviewOnMouseover)) {
         updatePreviewTime(v, p);
         return;
@@ -2059,7 +2059,7 @@ void ToolboxProxy::updatePlayState()
 {
     if (_engine->state() == PlayerEngine::CoreState::Playing) {
         //        _playBtn->setObjectName("PauseBtn");
-        if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ){
+        if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ) {
             _playBtn->setPropertyPic(":/icons/deepin/builtin/light/normal/suspend_normal.svg",
                                      ":/icons/deepin/builtin/light/normal/suspend_normal.svg",
                                      ":/icons/deepin/builtin/light/press/suspend_press.svg");
@@ -2071,27 +2071,27 @@ void ToolboxProxy::updatePlayState()
                                      ":/icons/deepin/builtin/light/press/next_press.svg");
             DPalette pa;
             pa = _palyBox->palette();
-            pa.setColor(DPalette::Light, QColor(255,255,255,255));
-            pa.setColor(DPalette::Dark, QColor(255,255,255,255));
-            pa.setColor(DPalette::Button, QColor(255,255,255,255));
+            pa.setColor(DPalette::Light, QColor(255, 255, 255, 255));
+            pa.setColor(DPalette::Dark, QColor(255, 255, 255, 255));
+            pa.setColor(DPalette::Button, QColor(255, 255, 255, 255));
             _palyBox->setPalette(pa);
 
             pa = _volBtn->palette();
-            pa.setColor(DPalette::Light, QColor(255,255,255,255));
-            pa.setColor(DPalette::Dark, QColor(255,255,255,255));
+            pa.setColor(DPalette::Light, QColor(255, 255, 255, 255));
+            pa.setColor(DPalette::Dark, QColor(255, 255, 255, 255));
             _volBtn->setPalette(pa);
 
             pa = _fsBtn->palette();
-            pa.setColor(DPalette::Light, QColor(255,255,255,255));
-            pa.setColor(DPalette::Dark, QColor(255,255,255,255));
+            pa.setColor(DPalette::Light, QColor(255, 255, 255, 255));
+            pa.setColor(DPalette::Dark, QColor(255, 255, 255, 255));
             _fsBtn->setPalette(pa);
 
             pa = _listBtn->palette();
-            pa.setColor(DPalette::Light, QColor(255,255,255,255));
-            pa.setColor(DPalette::Dark, QColor(255,255,255,255));
+            pa.setColor(DPalette::Light, QColor(255, 255, 255, 255));
+            pa.setColor(DPalette::Dark, QColor(255, 255, 255, 255));
             _listBtn->setPalette(pa);
 
-        }else {
+        } else {
             _playBtn->setPropertyPic(":/icons/deepin/builtin/dark/normal/suspend_normal.svg",
                                      ":/icons/deepin/builtin/dark/normal/suspend_normal.svg",
                                      ":/icons/deepin/builtin/dark/press/suspend_press.svg");
@@ -2104,24 +2104,24 @@ void ToolboxProxy::updatePlayState()
 
             DPalette pa;
             pa = _palyBox->palette();
-            pa.setColor(DPalette::Light, QColor(0,0,0,102));
-            pa.setColor(DPalette::Dark, QColor(0,0,0,102));
-            pa.setColor(DPalette::Button, QColor(0,0,0,102));
+            pa.setColor(DPalette::Light, QColor(0, 0, 0, 102));
+            pa.setColor(DPalette::Dark, QColor(0, 0, 0, 102));
+            pa.setColor(DPalette::Button, QColor(0, 0, 0, 102));
             _palyBox->setPalette(pa);
 
             pa = _volBtn->palette();
-            pa.setColor(DPalette::Light, QColor(0,0,0,102));
-            pa.setColor(DPalette::Dark, QColor(0,0,0,102));
+            pa.setColor(DPalette::Light, QColor(0, 0, 0, 102));
+            pa.setColor(DPalette::Dark, QColor(0, 0, 0, 102));
             _volBtn->setPalette(pa);
 
             pa = _fsBtn->palette();
-            pa.setColor(DPalette::Light, QColor(0,0,0,102));
-            pa.setColor(DPalette::Dark, QColor(0,0,0,102));
+            pa.setColor(DPalette::Light, QColor(0, 0, 0, 102));
+            pa.setColor(DPalette::Dark, QColor(0, 0, 0, 102));
             _fsBtn->setPalette(pa);
 
             pa = _listBtn->palette();
-            pa.setColor(DPalette::Light, QColor(0,0,0,102));
-            pa.setColor(DPalette::Dark, QColor(0,0,0,102));
+            pa.setColor(DPalette::Light, QColor(0, 0, 0, 102));
+            pa.setColor(DPalette::Dark, QColor(0, 0, 0, 102));
             _listBtn->setPalette(pa);
 
 
@@ -2129,7 +2129,7 @@ void ToolboxProxy::updatePlayState()
         _playBtn->setToolTip(tr("Pause"));
     } else {
         //        _playBtn->setObjectName("PlayBtn");
-        if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ){
+        if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ) {
             _playBtn->setPropertyPic(":/icons/deepin/builtin/light/normal/play_normal.svg",
                                      ":/icons/deepin/builtin/light/normal/play_normal.svg",
                                      ":/icons/deepin/builtin/light/press/play_press.svg");
@@ -2142,28 +2142,28 @@ void ToolboxProxy::updatePlayState()
 
             DPalette pa;
             pa = _palyBox->palette();
-            pa.setColor(DPalette::Light, QColor(255,255,255,255));
-            pa.setColor(DPalette::Dark, QColor(255,255,255,255));
-            pa.setColor(DPalette::Button, QColor(255,255,255,255));
+            pa.setColor(DPalette::Light, QColor(255, 255, 255, 255));
+            pa.setColor(DPalette::Dark, QColor(255, 255, 255, 255));
+            pa.setColor(DPalette::Button, QColor(255, 255, 255, 255));
             _palyBox->setPalette(pa);
 
 
             pa = _volBtn->palette();
-            pa.setColor(DPalette::Light, QColor(255,255,255,255));
-            pa.setColor(DPalette::Dark, QColor(255,255,255,255));
+            pa.setColor(DPalette::Light, QColor(255, 255, 255, 255));
+            pa.setColor(DPalette::Dark, QColor(255, 255, 255, 255));
             _volBtn->setPalette(pa);
 
             pa = _fsBtn->palette();
-            pa.setColor(DPalette::Light, QColor(255,255,255,255));
-            pa.setColor(DPalette::Dark, QColor(255,255,255,255));
+            pa.setColor(DPalette::Light, QColor(255, 255, 255, 255));
+            pa.setColor(DPalette::Dark, QColor(255, 255, 255, 255));
             _fsBtn->setPalette(pa);
 
             pa = _listBtn->palette();
-            pa.setColor(DPalette::Light, QColor(255,255,255,255));
-            pa.setColor(DPalette::Dark, QColor(255,255,255,255));
+            pa.setColor(DPalette::Light, QColor(255, 255, 255, 255));
+            pa.setColor(DPalette::Dark, QColor(255, 255, 255, 255));
             _listBtn->setPalette(pa);
 
-        }else {
+        } else {
             _playBtn->setPropertyPic(":/icons/deepin/builtin/dark/normal/play_normal.svg",
                                      ":/icons/deepin/builtin/dark/normal/play_normal.svg",
                                      ":/icons/deepin/builtin/dark/press/play_press.svg");
@@ -2175,24 +2175,24 @@ void ToolboxProxy::updatePlayState()
                                      ":/icons/deepin/builtin/dark/press/next_press.svg");
             DPalette pa;
             pa = _palyBox->palette();
-            pa.setColor(DPalette::Light, QColor(0,0,0,102));
-            pa.setColor(DPalette::Dark, QColor(0,0,0,102));
-            pa.setColor(DPalette::Button, QColor(0,0,0,102));
+            pa.setColor(DPalette::Light, QColor(0, 0, 0, 102));
+            pa.setColor(DPalette::Dark, QColor(0, 0, 0, 102));
+            pa.setColor(DPalette::Button, QColor(0, 0, 0, 102));
             _palyBox->setPalette(pa);
 
             pa = _volBtn->palette();
-            pa.setColor(DPalette::Light, QColor(0,0,0,102));
-            pa.setColor(DPalette::Dark, QColor(0,0,0,102));
+            pa.setColor(DPalette::Light, QColor(0, 0, 0, 102));
+            pa.setColor(DPalette::Dark, QColor(0, 0, 0, 102));
             _volBtn->setPalette(pa);
 
             pa = _fsBtn->palette();
-            pa.setColor(DPalette::Light, QColor(0,0,0,102));
-            pa.setColor(DPalette::Dark, QColor(0,0,0,102));
+            pa.setColor(DPalette::Light, QColor(0, 0, 0, 102));
+            pa.setColor(DPalette::Dark, QColor(0, 0, 0, 102));
             _fsBtn->setPalette(pa);
 
             pa = _listBtn->palette();
-            pa.setColor(DPalette::Light, QColor(0,0,0,102));
-            pa.setColor(DPalette::Dark, QColor(0,0,0,102));
+            pa.setColor(DPalette::Light, QColor(0, 0, 0, 102));
+            pa.setColor(DPalette::Dark, QColor(0, 0, 0, 102));
             _listBtn->setPalette(pa);
 
         }

@@ -351,8 +351,10 @@ struct MovieInfo MovieInfo::parseFromFile(const QFileInfo &fi, bool *ok)
     mi.proportion = mi.width / mi.height;
 
     if (open_codec_context(&stream_id, &dec_ctx, av_ctx, AVMEDIA_TYPE_AUDIO) < 0) {
-        if (ok) *ok = false;
-        return mi;
+        if (open_codec_context(&stream_id, &dec_ctx, av_ctx, AVMEDIA_TYPE_VIDEO) < 0) {
+            if (ok) *ok = false;
+            return mi;
+        }
     }
     mi.aCodeID = dec_ctx->codec_id;
     mi.aCodeRate = dec_ctx->bit_rate;
