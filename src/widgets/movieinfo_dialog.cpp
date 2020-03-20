@@ -439,6 +439,9 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
     } else {
         closeBt->setNormalPic(INFO_CLOSE_LIGHT);
     }
+    m_expandGroup.at(0)->setExpand(true);
+    m_expandGroup.at(1)->setExpand(true);
+    m_expandGroup.at(2)->setExpand(true);
 }
 
 void MovieInfoDialog::paintEvent(QPaintEvent *ev)
@@ -471,15 +474,32 @@ void MovieInfoDialog::changedHeight(const int height)
     if (lastHeight == -1) {
         lastHeight = height;
     } else {
-        int h = 0;
-        foreach (DDrawer *drawer, m_expandGroup) {
-            h = h + drawer->height() + 10;
+        //xpf修改此过程
+        int h = 10;
+        if (m_expandGroup.at(0)->expand()) {
+            h = h + 164;
+        } else {
+            h = h + 32;
         }
+        if (m_expandGroup.at(1)->expand()) {
+            h = h + 168 + 10;
+        } else {
+            h = h + 32 + 10;
+        }
+        if (m_expandGroup.at(2)->expand()) {
+            h = h + 168 + 10;
+        } else {
+            h = h + 32 + 10;
+        }
+//        foreach (DDrawer *drawer, m_expandGroup) {
+//            h = h + drawer->height() + 10;
+//        }
         h += 260;
         if (h > 642) {
             this->setFixedHeight(642);
         } else {
-            QTimer::singleShot(50, this, [ = ] {this->setFixedHeight(h);});
+            setFixedHeight(h);
+            //QTimer::singleShot(50, this, [ = ] {this->setFixedHeight(h);});
         }
         lastHeight = -1;
     }
