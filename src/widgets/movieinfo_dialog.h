@@ -40,6 +40,7 @@
 #include <DApplicationHelper>
 #include <DGuiApplicationHelper>
 #include <DApplication>
+#include <DArrowLineDrawer>
 
 #define LINE_MAX_WIDTH 200
 #define LINE_HEIGHT 30
@@ -66,7 +67,7 @@ public:
     }
 };
 
-class InfoBottom: public QWidget
+class InfoBottom: public DFrame
 {
     Q_OBJECT
 public:
@@ -79,11 +80,41 @@ protected:
         pt.setRenderHint(QPainter::Antialiasing);
 
         if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
-            pt.setPen(QColor(0, 0, 0, 0.05*255));
-            pt.setBrush(QBrush(QColor(255, 255, 255, 255*0.7)));
+            pt.setPen(Qt::NoPen);
+            pt.setBrush(QBrush(QColor(255, 255, 255, 0)));
+        } else if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
+            pt.setPen(Qt::NoPen);
+            pt.setBrush(QBrush(QColor(45, 45, 45, 0)));
+        }
+
+        QRect rect = this->rect();
+        rect.setWidth(rect.width() - 1);
+        rect.setHeight(rect.height() - 1);
+
+        QPainterPath painterPath;
+        painterPath.addRoundedRect(rect, 10, 10);
+        pt.drawPath(painterPath);
+    }
+};
+
+class ArrowLine: public DArrowLineDrawer
+{
+    Q_OBJECT
+public:
+    ArrowLine() {}
+
+protected:
+    virtual void paintEvent(QPaintEvent *ev)
+    {
+        QPainter pt(this);
+        pt.setRenderHint(QPainter::Antialiasing);
+
+        if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
+            pt.setPen(QColor(0, 0, 0, 0.05 * 255));
+            pt.setBrush(QBrush(QColor(255, 255, 255, 255 * 0.7)));
         } else if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
             pt.setPen(QColor(255, 255, 255, 20));
-            pt.setBrush(QBrush(QColor(45, 45, 45, 250*0.7)));
+            pt.setBrush(QBrush(QColor(45, 45, 45, 250 * 0.7)));
         }
 
         QRect rect = this->rect();
@@ -107,8 +138,11 @@ protected:
 
 private slots:
     void OnFontChanged(const QFont &font);
+    void changedHeight(const int);
 
 private:
+    QList<DDrawer *> addExpandWidget(const QStringList &titleList);
+    void initExpand(QVBoxLayout *layout, DDrawer *expand);
     void addRow(QString, QString, QFormLayout *, QList<DLabel *> &);
 
 private:
@@ -116,6 +150,9 @@ private:
     DLabel *m_filePathLbl {nullptr};
     QString m_strFilePath {QString()};
     QList<DLabel *> m_titleList;
+    QList<DDrawer *> m_expandGroup;
+    QScrollArea *m_scrollArea;
+    int lastHeight {-1};
 };
 
 
