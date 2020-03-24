@@ -327,8 +327,10 @@ struct MovieInfo MovieInfo::parseFromFile(const QFileInfo &fi, bool *ok)
         return mi;
     }
     if (open_codec_context(&stream_id, &dec_ctx, av_ctx, AVMEDIA_TYPE_VIDEO) < 0) {
+        //if (open_codec_context(&stream_id, &dec_ctx, av_ctx, AVMEDIA_TYPE_AUDIO) < 0) {
         if (ok) *ok = false;
         return mi;
+        //}
     }
 
     av_dump_format(av_ctx, 0, fi.fileName().toUtf8().constData(), 0);
@@ -347,8 +349,16 @@ struct MovieInfo MovieInfo::parseFromFile(const QFileInfo &fi, bool *ok)
 
     mi.vCodecID = dec_ctx->codec_id;
     mi.vCodeRate = dec_ctx->bit_rate;
-    mi.fps = dec_ctx->framerate.num / dec_ctx->framerate.den;
-    mi.proportion = mi.width / mi.height;
+    if (dec_ctx->framerate.den != 0) {
+        mi.fps = dec_ctx->framerate.num / dec_ctx->framerate.den;
+    } else {
+        mi.fps = 0;
+    }
+    if (mi.height != 0) {
+        mi.proportion = mi.width / mi.height;
+    } else {
+        mi.proportion = 0;
+    }
 
     if (open_codec_context(&stream_id, &dec_ctx, av_ctx, AVMEDIA_TYPE_AUDIO) < 0) {
         if (open_codec_context(&stream_id, &dec_ctx, av_ctx, AVMEDIA_TYPE_VIDEO) < 0) {
@@ -1098,6 +1108,8 @@ void PlaylistModel::changeCurrent(int pos)
     _last = _current;
     tryPlayCurrent(true);
     _userRequestingItem = false;
+    //切换播放时更新胶片
+    //emit currentChanged();
 }
 
 void PlaylistModel::switchPosition(int src, int target)

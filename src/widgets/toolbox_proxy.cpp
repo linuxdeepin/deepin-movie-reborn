@@ -56,6 +56,8 @@ static const int PROGBAR_SPEC = 10 + 120 + 17 + 54 + 10 + 54 + 10 + 170 + 10 + 2
 
 static const QString SLIDER_ARROW = ":resources/icons/slider.svg";
 
+#define POPUP_DURATION 350
+
 DWIDGET_USE_NAMESPACE
 
 namespace dmr {
@@ -2467,6 +2469,18 @@ void ToolboxProxy::setPlaylist(PlaylistWidget *playlist)
             bot_toolWgt->setFixedHeight(TOOLBOX_HEIGHT - 14);
             _bot_spec->setFixedHeight(TOOLBOX_SPACE_HEIGHT);
             _bot_spec->setVisible(true);
+            QRect rcEnd = this->geometry();
+            QRect rcBegin = rcEnd;
+            rcBegin.setTop(rcEnd.bottom());
+            QPropertyAnimation *pa = new QPropertyAnimation(this, "geometry");
+            pa->setEasingCurve(QEasingCurve::InOutCubic);
+            pa->setDuration(POPUP_DURATION);
+            pa->setStartValue(rcBegin);
+            pa->setEndValue(rcEnd);
+            pa->start();
+            connect(pa, &QPropertyAnimation::finished, [ = ]() {
+                pa->deleteLater();
+            });
             _listBtn->setChecked(true);
         } else {
             _listBtn->setChecked(false);

@@ -44,7 +44,7 @@
 #include <DScrollBar>
 
 #define PLAYLIST_FIXED_WIDTH 800
-#define POPUP_DURATION 200
+#define POPUP_DURATION 350
 
 namespace dmr {
 QString splitText(const QString &text, int width,
@@ -541,8 +541,7 @@ protected:
             DFontSizeManager::instance()->bind(_time, DFontSizeManager::T6, QFont::Medium);
 //            QColor bgColor  = pal.color(DPalette::ToolTipBase);
 
-        }
-        else {
+        } else {
 //            DPalette pa_name = DApplicationHelper::instance()->palette(_name);
 //            pa_name.setBrush(DPalette::Text, pa_name.color(DPalette::ToolTipText));
 //            _name->setPalette(pa_name);
@@ -555,7 +554,7 @@ protected:
             DFontSizeManager::instance()->bind(_time, DFontSizeManager::T6, QFont::Normal);
         }
 
-        if(!_pif.valid){
+        if (!_pif.valid) {
             setState(ItemState::Invalid);
             _name->setForegroundRole(DPalette::TextTips);
             _time->setText(tr("The file does not exist"));
@@ -575,8 +574,7 @@ protected:
             pp.addRoundedRect(bgRect, 8, 8);
             painter.fillPath(pp, bgColor);
 
-        }
-        else{
+        } else {
             _time->show();
             _closeBtn->hide();
         }
@@ -624,20 +622,16 @@ protected:
                 }
             }
             return false;
-        }else if (event->type() == QEvent::KeyRelease) {
+        } else if (event->type() == QEvent::KeyRelease) {
             QKeyEvent *key = static_cast<QKeyEvent *>(event);
-            if(key->key() == Qt::Key_Return || key->key() == Qt::Key_Enter)
-            {
+            if (key->key() == Qt::Key_Return || key->key() == Qt::Key_Enter) {
                 auto *plw = dynamic_cast<PlaylistWidget *>(parent());
 
-                if(plw->state() == PlaylistWidget::State::Opened)
-                {
-                    DListWidget* playlist = plw->get_playlist();
-                    for(int loop=0; loop < playlist->count(); loop++)
-                    {
+                if (plw->state() == PlaylistWidget::State::Opened) {
+                    DListWidget *playlist = plw->get_playlist();
+                    for (int loop = 0; loop < playlist->count(); loop++) {
                         auto piw = dynamic_cast<PlayItemWidget *>(playlist->itemWidget(playlist->item(loop)));
-                        if(piw->getBIsSelect())
-                        {
+                        if (piw->getBIsSelect()) {
                             piw->doubleClicked();
                             return false;
                         }
@@ -646,8 +640,7 @@ protected:
                 }
             }
             return false;
-        }
-        else {
+        } else {
             // standard event processing
             return QObject::eventFilter(obj, event);
         }
@@ -895,48 +888,48 @@ PlaylistWidget::~PlaylistWidget()
 void PlaylistWidget::updateSelectItem(const int key)
 {
     auto curItem = _playlist->currentItem();
-        auto curRow = _playlist->row(curItem);
-        qDebug() << "prevRow..." << curRow;
-        PlayItemWidget* prevItemWgt = nullptr;
-        if (curItem) {
-            prevItemWgt = reinterpret_cast<PlayItemWidget *>(_playlist->itemWidget(curItem));
-        }
+    auto curRow = _playlist->row(curItem);
+    qDebug() << "prevRow..." << curRow;
+    PlayItemWidget *prevItemWgt = nullptr;
+    if (curItem) {
+        prevItemWgt = reinterpret_cast<PlayItemWidget *>(_playlist->itemWidget(curItem));
+    }
 
-        if (key == Qt::Key_Up) {
-            if (curRow == -1) {
-                _index = curRow + 1;
-            } else {
-                _index = curRow - 1;
-            }
-            if (_index < 0) {
-                return;
-            }
-
-            _playlist->setCurrentRow(_index);
-            qDebug() << "Enter Key_Up..." << _index;
-            auto curItemWgt = reinterpret_cast<PlayItemWidget *>(_playlist->itemWidget(_playlist->item(_index)));
-            if (prevItemWgt) {
-                prevItemWgt->setBIsSelect(false);
-            }
-            if (curItemWgt) {
-                curItemWgt->setBIsSelect(true);
-            }
-
-        } else if (key == Qt::Key_Down) {
-            if (_index >= _playlist->count() - 1) {
-                return;
-            }
+    if (key == Qt::Key_Up) {
+        if (curRow == -1) {
             _index = curRow + 1;
-            _playlist->setCurrentRow(_index);
-            qDebug() << "Enter Key_Down..." << _index;
-            auto curItemWgt = reinterpret_cast<PlayItemWidget *>(_playlist->itemWidget(_playlist->item(_index)));
-            if (prevItemWgt) {
-                prevItemWgt->setBIsSelect(false);
-            }
-            if (curItemWgt) {
-                curItemWgt->setBIsSelect(true);
-            }
+        } else {
+            _index = curRow - 1;
         }
+        if (_index < 0) {
+            return;
+        }
+
+        _playlist->setCurrentRow(_index);
+        qDebug() << "Enter Key_Up..." << _index;
+        auto curItemWgt = reinterpret_cast<PlayItemWidget *>(_playlist->itemWidget(_playlist->item(_index)));
+        if (prevItemWgt) {
+            prevItemWgt->setBIsSelect(false);
+        }
+        if (curItemWgt) {
+            curItemWgt->setBIsSelect(true);
+        }
+
+    } else if (key == Qt::Key_Down) {
+        if (_index >= _playlist->count() - 1) {
+            return;
+        }
+        _index = curRow + 1;
+        _playlist->setCurrentRow(_index);
+        qDebug() << "Enter Key_Down..." << _index;
+        auto curItemWgt = reinterpret_cast<PlayItemWidget *>(_playlist->itemWidget(_playlist->item(_index)));
+        if (prevItemWgt) {
+            prevItemWgt->setBIsSelect(false);
+        }
+        if (curItemWgt) {
+            curItemWgt->setBIsSelect(true);
+        }
+    }
 }
 
 void PlaylistWidget::clear()
@@ -998,13 +991,11 @@ void PlaylistWidget::openItemInFM()
 
 void PlaylistWidget::removeClickedItem(bool isShortcut)
 {
-    if (isShortcut)
-    {
+    if (isShortcut) {
         for (int i = 0; i < _playlist->count(); i++) {
             auto piw = dynamic_cast<PlayItemWidget *>(_playlist->itemWidget(_playlist->item(i)));
-            qDebug()<<piw->getBIsSelect();
-            if(piw->getBIsSelect())
-            {
+            qDebug() << piw->getBIsSelect();
+            if (piw->getBIsSelect()) {
                 _engine->playlist().remove(i);
             }
         }
@@ -1106,18 +1097,12 @@ void PlaylistWidget::contextMenuEvent(QContextMenuEvent *cme)
         bool on = true;
         if (prop == ActionFactory::ActionKind::PlaylistOpenItemInFM) {
             on = on_item && piw->_pif.valid && piw->_pif.url.isLocalFile();
-        }
-        else if(prop == ActionFactory::ActionKind::PlaylistRemoveItem)
-        {
+        } else if (prop == ActionFactory::ActionKind::PlaylistRemoveItem) {
             on = on_item;
-        }
-        else if (prop == ActionFactory::ActionKind::PlaylistItemInfo)
-        {
+        } else if (prop == ActionFactory::ActionKind::PlaylistItemInfo) {
             on = on_item && piw->_pif.valid;
-        }
-        else
-        {
-            on = _playlist->count() > 0?true:false;
+        } else {
+            on = _playlist->count() > 0 ? true : false;
         }
         act->setEnabled(on);
     }
@@ -1299,15 +1284,15 @@ void PlaylistWidget::togglePopup()
         pa->setStartValue(fixed);
         pa->setEndValue(shrunk);;
 
-//        pa->start();
+        pa->start();
         connect(pa, &QPropertyAnimation::finished, [ = ]() {
             pa->deleteLater();
             setVisible(!isVisible());
-            _toggling = false;
-            _state = State::Closed;
-            emit stateChange();
+            //_toggling = false;
+            //_state = State::Closed;
+            //emit stateChange();
         });
-        setVisible(!isVisible());
+        //setVisible(!isVisible());
         _toggling = false;
         _state = State::Closed;
         emit stateChange();
@@ -1319,17 +1304,17 @@ void PlaylistWidget::togglePopup()
         pa->setDuration(POPUP_DURATION);
         pa->setStartValue(shrunk);
         pa->setEndValue(fixed);
-
-//        pa->start();
-        connect(pa, &QPropertyAnimation::finished, [ = ]() {
-            pa->deleteLater();
-            _toggling = false;
-            _state = State::Opened;
-            emit stateChange();
-        });
         _toggling = false;
         _state = State::Opened;
         emit stateChange();
+        pa->start();
+        connect(pa, &QPropertyAnimation::finished, [ = ]() {
+            pa->deleteLater();
+            //_toggling = false;
+            //_state = State::Opened;
+            //emit stateChange();
+        });
+
     }
 }
 
