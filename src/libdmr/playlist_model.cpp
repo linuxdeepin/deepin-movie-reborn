@@ -327,10 +327,10 @@ struct MovieInfo MovieInfo::parseFromFile(const QFileInfo &fi, bool *ok)
         return mi;
     }
     if (open_codec_context(&stream_id, &dec_ctx, av_ctx, AVMEDIA_TYPE_VIDEO) < 0) {
-        //if (open_codec_context(&stream_id, &dec_ctx, av_ctx, AVMEDIA_TYPE_AUDIO) < 0) {
-        if (ok) *ok = false;
-        return mi;
-        //}
+        if (open_codec_context(&stream_id, &dec_ctx, av_ctx, AVMEDIA_TYPE_AUDIO) < 0) {
+            if (ok) *ok = false;
+            return mi;
+        }
     }
 
     av_dump_format(av_ctx, 0, fi.fileName().toUtf8().constData(), 0);
@@ -1108,8 +1108,7 @@ void PlaylistModel::changeCurrent(int pos)
     _last = _current;
     tryPlayCurrent(true);
     _userRequestingItem = false;
-    //切换播放时更新胶片
-    //emit currentChanged();
+    emit currentChanged();
 }
 
 void PlaylistModel::switchPosition(int src, int target)

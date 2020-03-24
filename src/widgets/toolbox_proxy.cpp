@@ -1520,8 +1520,6 @@ void ToolboxProxy::setup()
     connect(signalMapper, static_cast<void(QSignalMapper::*)(const QString &)>(&QSignalMapper::mapped),
             this, &ToolboxProxy::buttonClicked);
 
-//    bot->addStretch();
-
     _mid = new QHBoxLayout(bot_toolWgt);
     _mid->setContentsMargins(0, 0, 0, 0);
     _mid->setSpacing(0);
@@ -1807,6 +1805,10 @@ void ToolboxProxy::setup()
             }
         }
     });
+    PlaylistModel *playListModel = _engine->getplaylist();
+    connect(playListModel, &PlaylistModel::currentChanged, this, [ = ] {
+        _autoResizeTimer.start(1000);
+    });
 }
 
 void ToolboxProxy::updateThumbnail()
@@ -1818,7 +1820,14 @@ void ToolboxProxy::updateThumbnail()
         m_worker->wait();
         delete m_worker;
         m_worker = nullptr;
+    }
 
+    //如果打开的是音乐
+    QString suffix = _engine->playlist().currentInfo().info.suffix();
+    foreach (QString sf, _engine->audio_filetypes) {
+        if (sf.right(sf.size() - 2) == suffix) {
+            return;
+        }
     }
 
     qDebug() << "worker" << m_worker;
@@ -1841,7 +1850,6 @@ void ToolboxProxy::updateThumbnail()
         connect(m_worker, SIGNAL(sigFinishiLoad(QSize)), this, SLOT(finishLoadSlot(QSize)));
         m_worker->start();
         _progBar_Widget->setCurrentIndex(1);
-
     });
 }
 
@@ -1948,7 +1956,8 @@ void ToolboxProxy::progressHoverChanged(int v)
     QPoint p { QCursor::pos().x(), pos.y() };
 
     auto proBar = qobject_cast<ViewProgBar *>(sender());
-    if (/*proBar == _viewProgBar && */!Settings::get().isSet(Settings::PreviewOnMouseover)) {
+    bool isAudio = _engine->isAudioFile(pif.info.fileName());
+    if (/*proBar == _viewProgBar && */!Settings::get().isSet(Settings::PreviewOnMouseover) || isAudio) {
         updatePreviewTime(v, p);
         return;
     }

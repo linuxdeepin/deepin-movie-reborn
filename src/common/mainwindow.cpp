@@ -1847,14 +1847,10 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
 
     case ActionFactory::ActionKind::OpenFileList: {
         //允许影院打开音乐文件进行播放
-        /*QStringList filenames = QFileDialog::getOpenFileNames(this, tr("Open File"),
+        QStringList filenames = QFileDialog::getOpenFileNames(this, tr("Open File"),
                                                               lastOpenedPath(),
                                                               tr("All videos (%1%2)").arg(_engine->audio_filetypes.join(" "))
                                                               .arg(_engine->video_filetypes.join(" ")), 0,
-                                                              QFileDialog::HideNameFilterDetails);*/
-        QStringList filenames = QFileDialog::getOpenFileNames(this, tr("Open File"),
-                                                              lastOpenedPath(),
-                                                              tr("All videos (%1)").arg(_engine->video_filetypes.join(" ")), 0,
                                                               QFileDialog::HideNameFilterDetails);
 
         QList<QUrl> urls;
