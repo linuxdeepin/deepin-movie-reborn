@@ -1,4 +1,4 @@
-/* 
+/*
  * (c) 2017, Deepin Technology Co., Ltd. <support@deepin.org>
  *
  * This program is free software; you can redistribute it and/or
@@ -28,7 +28,7 @@
  * files in the program, then also delete it here.
  */
 #ifndef _DMR_PLAYER_ENINE_H
-#define _DMR_PLAYER_ENINE_H 
+#define _DMR_PLAYER_ENINE_H
 
 
 #include <QtWidgets>
@@ -43,13 +43,13 @@ class PlaylistModel;
 using SubtitleInfo = QMap<QString, QVariant>;
 using AudioInfo = QMap<QString, QVariant>;
 
-struct PlayingMovieInfo 
-{
+struct PlayingMovieInfo {
     QList<SubtitleInfo> subs;
     QList<AudioInfo> audios;
 };
 
-class PlayerEngine: public QWidget {
+class PlayerEngine: public QWidget
+{
     Q_OBJECT
     Q_PROPERTY(qint64 duration READ duration)
     Q_PROPERTY(qint64 elapsed READ elapsed NOTIFY elapsedChanged)
@@ -65,16 +65,16 @@ public:
     };
     Q_ENUM(CoreState)
 
-        // filetypes supported by mpv: https://github.com/mpv-player/mpv/blob/master/player/external_files.c
-    const QStringList audio_filetypes {"*.mp3","*.ogg","*.wav","*.wma","*.m4a","*.aac","*.ac3","*.ape","*.flac","*.ra","*.mka","*.dts","*.opus"};
+    // filetypes supported by mpv: https://github.com/mpv-player/mpv/blob/master/player/external_files.c
+    const QStringList audio_filetypes {"*.mp3", "*.ogg", "*.wav", "*.wma", "*.m4a", "*.aac", "*.ac3", "*.ape", "*.flac", "*.ra", "*.mka", "*.dts", "*.opus"};
     const QStringList video_filetypes {
-        "*.3g2","*.3ga","*.3gp","*.3gp2","*.3gpp","*.amv","*.asf","*.asx","*.avf","*.avi","*.bdm","*.bdmv","*.bik","*.clpi", "*.cpi","*.dat","*.divx","*.drc","*.dv","*.dvr-ms","*.f4v","*.flv","*.gvi","*.gxf","*.hdmov","*.hlv","*.iso","*.letv", "*.lrv","*.m1v","*.m2p","*.m2t","*.m2ts","*.m2v","*.m3u","*.m3u8","*.m4v","*.mkv","*.moov", "*.mov","*.mov","*.mp2","*.mp2v","*.mp4","*.mp4v","*.mpe","*.mpeg","*.mpeg1","*.mpeg2","*.mpeg4","*.mpg","*.mpl","*.mpls","*.mpv","*.mpv2","*.mqv", "*.mts","*.mts","*.mtv","*.mxf","*.mxg","*.nsv","*.nuv","*.ogg","*.ogm","*.ogv","*.ogx","*.ps","*.qt","*.qtvr","*.ram","*.rec", "*.rm","*.rm","*.rmj","*.rmm","*.rms","*.rmvb","*.rmx","*.rp","*.rpl","*.rv","*.rvx","*.thp","*.tod","*.tp","*.trp","*.ts","*.tts","*.txd","*.vcd", "*.vdr","*.vob","*.vp8","*.vro","*.webm","*.wm","*.wmv","*.wtv","*.xesc" ,"*.xspf"
+        "*.3g2", "*.3ga", "*.3gp", "*.3gp2", "*.3gpp", "*.amv", "*.asf", "*.asx", "*.avf", "*.avi", "*.bdm", "*.bdmv", "*.bik", "*.clpi", "*.cpi", "*.dat", "*.divx", "*.drc", "*.dv", "*.dvr-ms", "*.f4v", "*.flv", "*.gvi", "*.gxf", "*.hdmov", "*.hlv", "*.iso", "*.letv", "*.lrv", "*.m1v", "*.m2p", "*.m2t", "*.m2ts", "*.m2v", "*.m3u", "*.m3u8", "*.m4v", "*.mkv", "*.moov", "*.mov", "*.mov", "*.mp2", "*.mp2v", "*.mp4", "*.mp4v", "*.mpe", "*.mpeg", "*.mpeg1", "*.mpeg2", "*.mpeg4", "*.mpg", "*.mpl", "*.mpls", "*.mpv", "*.mpv2", "*.mqv", "*.mts", "*.mts", "*.mtv", "*.mxf", "*.mxg", "*.nsv", "*.nuv", "*.ogg", "*.ogm", "*.ogv", "*.ogx", "*.ps", "*.qt", "*.qtvr", "*.ram", "*.rec", "*.rm", "*.rm", "*.rmj", "*.rmm", "*.rms", "*.rmvb", "*.rmx", "*.rp", "*.rpl", "*.rv", "*.rvx", "*.thp", "*.tod", "*.tp", "*.trp", "*.ts", "*.tts", "*.txd", "*.vcd", "*.vdr", "*.vob", "*.vp8", "*.vro", "*.webm", "*.wm", "*.wmv", "*.wtv", "*.xesc", "*.xspf"
     };
 
     const QStringList subtitle_suffixs {"ass", "sub", "srt", "aqt", "jss", "gsub", "ssf", "ssa", "smi", "usf", "idx"};
 
-    /* backend like mpv will asynchronously report end of playback. 
-     * there are situations when we need to see the end-event before 
+    /* backend like mpv will asynchronously report end of playback.
+     * there are situations when we need to see the end-event before
      * proceed (e.g playlist next)
      */
     void waitLastEnd();
@@ -84,16 +84,17 @@ public:
     PlayerEngine(QWidget *parent = 0);
     virtual ~PlayerEngine();
 
-    // only the last dvd device set 
-    void setDVDDevice(const QString& path);
+    // only the last dvd device set
+    void setDVDDevice(const QString &path);
 
-    bool addPlayFile(const QUrl& url);
-    QList<QUrl> addPlayDir(const QDir& dir); // return collected valid urls
+    bool addPlayFile(const QUrl &url);
+    QList<QUrl> addPlayDir(const QDir &dir); // return collected valid urls
     //returned list contains only accepted valid items
-    QList<QUrl> addPlayFiles(const QList<QUrl>& urls);
+    QList<QUrl> addPlayFiles(const QList<QUrl> &urls);
 
-    bool isPlayableFile(const QUrl& url);
-    bool isPlayableFile(const QString& name);
+    bool isPlayableFile(const QUrl &url);
+    bool isPlayableFile(const QString &name);
+    bool isAudioFile(const QString &name);
 
     // only supports (+/-) 0, 90, 180, 270
     int videoRotation() const;
@@ -105,25 +106,25 @@ public:
     qint64 duration() const;
     qint64 elapsed() const;
     QSize videoSize() const;
-    const struct MovieInfo& movieInfo(); 
+    const struct MovieInfo &movieInfo();
 
     bool paused();
     CoreState state();
-    const PlayingMovieInfo& playingMovieInfo();
+    const PlayingMovieInfo &playingMovieInfo();
     void setPlaySpeed(double times);
 
-    void loadOnlineSubtitle(const QUrl& url);
-    bool loadSubtitle(const QFileInfo& fi);
+    void loadOnlineSubtitle(const QUrl &url);
+    bool loadSubtitle(const QFileInfo &fi);
     void toggleSubtitle();
     bool isSubVisible();
     void selectSubtitle(int id); // id into PlayingMovieInfo.subs
     int sid();
     void setSubDelay(double secs);
     double subDelay() const;
-    void updateSubStyle(const QString& font, int sz);
-    void setSubCodepage(const QString& cp);
+    void updateSubStyle(const QString &font, int sz);
+    void setSubCodepage(const QString &cp);
     QString subCodepage();
-    void addSubSearchPath(const QString& path);
+    void addSubSearchPath(const QString &path);
 
     void selectTrack(int id); // id into PlayingMovieInfo.audios
     int aid();
@@ -132,8 +133,14 @@ public:
     int volume() const;
     bool muted() const;
 
-    PlaylistModel& playlist() const { return *_playlist; }
-    PlaylistModel* getplaylist() { return _playlist; };
+    PlaylistModel &playlist() const
+    {
+        return *_playlist;
+    }
+    PlaylistModel *getplaylist()
+    {
+        return _playlist;
+    };
 
     QImage takeScreenshot();
     void burstScreenshot(); //initial the start of burst screenshotting
@@ -145,8 +152,8 @@ public:
     void previousFrame();
 
     // use with caution
-    void setBackendProperty(const QString&, const QVariant&);
-    QVariant getBackendProperty(const QString&);
+    void setBackendProperty(const QString &, const QVariant &);
+    QVariant getBackendProperty(const QString &);
 
 signals:
     void tracksChanged();
@@ -160,10 +167,10 @@ signals:
     void aidChanged();
     void subCodepageChanged();
 
-    void loadOnlineSubtitlesFinished(const QUrl& url, bool success);
+    void loadOnlineSubtitlesFinished(const QUrl &url, bool success);
 
     //emit during burst screenshotting
-    void notifyScreenshot(const QImage& frame, qint64 time);
+    void notifyScreenshot(const QImage &frame, qint64 time);
 
     void playlistChanged();
 
@@ -180,7 +187,7 @@ public slots:
     void prev();
     void next();
     void playSelected(int id); // id as in playlist indexes
-    void playByName(const QUrl& url);
+    void playByName(const QUrl &url);
     void clearPlaylist();
 
     void seekForward(int secs);
@@ -196,9 +203,9 @@ protected slots:
     void onBackendStateChanged();
     void requestPlay(int id);
     void updateSubStyles();
-    void onSubtitlesDownloaded(const QUrl& url, const QList<QString>& filenames,
-            OnlineSubtitle::FailReason);
-    void onPlaylistAsyncAppendFinished(const QList<PlayItemInfo>&);
+    void onSubtitlesDownloaded(const QUrl &url, const QList<QString> &filenames,
+                               OnlineSubtitle::FailReason);
+    void onPlaylistAsyncAppendFinished(const QList<PlayItemInfo> &);
 
 protected:
     PlaylistModel *_playlist {nullptr};
@@ -209,10 +216,10 @@ protected:
 
     bool _playingRequest {false};
 
-    QList<QUrl> collectPlayFiles(const QList<QUrl>& urls);
-    QList<QUrl> collectPlayDir(const QDir& dir);
+    QList<QUrl> collectPlayFiles(const QList<QUrl> &urls);
+    QList<QUrl> collectPlayDir(const QDir &dir);
 
-    void resizeEvent(QResizeEvent* re) override;
+    void resizeEvent(QResizeEvent *re) override;
     void savePreviousMovieState();
 
 private:

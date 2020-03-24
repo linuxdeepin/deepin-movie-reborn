@@ -1,4 +1,4 @@
-/* 
+/*
  * (c) 2017, Deepin Technology Co., Ltd. <support@deepin.org>
  *
  * This program is free software; you can redistribute it and/or
@@ -46,7 +46,7 @@ DCORE_USE_NAMESPACE
 namespace dmr {
 
 PlayerEngine::PlayerEngine(QWidget *parent)
-    :QWidget(parent)
+    : QWidget(parent)
 {
     auto *l = new QVBoxLayout(this);
     l->setContentsMargins(0, 0, 0, 0);
@@ -77,12 +77,12 @@ PlayerEngine::PlayerEngine(QWidget *parent)
     connect(&Settings::get(), &Settings::subtitleChanged, this, &PlayerEngine::updateSubStyles);
 #endif
 
-    connect(&OnlineSubtitle::get(), &OnlineSubtitle::subtitlesDownloadedFor, 
+    connect(&OnlineSubtitle::get(), &OnlineSubtitle::subtitlesDownloadedFor,
             this, &PlayerEngine::onSubtitlesDownloaded);
     addSubSearchPath(OnlineSubtitle::get().storeLocation());
 
     _playlist = new PlaylistModel(this);
-    connect(_playlist, &PlaylistModel::asyncAppendFinished, this, 
+    connect(_playlist, &PlaylistModel::asyncAppendFinished, this,
             &PlayerEngine::onPlaylistAsyncAppendFinished);
 }
 
@@ -100,10 +100,10 @@ PlayerEngine::~PlayerEngine()
     qDebug() << __func__;
 }
 
-bool PlayerEngine::isPlayableFile(const QUrl& url)
+bool PlayerEngine::isPlayableFile(const QUrl &url)
 {
     if (url.isLocalFile()) {
-        return isPlayableFile(url.path());
+        return (isPlayableFile(url.path()) || isAudioFile(url.path()));
     } else {
         // for a networked url, there is no way to know if it's playable right now
         return true;
@@ -112,7 +112,7 @@ bool PlayerEngine::isPlayableFile(const QUrl& url)
 
 static QStringList suffixes;
 
-static const QStringList& buildPlayableDatabase()
+static const QStringList &buildPlayableDatabase()
 {
     static QStringList mimeTypes = {
         "application/ogg",
@@ -169,10 +169,16 @@ static const QStringList& buildPlayableDatabase()
     return suffixes;
 }
 
-bool PlayerEngine::isPlayableFile(const QString& name)
+bool PlayerEngine::isPlayableFile(const QString &name)
 {
     auto suffix = QString("*") + name.mid(name.lastIndexOf('.'));
     return video_filetypes.contains(suffix, Qt::CaseInsensitive);
+}
+
+bool PlayerEngine::isAudioFile(const QString &name)
+{
+    auto suffix = QString("*") + name.mid(name.lastIndexOf('.'));
+    return  audio_filetypes.contains(suffix, Qt::CaseInsensitive);
 }
 
 void PlayerEngine::updateSubStyles()
@@ -202,7 +208,7 @@ void PlayerEngine::updateSubStyles()
 
 void PlayerEngine::waitLastEnd()
 {
-    if (auto *mpv = dynamic_cast<MpvProxy*>(_current)) {
+    if (auto *mpv = dynamic_cast<MpvProxy *>(_current)) {
         mpv->pollingEndOfPlayback();
     }
 }
@@ -213,15 +219,15 @@ void PlayerEngine::onBackendStateChanged()
 
     auto old = _state;
     switch (_current->state()) {
-        case Backend::PlayState::Playing:
-            _state = CoreState::Playing;
-            break;
-        case Backend::PlayState::Paused:
-            _state = CoreState::Paused;
-            break;
-        case Backend::PlayState::Stopped:
-            _state = CoreState::Idle;
-            break;
+    case Backend::PlayState::Playing:
+        _state = CoreState::Playing;
+        break;
+    case Backend::PlayState::Paused:
+        _state = CoreState::Paused;
+        break;
+    case Backend::PlayState::Stopped:
+        _state = CoreState::Idle;
+        break;
     }
 
     updateSubStyles();
@@ -233,15 +239,15 @@ PlayerEngine::CoreState PlayerEngine::state()
 {
     auto old = _state;
     switch (_current->state()) {
-        case Backend::PlayState::Playing:
-            _state = CoreState::Playing;
-            break;
-        case Backend::PlayState::Paused:
-            _state = CoreState::Paused;
-            break;
-        case Backend::PlayState::Stopped:
-            _state = CoreState::Idle;
-            break;
+    case Backend::PlayState::Playing:
+        _state = CoreState::Playing;
+        break;
+    case Backend::PlayState::Paused:
+        _state = CoreState::Paused;
+        break;
+    case Backend::PlayState::Stopped:
+        _state = CoreState::Idle;
+        break;
     }
 
     if (old != _state) {
@@ -251,7 +257,7 @@ PlayerEngine::CoreState PlayerEngine::state()
     return _state;
 }
 
-const PlayingMovieInfo& PlayerEngine::playingMovieInfo()
+const PlayingMovieInfo &PlayerEngine::playingMovieInfo()
 {
     static PlayingMovieInfo empty;
 
@@ -261,7 +267,9 @@ const PlayingMovieInfo& PlayerEngine::playingMovieInfo()
 
 int PlayerEngine::aid()
 {
-    if (state() == CoreState::Idle) { return 0; }
+    if (state() == CoreState::Idle) {
+        return 0;
+    }
     if (!_current) return 0;
 
     return _current->aid();
@@ -269,31 +277,31 @@ int PlayerEngine::aid()
 
 int PlayerEngine::sid()
 {
-    if (state() == CoreState::Idle) { return 0; }
+    if (state() == CoreState::Idle) {
+        return 0;
+    }
     if (!_current) return 0;
 
     return _current->sid();
 }
 
-void PlayerEngine::onSubtitlesDownloaded(const QUrl& url, const QList<QString>& filenames,
-        OnlineSubtitle::FailReason reason)
+void PlayerEngine::onSubtitlesDownloaded(const QUrl &url, const QList<QString> &filenames,
+                                         OnlineSubtitle::FailReason reason)
 {
-    if (state() == CoreState::Idle) { return; }
+    if (state() == CoreState::Idle) {
+        return;
+    }
     if (!_current) return;
 
-    if (playlist().currentInfo().url != url) 
+    if (playlist().currentInfo().url != url)
         return;
 
     bool res = false;
 
-    for (auto& filename: filenames)
-    {
-        if( true == _current->loadSubtitle(filename))
-        {
+    for (auto &filename : filenames) {
+        if ( true == _current->loadSubtitle(filename)) {
             res = true;
-        }
-        else
-        {
+        } else {
             QFile::remove(filename);
         }
     }
@@ -302,14 +310,16 @@ void PlayerEngine::onSubtitlesDownloaded(const QUrl& url, const QList<QString>& 
 
 }
 
-bool PlayerEngine::loadSubtitle(const QFileInfo& fi)
+bool PlayerEngine::loadSubtitle(const QFileInfo &fi)
 {
-    if (state() == CoreState::Idle) { return true; }
+    if (state() == CoreState::Idle) {
+        return true;
+    }
     if (!_current) return true;
 
-    const auto& pmf = _current->playingMovieInfo();
+    const auto &pmf = _current->playingMovieInfo();
     auto pif = playlist().currentInfo();
-    for (const auto& sub: pmf.subs) {
+    for (const auto &sub : pmf.subs) {
         if (sub["external"].toBool()) {
             auto path = sub["external-filename"].toString();
             if (path == fi.canonicalFilePath()) {
@@ -321,16 +331,18 @@ bool PlayerEngine::loadSubtitle(const QFileInfo& fi)
     if (_current->loadSubtitle(fi)) {
 #ifndef _LIBDMR_
         MovieConfiguration::get().append2ListUrl(pif.url, ConfigKnownKey::ExternalSubs,
-                fi.canonicalFilePath());
+                                                 fi.canonicalFilePath());
 #endif
         return true;
     }
     return false;
 }
 
-void PlayerEngine::loadOnlineSubtitle(const QUrl& url)
+void PlayerEngine::loadOnlineSubtitle(const QUrl &url)
 {
-    if (state() == CoreState::Idle) { return; }
+    if (state() == CoreState::Idle) {
+        return;
+    }
     if (!_current) return;
 
     OnlineSubtitle::get().requestSubtitle(url);
@@ -360,7 +372,7 @@ QString PlayerEngine::subCodepage()
     return _current->subCodepage();
 }
 
-void PlayerEngine::setSubCodepage(const QString& cp)
+void PlayerEngine::setSubCodepage(const QString &cp)
 {
     if (!_current) return;
     _current->setSubCodepage(cp);
@@ -368,23 +380,23 @@ void PlayerEngine::setSubCodepage(const QString& cp)
     emit subCodepageChanged();
 }
 
-void PlayerEngine::addSubSearchPath(const QString& path)
+void PlayerEngine::addSubSearchPath(const QString &path)
 {
     if (!_current) return;
     _current->addSubSearchPath(path);
 }
 
-void PlayerEngine::updateSubStyle(const QString& font, int sz)
+void PlayerEngine::updateSubStyle(const QString &font, int sz)
 {
     if (!_current) return;
-    _current->updateSubStyle(font, sz);
+    _current->updateSubStyle(font, sz / 2);
 }
 
 void PlayerEngine::selectSubtitle(int id)
 {
     if (!_current) return;
     if (state() != CoreState::Idle) {
-        const auto& pmf = _current->playingMovieInfo();
+        const auto &pmf = _current->playingMovieInfo();
         if (id >= pmf.subs.size()) return;
         auto sid = pmf.subs[id]["id"].toInt();
         _current->selectSubtitle(sid);
@@ -393,7 +405,9 @@ void PlayerEngine::selectSubtitle(int id)
 
 bool PlayerEngine::isSubVisible()
 {
-    if (state() == CoreState::Idle) { return false; }
+    if (state() == CoreState::Idle) {
+        return false;
+    }
     if (!_current) return false;
 
     return _current->isSubVisible();
@@ -454,13 +468,13 @@ void PlayerEngine::savePreviousMovieState()
     savePlaybackPosition();
 }
 
-//FIXME: TODO: update _current according to file 
+//FIXME: TODO: update _current according to file
 void PlayerEngine::requestPlay(int id)
 {
     if (!_current) return;
     if (id >= _playlist->count()) return;
 
-    const auto& item = _playlist->items()[id];
+    const auto &item = _playlist->items()[id];
     _current->setPlayFile(item.url);
 
     DRecentData data;
@@ -497,7 +511,7 @@ void PlayerEngine::play()
 {
     if (!_current || !_playlist->count()) return;
 
-    if (state() == CoreState::Paused && 
+    if (state() == CoreState::Paused &&
             getBackendProperty("keep-open").toBool() &&
             getBackendProperty("eof-reached").toBool()) {
         stop();
@@ -525,7 +539,7 @@ void PlayerEngine::next()
     _playingRequest = false;
 }
 
-void PlayerEngine::onPlaylistAsyncAppendFinished(const QList<PlayItemInfo>& pil)
+void PlayerEngine::onPlaylistAsyncAppendFinished(const QList<PlayItemInfo> &pil)
 {
     if (_pendingPlayReq.isValid()) {
         auto id = _playlist->indexOf(_pendingPlayReq);
@@ -541,7 +555,7 @@ void PlayerEngine::onPlaylistAsyncAppendFinished(const QList<PlayItemInfo>& pil)
     }
 }
 
-void PlayerEngine::playByName(const QUrl& url)
+void PlayerEngine::playByName(const QUrl &url)
 {
     savePreviousMovieState();
     auto id = _playlist->indexOf(url);
@@ -619,25 +633,27 @@ void PlayerEngine::seekAbsolute(int pos)
     _current->seekAbsolute(pos);
 }
 
-void PlayerEngine::setDVDDevice(const QString& path)
+void PlayerEngine::setDVDDevice(const QString &path)
 {
-    if (!_current) { return; }
+    if (!_current) {
+        return;
+    }
     _current->setDVDDevice(path);
 }
 
-bool PlayerEngine::addPlayFile(const QUrl& url)
+bool PlayerEngine::addPlayFile(const QUrl &url)
 {
     if (isPlayableFile(url)) {
         if (url.isLocalFile())
             _playlist->appendAsync({url});
-        else 
+        else
             _playlist->append(url);
         return true;
     }
     return false;
 }
 
-QList<QUrl> PlayerEngine::collectPlayDir(const QDir& dir)
+QList<QUrl> PlayerEngine::collectPlayDir(const QDir &dir)
 {
     QList<QUrl> urls;
 
@@ -652,7 +668,7 @@ QList<QUrl> PlayerEngine::collectPlayDir(const QDir& dir)
     return urls;
 }
 
-QList<QUrl> PlayerEngine::addPlayDir(const QDir& dir)
+QList<QUrl> PlayerEngine::addPlayDir(const QDir &dir)
 {
     auto valids = collectPlayDir(dir);
     _playlist->appendAsync(valids);
@@ -660,19 +676,19 @@ QList<QUrl> PlayerEngine::addPlayDir(const QDir& dir)
 }
 
 
-QList<QUrl> PlayerEngine::addPlayFiles(const QList<QUrl>& urls)
+QList<QUrl> PlayerEngine::addPlayFiles(const QList<QUrl> &urls)
 {
     QList<QUrl> valids = collectPlayFiles(urls);
     _playlist->appendAsync(valids);
     return valids;
 }
 
-QList<QUrl> PlayerEngine::collectPlayFiles(const QList<QUrl>& urls)
+QList<QUrl> PlayerEngine::collectPlayFiles(const QList<QUrl> &urls)
 {
     qDebug() << urls;
     //NOTE: take care of loop, we don't recursive, it seems safe now
     QList<QUrl> valids;
-    for (const auto& url: urls) {
+    for (const auto &url : urls) {
         if (url.isLocalFile()) {
             QFileInfo fi(url.toLocalFile());
             if (!fi.exists()) {
@@ -685,8 +701,8 @@ QList<QUrl> PlayerEngine::collectPlayFiles(const QList<QUrl>& urls)
                 valids += subs;
                 valids += url;
                 continue;
-            } 
-            
+            }
+
             if (!url.isValid() || !isPlayableFile(url)) {
                 qDebug() << url << "not valid or playable";
                 continue;
@@ -737,17 +753,17 @@ int PlayerEngine::videoRotation() const
 
 void PlayerEngine::setVideoRotation(int degree)
 {
-    if (_current) 
+    if (_current)
         _current->setVideoRotation(degree);
 }
 
 void PlayerEngine::changeSoundMode(Backend::SoundMode sm)
 {
-    if (_current) 
+    if (_current)
         _current->changeSoundMode(sm);
 }
 
-void PlayerEngine::resizeEvent(QResizeEvent* re)
+void PlayerEngine::resizeEvent(QResizeEvent *re)
 {
     bool rounded = !window()->isFullScreen() && !window()->isMaximized();
 
@@ -769,14 +785,14 @@ void PlayerEngine::resizeEvent(QResizeEvent* re)
 #endif
 }
 
-void PlayerEngine::setBackendProperty(const QString& name, const QVariant& val)
+void PlayerEngine::setBackendProperty(const QString &name, const QVariant &val)
 {
     if (_current) {
         _current->setProperty(name, val);
     }
 }
 
-QVariant PlayerEngine::getBackendProperty(const QString& name)
+QVariant PlayerEngine::getBackendProperty(const QString &name)
 {
     if (_current) {
         return _current->getProperty(name);

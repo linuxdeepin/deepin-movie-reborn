@@ -1,4 +1,4 @@
-/* 
+/*
  * (c) 2017, Deepin Technology Co., Ltd. <support@deepin.org>
  *
  * This program is free software; you can redistribute it and/or
@@ -28,7 +28,7 @@
  * files in the program, then also delete it here.
  */
 #ifndef _DMR_PLAYLIST_WIDGET_H
-#define _DMR_PLAYLIST_WIDGET_H 
+#define _DMR_PLAYLIST_WIDGET_H
 
 #include <DPlatformWindowHandle>
 #include <QPushButton>
@@ -44,11 +44,9 @@
 #include <DTextEdit>
 
 
-namespace Dtk
-{
-namespace Widget
-{
-    class DImageButton;
+namespace Dtk {
+namespace Widget {
+class DImageButton;
 }
 }
 
@@ -58,40 +56,44 @@ namespace dmr {
 
 class PlayerEngine;
 class MainWindow;
-class ListPic:public QLabel{
+class ListPic: public QLabel
+{
     Q_OBJECT
 public:
-    ListPic(QPixmap pic,QWidget *parent):QLabel(parent){
-        setFixedSize(QSize(42,24));
+    ListPic(QPixmap pic, QWidget *parent): QLabel(parent)
+    {
+        setFixedSize(QSize(42, 24));
         _pic = pic;
     }
 protected:
-    void paintEvent(QPaintEvent *pe) override{
+    void paintEvent(QPaintEvent *pe) override
+    {
         QPainter painter(this);
         QBrush bgColor = QBrush(_pic);
         QPainterPath pp;
         QRectF bgRect;
         bgRect.setSize(size());
-        pp.addRoundedRect(bgRect,4,4);
+        pp.addRoundedRect(bgRect, 4, 4);
         painter.fillPath(pp, bgColor);
     };
 private:
     QPixmap _pic;
 };
 
-class FloatingButton: public DPushButton {
+class FloatingButton: public DPushButton
+{
     Q_OBJECT
 public:
-    FloatingButton(QWidget *p = nullptr){}
-    virtual ~FloatingButton(){}
+    FloatingButton(QWidget *p = nullptr) {}
+    virtual ~FloatingButton() {}
 
 protected:
-    virtual void enterEvent(QEvent* e)
+    virtual void enterEvent(QEvent *e)
     {
         emit mouseHover(true);
     }
 
-    virtual void leaveEvent(QEvent* e)
+    virtual void leaveEvent(QEvent *e)
     {
         emit mouseHover(false);
     }
@@ -102,20 +104,30 @@ signals:
 
 class PlayItemWidget;
 
-class PlaylistWidget: public QWidget {
+class PlaylistWidget: public QWidget
+{
     Q_OBJECT
 public:
     enum State {
         Opened,
         Closed,
     };
-    PlaylistWidget(QWidget *, PlayerEngine*);
+    PlaylistWidget(QWidget *, PlayerEngine *);
     virtual ~PlaylistWidget();
-    State state() const { return _state; }
-    bool toggling() const { return _toggling; }
+    State state() const
+    {
+        return _state;
+    }
+    bool toggling() const
+    {
+        return _toggling;
+    }
     void updateSelectItem(const int key);
     void clear();
-    DListWidget *get_playlist(){return _playlist;}
+    DListWidget *get_playlist()
+    {
+        return _playlist;
+    }
 signals:
     void stateChange();
     void sizeChange();
@@ -158,10 +170,9 @@ private:
     DLabel *_title {nullptr};
     bool _toggling {false};
     /// < original row, data>
-    QPair<int, PlayItemWidget*> _lastDragged {-1, nullptr}; 
+    QPair<int, PlayItemWidget *> _lastDragged {-1, nullptr};
     int _index {0};
     PlayItemWidget *_selectItemWgt;
-
     void batchUpdateSizeHints();
 };
 }
