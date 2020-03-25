@@ -1099,7 +1099,6 @@ public:
             }
             _slider->setValue(vol);
         });
-        m_composited = CompositingManager::get().composited();
     }
 
 
@@ -1109,24 +1108,6 @@ public:
 //                this, &VolumeSlider::updateBg);
     }
 
-#ifdef __mips__
-    void paintEvent(QPaintEvent *event)
-    {
-        bool composited = CompositingManager::get().composited();
-        if(!m_composited)
-        {
-            QPainter painter(this);
-            if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ) {
-                painter.fillRect(rect(), Qt::white);
-            } else {
-                painter.fillRect(rect(), Qt::black);
-            }
-        }
-        else {
-            DArrowRectangle::paintEvent(event);
-        }
-    }
-#endif
     void stopTimer()
     {
         _autoHideTimer.stop();
@@ -1186,7 +1167,6 @@ private:
     DSlider *_slider;
     MainWindow *_mw;
     QTimer _autoHideTimer;
-    bool m_composited = false;
 };
 
 viewProgBarLoad::viewProgBarLoad(PlayerEngine *engine, DMRSlider *progBar, ToolboxProxy *parent)
