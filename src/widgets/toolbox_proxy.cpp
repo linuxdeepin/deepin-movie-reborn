@@ -1107,13 +1107,16 @@ public:
 //        disconnect(DThemeManager::instance(), &DThemeManager::themeChanged,
 //                this, &VolumeSlider::updateBg);
     }
+
 #ifdef __mips__
     void paintEvent(QPaintEvent *event)
     {
         QPainter painter(this);
-        QPalette palette(this->palette());
-        palette.setColor(QPalette::Background, Qt::white);
-        this->setPalette(palette);
+        if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ) {
+            painter.fillRect(rect(), Qt::white);
+        } else {
+            painter.fillRect(rect(), Qt::black);
+        }
     }
 #endif
     void stopTimer()
