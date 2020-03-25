@@ -1107,7 +1107,15 @@ public:
 //        disconnect(DThemeManager::instance(), &DThemeManager::themeChanged,
 //                this, &VolumeSlider::updateBg);
     }
-
+#ifdef __mips__
+    void paintEvent(QPaintEvent *event)
+    {
+        QPainter painter(this);
+        QPalette palette(this->palette());
+        palette.setColor(QPalette::Background, Qt::white);
+        this->setPalette(palette);
+    }
+#endif
     void stopTimer()
     {
         _autoHideTimer.stop();
