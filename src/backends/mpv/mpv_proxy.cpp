@@ -97,7 +97,6 @@ MpvProxy::MpvProxy(QWidget *parent)
 #if defined(USE_DXCB) || defined(_LIBDMR_)
         _gl_widget->toggleRoundedClip(false);
 #endif
-
         auto *layout = new QHBoxLayout(this);
         layout->setContentsMargins(0, 0, 0, 0);
         layout->addWidget(_gl_widget);
@@ -552,8 +551,13 @@ void MpvProxy::processPropertyChange(mpv_event_property *ev)
             else
                 set_property(_handle, "pause", false);
         } else {
-            if (state() != PlayState::Stopped)
+            if (state() != PlayState::Stopped) {
                 setState(PlayState::Playing);
+                if (_startPlayDuration != 0) {
+                    seekAbsolute(_startPlayDuration);
+                    _startPlayDuration = 0;
+                }
+            }
         }
     } else if (name == "core-idle") {
     } else if (name == "paused-for-cache") {
@@ -808,7 +812,8 @@ void MpvProxy::play()
     auto cfg = MovieConfiguration::get().queryByUrl(_file);
     auto key = MovieConfiguration::knownKey2String(ConfigKnownKey::StartPos);
     if (Settings::get().isSet(Settings::ResumeFromLast) && cfg.contains(key)) {
-        opts << QString("start=%1").arg(cfg[key].toInt());
+        opts << QString("start=%1").arg(0);
+        _startPlayDuration = cfg[key].toInt();
     }
 
     key = MovieConfiguration::knownKey2String(ConfigKnownKey::SubCodepage);

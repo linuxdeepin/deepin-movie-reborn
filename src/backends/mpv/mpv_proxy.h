@@ -1,4 +1,4 @@
-/* 
+/*
  * (c) 2017, Deepin Technology Co., Ltd. <support@deepin.org>
  *
  * This program is free software; you can redistribute it and/or
@@ -28,10 +28,10 @@
  * files in the program, then also delete it here.
  */
 #ifndef _DMR_MPV_PROXY_H
-#define _DMR_MPV_PROXY_H 
+#define _DMR_MPV_PROXY_H
 
 #define MWV206_0  //After Jing Jiawei's graphics card is upgraded, deal with the macro according to the situation,
-                  //This macro is also available for compositing_manager.cpp.
+//This macro is also available for compositing_manager.cpp.
 
 #include <player_backend.h>
 #include <player_engine.h>
@@ -43,16 +43,20 @@ namespace dmr {
 using namespace mpv::qt;
 class MpvGLWidget;
 
-class MpvProxy: public Backend {
+class MpvProxy: public Backend
+{
     Q_OBJECT
 
 public:
     MpvProxy(QWidget *parent = 0);
     virtual ~MpvProxy();
 
-    const PlayingMovieInfo& playingMovieInfo() override;
+    const PlayingMovieInfo &playingMovieInfo() override;
     // mpv plays all files by default  (I hope)
-    bool isPlayable() const override { return true; }
+    bool isPlayable() const override
+    {
+        return true;
+    }
 
     // polling until current playback ended
     void pollingEndOfPlayback();
@@ -65,17 +69,17 @@ public:
     void setPlaySpeed(double times) override;
     void savePlaybackPosition() override;
 
-    bool loadSubtitle(const QFileInfo& fi) override;
+    bool loadSubtitle(const QFileInfo &fi) override;
     void toggleSubtitle() override;
     bool isSubVisible() override;
     void selectSubtitle(int id) override;
     int sid() const override;
     void setSubDelay(double secs) override;
     double subDelay() const override;
-    void updateSubStyle(const QString& font, int sz) override;
-    void setSubCodepage(const QString& cp) override;
+    void updateSubStyle(const QString &font, int sz) override;
+    void setSubCodepage(const QString &cp) override;
     QString subCodepage() override;
-    void addSubSearchPath(const QString& path) override;
+    void addSubSearchPath(const QString &path) override;
 
     void selectTrack(int id) override;
     int aid() const override;
@@ -93,8 +97,8 @@ public:
     void burstScreenshot() override; //initial the start of burst screenshotting
     void stopBurstScreenshot() override;
 
-    QVariant getProperty(const QString&) override;
-    void setProperty(const QString&, const QVariant&) override;
+    QVariant getProperty(const QString &) override;
+    void setProperty(const QString &, const QVariant &) override;
 
     void nextFrame() override;
     void previousFrame() override;
@@ -132,6 +136,8 @@ private:
     qint64 _burstStart {0};
     QList<qint64> _burstPoints;
 
+    qint64 _startPlayDuration {0};
+
     bool _pendingSeek {false};
     PlayingMovieInfo _pmf;
     int _videoRotation {0};
@@ -144,11 +150,11 @@ private:
 
     bool _pauseOnStart {false};
 
-    mpv_handle* mpv_init();
-    void processPropertyChange(mpv_event_property* ev);
-    void processLogMessage(mpv_event_log_message* ev);
+    mpv_handle *mpv_init();
+    void processPropertyChange(mpv_event_property *ev);
+    void processLogMessage(mpv_event_log_message *ev);
     QImage takeOneScreenshot();
-    void changeProperty(const QString& name, const QVariant& v);
+    void changeProperty(const QString &name, const QVariant &v);
     void updatePlayingMovieInfo();
     void setState(PlayState s);
     qint64 nextBurstShootPoint();
