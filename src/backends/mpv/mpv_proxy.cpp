@@ -81,6 +81,7 @@ static void mpv_callback(void *d)
 MpvProxy::MpvProxy(QWidget *parent)
     : Backend(parent)
 {
+    m_parentWidget = parent;
     if (!CompositingManager::get().composited()) {
         setWindowFlags(Qt::FramelessWindowHint);
         setAttribute(Qt::WA_NativeWindow);
@@ -243,7 +244,7 @@ mpv_handle *MpvProxy::mpv_init()
         set_property(h, "vo", "gpu,xv,x11");
 #endif
 #endif
-        set_property(h, "wid", this->winId());
+        set_property(h, "wid", m_parentWidget->winId());
     }
 
 

@@ -39,6 +39,7 @@
 #include <QtCore>
 #include <QtGui>
 #include <QX11Info>
+#include <QDBusInterface>
 
 #define GLX_GLXEXT_PROTOTYPES
 #include <GL/glx.h>

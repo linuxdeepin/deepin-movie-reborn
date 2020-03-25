@@ -130,6 +130,7 @@ signals:
 private:
     Handle _handle;
     MpvGLWidget *_gl_widget{nullptr};
+    QWidget *m_parentWidget;
 
     bool _inBurstShotting {false};
     QVariant _posBeforeBurst;
