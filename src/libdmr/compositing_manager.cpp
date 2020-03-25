@@ -194,7 +194,10 @@ CompositingManager::CompositingManager()
     }
 #endif
 #ifdef __mips__
-    // _composited = false;   //2020.3.19龙芯增加显卡需保留检测显卡方案
+    bool bRet = QDBusInterface("com.deepin.wm", "/com/deepin/wm", "com.deepin.wm").property("compositingAllowSwitch").toBool();
+    if (!bRet) {
+        _composited = false;   //2020.3.19龙芯增加显卡需保留检测显卡方案
+    }
 #endif
     qDebug() << "composited:" << _composited;
 }

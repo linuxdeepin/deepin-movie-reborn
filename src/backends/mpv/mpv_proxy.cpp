@@ -102,7 +102,9 @@ MpvProxy::MpvProxy(QWidget *parent)
         layout->addWidget(_gl_widget);
         setLayout(layout);
     }
-
+#ifdef __mips__
+    setAttribute(Qt::WA_TransparentForMouseEvents, true);
+#endif
 }
 
 MpvProxy::~MpvProxy()

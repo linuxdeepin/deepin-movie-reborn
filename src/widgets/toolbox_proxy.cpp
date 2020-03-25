@@ -1046,8 +1046,9 @@ public:
         : DArrowRectangle(DArrowRectangle::ArrowBottom, DArrowRectangle::FloatWidget, parent), _engine(eng), _mw(mw)
     {
         setFixedSize(QSize(62, 201));
-//        setWindowFlags(Qt::Tool);
-
+#ifdef __mips__
+        setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
+#endif
         setShadowBlurRadius(4);
         setRadius(18);
         setShadowYOffset(3);
@@ -1662,16 +1663,29 @@ void ToolboxProxy::setup()
     connect(_volBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_volBtn, "vol");
 //    _right->addWidget(_volBtn);
-
-    _volSlider = new VolumeSlider(_engine, _mainWindow, _mainWindow);
+#ifdef __mips__
+    _volSlider = new VolumeSlider(_engine, _mainWindow, nullptr);
     connect(_volBtn, &VolumeButton::entered, [ = ]() {
         _volSlider->stopTimer();
 //        QPoint pos = _volBtn->parentWidget()->mapToGlobal(_volBtn->pos());
 //        pos.ry() = parentWidget()->mapToGlobal(this->pos()).y();
         _volSlider->show(_mainWindow->width() - _volBtn->width() / 2 - _playBtn->width() - 43,
                          _mainWindow->height() - TOOLBOX_HEIGHT - 5);
+        QRect rc = _volBtn->geometry();
+        QPoint pos(rc.left() + rc.width() / 2, rc.top() - 20);
+        pos = this->mapToGlobal(pos);
+        _volSlider->move(pos.x(), pos.y());
         _volSlider->raise();
     });
+#else
+    _volSlider = new VolumeSlider(_engine, _mainWindow, _mainWindow);
+    connect(_volBtn, &VolumeButton::entered, [ = ]() {
+        _volSlider->stopTimer();
+        _volSlider->show(_mainWindow->width() - _volBtn->width() / 2 - _playBtn->width() - 43,
+                         _mainWindow->height() - TOOLBOX_HEIGHT - 5);
+        _volSlider->raise();
+    });
+#endif
     connect(_volBtn, &VolumeButton::leaved, _volSlider, &VolumeSlider::delayedHide);
     connect(_volBtn, &VolumeButton::requestVolumeUp, [ = ]() {
         _mainWindow->requestAction(ActionFactory::ActionKind::VolumeUp);
@@ -1798,7 +1812,7 @@ void ToolboxProxy::setup()
         {
             _viewProgBar->setWidth();
             if (_engine->state() != PlayerEngine::CoreState::Idle && size() != _loadsize) {
-#ifndef __mips__
+#ifdef __mips__
                 updateThumbnail();
 #endif
                 _loadsize = size();
