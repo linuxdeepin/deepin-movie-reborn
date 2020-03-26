@@ -227,10 +227,12 @@ mpv_handle *MpvProxy::mpv_init()
         set_property(h, "vo", "libmpv,opengl-cb");
         set_property(h, "vd-lavc-dr", "no");
         set_property(h, "gpu-sw", "on");
+        set_property(h, "ao", "alsa");
 #endif
     } else {
 #ifdef __mips__
         set_property(h, "vo", "xv");
+        set_property(h, "ao", "alsa");
 #else
 #ifdef MWV206_0
         QFileInfo fi("/dev/mwv206_0");              //景嘉微显卡目前只支持vo=xv，等日后升级代码需要酌情修改。
