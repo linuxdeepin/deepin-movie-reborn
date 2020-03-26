@@ -226,6 +226,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
     m_scrollArea->setWidgetResizable(true);
     m_scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOff);
 
+    //添加基本信息
     ArrowLine *film = new ArrowLine;
     film->setTitle(tr("Film info"));
     InfoBottom *infoRect = new InfoBottom;
@@ -406,8 +407,10 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
     auto th = new ToolTipEvent(this);
     if (tipLst.size() > 1) {
         auto filePathLbl = tipLst.at(3);
+        auto codeLabel = m_titleList.at(5);
         qDebug() << "filePathLbl w,h: " << filePathLbl->width() << "," << filePathLbl->height();
-        filePathLbl->setMinimumWidth(190);
+        QFontMetrics fm = codeLabel->fontMetrics();
+        filePathLbl->setMinimumWidth(qMin(190, 250 - fm.boundingRect(codeLabel->text()).width()));
         qDebug() << "filePathLbl w,h: " << filePathLbl->width() << "," << filePathLbl->height();
         auto fp = ElideText(tmp->text(), {filePathLbl->width(), fm.height()}, QTextOption::WrapAnywhere,
                             filePathLbl->font(), Qt::ElideRight, fm.height(), filePathLbl->width());
@@ -508,8 +511,8 @@ void MovieInfoDialog::changedHeight(const int height)
 void MovieInfoDialog::addRow(QString title, QString field, QFormLayout *form, QList<DLabel *> &tipLst)
 {
     auto f = new DLabel(title, this);
-    f->setFixedSize(60, 20);
     f->setAlignment(Qt::AlignLeft | Qt::AlignTop);
+    f->setFixedSize(60, 20);
     //DFontSizeManager::instance()->bind(f, DFontSizeManager::T8, 0);
     //f->setForegroundRole(DPalette::WindowText);
     QFont font = f->font();
@@ -518,8 +521,8 @@ void MovieInfoDialog::addRow(QString title, QString field, QFormLayout *form, QL
     font.setFamily("SourceHanSansSC");
     f->setFont(font);
     auto t = new DLabel(field, this);
-    t->setFixedHeight(60);
     t->setAlignment(Qt::AlignLeft | Qt::AlignTop);
+    t->setFixedHeight(20);
     t->setWordWrap(true);
     t->setFont(font);
     form->addRow(f, t);
