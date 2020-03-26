@@ -3039,6 +3039,12 @@ void MainWindow::resizeByConstraints(bool forceCentered)
 
     const auto &mi = _engine->playlist().currentInfo().mi;
     auto sz = _engine->videoSize();
+#ifdef __mips__
+    //3.26修改，初始分辨率大于1080P时缩小一半
+    while (sz.width() >= 1080) {
+        sz = sz / 2;
+    }
+#endif
     if (sz.isEmpty()) {
         sz = QSize(mi.width, mi.height);
         qDebug() << mi.width << mi.height;
