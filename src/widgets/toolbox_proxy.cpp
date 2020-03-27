@@ -1832,7 +1832,7 @@ void ToolboxProxy::setup()
         {
             _viewProgBar->setWidth();
             if (_engine->state() != PlayerEngine::CoreState::Idle && size() != _loadsize) {
-#ifdef __mips__
+#ifndef __mips__
                 updateThumbnail();
 #endif
                 _loadsize = size();
