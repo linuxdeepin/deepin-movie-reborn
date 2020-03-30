@@ -223,27 +223,21 @@ mpv_handle *MpvProxy::mpv_init()
         switch (index) {
         case 0:
             set_property(h, "hwdec", "no");
-            qDebug() << "modify HWDEC no";
             break;
         case 1:
             set_property(h, "hwdec", "auto");
-            qDebug() << "modify HWDEC auto";
             break;
         case 2:
             set_property(h, "hwdec", "yes");
-            qDebug() << "modify HWDEC yes";
             break;
         case 3:
             set_property(h, "hwdec", "auto-safe");
-            qDebug() << "modify HWDEC auto-safe";
             break;
         case 4:
             set_property(h, "hwdec", "vdpau");
-            qDebug() << "modify HWDEC vdpau";
             break;
         case 5:
             set_property(h, "hwdec", "vaapi");
-            qDebug() << "modify HWDEC vaapi";
             break;
         default:
             break;
@@ -277,9 +271,9 @@ mpv_handle *MpvProxy::mpv_init()
         QFileInfo fi("/dev/mwv206_0");              //景嘉微显卡目前只支持vo=xv，等日后升级代码需要酌情修改。
         if (fi.exists()) {
             set_property(h, "hwdec", "vdpau");
-            set_property(h, "vo", "vdpau");
-        } else {
             set_property(h, "vo", "xv");
+        } else {
+            set_property(h, "vo", "gpu,xv,x11");
         }
 #else
         set_property(h, "vo", "gpu,xv,x11");
