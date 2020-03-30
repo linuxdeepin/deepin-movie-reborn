@@ -212,7 +212,7 @@ mpv_handle *MpvProxy::mpv_init()
     }
 #endif
 #ifdef __aarch64__
-    /*QString path = QString("%1/%2/%3/conf")
+    QString path = QString("%1/%2/%3/conf")
                    .arg(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation))
                    .arg(qApp->organizationName())
                    .arg(qApp->applicationName());
@@ -223,34 +223,26 @@ mpv_handle *MpvProxy::mpv_init()
         switch (index) {
         case 0:
             set_property(h, "hwdec", "no");
-            qDebug() << "modify HWDEC no";
             break;
         case 1:
             set_property(h, "hwdec", "auto");
-            qDebug() << "modify HWDEC auto";
             break;
         case 2:
             set_property(h, "hwdec", "yes");
-            qDebug() << "modify HWDEC yes";
             break;
         case 3:
             set_property(h, "hwdec", "auto-safe");
-            qDebug() << "modify HWDEC auto-safe";
             break;
         case 4:
             set_property(h, "hwdec", "vdpau");
-            qDebug() << "modify HWDEC vdpau";
             break;
         case 5:
             set_property(h, "hwdec", "vaapi");
-            qDebug() << "modify HWDEC vaapi";
             break;
         default:
             break;
         }
-    }*/
-    set_property(h, "hwdec", "auto-safe");
-    qDebug() << "modify HWDEC auto-safe";
+    }
 #endif
     set_property(h, "panscan", 1.0);
     //set_property(h, "no-keepaspect", "true");
@@ -279,9 +271,9 @@ mpv_handle *MpvProxy::mpv_init()
         QFileInfo fi("/dev/mwv206_0");              //景嘉微显卡目前只支持vo=xv，等日后升级代码需要酌情修改。
         if (fi.exists()) {
             set_property(h, "hwdec", "vdpau");
-            set_property(h, "vo", "vdpau");
-        } else {
             set_property(h, "vo", "xv");
+        } else {
+            set_property(h, "vo", "gpu,xv,x11");
         }
 #else
         set_property(h, "vo", "gpu,xv,x11");
@@ -291,7 +283,7 @@ mpv_handle *MpvProxy::mpv_init()
     }
 
 
-    set_property(h, "volume-max", 240.0);
+    set_property(h, "volume-max", 200.0);
     set_property(h, "input-cursor", "no");
     set_property(h, "cursor-autohide", "no");
 
@@ -490,10 +482,8 @@ void MpvProxy::handle_mpv_events()
                 qDebug() << "MPV_EVENT_FILE_LOADED aarch64";
                 auto codec = get_property(_handle, "video-codec").toString();
                 if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") || codec.toLower().contains("mpeg2video")) {
-//                    qDebug() << "set_property hwdec no";
-//                    set_property(_handle, "hwdec", "no");
-                    qDebug() << "set_property hwdec auto-safe";
-                    set_property(_handle, "hwdec", "auto-safe");
+                    qDebug() << "set_property hwdec no";
+                    set_property(_handle, "hwdec", "no");
                 }
 #endif
             }
@@ -721,11 +711,7 @@ void MpvProxy::savePlaybackPosition()
 
 #ifndef _LIBDMR_
     MovieConfiguration::get().updateUrl(this->_file, ConfigKnownKey::SubId, sid());
-    if (elapsed() - 10 >= 0) {
-        MovieConfiguration::get().updateUrl(this->_file, ConfigKnownKey::StartPos, elapsed() - 10);
-    } else {
-        MovieConfiguration::get().updateUrl(this->_file, ConfigKnownKey::StartPos, 10);
-    }
+    MovieConfiguration::get().updateUrl(this->_file, ConfigKnownKey::StartPos, elapsed());
 #endif
 }
 
@@ -801,15 +787,12 @@ void MpvProxy::volumeUp()
 
 void MpvProxy::changeVolume(int val)
 {
-    val += 40;
-    val = qMin(qMax(val, 40), 240);
+    val = qMin(qMax(val, 0), 200);
     set_property(_handle, "volume", val);
 }
 
 void MpvProxy::volumeDown()
 {
-    if (volume() <= 0)
-        return;
     QList<QVariant> args = { "add", "volume", -8 };
     qDebug () << args;
     command(_handle, args);
@@ -817,7 +800,7 @@ void MpvProxy::volumeDown()
 
 int MpvProxy::volume() const
 {
-    return get_property(_handle, "volume").toInt() - 40;
+    return get_property(_handle, "volume").toInt();
 }
 
 int MpvProxy::videoRotation() const
