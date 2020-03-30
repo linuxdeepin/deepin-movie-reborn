@@ -211,6 +211,45 @@ mpv_handle *MpvProxy::mpv_init()
         set_property(h, "hwdec", "off");
     }
 #endif
+#ifdef __aarch64__
+    QString path = QString("%1/%2/%3/conf")
+                   .arg(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation))
+                   .arg(qApp->organizationName())
+                   .arg(qApp->applicationName());
+    QFile configFile(path);
+    if (configFile.exists()) {
+        configFile.open(QIODevice::ReadOnly);
+        int index = configFile.readLine().left(1).toInt();
+        switch (index) {
+        case 0:
+            set_property(h, "hwdec", "no");
+            qDebug << "modify HWDEC no";
+            break;
+        case 1:
+            set_property(h, "hwdec", "auto");
+            qDebug << "modify HWDEC auto";
+            break;
+        case 2:
+            set_property(h, "hwdec", "yes");
+            qDebug << "modify HWDEC yes";
+            break;
+        case 3:
+            set_property(h, "hwdec", "auto-safe");
+            qDebug << "modify HWDEC auto-safe";
+            break;
+        case 4:
+            set_property(h, "hwdec", "vdpau");
+            qDebug << "modify HWDEC vdpau";
+            break;
+        case 5:
+            set_property(h, "hwdec", "vaapi");
+            qDebug << "modify HWDEC vaapi";
+            break;
+        default:
+            break;
+        }
+    }
+#endif
     set_property(h, "panscan", 1.0);
     //set_property(h, "no-keepaspect", "true");
 
@@ -238,9 +277,9 @@ mpv_handle *MpvProxy::mpv_init()
         QFileInfo fi("/dev/mwv206_0");              //景嘉微显卡目前只支持vo=xv，等日后升级代码需要酌情修改。
         if (fi.exists()) {
             set_property(h, "hwdec", "vdpau");
-            set_property(h, "vo", "xv");
+            set_property(h, "vo", "vdpau");
         } else {
-            set_property(h, "vo", "gpu,xv,x11");
+            set_property(h, "vo", "xv");
         }
 #else
         set_property(h, "vo", "gpu,xv,x11");

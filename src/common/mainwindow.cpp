@@ -680,7 +680,7 @@ MainWindow::MainWindow(QWidget *parent)
         _handle = new DPlatformWindowHandle(this, this);
         //setAttribute(Qt::WA_TranslucentBackground, true);
         //if (composited)
-        //_handle->setTranslucentBackground(true);
+        //_handle->setTranslucentBackground(true);_miniPlayBtn
         _handle->setEnableSystemResize(false);
         _handle->setEnableSystemMove(false);
         _handle->setWindowRadius(4);
@@ -799,11 +799,26 @@ MainWindow::MainWindow(QWidget *parent)
             static_cast<void(QSignalMapper::*)(const QString &)>(&QSignalMapper::mapped),
             this, &MainWindow::miniButtonClicked);
 
+#ifdef __mips__
+    _miniPlayBtn = new IconButton(this);
+    _miniCloseBtn = new IconButton(this);
+    _miniQuitMiniBtn = new IconButton(this);
+
+    dynamic_cast<IconButton *>(_miniPlayBtn)->setFlat(true);
+    dynamic_cast<IconButton *>(_miniCloseBtn)->setFlat(true);
+    dynamic_cast<IconButton *>(_miniQuitMiniBtn)->setFlat(true);
+#else
     _miniPlayBtn = new DIconButton(this);
+    _miniCloseBtn = new DIconButton(this);
+    _miniQuitMiniBtn = new DIconButton(this);
+
+    _miniPlayBtn->setFlat(true);
+    _miniCloseBtn->setFlat(true);
+    _miniQuitMiniBtn->setFlat(true);
+#endif
     _miniPlayBtn->setIcon(QIcon(":/resources/icons/light/mini/play-normal-mini.svg"));
     _miniPlayBtn->setIconSize(QSize(30, 30));
     _miniPlayBtn->setFixedSize(QSize(30, 30));
-    _miniPlayBtn->setFlat(true);
     _miniPlayBtn->setObjectName("MiniPlayBtn");
     connect(_miniPlayBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_miniPlayBtn, "play");
@@ -846,20 +861,16 @@ MainWindow::MainWindow(QWidget *parent)
 //        _miniPlayBtn->setStyleSheet(_miniPlayBtn->styleSheet());
     });
 
-    _miniCloseBtn = new DIconButton(this);
     _miniCloseBtn->setIcon(QIcon(":/resources/icons/light/mini/close-normal.svg"));
     _miniCloseBtn->setIconSize(QSize(30, 30));
     _miniCloseBtn->setFixedSize(QSize(30, 30));
-    _miniCloseBtn->setFlat(true);
     _miniCloseBtn->setObjectName("MiniCloseBtn");
     connect(_miniCloseBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_miniCloseBtn, "close");
 
-    _miniQuitMiniBtn = new DIconButton(this);
     _miniQuitMiniBtn->setIcon(QIcon(":/resources/icons/light/mini/restore-normal-mini.svg"));
     _miniQuitMiniBtn->setIconSize(QSize(30, 30));
     _miniQuitMiniBtn->setFixedSize(QSize(30, 30));
-    _miniQuitMiniBtn->setFlat(true);
     _miniQuitMiniBtn->setObjectName("MiniQuitMiniBtn");
     connect(_miniQuitMiniBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_miniQuitMiniBtn, "quit_mini");
@@ -867,6 +878,11 @@ MainWindow::MainWindow(QWidget *parent)
     _miniPlayBtn->setVisible(_miniMode);
     _miniCloseBtn->setVisible(_miniMode);
     _miniQuitMiniBtn->setVisible(_miniMode);
+    if (!composited) {
+        _miniPlayBtn->setAttribute(Qt::WA_NativeWindow);
+        _miniCloseBtn->setAttribute(Qt::WA_NativeWindow);
+        _miniQuitMiniBtn->setAttribute(Qt::WA_NativeWindow);
+    }
     // ~
 
     updateProxyGeometry();
@@ -1064,6 +1080,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(&volumeMonitoring, &VolumeMonitoring::muteChanged, this, [ = ](bool mute) {
         changedMute();
     });
+    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, &MainWindow::updateMiniBtnTheme);
 }
 
 void MainWindow::setupTitlebar()
@@ -2073,22 +2090,27 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
 
     case ActionFactory::ActionKind::OrderPlay: {
         Settings::get().setInternalOption("playmode", 0);
+        _engine->playlist().setPlayMode(PlaylistModel::PlayMode::OrderPlay);
         break;
     }
     case ActionFactory::ActionKind::ShufflePlay: {
         Settings::get().setInternalOption("playmode", 1);
+        _engine->playlist().setPlayMode(PlaylistModel::PlayMode::ShufflePlay);
         break;
     }
     case ActionFactory::ActionKind::SinglePlay: {
         Settings::get().setInternalOption("playmode", 2);
+        _engine->playlist().setPlayMode(PlaylistModel::PlayMode::SinglePlay);
         break;
     }
     case ActionFactory::ActionKind::SingleLoop: {
         Settings::get().setInternalOption("playmode", 3);
+        _engine->playlist().setPlayMode(PlaylistModel::PlayMode::SingleLoop);
         break;
     }
     case ActionFactory::ActionKind::ListLoop: {
         Settings::get().setInternalOption("playmode", 4);
+        _engine->playlist().setPlayMode(PlaylistModel::PlayMode::ListLoop);
         break;
     }
 
@@ -3833,6 +3855,15 @@ QString MainWindow::probeCdromDevice()
     }
 
     return QString();
+}
+
+void MainWindow::updateMiniBtnTheme(int a)
+{
+#ifdef __mips__
+    dynamic_cast<IconButton *>(_miniPlayBtn)->changeTheme(a);
+    dynamic_cast<IconButton *>(_miniCloseBtn)->changeTheme(a);
+    dynamic_cast<IconButton *>(_miniQuitMiniBtn)->changeTheme(a);
+#endif
 }
 
 #include "mainwindow.moc"
