@@ -211,6 +211,39 @@ mpv_handle *MpvProxy::mpv_init()
         set_property(h, "hwdec", "off");
     }
 #endif
+#ifdef __aarch64__
+    QString path = QString("%1/%2/%3/conf")
+                   .arg(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation))
+                   .arg(qApp->organizationName())
+                   .arg(qApp->applicationName());
+    QFile configFile(path);
+    if (configFile.exists()) {
+        configFile.open(QIODevice::ReadOnly);
+        int index = configFile.readLine().left(1).toInt();
+        switch (index) {
+        case 0:
+            set_property(h, "hwdec", "no");
+            break;
+        case 1:
+            set_property(h, "hwdec", "auto");
+            break;
+        case 2:
+            set_property(h, "hwdec", "yes");
+            break;
+        case 3:
+            set_property(h, "hwdec", "auto-safe");
+            break;
+        case 4:
+            set_property(h, "hwdec", "vdpau");
+            break;
+        case 5:
+            set_property(h, "hwdec", "vaapi");
+            break;
+        default:
+            break;
+        }
+    }
+#endif
     set_property(h, "panscan", 1.0);
     //set_property(h, "no-keepaspect", "true");
 
