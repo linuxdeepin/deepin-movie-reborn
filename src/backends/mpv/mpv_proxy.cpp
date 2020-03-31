@@ -223,27 +223,27 @@ mpv_handle *MpvProxy::mpv_init()
         switch (index) {
         case 0:
             set_property(h, "hwdec", "no");
-            qDebug << "modify HWDEC no";
+            qDebug() << "modify HWDEC no";
             break;
         case 1:
             set_property(h, "hwdec", "auto");
-            qDebug << "modify HWDEC auto";
+            qDebug() << "modify HWDEC auto";
             break;
         case 2:
             set_property(h, "hwdec", "yes");
-            qDebug << "modify HWDEC yes";
+            qDebug() << "modify HWDEC yes";
             break;
         case 3:
             set_property(h, "hwdec", "auto-safe");
-            qDebug << "modify HWDEC auto-safe";
+            qDebug() << "modify HWDEC auto-safe";
             break;
         case 4:
             set_property(h, "hwdec", "vdpau");
-            qDebug << "modify HWDEC vdpau";
+            qDebug() << "modify HWDEC vdpau";
             break;
         case 5:
             set_property(h, "hwdec", "vaapi");
-            qDebug << "modify HWDEC vaapi";
+            qDebug() << "modify HWDEC vaapi";
             break;
         default:
             break;
