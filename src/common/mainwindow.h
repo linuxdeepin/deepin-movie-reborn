@@ -257,6 +257,8 @@ private:
     void setAudioVolume(double);
     void setMusicMuted(bool muted);
 
+    //Limit video to mini mode size
+    void LimitWindowize();
 private:
     DFloatingMessage *popup {nullptr};
     QLabel *_fullscreentimelable {nullptr};
