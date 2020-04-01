@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="sv">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="sv" version="2.1">
 <context>
     <name>QObject</name>
     <message>
@@ -13,7 +11,7 @@
     </message>
     <message>
         <source>Network disconnected</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>You don&apos;t have permission to operate this folder</source>
@@ -173,7 +171,7 @@
     </message>
     <message>
         <source>Exit fullscreen/mini mode</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>Movie</source>
@@ -193,7 +191,7 @@
     </message>
     <message>
         <source>Delete from playlist</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>Film info</source>
@@ -201,7 +199,7 @@
     </message>
     <message>
         <source>Burst shooting</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>Size</source>
@@ -209,15 +207,11 @@
     </message>
     <message>
         <source>Movie is a full-featured video player, supporting playing local and streaming media in multiple video formats.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>OK</source>
         <translation>Okej</translation>
-    </message>
-    <message>
-        <source>Default play mode</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -251,7 +245,7 @@
     </message>
     <message>
         <source>Empty playlist</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>Film info</source>
@@ -387,7 +381,7 @@
     </message>
     <message>
         <source>Delete from playlist</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>Display in file manager</source>
@@ -395,15 +389,11 @@
     </message>
     <message>
         <source>Next Frame</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>Previous Frame</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Go To Screenshot Folder</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -465,7 +455,7 @@
     </message>
     <message>
         <source>Parse failed</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>Mute</source>
@@ -477,7 +467,7 @@
     </message>
     <message>
         <source>Track: %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>Subtitle %1: %2s</source>
@@ -521,11 +511,11 @@
     </message>
     <message>
         <source>No matching online subtitles</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>Cannot open file or stream</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>Invalid file</source>
@@ -533,11 +523,11 @@
     </message>
     <message>
         <source>No video file found</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>Open File</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>Film screenshot</source>
@@ -545,7 +535,7 @@
     </message>
     <message>
         <source>Taking the screenshots, please wait...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>OK</source>
@@ -553,66 +543,38 @@
     </message>
     <message>
         <source>Please insert a CD/DVD</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>Reading DVD files...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>4K video may be stuck</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>Please load the video first</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>All videos (%1%2)</source>
-        <translation type="unfinished">Alla videos (%1) {1%2)?}</translation>
-    </message>
-    <message>
-        <source>Order play</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Shuffle play</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Single play</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Single loop</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>List loop</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The CD/DVD has been ejected</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
     <name>dmr::MovieInfo</name>
     <message>
         <source>%1G</source>
-        <translation type="vanished">%1G</translation>
+        <translation>%1G</translation>
     </message>
     <message>
         <source>%1M</source>
-        <translation type="vanished">%1M</translation>
+        <translation>%1M</translation>
     </message>
     <message>
         <source>%1K</source>
-        <translation type="vanished">%1K</translation>
+        <translation>%1K</translation>
     </message>
     <message>
         <source>%1</source>
-        <translation type="vanished">%1</translation>
+        <translation>%1</translation>
     </message>
 </context>
 <context>
@@ -641,87 +603,19 @@
         <source>Path</source>
         <translation>Sökväg</translation>
     </message>
-    <message>
-        <source>Codec info</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Video CodecID</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Video CodeRate</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>%1 kbps</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>FPS</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>%1 fps</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Proportion</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>%1</source>
-        <translation type="unfinished">%1</translation>
-    </message>
-    <message>
-        <source>Audio info</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Audio CodecID</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Audio CodeRate</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Audio digit</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>%1 bits</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Channels</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>%1 channels</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Sampling</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>%1hz</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>dmr::MpvProxy</name>
     <message>
         <source>Internal</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
     <name>dmr::PlayItemWidget</name>
     <message>
         <source>The file does not exist</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -732,7 +626,7 @@
     </message>
     <message>
         <source>%1 videos</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>Empty</source>
@@ -743,31 +637,11 @@
     <name>dmr::Settings</name>
     <message>
         <source>%1/Movie%2.jpg</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>%1/Movie%2(%3).jpg</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Order play</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Shuffle play</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Single play</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Single loop</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>List loop</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -802,23 +676,23 @@
     </message>
     <message>
         <source>play</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>prev</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>next</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>fs</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>list</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>Exit fullscreen</source>

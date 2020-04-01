@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="fr">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="fr" version="2.1">
 <context>
     <name>QObject</name>
     <message>
@@ -228,7 +226,7 @@
     </message>
     <message>
         <source>Please enter the URL:</source>
-        <translation>Veuillez entrer l&apos;URL&#xa0;:</translation>
+        <translation>Veuillez entrer l&apos;URL :</translation>
     </message>
     <message>
         <source>OK</source>
@@ -401,10 +399,6 @@
         <source>Previous Frame</source>
         <translation>Cadre précédent</translation>
     </message>
-    <message>
-        <source>Go To Screenshot Folder</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>dmr::BurstScreenshotsDialog</name>
@@ -473,7 +467,7 @@
     </message>
     <message>
         <source>Volume: %1%</source>
-        <translation>Volume&#xa0;: %1%</translation>
+        <translation>Volume : %1%</translation>
     </message>
     <message>
         <source>Track: %1</source>
@@ -481,7 +475,7 @@
     </message>
     <message>
         <source>Subtitle %1: %2s</source>
-        <translation>Sous-titre %1&#xa0;: %2s</translation>
+        <translation>Sous-titre %1 : %2s</translation>
     </message>
     <message>
         <source>delayed</source>
@@ -493,7 +487,7 @@
     </message>
     <message>
         <source>Speed: %1x</source>
-        <translation>Vitesse&#xa0;: %1x</translation>
+        <translation>Vitesse : %1x</translation>
     </message>
     <message>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</source>
@@ -517,7 +511,7 @@
     </message>
     <message>
         <source>Invalid file: %1</source>
-        <translation>Fichier non valide&#xa0;: %1</translation>
+        <translation>Fichier non valide : %1</translation>
     </message>
     <message>
         <source>No matching online subtitles</source>
@@ -591,28 +585,24 @@
         <source>The CD/DVD has been ejected</source>
         <translation>Le CD/DVD a été éjecté</translation>
     </message>
-    <message>
-        <source>All videos (%1%2)</source>
-        <translation type="unfinished">Toutes les vidéos (%1) {1%2)?}</translation>
-    </message>
 </context>
 <context>
     <name>dmr::MovieInfo</name>
     <message>
         <source>%1G</source>
-        <translation type="vanished">%1 GO</translation>
+        <translation>%1 GO</translation>
     </message>
     <message>
         <source>%1M</source>
-        <translation type="vanished">%1 MO</translation>
+        <translation>%1 MO</translation>
     </message>
     <message>
         <source>%1K</source>
-        <translation type="vanished">%1 KO</translation>
+        <translation>%1 KO</translation>
     </message>
     <message>
         <source>%1</source>
-        <translation type="vanished">%1</translation>
+        <translation>%1</translation>
     </message>
 </context>
 <context>
@@ -643,31 +633,31 @@
     </message>
     <message>
         <source>Codec info</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>Video CodecID</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>Video CodeRate</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>%1 kbps</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>FPS</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>%1 fps</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>Proportion</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>%1</source>
@@ -675,39 +665,39 @@
     </message>
     <message>
         <source>Audio info</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>Audio CodecID</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>Audio CodeRate</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>Audio digit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>%1 bits</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>Channels</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>%1 channels</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>Sampling</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>%1hz</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -798,7 +788,7 @@
     </message>
     <message>
         <source>Play/Pause</source>
-        <translation>Lecture&#xa0;/&#xa0;Pause</translation>
+        <translation>Lecture / Pause</translation>
     </message>
     <message>
         <source>play</source>
