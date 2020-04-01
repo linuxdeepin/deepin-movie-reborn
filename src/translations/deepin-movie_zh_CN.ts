@@ -591,6 +591,10 @@
         <source>The CD/DVD has been ejected</source>
         <translation>CD/DVD已弹出</translation>
     </message>
+    <message>
+        <source>All videos (%1%2)</source>
+        <translation type="unfinished">所有视频(%1) {1%2)?}</translation>
+    </message>
 </context>
 <context>
     <name>dmr::MovieInfo</name>
