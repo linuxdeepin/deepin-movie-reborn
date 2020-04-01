@@ -1113,16 +1113,14 @@ public:
     void paintEvent(QPaintEvent *event)
     {
         bool composited = CompositingManager::get().composited();
-        if(!m_composited)
-        {
+        if (!m_composited) {
             QPainter painter(this);
             if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ) {
                 painter.fillRect(rect(), Qt::white);
             } else {
                 painter.fillRect(rect(), Qt::black);
             }
-        }
-        else {
+        } else {
             DArrowRectangle::paintEvent(event);
         }
     }
