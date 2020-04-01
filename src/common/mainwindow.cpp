@@ -3725,7 +3725,7 @@ void MainWindow::toggleUIMode()
 //                this->setMinimumSize(QSize(1070, 680));
                 this->resize(850, 600);
             } else {
-                if (_lastRectInNormalMode.isValid()) {
+                if (_lastRectInNormalMode.isValid() && _engine->videoRotation() == 0) {
                     resize(_lastRectInNormalMode.size());
                 } else {
                     resizeByConstraints();
