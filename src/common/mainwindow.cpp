@@ -3148,12 +3148,21 @@ void MainWindow::updateGeometryNotification(const QSize &sz)
     }
 }
 
+void MainWindow::LimitWindowize()
+{
+    if (!_miniMode && (geometry().width() == 380 || geometry().height() == 380)) {
+        setGeometry(_lastRectInNormalMode);
+    }
+}
+
 void MainWindow::resizeEvent(QResizeEvent *ev)
 {
     qDebug() << __func__ << geometry();
     if (isFullScreen()) {
         _progIndicator->move(geometry().width() - _progIndicator->width() - 18, 8);
     }
+    // modify 4.1  Limit video to mini mode size by thx
+    LimitWindowize();
 
     updateSizeConstraints();
     updateProxyGeometry();
@@ -3522,6 +3531,7 @@ void MainWindow::setMusicMuted(bool muted)
 
     return;
 }
+
 
 QString MainWindow::lastOpenedPath()
 {
