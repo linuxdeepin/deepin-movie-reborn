@@ -4,6 +4,7 @@ void GenerateSettingTranslate()
 {
     auto base_play_addsimilarText = QObject::tr("Auto add similar files to play");
     auto base_play_emptylistText = QObject::tr("Clear playlist when exit");
+    auto base_play_showthumbnailmode = QObject::tr("Show thumbnails in progress bar");
     auto base_play_mousepreviewText = QObject::tr("Show video preview on mouseover");
     auto base_play_multiinstanceText = QObject::tr("Open a new player for each file played");
     auto base_play_pauseonminText = QObject::tr("Pause when minimized");

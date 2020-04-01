@@ -221,6 +221,9 @@ void PlayerEngine::onBackendStateChanged()
     switch (_current->state()) {
     case Backend::PlayState::Playing:
         _state = CoreState::Playing;
+
+        //playing . emit thumbnail progress mode signal with setting file
+        emit siginitthumbnailseting();
         break;
     case Backend::PlayState::Paused:
         _state = CoreState::Paused;

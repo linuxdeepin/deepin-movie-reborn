@@ -126,6 +126,8 @@ public:
 public slots:
     void finishLoadSlot(QSize size);
     void updateplaylisticon();
+    void setthumbnailmode();
+
 signals:
     void requestPlay();
     void requestPause();
@@ -217,6 +219,8 @@ private:
 
     viewProgBarLoad *m_worker = nullptr;
     bool m_mouseFlag = false;
+
+    bool _bthumbnailmode;
 };
 class viewProgBarLoad: public QThread{
     Q_OBJECT

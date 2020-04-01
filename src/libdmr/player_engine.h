@@ -179,6 +179,8 @@ signals:
     void mpvWarningLogsChanged(const QString prefix, const QString text);
     void urlpause(bool status);
 
+    void siginitthumbnailseting();
+
 public slots:
     void play();
     void pauseResume();

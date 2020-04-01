@@ -45,6 +45,7 @@ class Settings: public QObject {
     public:
         enum Flag {
             ClearWhenQuit,
+            ShowThumbnailMode,
             ResumeFromLast,
             AutoSearchSimilar,
             PreviewOnMouseover,

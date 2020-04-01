@@ -92,6 +92,7 @@ static QString flag2key(Settings::Flag f)
 {
     switch(f) {
         case Settings::Flag::ClearWhenQuit: return "emptylist";
+        case Settings::Flag::ShowThumbnailMode: return "showInthumbnailmode";
         case Settings::Flag::ResumeFromLast: return "resumelast";
         case Settings::Flag::AutoSearchSimilar: return "addsimilar";
         case Settings::Flag::PreviewOnMouseover: return "mousepreview";
