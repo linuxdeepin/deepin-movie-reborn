@@ -1,4 +1,6 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS language="es" version="2.1">
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.1" language="es">
 <context>
     <name>QObject</name>
     <message>
@@ -399,6 +401,10 @@
         <source>Previous Frame</source>
         <translation>Cuadro previo</translation>
     </message>
+    <message>
+        <source>Go To Screenshot Folder</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>dmr::BurstScreenshotsDialog</name>
@@ -585,24 +591,28 @@
         <source>The CD/DVD has been ejected</source>
         <translation>El CD/DVD ha sido extraído</translation>
     </message>
+    <message>
+        <source>All videos (%1%2)</source>
+        <translation type="unfinished">Todos los vídeos (%1) {1%2)?}</translation>
+    </message>
 </context>
 <context>
     <name>dmr::MovieInfo</name>
     <message>
         <source>%1G</source>
-        <translation>%1G</translation>
+        <translation type="vanished">%1G</translation>
     </message>
     <message>
         <source>%1M</source>
-        <translation>%1M</translation>
+        <translation type="vanished">%1M</translation>
     </message>
     <message>
         <source>%1K</source>
-        <translation>%1K</translation>
+        <translation type="vanished">%1K</translation>
     </message>
     <message>
         <source>%1</source>
-        <translation>%1</translation>
+        <translation type="vanished">%1</translation>
     </message>
 </context>
 <context>
