@@ -44,7 +44,7 @@
 #include "animationlabel.h"
 #include "volumemonitoring.h"
 
-static const int VOLUME_OFFSET = 40;
+//static const int VOLUME_OFFSET = 40;
 
 namespace Dtk {
 namespace Widget {

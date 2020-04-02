@@ -713,9 +713,9 @@ MainWindow::MainWindow(QWidget *parent)
 #endif
 
     int volume = Settings::get().internalOption("global_volume").toInt();
-    if (VOLUME_OFFSET == volume) {
+    /*if (VOLUME_OFFSET == volume) {
         volume = 0;
-    }
+    }*/
     _engine->changeVolume(volume);
 
     bool mute = Settings::get().internalOption("mute").toBool();
@@ -1262,9 +1262,9 @@ void MainWindow::changedMute()
         _nwComm->updateWithMessage(tr("Mute"));
     } else {
         double pert = _engine->volume();
-        if (pert > VOLUME_OFFSET) {
-            pert -= VOLUME_OFFSET;
-        }
+        /* if (pert > VOLUME_OFFSET) {
+             pert -= VOLUME_OFFSET;
+         }*/
         _nwComm->updateWithMessage(tr("Volume: %1%").arg(pert));
     }
 }
@@ -2154,19 +2154,39 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         _engine->setVideoAspect(2.35);
         break;
     }
+    /*
+            if (!_engine->muted()) {
+                _engine->changeVolume(0);
+                setAudioVolume(0);
 
+                _engine->toggleMute();
+                Settings::get().setInternalOption("mute", _engine->muted());
+                setMusicMuted(_engine->muted());
+                if (_engine->muted()) {
+                    _nwComm->updateWithMessage(tr("Mute"));
+                    //_engine->changeVolume(0);
+                    //_engine->toggleMute();
+                } else {
+                    double pert = _engine->volume();
+                    _engine->changeVolume(pert);
+                    _nwComm->updateWithMessage(tr("Volume: %1%").arg(pert));
+                }
+            }
+
+    */
     case ActionFactory::ActionKind::ToggleMute: {
+
         _engine->toggleMute();
         Settings::get().setInternalOption("mute", _engine->muted());
         setMusicMuted(_engine->muted());
         if (_engine->muted()) {
             _nwComm->updateWithMessage(tr("Mute"));
+            _engine->changeVolume(0);
+            //_engine->toggleMute();
         } else {
-            double pert = _engine->volume();
-            if (pert > VOLUME_OFFSET) {
-                pert -= VOLUME_OFFSET;
-            }
-            _nwComm->updateWithMessage(tr("Volume: %1%").arg(pert));
+            //double pert = _engine->volume();
+            //_engine->changeVolume(oldVolume);
+            //_nwComm->updateWithMessage(tr("Volume: %1%").arg(oldVolume));
         }
         break;
     }
@@ -2177,16 +2197,16 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         }
         if (!args.isEmpty()) {
             auto vol = args[0].toInt();
-            if (vol == VOLUME_OFFSET) {
-                vol = 0;
-            }
+            /* if (vol == VOLUME_OFFSET) {
+                 vol = 0;
+             }*/
             _engine->changeVolume(vol);
         }
-        Settings::get().setInternalOption("global_volume", qMin(_engine->volume(), 140));
+        Settings::get().setInternalOption("global_volume", qMin(_engine->volume(), 100));
         double pert = _engine->volume();
-        if (pert > VOLUME_OFFSET) {
+        /*if (pert > VOLUME_OFFSET) {
             pert -= VOLUME_OFFSET;
-        }
+        }*/
         _nwComm->updateWithMessage(tr("Volume: %1%").arg(pert));
         setAudioVolume(pert / 100.0);
         break;
@@ -2197,9 +2217,9 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             _engine->toggleMute();
         }
         double pert = _engine->volume();
-        if (0 == static_cast<int>(pert)) {
+        /*if (0 == static_cast<int>(pert)) {
             _engine->changeVolume(VOLUME_OFFSET);
-        }
+        }*/
         _engine->volumeUp();
         _nwComm->updateWithMessage(tr("Volume: %1%").arg(pert));
         break;
@@ -2207,10 +2227,10 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
 
     case ActionFactory::ActionKind::VolumeDown: {
         double pert = _engine->volume();
-        if (VOLUME_OFFSET == static_cast<int>(pert)) {
+        /*if (VOLUME_OFFSET == static_cast<int>(pert)) {
             _engine->changeVolume(0);
             pert = 0;
-        } else {
+        } else */{
             _engine->volumeDown();
         }
         _nwComm->updateWithMessage(tr("Volume: %1%").arg(pert));
@@ -3511,6 +3531,12 @@ void MainWindow::setAudioVolume(double volume)
 
         if (qFuzzyCompare(volume, 0.0))
             ainterface.call(QLatin1String("SetMute"), true);
+
+        //获取是否静音
+        QVariant muteV = ApplicationAdaptor::redDBusProperty("com.deepin.daemon.Audio", sinkInputPath,
+                                                             "com.deepin.daemon.Audio.SinkInput", "Mute");
+        if (volume > 0.0 && muteV.toBool() ==  true)
+            ainterface.call(QLatin1String("SetMute"), false);
     }
 }
 
