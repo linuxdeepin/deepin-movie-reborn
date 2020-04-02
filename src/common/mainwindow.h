@@ -232,6 +232,7 @@ protected slots:
 
     void changedVolume(int);
     void changedMute();
+    void changedMute(bool);
 
     void updateMiniBtnTheme(int);
 private:
@@ -254,7 +255,7 @@ private:
     void subtitleMatchVideo(const QString &fileName);
     void defaultplaymodeinit();
     void readSinkInputPath();
-    void setAudioVolume(double);
+    void setAudioVolume(int);
     void setMusicMuted(bool muted);
 
     //Limit video to mini mode size
@@ -338,6 +339,9 @@ private:
 
     VolumeMonitoring volumeMonitoring;
     QString sinkInputPath;
+
+    int m_lastVolume;
+    bool m_isManual;
 };
 };
 
