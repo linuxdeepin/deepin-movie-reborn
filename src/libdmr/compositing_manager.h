@@ -1,4 +1,4 @@
-/* 
+/*
  * (c) 2017, Deepin Technology Co., Ltd. <support@deepin.org>
  *
  * This program is free software; you can redistribute it and/or
@@ -28,10 +28,10 @@
  * files in the program, then also delete it here.
  */
 #ifndef _DMR_COMPOSITING_MANAGER
-#define _DMR_COMPOSITING_MANAGER 
+#define _DMR_COMPOSITING_MANAGER
 
 #define MWV206_0  //After Jing Jiawei's graphics card is upgraded, deal with the macro according to the situation,
-                  //This macro is also available for mpv_proxy.cpp.
+//This macro is also available for mpv_proxy.cpp.
 
 #include <QtCore>
 #include <string>
@@ -59,51 +59,58 @@ enum OpenGLInteropKind {
 using PlayerOption = QPair<QString, QString>;
 using PlayerOptionList = QList<PlayerOption>;
 
-class CompositingManager: public QObject {
-    public:
-        static CompositingManager& get();
-        virtual ~CompositingManager();
+class CompositingManager: public QObject
+{
+public:
+    static CompositingManager &get();
+    virtual ~CompositingManager();
 
-        /**
-         * should call this before any other qt functions get exec'ed.
-         * this makes sure mpv openglcb-interop to work correctly
-         */
-        static void detectOpenGLEarly();
-        /**
-         * get detectOpenGLEarly result
-         */
-        static OpenGLInteropKind interopKind();
-        static bool runningOnVmwgfx();
+    /**
+     * should call this before any other qt functions get exec'ed.
+     * this makes sure mpv openglcb-interop to work correctly
+     */
+    static void detectOpenGLEarly();
+    /**
+     * get detectOpenGLEarly result
+     */
+    static OpenGLInteropKind interopKind();
+    static bool runningOnVmwgfx();
 
-        /**
-         * override auto-detected compositing state.
-         * should call this right before player engine gets instantiated.
-         */
-        void overrideCompositeMode(bool useCompositing);
+    /**
+     * override auto-detected compositing state.
+     * should call this right before player engine gets instantiated.
+     */
+    void overrideCompositeMode(bool useCompositing);
 
-        // this actually means opengl rendering is capable
-        bool composited() const { return _composited; }
-        Platform platform() const { return _platform; }
+    // this actually means opengl rendering is capable
+    bool composited() const
+    {
+        return _composited;
+    }
+    Platform platform() const
+    {
+        return _platform;
+    }
 
-        PlayerOptionList getProfile(const QString& name);
-        PlayerOptionList getBestProfile(); // best for current platform and env
-        static void detectPciID();
-        static bool runningOnNvidia();
+    PlayerOptionList getProfile(const QString &name);
+    PlayerOptionList getBestProfile(); // best for current platform and env
+    static void detectPciID();
+    static bool runningOnNvidia();
 
-    signals:
-        void compositingChanged(bool);
+signals:
+    void compositingChanged(bool);
 
-    private:
-        CompositingManager();
-        bool isDriverLoadedCorrectly();
-        bool isDirectRendered();
-        bool isProprietaryDriver();
+private:
+    CompositingManager();
+    bool isDriverLoadedCorrectly();
+    bool isDirectRendered();
+    bool isProprietaryDriver();
 
-        static bool is_device_viable(int id);
-        static bool is_card_exists(int id, const std::vector<std::string>& drivers);
+    static bool is_device_viable(int id);
+    static bool is_card_exists(int id, const std::vector<std::string> &drivers);
 
-        bool _composited {false};
-        Platform _platform {Platform::Unknown};
+    bool _composited {false};
+    Platform _platform {Platform::Unknown};
 };
 }
 
