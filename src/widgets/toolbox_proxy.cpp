@@ -1077,15 +1077,15 @@ public:
 //        _slider->slider()->setOrientation(Qt::Vertical);
 
         auto vol = _engine->volume();
-        if (vol != 0) {
+        /*if (vol != 0) {
             vol -= VOLUME_OFFSET;
-        }
+        }*/
         _slider->setValue(vol);
         l->addWidget(_slider, Qt::AlignHCenter);
 
 
         connect(_slider, &DSlider::valueChanged, [ = ]() {
-            auto var = _slider->value() + VOLUME_OFFSET;
+            auto var = _slider->value() /*+ VOLUME_OFFSET*/;
             _mw->requestAction(ActionFactory::ChangeVolume, false, QList<QVariant>() << var);
         });
 
@@ -1094,9 +1094,9 @@ public:
 
         connect(_engine, &PlayerEngine::volumeChanged, [ = ]() {
             auto vol = _engine->volume();
-            if (vol != 0) {
+            /*if (vol != 0) {
                 vol -= VOLUME_OFFSET;
-            }
+            }*/
             _slider->setValue(vol);
         });
         m_composited = CompositingManager::get().composited();
@@ -1113,16 +1113,14 @@ public:
     void paintEvent(QPaintEvent *event)
     {
         bool composited = CompositingManager::get().composited();
-        if(!m_composited)
-        {
+        if (!m_composited) {
             QPainter painter(this);
             if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ) {
                 painter.fillRect(rect(), Qt::white);
             } else {
                 painter.fillRect(rect(), Qt::black);
             }
-        }
-        else {
+        } else {
             DArrowRectangle::paintEvent(event);
         }
     }
@@ -2070,16 +2068,16 @@ void ToolboxProxy::updateVolumeState()
         //_volBtn->setToolTip(tr("Mute"));
     } else {
         auto v = _engine->volume();
-        if (v != 0) {
+        /*if (v != 0) {
             v -= VOLUME_OFFSET;
-        }
+        }*/
         //_volBtn->setToolTip(tr("Volume"));
         if (v >= 66)
             _volBtn->changeLevel(VolumeButton::High);
         else if (v >= 33)
             _volBtn->changeLevel(VolumeButton::Mid);
         else if (v == 0)
-            _volBtn->changeLevel(VolumeButton::Off);
+            _volBtn->changeLevel(VolumeButton::Mute);
         else
             _volBtn->changeLevel(VolumeButton::Low);
     }
@@ -2505,6 +2503,7 @@ void ToolboxProxy::setViewProgBarWidth()
 
 void ToolboxProxy::setPlaylist(PlaylistWidget *playlist)
 {
+    int height = 393;
     _playlist = playlist;
     connect(_playlist, &PlaylistWidget::stateChange, this, [ = ]() {
         if (_playlist->state() == PlaylistWidget::State::Opened) {
@@ -2515,9 +2514,10 @@ void ToolboxProxy::setPlaylist(PlaylistWidget *playlist)
             QRect rcEnd = this->geometry();
             QRect rcBegin = rcEnd;
             rcBegin.setTop(rcEnd.bottom());
+
             QPropertyAnimation *pa = new QPropertyAnimation(this, "geometry");
             pa->setEasingCurve(QEasingCurve::InOutCubic);
-            pa->setDuration(POPUP_DURATION);
+            pa->setDuration(POPUP_DURATION - 150);
             pa->setStartValue(rcBegin);
             pa->setEndValue(rcEnd);
             pa->start();
@@ -2530,7 +2530,22 @@ void ToolboxProxy::setPlaylist(PlaylistWidget *playlist)
             _bot_spec->setVisible(false);
             _bot_spec->setFixedHeight(TOOLBOX_TOP_EXTENT);
             bot_toolWgt->setFixedHeight(TOOLBOX_HEIGHT - 10);
-            this->setFixedHeight(TOOLBOX_HEIGHT);
+            //this->setFixedHeight(TOOLBOX_HEIGHT);
+
+            QRect rcBegin = this->geometry();
+            QPoint buttomLeft(rcBegin.bottomLeft().x(), rcBegin.bottomLeft().y() - TOOLBOX_HEIGHT);
+            QRect rcEnd(buttomLeft, rcBegin.bottomRight());
+            QPropertyAnimation *pa = new QPropertyAnimation(this, "geometry");
+            pa->setEasingCurve(QEasingCurve::InOutCubic);
+            pa->setDuration(POPUP_DURATION - 200);
+            pa->setStartValue(rcBegin);
+            pa->setEndValue(rcEnd);
+            pa->start();
+            connect(pa, &QPropertyAnimation::finished, [ = ]() {
+                pa->deleteLater();
+                this->setFixedHeight(TOOLBOX_HEIGHT);
+            });
+
         }
     });
 }

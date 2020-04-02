@@ -67,7 +67,7 @@ void VolumeMonitoring::stop()
 void VolumeMonitoring::timeoutSlot()
 {
     QVariant v = ApplicationAdaptor::redDBusProperty("com.deepin.daemon.Audio", "/com/deepin/daemon/Audio",
-                                            "com.deepin.daemon.Audio", "SinkInputs");
+                                                     "com.deepin.daemon.Audio", "SinkInputs");
 
     if (!v.isValid())
         return;
@@ -77,7 +77,7 @@ void VolumeMonitoring::timeoutSlot()
     QString sinkInputPath;
     for (auto curPath : allSinkInputsList) {
         QVariant nameV = ApplicationAdaptor::redDBusProperty("com.deepin.daemon.Audio", curPath.path(),
-                                                    "com.deepin.daemon.Audio.SinkInput", "Name");
+                                                             "com.deepin.daemon.Audio.SinkInput", "Name");
 
         if (!nameV.isValid() || (!nameV.toString().contains( "mpv", Qt::CaseInsensitive) && !nameV.toString().contains("deepin-movie", Qt::CaseInsensitive)))
             continue;
@@ -97,20 +97,22 @@ void VolumeMonitoring::timeoutSlot()
 
     //获取音量
     QVariant volumeV = ApplicationAdaptor::redDBusProperty("com.deepin.daemon.Audio", sinkInputPath,
-                                                  "com.deepin.daemon.Audio.SinkInput", "Volume");
+                                                           "com.deepin.daemon.Audio.SinkInput", "Volume");
 
     //获取音量
     QVariant muteV = ApplicationAdaptor::redDBusProperty("com.deepin.daemon.Audio", sinkInputPath,
-                                                "com.deepin.daemon.Audio.SinkInput", "Mute");
+                                                         "com.deepin.daemon.Audio.SinkInput", "Mute");
 
-    int volume = volumeV.toDouble() * 100 + 40.001;
+    double temp = volumeV.toDouble();
+    int volume = (volumeV.toDouble() +  0.001) * 100 ;
     bool mute = muteV.toBool();
 
     auto oldMute = Settings::get().internalOption("mute");
     auto oldVolume = Settings::get().internalOption("global_volume");
 
+
     if (volume != oldVolume)
         Q_EMIT volumeChanged(volume);
-    if (mute != oldMute)
-        Q_EMIT muteChanged(muteV.toBool());
+    //if (mute != oldMute)
+    Q_EMIT muteChanged(muteV.toBool());
 }

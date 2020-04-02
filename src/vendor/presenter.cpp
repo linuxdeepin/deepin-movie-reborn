@@ -37,10 +37,10 @@ void Presenter::initMpris(MprisPlayer *mprisPlayer)
     connect(mprisPlayer, &MprisPlayer::previousRequested, this, &Presenter::slotplayprev);
     connect(mprisPlayer, &MprisPlayer::volumeRequested, this, &Presenter::slotvolumeRequested);
     connect(mprisPlayer, &MprisPlayer::openUriRequested, this, &Presenter::slotopenUriRequested);
-    connect(mprisPlayer,&MprisPlayer::loopStatusRequested,this,&Presenter::slotloopStatusRequested);
-    connect(_mw->engine()->getplaylist(),&PlaylistModel::playModeChanged,this,&Presenter::slotplayModeChanged);
+    connect(mprisPlayer, &MprisPlayer::loopStatusRequested, this, &Presenter::slotloopStatusRequested);
+    connect(_mw->engine()->getplaylist(), &PlaylistModel::playModeChanged, this, &Presenter::slotplayModeChanged);
     connect(mprisPlayer, &MprisPlayer::openUriRequested, this, [ = ] {_mw->requestAction(ActionFactory::Exit);});
-    connect(_mw->engine(),&PlayerEngine::volumeChanged,this,&Presenter::slotvolumeChanged);
+    //connect(_mw->engine(),&PlayerEngine::volumeChanged,this,&Presenter::slotvolumeChanged);
 
 //    connect(_mw->toolbox()->get_progBar(), &Presenter::progrossChanged,
 //    this, [ = ](qint64 pos, qint64) {
@@ -67,8 +67,8 @@ void Presenter::slotplayprev()
 void Presenter::slotvolumeRequested(double volume)
 {
     QList<QVariant> arg;
-    arg.append((volume+0.4)*100.0);
-    _mw->requestAction(ActionFactory::ChangeVolume,1,arg);
+    arg.append((volume + 0.4) * 100.0);
+    _mw->requestAction(ActionFactory::ChangeVolume, 1, arg);
 }
 
 void Presenter::slotopenUriRequested(const QUrl url)
@@ -93,15 +93,15 @@ void Presenter::slotstateChanged()
 
 void Presenter::slotloopStatusRequested(Mpris::LoopStatus loopStatus)
 {
-    if(loopStatus == Mpris::LoopStatus::InvalidLoopStatus){
+    if (loopStatus == Mpris::LoopStatus::InvalidLoopStatus) {
         return;
-    }else if (loopStatus == Mpris::LoopStatus::None) {
+    } else if (loopStatus == Mpris::LoopStatus::None) {
         _mw->requestAction(ActionFactory::OrderPlay);
         _mw->reflectActionToUI(ActionFactory::OrderPlay);
-    }else if (loopStatus == Mpris::LoopStatus::Track) {
+    } else if (loopStatus == Mpris::LoopStatus::Track) {
         _mw->requestAction(ActionFactory::SingleLoop);
         _mw->reflectActionToUI(ActionFactory::SingleLoop);
-    }else if (loopStatus == Mpris::LoopStatus::Playlist) {
+    } else if (loopStatus == Mpris::LoopStatus::Playlist) {
         _mw->requestAction(ActionFactory::ListLoop);
         _mw->reflectActionToUI(ActionFactory::ListLoop);
     }
@@ -109,27 +109,27 @@ void Presenter::slotloopStatusRequested(Mpris::LoopStatus loopStatus)
 
 void Presenter::slotplayModeChanged(PlaylistModel::PlayMode pm)
 {
-    if(pm == PlaylistModel::PlayMode::OrderPlay){
+    if (pm == PlaylistModel::PlayMode::OrderPlay) {
         m_mprisplayer->setLoopStatus(Mpris::LoopStatus::None);
-    }else if (pm == PlaylistModel::PlayMode::SingleLoop) {
+    } else if (pm == PlaylistModel::PlayMode::SingleLoop) {
         m_mprisplayer->setLoopStatus(Mpris::LoopStatus::Track);
-    }else if (pm == PlaylistModel::PlayMode::ListLoop) {
+    } else if (pm == PlaylistModel::PlayMode::ListLoop) {
         m_mprisplayer->setLoopStatus(Mpris::LoopStatus::Playlist);
-    }else {
+    } else {
         m_mprisplayer->setLoopStatus(Mpris::LoopStatus::InvalidLoopStatus);
     }
 }
 
 void Presenter::slotvolumeChanged()
 {
-    if(_mw->engine()->muted()){
+    if (_mw->engine()->muted()) {
         m_mprisplayer->setVolume(0.0);
-    }else {
+    } else {
         double pert = _mw->engine()->volume();
-        if(pert == 0.0){
-            m_mprisplayer->setVolume(pert/100.0);
-        }else {
-            m_mprisplayer->setVolume((pert-40.0)/100.0);
+        if (pert == 0.0) {
+            m_mprisplayer->setVolume(pert / 100.0);
+        } else {
+            m_mprisplayer->setVolume((pert - 40.0) / 100.0);
         }
     }
 }
