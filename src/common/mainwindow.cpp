@@ -1289,6 +1289,8 @@ void MainWindow::changedMute(bool mute)
         _engine->changeVolume(m_lastVolume);
         _nwComm->updateWithMessage(tr("Volume: %1%").arg(_engine->volume()));
     }
+    _engine->toggleMute();
+    Settings::get().setInternalOption("mute", mute);
 }
 
 #ifdef USE_DXCB
@@ -2232,6 +2234,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
 
     case ActionFactory::ActionKind::ChangeVolume: {
         if (!args.isEmpty()) {
+
             int nVol = args[0].toInt();
             if (m_lastVolume == nVol) {
                 _nwComm->updateWithMessage(tr("Volume: %1%").arg(nVol));
