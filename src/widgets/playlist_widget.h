@@ -128,6 +128,7 @@ public:
     {
         return _playlist;
     }
+    void endAnimation();
 signals:
     void stateChange();
     void sizeChange();
@@ -174,6 +175,9 @@ private:
     int _index {0};
     PlayItemWidget *_selectItemWgt;
     void batchUpdateSizeHints();
+
+    QPropertyAnimation *paOpen ;
+    QPropertyAnimation *paClose ;
 };
 }
 

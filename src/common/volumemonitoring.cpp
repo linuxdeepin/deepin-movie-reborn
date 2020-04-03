@@ -111,7 +111,7 @@ void VolumeMonitoring::timeoutSlot()
     auto oldVolume = Settings::get().internalOption("global_volume");
 
 
-    if (volume != oldVolume)
+    if (volume != oldVolume && !oldMute.toBool())
         Q_EMIT volumeChanged(volume);
     //if (mute != oldMute)
     Q_EMIT muteChanged(muteV.toBool());
