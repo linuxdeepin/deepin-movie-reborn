@@ -231,6 +231,7 @@ protected slots:
     void handleHelpAction();
 
     void changedVolume(int);
+    void changedVolumeSlot(int vol);
     void changedMute();
     void changedMute(bool);
 
