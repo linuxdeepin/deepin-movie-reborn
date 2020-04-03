@@ -1948,8 +1948,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         if (_playlist->state() == PlaylistWidget::Closed && !_toolbox->isVisible()) {
             _toolbox->show();
         }
-        //_playlist->togglePopup();
-        _toolbox->playListChange();
+        _playlist->togglePopup();
         if (!fromUI) {
             reflectActionToUI(kd);
         }
