@@ -1341,8 +1341,7 @@ void ToolboxProxy::finishLoadSlot(QSize size)
 {
     if (pm_list.isEmpty()) return;
 
-    if(!_bthumbnailmode)
-    {
+    if (!_bthumbnailmode) {
         return;
     }
     _viewProgBar->setViewProgBar(_engine, pm_list, pm_black_list);
@@ -1361,19 +1360,15 @@ void ToolboxProxy::finishLoadSlot(QSize size)
 
 void ToolboxProxy::setthumbnailmode()
 {
-    if(_engine->state() == PlayerEngine::CoreState::Idle)
-    {
+    if (_engine->state() == PlayerEngine::CoreState::Idle) {
         return;
     }
 
 #ifndef __mips__
-    if(Settings::get().isSet(Settings::ShowThumbnailMode))
-    {
+    if (Settings::get().isSet(Settings::ShowThumbnailMode)) {
         _bthumbnailmode = true;
         updateThumbnail();
-    }
-    else
-    {
+    } else {
         _bthumbnailmode = false;
         updateThumbnail();
         updateMovieProgress();
