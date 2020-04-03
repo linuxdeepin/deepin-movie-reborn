@@ -49,7 +49,7 @@
 #include <DApplication>
 #include <QThread>
 #include <DSlider>
-
+#include <iostream>
 static const int LEFT_MARGIN = 10;
 static const int RIGHT_MARGIN = 10;
 static const int PROGBAR_SPEC = 10 + 120 + 17 + 54 + 10 + 54 + 10 + 170 + 10 + 20;
@@ -1270,7 +1270,7 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
 //    setFrameShape(QFrame::NoFrame);
 //    setFrameShadow(QFrame::Plain);
 //    setLineWidth(0);
-    setFixedHeight(TOOLBOX_HEIGHT);
+    //setFixedHeight(TOOLBOX_HEIGHT);
 //    setAutoFillBackground(false);
 //    setAttribute(Qt::WA_TranslucentBackground);
     if (!composited) {
@@ -1434,6 +1434,7 @@ void ToolboxProxy::setup()
 //    _bot_spec->setFixedHeight(TOOLBOX_SPACE_HEIGHT);
     _bot_spec->setVisible(false);
     botv->addWidget(_bot_spec);
+    botv->addStretch();
 
     bot_toolWgt = new QWidget(bot_widget);
     bot_toolWgt->setFixedHeight(TOOLBOX_HEIGHT - 10);
@@ -2439,11 +2440,11 @@ void ToolboxProxy::resizeEvent(QResizeEvent *event)
 
     }
 
-    if (_playlist->state() == PlaylistWidget::State::Opened) {
+    if (_playlist->state() == PlaylistWidget::State::Opened && bAnimationFinash == true) {
         QRect r(5, _mainWindow->height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT) - _mainWindow->rect().top() - 5,
                 _mainWindow->rect().width() - 10, (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT));
         this->setGeometry(r);
-    } else {
+    } else if (_playlist->state() == PlaylistWidget::State::Closed && bAnimationFinash == true) {
         QRect r(5, _mainWindow->height() - TOOLBOX_HEIGHT - _mainWindow->rect().top() - 5,
                 _mainWindow->rect().width() - 10, TOOLBOX_HEIGHT);
         this->setGeometry(r);
@@ -2503,47 +2504,57 @@ void ToolboxProxy::setViewProgBarWidth()
 
 void ToolboxProxy::setPlaylist(PlaylistWidget *playlist)
 {
-    int height = 393;
     _playlist = playlist;
     connect(_playlist, &PlaylistWidget::stateChange, this, [ = ]() {
-        if (_playlist->state() == PlaylistWidget::State::Opened) {
-            this->setFixedHeight(TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT);
-            bot_toolWgt->setFixedHeight(TOOLBOX_HEIGHT - 14);
-            _bot_spec->setFixedHeight(TOOLBOX_SPACE_HEIGHT);
-            _bot_spec->setVisible(true);
-            QRect rcEnd = this->geometry();
-            QRect rcBegin = rcEnd;
-            rcBegin.setTop(rcEnd.bottom());
 
+        if (bAnimationFinash == false) {
+            return ;
+        }
+
+        if (_playlist->state() == PlaylistWidget::State::Opened) {
+            //this->setFixedHeight(TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT);
+            //bot_toolWgt->setFixedHeight(TOOLBOX_HEIGHT - 14);
+            //_bot_spec->setFixedHeight(TOOLBOX_SPACE_HEIGHT);
+            // _bot_spec->setVisible(true);
+            QRect rcBegin = this->geometry();
+            QRect rcEnd = rcBegin;
+            rcEnd.setY(rcBegin.y() - TOOLBOX_SPACE_HEIGHT);
+            //rcEnd.setHeight(rcBegin.height() - TOOLBOX_SPACE_HEIGHT);
+            bAnimationFinash = false;
             QPropertyAnimation *pa = new QPropertyAnimation(this, "geometry");
-            pa->setEasingCurve(QEasingCurve::InOutCubic);
-            pa->setDuration(POPUP_DURATION - 150);
+            pa->setEasingCurve(QEasingCurve::Linear);
+            pa->setDuration(POPUP_DURATION  ) ;
             pa->setStartValue(rcBegin);
             pa->setEndValue(rcEnd);
             pa->start();
             connect(pa, &QPropertyAnimation::finished, [ = ]() {
                 pa->deleteLater();
+                bAnimationFinash = true;
+
             });
             _listBtn->setChecked(true);
         } else {
             _listBtn->setChecked(false);
-            _bot_spec->setVisible(false);
-            _bot_spec->setFixedHeight(TOOLBOX_TOP_EXTENT);
-            bot_toolWgt->setFixedHeight(TOOLBOX_HEIGHT - 10);
+            // _bot_spec->setVisible(false);
+            //_bot_spec->setFixedHeight(TOOLBOX_TOP_EXTENT);
+            //bot_toolWgt->setFixedHeight(TOOLBOX_HEIGHT - 10);
             //this->setFixedHeight(TOOLBOX_HEIGHT);
+            bAnimationFinash = false;
 
             QRect rcBegin = this->geometry();
-            QPoint buttomLeft(rcBegin.bottomLeft().x(), rcBegin.bottomLeft().y() - TOOLBOX_HEIGHT);
-            QRect rcEnd(buttomLeft, rcBegin.bottomRight());
+            QRect rcEnd = rcBegin;
+            rcEnd.setY(rcBegin.y() + TOOLBOX_SPACE_HEIGHT);
+
             QPropertyAnimation *pa = new QPropertyAnimation(this, "geometry");
-            pa->setEasingCurve(QEasingCurve::InOutCubic);
-            pa->setDuration(POPUP_DURATION - 200);
+            pa->setEasingCurve(QEasingCurve::Linear);
+            pa->setDuration(POPUP_DURATION );
             pa->setStartValue(rcBegin);
             pa->setEndValue(rcEnd);
             pa->start();
             connect(pa, &QPropertyAnimation::finished, [ = ]() {
                 pa->deleteLater();
-                this->setFixedHeight(TOOLBOX_HEIGHT);
+                bAnimationFinash = true;
+
             });
 
         }
