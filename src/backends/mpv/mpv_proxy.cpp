@@ -721,7 +721,11 @@ void MpvProxy::savePlaybackPosition()
 
 #ifndef _LIBDMR_
     MovieConfiguration::get().updateUrl(this->_file, ConfigKnownKey::SubId, sid());
-    MovieConfiguration::get().updateUrl(this->_file, ConfigKnownKey::StartPos, elapsed());
+    if (elapsed() - 10 >= 0) {
+        MovieConfiguration::get().updateUrl(this->_file, ConfigKnownKey::StartPos, elapsed() - 10);
+    } else {
+        MovieConfiguration::get().updateUrl(this->_file, ConfigKnownKey::StartPos, 10);
+    }
 #endif
 }
 
