@@ -49,7 +49,6 @@
 #include <DApplication>
 #include <QThread>
 #include <DSlider>
-#include <iostream>
 static const int LEFT_MARGIN = 10;
 static const int RIGHT_MARGIN = 10;
 static const int PROGBAR_SPEC = 10 + 120 + 17 + 54 + 10 + 54 + 10 + 170 + 10 + 20;
@@ -1305,6 +1304,11 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
 
 
 //    DThemeManager::instance()->registerWidget(this);
+
+
+    paopen = nullptr;
+    paClose = nullptr;
+
     label_list.clear();
     label_black_list.clear();
     pm_list.clear();
@@ -2440,6 +2444,14 @@ void ToolboxProxy::resizeEvent(QResizeEvent *event)
 
     }
 
+    if (bAnimationFinash ==  false && paopen != nullptr && paClose != nullptr) {
+
+        _playlist->endAnimation();
+        paopen->setDuration(0);
+        paClose->setDuration(0);
+    }
+
+
     if (_playlist->state() == PlaylistWidget::State::Opened && bAnimationFinash == true) {
         QRect r(5, _mainWindow->height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT) - _mainWindow->rect().top() - 5,
                 _mainWindow->rect().width() - 10, (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT));
@@ -2521,16 +2533,16 @@ void ToolboxProxy::setPlaylist(PlaylistWidget *playlist)
             rcEnd.setY(rcBegin.y() - TOOLBOX_SPACE_HEIGHT);
             //rcEnd.setHeight(rcBegin.height() - TOOLBOX_SPACE_HEIGHT);
             bAnimationFinash = false;
-            QPropertyAnimation *pa = new QPropertyAnimation(this, "geometry");
-            pa->setEasingCurve(QEasingCurve::Linear);
-            pa->setDuration(POPUP_DURATION  ) ;
-            pa->setStartValue(rcBegin);
-            pa->setEndValue(rcEnd);
-            pa->start();
-            connect(pa, &QPropertyAnimation::finished, [ = ]() {
-                pa->deleteLater();
+            paopen = new QPropertyAnimation(this, "geometry");
+            paopen->setEasingCurve(QEasingCurve::Linear);
+            paopen->setDuration(POPUP_DURATION  ) ;
+            paopen->setStartValue(rcBegin);
+            paopen->setEndValue(rcEnd);
+            paopen->start();
+            connect(paopen, &QPropertyAnimation::finished, [ = ]() {
+                paopen->deleteLater();
+                paopen = nullptr;
                 bAnimationFinash = true;
-
             });
             _listBtn->setChecked(true);
         } else {
@@ -2544,17 +2556,16 @@ void ToolboxProxy::setPlaylist(PlaylistWidget *playlist)
             QRect rcBegin = this->geometry();
             QRect rcEnd = rcBegin;
             rcEnd.setY(rcBegin.y() + TOOLBOX_SPACE_HEIGHT);
-
-            QPropertyAnimation *pa = new QPropertyAnimation(this, "geometry");
-            pa->setEasingCurve(QEasingCurve::Linear);
-            pa->setDuration(POPUP_DURATION );
-            pa->setStartValue(rcBegin);
-            pa->setEndValue(rcEnd);
-            pa->start();
-            connect(pa, &QPropertyAnimation::finished, [ = ]() {
-                pa->deleteLater();
+            paClose = new QPropertyAnimation(this, "geometry");
+            paClose->setEasingCurve(QEasingCurve::Linear);
+            paClose->setDuration(POPUP_DURATION );
+            paClose->setStartValue(rcBegin);
+            paClose->setEndValue(rcEnd);
+            paClose->start();
+            connect(paClose, &QPropertyAnimation::finished, [ = ]() {
+                paClose->deleteLater();
+                paClose = nullptr;
                 bAnimationFinash = true;
-
             });
 
         }

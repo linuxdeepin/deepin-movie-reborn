@@ -657,6 +657,10 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     //NOTE: set fixed will affect geometry animation
     //setFixedWidth(220);
 
+
+    paOpen = nullptr;
+    paClose = nullptr;
+
     auto *mainVLayout = new QVBoxLayout(this);
     mainVLayout->setContentsMargins(0, 0, 0, 0);
     mainVLayout->setSpacing(0);
@@ -947,6 +951,8 @@ void PlaylistWidget::clear()
     QString s = QString(tr("%1 videos")).arg(_playlist->count());
     _num->setText(s);
 }
+
+
 void PlaylistWidget::updateItemInfo(int id)
 {
     auto piw = dynamic_cast<PlayItemWidget *>(_playlist->itemWidget(_playlist->item(id)));
@@ -1264,14 +1270,21 @@ void PlaylistWidget::batchUpdateSizeHints()
     }
 }
 
+void PlaylistWidget::endAnimation()
+{
+    if (paOpen != nullptr && paClose != nullptr) {
+        paOpen -> setDuration(0);
+        paClose->setDuration(0);
+    }
+}
 void PlaylistWidget::togglePopup()
 {
 
 
-    static bool bAnimationFinash = true;
-
-    if (bAnimationFinash == false)
+    if (paOpen != nullptr || paClose != nullptr) {
         return ;
+    }
+
     auto main_rect = _mw->rect();
 #ifdef USE_DXCB
     auto view_rect = main_rect;
@@ -1292,24 +1305,23 @@ void PlaylistWidget::togglePopup()
     if (_state == State::Opened) {
         Q_ASSERT(isVisible());
 
-        bAnimationFinash = false;
 
-        QPropertyAnimation *pa = new QPropertyAnimation(this, "geometry");
-        pa->setEasingCurve(QEasingCurve::Linear);
-        pa->setDuration(POPUP_DURATION - 200);
-        pa->setStartValue(fixed);
-        pa->setEndValue(shrunk);;
+        paOpen = new QPropertyAnimation(this, "geometry");
+        paOpen->setEasingCurve(QEasingCurve::Linear);
+        paOpen->setDuration(POPUP_DURATION);
+        paOpen->setStartValue(fixed);
+        paOpen->setEndValue(shrunk);;
         _toggling = false;
         _state = State::Closed;
         emit stateChange();
-        pa->start();
-        connect(pa, &QPropertyAnimation::finished, [ = ]() {
-            pa->deleteLater();
+        paOpen->start();
+        connect(paOpen, &QPropertyAnimation::finished, [ = ]() {
+            paOpen->deleteLater();
+            paOpen = nullptr;
             setVisible(!isVisible());
             //_toggling = false;
             //_state = State::Closed;
             //emit stateChange();
-            bAnimationFinash = true;
         });
 
 
@@ -1317,23 +1329,22 @@ void PlaylistWidget::togglePopup()
     } else {
         setVisible(!isVisible());
         _toggling = true;
-        bAnimationFinash = false;
 
-        QPropertyAnimation *pa = new QPropertyAnimation(this, "geometry");
-        pa->setEasingCurve(QEasingCurve::Linear);
-        pa->setDuration(POPUP_DURATION);
-        pa->setStartValue(shrunk);
-        pa->setEndValue(fixed);
+        paClose = new QPropertyAnimation(this, "geometry");
+        paClose->setEasingCurve(QEasingCurve::Linear);
+        paClose->setDuration(POPUP_DURATION);
+        paClose->setStartValue(shrunk);
+        paClose->setEndValue(fixed);
         _toggling = false;
         _state = State::Opened;
         emit stateChange();
-        pa->start();
-        connect(pa, &QPropertyAnimation::finished, [ = ]() {
-            pa->deleteLater();
+        paClose->start();
+        connect(paClose, &QPropertyAnimation::finished, [ = ]() {
+            paClose->deleteLater();
+            paClose = nullptr;
             //_toggling = false;
             //_state = State::Opened;
             //emit stateChange();
-            bAnimationFinash = true;
         });
     }
 }

@@ -236,6 +236,9 @@ private:
 
     //动画是否完成
     bool bAnimationFinash {true};
+
+    QPropertyAnimation *paopen;
+    QPropertyAnimation *paClose;
 };
 class viewProgBarLoad: public QThread
 {
