@@ -1073,7 +1073,7 @@ MainWindow::MainWindow(QWidget *parent)
     volumeMonitoring.start();
     connect(&volumeMonitoring, &VolumeMonitoring::volumeChanged, this, [ = ](int vol) {
         if (!m_isManual)
-            changedVolume(vol);
+            changedVolumeSlot(vol);
         //_engine->changeVolume(vol);
         //requestAction(ActionFactory::ChangeVolume);
     });
@@ -1248,11 +1248,22 @@ void MainWindow::handleHelpAction()
 
 void MainWindow::changedVolume(int vol)
 {
+    _engine->changeVolume(vol);
+    Settings::get().setInternalOption("global_volume", vol);
+    if (vol != 0)
+        _nwComm->updateWithMessage(tr("Volume: %1%").arg(vol));
+    else
+        _nwComm->updateWithMessage(tr("Mute"));
+}
+
+void MainWindow::changedVolumeSlot(int vol)
+{
     if (_engine->muted()) {
         _engine->toggleMute();
     }
     if (_engine->volume() <= 100 || vol < 100) {
         _engine->changeVolume(vol);
+        Settings::get().setInternalOption("global_volume", vol);
         _nwComm->updateWithMessage(tr("Volume: %1%").arg(vol));
     }
 }
@@ -1262,24 +1273,22 @@ void MainWindow::changedMute()
     bool mute = _engine->muted();
     _engine->toggleMute();
     Settings::get().setInternalOption("mute", !mute);
-//    if (_engine->muted()) {
-//        _nwComm->updateWithMessage(tr("Mute"));
-//    } else {
-//        double pert = _engine->volume();
-//        /* if (pert > VOLUME_OFFSET) {
-//             pert -= VOLUME_OFFSET;
-//         }*/
-//        _nwComm->updateWithMessage(tr("Volume: %1%").arg(pert));
-//    }
 }
 
 void MainWindow::changedMute(bool mute)
 {
-    if (_engine->muted() == mute) {
+    bool oldMute = Settings::get().internalOption("mute").toBool();
+    if (oldMute == mute) {
         return;
     }
     _engine->toggleMute();
     Settings::get().setInternalOption("mute", mute);
+    if (mute)
+        _nwComm->updateWithMessage(tr("Mute"));
+    else {
+        _engine->changeVolume(m_lastVolume);
+        _nwComm->updateWithMessage(tr("Volume: %1%").arg(_engine->volume()));
+    }
 }
 
 #ifdef USE_DXCB
@@ -1939,7 +1948,8 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         if (_playlist->state() == PlaylistWidget::Closed && !_toolbox->isVisible()) {
             _toolbox->show();
         }
-        _playlist->togglePopup();
+        //_playlist->togglePopup();
+        _toolbox->playListChange();
         if (!fromUI) {
             reflectActionToUI(kd);
         }
@@ -2194,9 +2204,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                 return;
             } else {
                 changedMute();
-                _engine->changeVolume(m_lastVolume);
-                int vol = _engine->volume();
-                _nwComm->updateWithMessage(tr("Volume: %1%").arg(vol));
+                changedVolume(m_lastVolume);
                 setMusicMuted(false);
             }
         } else {
@@ -2204,9 +2212,8 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             m_isManual = true;
             m_lastVolume = _engine->volume();
             changedMute();
-            _engine->changeVolume(0);
+            changedVolume(0);
             setMusicMuted(true);
-            _nwComm->updateWithMessage(tr("Mute"));
         }
         break;
     }
