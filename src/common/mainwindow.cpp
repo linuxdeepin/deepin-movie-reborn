@@ -1960,9 +1960,9 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     case ActionFactory::ActionKind::ToggleMiniMode: {
         if (isFullScreen()) {
             requestAction(ActionFactory::ToggleFullscreen);
-            if (!fromUI) {
+            /*if (!fromUI) {
                 reflectActionToUI(ActionFactory::ToggleFullscreen);
-            }
+            }*/
             if (!isFullScreen()) {
                 _fullscreentimelable->close();
             }
