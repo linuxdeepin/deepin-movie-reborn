@@ -653,6 +653,7 @@ private:
 MainWindow::MainWindow(QWidget *parent)
     : DMainWindow(NULL)
 {
+    m_lastVolume = Settings::get().internalOption("last_volume").toInt();;
     bool composited = CompositingManager::get().composited();
 #ifdef USE_DXCB
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowTitleHint | Qt::WindowMinMaxButtonsHint |
@@ -1888,8 +1889,8 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         //允许影院打开音乐文件进行播放
         QStringList filenames = QFileDialog::getOpenFileNames(this, tr("Open File"),
                                                               lastOpenedPath(),
-                                                              tr("All videos (%1%2)").arg(_engine->audio_filetypes.join(" "))
-                                                              .arg(_engine->video_filetypes.join(" ")), 0,
+                                                              tr("All videos (%2 %1)").arg(_engine->video_filetypes.join(" "))
+                                                              .arg(_engine->audio_filetypes.join(" ")), 0,
                                                               QFileDialog::HideNameFilterDetails);
 
         QList<QUrl> urls;
@@ -2201,6 +2202,11 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             //此处存在修改风险，注意！
             if (m_lastVolume == 0) {
                 return;
+            } else if (m_lastVolume == -1) {
+                changedMute();
+                int savedVolume = Settings::get().internalOption("global_volume").toInt();
+                changedVolume(savedVolume);
+                setMusicMuted(false);
             } else {
                 changedMute();
                 changedVolume(m_lastVolume);
@@ -2210,6 +2216,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             //手动静音
             m_isManual = true;
             m_lastVolume = _engine->volume();
+            Settings::get().setInternalOption("last_volume", _engine->volume());
             changedMute();
             changedVolume(0);
             setMusicMuted(true);
@@ -2232,16 +2239,19 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                 changedMute();
                 _nwComm->updateWithMessage(tr("Mute"));
                 m_lastVolume = _engine->volume();
+                Settings::get().setInternalOption("last_volume", _engine->volume());
             } else if (_engine->muted()) {
                 if (nVol > 0) {
                     changedMute();
                     _nwComm->updateWithMessage(tr("Volume: %1%").arg(nVol));
                     m_lastVolume = _engine->volume();
+                    Settings::get().setInternalOption("last_volume", _engine->volume());
                 } else
                     m_isManual = true;
             } else {
                 _nwComm->updateWithMessage(tr("Volume: %1%").arg(nVol));
                 m_lastVolume = _engine->volume();
+                Settings::get().setInternalOption("last_volume", _engine->volume());
                 setAudioVolume(nVol);
             }
         }

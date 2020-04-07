@@ -25,6 +25,14 @@
                             "default": 100
                         },
                         {
+                            "key": "last_volume",
+                            "name": "",
+                            "hide": true,
+                            "reset": false,
+                            "type": "spinbutton",
+                            "default": 100
+                        },
+                        {
                             "key": "mute",
                             "name": "",
                             "type": "checkbox",
