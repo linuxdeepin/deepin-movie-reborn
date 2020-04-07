@@ -120,6 +120,7 @@ CompositingManager::CompositingManager()
     _composited = false;
     if (QGSettings::isSchemaInstalled("com.deepin.deepin-movie")) {
         QGSettings gsettings("com.deepin.deepin-movie", "/com/deepin/deepin-movie/");
+        QString aa = gsettings.get("composited").toString();
         if ((gsettings.get("composited").toString() == "DisableComposited"
                 || gsettings.get("composited").toString() == "EnableComposited")) {
             if (gsettings.keys().contains("composited")) {
@@ -135,7 +136,16 @@ CompositingManager::CompositingManager()
             } else if (isProprietaryDriver()) {
                 _composited = true;
             } else if (isDriverLoadedCorrectly() || isDirectRendered()) {
+#ifdef __aarch64__
+                _composited = false;
+                qDebug() << "__aarch64__";
+#elif __mips__
+                _composited = false;
+                qDebug() << "__mips__";
+#else
                 _composited = true;
+                qDebug() << "__X86__";
+#endif
             } else {
                 GetScreenDriver = (glXGetScreenDriver_t *)glXGetProcAddressARB ((const GLubyte *)"glXGetScreenDriver");
                 if (GetScreenDriver) {

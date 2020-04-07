@@ -212,7 +212,7 @@ mpv_handle *MpvProxy::mpv_init()
     }
 #endif
 #ifdef __aarch64__
-    QString path = QString("%1/%2/%3/conf")
+    /*QString path = QString("%1/%2/%3/conf")
                    .arg(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation))
                    .arg(qApp->organizationName())
                    .arg(qApp->applicationName());
@@ -248,7 +248,9 @@ mpv_handle *MpvProxy::mpv_init()
         default:
             break;
         }
-    }
+    }*/
+    set_property(h, "hwdec", "auto-safe");
+    qDebug() << "modify HWDEC auto-safe";
 #endif
     set_property(h, "panscan", 1.0);
     //set_property(h, "no-keepaspect", "true");
@@ -289,7 +291,7 @@ mpv_handle *MpvProxy::mpv_init()
     }
 
 
-    set_property(h, "volume-max", 200.0);
+    set_property(h, "volume-max", 240.0);
     set_property(h, "input-cursor", "no");
     set_property(h, "cursor-autohide", "no");
 
@@ -488,8 +490,10 @@ void MpvProxy::handle_mpv_events()
                 qDebug() << "MPV_EVENT_FILE_LOADED aarch64";
                 auto codec = get_property(_handle, "video-codec").toString();
                 if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") || codec.toLower().contains("mpeg2video")) {
-                    qDebug() << "set_property hwdec no";
-                    set_property(_handle, "hwdec", "no");
+//                    qDebug() << "set_property hwdec no";
+//                    set_property(_handle, "hwdec", "no");
+                    qDebug() << "set_property hwdec auto-safe";
+                    set_property(_handle, "hwdec", "auto-safe");
                 }
 #endif
             }
@@ -717,7 +721,11 @@ void MpvProxy::savePlaybackPosition()
 
 #ifndef _LIBDMR_
     MovieConfiguration::get().updateUrl(this->_file, ConfigKnownKey::SubId, sid());
-    MovieConfiguration::get().updateUrl(this->_file, ConfigKnownKey::StartPos, elapsed());
+    if (elapsed() - 10 >= 0) {
+        MovieConfiguration::get().updateUrl(this->_file, ConfigKnownKey::StartPos, elapsed() - 10);
+    } else {
+        MovieConfiguration::get().updateUrl(this->_file, ConfigKnownKey::StartPos, 10);
+    }
 #endif
 }
 
@@ -793,12 +801,15 @@ void MpvProxy::volumeUp()
 
 void MpvProxy::changeVolume(int val)
 {
-    val = qMin(qMax(val, 0), 200);
+    val += 40;
+    val = qMin(qMax(val, 40), 240);
     set_property(_handle, "volume", val);
 }
 
 void MpvProxy::volumeDown()
 {
+    if (volume() <= 0)
+        return;
     QList<QVariant> args = { "add", "volume", -8 };
     qDebug () << args;
     command(_handle, args);
@@ -806,7 +817,7 @@ void MpvProxy::volumeDown()
 
 int MpvProxy::volume() const
 {
-    return get_property(_handle, "volume").toInt();
+    return get_property(_handle, "volume").toInt() - 40;
 }
 
 int MpvProxy::videoRotation() const

@@ -44,7 +44,7 @@
 #include "animationlabel.h"
 #include "volumemonitoring.h"
 
-static const int VOLUME_OFFSET = 40;
+//static const int VOLUME_OFFSET = 40;
 
 namespace Dtk {
 namespace Widget {
@@ -231,7 +231,9 @@ protected slots:
     void handleHelpAction();
 
     void changedVolume(int);
+    void changedVolumeSlot(int vol);
     void changedMute();
+    void changedMute(bool);
 
     void updateMiniBtnTheme(int);
 private:
@@ -254,9 +256,11 @@ private:
     void subtitleMatchVideo(const QString &fileName);
     void defaultplaymodeinit();
     void readSinkInputPath();
-    void setAudioVolume(double);
+    void setAudioVolume(int);
     void setMusicMuted(bool muted);
 
+    //Limit video to mini mode size
+    void LimitWindowize();
 private:
     DFloatingMessage *popup {nullptr};
     QLabel *_fullscreentimelable {nullptr};
@@ -336,6 +340,9 @@ private:
 
     VolumeMonitoring volumeMonitoring;
     QString sinkInputPath;
+
+    int m_lastVolume;
+    bool m_isManual;
 };
 };
 

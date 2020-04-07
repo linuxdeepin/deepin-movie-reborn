@@ -49,7 +49,6 @@
 #include <DApplication>
 #include <QThread>
 #include <DSlider>
-
 static const int LEFT_MARGIN = 10;
 static const int RIGHT_MARGIN = 10;
 static const int PROGBAR_SPEC = 10 + 120 + 17 + 54 + 10 + 54 + 10 + 170 + 10 + 20;
@@ -1077,15 +1076,15 @@ public:
 //        _slider->slider()->setOrientation(Qt::Vertical);
 
         auto vol = _engine->volume();
-        if (vol != 0) {
+        /*if (vol != 0) {
             vol -= VOLUME_OFFSET;
-        }
+        }*/
         _slider->setValue(vol);
         l->addWidget(_slider, Qt::AlignHCenter);
 
 
         connect(_slider, &DSlider::valueChanged, [ = ]() {
-            auto var = _slider->value() + VOLUME_OFFSET;
+            auto var = _slider->value() /*+ VOLUME_OFFSET*/;
             _mw->requestAction(ActionFactory::ChangeVolume, false, QList<QVariant>() << var);
         });
 
@@ -1094,9 +1093,9 @@ public:
 
         connect(_engine, &PlayerEngine::volumeChanged, [ = ]() {
             auto vol = _engine->volume();
-            if (vol != 0) {
+            /*if (vol != 0) {
                 vol -= VOLUME_OFFSET;
-            }
+            }*/
             _slider->setValue(vol);
         });
         m_composited = CompositingManager::get().composited();
@@ -1113,16 +1112,14 @@ public:
     void paintEvent(QPaintEvent *event)
     {
         bool composited = CompositingManager::get().composited();
-        if(!m_composited)
-        {
+        if (!m_composited) {
             QPainter painter(this);
             if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ) {
                 painter.fillRect(rect(), Qt::white);
             } else {
                 painter.fillRect(rect(), Qt::black);
             }
-        }
-        else {
+        } else {
             DArrowRectangle::paintEvent(event);
         }
     }
@@ -1272,7 +1269,7 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
 //    setFrameShape(QFrame::NoFrame);
 //    setFrameShadow(QFrame::Plain);
 //    setLineWidth(0);
-    setFixedHeight(TOOLBOX_HEIGHT);
+    //setFixedHeight(TOOLBOX_HEIGHT);
 //    setAutoFillBackground(false);
 //    setAttribute(Qt::WA_TranslucentBackground);
     if (!composited) {
@@ -1307,6 +1304,11 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
 
 
 //    DThemeManager::instance()->registerWidget(this);
+
+
+    paopen = nullptr;
+    paClose = nullptr;
+
     label_list.clear();
     label_black_list.clear();
     pm_list.clear();
@@ -1436,6 +1438,7 @@ void ToolboxProxy::setup()
 //    _bot_spec->setFixedHeight(TOOLBOX_SPACE_HEIGHT);
     _bot_spec->setVisible(false);
     botv->addWidget(_bot_spec);
+    botv->addStretch();
 
     bot_toolWgt = new QWidget(bot_widget);
     bot_toolWgt->setFixedHeight(TOOLBOX_HEIGHT - 10);
@@ -2070,16 +2073,16 @@ void ToolboxProxy::updateVolumeState()
         //_volBtn->setToolTip(tr("Mute"));
     } else {
         auto v = _engine->volume();
-        if (v != 0) {
+        /*if (v != 0) {
             v -= VOLUME_OFFSET;
-        }
+        }*/
         //_volBtn->setToolTip(tr("Volume"));
         if (v >= 66)
             _volBtn->changeLevel(VolumeButton::High);
         else if (v >= 33)
             _volBtn->changeLevel(VolumeButton::Mid);
         else if (v == 0)
-            _volBtn->changeLevel(VolumeButton::Off);
+            _volBtn->changeLevel(VolumeButton::Mute);
         else
             _volBtn->changeLevel(VolumeButton::Low);
     }
@@ -2441,11 +2444,19 @@ void ToolboxProxy::resizeEvent(QResizeEvent *event)
 
     }
 
-    if (_playlist->state() == PlaylistWidget::State::Opened) {
+    if (bAnimationFinash ==  false && paopen != nullptr && paClose != nullptr) {
+
+        _playlist->endAnimation();
+        paopen->setDuration(0);
+        paClose->setDuration(0);
+    }
+
+
+    if (_playlist->state() == PlaylistWidget::State::Opened && bAnimationFinash == true) {
         QRect r(5, _mainWindow->height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT) - _mainWindow->rect().top() - 5,
                 _mainWindow->rect().width() - 10, (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT));
         this->setGeometry(r);
-    } else {
+    } else if (_playlist->state() == PlaylistWidget::State::Closed && bAnimationFinash == true) {
         QRect r(5, _mainWindow->height() - TOOLBOX_HEIGHT - _mainWindow->rect().top() - 5,
                 _mainWindow->rect().width() - 10, TOOLBOX_HEIGHT);
         this->setGeometry(r);
@@ -2507,30 +2518,56 @@ void ToolboxProxy::setPlaylist(PlaylistWidget *playlist)
 {
     _playlist = playlist;
     connect(_playlist, &PlaylistWidget::stateChange, this, [ = ]() {
+
+        if (bAnimationFinash == false) {
+            return ;
+        }
+
         if (_playlist->state() == PlaylistWidget::State::Opened) {
-            this->setFixedHeight(TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT);
-            bot_toolWgt->setFixedHeight(TOOLBOX_HEIGHT - 14);
-            _bot_spec->setFixedHeight(TOOLBOX_SPACE_HEIGHT);
-            _bot_spec->setVisible(true);
-            QRect rcEnd = this->geometry();
-            QRect rcBegin = rcEnd;
-            rcBegin.setTop(rcEnd.bottom());
-            QPropertyAnimation *pa = new QPropertyAnimation(this, "geometry");
-            pa->setEasingCurve(QEasingCurve::InOutCubic);
-            pa->setDuration(POPUP_DURATION);
-            pa->setStartValue(rcBegin);
-            pa->setEndValue(rcEnd);
-            pa->start();
-            connect(pa, &QPropertyAnimation::finished, [ = ]() {
-                pa->deleteLater();
+            //this->setFixedHeight(TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT);
+            //bot_toolWgt->setFixedHeight(TOOLBOX_HEIGHT - 14);
+            //_bot_spec->setFixedHeight(TOOLBOX_SPACE_HEIGHT);
+            // _bot_spec->setVisible(true);
+            QRect rcBegin = this->geometry();
+            QRect rcEnd = rcBegin;
+            rcEnd.setY(rcBegin.y() - TOOLBOX_SPACE_HEIGHT);
+            //rcEnd.setHeight(rcBegin.height() - TOOLBOX_SPACE_HEIGHT);
+            bAnimationFinash = false;
+            paopen = new QPropertyAnimation(this, "geometry");
+            paopen->setEasingCurve(QEasingCurve::Linear);
+            paopen->setDuration(POPUP_DURATION  ) ;
+            paopen->setStartValue(rcBegin);
+            paopen->setEndValue(rcEnd);
+            paopen->start();
+            connect(paopen, &QPropertyAnimation::finished, [ = ]() {
+                paopen->deleteLater();
+                paopen = nullptr;
+                bAnimationFinash = true;
             });
             _listBtn->setChecked(true);
         } else {
             _listBtn->setChecked(false);
-            _bot_spec->setVisible(false);
-            _bot_spec->setFixedHeight(TOOLBOX_TOP_EXTENT);
-            bot_toolWgt->setFixedHeight(TOOLBOX_HEIGHT - 10);
-            this->setFixedHeight(TOOLBOX_HEIGHT);
+            // _bot_spec->setVisible(false);
+            //_bot_spec->setFixedHeight(TOOLBOX_TOP_EXTENT);
+            //bot_toolWgt->setFixedHeight(TOOLBOX_HEIGHT - 10);
+            //this->setFixedHeight(TOOLBOX_HEIGHT);
+            bAnimationFinash = false;
+
+            QRect rcBegin = this->geometry();
+            QRect rcEnd = rcBegin;
+            rcEnd.setY(rcBegin.y() + TOOLBOX_SPACE_HEIGHT);
+            paClose = new QPropertyAnimation(this, "geometry");
+            paClose->setEasingCurve(QEasingCurve::Linear);
+            paClose->setDuration(POPUP_DURATION );
+            paClose->setStartValue(rcBegin);
+            paClose->setEndValue(rcEnd);
+            paClose->start();
+            connect(paClose, &QPropertyAnimation::finished, [ = ]() {
+                paClose->deleteLater();
+                paClose = nullptr;
+                bAnimationFinash = true;
+            });
+
         }
     });
 }

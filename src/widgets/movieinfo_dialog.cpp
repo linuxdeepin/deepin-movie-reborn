@@ -71,10 +71,11 @@ static QString ElideText(const QString &text, const QSize &size,
         str = tmp_str;
     } else {
         while (line.isValid()) {
-            height += lineHeight;
+            //height += lineHeight;
             line.setLineWidth(size.width());
 
-            if (textLayout.lineCount() == 2) {
+            //2020.4.2修改，显示完整路径
+            /*if (textLayout.lineCount() == 2) {
                 QStringList strLst;
                 if (!text.isEmpty()) {
                     strLst = text.split(tmp_str);
@@ -84,7 +85,7 @@ static QString ElideText(const QString &text, const QSize &size,
                     str += fontMetrics.elidedText(strLst.last(), mode, lastLineWidth);
                     break;
                 }
-            }
+            }*/
 
             tmp_str = text.mid(line.textStart(), line.textLength());
 
@@ -416,14 +417,13 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
         auto codeLabel = m_titleList.at(5);
         qDebug() << "filePathLbl w,h: " << filePathLbl->width() << "," << filePathLbl->height();
         QFontMetrics fm = codeLabel->fontMetrics();
-        filePathLbl->setMinimumWidth(qMin(190, 250 - fm.boundingRect(codeLabel->text()).width()));
+        filePathLbl->setMinimumWidth(qMin(160, 250 - fm.boundingRect(codeLabel->text()).width()));
         qDebug() << "filePathLbl w,h: " << filePathLbl->width() << "," << filePathLbl->height();
         auto fp = ElideText(tmp->text(), {filePathLbl->width(), fm.height()}, QTextOption::WrapAnywhere,
                             filePathLbl->font(), Qt::ElideRight, fm.height(), filePathLbl->width());
         filePathLbl->setText(fp);
         m_filePathLbl = filePathLbl;
         m_strFilePath = tmp->text();
-        //filePathLbl->setFixedHeight(LINE_HEIGHT * 2);
         filePathLbl->setToolTip(tmp->text());
         auto t = new Tip(QPixmap(), tmp->text(), nullptr);
         t->resetSize(QApplication::desktop()->availableGeometry().width());
@@ -518,9 +518,7 @@ void MovieInfoDialog::addRow(QString title, QString field, QFormLayout *form, QL
 {
     auto f = new DLabel(title, this);
     f->setAlignment(Qt::AlignLeft | Qt::AlignTop);
-    f->setFixedWidth(60);
-    f->setMinimumHeight(20);
-    //f->setFixedSize(60, 20);
+    f->setMinimumSize(60, 20);
     //DFontSizeManager::instance()->bind(f, DFontSizeManager::T8, 0);
     //f->setForegroundRole(DPalette::WindowText);
     QFont font = f->font();
