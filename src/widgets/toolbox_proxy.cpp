@@ -2094,7 +2094,7 @@ void ToolboxProxy::updateVolumeState()
         else if (v >= 33)
             _volBtn->changeLevel(VolumeButton::Mid);
         else if (v == 0)
-            _volBtn->changeLevel(VolumeButton::Mute);
+            _volBtn->changeLevel(VolumeButton::Off);
         else
             _volBtn->changeLevel(VolumeButton::Low);
     }
