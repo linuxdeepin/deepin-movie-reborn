@@ -1084,7 +1084,7 @@ public:
 
 
         connect(_slider, &DSlider::valueChanged, [ = ]() {
-            auto var = _slider->value() /*+ VOLUME_OFFSET*/;
+            auto var = _slider->value();
             _mw->requestAction(ActionFactory::ChangeVolume, false, QList<QVariant>() << var);
         });
 
@@ -2082,7 +2082,7 @@ void ToolboxProxy::updateVolumeState()
         else if (v >= 33)
             _volBtn->changeLevel(VolumeButton::Mid);
         else if (v == 0)
-            _volBtn->changeLevel(VolumeButton::Mute);
+            _volBtn->changeLevel(VolumeButton::Off);
         else
             _volBtn->changeLevel(VolumeButton::Low);
     }
