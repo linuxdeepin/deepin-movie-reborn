@@ -1265,6 +1265,7 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
       _mainWindow(static_cast<MainWindow *>(mainWindow)),
       _engine(proxy)
 {
+    _bthumbnailmode = false;
     bool composited = CompositingManager::get().composited();
 //    setFrameShape(QFrame::NoFrame);
 //    setFrameShadow(QFrame::Plain);
@@ -1344,6 +1345,10 @@ void ToolboxProxy::finishLoadSlot(QSize size)
 {
     if (pm_list.isEmpty()) return;
 
+    if(!_bthumbnailmode)
+    {
+        return;
+    }
     _viewProgBar->setViewProgBar(_engine, pm_list, pm_black_list);
 
     if (CompositingManager::get().composited() && _loadsize == size && _engine->state() != PlayerEngine::CoreState::Idle) {
@@ -1356,6 +1361,32 @@ void ToolboxProxy::finishLoadSlot(QSize size)
         }
         _progBar_Widget->setCurrentIndex(2);
     }
+}
+
+void ToolboxProxy::setthumbnailmode()
+{
+    if(_engine->state() == PlayerEngine::CoreState::Idle)
+    {
+        return;
+    }
+
+#ifndef __mips__
+    if(Settings::get().isSet(Settings::ShowThumbnailMode))
+    {
+        _bthumbnailmode = true;
+        updateThumbnail();
+    }
+    else
+    {
+        _bthumbnailmode = false;
+        updateThumbnail();
+        updateMovieProgress();
+    }
+#else
+    updateMovieProgress();
+
+#endif
+
 }
 
 void ToolboxProxy::updateplaylisticon()
@@ -1494,6 +1525,8 @@ void ToolboxProxy::setup()
             _progBar->forceLeave();
         }
     });
+    connect(&Settings::get(), &Settings::baseChanged, this, &ToolboxProxy::setthumbnailmode);
+    connect(_engine, &PlayerEngine::siginitthumbnailseting, this, &ToolboxProxy::setthumbnailmode);
 
     connect(_progBar, &DSlider::sliderMoved, this, &ToolboxProxy::setProgress);
     connect(_progBar, &DSlider::valueChanged, this, &ToolboxProxy::setProgress);
@@ -1836,7 +1869,7 @@ void ToolboxProxy::setup()
             _viewProgBar->setWidth();
             if (_engine->state() != PlayerEngine::CoreState::Idle && size() != _loadsize) {
 #ifndef __mips__
-                updateThumbnail();
+                //updateThumbnail();
 #endif
                 _loadsize = size();
             }
