@@ -1276,8 +1276,7 @@ void ToolboxProxy::finishLoadSlot(QSize size)
 {
     if (pm_list.isEmpty()) return;
 
-    if(!_bthumbnailmode)
-    {
+    if (!_bthumbnailmode) {
         return;
     }
     _viewProgBar->setViewProgBar(_engine, pm_list, pm_black_list);
@@ -1296,19 +1295,15 @@ void ToolboxProxy::finishLoadSlot(QSize size)
 
 void ToolboxProxy::setthumbnailmode()
 {
-    if(_engine->state() == PlayerEngine::CoreState::Idle)
-    {
+    if (_engine->state() == PlayerEngine::CoreState::Idle) {
         return;
     }
 
 #ifndef __mips__
-    if(Settings::get().isSet(Settings::ShowThumbnailMode))
-    {
+    if (Settings::get().isSet(Settings::ShowThumbnailMode)) {
         _bthumbnailmode = true;
         updateThumbnail();
-    }
-    else
-    {
+    } else {
         _bthumbnailmode = false;
         updateThumbnail();
         updateMovieProgress();
@@ -1468,7 +1463,7 @@ void ToolboxProxy::setup()
         _previewTime->hide();
         m_mouseFlag = false;
     });
-    connect(&Settings::get(), &Settings::baseChanged,
+    connect(&Settings::get(), &Settings::baseMuteChanged,
     [ = ](QString sk, const QVariant & val) {
         if (sk == "base.play.mousepreview") {
             _progBar->setEnableIndication(_engine->state() != PlayerEngine::Idle);

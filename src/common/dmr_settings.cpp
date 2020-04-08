@@ -1,4 +1,4 @@
-/* 
+/*
  * (c) 2017, Deepin Technology Co., Ltd. <support@deepin.org>
  *
  * This program is free software; you can redistribute it and/or
@@ -35,9 +35,9 @@
 
 namespace dmr {
 using namespace Dtk::Core;
-static Settings* _theSettings = nullptr;
+static Settings *_theSettings = nullptr;
 
-Settings& Settings::get() 
+Settings &Settings::get()
 {
     if (!_theSettings) {
         _theSettings = new Settings;
@@ -47,12 +47,12 @@ Settings& Settings::get()
 }
 
 Settings::Settings()
-    : QObject(0) 
+    : QObject(0)
 {
     _configPath = QString("%1/%2/%3/config.conf")
-        .arg(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation))
-        .arg(qApp->organizationName())
-        .arg(qApp->applicationName());
+                  .arg(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation))
+                  .arg(qApp->organizationName())
+                  .arg(qApp->applicationName());
     qDebug() << "configPath" << _configPath;
     auto backend = new QSettingBackend(_configPath);
 
@@ -60,16 +60,18 @@ Settings::Settings()
     _settings->setBackend(backend);
 
     connect(_settings, &DSettings::valueChanged,
-            [=](const QString& key, const QVariant& value) {
-                if (key.startsWith("shortcuts."))
-                    emit shortcutsChanged(key, value);
-                else if (key.startsWith("base.play.playmode"))
-                    emit defaultplaymodechanged(key, value);
-                else if (key.startsWith("base."))
-                    emit baseChanged(key, value);
-                else if (key.startsWith("subtitle."))
-                    emit subtitleChanged(key, value);
-            });
+    [ = ](const QString & key, const QVariant & value) {
+        if (key.startsWith("shortcuts."))
+            emit shortcutsChanged(key, value);
+        else if (key.startsWith("base.play.playmode"))
+            emit defaultplaymodechanged(key, value);
+        else if (key.startsWith("base.play.mute"))
+            emit baseMuteChanged(key, value);
+        else if (key.startsWith("base."))
+            emit baseChanged(key, value);
+        else if (key.startsWith("subtitle."))
+            emit subtitleChanged(key, value);
+    });
 
     qDebug() << "keys" << _settings->keys();
 
@@ -80,7 +82,7 @@ Settings::Settings()
                      << tr("Single loop")
                      << tr("List loop");
     auto playmodeFamily = _settings->option("base.play.playmode");
-    playmodeFamily->setData("items",playmodeDatabase);
+    playmodeFamily->setData("items", playmodeDatabase);
 
     QFontDatabase fontDatabase;
     auto fontFamliy = _settings->option("subtitle.font.family");
@@ -90,15 +92,23 @@ Settings::Settings()
 
 static QString flag2key(Settings::Flag f)
 {
-    switch(f) {
-        case Settings::Flag::ClearWhenQuit: return "emptylist";
-        case Settings::Flag::ShowThumbnailMode: return "showInthumbnailmode";
-        case Settings::Flag::ResumeFromLast: return "resumelast";
-        case Settings::Flag::AutoSearchSimilar: return "addsimilar";
-        case Settings::Flag::PreviewOnMouseover: return "mousepreview";
-        case Settings::Flag::MultipleInstance: return "multiinstance";
-        case Settings::Flag::PauseOnMinimize: return "pauseonmin";
-        case Settings::Flag::HWAccel: return "hwaccel";
+    switch (f) {
+    case Settings::Flag::ClearWhenQuit:
+        return "emptylist";
+    case Settings::Flag::ShowThumbnailMode:
+        return "showInthumbnailmode";
+    case Settings::Flag::ResumeFromLast:
+        return "resumelast";
+    case Settings::Flag::AutoSearchSimilar:
+        return "addsimilar";
+    case Settings::Flag::PreviewOnMouseover:
+        return "mousepreview";
+    case Settings::Flag::MultipleInstance:
+        return "multiinstance";
+    case Settings::Flag::PauseOnMinimize:
+        return "pauseonmin";
+    case Settings::Flag::HWAccel:
+        return "hwaccel";
     }
 
     return "";
@@ -107,7 +117,7 @@ static QString flag2key(Settings::Flag f)
 bool Settings::isSet(Flag f) const
 {
     auto subgroups = _settings->group("base")->childGroups();
-    auto grp = std::find_if(subgroups.begin(), subgroups.end(), [=](GroupPtr grp) {
+    auto grp = std::find_if(subgroups.begin(), subgroups.end(), [ = ](GroupPtr grp) {
         return grp->key() == "base.play";
     });
 
@@ -115,12 +125,12 @@ bool Settings::isSet(Flag f) const
         auto sub = (*grp)->childOptions();
 
         auto key = flag2key(f);
-        auto p = std::find_if(sub.begin(), sub.end(), [=](OptionPtr opt) { 
-                auto sk = opt->key();
-                sk.remove(0, sk.lastIndexOf('.') + 1);
-                return sk == key; 
-            });
-        
+        auto p = std::find_if(sub.begin(), sub.end(), [ = ](OptionPtr opt) {
+            auto sk = opt->key();
+            sk.remove(0, sk.lastIndexOf('.') + 1);
+            return sk == key;
+        });
+
         return p != sub.end() && (*p)->value().toBool();
     }
 
@@ -131,17 +141,17 @@ QStringList Settings::commonPlayableProtocols() const
 {
     //from mpv and combined with stream media protocols
     return {
-        "http", "https", "bd", "ytdl", "smb", "dvd", "dvdread", "tv", "pvr", 
-            "dvb", "cdda", "lavf", "av", "avdevice", "fd", "fdclose", "edl",
-            "mf", "null", "memory", "hex", "rtmp", "rtsp", "hls", "mms", "rtp", 
-            "rtcp"
+        "http", "https", "bd", "ytdl", "smb", "dvd", "dvdread", "tv", "pvr",
+        "dvb", "cdda", "lavf", "av", "avdevice", "fd", "fdclose", "edl",
+        "mf", "null", "memory", "hex", "rtmp", "rtsp", "hls", "mms", "rtp",
+        "rtcp"
     };
 }
 
-bool Settings::iscommonPlayableProtocol(const QString& scheme) const
+bool Settings::iscommonPlayableProtocol(const QString &scheme) const
 {
-    for (auto pro: commonPlayableProtocols()) {
-        if (pro == scheme) 
+    for (auto pro : commonPlayableProtocols()) {
+        if (pro == scheme)
             return true;
     }
 
@@ -166,13 +176,13 @@ QString Settings::screenshotLocation()
 QString Settings::screenshotNameTemplate()
 {
     return tr("%1/Movie%2.jpg").arg(screenshotLocation())
-        .arg(QDateTime::currentDateTime().toString("yyyyMMddhhmmss"));
+           .arg(QDateTime::currentDateTime().toString("yyyyMMddhhmmss"));
 }
 
 QString Settings::screenshotNameSeqTemplate()
 {
     return tr("%1/Movie%2(%3).jpg").arg(screenshotLocation())
-        .arg(QDateTime::currentDateTime().toString("yyyyMMddhhmmss"));
+           .arg(QDateTime::currentDateTime().toString("yyyyMMddhhmmss"));
 }
 
 void Settings::setGeneralOption(const QString &opt, const QVariant &v)
@@ -186,12 +196,12 @@ QVariant Settings::generalOption(const QString &opt)
     return settings()->getOption(QString("base.general.%1").arg(opt));
 }
 
-QVariant Settings::internalOption(const QString& opt)
+QVariant Settings::internalOption(const QString &opt)
 {
     return settings()->getOption(QString("base.play.%1").arg(opt));
 }
 
-void Settings::setInternalOption(const QString& opt, const QVariant& v)
+void Settings::setInternalOption(const QString &opt, const QVariant &v)
 {
     settings()->setOption(QString("base.play.%1").arg(opt), v);
     settings()->sync();
