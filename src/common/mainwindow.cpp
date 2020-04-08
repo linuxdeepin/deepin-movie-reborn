@@ -718,6 +718,10 @@ MainWindow::MainWindow(QWidget *parent)
         volume = 0;
     }*/
     _engine->changeVolume(volume);
+    if (Settings::get().internalOption("mute").toBool()) {
+        _engine->toggleMute();
+        Settings::get().setInternalOption("mute", _engine->muted());
+    }
 
     _toolbox = new ToolboxProxy(this, _engine);
     _toolbox->setFocusPolicy(Qt::NoFocus);
