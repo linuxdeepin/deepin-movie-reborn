@@ -718,11 +718,6 @@ MainWindow::MainWindow(QWidget *parent)
     }*/
     _engine->changeVolume(volume);
 
-    bool mute = Settings::get().internalOption("mute").toBool();
-    if (mute) {
-        _engine->toggleMute();
-    }
-
     _toolbox = new ToolboxProxy(this, _engine);
     _toolbox->setFocusPolicy(Qt::NoFocus);
 
@@ -2277,6 +2272,10 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     }
 
     case ActionFactory::ActionKind::GotoPlaylistNext: {
+
+        if (_engine->state() != PlayerEngine::CoreState::Playing)
+            return ;
+
         if (isFullScreen() || isMaximized()) {
             _movieSwitchedInFsOrMaxed = true;
         }
@@ -2285,6 +2284,9 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     }
 
     case ActionFactory::ActionKind::GotoPlaylistPrev: {
+        if (_engine->state() != PlayerEngine::CoreState::Playing)
+            return ;
+
         if (isFullScreen() || isMaximized()) {
             _movieSwitchedInFsOrMaxed = true;
         }

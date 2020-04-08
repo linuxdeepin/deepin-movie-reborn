@@ -52,3 +52,4 @@ void GenerateSettingTranslate()
     auto group_shortcuts_showshortcuts = QObject::tr("Display shortcuts");
     auto group_settings = QObject::tr("Settings");
 }
+
