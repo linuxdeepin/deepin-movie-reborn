@@ -718,6 +718,10 @@ MainWindow::MainWindow(QWidget *parent)
         volume = 0;
     }*/
     _engine->changeVolume(volume);
+    if (Settings::get().internalOption("mute").toBool()) {
+        _engine->toggleMute();
+        Settings::get().setInternalOption("mute", _engine->muted());
+    }
 
     _toolbox = new ToolboxProxy(this, _engine);
     _toolbox->setFocusPolicy(Qt::NoFocus);
@@ -1954,6 +1958,9 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     }
 
     case ActionFactory::ActionKind::ToggleMiniMode: {
+        if (_playlist->state() == PlaylistWidget::Opened && !isFullScreen()) {
+            requestAction(ActionFactory::TogglePlaylist);
+        }
         if (isFullScreen()) {
             requestAction(ActionFactory::ToggleFullscreen);
             /*if (!fromUI) {
@@ -1963,13 +1970,12 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                 _fullscreentimelable->close();
             }
         }
+
         if (!fromUI) {
             reflectActionToUI(kd);
         }
-        if (_playlist->state() == PlaylistWidget::Opened && !isFullScreen()) {
-            requestAction(ActionFactory::TogglePlaylist);
-        }
         toggleUIMode();
+
         break;
     }
 
@@ -2259,8 +2265,10 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     }
 
     case ActionFactory::ActionKind::VolumeUp: {
-//        if (_engine->muted())
-//            changedMute();
+        if (_engine->muted()) {
+            changedMute();
+            setMusicMuted(_engine->muted());
+        }
         _engine->volumeUp();
         m_lastVolume = _engine->volume();
         int pert = _engine->volume();
@@ -2275,6 +2283,9 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             changedMute();
             _nwComm->updateWithMessage(tr("Mute"));
             setAudioVolume(0);
+        } else if (pert > 0 && _engine->muted()) {
+            changedMute();
+            setMusicMuted(_engine->muted());
         }
         m_lastVolume = _engine->volume();
         _nwComm->updateWithMessage(tr("Volume: %1%").arg(m_lastVolume));
@@ -2288,7 +2299,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
 
     case ActionFactory::ActionKind::GotoPlaylistNext: {
 
-        if (_engine->state() != PlayerEngine::CoreState::Playing)
+        if (_engine->state() == PlayerEngine::CoreState::Idle)
             return ;
 
         if (isFullScreen() || isMaximized()) {
@@ -2299,7 +2310,8 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     }
 
     case ActionFactory::ActionKind::GotoPlaylistPrev: {
-        if (_engine->state() != PlayerEngine::CoreState::Playing)
+
+        if (_engine->state() != PlayerEngine::CoreState::Idle)
             return ;
 
         if (isFullScreen() || isMaximized()) {
@@ -3730,7 +3742,7 @@ void MainWindow::toggleUIMode()
 
 
     _titlebar->setVisible(!_miniMode);
-    _toolbox->setVisible(!_miniMode);
+    //_toolbox->setVisible(!_miniMode);
 
     _miniPlayBtn->setVisible(_miniMode);
     _miniCloseBtn->setVisible(_miniMode);
@@ -3741,12 +3753,15 @@ void MainWindow::toggleUIMode()
     _miniQuitMiniBtn->setEnabled(_miniMode);
 
 
+
     resumeToolsWindow();
 
     if (_miniMode) {
+
         updateSizeConstraints();
         syncPlayState();
         setEnableSystemResize(false);
+
 
         _stateBeforeMiniMode = SBEM_None;
 
@@ -3787,6 +3802,7 @@ void MainWindow::toggleUIMode()
         if (_lastRectInNormalMode.isValid()) {
             geom = _lastRectInNormalMode;
         }
+
         geom.setSize(sz);
         setGeometry(geom);
         move(geom.x(), geom.y());
@@ -3796,6 +3812,7 @@ void MainWindow::toggleUIMode()
                            sz.height() - 10 - _miniPlayBtn->height());
         _miniCloseBtn->move(sz.width() - 15 - _miniCloseBtn->width(), 10);
         _miniQuitMiniBtn->move(14, sz.height() - 10 - _miniQuitMiniBtn->height());
+
 
     } else {
         if (_stateBeforeMiniMode & SBEM_Above) {
