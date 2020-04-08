@@ -327,23 +327,6 @@ private:
     PlayerEngine *_engine {nullptr};
     QListWidget *_subsView {nullptr};
 };
-class IndicatorLayout: public QHBoxLayout
-{
-    Q_OBJECT
-public:
-    IndicatorLayout(QWidget *parent = 0)
-    {
-
-    }
-protected:
-    void paintEvent(QPaintEvent *e)
-    {
-//        QPainter p(this);
-//        QRect r(_indicatorPos, QSize{4, 60});
-////        p.drawText(this->rect(),Qt::AlignCenter,"this is my widget");
-//        p.fillRect(r, QBrush(_indicatorColor));
-    }
-};
 
 class SliderTime: public DArrowRectangle
 {
@@ -407,58 +390,6 @@ private:
     QSize _miniSize = QSize(58, 25);
     QFont _font {QFont()};
     bool _bFontChanged {false};
-};
-
-class IndicatorBar: public DBlurEffectWidget
-{
-    Q_OBJECT
-public:
-    IndicatorBar(QWidget *parent = nullptr)
-    {
-        resize(4, 60);
-        setObjectName("indicator");
-        repaint();
-    }
-    virtual ~IndicatorBar() override {}
-
-    void changeStyle(bool flag)
-    {
-        _normal = !flag;
-        update();
-        repaint();
-    }
-
-protected:
-    void paintEvent(QPaintEvent *event) Q_DECL_OVERRIDE {
-        QPainter painter(this);
-        painter.setRenderHint(QPainter::Antialiasing);
-        QRectF bgRect;
-        bgRect.setSize(size());
-        QColor bgColor, bdColor;
-//        const QPalette pal = QGuiApplication::palette();
-//        bgColor = pal.color(QPalette::Highlight);
-        if (_normal)
-        {
-            bgColor = QColor(255, 255, 255);
-            bdColor = QColor(0, 0, 0, 40 * 255);
-            resize(4, 60);
-        } else
-        {
-            bgColor = QColor(255, 138, 0);
-            bdColor = bgColor;
-            resize(2, 60);
-        }
-        QPainterPath pp;
-        pp.setFillRule(Qt::WindingFill);
-        QPen pen(bdColor, 1);
-        painter.setPen(pen);
-        pp.addRoundedRect(bgRect, 2, 2);
-        painter.fillPath(pp, bgColor);
-        painter.drawPath(pp);
-    }
-
-private:
-    bool _normal = true;
 };
 
 class ViewProgBarItem: public QLabel
@@ -1518,7 +1449,8 @@ void ToolboxProxy::setup()
     _progBar->setEnableIndication(_engine->state() != PlayerEngine::Idle);
 //    _progBar->hide();
     connect(_previewer, &ThumbnailPreview::leavePreview, [ = ]() {
-        auto pos = _progBar->mapFromGlobal(QCursor::pos());
+        auto pos =
+            _progBar->mapFromGlobal(QCursor::pos());
         if (!_progBar->geometry().contains(pos)) {
             _previewer->hide();
             _previewTime->hide();
