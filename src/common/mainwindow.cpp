@@ -2265,8 +2265,10 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     }
 
     case ActionFactory::ActionKind::VolumeUp: {
-//        if (_engine->muted())
-//            changedMute();
+        if (_engine->muted()) {
+            changedMute();
+            setMusicMuted(_engine->muted());
+        }
         _engine->volumeUp();
         m_lastVolume = _engine->volume();
         int pert = _engine->volume();
@@ -2281,6 +2283,9 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             changedMute();
             _nwComm->updateWithMessage(tr("Mute"));
             setAudioVolume(0);
+        } else if (pert > 0 && _engine->muted()) {
+            changedMute();
+            setMusicMuted(_engine->muted());
         }
         m_lastVolume = _engine->volume();
         _nwComm->updateWithMessage(tr("Volume: %1%").arg(m_lastVolume));
