@@ -718,10 +718,6 @@ MainWindow::MainWindow(QWidget *parent)
         volume = 0;
     }*/
     _engine->changeVolume(volume);
-    if (Settings::get().internalOption("mute").toBool()) {
-        _engine->toggleMute();
-        Settings::get().setInternalOption("mute", _engine->muted());
-    }
 
     _toolbox = new ToolboxProxy(this, _engine);
     _toolbox->setFocusPolicy(Qt::NoFocus);
@@ -1289,8 +1285,6 @@ void MainWindow::changedMute(bool mute)
         _engine->changeVolume(m_lastVolume);
         _nwComm->updateWithMessage(tr("Volume: %1%").arg(_engine->volume()));
     }
-    _engine->toggleMute();
-    Settings::get().setInternalOption("mute", mute);
 }
 
 #ifdef USE_DXCB
@@ -2234,7 +2228,6 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
 
     case ActionFactory::ActionKind::ChangeVolume: {
         if (!args.isEmpty()) {
-
             int nVol = args[0].toInt();
             if (m_lastVolume == nVol) {
                 _nwComm->updateWithMessage(tr("Volume: %1%").arg(nVol));
@@ -2268,10 +2261,8 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     }
 
     case ActionFactory::ActionKind::VolumeUp: {
-        if (_engine->muted()) {
-            changedMute();
-            setMusicMuted(_engine->muted());
-        }
+//        if (_engine->muted())
+//            changedMute();
         _engine->volumeUp();
         m_lastVolume = _engine->volume();
         int pert = _engine->volume();
@@ -2286,9 +2277,6 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             changedMute();
             _nwComm->updateWithMessage(tr("Mute"));
             setAudioVolume(0);
-        } else if (pert > 0 && _engine->muted()) {
-            changedMute();
-            setMusicMuted(_engine->muted());
         }
         m_lastVolume = _engine->volume();
         _nwComm->updateWithMessage(tr("Volume: %1%").arg(m_lastVolume));
@@ -2302,48 +2290,21 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
 
     case ActionFactory::ActionKind::GotoPlaylistNext: {
 
-
-
-        if (_engine->state() == PlayerEngine::CoreState::Idle) {
-            //为了解决快速切换下一曲卡顿的问题
-            QTimer *timer = new QTimer;
-            connect(timer, &QTimer::timeout, [ = ]() {
-                timer->deleteLater();
-                if (_engine->state() == PlayerEngine::CoreState::Idle) {
-                    if (isFullScreen() || isMaximized()) {
-                        _movieSwitchedInFsOrMaxed = true;
-                    }
-                    _engine->next();
-                }
-            });
-            timer->start(500);
+        if (_engine->state() != PlayerEngine::CoreState::Playing)
             return ;
-        }
+
         if (isFullScreen() || isMaximized()) {
             _movieSwitchedInFsOrMaxed = true;
         }
         _engine->next();
-
         break;
     }
 
     case ActionFactory::ActionKind::GotoPlaylistPrev: {
 
-        if (_engine->state() == PlayerEngine::CoreState::Idle) {
-            //为了解决快速切换下一曲卡顿的问题
-            QTimer *timer = new QTimer;
-            connect(timer, &QTimer::timeout, [ = ]() {
-                timer->deleteLater();
-                if (_engine->state() == PlayerEngine::CoreState::Idle) {
-                    if (isFullScreen() || isMaximized()) {
-                        _movieSwitchedInFsOrMaxed = true;
-                    }
-                    _engine->prev();
-                }
-            });
-            timer->start(500);
+        if (_engine->state() != PlayerEngine::CoreState::Playing)
             return ;
-        }
+
         if (isFullScreen() || isMaximized()) {
             _movieSwitchedInFsOrMaxed = true;
         }
