@@ -1954,6 +1954,9 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     }
 
     case ActionFactory::ActionKind::ToggleMiniMode: {
+        if (_playlist->state() == PlaylistWidget::Opened && !isFullScreen()) {
+            requestAction(ActionFactory::TogglePlaylist);
+        }
         if (isFullScreen()) {
             requestAction(ActionFactory::ToggleFullscreen);
             /*if (!fromUI) {
@@ -1963,13 +1966,12 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                 _fullscreentimelable->close();
             }
         }
+
         if (!fromUI) {
             reflectActionToUI(kd);
         }
-        if (_playlist->state() == PlaylistWidget::Opened && !isFullScreen()) {
-            requestAction(ActionFactory::TogglePlaylist);
-        }
         toggleUIMode();
+
         break;
     }
 
@@ -2299,6 +2301,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     }
 
     case ActionFactory::ActionKind::GotoPlaylistPrev: {
+
         if (_engine->state() != PlayerEngine::CoreState::Playing)
             return ;
 
@@ -3730,7 +3733,7 @@ void MainWindow::toggleUIMode()
 
 
     _titlebar->setVisible(!_miniMode);
-    _toolbox->setVisible(!_miniMode);
+    //_toolbox->setVisible(!_miniMode);
 
     _miniPlayBtn->setVisible(_miniMode);
     _miniCloseBtn->setVisible(_miniMode);
@@ -3741,12 +3744,15 @@ void MainWindow::toggleUIMode()
     _miniQuitMiniBtn->setEnabled(_miniMode);
 
 
+
     resumeToolsWindow();
 
     if (_miniMode) {
+
         updateSizeConstraints();
         syncPlayState();
         setEnableSystemResize(false);
+
 
         _stateBeforeMiniMode = SBEM_None;
 
@@ -3787,6 +3793,7 @@ void MainWindow::toggleUIMode()
         if (_lastRectInNormalMode.isValid()) {
             geom = _lastRectInNormalMode;
         }
+
         geom.setSize(sz);
         setGeometry(geom);
         move(geom.x(), geom.y());
@@ -3796,6 +3803,7 @@ void MainWindow::toggleUIMode()
                            sz.height() - 10 - _miniPlayBtn->height());
         _miniCloseBtn->move(sz.width() - 15 - _miniCloseBtn->width(), 10);
         _miniQuitMiniBtn->move(14, sz.height() - 10 - _miniQuitMiniBtn->height());
+
 
     } else {
         if (_stateBeforeMiniMode & SBEM_Above) {
