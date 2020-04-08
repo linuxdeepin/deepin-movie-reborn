@@ -2299,21 +2299,48 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
 
     case ActionFactory::ActionKind::GotoPlaylistNext: {
 
-        if (_engine->state() == PlayerEngine::CoreState::Idle)
-            return ;
 
+
+        if (_engine->state() == PlayerEngine::CoreState::Idle) {
+            //为了解决快速切换下一曲卡顿的问题
+            QTimer *timer = new QTimer;
+            connect(timer, &QTimer::timeout, [ = ]() {
+                timer->deleteLater();
+                if (_engine->state() == PlayerEngine::CoreState::Idle) {
+                    if (isFullScreen() || isMaximized()) {
+                        _movieSwitchedInFsOrMaxed = true;
+                    }
+                    _engine->next();
+                }
+            });
+            timer->start(500);
+            return ;
+        }
         if (isFullScreen() || isMaximized()) {
             _movieSwitchedInFsOrMaxed = true;
         }
         _engine->next();
+
         break;
     }
 
     case ActionFactory::ActionKind::GotoPlaylistPrev: {
 
-        if (_engine->state() != PlayerEngine::CoreState::Idle)
+        if (_engine->state() == PlayerEngine::CoreState::Idle) {
+            //为了解决快速切换下一曲卡顿的问题
+            QTimer *timer = new QTimer;
+            connect(timer, &QTimer::timeout, [ = ]() {
+                timer->deleteLater();
+                if (_engine->state() == PlayerEngine::CoreState::Idle) {
+                    if (isFullScreen() || isMaximized()) {
+                        _movieSwitchedInFsOrMaxed = true;
+                    }
+                    _engine->prev();
+                }
+            });
+            timer->start(500);
             return ;
-
+        }
         if (isFullScreen() || isMaximized()) {
             _movieSwitchedInFsOrMaxed = true;
         }
