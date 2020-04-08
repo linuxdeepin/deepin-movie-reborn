@@ -653,6 +653,7 @@ private:
 MainWindow::MainWindow(QWidget *parent)
     : DMainWindow(NULL)
 {
+    m_lastVolume = Settings::get().internalOption("last_volume").toInt();;
     bool composited = CompositingManager::get().composited();
 #ifdef USE_DXCB
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowTitleHint | Qt::WindowMinMaxButtonsHint |
@@ -717,11 +718,6 @@ MainWindow::MainWindow(QWidget *parent)
         volume = 0;
     }*/
     _engine->changeVolume(volume);
-
-    bool mute = Settings::get().internalOption("mute").toBool();
-    if (mute) {
-        _engine->toggleMute();
-    }
 
     _toolbox = new ToolboxProxy(this, _engine);
     _toolbox->setFocusPolicy(Qt::NoFocus);
@@ -1072,8 +1068,7 @@ MainWindow::MainWindow(QWidget *parent)
     ThreadPool::instance()->moveToNewThread(&volumeMonitoring);
     volumeMonitoring.start();
     connect(&volumeMonitoring, &VolumeMonitoring::volumeChanged, this, [ = ](int vol) {
-        if (!m_isManual)
-            changedVolumeSlot(vol);
+        changedVolumeSlot(vol);
         //_engine->changeVolume(vol);
         //requestAction(ActionFactory::ChangeVolume);
     });
@@ -1260,6 +1255,7 @@ void MainWindow::changedVolumeSlot(int vol)
 {
     if (_engine->muted()) {
         _engine->toggleMute();
+        Settings::get().setInternalOption("mute", _engine->muted());
     }
     if (_engine->volume() <= 100 || vol < 100) {
         _engine->changeVolume(vol);
@@ -1272,7 +1268,7 @@ void MainWindow::changedMute()
 {
     bool mute = _engine->muted();
     _engine->toggleMute();
-    Settings::get().setInternalOption("mute", !mute);
+    Settings::get().setInternalOption("mute", _engine->muted());
 }
 
 void MainWindow::changedMute(bool mute)
@@ -1888,8 +1884,8 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         //允许影院打开音乐文件进行播放
         QStringList filenames = QFileDialog::getOpenFileNames(this, tr("Open File"),
                                                               lastOpenedPath(),
-                                                              tr("All videos (%1%2)").arg(_engine->audio_filetypes.join(" "))
-                                                              .arg(_engine->video_filetypes.join(" ")), 0,
+                                                              tr("All videos (%2 %1)").arg(_engine->video_filetypes.join(" "))
+                                                              .arg(_engine->audio_filetypes.join(" ")), 0,
                                                               QFileDialog::HideNameFilterDetails);
 
         QList<QUrl> urls;
@@ -2197,29 +2193,39 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
 
     */
     case ActionFactory::ActionKind::ToggleMute: {
-        if (_engine->muted()) {
+        /*if (_engine->muted()) {
             //此处存在修改风险，注意！
             if (m_lastVolume == 0) {
                 return;
+            } else if (m_lastVolume == -1) {
+                changedMute();
+                int savedVolume = Settings::get().internalOption("global_volume").toInt();
+                changedVolume(savedVolume);
+                setMusicMuted(false);
             } else {
                 changedMute();
                 changedVolume(m_lastVolume);
                 setMusicMuted(false);
             }
         } else {
-            //手动静音
-            m_isManual = true;
             m_lastVolume = _engine->volume();
+            Settings::get().setInternalOption("last_volume", _engine->volume());
             changedMute();
             changedVolume(0);
             setMusicMuted(true);
+        }*/
+        changedMute();
+        setMusicMuted(_engine->muted());
+        if (_engine->muted()) {
+            _nwComm->updateWithMessage(tr("Mute"));
+        } else {
+            _nwComm->updateWithMessage(tr("Volume: %1%").arg(_engine->volume()));
         }
         break;
     }
 
     case ActionFactory::ActionKind::ChangeVolume: {
         if (!args.isEmpty()) {
-            m_isManual = false;
             int nVol = args[0].toInt();
             if (m_lastVolume == nVol) {
                 _nwComm->updateWithMessage(tr("Volume: %1%").arg(nVol));
@@ -2228,29 +2234,33 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             }
             _engine->changeVolume(nVol);
             //当音量与当前静音状态不符时切换静音状态
-            if (nVol == 0 && !_engine->muted()) {
+            /*if (nVol == 0 && !_engine->muted()) {
                 changedMute();
                 _nwComm->updateWithMessage(tr("Mute"));
                 m_lastVolume = _engine->volume();
+                Settings::get().setInternalOption("last_volume", _engine->volume());
             } else if (_engine->muted()) {
-                if (nVol > 0) {
-                    changedMute();
-                    _nwComm->updateWithMessage(tr("Volume: %1%").arg(nVol));
-                    m_lastVolume = _engine->volume();
-                } else
-                    m_isManual = true;
+                changedMute();
+                _nwComm->updateWithMessage(tr("Volume: %1%").arg(nVol));
+                m_lastVolume = _engine->volume();
+                Settings::get().setInternalOption("last_volume", _engine->volume());
             } else {
                 _nwComm->updateWithMessage(tr("Volume: %1%").arg(nVol));
                 m_lastVolume = _engine->volume();
+                Settings::get().setInternalOption("last_volume", _engine->volume());
                 setAudioVolume(nVol);
-            }
+            }*/
+            _nwComm->updateWithMessage(tr("Volume: %1%").arg(nVol));
+            m_lastVolume = _engine->volume();
+            Settings::get().setInternalOption("last_volume", _engine->volume());
+            setAudioVolume(nVol);
         }
         break;
     }
 
     case ActionFactory::ActionKind::VolumeUp: {
-        if (_engine->muted())
-            changedMute();
+//        if (_engine->muted())
+//            changedMute();
         _engine->volumeUp();
         m_lastVolume = _engine->volume();
         int pert = _engine->volume();
@@ -2277,6 +2287,10 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     }
 
     case ActionFactory::ActionKind::GotoPlaylistNext: {
+
+        if (_engine->state() != PlayerEngine::CoreState::Playing)
+            return ;
+
         if (isFullScreen() || isMaximized()) {
             _movieSwitchedInFsOrMaxed = true;
         }
@@ -2285,6 +2299,9 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     }
 
     case ActionFactory::ActionKind::GotoPlaylistPrev: {
+        if (_engine->state() != PlayerEngine::CoreState::Playing)
+            return ;
+
         if (isFullScreen() || isMaximized()) {
             _movieSwitchedInFsOrMaxed = true;
         }
