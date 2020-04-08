@@ -1073,8 +1073,7 @@ MainWindow::MainWindow(QWidget *parent)
     ThreadPool::instance()->moveToNewThread(&volumeMonitoring);
     volumeMonitoring.start();
     connect(&volumeMonitoring, &VolumeMonitoring::volumeChanged, this, [ = ](int vol) {
-        if (!m_isManual)
-            changedVolumeSlot(vol);
+        changedVolumeSlot(vol);
         //_engine->changeVolume(vol);
         //requestAction(ActionFactory::ChangeVolume);
     });
@@ -1261,6 +1260,7 @@ void MainWindow::changedVolumeSlot(int vol)
 {
     if (_engine->muted()) {
         _engine->toggleMute();
+        Settings::get().setInternalOption("mute", _engine->muted());
     }
     if (_engine->volume() <= 100 || vol < 100) {
         _engine->changeVolume(vol);
@@ -1273,7 +1273,7 @@ void MainWindow::changedMute()
 {
     bool mute = _engine->muted();
     _engine->toggleMute();
-    Settings::get().setInternalOption("mute", !mute);
+    Settings::get().setInternalOption("mute", _engine->muted());
 }
 
 void MainWindow::changedMute(bool mute)
@@ -2198,7 +2198,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
 
     */
     case ActionFactory::ActionKind::ToggleMute: {
-        if (_engine->muted()) {
+        /*if (_engine->muted()) {
             //此处存在修改风险，注意！
             if (m_lastVolume == 0) {
                 return;
@@ -2213,20 +2213,24 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                 setMusicMuted(false);
             }
         } else {
-            //手动静音
-            m_isManual = true;
             m_lastVolume = _engine->volume();
             Settings::get().setInternalOption("last_volume", _engine->volume());
             changedMute();
             changedVolume(0);
             setMusicMuted(true);
+        }*/
+        changedMute();
+        setMusicMuted(_engine->muted());
+        if (_engine->muted()) {
+            _nwComm->updateWithMessage(tr("Mute"));
+        } else {
+            _nwComm->updateWithMessage(tr("Volume: %1%").arg(_engine->volume()));
         }
         break;
     }
 
     case ActionFactory::ActionKind::ChangeVolume: {
         if (!args.isEmpty()) {
-            m_isManual = false;
             int nVol = args[0].toInt();
             if (m_lastVolume == nVol) {
                 _nwComm->updateWithMessage(tr("Volume: %1%").arg(nVol));
@@ -2235,32 +2239,33 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             }
             _engine->changeVolume(nVol);
             //当音量与当前静音状态不符时切换静音状态
-            if (nVol == 0 && !_engine->muted()) {
+            /*if (nVol == 0 && !_engine->muted()) {
                 changedMute();
                 _nwComm->updateWithMessage(tr("Mute"));
                 m_lastVolume = _engine->volume();
                 Settings::get().setInternalOption("last_volume", _engine->volume());
             } else if (_engine->muted()) {
-                if (nVol > 0) {
-                    changedMute();
-                    _nwComm->updateWithMessage(tr("Volume: %1%").arg(nVol));
-                    m_lastVolume = _engine->volume();
-                    Settings::get().setInternalOption("last_volume", _engine->volume());
-                } else
-                    m_isManual = true;
+                changedMute();
+                _nwComm->updateWithMessage(tr("Volume: %1%").arg(nVol));
+                m_lastVolume = _engine->volume();
+                Settings::get().setInternalOption("last_volume", _engine->volume());
             } else {
                 _nwComm->updateWithMessage(tr("Volume: %1%").arg(nVol));
                 m_lastVolume = _engine->volume();
                 Settings::get().setInternalOption("last_volume", _engine->volume());
                 setAudioVolume(nVol);
-            }
+            }*/
+            _nwComm->updateWithMessage(tr("Volume: %1%").arg(nVol));
+            m_lastVolume = _engine->volume();
+            Settings::get().setInternalOption("last_volume", _engine->volume());
+            setAudioVolume(nVol);
         }
         break;
     }
 
     case ActionFactory::ActionKind::VolumeUp: {
-        if (_engine->muted())
-            changedMute();
+//        if (_engine->muted())
+//            changedMute();
         _engine->volumeUp();
         m_lastVolume = _engine->volume();
         int pert = _engine->volume();
