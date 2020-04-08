@@ -2290,7 +2290,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
 
     case ActionFactory::ActionKind::GotoPlaylistNext: {
 
-        if (_engine->state() != PlayerEngine::CoreState::Playing)
+        if (_engine->state() == PlayerEngine::CoreState::Idle)
             return ;
 
         if (isFullScreen() || isMaximized()) {
@@ -2302,7 +2302,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
 
     case ActionFactory::ActionKind::GotoPlaylistPrev: {
 
-        if (_engine->state() != PlayerEngine::CoreState::Playing)
+        if (_engine->state() != PlayerEngine::CoreState::Idle)
             return ;
 
         if (isFullScreen() || isMaximized()) {
