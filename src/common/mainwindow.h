@@ -343,6 +343,8 @@ private:
 
     int m_lastVolume;
     bool m_isManual;
+
+    //bool m_IsFree;  //播放器是否空闲，和IDel的定义不同
 };
 };
 
