@@ -49,9 +49,6 @@
 #include <DApplication>
 #include <QThread>
 #include <DSlider>
-#include <QDebug>
-#include <iostream>
-
 static const int LEFT_MARGIN = 10;
 static const int RIGHT_MARGIN = 10;
 static const int PROGBAR_SPEC = 10 + 120 + 17 + 54 + 10 + 54 + 10 + 170 + 10 + 20;
@@ -1138,14 +1135,12 @@ void viewProgBarLoad::quitLoad()
 
 void viewProgBarLoad::load()
 {
-
     m_mutex.lock();
     //停止
     m_bStop = true;
     m_bisload = true;
 
     m_mutex.unlock();
-
 }
 
 void viewProgBarLoad::setListPixmapMutex(QMutex *pMutex)
@@ -1157,13 +1152,14 @@ void viewProgBarLoad::run()
 {
     while (!m_bQuit) {
         if (m_bisload) {
+
             m_mutex.lock();
+
             m_bisload = false;
             m_bStop = false;
             m_mutex.unlock();
 
             loadViewProgBar(_parent->size());
-
         } else {
             this->sleep(1);
         }
@@ -1239,7 +1235,6 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
       _mainWindow(static_cast<MainWindow *>(mainWindow)),
       _engine(proxy)
 {
-    _bthumbnailmode = false;
     bool composited = CompositingManager::get().composited();
 //    setFrameShape(QFrame::NoFrame);
 //    setFrameShadow(QFrame::Plain);
@@ -1319,9 +1314,6 @@ void ToolboxProxy::finishLoadSlot(QSize size)
 {
     if (pm_list.isEmpty()) return;
 
-    if (!_bthumbnailmode) {
-        return;
-    }
     _viewProgBar->setViewProgBar(_engine, pm_list, pm_black_list);
 
 
@@ -1336,28 +1328,6 @@ void ToolboxProxy::finishLoadSlot(QSize size)
         }
         _progBar_Widget->setCurrentIndex(2);
     }
-}
-
-void ToolboxProxy::setthumbnailmode()
-{
-    if (_engine->state() == PlayerEngine::CoreState::Idle) {
-        return;
-    }
-
-#ifndef __mips__
-    if (Settings::get().isSet(Settings::ShowThumbnailMode)) {
-        _bthumbnailmode = true;
-        updateThumbnail();
-    } else {
-        _bthumbnailmode = false;
-        updateThumbnail();
-        updateMovieProgress();
-    }
-#else
-    updateMovieProgress();
-
-#endif
-
 }
 
 void ToolboxProxy::updateplaylisticon()
@@ -1503,8 +1473,6 @@ void ToolboxProxy::setup()
             _progBar->forceLeave();
         }
     });
-    connect(&Settings::get(), &Settings::baseChanged, this, &ToolboxProxy::setthumbnailmode);
-    connect(_engine, &PlayerEngine::siginitthumbnailseting, this, &ToolboxProxy::setthumbnailmode);
 
     connect(_progBar, &DSlider::sliderMoved, this, &ToolboxProxy::setProgress);
     connect(_progBar, &DSlider::valueChanged, this, &ToolboxProxy::setProgress);
@@ -1514,7 +1482,7 @@ void ToolboxProxy::setup()
         _previewTime->hide();
         m_mouseFlag = false;
     });
-    connect(&Settings::get(), &Settings::baseMuteChanged,
+    connect(&Settings::get(), &Settings::baseChanged,
     [ = ](QString sk, const QVariant & val) {
         if (sk == "base.play.mousepreview") {
             _progBar->setEnableIndication(_engine->state() != PlayerEngine::Idle);
