@@ -2424,10 +2424,14 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                                                         lastOpenedPath(),
                                                         tr("Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)"));
         if (QFileInfo(filename).exists()) {
-            auto success = _engine->loadSubtitle(QFileInfo(filename));
-            _nwComm->updateWithMessage(success ? tr("Load successfully") : tr("Load failed"));
-
-            subtitleMatchVideo(filename);
+            if (_engine->state() == PlayerEngine::Idle)
+                subtitleMatchVideo(filename);
+            else {
+                auto success = _engine->loadSubtitle(QFileInfo(filename));
+                _nwComm->updateWithMessage(success ? tr("Load successfully") : tr("Load failed"));
+            }
+        } else {
+            _nwComm->updateWithMessage(tr("Load failed"));
         }
         break;
     }
@@ -3919,7 +3923,6 @@ void MainWindow::dropEvent(QDropEvent *ev)
         // check if the dropped file is a subtitle.
         QFileInfo fileInfo(urls.first().toLocalFile());
         if (_engine->subtitle_suffixs.contains(fileInfo.suffix())) {
-            bool succ = _engine->loadSubtitle(fileInfo);
             // notice that the file loaded but won't automatically selected.
 //            const PlayingMovieInfo &pmf = _engine->playingMovieInfo();
 //            for (const SubtitleInfo &sub : pmf.subs) {
@@ -3934,10 +3937,14 @@ void MainWindow::dropEvent(QDropEvent *ev)
 
 //            QPixmap icon = utils::LoadHiDPIPixmap(QString(":/resources/icons/%1.svg").arg(succ ? "success" : "fail"));
 //            _nwComm->popupWithIcon(succ ? tr("Load successfully") : tr("Load failed"), icon);
-            _nwComm->updateWithMessage(succ ? tr("Load successfully") : tr("Load failed"));
 
             // Search for video files with the same name as the subtitles and play the video file.
-            subtitleMatchVideo(urls.first().toLocalFile());
+            if (_engine->state() == PlayerEngine::Idle)
+                subtitleMatchVideo(urls.first().toLocalFile());
+            else {
+                bool succ = _engine->loadSubtitle(fileInfo);
+                _nwComm->updateWithMessage(succ ? tr("Load successfully") : tr("Load failed"));
+            }
 
             return;
         }
