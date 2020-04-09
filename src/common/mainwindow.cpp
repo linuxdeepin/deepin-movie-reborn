@@ -928,6 +928,8 @@ MainWindow::MainWindow(QWidget *parent)
                 move((geom.width() - this->width()) / 2, (geom.height() - this->height()) / 2);
             }
         }
+
+        m_IsFree = true;
     });
     connect(_engine, &PlayerEngine::videoSizeChanged, [ = ]() {
         this->resizeByConstraints();
@@ -2299,23 +2301,25 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
 
     case ActionFactory::ActionKind::GotoPlaylistNext: {
 
-
-
-        if (_engine->state() == PlayerEngine::CoreState::Idle) {
-            //为了解决快速切换下一曲卡顿的问题
-            QTimer *timer = new QTimer;
-            connect(timer, &QTimer::timeout, [ = ]() {
-                timer->deleteLater();
-                if (_engine->state() == PlayerEngine::CoreState::Idle) {
-                    if (isFullScreen() || isMaximized()) {
-                        _movieSwitchedInFsOrMaxed = true;
-                    }
-                    _engine->next();
-                }
-            });
-            timer->start(500);
+        /* if (_engine->state() == PlayerEngine::CoreState::Idle) {
+             //为了解决快速切换下一曲卡顿的问题
+             QTimer *timer = new QTimer;
+             connect(timer, &QTimer::timeout, [ = ]() {
+                 timer->deleteLater();
+                 if (_engine->state() == PlayerEngine::CoreState::Idle) {
+                     if (isFullScreen() || isMaximized()) {
+                         _movieSwitchedInFsOrMaxed = true;
+                     }
+                     _engine->next();
+                 }
+             });
+             timer->start(500);
+             return ;
+         }*/
+        if (m_IsFree == false)
             return ;
-        }
+
+        m_IsFree = false;
         if (isFullScreen() || isMaximized()) {
             _movieSwitchedInFsOrMaxed = true;
         }
@@ -2326,7 +2330,22 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
 
     case ActionFactory::ActionKind::GotoPlaylistPrev: {
 
-        if (_engine->state() == PlayerEngine::CoreState::Idle) {
+        /* static bool sContinuous = false;
+
+         if (sContinuous == true)
+             return ;
+
+         sContinuous = true;
+
+         QTimer *timer = new QTimer;
+         connect(timer, &QTimer::timeout, [ = ]() {
+             timer->deleteLater();
+
+             sContinuous = false;
+         });
+         timer->start(1000);*/
+
+        /*if (_engine->state() == PlayerEngine::CoreState::Idle) {
             //为了解决快速切换下一曲卡顿的问题
             QTimer *timer = new QTimer;
             connect(timer, &QTimer::timeout, [ = ]() {
@@ -2340,7 +2359,12 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             });
             timer->start(500);
             return ;
-        }
+        }*/
+
+        if (m_IsFree == false)
+            return ;
+
+        m_IsFree = false;
         if (isFullScreen() || isMaximized()) {
             _movieSwitchedInFsOrMaxed = true;
         }

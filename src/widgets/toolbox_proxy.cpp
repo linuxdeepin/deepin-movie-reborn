@@ -603,19 +603,21 @@ public:
 //        _back->setLayout(_viewProgBarLayout);
         _viewProgBarLayout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
         _viewProgBarLayout->setSpacing(1);
+
+        int pixWidget = pm_black_list.at(0).width();
         for (int i = 0; i < pm_list.count(); i++) {
 //            ImageItem *label = new ImageItem(pm_list.at(i));
 //            label->setFixedSize(8,50);
 //            _viewProgBarLayout->addWidget(label, 0 , Qt::AlignLeft );
             ImageItem *label = new ImageItem(pm_list.at(i), false, _back);
             label->setMouseTracking(true);
-            label->move(i * 9 + 3, 5);
-            label->setFixedSize(8, 50);
+            label->move(i * (pixWidget + 1) + 3, 5);
+            label->setFixedSize(pixWidget, 50);
 
             ImageItem *label_black = new ImageItem(pm_black_list.at(i), true, _front);
             label_black->setMouseTracking(true);
-            label_black->move(i * 9 + 3, 5);
-            label_black->setFixedSize(8, 50);
+            label_black->move(i * (pixWidget + 1) + 3, 5);
+            label_black->setFixedSize(pixWidget, 50);
         }
 
         update();
@@ -1124,20 +1126,51 @@ viewProgBarLoad::viewProgBarLoad(PlayerEngine *engine, DMRSlider *progBar, Toolb
     _progBar = progBar;
 }
 
+void viewProgBarLoad::quitLoad()
+{
+
+    m_bQuit = true;
+    this->quit();
+}
+
+void viewProgBarLoad::load()
+{
+    m_mutex.lock();
+    //停止
+    m_bStop = true;
+    m_bisload = true;
+
+    m_mutex.unlock();
+}
+
+void viewProgBarLoad::setListPixmapMutex(QMutex *pMutex)
+{
+    pListPixmapMutex = pMutex;
+}
+
 void viewProgBarLoad::run()
 {
-    loadViewProgBar(_parent->size());
+    while (!m_bQuit) {
+        if (m_bisload) {
+
+            m_mutex.lock();
+
+            m_bisload = false;
+            m_bStop = false;
+            m_mutex.unlock();
+
+            loadViewProgBar(_parent->size());
+        } else {
+            this->sleep(1);
+        }
+    }
+
 }
 
 void viewProgBarLoad::loadViewProgBar(QSize size)
 {
-
-    if (isLoad) {
-        emit finished();
-        return;
-    }
-    isLoad = true;
-    auto num = qreal(_progBar->width()) / 9;
+    auto num = /*qreal(_progBar->width()) / 9*/100;
+    auto pixWidget =  _progBar->width() / 100;
     auto tmp = (_engine->duration() * 1000) / num;
     auto dpr = qApp->devicePixelRatio();
     QList<QPixmap> pm;
@@ -1160,6 +1193,10 @@ void viewProgBarLoad::loadViewProgBar(QSize size)
     auto file = QFileInfo(url.toLocalFile()).absoluteFilePath();
 
     for (auto i = 0; i < num; i++) {
+
+        if (m_bStop == true) {
+            return;
+        }
         if (isInterruptionRequested()) {
             qDebug() << "isInterruptionRequested";
             return;
@@ -1175,16 +1212,18 @@ void viewProgBarLoad::loadViewProgBar(QSize size)
             auto img_tmp = img.scaledToHeight(50);
 
 
-            pm.append(QPixmap::fromImage(img_tmp.copy(img_tmp.size().width() / 2 - 4, 0, 8, 50)));
+            pm.append(QPixmap::fromImage(img_tmp.copy(img_tmp.size().width() / 2 - 4, 0, pixWidget, 50)));
             QImage img_black = img_tmp.convertToFormat(QImage::Format_Grayscale8);
-            pm_black.append(QPixmap::fromImage(img_black.copy(img_black.size().width() / 2 - 4, 0, 8, 50)));
+            pm_black.append(QPixmap::fromImage(img_black.copy(img_black.size().width() / 2 - 4, 0, pixWidget, 50)));
 
         } catch (const std::logic_error &) {
         }
 
     }
+    pListPixmapMutex->lock();
     _parent->addpm_list(pm);
     _parent->addpm_black_list(pm_black);
+    pListPixmapMutex->unlock();
     emit sigFinishiLoad(size);
     emit finished();
 
@@ -1277,7 +1316,9 @@ void ToolboxProxy::finishLoadSlot(QSize size)
 
     _viewProgBar->setViewProgBar(_engine, pm_list, pm_black_list);
 
-    if (CompositingManager::get().composited() && _loadsize == size && _engine->state() != PlayerEngine::CoreState::Idle) {
+
+
+    if (CompositingManager::get().composited()/* && _loadsize == size*/ && _engine->state() != PlayerEngine::CoreState::Idle) {
         PlayItemInfo info = _engine->playlist().currentInfo();
         if (!info.url.isLocalFile()) {
             // Url and DVD without thumbnail
@@ -1307,6 +1348,12 @@ ToolboxProxy::~ToolboxProxy()
     delete _subView;
     delete _previewer;
     delete _previewTime;
+
+    if (m_worker) {
+        m_worker->quitLoad();
+        m_worker->wait();
+        m_worker->deleteLater();
+    }
 }
 
 void ToolboxProxy::setup()
@@ -1782,15 +1829,6 @@ void ToolboxProxy::setup()
 
 void ToolboxProxy::updateThumbnail()
 {
-    if (m_worker) {
-        qDebug() << "kill last worker";
-        m_worker->requestInterruption();
-        m_worker->quit();
-        m_worker->wait();
-        delete m_worker;
-        m_worker = nullptr;
-    }
-
     //如果打开的是音乐
     QString suffix = _engine->playlist().currentInfo().info.suffix();
     foreach (QString sf, _engine->audio_filetypes) {
@@ -1802,22 +1840,32 @@ void ToolboxProxy::updateThumbnail()
     qDebug() << "worker" << m_worker;
 
     QTimer::singleShot(1000, [this]() {
+
+        m_listPixmapMutex.lock();
         pm_list.clear();
         pm_black_list.clear();
+        m_listPixmapMutex.unlock();
 
-        m_worker = new viewProgBarLoad(_engine, _progBar, this);
+        if (m_worker == nullptr) {
+            m_worker = new viewProgBarLoad(_engine, _progBar, this);
+            m_worker->setListPixmapMutex(&m_listPixmapMutex);
+            /*connect(m_worker, &viewProgBarLoad::finished, this, [ = ] {
+                if (m_worker)
+                {
+                    m_worker->quit();
+                    m_worker->wait();
+                    delete m_worker;
+                    m_worker = nullptr;
+                }
+            });*/
 
-        connect(m_worker, &viewProgBarLoad::finished, this, [ = ] {
-            if (m_worker)
-            {
-                m_worker->quit();
-                m_worker->wait();
-                delete m_worker;
-                m_worker = nullptr;
-            }
-        });
-        connect(m_worker, SIGNAL(sigFinishiLoad(QSize)), this, SLOT(finishLoadSlot(QSize)));
-        m_worker->start();
+            connect(m_worker, SIGNAL(sigFinishiLoad(QSize)), this, SLOT(finishLoadSlot(QSize)));
+            m_worker->start();
+        }
+
+        m_worker->load();
+
+
         _progBar_Widget->setCurrentIndex(1);
     });
 }
