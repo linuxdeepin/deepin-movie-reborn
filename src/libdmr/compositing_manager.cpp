@@ -211,7 +211,6 @@ CompositingManager::CompositingManager()
     }
 #endif
     qDebug() << "composited:" << _composited;
-    _composited = false;
 }
 
 CompositingManager::~CompositingManager()
@@ -312,7 +311,7 @@ void CompositingManager::detectOpenGLEarly()
     if (CompositingManager::runningOnNvidia()) {
         qputenv("QT_XCB_GL_INTEGRATION", "xcb_glx");
     } else if (!CompositingManager::runningOnVmwgfx()) {
-        // qputenv("QT_XCB_GL_INTEGRATION", "xcb_egl");
+        qputenv("QT_XCB_GL_INTEGRATION", "xcb_egl");
     }
 #else
     if (_interopKind == INTEROP_VAAPI_EGL) {
