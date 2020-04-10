@@ -3633,10 +3633,14 @@ void MainWindow::readSinkInputPath()
 void MainWindow::setAudioVolume(int volume)
 {
     double tVolume = 0.0;
-    if (volume != 0) {
-        tVolume = volume / 100.0;
+    if (volume == 100 ) {
+        tVolume = (volume ) / 100.0 ;
+        //tVolume += 0.000005;
+    } else if (volume != 0 ) {
+        tVolume = (volume + 1) / 100.0 ;
         //tVolume += 0.000005;
     }
+
     readSinkInputPath();
 
     if (!sinkInputPath.isEmpty()) {

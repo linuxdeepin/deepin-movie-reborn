@@ -103,8 +103,9 @@ void VolumeMonitoring::timeoutSlot()
     QVariant muteV = ApplicationAdaptor::redDBusProperty("com.deepin.daemon.Audio", sinkInputPath,
                                                          "com.deepin.daemon.Audio.SinkInput", "Mute");
 
-    double temp = volumeV.toDouble();
-    int volume = (volumeV.toDouble() +  0.001) * 100 ;
+    // int temp = volumeV.toDouble();
+    int volume = volumeV.toDouble() * 100;
+//   int volume = (volumeV.toDouble() +  0.001) * 100;
     bool mute = muteV.toBool();
 
     auto oldMute = Settings::get().internalOption("mute");
