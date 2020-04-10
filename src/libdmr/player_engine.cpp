@@ -73,6 +73,7 @@ PlayerEngine::PlayerEngine(QWidget *parent)
 
     setLayout(l);
 
+
 #ifndef _LIBDMR_
     connect(&Settings::get(), &Settings::subtitleChanged, this, &PlayerEngine::updateSubStyles);
 #endif
@@ -783,7 +784,10 @@ void PlayerEngine::resizeEvent(QResizeEvent *re)
         clearMask();
     }
 #endif
+
 }
+
+
 
 void PlayerEngine::setBackendProperty(const QString &name, const QVariant &val)
 {
