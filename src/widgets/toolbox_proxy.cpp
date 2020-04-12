@@ -1235,6 +1235,7 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
       _mainWindow(static_cast<MainWindow *>(mainWindow)),
       _engine(proxy)
 {
+    _bthumbnailmode = false;
     bool composited = CompositingManager::get().composited();
 //    setFrameShape(QFrame::NoFrame);
 //    setFrameShadow(QFrame::Plain);
@@ -1314,6 +1315,9 @@ void ToolboxProxy::finishLoadSlot(QSize size)
 {
     if (pm_list.isEmpty()) return;
 
+    if (!_bthumbnailmode) {
+        return;
+    }
     _viewProgBar->setViewProgBar(_engine, pm_list, pm_black_list);
 
 
@@ -1328,6 +1332,28 @@ void ToolboxProxy::finishLoadSlot(QSize size)
         }
         _progBar_Widget->setCurrentIndex(2);
     }
+}
+
+void ToolboxProxy::setthumbnailmode()
+{
+    if (_engine->state() == PlayerEngine::CoreState::Idle) {
+        return;
+    }
+
+#ifndef __mips__
+    if (Settings::get().isSet(Settings::ShowThumbnailMode)) {
+        _bthumbnailmode = true;
+        updateThumbnail();
+    } else {
+        _bthumbnailmode = false;
+        updateThumbnail();
+        updateMovieProgress();
+    }
+#else
+    updateMovieProgress();
+
+#endif
+
 }
 
 void ToolboxProxy::updateplaylisticon()
@@ -1473,6 +1499,8 @@ void ToolboxProxy::setup()
             _progBar->forceLeave();
         }
     });
+    connect(&Settings::get(), &Settings::baseChanged, this, &ToolboxProxy::setthumbnailmode);
+    connect(_engine, &PlayerEngine::siginitthumbnailseting, this, &ToolboxProxy::setthumbnailmode);
 
     connect(_progBar, &DSlider::sliderMoved, this, &ToolboxProxy::setProgress);
     connect(_progBar, &DSlider::valueChanged, this, &ToolboxProxy::setProgress);
@@ -1482,7 +1510,7 @@ void ToolboxProxy::setup()
         _previewTime->hide();
         m_mouseFlag = false;
     });
-    connect(&Settings::get(), &Settings::baseChanged,
+    connect(&Settings::get(), &Settings::baseMuteChanged,
     [ = ](QString sk, const QVariant & val) {
         if (sk == "base.play.mousepreview") {
             _progBar->setEnableIndication(_engine->state() != PlayerEngine::Idle);
