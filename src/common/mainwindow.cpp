@@ -66,6 +66,7 @@
 #include <DWidgetUtil>
 #include <DSettingsWidgetFactory>
 #include <DLineEdit>
+#include <DFileDialog>
 
 #define AUTOHIDE_TIMEOUT 2000
 #include <DToast>
@@ -217,9 +218,9 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
     };
 
     option->connect(icon, &DPushButton::clicked, [ = ]() {
-        QString name = QFileDialog::getExistingDirectory(0, QObject::tr("Open folder"),
+        QString name = DFileDialog::getExistingDirectory(0, QObject::tr("Open folder"),
                                                          MainWindow::lastOpenedPath(),
-                                                         QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+                                                         DFileDialog::ShowDirsOnly | DFileDialog::DontResolveSymlinks);
         if (validate(name, false)) {
             option->setValue(name);
             nameLast = name;
@@ -1870,9 +1871,9 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     }
 
     case ActionFactory::ActionKind::OpenDirectory: {
-        QString name = QFileDialog::getExistingDirectory(this, tr("Open folder"),
+        QString name = DFileDialog::getExistingDirectory(this, tr("Open folder"),
                                                          lastOpenedPath(),
-                                                         QFileDialog::DontResolveSymlinks);
+                                                         DFileDialog::DontResolveSymlinks);
 
         QFileInfo fi(name);
         if (fi.isDir() && fi.exists()) {
@@ -1888,11 +1889,11 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
 
     case ActionFactory::ActionKind::OpenFileList: {
         //允许影院打开音乐文件进行播放
-        QStringList filenames = QFileDialog::getOpenFileNames(this, tr("Open File"),
+        QStringList filenames = DFileDialog::getOpenFileNames(this, tr("Open File"),
                                                               lastOpenedPath(),
                                                               tr("All videos (%2 %1)").arg(_engine->video_filetypes.join(" "))
                                                               .arg(_engine->audio_filetypes.join(" ")), 0,
-                                                              QFileDialog::HideNameFilterDetails);
+                                                              DFileDialog::HideNameFilterDetails);
 
         QList<QUrl> urls;
         if (filenames.size()) {
@@ -1911,10 +1912,10 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     }
 
     case ActionFactory::ActionKind::OpenFile: {
-        QString filename = QFileDialog::getOpenFileName(this, tr("Open File"),
+        QString filename = DFileDialog::getOpenFileName(this, tr("Open File"),
                                                         lastOpenedPath(),
                                                         tr("All videos (%1)").arg(_engine->video_filetypes.join(" ")), 0,
-                                                        QFileDialog::HideNameFilterDetails);
+                                                        DFileDialog::HideNameFilterDetails);
         QFileInfo fileInfo(filename);
         if (fileInfo.exists()) {
             Settings::get().setGeneralOption("last_open_path", fileInfo.path());
@@ -2448,7 +2449,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     }
 
     case ActionFactory::ActionKind::LoadSubtitle: {
-        QString filename = QFileDialog::getOpenFileName(this, tr("Open File"),
+        QString filename = DFileDialog::getOpenFileName(this, tr("Open File"),
                                                         lastOpenedPath(),
                                                         tr("Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)"));
         if (QFileInfo(filename).exists()) {
