@@ -36,6 +36,7 @@
 #include <QFrame>
 #include <QHBoxLayout>
 #include <QTimer>
+#include <QMutex>
 #include <DIconButton>
 #include <DButtonBox>
 #include <DBlurEffectWidget>
@@ -127,12 +128,12 @@ public:
     {
         label_black_list.append(label_black);
     }
-    void addpm_list(QList<QPixmap> pm)
+    void addpm_list(QList<QPixmap> &pm)
     {
         pm_list.clear();
         pm_list.append(pm);
     }
-    void addpm_black_list(QList<QPixmap> pm_black)
+    void addpm_black_list(QList<QPixmap> &pm_black)
     {
         pm_black_list.clear();
         pm_black_list.append(pm_black);
@@ -239,6 +240,8 @@ private:
 
     QPropertyAnimation *paopen;
     QPropertyAnimation *paClose;
+
+    QMutex m_listPixmapMutex;
 };
 class viewProgBarLoad: public QThread
 {
@@ -246,6 +249,12 @@ class viewProgBarLoad: public QThread
 public:
     explicit viewProgBarLoad(PlayerEngine *engine = nullptr, DMRSlider *progBar = nullptr, ToolboxProxy *parent = 0);
 
+    //退出线程直接调用这个函数
+    void quitLoad();
+    //告诉线程需要加载一个缩略图，线程会停止正在加载的项目，重新加载新的缩略图
+    void load();
+    //必须调用这个函数加锁
+    void setListPixmapMutex(QMutex *pMutex);
 public slots:
     void loadViewProgBar(QSize size);
 signals:
@@ -278,8 +287,17 @@ private:
     QHBoxLayout *_viewProgBarLayout_black{nullptr};
     DMRSlider *_progBar {nullptr};
     QSize _size;
-    bool isLoad = false;
 
+    //是否停止当前加载
+    bool m_bStop {false};
+    //加载缩略图是否加载完成，控制线程是否休眠
+    bool m_bisload {false};
+    //是否退出当前线程(退出while(1))
+    bool m_bQuit  {false};
+
+    QMutex m_mutex;
+
+    QMutex *pListPixmapMutex;
 
 };
 }
