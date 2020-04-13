@@ -996,6 +996,8 @@ public:
         setFixedSize(QSize(62, 201));
 #ifdef __mips__
         setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
+#elif __aarch64__
+        setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
 #endif
         setShadowBlurRadius(4);
         setRadius(18);
@@ -1682,6 +1684,20 @@ void ToolboxProxy::setup()
     signalMapper->setMapping(_volBtn, "vol");
 //    _right->addWidget(_volBtn);
 #ifdef __mips__
+    _volSlider = new VolumeSlider(_engine, _mainWindow, nullptr);
+    connect(_volBtn, &VolumeButton::entered, [ = ]() {
+        _volSlider->stopTimer();
+//        QPoint pos = _volBtn->parentWidget()->mapToGlobal(_volBtn->pos());
+//        pos.ry() = parentWidget()->mapToGlobal(this->pos()).y();
+        _volSlider->show(_mainWindow->width() - _volBtn->width() / 2 - _playBtn->width() - 43,
+                         _mainWindow->height() - TOOLBOX_HEIGHT - 5);
+        QRect rc = _volBtn->geometry();
+        QPoint pos(rc.left() + rc.width() / 2, rc.top() - 20);
+        pos = this->mapToGlobal(pos);
+        _volSlider->move(pos.x(), pos.y());
+        _volSlider->raise();
+    });
+#elif __aarch64__
     _volSlider = new VolumeSlider(_engine, _mainWindow, nullptr);
     connect(_volBtn, &VolumeButton::entered, [ = ]() {
         _volSlider->stopTimer();
