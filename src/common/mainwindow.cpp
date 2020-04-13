@@ -3108,6 +3108,8 @@ void MainWindow::hideEvent(QHideEvent *event)
                 _quitfullscreenstopflag = false;
             }
         }
+        QList<QAction *> acts = ActionFactory::get().findActionsByKind(ActionFactory::TogglePlaylist);
+        acts.at(0)->setChecked(false);
     }
 }
 
