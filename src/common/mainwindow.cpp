@@ -66,6 +66,7 @@
 #include <DWidgetUtil>
 #include <DSettingsWidgetFactory>
 #include <DLineEdit>
+#include <DFileDialog>
 
 #define AUTOHIDE_TIMEOUT 2000
 #include <DToast>
@@ -217,9 +218,9 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
     };
 
     option->connect(icon, &DPushButton::clicked, [ = ]() {
-        QString name = QFileDialog::getExistingDirectory(0, QObject::tr("Open folder"),
+        QString name = DFileDialog::getExistingDirectory(0, QObject::tr("Open folder"),
                                                          MainWindow::lastOpenedPath(),
-                                                         QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+                                                         DFileDialog::ShowDirsOnly | DFileDialog::DontResolveSymlinks);
         if (validate(name, false)) {
             option->setValue(name);
             nameLast = name;
@@ -928,6 +929,8 @@ MainWindow::MainWindow(QWidget *parent)
                 move((geom.width() - this->width()) / 2, (geom.height() - this->height()) / 2);
             }
         }
+
+        m_IsFree = true;
     });
     connect(_engine, &PlayerEngine::videoSizeChanged, [ = ]() {
         this->resizeByConstraints();
@@ -984,7 +987,7 @@ MainWindow::MainWindow(QWidget *parent)
     this->windowHandle()->installEventFilter(_listener);
 
     //auto mwfm = new MainWindowFocusMonitor(this);
-    auto mwpm = new MainWindowPropertyMonitor(this);
+    //auto mwpm = new MainWindowPropertyMonitor(this);
 
     connect(this, &MainWindow::windowEntered, &MainWindow::resumeToolsWindow);
     connect(this, &MainWindow::windowLeaved, &MainWindow::suspendToolsWindow);
@@ -1868,9 +1871,9 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     }
 
     case ActionFactory::ActionKind::OpenDirectory: {
-        QString name = QFileDialog::getExistingDirectory(this, tr("Open folder"),
+        QString name = DFileDialog::getExistingDirectory(this, tr("Open folder"),
                                                          lastOpenedPath(),
-                                                         QFileDialog::DontResolveSymlinks);
+                                                         DFileDialog::DontResolveSymlinks);
 
         QFileInfo fi(name);
         if (fi.isDir() && fi.exists()) {
@@ -1886,11 +1889,11 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
 
     case ActionFactory::ActionKind::OpenFileList: {
         //允许影院打开音乐文件进行播放
-        QStringList filenames = QFileDialog::getOpenFileNames(this, tr("Open File"),
+        QStringList filenames = DFileDialog::getOpenFileNames(this, tr("Open File"),
                                                               lastOpenedPath(),
                                                               tr("All videos (%2 %1)").arg(_engine->video_filetypes.join(" "))
                                                               .arg(_engine->audio_filetypes.join(" ")), 0,
-                                                              QFileDialog::HideNameFilterDetails);
+                                                              DFileDialog::HideNameFilterDetails);
 
         QList<QUrl> urls;
         if (filenames.size()) {
@@ -1909,10 +1912,10 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     }
 
     case ActionFactory::ActionKind::OpenFile: {
-        QString filename = QFileDialog::getOpenFileName(this, tr("Open File"),
+        QString filename = DFileDialog::getOpenFileName(this, tr("Open File"),
                                                         lastOpenedPath(),
                                                         tr("All videos (%1)").arg(_engine->video_filetypes.join(" ")), 0,
-                                                        QFileDialog::HideNameFilterDetails);
+                                                        DFileDialog::HideNameFilterDetails);
         QFileInfo fileInfo(filename);
         if (fileInfo.exists()) {
             Settings::get().setGeneralOption("last_open_path", fileInfo.path());
@@ -2299,23 +2302,25 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
 
     case ActionFactory::ActionKind::GotoPlaylistNext: {
 
-
-
-        if (_engine->state() == PlayerEngine::CoreState::Idle) {
-            //为了解决快速切换下一曲卡顿的问题
-            QTimer *timer = new QTimer;
-            connect(timer, &QTimer::timeout, [ = ]() {
-                timer->deleteLater();
-                if (_engine->state() == PlayerEngine::CoreState::Idle) {
-                    if (isFullScreen() || isMaximized()) {
-                        _movieSwitchedInFsOrMaxed = true;
-                    }
-                    _engine->next();
-                }
-            });
-            timer->start(500);
+        /* if (_engine->state() == PlayerEngine::CoreState::Idle) {
+             //为了解决快速切换下一曲卡顿的问题
+             QTimer *timer = new QTimer;
+             connect(timer, &QTimer::timeout, [ = ]() {
+                 timer->deleteLater();
+                 if (_engine->state() == PlayerEngine::CoreState::Idle) {
+                     if (isFullScreen() || isMaximized()) {
+                         _movieSwitchedInFsOrMaxed = true;
+                     }
+                     _engine->next();
+                 }
+             });
+             timer->start(500);
+             return ;
+         }*/
+        if (m_IsFree == false)
             return ;
-        }
+
+        m_IsFree = false;
         if (isFullScreen() || isMaximized()) {
             _movieSwitchedInFsOrMaxed = true;
         }
@@ -2326,7 +2331,22 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
 
     case ActionFactory::ActionKind::GotoPlaylistPrev: {
 
-        if (_engine->state() == PlayerEngine::CoreState::Idle) {
+        /* static bool sContinuous = false;
+
+         if (sContinuous == true)
+             return ;
+
+         sContinuous = true;
+
+         QTimer *timer = new QTimer;
+         connect(timer, &QTimer::timeout, [ = ]() {
+             timer->deleteLater();
+
+             sContinuous = false;
+         });
+         timer->start(1000);*/
+
+        /*if (_engine->state() == PlayerEngine::CoreState::Idle) {
             //为了解决快速切换下一曲卡顿的问题
             QTimer *timer = new QTimer;
             connect(timer, &QTimer::timeout, [ = ]() {
@@ -2340,7 +2360,12 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             });
             timer->start(500);
             return ;
-        }
+        }*/
+
+        if (m_IsFree == false)
+            return ;
+
+        m_IsFree = false;
         if (isFullScreen() || isMaximized()) {
             _movieSwitchedInFsOrMaxed = true;
         }
@@ -2424,14 +2449,18 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     }
 
     case ActionFactory::ActionKind::LoadSubtitle: {
-        QString filename = QFileDialog::getOpenFileName(this, tr("Open File"),
+        QString filename = DFileDialog::getOpenFileName(this, tr("Open File"),
                                                         lastOpenedPath(),
                                                         tr("Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)"));
         if (QFileInfo(filename).exists()) {
-            auto success = _engine->loadSubtitle(QFileInfo(filename));
-            _nwComm->updateWithMessage(success ? tr("Load successfully") : tr("Load failed"));
-
-            subtitleMatchVideo(filename);
+            if (_engine->state() == PlayerEngine::Idle)
+                subtitleMatchVideo(filename);
+            else {
+                auto success = _engine->loadSubtitle(QFileInfo(filename));
+                _nwComm->updateWithMessage(success ? tr("Load successfully") : tr("Load failed"));
+            }
+        } else {
+            _nwComm->updateWithMessage(tr("Load failed"));
         }
         break;
     }
@@ -3079,6 +3108,8 @@ void MainWindow::hideEvent(QHideEvent *event)
                 _quitfullscreenstopflag = false;
             }
         }
+        QList<QAction *> acts = ActionFactory::get().findActionsByKind(ActionFactory::TogglePlaylist);
+        acts.at(0)->setChecked(false);
     }
 }
 
@@ -3609,10 +3640,14 @@ void MainWindow::readSinkInputPath()
 void MainWindow::setAudioVolume(int volume)
 {
     double tVolume = 0.0;
-    if (volume != 0) {
-        tVolume = volume / 100.0;
+    if (volume == 100 ) {
+        tVolume = (volume ) / 100.0 ;
+        //tVolume += 0.000005;
+    } else if (volume != 0 ) {
+        tVolume = (volume + 1) / 100.0 ;
         //tVolume += 0.000005;
     }
+
     readSinkInputPath();
 
     if (!sinkInputPath.isEmpty()) {
@@ -3923,7 +3958,6 @@ void MainWindow::dropEvent(QDropEvent *ev)
         // check if the dropped file is a subtitle.
         QFileInfo fileInfo(urls.first().toLocalFile());
         if (_engine->subtitle_suffixs.contains(fileInfo.suffix())) {
-            bool succ = _engine->loadSubtitle(fileInfo);
             // notice that the file loaded but won't automatically selected.
 //            const PlayingMovieInfo &pmf = _engine->playingMovieInfo();
 //            for (const SubtitleInfo &sub : pmf.subs) {
@@ -3938,10 +3972,14 @@ void MainWindow::dropEvent(QDropEvent *ev)
 
 //            QPixmap icon = utils::LoadHiDPIPixmap(QString(":/resources/icons/%1.svg").arg(succ ? "success" : "fail"));
 //            _nwComm->popupWithIcon(succ ? tr("Load successfully") : tr("Load failed"), icon);
-            _nwComm->updateWithMessage(succ ? tr("Load successfully") : tr("Load failed"));
 
             // Search for video files with the same name as the subtitles and play the video file.
-            subtitleMatchVideo(urls.first().toLocalFile());
+            if (_engine->state() == PlayerEngine::Idle)
+                subtitleMatchVideo(urls.first().toLocalFile());
+            else {
+                bool succ = _engine->loadSubtitle(fileInfo);
+                _nwComm->updateWithMessage(succ ? tr("Load successfully") : tr("Load failed"));
+            }
 
             return;
         }

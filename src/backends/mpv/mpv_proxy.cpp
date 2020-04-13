@@ -711,6 +711,7 @@ void MpvProxy::resizeEvent(QResizeEvent *re)
     if (state() == PlayState::Stopped) {
         return;
     }
+
 }
 
 void MpvProxy::savePlaybackPosition()
