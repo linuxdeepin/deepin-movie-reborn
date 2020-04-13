@@ -605,19 +605,35 @@ public:
         _viewProgBarLayout->setSpacing(1);
 
         int pixWidget = pm_black_list.at(0).width();
-        for (int i = 0; i < pm_list.count(); i++) {
-//            ImageItem *label = new ImageItem(pm_list.at(i));
-//            label->setFixedSize(8,50);
-//            _viewProgBarLayout->addWidget(label, 0 , Qt::AlignLeft );
-            ImageItem *label = new ImageItem(pm_list.at(i), false, _back);
-            label->setMouseTracking(true);
-            label->move(i * (pixWidget + 1) + 3, 5);
-            label->setFixedSize(pixWidget, 50);
+        //当宽度比较宽的时候，就插入两次相同图片
+        if (this->width() > 500) {
+            pixWidget /= 2;
+            for (int i = 0; i < pm_list.count() * 2 ; i++) {
 
-            ImageItem *label_black = new ImageItem(pm_black_list.at(i), true, _front);
-            label_black->setMouseTracking(true);
-            label_black->move(i * (pixWidget + 1) + 3, 5);
-            label_black->setFixedSize(pixWidget, 50);
+                ImageItem *label = new ImageItem(pm_list.at(i / 2), false, _back);
+                label->setMouseTracking(true);
+                label->move(i * (pixWidget + 1) + 3, 5);
+                label->setFixedSize(pixWidget, 50);
+
+                ImageItem *label_black = new ImageItem(pm_black_list.at(i / 2), true, _front);
+                label_black->setMouseTracking(true);
+                label_black->move(i * (pixWidget + 1) + 3, 5);
+                label_black->setFixedSize(pixWidget, 50);
+
+
+            }
+        } else {
+            for (int i = 0; i < pm_list.count(); i++) {
+                ImageItem *label = new ImageItem(pm_list.at(i), false, _back);
+                label->setMouseTracking(true);
+                label->move(i * (pixWidget + 1) + 3, 5);
+                label->setFixedSize(pixWidget, 50);
+
+                ImageItem *label_black = new ImageItem(pm_black_list.at(i), true, _front);
+                label_black->setMouseTracking(true);
+                label_black->move(i * (pixWidget + 1) + 3, 5);
+                label_black->setFixedSize(pixWidget, 50);
+            }
         }
 
         update();
