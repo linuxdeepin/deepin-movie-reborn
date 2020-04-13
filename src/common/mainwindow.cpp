@@ -2820,13 +2820,13 @@ void MainWindow::updateProxyGeometry()
                       rect().width() - 10, TOOLBOX_HEIGHT);
             if (isFullScreen()) {
                 if (_playlist->state() == PlaylistWidget::State::Opened) {
-                    _toolbox->setGeometry(rfs);
+                    _toolbox->setGeometry(rct);
                 } else {
                     _toolbox->setGeometry(rct);
                 }
             } else {
                 if (_playlist->state() == PlaylistWidget::State::Opened) {
-                    _toolbox->setGeometry(rfs);
+                    _toolbox->setGeometry(rct);
                 } else {
                     _toolbox->setGeometry(rct);
                 }

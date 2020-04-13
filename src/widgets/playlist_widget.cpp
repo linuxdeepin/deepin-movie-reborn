@@ -1305,24 +1305,15 @@ void PlaylistWidget::togglePopup()
     if (_state == State::Opened) {
         Q_ASSERT(isVisible());
 
-
-        paOpen = new QPropertyAnimation(this, "geometry");
-        paOpen->setEasingCurve(QEasingCurve::Linear);
-        paOpen->setDuration(POPUP_DURATION);
-        paOpen->setStartValue(fixed);
-        paOpen->setEndValue(shrunk);;
         _toggling = false;
         _state = State::Closed;
         emit stateChange();
-        paOpen->start();
-        connect(paOpen, &QPropertyAnimation::finished, [ = ]() {
-            paOpen->deleteLater();
-            paOpen = nullptr;
-            setVisible(!isVisible());
-            //_toggling = false;
-            //_state = State::Closed;
-            //emit stateChange();
-        });
+
+        setVisible(!isVisible());
+        //_toggling = false;
+        //_state = State::Closed;
+        //emit stateChange();
+
 
 
 
@@ -1330,22 +1321,15 @@ void PlaylistWidget::togglePopup()
         setVisible(!isVisible());
         _toggling = true;
 
-        paClose = new QPropertyAnimation(this, "geometry");
-        paClose->setEasingCurve(QEasingCurve::Linear);
-        paClose->setDuration(POPUP_DURATION);
-        paClose->setStartValue(shrunk);
-        paClose->setEndValue(fixed);
+
         _toggling = false;
         _state = State::Opened;
         emit stateChange();
-        paClose->start();
-        connect(paClose, &QPropertyAnimation::finished, [ = ]() {
-            paClose->deleteLater();
-            paClose = nullptr;
-            //_toggling = false;
-            //_state = State::Opened;
-            //emit stateChange();
-        });
+
+        //_toggling = false;
+        //_state = State::Opened;
+        //emit stateChange();
+
     }
 }
 
@@ -1385,11 +1369,13 @@ void PlaylistWidget::resizeEvent(QResizeEvent *ev)
 #else
     auto view_rect = main_rect.marginsRemoved(QMargins(1, 1, 1, 1));
 #endif
-    QRect fixed((view_rect.width() - 10), (view_rect.height() - 394),
+    QRect fixed(15, (view_rect.height() - 394),
                 view_rect.width() - 20, (384 - 70));
 
 //    _playlist->setFixedWidth(width() - 235);
-    _playlist->setFixedWidth(fixed.width() - 235);
+    //_playlist->setFixedWidth(fixed.width() - 235);
+    _playlist->setFixedSize(fixed.width() - 221, fixed.height());
+    move(fixed.topLeft() - QPoint(10, 0));
     emit sizeChange();
 
     QTimer::singleShot(100, this, &PlaylistWidget::batchUpdateSizeHints);

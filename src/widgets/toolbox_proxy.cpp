@@ -978,7 +978,7 @@ public:
         : DArrowRectangle(DArrowRectangle::ArrowBottom, DArrowRectangle::FloatWidget, parent), _engine(eng), _mw(mw)
     {
         setFixedSize(QSize(62, 201));
-#ifdef __mips__
+#ifndef __mips__
         setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
 #endif
         setShadowBlurRadius(4);
@@ -1665,7 +1665,7 @@ void ToolboxProxy::setup()
     connect(_volBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_volBtn, "vol");
 //    _right->addWidget(_volBtn);
-#ifdef __mips__
+#ifndef __mips__
     _volSlider = new VolumeSlider(_engine, _mainWindow, nullptr);
     connect(_volBtn, &VolumeButton::entered, [ = ]() {
         _volSlider->stopTimer();
@@ -1815,7 +1815,9 @@ void ToolboxProxy::setup()
             _viewProgBar->setWidth();
             if (_engine->state() != PlayerEngine::CoreState::Idle && size() != _loadsize) {
 #ifndef __mips__
+#ifndef __aarch64__
                 updateThumbnail();
+#endif
 #endif
                 _loadsize = size();
             }
@@ -2424,24 +2426,19 @@ void ToolboxProxy::resizeEvent(QResizeEvent *event)
 
     }
 
-    if (bAnimationFinash ==  false && paopen != nullptr && paClose != nullptr) {
-
-        _playlist->endAnimation();
-        paopen->setDuration(0);
-        paClose->setDuration(0);
-    }
 
 
-    if (_playlist->state() == PlaylistWidget::State::Opened && bAnimationFinash == true) {
-        QRect r(5, _mainWindow->height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT) - _mainWindow->rect().top() - 5,
-                _mainWindow->rect().width() - 10, (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT));
-        this->setGeometry(r);
-    } else if (_playlist->state() == PlaylistWidget::State::Closed && bAnimationFinash == true) {
-        QRect r(5, _mainWindow->height() - TOOLBOX_HEIGHT - _mainWindow->rect().top() - 5,
-                _mainWindow->rect().width() - 10, TOOLBOX_HEIGHT);
-        this->setGeometry(r);
-    }
-
+    /*
+        if (_playlist->state() == PlaylistWidget::State::Opened ) {
+            QRect r(5, _mainWindow->height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT) - _mainWindow->rect().top() - 5,
+                    _mainWindow->rect().width() - 10, (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT));
+            this->setGeometry(r);
+        } else if (_playlist->state() == PlaylistWidget::State::Closed ) {
+            QRect r(5, _mainWindow->height() - TOOLBOX_HEIGHT - _mainWindow->rect().top() - 5,
+                    _mainWindow->rect().width() - 10, TOOLBOX_HEIGHT);
+            this->setGeometry(r);
+        }
+    */
     updateTimeLabel();
 }
 
@@ -2451,31 +2448,8 @@ void ToolboxProxy::updateTimeLabel()
     _listBtn->setVisible(width() > 300);
     _timeLabel->setVisible(width() > 450);
     _timeLabelend->setVisible(width() > 450);
-//    _viewProgBar->setVisible(width() > 350);
-//    _progBar->setVisible(width() > 350);
-    if (_mainWindow->width() < 1050) {
-//        _progBar->hide();
-    }
-    if (width() <= 300) {
-        _progBar->setFixedWidth(width() - PROGBAR_SPEC + 50 + 54 + 10 + 54 + 10 + 10);
-        _progBarspec->setFixedWidth(width() - PROGBAR_SPEC + 50 + 54 + 10 + 54 + 10 + 10);
-    } else if (width() <= 450) {
-        _progBar->setFixedWidth(width() - PROGBAR_SPEC + 54 + 54 + 10);
-        _progBarspec->setFixedWidth(width() - PROGBAR_SPEC + 54 + 54 + 10);
-    }
 
-//    if (width() > 400) {
-//        auto right_geom = _right->geometry();
-//        int left_w = 54;
-//        _timeLabel->show();
-//        _timeLabelend->show();
-//        int w = qMax(left_w, right_geom.width());
-////        int w = left_w;
-//        _timeLabel->setFixedWidth(left_w );
-//        _timeLabelend->setFixedWidth(left_w );
-//        right_geom.setWidth(w);
-//        _right->setGeometry(right_geom);
-    //    }
+
 }
 
 void ToolboxProxy::updateToolTipTheme(ToolButton *btn)
@@ -2499,31 +2473,13 @@ void ToolboxProxy::setPlaylist(PlaylistWidget *playlist)
     _playlist = playlist;
     connect(_playlist, &PlaylistWidget::stateChange, this, [ = ]() {
 
-        if (bAnimationFinash == false) {
-            return ;
-        }
 
         if (_playlist->state() == PlaylistWidget::State::Opened) {
             //this->setFixedHeight(TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT);
             //bot_toolWgt->setFixedHeight(TOOLBOX_HEIGHT - 14);
             //_bot_spec->setFixedHeight(TOOLBOX_SPACE_HEIGHT);
             // _bot_spec->setVisible(true);
-            QRect rcBegin = this->geometry();
-            QRect rcEnd = rcBegin;
-            rcEnd.setY(rcBegin.y() - TOOLBOX_SPACE_HEIGHT);
-            //rcEnd.setHeight(rcBegin.height() - TOOLBOX_SPACE_HEIGHT);
-            bAnimationFinash = false;
-            paopen = new QPropertyAnimation(this, "geometry");
-            paopen->setEasingCurve(QEasingCurve::Linear);
-            paopen->setDuration(POPUP_DURATION  ) ;
-            paopen->setStartValue(rcBegin);
-            paopen->setEndValue(rcEnd);
-            paopen->start();
-            connect(paopen, &QPropertyAnimation::finished, [ = ]() {
-                paopen->deleteLater();
-                paopen = nullptr;
-                bAnimationFinash = true;
-            });
+
             _listBtn->setChecked(true);
         } else {
             _listBtn->setChecked(false);
@@ -2531,22 +2487,6 @@ void ToolboxProxy::setPlaylist(PlaylistWidget *playlist)
             //_bot_spec->setFixedHeight(TOOLBOX_TOP_EXTENT);
             //bot_toolWgt->setFixedHeight(TOOLBOX_HEIGHT - 10);
             //this->setFixedHeight(TOOLBOX_HEIGHT);
-            bAnimationFinash = false;
-
-            QRect rcBegin = this->geometry();
-            QRect rcEnd = rcBegin;
-            rcEnd.setY(rcBegin.y() + TOOLBOX_SPACE_HEIGHT);
-            paClose = new QPropertyAnimation(this, "geometry");
-            paClose->setEasingCurve(QEasingCurve::Linear);
-            paClose->setDuration(POPUP_DURATION );
-            paClose->setStartValue(rcBegin);
-            paClose->setEndValue(rcEnd);
-            paClose->start();
-            connect(paClose, &QPropertyAnimation::finished, [ = ]() {
-                paClose->deleteLater();
-                paClose = nullptr;
-                bAnimationFinash = true;
-            });
 
         }
     });
