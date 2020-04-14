@@ -41,7 +41,7 @@
 
 namespace dmr {
 using namespace mpv::qt;
-class MpvGLWidget;
+//class MpvGLWidget;
 
 class MpvProxy: public Backend
 {
@@ -129,7 +129,7 @@ signals:
 
 private:
     Handle _handle;
-    MpvGLWidget *_gl_widget{nullptr};
+    //MpvGLWidget *_gl_widget{nullptr};
     QWidget *m_parentWidget;
 
     bool _inBurstShotting {false};

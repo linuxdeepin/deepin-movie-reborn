@@ -30,7 +30,7 @@
 #include "config.h"
 
 #include "mpv_proxy.h"
-#include "mpv_glwidget.h"
+//#include "mpv_glwidget.h"
 #include "compositing_manager.h"
 #include "utility.h"
 #include "player_engine.h"
@@ -89,23 +89,23 @@ MpvProxy::MpvProxy(QWidget *parent)
     }
 
     _handle = Handle::FromRawHandle(mpv_init());
-    if (CompositingManager::get().composited()) {
+    /*if (CompositingManager::get().composited()) {
         _gl_widget = new MpvGLWidget(this, _handle);
         connect(this, &MpvProxy::stateChanged, [ = ]() {
             _gl_widget->setPlaying(state() != Backend::PlayState::Stopped);
             _gl_widget->update();
         });
-#if defined(USE_DXCB) || defined(_LIBDMR_)
+    #if defined(USE_DXCB) || defined(_LIBDMR_)
         _gl_widget->toggleRoundedClip(false);
-#endif
+    #endif
         auto *layout = new QHBoxLayout(this);
         layout->setContentsMargins(0, 0, 0, 0);
         layout->addWidget(_gl_widget);
         setLayout(layout);
     }
-#ifdef __mips__
+    #ifdef __mips__
     setAttribute(Qt::WA_TransparentForMouseEvents, true);
-#endif
+    #endif*/
 }
 
 MpvProxy::~MpvProxy()
@@ -115,7 +115,7 @@ MpvProxy::~MpvProxy()
     disconnect(window()->windowHandle(), &QWindow::windowStateChanged, 0, 0);
     if (CompositingManager::get().composited()) {
         disconnect(this, &MpvProxy::stateChanged, 0, 0);
-        delete _gl_widget;
+        //delete _gl_widget;
     }
 }
 
@@ -367,9 +367,9 @@ void MpvProxy::setState(PlayState s)
 {
     if (_state != s) {
         _state = s;
-        if (_gl_widget) {
-            _gl_widget->setPlaying(s != PlayState::Stopped);
-        }
+        //if (_gl_widget) {
+        //    _gl_widget->setPlaying(s != PlayState::Stopped);
+        //}
         emit stateChanged();
     }
 }
@@ -471,32 +471,32 @@ void MpvProxy::handle_mpv_events()
         case MPV_EVENT_FILE_LOADED:
             qDebug() << mpv_event_name(ev->event_id);
 
-            if (_gl_widget) {
+            /*if (_gl_widget) {
                 auto w = get_property(_handle, "width").toInt();
                 auto h = get_property(_handle, "height").toInt();
 
                 qDebug() << "hwdec-interop" << get_property(_handle, "gpu-hwdec-interop")
                          << "codec: " << get_property(_handle, "video-codec")
                          << "format: " << get_property(_handle, "video-format");
-#ifdef __mips__
+            #ifdef __mips__
                 qDebug() << "MPV_EVENT_FILE_LOADED __mips__";
                 auto codec = get_property(_handle, "video-codec").toString();
                 if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") || codec.toLower().contains("mpeg2video")) {
                     qDebug() << "set_property hwdec no";
                     set_property(_handle, "hwdec", "no");
                 }
-#endif
-#ifdef __aarch64__
+            #endif
+            #ifdef __aarch64__
                 qDebug() << "MPV_EVENT_FILE_LOADED aarch64";
                 auto codec = get_property(_handle, "video-codec").toString();
                 if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") || codec.toLower().contains("mpeg2video")) {
-//                    qDebug() << "set_property hwdec no";
-//                    set_property(_handle, "hwdec", "no");
+            //                    qDebug() << "set_property hwdec no";
+            //                    set_property(_handle, "hwdec", "no");
                     qDebug() << "set_property hwdec auto-safe";
                     set_property(_handle, "hwdec", "auto-safe");
                 }
-#endif
-            }
+            #endif
+            }*/
             setState(PlayState::Playing); //might paused immediately
             emit fileLoaded();
             qDebug() << QString("rotate metadata: dec %1, out %2")
