@@ -1984,6 +1984,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
 
     case ActionFactory::ActionKind::MovieInfo: {
         if (_engine->state() != PlayerEngine::CoreState::Idle) {
+            //if (_engine->isPlayableFile())
             MovieInfoDialog mid(_engine->playlist().currentInfo());
             mid.exec();
         }
@@ -2849,13 +2850,21 @@ void MainWindow::updateProxyGeometry()
                       rect().width() - 10, TOOLBOX_HEIGHT);
             if (isFullScreen()) {
                 if (_playlist->state() == PlaylistWidget::State::Opened) {
+#ifndef __aarch64__
                     _toolbox->setGeometry(rfs);
+#else
+                     _toolbox->setGeometry(rct);
+#endif
                 } else {
                     _toolbox->setGeometry(rct);
                 }
             } else {
                 if (_playlist->state() == PlaylistWidget::State::Opened) {
+#ifndef __aarch64__
                     _toolbox->setGeometry(rfs);
+#else
+                     _toolbox->setGeometry(rct);
+#endif
                 } else {
                     _toolbox->setGeometry(rct);
                 }

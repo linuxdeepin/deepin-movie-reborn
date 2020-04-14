@@ -2483,7 +2483,7 @@ void ToolboxProxy::resizeEvent(QResizeEvent *event)
         }
 
     }
-
+#ifndef __aarch64__
     if (bAnimationFinash ==  false && paopen != nullptr && paClose != nullptr) {
 
         _playlist->endAnimation();
@@ -2503,10 +2503,13 @@ void ToolboxProxy::resizeEvent(QResizeEvent *event)
     }
 
     updateTimeLabel();
+#endif
 }
 
 void ToolboxProxy::updateTimeLabel()
 {
+
+    #ifndef __aarch64__
     // to keep left and right of the same width. which makes play button centered
     _listBtn->setVisible(width() > 300);
     _timeLabel->setVisible(width() > 450);
@@ -2536,6 +2539,7 @@ void ToolboxProxy::updateTimeLabel()
 //        right_geom.setWidth(w);
 //        _right->setGeometry(right_geom);
     //    }
+#endif
 }
 
 void ToolboxProxy::updateToolTipTheme(ToolButton *btn)
@@ -2559,19 +2563,16 @@ void ToolboxProxy::setPlaylist(PlaylistWidget *playlist)
     _playlist = playlist;
     connect(_playlist, &PlaylistWidget::stateChange, this, [ = ]() {
 
+
         if (bAnimationFinash == false) {
             return ;
         }
 
         if (_playlist->state() == PlaylistWidget::State::Opened) {
-            //this->setFixedHeight(TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT);
-            //bot_toolWgt->setFixedHeight(TOOLBOX_HEIGHT - 14);
-            //_bot_spec->setFixedHeight(TOOLBOX_SPACE_HEIGHT);
-            // _bot_spec->setVisible(true);
+#ifndef __aarch64__
             QRect rcBegin = this->geometry();
             QRect rcEnd = rcBegin;
             rcEnd.setY(rcBegin.y() - TOOLBOX_SPACE_HEIGHT);
-            //rcEnd.setHeight(rcBegin.height() - TOOLBOX_SPACE_HEIGHT);
             bAnimationFinash = false;
             paopen = new QPropertyAnimation(this, "geometry");
             paopen->setEasingCurve(QEasingCurve::Linear);
@@ -2584,13 +2585,11 @@ void ToolboxProxy::setPlaylist(PlaylistWidget *playlist)
                 paopen = nullptr;
                 bAnimationFinash = true;
             });
+#endif
             _listBtn->setChecked(true);
         } else {
             _listBtn->setChecked(false);
-            // _bot_spec->setVisible(false);
-            //_bot_spec->setFixedHeight(TOOLBOX_TOP_EXTENT);
-            //bot_toolWgt->setFixedHeight(TOOLBOX_HEIGHT - 10);
-            //this->setFixedHeight(TOOLBOX_HEIGHT);
+#ifndef __aarch64__
             bAnimationFinash = false;
 
             QRect rcBegin = this->geometry();
@@ -2607,7 +2606,7 @@ void ToolboxProxy::setPlaylist(PlaylistWidget *playlist)
                 paClose = nullptr;
                 bAnimationFinash = true;
             });
-
+#endif
         }
     });
 }
