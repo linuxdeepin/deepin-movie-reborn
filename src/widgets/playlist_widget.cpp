@@ -1392,7 +1392,7 @@ void PlaylistWidget::resizeEvent(QResizeEvent *ev)
 #endif
 #ifdef __aarch64__
     QRect fixed(15, (view_rect.height() - 394),
-                view_rect.width() - 20, (384 - 70));
+                view_rect.width() - 20, (384 - 100));
 
 //    _playlist->setFixedWidth(width() - 235);
     //_playlist->setFixedWidth(fixed.width() - 235);
