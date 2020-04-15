@@ -38,12 +38,22 @@
 namespace dmr {
 
 NotificationWidget::NotificationWidget(QWidget *parent)
+#ifdef __aarch64__
+    :QFrame(nullptr), _mw(parent)
+#else
     :QFrame(parent), _mw(parent)
+#endif
 {
 //    DThemeManager::instance()->registerWidget(this);
 
     //setFrameShape(QFrame::NoFrame);
     setObjectName("NotificationFrame");
+
+#ifdef __mips__
+        setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
+#elif __aarch64__
+        setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
+#endif
 
     _layout = new QHBoxLayout;
     _layout->setContentsMargins(0, 0, 0, 0);
@@ -83,7 +93,11 @@ void NotificationWidget::syncPosition()
             break;
 
         case AnchorNorthWest:
+#ifdef __aarch64__
+            move(geom.topLeft() + _anchorPoint);
+#else
             move(_anchorPoint);
+#endif
             break;
 
         case AnchorNone:
