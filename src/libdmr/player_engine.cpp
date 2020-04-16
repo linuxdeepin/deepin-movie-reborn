@@ -661,7 +661,8 @@ QList<QUrl> PlayerEngine::collectPlayDir(const QDir &dir)
 {
     QList<QUrl> urls;
 
-    QDirIterator di(dir, QDirIterator::Subdirectories);
+    //取消递归  by thx
+    QDirIterator di(dir, QDirIterator::NoIteratorFlags);
     while (di.hasNext()) {
         di.next();
         if (di.fileInfo().isFile() && isPlayableFile(di.fileName())) {
