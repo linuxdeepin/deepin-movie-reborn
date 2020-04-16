@@ -41,6 +41,7 @@
 #include "thumbnail_worker.h"
 #include "tip.h"
 #include "utils.h"
+#include "threadpool.h"
 
 //#include <QtWidgets>
 #include <DImageButton>
@@ -604,9 +605,10 @@ public:
         _viewProgBarLayout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
         _viewProgBarLayout->setSpacing(1);
 
-        int pixWidget = pm_black_list.at(0).width();
+        int pixWidget = this->width() / 100;//pm_black_list.at(0).width();
+
         //当宽度比较宽的时候，就插入两次相同图片
-        if (this->width() > 500) {
+        if ( _engine->width() > 1000) {
             pixWidget /= 2;
             for (int i = 0; i < pm_list.count() * 2 ; i++) {
 
@@ -619,8 +621,6 @@ public:
                 label_black->setMouseTracking(true);
                 label_black->move(i * (pixWidget + 1) + 3, 5);
                 label_black->setFixedSize(pixWidget, 50);
-
-
             }
         } else {
             for (int i = 0; i < pm_list.count(); i++) {
@@ -743,6 +743,9 @@ protected:
             _startPos = e->pos();
 
             int v = position2progress(e->pos());
+
+            if (v == -1)
+                return;
 //            setSliderPosition(v);
             emit sliderMoved(v);
             emit hoverChanged(v);
@@ -776,8 +779,6 @@ protected:
     }
     void resizeEvent(QResizeEvent *event)
     {
-        auto i = _parent->width();
-        auto j = this->width();
 //        setFixedWidth(_parent->width() - PROGBAR_SPEC);
         _back->setFixedWidth(this->width());
     }
@@ -806,6 +807,8 @@ private:
     QHBoxLayout *_viewProgBarLayout_black{nullptr};
     int position2progress(const QPoint &p)
     {
+        if (_engine == nullptr)
+            return -1;
         auto total = _engine->duration();
         qreal span = (qreal)total * p.x() / (contentsRect().width() - 4);
         return span/* * (p.x())*/;
@@ -1188,7 +1191,7 @@ void viewProgBarLoad::run()
 void viewProgBarLoad::loadViewProgBar(QSize size)
 {
     auto num = /*qreal(_progBar->width()) / 9*/100;
-    auto pixWidget =  _progBar->width() / 100;
+    auto pixWidget =  50;//_progBar->width() / 100;
     auto tmp = (_engine->duration() * 1000) / num;
     auto dpr = qApp->devicePixelRatio();
     QList<QPixmap> pm;
@@ -1201,8 +1204,10 @@ void viewProgBarLoad::loadViewProgBar(QSize size)
     qDebug() << _engine->videoSize().height();
     qDebug() << qApp->devicePixelRatio();
     if (_engine->videoSize().width() > 0 && _engine->videoSize().height() > 0) {
-        thumber.setThumbnailSize(50 * (_engine->videoSize().width() / _engine->videoSize().height() * 50)
-                                 * qApp->devicePixelRatio());
+        //thumber.setThumbnailSize(50 * (_engine->videoSize().width() / _engine->videoSize().height() * 50)
+        //* qApp->devicePixelRatio());
+
+        thumber.setThumbnailSize(50);
     }
 
     thumber.setMaintainAspectRatio(true);
@@ -1332,10 +1337,6 @@ void ToolboxProxy::finishLoadSlot(QSize size)
 {
     if (pm_list.isEmpty()) return;
 
-    _viewProgBar->setViewProgBar(_engine, pm_list, pm_black_list);
-
-
-
     if (CompositingManager::get().composited()/* && _loadsize == size*/ && _engine->state() != PlayerEngine::CoreState::Idle) {
         PlayItemInfo info = _engine->playlist().currentInfo();
         if (!info.url.isLocalFile()) {
@@ -1344,8 +1345,12 @@ void ToolboxProxy::finishLoadSlot(QSize size)
             return;
 //            }
         }
-        _progBar_Widget->setCurrentIndex(2);
+        _progBar_Widget->setCurrentIndex(2);    //先显示一下第二个界面，让第二个界面能正确的改变自己的大小
+        _progBar_Widget->setCurrentIndex(1);
     }
+    _viewProgBar->setViewProgBar(_engine, pm_list, pm_black_list);
+
+    _progBar_Widget->setCurrentIndex(2);
 }
 
 void ToolboxProxy::updateplaylisticon()
@@ -1520,6 +1525,9 @@ void ToolboxProxy::setup()
     _viewProgBar = new ViewProgBar(bot_toolWgt);
 //    _viewProgBar->hide();
     _viewProgBar->setFocusPolicy(Qt::NoFocus);
+
+    ThreadPool::instance()->moveToNewThread(_viewProgBar);
+
 //    _viewProgBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 
     connect(_viewProgBar, &ViewProgBar::leaveViewProgBar, [ = ]() {
@@ -1869,6 +1877,21 @@ void ToolboxProxy::updateThumbnail()
         }
     }
 
+    //判断是否是同一文件,并且已经加载完成，同一文件不进行重新获取缩略图了
+    if (m_UrloldThumbUrl == _engine->playlist().currentInfo().url.toString() && pm_list.size() == 100) {
+
+        QTimer *delayTimer = new QTimer;
+        connect(delayTimer, &QTimer::timeout, [ = ]() {
+            delayTimer->deleteLater();
+            finishLoadSlot(QSize());
+        });
+        if ( delayTimer->isActive())
+            delayTimer->stop();
+        delayTimer->start(1000);
+        return ;
+    }
+    m_UrloldThumbUrl = _engine->playlist().currentInfo().url.toString();
+
     qDebug() << "worker" << m_worker;
 
     QTimer::singleShot(1000, [this]() {
@@ -1881,15 +1904,6 @@ void ToolboxProxy::updateThumbnail()
         if (m_worker == nullptr) {
             m_worker = new viewProgBarLoad(_engine, _progBar, this);
             m_worker->setListPixmapMutex(&m_listPixmapMutex);
-            /*connect(m_worker, &viewProgBarLoad::finished, this, [ = ] {
-                if (m_worker)
-                {
-                    m_worker->quit();
-                    m_worker->wait();
-                    delete m_worker;
-                    m_worker = nullptr;
-                }
-            });*/
 
             connect(m_worker, SIGNAL(sigFinishiLoad(QSize)), this, SLOT(finishLoadSlot(QSize)));
             m_worker->start();
@@ -2445,6 +2459,7 @@ void ToolboxProxy::resizeEvent(QResizeEvent *event)
 
     if (_autoResizeTimer.isActive()) {
         _autoResizeTimer.stop();
+        _autoResizeTimer.start(1000);
     }
     if (event->oldSize().width() != event->size().width()) {
         _autoResizeTimer.start(1000);
