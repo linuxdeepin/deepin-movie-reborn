@@ -174,8 +174,7 @@ bool PlayerEngine::isPlayableFile(const QString &name)
 {
     bool bRes = true;
     auto suffix = QString("*") + name.mid(name.lastIndexOf('.'));
-    bRes =  video_filetypes.contains(suffix, Qt::CaseInsensitive);
-    bRes =  audio_filetypes.contains(suffix, Qt::CaseInsensitive);
+    bRes =  video_filetypes.contains(suffix, Qt::CaseInsensitive) | audio_filetypes.contains(suffix, Qt::CaseInsensitive);
     return bRes;
 }
 
