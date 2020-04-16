@@ -243,7 +243,12 @@ private:
     QPropertyAnimation *paopen;
     QPropertyAnimation *paClose;
 
-    QMutex m_listPixmapMutex;
+    QMutex m_listPixmapMutex;       //缩略图list的锁
+
+
+    QString m_UrloldThumbUrl;       //当前加载的文件，目的是为缩略图服务
+
+    DBlurEffectWidget *bot_widget {nullptr };
 };
 class viewProgBarLoad: public QThread
 {
