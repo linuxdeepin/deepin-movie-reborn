@@ -56,7 +56,8 @@ public slots:
     void popupWithIcon(const QString& msg, const QPixmap&);
     void popup(const QString& msg, bool flag = true);
     void updateWithMessage(const QString& newMsg, bool flag = true);
-
+    void syncPosition();
+    void syncPosition(QRect rect);
 protected:
     void showEvent(QShowEvent *event) override;
     void resizeEvent(QResizeEvent *re) override;
@@ -72,8 +73,7 @@ private:
     MessageAnchor _anchor {AnchorNone};
     int _anchorDist {10};
     QPoint _anchorPoint;
-
-    void syncPosition();
+    bool m_isWheel {true};
 };
 
 }

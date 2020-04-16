@@ -106,6 +106,28 @@ void NotificationWidget::syncPosition()
     }
 }
 
+void NotificationWidget::syncPosition(QRect rect)
+{
+    auto geom = rect;
+    switch (_anchor) {
+        case AnchorBottom:
+            move(geom.center().x() - size().width()/2, geom.bottom() - _anchorDist - height());
+            break;
+
+        case AnchorNorthWest:
+#ifdef __aarch64__
+            move(geom.topLeft() + _anchorPoint);
+#else
+            move(_anchorPoint);
+#endif
+            break;
+
+        case AnchorNone:
+            move(geom.center().x() - size().width()/2, geom.center().y() - size().height()/2);
+            break;
+    }
+}
+
 void NotificationWidget::popupWithIcon(const QString& msg, const QPixmap& pm)
 {
     if (!_icon) {
