@@ -67,11 +67,11 @@ static bool getMusicPix(const QFileInfo &fi, QPixmap &rImg)
         return false;
     }
 
-    // read the format headers
-    if (av_ctx->iformat->read_header(av_ctx) < 0) {
-        printf("No header format");
-        return false;
-    }
+    // read the format headers  comment by thx , 这里会导致一些音乐 奔溃
+    //if (av_ctx->iformat->read_header(av_ctx) < 0) {
+    //    printf("No header format");
+    //    return false;
+    //}
 
     for (int i = 0; i < av_ctx->nb_streams; i++) {
         if (av_ctx->streams[i]->disposition & AV_DISPOSITION_ATTACHED_PIC) {

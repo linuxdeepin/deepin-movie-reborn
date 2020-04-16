@@ -2888,7 +2888,7 @@ void MainWindow::updateProxyGeometry()
 #ifndef __aarch64__
                     _toolbox->setGeometry(rfs);
 #else
-                     _toolbox->setGeometry(rct);
+                    _toolbox->setGeometry(rct);
 #endif
                 } else {
                     _toolbox->setGeometry(rct);
@@ -2898,7 +2898,7 @@ void MainWindow::updateProxyGeometry()
 #ifndef __aarch64__
                     _toolbox->setGeometry(rfs);
 #else
-                     _toolbox->setGeometry(rct);
+                    _toolbox->setGeometry(rct);
 #endif
                 } else {
                     _toolbox->setGeometry(rct);
@@ -4100,7 +4100,6 @@ QString MainWindow::probeCdromDevice()
         QString strLine = mountFile.readLine();
         if ( strLine.indexOf("/dev/sr") != -1 || strLine.indexOf("/dev/cdrom") != -1) { //说明存在光盘的挂载。
             return strLine.split(" ").at(0);        //A B C 这样的格式，取部分
-
         }
     } while (!mountFile.atEnd() );
     return QString();
