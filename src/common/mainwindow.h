@@ -174,6 +174,7 @@ public slots:
     void checkErrorMpvLogsChanged(const QString prefix, const QString text);
     void checkWarningMpvLogsChanged(const QString prefix, const QString text);
     void slotdefaultplaymodechanged(const QString &key, const QVariant &value);
+    void syncPostion();
 
 
 protected:

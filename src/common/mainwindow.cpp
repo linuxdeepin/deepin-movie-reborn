@@ -512,6 +512,9 @@ skip_set_cursor:
             } else {
                 if (startResizing) {
                     updateGeometry(lastCornerEdge, e);
+#ifdef __aarch64__
+                    mw->syncPostion();
+#endif
                     return true;
                 }
             }
@@ -1267,7 +1270,9 @@ void MainWindow::changedVolumeSlot(int vol)
     if (_engine->volume() <= 100 || vol < 100) {
         _engine->changeVolume(vol);
         Settings::get().setInternalOption("global_volume", vol);
+#ifndef __aarch64__
         _nwComm->updateWithMessage(tr("Volume: %1%").arg(vol));
+#endif
     }
 }
 
@@ -3047,6 +3052,11 @@ void MainWindow::slotdefaultplaymodechanged(const QString &key, const QVariant &
     }
 }
 
+void MainWindow::syncPostion()
+{
+    _nwComm->syncPosition();
+}
+
 void MainWindow::checkErrorMpvLogsChanged(const QString prefix, const QString text)
 {
     QString errorMessage(text);
@@ -3228,6 +3238,10 @@ void MainWindow::resizeByConstraints(bool forceCentered)
     }
 
     qDebug() << "original: " << size() << "requested: " << sz;
+#ifdef __aarch64
+    _nwComm->syncPosition(this->geometry());
+    QRect rect = this->geometry();
+#endif
     if (size() == sz)
         return;
 
@@ -3238,12 +3252,18 @@ void MainWindow::resizeByConstraints(bool forceCentered)
         this->setGeometry(r);
         this->move(r.x(), r.y());
         this->resize(r.width(), r.height());
+#ifdef __aarch64
+        _nwComm->syncPosition(r);
+#endif
     } else {
         QRect r = this->geometry();
         r.setSize(sz);
         this->setGeometry(r);
         this->move(r.x(), r.y());
         this->resize(r.width(), r.height());
+#ifdef __aarch64
+        _nwComm->syncPosition(r);
+#endif
     }
 }
 
@@ -3345,7 +3365,14 @@ void MainWindow::updateWindowTitle()
 
 void MainWindow::moveEvent(QMoveEvent *ev)
 {
+#ifndef __aarch64__
     updateGeometryNotification(geometry().size());
+#else
+    if (windowState() == Qt::WindowNoState && !_miniMode) {
+        _lastRectInNormalMode = geometry();
+    }
+    _nwComm->syncPosition();
+#endif
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *ev)
@@ -3368,6 +3395,9 @@ void MainWindow::keyReleaseEvent(QKeyEvent *ev)
 void MainWindow::capturedMousePressEvent(QMouseEvent *me)
 {
     _mouseMoved = false;
+#ifdef __aarch64__
+    _nwComm->hide();
+#endif
     if (qApp->focusWindow() == 0) return;
 
     if (me->buttons() == Qt::LeftButton) {
@@ -3391,6 +3421,9 @@ static bool _afterDblClick = false;
 void MainWindow::mousePressEvent(QMouseEvent *ev)
 {
     _mouseMoved = false;
+#ifdef __aarch64__
+    _nwComm->hide();
+#endif
 
     if (qApp->focusWindow() == 0) return;
     if (ev->buttons() == Qt::LeftButton) {
