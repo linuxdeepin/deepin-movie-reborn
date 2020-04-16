@@ -160,7 +160,7 @@ public slots:
 
 protected:
     PlayState _state { PlayState::Stopped };
-    QString _dvdDevice {"/dev/sr0"};
+    QString _dvdDevice ;
     QUrl _file;
     static DebugLevel _debugLevel;
 };
