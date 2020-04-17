@@ -810,4 +810,11 @@ QVariant PlayerEngine::getBackendProperty(const QString &name)
     return QVariant();
 }
 
+void PlayerEngine::setVideoZoom(float val)
+{
+    if (_current) {
+        _current->setProperty("video-zoom", val);
+    }
+}
+
 } // end of namespace dmr
