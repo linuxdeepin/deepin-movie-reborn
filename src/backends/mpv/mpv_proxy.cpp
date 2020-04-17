@@ -1235,6 +1235,8 @@ void MpvProxy::setProperty(const QString &name, const QVariant &val)
 {
     if (name == "pause-on-start") {
         _pauseOnStart = val.toBool();
+    } else if (name == "video-zoom") {
+        set_property(_handle, name, val.toDouble());
     } else {
         set_property(_handle, name.toUtf8().data(), val);
     }

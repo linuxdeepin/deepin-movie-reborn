@@ -156,6 +156,9 @@ public:
 
     bool set_playlistopen_clicktogglepause(bool playlistopen);
     NotificationWidget *get_nwComm();
+
+    //在读取光盘的时候，直接把光盘挂载点的路径加入到播放列表中 thx
+    bool addCdromPath();
 signals:
     void windowEntered();
     void windowLeaved();

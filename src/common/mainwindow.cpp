@@ -1701,6 +1701,31 @@ NotificationWidget *MainWindow::get_nwComm()
     return _nwComm;
 }
 
+bool MainWindow::addCdromPath()
+{
+    QStringList strCDMountlist;
+
+    QFile mountFile("/proc/mounts");
+    if (mountFile.open(QIODevice::ReadOnly) == false) {
+        return false;
+    }
+    do {
+        QString strLine = mountFile.readLine();
+        if ( strLine.indexOf("/dev/sr") != -1 || strLine.indexOf("/dev/cdrom") != -1) { //说明存在光盘的挂载。
+            strCDMountlist.append(strLine.split(" ").at(1));        //A B C 这样的格式，取中间的
+        }
+    } while (!mountFile.atEnd() );
+
+    if (strCDMountlist.size() == 0)
+        return false;
+
+    const auto &urls = _engine->addPlayDir(strCDMountlist[0]);  //目前只是针对第一个光盘
+    if (urls.size()) {
+        _engine->playByName(QUrl("playlist://0"));
+    }
+    return true;
+}
+
 void MainWindow::menuItemInvoked(QAction *action)
 {
     auto kd = ActionFactory::actionKind(action);
@@ -1854,11 +1879,16 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             _nwComm->updateWithMessage(tr("No device found"));
             break;
         }
-        _engine->setDVDDevice(dev);
+
+        if ( addCdromPath() == false) {
+            _nwComm->updateWithMessage(tr("No device found"));
+        }
+        /*_engine->setDVDDevice(dev);  Comment by thx
         //FIXME: how to tell if it's bluray
-        QUrl url(QString("dvdread:///%1").arg(dev));
+        //QUrl url(QString("dvdread:///%1").arg(dev));
+        QUrl url(QString("dvd://%1").arg(dev));
         //QUrl url(QString("dvdnav://"));
-        play(url);
+        play(url);*/
         break;
     }
 
@@ -2858,7 +2888,7 @@ void MainWindow::updateProxyGeometry()
 #ifndef __aarch64__
                     _toolbox->setGeometry(rfs);
 #else
-                     _toolbox->setGeometry(rct);
+                    _toolbox->setGeometry(rct);
 #endif
                 } else {
                     _toolbox->setGeometry(rct);
@@ -2868,7 +2898,7 @@ void MainWindow::updateProxyGeometry()
 #ifndef __aarch64__
                     _toolbox->setGeometry(rfs);
 #else
-                     _toolbox->setGeometry(rct);
+                    _toolbox->setGeometry(rct);
 #endif
                 } else {
                     _toolbox->setGeometry(rct);
@@ -3222,9 +3252,17 @@ void MainWindow::resizeByConstraints(bool forceCentered)
     const auto &mi = _engine->playlist().currentInfo().mi;
     auto sz = _engine->videoSize();
 #ifdef __mips__
-    //3.26修改，初始分辨率大于1080P时缩小一半
-    while (sz.width() >= 1080) {
-        sz = sz / 2;
+    if (!CompositingManager::get().composited()) {
+        float w = (float)sz.width();
+        float h = (float)sz.height();
+        if ((w / h) > 0.56 && (w / h) < 0.75) {
+            _engine->setVideoZoom(-(w / h) - 0.1);
+        }
+
+        //3.26修改，初始分辨率大于1080P时缩小一半
+        while (sz.width() >= 1080) {
+            sz = sz / 2;
+        }
     }
 #endif
     if (sz.isEmpty()) {
@@ -4062,17 +4100,16 @@ void MainWindow::setInit(bool v)
 
 QString MainWindow::probeCdromDevice()
 {
-    QStringList cands = {
-        "/dev/sr0",
-        "/dev/cdrom"
-    };
-
-    for (auto d : cands) {
-        if (QFile::exists(d)) {
-            return d;
-        }
+    QFile mountFile("/proc/mounts");
+    if (mountFile.open(QIODevice::ReadOnly) == false) {
+        return QString();
     }
-
+    do {
+        QString strLine = mountFile.readLine();
+        if ( strLine.indexOf("/dev/sr") != -1 || strLine.indexOf("/dev/cdrom") != -1) { //说明存在光盘的挂载。
+            return strLine.split(" ").at(0);        //A B C 这样的格式，取部分
+        }
+    } while (!mountFile.atEnd() );
     return QString();
 }
 

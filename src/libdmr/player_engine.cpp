@@ -172,8 +172,10 @@ static const QStringList &buildPlayableDatabase()
 
 bool PlayerEngine::isPlayableFile(const QString &name)
 {
+    bool bRes = true;
     auto suffix = QString("*") + name.mid(name.lastIndexOf('.'));
-    return video_filetypes.contains(suffix, Qt::CaseInsensitive);
+    bRes =  video_filetypes.contains(suffix, Qt::CaseInsensitive) | audio_filetypes.contains(suffix, Qt::CaseInsensitive);
+    return bRes;
 }
 
 bool PlayerEngine::isAudioFile(const QString &name)
@@ -658,7 +660,8 @@ QList<QUrl> PlayerEngine::collectPlayDir(const QDir &dir)
 {
     QList<QUrl> urls;
 
-    QDirIterator di(dir, QDirIterator::Subdirectories);
+    //取消递归  by thx
+    QDirIterator di(dir, QDirIterator::NoIteratorFlags);
     while (di.hasNext()) {
         di.next();
         if (di.fileInfo().isFile() && isPlayableFile(di.fileName())) {
@@ -802,6 +805,13 @@ QVariant PlayerEngine::getBackendProperty(const QString &name)
         return _current->getProperty(name);
     }
     return QVariant();
+}
+
+void PlayerEngine::setVideoZoom(float val)
+{
+    if (_current) {
+        _current->setProperty("video-zoom", val);
+    }
 }
 
 } // end of namespace dmr
