@@ -58,13 +58,13 @@ int main(int argc, char *argv[])
     CompositingManager::detectOpenGLEarly();
     CompositingManager::detectPciID();
 
-    DApplication::loadDXcbPlugin();
-
 #if defined(STATIC_LIB)
     DWIDGET_INIT_RESOURCE();
 #endif
 
     DApplication app(argc, argv);
+
+    DApplication::loadDXcbPlugin();
 
     // required by mpv
     setlocale(LC_NUMERIC, "C");
@@ -108,7 +108,16 @@ int main(int argc, char *argv[])
     qDebug() << "log path: " << Dtk::Core::DLogManager::getlogFilePath();
 
     bool singleton = !dmr::Settings::get().isSet(dmr::Settings::MultipleInstance);
-    if (singleton && !app.setSingleInstance("deepinmovie")) {
+
+    QSharedMemory shared_memory("deepinmovie");
+
+    if(shared_memory.attach())
+    {
+        shared_memory.detach();
+    }
+
+    if(singleton && !shared_memory.create(1))
+    {
         qDebug() << "another deepin movie instance has started";
         if (!toOpenFiles.isEmpty()) {
             QDBusInterface iface("com.deepin.movie", "/", "com.deepin.movie");
