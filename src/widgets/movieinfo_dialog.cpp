@@ -71,10 +71,11 @@ static QString ElideText(const QString &text, const QSize &size,
         str = tmp_str;
     } else {
         while (line.isValid()) {
-            height += lineHeight;
+            //height += lineHeight;
             line.setLineWidth(size.width());
 
-            if (textLayout.lineCount() == 2) {
+            //2020.4.2修改，显示完整路径
+            /*if (textLayout.lineCount() == 2) {
                 QStringList strLst;
                 if (!text.isEmpty()) {
                     strLst = text.split(tmp_str);
@@ -84,7 +85,7 @@ static QString ElideText(const QString &text, const QSize &size,
                     str += fontMetrics.elidedText(strLst.last(), mode, lastLineWidth);
                     break;
                 }
-            }
+            }*/
 
             tmp_str = text.mid(line.textStart(), line.textLength());
 
@@ -198,6 +199,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
     ml->addSpacing(9);
 
     m_fileNameLbl = new DLabel(this);
+    m_fileNameLbl->setMinimumWidth(260);
     qDebug() << "fileNameLbl w,h: " << m_fileNameLbl->width() << "," << m_fileNameLbl->height();
     DFontSizeManager::instance()->bind(m_fileNameLbl, DFontSizeManager::T8);
     m_fileNameLbl->setForegroundRole(DPalette::BrightText);
@@ -234,11 +236,13 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
     scrollWidgetLayout->setAlignment(film, Qt::AlignHCenter);
     film->setContent(infoRect);
     film->setFixedWidth(280);
-    infoRect->setFixedSize(280, 132);
+    infoRect->setFixedWidth(280);
+    infoRect->setMinimumHeight(132);
+    //infoRect->setFixedSize(280, 132);
     film->setExpand(true);
     m_expandGroup.append(film);
     auto *form = new QFormLayout(infoRect);
-    form->setContentsMargins(10, 5, 20, 30);
+    form->setContentsMargins(10, 5, 20, 16);
     form->setVerticalSpacing(6);
     form->setHorizontalSpacing(10);
     form->setLabelAlignment(Qt::AlignLeft);
@@ -264,7 +268,9 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
     scrollWidgetLayout->setAlignment(video, Qt::AlignHCenter);
     video->setContent(videoRect);
     video->setFixedSize(280, 136);
-    videoRect->setFixedSize(280, 136);
+    videoRect->setFixedWidth(280);
+    videoRect->setMinimumHeight(136);
+    //videoRect->setFixedSize(280, 136);
     video->setExpand(true);
     m_expandGroup.append(video);
     auto *videoForm = new QFormLayout(videoRect);
@@ -290,7 +296,9 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
     scrollWidgetLayout->setAlignment(audio, Qt::AlignHCenter);
     audio->setContent(audioRect);
     audio->setFixedWidth(280);
-    audioRect->setFixedSize(280, 136);
+    audioRect->setFixedWidth(280);
+    audioRect->setMinimumHeight(136);
+    //audioRect->setFixedSize(280, 136);
     audio->setExpand(true);
     m_expandGroup.append(audio);
     auto *audioForm = new QFormLayout(audioRect);
@@ -410,14 +418,13 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
         auto codeLabel = m_titleList.at(5);
         qDebug() << "filePathLbl w,h: " << filePathLbl->width() << "," << filePathLbl->height();
         QFontMetrics fm = codeLabel->fontMetrics();
-        filePathLbl->setMinimumWidth(qMin(190, 250 - fm.boundingRect(codeLabel->text()).width()));
+        filePathLbl->setMinimumWidth(qMin(160, 250 - fm.boundingRect(codeLabel->text()).width()));
         qDebug() << "filePathLbl w,h: " << filePathLbl->width() << "," << filePathLbl->height();
         auto fp = ElideText(tmp->text(), {filePathLbl->width(), fm.height()}, QTextOption::WrapAnywhere,
                             filePathLbl->font(), Qt::ElideRight, fm.height(), filePathLbl->width());
         filePathLbl->setText(fp);
         m_filePathLbl = filePathLbl;
         m_strFilePath = tmp->text();
-        filePathLbl->setFixedHeight(LINE_HEIGHT * 2);
         filePathLbl->setToolTip(tmp->text());
         auto t = new Tip(QPixmap(), tmp->text(), nullptr);
         t->resetSize(QApplication::desktop()->availableGeometry().width());
@@ -512,19 +519,19 @@ void MovieInfoDialog::addRow(QString title, QString field, QFormLayout *form, QL
 {
     auto f = new DLabel(title, this);
     f->setAlignment(Qt::AlignLeft | Qt::AlignTop);
-    f->setFixedSize(60, 20);
+    f->setMinimumSize(60, 20);
     //DFontSizeManager::instance()->bind(f, DFontSizeManager::T8, 0);
     //f->setForegroundRole(DPalette::WindowText);
     QFont font = f->font();
     font.setPixelSize(12);
     font.setWeight(QFont::Weight::Normal);
     font.setFamily("SourceHanSansSC");
-    f->setFont(font);
+    //f->setFont(font);
     auto t = new DLabel(field, this);
     t->setAlignment(Qt::AlignLeft | Qt::AlignTop);
-    t->setFixedHeight(20);
+    t->setMinimumHeight(20);
     t->setWordWrap(true);
-    t->setFont(font);
+    //t->setFont(font);
     form->addRow(f, t);
     tipLst.append(t);
     m_titleList.append(f);

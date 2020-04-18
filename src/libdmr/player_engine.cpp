@@ -73,6 +73,7 @@ PlayerEngine::PlayerEngine(QWidget *parent)
 
     setLayout(l);
 
+
 #ifndef _LIBDMR_
     connect(&Settings::get(), &Settings::subtitleChanged, this, &PlayerEngine::updateSubStyles);
 #endif
@@ -171,8 +172,10 @@ static const QStringList &buildPlayableDatabase()
 
 bool PlayerEngine::isPlayableFile(const QString &name)
 {
+    bool bRes = true;
     auto suffix = QString("*") + name.mid(name.lastIndexOf('.'));
-    return video_filetypes.contains(suffix, Qt::CaseInsensitive);
+    bRes =  video_filetypes.contains(suffix, Qt::CaseInsensitive) | audio_filetypes.contains(suffix, Qt::CaseInsensitive);
+    return bRes;
 }
 
 bool PlayerEngine::isAudioFile(const QString &name)
@@ -221,6 +224,9 @@ void PlayerEngine::onBackendStateChanged()
     switch (_current->state()) {
     case Backend::PlayState::Playing:
         _state = CoreState::Playing;
+
+        //playing . emit thumbnail progress mode signal with setting file
+        emit siginitthumbnailseting();
         break;
     case Backend::PlayState::Paused:
         _state = CoreState::Paused;
@@ -657,7 +663,8 @@ QList<QUrl> PlayerEngine::collectPlayDir(const QDir &dir)
 {
     QList<QUrl> urls;
 
-    QDirIterator di(dir, QDirIterator::Subdirectories);
+    //取消递归  by thx
+    QDirIterator di(dir, QDirIterator::NoIteratorFlags);
     while (di.hasNext()) {
         di.next();
         if (di.fileInfo().isFile() && isPlayableFile(di.fileName())) {
@@ -783,7 +790,10 @@ void PlayerEngine::resizeEvent(QResizeEvent *re)
         clearMask();
     }
 #endif
+
 }
+
+
 
 void PlayerEngine::setBackendProperty(const QString &name, const QVariant &val)
 {
@@ -798,6 +808,13 @@ QVariant PlayerEngine::getBackendProperty(const QString &name)
         return _current->getProperty(name);
     }
     return QVariant();
+}
+
+void PlayerEngine::setVideoZoom(float val)
+{
+    if (_current) {
+        _current->setProperty("video-zoom", val);
+    }
 }
 
 } // end of namespace dmr

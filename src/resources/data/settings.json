@@ -25,6 +25,14 @@
                             "default": 100
                         },
                         {
+                            "key": "last_volume",
+                            "name": "",
+                            "hide": true,
+                            "reset": false,
+                            "type": "spinbutton",
+                            "default": 100
+                        },
+                        {
                             "key": "mute",
                             "name": "",
                             "type": "checkbox",
@@ -60,6 +68,13 @@
                             "name": "",
                             "type": "checkbox",
                             "text": "Clear playlist when exit",
+                            "default": ""
+                        },
+                        {
+                            "key": "showInthumbnailmode",
+                            "name": "",
+                            "type": "checkbox",
+                            "text": "Show thumbnails in progress bar",
                             "default": ""
                         },
                         {

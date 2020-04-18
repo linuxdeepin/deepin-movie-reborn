@@ -1,4 +1,4 @@
-/* 
+/*
  * (c) 2017, Deepin Technology Co., Ltd. <support@deepin.org>
  *
  * This program is free software; you can redistribute it and/or
@@ -28,7 +28,7 @@
  * files in the program, then also delete it here.
  */
 #ifndef _DMR_TOOLBOX_PROXY_H
-#define _DMR_TOOLBOX_PROXY_H 
+#define _DMR_TOOLBOX_PROXY_H
 
 #include <DPlatformWindowHandle>
 //#include <QtWidgets>
@@ -36,6 +36,7 @@
 #include <QFrame>
 #include <QHBoxLayout>
 #include <QTimer>
+#include <QMutex>
 #include <DIconButton>
 #include <DButtonBox>
 #include <DBlurEffectWidget>
@@ -46,11 +47,9 @@
 #include "dguiapplicationhelper.h"
 #include "videoboxbutton.h"
 
-namespace Dtk
-{
-namespace Widget
-{
-    class DImageButton;
+namespace Dtk {
+namespace Widget {
+class DImageButton;
 }
 }
 
@@ -69,23 +68,26 @@ class VolumeSlider;
 class ViewProgBar;
 class viewProgBarLoad;
 class PlaylistWidget;
-class ImageItem : public DLabel{
+class ImageItem : public DLabel
+{
     Q_OBJECT
 public:
-    ImageItem(QPixmap image ,bool isblack = false, QWidget *parent = 0):DLabel(parent){
+    ImageItem(QPixmap image, bool isblack = false, QWidget *parent = 0): DLabel(parent)
+    {
         _pixmap = image;
     };
 
 signals:
-    void imageItemclicked(int index,int indexNow);
+    void imageItemclicked(int index, int indexNow);
 protected:
-    void paintEvent(QPaintEvent *event){
+    void paintEvent(QPaintEvent *event)
+    {
         QPainter painter(this);
 //        painter.drawPixmap(rect(),QPixmap(_path).scaled(60,50));
 
         painter.setRenderHints(QPainter::HighQualityAntialiasing |
-                                QPainter::SmoothPixmapTransform |
-                                QPainter::Antialiasing);
+                               QPainter::SmoothPixmapTransform |
+                               QPainter::Antialiasing);
 
         QRect backgroundRect = rect();
         QRect pixmapRect;
@@ -100,32 +102,48 @@ protected:
 private:
     int _index;
     int _indexNow;
-    DLabel *_image=nullptr;
+    DLabel *_image = nullptr;
     QString _path = NULL;
     QPixmap _pixmap;
 };
 
-class ToolboxProxy: public DFloatingWidget {
+class ToolboxProxy: public DFloatingWidget
+{
     Q_OBJECT
 public:
-    ToolboxProxy(QWidget *mainWindow, PlayerEngine*);
+    ToolboxProxy(QWidget *mainWindow, PlayerEngine *);
     virtual ~ToolboxProxy();
 
     void updateTimeInfo(qint64 duration, qint64 pos, QLabel *_timeLabel,
-                        QLabel *_timeLabelend ,bool flag);
+                        QLabel *_timeLabelend, bool flag);
     bool anyPopupShown() const;
     void closeAnyPopup();
     void setViewProgBarWidth();
     void setPlaylist(PlaylistWidget *playlist);
-    void addLabel_list(ImageItem *label){ label_list.append(label);}
-    void addLabel_black_list(ImageItem *label_black){ label_black_list.append(label_black);}
-    void addpm_list(QList<QPixmap> pm){ pm_list.clear(); pm_list.append(pm);}
-    void addpm_black_list(QList<QPixmap> pm_black){ pm_black_list.clear(); pm_black_list.append(pm_black);}
+    void addLabel_list(ImageItem *label)
+    {
+        label_list.append(label);
+    }
+    void addLabel_black_list(ImageItem *label_black)
+    {
+        label_black_list.append(label_black);
+    }
+    void addpm_list(QList<QPixmap> &pm)
+    {
+        pm_list.clear();
+        pm_list.append(pm);
+    }
+    void addpm_black_list(QList<QPixmap> &pm_black)
+    {
+        pm_black_list.clear();
+        pm_black_list.append(pm_black);
+    }
     QLabel *getfullscreentimeLabel();
     QLabel *getfullscreentimeLabelend();
 public slots:
     void finishLoadSlot(QSize size);
     void updateplaylisticon();
+    void setthumbnailmode();
 signals:
     void requestPlay();
     void requestPause();
@@ -134,7 +152,7 @@ signals:
     void sigstartLoad(QSize size);
 
 protected slots:
-    void updatePosition(const QPoint& p);
+    void updatePosition(const QPoint &p);
     void buttonClicked(QString id);
     void buttonEnter();
     void buttonLeave();
@@ -146,7 +164,7 @@ protected slots:
     void setProgress(int v);
     void updateTimeVisible(bool visible);
     void progressHoverChanged(int v);
-    void updateHoverPreview(const QUrl& url, int secs);
+    void updateHoverPreview(const QUrl &url, int secs);
 
 
 protected:
@@ -217,14 +235,35 @@ private:
 
     viewProgBarLoad *m_worker = nullptr;
     bool m_mouseFlag = false;
+    bool _bthumbnailmode;
+
+    //动画是否完成
+    bool bAnimationFinash {true};
+
+    QPropertyAnimation *paopen;
+    QPropertyAnimation *paClose;
+
+    QMutex m_listPixmapMutex;       //缩略图list的锁
+
+
+    QString m_UrloldThumbUrl;       //当前加载的文件，目的是为缩略图服务
+
+    DBlurEffectWidget *bot_widget {nullptr };
 };
-class viewProgBarLoad: public QThread{
+class viewProgBarLoad: public QThread
+{
     Q_OBJECT
 public:
-    explicit viewProgBarLoad(PlayerEngine *engine = nullptr,DMRSlider *progBar = nullptr,ToolboxProxy *parent = 0);
+    explicit viewProgBarLoad(PlayerEngine *engine = nullptr, DMRSlider *progBar = nullptr, ToolboxProxy *parent = 0);
 
+    //退出线程直接调用这个函数
+    void quitLoad();
+    //告诉线程需要加载一个缩略图，线程会停止正在加载的项目，重新加载新的缩略图
+    void load();
+    //必须调用这个函数加锁
+    void setListPixmapMutex(QMutex *pMutex);
 public slots:
-     void loadViewProgBar(QSize size);
+    void loadViewProgBar(QSize size);
 signals:
     void leaveViewProgBar();
     void hoverChanged(int);
@@ -249,13 +288,24 @@ private:
     QWidget *_front{nullptr};
     DBlurEffectWidget *_indicator{nullptr};
     QGraphicsColorizeEffect *m_effect{nullptr};
-    QList<QLabel*> labelList ;
+    QList<QLabel *> labelList ;
     QHBoxLayout *_indicatorLayout{nullptr};
     QHBoxLayout *_viewProgBarLayout{nullptr};
     QHBoxLayout *_viewProgBarLayout_black{nullptr};
     DMRSlider *_progBar {nullptr};
     QSize _size;
-    bool isLoad = false;
+
+    //是否停止当前加载
+    bool m_bStop {false};
+    //加载缩略图是否加载完成，控制线程是否休眠
+    bool m_bisload {false};
+    //是否退出当前线程(退出while(1))
+    bool m_bQuit  {false};
+
+    QMutex m_mutex;
+
+    QMutex *pListPixmapMutex;
+
 };
 }
 

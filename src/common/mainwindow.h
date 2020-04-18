@@ -44,7 +44,7 @@
 #include "animationlabel.h"
 #include "volumemonitoring.h"
 
-static const int VOLUME_OFFSET = 40;
+//static const int VOLUME_OFFSET = 40;
 
 namespace Dtk {
 namespace Widget {
@@ -64,6 +64,48 @@ class PlaylistWidget;
 class PlayerEngine;
 class NotificationWidget;
 class MovieProgressIndicator;
+
+class IconButton: public DPushButton
+{
+public:
+    IconButton(QWidget *parent = 0): DPushButton(parent) {};
+
+    void setIcon(QIcon icon)
+    {
+        m_icon = icon;
+        DPushButton::setIcon(m_icon);
+    };
+
+    void changeTheme(int themeType = 0)
+    {
+        m_themeType = themeType;
+        update();
+    }
+protected:
+    void paintEvent(QPaintEvent *event)
+    {
+        QPainter painter(this);
+        QRect backgroundRect = rect();
+        //QPainterPath bp1;
+        //bp1.addRoundedRect(backgroundRect, 2, 2);
+        painter.setPen(Qt::NoPen);
+        if (m_themeType == 1) {
+            painter.setBrush(QBrush(QColor(247, 247, 247, 220)));
+        } else if (m_themeType == 2) {
+            painter.setBrush(QBrush(QColor(42, 42, 42, 220)));
+        } else {
+            painter.setBrush(QBrush(QColor(247, 247, 247, 220)));
+        }
+        QPainterPath painterPath;
+        painterPath.addRoundedRect(backgroundRect, 15, 15);
+        painter.drawPath(painterPath);
+
+        DPushButton::paintEvent(event);
+    };
+private:
+    QIcon m_icon;
+    int m_themeType;
+};
 
 class MainWindow: public DMainWindow
 {
@@ -113,7 +155,10 @@ public:
     void reflectActionToUI(ActionFactory::ActionKind);
 
     bool set_playlistopen_clicktogglepause(bool playlistopen);
-    NotificationWidget* get_nwComm();
+    NotificationWidget *get_nwComm();
+
+    //在读取光盘的时候，直接把光盘挂载点的路径加入到播放列表中 thx
+    bool addCdromPath();
 signals:
     void windowEntered();
     void windowLeaved();
@@ -131,7 +176,8 @@ public slots:
     void checkOnlineSubtitle(const OnlineSubtitle::FailReason reason);
     void checkErrorMpvLogsChanged(const QString prefix, const QString text);
     void checkWarningMpvLogsChanged(const QString prefix, const QString text);
-    void slotdefaultplaymodechanged(const QString& key, const QVariant& value);
+    void slotdefaultplaymodechanged(const QString &key, const QVariant &value);
+    void syncPostion();
 
 
 protected:
@@ -180,6 +226,7 @@ protected slots:
 #ifdef USE_DXCB
     void onMonitorButtonPressed(int x, int y);
     void onMonitorMotionNotify(int x, int y);
+    _miniPlayBtn
     void onMonitorButtonReleased(int x, int y);
 
     void updateShadow();
@@ -188,8 +235,11 @@ protected slots:
     void handleHelpAction();
 
     void changedVolume(int);
+    void changedVolumeSlot(int vol);
     void changedMute();
+    void changedMute(bool);
 
+    void updateMiniBtnTheme(int);
 private:
     void setupTitlebar();
 
@@ -210,9 +260,11 @@ private:
     void subtitleMatchVideo(const QString &fileName);
     void defaultplaymodeinit();
     void readSinkInputPath();
-    void setAudioVolume(double);
+    void setAudioVolume(int);
     void setMusicMuted(bool muted);
 
+    //Limit video to mini mode size
+    void LimitWindowize();
 private:
     DFloatingMessage *popup {nullptr};
     QLabel *_fullscreentimelable {nullptr};
@@ -230,9 +282,15 @@ private:
     bool _inBurstShootMode {false};
     bool _pausedBeforeBurst {false};
 
+#ifdef __mips__
+    QAbstractButton *_miniPlayBtn {nullptr};
+    QAbstractButton *_miniCloseBtn {nullptr};
+    QAbstractButton *_miniQuitMiniBtn {nullptr};
+#else
     DIconButton *_miniPlayBtn {nullptr};
     DIconButton *_miniCloseBtn {nullptr};
     DIconButton *_miniQuitMiniBtn {nullptr};
+#endif
 
     QImage bg_dark;
     QImage bg_light;
@@ -286,6 +344,11 @@ private:
 
     VolumeMonitoring volumeMonitoring;
     QString sinkInputPath;
+
+    int m_lastVolume;
+    bool m_isManual;
+
+    bool m_IsFree = true;  //播放器是否空闲，和IDel的定义不同
 };
 };
 

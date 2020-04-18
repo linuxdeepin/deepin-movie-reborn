@@ -45,6 +45,45 @@ extern "C" {
 
 #include <random>
 
+//获取音乐缩略图
+static bool getMusicPix(const QFileInfo &fi, QPixmap &rImg)
+{
+
+    AVFormatContext *av_ctx = NULL;
+    AVCodecContext *dec_ctx = NULL;
+
+    if (!fi.exists()) {
+        return false;
+    }
+
+    auto ret = avformat_open_input(&av_ctx, fi.filePath().toUtf8().constData(), NULL, NULL);
+    if (ret < 0) {
+        qWarning() << "avformat: could not open input";
+        return false;
+    }
+
+    if (avformat_find_stream_info(av_ctx, NULL) < 0) {
+        qWarning() << "av_find_stream_info failed";
+        return false;
+    }
+
+    // read the format headers  comment by thx , 这里会导致一些音乐 奔溃
+    //if (av_ctx->iformat->read_header(av_ctx) < 0) {
+    //    printf("No header format");
+    //    return false;
+    //}
+
+    for (int i = 0; i < av_ctx->nb_streams; i++) {
+        if (av_ctx->streams[i]->disposition & AV_DISPOSITION_ATTACHED_PIC) {
+            AVPacket pkt = av_ctx->streams[i]->attached_pic;
+            //使用QImage读取完整图片数据（注意，图片数据是为解析的文件数据，需要用QImage::fromdata来解析读取）
+            //rImg = QImage::fromData((uchar *)pkt.data, pkt.size);
+            return rImg.loadFromData((uchar *)pkt.data, pkt.size);
+        }
+    }
+    return false;
+}
+
 static int open_codec_context(int *stream_idx,
                               AVCodecContext **dec_ctx, AVFormatContext *fmt_ctx, enum AVMediaType type)
 {
@@ -366,6 +405,8 @@ struct MovieInfo MovieInfo::parseFromFile(const QFileInfo &fi, bool *ok)
             return mi;
         }
     }
+
+
     mi.aCodeID = dec_ctx->codec_id;
     mi.aCodeRate = dec_ctx->bit_rate;
     mi.aDigit = dec_ctx->sample_fmt;
@@ -398,6 +439,7 @@ struct MovieInfo MovieInfo::parseFromFile(const QFileInfo &fi, bool *ok)
         }
         qDebug() << "tag:" << tag->key << tag->value;
     }
+
 
     avformat_close_input(&av_ctx);
     mi.valid = true;
@@ -1168,13 +1210,13 @@ struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl &url, const QFil
 {
     bool ok = false;
     struct MovieInfo mi;
-
     auto ci = PersistentManager::get().loadFromCache(url);
     if (ci.mi_valid && url.isLocalFile()) {
         mi = ci.mi;
         ok = true;
         qDebug() << "load cached MovieInfo" << mi;
     } else {
+
         mi = MovieInfo::parseFromFile(fi, &ok);
         if (isDvd && url.scheme().startsWith("dvd")) {
             QString dev = url.path();
@@ -1203,12 +1245,26 @@ struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl &url, const QFil
         qDebug() << "load cached thumb" << url;
     } else if (ok) {
         try {
-            std::vector<uint8_t> buf;
-            _thumbnailer.generateThumbnail(fi.canonicalFilePath().toUtf8().toStdString(),
-                                           ThumbnailerImageType::Png, buf);
 
-            auto img = QImage::fromData(buf.data(), buf.size(), "png");
-            pm = QPixmap::fromImage(img);
+            //如果打开的是音乐就读取音乐缩略图
+            bool isMusic = false;
+            foreach (QString sf, _engine->audio_filetypes) {
+                if (sf.right(sf.size() - 2) == mi.fileType) {
+                    isMusic = true;
+                }
+            }
+            if (isMusic == false) {
+                std::vector<uint8_t> buf;
+                _thumbnailer.generateThumbnail(fi.canonicalFilePath().toUtf8().toStdString(),
+                                               ThumbnailerImageType::Png, buf);
+
+                auto img = QImage::fromData(buf.data(), buf.size(), "png");
+                pm = QPixmap::fromImage(img);
+            } else {
+                if (getMusicPix(fi, pm) == false) {
+                    pm.load(":/resources/icons/logo-big.svg");
+                }
+            }
             pm.setDevicePixelRatio(qApp->devicePixelRatio());
         } catch (const std::logic_error &) {
         }
