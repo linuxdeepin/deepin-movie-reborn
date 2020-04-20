@@ -2619,6 +2619,11 @@ QLabel *ToolboxProxy::getfullscreentimeLabelend()
 {
     return _fullscreentimelableend;
 }
+
+bool ToolboxProxy::getbAnimationFinash()
+{
+    return  bAnimationFinash;
+}
 }
 
 #include "toolbox_proxy.moc"

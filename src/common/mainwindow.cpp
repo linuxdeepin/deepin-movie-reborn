@@ -2102,6 +2102,9 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             if (/*!_miniMode && (fromUI || isShortcut) && */windowState() == Qt::WindowNoState) {
                 _lastRectInNormalMode = geometry();
             }
+            //可能存在更好的方法（全屏后更新toolbox状态），后期修改
+            if (!_toolbox->getbAnimationFinash())
+                return;
             showFullScreen();
             if (isFullScreen()) {
                 _maxfornormalflag = false;
