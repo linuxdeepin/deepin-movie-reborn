@@ -931,6 +931,8 @@ MainWindow::MainWindow(QWidget *parent)
                 auto geom = qApp->desktop()->availableGeometry(this);
                 move((geom.width() - this->width()) / 2, (geom.height() - this->height()) / 2);
             }
+        } else {
+            utils::MoveToCenter(this);
         }
 
         m_IsFree = true;
