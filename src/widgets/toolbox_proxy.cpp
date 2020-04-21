@@ -888,7 +888,7 @@ public:
     {
         auto rounded = utils::MakeRoundedPixmap(pm, 4, 4, rotation);
 
-        if(rounded.width() == 0)
+        if (rounded.width() == 0)
             return;
         if (rounded.width() > rounded.height()) {
             static int roundedH = static_cast<int>(
@@ -1125,13 +1125,11 @@ private slots:
                     _mw->requestAction(ActionFactory::VolumeUp);
                 }
 #ifdef   __aarch64__
-                else
-                {
+                else {
                     _mw->requestAction(we->angleDelta().y() > 0 ? ActionFactory::VolumeUp : ActionFactory::VolumeDown);
                 }
 #elif    __mips__
-                else
-                {
+                else {
                     _mw->requestAction(we->angleDelta().y() > 0 ? ActionFactory::VolumeUp : ActionFactory::VolumeDown);
                 }
 #endif
@@ -2016,10 +2014,6 @@ void ToolboxProxy::updateHoverPreview(const QUrl &url, int secs)
     QPoint p { QCursor::pos().x(), pos.y() };
 
     QPixmap pm = ThumbnailWorker::get().getThumb(url, secs);
-    if(pm.isNull())
-    {
-        pm =QPixmap::fromImage(_engine->takeScreenshot());
-    }
     _previewer->updateWithPreview(pm, secs, _engine->videoRotation());
     _previewer->updateWithPreview(p);
 
@@ -2532,7 +2526,7 @@ void ToolboxProxy::resizeEvent(QResizeEvent *event)
 void ToolboxProxy::updateTimeLabel()
 {
 
-    #ifndef __aarch64__
+#ifndef __aarch64__
     // to keep left and right of the same width. which makes play button centered
     _listBtn->setVisible(width() > 300);
     _timeLabel->setVisible(width() > 450);
