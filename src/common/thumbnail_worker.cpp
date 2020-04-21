@@ -1,4 +1,4 @@
-/* 
+/*
  * (c) 2017, Deepin Technology Co., Ltd. <support@deepin.org>
  *
  * This program is free software; you can redistribute it and/or
@@ -35,13 +35,13 @@
 #define SIZE_THRESHOLD (10 * 1<<20)
 
 namespace dmr {
-static std::atomic<ThumbnailWorker*> _instance { nullptr };
+static std::atomic<ThumbnailWorker *> _instance { nullptr };
 static QMutex _instLock;
 
 static QMutex _thumbLock;
 static QWaitCondition cond;
 
-ThumbnailWorker& ThumbnailWorker::get()
+ThumbnailWorker &ThumbnailWorker::get()
 {
     if (_instance == nullptr) {
         QMutexLocker lock(&_instLock);
@@ -54,16 +54,16 @@ ThumbnailWorker& ThumbnailWorker::get()
     return *_instance;
 }
 
-bool ThumbnailWorker::isThumbGenerated(const QUrl& url, int secs)
+bool ThumbnailWorker::isThumbGenerated(const QUrl &url, int secs)
 {
     QMutexLocker lock(&_thumbLock);
     if (!_cache.contains(url)) return false;
 
-    const auto& l = _cache[url];
+    const auto &l = _cache[url];
     return l.contains(secs);
 }
 
-QPixmap ThumbnailWorker::getThumb(const QUrl& url, int secs)
+QPixmap ThumbnailWorker::getThumb(const QUrl &url, int secs)
 {
     QMutexLocker lock(&_thumbLock);
     QPixmap pm;
@@ -83,13 +83,13 @@ void ThumbnailWorker::setPlayerEngine(PlayerEngine *pPlayerEngline)
 }
 
 
-void ThumbnailWorker::requestThumb(const QUrl& url, int secs)
+void ThumbnailWorker::requestThumb(const QUrl &url, int secs)
 {
     if (_thumbLock.tryLock()) {
         _wq.push_front(qMakePair(url, secs));
         cond.wakeOne();
         _thumbLock.unlock();
-    } 
+    }
 }
 
 ThumbnailWorker::ThumbnailWorker()
@@ -98,7 +98,7 @@ ThumbnailWorker::ThumbnailWorker()
     thumber.setMaintainAspectRatio(true);
 }
 
-QPixmap ThumbnailWorker::genThumb(const QUrl& url, int secs)
+QPixmap ThumbnailWorker::genThumb(const QUrl &url, int secs)
 {
     auto dpr = qApp->devicePixelRatio();
     QPixmap pm;
@@ -109,15 +109,24 @@ QPixmap ThumbnailWorker::genThumb(const QUrl& url, int secs)
     thumber.setSeekTime(d.toString("hh:mm:ss").toStdString());
     auto file = QFileInfo(url.toLocalFile()).absoluteFilePath();
     try {
+        auto e = QProcessEnvironment::systemEnvironment();
+        QString XDG_SESSION_TYPE = e.value(QStringLiteral("XDG_SESSION_TYPE"));
+        QString WAYLAND_DISPLAY = e.value(QStringLiteral("WAYLAND_DISPLAY"));
+
+        if (XDG_SESSION_TYPE == QLatin1String("wayland") ||
+                WAYLAND_DISPLAY.contains(QLatin1String("wayland"), Qt::CaseInsensitive)) {
+            return pm;
+        }
+
         std::vector<uint8_t> buf;
         thumber.generateThumbnail(file.toUtf8().toStdString(),
-                ThumbnailerImageType::Png, buf);
+                                  ThumbnailerImageType::Png, buf);
 
         auto img = QImage::fromData(buf.data(), buf.size(), "png");
 
         pm = QPixmap::fromImage(img.scaled(thumbSize() * dpr, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
         pm.setDevicePixelRatio(dpr);
-    } catch (const std::logic_error& e) {
+    } catch (const std::logic_error &e) {
     }
 
     return pm;
@@ -142,7 +151,7 @@ void ThumbnailWorker::run()
         }
 
         if (_quit.load()) break;
-        
+
         {
             QMutexLocker lock(&_thumbLock);
             //TODO: optimize: need a lru map
