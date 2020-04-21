@@ -1169,7 +1169,7 @@ void MainWindow::leaveEvent(QEvent *)
 {
     _autoHideTimer.stop();
     this->suspendToolsWindow();
-};
+}
 
 void MainWindow::onWindowStateChanged()
 {
@@ -1179,6 +1179,9 @@ void MainWindow::onWindowStateChanged()
         _titlebar->setVisible(_toolbox->isVisible());
     } else {
         _titlebar->setVisible(false);
+        this->toggleUIMode();
+        this->setWindowState(Qt::WindowMaximized);      //mini model need
+
     }
     //WTF: this->geometry() is not size of fullscreen !
     //_progIndicator->move(geometry().width() - _progIndicator->width() - 18, 14);
@@ -2001,6 +2004,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         if (_playlist->state() == PlaylistWidget::Opened && !isFullScreen()) {
             requestAction(ActionFactory::TogglePlaylist);
         }
+        this->setWindowState(Qt::WindowNoState);
         if (isFullScreen()) {
             requestAction(ActionFactory::ToggleFullscreen);
             /*if (!fromUI) {
@@ -3952,6 +3956,18 @@ void MainWindow::toggleUIMode()
 
         geom.setSize(sz);
         setGeometry(geom);
+        if(geom.x() < 0 )
+        {
+            geom.moveTo(0,geom.y());
+        }
+        if(geom.y() < 0 )
+        {
+            geom.moveTo(geom.x(),0);
+        }
+
+        QRect deskrect = QApplication::desktop()->screenGeometry();
+
+
         move(geom.x(), geom.y());
         resize(geom.width(), geom.height());
 

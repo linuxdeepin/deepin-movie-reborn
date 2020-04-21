@@ -36,6 +36,8 @@
 namespace dmr {
 using namespace ffmpegthumbnailer;
 
+class PlayerEngine;
+
 class ThumbnailWorker: public QThread {
     Q_OBJECT
 public:
@@ -48,7 +50,7 @@ public:
     QPixmap getThumb(const QUrl& url, int secs);
 
     void stop() { _quit.store(1); quit(); }
-
+    void setPlayerEngine(PlayerEngine* pPlayerEngline);
 public slots:
     void requestThumb(const QUrl& url, int secs);
 
@@ -61,6 +63,8 @@ private:
     VideoThumbnailer thumber;
     QAtomicInt _quit{0};
     qint64 _cacheSize {0};
+
+    PlayerEngine *_engine {nullptr};
 
     ThumbnailWorker();
     void run() override;

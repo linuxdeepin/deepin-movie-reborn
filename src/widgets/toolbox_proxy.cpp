@@ -888,6 +888,8 @@ public:
     {
         auto rounded = utils::MakeRoundedPixmap(pm, 4, 4, rotation);
 
+        if(rounded.width() == 0)
+            return;
         if (rounded.width() > rounded.height()) {
             static int roundedH = static_cast<int>(
                                       (static_cast<double>(m_thumbnailFixed)
@@ -1861,6 +1863,7 @@ void ToolboxProxy::setup()
     updateFullState();
     updateButtonStates();
 
+    ThumbnailWorker::get().setPlayerEngine(_engine);
     connect(&ThumbnailWorker::get(), &ThumbnailWorker::thumbGenerated,
             this, &ToolboxProxy::updateHoverPreview);
 
@@ -2008,6 +2011,10 @@ void ToolboxProxy::updateHoverPreview(const QUrl &url, int secs)
     QPoint p { QCursor::pos().x(), pos.y() };
 
     QPixmap pm = ThumbnailWorker::get().getThumb(url, secs);
+    if(pm.isNull())
+    {
+        pm =QPixmap::fromImage(_engine->takeScreenshot());
+    }
     _previewer->updateWithPreview(pm, secs, _engine->videoRotation());
     _previewer->updateWithPreview(p);
 

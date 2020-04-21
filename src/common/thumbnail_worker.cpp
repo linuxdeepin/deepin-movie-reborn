@@ -30,6 +30,7 @@
 #include "thumbnail_worker.h"
 #include <atomic>
 #include <mutex>
+#include "player_engine.h"
 
 #define SIZE_THRESHOLD (10 * 1<<20)
 
@@ -76,6 +77,11 @@ QPixmap ThumbnailWorker::getThumb(const QUrl& url, int secs)
     return pm;
 }
 
+void ThumbnailWorker::setPlayerEngine(PlayerEngine *pPlayerEngline)
+{
+    _engine = pPlayerEngline;
+}
+
 
 void ThumbnailWorker::requestThumb(const QUrl& url, int secs)
 {
@@ -111,7 +117,7 @@ QPixmap ThumbnailWorker::genThumb(const QUrl& url, int secs)
 
         pm = QPixmap::fromImage(img.scaled(thumbSize() * dpr, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
         pm.setDevicePixelRatio(dpr);
-    } catch (const std::logic_error&) {
+    } catch (const std::logic_error& e) {
     }
 
     return pm;
