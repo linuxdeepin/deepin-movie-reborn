@@ -1122,6 +1122,12 @@ private slots:
                     //keep increasing volume
                     _mw->requestAction(ActionFactory::VolumeUp);
                 }
+#ifdef __mips__
+                else
+                {
+                    _mw->requestAction(we->angleDelta().y() > 0 ? ActionFactory::VolumeUp : ActionFactory::VolumeDown);
+                }
+#endif
             }
             return false;
         } else {
