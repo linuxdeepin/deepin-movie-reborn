@@ -514,6 +514,8 @@ skip_set_cursor:
                     updateGeometry(lastCornerEdge, e);
 #ifdef __aarch64__
                     mw->syncPostion();
+#elif  __mips__
+                    mw->syncPostion();
 #endif
                     return true;
                 }
@@ -3273,6 +3275,7 @@ void MainWindow::resizeByConstraints(bool forceCentered)
             sz = sz / 2;
         }
     }
+    _nwComm->syncPosition();
 #endif
     if (sz.isEmpty()) {
         sz = QSize(mi.width, mi.height);
@@ -3309,7 +3312,7 @@ void MainWindow::resizeByConstraints(bool forceCentered)
         this->move(r.x(), r.y());
         this->resize(r.width(), r.height());
 #ifdef __aarch64
-        _nwComm->syncPosition(r);
+        _nwComm->syncPosition();
 #endif
     }
 }
@@ -3412,13 +3415,15 @@ void MainWindow::updateWindowTitle()
 
 void MainWindow::moveEvent(QMoveEvent *ev)
 {
-#ifndef __aarch64__
-    updateGeometryNotification(geometry().size());
-#else
+#ifdef __aarch64__
     if (windowState() == Qt::WindowNoState && !_miniMode) {
         _lastRectInNormalMode = geometry();
     }
     _nwComm->syncPosition();
+#elif  __mips__
+    _nwComm->syncPosition();
+#else
+    updateGeometryNotification(geometry().size());
 #endif
 }
 
@@ -3443,6 +3448,8 @@ void MainWindow::capturedMousePressEvent(QMouseEvent *me)
 {
     _mouseMoved = false;
 #ifdef __aarch64__
+    _nwComm->hide();
+#elif __mips__
     _nwComm->hide();
 #endif
     if (qApp->focusWindow() == 0) return;
@@ -3469,6 +3476,8 @@ void MainWindow::mousePressEvent(QMouseEvent *ev)
 {
     _mouseMoved = false;
 #ifdef __aarch64__
+    _nwComm->hide();
+#elif __mips__
     _nwComm->hide();
 #endif
 
