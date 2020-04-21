@@ -51,11 +51,13 @@ NotificationWidget::NotificationWidget(QWidget *parent)
 
 #ifdef __mips__
         setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
+        setAttribute(Qt::WA_TranslucentBackground, true);
 #elif __aarch64__
         setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
+        setAttribute(Qt::WA_TranslucentBackground, true);
 #endif
 
-    _layout = new QHBoxLayout;
+    _layout = new QHBoxLayout();
     _layout->setContentsMargins(0, 0, 0, 0);
     setLayout(_layout);
 
@@ -95,6 +97,8 @@ void NotificationWidget::syncPosition()
         case AnchorNorthWest:
 #ifdef __aarch64__
             move(geom.topLeft() + _anchorPoint);
+#elif  __mips__
+            move(geom.x()+30, geom.y()+58);
 #else
             move(_anchorPoint);
 #endif
@@ -117,6 +121,8 @@ void NotificationWidget::syncPosition(QRect rect)
         case AnchorNorthWest:
 #ifdef __aarch64__
             move(geom.topLeft() + _anchorPoint);
+#elif  __mips__
+            move(geom.x()+30, geom.y()+58);
 #else
             move(_anchorPoint);
 #endif

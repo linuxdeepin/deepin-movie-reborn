@@ -281,7 +281,7 @@ mpv_handle *MpvProxy::mpv_init()
             set_property(h, "hwdec", "vdpau");
             set_property(h, "vo", "vdpau");
         } else {
-            set_property(h, "vo", "xv");
+            set_property(h, "vo", "gpu,x11,xv");
         }
 #else
         set_property(h, "vo", "gpu,xv,x11");

@@ -514,6 +514,8 @@ skip_set_cursor:
                     updateGeometry(lastCornerEdge, e);
 #ifdef __aarch64__
                     mw->syncPostion();
+#elif  __mips__
+                    mw->syncPostion();
 #endif
                     return true;
                 }
@@ -931,6 +933,8 @@ MainWindow::MainWindow(QWidget *parent)
                 auto geom = qApp->desktop()->availableGeometry(this);
                 move((geom.width() - this->width()) / 2, (geom.height() - this->height()) / 2);
             }
+        } else {
+            utils::MoveToCenter(this);
         }
 
         m_IsFree = true;
@@ -1167,7 +1171,7 @@ void MainWindow::leaveEvent(QEvent *)
 {
     _autoHideTimer.stop();
     this->suspendToolsWindow();
-};
+}
 
 void MainWindow::onWindowStateChanged()
 {
@@ -1177,6 +1181,9 @@ void MainWindow::onWindowStateChanged()
         _titlebar->setVisible(_toolbox->isVisible());
     } else {
         _titlebar->setVisible(false);
+        this->toggleUIMode();
+        this->setWindowState(Qt::WindowMaximized);      //mini model need
+
     }
     //WTF: this->geometry() is not size of fullscreen !
     //_progIndicator->move(geometry().width() - _progIndicator->width() - 18, 14);
@@ -1999,6 +2006,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         if (_playlist->state() == PlaylistWidget::Opened && !isFullScreen()) {
             requestAction(ActionFactory::TogglePlaylist);
         }
+        this->setWindowState(Qt::WindowNoState);
         if (isFullScreen()) {
             requestAction(ActionFactory::ToggleFullscreen);
             /*if (!fromUI) {
@@ -2102,6 +2110,9 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             if (/*!_miniMode && (fromUI || isShortcut) && */windowState() == Qt::WindowNoState) {
                 _lastRectInNormalMode = geometry();
             }
+            //可能存在更好的方法（全屏后更新toolbox状态），后期修改
+            if (!_toolbox->getbAnimationFinash())
+                return;
             showFullScreen();
             if (isFullScreen()) {
                 _maxfornormalflag = false;
@@ -3264,6 +3275,7 @@ void MainWindow::resizeByConstraints(bool forceCentered)
             sz = sz / 2;
         }
     }
+    _nwComm->syncPosition();
 #endif
     if (sz.isEmpty()) {
         sz = QSize(mi.width, mi.height);
@@ -3300,7 +3312,7 @@ void MainWindow::resizeByConstraints(bool forceCentered)
         this->move(r.x(), r.y());
         this->resize(r.width(), r.height());
 #ifdef __aarch64
-        _nwComm->syncPosition(r);
+        _nwComm->syncPosition();
 #endif
     }
 }
@@ -3403,13 +3415,15 @@ void MainWindow::updateWindowTitle()
 
 void MainWindow::moveEvent(QMoveEvent *ev)
 {
-#ifndef __aarch64__
-    updateGeometryNotification(geometry().size());
-#else
+#ifdef __aarch64__
     if (windowState() == Qt::WindowNoState && !_miniMode) {
         _lastRectInNormalMode = geometry();
     }
     _nwComm->syncPosition();
+#elif  __mips__
+    _nwComm->syncPosition();
+#else
+    updateGeometryNotification(geometry().size());
 #endif
 }
 
@@ -3434,6 +3448,8 @@ void MainWindow::capturedMousePressEvent(QMouseEvent *me)
 {
     _mouseMoved = false;
 #ifdef __aarch64__
+    _nwComm->hide();
+#elif __mips__
     _nwComm->hide();
 #endif
     if (qApp->focusWindow() == 0) return;
@@ -3460,6 +3476,8 @@ void MainWindow::mousePressEvent(QMouseEvent *ev)
 {
     _mouseMoved = false;
 #ifdef __aarch64__
+    _nwComm->hide();
+#elif __mips__
     _nwComm->hide();
 #endif
 
@@ -3947,6 +3965,18 @@ void MainWindow::toggleUIMode()
 
         geom.setSize(sz);
         setGeometry(geom);
+        if(geom.x() < 0 )
+        {
+            geom.moveTo(0,geom.y());
+        }
+        if(geom.y() < 0 )
+        {
+            geom.moveTo(geom.x(),0);
+        }
+
+        QRect deskrect = QApplication::desktop()->screenGeometry();
+
+
         move(geom.x(), geom.y());
         resize(geom.width(), geom.height());
 

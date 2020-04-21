@@ -140,6 +140,7 @@ public:
     }
     QLabel *getfullscreentimeLabel();
     QLabel *getfullscreentimeLabelend();
+    bool getbAnimationFinash();
 public slots:
     void finishLoadSlot(QSize size);
     void updateplaylisticon();

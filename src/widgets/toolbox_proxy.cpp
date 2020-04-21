@@ -49,6 +49,7 @@
 #include <DApplication>
 #include <QThread>
 #include <DSlider>
+#include <QDBusInterface>
 static const int LEFT_MARGIN = 10;
 static const int RIGHT_MARGIN = 10;
 static const int PROGBAR_SPEC = 10 + 120 + 17 + 54 + 10 + 54 + 10 + 170 + 10 + 20;
@@ -888,6 +889,8 @@ public:
     {
         auto rounded = utils::MakeRoundedPixmap(pm, 4, 4, rotation);
 
+        if (rounded.width() == 0)
+            return;
         if (rounded.width() > rounded.height()) {
             static int roundedH = static_cast<int>(
                                       (static_cast<double>(m_thumbnailFixed)
@@ -1122,6 +1125,15 @@ private slots:
                     //keep increasing volume
                     _mw->requestAction(ActionFactory::VolumeUp);
                 }
+#ifdef   __aarch64__
+                else {
+                    _mw->requestAction(we->angleDelta().y() > 0 ? ActionFactory::VolumeUp : ActionFactory::VolumeDown);
+                }
+#elif    __mips__
+                else {
+                    _mw->requestAction(we->angleDelta().y() > 0 ? ActionFactory::VolumeUp : ActionFactory::VolumeDown);
+                }
+#endif
             }
             return false;
         } else {
@@ -1855,6 +1867,7 @@ void ToolboxProxy::setup()
     updateFullState();
     updateButtonStates();
 
+    ThumbnailWorker::get().setPlayerEngine(_engine);
     connect(&ThumbnailWorker::get(), &ThumbnailWorker::thumbGenerated,
             this, &ToolboxProxy::updateHoverPreview);
 
@@ -1874,7 +1887,12 @@ void ToolboxProxy::setup()
         {
             _viewProgBar->setWidth();
             if (_engine->state() != PlayerEngine::CoreState::Idle && size() != _loadsize) {
-#ifndef __mips__
+#ifdef __mips__
+                bool bRet = QDBusInterface("com.deepin.wm", "/com/deepin/wm", "com.deepin.wm").property("compositingAllowSwitch").toBool();
+                if (bRet) { //龙芯平台存在显卡才加载缩略图
+                    updateThumbnail();
+                }
+#else
                 updateThumbnail();
 #endif
                 _loadsize = size();
@@ -2509,7 +2527,7 @@ void ToolboxProxy::resizeEvent(QResizeEvent *event)
 void ToolboxProxy::updateTimeLabel()
 {
 
-    #ifndef __aarch64__
+#ifndef __aarch64__
     // to keep left and right of the same width. which makes play button centered
     _listBtn->setVisible(width() > 300);
     _timeLabel->setVisible(width() > 450);
@@ -2618,6 +2636,11 @@ QLabel *ToolboxProxy::getfullscreentimeLabel()
 QLabel *ToolboxProxy::getfullscreentimeLabelend()
 {
     return _fullscreentimelableend;
+}
+
+bool ToolboxProxy::getbAnimationFinash()
+{
+    return  bAnimationFinash;
 }
 }
 
