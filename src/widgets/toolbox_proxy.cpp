@@ -1880,7 +1880,12 @@ void ToolboxProxy::setup()
         {
             _viewProgBar->setWidth();
             if (_engine->state() != PlayerEngine::CoreState::Idle && size() != _loadsize) {
-#ifndef __mips__
+#ifdef __mips__
+                bool bRet = QDBusInterface("com.deepin.wm", "/com/deepin/wm", "com.deepin.wm").property("compositingAllowSwitch").toBool();
+                if (bRet) { //龙芯平台存在显卡才加载缩略图
+                    updateThumbnail();
+                }
+#else
                 updateThumbnail();
 #endif
                 _loadsize = size();
