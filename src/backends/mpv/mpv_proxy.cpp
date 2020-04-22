@@ -301,7 +301,7 @@ mpv_handle *MpvProxy::mpv_init()
     }
 
 
-    set_property(h, "volume-max", 240.0);
+    set_property(h, "volume-max", 100.0);
     set_property(h, "input-cursor", "no");
     set_property(h, "cursor-autohide", "no");
 
@@ -805,30 +805,43 @@ void MpvProxy::changeSoundMode(SoundMode sm)
 
 void MpvProxy::volumeUp()
 {
-    QList<QVariant> args = { "add", "volume", 8 };
-    qDebug () << args;
-    command(_handle, args);
+    if (volume() >= 200)
+        return;
+//    QList<QVariant> args = { "add", "volume", 8 };
+//    qDebug () << args;
+//    command(_handle, args);
+    changeVolume(volume() + 10);
 }
 
 void MpvProxy::changeVolume(int val)
 {
-    val += 40;
-    val = qMin(qMax(val, 40), 240);
-    set_property(_handle, "volume", val);
+    //val += 40;
+    //val = qMin(qMax(val, 40), 240);
+    set_property(_handle, "volume", volumeCorrection(val));
 }
 
 void MpvProxy::volumeDown()
 {
     if (volume() <= 0)
         return;
-    QList<QVariant> args = { "add", "volume", -8 };
-    qDebug () << args;
-    command(_handle, args);
+//    QList<QVariant> args = { "add", "volume", -8 };
+//    qDebug () << args;
+//    command(_handle, args);
+    changeVolume(volume() - 10);
 }
 
 int MpvProxy::volume() const
 {
-    return get_property(_handle, "volume").toInt() - 40;
+    /*float actualVol = get_property(_handle, "volume").toFloat();
+    if (actualVol > 0 && actualVol < 50) {
+        return (actualVol - 40) * 5;
+    } else if (actualVol > 80 && actualVol < 200) {
+        return (actualVol - 80) * 10;
+    } else
+        return get_property(_handle, "volume").toInt();*/
+    int actualVol = get_property(_handle, "volume").toInt();
+    int dispaly = (actualVol - 40) / 60.0 * 200.0;
+    return dispaly;
 }
 
 int MpvProxy::videoRotation() const
@@ -1003,6 +1016,12 @@ qint64 MpvProxy::nextBurstShootPoint()
     }
 
     return next;
+}
+
+int MpvProxy::volumeCorrection(int displayVol)
+{
+    int realVol = (displayVol / 200.0) * 60.0 + 40;
+    return (realVol);
 }
 
 QImage MpvProxy::takeOneScreenshot()
