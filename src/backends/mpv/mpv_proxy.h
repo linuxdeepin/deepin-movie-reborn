@@ -159,6 +159,7 @@ private:
     void updatePlayingMovieInfo();
     void setState(PlayState s);
     qint64 nextBurstShootPoint();
+    int volumeCorrection(int);
 };
 }
 
