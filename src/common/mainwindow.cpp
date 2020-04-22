@@ -1181,8 +1181,15 @@ void MainWindow::onWindowStateChanged()
         _titlebar->setVisible(_toolbox->isVisible());
     } else {
         _titlebar->setVisible(false);
-        this->toggleUIMode();
-        this->setWindowState(Qt::WindowMaximized);      //mini model need
+        auto e = QProcessEnvironment::systemEnvironment();
+        QString XDG_SESSION_TYPE = e.value(QStringLiteral("XDG_SESSION_TYPE"));
+        QString WAYLAND_DISPLAY = e.value(QStringLiteral("WAYLAND_DISPLAY"));
+
+        if (XDG_SESSION_TYPE == QLatin1String("wayland") ||
+                WAYLAND_DISPLAY.contains(QLatin1String("wayland"), Qt::CaseInsensitive)) {
+            this->toggleUIMode();
+            this->setWindowState(Qt::WindowMaximized);      //mini model need
+        }
 
     }
     //WTF: this->geometry() is not size of fullscreen !
