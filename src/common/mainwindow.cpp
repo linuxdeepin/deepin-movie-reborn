@@ -1187,8 +1187,10 @@ void MainWindow::onWindowStateChanged()
 
         if (XDG_SESSION_TYPE == QLatin1String("wayland") ||
                 WAYLAND_DISPLAY.contains(QLatin1String("wayland"), Qt::CaseInsensitive)) {
-            this->toggleUIMode();
-            this->setWindowState(Qt::WindowMaximized);      //mini model need
+            if (_miniMode) {
+                this->toggleUIMode();
+                this->setWindowState(Qt::WindowMaximized);      //mini model need
+            }
         }
 
     }
