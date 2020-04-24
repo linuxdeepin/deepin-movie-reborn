@@ -306,7 +306,7 @@ mpv_handle *MpvProxy::mpv_init()
     //set_property(h, "correct-pts", "no");
     //aa = get_property(_handle, "correct-pts").toChar();
     //set_property(h, "fps", 30);
-    set_property(h, "panscan",0);
+    set_property(h, "panscan", 0);
     set_property(h, "volume-max", 100.0);
     set_property(h, "input-cursor", "no");
     set_property(h, "cursor-autohide", "no");
@@ -1133,7 +1133,7 @@ void MpvProxy::seekForward(int secs)
 {
     if (state() == PlayState::Stopped) return;
 
-    //if (_pendingSeek) return;
+    if (_pendingSeek) return;
     QList<QVariant> args = { "seek", QVariant(secs), "relative+exact" };
     qDebug () << args;
     command_async(_handle, args, AsyncReplyTag::SEEK);
@@ -1144,7 +1144,7 @@ void MpvProxy::seekBackward(int secs)
 {
     if (state() == PlayState::Stopped) return;
 
-    //if (_pendingSeek) return;
+    if (_pendingSeek) return;
     if (secs > 0) secs = -secs;
     QList<QVariant> args = { "seek", QVariant(secs), "relative+exact" };
     qDebug () << args;
@@ -1187,7 +1187,8 @@ qint64 MpvProxy::duration() const
 qint64 MpvProxy::elapsed() const
 {
     if (state() == PlayState::Stopped) return 0;
-    return get_property(_handle, "time-pos").value<qint64>();
+    return  get_property(_handle, "time-pos").value<qint64>();
+
 }
 
 void MpvProxy::changeProperty(const QString &name, const QVariant &v)

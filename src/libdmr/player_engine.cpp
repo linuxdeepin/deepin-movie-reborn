@@ -28,7 +28,7 @@
  * files in the program, then also delete it here.
  */
 #include "config.h"
-
+#include <iostream>
 #include "player_engine.h"
 #include "playlist_model.h"
 #include "movie_configuration.h"
@@ -622,15 +622,29 @@ void PlayerEngine::seekForward(int secs)
 {
     if (state() == CoreState::Idle) return;
 
-    _current->seekForward(secs);
+    static int lastElapsed = 0;
+
+    if (elapsed() == lastElapsed)
+        return ;
+
+    if (elapsed() + abs(secs) >= duration()) {
+        _current->seekBackward(duration() - elapsed());
+    } else {
+        _current->seekForward(secs);
+    }
 }
 
 void PlayerEngine::seekBackward(int secs)
 {
     if (state() == CoreState::Idle) return;
 
-    _current->seekBackward(secs);
+    if (elapsed() - abs(secs) <= 0) {
+        _current->seekBackward(elapsed());
+    } else {
+        _current->seekBackward(secs);
+    }
 }
+
 
 void PlayerEngine::seekAbsolute(int pos)
 {
@@ -737,7 +751,16 @@ QSize PlayerEngine::videoSize() const
 qint64 PlayerEngine::elapsed() const
 {
     if (!_current) return 0;
-    return _current->elapsed();
+    if (!_playlist) return 0;
+    if (_playlist->count() == 0) return 0;
+    if (_playlist->current() < 0) return 0;
+    qint64 nDuration = _playlist->items()[_playlist->current()].mi.duration;        //因为文件信息的持续时间和MPV返回的持续有些差别，所以，我们使用文件返回的持续时间
+    qint64 nElapsed = _current->elapsed();
+    if (nElapsed < 0 )
+        return 0;
+    if (nElapsed > nDuration)
+        return nDuration;
+    return nElapsed;
 }
 
 void PlayerEngine::setVideoAspect(double r)
