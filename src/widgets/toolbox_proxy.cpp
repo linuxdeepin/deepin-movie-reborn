@@ -2072,6 +2072,9 @@ void ToolboxProxy::progressHoverChanged(int v)
 void ToolboxProxy::setProgress(int v)
 {
     m_mouseRelesePos = v;       //记录当前的位置，在鼠标松开的时候使用它设置进度（因为进度条会更新，在鼠标松开的嗯时候不能正确的获取进度）
+
+    progressHoverChanged(_progBar->slider()->sliderPosition()); //更新预览图位置
+    //updateMovieProgress();
     /*
     if (_engine->state() == PlayerEngine::CoreState::Idle)
         return;

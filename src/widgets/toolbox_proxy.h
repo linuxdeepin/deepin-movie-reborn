@@ -164,6 +164,9 @@ protected slots:
     void updateButtonStates();
     void setProgress(int v);
     void updateTimeVisible(bool visible);
+    /**
+       更新预览图位置
+    */
     void progressHoverChanged(int v);
     void updateHoverPreview(const QUrl &url, int secs);
 
