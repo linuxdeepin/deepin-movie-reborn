@@ -272,7 +272,7 @@ mpv_handle *MpvProxy::mpv_init()
 #endif
     } else {
 #ifdef __mips__
-        set_property(h, "vo", "gpu,x11,xv");
+        set_property(h, "vo", "x11,xv");
         set_property(h, "ao", "alsa");
 #else
 #ifdef MWV206_0
@@ -300,7 +300,13 @@ mpv_handle *MpvProxy::mpv_init()
         set_property(h, "wid", m_parentWidget->winId());
     }
 
-
+    //set_property(h, "keepaspect-window", "no");
+    //设置视频固定帧率，暂时无效
+    //QChar aa = get_property(_handle, "correct-pts").toChar();
+    //set_property(h, "correct-pts", "no");
+    //aa = get_property(_handle, "correct-pts").toChar();
+    //set_property(h, "fps", 30);
+    set_property(h, "panscan",0);
     set_property(h, "volume-max", 100.0);
     set_property(h, "input-cursor", "no");
     set_property(h, "cursor-autohide", "no");
@@ -707,11 +713,12 @@ void MpvProxy::updateSubStyle(const QString &font, int sz)
 void MpvProxy::showEvent(QShowEvent *re)
 {
     if (!_connectStateChange) {
-        connect(window()->windowHandle(), &QWindow::windowStateChanged, [ = ](Qt::WindowState ws) {
-            set_property(_handle, "panscan",
-                         (ws != Qt::WindowMaximized && ws != Qt::WindowFullScreen) ? 1.0 : 0.0);
+//        connect(window()->windowHandle(), &QWindow::windowStateChanged, [ = ](Qt::WindowState ws) {
+//            //设置视频按比例黑边填充
+//            set_property(_handle, "panscan",0);
+//                         //(ws != Qt::WindowMaximized && ws != Qt::WindowFullScreen) ? 1.0 : 0.0);
 
-        });
+//        });
         _connectStateChange = true;
     }
 }

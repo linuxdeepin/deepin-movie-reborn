@@ -3360,7 +3360,7 @@ void MainWindow::updateSizeConstraints()
     }
 
     qDebug() << __func__ << m;
-    this->setMinimumSize(m);
+    this->setMinimumSize(QSize(614, 500));
 }
 
 void MainWindow::updateGeometryNotification(const QSize &sz)
@@ -3391,6 +3391,7 @@ void MainWindow::resizeEvent(QResizeEvent *ev)
     // modify 4.1  Limit video to mini mode size by thx
     LimitWindowize();
 
+    //2020.4.30前重新实现 xpf
     updateSizeConstraints();
     updateProxyGeometry();
     QTimer::singleShot(0, [ = ]() {
