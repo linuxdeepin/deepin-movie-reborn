@@ -626,12 +626,7 @@ void PlayerEngine::seekForward(int secs)
 
     if (elapsed() == lastElapsed)
         return ;
-
-    if (elapsed() + abs(secs) >= duration()) {
-        _current->seekBackward(duration() - elapsed());
-    } else {
-        _current->seekForward(secs);
-    }
+    _current->seekForward(secs);
 }
 
 void PlayerEngine::seekBackward(int secs)
