@@ -3967,6 +3967,7 @@ void MainWindow::toggleUIMode()
 
         updateSizeConstraints();
         syncPlayState();
+        //设置等比缩放
         setEnableSystemResize(false);
 
 
@@ -4030,6 +4031,7 @@ void MainWindow::toggleUIMode()
 
 
     } else {
+        setEnableSystemResize(true);
         if (_stateBeforeMiniMode & SBEM_Above) {
             requestAction(ActionFactory::WindowAbove);
         }
