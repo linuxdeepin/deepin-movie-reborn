@@ -1714,7 +1714,18 @@ NotificationWidget *MainWindow::get_nwComm()
 {
     return _nwComm;
 }
-
+//排列判断(主要针对光驱)
+static bool compareBarData(const QUrl &url1, const QUrl &url2)
+{
+    QString str1 = QFileInfo(url1.path()).fileName();
+    QString str2 = QFileInfo(url2.path()).fileName();
+    if (str1.length() > 0 && str2.length() > 0) {
+        if (str1[0] < str2[0] ) {
+            return true;
+        }
+    }
+    return false;
+}
 bool MainWindow::addCdromPath()
 {
     QStringList strCDMountlist;
@@ -1733,9 +1744,13 @@ bool MainWindow::addCdromPath()
     if (strCDMountlist.size() == 0)
         return false;
 
-    const auto &urls = _engine->addPlayDir(strCDMountlist[0]);  //目前只是针对第一个光盘
+
+    QList<QUrl> urls = _engine->addPlayDir(strCDMountlist[0]);  //目前只是针对第一个光盘
+    qSort(urls.begin(), urls.end(), compareBarData);
     if (urls.size()) {
-        _engine->playByName(QUrl("playlist://0"));
+        if (_engine->state() == PlayerEngine::CoreState::Idle)
+            _engine->playByName(QUrl("playlist://0"));
+        _engine->playByName(urls[0]);
     }
     return true;
 }
@@ -1798,6 +1813,7 @@ void MainWindow::switchTheme()
     qApp->setTheme(_lightTheme ? "light" : "dark");
     Settings::get().setInternalOption("light_theme", _lightTheme);
 }
+
 
 bool MainWindow::isActionAllowed(ActionFactory::ActionKind kd, bool fromUI, bool isShortcut)
 {
@@ -1928,7 +1944,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         if (fi.isDir() && fi.exists()) {
             Settings::get().setGeneralOption("last_open_path", fi.path());
 
-            const auto &urls = _engine->addPlayDir(name);
+            QList<QUrl> urls = _engine->addPlayDir(name);
             if (urls.size()) {
                 _engine->playByName(QUrl("playlist://0"));
             }
