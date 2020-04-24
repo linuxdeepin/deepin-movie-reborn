@@ -167,12 +167,10 @@ protected slots:
     void progressHoverChanged(int v);
     void updateHoverPreview(const QUrl &url, int secs);
 
-
 protected:
 //    void paintEvent(QPaintEvent *pe) override;
     void showEvent(QShowEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
-
 private:
     void setup();
     void updateTimeLabel();
@@ -236,6 +234,8 @@ private:
 
     viewProgBarLoad *m_worker = nullptr;
     bool m_mouseFlag = false;
+    bool m_mousePree = false;   //thx
+    int m_mouseRelesePos = 0;
     bool _bthumbnailmode;
 
     //动画是否完成

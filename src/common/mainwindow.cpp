@@ -3896,6 +3896,28 @@ void MainWindow::paintEvent(QPaintEvent *pe)
 
 void MainWindow::toggleUIMode()
 {
+
+    //判断窗口是否靠边停靠（靠边停靠不支持MINI模式）thx
+    QRect deskrect = QApplication::desktop()->availableGeometry();
+    QPoint windowPos = pos();
+    if (this->geometry() != deskrect) {
+        if (windowPos.x() == 0 && (windowPos.y() == 0 ||
+                                   (abs(windowPos.y() + this->geometry().height() - deskrect.height()) < 50))) {
+            if (abs(this->geometry().width() - deskrect.width() / 2 ) < 50) {
+                _nwComm->updateWithMessage(tr("Please exit smart dock"));
+                return ;
+            }
+
+        }
+        if ( (abs(windowPos.x() + this->geometry().width() - deskrect.width()) < 50)  &&
+                (windowPos.y()  == 0 || abs(windowPos.y() + this->geometry().height() - deskrect.height() ) < 50 )) {
+            if (abs(this->geometry().width() - deskrect.width() / 2) < 50) {
+                _nwComm->updateWithMessage(tr("Please exit smart dock"));
+                return ;
+            }
+        }
+    }
+
     _miniMode = !_miniMode;
     qDebug() << __func__ << _miniMode;
 
@@ -3905,8 +3927,6 @@ void MainWindow::toggleUIMode()
         _titlebar->titlebar()->setDisableFlags(0);
     }
     if (_listener) _listener->setEnabled(!_miniMode);
-
-
 
     _titlebar->setVisible(!_miniMode);
     //_toolbox->setVisible(!_miniMode);
@@ -3972,16 +3992,12 @@ void MainWindow::toggleUIMode()
 
         geom.setSize(sz);
         setGeometry(geom);
-        if(geom.x() < 0 )
-        {
-            geom.moveTo(0,geom.y());
+        if (geom.x() < 0 ) {
+            geom.moveTo(0, geom.y());
         }
-        if(geom.y() < 0 )
-        {
-            geom.moveTo(geom.x(),0);
+        if (geom.y() < 0 ) {
+            geom.moveTo(geom.x(), 0);
         }
-
-        QRect deskrect = QApplication::desktop()->screenGeometry();
 
 
         move(geom.x(), geom.y());

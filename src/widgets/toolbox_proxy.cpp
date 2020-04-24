@@ -50,6 +50,7 @@
 #include <QThread>
 #include <DSlider>
 #include <QDBusInterface>
+#include <iostream>
 static const int LEFT_MARGIN = 10;
 static const int RIGHT_MARGIN = 10;
 static const int PROGBAR_SPEC = 10 + 120 + 17 + 54 + 10 + 54 + 10 + 170 + 10 + 20;
@@ -1540,6 +1541,14 @@ void ToolboxProxy::setup()
         _previewTime->hide();
         m_mouseFlag = false;
     });
+    connect(_progBar, &DMRSlider::sliderPressed, [ = ]() {
+        m_mousePree = true;
+    });
+    connect(_progBar, &DMRSlider::sliderReleased, [ = ]() {
+        m_mousePree = false;
+        _engine->seekAbsolute(m_mouseRelesePos);
+
+    });
     connect(&Settings::get(), &Settings::baseMuteChanged,
     [ = ](QString sk, const QVariant & val) {
         if (sk == "base.play.mousepreview") {
@@ -2062,15 +2071,17 @@ void ToolboxProxy::progressHoverChanged(int v)
 
 void ToolboxProxy::setProgress(int v)
 {
+    m_mouseRelesePos = v;       //记录当前的位置，在鼠标松开的时候使用它设置进度（因为进度条会更新，在鼠标松开的嗯时候不能正确的获取进度）
+    /*
     if (_engine->state() == PlayerEngine::CoreState::Idle)
         return;
 
-//    _engine->seekAbsolute(_progBar->sliderPosition());
+    //    _engine->seekAbsolute(_progBar->sliderPosition());
     _engine->seekAbsolute(v);
     if (_progBar->slider()->sliderPosition() != _lastHoverValue) {
         progressHoverChanged(_progBar->slider()->sliderPosition());
     }
-    updateMovieProgress();
+    updateMovieProgress();*/
 }
 
 void ToolboxProxy::updateTimeVisible(bool visible)
@@ -2085,6 +2096,8 @@ void ToolboxProxy::updateTimeVisible(bool visible)
 
 void ToolboxProxy::updateMovieProgress()
 {
+    if (m_mousePree == true)
+        return ;
     auto d = _engine->duration();
     auto e = _engine->elapsed();
     int v = 0;
@@ -2104,8 +2117,6 @@ void ToolboxProxy::updateMovieProgress()
         _viewProgBar->setTime(e);
         _viewProgBar->setIsBlockSignals(false);
     }
-
-
 }
 
 void ToolboxProxy::updateButtonStates()
@@ -2523,6 +2534,7 @@ void ToolboxProxy::resizeEvent(QResizeEvent *event)
     updateTimeLabel();
 #endif
 }
+
 
 void ToolboxProxy::updateTimeLabel()
 {
