@@ -3375,10 +3375,11 @@ void MainWindow::updateSizeConstraints()
         } else {
             m = QSize(614, 500);
         }
+        m = QSize(614, 500);
     }
 
     qDebug() << __func__ << m;
-    this->setMinimumSize(QSize(614, 500));
+    this->setMinimumSize(m);
 }
 
 void MainWindow::updateGeometryNotification(const QSize &sz)
