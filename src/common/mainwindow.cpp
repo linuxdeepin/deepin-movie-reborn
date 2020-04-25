@@ -1187,8 +1187,10 @@ void MainWindow::onWindowStateChanged()
 
         if (XDG_SESSION_TYPE == QLatin1String("wayland") ||
                 WAYLAND_DISPLAY.contains(QLatin1String("wayland"), Qt::CaseInsensitive)) {
-            this->toggleUIMode();
-            this->setWindowState(Qt::WindowMaximized);      //mini model need
+            if (_miniMode) {
+                this->toggleUIMode();
+                this->setWindowState(Qt::WindowMaximized);      //mini model need
+            }
         }
 
     }
@@ -1714,7 +1716,18 @@ NotificationWidget *MainWindow::get_nwComm()
 {
     return _nwComm;
 }
-
+//排列判断(主要针对光驱)
+static bool compareBarData(const QUrl &url1, const QUrl &url2)
+{
+    QString str1 = QFileInfo(url1.path()).fileName();
+    QString str2 = QFileInfo(url2.path()).fileName();
+    if (str1.length() > 0 && str2.length() > 0) {
+        if (str1[0] < str2[0] ) {
+            return true;
+        }
+    }
+    return false;
+}
 bool MainWindow::addCdromPath()
 {
     QStringList strCDMountlist;
@@ -1733,9 +1746,13 @@ bool MainWindow::addCdromPath()
     if (strCDMountlist.size() == 0)
         return false;
 
-    const auto &urls = _engine->addPlayDir(strCDMountlist[0]);  //目前只是针对第一个光盘
+
+    QList<QUrl> urls = _engine->addPlayDir(strCDMountlist[0]);  //目前只是针对第一个光盘
+    qSort(urls.begin(), urls.end(), compareBarData);
     if (urls.size()) {
-        _engine->playByName(QUrl("playlist://0"));
+        if (_engine->state() == PlayerEngine::CoreState::Idle)
+            _engine->playByName(QUrl("playlist://0"));
+        _engine->playByName(urls[0]);
     }
     return true;
 }
@@ -1798,6 +1815,7 @@ void MainWindow::switchTheme()
     qApp->setTheme(_lightTheme ? "light" : "dark");
     Settings::get().setInternalOption("light_theme", _lightTheme);
 }
+
 
 bool MainWindow::isActionAllowed(ActionFactory::ActionKind kd, bool fromUI, bool isShortcut)
 {
@@ -1928,7 +1946,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         if (fi.isDir() && fi.exists()) {
             Settings::get().setGeneralOption("last_open_path", fi.path());
 
-            const auto &urls = _engine->addPlayDir(name);
+            QList<QUrl> urls = _engine->addPlayDir(name);
             if (urls.size()) {
                 _engine->playByName(QUrl("playlist://0"));
             }
@@ -3357,6 +3375,7 @@ void MainWindow::updateSizeConstraints()
         } else {
             m = QSize(614, 500);
         }
+        m = QSize(614, 500);
     }
 
     qDebug() << __func__ << m;
@@ -3391,6 +3410,7 @@ void MainWindow::resizeEvent(QResizeEvent *ev)
     // modify 4.1  Limit video to mini mode size by thx
     LimitWindowize();
 
+    //2020.4.30前重新实现 xpf
     updateSizeConstraints();
     updateProxyGeometry();
     QTimer::singleShot(0, [ = ]() {
@@ -3896,6 +3916,28 @@ void MainWindow::paintEvent(QPaintEvent *pe)
 
 void MainWindow::toggleUIMode()
 {
+
+    //判断窗口是否靠边停靠（靠边停靠不支持MINI模式）thx
+    QRect deskrect = QApplication::desktop()->availableGeometry();
+    QPoint windowPos = pos();
+    if (this->geometry() != deskrect) {
+        if (windowPos.x() == 0 && (windowPos.y() == 0 ||
+                                   (abs(windowPos.y() + this->geometry().height() - deskrect.height()) < 50))) {
+            if (abs(this->geometry().width() - deskrect.width() / 2 ) < 50) {
+                _nwComm->updateWithMessage(tr("Please exit smart dock"));
+                return ;
+            }
+
+        }
+        if ( (abs(windowPos.x() + this->geometry().width() - deskrect.width()) < 50)  &&
+                (windowPos.y()  == 0 || abs(windowPos.y() + this->geometry().height() - deskrect.height() ) < 50 )) {
+            if (abs(this->geometry().width() - deskrect.width() / 2) < 50) {
+                _nwComm->updateWithMessage(tr("Please exit smart dock"));
+                return ;
+            }
+        }
+    }
+
     _miniMode = !_miniMode;
     qDebug() << __func__ << _miniMode;
 
@@ -3905,8 +3947,6 @@ void MainWindow::toggleUIMode()
         _titlebar->titlebar()->setDisableFlags(0);
     }
     if (_listener) _listener->setEnabled(!_miniMode);
-
-
 
     _titlebar->setVisible(!_miniMode);
     //_toolbox->setVisible(!_miniMode);
@@ -3927,6 +3967,7 @@ void MainWindow::toggleUIMode()
 
         updateSizeConstraints();
         syncPlayState();
+        //设置等比缩放
         setEnableSystemResize(false);
 
 
@@ -3972,16 +4013,12 @@ void MainWindow::toggleUIMode()
 
         geom.setSize(sz);
         setGeometry(geom);
-        if(geom.x() < 0 )
-        {
-            geom.moveTo(0,geom.y());
+        if (geom.x() < 0 ) {
+            geom.moveTo(0, geom.y());
         }
-        if(geom.y() < 0 )
-        {
-            geom.moveTo(geom.x(),0);
+        if (geom.y() < 0 ) {
+            geom.moveTo(geom.x(), 0);
         }
-
-        QRect deskrect = QApplication::desktop()->screenGeometry();
 
 
         move(geom.x(), geom.y());
@@ -3994,6 +4031,7 @@ void MainWindow::toggleUIMode()
 
 
     } else {
+        setEnableSystemResize(true);
         if (_stateBeforeMiniMode & SBEM_Above) {
             requestAction(ActionFactory::WindowAbove);
         }

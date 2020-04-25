@@ -35,7 +35,6 @@
 #endif
 #include "dvd_utils.h"
 
-
 #include <libffmpegthumbnailer/videothumbnailer.h>
 extern "C" {
 #include <libavformat/avformat.h>
@@ -1037,19 +1036,35 @@ void PlaylistModel::delayedAppendAsync(const QList<QUrl> &urls)
         };
     };
 
-    if (QThread::idealThreadCount() > 1) {
-        auto future = QtConcurrent::mapped(_pendingJob, MapFunctor(this));
-        _jobWatcher->setFuture(future);
-    } else {
-        PlayItemInfoList pil;
-        for (const auto &a : _pendingJob) {
-            qDebug() << "sync mapping " << a.first.fileName();
-            pil.append(calculatePlayInfo(a.first, a.second));
-        }
-        _pendingJob.clear();
-        _urlsInJob.clear();
-        handleAsyncAppendResults(pil);
-    }
+    auto e = QProcessEnvironment::systemEnvironment();
+          QString XDG_SESSION_TYPE = e.value(QStringLiteral("XDG_SESSION_TYPE"));
+          QString WAYLAND_DISPLAY = e.value(QStringLiteral("WAYLAND_DISPLAY"));
+
+          if (XDG_SESSION_TYPE == QLatin1String("wayland") ||
+                  WAYLAND_DISPLAY.contains(QLatin1String("wayland"), Qt::CaseInsensitive)) {
+              PlayItemInfoList pil;
+              for (const auto &a : _pendingJob) {
+                  qDebug() << "sync mapping " << a.first.fileName();
+                  pil.append(calculatePlayInfo(a.first, a.second));
+              }
+              _pendingJob.clear();
+              _urlsInJob.clear();
+              handleAsyncAppendResults(pil);
+          } else {
+              if (QThread::idealThreadCount() > 1) {
+                  auto future = QtConcurrent::mapped(_pendingJob, MapFunctor(this));
+                  _jobWatcher->setFuture(future);
+              } else {
+                  PlayItemInfoList pil;
+                  for (const auto &a : _pendingJob) {
+                      qDebug() << "sync mapping " << a.first.fileName();
+                      pil.append(calculatePlayInfo(a.first, a.second));
+                  }
+                  _pendingJob.clear();
+                  _urlsInJob.clear();
+                  handleAsyncAppendResults(pil);
+              }
+          }
 }
 
 static QList<PlayItemInfo> &SortSimilarFiles(QList<PlayItemInfo> &fil)
@@ -1245,7 +1260,6 @@ struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl &url, const QFil
         qDebug() << "load cached thumb" << url;
     } else if (ok) {
         try {
-
             //如果打开的是音乐就读取音乐缩略图
             bool isMusic = false;
             foreach (QString sf, _engine->audio_filetypes) {
