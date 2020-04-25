@@ -815,29 +815,6 @@ private:
 
 };
 
-//class ThumbnailTime: public DLabel
-//{
-//    Q_OBJECT
-//public:
-//    ThumbnailTime(QWidget *parent = nullptr): DLabel(parent)
-//    {
-
-//    }
-//protected:
-//    void paintEvent(QPaintEvent *pe) override
-//    {
-//        QPainter painter(this);
-//        painter.setRenderHint(QPainter::Antialiasing);
-//        QRectF bgRect;
-//        bgRect.setSize(size());
-//        const QPalette pal = QGuiApplication::palette();//this->palette();
-//        QColor bgColor = pal.color(QPalette::Highlight);
-//        QPainterPath pp;
-//        pp.addRoundedRect(bgRect, 8, 8);
-//        painter.fillPath(pp, bgColor);
-//    }
-//};
-
 class ThumbnailPreview: public DArrowRectangle
 {
     Q_OBJECT
@@ -1266,7 +1243,15 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
       _mainWindow(static_cast<MainWindow *>(mainWindow)),
       _engine(proxy)
 {
-    _bthumbnailmode = false;
+    auto systemEnv = QProcessEnvironment::systemEnvironment();
+    QString XDG_SESSION_TYPE = systemEnv.value(QStringLiteral("XDG_SESSION_TYPE"));
+    QString WAYLAND_DISPLAY = systemEnv.value(QStringLiteral("WAYLAND_DISPLAY"));
+
+    if (XDG_SESSION_TYPE == QLatin1String("wayland") ||
+            WAYLAND_DISPLAY.contains(QLatin1String("wayland"), Qt::CaseInsensitive)) {
+        _bthumbnailmode = false;
+    }
+
     bool composited = CompositingManager::get().composited();
 //    setFrameShape(QFrame::NoFrame);
 //    setFrameShadow(QFrame::Plain);
@@ -1582,9 +1567,9 @@ void ToolboxProxy::setup()
         m_mouseFlag = false;
     });
 
-    connect(_viewProgBar, &ViewProgBar::hoverChanged, this, &ToolboxProxy::progressHoverChanged);
-    connect(_viewProgBar, &ViewProgBar::sliderMoved, this, &ToolboxProxy::setProgress);
-    connect(_viewProgBar, &ViewProgBar::mousePressed, this, &ToolboxProxy::updateTimeVisible);
+    //connect(_viewProgBar, &ViewProgBar::hoverChanged, this, &ToolboxProxy::progressHoverChanged);
+    // connect(_viewProgBar, &ViewProgBar::sliderMoved, this, &ToolboxProxy::setProgress);
+    //connect(_viewProgBar, &ViewProgBar::mousePressed, this, &ToolboxProxy::updateTimeVisible);
 
     auto *signalMapper = new QSignalMapper(this);
     connect(signalMapper, static_cast<void(QSignalMapper::*)(const QString &)>(&QSignalMapper::mapped),
@@ -2075,16 +2060,16 @@ void ToolboxProxy::setProgress(int v)
 
     progressHoverChanged(_progBar->slider()->sliderPosition()); //更新预览图位置
     //updateMovieProgress();
-    /*
+
     if (_engine->state() == PlayerEngine::CoreState::Idle)
         return;
 
     //    _engine->seekAbsolute(_progBar->sliderPosition());
-    _engine->seekAbsolute(v);
+    // _engine->seekAbsolute(v);
     if (_progBar->slider()->sliderPosition() != _lastHoverValue) {
         progressHoverChanged(_progBar->slider()->sliderPosition());
     }
-    updateMovieProgress();*/
+    updateMovieProgress();
 }
 
 void ToolboxProxy::updateTimeVisible(bool visible)
