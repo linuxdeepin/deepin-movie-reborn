@@ -2540,6 +2540,11 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     case ActionFactory::ActionKind::TogglePause: {
         if (!_playlistopen_clicktogglepause) {
             if (_engine->state() == PlayerEngine::Idle && isShortcut) {
+                if(_engine->getplaylist()->getthreadstate())
+                {
+                    qDebug() <<"playlist loadthread is running";
+                    break;
+                }
                 requestAction(ActionFactory::StartPlay);
             } else {
                 if (_engine->state() == PlayerEngine::Paused) {
@@ -3522,6 +3527,11 @@ void MainWindow::mousePressEvent(QMouseEvent *ev)
 
 void MainWindow::mouseDoubleClickEvent(QMouseEvent *ev)
 {
+    if(!_miniMode && this->_engine->getplaylist()->getthreadstate())
+    {
+        qDebug() <<"playlist loadthread is running";
+        return;
+    }
     if (!_miniMode && !_inBurstShootMode) {
         _delayedMouseReleaseTimer.stop();
         if (_engine->state() == PlayerEngine::Idle) {

@@ -84,7 +84,7 @@ PlayerEngine::PlayerEngine(QWidget *parent)
 
     _playlist = new PlaylistModel(this);
     connect(_playlist, &PlaylistModel::asyncAppendFinished, this,
-            &PlayerEngine::onPlaylistAsyncAppendFinished);
+            &PlayerEngine::onPlaylistAsyncAppendFinished, Qt::DirectConnection);
 }
 
 PlayerEngine::~PlayerEngine()

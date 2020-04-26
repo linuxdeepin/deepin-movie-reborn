@@ -44,6 +44,19 @@ extern "C" {
 
 #include <random>
 
+static bool check_wayland()
+{
+    auto e = QProcessEnvironment::systemEnvironment();
+    QString XDG_SESSION_TYPE = e.value(QStringLiteral("XDG_SESSION_TYPE"));
+    QString WAYLAND_DISPLAY = e.value(QStringLiteral("WAYLAND_DISPLAY"));
+
+    if (XDG_SESSION_TYPE == QLatin1String("wayland") || WAYLAND_DISPLAY.contains(QLatin1String("wayland"), Qt::CaseInsensitive))
+        return true;
+    else {
+        return false;
+    }
+}
+
 //获取音乐缩略图
 static bool getMusicPix(const QFileInfo &fi, QPixmap &rImg)
 {
@@ -465,6 +478,9 @@ bool PlayItemInfo::refresh()
 PlaylistModel::PlaylistModel(PlayerEngine *e)
     : _engine(e)
 {
+    m_pdataMutex = new QMutex();
+    m_ploadThread = nullptr;
+    m_brunning = false;
     _thumbnailer.setThumbnailSize(400 * qApp->devicePixelRatio());
     av_register_all();
 
@@ -518,6 +534,8 @@ PlaylistModel::~PlaylistModel()
 {
     qDebug() << __func__;
     delete _jobWatcher;
+
+    delete m_pdataMutex;
 
 #ifndef _LIBDMR_
     if (Settings::get().isSet(Settings::ClearWhenQuit)) {
@@ -1007,9 +1025,39 @@ void PlaylistModel::collectionJob(const QList<QUrl> &urls)
 
 void PlaylistModel::appendAsync(const QList<QUrl> &urls)
 {
-    QTimer::singleShot(10, [ = ]() {
-        delayedAppendAsync(urls);
-    });
+    if(check_wayland())
+    {
+        if(m_ploadThread == nullptr)
+        {
+            m_ploadThread = new LoadThread(this, urls);
+            connect(m_ploadThread, &QThread::finished, this, &PlaylistModel::deleteThread);
+        }
+        if(!m_ploadThread->isRunning())
+        {
+            m_ploadThread->start();
+            m_brunning = m_ploadThread->isRunning();
+        }
+    }
+    else
+    {
+        QTimer::singleShot(10, [ = ]() {
+            delayedAppendAsync(urls);
+        });
+    }
+}
+
+void PlaylistModel::deleteThread()
+{
+    if(check_wayland())
+    {
+        if(m_ploadThread->isRunning())
+        {
+            m_ploadThread->wait();
+        }
+        delete m_ploadThread;
+        m_ploadThread = nullptr;
+        m_brunning = false;
+    }
 }
 
 void PlaylistModel::delayedAppendAsync(const QList<QUrl> &urls)
@@ -1017,11 +1065,16 @@ void PlaylistModel::delayedAppendAsync(const QList<QUrl> &urls)
     if (_pendingJob.size() > 0) {
         //TODO: may be automatically schedule later
         qWarning() << "there is a pending append going on, enqueue";
+        m_pdataMutex->lock();
         _pendingAppendReq.enqueue(urls);
+        m_pdataMutex->unlock();
         return;
     }
 
+    m_pdataMutex->lock();
     collectionJob(urls);
+    m_pdataMutex->unlock();
+
     if (!_pendingJob.size()) return;
 
     struct MapFunctor {
@@ -1036,35 +1089,46 @@ void PlaylistModel::delayedAppendAsync(const QList<QUrl> &urls)
         };
     };
 
-    auto e = QProcessEnvironment::systemEnvironment();
-          QString XDG_SESSION_TYPE = e.value(QStringLiteral("XDG_SESSION_TYPE"));
-          QString WAYLAND_DISPLAY = e.value(QStringLiteral("WAYLAND_DISPLAY"));
-
-          if (XDG_SESSION_TYPE == QLatin1String("wayland") ||
-                  WAYLAND_DISPLAY.contains(QLatin1String("wayland"), Qt::CaseInsensitive)) {
-              PlayItemInfoList pil;
-              for (const auto &a : _pendingJob) {
-                  qDebug() << "sync mapping " << a.first.fileName();
-                  pil.append(calculatePlayInfo(a.first, a.second));
+    if(check_wayland())
+    {
+       m_pdataMutex->lock();
+       PlayItemInfoList pil;
+       for (const auto &a : _pendingJob) {
+              qDebug() << "sync mapping " << a.first.fileName();
+              pil.append(calculatePlayInfo(a.first, a.second));
+              if(m_ploadThread && m_ploadThread->isRunning())
+              {
+                  m_ploadThread->msleep(10);
               }
-              _pendingJob.clear();
-              _urlsInJob.clear();
-              handleAsyncAppendResults(pil);
-          } else {
-              if (QThread::idealThreadCount() > 1) {
-                  auto future = QtConcurrent::mapped(_pendingJob, MapFunctor(this));
-                  _jobWatcher->setFuture(future);
-              } else {
-                  PlayItemInfoList pil;
-                  for (const auto &a : _pendingJob) {
-                      qDebug() << "sync mapping " << a.first.fileName();
-                      pil.append(calculatePlayInfo(a.first, a.second));
-                  }
-                  _pendingJob.clear();
-                  _urlsInJob.clear();
-                  handleAsyncAppendResults(pil);
+      }
+      _pendingJob.clear();
+      _urlsInJob.clear();
+
+      m_pdataMutex->unlock();
+
+      handleAsyncAppendResults(pil);
+   }
+   else
+   {
+      if (QThread::idealThreadCount() > 1) {
+          auto future = QtConcurrent::mapped(_pendingJob, MapFunctor(this));
+          _jobWatcher->setFuture(future);
+      } else {
+          PlayItemInfoList pil;
+          for (const auto &a : _pendingJob) {
+              qDebug() << "sync mapping " << a.first.fileName();
+              pil.append(calculatePlayInfo(a.first, a.second));
+              if(m_ploadThread && m_ploadThread->isRunning())
+              {
+                  m_ploadThread->msleep(10);
               }
           }
+          _pendingJob.clear();
+          _urlsInJob.clear();
+          handleAsyncAppendResults(pil);
+      }
+   }
+
 }
 
 static QList<PlayItemInfo> &SortSimilarFiles(QList<PlayItemInfo> &fil)
@@ -1221,6 +1285,18 @@ int PlaylistModel::current() const
     return _current;
 }
 
+bool PlaylistModel::getthreadstate()
+{
+    if(m_ploadThread)
+    {
+        m_brunning = m_ploadThread->isRunning();
+    }
+    else {
+        m_brunning = false;
+    }
+    return m_brunning;
+}
+
 struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl &url, const QFileInfo &fi, bool isDvd)
 {
     bool ok = false;
@@ -1314,6 +1390,26 @@ int PlaylistModel::indexOf(const QUrl &url)
 
     if (p == _infos.end()) return -1;
     return std::distance(_infos.begin(), p);
+}
+
+
+LoadThread::LoadThread(PlaylistModel *model, const QList<QUrl> &urls)
+{
+    _pModel = nullptr;
+    _pModel = model;
+    _urls = urls;
+}
+LoadThread::~LoadThread()
+{
+    _pModel = nullptr;
+}
+
+void LoadThread::run()
+{
+    if(_pModel)
+    {
+          _pModel->delayedAppendAsync(_urls);
+    }
 }
 
 }
