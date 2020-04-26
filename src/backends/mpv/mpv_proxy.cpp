@@ -300,11 +300,11 @@ mpv_handle *MpvProxy::mpv_init()
         set_property(h, "wid", m_parentWidget->winId());
     }
 
+    //设置音量名称
+    set_property(h, "audio-client-name", "Movie");
     //set_property(h, "keepaspect-window", "no");
     //设置视频固定帧率，暂时无效
-    //QChar aa = get_property(_handle, "correct-pts").toChar();
-    //set_property(h, "correct-pts", "no");
-    //aa = get_property(_handle, "correct-pts").toChar();
+    //set_property(h, "correct-pts", false);
     //set_property(h, "fps", 30);
     set_property(h, "panscan", 0);
     set_property(h, "volume-max", 100.0);

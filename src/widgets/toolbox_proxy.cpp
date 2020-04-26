@@ -1362,7 +1362,6 @@ void ToolboxProxy::setthumbnailmode()
         updateThumbnail();
     } else {
         _bthumbnailmode = false;
-        updateThumbnail();
         updateMovieProgress();
     }
 #else
