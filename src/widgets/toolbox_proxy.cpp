@@ -61,6 +61,59 @@ static const QString SLIDER_ARROW = ":resources/icons/slider.svg";
 
 DWIDGET_USE_NAMESPACE
 
+//thx  wayland chuang kou bai kuai
+#define WAYLAND_BLACK_WINDOW \
+do {\
+    auto systemEnv = QProcessEnvironment::systemEnvironment();\
+    QString XDG_SESSION_TYPE = systemEnv.value(QStringLiteral("XDG_SESSION_TYPE"));\
+    QString WAYLAND_DISPLAY = systemEnv.value(QStringLiteral("WAYLAND_DISPLAY"));\
+    if (XDG_SESSION_TYPE == QLatin1String("wayland") ||\
+            WAYLAND_DISPLAY.contains(QLatin1String("wayland"), Qt::CaseInsensitive)) {\
+        auto colortype = DGuiApplicationHelper::instance()->themeType();\
+        if(colortype == DGuiApplicationHelper::LightType)\
+        {\
+            QPalette pal(qApp->palette());\
+            this->setAutoFillBackground(true);\
+            this->setPalette(pal);\
+            if(_playlist)\
+            {\
+                QPalette pal(qApp->palette());\
+                _playlist->setAutoFillBackground(true);\
+                _playlist->setPalette(pal);\
+            }\
+            if(_engine )\
+            {\
+                QPalette pal(qApp->palette());\
+                _engine->setAutoFillBackground(true);\
+                _engine->setPalette(pal);\
+            }\
+        }\
+        else\
+        {\
+            QPalette pal(qApp->palette());\
+            pal.setColor(QPalette::Background,Qt::black);\
+            this->setAutoFillBackground(true);\
+            this->setPalette(pal);\
+            if(_playlist)\
+            {\
+                QPalette pal(qApp->palette());\
+                pal.setColor(QPalette::Background,Qt::black);\
+                _playlist->setAutoFillBackground(true);\
+                _playlist->setPalette(pal);\
+            }\
+            if(_engine)\
+            {\
+                QPalette pal(qApp->palette());\
+                pal.setColor(QPalette::Background,Qt::black);\
+                _engine->setAutoFillBackground(true);\
+                _engine->setPalette(pal);\
+            }\
+        }\
+    }\
+}while(0)
+
+
+
 namespace dmr {
 class KeyPressBubbler: public QObject
 {
@@ -1419,9 +1472,9 @@ void ToolboxProxy::setup()
 
 #define THEME_TYPE(colortype) do { \
     if (colortype == DGuiApplicationHelper::LightType){\
-        QColor backMaskColor(255, 255, 255, 140);\
+        QColor backMaskColor(255, 255, 255, 255);\
         this->blurBackground()->setMaskColor(backMaskColor);\
-        QColor maskColor(255, 255, 255, 76);\
+        QColor maskColor(255, 255, 255, 255);\
         bot_widget->setMaskColor(maskColor);\
     } else if (colortype == DGuiApplicationHelper::DarkType){\
         QColor backMaskColor(37, 37, 37, 140);\
@@ -1440,6 +1493,7 @@ void ToolboxProxy::setup()
     THEME_TYPE(type);
     connect(DApplicationHelper::instance(), &DApplicationHelper::themeTypeChanged, this, [ = ] {
         auto type = DGuiApplicationHelper::instance()->themeType();
+        WAYLAND_BLACK_WINDOW;
         THEME_TYPE(type);
     });
 #undef THEME_TYPE
