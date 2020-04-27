@@ -1024,12 +1024,14 @@ class VolumeSlider: public DArrowRectangle
 {
     Q_OBJECT
 public:
-    VolumeSlider(PlayerEngine *eng, MainWindow *mw, QWidget *parent = nullptr)
+    VolumeSlider(PlayerEngine *eng, MainWindow *mw, QWidget *parent)
         : DArrowRectangle(DArrowRectangle::ArrowBottom, DArrowRectangle::FloatWidget, parent), _engine(eng), _mw(mw)
     {
         setFixedSize(QSize(62, 201));
 #ifdef __mips__
-        setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
+        if (!CompositingManager::get().composited()) {
+            setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
+        }
 #elif __aarch64__
         setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
 #endif
@@ -1770,6 +1772,15 @@ void ToolboxProxy::setup()
     connect(_volBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_volBtn, "vol");
 //    _right->addWidget(_volBtn);
+    if (CompositingManager::get().composited()) {
+        _volSlider = new VolumeSlider(_engine, _mainWindow, _mainWindow);
+        connect(_volBtn, &VolumeButton::entered, [ = ]() {
+            _volSlider->stopTimer();
+            _volSlider->show(_mainWindow->width() - _volBtn->width() / 2 - _playBtn->width() - 43,
+                             _mainWindow->height() - TOOLBOX_HEIGHT - 5);
+            _volSlider->raise();
+        });
+    } else {
 #ifdef __mips__
     _volSlider = new VolumeSlider(_engine, _mainWindow, nullptr);
     connect(_volBtn, &VolumeButton::entered, [ = ]() {
@@ -1807,6 +1818,7 @@ void ToolboxProxy::setup()
         _volSlider->raise();
     });
 #endif
+    }
     connect(_volBtn, &VolumeButton::leaved, _volSlider, &VolumeSlider::delayedHide);
     connect(_volBtn, &VolumeButton::requestVolumeUp, [ = ]() {
         _mainWindow->requestAction(ActionFactory::ActionKind::VolumeUp);
