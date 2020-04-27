@@ -84,7 +84,7 @@ PlayerEngine::PlayerEngine(QWidget *parent)
 
     _playlist = new PlaylistModel(this);
     connect(_playlist, &PlaylistModel::asyncAppendFinished, this,
-            &PlayerEngine::onPlaylistAsyncAppendFinished);
+            &PlayerEngine::onPlaylistAsyncAppendFinished, Qt::DirectConnection);
 }
 
 PlayerEngine::~PlayerEngine()
@@ -239,6 +239,24 @@ void PlayerEngine::onBackendStateChanged()
     updateSubStyles();
     if (old != _state)
         emit stateChanged();
+
+    auto systemEnv = QProcessEnvironment::systemEnvironment();
+    QString XDG_SESSION_TYPE = systemEnv.value(QStringLiteral("XDG_SESSION_TYPE"));
+    QString WAYLAND_DISPLAY = systemEnv.value(QStringLiteral("WAYLAND_DISPLAY"));
+    if (XDG_SESSION_TYPE == QLatin1String("wayland") ||
+            WAYLAND_DISPLAY.contains(QLatin1String("wayland"), Qt::CaseInsensitive)) {
+        if ( _state == CoreState::Idle) {
+            QPalette pal(qApp->palette());
+            this->setAutoFillBackground(true);
+            this->setPalette(pal);
+        } else {
+            QPalette pal(this->palette());
+            pal.setColor(QPalette::Background, Qt::black);
+            this->setAutoFillBackground(true);
+            this->setPalette(pal);
+        }
+    }
+
 }
 
 PlayerEngine::CoreState PlayerEngine::state()
@@ -472,6 +490,18 @@ void PlayerEngine::toggleMute()
 void PlayerEngine::savePreviousMovieState()
 {
     savePlaybackPosition();
+}
+
+void PlayerEngine::paintEvent(QPaintEvent *e)
+{
+    QRect qqq = this->rect();
+    QImage icon = utils::LoadHiDPIImage(":/resources/icons/light/init-splash.svg");
+    QPixmap pix = QPixmap::fromImage(icon);
+    int x = this->rect().center().x() - pix.width() / 2;
+    int y = this->rect().center().y() - pix.height() / 2;
+    QPainter p(this);
+    p.drawPixmap(x, y, pix);
+    return QWidget::paintEvent(e);
 }
 
 //FIXME: TODO: update _current according to file

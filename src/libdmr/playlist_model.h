@@ -36,9 +36,11 @@
 
 #include "utils.h"
 #include <QNetworkReply>
+#include <QMutex>
 namespace dmr {
 using namespace ffmpegthumbnailer;
 class PlayerEngine;
+class LoadThread;
 
 struct MovieInfo {
     bool valid;
@@ -121,6 +123,7 @@ using AppendJob = QPair<QUrl, QFileInfo>; // async job
 using PlayItemInfoList = QList<PlayItemInfo>;
 using UrlList = QList<QUrl>;
 
+
 class PlaylistModel: public QObject
 {
     Q_OBJECT
@@ -175,13 +178,18 @@ public:
     void switchPosition(int p1, int p2);
 
     bool hasPendingAppends();
+    void handleAsyncAppendResults(QList<PlayItemInfo> &pil);
+    struct PlayItemInfo calculatePlayInfo(const QUrl &, const QFileInfo &fi, bool isDvd = false);
+    bool getthreadstate();
 
 public slots:
     void changeCurrent(int);
+    void delayedAppendAsync(const QList<QUrl> &);
+    void deleteThread();
 
 private slots:
     void onAsyncAppendFinished();
-    void delayedAppendAsync(const QList<QUrl> &);
+
 
 signals:
     void countChanged();
@@ -219,15 +227,39 @@ private:
 
     QString _playlistFile;
 
-    struct PlayItemInfo calculatePlayInfo(const QUrl &, const QFileInfo &fi, bool isDvd = false);
+    LoadThread *m_ploadThread;
+    QMutex *m_pdataMutex;
+    bool m_brunning;
+
     void reshuffle();
     void savePlaylist();
     void loadPlaylist();
     void clearPlaylist();
     void appendSingle(const QUrl &);
     void tryPlayCurrent(bool next);
-    void handleAsyncAppendResults(QList<PlayItemInfo> &pil);
+
 };
+
+
+class LoadThread: public QThread
+{
+    Q_OBJECT
+
+public:
+    LoadThread(PlaylistModel *model, const QList<QUrl> &urls);
+    ~LoadThread();
+
+public:
+    void run();
+
+private:
+    PlaylistModel *_pModel;
+    QList<QUrl> _urls;
+
+    QList<AppendJob> _pendingJob; // async job
+    QSet<QString> _urlsInJob;  // url list
+};
+
 
 }
 
