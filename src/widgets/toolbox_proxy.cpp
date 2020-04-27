@@ -1782,41 +1782,41 @@ void ToolboxProxy::setup()
         });
     } else {
 #ifdef __mips__
-    _volSlider = new VolumeSlider(_engine, _mainWindow, nullptr);
-    connect(_volBtn, &VolumeButton::entered, [ = ]() {
-        _volSlider->stopTimer();
+        _volSlider = new VolumeSlider(_engine, _mainWindow, nullptr);
+        connect(_volBtn, &VolumeButton::entered, [ = ]() {
+            _volSlider->stopTimer();
 //        QPoint pos = _volBtn->parentWidget()->mapToGlobal(_volBtn->pos());
 //        pos.ry() = parentWidget()->mapToGlobal(this->pos()).y();
-        _volSlider->show(_mainWindow->width() - _volBtn->width() / 2 - _playBtn->width() - 43,
-                         _mainWindow->height() - TOOLBOX_HEIGHT - 5);
-        QRect rc = _volBtn->geometry();
-        QPoint pos(rc.left() + rc.width() / 2, rc.top() - 20);
-        pos = this->mapToGlobal(pos);
-        _volSlider->move(pos.x(), pos.y());
-        _volSlider->raise();
-    });
+            _volSlider->show(_mainWindow->width() - _volBtn->width() / 2 - _playBtn->width() - 43,
+                             _mainWindow->height() - TOOLBOX_HEIGHT - 5);
+            QRect rc = _volBtn->geometry();
+            QPoint pos(rc.left() + rc.width() / 2, rc.top() - 20);
+            pos = this->mapToGlobal(pos);
+            _volSlider->move(pos.x(), pos.y());
+            _volSlider->raise();
+        });
 #elif __aarch64__
-    _volSlider = new VolumeSlider(_engine, _mainWindow, nullptr);
-    connect(_volBtn, &VolumeButton::entered, [ = ]() {
-        _volSlider->stopTimer();
+        _volSlider = new VolumeSlider(_engine, _mainWindow, nullptr);
+        connect(_volBtn, &VolumeButton::entered, [ = ]() {
+            _volSlider->stopTimer();
 //        QPoint pos = _volBtn->parentWidget()->mapToGlobal(_volBtn->pos());
 //        pos.ry() = parentWidget()->mapToGlobal(this->pos()).y();
-        _volSlider->show(_mainWindow->width() - _volBtn->width() / 2 - _playBtn->width() - 43,
-                         _mainWindow->height() - TOOLBOX_HEIGHT - 5);
-        QRect rc = _volBtn->geometry();
-        QPoint pos(rc.left() + rc.width() / 2, rc.top() - 20);
-        pos = this->mapToGlobal(pos);
-        _volSlider->move(pos.x(), pos.y());
-        _volSlider->raise();
-    });
+            _volSlider->show(_mainWindow->width() - _volBtn->width() / 2 - _playBtn->width() - 43,
+                             _mainWindow->height() - TOOLBOX_HEIGHT - 5);
+            QRect rc = _volBtn->geometry();
+            QPoint pos(rc.left() + rc.width() / 2, rc.top() - 20);
+            pos = this->mapToGlobal(pos);
+            _volSlider->move(pos.x(), pos.y());
+            _volSlider->raise();
+        });
 #else
-    _volSlider = new VolumeSlider(_engine, _mainWindow, _mainWindow);
-    connect(_volBtn, &VolumeButton::entered, [ = ]() {
-        _volSlider->stopTimer();
-        _volSlider->show(_mainWindow->width() - _volBtn->width() / 2 - _playBtn->width() - 43,
-                         _mainWindow->height() - TOOLBOX_HEIGHT - 5);
-        _volSlider->raise();
-    });
+        _volSlider = new VolumeSlider(_engine, _mainWindow, _mainWindow);
+        connect(_volBtn, &VolumeButton::entered, [ = ]() {
+            _volSlider->stopTimer();
+            _volSlider->show(_mainWindow->width() - _volBtn->width() / 2 - _playBtn->width() - 43,
+                             _mainWindow->height() - TOOLBOX_HEIGHT - 5);
+            _volSlider->raise();
+        });
 #endif
     }
     connect(_volBtn, &VolumeButton::leaved, _volSlider, &VolumeSlider::delayedHide);
@@ -2644,6 +2644,8 @@ void ToolboxProxy::setViewProgBarWidth()
 void ToolboxProxy::setPlaylist(PlaylistWidget *playlist)
 {
     _playlist = playlist;
+    WAYLAND_BLACK_WINDOW;
+
     connect(_playlist, &PlaylistWidget::stateChange, this, [ = ]() {
 
 
