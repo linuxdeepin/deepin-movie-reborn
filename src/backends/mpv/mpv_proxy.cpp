@@ -46,7 +46,7 @@
 
 #include <xcb/xproto.h>
 #include <xcb/xcb_aux.h>
-#include <QX11Info>
+//#include <QX11Info>
 
 namespace dmr {
 using namespace mpv::qt;
@@ -79,7 +79,7 @@ static void mpv_callback(void *d)
 }
 
 MpvProxy::MpvProxy(QWidget *parent)
-    : Backend(parent)
+    : Backend(0)
 {
     m_parentWidget = parent;
     if (!CompositingManager::get().composited()) {
@@ -197,7 +197,7 @@ mpv_handle *MpvProxy::mpv_init()
                     interop = forced;
                 }
             }
-
+            interop = QString::fromUtf8("vaapi-egl");
             if (!disable) {
                 set_property(h, "gpu-hwdec-interop", interop.toUtf8().constData());
                 qDebug() << "-------- set gpu-hwdec-interop = " << interop
@@ -265,9 +265,9 @@ mpv_handle *MpvProxy::mpv_init()
         mpv_set_option_string(h, "hwdec", "auto");
         qDebug() << "-------- __mips__hwdec____________";
 #else
-        set_property(h, "vo", "libmpv,opengl-cb");
-        set_property(h, "vd-lavc-dr", "no");
-        set_property(h, "gpu-sw", "on");
+        set_property(h, "vo", "opengl-cb");
+        //set_property(h, "vd-lavc-dr", "no");
+        //set_property(h, "gpu-sw", "on");
         //set_property(h, "ao", "alsa");
 #endif
     } else {
@@ -287,7 +287,7 @@ mpv_handle *MpvProxy::mpv_init()
 
             if (XDG_SESSION_TYPE == QLatin1String("wayland") ||
                     WAYLAND_DISPLAY.contains(QLatin1String("wayland"), Qt::CaseInsensitive)) {
-                set_property(h, "vo", "gpu,x11,xv");
+                set_property(h, "vo", "opengl-cb");
             } else {
                 set_property(h, "vo", "xv");
             }
@@ -297,7 +297,7 @@ mpv_handle *MpvProxy::mpv_init()
         set_property(h, "vo", "gpu,xv,x11");
 #endif
 #endif
-        set_property(h, "wid", m_parentWidget->winId());
+        //set_property(h, "wid", m_parentWidget->winId());
     }
 
     //设置音量名称

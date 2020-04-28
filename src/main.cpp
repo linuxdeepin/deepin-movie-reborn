@@ -90,7 +90,7 @@ int main(int argc, char *argv[])
         toOpenFiles = clm.positionalArguments();
     }
 
-    app.loadTranslator();
+    //app.loadTranslator();
     app.setApplicationDisplayName(QObject::tr("Movie"));
     app.setApplicationDescription(QObject::tr(
                                       "Movie is a full-featured video player, supporting playing local and streaming media in multiple video formats."

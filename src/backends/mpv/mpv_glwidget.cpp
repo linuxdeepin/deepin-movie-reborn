@@ -33,9 +33,12 @@
 #include "mpv_glwidget.h"
 
 #include <QtX11Extras/QX11Info>
-
+#include <EGL/egl.h>
 #include <dthememanager.h>
 #include <DApplication>
+#include <wayland-client.h>
+#include "../../window/qplatformnativeinterface.h"
+//qpa/qplatformnativeinterface.h
 DWIDGET_USE_NAMESPACE
 
 
@@ -52,6 +55,7 @@ void main() {
 )";
 
 static const char* fs_blend = R"(
+precision mediump float;
 varying vec2 texCoord;
 
 uniform sampler2D movie;
@@ -77,6 +81,7 @@ void main() {
 )";
 
 static const char* fs_blend_corner = R"(
+precision mediump float;
 varying vec2 maskCoord;
 varying vec2 texCoord;
 
@@ -103,6 +108,7 @@ void main() {
 )";
 
 static const char* fs_code = R"(
+precision mediump float;
 varying vec2 texCoord;
 
 uniform sampler2D sampler;
@@ -115,6 +121,7 @@ void main() {
 )";
 
 static const char* fs_corner_code = R"(
+precision mediump float;
 varying vec2 texCoord;
 
 uniform sampler2D corner;
@@ -127,10 +134,13 @@ void main() {
 )";
 
 namespace dmr {
-    static void* GLAPIENTRY glMPGetNativeDisplay(const char* name) {
+    static void* EGLAPIENTRY glMPGetNativeDisplay(const char* name) {
         qWarning() << __func__ << name;
-        if (!strcmp(name, "x11") || !strcmp(name, "X11")) {
-            return (void*)QX11Info::display();
+        QPlatformNativeInterface* native = QGuiApplication::platformNativeInterface();
+        struct wl_display * wl_dpy = (struct wl_display*) (native->nativeResourceForWindow("display",NULL));
+        if (!strcmp(name, "wayland") || !strcmp(name, "wayland")) {
+            //return (void*)wl_dpy;
+            return NULL;
         }
         return NULL;
     }
@@ -373,7 +383,8 @@ namespace dmr {
         });
 #endif
 #endif
-
+        QPlatformNativeInterface* native = QGuiApplication::platformNativeInterface();
+        struct wl_display * wl_dpy = (struct wl_display*) (native->nativeResourceForWindow("display",NULL));
         mpv_opengl_init_params gl_init_params = { get_proc_address, NULL, NULL };
         int adv_control = 1;
         mpv_render_param params[] = {
@@ -386,7 +397,7 @@ namespace dmr {
              *    underlying GPU API/driver needs to have support for it).
              **/
             //{MPV_RENDER_PARAM_ADVANCED_CONTROL, &adv_control},
-            {MPV_RENDER_PARAM_X11_DISPLAY, reinterpret_cast<void*>(QX11Info::display())},
+            {MPV_RENDER_PARAM_WL_DISPLAY, wl_dpy},
             {MPV_RENDER_PARAM_INVALID, nullptr}
         };
         if (mpv_render_context_create(&_render_ctx, _handle, params) < 0) {

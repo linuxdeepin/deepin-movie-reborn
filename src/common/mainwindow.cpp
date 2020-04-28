@@ -53,8 +53,8 @@
 
 //#include <QtWidgets>
 #include <QtDBus>
-#include <QtX11Extras>
-#include <QX11Info>
+//#include <QtX11Extras>
+//#include <QX11Info>
 #include <DLabel>
 #include <DApplication>
 #include <DTitlebar>
@@ -336,7 +336,8 @@ public:
     {
         qApp->installNativeEventFilter(this);
 
-        _atomWMState = Utility::internAtom("_NET_WM_STATE");
+        //2020.4.28 xpf
+        //_atomWMState = Utility::internAtom("_NET_WM_STATE");
     }
 
     ~MainWindowPropertyMonitor()
@@ -1569,14 +1570,15 @@ void MainWindow::updateActionsState()
 
 void MainWindow::syncStaysOnTop()
 {
-    static xcb_atom_t atomStateAbove = Utility::internAtom("_NET_WM_STATE_ABOVE");
+    //2020.04.28
+    /*static xcb_atom_t atomStateAbove = Utility::internAtom("_NET_WM_STATE_ABOVE");
 
     auto atoms = Utility::windowNetWMState(windowHandle()->winId());
     bool window_is_above = atoms.contains(atomStateAbove);
     if (window_is_above != _windowAbove) {
         qDebug() << "syncStaysOnTop: window_is_above" << window_is_above;
         requestAction(ActionFactory::WindowAbove);
-    }
+    }*/
 }
 
 void MainWindow::reflectActionToUI(ActionFactory::ActionKind kd)
