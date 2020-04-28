@@ -62,7 +62,8 @@ const char kAtomNameWmSkipPager[] = "_NET_WM_STATE_SKIP_PAGER";
 
 xcb_atom_t Utility::internAtom(const char *name)
 {
-    if (!name || *name == 0)
+    return XCB_NONE;
+    /*if (!name || *name == 0)
         return XCB_NONE;
 
     xcb_intern_atom_cookie_t cookie = xcb_intern_atom(QX11Info::connection(), true, strlen(name), name);
@@ -74,7 +75,7 @@ xcb_atom_t Utility::internAtom(const char *name)
     xcb_atom_t atom = reply->atom;
     free(reply);
 
-    return atom;
+    return atom;*/
 }
 
 void Utility::startWindowSystemMove(quint32 WId)
@@ -101,11 +102,12 @@ void Utility::updateMousePointForWindowMove(quint32 WId, const QPoint &globalPos
     xev.data.data32[3] = 0;
     xev.data.data32[4] = 0;
 
-    xcb_send_event(QX11Info::connection(), false, QX11Info::appRootWindow(),
-                   XCB_EVENT_MASK_SUBSTRUCTURE_REDIRECT | XCB_EVENT_MASK_SUBSTRUCTURE_NOTIFY,
-                   (const char *)&xev);
+    //2020.4.28 xpf
+//    xcb_send_event(QX11Info::connection(), false, QX11Info::appRootWindow(),
+//                   XCB_EVENT_MASK_SUBSTRUCTURE_REDIRECT | XCB_EVENT_MASK_SUBSTRUCTURE_NOTIFY,
+//                   (const char *)&xev);
 
-    xcb_flush(QX11Info::connection());
+//    xcb_flush(QX11Info::connection());
 }
 
 void Utility::setFrameExtents(quint32 WId, const QMargins &margins)
@@ -124,7 +126,8 @@ void Utility::setFrameExtents(quint32 WId, const QMargins &margins)
         (uint32_t)margins.bottom()
     };
 
-    xcb_change_property(QX11Info::connection(), XCB_PROP_MODE_REPLACE, WId, frameExtents, XCB_ATOM_CARDINAL, 32, 4, value);
+    //2020.4.28 xpf
+//    xcb_change_property(QX11Info::connection(), XCB_PROP_MODE_REPLACE, WId, frameExtents, XCB_ATOM_CARDINAL, 32, 4, value);
 }
 
 void Utility::setRectangles(quint32 WId, const QRegion &region, bool onlyInput)
@@ -134,7 +137,8 @@ void Utility::setRectangles(quint32 WId, const QRegion &region, bool onlyInput)
 
 void Utility::setRectangles(quint32 WId, const QVector<xcb_rectangle_t> &rectangles, bool onlyInput)
 {
-    if (rectangles.isEmpty()) {
+    //2020.4.28 xpf
+    /*if (rectangles.isEmpty()) {
         xcb_shape_mask(QX11Info::connection(), XCB_SHAPE_SO_SET,
                        onlyInput ? XCB_SHAPE_SK_INPUT : XCB_SHAPE_SK_BOUNDING, WId, 0, 0, XCB_NONE);
 
@@ -142,7 +146,7 @@ void Utility::setRectangles(quint32 WId, const QVector<xcb_rectangle_t> &rectang
     }
 
     xcb_shape_rectangles(QX11Info::connection(), XCB_SHAPE_SO_SET, onlyInput ? XCB_SHAPE_SK_INPUT : XCB_SHAPE_SK_BOUNDING,
-                         XCB_CLIP_ORDERING_YX_BANDED, WId, 0, 0, rectangles.size(), rectangles.constData());
+                         XCB_CLIP_ORDERING_YX_BANDED, WId, 0, 0, rectangles.size(), rectangles.constData());*/
 }
 
 void Utility::setShapePath(quint32 WId, const QPainterPath &path, bool onlyInput)
@@ -171,6 +175,7 @@ void Utility::setShapePath(quint32 WId, const QPainterPath &path, bool onlyInput
 
 void Utility::sendMoveResizeMessage(quint32 WId, uint32_t action, QPoint globalPos, Qt::MouseButton qbutton)
 {
+    return ;
     int xbtn = qbutton == Qt::LeftButton ? XCB_BUTTON_INDEX_1 :
                qbutton == Qt::RightButton ? XCB_BUTTON_INDEX_3 :
                XCB_BUTTON_INDEX_ANY;
@@ -179,7 +184,8 @@ void Utility::sendMoveResizeMessage(quint32 WId, uint32_t action, QPoint globalP
         //QTBUG-76114
         //globalPos = QCursor::pos();
         xcb_generic_error_t** err = nullptr;
-        xcb_query_pointer_reply_t* p = xcb_query_pointer_reply(QX11Info::connection(),
+        //2020.4.28 xpf
+        /*xcb_query_pointer_reply_t* p = xcb_query_pointer_reply(QX11Info::connection(),
                                                               xcb_query_pointer(QX11Info::connection(),
                                                                                 QX11Info::appRootWindow(QX11Info::appScreen())),
                                                               err);
@@ -189,7 +195,7 @@ void Utility::sendMoveResizeMessage(quint32 WId, uint32_t action, QPoint globalP
 
         if (p) {
             free(p);
-        }
+        }*/
     }
 
     xcb_client_message_event_t xev;
@@ -204,12 +210,12 @@ void Utility::sendMoveResizeMessage(quint32 WId, uint32_t action, QPoint globalP
     xev.data.data32[3] = xbtn;
     xev.data.data32[4] = 0;
 
-    xcb_ungrab_pointer(QX11Info::connection(), QX11Info::appTime());
+    /*xcb_ungrab_pointer(QX11Info::connection(), QX11Info::appTime());
     xcb_send_event(QX11Info::connection(), false, QX11Info::appRootWindow(QX11Info::appScreen()),
                    XCB_EVENT_MASK_SUBSTRUCTURE_REDIRECT | XCB_EVENT_MASK_SUBSTRUCTURE_NOTIFY,
                    (const char *)&xev);
 
-    xcb_flush(QX11Info::connection());
+    xcb_flush(QX11Info::connection());*/
 }
 
 QVector<xcb_rectangle_t> Utility::qregion2XcbRectangles(const QRegion &region)
@@ -263,7 +269,8 @@ static xcb_cursor_t CornerEdge2Xcb_cursor_t(Utility::CornerEdge ce)
 
 bool Utility::setWindowCursor(quint32 WId, Utility::CornerEdge ce)
 {
-    const auto display = QX11Info::display();
+    return true;
+    /*const auto display = QX11Info::display();
 
     Cursor cursor = XCreateFontCursor(display, CornerEdge2Xcb_cursor_t(ce));
 
@@ -276,7 +283,7 @@ bool Utility::setWindowCursor(quint32 WId, Utility::CornerEdge ce)
 
     XFlush(display);
 
-    return result == Success;
+    return result == Success;*/
 }
 
 QRegion Utility::regionAddMargins(const QRegion &region, const QMargins &margins, const QPoint &offset)
@@ -293,7 +300,8 @@ QRegion Utility::regionAddMargins(const QRegion &region, const QMargins &margins
 QByteArray Utility::windowProperty(quint32 WId, xcb_atom_t propAtom, xcb_atom_t typeAtom, quint32 len)
 {
     QByteArray data;
-    xcb_connection_t* conn = QX11Info::connection();
+    //2020.4.28 xpf
+    /*xcb_connection_t* conn = QX11Info::connection();
     xcb_get_property_cookie_t cookie = xcb_get_property(conn, false, WId, propAtom, typeAtom, 0, len);
     xcb_generic_error_t* err = nullptr;
     xcb_get_property_reply_t* reply = xcb_get_property_reply(conn, cookie, &err);
@@ -308,7 +316,7 @@ QByteArray Utility::windowProperty(quint32 WId, xcb_atom_t propAtom, xcb_atom_t 
     if (err != nullptr) {
         qDebug() << "get property error";
         free(err);
-    }
+    }*/
 
     return data;
 }
@@ -317,7 +325,8 @@ QList<xcb_atom_t> Utility::windowNetWMState(quint32 WId)
 {
     QList<xcb_atom_t> res;
 
-    const auto wmStateAtom = XInternAtom(QX11Info::display(), kAtomNameWmState, false);
+    //2020.4.28 xpf
+    /*const auto wmStateAtom = XInternAtom(QX11Info::display(), kAtomNameWmState, false);
     xcb_connection_t* conn = QX11Info::connection();
     xcb_get_property_cookie_t cookie = xcb_get_property(conn, false, WId,
             wmStateAtom, XCB_ATOM_ATOM, 0, 1);
@@ -336,23 +345,23 @@ QList<xcb_atom_t> Utility::windowNetWMState(quint32 WId)
     if (err != nullptr) {
         qDebug() << "get property error";
         free(err);
-    }
+    }*/
 
     return res;
 }
 
 void Utility::setWindowProperty(quint32 WId, xcb_atom_t propAtom, xcb_atom_t typeAtom, const void *data, quint32 len, uint8_t format)
 {
-    xcb_connection_t* conn = QX11Info::connection();
+    /*xcb_connection_t* conn = QX11Info::connection();
     xcb_change_property(conn, XCB_PROP_MODE_REPLACE, WId, propAtom, typeAtom, format, len, data);
-    xcb_flush(conn);
+    xcb_flush(conn);*/
 }
 
 void Utility::setStayOnTop(const QWidget *widget, bool on)
 {
     Q_ASSERT(widget);
 
-    const auto display = QX11Info::display();
+    /*const auto display = QX11Info::display();
     const auto screen = QX11Info::appScreen();
 
     const auto wmStateAtom = XInternAtom(display, kAtomNameWmState, false);
@@ -380,6 +389,6 @@ void Utility::setStayOnTop(const QWidget *widget, bool on)
                false,
                SubstructureRedirectMask | SubstructureNotifyMask,
                &xev);
-    XFlush(display);
+    XFlush(display);*/
 }
 
