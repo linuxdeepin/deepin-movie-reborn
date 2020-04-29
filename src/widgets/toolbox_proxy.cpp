@@ -1416,8 +1416,14 @@ void ToolboxProxy::setthumbnailmode()
         updateMovieProgress();
     }
 #else
-    updateMovieProgress();
-
+    bool composited = CompositingManager::get().composited();
+    if (composited) {
+        _bthumbnailmode = true;
+        updateThumbnail();
+    } else {
+        _bthumbnailmode = false;
+        updateMovieProgress();
+    }
 #endif
 
 }
