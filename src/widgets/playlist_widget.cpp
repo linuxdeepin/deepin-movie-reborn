@@ -1305,7 +1305,7 @@ void PlaylistWidget::togglePopup()
     if (_state == State::Opened) {
         Q_ASSERT(isVisible());
 
-#ifndef __aarch64__
+#ifndef __aarch64__ && __sw64__
         paOpen = new QPropertyAnimation(this, "geometry");
         paOpen->setEasingCurve(QEasingCurve::Linear);
         paOpen->setDuration(POPUP_DURATION);
@@ -1332,7 +1332,7 @@ void PlaylistWidget::togglePopup()
     } else {
         setVisible(!isVisible());
         _toggling = true;
-#ifndef __aarch64__
+#ifndef __aarch64__ && __sw64__
         paClose = new QPropertyAnimation(this, "geometry");
         paClose->setEasingCurve(QEasingCurve::Linear);
         paClose->setDuration(POPUP_DURATION);

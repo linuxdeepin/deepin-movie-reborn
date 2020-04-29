@@ -2654,7 +2654,7 @@ void ToolboxProxy::setPlaylist(PlaylistWidget *playlist)
         }
 
         if (_playlist->state() == PlaylistWidget::State::Opened) {
-#ifndef __aarch64__
+#ifndef __aarch64__ && ifndef __sw64__
             QRect rcBegin = this->geometry();
             QRect rcEnd = rcBegin;
             rcEnd.setY(rcBegin.y() - TOOLBOX_SPACE_HEIGHT);
@@ -2674,7 +2674,7 @@ void ToolboxProxy::setPlaylist(PlaylistWidget *playlist)
             _listBtn->setChecked(true);
         } else {
             _listBtn->setChecked(false);
-#ifndef __aarch64__
+#ifndef __aarch64__ && ifndef __sw64__
             bAnimationFinash = false;
 
             QRect rcBegin = this->geometry();

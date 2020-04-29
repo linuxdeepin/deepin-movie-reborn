@@ -109,15 +109,15 @@ int main(int argc, char *argv[])
 
     bool singleton = !dmr::Settings::get().isSet(dmr::Settings::MultipleInstance);
 
-    QSharedMemory shared_memory("deepinmovie");
+    QString strUserPath = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
 
-    if(shared_memory.attach())
-    {
+    QSharedMemory shared_memory(strUserPath + "deepinmovie");
+
+    if (shared_memory.attach()) {
         shared_memory.detach();
     }
 
-    if(singleton && !shared_memory.create(1))
-    {
+    if (singleton && !shared_memory.create(1)) {
         qDebug() << "another deepin movie instance has started";
         if (!toOpenFiles.isEmpty()) {
             QDBusInterface iface("com.deepin.movie", "/", "com.deepin.movie");
