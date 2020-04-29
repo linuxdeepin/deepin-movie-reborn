@@ -1085,7 +1085,12 @@ public:
             /*if (vol != 0) {
                 vol -= VOLUME_OFFSET;
             }*/
-            _slider->setValue(vol);
+            auto var = _slider->value();
+            if (abs(var - vol) < 5) {
+                _slider->setValue(var);
+            } else {
+                _slider->setValue(vol);
+            }
         });
         m_composited = CompositingManager::get().composited();
     }
