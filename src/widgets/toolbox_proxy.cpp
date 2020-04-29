@@ -1254,6 +1254,7 @@ void viewProgBarLoad::loadViewProgBar(QSize size)
     for (auto i = 0; i < num; i++) {
 
         if (m_bQuit == true) {
+            qDebug() << "load return";
             return;
         }
         if (isInterruptionRequested()) {
@@ -1380,6 +1381,8 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
 }
 void ToolboxProxy::finishLoadSlot(QSize size)
 {
+    qDebug() << "humbnail has finished";
+
     if (pm_list.isEmpty()) return;
 
     if (!_bthumbnailmode) {
@@ -2568,7 +2571,7 @@ void ToolboxProxy::resizeEvent(QResizeEvent *event)
         }
 
     }
-#ifndef __aarch64__
+#ifndef __aarch64__ && ifndef __sw64__
     if (bAnimationFinash ==  false && paopen != nullptr && paClose != nullptr) {
 
         _playlist->endAnimation();
@@ -2595,7 +2598,7 @@ void ToolboxProxy::resizeEvent(QResizeEvent *event)
 void ToolboxProxy::updateTimeLabel()
 {
 
-#ifndef __aarch64__
+#ifndef __aarch64__ && ifndef __sw64__
     // to keep left and right of the same width. which makes play button centered
     _listBtn->setVisible(width() > 300);
     _timeLabel->setVisible(width() > 450);
