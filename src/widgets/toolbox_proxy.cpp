@@ -1191,16 +1191,13 @@ viewProgBarLoad::viewProgBarLoad(PlayerEngine *engine, DMRSlider *progBar, Toolb
 
 void viewProgBarLoad::quitLoad()
 {
-
     m_bQuit = true;
-    this->quit();
 }
 
 void viewProgBarLoad::load()
 {
     m_mutex.lock();
     //停止
-    m_bStop = true;
     m_bisload = true;
 
     m_mutex.unlock();
@@ -1219,7 +1216,6 @@ void viewProgBarLoad::run()
             m_mutex.lock();
 
             m_bisload = false;
-            m_bStop = false;
             m_mutex.unlock();
 
             loadViewProgBar(_parent->size());
@@ -1257,7 +1253,7 @@ void viewProgBarLoad::loadViewProgBar(QSize size)
 
     for (auto i = 0; i < num; i++) {
 
-        if (m_bStop == true) {
+        if (m_bQuit == true) {
             return;
         }
         if (isInterruptionRequested()) {
@@ -1448,6 +1444,7 @@ ToolboxProxy::~ToolboxProxy()
     if (m_worker) {
         m_worker->quitLoad();
         m_worker->wait();
+        m_worker->quit();
         m_worker->deleteLater();
     }
 }
