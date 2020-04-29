@@ -776,6 +776,7 @@ protected:
             if (e->buttons() & Qt::LeftButton) {
                 int distance = (e->pos() - _startPos).manhattanLength();
                 if (distance >= QApplication::startDragDistance()) {
+                    _engine->seekAbsolute(v);
                     emit sliderMoved(v);
                     emit hoverChanged(v);
                     emit mousePressed(true);
@@ -799,6 +800,7 @@ protected:
 
             int v = position2progress(e->pos());
 //            setSliderPosition(v);
+            _engine->seekAbsolute(v);
             emit sliderMoved(v);
             emit hoverChanged(v);
             emit mousePressed(true);
@@ -1389,8 +1391,6 @@ void ToolboxProxy::finishLoadSlot(QSize size)
         return;
     }
     _viewProgBar->setViewProgBar(_engine, pm_list, pm_black_list);
-
-
 
     if (CompositingManager::get().composited()/* && _loadsize == size*/ && _engine->state() != PlayerEngine::CoreState::Idle) {
         PlayItemInfo info = _engine->playlist().currentInfo();

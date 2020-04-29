@@ -56,7 +56,7 @@ Settings::Settings()
                   .arg(qApp->applicationName());
     qDebug() << "configPath" << _configPath;
     auto backend = new QSettingBackend(_configPath);
-#ifdef __mips__
+#ifdef __mips__ || ifdef __sw64__
     bool composited = CompositingManager::get().composited();
     if (composited)
         _settings = DSettings::fromJsonFile(":/resources/data/lowEffectSettings.json");
