@@ -39,8 +39,16 @@
 #include <wayland-client.h>
 #include "../../window/qplatformnativeinterface.h"
 //qpa/qplatformnativeinterface.h
+#if defined(_WIN32) && !defined(_WIN32_WCE) && !defined(__SCITECH_SNAP__)
+    /* Win32 but not WinCE */
+#   define KHRONOS_APIENTRY __stdcall
+#else
+#   define KHRONOS_APIENTRY
+#endif
 DWIDGET_USE_NAMESPACE
-
+#ifndef EGLAPIENTRY
+#define EGLAPIENTRY  KHRONOS_APIENTRY
+#endif
 
 static const char *vs_blend = R"(
 attribute vec2 position;
