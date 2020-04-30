@@ -64,7 +64,7 @@ int main(int argc, char *argv[])
 
     DApplication app(argc, argv);
 
-    DApplication::loadDXcbPlugin();
+    //DApplication::loadDXcbPlugin();
 
     // required by mpv
     setlocale(LC_NUMERIC, "C");
@@ -90,7 +90,7 @@ int main(int argc, char *argv[])
         toOpenFiles = clm.positionalArguments();
     }
 
-    //app.loadTranslator();
+    app.loadTranslator();
     app.setApplicationDisplayName(QObject::tr("Movie"));
     app.setApplicationDescription(QObject::tr(
                                       "Movie is a full-featured video player, supporting playing local and streaming media in multiple video formats."
@@ -111,13 +111,11 @@ int main(int argc, char *argv[])
 
     QSharedMemory shared_memory("deepinmovie");
 
-    if(shared_memory.attach())
-    {
+    if (shared_memory.attach()) {
         shared_memory.detach();
     }
 
-    if(singleton && !shared_memory.create(1))
-    {
+    if (singleton && !shared_memory.create(1)) {
         qDebug() << "another deepin movie instance has started";
         if (!toOpenFiles.isEmpty()) {
             QDBusInterface iface("com.deepin.movie", "/", "com.deepin.movie");
