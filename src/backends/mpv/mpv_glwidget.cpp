@@ -36,7 +36,7 @@
 //#include <EGL/egl.h>
 #include <dthememanager.h>
 #include <DApplication>
-#include <wayland-client.h>
+//#include <wayland-client.h>
 #include "../../window/qplatformnativeinterface.h"
 //qpa/qplatformnativeinterface.h
 #if defined(_WIN32) && !defined(_WIN32_WCE) && !defined(__SCITECH_SNAP__)
