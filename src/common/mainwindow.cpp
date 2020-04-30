@@ -746,7 +746,8 @@ MainWindow::MainWindow(QWidget *parent)
         // delayed checking if engine is still idle, in case other videos are schedulered (next/prev req)
         // and another resize event will happen after that
         QTimer::singleShot(100, [ = ]() {
-            if (_engine->state() == PlayerEngine::Idle && !_miniMode && windowState() == Qt::WindowNoState) {
+            if (_engine->state() == PlayerEngine::Idle && !_miniMode
+                    && windowState() == Qt::WindowNoState && !window()->isFullScreen()) {
                 this->setMinimumSize(QSize(614, 500));
                 this->resize(850, 600);
             }
@@ -2540,9 +2541,8 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     case ActionFactory::ActionKind::TogglePause: {
         if (!_playlistopen_clicktogglepause) {
             if (_engine->state() == PlayerEngine::Idle && isShortcut) {
-                if(_engine->getplaylist()->getthreadstate())
-                {
-                    qDebug() <<"playlist loadthread is running";
+                if (_engine->getplaylist()->getthreadstate()) {
+                    qDebug() << "playlist loadthread is running";
                     break;
                 }
                 requestAction(ActionFactory::StartPlay);
@@ -2552,6 +2552,9 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                     if (!_miniMode) {
                         _animationlable->setGeometry(width() / 2 - 100, height() / 2 - 100, 200, 200);
                         _animationlable->start();
+                    }
+                    if (_engine->muted()) {
+                        _nwComm->updateWithMessage(tr("Mute"));
                     }
                     QTimer::singleShot(160, [ = ]() {
                         _engine->pauseResume();
@@ -3527,9 +3530,8 @@ void MainWindow::mousePressEvent(QMouseEvent *ev)
 
 void MainWindow::mouseDoubleClickEvent(QMouseEvent *ev)
 {
-    if(!_miniMode && this->_engine->getplaylist()->getthreadstate())
-    {
-        qDebug() <<"playlist loadthread is running";
+    if (!_miniMode && this->_engine->getplaylist()->getthreadstate()) {
+        qDebug() << "playlist loadthread is running";
         return;
     }
     if (!_miniMode && !_inBurstShootMode) {

@@ -31,6 +31,7 @@
 #include <QtGui>
 
 #include "dmr_settings.h"
+#include "compositing_manager.h"
 #include <qsettingbackend.h>
 
 namespace dmr {
@@ -55,8 +56,16 @@ Settings::Settings()
                   .arg(qApp->applicationName());
     qDebug() << "configPath" << _configPath;
     auto backend = new QSettingBackend(_configPath);
-
+#ifdef __mips__ || ifdef __sw64__
+    bool composited = CompositingManager::get().composited();
+    if (composited)
+        _settings = DSettings::fromJsonFile(":/resources/data/lowEffectSettings.json");
+    else {
+        _settings = DSettings::fromJsonFile(":/resources/data/settings.json");
+    }
+#else
     _settings = DSettings::fromJsonFile(":/resources/data/settings.json");
+#endif
     _settings->setBackend(backend);
 
     connect(_settings, &DSettings::valueChanged,

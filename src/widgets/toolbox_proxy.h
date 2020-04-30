@@ -299,8 +299,6 @@ private:
     DMRSlider *_progBar {nullptr};
     QSize _size;
 
-    //是否停止当前加载
-    bool m_bStop {false};
     //加载缩略图是否加载完成，控制线程是否休眠
     bool m_bisload {false};
     //是否退出当前线程(退出while(1))

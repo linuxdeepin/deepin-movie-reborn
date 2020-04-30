@@ -776,6 +776,7 @@ protected:
             if (e->buttons() & Qt::LeftButton) {
                 int distance = (e->pos() - _startPos).manhattanLength();
                 if (distance >= QApplication::startDragDistance()) {
+                    _engine->seekAbsolute(v);
                     emit sliderMoved(v);
                     emit hoverChanged(v);
                     emit mousePressed(true);
@@ -799,6 +800,7 @@ protected:
 
             int v = position2progress(e->pos());
 //            setSliderPosition(v);
+            _engine->seekAbsolute(v);
             emit sliderMoved(v);
             emit hoverChanged(v);
             emit mousePressed(true);
@@ -1083,7 +1085,12 @@ public:
             /*if (vol != 0) {
                 vol -= VOLUME_OFFSET;
             }*/
-            _slider->setValue(vol);
+            auto var = _slider->value();
+            if (abs(var - vol) < 5) {
+                _slider->setValue(var);
+            } else {
+                _slider->setValue(vol);
+            }
         });
         m_composited = CompositingManager::get().composited();
     }
@@ -1191,16 +1198,13 @@ viewProgBarLoad::viewProgBarLoad(PlayerEngine *engine, DMRSlider *progBar, Toolb
 
 void viewProgBarLoad::quitLoad()
 {
-
     m_bQuit = true;
-    this->quit();
 }
 
 void viewProgBarLoad::load()
 {
     m_mutex.lock();
     //停止
-    m_bStop = true;
     m_bisload = true;
 
     m_mutex.unlock();
@@ -1219,7 +1223,6 @@ void viewProgBarLoad::run()
             m_mutex.lock();
 
             m_bisload = false;
-            m_bStop = false;
             m_mutex.unlock();
 
             loadViewProgBar(_parent->size());
@@ -1257,7 +1260,8 @@ void viewProgBarLoad::loadViewProgBar(QSize size)
 
     for (auto i = 0; i < num; i++) {
 
-        if (m_bStop == true) {
+        if (m_bQuit == true) {
+            qDebug() << "load return";
             return;
         }
         if (isInterruptionRequested()) {
@@ -1384,14 +1388,14 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
 }
 void ToolboxProxy::finishLoadSlot(QSize size)
 {
+    qDebug() << "humbnail has finished";
+
     if (pm_list.isEmpty()) return;
 
     if (!_bthumbnailmode) {
         return;
     }
     _viewProgBar->setViewProgBar(_engine, pm_list, pm_black_list);
-
-
 
     if (CompositingManager::get().composited()/* && _loadsize == size*/ && _engine->state() != PlayerEngine::CoreState::Idle) {
         PlayItemInfo info = _engine->playlist().currentInfo();
@@ -1420,8 +1424,14 @@ void ToolboxProxy::setthumbnailmode()
         updateMovieProgress();
     }
 #else
-    updateMovieProgress();
-
+    bool composited = CompositingManager::get().composited();
+    if (composited) {
+        _bthumbnailmode = true;
+        updateThumbnail();
+    } else {
+        _bthumbnailmode = false;
+        updateMovieProgress();
+    }
 #endif
 
 }
@@ -1448,6 +1458,7 @@ ToolboxProxy::~ToolboxProxy()
     if (m_worker) {
         m_worker->quitLoad();
         m_worker->wait();
+        m_worker->quit();
         m_worker->deleteLater();
     }
 }
@@ -1782,41 +1793,37 @@ void ToolboxProxy::setup()
         });
     } else {
 #ifdef __mips__
-        _volSlider = new VolumeSlider(_engine, _mainWindow, nullptr);
-        connect(_volBtn, &VolumeButton::entered, [ = ]() {
-            _volSlider->stopTimer();
+    _volSlider = new VolumeSlider(_engine, _mainWindow, nullptr);
+    connect(_volBtn, &VolumeButton::entered, [ = ]() {
+        _volSlider->stopTimer();
 //        QPoint pos = _volBtn->parentWidget()->mapToGlobal(_volBtn->pos());
 //        pos.ry() = parentWidget()->mapToGlobal(this->pos()).y();
-            _volSlider->show(_mainWindow->width() - _volBtn->width() / 2 - _playBtn->width() - 43,
-                             _mainWindow->height() - TOOLBOX_HEIGHT - 5);
-            QRect rc = _volBtn->geometry();
-            QPoint pos(rc.left() + rc.width() / 2, rc.top() - 20);
-            pos = this->mapToGlobal(pos);
-            _volSlider->move(pos.x(), pos.y());
-            _volSlider->raise();
-        });
+        _volSlider->show(_mainWindow->width() - _volBtn->width() / 2 - _playBtn->width() - 43,
+                         _mainWindow->height() - TOOLBOX_HEIGHT - 5);
+        QRect rc = _volBtn->geometry();
+        QPoint pos(rc.left() + rc.width() / 2, rc.top() - 20);
+        pos = this->mapToGlobal(pos);
+        _volSlider->move(pos.x(), pos.y());
+        _volSlider->raise();
+    });
 #elif __aarch64__
-        _volSlider = new VolumeSlider(_engine, _mainWindow, nullptr);
-        connect(_volBtn, &VolumeButton::entered, [ = ]() {
-            _volSlider->stopTimer();
-//        QPoint pos = _volBtn->parentWidget()->mapToGlobal(_volBtn->pos());
-//        pos.ry() = parentWidget()->mapToGlobal(this->pos()).y();
-            _volSlider->show(_mainWindow->width() - _volBtn->width() / 2 - _playBtn->width() - 43,
-                             _mainWindow->height() - TOOLBOX_HEIGHT - 5);
-            QRect rc = _volBtn->geometry();
-            QPoint pos(rc.left() + rc.width() / 2, rc.top() - 20);
-            pos = this->mapToGlobal(pos);
-            _volSlider->move(pos.x(), pos.y());
-            _volSlider->raise();
-        });
+    _volSlider = new VolumeSlider(_engine, _mainWindow, nullptr);
+    connect(_volBtn, &VolumeButton::entered, [ = ]() {
+        _volSlider->stopTimer();
+        QPoint pos = _volBtn->parentWidget()->mapToGlobal(_volBtn->pos());
+        QRect rc = _volBtn->geometry();
+        pos = QPoint(pos.x() + rc.width() / 2, pos.y() - 20);
+        _volSlider->raise();
+        _volSlider->show(pos.x(), pos.y());
+    });
 #else
-        _volSlider = new VolumeSlider(_engine, _mainWindow, _mainWindow);
-        connect(_volBtn, &VolumeButton::entered, [ = ]() {
-            _volSlider->stopTimer();
-            _volSlider->show(_mainWindow->width() - _volBtn->width() / 2 - _playBtn->width() - 43,
-                             _mainWindow->height() - TOOLBOX_HEIGHT - 5);
-            _volSlider->raise();
-        });
+    _volSlider = new VolumeSlider(_engine, _mainWindow, _mainWindow);
+    connect(_volBtn, &VolumeButton::entered, [ = ]() {
+        _volSlider->stopTimer();
+        _volSlider->show(_mainWindow->width() - _volBtn->width() / 2 - _playBtn->width() - 43,
+                         _mainWindow->height() - TOOLBOX_HEIGHT - 5);
+        _volSlider->raise();
+    });
 #endif
     }
     connect(_volBtn, &VolumeButton::leaved, _volSlider, &VolumeSlider::delayedHide);
@@ -1940,24 +1947,24 @@ void ToolboxProxy::setup()
         }
     });
 
-    _autoResizeTimer.setSingleShot(true);
-    connect(&_autoResizeTimer, &QTimer::timeout, this, [ = ] {
-        if (_oldsize.width() == width())
-        {
-            _viewProgBar->setWidth();
-            if (_engine->state() != PlayerEngine::CoreState::Idle && size() != _loadsize) {
-#ifdef __mips__
-                bool bRet = QDBusInterface("com.deepin.wm", "/com/deepin/wm", "com.deepin.wm").property("compositingAllowSwitch").toBool();
-                if (bRet) { //龙芯平台存在显卡才加载缩略图
-                    updateThumbnail();
-                }
-#else
-                updateThumbnail();
-#endif
-                _loadsize = size();
-            }
-        }
-    });
+    /* _autoResizeTimer.setSingleShot(true);
+     connect(&_autoResizeTimer, &QTimer::timeout, this, [ = ] {
+         if (_oldsize.width() == width())
+         {
+             _viewProgBar->setWidth();
+             if (_engine->state() != PlayerEngine::CoreState::Idle && size() != _loadsize) {
+    #ifdef __mips__
+                 bool bRet = QDBusInterface("com.deepin.wm", "/com/deepin/wm", "com.deepin.wm").property("compositingAllowSwitch").toBool();
+                 if (bRet) { //龙芯平台存在显卡才加载缩略图
+                     updateThumbnail();
+                 }
+    #else
+                 updateThumbnail();
+    #endif
+                 _loadsize = size();
+             }
+         }
+     });*/
     PlaylistModel *playListModel = _engine->getplaylist();
     connect(playListModel, &PlaylistModel::currentChanged, this, [ = ] {
         _autoResizeTimer.start(1000);
@@ -2565,7 +2572,7 @@ void ToolboxProxy::resizeEvent(QResizeEvent *event)
         }
 
     }
-#ifndef __aarch64__
+#ifndef ifndef __sw64__
     if (bAnimationFinash ==  false && paopen != nullptr && paClose != nullptr) {
 
         _playlist->endAnimation();
@@ -2592,7 +2599,7 @@ void ToolboxProxy::resizeEvent(QResizeEvent *event)
 void ToolboxProxy::updateTimeLabel()
 {
 
-#ifndef __aarch64__
+#ifndef __sw64__
     // to keep left and right of the same width. which makes play button centered
     _listBtn->setVisible(width() > 300);
     _timeLabel->setVisible(width() > 450);
@@ -2654,7 +2661,7 @@ void ToolboxProxy::setPlaylist(PlaylistWidget *playlist)
         }
 
         if (_playlist->state() == PlaylistWidget::State::Opened) {
-#ifndef __aarch64__
+#ifndef __sw64__
             QRect rcBegin = this->geometry();
             QRect rcEnd = rcBegin;
             rcEnd.setY(rcBegin.y() - TOOLBOX_SPACE_HEIGHT);
@@ -2674,7 +2681,7 @@ void ToolboxProxy::setPlaylist(PlaylistWidget *playlist)
             _listBtn->setChecked(true);
         } else {
             _listBtn->setChecked(false);
-#ifndef __aarch64__
+#ifndef __sw64__
             bAnimationFinash = false;
 
             QRect rcBegin = this->geometry();
