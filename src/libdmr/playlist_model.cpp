@@ -1050,6 +1050,8 @@ void PlaylistModel::deleteThread()
 {
     if(check_wayland())
     {
+        if(m_ploadThread ==nullptr)
+            return ;
         if(m_ploadThread->isRunning())
         {
             m_ploadThread->wait();

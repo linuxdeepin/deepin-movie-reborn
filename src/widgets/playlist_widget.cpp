@@ -956,6 +956,8 @@ void PlaylistWidget::clear()
 void PlaylistWidget::updateItemInfo(int id)
 {
     auto piw = dynamic_cast<PlayItemWidget *>(_playlist->itemWidget(_playlist->item(id)));
+    if(piw == nullptr)      //update info thx
+        return ;
     piw->updateInfo(_engine->playlist().items()[id]);
 }
 
