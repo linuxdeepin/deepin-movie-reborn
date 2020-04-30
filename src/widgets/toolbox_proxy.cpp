@@ -1937,24 +1937,24 @@ void ToolboxProxy::setup()
         }
     });
 
-    _autoResizeTimer.setSingleShot(true);
-    connect(&_autoResizeTimer, &QTimer::timeout, this, [ = ] {
-        if (_oldsize.width() == width())
-        {
-            _viewProgBar->setWidth();
-            if (_engine->state() != PlayerEngine::CoreState::Idle && size() != _loadsize) {
-#ifdef __mips__
-                bool bRet = QDBusInterface("com.deepin.wm", "/com/deepin/wm", "com.deepin.wm").property("compositingAllowSwitch").toBool();
-                if (bRet) { //龙芯平台存在显卡才加载缩略图
-                    updateThumbnail();
-                }
-#else
-                updateThumbnail();
-#endif
-                _loadsize = size();
-            }
-        }
-    });
+    /* _autoResizeTimer.setSingleShot(true);
+     connect(&_autoResizeTimer, &QTimer::timeout, this, [ = ] {
+         if (_oldsize.width() == width())
+         {
+             _viewProgBar->setWidth();
+             if (_engine->state() != PlayerEngine::CoreState::Idle && size() != _loadsize) {
+    #ifdef __mips__
+                 bool bRet = QDBusInterface("com.deepin.wm", "/com/deepin/wm", "com.deepin.wm").property("compositingAllowSwitch").toBool();
+                 if (bRet) { //龙芯平台存在显卡才加载缩略图
+                     updateThumbnail();
+                 }
+    #else
+                 updateThumbnail();
+    #endif
+                 _loadsize = size();
+             }
+         }
+     });*/
     PlaylistModel *playListModel = _engine->getplaylist();
     connect(playListModel, &PlaylistModel::currentChanged, this, [ = ] {
         _autoResizeTimer.start(1000);
