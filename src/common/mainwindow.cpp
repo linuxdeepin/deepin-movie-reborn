@@ -1959,7 +1959,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         //允许影院打开音乐文件进行播放
         QStringList filenames = DFileDialog::getOpenFileNames(this, tr("Open File"),
                                                               lastOpenedPath(),
-                                                              tr("All videos (%2 %1)").arg(_engine->video_filetypes.join(" "))
+                                                              tr("All videos (*)(%2 %1)").arg(_engine->video_filetypes.join(" "))
                                                               .arg(_engine->audio_filetypes.join(" ")), 0,
                                                               DFileDialog::HideNameFilterDetails);
 

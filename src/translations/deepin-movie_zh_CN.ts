@@ -601,7 +601,15 @@
     </message>
     <message>
         <source>All videos (%2 %1)</source>
-        <translation>所有视频(%2 %1)</translation>
+        <translation type="vanished">所有视频(%2 %1)</translation>
+    </message>
+    <message>
+        <source>All videos (*)(%2 %1)</source>
+        <translation>所有视频 (*)(%2 %1)</translation>
+    </message>
+    <message>
+        <source>Please exit smart dock</source>
+        <translation>请退出智能停靠</translation>
     </message>
 </context>
 <context>
