@@ -115,6 +115,7 @@ CompositingManager &CompositingManager::get()
 
 CompositingManager::CompositingManager()
 {
+    _hasCard = false;
     _platform = PlatformChecker().check();
 
     _composited = false;
@@ -220,20 +221,22 @@ CompositingManager::CompositingManager()
         _composited = false;
     }
 #ifdef __mips__
-    QSettings setting(QString::fromStdString(":/resources/data/mipsconfig.ini"), QSettings::IniFormat);
-
-    setting.beginGroup("mips");
-    int icomposite = setting.value("composite").toInt();
-    setting.endGroup();
-    if (icomposite == 0) {
+     if(_composited)
+     {
+        _hasCard = _composited;
         _composited = false;
-    }
+     }
 #endif
 
 }
 
 CompositingManager::~CompositingManager()
 {
+}
+
+bool CompositingManager::hascard()
+{
+    return _hasCard;
 }
 
 // Attempt to reuse mpv's code for detecting whether we want GLX or EGL (which

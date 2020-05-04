@@ -272,8 +272,14 @@ mpv_handle *MpvProxy::mpv_init()
 #endif
     } else {
 #ifdef __mips__
-        set_property(h, "vo", "x11,xv");
-        set_property(h, "ao", "alsa");
+        if(CompositingManager::get().hascard())
+        {
+            set_property(h, "hwdec", "vdpau");
+        }
+        else {
+            set_property(h, "vo", "x11,xv");
+            set_property(h, "ao", "alsa");
+        }
 #else
 #ifdef MWV206_0
         QFileInfo fi("/dev/mwv206_0");              //景嘉微显卡目前只支持vo=xv，等日后升级代码需要酌情修改。
@@ -924,7 +930,14 @@ void MpvProxy::play()
 
     // hwdec could be disabled by some codecs, so we need to re-enable it
     if (Settings::get().isSet(Settings::HWAccel)) {
+
         set_property(_handle, "hwdec", "auto-safe");
+#ifdef __mips__
+        if(CompositingManager::get().hascard())
+        {
+            set_property(_handle, "hwdec", "vdpau");
+        }
+#endif
     } else {
         set_property(_handle, "hwdec", "off");
     }
