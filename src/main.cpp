@@ -49,14 +49,23 @@
 #include "movie_configuration.h"
 #include "vendor/movieapp.h"
 #include "vendor/presenter.h"
+#include <QSettings>
 
 DWIDGET_USE_NAMESPACE
 
 
 int main(int argc, char *argv[])
 {
+#ifdef __mips__
+    if(CompositingManager::get().composited())
+    {
+        CompositingManager::detectOpenGLEarly();
+        CompositingManager::detectPciID();
+    }
+#else
     CompositingManager::detectOpenGLEarly();
     CompositingManager::detectPciID();
+#endif
 
 #if defined(STATIC_LIB)
     DWIDGET_INIT_RESOURCE();
@@ -69,9 +78,19 @@ int main(int argc, char *argv[])
     // required by mpv
     setlocale(LC_NUMERIC, "C");
 
+#ifdef __mips__
+    if(CompositingManager::get().composited())
+    {
+        app.setAttribute(Qt::AA_UseHighDpiPixmaps);
+        // overwrite DApplication default value
+        app.setAttribute(Qt::AA_ForceRasterWidgets, false);
+    }
+#else
     app.setAttribute(Qt::AA_UseHighDpiPixmaps);
     // overwrite DApplication default value
     app.setAttribute(Qt::AA_ForceRasterWidgets, false);
+#endif
+
     app.setOrganizationName("deepin");
     app.setApplicationName("deepin-movie");
     app.setApplicationVersion(DMR_VERSION);

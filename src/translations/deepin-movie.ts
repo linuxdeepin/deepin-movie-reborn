@@ -597,7 +597,15 @@
     </message>
     <message>
         <source>All videos (%2 %1)</source>
-        <translation type="unfinished">All videos (%1) {2 %1)?}</translation>
+        <translation type="obsolete">All videos (%1) {2 %1)?}</translation>
+    </message>
+    <message>
+        <source>All videos (*)(%2 %1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please exit smart dock</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
