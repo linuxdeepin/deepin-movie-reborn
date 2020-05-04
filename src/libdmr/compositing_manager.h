@@ -75,6 +75,7 @@ public:
      */
     static OpenGLInteropKind interopKind();
     static bool runningOnVmwgfx();
+    bool hascard();
 
     /**
      * override auto-detected compositing state.
@@ -111,6 +112,7 @@ private:
 
     bool _composited {false};
     Platform _platform {Platform::Unknown};
+    bool _hasCard;
 };
 }
 
