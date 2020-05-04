@@ -220,14 +220,13 @@ CompositingManager::CompositingManager()
         _composited = false;
     }
 #ifdef __mips__
-    QSettings setting(QString::fromStdString(":/resources/data/mipsconfig.ini"),QSettings::IniFormat);
+    QSettings setting(QString::fromStdString(":/resources/data/mipsconfig.ini"), QSettings::IniFormat);
 
     setting.beginGroup("mips");
     int icomposite = setting.value("composite").toInt();
     setting.endGroup();
-    if(icomposite == 0)
-    {
-        _composited = false
+    if (icomposite == 0) {
+        _composited = false;
     }
 #endif
 
