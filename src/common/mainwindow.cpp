@@ -721,6 +721,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     int volume = Settings::get().internalOption("global_volume").toInt();
     _engine->changeVolume(volume);
+    m_displayVolume = volume;
     if (Settings::get().internalOption("mute").toBool()) {
         _engine->toggleMute();
         Settings::get().setInternalOption("mute", _engine->muted());
@@ -2314,6 +2315,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                 return;
             }
             _engine->changeVolume(nVol);
+            m_displayVolume = nVol;
             //当音量与当前静音状态不符时切换静音状态
             /*if (nVol == 0 && !_engine->muted()) {
                 changedMute();
@@ -2345,29 +2347,25 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             setMusicMuted(_engine->muted());
         }*/
         //_engine->volumeUp();
-        int vol = _toolbox->DisplayVolume() + 10;
-        if (vol > 200)
-            vol = 200;
-        _engine->changeVolume(vol);
-        setAudioVolume(vol);
+        m_displayVolume = qMin(m_displayVolume + 10, 200);
+        _engine->changeVolume(m_displayVolume);
+        setAudioVolume(m_displayVolume);
         m_lastVolume = _engine->volume();
-        if (_engine->muted()) {
-            _nwComm->updateWithMessage(tr("Volume: %1%").arg(vol));
+        if (!_engine->muted()) {
+            _nwComm->updateWithMessage(tr("Volume: %1%").arg(m_displayVolume));
         }
-        _toolbox->setDisplayValue(vol);
-        Settings::get().setInternalOption("global_volume", vol);
+        _toolbox->setDisplayValue(qMin(m_displayVolume, 100));
+        Settings::get().setInternalOption("global_volume", m_displayVolume);
         break;
     }
 
     case ActionFactory::ActionKind::VolumeDown: {
         //_engine->volumeDown();
-        int vol = _toolbox->DisplayVolume() - 10;
-        if (vol < 0)
-            vol = 0;
-        _engine->changeVolume(vol);
-        setAudioVolume(vol);
+        m_displayVolume = qMax(m_displayVolume - 10, 0);
+        _engine->changeVolume(m_displayVolume);
+        setAudioVolume(m_displayVolume);
         //int pert = _engine->volume();
-        if (vol == 0 && !_engine->muted()) {
+        if (m_displayVolume == 0 && !_engine->muted()) {
             changedMute();
             _nwComm->updateWithMessage(tr("Mute"));
             setAudioVolume(0);
@@ -2376,11 +2374,11 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             setMusicMuted(_engine->muted());
         }*/
         m_lastVolume = _engine->volume();
-        if (_engine->muted()) {
-            _nwComm->updateWithMessage(tr("Volume: %1%").arg(vol));
+        if (!_engine->muted()) {
+            _nwComm->updateWithMessage(tr("Volume: %1%").arg(m_displayVolume));
         }
-        _toolbox->setDisplayValue(vol);
-        Settings::get().setInternalOption("global_volume", vol);
+        _toolbox->setDisplayValue(m_displayVolume);
+        Settings::get().setInternalOption("global_volume", m_displayVolume);
         break;
     }
 
