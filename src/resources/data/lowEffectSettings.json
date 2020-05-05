@@ -39,12 +39,6 @@
                             "hide": true,
                             "default": false
                         },
-                         {
-                            "key": "showInthumbnailmode",
-                            "text": "Show thumbnails in progress bar",
-                            "type": "checkbox",
-                            "default": true
-                        },
                         {
                             "key": "playlist_pos",
                             "name": "",
