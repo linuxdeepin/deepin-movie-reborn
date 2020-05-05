@@ -1084,8 +1084,6 @@ MainWindow::MainWindow(QWidget *parent)
     volumeMonitoring.start();
     connect(&volumeMonitoring, &VolumeMonitoring::volumeChanged, this, [ = ](int vol) {
         changedVolumeSlot(vol);
-        //_engine->changeVolume(vol);
-        //requestAction(ActionFactory::ChangeVolume);
     });
 
     connect(&volumeMonitoring, &VolumeMonitoring::muteChanged, this, [ = ](bool mute) {
@@ -1291,6 +1289,7 @@ void MainWindow::changedVolumeSlot(int vol)
         _nwComm->updateWithMessage(tr("Volume: %1%").arg(vol));
 #endif
     }
+    _toolbox->setDisplayValue(vol);
 }
 
 void MainWindow::changedMute()
@@ -1312,7 +1311,7 @@ void MainWindow::changedMute(bool mute)
         _nwComm->updateWithMessage(tr("Mute"));
     else {
         _engine->changeVolume(m_lastVolume);
-        _nwComm->updateWithMessage(tr("Volume: %1%").arg(_engine->volume()));
+        _nwComm->updateWithMessage(tr("Volume: %1%").arg(_toolbox->DisplayVolume()));
     }
 }
 
@@ -2301,7 +2300,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         if (_engine->muted()) {
             _nwComm->updateWithMessage(tr("Mute"));
         } else {
-            _nwComm->updateWithMessage(tr("Volume: %1%").arg(_engine->volume()));
+            _nwComm->updateWithMessage(tr("Volume: %1%").arg(_toolbox->DisplayVolume()));
         }
         break;
     }
@@ -2334,7 +2333,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             }*/
             _nwComm->updateWithMessage(tr("Volume: %1%").arg(nVol));
             m_lastVolume = _engine->volume();
-            Settings::get().setInternalOption("global_volume", _engine->volume());
+            Settings::get().setInternalOption("global_volume", _toolbox->DisplayVolume());
             setAudioVolume(nVol);
         }
         break;
@@ -2345,19 +2344,30 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             changedMute();
             setMusicMuted(_engine->muted());
         }*/
-        _engine->volumeUp();
+        //_engine->volumeUp();
+        int vol = _toolbox->DisplayVolume() + 10;
+        if (vol > 200)
+            vol = 200;
+        _engine->changeVolume(vol);
+        setAudioVolume(vol);
         m_lastVolume = _engine->volume();
-        int pert = _engine->volume();
         if (_engine->muted()) {
-            _nwComm->updateWithMessage(tr("Volume: %1%").arg(pert));
+            _nwComm->updateWithMessage(tr("Volume: %1%").arg(vol));
         }
+        _toolbox->setDisplayValue(vol);
+        Settings::get().setInternalOption("global_volume", vol);
         break;
     }
 
     case ActionFactory::ActionKind::VolumeDown: {
-        _engine->volumeDown();
-        int pert = _engine->volume();
-        if (pert == 0 && !_engine->muted()) {
+        //_engine->volumeDown();
+        int vol = _toolbox->DisplayVolume() - 10;
+        if (vol < 0)
+            vol = 0;
+        _engine->changeVolume(vol);
+        setAudioVolume(vol);
+        //int pert = _engine->volume();
+        if (vol == 0 && !_engine->muted()) {
             changedMute();
             _nwComm->updateWithMessage(tr("Mute"));
             setAudioVolume(0);
@@ -2367,8 +2377,10 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         }*/
         m_lastVolume = _engine->volume();
         if (_engine->muted()) {
-            _nwComm->updateWithMessage(tr("Volume: %1%").arg(pert));
+            _nwComm->updateWithMessage(tr("Volume: %1%").arg(vol));
         }
+        _toolbox->setDisplayValue(vol);
+        Settings::get().setInternalOption("global_volume", vol);
         break;
     }
 
@@ -3812,7 +3824,7 @@ void MainWindow::setAudioVolume(int volume)
                 ainterface.call(QLatin1String("SetMute"), false);
         } else if (tVolume < 0.01 && !muteV.toBool())
             ainterface.call(QLatin1String("SetMute"), true);*/
-        ainterface.call(QLatin1String("SetMute"), _engine->muted());
+        //ainterface.call(QLatin1String("SetMute"), _engine->muted());
     }
 }
 
