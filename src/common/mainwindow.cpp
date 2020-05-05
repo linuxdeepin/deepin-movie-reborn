@@ -720,9 +720,6 @@ MainWindow::MainWindow(QWidget *parent)
 #endif
 
     int volume = Settings::get().internalOption("global_volume").toInt();
-    /*if (VOLUME_OFFSET == volume) {
-        volume = 0;
-    }*/
     _engine->changeVolume(volume);
     if (Settings::get().internalOption("mute").toBool()) {
         _engine->toggleMute();
@@ -1080,6 +1077,9 @@ MainWindow::MainWindow(QWidget *parent)
     }*/
 
     //****************************************
+    if (_engine->muted()) {
+        _nwComm->updateWithMessage(tr("Mute"));
+    }
     ThreadPool::instance()->moveToNewThread(&volumeMonitoring);
     volumeMonitoring.start();
     connect(&volumeMonitoring, &VolumeMonitoring::volumeChanged, this, [ = ](int vol) {
