@@ -2341,14 +2341,16 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     }
 
     case ActionFactory::ActionKind::VolumeUp: {
-        if (_engine->muted()) {
+        /*if (_engine->muted()) {
             changedMute();
             setMusicMuted(_engine->muted());
-        }
+        }*/
         _engine->volumeUp();
         m_lastVolume = _engine->volume();
         int pert = _engine->volume();
-        _nwComm->updateWithMessage(tr("Volume: %1%").arg(pert));
+        if (_engine->muted()) {
+            _nwComm->updateWithMessage(tr("Volume: %1%").arg(pert));
+        }
         break;
     }
 
@@ -2359,12 +2361,14 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             changedMute();
             _nwComm->updateWithMessage(tr("Mute"));
             setAudioVolume(0);
-        } else if (pert > 0 && _engine->muted()) {
+        } /*else if (pert > 0 && _engine->muted()) {
             changedMute();
             setMusicMuted(_engine->muted());
-        }
+        }*/
         m_lastVolume = _engine->volume();
-        _nwComm->updateWithMessage(tr("Volume: %1%").arg(m_lastVolume));
+        if (_engine->muted()) {
+            _nwComm->updateWithMessage(tr("Volume: %1%").arg(pert));
+        }
         break;
     }
 
@@ -3803,11 +3807,12 @@ void MainWindow::setAudioVolume(int volume)
         //获取是否静音
         QVariant muteV = ApplicationAdaptor::redDBusProperty("com.deepin.daemon.Audio", sinkInputPath,
                                                              "com.deepin.daemon.Audio.SinkInput", "Mute");
-        if (tVolume > 0.0) {
+        /*if (tVolume > 0.0) {
             if (muteV.toBool())
                 ainterface.call(QLatin1String("SetMute"), false);
         } else if (tVolume < 0.01 && !muteV.toBool())
-            ainterface.call(QLatin1String("SetMute"), true);
+            ainterface.call(QLatin1String("SetMute"), true);*/
+        ainterface.call(QLatin1String("SetMute"), _engine->muted());
     }
 }
 
