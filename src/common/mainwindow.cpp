@@ -2334,7 +2334,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             }*/
             _nwComm->updateWithMessage(tr("Volume: %1%").arg(nVol));
             m_lastVolume = _engine->volume();
-            Settings::get().setInternalOption("last_volume", _engine->volume());
+            Settings::get().setInternalOption("global_volume", _engine->volume());
             setAudioVolume(nVol);
         }
         break;
@@ -3766,7 +3766,8 @@ void MainWindow::readSinkInputPath()
         QVariant nameV = ApplicationAdaptor::redDBusProperty("com.deepin.daemon.Audio", curPath.path(),
                                                              "com.deepin.daemon.Audio.SinkInput", "Name");
 
-        if (!nameV.isValid() || (!nameV.toString().contains( "Movie", Qt::CaseInsensitive) && !nameV.toString().contains("deepin-movie", Qt::CaseInsensitive)))
+        QString strMovie = QObject::tr("Movie");
+        if (!nameV.isValid() || (!nameV.toString().contains( strMovie, Qt::CaseInsensitive) && !nameV.toString().contains("deepin-movie", Qt::CaseInsensitive)))
             continue;
 
         sinkInputPath = curPath.path();

@@ -306,12 +306,12 @@ mpv_handle *MpvProxy::mpv_init()
         set_property(h, "wid", m_parentWidget->winId());
     }
 
-    QLocale locale;
-    QString strMovie = "Movie";
-    if (locale.language() == QLocale::Chinese) { //获取系统语言环境
+    //QLocale locale;
+    QString strMovie = QObject::tr("Movie");
+    /*if (locale.language() == QLocale::Chinese) { //获取系统语言环境
         qDebug() << "Chinese system" ;
         strMovie = "影院";
-    }
+    }*/
     //设置音量名称
     set_property(h, "audio-client-name", strMovie);
     //set_property(h, "keepaspect-window", "no");
