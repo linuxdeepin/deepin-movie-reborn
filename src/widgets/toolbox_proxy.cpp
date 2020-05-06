@@ -1080,18 +1080,19 @@ public:
         _autoHideTimer.setSingleShot(true);
         connect(&_autoHideTimer, &QTimer::timeout, this, &VolumeSlider::hide);
 
-        connect(_engine, &PlayerEngine::volumeChanged, [ = ]() {
+        //Modify by xiepengfei 2020.5.5
+        //修改音量显示逻辑，使之发生变化时从变化源处直接修改显示值而不是从系统中获取
+        //此处修改有风险，但为了音量变化曲线问题
+        //后期如有方法解决音量变化曲线问题请启用此部分代码并删除setDiaplayValue等相关部分
+        /*connect(_engine, &PlayerEngine::volumeChanged, [ = ]() {
             auto vol = _engine->volume();
-            /*if (vol != 0) {
-                vol -= VOLUME_OFFSET;
-            }*/
             auto var = _slider->value();
             if (abs(var - vol) < 5) {
                 _slider->setValue(var);
             } else {
                 _slider->setValue(vol);
             }
-        });
+        });*/
         m_composited = CompositingManager::get().composited();
     }
 
@@ -1122,11 +1123,19 @@ public:
     {
         _autoHideTimer.stop();
     }
+    int value()
+    {
+        return _slider->value();
+    }
 
 public slots:
     void delayedHide()
     {
         _autoHideTimer.start(500);
+    }
+    void setValue(int v)
+    {
+        _slider->setValue(v);
     }
 
 protected:
@@ -1415,7 +1424,7 @@ void ToolboxProxy::setthumbnailmode()
         return;
     }
 
-#ifndef __mips__
+#if !defined (__mips__ ) && !defined(__aarch64__)
     if (Settings::get().isSet(Settings::ShowThumbnailMode)) {
         _bthumbnailmode = true;
         updateThumbnail();
@@ -1434,6 +1443,11 @@ void ToolboxProxy::setthumbnailmode()
     }
 #endif
 
+}
+
+void ToolboxProxy::setDisplayValue(int v)
+{
+    _volSlider->setValue(v);
 }
 
 void ToolboxProxy::updateplaylisticon()
@@ -2715,6 +2729,11 @@ QLabel *ToolboxProxy::getfullscreentimeLabelend()
 bool ToolboxProxy::getbAnimationFinash()
 {
     return  bAnimationFinash;
+}
+
+int ToolboxProxy::DisplayVolume()
+{
+    return _volSlider->value();
 }
 }
 

@@ -720,10 +720,8 @@ MainWindow::MainWindow(QWidget *parent)
 #endif
 
     int volume = Settings::get().internalOption("global_volume").toInt();
-    /*if (VOLUME_OFFSET == volume) {
-        volume = 0;
-    }*/
     _engine->changeVolume(volume);
+    m_displayVolume = volume;
     if (Settings::get().internalOption("mute").toBool()) {
         _engine->toggleMute();
         Settings::get().setInternalOption("mute", _engine->muted());
@@ -1080,12 +1078,13 @@ MainWindow::MainWindow(QWidget *parent)
     }*/
 
     //****************************************
+    if (_engine->muted()) {
+        _nwComm->updateWithMessage(tr("Mute"));
+    }
     ThreadPool::instance()->moveToNewThread(&volumeMonitoring);
     volumeMonitoring.start();
     connect(&volumeMonitoring, &VolumeMonitoring::volumeChanged, this, [ = ](int vol) {
         changedVolumeSlot(vol);
-        //_engine->changeVolume(vol);
-        //requestAction(ActionFactory::ChangeVolume);
     });
 
     connect(&volumeMonitoring, &VolumeMonitoring::muteChanged, this, [ = ](bool mute) {
@@ -1291,6 +1290,7 @@ void MainWindow::changedVolumeSlot(int vol)
         _nwComm->updateWithMessage(tr("Volume: %1%").arg(vol));
 #endif
     }
+    _toolbox->setDisplayValue(vol);
 }
 
 void MainWindow::changedMute()
@@ -1312,7 +1312,7 @@ void MainWindow::changedMute(bool mute)
         _nwComm->updateWithMessage(tr("Mute"));
     else {
         _engine->changeVolume(m_lastVolume);
-        _nwComm->updateWithMessage(tr("Volume: %1%").arg(_engine->volume()));
+        _nwComm->updateWithMessage(tr("Volume: %1%").arg(_toolbox->DisplayVolume()));
     }
 }
 
@@ -1587,7 +1587,6 @@ void MainWindow::reflectActionToUI(ActionFactory::ActionKind kd)
     case ActionFactory::ActionKind::WindowAbove:
     case ActionFactory::ActionKind::ToggleFullscreen:
     case ActionFactory::ActionKind::LightTheme:
-    case ActionFactory::ActionKind::ToggleMiniMode:
     case ActionFactory::ActionKind::TogglePlaylist:
     case ActionFactory::ActionKind::HideSubtitle: {
         qDebug() << __func__ << kd;
@@ -1610,6 +1609,22 @@ void MainWindow::reflectActionToUI(ActionFactory::ActionKind kd)
             (*p)->setEnabled(old);
             ++p;
         }
+        break;
+    }
+
+    case ActionFactory::ActionKind::ToggleMiniMode: {
+        acts = ActionFactory::get().findActionsByKind(kd);
+        auto p = acts[0];
+
+        QAction *act = ActionFactory::get().findActionsByKind(ActionFactory::ActionKind::ToggleFullscreen)[0];
+        bool bFlag = act->isChecked();
+        if (bFlag) {
+            act->setChecked(false);
+        }
+
+        p->setEnabled(false);
+        p->setChecked(!p->isChecked());
+        p->setEnabled(true);
         break;
     }
 
@@ -1998,6 +2013,11 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             requestAction(ActionFactory::ActionKind::OpenFileList);
         } else {
             if (_engine->state() == PlayerEngine::CoreState::Idle) {
+                if (_engine->muted()) {
+                    QTimer::singleShot(2000, [ = ]() {
+                        _nwComm->updateWithMessage(tr("Mute"));
+                    });
+                }
                 if (Settings::get().isSet(Settings::ResumeFromLast)) {
                     int restore_pos = Settings::get().internalOption("playlist_pos").toInt();
                     restore_pos = qMax(qMin(restore_pos, _engine->playlist().count() - 1), 0);
@@ -2301,7 +2321,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         if (_engine->muted()) {
             _nwComm->updateWithMessage(tr("Mute"));
         } else {
-            _nwComm->updateWithMessage(tr("Volume: %1%").arg(_engine->volume()));
+            _nwComm->updateWithMessage(tr("Volume: %1%").arg(_toolbox->DisplayVolume()));
         }
         break;
     }
@@ -2315,6 +2335,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                 return;
             }
             _engine->changeVolume(nVol);
+            m_displayVolume = nVol;
             //当音量与当前静音状态不符时切换静音状态
             /*if (nVol == 0 && !_engine->muted()) {
                 changedMute();
@@ -2334,37 +2355,50 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             }*/
             _nwComm->updateWithMessage(tr("Volume: %1%").arg(nVol));
             m_lastVolume = _engine->volume();
-            Settings::get().setInternalOption("last_volume", _engine->volume());
+            Settings::get().setInternalOption("global_volume", _toolbox->DisplayVolume());
             setAudioVolume(nVol);
         }
         break;
     }
 
     case ActionFactory::ActionKind::VolumeUp: {
-        if (_engine->muted()) {
+        /*if (_engine->muted()) {
             changedMute();
             setMusicMuted(_engine->muted());
-        }
-        _engine->volumeUp();
+        }*/
+        //_engine->volumeUp();
+        m_displayVolume = qMin(m_displayVolume + 10, 200);
+        _engine->changeVolume(m_displayVolume);
+        setAudioVolume(m_displayVolume);
         m_lastVolume = _engine->volume();
-        int pert = _engine->volume();
-        _nwComm->updateWithMessage(tr("Volume: %1%").arg(pert));
+        if (!_engine->muted()) {
+            _nwComm->updateWithMessage(tr("Volume: %1%").arg(m_displayVolume));
+        }
+        _toolbox->setDisplayValue(qMin(m_displayVolume, 100));
+        Settings::get().setInternalOption("global_volume", m_displayVolume);
         break;
     }
 
     case ActionFactory::ActionKind::VolumeDown: {
-        _engine->volumeDown();
-        int pert = _engine->volume();
-        if (pert == 0 && !_engine->muted()) {
+        //_engine->volumeDown();
+        m_displayVolume = qMax(m_displayVolume - 10, 0);
+        _engine->changeVolume(m_displayVolume);
+        setAudioVolume(m_displayVolume);
+        //int pert = _engine->volume();
+        if (m_displayVolume == 0 && !_engine->muted()) {
             changedMute();
             _nwComm->updateWithMessage(tr("Mute"));
             setAudioVolume(0);
-        } else if (pert > 0 && _engine->muted()) {
-            changedMute();
-            setMusicMuted(_engine->muted());
-        }
+        } /*else if (pert > 0 && _engine->muted()) {
+changedMute();
+setMusicMuted(_engine->muted());
+}*/
         m_lastVolume = _engine->volume();
-        _nwComm->updateWithMessage(tr("Volume: %1%").arg(m_lastVolume));
+        if (!_engine->muted()) {
+            _nwComm->updateWithMessage(tr("Volume: %1%").arg(m_displayVolume));
+        }
+        _toolbox->setDisplayValue(m_displayVolume);
+        Settings::get().setInternalOption("global_volume", m_displayVolume);
         break;
     }
 
@@ -2552,9 +2586,6 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                     if (!_miniMode) {
                         _animationlable->setGeometry(width() / 2 - 100, height() / 2 - 100, 200, 200);
                         _animationlable->start();
-                    }
-                    if (_engine->muted()) {
-                        _nwComm->updateWithMessage(tr("Mute"));
                     }
                     QTimer::singleShot(160, [ = ]() {
                         _engine->pauseResume();
@@ -3424,7 +3455,6 @@ void MainWindow::resizeEvent(QResizeEvent *ev)
     QTimer::singleShot(0, [ = ]() {
         updateWindowTitle();
     });
-
     updateGeometryNotification(geometry().size());
 }
 
@@ -3766,7 +3796,8 @@ void MainWindow::readSinkInputPath()
         QVariant nameV = ApplicationAdaptor::redDBusProperty("com.deepin.daemon.Audio", curPath.path(),
                                                              "com.deepin.daemon.Audio.SinkInput", "Name");
 
-        if (!nameV.isValid() || (!nameV.toString().contains( "Movie", Qt::CaseInsensitive) && !nameV.toString().contains("deepin-movie", Qt::CaseInsensitive)))
+        QString strMovie = QObject::tr("Movie");
+        if (!nameV.isValid() || (!nameV.toString().contains( strMovie, Qt::CaseInsensitive) && !nameV.toString().contains("deepin-movie", Qt::CaseInsensitive)))
             continue;
 
         sinkInputPath = curPath.path();
@@ -3802,11 +3833,12 @@ void MainWindow::setAudioVolume(int volume)
         //获取是否静音
         QVariant muteV = ApplicationAdaptor::redDBusProperty("com.deepin.daemon.Audio", sinkInputPath,
                                                              "com.deepin.daemon.Audio.SinkInput", "Mute");
-        if (tVolume > 0.0) {
+        /*if (tVolume > 0.0) {
             if (muteV.toBool())
                 ainterface.call(QLatin1String("SetMute"), false);
         } else if (tVolume < 0.01 && !muteV.toBool())
-            ainterface.call(QLatin1String("SetMute"), true);
+            ainterface.call(QLatin1String("SetMute"), true);*/
+        //ainterface.call(QLatin1String("SetMute"), _engine->muted());
     }
 }
 

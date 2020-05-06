@@ -56,13 +56,13 @@ Settings::Settings()
                   .arg(qApp->applicationName());
     qDebug() << "configPath" << _configPath;
     auto backend = new QSettingBackend(_configPath);
-#ifdef __mips__ || ifdef __sw64__
-    bool composited = CompositingManager::get().composited();
-    if (composited)
+#if defined (__mips__) || defined (__sw64__) || defined ( __aarch64__)
+    /*if (!CompositingManager::get().composited()) {
         _settings = DSettings::fromJsonFile(":/resources/data/lowEffectSettings.json");
-    else {
+    } else {
         _settings = DSettings::fromJsonFile(":/resources/data/settings.json");
-    }
+    }*/
+    _settings = DSettings::fromJsonFile(":/resources/data/lowEffectSettings.json");
 #else
     _settings = DSettings::fromJsonFile(":/resources/data/settings.json");
 #endif
@@ -104,8 +104,10 @@ static QString flag2key(Settings::Flag f)
     switch (f) {
     case Settings::Flag::ClearWhenQuit:
         return "emptylist";
+#ifndef __aarch64__
     case Settings::Flag::ShowThumbnailMode:
         return "showInthumbnailmode";
+#endif
     case Settings::Flag::ResumeFromLast:
         return "resumelast";
     case Settings::Flag::AutoSearchSimilar:

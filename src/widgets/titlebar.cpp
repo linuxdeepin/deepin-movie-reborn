@@ -1,4 +1,4 @@
-/* 
+/*
  * (c) 2017, Deepin Technology Co., Ltd. <support@deepin.org>
  *
  * This program is free software; you can redistribute it and/or
@@ -36,8 +36,7 @@
 
 DWIDGET_USE_NAMESPACE
 
-namespace dmr 
-{
+namespace dmr {
 class TitlebarPrivate
 {
 public:
@@ -72,7 +71,7 @@ Titlebar::Titlebar(QWidget *parent) : DTitlebar(parent), d_ptr(new TitlebarPriva
 //    setLayout(layout);
     d->m_titlebar = this;
     d->m_titlebar->setWindowFlags(Qt::WindowMinMaxButtonsHint |
-                               Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint);
+                                  Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint);
     d->m_titlebar->setBackgroundTransparent(false);
     d->m_titlebar->setBlurBackground(true);
 
@@ -104,7 +103,7 @@ Titlebar::Titlebar(QWidget *parent) : DTitlebar(parent), d_ptr(new TitlebarPriva
 //    shadowEffect->setBlurRadius(1);
 //    d->m_titletxt->setGraphicsEffect(shadowEffect);
     d->m_titletxt->setFont(DFontSizeManager::instance()->get(DFontSizeManager::T7));
-    d->m_titlebar->addWidget(d->m_titletxt, Qt::AlignCenter);
+    //d->m_titlebar->addWidget(d->m_titletxt, Qt::AlignCenter);
 
     d->m_shadowEffect = new QGraphicsDropShadowEffect(this);
     connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, [ = ] {
@@ -124,7 +123,8 @@ Titlebar::Titlebar(QWidget *parent) : DTitlebar(parent), d_ptr(new TitlebarPriva
                 d->m_shadowEffect->setBlurRadius(d->offsetY);
                 d->m_shadowEffect->setColor(d->darkEffectColor);
             }
-        } else {
+        } else
+        {
             if (d->m_play) {
                 paBar.setColor(DPalette::ButtonText, DPalette::TextLively);
                 d->m_titlebar->setPalette(paBar);
@@ -137,7 +137,7 @@ Titlebar::Titlebar(QWidget *parent) : DTitlebar(parent), d_ptr(new TitlebarPriva
             }
         }
         this->setGraphicsEffect(d->m_shadowEffect);
-    });   
+    });
 }
 
 Titlebar::~Titlebar()
@@ -174,13 +174,12 @@ void Titlebar::setTitleBarBackground(bool flag)
         paBar.setColor(DPalette::ButtonText, d->playColor);
         paBar.setColor(DPalette::WindowText, d->playColor);
         d->m_titlebar->setPalette(paBar);
-//        d->m_titletxt->setPalette(paBar);
+        d->m_titletxt->setPalette(paBar);
         d->m_shadowEffect->setColor(Qt::transparent);
     } else {
         d->m_titlebar->setBackgroundTransparent(d->m_play);
         d->m_titlebar->setBlurBackground(d->m_play);
-        if (DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::DarkType)
-        {
+        if (DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::DarkType) {
             d->m_shadowEffect->setOffset(d->offsetX, d->offsetY);
             d->m_shadowEffect->setBlurRadius(d->offsetY);
             d->m_shadowEffect->setColor(d->darkEffectColor);
@@ -204,7 +203,7 @@ void Titlebar::paintEvent(QPaintEvent *pe)
     if (d->m_play) {
         QPalette palette;
         QPixmap pixmap = QPixmap(":resources/icons/titlebar.png");
-        palette.setBrush(QPalette::Background,QBrush(pixmap.scaled(window()->width(),50)));
+        palette.setBrush(QPalette::Background, QBrush(pixmap.scaled(window()->width(), 50)));
         bgColor = QBrush(pixmap);
         this->setPalette(palette);
     } else {
