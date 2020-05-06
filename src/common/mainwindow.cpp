@@ -4076,8 +4076,8 @@ void MainWindow::toggleUIMode()
             geom.moveTo(geom.x(), 0);
         }
 
-
-        move(geom.x(), geom.y());
+        auto deskGeom = qApp->desktop()->availableGeometry(this);
+        move((deskGeom.width() - this->width()) / 2, (deskGeom.height() - this->height()) / 2);
         resize(geom.width(), geom.height());
 
         _miniPlayBtn->move(sz.width() - 12 - _miniPlayBtn->width(),

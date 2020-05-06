@@ -42,6 +42,7 @@ public slots:
     void timeoutSlot();
 
 private:
+    bool _bOpened;
     QScopedPointer<VolumeMonitoringPrivate> d_ptr;
     Q_DECLARE_PRIVATE_D(qGetPtrHelper(d_ptr), VolumeMonitoring)
 };
