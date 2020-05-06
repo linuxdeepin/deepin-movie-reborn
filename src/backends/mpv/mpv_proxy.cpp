@@ -103,7 +103,7 @@ MpvProxy::MpvProxy(QWidget *parent)
         layout->addWidget(_gl_widget);
         setLayout(layout);
     }
-#ifdef __mips__
+#if defined (__mips__) || defined (__aarch64__)
     setAttribute(Qt::WA_TransparentForMouseEvents, true);
 #endif
 }
@@ -271,12 +271,11 @@ mpv_handle *MpvProxy::mpv_init()
         //set_property(h, "ao", "alsa");
 #endif
     } else {
-#ifdef __mips__
-        if(CompositingManager::get().hascard())
-        {
-            set_property(h, "hwdec", "vdpau");
-        }
-        else {
+#if defined (__mips__) || defined (__aarch64__)
+        if (CompositingManager::get().hascard()) {
+            set_property(h, "hwdec", "auto");
+            set_property(h, "vo", "gpu");
+        } else {
             set_property(h, "vo", "x11,xv");
             set_property(h, "ao", "alsa");
         }
@@ -370,7 +369,7 @@ mpv_handle *MpvProxy::mpv_init()
     auto p = ol.begin();
     while (p != ol.end()) {
         if (!p->first.startsWith("#")) {
-#ifndef __mips__
+#if !defined (__mips__ ) && !defined(__aarch64__)
 #ifdef MWV206_0
             QFileInfo fi("/dev/mwv206_0");              //景嘉微显卡目前只支持vo=xv，等日后升级代码需要酌情修改。
             if (!fi.exists()) {
@@ -932,10 +931,9 @@ void MpvProxy::play()
     if (Settings::get().isSet(Settings::HWAccel)) {
 
         set_property(_handle, "hwdec", "auto-safe");
-#ifdef __mips__
-        if(CompositingManager::get().hascard())
-        {
-            set_property(_handle, "hwdec", "vdpau");
+#if defined (__mips__) || defined (__aarch64__)
+        if (CompositingManager::get().hascard()) {
+            set_property(_handle, "hwdec", "auto");
         }
 #endif
     } else {
