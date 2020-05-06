@@ -1998,6 +1998,11 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             requestAction(ActionFactory::ActionKind::OpenFileList);
         } else {
             if (_engine->state() == PlayerEngine::CoreState::Idle) {
+                QTimer::singleShot(2000, [ = ]() {
+                    if (_engine->muted()) {
+                        _nwComm->updateWithMessage(tr("Mute"));
+                    }
+                });
                 if (Settings::get().isSet(Settings::ResumeFromLast)) {
                     int restore_pos = Settings::get().internalOption("playlist_pos").toInt();
                     restore_pos = qMax(qMin(restore_pos, _engine->playlist().count() - 1), 0);
@@ -2370,9 +2375,9 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             _nwComm->updateWithMessage(tr("Mute"));
             setAudioVolume(0);
         } /*else if (pert > 0 && _engine->muted()) {
-            changedMute();
-            setMusicMuted(_engine->muted());
-        }*/
+changedMute();
+setMusicMuted(_engine->muted());
+}*/
         m_lastVolume = _engine->volume();
         if (!_engine->muted()) {
             _nwComm->updateWithMessage(tr("Volume: %1%").arg(m_displayVolume));
@@ -2566,9 +2571,6 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                     if (!_miniMode) {
                         _animationlable->setGeometry(width() / 2 - 100, height() / 2 - 100, 200, 200);
                         _animationlable->start();
-                    }
-                    if (_engine->muted()) {
-                        _nwComm->updateWithMessage(tr("Mute"));
                     }
                     QTimer::singleShot(160, [ = ]() {
                         _engine->pauseResume();
@@ -3438,7 +3440,6 @@ void MainWindow::resizeEvent(QResizeEvent *ev)
     QTimer::singleShot(0, [ = ]() {
         updateWindowTitle();
     });
-
     updateGeometryNotification(geometry().size());
 }
 
