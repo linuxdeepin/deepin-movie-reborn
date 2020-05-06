@@ -2321,13 +2321,19 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         if (_engine->muted()) {
             _nwComm->updateWithMessage(tr("Mute"));
         } else {
-            _nwComm->updateWithMessage(tr("Volume: %1%").arg(_toolbox->DisplayVolume()));
+            //_nwComm->updateWithMessage(tr("Volume: %1%").arg(_toolbox->DisplayVolume()));
+            _nwComm->updateWithMessage(tr("Volume: %1%").arg(m_displayVolume));
         }
         break;
     }
 
     case ActionFactory::ActionKind::ChangeVolume: {
         if (!args.isEmpty()) {
+            //在此处防止被return掉
+            if (_engine->muted()) {
+                changedMute();
+                setMusicMuted(_engine->muted());
+            }
             int nVol = args[0].toInt();
             if (m_lastVolume == nVol) {
                 _nwComm->updateWithMessage(tr("Volume: %1%").arg(nVol));
@@ -2373,6 +2379,9 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         m_lastVolume = _engine->volume();
         if (!_engine->muted()) {
             _nwComm->updateWithMessage(tr("Volume: %1%").arg(m_displayVolume));
+        } else if (_engine->muted() && m_displayVolume < 200) {
+            changedMute();
+            setMusicMuted(_engine->muted());
         }
         _toolbox->setDisplayValue(qMin(m_displayVolume, 100));
         Settings::get().setInternalOption("global_volume", m_displayVolume);
@@ -2389,7 +2398,10 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             changedMute();
             _nwComm->updateWithMessage(tr("Mute"));
             setAudioVolume(0);
-        } /*else if (pert > 0 && _engine->muted()) {
+        } else if (m_displayVolume > 0 && _engine->muted()) {
+            changedMute();
+            setMusicMuted(_engine->muted());
+        }/*else if (pert > 0 && _engine->muted()) {
 changedMute();
 setMusicMuted(_engine->muted());
 }*/
