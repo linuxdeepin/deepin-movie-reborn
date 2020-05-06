@@ -139,7 +139,12 @@ CompositingManager::CompositingManager()
             } else if (isDriverLoadedCorrectly() || isDirectRendered()) {
 #ifdef __aarch64__
                 _composited = false;
-                qDebug() << "__aarch64__";
+                qDebug() << "__aarch64__  isDirectRendered";
+                if(isDriverLoadedCorrectly())       //如果有独立显卡
+                {
+                    _composited = true;
+                     qDebug() << "__aarch64__  isDriverLoadedCorrectly";
+                }
 #elif __mips__
                 _composited = false;
                 qDebug() << "__mips__";
@@ -220,7 +225,7 @@ CompositingManager::CompositingManager()
             WAYLAND_DISPLAY.contains(QLatin1String("wayland"), Qt::CaseInsensitive)) {
         _composited = false;
     }
-#ifdef __mips__
+#if defined (__mips__) || defined (__aarch64__)
      if(_composited)
      {
         _hasCard = _composited;
