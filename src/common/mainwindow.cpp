@@ -1587,7 +1587,6 @@ void MainWindow::reflectActionToUI(ActionFactory::ActionKind kd)
     case ActionFactory::ActionKind::WindowAbove:
     case ActionFactory::ActionKind::ToggleFullscreen:
     case ActionFactory::ActionKind::LightTheme:
-    case ActionFactory::ActionKind::ToggleMiniMode:
     case ActionFactory::ActionKind::TogglePlaylist:
     case ActionFactory::ActionKind::HideSubtitle: {
         qDebug() << __func__ << kd;
@@ -1610,6 +1609,22 @@ void MainWindow::reflectActionToUI(ActionFactory::ActionKind kd)
             (*p)->setEnabled(old);
             ++p;
         }
+        break;
+    }
+
+    case ActionFactory::ActionKind::ToggleMiniMode: {
+        acts = ActionFactory::get().findActionsByKind(kd);
+        auto p = acts[0];
+
+        QAction *act = ActionFactory::get().findActionsByKind(ActionFactory::ActionKind::ToggleFullscreen)[0];
+        bool bFlag = act->isChecked();
+        if (bFlag) {
+            act->setChecked(false);
+        }
+
+        p->setEnabled(false);
+        p->setChecked(!p->isChecked());
+        p->setEnabled(true);
         break;
     }
 
