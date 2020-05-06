@@ -1998,11 +1998,11 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             requestAction(ActionFactory::ActionKind::OpenFileList);
         } else {
             if (_engine->state() == PlayerEngine::CoreState::Idle) {
-                QTimer::singleShot(2000, [ = ]() {
-                    if (_engine->muted()) {
+                if (_engine->muted()) {
+                    QTimer::singleShot(2000, [ = ]() {
                         _nwComm->updateWithMessage(tr("Mute"));
-                    }
-                });
+                    });
+                }
                 if (Settings::get().isSet(Settings::ResumeFromLast)) {
                     int restore_pos = Settings::get().internalOption("playlist_pos").toInt();
                     restore_pos = qMax(qMin(restore_pos, _engine->playlist().count() - 1), 0);
