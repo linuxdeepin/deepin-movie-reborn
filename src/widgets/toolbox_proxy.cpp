@@ -1431,6 +1431,7 @@ void ToolboxProxy::setthumbnailmode()
     } else {
         _bthumbnailmode = false;
         updateMovieProgress();
+        _progBar_Widget->setCurrentIndex(1);   //恢复进度条模式 by zhuyuliang
     }
 #else
     bool composited = CompositingManager::get().composited();

@@ -1612,6 +1612,7 @@ void MainWindow::reflectActionToUI(ActionFactory::ActionKind kd)
         break;
     }
 
+    //迷你模式下判断是否全屏，恢复菜单状态 by zhuyuliang
     case ActionFactory::ActionKind::ToggleMiniMode: {
         acts = ActionFactory::get().findActionsByKind(kd);
         auto p = acts[0];
@@ -4077,7 +4078,7 @@ void MainWindow::toggleUIMode()
         }
 
         auto deskGeom = qApp->desktop()->availableGeometry(this);
-        move((deskGeom.width() - this->width()) / 2, (deskGeom.height() - this->height()) / 2);
+        move((deskGeom.width() - this->width()) / 2, (deskGeom.height() - this->height()) / 2); //迷你模式下窗口居中 by zhuyuliang
         resize(geom.width(), geom.height());
 
         _miniPlayBtn->move(sz.width() - 12 - _miniPlayBtn->width(),
