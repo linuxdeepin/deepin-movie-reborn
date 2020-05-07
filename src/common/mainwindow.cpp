@@ -720,6 +720,9 @@ MainWindow::MainWindow(QWidget *parent)
 #endif
 
     int volume = Settings::get().internalOption("global_volume").toInt();
+    if (volume > 100) {
+        volume = 100;
+    }
     _engine->changeVolume(volume);
     m_displayVolume = volume;
     if (Settings::get().internalOption("mute").toBool()) {
