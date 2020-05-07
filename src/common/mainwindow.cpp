@@ -1031,6 +1031,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 #if defined (__aarch64__) || defined (__mips__)
     popup = new DFloatingMessage(DFloatingMessage::TransientType, nullptr);
+    popup->setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
 #else
     popup = new DFloatingMessage(DFloatingMessage::TransientType, this);
 #endif
@@ -3885,7 +3886,7 @@ void MainWindow::popupAdapter(QIcon icon, QString text)
     popup->setMessage(text);
     popup->resize(w + 70, 52);
 #if defined (__aarch64__) || defined (__mips__)
-    popup->move((width() - popup->width()) / 2 + geometry().x(), height() - 127 + geometry().y());
+    popup->move((width() - popup->width()) / 2 + geometry().x(), height() - 137 + geometry().y());
 #else
     popup->move((width() - popup->width()) / 2, height() - 127);
 #endif
