@@ -1026,7 +1026,11 @@ MainWindow::MainWindow(QWidget *parent)
     _animationlable->setParent(this);
     _animationlable->setGeometry(width() / 2 - 100, height() / 2 - 100, 200, 200);
 
+#if defined (__aarch64__) || defined (__mips__)
+    popup = new DFloatingMessage(DFloatingMessage::TransientType, nullptr);
+#else
     popup = new DFloatingMessage(DFloatingMessage::TransientType, this);
+#endif
     popup->resize(0, 0);
 //    popup->hide(); //This causes the first screenshot icon to move down
 
@@ -2684,11 +2688,11 @@ popup->show();\
         if (success) {
             const QIcon icon = QIcon(":/resources/icons/icon_toast_sucess.svg");
             QString text = QString(tr("The screenshot is saved"));
-            POPUP_ADAPTER(icon, text);
+            popupAdapter(icon, text);
         } else {
             const QIcon icon = QIcon(":/resources/icons/icon_toast_fail.svg");
             QString text = QString(tr("Failed to save the screenshot"));
-            POPUP_ADAPTER(icon, text);
+            popupAdapter(icon, text);
         }
 
 #undef POPUP_ADAPTER
@@ -2801,11 +2805,11 @@ void MainWindow::onBurstScreenshot(const QImage &frame, qint64 timestamp)
             if (QFileInfo::exists(poster_path)) {
                 const QIcon icon = QIcon(":/resources/icons/icon_toast_sucess.svg");
                 QString text = QString(tr("The screenshot is saved"));
-                POPUP_ADAPTER(icon, text);
+                popupAdapter(icon, text);
             } else {
                 const QIcon icon = QIcon(":/resources/icons/icon_toast_fail.svg");
                 QString text = QString(tr("Failed to save the screenshot"));
-                POPUP_ADAPTER(icon, text);
+                popupAdapter(icon, text);
             }
         }
     }
@@ -3865,6 +3869,23 @@ void MainWindow::setMusicMuted(bool muted)
     }
 
     return;
+}
+
+void MainWindow::popupAdapter(QIcon icon, QString text)
+{
+    popup->setIcon(icon);
+    DFontSizeManager::instance()->bind(this, DFontSizeManager::T6);
+    QFont font = DFontSizeManager::instance()->get(DFontSizeManager::T6);
+    QFontMetrics fm(font);
+    auto w = fm.boundingRect(text).width();
+    popup->setMessage(text);
+    popup->resize(w + 70, 52);
+#if defined (__aarch64__) || defined (__mips__)
+    popup->move((width() - popup->width()) / 2 + geometry().x(), height() - 127 + geometry().y());
+#else
+    popup->move((width() - popup->width()) / 2, height() - 127);
+#endif
+    popup->show();
 }
 
 
