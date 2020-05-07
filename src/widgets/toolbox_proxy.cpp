@@ -2490,7 +2490,7 @@ void ToolboxProxy::buttonEnter()
     ToolButton *btn = qobject_cast<ToolButton *>(sender());
     QString id = btn->property("TipId").toString();
 
-    if (id == "sub" || id == "fs" || id == "list") {
+    if (id == tr("sub") || id == tr("fs") || id == tr("list")) {
         updateToolTipTheme(btn);
         btn->showToolTip();
     }
@@ -2503,7 +2503,7 @@ void ToolboxProxy::buttonLeave()
     ToolButton *btn = qobject_cast<ToolButton *>(sender());
     QString id = btn->property("TipId").toString();
 
-    if (id == "sub" || id == "fs" || id == "list") {
+    if (id == tr("sub") || id == tr("fs") || id == tr("list")) {
         btn->hideToolTip();
     }
 }
