@@ -1287,6 +1287,7 @@ void MainWindow::changedVolume(int vol)
 
 void MainWindow::changedVolumeSlot(int vol)
 {
+    setAudioVolume(vol);
     if (_engine->muted()) {
         _engine->toggleMute();
         Settings::get().setInternalOption("mute", _engine->muted());
