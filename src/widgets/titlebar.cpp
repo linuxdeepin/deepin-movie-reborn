@@ -103,7 +103,7 @@ Titlebar::Titlebar(QWidget *parent) : DTitlebar(parent), d_ptr(new TitlebarPriva
 //    shadowEffect->setBlurRadius(1);
 //    d->m_titletxt->setGraphicsEffect(shadowEffect);
     d->m_titletxt->setFont(DFontSizeManager::instance()->get(DFontSizeManager::T7));
-    //d->m_titlebar->addWidget(d->m_titletxt, Qt::AlignCenter);
+    d->m_titlebar->addWidget(d->m_titletxt, Qt::AlignCenter);
 
     d->m_shadowEffect = new QGraphicsDropShadowEffect(this);
     connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, [ = ] {

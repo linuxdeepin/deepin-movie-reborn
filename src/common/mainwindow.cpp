@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, see <http://www.gnu.org/licenses/>.
  *
- * In addition, as a special exception, the copyright holders give
+ * In addition, as a special exception, the copyright hemiters give
  * permission to link the code of portions of this program with the
  * OpenSSL library under certain conditions as described in each
  * individual source file, and distribute linked combinations
@@ -720,6 +720,9 @@ MainWindow::MainWindow(QWidget *parent)
 #endif
 
     int volume = Settings::get().internalOption("global_volume").toInt();
+    if (volume > 100) {
+        volume = 100;
+    }
     _engine->changeVolume(volume);
     m_displayVolume = volume;
     if (Settings::get().internalOption("mute").toBool()) {
@@ -1026,7 +1029,12 @@ MainWindow::MainWindow(QWidget *parent)
     _animationlable->setParent(this);
     _animationlable->setGeometry(width() / 2 - 100, height() / 2 - 100, 200, 200);
 
+#if defined (__aarch64__) || defined (__mips__)
+    popup = new DFloatingMessage(DFloatingMessage::TransientType, nullptr);
+    popup->setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
+#else
     popup = new DFloatingMessage(DFloatingMessage::TransientType, this);
+#endif
     popup->resize(0, 0);
 //    popup->hide(); //This causes the first screenshot icon to move down
 
@@ -1279,6 +1287,7 @@ void MainWindow::changedVolume(int vol)
 
 void MainWindow::changedVolumeSlot(int vol)
 {
+    setAudioVolume(vol);
     if (_engine->muted()) {
         _engine->toggleMute();
         Settings::get().setInternalOption("mute", _engine->muted());
@@ -1287,7 +1296,9 @@ void MainWindow::changedVolumeSlot(int vol)
         _engine->changeVolume(vol);
         Settings::get().setInternalOption("global_volume", vol);
 #ifndef __aarch64__
-        _nwComm->updateWithMessage(tr("Volume: %1%").arg(vol));
+        if (!_engine->muted()) {
+            _nwComm->updateWithMessage(tr("Volume: %1%").arg(vol));
+        }
 #endif
     }
     _toolbox->setDisplayValue(vol);
@@ -1612,6 +1623,7 @@ void MainWindow::reflectActionToUI(ActionFactory::ActionKind kd)
         break;
     }
 
+    //迷你模式下判断是否全屏，恢复菜单状态 by zhuyuliang
     case ActionFactory::ActionKind::ToggleMiniMode: {
         acts = ActionFactory::get().findActionsByKind(kd);
         auto p = acts[0];
@@ -2321,7 +2333,8 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         if (_engine->muted()) {
             _nwComm->updateWithMessage(tr("Mute"));
         } else {
-            _nwComm->updateWithMessage(tr("Volume: %1%").arg(_toolbox->DisplayVolume()));
+            //_nwComm->updateWithMessage(tr("Volume: %1%").arg(_toolbox->DisplayVolume()));
+            _nwComm->updateWithMessage(tr("Volume: %1%").arg(m_displayVolume));
         }
         break;
     }
@@ -2330,7 +2343,9 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         if (!args.isEmpty()) {
             int nVol = args[0].toInt();
             if (m_lastVolume == nVol) {
-                _nwComm->updateWithMessage(tr("Volume: %1%").arg(nVol));
+                if (!_engine->muted()) {
+                    _nwComm->updateWithMessage(tr("Volume: %1%").arg(nVol));
+                }
                 setAudioVolume(nVol);
                 return;
             }
@@ -2353,7 +2368,9 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                 Settings::get().setInternalOption("last_volume", _engine->volume());
                 setAudioVolume(nVol);
             }*/
-            _nwComm->updateWithMessage(tr("Volume: %1%").arg(nVol));
+            if (!_engine->muted()) {
+                _nwComm->updateWithMessage(tr("Volume: %1%").arg(nVol));
+            }
             m_lastVolume = _engine->volume();
             Settings::get().setInternalOption("global_volume", _toolbox->DisplayVolume());
             setAudioVolume(nVol);
@@ -2373,6 +2390,9 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         m_lastVolume = _engine->volume();
         if (!_engine->muted()) {
             _nwComm->updateWithMessage(tr("Volume: %1%").arg(m_displayVolume));
+        } else if (_engine->muted() && m_displayVolume < 200) {
+            changedMute();
+            setMusicMuted(_engine->muted());
         }
         _toolbox->setDisplayValue(qMin(m_displayVolume, 100));
         Settings::get().setInternalOption("global_volume", m_displayVolume);
@@ -2389,10 +2409,14 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             changedMute();
             _nwComm->updateWithMessage(tr("Mute"));
             setAudioVolume(0);
-        } /*else if (pert > 0 && _engine->muted()) {
-changedMute();
-setMusicMuted(_engine->muted());
-}*/
+        } else if (m_displayVolume > 0 && _engine->muted()) {
+            changedMute();
+            setMusicMuted(_engine->muted());
+        }
+        /*else if (pert > 0 && _engine->muted()) {
+        changedMute();
+        setMusicMuted(_engine->muted());
+        }*/
         m_lastVolume = _engine->volume();
         if (!_engine->muted()) {
             _nwComm->updateWithMessage(tr("Volume: %1%").arg(m_displayVolume));
@@ -2677,11 +2701,11 @@ popup->show();\
         if (success) {
             const QIcon icon = QIcon(":/resources/icons/icon_toast_sucess.svg");
             QString text = QString(tr("The screenshot is saved"));
-            POPUP_ADAPTER(icon, text);
+            popupAdapter(icon, text);
         } else {
             const QIcon icon = QIcon(":/resources/icons/icon_toast_fail.svg");
             QString text = QString(tr("Failed to save the screenshot"));
-            POPUP_ADAPTER(icon, text);
+            popupAdapter(icon, text);
         }
 
 #undef POPUP_ADAPTER
@@ -2794,11 +2818,11 @@ void MainWindow::onBurstScreenshot(const QImage &frame, qint64 timestamp)
             if (QFileInfo::exists(poster_path)) {
                 const QIcon icon = QIcon(":/resources/icons/icon_toast_sucess.svg");
                 QString text = QString(tr("The screenshot is saved"));
-                POPUP_ADAPTER(icon, text);
+                popupAdapter(icon, text);
             } else {
                 const QIcon icon = QIcon(":/resources/icons/icon_toast_fail.svg");
                 QString text = QString(tr("Failed to save the screenshot"));
-                POPUP_ADAPTER(icon, text);
+                popupAdapter(icon, text);
             }
         }
     }
@@ -3860,6 +3884,23 @@ void MainWindow::setMusicMuted(bool muted)
     return;
 }
 
+void MainWindow::popupAdapter(QIcon icon, QString text)
+{
+    popup->setIcon(icon);
+    DFontSizeManager::instance()->bind(this, DFontSizeManager::T6);
+    QFont font = DFontSizeManager::instance()->get(DFontSizeManager::T6);
+    QFontMetrics fm(font);
+    auto w = fm.boundingRect(text).width();
+    popup->setMessage(text);
+    popup->resize(w + 70, 52);
+#if defined (__aarch64__) || defined (__mips__)
+    popup->move((width() - popup->width()) / 2 + geometry().x(), height() - 137 + geometry().y());
+#else
+    popup->move((width() - popup->width()) / 2, height() - 127);
+#endif
+    popup->show();
+}
+
 
 QString MainWindow::lastOpenedPath()
 {
@@ -4064,8 +4105,8 @@ void MainWindow::toggleUIMode()
             geom.moveTo(geom.x(), 0);
         }
 
-
-        move(geom.x(), geom.y());
+        auto deskGeom = qApp->desktop()->availableGeometry(this);
+        move((deskGeom.width() - this->width()) / 2, (deskGeom.height() - this->height()) / 2); //迷你模式下窗口居中 by zhuyuliang
         resize(geom.width(), geom.height());
 
         _miniPlayBtn->move(sz.width() - 12 - _miniPlayBtn->width(),

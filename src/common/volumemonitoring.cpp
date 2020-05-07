@@ -44,6 +44,7 @@ VolumeMonitoring::VolumeMonitoring(QObject *parent)
     : QObject(parent), d_ptr(new VolumeMonitoringPrivate(this))
 {
     Q_D(VolumeMonitoring);
+    _bOpened = false;
     connect(&d->timer, SIGNAL(timeout()), this, SLOT(timeoutSlot()));
 }
 
@@ -112,9 +113,14 @@ void VolumeMonitoring::timeoutSlot()
     auto oldMute = Settings::get().internalOption("mute");
     auto oldVolume = Settings::get().internalOption("global_volume");
 
-
-    if (volume != oldVolume)
-        Q_EMIT volumeChanged(volume);
-    //if (mute != oldMute)
-    Q_EMIT muteChanged(muteV.toBool());
+    //第一次从dbus里获取的音量可能和实际不匹配，若是第一进入就用实际音量 by zhuyuliang
+    if (!_bOpened) {
+        Q_EMIT volumeChanged(oldVolume.toInt());
+        Q_EMIT muteChanged(muteV.toBool());
+        _bOpened = true;
+    } else {
+        if (volume != oldVolume)
+            Q_EMIT volumeChanged(volume);
+        Q_EMIT muteChanged(muteV.toBool());
+    }
 }

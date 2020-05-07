@@ -262,6 +262,7 @@ private:
     void readSinkInputPath();
     void setAudioVolume(int);
     void setMusicMuted(bool muted);
+    void popupAdapter(QIcon, QString);
 
     //Limit video to mini mode size
     void LimitWindowize();
