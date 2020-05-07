@@ -67,7 +67,7 @@ void VolumeMonitoring::stop()
 
 void VolumeMonitoring::timeoutSlot()
 {
-    d_ptr->timer.stop();
+    //d_ptr->timer.stop();
     QVariant v = ApplicationAdaptor::redDBusProperty("com.deepin.daemon.Audio", "/com/deepin/daemon/Audio",
                                                      "com.deepin.daemon.Audio", "SinkInputs");
 
@@ -125,5 +125,5 @@ void VolumeMonitoring::timeoutSlot()
         Q_EMIT muteChanged(muteV.toBool());
     }
 
-    d_ptr->timer.start();
+    //d_ptr->timer.start();
 }
