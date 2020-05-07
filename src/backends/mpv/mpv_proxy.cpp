@@ -160,7 +160,7 @@ mpv_handle *MpvProxy::mpv_init()
         set_property(h, "gpu-hwdec-interop", interop.toUtf8().constData());
         qDebug() << "set gpu-hwdec-interop = " << interop;
     }
-    set_property(h, "hwdec", "auto");
+    set_property(h, "hwdec", "auto-safe");
 
 #else
     if (Settings::get().isSet(Settings::HWAccel)) {
@@ -206,7 +206,7 @@ mpv_handle *MpvProxy::mpv_init()
                 qDebug() << "-------- gpu-hwdec-interop is disabled by user";
             }
         }
-        set_property(h, "hwdec", "auto");
+        set_property(h, "hwdec", "auto-safe");
     } else {
         set_property(h, "hwdec", "off");
     }
@@ -226,7 +226,7 @@ mpv_handle *MpvProxy::mpv_init()
             qDebug() << "modify HWDEC no";
             break;
         case 1:
-            set_property(h, "hwdec", "auto");
+            set_property(h, "hwdec", "auto-safe");
             qDebug() << "modify HWDEC auto";
             break;
         case 2:
@@ -273,7 +273,7 @@ mpv_handle *MpvProxy::mpv_init()
     } else {
 #if defined (__mips__) || defined (__aarch64__)
         if (CompositingManager::get().hascard()) {
-            set_property(h, "hwdec", "auto");
+            set_property(h, "hwdec", "auto-safe");
             set_property(h, "vo", "gpu");
         } else {
             set_property(h, "vo", "x11,xv");
@@ -942,7 +942,24 @@ void MpvProxy::play()
 #else
     set_property(_handle, "hwdec", "auto");
 #endif
-
+#ifdef __mips__
+    qDebug() << "play __mips__";
+    auto codec = get_property(_handle, "video-codec").toString();
+    if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") || codec.toLower().contains("mpeg2video")) {
+        qDebug() << "set_property hwdec no";
+        set_property(_handle, "hwdec", "no");
+    }
+#endif
+#ifdef __aarch64__
+    qDebug() << "MPV_EVENT_FILE_LOADED aarch64";
+    auto codec = get_property(_handle, "video-codec").toString();
+    if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") || codec.toLower().contains("mpeg2video")) {
+        qDebug() << "set_property hwdec no";
+        set_property(_handle, "hwdec", "no");
+        //qDebug() << "set_property hwdec auto-safe";
+        //set_property(_handle, "hwdec", "auto-safe");
+    }
+#endif
     if (opts.size()) {
         //opts << "sub-auto=fuzzy";
         args << "replace" << opts.join(',');
