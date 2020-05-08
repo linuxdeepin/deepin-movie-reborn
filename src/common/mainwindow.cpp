@@ -936,9 +936,9 @@ MainWindow::MainWindow(QWidget *parent)
                 auto geom = qApp->desktop()->availableGeometry(this);
                 move((geom.width() - this->width()) / 2, (geom.height() - this->height()) / 2);
             }
-        } else {
+        } /*else {
             utils::MoveToCenter(this);
-        }
+        }*/
 
         m_IsFree = true;
     });
@@ -3388,18 +3388,18 @@ void MainWindow::resizeByConstraints(bool forceCentered)
         QRect r;
         r.setSize(sz);
         r.moveTopLeft({(geom.width() - r.width()) / 2, (geom.height() - r.height()) / 2});
-        this->setGeometry(r);
-        this->move(r.x(), r.y());
-        this->resize(r.width(), r.height());
+//        this->setGeometry(r);
+//        this->move(r.x(), r.y());
+//        this->resize(r.width(), r.height());
 #ifdef __aarch64
         _nwComm->syncPosition(r);
 #endif
     } else {
-        QRect r = this->geometry();
-        r.setSize(sz);
-        this->setGeometry(r);
-        this->move(r.x(), r.y());
-        this->resize(r.width(), r.height());
+//        QRect r = this->geometry();
+//        r.setSize(sz);
+//        this->setGeometry(r);
+//        this->move(r.x(), r.y());
+//        this->resize(r.width(), r.height());
 #ifdef __aarch64
         _nwComm->syncPosition();
 #endif

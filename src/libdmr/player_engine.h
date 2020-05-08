@@ -226,7 +226,7 @@ protected:
     void resizeEvent(QResizeEvent *re) override;
     void savePreviousMovieState();
 
-    void paintEvent(QPaintEvent*e) override;
+    void paintEvent(QPaintEvent *e) override;
 
 private:
     QNetworkConfigurationManager _networkConfigMng;
