@@ -1296,11 +1296,10 @@ void MainWindow::changedVolumeSlot(int vol)
     if (_engine->volume() <= 100 || vol < 100) {
         _engine->changeVolume(vol);
         Settings::get().setInternalOption("global_volume", vol);
-#ifndef __aarch64__
-        if (!_engine->muted()) {
-            _nwComm->updateWithMessage(tr("Volume: %1%").arg(vol));
-        }
-#endif
+    }
+    //fix bug 24816 by ZhuYuliang
+    if (!_engine->muted()) {
+        _nwComm->updateWithMessage(tr("Volume: %1%").arg(m_displayVolume));
     }
     _toolbox->setDisplayValue(vol);
 }
