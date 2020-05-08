@@ -2343,6 +2343,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     case ActionFactory::ActionKind::ChangeVolume: {
         if (!args.isEmpty()) {
             int nVol = args[0].toInt();
+            m_displayVolume = nVol;
             if (m_lastVolume == nVol) {
                 if (!_engine->muted()) {
                     _nwComm->updateWithMessage(tr("Volume: %1%").arg(nVol));
@@ -2351,7 +2352,6 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                 return;
             }
             _engine->changeVolume(nVol);
-            m_displayVolume = nVol;
             //当音量与当前静音状态不符时切换静音状态
             /*if (nVol == 0 && !_engine->muted()) {
                 changedMute();
