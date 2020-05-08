@@ -1648,9 +1648,9 @@ void ToolboxProxy::setup()
         m_mouseFlag = false;
     });
 
-    //connect(_viewProgBar, &ViewProgBar::hoverChanged, this, &ToolboxProxy::progressHoverChanged);
-    // connect(_viewProgBar, &ViewProgBar::sliderMoved, this, &ToolboxProxy::setProgress);
-    //connect(_viewProgBar, &ViewProgBar::mousePressed, this, &ToolboxProxy::updateTimeVisible);
+//    connect(_viewProgBar, &ViewProgBar::hoverChanged, this, &ToolboxProxy::progressHoverChanged);
+//    connect(_viewProgBar, &ViewProgBar::sliderMoved, this, &ToolboxProxy::setProgress);
+//    connect(_viewProgBar, &ViewProgBar::mousePressed, this, &ToolboxProxy::updateTimeVisible);
 
     auto *signalMapper = new QSignalMapper(this);
     connect(signalMapper, static_cast<void(QSignalMapper::*)(const QString &)>(&QSignalMapper::mapped),
