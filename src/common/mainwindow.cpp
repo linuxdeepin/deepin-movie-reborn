@@ -721,6 +721,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     int volume = Settings::get().internalOption("global_volume").toInt();
     if (volume > 100) {
+        Settings::get().setInternalOption("global_volume", 100);
         volume = 100;
     }
     _engine->changeVolume(volume);
