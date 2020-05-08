@@ -304,6 +304,7 @@ mpv_handle *MpvProxy::mpv_init()
 #endif
         set_property(h, "wid", m_parentWidget->winId());
     }
+    qDebug() << __func__<< get_property(h, "vo").toString();
 
     //QLocale locale;
     QString strMovie = QObject::tr("Movie");
