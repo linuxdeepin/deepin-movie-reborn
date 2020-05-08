@@ -2027,6 +2027,14 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             requestAction(ActionFactory::ActionKind::OpenFileList);
         } else {
             if (_engine->state() == PlayerEngine::CoreState::Idle) {
+                //先显示分辨率，再显示静音
+                QTimer::singleShot(500, [ = ]() {
+                    QSize sz = geometry().size();
+                    auto msg = QString("%1x%2").arg(sz.width()).arg(sz.height());
+                    if (_engine->state() != PlayerEngine::CoreState::Idle) {
+                        _nwComm->updateWithMessage(msg);
+                    }
+                });
                 if (Settings::get().isSet(Settings::ResumeFromLast)) {
                     int restore_pos = Settings::get().internalOption("playlist_pos").toInt();
                     restore_pos = qMax(qMin(restore_pos, _engine->playlist().count() - 1), 0);
