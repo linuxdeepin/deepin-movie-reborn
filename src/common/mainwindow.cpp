@@ -1287,6 +1287,7 @@ void MainWindow::changedVolume(int vol)
 
 void MainWindow::changedVolumeSlot(int vol)
 {
+    setAudioVolume(vol);
     if (_engine->muted()) {
         _engine->toggleMute();
         Settings::get().setInternalOption("mute", _engine->muted());
@@ -2389,6 +2390,9 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         m_lastVolume = _engine->volume();
         if (!_engine->muted()) {
             _nwComm->updateWithMessage(tr("Volume: %1%").arg(m_displayVolume));
+        } else if (_engine->muted() && m_displayVolume < 200) {
+            changedMute();
+            setMusicMuted(_engine->muted());
         }
         _toolbox->setDisplayValue(qMin(m_displayVolume, 100));
         Settings::get().setInternalOption("global_volume", m_displayVolume);
@@ -2405,10 +2409,14 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             changedMute();
             _nwComm->updateWithMessage(tr("Mute"));
             setAudioVolume(0);
-        } /*else if (pert > 0 && _engine->muted()) {
-changedMute();
-setMusicMuted(_engine->muted());
-}*/
+        } else if (m_displayVolume > 0 && _engine->muted()) {
+            changedMute();
+            setMusicMuted(_engine->muted());
+        }
+        /*else if (pert > 0 && _engine->muted()) {
+        changedMute();
+        setMusicMuted(_engine->muted());
+        }*/
         m_lastVolume = _engine->volume();
         if (!_engine->muted()) {
             _nwComm->updateWithMessage(tr("Volume: %1%").arg(m_displayVolume));

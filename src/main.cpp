@@ -57,8 +57,7 @@ DWIDGET_USE_NAMESPACE
 int main(int argc, char *argv[])
 {
 #ifdef __mips__
-    if(CompositingManager::get().composited())
-    {
+    if (CompositingManager::get().composited()) {
         CompositingManager::detectOpenGLEarly();
         CompositingManager::detectPciID();
     }
@@ -79,8 +78,7 @@ int main(int argc, char *argv[])
     setlocale(LC_NUMERIC, "C");
 
 #ifdef __mips__
-    if(CompositingManager::get().composited())
-    {
+    if (CompositingManager::get().composited()) {
         app.setAttribute(Qt::AA_UseHighDpiPixmaps);
         // overwrite DApplication default value
         app.setAttribute(Qt::AA_ForceRasterWidgets, false);
