@@ -1301,7 +1301,9 @@ void MainWindow::changedVolumeSlot(int vol)
     if (!_engine->muted()) {
         _nwComm->updateWithMessage(tr("Volume: %1%").arg(m_displayVolume));
     } else {
-        _nwComm->updateWithMessage(tr("Mute"));
+        QTimer::singleShot(1000, [ = ]() {
+            _nwComm->updateWithMessage(tr("Mute"));
+        });
     }
     _toolbox->setDisplayValue(vol);
 }
@@ -2030,9 +2032,9 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         } else {
             if (_engine->state() == PlayerEngine::CoreState::Idle) {
                 //先显示分辨率，再显示静音
+                QSize sz = geometry().size();
+                auto msg = QString("%1x%2").arg(sz.width()).arg(sz.height());
                 QTimer::singleShot(500, [ = ]() {
-                    QSize sz = geometry().size();
-                    auto msg = QString("%1x%2").arg(sz.width()).arg(sz.height());
                     if (_engine->state() != PlayerEngine::CoreState::Idle) {
                         _nwComm->updateWithMessage(msg);
                     }
