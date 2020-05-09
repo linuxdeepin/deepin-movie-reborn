@@ -956,7 +956,7 @@ void PlaylistWidget::clear()
 void PlaylistWidget::updateItemInfo(int id)
 {
     auto piw = dynamic_cast<PlayItemWidget *>(_playlist->itemWidget(_playlist->item(id)));
-    if(piw == nullptr)      //update info thx
+    if (piw == nullptr)     //update info thx
         return ;
     piw->updateInfo(_engine->playlist().items()[id]);
 }
@@ -1307,7 +1307,7 @@ void PlaylistWidget::togglePopup()
     if (_state == State::Opened) {
         Q_ASSERT(isVisible());
 
-#ifndef __sw64__
+#ifndef __sw_64__
         paOpen = new QPropertyAnimation(this, "geometry");
         paOpen->setEasingCurve(QEasingCurve::Linear);
         paOpen->setDuration(POPUP_DURATION);
@@ -1334,7 +1334,7 @@ void PlaylistWidget::togglePopup()
     } else {
         setVisible(!isVisible());
         _toggling = true;
-#ifndef __sw64__
+#ifndef __sw_64__
         paClose = new QPropertyAnimation(this, "geometry");
         paClose->setEasingCurve(QEasingCurve::Linear);
         paClose->setDuration(POPUP_DURATION);

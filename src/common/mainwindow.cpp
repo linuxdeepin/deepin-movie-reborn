@@ -721,6 +721,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     int volume = Settings::get().internalOption("global_volume").toInt();
     if (volume > 100) {
+        Settings::get().setInternalOption("global_volume", 100);
         volume = 100;
     }
     _engine->changeVolume(volume);
@@ -935,9 +936,9 @@ MainWindow::MainWindow(QWidget *parent)
                 auto geom = qApp->desktop()->availableGeometry(this);
                 move((geom.width() - this->width()) / 2, (geom.height() - this->height()) / 2);
             }
-        } else {
+        } /*else {
             utils::MoveToCenter(this);
-        }
+        }*/
 
         m_IsFree = true;
     });
@@ -1289,17 +1290,18 @@ void MainWindow::changedVolumeSlot(int vol)
 {
     setAudioVolume(vol);
     if (_engine->muted()) {
-        _engine->toggleMute();
+        //_engine->toggleMute();
         Settings::get().setInternalOption("mute", _engine->muted());
     }
     if (_engine->volume() <= 100 || vol < 100) {
         _engine->changeVolume(vol);
         Settings::get().setInternalOption("global_volume", vol);
-#ifndef __aarch64__
-        if (!_engine->muted()) {
-            _nwComm->updateWithMessage(tr("Volume: %1%").arg(vol));
-        }
-#endif
+    }
+    //fix bug 24816 by ZhuYuliang
+    if (!_engine->muted()) {
+        _nwComm->updateWithMessage(tr("Volume: %1%").arg(m_displayVolume));
+    } else {
+        _nwComm->updateWithMessage(tr("Mute"));
     }
     _toolbox->setDisplayValue(vol);
 }
@@ -1319,9 +1321,11 @@ void MainWindow::changedMute(bool mute)
     }
     _engine->toggleMute();
     Settings::get().setInternalOption("mute", mute);
-    if (mute)
-        _nwComm->updateWithMessage(tr("Mute"));
-    else {
+    if (mute) {
+        QTimer::singleShot(1000, [ = ]() {
+            _nwComm->updateWithMessage(tr("Mute"));
+        });
+    } else {
         _engine->changeVolume(m_lastVolume);
         _nwComm->updateWithMessage(tr("Volume: %1%").arg(_toolbox->DisplayVolume()));
     }
@@ -2025,11 +2029,14 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             requestAction(ActionFactory::ActionKind::OpenFileList);
         } else {
             if (_engine->state() == PlayerEngine::CoreState::Idle) {
-                if (_engine->muted()) {
-                    QTimer::singleShot(2000, [ = ]() {
-                        _nwComm->updateWithMessage(tr("Mute"));
-                    });
-                }
+                //先显示分辨率，再显示静音
+                QTimer::singleShot(500, [ = ]() {
+                    QSize sz = geometry().size();
+                    auto msg = QString("%1x%2").arg(sz.width()).arg(sz.height());
+                    if (_engine->state() != PlayerEngine::CoreState::Idle) {
+                        _nwComm->updateWithMessage(msg);
+                    }
+                });
                 if (Settings::get().isSet(Settings::ResumeFromLast)) {
                     int restore_pos = Settings::get().internalOption("playlist_pos").toInt();
                     restore_pos = qMax(qMin(restore_pos, _engine->playlist().count() - 1), 0);
@@ -2342,6 +2349,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     case ActionFactory::ActionKind::ChangeVolume: {
         if (!args.isEmpty()) {
             int nVol = args[0].toInt();
+            m_displayVolume = nVol;
             if (m_lastVolume == nVol) {
                 if (!_engine->muted()) {
                     _nwComm->updateWithMessage(tr("Volume: %1%").arg(nVol));
@@ -2350,7 +2358,6 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                 return;
             }
             _engine->changeVolume(nVol);
-            m_displayVolume = nVol;
             //当音量与当前静音状态不符时切换静音状态
             /*if (nVol == 0 && !_engine->muted()) {
                 changedMute();
@@ -3387,18 +3394,18 @@ void MainWindow::resizeByConstraints(bool forceCentered)
         QRect r;
         r.setSize(sz);
         r.moveTopLeft({(geom.width() - r.width()) / 2, (geom.height() - r.height()) / 2});
-        this->setGeometry(r);
-        this->move(r.x(), r.y());
-        this->resize(r.width(), r.height());
+//        this->setGeometry(r);
+//        this->move(r.x(), r.y());
+//        this->resize(r.width(), r.height());
 #ifdef __aarch64
         _nwComm->syncPosition(r);
 #endif
     } else {
-        QRect r = this->geometry();
-        r.setSize(sz);
-        this->setGeometry(r);
-        this->move(r.x(), r.y());
-        this->resize(r.width(), r.height());
+//        QRect r = this->geometry();
+//        r.setSize(sz);
+//        this->setGeometry(r);
+//        this->move(r.x(), r.y());
+//        this->resize(r.width(), r.height());
 #ifdef __aarch64
         _nwComm->syncPosition();
 #endif

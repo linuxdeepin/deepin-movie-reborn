@@ -460,8 +460,10 @@ class ViewProgBar: public DWidget
 {
     Q_OBJECT
 public:
-    ViewProgBar(QWidget *parent = 0)
+    ViewProgBar(DMRSlider *_progBar, QWidget *parent = 0)
     {
+        //传入进度条，以便重新获取胶片进度条长度 by ZhuYuliang
+        this->_progBar = _progBar;
         _parent = parent;
         setFixedHeight(70);
 //       setFixedWidth(584);
@@ -659,7 +661,8 @@ public:
         _viewProgBarLayout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
         _viewProgBarLayout->setSpacing(1);
 
-        int pixWidget = pm_black_list.at(0).width();
+        //重新获取胶片进度条长度 by ZhuYuliang
+        int pixWidget = _progBar->width() / 100;
         //当宽度比较宽的时候，就插入两次相同图片
         if (this->width() > 500) {
             pixWidget /= 2;
@@ -861,6 +864,7 @@ private:
     QHBoxLayout *_indicatorLayout{nullptr};
     QHBoxLayout *_viewProgBarLayout{nullptr};
     QHBoxLayout *_viewProgBarLayout_black{nullptr};
+    DMRSlider *_progBar{nullptr};
     int position2progress(const QPoint &p)
     {
         auto total = _engine->duration();
@@ -1632,7 +1636,7 @@ void ToolboxProxy::setup()
     });
 //    stacked->addWidget(_progBar);
 
-    _viewProgBar = new ViewProgBar(bot_toolWgt);
+    _viewProgBar = new ViewProgBar(_progBar, bot_toolWgt);
 //    _viewProgBar->hide();
     _viewProgBar->setFocusPolicy(Qt::NoFocus);
 //    _viewProgBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
@@ -1648,9 +1652,9 @@ void ToolboxProxy::setup()
         m_mouseFlag = false;
     });
 
-    //connect(_viewProgBar, &ViewProgBar::hoverChanged, this, &ToolboxProxy::progressHoverChanged);
-    // connect(_viewProgBar, &ViewProgBar::sliderMoved, this, &ToolboxProxy::setProgress);
-    //connect(_viewProgBar, &ViewProgBar::mousePressed, this, &ToolboxProxy::updateTimeVisible);
+    connect(_viewProgBar, &ViewProgBar::hoverChanged, this, &ToolboxProxy::progressHoverChanged);
+    connect(_viewProgBar, &ViewProgBar::sliderMoved, this, &ToolboxProxy::setProgress);
+    connect(_viewProgBar, &ViewProgBar::mousePressed, this, &ToolboxProxy::updateTimeVisible);
 
     auto *signalMapper = new QSignalMapper(this);
     connect(signalMapper, static_cast<void(QSignalMapper::*)(const QString &)>(&QSignalMapper::mapped),

@@ -230,8 +230,10 @@ CompositingManager::CompositingManager()
      {
         _hasCard = _composited;
         _composited = false;
+        qDebug() << "hasCard: " <<_hasCard;
      }
 #endif
+     qDebug() << __func__<< "Composited is " <<_composited;
 
 }
 
