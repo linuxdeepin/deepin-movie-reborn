@@ -4098,7 +4098,7 @@ void MainWindow::toggleUIMode()
             if (vid_size.width() > vid_size.height()) {
                 sz = QSize(380, 380 / ratio);
             } else {
-                sz = QSize(380 * ratio, 380);
+                sz = QSize(380, 380 * ratio);   //by thx 这样修改mini模式也存在黑边
             }
         }
 
@@ -4140,7 +4140,7 @@ void MainWindow::toggleUIMode()
 //                this->setMinimumSize(QSize(1070, 680));
                 this->resize(850, 600);
             } else {
-                if (_lastRectInNormalMode.isValid() && _engine->videoRotation() == 0) {
+                if (_lastRectInNormalMode.isValid() /*&& _engine->videoRotation() == 0  by thx*/) {
                     resize(_lastRectInNormalMode.size());
                 } else {
                     resizeByConstraints();
