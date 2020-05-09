@@ -1290,6 +1290,7 @@ void MainWindow::changedVolumeSlot(int vol)
 {
     setAudioVolume(vol);
     if (_engine->muted()) {
+        //del by xiangxiaojun for 24834
         //_engine->toggleMute();
         Settings::get().setInternalOption("mute", _engine->muted());
     }
@@ -1324,9 +1325,7 @@ void MainWindow::changedMute(bool mute)
     _engine->toggleMute();
     Settings::get().setInternalOption("mute", mute);
     if (mute) {
-        QTimer::singleShot(1000, [ = ]() {
-            _nwComm->updateWithMessage(tr("Mute"));
-        });
+        _nwComm->updateWithMessage(tr("Mute"));
     } else {
         _engine->changeVolume(m_lastVolume);
         _nwComm->updateWithMessage(tr("Volume: %1%").arg(_toolbox->DisplayVolume()));
@@ -2415,8 +2414,11 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         setAudioVolume(m_displayVolume);
         //int pert = _engine->volume();
         if (m_displayVolume == 0 && !_engine->muted()) {
+            _nwComm->updateWithMessage(tr("Volume: %1%").arg(m_displayVolume));
             changedMute();
-            _nwComm->updateWithMessage(tr("Mute"));
+            QTimer::singleShot(500, [ = ]() {
+                _nwComm->updateWithMessage(tr("Mute"));
+            });
             setAudioVolume(0);
         } else if (m_displayVolume > 0 && _engine->muted()) {
             changedMute();
