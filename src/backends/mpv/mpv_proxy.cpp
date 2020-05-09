@@ -276,7 +276,7 @@ mpv_handle *MpvProxy::mpv_init()
             set_property(h, "hwdec", "auto-safe");
             set_property(h, "vo", "gpu");
         } else {
-            set_property(h, "vo", "x11,xv");
+            set_property(h, "vo", "xv,x11");
             set_property(h, "ao", "alsa");
         }
 #else
