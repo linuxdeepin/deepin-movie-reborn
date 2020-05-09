@@ -304,7 +304,7 @@ mpv_handle *MpvProxy::mpv_init()
 #endif
         set_property(h, "wid", m_parentWidget->winId());
     }
-    qDebug() << __func__<< get_property(h, "vo").toString();
+    qDebug() << __func__ << get_property(h, "vo").toString();
 
     //QLocale locale;
     QString strMovie = QObject::tr("Movie");
@@ -406,29 +406,20 @@ void MpvProxy::setState(PlayState s)
 void MpvProxy::pollingEndOfPlayback()
 {
     if (_state != Backend::Stopped) {
-        _polling = true;
-        blockSignals(true);
-        stop();
+
+        setState(Backend::Stopped);
+
         auto idle = get_property(_handle, "idle-active").toBool();
         if (idle) {
-            blockSignals(false);
+            //blockSignals(false);
             setState(Backend::Stopped);
             _polling = false;
             return;
         }
 
-        while (_state != Backend::Stopped) {
-            mpv_event *ev = mpv_wait_event(_handle, 0.005);
-            if (ev->event_id == MPV_EVENT_NONE)
-                continue;
-
-            if (ev->event_id == MPV_EVENT_END_FILE) {
-                qDebug() << "end of playback";
-                blockSignals(false);
-                setState(Backend::Stopped);
-                break;
-            }
-        }
+        _polling = true;
+        //blockSignals(true);
+        //stop();
 
         _polling = false;
     }
