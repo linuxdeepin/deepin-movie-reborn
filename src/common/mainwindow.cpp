@@ -1290,7 +1290,7 @@ void MainWindow::changedVolumeSlot(int vol)
 {
     setAudioVolume(vol);
     if (_engine->muted()) {
-        _engine->toggleMute();
+        //_engine->toggleMute();
         Settings::get().setInternalOption("mute", _engine->muted());
     }
     if (_engine->volume() <= 100 || vol < 100) {
@@ -1321,9 +1321,11 @@ void MainWindow::changedMute(bool mute)
     }
     _engine->toggleMute();
     Settings::get().setInternalOption("mute", mute);
-    if (mute)
-        _nwComm->updateWithMessage(tr("Mute"));
-    else {
+    if (mute) {
+        QTimer::singleShot(1000, [ = ]() {
+            _nwComm->updateWithMessage(tr("Mute"));
+        });
+    } else {
         _engine->changeVolume(m_lastVolume);
         _nwComm->updateWithMessage(tr("Volume: %1%").arg(_toolbox->DisplayVolume()));
     }
