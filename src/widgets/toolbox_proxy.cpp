@@ -2591,7 +2591,9 @@ void ToolboxProxy::resizeEvent(QResizeEvent *event)
         }
 
     }
-#ifndef __sw_64__
+
+
+#if!defined ( __sw_64__) && !defined (__aarch64__)
     if (bAnimationFinash ==  false && paopen != nullptr && paClose != nullptr) {
 
         _playlist->endAnimation();
@@ -2618,7 +2620,7 @@ void ToolboxProxy::resizeEvent(QResizeEvent *event)
 void ToolboxProxy::updateTimeLabel()
 {
 
-#ifndef __sw_64__
+#if!defined ( __sw_64__) && !defined (__aarch64__)
     // to keep left and right of the same width. which makes play button centered
     _listBtn->setVisible(width() > 300);
     _timeLabel->setVisible(width() > 450);
@@ -2680,7 +2682,7 @@ void ToolboxProxy::setPlaylist(PlaylistWidget *playlist)
         }
 
         if (_playlist->state() == PlaylistWidget::State::Opened) {
-#ifndef __sw_64__
+#if !defined ( __sw_64__) && !defined (__aarch64__)
             QRect rcBegin = this->geometry();
             QRect rcEnd = rcBegin;
             rcEnd.setY(rcBegin.y() - TOOLBOX_SPACE_HEIGHT);
@@ -2700,7 +2702,7 @@ void ToolboxProxy::setPlaylist(PlaylistWidget *playlist)
             _listBtn->setChecked(true);
         } else {
             _listBtn->setChecked(false);
-#ifndef __sw_64__
+#if !defined ( __sw_64__) && !defined (__aarch64__)
             bAnimationFinash = false;
 
             QRect rcBegin = this->geometry();

@@ -277,7 +277,7 @@ mpv_handle *MpvProxy::mpv_init()
             set_property(h, "vo", "gpu");
         } else {
             set_property(h, "vo", "xv,x11");
-            set_property(h, "ao", "alsa");
+            //set_property(h, "ao", "alsa");
         }
 #else
 #ifdef MWV206_0
