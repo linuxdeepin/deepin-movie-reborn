@@ -1290,6 +1290,7 @@ void MainWindow::changedVolumeSlot(int vol)
 {
     setAudioVolume(vol);
     if (_engine->muted()) {
+        //del by xiangxiaojun for 24834
         //_engine->toggleMute();
         Settings::get().setInternalOption("mute", _engine->muted());
     }
@@ -1301,7 +1302,9 @@ void MainWindow::changedVolumeSlot(int vol)
     if (!_engine->muted()) {
         _nwComm->updateWithMessage(tr("Volume: %1%").arg(m_displayVolume));
     } else {
-        _nwComm->updateWithMessage(tr("Mute"));
+        QTimer::singleShot(1000, [ = ]() {
+            _nwComm->updateWithMessage(tr("Mute"));
+        });
     }
     _toolbox->setDisplayValue(vol);
 }
@@ -1322,9 +1325,7 @@ void MainWindow::changedMute(bool mute)
     _engine->toggleMute();
     Settings::get().setInternalOption("mute", mute);
     if (mute) {
-        QTimer::singleShot(1000, [ = ]() {
-            _nwComm->updateWithMessage(tr("Mute"));
-        });
+        _nwComm->updateWithMessage(tr("Mute"));
     } else {
         _engine->changeVolume(m_lastVolume);
         _nwComm->updateWithMessage(tr("Volume: %1%").arg(_toolbox->DisplayVolume()));
@@ -2030,9 +2031,9 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         } else {
             if (_engine->state() == PlayerEngine::CoreState::Idle) {
                 //先显示分辨率，再显示静音
+                QSize sz = geometry().size();
+                auto msg = QString("%1x%2").arg(sz.width()).arg(sz.height());
                 QTimer::singleShot(500, [ = ]() {
-                    QSize sz = geometry().size();
-                    auto msg = QString("%1x%2").arg(sz.width()).arg(sz.height());
                     if (_engine->state() != PlayerEngine::CoreState::Idle) {
                         _nwComm->updateWithMessage(msg);
                     }
@@ -2413,8 +2414,11 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         setAudioVolume(m_displayVolume);
         //int pert = _engine->volume();
         if (m_displayVolume == 0 && !_engine->muted()) {
+            _nwComm->updateWithMessage(tr("Volume: %1%").arg(m_displayVolume));
             changedMute();
-            _nwComm->updateWithMessage(tr("Mute"));
+            QTimer::singleShot(500, [ = ]() {
+                _nwComm->updateWithMessage(tr("Mute"));
+            });
             setAudioVolume(0);
         } else if (m_displayVolume > 0 && _engine->muted()) {
             changedMute();
@@ -3363,6 +3367,8 @@ void MainWindow::resizeByConstraints(bool forceCentered)
         float h = (float)sz.height();
         if ((w / h) > 0.56 && (w / h) < 0.75) {
             _engine->setVideoZoom(-(w / h) - 0.1);
+        } else {
+            _engine->setVideoZoom(0);
         }
 
         //3.26修改，初始分辨率大于1080P时缩小一半
@@ -4094,7 +4100,7 @@ void MainWindow::toggleUIMode()
             if (vid_size.width() > vid_size.height()) {
                 sz = QSize(380, 380 / ratio);
             } else {
-                sz = QSize(380 * ratio, 380);
+                sz = QSize(380, 380 * ratio);   //by thx 这样修改mini模式也存在黑边
             }
         }
 
@@ -4136,7 +4142,7 @@ void MainWindow::toggleUIMode()
 //                this->setMinimumSize(QSize(1070, 680));
                 this->resize(850, 600);
             } else {
-                if (_lastRectInNormalMode.isValid() && _engine->videoRotation() == 0) {
+                if (_lastRectInNormalMode.isValid() /*&& _engine->videoRotation() == 0  by thx*/) {
                     resize(_lastRectInNormalMode.size());
                 } else {
                     resizeByConstraints();
