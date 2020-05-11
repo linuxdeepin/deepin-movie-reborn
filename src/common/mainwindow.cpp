@@ -50,6 +50,7 @@
 #include "dvd_utils.h"
 #include "dbus_adpator.h"
 #include "threadpool.h"
+#include "dbusdock.h"
 
 //#include <QtWidgets>
 #include <QtDBus>
@@ -67,6 +68,8 @@
 #include <DSettingsWidgetFactory>
 #include <DLineEdit>
 #include <DFileDialog>
+
+#define DOCK_KELVINU_VIEW 1
 
 #define AUTOHIDE_TIMEOUT 2000
 #include <DToast>
@@ -931,12 +934,12 @@ MainWindow::MainWindow(QWidget *parent)
         }
         this->resizeByConstraints();
         QDesktopWidget desktop;
-        if (desktop.screenCount() > 1) {
+        /*if (desktop.screenCount() > 1) {
             if (!isFullScreen() && !isMaximized() && !_miniMode) {
                 auto geom = qApp->desktop()->availableGeometry(this);
                 move((geom.width() - this->width()) / 2, (geom.height() - this->height()) / 2);
             }
-        } /*else {
+        } else {
             utils::MoveToCenter(this);
         }*/
 
@@ -1185,6 +1188,24 @@ void MainWindow::leaveEvent(QEvent *)
 void MainWindow::onWindowStateChanged()
 {
     qDebug() << windowState();
+
+#ifdef DOCK_KELVINU_VIEW
+    if (windowState() == Qt::WindowMaximized && _bIsMaxmized) {
+        setWindowState(Qt::WindowNoState);
+        _bIsMaxmized = false;
+        this->setGeometry(_rectNormal);
+    }
+
+    else if (windowState() == Qt::WindowMaximized && !_bIsMaxmized) {
+        setWindowState(Qt::WindowNoState);
+        _rectNormal = this->geometry();
+        DBusDock dbusDock;
+        DockRect dockRect = dbusDock.frontendWindowRect();
+        QRect primaryGeometry = qApp->primaryScreen()->geometry();
+        setGeometry(0, 0, primaryGeometry.width(), primaryGeometry.height() - dockRect.height);
+        _bIsMaxmized = true;
+    }
+#endif
 
     if (!_miniMode && !isFullScreen()) {
         _titlebar->setVisible(_toolbox->isVisible());
@@ -2155,6 +2176,8 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
 //                return;
 //            }
 //        }
+
+        this->setCursor(Qt::BlankCursor);
         if (isFullScreen()) {
             _quitfullscreenstopflag = true;
             if (_lastWindowState == Qt::WindowMaximized) {
@@ -2180,6 +2203,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             if (!_toolbox->getbAnimationFinash())
                 return;
             showFullScreen();
+
             if (isFullScreen()) {
                 _maxfornormalflag = false;
                 int pixelsWidth = _toolbox->getfullscreentimeLabel()->width() + _toolbox->getfullscreentimeLabelend()->width();
@@ -2199,6 +2223,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             _animationlable->move(QPoint((width() - _animationlable->width()) / 2,
                                          (height() - _animationlable->height()) / 2));
         }
+
         break;
     }
 
@@ -3076,6 +3101,8 @@ void MainWindow::suspendToolsWindow()
 
         _titlebar->hide();
         _toolbox->hide();
+        if(isFullScreen())
+            this->setCursor(Qt::BlankCursor);
     } else {
         if (_autoHideTimer.isActive())
             return;
@@ -3527,6 +3554,7 @@ void MainWindow::moveEvent(QMoveEvent *ev)
 #else
     updateGeometryNotification(geometry().size());
 #endif
+    qDebug() << __func__ << geometry();
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *ev)
