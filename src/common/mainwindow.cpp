@@ -2155,6 +2155,8 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
 //                return;
 //            }
 //        }
+
+        this->setCursor(Qt::BlankCursor);
         if (isFullScreen()) {
             _quitfullscreenstopflag = true;
             if (_lastWindowState == Qt::WindowMaximized) {
@@ -2180,6 +2182,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             if (!_toolbox->getbAnimationFinash())
                 return;
             showFullScreen();
+
             if (isFullScreen()) {
                 _maxfornormalflag = false;
                 int pixelsWidth = _toolbox->getfullscreentimeLabel()->width() + _toolbox->getfullscreentimeLabelend()->width();
@@ -2199,6 +2202,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             _animationlable->move(QPoint((width() - _animationlable->width()) / 2,
                                          (height() - _animationlable->height()) / 2));
         }
+
         break;
     }
 
@@ -3076,6 +3080,8 @@ void MainWindow::suspendToolsWindow()
 
         _titlebar->hide();
         _toolbox->hide();
+        if(isFullScreen())
+            this->setCursor(Qt::BlankCursor);
     } else {
         if (_autoHideTimer.isActive())
             return;
