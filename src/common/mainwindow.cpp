@@ -50,6 +50,7 @@
 #include "dvd_utils.h"
 #include "dbus_adpator.h"
 #include "threadpool.h"
+#include "dbusdock.h"
 
 //#include <QtWidgets>
 #include <QtDBus>
@@ -67,6 +68,8 @@
 #include <DSettingsWidgetFactory>
 #include <DLineEdit>
 #include <DFileDialog>
+
+#define DOCK_KELVINU_VIEW 1
 
 #define AUTOHIDE_TIMEOUT 2000
 #include <DToast>
@@ -1185,6 +1188,24 @@ void MainWindow::leaveEvent(QEvent *)
 void MainWindow::onWindowStateChanged()
 {
     qDebug() << windowState();
+
+#ifdef DOCK_KELVINU_VIEW
+    if (windowState() == Qt::WindowMaximized && _bIsMaxmized) {
+        setWindowState(Qt::WindowNoState);
+        _bIsMaxmized = false;
+        this->setGeometry(_rectNormal);
+    }
+
+    else if (windowState() == Qt::WindowMaximized && !_bIsMaxmized) {
+        setWindowState(Qt::WindowNoState);
+        _rectNormal = this->geometry();
+        DBusDock dbusDock;
+        DockRect dockRect = dbusDock.frontendWindowRect();
+        QRect primaryGeometry = qApp->primaryScreen()->geometry();
+        setGeometry(0, 0, primaryGeometry.width(), primaryGeometry.height() - dockRect.height);
+        _bIsMaxmized = true;
+    }
+#endif
 
     if (!_miniMode && !isFullScreen()) {
         _titlebar->setVisible(_toolbox->isVisible());
