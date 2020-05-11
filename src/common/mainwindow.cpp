@@ -931,12 +931,12 @@ MainWindow::MainWindow(QWidget *parent)
         }
         this->resizeByConstraints();
         QDesktopWidget desktop;
-        if (desktop.screenCount() > 1) {
+        /*if (desktop.screenCount() > 1) {
             if (!isFullScreen() && !isMaximized() && !_miniMode) {
                 auto geom = qApp->desktop()->availableGeometry(this);
                 move((geom.width() - this->width()) / 2, (geom.height() - this->height()) / 2);
             }
-        } /*else {
+        } else {
             utils::MoveToCenter(this);
         }*/
 
@@ -3527,6 +3527,7 @@ void MainWindow::moveEvent(QMoveEvent *ev)
 #else
     updateGeometryNotification(geometry().size());
 #endif
+    qDebug() << __func__ << geometry();
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *ev)
