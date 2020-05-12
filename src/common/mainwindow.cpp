@@ -930,13 +930,13 @@ MainWindow::MainWindow(QWidget *parent)
             _lastRectInNormalMode.setSize({mi.width, mi.height});
         }
         this->resizeByConstraints();
-        QDesktopWidget desktop;
+        /*QDesktopWidget desktop;
         if (desktop.screenCount() > 1) {
             if (!isFullScreen() && !isMaximized() && !_miniMode) {
                 auto geom = qApp->desktop()->availableGeometry(this);
                 move((geom.width() - this->width()) / 2, (geom.height() - this->height()) / 2);
             }
-        } /*else {
+        } else {
             utils::MoveToCenter(this);
         }*/
 
@@ -1288,7 +1288,7 @@ void MainWindow::changedVolume(int vol)
 
 void MainWindow::changedVolumeSlot(int vol)
 {
-    setAudioVolume(vol);
+    setAudioVolume(qMin(vol, 100));
     if (_engine->muted()) {
         //del by xiangxiaojun for 24834
         //_engine->toggleMute();
@@ -1306,7 +1306,7 @@ void MainWindow::changedVolumeSlot(int vol)
             _nwComm->updateWithMessage(tr("Mute"));
         });
     }
-    _toolbox->setDisplayValue(vol);
+    _toolbox->setDisplayValue(qMin(vol, 100));
 }
 
 void MainWindow::changedMute()
@@ -2355,7 +2355,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                 if (!_engine->muted()) {
                     _nwComm->updateWithMessage(tr("Volume: %1%").arg(nVol));
                 }
-                setAudioVolume(nVol);
+                setAudioVolume(qMin(nVol, 100));
                 return;
             }
             _engine->changeVolume(nVol);
@@ -2381,7 +2381,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             }
             m_lastVolume = _engine->volume();
             Settings::get().setInternalOption("global_volume", _toolbox->DisplayVolume());
-            setAudioVolume(nVol);
+            setAudioVolume(qMin(nVol, 100));
         }
         break;
     }
@@ -2394,7 +2394,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         //_engine->volumeUp();
         m_displayVolume = qMin(m_displayVolume + 10, 200);
         _engine->changeVolume(m_displayVolume);
-        setAudioVolume(m_displayVolume);
+        setAudioVolume(qMin(m_displayVolume, 100));
         m_lastVolume = _engine->volume();
         if (!_engine->muted()) {
             _nwComm->updateWithMessage(tr("Volume: %1%").arg(m_displayVolume));
@@ -2411,7 +2411,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         //_engine->volumeDown();
         m_displayVolume = qMax(m_displayVolume - 10, 0);
         _engine->changeVolume(m_displayVolume);
-        setAudioVolume(m_displayVolume);
+        setAudioVolume(qMin(m_displayVolume, 100));
         //int pert = _engine->volume();
         if (m_displayVolume == 0 && !_engine->muted()) {
             _nwComm->updateWithMessage(tr("Volume: %1%").arg(m_displayVolume));
@@ -2432,7 +2432,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         if (!_engine->muted()) {
             _nwComm->updateWithMessage(tr("Volume: %1%").arg(m_displayVolume));
         }
-        _toolbox->setDisplayValue(m_displayVolume);
+        _toolbox->setDisplayValue(qMin(m_displayVolume, 100));
         Settings::get().setInternalOption("global_volume", m_displayVolume);
         break;
     }
@@ -3549,6 +3549,7 @@ void MainWindow::keyReleaseEvent(QKeyEvent *ev)
 void MainWindow::capturedMousePressEvent(QMouseEvent *me)
 {
     _mouseMoved = false;
+    _mousePressed = false;
 #ifdef __aarch64__
     _nwComm->hide();
 #elif __mips__
@@ -3577,6 +3578,7 @@ static bool _afterDblClick = false;
 void MainWindow::mousePressEvent(QMouseEvent *ev)
 {
     _mouseMoved = false;
+    _mousePressed = false;
 #ifdef __aarch64__
     _nwComm->hide();
 #elif __mips__
