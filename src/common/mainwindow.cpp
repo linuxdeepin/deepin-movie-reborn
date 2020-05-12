@@ -930,13 +930,13 @@ MainWindow::MainWindow(QWidget *parent)
             _lastRectInNormalMode.setSize({mi.width, mi.height});
         }
         this->resizeByConstraints();
-        QDesktopWidget desktop;
+        /*QDesktopWidget desktop;
         if (desktop.screenCount() > 1) {
             if (!isFullScreen() && !isMaximized() && !_miniMode) {
                 auto geom = qApp->desktop()->availableGeometry(this);
                 move((geom.width() - this->width()) / 2, (geom.height() - this->height()) / 2);
             }
-        } /*else {
+        } else {
             utils::MoveToCenter(this);
         }*/
 
