@@ -496,7 +496,7 @@ void MpvProxy::handle_mpv_events()
             emit tracksChanged();
             break;
 
-        case MPV_EVENT_FILE_LOADED:
+        case MPV_EVENT_FILE_LOADED: {
             qDebug() << mpv_event_name(ev->event_id);
 
             if (_gl_widget) {
@@ -531,7 +531,7 @@ void MpvProxy::handle_mpv_events()
                      .arg(get_property(_handle, "video-dec-params/rotate").toInt())
                      .arg(get_property(_handle, "video-params/rotate").toInt());
             break;
-
+        }
         case MPV_EVENT_VIDEO_RECONFIG: {
             auto sz = videoSize();
             if (!sz.isEmpty())
