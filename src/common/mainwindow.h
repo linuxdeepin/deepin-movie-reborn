@@ -351,10 +351,6 @@ private:
     bool m_isManual;
 
     bool m_IsFree = true;  //播放器是否空闲，和IDel的定义不同
-
-    bool _bIsMaxmized = false;
-
-    QRect _rectNormal {0, 0, 0, 0};
 };
 };
 

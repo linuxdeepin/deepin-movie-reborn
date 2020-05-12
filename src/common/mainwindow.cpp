@@ -662,6 +662,13 @@ private:
 MainWindow::MainWindow(QWidget *parent)
     : DMainWindow(NULL)
 {
+#ifdef DOCK_KELVINU_VIEW
+    DBusDock dbusDock;
+    DockRect dockRect = dbusDock.frontendWindowRect();
+    QRect primaryGeometry = qApp->primaryScreen()->geometry();
+    setMaximumSize(primaryGeometry.width(), primaryGeometry.height() - dockRect.height);
+#endif
+
     m_lastVolume = Settings::get().internalOption("last_volume").toInt();;
     bool composited = CompositingManager::get().composited();
 #ifdef USE_DXCB
@@ -1188,24 +1195,6 @@ void MainWindow::leaveEvent(QEvent *)
 void MainWindow::onWindowStateChanged()
 {
     qDebug() << windowState();
-
-#ifdef DOCK_KELVINU_VIEW
-    if (windowState() == Qt::WindowMaximized && _bIsMaxmized) {
-        setWindowState(Qt::WindowNoState);
-        _bIsMaxmized = false;
-        this->setGeometry(_rectNormal);
-    }
-
-    else if (windowState() == Qt::WindowMaximized && !_bIsMaxmized) {
-        setWindowState(Qt::WindowNoState);
-        _rectNormal = this->geometry();
-        DBusDock dbusDock;
-        DockRect dockRect = dbusDock.frontendWindowRect();
-        QRect primaryGeometry = qApp->primaryScreen()->geometry();
-        setGeometry(0, 0, primaryGeometry.width(), primaryGeometry.height() - dockRect.height);
-        _bIsMaxmized = true;
-    }
-#endif
 
     if (!_miniMode && !isFullScreen()) {
         _titlebar->setVisible(_toolbox->isVisible());
@@ -3101,7 +3090,7 @@ void MainWindow::suspendToolsWindow()
 
         _titlebar->hide();
         _toolbox->hide();
-        if(isFullScreen())
+        if (isFullScreen())
             this->setCursor(Qt::BlankCursor);
     } else {
         if (_autoHideTimer.isActive())
