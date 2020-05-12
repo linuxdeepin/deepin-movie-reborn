@@ -3566,6 +3566,7 @@ void MainWindow::keyReleaseEvent(QKeyEvent *ev)
 void MainWindow::capturedMousePressEvent(QMouseEvent *me)
 {
     _mouseMoved = false;
+    _mousePressed = false;
 #ifdef __aarch64__
     _nwComm->hide();
 #elif __mips__
@@ -3594,6 +3595,7 @@ static bool _afterDblClick = false;
 void MainWindow::mousePressEvent(QMouseEvent *ev)
 {
     _mouseMoved = false;
+    _mousePressed = false;
 #ifdef __aarch64__
     _nwComm->hide();
 #elif __mips__
