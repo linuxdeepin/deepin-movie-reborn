@@ -46,6 +46,7 @@
 #include <DFloatingWidget>
 #include "dguiapplicationhelper.h"
 #include "videoboxbutton.h"
+#include "filter.h"
 
 namespace Dtk {
 namespace Widget {

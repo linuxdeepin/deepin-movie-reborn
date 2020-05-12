@@ -49,6 +49,7 @@
 #include <DApplication>
 #include <QThread>
 #include <DSlider>
+#include <DUtil>
 #include <QDBusInterface>
 #include <iostream>
 static const int LEFT_MARGIN = 10;
