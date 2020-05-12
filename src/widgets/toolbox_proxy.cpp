@@ -1034,13 +1034,7 @@ public:
         : DArrowRectangle(DArrowRectangle::ArrowBottom, DArrowRectangle::FloatWidget, parent), _engine(eng), _mw(mw)
     {
         setFixedSize(QSize(62, 201));
-#ifdef __mips__
-        if (!CompositingManager::get().composited()) {
-            setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
-        }
-#elif __aarch64__
         setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
-#endif
         setShadowBlurRadius(4);
         setRadius(18);
         setShadowYOffset(3);
@@ -1082,7 +1076,7 @@ public:
         });
 
         _autoHideTimer.setSingleShot(true);
-        connect(&_autoHideTimer, &QTimer::timeout, this, &VolumeSlider::hide);
+        //connect(&_autoHideTimer, &QTimer::timeout, this, &VolumeSlider::hide);
 
         //Modify by xiepengfei 2020.5.5
         //修改音量显示逻辑，使之发生变化时从变化源处直接修改显示值而不是从系统中获取
@@ -1135,7 +1129,12 @@ public:
 public slots:
     void delayedHide()
     {
-        _autoHideTimer.start(500);
+        //_autoHideTimer.start(500);
+        m_mouseIn = false;
+        DUtil::TimerSingleShot(100, [this]() {
+            if (!m_mouseIn)
+                hide();
+            });
     }
     void setValue(int v)
     {
@@ -1145,17 +1144,24 @@ public slots:
 protected:
     void enterEvent(QEvent *e)
     {
-        _autoHideTimer.stop();
+        m_mouseIn = true;
+        QWidget::leaveEvent(e);
+        //_autoHideTimer.stop();
     }
 
     void showEvent(QShowEvent *se)
     {
-        _autoHideTimer.stop();
+        m_mouseIn = true;
+        QWidget::showEvent(se);
+        //_autoHideTimer.stop();
     }
 
     void leaveEvent(QEvent *e)
     {
-        _autoHideTimer.start(500);
+        m_mouseIn = false;
+        delayedHide();
+        QWidget::leaveEvent(e);
+        //_autoHideTimer.start(500);
     }
 
 private slots:
@@ -1200,6 +1206,7 @@ private:
     MainWindow *_mw;
     QTimer _autoHideTimer;
     bool m_composited = false;
+    bool m_mouseIn = false;
 };
 
 viewProgBarLoad::viewProgBarLoad(PlayerEngine *engine, DMRSlider *progBar, ToolboxProxy *parent)
@@ -1801,51 +1808,36 @@ void ToolboxProxy::setup()
     _volBtn->setFixedSize(50, 50);
     connect(_volBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_volBtn, "vol");
-//    _right->addWidget(_volBtn);
     if (CompositingManager::get().composited()) {
         _volSlider = new VolumeSlider(_engine, _mainWindow, _mainWindow);
         connect(_volBtn, &VolumeButton::entered, [ = ]() {
+            if (!_volSlider->isHidden())
+                return ;
             _volSlider->stopTimer();
             _volSlider->show(_mainWindow->width() - _volBtn->width() / 2 - _playBtn->width() - 43,
                              _mainWindow->height() - TOOLBOX_HEIGHT - 5);
             _volSlider->raise();
         });
     } else {
-#ifdef __mips__
         _volSlider = new VolumeSlider(_engine, _mainWindow, nullptr);
-        connect(_volBtn, &VolumeButton::entered, [ = ]() {
-            _volSlider->stopTimer();
-//        QPoint pos = _volBtn->parentWidget()->mapToGlobal(_volBtn->pos());
-//        pos.ry() = parentWidget()->mapToGlobal(this->pos()).y();
-            _volSlider->show(_mainWindow->width() - _volBtn->width() / 2 - _playBtn->width() - 43,
-                             _mainWindow->height() - TOOLBOX_HEIGHT - 5);
-            QRect rc = _volBtn->geometry();
-            QPoint pos(rc.left() + rc.width() / 2, rc.top() - 20);
-            pos = this->mapToGlobal(pos);
-            _volSlider->move(pos.x(), pos.y());
-            _volSlider->raise();
-        });
-#elif __aarch64__
-        _volSlider = new VolumeSlider(_engine, _mainWindow, nullptr);
-        connect(_volBtn, &VolumeButton::entered, [ = ]() {
-            _volSlider->stopTimer();
-            QPoint pos = _volBtn->parentWidget()->mapToGlobal(_volBtn->pos());
-            QRect rc = _volBtn->geometry();
-            pos = QPoint(pos.x() + rc.width() / 2, pos.y() - 20);
-            _volSlider->raise();
-            _volSlider->show(pos.x(), pos.y());
-        });
-#else
-        _volSlider = new VolumeSlider(_engine, _mainWindow, _mainWindow);
-        connect(_volBtn, &VolumeButton::entered, [ = ]() {
-            _volSlider->stopTimer();
-            _volSlider->show(_mainWindow->width() - _volBtn->width() / 2 - _playBtn->width() - 43,
-                             _mainWindow->height() - TOOLBOX_HEIGHT - 5);
-            _volSlider->raise();
-        });
-#endif
+        hintFilter = new HintFilter;
+        _volSlider->setProperty("DelayHide", true);
+        _volSlider->setProperty("NoDelayShow", true);
+        installHint(_volBtn, _volSlider);
+        /*connect(_volBtn, &VolumeButton::entered, [ = ]() {
+            m_isMouseIn = true;
+//            _volSlider->stopTimer();
+//            _volSlider->show(_mainWindow->width() - _volBtn->width() / 2 - _playBtn->width() - 43,
+//                             _mainWindow->height() - TOOLBOX_HEIGHT - 5);
+//            _volSlider->raise();
+            qDebug() << __func__ << "show";
+        });*/
     }
-    connect(_volBtn, &VolumeButton::leaved, _volSlider, &VolumeSlider::delayedHide);
+    //connect(_volBtn, &VolumeButton::leaved, _volSlider, &VolumeSlider::delayedHide);
+    connect(_volBtn, &VolumeButton::leaved, [ = ]() {
+        m_isMouseIn = false;
+        _volSlider->delayedHide();
+    });
     connect(_volBtn, &VolumeButton::requestVolumeUp, [ = ]() {
         _mainWindow->requestAction(ActionFactory::ActionKind::VolumeUp);
     });
@@ -1988,6 +1980,12 @@ void ToolboxProxy::setup()
     connect(playListModel, &PlaylistModel::currentChanged, this, [ = ] {
         _autoResizeTimer.start(1000);
     });
+}
+
+void ToolboxProxy::installHint(QWidget *w, QWidget *hint)
+{
+    w->setProperty("HintWidget", QVariant::fromValue<QWidget *>(hint));
+    w->installEventFilter(hintFilter);
 }
 
 void ToolboxProxy::updateThumbnail()
