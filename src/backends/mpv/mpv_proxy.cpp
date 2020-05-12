@@ -497,25 +497,25 @@ void MpvProxy::handle_mpv_events()
                 qDebug() << "hwdec-interop" << get_property(_handle, "gpu-hwdec-interop")
                          << "codec: " << get_property(_handle, "video-codec")
                          << "format: " << get_property(_handle, "video-format");
+            }
 #ifdef __mips__
-                qDebug() << "MPV_EVENT_FILE_LOADED __mips__";
-                auto codec = get_property(_handle, "video-codec").toString();
-                if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") || codec.toLower().contains("mpeg2video")) {
-                    qDebug() << "set_property hwdec no";
-                    set_property(_handle, "hwdec", "no");
-                }
+            qDebug() << "MPV_EVENT_FILE_LOADED __mips__";
+            auto codec = get_property(_handle, "video-codec").toString();
+            if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") || codec.toLower().contains("mpeg2video")) {
+                qDebug() << "set_property hwdec no";
+                set_property(_handle, "hwdec", "no");
+            }
 #endif
 #ifdef __aarch64__
-                qDebug() << "MPV_EVENT_FILE_LOADED aarch64";
-                auto codec = get_property(_handle, "video-codec").toString();
-                if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") || codec.toLower().contains("mpeg2video")) {
+            qDebug() << "MPV_EVENT_FILE_LOADED aarch64";
+            auto codec = get_property(_handle, "video-codec").toString();
+            if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") || codec.toLower().contains("mpeg2video")) {
 //                    qDebug() << "set_property hwdec no";
 //                    set_property(_handle, "hwdec", "no");
-                    qDebug() << "set_property hwdec auto-safe";
-                    set_property(_handle, "hwdec", "auto-safe");
-                }
-#endif
+                qDebug() << "set_property hwdec auto-safe";
+                set_property(_handle, "hwdec", "auto-safe");
             }
+#endif
             setState(PlayState::Playing); //might paused immediately
             emit fileLoaded();
             qDebug() << QString("rotate metadata: dec %1, out %2")
