@@ -46,6 +46,7 @@
 #include <DFloatingWidget>
 #include "dguiapplicationhelper.h"
 #include "videoboxbutton.h"
+#include "filter.h"
 
 namespace Dtk {
 namespace Widget {
@@ -182,6 +183,7 @@ private:
     void updateToolTipTheme(ToolButton *btn);
     void updateThumbnail();
     void updatePreviewTime(qint64 secs, const QPoint &pos);
+    void installHint(QWidget *w, QWidget *hint);
 
     QLabel *_fullscreentimelable {nullptr};
     QLabel *_fullscreentimelableend {nullptr};
@@ -255,6 +257,9 @@ private:
     QString m_UrloldThumbUrl;       //当前加载的文件，目的是为缩略图服务
 
     DBlurEffectWidget *bot_widget {nullptr };
+    HintFilter        *hintFilter {nullptr };
+    bool m_isMouseIn = false;
+    QTimer _hideTime;
 };
 class viewProgBarLoad: public QThread
 {
