@@ -1298,17 +1298,18 @@ void MainWindow::changedVolumeSlot(int vol)
         _engine->changeVolume(vol);
         Settings::get().setInternalOption("global_volume", vol);
     }
+    _toolbox->setDisplayValue(qMin(vol, 100));
+    if (m_oldDisplayVolume == m_displayVolume) {
+        return;
+    }
     //fix bug 24816 by ZhuYuliang
     if (!_engine->muted()) {
-        if (m_oldDisplayVolume != m_displayVolume) {
-            _nwComm->updateWithMessage(tr("Volume: %1%").arg(m_displayVolume));
-        }
+        _nwComm->updateWithMessage(tr("Volume: %1%").arg(m_displayVolume));
     } else {
         QTimer::singleShot(1000, [ = ]() {
             _nwComm->updateWithMessage(tr("Mute"));
         });
     }
-    _toolbox->setDisplayValue(qMin(vol, 100));
 }
 
 void MainWindow::changedMute()
