@@ -1300,7 +1300,9 @@ void MainWindow::changedVolumeSlot(int vol)
     }
     //fix bug 24816 by ZhuYuliang
     if (!_engine->muted()) {
-        _nwComm->updateWithMessage(tr("Volume: %1%").arg(m_displayVolume));
+        if (m_oldDisplayVolume != m_displayVolume) {
+            _nwComm->updateWithMessage(tr("Volume: %1%").arg(m_displayVolume));
+        }
     } else {
         QTimer::singleShot(1000, [ = ]() {
             _nwComm->updateWithMessage(tr("Mute"));
