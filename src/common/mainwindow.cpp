@@ -3210,7 +3210,12 @@ void MainWindow::checkErrorMpvLogsChanged(const QString prefix, const QString te
                (errorMessage.toLower().contains(QString("format")))
               ) {
         _nwComm->updateWithMessage(tr("Invalid file"));
-        _engine->playlist().remove(_engine->playlist().count() - 1);
+        if (!_retryGapDateTime.isValid() || _retryGapDateTime.msecsTo(QDateTime::currentDateTime()) > 500) {
+            requestAction(ActionFactory::ActionKind::StartPlay);
+            _retryGapDateTime = QDateTime::currentDateTime();
+        } else {
+            _engine->playlist().remove(_engine->playlist().count() - 1);
+        }
 //        _engine->playlist().clear();
     } else if (errorMessage.toLower().contains(QString("moov atom not found"))) {
         _nwComm->updateWithMessage(tr("Invalid file"));
