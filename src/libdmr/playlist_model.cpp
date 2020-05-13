@@ -508,12 +508,8 @@ PlaylistModel::PlaylistModel(PlayerEngine *e)
 
         case PlayerEngine::Idle:
             if (!_userRequestingItem) {
-                //stop();
+                stop();
                 playNext(false);
-
-                //_current = _last;
-                //tryPlayCurrent(true);
-
             }
             break;
         }
@@ -523,7 +519,7 @@ PlaylistModel::PlaylistModel(PlayerEngine *e)
     connect(_jobWatcher, &QFutureWatcher<PlayItemInfo>::finished,
             this, &PlaylistModel::onAsyncAppendFinished);
 
-    //stop();
+    stop();
     loadPlaylist();
 
 #ifndef _LIBDMR_
@@ -694,7 +690,6 @@ void PlaylistModel::reshuffle()
 void PlaylistModel::clear()
 {
     _infos.clear();
-    _engine->stop();
     _engine->waitLastEnd();
 
     _current = -1;

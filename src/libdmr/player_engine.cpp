@@ -209,6 +209,7 @@ void PlayerEngine::updateSubStyles()
 #endif
 }
 
+//等待播放停止
 void PlayerEngine::waitLastEnd()
 {
     if (auto *mpv = dynamic_cast<MpvProxy *>(_current)) {
