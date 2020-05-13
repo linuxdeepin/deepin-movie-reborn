@@ -2395,6 +2395,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         }*/
         //_engine->volumeUp();
         m_displayVolume = qMin(m_displayVolume + 10, 200);
+        m_oldDisplayVolume = m_displayVolume;
         _engine->changeVolume(m_displayVolume);
         setAudioVolume(qMin(m_displayVolume, 100));
         m_lastVolume = _engine->volume();
@@ -2412,6 +2413,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     case ActionFactory::ActionKind::VolumeDown: {
         //_engine->volumeDown();
         m_displayVolume = qMax(m_displayVolume - 10, 0);
+        m_oldDisplayVolume = m_displayVolume;
         _engine->changeVolume(m_displayVolume);
         setAudioVolume(qMin(m_displayVolume, 100));
         //int pert = _engine->volume();
