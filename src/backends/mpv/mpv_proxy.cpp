@@ -403,24 +403,33 @@ void MpvProxy::setState(PlayState s)
 }
 
 
+//等待停止播放，playengine.stop
 void MpvProxy::pollingEndOfPlayback()
 {
     if (_state != Backend::Stopped) {
-
-        setState(Backend::Stopped);
-
+        _polling = true;
+        blockSignals(true);
+        stop();
         auto idle = get_property(_handle, "idle-active").toBool();
         if (idle) {
-            //blockSignals(false);
+            blockSignals(false);
             setState(Backend::Stopped);
             _polling = false;
             return;
         }
 
-        _polling = true;
-        //blockSignals(true);
-        //stop();
+        while (_state != Backend::Stopped) {
+            mpv_event *ev = mpv_wait_event(_handle, 0.005);
+            if (ev->event_id == MPV_EVENT_NONE)
+                continue;
 
+            if (ev->event_id == MPV_EVENT_END_FILE) {
+                qDebug() << "end of playback";
+                blockSignals(false);
+                setState(Backend::Stopped);
+                break;
+            }
+        }
         _polling = false;
     }
 }
