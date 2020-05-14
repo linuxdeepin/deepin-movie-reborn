@@ -1815,13 +1815,11 @@ void ToolboxProxy::setup()
         _volSlider = new VolumeSlider(_engine, _mainWindow, nullptr);
         connect(_volBtn, &VolumeButton::entered, [ = ]() {
             _volSlider->stopTimer();
-//        QPoint pos = _volBtn->parentWidget()->mapToGlobal(_volBtn->pos());
-//        pos.ry() = parentWidget()->mapToGlobal(this->pos()).y();
             _volSlider->show(_mainWindow->width() - _volBtn->width() / 2 - _playBtn->width() - 43,
                              _mainWindow->height() - TOOLBOX_HEIGHT - 5);
             QRect rc = _volBtn->geometry();
-            QPoint pos(rc.left() + rc.width() / 2, rc.top() - 20);
-            pos = this->mapToGlobal(pos);
+            QPoint pos(rc.left() + rc.width() / 2 + 11, _mainWindow->height() - 85);
+            pos = _mainWindow->mapToGlobal(pos);
             _volSlider->move(pos.x(), pos.y());
             _volSlider->raise();
         });
