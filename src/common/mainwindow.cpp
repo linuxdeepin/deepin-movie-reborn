@@ -1298,6 +1298,10 @@ void MainWindow::changedVolumeSlot(int vol)
         _engine->changeVolume(vol);
         Settings::get().setInternalOption("global_volume", vol);
     }
+    _toolbox->setDisplayValue(qMin(vol, 100));
+    if (m_oldDisplayVolume == m_displayVolume) {
+        return;
+    }
     //fix bug 24816 by ZhuYuliang
     if (!_engine->muted()) {
         _nwComm->updateWithMessage(tr("Volume: %1%").arg(m_displayVolume));
@@ -1306,7 +1310,6 @@ void MainWindow::changedVolumeSlot(int vol)
             _nwComm->updateWithMessage(tr("Mute"));
         });
     }
-    _toolbox->setDisplayValue(qMin(vol, 100));
 }
 
 void MainWindow::changedMute()
@@ -2393,6 +2396,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         }*/
         //_engine->volumeUp();
         m_displayVolume = qMin(m_displayVolume + 10, 200);
+        m_oldDisplayVolume = m_displayVolume;
         _engine->changeVolume(m_displayVolume);
         setAudioVolume(qMin(m_displayVolume, 100));
         m_lastVolume = _engine->volume();
@@ -2410,6 +2414,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     case ActionFactory::ActionKind::VolumeDown: {
         //_engine->volumeDown();
         m_displayVolume = qMax(m_displayVolume - 10, 0);
+        m_oldDisplayVolume = m_displayVolume;
         _engine->changeVolume(m_displayVolume);
         setAudioVolume(qMin(m_displayVolume, 100));
         //int pert = _engine->volume();
@@ -3210,7 +3215,12 @@ void MainWindow::checkErrorMpvLogsChanged(const QString prefix, const QString te
                (errorMessage.toLower().contains(QString("format")))
               ) {
         _nwComm->updateWithMessage(tr("Invalid file"));
-        _engine->playlist().remove(_engine->playlist().count() - 1);
+        if (!_retryGapDateTime.isValid() || _retryGapDateTime.msecsTo(QDateTime::currentDateTime()) > 500) {
+            requestAction(ActionFactory::ActionKind::StartPlay);
+            _retryGapDateTime = QDateTime::currentDateTime();
+        } else {
+            _engine->playlist().remove(_engine->playlist().count() - 1);
+        }
 //        _engine->playlist().clear();
     } else if (errorMessage.toLower().contains(QString("moov atom not found"))) {
         _nwComm->updateWithMessage(tr("Invalid file"));

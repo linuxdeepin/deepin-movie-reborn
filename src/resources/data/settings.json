@@ -102,7 +102,7 @@
                             "key": "showInthumbnailmode",
                             "text": "Show thumbnails in progress bar",
                             "type": "checkbox",
-                            "default": true
+                            "default": ""
                         },
                         {
                             "key": "pauseonmin",
