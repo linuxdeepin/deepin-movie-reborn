@@ -3217,7 +3217,7 @@ void MainWindow::checkErrorMpvLogsChanged(const QString prefix, const QString te
     } else if (errorMessage.toLower().contains(QString("fail")) &&
                (errorMessage.toLower().contains(QString("format")))
               ) {
-        if (_retryTimes < 5) {
+        if (_retryTimes < 10) {
             _retryTimes++;
             requestAction(ActionFactory::ActionKind::StartPlay);
         } else {
