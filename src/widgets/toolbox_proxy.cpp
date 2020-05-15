@@ -2599,8 +2599,8 @@ void ToolboxProxy::resizeEvent(QResizeEvent *event)
 
 
     if (_playlist->state() == PlaylistWidget::State::Opened && bAnimationFinash == true) {
-        QRect r(5, _mainWindow->height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT) - _mainWindow->rect().top() - 5,
-                _mainWindow->rect().width() - 10, (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT));
+        QRect r(5, _mainWindow->height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT + 7) - _mainWindow->rect().top() - 5,
+                _mainWindow->rect().width() - 10, (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT + 7));
         this->setGeometry(r);
     } else if (_playlist->state() == PlaylistWidget::State::Closed && bAnimationFinash == true) {
         QRect r(5, _mainWindow->height() - TOOLBOX_HEIGHT - _mainWindow->rect().top() - 5,
@@ -2681,7 +2681,7 @@ void ToolboxProxy::setPlaylist(PlaylistWidget *playlist)
 #ifndef __sw_64__
             QRect rcBegin = this->geometry();
             QRect rcEnd = rcBegin;
-            rcEnd.setY(rcBegin.y() - TOOLBOX_SPACE_HEIGHT);
+            rcEnd.setY(rcBegin.y() - TOOLBOX_SPACE_HEIGHT - 7);
             bAnimationFinash = false;
             paopen = new QPropertyAnimation(this, "geometry");
             paopen->setEasingCurve(QEasingCurve::Linear);
@@ -2703,7 +2703,7 @@ void ToolboxProxy::setPlaylist(PlaylistWidget *playlist)
 
             QRect rcBegin = this->geometry();
             QRect rcEnd = rcBegin;
-            rcEnd.setY(rcBegin.y() + TOOLBOX_SPACE_HEIGHT);
+            rcEnd.setY(rcBegin.y() + TOOLBOX_SPACE_HEIGHT + 7);
             paClose = new QPropertyAnimation(this, "geometry");
             paClose->setEasingCurve(QEasingCurve::Linear);
             paClose->setDuration(POPUP_DURATION );

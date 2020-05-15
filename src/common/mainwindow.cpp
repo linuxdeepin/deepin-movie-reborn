@@ -3976,8 +3976,10 @@ void MainWindow::paintEvent(QPaintEvent *pe)
 //        pp.addRect(bgRect);
 //        painter.fillPath(pp, bgColor);
 //    }
-    auto pt = bgRect.center() - QPoint(bg.width() / 2, bg.height() / 2) / devicePixelRatioF();
-    painter.drawImage(pt, bg);
+    if (_engine->state() == PlayerEngine::Idle) {
+        auto pt = bgRect.center() - QPoint(bg.width() / 2, bg.height() / 2) / devicePixelRatioF();
+        painter.drawImage(pt, bg);
+    }
 
     /*
         QPainter p(this);

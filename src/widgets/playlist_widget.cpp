@@ -669,9 +669,10 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     mainLayout->setContentsMargins(10, 0, 16, 0);
     mainLayout->setSpacing(10);
     mainLayout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
-//    setLayout(mainLayout);
+    //setLayout(mainLayout);
     QWidget *topspec = new QWidget;
-    topspec->setFixedHeight(30);
+    topspec->setFixedHeight(20);
+    //topspec->setFixedHeight(30);
     mainVLayout->addWidget(topspec);
     mainVLayout->addLayout(mainLayout);
 
