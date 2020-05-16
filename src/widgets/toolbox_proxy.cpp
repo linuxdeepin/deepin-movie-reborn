@@ -49,6 +49,7 @@
 #include <DApplication>
 #include <QThread>
 #include <DSlider>
+#include <DUtil>
 #include <QDBusInterface>
 #include <iostream>
 static const int LEFT_MARGIN = 10;
@@ -1082,7 +1083,9 @@ public:
         });
 
         _autoHideTimer.setSingleShot(true);
+#ifdef __x86_64__
         connect(&_autoHideTimer, &QTimer::timeout, this, &VolumeSlider::hide);
+#endif
 
         //Modify by xiepengfei 2020.5.5
         //修改音量显示逻辑，使之发生变化时从变化源处直接修改显示值而不是从系统中获取
@@ -1135,7 +1138,15 @@ public:
 public slots:
     void delayedHide()
     {
+#ifdef __x86_64__
         _autoHideTimer.start(500);
+#else
+        m_mouseIn = false;
+        DUtil::TimerSingleShot(100, [this]() {
+            if (!m_mouseIn)
+                hide();
+            });
+#endif
     }
     void setValue(int v)
     {
@@ -1143,6 +1154,7 @@ public slots:
     }
 
 protected:
+#ifdef __x86_64__
     void enterEvent(QEvent *e)
     {
         _autoHideTimer.stop();
@@ -1157,6 +1169,26 @@ protected:
     {
         _autoHideTimer.start(500);
     }
+#else
+    void enterEvent(QEvent *e)
+    {
+        m_mouseIn = true;
+        QWidget::leaveEvent(e);
+    }
+
+    void showEvent(QShowEvent *se)
+    {
+        m_mouseIn = true;
+        QWidget::showEvent(se);
+    }
+
+    void leaveEvent(QEvent *e)
+    {
+        m_mouseIn = false;
+        delayedHide();
+        QWidget::leaveEvent(e);
+    }
+#endif
 
 private slots:
     void updateBg()
@@ -1200,6 +1232,7 @@ private:
     MainWindow *_mw;
     QTimer _autoHideTimer;
     bool m_composited = false;
+    bool m_mouseIn = false;
 };
 
 viewProgBarLoad::viewProgBarLoad(PlayerEngine *engine, DMRSlider *progBar, ToolboxProxy *parent)
@@ -1813,7 +1846,12 @@ void ToolboxProxy::setup()
     } else {
 #ifdef __mips__
         _volSlider = new VolumeSlider(_engine, _mainWindow, nullptr);
-        connect(_volBtn, &VolumeButton::entered, [ = ]() {
+        hintFilter = new HintFilter;
+        _volSlider->setProperty("DelayHide", true);
+		_volSlider->setProperty("NoDelayShow", true);
+		installHint(_volBtn, _volSlider);
+		
+        /*connect(_volBtn, &VolumeButton::entered, [ = ]() {
             _volSlider->stopTimer();
             _volSlider->show(_mainWindow->width() - _volBtn->width() / 2 - _playBtn->width() - 43,
                              _mainWindow->height() - TOOLBOX_HEIGHT - 5);
@@ -1822,17 +1860,22 @@ void ToolboxProxy::setup()
             pos = _mainWindow->mapToGlobal(pos);
             _volSlider->move(pos.x(), pos.y());
             _volSlider->raise();
-        });
+        });*/
 #elif __aarch64__
         _volSlider = new VolumeSlider(_engine, _mainWindow, nullptr);
-        connect(_volBtn, &VolumeButton::entered, [ = ]() {
+        hintFilter = new HintFilter;
+        _volSlider->setProperty("DelayHide", true);
+        _volSlider->setProperty("NoDelayShow", true);
+        installHint(_volBtn, _volSlider);
+
+        /*connect(_volBtn, &VolumeButton::entered, [ = ]() {
             _volSlider->stopTimer();
             QPoint pos = _volBtn->parentWidget()->mapToGlobal(_volBtn->pos());
             QRect rc = _volBtn->geometry();
             pos = QPoint(pos.x() + rc.width() / 2, pos.y() - 20);
             _volSlider->raise();
             _volSlider->show(pos.x(), pos.y());
-        });
+        });*/
 #else
         _volSlider = new VolumeSlider(_engine, _mainWindow, _mainWindow);
         connect(_volBtn, &VolumeButton::entered, [ = ]() {
@@ -1843,7 +1886,14 @@ void ToolboxProxy::setup()
         });
 #endif
     }
+#ifdef __x86_64__
     connect(_volBtn, &VolumeButton::leaved, _volSlider, &VolumeSlider::delayedHide);
+#else
+    connect(_volBtn, &VolumeButton::leaved, [ = ]() {
+        m_isMouseIn = false;
+        _volSlider->delayedHide();
+    });
+#endif
     connect(_volBtn, &VolumeButton::requestVolumeUp, [ = ]() {
         _mainWindow->requestAction(ActionFactory::ActionKind::VolumeUp);
     });
@@ -1986,6 +2036,12 @@ void ToolboxProxy::setup()
     connect(playListModel, &PlaylistModel::currentChanged, this, [ = ] {
         _autoResizeTimer.start(1000);
     });
+}
+
+void ToolboxProxy::installHint(QWidget *w, QWidget *hint)
+{
+    w->setProperty("HintWidget", QVariant::fromValue<QWidget *>(hint));
+    w->installEventFilter(hintFilter);
 }
 
 void ToolboxProxy::updateThumbnail()
