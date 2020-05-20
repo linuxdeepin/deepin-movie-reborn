@@ -304,6 +304,10 @@ mpv_handle *MpvProxy::mpv_init()
 #endif
         set_property(h, "wid", m_parentWidget->winId());
     }
+    if (QFile::exists("/dev/csmcore")) {
+        set_property(h, "vo", "x11");
+        set_property(h, "hwdec", "auto");
+    }
     qDebug() << __func__ << get_property(h, "vo").toString();
 
     //QLocale locale;
