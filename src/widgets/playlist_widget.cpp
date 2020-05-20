@@ -669,9 +669,10 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     mainLayout->setContentsMargins(10, 0, 16, 0);
     mainLayout->setSpacing(10);
     mainLayout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
-//    setLayout(mainLayout);
+    //setLayout(mainLayout);
     QWidget *topspec = new QWidget;
-    topspec->setFixedHeight(30);
+    topspec->setFixedHeight(20);
+    //topspec->setFixedHeight(30);
     mainVLayout->addWidget(topspec);
     mainVLayout->addLayout(mainLayout);
 
@@ -964,6 +965,7 @@ void PlaylistWidget::updateItemInfo(int id)
 void PlaylistWidget::updateItemStates()
 {
     qDebug() << __func__ << _playlist->count() << "current = " << _engine->playlist().current();
+    int len = _playlist->count();
     for (int i = 0; i < _playlist->count(); i++) {
         auto piw = dynamic_cast<PlayItemWidget *>(_playlist->itemWidget(_playlist->item(i)));
 
@@ -975,8 +977,11 @@ void PlaylistWidget::updateItemStates()
 
         if (i == _engine->playlist().current()) {
             if (piw->state() != ItemState::Playing) {
-                _playlist->scrollToItem(_playlist->item(i));
+                //scrollToItem只能更新scroll位置，不能同步列表项
+                //_playlist->scrollToItem(_playlist->item(i));
+                _playlist->setCurrentRow(i);
                 piw->setState(ItemState::Playing);
+
             }
         }
 

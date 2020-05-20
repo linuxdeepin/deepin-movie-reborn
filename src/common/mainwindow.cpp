@@ -76,6 +76,8 @@ using namespace dmr;
 
 #define MOUSE_MARGINS 6
 
+int MainWindow::_retryTimes = 0;
+
 static void workaround_updateStyle(QWidget *parent, const QString &theme)
 {
     parent->setStyle(QStyleFactory::create(theme));
@@ -925,6 +927,7 @@ MainWindow::MainWindow(QWidget *parent)
     });
 
     connect(_engine, &PlayerEngine::fileLoaded, [ = ]() {
+        _retryTimes = 0;
         if (windowState() == Qt::WindowNoState && _lastRectInNormalMode.isValid()) {
             const auto &mi = _engine->playlist().currentInfo().mi;
             _lastRectInNormalMode.setSize({mi.width, mi.height});
@@ -3214,11 +3217,12 @@ void MainWindow::checkErrorMpvLogsChanged(const QString prefix, const QString te
     } else if (errorMessage.toLower().contains(QString("fail")) &&
                (errorMessage.toLower().contains(QString("format")))
               ) {
-        _nwComm->updateWithMessage(tr("Invalid file"));
-        if (!_retryGapDateTime.isValid() || _retryGapDateTime.msecsTo(QDateTime::currentDateTime()) > 500) {
+        if (_retryTimes < 10) {
+            _retryTimes++;
             requestAction(ActionFactory::ActionKind::StartPlay);
-            _retryGapDateTime = QDateTime::currentDateTime();
         } else {
+            _retryTimes = 0;
+            _nwComm->updateWithMessage(tr("Invalid file"));
             _engine->playlist().remove(_engine->playlist().count() - 1);
         }
 //        _engine->playlist().clear();
@@ -3976,8 +3980,10 @@ void MainWindow::paintEvent(QPaintEvent *pe)
 //        pp.addRect(bgRect);
 //        painter.fillPath(pp, bgColor);
 //    }
-    auto pt = bgRect.center() - QPoint(bg.width() / 2, bg.height() / 2) / devicePixelRatioF();
-    painter.drawImage(pt, bg);
+    if (_engine->state() == PlayerEngine::Idle) {
+        auto pt = bgRect.center() - QPoint(bg.width() / 2, bg.height() / 2) / devicePixelRatioF();
+        painter.drawImage(pt, bg);
+    }
 
     /*
         QPainter p(this);

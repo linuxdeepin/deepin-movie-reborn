@@ -353,7 +353,7 @@ private:
 
     bool m_IsFree = true;  //播放器是否空闲，和IDel的定义不同
 
-    QDateTime _retryGapDateTime;
+    static int _retryTimes;
 };
 };
 
