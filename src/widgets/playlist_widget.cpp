@@ -965,6 +965,7 @@ void PlaylistWidget::updateItemInfo(int id)
 void PlaylistWidget::updateItemStates()
 {
     qDebug() << __func__ << _playlist->count() << "current = " << _engine->playlist().current();
+    int len = _playlist->count();
     for (int i = 0; i < _playlist->count(); i++) {
         auto piw = dynamic_cast<PlayItemWidget *>(_playlist->itemWidget(_playlist->item(i)));
 
@@ -976,8 +977,11 @@ void PlaylistWidget::updateItemStates()
 
         if (i == _engine->playlist().current()) {
             if (piw->state() != ItemState::Playing) {
-                _playlist->scrollToItem(_playlist->item(i));
+                //scrollToItem只能更新scroll位置，不能同步列表项
+                //_playlist->scrollToItem(_playlist->item(i));
+                _playlist->setCurrentRow(i);
                 piw->setState(ItemState::Playing);
+
             }
         }
 
