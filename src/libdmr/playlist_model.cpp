@@ -50,6 +50,17 @@ static bool check_wayland()
     QString XDG_SESSION_TYPE = e.value(QStringLiteral("XDG_SESSION_TYPE"));
     QString WAYLAND_DISPLAY = e.value(QStringLiteral("WAYLAND_DISPLAY"));
 
+    //start...
+    //solv problem that drop movie fast will update ui error,
+    //get env var config item : QT_QPA_PLATFORM=xcb
+    QString QT_QPA_PLATFORM = e.value(QStringLiteral("QT_QPA_PLATFORM"));
+    if(QT_QPA_PLATFORM == QLatin1String("dxcb") || QT_QPA_PLATFORM == QLatin1String("xcb") )
+    {
+        qDebug() << "QT_QPA_PLATFORM type is : " << QT_QPA_PLATFORM;
+        return false;
+    }
+    //end...
+
     if (XDG_SESSION_TYPE == QLatin1String("wayland") || WAYLAND_DISPLAY.contains(QLatin1String("wayland"), Qt::CaseInsensitive))
         return true;
     else {
