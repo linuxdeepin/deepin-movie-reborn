@@ -406,32 +406,23 @@ void MpvProxy::setState(PlayState s)
 void MpvProxy::pollingEndOfPlayback()
 {
     if (_state != Backend::Stopped) {
-        _polling = true;
-        blockSignals(true);
-        stop();
+
+        setState(Backend::Stopped);
+
         auto idle = get_property(_handle, "idle-active").toBool();
         if (idle) {
-            blockSignals(false);
+            //blockSignals(false);
             setState(Backend::Stopped);
             _polling = false;
             return;
         }
 
-        while (_state != Backend::Stopped) {
-            mpv_event *ev = mpv_wait_event(_handle, 0.005);
-            if (ev->event_id == MPV_EVENT_NONE)
-                continue;
+        _polling = true;
+        //blockSignals(true);
+        //stop();
 
-            if (ev->event_id == MPV_EVENT_END_FILE) {
-                qDebug() << "end of playback";
-                blockSignals(false);
-                setState(Backend::Stopped);
-                break;
-            }
-        }
         _polling = false;
     }
-
 }
 
 void MpvProxy::pollingStartOfPlayback()
@@ -496,7 +487,7 @@ void MpvProxy::handle_mpv_events()
             emit tracksChanged();
             break;
 
-        case MPV_EVENT_FILE_LOADED: {
+        case MPV_EVENT_FILE_LOADED:
             qDebug() << mpv_event_name(ev->event_id);
 
             if (_gl_widget) {
@@ -506,32 +497,32 @@ void MpvProxy::handle_mpv_events()
                 qDebug() << "hwdec-interop" << get_property(_handle, "gpu-hwdec-interop")
                          << "codec: " << get_property(_handle, "video-codec")
                          << "format: " << get_property(_handle, "video-format");
-            }
 #ifdef __mips__
-            qDebug() << "MPV_EVENT_FILE_LOADED __mips__";
-            auto codec = get_property(_handle, "video-codec").toString();
-            if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") || codec.toLower().contains("mpeg2video")) {
-                qDebug() << "set_property hwdec no";
-                set_property(_handle, "hwdec", "no");
-            }
+                qDebug() << "MPV_EVENT_FILE_LOADED __mips__";
+                auto codec = get_property(_handle, "video-codec").toString();
+                if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") || codec.toLower().contains("mpeg2video")) {
+                    qDebug() << "set_property hwdec no";
+                    set_property(_handle, "hwdec", "no");
+                }
 #endif
 #ifdef __aarch64__
-            qDebug() << "MPV_EVENT_FILE_LOADED aarch64";
-            auto codec = get_property(_handle, "video-codec").toString();
-            if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") || codec.toLower().contains("mpeg2video")) {
+                qDebug() << "MPV_EVENT_FILE_LOADED aarch64";
+                auto codec = get_property(_handle, "video-codec").toString();
+                if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") || codec.toLower().contains("mpeg2video")) {
 //                    qDebug() << "set_property hwdec no";
 //                    set_property(_handle, "hwdec", "no");
-                qDebug() << "set_property hwdec auto-safe";
-                set_property(_handle, "hwdec", "auto-safe");
-            }
+                    qDebug() << "set_property hwdec auto-safe";
+                    set_property(_handle, "hwdec", "auto-safe");
+                }
 #endif
+            }
             setState(PlayState::Playing); //might paused immediately
             emit fileLoaded();
             qDebug() << QString("rotate metadata: dec %1, out %2")
                      .arg(get_property(_handle, "video-dec-params/rotate").toInt())
                      .arg(get_property(_handle, "video-params/rotate").toInt());
             break;
-        }
+
         case MPV_EVENT_VIDEO_RECONFIG: {
             auto sz = videoSize();
             if (!sz.isEmpty())

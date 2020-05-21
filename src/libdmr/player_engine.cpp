@@ -494,7 +494,6 @@ void PlayerEngine::savePreviousMovieState()
 
 void PlayerEngine::paintEvent(QPaintEvent *e)
 {
-#if thx //在walyland下需要启用
     QRect qqq = this->rect();
     QImage icon = utils::LoadHiDPIImage(":/resources/icons/light/init-splash.svg");
     QPixmap pix = QPixmap::fromImage(icon);
@@ -502,7 +501,6 @@ void PlayerEngine::paintEvent(QPaintEvent *e)
     int y = this->rect().center().y() - pix.height() / 2;
     QPainter p(this);
     p.drawPixmap(x, y, pix);
-#endif
     return QWidget::paintEvent(e);
 }
 
