@@ -48,6 +48,7 @@ bool HoverFilter::eventFilter(QObject *obj, QEvent *event)
 //        QApplication::setOverrideCursor(Qt::PointingHandCursor);
         return QObject::eventFilter(obj, event);
     }
+
     case QEvent::Leave: {
         auto w = qobject_cast<QWidget *>(obj);
 //        qDebug() << "unset cursor" << w;
@@ -87,6 +88,7 @@ void HintFilterPrivate::showHint(QWidget *hint)
     if (hintWidget && hintWidget != hint) {
         hintWidget->hide();
     }
+
     hintWidget = hint;
     if (!hintWidget) {
         return;
