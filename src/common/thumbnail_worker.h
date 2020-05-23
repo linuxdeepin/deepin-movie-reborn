@@ -1,4 +1,4 @@
-/* 
+/*
  * (c) 2017, Deepin Technology Co., Ltd. <support@deepin.org>
  *
  * This program is free software; you can redistribute it and/or
@@ -28,7 +28,7 @@
  * files in the program, then also delete it here.
  */
 #ifndef _DMR_THUMBNAIL_WORKER_H
-#define _DMR_THUMBNAIL_WORKER_H 
+#define _DMR_THUMBNAIL_WORKER_H
 
 #include <QtWidgets>
 #include <libffmpegthumbnailer/videothumbnailer.h>
@@ -38,24 +38,32 @@ using namespace ffmpegthumbnailer;
 
 class PlayerEngine;
 
-class ThumbnailWorker: public QThread {
+class ThumbnailWorker: public QThread
+{
     Q_OBJECT
 public:
-    static ThumbnailWorker& get();
+    static ThumbnailWorker &get();
 
     // expected size for ui
-    static QSize thumbSize() { return {178, 101}; }
+    static QSize thumbSize()
+    {
+        return {178, 101};
+    }
 
-    bool isThumbGenerated(const QUrl& url, int secs);
-    QPixmap getThumb(const QUrl& url, int secs);
+    bool isThumbGenerated(const QUrl &url, int secs);
+    QPixmap getThumb(const QUrl &url, int secs);
 
-    void stop() { _quit.store(1); quit(); }
-    void setPlayerEngine(PlayerEngine* pPlayerEngline);
+    void stop()
+    {
+        _quit.store(1);
+        quit();
+    }
+    void setPlayerEngine(PlayerEngine *pPlayerEngline);
 public slots:
-    void requestThumb(const QUrl& url, int secs);
+    void requestThumb(const QUrl &url, int secs);
 
 signals:
-    void thumbGenerated(const QUrl& url, int secs);
+    void thumbGenerated(const QUrl &url, int secs);
 
 private:
     QList<QPair<QUrl, int>> _wq;
@@ -68,7 +76,8 @@ private:
 
     ThumbnailWorker();
     void run() override;
-    QPixmap genThumb(const QUrl& url, int secs);
+    void runSingle(QPair<QUrl, int> w);
+    QPixmap genThumb(const QUrl &url, int secs);
 };
 
 }

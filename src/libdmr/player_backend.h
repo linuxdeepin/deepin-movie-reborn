@@ -1,4 +1,4 @@
-/* 
+/*
  * (c) 2017, Deepin Technology Co., Ltd. <support@deepin.org>
  *
  * This program is free software; you can redistribute it and/or
@@ -28,7 +28,7 @@
  * files in the program, then also delete it here.
  */
 #ifndef _DMR_PLAYER_BACKEND_H
-#define _DMR_PLAYER_BACKEND_H 
+#define _DMR_PLAYER_BACKEND_H
 
 #include <QtWidgets>
 
@@ -39,7 +39,8 @@ class PlayingMovieInfo;
 // There are only two backends: mpv and vpu
 // mpv is the only and default on all platform except Sunway
 // vpu is default for Sunway if media file can be hardware-decoded by coda vpu
-class Backend: public QWidget {
+class Backend: public QWidget
+{
     Q_OBJECT
     Q_PROPERTY(qint64 duration READ duration)
     Q_PROPERTY(qint64 elapsed READ elapsed NOTIFY elapsedChanged)
@@ -72,28 +73,46 @@ public:
     Backend(QWidget *parent = 0) {}
     virtual ~Backend() {}
 
-    virtual void setPlayFile(const QUrl& url) { _file = url; }
-    virtual void setDVDDevice(const QString& path) { _dvdDevice = path; }
+    virtual void setPlayFile(const QUrl &url)
+    {
+        _file = url;
+    }
+    virtual void setDVDDevice(const QString &path)
+    {
+        _dvdDevice = path;
+    }
 
-    // NOTE: need to check if file is playable by this backend, 
+    // NOTE: need to check if file is playable by this backend,
     // this is important especially for vpu
     virtual bool isPlayable() const = 0;
 
-    virtual qint64 duration() const { return 0; }
-    virtual qint64 elapsed() const { return 0; }
+    virtual qint64 duration() const
+    {
+        return 0;
+    }
+    virtual qint64 elapsed() const
+    {
+        return 0;
+    }
     virtual QSize videoSize() const = 0;
 
-    virtual bool paused() { return _state == PlayState::Paused; }
-    virtual PlayState state() const { return _state; }
-    virtual const PlayingMovieInfo& playingMovieInfo() = 0;
+    virtual bool paused()
+    {
+        return _state == PlayState::Paused;
+    }
+    virtual PlayState state() const
+    {
+        return _state;
+    }
+    virtual const PlayingMovieInfo &playingMovieInfo() = 0;
     virtual void setPlaySpeed(double times) = 0;
     virtual void savePlaybackPosition() = 0;
-    virtual void updateSubStyle(const QString& font, int sz) = 0;
-    virtual void setSubCodepage(const QString& cp) = 0;
+    virtual void updateSubStyle(const QString &font, int sz) = 0;
+    virtual void setSubCodepage(const QString &cp) = 0;
     virtual QString subCodepage() = 0;
-    virtual void addSubSearchPath(const QString& path) = 0;
+    virtual void addSubSearchPath(const QString &path) = 0;
 
-    virtual bool loadSubtitle(const QFileInfo& fi) = 0;
+    virtual bool loadSubtitle(const QFileInfo &fi) = 0;
     virtual void toggleSubtitle() = 0;
     virtual bool isSubVisible() = 0;
     virtual void selectSubtitle(int id) = 0;
@@ -119,13 +138,16 @@ public:
     virtual void stopBurstScreenshot() = 0;
 
     // hack: used to access backend internal states
-    virtual QVariant getProperty(const QString&) = 0;
-    virtual void setProperty(const QString&, const QVariant&) = 0;
+    virtual QVariant getProperty(const QString &) = 0;
+    virtual void setProperty(const QString &, const QVariant &) = 0;
 
     virtual void nextFrame() = 0;
     virtual void previousFrame() = 0;
 
-    static void setDebugLevel(DebugLevel lvl) { _debugLevel = lvl; }
+    static void setDebugLevel(DebugLevel lvl)
+    {
+        _debugLevel = lvl;
+    }
 
 Q_SIGNALS:
     void tracksChanged();
@@ -139,7 +161,7 @@ Q_SIGNALS:
     void aidChanged();
 
     //emit during burst screenshotting
-    void notifyScreenshot(const QImage& frame, qint64 time);
+    void notifyScreenshot(const QImage &frame, qint64 time);
 
     void mpvErrorLogsChanged(const QString prefix, const QString text);
     void mpvWarningLogsChanged(const QString prefix, const QString text);
