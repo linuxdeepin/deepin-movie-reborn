@@ -129,7 +129,7 @@ int main(int argc, char *argv[])
     if (QString(argv[argc - 1]) != "QProcess") {
         QString t_argv = QString(argv[0]) + " ";
         if (argc > 1) {
-            for (int i = 1;i < argc;i++) {
+            for (int i = 1; i < argc; i++) {
                 t_argv += argv[i];
                 t_argv += " ";
             }
@@ -140,7 +140,7 @@ int main(int argc, char *argv[])
         QProcess *process = new QProcess(0);
         QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
 
-        env.insert("QT_QPA_PLATFORM","xcb");
+        env.insert("QT_QPA_PLATFORM", "xcb");
         process->setProcessEnvironment(env);
         process->startDetached(t_argv);
         process->deleteLater();
