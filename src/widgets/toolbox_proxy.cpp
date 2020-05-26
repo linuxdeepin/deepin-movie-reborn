@@ -41,6 +41,7 @@
 #include "thumbnail_worker.h"
 #include "tip.h"
 #include "utils.h"
+#include "dbus_adpator.h"
 
 //#include <QtWidgets>
 #include <DImageButton>
@@ -2099,10 +2100,14 @@ void ToolboxProxy::updateHoverPreview(const QUrl &url, int secs)
 //    auto pos = _viewProgBar->mapToGlobal(QPoint(0, TOOLBOX_TOP_EXTENT - 10));
     QPoint p { QCursor::pos().x(), pos.y() };
 
+    QVariant l = ApplicationAdaptor::redDBusProperty("com.deepin.SessionManager", "/com/deepin/SessionManager",
+                                                     "com.deepin.SessionManager", "Locked");
+    if (l.isValid() && l.toBool()) {
+        return;
+    }
     QPixmap pm = ThumbnailWorker::get().getThumb(url, secs);
     _previewer->updateWithPreview(pm, secs, _engine->videoRotation());
     _previewer->updateWithPreview(p);
-
 }
 
 void ToolboxProxy::progressHoverChanged(int v)
