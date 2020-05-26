@@ -516,6 +516,7 @@ skip_set_cursor:
                 if (startResizing) {
                     updateGeometry(lastCornerEdge, e);
 #ifdef __aarch64__
+                    qDebug() << __func__;
                     mw->syncPostion();
 #elif  __mips__
                     mw->syncPostion();
@@ -1510,6 +1511,7 @@ void MainWindow::syncPlayState()
 {
     auto r = QRect(QPoint(0, 0), QSize(128, 128));
     r.moveCenter(rect().center());
+    qDebug() << __func__;
     //_playState->move(r.topLeft());
 
     if (_miniMode) {
@@ -3010,6 +3012,7 @@ void MainWindow::updateProxyGeometry()
             if (isFullScreen()) {
                 if (_playlist->state() == PlaylistWidget::State::Opened) {
 #ifndef __aarch64__
+                    qDebug() << __func__;
                     _toolbox->setGeometry(rfs);
 #else
                     _toolbox->setGeometry(rct);
@@ -3020,6 +3023,7 @@ void MainWindow::updateProxyGeometry()
             } else {
                 if (_playlist->state() == PlaylistWidget::State::Opened) {
 #ifndef __aarch64__
+                    qDebug() << __func__;
                     _toolbox->setGeometry(rfs);
 #else
                     _toolbox->setGeometry(rct);
@@ -3340,9 +3344,19 @@ void MainWindow::showEvent(QShowEvent *event)
     if (_pausedOnHide || Settings::get().isSet(Settings::PauseOnMinimize)) {
         if (_pausedOnHide && _engine && _engine->state() != PlayerEngine::Playing) {
             if (!_quitfullscreenstopflag) {
-                requestAction(ActionFactory::TogglePause);
-                _pausedOnHide = false;
-                _quitfullscreenstopflag = false;
+#ifdef __aarch64__
+                QVariant l = ApplicationAdaptor::redDBusProperty("com.deepin.SessionManager", "/com/deepin/SessionManager",
+                                                                 "com.deepin.SessionManager", "Locked");
+                if (l.isValid() && !l.toBool()) {
+                    qDebug() << "locked_____________" << l;
+                    //是否锁屏
+#endif
+                    requestAction(ActionFactory::TogglePause);
+                    _pausedOnHide = false;
+                    _quitfullscreenstopflag = false;
+#ifdef __aarch64__
+                }
+#endif
             } else {
                 _quitfullscreenstopflag = false;
             }
@@ -3533,7 +3547,8 @@ void MainWindow::updateWindowTitle()
 
 void MainWindow::moveEvent(QMoveEvent *ev)
 {
-#ifdef __aarch64__
+#ifndef __aarch64__
+    qDebug() << __func__;
     if (windowState() == Qt::WindowNoState && !_miniMode) {
         _lastRectInNormalMode = geometry();
     }
