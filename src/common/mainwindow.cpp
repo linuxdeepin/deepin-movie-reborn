@@ -3209,8 +3209,10 @@ void MainWindow::checkErrorMpvLogsChanged(const QString prefix, const QString te
     } else if (errorMessage.toLower().contains(QString("fail")) &&
                (errorMessage.toLower().contains(QString("format")))
               ) {
-        _nwComm->updateWithMessage(tr("Invalid file"));
-        _engine->playlist().remove(_engine->playlist().count() - 1);
+        if (_engine->state() == PlayerEngine::CoreState::Idle) {
+            _nwComm->updateWithMessage(tr("Invalid file"));
+            _engine->playlist().remove(_engine->playlist().count() - 1);
+        }
 //        _engine->playlist().clear();
     } else if (errorMessage.toLower().contains(QString("moov atom not found"))) {
         _nwComm->updateWithMessage(tr("Invalid file"));

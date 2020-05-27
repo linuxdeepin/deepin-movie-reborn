@@ -274,7 +274,7 @@ mpv_handle *MpvProxy::mpv_init()
 #if defined (__mips__) || defined (__aarch64__)
         if (CompositingManager::get().hascard()) {
             set_property(h, "hwdec", "auto-safe");
-            set_property(h, "vo", "gpu");
+            set_property(h, "vo", "x11");
         } else {
             set_property(h, "vo", "xv,x11");
             set_property(h, "ao", "alsa");
