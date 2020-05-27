@@ -508,7 +508,7 @@ PlaylistModel::PlaylistModel(PlayerEngine *e)
 
         case PlayerEngine::Idle:
             if (!_userRequestingItem) {
-                //stop();
+                stop();
                 playNext(false);
 
                 //_current = _last;
