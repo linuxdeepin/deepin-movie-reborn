@@ -1,0 +1,6 @@
+ {
+       "type": "opensource",
+       "3rdparty": [],
+       "ignore": ["./assets","./tx","./debain","./translations","./*.txt","./*.md","./     *.in"],
+       "license": []
+ }

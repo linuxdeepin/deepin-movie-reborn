@@ -96,6 +96,7 @@ SOURCES += main.cpp \
            common/event_monitor.cpp \
            common/event_relayer.cpp \
            common/mainwindow.cpp \
+           common/dbusutils.cpp \
            common/options.cpp \
            common/settings_translation.cpp \
            common/shortcut_manager.cpp \
@@ -131,5 +132,5 @@ SOURCES += main.cpp \
            vendor/mpris-qt/mprisplayerinterface.cpp \
            vendor/mpris-qt/mprisrootadaptor.cpp \
            vendor/mpris-qt/mprisrootinterface.cpp
-RESOURCES += resources.qrc theme.qrc icons/theme-icons.qrc
+RESOURCES += ../assets/resources/resources.qrc ../assets/theme.qrc ../assets/icons/theme-icons.qrc
 
