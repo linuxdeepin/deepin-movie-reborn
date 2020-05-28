@@ -27,10 +27,10 @@ pkg_check_modules(AV REQUIRED IMPORTED_TARGET libavformat
 pkg_check_modules(Other REQUIRED libffmpegthumbnailer
     libpulse libpulse-simple openssl dvdnav gsettings-qt)
 
-qt5_add_resources(RCS resources.qrc)
-qt5_add_resources(RCS icons/theme-icons.qrc)
+qt5_add_resources(RCS ../assets/resources/resources.qrc)
+qt5_add_resources(RCS ../assets/icons/theme-icons.qrc)
 if (${Dtk_VERSION} LESS 2.0.6.1)
-    qt5_add_resources(RCS theme.qrc)
+    qt5_add_resources(RCS ../assets/theme.qrc)
 endif()
 
 
@@ -62,7 +62,7 @@ endif ()
 file(GLOB TS LIST_DIRECTORIES false translations/${CMD_NAME}*.ts)
 
 set_source_files_properties(${TS}
-    PROPERTIES OUTPUT_LOCATION ${PROJECT_SOURCE_DIR}/src/translations)
+    PROPERTIES OUTPUT_LOCATION ${PROJECT_SOURCE_DIR}/translations)
 
 if (NOT (${CMAKE_BUILD_TYPE} MATCHES "Debug"))
     qt5_create_translation(QM ${SRCS} ${TS})
@@ -80,7 +80,7 @@ target_link_libraries(${CMD_NAME} ${TARGET_LIBS} ${Other_LIBRARIES})
 
 
 install(TARGETS ${CMD_NAME} DESTINATION bin)
-install(DIRECTORY ${PROJECT_SOURCE_DIR}/src/translations
+install(DIRECTORY ${PROJECT_SOURCE_DIR}/translations
     DESTINATION share/${CMD_NAME}
     FILES_MATCHING PATTERN "*.qm")
 install(FILES ${PROJECT_SOURCE_DIR}/src/deepin-movie.desktop
