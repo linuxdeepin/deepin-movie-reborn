@@ -1,6 +1,6 @@
- {
-    "type": "homebrew",
-    "3rdparty": [],
-    "ignore": ["./assets","tx","./debain","./translations","./3rdparty","*.txt","*.md","*.in","./LICENSE","./LICENSE.OpenSSL","./.transifexrc","./.ycm_extra_conf.py"," ./.clog.toml","./config.h","*.pro","*.pro.user.*","*.user","*.pri","*.xml"],
-    "license": ["GPLv3"]
- }
+{
+	"type": "homebrew",
+	"3rdparty": [],
+	"ignore": ["./src/resources", "./.tx", "./debain", "./src/translations", ".json", "./3rdparty", "*.txt", "*.theme", "*.png", "*.profile", "*.svg", "*.ts", "*.md", "*.in", "./LICENSE", "./LICENSE.OpenSSL", "./.transifexrc", "./.ycm_extra_conf.py", " ./.clog.toml", "./config.h", "*.pro", "*.pro.user.*", "*.user", "*.pri", "*.xml"],
+	"license": ["GPLv3"]
+}
