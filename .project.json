@@ -1,6 +1,6 @@
  {
-       "type": "opensource",
+       "type": "homebrew",
        "3rdparty": [],
-       "ignore": ["./assets","./tx","./debain","./translations","./*.txt","./*.md","./     *.in"],
-       "license": []
+       "ignore": ["./assets","./tx","./debain","./translations","./3rdparty","./*.txt","./*.md","./*.in","./LICENSE","./LICENSE.OpenSSL","./.transifexrc","./.ycm_extra_conf.py"," ./.clog.toml"],
+       "license": ["LICENSE"]
  }
