@@ -14,11 +14,11 @@ dman.path = $${PREFIX}/share/dman/
 dman.files = $$PWD/dman/*
 
 translations.path = $${PREFIX}/share/$${TARGET}/translations
-translations.files = $$PWD/../translations/*.qm \
-                     $$PWD/../translations/desktop/*.qm
+translations.files = $$PWD/translations/*.qm \
+                     $$PWD/translations/desktop/*.qm
 
 hicolor.path =  $${PREFIX}/share/icons/hicolor/scalable/apps
-hicolor.files = $$PWD/../assets/resource/icons/logo.svg
+hicolor.files = $$PWD/resource/icons/logo.svg
 
 INSTALLS += target translations desktop_files hicolor dman
 
