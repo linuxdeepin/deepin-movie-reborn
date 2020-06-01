@@ -271,6 +271,12 @@ mpv_handle *MpvProxy::mpv_init()
         //set_property(h, "ao", "alsa");
 #endif
     } else {
+        QFileInfo fi("/dev/mwv206_0");              //景嘉微显卡目前只支持vo=xv，等日后升级代码需要酌情修改。
+        if (fi.exists()) {
+            _isJingJia = true;
+            set_property(h, "hwdec", "vdpau");
+            set_property(h, "vo", "vdpau");
+        } else {
 #if defined (__mips__) || defined (__aarch64__)
         if (CompositingManager::get().hascard()) {
             set_property(h, "hwdec", "auto-safe");
@@ -280,14 +286,9 @@ mpv_handle *MpvProxy::mpv_init()
             //set_property(h, "ao", "alsa");
         }
 #else
-#ifdef MWV206_0
-        QFileInfo fi("/dev/mwv206_0");              //景嘉微显卡目前只支持vo=xv，等日后升级代码需要酌情修改。
-        if (fi.exists()) {
-            _isJingJia = true;
-            set_property(h, "hwdec", "vdpau");
-            set_property(h, "vo", "vdpau");
-        } else {
-            auto e = QProcessEnvironment::systemEnvironment();
+            set_property(h, "vo", "xv,x11");
+#endif
+            /*auto e = QProcessEnvironment::systemEnvironment();
             QString XDG_SESSION_TYPE = e.value(QStringLiteral("XDG_SESSION_TYPE"));
             QString WAYLAND_DISPLAY = e.value(QStringLiteral("WAYLAND_DISPLAY"));
 
@@ -296,13 +297,8 @@ mpv_handle *MpvProxy::mpv_init()
                 set_property(h, "vo", "gpu,x11,xv");
             } else {
                 set_property(h, "vo", "xv");
-            }
-
+            }*/
         }
-#else
-        set_property(h, "vo", "gpu,xv,x11");
-#endif
-#endif
         set_property(h, "wid", m_parentWidget->winId());
     }
     if (QFile::exists("/dev/csmcore")) {
@@ -513,6 +509,7 @@ void MpvProxy::handle_mpv_events()
                          << "codec: " << get_property(_handle, "video-codec")
                          << "format: " << get_property(_handle, "video-format");
             }
+            if (!_isJingJia) {
 #ifdef __mips__
             qDebug() << "MPV_EVENT_FILE_LOADED __mips__";
             auto codec = get_property(_handle, "video-codec").toString();
@@ -531,6 +528,7 @@ void MpvProxy::handle_mpv_events()
                 set_property(_handle, "hwdec", "auto-safe");
             }
 #endif
+            }
             setState(PlayState::Playing); //might paused immediately
             emit fileLoaded();
             qDebug() << QString("rotate metadata: dec %1, out %2")
