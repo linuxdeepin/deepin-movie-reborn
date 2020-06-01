@@ -151,6 +151,8 @@ private:
 
     bool _pauseOnStart {false};
 
+    bool _isJingJia {false};
+
     mpv_handle *mpv_init();
     void processPropertyChange(mpv_event_property *ev);
     void processLogMessage(mpv_event_log_message *ev);
