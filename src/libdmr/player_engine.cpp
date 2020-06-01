@@ -820,6 +820,11 @@ void PlayerEngine::changeSoundMode(Backend::SoundMode sm)
         _current->changeSoundMode(sm);
 }
 
+void PlayerEngine::changeHwdecMode(Backend::HwdecMode hm)
+{
+    if (_current)
+        _current->changeHwdecMode(hm);
+}
 void PlayerEngine::resizeEvent(QResizeEvent *re)
 {
     bool rounded = !window()->isFullScreen() && !window()->isMaximized();

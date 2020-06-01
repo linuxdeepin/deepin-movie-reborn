@@ -63,6 +63,19 @@ public:
     };
     Q_ENUM(SoundMode)
 
+    enum HwdecMode {
+        NO,
+        Auto,
+        Yes,
+        AutoSafe,
+        AutoCopy,
+        Vdpau,
+        VdpauCopy,
+        Vaapi,
+        VaapiCopy
+    };
+    Q_ENUM(HwdecMode)
+
     enum DebugLevel {
         Info,
         Debug,  // some normal debug info
@@ -124,6 +137,7 @@ public:
     virtual int sid() const = 0;
 
     virtual void changeSoundMode(SoundMode sm) {}
+    virtual void changeHwdecMode(HwdecMode sm) {}
     virtual int volume() const = 0;
     virtual bool muted() const = 0;
 

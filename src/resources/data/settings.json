@@ -230,6 +230,13 @@
                             "name": "Film info",
                             "type": "shortcut",
                             "default": "Alt+Return"
+                        },
+                        {
+                            "key": "hwdec",
+                            "name": "hwdec",
+                            "type": "shortcut",
+                            "hide":true,
+                            "default": "Ctrl+Alt+H"
                         }
                     ]
                 },

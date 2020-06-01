@@ -85,6 +85,7 @@ public:
     int aid() const override;
 
     void changeSoundMode(SoundMode sm) override;
+    void changeHwdecMode(HwdecMode hm) override;
     int volume() const override;
     bool muted() const override;
 
@@ -150,6 +151,8 @@ private:
     bool _connectStateChange {false};
 
     bool _pauseOnStart {false};
+
+    bool _isJingJia {false};
 
     mpv_handle *mpv_init();
     void processPropertyChange(mpv_event_property *ev);

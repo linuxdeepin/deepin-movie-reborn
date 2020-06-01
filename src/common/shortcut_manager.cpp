@@ -85,6 +85,8 @@ ShortcutManager::ShortcutManager()
 
         {"next_frame", ActionFactory::ActionKind::NextFrame},
         {"previous_frame", ActionFactory::ActionKind::PreviousFrame},
+
+        {"hwdec", ActionFactory::ActionKind::Hwdec},
     };
 
     connect(&Settings::get(), &Settings::shortcutsChanged,
