@@ -125,6 +125,7 @@ public:
 
 
         ViewShortcut,
+        Hwdec,
     };
     Q_ENUM(ActionKind)
 

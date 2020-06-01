@@ -85,6 +85,7 @@ public:
     int aid() const override;
 
     void changeSoundMode(SoundMode sm) override;
+    void changeHwdecMode(HwdecMode hm) override;
     int volume() const override;
     bool muted() const override;
 

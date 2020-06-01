@@ -827,6 +827,41 @@ void MpvProxy::changeSoundMode(SoundMode sm)
     command(_handle, args);
 }
 
+void MpvProxy::changeHwdecMode(HwdecMode hm)
+{
+    //改变解码模式
+    switch (hm) {
+    case HwdecMode::NO:
+        set_property(_handle, "hwdec", "no");
+        break;
+    case HwdecMode::Auto:
+        set_property(_handle, "hwdec", "auto");
+        break;
+    case HwdecMode::Yes:
+        set_property(_handle, "hwdec", "yes");
+        break;
+    case HwdecMode::AutoSafe:
+        set_property(_handle, "hwdec", "auto-safe");
+        break;
+    case HwdecMode::AutoCopy:
+        set_property(_handle, "hwdec", "auto-copy");
+        break;
+    case HwdecMode::Vdpau:
+        set_property(_handle, "hwdec", "vdpau");
+        break;
+    case HwdecMode::VdpauCopy:
+        set_property(_handle, "hwdec", "vdpau-copy");
+        break;
+    case HwdecMode::Vaapi:
+        set_property(_handle, "hwdec", "vaapi");
+        break;
+    case HwdecMode::VaapiCopy:
+        set_property(_handle, "hwdec", "vaapi-copy");
+        break;
+    default:
+        break;
+    }
+}
 void MpvProxy::volumeUp()
 {
     if (volume() >= 200)
