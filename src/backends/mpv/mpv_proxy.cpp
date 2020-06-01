@@ -925,7 +925,7 @@ void MpvProxy::play()
         set_property(_handle, "hwdec", "auto-safe");
 #if defined (__mips__) || defined (__aarch64__)
         if (CompositingManager::get().hascard()) {
-            set_property(_handle, "hwdec", "auto");
+            set_property(_handle, "hwdec", "auto-safe");
         }
 #endif
     } else {
