@@ -509,6 +509,7 @@ void MpvProxy::handle_mpv_events()
                          << "codec: " << get_property(_handle, "video-codec")
                          << "format: " << get_property(_handle, "video-format");
             }
+            if (!_isJingJia) {
 #ifdef __mips__
             qDebug() << "MPV_EVENT_FILE_LOADED __mips__";
             auto codec = get_property(_handle, "video-codec").toString();
@@ -527,6 +528,7 @@ void MpvProxy::handle_mpv_events()
                 set_property(_handle, "hwdec", "auto-safe");
             }
 #endif
+            }
             setState(PlayState::Playing); //might paused immediately
             emit fileLoaded();
             qDebug() << QString("rotate metadata: dec %1, out %2")
