@@ -211,6 +211,7 @@
         <file>profiles/composited.profile</file>
         <file>profiles/default.profile</file>
         <file>profiles/failsafe.profile</file>
+        <file>data/lowEffectSettings.json</file>
     </qresource>
     <qresource prefix="/dark">
         <file>qss/dark/dmr--MainWindow.theme</file>
