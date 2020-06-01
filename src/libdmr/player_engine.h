@@ -130,6 +130,7 @@ public:
     int aid();
 
     void changeSoundMode(Backend::SoundMode sm);
+    void changeHwdecMode(Backend::HwdecMode hm);
     int volume() const;
     bool muted() const;
 
