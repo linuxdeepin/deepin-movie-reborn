@@ -77,6 +77,10 @@ using namespace dmr;
 #define MOUSE_MARGINS 6
 
 int MainWindow::_retryTimes = 0;
+int MainWindow::_hwdecModes = 0;
+QList<QString> MainWindow::_hwdecInfos = {
+    "no", "auto", "yes", "auto-safe", "auto-copy", "vdpau", "vdpau-copy", "vaapi", "vaapi-copy",
+};
 
 static void workaround_updateStyle(QWidget *parent, const QString &theme)
 {
@@ -2791,6 +2795,16 @@ popup->show();\
         break;
     }
 
+#ifndef QT_NO_DEBUG
+    case ActionFactory::ActionKind::Hwdec: {
+        if (_hwdecModes > Backend::HwdecMode::VaapiCopy)
+            _hwdecModes = 0;
+        _engine->changeHwdecMode(static_cast<Backend::HwdecMode>(_hwdecModes));
+        _nwComm->updateWithMessage(tr("HwdecMode = %1").arg(_hwdecInfos[_hwdecModes]));
+        _hwdecModes++;
+        break;
+    }
+#endif
     default:
         break;
     }

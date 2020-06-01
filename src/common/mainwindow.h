@@ -354,6 +354,8 @@ private:
     bool m_IsFree = true;  //播放器是否空闲，和IDel的定义不同
 
     static int _retryTimes;
+    static int _hwdecModes;
+    static QList<QString> _hwdecInfos;
 };
 };
 
