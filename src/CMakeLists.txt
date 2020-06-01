@@ -87,7 +87,7 @@ install(FILES ${PROJECT_SOURCE_DIR}/src/deepin-movie.desktop
     DESTINATION share/applications)
 install(FILES ${CMAKE_SOURCE_DIR}/src/libdmr/com.deepin.deepin-movie.gschema.xml
     DESTINATION /usr/share/glib-2.0/schemas)
-install(FILES ${PROJECT_SOURCE_DIR}/src/resources/icons/logo-big.svg
+install(FILES ${PROJECT_SOURCE_DIR}/assets/resources/icons/logo-big.svg
     DESTINATION share/icons/hicolor/scalable/apps
     RENAME deepin-movie.svg)
 
