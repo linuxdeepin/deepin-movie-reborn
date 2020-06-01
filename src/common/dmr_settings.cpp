@@ -57,11 +57,6 @@ Settings::Settings()
     qDebug() << "configPath" << _configPath;
     auto backend = new QSettingBackend(_configPath);
 #if defined (__mips__) || defined (__sw_64__) || defined ( __aarch64__)
-    /*if (!CompositingManager::get().composited()) {
-        _settings = DSettings::fromJsonFile(":/resources/data/lowEffectSettings.json");
-    } else {
-        _settings = DSettings::fromJsonFile(":/resources/data/settings.json");
-    }*/
     _settings = DSettings::fromJsonFile(":/resources/data/lowEffectSettings.json");
 #else
     _settings = DSettings::fromJsonFile(":/resources/data/settings.json");

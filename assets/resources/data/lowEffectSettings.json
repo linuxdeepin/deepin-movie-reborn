@@ -25,14 +25,6 @@
                             "default": 100
                         },
                         {
-                            "key": "last_volume",
-                            "name": "",
-                            "hide": true,
-                            "reset": false,
-                            "type": "spinbutton",
-                            "default": 100
-                        },
-                        {
                             "key": "mute",
                             "name": "",
                             "type": "checkbox",
@@ -95,12 +87,6 @@
                             "key": "multiinstance",
                             "hide": true,
                             "text": "Open a new player for each file played",
-                            "type": "checkbox",
-                            "default": ""
-                        },
-                         {
-                            "key": "showInthumbnailmode",
-                            "text": "Show thumbnails in progress bar",
                             "type": "checkbox",
                             "default": ""
                         },
@@ -230,13 +216,6 @@
                             "name": "Film info",
                             "type": "shortcut",
                             "default": "Alt+Return"
-                        },
-                        {
-                            "key": "hwdec",
-                            "name": "hwdec",
-                            "type": "shortcut",
-                            "hide":true,
-                            "default": "Ctrl+Alt+H"
                         }
                     ]
                 },
