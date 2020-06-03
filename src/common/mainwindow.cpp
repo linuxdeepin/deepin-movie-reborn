@@ -1097,7 +1097,6 @@ MainWindow::MainWindow(QWidget *parent)
     if (_engine->muted()) {
         _nwComm->updateWithMessage(tr("Mute"));
     }
-
     ThreadPool::instance()->moveToNewThread(&volumeMonitoring);
     volumeMonitoring.start();
     connect(&volumeMonitoring, &VolumeMonitoring::volumeChanged, this, [ = ](int vol) {
@@ -1107,7 +1106,6 @@ MainWindow::MainWindow(QWidget *parent)
     connect(&volumeMonitoring, &VolumeMonitoring::muteChanged, this, [ = ](bool mute) {
         changedMute(mute);
     });
-
     connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, &MainWindow::updateMiniBtnTheme);
 }
 
