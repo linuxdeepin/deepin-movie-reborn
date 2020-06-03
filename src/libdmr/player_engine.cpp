@@ -344,13 +344,16 @@ bool PlayerEngine::loadSubtitle(const QFileInfo &fi)
 
     const auto &pmf = _current->playingMovieInfo();
     auto pif = playlist().currentInfo();
+    int i = 0;
     for (const auto &sub : pmf.subs) {
         if (sub["external"].toBool()) {
             auto path = sub["external-filename"].toString();
             if (path == fi.canonicalFilePath()) {
+                this->selectSubtitle(i);
                 return true;
             }
         }
+        ++i;
     }
 
     if (_current->loadSubtitle(fi)) {
