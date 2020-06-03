@@ -206,7 +206,7 @@ mpv_handle *MpvProxy::mpv_init()
                 qDebug() << "-------- gpu-hwdec-interop is disabled by user";
             }
         }
-        set_property(h, "hwdec", "auto-safe");
+        set_property(h, "hwdec", "auto");
     } else {
         set_property(h, "hwdec", "off");
     }
@@ -987,12 +987,12 @@ void MpvProxy::play()
 #endif
     //非景嘉微显卡
     if (!_isJingJia) {
-#ifndef __mips__
+#ifdef __mips__
         qDebug() << "play __mips__";
         auto codec = get_property(_handle, "video-codec").toString();
         if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") /*|| codec.toLower().contains("mpeg2video")*/) {
             qDebug() << "set_property hwdec no";
-            set_property(_handle, "hwdec", "no");
+            set_property(_handle, "hwdec", "auto");
         }
 #endif
 #ifdef __aarch64__
