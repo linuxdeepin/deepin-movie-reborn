@@ -344,13 +344,16 @@ bool PlayerEngine::loadSubtitle(const QFileInfo &fi)
 
     const auto &pmf = _current->playingMovieInfo();
     auto pif = playlist().currentInfo();
+    int i = 0;
     for (const auto &sub : pmf.subs) {
         if (sub["external"].toBool()) {
             auto path = sub["external-filename"].toString();
             if (path == fi.canonicalFilePath()) {
+                this->selectSubtitle(i);
                 return true;
             }
         }
+        ++i;
     }
 
     if (_current->loadSubtitle(fi)) {
@@ -495,13 +498,6 @@ void PlayerEngine::savePreviousMovieState()
 
 void PlayerEngine::paintEvent(QPaintEvent *e)
 {
-    QRect qqq = this->rect();
-    QImage icon = utils::LoadHiDPIImage(":/resources/icons/light/init-splash.svg");
-    QPixmap pix = QPixmap::fromImage(icon);
-    int x = this->rect().center().x() - pix.width() / 2;
-    int y = this->rect().center().y() - pix.height() / 2;
-    QPainter p(this);
-    p.drawPixmap(x, y, pix);
     return QWidget::paintEvent(e);
 }
 

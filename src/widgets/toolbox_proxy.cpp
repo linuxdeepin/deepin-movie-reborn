@@ -1135,7 +1135,7 @@ public slots:
         DUtil::TimerSingleShot(100, [this]() {
             if (!m_mouseIn)
                 hide();
-            });
+        });
     }
     void setValue(int v)
     {
@@ -1827,10 +1827,10 @@ void ToolboxProxy::setup()
         installHint(_volBtn, _volSlider);
         /*connect(_volBtn, &VolumeButton::entered, [ = ]() {
             m_isMouseIn = true;
-//            _volSlider->stopTimer();
-//            _volSlider->show(_mainWindow->width() - _volBtn->width() / 2 - _playBtn->width() - 43,
-//                             _mainWindow->height() - TOOLBOX_HEIGHT - 5);
-//            _volSlider->raise();
+        //            _volSlider->stopTimer();
+        //            _volSlider->show(_mainWindow->width() - _volBtn->width() / 2 - _playBtn->width() - 43,
+        //                             _mainWindow->height() - TOOLBOX_HEIGHT - 5);
+        //            _volSlider->raise();
             qDebug() << __func__ << "show";
         });*/
     }
