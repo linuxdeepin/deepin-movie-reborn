@@ -279,7 +279,7 @@ mpv_handle *MpvProxy::mpv_init()
         } else {
 #if defined (__mips__) || defined (__aarch64__)
         if (CompositingManager::get().hascard()) {
-            set_property(h, "hwdec", "auto-safe");
+            set_property(h, "hwdec", "auto");
             set_property(h, "vo", "gpu");
         } else {
             set_property(h, "vo", "xv,x11");
@@ -513,7 +513,7 @@ void MpvProxy::handle_mpv_events()
 #ifdef __mips__
             qDebug() << "MPV_EVENT_FILE_LOADED __mips__";
             auto codec = get_property(_handle, "video-codec").toString();
-            if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") || codec.toLower().contains("mpeg2video")) {
+            if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") /*|| codec.toLower().contains("mpeg2video")*/) {
                 qDebug() << "set_property hwdec no";
                 set_property(_handle, "hwdec", "no");
             }
@@ -972,7 +972,7 @@ void MpvProxy::play()
         // hwdec could be disabled by some codecs, so we need to re-enable it
         if (Settings::get().isSet(Settings::HWAccel)) {
 
-            set_property(_handle, "hwdec", "auto-safe");
+            set_property(_handle, "hwdec", "auto");
 #if defined (__mips__) || defined (__aarch64__)
             if (CompositingManager::get().hascard()) {
                 set_property(_handle, "hwdec", "auto");
@@ -987,10 +987,10 @@ void MpvProxy::play()
 #endif
     //非景嘉微显卡
     if (!_isJingJia) {
-#ifdef __mips__
+#ifndef __mips__
         qDebug() << "play __mips__";
         auto codec = get_property(_handle, "video-codec").toString();
-        if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") || codec.toLower().contains("mpeg2video")) {
+        if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") /*|| codec.toLower().contains("mpeg2video")*/) {
             qDebug() << "set_property hwdec no";
             set_property(_handle, "hwdec", "no");
         }
