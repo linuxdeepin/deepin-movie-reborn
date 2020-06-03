@@ -906,6 +906,7 @@ MainWindow::MainWindow(QWidget *parent)
             this, &MainWindow::onBindingsChanged);
     ShortcutManager::get().buildBindings();
 
+    connect(_engine, SIGNAL(stateChanged()), this, SLOT(update()));
     connect(_engine, &PlayerEngine::tracksChanged, this, &MainWindow::updateActionsState);
     connect(_engine, &PlayerEngine::stateChanged, this, &MainWindow::updateActionsState);
     updateActionsState();

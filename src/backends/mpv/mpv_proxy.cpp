@@ -278,13 +278,13 @@ mpv_handle *MpvProxy::mpv_init()
             set_property(h, "vo", "vdpau");
         } else {
 #if defined (__mips__) || defined (__aarch64__)
-        if (CompositingManager::get().hascard()) {
-            set_property(h, "hwdec", "auto");
-            set_property(h, "vo", "gpu");
-        } else {
-            set_property(h, "vo", "xv,x11");
-            //set_property(h, "ao", "alsa");
-        }
+            if (CompositingManager::get().hascard()) {
+                set_property(h, "hwdec", "auto");
+                set_property(h, "vo", "gpu");
+            } else {
+                set_property(h, "vo", "xv,x11");
+                //set_property(h, "ao", "alsa");
+            }
 #else
             set_property(h, "vo", "xv,x11");
 #endif
@@ -511,22 +511,22 @@ void MpvProxy::handle_mpv_events()
             }
             if (!_isJingJia) {
 #ifdef __mips__
-            qDebug() << "MPV_EVENT_FILE_LOADED __mips__";
-            auto codec = get_property(_handle, "video-codec").toString();
-            if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") /*|| codec.toLower().contains("mpeg2video")*/) {
-                qDebug() << "set_property hwdec no";
-                set_property(_handle, "hwdec", "no");
-            }
+                qDebug() << "MPV_EVENT_FILE_LOADED __mips__";
+                auto codec = get_property(_handle, "video-codec").toString();
+                if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") /*|| codec.toLower().contains("mpeg2video")*/) {
+                    qDebug() << "set_property hwdec no";
+                    set_property(_handle, "hwdec", "no");
+                }
 #endif
 #ifdef __aarch64__
-            qDebug() << "MPV_EVENT_FILE_LOADED aarch64";
-            auto codec = get_property(_handle, "video-codec").toString();
-            if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") || codec.toLower().contains("mpeg2video")) {
+                qDebug() << "MPV_EVENT_FILE_LOADED aarch64";
+                auto codec = get_property(_handle, "video-codec").toString();
+                if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") || codec.toLower().contains("mpeg2video")) {
 //                    qDebug() << "set_property hwdec no";
 //                    set_property(_handle, "hwdec", "no");
-                qDebug() << "set_property hwdec auto-safe";
-                set_property(_handle, "hwdec", "auto-safe");
-            }
+                    qDebug() << "set_property hwdec auto-safe";
+                    set_property(_handle, "hwdec", "auto-safe");
+                }
 #endif
             }
             setState(PlayState::Playing); //might paused immediately
@@ -997,8 +997,8 @@ void MpvProxy::play()
 #endif
 #ifdef __aarch64__
         qDebug() << "MPV_EVENT_FILE_LOADED aarch64";
-        auto codec = get_property(_handle, "video-codec").toString();
-        if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") || codec.toLower().contains("mpeg2video")) {
+        auto recodec = get_property(_handle, "video-codec").toString();
+        if (recodec.toLower().contains("wmv3") || recodec.toLower().contains("wmv2") || recodec.toLower().contains("mpeg2video")) {
             qDebug() << "set_property hwdec no";
             set_property(_handle, "hwdec", "no");
             //qDebug() << "set_property hwdec auto-safe";
