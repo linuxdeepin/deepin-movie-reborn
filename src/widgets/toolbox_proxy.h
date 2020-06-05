@@ -108,6 +108,35 @@ private:
     QPixmap _pixmap;
 };
 
+class IndicatorItem : public QWidget
+{
+    Q_OBJECT
+public:
+    IndicatorItem(QWidget *parent = 0): QWidget(parent)
+    {
+    };
+
+protected:
+    void paintEvent(QPaintEvent *event)
+    {
+        QPainter painter(this);
+        QRect backgroundRect = rect();
+
+        QPainterPath bpath;
+        bpath.addRect(backgroundRect.marginsRemoved(QMargins(1, 1, 1, 1)));
+        painter.fillPath(bpath, QColor(255, 255, 255, 255));
+
+        QPen pen;
+        pen.setWidth(1);
+        pen.setColor(QColor(0, 0, 0));
+        bpath.addRoundedRect(backgroundRect, 2, 2);
+        painter.setPen(pen);
+        painter.setOpacity(0.4);
+        painter.drawPath(bpath);
+
+    };
+};
+
 class ToolboxProxy: public DFloatingWidget
 {
     Q_OBJECT
