@@ -42,7 +42,7 @@ MovieProgressIndicator::MovieProgressIndicator(QWidget *parent)
 
     _fixedSize = QSize(qMax(52, fm.width("999:99")), fm.height() + 10);
     this->setFixedSize(_fixedSize);
-#ifdef __mips__ && __aarch64__ && __sw_64__
+#if defined (__mips__) || defined (__aarch64__) || defined (__sw_64__)
     this->setAttribute(Qt::WA_TranslucentBackground);
     this->setWindowFlags(Qt::FramelessWindowHint);
     setWindowFlags(this->windowFlags() | Qt::Dialog);

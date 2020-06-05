@@ -1022,9 +1022,9 @@ MainWindow::MainWindow(QWidget *parent)
     _fullscreentimelable->setAttribute(Qt::WA_TranslucentBackground);
     _fullscreentimelable->setWindowFlags(Qt::FramelessWindowHint);
     _fullscreentimelable->setParent(this);
-#ifdef __mips__ && __aarch64__ && __sw_64__
-    _fullscreentimelable->setWindowFlags(_fullscreentimelable->windowFlags() | Qt::Dialog);
-#endif
+    if (!composited) {
+        _fullscreentimelable->setWindowFlags(_fullscreentimelable->windowFlags() | Qt::Dialog);
+    }
     _fullscreentimebox = new QHBoxLayout;
     _fullscreentimebox->addStretch();
     _fullscreentimebox->addWidget(_toolbox->getfullscreentimeLabel());
