@@ -56,6 +56,8 @@ DWIDGET_USE_NAMESPACE
 
 int main(int argc, char *argv[])
 {
+    setenv("PULSE_PROP_media.role", "video", 1);
+
 #ifdef __mips__
     if (CompositingManager::get().composited()) {
         CompositingManager::detectOpenGLEarly();
