@@ -488,7 +488,7 @@ public:
 //       _indicator = new IndicatorBar(this);
 //        _indicator = new DBlurEffectWidget(this);
         _indicator = new IndicatorItem(this);
-        _indicator->resize(4, 60);
+        _indicator->resize(6, 60);
         _indicator->setObjectName("indicator");
 //        _indicator->setMaskColor(QColor(255, 255, 255));
 //        _indicator->setBlurRectXRadius(2);
@@ -667,10 +667,9 @@ public:
         //重新获取胶片进度条长度 by ZhuYuliang
         int pixWidget = _progBar->width() / 100;
         //当宽度比较宽的时候，就插入两次相同图片
-        if (this->width() > 500) {
+        if (pixWidget > 500) {
             pixWidget /= 2;
             for (int i = 0; i < pm_list.count() * 2 ; i++) {
-
                 ImageItem *label = new ImageItem(pm_list.at(i / 2), false, _back);
                 label->setMouseTracking(true);
                 label->move(i * (pixWidget + 1) + 3, 5);
@@ -680,8 +679,6 @@ public:
                 label_black->setMouseTracking(true);
                 label_black->move(i * (pixWidget + 1) + 3, 5);
                 label_black->setFixedSize(pixWidget, 50);
-
-
             }
         } else {
             for (int i = 0; i < pm_list.count(); i++) {
@@ -818,7 +815,8 @@ protected:
         emit mousePressed(false);
         if (_press && isEnabled()) {
             changeStyle(!_press);
-//            setTimeVisible(!_press);
+            setTimeVisible(!_press);
+            _sliderArrowUp->setVisible(false);
             _press = !_press;
         }
     }
@@ -1024,7 +1022,7 @@ private:
 
 private:
     DFrame *_thumb {nullptr};
-    int m_thumbnailFixed = 178;
+    int m_thumbnailFixed = 106;
 };
 
 class VolumeSlider: public DArrowRectangle
@@ -1145,7 +1143,7 @@ public slots:
         DUtil::TimerSingleShot(100, [this]() {
             if (!m_mouseIn)
                 hide();
-            });
+        });
 #endif
     }
     void setValue(int v)
@@ -1848,9 +1846,9 @@ void ToolboxProxy::setup()
         _volSlider = new VolumeSlider(_engine, _mainWindow, nullptr);
         hintFilter = new HintFilter;
         _volSlider->setProperty("DelayHide", true);
-		_volSlider->setProperty("NoDelayShow", true);
-		installHint(_volBtn, _volSlider);
-		
+        _volSlider->setProperty("NoDelayShow", true);
+        installHint(_volBtn, _volSlider);
+
         /*connect(_volBtn, &VolumeButton::entered, [ = ]() {
             _volSlider->stopTimer();
             _volSlider->show(_mainWindow->width() - _volBtn->width() / 2 - _playBtn->width() - 43,
