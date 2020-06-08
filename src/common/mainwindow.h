@@ -291,8 +291,8 @@ private:
     DIconButton *_miniPlayBtn {nullptr};
     DIconButton *_miniCloseBtn {nullptr};
     DIconButton *_miniQuitMiniBtn {nullptr};
-    QLabel *_labelCover {nullptr};
 #endif
+    QLabel *_labelCover {nullptr};
 
     QImage bg_dark;
     QImage bg_light;
