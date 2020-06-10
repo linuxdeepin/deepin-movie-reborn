@@ -1057,7 +1057,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(_engine, &PlayerEngine::onlineStateChanged, this, &MainWindow::checkOnlineState);
     connect(&OnlineSubtitle::get(), &OnlineSubtitle::onlineSubtitleStateChanged, this, &MainWindow::checkOnlineSubtitle);
     connect(_engine, &PlayerEngine::mpvErrorLogsChanged, this, &MainWindow::checkErrorMpvLogsChanged);
-    connect(_engine, &PlayerEngine::mpvWarningLogsChanged, this, &MainWindow::checkWarningMpvLogsChanged);
+    //4k播放时不显示提示框
+    //connect(_engine, &PlayerEngine::mpvWarningLogsChanged, this, &MainWindow::checkWarningMpvLogsChanged);
     connect(_engine, &PlayerEngine::urlpause, this, [ = ](bool status) {
         if (status) {
             auto msg = QString(tr("Buffering..."));
@@ -1796,6 +1797,8 @@ bool MainWindow::addCdromPath()
         if (_engine->state() == PlayerEngine::CoreState::Idle)
             _engine->playByName(QUrl("playlist://0"));
         _engine->playByName(urls[0]);
+    } else {
+        return false;
     }
     return true;
 }
@@ -1956,14 +1959,10 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         }
 
         if ( addCdromPath() == false) {
-            _nwComm->updateWithMessage(tr("No device found"));
+            //_nwComm->updateWithMessage(tr("No device found"));
+            QUrl url(QString("dvd:///%1").arg(dev));
+            play(url);
         }
-        /*_engine->setDVDDevice(dev);  Comment by thx
-        //FIXME: how to tell if it's bluray
-        //QUrl url(QString("dvdread:///%1").arg(dev));
-        QUrl url(QString("dvd://%1").arg(dev));
-        //QUrl url(QString("dvdnav://"));
-        play(url);*/
         break;
     }
 
@@ -3242,7 +3241,9 @@ void MainWindow::checkErrorMpvLogsChanged(const QString prefix, const QString te
                (errorMessage.toLower().contains(QString("open")))) {
         _nwComm->updateWithMessage(tr("No video file found"));
 //        _engine->playlist().clear();
-    } else if (errorMessage.contains(QString("Hardware does not support image size 3840x2160"))) {
+    }
+    //4k播放不显示提示框
+    /*else if (errorMessage.contains(QString("Hardware does not support image size 3840x2160"))) {
         requestAction(ActionFactory::TogglePause);
 
         DDialog *dialog = new DDialog;
@@ -3267,7 +3268,7 @@ void MainWindow::checkErrorMpvLogsChanged(const QString prefix, const QString te
             }
             _engine->pauseResume();
         });
-    }
+    }*/
 
 }
 
