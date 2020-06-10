@@ -65,8 +65,8 @@ xcb_atom_t Utility::internAtom(const char *name)
     if (!name || *name == 0)
         return XCB_NONE;
 
-    xcb_intern_atom_cookie_t cookie = xcb_intern_atom(QX11Info::connection(), true, strlen(name), name);
-    xcb_intern_atom_reply_t *reply = xcb_intern_atom_reply(QX11Info::connection(), cookie, 0);
+    xcb_intern_atom_cookie_t cookie = xcb_intern_atom(QX11Info::connection(), true, static_cast<uint16_t>(strlen(name)), name);
+    xcb_intern_atom_reply_t *reply = xcb_intern_atom_reply(QX11Info::connection(), cookie, nullptr);
 
     if (!reply)
         return XCB_NONE;
@@ -95,8 +95,8 @@ void Utility::updateMousePointForWindowMove(quint32 WId, const QPoint &globalPos
     xev.type = internAtom("_DEEPIN_MOVE_UPDATE");
     xev.window = WId;
     xev.format = 32;
-    xev.data.data32[0] = globalPos.x();
-    xev.data.data32[1] = globalPos.y();
+    xev.data.data32[0] = static_cast<uint32_t>(globalPos.x());
+    xev.data.data32[1] = static_cast<uint32_t>(globalPos.y());
     xev.data.data32[2] = 0;
     xev.data.data32[3] = 0;
     xev.data.data32[4] = 0;
@@ -118,10 +118,10 @@ void Utility::setFrameExtents(quint32 WId, const QMargins &margins)
     }
 
     uint32_t value[4] = {
-        (uint32_t)margins.left(),
-        (uint32_t)margins.right(),
-        (uint32_t)margins.top(),
-        (uint32_t)margins.bottom()
+        static_cast<uint32_t>(margins.left()),
+        static_cast<uint32_t>(margins.right()),
+        static_cast<uint32_t>(margins.top()),
+        static_cast<uint32_t>(margins.bottom())
     };
 
     xcb_change_property(QX11Info::connection(), XCB_PROP_MODE_REPLACE, WId, frameExtents, XCB_ATOM_CARDINAL, 32, 4, value);
@@ -142,7 +142,7 @@ void Utility::setRectangles(quint32 WId, const QVector<xcb_rectangle_t> &rectang
     }
 
     xcb_shape_rectangles(QX11Info::connection(), XCB_SHAPE_SO_SET, onlyInput ? XCB_SHAPE_SK_INPUT : XCB_SHAPE_SK_BOUNDING,
-                         XCB_CLIP_ORDERING_YX_BANDED, WId, 0, 0, rectangles.size(), rectangles.constData());
+                         XCB_CLIP_ORDERING_YX_BANDED, WId, 0, 0, static_cast<uint32_t>(rectangles.size()), rectangles.constData());
 }
 
 void Utility::setShapePath(quint32 WId, const QPainterPath &path, bool onlyInput)
@@ -157,10 +157,10 @@ void Utility::setShapePath(quint32 WId, const QPainterPath &path, bool onlyInput
         foreach(const QRect &area, QRegion(polygon.toPolygon()).rects()) {
             xcb_rectangle_t rectangle;
 
-            rectangle.x = area.x();
-            rectangle.y = area.y();
-            rectangle.width = area.width();
-            rectangle.height = area.height();
+            rectangle.x = static_cast<int16_t>(area.x());
+            rectangle.y = static_cast<int16_t>(area.y());
+            rectangle.width = static_cast<uint16_t>(area.width());
+            rectangle.height = static_cast<uint16_t>(area.height());
 
             rectangles.append(std::move(rectangle));
         }
@@ -198,10 +198,10 @@ void Utility::sendMoveResizeMessage(quint32 WId, uint32_t action, QPoint globalP
     xev.type = internAtom(XATOM_MOVE_RESIZE);
     xev.window = WId;
     xev.format = 32;
-    xev.data.data32[0] = globalPos.x();
-    xev.data.data32[1] = globalPos.y();
+    xev.data.data32[0] = static_cast<uint32_t>(globalPos.x());
+    xev.data.data32[1] = static_cast<uint32_t>(globalPos.y());
     xev.data.data32[2] = action;
-    xev.data.data32[3] = xbtn;
+    xev.data.data32[3] = static_cast<uint32_t>(xbtn);
     xev.data.data32[4] = 0;
 
     xcb_ungrab_pointer(QX11Info::connection(), QX11Info::appTime());
@@ -221,10 +221,10 @@ QVector<xcb_rectangle_t> Utility::qregion2XcbRectangles(const QRegion &region)
     for (const QRect &rect : region.rects()) {
         xcb_rectangle_t r;
 
-        r.x = rect.x();
-        r.y = rect.y();
-        r.width = rect.width();
-        r.height = rect.height();
+        r.x = static_cast<int16_t>(rect.x());
+        r.y = static_cast<int16_t>(rect.y());
+        r.width = static_cast<uint16_t>(rect.width());
+        r.height = static_cast<uint16_t>(rect.height());
 
         rectangles << r;
     }
@@ -234,7 +234,7 @@ QVector<xcb_rectangle_t> Utility::qregion2XcbRectangles(const QRegion &region)
 
 void Utility::startWindowSystemResize(quint32 WId, CornerEdge cornerEdge, const QPoint &globalPos)
 {
-    sendMoveResizeMessage(WId, cornerEdge, globalPos);
+    sendMoveResizeMessage(WId, static_cast<uint32_t>(cornerEdge), globalPos);
 }
 
 static xcb_cursor_t CornerEdge2Xcb_cursor_t(Utility::CornerEdge ce)
@@ -320,9 +320,9 @@ QList<xcb_atom_t> Utility::windowNetWMState(quint32 WId)
     const auto wmStateAtom = XInternAtom(QX11Info::display(), kAtomNameWmState, false);
     xcb_connection_t* conn = QX11Info::connection();
     xcb_get_property_cookie_t cookie = xcb_get_property(conn, false, WId,
-            wmStateAtom, XCB_ATOM_ATOM, 0, 1);
-    xcb_generic_error_t* err = nullptr;
-    xcb_get_property_reply_t* reply = xcb_get_property_reply(conn, cookie, &err);
+                                                        static_cast<xcb_atom_t>(wmStateAtom), XCB_ATOM_ATOM, 0, 1);
+    xcb_generic_error_t *err = nullptr;
+    xcb_get_property_reply_t *reply = xcb_get_property_reply(conn, cookie, &err);
 
     if (reply != nullptr) {
         auto len = xcb_get_property_value_length(reply);
@@ -371,8 +371,8 @@ void Utility::setStayOnTop(const QWidget *widget, bool on)
     xev.xclient.format = 32;
 
     xev.xclient.data.l[0] = on ? _NET_WM_STATE_ADD : _NET_WM_STATE_REMOVE;
-    xev.xclient.data.l[1] = stateAboveAtom;
-    xev.xclient.data.l[2] = stateStaysOnTopAtom;
+    xev.xclient.data.l[1] = static_cast<long>(stateAboveAtom);
+    xev.xclient.data.l[2] = static_cast<long>(stateStaysOnTopAtom);
     xev.xclient.data.l[3] = 1;
 
     XSendEvent(display,

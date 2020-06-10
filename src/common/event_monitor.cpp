@@ -1,4 +1,4 @@
-/* 
+/*
  * (c) 2017, Deepin Technology Co., Ltd. <support@deepin.org>
  *
  * This program is free software; you can redistribute it and/or
@@ -37,9 +37,9 @@
 #include <X11/extensions/record.h>
 #undef Bool
 
-void callback(XPointer ptr, XRecordInterceptData* data)
+void callback(XPointer ptr, XRecordInterceptData *data)
 {
-    ((dmr::EventMonitor *) ptr)->handleRecordEvent(data);
+    (reinterpret_cast<dmr::EventMonitor *>(ptr))->handleRecordEvent(data);
 }
 
 namespace dmr {
@@ -51,8 +51,8 @@ EventMonitor::EventMonitor(QObject *parent) : QThread(parent)
 
 void EventMonitor::run()
 {
-    Display* display = XOpenDisplay(0);
-    if (display == 0) {
+    Display *display = XOpenDisplay(nullptr);
+    if (display == nullptr) {
         fprintf(stderr, "unable to open display\n");
         return;
     }
@@ -60,8 +60,8 @@ void EventMonitor::run()
     // Receive from ALL clients, including future clients.
     //XRecordClientSpec clients = XRecordAllClients;
     XRecordClientSpec clients = XRecordCurrentClients;
-    XRecordRange* range = XRecordAllocRange();
-    if (range == 0) {
+    XRecordRange *range = XRecordAllocRange();
+    if (range == nullptr) {
         fprintf(stderr, "unable to allocate XRecordRange\n");
         return;
     }
@@ -69,7 +69,7 @@ void EventMonitor::run()
     memset(range, 0, sizeof(XRecordRange));
     range->device_events.first = ButtonPress;
     range->device_events.last  = MotionNotify;
-    
+
     // And create the XRECORD context.
     XRecordContext context = XRecordCreateContext (display, 0, &clients, 1, &range, 1);
     if (context == 0) {
@@ -80,8 +80,8 @@ void EventMonitor::run()
 
     XSync(display, True);
 
-    Display* display_datalink = XOpenDisplay(0);
-    if (display_datalink == 0) {
+    Display *display_datalink = XOpenDisplay(nullptr);
+    if (display_datalink == nullptr) {
         fprintf(stderr, "unable to open second display\n");
         return;
     }
@@ -92,22 +92,22 @@ void EventMonitor::run()
     }
 }
 
-void EventMonitor::handleRecordEvent(void* dat)
+void EventMonitor::handleRecordEvent(void *dat)
 {
-    XRecordInterceptData* data = (XRecordInterceptData*)dat;
+    XRecordInterceptData *data = (XRecordInterceptData *)dat;
     if (!_recording) {
         XRecordFreeData(data);
         return;
     }
 
     if (data->category == XRecordFromServer) {
-        xEvent * event = (xEvent *)data->data;
+        xEvent *event = (xEvent *)data->data;
         switch (event->u.u.type) {
         case ButtonPress:
             if (event->u.u.detail != WheelUp &&
-                event->u.u.detail != WheelDown &&
-                event->u.u.detail != WheelLeft && 
-                event->u.u.detail != WheelRight) {
+                    event->u.u.detail != WheelDown &&
+                    event->u.u.detail != WheelLeft &&
+                    event->u.u.detail != WheelRight) {
                 isPress = true;
                 emit buttonedPress(event->u.keyButtonPointer.rootX, event->u.keyButtonPointer.rootY);
             }
@@ -119,9 +119,9 @@ void EventMonitor::handleRecordEvent(void* dat)
             break;
         case ButtonRelease:
             if (event->u.u.detail != WheelUp &&
-                event->u.u.detail != WheelDown &&
-                event->u.u.detail != WheelLeft && 
-                event->u.u.detail != WheelRight) {
+                    event->u.u.detail != WheelDown &&
+                    event->u.u.detail != WheelLeft &&
+                    event->u.u.detail != WheelRight) {
                 isPress = false;
                 emit buttonedRelease(event->u.keyButtonPointer.rootX, event->u.keyButtonPointer.rootY);
             }

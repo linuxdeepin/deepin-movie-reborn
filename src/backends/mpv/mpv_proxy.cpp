@@ -112,9 +112,9 @@ MpvProxy::~MpvProxy()
 {
     disconnect(this, &MpvProxy::has_mpv_events, this, &MpvProxy::handle_mpv_events);
     _connectStateChange = false;
-    disconnect(window()->windowHandle(), &QWindow::windowStateChanged, 0, 0);
+    disconnect(window()->windowHandle(), &QWindow::windowStateChanged, nullptr, nullptr);
     if (CompositingManager::get().composited()) {
-        disconnect(this, &MpvProxy::stateChanged, 0, 0);
+        disconnect(this, &MpvProxy::stateChanged, nullptr, nullptr);
         delete _gl_widget;
     }
 }
@@ -473,11 +473,11 @@ void MpvProxy::handle_mpv_events()
 
         switch (ev->event_id) {
         case MPV_EVENT_LOG_MESSAGE:
-            processLogMessage((mpv_event_log_message *)ev->data);
+            processLogMessage(reinterpret_cast<mpv_event_log_message *>(ev->data));
             break;
 
         case MPV_EVENT_PROPERTY_CHANGE:
-            processPropertyChange((mpv_event_property *)ev->data);
+            processPropertyChange(reinterpret_cast<mpv_event_property *>(ev->data));
             break;
 
         case MPV_EVENT_COMMAND_REPLY:
@@ -504,9 +504,6 @@ void MpvProxy::handle_mpv_events()
             qDebug() << mpv_event_name(ev->event_id);
 
             if (_gl_widget) {
-                auto w = get_property(_handle, "width").toInt();
-                auto h = get_property(_handle, "height").toInt();
-
                 qDebug() << "hwdec-interop" << get_property(_handle, "gpu-hwdec-interop")
                          << "codec: " << get_property(_handle, "video-codec")
                          << "format: " << get_property(_handle, "video-format");
@@ -549,7 +546,7 @@ void MpvProxy::handle_mpv_events()
             MovieConfiguration::get().updateUrl(this->_file,
                                                 ConfigKnownKey::StartPos, 0);
 #endif
-            mpv_event_end_file *ev_ef = (mpv_event_end_file *)ev->data;
+            mpv_event_end_file *ev_ef = reinterpret_cast<mpv_event_end_file *>(ev->data);
             qDebug() << mpv_event_name(ev->event_id) <<
                      "reason " << ev_ef->reason;
             setState(PlayState::Stopped);
@@ -634,7 +631,7 @@ void MpvProxy::processPropertyChange(mpv_event_property *ev)
             if (state() != PlayState::Stopped) {
                 setState(PlayState::Playing);
                 if (_startPlayDuration != 0) {
-                    seekAbsolute(_startPlayDuration);
+                    seekAbsolute(static_cast<int>(_startPlayDuration));
                     _startPlayDuration = 0;
                 }
             }
@@ -737,6 +734,7 @@ void MpvProxy::showEvent(QShowEvent *re)
 //        });
         _connectStateChange = true;
     }
+    Backend::showEvent(re);
 }
 
 void MpvProxy::resizeEvent(QResizeEvent *re)
@@ -744,7 +742,7 @@ void MpvProxy::resizeEvent(QResizeEvent *re)
     if (state() == PlayState::Stopped) {
         return;
     }
-
+    Backend::resizeEvent(re);
 }
 
 void MpvProxy::savePlaybackPosition()
@@ -863,7 +861,7 @@ int MpvProxy::volume() const
     } else
         return get_property(_handle, "volume").toInt();*/
     int actualVol = get_property(_handle, "volume").toInt();
-    int dispaly = (actualVol - 40) / 60.0 * 200.0;
+    int dispaly = static_cast<int>((actualVol - 40) / 60.0 * 200.0);
     return dispaly;
 }
 
@@ -1031,7 +1029,7 @@ void MpvProxy::burstScreenshot()
     //command(_handle, QList<QVariant> {"revert-seek", "mark"});
     _posBeforeBurst = get_property(_handle, "time-pos");
 
-    int d = duration() / 15;
+    int d = static_cast<int>(duration() / 15);
 
     std::random_device rd;
     std::mt19937 g(rd());
@@ -1056,7 +1054,7 @@ void MpvProxy::burstScreenshot()
 
 qint64 MpvProxy::nextBurstShootPoint()
 {
-    auto next = _burstPoints[_burstStart++];
+    auto next = _burstPoints[static_cast<int>(_burstStart++)];
     if (next >= duration()) {
         next = duration() - 5;
     }
@@ -1066,7 +1064,7 @@ qint64 MpvProxy::nextBurstShootPoint()
 
 int MpvProxy::volumeCorrection(int displayVol)
 {
-    int realVol = (displayVol / 200.0) * 60.0 + 40;
+    int realVol = static_cast<int>((displayVol / 200.0) * 60.0 + 40);
     return (realVol);
 }
 
@@ -1087,30 +1085,30 @@ QImage MpvProxy::takeOneScreenshot()
 
     Q_ASSERT(res.format == MPV_FORMAT_NODE_MAP);
 
-    int w, h, stride;
+    int w = 0, h = 0, stride = 0;
 
     mpv_node_list *list = res.u.list;
-    uchar *data = NULL;
+    uchar *data = nullptr;
 
     for (int n = 0; n < list->num; n++) {
         auto key = QString::fromUtf8(list->keys[n]);
         if (key == "w") {
-            w = list->values[n].u.int64;
+            w = static_cast<int>(list->values[n].u.int64);
         } else if (key == "h") {
-            h = list->values[n].u.int64;
+            h = static_cast<int>(list->values[n].u.int64);
         } else if (key == "stride") {
-            stride = list->values[n].u.int64;
+            stride = static_cast<int>(list->values[n].u.int64);
         } else if (key == "format") {
             auto format = QString::fromUtf8(list->values[n].u.string);
             qDebug() << "format" << format;
         } else if (key == "data") {
-            data = (uchar *)list->values[n].u.ba->data;
+            data = static_cast<uchar *>(list->values[n].u.ba->data);
         }
     }
 
     if (data) {
         //alpha should be ignored
-        auto img = QImage((const uchar *)data, w, h, stride, QImage::Format_RGB32);
+        auto img = QImage(static_cast<const uchar *>(data), w, h, stride, QImage::Format_RGB32);
         img.bits();
         int rotationdegree = videoRotation();
         if (rotationdegree) {
@@ -1230,9 +1228,9 @@ qint64 MpvProxy::elapsed() const
 
 }
 
-void MpvProxy::changeProperty(const QString &name, const QVariant &v)
-{
-}
+//void MpvProxy::changeProperty(const QString &name, const QVariant &v)
+//{
+//}
 
 void MpvProxy::updatePlayingMovieInfo()
 {

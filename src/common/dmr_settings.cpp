@@ -48,7 +48,7 @@ Settings &Settings::get()
 }
 
 Settings::Settings()
-    : QObject(0)
+    : QObject(nullptr)
 {
     _configPath = QString("%1/%2/%3/config.conf")
                   .arg(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation))

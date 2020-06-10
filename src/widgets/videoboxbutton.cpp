@@ -151,6 +151,8 @@ void VideoBoxButton::enterEvent(QEvent *event)
 //    if (autoChecked) {
 //        setChecked(true);
 //    }
+
+    DButtonBoxButton::enterEvent(event);
 }
 
 void VideoBoxButton::leaveEvent(QEvent *event)
@@ -202,6 +204,7 @@ void VideoBoxButton::leaveEvent(QEvent *event)
 //    if (autoChecked) {
 //        setChecked(false);
 //    }
+    DButtonBoxButton::leaveEvent(event);
 }
 
 void VideoBoxButton::mousePressEvent(QMouseEvent *event)

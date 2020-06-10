@@ -144,7 +144,7 @@ CompositingManager::CompositingManager()
                     _composited = true;
                     qDebug() << "__aarch64__  isDriverLoadedCorrectly";
                 }
-#elif __mips__
+#elif defined (__mips__)
                 _composited = false;
                 qDebug() << "__mips__";
 #else

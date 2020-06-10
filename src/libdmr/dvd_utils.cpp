@@ -37,9 +37,9 @@ namespace dvd {
 QString RetrieveDVDTitle(const QString& device)
 {
     qDebug() << "device" << device;
-    const char *title = NULL;
+    const char *title = nullptr;
 
-    dvdnav_t *handle = NULL;
+    dvdnav_t *handle = nullptr;
     auto res = dvdnav_open(&handle, device.toUtf8().constData());
     if (res == DVDNAV_STATUS_ERR) {
         qWarning() << "dvdnav open " << device << "failed";

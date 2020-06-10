@@ -70,7 +70,7 @@ public:
     };
     Q_ENUM(DebugLevel)
 
-    Backend(QWidget *parent = 0) {}
+    Backend(QWidget *parent = nullptr) {}
     virtual ~Backend() {}
 
     virtual void setPlayFile(const QUrl &url)

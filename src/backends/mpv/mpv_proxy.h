@@ -155,7 +155,7 @@ private:
     void processPropertyChange(mpv_event_property *ev);
     void processLogMessage(mpv_event_log_message *ev);
     QImage takeOneScreenshot();
-    void changeProperty(const QString &name, const QVariant &v);
+    //void changeProperty(const QString &name, const QVariant &v);
     void updatePlayingMovieInfo();
     void setState(PlayState s);
     qint64 nextBurstShootPoint();

@@ -130,21 +130,21 @@ namespace dmr {
     static void* GLAPIENTRY glMPGetNativeDisplay(const char* name) {
         qWarning() << __func__ << name;
         if (!strcmp(name, "x11") || !strcmp(name, "X11")) {
-            return (void*)QX11Info::display();
+            return static_cast<void*>(QX11Info::display());
         }
-        return NULL;
+        return nullptr;
     }
 
     static void *get_proc_address(void *ctx, const char *name) {
         Q_UNUSED(ctx);
         QOpenGLContext *glctx = QOpenGLContext::currentContext();
         if (!glctx)
-            return NULL;
+            return nullptr;
 
         if (!strcmp(name, "glMPGetNativeDisplay")) {
-            return (void*)glMPGetNativeDisplay;
+            return reinterpret_cast<void*>(glMPGetNativeDisplay);
         }
-        return (void *)glctx->getProcAddress(QByteArray(name));
+        return reinterpret_cast<void*>(glctx->getProcAddress(QByteArray(name)));
     }
 
     static void gl_update_callback(void *cb_ctx)
@@ -217,7 +217,7 @@ namespace dmr {
 
         if (_fbo) delete _fbo;
 
-        if (_render_ctx) mpv_render_context_set_update_callback(_render_ctx, NULL, NULL);
+        if (_render_ctx) mpv_render_context_set_update_callback(_render_ctx, nullptr, nullptr);
         // Until this call is done, we need to make sure the player remains
         // alive. This is done implicitly with the mpv::qt::Handle instance
         // in this class.
@@ -349,11 +349,11 @@ namespace dmr {
         QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
         //f->glEnable(GL_BLEND);
         //f->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        float a = 16.0 / 255.0;
+        float a = static_cast<float>(16.0 / 255.0);
 
 //        if (qApp->theme() != "dark") a = 252.0 / 255.0;
         if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()){
-            a = 252.0 / 255.0;
+            a = static_cast<float>(252.0 / 255.0);
         }
         f->glClearColor(a, a, a, 1.0);
 
@@ -374,8 +374,8 @@ namespace dmr {
 #endif
 #endif
 
-        mpv_opengl_init_params gl_init_params = { get_proc_address, NULL, NULL };
-        int adv_control = 1;
+        mpv_opengl_init_params gl_init_params = { get_proc_address, nullptr, nullptr };
+        //int adv_control = 1;
         mpv_render_param params[] = {
             {MPV_RENDER_PARAM_API_TYPE, const_cast<char*>(MPV_RENDER_API_TYPE_OPENGL)},
             {MPV_RENDER_PARAM_OPENGL_INIT_PARAMS, &gl_init_params},
@@ -428,7 +428,7 @@ namespace dmr {
             QPainterPath pp;
             switch (i) {
                 case 0:
-                    pp.moveTo({0, (qreal)sz.height()});
+                    pp.moveTo({0, static_cast<qreal>(sz.height())});
                     pp.arcTo(QRectF(0, 0, RADIUS*2, RADIUS*2), 180.0, -90.0);
                     pp.lineTo(RADIUS, RADIUS);
                     pp.closeSubpath();
@@ -442,14 +442,14 @@ namespace dmr {
                     break;
 
                 case 2:
-                    pp.moveTo({(qreal)sz.width(), 0});
+                    pp.moveTo({static_cast<qreal>(sz.width()), 0});
                     pp.arcTo(QRectF(-RADIUS, -RADIUS, RADIUS*2, RADIUS*2), 0.0, -90.0);
                     pp.lineTo(0, 0);
                     pp.closeSubpath();
                     break;
 
                 case 3:
-                    pp.moveTo({(qreal)sz.width(), (qreal)sz.height()});
+                    pp.moveTo({static_cast<qreal>(sz.width()), static_cast<qreal>(sz.height())});
                     pp.arcTo(QRectF(0, -RADIUS, RADIUS*2, RADIUS*2), 270.0, -90.0);
                     pp.lineTo(RADIUS, 0);
                     pp.closeSubpath();
@@ -521,21 +521,21 @@ namespace dmr {
 
             auto r2 = QRect(pos[i], tex_sz);
 
-            GLfloat x1 = (float)r2.left() / r.width();
-            GLfloat x2 = (float)(r2.right()+1) / r.width();
-            GLfloat y1 = (float)r2.top() / r.height();
-            GLfloat y2 = (float)(r2.bottom()+1) / r.height();
+            GLfloat x1 = static_cast<float>(r2.left()) / r.width();
+            GLfloat x2 = static_cast<float>(r2.right()+1) / r.width();
+            GLfloat y1 = static_cast<float>(r2.top()) / r.height();
+            GLfloat y2 = static_cast<float>(r2.bottom()+1) / r.height();
 
-            x1 = x1 * 2.0 - 1.0;
-            x2 = x2 * 2.0 - 1.0;
-            y1 = y1 * 2.0 - 1.0;
-            y2 = y2 * 2.0 - 1.0;
+            x1 = static_cast<GLfloat>(static_cast<double>(x1) * 2.0 - 1.0);
+            x2 = static_cast<GLfloat>(static_cast<double>(x2) * 2.0 - 1.0);
+            y1 = static_cast<GLfloat>(static_cast<double>(y1) * 2.0 - 1.0);
+            y2 = static_cast<GLfloat>(static_cast<double>(y2) * 2.0 - 1.0);
 
             // for video tex coord
-            GLfloat s1 = (float)r2.left() / r.width();
-            GLfloat s2 = (float)(r2.right()+1) / r.width();
-            GLfloat t2 = (float)(r2.top()) / r.height();
-            GLfloat t1 = (float)(r2.bottom()+1) / r.height();
+            GLfloat s1 = static_cast<GLfloat>(r2.left()) / r.width();
+            GLfloat s2 = static_cast<GLfloat>(r2.right()+1) / r.width();
+            GLfloat t2 = static_cast<GLfloat>(r2.top()) / r.height();
+            GLfloat t1 = static_cast<GLfloat>(r2.bottom()+1) / r.height();
             
             // corner(and video) coord, corner-tex-coord, and video-as-tex-coord
             GLfloat vdata[] = {
@@ -568,15 +568,15 @@ namespace dmr {
         auto r = QRectF(0, 0, vp.width(), vp.height());
         auto r2 = QRectF(r.center() - QPointF(tex_sz.width()/2, tex_sz.height()/2), tex_sz);
 
-        GLfloat x1 = (float)r2.left() / r.width();
-        GLfloat x2 = (float)(r2.right()+1) / r.width();
-        GLfloat y1 = (float)r2.top() / r.height();
-        GLfloat y2 = (float)(r2.bottom()+1) / r.height();
+        GLfloat x1 = static_cast<GLfloat>(static_cast<double>(r2.left()) / r.width());
+        GLfloat x2 = static_cast<GLfloat>(static_cast<double>((r2.right()+1) / r.width()));
+        GLfloat y1 = static_cast<GLfloat>(static_cast<double>(r2.top() / r.height()));
+        GLfloat y2 = static_cast<GLfloat>(static_cast<double>((r2.bottom()+1) / r.height()));
 
-        x1 = x1 * 2.0 - 1.0;
-        x2 = x2 * 2.0 - 1.0;
-        y1 = y1 * 2.0 - 1.0;
-        y2 = y2 * 2.0 - 1.0;
+        x1 = static_cast<GLfloat>(static_cast<double>(x1) * 2.0 - 1.0);
+        x2 = static_cast<GLfloat>(static_cast<double>(x2) * 2.0 - 1.0);
+        y1 = static_cast<GLfloat>(static_cast<double>(y1) * 2.0 - 1.0);
+        y2 = static_cast<GLfloat>(static_cast<double>(y2) * 2.0 - 1.0);
 
         GLfloat vdata[] = {
             x1, y1, 0.0f, 1.0f,
@@ -707,14 +707,14 @@ namespace dmr {
             f->glEnable(GL_BLEND);
             f->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             auto clr = QColor(37, 37, 37, 255);
-            float a = 37.0 / 255.0;
+            float a = 37.0f / 255.0f;
 //            if (qApp->theme() != "dark") {
 //                clr = QColor(252, 252, 252, 255);
 //                a = 252.0 / 255.0;
 //            }
             if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()){
                 clr = QColor(252, 252, 252, 255);
-                a = 252.0 / 255.0;
+                a = 252.0f / 255.0f;
             }
             f->glClearColor(a, a, a, 1.0);
             f->glClear(GL_COLOR_BUFFER_BIT);

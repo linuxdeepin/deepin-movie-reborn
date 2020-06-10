@@ -89,12 +89,12 @@ PlayerEngine::PlayerEngine(QWidget *parent)
 
 PlayerEngine::~PlayerEngine()
 {
-    disconnect(_playlist, 0, 0, 0);
+    disconnect(_playlist, nullptr, nullptr, nullptr);
     delete _playlist;
     _playlist = nullptr;
 
     if (_current) {
-        disconnect(_current, 0, 0, 0);
+        disconnect(_current, nullptr, nullptr, nullptr);
         delete _current;
         _current = nullptr;
     }
@@ -666,7 +666,7 @@ void PlayerEngine::seekBackward(int secs)
     if (state() == CoreState::Idle) return;
 
     if (elapsed() - abs(secs) <= 0) {
-        _current->seekBackward(elapsed());
+        _current->seekBackward(static_cast<int>(elapsed()));
     } else {
         _current->seekBackward(secs);
     }

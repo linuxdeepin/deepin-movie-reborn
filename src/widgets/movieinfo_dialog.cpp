@@ -142,7 +142,7 @@ protected:
             auto parent = obj->property("HintWidget").value<Tip *>();
             parent->hide();
             event->ignore();
-
+            break;
         }
         default:
             break;
@@ -286,7 +286,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
     addRow(tr("Video CodecID"), mi.videoCodec(), videoForm, tipLst);
     addRow(tr("Video CodeRate"), QString(tr("%1 kbps")).arg(mi.vCodeRate), videoForm, tipLst);
     addRow(tr("FPS"), QString(tr("%1 fps")).arg(mi.fps), videoForm, tipLst);
-    addRow(tr("Proportion"), QString(tr("%1")).arg(mi.proportion), videoForm, tipLst);
+    addRow(tr("Proportion"), QString(tr("%1")).arg(static_cast<double>(mi.proportion)), videoForm, tipLst);
     addRow(tr("Resolution"), mi.resolution, videoForm, tipLst);
 
     //添加音频信息
@@ -458,7 +458,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
 void MovieInfoDialog::paintEvent(QPaintEvent *ev)
 {
     QPainter painter(this);
-    painter.fillRect(this->rect(), QColor(0, 0, 0, 255 * 0.8));
+    painter.fillRect(this->rect(), QColor(0, 0, 0, static_cast<int>(255 * 0.8)));
     QDialog::paintEvent(ev);
 }
 
