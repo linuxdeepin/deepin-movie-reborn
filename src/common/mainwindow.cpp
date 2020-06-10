@@ -1797,6 +1797,8 @@ bool MainWindow::addCdromPath()
         if (_engine->state() == PlayerEngine::CoreState::Idle)
             _engine->playByName(QUrl("playlist://0"));
         _engine->playByName(urls[0]);
+    } else {
+        return false;
     }
     return true;
 }
@@ -1957,14 +1959,10 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         }
 
         if ( addCdromPath() == false) {
-            _nwComm->updateWithMessage(tr("No device found"));
+            //_nwComm->updateWithMessage(tr("No device found"));
+            QUrl url(QString("dvd:///%1").arg(dev));
+            play(url);
         }
-        /*_engine->setDVDDevice(dev);  Comment by thx
-        //FIXME: how to tell if it's bluray
-        //QUrl url(QString("dvdread:///%1").arg(dev));
-        QUrl url(QString("dvd://%1").arg(dev));
-        //QUrl url(QString("dvdnav://"));
-        play(url);*/
         break;
     }
 
