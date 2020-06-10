@@ -86,6 +86,9 @@ public:
 
     // only the last dvd device set
     void setDVDDevice(const QString &path);
+    //add by heyi
+    //第一次播放需要初库始化函数指针
+    void firstInit();
 
     bool addPlayFile(const QUrl &url);
     QList<QUrl> addPlayDir(const QDir &dir); // return collected valid urls
@@ -170,6 +173,8 @@ signals:
     void subCodepageChanged();
 
     void loadOnlineSubtitlesFinished(const QUrl &url, bool success);
+    //add by heyi mpv函数加载完毕
+    void mpvFunsLoadOver();
 
     //emit during burst screenshotting
     void notifyScreenshot(const QImage &frame, qint64 time);
@@ -219,6 +224,8 @@ protected:
     QUrl _pendingPlayReq;
 
     bool _playingRequest {false};
+    //add by heyi
+    bool m_bMpvFunsLoad {false};
 
     QList<QUrl> collectPlayFiles(const QList<QUrl> &urls);
     QList<QUrl> collectPlayDir(const QDir &dir);

@@ -1300,7 +1300,9 @@ struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl &url, const QFil
         if (isDvd && url.scheme().startsWith("dvd")) {
             QString dev = url.path();
             if (dev.isEmpty()) dev = "/dev/sr0";
+#ifdef __mips__
             dmr::dvd::RetrieveDvdThread::get()->startDvd(dev);
+#endif
 //            mi.title = dmr::dvd::RetrieveDVDTitle(dev);
 //            if (mi.title.isEmpty()) {
 //              mi.title = "DVD";

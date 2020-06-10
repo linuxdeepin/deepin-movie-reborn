@@ -80,7 +80,8 @@ PlayerEngine::PlayerEngine(QWidget *parent)
 
     connect(&OnlineSubtitle::get(), &OnlineSubtitle::subtitlesDownloadedFor,
             this, &PlayerEngine::onSubtitlesDownloaded);
-    addSubSearchPath(OnlineSubtitle::get().storeLocation());
+    //heyi need
+    //addSubSearchPath(OnlineSubtitle::get().storeLocation());
 
     _playlist = new PlaylistModel(this);
     connect(_playlist, &PlaylistModel::asyncAppendFinished, this,
@@ -483,6 +484,12 @@ bool PlayerEngine::muted() const
 void PlayerEngine::toggleMute()
 {
     if (!_current) return;
+    //发送信号通知初始化库函数
+    if (!m_bMpvFunsLoad) {
+        emit mpvFunsLoadOver();
+        m_bMpvFunsLoad = true;
+    }
+
     _current->toggleMute();
     emit volumeChanged();
 }
@@ -509,6 +516,12 @@ void PlayerEngine::paintEvent(QPaintEvent *e)
 //FIXME: TODO: update _current according to file
 void PlayerEngine::requestPlay(int id)
 {
+    //发送信号通知初始化库函数
+    if (!m_bMpvFunsLoad) {
+        emit mpvFunsLoadOver();
+        m_bMpvFunsLoad = true;
+    }
+
     if (!_current) return;
     if (id >= _playlist->count()) return;
 
@@ -686,6 +699,12 @@ void PlayerEngine::setDVDDevice(const QString &path)
         return;
     }
     _current->setDVDDevice(path);
+}
+
+void PlayerEngine::firstInit()
+{
+    _current->firstInit();
+    addSubSearchPath(OnlineSubtitle::get().storeLocation());
 }
 
 bool PlayerEngine::addPlayFile(const QUrl &url)

@@ -1,4 +1,4 @@
-/* 
+/*
  * (c) 2017, Deepin Technology Co., Ltd. <support@deepin.org>
  *
  * This program is free software; you can redistribute it and/or
@@ -89,6 +89,8 @@ void Utility::cancelWindowMoveResize(quint32 WId)
 
 void Utility::updateMousePointForWindowMove(quint32 WId, const QPoint &globalPos)
 {
+    //add by xxj
+#ifdef __mips__
     xcb_client_message_event_t xev;
 
     xev.response_type = XCB_CLIENT_MESSAGE;
@@ -106,8 +108,11 @@ void Utility::updateMousePointForWindowMove(quint32 WId, const QPoint &globalPos
                    (const char *)&xev);
 
     xcb_flush(QX11Info::connection());
+#endif
 }
 
+//add by xxj
+#ifdef __mips__
 void Utility::setFrameExtents(quint32 WId, const QMargins &margins)
 {
     xcb_atom_t frameExtents = internAtom("_GTK_FRAME_EXTENTS");
@@ -153,8 +158,8 @@ void Utility::setShapePath(quint32 WId, const QPainterPath &path, bool onlyInput
 
     QVector<xcb_rectangle_t> rectangles;
 
-    foreach(const QPolygonF &polygon, path.toFillPolygons()) {
-        foreach(const QRect &area, QRegion(polygon.toPolygon()).rects()) {
+    foreach (const QPolygonF &polygon, path.toFillPolygons()) {
+        foreach (const QRect &area, QRegion(polygon.toPolygon()).rects()) {
             xcb_rectangle_t rectangle;
 
             rectangle.x = static_cast<int16_t>(area.x());
@@ -168,6 +173,7 @@ void Utility::setShapePath(quint32 WId, const QPainterPath &path, bool onlyInput
 
     setRectangles(WId, rectangles, onlyInput);
 }
+#endif
 
 void Utility::sendMoveResizeMessage(quint32 WId, uint32_t action, QPoint globalPos, Qt::MouseButton qbutton)
 {
@@ -178,11 +184,11 @@ void Utility::sendMoveResizeMessage(quint32 WId, uint32_t action, QPoint globalP
     if (globalPos.isNull()) {
         //QTBUG-76114
         //globalPos = QCursor::pos();
-        xcb_generic_error_t** err = nullptr;
-        xcb_query_pointer_reply_t* p = xcb_query_pointer_reply(QX11Info::connection(),
-                                                              xcb_query_pointer(QX11Info::connection(),
-                                                                                QX11Info::appRootWindow(QX11Info::appScreen())),
-                                                              err);
+        xcb_generic_error_t **err = nullptr;
+        xcb_query_pointer_reply_t *p = xcb_query_pointer_reply(QX11Info::connection(),
+                                                               xcb_query_pointer(QX11Info::connection(),
+                                                                                 QX11Info::appRootWindow(QX11Info::appScreen())),
+                                                               err);
         if (p && err == nullptr) {
             globalPos = QPoint(p->root_x, p->root_y);
         }
@@ -212,6 +218,7 @@ void Utility::sendMoveResizeMessage(quint32 WId, uint32_t action, QPoint globalP
     xcb_flush(QX11Info::connection());
 }
 
+#ifdef __mips__
 QVector<xcb_rectangle_t> Utility::qregion2XcbRectangles(const QRegion &region)
 {
     QVector<xcb_rectangle_t> rectangles;
@@ -231,6 +238,7 @@ QVector<xcb_rectangle_t> Utility::qregion2XcbRectangles(const QRegion &region)
 
     return rectangles;
 }
+#endif
 
 void Utility::startWindowSystemResize(quint32 WId, CornerEdge cornerEdge, const QPoint &globalPos)
 {
@@ -293,14 +301,14 @@ QRegion Utility::regionAddMargins(const QRegion &region, const QMargins &margins
 QByteArray Utility::windowProperty(quint32 WId, xcb_atom_t propAtom, xcb_atom_t typeAtom, quint32 len)
 {
     QByteArray data;
-    xcb_connection_t* conn = QX11Info::connection();
+    xcb_connection_t *conn = QX11Info::connection();
     xcb_get_property_cookie_t cookie = xcb_get_property(conn, false, WId, propAtom, typeAtom, 0, len);
-    xcb_generic_error_t* err = nullptr;
-    xcb_get_property_reply_t* reply = xcb_get_property_reply(conn, cookie, &err);
+    xcb_generic_error_t *err = nullptr;
+    xcb_get_property_reply_t *reply = xcb_get_property_reply(conn, cookie, &err);
 
     if (reply != nullptr) {
         len = xcb_get_property_value_length(reply);
-        const char* buf = static_cast<const char*>(xcb_get_property_value(reply));
+        const char *buf = static_cast<const char *>(xcb_get_property_value(reply));
         data.append(buf, len);
         free(reply);
     }
@@ -318,7 +326,7 @@ QList<xcb_atom_t> Utility::windowNetWMState(quint32 WId)
     QList<xcb_atom_t> res;
 
     const auto wmStateAtom = XInternAtom(QX11Info::display(), kAtomNameWmState, false);
-    xcb_connection_t* conn = QX11Info::connection();
+    xcb_connection_t *conn = QX11Info::connection();
     xcb_get_property_cookie_t cookie = xcb_get_property(conn, false, WId,
                                                         static_cast<xcb_atom_t>(wmStateAtom), XCB_ATOM_ATOM, 0, 1);
     xcb_generic_error_t *err = nullptr;
@@ -326,7 +334,7 @@ QList<xcb_atom_t> Utility::windowNetWMState(quint32 WId)
 
     if (reply != nullptr) {
         auto len = xcb_get_property_value_length(reply);
-        uint32_t *data = static_cast<uint32_t*>(xcb_get_property_value(reply));
+        uint32_t *data = static_cast<uint32_t *>(xcb_get_property_value(reply));
         for (int i = 0; i < len; i++) {
             res.append(data[i]);
         }
@@ -343,7 +351,7 @@ QList<xcb_atom_t> Utility::windowNetWMState(quint32 WId)
 
 void Utility::setWindowProperty(quint32 WId, xcb_atom_t propAtom, xcb_atom_t typeAtom, const void *data, quint32 len, uint8_t format)
 {
-    xcb_connection_t* conn = QX11Info::connection();
+    xcb_connection_t *conn = QX11Info::connection();
     xcb_change_property(conn, XCB_PROP_MODE_REPLACE, WId, propAtom, typeAtom, format, len, data);
     xcb_flush(conn);
 }
@@ -358,8 +366,8 @@ void Utility::setStayOnTop(const QWidget *widget, bool on)
     const auto wmStateAtom = XInternAtom(display, kAtomNameWmState, false);
     const auto stateAboveAtom = XInternAtom(display, kAtomNameWmStateAbove, false);
     const auto stateStaysOnTopAtom = XInternAtom(display,
-                                     kAtomNameWmStateStaysOnTop,
-                                     false);
+                                                 kAtomNameWmStateStaysOnTop,
+                                                 false);
 
     XEvent xev;
     memset(&xev, 0, sizeof(xev));

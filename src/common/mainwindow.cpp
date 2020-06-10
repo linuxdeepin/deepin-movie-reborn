@@ -354,7 +354,10 @@ public:
             case XCB_PROPERTY_NOTIFY: {
                 xcb_property_notify_event_t *pne = (xcb_property_notify_event_t *)(event);
                 if (pne->atom == _atomWMState && pne->window == (xcb_window_t)_source->winId()) {
+                    //add by xxj ***
+#ifdef __mips__
                     _mw->syncStaysOnTop();
+#endif
                 }
                 break;
             }
@@ -492,12 +495,14 @@ protected:
                         goto skip_set_cursor;
                     }
 set_cursor:
+#ifdef __mips__
                     if (window->property("_d_real_winId").isValid()) {
                         auto real_wid = window->property("_d_real_winId").toUInt();
                         Utility::setWindowCursor(real_wid, mouseCorner);
                     } else {
                         Utility::setWindowCursor(static_cast<quint32>(window->winId()), mouseCorner);
                     }
+#endif
 
                     if (qApp->mouseButtons() == Qt::LeftButton) {
                         updateGeometry(mouseCorner, e);
@@ -678,8 +683,8 @@ MainWindow::MainWindow(QWidget *parent)
     setAcceptDrops(true);
 
     if (composited) {
-        setAttribute(Qt::WA_TranslucentBackground, true);
-        //setAttribute(Qt::WA_NoSystemBackground, false);
+        //setAttribute(Qt::WA_TranslucentBackground, true);
+        setAttribute(Qt::WA_NoSystemBackground, false);
     }
 
 //    DThemeManager::instance()->registerWidget(this);
@@ -718,6 +723,8 @@ MainWindow::MainWindow(QWidget *parent)
         Backend::setDebugLevel(Backend::DebugLevel::Verbose);
     }
     _engine = new PlayerEngine(this);
+    //add by heyi
+    connect(_engine, &PlayerEngine::mpvFunsLoadOver, this, &MainWindow::firstPlayInit);
 #ifndef USE_DXCB
     _engine->move(0, 0);
 #endif
@@ -727,7 +734,8 @@ MainWindow::MainWindow(QWidget *parent)
         Settings::get().setInternalOption("global_volume", 100);
         volume = 100;
     }
-    _engine->changeVolume(volume);
+    //heyi need
+    //_engine->changeVolume(volume);
     m_displayVolume = volume;
     if (Settings::get().internalOption("mute").toBool()) {
         _engine->toggleMute();
@@ -910,7 +918,7 @@ MainWindow::MainWindow(QWidget *parent)
     reflectActionToUI(ActionFactory::DefaultFrame);
     //reflectActionToUI(ActionFactory::OrderPlay);
     reflectActionToUI(ActionFactory::Stereo);
-    requestAction(ActionFactory::ChangeSubCodepage, false, {"auto"});
+    //requestAction(ActionFactory::ChangeSubCodepage, false, {"auto"});
 
     _lightTheme = Settings::get().internalOption("light_theme").toBool();
     if (_lightTheme) reflectActionToUI(ActionFactory::LightTheme);
@@ -1053,8 +1061,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(_engine, &PlayerEngine::onlineStateChanged, this, &MainWindow::checkOnlineState);
     connect(&OnlineSubtitle::get(), &OnlineSubtitle::onlineSubtitleStateChanged, this, &MainWindow::checkOnlineSubtitle);
     connect(_engine, &PlayerEngine::mpvErrorLogsChanged, this, &MainWindow::checkErrorMpvLogsChanged);
-    //4k播放时不显示提示框
-    //connect(_engine, &PlayerEngine::mpvWarningLogsChanged, this, &MainWindow::checkWarningMpvLogsChanged);
+    connect(_engine, &PlayerEngine::mpvWarningLogsChanged, this, &MainWindow::checkWarningMpvLogsChanged);
     connect(_engine, &PlayerEngine::urlpause, this, [ = ](bool status) {
         if (status) {
             auto msg = QString(tr("Buffering..."));
@@ -1076,7 +1083,7 @@ MainWindow::MainWindow(QWidget *parent)
         _fullscreentimelable->setGeometry(deskRect.width() - pixelsWidth - 32, 40, pixelsWidth + 32, 36);
     });
 
-    connect(dmr::dvd::RetrieveDvdThread::get(), &dmr::dvd::RetrieveDvdThread::sigData, this, &MainWindow::onDvdData);
+    //connect(dmr::dvd::RetrieveDvdThread::get(), &dmr::dvd::RetrieveDvdThread::sigData, this, &MainWindow::onDvdData);
 
     {
         loadWindowState();
@@ -1094,10 +1101,10 @@ MainWindow::MainWindow(QWidget *parent)
     }*/
 
     //****************************************
-    if (_engine->muted()) {
-        _nwComm->updateWithMessage(tr("Mute"));
-    }
-
+    //heyi need
+//    if (_engine->muted()) {
+//        _nwComm->updateWithMessage(tr("Mute"));
+//    }
     ThreadPool::instance()->moveToNewThread(&volumeMonitoring);
     volumeMonitoring.start();
     connect(&volumeMonitoring, &VolumeMonitoring::volumeChanged, this, [ = ](int vol) {
@@ -1406,6 +1413,29 @@ MainWindow::~MainWindow()
 #endif
 }
 
+void MainWindow::firstPlayInit()
+{
+    if (m_bMpvFunsLoad) return;
+
+    _engine->firstInit();
+
+    int volume = Settings::get().internalOption("global_volume").toInt();
+    if (volume > 100) {
+        Settings::get().setInternalOption("global_volume", 100);
+        volume = 100;
+    }
+
+    //heyi need
+    _engine->changeVolume(volume);
+
+    if (_engine->muted()) {
+        _nwComm->updateWithMessage(tr("Mute"));
+    }
+
+    requestAction(ActionFactory::ChangeSubCodepage, false, {"auto"});
+    m_bMpvFunsLoad = true;
+}
+
 void MainWindow::onApplicationStateChanged(Qt::ApplicationState e)
 {
     switch (e) {
@@ -1600,13 +1630,15 @@ void MainWindow::updateActionsState()
 void MainWindow::syncStaysOnTop()
 {
     static xcb_atom_t atomStateAbove = Utility::internAtom("_NET_WM_STATE_ABOVE");
-
     auto atoms = Utility::windowNetWMState(static_cast<quint32>(windowHandle()->winId()));
+
+#ifdef __mips__
     bool window_is_above = atoms.contains(atomStateAbove);
     if (window_is_above != _windowAbove) {
         qDebug() << "syncStaysOnTop: window_is_above" << window_is_above;
         requestAction(ActionFactory::WindowAbove);
     }
+#endif
 }
 
 void MainWindow::reflectActionToUI(ActionFactory::ActionKind kd)
@@ -2137,7 +2169,9 @@ play(url);
             show();
             ```
         */
+#ifdef __mips__
         Utility::setStayOnTop(this, _windowAbove);
+#endif
         if (!fromUI) {
             reflectActionToUI(kd);
         }
@@ -4234,6 +4268,8 @@ void MainWindow::dragMoveEvent(QDragMoveEvent *ev)
 
 void MainWindow::dropEvent(QDropEvent *ev)
 {
+    //add bu heyi 拖动进来时先初始化窗口
+    firstPlayInit();
     qDebug() << ev->mimeData()->formats();
     if (!ev->mimeData()->hasUrls()) {
         return;

@@ -62,8 +62,8 @@ int main(int argc, char *argv[])
         CompositingManager::detectPciID();
     }
 #else
-    CompositingManager::detectOpenGLEarly();
-    CompositingManager::detectPciID();
+//    CompositingManager::detectOpenGLEarly();
+//    CompositingManager::detectPciID();
 #endif
 
 #if defined(STATIC_LIB)

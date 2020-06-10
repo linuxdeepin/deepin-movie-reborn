@@ -28,7 +28,7 @@
  * files in the program, then also delete it here.
  */
 #ifndef _DMR_DVD_UTILS_H
-#define _DMR_DVD_UTILS_H 
+#define _DMR_DVD_UTILS_H
 
 #define _DMR_DVD_UTILS_H
 
@@ -36,15 +36,18 @@
 #include <QThread>
 
 namespace dmr {
+//add by xxj
+#ifdef __mips__
 namespace dvd {
-    // device could be a dev node or a iso file
-    QString RetrieveDVDTitle(const QString& device);
+// device could be a dev node or a iso file
+QString RetrieveDVDTitle(const QString &device);
 /*
    class RetrieveDvdThread
    the class function DVD thread, Retrieve DVD and get DVD message
    todo Handle dvdnav_open blocking of the dvdnav library function
 */
-class RetrieveDvdThread: public QThread {
+class RetrieveDvdThread: public QThread
+{
     Q_OBJECT
 
 public:
@@ -70,6 +73,7 @@ private:
 };
 
 }
+#endif
 }
 
 #endif /* ifndef _DMR_DVD_UTILS_H */

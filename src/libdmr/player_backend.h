@@ -28,7 +28,7 @@
  * files in the program, then also delete it here.
  */
 #ifndef _DMR_PLAYER_BACKEND_H
-#define _DMR_PLAYER_BACKEND_H
+#define _DMR_PLAYER_BACKEND_H 
 
 #include <QtWidgets>
 
@@ -110,9 +110,10 @@ public:
     virtual void updateSubStyle(const QString &font, int sz) = 0;
     virtual void setSubCodepage(const QString &cp) = 0;
     virtual QString subCodepage() = 0;
-    virtual void addSubSearchPath(const QString &path) = 0;
-
-    virtual bool loadSubtitle(const QFileInfo &fi) = 0;
+    virtual void addSubSearchPath(const QString& path) = 0;
+    //add by heyi
+    virtual void firstInit() = 0;
+    virtual bool loadSubtitle(const QFileInfo& fi) = 0;
     virtual void toggleSubtitle() = 0;
     virtual bool isSubVisible() = 0;
     virtual void selectSubtitle(int id) = 0;

@@ -19,13 +19,13 @@ find_package(Qt5Sql)
 pkg_check_modules(Dtk REQUIRED IMPORTED_TARGET dtkwidget)
 pkg_check_modules(Dtk REQUIRED IMPORTED_TARGET dtkcore)
 pkg_check_modules(Mpv REQUIRED IMPORTED_TARGET mpv)
-pkg_check_modules(Xcb REQUIRED IMPORTED_TARGET xcb xcb-aux
-    xcb-proto xcb-ewmh xcb-shape)
+pkg_check_modules(Xcb REQUIRED IMPORTED_TARGET xcb
+      )
 pkg_check_modules(AV REQUIRED IMPORTED_TARGET libavformat
     libavutil libavcodec)
 # IMPORTED_TARGET failed to work for some of libs under flatpak env
-pkg_check_modules(Other REQUIRED libffmpegthumbnailer
-    libpulse libpulse-simple openssl dvdnav gsettings-qt)
+pkg_check_modules(Other REQUIRED libffmpegthumbnailer 
+      gsettings-qt)
 
 qt5_add_resources(RCS resources.qrc)
 qt5_add_resources(RCS icons/theme-icons.qrc)
@@ -73,9 +73,13 @@ add_executable(${CMD_NAME} ${SRCS} ${RCS} ${QM})
 
 target_include_directories(${CMD_NAME} PUBLIC ${PROJECT_INCLUDE})
 
-set(TARGET_LIBS X11 Xext Xtst PkgConfig::Xcb Qt5::Widgets Qt5::X11Extras Qt5::Network
-    Qt5::Concurrent Qt5::DBus Qt5::Sql PkgConfig::Dtk PkgConfig::Mpv
-    PkgConfig::AV pthread GL)
+#set(TARGET_LIBS X11 Xtst  PkgConfig::Xcb Qt5::Widgets Qt5::X11Extras Qt5::Network
+#    Qt5::Concurrent Qt5::DBus Qt5::Sql PkgConfig::Dtk PkgConfig::Mpv
+#    PkgConfig::AV  GL)
+
+set(TARGET_LIBS X11 Xtst  PkgConfig::Xcb Qt5::Widgets Qt5::X11Extras Qt5::Network
+    Qt5::Concurrent Qt5::DBus Qt5::Sql PkgConfig::Dtk  PkgConfig::AV  GL)
+
 target_link_libraries(${CMD_NAME} ${TARGET_LIBS} ${Other_LIBRARIES})
 
 

@@ -33,6 +33,7 @@
 #include "mpv_glwidget.h"
 
 #include <QtX11Extras/QX11Info>
+#include <QLibrary>
 
 #include <dthememanager.h>
 #include <DApplication>
@@ -162,7 +163,7 @@ namespace dmr {
             context()->swapBuffers(context()->surface());
             doneCurrent();
         } else {
-            mpv_render_context_update(_render_ctx);
+            m_renderContextUpdate(_render_ctx);
             update();
         }
     }
@@ -170,10 +171,12 @@ namespace dmr {
     void MpvGLWidget::onFrameSwapped()
     {
         //qDebug() << "frame swapped";
-        mpv_render_context_report_swap(_render_ctx);
+
+        if(!m_context_report) return;
+        m_context_report(_render_ctx);
     }
 
-    MpvGLWidget::MpvGLWidget(QWidget *parent, mpv::qt::Handle h)
+    MpvGLWidget::MpvGLWidget(QWidget *parent, myHandle h)
         :QOpenGLWidget(parent), _handle(h) { 
         setUpdateBehavior(QOpenGLWidget::NoPartialUpdate);
 
@@ -216,12 +219,13 @@ namespace dmr {
         _vaoCorner.destroy();
 
         if (_fbo) delete _fbo;
-
-        if (_render_ctx) mpv_render_context_set_update_callback(_render_ctx, nullptr, nullptr);
+        //add by heyi
+        if (_render_ctx) m_callback(_render_ctx, nullptr, nullptr);
         // Until this call is done, we need to make sure the player remains
         // alive. This is done implicitly with the mpv::qt::Handle instance
         // in this class.
-        mpv_render_context_free(_render_ctx);
+        m_renderContex(_render_ctx);
+        //mpv_render_context_free(_render_ctx);
         doneCurrent();
     }
 
@@ -389,11 +393,14 @@ namespace dmr {
             {MPV_RENDER_PARAM_X11_DISPLAY, reinterpret_cast<void*>(QX11Info::display())},
             {MPV_RENDER_PARAM_INVALID, nullptr}
         };
-        if (mpv_render_context_create(&_render_ctx, _handle, params) < 0) {
+
+        //add by heyi
+        if(!m_renderCreat) return;
+        if (m_renderCreat(&_render_ctx, _handle, params) < 0) {
             std::runtime_error("can not init mpv gl");
         }
 
-        mpv_render_context_set_update_callback(_render_ctx, gl_update_callback,
+        m_callback(_render_ctx, gl_update_callback,
                 reinterpret_cast<void*>(this));
     }
 
@@ -613,6 +620,11 @@ namespace dmr {
         update();
     }
 
+    void MpvGLWidget::setHandle(myHandle h)
+    {
+        _handle = h;
+    }
+
     void MpvGLWidget::paintGL() 
     {
         QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
@@ -633,7 +645,7 @@ namespace dmr {
                     {MPV_RENDER_PARAM_INVALID, nullptr}
                 };
 
-                mpv_render_context_render(_render_ctx, params);
+                m_renderContexRender(_render_ctx, params);
             } else {
                 f->glEnable(GL_BLEND);
                 f->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -650,7 +662,7 @@ namespace dmr {
                     {MPV_RENDER_PARAM_INVALID, nullptr}
                 };
 
-                mpv_render_context_render(_render_ctx, params);
+                m_renderContexRender(_render_ctx, params);
 
                 _fbo->release();
 
@@ -794,5 +806,15 @@ namespace dmr {
             update();
         }
     }
-}
 
+    void MpvGLWidget::initMpvFuns()
+    {
+        qDebug() << "MpvGLWidget开始initMpvFuns";
+        m_callback = (mpv_render_contextSet_update_callback)QLibrary::resolve(LIB_PATH, "mpv_render_context_set_update_callback");
+        m_context_report = (mpv_render_contextReport_swap)QLibrary::resolve(LIB_PATH, "mpv_render_context_report_swap");
+        m_renderContex = (mpv_renderContext_free)QLibrary::resolve(LIB_PATH, "mpv_render_context_free");
+        m_renderCreat = (mpv_renderContext_create)QLibrary::resolve(LIB_PATH, "mpv_render_context_create");
+        m_renderContexRender = (mpv_renderContext_render)QLibrary::resolve(LIB_PATH, "mpv_render_context_render");
+        m_renderContextUpdate = (mpv_renderContext_update)QLibrary::resolve(LIB_PATH, "mpv_render_context_update");
+    }
+}
