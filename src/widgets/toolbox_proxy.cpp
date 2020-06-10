@@ -1207,16 +1207,9 @@ private slots:
                 if (_slider->value() == _slider->maximum() && we->angleDelta().y() > 0) {
                     //keep increasing volume
                     _mw->requestAction(ActionFactory::VolumeUp);
-                }
-#ifdef   __aarch64__
-                else {
+                } else {
                     _mw->requestAction(we->angleDelta().y() > 0 ? ActionFactory::VolumeUp : ActionFactory::VolumeDown);
                 }
-#elif    __mips__
-                else {
-                    _mw->requestAction(we->angleDelta().y() > 0 ? ActionFactory::VolumeUp : ActionFactory::VolumeDown);
-                }
-#endif
             }
             return false;
         } else {
