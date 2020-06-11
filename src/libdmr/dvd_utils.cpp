@@ -1,4 +1,4 @@
-/* 
+/*
  * (c) 2017, Deepin Technology Co., Ltd. <support@deepin.org>
  *
  * This program is free software; you can redistribute it and/or
@@ -33,7 +33,7 @@
 
 namespace dmr {
 //add by xxj
-#ifdef __mips__
+#ifdef heyi
 namespace dvd {
 
 QString RetrieveDVDTitle(const QString &device)
@@ -68,7 +68,7 @@ QString RetrieveDVDTitle(const QString &device)
         auto n = dvdnav_describe_title_chapters(handle, i, NULL, &duration);
         if (max_duration < duration) {
             max_duration = duration;
-            //title 
+            //title
         }
     }
 #endif
@@ -81,7 +81,7 @@ on_error:
     return "";
 }
 
-static std::atomic<RetrieveDvdThread*> _instance { nullptr };
+static std::atomic<RetrieveDvdThread *> _instance { nullptr };
 static QMutex _instLock;
 static QMutex _startLock;
 static QMutex _runLock;

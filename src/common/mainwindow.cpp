@@ -355,7 +355,7 @@ public:
                 xcb_property_notify_event_t *pne = (xcb_property_notify_event_t *)(event);
                 if (pne->atom == _atomWMState && pne->window == (xcb_window_t)_source->winId()) {
                     //add by xxj ***
-#ifdef __mips__
+#ifdef heyi
                     _mw->syncStaysOnTop();
 #endif
                 }
@@ -1179,6 +1179,28 @@ void MainWindow::updateShadow()
 
 bool MainWindow::event(QEvent *ev)
 {
+    static int nX = 0, nY = 0;
+    if (ev->type() == QEvent::MouseButtonPress) {
+        qDebug() << "MouseButtonPress111111111";
+        QMouseEvent *newEv = (QMouseEvent *)ev;
+        nX = newEv->globalX();
+        nY = newEv->globalY();
+    }
+
+    if (ev->type() == QEvent::MouseMove) {
+        QMouseEvent *newEv = (QMouseEvent *)ev;
+        qDebug() << "x=" << newEv->globalX() << "y=" << newEv->globalY();
+        //修复触屏无法弹出右键问题
+
+        if (qAbs(nX - newEv->globalX()) < 5 || qAbs(nY - newEv->globalY()) < 5) {
+            ev->ignore();
+            return false;
+        }
+
+        qDebug() << "nX=" << nX << "nY=" << nY;
+    }
+
+    qDebug() << "进入event";
     if (ev->type() == QEvent::WindowStateChange) {
         auto wse = dynamic_cast<QWindowStateChangeEvent *>(ev);
         _lastWindowState = wse->oldState();
@@ -1189,6 +1211,7 @@ bool MainWindow::event(QEvent *ev)
         //connect(windowHandle(), &QWindow::windowStateChanged, this, &MainWindow::onWindowStateChanged);
         onWindowStateChanged();
     }
+
     return DMainWindow::event(ev);
 }
 
@@ -1217,7 +1240,6 @@ void MainWindow::onWindowStateChanged()
                 this->setWindowState(Qt::WindowMaximized);      //mini model need
             }
         }
-
     }
     //WTF: this->geometry() is not size of fullscreen !
     //_progIndicator->move(geometry().width() - _progIndicator->width() - 18, 14);
@@ -1632,7 +1654,7 @@ void MainWindow::syncStaysOnTop()
     static xcb_atom_t atomStateAbove = Utility::internAtom("_NET_WM_STATE_ABOVE");
     auto atoms = Utility::windowNetWMState(static_cast<quint32>(windowHandle()->winId()));
 
-#ifdef __mips__
+#ifndef __mips__
     bool window_is_above = atoms.contains(atomStateAbove);
     if (window_is_above != _windowAbove) {
         qDebug() << "syncStaysOnTop: window_is_above" << window_is_above;
@@ -2169,7 +2191,7 @@ play(url);
             show();
             ```
         */
-#ifdef __mips__
+#ifndef __mips__
         Utility::setStayOnTop(this, _windowAbove);
 #endif
         if (!fromUI) {
@@ -3582,6 +3604,8 @@ void MainWindow::updateWindowTitle()
 
 void MainWindow::moveEvent(QMoveEvent *ev)
 {
+    qDebug() << "进入moveEvent";
+    QWidget::moveEvent(ev);
 #ifdef __aarch64__
     if (windowState() == Qt::WindowNoState && !_miniMode) {
         _lastRectInNormalMode = geometry();
@@ -3642,6 +3666,8 @@ void MainWindow::capturedMouseReleaseEvent(QMouseEvent *me)
 static bool _afterDblClick = false;
 void MainWindow::mousePressEvent(QMouseEvent *ev)
 {
+    qDebug() << "进入mousePressEvent";
+    QWidget::mousePressEvent(ev);
     _mouseMoved = false;
     _mousePressed = false;
 #ifdef __aarch64__
@@ -3659,11 +3685,13 @@ void MainWindow::mousePressEvent(QMouseEvent *ev)
             qApp->sendEvent(_playState, &me);
         }*/
     }
+
 }
 
 
 void MainWindow::mouseDoubleClickEvent(QMouseEvent *ev)
 {
+    qDebug() << "进入mouseDoubleClickEvent";
     if (!_miniMode && this->_engine->getplaylist()->getthreadstate()) {
         qDebug() << "playlist loadthread is running";
         return;
@@ -3698,6 +3726,8 @@ bool MainWindow::insideResizeArea(const QPoint &global_p)
 
 void MainWindow::mouseReleaseEvent(QMouseEvent *ev)
 {
+    qDebug() << "进入mouseReleaseEvent";
+    QWidget::mouseReleaseEvent(ev);
     if (!_mousePressed) {
         _afterDblClick = false;
         _mouseMoved = false;
@@ -3774,11 +3804,13 @@ void MainWindow::mouseMoveEvent(QMouseEvent *ev)
     if (windowState() == Qt::WindowNoState || isMaximized()) {
         Utility::startWindowSystemMove(static_cast<quint32>(this->winId()));
     }
+
     QWidget::mouseMoveEvent(ev);
 }
 
 void MainWindow::contextMenuEvent(QContextMenuEvent *cme)
 {
+    qDebug() << "进入contextMenuEvent";
     if (_miniMode || _inBurstShootMode)
         return;
 

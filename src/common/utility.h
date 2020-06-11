@@ -1,4 +1,4 @@
-/* 
+/*
  * (c) 2017, Deepin Technology Co., Ltd. <support@deepin.org>
  *
  * This program is free software; you can redistribute it and/or
@@ -66,7 +66,7 @@ public:
 
     static void setFrameExtents(quint32 WId, const QMargins &margins);
     //add by xxj
-#ifdef __mips__
+#ifdef heyi
     static void setRectangles(quint32 WId, const QRegion &region, bool onlyInput = true);
     static void setRectangles(quint32 WId, const QVector<xcb_rectangle_t> &rectangles, bool onlyInput = true);
     static void setShapePath(quint32 WId, const QPainterPath &path, bool onlyInput = true);
@@ -84,7 +84,7 @@ public:
 private:
     static void sendMoveResizeMessage(quint32 WId, uint32_t action, QPoint globalPos = QPoint(), Qt::MouseButton qbutton = Qt::LeftButton);
     //add by xxj
-#ifdef __mips__
+#ifdef heyi
     static QVector<xcb_rectangle_t> qregion2XcbRectangles(const QRegion &region);
 #endif
 };

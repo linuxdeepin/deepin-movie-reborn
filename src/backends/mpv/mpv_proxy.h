@@ -55,6 +55,10 @@
 #define LIB_PATH "/lib/mips64el-linux-gnuabi64/libmpv.so.1"
 #endif
 
+#ifndef LIB_PATH
+#define LIB_PATH "/lib/i386-linux-gnu/libmpv.so.1"
+#endif
+
 typedef mpv_event *(*mpv_waitEvent)(mpv_handle *ctx, double timeout);
 typedef int (*mpv_set_optionString)(mpv_handle *ctx, const char *name, const char *data);
 typedef int (*mpv_setProperty)(mpv_handle *ctx, const char *name, mpv_format format,

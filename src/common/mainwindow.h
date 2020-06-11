@@ -137,8 +137,12 @@ public:
     }
 
     //add by heyi
-    //第一次点击播放时，需要加载动态库函数指针然后进行构造未完成的初始化
+    /**
+     * @brief firstPlayInit 第一次点击播放时，需要加载动态库函数指针然后进行构造未完成的初始化
+     */
     void firstPlayInit();
+
+    //解决触屏拖动bug
 
     void requestAction(ActionFactory::ActionKind, bool fromUI = false,
                        QList<QVariant> args = {}, bool shortcut = false);
