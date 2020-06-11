@@ -43,6 +43,10 @@
 #define LIB_PATH "/lib/x86_64-linux-gnu/libmpv.so.1"
 #endif
 
+#ifdef __sw_64__
+#define LIB_PATH "/lib/sw_64-linux-gnu/libmpv.so.1"
+#endif
+
 #ifdef __aarch64__
 #define LIB_PATH "/lib/aarch64-linux-gnu/libmpv.so.1"
 #endif
