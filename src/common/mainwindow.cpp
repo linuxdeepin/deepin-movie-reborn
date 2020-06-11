@@ -4268,7 +4268,7 @@ void MainWindow::dragMoveEvent(QDragMoveEvent *ev)
 
 void MainWindow::dropEvent(QDropEvent *ev)
 {
-    //add bu heyi 拖动进来时先初始化窗口
+    //add by heyi 拖动进来时先初始化窗口
     firstPlayInit();
     qDebug() << ev->mimeData()->formats();
     if (!ev->mimeData()->hasUrls()) {

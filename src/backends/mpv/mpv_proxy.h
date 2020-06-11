@@ -39,10 +39,15 @@
 #undef Bool
 #include <mpv/qthelper.hpp>
 
-#ifndef __mips__
+#ifdef __x86_64__
 #define LIB_PATH "/lib/x86_64-linux-gnu/libmpv.so.1"
-//#define LIB_PATH "/lib/aarch64-linux-gnu/libmpv.so.1"
-#else
+#endif
+
+#ifdef __aarch64__
+#define LIB_PATH "/lib/aarch64-linux-gnu/libmpv.so.1"
+#endif
+
+#ifdef __mips__
 #define LIB_PATH "/lib/mips64el-linux-gnuabi64/libmpv.so.1"
 #endif
 
@@ -130,7 +135,9 @@ public:
     void initMpvFuns();
 
     //add by heyi
-    //第一次播放需要初库始化函数指针
+    /**
+     * @brief firstInit 第一次播放需要初库始化函数指针
+     */
     void firstInit();
 
     const PlayingMovieInfo &playingMovieInfo() override;
