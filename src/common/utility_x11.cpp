@@ -90,7 +90,7 @@ void Utility::cancelWindowMoveResize(quint32 WId)
 void Utility::updateMousePointForWindowMove(quint32 WId, const QPoint &globalPos)
 {
     //add by xxj
-#ifdef __mips__
+#ifdef heyi
     xcb_client_message_event_t xev;
 
     xev.response_type = XCB_CLIENT_MESSAGE;
@@ -112,7 +112,7 @@ void Utility::updateMousePointForWindowMove(quint32 WId, const QPoint &globalPos
 }
 
 //add by xxj
-#ifdef __mips__
+#ifdef heyi
 void Utility::setFrameExtents(quint32 WId, const QMargins &margins)
 {
     xcb_atom_t frameExtents = internAtom("_GTK_FRAME_EXTENTS");
@@ -218,7 +218,7 @@ void Utility::sendMoveResizeMessage(quint32 WId, uint32_t action, QPoint globalP
     xcb_flush(QX11Info::connection());
 }
 
-#ifdef __mips__
+#ifdef heyi
 QVector<xcb_rectangle_t> Utility::qregion2XcbRectangles(const QRegion &region)
 {
     QVector<xcb_rectangle_t> rectangles;

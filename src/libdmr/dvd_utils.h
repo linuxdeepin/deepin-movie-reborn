@@ -1,4 +1,4 @@
-/* 
+/*
  * (c) 2017, Deepin Technology Co., Ltd. <support@deepin.org>
  *
  * This program is free software; you can redistribute it and/or
@@ -37,7 +37,7 @@
 
 namespace dmr {
 //add by xxj
-#ifdef __mips__
+#ifdef heyi
 namespace dvd {
 // device could be a dev node or a iso file
 QString RetrieveDVDTitle(const QString &device);
@@ -58,7 +58,7 @@ public:
     void startDvd(const QString &dev);
 
     // device could be a dev node or a iso file
-    QString getDvdMsg(const QString& device);
+    QString getDvdMsg(const QString &device);
 
 protected:
     void run();
