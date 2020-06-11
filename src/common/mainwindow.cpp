@@ -3756,15 +3756,23 @@ void MainWindow::onDvdData(const QString &title)
 
 void MainWindow::mouseMoveEvent(QMouseEvent *ev)
 {
-    if (_mouseMoved) {
-        return Utility::updateMousePointForWindowMove(this->winId(), ev->globalPos() * devicePixelRatioF());
+    static int nX = 0, nY = 0;
+    //修复触屏无法弹出右键问题
+    if (qAbs(nX - ev->globalX()) < 50 || qAbs(nY - ev->globalY()) < 50) {
+        return;
     }
 
-    _mouseMoved = true;
+    nX = ev->globalX();
+    nY = ev->globalY();
+//    if (_mouseMoved) {
+//        return Utility::updateMousePointForWindowMove(static_cast<quint32>(this->winId()), ev->globalPos() * devicePixelRatioF());
+//    }
 
-    if (windowState() == Qt::WindowNoState || isMaximized()) {
-        Utility::startWindowSystemMove(this->winId());
-    }
+//    _mouseMoved = true;
+
+//    if (windowState() == Qt::WindowNoState || isMaximized()) {
+//        Utility::startWindowSystemMove(static_cast<quint32>(this->winId()));
+//    }
     QWidget::mouseMoveEvent(ev);
 }
 
