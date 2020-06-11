@@ -2243,6 +2243,8 @@ void ToolboxProxy::updateTimeVisible(bool visible)
 
 void ToolboxProxy::updateMovieProgress()
 {
+    if (m_mousePree == true)
+        return ;
     auto d = oldDuration;
     auto e = oldElapsed;
     if (!_isJinJia) {
