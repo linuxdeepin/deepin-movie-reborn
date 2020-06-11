@@ -289,6 +289,10 @@ private:
     HintFilter        *hintFilter {nullptr };
     bool m_isMouseIn = false;
     QTimer _hideTime;
+    bool _isJinJia = false;//是否是景嘉微显卡
+    qint64 oldDuration = 0;
+    qint64 oldElapsed = 0;
+    QTimer _progressTimer;
 };
 class viewProgBarLoad: public QThread
 {

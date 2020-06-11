@@ -357,6 +357,11 @@ private:
     static int _retryTimes;
     static int _hwdecModes;
     static QList<QString> _hwdecInfos;
+
+    bool _isJinJia = false;//是否是景嘉微显卡
+    QTimer _progressTimer;
+    qint64 oldDuration = 0;
+    qint64 oldElapsed = 0;
 };
 };
 

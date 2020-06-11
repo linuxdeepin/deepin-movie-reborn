@@ -747,6 +747,15 @@ MainWindow::MainWindow(QWidget *parent)
     _toolbox->setPlaylist(_playlist);
 
     connect(_engine, &PlayerEngine::stateChanged, [ = ]() {
+        if (_isJinJia) {
+            if (!_progressTimer.isActive()) {
+                oldDuration = _engine->duration();
+                oldElapsed = _engine->elapsed();
+                _progressTimer.start(1000);
+            } else {
+                _progressTimer.stop();
+            }
+        }
         setInit(_engine->state() != PlayerEngine::Idle);
         resumeToolsWindow();
         updateWindowTitle();
@@ -761,6 +770,15 @@ MainWindow::MainWindow(QWidget *parent)
             }
         });
     });
+
+    QFileInfo fi("/dev/mwv206_0");              //景嘉微显卡
+    if (fi.exists()) {
+        _isJinJia = true;
+        connect(&_progressTimer, &QTimer::timeout, [ = ]() {
+            oldDuration = _engine->duration();
+            oldElapsed = _engine->elapsed();
+        });
+    }
 
     connect(ActionFactory::get().mainContextMenu(), &DMenu::triggered,
             this, &MainWindow::menuItemInvoked);
@@ -805,7 +823,11 @@ MainWindow::MainWindow(QWidget *parent)
     _progIndicator = new MovieProgressIndicator(this);
     _progIndicator->setVisible(false);
     connect(_engine, &PlayerEngine::elapsedChanged, [ = ]() {
-        _progIndicator->updateMovieProgress(_engine->duration(), _engine->elapsed());
+        if (!_isJinJia) {
+            _progIndicator->updateMovieProgress(_engine->duration(), _engine->elapsed());
+        } else {
+            _progIndicator->updateMovieProgress(oldDuration, oldElapsed);
+        }
     });
 
     // mini ui

@@ -1422,6 +1422,16 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
             this, &ToolboxProxy::updatePlayState);
     connect(DApplicationHelper::instance(), &DApplicationHelper::themeTypeChanged,
             this, &ToolboxProxy::updateplaylisticon);
+
+
+    QFileInfo fi("/dev/mwv206_0");              //景嘉微显卡
+    if (fi.exists()) {
+        _isJinJia = true;
+        connect(&_progressTimer, &QTimer::timeout, [ = ]() {
+            oldDuration = _engine->duration();
+            oldElapsed = _engine->elapsed();
+        });
+    }
 }
 void ToolboxProxy::finishLoadSlot(QSize size)
 {
@@ -1963,7 +1973,11 @@ void ToolboxProxy::setup()
         if (_engine->playlist().current() != -1) {
             url = _engine->playlist().items()[_engine->playlist().current()].mi.duration;
         }
-        updateTimeInfo(url, _engine->elapsed(), _timeLabel, _timeLabelend, true);
+        if (!_isJinJia) {
+            updateTimeInfo(url, _engine->elapsed(), _timeLabel, _timeLabelend, true);
+        } else {
+            updateTimeInfo(url, oldElapsed, _timeLabel, _timeLabelend, true);
+        }
         updateMovieProgress();
     });
     connect(_engine, &PlayerEngine::elapsedChanged, [ = ]() {
@@ -1971,7 +1985,12 @@ void ToolboxProxy::setup()
         if (_engine->playlist().current() != -1) {
             _url = _engine->playlist().items()[_engine->playlist().current()].mi.duration;
         }
-        updateTimeInfo(_url, _engine->elapsed(), _fullscreentimelable, _fullscreentimelableend, false);
+        if (!_isJinJia) {
+            updateTimeInfo(_url, _engine->elapsed(), _fullscreentimelable, _fullscreentimelableend, false);
+        } else {
+            updateTimeInfo(_url, oldElapsed, _fullscreentimelable, _fullscreentimelableend, false);
+        }
+
         QFontMetrics fm(DFontSizeManager::instance()->get(DFontSizeManager::T6));
         _fullscreentimelable->setMinimumWidth(fm.width(_fullscreentimelable->text()));
         _fullscreentimelableend->setMinimumWidth(fm.width(_fullscreentimelableend->text()));
@@ -2224,10 +2243,12 @@ void ToolboxProxy::updateTimeVisible(bool visible)
 
 void ToolboxProxy::updateMovieProgress()
 {
-    if (m_mousePree == true)
-        return ;
-    auto d = _engine->duration();
-    auto e = _engine->elapsed();
+    auto d = oldDuration;
+    auto e = oldElapsed;
+    if (!_isJinJia) {
+        d = _engine->duration();
+        e = _engine->elapsed();
+    }
     int v = 0;
     int v2 = 0;
     if (d != 0 && e != 0) {
@@ -2372,7 +2393,18 @@ void ToolboxProxy::updatePlayState()
 
         }
         _playBtn->setToolTip(tr("Pause"));
+        if (_isJinJia) {
+            if (!_progressTimer.isActive()) {
+                oldDuration = _engine->duration();
+                oldElapsed = _engine->elapsed();
+                _progressTimer.start(1000);
+            } else {
+                _progressTimer.stop();
+            }
+        }
     } else {
+        if (_progressTimer.isActive())
+            _progressTimer.stop();
         //        _playBtn->setObjectName("PlayBtn");
         if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ) {
             _playBtn->setPropertyPic(":/icons/deepin/builtin/light/normal/play_normal.svg",
