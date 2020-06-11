@@ -136,6 +136,10 @@ public:
         return _playlist;
     }
 
+    //add by heyi
+    //第一次点击播放时，需要加载动态库函数指针然后进行构造未完成的初始化
+    void firstPlayInit();
+
     void requestAction(ActionFactory::ActionKind, bool fromUI = false,
                        QList<QVariant> args = {}, bool shortcut = false);
 
@@ -321,6 +325,8 @@ private:
 
     bool _quitfullscreenstopflag {false};
     bool _maxfornormalflag {false};
+    //add by heyi
+    bool m_bMpvFunsLoad {false};
 
     enum StateBeforeEnterMiniMode {
         SBEM_None = 0x0,

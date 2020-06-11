@@ -33,10 +33,24 @@
 #include <QtWidgets>
 #include <mpv/render.h>
 #include <mpv/render_gl.h>
+#include <mpv_proxy.h>
 #undef Bool
 #include <mpv/qthelper.hpp>
 #include <DGuiApplicationHelper>
 //DWIDGET_USE_NAMESPACE
+
+//add by heyi
+typedef void (*mpv_render_contextSet_update_callback)(mpv_render_context *ctx,
+                                                      mpv_render_update_fn callback,
+                                                      void *callback_ctx);
+typedef void (*mpv_render_contextReport_swap)(mpv_render_context *ctx);
+typedef void (*mpv_renderContext_free)(mpv_render_context *ctx);
+typedef int (*mpv_renderContext_create)(mpv_render_context **res, mpv_handle *mpv,
+                                        mpv_render_param *params);
+typedef int (*mpv_renderContext_render)(mpv_render_context *ctx, mpv_render_param *params);
+typedef uint64_t (*mpv_renderContext_update)(mpv_render_context *ctx);
+
+
 namespace dmr {
 class MpvGLWidget : public QOpenGLWidget
 {
@@ -44,13 +58,15 @@ class MpvGLWidget : public QOpenGLWidget
 public:
     friend class MpvProxy;
 
-    MpvGLWidget(QWidget *parent, mpv::qt::Handle h);
+    MpvGLWidget(QWidget *parent, myHandle h);
     virtual ~MpvGLWidget();
 
     /*
      * rounded clipping consumes a lot of resources, and performs bad on 4K video
      */
     void toggleRoundedClip(bool val);
+    //add by heyi
+    void setHandle(myHandle h);
 
 protected:
     void initializeGL() override;
@@ -59,13 +75,15 @@ protected:
 
     void setPlaying(bool);
     void setMiniMode(bool);
+    //add by heyi
+    void initMpvFuns();
 
 protected slots:
     void onNewFrame();
     void onFrameSwapped();
 
 private:
-    mpv::qt::Handle _handle;
+    myHandle _handle;
     mpv_render_context *_render_ctx {nullptr};
 
     bool _playing {false};
@@ -107,6 +125,13 @@ private:
 
     void prepareSplashImages();
 
+    //add by heyi
+    mpv_render_contextSet_update_callback m_callback{nullptr};
+    mpv_render_contextReport_swap m_context_report{nullptr};
+    mpv_renderContext_free m_renderContex{nullptr};
+    mpv_renderContext_create m_renderCreat{nullptr};
+    mpv_renderContext_render m_renderContexRender{nullptr};
+    mpv_renderContext_update m_renderContextUpdate{nullptr};
 };
 
 }

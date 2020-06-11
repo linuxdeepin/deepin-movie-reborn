@@ -89,8 +89,8 @@ static int stringDistance(const QString &s1, const QString &s2)
     int n = s1.size(), m = s2.size();
     if (!n || !m) return max(n, m);
 
-    vector<int> dp(n + 1);
-    for (int i = 0; i < n + 1; i++) dp[i] = i;
+    vector<int> dp(static_cast<vector<int>::size_type>(n + 1));
+    for (int i = 0; i < n + 1; i++) dp[static_cast<vector<int>::size_type>(i)] = i;
     int pred = 0;
     int curr = 0;
 
@@ -99,15 +99,15 @@ static int stringDistance(const QString &s1, const QString &s2)
         pred = i + 1;
         for (int j = 0; j < n; j++) {
             if (s1[j] == s2[i]) {
-                curr = dp[j];
+                curr = dp[static_cast<vector<int>::size_type>(j)];
             } else {
-                curr = min(dp[j], dp[j + 1], pred) + 1;
+                curr = min(dp[static_cast<vector<int>::size_type>(j)], dp[static_cast<vector<int>::size_type>(j + 1)], pred) + 1;
             }
-            dp[j] = pred;
+            dp[static_cast<vector<int>::size_type>(j)] = pred;
             pred = curr;
 
         }
-        dp[n] = pred;
+        dp[static_cast<vector<int>::size_type>(n)] = pred;
     }
 
     return curr;
@@ -202,8 +202,6 @@ QString FastFileHash(const QFileInfo &fi)
 // hash the entire file (hope file is small)
 QString FullFileHash(const QFileInfo &fi)
 {
-    auto sz = fi.size();
-
     QFile f(fi.absoluteFilePath());
     if (!f.open(QFile::ReadOnly)) {
         return QString();
@@ -272,10 +270,10 @@ QPixmap MakeRoundedPixmap(QSize sz, QPixmap pm, qreal rx, qreal ry, qint64 time)
     ft.setWeight(QFont::Medium);
     p.setFont(ft);
 
-    auto tm_str = QTime(0, 0, 0).addSecs(time).toString("hh:mm:ss");
+    auto tm_str = QTime(0, 0, 0).addSecs(static_cast<int>(time)).toString("hh:mm:ss");
     QRect bounding = QFontMetrics(ft).boundingRect(tm_str);
-    bounding.moveTopLeft({((int)(dest.width() / dpr)) - 5 - bounding.width(),
-                          ((int)(dest.height() / dpr)) - 5 - bounding.height()});
+    bounding.moveTopLeft({(static_cast<int>(dest.width() / dpr)) - 5 - bounding.width(),
+                          (static_cast<int>(dest.height() / dpr)) - 5 - bounding.height()});
 
     {
         QPainterPath pp;
@@ -353,7 +351,7 @@ void MoveToCenter(QWidget *w)
 QString Time2str(qint64 seconds)
 {
     QTime d(0, 0, 0);
-    d = d.addSecs(seconds);
+    d = d.addSecs(static_cast<int>(seconds));
     return d.toString("hh:mm:ss");
 }
 

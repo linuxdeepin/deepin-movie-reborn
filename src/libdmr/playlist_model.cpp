@@ -61,20 +61,20 @@ static bool check_wayland()
 static bool getMusicPix(const QFileInfo &fi, QPixmap &rImg)
 {
 
-    AVFormatContext *av_ctx = NULL;
-    AVCodecContext *dec_ctx = NULL;
+    AVFormatContext *av_ctx = nullptr;
+    //AVCodecContext *dec_ctx = nullptr;
 
     if (!fi.exists()) {
         return false;
     }
 
-    auto ret = avformat_open_input(&av_ctx, fi.filePath().toUtf8().constData(), NULL, NULL);
+    auto ret = avformat_open_input(&av_ctx, fi.filePath().toUtf8().constData(), nullptr, nullptr);
     if (ret < 0) {
         qWarning() << "avformat: could not open input";
         return false;
     }
 
-    if (avformat_find_stream_info(av_ctx, NULL) < 0) {
+    if (avformat_find_stream_info(av_ctx, nullptr) < 0) {
         qWarning() << "av_find_stream_info failed";
         return false;
     }
@@ -85,12 +85,12 @@ static bool getMusicPix(const QFileInfo &fi, QPixmap &rImg)
     //    return false;
     //}
 
-    for (int i = 0; i < av_ctx->nb_streams; i++) {
+    for (unsigned int i = 0; i < av_ctx->nb_streams; i++) {
         if (av_ctx->streams[i]->disposition & AV_DISPOSITION_ATTACHED_PIC) {
             AVPacket pkt = av_ctx->streams[i]->attached_pic;
             //使用QImage读取完整图片数据（注意，图片数据是为解析的文件数据，需要用QImage::fromdata来解析读取）
             //rImg = QImage::fromData((uchar *)pkt.data, pkt.size);
-            return rImg.loadFromData((uchar *)pkt.data, pkt.size);
+            return rImg.loadFromData(static_cast<uchar *>(pkt.data), static_cast<uint>(pkt.size));
         }
     }
     return false;
@@ -101,9 +101,9 @@ static int open_codec_context(int *stream_idx,
 {
     int ret, stream_index;
     AVStream *st;
-    AVCodec *dec = NULL;
-    AVDictionary *opts = NULL;
-    ret = av_find_best_stream(fmt_ctx, type, -1, -1, NULL, 0);
+    AVCodec *dec = nullptr;
+    AVDictionary *opts = nullptr;
+    ret = av_find_best_stream(fmt_ctx, type, -1, -1, nullptr, 0);
     if (ret < 0) {
         qWarning() << "Could not find " << av_get_media_type_string(type)
                    << " stream in input file";
@@ -351,23 +351,23 @@ struct MovieInfo MovieInfo::parseFromFile(const QFileInfo &fi, bool *ok)
 {
     struct MovieInfo mi;
     mi.valid = false;
-    AVFormatContext *av_ctx = NULL;
+    AVFormatContext *av_ctx = nullptr;
     int stream_id = -1;
-    AVCodecContext *dec_ctx = NULL;
+    AVCodecContext *dec_ctx = nullptr;
 
     if (!fi.exists()) {
         if (ok) *ok = false;
         return mi;
     }
 
-    auto ret = avformat_open_input(&av_ctx, fi.filePath().toUtf8().constData(), NULL, NULL);
+    auto ret = avformat_open_input(&av_ctx, fi.filePath().toUtf8().constData(), nullptr, nullptr);
     if (ret < 0) {
         qWarning() << "avformat: could not open input";
         if (ok) *ok = false;
         return mi;
     }
 
-    if (avformat_find_stream_info(av_ctx, NULL) < 0) {
+    if (avformat_find_stream_info(av_ctx, nullptr) < 0) {
         qWarning() << "av_find_stream_info failed";
         if (ok) *ok = false;
         return mi;
@@ -425,8 +425,8 @@ struct MovieInfo MovieInfo::parseFromFile(const QFileInfo &fi, bool *ok)
     mi.channels = dec_ctx->channels;
     mi.sampling = dec_ctx->sample_rate;
 
-    AVDictionaryEntry *tag = NULL;
-    while ((tag = av_dict_get(av_ctx->metadata, "", tag, AV_DICT_IGNORE_SUFFIX)) != NULL) {
+    AVDictionaryEntry *tag = nullptr;
+    while ((tag = av_dict_get(av_ctx->metadata, "", tag, AV_DICT_IGNORE_SUFFIX)) != nullptr) {
         if (tag->key && strcmp(tag->key, "creation_time") == 0) {
             auto dt = QDateTime::fromString(tag->value, Qt::ISODate);
             mi.creation = dt.toString();
@@ -436,9 +436,9 @@ struct MovieInfo MovieInfo::parseFromFile(const QFileInfo &fi, bool *ok)
         qDebug() << "tag:" << tag->key << tag->value;
     }
 
-    tag = NULL;
+    tag = nullptr;
     AVStream *st = av_ctx->streams[stream_id];
-    while ((tag = av_dict_get(st->metadata, "", tag, AV_DICT_IGNORE_SUFFIX)) != NULL) {
+    while ((tag = av_dict_get(st->metadata, "", tag, AV_DICT_IGNORE_SUFFIX)) != nullptr) {
         if (tag->key && strcmp(tag->key, "rotate") == 0) {
             mi.raw_rotate = QString(tag->value).toInt();
             auto vr = (mi.raw_rotate + 360) % 360;
@@ -481,7 +481,7 @@ PlaylistModel::PlaylistModel(PlayerEngine *e)
     m_pdataMutex = new QMutex();
     m_ploadThread = nullptr;
     m_brunning = false;
-    _thumbnailer.setThumbnailSize(400 * qApp->devicePixelRatio());
+    _thumbnailer.setThumbnailSize(static_cast<int>(400 * qApp->devicePixelRatio()));
     av_register_all();
 
     _playlistFile = QString("%1/%2/%3/playlist")
@@ -1073,7 +1073,7 @@ void PlaylistModel::delayedAppendAsync(const QList<QUrl> &urls)
     if (!_pendingJob.size()) return;
 
     struct MapFunctor {
-        PlaylistModel *_model = 0;
+        PlaylistModel *_model = nullptr;
         using result_type = PlayItemInfo;
         MapFunctor(PlaylistModel *model): _model(model) {}
 
@@ -1081,7 +1081,7 @@ void PlaylistModel::delayedAppendAsync(const QList<QUrl> &urls)
         {
             qDebug() << "mapping " << a.first.fileName();
             return _model->calculatePlayInfo(a.first, a.second);
-        };
+        }
     };
 
     if (check_wayland()) {
@@ -1300,7 +1300,9 @@ struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl &url, const QFil
         if (isDvd && url.scheme().startsWith("dvd")) {
             QString dev = url.path();
             if (dev.isEmpty()) dev = "/dev/sr0";
+#ifdef __mips__
             dmr::dvd::RetrieveDvdThread::get()->startDvd(dev);
+#endif
 //            mi.title = dmr::dvd::RetrieveDVDTitle(dev);
 //            if (mi.title.isEmpty()) {
 //              mi.title = "DVD";
@@ -1336,7 +1338,7 @@ struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl &url, const QFil
                 _thumbnailer.generateThumbnail(fi.canonicalFilePath().toUtf8().toStdString(),
                                                ThumbnailerImageType::Png, buf);
 
-                auto img = QImage::fromData(buf.data(), buf.size(), "png");
+                auto img = QImage::fromData(buf.data(), static_cast<int>(buf.size()), "png");
                 pm = QPixmap::fromImage(img);
             } else {
                 if (getMusicPix(fi, pm) == false) {

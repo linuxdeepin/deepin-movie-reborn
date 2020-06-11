@@ -220,7 +220,7 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
     };
 
     option->connect(icon, &DPushButton::clicked, [ = ]() {
-        QString name = DFileDialog::getExistingDirectory(0, QObject::tr("Open folder"),
+        QString name = DFileDialog::getExistingDirectory(nullptr, QObject::tr("Open folder"),
                                                          MainWindow::lastOpenedPath(),
                                                          DFileDialog::ShowDirsOnly | DFileDialog::DontResolveSymlinks);
         if (validate(name, false)) {
@@ -354,7 +354,10 @@ public:
             case XCB_PROPERTY_NOTIFY: {
                 xcb_property_notify_event_t *pne = (xcb_property_notify_event_t *)(event);
                 if (pne->atom == _atomWMState && pne->window == (xcb_window_t)_source->winId()) {
+                    //add by xxj ***
+#ifdef __mips__
                     _mw->syncStaysOnTop();
+#endif
                 }
                 break;
             }
@@ -382,7 +385,7 @@ public:
     {
     }
 
-    ~MainWindowEventListener()
+    ~MainWindowEventListener() override
     {
     }
 
@@ -396,7 +399,7 @@ protected:
         QWindow *window = qobject_cast<QWindow *>(obj);
         if (!window) return false;
 
-        switch ((int)event->type())
+        switch (static_cast<int>(event->type()))
         {
         case QEvent::MouseButtonPress: {
             if (!enabled) return false;
@@ -492,12 +495,14 @@ protected:
                         goto skip_set_cursor;
                     }
 set_cursor:
+#ifdef __mips__
                     if (window->property("_d_real_winId").isValid()) {
                         auto real_wid = window->property("_d_real_winId").toUInt();
                         Utility::setWindowCursor(real_wid, mouseCorner);
                     } else {
-                        Utility::setWindowCursor(window->winId(), mouseCorner);
+                        Utility::setWindowCursor(static_cast<quint32>(window->winId()), mouseCorner);
                     }
+#endif
 
                     if (qApp->mouseButtons() == Qt::LeftButton) {
                         updateGeometry(mouseCorner, e);
@@ -540,7 +545,7 @@ private:
             return;
 
         if (!pressed)
-            Utility::cancelWindowMoveResize(_window->winId());
+            Utility::cancelWindowMoveResize(static_cast<quint32>(_window->winId()));
 
         leftButtonPressed = pressed;
     }
@@ -551,7 +556,7 @@ private:
         bool keep_ratio = mw->engine()->state() != PlayerEngine::CoreState::Idle;
         auto old_geom = mw->frameGeometry();
         auto geom = mw->frameGeometry();
-        qreal ratio = (qreal)geom.width() / geom.height();
+        qreal ratio = static_cast<qreal>(geom.width()) / geom.height();
 
         // disable edges
         switch (edge) {
@@ -572,30 +577,30 @@ private:
                 sz = QSize(mi.width, mi.height);
             }
 
-            ratio = sz.width() / (qreal)sz.height();
+            ratio = sz.width() / static_cast<qreal>(sz.height());
             switch (edge) {
             case Utility::TopLeftCorner:
                 geom.setLeft(e->globalX());
-                geom.setTop(geom.bottom() - geom.width() / ratio);
+                geom.setTop(static_cast<int>(geom.bottom() - geom.width() / ratio));
                 break;
             case Utility::BottomLeftCorner:
             case Utility::LeftEdge:
                 geom.setLeft(e->globalX());
-                geom.setHeight(geom.width() / ratio);
+                geom.setHeight(static_cast<int>(geom.width() / ratio));
                 break;
             case Utility::BottomRightCorner:
             case Utility::RightEdge:
                 geom.setRight(e->globalX());
-                geom.setHeight(geom.width() / ratio);
+                geom.setHeight(static_cast<int>(geom.width() / ratio));
                 break;
             case Utility::TopRightCorner:
             case Utility::TopEdge:
                 geom.setTop(e->globalY());
-                geom.setWidth(geom.height() * ratio);
+                geom.setWidth(static_cast<int>(geom.height() * ratio));
                 break;
             case Utility::BottomEdge:
                 geom.setBottom(e->globalY());
-                geom.setWidth(geom.height() * ratio);
+                geom.setWidth(static_cast<int>(geom.height() * ratio));
                 break;
             default:
                 break;
@@ -648,6 +653,7 @@ private:
     bool leftButtonPressed {false};
     bool startResizing {false};
     bool enabled {true};
+    bool ttt{false};//内存对齐
     Utility::CornerEdge lastCornerEdge;
     QWindow *_window;
 };
@@ -659,7 +665,7 @@ private:
 #endif
 
 MainWindow::MainWindow(QWidget *parent)
-    : DMainWindow(NULL)
+    : DMainWindow(nullptr)
 {
     m_lastVolume = Settings::get().internalOption("last_volume").toInt();;
     bool composited = CompositingManager::get().composited();
@@ -677,8 +683,8 @@ MainWindow::MainWindow(QWidget *parent)
     setAcceptDrops(true);
 
     if (composited) {
-        setAttribute(Qt::WA_TranslucentBackground, true);
-        //setAttribute(Qt::WA_NoSystemBackground, false);
+        //setAttribute(Qt::WA_TranslucentBackground, true);
+        setAttribute(Qt::WA_NoSystemBackground, false);
     }
 
 //    DThemeManager::instance()->registerWidget(this);
@@ -717,6 +723,8 @@ MainWindow::MainWindow(QWidget *parent)
         Backend::setDebugLevel(Backend::DebugLevel::Verbose);
     }
     _engine = new PlayerEngine(this);
+    //add by heyi
+    connect(_engine, &PlayerEngine::mpvFunsLoadOver, this, &MainWindow::firstPlayInit);
 #ifndef USE_DXCB
     _engine->move(0, 0);
 #endif
@@ -726,7 +734,8 @@ MainWindow::MainWindow(QWidget *parent)
         Settings::get().setInternalOption("global_volume", 100);
         volume = 100;
     }
-    _engine->changeVolume(volume);
+    //heyi need
+    //_engine->changeVolume(volume);
     m_displayVolume = volume;
     if (Settings::get().internalOption("mute").toBool()) {
         _engine->toggleMute();
@@ -909,7 +918,7 @@ MainWindow::MainWindow(QWidget *parent)
     reflectActionToUI(ActionFactory::DefaultFrame);
     //reflectActionToUI(ActionFactory::OrderPlay);
     reflectActionToUI(ActionFactory::Stereo);
-    requestAction(ActionFactory::ChangeSubCodepage, false, {"auto"});
+    //requestAction(ActionFactory::ChangeSubCodepage, false, {"auto"});
 
     _lightTheme = Settings::get().internalOption("light_theme").toBool();
     if (_lightTheme) reflectActionToUI(ActionFactory::LightTheme);
@@ -953,7 +962,7 @@ MainWindow::MainWindow(QWidget *parent)
     syncPlayState();
 
     connect(_engine, &PlayerEngine::loadOnlineSubtitlesFinished,
-    [this](const QUrl & url, bool success) {
+    [this](const QUrl & url, bool success) {//不能去掉 url参数
         _nwComm->updateWithMessage(success ? tr("Load successfully") : tr("Load failed"));
     });
 
@@ -1018,7 +1027,9 @@ MainWindow::MainWindow(QWidget *parent)
     _fullscreentimelable->setAttribute(Qt::WA_TranslucentBackground);
     _fullscreentimelable->setWindowFlags(Qt::FramelessWindowHint);
     _fullscreentimelable->setParent(this);
-//    _fullscreentimelable->setWindowFlags(_fullscreentimelable->windowFlags()|Qt::Dialog);
+    if (!composited) {
+        _fullscreentimelable->setWindowFlags(_fullscreentimelable->windowFlags() | Qt::Dialog);
+    }
     _fullscreentimebox = new QHBoxLayout;
     _fullscreentimebox->addStretch();
     _fullscreentimebox->addWidget(_toolbox->getfullscreentimeLabel());
@@ -1062,7 +1073,7 @@ MainWindow::MainWindow(QWidget *parent)
         this->activateWindow();
     });
 
-    connect(qApp, &QGuiApplication::fontChanged, this, [ = ](const QFont & font) {
+    connect(qApp, &QGuiApplication::fontChanged, this, [ = ]() {
         QFontMetrics fm(DFontSizeManager::instance()->get(DFontSizeManager::T6));
         _toolbox->getfullscreentimeLabel()->setMinimumWidth(fm.width(_toolbox->getfullscreentimeLabel()->text()));
         _toolbox->getfullscreentimeLabelend()->setMinimumWidth(fm.width(_toolbox->getfullscreentimeLabelend()->text()));
@@ -1072,7 +1083,7 @@ MainWindow::MainWindow(QWidget *parent)
         _fullscreentimelable->setGeometry(deskRect.width() - pixelsWidth - 32, 40, pixelsWidth + 32, 36);
     });
 
-    connect(dmr::dvd::RetrieveDvdThread::get(), &dmr::dvd::RetrieveDvdThread::sigData, this, &MainWindow::onDvdData);
+    //connect(dmr::dvd::RetrieveDvdThread::get(), &dmr::dvd::RetrieveDvdThread::sigData, this, &MainWindow::onDvdData);
 
     {
         loadWindowState();
@@ -1090,10 +1101,10 @@ MainWindow::MainWindow(QWidget *parent)
     }*/
 
     //****************************************
-    if (_engine->muted()) {
-        _nwComm->updateWithMessage(tr("Mute"));
-    }
-
+    //heyi need
+//    if (_engine->muted()) {
+//        _nwComm->updateWithMessage(tr("Mute"));
+//    }
     ThreadPool::instance()->moveToNewThread(&volumeMonitoring);
     volumeMonitoring.start();
     connect(&volumeMonitoring, &VolumeMonitoring::volumeChanged, this, [ = ](int vol) {
@@ -1381,8 +1392,8 @@ void MainWindow::onMonitorMotionNotify(int x, int y)
 MainWindow::~MainWindow()
 {
     qDebug() << __func__;
-    disconnect(_engine, 0, 0, 0);
-    disconnect(&_engine->playlist(), 0, 0, 0);
+    disconnect(_engine, nullptr, nullptr, nullptr);
+    disconnect(&_engine->playlist(), nullptr, nullptr, nullptr);
 
     if (_lastCookie > 0) {
         utils::UnInhibitStandby(_lastCookie);
@@ -1400,6 +1411,29 @@ MainWindow::~MainWindow()
         delete _evm;
     }
 #endif
+}
+
+void MainWindow::firstPlayInit()
+{
+    if (m_bMpvFunsLoad) return;
+
+    _engine->firstInit();
+
+    int volume = Settings::get().internalOption("global_volume").toInt();
+    if (volume > 100) {
+        Settings::get().setInternalOption("global_volume", 100);
+        volume = 100;
+    }
+
+    //heyi need
+    _engine->changeVolume(volume);
+
+    if (_engine->muted()) {
+        _nwComm->updateWithMessage(tr("Mute"));
+    }
+
+    requestAction(ActionFactory::ChangeSubCodepage, false, {"auto"});
+    m_bMpvFunsLoad = true;
 }
 
 void MainWindow::onApplicationStateChanged(Qt::ApplicationState e)
@@ -1577,6 +1611,7 @@ void MainWindow::updateActionsState()
         case ActionFactory::ActionKind::HideSubtitle:
         case ActionFactory::ActionKind::SelectSubtitle:
             v = pmf.subs.size() > 0;
+            break;
         default:
             break;
         }
@@ -1595,13 +1630,15 @@ void MainWindow::updateActionsState()
 void MainWindow::syncStaysOnTop()
 {
     static xcb_atom_t atomStateAbove = Utility::internAtom("_NET_WM_STATE_ABOVE");
+    auto atoms = Utility::windowNetWMState(static_cast<quint32>(windowHandle()->winId()));
 
-    auto atoms = Utility::windowNetWMState(windowHandle()->winId());
+#ifdef __mips__
     bool window_is_above = atoms.contains(atomStateAbove);
     if (window_is_above != _windowAbove) {
         qDebug() << "syncStaysOnTop: window_is_above" << window_is_above;
         requestAction(ActionFactory::WindowAbove);
     }
+#endif
 }
 
 void MainWindow::reflectActionToUI(ActionFactory::ActionKind kd)
@@ -1855,7 +1892,7 @@ void MainWindow::menuItemInvoked(QAction *action)
 void MainWindow::switchTheme()
 {
     _lightTheme = !_lightTheme;
-    qApp->setTheme(_lightTheme ? "light" : "dark");
+    //qApp->setTheme(_lightTheme ? "light" : "dark");
     Settings::get().setInternalOption("light_theme", _lightTheme);
 }
 
@@ -1917,6 +1954,7 @@ bool MainWindow::isActionAllowed(ActionFactory::ActionKind kd, bool fromUI, bool
         case ActionFactory::HideSubtitle:
         case ActionFactory::SelectSubtitle:
             v = pmf.subs.size() > 0;
+            break;
         default:
             break;
         }
@@ -2007,7 +2045,7 @@ play(url);
         QStringList filenames = DFileDialog::getOpenFileNames(this, tr("Open File"),
                                                               lastOpenedPath(),
                                                               tr("All videos (*)(%2 %1)").arg(_engine->video_filetypes.join(" "))
-                                                              .arg(_engine->audio_filetypes.join(" ")), 0,
+                                                              .arg(_engine->audio_filetypes.join(" ")), nullptr,
                                                               DFileDialog::HideNameFilterDetails);
 
         QList<QUrl> urls;
@@ -2029,7 +2067,7 @@ play(url);
     case ActionFactory::ActionKind::OpenFile: {
         QString filename = DFileDialog::getOpenFileName(this, tr("Open File"),
                                                         lastOpenedPath(),
-                                                        tr("All videos (%1)").arg(_engine->video_filetypes.join(" ")), 0,
+                                                        tr("All videos (%1)").arg(_engine->video_filetypes.join(" ")), nullptr,
                                                         DFileDialog::HideNameFilterDetails);
         QFileInfo fileInfo(filename);
         if (fileInfo.exists()) {
@@ -2131,7 +2169,9 @@ play(url);
             show();
             ```
         */
+#ifdef __mips__
         Utility::setStayOnTop(this, _windowAbove);
+#endif
         if (!fromUI) {
             reflectActionToUI(kd);
         }
@@ -3249,7 +3289,9 @@ void MainWindow::checkErrorMpvLogsChanged(const QString prefix, const QString te
                (errorMessage.toLower().contains(QString("open")))) {
         _nwComm->updateWithMessage(tr("No video file found"));
 //        _engine->playlist().clear();
-    } else if (errorMessage.contains(QString("Hardware does not support image size 3840x2160"))) {
+    }
+    //4k播放不显示提示框
+    /*else if (errorMessage.contains(QString("Hardware does not support image size 3840x2160"))) {
         requestAction(ActionFactory::TogglePause);
 
         DDialog *dialog = new DDialog;
@@ -3274,7 +3316,7 @@ void MainWindow::checkErrorMpvLogsChanged(const QString prefix, const QString te
             }
             _engine->pauseResume();
         });
-    }
+    }*/
 
 }
 
@@ -3456,15 +3498,15 @@ void MainWindow::updateSizeConstraints()
             if (sz.width() == 0 || sz.height() == 0) {
                 m = QSize(614, 500);
             } else {
-                qreal ratio = (qreal)sz.width() / sz.height();
+                qreal ratio = static_cast<qreal>(sz.width()) / sz.height();
                 if (sz.width() > sz.height()) {
-                    int w = 500 * ratio;
+                    int w = static_cast<int>(500 * ratio);
 //                    if (w > dRect.width()) {
 //                        w = dRect.width();
 //                    }
                     m = QSize(w, 500);
                 } else {
-                    int h = 614 / ratio;
+                    int h = static_cast<int>(614 / ratio);
                     if (h > dRect.height()) {
                         h = dRect.height();
                     }
@@ -3578,7 +3620,7 @@ void MainWindow::capturedMousePressEvent(QMouseEvent *me)
 #elif __mips__
     _nwComm->hide();
 #endif
-    if (qApp->focusWindow() == 0) return;
+    if (qApp->focusWindow() == nullptr) return;
 
     if (me->buttons() == Qt::LeftButton) {
         _mousePressed = true;
@@ -3681,7 +3723,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *ev)
         }
     }
 
-    Utility::cancelWindowMoveResize(winId());
+    Utility::cancelWindowMoveResize(static_cast<quint32>(winId()));
     _mouseMoved = false;
 }
 
@@ -3724,13 +3766,13 @@ void MainWindow::onDvdData(const QString &title)
 void MainWindow::mouseMoveEvent(QMouseEvent *ev)
 {
     if (_mouseMoved) {
-        return Utility::updateMousePointForWindowMove(this->winId(), ev->globalPos() * devicePixelRatioF());
+        return Utility::updateMousePointForWindowMove(static_cast<quint32>(this->winId()), ev->globalPos() * devicePixelRatioF());
     }
 
     _mouseMoved = true;
 
     if (windowState() == Qt::WindowNoState || isMaximized()) {
-        Utility::startWindowSystemMove(this->winId());
+        Utility::startWindowSystemMove(static_cast<quint32>(this->winId()));
     }
     QWidget::mouseMoveEvent(ev);
 }
@@ -4069,7 +4111,7 @@ void MainWindow::toggleUIMode()
     if (_miniMode) {
         _titlebar->titlebar()->setDisableFlags(Qt::WindowMaximizeButtonHint);
     } else {
-        _titlebar->titlebar()->setDisableFlags(0);
+        _titlebar->titlebar()->setDisableFlags(nullptr);
     }
     if (_listener) _listener->setEnabled(!_miniMode);
 
@@ -4122,12 +4164,12 @@ void MainWindow::toggleUIMode()
         auto sz = QSize(380, 380);
         if (_engine->state() != PlayerEngine::CoreState::Idle) {
             auto vid_size = _engine->videoSize();
-            qreal ratio = vid_size.width() / (qreal)vid_size.height();
+            qreal ratio = vid_size.width() / static_cast<qreal>(vid_size.height());
 
             if (vid_size.width() > vid_size.height()) {
-                sz = QSize(380, 380 / ratio);
+                sz = QSize(380, static_cast<int>(380 / ratio));
             } else {
-                sz = QSize(380, 380 * ratio);   //by thx 这样修改mini模式也存在黑边
+                sz = QSize(380, static_cast<int>(380 * ratio));   //by thx 这样修改mini模式也存在黑边
             }
         }
 
@@ -4226,6 +4268,8 @@ void MainWindow::dragMoveEvent(QDragMoveEvent *ev)
 
 void MainWindow::dropEvent(QDropEvent *ev)
 {
+    //add by heyi 拖动进来时先初始化窗口
+    firstPlayInit();
     qDebug() << ev->mimeData()->formats();
     if (!ev->mimeData()->hasUrls()) {
         return;

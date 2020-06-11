@@ -1,4 +1,4 @@
-/* 
+/*
  * (c) 2017, Deepin Technology Co., Ltd. <support@deepin.org>
  *
  * This program is free software; you can redistribute it and/or
@@ -37,8 +37,8 @@
 DWIDGET_USE_NAMESPACE
 
 namespace dmr {
-BurstScreenshotsDialog::BurstScreenshotsDialog(const PlayItemInfo& pif)
-    :DAbstractDialog(nullptr)
+BurstScreenshotsDialog::BurstScreenshotsDialog(const PlayItemInfo &pif)
+    : DAbstractDialog(nullptr)
 {
     auto mi = pif.mi;
 
@@ -136,7 +136,7 @@ BurstScreenshotsDialog::BurstScreenshotsDialog(const PlayItemInfo& pif)
 //    QWidget  *mainContent = new QWidget;
 //    mainContent->setLayout(ml);
 //    addContent(mainContent, Qt::AlignCenter);
-    QVBoxLayout* mainlayout = new QVBoxLayout;
+    QVBoxLayout *mainlayout = new QVBoxLayout;
     mainlayout->setContentsMargins(10, 0, 10, 15);
     mainlayout->setSpacing(0);
     mainlayout->addWidget(m_titlebar);
@@ -146,15 +146,15 @@ BurstScreenshotsDialog::BurstScreenshotsDialog(const PlayItemInfo& pif)
     setLayout(mainlayout);
 }
 
-void BurstScreenshotsDialog::updateWithFrames(const QList<QPair<QImage, qint64>>& frames)
+void BurstScreenshotsDialog::updateWithFrames(const QList<QPair<QImage, qint64>> &frames)
 {
     auto dpr = qApp->devicePixelRatio();
-    QSize sz(178 * dpr, 100 * dpr);
-    
+    QSize sz(static_cast<int>(178 * dpr), static_cast<int>(100 * dpr));
+
     int count = 0;
-    for (auto frame: frames) {
-        auto scaled = frame.first.scaled(sz.width()-2, sz.height()-2,
-                Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+    for (auto frame : frames) {
+        auto scaled = frame.first.scaled(sz.width() - 2, sz.height() - 2,
+                                         Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
         auto *l = new ThumbnailFrame(this);
 
         int r = count / 3;
@@ -188,7 +188,7 @@ void BurstScreenshotsDialog::savePoster()
 void BurstScreenshotsDialog::saveShootings()
 {
     int i = 1;
-    for (auto& img: _thumbs) {
+    for (auto &img : _thumbs) {
         auto file_path = Settings::get().screenshotNameSeqTemplate().arg(i++);
         img.first.save(file_path);
     }

@@ -32,14 +32,16 @@
 #include <dvdnav/dvdnav.h>
 
 namespace dmr {
+//add by xxj
+#ifdef __mips__
 namespace dvd {
 
-QString RetrieveDVDTitle(const QString& device)
+QString RetrieveDVDTitle(const QString &device)
 {
     qDebug() << "device" << device;
-    const char *title = NULL;
+    const char *title = nullptr;
 
-    dvdnav_t *handle = NULL;
+    dvdnav_t *handle = nullptr;
     auto res = dvdnav_open(&handle, device.toUtf8().constData());
     if (res == DVDNAV_STATUS_ERR) {
         qWarning() << "dvdnav open " << device << "failed";
@@ -141,14 +143,16 @@ QString RetrieveDvdThread::getDvdMsg(const QString &device)
     const char *title = nullptr;
 
     dvdnav_t *handle = nullptr;
-    auto res = dvdnav_open(&handle, device.toUtf8().constData());
+    int32_t res = 0;
+#ifndef __mips__
+    res = dvdnav_open(&handle, device.toUtf8().constData());
     if (res == DVDNAV_STATUS_ERR) {
         qCritical() << "dvdnav open " << device << "failed";
         qCritical() << dvdnav_err_to_string(handle);
         if (handle) dvdnav_close(handle);
         return "dvd open failed";
     }
-
+#endif
     int32_t nr_titles = 0;
     res = dvdnav_get_number_of_titles(handle, &nr_titles);
     if (res == DVDNAV_STATUS_ERR) {
@@ -183,6 +187,7 @@ on_error:
 }
 
 }
+#endif
 }
 
 

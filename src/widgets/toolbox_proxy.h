@@ -73,10 +73,10 @@ class ImageItem : public DLabel
 {
     Q_OBJECT
 public:
-    ImageItem(QPixmap image, bool isblack = false, QWidget *parent = 0): DLabel(parent)
+    ImageItem(QPixmap image, bool isblack = false, QWidget *parent = nullptr): DLabel(parent)
     {
         _pixmap = image;
-    };
+    }
 
 signals:
     void imageItemclicked(int index, int indexNow);
@@ -99,12 +99,12 @@ protected:
 
         painter.drawPixmap(backgroundRect, _pixmap);
 
-    };
+    }
 private:
     int _index;
     int _indexNow;
     DLabel *_image = nullptr;
-    QString _path = NULL;
+    QString _path = nullptr;
     QPixmap _pixmap;
 };
 
@@ -113,7 +113,7 @@ class ToolboxProxy: public DFloatingWidget
     Q_OBJECT
 public:
     ToolboxProxy(QWidget *mainWindow, PlayerEngine *);
-    virtual ~ToolboxProxy();
+    virtual ~ToolboxProxy() override;
 
     void updateTimeInfo(qint64 duration, qint64 pos, QLabel *_timeLabel,
                         QLabel *_timeLabelend, bool flag);
@@ -265,7 +265,7 @@ class viewProgBarLoad: public QThread
 {
     Q_OBJECT
 public:
-    explicit viewProgBarLoad(PlayerEngine *engine = nullptr, DMRSlider *progBar = nullptr, ToolboxProxy *parent = 0);
+    explicit viewProgBarLoad(PlayerEngine *engine = nullptr, DMRSlider *progBar = nullptr, ToolboxProxy *parent = nullptr);
 
     //退出线程直接调用这个函数
     void quitLoad();

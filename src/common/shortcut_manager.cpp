@@ -50,8 +50,8 @@ ShortcutManager::~ShortcutManager()
 {
 }
 
-ShortcutManager::ShortcutManager() 
-    :QObject(0)
+ShortcutManager::ShortcutManager()
+    : QObject(nullptr)
 {
     _keyToAction = {
         {"pause_play", ActionFactory::ActionKind::TogglePause},

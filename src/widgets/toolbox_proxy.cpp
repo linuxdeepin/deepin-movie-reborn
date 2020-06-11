@@ -125,7 +125,7 @@ protected:
     bool eventFilter(QObject *obj, QEvent *event)
     {
         if (event->type() == QEvent::KeyPress) {
-            QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
+            //QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
             event->setAccepted(false);
             return false;
         } else {
@@ -145,7 +145,7 @@ protected:
     {
         switch (event->type()) {
         case QEvent::ToolTip: {
-            QHelpEvent *he = static_cast<QHelpEvent *>(event);
+            //QHelpEvent *he = static_cast<QHelpEvent *>(event);
             auto tip = obj->property("HintWidget").value<Tip *>();
             auto btn = tip->property("for").value<QWidget *>();
             tip->setText(btn->toolTip());
@@ -164,7 +164,7 @@ protected:
             auto parent = obj->property("HintWidget").value<Tip *>();
             parent->hide();
             event->ignore();
-
+            break;
         }
         default:
             break;
@@ -238,6 +238,8 @@ protected:
         }
         _title->setFixedHeight(h);
         _title->setText(shorted);
+
+        QWidget::showEvent(se);
     }
 
 private slots:
@@ -452,7 +454,7 @@ class ViewProgBarItem: public QLabel
 {
     Q_OBJECT
 public:
-    ViewProgBarItem(QImage *image, QWidget *parent = 0)
+    ViewProgBarItem(QImage *image, QWidget *parent = nullptr)
     {
 
     }
@@ -461,7 +463,7 @@ class ViewProgBar: public DWidget
 {
     Q_OBJECT
 public:
-    ViewProgBar(DMRSlider *_progBar, QWidget *parent = 0)
+    ViewProgBar(DMRSlider *_progBar, QWidget *parent = nullptr)
     {
         //传入进度条，以便重新获取胶片进度条长度 by ZhuYuliang
         this->_progBar = _progBar;
@@ -519,7 +521,7 @@ public:
         _viewProgBarLayout_black->setContentsMargins(0, 5, 0, 5);
         _front->setLayout(_viewProgBarLayout_black);
 
-    };
+    }
 //    virtual ~ViewProgBar();
     void setIsBlockSignals(bool isBlockSignals)
     {
@@ -546,7 +548,7 @@ public:
     void setTime(qint64 pos)
     {
         QTime time(0, 0, 0);
-        QString strTime = time.addSecs(pos).toString("hh:mm:ss");
+        QString strTime = time.addSecs(static_cast<int>(pos)).toString("hh:mm:ss");
         _sliderTime->setTime(strTime);
     }
 
@@ -566,19 +568,19 @@ public:
 //        _viewProgBarLoad =new viewProgBarLoad(engine);
         _engine = engine;
         QLayoutItem *child;
-        while ((child = _viewProgBarLayout->takeAt(0)) != 0) {
+        while ((child = _viewProgBarLayout->takeAt(0)) != nullptr) {
             //setParent为NULL，防止删除之后界面不消失
             if (child->widget()) {
-                child->widget()->setParent(NULL);
+                child->widget()->setParent(nullptr);
             }
 
             delete child;
         }
 
-        while ((child = _viewProgBarLayout_black->takeAt(0)) != 0) {
+        while ((child = _viewProgBarLayout_black->takeAt(0)) != nullptr) {
             //setParent为NULL，防止删除之后界面不消失
             if (child->widget()) {
-                child->widget()->setParent(NULL);
+                child->widget()->setParent(nullptr);
             }
 
             delete child;
@@ -765,11 +767,14 @@ protected:
     void leaveEvent(QEvent *e) override
     {
         emit leaveViewProgBar();
+
+        DWidget::leaveEvent(e);
     }
 
     void showEvent(QShowEvent *se) override
     {
 //        _time->move((width() - _time->width())/2, 69);
+        DWidget::showEvent(se);
     }
     void mouseMoveEvent(QMouseEvent *e) override
     {
@@ -795,8 +800,10 @@ protected:
             }
         }
         e->accept();
+
+        DWidget::mouseMoveEvent(e);
     }
-    void mousePressEvent(QMouseEvent *e)
+    void mousePressEvent(QMouseEvent *e) override
     {
         if (!_press && e->buttons() == Qt::LeftButton && isEnabled()) {
 //            QSlider::mousePressEvent(e);
@@ -814,7 +821,7 @@ protected:
             _press = !_press;
         }
     }
-    void mouseReleaseEvent(QMouseEvent *e)
+    void mouseReleaseEvent(QMouseEvent *e) override
     {
         emit mousePressed(false);
         if (_press && isEnabled()) {
@@ -822,8 +829,10 @@ protected:
 //            setTimeVisible(!_press);
             _press = !_press;
         }
+
+        DWidget::mouseReleaseEvent(e);
     }
-    void paintEvent(QPaintEvent *e)
+    void paintEvent(QPaintEvent *e) override
     {
         _indicator->move(_indicatorPos.x(), _indicatorPos.y());
 //        _sliderArrowDown->move(_indicatorPos.x() + _indicator->width() / 2 - _sliderArrowDown->width() / 2,
@@ -834,13 +843,17 @@ protected:
         if (_press) {
             setTimeVisible(_press);
         }
+
+        DWidget::paintEvent(e);
     }
-    void resizeEvent(QResizeEvent *event)
+    void resizeEvent(QResizeEvent *event) override
     {
-        auto i = _parent->width();
-        auto j = this->width();
+        //auto i = _parent->width();
+        //auto j = this->width();
 //        setFixedWidth(_parent->width() - PROGBAR_SPEC);
         _back->setFixedWidth(this->width());
+
+        DWidget::resizeEvent(event);
     }
 private:
     PlayerEngine *_engine {nullptr};
@@ -869,7 +882,8 @@ private:
     int position2progress(const QPoint &p)
     {
         auto total = _engine->duration();
-        qreal span = (qreal)total * p.x() / (contentsRect().width() - 4);
+        //qreal span = (qreal)total * p.x() / (contentsRect().width() - 4);
+        int span = static_cast<int>(total * p.x() / (contentsRect().width() - 4));
         return span/* * (p.x())*/;
     }
 
@@ -1001,6 +1015,8 @@ protected:
     void leaveEvent(QEvent *e) override
     {
         emit leavePreview();
+
+        DArrowRectangle::leaveEvent(e);
     }
 
     void showEvent(QShowEvent *se) override
@@ -1039,7 +1055,7 @@ public:
         if (!CompositingManager::get().composited()) {
             setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
         }
-#elif __aarch64__
+#elif  defined (__aarch64__)
         setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
 #endif
         setShadowBlurRadius(4);
@@ -1145,7 +1161,7 @@ public slots:
         DUtil::TimerSingleShot(100, [this]() {
             if (!m_mouseIn)
                 hide();
-            });
+        });
 #endif
     }
     void setValue(int v)
@@ -1158,16 +1174,22 @@ protected:
     void enterEvent(QEvent *e)
     {
         _autoHideTimer.stop();
+
+        DArrowRectangle::enterEvent(e);
     }
 
     void showEvent(QShowEvent *se)
     {
         _autoHideTimer.stop();
+
+        DArrowRectangle::showEvent(se);
     }
 
     void leaveEvent(QEvent *e)
     {
         _autoHideTimer.start(500);
+
+        DArrowRectangle::leaveEvent(e);
     }
 #else
     void enterEvent(QEvent *e)
@@ -1209,16 +1231,9 @@ private slots:
                 if (_slider->value() == _slider->maximum() && we->angleDelta().y() > 0) {
                     //keep increasing volume
                     _mw->requestAction(ActionFactory::VolumeUp);
-                }
-#ifdef   __aarch64__
-                else {
+                } else {
                     _mw->requestAction(we->angleDelta().y() > 0 ? ActionFactory::VolumeUp : ActionFactory::VolumeDown);
                 }
-#elif    __mips__
-                else {
-                    _mw->requestAction(we->angleDelta().y() > 0 ? ActionFactory::VolumeUp : ActionFactory::VolumeDown);
-                }
-#endif
             }
             return false;
         } else {
@@ -1284,7 +1299,7 @@ void viewProgBarLoad::loadViewProgBar(QSize size)
     auto num = /*qreal(_progBar->width()) / 9*/100;
     auto pixWidget =  _progBar->width() / 100;
     auto tmp = (_engine->duration() * 1000) / num;
-    auto dpr = qApp->devicePixelRatio();
+    //auto dpr = qApp->devicePixelRatio();
     QList<QPixmap> pm;
 //    pm.setDevicePixelRatio(dpr);
     QList<QPixmap> pm_black;
@@ -1295,8 +1310,8 @@ void viewProgBarLoad::loadViewProgBar(QSize size)
     qDebug() << _engine->videoSize().height();
     qDebug() << qApp->devicePixelRatio();
     if (_engine->videoSize().width() > 0 && _engine->videoSize().height() > 0) {
-        thumber.setThumbnailSize(50 * (_engine->videoSize().width() / _engine->videoSize().height() * 50)
-                                 * qApp->devicePixelRatio());
+        thumber.setThumbnailSize(static_cast<int>(50 * (_engine->videoSize().width() / _engine->videoSize().height() * 50)
+                                                  * qApp->devicePixelRatio()));
     }
 
     thumber.setMaintainAspectRatio(true);
@@ -1321,7 +1336,7 @@ void viewProgBarLoad::loadViewProgBar(QSize size)
             std::vector<uint8_t> buf;
             thumber.generateThumbnail(file.toUtf8().toStdString(), ThumbnailerImageType::Jpeg, buf);
 
-            auto img = QImage::fromData(buf.data(), buf.size(), "jpg");
+            auto img = QImage::fromData(buf.data(), static_cast<int>(buf.size()), "jpg");
             auto img_tmp = img.scaledToHeight(50);
 
 
@@ -1412,7 +1427,7 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
     _previewTime = new SliderTime;
     _previewTime->hide();
 
-    _subView = new SubtitlesView(0, _engine);
+    _subView = new SubtitlesView(nullptr, _engine);
     _subView->hide();
     setup();
 
@@ -1844,38 +1859,12 @@ void ToolboxProxy::setup()
             _volSlider->raise();
         });
     } else {
-#ifdef __mips__
-        _volSlider = new VolumeSlider(_engine, _mainWindow, nullptr);
-        hintFilter = new HintFilter;
-        _volSlider->setProperty("DelayHide", true);
-		_volSlider->setProperty("NoDelayShow", true);
-		installHint(_volBtn, _volSlider);
-		
-        /*connect(_volBtn, &VolumeButton::entered, [ = ]() {
-            _volSlider->stopTimer();
-            _volSlider->show(_mainWindow->width() - _volBtn->width() / 2 - _playBtn->width() - 43,
-                             _mainWindow->height() - TOOLBOX_HEIGHT - 5);
-            QRect rc = _volBtn->geometry();
-            QPoint pos(rc.left() + rc.width() / 2 + 11, _mainWindow->height() - 85);
-            pos = _mainWindow->mapToGlobal(pos);
-            _volSlider->move(pos.x(), pos.y());
-            _volSlider->raise();
-        });*/
-#elif __aarch64__
+#if defined (__mips__) || defined (__aarch64__)
         _volSlider = new VolumeSlider(_engine, _mainWindow, nullptr);
         hintFilter = new HintFilter;
         _volSlider->setProperty("DelayHide", true);
         _volSlider->setProperty("NoDelayShow", true);
         installHint(_volBtn, _volSlider);
-
-        /*connect(_volBtn, &VolumeButton::entered, [ = ]() {
-            _volSlider->stopTimer();
-            QPoint pos = _volBtn->parentWidget()->mapToGlobal(_volBtn->pos());
-            QRect rc = _volBtn->geometry();
-            pos = QPoint(pos.x() + rc.width() / 2, pos.y() - 20);
-            _volSlider->raise();
-            _volSlider->show(pos.x(), pos.y());
-        });*/
 #else
         _volSlider = new VolumeSlider(_engine, _mainWindow, _mainWindow);
         connect(_volBtn, &VolumeButton::entered, [ = ]() {
@@ -1960,7 +1949,7 @@ void ToolboxProxy::setup()
     connect(_engine, &PlayerEngine::stateChanged, this, &ToolboxProxy::updatePlayState);
     connect(_engine, &PlayerEngine::fileLoaded, [ = ]() {
         _viewProgBar->clear();
-        _progBar->slider()->setRange(0, _engine->duration());
+        _progBar->slider()->setRange(0, static_cast<int>(_engine->duration()));
 //        _progBar_stacked->setCurrentIndex(1);
         _progBar_Widget->setCurrentIndex(1);
         _loadsize = size();
@@ -1968,19 +1957,19 @@ void ToolboxProxy::setup()
 //        updateThumbnail();
     });
     connect(_engine, &PlayerEngine::elapsedChanged, [ = ]() {
-        quint64 url = -1;
+        quint64 url = static_cast<quint64>(-1);
         if (_engine->playlist().current() != -1) {
-            url = _engine->playlist().items()[_engine->playlist().current()].mi.duration;
+            url = static_cast<quint64>(_engine->playlist().items()[_engine->playlist().current()].mi.duration);
         }
-        updateTimeInfo(url, _engine->elapsed(), _timeLabel, _timeLabelend, true);
+        updateTimeInfo(static_cast<qint64>(url), _engine->elapsed(), _timeLabel, _timeLabelend, true);
         updateMovieProgress();
     });
     connect(_engine, &PlayerEngine::elapsedChanged, [ = ]() {
-        quint64 _url = -1;
+        quint64 _url = static_cast<quint64>(-1);
         if (_engine->playlist().current() != -1) {
-            _url = _engine->playlist().items()[_engine->playlist().current()].mi.duration;
+            _url = static_cast<quint64>(_engine->playlist().items()[_engine->playlist().current()].mi.duration);
         }
-        updateTimeInfo(_url, _engine->elapsed(), _fullscreentimelable, _fullscreentimelableend, false);
+        updateTimeInfo(static_cast<qint64>(_url), _engine->elapsed(), _fullscreentimelable, _fullscreentimelableend, false);
         QFontMetrics fm(DFontSizeManager::instance()->get(DFontSizeManager::T6));
         _fullscreentimelable->setMinimumWidth(fm.width(_fullscreentimelable->text()));
         _fullscreentimelableend->setMinimumWidth(fm.width(_fullscreentimelableend->text()));
@@ -2090,7 +2079,7 @@ void ToolboxProxy::updateThumbnail()
 void ToolboxProxy::updatePreviewTime(qint64 secs, const QPoint &pos)
 {
     QTime time(0, 0, 0);
-    QString strTime = time.addSecs(secs).toString("hh:mm:ss");
+    QString strTime = time.addSecs(static_cast<int>(secs)).toString("hh:mm:ss");
     _previewTime->setTime(strTime);
     _previewTime->show(pos.x(), pos.y() + 14);
 }
@@ -2189,7 +2178,7 @@ void ToolboxProxy::progressHoverChanged(int v)
 //    auto pos = _viewProgBar->mapToGlobal(QPoint(0, TOOLBOX_TOP_EXTENT - 10));
     QPoint p { QCursor::pos().x(), pos.y() };
 
-    auto proBar = qobject_cast<ViewProgBar *>(sender());
+    //auto proBar = qobject_cast<ViewProgBar *>(sender());
     bool isAudio = _engine->isAudioFile(pif.info.fileName());
     if (/*proBar == _viewProgBar && */!Settings::get().isSet(Settings::PreviewOnMouseover) || isAudio) {
         updatePreviewTime(v, p);
@@ -2236,8 +2225,8 @@ void ToolboxProxy::updateMovieProgress()
     int v = 0;
     int v2 = 0;
     if (d != 0 && e != 0) {
-        v = _progBar->maximum() * ((double)e / d);
-        v2 = (_viewProgBar->rect().width() - 4) * ((double)e / d);
+        v = static_cast<int>(_progBar->maximum() * e / d);
+        v2 = static_cast<int>((_viewProgBar->rect().width() - 4) * e / d);
     }
     if (!_progBar->signalsBlocked()) {
         _progBar->blockSignals(true);
@@ -2628,6 +2617,8 @@ void ToolboxProxy::updatePosition(const QPoint &p)
 void ToolboxProxy::showEvent(QShowEvent *event)
 {
     updateTimeLabel();
+
+    DFloatingWidget::showEvent(event);
 }
 
 void ToolboxProxy::resizeEvent(QResizeEvent *event)
@@ -2666,6 +2657,8 @@ void ToolboxProxy::resizeEvent(QResizeEvent *event)
 
     updateTimeLabel();
 #endif
+
+    DFloatingWidget::resizeEvent(event);
 }
 
 

@@ -65,9 +65,12 @@ public:
     static void updateMousePointForWindowMove(quint32 WId, const QPoint &globalPos);
 
     static void setFrameExtents(quint32 WId, const QMargins &margins);
+    //add by xxj
+#ifdef __mips__
     static void setRectangles(quint32 WId, const QRegion &region, bool onlyInput = true);
     static void setRectangles(quint32 WId, const QVector<xcb_rectangle_t> &rectangles, bool onlyInput = true);
     static void setShapePath(quint32 WId, const QPainterPath &path, bool onlyInput = true);
+#endif
     static void startWindowSystemResize(quint32 WId, CornerEdge cornerEdge, const QPoint &globalPos = QPoint());
     static bool setWindowCursor(quint32 WId, CornerEdge ce);
 
@@ -80,7 +83,10 @@ public:
 
 private:
     static void sendMoveResizeMessage(quint32 WId, uint32_t action, QPoint globalPos = QPoint(), Qt::MouseButton qbutton = Qt::LeftButton);
+    //add by xxj
+#ifdef __mips__
     static QVector<xcb_rectangle_t> qregion2XcbRectangles(const QRegion &region);
+#endif
 };
 
 #endif // _DMR_UTILITY_H

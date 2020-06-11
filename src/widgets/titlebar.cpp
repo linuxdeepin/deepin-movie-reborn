@@ -77,8 +77,8 @@ Titlebar::Titlebar(QWidget *parent) : DTitlebar(parent), d_ptr(new TitlebarPriva
 
     {
         auto dpr = qApp->devicePixelRatio();
-        int w2 = 32 * dpr;
-        int w = 32 * dpr;
+        int w2 = static_cast<int>(32 * dpr);
+        int w = static_cast<int>(32 * dpr);
 
         QIcon icon = QIcon::fromTheme("deepin-movie");
         auto logo = icon.pixmap(QSize(32, 32))
@@ -214,6 +214,8 @@ void Titlebar::paintEvent(QPaintEvent *pe)
     pp.setFillRule(Qt::WindingFill);
     pp.addRect(rect());
     painter.fillPath(pp, bgColor);
+
+    DTitlebar::paintEvent(pe);
 }
 
 }

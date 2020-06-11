@@ -144,7 +144,7 @@ CompositingManager::CompositingManager()
                     _composited = true;
                     qDebug() << "__aarch64__  isDriverLoadedCorrectly";
                 }
-#elif __mips__
+#elif defined (__mips__)
                 _composited = false;
                 qDebug() << "__mips__";
 #else
@@ -249,21 +249,22 @@ bool CompositingManager::hascard()
 // but quite effective and without having to duplicate too much GLX/EGL code.
 static QString probeHwdecInterop()
 {
-    auto mpv = mpv::qt::Handle::FromRawHandle(mpv_create());
-    if (!mpv)
-        return "";
-    mpv::qt::set_property(mpv, "hwdec-preload", "auto");
-    // Actually creating a window is required. There is currently no way to keep
-    // this window hidden or invisible.
-    mpv::qt::set_property(mpv, "force-window", true);
-    // As a mitigation, put the window in the top/right corner, and make it as
-    // small as possible by forcing 1x1 size and removing window borders.
-    mpv::qt::set_property(mpv, "geometry", "1x1+0+0");
-    mpv::qt::set_property(mpv, "border", false);
-    if (mpv_initialize(mpv) < 0)
-        return "";
-    // return "auto"
-    return mpv::qt::get_property(mpv, "gpu-hwdec-interop").toString();
+//    auto mpv = mpv::qt::Handle::FromRawHandle(mpv_create());
+//    if (!mpv)
+//        return "";
+//    mpv::qt::set_property(mpv, "hwdec-preload", "auto");
+//    // Actually creating a window is required. There is currently no way to keep
+//    // this window hidden or invisible.
+//    mpv::qt::set_property(mpv, "force-window", true);
+//    // As a mitigation, put the window in the top/right corner, and make it as
+//    // small as possible by forcing 1x1 size and removing window borders.
+//    mpv::qt::set_property(mpv, "geometry", "1x1+0+0");
+//    mpv::qt::set_property(mpv, "border", false);
+//    if (mpv_initialize(mpv) < 0)
+//        return "";
+//    // return "auto"
+//    return mpv::qt::get_property(mpv, "gpu-hwdec-interop").toString();
+    return QString("");
 }
 
 static OpenGLInteropKind _interopKind = OpenGLInteropKind::INTEROP_NONE;
@@ -487,7 +488,7 @@ bool CompositingManager::isProprietaryDriver()
     for (int id = 0; id <= 10; id++) {
         if (!QFile::exists(QString("/sys/class/drm/card%1").arg(id))) break;
         if (is_device_viable(id)) {
-            vector<string> drivers = {"nvidia", "fglrx", "vmwgfx", "hibmc-drm", "radeon", "i915"};
+            vector<string> drivers = {"nvidia", "fglrx", "vmwgfx", "hibmc-drm", "radeon", "i915", "amdgpu"};
             return is_card_exists(id, drivers);
         }
     }

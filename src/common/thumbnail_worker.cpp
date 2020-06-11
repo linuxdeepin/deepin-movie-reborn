@@ -100,7 +100,7 @@ void ThumbnailWorker::requestThumb(const QUrl &url, int secs)
 
 ThumbnailWorker::ThumbnailWorker()
 {
-    thumber.setThumbnailSize(thumbSize().width() * qApp->devicePixelRatio());
+    thumber.setThumbnailSize(static_cast<int>(thumbSize().width() * qApp->devicePixelRatio()));
     thumber.setMaintainAspectRatio(true);
 }
 
@@ -128,7 +128,7 @@ QPixmap ThumbnailWorker::genThumb(const QUrl &url, int secs)
         thumber.generateThumbnail(file.toUtf8().toStdString(),
                                   ThumbnailerImageType::Png, buf);
 
-        auto img = QImage::fromData(buf.data(), buf.size(), "png");
+        auto img = QImage::fromData(buf.data(), static_cast<int>(buf.size()), "png");
 
         pm = QPixmap::fromImage(img.scaled(thumbSize() * dpr, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
         pm.setDevicePixelRatio(dpr);
