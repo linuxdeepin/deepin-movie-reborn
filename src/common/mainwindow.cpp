@@ -663,12 +663,12 @@ private:
 MainWindow::MainWindow(QWidget *parent)
     : DMainWindow(NULL)
 {
-#ifdef DOCK_KELVINU_VIEW
-    DBusDock dbusDock;
-    DockRect dockRect = dbusDock.frontendWindowRect();
-    QRect primaryGeometry = qApp->primaryScreen()->geometry();
-    setMaximumSize(primaryGeometry.width(), primaryGeometry.height() - dockRect.height);
-#endif
+//#ifdef DOCK_KELVINU_VIEW
+//    DBusDock dbusDock;
+//    DockRect dockRect = dbusDock.frontendWindowRect();
+//    QRect primaryGeometry = qApp->primaryScreen()->geometry();
+//    setMaximumSize(primaryGeometry.width(), primaryGeometry.height() - dockRect.height);
+//#endif
 
     m_lastVolume = Settings::get().internalOption("last_volume").toInt();;
     bool composited = CompositingManager::get().composited();
