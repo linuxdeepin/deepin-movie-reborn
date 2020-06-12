@@ -72,9 +72,9 @@ int main(int argc, char *argv[])
     DWIDGET_INIT_RESOURCE();
 #endif
 
-    DApplication app(argc, argv);
-
     DApplication::loadDXcbPlugin();
+
+    DApplication app(argc, argv);
 
     // required by mpv
     setlocale(LC_NUMERIC, "C");
