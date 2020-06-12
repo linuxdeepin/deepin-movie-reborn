@@ -1996,16 +1996,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             //_nwComm->updateWithMessage(tr("No device found"));
             QUrl url(QString("dvd:///%1").arg(dev));
             play(url);
-        } /*else {
-QUrl url(QString("dvd:///%1").arg(dev));
-play(url);
-}*/
-//        _engine->setDVDDevice(dev);  Comment by thx
-        //FIXME: how to tell if it's bluray
-        //QUrl url(QString("dvdread:///%1").arg(dev));
-//        QUrl url(QString("dvd:///%1").arg(dev));
-//        //QUrl url(QString("dvdnav://"));
-//        play(url);
+        }
         break;
     }
 
@@ -3402,9 +3393,19 @@ void MainWindow::showEvent(QShowEvent *event)
     if (_pausedOnHide || Settings::get().isSet(Settings::PauseOnMinimize)) {
         if (_pausedOnHide && _engine && _engine->state() != PlayerEngine::Playing) {
             if (!_quitfullscreenstopflag) {
-                requestAction(ActionFactory::TogglePause);
-                _pausedOnHide = false;
-                _quitfullscreenstopflag = false;
+#ifdef __aarch64__
+                QVariant l = ApplicationAdaptor::redDBusProperty("com.deepin.SessionManager", "/com/deepin/SessionManager",
+                                                                 "com.deepin.SessionManager", "Locked");
+                if (l.isValid() && !l.toBool()) {
+                    qDebug() << "locked_____________" << l;
+                    //是否锁屏
+#endif
+                    requestAction(ActionFactory::TogglePause);
+                    _pausedOnHide = false;
+                    _quitfullscreenstopflag = false;
+#ifdef __aarch64__
+                }
+#endif
             } else {
                 _quitfullscreenstopflag = false;
             }
