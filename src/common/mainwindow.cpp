@@ -747,6 +747,15 @@ MainWindow::MainWindow(QWidget *parent)
     _toolbox->setPlaylist(_playlist);
 
     connect(_engine, &PlayerEngine::stateChanged, [ = ]() {
+        if (_isJinJia) {
+            if (!_progressTimer.isActive()) {
+                oldDuration = _engine->duration();
+                oldElapsed = _engine->elapsed();
+                _progressTimer.start(1000);
+            } else {
+                _progressTimer.stop();
+            }
+        }
         setInit(_engine->state() != PlayerEngine::Idle);
         resumeToolsWindow();
         updateWindowTitle();
@@ -761,6 +770,15 @@ MainWindow::MainWindow(QWidget *parent)
             }
         });
     });
+
+    QFileInfo fi("/dev/mwv206_0");              //景嘉微显卡
+    if (fi.exists()) {
+        _isJinJia = true;
+        connect(&_progressTimer, &QTimer::timeout, [ = ]() {
+            oldDuration = _engine->duration();
+            oldElapsed = _engine->elapsed();
+        });
+    }
 
     connect(ActionFactory::get().mainContextMenu(), &DMenu::triggered,
             this, &MainWindow::menuItemInvoked);
@@ -805,7 +823,11 @@ MainWindow::MainWindow(QWidget *parent)
     _progIndicator = new MovieProgressIndicator(this);
     _progIndicator->setVisible(false);
     connect(_engine, &PlayerEngine::elapsedChanged, [ = ]() {
-        _progIndicator->updateMovieProgress(_engine->duration(), _engine->elapsed());
+        if (!_isJinJia) {
+            _progIndicator->updateMovieProgress(_engine->duration(), _engine->elapsed());
+        } else {
+            _progIndicator->updateMovieProgress(oldDuration, oldElapsed);
+        }
     });
 
     // mini ui
@@ -1066,7 +1088,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(_engine, &PlayerEngine::onlineStateChanged, this, &MainWindow::checkOnlineState);
     connect(&OnlineSubtitle::get(), &OnlineSubtitle::onlineSubtitleStateChanged, this, &MainWindow::checkOnlineSubtitle);
     connect(_engine, &PlayerEngine::mpvErrorLogsChanged, this, &MainWindow::checkErrorMpvLogsChanged);
-    connect(_engine, &PlayerEngine::mpvWarningLogsChanged, this, &MainWindow::checkWarningMpvLogsChanged);
+    //4k播放时不显示提示框
+    //connect(_engine, &PlayerEngine::mpvWarningLogsChanged, this, &MainWindow::checkWarningMpvLogsChanged);
     connect(_engine, &PlayerEngine::urlpause, this, [ = ](bool status) {
         if (status) {
             auto msg = QString(tr("Buffering..."));
@@ -3279,7 +3302,9 @@ void MainWindow::checkErrorMpvLogsChanged(const QString prefix, const QString te
                (errorMessage.toLower().contains(QString("open")))) {
         _nwComm->updateWithMessage(tr("No video file found"));
 //        _engine->playlist().clear();
-    } else if (errorMessage.contains(QString("Hardware does not support image size 3840x2160"))) {
+    }
+    //4k播放不显示提示框
+    /*else if (errorMessage.contains(QString("Hardware does not support image size 3840x2160"))) {
         requestAction(ActionFactory::TogglePause);
 
         DDialog *dialog = new DDialog;
@@ -3304,7 +3329,7 @@ void MainWindow::checkErrorMpvLogsChanged(const QString prefix, const QString te
             }
             _engine->pauseResume();
         });
-    }
+    }*/
 
 }
 
@@ -3753,15 +3778,23 @@ void MainWindow::onDvdData(const QString &title)
 
 void MainWindow::mouseMoveEvent(QMouseEvent *ev)
 {
-    if (_mouseMoved) {
-        return Utility::updateMousePointForWindowMove(this->winId(), ev->globalPos() * devicePixelRatioF());
+    static int nX = 0, nY = 0;
+    //修复触屏无法弹出右键问题
+    if (qAbs(nX - ev->globalX()) < 50 || qAbs(nY - ev->globalY()) < 50) {
+        return;
     }
 
-    _mouseMoved = true;
+    nX = ev->globalX();
+    nY = ev->globalY();
+//    if (_mouseMoved) {
+//        return Utility::updateMousePointForWindowMove(static_cast<quint32>(this->winId()), ev->globalPos() * devicePixelRatioF());
+//    }
 
-    if (windowState() == Qt::WindowNoState || isMaximized()) {
-        Utility::startWindowSystemMove(this->winId());
-    }
+//    _mouseMoved = true;
+
+//    if (windowState() == Qt::WindowNoState || isMaximized()) {
+//        Utility::startWindowSystemMove(static_cast<quint32>(this->winId()));
+//    }
     QWidget::mouseMoveEvent(ev);
 }
 

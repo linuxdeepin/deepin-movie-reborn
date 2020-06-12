@@ -488,7 +488,7 @@ public:
 //       _indicator = new IndicatorBar(this);
 //        _indicator = new DBlurEffectWidget(this);
         _indicator = new IndicatorItem(this);
-        _indicator->resize(4, 60);
+        _indicator->resize(6, 60);
         _indicator->setObjectName("indicator");
 //        _indicator->setMaskColor(QColor(255, 255, 255));
 //        _indicator->setBlurRectXRadius(2);
@@ -667,10 +667,9 @@ public:
         //重新获取胶片进度条长度 by ZhuYuliang
         int pixWidget = _progBar->width() / 100;
         //当宽度比较宽的时候，就插入两次相同图片
-        if (this->width() > 500) {
+        if (pixWidget > 500) {
             pixWidget /= 2;
             for (int i = 0; i < pm_list.count() * 2 ; i++) {
-
                 ImageItem *label = new ImageItem(pm_list.at(i / 2), false, _back);
                 label->setMouseTracking(true);
                 label->move(i * (pixWidget + 1) + 3, 5);
@@ -680,8 +679,6 @@ public:
                 label_black->setMouseTracking(true);
                 label_black->move(i * (pixWidget + 1) + 3, 5);
                 label_black->setFixedSize(pixWidget, 50);
-
-
             }
         } else {
             for (int i = 0; i < pm_list.count(); i++) {
@@ -818,7 +815,8 @@ protected:
         emit mousePressed(false);
         if (_press && isEnabled()) {
             changeStyle(!_press);
-//            setTimeVisible(!_press);
+            setTimeVisible(!_press);
+            _sliderArrowUp->setVisible(false);
             _press = !_press;
         }
     }
@@ -1024,7 +1022,7 @@ private:
 
 private:
     DFrame *_thumb {nullptr};
-    int m_thumbnailFixed = 178;
+    int m_thumbnailFixed = 106;
 };
 
 class VolumeSlider: public DArrowRectangle
@@ -1145,7 +1143,7 @@ public slots:
         DUtil::TimerSingleShot(100, [this]() {
             if (!m_mouseIn)
                 hide();
-            });
+        });
 #endif
     }
     void setValue(int v)
@@ -1209,16 +1207,9 @@ private slots:
                 if (_slider->value() == _slider->maximum() && we->angleDelta().y() > 0) {
                     //keep increasing volume
                     _mw->requestAction(ActionFactory::VolumeUp);
-                }
-#ifdef   __aarch64__
-                else {
+                } else {
                     _mw->requestAction(we->angleDelta().y() > 0 ? ActionFactory::VolumeUp : ActionFactory::VolumeDown);
                 }
-#elif    __mips__
-                else {
-                    _mw->requestAction(we->angleDelta().y() > 0 ? ActionFactory::VolumeUp : ActionFactory::VolumeDown);
-                }
-#endif
             }
             return false;
         } else {
@@ -1431,6 +1422,16 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
             this, &ToolboxProxy::updatePlayState);
     connect(DApplicationHelper::instance(), &DApplicationHelper::themeTypeChanged,
             this, &ToolboxProxy::updateplaylisticon);
+
+
+    QFileInfo fi("/dev/mwv206_0");              //景嘉微显卡
+    if (fi.exists()) {
+        _isJinJia = true;
+        connect(&_progressTimer, &QTimer::timeout, [ = ]() {
+            oldDuration = _engine->duration();
+            oldElapsed = _engine->elapsed();
+        });
+    }
 }
 void ToolboxProxy::finishLoadSlot(QSize size)
 {
@@ -1848,9 +1849,9 @@ void ToolboxProxy::setup()
         _volSlider = new VolumeSlider(_engine, _mainWindow, nullptr);
         hintFilter = new HintFilter;
         _volSlider->setProperty("DelayHide", true);
-		_volSlider->setProperty("NoDelayShow", true);
-		installHint(_volBtn, _volSlider);
-		
+        _volSlider->setProperty("NoDelayShow", true);
+        installHint(_volBtn, _volSlider);
+
         /*connect(_volBtn, &VolumeButton::entered, [ = ]() {
             _volSlider->stopTimer();
             _volSlider->show(_mainWindow->width() - _volBtn->width() / 2 - _playBtn->width() - 43,
@@ -1972,7 +1973,11 @@ void ToolboxProxy::setup()
         if (_engine->playlist().current() != -1) {
             url = _engine->playlist().items()[_engine->playlist().current()].mi.duration;
         }
-        updateTimeInfo(url, _engine->elapsed(), _timeLabel, _timeLabelend, true);
+        if (!_isJinJia) {
+            updateTimeInfo(url, _engine->elapsed(), _timeLabel, _timeLabelend, true);
+        } else {
+            updateTimeInfo(url, oldElapsed, _timeLabel, _timeLabelend, true);
+        }
         updateMovieProgress();
     });
     connect(_engine, &PlayerEngine::elapsedChanged, [ = ]() {
@@ -1980,7 +1985,12 @@ void ToolboxProxy::setup()
         if (_engine->playlist().current() != -1) {
             _url = _engine->playlist().items()[_engine->playlist().current()].mi.duration;
         }
-        updateTimeInfo(_url, _engine->elapsed(), _fullscreentimelable, _fullscreentimelableend, false);
+        if (!_isJinJia) {
+            updateTimeInfo(_url, _engine->elapsed(), _fullscreentimelable, _fullscreentimelableend, false);
+        } else {
+            updateTimeInfo(_url, oldElapsed, _fullscreentimelable, _fullscreentimelableend, false);
+        }
+
         QFontMetrics fm(DFontSizeManager::instance()->get(DFontSizeManager::T6));
         _fullscreentimelable->setMinimumWidth(fm.width(_fullscreentimelable->text()));
         _fullscreentimelableend->setMinimumWidth(fm.width(_fullscreentimelableend->text()));
@@ -2235,8 +2245,12 @@ void ToolboxProxy::updateMovieProgress()
 {
     if (m_mousePree == true)
         return ;
-    auto d = _engine->duration();
-    auto e = _engine->elapsed();
+    auto d = oldDuration;
+    auto e = oldElapsed;
+    if (!_isJinJia) {
+        d = _engine->duration();
+        e = _engine->elapsed();
+    }
     int v = 0;
     int v2 = 0;
     if (d != 0 && e != 0) {
@@ -2381,7 +2395,18 @@ void ToolboxProxy::updatePlayState()
 
         }
         _playBtn->setToolTip(tr("Pause"));
+        if (_isJinJia) {
+            if (!_progressTimer.isActive()) {
+                oldDuration = _engine->duration();
+                oldElapsed = _engine->elapsed();
+                _progressTimer.start(1000);
+            } else {
+                _progressTimer.stop();
+            }
+        }
     } else {
+        if (_progressTimer.isActive())
+            _progressTimer.stop();
         //        _playBtn->setObjectName("PlayBtn");
         if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ) {
             _playBtn->setPropertyPic(":/icons/deepin/builtin/light/normal/play_normal.svg",
