@@ -143,6 +143,7 @@ public:
     QLabel *getfullscreentimeLabelend();
     bool getbAnimationFinash();
     int DisplayVolume();
+    void setVolSliderHide();
 public slots:
     void finishLoadSlot(QSize size);
     void updateplaylisticon();
