@@ -2216,6 +2216,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                 _fullscreentimelable->close();
             }
         } else {
+            _toolbox->setVolSliderHide();
             if (/*!_miniMode && (fromUI || isShortcut) && */windowState() == Qt::WindowNoState) {
                 _lastRectInNormalMode = geometry();
             }
