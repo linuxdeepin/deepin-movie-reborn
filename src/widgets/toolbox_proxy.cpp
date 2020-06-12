@@ -2823,6 +2823,11 @@ int ToolboxProxy::DisplayVolume()
 {
     return _volSlider->value();
 }
+
+void ToolboxProxy::setVolSliderHide()
+{
+    _volSlider->setVisible(false);
+}
 }
 
 #include "toolbox_proxy.moc"

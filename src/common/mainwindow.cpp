@@ -665,6 +665,27 @@ private:
 MainWindow::MainWindow(QWidget *parent)
     : DMainWindow(NULL)
 {
+    //add bu heyi
+    this->setAttribute(Qt::WA_AcceptTouchEvents);
+    _mousePressTimer.setInterval(1300);
+    connect(&_mousePressTimer, &QTimer::timeout, this, [ = ]() {
+        if (_miniMode || _inBurstShootMode || !_mousePressed)
+            return;
+
+        if (insideToolsArea(QCursor::pos()))
+            return;
+
+        resumeToolsWindow();
+        QTimer::singleShot(0, [ = ]() {
+            qApp->restoreOverrideCursor();
+            ActionFactory::get().mainContextMenu()->popup(QCursor::pos());
+        });
+
+        _mousePressTimer.stop();
+        _mousePressed = false;
+        _isTouch = false;
+    });
+    //*************
     m_lastVolume = Settings::get().internalOption("last_volume").toInt();;
     bool composited = CompositingManager::get().composited();
 #ifdef USE_DXCB
@@ -1205,6 +1226,26 @@ void MainWindow::updateShadow()
 
 bool MainWindow::event(QEvent *ev)
 {
+    //add by heyi
+    //判断是否停止右键菜单定时器
+    if (_mousePressed) {
+        qDebug() << "hahahaha nX = " << nX << "haaahahaha nY= " << nY;
+        qDebug() << "mapToGlobal(QCursor::pos()).x() = " << mapToGlobal(QCursor::pos()).x() << "mapToGlobal(QCursor::pos()).y()= " << mapToGlobal(QCursor::pos()).y();
+        if (qAbs(nX - mapToGlobal(QCursor::pos()).x()) > 50 || qAbs(nY - mapToGlobal(QCursor::pos()).y()) > 50) {
+            if (_mousePressTimer.isActive()) {
+                qDebug() << "结束定时器";
+                _mousePressTimer.stop();
+                _mousePressed = false;
+                _isTouch = false;
+            }
+        }
+    }
+
+    if (ev->type() == QEvent::TouchBegin) {
+        //判定是否是触屏
+        _isTouch = true;
+    }
+
     if (ev->type() == QEvent::WindowStateChange) {
         auto wse = dynamic_cast<QWindowStateChangeEvent *>(ev);
         _lastWindowState = wse->oldState();
@@ -1996,16 +2037,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             //_nwComm->updateWithMessage(tr("No device found"));
             QUrl url(QString("dvd:///%1").arg(dev));
             play(url);
-        } /*else {
-QUrl url(QString("dvd:///%1").arg(dev));
-play(url);
-}*/
-//        _engine->setDVDDevice(dev);  Comment by thx
-        //FIXME: how to tell if it's bluray
-        //QUrl url(QString("dvdread:///%1").arg(dev));
-//        QUrl url(QString("dvd:///%1").arg(dev));
-//        //QUrl url(QString("dvdnav://"));
-//        play(url);
+        }
         break;
     }
 
@@ -2225,6 +2257,7 @@ play(url);
                 _fullscreentimelable->close();
             }
         } else {
+            _toolbox->setVolSliderHide();
             if (/*!_miniMode && (fromUI || isShortcut) && */windowState() == Qt::WindowNoState) {
                 _lastRectInNormalMode = geometry();
             }
@@ -3402,9 +3435,19 @@ void MainWindow::showEvent(QShowEvent *event)
     if (_pausedOnHide || Settings::get().isSet(Settings::PauseOnMinimize)) {
         if (_pausedOnHide && _engine && _engine->state() != PlayerEngine::Playing) {
             if (!_quitfullscreenstopflag) {
-                requestAction(ActionFactory::TogglePause);
-                _pausedOnHide = false;
-                _quitfullscreenstopflag = false;
+#ifdef __aarch64__
+                QVariant l = ApplicationAdaptor::redDBusProperty("com.deepin.SessionManager", "/com/deepin/SessionManager",
+                                                                 "com.deepin.SessionManager", "Locked");
+                if (l.isValid() && !l.toBool()) {
+                    qDebug() << "locked_____________" << l;
+                    //是否锁屏
+#endif
+                    requestAction(ActionFactory::TogglePause);
+                    _pausedOnHide = false;
+                    _quitfullscreenstopflag = false;
+#ifdef __aarch64__
+                }
+#endif
             } else {
                 _quitfullscreenstopflag = false;
             }
@@ -3666,6 +3709,15 @@ void MainWindow::mousePressEvent(QMouseEvent *ev)
     if (qApp->focusWindow() == 0) return;
     if (ev->buttons() == Qt::LeftButton) {
         _mousePressed = true;
+        //add by heyi
+        if (!_mousePressTimer.isActive() && _isTouch) {
+            _mousePressTimer.stop();
+
+            nX = mapToGlobal(QCursor::pos()).x();
+            nY = mapToGlobal(QCursor::pos()).y();
+            qDebug() << "已经进入触屏按下事件" << nX << nY;
+            _mousePressTimer.start();
+        }
         /*if (_playState->isVisible()) {
             //_playState->setState(DImageButton::Press);
             QMouseEvent me(QEvent::MouseButtonPress, {}, ev->button(), ev->buttons(), ev->modifiers());
@@ -3673,7 +3725,6 @@ void MainWindow::mousePressEvent(QMouseEvent *ev)
         }*/
     }
 }
-
 
 void MainWindow::mouseDoubleClickEvent(QMouseEvent *ev)
 {
@@ -3718,7 +3769,14 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *ev)
 
     if (qApp->focusWindow() == 0 || !_mousePressed) return;
 
+    if (ev->button() == Qt::LeftButton) {
+        if (_mousePressTimer.isActive()) {
+            _mousePressTimer.stop();
+        }
+    }
+
     _mousePressed = false;
+    _isTouch = false;
     /*if (_playState->isVisible()) {
         //QMouseEvent me(QEvent::MouseButtonRelease, {}, ev->button(), ev->buttons(), ev->modifiers());
         //qApp->sendEvent(_playState, &me);
@@ -3778,14 +3836,6 @@ void MainWindow::onDvdData(const QString &title)
 
 void MainWindow::mouseMoveEvent(QMouseEvent *ev)
 {
-    static int nX = 0, nY = 0;
-    //修复触屏无法弹出右键问题
-    if (qAbs(nX - ev->globalX()) < 50 || qAbs(nY - ev->globalY()) < 50) {
-        return;
-    }
-
-    nX = ev->globalX();
-    nY = ev->globalY();
 //    if (_mouseMoved) {
 //        return Utility::updateMousePointForWindowMove(static_cast<quint32>(this->winId()), ev->globalPos() * devicePixelRatioF());
 //    }

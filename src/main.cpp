@@ -56,6 +56,8 @@ DWIDGET_USE_NAMESPACE
 
 int main(int argc, char *argv[])
 {
+    setenv("PULSE_PROP_media.role", "video", 1);
+
 #ifdef __mips__
     if (CompositingManager::get().composited()) {
         CompositingManager::detectOpenGLEarly();
@@ -70,9 +72,9 @@ int main(int argc, char *argv[])
     DWIDGET_INIT_RESOURCE();
 #endif
 
-    DApplication app(argc, argv);
-
     DApplication::loadDXcbPlugin();
+
+    DApplication app(argc, argv);
 
     // required by mpv
     setlocale(LC_NUMERIC, "C");
