@@ -1135,7 +1135,7 @@ public slots:
         DUtil::TimerSingleShot(100, [this]() {
             if (!m_mouseIn)
                 hide();
-            });
+        });
     }
     void setValue(int v)
     {

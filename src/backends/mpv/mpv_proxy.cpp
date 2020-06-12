@@ -496,7 +496,7 @@ void MpvProxy::handle_mpv_events()
             emit tracksChanged();
             break;
 
-        case MPV_EVENT_FILE_LOADED:
+        case MPV_EVENT_FILE_LOADED: {
             qDebug() << mpv_event_name(ev->event_id);
 
             if (_gl_widget) {
@@ -531,7 +531,7 @@ void MpvProxy::handle_mpv_events()
                      .arg(get_property(_handle, "video-dec-params/rotate").toInt())
                      .arg(get_property(_handle, "video-params/rotate").toInt());
             break;
-
+        }
         case MPV_EVENT_VIDEO_RECONFIG: {
             auto sz = videoSize();
             if (!sz.isEmpty())
@@ -952,14 +952,14 @@ void MpvProxy::play()
     }
 #endif
 #ifdef __aarch64__
-    qDebug() << "MPV_EVENT_FILE_LOADED aarch64";
-    auto codec = get_property(_handle, "video-codec").toString();
-    if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") || codec.toLower().contains("mpeg2video")) {
-        qDebug() << "set_property hwdec no";
-        set_property(_handle, "hwdec", "no");
-        //qDebug() << "set_property hwdec auto-safe";
-        //set_property(_handle, "hwdec", "auto-safe");
-    }
+        qDebug() << "MPV_EVENT_FILE_LOADED aarch64";
+        auto recodec = get_property(_handle, "video-codec").toString();
+        if (recodec.toLower().contains("wmv3") || recodec.toLower().contains("wmv2") || recodec.toLower().contains("mpeg2video")) {
+            qDebug() << "set_property hwdec no";
+            set_property(_handle, "hwdec", "no");
+            //qDebug() << "set_property hwdec auto-safe";
+            //set_property(_handle, "hwdec", "auto-safe");
+        }
 #endif
     if (opts.size()) {
         //opts << "sub-auto=fuzzy";
