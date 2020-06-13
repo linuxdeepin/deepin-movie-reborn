@@ -2175,6 +2175,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
 //            }
 //        }
 
+        _toolbox->setVolSliderHide();
         this->setCursor(Qt::BlankCursor);
         if (isFullScreen()) {
             _quitfullscreenstopflag = true;
@@ -2194,7 +2195,6 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                 _fullscreentimelable->close();
             }
         } else {
-            _toolbox->setVolSliderHide();
             if (/*!_miniMode && (fromUI || isShortcut) && */windowState() == Qt::WindowNoState) {
                 _lastRectInNormalMode = geometry();
             }
