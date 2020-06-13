@@ -3840,7 +3840,7 @@ void MainWindow::mouseMoveEvent(QMouseEvent *ev)
 //        return Utility::updateMousePointForWindowMove(static_cast<quint32>(this->winId()), ev->globalPos() * devicePixelRatioF());
 //    }
 
-//    _mouseMoved = true;
+    _mouseMoved = true;
 
 //    if (windowState() == Qt::WindowNoState || isMaximized()) {
 //        Utility::startWindowSystemMove(static_cast<quint32>(this->winId()));
