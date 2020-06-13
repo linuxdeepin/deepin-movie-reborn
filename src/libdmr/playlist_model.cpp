@@ -65,7 +65,6 @@ static bool check_wayland()
     else {
         return false;
     }
-
 }
 
 //获取音乐缩略图

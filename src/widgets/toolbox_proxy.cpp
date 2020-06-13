@@ -1135,7 +1135,7 @@ public slots:
         DUtil::TimerSingleShot(100, [this]() {
             if (!m_mouseIn)
                 hide();
-            });
+        });
     }
     void setValue(int v)
     {
@@ -2740,6 +2740,11 @@ bool ToolboxProxy::getbAnimationFinash()
 int ToolboxProxy::DisplayVolume()
 {
     return _volSlider->value();
+}
+
+void ToolboxProxy::setVolSliderHide()
+{
+    _volSlider->setVisible(false);
 }
 }
 

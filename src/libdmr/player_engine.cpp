@@ -505,6 +505,7 @@ void PlayerEngine::paintEvent(QPaintEvent *e)
     int y = this->rect().center().y() - pix.height() / 2;
     QPainter p(this);
     p.drawPixmap(x, y, pix);
+
     return QWidget::paintEvent(e);
 }
 
