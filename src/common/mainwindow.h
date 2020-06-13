@@ -152,6 +152,8 @@ public:
      * @brief firstPlayInit 第一次点击播放时，需要加载动态库函数指针然后进行构造未完成的初始化
      */
     void firstPlayInit();
+    //判断鼠标是否在窗口内
+    bool judgeMouseInWindow(QPoint pos);
 
     void requestAction(ActionFactory::ActionKind, bool fromUI = false,
                        QList<QVariant> args = {}, bool shortcut = false);
@@ -374,6 +376,11 @@ private:
     bool m_IsFree = true;  //播放器是否空闲，和IDel的定义不同
 
     static int _retryTimes;
+    QTimer _progressTimer;
+    //add by heyi 解决触屏右键菜单bug
+    int nX = 0, nY = 0;     //左键按下时保存的点
+    bool _isTouch = false;          //是否是触摸屏按下
+    QTimer _mousePressTimer;
 };
 };
 

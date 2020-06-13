@@ -449,6 +449,8 @@ protected:
             const QRect window_visible_rect = _window->frameGeometry() - mw->dragMargins();
 
             if (!leftButtonPressed) {
+                //add by heyi  拦截鼠标移动事件
+                mw->judgeMouseInWindow(QCursor::pos());
                 if (mw->insideResizeArea(e->globalPos())) {
                     CornerEdge mouseCorner = CornerEdge::NoneEdge;
                     QRect cornerRect;
@@ -673,6 +675,28 @@ private:
 MainWindow::MainWindow(QWidget *parent)
     : DMainWindow(nullptr)
 {
+    //add bu heyi
+    this->setMouseTracking(true);
+    this->setAttribute(Qt::WA_AcceptTouchEvents);
+    _mousePressTimer.setInterval(1300);
+    connect(&_mousePressTimer, &QTimer::timeout, this, [ = ]() {
+        if (_miniMode || _inBurstShootMode || !_mousePressed)
+            return;
+
+        if (insideToolsArea(QCursor::pos()))
+            return;
+
+        resumeToolsWindow();
+        QTimer::singleShot(0, [ = ]() {
+            qApp->restoreOverrideCursor();
+            ActionFactory::get().mainContextMenu()->popup(QCursor::pos());
+        });
+
+        _mousePressTimer.stop();
+        _mousePressed = false;
+        _isTouch = false;
+    });
+    //*************
     m_lastVolume = Settings::get().internalOption("last_volume").toInt();;
     bool composited = CompositingManager::get().composited();
 #ifdef USE_DXCB
@@ -1185,31 +1209,26 @@ void MainWindow::updateShadow()
 
 bool MainWindow::event(QEvent *ev)
 {
-//    qDebug() << ev->type();
-//    static int nX = 0, nY = 0;
-//    if (ev->type() == QEvent::MouseButtonPress) {
-//        qDebug() << "MouseButtonPress111111111";
-//        QMouseEvent *newEv = (QMouseEvent *)ev;
-//        nX = newEv->globalX();
-//        nY = newEv->globalY();
-//    }
+    //add by heyi
+    //判断是否停止右键菜单定时器
+    if (_mousePressed) {
+        qDebug() << "hahahaha nX = " << nX << "haaahahaha nY= " << nY;
+        qDebug() << "mapToGlobal(QCursor::pos()).x() = " << mapToGlobal(QCursor::pos()).x() << "mapToGlobal(QCursor::pos()).y()= " << mapToGlobal(QCursor::pos()).y();
+        if (qAbs(nX - mapToGlobal(QCursor::pos()).x()) > 50 || qAbs(nY - mapToGlobal(QCursor::pos()).y()) > 50) {
+            if (_mousePressTimer.isActive()) {
+                qDebug() << "结束定时器";
+                _mousePressTimer.stop();
+                _mousePressed = false;
+                _isTouch = false;
+            }
+        }
+    }
 
-//    if (ev->type() == QEvent::MouseMove) {
-//        QMouseEvent *newEv = (QMouseEvent *)ev;
-//        qDebug() << "x=" << newEv->globalX() << "y=" << newEv->globalY();
-//        //修复触屏无法弹出右键问题
+    if (ev->type() == QEvent::TouchBegin) {
+        //判定是否是触屏
+        _isTouch = true;
+    }
 
-//        if (qAbs(nX - newEv->globalX()) < 5 || qAbs(nY - newEv->globalY()) < 5) {
-//            ev->ignore();
-//            return false;
-//        }
-
-//        nX = newEv->globalX();
-//        nY = newEv->globalY();
-//        qDebug() << "nX=" << nX << "nY=" << nY;
-//    }
-
-    qDebug() << "进入event";
     if (ev->type() == QEvent::WindowStateChange) {
         auto wse = dynamic_cast<QWindowStateChangeEvent *>(ev);
         _lastWindowState = wse->oldState();
@@ -1465,6 +1484,25 @@ void MainWindow::firstPlayInit()
 
     requestAction(ActionFactory::ChangeSubCodepage, false, {"auto"});
     m_bMpvFunsLoad = true;
+}
+
+bool MainWindow::judgeMouseInWindow(QPoint pos)
+{
+    bool bRet = false;
+    QRect rect = frameGeometry();
+    QPoint topLeft = rect.topLeft();
+    QPoint bottomRight = rect.bottomRight();
+    pos = mapToGlobal(pos);
+    topLeft = mapToGlobal(topLeft);
+    bottomRight = mapToGlobal(bottomRight);
+
+    if ((pos.x() > topLeft.x()) && (pos.x() < bottomRight.x()) && (pos.y() > topLeft.y()) && (pos.y() < bottomRight.y())) {
+        bRet = true;
+    } else {
+        leaveEvent(nullptr);
+    }
+
+    return bRet;
 }
 
 void MainWindow::onApplicationStateChanged(Qt::ApplicationState e)
@@ -3677,8 +3715,6 @@ void MainWindow::capturedMouseReleaseEvent(QMouseEvent *me)
 static bool _afterDblClick = false;
 void MainWindow::mousePressEvent(QMouseEvent *ev)
 {
-    qDebug() << "进入mousePressEvent";
-    QWidget::mousePressEvent(ev);
     _mouseMoved = false;
     _mousePressed = false;
 #ifdef __aarch64__
@@ -3690,7 +3726,15 @@ void MainWindow::mousePressEvent(QMouseEvent *ev)
     if (qApp->focusWindow() == 0) return;
     if (ev->buttons() == Qt::LeftButton) {
         _mousePressed = true;
-        m_dragPos = QCursor::pos() - frameGeometry().topLeft();
+        //add by heyi
+        if (!_mousePressTimer.isActive() && _isTouch) {
+            _mousePressTimer.stop();
+
+            nX = mapToGlobal(QCursor::pos()).x();
+            nY = mapToGlobal(QCursor::pos()).y();
+            qDebug() << "已经进入触屏按下事件" << nX << nY;
+            _mousePressTimer.start();
+        }
         /*if (_playState->isVisible()) {
             //_playState->setState(DImageButton::Press);
             QMouseEvent me(QEvent::MouseButtonPress, {}, ev->button(), ev->buttons(), ev->modifiers());

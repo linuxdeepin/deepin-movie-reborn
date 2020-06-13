@@ -232,7 +232,6 @@ CompositingManager::CompositingManager()
     }
 #endif
     qDebug() << __func__ << "Composited is " << _composited;
-
 }
 
 CompositingManager::~CompositingManager()
