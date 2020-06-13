@@ -54,6 +54,17 @@ class DImageButton;
 
 DWIDGET_USE_NAMESPACE
 
+enum CornerEdge {
+    TopLeftCorner = 0,
+    TopEdge = 1,
+    TopRightCorner = 2,
+    RightEdge = 3,
+    BottomRightCorner = 4,
+    BottomEdge = 5,
+    BottomLeftCorner = 6,
+    LeftEdge = 7,
+    NoneEdge = -1
+};
 
 class MainWindowEventListener;
 
@@ -141,8 +152,6 @@ public:
      * @brief firstPlayInit 第一次点击播放时，需要加载动态库函数指针然后进行构造未完成的初始化
      */
     void firstPlayInit();
-
-    //解决触屏拖动bug
 
     void requestAction(ActionFactory::ActionKind, bool fromUI = false,
                        QList<QVariant> args = {}, bool shortcut = false);
@@ -331,6 +340,7 @@ private:
     bool _maxfornormalflag {false};
     //add by heyi
     bool m_bMpvFunsLoad {false};
+    QPoint m_dragPos;
 
     enum StateBeforeEnterMiniMode {
         SBEM_None = 0x0,

@@ -140,6 +140,9 @@ public:
     virtual ~MpvProxy();
 
 //    //add by heyi
+    /**
+     * @brief initMpvFuns   初始化MPV动态调用库函数
+     */
     void initMpvFuns();
 
     //add by heyi

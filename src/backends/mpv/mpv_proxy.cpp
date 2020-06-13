@@ -32,7 +32,6 @@
 #include "mpv_proxy.h"
 #include "mpv_glwidget.h"
 #include "compositing_manager.h"
-#include "utility.h"
 #include "player_engine.h"
 #ifndef _LIBDMR_
 #include "dmr_settings.h"
@@ -148,17 +147,6 @@ void MpvProxy::firstInit()
 {
     initMpvFuns();
     if (m_creat) {
-//        QLayoutItem *child = nullptr;
-//        if (_gl_widget) {
-//            _gl_widget->initMpvFuns();
-//            while ((child = this->layout()->takeAt(0)) != nullptr) {
-//                this->layout()->removeWidget(child->widget());
-//                child->widget()->setParent(nullptr);
-//                child->widget()->deleteLater();
-//                _gl_widget = nullptr;
-//            }
-//        }
-
         _handle = myHandle::myFromRawHandle(mpv_init());
         if (CompositingManager::get().composited()) {
             _gl_widget = new MpvGLWidget(this, _handle);
