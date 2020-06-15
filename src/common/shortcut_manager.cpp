@@ -85,8 +85,6 @@ ShortcutManager::ShortcutManager()
 
         {"next_frame", ActionFactory::ActionKind::NextFrame},
         {"previous_frame", ActionFactory::ActionKind::PreviousFrame},
-
-        {"hwdec", ActionFactory::ActionKind::Hwdec},
     };
 
     connect(&Settings::get(), &Settings::shortcutsChanged,
@@ -197,6 +195,7 @@ void ShortcutManager::buildBindingsFromSettings()
 //    _map.insert(QKeySequence(Qt::Key_Space), ActionFactory::TogglePause);
 //    _map.insert(QKeySequence(Qt::Key_Escape), ActionFactory::QuitFullscreen);
     _map.insert(QKeySequence(Qt::Key_Slash + Qt::CTRL + Qt::SHIFT), ActionFactory::ViewShortcut);
+    _map.insert(QKeySequence(Qt::CTRL + Qt::ALT + Qt::Key_H), ActionFactory::Hwdec);
 
     QPointer<DSettingsGroup> shortcuts = Settings::get().shortcuts();
 
