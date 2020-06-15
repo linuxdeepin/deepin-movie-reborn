@@ -12,27 +12,27 @@
         <translation type="vanished">Películes Deepin ye un reproductor de videu bien diseñáu y completu con un diseñu cenciellu ensin berbesos. Sofita la reproducción llocal y remota de conteníu con formatos de videu múltiples.</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="184"/>
+        <location filename="../common/mainwindow.cpp" line="190"/>
         <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="200"/>
+        <location filename="../common/mainwindow.cpp" line="206"/>
         <source>Invalid folder</source>
         <translation>La carpeta nun ye válida</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="221"/>
+        <location filename="../common/mainwindow.cpp" line="227"/>
         <source>Open folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="3012"/>
+        <location filename="../common/mainwindow.cpp" line="3190"/>
         <source>Network disconnected</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="182"/>
+        <location filename="../common/mainwindow.cpp" line="188"/>
         <source>You don&apos;t have permission to operate this folder</source>
         <translation>Nun tienes permisu pa operar nesta carpeta</translation>
     </message>
@@ -268,30 +268,33 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="94"/>
-        <location filename="../main.cpp" line="136"/>
+        <location filename="../backends/mpv/mpv_proxy.cpp" line="312"/>
+        <location filename="../main.cpp" line="113"/>
+        <location filename="../main.cpp" line="155"/>
+        <location filename="../common/volumemonitoring.cpp" line="84"/>
+        <location filename="../common/mainwindow.cpp" line="3934"/>
         <source>Movie</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../main.cpp" line="95"/>
+        <location filename="../main.cpp" line="114"/>
         <source>Movie is a full-featured video player, supporting playing local and streaming media in multiple video formats.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/shortcut_manager.cpp" line="266"/>
+        <location filename="../common/shortcut_manager.cpp" line="268"/>
         <location filename="../common/settings_translation.cpp" line="54"/>
         <source>Settings</source>
         <translation type="unfinished">Axustes</translation>
     </message>
     <message>
-        <location filename="../common/shortcut_manager.cpp" line="269"/>
+        <location filename="../common/shortcut_manager.cpp" line="271"/>
         <location filename="../common/settings_translation.cpp" line="52"/>
         <source>Help</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/shortcut_manager.cpp" line="274"/>
+        <location filename="../common/shortcut_manager.cpp" line="276"/>
         <location filename="../common/settings_translation.cpp" line="53"/>
         <source>Display shortcuts</source>
         <translation type="unfinished"></translation>
@@ -566,28 +569,27 @@
 <context>
     <name>dmr::MainWindow</name>
     <message>
-        <location filename="../common/mainwindow.cpp" line="947"/>
-        <location filename="../common/mainwindow.cpp" line="2499"/>
-        <location filename="../common/mainwindow.cpp" line="4064"/>
+        <location filename="../common/mainwindow.cpp" line="995"/>
+        <location filename="../common/mainwindow.cpp" line="2656"/>
+        <location filename="../common/mainwindow.cpp" line="4340"/>
         <source>Load successfully</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="947"/>
-        <location filename="../common/mainwindow.cpp" line="2499"/>
-        <location filename="../common/mainwindow.cpp" line="2502"/>
-        <location filename="../common/mainwindow.cpp" line="4064"/>
+        <location filename="../common/mainwindow.cpp" line="995"/>
+        <location filename="../common/mainwindow.cpp" line="2656"/>
+        <location filename="../common/mainwindow.cpp" line="2659"/>
+        <location filename="../common/mainwindow.cpp" line="4340"/>
         <source>Load failed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1041"/>
+        <location filename="../common/mainwindow.cpp" line="1097"/>
         <source>Buffering...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1879"/>
-        <location filename="../common/mainwindow.cpp" line="1884"/>
+        <location filename="../common/mainwindow.cpp" line="1999"/>
         <source>No device found</source>
         <translation>Nun s&apos;alcontraron preseos</translation>
     </message>
@@ -596,7 +598,7 @@
         <translation type="vanished">Falló l&apos;analís</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1909"/>
+        <location filename="../common/mainwindow.cpp" line="2025"/>
         <source>Open folder</source>
         <translation type="unfinished"></translation>
     </message>
@@ -605,22 +607,22 @@
         <translation type="vanished">Abrir un ficheru</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1952"/>
+        <location filename="../common/mainwindow.cpp" line="2068"/>
         <source>All videos (%1)</source>
         <translation>Tolos vídeos (%1)</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2185"/>
+        <location filename="../common/mainwindow.cpp" line="2311"/>
         <source>Stereo</source>
         <translation type="unfinished">Estereu</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2190"/>
+        <location filename="../common/mainwindow.cpp" line="2316"/>
         <source>Left channel</source>
         <translation type="unfinished">Canal esquierda</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2195"/>
+        <location filename="../common/mainwindow.cpp" line="2321"/>
         <source>Right channel</source>
         <translation type="unfinished">Canal drecha</translation>
     </message>
@@ -629,179 +631,200 @@
         <translation type="vanished">SIlenciáu</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1902"/>
+        <location filename="../common/mainwindow.cpp" line="2018"/>
         <source>Parse failed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1261"/>
-        <location filename="../common/mainwindow.cpp" line="1295"/>
-        <location filename="../common/mainwindow.cpp" line="2268"/>
-        <location filename="../common/mainwindow.cpp" line="2326"/>
+        <location filename="../common/mainwindow.cpp" line="1135"/>
+        <location filename="../common/mainwindow.cpp" line="1330"/>
+        <location filename="../common/mainwindow.cpp" line="1354"/>
+        <location filename="../common/mainwindow.cpp" line="1375"/>
+        <location filename="../common/mainwindow.cpp" line="2394"/>
+        <location filename="../common/mainwindow.cpp" line="2474"/>
         <source>Mute</source>
         <translation type="unfinished">Silenciar</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1259"/>
-        <location filename="../common/mainwindow.cpp" line="1274"/>
-        <location filename="../common/mainwindow.cpp" line="1298"/>
-        <location filename="../common/mainwindow.cpp" line="2270"/>
-        <location filename="../common/mainwindow.cpp" line="2279"/>
-        <location filename="../common/mainwindow.cpp" line="2301"/>
-        <location filename="../common/mainwindow.cpp" line="2317"/>
-        <location filename="../common/mainwindow.cpp" line="2333"/>
+        <location filename="../common/mainwindow.cpp" line="1328"/>
+        <location filename="../common/mainwindow.cpp" line="1351"/>
+        <location filename="../common/mainwindow.cpp" line="1378"/>
+        <location filename="../common/mainwindow.cpp" line="2397"/>
+        <location filename="../common/mainwindow.cpp" line="2408"/>
+        <location filename="../common/mainwindow.cpp" line="2432"/>
+        <location filename="../common/mainwindow.cpp" line="2453"/>
+        <location filename="../common/mainwindow.cpp" line="2471"/>
+        <location filename="../common/mainwindow.cpp" line="2487"/>
         <source>Volume: %1%</source>
         <translation>Volume: %1%</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1927"/>
-        <location filename="../common/mainwindow.cpp" line="1950"/>
-        <location filename="../common/mainwindow.cpp" line="2491"/>
+        <location filename="../common/mainwindow.cpp" line="2043"/>
+        <location filename="../common/mainwindow.cpp" line="2066"/>
+        <location filename="../common/mainwindow.cpp" line="2648"/>
         <source>Open File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="1929"/>
         <source>All videos (%2 %1)</source>
-        <translation type="unfinished">Tolos vídeos (%1) {2 %1)?}</translation>
+        <translation type="obsolete">Tolos vídeos (%1) {2 %1)?}</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2418"/>
+        <location filename="../common/mainwindow.cpp" line="2575"/>
         <source>Track: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2456"/>
-        <location filename="../common/mainwindow.cpp" line="2464"/>
+        <location filename="../common/mainwindow.cpp" line="2613"/>
+        <location filename="../common/mainwindow.cpp" line="2621"/>
         <source>Subtitle %1: %2s</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2457"/>
-        <location filename="../common/mainwindow.cpp" line="2465"/>
+        <location filename="../common/mainwindow.cpp" line="2614"/>
+        <location filename="../common/mainwindow.cpp" line="2622"/>
         <source>delayed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2457"/>
-        <location filename="../common/mainwindow.cpp" line="2465"/>
+        <location filename="../common/mainwindow.cpp" line="2614"/>
+        <location filename="../common/mainwindow.cpp" line="2622"/>
         <source>advanced</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2472"/>
-        <location filename="../common/mainwindow.cpp" line="2479"/>
-        <location filename="../common/mainwindow.cpp" line="2486"/>
+        <location filename="../common/mainwindow.cpp" line="2629"/>
+        <location filename="../common/mainwindow.cpp" line="2636"/>
+        <location filename="../common/mainwindow.cpp" line="2643"/>
         <source>Speed: %1x</source>
         <translation>Velocidá: %1x</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2493"/>
+        <location filename="../common/mainwindow.cpp" line="2650"/>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2570"/>
+        <location filename="../common/mainwindow.cpp" line="2731"/>
         <source>View</source>
         <translation>Ver</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2581"/>
+        <location filename="../common/mainwindow.cpp" line="2742"/>
         <source>Film screenshot</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2691"/>
+        <location filename="../common/mainwindow.cpp" line="2836"/>
+        <source>HwdecMode = %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../common/mainwindow.cpp" line="2862"/>
         <source>Taking the screenshots, please wait...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2822"/>
+        <location filename="../common/mainwindow.cpp" line="2993"/>
         <source>Reading DVD files...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="3035"/>
-        <location filename="../common/mainwindow.cpp" line="3130"/>
+        <location filename="../common/mainwindow.cpp" line="3213"/>
         <source>4K video may be stuck</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="3036"/>
-        <location filename="../common/mainwindow.cpp" line="3131"/>
+        <location filename="../common/mainwindow.cpp" line="3214"/>
         <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="3065"/>
-        <location filename="../common/mainwindow.cpp" line="3680"/>
+        <location filename="../common/mainwindow.cpp" line="3242"/>
+        <location filename="../common/mainwindow.cpp" line="3899"/>
         <source>Order play</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="3069"/>
-        <location filename="../common/mainwindow.cpp" line="3683"/>
+        <location filename="../common/mainwindow.cpp" line="3246"/>
+        <location filename="../common/mainwindow.cpp" line="3902"/>
         <source>Shuffle play</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="3073"/>
-        <location filename="../common/mainwindow.cpp" line="3686"/>
+        <location filename="../common/mainwindow.cpp" line="3250"/>
+        <location filename="../common/mainwindow.cpp" line="3905"/>
         <source>Single play</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="3077"/>
-        <location filename="../common/mainwindow.cpp" line="3689"/>
+        <location filename="../common/mainwindow.cpp" line="3254"/>
+        <location filename="../common/mainwindow.cpp" line="3908"/>
         <source>Single loop</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="3081"/>
-        <location filename="../common/mainwindow.cpp" line="3692"/>
+        <location filename="../common/mainwindow.cpp" line="3258"/>
+        <location filename="../common/mainwindow.cpp" line="3911"/>
         <source>List loop</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="3112"/>
+        <location filename="../common/mainwindow.cpp" line="3295"/>
         <source>Please insert a CD/DVD</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="3116"/>
+        <location filename="../common/mainwindow.cpp" line="3299"/>
         <source>The CD/DVD has been ejected</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="3671"/>
+        <location filename="../common/mainwindow.cpp" line="3890"/>
         <source>Please load the video first</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2582"/>
+        <location filename="../common/mainwindow.cpp" line="4125"/>
+        <location filename="../common/mainwindow.cpp" line="4133"/>
+        <source>Please exit smart dock</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../common/mainwindow.cpp" line="2743"/>
         <source>Saved to</source>
         <translation>Guardóse en</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2607"/>
-        <location filename="../common/mainwindow.cpp" line="2724"/>
+        <location filename="../common/mainwindow.cpp" line="1540"/>
+        <source>Disc eject</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../common/mainwindow.cpp" line="2045"/>
+        <source>All videos (*)(%2 %1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../common/mainwindow.cpp" line="2768"/>
+        <location filename="../common/mainwindow.cpp" line="2895"/>
         <source>The screenshot is saved</source>
         <translation>Guardóse la captura de pantalla</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2611"/>
-        <location filename="../common/mainwindow.cpp" line="2728"/>
+        <location filename="../common/mainwindow.cpp" line="2772"/>
+        <location filename="../common/mainwindow.cpp" line="2899"/>
         <source>Failed to save the screenshot</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2829"/>
-        <location filename="../common/mainwindow.cpp" line="4078"/>
+        <location filename="../common/mainwindow.cpp" line="3000"/>
+        <location filename="../common/mainwindow.cpp" line="4354"/>
         <source>Invalid file: %1</source>
         <translation>Ficheru non válidu: %1</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="3019"/>
+        <location filename="../common/mainwindow.cpp" line="3197"/>
         <source>No matching online subtitles</source>
         <translation type="unfinished"></translation>
     </message>
@@ -810,20 +833,20 @@
         <translation type="obsolete">Confirmar</translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="3100"/>
+        <location filename="../common/mainwindow.cpp" line="3277"/>
         <source>Cannot open file or stream</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="3105"/>
-        <location filename="../common/mainwindow.cpp" line="3109"/>
+        <location filename="../common/mainwindow.cpp" line="3287"/>
+        <location filename="../common/mainwindow.cpp" line="3292"/>
         <source>Invalid file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/mainwindow.cpp" line="2817"/>
-        <location filename="../common/mainwindow.cpp" line="3120"/>
-        <location filename="../common/mainwindow.cpp" line="3565"/>
+        <location filename="../common/mainwindow.cpp" line="2988"/>
+        <location filename="../common/mainwindow.cpp" line="3303"/>
+        <location filename="../common/mainwindow.cpp" line="3776"/>
         <source>No video file found</source>
         <translation type="unfinished"></translation>
     </message>
@@ -970,7 +993,7 @@
 <context>
     <name>dmr::MpvProxy</name>
     <message>
-        <location filename="../backends/mpv/mpv_proxy.cpp" line="1202"/>
+        <location filename="../backends/mpv/mpv_proxy.cpp" line="1319"/>
         <source>Internal</source>
         <translation type="unfinished"></translation>
     </message>
@@ -993,20 +1016,20 @@
 <context>
     <name>dmr::PlaylistWidget</name>
     <message>
-        <location filename="../widgets/playlist_widget.cpp" line="701"/>
+        <location filename="../widgets/playlist_widget.cpp" line="702"/>
         <source>Playlist</source>
         <translation type="unfinished">Llista de reproducción</translation>
     </message>
     <message>
-        <location filename="../widgets/playlist_widget.cpp" line="724"/>
+        <location filename="../widgets/playlist_widget.cpp" line="725"/>
         <source>Empty</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/playlist_widget.cpp" line="951"/>
-        <location filename="../widgets/playlist_widget.cpp" line="1160"/>
-        <location filename="../widgets/playlist_widget.cpp" line="1184"/>
-        <location filename="../widgets/playlist_widget.cpp" line="1256"/>
+        <location filename="../widgets/playlist_widget.cpp" line="952"/>
+        <location filename="../widgets/playlist_widget.cpp" line="1166"/>
+        <location filename="../widgets/playlist_widget.cpp" line="1190"/>
+        <location filename="../widgets/playlist_widget.cpp" line="1262"/>
         <source>%1 videos</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1022,37 +1045,37 @@
         <translation type="vanished">%1/DMovie%2(%3).jpg</translation>
     </message>
     <message>
-        <location filename="../common/dmr_settings.cpp" line="79"/>
+        <location filename="../common/dmr_settings.cpp" line="83"/>
         <source>Order play</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/dmr_settings.cpp" line="80"/>
+        <location filename="../common/dmr_settings.cpp" line="84"/>
         <source>Shuffle play</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/dmr_settings.cpp" line="81"/>
+        <location filename="../common/dmr_settings.cpp" line="85"/>
         <source>Single play</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/dmr_settings.cpp" line="82"/>
+        <location filename="../common/dmr_settings.cpp" line="86"/>
         <source>Single loop</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/dmr_settings.cpp" line="83"/>
+        <location filename="../common/dmr_settings.cpp" line="87"/>
         <source>List loop</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/dmr_settings.cpp" line="178"/>
+        <location filename="../common/dmr_settings.cpp" line="188"/>
         <source>%1/Movie%2.jpg</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../common/dmr_settings.cpp" line="184"/>
+        <location filename="../common/dmr_settings.cpp" line="194"/>
         <source>%1/Movie%2(%3).jpg</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1060,75 +1083,85 @@
 <context>
     <name>dmr::ToolboxProxy</name>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="2298"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="2478"/>
         <source>Play</source>
         <translation>Reproducir</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="1797"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="1937"/>
         <source>Previous</source>
         <translation>Previo</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="1797"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="1937"/>
         <source>Next</source>
         <translation>Siguiente</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="1798"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="1938"/>
         <source>Subtitles</source>
         <translation>Sotítulos</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="1798"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="1938"/>
         <source>Playlist</source>
         <translation>Llista de reproducción</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="1798"/>
-        <location filename="../widgets/toolbox_proxy.cpp" line="2152"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="1938"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="2321"/>
         <source>Fullscreen</source>
         <translation>Panatalla completa</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="1797"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="1937"/>
         <source>Play/Pause</source>
         <translation>Reproducir/Posar</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="1801"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="1941"/>
         <source>play</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="1801"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="1941"/>
         <source>prev</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="1801"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="1941"/>
         <source>next</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="1802"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="1942"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="2580"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="2593"/>
         <source>fs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="1802"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="1942"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="2580"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="2593"/>
         <source>list</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="2148"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="2317"/>
         <source>Exit fullscreen</source>
         <translation>Colar de pantalla completa</translation>
     </message>
     <message>
-        <location filename="../widgets/toolbox_proxy.cpp" line="2228"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="2397"/>
         <source>Pause</source>
         <translation>Posar</translation>
+    </message>
+    <message>
+        <location filename="../widgets/toolbox_proxy.cpp" line="2580"/>
+        <location filename="../widgets/toolbox_proxy.cpp" line="2593"/>
+        <source>sub</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

@@ -611,6 +611,15 @@
         <source>Please exit smart dock</source>
         <translation>请退出智能停靠</translation>
     </message>
+    <message>
+        <source>Disc eject</source>
+        <translatorcomment>光盘弹出</translatorcomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>HwdecMode = %1</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>dmr::MovieInfo</name>
@@ -843,6 +852,10 @@
     <message>
         <source>Pause</source>
         <translation>暂停</translation>
+    </message>
+    <message>
+        <source>sub</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

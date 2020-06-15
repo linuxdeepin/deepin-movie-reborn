@@ -843,7 +843,8 @@ MainWindow::MainWindow(QWidget *parent)
     _progIndicator->setVisible(false);
     connect(_engine, &PlayerEngine::elapsedChanged, [ = ]() {
         if (!_isJinJia) {
-            _progIndicator->updateMovieProgress(_engine->duration(), _engine->elapsed());
+            m_currElapsed = _engine->elapsed();
+            _progIndicator->updateMovieProgress(_engine->duration(), m_currElapsed);
         } else {
             _progIndicator->updateMovieProgress(oldDuration, oldElapsed);
         }
@@ -996,6 +997,7 @@ MainWindow::MainWindow(QWidget *parent)
         } else {
             utils::MoveToCenter(this);
         }*/
+        m_initDuration = _engine->duration();
 
         m_IsFree = true;
     });
@@ -1568,9 +1570,14 @@ void MainWindow::animatePlayState()
             _animationlable->setGeometry(width() / 2 - 100, height() / 2 - 100, 200, 200);
             _animationlable->stop();
         }
+        m_isPlayDisk = false;
         //_playState->raise();
 
     } else if (_engine->state() == PlayerEngine::CoreState::Idle) {
+        if (m_isPlayDisk && m_currElapsed != m_initDuration) {
+            _nwComm->updateWithMessage(tr("Disc eject"));
+        }
+        m_isPlayDisk = false;
         //_playState->setVisible(false);
 
     } else {
@@ -1869,6 +1876,7 @@ bool MainWindow::addCdromPath()
         if (_engine->state() == PlayerEngine::CoreState::Idle)
             _engine->playByName(QUrl("playlist://0"));
         _engine->playByName(urls[0]);
+        m_isPlayDisk = true;
     } else {
         return false;
     }
@@ -3032,6 +3040,7 @@ void MainWindow::play(const QUrl &url)
         }
     }
     _engine->playByName(url);
+    m_isPlayDisk = true;
 }
 
 void MainWindow::toggleShapeMask()
@@ -3256,7 +3265,6 @@ void MainWindow::checkWarningMpvLogsChanged(const QString prefix, const QString 
             _engine->pauseResume();
         });
     }
-
 }
 
 void MainWindow::slotdefaultplaymodechanged(const QString &key, const QVariant &value)

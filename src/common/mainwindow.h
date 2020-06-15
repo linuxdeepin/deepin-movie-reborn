@@ -368,6 +368,10 @@ private:
     QTimer _mousePressTimer;
     qint64 oldDuration = 0;
     qint64 oldElapsed = 0;
+
+    qint64 m_initDuration {0};
+    qint64 m_currElapsed {0};
+    bool m_isPlayDisk {false};
 };
 };
 
