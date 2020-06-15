@@ -3680,6 +3680,7 @@ void MainWindow::capturedMousePressEvent(QMouseEvent *me)
 
     if (me->buttons() == Qt::LeftButton) {
         _mousePressed = true;
+        posMouseOrigin = QCursor::pos();
     }
 }
 
@@ -3723,6 +3724,7 @@ void MainWindow::mousePressEvent(QMouseEvent *ev)
             QMouseEvent me(QEvent::MouseButtonPress, {}, ev->button(), ev->buttons(), ev->modifiers());
             qApp->sendEvent(_playState, &me);
         }*/
+        posMouseOrigin = QCursor::pos();
     }
 }
 
@@ -3836,16 +3838,16 @@ void MainWindow::onDvdData(const QString &title)
 
 void MainWindow::mouseMoveEvent(QMouseEvent *ev)
 {
-//    if (_mouseMoved) {
-//        return Utility::updateMousePointForWindowMove(static_cast<quint32>(this->winId()), ev->globalPos() * devicePixelRatioF());
-//    }
+    if (!CompositingManager::get().composited()) {
+        QPoint ptMouseNow = QCursor::pos();
+        QPoint ptDelta = ptMouseNow - this->posMouseOrigin;
+        move(this->pos() + ptDelta);
+        posMouseOrigin = ptMouseNow;
+    } else {
+        QWidget::mouseMoveEvent(ev);
+    }
 
     _mouseMoved = true;
-
-//    if (windowState() == Qt::WindowNoState || isMaximized()) {
-//        Utility::startWindowSystemMove(static_cast<quint32>(this->winId()));
-//    }
-    QWidget::mouseMoveEvent(ev);
 }
 
 void MainWindow::contextMenuEvent(QContextMenuEvent *cme)
