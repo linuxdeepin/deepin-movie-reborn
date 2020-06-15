@@ -342,7 +342,7 @@ private:
     bool _maxfornormalflag {false};
     //add by heyi
     bool m_bMpvFunsLoad {false};
-    QPoint m_dragPos;
+    QPoint posMouseOrigin;
 
     enum StateBeforeEnterMiniMode {
         SBEM_None = 0x0,

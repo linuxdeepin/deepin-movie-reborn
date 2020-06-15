@@ -2501,6 +2501,14 @@ void ToolboxProxy::updateTimeInfo(qint64 duration, qint64 pos, QLabel *_timeLabe
 
 void ToolboxProxy::buttonClicked(QString id)
 {
+    //add by heyi
+    static bool bFlags = true;
+    if (bFlags) {
+        _mainWindow->firstPlayInit();
+        _mainWindow->repaint();
+        bFlags = false;
+    }
+
     if (!isVisible()) return;
 
     qDebug() << __func__ << id;

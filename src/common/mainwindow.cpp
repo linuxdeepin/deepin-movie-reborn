@@ -676,7 +676,7 @@ MainWindow::MainWindow(QWidget *parent)
     : DMainWindow(nullptr)
 {
     //add bu heyi
-    this->setMouseTracking(true);
+    //this->setMouseTracking(true);
     this->setAttribute(Qt::WA_AcceptTouchEvents);
     _mousePressTimer.setInterval(1300);
     connect(&_mousePressTimer, &QTimer::timeout, this, [ = ]() {
@@ -1496,9 +1496,7 @@ bool MainWindow::judgeMouseInWindow(QPoint pos)
     topLeft = mapToGlobal(topLeft);
     bottomRight = mapToGlobal(bottomRight);
 
-    if ((pos.x() > topLeft.x()) && (pos.x() < bottomRight.x()) && (pos.y() > topLeft.y()) && (pos.y() < bottomRight.y())) {
-        bRet = true;
-    } else {
+    if ((pos.x() == topLeft.x()) || (pos.x() == bottomRight.x()) || (pos.y() == topLeft.y()) || (pos.y() == bottomRight.y())) {
         leaveEvent(nullptr);
     }
 
@@ -3697,6 +3695,7 @@ void MainWindow::capturedMousePressEvent(QMouseEvent *me)
 
     if (me->buttons() == Qt::LeftButton) {
         _mousePressed = true;
+        posMouseOrigin = QCursor::pos();
     }
 }
 
@@ -3740,10 +3739,9 @@ void MainWindow::mousePressEvent(QMouseEvent *ev)
             QMouseEvent me(QEvent::MouseButtonPress, {}, ev->button(), ev->buttons(), ev->modifiers());
             qApp->sendEvent(_playState, &me);
         }*/
+        posMouseOrigin = QCursor::pos();
     }
-
 }
-
 
 void MainWindow::mouseDoubleClickEvent(QMouseEvent *ev)
 {
@@ -3782,6 +3780,14 @@ bool MainWindow::insideResizeArea(const QPoint &global_p)
 
 void MainWindow::mouseReleaseEvent(QMouseEvent *ev)
 {
+    //add by heyi
+    static bool bFlags = true;
+    if (bFlags) {
+        firstPlayInit();
+        repaint();
+        bFlags = false;
+    }
+
     qDebug() << "进入mouseReleaseEvent";
     QWidget::mouseReleaseEvent(ev);
     if (!_mousePressed) {
@@ -3852,13 +3858,15 @@ void MainWindow::onDvdData(const QString &title)
 void MainWindow::mouseMoveEvent(QMouseEvent *ev)
 {
     if (!CompositingManager::get().composited()) {
-        if (ev->buttons() & Qt::LeftButton) {
-            QPoint movePos = ev->globalPos();
-            move(movePos - m_dragPos);
-        }
+        QPoint ptMouseNow = QCursor::pos();
+        QPoint ptDelta = ptMouseNow - this->posMouseOrigin;
+        move(this->pos() + ptDelta);
+        posMouseOrigin = ptMouseNow;
     } else {
         QWidget::mouseMoveEvent(ev);
     }
+
+    _mouseMoved = true;
 }
 
 void MainWindow::contextMenuEvent(QContextMenuEvent *cme)
