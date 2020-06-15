@@ -364,6 +364,7 @@ private:
     //add by heyi 解决触屏右键菜单bug
     int nX = 0, nY = 0;     //左键按下时保存的点
     bool _isTouch = false;          //是否是触摸屏按下
+    QPoint posMouseOrigin;
     QTimer _mousePressTimer;
     qint64 oldDuration = 0;
     qint64 oldElapsed = 0;
