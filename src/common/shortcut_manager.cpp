@@ -154,9 +154,9 @@ void ShortcutManager::toggleGroupShortcuts(GroupPtr grp, bool on)
 
         QString sk = opt->key();
         sk.remove(0, sk.lastIndexOf('.') + 1);
-        qDebug() << opt->name()
-                 << QKeySequence(opt->value().toStringList().at(0))
-                 << QKeySequence(opt->value().toStringList().at(0)).toString();
+        //qDebug() << opt->name()
+        //         << QKeySequence(opt->value().toStringList().at(0))
+        //         << QKeySequence(opt->value().toStringList().at(0)).toString();
         QString strKey = QKeySequence(opt->value().toStringList().at(0)).toString();
 
         if (strKey.contains("Return")) {
@@ -164,19 +164,19 @@ void ShortcutManager::toggleGroupShortcuts(GroupPtr grp, bool on)
 //                strKey = QString("%1Return, %1Num+Enter").arg(strKey.remove("Return"));
             strKey = QString("%1Num+Enter").arg(strKey.remove("Return"));
             _map[strKey] = _keyToAction[sk];
-            qDebug() << opt->name() << QKeySequence(strKey) << strKey;
+            //qDebug() << opt->name() << QKeySequence(strKey) << strKey;
 
         } else if (strKey.contains("Num+Enter")) {
             _map[QKeySequence(opt->value().toStringList().at(0))] = _keyToAction[sk];
 //                strKey = QString("%1Return, %1Num+Enter").arg(strKey.remove("Num+Enter"));
             strKey = QString("%1Return").arg(strKey.remove("Num+Enter"));
             _map[strKey] = _keyToAction[sk];
-            qDebug() << opt->name() << QKeySequence(strKey) << strKey;
+            //qDebug() << opt->name() << QKeySequence(strKey) << strKey;
         }
 
         if (on) {
             _map[strKey] = _keyToAction[sk];
-            qDebug() << opt->name() << QKeySequence(strKey) << strKey;
+            //qDebug() << opt->name() << QKeySequence(strKey) << strKey;
             _map[QKeySequence(opt->value().toStringList().at(0))] = _keyToAction[sk];
         } else {
             _map.remove(QKeySequence(opt->value().toStringList().at(0)));
@@ -311,7 +311,7 @@ vector<QAction*> ShortcutManager::actionsForBindings()
         act->setProperty("origin", "shortcut");
         actions.push_back(act);
 
-        qDebug() << "action " << p.key() << p.value();
+        //qDebug() << "action " << p.key() << p.value();
         ++p;
     }
 

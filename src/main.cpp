@@ -124,7 +124,7 @@ int main(int argc, char *argv[])
         Dtk::Core::DLogManager::registerConsoleAppender();
     }
     Dtk::Core::DLogManager::registerFileAppender();
-    qDebug() << "log path: " << Dtk::Core::DLogManager::getlogFilePath();
+    qInfo() << "log path: " << Dtk::Core::DLogManager::getlogFilePath();
 
     bool singleton = !dmr::Settings::get().isSet(dmr::Settings::MultipleInstance);
 
@@ -137,7 +137,7 @@ int main(int argc, char *argv[])
     }
 
     if (singleton && !shared_memory.create(1)) {
-        qDebug() << "another deepin movie instance has started";
+        qWarning() << "another deepin movie instance has started";
         if (!toOpenFiles.isEmpty()) {
             QDBusInterface iface("com.deepin.movie", "/", "com.deepin.movie");
             if (toOpenFiles.size() == 1) {

@@ -729,8 +729,6 @@ MainWindow::MainWindow(QWidget *parent)
     sp.setHeightForWidth(true);
     setSizePolicy(sp);
 
-    qDebug() << "composited = " << composited;
-
     setContentsMargins(0, 0, 0, 0);
 
     setupTitlebar();
@@ -891,7 +889,7 @@ MainWindow::MainWindow(QWidget *parent)
     signalMapper->setMapping(_miniPlayBtn, "play");
 
     connect(_engine, &PlayerEngine::stateChanged, [ = ]() {
-        qDebug() << __func__ << _engine->state();
+        qInfo() << __func__ << _engine->state();
         if (_engine->state() == PlayerEngine::CoreState::Idle) {
             emit frameMenuEnable(false);
         }
@@ -925,7 +923,6 @@ MainWindow::MainWindow(QWidget *parent)
                 _powerCookie = 0;
             }
         }
-//        _miniPlayBtn->setStyleSheet(_miniPlayBtn->styleSheet());
     });
 
     _miniCloseBtn->setIcon(QIcon(":/resources/icons/light/mini/close-normal.svg"));
@@ -1067,8 +1064,8 @@ MainWindow::MainWindow(QWidget *parent)
             _engine->windowHandle()->installEventFilter(_listener);
         _titlebar->windowHandle()->installEventFilter(_listener);
         _toolbox->windowHandle()->installEventFilter(_listener);
+        qInfo() << "event listener";
     }
-    qDebug() << "event listener";
 #endif
 
     _fullscreentimelable = new QLabel;
@@ -1229,8 +1226,8 @@ bool MainWindow::event(QEvent *ev)
     //add by heyi
     //判断是否停止右键菜单定时器
     if (_mousePressed) {
-        qDebug() << "hahahaha nX = " << nX << "haaahahaha nY= " << nY;
-        qDebug() << "mapToGlobal(QCursor::pos()).x() = " << mapToGlobal(QCursor::pos()).x() << "mapToGlobal(QCursor::pos()).y()= " << mapToGlobal(QCursor::pos()).y();
+        //qDebug() << "hahahaha nX = " << nX << "haaahahaha nY= " << nY;
+        //qDebug() << "mapToGlobal(QCursor::pos()).x() = " << mapToGlobal(QCursor::pos()).x() << "mapToGlobal(QCursor::pos()).y()= " << mapToGlobal(QCursor::pos()).y();
         if (qAbs(nX - mapToGlobal(QCursor::pos()).x()) > 50 || qAbs(nY - mapToGlobal(QCursor::pos()).y()) > 50) {
             if (_mousePressTimer.isActive()) {
                 qDebug() << "结束定时器";
@@ -1267,7 +1264,7 @@ void MainWindow::leaveEvent(QEvent *)
 
 void MainWindow::onWindowStateChanged()
 {
-    qDebug() << windowState();
+    qInfo() << windowState();
 
     if (!_miniMode && !isFullScreen()) {
         _titlebar->setVisible(_toolbox->isVisible());
@@ -1485,7 +1482,7 @@ void MainWindow::onApplicationStateChanged(Qt::ApplicationState e)
     switch (e) {
     case Qt::ApplicationActive:
         if (qApp->focusWindow())
-            qDebug() << QString("focus window 0x%1").arg(qApp->focusWindow()->winId(), 0, 16);
+            qInfo() << QString("focus window 0x%1").arg(qApp->focusWindow()->winId(), 0, 16);
         qApp->setActiveWindow(this);
         _evm->resumeRecording();
         resumeToolsWindow();
@@ -1677,7 +1674,7 @@ void MainWindow::syncStaysOnTop()
     auto atoms = Utility::windowNetWMState(windowHandle()->winId());
     bool window_is_above = atoms.contains(atomStateAbove);
     if (window_is_above != _windowAbove) {
-        qDebug() << "syncStaysOnTop: window_is_above" << window_is_above;
+        qInfo() << "syncStaysOnTop: window_is_above" << window_is_above;
         requestAction(ActionFactory::WindowAbove);
     }
 }
@@ -1691,7 +1688,7 @@ void MainWindow::reflectActionToUI(ActionFactory::ActionKind kd)
     case ActionFactory::ActionKind::LightTheme:
     case ActionFactory::ActionKind::TogglePlaylist:
     case ActionFactory::ActionKind::HideSubtitle: {
-        qDebug() << __func__ << kd;
+        qInfo() << __func__ << kd;
         acts = ActionFactory::get().findActionsByKind(kd);
         auto p = acts.begin();
         while (p != acts.end()) {
@@ -1733,7 +1730,7 @@ void MainWindow::reflectActionToUI(ActionFactory::ActionKind kd)
 
     case ActionFactory::ActionKind::ChangeSubCodepage: {
         auto cp = _engine->subCodepage();
-        qDebug() << "codepage" << cp;
+        qInfo() << "codepage" << cp;
         acts = ActionFactory::get().findActionsByKind(kd);
         auto p = acts.begin();
         while (p != acts.end()) {
@@ -1774,7 +1771,7 @@ void MainWindow::reflectActionToUI(ActionFactory::ActionKind kd)
             }
         }
 
-        qDebug() << __func__ << kd << "idx = " << idx;
+        qInfo() << __func__ << kd << "idx = " << idx;
         acts = ActionFactory::get().findActionsByKind(kd);
         auto p = acts.begin();
         while (p != acts.end()) {
@@ -1794,7 +1791,7 @@ void MainWindow::reflectActionToUI(ActionFactory::ActionKind kd)
 
     case ActionFactory::ActionKind::Stereo:
     case ActionFactory::ActionKind::DefaultFrame: {
-        qDebug() << __func__ << kd;
+        qInfo() << __func__ << kd;
         acts = ActionFactory::get().findActionsByKind(kd);
         auto p = acts.begin();
         auto old = (*p)->isEnabled();
@@ -1809,7 +1806,7 @@ void MainWindow::reflectActionToUI(ActionFactory::ActionKind kd)
     case ActionFactory::ActionKind::SinglePlay:
     case ActionFactory::ActionKind::SingleLoop:
     case ActionFactory::ActionKind::ListLoop: {
-        qDebug() << __func__ << kd;
+        qInfo() << __func__ << kd;
         acts = ActionFactory::get().findActionsByKind(kd);
         auto p = acts.begin();
         //auto old = (*p)->isEnabled();
@@ -2007,10 +2004,10 @@ bool MainWindow::isActionAllowed(ActionFactory::ActionKind kd, bool fromUI, bool
 void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                                QList<QVariant> args, bool isShortcut)
 {
-    qDebug() << "kd = " << kd << "fromUI " << fromUI << (isShortcut ? "shortcut" : "");
+    qInfo() << "kd = " << kd << "fromUI " << fromUI << (isShortcut ? "shortcut" : "");
 
     if (!isActionAllowed(kd, fromUI, isShortcut)) {
-        qDebug() << kd << "disallowed";
+        qInfo() << kd << "disallowed";
         return;
     }
 
@@ -2980,7 +2977,6 @@ void MainWindow::playList(const QList<QString> &l)
 
     QList<QUrl> urls;
     for (const auto &filename : l) {
-        qDebug() << filename;
         QUrl url;
         if (url_re.indexIn(filename) == 0) {
             url = QUrl::fromPercentEncoding(filename.toUtf8());
@@ -3233,7 +3229,7 @@ void MainWindow::checkOnlineSubtitle(const OnlineSubtitle::FailReason reason)
 void MainWindow::checkWarningMpvLogsChanged(const QString prefix, const QString text)
 {
     QString warningMessage(text);
-    qDebug() << "checkWarningMpvLogsChanged" << text;
+    qWarning() << "checkWarningMpvLogsChanged:" << text;
     if (warningMessage.contains(QString("Hardware does not support image size 3840x2160"))) {
         requestAction(ActionFactory::TogglePause);
 
@@ -3303,7 +3299,7 @@ void MainWindow::syncPostion()
 void MainWindow::checkErrorMpvLogsChanged(const QString prefix, const QString text)
 {
     QString errorMessage(text);
-    qDebug() << "checkErrorMpvLogsChanged" << text;
+    qInfo() << "checkErrorMpvLogsChanged" << text;
     if (errorMessage.toLower().contains(QString("avformat_open_input() failed"))) {
         //do nothing
     } else if (errorMessage.toLower().contains(QString("fail")) && errorMessage.toLower().contains(QString("open"))) {
@@ -3477,7 +3473,7 @@ void MainWindow::resizeByConstraints(bool forceCentered)
         return;
     }
 
-    qDebug() << __func__;
+    qDebug() << __func__ << geometry();
     updateWindowTitle();
 
     const auto &mi = _engine->playlist().currentInfo().mi;
@@ -3501,7 +3497,7 @@ void MainWindow::resizeByConstraints(bool forceCentered)
 #endif
     if (sz.isEmpty()) {
         sz = QSize(mi.width, mi.height);
-        qDebug() << mi.width << mi.height;
+        qDebug() << "Get video size" << mi.width << mi.height;
     }
 
     auto geom = qApp->desktop()->availableGeometry(this);
@@ -3607,7 +3603,6 @@ void MainWindow::resizeEvent(QResizeEvent *ev)
     // modify 4.1  Limit video to mini mode size by thx
     LimitWindowize();
 
-    //2020.4.30前重新实现 xpf
     updateSizeConstraints();
     updateProxyGeometry();
     QTimer::singleShot(0, [ = ]() {
@@ -4179,7 +4174,7 @@ void MainWindow::toggleUIMode()
     }
 
     _miniMode = !_miniMode;
-    qDebug() << __func__ << _miniMode;
+    qInfo() << __func__ << _miniMode;
 
     if (_miniMode) {
         _titlebar->titlebar()->setDisableFlags(Qt::WindowMaximizeButtonHint);
