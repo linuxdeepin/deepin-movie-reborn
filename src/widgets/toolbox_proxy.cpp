@@ -873,16 +873,17 @@ private:
 
 };
 
-class ThumbnailPreview: public DArrowRectangle
+class ThumbnailPreview: public QWidget
 {
     Q_OBJECT
 public:
-    ThumbnailPreview(): DArrowRectangle(DArrowRectangle::ArrowBottom)
+    ThumbnailPreview()
     {
         setAttribute(Qt::WA_DeleteOnClose);
         // FIXME(hualet): Qt::Tooltip will cause Dock to show up even
         // the player is in fullscreen mode.
-//        setWindowFlags(Qt::Tool);
+        setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
+        setAttribute(Qt::WA_TranslucentBackground);
 
         setObjectName("ThumbnailPreview");
 
@@ -893,22 +894,22 @@ public:
 //        resize(QSize(106, 66));
 //        setShadowBlurRadius(2);
 //        setRadius(2);
-        setRadius(16);
-        setBorderWidth(1);
-        setBorderColor(QColor(255, 255, 255, 26));
+//        setRadius(16);
+//        setBorderWidth(1);
+//        setBorderColor(QColor(255, 255, 255, 26));
 
-        setShadowYOffset(4);
-        setShadowXOffset(0);
-        setShadowBlurRadius(6);
-        setArrowWidth(0);
-        setArrowHeight(0);
+//        setShadowYOffset(4);
+//        setShadowXOffset(0);
+//        setShadowBlurRadius(6);
+//        setArrowWidth(0);
+//        setArrowHeight(0);
 
         auto *l = new QVBoxLayout;
 //        l->setContentsMargins(0, 0, 0, 10);
         l->setContentsMargins(1, 0, 0, 0);
 
         _thumb = new DFrame(this);
-        DStyle::setFrameRadius(_thumb, 16);
+        DStyle::setFrameRadius(_thumb, 8);
 
         //_thumb->setFixedSize(ThumbnailWorker::thumbSize());
         l->addWidget(_thumb/*,Qt::AlignTop*/);
@@ -918,7 +919,7 @@ public:
 //                this, &ThumbnailPreview::updateTheme);
 //        updateTheme();
 
-        winId(); // force backed window to be created
+//        winId(); // force backed window to be created
     }
 
     void updateWithPreview(const QPixmap &pm, qint64 secs, int rotation)
@@ -961,8 +962,10 @@ public:
 
     void updateWithPreview(const QPoint &pos)
     {
-        resizeWithContent();
-        show(pos.x(), pos.y() + 10);
+        //resizeWithContent();
+        move(pos.x() - this->width() / 2, pos.y() + 10);
+        show();
+        raise();
     }
 
 signals:
@@ -994,7 +997,7 @@ protected slots:
 
 protected:
     void paintEvent(QPaintEvent *e) Q_DECL_OVERRIDE{
-        DArrowRectangle::paintEvent(e);
+        QWidget::paintEvent(e);
     }
     void leaveEvent(QEvent *e) override
     {
@@ -1003,7 +1006,7 @@ protected:
 
     void showEvent(QShowEvent *se) override
     {
-        DArrowRectangle::showEvent(se);
+        QWidget::showEvent(se);
     }
 
 private:
@@ -2159,7 +2162,7 @@ void ToolboxProxy::updateHoverPreview(const QUrl &url, int secs)
         return;
     }
 
-    auto pos = _progBar->mapToGlobal(QPoint(0, TOOLBOX_TOP_EXTENT - 10));
+    auto pos = _progBar->mapToGlobal(QPoint(0, -TOOLBOX_HEIGHT + 10));
 //    auto pos = _viewProgBar->mapToGlobal(QPoint(0, TOOLBOX_TOP_EXTENT - 10));
     QPoint p { QCursor::pos().x(), pos.y() };
 
