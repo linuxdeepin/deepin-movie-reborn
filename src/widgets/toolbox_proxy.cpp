@@ -51,6 +51,7 @@
 #include <DSlider>
 #include <DUtil>
 #include <QDBusInterface>
+#include <dthememanager.h>
 #include <iostream>
 static const int LEFT_MARGIN = 10;
 static const int RIGHT_MARGIN = 10;
@@ -214,7 +215,8 @@ public:
     void setCurrent(bool v)
     {
         if (v) {
-            auto name = QString(":/resources/icons/%1/subtitle-selected.svg").arg(qApp->theme());
+            //auto name = QString(":/resources/icons/%1/subtitle-selected.svg").arg(qApp->theme());
+            auto name = QString(":/resources/icons/%1/subtitle-selected.svg").arg(DThemeManager::instance()->theme());
             _selectedLabel->setPixmap(QPixmap(name));
         } else {
             _selectedLabel->clear();
@@ -246,7 +248,8 @@ private slots:
     void onThemeChanged()
     {
         if (property("current").toBool()) {
-            auto name = QString(":/resources/icons/%1/subtitle-selected.svg").arg(qApp->theme());
+            //auto name = QString(":/resources/icons/%1/subtitle-selected.svg").arg(qApp->theme());
+            auto name = QString(":/resources/icons/%1/subtitle-selected.svg").arg(DThemeManager::instance()->theme());
             _selectedLabel->setPixmap(QPixmap(name));
         }
     }
@@ -316,7 +319,7 @@ protected:
 protected slots:
     void onThemeChanged()
     {
-        if (qApp->theme() == "dark") {
+        if (DThemeManager::instance()->theme() == "dark") {
             setBackgroundColor(DBlurEffectWidget::DarkColor);
         } else {
             setBackgroundColor(DBlurEffectWidget::LightColor);
