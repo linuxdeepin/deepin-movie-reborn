@@ -500,6 +500,7 @@ protected:
                         goto skip_set_cursor;
                     }
 set_cursor:
+#ifdef USE_DXCB
 #ifdef __mips__
                     if (window->property("_d_real_winId").isValid()) {
                         auto real_wid = window->property("_d_real_winId").toUInt();
@@ -507,6 +508,7 @@ set_cursor:
                     } else {
                         Utility::setWindowCursor(static_cast<quint32>(window->winId()), mouseCorner);
                     }
+#endif
 #endif
 
                     if (qApp->mouseButtons() == Qt::LeftButton) {
