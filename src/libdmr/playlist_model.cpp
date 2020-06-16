@@ -113,7 +113,8 @@ static int open_codec_context(int *stream_idx,
     stream_index = ret;
     st = fmt_ctx->streams[stream_index];
 #if LIBAVFORMAT_VERSION_MAJOR >= 57 && LIBAVFORMAT_VERSION_MINOR <= 25
-    *dec_ctx = st->codec;
+    //*dec_ctx = st->codec;
+    avcodec_parameters_to_context(*dec_ctx, st->codecpar);
     dec = avcodec_find_decoder((*dec_ctx)->codec_id);
 #else
     /* find decoder for the stream */
@@ -483,7 +484,7 @@ PlaylistModel::PlaylistModel(PlayerEngine *e)
     m_ploadThread = nullptr;
     m_brunning = false;
     _thumbnailer.setThumbnailSize(static_cast<int>(400 * qApp->devicePixelRatio()));
-    av_register_all();
+    //av_register_all();
 
     _playlistFile = QString("%1/%2/%3/playlist")
                     .arg(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation))
