@@ -1380,7 +1380,7 @@ void MainWindow::changedVolumeSlot(int vol)
 
 void MainWindow::changedMute()
 {
-    bool mute = _engine->muted();
+    //bool mute = _engine->muted();
     _engine->toggleMute();
     Settings::get().setInternalOption("mute", _engine->muted());
 }
@@ -3722,7 +3722,7 @@ void MainWindow::mousePressEvent(QMouseEvent *ev)
     _nwComm->hide();
 #endif
 
-    if (qApp->focusWindow() == 0) return;
+    if (qApp->focusWindow() == nullptr) return;
     if (ev->buttons() == Qt::LeftButton) {
         _mousePressed = true;
         //add by heyi
@@ -3795,7 +3795,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *ev)
         _mouseMoved = false;
     }
 
-    if (qApp->focusWindow() == 0 || !_mousePressed) return;
+    if (qApp->focusWindow() == nullptr || !_mousePressed) return;
 
     _mousePressed = false;
     /*if (_playState->isVisible()) {

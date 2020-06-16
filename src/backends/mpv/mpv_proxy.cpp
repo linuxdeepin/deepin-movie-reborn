@@ -58,19 +58,19 @@ enum AsyncReplyTag {
 };
 
 
-static inline bool command_async(mpv_handle *ctx, const QVariant &args, uint64_t tag)
-{
+//static inline bool command_async(mpv_handle *ctx, const QVariant &args, uint64_t tag)
+//{
 //    node_builder node(args);
 //    int err = mpv_command_node_async(ctx, tag, node.node());
 //    return err == 0;
-}
+//}
 
-static inline int set_property_async(mpv_handle *ctx, const QString &name,
-                                     const QVariant &v, uint64_t tag)
-{
+//static inline int set_property_async(mpv_handle *ctx, const QString &name,
+//                                     const QVariant &v, uint64_t tag)
+//{
 //    node_builder node(v);
 //    return mpv_set_property_async(ctx, tag, name.toUtf8().data(), MPV_FORMAT_NODE, node.node());
-}
+//}
 
 static void mpv_callback(void *d)
 {
@@ -127,20 +127,20 @@ MpvProxy::~MpvProxy()
 void MpvProxy::initMpvFuns()
 {
     qDebug() << "MpvProxy开始initMpvFuns";
-    m_waitEvent = (mpv_waitEvent)QLibrary::resolve(LIB_PATH, "mpv_wait_event");
-    m_setOptionString = (mpv_set_optionString)QLibrary::resolve(LIB_PATH, "mpv_set_option_string");
-    m_setProperty = (mpv_setProperty)QLibrary::resolve(LIB_PATH, "mpv_set_property");
-    m_setPropertyAsync = (mpv_setProperty_async)QLibrary::resolve(LIB_PATH, "mpv_set_property_async");
-    m_commandNode = (mpv_commandNode)QLibrary::resolve(LIB_PATH, "mpv_command_node");
-    m_commandNodeAsync = (mpv_commandNode_async)QLibrary::resolve(LIB_PATH, "mpv_command_node_async");
-    m_getProperty = (mpv_getProperty)QLibrary::resolve(LIB_PATH, "mpv_get_property");
-    m_observeProperty = (mpv_observeProperty)QLibrary::resolve(LIB_PATH, "mpv_observe_property");
-    m_eventName = (mpv_eventName)QLibrary::resolve(LIB_PATH, "mpv_event_name");
-    m_creat = (mpvCreate)QLibrary::resolve(LIB_PATH, "mpv_create");
-    m_requestLogMessage = (mpv_requestLog_messages)QLibrary::resolve(LIB_PATH, "mpv_request_log_messages");
-    m_setWakeupCallback = (mpv_setWakeup_callback)QLibrary::resolve(LIB_PATH, "mpv_set_wakeup_callback");
-    m_initialize = (mpvinitialize)QLibrary::resolve(LIB_PATH, "mpv_initialize");
-    m_freeNodecontents = (mpv_freeNode_contents)QLibrary::resolve(LIB_PATH, "mpv_free_node_contents");
+    m_waitEvent = reinterpret_cast<mpv_waitEvent>(QLibrary::resolve(LIB_PATH, "mpv_wait_event"));
+    m_setOptionString = reinterpret_cast<mpv_set_optionString>(QLibrary::resolve(LIB_PATH, "mpv_set_option_string"));
+    m_setProperty = reinterpret_cast<mpv_setProperty>(QLibrary::resolve(LIB_PATH, "mpv_set_property"));
+    m_setPropertyAsync = reinterpret_cast<mpv_setProperty_async>(QLibrary::resolve(LIB_PATH, "mpv_set_property_async"));
+    m_commandNode = reinterpret_cast<mpv_commandNode>(QLibrary::resolve(LIB_PATH, "mpv_command_node"));
+    m_commandNodeAsync = reinterpret_cast<mpv_commandNode_async>(QLibrary::resolve(LIB_PATH, "mpv_command_node_async"));
+    m_getProperty = reinterpret_cast<mpv_getProperty>(QLibrary::resolve(LIB_PATH, "mpv_get_property"));
+    m_observeProperty = reinterpret_cast<mpv_observeProperty>(QLibrary::resolve(LIB_PATH, "mpv_observe_property"));
+    m_eventName = reinterpret_cast<mpv_eventName>(QLibrary::resolve(LIB_PATH, "mpv_event_name"));
+    m_creat = reinterpret_cast<mpvCreate>(QLibrary::resolve(LIB_PATH, "mpv_create"));
+    m_requestLogMessage = reinterpret_cast<mpv_requestLog_messages>(QLibrary::resolve(LIB_PATH, "mpv_request_log_messages"));
+    m_setWakeupCallback = reinterpret_cast<mpv_setWakeup_callback>(QLibrary::resolve(LIB_PATH, "mpv_set_wakeup_callback"));
+    m_initialize = reinterpret_cast<mpvinitialize>(QLibrary::resolve(LIB_PATH, "mpv_initialize"));
+    m_freeNodecontents = reinterpret_cast<mpv_freeNode_contents>(QLibrary::resolve(LIB_PATH, "mpv_free_node_contents"));
 }
 
 void MpvProxy::firstInit()
@@ -1170,13 +1170,6 @@ QVariant MpvProxy::my_command(mpv_handle *ctx, const QVariant &args)
         return QVariant::fromValue(ErrorReturn(err));
     my_node_autofree f(&res);
     return node_to_variant(&res);
-}
-
-Handle MpvProxy::my_FromRawHandle(mpv_handle *handle)
-{
-    Handle h;
-
-    return h;
 }
 
 QImage MpvProxy::takeOneScreenshot()

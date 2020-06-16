@@ -211,7 +211,6 @@ public:
                               const QVariant &v, uint64_t tag);
     QVariant my_get_property_variant(mpv_handle *ctx, const QString &name);
     QVariant my_command(mpv_handle *ctx, const QVariant &args);
-    Handle my_FromRawHandle(mpv_handle *handle);
 
     mpv_waitEvent m_waitEvent{nullptr};
     mpv_set_optionString m_setOptionString{nullptr};
