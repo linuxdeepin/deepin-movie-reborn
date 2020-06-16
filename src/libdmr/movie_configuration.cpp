@@ -198,15 +198,17 @@ public:
         return res;
     }
 
-    ~MovieConfigurationBackend()
-    {
-        _db.close();
-        QSqlDatabase::removeDatabase(_db.connectionName());
-    }
+    ~MovieConfigurationBackend();
 
 private:
     QSqlDatabase _db;
 };
+
+MovieConfigurationBackend::~MovieConfigurationBackend()
+{
+    _db.close();
+    QSqlDatabase::removeDatabase(_db.connectionName());
+}
 
 MovieConfiguration &MovieConfiguration::get()
 {
@@ -255,8 +257,9 @@ void MovieConfiguration::append2ListUrl(const QUrl &url, KnownKey key, const QSt
 
 void MovieConfiguration::removeFromListUrl(const QUrl &url, KnownKey key, const QString &val)
 {
+    //add for warning by xxj ,no any means
+    val.isNull();
     auto list = getListByUrl(url, key);
-
 }
 
 QString MovieConfiguration::knownKey2String(KnownKey kk)

@@ -28,7 +28,6 @@
  * files in the program, then also delete it here.
  */
 #include "notification_widget.h"
-#include "utility.h"
 #include "event_relayer.h"
 
 #include <DPlatformWindowHandle>

@@ -19,8 +19,7 @@ find_package(Qt5Sql)
 pkg_check_modules(Dtk REQUIRED IMPORTED_TARGET dtkwidget)
 pkg_check_modules(Dtk REQUIRED IMPORTED_TARGET dtkcore)
 pkg_check_modules(Mpv REQUIRED IMPORTED_TARGET mpv)
-pkg_check_modules(Xcb REQUIRED IMPORTED_TARGET xcb
-      )
+#pkg_check_modules(Xcb REQUIRED IMPORTED_TARGET xcb)
 pkg_check_modules(AV REQUIRED IMPORTED_TARGET libavformat
     libavutil libavcodec)
 # IMPORTED_TARGET failed to work for some of libs under flatpak env
@@ -77,7 +76,7 @@ target_include_directories(${CMD_NAME} PUBLIC ${PROJECT_INCLUDE})
 #    Qt5::Concurrent Qt5::DBus Qt5::Sql PkgConfig::Dtk PkgConfig::Mpv
 #    PkgConfig::AV  GL)
 
-set(TARGET_LIBS X11 Xtst  PkgConfig::Xcb Qt5::Widgets Qt5::X11Extras Qt5::Network
+set(TARGET_LIBS X11 Xtst  Qt5::Widgets Qt5::X11Extras Qt5::Network
     Qt5::Concurrent Qt5::DBus Qt5::Sql PkgConfig::Dtk  PkgConfig::AV  GL)
 
 target_link_libraries(${CMD_NAME} ${TARGET_LIBS} ${Other_LIBRARIES})

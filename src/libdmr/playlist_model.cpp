@@ -102,7 +102,7 @@ static int open_codec_context(int *stream_idx,
     int ret, stream_index;
     AVStream *st;
     AVCodec *dec = nullptr;
-    AVDictionary *opts = nullptr;
+    //AVDictionary *opts = nullptr;
     ret = av_find_best_stream(fmt_ctx, type, -1, -1, nullptr, 0);
     if (ret < 0) {
         qWarning() << "Could not find " << av_get_media_type_string(type)
@@ -113,7 +113,8 @@ static int open_codec_context(int *stream_idx,
     stream_index = ret;
     st = fmt_ctx->streams[stream_index];
 #if LIBAVFORMAT_VERSION_MAJOR >= 57 && LIBAVFORMAT_VERSION_MINOR <= 25
-    *dec_ctx = st->codec;
+    //*dec_ctx = st->codec;
+    avcodec_parameters_to_context(*dec_ctx, st->codecpar);
     dec = avcodec_find_decoder((*dec_ctx)->codec_id);
 #else
     /* find decoder for the stream */
@@ -246,6 +247,7 @@ public:
         QPixmap thumb;
         bool mi_valid {false};
         bool thumb_valid {false};
+        char m_padding [6];//占位符
     };
 
     CacheInfo loadFromCache(const QUrl &url)
@@ -482,7 +484,7 @@ PlaylistModel::PlaylistModel(PlayerEngine *e)
     m_ploadThread = nullptr;
     m_brunning = false;
     _thumbnailer.setThumbnailSize(static_cast<int>(400 * qApp->devicePixelRatio()));
-    av_register_all();
+    //av_register_all();
 
     _playlistFile = QString("%1/%2/%3/playlist")
                     .arg(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation))
@@ -1379,7 +1381,7 @@ int PlaylistModel::indexOf(const QUrl &url)
     });
 
     if (p == _infos.end()) return -1;
-    return std::distance(_infos.begin(), p);
+    return static_cast<int>(std::distance(_infos.begin(), p));
 }
 
 

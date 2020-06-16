@@ -152,7 +152,7 @@ CompositingManager::CompositingManager()
                 qDebug() << "__X86__";
 #endif
             } else {
-                GetScreenDriver = (glXGetScreenDriver_t *)glXGetProcAddressARB ((const GLubyte *)"glXGetScreenDriver");
+                GetScreenDriver = reinterpret_cast<glXGetScreenDriver_t *>(glXGetProcAddressARB (reinterpret_cast<const GLubyte *>("glXGetScreenDriver")));
                 if (GetScreenDriver) {
                     const char *name = (*GetScreenDriver) (QX11Info::display(), QX11Info::appScreen());
                     qDebug() << "dri driver: " << name;
@@ -182,7 +182,7 @@ CompositingManager::CompositingManager()
         } else if (isDriverLoadedCorrectly() || isDirectRendered()) {
             _composited = true;
         } else {
-            GetScreenDriver = (glXGetScreenDriver_t *)glXGetProcAddressARB ((const GLubyte *)"glXGetScreenDriver");
+            GetScreenDriver = reinterpret_cast<glXGetScreenDriver_t *>(glXGetProcAddressARB (reinterpret_cast<const GLubyte *>("glXGetScreenDriver")));
             if (GetScreenDriver) {
                 const char *name = (*GetScreenDriver) (QX11Info::display(), QX11Info::appScreen());
                 qDebug() << "dri driver: " << name;
@@ -232,7 +232,6 @@ CompositingManager::CompositingManager()
     }
 #endif
     qDebug() << __func__ << "Composited is " << _composited;
-
 }
 
 CompositingManager::~CompositingManager()

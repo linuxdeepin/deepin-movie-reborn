@@ -66,6 +66,10 @@ public:
      */
     void toggleRoundedClip(bool val);
     //add by heyi
+    /**
+     * @brief setHandle 设置句柄
+     * @param h 传入的句柄
+     */
     void setHandle(myHandle h);
 
 protected:
@@ -76,6 +80,9 @@ protected:
     void setPlaying(bool);
     void setMiniMode(bool);
     //add by heyi
+    /**
+     * @brief initMpvFuns 第一次播放需要初库始化函数指针
+     */
     void initMpvFuns();
 
 protected slots:

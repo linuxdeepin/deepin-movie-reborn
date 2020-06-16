@@ -36,7 +36,6 @@
 #include "compositing_manager.h"
 #include "shortcut_manager.h"
 #include "dmr_settings.h"
-#include "utility.h"
 #include "movieinfo_dialog.h"
 #include "burst_screenshots_dialog.h"
 #include "playlist_widget.h"
@@ -282,6 +281,7 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
     return  optionWidget;
 }
 
+#ifdef USE_DXCB
 class MainWindowFocusMonitor: public QAbstractNativeEventFilter
 {
 public:
@@ -329,7 +329,10 @@ public:
 
     MainWindow *_source;
 };
+#endif
 
+
+#ifdef USE_DXCB
 class MainWindowPropertyMonitor: public QAbstractNativeEventFilter
 {
 public:
@@ -338,7 +341,7 @@ public:
     {
         qApp->installNativeEventFilter(this);
 
-        _atomWMState = Utility::internAtom("_NET_WM_STATE");
+        //heyi _atomWMState = Utility::internAtom("_NET_WM_STATE");
     }
 
     ~MainWindowPropertyMonitor()
@@ -374,7 +377,7 @@ public:
     QWindow *_source {nullptr};
     xcb_atom_t _atomWMState;
 };
-
+#endif
 
 class MainWindowEventListener : public QObject
 {
@@ -406,7 +409,7 @@ protected:
             QMouseEvent *e = static_cast<QMouseEvent *>(event);
             setLeftButtonPressed(true);
             auto mw = static_cast<MainWindow *>(parent());
-            if (mw->insideResizeArea(e->globalPos()) && lastCornerEdge != Utility::NoneEdge)
+            if (mw->insideResizeArea(e->globalPos()) && lastCornerEdge != CornerEdge::NoneEdge)
                 startResizing = true;
 
             mw->capturedMousePressEvent(e);
@@ -446,33 +449,35 @@ protected:
             const QRect window_visible_rect = _window->frameGeometry() - mw->dragMargins();
 
             if (!leftButtonPressed) {
+                //add by heyi  拦截鼠标移动事件
+                mw->judgeMouseInWindow(QCursor::pos());
                 if (mw->insideResizeArea(e->globalPos())) {
-                    Utility::CornerEdge mouseCorner = Utility::NoneEdge;
+                    CornerEdge mouseCorner = CornerEdge::NoneEdge;
                     QRect cornerRect;
 
                     /// begin set cursor corner type
                     cornerRect.setSize(QSize(MOUSE_MARGINS * 2, MOUSE_MARGINS * 2));
                     cornerRect.moveTopLeft(_window->frameGeometry().topLeft());
                     if (cornerRect.contains(e->globalPos())) {
-                        mouseCorner = Utility::TopLeftCorner;
+                        mouseCorner = CornerEdge::TopLeftCorner;
                         goto set_cursor;
                     }
 
                     cornerRect.moveTopRight(_window->frameGeometry().topRight());
                     if (cornerRect.contains(e->globalPos())) {
-                        mouseCorner = Utility::TopRightCorner;
+                        mouseCorner = CornerEdge::TopRightCorner;
                         goto set_cursor;
                     }
 
                     cornerRect.moveBottomRight(_window->frameGeometry().bottomRight());
                     if (cornerRect.contains(e->globalPos())) {
-                        mouseCorner = Utility::BottomRightCorner;
+                        mouseCorner = CornerEdge::BottomRightCorner;
                         goto set_cursor;
                     }
 
                     cornerRect.moveBottomLeft(_window->frameGeometry().bottomLeft());
                     if (cornerRect.contains(e->globalPos())) {
-                        mouseCorner = Utility::BottomLeftCorner;
+                        mouseCorner = CornerEdge::BottomLeftCorner;
                         goto set_cursor;
                     }
 
@@ -480,17 +485,17 @@ protected:
 
                     /// begin set cursor edge type
                     if (e->globalX() <= window_visible_rect.x()) {
-                        mouseCorner = Utility::LeftEdge;
+                        mouseCorner = CornerEdge::LeftEdge;
                     } else if (e->globalX() < window_visible_rect.right()) {
                         if (e->globalY() <= window_visible_rect.y()) {
-                            mouseCorner = Utility::TopEdge;
+                            mouseCorner = CornerEdge::TopEdge;
                         } else if (e->globalY() >= window_visible_rect.bottom()) {
-                            mouseCorner = Utility::BottomEdge;
+                            mouseCorner = CornerEdge::BottomEdge;
                         } else {
                             goto skip_set_cursor;
                         }
                     } else if (e->globalX() >= window_visible_rect.right()) {
-                        mouseCorner = Utility::RightEdge;
+                        mouseCorner = CornerEdge::RightEdge;
                     } else {
                         goto skip_set_cursor;
                     }
@@ -511,7 +516,7 @@ set_cursor:
                     return true;
 
 skip_set_cursor:
-                    lastCornerEdge = mouseCorner = Utility::NoneEdge;
+                    lastCornerEdge = mouseCorner = CornerEdge::NoneEdge;
                     return false;
                 } else {
                     qApp->setOverrideCursor(window->cursor());
@@ -544,13 +549,16 @@ private:
         if (leftButtonPressed == pressed)
             return;
 
-        if (!pressed)
+        if (!pressed) {
+#ifdef USE_DXCB
             Utility::cancelWindowMoveResize(static_cast<quint32>(_window->winId()));
+#endif
+        }
 
         leftButtonPressed = pressed;
     }
 
-    void updateGeometry(Utility::CornerEdge edge, QMouseEvent *e)
+    void updateGeometry(CornerEdge edge, QMouseEvent *e)
     {
         auto mw = static_cast<MainWindow *>(parent());
         bool keep_ratio = mw->engine()->state() != PlayerEngine::CoreState::Idle;
@@ -560,11 +568,11 @@ private:
 
         // disable edges
         switch (edge) {
-        case Utility::BottomEdge:
-        case Utility::TopEdge:
-        case Utility::LeftEdge:
-        case Utility::RightEdge:
-        case Utility::NoneEdge:
+        case CornerEdge::BottomEdge:
+        case CornerEdge::TopEdge:
+        case CornerEdge::LeftEdge:
+        case CornerEdge::RightEdge:
+        case CornerEdge::NoneEdge:
             return;
         default:
             break;
@@ -579,26 +587,26 @@ private:
 
             ratio = sz.width() / static_cast<qreal>(sz.height());
             switch (edge) {
-            case Utility::TopLeftCorner:
+            case CornerEdge::TopLeftCorner:
                 geom.setLeft(e->globalX());
                 geom.setTop(static_cast<int>(geom.bottom() - geom.width() / ratio));
                 break;
-            case Utility::BottomLeftCorner:
-            case Utility::LeftEdge:
+            case CornerEdge::BottomLeftCorner:
+            case CornerEdge::LeftEdge:
                 geom.setLeft(e->globalX());
                 geom.setHeight(static_cast<int>(geom.width() / ratio));
                 break;
-            case Utility::BottomRightCorner:
-            case Utility::RightEdge:
+            case CornerEdge::BottomRightCorner:
+            case CornerEdge::RightEdge:
                 geom.setRight(e->globalX());
                 geom.setHeight(static_cast<int>(geom.width() / ratio));
                 break;
-            case Utility::TopRightCorner:
-            case Utility::TopEdge:
+            case CornerEdge::TopRightCorner:
+            case CornerEdge::TopEdge:
                 geom.setTop(e->globalY());
                 geom.setWidth(static_cast<int>(geom.height() * ratio));
                 break;
-            case Utility::BottomEdge:
+            case CornerEdge::BottomEdge:
                 geom.setBottom(e->globalY());
                 geom.setWidth(static_cast<int>(geom.height() * ratio));
                 break;
@@ -607,28 +615,28 @@ private:
             }
         } else {
             switch (edge) {
-            case Utility::BottomLeftCorner:
+            case CornerEdge::BottomLeftCorner:
                 geom.setBottomLeft(e->globalPos());
                 break;
-            case Utility::TopLeftCorner:
+            case CornerEdge::TopLeftCorner:
                 geom.setTopLeft(e->globalPos());
                 break;
-            case Utility::LeftEdge:
+            case CornerEdge::LeftEdge:
                 geom.setLeft(e->globalX());
                 break;
-            case Utility::BottomRightCorner:
+            case CornerEdge::BottomRightCorner:
                 geom.setBottomRight(e->globalPos());
                 break;
-            case Utility::RightEdge:
+            case CornerEdge::RightEdge:
                 geom.setRight(e->globalX());
                 break;
-            case Utility::TopRightCorner:
+            case CornerEdge::TopRightCorner:
                 geom.setTopRight(e->globalPos());
                 break;
-            case Utility::TopEdge:
+            case CornerEdge::TopEdge:
                 geom.setTop(e->globalY());
                 break;
-            case Utility::BottomEdge:
+            case CornerEdge::BottomEdge:
                 geom.setBottom(e->globalY());
                 break;
             default:
@@ -654,7 +662,7 @@ private:
     bool startResizing {false};
     bool enabled {true};
     bool ttt{false};//内存对齐
-    Utility::CornerEdge lastCornerEdge;
+    CornerEdge lastCornerEdge;
     QWindow *_window;
 };
 
@@ -667,6 +675,28 @@ private:
 MainWindow::MainWindow(QWidget *parent)
     : DMainWindow(nullptr)
 {
+    //add bu heyi
+    //this->setMouseTracking(true);
+    this->setAttribute(Qt::WA_AcceptTouchEvents);
+    _mousePressTimer.setInterval(1300);
+    connect(&_mousePressTimer, &QTimer::timeout, this, [ = ]() {
+        if (_miniMode || _inBurstShootMode || !_mousePressed)
+            return;
+
+        if (insideToolsArea(QCursor::pos()))
+            return;
+
+        resumeToolsWindow();
+        QTimer::singleShot(0, [ = ]() {
+            qApp->restoreOverrideCursor();
+            ActionFactory::get().mainContextMenu()->popup(QCursor::pos());
+        });
+
+        _mousePressTimer.stop();
+        _mousePressed = false;
+        _isTouch = false;
+    });
+    //*************
     m_lastVolume = Settings::get().internalOption("last_volume").toInt();;
     bool composited = CompositingManager::get().composited();
 #ifdef USE_DXCB
@@ -1179,28 +1209,26 @@ void MainWindow::updateShadow()
 
 bool MainWindow::event(QEvent *ev)
 {
-    static int nX = 0, nY = 0;
-    if (ev->type() == QEvent::MouseButtonPress) {
-        qDebug() << "MouseButtonPress111111111";
-        QMouseEvent *newEv = (QMouseEvent *)ev;
-        nX = newEv->globalX();
-        nY = newEv->globalY();
-    }
-
-    if (ev->type() == QEvent::MouseMove) {
-        QMouseEvent *newEv = (QMouseEvent *)ev;
-        qDebug() << "x=" << newEv->globalX() << "y=" << newEv->globalY();
-        //修复触屏无法弹出右键问题
-
-        if (qAbs(nX - newEv->globalX()) < 5 || qAbs(nY - newEv->globalY()) < 5) {
-            ev->ignore();
-            return false;
+    //add by heyi
+    //判断是否停止右键菜单定时器
+    if (_mousePressed) {
+        qDebug() << "hahahaha nX = " << nX << "haaahahaha nY= " << nY;
+        qDebug() << "mapToGlobal(QCursor::pos()).x() = " << mapToGlobal(QCursor::pos()).x() << "mapToGlobal(QCursor::pos()).y()= " << mapToGlobal(QCursor::pos()).y();
+        if (qAbs(nX - mapToGlobal(QCursor::pos()).x()) > 50 || qAbs(nY - mapToGlobal(QCursor::pos()).y()) > 50) {
+            if (_mousePressTimer.isActive()) {
+                qDebug() << "结束定时器";
+                _mousePressTimer.stop();
+                _mousePressed = false;
+                _isTouch = false;
+            }
         }
-
-        qDebug() << "nX=" << nX << "nY=" << nY;
     }
 
-    qDebug() << "进入event";
+    if (ev->type() == QEvent::TouchBegin) {
+        //判定是否是触屏
+        _isTouch = true;
+    }
+
     if (ev->type() == QEvent::WindowStateChange) {
         auto wse = dynamic_cast<QWindowStateChangeEvent *>(ev);
         _lastWindowState = wse->oldState();
@@ -1352,7 +1380,7 @@ void MainWindow::changedVolumeSlot(int vol)
 
 void MainWindow::changedMute()
 {
-    bool mute = _engine->muted();
+    //bool mute = _engine->muted();
     _engine->toggleMute();
     Settings::get().setInternalOption("mute", _engine->muted());
 }
@@ -1456,6 +1484,23 @@ void MainWindow::firstPlayInit()
 
     requestAction(ActionFactory::ChangeSubCodepage, false, {"auto"});
     m_bMpvFunsLoad = true;
+}
+
+bool MainWindow::judgeMouseInWindow(QPoint pos)
+{
+    bool bRet = false;
+    QRect rect = frameGeometry();
+    QPoint topLeft = rect.topLeft();
+    QPoint bottomRight = rect.bottomRight();
+    pos = mapToGlobal(pos);
+    topLeft = mapToGlobal(topLeft);
+    bottomRight = mapToGlobal(bottomRight);
+
+    if ((pos.x() == topLeft.x()) || (pos.x() == bottomRight.x()) || (pos.y() == topLeft.y()) || (pos.y() == bottomRight.y())) {
+        leaveEvent(nullptr);
+    }
+
+    return bRet;
 }
 
 void MainWindow::onApplicationStateChanged(Qt::ApplicationState e)
@@ -1651,6 +1696,7 @@ void MainWindow::updateActionsState()
 
 void MainWindow::syncStaysOnTop()
 {
+#ifdef USE_DXCB
     static xcb_atom_t atomStateAbove = Utility::internAtom("_NET_WM_STATE_ABOVE");
     auto atoms = Utility::windowNetWMState(static_cast<quint32>(windowHandle()->winId()));
 
@@ -1660,6 +1706,7 @@ void MainWindow::syncStaysOnTop()
         qDebug() << "syncStaysOnTop: window_is_above" << window_is_above;
         requestAction(ActionFactory::WindowAbove);
     }
+#endif
 #endif
 }
 
@@ -2191,8 +2238,8 @@ play(url);
             show();
             ```
         */
-#ifndef __mips__
-        Utility::setStayOnTop(this, _windowAbove);
+#ifdef __mips__
+        //heyiUtility::setStayOnTop(this, _windowAbove);
 #endif
         if (!fromUI) {
             reflectActionToUI(kd);
@@ -3648,6 +3695,7 @@ void MainWindow::capturedMousePressEvent(QMouseEvent *me)
 
     if (me->buttons() == Qt::LeftButton) {
         _mousePressed = true;
+        posMouseOrigin = QCursor::pos();
     }
 }
 
@@ -3666,8 +3714,6 @@ void MainWindow::capturedMouseReleaseEvent(QMouseEvent *me)
 static bool _afterDblClick = false;
 void MainWindow::mousePressEvent(QMouseEvent *ev)
 {
-    qDebug() << "进入mousePressEvent";
-    QWidget::mousePressEvent(ev);
     _mouseMoved = false;
     _mousePressed = false;
 #ifdef __aarch64__
@@ -3676,18 +3722,26 @@ void MainWindow::mousePressEvent(QMouseEvent *ev)
     _nwComm->hide();
 #endif
 
-    if (qApp->focusWindow() == 0) return;
+    if (qApp->focusWindow() == nullptr) return;
     if (ev->buttons() == Qt::LeftButton) {
         _mousePressed = true;
+        //add by heyi
+        if (!_mousePressTimer.isActive() && _isTouch) {
+            _mousePressTimer.stop();
+
+            nX = mapToGlobal(QCursor::pos()).x();
+            nY = mapToGlobal(QCursor::pos()).y();
+            qDebug() << "已经进入触屏按下事件" << nX << nY;
+            _mousePressTimer.start();
+        }
         /*if (_playState->isVisible()) {
             //_playState->setState(DImageButton::Press);
             QMouseEvent me(QEvent::MouseButtonPress, {}, ev->button(), ev->buttons(), ev->modifiers());
             qApp->sendEvent(_playState, &me);
         }*/
+        posMouseOrigin = QCursor::pos();
     }
-
 }
-
 
 void MainWindow::mouseDoubleClickEvent(QMouseEvent *ev)
 {
@@ -3726,6 +3780,14 @@ bool MainWindow::insideResizeArea(const QPoint &global_p)
 
 void MainWindow::mouseReleaseEvent(QMouseEvent *ev)
 {
+    //add by heyi
+    static bool bFlags = true;
+    if (bFlags) {
+        firstPlayInit();
+        repaint();
+        bFlags = false;
+    }
+
     qDebug() << "进入mouseReleaseEvent";
     QWidget::mouseReleaseEvent(ev);
     if (!_mousePressed) {
@@ -3733,7 +3795,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *ev)
         _mouseMoved = false;
     }
 
-    if (qApp->focusWindow() == 0 || !_mousePressed) return;
+    if (qApp->focusWindow() == nullptr || !_mousePressed) return;
 
     _mousePressed = false;
     /*if (_playState->isVisible()) {
@@ -3753,7 +3815,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *ev)
         }
     }
 
-    Utility::cancelWindowMoveResize(static_cast<quint32>(winId()));
+    //heyiUtility::cancelWindowMoveResize(static_cast<quint32>(winId()));
     _mouseMoved = false;
 }
 
@@ -3795,17 +3857,16 @@ void MainWindow::onDvdData(const QString &title)
 
 void MainWindow::mouseMoveEvent(QMouseEvent *ev)
 {
-    if (_mouseMoved) {
-        return Utility::updateMousePointForWindowMove(static_cast<quint32>(this->winId()), ev->globalPos() * devicePixelRatioF());
+    if (!CompositingManager::get().composited()) {
+        QPoint ptMouseNow = QCursor::pos();
+        QPoint ptDelta = ptMouseNow - this->posMouseOrigin;
+        move(this->pos() + ptDelta);
+        posMouseOrigin = ptMouseNow;
+    } else {
+        QWidget::mouseMoveEvent(ev);
     }
 
     _mouseMoved = true;
-
-    if (windowState() == Qt::WindowNoState || isMaximized()) {
-        Utility::startWindowSystemMove(static_cast<quint32>(this->winId()));
-    }
-
-    QWidget::mouseMoveEvent(ev);
 }
 
 void MainWindow::contextMenuEvent(QContextMenuEvent *cme)
