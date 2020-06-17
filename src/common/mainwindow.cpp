@@ -3790,7 +3790,6 @@ void MainWindow::capturedMouseReleaseEvent(QMouseEvent *me)
 
     //add by heyi
     my_setStayOnTop(this, false);
-    QString str = "hahah";
 }
 
 static bool _afterDblClick = false;
