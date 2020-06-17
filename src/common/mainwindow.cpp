@@ -3134,7 +3134,7 @@ void MainWindow::updateProxyGeometry()
                 }
             } else {
                 if (_playlist->state() == PlaylistWidget::State::Opened) {
-#ifndef __aarch64__
+#if !defined(__aarch64__) && !defined (__sw_64__)
                     _toolbox->setGeometry(rfs);
 #else
                     _toolbox->setGeometry(rct);
@@ -3146,8 +3146,13 @@ void MainWindow::updateProxyGeometry()
         }
 
         if (_playlist && !_playlist->toggling()) {
+#ifndef __sw_64__
             QRect fixed((10), (view_rect.height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT + 10)),
                         view_rect.width() - 20, TOOLBOX_SPACE_HEIGHT);
+#else
+            QRect fixed((10), (view_rect.height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT - 1)),
+                        view_rect.width() - 20, TOOLBOX_SPACE_HEIGHT);
+#endif
             _playlist->setGeometry(fixed);
         }
     }
@@ -4193,7 +4198,7 @@ void MainWindow::paintEvent(QPaintEvent *pe)
 //        pp.addRect(bgRect);
 //        painter.fillPath(pp, bgColor);
 //    }
-    if (_engine->state() == PlayerEngine::Idle) {
+    if (_engine->state() == PlayerEngine::Idle && (_playlist && _playlist->state() == PlaylistWidget::Closed)) {
         auto pt = bgRect.center() - QPoint(bg.width() / 2, bg.height() / 2) / devicePixelRatioF();
         painter.drawImage(pt, bg);
     }
