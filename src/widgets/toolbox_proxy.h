@@ -207,6 +207,7 @@ protected:
 //    void paintEvent(QPaintEvent *pe) override;
     void showEvent(QShowEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
+
 private:
     void setup();
     void updateTimeLabel();

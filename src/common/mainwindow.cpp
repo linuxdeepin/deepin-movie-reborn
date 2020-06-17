@@ -67,6 +67,33 @@
 #include <DSettingsWidgetFactory>
 #include <DLineEdit>
 #include <DFileDialog>
+#include <QtX11Extras/QX11Info>
+
+#include <X11/cursorfont.h>
+#include <X11/Xlib.h>
+
+//add by heyi
+#define _NET_WM_MOVERESIZE_MOVE              8   /* movement only */
+#define _NET_WM_MOVERESIZE_CANCEL           11   /* cancel operation */
+
+#define XATOM_MOVE_RESIZE "_NET_WM_MOVERESIZE"
+#define XDEEPIN_BLUR_REGION "_NET_WM_DEEPIN_BLUR_REGION"
+#define XDEEPIN_BLUR_REGION_ROUNDED "_NET_WM_DEEPIN_BLUR_REGION_ROUNDED"
+
+#define _NET_WM_STATE_REMOVE        0    /* remove/unset property */
+#define _NET_WM_STATE_ADD           1    /* add/set property */
+#define _NET_WM_STATE_TOGGLE        2    /* toggle property  */
+
+const char kAtomNameHidden[] = "_NET_WM_STATE_HIDDEN";
+const char kAtomNameFullscreen[] = "_NET_WM_STATE_FULLSCREEN";
+const char kAtomNameMaximizedHorz[] = "_NET_WM_STATE_MAXIMIZED_HORZ";
+const char kAtomNameMaximizedVert[] = "_NET_WM_STATE_MAXIMIZED_VERT";
+const char kAtomNameMoveResize[] = "_NET_WM_MOVERESIZE";
+const char kAtomNameWmState[] = "_NET_WM_STATE";
+const char kAtomNameWmStateAbove[] = "_NET_WM_STATE_ABOVE";
+const char kAtomNameWmStateStaysOnTop[] = "_NET_WM_STATE_STAYS_ON_TOP";
+const char kAtomNameWmSkipTaskbar[] = "_NET_WM_STATE_SKIP_TASKBAR";
+const char kAtomNameWmSkipPager[] = "_NET_WM_STATE_SKIP_PAGER";
 
 #define AUTOHIDE_TIMEOUT 2000
 #include <DToast>
@@ -2205,7 +2232,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             show();
             ```
         */
-        Utility::setStayOnTop(this, _windowAbove);
+        my_setStayOnTop(this, _windowAbove);
         if (!fromUI) {
             reflectActionToUI(kd);
         }
@@ -3304,6 +3331,41 @@ void MainWindow::syncPostion()
     _nwComm->syncPosition();
 }
 
+void MainWindow::my_setStayOnTop(const QWidget *widget, bool on)
+{
+    Q_ASSERT(widget);
+
+    const auto display = QX11Info::display();
+    const auto screen = QX11Info::appScreen();
+
+    const auto wmStateAtom = XInternAtom(display, kAtomNameWmState, false);
+    const auto stateAboveAtom = XInternAtom(display, kAtomNameWmStateAbove, false);
+    const auto stateStaysOnTopAtom = XInternAtom(display,
+                                                 kAtomNameWmStateStaysOnTop,
+                                                 false);
+
+    XEvent xev;
+    memset(&xev, 0, sizeof(xev));
+
+    xev.xclient.type = ClientMessage;
+    xev.xclient.message_type = wmStateAtom;
+    xev.xclient.display = display;
+    xev.xclient.window = widget->winId();
+    xev.xclient.format = 32;
+
+    xev.xclient.data.l[0] = on ? _NET_WM_STATE_ADD : _NET_WM_STATE_REMOVE;
+    xev.xclient.data.l[1] = stateAboveAtom;
+    xev.xclient.data.l[2] = stateStaysOnTopAtom;
+    xev.xclient.data.l[3] = 1;
+
+    XSendEvent(display,
+               QX11Info::appRootWindow(screen),
+               false,
+               SubstructureRedirectMask | SubstructureNotifyMask,
+               &xev);
+    XFlush(display);
+}
+
 void MainWindow::checkErrorMpvLogsChanged(const QString prefix, const QString text)
 {
     QString errorMessage(text);
@@ -3617,6 +3679,10 @@ void MainWindow::resizeEvent(QResizeEvent *ev)
         updateWindowTitle();
     });
     updateGeometryNotification(geometry().size());
+    //add by heyi
+    if (!isFullScreen() && !_windowAbove) {
+        my_setStayOnTop(this, false);
+    }
 }
 
 void MainWindow::updateWindowTitle()
@@ -3685,6 +3751,15 @@ void MainWindow::capturedMousePressEvent(QMouseEvent *me)
         _mousePressed = true;
         posMouseOrigin = QCursor::pos();
     }
+
+    //add by heyi
+    if (_isTouch && !_windowAbove) {
+        if (isFullScreen()) {
+            my_setStayOnTop(this, true);
+        } else {
+            my_setStayOnTop(this, false);
+        }
+    }
 }
 
 void MainWindow::capturedMouseReleaseEvent(QMouseEvent *me)
@@ -3696,6 +3771,11 @@ void MainWindow::capturedMouseReleaseEvent(QMouseEvent *me)
             this->setMinimumSize({0, 0});
             this->resizeByConstraints(true);
         });
+    }
+
+    //add by heyi
+    if (!_windowAbove) {
+        my_setStayOnTop(this, false);
     }
 }
 
@@ -3866,6 +3946,12 @@ void MainWindow::contextMenuEvent(QContextMenuEvent *cme)
         qApp->restoreOverrideCursor();
         ActionFactory::get().mainContextMenu()->popup(QCursor::pos());
     });
+
+    //add by heyi
+    if (!_windowAbove) {
+        my_setStayOnTop(this, false);
+    }
+
     cme->accept();
 }
 

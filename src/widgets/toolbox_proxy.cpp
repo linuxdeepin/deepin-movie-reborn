@@ -2700,7 +2700,6 @@ void ToolboxProxy::resizeEvent(QResizeEvent *event)
 #endif
 }
 
-
 void ToolboxProxy::updateTimeLabel()
 {
 
