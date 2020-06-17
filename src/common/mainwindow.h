@@ -197,6 +197,8 @@ public slots:
     void checkWarningMpvLogsChanged(const QString prefix, const QString text);
     void slotdefaultplaymodechanged(const QString &key, const QVariant &value);
     void syncPostion();
+    //设置窗口顶层
+    void my_setStayOnTop(const QWidget *widget, bool on);
 
 
 protected:
