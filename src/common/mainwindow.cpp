@@ -3124,7 +3124,7 @@ void MainWindow::updateProxyGeometry()
                       rect().width() - 10, TOOLBOX_HEIGHT);
             if (isFullScreen()) {
                 if (_playlist->state() == PlaylistWidget::State::Opened) {
-#ifndef __aarch64__
+#if !defined(__aarch64__) && !defined (__sw_64__)
                     _toolbox->setGeometry(rfs);
 #else
                     _toolbox->setGeometry(rct);
@@ -4198,7 +4198,7 @@ void MainWindow::paintEvent(QPaintEvent *pe)
 //        pp.addRect(bgRect);
 //        painter.fillPath(pp, bgColor);
 //    }
-    if (_engine->state() == PlayerEngine::Idle && (_playlist && _playlist->state() == PlaylistWidget::Closed)) {
+    if (_engine->state() == PlayerEngine::Idle && _playlist->state() == PlaylistWidget::State::Closed) {
         auto pt = bgRect.center() - QPoint(bg.width() / 2, bg.height() / 2) / devicePixelRatioF();
         painter.drawImage(pt, bg);
     }

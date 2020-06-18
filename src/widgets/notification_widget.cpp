@@ -98,6 +98,8 @@ void NotificationWidget::syncPosition()
         move(geom.topLeft() + _anchorPoint);
 #elif  __mips__
         move(geom.x() + 30, geom.y() + 58);
+#elif __sw_64__
+        move(geom.topLeft() + _anchorPoint);
 #else
         move(_anchorPoint);
 #endif
