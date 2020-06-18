@@ -179,6 +179,8 @@ public slots:
     void checkWarningMpvLogsChanged(const QString prefix, const QString text);
     void slotdefaultplaymodechanged(const QString &key, const QVariant &value);
     void syncPostion();
+    //设置窗口顶层
+    void my_setStayOnTop(const QWidget *widget, bool on);
 
 
 protected:
@@ -368,6 +370,10 @@ private:
     QTimer _mousePressTimer;
     qint64 oldDuration = 0;
     qint64 oldElapsed = 0;
+
+    qint64 m_initDuration {0};
+    qint64 m_currElapsed {0};
+    bool m_isPlayDisk {false};
 };
 };
 

@@ -85,7 +85,7 @@ MpvProxy::MpvProxy(QWidget *parent)
     if (!CompositingManager::get().composited()) {
         setWindowFlags(Qt::FramelessWindowHint);
         setAttribute(Qt::WA_NativeWindow);
-        qDebug() << "proxy hook winId " << this->winId();
+        qInfo() << "proxy hook winId " << this->winId();
     }
 
     _handle = Handle::FromRawHandle(mpv_init());
@@ -306,7 +306,8 @@ mpv_handle *MpvProxy::mpv_init()
         set_property(h, "hwdec", "auto");
         set_property(h, "wid", m_parentWidget->winId());
     }
-    qDebug() << __func__ << get_property(h, "vo").toString();
+    qInfo() << __func__ << get_property(h, "vo").toString();
+    qInfo() << __func__ << get_property(h, "hwdec").toString();
 
     //QLocale locale;
     QString strMovie = QObject::tr("Movie");
@@ -377,15 +378,15 @@ mpv_handle *MpvProxy::mpv_init()
             QFileInfo fi("/dev/mwv206_0");              //景嘉微显卡目前只支持vo=xv，等日后升级代码需要酌情修改。
             if (!fi.exists()) {
                 set_property(h, p->first.toUtf8().constData(), p->second.toUtf8().constData());
-                qDebug() << "apply" << p->first << "=" << p->second;
+                qInfo() << "apply" << p->first << "=" << p->second;
             }
 #else
             set_property(h, p->first.toUtf8().constData(), p->second.toUtf8().constData());
-            qDebug() << "apply" << p->first << "=" << p->second;
+            qInfo() << "apply" << p->first << "=" << p->second;
 #endif
 #endif
         } else {
-            qDebug() << "ignore(commented out)" << p->first << "=" << p->second;
+            qInfo() << "ignore(commented out)" << p->first << "=" << p->second;
         }
         ++p;
     }
@@ -655,7 +656,7 @@ bool MpvProxy::loadSubtitle(const QFileInfo &fi)
         return false;
 
     QList<QVariant> args = { "sub-add", fi.absoluteFilePath(), "select" };
-    qDebug () << args;
+    qInfo () << args;
     QVariant id = command(_handle, args);
     if (id.canConvert<ErrorReturn>()) {
         return false;
@@ -988,7 +989,6 @@ void MpvProxy::play()
     //非景嘉微显卡
     if (!_isJingJia) {
 #ifdef __mips__
-        qDebug() << "play __mips__";
         auto codec = get_property(_handle, "video-codec").toString();
         if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") /*|| codec.toLower().contains("mpeg2video")*/) {
             qDebug() << "set_property hwdec no";
@@ -996,7 +996,6 @@ void MpvProxy::play()
         }
 #endif
 #ifdef __aarch64__
-        qDebug() << "MPV_EVENT_FILE_LOADED aarch64";
         auto recodec = get_property(_handle, "video-codec").toString();
         if (recodec.toLower().contains("wmv3") || recodec.toLower().contains("wmv2") || recodec.toLower().contains("mpeg2video")) {
             qDebug() << "set_property hwdec no";

@@ -607,6 +607,14 @@
         <source>Please exit smart dock</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Disc eject</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>HwdecMode = %1</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>dmr::MovieInfo</name>
@@ -839,6 +847,10 @@
     <message>
         <source>Pause</source>
         <translation>Pause</translation>
+    </message>
+    <message>
+        <source>sub</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

@@ -177,7 +177,7 @@ void DMRSlider::mouseMoveEvent(QMouseEvent *e)
 {
     if (!isEnabled()) return;
 
-    int v = position2progress(e->pos());;
+    int v = position2progress(e->pos());
     if (_down) {
         slider()->setSliderPosition(v);
         if (_showIndicator) {

@@ -572,7 +572,7 @@
     </message>
     <message>
         <source>All videos (%2 %1)</source>
-        <translation type="unfinished">সকল ভিডিওসমূহ(%1) {2 %1)?}</translation>
+        <translation type="obsolete">সকল ভিডিওসমূহ(%1) {2 %1)?}</translation>
     </message>
     <message>
         <source>4K video may be stuck</source>
@@ -604,6 +604,22 @@
     </message>
     <message>
         <source>Please load the video first</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Disc eject</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>All videos (*)(%2 %1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>HwdecMode = %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please exit smart dock</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -838,6 +854,10 @@
     <message>
         <source>Pause</source>
         <translation>থামুন</translation>
+    </message>
+    <message>
+        <source>sub</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>
