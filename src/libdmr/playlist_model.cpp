@@ -765,8 +765,11 @@ void PlaylistModel::tryPlayCurrent(bool next)
     }
     emit itemInfoUpdated(_current);
     if (pif.valid) {
-        _engine->requestPlay(_current);
         emit currentChanged();
+        //小于1s视频不播放
+        if (pif.mi.duration <= 1)
+            return;
+        _engine->requestPlay(_current);
     } else {
         _current = -1;
         emit currentChanged();
