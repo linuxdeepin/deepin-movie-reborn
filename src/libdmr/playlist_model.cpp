@@ -97,7 +97,7 @@ static bool getMusicPix(const QFileInfo &fi, QPixmap &rImg)
 }
 
 static int open_codec_context(int *stream_idx,
-                              AVCodecContext **dec_ctx, AVFormatContext *fmt_ctx, enum AVMediaType type)
+                              AVCodecParameters **dec_ctx, AVFormatContext *fmt_ctx, enum AVMediaType type)
 {
     int ret, stream_index;
     AVStream *st;
@@ -113,7 +113,7 @@ static int open_codec_context(int *stream_idx,
     stream_index = ret;
     st = fmt_ctx->streams[stream_index];
 #if LIBAVFORMAT_VERSION_MAJOR >= 57 && LIBAVFORMAT_VERSION_MINOR <= 25
-    *dec_ctx = st->codec;
+    *dec_ctx = st->codecpar;
     dec = avcodec_find_decoder((*dec_ctx)->codec_id);
 #else
     /* find decoder for the stream */
@@ -354,7 +354,7 @@ struct MovieInfo MovieInfo::parseFromFile(const QFileInfo &fi, bool *ok)
     mi.valid = false;
     AVFormatContext *av_ctx = nullptr;
     int stream_id = -1;
-    AVCodecContext *dec_ctx = nullptr;
+    AVCodecParameters *dec_ctx = nullptr;
 
     if (!fi.exists()) {
         if (ok) *ok = false;
@@ -401,8 +401,8 @@ struct MovieInfo MovieInfo::parseFromFile(const QFileInfo &fi, bool *ok)
 
     mi.vCodecID = dec_ctx->codec_id;
     mi.vCodeRate = dec_ctx->bit_rate;
-    if (dec_ctx->framerate.den != 0) {
-        mi.fps = dec_ctx->framerate.num / dec_ctx->framerate.den;
+    if (dec_ctx->sample_aspect_ratio.den != 0) {
+        mi.fps = dec_ctx->sample_aspect_ratio.num / dec_ctx->sample_aspect_ratio.den;
     } else {
         mi.fps = 0;
     }
@@ -422,7 +422,7 @@ struct MovieInfo MovieInfo::parseFromFile(const QFileInfo &fi, bool *ok)
 
     mi.aCodeID = dec_ctx->codec_id;
     mi.aCodeRate = dec_ctx->bit_rate;
-    mi.aDigit = dec_ctx->sample_fmt;
+    mi.aDigit = dec_ctx->format;
     mi.channels = dec_ctx->channels;
     mi.sampling = dec_ctx->sample_rate;
 
