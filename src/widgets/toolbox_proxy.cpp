@@ -1042,6 +1042,8 @@ public:
         }
 #elif __aarch64__
         setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
+#elif __sw_64__
+        setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
 #endif
         setShadowBlurRadius(4);
         setRadius(18);

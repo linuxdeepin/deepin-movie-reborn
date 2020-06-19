@@ -161,7 +161,7 @@ public:
         _play = QPixmap(":/resources/icons/dark/normal/film-top.svg");
         _play.setDevicePixelRatio(qApp->devicePixelRatio());
 
-        setFixedSize(_playlist->width() - 250, 36);
+        setFixedSize(_playlist->width() - 260, 36);
         auto *l = new QHBoxLayout(this);
         l->setContentsMargins(17, 0, 0, 0);
         l->setSpacing(10);
@@ -241,9 +241,9 @@ public:
         t->hide();
         setProperty("HintWidget", QVariant::fromValue<QWidget *>(t));
         installEventFilter(th);
-        connect(_playlist, &PlaylistWidget::sizeChange, this, [ = ] {
-            setFixedWidth(_playlist->width() - 250);
-//            setFixedSize(_playlist->width(), 36);
+        connect(_playlist, &PlaylistWidget::sizeChange, this, [=] {
+            setFixedWidth(_playlist->width() - 260);
+            //            setFixedSize(_playlist->width(), 36);
         });
     }
 
@@ -547,8 +547,20 @@ protected:
 //            _name->setPalette(pa_name);
 //            _name->setFontWeight(QFont::Weight::Normal);
             _name->setForegroundRole(DPalette::ToolTipText);
-            _index->setForegroundRole(DPalette::TextTips);
-            _time->setForegroundRole(DPalette::TextTips);
+            _index->setForegroundRole(DPalette::BrightText);
+            _time->setForegroundRole(DPalette::BrightText);
+            QGraphicsOpacityEffect *opacityEffect = new QGraphicsOpacityEffect;
+            _time->setGraphicsEffect(opacityEffect);
+            opacityEffect->setOpacity(0.5);
+
+            QGraphicsOpacityEffect *opacityEffect_1 = new QGraphicsOpacityEffect;
+            _index->setGraphicsEffect(opacityEffect_1);
+            if (m_bIsSelect) {
+                opacityEffect_1->setOpacity(1.0);
+            } else {
+                opacityEffect_1->setOpacity(0.5);
+            }
+
             DFontSizeManager::instance()->bind(_name, DFontSizeManager::T6, QFont::Normal);
             DFontSizeManager::instance()->bind(_index, DFontSizeManager::T6, QFont::Normal);
             DFontSizeManager::instance()->bind(_time, DFontSizeManager::T6, QFont::Normal);
@@ -666,8 +678,8 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     mainVLayout->setSpacing(0);
     setLayout(mainVLayout);
     auto *mainLayout = new QHBoxLayout();
-    mainLayout->setContentsMargins(10, 0, 16, 0);
-    mainLayout->setSpacing(10);
+    mainLayout->setContentsMargins(10, 0, 0, 0);
+    mainLayout->setSpacing(30);
     mainLayout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
     //setLayout(mainLayout);
     QWidget *topspec = new QWidget;
@@ -704,7 +716,10 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
 //    _title->setContentsMargins(0, 0, 0, 0);
 
     _num = new DLabel();
-    _num->setForegroundRole(DPalette::TextTips);
+    _num->setForegroundRole(DPalette::BrightText);
+    QGraphicsOpacityEffect *opacityEffect = new QGraphicsOpacityEffect;
+    _num->setGraphicsEffect(opacityEffect);
+    opacityEffect->setOpacity(0.5);
     _num->setText("");
     DFontSizeManager::instance()->bind(_num, DFontSizeManager::T6);
 //    _num->setFixedSize(96, 20);
@@ -1218,10 +1233,16 @@ void PlaylistWidget::OnItemChanged(QListWidgetItem *current, QListWidgetItem *pr
 {
     auto prevRow = _playlist->row(previous);
     qDebug() << "changed prevRow..." << prevRow;
+    QPalette pe;
     if (previous) {
         auto prevItemWgt = reinterpret_cast<PlayItemWidget *>(_playlist->itemWidget(previous));
         if (prevItemWgt) {
             prevItemWgt->setBIsSelect(false);
+            pe.setColor(QPalette::ToolTipText, Qt::black);
+            prevItemWgt->_name->setPalette(pe);
+            pe.setColor(QPalette::BrightText, Qt::black);
+            prevItemWgt->_index->setPalette(pe);
+            // _time->setForegroundRole(DPalette::BrightText);
         }
     }
 
@@ -1230,6 +1251,11 @@ void PlaylistWidget::OnItemChanged(QListWidgetItem *current, QListWidgetItem *pr
         auto curItemWgt = reinterpret_cast<PlayItemWidget *>(_playlist->itemWidget(current));
         if (curItemWgt) {
             curItemWgt->setBIsSelect(true);
+            pe.setColor(QPalette::ToolTipText, Qt::white);
+            curItemWgt->_name->setPalette(pe);
+
+            pe.setColor(QPalette::BrightText, Qt::white);
+            curItemWgt->_index->setPalette(pe);
         }
     }
 }
