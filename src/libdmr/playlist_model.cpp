@@ -906,7 +906,6 @@ void PlaylistModel::playPrev(bool fromUser)
                 _last = _last == -1 ? 0 : _last;
                 _current = _last;
                 tryPlayCurrent(false);
-
             } else {
                 if (_last - 1 < 0) {
                     _last = count();
