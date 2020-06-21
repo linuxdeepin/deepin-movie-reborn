@@ -1117,12 +1117,11 @@ MainWindow::MainWindow(QWidget *parent)
     _animationlable->setWindowFlags(Qt::FramelessWindowHint);
     _animationlable->setParent(this);
     _animationlable->setGeometry(width() / 2 - 100, height() / 2 - 100, 200, 200);
-
-#if defined (__aarch64__) || defined (__mips__)
+#ifdef __x86_64__
+    popup = new DFloatingMessage(DFloatingMessage::TransientType, this);
+#else
     popup = new DFloatingMessage(DFloatingMessage::TransientType, nullptr);
     popup->setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
-#else
-    popup = new DFloatingMessage(DFloatingMessage::TransientType, this);
 #endif
     popup->resize(0, 0);
 //    popup->hide(); //This causes the first screenshot icon to move down
@@ -4140,10 +4139,10 @@ void MainWindow::popupAdapter(QIcon icon, QString text)
     auto w = fm.boundingRect(text).width();
     popup->setMessage(text);
     popup->resize(w + 70, 52);
-#if defined (__aarch64__) || defined (__mips__)
-    popup->move((width() - popup->width()) / 2 + geometry().x(), height() - 137 + geometry().y());
-#else
+#ifdef __x86_64__
     popup->move((width() - popup->width()) / 2, height() - 127);
+#else
+    popup->move((width() - popup->width()) / 2 + geometry().x(), height() - 137 + geometry().y());
 #endif
     popup->show();
 }
