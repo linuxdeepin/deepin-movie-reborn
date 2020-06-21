@@ -1043,7 +1043,8 @@ public:
 #elif __aarch64__
         setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
 #elif __sw_64__
-        setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
+        setWindowFlags(Qt::FramelessWindowHint | Qt::BypassWindowManagerHint);
+        setAttribute(Qt::WA_NativeWindow);
 #endif
         setShadowBlurRadius(4);
         setRadius(18);
@@ -1868,21 +1869,6 @@ void ToolboxProxy::setup()
             _volSlider->raise();
         });*/
 #elif __aarch64__
-        _volSlider = new VolumeSlider(_engine, _mainWindow, nullptr);
-        hintFilter = new HintFilter;
-        _volSlider->setProperty("DelayHide", true);
-        _volSlider->setProperty("NoDelayShow", true);
-        installHint(_volBtn, _volSlider);
-
-        /*connect(_volBtn, &VolumeButton::entered, [ = ]() {
-            _volSlider->stopTimer();
-            QPoint pos = _volBtn->parentWidget()->mapToGlobal(_volBtn->pos());
-            QRect rc = _volBtn->geometry();
-            pos = QPoint(pos.x() + rc.width() / 2, pos.y() - 20);
-            _volSlider->raise();
-            _volSlider->show(pos.x(), pos.y());
-        });*/
-#elif __sw_64__
         _volSlider = new VolumeSlider(_engine, _mainWindow, nullptr);
         hintFilter = new HintFilter;
         _volSlider->setProperty("DelayHide", true);
