@@ -665,7 +665,7 @@ public:
         _viewProgBarLayout->setSpacing(1);
 
         //重新获取胶片进度条长度 by ZhuYuliang
-        int pixWidget = _progBar->width() / 100;
+        int pixWidget = 8/*_progBar->width() / 100*/;
         //当宽度比较宽的时候，就插入两次相同图片
         if (pixWidget > 500) {
             pixWidget /= 2;
@@ -1278,8 +1278,8 @@ void viewProgBarLoad::run()
 
 void viewProgBarLoad::loadViewProgBar(QSize size)
 {
-    auto num = /*qreal(_progBar->width()) / 9*/100;
-    auto pixWidget =  _progBar->width() / 100;
+    auto num = qreal(_progBar->width()) / 9/*100*/;
+    auto pixWidget =  8 /*_progBar->width() / 100*/;
     auto tmp = (_engine->duration() * 1000) / num;
     auto dpr = qApp->devicePixelRatio();
     QList<QPixmap> pm;
@@ -1322,7 +1322,7 @@ void viewProgBarLoad::loadViewProgBar(QSize size)
             auto img_tmp = img.scaledToHeight(50);
 
 
-            pm.append(QPixmap::fromImage(img_tmp.copy(img_tmp.size().width() / 2 - 4, 0, pixWidget, 50)));
+            pm.append(QPixmap::fromImage(img_tmp.copy(img_tmp.size().width() / 2 - 4, 0, pixWidget, 50))); //-2 为了1px的内边框
             QImage img_black = img_tmp.convertToFormat(QImage::Format_Grayscale8);
             pm_black.append(QPixmap::fromImage(img_black.copy(img_black.size().width() / 2 - 4, 0, pixWidget, 50)));
 
@@ -1448,7 +1448,9 @@ void ToolboxProxy::finishLoadSlot(QSize size)
     if (!_bthumbnailmode) {
         return;
     }
-    _viewProgBar->setViewProgBar(_engine, pm_list, pm_black_list);
+    if (isStillShowThumbnail) {
+        _viewProgBar->setViewProgBar(_engine, pm_list, pm_black_list);
+    }
 
     if (CompositingManager::get().composited()/* && _loadsize == size*/ && _engine->state() != PlayerEngine::CoreState::Idle) {
         PlayItemInfo info = _engine->playlist().currentInfo();
@@ -1470,6 +1472,7 @@ void ToolboxProxy::setthumbnailmode()
 
 #if !defined (__mips__ ) && !defined(__aarch64__)
     if (Settings::get().isSet(Settings::ShowThumbnailMode)) {
+        isStillShowThumbnail = true;
         _bthumbnailmode = true;
         updateThumbnail();
     } else {
@@ -1480,6 +1483,7 @@ void ToolboxProxy::setthumbnailmode()
 #else
     bool composited = CompositingManager::get().composited();
     if (composited) {
+        isStillShowThumbnail = true;
         _bthumbnailmode = true;
         updateThumbnail();
     } else {
@@ -2676,6 +2680,11 @@ void ToolboxProxy::resizeEvent(QResizeEvent *event)
         _oldsize = event->size();
 //        _progBar->setFixedWidth(width() - PROGBAR_SPEC);
         if (_engine->state() != PlayerEngine::CoreState::Idle) {
+            if (_bthumbnailmode) {
+                isStillShowThumbnail = false;
+                _bthumbnailmode = false;
+                updateMovieProgress();
+            }
             _progBar_Widget->setCurrentIndex(1);
         }
 

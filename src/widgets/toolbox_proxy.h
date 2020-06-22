@@ -275,6 +275,7 @@ private:
     bool m_mousePree = false;   //thx
     int m_mouseRelesePos = 0;
     bool _bthumbnailmode;
+    bool isStillShowThumbnail{true};
 
     //动画是否完成
     bool bAnimationFinash {true};
