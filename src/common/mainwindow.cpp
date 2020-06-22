@@ -870,8 +870,7 @@ MainWindow::MainWindow(QWidget *parent)
     _progIndicator->setVisible(false);
     connect(_engine, &PlayerEngine::elapsedChanged, [ = ]() {
         if (!_isJinJia) {
-            m_currElapsed = _engine->elapsed();
-            _progIndicator->updateMovieProgress(_engine->duration(), m_currElapsed);
+            _progIndicator->updateMovieProgress(_engine->duration(), _engine->elapsed());
         } else {
             _progIndicator->updateMovieProgress(oldDuration, oldElapsed);
         }
@@ -1024,7 +1023,6 @@ MainWindow::MainWindow(QWidget *parent)
         } else {
             utils::MoveToCenter(this);
         }*/
-        m_initDuration = _engine->duration();
 
         m_IsFree = true;
     });
@@ -1188,6 +1186,11 @@ MainWindow::MainWindow(QWidget *parent)
         changedMute(mute);
     });
     connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, &MainWindow::updateMiniBtnTheme);
+
+    ThreadPool::instance()->moveToNewThread(&m_diskCheckThread);
+    m_diskCheckThread.start();
+
+    connect(&m_diskCheckThread, &Diskcheckthread::diskRemove, this, &MainWindow::diskRemoved);
 }
 
 void MainWindow::setupTitlebar()
@@ -1596,14 +1599,9 @@ void MainWindow::animatePlayState()
             _animationlable->setGeometry(width() / 2 - 100, height() / 2 - 100, 200, 200);
             _animationlable->stop();
         }
-        m_isPlayDisk = false;
         //_playState->raise();
 
     } else if (_engine->state() == PlayerEngine::CoreState::Idle) {
-        if (m_isPlayDisk && m_currElapsed != m_initDuration) {
-            _nwComm->updateWithMessage(tr("Disc eject"));
-        }
-        m_isPlayDisk = false;
         //_playState->setVisible(false);
 
     } else {
@@ -1902,7 +1900,6 @@ bool MainWindow::addCdromPath()
         if (_engine->state() == PlayerEngine::CoreState::Idle)
             _engine->playByName(QUrl("playlist://0"));
         _engine->playByName(urls[0]);
-        m_isPlayDisk = true;
     } else {
         return false;
     }
@@ -3066,7 +3063,6 @@ void MainWindow::play(const QUrl &url)
         }
     }
     _engine->playByName(url);
-    m_isPlayDisk = true;
 }
 
 void MainWindow::toggleShapeMask()
@@ -4534,6 +4530,15 @@ void MainWindow::updateMiniBtnTheme(int a)
     dynamic_cast<IconButton *>(_miniCloseBtn)->changeTheme(a);
     dynamic_cast<IconButton *>(_miniQuitMiniBtn)->changeTheme(a);
 #endif
+}
+
+void MainWindow::diskRemoved(QString strDiskName)
+{
+    QString strCurrFile;
+    strCurrFile = _engine->getplaylist()->currentInfo().url.toString();
+
+    if (strCurrFile.contains(strDiskName)/* && _engine->state() == PlayerEngine::Playing*/)
+        _nwComm->updateWithMessage(tr("Disc reject"));
 }
 
 #include "mainwindow.moc"
