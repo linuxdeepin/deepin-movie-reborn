@@ -90,15 +90,25 @@ protected:
                                QPainter::SmoothPixmapTransform |
                                QPainter::Antialiasing);
 
-        QRect backgroundRect = rect();
+        //QRect backgroundRect = QRect();
         QRect pixmapRect;
 
         QPainterPath bp1;
-        bp1.addRoundedRect(backgroundRect, 2, 2);
+
+        QPen pen;
+        pen.setWidth(1);
+        pen.setStyle(Qt::SolidLine);
+        if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
+            pen.setColor(QColor(0, 0, 0, 0.1 * 255));
+        } else {
+            pen.setColor(QColor(255, 255, 255, 0.1 * 255));
+        }
+
+        painter.setPen(pen);
+        painter.fillRect(rect(), QBrush(Qt::black));
+        bp1.addRoundedRect(1, 1, rect().width() - 2, rect().height() - 2, 1, 1);
         painter.setClipPath(bp1);
-
-        painter.drawPixmap(backgroundRect, _pixmap);
-
+        painter.drawPixmap(1, 1, rect().width() - 2, rect().height() - 2, _pixmap);
     };
 private:
     int _index;
