@@ -500,10 +500,18 @@ public:
         QMatrix matrix;
         matrix.rotate(180);
         QPixmap pixmap = utils::LoadHiDPIPixmap(SLIDER_ARROW);
-        _sliderArrowUp = new DLabel(this);
-        _sliderArrowUp->setFixedSize(20, 18);
-        _sliderArrowUp->setPixmap(pixmap);
+        _sliderArrowUp = new DArrowRectangle(DArrowRectangle::ArrowTop);
+        _sliderArrowUp->setFocusPolicy(Qt::NoFocus);
+        _sliderArrowUp->setAttribute(Qt::WA_DeleteOnClose);
+        _sliderArrowUp->setWindowFlag(Qt::WindowStaysOnTopHint);
+        _sliderArrowUp->setArrowWidth(10);
+        _sliderArrowUp->setArrowHeight(7);
+        const QPalette pa = QGuiApplication::palette();
+        QColor bgColor = pa.color(QPalette::Highlight);
+        _sliderArrowUp->setBackgroundColor(bgColor);
+        _sliderArrowUp->setFixedSize(10, 7);
         _sliderArrowUp->hide();
+
         _sliderArrowDown = new DLabel(this);
         _sliderArrowDown->setFixedSize(20, 18);
         _sliderArrowDown->setPixmap(pixmap.transformed(matrix, Qt::SmoothTransformation));
@@ -665,7 +673,7 @@ public:
         _viewProgBarLayout->setSpacing(1);
 
         //重新获取胶片进度条长度 by ZhuYuliang
-        int pixWidget = _progBar->width() / 100;
+        int pixWidget = 8/*_progBar->width() / 100*/;
         //当宽度比较宽的时候，就插入两次相同图片
         if (pixWidget > 500) {
             pixWidget /= 2;
@@ -733,6 +741,7 @@ private:
 
         if (press) {
 //            _indicator->changeStyle(press);
+            _indicator->setPressed(press);
             _indicator->resize(2, 60);
 //            _indicator->setMaskColor(QColor(255, 138, 0));
 //            _indicator->setBlurRectXRadius(2);
@@ -742,7 +751,8 @@ private:
 //            _sliderArrowDown->setVisible(press);
         } else {
 //            _indicator->changeStyle(press);
-            _indicator->resize(4, 60);
+            _indicator->setPressed(press);
+            _indicator->resize(6, 60);
 //            _indicator->setMaskColor(QColor(255, 255, 255));
 //            _indicator->setBlurRectXRadius(2);
 //            _indicator->setBlurRectYRadius(2);
@@ -823,9 +833,8 @@ protected:
     void paintEvent(QPaintEvent *e)
     {
         _indicator->move(_indicatorPos.x(), _indicatorPos.y());
-//        _sliderArrowDown->move(_indicatorPos.x() + _indicator->width() / 2 - _sliderArrowDown->width() / 2,
-//                               _indicatorPos.y() - 10);
-        _sliderArrowUp->move(_indicatorPos.x() + _indicator->width() / 2 - _sliderArrowUp->width() / 2, 55);
+        QPoint pos = this->mapToGlobal(QPoint(0, 0));
+        _sliderArrowUp->move(pos.x() + _indicatorPos.x() + 1, pos.y() + _indicator->height() - 5);
         _front->setFixedWidth(_indicatorPos.x());
 
         if (_press) {
@@ -856,7 +865,7 @@ private:
     IndicatorItem *_indicator {nullptr};
     SliderTime *_sliderTime{nullptr};
     DLabel *_sliderArrowDown{nullptr};
-    DLabel *_sliderArrowUp{nullptr};
+    DArrowRectangle *_sliderArrowUp{nullptr};
     bool _press{false};
     QGraphicsColorizeEffect *m_effect{nullptr};
     QList<QLabel *> labelList ;
@@ -1278,8 +1287,8 @@ void viewProgBarLoad::run()
 
 void viewProgBarLoad::loadViewProgBar(QSize size)
 {
-    auto num = /*qreal(_progBar->width()) / 9*/100;
-    auto pixWidget =  _progBar->width() / 100;
+    auto num = qreal(_progBar->width()) / 9/*100*/;
+    auto pixWidget =  8 /*_progBar->width() / 100*/;
     auto tmp = (_engine->duration() * 1000) / num;
     auto dpr = qApp->devicePixelRatio();
     QList<QPixmap> pm;
@@ -1322,7 +1331,7 @@ void viewProgBarLoad::loadViewProgBar(QSize size)
             auto img_tmp = img.scaledToHeight(50);
 
 
-            pm.append(QPixmap::fromImage(img_tmp.copy(img_tmp.size().width() / 2 - 4, 0, pixWidget, 50)));
+            pm.append(QPixmap::fromImage(img_tmp.copy(img_tmp.size().width() / 2 - 4, 0, pixWidget, 50))); //-2 为了1px的内边框
             QImage img_black = img_tmp.convertToFormat(QImage::Format_Grayscale8);
             pm_black.append(QPixmap::fromImage(img_black.copy(img_black.size().width() / 2 - 4, 0, pixWidget, 50)));
 
@@ -1406,7 +1415,7 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
     _previewer = new ThumbnailPreview;
     _previewer->hide();
 
-    _previewTime = new SliderTime;
+    _previewTime  = new SliderTime;
     _previewTime->hide();
 
     _subView = new SubtitlesView(0, _engine);
@@ -1448,7 +1457,9 @@ void ToolboxProxy::finishLoadSlot(QSize size)
     if (!_bthumbnailmode) {
         return;
     }
-    _viewProgBar->setViewProgBar(_engine, pm_list, pm_black_list);
+    if (isStillShowThumbnail) {
+        _viewProgBar->setViewProgBar(_engine, pm_list, pm_black_list);
+    }
 
     if (CompositingManager::get().composited()/* && _loadsize == size*/ && _engine->state() != PlayerEngine::CoreState::Idle) {
         PlayItemInfo info = _engine->playlist().currentInfo();
@@ -1470,6 +1481,7 @@ void ToolboxProxy::setthumbnailmode()
 
 #if !defined (__mips__ ) && !defined(__aarch64__)
     if (Settings::get().isSet(Settings::ShowThumbnailMode)) {
+        isStillShowThumbnail = true;
         _bthumbnailmode = true;
         updateThumbnail();
     } else {
@@ -1480,6 +1492,7 @@ void ToolboxProxy::setthumbnailmode()
 #else
     bool composited = CompositingManager::get().composited();
     if (composited) {
+        isStillShowThumbnail = true;
         _bthumbnailmode = true;
         updateThumbnail();
     } else {
@@ -1779,11 +1792,11 @@ void ToolboxProxy::setup()
     QList<DButtonBoxButton *> list;
 
 
-//    _prevBtn = new DIconButton(this);
-    _prevBtn = new VideoBoxButton("", ":/icons/deepin/builtin/light/normal/last_normal.svg",
-                                  ":/icons/deepin/builtin/light/normal/last_normal.svg",
-                                  ":/icons/deepin/builtin/light/press/last_press.svg");
-//    _prevBtn->setIcon(QIcon::fromTheme("dcc_last"));
+    _prevBtn = new DButtonBoxButton("", this);
+//    _prevBtn = new VideoBoxButton("", ":/icons/deepin/builtin/light/normal/last_normal.svg",
+//                                  ":/icons/deepin/builtin/light/normal/last_normal.svg",
+//                                  ":/icons/deepin/builtin/light/press/last_normal.svg");
+    _prevBtn->setIcon(QIcon::fromTheme("dcc_last", QIcon(":/icons/deepin/builtin/light/normal/last_normal.svg")));
     _prevBtn->setIconSize(QSize(36, 36));
     _prevBtn->setFixedSize(40, 50);
     _prevBtn->setObjectName("PrevBtn");
@@ -1791,10 +1804,12 @@ void ToolboxProxy::setup()
     signalMapper->setMapping(_prevBtn, "prev");
 //    _mid->addWidget(_prevBtn);
     list.append(_prevBtn);
-    _playBtn = new VideoBoxButton("", ":/resources/icons/light/normal/play_normal2.svg",
-                                  ":/resources/icons/light/normal/play_normal2.svg",
-                                  ":/icons/deepin/builtin/light/press/play_press.svg");
-//    _playBtn->setIcon(QIcon::fromTheme("dcc_play"));
+
+    _playBtn = new DButtonBoxButton("", this);
+//    _playBtn = new VideoBoxButton("", ":/resources/icons/light/normal/play_normal2.svg",
+//                                  ":/resources/icons/light/normal/play_normal2.svg",
+//                                  ":/icons/deepin/builtin/light/press/play_press.svg");
+    _playBtn->setIcon(QIcon::fromTheme("dcc_play", QIcon(":/icons/deepin/builtin/light/normal/play_normal.svg")));
     _playBtn->setIconSize(QSize(36, 36));
     _playBtn->setFixedSize(40, 50);
     connect(_playBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
@@ -1802,10 +1817,11 @@ void ToolboxProxy::setup()
 //    _mid->addWidget(_playBtn);
     list.append(_playBtn);
 
-    _nextBtn = new VideoBoxButton("", ":/icons/deepin/builtin/light/normal/next_normal.svg",
-                                  ":/icons/deepin/builtin/light/normal/next_normal.svg",
-                                  ":/icons/deepin/builtin/light/press/next_press.svg");
-//    _nextBtn->setIcon(QIcon::fromTheme("dcc_next"));
+    _nextBtn = new DButtonBoxButton("", this);
+//    _nextBtn = new VideoBoxButton("", ":/icons/deepin/builtin/light/normal/next_normal.svg",
+//                                  ":/icons/deepin/builtin/light/normal/next_normal.svg",
+//                                  ":/icons/deepin/builtin/light/press/next_press.svg");
+    _nextBtn->setIcon(QIcon::fromTheme("dcc_next", QIcon(":/icons/deepin/builtin/light/normal/next_normal.svg")));
     _nextBtn->setIconSize(QSize(36, 36));
     _nextBtn->setFixedSize(40, 50);
     connect(_nextBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
@@ -2334,15 +2350,15 @@ void ToolboxProxy::updatePlayState()
     if (_engine->state() == PlayerEngine::CoreState::Playing) {
         //        _playBtn->setObjectName("PauseBtn");
         if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ) {
-            _playBtn->setPropertyPic(":/icons/deepin/builtin/light/normal/suspend_normal.svg",
-                                     ":/icons/deepin/builtin/light/normal/suspend_normal.svg",
-                                     ":/icons/deepin/builtin/light/press/suspend_press.svg");
-            _prevBtn->setPropertyPic(":/icons/deepin/builtin/light/normal/last_normal.svg",
-                                     ":/icons/deepin/builtin/light/normal/last_normal.svg",
-                                     ":/icons/deepin/builtin/light/press/last_press.svg");
-            _nextBtn->setPropertyPic(":/icons/deepin/builtin/light/normal/next_normal.svg",
-                                     ":/icons/deepin/builtin/light/normal/next_normal.svg",
-                                     ":/icons/deepin/builtin/light/press/next_press.svg");
+//            _playBtn->setPropertyPic(":/icons/deepin/builtin/light/normal/suspend_normal.svg",
+//                                     ":/icons/deepin/builtin/light/normal/suspend_normal.svg",
+//                                     ":/icons/deepin/builtin/light/press/suspend_press.svg");
+//            _prevBtn->setPropertyPic(":/icons/deepin/builtin/light/normal/last_normal.svg",
+//                                     ":/icons/deepin/builtin/light/normal/last_normal.svg",
+//                                     ":/icons/deepin/builtin/light/press/last_press.svg");
+//            _nextBtn->setPropertyPic(":/icons/deepin/builtin/light/normal/next_normal.svg",
+//                                     ":/icons/deepin/builtin/light/normal/next_normal.svg",
+//                                     ":/icons/deepin/builtin/light/press/next_press.svg");
             DPalette pa;
             pa = _palyBox->palette();
             pa.setColor(DPalette::Light, QColor(255, 255, 255, 255));
@@ -2366,15 +2382,15 @@ void ToolboxProxy::updatePlayState()
             _listBtn->setPalette(pa);
 
         } else {
-            _playBtn->setPropertyPic(":/icons/deepin/builtin/dark/normal/suspend_normal.svg",
-                                     ":/icons/deepin/builtin/dark/normal/suspend_normal.svg",
-                                     ":/icons/deepin/builtin/dark/press/suspend_press.svg");
-            _prevBtn->setPropertyPic(":/icons/deepin/builtin/dark/normal/last_normal.svg",
-                                     ":/icons/deepin/builtin/dark/normal/last_normal.svg",
-                                     ":/icons/deepin/builtin/dark/press/last_press.svg");
-            _nextBtn->setPropertyPic(":/icons/deepin/builtin/dark/normal/next_normal.svg",
-                                     ":/icons/deepin/builtin/dark/normal/next_normal.svg",
-                                     ":/icons/deepin/builtin/dark/press/next_press.svg");
+//            _playBtn->setPropertyPic(":/icons/deepin/builtin/dark/normal/suspend_normal.svg",
+//                                     ":/icons/deepin/builtin/dark/normal/suspend_normal.svg",
+//                                     ":/icons/deepin/builtin/dark/press/suspend_press.svg");
+//            _prevBtn->setPropertyPic(":/icons/deepin/builtin/dark/normal/last_normal.svg",
+//                                     ":/icons/deepin/builtin/dark/normal/last_normal.svg",
+//                                     ":/icons/deepin/builtin/dark/press/last_press.svg");
+//            _nextBtn->setPropertyPic(":/icons/deepin/builtin/dark/normal/next_normal.svg",
+//                                     ":/icons/deepin/builtin/dark/normal/next_normal.svg",
+//                                     ":/icons/deepin/builtin/dark/press/next_press.svg");
 
             DPalette pa;
             pa = _palyBox->palette();
@@ -2400,6 +2416,7 @@ void ToolboxProxy::updatePlayState()
 
 
         }
+        _playBtn->setIcon(QIcon::fromTheme("dcc_suspend", QIcon(":/icons/deepin/builtin/light/normal/suspend_normal.svg")));
         _playBtn->setToolTip(tr("Pause"));
         if (_isJinJia) {
             if (!_progressTimer.isActive()) {
@@ -2415,15 +2432,15 @@ void ToolboxProxy::updatePlayState()
             _progressTimer.stop();
         //        _playBtn->setObjectName("PlayBtn");
         if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ) {
-            _playBtn->setPropertyPic(":/icons/deepin/builtin/light/normal/play_normal.svg",
-                                     ":/icons/deepin/builtin/light/normal/play_normal.svg",
-                                     ":/icons/deepin/builtin/light/press/play_press.svg");
-            _prevBtn->setPropertyPic(":/icons/deepin/builtin/light/normal/last_normal.svg",
-                                     ":/icons/deepin/builtin/light/normal/last_normal.svg",
-                                     ":/icons/deepin/builtin/light/press/last_press.svg");
-            _nextBtn->setPropertyPic(":/icons/deepin/builtin/light/normal/next_normal.svg",
-                                     ":/icons/deepin/builtin/light/normal/next_normal.svg",
-                                     ":/icons/deepin/builtin/light/press/next_press.svg");
+//            _playBtn->setPropertyPic(":/icons/deepin/builtin/light/normal/play_normal.svg",
+//                                     ":/icons/deepin/builtin/light/normal/play_normal.svg",
+//                                     ":/icons/deepin/builtin/light/press/play_press.svg");
+//            _prevBtn->setPropertyPic(":/icons/deepin/builtin/light/normal/last_normal.svg",
+//                                     ":/icons/deepin/builtin/light/normal/last_normal.svg",
+//                                     ":/icons/deepin/builtin/light/press/last_press.svg");
+//            _nextBtn->setPropertyPic(":/icons/deepin/builtin/light/normal/next_normal.svg",
+//                                     ":/icons/deepin/builtin/light/normal/next_normal.svg",
+//                                     ":/icons/deepin/builtin/light/press/next_press.svg");
 
             DPalette pa;
             pa = _palyBox->palette();
@@ -2449,15 +2466,15 @@ void ToolboxProxy::updatePlayState()
             _listBtn->setPalette(pa);
 
         } else {
-            _playBtn->setPropertyPic(":/icons/deepin/builtin/dark/normal/play_normal.svg",
-                                     ":/icons/deepin/builtin/dark/normal/play_normal.svg",
-                                     ":/icons/deepin/builtin/dark/press/play_press.svg");
-            _prevBtn->setPropertyPic(":/icons/deepin/builtin/dark/normal/last_normal.svg",
-                                     ":/icons/deepin/builtin/dark/normal/last_normal.svg",
-                                     ":/icons/deepin/builtin/dark/press/last_press.svg");
-            _nextBtn->setPropertyPic(":/icons/deepin/builtin/dark/normal/next_normal.svg",
-                                     ":/icons/deepin/builtin/dark/normal/next_normal.svg",
-                                     ":/icons/deepin/builtin/dark/press/next_press.svg");
+//            _playBtn->setPropertyPic(":/icons/deepin/builtin/dark/normal/play_normal.svg",
+//                                     ":/icons/deepin/builtin/dark/normal/play_normal.svg",
+//                                     ":/icons/deepin/builtin/dark/press/play_press.svg");
+//            _prevBtn->setPropertyPic(":/icons/deepin/builtin/dark/normal/last_normal.svg",
+//                                     ":/icons/deepin/builtin/dark/normal/last_normal.svg",
+//                                     ":/icons/deepin/builtin/dark/press/last_press.svg");
+//            _nextBtn->setPropertyPic(":/icons/deepin/builtin/dark/normal/next_normal.svg",
+//                                     ":/icons/deepin/builtin/dark/normal/next_normal.svg",
+//                                     ":/icons/deepin/builtin/dark/press/next_press.svg");
             DPalette pa;
             pa = _palyBox->palette();
             pa.setColor(DPalette::Light, QColor(0, 0, 0, 102));
@@ -2482,6 +2499,7 @@ void ToolboxProxy::updatePlayState()
 
         }
         _playBtn->setToolTip(tr("Play"));
+        _playBtn->setIcon(QIcon::fromTheme("dcc_play", QIcon(":/icons/deepin/builtin/light/normal/play_normal.svg")));
     }
 
     if (_engine->state() == PlayerEngine::CoreState::Idle) {
@@ -2676,6 +2694,11 @@ void ToolboxProxy::resizeEvent(QResizeEvent *event)
         _oldsize = event->size();
 //        _progBar->setFixedWidth(width() - PROGBAR_SPEC);
         if (_engine->state() != PlayerEngine::CoreState::Idle) {
+            if (_bthumbnailmode) {
+                isStillShowThumbnail = false;
+                _bthumbnailmode = false;
+                updateMovieProgress();
+            }
             _progBar_Widget->setCurrentIndex(1);
         }
 

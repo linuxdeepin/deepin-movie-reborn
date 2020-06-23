@@ -90,15 +90,25 @@ protected:
                                QPainter::SmoothPixmapTransform |
                                QPainter::Antialiasing);
 
-        QRect backgroundRect = rect();
+        //QRect backgroundRect = QRect();
         QRect pixmapRect;
 
         QPainterPath bp1;
-        bp1.addRoundedRect(backgroundRect, 2, 2);
+
+        QPen pen;
+        pen.setWidth(1);
+        pen.setStyle(Qt::SolidLine);
+        if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
+            pen.setColor(QColor(0, 0, 0, 0.1 * 255));
+        } else {
+            pen.setColor(QColor(255, 255, 255, 0.1 * 255));
+        }
+
+        painter.setPen(pen);
+        painter.fillRect(rect(), QBrush(Qt::black));
+        bp1.addRoundedRect(1, 1, rect().width() - 2, rect().height() - 2, 1, 1);
         painter.setClipPath(bp1);
-
-        painter.drawPixmap(backgroundRect, _pixmap);
-
+        painter.drawPixmap(1, 1, rect().width() - 2, rect().height() - 2, _pixmap);
     };
 private:
     int _index;
@@ -116,6 +126,11 @@ public:
     {
     };
 
+    void setPressed(bool bPressed)
+    {
+        m_bIsPressed = bPressed;
+    }
+
 protected:
     void paintEvent(QPaintEvent *event)
     {
@@ -123,18 +138,26 @@ protected:
         QRect backgroundRect = rect();
 
         QPainterPath bpath;
-        bpath.addRect(backgroundRect.marginsRemoved(QMargins(1, 1, 1, 1)));
-        painter.fillPath(bpath, QColor(255, 255, 255, 255));
 
-        QPen pen;
-        pen.setWidth(1);
-        pen.setColor(QColor(0, 0, 0));
-        bpath.addRoundedRect(backgroundRect, 2, 2);
-        painter.setPen(pen);
-        painter.setOpacity(0.4);
-        painter.drawPath(bpath);
+        if (!m_bIsPressed) {
+            bpath.addRect(backgroundRect.marginsRemoved(QMargins(1, 1, 1, 1)));
+            painter.fillPath(bpath, QColor(255, 255, 255, 255));
+
+            QPen pen;
+            pen.setWidth(1);
+            pen.setColor(QColor(0, 0, 0));
+            bpath.addRoundedRect(backgroundRect, 2, 2);
+            painter.setPen(pen);
+            painter.setOpacity(0.4);
+            painter.drawPath(bpath);
+        } else {
+            painter.fillRect(backgroundRect, QBrush(QColor(255, 138, 0)));
+        }
 
     };
+
+private:
+    bool m_bIsPressed {false};
 };
 
 class ToolboxProxy: public DFloatingWidget
@@ -227,13 +250,13 @@ private:
     VolumeSlider *_volSlider {nullptr};
 
 //    DImageButton *_playBtn {nullptr};
-//    DIconButton *_playBtn {nullptr};
+//   DIconButton *_playBtn {nullptr};
 //    DIconButton *_prevBtn {nullptr};
 //    DIconButton *_nextBtn {nullptr};
 
-    VideoBoxButton *_playBtn {nullptr};
-    VideoBoxButton *_prevBtn {nullptr};
-    VideoBoxButton *_nextBtn {nullptr};
+    DButtonBoxButton *_playBtn {nullptr};
+    DButtonBoxButton *_prevBtn {nullptr};
+    DButtonBoxButton *_nextBtn {nullptr};
     DButtonBox *_palyBox{nullptr};
 
 //    DIconButton *_subBtn {nullptr};
@@ -275,6 +298,7 @@ private:
     bool m_mousePree = false;   //thx
     int m_mouseRelesePos = 0;
     bool _bthumbnailmode;
+    bool isStillShowThumbnail{true};
 
     //动画是否完成
     bool bAnimationFinash {true};

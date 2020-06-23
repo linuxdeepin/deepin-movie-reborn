@@ -44,6 +44,7 @@
 #include <DFloatingMessage>
 #include "animationlabel.h"
 #include "volumemonitoring.h"
+#include "diskcheckthread.h"
 
 //static const int VOLUME_OFFSET = 40;
 
@@ -243,6 +244,7 @@ protected slots:
     void changedMute(bool);
 
     void updateMiniBtnTheme(int);
+    void diskRemoved(QString strDiskName);
 private:
     void setupTitlebar();
 
@@ -371,9 +373,7 @@ private:
     qint64 oldDuration = 0;
     qint64 oldElapsed = 0;
 
-    qint64 m_initDuration {0};
-    qint64 m_currElapsed {0};
-    bool m_isPlayDisk {false};
+    Diskcheckthread m_diskCheckThread;
 };
 };
 
