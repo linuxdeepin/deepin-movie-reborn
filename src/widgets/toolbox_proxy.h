@@ -116,6 +116,11 @@ public:
     {
     };
 
+    void setPressed(bool bPressed)
+    {
+        m_bIsPressed = bPressed;
+    }
+
 protected:
     void paintEvent(QPaintEvent *event)
     {
@@ -123,18 +128,26 @@ protected:
         QRect backgroundRect = rect();
 
         QPainterPath bpath;
-        bpath.addRect(backgroundRect.marginsRemoved(QMargins(1, 1, 1, 1)));
-        painter.fillPath(bpath, QColor(255, 255, 255, 255));
 
-        QPen pen;
-        pen.setWidth(1);
-        pen.setColor(QColor(0, 0, 0));
-        bpath.addRoundedRect(backgroundRect, 2, 2);
-        painter.setPen(pen);
-        painter.setOpacity(0.4);
-        painter.drawPath(bpath);
+        if (!m_bIsPressed) {
+            bpath.addRect(backgroundRect.marginsRemoved(QMargins(1, 1, 1, 1)));
+            painter.fillPath(bpath, QColor(255, 255, 255, 255));
+
+            QPen pen;
+            pen.setWidth(1);
+            pen.setColor(QColor(0, 0, 0));
+            bpath.addRoundedRect(backgroundRect, 2, 2);
+            painter.setPen(pen);
+            painter.setOpacity(0.4);
+            painter.drawPath(bpath);
+        } else {
+            painter.fillRect(backgroundRect, QBrush(QColor(255, 138, 0)));
+        }
 
     };
+
+private:
+    bool m_bIsPressed {false};
 };
 
 class ToolboxProxy: public DFloatingWidget

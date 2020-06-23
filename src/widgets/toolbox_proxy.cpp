@@ -500,10 +500,18 @@ public:
         QMatrix matrix;
         matrix.rotate(180);
         QPixmap pixmap = utils::LoadHiDPIPixmap(SLIDER_ARROW);
-        _sliderArrowUp = new DLabel(this);
-        _sliderArrowUp->setFixedSize(20, 18);
-        _sliderArrowUp->setPixmap(pixmap);
+        _sliderArrowUp = new DArrowRectangle(DArrowRectangle::ArrowTop);
+        _sliderArrowUp->setFocusPolicy(Qt::NoFocus);
+        _sliderArrowUp->setAttribute(Qt::WA_DeleteOnClose);
+        _sliderArrowUp->setWindowFlag(Qt::WindowStaysOnTopHint);
+        _sliderArrowUp->setArrowWidth(10);
+        _sliderArrowUp->setArrowHeight(7);
+        const QPalette pa = QGuiApplication::palette();
+        QColor bgColor = pa.color(QPalette::Highlight);
+        _sliderArrowUp->setBackgroundColor(bgColor);
+        _sliderArrowUp->setFixedSize(10, 7);
         _sliderArrowUp->hide();
+
         _sliderArrowDown = new DLabel(this);
         _sliderArrowDown->setFixedSize(20, 18);
         _sliderArrowDown->setPixmap(pixmap.transformed(matrix, Qt::SmoothTransformation));
@@ -733,6 +741,7 @@ private:
 
         if (press) {
 //            _indicator->changeStyle(press);
+            _indicator->setPressed(press);
             _indicator->resize(2, 60);
 //            _indicator->setMaskColor(QColor(255, 138, 0));
 //            _indicator->setBlurRectXRadius(2);
@@ -742,7 +751,8 @@ private:
 //            _sliderArrowDown->setVisible(press);
         } else {
 //            _indicator->changeStyle(press);
-            _indicator->resize(4, 60);
+            _indicator->setPressed(press);
+            _indicator->resize(6, 60);
 //            _indicator->setMaskColor(QColor(255, 255, 255));
 //            _indicator->setBlurRectXRadius(2);
 //            _indicator->setBlurRectYRadius(2);
@@ -823,9 +833,8 @@ protected:
     void paintEvent(QPaintEvent *e)
     {
         _indicator->move(_indicatorPos.x(), _indicatorPos.y());
-//        _sliderArrowDown->move(_indicatorPos.x() + _indicator->width() / 2 - _sliderArrowDown->width() / 2,
-//                               _indicatorPos.y() - 10);
-        _sliderArrowUp->move(_indicatorPos.x() + _indicator->width() / 2 - _sliderArrowUp->width() / 2, 55);
+        QPoint pos = this->mapToGlobal(QPoint(0, 0));
+        _sliderArrowUp->move(pos.x() + _indicatorPos.x() + 1, pos.y() + _indicator->height() - 5);
         _front->setFixedWidth(_indicatorPos.x());
 
         if (_press) {
@@ -856,7 +865,7 @@ private:
     IndicatorItem *_indicator {nullptr};
     SliderTime *_sliderTime{nullptr};
     DLabel *_sliderArrowDown{nullptr};
-    DLabel *_sliderArrowUp{nullptr};
+    DArrowRectangle *_sliderArrowUp{nullptr};
     bool _press{false};
     QGraphicsColorizeEffect *m_effect{nullptr};
     QList<QLabel *> labelList ;
@@ -1406,7 +1415,7 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
     _previewer = new ThumbnailPreview;
     _previewer->hide();
 
-    _previewTime = new SliderTime;
+    _previewTime  = new SliderTime;
     _previewTime->hide();
 
     _subView = new SubtitlesView(0, _engine);
