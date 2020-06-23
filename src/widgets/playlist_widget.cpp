@@ -772,7 +772,7 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     });
     left->setContentsMargins(36, 0, 0, 0);
 //    _title->setContentsMargins(0, 0, 0, 0);
-    clearButton->setContentsMargins(0, 0, 0, 0);
+    clearButton->setContentsMargins(0, 0, 0, 70);
     _num->setContentsMargins(0, 0, 0, 0);
 
 
