@@ -818,8 +818,17 @@ MainWindow::MainWindow(QWidget *parent)
     dynamic_cast<IconButton *>(_miniQuitMiniBtn)->setFlat(true);
 #else
     _miniPlayBtn = new DIconButton(this);
-    _miniCloseBtn = new DIconButton(this);
     _miniQuitMiniBtn = new DIconButton(this);
+    if (!composited) {
+        _labelCover = new QLabel(this);
+        _labelCover->setFixedSize(QSize(30, 30));
+        _labelCover->setVisible(_miniMode);
+        QPalette palette;
+        palette.setColor(QPalette::Window, QColor(255, 255, 255));
+        _labelCover->setAutoFillBackground(true);
+        _labelCover->setPalette(palette);
+    }
+    _miniCloseBtn = new DIconButton(this);
 
     _miniPlayBtn->setFlat(true);
     _miniCloseBtn->setFlat(true);
@@ -900,6 +909,7 @@ MainWindow::MainWindow(QWidget *parent)
             this, &MainWindow::onBindingsChanged);
     ShortcutManager::get().buildBindings();
 
+    connect(_engine, SIGNAL(stateChanged()), this, SLOT(update()));
     connect(_engine, &PlayerEngine::tracksChanged, this, &MainWindow::updateActionsState);
     connect(_engine, &PlayerEngine::stateChanged, this, &MainWindow::updateActionsState);
     updateActionsState();
@@ -1047,7 +1057,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(_engine, &PlayerEngine::onlineStateChanged, this, &MainWindow::checkOnlineState);
     connect(&OnlineSubtitle::get(), &OnlineSubtitle::onlineSubtitleStateChanged, this, &MainWindow::checkOnlineSubtitle);
     connect(_engine, &PlayerEngine::mpvErrorLogsChanged, this, &MainWindow::checkErrorMpvLogsChanged);
-    connect(_engine, &PlayerEngine::mpvWarningLogsChanged, this, &MainWindow::checkWarningMpvLogsChanged);
+    //4k播放时不显示提示框
+    //connect(_engine, &PlayerEngine::mpvWarningLogsChanged, this, &MainWindow::checkWarningMpvLogsChanged);
     connect(_engine, &PlayerEngine::urlpause, this, [ = ](bool status) {
         if (status) {
             auto msg = QString(tr("Buffering..."));
@@ -3083,6 +3094,9 @@ void MainWindow::suspendToolsWindow()
         _miniPlayBtn->hide();
         _miniCloseBtn->hide();
         _miniQuitMiniBtn->hide();
+        if (_labelCover) {
+            _labelCover->hide();
+        }
     }
 }
 
@@ -3107,6 +3121,9 @@ void MainWindow::resumeToolsWindow()
         _miniPlayBtn->show();
         _miniCloseBtn->show();
         _miniQuitMiniBtn->show();
+        if (_labelCover) {
+            _labelCover->show();
+        }
     }
 
 _finish:
@@ -3228,7 +3245,9 @@ void MainWindow::checkErrorMpvLogsChanged(const QString prefix, const QString te
                (errorMessage.toLower().contains(QString("open")))) {
         _nwComm->updateWithMessage(tr("No video file found"));
 //        _engine->playlist().clear();
-    } else if (errorMessage.contains(QString("Hardware does not support image size 3840x2160"))) {
+    }
+    //4k播放不显示提示框
+    /*else if (errorMessage.contains(QString("Hardware does not support image size 3840x2160"))) {
         requestAction(ActionFactory::TogglePause);
 
         DDialog *dialog = new DDialog;
@@ -3253,7 +3272,7 @@ void MainWindow::checkErrorMpvLogsChanged(const QString prefix, const QString te
             }
             _engine->pauseResume();
         });
-    }
+    }*/
 
 }
 
@@ -4054,7 +4073,9 @@ void MainWindow::toggleUIMode()
     _miniPlayBtn->setVisible(_miniMode);
     _miniCloseBtn->setVisible(_miniMode);
     _miniQuitMiniBtn->setVisible(_miniMode);
-
+    if (_labelCover) {
+        _labelCover->setVisible(_miniMode);
+    }
     _miniPlayBtn->setEnabled(_miniMode);
     _miniCloseBtn->setEnabled(_miniMode);
     _miniQuitMiniBtn->setEnabled(_miniMode);
@@ -4126,6 +4147,9 @@ void MainWindow::toggleUIMode()
 
         _miniPlayBtn->move(sz.width() - 12 - _miniPlayBtn->width(),
                            sz.height() - 10 - _miniPlayBtn->height());
+        if (_labelCover) {
+            _labelCover->move(sz.width() - 15 - _miniCloseBtn->width(), 10);
+        }
         _miniCloseBtn->move(sz.width() - 15 - _miniCloseBtn->width(), 10);
         _miniQuitMiniBtn->move(14, sz.height() - 10 - _miniQuitMiniBtn->height());
 
