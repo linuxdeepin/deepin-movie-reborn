@@ -374,6 +374,7 @@ private:
     qint64 oldElapsed = 0;
 
     Diskcheckthread m_diskCheckThread;
+    bool m_bClosed {false};      //用于景嘉微显卡下过滤metacall事件
 };
 };
 
