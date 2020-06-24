@@ -1284,6 +1284,11 @@ bool MainWindow::event(QEvent *ev)
         //connect(windowHandle(), &QWindow::windowStateChanged, this, &MainWindow::onWindowStateChanged);
         onWindowStateChanged();
     }
+
+    if (m_bClosed && _isJinJia && ev->type() == QEvent::MetaCall) {
+        return true;
+    }
+
     return DMainWindow::event(ev);
 }
 
@@ -3452,6 +3457,9 @@ void MainWindow::hideEvent(QHideEvent *event)
 void MainWindow::closeEvent(QCloseEvent *ev)
 {
     qDebug() << __func__;
+
+    m_bClosed = true;
+
     if (_lastCookie > 0) {
         utils::UnInhibitStandby(_lastCookie);
         qDebug() << "uninhibit cookie" << _lastCookie;
