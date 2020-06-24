@@ -769,7 +769,7 @@ void PlaylistModel::tryPlayCurrent(bool next)
         if (_playMode == SingleLoop && pif.mi.duration <= 1) {
             if (1 == count())
                 return;
-            if (_current < count()) {
+            if (_current < count() - 1) {
                 _current++;
             } else {
                 _current = 0;
