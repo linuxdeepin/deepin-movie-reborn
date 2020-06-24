@@ -766,17 +766,26 @@ void PlaylistModel::tryPlayCurrent(bool next)
     emit itemInfoUpdated(_current);
     if (pif.valid) {
         //单个循环小于1s视频不播放
-        if (_playMode == SingleLoop && pif.mi.duration <= 1) {
+        if ( pif.mi.duration <= 1) {
             if (1 == count())
                 return;
             if (_current < count() - 1) {
                 _current++;
+                _last = _current;
             } else {
                 _current = 0;
             }
         }
-        _engine->requestPlay(_current);
-        emit currentChanged();
+        _hasNormalVideo == false;
+        for (auto info : _infos) {
+            if (info.valid && info.mi.duration > 1) {
+                _hasNormalVideo = true;
+            }
+        }
+        if (_hasNormalVideo) {
+            _engine->requestPlay(_current);
+            emit currentChanged();
+        }
     } else {
         _current = -1;
         emit currentChanged();
