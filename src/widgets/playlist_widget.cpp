@@ -543,6 +543,10 @@ protected:
                 _name->setForegroundRole(DPalette::Highlight);
                 _index->setForegroundRole(DPalette::Highlight);
                 _time->setForegroundRole(DPalette::Highlight);
+            } else {
+                _name->setForegroundRole(DPalette::ToolTipText);
+                _index->setForegroundRole(DPalette::BrightText);
+                _time->setForegroundRole(DPalette::BrightText);
             }
             opacityEffect_1->setOpacity(1.0);
             opacityEffect->setOpacity(1.0);
