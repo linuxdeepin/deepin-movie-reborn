@@ -2186,6 +2186,9 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     }
 
     case ActionFactory::ActionKind::ToggleMiniMode: {
+        if (_mouseMoved) {
+            break;
+        }
         if (_playlist->state() == PlaylistWidget::Opened && !isFullScreen()) {
             requestAction(ActionFactory::TogglePlaylist);
         }
