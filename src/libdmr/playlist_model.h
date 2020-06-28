@@ -207,6 +207,7 @@ private:
     int _count {0};
     int _current {-1};
     int _last {-1};
+    bool _hasNormalVideo{false};
     PlayMode _playMode {PlayMode::OrderPlay};
     QList<PlayItemInfo> _infos;
 
