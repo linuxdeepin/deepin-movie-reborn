@@ -1307,7 +1307,7 @@ void PlaylistWidget::togglePopup()
     if (_state == State::Opened) {
         Q_ASSERT(isVisible());
 
-#ifndef __sw_64__
+#if !defined(__sw_64__) && !defined (__aarch64__)
         paOpen = new QPropertyAnimation(this, "geometry");
         paOpen->setEasingCurve(QEasingCurve::Linear);
         paOpen->setDuration(POPUP_DURATION);
@@ -1315,12 +1315,13 @@ void PlaylistWidget::togglePopup()
         paOpen->setEndValue(shrunk);;
         _toggling = false;
         _state = State::Closed;
-        emit stateChange();
+        //emit stateChange();
         paOpen->start();
         connect(paOpen, &QPropertyAnimation::finished, [ = ]() {
             paOpen->deleteLater();
             paOpen = nullptr;
             setVisible(!isVisible());
+            emit finishedAnimation();
             //_toggling = false;
             //_state = State::Closed;
             //emit stateChange();
@@ -1334,7 +1335,7 @@ void PlaylistWidget::togglePopup()
     } else {
         setVisible(!isVisible());
         _toggling = true;
-#ifndef __sw_64__
+#if !defined(__sw_64__) && !defined (__aarch64__)
         paClose = new QPropertyAnimation(this, "geometry");
         paClose->setEasingCurve(QEasingCurve::Linear);
         paClose->setDuration(POPUP_DURATION);
@@ -1342,11 +1343,12 @@ void PlaylistWidget::togglePopup()
         paClose->setEndValue(fixed);
         _toggling = false;
         _state = State::Opened;
-        emit stateChange();
+        //emit stateChange();
         paClose->start();
         connect(paClose, &QPropertyAnimation::finished, [ = ]() {
             paClose->deleteLater();
             paClose = nullptr;
+            emit finishedAnimation();
         });
 #else
         _toggling = false;
