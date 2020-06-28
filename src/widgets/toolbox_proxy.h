@@ -137,6 +137,10 @@ protected:
         QPainter painter(this);
         QRect backgroundRect = rect();
 
+        painter.setRenderHints(QPainter::HighQualityAntialiasing |
+                               QPainter::SmoothPixmapTransform |
+                               QPainter::Antialiasing);
+
         QPainterPath bpath;
 
         if (!m_bIsPressed) {
@@ -146,7 +150,7 @@ protected:
             QPen pen;
             pen.setWidth(1);
             pen.setColor(QColor(0, 0, 0));
-            bpath.addRoundedRect(backgroundRect, 2, 2);
+            bpath.addRoundedRect(backgroundRect, 3, 3);
             painter.setPen(pen);
             painter.setOpacity(0.4);
             painter.drawPath(bpath);
