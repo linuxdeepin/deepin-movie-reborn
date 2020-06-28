@@ -776,7 +776,7 @@ void PlaylistModel::tryPlayCurrent(bool next)
                 _current = 0;
             }
         }
-        _hasNormalVideo == false;
+        _hasNormalVideo = false;
         for (auto info : _infos) {
             if (info.valid && info.mi.duration > 1) {
                 _hasNormalVideo = true;
