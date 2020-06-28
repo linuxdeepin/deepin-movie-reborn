@@ -2677,6 +2677,11 @@ void ToolboxProxy::setPlaylist(PlaylistWidget *playlist)
     _playlist = playlist;
     WAYLAND_BLACK_WINDOW;
 
+    connect(_playlist, &PlaylistWidget::finishedAnimation, this, [ = ]() {
+        _mainWindow->update();
+        this->update();
+    });
+
     connect(_playlist, &PlaylistWidget::stateChange, this, [ = ]() {
 
 
@@ -2685,7 +2690,7 @@ void ToolboxProxy::setPlaylist(PlaylistWidget *playlist)
         }
 
         if (_playlist->state() == PlaylistWidget::State::Opened) {
-#ifndef __sw_64__
+#if !defined(__sw_64__) && !defined (__aarch64__)
             QRect rcBegin = this->geometry();
             QRect rcEnd = rcBegin;
             rcEnd.setY(rcBegin.y() - TOOLBOX_SPACE_HEIGHT);
@@ -2701,11 +2706,15 @@ void ToolboxProxy::setPlaylist(PlaylistWidget *playlist)
                 paopen = nullptr;
                 bAnimationFinash = true;
             });
+#else
+            QRect rc = this->geometry();
+            rc.setY(rc.y() - TOOLBOX_SPACE_HEIGHT);
+            this->setGeometry(rc);
 #endif
             _listBtn->setChecked(true);
         } else {
             _listBtn->setChecked(false);
-#ifndef __sw_64__
+#if !defined(__sw_64__) && !defined (__aarch64__)
             bAnimationFinash = false;
 
             QRect rcBegin = this->geometry();
@@ -2722,6 +2731,10 @@ void ToolboxProxy::setPlaylist(PlaylistWidget *playlist)
                 paClose = nullptr;
                 bAnimationFinash = true;
             });
+#else
+            QRect rc = this->geometry();
+            rc.setY(rc.y() + TOOLBOX_SPACE_HEIGHT);
+            this->setGeometry(rc);
 #endif
         }
     });

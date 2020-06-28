@@ -132,6 +132,7 @@ public:
 signals:
     void stateChange();
     void sizeChange();
+    void finishedAnimation();
 public slots:
     void togglePopup();
     void loadPlaylist();
