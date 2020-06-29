@@ -543,6 +543,10 @@ protected:
                 _name->setForegroundRole(DPalette::Highlight);
                 _index->setForegroundRole(DPalette::Highlight);
                 _time->setForegroundRole(DPalette::Highlight);
+            } else {
+                _name->setForegroundRole(DPalette::ToolTipText);
+                _index->setForegroundRole(DPalette::BrightText);
+                _time->setForegroundRole(DPalette::BrightText);
             }
             opacityEffect_1->setOpacity(1.0);
             opacityEffect->setOpacity(1.0);
@@ -594,9 +598,34 @@ protected:
             pp.addRoundedRect(bgRect, 8, 8);
             painter.fillPath(pp, bgColor);
 
+            QPalette pe;
+            if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
+                pe.setColor(QPalette::ToolTipText, Qt::white);
+                _name->setPalette(pe);
+                pe.setColor(QPalette::BrightText, Qt::white);
+                _index->setPalette(pe);
+            } else if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
+                pe.setColor(QPalette::ToolTipText, Qt::white);
+                _name->setPalette(pe);
+                pe.setColor(QPalette::BrightText, Qt::white);
+                _index->setPalette(pe);
+            }
         } else {
             _time->show();
             _closeBtn->hide();
+
+            QPalette pe;
+            if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
+                pe.setColor(QPalette::ToolTipText, Qt::black);
+                _name->setPalette(pe);
+                pe.setColor(QPalette::BrightText, Qt::black);
+                _index->setPalette(pe);
+            } else if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
+                pe.setColor(QPalette::ToolTipText, Qt::white);
+                _name->setPalette(pe);
+                pe.setColor(QPalette::BrightText, Qt::white);
+                _index->setPalette(pe);
+            }
         }
 
         QWidget::paintEvent(pe);
@@ -1247,11 +1276,12 @@ void PlaylistWidget::OnItemChanged(QListWidgetItem *current, QListWidgetItem *pr
         auto prevItemWgt = reinterpret_cast<PlayItemWidget *>(_playlist->itemWidget(previous));
         if (prevItemWgt) {
             prevItemWgt->setBIsSelect(false);
-            pe.setColor(QPalette::ToolTipText, Qt::black);
-            prevItemWgt->_name->setPalette(pe);
-            pe.setColor(QPalette::BrightText, Qt::black);
-            prevItemWgt->_index->setPalette(pe);
-            // _time->setForegroundRole(DPalette::BrightText);
+//            if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
+//                pe.setColor(QPalette::ToolTipText, Qt::black);
+//                prevItemWgt->_name->setPalette(pe);
+//                pe.setColor(QPalette::BrightText, Qt::black);
+//                prevItemWgt->_index->setPalette(pe);
+//            }
         }
     }
 
@@ -1260,11 +1290,12 @@ void PlaylistWidget::OnItemChanged(QListWidgetItem *current, QListWidgetItem *pr
         auto curItemWgt = reinterpret_cast<PlayItemWidget *>(_playlist->itemWidget(current));
         if (curItemWgt) {
             curItemWgt->setBIsSelect(true);
-            pe.setColor(QPalette::ToolTipText, Qt::white);
-            curItemWgt->_name->setPalette(pe);
-
-            pe.setColor(QPalette::BrightText, Qt::white);
-            curItemWgt->_index->setPalette(pe);
+//            if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
+//                pe.setColor(QPalette::ToolTipText, Qt::white);
+//                curItemWgt->_name->setPalette(pe);
+//                pe.setColor(QPalette::BrightText, Qt::white);
+//                curItemWgt->_index->setPalette(pe);
+//            }
         }
     }
 }
@@ -1414,9 +1445,8 @@ void PlaylistWidget::paintEvent(QPaintEvent *pe)
 //    }
     if (_title && _num) {
         _title->setForegroundRole(DPalette::ToolTipText);
-        _num->setForegroundRole(DPalette::TextTips);
+        _num->setForegroundRole(DPalette::BrightText);
     }
-
 
     QWidget::paintEvent(pe);
 }
