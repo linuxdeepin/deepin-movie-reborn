@@ -48,6 +48,8 @@
 #include "videoboxbutton.h"
 #include "filter.h"
 
+#include "thumbnail_worker.h"
+
 namespace Dtk {
 namespace Widget {
 class DImageButton;
@@ -314,6 +316,8 @@ private:
     QMutex m_mutex;
 
     QMutex *pListPixmapMutex;
+
+    VideoThumbnailer *m_pThumber {nullptr};
 
 };
 }

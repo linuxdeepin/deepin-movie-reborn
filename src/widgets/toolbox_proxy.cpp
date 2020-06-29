@@ -1307,18 +1307,20 @@ void viewProgBarLoad::loadViewProgBar(QSize size)
 //    pm.setDevicePixelRatio(dpr);
     QList<QPixmap> pm_black;
 //    pm_black.setDevicePixelRatio(dpr);
-    VideoThumbnailer thumber;
+    if (m_pThumber == nullptr) {
+        m_pThumber = new VideoThumbnailer();
+        m_pThumber->setMaintainAspectRatio(true);
+    }
     QTime d(0, 0, 0, 0);
     qDebug() << _engine->videoSize().width();
     qDebug() << _engine->videoSize().height();
     qDebug() << qApp->devicePixelRatio();
     if (_engine->videoSize().width() > 0 && _engine->videoSize().height() > 0) {
-        thumber.setThumbnailSize(static_cast<int>(50 * (_engine->videoSize().width() / _engine->videoSize().height() * 50)
+        m_pThumber->setThumbnailSize(static_cast<int>(50 * (_engine->videoSize().width() / _engine->videoSize().height() * 50)
                                                   * qApp->devicePixelRatio()));
     }
 
-    thumber.setMaintainAspectRatio(true);
-    thumber.setSeekTime(d.toString("hh:mm:ss").toStdString());
+    m_pThumber->setSeekTime(d.toString("hh:mm:ss").toStdString());
     auto url = _engine->playlist().currentInfo().url;
     auto file = QFileInfo(url.toLocalFile()).absoluteFilePath();
 
@@ -1334,10 +1336,10 @@ void viewProgBarLoad::loadViewProgBar(QSize size)
         }
         d = d.addMSecs(tmp);
 //        qDebug()<<d;
-        thumber.setSeekTime(d.toString("hh:mm:ss:ms").toStdString());
+        m_pThumber->setSeekTime(d.toString("hh:mm:ss:ms").toStdString());
         try {
             std::vector<uint8_t> buf;
-            thumber.generateThumbnail(file.toUtf8().toStdString(), ThumbnailerImageType::Jpeg, buf);
+            m_pThumber->generateThumbnail(file.toUtf8().toStdString(), ThumbnailerImageType::Jpeg, buf);
 
             auto img = QImage::fromData(buf.data(), static_cast<int>(buf.size()), "jpg");
             auto img_tmp = img.scaledToHeight(50);
