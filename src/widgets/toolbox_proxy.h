@@ -84,31 +84,35 @@ protected:
     void paintEvent(QPaintEvent *event)
     {
         QPainter painter(this);
-//        painter.drawPixmap(rect(),QPixmap(_path).scaled(60,50));
 
-        painter.setRenderHints(QPainter::HighQualityAntialiasing |
-                               QPainter::SmoothPixmapTransform |
-                               QPainter::Antialiasing);
+        painter.setRenderHints(QPainter::HighQualityAntialiasing);
+        painter.setRenderHints(QPainter::SmoothPixmapTransform);
+        painter.setRenderHints(QPainter::Antialiasing);
 
-        //QRect backgroundRect = QRect();
-        QRect pixmapRect;
+        QSize size(_pixmap.size());
+        QBitmap mask(size);
+        QPainter painter1(&mask);
+        painter1.setRenderHint(QPainter::Antialiasing);
+        painter1.setRenderHint(QPainter::SmoothPixmapTransform);
+        painter1.fillRect(mask.rect(), Qt::white);
+        painter1.setBrush(QColor(0, 0, 0));
+        painter1.drawRoundedRect(mask.rect(), 2, 2);
+        QPixmap image = _pixmap;
+        image.setMask(mask);
 
-        QPainterPath bp1;
+        painter.drawPixmap(rect(), image);
 
         QPen pen;
         pen.setWidth(1);
-        pen.setStyle(Qt::SolidLine);
         if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
             pen.setColor(QColor(0, 0, 0, 0.1 * 255));
-        } else {
+            painter.setPen(pen);
+        } else if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
             pen.setColor(QColor(255, 255, 255, 0.1 * 255));
+            painter.setPen(pen);
         }
-
-        painter.setPen(pen);
-        painter.fillRect(rect(), QBrush(Qt::black));
-        bp1.addRoundedRect(1, 1, rect().width() - 2, rect().height() - 2, 1, 1);
-        painter.setClipPath(bp1);
-        painter.drawPixmap(1, 1, rect().width() - 2, rect().height() - 2, _pixmap);
+        painter.setBrush(Qt::NoBrush);
+        painter.drawRoundedRect(rect(), 4, 4);
     };
 private:
     int _index;
