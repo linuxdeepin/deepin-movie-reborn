@@ -160,7 +160,7 @@ mpv_handle *MpvProxy::mpv_init()
         set_property(h, "gpu-hwdec-interop", interop.toUtf8().constData());
         qDebug() << "set gpu-hwdec-interop = " << interop;
     }
-    set_property(h, "hwdec", "auto");
+    set_property(h, "hwdec", "auto-safe");
 
 #else
     if (Settings::get().isSet(Settings::HWAccel)) {
@@ -197,7 +197,7 @@ mpv_handle *MpvProxy::mpv_init()
                     interop = forced;
                 }
             }
-            interop = QString::fromUtf8("vaapi-egl");
+
             if (!disable) {
                 set_property(h, "gpu-hwdec-interop", interop.toUtf8().constData());
                 qDebug() << "-------- set gpu-hwdec-interop = " << interop
@@ -206,7 +206,7 @@ mpv_handle *MpvProxy::mpv_init()
                 qDebug() << "-------- gpu-hwdec-interop is disabled by user";
             }
         }
-        set_property(h, "hwdec", "auto");
+        set_property(h, "hwdec", "auto-safe");
     } else {
         set_property(h, "hwdec", "off");
     }
@@ -226,7 +226,7 @@ mpv_handle *MpvProxy::mpv_init()
             qDebug() << "modify HWDEC no";
             break;
         case 1:
-            set_property(h, "hwdec", "auto");
+            set_property(h, "hwdec", "auto-safe");
             qDebug() << "modify HWDEC auto";
             break;
         case 2:
@@ -265,9 +265,9 @@ mpv_handle *MpvProxy::mpv_init()
         mpv_set_option_string(h, "hwdec", "auto");
         qDebug() << "-------- __mips__hwdec____________";
 #else
-        set_property(h, "vo", "opengl-cb");
-        //set_property(h, "vd-lavc-dr", "no");
-        //set_property(h, "gpu-sw", "on");
+        set_property(h, "vo", "libmpv,opengl-cb");
+        set_property(h, "vd-lavc-dr", "no");
+        set_property(h, "gpu-sw", "on");
         //set_property(h, "ao", "alsa");
 #endif
     } else {
@@ -287,7 +287,7 @@ mpv_handle *MpvProxy::mpv_init()
 
             if (XDG_SESSION_TYPE == QLatin1String("wayland") ||
                     WAYLAND_DISPLAY.contains(QLatin1String("wayland"), Qt::CaseInsensitive)) {
-                set_property(h, "vo", "opengl-cb");
+                set_property(h, "vo", "gpu,x11,xv");
             } else {
                 set_property(h, "vo", "xv");
             }
@@ -297,11 +297,18 @@ mpv_handle *MpvProxy::mpv_init()
         set_property(h, "vo", "gpu,xv,x11");
 #endif
 #endif
-        //set_property(h, "wid", m_parentWidget->winId());
+        set_property(h, "wid", m_parentWidget->winId());
     }
+    qDebug() << __func__ << get_property(h, "vo").toString();
 
+    //QLocale locale;
+    QString strMovie = QObject::tr("Movie");
+    /*if (locale.language() == QLocale::Chinese) { //获取系统语言环境
+        qDebug() << "Chinese system" ;
+        strMovie = "影院";
+    }*/
     //设置音量名称
-    set_property(h, "audio-client-name", "Movie");
+    set_property(h, "audio-client-name", strMovie);
     //set_property(h, "keepaspect-window", "no");
     //设置视频固定帧率，暂时无效
     //set_property(h, "correct-pts", false);
@@ -358,7 +365,7 @@ mpv_handle *MpvProxy::mpv_init()
     auto p = ol.begin();
     while (p != ol.end()) {
         if (!p->first.startsWith("#")) {
-#ifndef __mips__
+#if !defined (__mips__ ) && !defined(__aarch64__)
 #ifdef MWV206_0
             QFileInfo fi("/dev/mwv206_0");              //景嘉微显卡目前只支持vo=xv，等日后升级代码需要酌情修改。
             if (!fi.exists()) {
@@ -484,7 +491,7 @@ void MpvProxy::handle_mpv_events()
             emit tracksChanged();
             break;
 
-        case MPV_EVENT_FILE_LOADED:
+        case MPV_EVENT_FILE_LOADED: {
             qDebug() << mpv_event_name(ev->event_id);
 
             if (_gl_widget) {
@@ -519,7 +526,7 @@ void MpvProxy::handle_mpv_events()
                      .arg(get_property(_handle, "video-dec-params/rotate").toInt())
                      .arg(get_property(_handle, "video-params/rotate").toInt());
             break;
-
+        }
         case MPV_EVENT_VIDEO_RECONFIG: {
             auto sz = videoSize();
             if (!sz.isEmpty())
@@ -739,10 +746,10 @@ void MpvProxy::savePlaybackPosition()
 
 #ifndef _LIBDMR_
     MovieConfiguration::get().updateUrl(this->_file, ConfigKnownKey::SubId, sid());
-    if (elapsed() - 10 >= 0) {
-        MovieConfiguration::get().updateUrl(this->_file, ConfigKnownKey::StartPos, elapsed() - 10);
+    if (duration() - elapsed() < 5) {
+        MovieConfiguration::get().updateUrl(this->_file, ConfigKnownKey::StartPos, elapsed() - 2);
     } else {
-        MovieConfiguration::get().updateUrl(this->_file, ConfigKnownKey::StartPos, 10);
+        MovieConfiguration::get().updateUrl(this->_file, ConfigKnownKey::StartPos, elapsed());
     }
 #endif
 }
