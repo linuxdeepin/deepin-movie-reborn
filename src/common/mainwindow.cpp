@@ -3502,6 +3502,10 @@ void MainWindow::LimitWindowize()
 void MainWindow::resizeEvent(QResizeEvent *ev)
 {
     qDebug() << __func__ << geometry();
+    if (_playlist) {
+        _playlist->setFixedWidth(this->width() - 20);
+    }
+
     if (isFullScreen()) {
         _progIndicator->move(geometry().width() - _progIndicator->width() - 18, 8);
     }
