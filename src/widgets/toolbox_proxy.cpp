@@ -929,6 +929,7 @@ public:
 //        updateTheme();
 
 //        winId(); // force backed window to be created
+        m_shadow_effect = new QGraphicsDropShadowEffect(this);
     }
 
     void updateWithPreview(const QPixmap &pm, qint64 secs, int rotation)
@@ -1006,6 +1007,11 @@ protected slots:
 
 protected:
     void paintEvent(QPaintEvent *e) Q_DECL_OVERRIDE{
+        m_shadow_effect->setOffset(-5, 5);
+        m_shadow_effect->setColor(Qt::gray);
+        m_shadow_effect->setBlurRadius(8);
+        setGraphicsEffect(m_shadow_effect);
+
         QWidget::paintEvent(e);
     }
     void leaveEvent(QEvent *e) override
@@ -1035,6 +1041,7 @@ private:
 private:
     DFrame *_thumb {nullptr};
     int m_thumbnailFixed = 106;
+    QGraphicsDropShadowEffect *m_shadow_effect{nullptr};
 };
 
 class VolumeSlider: public DArrowRectangle
@@ -1312,7 +1319,7 @@ void viewProgBarLoad::loadViewProgBar(QSize size)
     auto url = _engine->playlist().currentInfo().url;
     auto file = QFileInfo(url.toLocalFile()).absoluteFilePath();
 
-    for (auto i = 0; i < num; i++) {
+    for (auto i = 0; i < num - 1; i++) {
 
         if (m_bQuit == true) {
             qDebug() << "load return";
@@ -1559,9 +1566,9 @@ void ToolboxProxy::setup()
 
 #define THEME_TYPE(colortype) do { \
     if (colortype == DGuiApplicationHelper::LightType){\
-        QColor backMaskColor(255, 255, 255, 255);\
+        QColor backMaskColor(255, 255, 255, 140);\
         this->blurBackground()->setMaskColor(backMaskColor);\
-        QColor maskColor(255, 255, 255, 255);\
+        QColor maskColor(255, 255, 255, 76);\
         bot_widget->setMaskColor(maskColor);\
     } else if (colortype == DGuiApplicationHelper::DarkType){\
         QColor backMaskColor(37, 37, 37, 140);\
@@ -2396,24 +2403,24 @@ void ToolboxProxy::updatePlayState()
 
             DPalette pa;
             pa = _palyBox->palette();
-            pa.setColor(DPalette::Light, QColor(0, 0, 0, 102));
-            pa.setColor(DPalette::Dark, QColor(0, 0, 0, 102));
-            pa.setColor(DPalette::Button, QColor(0, 0, 0, 102));
+            pa.setColor(DPalette::Light, QColor(0, 0, 0, 255));
+            pa.setColor(DPalette::Dark, QColor(0, 0, 0, 255));
+            pa.setColor(DPalette::Button, QColor(0, 0, 0, 255));
             _palyBox->setPalette(pa);
 
             pa = _volBtn->palette();
-            pa.setColor(DPalette::Light, QColor(0, 0, 0, 102));
-            pa.setColor(DPalette::Dark, QColor(0, 0, 0, 102));
+            pa.setColor(DPalette::Light, QColor(0, 0, 0, 255));
+            pa.setColor(DPalette::Dark, QColor(0, 0, 0, 255));
             _volBtn->setPalette(pa);
 
             pa = _fsBtn->palette();
-            pa.setColor(DPalette::Light, QColor(0, 0, 0, 102));
-            pa.setColor(DPalette::Dark, QColor(0, 0, 0, 102));
+            pa.setColor(DPalette::Light, QColor(0, 0, 0, 255));
+            pa.setColor(DPalette::Dark, QColor(0, 0, 0, 255));
             _fsBtn->setPalette(pa);
 
             pa = _listBtn->palette();
-            pa.setColor(DPalette::Light, QColor(0, 0, 0, 102));
-            pa.setColor(DPalette::Dark, QColor(0, 0, 0, 102));
+            pa.setColor(DPalette::Light, QColor(0, 0, 0, 255));
+            pa.setColor(DPalette::Dark, QColor(0, 0, 0, 255));
             _listBtn->setPalette(pa);
 
 
@@ -2479,24 +2486,24 @@ void ToolboxProxy::updatePlayState()
 //                                     ":/icons/deepin/builtin/dark/press/next_press.svg");
             DPalette pa;
             pa = _palyBox->palette();
-            pa.setColor(DPalette::Light, QColor(0, 0, 0, 102));
-            pa.setColor(DPalette::Dark, QColor(0, 0, 0, 102));
-            pa.setColor(DPalette::Button, QColor(0, 0, 0, 102));
+            pa.setColor(DPalette::Light, QColor(0, 0, 0, 255));
+            pa.setColor(DPalette::Dark, QColor(0, 0, 0, 255));
+            pa.setColor(DPalette::Button, QColor(0, 0, 0, 255));
             _palyBox->setPalette(pa);
 
             pa = _volBtn->palette();
-            pa.setColor(DPalette::Light, QColor(0, 0, 0, 102));
-            pa.setColor(DPalette::Dark, QColor(0, 0, 0, 102));
+            pa.setColor(DPalette::Light, QColor(0, 0, 0, 255));
+            pa.setColor(DPalette::Dark, QColor(0, 0, 0, 255));
             _volBtn->setPalette(pa);
 
             pa = _fsBtn->palette();
-            pa.setColor(DPalette::Light, QColor(0, 0, 0, 102));
-            pa.setColor(DPalette::Dark, QColor(0, 0, 0, 102));
+            pa.setColor(DPalette::Light, QColor(0, 0, 0, 255));
+            pa.setColor(DPalette::Dark, QColor(0, 0, 0, 255));
             _fsBtn->setPalette(pa);
 
             pa = _listBtn->palette();
-            pa.setColor(DPalette::Light, QColor(0, 0, 0, 102));
-            pa.setColor(DPalette::Dark, QColor(0, 0, 0, 102));
+            pa.setColor(DPalette::Light, QColor(0, 0, 0, 255));
+            pa.setColor(DPalette::Dark, QColor(0, 0, 0, 255));
             _listBtn->setPalette(pa);
 
         }
