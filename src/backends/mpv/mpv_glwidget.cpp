@@ -418,7 +418,7 @@ namespace dmr {
 
     void MpvGLWidget::updateMovieFbo()
     {
-        if (!_doRoundedClipping) return;
+//        if (!_doRoundedClipping) return;
 
         auto desiredSize = size() * qApp->devicePixelRatio();
 
@@ -434,7 +434,7 @@ namespace dmr {
 
     void MpvGLWidget::updateCornerMasks()
     {
-        if (!_doRoundedClipping) return;
+//        if (!_doRoundedClipping) return;
 
         for (int i = 0; i < 4; i++) {
             QSize sz(RADIUS, RADIUS);
@@ -617,7 +617,7 @@ namespace dmr {
 
         updateMovieFbo();
         updateVbo();
-        if (_doRoundedClipping)
+//        if (_doRoundedClipping)
             updateVboCorners();
 
         qDebug() << "GL resize" << w << h;
@@ -641,7 +641,8 @@ namespace dmr {
             QSize scaled = size() * dpr;
             int flip = 1;
 
-            if (!_doRoundedClipping) {
+//            if (!_doRoundedClipping) {
+            if(0){
                 mpv_opengl_fbo fbo {
                     static_cast<int>(defaultFramebufferObject()), scaled.width(), scaled.height(), 0
                 };
