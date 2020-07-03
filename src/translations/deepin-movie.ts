@@ -608,11 +608,11 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Disc eject</source>
+        <source>HwdecMode = %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>HwdecMode = %1</source>
+        <source>Disc reject</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
