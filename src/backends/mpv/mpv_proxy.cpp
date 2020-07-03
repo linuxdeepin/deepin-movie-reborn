@@ -542,8 +542,12 @@ void MpvProxy::handle_mpv_events()
 
         case MPV_EVENT_END_FILE: {
 #ifndef _LIBDMR_
-            MovieConfiguration::get().updateUrl(this->_file,
-                                                ConfigKnownKey::StartPos, 0);
+            if (!CompositingManager::get().isClosed()) {
+                MovieConfiguration::get().updateUrl(this->_file,
+                                                    ConfigKnownKey::StartPos, 0);
+            } else {
+                qDebug() << "the deepin movie is closed";
+            }
 #endif
             mpv_event_end_file *ev_ef = (mpv_event_end_file *)ev->data;
             qDebug() << mpv_event_name(ev->event_id) <<
