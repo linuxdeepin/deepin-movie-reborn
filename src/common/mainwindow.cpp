@@ -3307,6 +3307,7 @@ void MainWindow::hideEvent(QHideEvent *event)
 void MainWindow::closeEvent(QCloseEvent *ev)
 {
     qDebug() << __func__;
+    CompositingManager::get().setClosed(true);
     if (_lastCookie > 0) {
         utils::UnInhibitStandby(_lastCookie);
         qDebug() << "uninhibit cookie" << _lastCookie;

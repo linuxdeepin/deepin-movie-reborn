@@ -246,6 +246,16 @@ bool CompositingManager::hascard()
     return _hasCard;
 }
 
+bool CompositingManager::isClosed()
+{
+    return _isClosed;
+}
+
+void CompositingManager::setClosed(bool c)
+{
+    _isClosed = c;
+}
+
 // Attempt to reuse mpv's code for detecting whether we want GLX or EGL (which
 // is tricky to do because of hardware decoding concerns). This is not pretty,
 // but quite effective and without having to duplicate too much GLX/EGL code.
