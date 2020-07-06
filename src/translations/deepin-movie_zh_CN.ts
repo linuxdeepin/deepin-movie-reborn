@@ -614,11 +614,15 @@
     <message>
         <source>Disc eject</source>
         <translatorcomment>光盘弹出</translatorcomment>
-        <translation>光盘弹出</translation>
+        <translation type="vanished">光盘弹出</translation>
     </message>
     <message>
         <source>HwdecMode = %1</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Disc reject</source>
+        <translation>光盘弹出</translation>
     </message>
 </context>
 <context>
