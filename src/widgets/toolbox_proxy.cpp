@@ -1050,7 +1050,8 @@ public:
             setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
         }
 #elif __aarch64__
-        setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
+        //lmh0706，wayland下设置，pos位置就出现问题了。
+        //setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
 #endif
         setShadowBlurRadius(4);
         setRadius(18);
@@ -1786,6 +1787,11 @@ void ToolboxProxy::setup()
     _playBtn->setFocusPolicy(Qt::FocusPolicy::NoFocus);
     _prevBtn->setFocusPolicy(Qt::FocusPolicy::NoFocus);
 
+    //lmh0706,延时
+    connect(_nextBtn,&DButtonBoxButton::clicked,this,&ToolboxProxy::waitPlay);
+    connect(_playBtn,&DButtonBoxButton::clicked,this,&ToolboxProxy::waitPlay);
+    connect(_prevBtn,&DButtonBoxButton::clicked,this,&ToolboxProxy::waitPlay);
+
 //    bot->addStretch();
 
     _right = new QHBoxLayout(bot_toolWgt);
@@ -2130,6 +2136,30 @@ void ToolboxProxy::updateHoverPreview(const QUrl &url, int secs)
     QPixmap pm = ThumbnailWorker::get().getThumb(url, secs);
     _previewer->updateWithPreview(pm, secs, _engine->videoRotation());
     _previewer->updateWithPreview(p);
+}
+
+void ToolboxProxy::waitPlay()
+{
+    if(_playBtn){
+        _playBtn->setEnabled(false);
+    }
+    if(_prevBtn){
+        _prevBtn->setEnabled(false);
+    }
+    if(_nextBtn){
+        _nextBtn->setEnabled(false);
+    }
+    QTimer::singleShot(500,[=]{
+        if(_playBtn){
+            _playBtn->setEnabled(true);
+        }
+        if(_prevBtn&&_engine->playlist().count()>1){
+            _prevBtn->setEnabled(true);
+        }
+        if(_nextBtn&&_engine->playlist().count()>1){
+            _nextBtn->setEnabled(true);
+        }
+    });
 }
 
 void ToolboxProxy::progressHoverChanged(int v)

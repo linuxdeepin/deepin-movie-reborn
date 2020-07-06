@@ -38,20 +38,17 @@
 namespace dmr {
 
 NotificationWidget::NotificationWidget(QWidget *parent)
-#ifdef __aarch64__
-    : QFrame(nullptr), _mw(parent)
-#else
+//LMH 0706,ifdef去掉，策略和x86改为相同
     : QFrame(parent), _mw(parent)
-#endif
 {
 //    DThemeManager::instance()->registerWidget(this);
 
     //setFrameShape(QFrame::NoFrame);
     setObjectName("NotificationFrame");
 
-
-    setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
-    setAttribute(Qt::WA_TranslucentBackground, true);
+//LMH 0706,wayland下设置有问题，选择屏蔽，音量条位置就正确了
+//    setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
+//    setAttribute(Qt::WA_TranslucentBackground, true);
 
     _layout = new QHBoxLayout();
     _layout->setContentsMargins(0, 0, 0, 0);
