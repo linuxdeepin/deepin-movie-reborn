@@ -75,6 +75,7 @@ protected:
 //        bgRect.setSize(size());
 //        pp.addRoundedRect(bgRect, 4, 4);
 //        painter.fillPath(pp, bgColor);
+        painter.save();
         painter.setRenderHints(QPainter::HighQualityAntialiasing);
         painter.setRenderHints(QPainter::SmoothPixmapTransform);
         painter.setRenderHints(QPainter::Antialiasing);
@@ -103,7 +104,7 @@ protected:
         }
         painter.setBrush(Qt::NoBrush);
         painter.drawRoundedRect(rect(), 6, 6);
-
+        painter.restore();
     };
 private:
     QPixmap _pic;

@@ -973,7 +973,7 @@ public:
     void updateWithPreview(const QPoint &pos)
     {
         //resizeWithContent();
-        move(pos.x() - this->width() / 2, pos.y() + 10);
+        move(pos.x() - this->width() / 2, pos.y() - this->height() + 10);
         show();
         raise();
     }
@@ -2190,8 +2190,7 @@ void ToolboxProxy::updateHoverPreview(const QUrl &url, int secs)
         return;
     }
 
-    auto pos = _progBar->mapToGlobal(QPoint(0, -TOOLBOX_HEIGHT + 10));
-//    auto pos = _viewProgBar->mapToGlobal(QPoint(0, TOOLBOX_TOP_EXTENT - 10));
+    auto pos = _viewProgBar->mapToGlobal(QPoint(0, TOOLBOX_TOP_EXTENT - 10));
     QPoint p { QCursor::pos().x(), pos.y() };
 
     QVariant l = ApplicationAdaptor::redDBusProperty("com.deepin.SessionManager", "/com/deepin/SessionManager",
