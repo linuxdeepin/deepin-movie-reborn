@@ -181,6 +181,8 @@ public:
     void handleAsyncAppendResults(QList<PlayItemInfo> &pil);
     struct PlayItemInfo calculatePlayInfo(const QUrl &, const QFileInfo &fi, bool isDvd = false);
     bool getthreadstate();
+    void savePlaylist();
+    void clearPlaylist();
 
 public slots:
     void changeCurrent(int);
@@ -233,9 +235,7 @@ private:
     bool m_brunning;
 
     void reshuffle();
-    void savePlaylist();
     void loadPlaylist();
-    void clearPlaylist();
     void appendSingle(const QUrl &);
     void tryPlayCurrent(bool next);
 
