@@ -3329,6 +3329,16 @@ void MainWindow::closeEvent(QCloseEvent *ev)
     }
 
     ev->accept();
+#ifndef _LIBDMR_
+    if (Settings::get().isSet(Settings::ClearWhenQuit)) {
+        _engine->playlist().clearPlaylist();
+
+    } else {
+        _engine->playlist().savePlaylist();
+
+    }
+#endif
+    QApplication::quit();
 }
 
 void MainWindow::wheelEvent(QWheelEvent *we)
