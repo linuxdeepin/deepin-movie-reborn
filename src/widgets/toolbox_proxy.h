@@ -236,6 +236,9 @@ protected slots:
     void progressHoverChanged(int v);
     void updateHoverPreview(const QUrl &url, int secs);
 
+    //lmh0706暂停延时，解决乱按卡死问题
+    void waitPlay();
+
 protected:
 //    void paintEvent(QPaintEvent *pe) override;
     void showEvent(QShowEvent *event) override;

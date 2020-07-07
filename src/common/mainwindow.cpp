@@ -3505,7 +3505,9 @@ void MainWindow::resizeEvent(QResizeEvent *ev)
     if (_playlist) {
         _playlist->setFixedWidth(this->width() - 20);
     }
-
+    if (_toolbox) {
+        _toolbox->setFixedWidth(this->width() - 10);
+    }
     if (isFullScreen()) {
         _progIndicator->move(geometry().width() - _progIndicator->width() - 18, 8);
     }
