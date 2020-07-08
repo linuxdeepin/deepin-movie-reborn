@@ -759,16 +759,19 @@ void PlaylistModel::stop()
 
 void PlaylistModel::tryPlayCurrent(bool next)
 {
+    qDebug() << __func__;
     auto &pif = _infos[_current];
     if (pif.refresh()) {
         qDebug() << pif.url.fileName() << "changed";
     }
     emit itemInfoUpdated(_current);
     if (pif.valid) {
-        //单个循环小于1s视频不播放
-        if ( pif.mi.duration <= 1) {
-            if (1 == count())
+        //单个循环/列表循环，小于1s视频/无法解码视频，不播放，直接播放下一个
+        if ( pif.mi.duration <= 1 || pif.thumbnail.isNull()) {
+            if (1 == count()) {
+                qWarning() << "return for video is cannot play and loop play!";
                 return;
+            }
             if (_current < count() - 1) {
                 _current++;
                 _last = _current;
@@ -778,7 +781,7 @@ void PlaylistModel::tryPlayCurrent(bool next)
         }
         _hasNormalVideo = false;
         for (auto info : _infos) {
-            if (info.valid && info.mi.duration > 1) {
+            if (info.valid && info.mi.duration > 1 && !info.thumbnail.isNull()) {
                 _hasNormalVideo = true;
             }
         }
