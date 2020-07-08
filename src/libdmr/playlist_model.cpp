@@ -760,9 +760,29 @@ void PlaylistModel::tryPlayCurrent(bool next)
         emit currentChanged();
     } else {
         _current = -1;
-        emit currentChanged();
-        if (next) playNext(false);
-        else playPrev(false);
+        bool canPlay = false;
+        //循环播放时，无效文件播放闪退
+        if (_playMode == PlayMode::SingleLoop) {
+            if ((_last < count() - 1) && next) {
+                _last++;
+            } else if ((_last > 0) && !next) {
+                _last--;
+            } else if (next) {
+                _last = 0;
+            } else if (!next) {
+                _last = count() - 1;
+            }
+        }
+        for (auto info : _infos) {
+            if (info.valid) {
+                canPlay = true;
+            }
+        }
+        if (canPlay) {
+            emit currentChanged();
+            if (next) playNext(false);
+            else playPrev(false);
+        }
     }
 }
 
