@@ -91,7 +91,10 @@ Titlebar::Titlebar(QWidget *parent) : DBlurEffectWidget(parent), d_ptr(new Title
         QPainter p(&pm);
         p.drawPixmap((w2 - w) / 2, (w2 - w) / 2, logo);
         p.end();
+        //lmh0710,删除icon，规避dtk标题的问题
+#ifdef __aarch64__
         d->m_titlebar->setIcon(pm);
+#endif
     }
 
     d->m_titlebar->setTitle("");

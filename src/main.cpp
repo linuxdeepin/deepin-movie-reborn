@@ -63,9 +63,10 @@ int main(int argc, char *argv[])
     qputenv("XDG_CONFIG_DIRS", "/usr/local/etc/xdg:/etc/xdg");
     qputenv("QT_QPA_PLATFORM", "wayland");
     qputenv("QT_WAYLAND_SHELL_INTEGRATION", "xdg-shell-v6");
+    qputenv("_d_disableDBusFileDialog", "true");
 
-    CompositingManager::detectOpenGLEarly();
-    CompositingManager::detectPciID();
+//    CompositingManager::detectOpenGLEarly();
+//    CompositingManager::detectPciID();
 
 #if defined(STATIC_LIB)
     DWIDGET_INIT_RESOURCE();
