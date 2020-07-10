@@ -3035,12 +3035,20 @@ void MainWindow::updateProxyGeometry()
                 }
             }
         }
-
+        //lmh0710,修复playlist位置不正确
+#ifdef __aarch64__
+        if (_playlist && !_playlist->toggling()) {
+            QRect fixed((5), (view_rect.height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT )),
+                        view_rect.width() - 10, TOOLBOX_SPACE_HEIGHT);
+            _playlist->setGeometry(fixed);
+        }
+#else
         if (_playlist && !_playlist->toggling()) {
             QRect fixed((10), (view_rect.height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT + 10)),
                         view_rect.width() - 20, TOOLBOX_SPACE_HEIGHT);
             _playlist->setGeometry(fixed);
         }
+#endif
     }
 
 
@@ -3520,9 +3528,9 @@ void MainWindow::LimitWindowize()
 void MainWindow::resizeEvent(QResizeEvent *ev)
 {
     qDebug() << __func__ << geometry();
-    if (_playlist) {
-        _playlist->setFixedWidth(this->width() - 20);
-    }
+//    if (_playlist) {
+//        _playlist->setFixedWidth(this->width() - 20);
+//    }
     if (_toolbox) {
         _toolbox->setFixedWidth(this->width() - 10);
     }
