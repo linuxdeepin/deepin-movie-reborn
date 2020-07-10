@@ -35,8 +35,7 @@
 #endif
 #include "dvd_utils.h"
 
-//#include <libffmpegthumbnailer/videothumbnailer.h>
-#include "libffmpegthumbnailer/videothumbnailer.h"
+#include <libffmpegthumbnailer/videothumbnailer.h>
 extern "C" {
 #include <libavformat/avformat.h>
 #include <libavutil/dict.h>

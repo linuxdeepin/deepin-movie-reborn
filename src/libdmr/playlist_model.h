@@ -32,7 +32,7 @@
 
 #include <QtWidgets>
 #include <QtConcurrent>
-#include "libffmpegthumbnailer/videothumbnailer.h"
+#include <libffmpegthumbnailer/videothumbnailer.h>
 
 #include "utils.h"
 #include <QNetworkReply>

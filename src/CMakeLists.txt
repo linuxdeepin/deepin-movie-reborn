@@ -20,13 +20,12 @@ pkg_check_modules(Dtk REQUIRED IMPORTED_TARGET dtkwidget)
 pkg_check_modules(Dtk REQUIRED IMPORTED_TARGET dtkcore)
 pkg_check_modules(Mpv REQUIRED IMPORTED_TARGET mpv)
 #pkg_check_modules(Xcb REQUIRED IMPORTED_TARGET xcb)
-#pkg_check_modules(AV REQUIRED IMPORTED_TARGET libavformat
-#    libavutil libavcodec)
+pkg_check_modules(AV REQUIRED IMPORTED_TARGET libavformat
+    libavutil libavcodec)
 # IMPORTED_TARGET failed to work for some of libs under flatpak env
-#pkg_check_modules(Other REQUIRED libffmpegthumbnailer
-#     gsettings-qt)
-pkg_check_modules(Other REQUIRED
-     gsettings-qt)
+pkg_check_modules(Other REQUIRED libffmpegthumbnailer 
+      gsettings-qt)
+
 qt5_add_resources(RCS resources.qrc)
 qt5_add_resources(RCS icons/theme-icons.qrc)
 if (${Dtk_VERSION} LESS 2.0.6.1)
@@ -34,17 +33,12 @@ if (${Dtk_VERSION} LESS 2.0.6.1)
 endif()
 
 
-file(GLOB_RECURSE SRCS LIST_DIRECTORIES false common/*.cpp widgets/*.cpp libdmr/*.cpp vendor/*.cpp vendor/mpris-qt/*.cpp vendor/dbusextended-qt/*.cpp libffmpegthumbnailer/*.cpp)
+file(GLOB_RECURSE SRCS LIST_DIRECTORIES false common/*.cpp widgets/*.cpp libdmr/*.cpp vendor/*.cpp vendor/mpris-qt/*.cpp vendor/dbusextended-qt/*.cpp)
 list(APPEND SRCS main.cpp)
 
 include_directories(
         ${CMAKE_CURRENT_SOURCE_DIR}/vendor/mpris-qt
         ${CMAKE_CURRENT_SOURCE_DIR}/vendor/dbusextended-qt
-#        ${CMAKE_CURRENT_SOURCE_DIR}/inc
-        ${CMAKE_CURRENT_SOURCE_DIR}/libffmpegthumbnailer
-#        ${CMAKE_CURRENT_SOURCE_DIR}/libavformat
-#        ${CMAKE_CURRENT_SOURCE_DIR}/libavutil
-#        ${CMAKE_CURRENT_SOURCE_DIR}/libavcodec
 )
 
 # mpv backend
@@ -83,9 +77,7 @@ target_include_directories(${CMD_NAME} PUBLIC ${PROJECT_INCLUDE})
 #    PkgConfig::AV  GL)
 
 set(TARGET_LIBS X11 Xtst  Qt5::Widgets Qt5::X11Extras Qt5::Network
-    Qt5::Concurrent Qt5::DBus Qt5::Sql PkgConfig::Dtk  GL dl pthread ${PROJECT_SOURCE_DIR}/src/ffmpeg/libavformat.a ${PROJECT_SOURCE_DIR}/src/ffmpeg/libavfilter.a ${PROJECT_SOURCE_DIR}/src/ffmpeg/libavcodec.a
-    ${PROJECT_SOURCE_DIR}/src/ffmpeg/libavutil.a ${PROJECT_SOURCE_DIR}/src/ffmpeg/libavfilter.a ${PROJECT_SOURCE_DIR}/src/ffmpeg/libswresample.a ${PROJECT_SOURCE_DIR}/src/ffmpeg/libswscale.a z va va-x11 va-drm vdpau bz2
-    lzma crystalhd png16 jpeg)
+    Qt5::Concurrent Qt5::DBus Qt5::Sql PkgConfig::Dtk  PkgConfig::AV  GL)
 
 target_link_libraries(${CMD_NAME} ${TARGET_LIBS} ${Other_LIBRARIES})
 
