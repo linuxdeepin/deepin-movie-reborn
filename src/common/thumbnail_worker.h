@@ -31,7 +31,8 @@
 #define _DMR_THUMBNAIL_WORKER_H
 
 #include <QtWidgets>
-#include <libffmpegthumbnailer/videothumbnailer.h>
+//#include <libffmpegthumbnailer/videothumbnailer.h>
+#include "libffmpegthumbnailer/videothumbnailer.h"
 
 namespace dmr {
 using namespace ffmpegthumbnailer;
