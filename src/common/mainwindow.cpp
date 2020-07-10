@@ -2070,6 +2070,10 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             _toolbox->show();
         }
         _playlist->togglePopup();
+        //lmh0710,修复playlist大小不正确
+#ifdef __aarch64__
+        updateProxyGeometry();
+#endif
         if (!fromUI) {
             reflectActionToUI(kd);
         }
@@ -3219,7 +3223,18 @@ void MainWindow::checkErrorMpvLogsChanged(const QString prefix, const QString te
     if (errorMessage.toLower().contains(QString("avformat_open_input() failed"))) {
         //do nothing
     } else if (errorMessage.toLower().contains(QString("fail")) && errorMessage.toLower().contains(QString("open"))) {
+        //lmh0710,修复第一次进来显示无法流那个问题，后续环境正确后，请删除该代码
+#ifdef __aarch64__
+        static int updateIndex=0;
+        if(0!=updateIndex){
+            _nwComm->updateWithMessage(tr("Cannot open file or stream"));
+        }
+        else {
+            updateIndex++;
+        }
+#else
         _nwComm->updateWithMessage(tr("Cannot open file or stream"));
+#endif
         _engine->playlist().remove(_engine->playlist().count() - 1);
     } else if (errorMessage.toLower().contains(QString("fail")) &&
                (errorMessage.toLower().contains(QString("format")))
@@ -3382,7 +3397,10 @@ void MainWindow::resizeByConstraints(bool forceCentered)
 
     qDebug() << __func__;
     updateWindowTitle();
-
+    //lmh0710修复窗口变成影片分辨率问题
+#ifdef __aarch64__
+    return;
+#endif
     const auto &mi = _engine->playlist().currentInfo().mi;
     auto sz = _engine->videoSize();
 #ifdef __mips__
