@@ -545,14 +545,13 @@ private:
 
         leftButtonPressed = pressed;
     }
-
     void updateGeometry(Utility::CornerEdge edge, QMouseEvent *e)
     {
         auto mw = static_cast<MainWindow *>(parent());
         bool keep_ratio = mw->engine()->state() != PlayerEngine::CoreState::Idle;
         auto old_geom = mw->frameGeometry();
         auto geom = mw->frameGeometry();
-        qreal ratio = (qreal)geom.width() / geom.height();
+        qreal frameRatio = (qreal)geom.width() / geom.height();
 
         // disable edges
         switch (edge) {
@@ -573,33 +572,66 @@ private:
                 sz = QSize(mi.width, mi.height);
             }
 
-            ratio = sz.width() / (qreal)sz.height();
-            switch (edge) {
-            case Utility::TopLeftCorner:
-                geom.setLeft(e->globalX());
-                geom.setTop(geom.bottom() - geom.width() / ratio);
-                break;
-            case Utility::BottomLeftCorner:
-            case Utility::LeftEdge:
-                geom.setLeft(e->globalX());
-                geom.setHeight(geom.width() / ratio);
-                break;
-            case Utility::BottomRightCorner:
-            case Utility::RightEdge:
-                geom.setRight(e->globalX());
-                geom.setHeight(geom.width() / ratio);
-                break;
-            case Utility::TopRightCorner:
-            case Utility::TopEdge:
-                geom.setTop(e->globalY());
-                geom.setWidth(geom.height() * ratio);
-                break;
-            case Utility::BottomEdge:
-                geom.setBottom(e->globalY());
-                geom.setWidth(geom.height() * ratio);
-                break;
-            default:
-                break;
+            qreal ratio = sz.width() / (qreal)sz.height();
+            bool equal = (abs(frameRatio - ratio) < 0.05);
+            //窗口达到等比后进行等比缩放，未达到之前自由缩放
+            if (equal) {
+                switch (edge) {
+                case Utility::TopLeftCorner:
+                    geom.setLeft(e->globalX());
+                    geom.setTop(geom.bottom() - geom.width() / ratio);
+                    break;
+                case Utility::BottomLeftCorner:
+                case Utility::LeftEdge:
+                    geom.setLeft(e->globalX());
+                    geom.setHeight(geom.width() / ratio);
+                    break;
+                case Utility::BottomRightCorner:
+                case Utility::RightEdge:
+                    geom.setRight(e->globalX());
+                    geom.setHeight(geom.width() / ratio);
+                    break;
+                case Utility::TopRightCorner:
+                case Utility::TopEdge:
+                    geom.setTop(e->globalY());
+                    geom.setWidth(geom.height() * ratio);
+                    break;
+                case Utility::BottomEdge:
+                    geom.setBottom(e->globalY());
+                    geom.setWidth(geom.height() * ratio);
+                    break;
+                default:
+                    break;
+                }
+            } else {
+                switch (edge) {
+                case Utility::BottomLeftCorner:
+                    geom.setBottomLeft(e->globalPos());
+                    break;
+                case Utility::TopLeftCorner:
+                    geom.setTopLeft(e->globalPos());
+                    break;
+                case Utility::LeftEdge:
+                    geom.setLeft(e->globalX());
+                    break;
+                case Utility::BottomRightCorner:
+                    geom.setBottomRight(e->globalPos());
+                    break;
+                case Utility::RightEdge:
+                    geom.setRight(e->globalX());
+                    break;
+                case Utility::TopRightCorner:
+                    geom.setTopRight(e->globalPos());
+                    break;
+                case Utility::TopEdge:
+                    geom.setTop(e->globalY());
+                    break;
+                case Utility::BottomEdge:
+                    geom.setBottom(e->globalY());
+                    break;
+                default:
+                    break;
+                }
             }
         } else {
             switch (edge) {
