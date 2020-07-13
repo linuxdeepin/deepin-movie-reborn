@@ -56,12 +56,12 @@ DWIDGET_USE_NAMESPACE
 int main(int argc, char *argv[])
 {
     qputenv("LD_LIBRARY_PATH", "/usr/local/lib:/usr/local/lib/aarch64-linux-gnu/");
-    qputenv("QT_QPA_PLATFORM_PLUGIN_PATH", "/usr/local/plugins/platforms:/usr/local/lib/aarch64-linux-gnu/plugins/platforms");
-    qputenv("QT_PLUGIN_PATH", "/usr/local/plugins:/usr/local/lib/aarch64-linux-gnu/plugins/");
-    qputenv("QML2_IMPORT_PATH", "/usr/local/qml:/usr/local/lib/aarch64-linux-gnu/qml:/usr/lib/aarch64-linux-gnu/qt5/qml");
-    qputenv("XDG_DATA_DIRS", "/usr/local/share:/usr/share");
-    qputenv("XDG_CONFIG_DIRS", "/usr/local/etc/xdg:/etc/xdg");
-    qputenv("QT_QPA_PLATFORM", "wayland");
+//    qputenv("QT_QPA_PLATFORM_PLUGIN_PATH", "/usr/local/plugins/platforms:/usr/local/lib/aarch64-linux-gnu/plugins/platforms");
+//    qputenv("QT_PLUGIN_PATH", "/usr/local/plugins:/usr/local/lib/aarch64-linux-gnu/plugins/");
+//    qputenv("QML2_IMPORT_PATH", "/usr/local/qml:/usr/local/lib/aarch64-linux-gnu/qml:/usr/lib/aarch64-linux-gnu/qt5/qml");
+//    qputenv("XDG_DATA_DIRS", "/usr/local/share:/usr/share");
+//    qputenv("XDG_CONFIG_DIRS", "/usr/local/etc/xdg:/etc/xdg");
+//    qputenv("QT_QPA_PLATFORM", "wayland");
     qputenv("QT_WAYLAND_SHELL_INTEGRATION", "xdg-shell-v6");
     qputenv("_d_disableDBusFileDialog", "true");
 
