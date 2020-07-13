@@ -2021,6 +2021,10 @@ void ToolboxProxy::installHint(QWidget *w, QWidget *hint)
 
 void ToolboxProxy::updateThumbnail()
 {
+    //lmh0713,在wayland下面暂时不需要胶片
+#ifdef __aarch64__
+    return;
+#endif
     //如果打开的是音乐
     QString suffix = _engine->playlist().currentInfo().info.suffix();
     foreach (QString sf, _engine->audio_filetypes) {
