@@ -1350,6 +1350,9 @@ void PlaylistWidget::togglePopup()
         });
 #else
         _toggling = false;
+#ifdef __aarch64__
+        setFixedWidth(view_rect.width());
+#endif
         _state = State::Opened;
         emit stateChange();
 #endif
@@ -1367,12 +1370,14 @@ void PlaylistWidget::paintEvent(QPaintEvent *pe)
 
     QPainterPath pp;
     pp.addRoundedRect(bgRect, 18, 18);
-//    {
-//        auto view_rect = bgRect.marginsRemoved(QMargins(1, 1, 1, 1));
-//        QPainterPath pp;
-//        pp.addRoundedRect(view_rect, RADIUS, RADIUS);
-//        painter.fillPath(pp, bgColor);
-//    }
+#ifdef __aarch64__
+    {
+        auto view_rect = bgRect.marginsRemoved(QMargins(1, 1, 1, 1));
+        QPainterPath pp;
+        pp.addRoundedRect(view_rect, RADIUS, RADIUS);
+        painter.fillPath(pp, bgColor);
+    }
+#endif
     if (_title && _num) {
         _title->setForegroundRole(DPalette::ToolTipText);
         _num->setForegroundRole(DPalette::TextTips);
