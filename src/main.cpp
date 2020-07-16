@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
 //    qputenv("XDG_DATA_DIRS", "/usr/local/share:/usr/share");
 //    qputenv("XDG_CONFIG_DIRS", "/usr/local/etc/xdg:/etc/xdg");
 //    qputenv("QT_QPA_PLATFORM", "wayland");
-    qputenv("QT_WAYLAND_SHELL_INTEGRATION", "xdg-shell-v6");
+    qputenv("QT_WAYLAND_SHELL_INTEGRATION", "kwayland-shell");
     qputenv("_d_disableDBusFileDialog", "true");
 
 //    CompositingManager::detectOpenGLEarly();
