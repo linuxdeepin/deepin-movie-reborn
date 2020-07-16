@@ -776,6 +776,7 @@ void PlaylistModel::tryPlayCurrent(bool next)
         for (auto info : _infos) {
             if (info.valid) {
                 canPlay = true;
+                break;
             }
         }
         if (canPlay) {
