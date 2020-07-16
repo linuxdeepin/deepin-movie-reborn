@@ -1374,7 +1374,7 @@ void PlaylistWidget::paintEvent(QPaintEvent *pe)
     {
         auto view_rect = bgRect.marginsRemoved(QMargins(1, 1, 1, 1));
         QPainterPath pp;
-        pp.addRoundedRect(view_rect, RADIUS, RADIUS);
+        pp.addRoundedRect(view_rect, 0, 0);
         painter.fillPath(pp, bgColor);
     }
 #endif
