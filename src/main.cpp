@@ -141,14 +141,14 @@ int main(int argc, char *argv[])
         <<"QT_QPA_PLATFORM=wayland"
         <<"QT_WAYLAND_SHELL_INTEGRATION=xdg-shell-v6";*/
         QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-        env.insert("LD_LIBRARY_PATH", "/usr/local/lib:/usr/local/lib/aarch64-linux-gnu/");
-        env.insert("QT_QPA_PLATFORM_PLUGIN_PATH", "/usr/local/plugins/platforms:/usr/local/lib/aarch64-linux-gnu/plugins/platforms");
-        env.insert("QT_PLUGIN_PATH", "/usr/local/plugins:/usr/local/lib/aarch64-linux-gnu/plugins/");
-        env.insert("QML2_IMPORT_PATH", "/usr/local/qml:/usr/local/lib/aarch64-linux-gnu/qml:/usr/lib/aarch64-linux-gnu/qt5/qml");
-        env.insert("XDG_DATA_DIRS", "/usr/local/share:/usr/share");
-        env.insert("XDG_CONFIG_DIRS", "/usr/local/etc/xdg:/etc/xdg");
-        env.insert("QT_QPA_PLATFORM", "wayland");
-        env.insert("QT_WAYLAND_SHELL_INTEGRATION", "xdg-shell-v6");
+//        env.insert("LD_LIBRARY_PATH", "/usr/local/lib:/usr/local/lib/aarch64-linux-gnu/");
+//        env.insert("QT_QPA_PLATFORM_PLUGIN_PATH", "/usr/local/plugins/platforms:/usr/local/lib/aarch64-linux-gnu/plugins/platforms");
+//        env.insert("QT_PLUGIN_PATH", "/usr/local/plugins:/usr/local/lib/aarch64-linux-gnu/plugins/");
+//        env.insert("QML2_IMPORT_PATH", "/usr/local/qml:/usr/local/lib/aarch64-linux-gnu/qml:/usr/lib/aarch64-linux-gnu/qt5/qml");
+//        env.insert("XDG_DATA_DIRS", "/usr/local/share:/usr/share");
+//        env.insert("XDG_CONFIG_DIRS", "/usr/local/etc/xdg:/etc/xdg");
+//        env.insert("QT_QPA_PLATFORM", "wayland");
+//        env.insert("QT_WAYLAND_SHELL_INTEGRATION", "xdg-shell-v6");
         //process->setEnvironment(env);
         //process->setNativeArguments("");
         process->setProcessEnvironment(env);
