@@ -43,6 +43,7 @@
 #include <DFloatingMessage>
 #include "animationlabel.h"
 #include "volumemonitoring.h"
+#include "diskcheckthread.h"
 
 //static const int VOLUME_OFFSET = 40;
 
@@ -240,6 +241,7 @@ protected slots:
     void changedMute(bool);
 
     void updateMiniBtnTheme(int);
+    void diskRemoved(QString strDiskName);
 private:
     void setupTitlebar();
 
@@ -262,6 +264,7 @@ private:
     void readSinkInputPath();
     void setAudioVolume(int);
     void setMusicMuted(bool muted);
+    void popupAdapter(QIcon, QString);
 
     //Limit video to mini mode size
     void LimitWindowize();
@@ -346,9 +349,13 @@ private:
     QString sinkInputPath;
 
     int m_lastVolume;
+    int m_displayVolume;
+    int m_oldDisplayVolume;
     bool m_isManual;
 
     bool m_IsFree = true;  //播放器是否空闲，和IDel的定义不同
+    static int _retryTimes;
+    Diskcheckthread m_diskCheckThread;
 };
 };
 

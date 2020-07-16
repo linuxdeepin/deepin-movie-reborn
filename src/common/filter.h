@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 ~ 2018 Wuhan Deepin Technology Co., Ltd.
+ * Copyright (C) 2016 ~ 2018 Wuhan Deepin Technology Co., Ltd.
  *
  * Author:     Iceyer <me@iceyer.net>
  *
@@ -22,27 +22,37 @@
 #pragma once
 
 #include <QObject>
+#include <QScopedPointer>
 
-class VolumeMonitoringPrivate;
-class VolumeMonitoring : public QObject
+class HoverFilter : public QObject
 {
     Q_OBJECT
 public:
-    explicit VolumeMonitoring(QObject *parent = Q_NULLPTR);
-    ~VolumeMonitoring();
+    explicit HoverFilter(QObject *parent = 0);
+    bool eventFilter(QObject *obj, QEvent *event);
+};
 
-    void start();
-    void stop();
+class HoverShadowFilter : public QObject
+{
+    Q_OBJECT
+public:
+    explicit HoverShadowFilter(QObject *parent = 0);
+    bool eventFilter(QObject *obj, QEvent *event);
+};
 
-signals:
-    void volumeChanged(int volume);
-    void muteChanged(bool mute);
 
-public slots:
-    void timeoutSlot();
+class HintFilterPrivate;
+class HintFilter: public QObject
+{
+    Q_OBJECT
+public:
+    HintFilter(QObject *parent = 0);
+    ~HintFilter();
 
+    void hideAll();
+    bool eventFilter(QObject *obj, QEvent *event);
+    void showHitsFor(QWidget *w, QWidget *hint);
 private:
-    bool _bOpened;
-    QScopedPointer<VolumeMonitoringPrivate> d_ptr;
-    Q_DECLARE_PRIVATE_D(qGetPtrHelper(d_ptr), VolumeMonitoring)
+    QScopedPointer<HintFilterPrivate> d_ptr;
+    Q_DECLARE_PRIVATE_D(qGetPtrHelper(d_ptr), HintFilter)
 };

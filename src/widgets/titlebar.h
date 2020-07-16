@@ -28,7 +28,7 @@
  * files in the program, then also delete it here.
  */
 #ifndef DMR_TITLEBAR_H
-#define DMR_TITLEBAR_H 
+#define DMR_TITLEBAR_H
 #include <QScopedPointer>
 #include <DTitlebar>
 #include <DWidget>
@@ -42,7 +42,8 @@ DWIDGET_USE_NAMESPACE
 
 namespace dmr {
 class TitlebarPrivate;
-class Titlebar : public DTitlebar {
+class Titlebar : public DBlurEffectWidget
+{
     Q_OBJECT
 
 public:

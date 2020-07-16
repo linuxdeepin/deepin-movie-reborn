@@ -163,12 +163,15 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
     layout->setSpacing(0);
     layout->setContentsMargins(0, 0, 0, 0);
     setLayout(layout);
+    //lmh0710,修复详细信息里面有个自己绘制的x按钮
+#ifdef __aarch64__
 
+#else
     DImageButton *closeBt = new DImageButton(this);
     closeBt->setFixedSize(50, 50);
     connect(closeBt, &DImageButton::clicked, this, &MovieInfoDialog::close);
     layout->addWidget(closeBt, 0, Qt::AlignTop | Qt::AlignRight);
-
+#endif
     const auto &mi = pif.mi;
 
     auto *ml = new QVBoxLayout;
@@ -442,7 +445,10 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
         m_fileNameLbl->setForegroundRole(DPalette::BrightText);
         //title->setForegroundRole(DPalette::Text);
     });
+    //lmh0710,修复详细信息里面有个自己绘制的x按钮
+#ifdef __aarch64__
 
+#else
     if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
         closeBt->setNormalPic(INFO_CLOSE_LIGHT);
     } else if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
@@ -450,6 +456,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
     } else {
         closeBt->setNormalPic(INFO_CLOSE_LIGHT);
     }
+#endif
     m_expandGroup.at(0)->setExpand(true);
     m_expandGroup.at(1)->setExpand(true);
     m_expandGroup.at(2)->setExpand(true);

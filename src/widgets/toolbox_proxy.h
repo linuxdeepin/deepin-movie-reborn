@@ -46,6 +46,9 @@
 #include <DFloatingWidget>
 #include "dguiapplicationhelper.h"
 #include "videoboxbutton.h"
+#include "filter.h"
+
+#include "thumbnail_worker.h"
 
 namespace Dtk {
 namespace Widget {
@@ -83,21 +86,35 @@ protected:
     void paintEvent(QPaintEvent *event)
     {
         QPainter painter(this);
-//        painter.drawPixmap(rect(),QPixmap(_path).scaled(60,50));
 
-        painter.setRenderHints(QPainter::HighQualityAntialiasing |
-                               QPainter::SmoothPixmapTransform |
-                               QPainter::Antialiasing);
+        painter.setRenderHints(QPainter::HighQualityAntialiasing);
+        painter.setRenderHints(QPainter::SmoothPixmapTransform);
+        painter.setRenderHints(QPainter::Antialiasing);
 
-        QRect backgroundRect = rect();
-        QRect pixmapRect;
+        QSize size(_pixmap.size());
+        QBitmap mask(size);
+        QPainter painter1(&mask);
+        painter1.setRenderHint(QPainter::Antialiasing);
+        painter1.setRenderHint(QPainter::SmoothPixmapTransform);
+        painter1.fillRect(mask.rect(), Qt::white);
+        painter1.setBrush(QColor(0, 0, 0));
+        painter1.drawRoundedRect(mask.rect(), 2, 2);
+        QPixmap image = _pixmap;
+        image.setMask(mask);
 
-        QPainterPath bp1;
-        bp1.addRoundedRect(backgroundRect, 2, 2);
-        painter.setClipPath(bp1);
+        painter.drawPixmap(rect(), image);
 
-        painter.drawPixmap(backgroundRect, _pixmap);
-
+        QPen pen;
+        pen.setWidth(1);
+        if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
+            pen.setColor(QColor(0, 0, 0, 0.1 * 255));
+            painter.setPen(pen);
+        } else if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
+            pen.setColor(QColor(255, 255, 255, 0.1 * 255));
+            painter.setPen(pen);
+        }
+        painter.setBrush(Qt::NoBrush);
+        painter.drawRoundedRect(rect(), 4, 4);
     };
 private:
     int _index;
@@ -105,6 +122,52 @@ private:
     DLabel *_image = nullptr;
     QString _path = NULL;
     QPixmap _pixmap;
+};
+
+class IndicatorItem : public QWidget
+{
+    Q_OBJECT
+public:
+    IndicatorItem(QWidget *parent = 0): QWidget(parent)
+    {
+    };
+
+    void setPressed(bool bPressed)
+    {
+        m_bIsPressed = bPressed;
+    }
+
+protected:
+    void paintEvent(QPaintEvent *event)
+    {
+        QPainter painter(this);
+        QRect backgroundRect = rect();
+
+        painter.setRenderHints(QPainter::HighQualityAntialiasing |
+                               QPainter::SmoothPixmapTransform |
+                               QPainter::Antialiasing);
+
+        QPainterPath bpath;
+
+        if (!m_bIsPressed) {
+            bpath.addRect(backgroundRect.marginsRemoved(QMargins(1, 1, 1, 1)));
+            painter.fillPath(bpath, QColor(255, 255, 255, 255));
+
+            QPen pen;
+            pen.setWidth(1);
+            pen.setColor(QColor(0, 0, 0));
+            bpath.addRoundedRect(backgroundRect, 3, 3);
+            painter.setPen(pen);
+            painter.setOpacity(0.4);
+            painter.drawPath(bpath);
+        } else {
+            painter.fillRect(backgroundRect, QBrush(QColor(255, 138, 0)));
+        }
+
+    };
+
+private:
+    bool m_bIsPressed {false};
 };
 
 class ToolboxProxy: public DFloatingWidget
@@ -141,10 +204,13 @@ public:
     QLabel *getfullscreentimeLabel();
     QLabel *getfullscreentimeLabelend();
     bool getbAnimationFinash();
+    int DisplayVolume();
+    void setVolSliderHide();
 public slots:
     void finishLoadSlot(QSize size);
     void updateplaylisticon();
     void setthumbnailmode();
+    void setDisplayValue(int);
 signals:
     void requestPlay();
     void requestPause();
@@ -170,16 +236,21 @@ protected slots:
     void progressHoverChanged(int v);
     void updateHoverPreview(const QUrl &url, int secs);
 
+    //lmh0706暂停延时，解决乱按卡死问题
+    void waitPlay();
+
 protected:
 //    void paintEvent(QPaintEvent *pe) override;
     void showEvent(QShowEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
+
 private:
     void setup();
     void updateTimeLabel();
     void updateToolTipTheme(ToolButton *btn);
     void updateThumbnail();
     void updatePreviewTime(qint64 secs, const QPoint &pos);
+    void installHint(QWidget *w, QWidget *hint);
 
     QLabel *_fullscreentimelable {nullptr};
     QLabel *_fullscreentimelableend {nullptr};
@@ -196,9 +267,9 @@ private:
 //    DIconButton *_prevBtn {nullptr};
 //    DIconButton *_nextBtn {nullptr};
 
-    VideoBoxButton *_playBtn {nullptr};
-    VideoBoxButton *_prevBtn {nullptr};
-    VideoBoxButton *_nextBtn {nullptr};
+    DButtonBoxButton *_playBtn {nullptr};
+    DButtonBoxButton *_prevBtn {nullptr};
+    DButtonBoxButton *_nextBtn {nullptr};
     DButtonBox *_palyBox{nullptr};
 
 //    DIconButton *_subBtn {nullptr};
@@ -240,6 +311,7 @@ private:
     bool m_mousePree = false;   //thx
     int m_mouseRelesePos = 0;
     bool _bthumbnailmode;
+    bool isStillShowThumbnail{true};
 
     //动画是否完成
     bool bAnimationFinash {true};
@@ -253,6 +325,9 @@ private:
     QString m_UrloldThumbUrl;       //当前加载的文件，目的是为缩略图服务
 
     DBlurEffectWidget *bot_widget {nullptr };
+    HintFilter        *hintFilter {nullptr };
+    bool m_isMouseIn = false;
+    QTimer _hideTime;
 };
 class viewProgBarLoad: public QThread
 {
@@ -299,8 +374,6 @@ private:
     DMRSlider *_progBar {nullptr};
     QSize _size;
 
-    //是否停止当前加载
-    bool m_bStop {false};
     //加载缩略图是否加载完成，控制线程是否休眠
     bool m_bisload {false};
     //是否退出当前线程(退出while(1))
@@ -309,6 +382,8 @@ private:
     QMutex m_mutex;
 
     QMutex *pListPixmapMutex;
+
+    VideoThumbnailer *m_pThumber {nullptr};
 
 };
 }
