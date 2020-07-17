@@ -692,9 +692,9 @@ private:
         mw->move(geom.x(), geom.y());
         if (geom.bottom() + 40 >= deskRect.height()) {
             int height = deskRect.height() - mw->geometry().top();
-            mw->resize(geom.width(),height);
+            mw->resize(geom.width(), height);
         } else {
-            mw->resize(geom.width(),geom.height());
+            mw->resize(geom.width(), geom.height());
         }
         mw->updateGeometryNotification(geom.size());
     }
@@ -3092,7 +3092,8 @@ void MainWindow::updateProxyGeometry()
             }
         }
 
-        if (_playlist && !_playlist->toggling()) {
+        //note for 37834 by xxj
+        if (_playlist /*&& !_playlist->toggling()*/) {
             QRect fixed((10), (view_rect.height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT + 10)),
                         view_rect.width() - 20, TOOLBOX_SPACE_HEIGHT);
             _playlist->setGeometry(fixed);
