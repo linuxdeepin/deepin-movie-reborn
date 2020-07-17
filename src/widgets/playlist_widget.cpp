@@ -1130,7 +1130,8 @@ void PlaylistWidget::contextMenuEvent(QContextMenuEvent *cme)
 void PlaylistWidget::showEvent(QShowEvent *se)
 {
     batchUpdateSizeHints();
-    adjustSize();
+    //del for bug 37834 by xxj
+    //adjustSize();
 }
 
 void PlaylistWidget::removeItem(int idx)
