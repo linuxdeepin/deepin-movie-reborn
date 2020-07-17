@@ -417,6 +417,7 @@ protected:
             if (!enabled) return false;
             QMouseEvent *e = static_cast<QMouseEvent *>(event);
             setLeftButtonPressed(false);
+            equalRatio = false;
             qApp->setOverrideCursor(window->cursor());
 
             auto mw = static_cast<MainWindow *>(parent());
@@ -552,6 +553,8 @@ private:
         auto old_geom = mw->frameGeometry();
         auto geom = mw->frameGeometry();
         qreal frameRatio = (qreal)geom.width() / geom.height();
+        auto min = mw->minimumSize();
+        QRect deskRect = QApplication::desktop()->availableGeometry();
 
         // disable edges
         switch (edge) {
@@ -572,10 +575,13 @@ private:
                 sz = QSize(mi.width, mi.height);
             }
 
+            //判断窗口何时进入等比且何时退出
             qreal ratio = sz.width() / (qreal)sz.height();
-            bool equal = (abs(frameRatio - ratio) < 0.05);
+            if (!equalRatio) {
+                equalRatio = (abs(frameRatio - ratio) < 0.05);
+            }
             //窗口达到等比后进行等比缩放，未达到之前自由缩放
-            if (equal) {
+            if (equalRatio) {
                 switch (edge) {
                 case Utility::TopLeftCorner:
                     geom.setLeft(e->globalX());
@@ -583,7 +589,11 @@ private:
                     break;
                 case Utility::BottomLeftCorner:
                 case Utility::LeftEdge:
-                    geom.setLeft(e->globalX());
+                    if (geom.right() - e->globalX() - min.width() < 0) {
+                        geom.setLeft(geom.right() - min.width());
+                    } else {
+                        geom.setLeft(e->globalX());
+                    }
                     geom.setHeight(geom.width() / ratio);
                     break;
                 case Utility::BottomRightCorner:
@@ -606,6 +616,10 @@ private:
             } else {
                 switch (edge) {
                 case Utility::BottomLeftCorner:
+                    if (geom.right() - e->globalX() - min.width() < 0) {
+                        geom.setBottomLeft(QPoint(geom.right() - min.width(), e->globalY()));
+                        break;
+                    }
                     geom.setBottomLeft(e->globalPos());
                     break;
                 case Utility::TopLeftCorner:
@@ -615,7 +629,7 @@ private:
                     geom.setLeft(e->globalX());
                     break;
                 case Utility::BottomRightCorner:
-                    geom.setBottomRight(e->globalPos());
+                    geom.setBottomRight(e->globalPos() - QPoint(0, 40));
                     break;
                 case Utility::RightEdge:
                     geom.setRight(e->globalX());
@@ -664,7 +678,6 @@ private:
             }
         }
 
-        auto min = mw->minimumSize();
         if (old_geom.width() <= min.width() && geom.left() > old_geom.left()) {
             geom.setLeft(old_geom.left());
         }
@@ -674,13 +687,22 @@ private:
 
         geom.setWidth(qMax(geom.width(), min.width()));
         geom.setHeight(qMax(geom.height(), min.height()));
-        mw->updateContentGeometry(geom);
+        //mw->updateContentGeometry(geom);
+
+        mw->move(geom.x(), geom.y());
+        if (geom.bottom() + 40 >= deskRect.height()) {
+            int height = deskRect.height() - mw->geometry().top();
+            mw->resize(geom.width(),height);
+        } else {
+            mw->resize(geom.width(),geom.height());
+        }
         mw->updateGeometryNotification(geom.size());
     }
 
     bool leftButtonPressed {false};
     bool startResizing {false};
     bool enabled {true};
+    bool equalRatio {false};
     Utility::CornerEdge lastCornerEdge;
     QWindow *_window;
 };
