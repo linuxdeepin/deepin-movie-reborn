@@ -598,7 +598,15 @@ Localizzazione italiana a cura di Carofano Massimo Antonio.</translation>
     </message>
     <message>
         <source>All videos (%2 %1)</source>
-        <translation type="unfinished">Tutti i video (%1) {2 %1)?}</translation>
+        <translation type="obsolete">Tutti i video (%1) {2 %1)?}</translation>
+    </message>
+    <message>
+        <source>All videos (*)(%2 %1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please exit smart dock</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -832,6 +840,10 @@ Localizzazione italiana a cura di Carofano Massimo Antonio.</translation>
     <message>
         <source>Pause</source>
         <translation>Pausa</translation>
+    </message>
+    <message>
+        <source>sub</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

@@ -597,7 +597,15 @@
     </message>
     <message>
         <source>All videos (%2 %1)</source>
-        <translation type="unfinished">모든 동영상 (%1) {2 %1)?}</translation>
+        <translation type="obsolete">모든 동영상 (%1) {2 %1)?}</translation>
+    </message>
+    <message>
+        <source>All videos (*)(%2 %1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please exit smart dock</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -831,6 +839,10 @@
     <message>
         <source>Pause</source>
         <translation>일시정지</translation>
+    </message>
+    <message>
+        <source>sub</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

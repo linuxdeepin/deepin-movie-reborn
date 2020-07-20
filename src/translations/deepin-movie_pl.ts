@@ -573,7 +573,7 @@
     </message>
     <message>
         <source>All videos (%2 %1)</source>
-        <translation type="unfinished">Wszystkie filmy (%1) {2 %1)?}</translation>
+        <translation type="obsolete">Wszystkie filmy (%1) {2 %1)?}</translation>
     </message>
     <message>
         <source>Order play</source>
@@ -597,6 +597,14 @@
     </message>
     <message>
         <source>The CD/DVD has been ejected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>All videos (*)(%2 %1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please exit smart dock</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -831,6 +839,10 @@
     <message>
         <source>Pause</source>
         <translation>Wstrzymaj</translation>
+    </message>
+    <message>
+        <source>sub</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>
