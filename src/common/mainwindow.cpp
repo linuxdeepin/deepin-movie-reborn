@@ -3094,7 +3094,7 @@ void MainWindow::updateProxyGeometry()
 
         //note for 37834 by xxj
         if (_playlist /*&& !_playlist->toggling()*/) {
-            QRect fixed((10), (view_rect.height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT + 10)),
+            QRect fixed((10), (view_rect.height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT)),
                         view_rect.width() - 20, TOOLBOX_SPACE_HEIGHT);
             _playlist->setGeometry(fixed);
         }
