@@ -844,5 +844,9 @@
         <source>Pause</source>
         <translation>暂停</translation>
     </message>
+    <message>
+        <source>sub</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 </TS>
