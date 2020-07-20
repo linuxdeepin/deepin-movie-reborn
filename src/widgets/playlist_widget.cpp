@@ -1351,9 +1351,6 @@ void PlaylistWidget::togglePopup()
         });
 #else
         _toggling = false;
-#ifdef __aarch64__
-        setFixedWidth(view_rect.width());
-#endif
         _state = State::Opened;
         emit stateChange();
 #endif
