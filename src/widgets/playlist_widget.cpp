@@ -1071,6 +1071,7 @@ void PlaylistWidget::removeClickedItem(bool isShortcut)
             qDebug() << piw->getBIsSelect();
             if (piw->getBIsSelect()) {
                 _engine->playlist().remove(i);
+                return;
             }
         }
     }
