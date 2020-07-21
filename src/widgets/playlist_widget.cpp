@@ -1171,7 +1171,7 @@ void PlaylistWidget::contextMenuEvent(QContextMenuEvent *cme)
 {
     bool on_item = false;
     _mouseItem = nullptr;
-    QPoint itempos(cme->pos().x() - 235, cme->pos().y() - 30);
+    QPoint itempos(cme->pos().x() - 235, cme->pos().y() - 20);
 
     if (_playlist->itemAt(itempos)) {
         _mouseItem = _playlist->itemWidget(_playlist->itemAt(itempos));
