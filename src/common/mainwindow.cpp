@@ -3208,8 +3208,12 @@ void MainWindow::suspendToolsWindow()
             return;
 
         if (isFullScreen()) {
-            if (qApp->focusWindow() == this->windowHandle())
+            if (qApp->focusWindow() == this->windowHandle()){
                 qApp->setOverrideCursor(Qt::BlankCursor);
+            }
+            else {
+                qApp->setOverrideCursor(Qt::ArrowCursor);
+            }
         }
 
         _titlebar->hide();
