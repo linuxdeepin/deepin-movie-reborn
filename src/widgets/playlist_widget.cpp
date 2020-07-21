@@ -1406,6 +1406,7 @@ void PlaylistWidget::togglePopup()
         setVisible(!isVisible());
 #endif
     } else {
+         _playlist->setAttribute(Qt::WA_TransparentForMouseEvents, true);
         setVisible(!isVisible());
         _toggling = true;
 #ifndef __sw_64__
@@ -1421,6 +1422,7 @@ void PlaylistWidget::togglePopup()
         connect(paClose, &QPropertyAnimation::finished, [ = ]() {
             paClose->deleteLater();
             paClose = nullptr;
+             _playlist->setAttribute(Qt::WA_TransparentForMouseEvents, false);
         });
 #else
         _toggling = false;
