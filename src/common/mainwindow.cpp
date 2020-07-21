@@ -784,7 +784,7 @@ MainWindow::MainWindow(QWidget *parent)
     }
     _engine = new PlayerEngine(this);
     //add by heyi
-    connect(_engine, &PlayerEngine::mpvFunsLoadOver, this, &MainWindow::firstPlayInit);
+    //connect(_engine, &PlayerEngine::mpvFunsLoadOver, this, &MainWindow::firstPlayInit);
 #ifndef USE_DXCB
     _engine->move(0, 0);
 #endif
@@ -1495,25 +1495,25 @@ MainWindow::~MainWindow()
 
 void MainWindow::firstPlayInit()
 {
-    if (m_bMpvFunsLoad) return;
+//    if (m_bMpvFunsLoad) return;
 
-    _engine->firstInit();
+//    _engine->firstInit();
 
-    int volume = Settings::get().internalOption("global_volume").toInt();
-    if (volume > 100) {
-        Settings::get().setInternalOption("global_volume", 100);
-        volume = 100;
-    }
+//    int volume = Settings::get().internalOption("global_volume").toInt();
+//    if (volume > 100) {
+//        Settings::get().setInternalOption("global_volume", 100);
+//        volume = 100;
+//    }
 
-    //heyi need
-    _engine->changeVolume(volume);
+//    //heyi need
+//    _engine->changeVolume(volume);
 
-    if (_engine->muted()) {
-        _nwComm->updateWithMessage(tr("Mute"));
-    }
+//    if (_engine->muted()) {
+//        _nwComm->updateWithMessage(tr("Mute"));
+//    }
 
-    requestAction(ActionFactory::ChangeSubCodepage, false, {"auto"});
-    m_bMpvFunsLoad = true;
+//    requestAction(ActionFactory::ChangeSubCodepage, false, {"auto"});
+//    m_bMpvFunsLoad = true;
 }
 
 bool MainWindow::judgeMouseInWindow(QPoint pos)
@@ -3864,7 +3864,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *ev)
     //add by heyi
     static bool bFlags = true;
     if (bFlags) {
-        firstPlayInit();
+        //firstPlayInit();
         repaint();
         bFlags = false;
     }
@@ -4443,7 +4443,7 @@ void MainWindow::dragMoveEvent(QDragMoveEvent *ev)
 void MainWindow::dropEvent(QDropEvent *ev)
 {
     //add by heyi 拖动进来时先初始化窗口
-    firstPlayInit();
+    //firstPlayInit();
     qDebug() << ev->mimeData()->formats();
     if (!ev->mimeData()->hasUrls()) {
         return;
