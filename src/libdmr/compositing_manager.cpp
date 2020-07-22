@@ -264,7 +264,6 @@ void CompositingManager::softDecodeCheck()
                 if(listPara.at(0).contains("model name")
                    && listPara.at(1).contains("Kunpeng 920"))
                 {
-                    free(data);
                     m_bOnlySoftDecode = true;
                 }
             }
