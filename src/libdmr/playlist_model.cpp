@@ -766,8 +766,8 @@ void PlaylistModel::tryPlayCurrent(bool next)
     }
     emit itemInfoUpdated(_current);
     if (pif.valid) {
-        //单个循环/列表循环，小于1s视频/无法解码视频，不播放，直接播放下一个
-        if ( pif.mi.duration <= 1 || pif.thumbnail.isNull()) {
+        //本地视频单个循环/列表循环，小于1s视频/无法解码视频，不播放，直接播放下一个
+        if ( (pif.mi.duration <= 1 || pif.thumbnail.isNull()) && pif.url.isLocalFile()) {
             if (1 == count()) {
                 qWarning() << "return for video is cannot play and loop play!";
                 return;
@@ -781,8 +781,9 @@ void PlaylistModel::tryPlayCurrent(bool next)
         }
         _hasNormalVideo = false;
         for (auto info : _infos) {
-            if (info.valid && info.mi.duration > 1 && !info.thumbnail.isNull()) {
+            if ((info.valid && info.mi.duration > 1 && !info.thumbnail.isNull()) || !pif.url.isLocalFile()) {
                 _hasNormalVideo = true;
+                break;
             }
         }
         if (_hasNormalVideo) {
