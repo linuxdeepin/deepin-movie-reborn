@@ -355,6 +355,7 @@ struct MovieInfo MovieInfo::parseFromFile(const QFileInfo &fi, bool *ok)
     AVFormatContext *av_ctx = nullptr;
     int stream_id = -1;
     AVCodecParameters *dec_ctx = nullptr;
+    AVStream* av_stream = nullptr;
 
     if (!fi.exists()) {
         if (ok) *ok = false;
@@ -387,6 +388,8 @@ struct MovieInfo MovieInfo::parseFromFile(const QFileInfo &fi, bool *ok)
 
     av_dump_format(av_ctx, 0, fi.fileName().toUtf8().constData(), 0);
 
+    av_stream = av_ctx->streams[0];
+
     mi.width = dec_ctx->width;
     mi.height = dec_ctx->height;
     auto duration = av_ctx->duration == AV_NOPTS_VALUE ? 0 : av_ctx->duration;
@@ -401,13 +404,13 @@ struct MovieInfo MovieInfo::parseFromFile(const QFileInfo &fi, bool *ok)
 
     mi.vCodecID = dec_ctx->codec_id;
     mi.vCodeRate = dec_ctx->bit_rate;
-    if (dec_ctx->sample_aspect_ratio.den != 0) {
-        mi.fps = dec_ctx->sample_aspect_ratio.num / dec_ctx->sample_aspect_ratio.den;
+    if (av_stream->time_base.num != 0) {
+         mi.fps = av_stream->time_base.den / av_stream->time_base.num;
     } else {
         mi.fps = 0;
     }
     if (mi.height != 0) {
-        mi.proportion = mi.width / mi.height;
+        mi.proportion = static_cast<float>(mi.width) / static_cast<float>(mi.height);
     } else {
         mi.proportion = 0;
     }
@@ -459,21 +462,6 @@ struct MovieInfo MovieInfo::parseFromFile(const QFileInfo &fi, bool *ok)
 
     if (ok) *ok = true;
     return mi;
-}
-
-bool PlayItemInfo::refresh()
-{
-    if (url.isLocalFile()) {
-        //FIXME: it seems that info.exists always gets refreshed
-        auto o = this->info.exists();
-        auto sz = this->info.size();
-
-        this->info.refresh();
-        this->valid = this->info.exists();
-
-        return (o != this->info.exists()) || sz != this->info.size();
-    }
-    return false;
 }
 
 PlaylistModel::PlaylistModel(PlayerEngine *e)
