@@ -21,6 +21,7 @@ Presenter::Presenter(MainWindow *mw, QObject *parent)
     mprisPlayer->setCanGoNext(true);
     mprisPlayer->setCanGoPrevious(true);
     mprisPlayer->setCanPause(true);
+    mprisPlayer->setCanSeek(true);
     initMpris(mprisPlayer);
 }
 
@@ -40,6 +41,8 @@ void Presenter::initMpris(MprisPlayer *mprisPlayer)
     connect(mprisPlayer, &MprisPlayer::loopStatusRequested, this, &Presenter::slotloopStatusRequested);
     connect(_mw->engine()->getplaylist(), &PlaylistModel::playModeChanged, this, &Presenter::slotplayModeChanged);
     connect(mprisPlayer, &MprisPlayer::openUriRequested, this, [ = ] {_mw->requestAction(ActionFactory::Exit);});
+    connect(mprisPlayer, &MprisPlayer::seekRequested, this, &Presenter::slotseek);
+     connect(mprisPlayer, &MprisPlayer::stopRequested, this, &Presenter::slotstop);
     //connect(_mw->engine(),&PlayerEngine::volumeChanged,this,&Presenter::slotvolumeChanged);
 
 //    connect(_mw->toolbox()->get_progBar(), &Presenter::progrossChanged,
@@ -132,4 +135,14 @@ void Presenter::slotvolumeChanged()
             m_mprisplayer->setVolume((pert - 40.0) / 100.0);
         }
     }
+}
+
+void Presenter::slotseek(qlonglong Offset)
+{
+    _mw->engine()->seekAbsolute(Offset);
+}
+
+void Presenter::slotstop()
+{
+    _mw->engine()->stop();
 }
