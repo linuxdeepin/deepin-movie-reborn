@@ -3394,6 +3394,7 @@ void MainWindow::closeEvent(QCloseEvent *ev)
     }
 #endif
     QApplication::quit();
+    _Exit(0);
 }
 
 void MainWindow::wheelEvent(QWheelEvent *we)
