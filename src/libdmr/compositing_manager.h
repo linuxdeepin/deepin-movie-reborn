@@ -76,6 +76,8 @@ public:
     static OpenGLInteropKind interopKind();
     static bool runningOnVmwgfx();
     bool hascard();
+    void softDecodeCheck();
+    bool isOnlySoftDecode();
 
     /**
      * override auto-detected compositing state.
@@ -113,6 +115,7 @@ private:
     bool _composited {false};
     Platform _platform {Platform::Unknown};
     bool _hasCard;
+    bool m_bOnlySoftDecode {false};  //kunpeng920走软解码
 };
 }
 
