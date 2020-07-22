@@ -201,13 +201,7 @@ int main(int argc, char *argv[])
 
     if (!toOpenFiles.isEmpty()) {
         if (toOpenFiles.size() == 1) {
-            //mod by xxj for task 30631
-            QUrl url = toOpenFiles[0];
-            if (url.isLocalFile()) {
-                mw.play(QUrl::fromLocalFile(toOpenFiles[0]));
-            } else {
-                mw.play(toOpenFiles[0]);
-            }
+            mw.play(toOpenFiles[0]);
         } else {
             mw.playList(toOpenFiles);
         }
