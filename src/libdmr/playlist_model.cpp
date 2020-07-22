@@ -464,6 +464,21 @@ struct MovieInfo MovieInfo::parseFromFile(const QFileInfo &fi, bool *ok)
     return mi;
 }
 
+bool PlayItemInfo::refresh()
+{
+    if (url.isLocalFile()) {
+        //FIXME: it seems that info.exists always gets refreshed
+        auto o = this->info.exists();
+        auto sz = this->info.size();
+
+        this->info.refresh();
+        this->valid = this->info.exists();
+
+        return (o != this->info.exists()) || sz != this->info.size();
+    }
+    return false;
+}
+
 PlaylistModel::PlaylistModel(PlayerEngine *e)
     : _engine(e)
 {
