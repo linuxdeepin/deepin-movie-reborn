@@ -43,6 +43,7 @@
 #include <DFloatingMessage>
 #include "animationlabel.h"
 #include "volumemonitoring.h"
+#include "diskcheckthread.h"
 
 //static const int VOLUME_OFFSET = 40;
 
@@ -261,6 +262,7 @@ protected slots:
     void changedMute(bool);
 
     void updateMiniBtnTheme(int);
+    void diskRemoved(QString strDiskName);
 private:
     void setupTitlebar();
 
@@ -313,6 +315,7 @@ private:
     DIconButton *_miniCloseBtn {nullptr};
     DIconButton *_miniQuitMiniBtn {nullptr};
 #endif
+    QLabel *_labelCover {nullptr};
 
     QImage bg_dark;
     QImage bg_light;
@@ -383,6 +386,7 @@ private:
     int nX = 0, nY = 0;     //左键按下时保存的点
     bool _isTouch = false;          //是否是触摸屏按下
     QTimer _mousePressTimer;
+    Diskcheckthread m_diskCheckThread;
 };
 };
 
