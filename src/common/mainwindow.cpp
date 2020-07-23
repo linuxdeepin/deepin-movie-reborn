@@ -2230,9 +2230,9 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         if (_playlist->state() == PlaylistWidget::Opened && !isFullScreen()) {
             requestAction(ActionFactory::TogglePlaylist);
         }
-        this->setWindowState(Qt::WindowNoState);
+        //this->setWindowState(Qt::WindowNoState);
         if (isFullScreen()) {
-            requestAction(ActionFactory::ToggleFullscreen);
+            //requestAction(ActionFactory::ToggleFullscreen);
             /*if (!fromUI) {
                 reflectActionToUI(ActionFactory::ToggleFullscreen);
             }*/
@@ -2334,9 +2334,9 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                 _fullscreentimelable->close();
             }
         } else {
-            if (/*!_miniMode && (fromUI || isShortcut) && */windowState() == Qt::WindowNoState) {
-                _lastRectInNormalMode = geometry();
-            }
+//            if (/*!_miniMode && (fromUI || isShortcut) && */windowState() == Qt::WindowNoState) {
+//                _lastRectInNormalMode = geometry();
+//            }
             //可能存在更好的方法（全屏后更新toolbox状态），后期修改
             if (!_toolbox->getbAnimationFinash())
                 return;
@@ -4334,10 +4334,10 @@ void MainWindow::toggleUIMode()
 
         _stateBeforeMiniMode = SBEM_None;
 
-        if (!_windowAbove) {
-            _stateBeforeMiniMode |= SBEM_Above;
-            requestAction(ActionFactory::WindowAbove);
-        }
+//        if (!_windowAbove) {
+//            _stateBeforeMiniMode |= SBEM_Above;
+//            requestAction(ActionFactory::WindowAbove);
+//        }
 
         if (_playlist->state() == PlaylistWidget::Opened) {
             _stateBeforeMiniMode |= SBEM_PlaylistOpened;
@@ -4346,13 +4346,19 @@ void MainWindow::toggleUIMode()
 
         if (isFullScreen()) {
             _stateBeforeMiniMode |= SBEM_Fullscreen;
-            requestAction(ActionFactory::QuitFullscreen);
-            reflectActionToUI(ActionFactory::ToggleMiniMode);
+            requestAction(ActionFactory::ToggleFullscreen);
+//            requestAction(ActionFactory::QuitFullscreen);
+//            reflectActionToUI(ActionFactory::ToggleMiniMode);
         } else if (isMaximized()) {
             _stateBeforeMiniMode |= SBEM_Maximized;
             showNormal();
         } else {
             _lastRectInNormalMode = geometry();
+        }
+
+        if (!_windowAbove) {
+            _stateBeforeMiniMode |= SBEM_Above;
+            requestAction(ActionFactory::WindowAbove);
         }
 
         auto sz = QSize(380, 380);
@@ -4569,7 +4575,7 @@ void MainWindow::diskRemoved(QString strDiskName)
     strCurrFile = _engine->getplaylist()->currentInfo().url.toString();
 
     if (strCurrFile.contains(strDiskName)/* && _engine->state() == PlayerEngine::Playing*/)
-        _nwComm->updateWithMessage(tr("Disc reject"));
+        _nwComm->updateWithMessage(tr("The CD/DVD has been ejected"));
 }
 
 #include "mainwindow.moc"
