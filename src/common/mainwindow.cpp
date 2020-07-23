@@ -2316,7 +2316,8 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
 //            }
 //        }
         if (isFullScreen()) {
-            _quitfullscreenstopflag = true;
+            //感觉这个参数没什么用，后期观察没有其他用处可以酌情删除
+            //_quitfullscreenstopflag = true;
             if (_lastWindowState == Qt::WindowMaximized) {
                 _maxfornormalflag = true;
                 setWindowFlags(Qt::Window);
