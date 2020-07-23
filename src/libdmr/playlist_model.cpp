@@ -355,6 +355,7 @@ struct MovieInfo MovieInfo::parseFromFile(const QFileInfo &fi, bool *ok)
     AVFormatContext *av_ctx = nullptr;
     int stream_id = -1;
     AVCodecParameters *dec_ctx = nullptr;
+    AVStream* av_stream = nullptr;
 
     if (!fi.exists()) {
         if (ok) *ok = false;
@@ -387,6 +388,14 @@ struct MovieInfo MovieInfo::parseFromFile(const QFileInfo &fi, bool *ok)
 
     av_dump_format(av_ctx, 0, fi.fileName().toUtf8().constData(), 0);
 
+    for(int i =0;i<av_ctx->nb_streams;i++){
+        av_stream = av_ctx->streams[i];
+        if(av_stream->codecpar->codec_type == AVMEDIA_TYPE_VIDEO)
+        {
+            break;
+        }
+    }
+
     mi.width = dec_ctx->width;
     mi.height = dec_ctx->height;
     auto duration = av_ctx->duration == AV_NOPTS_VALUE ? 0 : av_ctx->duration;
@@ -401,13 +410,13 @@ struct MovieInfo MovieInfo::parseFromFile(const QFileInfo &fi, bool *ok)
 
     mi.vCodecID = dec_ctx->codec_id;
     mi.vCodeRate = dec_ctx->bit_rate;
-    if (dec_ctx->sample_aspect_ratio.den != 0) {
-        mi.fps = dec_ctx->sample_aspect_ratio.num / dec_ctx->sample_aspect_ratio.den;
+    if (av_stream->r_frame_rate.den != 0) {
+         mi.fps = av_stream->r_frame_rate.num / av_stream->r_frame_rate.den;
     } else {
         mi.fps = 0;
     }
     if (mi.height != 0) {
-        mi.proportion = mi.width / mi.height;
+        mi.proportion = static_cast<float>(mi.width) / static_cast<float>(mi.height);
     } else {
         mi.proportion = 0;
     }
@@ -418,7 +427,6 @@ struct MovieInfo MovieInfo::parseFromFile(const QFileInfo &fi, bool *ok)
             return mi;
         }
     }
-
 
     mi.aCodeID = dec_ctx->codec_id;
     mi.aCodeRate = dec_ctx->bit_rate;

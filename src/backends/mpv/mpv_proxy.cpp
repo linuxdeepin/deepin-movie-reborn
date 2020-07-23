@@ -699,6 +699,11 @@ bool MpvProxy::loadSubtitle(const QFileInfo &fi)
 {
     //movie could be in an inner state that marked as Stopped when loadfile executes
     //if (state() == PlayState::Stopped) { return true; }
+    if(!m_bInited)
+    {
+        firstInit();
+        m_bInited = true;
+    }
 
     if (!fi.exists())
         return false;
@@ -752,6 +757,12 @@ void MpvProxy::addSubSearchPath(const QString &path)
 
 void MpvProxy::setSubCodepage(const QString &cp)
 {
+    if(!m_bInited)
+    {
+        m_bInited = true;
+        firstInit();
+    }
+
     auto cp2 = cp;
     if (!cp.startsWith("+") && cp != "auto")
         cp2.prepend('+');
@@ -953,6 +964,12 @@ void MpvProxy::toggleMute()
 
 void MpvProxy::play()
 {
+    if(!m_bInited)
+    {
+        firstInit();
+        m_bInited = true;
+    }
+
     QList<QVariant> args = { "loadfile" };
     QStringList opts = { };
 

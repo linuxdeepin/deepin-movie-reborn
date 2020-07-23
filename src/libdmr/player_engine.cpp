@@ -719,13 +719,22 @@ bool PlayerEngine::addPlayFile(const QUrl &url)
 QList<QUrl> PlayerEngine::collectPlayDir(const QDir &dir)
 {
     QList<QUrl> urls;
+    QString strtp;
 
     //取消递归  by thx
     QDirIterator di(dir, QDirIterator::NoIteratorFlags);
     while (di.hasNext()) {
         di.next();
         if (di.fileInfo().isFile() && isPlayableFile(di.fileName())) {
-            urls.append(QUrl::fromLocalFile(di.filePath()));
+            strtp = di.filePath();
+            while(QFileInfo(strtp).isSymLink())
+            {
+                /*****************************
+                 * use oringnal path to replace link path
+                 * ***************************/
+               strtp = QFileInfo(strtp).symLinkTarget();
+            }
+            urls.append(QUrl::fromLocalFile(strtp));
         }
     }
 

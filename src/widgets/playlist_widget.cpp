@@ -1084,6 +1084,7 @@ void PlaylistWidget::removeClickedItem(bool isShortcut)
             qDebug() << piw->getBIsSelect();
             if (piw->getBIsSelect()) {
                 _engine->playlist().remove(i);
+                return;
             }
         }
     }
@@ -1170,7 +1171,7 @@ void PlaylistWidget::contextMenuEvent(QContextMenuEvent *cme)
 {
     bool on_item = false;
     _mouseItem = nullptr;
-    QPoint itempos(cme->pos().x() - 235, cme->pos().y() - 30);
+    QPoint itempos(cme->pos().x() - 235, cme->pos().y() - 20);
 
     if (_playlist->itemAt(itempos)) {
         _mouseItem = _playlist->itemWidget(_playlist->itemAt(itempos));
@@ -1405,6 +1406,7 @@ void PlaylistWidget::togglePopup()
         setVisible(!isVisible());
 #endif
     } else {
+         _playlist->setAttribute(Qt::WA_TransparentForMouseEvents, true);
         setVisible(!isVisible());
         _toggling = true;
 #ifndef __sw_64__
@@ -1420,6 +1422,7 @@ void PlaylistWidget::togglePopup()
         connect(paClose, &QPropertyAnimation::finished, [ = ]() {
             paClose->deleteLater();
             paClose = nullptr;
+             _playlist->setAttribute(Qt::WA_TransparentForMouseEvents, false);
         });
 #else
         _toggling = false;
