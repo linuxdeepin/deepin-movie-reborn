@@ -462,6 +462,10 @@ const PlayingMovieInfo &MpvProxy::playingMovieInfo()
 
 void MpvProxy::handle_mpv_events()
 {
+    if(CompositingManager::get().isTestFlag()){
+        qDebug()<<"not handle mpv events!";
+        return;
+    }
     while (1) {
         mpv_event *ev = mpv_wait_event(_handle, 0.0005);
         if (ev->event_id == MPV_EVENT_NONE)

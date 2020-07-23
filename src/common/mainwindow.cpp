@@ -1448,8 +1448,8 @@ void MainWindow::onMonitorMotionNotify(int x, int y)
 MainWindow::~MainWindow()
 {
     qDebug() << __func__;
-    disconnect(_engine, 0, 0, 0);
-    disconnect(&_engine->playlist(), 0, 0, 0);
+    //disconnect(_engine, 0, 0, 0);
+    //disconnect(&_engine->playlist(), 0, 0, 0);
 
     if (_lastCookie > 0) {
         utils::UnInhibitStandby(_lastCookie);
@@ -3393,8 +3393,17 @@ void MainWindow::closeEvent(QCloseEvent *ev)
 
     }
 #endif
-    QApplication::quit();
-    _Exit(0);
+    _quitfullscreenstopflag = true;
+    DMainWindow::closeEvent(ev);
+    _engine->stop();
+    disconnect(_engine,0,0,0);
+    disconnect(&_engine->playlist(),0,0,0);
+    if(_engine){
+        delete _engine;
+        _engine = nullptr;
+    }
+    CompositingManager::get().setTestFlag(true);
+    DApplication::quit();
 }
 
 void MainWindow::wheelEvent(QWheelEvent *we)
