@@ -63,6 +63,7 @@ int main(int argc, char *argv[])
 //    qputenv("XDG_CONFIG_DIRS", "/usr/local/etc/xdg:/etc/xdg");
 //    qputenv("QT_QPA_PLATFORM", "wayland");
     qputenv("QT_WAYLAND_SHELL_INTEGRATION", "kwayland-shell");
+
     qputenv("_d_disableDBusFileDialog", "true");
 
 //    CompositingManager::detectOpenGLEarly();
@@ -140,7 +141,7 @@ int main(int argc, char *argv[])
         <<"XDG_CONFIG_DIRS=/usr/local/etc/xdg:/etc/xdg"
         <<"QT_QPA_PLATFORM=wayland"
         <<"QT_WAYLAND_SHELL_INTEGRATION=xdg-shell-v6";*/
-        QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+//        QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
 //        env.insert("LD_LIBRARY_PATH", "/usr/local/lib:/usr/local/lib/aarch64-linux-gnu/");
 //        env.insert("QT_QPA_PLATFORM_PLUGIN_PATH", "/usr/local/plugins/platforms:/usr/local/lib/aarch64-linux-gnu/plugins/platforms");
 //        env.insert("QT_PLUGIN_PATH", "/usr/local/plugins:/usr/local/lib/aarch64-linux-gnu/plugins/");
@@ -151,7 +152,7 @@ int main(int argc, char *argv[])
 //        env.insert("QT_WAYLAND_SHELL_INTEGRATION", "xdg-shell-v6");
         //process->setEnvironment(env);
         //process->setNativeArguments("");
-        process->setProcessEnvironment(env);
+//        process->setProcessEnvironment(env);
         process->startDetached(t_argv);
         process->deleteLater();
 
