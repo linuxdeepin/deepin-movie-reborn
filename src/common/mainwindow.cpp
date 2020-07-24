@@ -3343,6 +3343,9 @@ void MainWindow::closeEvent(QCloseEvent *ev)
     }
 
     ev->accept();
+    /*lmh0724临时规避退出崩溃问题*/
+    QApplication::quit();
+    _Exit(0);
 }
 
 void MainWindow::wheelEvent(QWheelEvent *we)
