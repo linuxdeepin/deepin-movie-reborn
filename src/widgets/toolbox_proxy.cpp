@@ -490,12 +490,13 @@ public:
         _front->setContentsMargins(0, 0, 0, 0);
 
 //       _indicator = new IndicatorBar(this);
-        _indicator = new DBlurEffectWidget(this);
-        _indicator->resize(4, 60);
+//        _indicator = new DBlurEffectWidget(this);
+        _indicator = new IndicatorItem(this);
+        _indicator->resize(6, 60);
         _indicator->setObjectName("indicator");
-        _indicator->setMaskColor(QColor(255, 255, 255));
-        _indicator->setBlurRectXRadius(2);
-        _indicator->setBlurRectYRadius(2);
+//        _indicator->setMaskColor(QColor(255, 255, 255));
+//        _indicator->setBlurRectXRadius(2);
+//        _indicator->setBlurRectYRadius(2);
 
         _sliderTime = new SliderTime;
         _sliderTime->hide();
@@ -503,9 +504,16 @@ public:
         QMatrix matrix;
         matrix.rotate(180);
         QPixmap pixmap = utils::LoadHiDPIPixmap(SLIDER_ARROW);
-        _sliderArrowUp = new DLabel(this);
-        _sliderArrowUp->setFixedSize(20, 18);
-        _sliderArrowUp->setPixmap(pixmap);
+        _sliderArrowUp = new DArrowRectangle(DArrowRectangle::ArrowTop);
+        _sliderArrowUp->setFocusPolicy(Qt::NoFocus);
+        _sliderArrowUp->setAttribute(Qt::WA_DeleteOnClose);
+        _sliderArrowUp->setWindowFlag(Qt::WindowStaysOnTopHint);
+        _sliderArrowUp->setArrowWidth(10);
+        _sliderArrowUp->setArrowHeight(7);
+        const QPalette pa = QGuiApplication::palette();
+        QColor bgColor = pa.color(QPalette::Highlight);
+        _sliderArrowUp->setBackgroundColor(bgColor);
+        _sliderArrowUp->setFixedSize(10, 7);
         _sliderArrowUp->hide();
         _sliderArrowDown = new DLabel(this);
         _sliderArrowDown->setFixedSize(20, 18);
@@ -739,22 +747,21 @@ private:
 
         if (press) {
 //            _indicator->changeStyle(press);
+            _indicator->setPressed(press);
             _indicator->resize(2, 60);
-            _indicator->setMaskColor(QColor(255, 138, 0));
-            _indicator->setBlurRectXRadius(2);
-            _indicator->setBlurRectYRadius(2);
-            _sliderTime->setVisible(press);
+//            _indicator->setMaskColor(QColor(255, 138, 0));
+//            _indicator->setBlurRectXRadius(2);
+//            _indicator->setBlurRectYRadius(2);
+//            _sliderTime->setVisible(press);
             _sliderArrowUp->setVisible(press);
 //            _sliderArrowDown->setVisible(press);
         } else {
 //            _indicator->changeStyle(press);
-            _indicator->resize(4, 60);
-            _indicator->setMaskColor(QColor(255, 255, 255));
-            _indicator->setBlurRectXRadius(2);
-            _indicator->setBlurRectYRadius(2);
-            _sliderTime->setVisible(press);
-            _sliderArrowUp->setVisible(press);
-//            _sliderArrowDown->setVisible(press);
+            _indicator->setPressed(press);
+            _indicator->resize(6, 60);
+//            _indicator->setMaskColor(QColor(255, 255, 255));
+//            _indicator->setBlurRectXRadius(2);
+//            _indicator->setBlurRectYRadius(2);
         }
     }
 
@@ -838,9 +845,8 @@ protected:
     void paintEvent(QPaintEvent *e) override
     {
         _indicator->move(_indicatorPos.x(), _indicatorPos.y());
-//        _sliderArrowDown->move(_indicatorPos.x() + _indicator->width() / 2 - _sliderArrowDown->width() / 2,
-//                               _indicatorPos.y() - 10);
-        _sliderArrowUp->move(_indicatorPos.x() + _indicator->width() / 2 - _sliderArrowUp->width() / 2, 55);
+        QPoint pos = this->mapToGlobal(QPoint(0, 0));
+        _sliderArrowUp->move(pos.x() + _indicatorPos.x() + 1, pos.y() + _indicator->height() - 5);
         _front->setFixedWidth(_indicatorPos.x());
 
         if (_press) {
@@ -871,10 +877,11 @@ private:
     QWidget *_back{nullptr};
     QWidget *_front{nullptr};
 //    IndicatorBar *_indicator{nullptr};
-    DBlurEffectWidget *_indicator{nullptr};
+    //DBlurEffectWidget *_indicator{nullptr};
+    IndicatorItem *_indicator {nullptr};
     SliderTime *_sliderTime{nullptr};
     DLabel *_sliderArrowDown{nullptr};
-    DLabel *_sliderArrowUp{nullptr};
+    DArrowRectangle *_sliderArrowUp{nullptr};
     bool _press{false};
     QGraphicsColorizeEffect *m_effect{nullptr};
     QList<QLabel *> labelList ;
@@ -892,16 +899,17 @@ private:
 
 };
 
-class ThumbnailPreview: public DArrowRectangle
+class ThumbnailPreview: public QWidget
 {
     Q_OBJECT
 public:
-    ThumbnailPreview(): DArrowRectangle(DArrowRectangle::ArrowBottom)
+    ThumbnailPreview()
     {
         setAttribute(Qt::WA_DeleteOnClose);
         // FIXME(hualet): Qt::Tooltip will cause Dock to show up even
         // the player is in fullscreen mode.
-//        setWindowFlags(Qt::Tool);
+        setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
+        setAttribute(Qt::WA_TranslucentBackground);
 
         setObjectName("ThumbnailPreview");
 
@@ -912,22 +920,22 @@ public:
 //        resize(QSize(106, 66));
 //        setShadowBlurRadius(2);
 //        setRadius(2);
-        setRadius(16);
-        setBorderWidth(1);
-        setBorderColor(QColor(255, 255, 255, 26));
+//        setRadius(16);
+//        setBorderWidth(1);
+//        setBorderColor(QColor(255, 255, 255, 26));
 
-        setShadowYOffset(4);
-        setShadowXOffset(0);
-        setShadowBlurRadius(6);
-        setArrowWidth(0);
-        setArrowHeight(0);
+//        setShadowYOffset(4);
+//        setShadowXOffset(0);
+//        setShadowBlurRadius(6);
+//        setArrowWidth(0);
+//        setArrowHeight(0);
 
         auto *l = new QVBoxLayout;
 //        l->setContentsMargins(0, 0, 0, 10);
         l->setContentsMargins(1, 0, 0, 0);
 
         _thumb = new DFrame(this);
-        DStyle::setFrameRadius(_thumb, 16);
+        DStyle::setFrameRadius(_thumb, 8);
 
         //_thumb->setFixedSize(ThumbnailWorker::thumbSize());
         l->addWidget(_thumb/*,Qt::AlignTop*/);
@@ -937,7 +945,7 @@ public:
 //                this, &ThumbnailPreview::updateTheme);
 //        updateTheme();
 
-        winId(); // force backed window to be created
+//        winId(); // force backed window to be created
         m_shadow_effect = new QGraphicsDropShadowEffect(this);
     }
 
@@ -981,8 +989,10 @@ public:
 
     void updateWithPreview(const QPoint &pos)
     {
-        resizeWithContent();
-        show(pos.x(), pos.y() + 10);
+        //resizeWithContent();
+        move(pos.x() - this->width() / 2, pos.y() - this->height() + 10);
+        show();
+        raise();
     }
 
 signals:
@@ -1014,23 +1024,21 @@ protected slots:
 
 protected:
     void paintEvent(QPaintEvent *e) Q_DECL_OVERRIDE{
-
         m_shadow_effect->setOffset(-5, 5);
-        m_shadow_effect->setColor(Qt::red);
-        m_shadow_effect->setBlurRadius(20);
+        m_shadow_effect->setColor(Qt::gray);
+        m_shadow_effect->setBlurRadius(8);
         setGraphicsEffect(m_shadow_effect);
-        DArrowRectangle::paintEvent(e);
+
+        QWidget::paintEvent(e);
     }
     void leaveEvent(QEvent *e) override
     {
         emit leavePreview();
-
-        DArrowRectangle::leaveEvent(e);
     }
 
     void showEvent(QShowEvent *se) override
     {
-        DArrowRectangle::showEvent(se);
+        QWidget::showEvent(se);
     }
 
 private:
@@ -1049,7 +1057,7 @@ private:
 
 private:
     DFrame *_thumb {nullptr};
-    int m_thumbnailFixed = 178;
+    int m_thumbnailFixed = 106;
     QGraphicsDropShadowEffect *m_shadow_effect{nullptr};
 };
 
@@ -1065,8 +1073,11 @@ public:
         if (!CompositingManager::get().composited()) {
             setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
         }
-#elif  defined (__aarch64__)
+#elif __aarch64__
         setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
+#elif __sw_64__
+        setWindowFlags(Qt::FramelessWindowHint | Qt::BypassWindowManagerHint);
+        setAttribute(Qt::WA_NativeWindow);
 #endif
         setShadowBlurRadius(4);
         setRadius(18);
@@ -1184,22 +1195,16 @@ protected:
     void enterEvent(QEvent *e)
     {
         _autoHideTimer.stop();
-
-        DArrowRectangle::enterEvent(e);
     }
 
     void showEvent(QShowEvent *se)
     {
         _autoHideTimer.stop();
-
-        DArrowRectangle::showEvent(se);
     }
 
     void leaveEvent(QEvent *e)
     {
         _autoHideTimer.start(500);
-
-        DArrowRectangle::leaveEvent(e);
     }
 #else
     void enterEvent(QEvent *e)
@@ -1352,7 +1357,7 @@ void viewProgBarLoad::loadViewProgBar(QSize size)
             auto img_tmp = img.scaledToHeight(50);
 
 
-            pm.append(QPixmap::fromImage(img_tmp.copy(img_tmp.size().width() / 2 - 4, 0, pixWidget, 50)));
+            pm.append(QPixmap::fromImage(img_tmp.copy(img_tmp.size().width() / 2 - 4, 0, pixWidget, 50))); //-2 为了1px的内边框
             QImage img_black = img_tmp.convertToFormat(QImage::Format_Grayscale8);
             pm_black.append(QPixmap::fromImage(img_black.copy(img_black.size().width() / 2 - 4, 0, pixWidget, 50)));
 
@@ -2157,8 +2162,7 @@ void ToolboxProxy::updateHoverPreview(const QUrl &url, int secs)
         return;
     }
 
-    auto pos = _progBar->mapToGlobal(QPoint(0, TOOLBOX_TOP_EXTENT - 10));
-//    auto pos = _viewProgBar->mapToGlobal(QPoint(0, TOOLBOX_TOP_EXTENT - 10));
+    auto pos = _viewProgBar->mapToGlobal(QPoint(0, TOOLBOX_TOP_EXTENT - 10));
     QPoint p { QCursor::pos().x(), pos.y() };
 
     QPixmap pm = ThumbnailWorker::get().getThumb(url, secs);
@@ -2652,7 +2656,6 @@ void ToolboxProxy::showEvent(QShowEvent *event)
 
 void ToolboxProxy::resizeEvent(QResizeEvent *event)
 {
-
     if (_autoResizeTimer.isActive()) {
         _autoResizeTimer.stop();
     }
@@ -2709,13 +2712,13 @@ void ToolboxProxy::updateTimeLabel()
     if (_mainWindow->width() < 1050) {
 //        _progBar->hide();
     }
-    if (width() <= 300) {
-        _progBar->setFixedWidth(width() - PROGBAR_SPEC + 50 + 54 + 10 + 54 + 10 + 10);
-        _progBarspec->setFixedWidth(width() - PROGBAR_SPEC + 50 + 54 + 10 + 54 + 10 + 10);
-    } else if (width() <= 450) {
-        _progBar->setFixedWidth(width() - PROGBAR_SPEC + 54 + 54 + 10);
-        _progBarspec->setFixedWidth(width() - PROGBAR_SPEC + 54 + 54 + 10);
-    }
+//    if (width() <= 300) {
+//        _progBar->setFixedWidth(width() - PROGBAR_SPEC + 50 + 54 + 10 + 54 + 10 + 10);
+//        _progBarspec->setFixedWidth(width() - PROGBAR_SPEC + 50 + 54 + 10 + 54 + 10 + 10);
+//    } else if (width() <= 450) {
+//        _progBar->setFixedWidth(width() - PROGBAR_SPEC + 54 + 54 + 10);
+//        _progBarspec->setFixedWidth(width() - PROGBAR_SPEC + 54 + 54 + 10);
+//    }
 
 //    if (width() > 400) {
 //        auto right_geom = _right->geometry();

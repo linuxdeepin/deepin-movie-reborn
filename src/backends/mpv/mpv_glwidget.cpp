@@ -178,7 +178,10 @@ namespace dmr {
 
     MpvGLWidget::MpvGLWidget(QWidget *parent, myHandle h)
         :QOpenGLWidget(parent), _handle(h) { 
+         initMpvFuns();
         setUpdateBehavior(QOpenGLWidget::NoPartialUpdate);
+
+
 
         connect(this, &QOpenGLWidget::frameSwapped, 
                 this, &MpvGLWidget::onFrameSwapped, Qt::DirectConnection);

@@ -36,6 +36,8 @@
 #include <QScrollArea>
 #include <QDebug>
 
+#include <DPushButton>
+
 #include <denhancedwidget.h>
 
 DWIDGET_USE_NAMESPACE
@@ -152,6 +154,25 @@ protected:
     }
 };
 
+class CloseButton : public DPushButton
+{
+public:
+    CloseButton(QWidget *parent) {}
+protected:
+    void paintEvent(QPaintEvent *e) override
+    {
+        QPainter painter(this);
+        QRect rect = this->rect();
+        if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
+            painter.drawPixmap(rect, QPixmap(INFO_CLOSE_LIGHT));
+        } else if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
+            painter.drawPixmap(rect, QPixmap(INFO_CLOSE_DARK));
+        } else {
+            painter.drawPixmap(rect, QPixmap(INFO_CLOSE_LIGHT));
+        }
+    }
+};
+
 MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
     : DAbstractDialog(nullptr)
 {
@@ -164,9 +185,11 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
     layout->setContentsMargins(0, 0, 0, 0);
     setLayout(layout);
 
-    DImageButton *closeBt = new DImageButton(this);
+    CloseButton *closeBt = new CloseButton(this);
+    //closeBt->setIcon(QIcon(INFO_CLOSE_LIGHT));
+    //DImageButton *closeBt = new DImageButton(this);
     closeBt->setFixedSize(50, 50);
-    connect(closeBt, &DImageButton::clicked, this, &MovieInfoDialog::close);
+    connect(closeBt, &CloseButton::clicked, this, &MovieInfoDialog::close);
     layout->addWidget(closeBt, 0, Qt::AlignTop | Qt::AlignRight);
 
     const auto &mi = pif.mi;
@@ -443,13 +466,13 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
         //title->setForegroundRole(DPalette::Text);
     });
 
-    if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
-        closeBt->setNormalPic(INFO_CLOSE_LIGHT);
-    } else if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
-        closeBt->setNormalPic(INFO_CLOSE_DARK);
-    } else {
-        closeBt->setNormalPic(INFO_CLOSE_LIGHT);
-    }
+//    if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
+//        closeBt->setNormalPic(INFO_CLOSE_LIGHT);
+//    } else if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
+//        closeBt->setNormalPic(INFO_CLOSE_DARK);
+//    } else {
+//        closeBt->setNormalPic(INFO_CLOSE_LIGHT);
+//    }
     m_expandGroup.at(0)->setExpand(true);
     m_expandGroup.at(1)->setExpand(true);
     m_expandGroup.at(2)->setExpand(true);

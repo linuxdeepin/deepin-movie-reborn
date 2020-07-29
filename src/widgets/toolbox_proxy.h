@@ -125,6 +125,52 @@ private:
     QPixmap _pixmap;
 };
 
+class IndicatorItem : public QWidget
+{
+    Q_OBJECT
+public:
+    IndicatorItem(QWidget *parent = 0): QWidget(parent)
+    {
+    };
+
+    void setPressed(bool bPressed)
+    {
+        m_bIsPressed = bPressed;
+    }
+
+protected:
+    void paintEvent(QPaintEvent *event)
+    {
+        QPainter painter(this);
+        QRect backgroundRect = rect();
+
+        painter.setRenderHints(QPainter::HighQualityAntialiasing |
+                               QPainter::SmoothPixmapTransform |
+                               QPainter::Antialiasing);
+
+        QPainterPath bpath;
+
+        if (!m_bIsPressed) {
+            bpath.addRect(backgroundRect.marginsRemoved(QMargins(1, 1, 1, 1)));
+            painter.fillPath(bpath, QColor(255, 255, 255, 255));
+
+            QPen pen;
+            pen.setWidth(1);
+            pen.setColor(QColor(0, 0, 0));
+            bpath.addRoundedRect(backgroundRect, 3, 3);
+            painter.setPen(pen);
+            painter.setOpacity(0.4);
+            painter.drawPath(bpath);
+        } else {
+            painter.fillRect(backgroundRect, QBrush(QColor(255, 138, 0)));
+        }
+
+    };
+
+private:
+    bool m_bIsPressed {false};
+};
+
 class ToolboxProxy: public DFloatingWidget
 {
     Q_OBJECT
