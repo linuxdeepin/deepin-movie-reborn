@@ -617,10 +617,10 @@ private:
                 switch (edge) {
                 case Utility::BottomLeftCorner:
                     if (geom.right() - e->globalX() - min.width() < 0) {
-                        geom.setBottomLeft(QPoint(geom.right() - min.width(), e->globalY()));
+                        geom.setBottomLeft(QPoint(geom.right() - min.width(), e->globalY() - 40));
                         break;
                     }
-                    geom.setBottomLeft(e->globalPos());
+                    geom.setBottomLeft(e->globalPos() - QPoint(0, 40));
                     break;
                 case Utility::TopLeftCorner:
                     geom.setTopLeft(e->globalPos());
@@ -1369,14 +1369,15 @@ void MainWindow::changedVolumeSlot(int vol)
         //_engine->toggleMute();
         Settings::get().setInternalOption("mute", _engine->muted());
     }
+    auto oldVolume = Settings::get().internalOption("global_volume");
     if (_engine->volume() <= 100 || vol < 100) {
         _engine->changeVolume(vol);
         Settings::get().setInternalOption("global_volume", vol);
     }
     //fix bug 24816 by ZhuYuliang
-    if (!_engine->muted()) {
+    if (!_engine->muted() && oldVolume != m_displayVolume) {
         _nwComm->updateWithMessage(tr("Volume: %1%").arg(m_displayVolume));
-    } else {
+    } else if(_engine->muted()) {
         QTimer::singleShot(1000, [ = ]() {
             _nwComm->updateWithMessage(tr("Mute"));
         });
@@ -2469,8 +2470,10 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         }*/
         //_engine->volumeUp();
         m_displayVolume = qMin(m_displayVolume + 10, 200);
-        _engine->changeVolume(m_displayVolume);
-        setAudioVolume(m_displayVolume);
+        if(m_displayVolume > 100 && m_displayVolume <= 200)
+            _engine->changeVolume(m_displayVolume);
+        else
+            setAudioVolume(m_displayVolume);
         m_lastVolume = _engine->volume();
         if (!_engine->muted()) {
             _nwComm->updateWithMessage(tr("Volume: %1%").arg(m_displayVolume));
@@ -2486,8 +2489,10 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     case ActionFactory::ActionKind::VolumeDown: {
         //_engine->volumeDown();
         m_displayVolume = qMax(m_displayVolume - 10, 0);
-        _engine->changeVolume(m_displayVolume);
-        setAudioVolume(m_displayVolume);
+        if(m_displayVolume > 100 && m_displayVolume <= 200)
+            _engine->changeVolume(m_displayVolume);
+        else
+            setAudioVolume(m_displayVolume);
         //int pert = _engine->volume();
         if (m_displayVolume == 0 && !_engine->muted()) {
             _nwComm->updateWithMessage(tr("Volume: %1%").arg(m_displayVolume));
@@ -3393,8 +3398,12 @@ void MainWindow::closeEvent(QCloseEvent *ev)
 
     }
 #endif
+    if (_engine->windowHandle())
+        _engine->windowHandle()->removeEventFilter(_listener);
+    _titlebar->windowHandle()->removeEventFilter(_listener);
+    _toolbox->windowHandle()->removeEventFilter(_listener);
+    CompositingManager::get().setTestFlag(true);
     _quitfullscreenstopflag = true;
-    DMainWindow::closeEvent(ev);
     _engine->stop();
     disconnect(_engine,0,0,0);
     disconnect(&_engine->playlist(),0,0,0);
@@ -3402,8 +3411,8 @@ void MainWindow::closeEvent(QCloseEvent *ev)
         delete _engine;
         _engine = nullptr;
     }
-    CompositingManager::get().setTestFlag(true);
     DApplication::quit();
+    DMainWindow::closeEvent(ev);
 }
 
 void MainWindow::wheelEvent(QWheelEvent *we)
@@ -3439,6 +3448,11 @@ void MainWindow::showEvent(QShowEvent *event)
                     qDebug() << "locked_____________" << l;
                     //是否锁屏
 #endif
+                    //最小化窗口后，不更新任何状态
+                    if(windowState() & Qt::WindowMinimized > 0){
+                        qWarning()<<"minimize is not doing anthing!"<<windowState();
+                        return;
+                    }
                     requestAction(ActionFactory::TogglePause);
                     _pausedOnHide = false;
                     _quitfullscreenstopflag = false;

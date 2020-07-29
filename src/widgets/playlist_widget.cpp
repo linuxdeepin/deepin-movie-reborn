@@ -858,9 +858,6 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     connect(&_engine->playlist(), &PlaylistModel::itemRemoved, this, &PlaylistWidget::removeItem);
     connect(&_engine->playlist(), &PlaylistModel::currentChanged, this, &PlaylistWidget::updateItemStates);
     connect(&_engine->playlist(), &PlaylistModel::itemInfoUpdated, this, &PlaylistWidget::updateItemInfo);
-
-    QTimer::singleShot(10, this, &PlaylistWidget::loadPlaylist);
-
     connect(ActionFactory::get().playlistContextMenu(), &DMenu::aboutToShow, [ = ]() {
         QTimer::singleShot(20, [ = ]() {
             if (_mouseItem) {
@@ -892,6 +889,7 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
             }
         }
     });
+    loadPlaylist();
 }
 
 PlaylistWidget::~PlaylistWidget()
