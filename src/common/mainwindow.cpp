@@ -4550,6 +4550,10 @@ void MainWindow::updateMiniBtnTheme(int a)
 void MainWindow::diskRemoved(QString strDiskName)
 {
     QString strCurrFile;
+    if(_engine->getplaylist()->count()<=0)
+    {
+        return;
+    }
     strCurrFile = _engine->getplaylist()->currentInfo().url.toString();
 
     if (strCurrFile.contains(strDiskName)/* && _engine->state() == PlayerEngine::Playing*/)

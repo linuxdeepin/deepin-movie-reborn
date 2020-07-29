@@ -61,6 +61,7 @@ void Diskcheckthread::diskChecking()
     } while (!mountFile.atEnd() );
 
     foreach (QString strDiskName, listDisk) {
+        m_mapDisk2Name.clear();
         emit diskRemove(strDiskName);
     }
 }
