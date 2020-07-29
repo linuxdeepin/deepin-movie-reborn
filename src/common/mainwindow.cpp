@@ -202,10 +202,16 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
 //    icon->setHoverIcon(":resources/icons/select-hover.svg");
 //    icon->setPressIcon(":resources/icons/select-press.svg");
 
-    auto optionWidget = DSettingsWidgetFactory::createTwoColumWidget(option, main);
+    /**
+     * createTwoColumWidget在dtk中已被弃用
+     * 修改警告重新创建窗口
+     */
+    DSettingsWidgetFactory *settingWidget = new DSettingsWidgetFactory(main);
+    //auto optionWidget = DSettingsWidgetFactory::createTwoColumWidget(option, main);
+    auto optionWidget = settingWidget->createWidget(option);
     workaround_updateStyle(optionWidget, "light");
 
-    DDialog *prompt = new DDialog(optionWidget);
+    DDialog *prompt = new DDialog(main);
     prompt->setIcon(QIcon(":/resources/icons/warning.svg"));
     //prompt->setTitle(QObject::tr("Permissions prompt"));
     prompt->setMessage(QObject::tr("You don't have permission to operate this folder"));
@@ -1257,8 +1263,7 @@ bool MainWindow::event(QEvent *ev)
     //add by heyi
     //判断是否停止右键菜单定时器
     if (_mousePressed) {
-        qDebug() << "hahahaha nX = " << nX << "haaahahaha nY= " << nY;
-        qDebug() << "mapToGlobal(QCursor::pos()).x() = " << mapToGlobal(QCursor::pos()).x() << "mapToGlobal(QCursor::pos()).y()= " << mapToGlobal(QCursor::pos()).y();
+//        qDebug() << "mapToGlobal(QCursor::pos()).x() = " << mapToGlobal(QCursor::pos()).x() << "mapToGlobal(QCursor::pos()).y()= " << mapToGlobal(QCursor::pos()).y();
         if (qAbs(nX - mapToGlobal(QCursor::pos()).x()) > 50 || qAbs(nY - mapToGlobal(QCursor::pos()).y()) > 50) {
             if (_mousePressTimer.isActive()) {
                 qDebug() << "结束定时器";
@@ -2360,6 +2365,8 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             _animationlable->move(QPoint((width() - _animationlable->width()) / 2,
                                          (height() - _animationlable->height()) / 2));
         }
+
+        activateWindow();
         break;
     }
 
@@ -3414,8 +3421,8 @@ void MainWindow::checkErrorMpvLogsChanged(const QString prefix, const QString te
     } else if (errorMessage.toLower().contains(QString("fail")) && errorMessage.toLower().contains(QString("open"))) {
         _nwComm->updateWithMessage(tr("Cannot open file or stream"));
         _engine->playlist().remove(_engine->playlist().count() - 1);
-    } else if (errorMessage.toLower().contains(QString("fail")) &&
-               (errorMessage.toLower().contains(QString("format")))
+    } else if ((errorMessage.toLower().contains(QString("fail")) &&
+               (errorMessage.toLower().contains(QString("format"))))
               ) {
         if (_retryTimes < 10) {
             _retryTimes++;
@@ -3702,7 +3709,6 @@ void MainWindow::resizeEvent(QResizeEvent *ev)
     // modify 4.1  Limit video to mini mode size by thx
     LimitWindowize();
 
-    //2020.4.30前重新实现 xpf
     updateSizeConstraints();
     updateProxyGeometry();
     QTimer::singleShot(0, [ = ]() {
@@ -3710,9 +3716,14 @@ void MainWindow::resizeEvent(QResizeEvent *ev)
     });
     updateGeometryNotification(geometry().size());
     //add by heyi
-    if (!isFullScreen()) {
-        my_setStayOnTop(this, false);
-    }
+    /*******
+     * 之前为修改全屏下呼出右键菜单任务栏不消失问题
+     * 此处修改存在逻辑错误，未判断窗口初始状态是否为置顶
+     * 此处先注释掉完成当前版本功能，sp3开发人员根据后期开发状态进行修改
+     *******/
+//    if (!isFullScreen()) {
+//        my_setStayOnTop(this, false);
+//    }
 }
 
 void MainWindow::updateWindowTitle()
@@ -3806,7 +3817,13 @@ void MainWindow::capturedMouseReleaseEvent(QMouseEvent *me)
     }
 
     //add by heyi
-    my_setStayOnTop(this, false);
+    /********
+    **触摸屏呼出右键菜单相关
+    **此处逻辑与窗口置顶存在冲突，先处理窗口置顶问题
+    **sp3开发人员请重新梳理此处代码
+    ** add by xiepengfei
+    ********/
+    //my_setStayOnTop(this, false);
 }
 
 static bool _afterDblClick = false;
@@ -4331,14 +4348,7 @@ void MainWindow::toggleUIMode()
         //设置等比缩放
         setEnableSystemResize(false);
 
-
         _stateBeforeMiniMode = SBEM_None;
-
-//        if (!_windowAbove) {
-//            _stateBeforeMiniMode |= SBEM_Above;
-//            requestAction(ActionFactory::WindowAbove);
-//        }
-
         if (_playlist->state() == PlaylistWidget::Opened) {
             _stateBeforeMiniMode |= SBEM_PlaylistOpened;
             requestAction(ActionFactory::TogglePlaylist);
@@ -4354,11 +4364,6 @@ void MainWindow::toggleUIMode()
             showNormal();
         } else {
             _lastRectInNormalMode = geometry();
-        }
-
-        if (!_windowAbove) {
-            _stateBeforeMiniMode |= SBEM_Above;
-            requestAction(ActionFactory::WindowAbove);
         }
 
         auto sz = QSize(380, 380);
@@ -4398,8 +4403,10 @@ void MainWindow::toggleUIMode()
         }
         _miniCloseBtn->move(sz.width() - 15 - _miniCloseBtn->width(), 10);
         _miniQuitMiniBtn->move(14, sz.height() - 10 - _miniQuitMiniBtn->height());
-
-
+        if (!_windowAbove) {
+            _stateBeforeMiniMode |= SBEM_Above;
+            requestAction(ActionFactory::WindowAbove);
+        }
     } else {
         setEnableSystemResize(true);
         if (_stateBeforeMiniMode & SBEM_Above) {
@@ -4512,20 +4519,20 @@ void MainWindow::dropEvent(QDropEvent *ev)
         }
     }
 
-    {
-        auto all = urls.toSet();
-        auto accepted = valids.toSet();
-        auto invalids = all.subtract(accepted).toList();
-        int ms = 0;
-        for (const auto &url : invalids) {
-            QTimer::singleShot(ms, [ = ]() {
-                auto msg = QString(tr("Invalid file: %1").arg(url.fileName()));
-                _nwComm->updateWithMessage(msg);
-            });
+//    {
+//        auto all = urls.toSet();
+//        auto accepted = valids.toSet();
+//        auto invalids = all.subtract(accepted).toList();
+//        int ms = 0;
+//        for (const auto &url : invalids) {
+//            QTimer::singleShot(ms, [ = ]() {
+//                auto msg = QString(tr("Invalid file: %1").arg(url.fileName()));
+//                _nwComm->updateWithMessage(msg);
+//            });
 
-            ms += 1000;
-        }
-    }
+//            ms += 1000;
+//        }
+//    }
 
     if (valids.size()) {
         if (valids.size() == 1) {
@@ -4572,6 +4579,10 @@ void MainWindow::updateMiniBtnTheme(int a)
 void MainWindow::diskRemoved(QString strDiskName)
 {
     QString strCurrFile;
+    if(_engine->getplaylist()->count()<=0)
+    {
+        return;
+    }
     strCurrFile = _engine->getplaylist()->currentInfo().url.toString();
 
     if (strCurrFile.contains(strDiskName)/* && _engine->state() == PlayerEngine::Playing*/)

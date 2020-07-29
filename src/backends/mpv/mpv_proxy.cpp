@@ -162,10 +162,10 @@ void MpvProxy::firstInit()
             layout->setContentsMargins(0, 0, 0, 0);
             layout->addWidget(_gl_widget);
             setLayout(layout);
-
-            if (_gl_widget) {
-                _gl_widget->initMpvFuns();
-            }
+            _gl_widget->show();
+            //if (_gl_widget) {
+               // _gl_widget->initMpvFuns();
+           // }
         }
     }
 }
@@ -959,6 +959,11 @@ void MpvProxy::toggleMute()
 {
     QList<QVariant> args = { "cycle", "mute" };
     qDebug () << args;
+    if(!m_bInited)
+    {
+        firstInit();
+        m_bInited = true;
+    }
     my_command(_handle, args);
 }
 

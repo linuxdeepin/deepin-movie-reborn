@@ -35,6 +35,7 @@
 #include "online_sub.h"
 
 #include "mpv_proxy.h"
+#include "compositing_manager.h"
 
 #ifndef _LIBDMR_
 #include "dmr_settings.h"
@@ -67,6 +68,7 @@ PlayerEngine::PlayerEngine(QWidget *parent)
         connect(_current, &Backend::mpvWarningLogsChanged, this, &PlayerEngine::mpvWarningLogsChanged);
         connect(_current, &Backend::urlpause, this, &PlayerEngine::urlpause);
         l->addWidget(_current);
+        //_current->firstInit();
     }
 
     connect(&_networkConfigMng, &QNetworkConfigurationManager::onlineStateChanged, this, &PlayerEngine::onlineStateChanged);
@@ -504,15 +506,17 @@ void PlayerEngine::savePreviousMovieState()
 
 void PlayerEngine::paintEvent(QPaintEvent *e)
 {
-#if thx //在walyland下需要启用
-    QRect qqq = this->rect();
-    QImage icon = utils::LoadHiDPIImage(":/resources/icons/light/init-splash.svg");
-    QPixmap pix = QPixmap::fromImage(icon);
-    int x = this->rect().center().x() - pix.width() / 2;
-    int y = this->rect().center().y() - pix.height() / 2;
-    QPainter p(this);
-    p.drawPixmap(x, y, pix);
-#endif
+    if (!CompositingManager::get().composited()) {
+        QRect rect = this->rect();
+        QImage icon = utils::LoadHiDPIImage(":/resources/icons/light/init-splash.svg");
+        QPixmap pix = QPixmap::fromImage(icon);
+        int x = this->rect().center().x() - pix.width() / 2;
+        int y = this->rect().center().y() - pix.height() / 2;
+        QPainter p(this);
+
+        p.fillRect(rect, QBrush(QColor(255, 255, 255)));
+        p.drawPixmap(x, y, pix);
+    }
     return QWidget::paintEvent(e);
 }
 
