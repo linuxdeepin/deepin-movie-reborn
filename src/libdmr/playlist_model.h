@@ -41,6 +41,7 @@ namespace dmr {
 using namespace ffmpegthumbnailer;
 class PlayerEngine;
 class LoadThread;
+class GetThumanbil;
 
 struct MovieInfo {
     bool valid;
@@ -191,6 +192,7 @@ public slots:
 
 private slots:
     void onAsyncAppendFinished();
+    void onAsyncFinished();
 
 
 signals:
@@ -231,8 +233,10 @@ private:
     QString _playlistFile;
 
     LoadThread *m_ploadThread;
+    GetThumanbil *m_getThumanbil {nullptr};
     QMutex *m_pdataMutex;
     bool m_brunning;
+    QList<QUrl> m_tempList;
 
     void reshuffle();
     void loadPlaylist();
@@ -259,6 +263,58 @@ private:
 
     QList<AppendJob> _pendingJob; // async job
     QSet<QString> _urlsInJob;  // url list
+};
+
+class GetThumanbil : public QThread
+{
+    Q_OBJECT
+public:
+    GetThumanbil(PlaylistModel *model, const QList<QUrl> &urls)
+    {
+        m_model = model;
+        m_urls = urls;
+        m_mutex = new QMutex;
+        m_itemMutex = new QMutex;
+    };
+    ~GetThumanbil()
+    {
+        m_stop = true;
+    };
+    QList<PlayItemInfo> getInfoList() {return m_itemInfo;}
+    void stop() {m_stop = true;};
+    void setUrls(QList<QUrl> urls) {
+        m_mutex->lock();
+        m_urls = urls;
+        m_mutex->unlock();
+    };
+    void clearItem() {
+        m_itemMutex->lock();
+        m_itemInfo.clear();
+        m_itemMutex->unlock();
+    };
+
+private:
+    void run()
+    {
+        m_mutex->lock();
+        QList<QUrl> urls = m_urls;
+        m_mutex->unlock();
+        foreach (QUrl url, urls) {
+            QFileInfo info(url.path());
+            m_itemMutex->lock();
+            m_itemInfo.append(m_model->calculatePlayInfo(url, info, false));
+            m_itemMutex->unlock();
+            m_isFinished = true;
+            if (m_stop) break;
+        }
+    }
+    PlaylistModel *m_model;
+    QList<QUrl> m_urls;
+    QList<PlayItemInfo> m_itemInfo;
+    QMutex *m_mutex;
+    QMutex *m_itemMutex;
+    bool m_isFinished {true};
+    bool m_stop {false};
 };
 
 

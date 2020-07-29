@@ -591,8 +591,12 @@ void PlayerEngine::onPlaylistAsyncAppendFinished(const QList<PlayItemInfo> &pil)
         if (id >= 0) {
             _playlist->changeCurrent(id);
             _pendingPlayReq = QUrl();
+        } else {
+            qInfo() << __func__ << "id is:" << id;
         }
         // else, wait for another signal
+    } else {
+        qInfo() << __func__ << _pendingPlayReq;
     }
 }
 
@@ -600,6 +604,7 @@ void PlayerEngine::playByName(const QUrl &url)
 {
     savePreviousMovieState();
     auto id = _playlist->indexOf(url);
+    qDebug() << __func__ << url << "id:" << id;
     if (id >= 0) {
         _playlist->changeCurrent(id);
     } else {
@@ -609,6 +614,7 @@ void PlayerEngine::playByName(const QUrl &url)
 
 void PlayerEngine::playSelected(int id)
 {
+    qDebug() << __func__ << id;
     savePreviousMovieState();
     _playlist->changeCurrent(id);
 }
