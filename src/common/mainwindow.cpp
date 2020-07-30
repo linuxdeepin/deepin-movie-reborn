@@ -3343,6 +3343,14 @@ void MainWindow::closeEvent(QCloseEvent *ev)
     }
 
     ev->accept();
+#ifndef _LIBDMR_
+    if (Settings::get().isSet(Settings::ClearWhenQuit)) {
+        _engine->playlist().clearPlaylist();
+    } else {
+        //persistently save current playlist
+        _engine->playlist().savePlaylist();
+    }
+#endif
     /*lmh0724临时规避退出崩溃问题*/
     QApplication::quit();
     _Exit(0);
