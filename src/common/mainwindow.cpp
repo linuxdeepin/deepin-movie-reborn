@@ -2740,23 +2740,29 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     }
 
     case ActionFactory::ActionKind::AccelPlayback: {
-        _playSpeed = qMin(2.0, _playSpeed + 0.1);
-        _engine->setPlaySpeed(_playSpeed);
-        _nwComm->updateWithMessage(tr("Speed: %1x").arg(_playSpeed));
+        if(_engine->state() != PlayerEngine::CoreState::Idle){
+            _playSpeed = qMin(2.0, _playSpeed + 0.1);
+            _engine->setPlaySpeed(_playSpeed);
+            _nwComm->updateWithMessage(tr("Speed: %1x").arg(_playSpeed));
+        }
         break;
     }
 
     case ActionFactory::ActionKind::DecelPlayback: {
-        _playSpeed = qMax(0.1, _playSpeed - 0.1);
-        _engine->setPlaySpeed(_playSpeed);
-        _nwComm->updateWithMessage(tr("Speed: %1x").arg(_playSpeed));
+        if(_engine->state() != PlayerEngine::CoreState::Idle){
+            _playSpeed = qMax(0.1, _playSpeed - 0.1);
+            _engine->setPlaySpeed(_playSpeed);
+            _nwComm->updateWithMessage(tr("Speed: %1x").arg(_playSpeed));
+        }
         break;
     }
 
     case ActionFactory::ActionKind::ResetPlayback: {
-        _playSpeed = 1.0;
-        _engine->setPlaySpeed(_playSpeed);
-        _nwComm->updateWithMessage(tr("Speed: %1x").arg(_playSpeed));
+        if(_engine->state() != PlayerEngine::CoreState::Idle){
+            _playSpeed = 1.0;
+            _engine->setPlaySpeed(_playSpeed);
+            _nwComm->updateWithMessage(tr("Speed: %1x").arg(_playSpeed));
+        }
         break;
     }
 
