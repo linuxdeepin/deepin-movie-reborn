@@ -1370,10 +1370,11 @@ void MainWindow::changedVolumeSlot(int vol)
         Settings::get().setInternalOption("mute", _engine->muted());
     }
     auto oldVolume = Settings::get().internalOption("global_volume");
-    if (_engine->volume() <= 100 || vol < 100) {
-        _engine->changeVolume(vol);
-        Settings::get().setInternalOption("global_volume", vol);
-    }
+//del for xiangxiaojun
+//    if (_engine->volume() <= 100 || vol < 100) {
+//        _engine->changeVolume(vol);
+//        Settings::get().setInternalOption("global_volume", vol);
+//    }
     //fix bug 24816 by ZhuYuliang
     if (!_engine->muted() && oldVolume != m_displayVolume) {
         _nwComm->updateWithMessage(tr("Volume: %1%").arg(m_displayVolume));
@@ -2435,7 +2436,11 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                 setAudioVolume(nVol);
                 return;
             }
-            _engine->changeVolume(nVol);
+            if(nVol > 100){
+                _engine->changeVolume(nVol);
+                Settings::get().setInternalOption("global_volume", m_lastVolume);
+            }
+
             //当音量与当前静音状态不符时切换静音状态
             /*if (nVol == 0 && !_engine->muted()) {
                 changedMute();
@@ -3842,6 +3847,7 @@ void MainWindow::mouseMoveEvent(QMouseEvent *ev)
     if (windowState() == Qt::WindowNoState || isMaximized()) {
         Utility::startWindowSystemMove(this->winId());
     }
+    _toolbox->setVolSliderHide();
     QWidget::mouseMoveEvent(ev);
 }
 
