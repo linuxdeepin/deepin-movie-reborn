@@ -3847,6 +3847,7 @@ void MainWindow::mouseMoveEvent(QMouseEvent *ev)
     if (windowState() == Qt::WindowNoState || isMaximized()) {
         Utility::startWindowSystemMove(this->winId());
     }
+    _toolbox->setVolSliderHide();
     QWidget::mouseMoveEvent(ev);
 }
 
