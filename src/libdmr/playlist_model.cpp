@@ -1182,9 +1182,10 @@ void PlaylistModel::delayedAppendAsync(const QList<QUrl> &urls)
             if (!m_getThumanbil) {
                 m_getThumanbil = new GetThumanbil(this, urls);
                 connect(m_getThumanbil, &GetThumanbil::finished, this, &PlaylistModel::onAsyncFinished);
+                m_isLoadRunning = true;
                 m_getThumanbil->start();
             } else {
-                if (m_getThumanbil->isRunning()) {
+                if (m_isLoadRunning) {
                     m_tempList.append(urls);
                 } else {
                     m_getThumanbil->setUrls(urls);
@@ -1256,12 +1257,14 @@ void PlaylistModel::onAsyncFinished()
             fil.removeAt(i);
         }
     }
+    m_isLoadRunning = false;
     qDebug() << fil.size();
     m_getThumanbil->clearItem();
     handleAsyncAppendResults(fil);
     if (!m_tempList.isEmpty()) {
         m_getThumanbil->setUrls(m_tempList);
         m_tempList.clear();
+        m_isLoadRunning = true;
         m_getThumanbil->start();
     }
 }
