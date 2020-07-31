@@ -240,6 +240,7 @@ private:
     bool m_brunning;
     QList<QUrl> m_tempList;
     QList<QUrl> m_loadFile;
+    bool m_isLoadRunning {false};
 
     void reshuffle();
     void loadPlaylist();
