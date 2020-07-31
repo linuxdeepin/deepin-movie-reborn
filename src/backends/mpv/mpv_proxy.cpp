@@ -1116,7 +1116,9 @@ qint64 MpvProxy::nextBurstShootPoint()
 
 int MpvProxy::volumeCorrection(int displayVol)
 {
-    int realVol = (displayVol / 200.0) * 60.0 + 40;
+    //int realVol = (displayVol / 200.0) * 60.0 + 40;
+    //>100时，mpv按照显示音量：mpv 10：5的比例调节音量
+    int realVol = displayVol > 100 ? 100 + (displayVol-100)/10*5 : displayVol;
     return (realVol);
 }
 
