@@ -725,6 +725,7 @@ void PlaylistModel::remove(int pos)
 
     _userRequestingItem = true;
 
+    m_loadFile.removeOne(_infos[pos].url);
     _infos.removeAt(pos);
     reshuffle();
 
@@ -826,6 +827,11 @@ void PlaylistModel::tryPlayCurrent(bool next)
             else playPrev(false);
         }
     }
+}
+
+void PlaylistModel::clearLoad()
+{
+    m_loadFile.clear();
 }
 
 void PlaylistModel::playNext(bool fromUser)
@@ -1053,9 +1059,14 @@ void PlaylistModel::appendSingle(const QUrl &url)
 void PlaylistModel::collectionJob(const QList<QUrl> &urls)
 {
     for (const auto &url : urls) {
+        int aa = indexOf(url);
+        if (m_loadFile.contains(url))
+            continue;
         if (!url.isValid() || indexOf(url) >= 0 || !url.isLocalFile() || _urlsInJob.contains(url.toLocalFile()))
             continue;
 
+        m_loadFile.append(url);
+        qDebug() << __func__ <<_infos.size() << "index is" << aa << url;
         QFileInfo fi(url.toLocalFile());
         if (!_firstLoad && (!fi.exists() || !fi.isFile())) continue;
 
@@ -1165,18 +1176,20 @@ void PlaylistModel::delayedAppendAsync(const QList<QUrl> &urls)
         handleAsyncAppendResults(pil);
     } else {
         qDebug() << "not wayland";
-        if (QThread::idealThreadCount() >1) {
+        if (QThread::idealThreadCount() > 1) {
             //auto future = QtConcurrent::mapped(_pendingJob, MapFunctor(this));
             //_jobWatcher->setFuture(future);
             if (!m_getThumanbil) {
                 m_getThumanbil = new GetThumanbil(this, urls);
                 connect(m_getThumanbil, &GetThumanbil::finished, this, &PlaylistModel::onAsyncFinished);
                 m_getThumanbil->start();
-            } else if (m_getThumanbil->isRunning()) {
-                m_tempList.append(urls);
             } else {
-                m_getThumanbil->setUrls(urls);
-                m_getThumanbil->start();
+                if (m_getThumanbil->isRunning()) {
+                    m_tempList.append(urls);
+                } else {
+                    m_getThumanbil->setUrls(urls);
+                    m_getThumanbil->start();
+                }
             }
             _pendingJob.clear();
             _urlsInJob.clear();
@@ -1237,6 +1250,13 @@ void PlaylistModel::onAsyncAppendFinished()
 void PlaylistModel::onAsyncFinished()
 {
     QList<PlayItemInfo> fil = m_getThumanbil->getInfoList();
+    qDebug() << __func__ << "size" << fil.size() << "info size" << _infos.size();
+    for (int i = 0; i < fil.size();i++) {
+        if (indexOf(fil[i].url) >= 0) {
+            fil.removeAt(i);
+        }
+    }
+    qDebug() << fil.size();
     m_getThumanbil->clearItem();
     handleAsyncAppendResults(fil);
     if (!m_tempList.isEmpty()) {
@@ -1249,6 +1269,8 @@ void PlaylistModel::onAsyncFinished()
 void PlaylistModel::handleAsyncAppendResults(QList<PlayItemInfo> &fil)
 {
     qDebug() << __func__ << fil.size();
+    if (!fil.size())
+        return;
     if (!_firstLoad) {
         //since _infos are modified only at the same thread, the lock is not necessary
         auto last = std::remove_if(fil.begin(), fil.end(), [](const PlayItemInfo & pif) {
