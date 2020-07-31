@@ -184,11 +184,13 @@ public:
     bool getthreadstate();
     void savePlaylist();
     void clearPlaylist();
+    QList<QUrl> getLoadList() {return m_loadFile;};
 
 public slots:
     void changeCurrent(int);
     void delayedAppendAsync(const QList<QUrl> &);
     void deleteThread();
+    void clearLoad();
 
 private slots:
     void onAsyncAppendFinished();
@@ -237,6 +239,7 @@ private:
     QMutex *m_pdataMutex;
     bool m_brunning;
     QList<QUrl> m_tempList;
+    QList<QUrl> m_loadFile;
 
     void reshuffle();
     void loadPlaylist();
@@ -290,10 +293,10 @@ public:
     void clearItem() {
         m_itemMutex->lock();
         m_itemInfo.clear();
+        m_urls.clear();
         m_itemMutex->unlock();
     };
 
-private:
     void run()
     {
         m_mutex->lock();
@@ -308,6 +311,7 @@ private:
             if (m_stop) break;
         }
     }
+private:
     PlaylistModel *m_model;
     QList<QUrl> m_urls;
     QList<PlayItemInfo> m_itemInfo;

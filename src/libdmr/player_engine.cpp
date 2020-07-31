@@ -699,11 +699,13 @@ void PlayerEngine::setDVDDevice(const QString &path)
 
 bool PlayerEngine::addPlayFile(const QUrl &url)
 {
+    qDebug() << __func__;
     if (isPlayableFile(url)) {
-        if (url.isLocalFile())
+        if (url.isLocalFile()){
             _playlist->appendAsync({url});
-        else
+        } else {
             _playlist->append(url);
+        }
         return true;
     }
     return false;
@@ -735,6 +737,7 @@ QList<QUrl> PlayerEngine::addPlayDir(const QDir &dir)
 
 QList<QUrl> PlayerEngine::addPlayFiles(const QList<QUrl> &urls)
 {
+    qDebug() << __func__;
     QList<QUrl> valids = collectPlayFiles(urls);
     _playlist->appendAsync(valids);
     return valids;

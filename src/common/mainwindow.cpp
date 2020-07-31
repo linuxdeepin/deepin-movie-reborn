@@ -650,7 +650,11 @@ private:
         } else {
             switch (edge) {
             case Utility::BottomLeftCorner:
-                geom.setBottomLeft(e->globalPos());
+                if (geom.right() - e->globalX() - min.width() < 0) {
+                    geom.setBottomLeft(QPoint(geom.right() - min.width(), e->globalY() - 40));
+                    break;
+                }
+                geom.setBottomLeft(e->globalPos() - QPoint(0, 40));
                 break;
             case Utility::TopLeftCorner:
                 geom.setTopLeft(e->globalPos());
@@ -659,7 +663,7 @@ private:
                 geom.setLeft(e->globalX());
                 break;
             case Utility::BottomRightCorner:
-                geom.setBottomRight(e->globalPos());
+                geom.setBottomRight(e->globalPos() - QPoint(0, 40));
                 break;
             case Utility::RightEdge:
                 geom.setRight(e->globalX());
