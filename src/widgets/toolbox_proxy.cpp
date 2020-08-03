@@ -167,6 +167,12 @@ protected:
             event->ignore();
 
         }
+
+        case QEvent::MouseMove:{
+            QHelpEvent *he = static_cast<QHelpEvent *>(event);
+            auto tip = obj->property("HintWidget").value<Tip *>();
+            tip->hide();
+        }
         default:
             break;
         }
@@ -2682,6 +2688,13 @@ void ToolboxProxy::resizeEvent(QResizeEvent *event)
 #endif
 }
 
+void ToolboxProxy::mouseMoveEvent(QMouseEvent *ev)
+{
+    setButtonTooltipHide();
+    QWidget::mouseMoveEvent(ev);
+}
+
+
 void ToolboxProxy::updateTimeLabel()
 {
 
@@ -2811,6 +2824,12 @@ int ToolboxProxy::DisplayVolume()
 void ToolboxProxy::setVolSliderHide()
 {
     _volSlider->setVisible(false);
+}
+
+void ToolboxProxy::setButtonTooltipHide(){
+    _subBtn->hideToolTip();
+    _listBtn->hideToolTip();
+    _fsBtn->hideToolTip();
 }
 }
 
