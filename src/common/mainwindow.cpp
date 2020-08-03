@@ -704,6 +704,8 @@ MainWindow::MainWindow(QWidget *parent)
     sp.setHeightForWidth(true);
     setSizePolicy(sp);
 
+    qDebug() << "composited = " << composited;
+
     setContentsMargins(0, 0, 0, 0);
 
     setupTitlebar();
@@ -1302,22 +1304,21 @@ void MainWindow::changedVolumeSlot(int vol)
         //_engine->toggleMute();
         Settings::get().setInternalOption("mute", _engine->muted());
     }
-    if (_engine->volume() <= 100 || vol < 100) {
-        _engine->changeVolume(vol);
-        Settings::get().setInternalOption("global_volume", vol);
-    }
-    _toolbox->setDisplayValue(qMin(vol, 100));
-    if (m_oldDisplayVolume == m_displayVolume) {
-        return;
-    }
+    auto oldVolume = Settings::get().internalOption("global_volume");
+//del for xiangxiaojun
+//    if (_engine->volume() <= 100 || vol < 100) {
+//        _engine->changeVolume(vol);
+//        Settings::get().setInternalOption("global_volume", vol);
+//    }
     //fix bug 24816 by ZhuYuliang
-    if (!_engine->muted()) {
+    if (!_engine->muted() && oldVolume != m_displayVolume) {
         _nwComm->updateWithMessage(tr("Volume: %1%").arg(m_displayVolume));
-    } else {
+    } else if(_engine->muted()) {
         QTimer::singleShot(1000, [ = ]() {
             _nwComm->updateWithMessage(tr("Mute"));
         });
     }
+    _toolbox->setDisplayValue(vol);
 }
 
 void MainWindow::changedMute()
@@ -2377,7 +2378,11 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                 setAudioVolume(qMin(nVol, 100));
                 return;
             }
-            _engine->changeVolume(nVol);
+            if(nVol > 100){
+                _engine->changeVolume(nVol);
+                Settings::get().setInternalOption("global_volume", m_lastVolume);
+            }
+
             //当音量与当前静音状态不符时切换静音状态
             /*if (nVol == 0 && !_engine->muted()) {
                 changedMute();
@@ -2413,8 +2418,10 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         //_engine->volumeUp();
         m_displayVolume = qMin(m_displayVolume + 10, 200);
         m_oldDisplayVolume = m_displayVolume;
-        _engine->changeVolume(m_displayVolume);
-        setAudioVolume(qMin(m_displayVolume, 100));
+        if(m_displayVolume > 100 && m_displayVolume <= 200)
+            _engine->changeVolume(m_displayVolume);
+        else
+            setAudioVolume(m_displayVolume);
         m_lastVolume = _engine->volume();
         if (!_engine->muted()) {
             _nwComm->updateWithMessage(tr("Volume: %1%").arg(m_displayVolume));
@@ -2431,8 +2438,10 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         //_engine->volumeDown();
         m_displayVolume = qMax(m_displayVolume - 10, 0);
         m_oldDisplayVolume = m_displayVolume;
-        _engine->changeVolume(m_displayVolume);
-        setAudioVolume(qMin(m_displayVolume, 100));
+        if(m_displayVolume > 100 && m_displayVolume <= 200)
+            _engine->changeVolume(m_displayVolume);
+        else
+            setAudioVolume(m_displayVolume);
         //int pert = _engine->volume();
         if (m_displayVolume == 0 && !_engine->muted()) {
             _nwComm->updateWithMessage(tr("Volume: %1%").arg(m_displayVolume));
@@ -3368,7 +3377,8 @@ void MainWindow::wheelEvent(QWheelEvent *we)
     }
 
     if (we->buttons() == Qt::NoButton && we->modifiers() == Qt::NoModifier) {
-        requestAction(we->angleDelta().y() > 0 ? ActionFactory::VolumeUp : ActionFactory::VolumeDown);
+        //del by xxj for +20 every wheel
+        //requestAction(we->angleDelta().y() > 0 ? ActionFactory::VolumeUp : ActionFactory::VolumeDown);
     }
 }
 
@@ -3383,9 +3393,24 @@ void MainWindow::showEvent(QShowEvent *event)
     if (_pausedOnHide || Settings::get().isSet(Settings::PauseOnMinimize)) {
         if (_pausedOnHide && _engine && _engine->state() != PlayerEngine::Playing) {
             if (!_quitfullscreenstopflag) {
-                requestAction(ActionFactory::TogglePause);
-                _pausedOnHide = false;
-                _quitfullscreenstopflag = false;
+#ifdef __aarch64__
+                QVariant l = ApplicationAdaptor::redDBusProperty("com.deepin.SessionManager", "/com/deepin/SessionManager",
+                                                                 "com.deepin.SessionManager", "Locked");
+                if (l.isValid() && !l.toBool()) {
+                    qDebug() << "locked_____________" << l;
+                    //是否锁屏
+#endif
+                    //最小化窗口后，不更新任何状态
+                    if(windowState() & Qt::WindowMinimized > 0){
+                        qWarning()<<"minimize is not doing anthing!"<<windowState();
+                        return;
+                    }
+                    requestAction(ActionFactory::TogglePause);
+                    _pausedOnHide = false;
+                    _quitfullscreenstopflag = false;
+#ifdef __aarch64__
+                }
+#endif
             } else {
                 _quitfullscreenstopflag = false;
             }
@@ -3594,6 +3619,7 @@ void MainWindow::moveEvent(QMoveEvent *ev)
 #else
     updateGeometryNotification(geometry().size());
 #endif
+    qDebug() << __func__ << geometry();
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *ev)
@@ -3774,6 +3800,7 @@ void MainWindow::mouseMoveEvent(QMouseEvent *ev)
     if (windowState() == Qt::WindowNoState || isMaximized()) {
         Utility::startWindowSystemMove(this->winId());
     }
+    _toolbox->setVolSliderHide();
     QWidget::mouseMoveEvent(ev);
 }
 

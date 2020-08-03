@@ -1004,6 +1004,7 @@ void PlaylistWidget::clear()
     _playlist->clear();
     QString s = QString(tr("%1 videos")).arg(_playlist->count());
     _num->setText(s);
+    _engine->getplaylist()->clearLoad();
 }
 
 
