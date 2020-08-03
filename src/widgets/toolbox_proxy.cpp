@@ -556,6 +556,16 @@ public:
         update();
     }
 
+    int getValue()
+    {
+        return _indicator->x();
+    }
+
+    int getTimePos()
+    {
+        return position2progress(QPoint(_indicator->x(),0));
+    }
+
     void setTime(qint64 pos)
     {
         QTime time(0, 0, 0);
@@ -2823,6 +2833,41 @@ bool ToolboxProxy::getbAnimationFinash()
 int ToolboxProxy::DisplayVolume()
 {
     return _volSlider->value();
+}
+
+void ToolboxProxy::updateProgress(int nValue)
+{
+    int nDuration = static_cast<int>(_engine->duration());
+
+    if(_progBar_Widget->currentIndex()==1){                  //进度条模式
+
+        int nCurrPos = _progBar->value()+nValue*nDuration/_progBar->width();
+        if(!_progBar->signalsBlocked())
+        {
+            _progBar->blockSignals(true);
+        }
+
+        _progBar->slider()->setSliderPosition(nCurrPos);
+        _progBar->slider()->setValue(nCurrPos);
+    }
+    else {
+        _viewProgBar->setIsBlockSignals(true);
+        _viewProgBar->setValue(_viewProgBar->getValue()+nValue);
+    }
+}
+
+void ToolboxProxy::updateSlider()
+{
+    if(_progBar_Widget->currentIndex() ==1)
+    {
+        _engine->seekAbsolute(_progBar->value());
+
+        _progBar->blockSignals(false);
+    }
+    else {
+        _engine->seekAbsolute(_viewProgBar->getTimePos());
+        _viewProgBar->setIsBlockSignals(false);
+    }
 }
 }
 
