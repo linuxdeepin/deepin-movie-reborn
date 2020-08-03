@@ -2178,7 +2178,8 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             //_quitfullscreenstopflag = true;
             if (_lastWindowState == Qt::WindowMaximized) {
                 _maxfornormalflag = true;
-                setWindowFlags(Qt::Window);
+                //del by xxj for task 31794
+                //setWindowFlags(Qt::Window);
                 showMaximized();
             } else {
                 setWindowState(windowState() & ~Qt::WindowFullScreen);
