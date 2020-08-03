@@ -144,6 +144,7 @@ public:
     bool getbAnimationFinash();
     int DisplayVolume();
     void setVolSliderHide();
+    void setButtonTooltipHide();
 public slots:
     void finishLoadSlot(QSize size);
     void updateplaylisticon();
@@ -178,6 +179,7 @@ protected:
 //    void paintEvent(QPaintEvent *pe) override;
     void showEvent(QShowEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *ev) override;
 private:
     void setup();
     void updateTimeLabel();
