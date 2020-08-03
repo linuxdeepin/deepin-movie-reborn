@@ -2864,6 +2864,9 @@ void ToolboxProxy::setVolSliderHide()
 {
     _volSlider->setVisible(false);
 }
+bool ToolboxProxy::getVolSliderIsHided(){
+    return _volSlider->isHidden();
+}
 }
 
 #include "toolbox_proxy.moc"

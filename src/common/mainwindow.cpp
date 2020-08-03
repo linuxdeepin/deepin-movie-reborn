@@ -3510,9 +3510,8 @@ void MainWindow::wheelEvent(QWheelEvent *we)
         return;
     }
 
-    if (we->buttons() == Qt::NoButton && we->modifiers() == Qt::NoModifier) {
-        //del by xiangxiaojun for +20 every wheel
-        //requestAction(we->angleDelta().y() > 0 ? ActionFactory::VolumeUp : ActionFactory::VolumeDown);
+    if (we->buttons() == Qt::NoButton && we->modifiers() == Qt::NoModifier && _toolbox->getVolSliderIsHided()) {
+        requestAction(we->angleDelta().y() > 0 ? ActionFactory::VolumeUp : ActionFactory::VolumeDown);
     }
 }
 
