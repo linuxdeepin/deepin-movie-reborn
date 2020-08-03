@@ -2761,16 +2761,9 @@ void ToolboxProxy::setVolSliderHide()
 }
 
 void ToolboxProxy::setButtonTooltipHide(){
-//    auto btnList = _palyBox->buttonList();
-//    for (auto btn : btnList) {
-//        auto button = static_cast<ToolButton*>(btn);
-//        button->hideToolTip();
-//    }
-
     _subBtn->hideToolTip();
     _listBtn->hideToolTip();
     _fsBtn->hideToolTip();
-
 }
 }
 
