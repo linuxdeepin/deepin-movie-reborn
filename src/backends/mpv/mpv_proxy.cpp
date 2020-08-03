@@ -889,6 +889,12 @@ void MpvProxy::changeSoundMode(SoundMode sm)
 
 void MpvProxy::volumeUp()
 {
+    if(!m_bInited)
+    {
+        firstInit();
+        m_bInited = true;
+    }
+
     if (volume() >= 200)
         return;
 //    QList<QVariant> args = { "add", "volume", 8 };
@@ -899,6 +905,12 @@ void MpvProxy::volumeUp()
 
 void MpvProxy::changeVolume(int val)
 {
+    if(!m_bInited)
+    {
+        firstInit();
+        m_bInited = true;
+    }
+
     //val += 40;
     //val = qMin(qMax(val, 40), 240);
     my_set_property(_handle, "volume", volumeCorrection(val));

@@ -50,6 +50,8 @@
 
 #include "thumbnail_worker.h"
 
+#include "slider.h"
+
 namespace Dtk {
 namespace Widget {
 class DImageButton;
@@ -206,6 +208,25 @@ public:
     QLabel *getfullscreentimeLabelend();
     bool getbAnimationFinash();
     int DisplayVolume();
+    DMRSlider* getSlider()
+    {
+        return _progBar;
+    }
+    ViewProgBar* getViewProBar()
+    {
+        return _viewProgBar;
+    }
+    bool isViewProgress()
+    {
+        if(_progBar_Widget->currentIndex()==2)
+        {
+            return true;
+        }
+    }
+
+    void updateProgress(int nValue);    //更新进度条显示
+
+    void updateSlider();                //根据进度条显示更新影片实际进度
 public slots:
     void finishLoadSlot(QSize size);
     void updateplaylisticon();

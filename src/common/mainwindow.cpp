@@ -1015,7 +1015,7 @@ MainWindow::MainWindow(QWidget *parent)
         _retryTimes = 0;
         if (windowState() == Qt::WindowNoState && _lastRectInNormalMode.isValid()) {
             const auto &mi = _engine->playlist().currentInfo().mi;
-            _lastRectInNormalMode.setSize({mi.width, mi.height});
+            //_lastRectInNormalMode.setSize({mi.width, mi.height});    //窗口大小和影片大小无关
         }
         this->resizeByConstraints();
         /*QDesktopWidget desktop;
@@ -1260,6 +1260,12 @@ void MainWindow::updateShadow()
 
 bool MainWindow::event(QEvent *ev)
 {
+    if (ev->type() == QEvent::TouchBegin) {
+        //判定是否是触屏
+        this->posMouseOrigin = QCursor::pos();
+        _isTouch = true;
+    }
+
     //add by heyi
     //判断是否停止右键菜单定时器
     if (_mousePressed) {
@@ -1269,14 +1275,8 @@ bool MainWindow::event(QEvent *ev)
                 qDebug() << "结束定时器";
                 _mousePressTimer.stop();
                 _mousePressed = false;
-                _isTouch = false;
             }
         }
-    }
-
-    if (ev->type() == QEvent::TouchBegin) {
-        //判定是否是触屏
-        _isTouch = true;
     }
 
     if (ev->type() == QEvent::WindowStateChange) {
@@ -3798,7 +3798,6 @@ void MainWindow::capturedMousePressEvent(QMouseEvent *me)
 
     if (me->buttons() == Qt::LeftButton) {
         _mousePressed = true;
-        posMouseOrigin = QCursor::pos();
     }
 
     //add by heyi
@@ -3860,8 +3859,10 @@ void MainWindow::mousePressEvent(QMouseEvent *ev)
             QMouseEvent me(QEvent::MouseButtonPress, {}, ev->button(), ev->buttons(), ev->modifiers());
             qApp->sendEvent(_playState, &me);
         }*/
-        posMouseOrigin = QCursor::pos();
+        //posMouseOrigin = QCursor::pos();
     }
+
+    posMouseOrigin = ev->pos();
 }
 
 void MainWindow::mouseDoubleClickEvent(QMouseEvent *ev)
@@ -3901,6 +3902,13 @@ bool MainWindow::insideResizeArea(const QPoint &global_p)
 
 void MainWindow::mouseReleaseEvent(QMouseEvent *ev)
 {
+    if(_isTouch && m_bProgressChanged)
+    {
+        _toolbox->updateSlider();   //手势释放时改变影片进度
+        _isTouch = false;
+        m_bProgressChanged = false;
+    }
+
     //add by heyi
     static bool bFlags = true;
     if (bFlags) {
@@ -3942,7 +3950,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *ev)
 
 void MainWindow::delayedMouseReleaseHandler()
 {
-    if (!_afterDblClick)
+    if (!_afterDblClick && !isFullScreen())
         requestAction(ActionFactory::TogglePause, false, {}, true);
     _afterDblClick = false;
 }
@@ -3978,15 +3986,43 @@ void MainWindow::onDvdData(const QString &title)
 
 void MainWindow::mouseMoveEvent(QMouseEvent *ev)
 {
+    QPoint ptCurr = ev->pos();
+    QPoint ptDelta = ptCurr-this->posMouseOrigin;
+
+    if(qAbs(ptDelta.x())<5 && qAbs(ptDelta.y()<5)){  //避免误触
+        this->posMouseOrigin = ptCurr;
+        return;
+    }
+
+    if(_isTouch&&isFullScreen())     //全屏时才触发滑动改变音量和进度的操作
+    {
+        if(qAbs(ptDelta.x())>qAbs(ptDelta.y())
+                && _engine->state() != PlayerEngine::CoreState::Idle){
+            _toolbox->updateProgress(ptDelta.x());     //改变进度条显示
+            this->posMouseOrigin = ptCurr;
+            m_bProgressChanged = true;
+            return;
+        }
+        else if(qAbs(ptDelta.x())<qAbs(ptDelta.y())){
+            if(ptDelta.y()>0){
+                requestAction(ActionFactory::ActionKind::VolumeDown);
+            }
+            else {
+                requestAction(ActionFactory::ActionKind::VolumeUp);
+            }
+
+            this->posMouseOrigin = ptCurr;
+            return;
+        }
+    }
+
     if (!CompositingManager::get().composited()) {
-        QPoint ptMouseNow = QCursor::pos();
-        QPoint ptDelta = ptMouseNow - this->posMouseOrigin;
         move(this->pos() + ptDelta);
-        posMouseOrigin = ptMouseNow;
     } else {
         QWidget::mouseMoveEvent(ev);
     }
 
+     this->posMouseOrigin = ptCurr;
     _mouseMoved = true;
 }
 
