@@ -1385,8 +1385,8 @@ void MainWindow::onMonitorMotionNotify(int x, int y)
 MainWindow::~MainWindow()
 {
     qDebug() << __func__;
-    disconnect(_engine, 0, 0, 0);
-    disconnect(&_engine->playlist(), 0, 0, 0);
+    //disconnect(_engine, 0, 0, 0);
+    //disconnect(&_engine->playlist(), 0, 0, 0);
 
     if (_lastCookie > 0) {
         utils::UnInhibitStandby(_lastCookie);
@@ -3362,6 +3362,17 @@ void MainWindow::closeEvent(QCloseEvent *ev)
         _engine->playlist().savePlaylist();
     }
 #endif
+    // xcb close slow so add this for wayland  by xxj
+    _quitfullscreenstopflag = true;
+    DMainWindow::closeEvent(ev);
+    _engine->stop();
+    disconnect(_engine,nullptr,nullptr,nullptr);
+    disconnect(&_engine->playlist(),nullptr,nullptr,nullptr);
+    if(_engine){
+        delete _engine;
+        _engine = nullptr;
+    }
+    CompositingManager::get().setTestFlag(true);
     /*lmh0724临时规避退出崩溃问题*/
     QApplication::quit();
     _Exit(0);
