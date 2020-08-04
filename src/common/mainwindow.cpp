@@ -206,9 +206,9 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
      * createTwoColumWidget在dtk中已被弃用
      * 修改警告重新创建窗口
      */
-    DSettingsWidgetFactory *settingWidget = new DSettingsWidgetFactory(main);
-    //auto optionWidget = DSettingsWidgetFactory::createTwoColumWidget(option, main);
-    auto optionWidget = settingWidget->createWidget(option);
+    //DSettingsWidgetFactory *settingWidget = new DSettingsWidgetFactory(main);
+    auto optionWidget = DSettingsWidgetFactory::createTwoColumWidget(option, main);
+    //auto optionWidget = settingWidget->createWidget(option);
     workaround_updateStyle(optionWidget, "light");
 
     DDialog *prompt = new DDialog(main);
