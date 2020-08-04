@@ -3618,6 +3618,12 @@ void MainWindow::LimitWindowize()
     }
 }
 
+void MainWindow::hidePopWindow()
+{
+    _toolbox->setVolSliderHide();
+    _nwComm->setHidden(true);
+}
+
 void MainWindow::resizeEvent(QResizeEvent *ev)
 {
     qDebug() << __func__ << geometry();
@@ -3851,7 +3857,7 @@ void MainWindow::mouseMoveEvent(QMouseEvent *ev)
     if (windowState() == Qt::WindowNoState || isMaximized()) {
         Utility::startWindowSystemMove(this->winId());
     }
-    _toolbox->setVolSliderHide();
+    hidePopWindow();
     QWidget::mouseMoveEvent(ev);
 }
 
