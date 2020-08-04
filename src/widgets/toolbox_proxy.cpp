@@ -166,6 +166,12 @@ protected:
             event->ignore();
 
         }
+
+        case QEvent::MouseMove:{
+            QHelpEvent *he = static_cast<QHelpEvent *>(event);
+            auto tip = obj->property("HintWidget").value<Tip *>();
+            tip->hide();
+        }
         default:
             break;
         }
@@ -2504,6 +2510,7 @@ void ToolboxProxy::buttonLeave()
     if (!isVisible()) return;
 
     ToolButton *btn = qobject_cast<ToolButton *>(sender());
+
     QString id = btn->property("TipId").toString();
 
     if (id == tr("sub") || id == tr("fs") || id == tr("list")) {
@@ -2613,6 +2620,12 @@ void ToolboxProxy::resizeEvent(QResizeEvent *event)
 
     updateTimeLabel();
 #endif
+}
+
+void ToolboxProxy::mouseMoveEvent(QMouseEvent *ev)
+{
+    setButtonTooltipHide();
+    QWidget::mouseMoveEvent(ev);
 }
 
 
@@ -2745,6 +2758,12 @@ int ToolboxProxy::DisplayVolume()
 void ToolboxProxy::setVolSliderHide()
 {
     _volSlider->setVisible(false);
+}
+
+void ToolboxProxy::setButtonTooltipHide(){
+    _subBtn->hideToolTip();
+    _listBtn->hideToolTip();
+    _fsBtn->hideToolTip();
 }
 }
 
