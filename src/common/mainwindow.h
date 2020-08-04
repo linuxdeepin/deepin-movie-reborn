@@ -388,6 +388,7 @@ private:
     QTimer _mousePressTimer;
     Diskcheckthread m_diskCheckThread;
     bool m_bProgressChanged {false};        //进度条是否被拖动
+    bool m_bFirstInit {false};
 };
 };
 

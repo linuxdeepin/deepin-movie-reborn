@@ -820,8 +820,6 @@ protected:
             }
         }
         e->accept();
-
-        DWidget::mouseMoveEvent(e);
     }
     void mousePressEvent(QMouseEvent *e) override
     {
@@ -846,7 +844,8 @@ protected:
         emit mousePressed(false);
         if (_press && isEnabled()) {
             changeStyle(!_press);
-//            setTimeVisible(!_press);
+            setTimeVisible(!_press);
+            _sliderArrowUp->setVisible(false);
             _press = !_press;
         }
 
@@ -1034,7 +1033,7 @@ protected slots:
 
 protected:
     void paintEvent(QPaintEvent *e) Q_DECL_OVERRIDE{
-        m_shadow_effect->setOffset(-5, 5);
+        m_shadow_effect->setOffset(0, 0);
         m_shadow_effect->setColor(Qt::gray);
         m_shadow_effect->setBlurRadius(8);
         setGraphicsEffect(m_shadow_effect);

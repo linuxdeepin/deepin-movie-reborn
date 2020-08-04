@@ -802,11 +802,8 @@ MainWindow::MainWindow(QWidget *parent)
     }
     //heyi need
     //_engine->changeVolume(volume);
+
     m_displayVolume = volume;
-    if (Settings::get().internalOption("mute").toBool()) {
-        _engine->toggleMute();
-        Settings::get().setInternalOption("mute", _engine->muted());
-    }
 
     _toolbox = new ToolboxProxy(this, _engine);
     _toolbox->setFocusPolicy(Qt::NoFocus);
@@ -1197,6 +1194,13 @@ MainWindow::MainWindow(QWidget *parent)
     m_diskCheckThread.start();
 
     connect(&m_diskCheckThread, &Diskcheckthread::diskRemove, this, &MainWindow::diskRemoved);
+
+    _engine->firstInit();
+
+    if (Settings::get().internalOption("mute").toBool()) {
+        _engine->toggleMute();
+        Settings::get().setInternalOption("mute", _engine->muted());
+    }
 }
 
 void MainWindow::setupTitlebar()
