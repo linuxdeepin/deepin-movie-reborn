@@ -387,6 +387,8 @@ private:
     bool _isTouch = false;          //是否是触摸屏按下
     QTimer _mousePressTimer;
     Diskcheckthread m_diskCheckThread;
+    bool m_bProgressChanged {false};        //进度条是否被拖动
+    bool m_bFirstInit {false};
 };
 };
 

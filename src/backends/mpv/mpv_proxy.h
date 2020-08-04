@@ -284,7 +284,7 @@ private:
     void setState(PlayState s);
     qint64 nextBurstShootPoint();
     int volumeCorrection(int);
-    bool m_bInited {false};
+    bool m_bInited {true};
 };
 
 }
