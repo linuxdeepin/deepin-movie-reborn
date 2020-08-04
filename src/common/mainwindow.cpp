@@ -1011,7 +1011,7 @@ MainWindow::MainWindow(QWidget *parent)
         _retryTimes = 0;
         if (windowState() == Qt::WindowNoState && _lastRectInNormalMode.isValid()) {
             const auto &mi = _engine->playlist().currentInfo().mi;
-            _lastRectInNormalMode.setSize({mi.width, mi.height});
+            //_lastRectInNormalMode.setSize({mi.width, mi.height});
         }
         this->resizeByConstraints();
         /*QDesktopWidget desktop;
@@ -2289,6 +2289,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                     setGeometry(_lastRectInNormalMode);
                     move(_lastRectInNormalMode.x(), _lastRectInNormalMode.y());
                     resize(_lastRectInNormalMode.width(), _lastRectInNormalMode.height());
+                    _titlebar->setFixedWidth(_lastRectInNormalMode.width());             //bug 39991
                 }
             }
             if (!isFullScreen()) {
