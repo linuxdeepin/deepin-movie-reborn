@@ -206,6 +206,7 @@ public:
     bool getbAnimationFinash();
     int DisplayVolume();
     void setVolSliderHide();
+    bool getVolSliderIsHided();
 public slots:
     void finishLoadSlot(QSize size);
     void updateplaylisticon();

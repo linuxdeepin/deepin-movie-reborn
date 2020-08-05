@@ -1011,7 +1011,7 @@ MainWindow::MainWindow(QWidget *parent)
         _retryTimes = 0;
         if (windowState() == Qt::WindowNoState && _lastRectInNormalMode.isValid()) {
             const auto &mi = _engine->playlist().currentInfo().mi;
-            _lastRectInNormalMode.setSize({mi.width, mi.height});
+            //_lastRectInNormalMode.setSize({mi.width, mi.height});
         }
         this->resizeByConstraints();
         /*QDesktopWidget desktop;
@@ -1410,10 +1410,11 @@ void MainWindow::changedVolumeSlot(int vol)
         //_engine->toggleMute();
         Settings::get().setInternalOption("mute", _engine->muted());
     }
-    if (_engine->volume() <= 100 || vol < 100) {
-        _engine->changeVolume(vol);
-        Settings::get().setInternalOption("global_volume", vol);
-    }
+//del for xiangxiaojun
+//    if (_engine->volume() <= 100 || vol < 100) {
+//        _engine->changeVolume(vol);
+//        Settings::get().setInternalOption("global_volume", vol);
+//    }
     _toolbox->setDisplayValue(qMin(vol, 100));
     if (m_oldDisplayVolume == m_displayVolume) {
         return;
@@ -2288,6 +2289,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                     setGeometry(_lastRectInNormalMode);
                     move(_lastRectInNormalMode.x(), _lastRectInNormalMode.y());
                     resize(_lastRectInNormalMode.width(), _lastRectInNormalMode.height());
+                    _titlebar->setFixedWidth(_lastRectInNormalMode.width());             //bug 39991
                 }
             }
             if (!isFullScreen()) {
@@ -2480,7 +2482,11 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                 setAudioVolume(qMin(nVol, 100));
                 return;
             }
-            _engine->changeVolume(nVol);
+            if(nVol > 100){
+                _engine->changeVolume(nVol);
+                Settings::get().setInternalOption("global_volume", m_lastVolume);
+            }
+
             //当音量与当前静音状态不符时切换静音状态
             /*if (nVol == 0 && !_engine->muted()) {
                 changedMute();
@@ -2516,8 +2522,10 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         //_engine->volumeUp();
         m_displayVolume = qMin(m_displayVolume + 10, 200);
         m_oldDisplayVolume = m_displayVolume;
-        _engine->changeVolume(m_displayVolume);
-        setAudioVolume(qMin(m_displayVolume, 100));
+         if(m_displayVolume > 100 && m_displayVolume <= 200)
+            _engine->changeVolume(m_displayVolume);
+        else
+            setAudioVolume(m_displayVolume);
         m_lastVolume = _engine->volume();
         if (!_engine->muted()) {
             _nwComm->updateWithMessage(tr("Volume: %1%").arg(m_displayVolume));
@@ -2534,8 +2542,10 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         //_engine->volumeDown();
         m_displayVolume = qMax(m_displayVolume - 10, 0);
         m_oldDisplayVolume = m_displayVolume;
-        _engine->changeVolume(m_displayVolume);
-        setAudioVolume(qMin(m_displayVolume, 100));
+        if(m_displayVolume > 100 && m_displayVolume <= 200)
+            _engine->changeVolume(m_displayVolume);
+        else
+            setAudioVolume(m_displayVolume);
         //int pert = _engine->volume();
         if (m_displayVolume == 0 && !_engine->muted()) {
             _nwComm->updateWithMessage(tr("Volume: %1%").arg(m_displayVolume));
@@ -3501,7 +3511,7 @@ void MainWindow::wheelEvent(QWheelEvent *we)
         return;
     }
 
-    if (we->buttons() == Qt::NoButton && we->modifiers() == Qt::NoModifier) {
+    if (we->buttons() == Qt::NoButton && we->modifiers() == Qt::NoModifier && _toolbox->getVolSliderIsHided()) {
         requestAction(we->angleDelta().y() > 0 ? ActionFactory::VolumeUp : ActionFactory::VolumeDown);
     }
 }
@@ -4550,6 +4560,10 @@ void MainWindow::updateMiniBtnTheme(int a)
 void MainWindow::diskRemoved(QString strDiskName)
 {
     QString strCurrFile;
+    if(_engine->getplaylist()->count()<=0)
+    {
+        return;
+    }
     strCurrFile = _engine->getplaylist()->currentInfo().url.toString();
 
     if (strCurrFile.contains(strDiskName)/* && _engine->state() == PlayerEngine::Playing*/)
