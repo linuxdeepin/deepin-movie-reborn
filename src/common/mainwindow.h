@@ -268,6 +268,9 @@ private:
 
     //Limit video to mini mode size
     void LimitWindowize();
+
+    //hide pop windows when dragging window
+    void hidePopWindow();
 private:
     DFloatingMessage *popup {nullptr};
     QLabel *_fullscreentimelable {nullptr};
