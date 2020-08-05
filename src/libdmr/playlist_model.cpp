@@ -1061,7 +1061,7 @@ void PlaylistModel::collectionJob(const QList<QUrl> &urls)
                             _engine->isPlayableFile(fi.fileName())) {
                         _pendingJob.append(qMakePair(url, fi));
                         _urlsInJob.insert(url.toLocalFile());
-                        handleAsyncAppendResults(QList<PlayItemInfo>()<<calculatePlayInfo(url,fi));
+                        //handleAsyncAppendResults(QList<PlayItemInfo>()<<calculatePlayInfo(url,fi));
                     }
                 }
             });
