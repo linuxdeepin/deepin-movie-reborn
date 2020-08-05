@@ -12,8 +12,8 @@ Build-Depends: debhelper, cmake, pkg-config, qttools5-dev-tools,
                 x11proto-record-dev, libxtst-dev,
                 libavcodec-dev, libavformat-dev,libavutil-dev,
                 libpulse-dev, libssl-dev, libdvdnav-dev, libgsettings-qt-dev,
-                libjpeg-dev, libpng-dev, liblzma-dev, libva-dev, libva-x11-2, 
-                libva-drm2, libvdpau-dev, libbz2-dev,libcrystalhd-dev
+                libavutil-dev, libavformat-dev, libavcodec-dev (>= 4:0.6~svn20100505-1~),
+                libavfilter-dev, libpng-dev, libjpeg-dev, dpkg-dev (>= 1.16.1), cmake
 Standards-Version: 3.9.8
 Homepage: https://www.deepin.org/
 
