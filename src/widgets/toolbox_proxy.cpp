@@ -58,6 +58,7 @@ static const int RIGHT_MARGIN = 10;
 static const int PROGBAR_SPEC = 10 + 120 + 17 + 54 + 10 + 54 + 10 + 170 + 10 + 20;
 
 static const QString SLIDER_ARROW = ":resources/icons/slider.svg";
+const QString path = "/usr/lib/x86_64-linux-gnu/ImageMagick-6.9.10/modules-Q16/coders/thumbnail.so";
 
 #define POPUP_DURATION 350
 
