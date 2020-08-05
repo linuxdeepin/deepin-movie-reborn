@@ -1031,7 +1031,7 @@ void PlaylistModel::appendSingle(const QUrl &url)
     }
 }
 
-void PlaylistModel::collectionJob(const QList<QUrl> &urls)
+void PlaylistModel::collectionJob(const QList<QUrl> &urls, QList<QUrl> &inputUrls)
 {
     for (const auto &url : urls) {
         int aa = indexOf(url);
@@ -1047,13 +1047,14 @@ void PlaylistModel::collectionJob(const QList<QUrl> &urls)
 
         _pendingJob.append(qMakePair(url, fi));
         _urlsInJob.insert(url.toLocalFile());
+        inputUrls.append(url);
         qDebug() << "append " << url.fileName();
 
 #ifndef _LIBDMR_
         if (!_firstLoad && Settings::get().isSet(Settings::AutoSearchSimilar)) {
             auto fil = utils::FindSimilarFiles(fi);
             qDebug() << "auto search similar files" << fil;
-            std::for_each(fil.begin(), fil.end(), [ = ](const QFileInfo & fi) {
+            for (const QFileInfo &fi: fil) {
                 if (fi.isFile()) {
                     auto url = QUrl::fromLocalFile(fi.absoluteFilePath());
 
@@ -1061,10 +1062,11 @@ void PlaylistModel::collectionJob(const QList<QUrl> &urls)
                             _engine->isPlayableFile(fi.fileName())) {
                         _pendingJob.append(qMakePair(url, fi));
                         _urlsInJob.insert(url.toLocalFile());
+                        inputUrls.append(url);
                         //handleAsyncAppendResults(QList<PlayItemInfo>()<<calculatePlayInfo(url,fi));
                     }
                 }
-            });
+            }
         }
 #endif
     }
@@ -1116,8 +1118,9 @@ void PlaylistModel::delayedAppendAsync(const QList<QUrl> &urls)
         return;
     }
 
+    QList<QUrl> t_urls;
     m_pdataMutex->lock();
-    collectionJob(urls);
+    collectionJob(urls, t_urls);
     m_pdataMutex->unlock();
 
     if (!_pendingJob.size()) return;
@@ -1155,16 +1158,16 @@ void PlaylistModel::delayedAppendAsync(const QList<QUrl> &urls)
 //            auto future = QtConcurrent::mapped(_pendingJob, MapFunctor(this));
 //            _jobWatcher->setFuture(future);
             if (!m_getThumanbil) {
-                m_getThumanbil = new GetThumanbil(this, urls);
+                m_getThumanbil = new GetThumanbil(this, t_urls);
                 connect(m_getThumanbil, &GetThumanbil::finished, this, &PlaylistModel::onAsyncFinished);
                 connect(m_getThumanbil, &GetThumanbil::updateItem, this, &PlaylistModel::onAsyncUpdate, Qt::BlockingQueuedConnection);
                 m_isLoadRunning = true;
                 m_getThumanbil->start();
             } else {
                 if (m_isLoadRunning) {
-                    m_tempList.append(urls);
+                    m_tempList.append(t_urls);
                 } else {
-                    m_getThumanbil->setUrls(urls);
+                    m_getThumanbil->setUrls(t_urls);
                     m_getThumanbil->start();
                 }
             }
