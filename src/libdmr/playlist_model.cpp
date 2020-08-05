@@ -35,7 +35,7 @@
 #endif
 #include "dvd_utils.h"
 
-#include <libffmpegthumbnailer/videothumbnailer.h>
+#include "libffmpegthumbnailer/videothumbnailer.h"
 extern "C" {
 #include <libavformat/avformat.h>
 #include <libavutil/dict.h>
@@ -1216,7 +1216,7 @@ static QList<PlayItemInfo> &SortSimilarFiles(QList<PlayItemInfo> &fil)
 void PlaylistModel::onAsyncAppendFinished()
 {
     qDebug() << __func__;
-    auto f = _jobWatcher->future();
+//    auto f = _jobWatcher->future();
     _pendingJob.clear();
     _urlsInJob.clear();
 
