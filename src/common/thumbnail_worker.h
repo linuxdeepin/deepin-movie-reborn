@@ -31,7 +31,12 @@
 #define _DMR_THUMBNAIL_WORKER_H
 
 #include <QtWidgets>
-#include <libffmpegthumbnailer/videothumbnailer.h>
+#include "libffmpegthumbnailer/videothumbnailer.h"
+
+typedef void (*thumb_setSeekTime)(const std::string& seekTime);
+//typedef void (*thumb_generateThumbnail) (const std::string& videoFile, ThumbnailerImageType type, std::vector<uint8_t>& buffer);
+typedef void (*thumb_setThumbnailSize) (int size);
+typedef void (*thumb_setMaintainAspectRatio) (bool enabled);
 
 namespace dmr {
 using namespace ffmpegthumbnailer;
@@ -74,7 +79,13 @@ private:
 
     PlayerEngine *_engine {nullptr};
 
+    thumb_setSeekTime m_setSeekTime {nullptr};
+//    thumb_generateThumbnail m_generateThumbnail {nullptr};
+    thumb_setThumbnailSize m_setThumbnailSize {nullptr};
+    thumb_setMaintainAspectRatio m_setMaintainAspectRatio{nullptr};
+
     ThumbnailWorker();
+    void initThumb();
     void run() override;
     void runSingle(QPair<QUrl, int> w);
     QPixmap genThumb(const QUrl &url, int secs);

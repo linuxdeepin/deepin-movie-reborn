@@ -31,8 +31,14 @@
 #include <atomic>
 #include <mutex>
 #include "player_engine.h"
+#include <QLibrary>
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <dlfcn.h>
 
 #define SIZE_THRESHOLD (10 * 1<<20)
+const char* path = "/usr/lib/x86_64-linux-gnu/libffmpegthumbnailer.so.4";
 
 namespace dmr {
 static std::atomic<ThumbnailWorker *> _instance { nullptr };
@@ -100,9 +106,43 @@ void ThumbnailWorker::requestThumb(const QUrl &url, int secs)
 
 ThumbnailWorker::ThumbnailWorker()
 {
+    //initThumb();
     thumber.setThumbnailSize(static_cast<int>(thumbSize().width() * qApp->devicePixelRatio()));
     thumber.setMaintainAspectRatio(true);
 }
+
+/*void ThumbnailWorker::initThumb()
+{
+//    QLibrary *library = new QLibrary(path);
+//    library->load();
+//    m_setSeekTime = reinterpret_cast<thumb_setSeekTime>(QLibrary::resolve(path, "setSeekTime"));
+//    if (m_setSeekTime == nullptr) {
+//        return;
+//    }
+
+    void *handle = nullptr;
+    handle = dlopen(path, RTLD_LAZY);
+    if (handle == nullptr) {
+        qWarning() << "ERROR:" << dlerror() << ":dlopen";
+        return;
+    }
+    m_setSeekTime = (thumb_setSeekTime) dlsym(handle, "setSeekTime");
+    if (m_setSeekTime == nullptr) {
+        qWarning() << "ERROR:" << dlerror() << ":dlsym";
+    }
+    m_generateThumbnail = (thumb_generateThumbnail) dlsym(handle, "generateThumbnail");
+    if (m_generateThumbnail == nullptr) {
+        qWarning() << "ERROR:" << dlerror() << ":dlsym";
+    }
+    m_setThumbnailSize = (thumb_setThumbnailSize) dlsym(handle, "setThumbnailSize");
+    if (m_setThumbnailSize == nullptr) {
+        qWarning() << "ERROR:" << dlerror() << ":dlsym";
+    }
+    m_setMaintainAspectRatio = (thumb_setMaintainAspectRatio) dlsym(handle, "setMaintainAspectRatio");
+    if (m_setMaintainAspectRatio == nullptr) {
+        qWarning() << "ERROR:" << dlerror() << ":dlsym";
+    }
+}*/
 
 QPixmap ThumbnailWorker::genThumb(const QUrl &url, int secs)
 {
@@ -125,8 +165,7 @@ QPixmap ThumbnailWorker::genThumb(const QUrl &url, int secs)
         }
 
         std::vector<uint8_t> buf;
-        thumber.generateThumbnail(file.toUtf8().toStdString(),
-                                  ThumbnailerImageType::Png, buf);
+        thumber.generateThumbnail(file.toUtf8().toStdString(), ThumbnailerImageType::Png, buf);
 
         auto img = QImage::fromData(buf.data(), static_cast<int>(buf.size()), "png");
 
