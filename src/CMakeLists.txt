@@ -23,7 +23,7 @@ pkg_check_modules(Mpv REQUIRED IMPORTED_TARGET mpv)
 pkg_check_modules(AV REQUIRED IMPORTED_TARGET libavformat libavutil libavcodec libavfilter)
 # IMPORTED_TARGET failed to work for some of libs under flatpak env
 #pkg_check_modules(Other REQUIRED libffmpegthumbnailer gsettings-qt)
-pkg_check_modules(Other REQUIRED gsettings-qt)
+pkg_check_modules(Other REQUIRED libffmpegthumbnailer gsettings-qt)
 
 qt5_add_resources(RCS resources.qrc)
 qt5_add_resources(RCS icons/theme-icons.qrc)
@@ -32,7 +32,7 @@ if (${Dtk_VERSION} LESS 2.0.6.1)
 endif()
 
 
-file(GLOB_RECURSE SRCS LIST_DIRECTORIES false common/*.cpp widgets/*.cpp libdmr/*.cpp vendor/*.cpp vendor/mpris-qt/*.cpp vendor/dbusextended-qt/*.cpp libffmpegthumbnailer/*.cpp)
+file(GLOB_RECURSE SRCS LIST_DIRECTORIES false common/*.cpp widgets/*.cpp libdmr/*.cpp vendor/*.cpp vendor/mpris-qt/*.cpp vendor/dbusextended-qt/*.cpp)
 list(APPEND SRCS main.cpp)
 
 include_directories(
@@ -82,7 +82,7 @@ target_include_directories(${CMD_NAME} PUBLIC ${PROJECT_INCLUDE})
 #    PkgConfig::AV  GL)
 
 set(TARGET_LIBS X11 Xtst  Qt5::Widgets Qt5::X11Extras Qt5::Network
-    Qt5::Concurrent Qt5::DBus Qt5::Sql PkgConfig::Dtk  PkgConfig::AV  GL png jpeg)
+    Qt5::Concurrent Qt5::DBus Qt5::Sql PkgConfig::Dtk  PkgConfig::AV  GL)
 
 target_link_libraries(${CMD_NAME} ${TARGET_LIBS} ${Other_LIBRARIES})
 

@@ -31,7 +31,7 @@
 #define _DMR_THUMBNAIL_WORKER_H
 
 #include <QtWidgets>
-#include "libffmpegthumbnailer/videothumbnailer.h"
+#include <libffmpegthumbnailer/videothumbnailer.h>
 
 typedef void (*thumb_setSeekTime)(const std::string& seekTime);
 //typedef void (*thumb_generateThumbnail) (const std::string& videoFile, ThumbnailerImageType type, std::vector<uint8_t>& buffer);
