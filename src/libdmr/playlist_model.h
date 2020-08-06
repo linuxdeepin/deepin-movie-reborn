@@ -156,7 +156,7 @@ public:
     void append(const QUrl &);
 
     void appendAsync(const QList<QUrl> &);
-    void collectionJob(const QList<QUrl> &);
+    void collectionJob(const QList<QUrl> &, QList<QUrl> &);
 
     void playNext(bool fromUser);
     void playPrev(bool fromUser);
@@ -195,6 +195,7 @@ public slots:
 private slots:
     void onAsyncAppendFinished();
     void onAsyncFinished();
+    void onAsyncUpdate(PlayItemInfo);
 
 
 signals:
@@ -306,12 +307,16 @@ public:
         foreach (QUrl url, urls) {
             QFileInfo info(url.path());
             m_itemMutex->lock();
-            m_itemInfo.append(m_model->calculatePlayInfo(url, info, false));
+            //m_itemInfo.append();
+            emit updateItem(m_model->calculatePlayInfo(url, info, false));
             m_itemMutex->unlock();
             m_isFinished = true;
             if (m_stop) break;
         }
     }
+
+signals:
+    void updateItem(PlayItemInfo);
 private:
     PlaylistModel *m_model;
     QList<QUrl> m_urls;
