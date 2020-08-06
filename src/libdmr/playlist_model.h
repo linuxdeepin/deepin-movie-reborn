@@ -156,7 +156,7 @@ public:
     void append(const QUrl &);
 
     void appendAsync(const QList<QUrl> &);
-    void collectionJob(const QList<QUrl> &);
+    void collectionJob(const QList<QUrl> &, QList<QUrl> &);
 
     void playNext(bool fromUser);
     void playPrev(bool fromUser);

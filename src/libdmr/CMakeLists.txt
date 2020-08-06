@@ -5,12 +5,12 @@ set(CMD_NAME dmr)
 
 add_definitions(-D_LIBDMR_)
 
-#pkg_check_modules(FFTHUMB REQUIRED libffmpegthumbnailer)
+pkg_check_modules(FFTHUMB REQUIRED libffmpegthumbnailer)
 
-include_directories(${CMAKE_INCLUDE_CURRENT_DIR}
-                    ${CMAKE_INCLUDE_CURRENT_DIR}/libffmpegthumbnailer)
+include_directories(${CMAKE_INCLUDE_CURRENT_DIR})
+#                    ${CMAKE_INCLUDE_CURRENT_DIR}/libffmpegthumbnailer)
 
-file(GLOB_RECURSE SRCS LIST_DIRECTORIES false *.cpp ../libffmpegthumbnailer/*.cpp)
+file(GLOB_RECURSE SRCS LIST_DIRECTORIES false *.cpp)
 file(GLOB_RECURSE MPV_SRCS LIST_DIRECTORIES false ../backends/mpv/*.cpp)
 list(APPEND SRCS player_widget.cpp ${MPV_SRCS})
 
@@ -20,11 +20,11 @@ set_target_properties(${CMD_NAME} PROPERTIES VERSION 0.1.1 SOVERSION 0.1)
 target_include_directories(${CMD_NAME} PUBLIC
     ${PROJECT_SOURCE_DIR}/../common ${PROJECT_SOURCE_DIR}/../backends/mpv)
 
-#target_link_libraries(${CMD_NAME} PkgConfig::Dtk Qt5::Widgets Qt5::Concurrent
-#    Qt5::Network Qt5::X11Extras Qt5::Sql Qt5::DBus PkgConfig::Mpv PkgConfig::AV
-#    ${FFTHUMB_LIBRARIES} GL)
 target_link_libraries(${CMD_NAME} PkgConfig::Dtk Qt5::Widgets Qt5::Concurrent
-    Qt5::Network Qt5::X11Extras Qt5::Sql Qt5::DBus PkgConfig::AV GL png jpeg)
+    Qt5::Network Qt5::X11Extras Qt5::Sql Qt5::DBus PkgConfig::Mpv PkgConfig::AV
+    ${FFTHUMB_LIBRARIES} GL)
+#target_link_libraries(${CMD_NAME} PkgConfig::Dtk Qt5::Widgets Qt5::Concurrent
+#    Qt5::Network Qt5::X11Extras Qt5::Sql Qt5::DBus PkgConfig::AV GL png jpeg)
 
 
 include(GNUInstallDirs)
