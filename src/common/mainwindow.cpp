@@ -207,7 +207,18 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
      * 修改警告重新创建窗口
      */
     //DSettingsWidgetFactory *settingWidget = new DSettingsWidgetFactory(main);
-    auto optionWidget = DSettingsWidgetFactory::createTwoColumWidget(option, main);
+    //auto optionWidget = DSettingsWidgetFactory::createTwoColumWidget(option, main);
+
+    auto optionWidget = new QWidget;
+    optionWidget->setObjectName("OptionFrame");
+
+    auto optionLayout = new QFormLayout(optionWidget);
+    optionLayout->setContentsMargins(0, 0, 0, 0);
+    optionLayout->setSpacing(0);
+
+    main->setMinimumWidth(240);
+    optionLayout->addRow(new DLabel(QObject::tr(option->name().toStdString().c_str())), main);
+
     //auto optionWidget = settingWidget->createWidget(option);
     workaround_updateStyle(optionWidget, "light");
 
