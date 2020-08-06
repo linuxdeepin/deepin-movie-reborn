@@ -20,10 +20,11 @@ pkg_check_modules(Dtk REQUIRED IMPORTED_TARGET dtkwidget)
 pkg_check_modules(Dtk REQUIRED IMPORTED_TARGET dtkcore)
 pkg_check_modules(Mpv REQUIRED IMPORTED_TARGET mpv)
 #pkg_check_modules(Xcb REQUIRED IMPORTED_TARGET xcb)
-pkg_check_modules(AV REQUIRED IMPORTED_TARGET libavformat libavutil libavcodec libavfilter)
+pkg_check_modules(AV REQUIRED IMPORTED_TARGET libavformat
+    libavutil libavcodec)
 # IMPORTED_TARGET failed to work for some of libs under flatpak env
-#pkg_check_modules(Other REQUIRED libffmpegthumbnailer gsettings-qt)
-pkg_check_modules(Other REQUIRED libffmpegthumbnailer gsettings-qt)
+pkg_check_modules(Other REQUIRED libffmpegthumbnailer 
+      gsettings-qt)
 
 qt5_add_resources(RCS resources.qrc)
 qt5_add_resources(RCS icons/theme-icons.qrc)
@@ -38,11 +39,6 @@ list(APPEND SRCS main.cpp)
 include_directories(
         ${CMAKE_CURRENT_SOURCE_DIR}/vendor/mpris-qt
         ${CMAKE_CURRENT_SOURCE_DIR}/vendor/dbusextended-qt
-        ${CMAKE_CURRENT_SOURCE_DIR}
-        ${CMAKE_CURRENT_SOURCE_DIR}/libffmpegthumbnailer
-#        ${CMAKE_CURRENT_SOURCE_DIR}/libavformat
-#        ${CMAKE_CURRENT_SOURCE_DIR}/libavutil
-#        ${CMAKE_CURRENT_SOURCE_DIR}/libavcodec
 )
 
 # mpv backend
@@ -73,7 +69,6 @@ endif ()
 # ~
 
 add_executable(${CMD_NAME} ${SRCS} ${RCS} ${QM})
-TARGET_LINK_LIBRARIES(${CMD_NAME} dl)
 
 target_include_directories(${CMD_NAME} PUBLIC ${PROJECT_INCLUDE})
 
