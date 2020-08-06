@@ -1287,9 +1287,7 @@ void PlaylistModel::onAsyncUpdate(PlayItemInfo fil)
     emit itemsAppended();
     emit countChanged();
     _firstLoad = false;
-    if (_engine->state() != PlayerEngine::Playing && !m_isLoadRunning) {
-        emit asyncAppendFinished(fils);
-    }
+    emit asyncAppendFinished(fils);
 
     if (_pendingAppendReq.size()) {
         auto job = _pendingAppendReq.dequeue();
