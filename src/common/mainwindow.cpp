@@ -1277,7 +1277,7 @@ bool MainWindow::event(QEvent *ev)
 {
     if (ev->type() == QEvent::TouchBegin) {
         //判定是否是触屏
-        this->posMouseOrigin = QCursor::pos();
+        this->posMouseOrigin = mapToGlobal(QCursor::pos());
         _isTouch = true;
     }
 
@@ -3846,6 +3846,8 @@ void MainWindow::capturedMousePressEvent(QMouseEvent *me)
             my_setStayOnTop(this, false);
         }
     }
+
+    posMouseOrigin = mapToGlobal(me->pos());
 }
 
 void MainWindow::capturedMouseReleaseEvent(QMouseEvent *me)
@@ -3900,7 +3902,7 @@ void MainWindow::mousePressEvent(QMouseEvent *ev)
         //posMouseOrigin = QCursor::pos();
     }
 
-    posMouseOrigin = ev->pos();
+    posMouseOrigin = mapToGlobal(ev->pos());
 }
 
 void MainWindow::mouseDoubleClickEvent(QMouseEvent *ev)
@@ -4024,7 +4026,7 @@ void MainWindow::onDvdData(const QString &title)
 
 void MainWindow::mouseMoveEvent(QMouseEvent *ev)
 {
-    QPoint ptCurr = ev->pos();
+    QPoint ptCurr = mapToGlobal(ev->pos());
     QPoint ptDelta = ptCurr-this->posMouseOrigin;
 
     if(qAbs(ptDelta.x())<5 && qAbs(ptDelta.y()<5)){  //避免误触
