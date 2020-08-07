@@ -58,7 +58,7 @@ NotificationWidget::NotificationWidget(QWidget *parent)
     _msgLabel->setFrameShape(QFrame::NoFrame);
 
     _timer = new QTimer(this);
-    _timer->setInterval(2000);
+    _timer->setInterval(500);
     _timer->setSingleShot(true);
     connect(_timer, &QTimer::timeout, [ = ]() {
         this->hide();
