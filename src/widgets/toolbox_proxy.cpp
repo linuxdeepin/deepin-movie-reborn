@@ -58,7 +58,6 @@ static const int RIGHT_MARGIN = 10;
 static const int PROGBAR_SPEC = 10 + 120 + 17 + 54 + 10 + 54 + 10 + 170 + 10 + 20;
 
 static const QString SLIDER_ARROW = ":resources/icons/slider.svg";
-const QString path = "/usr/lib/x86_64-linux-gnu/ImageMagick-6.9.10/modules-Q16/coders/thumbnail.so";
 
 #define POPUP_DURATION 350
 
@@ -118,6 +117,36 @@ do {\
 
 
 namespace dmr {
+
+class ImageButton: public QPushButton
+{
+    Q_OBJECT
+public:
+    ImageButton(QWidget* parent = nullptr)
+        :QPushButton (parent)
+    {
+
+    }
+
+    void setImage(QString strUrl)
+    {
+        m_strImageUrl = strUrl;
+        repaint();
+    }
+
+protected:
+    void paintEvent(QPaintEvent* pEvent)
+    {
+        QPainter painter(this);
+        QImage image(m_strImageUrl);
+
+        painter.drawImage(rect(),image);
+    }
+
+private:
+    QString m_strImageUrl;
+};
+
 class KeyPressBubbler: public QObject
 {
 public:
@@ -1078,7 +1107,7 @@ public:
     VolumeSlider(PlayerEngine *eng, MainWindow *mw, QWidget *parent)
         : DArrowRectangle(DArrowRectangle::ArrowBottom, DArrowRectangle::FloatWidget, parent), _engine(eng), _mw(mw)
     {
-        setFixedSize(QSize(62, 201));
+        setFixedSize(QSize(62, 205));
 #ifdef __mips__
         if (!CompositingManager::get().composited()) {
             setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
@@ -1103,29 +1132,49 @@ public:
 
 //        updateBg();
 
-        auto *l = new QHBoxLayout;
-        l->setContentsMargins(0, 4, 0, 10);
+//        auto *l = new QHBoxLayout;
+        auto *l = new QVBoxLayout(this);
+        l->setContentsMargins(0, 10, 0, 10);
+        l->setSpacing(0);
+
         setLayout(l);
 
-        _slider = new DSlider(Qt::Vertical, this);
-        _slider->setLeftIcon(QIcon());
-        _slider->setRightIcon(QIcon());
+        _slider = new DSlider(Qt::Vertical,this);
+        _slider->setFixedHeight(132);
+        _slider->setFixedWidth(24);
         _slider->setIconSize(QSize(12, 12));
         _slider->installEventFilter(this);
         _slider->show();
         _slider->slider()->setRange(0, 100);
-//        _slider->slider()->setOrientation(Qt::Vertical);
 
         auto vol = _engine->volume();
         /*if (vol != 0) {
             vol -= VOLUME_OFFSET;
         }*/
         _slider->setValue(vol);
-        l->addWidget(_slider, Qt::AlignHCenter);
 
+        QFont font;
+        font.setFamily("SourceHanSansSC");
+        font.setPixelSize(14);
+        font.setWeight(500);
+        m_pLabShowVolume = new QLabel(this);
+        m_pLabShowVolume->setFont(font);
+        m_pLabShowVolume->setAlignment(Qt::AlignCenter);
+        m_pLabShowVolume->setText("0%");
+        l->addWidget(m_pLabShowVolume, 0, Qt::AlignCenter);
+
+        l->addWidget(_slider, 1 , Qt::AlignCenter);
+
+        m_pBtnChangeVolume = new ImageButton(this);
+        m_pBtnChangeVolume->setFixedSize(36,36);
+        m_pBtnChangeVolume->setImage(":/icons/deepin/builtin/dark/texts/dcc_mute_36px.svg");
+        connect(m_pBtnChangeVolume,SIGNAL(clicked()),this,SLOT(changeSate()));
+
+        l->addWidget(m_pBtnChangeVolume, 0, Qt::AlignHCenter);
 
         connect(_slider, &DSlider::valueChanged, [ = ]() {
             auto var = _slider->value();
+            m_pLabShowVolume->setText(QString("%1%").arg(var*1.0/_slider->maximum()*100));
             _mw->requestAction(ActionFactory::ChangeVolume, false, QList<QVariant>() << var);
         });
 
@@ -1147,7 +1196,13 @@ public:
                 _slider->setValue(vol);
             }
         });*/
-        m_composited = CompositingManager::get().composited();
+//        m_composited = CompositingManager::get().composited();
+
+//        auto *bodyShadow = new QGraphicsDropShadowEffect;
+//        bodyShadow->setBlurRadius(20.0);
+//        bodyShadow->setColor(QColor(0, 0, 0,  255 / 10));
+//        bodyShadow->setOffset(0, 6.0);
+//        this->setGraphicsEffect(bodyShadow);
     }
 
 
@@ -1181,6 +1236,13 @@ public:
     {
         return _slider->value();
     }
+    void setMute(bool bMute)
+    {
+        if(m_bIsMute != bMute)
+        {
+            changeSate();
+        }
+    }
 
 public slots:
     void delayedHide()
@@ -1197,7 +1259,25 @@ public slots:
     }
     void setValue(int v)
     {
+        if(m_bIsMute && v>0)
+        {
+            changeSate();
+        }
         _slider->setValue(v);
+        m_pLabShowVolume->setText(QString("%1%").arg(v*1.0/_slider->maximum()*100));
+    }
+    void changeSate()
+    {
+        if(m_bIsMute){
+            m_bIsMute = false;
+            m_pBtnChangeVolume->setImage(":/icons/deepin/builtin/dark/texts/dcc_volumemid_36px.svg");
+        }
+        else {
+            m_bIsMute = true;
+            m_pBtnChangeVolume->setImage(":/icons/deepin/builtin/dark/texts/dcc_mute_36px.svg");
+        }
+
+        m_pBtnChangeVolume->repaint();
     }
 
 protected:
@@ -1237,6 +1317,68 @@ protected:
     }
 #endif
 
+//    void paintEvent(QPaintEvent * /*event*/)
+//    {
+//        QPainter painter(this);
+//        painter.setRenderHints(QPainter::Antialiasing | QPainter::HighQualityAntialiasing);
+//        QPainterPath path;
+
+//        auto palette = this->palette();
+
+//        auto penWidthf = 1.0;
+//        auto background = QColor(235,235,235,0.3*255); //palette.background();
+//        auto borderColor = QColor(0,0,0,255*2/10);
+
+//        const qreal radius = 20;
+//        const qreal triHeight = 12;
+//        const qreal triWidth = 16;
+//        const qreal height = this->height() - triHeight;
+//        const qreal width = this->width();
+
+//        QRectF topRightRect(QPointF(0, 0),
+//                            QPointF(2 * radius, 2 * radius));
+//        QRectF bottomRightRect(QPointF(0, height - 2 * radius),
+//                               QPointF(2 * radius, height));
+//        QRectF topLeftRect(QPointF(width, 0),
+//                           QPointF(width - 2 * radius, 2 * radius));
+//        QRectF bottomLeftRect(QPointF(width, height),
+//                              QPointF(width - 2 * radius, height - 2 * radius));
+
+//        path.moveTo(radius, 0.0);
+//        path.lineTo(width - radius, 0.0);
+//        path.arcTo(topLeftRect, 90.0, 90.0);
+//        path.lineTo(width, height - radius);
+//        path.arcTo(bottomLeftRect, 180.0, -90.0);
+//        path.lineTo(width / 2 + triWidth / 2, height);
+//        path.lineTo(width / 2, height + triHeight);
+//        path.lineTo(width / 2 - triWidth / 2, height);
+//        path.lineTo(radius, height);
+
+//        path.arcTo(bottomRightRect, 270.0, -90.0);
+//        path.lineTo(0.0, radius);
+
+//        path.arcTo(topRightRect, 180.0, -90.0);
+//        path.lineTo(radius, 0.0);
+
+//        /*
+//        FIXME: light: white
+//        painter.fillPath(path, QColor(49, 49, 49));
+//        FIXME: light: QColor(0, 0, 0, 51)
+//        QPen pen(QColor(0, 0, 0, 0.1 * 255));
+//        */
+
+//        if (0 == 2) {
+//            painter.fillPath(path, QColor(43, 43, 43));
+
+//        } else {
+//            painter.fillPath(path, background);
+//        }
+
+//        QPen pen(borderColor);
+//        pen.setWidth(penWidthf);
+//        //painter.strokePath(path, pen);
+//    }
+
 private slots:
     void updateBg()
     {
@@ -1267,12 +1409,15 @@ private slots:
     }
 
 private:
+    ImageButton* m_pBtnChangeVolume {nullptr};
+    QLabel* m_pLabShowVolume {nullptr};
     PlayerEngine *_engine;
     DSlider *_slider;
     MainWindow *_mw;
     QTimer _autoHideTimer;
     bool m_composited = false;
     bool m_mouseIn = false;
+    bool m_bIsMute {true};
 };
 
 viewProgBarLoad::viewProgBarLoad(PlayerEngine *engine, DMRSlider *progBar, ToolboxProxy *parent)
@@ -1881,8 +2026,8 @@ void ToolboxProxy::setup()
 
     _volBtn = new VolumeButton(bot_toolWgt);
     _volBtn->setFixedSize(50, 50);
-    connect(_volBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
-    signalMapper->setMapping(_volBtn, "vol");
+//    connect(_volBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
+//    signalMapper->setMapping(_volBtn, "vol");
 //    _right->addWidget(_volBtn);
     if (CompositingManager::get().composited()) {
         _volSlider = new VolumeSlider(_engine, _mainWindow, _mainWindow);
@@ -1890,6 +2035,9 @@ void ToolboxProxy::setup()
             _volSlider->stopTimer();
             _volSlider->show(_mainWindow->width() - _volBtn->width() / 2 - _playBtn->width() - 43,
                              _mainWindow->height() - TOOLBOX_HEIGHT - 5);
+//            _volSlider->move(mapTo(_mainWindow,_volBtn->pos()).x(),
+//                             mapTo(_mainWindow,_volBtn->pos()).y() - _volSlider->height());
+//            _volSlider->show();
             _volSlider->raise();
         });
     } else {
@@ -1905,6 +2053,9 @@ void ToolboxProxy::setup()
             _volSlider->stopTimer();
             _volSlider->show(_mainWindow->width() - _volBtn->width() / 2 - _playBtn->width() - 43,
                              _mainWindow->height() - TOOLBOX_HEIGHT - 5);
+//            _volSlider->move(mapTo(_mainWindow,_volBtn->pos()).x(),
+//                             mapTo(_mainWindow,_volBtn->pos()).y() - _volSlider->height());
+//            _volSlider->show();
             _volSlider->raise();
         });
 #endif
@@ -2293,8 +2444,9 @@ void ToolboxProxy::updateButtonStates()
 void ToolboxProxy::updateVolumeState()
 {
     if (_engine->muted()) {
-        _volBtn->changeLevel(VolumeButton::Mute);
+        //_volBtn->changeLevel(VolumeButton::Mute);
         //_volBtn->setToolTip(tr("Mute"));
+        _volSlider->setMute(true);
     } else {
         auto v = _engine->volume();
         /*if (v != 0) {
