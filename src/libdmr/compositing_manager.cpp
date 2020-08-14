@@ -269,8 +269,15 @@ void CompositingManager::softDecodeCheck()
             }
         }
     }
-
     free(data);
+    //浪潮 inspur softdecode
+    QProcess inspur;
+    inspur.start("cat /sys/class/dmi/id/board_vendor");
+    if (inspur.waitForStarted() && inspur.waitForFinished()) {
+        QString drv = QString::fromUtf8(inspur.readAllStandardOutput().trimmed().constData());
+        qDebug() << "inspur check : " << drv;
+        m_bOnlySoftDecode =  m_bOnlySoftDecode || drv.contains("Inspur");
+    }
 }
 
 bool CompositingManager::isOnlySoftDecode()
