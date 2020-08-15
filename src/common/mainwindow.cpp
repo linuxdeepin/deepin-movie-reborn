@@ -929,6 +929,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(_engine, &PlayerEngine::stateChanged, [ = ]() {
         qDebug() << __func__ << _engine->state();
         if (_engine->state() == PlayerEngine::CoreState::Idle) {
+            _fullscreentimelable->close();
+            _progIndicator->setVisible(false);
             emit frameMenuEnable(false);
         }
         if (_engine->state() == PlayerEngine::CoreState::Playing) {
@@ -1336,7 +1338,7 @@ void MainWindow::onWindowStateChanged()
     }
     //WTF: this->geometry() is not size of fullscreen !
     //_progIndicator->move(geometry().width() - _progIndicator->width() - 18, 14);
-    _progIndicator->setVisible(isFullScreen());
+    _progIndicator->setVisible(isFullScreen() && _engine && _engine->state() != PlayerEngine::Idle);
     toggleShapeMask();
 
 #ifndef USE_DXCB
@@ -2363,11 +2365,13 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             showFullScreen();
             if (isFullScreen()) {
                 _maxfornormalflag = false;
-                int pixelsWidth = _toolbox->getfullscreentimeLabel()->width() + _toolbox->getfullscreentimeLabelend()->width();
-                QRect deskRect = QApplication::desktop()->availableGeometry();
-                pixelsWidth = qMax(117, pixelsWidth);
-                _fullscreentimelable->setGeometry(deskRect.width() - pixelsWidth - 60, 40, pixelsWidth + 60, 36);
-                _fullscreentimelable->show();
+                if(_engine->state() != PlayerEngine::CoreState::Idle){
+                    int pixelsWidth = _toolbox->getfullscreentimeLabel()->width() + _toolbox->getfullscreentimeLabelend()->width();
+                    QRect deskRect = QApplication::desktop()->availableGeometry();
+                    pixelsWidth = qMax(117, pixelsWidth);
+                    _fullscreentimelable->setGeometry(deskRect.width() - pixelsWidth - 60, 40, pixelsWidth + 60, 36);
+                    _fullscreentimelable->show();
+                }
             }
         }
         if (!fromUI) {
