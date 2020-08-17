@@ -3843,13 +3843,14 @@ void MainWindow::capturedMousePressEvent(QMouseEvent *me)
     }
 
     //add by heyi
-    if (_isTouch) {
-        if (isFullScreen()) {
-            my_setStayOnTop(this, true);
-        } else {
-            my_setStayOnTop(this, false);
-        }
-    }
+//此代码解决全屏时dock未隐藏的问题，但是会修改引入其他问题，dock的问题应由dock解决
+//    if (_isTouch) {
+//        if (isFullScreen()) {
+//            my_setStayOnTop(this, true);
+//        } else {
+//            my_setStayOnTop(this, false);
+//        }
+//    }
 
     posMouseOrigin = mapToGlobal(me->pos());
 }
