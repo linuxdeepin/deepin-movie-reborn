@@ -258,7 +258,14 @@ mpv_handle *MpvProxy::mpv_init()
                 qDebug() << "-------- gpu-hwdec-interop is disabled by user";
             }
         }
-        my_set_property(h, "hwdec", "auto-safe");
+
+        if(CompositingManager::get().isOnlySoftDecode()){
+            my_set_property(h, "hwdec", "off");
+        }
+        else{
+            my_set_property(h, "hwdec", "auto-safe");
+        }
+
     } else {
         my_set_property(h, "hwdec", "off");
     }
@@ -301,7 +308,12 @@ mpv_handle *MpvProxy::mpv_init()
             break;
         }
     }*/
-    my_set_property(h, "hwdec", "auto-safe");
+    if(CompositingManager::get().isOnlySoftDecode()){
+        my_set_property(h, "hwdec", "off");
+    }
+    else{
+         my_set_property(h, "hwdec", "auto-safe");
+    }
     qDebug() << "modify HWDEC auto-safe";
 #endif
     my_set_property(h, "panscan", 1.0);
@@ -325,7 +337,12 @@ mpv_handle *MpvProxy::mpv_init()
     } else {
 #if defined (__mips__) || defined (__aarch64__)
         if (CompositingManager::get().hascard()) {
-            my_set_property(h, "hwdec", "auto-safe");
+            if(CompositingManager::get().isOnlySoftDecode()){
+                my_set_property(h, "hwdec", "off");
+            }
+            else{
+                my_set_property(h, "hwdec", "auto-safe");
+            }
             my_set_property(h, "vo", "gpu");
         } else {
             my_set_property(h, "vo", "xv,x11");
@@ -574,7 +591,12 @@ void MpvProxy::handle_mpv_events()
 //                    qDebug() << "my_set_property hwdec no";
 //                    my_set_property(_handle, "hwdec", "no");
                 qDebug() << "my_set_property hwdec auto-safe";
-                my_set_property(_handle, "hwdec", "auto-safe");
+                if(CompositingManager::get().isOnlySoftDecode()){
+                    my_set_property(_handle, "hwdec", "off");
+                }
+                else{
+                    my_set_property(_handle, "hwdec", "auto-safe");
+                }
             }
 #endif
             setState(PlayState::Playing); //might paused immediately
@@ -1019,18 +1041,25 @@ void MpvProxy::play()
 
     // hwdec could be disabled by some codecs, so we need to re-enable it
     if (Settings::get().isSet(Settings::HWAccel)) {
-
         my_set_property(_handle, "hwdec", "auto-safe");
 #if defined (__mips__) || defined (__aarch64__)
-        if (CompositingManager::get().hascard()) {
+        if (CompositingManager::get().hascard() && !CompositingManager::get().isOnlySoftDecode()) {
             my_set_property(_handle, "hwdec", "auto");
+        }
+        else{
+            my_set_property(_handle, "hwdec", "off");
         }
 #endif
     } else {
         my_set_property(_handle, "hwdec", "off");
     }
 #else
-    my_set_property(_handle, "hwdec", "auto");
+    if(CompositingManager::get().isOnlySoftDecode()){
+        my_set_property(_handle, "hwdec", "off");
+    }
+    else{
+        my_set_property(_handle, "hwdec", "auto");
+    }
 #endif
 #ifdef __mips__
     qDebug() << "play __mips__";
