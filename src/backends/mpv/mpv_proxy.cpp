@@ -1043,7 +1043,7 @@ void MpvProxy::play()
     if (Settings::get().isSet(Settings::HWAccel)) {
         my_set_property(_handle, "hwdec", "auto-safe");
 #if defined (__mips__) || defined (__aarch64__)
-        if (CompositingManager::get().hascard() && && !CompositingManager::get().isOnlySoftDecode()) {
+        if (CompositingManager::get().hascard() && !CompositingManager::get().isOnlySoftDecode()) {
             my_set_property(_handle, "hwdec", "auto");
         }
         else{
