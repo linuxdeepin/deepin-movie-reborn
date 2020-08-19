@@ -506,16 +506,28 @@ void PlayerEngine::savePreviousMovieState()
 
 void PlayerEngine::paintEvent(QPaintEvent *e)
 {
-    if (!CompositingManager::get().composited()) {
-        QRect rect = this->rect();
-        QImage icon = utils::LoadHiDPIImage(":/resources/icons/light/init-splash.svg");
-        QPixmap pix = QPixmap::fromImage(icon);
-        int x = this->rect().center().x() - pix.width() / 2;
-        int y = this->rect().center().y() - pix.height() / 2;
-        QPainter p(this);
+    bool bHasOwnThumbnail = true;
+    if(_playlist->count() > 0 && _state != Idle)
+    {
+        bHasOwnThumbnail = _playlist->currentInfo().bHasOwnThumbnail;
+    }
+    QRect rect = this->rect();
+    QPainter p(this);
 
-        p.fillRect(rect, QBrush(QColor(255, 255, 255)));
-        p.drawPixmap(x, y, pix);
+    if (!CompositingManager::get().composited()) {
+        if(_state != Idle && !bHasOwnThumbnail) {
+            p.fillRect(rect, QBrush(QColor(0, 0, 0)));
+        }
+        else
+        {
+            QImage icon = utils::LoadHiDPIImage(":/resources/icons/light/init-splash.svg");
+            QPixmap pix = QPixmap::fromImage(icon);
+            int x = this->rect().center().x() - pix.width() / 2;
+            int y = this->rect().center().y() - pix.height() / 2;
+
+            p.fillRect(rect, QBrush(QColor(255, 255, 255)));
+            p.drawPixmap(x, y, pix);
+        }
     }
     return QWidget::paintEvent(e);
 }
