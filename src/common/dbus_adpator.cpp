@@ -52,6 +52,12 @@ void ApplicationAdaptor::openFile(const QString& file)
     _mw->play(url);
 }
 
+void ApplicationAdaptor::Raise(){
+   //临时使用
+    _mw->hide();
+    _mw->show();
+}
+
 QVariant ApplicationAdaptor::redDBusProperty(const QString &service, const QString &path, const QString &interface, const char *propert)
 {
     // 创建QDBusInterface接口

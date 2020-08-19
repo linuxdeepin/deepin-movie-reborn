@@ -179,6 +179,11 @@ int main(int argc, char *argv[])
             }
         }
 
+        QDBusInterface iface("com.deepin.movie", "/", "com.deepin.movie");
+        if (iface.isValid()) {
+             qWarning() << "deepin-movie raise";
+            iface.asyncCall("Raise");
+        }
         exit(0);
     }
 
