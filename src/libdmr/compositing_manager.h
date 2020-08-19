@@ -97,6 +97,8 @@ public:
     PlayerOptionList getBestProfile(); // best for current platform and env
     static void detectPciID();
     static bool runningOnNvidia();
+    void softDecodeCheck();
+    bool isOnlySoftDecode();
 
 signals:
     void compositingChanged(bool);
@@ -113,6 +115,7 @@ private:
     bool _composited {false};
     Platform _platform {Platform::Unknown};
     bool _hasCard;
+    bool m_bOnlySoftDecode {false};  //kunpeng920走软解码
 };
 }
 
