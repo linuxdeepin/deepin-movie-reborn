@@ -506,16 +506,17 @@ void PlayerEngine::savePreviousMovieState()
 
 void PlayerEngine::paintEvent(QPaintEvent *e)
 {
-    bool bHasOwnThumbnail = true;
-    if(_playlist->count() > 0 && _state != Idle)
-    {
-        bHasOwnThumbnail = _playlist->currentInfo().bHasOwnThumbnail;
-    }
+    bool bIsMusic = true;
     QRect rect = this->rect();
     QPainter p(this);
 
+    if(_playlist->count() > 0 && _state != Idle)
+    {
+        bIsMusic = isAudioFile( _playlist->currentInfo().mi.title);
+    }
+
     if (!CompositingManager::get().composited()) {
-        if(_state != Idle && !bHasOwnThumbnail) {
+        if(_state != Idle && !bIsMusic) {
             p.fillRect(rect, QBrush(QColor(0, 0, 0)));
         }
         else

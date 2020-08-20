@@ -1410,7 +1410,6 @@ bool PlaylistModel::getthreadstate()
 
 struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl &url, const QFileInfo &fi, bool isDvd)
 {
-    bool bHasOwnThumbnail = true;
     bool ok = false;
     struct MovieInfo mi;
     auto ci = PersistentManager::get().loadFromCache(url);
@@ -1466,7 +1465,6 @@ struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl &url, const QFil
                 pm = QPixmap::fromImage(img);
             } else {
                 if (getMusicPix(fi, pm) == false) {
-                    bHasOwnThumbnail = false;
                     pm.load(":/resources/icons/logo-big.svg");
                 }
             }
