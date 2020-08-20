@@ -208,6 +208,7 @@ public:
     QLabel *getfullscreentimeLabelend();
     bool getbAnimationFinash();
     int DisplayVolume();
+    bool getVolSliderIsHided();
     DMRSlider* getSlider()
     {
         return _progBar;
