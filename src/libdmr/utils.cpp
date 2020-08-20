@@ -351,8 +351,17 @@ void MoveToCenter(QWidget *w)
 QString Time2str(qint64 seconds)
 {
     QTime d(0, 0, 0);
-    d = d.addSecs(static_cast<int>(seconds));
-    return d.toString("hh:mm:ss");
+    if(seconds < DAYSECONDS){
+        d = d.addSecs(static_cast<int>(seconds));
+        return d.toString("hh:mm:ss");
+    }
+    else {
+        d = d.addSecs(static_cast<int>(seconds));
+        int add = static_cast<int>(seconds / DAYSECONDS)*24;
+        QString dayOut =  d.toString("hh:mm:ss");
+        dayOut.replace(0,2,QString::number(add + dayOut.left(2).toInt()));
+        return dayOut;
+    }
 }
 
 QString videoIndex2str(int index)
