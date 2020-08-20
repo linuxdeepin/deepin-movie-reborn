@@ -1265,15 +1265,16 @@ public:
 public slots:
     void delayedHide()
     {
-#ifdef __x86_64__
-        _autoHideTimer.start(500);
-#else
-        m_mouseIn = false;
-        DUtil::TimerSingleShot(100, [this]() {
-            if (!m_mouseIn)
-                hide();
-        });
-#endif
+        //sp3需求取消自动消失功能
+//#ifdef __x86_64__
+//        _autoHideTimer.start(500);
+//#else
+//        m_mouseIn = false;
+//        DUtil::TimerSingleShot(100, [this]() {
+//            if (!m_mouseIn)
+//                hide();
+//        });
+//#endif
     }
     void setValue(int v)
     {
@@ -2036,14 +2037,24 @@ void ToolboxProxy::setup()
 //    _right->addWidget(_volBtn);
     if (CompositingManager::get().composited()) {
         _volSlider = new VolumeSlider(_engine, _mainWindow, _mainWindow);
-        connect(_volBtn, &VolumeButton::entered, [ = ]() {
-            _volSlider->stopTimer();
-            _volSlider->show(_mainWindow->width() - _volBtn->width() / 2 - _playBtn->width() - 43,
-                             _mainWindow->height() - TOOLBOX_HEIGHT - 5);
-//            _volSlider->move(mapTo(_mainWindow,_volBtn->pos()).x(),
-//                             mapTo(_mainWindow,_volBtn->pos()).y() - _volSlider->height());
-//            _volSlider->show();
-            _volSlider->raise();
+//        connect(_volBtn, &VolumeButton::entered, [ = ]() {
+//            _volSlider->stopTimer();
+//            _volSlider->show(_mainWindow->width() - _volBtn->width() / 2 - _playBtn->width() - 43,
+//                             _mainWindow->height() - TOOLBOX_HEIGHT - 5);
+////            _volSlider->move(mapTo(_mainWindow,_volBtn->pos()).x(),
+////                             mapTo(_mainWindow,_volBtn->pos()).y() - _volSlider->height());
+////            _volSlider->show();
+//            _volSlider->raise();
+//        });
+        connect(_volBtn, &VolumeButton::clicked, [ = ]() {
+            if(!_volSlider->isVisible()){
+                _volSlider->show(_mainWindow->width() - _volBtn->width() / 2 - _playBtn->width() - 43,
+                                 _mainWindow->height() - TOOLBOX_HEIGHT - 5);
+                _volSlider->raise();
+            }
+            else {
+                _volSlider->hide();
+            }
         });
     } else {
 #if defined (__mips__) || defined (__aarch64__)
@@ -2054,14 +2065,24 @@ void ToolboxProxy::setup()
         installHint(_volBtn, _volSlider);
 #else
         _volSlider = new VolumeSlider(_engine, _mainWindow, _mainWindow);
-        connect(_volBtn, &VolumeButton::entered, [ = ]() {
-            _volSlider->stopTimer();
-            _volSlider->show(_mainWindow->width() - _volBtn->width() / 2 - _playBtn->width() - 43,
-                             _mainWindow->height() - TOOLBOX_HEIGHT - 5);
-//            _volSlider->move(mapTo(_mainWindow,_volBtn->pos()).x(),
-//                             mapTo(_mainWindow,_volBtn->pos()).y() - _volSlider->height());
-//            _volSlider->show();
-            _volSlider->raise();
+//        connect(_volBtn, &VolumeButton::entered, [ = ]() {
+//            _volSlider->stopTimer();
+//            _volSlider->show(_mainWindow->width() - _volBtn->width() / 2 - _playBtn->width() - 43,
+//                             _mainWindow->height() - TOOLBOX_HEIGHT - 5);
+////            _volSlider->move(mapTo(_mainWindow,_volBtn->pos()).x(),
+////                             mapTo(_mainWindow,_volBtn->pos()).y() - _volSlider->height());
+////            _volSlider->show();
+//            _volSlider->raise();
+//        });
+        connect(_volBtn, &VolumeButton::clicked, [ = ]() {
+            if(!_volBtn->isVisible()) {
+                _volSlider->show(_mainWindow->width() - _volBtn->width() / 2 - _playBtn->width() - 43,
+                                 _mainWindow->height() - TOOLBOX_HEIGHT - 5);
+                _volSlider->raise();
+            }
+            else {
+                _volSlider->hide();
+            }
         });
 #endif
     }
@@ -2931,7 +2952,7 @@ void ToolboxProxy::setPlaylist(PlaylistWidget *playlist)
         }
 
         if (_playlist->state() == PlaylistWidget::State::Opened) {
-#ifdef __x86_64__
+#ifndef __sw_64__
             QRect rcBegin = this->geometry();
             QRect rcEnd = rcBegin;
             rcEnd.setY(rcBegin.y() - TOOLBOX_SPACE_HEIGHT - 7);
@@ -2951,7 +2972,7 @@ void ToolboxProxy::setPlaylist(PlaylistWidget *playlist)
             _listBtn->setChecked(true);
         } else {
             _listBtn->setChecked(false);
-#ifdef __x86_64__
+#ifndef __sw_64__
             bAnimationFinash = false;
 
             QRect rcBegin = this->geometry();
