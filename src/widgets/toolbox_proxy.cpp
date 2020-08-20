@@ -2448,6 +2448,7 @@ void ToolboxProxy::updateVolumeState()
         _volSlider->setMute(true);
     } else {
         auto v = _engine->volume();
+        _volSlider->setMute(false);
         /*if (v != 0) {
             v -= VOLUME_OFFSET;
         }*/
@@ -2984,6 +2985,10 @@ bool ToolboxProxy::getbAnimationFinash()
 int ToolboxProxy::DisplayVolume()
 {
     return _volSlider->value();
+}
+
+bool ToolboxProxy::getVolSliderIsHided(){
+    return _volSlider->isHidden();
 }
 
 void ToolboxProxy::updateProgress(int nValue)

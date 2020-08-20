@@ -3569,7 +3569,7 @@ void MainWindow::wheelEvent(QWheelEvent *we)
         return;
     }
 
-    if (we->buttons() == Qt::NoButton && we->modifiers() == Qt::NoModifier) {
+    if (we->buttons() == Qt::NoButton && we->modifiers() == Qt::NoModifier && _toolbox->getVolSliderIsHided()) {
         requestAction(we->angleDelta().y() > 0 ? ActionFactory::VolumeUp : ActionFactory::VolumeDown);
     }
 }
