@@ -3261,7 +3261,7 @@ void MainWindow::suspendToolsWindow()
             //return;
 
             if (_titlebar->isVisible()) {
-                if (insideToolsArea(mapFromGlobal(QCursor::pos())))
+                if (insideToolsArea(mapFromGlobal(QCursor::pos())) && !m_bLastIsTouch)
                     return;
             } else {
                 if (_toolbox->geometry().contains(mapFromGlobal(QCursor::pos()))) {
@@ -3859,6 +3859,21 @@ void MainWindow::capturedMousePressEvent(QMouseEvent *me)
 
 void MainWindow::capturedMouseReleaseEvent(QMouseEvent *me)
 {
+    if(_isTouch)
+    {
+        m_bLastIsTouch = true;
+         _isTouch = false;
+
+        if(m_bLastIsTouch)
+        {
+            _toolbox->updateSlider();   //手势释放时改变影片进度
+            m_bProgressChanged = false;
+        }
+    }
+    else {
+         m_bLastIsTouch = false;
+    }
+
     if (_delayedResizeByConstraint) {
         _delayedResizeByConstraint = false;
 
@@ -3949,13 +3964,6 @@ bool MainWindow::insideResizeArea(const QPoint &global_p)
 
 void MainWindow::mouseReleaseEvent(QMouseEvent *ev)
 {
-    if(_isTouch && m_bProgressChanged)
-    {
-        _toolbox->updateSlider();   //手势释放时改变影片进度
-        _isTouch = false;
-        m_bProgressChanged = false;
-    }
-
     //add by heyi
     static bool bFlags = true;
     if (bFlags) {
