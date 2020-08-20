@@ -1167,12 +1167,15 @@ public:
 
         m_pBtnChangeVolume = new ImageButton(this);
         m_pBtnChangeVolume->setFixedSize(36,36);
-        m_pBtnChangeVolume->setImage(":/icons/deepin/builtin/dark/texts/dcc_mute_36px.svg");
+        m_pBtnChangeVolume->setImage(":/icons/deepin/builtin/dark/texts/dcc_volumemid_36px.svg");
         connect(m_pBtnChangeVolume,SIGNAL(clicked()),this,SLOT(changeSate()));
 
         l->addWidget(m_pBtnChangeVolume, 0, Qt::AlignHCenter);
 
         connect(_slider, &DSlider::valueChanged, [ = ]() {
+            if(m_bIsMute){
+                changeSate();
+            }
             auto var = _slider->value();
             m_pLabShowVolume->setText(QString("%1%").arg(var*1.0/_slider->maximum()*100));
             _mw->requestAction(ActionFactory::ChangeVolume, false, QList<QVariant>() << var);
@@ -1238,10 +1241,21 @@ public:
     }
     void setMute(bool bMute)
     {
-        if(m_bIsMute != bMute)
+        if(m_bIsMute == bMute)
         {
-            changeSate();
+            return;
         }
+
+        m_bIsMute = bMute;
+
+        if(m_bIsMute){
+            m_pBtnChangeVolume->setImage(":/icons/deepin/builtin/dark/texts/dcc_mute_36px.svg");
+        }
+        else {
+            m_pBtnChangeVolume->setImage(":/icons/deepin/builtin/dark/texts/dcc_volumemid_36px.svg");
+        }
+
+        m_pBtnChangeVolume->repaint();
     }
 
 public slots:
@@ -1259,25 +1273,12 @@ public slots:
     }
     void setValue(int v)
     {
-        if(m_bIsMute && v>0)
-        {
-            changeSate();
-        }
         _slider->setValue(v);
         m_pLabShowVolume->setText(QString("%1%").arg(v*1.0/_slider->maximum()*100));
     }
     void changeSate()
     {
-        if(m_bIsMute){
-            m_bIsMute = false;
-            m_pBtnChangeVolume->setImage(":/icons/deepin/builtin/dark/texts/dcc_volumemid_36px.svg");
-        }
-        else {
-            m_bIsMute = true;
-            m_pBtnChangeVolume->setImage(":/icons/deepin/builtin/dark/texts/dcc_mute_36px.svg");
-        }
-
-        m_pBtnChangeVolume->repaint();
+        _mw->requestAction(ActionFactory::ToggleMute);
     }
 
 protected:
@@ -1417,7 +1418,7 @@ private:
     QTimer _autoHideTimer;
     bool m_composited = false;
     bool m_mouseIn = false;
-    bool m_bIsMute {true};
+    bool m_bIsMute {false};
 };
 
 viewProgBarLoad::viewProgBarLoad(PlayerEngine *engine, DMRSlider *progBar, ToolboxProxy *parent)
