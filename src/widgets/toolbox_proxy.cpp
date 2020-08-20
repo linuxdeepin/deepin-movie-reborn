@@ -930,6 +930,10 @@ private:
     DMRSlider *_progBar{nullptr};
     int position2progress(const QPoint &p)
     {
+        if(!_engine)
+        {
+            return 0;
+        }
         auto total = _engine->duration();
         //qreal span = (qreal)total * p.x() / (contentsRect().width() - 4);
         int span = static_cast<int>(total * p.x() / (contentsRect().width() - 4));

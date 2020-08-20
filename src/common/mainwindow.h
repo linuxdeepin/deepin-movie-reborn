@@ -389,6 +389,7 @@ private:
     Diskcheckthread m_diskCheckThread;
     bool m_bProgressChanged {false};        //进度条是否被拖动
     bool m_bFirstInit {false};
+    bool m_bLastIsTouch {false};
 };
 };
 
