@@ -930,6 +930,10 @@ private:
     DMRSlider *_progBar{nullptr};
     int position2progress(const QPoint &p)
     {
+        if(!_engine)
+        {
+            return 0;
+        }
         auto total = _engine->duration();
         //qreal span = (qreal)total * p.x() / (contentsRect().width() - 4);
         int span = static_cast<int>(total * p.x() / (contentsRect().width() - 4));
@@ -1167,12 +1171,15 @@ public:
 
         m_pBtnChangeVolume = new ImageButton(this);
         m_pBtnChangeVolume->setFixedSize(36,36);
-        m_pBtnChangeVolume->setImage(":/icons/deepin/builtin/dark/texts/dcc_mute_36px.svg");
+        m_pBtnChangeVolume->setImage(":/icons/deepin/builtin/dark/texts/dcc_volumemid_36px.svg");
         connect(m_pBtnChangeVolume,SIGNAL(clicked()),this,SLOT(changeSate()));
 
         l->addWidget(m_pBtnChangeVolume, 0, Qt::AlignHCenter);
 
         connect(_slider, &DSlider::valueChanged, [ = ]() {
+            if(m_bIsMute){
+                changeSate();
+            }
             auto var = _slider->value();
             m_pLabShowVolume->setText(QString("%1%").arg(var*1.0/_slider->maximum()*100));
             _mw->requestAction(ActionFactory::ChangeVolume, false, QList<QVariant>() << var);
@@ -1238,46 +1245,45 @@ public:
     }
     void setMute(bool bMute)
     {
-        if(m_bIsMute != bMute)
+        if(m_bIsMute == bMute)
         {
-            changeSate();
+            return;
         }
+
+        m_bIsMute = bMute;
+
+        if(m_bIsMute){
+            m_pBtnChangeVolume->setImage(":/icons/deepin/builtin/dark/texts/dcc_mute_36px.svg");
+        }
+        else {
+            m_pBtnChangeVolume->setImage(":/icons/deepin/builtin/dark/texts/dcc_volumemid_36px.svg");
+        }
+
+        m_pBtnChangeVolume->repaint();
     }
 
 public slots:
     void delayedHide()
     {
-#ifdef __x86_64__
-        _autoHideTimer.start(500);
-#else
-        m_mouseIn = false;
-        DUtil::TimerSingleShot(100, [this]() {
-            if (!m_mouseIn)
-                hide();
-        });
-#endif
+        //sp3需求取消自动消失功能
+//#ifdef __x86_64__
+//        _autoHideTimer.start(500);
+//#else
+//        m_mouseIn = false;
+//        DUtil::TimerSingleShot(100, [this]() {
+//            if (!m_mouseIn)
+//                hide();
+//        });
+//#endif
     }
     void setValue(int v)
     {
-        if(m_bIsMute && v>0)
-        {
-            changeSate();
-        }
         _slider->setValue(v);
         m_pLabShowVolume->setText(QString("%1%").arg(v*1.0/_slider->maximum()*100));
     }
     void changeSate()
     {
-        if(m_bIsMute){
-            m_bIsMute = false;
-            m_pBtnChangeVolume->setImage(":/icons/deepin/builtin/dark/texts/dcc_volumemid_36px.svg");
-        }
-        else {
-            m_bIsMute = true;
-            m_pBtnChangeVolume->setImage(":/icons/deepin/builtin/dark/texts/dcc_mute_36px.svg");
-        }
-
-        m_pBtnChangeVolume->repaint();
+        _mw->requestAction(ActionFactory::ToggleMute);
     }
 
 protected:
@@ -1417,7 +1423,7 @@ private:
     QTimer _autoHideTimer;
     bool m_composited = false;
     bool m_mouseIn = false;
-    bool m_bIsMute {true};
+    bool m_bIsMute {false};
 };
 
 viewProgBarLoad::viewProgBarLoad(PlayerEngine *engine, DMRSlider *progBar, ToolboxProxy *parent)
@@ -2031,14 +2037,24 @@ void ToolboxProxy::setup()
 //    _right->addWidget(_volBtn);
     if (CompositingManager::get().composited()) {
         _volSlider = new VolumeSlider(_engine, _mainWindow, _mainWindow);
-        connect(_volBtn, &VolumeButton::entered, [ = ]() {
-            _volSlider->stopTimer();
-            _volSlider->show(_mainWindow->width() - _volBtn->width() / 2 - _playBtn->width() - 43,
-                             _mainWindow->height() - TOOLBOX_HEIGHT - 5);
-//            _volSlider->move(mapTo(_mainWindow,_volBtn->pos()).x(),
-//                             mapTo(_mainWindow,_volBtn->pos()).y() - _volSlider->height());
-//            _volSlider->show();
-            _volSlider->raise();
+//        connect(_volBtn, &VolumeButton::entered, [ = ]() {
+//            _volSlider->stopTimer();
+//            _volSlider->show(_mainWindow->width() - _volBtn->width() / 2 - _playBtn->width() - 43,
+//                             _mainWindow->height() - TOOLBOX_HEIGHT - 5);
+////            _volSlider->move(mapTo(_mainWindow,_volBtn->pos()).x(),
+////                             mapTo(_mainWindow,_volBtn->pos()).y() - _volSlider->height());
+////            _volSlider->show();
+//            _volSlider->raise();
+//        });
+        connect(_volBtn, &VolumeButton::clicked, [ = ]() {
+            if(!_volSlider->isVisible()){
+                _volSlider->show(_mainWindow->width() - _volBtn->width() / 2 - _playBtn->width() - 43,
+                                 _mainWindow->height() - TOOLBOX_HEIGHT - 5);
+                _volSlider->raise();
+            }
+            else {
+                _volSlider->hide();
+            }
         });
     } else {
 #if defined (__mips__) || defined (__aarch64__)
@@ -2049,14 +2065,24 @@ void ToolboxProxy::setup()
         installHint(_volBtn, _volSlider);
 #else
         _volSlider = new VolumeSlider(_engine, _mainWindow, _mainWindow);
-        connect(_volBtn, &VolumeButton::entered, [ = ]() {
-            _volSlider->stopTimer();
-            _volSlider->show(_mainWindow->width() - _volBtn->width() / 2 - _playBtn->width() - 43,
-                             _mainWindow->height() - TOOLBOX_HEIGHT - 5);
-//            _volSlider->move(mapTo(_mainWindow,_volBtn->pos()).x(),
-//                             mapTo(_mainWindow,_volBtn->pos()).y() - _volSlider->height());
-//            _volSlider->show();
-            _volSlider->raise();
+//        connect(_volBtn, &VolumeButton::entered, [ = ]() {
+//            _volSlider->stopTimer();
+//            _volSlider->show(_mainWindow->width() - _volBtn->width() / 2 - _playBtn->width() - 43,
+//                             _mainWindow->height() - TOOLBOX_HEIGHT - 5);
+////            _volSlider->move(mapTo(_mainWindow,_volBtn->pos()).x(),
+////                             mapTo(_mainWindow,_volBtn->pos()).y() - _volSlider->height());
+////            _volSlider->show();
+//            _volSlider->raise();
+//        });
+        connect(_volBtn, &VolumeButton::clicked, [ = ]() {
+            if(!_volBtn->isVisible()) {
+                _volSlider->show(_mainWindow->width() - _volBtn->width() / 2 - _playBtn->width() - 43,
+                                 _mainWindow->height() - TOOLBOX_HEIGHT - 5);
+                _volSlider->raise();
+            }
+            else {
+                _volSlider->hide();
+            }
         });
 #endif
     }
@@ -2448,6 +2474,7 @@ void ToolboxProxy::updateVolumeState()
         _volSlider->setMute(true);
     } else {
         auto v = _engine->volume();
+        _volSlider->setMute(false);
         /*if (v != 0) {
             v -= VOLUME_OFFSET;
         }*/
@@ -2984,6 +3011,10 @@ bool ToolboxProxy::getbAnimationFinash()
 int ToolboxProxy::DisplayVolume()
 {
     return _volSlider->value();
+}
+
+bool ToolboxProxy::getVolSliderIsHided(){
+    return _volSlider->isHidden();
 }
 
 void ToolboxProxy::updateProgress(int nValue)
