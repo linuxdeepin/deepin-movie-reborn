@@ -3595,7 +3595,7 @@ void MainWindow::showEvent(QShowEvent *event)
             requestAction(ActionFactory::TogglePause);
             _quitfullscreenflag = false;
         }
-#ifndef __aarch64__
+#ifdef __aarch64__
                 QVariant l = ApplicationAdaptor::redDBusProperty("com.deepin.SessionManager", "/com/deepin/SessionManager",
                                                                  "com.deepin.SessionManager", "Locked");
                 if (l.isValid() && !l.toBool()) {
@@ -3615,7 +3615,7 @@ void MainWindow::showEvent(QShowEvent *event)
 //            }
 
 //            if (!_quitfullscreenstopflag) {
-//#ifndef __aarch64__
+//#ifdef __aarch64__
 //                QVariant l = ApplicationAdaptor::redDBusProperty("com.deepin.SessionManager", "/com/deepin/SessionManager",
 //                                                                 "com.deepin.SessionManager", "Locked");
 //                if (l.isValid() && !l.toBool()) {

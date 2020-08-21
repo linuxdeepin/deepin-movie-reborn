@@ -1473,7 +1473,7 @@ struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl &url, const QFil
         }
     }
 
-    PlayItemInfo pif { fi.exists() || !url.isLocalFile(), ok, bHasOwnThumbnail, url, fi, pm, mi };
+    PlayItemInfo pif { fi.exists() || !url.isLocalFile(), ok, url, fi, pm, mi };
     if (ok && url.isLocalFile() && (!ci.mi_valid || !ci.thumb_valid)) {
         PersistentManager::get().save(pif);
     }
