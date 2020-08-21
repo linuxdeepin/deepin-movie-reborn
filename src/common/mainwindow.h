@@ -344,6 +344,7 @@ private:
     double _playSpeed {1.0};
 
     bool _quitfullscreenstopflag {false};
+    bool _quitfullscreenflag{false};
     bool _maxfornormalflag {false};
     //add by heyi
     bool m_bMpvFunsLoad {false};
