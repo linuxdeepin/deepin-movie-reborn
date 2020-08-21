@@ -1444,12 +1444,6 @@ void PlaylistWidget::paintEvent(QPaintEvent *pe)
 
     QPainterPath pp;
     pp.addRoundedRect(bgRect, 18, 18);
-//    {
-//        auto view_rect = bgRect.marginsRemoved(QMargins(1, 1, 1, 1));
-//        QPainterPath pp;
-//        pp.addRoundedRect(view_rect, RADIUS, RADIUS);
-//        painter.fillPath(pp, bgColor);
-//    }
     if (_title && _num) {
         _title->setForegroundRole(DPalette::ToolTipText);
         _num->setForegroundRole(DPalette::BrightText);
