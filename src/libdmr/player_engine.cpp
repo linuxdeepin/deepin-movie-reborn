@@ -506,7 +506,7 @@ void PlayerEngine::savePreviousMovieState()
 
 void PlayerEngine::paintEvent(QPaintEvent *e)
 {
-    bool bIsMusic = true;
+    bool bIsMusic = false;
     QRect rect = this->rect();
     QPainter p(this);
 
@@ -516,7 +516,7 @@ void PlayerEngine::paintEvent(QPaintEvent *e)
     }
 
     if (!CompositingManager::get().composited()) {
-        if(_state != Idle && !bIsMusic) {
+        if(_state != Idle && bIsMusic) {
             p.fillRect(rect, QBrush(QColor(0, 0, 0)));
         }
         else
