@@ -52,6 +52,13 @@ void ApplicationAdaptor::openFile(const QString& file)
     _mw->play(url);
 }
 
+void ApplicationAdaptor::Raise(){
+    qDebug()<<"raise window from dbus";
+    _mw->showNormal();
+    _mw->raise();
+    _mw->activateWindow();
+}
+
 QVariant ApplicationAdaptor::redDBusProperty(const QString &service, const QString &path, const QString &interface, const char *propert)
 {
     // 创建QDBusInterface接口

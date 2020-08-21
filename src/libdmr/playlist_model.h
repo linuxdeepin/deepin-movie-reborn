@@ -112,7 +112,6 @@ struct MovieInfo {
 struct PlayItemInfo {
     bool valid;
     bool loaded;  // if url is network, this is false until playback started
-    bool bHasOwnThumbnail;
     QUrl url;
     QFileInfo info;
     QPixmap thumbnail;

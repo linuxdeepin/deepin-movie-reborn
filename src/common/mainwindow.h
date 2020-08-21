@@ -344,6 +344,7 @@ private:
     double _playSpeed {1.0};
 
     bool _quitfullscreenstopflag {false};
+    bool _quitfullscreenflag{false};
     bool _maxfornormalflag {false};
     //add by heyi
     bool m_bMpvFunsLoad {false};
@@ -389,6 +390,7 @@ private:
     Diskcheckthread m_diskCheckThread;
     bool m_bProgressChanged {false};        //进度条是否被拖动
     bool m_bFirstInit {false};
+    bool m_bLastIsTouch {false};
 };
 };
 

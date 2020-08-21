@@ -1210,6 +1210,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     _engine->firstInit();
 
+     _toolbox->setDisplayValue(volume);
+
     if (Settings::get().internalOption("mute").toBool()) {
         _engine->toggleMute();
         Settings::get().setInternalOption("mute", _engine->muted());
@@ -3259,7 +3261,7 @@ void MainWindow::suspendToolsWindow()
             //return;
 
             if (_titlebar->isVisible()) {
-                if (insideToolsArea(mapFromGlobal(QCursor::pos())))
+                if (insideToolsArea(mapFromGlobal(QCursor::pos())) && !m_bLastIsTouch)
                     return;
             } else {
                 if (_toolbox->geometry().contains(mapFromGlobal(QCursor::pos()))) {
@@ -3516,23 +3518,6 @@ void MainWindow::checkErrorMpvLogsChanged(const QString prefix, const QString te
 
 }
 
-void MainWindow::hideEvent(QHideEvent *event)
-{
-    if (Settings::get().isSet(Settings::PauseOnMinimize)) {
-        if (_engine && _engine->state() == PlayerEngine::Playing) {
-            if (!_quitfullscreenstopflag) {
-                _pausedOnHide = true;
-                requestAction(ActionFactory::TogglePause);
-                _quitfullscreenstopflag = false;
-            } else {
-                _quitfullscreenstopflag = false;
-            }
-        }
-        QList<QAction *> acts = ActionFactory::get().findActionsByKind(ActionFactory::TogglePlaylist);
-        acts.at(0)->setChecked(false);
-    }
-}
-
 void MainWindow::closeEvent(QCloseEvent *ev)
 {
     qDebug() << __func__;
@@ -3569,7 +3554,7 @@ void MainWindow::wheelEvent(QWheelEvent *we)
         return;
     }
 
-    if (we->buttons() == Qt::NoButton && we->modifiers() == Qt::NoModifier) {
+    if (we->buttons() == Qt::NoButton && we->modifiers() == Qt::NoModifier && _toolbox->getVolSliderIsHided()) {
         requestAction(we->angleDelta().y() > 0 ? ActionFactory::VolumeUp : ActionFactory::VolumeDown);
     }
 }
@@ -3579,30 +3564,79 @@ void MainWindow::focusInEvent(QFocusEvent *fe)
     resumeToolsWindow();
 }
 
+void MainWindow::hideEvent(QHideEvent *event)
+{
+    if(_maxfornormalflag)
+        return;
+    if (Settings::get().isSet(Settings::PauseOnMinimize)) {
+        if (_engine && _engine->state() == PlayerEngine::Playing) {
+            requestAction(ActionFactory::TogglePause);
+            _quitfullscreenflag = true;
+//            if (!_quitfullscreenstopflag) {
+//                _pausedOnHide = true;
+//                requestAction(ActionFactory::TogglePause);
+//                _quitfullscreenstopflag = false;
+//            } else {
+//                _quitfullscreenstopflag = false;
+//            }
+        }
+        QList<QAction *> acts = ActionFactory::get().findActionsByKind(ActionFactory::TogglePlaylist);
+        acts.at(0)->setChecked(false);
+    }
+}
 void MainWindow::showEvent(QShowEvent *event)
 {
     qDebug() << __func__;
-    if (_pausedOnHide || Settings::get().isSet(Settings::PauseOnMinimize)) {
-        if (_pausedOnHide && _engine && _engine->state() != PlayerEngine::Playing) {
-            if (!_quitfullscreenstopflag) {
+    /*最大化，全屏，取消全屏，会先调用hideevent,再调用showevent，此时播放状态尚未切换，导致逻辑出错*/
+    if(_maxfornormalflag)
+        return;
+    if ( Settings::get().isSet(Settings::PauseOnMinimize)) {
+        if (_quitfullscreenflag) {
+            requestAction(ActionFactory::TogglePause);
+            _quitfullscreenflag = false;
+        }
 #ifdef __aarch64__
                 QVariant l = ApplicationAdaptor::redDBusProperty("com.deepin.SessionManager", "/com/deepin/SessionManager",
                                                                  "com.deepin.SessionManager", "Locked");
                 if (l.isValid() && !l.toBool()) {
                     qDebug() << "locked_____________" << l;
                     //是否锁屏
-#endif
-                    requestAction(ActionFactory::TogglePause);
-                    _pausedOnHide = false;
-                    _quitfullscreenstopflag = false;
-#ifdef __aarch64__
+                    if(_engine && _engine->state() != PlayerEngine::Playing){
+                        requestAction(ActionFactory::TogglePause);
+                    }
                 }
 #endif
-            } else {
-                _quitfullscreenstopflag = false;
-            }
-        }
     }
+//    if (_pausedOnHide || Settings::get().isSet(Settings::PauseOnMinimize)) {
+//        if (_pausedOnHide && _engine && _engine->state() != PlayerEngine::Playing) {
+//            if (_quitfullscreenflag) {
+//                requestAction(ActionFactory::TogglePause);
+//                _quitfullscreenflag = false;
+//            }
+
+//            if (!_quitfullscreenstopflag) {
+//#ifdef __aarch64__
+//                QVariant l = ApplicationAdaptor::redDBusProperty("com.deepin.SessionManager", "/com/deepin/SessionManager",
+//                                                                 "com.deepin.SessionManager", "Locked");
+//                if (l.isValid() && !l.toBool()) {
+//                    qDebug() << "locked_____________" << l;
+//                    //是否锁屏
+//                    if(_engine && _engine->state() != PlayerEngine::Playing){
+//                        requestAction(ActionFactory::TogglePause);
+//                    }
+//                }
+//#endif
+//                    requestAction(ActionFactory::TogglePause);
+//                    _pausedOnHide = false;
+//                    _quitfullscreenstopflag = false;
+//#ifdef __aarch64__
+//                }
+//#endif
+//            } else {
+//                _quitfullscreenstopflag = false;
+//            }
+//        }
+//    }
 
     _titlebar->raise();
     _toolbox->raise();
@@ -3857,6 +3891,21 @@ void MainWindow::capturedMousePressEvent(QMouseEvent *me)
 
 void MainWindow::capturedMouseReleaseEvent(QMouseEvent *me)
 {
+    if(_isTouch)
+    {
+        m_bLastIsTouch = true;
+         _isTouch = false;
+
+        if(m_bLastIsTouch)
+        {
+            _toolbox->updateSlider();   //手势释放时改变影片进度
+            m_bProgressChanged = false;
+        }
+    }
+    else {
+         m_bLastIsTouch = false;
+    }
+
     if (_delayedResizeByConstraint) {
         _delayedResizeByConstraint = false;
 
@@ -3947,13 +3996,6 @@ bool MainWindow::insideResizeArea(const QPoint &global_p)
 
 void MainWindow::mouseReleaseEvent(QMouseEvent *ev)
 {
-    if(_isTouch && m_bProgressChanged)
-    {
-        _toolbox->updateSlider();   //手势释放时改变影片进度
-        _isTouch = false;
-        m_bProgressChanged = false;
-    }
-
     //add by heyi
     static bool bFlags = true;
     if (bFlags) {
