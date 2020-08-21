@@ -3518,23 +3518,6 @@ void MainWindow::checkErrorMpvLogsChanged(const QString prefix, const QString te
 
 }
 
-void MainWindow::hideEvent(QHideEvent *event)
-{
-    if (Settings::get().isSet(Settings::PauseOnMinimize)) {
-        if (_engine && _engine->state() == PlayerEngine::Playing) {
-            if (!_quitfullscreenstopflag) {
-                _pausedOnHide = true;
-                requestAction(ActionFactory::TogglePause);
-                _quitfullscreenstopflag = false;
-            } else {
-                _quitfullscreenstopflag = false;
-            }
-        }
-        QList<QAction *> acts = ActionFactory::get().findActionsByKind(ActionFactory::TogglePlaylist);
-        acts.at(0)->setChecked(false);
-    }
-}
-
 void MainWindow::closeEvent(QCloseEvent *ev)
 {
     qDebug() << __func__;
@@ -3581,30 +3564,79 @@ void MainWindow::focusInEvent(QFocusEvent *fe)
     resumeToolsWindow();
 }
 
+void MainWindow::hideEvent(QHideEvent *event)
+{
+    if(_maxfornormalflag)
+        return;
+    if (Settings::get().isSet(Settings::PauseOnMinimize)) {
+        if (_engine && _engine->state() == PlayerEngine::Playing) {
+            requestAction(ActionFactory::TogglePause);
+            _quitfullscreenflag = true;
+//            if (!_quitfullscreenstopflag) {
+//                _pausedOnHide = true;
+//                requestAction(ActionFactory::TogglePause);
+//                _quitfullscreenstopflag = false;
+//            } else {
+//                _quitfullscreenstopflag = false;
+//            }
+        }
+        QList<QAction *> acts = ActionFactory::get().findActionsByKind(ActionFactory::TogglePlaylist);
+        acts.at(0)->setChecked(false);
+    }
+}
 void MainWindow::showEvent(QShowEvent *event)
 {
     qDebug() << __func__;
-    if (_pausedOnHide || Settings::get().isSet(Settings::PauseOnMinimize)) {
-        if (_pausedOnHide && _engine && _engine->state() != PlayerEngine::Playing) {
-            if (!_quitfullscreenstopflag) {
-#ifdef __aarch64__
+    /*最大化，全屏，取消全屏，会先调用hideevent,再调用showevent，此时播放状态尚未切换，导致逻辑出错*/
+    if(_maxfornormalflag)
+        return;
+    if ( Settings::get().isSet(Settings::PauseOnMinimize)) {
+        if (_quitfullscreenflag) {
+            requestAction(ActionFactory::TogglePause);
+            _quitfullscreenflag = false;
+        }
+#ifndef __aarch64__
                 QVariant l = ApplicationAdaptor::redDBusProperty("com.deepin.SessionManager", "/com/deepin/SessionManager",
                                                                  "com.deepin.SessionManager", "Locked");
                 if (l.isValid() && !l.toBool()) {
                     qDebug() << "locked_____________" << l;
                     //是否锁屏
-#endif
-                    requestAction(ActionFactory::TogglePause);
-                    _pausedOnHide = false;
-                    _quitfullscreenstopflag = false;
-#ifdef __aarch64__
+                    if(_engine && _engine->state() != PlayerEngine::Playing){
+                        requestAction(ActionFactory::TogglePause);
+                    }
                 }
 #endif
-            } else {
-                _quitfullscreenstopflag = false;
-            }
-        }
     }
+//    if (_pausedOnHide || Settings::get().isSet(Settings::PauseOnMinimize)) {
+//        if (_pausedOnHide && _engine && _engine->state() != PlayerEngine::Playing) {
+//            if (_quitfullscreenflag) {
+//                requestAction(ActionFactory::TogglePause);
+//                _quitfullscreenflag = false;
+//            }
+
+//            if (!_quitfullscreenstopflag) {
+//#ifndef __aarch64__
+//                QVariant l = ApplicationAdaptor::redDBusProperty("com.deepin.SessionManager", "/com/deepin/SessionManager",
+//                                                                 "com.deepin.SessionManager", "Locked");
+//                if (l.isValid() && !l.toBool()) {
+//                    qDebug() << "locked_____________" << l;
+//                    //是否锁屏
+//                    if(_engine && _engine->state() != PlayerEngine::Playing){
+//                        requestAction(ActionFactory::TogglePause);
+//                    }
+//                }
+//#endif
+//                    requestAction(ActionFactory::TogglePause);
+//                    _pausedOnHide = false;
+//                    _quitfullscreenstopflag = false;
+//#ifdef __aarch64__
+//                }
+//#endif
+//            } else {
+//                _quitfullscreenstopflag = false;
+//            }
+//        }
+//    }
 
     _titlebar->raise();
     _toolbox->raise();
