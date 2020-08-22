@@ -2968,6 +2968,11 @@ void ToolboxProxy::setPlaylist(PlaylistWidget *playlist)
                 paopen = nullptr;
                 bAnimationFinash = true;
             });
+#else
+            QRect rcBegin = this->geometry();
+            QRect rcEnd = rcBegin;
+            rcEnd.setY(rcBegin.y() - TOOLBOX_SPACE_HEIGHT - 7);
+            setGeometry(rcEnd);
 #endif
             _listBtn->setChecked(true);
         } else {
@@ -2989,6 +2994,11 @@ void ToolboxProxy::setPlaylist(PlaylistWidget *playlist)
                 paClose = nullptr;
                 bAnimationFinash = true;
             });
+#else
+            QRect rcBegin = this->geometry();
+            QRect rcEnd = rcBegin;
+            rcEnd.setY(rcBegin.y() + TOOLBOX_SPACE_HEIGHT + 7);
+            setGeometry(rcEnd);
 #endif
         }
     });
