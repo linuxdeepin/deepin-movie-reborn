@@ -3260,7 +3260,7 @@ void MainWindow::suspendToolsWindow()
             //if (qApp->focusWindow() != windowHandle())
             //return;
 
-            if (_titlebar->isVisible()) {
+            if (_toolbox->isVisible()) {
                 if (insideToolsArea(mapFromGlobal(QCursor::pos())) && !m_bLastIsTouch)
                     return;
             } else {
