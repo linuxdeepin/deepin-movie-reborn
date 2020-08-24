@@ -1219,22 +1219,23 @@ public:
 //                this, &VolumeSlider::updateBg);
     }
 
-#ifdef __mips__
-    void paintEvent(QPaintEvent *event)
-    {
-        bool composited = CompositingManager::get().composited();
-        if (!m_composited) {
-            QPainter painter(this);
-            if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ) {
-                painter.fillRect(rect(), Qt::white);
-            } else {
-                painter.fillRect(rect(), Qt::black);
-            }
-        } else {
-            DArrowRectangle::paintEvent(event);
-        }
-    }
-#endif
+//修改bug42399,注释掉此段代码
+//#ifdef __mips__
+//    void paintEvent(QPaintEvent *event)
+//    {
+//        bool composited = CompositingManager::get().composited();
+//        if (!m_composited) {
+//            QPainter painter(this);
+//            if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ) {
+//                painter.fillRect(rect(), Qt::white);
+//            } else {
+//                painter.fillRect(rect(), Qt::black);
+//            }
+//        } else {
+//            DArrowRectangle::paintEvent(event);
+//        }
+//    }
+//#endif
     void stopTimer()
     {
         _autoHideTimer.stop();
@@ -2048,8 +2049,8 @@ void ToolboxProxy::setup()
 //        });
         connect(_volBtn, &VolumeButton::clicked, [ = ]() {
             if(!_volSlider->isVisible()){
-                _volSlider->show(_mainWindow->width() - _volBtn->width() / 2 - _playBtn->width() - 43,
-                                 _mainWindow->height() - TOOLBOX_HEIGHT - 5);
+                _volSlider->show(_mainWindow->width() - _volBtn->width() / 2 - _playBtn->width() - 40,
+                                 _mainWindow->height() - TOOLBOX_HEIGHT - 2);
                 _volSlider->raise();
             }
             else {
@@ -2059,10 +2060,23 @@ void ToolboxProxy::setup()
     } else {
 #if defined (__mips__) || defined (__aarch64__)
         _volSlider = new VolumeSlider(_engine, _mainWindow, nullptr);
-        hintFilter = new HintFilter;
-        _volSlider->setProperty("DelayHide", true);
-        _volSlider->setProperty("NoDelayShow", true);
-        installHint(_volBtn, _volSlider);
+        connect(_volBtn, &VolumeButton::clicked, [ = ]() {
+            if(!_volSlider->isVisible()){
+                auto pPoint = mapToGlobal(QPoint(this->rect().width(),this->rect().height()));
+                _volSlider->adjustSize();
+
+                pPoint.setX(pPoint.x()  -_volBtn->width() / 2 - _playBtn->width() - 43);
+                pPoint.setY(pPoint.y() - TOOLBOX_HEIGHT - 5);
+                _volSlider->show(pPoint.x(), pPoint.y());
+                _volSlider->raise();
+            }
+            else {
+                _volSlider->hide();
+            }
+        });
+//        _volSlider->setProperty("DelayHide", true);
+//        _volSlider->setProperty("NoDelayShow", true);
+//        installHint(_volBtn, _volSlider);
 #else
         _volSlider = new VolumeSlider(_engine, _mainWindow, _mainWindow);
 //        connect(_volBtn, &VolumeButton::entered, [ = ]() {
