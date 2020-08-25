@@ -164,10 +164,13 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
     layout->setContentsMargins(0, 0, 0, 0);
     setLayout(layout);
 
-    DImageButton *closeBt = new DImageButton(this);
-    closeBt->setFixedSize(50, 50);
-    connect(closeBt, &DImageButton::clicked, this, &MovieInfoDialog::close);
-    layout->addWidget(closeBt, 0, Qt::AlignTop | Qt::AlignRight);
+    CloseButton *closeBt = nullptr;
+    if(!utils::check_wayland_env()){
+        closeBt = new CloseButton(this);
+        closeBt->setFixedSize(50, 50);
+        connect(closeBt, &CloseButton::clicked, this, &MovieInfoDialog::close);
+        layout->addWidget(closeBt, 0, Qt::AlignTop | Qt::AlignRight);
+    }
 
     const auto &mi = pif.mi;
 
@@ -443,13 +446,14 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
         //title->setForegroundRole(DPalette::Text);
     });
 
-    if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
-        closeBt->setNormalPic(INFO_CLOSE_LIGHT);
-    } else if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
-        closeBt->setNormalPic(INFO_CLOSE_DARK);
-    } else {
-        closeBt->setNormalPic(INFO_CLOSE_LIGHT);
-    }
+//    if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
+//        closeBt->setNormalPic(INFO_CLOSE_LIGHT);
+//    } else if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
+//        closeBt->setNormalPic(INFO_CLOSE_DARK);
+//    } else {
+//        closeBt->setNormalPic(INFO_CLOSE_LIGHT);
+//    }
+
     m_expandGroup.at(0)->setExpand(true);
     m_expandGroup.at(1)->setExpand(true);
     m_expandGroup.at(2)->setExpand(true);

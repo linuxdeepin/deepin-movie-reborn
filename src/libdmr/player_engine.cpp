@@ -594,8 +594,12 @@ void PlayerEngine::onPlaylistAsyncAppendFinished(const QList<PlayItemInfo> &pil)
         if (id >= 0) {
             _playlist->changeCurrent(id);
             _pendingPlayReq = QUrl();
+        } else {
+            qInfo() << __func__ << "id is:" << id;
         }
         // else, wait for another signal
+    } else {
+        qInfo() << __func__ << _pendingPlayReq;
     }
 }
 
@@ -603,6 +607,7 @@ void PlayerEngine::playByName(const QUrl &url)
 {
     savePreviousMovieState();
     auto id = _playlist->indexOf(url);
+    qDebug() << __func__ << url << "id:" << id;
     if (id >= 0) {
         _playlist->changeCurrent(id);
     } else {
@@ -612,6 +617,7 @@ void PlayerEngine::playByName(const QUrl &url)
 
 void PlayerEngine::playSelected(int id)
 {
+    qDebug() << __func__ << id;
     savePreviousMovieState();
     _playlist->changeCurrent(id);
 }
@@ -696,6 +702,7 @@ void PlayerEngine::setDVDDevice(const QString &path)
 
 bool PlayerEngine::addPlayFile(const QUrl &url)
 {
+    qDebug() << __func__;
     if (isPlayableFile(url)) {
         if (url.isLocalFile())
             _playlist->appendAsync({url});
@@ -741,6 +748,7 @@ QList<QUrl> PlayerEngine::addPlayDir(const QDir &dir)
 
 QList<QUrl> PlayerEngine::addPlayFiles(const QList<QUrl> &urls)
 {
+    qDebug() << __func__;
     QList<QUrl> valids = collectPlayFiles(urls);
     _playlist->appendAsync(valids);
     return valids;

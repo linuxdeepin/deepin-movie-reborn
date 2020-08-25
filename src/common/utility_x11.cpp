@@ -28,6 +28,7 @@
  * files in the program, then also delete it here.
  */
 #include "utility.h"
+#include "utils.h"
 
 #include <QtWidgets>
 #include <QtX11Extras/QX11Info>
@@ -62,6 +63,8 @@ const char kAtomNameWmSkipPager[] = "_NET_WM_STATE_SKIP_PAGER";
 
 xcb_atom_t Utility::internAtom(const char *name)
 {
+    if(dmr::utils::check_wayland_env())
+        return XCB_NONE;
     if (!name || *name == 0)
         return XCB_NONE;
 
@@ -101,11 +104,13 @@ void Utility::updateMousePointForWindowMove(quint32 WId, const QPoint &globalPos
     xev.data.data32[3] = 0;
     xev.data.data32[4] = 0;
 
-    xcb_send_event(QX11Info::connection(), false, QX11Info::appRootWindow(),
-                   XCB_EVENT_MASK_SUBSTRUCTURE_REDIRECT | XCB_EVENT_MASK_SUBSTRUCTURE_NOTIFY,
-                   (const char *)&xev);
+    if(!dmr::utils::check_wayland_env()){
+        xcb_send_event(QX11Info::connection(), false, QX11Info::appRootWindow(),
+                       XCB_EVENT_MASK_SUBSTRUCTURE_REDIRECT | XCB_EVENT_MASK_SUBSTRUCTURE_NOTIFY,
+                       (const char *)&xev);
 
-    xcb_flush(QX11Info::connection());
+        xcb_flush(QX11Info::connection());
+    }
 }
 
 void Utility::setFrameExtents(quint32 WId, const QMargins &margins)
@@ -124,7 +129,9 @@ void Utility::setFrameExtents(quint32 WId, const QMargins &margins)
         (uint32_t)margins.bottom()
     };
 
-    xcb_change_property(QX11Info::connection(), XCB_PROP_MODE_REPLACE, WId, frameExtents, XCB_ATOM_CARDINAL, 32, 4, value);
+    if(!dmr::utils::check_wayland_env()){
+        xcb_change_property(QX11Info::connection(), XCB_PROP_MODE_REPLACE, WId, frameExtents, XCB_ATOM_CARDINAL, 32, 4, value);
+    }
 }
 
 void Utility::setRectangles(quint32 WId, const QRegion &region, bool onlyInput)
@@ -134,6 +141,9 @@ void Utility::setRectangles(quint32 WId, const QRegion &region, bool onlyInput)
 
 void Utility::setRectangles(quint32 WId, const QVector<xcb_rectangle_t> &rectangles, bool onlyInput)
 {
+    if(dmr::utils::check_wayland_env()){
+        return;
+    }
     if (rectangles.isEmpty()) {
         xcb_shape_mask(QX11Info::connection(), XCB_SHAPE_SO_SET,
                        onlyInput ? XCB_SHAPE_SK_INPUT : XCB_SHAPE_SK_BOUNDING, WId, 0, 0, XCB_NONE);
@@ -171,6 +181,9 @@ void Utility::setShapePath(quint32 WId, const QPainterPath &path, bool onlyInput
 
 void Utility::sendMoveResizeMessage(quint32 WId, uint32_t action, QPoint globalPos, Qt::MouseButton qbutton)
 {
+    if(dmr::utils::check_wayland_env()){
+        return;
+    }
     int xbtn = qbutton == Qt::LeftButton ? XCB_BUTTON_INDEX_1 :
                qbutton == Qt::RightButton ? XCB_BUTTON_INDEX_3 :
                XCB_BUTTON_INDEX_ANY;
@@ -263,6 +276,9 @@ static xcb_cursor_t CornerEdge2Xcb_cursor_t(Utility::CornerEdge ce)
 
 bool Utility::setWindowCursor(quint32 WId, Utility::CornerEdge ce)
 {
+    if(dmr::utils::check_wayland_env()){
+        return true;
+    }
     const auto display = QX11Info::display();
 
     Cursor cursor = XCreateFontCursor(display, CornerEdge2Xcb_cursor_t(ce));
@@ -293,6 +309,9 @@ QRegion Utility::regionAddMargins(const QRegion &region, const QMargins &margins
 QByteArray Utility::windowProperty(quint32 WId, xcb_atom_t propAtom, xcb_atom_t typeAtom, quint32 len)
 {
     QByteArray data;
+    if(dmr::utils::check_wayland_env()){
+        return data;
+    }
     xcb_connection_t* conn = QX11Info::connection();
     xcb_get_property_cookie_t cookie = xcb_get_property(conn, false, WId, propAtom, typeAtom, 0, len);
     xcb_generic_error_t* err = nullptr;
@@ -343,6 +362,9 @@ QList<xcb_atom_t> Utility::windowNetWMState(quint32 WId)
 
 void Utility::setWindowProperty(quint32 WId, xcb_atom_t propAtom, xcb_atom_t typeAtom, const void *data, quint32 len, uint8_t format)
 {
+    if(dmr::utils::check_wayland_env()){
+       return;
+    }
     xcb_connection_t* conn = QX11Info::connection();
     xcb_change_property(conn, XCB_PROP_MODE_REPLACE, WId, propAtom, typeAtom, format, len, data);
     xcb_flush(conn);
@@ -350,6 +372,9 @@ void Utility::setWindowProperty(quint32 WId, xcb_atom_t propAtom, xcb_atom_t typ
 
 void Utility::setStayOnTop(const QWidget *widget, bool on)
 {
+    if(dmr::utils::check_wayland_env()){
+       return;
+    }
     Q_ASSERT(widget);
 
     const auto display = QX11Info::display();
