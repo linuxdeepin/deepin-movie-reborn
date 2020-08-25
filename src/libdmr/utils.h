@@ -36,6 +36,7 @@ namespace dmr {
 namespace utils {
 void ShowInFileManager(const QString &path);
 bool CompareNames(const QString &fileName1, const QString &fileName2);
+bool first_check_wayland_env();
 bool check_wayland_env();
 bool IsNamesSimilar(const QString &s1, const QString &s2);
 QFileInfoList FindSimilarFiles(const QFileInfo &fi);
