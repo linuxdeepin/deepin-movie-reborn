@@ -28,6 +28,7 @@
  * files in the program, then also delete it here.
  */
 #include "movie_progress_indicator.h"
+#include "utils.h"
 
 
 namespace dmr {
@@ -42,11 +43,13 @@ MovieProgressIndicator::MovieProgressIndicator(QWidget *parent)
 
     _fixedSize = QSize(qMax(52, fm.width("999:99")), fm.height() + 10);
     this->setFixedSize(_fixedSize);
+    if(!utils::check_wayland_env()){
 #if defined (__mips__) || defined (__aarch64__) || defined (__sw_64__)
     this->setAttribute(Qt::WA_TranslucentBackground);
     this->setWindowFlags(Qt::FramelessWindowHint);
     setWindowFlags(this->windowFlags() | Qt::Dialog);
 #endif
+    }
 }
 
 void MovieProgressIndicator::paintEvent(QPaintEvent *pe)

@@ -167,6 +167,11 @@ protected:
             event->ignore();
 
         }
+        case QEvent::MouseMove:{
+            QHelpEvent *he = static_cast<QHelpEvent *>(event);
+            auto tip = obj->property("HintWidget").value<Tip *>();
+            tip->hide();
+        }
         default:
             break;
         }
@@ -973,7 +978,12 @@ public:
     void updateWithPreview(const QPoint &pos)
     {
         //resizeWithContent();
-        move(pos.x() - this->width() / 2, pos.y() - this->height() + 10);
+        if(utils::check_wayland_env()){
+            move(pos.x() - this->width() / 2, pos.y() + 10);
+        }else {
+            move(pos.x() - this->width() / 2, pos.y() - this->height() + 10);
+        }
+
         show();
         raise();
     }
@@ -1057,7 +1067,8 @@ public:
             setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
         }
 #elif __aarch64__
-        setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
+        if(!utils::check_wayland_env())
+            setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
 #elif __sw_64__
         setWindowFlags(Qt::FramelessWindowHint | Qt::BypassWindowManagerHint);
         setAttribute(Qt::WA_NativeWindow);
@@ -1106,7 +1117,9 @@ public:
 #ifdef __x86_64__
         connect(&_autoHideTimer, &QTimer::timeout, this, &VolumeSlider::hide);
 #endif
-
+        if(utils::check_wayland_env()){
+            connect(&_autoHideTimer, &QTimer::timeout, this, &VolumeSlider::hide);
+        }
         //Modify by xiepengfei 2020.5.5
         //修改音量显示逻辑，使之发生变化时从变化源处直接修改显示值而不是从系统中获取
         //此处修改有风险，但为了音量变化曲线问题
@@ -1258,6 +1271,7 @@ viewProgBarLoad::viewProgBarLoad(PlayerEngine *engine, DMRSlider *progBar, Toolb
 void viewProgBarLoad::quitLoad()
 {
     m_bQuit = true;
+    this->quit();
 }
 
 void viewProgBarLoad::load()
@@ -1742,6 +1756,14 @@ void ToolboxProxy::setup()
     progBarspec->setContentsMargins(0, 5, 0, 0);
     progBarspec->setSpacing(0);
     progBarspec->setAlignment(Qt::AlignHCenter);
+
+    if(utils::check_wayland_env()){
+        //lmh0706,延时
+        connect(_nextBtn,&DButtonBoxButton::clicked,this,&ToolboxProxy::waitPlay);
+        connect(_playBtn,&DButtonBoxButton::clicked,this,&ToolboxProxy::waitPlay);
+        connect(_prevBtn,&DButtonBoxButton::clicked,this,&ToolboxProxy::waitPlay);
+    }
+
 //    bot->addLayout(progBarspec);
 //    progBarspec->addWidget(_progBarspec);
     _progBar_Widget = new QStackedWidget(bot_toolWgt);
@@ -2087,6 +2109,9 @@ void ToolboxProxy::installHint(QWidget *w, QWidget *hint)
 
 void ToolboxProxy::updateThumbnail()
 {
+    if(utils::check_wayland_env()){
+        return;
+    }
     //如果打开的是音乐
     QString suffix = _engine->playlist().currentInfo().info.suffix();
     foreach (QString sf, _engine->audio_filetypes) {
@@ -2191,6 +2216,9 @@ void ToolboxProxy::updateHoverPreview(const QUrl &url, int secs)
     }
 
     auto pos = _viewProgBar->mapToGlobal(QPoint(0, TOOLBOX_TOP_EXTENT - 10));
+    if(utils::check_wayland_env()){
+        pos = _progBar->mapToGlobal(QPoint(0, -TOOLBOX_HEIGHT + 10));
+    }
     QPoint p { QCursor::pos().x(), pos.y() };
 
     QVariant l = ApplicationAdaptor::redDBusProperty("com.deepin.SessionManager", "/com/deepin/SessionManager",
@@ -2201,6 +2229,30 @@ void ToolboxProxy::updateHoverPreview(const QUrl &url, int secs)
     QPixmap pm = ThumbnailWorker::get().getThumb(url, secs);
     _previewer->updateWithPreview(pm, secs, _engine->videoRotation());
     _previewer->updateWithPreview(p);
+}
+
+void ToolboxProxy::waitPlay()
+{
+    if(_playBtn){
+        _playBtn->setEnabled(false);
+    }
+    if(_prevBtn){
+        _prevBtn->setEnabled(false);
+    }
+    if(_nextBtn){
+        _nextBtn->setEnabled(false);
+    }
+    QTimer::singleShot(500,[=]{
+        if(_playBtn){
+            _playBtn->setEnabled(true);
+        }
+        if(_prevBtn&&_engine->playlist().count()>1){
+            _prevBtn->setEnabled(true);
+        }
+        if(_nextBtn&&_engine->playlist().count()>1){
+            _nextBtn->setEnabled(true);
+        }
+    });
 }
 
 void ToolboxProxy::progressHoverChanged(int v)
@@ -2712,61 +2764,72 @@ void ToolboxProxy::resizeEvent(QResizeEvent *event)
 
     }
 #ifndef __sw_64__
-    if (bAnimationFinash ==  false && paopen != nullptr && paClose != nullptr) {
+    if(!utils::check_wayland_env()){
+        if (bAnimationFinash ==  false && paopen != nullptr && paClose != nullptr) {
 
-        _playlist->endAnimation();
-        paopen->setDuration(0);
-        paClose->setDuration(0);
+            _playlist->endAnimation();
+            paopen->setDuration(0);
+            paClose->setDuration(0);
+        }
+
+
+        if (_playlist->state() == PlaylistWidget::State::Opened && bAnimationFinash == true) {
+            QRect r(5, _mainWindow->height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT + 7) - _mainWindow->rect().top() - 5,
+                    _mainWindow->rect().width() - 10, (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT + 7));
+            this->setGeometry(r);
+        } else if (_playlist->state() == PlaylistWidget::State::Closed && bAnimationFinash == true) {
+            QRect r(5, _mainWindow->height() - TOOLBOX_HEIGHT - _mainWindow->rect().top() - 5,
+                    _mainWindow->rect().width() - 10, TOOLBOX_HEIGHT);
+            this->setGeometry(r);
+        }
+
+        updateTimeLabel();
     }
-
-
-    if (_playlist->state() == PlaylistWidget::State::Opened && bAnimationFinash == true) {
-        QRect r(5, _mainWindow->height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT + 7) - _mainWindow->rect().top() - 5,
-                _mainWindow->rect().width() - 10, (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT + 7));
-        this->setGeometry(r);
-    } else if (_playlist->state() == PlaylistWidget::State::Closed && bAnimationFinash == true) {
-        QRect r(5, _mainWindow->height() - TOOLBOX_HEIGHT - _mainWindow->rect().top() - 5,
-                _mainWindow->rect().width() - 10, TOOLBOX_HEIGHT);
-        this->setGeometry(r);
-    }
-
-    updateTimeLabel();
 #endif
 }
+
+void ToolboxProxy::mouseMoveEvent(QMouseEvent *ev)
+{
+    setButtonTooltipHide();
+    QWidget::mouseMoveEvent(ev);
+}
+
 
 void ToolboxProxy::updateTimeLabel()
 {
 
 #ifndef __sw_64__
-    // to keep left and right of the same width. which makes play button centered
-    _listBtn->setVisible(width() > 300);
-    _timeLabel->setVisible(width() > 450);
-    _timeLabelend->setVisible(width() > 450);
-//    _viewProgBar->setVisible(width() > 350);
-//    _progBar->setVisible(width() > 350);
-    if (_mainWindow->width() < 1050) {
-//        _progBar->hide();
-    }
-    if (width() <= 300) {
-        _progBar->setFixedWidth(width() - PROGBAR_SPEC + 50 + 54 + 10 + 54 + 10 + 10);
-        _progBarspec->setFixedWidth(width() - PROGBAR_SPEC + 50 + 54 + 10 + 54 + 10 + 10);
-    } else if (width() <= 450) {
-        _progBar->setFixedWidth(width() - PROGBAR_SPEC + 54 + 54 + 10);
-        _progBarspec->setFixedWidth(width() - PROGBAR_SPEC + 54 + 54 + 10);
-    }
+    if(!utils::check_wayland_env()){
+        // to keep left and right of the same width. which makes play button centered
+        _listBtn->setVisible(width() > 300);
+        _timeLabel->setVisible(width() > 450);
+        _timeLabelend->setVisible(width() > 450);
+    //    _viewProgBar->setVisible(width() > 350);
+    //    _progBar->setVisible(width() > 350);
+        if (_mainWindow->width() < 1050) {
+    //        _progBar->hide();
+        }
+        if (width() <= 300) {
+            _progBar->setFixedWidth(width() - PROGBAR_SPEC + 50 + 54 + 10 + 54 + 10 + 10);
+            _progBarspec->setFixedWidth(width() - PROGBAR_SPEC + 50 + 54 + 10 + 54 + 10 + 10);
+        } else if (width() <= 450) {
+            _progBar->setFixedWidth(width() - PROGBAR_SPEC + 54 + 54 + 10);
+            _progBarspec->setFixedWidth(width() - PROGBAR_SPEC + 54 + 54 + 10);
+        }
 
-//    if (width() > 400) {
-//        auto right_geom = _right->geometry();
-//        int left_w = 54;
-//        _timeLabel->show();
-//        _timeLabelend->show();
-//        int w = qMax(left_w, right_geom.width());
-////        int w = left_w;
-//        _timeLabel->setFixedWidth(left_w );
-//        _timeLabelend->setFixedWidth(left_w );
-//        right_geom.setWidth(w);
-//        _right->setGeometry(right_geom);
-    //    }
+    //    if (width() > 400) {
+    //        auto right_geom = _right->geometry();
+    //        int left_w = 54;
+    //        _timeLabel->show();
+    //        _timeLabelend->show();
+    //        int w = qMax(left_w, right_geom.width());
+    ////        int w = left_w;
+    //        _timeLabel->setFixedWidth(left_w );
+    //        _timeLabelend->setFixedWidth(left_w );
+    //        right_geom.setWidth(w);
+    //        _right->setGeometry(right_geom);
+        //    }
+    }
 #endif
 }
 
@@ -2800,42 +2863,46 @@ void ToolboxProxy::setPlaylist(PlaylistWidget *playlist)
 
         if (_playlist->state() == PlaylistWidget::State::Opened) {
 #ifndef __sw_64__
-            QRect rcBegin = this->geometry();
-            QRect rcEnd = rcBegin;
-            rcEnd.setY(rcBegin.y() - TOOLBOX_SPACE_HEIGHT - 7);
-            bAnimationFinash = false;
-            paopen = new QPropertyAnimation(this, "geometry");
-            paopen->setEasingCurve(QEasingCurve::Linear);
-            paopen->setDuration(POPUP_DURATION  ) ;
-            paopen->setStartValue(rcBegin);
-            paopen->setEndValue(rcEnd);
-            paopen->start();
-            connect(paopen, &QPropertyAnimation::finished, [ = ]() {
-                paopen->deleteLater();
-                paopen = nullptr;
-                bAnimationFinash = true;
-            });
+            if(!utils::check_wayland_env()){
+                QRect rcBegin = this->geometry();
+                QRect rcEnd = rcBegin;
+                rcEnd.setY(rcBegin.y() - TOOLBOX_SPACE_HEIGHT - 7);
+                bAnimationFinash = false;
+                paopen = new QPropertyAnimation(this, "geometry");
+                paopen->setEasingCurve(QEasingCurve::Linear);
+                paopen->setDuration(POPUP_DURATION  ) ;
+                paopen->setStartValue(rcBegin);
+                paopen->setEndValue(rcEnd);
+                paopen->start();
+                connect(paopen, &QPropertyAnimation::finished, [ = ]() {
+                    paopen->deleteLater();
+                    paopen = nullptr;
+                    bAnimationFinash = true;
+                });
+            }
 #endif
             _listBtn->setChecked(true);
         } else {
             _listBtn->setChecked(false);
 #ifndef __sw_64__
-            bAnimationFinash = false;
+            if(!utils::check_wayland_env()){
+                bAnimationFinash = false;
 
-            QRect rcBegin = this->geometry();
-            QRect rcEnd = rcBegin;
-            rcEnd.setY(rcBegin.y() + TOOLBOX_SPACE_HEIGHT + 7);
-            paClose = new QPropertyAnimation(this, "geometry");
-            paClose->setEasingCurve(QEasingCurve::Linear);
-            paClose->setDuration(POPUP_DURATION );
-            paClose->setStartValue(rcBegin);
-            paClose->setEndValue(rcEnd);
-            paClose->start();
-            connect(paClose, &QPropertyAnimation::finished, [ = ]() {
-                paClose->deleteLater();
-                paClose = nullptr;
-                bAnimationFinash = true;
-            });
+                QRect rcBegin = this->geometry();
+                QRect rcEnd = rcBegin;
+                rcEnd.setY(rcBegin.y() + TOOLBOX_SPACE_HEIGHT + 7);
+                paClose = new QPropertyAnimation(this, "geometry");
+                paClose->setEasingCurve(QEasingCurve::Linear);
+                paClose->setDuration(POPUP_DURATION );
+                paClose->setStartValue(rcBegin);
+                paClose->setEndValue(rcEnd);
+                paClose->start();
+                connect(paClose, &QPropertyAnimation::finished, [ = ]() {
+                    paClose->deleteLater();
+                    paClose = nullptr;
+                    bAnimationFinash = true;
+                });
+            }
 #endif
         }
     });
@@ -2864,6 +2931,13 @@ void ToolboxProxy::setVolSliderHide()
 {
     _volSlider->setVisible(false);
 }
+
+void ToolboxProxy::setButtonTooltipHide(){
+    _subBtn->hideToolTip();
+    _listBtn->hideToolTip();
+    _fsBtn->hideToolTip();
+}
+
 bool ToolboxProxy::getVolSliderIsHided(){
     return _volSlider->isHidden();
 }

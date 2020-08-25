@@ -29,6 +29,7 @@
  */
 #include "notification_widget.h"
 #include "utility.h"
+#include "utils.h"
 #include "event_relayer.h"
 
 #include <DPlatformWindowHandle>
@@ -39,7 +40,7 @@ namespace dmr {
 
 NotificationWidget::NotificationWidget(QWidget *parent)
 #ifdef __aarch64__
-    : QFrame(nullptr), _mw(parent)
+    : QFrame(utils::check_wayland_env()? parent : nullptr), _mw(parent)
 #else
     : QFrame(parent), _mw(parent)
 #endif
@@ -48,10 +49,11 @@ NotificationWidget::NotificationWidget(QWidget *parent)
 
     //setFrameShape(QFrame::NoFrame);
     setObjectName("NotificationFrame");
-
 #ifndef __x86_64__
-    setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
-    setAttribute(Qt::WA_TranslucentBackground, true);
+    if(!utils::check_wayland_env()){
+        setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
+        setAttribute(Qt::WA_TranslucentBackground, true);
+    }
 #endif
 
     _layout = new QHBoxLayout();
@@ -62,7 +64,11 @@ NotificationWidget::NotificationWidget(QWidget *parent)
     _msgLabel->setFrameShape(QFrame::NoFrame);
 
     _timer = new QTimer(this);
-    _timer->setInterval(2000);
+    if(!utils::check_wayland_env()){
+        _timer->setInterval(2000);
+    }else {
+        _timer->setInterval(500);
+    }
     _timer->setSingleShot(true);
     connect(_timer, &QTimer::timeout, [ = ]() {
         this->hide();

@@ -281,12 +281,18 @@ mpv_handle *MpvProxy::mpv_init()
         //set_property(h, "ao", "alsa");
 #endif
     } else {
+#ifdef __mips__
+        set_property(h, "vo", "x11,xv");
+        set_property(h, "ao", "alsa");
+#else
+#ifdef MWV206_0
         QFileInfo fi("/dev/mwv206_0");              //景嘉微显卡目前只支持vo=xv，等日后升级代码需要酌情修改。
         if (fi.exists()) {
             _isJingJia = true;
             set_property(h, "hwdec", "vdpau");
             set_property(h, "vo", "vdpau");
         } else {
+            if(!utils::check_wayland_env()){
 #if defined (__mips__) || defined (__aarch64__)
             if (CompositingManager::get().hascard()) {
                 if(CompositingManager::get().isOnlySoftDecode()){
@@ -303,17 +309,23 @@ mpv_handle *MpvProxy::mpv_init()
 #else
             set_property(h, "vo", "xv,x11");
 #endif
-            /*auto e = QProcessEnvironment::systemEnvironment();
-            QString XDG_SESSION_TYPE = e.value(QStringLiteral("XDG_SESSION_TYPE"));
-            QString WAYLAND_DISPLAY = e.value(QStringLiteral("WAYLAND_DISPLAY"));
+            }else {
+                auto e = QProcessEnvironment::systemEnvironment();
+                QString XDG_SESSION_TYPE = e.value(QStringLiteral("XDG_SESSION_TYPE"));
+                QString WAYLAND_DISPLAY = e.value(QStringLiteral("WAYLAND_DISPLAY"));
 
-            if (XDG_SESSION_TYPE == QLatin1String("wayland") ||
-                    WAYLAND_DISPLAY.contains(QLatin1String("wayland"), Qt::CaseInsensitive)) {
-                set_property(h, "vo", "gpu,x11,xv");
-            } else {
-                set_property(h, "vo", "xv");
-            }*/
+                if (XDG_SESSION_TYPE == QLatin1String("wayland") ||
+                        WAYLAND_DISPLAY.contains(QLatin1String("wayland"), Qt::CaseInsensitive)) {
+                    set_property(h, "vo", "gpu,x11,xv");
+                } else {
+                    set_property(h, "vo", "xv");
+                }
+            }
         }
+#else
+        set_property(h, "vo", "gpu,xv,x11");
+#endif
+#endif
         set_property(h, "wid", m_parentWidget->winId());
     }
     if (QFile::exists("/dev/csmcore")) {
@@ -480,6 +492,10 @@ const PlayingMovieInfo &MpvProxy::playingMovieInfo()
 
 void MpvProxy::handle_mpv_events()
 {
+    if(utils::check_wayland_env() && CompositingManager::get().isTestFlag()){
+        qDebug()<<"not handle mpv events!";
+        return;
+    }
     while (1) {
         mpv_event *ev = mpv_wait_event(_handle, 0.0005);
         if (ev->event_id == MPV_EVENT_NONE)
@@ -984,7 +1000,7 @@ void MpvProxy::play()
     }
 
     //非景嘉微显卡
-    if (!_isJingJia) {
+    if (!_isJingJia || !utils::check_wayland_env()) {
         // hwdec could be disabled by some codecs, so we need to re-enable it
         if (Settings::get().isSet(Settings::HWAccel)
                 && !CompositingManager::get().isOnlySoftDecode()) {
@@ -997,7 +1013,7 @@ void MpvProxy::play()
     set_property(_handle, "hwdec", "auto");
 #endif
     //非景嘉微显卡
-    if (!_isJingJia) {
+    if (!utils::check_wayland_env() && !_isJingJia) {
 #ifdef __mips__
         auto codec = get_property(_handle, "video-codec").toString();
         if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") /*|| codec.toLower().contains("mpeg2video")*/) {

@@ -78,7 +78,6 @@ void ShowInFileManager(const QString &path)
     }
 }
 
-
 static int min(int v1, int v2, int v3)
 {
     return std::min(v1, std::min(v2, v3));
@@ -168,6 +167,19 @@ bool CompareNames(const QString &fileName1, const QString &fileName2)
         pos += inc;
     }
     return fileName1.localeAwareCompare(fileName2) < 0;
+}
+
+bool check_wayland_env()
+{
+    auto e = QProcessEnvironment::systemEnvironment();
+    QString XDG_SESSION_TYPE = e.value(QStringLiteral("XDG_SESSION_TYPE"));
+    QString WAYLAND_DISPLAY = e.value(QStringLiteral("WAYLAND_DISPLAY"));
+
+    if (XDG_SESSION_TYPE == QLatin1String("wayland") || WAYLAND_DISPLAY.contains(QLatin1String("wayland"), Qt::CaseInsensitive))
+        return true;
+    else {
+        return false;
+    }
 }
 
 // hash the whole file takes amount of time, so just pick some areas to be hashed

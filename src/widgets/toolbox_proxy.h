@@ -207,6 +207,7 @@ public:
     int DisplayVolume();
     void setVolSliderHide();
     bool getVolSliderIsHided();
+	 void setButtonTooltipHide();
 public slots:
     void finishLoadSlot(QSize size);
     void updateplaylisticon();
@@ -237,11 +238,14 @@ protected slots:
     void progressHoverChanged(int v);
     void updateHoverPreview(const QUrl &url, int secs);
 
+    //lmh0706暂停延时，解决乱按卡死问题
+    void waitPlay();
+
 protected:
 //    void paintEvent(QPaintEvent *pe) override;
     void showEvent(QShowEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
-
+    void mouseMoveEvent(QMouseEvent *ev) override;
 private:
     void setup();
     void updateTimeLabel();

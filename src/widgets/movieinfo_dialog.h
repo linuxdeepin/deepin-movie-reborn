@@ -34,6 +34,7 @@
 #include <QGuiApplication>
 #include <DDialog>
 #include <DImageButton>
+#include <DPushButton>
 #include <DLabel>
 #include <DFontSizeManager>
 #include <DThemeManager>
@@ -124,6 +125,25 @@ protected:
         QPainterPath painterPath;
         painterPath.addRoundedRect(rect, 10, 10);
         pt.drawPath(painterPath);
+    }
+};
+
+class CloseButton : public DPushButton
+{
+public:
+    CloseButton(QWidget *parent) {}
+protected:
+    void paintEvent(QPaintEvent *e) override
+    {
+        QPainter painter(this);
+        QRect rect = this->rect();
+        if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
+            painter.drawPixmap(rect, QPixmap(INFO_CLOSE_LIGHT));
+        } else if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
+            painter.drawPixmap(rect, QPixmap(INFO_CLOSE_DARK));
+        } else {
+            painter.drawPixmap(rect, QPixmap(INFO_CLOSE_LIGHT));
+        }
     }
 };
 
