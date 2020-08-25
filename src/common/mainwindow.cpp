@@ -735,10 +735,10 @@ MainWindow::MainWindow(QWidget *parent)
             return;
 
         resumeToolsWindow();
-        QTimer::singleShot(0, [ = ]() {
-            qApp->restoreOverrideCursor();
-            ActionFactory::get().mainContextMenu()->popup(QCursor::pos());
-        });
+//        QTimer::singleShot(0, [ = ]() {
+//            qApp->restoreOverrideCursor();
+//            ActionFactory::get().mainContextMenu()->popup(QCursor::pos());
+//        });
 
         _mousePressed = false;
         _isTouch = false;
