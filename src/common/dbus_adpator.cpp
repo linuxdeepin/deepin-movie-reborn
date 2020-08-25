@@ -28,6 +28,7 @@
  * files in the program, then also delete it here.
  */
 #include "dbus_adpator.h"
+#include "utils.h"
 
 ApplicationAdaptor::ApplicationAdaptor(MainWindow* mw)
     :QDBusAbstractAdaptor(mw), _mw(mw) 
@@ -50,6 +51,16 @@ void ApplicationAdaptor::openFile(const QString& file)
         url = QUrl::fromLocalFile(file);
     }
     _mw->play(url);
+}
+
+void ApplicationAdaptor::Raise(){
+    if(utils::check_wayland_env()){
+
+    }else {
+        _mw->showNormal();
+        _mw->raise();
+        _mw->activateWindow();
+    }
 }
 
 QVariant ApplicationAdaptor::redDBusProperty(const QString &service, const QString &path, const QString &interface, const char *propert)

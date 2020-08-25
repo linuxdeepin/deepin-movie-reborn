@@ -56,23 +56,31 @@ DWIDGET_USE_NAMESPACE
 
 int main(int argc, char *argv[])
 {
-    setenv("PULSE_PROP_media.role", "video", 1);
+    if(dmr::utils::first_check_wayland_env()){
+        qputenv("QT_WAYLAND_SHELL_INTEGRATION", "kwayland-she/ll");
+        qputenv("_d_disableDBusFileDialog", "true");
+        QSurfaceFormat format;
+        format.setRenderableType(QSurfaceFormat::OpenGLES);
+        format.setDefaultFormat(format);
+    }else {
+        setenv("PULSE_PROP_media.role", "video", 1);
 
-#ifdef __mips__
-    if (CompositingManager::get().composited()) {
-        CompositingManager::detectOpenGLEarly();
-        CompositingManager::detectPciID();
+        #ifdef __mips__
+            if (CompositingManager::get().composited()) {
+                CompositingManager::detectOpenGLEarly();
+                CompositingManager::detectPciID();
+            }
+        #else
+            CompositingManager::detectOpenGLEarly();
+            CompositingManager::detectPciID();
+        #endif
+        DApplication::loadDXcbPlugin();
     }
-#else
-    CompositingManager::detectOpenGLEarly();
-    CompositingManager::detectPciID();
-#endif
+
 
 #if defined(STATIC_LIB)
     DWIDGET_INIT_RESOURCE();
 #endif
-
-    DApplication::loadDXcbPlugin();
 
     DApplication app(argc, argv);
 
@@ -130,6 +138,31 @@ int main(int argc, char *argv[])
 
     QString strUserPath = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
 
+    if(utils::check_wayland_env()){
+        if (QString(argv[argc - 1]) != "QProcess") {
+               QString t_argv = QString(argv[0]) + " ";
+               if (argc > 1) {
+                   for (int i = 1; i < argc; i++) {
+                       t_argv += argv[i];
+                       t_argv += " ";
+                   }
+               }
+
+               t_argv += "QProcess";
+
+               QProcess *process = new QProcess(nullptr);
+
+               QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+
+               process->setProcessEnvironment(env);
+               process->startDetached(t_argv);
+               process->deleteLater();
+
+               qDebug() << t_argv;
+               return 0;
+           }
+    }
+
     QSharedMemory shared_memory(strUserPath + "deepinmovie");
 
     if (shared_memory.attach()) {
@@ -141,12 +174,18 @@ int main(int argc, char *argv[])
         if (!toOpenFiles.isEmpty()) {
             QDBusInterface iface("com.deepin.movie", "/", "com.deepin.movie");
             if (toOpenFiles.size() == 1) {
-                iface.asyncCall("openFile", toOpenFiles[0]);
+                if(!toOpenFiles[0].contains("QProcess"))
+                    iface.asyncCall("openFile", toOpenFiles[0]);
             } else {
                 iface.asyncCall("openFiles", toOpenFiles);
             }
         }
 
+        QDBusInterface iface("com.deepin.movie", "/", "com.deepin.movie");
+        if (iface.isValid()) {
+             qWarning() << "deepin-movie raise";
+            iface.asyncCall("Raise");
+        }
         exit(0);
     }
 

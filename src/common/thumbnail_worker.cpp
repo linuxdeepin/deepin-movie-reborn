@@ -121,7 +121,8 @@ QPixmap ThumbnailWorker::genThumb(const QUrl &url, int secs)
 
         if (XDG_SESSION_TYPE == QLatin1String("wayland") ||
                 WAYLAND_DISPLAY.contains(QLatin1String("wayland"), Qt::CaseInsensitive)) {
-            return pm;
+            if(!utils::check_wayland_env())
+                return pm;
         }
 
         std::vector<uint8_t> buf;

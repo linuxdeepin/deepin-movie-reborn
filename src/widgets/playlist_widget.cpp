@@ -1004,6 +1004,7 @@ void PlaylistWidget::clear()
     _playlist->clear();
     QString s = QString(tr("%1 videos")).arg(_playlist->count());
     _num->setText(s);
+    _engine->getplaylist()->clearLoad();
 }
 
 
@@ -1379,23 +1380,30 @@ void PlaylistWidget::togglePopup()
         Q_ASSERT(isVisible());
 
 #ifndef __sw_64__
-        paOpen = new QPropertyAnimation(this, "geometry");
-        paOpen->setEasingCurve(QEasingCurve::Linear);
-        paOpen->setDuration(POPUP_DURATION);
-        paOpen->setStartValue(fixed);
-        paOpen->setEndValue(shrunk);;
-        _toggling = false;
-        _state = State::Closed;
-        emit stateChange();
-        paOpen->start();
-        connect(paOpen, &QPropertyAnimation::finished, [ = ]() {
-            paOpen->deleteLater();
-            paOpen = nullptr;
+        if(!utils::check_wayland_env()){
+            paOpen = new QPropertyAnimation(this, "geometry");
+            paOpen->setEasingCurve(QEasingCurve::Linear);
+            paOpen->setDuration(POPUP_DURATION);
+            paOpen->setStartValue(fixed);
+            paOpen->setEndValue(shrunk);;
+            _toggling = false;
+            _state = State::Closed;
+            emit stateChange();
+            paOpen->start();
+            connect(paOpen, &QPropertyAnimation::finished, [ = ]() {
+                paOpen->deleteLater();
+                paOpen = nullptr;
+                setVisible(!isVisible());
+                //_toggling = false;
+                //_state = State::Closed;
+                //emit stateChange();
+            });
+        }else {
+            _toggling = false;
+            _state = State::Closed;
+            emit stateChange();
             setVisible(!isVisible());
-            //_toggling = false;
-            //_state = State::Closed;
-            //emit stateChange();
-        });
+        }
 #else
         _toggling = false;
         _state = State::Closed;
@@ -1407,20 +1415,26 @@ void PlaylistWidget::togglePopup()
         setVisible(!isVisible());
         _toggling = true;
 #ifndef __sw_64__
-        paClose = new QPropertyAnimation(this, "geometry");
-        paClose->setEasingCurve(QEasingCurve::Linear);
-        paClose->setDuration(POPUP_DURATION);
-        paClose->setStartValue(shrunk);
-        paClose->setEndValue(fixed);
-        _toggling = false;
-        _state = State::Opened;
-        emit stateChange();
-        paClose->start();
-        connect(paClose, &QPropertyAnimation::finished, [ = ]() {
-            paClose->deleteLater();
-            paClose = nullptr;
-             _playlist->setAttribute(Qt::WA_TransparentForMouseEvents, false);
-        });
+        if(!utils::check_wayland_env()){
+            paClose = new QPropertyAnimation(this, "geometry");
+            paClose->setEasingCurve(QEasingCurve::Linear);
+            paClose->setDuration(POPUP_DURATION);
+            paClose->setStartValue(shrunk);
+            paClose->setEndValue(fixed);
+            _toggling = false;
+            _state = State::Opened;
+            emit stateChange();
+            paClose->start();
+            connect(paClose, &QPropertyAnimation::finished, [ = ]() {
+                paClose->deleteLater();
+                paClose = nullptr;
+                 _playlist->setAttribute(Qt::WA_TransparentForMouseEvents, false);
+            });
+        }else {
+            _toggling = false;
+            _state = State::Opened;
+            emit stateChange();
+        }
 #else
         _toggling = false;
         _state = State::Opened;
