@@ -122,8 +122,8 @@ class ImageButton: public QPushButton
 {
     Q_OBJECT
 public:
-    ImageButton(QWidget* parent = nullptr)
-        :QPushButton (parent)
+    ImageButton(QWidget *parent = nullptr)
+        : QPushButton (parent)
     {
 
     }
@@ -135,12 +135,12 @@ public:
     }
 
 protected:
-    void paintEvent(QPaintEvent* pEvent)
+    void paintEvent(QPaintEvent *pEvent)
     {
         QPainter painter(this);
         QImage image(m_strImageUrl);
 
-        painter.drawImage(rect(),image);
+        painter.drawImage(rect(), image);
     }
 
 private:
@@ -1416,8 +1416,8 @@ private slots:
     }
 
 private:
-    ImageButton* m_pBtnChangeVolume {nullptr};
-    QLabel* m_pLabShowVolume {nullptr};
+    ImageButton *m_pBtnChangeVolume {nullptr};
+    QLabel *m_pLabShowVolume {nullptr};
     PlayerEngine *_engine;
     DSlider *_slider;
     MainWindow *_mw;
@@ -1432,6 +1432,7 @@ viewProgBarLoad::viewProgBarLoad(PlayerEngine *engine, DMRSlider *progBar, Toolb
     _parent = parent;
     _engine = engine;
     _progBar = progBar;
+    initThumb();
 }
 
 void viewProgBarLoad::quitLoad()
@@ -1471,6 +1472,33 @@ void viewProgBarLoad::run()
 
 }
 
+void viewProgBarLoad::initThumb()
+{
+#ifdef __x86_64__
+    const char *path = "/usr/lib/x86_64-linux-gnu/libffmpegthumbnailer.so.4";
+#elif __mips__
+    const char *path = "/usr/lib/mips64el-linux-gnuabi64/libffmpegthumbnailer.so.4";
+#elif __aarch64__
+    const char *path = "/usr/lib/aarch64-linux-gnu/libffmpegthumbnailer.so.4";
+#endif
+
+    QLibrary library(path);
+    m_mvideo_thumbnailer = (mvideo_thumbnailer) library.resolve( "video_thumbnailer_create");
+    m_mvideo_thumbnailer_destroy = (mvideo_thumbnailer_destroy) library.resolve( "video_thumbnailer_destroy");
+    m_mvideo_thumbnailer_create_image_data = (mvideo_thumbnailer_create_image_data) library.resolve( "video_thumbnailer_create_image_data");
+    m_mvideo_thumbnailer_destroy_image_data = (mvideo_thumbnailer_destroy_image_data) library.resolve( "video_thumbnailer_destroy_image_data");
+    m_mvideo_thumbnailer_generate_thumbnail_to_buffer = (mvideo_thumbnailer_generate_thumbnail_to_buffer) library.resolve( "video_thumbnailer_generate_thumbnail_to_buffer");
+    if (m_mvideo_thumbnailer == nullptr || m_mvideo_thumbnailer_destroy == nullptr
+            || m_mvideo_thumbnailer_create_image_data == nullptr || m_mvideo_thumbnailer_destroy_image_data == nullptr
+            || m_mvideo_thumbnailer_generate_thumbnail_to_buffer == nullptr )
+
+    {
+        return;
+    }
+    m_video_thumbnailer = m_mvideo_thumbnailer();
+    m_image_data = m_mvideo_thumbnailer_create_image_data();
+}
+
 void viewProgBarLoad::loadViewProgBar(QSize size)
 {
     auto num = qreal(_progBar->width()) / 9/*100*/;
@@ -1481,20 +1509,17 @@ void viewProgBarLoad::loadViewProgBar(QSize size)
 //    pm.setDevicePixelRatio(dpr);
     QList<QPixmap> pm_black;
 //    pm_black.setDevicePixelRatio(dpr);
-    if (m_pThumber == nullptr) {
-        m_pThumber = new VideoThumbnailer();
-        m_pThumber->setMaintainAspectRatio(true);
-    }
+
     QTime d(0, 0, 0, 0);
     qDebug() << _engine->videoSize().width();
     qDebug() << _engine->videoSize().height();
     qDebug() << qApp->devicePixelRatio();
     if (_engine->videoSize().width() > 0 && _engine->videoSize().height() > 0) {
-        m_pThumber->setThumbnailSize(static_cast<int>(50 * (_engine->videoSize().width() / _engine->videoSize().height() * 50)
-                                                      * qApp->devicePixelRatio()));
+        m_video_thumbnailer->thumbnail_size = (static_cast<int>(50 * (_engine->videoSize().width() / _engine->videoSize().height() * 50)
+                                                                * qApp->devicePixelRatio()));
     }
 
-    m_pThumber->setSeekTime(d.toString("hh:mm:ss").toStdString());
+    m_video_thumbnailer->seek_time = d.toString("hh:mm:ss").toLatin1().data();
     auto url = _engine->playlist().currentInfo().url;
     auto file = QFileInfo(url.toLocalFile()).absoluteFilePath();
 
@@ -1510,12 +1535,11 @@ void viewProgBarLoad::loadViewProgBar(QSize size)
         }
         d = d.addMSecs(tmp);
 //        qDebug()<<d;
-        m_pThumber->setSeekTime(d.toString("hh:mm:ss:ms").toStdString());
+        m_video_thumbnailer->seek_time = d.toString("hh:mm:ss").toLatin1().data();
         try {
-            std::vector<uint8_t> buf;
-            m_pThumber->generateThumbnail(file.toUtf8().toStdString(), ThumbnailerImageType::Jpeg, buf);
 
-            auto img = QImage::fromData(buf.data(), static_cast<int>(buf.size()), "jpg");
+            m_mvideo_thumbnailer_generate_thumbnail_to_buffer(m_video_thumbnailer, file.toUtf8().data(),  m_image_data);
+            auto img = QImage::fromData(m_image_data->image_data_ptr, static_cast<int>(m_image_data->image_data_size), "png");
             auto img_tmp = img.scaledToHeight(50);
 
 
@@ -2214,9 +2238,8 @@ void ToolboxProxy::setup()
     updateFullState();
     updateButtonStates();
 
-    ThumbnailWorker::get().setPlayerEngine(_engine);
-    connect(&ThumbnailWorker::get(), &ThumbnailWorker::thumbGenerated,
-            this, &ToolboxProxy::updateHoverPreview);
+//    connect(&ThumbnailWorker::get(), &ThumbnailWorker::thumbGenerated,
+//            this, &ToolboxProxy::updateHoverPreview);
 
     auto bubbler = new KeyPressBubbler(this);
     this->installEventFilter(bubbler);
@@ -2884,11 +2907,11 @@ void ToolboxProxy::resizeEvent(QResizeEvent *event)
     }
 
 
-    if (_playlist->state() == PlaylistWidget::State::Opened && bAnimationFinash == true) {
+    if (_playlist && _playlist->state() == PlaylistWidget::State::Opened && bAnimationFinash == true) {
         QRect r(5, _mainWindow->height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT + 7) - _mainWindow->rect().top() - 5,
                 _mainWindow->rect().width() - 10, (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT + 7));
         this->setGeometry(r);
-    } else if (_playlist->state() == PlaylistWidget::State::Closed && bAnimationFinash == true) {
+    } else if (_playlist && _playlist->state() == PlaylistWidget::State::Closed && bAnimationFinash == true) {
         QRect r(5, _mainWindow->height() - TOOLBOX_HEIGHT - _mainWindow->rect().top() - 5,
                 _mainWindow->rect().width() - 10, TOOLBOX_HEIGHT);
         this->setGeometry(r);
@@ -3045,35 +3068,38 @@ void ToolboxProxy::updateProgress(int nValue)
 {
     int nDuration = static_cast<int>(_engine->duration());
 
-    if(_progBar_Widget->currentIndex()==1){                  //进度条模式
+    if (_progBar_Widget->currentIndex() == 1) {              //进度条模式
 
-        int nCurrPos = _progBar->value()+nValue*nDuration/_progBar->width();
-        if(!_progBar->signalsBlocked())
-        {
+        int nCurrPos = _progBar->value() + nValue * nDuration / _progBar->width();
+        if (!_progBar->signalsBlocked()) {
             _progBar->blockSignals(true);
         }
 
         _progBar->slider()->setSliderPosition(nCurrPos);
         _progBar->slider()->setValue(nCurrPos);
-    }
-    else {
+    } else {
         _viewProgBar->setIsBlockSignals(true);
-        _viewProgBar->setValue(_viewProgBar->getValue()+nValue);
+        _viewProgBar->setValue(_viewProgBar->getValue() + nValue);
     }
 }
 
 void ToolboxProxy::updateSlider()
 {
-    if(_progBar_Widget->currentIndex() ==1)
-    {
+    if (_progBar_Widget->currentIndex() == 1) {
         _engine->seekAbsolute(_progBar->value());
 
         _progBar->blockSignals(false);
-    }
-    else {
+    } else {
         _engine->seekAbsolute(_viewProgBar->getTimePos());
         _viewProgBar->setIsBlockSignals(false);
     }
+}
+
+void ToolboxProxy::initThumb()
+{
+    ThumbnailWorker::get().setPlayerEngine(_engine);
+    connect(&ThumbnailWorker::get(), &ThumbnailWorker::thumbGenerated,
+            this, &ToolboxProxy::updateHoverPreview);
 }
 }
 

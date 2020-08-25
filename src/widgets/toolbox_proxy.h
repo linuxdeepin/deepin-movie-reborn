@@ -213,14 +213,13 @@ public:
     {
         return _progBar;
     }
-    ViewProgBar* getViewProBar()
+    ViewProgBar *getViewProBar()
     {
         return _viewProgBar;
     }
     bool isViewProgress()
     {
-        if(_progBar_Widget->currentIndex()==2)
-        {
+        if (_progBar_Widget->currentIndex() == 2) {
             return true;
         }
     }
@@ -228,6 +227,7 @@ public:
     void updateProgress(int nValue);    //更新进度条显示
 
     void updateSlider();                //根据进度条显示更新影片实际进度
+    void initThumb();
 public slots:
     void finishLoadSlot(QSize size);
     void updateplaylisticon();
@@ -372,6 +372,7 @@ signals:
 protected:
     void run();
 private:
+    void initThumb();
     PlayerEngine *_engine {nullptr};
     ToolboxProxy *_parent{nullptr};
     int _vlastHoverValue;
@@ -401,7 +402,14 @@ private:
 
     QMutex *pListPixmapMutex;
 
-    VideoThumbnailer *m_pThumber {nullptr};
+    video_thumbnailer *m_video_thumbnailer = nullptr;
+    image_data *m_image_data = nullptr;
+
+    mvideo_thumbnailer m_mvideo_thumbnailer = nullptr;
+    mvideo_thumbnailer_destroy m_mvideo_thumbnailer_destroy = nullptr;
+    mvideo_thumbnailer_create_image_data m_mvideo_thumbnailer_create_image_data = nullptr;
+    mvideo_thumbnailer_destroy_image_data m_mvideo_thumbnailer_destroy_image_data = nullptr;
+    mvideo_thumbnailer_generate_thumbnail_to_buffer m_mvideo_thumbnailer_generate_thumbnail_to_buffer = nullptr;
 
 };
 }

@@ -179,6 +179,7 @@ public:
 
     //在读取光盘的时候，直接把光盘挂载点的路径加入到播放列表中 thx
     bool addCdromPath();
+    void loadPlayList();
 signals:
     void windowEntered();
     void windowLeaved();

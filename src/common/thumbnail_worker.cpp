@@ -38,7 +38,13 @@
 #include <dlfcn.h>
 
 #define SIZE_THRESHOLD (10 * 1<<20)
-const char* path = "/usr/lib/x86_64-linux-gnu/libffmpegthumbnailer.so.4";
+#ifdef __x86_64__
+    const char *path = "/usr/lib/x86_64-linux-gnu/libffmpegthumbnailer.so.4";
+#elif __mips__
+    const char *path = "/usr/lib/mips64el-linux-gnuabi64/libffmpegthumbnailer.so.4";
+#elif __aarch64__
+    const char *path = "/usr/lib/aarch64-linux-gnu/libffmpegthumbnailer.so.4";
+#endif
 
 namespace dmr {
 static std::atomic<ThumbnailWorker *> _instance { nullptr };
@@ -106,12 +112,11 @@ void ThumbnailWorker::requestThumb(const QUrl &url, int secs)
 
 ThumbnailWorker::ThumbnailWorker()
 {
-    //initThumb();
-    thumber.setThumbnailSize(static_cast<int>(thumbSize().width() * qApp->devicePixelRatio()));
-    thumber.setMaintainAspectRatio(true);
+    initThumb();
+    m_video_thumbnailer->thumbnail_size = m_video_thumbnailer->thumbnail_size * qApp->devicePixelRatio();
 }
 
-/*void ThumbnailWorker::initThumb()
+void ThumbnailWorker::initThumb()
 {
 //    QLibrary *library = new QLibrary(path);
 //    library->load();
@@ -119,30 +124,22 @@ ThumbnailWorker::ThumbnailWorker()
 //    if (m_setSeekTime == nullptr) {
 //        return;
 //    }
+    QLibrary library(path);
+    m_mvideo_thumbnailer = (mvideo_thumbnailer) library.resolve( "video_thumbnailer_create");
+    m_mvideo_thumbnailer_destroy = (mvideo_thumbnailer_destroy) library.resolve( "video_thumbnailer_destroy");
+    m_mvideo_thumbnailer_create_image_data = (mvideo_thumbnailer_create_image_data) library.resolve( "video_thumbnailer_create_image_data");
+    m_mvideo_thumbnailer_destroy_image_data = (mvideo_thumbnailer_destroy_image_data) library.resolve( "video_thumbnailer_destroy_image_data");
+    m_mvideo_thumbnailer_generate_thumbnail_to_buffer = (mvideo_thumbnailer_generate_thumbnail_to_buffer) library.resolve( "video_thumbnailer_generate_thumbnail_to_buffer");
+    if (m_mvideo_thumbnailer == nullptr || m_mvideo_thumbnailer_destroy == nullptr
+            || m_mvideo_thumbnailer_create_image_data == nullptr || m_mvideo_thumbnailer_destroy_image_data == nullptr
+            || m_mvideo_thumbnailer_generate_thumbnail_to_buffer == nullptr )
 
-    void *handle = nullptr;
-    handle = dlopen(path, RTLD_LAZY);
-    if (handle == nullptr) {
-        qWarning() << "ERROR:" << dlerror() << ":dlopen";
+    {
         return;
     }
-    m_setSeekTime = (thumb_setSeekTime) dlsym(handle, "setSeekTime");
-    if (m_setSeekTime == nullptr) {
-        qWarning() << "ERROR:" << dlerror() << ":dlsym";
-    }
-    m_generateThumbnail = (thumb_generateThumbnail) dlsym(handle, "generateThumbnail");
-    if (m_generateThumbnail == nullptr) {
-        qWarning() << "ERROR:" << dlerror() << ":dlsym";
-    }
-    m_setThumbnailSize = (thumb_setThumbnailSize) dlsym(handle, "setThumbnailSize");
-    if (m_setThumbnailSize == nullptr) {
-        qWarning() << "ERROR:" << dlerror() << ":dlsym";
-    }
-    m_setMaintainAspectRatio = (thumb_setMaintainAspectRatio) dlsym(handle, "setMaintainAspectRatio");
-    if (m_setMaintainAspectRatio == nullptr) {
-        qWarning() << "ERROR:" << dlerror() << ":dlsym";
-    }
-}*/
+    m_video_thumbnailer = m_mvideo_thumbnailer();
+    m_image_data = m_mvideo_thumbnailer_create_image_data();
+}
 
 QPixmap ThumbnailWorker::genThumb(const QUrl &url, int secs)
 {
@@ -152,7 +149,7 @@ QPixmap ThumbnailWorker::genThumb(const QUrl &url, int secs)
 
     QTime d(0, 0, 0);
     d = d.addSecs(secs);
-    thumber.setSeekTime(d.toString("hh:mm:ss").toStdString());
+    m_video_thumbnailer->seek_time = d.toString("hh:mm:ss").toLatin1().data();
     auto file = QFileInfo(url.toLocalFile()).absoluteFilePath();
     try {
         auto e = QProcessEnvironment::systemEnvironment();
@@ -163,11 +160,8 @@ QPixmap ThumbnailWorker::genThumb(const QUrl &url, int secs)
                 WAYLAND_DISPLAY.contains(QLatin1String("wayland"), Qt::CaseInsensitive)) {
             return pm;
         }
-
-        std::vector<uint8_t> buf;
-        thumber.generateThumbnail(file.toUtf8().toStdString(), ThumbnailerImageType::Png, buf);
-
-        auto img = QImage::fromData(buf.data(), static_cast<int>(buf.size()), "png");
+        m_mvideo_thumbnailer_generate_thumbnail_to_buffer(m_video_thumbnailer, file.toUtf8().data(),  m_image_data);
+        auto img = QImage::fromData(m_image_data->image_data_ptr, static_cast<int>(m_image_data->image_data_size), "png");
 
         pm = QPixmap::fromImage(img.scaled(thumbSize() * dpr, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
         pm.setDevicePixelRatio(dpr);

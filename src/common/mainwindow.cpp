@@ -735,10 +735,10 @@ MainWindow::MainWindow(QWidget *parent)
             return;
 
         resumeToolsWindow();
-        QTimer::singleShot(0, [ = ]() {
-            qApp->restoreOverrideCursor();
-            ActionFactory::get().mainContextMenu()->popup(QCursor::pos());
-        });
+//        QTimer::singleShot(0, [ = ]() {
+//            qApp->restoreOverrideCursor();
+//            ActionFactory::get().mainContextMenu()->popup(QCursor::pos());
+//        });
 
         _mousePressed = false;
         _isTouch = false;
@@ -818,12 +818,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     _toolbox = new ToolboxProxy(this, _engine);
     _toolbox->setFocusPolicy(Qt::NoFocus);
-
-    _playlist = new PlaylistWidget(this, _engine);
-    _playlist->hide();
-//    _playlist->setParent(_toolbox);
-
-    _toolbox->setPlaylist(_playlist);
 
     connect(_engine, &PlayerEngine::stateChanged, [ = ]() {
         setInit(_engine->state() != PlayerEngine::Idle);
@@ -1208,7 +1202,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(&m_diskCheckThread, &Diskcheckthread::diskRemove, this, &MainWindow::diskRemoved);
 
-    _engine->firstInit();
+    //_engine->firstInit();
 
      _toolbox->setDisplayValue(volume);
 
@@ -1216,6 +1210,10 @@ MainWindow::MainWindow(QWidget *parent)
         _engine->toggleMute();
         Settings::get().setInternalOption("mute", _engine->muted());
     }
+
+    QTimer::singleShot(500, [this]() {
+        loadPlayList();
+    });
 }
 
 void MainWindow::setupTitlebar()
@@ -1973,6 +1971,16 @@ bool MainWindow::addCdromPath()
         return false;
     }
     return true;
+}
+
+void MainWindow::loadPlayList()
+{
+    _playlist = new PlaylistWidget(this, _engine);
+    _playlist->hide();
+//    _playlist->setParent(_toolbox);
+    _toolbox->setPlaylist(_playlist);
+    _engine->getplaylist()->loadPlaylist();
+    _toolbox->initThumb();
 }
 
 void MainWindow::menuItemInvoked(QAction *action)
@@ -3209,7 +3217,7 @@ void MainWindow::updateProxyGeometry()
                     _toolbox->setGeometry(rct);
                 }
             } else {
-                if (_playlist->state() == PlaylistWidget::State::Opened) {
+                if (_playlist && _playlist->state() == PlaylistWidget::State::Opened) {
 #if !defined(__aarch64__) && !defined (__sw_64__)
                     _toolbox->setGeometry(rfs);
 #else
@@ -3308,7 +3316,7 @@ void MainWindow::resumeToolsWindow()
     if (_engine->state() != PlayerEngine::Idle &&
             qApp->applicationState() == Qt::ApplicationActive) {
         // playlist's previous state was Opened
-        if (_playlist->state() != PlaylistWidget::Closed &&
+        if (_playlist && _playlist->state() != PlaylistWidget::Closed &&
                 !frameGeometry().contains(QCursor::pos())) {
             goto _finish;
         }
@@ -3640,7 +3648,9 @@ void MainWindow::showEvent(QShowEvent *event)
 
     _titlebar->raise();
     _toolbox->raise();
-    _playlist->raise();
+    if (_playlist) {
+        _playlist->raise();
+    }
     resumeToolsWindow();
 
     if (!qgetenv("FLATPAK_APPID").isEmpty()) {
@@ -3896,7 +3906,7 @@ void MainWindow::capturedMouseReleaseEvent(QMouseEvent *me)
         m_bLastIsTouch = true;
          _isTouch = false;
 
-        if(m_bLastIsTouch)
+        if(m_bProgressChanged)
         {
             _toolbox->updateSlider();   //手势释放时改变影片进度
             m_bProgressChanged = false;
@@ -4076,7 +4086,7 @@ void MainWindow::mouseMoveEvent(QMouseEvent *ev)
     QPoint ptCurr = mapToGlobal(ev->pos());
     QPoint ptDelta = ptCurr-this->posMouseOrigin;
 
-    if(qAbs(ptDelta.x())<5 && qAbs(ptDelta.y()<5)){  //避免误触
+    if(qAbs(ptDelta.x())<5 && qAbs(ptDelta.y())<5){  //避免误触
         this->posMouseOrigin = ptCurr;
         return;
     }
@@ -4654,20 +4664,20 @@ void MainWindow::dropEvent(QDropEvent *ev)
         }
     }
 
-//    {
-//        auto all = urls.toSet();
-//        auto accepted = valids.toSet();
-//        auto invalids = all.subtract(accepted).toList();
-//        int ms = 0;
-//        for (const auto &url : invalids) {
-//            QTimer::singleShot(ms, [ = ]() {
-//                auto msg = QString(tr("Invalid file: %1").arg(url.fileName()));
-//                _nwComm->updateWithMessage(msg);
-//            });
+    {
+        auto all = urls.toSet();
+        auto accepted = valids.toSet();
+        auto invalids = all.subtract(accepted).toList();
+        int ms = 0;
+        for (const auto &url : invalids) {
+            QTimer::singleShot(ms, [ = ]() {
+                auto msg = QString(tr("Invalid file: %1").arg(url.fileName()));
+                _nwComm->updateWithMessage(msg);
+            });
 
-//            ms += 1000;
-//        }
-//    }
+            ms += 1000;
+        }
+    }
 
     if (valids.size()) {
         if (valids.size() == 1) {
