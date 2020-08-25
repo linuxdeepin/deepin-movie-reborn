@@ -3326,8 +3326,13 @@ void MainWindow::resumeToolsWindow()
     setCursor(Qt::ArrowCursor);
 
     if (!_miniMode) {
-        _titlebar->setVisible(!isFullScreen());
-        _toolbox->show();
+        if(!m_bTouchChangeVolume) {
+            _titlebar->setVisible(!isFullScreen());
+            _toolbox->show();
+        }
+        else {
+            _toolbox->hide();
+        }
     } else {
         _miniPlayBtn->show();
         _miniCloseBtn->show();
@@ -3905,6 +3910,7 @@ void MainWindow::capturedMouseReleaseEvent(QMouseEvent *me)
     {
         m_bLastIsTouch = true;
          _isTouch = false;
+         m_bTouchChangeVolume = false;
 
         if(m_bProgressChanged)
         {
@@ -4095,6 +4101,7 @@ void MainWindow::mouseMoveEvent(QMouseEvent *ev)
     {
         if(qAbs(ptDelta.x())>qAbs(ptDelta.y())
                 && _engine->state() != PlayerEngine::CoreState::Idle){
+            m_bTouchChangeVolume = false;
             _toolbox->updateProgress(ptDelta.x());     //改变进度条显示
             this->posMouseOrigin = ptCurr;
             m_bProgressChanged = true;
@@ -4102,9 +4109,11 @@ void MainWindow::mouseMoveEvent(QMouseEvent *ev)
         }
         else if(qAbs(ptDelta.x())<qAbs(ptDelta.y())){
             if(ptDelta.y()>0){
+                m_bTouchChangeVolume = true;
                 requestAction(ActionFactory::ActionKind::VolumeDown);
             }
             else {
+                m_bTouchChangeVolume = true;
                 requestAction(ActionFactory::ActionKind::VolumeUp);
             }
 
