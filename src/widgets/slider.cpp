@@ -167,7 +167,7 @@ void DMRSlider::mousePressEvent(QMouseEvent *e)
         QWidget::mousePressEvent(e);
 
         int v = position2progress(e->pos());;
-        slider()->setSliderPosition(v);
+        //slider()->setSliderPosition(v);
         emit sliderMoved(v);
         _down = true;
     }
@@ -179,7 +179,7 @@ void DMRSlider::mouseMoveEvent(QMouseEvent *e)
 
     int v = position2progress(e->pos());
     if (_down) {
-        slider()->setSliderPosition(v);
+       // slider()->setSliderPosition(v);
         if (_showIndicator) {
             _indicatorPos = {e->x(), pos().y() + TOOLBOX_TOP_EXTENT - 4};
             update();
