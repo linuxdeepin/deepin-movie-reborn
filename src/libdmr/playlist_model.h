@@ -32,13 +32,37 @@
 
 #include <QtWidgets>
 #include <QtConcurrent>
-#include <libffmpegthumbnailer/videothumbnailer.h>
+#include <libffmpegthumbnailer/videothumbnailerc.h>
 
 #include "utils.h"
 #include <QNetworkReply>
 #include <QMutex>
+
+#include <libffmpegthumbnailer/videothumbnailerc.h>
+
+extern "C" {
+#include <libavformat/avformat.h>
+#include <libavutil/dict.h>
+#include <libavutil/avutil.h>
+}
+
+typedef video_thumbnailer *(*mvideo_thumbnailer)();
+typedef void (*mvideo_thumbnailer_destroy)(video_thumbnailer *thumbnailer);
+/* create image_data structure */
+typedef image_data *(*mvideo_thumbnailer_create_image_data)(void);
+/* destroy image_data structure */
+typedef void (*mvideo_thumbnailer_destroy_image_data)(image_data *data);
+typedef int (*mvideo_thumbnailer_generate_thumbnail_to_buffer)(video_thumbnailer *thumbnailer, const char *movie_filename, image_data *generated_image_data);
+
+typedef int (*mvideo_avformat_open_input)(AVFormatContext **ps, const char *url, AVInputFormat *fmt, AVDictionary **options);
+typedef int (*mvideo_avformat_find_stream_info)(AVFormatContext *ic, AVDictionary **options);
+typedef int (*mvideo_av_find_best_stream)(AVFormatContext *ic, enum AVMediaType type, int wanted_stream_nb, int related_stream, AVCodec **decoder_ret, int flags);
+typedef AVCodec* (*mvideo_avcodec_find_decoder)(enum AVCodecID id);
+typedef void (*mvideo_av_dump_format)(AVFormatContext *ic, int index, const char *url, int is_output);
+typedef void (*mvideo_avformat_close_input)(AVFormatContext **s);
+typedef AVDictionaryEntry* (*mvideo_av_dict_get)(const AVDictionary *m, const char *key, const AVDictionaryEntry *prev, int flags);
+
 namespace dmr {
-using namespace ffmpegthumbnailer;
 class PlayerEngine;
 class LoadThread;
 class GetThumanbil;
@@ -70,7 +94,6 @@ struct MovieInfo {
     int channels;
     int sampling;
 
-    static struct MovieInfo parseFromFile(const QFileInfo &fi, bool *ok = nullptr);
     QString durationStr() const
     {
         return utils::Time2str(duration);
@@ -184,7 +207,11 @@ public:
     bool getthreadstate();
     void savePlaylist();
     void clearPlaylist();
-    QList<QUrl> getLoadList() {return m_loadFile;};
+    QList<QUrl> getLoadList()
+    {
+        return m_loadFile;
+    };
+    void loadPlaylist();
 
 public slots:
     void changeCurrent(int);
@@ -209,6 +236,10 @@ signals:
     void itemInfoUpdated(int id);
 
 private:
+    void initThumb();
+    void initFFmpeg();
+    bool getMusicPix(const QFileInfo &fi, QPixmap &rImg);
+    struct MovieInfo parseFromFile(const QFileInfo &fi, bool *ok = nullptr);
     // when app starts, and the first time to load playlist
     bool _firstLoad {true};
     int _count {0};
@@ -229,7 +260,23 @@ private:
 
     bool _userRequestingItem {false};
 
-    VideoThumbnailer _thumbnailer;
+    video_thumbnailer *m_video_thumbnailer = nullptr;
+    image_data *m_image_data = nullptr;
+
+    mvideo_thumbnailer m_mvideo_thumbnailer = nullptr;
+    mvideo_thumbnailer_destroy m_mvideo_thumbnailer_destroy = nullptr;
+    mvideo_thumbnailer_create_image_data m_mvideo_thumbnailer_create_image_data = nullptr;
+    mvideo_thumbnailer_destroy_image_data m_mvideo_thumbnailer_destroy_image_data = nullptr;
+    mvideo_thumbnailer_generate_thumbnail_to_buffer m_mvideo_thumbnailer_generate_thumbnail_to_buffer = nullptr;
+
+    mvideo_avformat_open_input m_mvideo_avformat_open_input = nullptr;
+    mvideo_avformat_find_stream_info m_mvideo_avformat_find_stream_info = nullptr;
+    mvideo_av_find_best_stream m_mvideo_av_find_best_stream = nullptr;
+    mvideo_avcodec_find_decoder m_mvideo_avcodec_find_decoder = nullptr;
+    mvideo_av_dump_format m_mvideo_av_dump_format = nullptr;
+    mvideo_avformat_close_input m_mvideo_avformat_close_input = nullptr;
+    mvideo_av_dict_get m_mvideo_av_dict_get = nullptr;
+
     PlayerEngine *_engine {nullptr};
 
     QString _playlistFile;
@@ -243,7 +290,6 @@ private:
     bool m_isLoadRunning {false};
 
     void reshuffle();
-    void loadPlaylist();
     void appendSingle(const QUrl &);
     void tryPlayCurrent(bool next);
 
@@ -285,13 +331,18 @@ public:
         m_stop = true;
     };
     //QList<PlayItemInfo> getInfoList() {return m_itemInfo;}
-    void stop() {m_stop = true;};
-    void setUrls(QList<QUrl> urls) {
+    void stop()
+    {
+        m_stop = true;
+    };
+    void setUrls(QList<QUrl> urls)
+    {
         m_mutex->lock();
         m_urls = urls;
         m_mutex->unlock();
     };
-    void clearItem() {
+    void clearItem()
+    {
         m_itemMutex->lock();
         //m_itemInfo.clear();
         m_urls.clear();
