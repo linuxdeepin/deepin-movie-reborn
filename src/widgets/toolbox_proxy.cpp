@@ -1266,16 +1266,15 @@ public:
 public slots:
     void delayedHide()
     {
-        //sp3需求取消自动消失功能
-//#ifdef __x86_64__
-//        _autoHideTimer.start(500);
-//#else
-//        m_mouseIn = false;
-//        DUtil::TimerSingleShot(100, [this]() {
-//            if (!m_mouseIn)
-//                hide();
-//        });
-//#endif
+#ifdef __x86_64__
+        _autoHideTimer.start(500);
+#else
+        m_mouseIn = false;
+        DUtil::TimerSingleShot(100, [this]() {
+            if (!m_mouseIn)
+                hide();
+        });
+#endif
     }
     void setValue(int v)
     {
