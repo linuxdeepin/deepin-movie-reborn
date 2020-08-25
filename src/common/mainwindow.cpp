@@ -4664,20 +4664,20 @@ void MainWindow::dropEvent(QDropEvent *ev)
         }
     }
 
-//    {
-//        auto all = urls.toSet();
-//        auto accepted = valids.toSet();
-//        auto invalids = all.subtract(accepted).toList();
-//        int ms = 0;
-//        for (const auto &url : invalids) {
-//            QTimer::singleShot(ms, [ = ]() {
-//                auto msg = QString(tr("Invalid file: %1").arg(url.fileName()));
-//                _nwComm->updateWithMessage(msg);
-//            });
+    {
+        auto all = urls.toSet();
+        auto accepted = valids.toSet();
+        auto invalids = all.subtract(accepted).toList();
+        int ms = 0;
+        for (const auto &url : invalids) {
+            QTimer::singleShot(ms, [ = ]() {
+                auto msg = QString(tr("Invalid file: %1").arg(url.fileName()));
+                _nwComm->updateWithMessage(msg);
+            });
 
-//            ms += 1000;
-//        }
-//    }
+            ms += 1000;
+        }
+    }
 
     if (valids.size()) {
         if (valids.size() == 1) {
