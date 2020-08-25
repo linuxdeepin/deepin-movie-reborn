@@ -174,7 +174,8 @@ int main(int argc, char *argv[])
         if (!toOpenFiles.isEmpty()) {
             QDBusInterface iface("com.deepin.movie", "/", "com.deepin.movie");
             if (toOpenFiles.size() == 1) {
-                iface.asyncCall("openFile", toOpenFiles[0]);
+                if(!toOpenFiles[0].contains("QProcess"))
+                    iface.asyncCall("openFile", toOpenFiles[0]);
             } else {
                 iface.asyncCall("openFiles", toOpenFiles);
             }
