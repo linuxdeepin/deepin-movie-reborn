@@ -35,13 +35,6 @@
 #endif
 #include "dvd_utils.h"
 
-#include "libffmpegthumbnailer/videothumbnailer.h"
-extern "C" {
-#include <libavformat/avformat.h>
-#include <libavutil/dict.h>
-#include <libavutil/avutil.h>
-}
-
 #include <random>
 
 static bool check_wayland()
@@ -57,90 +50,51 @@ static bool check_wayland()
     }
 }
 
-//获取音乐缩略图
-static bool getMusicPix(const QFileInfo &fi, QPixmap &rImg)
-{
+//static int open_codec_context(int *stream_idx,
+//                              AVCodecParameters **dec_ctx, AVFormatContext *fmt_ctx, enum AVMediaType type)
+//{
+//    int ret, stream_index;
+//    AVStream *st;
+//    AVCodec *dec = nullptr;
+//    //AVDictionary *opts = nullptr;
+//    ret = av_find_best_stream(fmt_ctx, type, -1, -1, nullptr, 0);
+//    if (ret < 0) {
+////        qWarning() << "Could not find " << av_get_media_type_string(type)
+////                   << " stream in input file";
+//        return ret;
+//    }
 
-    AVFormatContext *av_ctx = nullptr;
-    //AVCodecContext *dec_ctx = nullptr;
+//    stream_index = ret;
+//    st = fmt_ctx->streams[stream_index];
+//#if LIBAVFORMAT_VERSION_MAJOR >= 57 && LIBAVFORMAT_VERSION_MINOR <= 25
+//    *dec_ctx = st->codecpar;
+//    dec = avcodec_find_decoder((*dec_ctx)->codec_id);
+//#else
+//    /* find decoder for the stream */
+//    dec = avcodec_find_decoder(st->codecpar->codec_id);
+//    if (!dec) {
+//        fprintf(stderr, "Failed to find %s codec\n",
+//                av_get_media_type_string(type));
+//        return AVERROR(EINVAL);
+//    }
+//    /* Allocate a codec context for the decoder */
+//    *dec_ctx = avcodec_alloc_context3(dec);
+//    if (!*dec_ctx) {
+//        fprintf(stderr, "Failed to allocate the %s codec context\n",
+//                av_get_media_type_string(type));
+//        return AVERROR(ENOMEM);
+//    }
+//    /* Copy codec parameters from input stream to output codec context */
+//    if ((ret = avcodec_parameters_to_context(*dec_ctx, st->codecpar)) < 0) {
+//        fprintf(stderr, "Failed to copy %s codec parameters to decoder context\n",
+//                av_get_media_type_string(type));
+//        return ret;
+//    }
+//#endif
 
-    if (!fi.exists()) {
-        return false;
-    }
-
-    auto ret = avformat_open_input(&av_ctx, fi.filePath().toUtf8().constData(), nullptr, nullptr);
-    if (ret < 0) {
-        qWarning() << "avformat: could not open input";
-        return false;
-    }
-
-    if (avformat_find_stream_info(av_ctx, nullptr) < 0) {
-        qWarning() << "av_find_stream_info failed";
-        return false;
-    }
-
-    // read the format headers  comment by thx , 这里会导致一些音乐 奔溃
-    //if (av_ctx->iformat->read_header(av_ctx) < 0) {
-    //    printf("No header format");
-    //    return false;
-    //}
-
-    for (unsigned int i = 0; i < av_ctx->nb_streams; i++) {
-        if (av_ctx->streams[i]->disposition & AV_DISPOSITION_ATTACHED_PIC) {
-            AVPacket pkt = av_ctx->streams[i]->attached_pic;
-            //使用QImage读取完整图片数据（注意，图片数据是为解析的文件数据，需要用QImage::fromdata来解析读取）
-            //rImg = QImage::fromData((uchar *)pkt.data, pkt.size);
-            return rImg.loadFromData(static_cast<uchar *>(pkt.data), static_cast<uint>(pkt.size));
-        }
-    }
-    return false;
-}
-
-static int open_codec_context(int *stream_idx,
-                              AVCodecParameters **dec_ctx, AVFormatContext *fmt_ctx, enum AVMediaType type)
-{
-    int ret, stream_index;
-    AVStream *st;
-    AVCodec *dec = nullptr;
-    //AVDictionary *opts = nullptr;
-    ret = av_find_best_stream(fmt_ctx, type, -1, -1, nullptr, 0);
-    if (ret < 0) {
-        qWarning() << "Could not find " << av_get_media_type_string(type)
-                   << " stream in input file";
-        return ret;
-    }
-
-    stream_index = ret;
-    st = fmt_ctx->streams[stream_index];
-#if LIBAVFORMAT_VERSION_MAJOR >= 57 && LIBAVFORMAT_VERSION_MINOR <= 25
-    *dec_ctx = st->codecpar;
-    dec = avcodec_find_decoder((*dec_ctx)->codec_id);
-#else
-    /* find decoder for the stream */
-    dec = avcodec_find_decoder(st->codecpar->codec_id);
-    if (!dec) {
-        fprintf(stderr, "Failed to find %s codec\n",
-                av_get_media_type_string(type));
-        return AVERROR(EINVAL);
-    }
-    /* Allocate a codec context for the decoder */
-    *dec_ctx = avcodec_alloc_context3(dec);
-    if (!*dec_ctx) {
-        fprintf(stderr, "Failed to allocate the %s codec context\n",
-                av_get_media_type_string(type));
-        return AVERROR(ENOMEM);
-    }
-    /* Copy codec parameters from input stream to output codec context */
-    if ((ret = avcodec_parameters_to_context(*dec_ctx, st->codecpar)) < 0) {
-        fprintf(stderr, "Failed to copy %s codec parameters to decoder context\n",
-                av_get_media_type_string(type));
-        return ret;
-    }
-#endif
-
-    *stream_idx = stream_index;
-    return 0;
-}
+//    *stream_idx = stream_index;
+//    return 0;
+//}
 
 
 namespace dmr {
@@ -348,28 +302,29 @@ private:
 
 };
 
-struct MovieInfo MovieInfo::parseFromFile(const QFileInfo &fi, bool *ok)
+struct MovieInfo PlaylistModel::parseFromFile(const QFileInfo &fi, bool *ok)
 {
     struct MovieInfo mi;
     mi.valid = false;
     AVFormatContext *av_ctx = nullptr;
     int stream_id = -1;
-    AVCodecParameters *dec_ctx = nullptr;
-    AVStream* av_stream = nullptr;
+    AVCodecParameters *video_dec_ctx = nullptr;
+    AVCodecParameters *audio_dec_ctx = nullptr;
+    AVStream *av_stream = nullptr;
 
     if (!fi.exists()) {
         if (ok) *ok = false;
         return mi;
     }
 
-    auto ret = avformat_open_input(&av_ctx, fi.filePath().toUtf8().constData(), nullptr, nullptr);
+    auto ret = m_mvideo_avformat_open_input(&av_ctx, fi.filePath().toUtf8().constData(), nullptr, nullptr);
     if (ret < 0) {
         qWarning() << "avformat: could not open input";
         if (ok) *ok = false;
         return mi;
     }
 
-    if (avformat_find_stream_info(av_ctx, nullptr) < 0) {
+    if (m_mvideo_avformat_find_stream_info(av_ctx, nullptr) < 0) {
         qWarning() << "av_find_stream_info failed";
         if (ok) *ok = false;
         return mi;
@@ -379,25 +334,71 @@ struct MovieInfo MovieInfo::parseFromFile(const QFileInfo &fi, bool *ok)
         if (ok) *ok = false;
         return mi;
     }
-    if (open_codec_context(&stream_id, &dec_ctx, av_ctx, AVMEDIA_TYPE_VIDEO) < 0) {
-        if (open_codec_context(&stream_id, &dec_ctx, av_ctx, AVMEDIA_TYPE_AUDIO) < 0) {
-            if (ok) *ok = false;
-            return mi;
-        }
+//    if (open_codec_context(&stream_id, &dec_ctx, av_ctx, AVMEDIA_TYPE_VIDEO) < 0) {
+//        if (open_codec_context(&stream_id, &dec_ctx, av_ctx, AVMEDIA_TYPE_AUDIO) < 0) {
+//            if (ok) *ok = false;
+//            return mi;
+//        }
+//    }
+
+    int videoRet, audioRet, video_stream_index, audio_stream_index;
+    AVStream *videoStream;
+    AVStream *audioStream;
+    AVCodec *dec = nullptr;
+    //AVDictionary *opts = nullptr;
+    videoRet = m_mvideo_av_find_best_stream(av_ctx, AVMEDIA_TYPE_VIDEO, -1, -1, nullptr, 0);
+    audioRet = m_mvideo_av_find_best_stream(av_ctx, AVMEDIA_TYPE_AUDIO, -1, -1, nullptr, 0);
+    if (videoRet < 0 && audioRet < 0) {
+//        qWarning() << "Could not find " << av_get_media_type_string(type)
+//                   << " stream in input file";
+        if (ok) *ok = false;
+        return mi;
     }
 
-    av_dump_format(av_ctx, 0, fi.fileName().toUtf8().constData(), 0);
+    //AVCodecParameters *dec_ctx = nullptr;
+    if (videoRet >= 0) {
+        video_stream_index = videoRet;
+        videoStream = av_ctx->streams[video_stream_index];
+        video_dec_ctx = videoStream->codecpar;
 
-    for(int i =0;i<av_ctx->nb_streams;i++){
-        av_stream = av_ctx->streams[i];
-        if(av_stream->codecpar->codec_type == AVMEDIA_TYPE_VIDEO)
-        {
-            break;
+        mi.width = video_dec_ctx->width;
+        mi.height = video_dec_ctx->height;
+        mi.vCodecID = video_dec_ctx->codec_id;
+        mi.vCodeRate = video_dec_ctx->bit_rate;
+
+        if (videoStream->r_frame_rate.den != 0) {
+            mi.fps = videoStream->r_frame_rate.num / videoStream->r_frame_rate.den;
+        } else {
+            mi.fps = 0;
+        }
+        if (mi.height != 0) {
+            mi.proportion = static_cast<float>(mi.width) / static_cast<float>(mi.height);
+        } else {
+            mi.proportion = 0;
         }
     }
+    if (audioRet >= 0) {
+        audio_stream_index = audioRet;
+        audioStream = av_ctx->streams[audio_stream_index];
+        audio_dec_ctx = audioStream->codecpar;
 
-    mi.width = dec_ctx->width;
-    mi.height = dec_ctx->height;
+        mi.aCodeID = audio_dec_ctx->codec_id;
+        mi.aCodeRate = audio_dec_ctx->bit_rate;
+        mi.aDigit = audio_dec_ctx->format;
+        mi.channels = audio_dec_ctx->channels;
+        mi.sampling = audio_dec_ctx->sample_rate;
+    }
+//    dec = m_mvideo_avcodec_find_decoder((video_dec_ctx)->codec_id);
+//    stream_id = video_stream_index;
+
+    m_mvideo_av_dump_format(av_ctx, 0, fi.fileName().toUtf8().constData(), 0);
+
+//    for (int i = 0; i < av_ctx->nb_streams; i++) {
+//        av_stream = av_ctx->streams[i];
+//        if (av_stream->codecpar->codec_type == AVMEDIA_TYPE_VIDEO) {
+//            break;
+//        }
+//    }
     auto duration = av_ctx->duration == AV_NOPTS_VALUE ? 0 : av_ctx->duration;
     duration = duration + (duration <= INT64_MAX - 5000 ? 5000 : 0);
     mi.duration = duration / AV_TIME_BASE;
@@ -408,34 +409,15 @@ struct MovieInfo MovieInfo::parseFromFile(const QFileInfo &fi, bool *ok)
     mi.fileSize = fi.size();
     mi.fileType = fi.suffix();
 
-    mi.vCodecID = dec_ctx->codec_id;
-    mi.vCodeRate = dec_ctx->bit_rate;
-    if (av_stream->r_frame_rate.den != 0) {
-         mi.fps = av_stream->r_frame_rate.num / av_stream->r_frame_rate.den;
-    } else {
-        mi.fps = 0;
-    }
-    if (mi.height != 0) {
-        mi.proportion = static_cast<float>(mi.width) / static_cast<float>(mi.height);
-    } else {
-        mi.proportion = 0;
-    }
-
-    if (open_codec_context(&stream_id, &dec_ctx, av_ctx, AVMEDIA_TYPE_AUDIO) < 0) {
-        if (open_codec_context(&stream_id, &dec_ctx, av_ctx, AVMEDIA_TYPE_VIDEO) < 0) {
-            if (ok) *ok = false;
-            return mi;
-        }
-    }
-
-    mi.aCodeID = dec_ctx->codec_id;
-    mi.aCodeRate = dec_ctx->bit_rate;
-    mi.aDigit = dec_ctx->format;
-    mi.channels = dec_ctx->channels;
-    mi.sampling = dec_ctx->sample_rate;
+//    if (open_codec_context(&stream_id, &dec_ctx, av_ctx, AVMEDIA_TYPE_AUDIO) < 0) {
+//        if (open_codec_context(&stream_id, &dec_ctx, av_ctx, AVMEDIA_TYPE_VIDEO) < 0) {
+//            if (ok) *ok = false;
+//            return mi;
+//        }
+//    }
 
     AVDictionaryEntry *tag = nullptr;
-    while ((tag = av_dict_get(av_ctx->metadata, "", tag, AV_DICT_IGNORE_SUFFIX)) != nullptr) {
+    while ((tag = m_mvideo_av_dict_get(av_ctx->metadata, "", tag, AV_DICT_IGNORE_SUFFIX)) != nullptr) {
         if (tag->key && strcmp(tag->key, "creation_time") == 0) {
             auto dt = QDateTime::fromString(tag->value, Qt::ISODate);
             mi.creation = dt.toString();
@@ -446,8 +428,7 @@ struct MovieInfo MovieInfo::parseFromFile(const QFileInfo &fi, bool *ok)
     }
 
     tag = nullptr;
-    AVStream *st = av_ctx->streams[stream_id];
-    while ((tag = av_dict_get(st->metadata, "", tag, AV_DICT_IGNORE_SUFFIX)) != nullptr) {
+    while ((tag = m_mvideo_av_dict_get(audioStream->metadata, "", tag, AV_DICT_IGNORE_SUFFIX)) != nullptr) {
         if (tag->key && strcmp(tag->key, "rotate") == 0) {
             mi.raw_rotate = QString(tag->value).toInt();
             auto vr = (mi.raw_rotate + 360) % 360;
@@ -462,7 +443,7 @@ struct MovieInfo MovieInfo::parseFromFile(const QFileInfo &fi, bool *ok)
     }
 
 
-    avformat_close_input(&av_ctx);
+    m_mvideo_avformat_close_input(&av_ctx);
     mi.valid = true;
 
     if (ok) *ok = true;
@@ -490,7 +471,8 @@ PlaylistModel::PlaylistModel(PlayerEngine *e)
     m_pdataMutex = new QMutex();
     m_ploadThread = nullptr;
     m_brunning = false;
-    _thumbnailer.setThumbnailSize(static_cast<int>(400 * qApp->devicePixelRatio()));
+    //initThumb();
+    //m_video_thumbnailer->thumbnail_size = 400 * qApp->devicePixelRatio();
     //av_register_all();
 
     _playlistFile = QString("%1/%2/%3/playlist")
@@ -529,7 +511,7 @@ PlaylistModel::PlaylistModel(PlayerEngine *e)
 //            this, &PlaylistModel::onAsyncAppendFinished);
 
     stop();
-    loadPlaylist();
+    //loadPlaylist();
 
 #ifndef _LIBDMR_
     if (Settings::get().isSet(Settings::ResumeFromLast)) {
@@ -537,6 +519,57 @@ PlaylistModel::PlaylistModel(PlayerEngine *e)
         _last = restore_pos;
     }
 #endif
+}
+void PlaylistModel::initThumb()
+{
+#ifdef __x86_64__
+    const char *path = "/usr/lib/x86_64-linux-gnu/libffmpegthumbnailer.so.4";
+#elif __mips__
+    const char *path = "/usr/lib/mips64el-linux-gnuabi64/libffmpegthumbnailer.so.4";
+#elif __aarch64__
+    const char *path = "/usr/lib/aarch64-linux-gnu/libffmpegthumbnailer.so.4";
+#endif
+    QLibrary library(path);
+    m_mvideo_thumbnailer = (mvideo_thumbnailer) library.resolve( "video_thumbnailer_create");
+    m_mvideo_thumbnailer_destroy = (mvideo_thumbnailer_destroy) library.resolve( "video_thumbnailer_destroy");
+    m_mvideo_thumbnailer_create_image_data = (mvideo_thumbnailer_create_image_data) library.resolve( "video_thumbnailer_create_image_data");
+    m_mvideo_thumbnailer_destroy_image_data = (mvideo_thumbnailer_destroy_image_data) library.resolve( "video_thumbnailer_destroy_image_data");
+    m_mvideo_thumbnailer_generate_thumbnail_to_buffer = (mvideo_thumbnailer_generate_thumbnail_to_buffer) library.resolve( "video_thumbnailer_generate_thumbnail_to_buffer");
+    if (m_mvideo_thumbnailer == nullptr || m_mvideo_thumbnailer_destroy == nullptr
+            || m_mvideo_thumbnailer_create_image_data == nullptr || m_mvideo_thumbnailer_destroy_image_data == nullptr
+            || m_mvideo_thumbnailer_generate_thumbnail_to_buffer == nullptr )
+
+    {
+        return;
+    }
+    m_video_thumbnailer = m_mvideo_thumbnailer();
+    m_image_data = m_mvideo_thumbnailer_create_image_data();
+    m_video_thumbnailer->thumbnail_size = 400 * qApp->devicePixelRatio();
+}
+
+void PlaylistModel::initFFmpeg()
+{
+#ifdef __x86_64__
+    QString path = "/usr/lib/x86_64-linux-gnu/";
+#elif __mips__
+    QString path = "/usr/lib/mips64el-linux-gnuabi64/";
+#elif __aarch64__
+    QString path = "/usr/lib/aarch64-linux-gnu/";
+#endif
+
+    QLibrary avcodecLibrary(path + "libavcodec.so.58");
+    QLibrary avformatLibrary(path + "libavformat.so.58");
+    QLibrary avutilLibrary(path + "libavutil.so.56");
+
+    m_mvideo_avformat_open_input = (mvideo_avformat_open_input) avformatLibrary.resolve("avformat_open_input");
+    m_mvideo_avformat_find_stream_info = (mvideo_avformat_find_stream_info) avformatLibrary.resolve("avformat_find_stream_info");
+    m_mvideo_av_find_best_stream = (mvideo_av_find_best_stream) avformatLibrary.resolve("av_find_best_stream");
+    m_mvideo_av_dump_format = (mvideo_av_dump_format) avformatLibrary.resolve("av_dump_format");
+    m_mvideo_avformat_close_input = (mvideo_avformat_close_input) avformatLibrary.resolve("avformat_close_input");
+
+    m_mvideo_av_dict_get = (mvideo_av_dict_get) avutilLibrary.resolve("av_dict_get");
+
+    m_mvideo_avcodec_find_decoder = (mvideo_avcodec_find_decoder) avcodecLibrary.resolve("avcodec_find_decoder");
 }
 
 PlaylistModel::~PlaylistModel()
@@ -554,8 +587,7 @@ PlaylistModel::~PlaylistModel()
         savePlaylist();
     }
 #endif
-    if (m_getThumanbil)
-    {
+    if (m_getThumanbil) {
         if (m_getThumanbil->isRunning()) {
             m_getThumanbil->stop();
         }
@@ -640,6 +672,8 @@ void PlaylistModel::savePlaylist()
 
 void PlaylistModel::loadPlaylist()
 {
+    initThumb();
+    initFFmpeg();
     QList<QUrl> urls;
 
     QSettings cfg(_playlistFile, QSettings::NativeFormat);
@@ -667,7 +701,7 @@ void PlaylistModel::loadPlaylist()
     }
 
     //QTimer::singleShot(0, [ = ]() {
-        delayedAppendAsync(urls);
+    delayedAppendAsync(urls);
     //});
 }
 
@@ -1041,7 +1075,7 @@ void PlaylistModel::collectionJob(const QList<QUrl> &urls, QList<QUrl> &inputUrl
             continue;
 
         m_loadFile.append(url);
-        qDebug() << __func__ <<_infos.size() << "index is" << aa << url;
+        qDebug() << __func__ << _infos.size() << "index is" << aa << url;
         QFileInfo fi(url.toLocalFile());
         if (!_firstLoad && (!fi.exists() || !fi.isFile())) continue;
 
@@ -1054,7 +1088,7 @@ void PlaylistModel::collectionJob(const QList<QUrl> &urls, QList<QUrl> &inputUrl
         if (!_firstLoad && Settings::get().isSet(Settings::AutoSearchSimilar)) {
             auto fil = utils::FindSimilarFiles(fi);
             qDebug() << "auto search similar files" << fil;
-            for (const QFileInfo &fi: fil) {
+            for (const QFileInfo &fi : fil) {
                 if (fi.isFile()) {
                     auto url = QUrl::fromLocalFile(fi.absoluteFilePath());
 
@@ -1088,7 +1122,7 @@ void PlaylistModel::appendAsync(const QList<QUrl> &urls)
         }
     } else {
         //QTimer::singleShot(10, [ = ]() {
-            delayedAppendAsync(urls);
+        delayedAppendAsync(urls);
         //});
     }
 }
@@ -1408,6 +1442,56 @@ bool PlaylistModel::getthreadstate()
     return m_brunning;
 }
 
+//获取音乐缩略图
+bool PlaylistModel::getMusicPix(const QFileInfo &fi, QPixmap &rImg)
+{
+
+    AVFormatContext *av_ctx = nullptr;
+    //AVCodecContext *dec_ctx = nullptr;
+
+    if (!fi.exists()) {
+        return false;
+    }
+
+#ifdef __x86_64__
+    QString path = "/usr/lib/x86_64-linux-gnu/libavformat.so.58";
+#elif __mips__
+    QString path = "/usr/lib/mips64el-linux-gnuabi64/libavformat.so.58";
+#elif __aarch64__
+    QString path = "/usr/lib/aarch64-linux-gnu/libavformat.so.58";
+#endif
+    QLibrary library(path);
+    mvideo_avformat_open_input m_mvideo_avformat_open_input = (mvideo_avformat_open_input) library.resolve("avformat_open_input");
+    mvideo_avformat_find_stream_info m_mvideo_avformat_find_stream_info = (mvideo_avformat_find_stream_info) library.resolve("avformat_find_stream_info");
+
+    auto ret = m_mvideo_avformat_open_input(&av_ctx, fi.filePath().toUtf8().constData(), nullptr, nullptr);
+    if (ret < 0) {
+        qWarning() << "avformat: could not open input";
+        return false;
+    }
+
+    if (m_mvideo_avformat_find_stream_info(av_ctx, nullptr) < 0) {
+        qWarning() << "av_find_stream_info failed";
+        return false;
+    }
+
+    // read the format headers  comment by thx , 这里会导致一些音乐 奔溃
+    //if (av_ctx->iformat->read_header(av_ctx) < 0) {
+    //    printf("No header format");
+    //    return false;
+    //}
+
+    for (unsigned int i = 0; i < av_ctx->nb_streams; i++) {
+        if (av_ctx->streams[i]->disposition & AV_DISPOSITION_ATTACHED_PIC) {
+            AVPacket pkt = av_ctx->streams[i]->attached_pic;
+            //使用QImage读取完整图片数据（注意，图片数据是为解析的文件数据，需要用QImage::fromdata来解析读取）
+            //rImg = QImage::fromData((uchar *)pkt.data, pkt.size);
+            return rImg.loadFromData(static_cast<uchar *>(pkt.data), static_cast<uint>(pkt.size));
+        }
+    }
+    return false;
+}
+
 struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl &url, const QFileInfo &fi, bool isDvd)
 {
     bool ok = false;
@@ -1419,7 +1503,7 @@ struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl &url, const QFil
         qDebug() << "load cached MovieInfo" << mi;
     } else {
 
-        mi = MovieInfo::parseFromFile(fi, &ok);
+        mi = parseFromFile(fi, &ok);
         if (isDvd && url.scheme().startsWith("dvd")) {
             QString dev = url.path();
             if (dev.isEmpty()) dev = "/dev/sr0";
@@ -1457,11 +1541,9 @@ struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl &url, const QFil
                 }
             }
             if (isMusic == false) {
-                std::vector<uint8_t> buf;
-                _thumbnailer.generateThumbnail(fi.canonicalFilePath().toUtf8().toStdString(),
-                                               ThumbnailerImageType::Png, buf);
 
-                auto img = QImage::fromData(buf.data(), static_cast<int>(buf.size()), "png");
+                m_mvideo_thumbnailer_generate_thumbnail_to_buffer(m_video_thumbnailer, fi.canonicalFilePath().toUtf8().data(),  m_image_data);
+                auto img = QImage::fromData(m_image_data->image_data_ptr, static_cast<int>(m_image_data->image_data_size), "png");
                 pm = QPixmap::fromImage(img);
             } else {
                 if (getMusicPix(fi, pm) == false) {
