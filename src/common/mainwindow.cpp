@@ -3906,7 +3906,7 @@ void MainWindow::capturedMouseReleaseEvent(QMouseEvent *me)
         m_bLastIsTouch = true;
          _isTouch = false;
 
-        if(m_bLastIsTouch)
+        if(m_bProgressChanged)
         {
             _toolbox->updateSlider();   //手势释放时改变影片进度
             m_bProgressChanged = false;
@@ -4086,7 +4086,7 @@ void MainWindow::mouseMoveEvent(QMouseEvent *ev)
     QPoint ptCurr = mapToGlobal(ev->pos());
     QPoint ptDelta = ptCurr-this->posMouseOrigin;
 
-    if(qAbs(ptDelta.x())<5 && qAbs(ptDelta.y()<5)){  //避免误触
+    if(qAbs(ptDelta.x())<5 && qAbs(ptDelta.y())<5){  //避免误触
         this->posMouseOrigin = ptCurr;
         return;
     }
