@@ -393,6 +393,7 @@ private:
     bool m_bFirstInit {false};
     bool m_bLastIsTouch {false};
     bool m_bTouchChangeVolume {false};
+    bool m_bIsFullSreen {false};
 };
 };
 
