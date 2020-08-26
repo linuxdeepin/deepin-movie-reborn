@@ -6,6 +6,7 @@ set(CMD_NAME dmr)
 add_definitions(-D_LIBDMR_)
 
 pkg_check_modules(FFTHUMB REQUIRED libffmpegthumbnailer)
+pkg_check_modules(AV REQUIRED IMPORTED_TARGET libavformat libavutil libavcodec)
 
 include_directories(${CMAKE_INCLUDE_CURRENT_DIR})
 
@@ -20,7 +21,7 @@ target_include_directories(${CMD_NAME} PUBLIC
     ${PROJECT_SOURCE_DIR}/../common ${PROJECT_SOURCE_DIR}/../backends/mpv)
 
 target_link_libraries(${CMD_NAME} PkgConfig::Dtk Qt5::Widgets Qt5::Concurrent
-    Qt5::Network Qt5::X11Extras Qt5::Sql Qt5::DBus GL)
+    Qt5::Network Qt5::X11Extras Qt5::Sql Qt5::DBus PkgConfig::AV GL)
 #target_link_libraries(${CMD_NAME} PkgConfig::Dtk Qt5::Widgets Qt5::Concurrent
 #    Qt5::Network Qt5::X11Extras Qt5::Sql Qt5::DBus PkgConfig::AV GL png jpeg)
 
