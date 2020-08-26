@@ -39,6 +39,8 @@
 
 #ifndef _LIBDMR_
 #include "dmr_settings.h"
+#else
+#include "thumbnail_worker.h"
 #endif
 
 #include "drecentmanager.h"
@@ -78,6 +80,9 @@ PlayerEngine::PlayerEngine(QWidget *parent)
 
 #ifndef _LIBDMR_
     connect(&Settings::get(), &Settings::subtitleChanged, this, &PlayerEngine::updateSubStyles);
+#else
+    _current->firstInit();
+    ThumbnailWorker::get();
 #endif
 
     connect(&OnlineSubtitle::get(), &OnlineSubtitle::subtitlesDownloadedFor,
