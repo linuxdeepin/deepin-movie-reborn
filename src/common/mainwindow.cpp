@@ -828,7 +828,7 @@ MainWindow::MainWindow(QWidget *parent)
         // and another resize event will happen after that
         QTimer::singleShot(100, [ = ]() {
             if (_engine->state() == PlayerEngine::Idle && !_miniMode
-                    && windowState() == Qt::WindowNoState && !window()->isFullScreen()) {
+                    && windowState() == Qt::WindowNoState && !m_bIsFullSreen) {
                 this->setMinimumSize(QSize(614, 500));
                 this->resize(850, 600);
             }
@@ -1149,6 +1149,11 @@ MainWindow::MainWindow(QWidget *parent)
         }
 
     });
+//    connect(_engine, &PlayerEngine::checkMuted, this, [=](bool mute) {
+//        this->setMusicMuted(!mute);
+//        volumeMonitoring.start();
+//        disconnect(_engine, &PlayerEngine::checkMuted, nullptr, nullptr);
+//    });
     connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::newProcessInstance, this, [ = ] {
         this->activateWindow();
     });
@@ -1192,6 +1197,11 @@ MainWindow::MainWindow(QWidget *parent)
     });
 
     connect(&volumeMonitoring, &VolumeMonitoring::muteChanged, this, [ = ](bool mute) {
+        //首次启动的时候先判断一次设置的静音状态
+        if (!m_bFirstInit) {
+            this->setMusicMuted(_engine->muted());
+            m_bFirstInit = true;
+        }
         changedMute(mute);
     });
 
@@ -1320,7 +1330,7 @@ void MainWindow::onWindowStateChanged()
 {
     qDebug() << windowState();
 
-    if (!_miniMode && !isFullScreen()) {
+    if (!_miniMode && !m_bIsFullSreen) {
         _titlebar->setVisible(_toolbox->isVisible());
     } else {
         _titlebar->setVisible(false);
@@ -1338,11 +1348,11 @@ void MainWindow::onWindowStateChanged()
     }
     //WTF: this->geometry() is not size of fullscreen !
     //_progIndicator->move(geometry().width() - _progIndicator->width() - 18, 14);
-    _progIndicator->setVisible(isFullScreen() && _engine && _engine->state() != PlayerEngine::Idle);
+    _progIndicator->setVisible(m_bIsFullSreen && _engine && _engine->state() != PlayerEngine::Idle);
     toggleShapeMask();
 
 #ifndef USE_DXCB
-    if (isFullScreen()) {
+    if (m_bIsFullSreen) {
         _titlebar->move(0, 0);
         _engine->move(0, 0);
     } else {
@@ -1351,7 +1361,7 @@ void MainWindow::onWindowStateChanged()
     }
 #endif
 
-    if (!isFullScreen() && !isMaximized()) {
+    if (!m_bIsFullSreen && !isMaximized()) {
         if (_movieSwitchedInFsOrMaxed || !_lastRectInNormalMode.isValid()) {
             if (_mousePressed || _mouseMoved) {
                 _delayedResizeByConstraint = true;
@@ -1364,7 +1374,7 @@ void MainWindow::onWindowStateChanged()
     }
     update();
 
-    if (!isMaximized() && !isFullScreen() && !_miniMode) {
+    if (!isMaximized() && !m_bIsFullSreen && !_miniMode) {
         if (_maxfornormalflag) {
             setWindowState(windowState() & ~Qt::WindowFullScreen);
             if (_lastRectInNormalMode.isValid() && !_miniMode && !isMaximized()) {
@@ -1388,7 +1398,7 @@ void MainWindow::onWindowStateChanged()
         _animationlable->move(QPoint(QApplication::desktop()->availableGeometry().width() / 2 - 100
                                      , QApplication::desktop()->availableGeometry().height() / 2 - 100));
     }
-    if (!isFullScreen() && !isMaximized() && !_miniMode) {
+    if (!m_bIsFullSreen && !isMaximized() && !_miniMode) {
         _animationlable->move(QPoint((_lastRectInNormalMode.width() - _animationlable->width()) / 2,
                                      (_lastRectInNormalMode.height() - _animationlable->height()) / 2));
     }
@@ -2259,16 +2269,16 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     }
 
     case ActionFactory::ActionKind::ToggleMiniMode: {
-        if (_playlist->state() == PlaylistWidget::Opened && !isFullScreen()) {
+        if (_playlist->state() == PlaylistWidget::Opened && !m_bIsFullSreen) {
             requestAction(ActionFactory::TogglePlaylist);
         }
         //this->setWindowState(Qt::WindowNoState);
-        if (isFullScreen()) {
+        if (m_bIsFullSreen) {
             //requestAction(ActionFactory::ToggleFullscreen);
             /*if (!fromUI) {
                 reflectActionToUI(ActionFactory::ToggleFullscreen);
             }*/
-            if (!isFullScreen()) {
+            if (!m_bIsFullSreen) {
                 _fullscreentimelable->close();
             }
         }
@@ -2321,7 +2331,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                 //reflectActionToUI(kd);
             }
             toggleUIMode();
-        } else if (isFullScreen()) {
+        } else if (m_bIsFullSreen) {
 //            if (_lastWindowState == Qt::WindowMaximized) {
 //                showMaximized();
 //            } else {
@@ -2330,7 +2340,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             /*if (!fromUI) {
                 reflectActionToUI(ActionFactory::ToggleFullscreen);
             }*/
-            if (!isFullScreen()) {
+            if (!m_bIsFullSreen) {
                 _fullscreentimelable->close();
             }
         }
@@ -2347,9 +2357,10 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
 //                return;
 //            }
 //        }
-        if (isFullScreen()) {
+        if (m_bIsFullSreen) {
             //感觉这个参数没什么用，后期观察没有其他用处可以酌情删除
             //_quitfullscreenstopflag = true;
+            m_bIsFullSreen = false;
             if (_lastWindowState == Qt::WindowMaximized) {
                 _maxfornormalflag = true;
                 setWindowFlags(Qt::Window);
@@ -2362,7 +2373,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                     resize(_lastRectInNormalMode.width(), _lastRectInNormalMode.height());
                 }
             }
-            if (!isFullScreen()) {
+            if (!m_bIsFullSreen) {
                 _fullscreentimelable->close();
             }
         } else {
@@ -2372,8 +2383,9 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             //可能存在更好的方法（全屏后更新toolbox状态），后期修改
             if (!_toolbox->getbAnimationFinash())
                 return;
+            m_bIsFullSreen = true;
             showFullScreen();
-            if (isFullScreen()) {
+            if (m_bIsFullSreen) {
                 _maxfornormalflag = false;
                 if(_engine->state() != PlayerEngine::CoreState::Idle){
                     int pixelsWidth = _toolbox->getfullscreentimeLabel()->width() + _toolbox->getfullscreentimeLabelend()->width();
@@ -2387,7 +2399,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         if (!fromUI) {
             reflectActionToUI(kd);
         }
-        if (isFullScreen()) {
+        if (m_bIsFullSreen) {
             _animationlable->move(QPoint(QApplication::desktop()->availableGeometry().width() / 2 - _animationlable->width() / 2
                                          , QApplication::desktop()->availableGeometry().height() / 2 - _animationlable->height() / 2));
         } else {
@@ -2670,7 +2682,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             return ;
 
         m_IsFree = false;
-        if (isFullScreen() || isMaximized()) {
+        if (m_bIsFullSreen || isMaximized()) {
             _movieSwitchedInFsOrMaxed = true;
         }
         _engine->next();
@@ -2715,7 +2727,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             return ;
 
         m_IsFree = false;
-        if (isFullScreen() || isMaximized()) {
+        if (m_bIsFullSreen || isMaximized()) {
             _movieSwitchedInFsOrMaxed = true;
         }
         _engine->prev();
@@ -3162,7 +3174,7 @@ void MainWindow::toggleShapeMask()
     return;
 
 #ifndef USE_DXCB
-    if (isFullScreen() || isMaximized()) {
+    if (m_bIsFullSreen || isMaximized()) {
         clearMask();
     } else {
         QPixmap shape(size());
@@ -3206,7 +3218,7 @@ void MainWindow::updateProxyGeometry()
                       rect().width() - 10, (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT));
             QRect rct(5, height() - TOOLBOX_HEIGHT - rect().top() - 5,
                       rect().width() - 10, TOOLBOX_HEIGHT);
-            if (isFullScreen()) {
+            if (m_bIsFullSreen) {
                 if (_playlist->state() == PlaylistWidget::State::Opened) {
 #if !defined(__aarch64__) && !defined (__sw_64__)
                     _toolbox->setGeometry(rfs);
@@ -3287,7 +3299,7 @@ void MainWindow::suspendToolsWindow()
         if (_autoHideTimer.isActive())
             return;
 
-        if (isFullScreen()) {
+        if (m_bIsFullSreen) {
             if (qApp->focusWindow() == this->windowHandle()){
                 qApp->setOverrideCursor(Qt::BlankCursor);
             }
@@ -3327,7 +3339,7 @@ void MainWindow::resumeToolsWindow()
 
     if (!_miniMode) {
         if(!m_bTouchChangeVolume) {
-            _titlebar->setVisible(!isFullScreen());
+            _titlebar->setVisible(!m_bIsFullSreen);
             _toolbox->show();
         }
         else {
@@ -3672,7 +3684,7 @@ void MainWindow::resizeByConstraints(bool forceCentered)
         return;
     }
 
-    if (_miniMode || isFullScreen() || isMaximized()) {
+    if (_miniMode || m_bIsFullSreen || isMaximized()) {
         return;
     }
 
@@ -3800,7 +3812,7 @@ void MainWindow::LimitWindowize()
 void MainWindow::resizeEvent(QResizeEvent *ev)
 {
     qDebug() << __func__ << geometry();
-    if (isFullScreen()) {
+    if (m_bIsFullSreen) {
         _progIndicator->move(geometry().width() - _progIndicator->width() - 18, 8);
     }
     // modify 4.1  Limit video to mini mode size by thx
@@ -4053,7 +4065,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *ev)
 
 void MainWindow::delayedMouseReleaseHandler()
 {
-    if (!_afterDblClick && !isFullScreen())
+    if (!_afterDblClick && !m_bIsFullSreen)
         requestAction(ActionFactory::TogglePause, false, {}, true);
     _afterDblClick = false;
 }
@@ -4097,7 +4109,7 @@ void MainWindow::mouseMoveEvent(QMouseEvent *ev)
         return;
     }
 
-    if(_isTouch&&isFullScreen())     //全屏时才触发滑动改变音量和进度的操作
+    if(_isTouch&&m_bIsFullSreen)     //全屏时才触发滑动改变音量和进度的操作
     {
         if(qAbs(ptDelta.x())>qAbs(ptDelta.y())
                 && _engine->state() != PlayerEngine::CoreState::Idle){
@@ -4504,7 +4516,7 @@ void MainWindow::toggleUIMode()
             requestAction(ActionFactory::TogglePlaylist);
         }
 
-        if (isFullScreen()) {
+        if (m_bIsFullSreen) {
             _stateBeforeMiniMode |= SBEM_Fullscreen;
             requestAction(ActionFactory::ToggleFullscreen);
             //requestAction(ActionFactory::QuitFullscreen);
