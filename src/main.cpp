@@ -57,14 +57,13 @@ DWIDGET_USE_NAMESPACE
 int main(int argc, char *argv[])
 {
     if(dmr::utils::first_check_wayland_env()){
-        qputenv("QT_WAYLAND_SHELL_INTEGRATION", "kwayland-she/ll");
+        qputenv("QT_WAYLAND_SHELL_INTEGRATION", "kwayland-shell");
         qputenv("_d_disableDBusFileDialog", "true");
+        setenv("PULSE_PROP_media.role", "video", 1);
         QSurfaceFormat format;
         format.setRenderableType(QSurfaceFormat::OpenGLES);
         format.setDefaultFormat(format);
     }else {
-        setenv("PULSE_PROP_media.role", "video", 1);
-
         #ifdef __mips__
             if (CompositingManager::get().composited()) {
                 CompositingManager::detectOpenGLEarly();
