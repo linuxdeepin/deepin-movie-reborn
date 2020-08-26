@@ -593,7 +593,7 @@ public:
 
     int getTimePos()
     {
-        return position2progress(QPoint(_indicator->x(),0));
+        return position2progress(QPoint(_indicator->x(), 0));
     }
 
     void setTime(qint64 pos)
@@ -930,8 +930,7 @@ private:
     DMRSlider *_progBar{nullptr};
     int position2progress(const QPoint &p)
     {
-        if(!_engine)
-        {
+        if (!_engine) {
             return 0;
         }
         auto total = _engine->duration();
@@ -1143,7 +1142,7 @@ public:
 
         setLayout(l);
 
-        _slider = new DSlider(Qt::Vertical,this);
+        _slider = new DSlider(Qt::Vertical, this);
         _slider->setFixedHeight(132);
         _slider->setFixedWidth(24);
         _slider->setIconSize(QSize(12, 12));
@@ -1167,21 +1166,21 @@ public:
         m_pLabShowVolume->setText("0%");
         l->addWidget(m_pLabShowVolume, 0, Qt::AlignCenter);
 
-        l->addWidget(_slider, 1 , Qt::AlignCenter);
+        l->addWidget(_slider, 1, Qt::AlignCenter);
 
         m_pBtnChangeVolume = new ImageButton(this);
-        m_pBtnChangeVolume->setFixedSize(36,36);
+        m_pBtnChangeVolume->setFixedSize(36, 36);
         m_pBtnChangeVolume->setImage(":/icons/deepin/builtin/dark/texts/dcc_volumemid_36px.svg");
-        connect(m_pBtnChangeVolume,SIGNAL(clicked()),this,SLOT(changeSate()));
+        connect(m_pBtnChangeVolume, SIGNAL(clicked()), this, SLOT(changeSate()));
 
         l->addWidget(m_pBtnChangeVolume, 0, Qt::AlignHCenter);
 
         connect(_slider, &DSlider::valueChanged, [ = ]() {
-            if(m_bIsMute){
+            if (m_bIsMute) {
                 changeSate();
             }
             auto var = _slider->value();
-            m_pLabShowVolume->setText(QString("%1%").arg(var*1.0/_slider->maximum()*100));
+            m_pLabShowVolume->setText(QString("%1%").arg(var * 1.0 / _slider->maximum() * 100));
             _mw->requestAction(ActionFactory::ChangeVolume, false, QList<QVariant>() << var);
         });
 
@@ -1246,17 +1245,15 @@ public:
     }
     void setMute(bool bMute)
     {
-        if(m_bIsMute == bMute)
-        {
+        if (m_bIsMute == bMute) {
             return;
         }
 
         m_bIsMute = bMute;
 
-        if(m_bIsMute){
+        if (m_bIsMute) {
             m_pBtnChangeVolume->setImage(":/icons/deepin/builtin/dark/texts/dcc_mute_36px.svg");
-        }
-        else {
+        } else {
             m_pBtnChangeVolume->setImage(":/icons/deepin/builtin/dark/texts/dcc_volumemid_36px.svg");
         }
 
@@ -1279,7 +1276,7 @@ public slots:
     void setValue(int v)
     {
         _slider->setValue(v);
-        m_pLabShowVolume->setText(QString("%1%").arg(v*1.0/_slider->maximum()*100));
+        m_pLabShowVolume->setText(QString("%1%").arg(v * 1.0 / _slider->maximum() * 100));
     }
     void changeSate()
     {
@@ -1479,6 +1476,10 @@ void viewProgBarLoad::initThumb()
     const char *path = "/usr/lib/mips64el-linux-gnuabi64/libffmpegthumbnailer.so.4";
 #elif __aarch64__
     const char *path = "/usr/lib/aarch64-linux-gnu/libffmpegthumbnailer.so.4";
+#elif __sw_64__
+    const char *path = "/usr/lib/sw_64-linux-gnu/libffmpegthumbnailer.so.4";
+#else
+    const char *path = "/usr/lib/i386-linux-gnu/libffmpegthumbnailer.so.4";
 #endif
 
     QLibrary library(path);
@@ -2071,12 +2072,11 @@ void ToolboxProxy::setup()
 //            _volSlider->raise();
 //        });
         connect(_volBtn, &VolumeButton::clicked, [ = ]() {
-            if(!_volSlider->isVisible()){
+            if (!_volSlider->isVisible()) {
                 _volSlider->show(_mainWindow->width() - _volBtn->width() / 2 - _playBtn->width() - 40,
                                  _mainWindow->height() - TOOLBOX_HEIGHT - 2);
                 _volSlider->raise();
-            }
-            else {
+            } else {
                 _volSlider->hide();
             }
         });
@@ -2084,16 +2084,15 @@ void ToolboxProxy::setup()
 #if defined (__mips__) || defined (__aarch64__)
         _volSlider = new VolumeSlider(_engine, _mainWindow, nullptr);
         connect(_volBtn, &VolumeButton::clicked, [ = ]() {
-            if(!_volSlider->isVisible()){
-                auto pPoint = mapToGlobal(QPoint(this->rect().width(),this->rect().height()));
+            if (!_volSlider->isVisible()) {
+                auto pPoint = mapToGlobal(QPoint(this->rect().width(), this->rect().height()));
                 _volSlider->adjustSize();
 
-                pPoint.setX(pPoint.x()  -_volBtn->width() / 2 - _playBtn->width() - 43);
+                pPoint.setX(pPoint.x()  - _volBtn->width() / 2 - _playBtn->width() - 43);
                 pPoint.setY(pPoint.y() - TOOLBOX_HEIGHT - 5);
                 _volSlider->show(pPoint.x(), pPoint.y());
                 _volSlider->raise();
-            }
-            else {
+            } else {
                 _volSlider->hide();
             }
         });
@@ -2112,12 +2111,11 @@ void ToolboxProxy::setup()
 //            _volSlider->raise();
 //        });
         connect(_volBtn, &VolumeButton::clicked, [ = ]() {
-            if(!_volBtn->isVisible()) {
+            if (!_volBtn->isVisible()) {
                 _volSlider->show(_mainWindow->width() - _volBtn->width() / 2 - _playBtn->width() - 43,
                                  _mainWindow->height() - TOOLBOX_HEIGHT - 5);
                 _volSlider->raise();
-            }
-            else {
+            } else {
                 _volSlider->hide();
             }
         });
@@ -3059,7 +3057,8 @@ int ToolboxProxy::DisplayVolume()
     return _volSlider->value();
 }
 
-bool ToolboxProxy::getVolSliderIsHided(){
+bool ToolboxProxy::getVolSliderIsHided()
+{
     return _volSlider->isHidden();
 }
 

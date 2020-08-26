@@ -45,10 +45,10 @@ extern "C" {
 typedef int (*mvideo_avformat_open_input)(AVFormatContext **ps, const char *url, AVInputFormat *fmt, AVDictionary **options);
 typedef int (*mvideo_avformat_find_stream_info)(AVFormatContext *ic, AVDictionary **options);
 typedef int (*mvideo_av_find_best_stream)(AVFormatContext *ic, enum AVMediaType type, int wanted_stream_nb, int related_stream, AVCodec **decoder_ret, int flags);
-typedef AVCodec* (*mvideo_avcodec_find_decoder)(enum AVCodecID id);
+typedef AVCodec *(*mvideo_avcodec_find_decoder)(enum AVCodecID id);
 typedef void (*mvideo_av_dump_format)(AVFormatContext *ic, int index, const char *url, int is_output);
 typedef void (*mvideo_avformat_close_input)(AVFormatContext **s);
-typedef AVDictionaryEntry* (*mvideo_av_dict_get)(const AVDictionary *m, const char *key, const AVDictionaryEntry *prev, int flags);
+typedef AVDictionaryEntry *(*mvideo_av_dict_get)(const AVDictionary *m, const char *key, const AVDictionaryEntry *prev, int flags);
 
 
 mvideo_avformat_open_input g_mvideo_avformat_open_input = nullptr;
@@ -550,6 +550,10 @@ void PlaylistModel::initThumb()
     const char *path = "/usr/lib/mips64el-linux-gnuabi64/libffmpegthumbnailer.so.4";
 #elif __aarch64__
     const char *path = "/usr/lib/aarch64-linux-gnu/libffmpegthumbnailer.so.4";
+#elif __sw_64__
+    const char *path = "/usr/lib/sw_64-linux-gnu/libffmpegthumbnailer.so.4";
+#else
+    const char *path = "/usr/lib/i386-linux-gnu/libffmpegthumbnailer.so.4";
 #endif
     QLibrary library(path);
     m_mvideo_thumbnailer = (mvideo_thumbnailer) library.resolve( "video_thumbnailer_create");
@@ -577,7 +581,12 @@ void PlaylistModel::initFFmpeg()
     QString path = "/usr/lib/mips64el-linux-gnuabi64/";
 #elif __aarch64__
     QString path = "/usr/lib/aarch64-linux-gnu/";
+#elif __sw_64__
+    QString path = "/usr/lib/sw_64-linux-gnu/";
+#else
+    QString path = "/usr/lib/i386-linux-gnu/";
 #endif
+
 
     QLibrary avcodecLibrary(path + "libavcodec.so.58");
     QLibrary avformatLibrary(path + "libavformat.so.58");
@@ -1476,11 +1485,15 @@ bool PlaylistModel::getMusicPix(const QFileInfo &fi, QPixmap &rImg)
     }
 
 #ifdef __x86_64__
-    QString path = "/usr/lib/x86_64-linux-gnu/libavformat.so.58";
+    QString path = "/usr/lib/x86_64-linux-gnu/";
 #elif __mips__
-    QString path = "/usr/lib/mips64el-linux-gnuabi64/libavformat.so.58";
+    QString path = "/usr/lib/mips64el-linux-gnuabi64/";
 #elif __aarch64__
-    QString path = "/usr/lib/aarch64-linux-gnu/libavformat.so.58";
+    QString path = "/usr/lib/aarch64-linux-gnu/";
+#elif __sw_64__
+    QString path = "/usr/lib/sw_64-linux-gnu/";
+#else
+    QString path = "/usr/lib/i386-linux-gnu/";
 #endif
     QLibrary library(path);
     mvideo_avformat_open_input g_mvideo_avformat_open_input = (mvideo_avformat_open_input) library.resolve("avformat_open_input");
