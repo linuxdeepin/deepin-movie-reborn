@@ -1149,6 +1149,11 @@ MainWindow::MainWindow(QWidget *parent)
         }
 
     });
+//    connect(_engine, &PlayerEngine::checkMuted, this, [=](bool mute) {
+//        this->setMusicMuted(!mute);
+//        volumeMonitoring.start();
+//        disconnect(_engine, &PlayerEngine::checkMuted, nullptr, nullptr);
+//    });
     connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::newProcessInstance, this, [ = ] {
         this->activateWindow();
     });
@@ -1192,6 +1197,11 @@ MainWindow::MainWindow(QWidget *parent)
     });
 
     connect(&volumeMonitoring, &VolumeMonitoring::muteChanged, this, [ = ](bool mute) {
+        //首次启动的时候先判断一次设置的静音状态
+        if (!m_bFirstInit) {
+            this->setMusicMuted(_engine->muted());
+            m_bFirstInit = true;
+        }
         changedMute(mute);
     });
 
