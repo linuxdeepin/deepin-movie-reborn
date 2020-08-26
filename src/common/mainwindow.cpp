@@ -895,7 +895,7 @@ MainWindow::MainWindow(QWidget *parent)
     _miniPlayBtn = new DIconButton(this);
     _miniQuitMiniBtn = new DIconButton(this);
     if (!composited) {
-        _labelCover = new QLabel();
+        _labelCover = new QLabel(this);
         _labelCover->setFixedSize(QSize(30, 30));
         _labelCover->setVisible(_miniMode);
         QPalette palette;

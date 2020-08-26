@@ -219,14 +219,14 @@ CompositingManager::CompositingManager()
         }
     #endif
         qDebug() << "composited:" << _composited;
-        auto e = QProcessEnvironment::systemEnvironment();
-        QString XDG_SESSION_TYPE = e.value(QStringLiteral("XDG_SESSION_TYPE"));
-        QString WAYLAND_DISPLAY = e.value(QStringLiteral("WAYLAND_DISPLAY"));
+//        auto e = QProcessEnvironment::systemEnvironment();
+//        QString XDG_SESSION_TYPE = e.value(QStringLiteral("XDG_SESSION_TYPE"));
+//        QString WAYLAND_DISPLAY = e.value(QStringLiteral("WAYLAND_DISPLAY"));
 
-        if (XDG_SESSION_TYPE == QLatin1String("wayland") ||
-                WAYLAND_DISPLAY.contains(QLatin1String("wayland"), Qt::CaseInsensitive)) {
-            _composited = false;
-        }
+//        if (XDG_SESSION_TYPE == QLatin1String("wayland") ||
+//                WAYLAND_DISPLAY.contains(QLatin1String("wayland"), Qt::CaseInsensitive)) {
+//            _composited = false;
+//        }
     #if defined (__mips__) || defined (__aarch64__) || defined (__sw_64__)
         if (_composited) {
             _hasCard = _composited;
