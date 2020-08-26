@@ -40,12 +40,6 @@
 
 #include <libffmpegthumbnailer/videothumbnailerc.h>
 
-extern "C" {
-#include <libavformat/avformat.h>
-#include <libavutil/dict.h>
-#include <libavutil/avutil.h>
-}
-
 typedef video_thumbnailer *(*mvideo_thumbnailer)();
 typedef void (*mvideo_thumbnailer_destroy)(video_thumbnailer *thumbnailer);
 /* create image_data structure */
@@ -53,14 +47,6 @@ typedef image_data *(*mvideo_thumbnailer_create_image_data)(void);
 /* destroy image_data structure */
 typedef void (*mvideo_thumbnailer_destroy_image_data)(image_data *data);
 typedef int (*mvideo_thumbnailer_generate_thumbnail_to_buffer)(video_thumbnailer *thumbnailer, const char *movie_filename, image_data *generated_image_data);
-
-typedef int (*mvideo_avformat_open_input)(AVFormatContext **ps, const char *url, AVInputFormat *fmt, AVDictionary **options);
-typedef int (*mvideo_avformat_find_stream_info)(AVFormatContext *ic, AVDictionary **options);
-typedef int (*mvideo_av_find_best_stream)(AVFormatContext *ic, enum AVMediaType type, int wanted_stream_nb, int related_stream, AVCodec **decoder_ret, int flags);
-typedef AVCodec* (*mvideo_avcodec_find_decoder)(enum AVCodecID id);
-typedef void (*mvideo_av_dump_format)(AVFormatContext *ic, int index, const char *url, int is_output);
-typedef void (*mvideo_avformat_close_input)(AVFormatContext **s);
-typedef AVDictionaryEntry* (*mvideo_av_dict_get)(const AVDictionary *m, const char *key, const AVDictionaryEntry *prev, int flags);
 
 namespace dmr {
 class PlayerEngine;
@@ -268,14 +254,6 @@ private:
     mvideo_thumbnailer_create_image_data m_mvideo_thumbnailer_create_image_data = nullptr;
     mvideo_thumbnailer_destroy_image_data m_mvideo_thumbnailer_destroy_image_data = nullptr;
     mvideo_thumbnailer_generate_thumbnail_to_buffer m_mvideo_thumbnailer_generate_thumbnail_to_buffer = nullptr;
-
-    mvideo_avformat_open_input m_mvideo_avformat_open_input = nullptr;
-    mvideo_avformat_find_stream_info m_mvideo_avformat_find_stream_info = nullptr;
-    mvideo_av_find_best_stream m_mvideo_av_find_best_stream = nullptr;
-    mvideo_avcodec_find_decoder m_mvideo_avcodec_find_decoder = nullptr;
-    mvideo_av_dump_format m_mvideo_av_dump_format = nullptr;
-    mvideo_avformat_close_input m_mvideo_avformat_close_input = nullptr;
-    mvideo_av_dict_get m_mvideo_av_dict_get = nullptr;
 
     PlayerEngine *_engine {nullptr};
 
