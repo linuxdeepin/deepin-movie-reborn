@@ -3927,7 +3927,12 @@ void MainWindow::capturedMouseReleaseEvent(QMouseEvent *me)
     {
         m_bLastIsTouch = true;
          _isTouch = false;
-         m_bTouchChangeVolume = false;
+
+         if(m_bTouchChangeVolume)
+         {
+             m_bTouchChangeVolume = false;
+             _toolbox->setVisible(true);
+         }
 
         if(m_bProgressChanged)
         {
