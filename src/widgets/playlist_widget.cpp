@@ -1429,6 +1429,7 @@ void PlaylistWidget::togglePopup()
         _toggling = false;
         _state = State::Opened;
         emit stateChange();
+        setGeometry(fixed);
 #endif
     }
 }
