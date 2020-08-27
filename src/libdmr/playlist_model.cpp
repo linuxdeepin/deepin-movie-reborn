@@ -542,6 +542,23 @@ PlaylistModel::PlaylistModel(PlayerEngine *e)
     }
 #endif
 }
+
+QString PlaylistModel::libPath(const QString &strlib)
+{
+    QDir  dir;
+    QString path  = QLibraryInfo::location(QLibraryInfo::LibrariesPath);
+    dir.setPath(path);
+    QStringList list = dir.entryList(QStringList()<<(strlib + "*"),QDir::NoDotAndDotDot |QDir::Files);//filter name with strlib
+    if(list.contains(strlib)){
+        return strlib;
+    }else{
+        list.sort();
+    }
+
+    Q_ASSERT(list.size() > 0);
+    return list.last();
+}
+
 void PlaylistModel::initThumb()
 {
 #ifdef __x86_64__
@@ -555,7 +572,7 @@ void PlaylistModel::initThumb()
 #else
     const char *path = "/usr/lib/i386-linux-gnu/libffmpegthumbnailer.so.4";
 #endif
-    QLibrary library(path);
+    QLibrary library(libPath("libffmpegthumbnailer.so"));
     m_mvideo_thumbnailer = (mvideo_thumbnailer) library.resolve( "video_thumbnailer_create");
     m_mvideo_thumbnailer_destroy = (mvideo_thumbnailer_destroy) library.resolve( "video_thumbnailer_destroy");
     m_mvideo_thumbnailer_create_image_data = (mvideo_thumbnailer_create_image_data) library.resolve( "video_thumbnailer_create_image_data");
@@ -588,9 +605,9 @@ void PlaylistModel::initFFmpeg()
 #endif
 
 
-    QLibrary avcodecLibrary(path + "libavcodec.so.58");
-    QLibrary avformatLibrary(path + "libavformat.so.58");
-    QLibrary avutilLibrary(path + "libavutil.so.56");
+    QLibrary avcodecLibrary(libPath("libavcodec.so"));
+    QLibrary avformatLibrary(libPath("libavformat.so"));
+    QLibrary avutilLibrary(libPath("libavutil.so"));
 
     g_mvideo_avformat_open_input = (mvideo_avformat_open_input) avformatLibrary.resolve("avformat_open_input");
     g_mvideo_avformat_find_stream_info = (mvideo_avformat_find_stream_info) avformatLibrary.resolve("avformat_find_stream_info");
@@ -1495,7 +1512,7 @@ bool PlaylistModel::getMusicPix(const QFileInfo &fi, QPixmap &rImg)
 #else
     QString path = "/usr/lib/i386-linux-gnu/";
 #endif
-    QLibrary library(path);
+    QLibrary library(libPath("libavformat.so"));
     mvideo_avformat_open_input g_mvideo_avformat_open_input = (mvideo_avformat_open_input) library.resolve("avformat_open_input");
     mvideo_avformat_find_stream_info g_mvideo_avformat_find_stream_info = (mvideo_avformat_find_stream_info) library.resolve("avformat_find_stream_info");
 

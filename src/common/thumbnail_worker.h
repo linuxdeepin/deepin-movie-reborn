@@ -94,6 +94,7 @@ private:
     void run() override;
     void runSingle(QPair<QUrl, int> w);
     QPixmap genThumb(const QUrl &url, int secs);
+    QString libPath(const QString &strlib);
 };
 
 }

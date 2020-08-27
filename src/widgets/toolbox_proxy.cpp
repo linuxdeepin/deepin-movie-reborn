@@ -1468,6 +1468,22 @@ void viewProgBarLoad::run()
 
 }
 
+QString libPath(const QString &strlib)
+{
+    QDir  dir;
+    QString path  = QLibraryInfo::location(QLibraryInfo::LibrariesPath);
+    dir.setPath(path);
+    QStringList list = dir.entryList(QStringList()<<(strlib + "*"),QDir::NoDotAndDotDot |QDir::Files);//filter name with strlib
+    if(list.contains(strlib)){
+        return strlib;
+    }else{
+        list.sort();
+    }
+
+    Q_ASSERT(list.size() > 0);
+    return list.last();
+}
+
 void viewProgBarLoad::initThumb()
 {
 #ifdef __x86_64__
@@ -1482,7 +1498,7 @@ void viewProgBarLoad::initThumb()
     const char *path = "/usr/lib/i386-linux-gnu/libffmpegthumbnailer.so.4";
 #endif
 
-    QLibrary library(path);
+    QLibrary library(libPath("libffmpegthumbnailer.so"));
     m_mvideo_thumbnailer = (mvideo_thumbnailer) library.resolve( "video_thumbnailer_create");
     m_mvideo_thumbnailer_destroy = (mvideo_thumbnailer_destroy) library.resolve( "video_thumbnailer_destroy");
     m_mvideo_thumbnailer_create_image_data = (mvideo_thumbnailer_create_image_data) library.resolve( "video_thumbnailer_create_image_data");

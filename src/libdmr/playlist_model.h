@@ -226,6 +226,7 @@ private:
     void initFFmpeg();
     bool getMusicPix(const QFileInfo &fi, QPixmap &rImg);
     struct MovieInfo parseFromFile(const QFileInfo &fi, bool *ok = nullptr);
+    QString libPath(const QString &strlib);
     // when app starts, and the first time to load playlist
     bool _firstLoad {true};
     int _count {0};
