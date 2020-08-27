@@ -267,6 +267,7 @@ private:
     QList<QUrl> m_tempList;
     QList<QUrl> m_loadFile;
     bool m_isLoadRunning {false};
+    bool m_initFFmpeg {false};
 
     void reshuffle();
     void appendSingle(const QUrl &);

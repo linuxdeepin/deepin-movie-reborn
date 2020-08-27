@@ -1938,7 +1938,7 @@ void ToolboxProxy::setup()
     bot_layout->addLayout(_mid);
 
     QHBoxLayout *time = new QHBoxLayout(bot_toolWgt);
-    time->setContentsMargins(10, 10, 10, 10);
+    time->setContentsMargins(11, 9, 11, 9);
     time->setSpacing(0);
     time->setAlignment(Qt::AlignLeft);
     bot_layout->addLayout(time);
