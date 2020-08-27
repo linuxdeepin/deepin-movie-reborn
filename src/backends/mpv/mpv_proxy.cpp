@@ -87,7 +87,10 @@ MpvProxy::MpvProxy(QWidget *parent)
         setAttribute(Qt::WA_NativeWindow);
         qDebug() << "proxy hook winId " << this->winId();
     }
-
+#ifdef _LIBDMR_
+    firstInit();
+    m_bInited = true;
+#endif
     //heyi need
 //    if (m_creat) {
 //        _handle = myHandle::myFromRawHandle(mpv_init());
@@ -164,8 +167,8 @@ void MpvProxy::firstInit()
             setLayout(layout);
             _gl_widget->show();
             //if (_gl_widget) {
-               // _gl_widget->initMpvFuns();
-           // }
+            // _gl_widget->initMpvFuns();
+            // }
         }
     }
 }
@@ -259,10 +262,9 @@ mpv_handle *MpvProxy::mpv_init()
             }
         }
 
-        if(CompositingManager::get().isOnlySoftDecode()){
+        if (CompositingManager::get().isOnlySoftDecode()) {
             my_set_property(h, "hwdec", "off");
-        }
-        else{
+        } else {
             my_set_property(h, "hwdec", "auto-safe");
         }
 
@@ -308,11 +310,10 @@ mpv_handle *MpvProxy::mpv_init()
             break;
         }
     }*/
-    if(CompositingManager::get().isOnlySoftDecode()){
+    if (CompositingManager::get().isOnlySoftDecode()) {
         my_set_property(h, "hwdec", "off");
-    }
-    else{
-         my_set_property(h, "hwdec", "auto-safe");
+    } else {
+        my_set_property(h, "hwdec", "auto-safe");
     }
     qDebug() << "modify HWDEC auto-safe";
 #endif
@@ -337,10 +338,9 @@ mpv_handle *MpvProxy::mpv_init()
     } else {
 #if defined (__mips__) || defined (__aarch64__)
         if (CompositingManager::get().hascard()) {
-            if(CompositingManager::get().isOnlySoftDecode()){
+            if (CompositingManager::get().isOnlySoftDecode()) {
                 my_set_property(h, "hwdec", "off");
-            }
-            else{
+            } else {
                 my_set_property(h, "hwdec", "auto-safe");
             }
             my_set_property(h, "vo", "gpu");
@@ -591,10 +591,9 @@ void MpvProxy::handle_mpv_events()
 //                    qDebug() << "my_set_property hwdec no";
 //                    my_set_property(_handle, "hwdec", "no");
                 qDebug() << "my_set_property hwdec auto-safe";
-                if(CompositingManager::get().isOnlySoftDecode()){
+                if (CompositingManager::get().isOnlySoftDecode()) {
                     my_set_property(_handle, "hwdec", "off");
-                }
-                else{
+                } else {
                     my_set_property(_handle, "hwdec", "auto-safe");
                 }
             }
@@ -721,8 +720,7 @@ bool MpvProxy::loadSubtitle(const QFileInfo &fi)
 {
     //movie could be in an inner state that marked as Stopped when loadfile executes
     //if (state() == PlayState::Stopped) { return true; }
-    if(!m_bInited)
-    {
+    if (!m_bInited) {
         firstInit();
         m_bInited = true;
     }
@@ -779,8 +777,7 @@ void MpvProxy::addSubSearchPath(const QString &path)
 
 void MpvProxy::setSubCodepage(const QString &cp)
 {
-    if(!m_bInited)
-    {
+    if (!m_bInited) {
         m_bInited = true;
         firstInit();
     }
@@ -911,8 +908,7 @@ void MpvProxy::changeSoundMode(SoundMode sm)
 
 void MpvProxy::volumeUp()
 {
-    if(!m_bInited)
-    {
+    if (!m_bInited) {
         firstInit();
         m_bInited = true;
     }
@@ -927,8 +923,7 @@ void MpvProxy::volumeUp()
 
 void MpvProxy::changeVolume(int val)
 {
-    if(!m_bInited)
-    {
+    if (!m_bInited) {
         firstInit();
         m_bInited = true;
     }
@@ -993,8 +988,7 @@ void MpvProxy::toggleMute()
 {
     QList<QVariant> args = { "cycle", "mute" };
     qDebug () << args;
-    if(!m_bInited)
-    {
+    if (!m_bInited) {
         firstInit();
         m_bInited = true;
     }
@@ -1003,8 +997,7 @@ void MpvProxy::toggleMute()
 
 void MpvProxy::play()
 {
-    if(!m_bInited)
-    {
+    if (!m_bInited) {
         firstInit();
         m_bInited = true;
     }
@@ -1045,8 +1038,7 @@ void MpvProxy::play()
 #if defined (__mips__) || defined (__aarch64__)
         if (CompositingManager::get().hascard() && !CompositingManager::get().isOnlySoftDecode()) {
             my_set_property(_handle, "hwdec", "auto");
-        }
-        else{
+        } else {
             my_set_property(_handle, "hwdec", "off");
         }
 #endif
@@ -1054,10 +1046,9 @@ void MpvProxy::play()
         my_set_property(_handle, "hwdec", "off");
     }
 #else
-    if(CompositingManager::get().isOnlySoftDecode()){
+    if (CompositingManager::get().isOnlySoftDecode()) {
         my_set_property(_handle, "hwdec", "off");
-    }
-    else{
+    } else {
         my_set_property(_handle, "hwdec", "auto");
     }
 #endif
