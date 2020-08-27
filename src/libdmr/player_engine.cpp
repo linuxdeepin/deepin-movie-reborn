@@ -78,8 +78,6 @@ PlayerEngine::PlayerEngine(QWidget *parent)
 
 #ifndef _LIBDMR_
     connect(&Settings::get(), &Settings::subtitleChanged, this, &PlayerEngine::updateSubStyles);
-#else
-    _current->firstInit();
 #endif
 
     connect(&OnlineSubtitle::get(), &OnlineSubtitle::subtitlesDownloadedFor,
@@ -512,17 +510,14 @@ void PlayerEngine::paintEvent(QPaintEvent *e)
     QRect rect = this->rect();
     QPainter p(this);
 
-    if(_playlist->count() > 0 && _state != Idle)
-    {
+    if (_playlist->count() > 0 && _state != Idle) {
         bIsMusic = isAudioFile( _playlist->currentInfo().mi.title);
     }
 
     if (!CompositingManager::get().composited()) {
-        if(_state != Idle && bIsMusic) {
+        if (_state != Idle && bIsMusic) {
             p.fillRect(rect, QBrush(QColor(0, 0, 0)));
-        }
-        else
-        {
+        } else {
             QImage icon = utils::LoadHiDPIImage(":/resources/icons/light/init-splash.svg");
             QPixmap pix = QPixmap::fromImage(icon);
             int x = this->rect().center().x() - pix.width() / 2;
@@ -746,12 +741,11 @@ QList<QUrl> PlayerEngine::collectPlayDir(const QDir &dir)
         di.next();
         if (di.fileInfo().isFile() && isPlayableFile(di.fileName())) {
             strtp = di.filePath();
-            while(QFileInfo(strtp).isSymLink())
-            {
+            while (QFileInfo(strtp).isSymLink()) {
                 /*****************************
                  * use oringnal path to replace link path
                  * ***************************/
-               strtp = QFileInfo(strtp).symLinkTarget();
+                strtp = QFileInfo(strtp).symLinkTarget();
             }
             urls.append(QUrl::fromLocalFile(strtp));
         }
@@ -773,12 +767,11 @@ QList<QUrl> PlayerEngine::addPlayFiles(const QList<QUrl> &urls)
     QList<QUrl> valids = collectPlayFiles(urls);
     for (auto &url : valids) {
         QString strtp = url.toLocalFile();
-        while(QFileInfo(strtp).isSymLink())
-        {
+        while (QFileInfo(strtp).isSymLink()) {
             /*****************************
              * use oringnal path to replace link path
              * ***************************/
-           strtp = QFileInfo(strtp).symLinkTarget();
+            strtp = QFileInfo(strtp).symLinkTarget();
         }
         url = QUrl::fromLocalFile(strtp);
     }
