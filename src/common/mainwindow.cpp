@@ -4144,7 +4144,7 @@ void MainWindow::mouseMoveEvent(QMouseEvent *ev)
         }
     }
 
-    if (!CompositingManager::get().composited()) {
+    if (!CompositingManager::get().composited() && !m_bIsFullSreen) {
         move(this->pos() + ptDelta);
     } else {
         QWidget::mouseMoveEvent(ev);
