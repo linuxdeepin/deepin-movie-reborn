@@ -2565,9 +2565,14 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                     _nwComm->updateWithMessage(tr("Volume: %1%").arg(nVol));
                 }
                 setAudioVolume(qMin(nVol, 100));
+                //音量调整为超过100关闭，再次启动后不会重新设置mpv音量问题
+                if (!m_bFirstInit && nVol >= 100) {
+                    _engine->changeVolume(nVol);
+                    Settings::get().setInternalOption("global_volume", m_lastVolume);
+                }
                 return;
             }
-            if(nVol > 100){
+            if(nVol >= 100) {
                 _engine->changeVolume(nVol);
                 Settings::get().setInternalOption("global_volume", m_lastVolume);
             }
