@@ -3927,7 +3927,12 @@ void MainWindow::capturedMouseReleaseEvent(QMouseEvent *me)
     {
         m_bLastIsTouch = true;
          _isTouch = false;
-         m_bTouchChangeVolume = false;
+
+         if(m_bTouchChangeVolume)
+         {
+             m_bTouchChangeVolume = false;
+             _toolbox->setVisible(true);
+         }
 
         if(m_bProgressChanged)
         {
@@ -4070,7 +4075,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *ev)
 
 void MainWindow::delayedMouseReleaseHandler()
 {
-    if (!_afterDblClick && !m_bIsFullSreen)
+    if (!_afterDblClick && !m_bLastIsTouch)
         requestAction(ActionFactory::TogglePause, false, {}, true);
     _afterDblClick = false;
 }
@@ -4139,7 +4144,7 @@ void MainWindow::mouseMoveEvent(QMouseEvent *ev)
         }
     }
 
-    if (!CompositingManager::get().composited()) {
+    if (!CompositingManager::get().composited() && !m_bIsFullSreen) {
         move(this->pos() + ptDelta);
     } else {
         QWidget::mouseMoveEvent(ev);

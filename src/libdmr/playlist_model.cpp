@@ -561,17 +561,6 @@ QString PlaylistModel::libPath(const QString &strlib)
 
 void PlaylistModel::initThumb()
 {
-#ifdef __x86_64__
-    const char *path = "/usr/lib/x86_64-linux-gnu/libffmpegthumbnailer.so.4";
-#elif __mips__
-    const char *path = "/usr/lib/mips64el-linux-gnuabi64/libffmpegthumbnailer.so.4";
-#elif __aarch64__
-    const char *path = "/usr/lib/aarch64-linux-gnu/libffmpegthumbnailer.so.4";
-#elif __sw_64__
-    const char *path = "/usr/lib/sw_64-linux-gnu/libffmpegthumbnailer.so.4";
-#else
-    const char *path = "/usr/lib/i386-linux-gnu/libffmpegthumbnailer.so.4";
-#endif
     QLibrary library(libPath("libffmpegthumbnailer.so"));
     m_mvideo_thumbnailer = (mvideo_thumbnailer) library.resolve( "video_thumbnailer_create");
     m_mvideo_thumbnailer_destroy = (mvideo_thumbnailer_destroy) library.resolve( "video_thumbnailer_destroy");
@@ -592,19 +581,6 @@ void PlaylistModel::initThumb()
 
 void PlaylistModel::initFFmpeg()
 {
-#ifdef __x86_64__
-    QString path = "/usr/lib/x86_64-linux-gnu/";
-#elif __mips__
-    QString path = "/usr/lib/mips64el-linux-gnuabi64/";
-#elif __aarch64__
-    QString path = "/usr/lib/aarch64-linux-gnu/";
-#elif __sw_64__
-    QString path = "/usr/lib/sw_64-linux-gnu/";
-#else
-    QString path = "/usr/lib/i386-linux-gnu/";
-#endif
-
-
     QLibrary avcodecLibrary(libPath("libavcodec.so"));
     QLibrary avformatLibrary(libPath("libavformat.so"));
     QLibrary avutilLibrary(libPath("libavutil.so"));
@@ -618,6 +594,7 @@ void PlaylistModel::initFFmpeg()
     g_mvideo_av_dict_get = (mvideo_av_dict_get) avutilLibrary.resolve("av_dict_get");
 
     g_mvideo_avcodec_find_decoder = (mvideo_avcodec_find_decoder) avcodecLibrary.resolve("avcodec_find_decoder");
+    m_initFFmpeg = true;
 }
 
 PlaylistModel::~PlaylistModel()
@@ -1159,6 +1136,10 @@ void PlaylistModel::collectionJob(const QList<QUrl> &urls, QList<QUrl> &inputUrl
 
 void PlaylistModel::appendAsync(const QList<QUrl> &urls)
 {
+    if (!m_initFFmpeg) {
+        initThumb();
+        initFFmpeg();
+    }
     if (check_wayland()) {
         if (m_ploadThread == nullptr) {
             m_ploadThread = new LoadThread(this, urls);
