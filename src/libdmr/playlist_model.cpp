@@ -1798,6 +1798,12 @@ MovieInfo MovieInfo::parseFromFile(const QFileInfo &fi, bool *ok)
     if (ok) *ok = true;
     return mi;
 }
+#else
+MovieInfo MovieInfo::parseFromFile(const QFileInfo &fi, bool *ok)
+{
+    MovieInfo info;
+    return info;
+}
 #endif
 }
 

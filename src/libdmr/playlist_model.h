@@ -79,9 +79,7 @@ struct MovieInfo {
     int aDigit;
     int channels;
     int sampling;
-#ifdef _LIBDMR_
     static struct MovieInfo parseFromFile(const QFileInfo &fi, bool *ok = nullptr);
-#endif
     QString durationStr() const
     {
         return utils::Time2str(duration);
