@@ -35,7 +35,6 @@
 #endif
 #include "dvd_utils.h"
 
-
 #include <libffmpegthumbnailer/videothumbnailer.h>
 extern "C" {
 #include <libavformat/avformat.h>
@@ -44,6 +43,58 @@ extern "C" {
 }
 
 #include <random>
+
+static bool check_wayland()
+{
+    auto e = QProcessEnvironment::systemEnvironment();
+    QString XDG_SESSION_TYPE = e.value(QStringLiteral("XDG_SESSION_TYPE"));
+    QString WAYLAND_DISPLAY = e.value(QStringLiteral("WAYLAND_DISPLAY"));
+
+    if (XDG_SESSION_TYPE == QLatin1String("wayland") || WAYLAND_DISPLAY.contains(QLatin1String("wayland"), Qt::CaseInsensitive))
+        return true;
+    else {
+        return false;
+    }
+}
+
+//获取音乐缩略图
+static bool getMusicPix(const QFileInfo &fi, QPixmap &rImg)
+{
+
+    AVFormatContext *av_ctx = NULL;
+    AVCodecContext *dec_ctx = NULL;
+
+    if (!fi.exists()) {
+        return false;
+    }
+
+    auto ret = avformat_open_input(&av_ctx, fi.filePath().toUtf8().constData(), NULL, NULL);
+    if (ret < 0) {
+        qWarning() << "avformat: could not open input";
+        return false;
+    }
+
+    if (avformat_find_stream_info(av_ctx, NULL) < 0) {
+        qWarning() << "av_find_stream_info failed";
+        return false;
+    }
+
+    // read the format headers  comment by thx , 这里会导致一些音乐 奔溃
+    //if (av_ctx->iformat->read_header(av_ctx) < 0) {
+    //    printf("No header format");
+    //    return false;
+    //}
+
+    for (int i = 0; i < av_ctx->nb_streams; i++) {
+        if (av_ctx->streams[i]->disposition & AV_DISPOSITION_ATTACHED_PIC) {
+            AVPacket pkt = av_ctx->streams[i]->attached_pic;
+            //使用QImage读取完整图片数据（注意，图片数据是为解析的文件数据，需要用QImage::fromdata来解析读取）
+            //rImg = QImage::fromData((uchar *)pkt.data, pkt.size);
+            return rImg.loadFromData((uchar *)pkt.data, pkt.size);
+        }
+    }
+    return false;
+}
 
 static int open_codec_context(int *stream_idx,
                               AVCodecContext **dec_ctx, AVFormatContext *fmt_ctx, enum AVMediaType type)
@@ -366,6 +417,8 @@ struct MovieInfo MovieInfo::parseFromFile(const QFileInfo &fi, bool *ok)
             return mi;
         }
     }
+
+
     mi.aCodeID = dec_ctx->codec_id;
     mi.aCodeRate = dec_ctx->bit_rate;
     mi.aDigit = dec_ctx->sample_fmt;
@@ -399,6 +452,7 @@ struct MovieInfo MovieInfo::parseFromFile(const QFileInfo &fi, bool *ok)
         qDebug() << "tag:" << tag->key << tag->value;
     }
 
+
     avformat_close_input(&av_ctx);
     mi.valid = true;
 
@@ -424,6 +478,9 @@ bool PlayItemInfo::refresh()
 PlaylistModel::PlaylistModel(PlayerEngine *e)
     : _engine(e)
 {
+    m_pdataMutex = new QMutex();
+    m_ploadThread = nullptr;
+    m_brunning = false;
     _thumbnailer.setThumbnailSize(400 * qApp->devicePixelRatio());
     av_register_all();
 
@@ -477,6 +534,8 @@ PlaylistModel::~PlaylistModel()
 {
     qDebug() << __func__;
     delete _jobWatcher;
+
+    delete m_pdataMutex;
 
 #ifndef _LIBDMR_
     if (Settings::get().isSet(Settings::ClearWhenQuit)) {
@@ -966,9 +1025,34 @@ void PlaylistModel::collectionJob(const QList<QUrl> &urls)
 
 void PlaylistModel::appendAsync(const QList<QUrl> &urls)
 {
-    QTimer::singleShot(10, [ = ]() {
-        delayedAppendAsync(urls);
-    });
+    if (check_wayland()) {
+        if (m_ploadThread == nullptr) {
+            m_ploadThread = new LoadThread(this, urls);
+            connect(m_ploadThread, &QThread::finished, this, &PlaylistModel::deleteThread);
+        }
+        if (!m_ploadThread->isRunning()) {
+            m_ploadThread->start();
+            m_brunning = m_ploadThread->isRunning();
+        }
+    } else {
+        QTimer::singleShot(10, [ = ]() {
+            delayedAppendAsync(urls);
+        });
+    }
+}
+
+void PlaylistModel::deleteThread()
+{
+    if (check_wayland()) {
+        if (m_ploadThread == nullptr)
+            return ;
+        if (m_ploadThread->isRunning()) {
+            m_ploadThread->wait();
+        }
+        delete m_ploadThread;
+        m_ploadThread = nullptr;
+        m_brunning = false;
+    }
 }
 
 void PlaylistModel::delayedAppendAsync(const QList<QUrl> &urls)
@@ -976,11 +1060,16 @@ void PlaylistModel::delayedAppendAsync(const QList<QUrl> &urls)
     if (_pendingJob.size() > 0) {
         //TODO: may be automatically schedule later
         qWarning() << "there is a pending append going on, enqueue";
+        m_pdataMutex->lock();
         _pendingAppendReq.enqueue(urls);
+        m_pdataMutex->unlock();
         return;
     }
 
+    m_pdataMutex->lock();
     collectionJob(urls);
+    m_pdataMutex->unlock();
+
     if (!_pendingJob.size()) return;
 
     struct MapFunctor {
@@ -995,19 +1084,41 @@ void PlaylistModel::delayedAppendAsync(const QList<QUrl> &urls)
         };
     };
 
-    if (QThread::idealThreadCount() > 1) {
-        auto future = QtConcurrent::mapped(_pendingJob, MapFunctor(this));
-        _jobWatcher->setFuture(future);
-    } else {
+    if (check_wayland()) {
+        m_pdataMutex->lock();
         PlayItemInfoList pil;
         for (const auto &a : _pendingJob) {
             qDebug() << "sync mapping " << a.first.fileName();
             pil.append(calculatePlayInfo(a.first, a.second));
+            if (m_ploadThread && m_ploadThread->isRunning()) {
+                m_ploadThread->msleep(10);
+            }
         }
         _pendingJob.clear();
         _urlsInJob.clear();
+
+        m_pdataMutex->unlock();
+
         handleAsyncAppendResults(pil);
+    } else {
+        if (QThread::idealThreadCount() > 1) {
+            auto future = QtConcurrent::mapped(_pendingJob, MapFunctor(this));
+            _jobWatcher->setFuture(future);
+        } else {
+            PlayItemInfoList pil;
+            for (const auto &a : _pendingJob) {
+                qDebug() << "sync mapping " << a.first.fileName();
+                pil.append(calculatePlayInfo(a.first, a.second));
+                if (m_ploadThread && m_ploadThread->isRunning()) {
+                    m_ploadThread->msleep(10);
+                }
+            }
+            _pendingJob.clear();
+            _urlsInJob.clear();
+            handleAsyncAppendResults(pil);
+        }
     }
+
 }
 
 static QList<PlayItemInfo> &SortSimilarFiles(QList<PlayItemInfo> &fil)
@@ -1164,17 +1275,27 @@ int PlaylistModel::current() const
     return _current;
 }
 
+bool PlaylistModel::getthreadstate()
+{
+    if (m_ploadThread) {
+        m_brunning = m_ploadThread->isRunning();
+    } else {
+        m_brunning = false;
+    }
+    return m_brunning;
+}
+
 struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl &url, const QFileInfo &fi, bool isDvd)
 {
     bool ok = false;
     struct MovieInfo mi;
-
     auto ci = PersistentManager::get().loadFromCache(url);
     if (ci.mi_valid && url.isLocalFile()) {
         mi = ci.mi;
         ok = true;
         qDebug() << "load cached MovieInfo" << mi;
     } else {
+
         mi = MovieInfo::parseFromFile(fi, &ok);
         if (isDvd && url.scheme().startsWith("dvd")) {
             QString dev = url.path();
@@ -1203,12 +1324,25 @@ struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl &url, const QFil
         qDebug() << "load cached thumb" << url;
     } else if (ok) {
         try {
-            std::vector<uint8_t> buf;
-            _thumbnailer.generateThumbnail(fi.canonicalFilePath().toUtf8().toStdString(),
-                                           ThumbnailerImageType::Png, buf);
+            //如果打开的是音乐就读取音乐缩略图
+            bool isMusic = false;
+            foreach (QString sf, _engine->audio_filetypes) {
+                if (sf.right(sf.size() - 2) == mi.fileType) {
+                    isMusic = true;
+                }
+            }
+            if (isMusic == false) {
+                std::vector<uint8_t> buf;
+                _thumbnailer.generateThumbnail(fi.canonicalFilePath().toUtf8().toStdString(),
+                                               ThumbnailerImageType::Png, buf);
 
-            auto img = QImage::fromData(buf.data(), buf.size(), "png");
-            pm = QPixmap::fromImage(img);
+                auto img = QImage::fromData(buf.data(), buf.size(), "png");
+                pm = QPixmap::fromImage(img);
+            } else {
+                if (getMusicPix(fi, pm) == false) {
+                    pm.load(":/resources/icons/logo-big.svg");
+                }
+            }
             pm.setDevicePixelRatio(qApp->devicePixelRatio());
         } catch (const std::logic_error &) {
         }
@@ -1244,6 +1378,25 @@ int PlaylistModel::indexOf(const QUrl &url)
 
     if (p == _infos.end()) return -1;
     return std::distance(_infos.begin(), p);
+}
+
+
+LoadThread::LoadThread(PlaylistModel *model, const QList<QUrl> &urls)
+{
+    _pModel = nullptr;
+    _pModel = model;
+    _urls = urls;
+}
+LoadThread::~LoadThread()
+{
+    _pModel = nullptr;
+}
+
+void LoadThread::run()
+{
+    if (_pModel) {
+        _pModel->delayedAppendAsync(_urls);
+    }
 }
 
 }

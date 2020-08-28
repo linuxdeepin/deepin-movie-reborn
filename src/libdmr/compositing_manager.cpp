@@ -115,6 +115,7 @@ CompositingManager &CompositingManager::get()
 
 CompositingManager::CompositingManager()
 {
+    _hasCard = false;
     _platform = PlatformChecker().check();
 
     _composited = false;
@@ -138,7 +139,11 @@ CompositingManager::CompositingManager()
             } else if (isDriverLoadedCorrectly() || isDirectRendered()) {
 #ifdef __aarch64__
                 _composited = false;
-                qDebug() << "__aarch64__";
+                qDebug() << "__aarch64__  isDirectRendered";
+                if (isDriverLoadedCorrectly()) {    //如果有独立显卡
+                    _composited = true;
+                    qDebug() << "__aarch64__  isDriverLoadedCorrectly";
+                }
 #elif __mips__
                 _composited = false;
                 qDebug() << "__mips__";
@@ -211,10 +216,32 @@ CompositingManager::CompositingManager()
     }
 #endif
     qDebug() << "composited:" << _composited;
+    auto e = QProcessEnvironment::systemEnvironment();
+    QString XDG_SESSION_TYPE = e.value(QStringLiteral("XDG_SESSION_TYPE"));
+    QString WAYLAND_DISPLAY = e.value(QStringLiteral("WAYLAND_DISPLAY"));
+
+    if (XDG_SESSION_TYPE == QLatin1String("wayland") ||
+            WAYLAND_DISPLAY.contains(QLatin1String("wayland"), Qt::CaseInsensitive)) {
+        _composited = false;
+    }
+#if defined (__mips__) || defined (__aarch64__) || defined (__sw_64__)
+    if (_composited) {
+        _hasCard = _composited;
+        _composited = false;
+        qDebug() << "hasCard: " << _hasCard;
+    }
+#endif
+    qDebug() << __func__ << "Composited is " << _composited;
+
 }
 
 CompositingManager::~CompositingManager()
 {
+}
+
+bool CompositingManager::hascard()
+{
+    return _hasCard;
 }
 
 // Attempt to reuse mpv's code for detecting whether we want GLX or EGL (which
@@ -311,7 +338,14 @@ void CompositingManager::detectOpenGLEarly()
     if (CompositingManager::runningOnNvidia()) {
         qputenv("QT_XCB_GL_INTEGRATION", "xcb_glx");
     } else if (!CompositingManager::runningOnVmwgfx()) {
-        qputenv("QT_XCB_GL_INTEGRATION", "xcb_egl");
+        auto e = QProcessEnvironment::systemEnvironment();
+        QString XDG_SESSION_TYPE = e.value(QStringLiteral("XDG_SESSION_TYPE"));
+        QString WAYLAND_DISPLAY = e.value(QStringLiteral("WAYLAND_DISPLAY"));
+
+        if (XDG_SESSION_TYPE != QLatin1String("wayland") &&
+                !WAYLAND_DISPLAY.contains(QLatin1String("wayland"), Qt::CaseInsensitive)) {
+            qputenv("QT_XCB_GL_INTEGRATION", "xcb_egl");
+        }
     }
 #else
     if (_interopKind == INTEROP_VAAPI_EGL) {

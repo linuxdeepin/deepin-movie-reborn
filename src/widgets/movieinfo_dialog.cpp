@@ -199,10 +199,12 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
     ml->addSpacing(9);
 
     m_fileNameLbl = new DLabel(this);
+    m_fileNameLbl->setMinimumWidth(260);
     qDebug() << "fileNameLbl w,h: " << m_fileNameLbl->width() << "," << m_fileNameLbl->height();
     DFontSizeManager::instance()->bind(m_fileNameLbl, DFontSizeManager::T8);
     m_fileNameLbl->setForegroundRole(DPalette::BrightText);
     m_fileNameLbl->setText(m_fileNameLbl->fontMetrics().elidedText(QFileInfo(mi.filePath).fileName(), Qt::ElideMiddle, 260));
+    m_fileNameLbl->setAlignment(Qt::AlignCenter);
     ml->addWidget(m_fileNameLbl);
     ml->setAlignment(m_fileNameLbl, Qt::AlignHCenter);
     ml->addSpacing(50);

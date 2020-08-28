@@ -49,16 +49,22 @@
 #include "movie_configuration.h"
 #include "vendor/movieapp.h"
 #include "vendor/presenter.h"
+#include <QSettings>
 
 DWIDGET_USE_NAMESPACE
 
 
 int main(int argc, char *argv[])
 {
+#ifdef __mips__
+    if (CompositingManager::get().composited()) {
+        CompositingManager::detectOpenGLEarly();
+        CompositingManager::detectPciID();
+    }
+#else
     CompositingManager::detectOpenGLEarly();
     CompositingManager::detectPciID();
-
-    DApplication::loadDXcbPlugin();
+#endif
 
 #if defined(STATIC_LIB)
     DWIDGET_INIT_RESOURCE();
@@ -66,12 +72,23 @@ int main(int argc, char *argv[])
 
     DApplication app(argc, argv);
 
+    DApplication::loadDXcbPlugin();
+
     // required by mpv
     setlocale(LC_NUMERIC, "C");
 
+#ifdef __mips__
+    if (CompositingManager::get().composited()) {
+        app.setAttribute(Qt::AA_UseHighDpiPixmaps);
+        // overwrite DApplication default value
+        app.setAttribute(Qt::AA_ForceRasterWidgets, false);
+    }
+#else
     app.setAttribute(Qt::AA_UseHighDpiPixmaps);
     // overwrite DApplication default value
     app.setAttribute(Qt::AA_ForceRasterWidgets, false);
+#endif
+
     app.setOrganizationName("deepin");
     app.setApplicationName("deepin-movie");
     app.setApplicationVersion(DMR_VERSION);
@@ -108,7 +125,16 @@ int main(int argc, char *argv[])
     qDebug() << "log path: " << Dtk::Core::DLogManager::getlogFilePath();
 
     bool singleton = !dmr::Settings::get().isSet(dmr::Settings::MultipleInstance);
-    if (singleton && !app.setSingleInstance("deepinmovie")) {
+
+    QString strUserPath = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+
+    QSharedMemory shared_memory(strUserPath + "deepinmovie");
+
+    if (shared_memory.attach()) {
+        shared_memory.detach();
+    }
+
+    if (singleton && !shared_memory.create(1)) {
         qDebug() << "another deepin movie instance has started";
         if (!toOpenFiles.isEmpty()) {
             QDBusInterface iface("com.deepin.movie", "/", "com.deepin.movie");

@@ -31,6 +31,7 @@
 
 #include <DThemeManager>
 #include <DApplication>
+#include <QProcess>
 
 #define TOOLBOX_TOP_EXTENT 12
 
@@ -153,6 +154,15 @@ int DMRSlider::position2progress(const QPoint &p)
 
 void DMRSlider::mousePressEvent(QMouseEvent *e)
 {
+    auto systemEnv = QProcessEnvironment::systemEnvironment();
+    QString XDG_SESSION_TYPE = systemEnv.value(QStringLiteral("XDG_SESSION_TYPE"));
+    QString WAYLAND_DISPLAY = systemEnv.value(QStringLiteral("WAYLAND_DISPLAY"));
+
+    if (XDG_SESSION_TYPE == QLatin1String("wayland") ||
+            WAYLAND_DISPLAY.contains(QLatin1String("wayland"), Qt::CaseInsensitive)) {
+        return ;
+    }
+
     if (e->buttons() == Qt::LeftButton && isEnabled()) {
         QWidget::mousePressEvent(e);
 

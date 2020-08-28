@@ -156,6 +156,9 @@ public:
 
     bool set_playlistopen_clicktogglepause(bool playlistopen);
     NotificationWidget *get_nwComm();
+
+    //在读取光盘的时候，直接把光盘挂载点的路径加入到播放列表中 thx
+    bool addCdromPath();
 signals:
     void windowEntered();
     void windowLeaved();
@@ -174,6 +177,7 @@ public slots:
     void checkErrorMpvLogsChanged(const QString prefix, const QString text);
     void checkWarningMpvLogsChanged(const QString prefix, const QString text);
     void slotdefaultplaymodechanged(const QString &key, const QVariant &value);
+    void syncPostion();
 
 
 protected:
@@ -258,6 +262,7 @@ private:
     void readSinkInputPath();
     void setAudioVolume(int);
     void setMusicMuted(bool muted);
+    void popupAdapter(QIcon, QString);
 
     //Limit video to mini mode size
     void LimitWindowize();
@@ -342,7 +347,13 @@ private:
     QString sinkInputPath;
 
     int m_lastVolume;
+    int m_displayVolume;
+    int m_oldDisplayVolume;
     bool m_isManual;
+
+    bool m_IsFree = true;  //播放器是否空闲，和IDel的定义不同
+
+    static int _retryTimes;
 };
 };
 

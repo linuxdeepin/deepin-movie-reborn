@@ -36,6 +36,7 @@
 #include <QFrame>
 #include <QHBoxLayout>
 #include <QTimer>
+#include <QMutex>
 #include <DIconButton>
 #include <DButtonBox>
 #include <DBlurEffectWidget>
@@ -45,6 +46,7 @@
 #include <DFloatingWidget>
 #include "dguiapplicationhelper.h"
 #include "videoboxbutton.h"
+#include "filter.h"
 
 namespace Dtk {
 namespace Widget {
@@ -127,21 +129,25 @@ public:
     {
         label_black_list.append(label_black);
     }
-    void addpm_list(QList<QPixmap> pm)
+    void addpm_list(QList<QPixmap> &pm)
     {
         pm_list.clear();
         pm_list.append(pm);
     }
-    void addpm_black_list(QList<QPixmap> pm_black)
+    void addpm_black_list(QList<QPixmap> &pm_black)
     {
         pm_black_list.clear();
         pm_black_list.append(pm_black);
     }
     QLabel *getfullscreentimeLabel();
     QLabel *getfullscreentimeLabelend();
+    bool getbAnimationFinash();
+    int DisplayVolume();
 public slots:
     void finishLoadSlot(QSize size);
     void updateplaylisticon();
+    void setthumbnailmode();
+    void setDisplayValue(int);
 signals:
     void requestPlay();
     void requestPause();
@@ -161,21 +167,23 @@ protected slots:
     void updateButtonStates();
     void setProgress(int v);
     void updateTimeVisible(bool visible);
+    /**
+       更新预览图位置
+    */
     void progressHoverChanged(int v);
     void updateHoverPreview(const QUrl &url, int secs);
-
 
 protected:
 //    void paintEvent(QPaintEvent *pe) override;
     void showEvent(QShowEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
-
 private:
     void setup();
     void updateTimeLabel();
     void updateToolTipTheme(ToolButton *btn);
     void updateThumbnail();
     void updatePreviewTime(qint64 secs, const QPoint &pos);
+    void installHint(QWidget *w, QWidget *hint);
 
     QLabel *_fullscreentimelable {nullptr};
     QLabel *_fullscreentimelableend {nullptr};
@@ -233,12 +241,25 @@ private:
 
     viewProgBarLoad *m_worker = nullptr;
     bool m_mouseFlag = false;
+    bool m_mousePree = false;   //thx
+    int m_mouseRelesePos = 0;
+    bool _bthumbnailmode;
 
     //动画是否完成
     bool bAnimationFinash {true};
 
     QPropertyAnimation *paopen;
     QPropertyAnimation *paClose;
+
+    QMutex m_listPixmapMutex;       //缩略图list的锁
+
+
+    QString m_UrloldThumbUrl;       //当前加载的文件，目的是为缩略图服务
+
+    DBlurEffectWidget *bot_widget {nullptr };
+    HintFilter        *hintFilter {nullptr };
+    bool m_isMouseIn = false;
+    QTimer _hideTime;
 };
 class viewProgBarLoad: public QThread
 {
@@ -246,6 +267,12 @@ class viewProgBarLoad: public QThread
 public:
     explicit viewProgBarLoad(PlayerEngine *engine = nullptr, DMRSlider *progBar = nullptr, ToolboxProxy *parent = 0);
 
+    //退出线程直接调用这个函数
+    void quitLoad();
+    //告诉线程需要加载一个缩略图，线程会停止正在加载的项目，重新加载新的缩略图
+    void load();
+    //必须调用这个函数加锁
+    void setListPixmapMutex(QMutex *pMutex);
 public slots:
     void loadViewProgBar(QSize size);
 signals:
@@ -278,8 +305,15 @@ private:
     QHBoxLayout *_viewProgBarLayout_black{nullptr};
     DMRSlider *_progBar {nullptr};
     QSize _size;
-    bool isLoad = false;
 
+    //加载缩略图是否加载完成，控制线程是否休眠
+    bool m_bisload {false};
+    //是否退出当前线程(退出while(1))
+    bool m_bQuit  {false};
+
+    QMutex m_mutex;
+
+    QMutex *pListPixmapMutex;
 
 };
 }

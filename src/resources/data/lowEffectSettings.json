@@ -98,12 +98,6 @@
                             "type": "checkbox",
                             "default": ""
                         },
-                         {
-                            "key": "showInthumbnailmode",
-                            "text": "Show thumbnails in progress bar",
-                            "type": "checkbox",
-                            "default": ""
-                        },
                         {
                             "key": "pauseonmin",
                             "text": "Pause when minimized",

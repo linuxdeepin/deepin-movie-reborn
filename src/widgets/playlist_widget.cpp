@@ -669,9 +669,10 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     mainLayout->setContentsMargins(10, 0, 16, 0);
     mainLayout->setSpacing(10);
     mainLayout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
-//    setLayout(mainLayout);
+    //setLayout(mainLayout);
     QWidget *topspec = new QWidget;
-    topspec->setFixedHeight(30);
+    topspec->setFixedHeight(20);
+    //topspec->setFixedHeight(30);
     mainVLayout->addWidget(topspec);
     mainVLayout->addLayout(mainLayout);
 
@@ -956,12 +957,15 @@ void PlaylistWidget::clear()
 void PlaylistWidget::updateItemInfo(int id)
 {
     auto piw = dynamic_cast<PlayItemWidget *>(_playlist->itemWidget(_playlist->item(id)));
+    if (piw == nullptr)     //update info thx
+        return ;
     piw->updateInfo(_engine->playlist().items()[id]);
 }
 
 void PlaylistWidget::updateItemStates()
 {
     qDebug() << __func__ << _playlist->count() << "current = " << _engine->playlist().current();
+    int len = _playlist->count();
     for (int i = 0; i < _playlist->count(); i++) {
         auto piw = dynamic_cast<PlayItemWidget *>(_playlist->itemWidget(_playlist->item(i)));
 
@@ -973,8 +977,11 @@ void PlaylistWidget::updateItemStates()
 
         if (i == _engine->playlist().current()) {
             if (piw->state() != ItemState::Playing) {
-                _playlist->scrollToItem(_playlist->item(i));
+                //scrollToItem只能更新scroll位置，不能同步列表项
+                //_playlist->scrollToItem(_playlist->item(i));
+                _playlist->setCurrentRow(i);
                 piw->setState(ItemState::Playing);
+
             }
         }
 
@@ -1305,7 +1312,7 @@ void PlaylistWidget::togglePopup()
     if (_state == State::Opened) {
         Q_ASSERT(isVisible());
 
-
+#ifndef __sw_64__
         paOpen = new QPropertyAnimation(this, "geometry");
         paOpen->setEasingCurve(QEasingCurve::Linear);
         paOpen->setDuration(POPUP_DURATION);
@@ -1323,13 +1330,16 @@ void PlaylistWidget::togglePopup()
             //_state = State::Closed;
             //emit stateChange();
         });
-
-
-
+#else
+        _toggling = false;
+        _state = State::Closed;
+        emit stateChange();
+        setVisible(!isVisible());
+#endif
     } else {
         setVisible(!isVisible());
         _toggling = true;
-
+#ifndef __sw_64__
         paClose = new QPropertyAnimation(this, "geometry");
         paClose->setEasingCurve(QEasingCurve::Linear);
         paClose->setDuration(POPUP_DURATION);
@@ -1342,10 +1352,12 @@ void PlaylistWidget::togglePopup()
         connect(paClose, &QPropertyAnimation::finished, [ = ]() {
             paClose->deleteLater();
             paClose = nullptr;
-            //_toggling = false;
-            //_state = State::Opened;
-            //emit stateChange();
         });
+#else
+        _toggling = false;
+        _state = State::Opened;
+        emit stateChange();
+#endif
     }
 }
 
@@ -1360,8 +1372,6 @@ void PlaylistWidget::paintEvent(QPaintEvent *pe)
 
     QPainterPath pp;
     pp.addRoundedRect(bgRect, 18, 18);
-//    painter.fillPath(pp, bgColor);
-
 //    {
 //        auto view_rect = bgRect.marginsRemoved(QMargins(1, 1, 1, 1));
 //        QPainterPath pp;
@@ -1385,11 +1395,21 @@ void PlaylistWidget::resizeEvent(QResizeEvent *ev)
 #else
     auto view_rect = main_rect.marginsRemoved(QMargins(1, 1, 1, 1));
 #endif
+//#ifdef __aarch64__
+//    QRect fixed(15, (view_rect.height() - 394),
+//                view_rect.width() - 20, (384 - 100));
+
+////    _playlist->setFixedWidth(width() - 235);
+//    //_playlist->setFixedWidth(fixed.width() - 235);
+//    _playlist->setFixedSize(fixed.width() - 221, fixed.height());
+//    move(fixed.topLeft() - QPoint(10, 0));
+//#else
     QRect fixed((view_rect.width() - 10), (view_rect.height() - 394),
                 view_rect.width() - 20, (384 - 70));
 
 //    _playlist->setFixedWidth(width() - 235);
     _playlist->setFixedWidth(fixed.width() - 235);
+//#endif
     emit sizeChange();
 
     QTimer::singleShot(100, this, &PlaylistWidget::batchUpdateSizeHints);
