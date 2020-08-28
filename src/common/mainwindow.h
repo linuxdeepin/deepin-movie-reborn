@@ -31,6 +31,7 @@
 #define _DMR_MAIN_WINDOW_H
 
 #include <QObject>
+#include <QTimer>
 #include <DMainWindow>
 #include <DTitlebar>
 #include <DPlatformWindowHandle>
@@ -43,6 +44,7 @@
 #include <DFloatingMessage>
 #include "animationlabel.h"
 #include "volumemonitoring.h"
+#include "diskcheckthread.h"
 
 //static const int VOLUME_OFFSET = 40;
 
@@ -178,6 +180,8 @@ public slots:
     void checkWarningMpvLogsChanged(const QString prefix, const QString text);
     void slotdefaultplaymodechanged(const QString &key, const QVariant &value);
     void syncPostion();
+    //设置窗口顶层
+    void my_setStayOnTop(const QWidget *widget, bool on);
 
 
 protected:
@@ -240,6 +244,7 @@ protected slots:
     void changedMute(bool);
 
     void updateMiniBtnTheme(int);
+    void diskRemoved(QString strDiskName);
 private:
     void setupTitlebar();
 
@@ -292,6 +297,7 @@ private:
     DIconButton *_miniCloseBtn {nullptr};
     DIconButton *_miniQuitMiniBtn {nullptr};
 #endif
+    QLabel *_labelCover {nullptr};
 
     QImage bg_dark;
     QImage bg_light;
@@ -354,6 +360,21 @@ private:
     bool m_IsFree = true;  //播放器是否空闲，和IDel的定义不同
 
     static int _retryTimes;
+    static int _hwdecModes;
+    static QList<QString> _hwdecInfos;
+
+    bool _isJinJia = false;//是否是景嘉微显卡
+    QTimer _progressTimer;
+    //add by heyi 解决触屏右键菜单bug
+    int nX = 0, nY = 0;     //左键按下时保存的点
+    bool _isTouch = false;          //是否是触摸屏按下
+    QPoint posMouseOrigin;
+    QTimer _mousePressTimer;
+    qint64 oldDuration = 0;
+    qint64 oldElapsed = 0;
+
+    Diskcheckthread m_diskCheckThread;
+    bool m_bClosed {false};      //用于景嘉微显卡下过滤metacall事件
 };
 };
 

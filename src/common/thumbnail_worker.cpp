@@ -47,7 +47,9 @@ ThumbnailWorker &ThumbnailWorker::get()
         QMutexLocker lock(&_instLock);
         if (_instance == nullptr) {
             _instance = new ThumbnailWorker;
+#ifndef __mips__
             (*_instance).start();
+#endif
         }
     }
 
@@ -85,11 +87,15 @@ void ThumbnailWorker::setPlayerEngine(PlayerEngine *pPlayerEngline)
 
 void ThumbnailWorker::requestThumb(const QUrl &url, int secs)
 {
+#ifndef __mips__
     if (_thumbLock.tryLock()) {
         _wq.push_front(qMakePair(url, secs));
         cond.wakeOne();
         _thumbLock.unlock();
     }
+#else
+    runSingle(qMakePair(url, secs));
+#endif
 }
 
 ThumbnailWorker::ThumbnailWorker()
@@ -178,6 +184,29 @@ void ThumbnailWorker::run()
     }
 
     _wq.clear();
+}
+
+void ThumbnailWorker::runSingle(QPair<QUrl, int> w)
+{
+    if (_cacheSize > SIZE_THRESHOLD) {
+        qDebug() << "thumb cache size exceeds maximum, clean up";
+        _cache.clear();
+        _cacheSize = 0;
+    }
+
+    if (!isThumbGenerated(w.first, w.second)) {
+        auto pm = genThumb(w.first, w.second);
+
+        QMutexLocker lock(&_thumbLock);
+        _cache[w.first].insert(w.second, pm);
+        _cacheSize += pm.width() * pm.height() * (pm.hasAlpha() ? 4 : 3);
+
+        QTime d(0, 0, 0);
+        d = d.addSecs(w.second);
+        qDebug() << "thumb for " << w.first << d.toString("hh:mm:ss");
+    }
+
+    emit thumbGenerated(w.first, w.second);
 }
 
 }

@@ -56,6 +56,8 @@ DWIDGET_USE_NAMESPACE
 
 int main(int argc, char *argv[])
 {
+    setenv("PULSE_PROP_media.role", "video", 1);
+
 #ifdef __mips__
     if (CompositingManager::get().composited()) {
         CompositingManager::detectOpenGLEarly();
@@ -70,9 +72,9 @@ int main(int argc, char *argv[])
     DWIDGET_INIT_RESOURCE();
 #endif
 
-    DApplication app(argc, argv);
-
     DApplication::loadDXcbPlugin();
+
+    DApplication app(argc, argv);
 
     // required by mpv
     setlocale(LC_NUMERIC, "C");
@@ -122,7 +124,7 @@ int main(int argc, char *argv[])
         Dtk::Core::DLogManager::registerConsoleAppender();
     }
     Dtk::Core::DLogManager::registerFileAppender();
-    qDebug() << "log path: " << Dtk::Core::DLogManager::getlogFilePath();
+    qInfo() << "log path: " << Dtk::Core::DLogManager::getlogFilePath();
 
     bool singleton = !dmr::Settings::get().isSet(dmr::Settings::MultipleInstance);
 
@@ -135,7 +137,7 @@ int main(int argc, char *argv[])
     }
 
     if (singleton && !shared_memory.create(1)) {
-        qDebug() << "another deepin movie instance has started";
+        qWarning() << "another deepin movie instance has started";
         if (!toOpenFiles.isEmpty()) {
             QDBusInterface iface("com.deepin.movie", "/", "com.deepin.movie");
             if (toOpenFiles.size() == 1) {

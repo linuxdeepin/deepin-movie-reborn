@@ -56,12 +56,7 @@ Settings::Settings()
                   .arg(qApp->applicationName());
     qDebug() << "configPath" << _configPath;
     auto backend = new QSettingBackend(_configPath);
-#if defined (__mips__) || defined (__sw_64__) || defined ( __aarch64__)
-    /*if (!CompositingManager::get().composited()) {
-        _settings = DSettings::fromJsonFile(":/resources/data/lowEffectSettings.json");
-    } else {
-        _settings = DSettings::fromJsonFile(":/resources/data/settings.json");
-    }*/
+#if !defined (__x86_64__)
     _settings = DSettings::fromJsonFile(":/resources/data/lowEffectSettings.json");
 #else
     _settings = DSettings::fromJsonFile(":/resources/data/settings.json");
@@ -97,6 +92,10 @@ Settings::Settings()
     auto fontFamliy = _settings->option("subtitle.font.family");
     fontFamliy->setData("items", fontDatabase.families());
     //fontFamliy->setValue(0);
+    QFileInfo fi("/dev/mwv206_0");      //景嘉微显卡默认不勾选预览
+    if (fi.exists()) {
+        setInternalOption("mousepreview",false);
+    }
 }
 
 static QString flag2key(Settings::Flag f)

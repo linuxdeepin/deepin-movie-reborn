@@ -85,7 +85,7 @@ MpvProxy::MpvProxy(QWidget *parent)
     if (!CompositingManager::get().composited()) {
         setWindowFlags(Qt::FramelessWindowHint);
         setAttribute(Qt::WA_NativeWindow);
-        qDebug() << "proxy hook winId " << this->winId();
+        qInfo() << "proxy hook winId " << this->winId();
     }
 
     _handle = Handle::FromRawHandle(mpv_init());
@@ -206,7 +206,7 @@ mpv_handle *MpvProxy::mpv_init()
                 qDebug() << "-------- gpu-hwdec-interop is disabled by user";
             }
         }
-        set_property(h, "hwdec", "auto-safe");
+        set_property(h, "hwdec", "auto");
     } else {
         set_property(h, "hwdec", "off");
     }
@@ -271,22 +271,24 @@ mpv_handle *MpvProxy::mpv_init()
         //set_property(h, "ao", "alsa");
 #endif
     } else {
-#if defined (__mips__) || defined (__aarch64__)
-        if (CompositingManager::get().hascard()) {
-            set_property(h, "hwdec", "auto-safe");
-            set_property(h, "vo", "gpu");
-        } else {
-            set_property(h, "vo", "xv,x11");
-            set_property(h, "ao", "alsa");
-        }
-#else
-#ifdef MWV206_0
         QFileInfo fi("/dev/mwv206_0");              //景嘉微显卡目前只支持vo=xv，等日后升级代码需要酌情修改。
         if (fi.exists()) {
+            _isJingJia = true;
             set_property(h, "hwdec", "vdpau");
             set_property(h, "vo", "vdpau");
         } else {
-            auto e = QProcessEnvironment::systemEnvironment();
+#if defined (__mips__) || defined (__aarch64__)
+            if (CompositingManager::get().hascard()) {
+                set_property(h, "hwdec", "auto");
+                set_property(h, "vo", "gpu");
+            } else {
+                set_property(h, "vo", "xv,x11");
+                //set_property(h, "ao", "alsa");
+            }
+#else
+            set_property(h, "vo", "xv,x11");
+#endif
+            /*auto e = QProcessEnvironment::systemEnvironment();
             QString XDG_SESSION_TYPE = e.value(QStringLiteral("XDG_SESSION_TYPE"));
             QString WAYLAND_DISPLAY = e.value(QStringLiteral("WAYLAND_DISPLAY"));
 
@@ -295,20 +297,17 @@ mpv_handle *MpvProxy::mpv_init()
                 set_property(h, "vo", "gpu,x11,xv");
             } else {
                 set_property(h, "vo", "xv");
-            }
-
+            }*/
         }
-#else
-        set_property(h, "vo", "gpu,xv,x11");
-#endif
-#endif
         set_property(h, "wid", m_parentWidget->winId());
     }
     if (QFile::exists("/dev/csmcore")) {
         set_property(h, "vo", "x11");
         set_property(h, "hwdec", "auto");
+        set_property(h, "wid", m_parentWidget->winId());
     }
-    qDebug() << __func__ << get_property(h, "vo").toString();
+    qInfo() << __func__ << get_property(h, "vo").toString();
+    qInfo() << __func__ << get_property(h, "hwdec").toString();
 
     //QLocale locale;
     QString strMovie = QObject::tr("Movie");
@@ -379,15 +378,15 @@ mpv_handle *MpvProxy::mpv_init()
             QFileInfo fi("/dev/mwv206_0");              //景嘉微显卡目前只支持vo=xv，等日后升级代码需要酌情修改。
             if (!fi.exists()) {
                 set_property(h, p->first.toUtf8().constData(), p->second.toUtf8().constData());
-                qDebug() << "apply" << p->first << "=" << p->second;
+                qInfo() << "apply" << p->first << "=" << p->second;
             }
 #else
             set_property(h, p->first.toUtf8().constData(), p->second.toUtf8().constData());
-            qDebug() << "apply" << p->first << "=" << p->second;
+            qInfo() << "apply" << p->first << "=" << p->second;
 #endif
 #endif
         } else {
-            qDebug() << "ignore(commented out)" << p->first << "=" << p->second;
+            qInfo() << "ignore(commented out)" << p->first << "=" << p->second;
         }
         ++p;
     }
@@ -511,24 +510,26 @@ void MpvProxy::handle_mpv_events()
                          << "codec: " << get_property(_handle, "video-codec")
                          << "format: " << get_property(_handle, "video-format");
             }
+            if (!_isJingJia) {
 #ifdef __mips__
-            qDebug() << "MPV_EVENT_FILE_LOADED __mips__";
-            auto codec = get_property(_handle, "video-codec").toString();
-            if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") || codec.toLower().contains("mpeg2video")) {
-                qDebug() << "set_property hwdec no";
-                set_property(_handle, "hwdec", "no");
-            }
+                qDebug() << "MPV_EVENT_FILE_LOADED __mips__";
+                auto codec = get_property(_handle, "video-codec").toString();
+                if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") /*|| codec.toLower().contains("mpeg2video")*/) {
+                    qDebug() << "set_property hwdec no";
+                    set_property(_handle, "hwdec", "no");
+                }
 #endif
 #ifdef __aarch64__
-            qDebug() << "MPV_EVENT_FILE_LOADED aarch64";
-            auto codec = get_property(_handle, "video-codec").toString();
-            if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") || codec.toLower().contains("mpeg2video")) {
+                qDebug() << "MPV_EVENT_FILE_LOADED aarch64";
+                auto codec = get_property(_handle, "video-codec").toString();
+                if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") || codec.toLower().contains("mpeg2video")) {
 //                    qDebug() << "set_property hwdec no";
 //                    set_property(_handle, "hwdec", "no");
-                qDebug() << "set_property hwdec auto-safe";
-                set_property(_handle, "hwdec", "auto-safe");
-            }
+                    qDebug() << "set_property hwdec auto-safe";
+                    set_property(_handle, "hwdec", "auto-safe");
+                }
 #endif
+            }
             setState(PlayState::Playing); //might paused immediately
             emit fileLoaded();
             qDebug() << QString("rotate metadata: dec %1, out %2")
@@ -655,7 +656,7 @@ bool MpvProxy::loadSubtitle(const QFileInfo &fi)
         return false;
 
     QList<QVariant> args = { "sub-add", fi.absoluteFilePath(), "select" };
-    qDebug () << args;
+    qInfo () << args;
     QVariant id = command(_handle, args);
     if (id.canConvert<ErrorReturn>()) {
         return false;
@@ -755,10 +756,10 @@ void MpvProxy::savePlaybackPosition()
 
 #ifndef _LIBDMR_
     MovieConfiguration::get().updateUrl(this->_file, ConfigKnownKey::SubId, sid());
-    if (elapsed() - 10 >= 0) {
-        MovieConfiguration::get().updateUrl(this->_file, ConfigKnownKey::StartPos, elapsed() - 10);
+    if (duration() - elapsed() < 5) {
+        MovieConfiguration::get().updateUrl(this->_file, ConfigKnownKey::StartPos, elapsed() - 2);
     } else {
-        MovieConfiguration::get().updateUrl(this->_file, ConfigKnownKey::StartPos, 10);
+        MovieConfiguration::get().updateUrl(this->_file, ConfigKnownKey::StartPos, elapsed());
     }
 #endif
 }
@@ -826,6 +827,41 @@ void MpvProxy::changeSoundMode(SoundMode sm)
     command(_handle, args);
 }
 
+void MpvProxy::changeHwdecMode(HwdecMode hm)
+{
+    //改变解码模式
+    switch (hm) {
+    case HwdecMode::NO:
+        set_property(_handle, "hwdec", "no");
+        break;
+    case HwdecMode::Auto:
+        set_property(_handle, "hwdec", "auto");
+        break;
+    case HwdecMode::Yes:
+        set_property(_handle, "hwdec", "yes");
+        break;
+    case HwdecMode::AutoSafe:
+        set_property(_handle, "hwdec", "auto-safe");
+        break;
+    case HwdecMode::AutoCopy:
+        set_property(_handle, "hwdec", "auto-copy");
+        break;
+    case HwdecMode::Vdpau:
+        set_property(_handle, "hwdec", "vdpau");
+        break;
+    case HwdecMode::VdpauCopy:
+        set_property(_handle, "hwdec", "vdpau-copy");
+        break;
+    case HwdecMode::Vaapi:
+        set_property(_handle, "hwdec", "vaapi");
+        break;
+    case HwdecMode::VaapiCopy:
+        set_property(_handle, "hwdec", "vaapi-copy");
+        break;
+    default:
+        break;
+    }
+}
 void MpvProxy::volumeUp()
 {
     if (volume() >= 200)
@@ -932,39 +968,43 @@ void MpvProxy::play()
         opts << QString("dvd-device=%1").arg(_dvdDevice);
     }
 
-    // hwdec could be disabled by some codecs, so we need to re-enable it
-    if (Settings::get().isSet(Settings::HWAccel)) {
+    //非景嘉微显卡
+    if (!_isJingJia) {
+        // hwdec could be disabled by some codecs, so we need to re-enable it
+        if (Settings::get().isSet(Settings::HWAccel)) {
 
-        set_property(_handle, "hwdec", "auto-safe");
-#if defined (__mips__) || defined (__aarch64__)
-        if (CompositingManager::get().hascard()) {
             set_property(_handle, "hwdec", "auto");
-        }
+#if defined (__mips__) || defined (__aarch64__)
+            if (CompositingManager::get().hascard()) {
+                set_property(_handle, "hwdec", "auto");
+            }
 #endif
-    } else {
-        set_property(_handle, "hwdec", "off");
+        } else {
+            set_property(_handle, "hwdec", "off");
+        }
     }
 #else
     set_property(_handle, "hwdec", "auto");
 #endif
+    //非景嘉微显卡
+    if (!_isJingJia) {
 #ifdef __mips__
-    qDebug() << "play __mips__";
-    auto codec = get_property(_handle, "video-codec").toString();
-    if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") || codec.toLower().contains("mpeg2video")) {
-        qDebug() << "set_property hwdec no";
-        set_property(_handle, "hwdec", "no");
-    }
+        auto codec = get_property(_handle, "video-codec").toString();
+        if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") /*|| codec.toLower().contains("mpeg2video")*/) {
+            qDebug() << "set_property hwdec no";
+            set_property(_handle, "hwdec", "auto");
+        }
 #endif
 #ifdef __aarch64__
-    qDebug() << "MPV_EVENT_FILE_LOADED aarch64";
-    auto codec = get_property(_handle, "video-codec").toString();
-    if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") || codec.toLower().contains("mpeg2video")) {
-        qDebug() << "set_property hwdec no";
-        set_property(_handle, "hwdec", "no");
-        //qDebug() << "set_property hwdec auto-safe";
-        //set_property(_handle, "hwdec", "auto-safe");
-    }
+        auto recodec = get_property(_handle, "video-codec").toString();
+        if (recodec.toLower().contains("wmv3") || recodec.toLower().contains("wmv2") || recodec.toLower().contains("mpeg2video")) {
+            qDebug() << "set_property hwdec no";
+            set_property(_handle, "hwdec", "no");
+            //qDebug() << "set_property hwdec auto-safe";
+            //set_property(_handle, "hwdec", "auto-safe");
+        }
 #endif
+    }
     if (opts.size()) {
         //opts << "sub-auto=fuzzy";
         args << "replace" << opts.join(',');

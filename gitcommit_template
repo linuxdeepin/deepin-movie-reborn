@@ -1,0 +1,11 @@
+# commit type :fix（问题修复）、feat（功能开发）、build（构建修改）、docs（文档）、chore（其他)
+Type:
+
+# Describe you bug/feature,or other things
+Description:
+
+# The root cause of bug,if not Type fix, leave Null here
+RootCause:Null
+
+# How do you fix the bug
+Solution:

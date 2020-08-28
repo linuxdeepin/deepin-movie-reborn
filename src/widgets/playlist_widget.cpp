@@ -161,7 +161,7 @@ public:
         _play = QPixmap(":/resources/icons/dark/normal/film-top.svg");
         _play.setDevicePixelRatio(qApp->devicePixelRatio());
 
-        setFixedSize(_playlist->width() - 250, 36);
+        setFixedSize(_playlist->width() - 230, 36);
         auto *l = new QHBoxLayout(this);
         l->setContentsMargins(17, 0, 0, 0);
         l->setSpacing(10);
@@ -223,6 +223,7 @@ public:
         _closeBtn->setIconSize(QSize(28, 28));
         _closeBtn->setFixedSize(25, 25);
         _closeBtn->setObjectName("CloseBtn");
+
         _closeBtn->hide();
         connect(_closeBtn, &DFloatingButton::clicked, this, &PlayItemWidget::closeButtonClicked);
         //connect(_closeBtn, &FloatingButton::clicked, this, &PlayItemWidget::closeButtonClicked);
@@ -242,8 +243,8 @@ public:
         setProperty("HintWidget", QVariant::fromValue<QWidget *>(t));
         installEventFilter(th);
         connect(_playlist, &PlaylistWidget::sizeChange, this, [ = ] {
-            setFixedWidth(_playlist->width() - 250);
-//            setFixedSize(_playlist->width(), 36);
+            setFixedWidth(_playlist->width() - 230);
+            //            setFixedSize(_playlist->width(), 36);
         });
     }
 
@@ -527,14 +528,28 @@ protected:
             painter.fillPath(pp, bgColor);
 
         }
+
+        QGraphicsOpacityEffect *opacityEffect = new QGraphicsOpacityEffect;
+        _time->setGraphicsEffect(opacityEffect);
+        QGraphicsOpacityEffect *opacityEffect_1 = new QGraphicsOpacityEffect;
+        _index->setGraphicsEffect(opacityEffect_1);
+
         if (state() == ItemState::Playing) {
             DPalette pa = DApplicationHelper::instance()->palette(this);
             pa.setBrush(DPalette::Text, pa.color(DPalette::Highlight));
 //            setPalette(pa);
 //            _name->setPalette(pa);
-            _name->setForegroundRole(DPalette::Highlight);
-            _index->setForegroundRole(DPalette::Highlight);
-            _time->setForegroundRole(DPalette::Highlight);
+            if (!m_bIsSelect) {
+                _name->setForegroundRole(DPalette::Highlight);
+                _index->setForegroundRole(DPalette::Highlight);
+                _time->setForegroundRole(DPalette::Highlight);
+            } else {
+                _name->setForegroundRole(DPalette::ToolTipText);
+                _index->setForegroundRole(DPalette::BrightText);
+                _time->setForegroundRole(DPalette::BrightText);
+            }
+            opacityEffect_1->setOpacity(1.0);
+            opacityEffect->setOpacity(1.0);
 //            _name->setFontWeight(QFont::Weight::Medium);
             DFontSizeManager::instance()->bind(_name, DFontSizeManager::T6, QFont::Medium);
             DFontSizeManager::instance()->bind(_index, DFontSizeManager::T6, QFont::Medium);
@@ -547,8 +562,17 @@ protected:
 //            _name->setPalette(pa_name);
 //            _name->setFontWeight(QFont::Weight::Normal);
             _name->setForegroundRole(DPalette::ToolTipText);
-            _index->setForegroundRole(DPalette::TextTips);
-            _time->setForegroundRole(DPalette::TextTips);
+            _index->setForegroundRole(DPalette::BrightText);
+            _time->setForegroundRole(DPalette::BrightText);
+
+            opacityEffect->setOpacity(0.5);
+
+            if (m_bIsSelect) {
+                opacityEffect_1->setOpacity(1.0);
+            } else {
+                opacityEffect_1->setOpacity(0.5);
+            }
+
             DFontSizeManager::instance()->bind(_name, DFontSizeManager::T6, QFont::Normal);
             DFontSizeManager::instance()->bind(_index, DFontSizeManager::T6, QFont::Normal);
             DFontSizeManager::instance()->bind(_time, DFontSizeManager::T6, QFont::Normal);
@@ -565,18 +589,43 @@ protected:
             _time->hide();
             _closeBtn->show();
             _closeBtn->raise();
-            QColor bgColor(255, 255, 255, 51);
-            if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ) {
-                bgColor = QColor(0, 0, 0, 51);
-            }
+            QColor bgColor = Dtk::Gui::DGuiApplicationHelper::instance()->applicationPalette().highlight().color();
+//            if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ) {
+//                bgColor = QColor(0, 0, 0, 51);
+//            }
 
             QPainterPath pp;
             pp.addRoundedRect(bgRect, 8, 8);
             painter.fillPath(pp, bgColor);
 
+            QPalette pe;
+            if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
+                pe.setColor(QPalette::ToolTipText, Qt::white);
+                _name->setPalette(pe);
+                pe.setColor(QPalette::BrightText, Qt::white);
+                _index->setPalette(pe);
+            } else if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
+                pe.setColor(QPalette::ToolTipText, Qt::white);
+                _name->setPalette(pe);
+                pe.setColor(QPalette::BrightText, Qt::white);
+                _index->setPalette(pe);
+            }
         } else {
             _time->show();
             _closeBtn->hide();
+
+            QPalette pe;
+            if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
+                pe.setColor(QPalette::ToolTipText, Qt::black);
+                _name->setPalette(pe);
+                pe.setColor(QPalette::BrightText, Qt::black);
+                _index->setPalette(pe);
+            } else if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
+                pe.setColor(QPalette::ToolTipText, Qt::white);
+                _name->setPalette(pe);
+                pe.setColor(QPalette::BrightText, Qt::white);
+                _index->setPalette(pe);
+            }
         }
 
         QWidget::paintEvent(pe);
@@ -666,8 +715,8 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     mainVLayout->setSpacing(0);
     setLayout(mainVLayout);
     auto *mainLayout = new QHBoxLayout();
-    mainLayout->setContentsMargins(10, 0, 16, 0);
-    mainLayout->setSpacing(10);
+    mainLayout->setContentsMargins(10, 0, 0, 0);
+    mainLayout->setSpacing(0);
     mainLayout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
     //setLayout(mainLayout);
     QWidget *topspec = new QWidget;
@@ -704,7 +753,10 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
 //    _title->setContentsMargins(0, 0, 0, 0);
 
     _num = new DLabel();
-    _num->setForegroundRole(DPalette::TextTips);
+    _num->setForegroundRole(DPalette::BrightText);
+    QGraphicsOpacityEffect *opacityEffect = new QGraphicsOpacityEffect;
+    _num->setGraphicsEffect(opacityEffect);
+    opacityEffect->setOpacity(0.5);
     _num->setText("");
     DFontSizeManager::instance()->bind(_num, DFontSizeManager::T6);
 //    _num->setFixedSize(96, 20);
@@ -757,7 +809,7 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     });
     left->setContentsMargins(36, 0, 0, 0);
 //    _title->setContentsMargins(0, 0, 0, 0);
-    clearButton->setContentsMargins(0, 0, 0, 0);
+    clearButton->setContentsMargins(0, 0, 0, 70);
     _num->setContentsMargins(0, 0, 0, 0);
 
 
@@ -766,6 +818,7 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     vl->setSpacing(0);
 //    mainLayout->addLayout(vl, 3);
     QWidget *right = new QWidget();
+
     auto *rightinfo = new QVBoxLayout;
     rightinfo->setContentsMargins(0, 0, 0, 0);
     rightinfo->setSpacing(0);
@@ -777,9 +830,9 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     _playlist->setAttribute(Qt::WA_DeleteOnClose);
     _playlist->setFocusPolicy(Qt::NoFocus);
 //    _playlist->setFixedSize(820,288);
-    _playlist->setFixedSize(width() - 235, 288);
+    _playlist->setFixedSize(width() - 205, 288);
 //    _playlist->setFixedHeight(288);
-    _playlist->setContentsMargins(0, 30, 0, 0);
+    _playlist->setContentsMargins(0, 0, 0, 0);
     _playlist->viewport()->setAutoFillBackground(false);
     _playlist->setAutoFillBackground(false);
 
@@ -801,7 +854,7 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     connect(_playlist, &DListWidget::itemClicked, this, &PlaylistWidget::slotShowSelectItem);
     connect(_playlist, &DListWidget::currentItemChanged, this, &PlaylistWidget::OnItemChanged);
 
-    _playlist->setContentsMargins(0, 30, 0, 0);
+    _playlist->setContentsMargins(0, 0, 0, 0);
 
     if (!composited) {
         _playlist->setWindowFlags(Qt::FramelessWindowHint | Qt::BypassWindowManagerHint);
@@ -965,7 +1018,6 @@ void PlaylistWidget::updateItemInfo(int id)
 void PlaylistWidget::updateItemStates()
 {
     qDebug() << __func__ << _playlist->count() << "current = " << _engine->playlist().current();
-    int len = _playlist->count();
     for (int i = 0; i < _playlist->count(); i++) {
         auto piw = dynamic_cast<PlayItemWidget *>(_playlist->itemWidget(_playlist->item(i)));
 
@@ -1219,10 +1271,17 @@ void PlaylistWidget::OnItemChanged(QListWidgetItem *current, QListWidgetItem *pr
 {
     auto prevRow = _playlist->row(previous);
     qDebug() << "changed prevRow..." << prevRow;
+    QPalette pe;
     if (previous) {
         auto prevItemWgt = reinterpret_cast<PlayItemWidget *>(_playlist->itemWidget(previous));
         if (prevItemWgt) {
             prevItemWgt->setBIsSelect(false);
+//            if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
+//                pe.setColor(QPalette::ToolTipText, Qt::black);
+//                prevItemWgt->_name->setPalette(pe);
+//                pe.setColor(QPalette::BrightText, Qt::black);
+//                prevItemWgt->_index->setPalette(pe);
+//            }
         }
     }
 
@@ -1231,6 +1290,12 @@ void PlaylistWidget::OnItemChanged(QListWidgetItem *current, QListWidgetItem *pr
         auto curItemWgt = reinterpret_cast<PlayItemWidget *>(_playlist->itemWidget(current));
         if (curItemWgt) {
             curItemWgt->setBIsSelect(true);
+//            if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
+//                pe.setColor(QPalette::ToolTipText, Qt::white);
+//                curItemWgt->_name->setPalette(pe);
+//                pe.setColor(QPalette::BrightText, Qt::white);
+//                curItemWgt->_index->setPalette(pe);
+//            }
         }
     }
 }
@@ -1301,7 +1366,7 @@ void PlaylistWidget::togglePopup()
 //    QRect fixed((10), (view_rect.height() - 394),
 //                view_rect.width() - 20, (384 - 70));
     QRect fixed((10), (view_rect.height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT + 10)),
-                view_rect.width() - 20, TOOLBOX_SPACE_HEIGHT);
+                view_rect.width() - 20, TOOLBOX_SPACE_HEIGHT + 10);
 
     QRect shrunk = fixed;
     shrunk.setHeight(0);
@@ -1380,9 +1445,8 @@ void PlaylistWidget::paintEvent(QPaintEvent *pe)
 //    }
     if (_title && _num) {
         _title->setForegroundRole(DPalette::ToolTipText);
-        _num->setForegroundRole(DPalette::TextTips);
+        _num->setForegroundRole(DPalette::BrightText);
     }
-
 
     QWidget::paintEvent(pe);
 }
@@ -1408,7 +1472,7 @@ void PlaylistWidget::resizeEvent(QResizeEvent *ev)
                 view_rect.width() - 20, (384 - 70));
 
 //    _playlist->setFixedWidth(width() - 235);
-    _playlist->setFixedWidth(fixed.width() - 235);
+    _playlist->setFixedWidth(fixed.width() - 205);
 //#endif
     emit sizeChange();
 

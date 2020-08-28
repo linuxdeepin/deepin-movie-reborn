@@ -48,6 +48,8 @@
 #include "videoboxbutton.h"
 #include "filter.h"
 
+#include "thumbnail_worker.h"
+
 namespace Dtk {
 namespace Widget {
 class DImageButton;
@@ -84,21 +86,35 @@ protected:
     void paintEvent(QPaintEvent *event)
     {
         QPainter painter(this);
-//        painter.drawPixmap(rect(),QPixmap(_path).scaled(60,50));
 
-        painter.setRenderHints(QPainter::HighQualityAntialiasing |
-                               QPainter::SmoothPixmapTransform |
-                               QPainter::Antialiasing);
+        painter.setRenderHints(QPainter::HighQualityAntialiasing);
+        painter.setRenderHints(QPainter::SmoothPixmapTransform);
+        painter.setRenderHints(QPainter::Antialiasing);
 
-        QRect backgroundRect = rect();
-        QRect pixmapRect;
+        QSize size(_pixmap.size());
+        QBitmap mask(size);
+        QPainter painter1(&mask);
+        painter1.setRenderHint(QPainter::Antialiasing);
+        painter1.setRenderHint(QPainter::SmoothPixmapTransform);
+        painter1.fillRect(mask.rect(), Qt::white);
+        painter1.setBrush(QColor(0, 0, 0));
+        painter1.drawRoundedRect(mask.rect(), 2, 2);
+        QPixmap image = _pixmap;
+        image.setMask(mask);
 
-        QPainterPath bp1;
-        bp1.addRoundedRect(backgroundRect, 2, 2);
-        painter.setClipPath(bp1);
+        painter.drawPixmap(rect(), image);
 
-        painter.drawPixmap(backgroundRect, _pixmap);
-
+        QPen pen;
+        pen.setWidth(1);
+        if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
+            pen.setColor(QColor(0, 0, 0, 0.1 * 255));
+            painter.setPen(pen);
+        } else if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
+            pen.setColor(QColor(255, 255, 255, 0.1 * 255));
+            painter.setPen(pen);
+        }
+        painter.setBrush(Qt::NoBrush);
+        painter.drawRoundedRect(rect(), 4, 4);
     };
 private:
     int _index;
@@ -106,6 +122,52 @@ private:
     DLabel *_image = nullptr;
     QString _path = NULL;
     QPixmap _pixmap;
+};
+
+class IndicatorItem : public QWidget
+{
+    Q_OBJECT
+public:
+    IndicatorItem(QWidget *parent = 0): QWidget(parent)
+    {
+    };
+
+    void setPressed(bool bPressed)
+    {
+        m_bIsPressed = bPressed;
+    }
+
+protected:
+    void paintEvent(QPaintEvent *event)
+    {
+        QPainter painter(this);
+        QRect backgroundRect = rect();
+
+        painter.setRenderHints(QPainter::HighQualityAntialiasing |
+                               QPainter::SmoothPixmapTransform |
+                               QPainter::Antialiasing);
+
+        QPainterPath bpath;
+
+        if (!m_bIsPressed) {
+            bpath.addRect(backgroundRect.marginsRemoved(QMargins(1, 1, 1, 1)));
+            painter.fillPath(bpath, QColor(255, 255, 255, 255));
+
+            QPen pen;
+            pen.setWidth(1);
+            pen.setColor(QColor(0, 0, 0));
+            bpath.addRoundedRect(backgroundRect, 3, 3);
+            painter.setPen(pen);
+            painter.setOpacity(0.4);
+            painter.drawPath(bpath);
+        } else {
+            painter.fillRect(backgroundRect, QBrush(QColor(255, 138, 0)));
+        }
+
+    };
+
+private:
+    bool m_bIsPressed {false};
 };
 
 class ToolboxProxy: public DFloatingWidget
@@ -143,6 +205,7 @@ public:
     QLabel *getfullscreentimeLabelend();
     bool getbAnimationFinash();
     int DisplayVolume();
+    void setVolSliderHide();
 public slots:
     void finishLoadSlot(QSize size);
     void updateplaylisticon();
@@ -177,6 +240,7 @@ protected:
 //    void paintEvent(QPaintEvent *pe) override;
     void showEvent(QShowEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
+
 private:
     void setup();
     void updateTimeLabel();
@@ -196,13 +260,13 @@ private:
     VolumeSlider *_volSlider {nullptr};
 
 //    DImageButton *_playBtn {nullptr};
-//    DIconButton *_playBtn {nullptr};
+//   DIconButton *_playBtn {nullptr};
 //    DIconButton *_prevBtn {nullptr};
 //    DIconButton *_nextBtn {nullptr};
 
-    VideoBoxButton *_playBtn {nullptr};
-    VideoBoxButton *_prevBtn {nullptr};
-    VideoBoxButton *_nextBtn {nullptr};
+    DButtonBoxButton *_playBtn {nullptr};
+    DButtonBoxButton *_prevBtn {nullptr};
+    DButtonBoxButton *_nextBtn {nullptr};
     DButtonBox *_palyBox{nullptr};
 
 //    DIconButton *_subBtn {nullptr};
@@ -244,6 +308,7 @@ private:
     bool m_mousePree = false;   //thx
     int m_mouseRelesePos = 0;
     bool _bthumbnailmode;
+    bool isStillShowThumbnail{true};
 
     //动画是否完成
     bool bAnimationFinash {true};
@@ -260,6 +325,10 @@ private:
     HintFilter        *hintFilter {nullptr };
     bool m_isMouseIn = false;
     QTimer _hideTime;
+    bool _isJinJia = false;//是否是景嘉微显卡
+    qint64 oldDuration = 0;
+    qint64 oldElapsed = 0;
+    QTimer _progressTimer;
 };
 class viewProgBarLoad: public QThread
 {
@@ -314,6 +383,8 @@ private:
     QMutex m_mutex;
 
     QMutex *pListPixmapMutex;
+
+    VideoThumbnailer *m_pThumber {nullptr};
 
 };
 }
