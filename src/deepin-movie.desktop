@@ -1,7 +1,7 @@
 [Desktop Entry]
 Categories=AudioVideo;Player;
 Comment=Play your video collection
-Exec=/usr/bin/deepin-turbo-invoker  --type=dtkwidget deepin-movie %U
+Exec=deepin-movie %U
 GenericName=Movie
 Icon=deepin-movie
 Keywords=Player;Movie;Theater;Theatre;Video;
@@ -11,7 +11,6 @@ StartupNotify=true
 Type=Application
 X-Deepin-ManualID=deepin-movie
 X-Deepin-Vendor=deepin
-TZ='Asia/Shanghai'
 
 # Translations:
 # Do not manually modify!
