@@ -4460,12 +4460,16 @@ void MainWindow::paintEvent(QPaintEvent *pe)
         p.drawImage(pt, bg);
     */
 
+#ifdef __x86_64__
     QPalette *pal1 = new QPalette(palette());
     if(_mousePressed && !_toolbox->isVisible()){
         pal1->setColor(QPalette::Background, Qt::black); //设置背景黑色
-        setAutoFillBackground(true);
-        setPalette(*pal1);
+    }else{
+        pal1->setColor(QPalette::Background, Qt::white); //设置背景白色
     }
+    setAutoFillBackground(true);
+    setPalette(*pal1);
+#endif
 }
 
 void MainWindow::toggleUIMode()
