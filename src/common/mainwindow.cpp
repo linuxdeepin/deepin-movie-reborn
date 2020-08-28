@@ -819,6 +819,8 @@ MainWindow::MainWindow(QWidget *parent)
     _toolbox = new ToolboxProxy(this, _engine);
     _toolbox->setFocusPolicy(Qt::NoFocus);
 
+    titlebar()->deleteLater();
+
     connect(_engine, &PlayerEngine::stateChanged, [ = ]() {
         setInit(_engine->state() != PlayerEngine::Idle);
         resumeToolsWindow();
@@ -2363,7 +2365,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             m_bIsFullSreen = false;
             if (_lastWindowState == Qt::WindowMaximized) {
                 _maxfornormalflag = true;
-                setWindowFlags(Qt::Window);
+                showNormal();           //直接最大化会失败
                 showMaximized();
             } else {
                 setWindowState(windowState() & ~Qt::WindowFullScreen);
@@ -4457,6 +4459,17 @@ void MainWindow::paintEvent(QPaintEvent *pe)
         auto pt = rect().center() - QPoint(bg.width()/2, bg.height()/2)/devicePixelRatioF();
         p.drawImage(pt, bg);
     */
+
+#ifdef __x86_64__
+    QPalette *pal1 = new QPalette(palette());
+    if(_mousePressed && !_toolbox->isVisible()){
+        pal1->setColor(QPalette::Background, Qt::black); //设置背景黑色
+    }else{
+        pal1->setColor(QPalette::Background, Qt::white); //设置背景白色
+    }
+    setAutoFillBackground(true);
+    setPalette(*pal1);
+#endif
 }
 
 void MainWindow::toggleUIMode()
