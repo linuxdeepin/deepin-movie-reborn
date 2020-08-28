@@ -2363,7 +2363,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             m_bIsFullSreen = false;
             if (_lastWindowState == Qt::WindowMaximized) {
                 _maxfornormalflag = true;
-                setWindowFlags(Qt::Window);
+                showNormal();           //直接最大化会失败
                 showMaximized();
             } else {
                 setWindowState(windowState() & ~Qt::WindowFullScreen);
