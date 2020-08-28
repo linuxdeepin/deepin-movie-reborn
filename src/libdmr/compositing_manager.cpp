@@ -118,6 +118,8 @@ CompositingManager::CompositingManager()
     _hasCard = false;
     _platform = PlatformChecker().check();
 
+    softDecodeCheck();   //检测是否是kunpeng920（是否走软解码）
+
     _composited = false;
     if (QGSettings::isSchemaInstalled("com.deepin.deepin-movie")) {
         QGSettings gsettings("com.deepin.deepin-movie", "/com/deepin/deepin-movie/");
@@ -241,6 +243,39 @@ CompositingManager::~CompositingManager()
 bool CompositingManager::hascard()
 {
     return _hasCard;
+}
+
+void CompositingManager::softDecodeCheck()
+{
+    QProcess uname;
+    char* data = (char*)malloc(100);
+    uname.start("cat /proc/cpuinfo");
+    if (uname.waitForStarted()) {
+        if (uname.waitForFinished()) {
+            while (uname.readLine(data,99)>0) {
+                QString strData(data);
+                QStringList listPara = strData.split(":");
+
+                if(listPara.size()<2)
+                {
+                    continue;
+                }
+
+                if(listPara.at(0).contains("model name")
+                   && listPara.at(1).contains("Kunpeng 920"))
+                {
+                    m_bOnlySoftDecode = true;
+                }
+            }
+        }
+    }
+
+    free(data);
+}
+
+bool CompositingManager::isOnlySoftDecode()
+{
+    return m_bOnlySoftDecode;
 }
 
 // Attempt to reuse mpv's code for detecting whether we want GLX or EGL (which

@@ -206,7 +206,12 @@ mpv_handle *MpvProxy::mpv_init()
                 qDebug() << "-------- gpu-hwdec-interop is disabled by user";
             }
         }
-        set_property(h, "hwdec", "auto");
+        if(CompositingManager::get().isOnlySoftDecode()){
+            set_property(h, "hwdec", "off");
+        }
+        else{
+            set_property(h, "hwdec", "auto");
+        }
     } else {
         set_property(h, "hwdec", "off");
     }
@@ -249,7 +254,12 @@ mpv_handle *MpvProxy::mpv_init()
             break;
         }
     }*/
-    set_property(h, "hwdec", "auto-safe");
+    if(CompositingManager::get().isOnlySoftDecode()){
+        set_property(h, "hwdec", "off");
+    }
+    else{
+        set_property(h, "hwdec", "auto-safe");
+    }
     qDebug() << "modify HWDEC auto-safe";
 #endif
     set_property(h, "panscan", 1.0);
@@ -279,7 +289,12 @@ mpv_handle *MpvProxy::mpv_init()
         } else {
 #if defined (__mips__) || defined (__aarch64__)
             if (CompositingManager::get().hascard()) {
-                set_property(h, "hwdec", "auto");
+                if(CompositingManager::get().isOnlySoftDecode()){
+                    set_property(h, "hwdec", "off");
+                }
+                else{
+                    set_property(h, "hwdec", "auto-safe");
+                }
                 set_property(h, "vo", "gpu");
             } else {
                 set_property(h, "vo", "xv,x11");
@@ -971,14 +986,9 @@ void MpvProxy::play()
     //非景嘉微显卡
     if (!_isJingJia) {
         // hwdec could be disabled by some codecs, so we need to re-enable it
-        if (Settings::get().isSet(Settings::HWAccel)) {
-
+        if (Settings::get().isSet(Settings::HWAccel)
+                && !CompositingManager::get().isOnlySoftDecode()) {
             set_property(_handle, "hwdec", "auto");
-#if defined (__mips__) || defined (__aarch64__)
-            if (CompositingManager::get().hascard()) {
-                set_property(_handle, "hwdec", "auto");
-            }
-#endif
         } else {
             set_property(_handle, "hwdec", "off");
         }

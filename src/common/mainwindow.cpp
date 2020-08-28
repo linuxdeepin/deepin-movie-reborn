@@ -2276,7 +2276,8 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
 //            }
 //        }
         if (isFullScreen()) {
-            _quitfullscreenstopflag = true;
+            //del by xxj for 36101
+            //_quitfullscreenstopflag = true;
             if (_lastWindowState == Qt::WindowMaximized) {
                 _maxfornormalflag = true;
                 setWindowFlags(Qt::Window);
@@ -3207,8 +3208,12 @@ void MainWindow::suspendToolsWindow()
             return;
 
         if (isFullScreen()) {
-            if (qApp->focusWindow() == this->windowHandle())
+            if (qApp->focusWindow() == this->windowHandle()){
                 qApp->setOverrideCursor(Qt::BlankCursor);
+            }
+            else {
+                qApp->setOverrideCursor(Qt::ArrowCursor);
+            }
         }
 
         _titlebar->hide();
@@ -4204,54 +4209,52 @@ void MainWindow::paintEvent(QPaintEvent *pe)
 //        pp.addRect(bgRect);
 //        painter.fillPath(pp, bgColor);
 //    }
-    if (_engine->state() == PlayerEngine::Idle && _playlist->state() == PlaylistWidget::State::Closed) {
-        auto pt = bgRect.center() - QPoint(bg.width() / 2, bg.height() / 2) / devicePixelRatioF();
-        painter.drawImage(pt, bg);
-    }
 
-    /*
-        QPainter p(this);
-        p.setRenderHint(QPainter::Antialiasing);
+#ifdef __mips__
+    if (!CompositingManager::get().hascard()) {
+        painter.setRenderHint(QPainter::Antialiasing);
 
-        bool light = ("light" == qApp->theme());
+        bool light = (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType());
+        bool playing = (_engine->state() == PlayerEngine::Playing);
         auto bg_clr = QColor(16, 16, 16);
-        QImage& bg = bg_dark;
-        if (light) {
-            bg = bg_light;
+        if (light && !playing) {
+//        bg = bg_light;
             bg_clr = QColor(252, 252, 252);
         }
 
-    #ifdef USE_DXCB
+#ifdef USE_DXCB
         QPainterPath pp;
         pp.addRect(rect());
-        p.fillPath(pp, bg_clr);
-    #else
+        painter.fillPath(pp, bg_clr);
+#else
         bool rounded = !isFullScreen() && !isMaximized();
 
-        p.fillRect(rect(), Qt::transparent);
+        painter.fillRect(rect(), Qt::transparent);
 
         if (rounded) {
             QPainterPath pp;
             pp.addRoundedRect(rect(), RADIUS, RADIUS);
-            p.fillPath(pp, QColor(0, 0, 0, light ? 255 * 0.1: 255));
+            painter.fillPath(pp, QColor(0, 0, 0, light ? 255 * 0.1 : 255));
 
             {
                 auto view_rect = rect().marginsRemoved(QMargins(1, 1, 1, 1));
                 QPainterPath pp;
                 pp.addRoundedRect(view_rect, RADIUS, RADIUS);
-                p.fillPath(pp, bg_clr);
+                painter.fillPath(pp, bg_clr);
             }
         } else {
             QPainterPath pp;
             pp.addRect(rect());
-            p.fillPath(pp, bg_clr);
+            painter.fillPath(pp, bg_clr);
         }
 
-    #endif
-
-        auto pt = rect().center() - QPoint(bg.width()/2, bg.height()/2)/devicePixelRatioF();
-        p.drawImage(pt, bg);
-    */
+#endif
+    }
+#endif
+    if (_engine->state() == PlayerEngine::Idle && _playlist->state() == PlaylistWidget::State::Closed) {
+        auto pt = bgRect.center() - QPoint(bg.width() / 2, bg.height() / 2) / devicePixelRatioF();
+        painter.drawImage(pt, bg);
+    }
 }
 
 void MainWindow::toggleUIMode()
