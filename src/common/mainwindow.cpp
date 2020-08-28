@@ -819,6 +819,8 @@ MainWindow::MainWindow(QWidget *parent)
     _toolbox = new ToolboxProxy(this, _engine);
     _toolbox->setFocusPolicy(Qt::NoFocus);
 
+    titlebar()->deleteLater();
+
     connect(_engine, &PlayerEngine::stateChanged, [ = ]() {
         setInit(_engine->state() != PlayerEngine::Idle);
         resumeToolsWindow();
@@ -4457,6 +4459,13 @@ void MainWindow::paintEvent(QPaintEvent *pe)
         auto pt = rect().center() - QPoint(bg.width()/2, bg.height()/2)/devicePixelRatioF();
         p.drawImage(pt, bg);
     */
+
+    QPalette *pal1 = new QPalette(palette());
+    if(_mousePressed && !_toolbox->isVisible()){
+        pal1->setColor(QPalette::Background, Qt::black); //设置背景黑色
+        setAutoFillBackground(true);
+        setPalette(*pal1);
+    }
 }
 
 void MainWindow::toggleUIMode()
