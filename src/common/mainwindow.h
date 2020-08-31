@@ -394,6 +394,7 @@ private:
     bool m_bLastIsTouch {false};
     bool m_bTouchChangeVolume {false};
     bool m_bIsFullSreen {false};
+    bool m_bisOverhunderd {false};
 };
 };
 

@@ -2228,6 +2228,11 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     }
 
     case ActionFactory::ActionKind::StartPlay: {
+        if (m_bisOverhunderd) {
+            _engine->changeVolume(100);
+            Settings::get().setInternalOption("global_volume", m_lastVolume);
+            m_bisOverhunderd = false;
+        }
         if (_engine->playlist().count() == 0) {
             requestAction(ActionFactory::ActionKind::OpenFileList);
         } else {
@@ -2569,8 +2574,10 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                 setAudioVolume(qMin(nVol, 100));
                 //音量调整为超过100关闭，再次启动后不会重新设置mpv音量问题
                 if (!m_bFirstInit && nVol >= 100) {
-                    _engine->changeVolume(nVol);
-                    Settings::get().setInternalOption("global_volume", m_lastVolume);
+                    m_bisOverhunderd = true;
+                    //首次启动不初始化mpv
+//                    _engine->changeVolume(nVol);
+//                    Settings::get().setInternalOption("global_volume", m_lastVolume);
                 }
                 return;
             }
@@ -2664,6 +2671,11 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     }
 
     case ActionFactory::ActionKind::GotoPlaylistSelected: {
+        if (m_bisOverhunderd) {
+            _engine->changeVolume(100);
+            Settings::get().setInternalOption("global_volume", m_lastVolume);
+            m_bisOverhunderd = false;
+        }
         _engine->playSelected(args[0].toInt());
         break;
     }
@@ -3169,6 +3181,11 @@ void MainWindow::play(const QUrl &url)
             _nwComm->updateWithMessage(msg);
             return;
         }
+    }
+    if (m_bisOverhunderd) {
+        _engine->changeVolume(100);
+        Settings::get().setInternalOption("global_volume", m_lastVolume);
+        m_bisOverhunderd = false;
     }
     _engine->playByName(url);
 }
@@ -4672,6 +4689,12 @@ void MainWindow::dropEvent(QDropEvent *ev)
     qDebug() << ev->mimeData()->formats();
     if (!ev->mimeData()->hasUrls()) {
         return;
+    }
+
+    if (m_bisOverhunderd) {
+        _engine->changeVolume(100);
+        Settings::get().setInternalOption("global_volume", m_lastVolume);
+        m_bisOverhunderd = false;
     }
 
     QList<QUrl> urls = ev->mimeData()->urls();
