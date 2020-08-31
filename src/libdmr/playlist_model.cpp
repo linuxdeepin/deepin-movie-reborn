@@ -363,9 +363,12 @@ struct MovieInfo PlaylistModel::parseFromFile(const QFileInfo &fi, bool *ok)
 //        }
 //    }
 
-    int videoRet, audioRet, video_stream_index, audio_stream_index;
-    AVStream *videoStream;
-    AVStream *audioStream;
+    int videoRet = -1;
+    int audioRet = -1;
+    int video_stream_index = -1;
+    int audio_stream_index = -1;
+    AVStream *videoStream = nullptr;
+    AVStream *audioStream = nullptr;
     AVCodec *dec = nullptr;
     //AVDictionary *opts = nullptr;
     videoRet = g_mvideo_av_find_best_stream(av_ctx, AVMEDIA_TYPE_VIDEO, -1, -1, nullptr, 0);
@@ -449,8 +452,15 @@ struct MovieInfo PlaylistModel::parseFromFile(const QFileInfo &fi, bool *ok)
         qDebug() << "tag:" << tag->key << tag->value;
     }
 
-    tag = nullptr;
-    while ((tag = g_mvideo_av_dict_get(audioStream->metadata, "", tag, AV_DICT_IGNORE_SUFFIX)) != nullptr) {
+    AVStream* pTempStream = nullptr;
+    if(videoRet >= 0) {
+        pTempStream = av_ctx->streams[videoRet];
+    }
+    else if (audioRet >= 0) {
+        pTempStream = av_ctx->streams[audioRet];
+    }
+
+    while ((tag = g_mvideo_av_dict_get(pTempStream->metadata, "", tag, AV_DICT_IGNORE_SUFFIX)) != nullptr) {
         if (tag->key && strcmp(tag->key, "rotate") == 0) {
             mi.raw_rotate = QString(tag->value).toInt();
             auto vr = (mi.raw_rotate + 360) % 360;
