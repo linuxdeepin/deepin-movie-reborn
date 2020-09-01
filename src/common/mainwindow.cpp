@@ -725,6 +725,7 @@ MainWindow::MainWindow(QWidget *parent)
     //add bu heyi
     //this->setMouseTracking(true);
     this->setAttribute(Qt::WA_AcceptTouchEvents);
+    this->setObjectName("deepin-movie-mainwindow");
     _mousePressTimer.setInterval(1300);
     connect(&_mousePressTimer, &QTimer::timeout, this, [ = ]() {
         _mousePressTimer.stop();
@@ -818,6 +819,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     _toolbox = new ToolboxProxy(this, _engine);
     _toolbox->setFocusPolicy(Qt::NoFocus);
+    _toolbox->setObjectName("toolBoxProxy");
 
     titlebar()->deleteLater();
 
@@ -878,6 +880,7 @@ MainWindow::MainWindow(QWidget *parent)
     });*/
 
     _progIndicator = new MovieProgressIndicator(this);
+    _progIndicator->setObjectName("movieProgIndicator");
     _progIndicator->setVisible(false);
     connect(_engine, &PlayerEngine::elapsedChanged, [ = ]() {
         _progIndicator->updateMovieProgress(_engine->duration(), _engine->elapsed());
@@ -899,6 +902,7 @@ MainWindow::MainWindow(QWidget *parent)
     dynamic_cast<IconButton *>(_miniQuitMiniBtn)->setFlat(true);
 #else
     _miniPlayBtn = new DIconButton(this);
+    _miniPlayBtn->setObjectName("miniPlayButton");
     _miniQuitMiniBtn = new DIconButton(this);
     if (!composited) {
         _labelCover = new QLabel(this);
@@ -1113,6 +1117,7 @@ MainWindow::MainWindow(QWidget *parent)
         _fullscreentimelable->setWindowFlags(_fullscreentimelable->windowFlags() | Qt::Dialog);
     }
     _fullscreentimebox = new QHBoxLayout;
+    _fullscreentimebox->setObjectName("fullscreenTimeBox");
     _fullscreentimebox->addStretch();
     _fullscreentimebox->addWidget(_toolbox->getfullscreentimeLabel());
     _fullscreentimebox->addWidget(_toolbox->getfullscreentimeLabelend());
@@ -1231,6 +1236,7 @@ MainWindow::MainWindow(QWidget *parent)
 void MainWindow::setupTitlebar()
 {
     _titlebar = new Titlebar(this);
+    _titlebar->setObjectName("titlebar");
 #ifdef USE_DXCB
     _titlebar->move(0, 0);
 #else
@@ -1988,6 +1994,7 @@ bool MainWindow::addCdromPath()
 void MainWindow::loadPlayList()
 {
     _playlist = new PlaylistWidget(this, _engine);
+    _playlist->setObjectName("playList");
     _playlist->hide();
 //    _playlist->setParent(_toolbox);
     _toolbox->setPlaylist(_playlist);

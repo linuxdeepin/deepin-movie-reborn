@@ -53,6 +53,7 @@
 #include <QDBusInterface>
 #include <dthememanager.h>
 #include <iostream>
+#include "../accessibility/ac-desktop-define.h"
 static const int LEFT_MARGIN = 10;
 static const int RIGHT_MARGIN = 10;
 static const int PROGBAR_SPEC = 10 + 120 + 17 + 54 + 10 + 54 + 10 + 170 + 10 + 20;
@@ -523,7 +524,6 @@ public:
 //        _indicator = new DBlurEffectWidget(this);
         _indicator = new IndicatorItem(this);
         _indicator->resize(6, 60);
-        _indicator->setObjectName("indicator");
 //        _indicator->setMaskColor(QColor(255, 255, 255));
 //        _indicator->setBlurRectXRadius(2);
 //        _indicator->setBlurRectYRadius(2);
@@ -1956,6 +1956,7 @@ void ToolboxProxy::setup()
     _progBar_Widget = new QStackedWidget(bot_toolWgt);
     _progBar_Widget->setContentsMargins(0, 0, 0, 0);
     _progBar_Widget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+    _progBar_Widget->setObjectName("progBarWidget");
 
     _progBarspec = new DWidget(_progBar_Widget);
     _progBarspec->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
@@ -2005,6 +2006,7 @@ void ToolboxProxy::setup()
 
     _palyBox = new DButtonBox(bot_toolWgt);
     _palyBox->setFixedWidth(120);
+    _palyBox->setObjectName(PLAY_BUTTOB_BOX);
     _mid->addWidget(_palyBox);
     _mid->setAlignment(_palyBox, Qt::AlignLeft);
     QList<DButtonBoxButton *> list;
@@ -2017,7 +2019,8 @@ void ToolboxProxy::setup()
     _prevBtn->setIcon(QIcon::fromTheme("dcc_last", QIcon(":/icons/deepin/builtin/light/normal/last_normal.svg")));
     _prevBtn->setIconSize(QSize(36, 36));
     _prevBtn->setFixedSize(40, 50);
-    _prevBtn->setObjectName("PrevBtn");
+    _prevBtn->setObjectName(PREV_BUTTON);
+    _prevBtn->setAccessibleName(PREV_BUTTON);
     connect(_prevBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_prevBtn, "prev");
 //    _mid->addWidget(_prevBtn);
@@ -2030,6 +2033,8 @@ void ToolboxProxy::setup()
     _playBtn->setIcon(QIcon::fromTheme("dcc_play", QIcon(":/icons/deepin/builtin/light/normal/play_normal.svg")));
     _playBtn->setIconSize(QSize(36, 36));
     _playBtn->setFixedSize(40, 50);
+    _playBtn->setObjectName(PLAY_BUTTON);
+    _playBtn->setAccessibleName(PLAY_BUTTON);
     connect(_playBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_playBtn, "play");
 //    _mid->addWidget(_playBtn);
@@ -2042,6 +2047,8 @@ void ToolboxProxy::setup()
     _nextBtn->setIcon(QIcon::fromTheme("dcc_next", QIcon(":/icons/deepin/builtin/light/normal/next_normal.svg")));
     _nextBtn->setIconSize(QSize(36, 36));
     _nextBtn->setFixedSize(40, 50);
+    _nextBtn->setObjectName(NEXT_BUTTON);
+    _nextBtn->setAccessibleName(NEXT_BUTTON);
     connect(_nextBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_nextBtn, "next");
 //    _mid->addWidget(_nextBtn);
@@ -2073,6 +2080,8 @@ void ToolboxProxy::setup()
 
     _volBtn = new VolumeButton(bot_toolWgt);
     _volBtn->setFixedSize(50, 50);
+    _volBtn->setObjectName(VOLUME_BUTTON);
+    _volBtn->setAccessibleName(VOLUME_BUTTON);
 //    connect(_volBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
 //    signalMapper->setMapping(_volBtn, "vol");
 //    _right->addWidget(_volBtn);
@@ -2087,6 +2096,7 @@ void ToolboxProxy::setup()
 ////            _volSlider->show();
 //            _volSlider->raise();
 //        });
+        _volSlider->setObjectName(VOLUME_SLIDER);
         connect(_volBtn, &VolumeButton::clicked, [ = ]() {
             if (!_volSlider->isVisible()) {
                 _volSlider->show(_mainWindow->width() - _volBtn->width() / 2 - _playBtn->width() - 40,
@@ -2154,6 +2164,8 @@ void ToolboxProxy::setup()
 
 
     _fsBtn = new ToolButton(bot_toolWgt);
+    _fsBtn->setObjectName(FS_BUTTON);
+    _fsBtn->setAccessibleName(FS_BUTTON);
     _fsBtn->setIcon(QIcon::fromTheme("dcc_zoomin"));
     _fsBtn->setIconSize(QSize(36, 36));
     _fsBtn->setFixedSize(50, 50);
@@ -2173,6 +2185,8 @@ void ToolboxProxy::setup()
     _listBtn->initToolTip();
 //    _listBtn->setFocusPolicy(Qt::FocusPolicy::TabFocus);
     _listBtn->setCheckable(true);
+    _listBtn->setObjectName(PLAYLIST_BUTTON);
+    _listBtn->setAccessibleName(PLAYLIST_BUTTON);
 
     connect(_listBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_listBtn, "list");

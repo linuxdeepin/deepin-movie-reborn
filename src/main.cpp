@@ -51,6 +51,7 @@
 #include "vendor/presenter.h"
 #include <QSettings>
 
+#include "accessibility/acobjectlist.h"
 DWIDGET_USE_NAMESPACE
 
 
@@ -71,9 +72,10 @@ int main(int argc, char *argv[])
 #endif
     DApplication::loadDXcbPlugin();
 
+
     DApplication app(argc, argv);
 
-
+    QAccessible::installFactory(accessibleFactory);
     // required by mpv
     setlocale(LC_NUMERIC, "C");
 
@@ -96,7 +98,6 @@ int main(int argc, char *argv[])
     app.setWindowIcon(QIcon(":/resources/icons/logo-big.svg"));
     QString acknowledgementLink = "https://www.deepin.org/acknowledgments/deepin-movie";
     app.setApplicationAcknowledgementPage(acknowledgementLink);
-
     //save theme
     DApplicationSettings saveTheme;
     auto &clm = dmr::CommandLineManager::get();

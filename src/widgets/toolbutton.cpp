@@ -38,6 +38,7 @@ VolumeButton::VolumeButton(QWidget *parent)
     changeLevel(Level::High);
     setIcon(QIcon::fromTheme("dcc_volume"));
     setIconSize(QSize(36, 36));
+    this->setObjectName("volume_button");
 }
 
 void VolumeButton::changeLevel(Level lv)

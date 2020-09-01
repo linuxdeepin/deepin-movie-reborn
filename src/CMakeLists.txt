@@ -3,7 +3,8 @@ set(CMD_NAME deepin-movie)
 
 set(PROJECT_INCLUDE ${PROJECT_SOURCE_DIR}/src/widgets
     ${PROJECT_SOURCE_DIR}/src/common
-    ${PROJECT_SOURCE_DIR}/src/libdmr)
+    ${PROJECT_SOURCE_DIR}/src/libdmr
+    ${PROJECT_SOURCE_DIR}/src/accessibility)
 
 include_directories(${CMAKE_INCLUDE_CURRENT_DIR})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})

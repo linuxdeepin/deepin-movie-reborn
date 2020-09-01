@@ -41,6 +41,8 @@ VideoBoxButton::VideoBoxButton(const QString &text, const QString &normalPic, co
     defaultPicPath.pressPicPath = pressPic;
     defaultPicPath.checkedPicPath = checkedPic;
 
+    this->setObjectName("videoBoxButton");
+
     auto pl = this->palette();
     QColor sbcolor("#000000");
     sbcolor.setAlphaF(0.05);

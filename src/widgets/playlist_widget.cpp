@@ -42,6 +42,7 @@
 #include <dimagebutton.h>
 #include <dthememanager.h>
 #include <DScrollBar>
+#include "../accessibility/ac-desktop-define.h"
 
 #define PLAYLIST_FIXED_WIDTH 800
 #define POPUP_DURATION 350
@@ -146,7 +147,7 @@ public:
         setProperty("PlayItemThumb", "true");
         setState(ItemState::Normal);
         setFrameShape(QFrame::NoFrame);
-
+        this->setObjectName(PLAYITEM_WIDGET);
         auto kd = "local";
         if (!_pif.url.isLocalFile()) {
             if (_pif.url.scheme().startsWith("dvd")) {
@@ -220,9 +221,10 @@ public:
 
         //_closeBtn = new FloatingButton(this);
         _closeBtn = new DFloatingButton(DStyle::SP_CloseButton, this);
+        _closeBtn->setObjectName(PLAYITEN_CLOSE_BUTTON);
+        _closeBtn->setAccessibleName(PLAYITEN_CLOSE_BUTTON);
         _closeBtn->setIconSize(QSize(28, 28));
         _closeBtn->setFixedSize(25, 25);
-        _closeBtn->setObjectName("CloseBtn");
         _closeBtn->hide();
         connect(_closeBtn, &DFloatingButton::clicked, this, &PlayItemWidget::closeButtonClicked);
         //connect(_closeBtn, &FloatingButton::clicked, this, &PlayItemWidget::closeButtonClicked);
@@ -784,6 +786,8 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     leftinfo->addSpacing(6);
 //    DPushButton *clearButton = new DPushButton(QIcon::fromTheme("dcc_clearlist"),tr("清空列表"),nullptr);
     DPushButton *clearButton = new DPushButton();
+    clearButton->setObjectName(CLEAR_PLAYLIST_BUTTON);
+    clearButton->setAccessibleName(CLEAR_PLAYLIST_BUTTON);
     clearButton->setIcon(QIcon::fromTheme("dcc_clearlist"));
     clearButton->setText(tr("Empty"));
     DFontSizeManager::instance()->bind(clearButton, DFontSizeManager::T6);
@@ -838,6 +842,7 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     mainLayout->addWidget(right);
 
     _playlist = new DListWidget();
+    _playlist->setObjectName(PLAYLIST_WIDGET);
     _playlist->setAttribute(Qt::WA_DeleteOnClose);
     _playlist->setFocusPolicy(Qt::NoFocus);
 //    _playlist->setFixedSize(820,288);
