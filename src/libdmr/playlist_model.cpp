@@ -1650,7 +1650,7 @@ void LoadThread::run()
 }
 #ifdef _LIBDMR_
 static int open_codec_context(int *stream_idx,
-                              AVCodecContext **dec_ctx, AVFormatContext *fmt_ctx, enum AVMediaType type)
+                              AVCodecParameters **dec_ctx, AVFormatContext *fmt_ctx, enum AVMediaType type)
 {
     int ret, stream_index;
     AVStream *st;
@@ -1666,7 +1666,7 @@ static int open_codec_context(int *stream_idx,
     stream_index = ret;
     st = fmt_ctx->streams[stream_index];
 #if LIBAVFORMAT_VERSION_MAJOR >= 57 && LIBAVFORMAT_VERSION_MINOR <= 25
-    *dec_ctx = st->codec;
+    *dec_ctx = st->codecpar;
     dec = avcodec_find_decoder((*dec_ctx)->codec_id);
 #else
     /* find decoder for the stream */
@@ -1700,7 +1700,8 @@ MovieInfo MovieInfo::parseFromFile(const QFileInfo &fi, bool *ok)
     mi.valid = false;
     AVFormatContext *av_ctx = NULL;
     int stream_id = -1;
-    AVCodecContext *dec_ctx = NULL;
+    AVCodecParameters *dec_ctx = NULL;
+    AVStream* av_stream = nullptr;
 
     if (!fi.exists()) {
         if (ok) *ok = false;
@@ -1731,6 +1732,14 @@ MovieInfo MovieInfo::parseFromFile(const QFileInfo &fi, bool *ok)
         }
     }
 
+    for(int i =0;i<av_ctx->nb_streams;i++){
+        av_stream = av_ctx->streams[i];
+        if(av_stream->codecpar->codec_type == AVMEDIA_TYPE_VIDEO)
+        {
+            break;
+        }
+    }
+
     av_dump_format(av_ctx, 0, fi.fileName().toUtf8().constData(), 0);
 
     mi.width = dec_ctx->width;
@@ -1747,8 +1756,8 @@ MovieInfo MovieInfo::parseFromFile(const QFileInfo &fi, bool *ok)
 
     mi.vCodecID = dec_ctx->codec_id;
     mi.vCodeRate = dec_ctx->bit_rate;
-    if (dec_ctx->framerate.den != 0) {
-        mi.fps = dec_ctx->framerate.num / dec_ctx->framerate.den;
+    if (av_stream->r_frame_rate.den != 0) {
+         mi.fps = av_stream->r_frame_rate.num / av_stream->r_frame_rate.den;
     } else {
         mi.fps = 0;
     }
@@ -1768,7 +1777,7 @@ MovieInfo MovieInfo::parseFromFile(const QFileInfo &fi, bool *ok)
 
     mi.aCodeID = dec_ctx->codec_id;
     mi.aCodeRate = dec_ctx->bit_rate;
-    mi.aDigit = dec_ctx->sample_fmt;
+    mi.aDigit = dec_ctx->format;
     mi.channels = dec_ctx->channels;
     mi.sampling = dec_ctx->sample_rate;
 
