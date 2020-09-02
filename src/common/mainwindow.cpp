@@ -4428,6 +4428,18 @@ void MainWindow::paintEvent(QPaintEvent *pe)
 //        pp.addRect(bgRect);
 //        painter.fillPath(pp, bgColor);
 //    }
+#ifdef __x86_64__
+    QPainterPath pp;
+    if(DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()){
+        if(_engine->state() != PlayerEngine::Idle && !_toolbox->isVisible()){
+            pp.addRect(bgRect);
+            painter.fillPath(pp, Qt::black);
+        }else{
+            pp.addRect(bgRect);
+            painter.fillPath(pp, Qt::white);
+        }
+    }
+#endif
     if (_engine->state() == PlayerEngine::Idle) {
         auto pt = bgRect.center() - QPoint(bg.width() / 2, bg.height() / 2) / devicePixelRatioF();
         painter.drawImage(pt, bg);
@@ -4476,17 +4488,6 @@ void MainWindow::paintEvent(QPaintEvent *pe)
         auto pt = rect().center() - QPoint(bg.width()/2, bg.height()/2)/devicePixelRatioF();
         p.drawImage(pt, bg);
     */
-
-#ifdef __x86_64__
-    QPalette *pal1 = new QPalette(palette());
-    if(_mousePressed && !_toolbox->isVisible()){
-        pal1->setColor(QPalette::Background, Qt::black); //设置背景黑色
-    }else{
-        pal1->setColor(QPalette::Background, Qt::white); //设置背景白色
-    }
-    setAutoFillBackground(true);
-    setPalette(*pal1);
-#endif
 }
 
 void MainWindow::toggleUIMode()
