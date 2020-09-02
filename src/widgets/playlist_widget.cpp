@@ -1433,6 +1433,7 @@ void PlaylistWidget::togglePopup()
         }else {
             _toggling = false;
             _state = State::Opened;
+            _playlist->setAttribute(Qt::WA_TransparentForMouseEvents, false);
             emit stateChange();
         }
 #else
