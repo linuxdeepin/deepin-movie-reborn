@@ -1014,7 +1014,7 @@ void MpvProxy::play()
     auto cfg = MovieConfiguration::get().queryByUrl(_file);
     auto key = MovieConfiguration::knownKey2String(ConfigKnownKey::StartPos);
     if (Settings::get().isSet(Settings::ResumeFromLast) && cfg.contains(key)) {
-        opts << QString("start=%1").arg(0);
+        //opts << QString("start=%1").arg(0);   //如果视频长度小于1s这段代码会导致视频无法播放
         _startPlayDuration = cfg[key].toInt();
     }
 

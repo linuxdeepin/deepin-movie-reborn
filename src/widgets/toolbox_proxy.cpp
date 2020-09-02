@@ -2308,6 +2308,12 @@ void ToolboxProxy::updateThumbnail()
 
     QTimer::singleShot(1000, [this]() {
 
+        //如果视频长度小于1s应该直接返回不然会UI错误
+        if(_engine->playlist().currentInfo().mi.duration < 1)
+        {
+            return;
+        }
+
         m_listPixmapMutex.lock();
         pm_list.clear();
         pm_black_list.clear();
