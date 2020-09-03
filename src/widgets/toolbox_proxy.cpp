@@ -2525,8 +2525,8 @@ void ToolboxProxy::updateButtonStates()
 void ToolboxProxy::updateVolumeState()
 {
     if (_engine->muted()) {
-        //_volBtn->changeLevel(VolumeButton::Mute);
-        //_volBtn->setToolTip(tr("Mute"));
+        _volBtn->changeLevel(VolumeButton::Mute);
+        _volBtn->setToolTip(tr("Mute"));
         _volSlider->setMute(true);
     } else {
         auto v = _engine->volume();
