@@ -42,7 +42,8 @@ DWIDGET_USE_NAMESPACE
 
 namespace dmr {
 class TitlebarPrivate;
-class Titlebar : public DTitlebar {
+class Titlebar : public DBlurEffectWidget
+{
     Q_OBJECT
 
 public:

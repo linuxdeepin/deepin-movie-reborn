@@ -57,19 +57,19 @@ public:
     Q_DECLARE_PUBLIC(Titlebar)
 };
 
-Titlebar::Titlebar(QWidget *parent) : DTitlebar(parent), d_ptr(new TitlebarPrivate(this))
+Titlebar::Titlebar(QWidget *parent) : DBlurEffectWidget(parent), d_ptr(new TitlebarPrivate(this))
 {
     Q_D(Titlebar);
 
     setAttribute(Qt::WA_TranslucentBackground, false);
     setFocusPolicy(Qt::NoFocus);
-//    QHBoxLayout *layout = new QHBoxLayout(this);
-//    layout->setContentsMargins(0, 0, 0, 0);
-//    layout->setSpacing(0);
-//    d->m_titlebar = new DTitlebar(this);
-//    layout->addWidget(d->m_titlebar);
-//    setLayout(layout);
-    d->m_titlebar = this;
+    QHBoxLayout *layout = new QHBoxLayout(this);
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setSpacing(0);
+    d->m_titlebar = new DTitlebar(this);
+    layout->addWidget(d->m_titlebar);
+    setLayout(layout);
+
     d->m_titlebar->setWindowFlags(Qt::WindowMinMaxButtonsHint |
                                   Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint);
     d->m_titlebar->setBackgroundTransparent(false);
@@ -107,33 +107,41 @@ Titlebar::Titlebar(QWidget *parent) : DTitlebar(parent), d_ptr(new TitlebarPriva
 
     d->m_shadowEffect = new QGraphicsDropShadowEffect(this);
     connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, [ = ] {
-        DPalette paBar = QGuiApplication::palette();
-        if (DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::DarkType)
+        QPalette pa1, pa2;
+        if (d->m_play)
         {
-            if (d->m_play) {
-                paBar.setColor(DPalette::ButtonText, DPalette::TextLively);
-                d->m_titlebar->setPalette(paBar);
-                d->m_shadowEffect->setOffset(d->offsetX, d->offsetX);
-                d->m_shadowEffect->setBlurRadius(d->offsetX);
-                d->m_shadowEffect->setColor(Qt::transparent);
-            } else {
-                paBar.setColor(DPalette::ButtonText, paBar.color(DPalette::ButtonText));
-                d->m_titlebar->setPalette(paBar);
-                d->m_shadowEffect->setOffset(d->offsetX, d->offsetY);
-                d->m_shadowEffect->setBlurRadius(d->offsetY);
-                d->m_shadowEffect->setColor(d->darkEffectColor);
-            }
+            pa1.setColor(QPalette::ButtonText, d->playColor);
+            pa2.setColor(QPalette::WindowText, d->playColor);
+            d->m_titlebar->setPalette(pa1);
+            d->m_titletxt->setPalette(pa2);
+            d->m_shadowEffect->setOffset(d->offsetX, d->offsetY);
+            d->m_shadowEffect->setBlurRadius(d->offsetY);
+            d->m_shadowEffect->setColor(d->darkEffectColor);
         } else
         {
             if (d->m_play) {
-                paBar.setColor(DPalette::ButtonText, DPalette::TextLively);
-                d->m_titlebar->setPalette(paBar);
+                pa1.setColor(QPalette::ButtonText, d->playColor);
+                pa2.setColor(QPalette::WindowText, d->playColor);
+                d->m_titlebar->setPalette(pa1);
+                d->m_titletxt->setPalette(pa2);
             } else {
-                paBar.setColor(DPalette::ButtonText, paBar.color(DPalette::ButtonText));
-                d->m_titlebar->setPalette(paBar);
-                d->m_shadowEffect->setOffset(d->offsetX, d->offsetY);
-                d->m_shadowEffect->setBlurRadius(d->blurRadius);
-                d->m_shadowEffect->setColor(d->lightEffectColor);
+                if (DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::DarkType) {
+                    pa1.setColor(QPalette::ButtonText, d->playColor);
+                    pa2.setColor(QPalette::WindowText, d->playColor);
+                    d->m_titlebar->setPalette(pa1);
+                    d->m_titletxt->setPalette(pa2);
+                    d->m_shadowEffect->setOffset(d->offsetX, d->offsetY);
+                    d->m_shadowEffect->setBlurRadius(d->offsetY);
+                    d->m_shadowEffect->setColor(d->darkEffectColor);
+                } else {
+                    pa1.setColor(QPalette::ButtonText, QColor(98, 110, 136, 225));
+                    pa2.setColor(QPalette::WindowText, QColor(98, 110, 136, 225));
+                    d->m_titlebar->setPalette(pa1);
+                    d->m_titletxt->setPalette(pa2);
+                    d->m_shadowEffect->setOffset(d->offsetX, d->offsetY);
+                    d->m_shadowEffect->setBlurRadius(d->blurRadius);
+                    d->m_shadowEffect->setColor(d->lightEffectColor);
+                }
             }
         }
         this->setGraphicsEffect(d->m_shadowEffect);
@@ -161,29 +169,39 @@ void Titlebar::setTitleBarBackground(bool flag)
 {
     Q_D(Titlebar);
 
-    DPalette paBar = QGuiApplication::palette();
-    QColor textColor = paBar.color(DPalette::ButtonText);
-    paBar.setColor(DPalette::ButtonText, textColor);
-    d->m_titlebar->setPalette(paBar);
+
+    QPalette pa1, pa2;
 
     d->m_play = flag;
 
     if (d->m_play) {
         d->m_titlebar->setBackgroundTransparent(d->m_play);
-        d->m_titlebar->setBlurBackground(!d->m_play);
-        paBar.setColor(DPalette::ButtonText, d->playColor);
-        paBar.setColor(DPalette::WindowText, d->playColor);
-        d->m_titlebar->setPalette(paBar);
-        d->m_titletxt->setPalette(paBar);
+        pa1.setColor(QPalette::ButtonText, d->playColor);
+        pa2.setColor(QPalette::WindowText, d->playColor);
+        d->m_titlebar->setPalette(pa1);
+        d->m_titletxt->setPalette(pa2);
+        d->m_shadowEffect->setOffset(d->offsetX, d->offsetX);
+        d->m_shadowEffect->setBlurRadius(d->offsetX);
         d->m_shadowEffect->setColor(Qt::transparent);
     } else {
+        QPalette palette;
+        palette.setColor(QPalette::Background, QColor(200, 200, 200, 50));
+        this->setPalette(palette);
         d->m_titlebar->setBackgroundTransparent(d->m_play);
         d->m_titlebar->setBlurBackground(d->m_play);
         if (DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::DarkType) {
+            pa1.setColor(QPalette::ButtonText, d->playColor);
+            pa2.setColor(QPalette::WindowText, d->playColor);
+            d->m_titlebar->setPalette(pa1);
+            d->m_titletxt->setPalette(pa2);
             d->m_shadowEffect->setOffset(d->offsetX, d->offsetY);
-            d->m_shadowEffect->setBlurRadius(d->offsetY);
+            d->m_shadowEffect->setBlurRadius(d->blurRadius);
             d->m_shadowEffect->setColor(d->darkEffectColor);
         } else {
+            pa1.setColor(QPalette::ButtonText, QColor(98, 110, 136, 225));
+            pa2.setColor(QPalette::WindowText, QColor(98, 110, 136, 225));
+            d->m_titlebar->setPalette(pa1);
+            d->m_titletxt->setPalette(pa2);
             d->m_shadowEffect->setOffset(d->offsetX, d->offsetY);
             d->m_shadowEffect->setBlurRadius(d->blurRadius);
             d->m_shadowEffect->setColor(d->lightEffectColor);
@@ -203,8 +221,9 @@ void Titlebar::paintEvent(QPaintEvent *pe)
     if (d->m_play) {
         QPalette palette;
         QPixmap pixmap = QPixmap(":resources/icons/titlebar.png");
-        palette.setBrush(QPalette::Background, QBrush(pixmap.scaled(window()->width(), 50)));
+        //palette.setBrush(QPalette::Background, QBrush(pixmap.scaled(window()->width(), 50)));
         bgColor = QBrush(pixmap);
+        palette.setColor(QPalette::Background, QColor(0, 0, 0, 0));
         this->setPalette(palette);
     } else {
         bgColor = Qt::transparent;
@@ -214,8 +233,6 @@ void Titlebar::paintEvent(QPaintEvent *pe)
     pp.setFillRule(Qt::WindingFill);
     pp.addRect(rect());
     painter.fillPath(pp, bgColor);
-
-    DTitlebar::paintEvent(pe);
 }
 
 }
