@@ -68,14 +68,15 @@ public:
 protected:
     void paintEvent(QPaintEvent *pe) override
     {
-        QPainter painter(this);
+//        QPainter painter(this);
 //        QBrush bgColor = QBrush(_pic);
 //        QPainterPath pp;
 //        QRectF bgRect;
 //        bgRect.setSize(size());
 //        pp.addRoundedRect(bgRect, 4, 4);
 //        painter.fillPath(pp, bgColor);
-        painter.save();
+
+        QPainter painter(this);
         painter.setRenderHints(QPainter::HighQualityAntialiasing);
         painter.setRenderHints(QPainter::SmoothPixmapTransform);
         painter.setRenderHints(QPainter::Antialiasing);
@@ -87,14 +88,14 @@ protected:
         painter1.setRenderHint(QPainter::SmoothPixmapTransform);
         painter1.fillRect(mask.rect(), Qt::white);
         painter1.setBrush(QColor(0, 0, 0));
-        painter1.drawRoundedRect(mask.rect(), 2, 2);
+        painter1.drawRoundedRect(mask.rect(), 4, 4);
         QPixmap image = _pic;
         image.setMask(mask);
 
         painter.drawPixmap(rect(), image);
 
         QPen pen;
-        pen.setWidth(1);
+        pen.setWidth(2);
         if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
             pen.setColor(QColor(0, 0, 0, 0.2 * 255));
             painter.setPen(pen);
@@ -103,8 +104,7 @@ protected:
             painter.setPen(pen);
         }
         painter.setBrush(Qt::NoBrush);
-        painter.drawRoundedRect(rect(), 6, 6);
-        painter.restore();
+        painter.drawRoundedRect(rect(), 4, 4);
     };
 private:
     QPixmap _pic;

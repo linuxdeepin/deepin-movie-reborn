@@ -28,7 +28,6 @@
  * files in the program, then also delete it here.
  */
 #include "notification_widget.h"
-#include "utility.h"
 #include "event_relayer.h"
 
 #include <DPlatformWindowHandle>
@@ -49,7 +48,7 @@ NotificationWidget::NotificationWidget(QWidget *parent)
     //setFrameShape(QFrame::NoFrame);
     setObjectName("NotificationFrame");
 
-#ifndef __x86_64__
+#if defined (__mips__) || defined (__aarch64__)
     setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
     setAttribute(Qt::WA_TranslucentBackground, true);
 #endif
@@ -79,10 +78,13 @@ void NotificationWidget::showEvent(QShowEvent *event)
         adjustSize();
     }
     syncPosition();
+
+    QFrame::showEvent(event);
 }
 
 void NotificationWidget::resizeEvent(QResizeEvent *re)
 {
+    QFrame::resizeEvent(re);
 }
 
 void NotificationWidget::syncPosition()
@@ -96,10 +98,8 @@ void NotificationWidget::syncPosition()
     case AnchorNorthWest:
 #ifdef __aarch64__
         move(geom.topLeft() + _anchorPoint);
-#elif  __mips__
+#elif defined (__mips__)
         move(geom.x() + 30, geom.y() + 58);
-#elif __sw_64__
-        move(geom.topLeft() + _anchorPoint);
 #else
         move(_anchorPoint);
 #endif
@@ -122,7 +122,7 @@ void NotificationWidget::syncPosition(QRect rect)
     case AnchorNorthWest:
 #ifdef __aarch64__
         move(geom.topLeft() + _anchorPoint);
-#elif  __mips__
+#elif  defined (__mips__)
         move(geom.x() + 30, geom.y() + 58);
 #else
         move(_anchorPoint);
@@ -217,15 +217,17 @@ void NotificationWidget::paintEvent(QPaintEvent *pe)
     p.fillRect(rect(), Qt::transparent);
     {
         QPainterPath pp;
-        pp.addRoundedRect(rect(), RADIUS, RADIUS);
+        pp.addRoundedRect(rect(), static_cast<qreal>(RADIUS), static_cast<qreal>(RADIUS));
         p.setPen(border_clr);
         p.drawPath(pp);
     }
 
     auto view_rect = rect().marginsRemoved(QMargins(1, 1, 1, 1));
     QPainterPath pp;
-    pp.addRoundedRect(view_rect, RADIUS, RADIUS);
+    pp.addRoundedRect(view_rect, static_cast<qreal>(RADIUS), static_cast<qreal>(RADIUS));
     p.fillPath(pp, bg_clr);
+
+    QFrame::paintEvent(pe);
 }
 
 }

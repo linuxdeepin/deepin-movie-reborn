@@ -75,6 +75,8 @@ QUrl UrlDialog::url() const
 void UrlDialog::showEvent(QShowEvent *se)
 {
     _le->setFocus();
+
+    DDialog::showEvent(se);
 }
 
 }

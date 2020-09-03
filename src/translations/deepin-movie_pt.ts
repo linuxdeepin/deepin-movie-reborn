@@ -600,15 +600,7 @@
         <translation type="obsolete">Todos os vídeos (%1) {2 %1)?}</translation>
     </message>
     <message>
-        <source>Disc eject</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>All videos (*)(%2 %1)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>HwdecMode = %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

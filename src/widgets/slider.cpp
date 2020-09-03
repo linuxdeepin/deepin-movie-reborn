@@ -144,11 +144,11 @@ int DMRSlider::position2progress(const QPoint &p)
     auto total = (maximum() - minimum());
 
     if (orientation() == Qt::Horizontal) {
-        qreal span = (qreal)total / contentsRect().width();
-        return span * (p.x()) + minimum();
+        qreal span = static_cast<qreal>(total) / contentsRect().width();
+        return static_cast<int>(span * (p.x()) + minimum());
     } else {
-        qreal span = (qreal)total / contentsRect().height();
-        return span * (height() - p.y()) + minimum();
+        qreal span = static_cast<qreal>(total) / contentsRect().height();
+        return static_cast<int>(span * (height() - p.y()) + minimum());
     }
 }
 
@@ -167,7 +167,7 @@ void DMRSlider::mousePressEvent(QMouseEvent *e)
         QWidget::mousePressEvent(e);
 
         int v = position2progress(e->pos());;
-        slider()->setSliderPosition(v);
+        //slider()->setSliderPosition(v);
         emit sliderMoved(v);
         _down = true;
     }
@@ -179,7 +179,7 @@ void DMRSlider::mouseMoveEvent(QMouseEvent *e)
 
     int v = position2progress(e->pos());
     if (_down) {
-        slider()->setSliderPosition(v);
+       // slider()->setSliderPosition(v);
         if (_showIndicator) {
             _indicatorPos = {e->x(), pos().y() + TOOLBOX_TOP_EXTENT - 4};
             update();
@@ -233,7 +233,7 @@ void DMRSlider::leaveEvent(QEvent *e)
 
 void DMRSlider::forceLeave()
 {
-    leaveEvent(NULL);
+    leaveEvent(nullptr);
 }
 
 void DMRSlider::onAnimationStopped()
@@ -252,11 +252,11 @@ void DMRSlider::onValueChanged(const QVariant &v)
     // see dmr--ToolProxy.theme to find out the meaning of these values
     // v1 is for groove and sub-page
     // v2 is for add-page
-    float v1 = (1.0 - v.toFloat()) * 0.500000 + v.toFloat() * (1 / 3.0);
+    double v1 = (1.0 - v.toDouble()) * 0.500000 + v.toDouble() * (1 / 3.0);
 
-    float v2 = (1.0 - v.toFloat()) * 0.500000 + v.toFloat() * (1 / 3.0);
-    float v3 = v2 + (1.0 / 24.0);
-    float v4 = v2 + (2.0 / 24.0);
+    double v2 = (1.0 - v.toDouble()) * 0.500000 + v.toDouble() * (1 / 3.0);
+    double v3 = v2 + (1.0 / 24.0);
+    double v4 = v2 + (2.0 / 24.0);
 
     auto s = QString::fromUtf8(_style_tmpl)
              .arg(v1).arg(v1 + 0.000001)

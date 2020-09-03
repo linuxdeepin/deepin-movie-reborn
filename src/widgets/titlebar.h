@@ -1,4 +1,4 @@
-/*
+/* 
  * (c) 2017, Deepin Technology Co., Ltd. <support@deepin.org>
  *
  * This program is free software; you can redistribute it and/or
@@ -28,7 +28,7 @@
  * files in the program, then also delete it here.
  */
 #ifndef DMR_TITLEBAR_H
-#define DMR_TITLEBAR_H
+#define DMR_TITLEBAR_H 
 #include <QScopedPointer>
 #include <DTitlebar>
 #include <DWidget>

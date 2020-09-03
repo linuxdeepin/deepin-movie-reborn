@@ -31,10 +31,18 @@
 #define _DMR_THUMBNAIL_WORKER_H
 
 #include <QtWidgets>
-#include <libffmpegthumbnailer/videothumbnailer.h>
+#include <libffmpegthumbnailer/videothumbnailerc.h>
+
+typedef video_thumbnailer *(*mvideo_thumbnailer)();
+typedef void (*mvideo_thumbnailer_destroy)(video_thumbnailer *thumbnailer);
+/* create image_data structure */
+typedef image_data *(*mvideo_thumbnailer_create_image_data)(void);
+/* destroy image_data structure */
+typedef void (*mvideo_thumbnailer_destroy_image_data)(image_data *data);
+typedef int (*mvideo_thumbnailer_generate_thumbnail_to_buffer)(video_thumbnailer *thumbnailer, const char *movie_filename, image_data *generated_image_data);
 
 namespace dmr {
-using namespace ffmpegthumbnailer;
+//using namespace ffmpegthumbnailer;
 
 class PlayerEngine;
 
@@ -68,16 +76,25 @@ signals:
 private:
     QList<QPair<QUrl, int>> _wq;
     QHash<QUrl, QMap<int, QPixmap>> _cache;
-    VideoThumbnailer thumber;
     QAtomicInt _quit{0};
     qint64 _cacheSize {0};
 
+    video_thumbnailer *m_video_thumbnailer = nullptr;
+    image_data *m_image_data = nullptr;
     PlayerEngine *_engine {nullptr};
 
+    mvideo_thumbnailer m_mvideo_thumbnailer = nullptr;
+    mvideo_thumbnailer_destroy m_mvideo_thumbnailer_destroy = nullptr;
+    mvideo_thumbnailer_create_image_data m_mvideo_thumbnailer_create_image_data = nullptr;
+    mvideo_thumbnailer_destroy_image_data m_mvideo_thumbnailer_destroy_image_data = nullptr;
+    mvideo_thumbnailer_generate_thumbnail_to_buffer m_mvideo_thumbnailer_generate_thumbnail_to_buffer = nullptr;
+
     ThumbnailWorker();
+    void initThumb();
     void run() override;
     void runSingle(QPair<QUrl, int> w);
     QPixmap genThumb(const QUrl &url, int secs);
+    QString libPath(const QString &strlib);
 };
 
 }

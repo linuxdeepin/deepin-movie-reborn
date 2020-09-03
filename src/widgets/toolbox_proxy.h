@@ -50,6 +50,8 @@
 
 #include "thumbnail_worker.h"
 
+#include "slider.h"
+
 namespace Dtk {
 namespace Widget {
 class DImageButton;
@@ -75,10 +77,10 @@ class ImageItem : public DLabel
 {
     Q_OBJECT
 public:
-    ImageItem(QPixmap image, bool isblack = false, QWidget *parent = 0): DLabel(parent)
+    ImageItem(QPixmap image, bool isblack = false, QWidget *parent = nullptr): DLabel(parent)
     {
         _pixmap = image;
-    };
+    }
 
 signals:
     void imageItemclicked(int index, int indexNow);
@@ -86,6 +88,7 @@ protected:
     void paintEvent(QPaintEvent *event)
     {
         QPainter painter(this);
+//        painter.drawPixmap(rect(),QPixmap(_path).scaled(60,50));
 
         painter.setRenderHints(QPainter::HighQualityAntialiasing);
         painter.setRenderHints(QPainter::SmoothPixmapTransform);
@@ -120,7 +123,7 @@ private:
     int _index;
     int _indexNow;
     DLabel *_image = nullptr;
-    QString _path = NULL;
+    QString _path = nullptr;
     QPixmap _pixmap;
 };
 
@@ -175,7 +178,7 @@ class ToolboxProxy: public DFloatingWidget
     Q_OBJECT
 public:
     ToolboxProxy(QWidget *mainWindow, PlayerEngine *);
-    virtual ~ToolboxProxy();
+    virtual ~ToolboxProxy() override;
 
     void updateTimeInfo(qint64 duration, qint64 pos, QLabel *_timeLabel,
                         QLabel *_timeLabelend, bool flag);
@@ -205,7 +208,26 @@ public:
     QLabel *getfullscreentimeLabelend();
     bool getbAnimationFinash();
     int DisplayVolume();
-    void setVolSliderHide();
+    bool getVolSliderIsHided();
+    DMRSlider* getSlider()
+    {
+        return _progBar;
+    }
+    ViewProgBar *getViewProBar()
+    {
+        return _viewProgBar;
+    }
+    bool isViewProgress()
+    {
+        if (_progBar_Widget->currentIndex() == 2) {
+            return true;
+        }
+    }
+
+    void updateProgress(int nValue);    //更新进度条显示
+
+    void updateSlider();                //根据进度条显示更新影片实际进度
+    void initThumb();
 public slots:
     void finishLoadSlot(QSize size);
     void updateplaylisticon();
@@ -240,7 +262,6 @@ protected:
 //    void paintEvent(QPaintEvent *pe) override;
     void showEvent(QShowEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
-
 private:
     void setup();
     void updateTimeLabel();
@@ -260,7 +281,7 @@ private:
     VolumeSlider *_volSlider {nullptr};
 
 //    DImageButton *_playBtn {nullptr};
-//   DIconButton *_playBtn {nullptr};
+//    DIconButton *_playBtn {nullptr};
 //    DIconButton *_prevBtn {nullptr};
 //    DIconButton *_nextBtn {nullptr};
 
@@ -325,16 +346,12 @@ private:
     HintFilter        *hintFilter {nullptr };
     bool m_isMouseIn = false;
     QTimer _hideTime;
-    bool _isJinJia = false;//是否是景嘉微显卡
-    qint64 oldDuration = 0;
-    qint64 oldElapsed = 0;
-    QTimer _progressTimer;
 };
 class viewProgBarLoad: public QThread
 {
     Q_OBJECT
 public:
-    explicit viewProgBarLoad(PlayerEngine *engine = nullptr, DMRSlider *progBar = nullptr, ToolboxProxy *parent = 0);
+    explicit viewProgBarLoad(PlayerEngine *engine = nullptr, DMRSlider *progBar = nullptr, ToolboxProxy *parent = nullptr);
 
     //退出线程直接调用这个函数
     void quitLoad();
@@ -355,6 +372,7 @@ signals:
 protected:
     void run();
 private:
+    void initThumb();
     PlayerEngine *_engine {nullptr};
     ToolboxProxy *_parent{nullptr};
     int _vlastHoverValue;
@@ -384,7 +402,14 @@ private:
 
     QMutex *pListPixmapMutex;
 
-    VideoThumbnailer *m_pThumber {nullptr};
+    video_thumbnailer *m_video_thumbnailer = nullptr;
+    image_data *m_image_data = nullptr;
+
+    mvideo_thumbnailer m_mvideo_thumbnailer = nullptr;
+    mvideo_thumbnailer_destroy m_mvideo_thumbnailer_destroy = nullptr;
+    mvideo_thumbnailer_create_image_data m_mvideo_thumbnailer_create_image_data = nullptr;
+    mvideo_thumbnailer_destroy_image_data m_mvideo_thumbnailer_destroy_image_data = nullptr;
+    mvideo_thumbnailer_generate_thumbnail_to_buffer m_mvideo_thumbnailer_generate_thumbnail_to_buffer = nullptr;
 
 };
 }

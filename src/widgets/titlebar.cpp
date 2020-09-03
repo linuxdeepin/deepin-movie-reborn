@@ -77,8 +77,8 @@ Titlebar::Titlebar(QWidget *parent) : DBlurEffectWidget(parent), d_ptr(new Title
 
     {
         auto dpr = qApp->devicePixelRatio();
-        int w2 = 32 * dpr;
-        int w = 32 * dpr;
+        int w2 = static_cast<int>(32 * dpr);
+        int w = static_cast<int>(32 * dpr);
 
         QIcon icon = QIcon::fromTheme("deepin-movie");
         auto logo = icon.pixmap(QSize(32, 32))
@@ -97,7 +97,11 @@ Titlebar::Titlebar(QWidget *parent) : DBlurEffectWidget(parent), d_ptr(new Title
     d->m_titlebar->setTitle("");
     d->m_titletxt = new DLabel(this);
     d->m_titletxt->setText("");
-
+//    QGraphicsDropShadowEffect* shadowEffect = new QGraphicsDropShadowEffect(d->m_titletxt);
+//    shadowEffect->setOffset(0, 1);
+//    shadowEffect->setColor(QColor(0,0,0,127));
+//    shadowEffect->setBlurRadius(1);
+//    d->m_titletxt->setGraphicsEffect(shadowEffect);
     d->m_titletxt->setFont(DFontSizeManager::instance()->get(DFontSizeManager::T7));
     d->m_titlebar->addWidget(d->m_titletxt, Qt::AlignCenter);
 

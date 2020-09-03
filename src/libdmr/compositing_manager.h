@@ -76,8 +76,6 @@ public:
     static OpenGLInteropKind interopKind();
     static bool runningOnVmwgfx();
     bool hascard();
-    void softDecodeCheck();
-    bool isOnlySoftDecode();
 
     /**
      * override auto-detected compositing state.
@@ -99,6 +97,8 @@ public:
     PlayerOptionList getBestProfile(); // best for current platform and env
     static void detectPciID();
     static bool runningOnNvidia();
+    void softDecodeCheck();
+    bool isOnlySoftDecode();
 
 signals:
     void compositingChanged(bool);

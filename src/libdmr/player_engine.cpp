@@ -68,6 +68,7 @@ PlayerEngine::PlayerEngine(QWidget *parent)
         connect(_current, &Backend::mpvWarningLogsChanged, this, &PlayerEngine::mpvWarningLogsChanged);
         connect(_current, &Backend::urlpause, this, &PlayerEngine::urlpause);
         l->addWidget(_current);
+        //_current->firstInit();
     }
 
     connect(&_networkConfigMng, &QNetworkConfigurationManager::onlineStateChanged, this, &PlayerEngine::onlineStateChanged);
@@ -81,7 +82,8 @@ PlayerEngine::PlayerEngine(QWidget *parent)
 
     connect(&OnlineSubtitle::get(), &OnlineSubtitle::subtitlesDownloadedFor,
             this, &PlayerEngine::onSubtitlesDownloaded);
-    addSubSearchPath(OnlineSubtitle::get().storeLocation());
+    //heyi need
+    //addSubSearchPath(OnlineSubtitle::get().storeLocation());
 
     _playlist = new PlaylistModel(this);
     connect(_playlist, &PlaylistModel::asyncAppendFinished, this,
@@ -90,12 +92,12 @@ PlayerEngine::PlayerEngine(QWidget *parent)
 
 PlayerEngine::~PlayerEngine()
 {
-    disconnect(_playlist, 0, 0, 0);
+    disconnect(_playlist, nullptr, nullptr, nullptr);
     delete _playlist;
     _playlist = nullptr;
 
     if (_current) {
-        disconnect(_current, 0, 0, 0);
+        disconnect(_current, nullptr, nullptr, nullptr);
         delete _current;
         _current = nullptr;
     }
@@ -114,62 +116,62 @@ bool PlayerEngine::isPlayableFile(const QUrl &url)
 
 static QStringList suffixes;
 
-static const QStringList &buildPlayableDatabase()
-{
-    static QStringList mimeTypes = {
-        "application/ogg",
-        "application/vnd.apple.mpegurl",
-        "application/vnd.rn-realmedia",
-        "application/x-extension-mp4",
-        "application/x-flac",
-        "application/x-matroska",
-        "application/x-ogg",
-        "application/xspf+xml",
-        "image/vnd.rn-realpix",
-        "misc/ultravox",
-        "video/3gpp",
-        "video/dv",
-        "video/mp2t",
-        "video/mp4",
-        "video/mp4v-es",
-        "video/mpeg",
-        "video/msvideo",
-        "video/ogg",
-        "video/quicktime",
-        "video/vnd.rn-realvideo",
-        "video/webm",
-        "video/x-anim",
-        "video/x-avi",
-        "video/x-flc",
-        "video/x-fli",
-        "video/x-flv",
-        "video/x-m4v",
-        "video/x-matroska",
-        "video/x-mpeg",
-        "video/x-mpeg2",
-        "video/x-ms-afs",
-        "video/x-ms-asf",
-        "video/x-msvideo",
-        "video/x-ms-wmv",
-        "video/x-ms-wmx",
-        "video/x-ms-wvxvideo",
-        "video/x-nsv",
-        "video/x-ogm+ogg",
-        "video/x-theora",
-        "video/x-theora+ogg",
-        "x-content/video-dvd",
-        "x-content/video-svcd",
-        "x-content/video-vcd",
-        "x-scheme-handler/mms",
-        "x-scheme-handler/rtmp",
-        "x-scheme-handler/rtsp",
-    };
+//static const QStringList &buildPlayableDatabase()
+//{
+//    static QStringList mimeTypes = {
+//        "application/ogg",
+//        "application/vnd.apple.mpegurl",
+//        "application/vnd.rn-realmedia",
+//        "application/x-extension-mp4",
+//        "application/x-flac",
+//        "application/x-matroska",
+//        "application/x-ogg",
+//        "application/xspf+xml",
+//        "image/vnd.rn-realpix",
+//        "misc/ultravox",
+//        "video/3gpp",
+//        "video/dv",
+//        "video/mp2t",
+//        "video/mp4",
+//        "video/mp4v-es",
+//        "video/mpeg",
+//        "video/msvideo",
+//        "video/ogg",
+//        "video/quicktime",
+//        "video/vnd.rn-realvideo",
+//        "video/webm",
+//        "video/x-anim",
+//        "video/x-avi",
+//        "video/x-flc",
+//        "video/x-fli",
+//        "video/x-flv",
+//        "video/x-m4v",
+//        "video/x-matroska",
+//        "video/x-mpeg",
+//        "video/x-mpeg2",
+//        "video/x-ms-afs",
+//        "video/x-ms-asf",
+//        "video/x-msvideo",
+//        "video/x-ms-wmv",
+//        "video/x-ms-wmx",
+//        "video/x-ms-wvxvideo",
+//        "video/x-nsv",
+//        "video/x-ogm+ogg",
+//        "video/x-theora",
+//        "video/x-theora+ogg",
+//        "x-content/video-dvd",
+//        "x-content/video-svcd",
+//        "x-content/video-vcd",
+//        "x-scheme-handler/mms",
+//        "x-scheme-handler/rtmp",
+//        "x-scheme-handler/rtsp",
+//    };
 
-    if (suffixes.isEmpty()) {
-    }
+//    if (suffixes.isEmpty()) {
+//    }
 
-    return suffixes;
-}
+//    return suffixes;
+//}
 
 bool PlayerEngine::isPlayableFile(const QString &name)
 {
@@ -313,6 +315,9 @@ int PlayerEngine::sid()
 void PlayerEngine::onSubtitlesDownloaded(const QUrl &url, const QList<QString> &filenames,
                                          OnlineSubtitle::FailReason reason)
 {
+    //mod for warning by xxj ,no any means
+    reason = OnlineSubtitle::FailReason::NoError;
+
     if (state() == CoreState::Idle) {
         return;
     }
@@ -344,16 +349,13 @@ bool PlayerEngine::loadSubtitle(const QFileInfo &fi)
 
     const auto &pmf = _current->playingMovieInfo();
     auto pif = playlist().currentInfo();
-    int i = 0;
     for (const auto &sub : pmf.subs) {
         if (sub["external"].toBool()) {
             auto path = sub["external-filename"].toString();
             if (path == fi.canonicalFilePath()) {
-                this->selectSubtitle(i);
                 return true;
             }
         }
-        ++i;
     }
 
     if (_current->loadSubtitle(fi)) {
@@ -487,6 +489,12 @@ bool PlayerEngine::muted() const
 void PlayerEngine::toggleMute()
 {
     if (!_current) return;
+    //发送信号通知初始化库函数
+    if (!m_bMpvFunsLoad) {
+        emit mpvFunsLoadOver();
+        m_bMpvFunsLoad = true;
+    }
+
     _current->toggleMute();
     emit volumeChanged();
 }
@@ -498,16 +506,26 @@ void PlayerEngine::savePreviousMovieState()
 
 void PlayerEngine::paintEvent(QPaintEvent *e)
 {
-    if (!CompositingManager::get().composited()) {
-        QRect rect = this->rect();
-        QImage icon = utils::LoadHiDPIImage(":/resources/icons/light/init-splash.svg");
-        QPixmap pix = QPixmap::fromImage(icon);
-        int x = this->rect().center().x() - pix.width() / 2;
-        int y = this->rect().center().y() - pix.height() / 2;
-        QPainter p(this);
+    bool bIsMusic = false;
+    QRect rect = this->rect();
+    QPainter p(this);
 
-        p.fillRect(rect, QBrush(QColor(255, 255, 255)));
-        p.drawPixmap(x, y, pix);
+    if (_playlist->count() > 0 && _state != Idle) {
+        bIsMusic = isAudioFile( _playlist->currentInfo().mi.title);
+    }
+
+    if (!CompositingManager::get().composited()) {
+        if (_state != Idle && bIsMusic) {
+            p.fillRect(rect, QBrush(QColor(0, 0, 0)));
+        } else {
+            QImage icon = utils::LoadHiDPIImage(":/resources/icons/light/init-splash.svg");
+            QPixmap pix = QPixmap::fromImage(icon);
+            int x = this->rect().center().x() - pix.width() / 2;
+            int y = this->rect().center().y() - pix.height() / 2;
+
+            p.fillRect(rect, QBrush(QColor(255, 255, 255)));
+            p.drawPixmap(x, y, pix);
+        }
     }
     return QWidget::paintEvent(e);
 }
@@ -672,7 +690,7 @@ void PlayerEngine::seekBackward(int secs)
     if (state() == CoreState::Idle) return;
 
     if (elapsed() - abs(secs) <= 0) {
-        _current->seekBackward(elapsed());
+        _current->seekBackward(static_cast<int>(elapsed()));
     } else {
         _current->seekBackward(secs);
     }
@@ -694,6 +712,12 @@ void PlayerEngine::setDVDDevice(const QString &path)
     _current->setDVDDevice(path);
 }
 
+void PlayerEngine::firstInit()
+{
+    _current->firstInit();
+    addSubSearchPath(OnlineSubtitle::get().storeLocation());
+}
+
 bool PlayerEngine::addPlayFile(const QUrl &url)
 {
     if (isPlayableFile(url)) {
@@ -709,13 +733,21 @@ bool PlayerEngine::addPlayFile(const QUrl &url)
 QList<QUrl> PlayerEngine::collectPlayDir(const QDir &dir)
 {
     QList<QUrl> urls;
+    QString strtp;
 
     //取消递归  by thx
     QDirIterator di(dir, QDirIterator::NoIteratorFlags);
     while (di.hasNext()) {
         di.next();
         if (di.fileInfo().isFile() && isPlayableFile(di.fileName())) {
-            urls.append(QUrl::fromLocalFile(di.filePath()));
+            strtp = di.filePath();
+            while (QFileInfo(strtp).isSymLink()) {
+                /*****************************
+                 * use oringnal path to replace link path
+                 * ***************************/
+                strtp = QFileInfo(strtp).symLinkTarget();
+            }
+            urls.append(QUrl::fromLocalFile(strtp));
         }
     }
 
@@ -733,6 +765,16 @@ QList<QUrl> PlayerEngine::addPlayDir(const QDir &dir)
 QList<QUrl> PlayerEngine::addPlayFiles(const QList<QUrl> &urls)
 {
     QList<QUrl> valids = collectPlayFiles(urls);
+    for (auto &url : valids) {
+        QString strtp = url.toLocalFile();
+        while (QFileInfo(strtp).isSymLink()) {
+            /*****************************
+             * use oringnal path to replace link path
+             * ***************************/
+            strtp = QFileInfo(strtp).symLinkTarget();
+        }
+        url = QUrl::fromLocalFile(strtp);
+    }
     _playlist->appendAsync(valids);
     return valids;
 }
@@ -826,11 +868,6 @@ void PlayerEngine::changeSoundMode(Backend::SoundMode sm)
         _current->changeSoundMode(sm);
 }
 
-void PlayerEngine::changeHwdecMode(Backend::HwdecMode hm)
-{
-    if (_current)
-        _current->changeHwdecMode(hm);
-}
 void PlayerEngine::resizeEvent(QResizeEvent *re)
 {
     bool rounded = !window()->isFullScreen() && !window()->isMaximized();

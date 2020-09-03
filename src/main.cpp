@@ -56,25 +56,23 @@ DWIDGET_USE_NAMESPACE
 
 int main(int argc, char *argv[])
 {
-    setenv("PULSE_PROP_media.role", "video", 1);
-
 #ifdef __mips__
     if (CompositingManager::get().composited()) {
         CompositingManager::detectOpenGLEarly();
         CompositingManager::detectPciID();
     }
 #else
-    CompositingManager::detectOpenGLEarly();
-    CompositingManager::detectPciID();
+//    CompositingManager::detectOpenGLEarly();
+//    CompositingManager::detectPciID();
 #endif
 
 #if defined(STATIC_LIB)
     DWIDGET_INIT_RESOURCE();
 #endif
-
     DApplication::loadDXcbPlugin();
 
     DApplication app(argc, argv);
+
 
     // required by mpv
     setlocale(LC_NUMERIC, "C");
@@ -124,7 +122,7 @@ int main(int argc, char *argv[])
         Dtk::Core::DLogManager::registerConsoleAppender();
     }
     Dtk::Core::DLogManager::registerFileAppender();
-    qInfo() << "log path: " << Dtk::Core::DLogManager::getlogFilePath();
+    qDebug() << "log path: " << Dtk::Core::DLogManager::getlogFilePath();
 
     bool singleton = !dmr::Settings::get().isSet(dmr::Settings::MultipleInstance);
 
@@ -137,7 +135,7 @@ int main(int argc, char *argv[])
     }
 
     if (singleton && !shared_memory.create(1)) {
-        qWarning() << "another deepin movie instance has started";
+        qDebug() << "another deepin movie instance has started";
         if (!toOpenFiles.isEmpty()) {
             QDBusInterface iface("com.deepin.movie", "/", "com.deepin.movie");
             if (toOpenFiles.size() == 1) {
@@ -147,6 +145,11 @@ int main(int argc, char *argv[])
             }
         }
 
+        QDBusInterface iface("com.deepin.movie", "/", "com.deepin.movie");
+        if (iface.isValid()) {
+             qWarning() << "deepin-movie raise";
+            iface.asyncCall("Raise");
+        }
         exit(0);
     }
 

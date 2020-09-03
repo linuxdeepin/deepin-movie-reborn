@@ -607,14 +607,6 @@
         <source>Please exit smart dock</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>HwdecMode = %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Disc reject</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>dmr::MovieInfo</name>

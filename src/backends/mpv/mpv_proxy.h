@@ -39,6 +39,85 @@
 #undef Bool
 #include <mpv/qthelper.hpp>
 
+#ifdef __x86_64__
+#define LIB_PATH "/lib/x86_64-linux-gnu/libmpv.so.1"
+#endif
+
+#ifdef __sw_64__
+#define LIB_PATH "/lib/sw_64-linux-gnu/libmpv.so.1"
+#endif
+
+#ifdef __aarch64__
+#define LIB_PATH "/lib/aarch64-linux-gnu/libmpv.so.1"
+#endif
+
+#ifdef __mips__
+#define LIB_PATH "/lib/mips64el-linux-gnuabi64/libmpv.so.1"
+#endif
+
+#ifndef LIB_PATH
+#define LIB_PATH "/lib/i386-linux-gnu/libmpv.so.1"
+#endif
+
+typedef mpv_event *(*mpv_waitEvent)(mpv_handle *ctx, double timeout);
+typedef int (*mpv_set_optionString)(mpv_handle *ctx, const char *name, const char *data);
+typedef int (*mpv_setProperty)(mpv_handle *ctx, const char *name, mpv_format format,
+                               void *data);
+typedef int (*mpv_setProperty_async)(mpv_handle *ctx, uint64_t reply_userdata,
+                                     const char *name, mpv_format format, void *data);
+typedef int (*mpv_commandNode)(mpv_handle *ctx, mpv_node *args, mpv_node *result);
+typedef int (*mpv_commandNode_async)(mpv_handle *ctx, uint64_t reply_userdata,
+                                     mpv_node *args);
+typedef int (*mpv_getProperty)(mpv_handle *ctx, const char *name, mpv_format format,
+                               void *data);
+typedef int (*mpv_observeProperty)(mpv_handle *mpv, uint64_t reply_userdata,
+                                   const char *name, mpv_format format);
+typedef const char *(*mpv_eventName)(mpv_event_id event);
+typedef mpv_handle *(*mpvCreate)(void);
+typedef int (*mpv_requestLog_messages)(mpv_handle *ctx, const char *min_level);
+typedef int (*mpv_observeProperty)(mpv_handle *mpv, uint64_t reply_userdata,
+                                   const char *name, mpv_format format);
+typedef void (*mpv_setWakeup_callback)(mpv_handle *ctx, void (*cb)(void *d), void *d);
+typedef int (*mpvinitialize)(mpv_handle *ctx);
+typedef void (*mpv_freeNode_contents)(mpv_node *node);
+typedef void (*mpv_terminateDestroy)(mpv_handle *ctx);
+
+class myHandle
+{
+    struct container {
+        container(mpv_handle *h) : mpv(h) {}
+        ~container()
+        {
+            mpv_terminateDestroy fun = (mpv_terminateDestroy)QLibrary::resolve(LIB_PATH, "mpv_terminate_destroy");
+            fun(mpv);
+        }
+
+        mpv_handle *mpv;
+    };
+    QSharedPointer<container> sptr;
+public:
+    // Construct a new Handle from a raw mpv_handle with refcount 1. If the
+    // last Handle goes out of scope, the mpv_handle will be destroyed with
+    // mpv_terminate_destroy().
+    // Never destroy the mpv_handle manually when using this wrapper. You
+    // will create dangling pointers. Just let the wrapper take care of
+    // destroying the mpv_handle.
+    // Never create multiple wrappers from the same raw mpv_handle; copy the
+    // wrapper instead (that's what it's for).
+    static myHandle myFromRawHandle(mpv_handle *handle)
+    {
+        myHandle h;
+        h.sptr = QSharedPointer<container>(new container(handle));
+        return h;
+    }
+
+    // Return the raw handle; for use with the libmpv C API.
+    operator mpv_handle *() const
+    {
+        return sptr ? (*sptr).mpv : 0;
+    }
+};
+
 namespace dmr {
 using namespace mpv::qt;
 class MpvGLWidget;
@@ -47,9 +126,30 @@ class MpvProxy: public Backend
 {
     Q_OBJECT
 
+    struct my_node_autofree {
+        mpv_node *ptr;
+        my_node_autofree(mpv_node *a_ptr) : ptr(a_ptr) {}
+        ~my_node_autofree()
+        {
+            mpv_freeNode_contents(ptr);
+        }
+    };
+
 public:
     MpvProxy(QWidget *parent = 0);
     virtual ~MpvProxy();
+
+//    //add by heyi
+    /**
+     * @brief initMpvFuns   初始化MPV动态调用库函数
+     */
+    void initMpvFuns();
+
+    //add by heyi
+    /**
+     * @brief firstInit 第一次播放需要初库始化函数指针
+     */
+    void firstInit();
 
     const PlayingMovieInfo &playingMovieInfo() override;
     // mpv plays all files by default  (I hope)
@@ -85,7 +185,6 @@ public:
     int aid() const override;
 
     void changeSoundMode(SoundMode sm) override;
-    void changeHwdecMode(HwdecMode hm) override;
     int volume() const override;
     bool muted() const override;
 
@@ -103,6 +202,30 @@ public:
 
     void nextFrame() override;
     void previousFrame() override;
+public:
+    //add by heyi
+    QVariant my_get_property(mpv_handle *ctx, const QString &name) const;
+    int my_set_property(mpv_handle *ctx, const QString &name, const QVariant &v);
+    bool my_command_async(mpv_handle *ctx, const QVariant &args, uint64_t tag);
+    int my_set_property_async(mpv_handle *ctx, const QString &name,
+                              const QVariant &v, uint64_t tag);
+    QVariant my_get_property_variant(mpv_handle *ctx, const QString &name);
+    QVariant my_command(mpv_handle *ctx, const QVariant &args);
+
+    mpv_waitEvent m_waitEvent{nullptr};
+    mpv_set_optionString m_setOptionString{nullptr};
+    mpv_setProperty m_setProperty{nullptr};
+    mpv_setProperty_async m_setPropertyAsync;
+    mpv_commandNode m_commandNode{nullptr};
+    mpv_commandNode_async m_commandNodeAsync{nullptr};
+    mpv_getProperty m_getProperty{nullptr};
+    mpv_observeProperty m_observeProperty{nullptr};
+    mpv_eventName m_eventName{nullptr};
+    mpvCreate m_creat{nullptr};
+    mpv_requestLog_messages m_requestLogMessage{nullptr};
+    mpv_setWakeup_callback m_setWakeupCallback{nullptr};
+    mpvinitialize m_initialize{nullptr};
+    mpv_freeNode_contents m_freeNodecontents{nullptr};
 
 public slots:
     void play() override;
@@ -129,7 +252,7 @@ signals:
     void has_mpv_events();
 
 private:
-    Handle _handle;
+    myHandle _handle;
     MpvGLWidget *_gl_widget{nullptr};
     QWidget *m_parentWidget;
 
@@ -152,18 +275,18 @@ private:
 
     bool _pauseOnStart {false};
 
-    bool _isJingJia {false};
-
     mpv_handle *mpv_init();
     void processPropertyChange(mpv_event_property *ev);
     void processLogMessage(mpv_event_log_message *ev);
     QImage takeOneScreenshot();
-    void changeProperty(const QString &name, const QVariant &v);
+    //void changeProperty(const QString &name, const QVariant &v);
     void updatePlayingMovieInfo();
     void setState(PlayState s);
     qint64 nextBurstShootPoint();
     int volumeCorrection(int);
+    bool m_bInited {false};
 };
+
 }
 
 #endif /* ifndef _DMR_MPV_PROXY_H */

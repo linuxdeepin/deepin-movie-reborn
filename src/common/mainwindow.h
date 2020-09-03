@@ -31,7 +31,6 @@
 #define _DMR_MAIN_WINDOW_H
 
 #include <QObject>
-#include <QTimer>
 #include <DMainWindow>
 #include <DTitlebar>
 #include <DPlatformWindowHandle>
@@ -56,6 +55,17 @@ class DImageButton;
 
 DWIDGET_USE_NAMESPACE
 
+enum CornerEdge {
+    TopLeftCorner = 0,
+    TopEdge = 1,
+    TopRightCorner = 2,
+    RightEdge = 3,
+    BottomRightCorner = 4,
+    BottomEdge = 5,
+    BottomLeftCorner = 6,
+    LeftEdge = 7,
+    NoneEdge = -1
+};
 
 class MainWindowEventListener;
 
@@ -138,6 +148,14 @@ public:
         return _playlist;
     }
 
+    //add by heyi
+    /**
+     * @brief firstPlayInit 第一次点击播放时，需要加载动态库函数指针然后进行构造未完成的初始化
+     */
+    void firstPlayInit();
+    //判断鼠标是否在窗口内
+    bool judgeMouseInWindow(QPoint pos);
+
     void requestAction(ActionFactory::ActionKind, bool fromUI = false,
                        QList<QVariant> args = {}, bool shortcut = false);
 
@@ -161,6 +179,7 @@ public:
 
     //在读取光盘的时候，直接把光盘挂载点的路径加入到播放列表中 thx
     bool addCdromPath();
+    void loadPlayList();
 signals:
     void windowEntered();
     void windowLeaved();
@@ -326,7 +345,11 @@ private:
     double _playSpeed {1.0};
 
     bool _quitfullscreenstopflag {false};
+    bool _quitfullscreenflag{false};
     bool _maxfornormalflag {false};
+    //add by heyi
+    bool m_bMpvFunsLoad {false};
+    QPoint posMouseOrigin;
 
     enum StateBeforeEnterMiniMode {
         SBEM_None = 0x0,
@@ -360,21 +383,18 @@ private:
     bool m_IsFree = true;  //播放器是否空闲，和IDel的定义不同
 
     static int _retryTimes;
-    static int _hwdecModes;
-    static QList<QString> _hwdecInfos;
-
-    bool _isJinJia = false;//是否是景嘉微显卡
     QTimer _progressTimer;
     //add by heyi 解决触屏右键菜单bug
     int nX = 0, nY = 0;     //左键按下时保存的点
     bool _isTouch = false;          //是否是触摸屏按下
-    QPoint posMouseOrigin;
     QTimer _mousePressTimer;
-    qint64 oldDuration = 0;
-    qint64 oldElapsed = 0;
-
     Diskcheckthread m_diskCheckThread;
-    bool m_bClosed {false};      //用于景嘉微显卡下过滤metacall事件
+    bool m_bProgressChanged {false};        //进度条是否被拖动
+    bool m_bFirstInit {false};
+    bool m_bLastIsTouch {false};
+    bool m_bTouchChangeVolume {false};
+    bool m_bIsFullSreen {false};
+    bool m_bisOverhunderd {false};
 };
 };
 

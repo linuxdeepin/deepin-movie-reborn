@@ -69,7 +69,7 @@ void VolumeMonitoring::stop()
 void VolumeMonitoring::timeoutSlot()
 {
     QVariant v = DBusUtils::redDBusProperty("com.deepin.daemon.Audio", "/com/deepin/daemon/Audio",
-                                                     "com.deepin.daemon.Audio", "SinkInputs");
+                                            "com.deepin.daemon.Audio", "SinkInputs");
 
     if (!v.isValid())
         return;
@@ -79,7 +79,7 @@ void VolumeMonitoring::timeoutSlot()
     QString sinkInputPath;
     for (auto curPath : allSinkInputsList) {
         QVariant nameV = DBusUtils::redDBusProperty("com.deepin.daemon.Audio", curPath.path(),
-                                                             "com.deepin.daemon.Audio.SinkInput", "Name");
+                                                    "com.deepin.daemon.Audio.SinkInput", "Name");
 
         QString movieStr = QObject::tr("Movie");
         if (!nameV.isValid() || (!nameV.toString().contains( movieStr, Qt::CaseInsensitive) && !nameV.toString().contains("deepin-movie", Qt::CaseInsensitive)))
@@ -100,16 +100,15 @@ void VolumeMonitoring::timeoutSlot()
 
     //获取音量
     QVariant volumeV = DBusUtils::redDBusProperty("com.deepin.daemon.Audio", sinkInputPath,
-                                                           "com.deepin.daemon.Audio.SinkInput", "Volume");
+                                                  "com.deepin.daemon.Audio.SinkInput", "Volume");
 
     //获取音量
     QVariant muteV = DBusUtils::redDBusProperty("com.deepin.daemon.Audio", sinkInputPath,
-                                                         "com.deepin.daemon.Audio.SinkInput", "Mute");
+                                                "com.deepin.daemon.Audio.SinkInput", "Mute");
 
     // int temp = volumeV.toDouble();
-    int volume = volumeV.toDouble() * 100;
+    int volume = static_cast<int>(volumeV.toDouble() * 100);
 //   int volume = (volumeV.toDouble() +  0.001) * 100;
-    bool mute = muteV.toBool();
 
     auto oldMute = Settings::get().internalOption("mute");
     auto oldVolume = Settings::get().internalOption("global_volume");

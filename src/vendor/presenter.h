@@ -33,8 +33,6 @@ public slots:
     void slotloopStatusRequested(Mpris::LoopStatus loopStatus);
     void slotplayModeChanged(PlaylistModel::PlayMode pm);
     void slotvolumeChanged();
-    void slotseek(qlonglong Offset);
-    void slotstop();
 private:
     MainWindow* _mw = nullptr;
     MprisPlayer* m_mprisplayer=nullptr;
