@@ -3279,12 +3279,6 @@ void MainWindow::updateProxyGeometry()
 
 
     syncPlayState();
-//    if (_playState) {
-//        auto r = QRect(QPoint(0, 0), QSize(128, 128));
-//        r.moveCenter(rect().center());
-//        _playState->move(r.topLeft());
-//    }
-
 }
 
 void MainWindow::suspendToolsWindow()
