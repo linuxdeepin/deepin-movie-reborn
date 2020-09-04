@@ -176,7 +176,7 @@ protected:
 MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
     : DAbstractDialog(nullptr)
 {
-    setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint);
+    setWindowFlags(windowFlags() /*| Qt::WindowStaysOnTopHint*/);  //和其他应用保持统一取消置顶
     setAttribute(Qt::WA_TranslucentBackground, true);
     m_titleList.clear();
 
