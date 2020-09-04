@@ -1993,6 +1993,19 @@ void MainWindow::loadPlayList()
     _toolbox->setPlaylist(_playlist);
     _engine->getplaylist()->loadPlaylist();
     _toolbox->initThumb();
+
+    if (!m_openFiles.isEmpty()) {
+        if (m_openFiles.size() == 1) {
+            play(m_openFiles[0]);
+        } else {
+            playList(m_openFiles);
+        }
+    }
+}
+
+void MainWindow::setOpenFiles(QStringList &list)
+{
+    m_openFiles = list;
 }
 
 void MainWindow::menuItemInvoked(QAction *action)

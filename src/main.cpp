@@ -170,6 +170,7 @@ int main(int argc, char *argv[])
     mw.resize(850, 600);
     utils::MoveToCenter(&mw);
     mw.show();
+    mw.setOpenFiles(toOpenFiles);
 
     if (!QDBusConnection::sessionBus().isConnected()) {
         qWarning() << "dbus disconnected";
@@ -179,13 +180,13 @@ int main(int argc, char *argv[])
     QDBusConnection::sessionBus().registerService("com.deepin.movie");
     QDBusConnection::sessionBus().registerObject("/", &mw);
 
-    if (!toOpenFiles.isEmpty()) {
-        if (toOpenFiles.size() == 1) {
-            mw.play(toOpenFiles[0]);
-        } else {
-            mw.playList(toOpenFiles);
-        }
-    }
+//    if (!toOpenFiles.isEmpty()) {
+//        if (toOpenFiles.size() == 1) {
+//            mw.play(toOpenFiles[0]);
+//        } else {
+//            mw.playList(toOpenFiles);
+//        }
+//    }
     return app.exec();
 
 }

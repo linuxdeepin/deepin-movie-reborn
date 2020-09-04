@@ -180,6 +180,7 @@ public:
     //在读取光盘的时候，直接把光盘挂载点的路径加入到播放列表中 thx
     bool addCdromPath();
     void loadPlayList();
+    void setOpenFiles(QStringList&);
 signals:
     void windowEntered();
     void windowLeaved();
@@ -389,6 +390,7 @@ private:
     bool _isTouch = false;          //是否是触摸屏按下
     QTimer _mousePressTimer;
     Diskcheckthread m_diskCheckThread;
+    QStringList m_openFiles;
     bool m_bProgressChanged {false};        //进度条是否被拖动
     bool m_bFirstInit {false};
     bool m_bLastIsTouch {false};
