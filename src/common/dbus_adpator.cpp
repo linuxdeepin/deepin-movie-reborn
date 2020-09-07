@@ -33,11 +33,20 @@
 ApplicationAdaptor::ApplicationAdaptor(MainWindow* mw)
     :QDBusAbstractAdaptor(mw), _mw(mw) 
 {
+    oldTime = QTime::currentTime();
 }
 
 void ApplicationAdaptor::openFiles(const QStringList& list)
 {
-    _mw->playList(list);
+    if(utils::check_wayland_env()){
+        QTime current = QTime::currentTime();
+        if(abs(oldTime.msecsTo(current)) > 100){
+            _mw->playList(list);
+        }
+    }else{
+        _mw->playList(list);
+    }
+
 }
 
 void ApplicationAdaptor::openFile(const QString& file) 

@@ -51,6 +51,7 @@ public slots:
 
 private:
     MainWindow *_mw {nullptr};
+    QTime oldTime;
 };
 
 
