@@ -2347,6 +2347,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             _animationlable->move(QPoint((width() - _animationlable->width()) / 2,
                                          (height() - _animationlable->height()) / 2));
         }
+        activateWindow();
         break;
     }
 
