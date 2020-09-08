@@ -4103,7 +4103,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *ev)
 
 void MainWindow::delayedMouseReleaseHandler()
 {
-    if (!_afterDblClick && !m_bLastIsTouch)
+    if ((!_afterDblClick && !m_bLastIsTouch) || _miniMode)
         requestAction(ActionFactory::TogglePause, false, {}, true);
     _afterDblClick = false;
 }
