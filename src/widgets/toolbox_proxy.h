@@ -101,7 +101,7 @@ protected:
         painter1.setRenderHint(QPainter::SmoothPixmapTransform);
         painter1.fillRect(mask.rect(), Qt::white);
         painter1.setBrush(QColor(0, 0, 0));
-        painter1.drawRoundedRect(mask.rect(), 2, 2);
+        painter1.drawRoundedRect(mask.rect(), 6, 6);
         QPixmap image = _pixmap;
         image.setMask(mask);
 
@@ -153,13 +153,14 @@ protected:
         QPainterPath bpath;
 
         if (!m_bIsPressed) {
-            bpath.addRect(backgroundRect.marginsRemoved(QMargins(1, 1, 1, 1)));
+            //bpath.addRect(backgroundRect.marginsRemoved(QMargins(1, 1, 1, 1)));
+            bpath.addRoundedRect(backgroundRect, 6, 6);
             painter.fillPath(bpath, QColor(255, 255, 255, 255));
 
             QPen pen;
             pen.setWidth(1);
             pen.setColor(QColor(0, 0, 0));
-            bpath.addRoundedRect(backgroundRect, 3, 3);
+            bpath.addRoundedRect(backgroundRect, 6, 6);
             painter.setPen(pen);
             painter.setOpacity(0.4);
             painter.drawPath(bpath);
