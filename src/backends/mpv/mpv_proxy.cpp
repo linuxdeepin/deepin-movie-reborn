@@ -328,7 +328,7 @@ mpv_handle *MpvProxy::mpv_init()
 #ifdef __mips__
     if (!CompositingManager::get().hascard()) {
         qInfo() << "修改音视频同步模式";
-        set_property(h, "video-sync", "display-resample");
+        set_property(h, "video-sync", "desync");
     }
 #endif
     //QLocale locale;
