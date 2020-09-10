@@ -252,7 +252,6 @@ namespace dmr {
     MpvGLWidget::MpvGLWidget(QWidget *parent, mpv::qt::Handle h)
         :QOpenGLWidget(parent), _handle(h) {
         setUpdateBehavior(QOpenGLWidget::NoPartialUpdate);
-
         connect(this, &QOpenGLWidget::frameSwapped,
                 this, &MpvGLWidget::onFrameSwapped, Qt::DirectConnection);
 
@@ -459,7 +458,11 @@ namespace dmr {
         setupBlendPipe();
 
 #ifdef _LIBDMR_
-        toggleRoundedClip(false);
+       if(utils::check_wayland_env()){
+            toggleRoundedClip(true);
+        }else{
+            toggleRoundedClip(false);
+        }
 #else
 #ifndef USE_DXCB
         connect(window()->windowHandle(), &QWindow::windowStateChanged, [=]() {
@@ -499,7 +502,8 @@ namespace dmr {
 
     void MpvGLWidget::updateMovieFbo()
     {
-        if(!utils::check_wayland_env() && !_doRoundedClipping)
+        //if(!utils::check_wayland_env() && !_doRoundedClipping)
+        if( !_doRoundedClipping)
             return;
 
         auto desiredSize = size() * qApp->devicePixelRatio();
@@ -699,10 +703,7 @@ namespace dmr {
 
         updateMovieFbo();
         updateVbo();
-        if (!utils::check_wayland_env() && _doRoundedClipping){
-            updateVboCorners();
-        }
-        if(utils::check_wayland_env()){
+        if (_doRoundedClipping){
             updateVboCorners();
         }
         qDebug() << "GL resize" << w << h;
@@ -726,7 +727,7 @@ namespace dmr {
             QSize scaled = size() * dpr;
             int flip = 1;
 
-            if (!utils::check_wayland_env() && !_doRoundedClipping) {
+            if (!_doRoundedClipping) {
                 mpv_opengl_fbo fbo {
                     static_cast<int>(defaultFramebufferObject()), scaled.width(), scaled.height(), 0
                 };

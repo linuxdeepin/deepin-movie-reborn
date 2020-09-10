@@ -118,7 +118,8 @@ CompositingManager::CompositingManager()
 {
     _hasCard = false;
     _platform = PlatformChecker().check();
-    if(!dmr::utils::check_wayland_env()){
+    dmr::utils::first_check_wayland_env();
+    if(!dmr::utils::check_wayland_env()) {
         softDecodeCheck();   //检测是否是kunpeng920（是否走软解码）
 
         _composited = false;
@@ -234,10 +235,10 @@ CompositingManager::CompositingManager()
             qDebug() << "hasCard: " << _hasCard;
         }
     #endif
-        qDebug() << __func__ << "Composited is " << _composited;
     }else{
         _composited = true;
     }
+    qInfo() << __func__ << "Composited is " << _composited;
 }
 
 CompositingManager::~CompositingManager()
@@ -543,13 +544,13 @@ bool CompositingManager::isProprietaryDriver()
 //this is not accurate when proprietary driver used
 bool CompositingManager::isDirectRendered()
 {
-    QProcess xdriinfo;
-    xdriinfo.start("xdriinfo driver 0");
-    if (xdriinfo.waitForStarted() && xdriinfo.waitForFinished()) {
-        QString drv = QString::fromUtf8(xdriinfo.readAllStandardOutput().trimmed().constData());
-        qDebug() << "xdriinfo: " << drv;
-        return !drv.contains("not direct rendering capable");
-    }
+//    QProcess xdriinfo;
+//    xdriinfo.start("xdriinfo driver 0");
+//    if (xdriinfo.waitForStarted() && xdriinfo.waitForFinished()) {
+//        QString drv = QString::fromUtf8(xdriinfo.readAllStandardOutput().trimmed().constData());
+//        qDebug() << "xdriinfo: " << drv;
+//        return !drv.contains("not direct rendering capable");
+//    }
 
     return true;
 }

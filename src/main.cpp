@@ -137,31 +137,6 @@ int main(int argc, char *argv[])
 
     QString strUserPath = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
 
-    if(utils::check_wayland_env()){
-        if (QString(argv[argc - 1]) != "QProcess") {
-               QString t_argv = QString(argv[0]) + " ";
-               if (argc > 1) {
-                   for (int i = 1; i < argc; i++) {
-                       t_argv += argv[i];
-                       t_argv += " ";
-                   }
-               }
-
-               t_argv += "QProcess";
-
-               QProcess *process = new QProcess(nullptr);
-
-               QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-
-               process->setProcessEnvironment(env);
-               process->startDetached(t_argv);
-               process->deleteLater();
-
-               qDebug() << t_argv;
-               return 0;
-           }
-    }
-
     QSharedMemory shared_memory(strUserPath + "deepinmovie");
 
     if (shared_memory.attach()) {

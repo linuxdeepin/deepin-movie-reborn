@@ -95,13 +95,11 @@ MpvProxy::MpvProxy(QWidget *parent)
             _gl_widget->setPlaying(state() != Backend::PlayState::Stopped);
             _gl_widget->update();
         });
-#if defined(USE_DXCB) || defined(_LIBDMR_)
-        _gl_widget->toggleRoundedClip(false);
-#endif
         auto *layout = new QHBoxLayout(this);
         layout->setContentsMargins(0, 0, 0, 0);
         layout->addWidget(_gl_widget);
         setLayout(layout);
+         _gl_widget->show();
     }
 #if defined (__mips__) || defined (__aarch64__)
     setAttribute(Qt::WA_TransparentForMouseEvents, true);
