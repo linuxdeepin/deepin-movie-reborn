@@ -4142,13 +4142,12 @@ void MainWindow::mouseMoveEvent(QMouseEvent *ev)
     QPoint ptCurr = mapToGlobal(ev->pos());
     QPoint ptDelta = ptCurr-this->posMouseOrigin;
 
-    if(qAbs(ptDelta.x())<5 && qAbs(ptDelta.y())<5){  //避免误触
-        this->posMouseOrigin = ptCurr;
-        return;
-    }
-
     if(_isTouch&&m_bIsFullSreen)     //全屏时才触发滑动改变音量和进度的操作
     {
+        if(qAbs(ptDelta.x())<5 && qAbs(ptDelta.y())<5){  //避免误触
+            return;
+        }
+
         if(qAbs(ptDelta.x())>qAbs(ptDelta.y())
                 && _engine->state() != PlayerEngine::CoreState::Idle){
             m_bTouchChangeVolume = false;
