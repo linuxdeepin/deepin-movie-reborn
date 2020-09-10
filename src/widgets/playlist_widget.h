@@ -121,27 +121,27 @@ protected:
         QPainter painter(this);
         painter.setRenderHints(QPainter::HighQualityAntialiasing | QPainter::SmoothPixmapTransform |
                                        QPainter::Antialiasing);
-
         QSize size(_pic.size());
         QBitmap mask(size);
         QPainter painter1(&mask);
         painter1.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
         painter1.fillRect(mask.rect(), Qt::white);
         painter1.setBrush(QColor(0, 0, 0));
-        painter1.drawRoundedRect(mask.rect(), 4, 4);
+        painter1.drawRoundedRect(mask.rect(), 5, 5);
         QPixmap image = _pic;
         image.setMask(mask);
 
+        painter.setClipping(true);
         QPainterPath bg0;
-        bg0.addRoundedRect(rect(), 4, 4);
+        bg0.addRoundedRect(rect(), 5, 5);   //使用5个像素点，圆角效果更好
         painter.setClipPath(bg0);
-
-        painter.setPen(
-            QPen(DGuiApplicationHelper::instance()->applicationPalette().frameBorder().color(), 2));
-        painter.drawRoundedRect(rect(), 4, 4);
 
         painter.drawPixmap(rect(), image);
 
+        painter.setPen(
+            QPen(DGuiApplicationHelper::instance()->applicationPalette().frameBorder().color(), 2));
+        painter.setBrush(Qt::NoBrush);
+        painter.drawRoundedRect(rect(), 5, 5);
     };
 private:
     QPixmap _pic;
