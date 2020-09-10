@@ -39,11 +39,7 @@
 namespace dmr {
 
 NotificationWidget::NotificationWidget(QWidget *parent)
-#ifdef __aarch64__
-    : QFrame(utils::check_wayland_env()? parent : nullptr), _mw(parent)
-#else
     : QFrame(parent), _mw(parent)
-#endif
 {
 //    DThemeManager::instance()->registerWidget(this);
 
@@ -101,7 +97,12 @@ void NotificationWidget::syncPosition()
 
     case AnchorNorthWest:
 #ifdef __aarch64__
-        move(geom.topLeft() + _anchorPoint);
+        if(!utils::check_wayland_env()){
+            move(geom.topLeft() + _anchorPoint);
+        }
+        else {
+            move(_anchorPoint);
+        }
 #elif  __mips__
         move(geom.x() + 30, geom.y() + 58);
 #elif __sw_64__

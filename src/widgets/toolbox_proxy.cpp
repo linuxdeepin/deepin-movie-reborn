@@ -1823,7 +1823,7 @@ void ToolboxProxy::setup()
     QList<DButtonBoxButton *> list;
 
 
-    _prevBtn = new DButtonBoxButton("", this);
+    _prevBtn = new ButtonBoxButton("", this);
 //    _prevBtn = new VideoBoxButton("", ":/icons/deepin/builtin/light/normal/last_normal.svg",
 //                                  ":/icons/deepin/builtin/light/normal/last_normal.svg",
 //                                  ":/icons/deepin/builtin/light/press/last_normal.svg");
@@ -1836,7 +1836,7 @@ void ToolboxProxy::setup()
 //    _mid->addWidget(_prevBtn);
     list.append(_prevBtn);
 
-    _playBtn = new DButtonBoxButton("", this);
+    _playBtn = new ButtonBoxButton("", this);
 //    _playBtn = new VideoBoxButton("", ":/resources/icons/light/normal/play_normal2.svg",
 //                                  ":/resources/icons/light/normal/play_normal2.svg",
 //                                  ":/icons/deepin/builtin/light/press/play_press.svg");
@@ -1848,7 +1848,7 @@ void ToolboxProxy::setup()
 //    _mid->addWidget(_playBtn);
     list.append(_playBtn);
 
-    _nextBtn = new DButtonBoxButton("", this);
+    _nextBtn = new ButtonBoxButton("", this);
 //    _nextBtn = new VideoBoxButton("", ":/icons/deepin/builtin/light/normal/next_normal.svg",
 //                                  ":/icons/deepin/builtin/light/normal/next_normal.svg",
 //                                  ":/icons/deepin/builtin/light/press/next_press.svg");
@@ -1982,32 +1982,39 @@ void ToolboxProxy::setup()
     _right->addWidget(_listBtn);
 
     // these tooltips is not used due to deepin ui design
-    auto th = new TooltipHandler(this);
-    QWidget *btns[] = {
-        _playBtn, _prevBtn, _nextBtn, _subBtn, _fsBtn, _listBtn
-    };
-    QString hints[] = {
-        tr("Play/Pause"), tr("Previous"), tr("Next"),
-        tr("Subtitles"), tr("Fullscreen"), tr("Playlist")
-    };
-    QString attrs[] = {
-        tr("play"), tr("prev"), tr("next"),
-        "sub", tr("fs"), tr("list")
-    };
 
-    for (unsigned int i = 0; i < sizeof(btns) / sizeof(btns[0]); i++) {
-        if (i < sizeof(btns) / sizeof(btns[0]) / 2) {
-            btns[i]->setToolTip(hints[i]);
-            auto t = new Tip(QPixmap(), hints[i], parentWidget());
-            t->setProperty("for", QVariant::fromValue<QWidget *>(btns[i]));
-            btns[i]->setProperty("HintWidget", QVariant::fromValue<QWidget *>(t));
-            btns[i]->installEventFilter(th);
-        } else {
-            auto btn = dynamic_cast<ToolButton *>(btns[i]);
-            btn->setTooTipText(hints[i]);
-            btn->setProperty("TipId", attrs[i]);
-            connect(btn, &ToolButton::entered, this, &ToolboxProxy::buttonEnter);
-            connect(btn, &ToolButton::leaved, this, &ToolboxProxy::buttonLeave);
+    //lmh0910wayland下用这一套tooltip
+    if(utils::check_wayland_env()){
+        initToolTip();
+    }
+    else{
+        auto th = new TooltipHandler(this);
+        QWidget *btns[] = {
+            _playBtn, _prevBtn, _nextBtn, _subBtn, _fsBtn, _listBtn
+        };
+        QString hints[] = {
+            tr("Play/Pause"), tr("Previous"), tr("Next"),
+            tr("Subtitles"), tr("Fullscreen"), tr("Playlist")
+        };
+        QString attrs[] = {
+            tr("play"), tr("prev"), tr("next"),
+            "sub", tr("fs"), tr("list")
+        };
+
+        for (unsigned int i = 0; i < sizeof(btns) / sizeof(btns[0]); i++) {
+            if (i < sizeof(btns) / sizeof(btns[0]) / 2) {
+                btns[i]->setToolTip(hints[i]);
+                auto t = new Tip(QPixmap(), hints[i], parentWidget());
+                t->setProperty("for", QVariant::fromValue<QWidget *>(btns[i]));
+                btns[i]->setProperty("HintWidget", QVariant::fromValue<QWidget *>(t));
+                btns[i]->installEventFilter(th);
+            } else {
+                auto btn = dynamic_cast<ToolButton *>(btns[i]);
+                btn->setTooTipText(hints[i]);
+                btn->setProperty("TipId", attrs[i]);
+                connect(btn, &ToolButton::entered, this, &ToolboxProxy::buttonEnter);
+                connect(btn, &ToolButton::leaved, this, &ToolboxProxy::buttonLeave);
+            }
         }
     }
 
@@ -2477,7 +2484,14 @@ void ToolboxProxy::updatePlayState()
 
         }
         _playBtn->setIcon(QIcon::fromTheme("dcc_suspend", QIcon(":/icons/deepin/builtin/light/normal/suspend_normal.svg")));
-        _playBtn->setToolTip(tr("Pause"));
+        //lmh0910wayland下用这一套tooltip
+        if(utils::check_wayland_env()){
+            m_playBtnTip->setText(tr("Pause"));
+        }
+        else{
+            _playBtn->setToolTip(tr("Pause"));
+        }
+
         if (_isJinJia) {
             if (!_progressTimer.isActive()) {
                 oldDuration = _engine->duration();
@@ -2558,7 +2572,13 @@ void ToolboxProxy::updatePlayState()
             _listBtn->setPalette(pa);
 
         }
-        _playBtn->setToolTip(tr("Play"));
+        //lmh0910wayland下用这一套tooltip
+        if(utils::check_wayland_env()){
+            m_playBtnTip->setText(tr("Play"));
+        }
+        else{
+            _playBtn->setToolTip(tr("Play"));
+        }
         _playBtn->setIcon(QIcon::fromTheme("dcc_play", QIcon(":/icons/deepin/builtin/light/normal/play_normal.svg")));
     }
 
@@ -2936,6 +2956,99 @@ void ToolboxProxy::setButtonTooltipHide(){
     _subBtn->hideToolTip();
     _listBtn->hideToolTip();
     _fsBtn->hideToolTip();
+}
+
+void ToolboxProxy::initToolTip()
+{
+    //lmh0910播放
+    m_playBtnTip=new ButtonToolTip(_mainWindow);
+    m_playBtnTip->setText(tr("Play"));
+    connect(_playBtn, &ButtonBoxButton::entered, [ = ]() {
+        m_playBtnTip->move(80,
+                        _mainWindow->height() - TOOLBOX_HEIGHT - 5);
+        m_playBtnTip->show();
+        m_playBtnTip->QWidget::activateWindow();
+        m_playBtnTip->update();
+        m_playBtnTip->releaseMouse();
+
+    });
+    connect(_playBtn, &ButtonBoxButton::leaved, [ = ]() {
+        QTimer::singleShot(0,[=]{
+            m_playBtnTip->hide();
+        });
+    });
+
+    //lmh0910上一个
+    ButtonToolTip *m_prevBtnTip=new ButtonToolTip(_mainWindow);
+    m_prevBtnTip->setText(tr("Previous"));
+    connect(_prevBtn, &ButtonBoxButton::entered, [ = ]() {
+        m_prevBtnTip->move(40,
+                        _mainWindow->height() - TOOLBOX_HEIGHT - 5);
+        m_prevBtnTip->show();
+        m_prevBtnTip->QWidget::activateWindow();
+        m_prevBtnTip->update();
+        m_prevBtnTip->releaseMouse();
+
+    });
+    connect(_prevBtn, &ButtonBoxButton::leaved, [ = ]() {
+        QTimer::singleShot(0,[=]{
+            m_prevBtnTip->hide();
+        });
+    });
+
+    //lmh0910下一个
+    ButtonToolTip *m_nextBtnTip=new ButtonToolTip(_mainWindow);
+    m_nextBtnTip->setText(tr("Next"));
+    connect(_nextBtn, &ButtonBoxButton::entered, [ = ]() {
+        m_nextBtnTip->move(120,
+                        _mainWindow->height() - TOOLBOX_HEIGHT - 5);
+        m_nextBtnTip->show();
+        m_nextBtnTip->QWidget::activateWindow();
+        m_nextBtnTip->update();
+        m_nextBtnTip->releaseMouse();
+
+    });
+    connect(_nextBtn, &ButtonBoxButton::leaved, [ = ]() {
+        QTimer::singleShot(0,[=]{
+            m_nextBtnTip->hide();
+        });
+    });
+
+
+    //lmh0910全屏按键
+    ButtonToolTip *m_fsBtnTip=new ButtonToolTip(_mainWindow);
+    m_fsBtnTip->setText(tr("Fullscreen"));
+    connect(_fsBtn, &ToolButton::entered, [ = ]() {
+        m_fsBtnTip->move(_mainWindow->width() - _fsBtn->width() / 2 /*- _playBtn->width()*/ - 140,
+                        _mainWindow->height() - TOOLBOX_HEIGHT - 5);
+        m_fsBtnTip->show();
+        m_fsBtnTip->QWidget::activateWindow();
+        m_fsBtnTip->update();
+        m_fsBtnTip->releaseMouse();
+
+    });
+    connect(_fsBtn, &ToolButton::leaved, [ = ]() {
+        QTimer::singleShot(0,[=]{
+            m_fsBtnTip->hide();
+        });
+    });
+    //lmh0910list按键
+    ButtonToolTip *m_listBtnTip=new ButtonToolTip(_mainWindow);
+    m_listBtnTip->setText(tr("Playlist"));
+    connect(_listBtn, &ToolButton::entered, [ = ]() {
+        m_listBtnTip->move(_mainWindow->width() - _listBtn->width() / 2 /*- _playBtn->width()*/ - 20,
+                          _mainWindow->height() - TOOLBOX_HEIGHT - 5);
+        m_listBtnTip->show();
+        m_listBtnTip->QWidget::activateWindow();
+        m_listBtnTip->update();
+        m_listBtnTip->releaseMouse();
+
+    });
+    connect(_listBtn, &ToolButton::leaved, [ = ]() {
+        QTimer::singleShot(0,[=]{
+            m_listBtnTip->hide();
+        });
+    });
 }
 
 bool ToolboxProxy::getVolSliderIsHided(){

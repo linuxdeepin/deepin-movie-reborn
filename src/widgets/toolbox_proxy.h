@@ -47,6 +47,7 @@
 #include "dguiapplicationhelper.h"
 #include "videoboxbutton.h"
 #include "filter.h"
+#include "toolbutton.h"
 
 #include "thumbnail_worker.h"
 
@@ -208,6 +209,9 @@ public:
     void setVolSliderHide();
     bool getVolSliderIsHided();
 	 void setButtonTooltipHide();
+
+     //lmh0910初始化下方按键的tooltip
+     void initToolTip();
 public slots:
     void finishLoadSlot(QSize size);
     void updateplaylisticon();
@@ -269,9 +273,16 @@ private:
 //    DIconButton *_prevBtn {nullptr};
 //    DIconButton *_nextBtn {nullptr};
 
-    DButtonBoxButton *_playBtn {nullptr};
-    DButtonBoxButton *_prevBtn {nullptr};
-    DButtonBoxButton *_nextBtn {nullptr};
+    //lmh0910DButtonBoxButton替换到ButtonBoxButton
+    ButtonToolTip *m_playBtnTip{nullptr};
+    ButtonToolTip *m_prevBtnTip{nullptr};
+    ButtonToolTip *m_nextBtnTip{nullptr};
+    ButtonToolTip *m_fsBtnTip{nullptr};
+    ButtonToolTip *m_listBtnTip{nullptr};
+
+    ButtonBoxButton *_playBtn {nullptr};
+    ButtonBoxButton *_prevBtn {nullptr};
+    ButtonBoxButton *_nextBtn {nullptr};
     DButtonBox *_palyBox{nullptr};
 
 //    DIconButton *_subBtn {nullptr};
