@@ -2010,6 +2010,18 @@ void MainWindow::setOpenFiles(QStringList &list)
     m_openFiles = list;
 }
 
+void MainWindow::mipsShowFullScreen()
+{
+    QPropertyAnimation *pAn = new QPropertyAnimation(this, "windowOpacity");
+    pAn->setDuration(100);
+    pAn->setEasingCurve(QEasingCurve::Linear);
+    pAn->setEndValue(1);
+    pAn->setStartValue(0);
+    pAn->start(QAbstractAnimation::DeleteWhenStopped);
+
+    showFullScreen();
+}
+
 void MainWindow::menuItemInvoked(QAction *action)
 {
     auto kd = ActionFactory::actionKind(action);
@@ -2406,7 +2418,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             if (!_toolbox->getbAnimationFinash())
                 return;
             m_bIsFullSreen = true;
-            showFullScreen();
+            mipsShowFullScreen();
             if (m_bIsFullSreen) {
                 _maxfornormalflag = false;
                 if(_engine->state() != PlayerEngine::CoreState::Idle){

@@ -291,6 +291,7 @@ private:
 
     //Limit video to mini mode size
     void LimitWindowize();
+    void mipsShowFullScreen();
 private:
     DFloatingMessage *popup {nullptr};
     QLabel *_fullscreentimelable {nullptr};
