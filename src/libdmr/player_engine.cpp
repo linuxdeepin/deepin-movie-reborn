@@ -37,12 +37,15 @@
 #include "mpv_proxy.h"
 #include "compositing_manager.h"
 
+#include "dguiapplicationhelper.h"
+
 #ifndef _LIBDMR_
 #include "dmr_settings.h"
 #endif
 
 #include "drecentmanager.h"
 DCORE_USE_NAMESPACE
+DGUI_USE_NAMESPACE
 
 namespace dmr {
 
@@ -68,6 +71,7 @@ PlayerEngine::PlayerEngine(QWidget *parent)
         connect(_current, &Backend::mpvWarningLogsChanged, this, &PlayerEngine::mpvWarningLogsChanged);
         connect(_current, &Backend::urlpause, this, &PlayerEngine::urlpause);
         l->addWidget(_current);
+
         //_current->firstInit();
     }
 
@@ -523,8 +527,14 @@ void PlayerEngine::paintEvent(QPaintEvent *e)
             int x = this->rect().center().x() - pix.width() / 2;
             int y = this->rect().center().y() - pix.height() / 2;
 
-            p.fillRect(rect, QBrush(QColor(255, 255, 255)));
-            p.drawPixmap(x, y, pix);
+            if(DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()){
+                p.fillRect(rect, QBrush(QColor(255, 255, 255)));
+                p.drawPixmap(x, y, pix);
+            }
+            else {
+                p.fillRect(rect, QBrush(QColor(0, 0, 0)));
+                p.drawPixmap(x, y, pix);
+            }
         }
     }
     return QWidget::paintEvent(e);
