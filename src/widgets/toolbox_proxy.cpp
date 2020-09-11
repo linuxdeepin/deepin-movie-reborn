@@ -1111,6 +1111,9 @@ public:
         connect(_slider, &DSlider::valueChanged, [ = ]() {
             auto var = _slider->value();
             _mw->requestAction(ActionFactory::ChangeVolume, false, QList<QVariant>() << var);
+            auto toolbox = _mw->toolbox();
+            if(toolbox)
+                toolbox->updateVolumeStateOnStopMode(var);
         });
 
         _autoHideTimer.setSingleShot(true);
@@ -2391,6 +2394,27 @@ void ToolboxProxy::updateVolumeState()
         else if (v >= 33)
             _volBtn->changeLevel(VolumeButton::Mid);
         else if (v == 0)
+            _volBtn->changeLevel(VolumeButton::Off);
+        else
+            _volBtn->changeLevel(VolumeButton::Low);
+    }
+}
+
+void ToolboxProxy::updateVolumeStateOnStopMode(uint64_t vol){
+    if (0 == vol) {
+        //静音设置
+        _volBtn->changeLevel(VolumeButton::Mute);
+        //_volBtn->setToolTip(tr("Mute"));
+    } else {
+        /*if (v != 0) {
+            v -= VOLUME_OFFSET;
+        }*/
+        //_volBtn->setToolTip(tr("Volume"));
+        if (vol >= 66)
+            _volBtn->changeLevel(VolumeButton::High);
+        else if (vol >= 33)
+            _volBtn->changeLevel(VolumeButton::Mid);
+        else if (vol == 0)
             _volBtn->changeLevel(VolumeButton::Off);
         else
             _volBtn->changeLevel(VolumeButton::Low);

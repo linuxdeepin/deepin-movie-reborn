@@ -306,6 +306,7 @@ private:
     QImage bg_light;
 
     bool _miniMode {false};
+    bool _miniMark {false};
     /// used to restore to recent geometry when quit fullscreen or minVolumeMonitoringi mode
     QRect _lastRectInNormalMode;
 

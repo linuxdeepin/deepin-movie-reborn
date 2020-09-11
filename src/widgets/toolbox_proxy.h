@@ -208,7 +208,8 @@ public:
     int DisplayVolume();
     void setVolSliderHide();
     bool getVolSliderIsHided();
-	 void setButtonTooltipHide();
+    void setButtonTooltipHide();
+    void updateVolumeStateOnStopMode(uint64_t vol);
 
      //lmh0910初始化下方按键的tooltip
      void initToolTip();

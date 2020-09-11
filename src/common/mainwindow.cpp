@@ -3723,6 +3723,10 @@ void MainWindow::updateSizeConstraints()
 
     if (_miniMode) {
         m = QSize(40, 40);
+        if(utils::check_wayland_env()){
+            _miniMark = true;
+            this->setFixedSize(380,213);
+        }
     } else {
         if (_engine->state() != PlayerEngine::CoreState::Idle) {
             auto dRect = DApplication::desktop()->availableGeometry();
@@ -3749,6 +3753,14 @@ void MainWindow::updateSizeConstraints()
             m = QSize(614, 500);
         }
         m = QSize(614, 500);
+        if(utils::check_wayland_env()){
+            this->setMinimumSize(m);
+            this->setMaximumSize(QWIDGETSIZE_MAX,QWIDGETSIZE_MAX);
+            if(_miniMark){
+                this->resize(850,600);
+                _miniMark = false;
+            }
+        }
     }
 
     qDebug() << __func__ << m;
@@ -4508,6 +4520,8 @@ void MainWindow::toggleUIMode()
 
 
     } else {
+        if(utils::check_wayland_env())
+            updateSizeConstraints();
         setEnableSystemResize(true);
         if (_stateBeforeMiniMode & SBEM_Above) {
             requestAction(ActionFactory::WindowAbove);
