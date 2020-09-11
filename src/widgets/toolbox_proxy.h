@@ -101,7 +101,7 @@ protected:
         painter1.setRenderHint(QPainter::SmoothPixmapTransform);
         painter1.fillRect(mask.rect(), Qt::white);
         painter1.setBrush(QColor(0, 0, 0));
-        painter1.drawRoundedRect(mask.rect(), 6, 6);
+        painter1.drawRoundedRect(mask.rect(), 2, 2);
         QPixmap image = _pixmap;
         image.setMask(mask);
 
@@ -117,7 +117,7 @@ protected:
             painter.setPen(pen);
         }
         painter.setBrush(Qt::NoBrush);
-        painter.drawRoundedRect(rect(), 4, 4);
+        painter.drawRoundedRect(rect(), 2, 2);
     };
 private:
     int _index;
