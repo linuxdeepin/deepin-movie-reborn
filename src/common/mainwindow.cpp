@@ -2094,6 +2094,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
 
     case ActionFactory::ActionKind::OpenUrl: {
         UrlDialog dlg(this);
+        dlg.moveToCenter();
         if (dlg.exec() == QDialog::Accepted) {
             auto url = dlg.url();
             if (url.isValid()) {
@@ -3764,7 +3765,6 @@ void MainWindow::updateSizeConstraints()
     }
 
     qDebug() << __func__ << m;
-    this->setMinimumSize(m);
 }
 
 void MainWindow::updateGeometryNotification(const QSize &sz)
