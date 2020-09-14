@@ -887,16 +887,17 @@ private:
 
 };
 
-class ThumbnailPreview: public QWidget
+class ThumbnailPreview: public ButtonToolTip
 {
     Q_OBJECT
 public:
-    ThumbnailPreview()
+    ThumbnailPreview(QWidget* parent=nullptr)
+        :ButtonToolTip(parent)
     {
         setAttribute(Qt::WA_DeleteOnClose);
         // FIXME(hualet): Qt::Tooltip will cause Dock to show up even
         // the player is in fullscreen mode.
-        setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
+        //setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
         setAttribute(Qt::WA_TranslucentBackground);
 
         setObjectName("ThumbnailPreview");
@@ -1438,7 +1439,7 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
     pm_list.clear();
     pm_black_list.clear();
 
-    _previewer = new ThumbnailPreview;
+    _previewer = new ThumbnailPreview(_mainWindow);
     _previewer->hide();
 
     _previewTime  = new SliderTime;
@@ -2225,11 +2226,18 @@ void ToolboxProxy::updateHoverPreview(const QUrl &url, int secs)
         return;
     }
 
-    auto pos = _viewProgBar->mapToGlobal(QPoint(0, TOOLBOX_TOP_EXTENT - 10));
+//    auto pos = _viewProgBar->mapToGlobal(QPoint(0, TOOLBOX_TOP_EXTENT - 10));
+    //wayland下 鼠标位置不准确，使用相对于mainwindow位置实现
+    auto mainPos = _mainWindow->mapToGlobal(QPoint(0, 0));
+//    if(utils::check_wayland_env()){
+//        pos = _progBar->mapToGlobal(QPoint(0, -TOOLBOX_HEIGHT + 10));
+//    }
+    QPoint p;
     if(utils::check_wayland_env()){
-        pos = _progBar->mapToGlobal(QPoint(0, -TOOLBOX_HEIGHT + 10));
+        p = { QCursor::pos().x() - mainPos.x()+ _previewer->width()/2, _mainWindow->height()-_previewer->height()/2 - 50 };
+    }else{
+        p = { QCursor::pos().x() - mainPos.x()+ _previewer->width()/2, _mainWindow->height()-_previewer->height()/2 + 8 };
     }
-    QPoint p { QCursor::pos().x(), pos.y() };
 
     QVariant l = ApplicationAdaptor::redDBusProperty("com.deepin.SessionManager", "/com/deepin/SessionManager",
                                                      "com.deepin.SessionManager", "Locked");
