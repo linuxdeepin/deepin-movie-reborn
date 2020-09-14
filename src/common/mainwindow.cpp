@@ -4283,11 +4283,7 @@ void MainWindow::popupAdapter(QIcon icon, QString text)
     auto w = fm.boundingRect(text).width();
     popup->setMessage(text);
     popup->resize(w + 70, 52);
-#ifdef __x86_64__
     popup->move((width() - popup->width()) / 2, height() - 127);
-#else
-    popup->move((width() - popup->width()) / 2 + geometry().x(), height() - 137 + geometry().y());
-#endif
     popup->show();
 }
 
