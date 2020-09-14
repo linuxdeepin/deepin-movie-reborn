@@ -209,6 +209,8 @@
         <file>resources/icons/mute_hover.svg</file>
         <file>resources/icons/icon_toast_fail.svg</file>
         <file>resources/data/lowEffectSettings.json</file>
+        <file>resources/icons/music-dark.svg</file>
+        <file>resources/icons/music-light.svg</file>
     </qresource>
     <qresource prefix="/dark">
         <file alias="dmr::NotificationWidget.theme">resources/qss/dark/dmr--NotificationWidget.theme</file>

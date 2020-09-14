@@ -173,10 +173,20 @@ public:
         _index->setFixedWidth(22);
         l->addWidget(_index);
 
-
         _thumb = new ListPic(_pif.thumbnail.scaled(QSize(42, 24)), this);
+        if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()){
+            _thumb->setPic(_pif.thumbnail_dark);
+        };
 //        _thumb->setPixmap(_pif.thumbnail.scaled(QSize(42,24)));
         l->addWidget(_thumb);
+        QObject::connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged,_thumb,[=]{
+            if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
+                _thumb->setPic(_pif.thumbnail);
+            };
+            if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
+                _thumb->setPic(_pif.thumbnail_dark);
+            }
+        });
 
         auto *vl = new QHBoxLayout;
         vl->setContentsMargins(0, 0, 0, 0);
@@ -324,7 +334,7 @@ public:
         }
         p.end();
 
-        _thumb->setPixmap(dest);
+//        _thumb->setPixmap(dest);
     }
 
     void setHovered(bool v)

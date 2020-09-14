@@ -1571,6 +1571,7 @@ struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl &url, const QFil
     }
 
     QPixmap pm;
+    QPixmap dark_pm;
     if (ci.thumb_valid) {
         pm = ci.thumb;
         qDebug() << "load cached thumb" << url;
@@ -1584,21 +1585,26 @@ struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl &url, const QFil
                 }
             }
             if (isMusic == false) {
-
                 m_mvideo_thumbnailer_generate_thumbnail_to_buffer(m_video_thumbnailer, fi.canonicalFilePath().toUtf8().data(),  m_image_data);
                 auto img = QImage::fromData(m_image_data->image_data_ptr, static_cast<int>(m_image_data->image_data_size), "png");
                 pm = QPixmap::fromImage(img);
+                dark_pm = pm;
             } else {
                 if (getMusicPix(fi, pm) == false) {
-                    pm.load(":/resources/icons/logo-big.svg");
+                    pm.load(":/resources/icons/music-light.svg");
+                }
+                if(getMusicPix(fi, dark_pm) == false){
+                    dark_pm.load(":/resources/icons/music-dark.svg");
                 }
             }
             pm.setDevicePixelRatio(qApp->devicePixelRatio());
+            dark_pm.setDevicePixelRatio(qApp->devicePixelRatio());
         } catch (const std::logic_error &) {
         }
     }
 
-    PlayItemInfo pif { fi.exists() || !url.isLocalFile(), ok, url, fi, pm, mi };
+    PlayItemInfo pif { fi.exists() || !url.isLocalFile(), ok, url, fi, pm, dark_pm, mi };
+
     if (ok && url.isLocalFile() && (!ci.mi_valid || !ci.thumb_valid)) {
         PersistentManager::get().save(pif);
     }

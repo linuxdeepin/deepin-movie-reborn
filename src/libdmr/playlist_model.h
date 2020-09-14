@@ -32,6 +32,7 @@
 
 #include <QtWidgets>
 #include <QtConcurrent>
+#include <DApplicationHelper>
 #include <libffmpegthumbnailer/videothumbnailerc.h>
 
 #include "utils.h"
@@ -124,6 +125,7 @@ struct PlayItemInfo {
     QUrl url;
     QFileInfo info;
     QPixmap thumbnail;
+    QPixmap thumbnail_dark;
     struct MovieInfo mi;
 
     bool refresh();

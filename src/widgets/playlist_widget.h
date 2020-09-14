@@ -65,6 +65,10 @@ public:
         setFixedSize(QSize(42, 24));
         _pic = pic;
     }
+    void setPic(QPixmap pic)
+    {
+        _pic = pic;
+    }
 protected:
     void paintEvent(QPaintEvent *pe) override
     {
