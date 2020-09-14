@@ -1517,7 +1517,7 @@ void viewProgBarLoad::initThumb()
 
 void viewProgBarLoad::loadViewProgBar(QSize size)
 {
-    auto num = qreal(_progBar->width()) / 9/*100*/;
+    auto num = int(_progBar->width()-3) / 9/*100*/;
     auto pixWidget =  8 /*_progBar->width() / 100*/;
     auto tmp = (_engine->duration() * 1000) / num;
     //auto dpr = qApp->devicePixelRatio();
@@ -1539,7 +1539,7 @@ void viewProgBarLoad::loadViewProgBar(QSize size)
     auto url = _engine->playlist().currentInfo().url;
     auto file = QFileInfo(url.toLocalFile()).absoluteFilePath();
 
-    for (auto i = 0; i < num - 1; i++) {
+    for (auto i = 0; i < num ; i++) {
 
         if (m_bQuit == true) {
             qDebug() << "load return";

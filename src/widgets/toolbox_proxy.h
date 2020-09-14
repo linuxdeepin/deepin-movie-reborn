@@ -101,14 +101,14 @@ protected:
         painter1.setRenderHint(QPainter::SmoothPixmapTransform);
         painter1.fillRect(mask.rect(), Qt::white);
         painter1.setBrush(QColor(0, 0, 0));
-        painter1.drawRoundedRect(mask.rect(), 2, 2);
+        painter1.drawRoundedRect(mask.rect(), 3, 3);
         QPixmap image = _pixmap;
         image.setMask(mask);
 
         painter.drawPixmap(rect(), image);
 
         QPen pen;
-        pen.setWidth(1);
+        pen.setWidth(2);
         if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
             pen.setColor(QColor(0, 0, 0, 0.1 * 255));
             painter.setPen(pen);
@@ -117,7 +117,7 @@ protected:
             painter.setPen(pen);
         }
         painter.setBrush(Qt::NoBrush);
-        painter.drawRoundedRect(rect(), 2, 2);
+        painter.drawRoundedRect(rect(), 3, 3);
     };
 private:
     int _index;
@@ -153,17 +153,20 @@ protected:
         QPainterPath bpath;
 
         if (!m_bIsPressed) {
-            //bpath.addRect(backgroundRect.marginsRemoved(QMargins(1, 1, 1, 1)));
-            bpath.addRoundedRect(backgroundRect, 6, 6);
-            painter.fillPath(bpath, QColor(255, 255, 255, 255));
-
             QPen pen;
             pen.setWidth(1);
             pen.setColor(QColor(0, 0, 0));
-            bpath.addRoundedRect(backgroundRect, 6, 6);
+            bpath.addRoundedRect(backgroundRect, 3, 3);
             painter.setPen(pen);
+            painter.setBrush(Qt::NoBrush);
             painter.setOpacity(0.4);
-            painter.drawPath(bpath);
+            painter.fillPath(bpath,QColor(0,0,0));
+
+            //改变一下paint的顺序锯齿效果没有那么明显
+            QPainterPath bpath1;
+            painter.setOpacity(1);
+            bpath1.addRoundedRect(backgroundRect.marginsRemoved(QMargins(1, 1, 1, 1)), 3, 3);
+            painter.fillPath(bpath1, QColor(255, 255, 255));
         } else {
             painter.fillRect(backgroundRect, QBrush(QColor(255, 138, 0)));
         }
