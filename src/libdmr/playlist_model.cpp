@@ -220,6 +220,7 @@ public:
     struct CacheInfo {
         struct MovieInfo mi;
         QPixmap thumb;
+        QPixmap thumb_dark;
         bool mi_valid {false};
         bool thumb_valid {false};
         char m_padding [6];//占位符
@@ -252,8 +253,14 @@ public:
             if (f.open(QIODevice::ReadOnly)) {
                 QDataStream ds(&f);
                 ds >> ci.thumb;
+                ds >> ci.thumb_dark;
                 ci.thumb.setDevicePixelRatio(qApp->devicePixelRatio());
-                ci.thumb_valid = !ci.thumb.isNull();
+                ci.thumb_dark.setDevicePixelRatio(qApp->devicePixelRatio());
+                if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
+                    ci.thumb_valid = !ci.thumb_dark.isNull();
+                } else {
+                    ci.thumb_valid = !ci.thumb.isNull();
+                }
             } else {
                 qWarning() << f.errorString();
             }
@@ -287,6 +294,7 @@ public:
             if (f.open(QIODevice::WriteOnly)) {
                 QDataStream ds(&f);
                 ds << pif.thumbnail;
+                ds << pif.thumbnail_dark;
             } else {
                 qWarning() << f.errorString();
             }
@@ -1576,6 +1584,8 @@ struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl &url, const QFil
     QPixmap dark_pm;
     if (ci.thumb_valid) {
         pm = ci.thumb;
+        dark_pm = ci.thumb_dark;
+
         qDebug() << "load cached thumb" << url;
     } else if (ok) {
         try {
