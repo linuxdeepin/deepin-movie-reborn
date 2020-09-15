@@ -170,7 +170,6 @@ protected:
         } else {
             painter.fillRect(backgroundRect, QBrush(QColor(255, 138, 0)));
         }
-
     };
 
 private:
