@@ -887,12 +887,12 @@ private:
 
 };
 
-class ThumbnailPreview: public ButtonToolTip
+class ThumbnailPreview: public DArrowRectangle
 {
     Q_OBJECT
 public:
     ThumbnailPreview(QWidget* parent=nullptr)
-        :ButtonToolTip(parent)
+        :DArrowRectangle(DArrowRectangle::ArrowBottom, DArrowRectangle::FloatWidget,parent)
     {
         setAttribute(Qt::WA_DeleteOnClose);
         // FIXME(hualet): Qt::Tooltip will cause Dock to show up even
@@ -989,6 +989,9 @@ public:
         raise();
     }
 
+    void show(){
+        QWidget::show();
+    }
 signals:
     void leavePreview();
 
