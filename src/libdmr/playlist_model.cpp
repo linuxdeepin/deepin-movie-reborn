@@ -452,11 +452,10 @@ struct MovieInfo PlaylistModel::parseFromFile(const QFileInfo &fi, bool *ok)
         qDebug() << "tag:" << tag->key << tag->value;
     }
 
-    AVStream* pTempStream = nullptr;
-    if(videoRet >= 0) {
+    AVStream *pTempStream = nullptr;
+    if (videoRet >= 0) {
         pTempStream = av_ctx->streams[videoRet];
-    }
-    else if (audioRet >= 0) {
+    } else if (audioRet >= 0) {
         pTempStream = av_ctx->streams[audioRet];
     }
 
@@ -544,7 +543,10 @@ PlaylistModel::PlaylistModel(PlayerEngine *e)
 
     stop();
     //loadPlaylist();
-
+#ifdef _LIBDMR_
+    initThumb();
+    initFFmpeg();
+#endif
 #ifndef _LIBDMR_
     if (Settings::get().isSet(Settings::ResumeFromLast)) {
         int restore_pos = Settings::get().internalOption("playlist_pos").toInt();
@@ -558,10 +560,10 @@ QString PlaylistModel::libPath(const QString &strlib)
     QDir  dir;
     QString path  = QLibraryInfo::location(QLibraryInfo::LibrariesPath);
     dir.setPath(path);
-    QStringList list = dir.entryList(QStringList()<<(strlib + "*"),QDir::NoDotAndDotDot |QDir::Files);//filter name with strlib
-    if(list.contains(strlib)){
+    QStringList list = dir.entryList(QStringList() << (strlib + "*"), QDir::NoDotAndDotDot | QDir::Files); //filter name with strlib
+    if (list.contains(strlib)) {
         return strlib;
-    }else{
+    } else {
         list.sort();
     }
 
@@ -1593,7 +1595,7 @@ struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl &url, const QFil
                 if (getMusicPix(fi, pm) == false) {
                     pm.load(":/resources/icons/music-light.svg");
                 }
-                if(getMusicPix(fi, dark_pm) == false){
+                if (getMusicPix(fi, dark_pm) == false) {
                     dark_pm.load(":/resources/icons/music-dark.svg");
                 }
             }
@@ -1707,7 +1709,7 @@ MovieInfo MovieInfo::parseFromFile(const QFileInfo &fi, bool *ok)
     AVFormatContext *av_ctx = NULL;
     int stream_id = -1;
     AVCodecParameters *dec_ctx = NULL;
-    AVStream* av_stream = nullptr;
+    AVStream *av_stream = nullptr;
 
     if (!fi.exists()) {
         if (ok) *ok = false;
@@ -1738,10 +1740,9 @@ MovieInfo MovieInfo::parseFromFile(const QFileInfo &fi, bool *ok)
         }
     }
 
-    for(int i =0;i<av_ctx->nb_streams;i++){
+    for (int i = 0; i < av_ctx->nb_streams; i++) {
         av_stream = av_ctx->streams[i];
-        if(av_stream->codecpar->codec_type == AVMEDIA_TYPE_VIDEO)
-        {
+        if (av_stream->codecpar->codec_type == AVMEDIA_TYPE_VIDEO) {
             break;
         }
     }
@@ -1763,7 +1764,7 @@ MovieInfo MovieInfo::parseFromFile(const QFileInfo &fi, bool *ok)
     mi.vCodecID = dec_ctx->codec_id;
     mi.vCodeRate = dec_ctx->bit_rate;
     if (av_stream->r_frame_rate.den != 0) {
-         mi.fps = av_stream->r_frame_rate.num / av_stream->r_frame_rate.den;
+        mi.fps = av_stream->r_frame_rate.num / av_stream->r_frame_rate.den;
     } else {
         mi.fps = 0;
     }
