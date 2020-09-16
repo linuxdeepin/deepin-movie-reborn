@@ -1318,6 +1318,34 @@ bool MainWindow::event(QEvent *ev)
         //NOTE: windowStateChanged won't be emitted if by draggint to restore. so we need to
         //check window state here.
         //connect(windowHandle(), &QWindow::windowStateChanged, this, &MainWindow::onWindowStateChanged);
+        if (_lastWindowState == Qt::WindowNoState && windowState() == Qt::WindowMinimized) {
+            if (Settings::get().isSet(Settings::PauseOnMinimize)) {
+                if (_engine && _engine->state() == PlayerEngine::Playing) {
+                    requestAction(ActionFactory::TogglePause);
+                    _quitfullscreenflag = true;
+                }
+                QList<QAction *> acts = ActionFactory::get().findActionsByKind(ActionFactory::TogglePlaylist);
+                acts.at(0)->setChecked(false);
+            }
+        } else if (_lastWindowState == Qt::WindowMinimized && windowState() == Qt::WindowNoState) {
+            if ( Settings::get().isSet(Settings::PauseOnMinimize)) {
+                if (_quitfullscreenflag) {
+                    requestAction(ActionFactory::TogglePause);
+                    _quitfullscreenflag = false;
+                }
+        #ifdef __aarch64__
+                        QVariant l = ApplicationAdaptor::redDBusProperty("com.deepin.SessionManager", "/com/deepin/SessionManager",
+                                                                         "com.deepin.SessionManager", "Locked");
+                        if (l.isValid() && !l.toBool()) {
+                            qDebug() << "locked_____________" << l;
+                            //是否锁屏
+                            if(_engine && _engine->state() != PlayerEngine::Playing){
+                                requestAction(ActionFactory::TogglePause);
+                            }
+                        }
+        #endif
+            }
+        }
         onWindowStateChanged();
     }
 
@@ -3638,7 +3666,7 @@ void MainWindow::hideEvent(QHideEvent *event)
 {
     if(_maxfornormalflag)
         return;
-    if (Settings::get().isSet(Settings::PauseOnMinimize)) {
+    /*if (Settings::get().isSet(Settings::PauseOnMinimize)) {
         if (_engine && _engine->state() == PlayerEngine::Playing) {
             requestAction(ActionFactory::TogglePause);
             _quitfullscreenflag = true;
@@ -3652,7 +3680,7 @@ void MainWindow::hideEvent(QHideEvent *event)
         }
         QList<QAction *> acts = ActionFactory::get().findActionsByKind(ActionFactory::TogglePlaylist);
         acts.at(0)->setChecked(false);
-    }
+    }*/
 }
 void MainWindow::showEvent(QShowEvent *event)
 {
@@ -3660,7 +3688,7 @@ void MainWindow::showEvent(QShowEvent *event)
     /*最大化，全屏，取消全屏，会先调用hideevent,再调用showevent，此时播放状态尚未切换，导致逻辑出错*/
     if(_maxfornormalflag)
         return;
-    if ( Settings::get().isSet(Settings::PauseOnMinimize)) {
+    /*if ( Settings::get().isSet(Settings::PauseOnMinimize)) {
         if (_quitfullscreenflag) {
             requestAction(ActionFactory::TogglePause);
             _quitfullscreenflag = false;
@@ -3676,7 +3704,7 @@ void MainWindow::showEvent(QShowEvent *event)
                     }
                 }
 #endif
-    }
+    }*/
 //    if (_pausedOnHide || Settings::get().isSet(Settings::PauseOnMinimize)) {
 //        if (_pausedOnHide && _engine && _engine->state() != PlayerEngine::Playing) {
 //            if (_quitfullscreenflag) {
