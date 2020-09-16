@@ -1333,17 +1333,6 @@ bool MainWindow::event(QEvent *ev)
                     requestAction(ActionFactory::TogglePause);
                     _quitfullscreenflag = false;
                 }
-        #ifdef __aarch64__
-                        QVariant l = ApplicationAdaptor::redDBusProperty("com.deepin.SessionManager", "/com/deepin/SessionManager",
-                                                                         "com.deepin.SessionManager", "Locked");
-                        if (l.isValid() && !l.toBool()) {
-                            qDebug() << "locked_____________" << l;
-                            //是否锁屏
-                            if(_engine && _engine->state() != PlayerEngine::Playing){
-                                requestAction(ActionFactory::TogglePause);
-                            }
-                        }
-        #endif
             }
         }
         onWindowStateChanged();
