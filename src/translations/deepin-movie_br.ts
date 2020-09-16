@@ -1,597 +1,597 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS language="ar" version="2.1">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="br" version="2.1">
 <context>
     <name>QObject</name>
     <message>
         <source>Invalid folder</source>
-        <translation>مجلد غير صالح</translation>
+        <translation>Doser direizh</translation>
     </message>
     <message>
         <source>Open folder</source>
-        <translation>فتح مجلد</translation>
+        <translation>Digeriñ un doser</translation>
     </message>
     <message>
         <source>Network disconnected</source>
-        <translation>الشبكة غير متصلة</translation>
+        <translation>Rouedad digevreet</translation>
     </message>
     <message>
         <source>You don&apos;t have permission to operate this folder</source>
-        <translation>ليس لديك إذن لتنفيذ عملية في هذا المجلد</translation>
+        <translation>N&apos;ho peus ket an aotre d&apos;ober tra-pe-dra war an doser-mañ</translation>
     </message>
     <message>
         <source>Auto add similar files to play</source>
-        <translation>إضافة الملفات المشابهة تلقائياً للتشغيل</translation>
+        <translation>Em-ouzhpennañ restroù heñvel d&apos;ar roll-lenn</translation>
     </message>
     <message>
         <source>Clear playlist when exit</source>
-        <translation>مسح قائمة التشغيل عند الخروج</translation>
+        <translation>Sklaeraat ar roll-lenn en ur guitaat</translation>
     </message>
     <message>
         <source>Show video preview on mouseover</source>
-        <translation>عرض معاينة الفيديو على تمرير مؤشر الفأرة</translation>
+        <translation>Diskouez rakwel ar video pa dremen al logodenn</translation>
     </message>
     <message>
         <source>Open a new player for each file played</source>
-        <translation>فتح مشغل جديد لكل ملف قيد التشغيل</translation>
+        <translation>Digeriñ ul lenner nevez da bep restr lennet</translation>
     </message>
     <message>
         <source>Pause when minimized</source>
-        <translation>إيقاف مؤقت عند التصغير</translation>
+        <translation>Ehanañ pa vez bihanaet</translation>
     </message>
     <message>
         <source>Remember playback position</source>
-        <translation>تذكر وضع التشغيل</translation>
+        <translation>Derc&apos;hel-soñj eus pelec&apos;h emañ erruet al lenn</translation>
     </message>
     <message>
         <source>Path</source>
-        <translation>مسار</translation>
+        <translation>Hent</translation>
     </message>
     <message>
         <source>Basic</source>
-        <translation>أساسي</translation>
+        <translation>Eeun</translation>
     </message>
     <message>
         <source>Play</source>
-        <translation>تشغيل</translation>
+        <translation>Lenn</translation>
     </message>
     <message>
         <source>Screenshot</source>
-        <translation>لقطة للشاشة</translation>
+        <translation>Tapadenn-skramm</translation>
     </message>
     <message>
         <source>Shortcuts</source>
-        <translation>الإختصارات</translation>
+        <translation>Berradurioù</translation>
     </message>
     <message>
         <source>File</source>
-        <translation>الملف</translation>
+        <translation>Restr</translation>
     </message>
     <message>
         <source>Frame/Sound</source>
-        <translation>الإطار / الصوت</translation>
+        <translation>Skeudenn/Son</translation>
     </message>
     <message>
         <source>Playback</source>
-        <translation>التشغيل</translation>
+        <translation>Lenn</translation>
     </message>
     <message>
         <source>Subtitle</source>
-        <translation>الترجمة</translation>
+        <translation>Istitl</translation>
     </message>
     <message>
         <source>Font Style</source>
-        <translation>نمط الخط</translation>
+        <translation>Stil ar skritur</translation>
     </message>
     <message>
         <source>Restore Defaults</source>
-        <translation>استعادة الافتراضيات</translation>
+        <translation>Adlakaat an talvoudoù dre ziouer</translation>
     </message>
     <message>
         <source>Open file</source>
-        <translation>فتح ملف</translation>
+        <translation>Digeriñ ar restr</translation>
     </message>
     <message>
         <source>Open next</source>
-        <translation>فتح التالي</translation>
+        <translation>Digeriñ an hini da-heul</translation>
     </message>
     <message>
         <source>Open previous</source>
-        <translation>فتح السابق</translation>
+        <translation>Digeriñ an hini kent</translation>
     </message>
     <message>
         <source>Mini mode</source>
-        <translation>وضع مصغر</translation>
+        <translation>Mod mini</translation>
     </message>
     <message>
         <source>Mute</source>
-        <translation>صامت</translation>
+        <translation>Mut</translation>
     </message>
     <message>
         <source>Next frame</source>
-        <translation>الإطار التالي</translation>
+        <translation>Skeudenn da-heul</translation>
     </message>
     <message>
         <source>Previous frame</source>
-        <translation>الإطار السابق</translation>
+        <translation>Skeudenn gent</translation>
     </message>
     <message>
         <source>Volume down</source>
-        <translation>خفض الصوت</translation>
+        <translation>Izelaat al live-son</translation>
     </message>
     <message>
         <source>Volume up</source>
-        <translation>رفع الصوت</translation>
+        <translation>Lakaat da greskiñ al live-son</translation>
     </message>
     <message>
         <source>Speed up</source>
-        <translation>تسريع</translation>
+        <translation>Herrekaat</translation>
     </message>
     <message>
         <source>Speed down</source>
-        <translation>تبطيئ</translation>
+        <translation>Gorrekaat</translation>
     </message>
     <message>
         <source>Fullscreen</source>
-        <translation>ملء الشاشة</translation>
+        <translation>Skramm-leun</translation>
     </message>
     <message>
         <source>Pause/Play</source>
-        <translation>إيقاف / تشغيل</translation>
+        <translation>Ehan/Lenn</translation>
     </message>
     <message>
         <source>Playlist</source>
-        <translation>قائمة التشغيل</translation>
+        <translation>Roll-lenn</translation>
     </message>
     <message>
         <source>Reset speed</source>
-        <translation>إعادة تعيين السرعة</translation>
+        <translation>Adlakaat diouer an tizh</translation>
     </message>
     <message>
         <source>Rewind</source>
-        <translation>رجوع</translation>
+        <translation>Mont war-gil</translation>
     </message>
     <message>
         <source>Forward</source>
-        <translation>للأمام</translation>
+        <translation>Mont war-raok</translation>
     </message>
     <message>
         <source>Film screenshot</source>
-        <translation>لقطة شاشة للفلم</translation>
+        <translation>Tapadenn-skramm ar film</translation>
     </message>
     <message>
         <source>0.5s backward</source>
-        <translation>تأخير 0.5 ثانية</translation>
+        <translation>0.5s war-gil</translation>
     </message>
     <message>
         <source>0.5s forward</source>
-        <translation>تقديم 0.5 ثانية</translation>
+        <translation>0.5s war-raok</translation>
     </message>
     <message>
         <source>Font</source>
-        <translation>الخط</translation>
+        <translation>Skritur</translation>
     </message>
     <message>
         <source>Exit fullscreen/mini mode</source>
-        <translation>خروج من وضع ملء الشاشة/أو الوضع المصغر</translation>
+        <translation>Kuitaat ar mod skramm-leun/mod mini</translation>
     </message>
     <message>
         <source>Movie</source>
-        <translation>الأفلام</translation>
+        <translation>Video</translation>
     </message>
     <message>
         <source>Settings</source>
-        <translation>الإعدادات</translation>
+        <translation>Arventennoù</translation>
     </message>
     <message>
         <source>Help</source>
-        <translation>مساعدة</translation>
+        <translation>Skoazell</translation>
     </message>
     <message>
         <source>Display shortcuts</source>
-        <translation>عرض الإختصارات</translation>
+        <translation>Diskouez ar berradurioù</translation>
     </message>
     <message>
         <source>Delete from playlist</source>
-        <translation>إزالة من قائمة التشغيل</translation>
+        <translation>Dilemel diwar ar roll-lenn</translation>
     </message>
     <message>
         <source>Film info</source>
-        <translation>معلومات الفلم</translation>
+        <translation>Titouroù ar film</translation>
     </message>
     <message>
         <source>Burst shooting</source>
-        <translation>تصوير متتابع</translation>
+        <translation>Tennadeg skeudennoù</translation>
     </message>
     <message>
         <source>Size</source>
-        <translation>الحجم</translation>
+        <translation>Ment</translation>
     </message>
     <message>
         <source>Movie is a full-featured video player, supporting playing local and streaming media in multiple video formats.</source>
-        <translation>فلم: مشغل فيديوهات مليء بالمزايا، ويدم تشغيل الوسائط المحلية ووسائط البث بالعديد مع صيغ الفيديو المتنوعة.</translation>
+        <translation>Movie a zo ul lenner video klok, hag a c&apos;hall lenn ar mediaoù lec&apos;hel hag e streaming e meur a furmad video.</translation>
     </message>
     <message>
         <source>OK</source>
-        <translation>موافق</translation>
+        <translation>Mat eo</translation>
     </message>
     <message>
         <source>Default play mode</source>
-        <translation>وضع التشغيل الإفتراضي</translation>
+        <translation>Mod-lenn dre-ziouer</translation>
     </message>
     <message>
         <source>Show thumbnails in progress bar</source>
-        <translation>اظهار الصور المصغره في شريط التقدم</translation>
+        <translation>Diskouez ar vignetennoù e-barzh barrenn an araokaat</translation>
     </message>
 </context>
 <context>
     <name>UrlDialog</name>
     <message>
         <source>Cancel</source>
-        <translation>إلغاء</translation>
+        <translation>Nullañ</translation>
     </message>
     <message>
         <source>Please enter the URL:</source>
-        <translation>يرجى إدخال الرابط :</translation>
+        <translation>Ebarzhit an URL mar plij:</translation>
     </message>
     <message>
         <source>OK</source>
-        <translation>موافق</translation>
+        <translation>Mat eo</translation>
     </message>
 </context>
 <context>
     <name>dmr::ActionFactory</name>
     <message>
         <source>Settings</source>
-        <translation>إعدادات</translation>
+        <translation>Arventennoù</translation>
     </message>
     <message>
         <source>Fullscreen</source>
-        <translation>ملء الشاشة</translation>
+        <translation>Skramm-leun</translation>
     </message>
     <message>
         <source>Always on Top</source>
-        <translation>دائماً في المقدمة</translation>
+        <translation>Er rakleur bepred</translation>
     </message>
     <message>
         <source>Empty playlist</source>
-        <translation>إفراغ قائمة التشغيل</translation>
+        <translation>Roll-lenn goullo</translation>
     </message>
     <message>
         <source>Film info</source>
-        <translation>معلومات الفلم</translation>
+        <translation>Titouroù ar film</translation>
     </message>
     <message>
         <source>Open file</source>
-        <translation>فتح ملف</translation>
+        <translation>Digeriñ ar restr</translation>
     </message>
     <message>
         <source>Open folder</source>
-        <translation>فتح مجلد</translation>
+        <translation>Digeriñ un doser</translation>
     </message>
     <message>
         <source>Open URL</source>
-        <translation>فتح رابط</translation>
+        <translation>Digeriñ an URL</translation>
     </message>
     <message>
         <source>Open CD/DVD</source>
-        <translation>فتح قرص  CD/DVD</translation>
+        <translation>Digeriñ ur CD/DVD</translation>
     </message>
     <message>
         <source>Mini Mode</source>
-        <translation>الوضع المصغر</translation>
+        <translation>Stumm bihan</translation>
     </message>
     <message>
         <source>Play Mode</source>
-        <translation>وضع التشغيل</translation>
+        <translation>Mod-lenn</translation>
     </message>
     <message>
         <source>Order Play</source>
-        <translation>ترتيب التشغيل</translation>
+        <translation>Urzh-lenn</translation>
     </message>
     <message>
         <source>Shuffle Play</source>
-        <translation>خلط التشغيل</translation>
+        <translation>Lenn dre-zegouezh</translation>
     </message>
     <message>
         <source>Single Play</source>
-        <translation>تشغيل مفرد</translation>
+        <translation>Lenn eeun</translation>
     </message>
     <message>
         <source>Single Loop</source>
-        <translation>تكرار مفرد</translation>
+        <translation>Lenn e bouklenn</translation>
     </message>
     <message>
         <source>List Loop</source>
-        <translation>تكرار القائمة</translation>
+        <translation>Roll-lenn e bouklenn</translation>
     </message>
     <message>
         <source>Frame</source>
-        <translation>إطار</translation>
+        <translation>Skeudenn</translation>
     </message>
     <message>
         <source>Default</source>
-        <translation>افتراضي</translation>
+        <translation>Dre ziouer</translation>
     </message>
     <message>
         <source>Clockwise</source>
-        <translation>بإتجاه عقارب الساعة</translation>
+        <translation>Tu an horolaj</translation>
     </message>
     <message>
         <source>Counterclockwise</source>
-        <translation>عكس عقارب الساعة</translation>
+        <translation>Tu enep an horolaj</translation>
     </message>
     <message>
         <source>Sound</source>
-        <translation>الصوت</translation>
+        <translation>Son</translation>
     </message>
     <message>
         <source>Channel</source>
-        <translation>القناة</translation>
+        <translation>Kanol</translation>
     </message>
     <message>
         <source>Stereo</source>
-        <translation>استريو</translation>
+        <translation>Stereo</translation>
     </message>
     <message>
         <source>Left channel</source>
-        <translation>القناة اليسرى</translation>
+        <translation>Kanol gleiz</translation>
     </message>
     <message>
         <source>Right channel</source>
-        <translation>القناة اليمنى</translation>
+        <translation>Kanal zehoù</translation>
     </message>
     <message>
         <source>Track</source>
-        <translation>المسار</translation>
+        <translation>Roudenn</translation>
     </message>
     <message>
         <source>Subtitle</source>
-        <translation>الترجمة</translation>
+        <translation>Istitl</translation>
     </message>
     <message>
         <source>Load</source>
-        <translation>تحميل</translation>
+        <translation>Kargañ</translation>
     </message>
     <message>
         <source>Online Search</source>
-        <translation>بحث في الانترنت</translation>
+        <translation>Klask enlinenn</translation>
     </message>
     <message>
         <source>Select</source>
-        <translation>تحديد</translation>
+        <translation>Diuzañ</translation>
     </message>
     <message>
         <source>Hide</source>
-        <translation>إخفاء</translation>
+        <translation>Kuzhat</translation>
     </message>
     <message>
         <source>Encodings</source>
-        <translation>الترميز</translation>
+        <translation>Enkodañ</translation>
     </message>
     <message>
         <source>Screenshot</source>
-        <translation>لقطة للشاشة</translation>
+        <translation>Tapadenn-skramm</translation>
     </message>
     <message>
         <source>Film Screenshot</source>
-        <translation>لقطة شاشة للفلم</translation>
+        <translation>Tapadenn-skramm ar film</translation>
     </message>
     <message>
         <source>Burst Shooting</source>
-        <translation>إطلاق التدفق </translation>
+        <translation>Mod tennadeg</translation>
     </message>
     <message>
         <source>Playlist</source>
-        <translation>قائمة التشغيل</translation>
+        <translation>Roll-lenn</translation>
     </message>
     <message>
         <source>Film Info</source>
-        <translation>معلومات الفلم</translation>
+        <translation>Titouroù ar film</translation>
     </message>
     <message>
         <source>Delete from playlist</source>
-        <translation>إزالة من قائمة التشغيل</translation>
+        <translation>Dilemel diwar ar roll-lenn</translation>
     </message>
     <message>
         <source>Display in file manager</source>
-        <translation>عرض في مدير الملفات</translation>
+        <translation>Diskouez er merer restroù</translation>
     </message>
     <message>
         <source>Next Frame</source>
-        <translation>الإطار التالي</translation>
+        <translation>Skeudenn da-heul</translation>
     </message>
     <message>
         <source>Previous Frame</source>
-        <translation>الإطار السابق</translation>
+        <translation>Skeuden gent</translation>
     </message>
     <message>
         <source>Open screenshot folder</source>
-        <translation>فتح ملف صور الشاشه</translation>
+        <translation>Digeriñ doser an tapadennoù-skramm</translation>
     </message>
 </context>
 <context>
     <name>dmr::BurstScreenshotsDialog</name>
     <message>
         <source>Duration: %1</source>
-        <translation>المدة: %1</translation>
+        <translation>Padelezh: %1</translation>
     </message>
     <message>
         <source>Resolution: %1</source>
-        <translation>الدقة: %1</translation>
+        <translation>Spisder: %1</translation>
     </message>
     <message>
         <source>Size: %1</source>
-        <translation>الحجم: %1</translation>
+        <translation>Ment: %1</translation>
     </message>
     <message>
         <source>Save</source>
-        <translation>حفظ</translation>
+        <translation>Enrollañ</translation>
     </message>
 </context>
 <context>
     <name>dmr::MainWindow</name>
     <message>
         <source>Load successfully</source>
-        <translation>تم التحميل بنجاح</translation>
+        <translation>Kargadenn gant berzh</translation>
     </message>
     <message>
         <source>Load failed</source>
-        <translation>فشل التحميل</translation>
+        <translation>Kargadenn sac&apos;het</translation>
     </message>
     <message>
         <source>Buffering...</source>
-        <translation>تدفق ...</translation>
+        <translation>Memor skurzer...</translation>
     </message>
     <message>
         <source>No device found</source>
-        <translation>لم يتم العثور على جهاز</translation>
+        <translation>Trevnad ebet kavet</translation>
     </message>
     <message>
         <source>Open folder</source>
-        <translation>فتح مجلد</translation>
+        <translation>Digeriñ un doser</translation>
     </message>
     <message>
         <source>All videos (%1)</source>
-        <translation>كافة الفيديوهات (%1)</translation>
+        <translation>An holl videoioù (%1)</translation>
     </message>
     <message>
         <source>Stereo</source>
-        <translation>استريو</translation>
+        <translation>Stereo</translation>
     </message>
     <message>
         <source>Left channel</source>
-        <translation>القناة اليسرى</translation>
+        <translation>Kanol gleiz</translation>
     </message>
     <message>
         <source>Right channel</source>
-        <translation>القناة اليمنى</translation>
+        <translation>Kanal zehoù</translation>
     </message>
     <message>
         <source>Parse failed</source>
-        <translation>فشل التحليل</translation>
+        <translation>C&apos;hwitet ez eus bet war an analizadur</translation>
     </message>
     <message>
         <source>Mute</source>
-        <translation>صامت</translation>
+        <translation>Mut</translation>
     </message>
     <message>
         <source>Volume: %1%</source>
-        <translation>الصوت: %1%</translation>
+        <translation>Live-son: %1</translation>
     </message>
     <message>
         <source>Track: %1</source>
-        <translation>المسار %1</translation>
+        <translation>Roudenn: %1</translation>
     </message>
     <message>
         <source>Subtitle %1: %2s</source>
-        <translation>ترجمة %1 : %2s</translation>
+        <translation>Istitl %1: %2s</translation>
     </message>
     <message>
         <source>delayed</source>
-        <translation>مؤخر</translation>
+        <translation>daleet</translation>
     </message>
     <message>
         <source>advanced</source>
-        <translation>متقدم</translation>
+        <translation>araokaet</translation>
     </message>
     <message>
         <source>Speed: %1x</source>
-        <translation>السرعة: %1x</translation>
+        <translation>Tizh: %1x</translation>
     </message>
     <message>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</source>
-        <translation>الترجمة (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</translation>
+        <translation>Istitl (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</translation>
     </message>
     <message>
         <source>View</source>
-        <translation>عرض</translation>
+        <translation>Gweled</translation>
     </message>
     <message>
         <source>Saved to</source>
-        <translation>حفظ في</translation>
+        <translation>Enrollañ e-barzh</translation>
     </message>
     <message>
         <source>The screenshot is saved</source>
-        <translation>تم حفظ لقطة الشاشة</translation>
+        <translation>Tapadenn-skramm enrollet</translation>
     </message>
     <message>
         <source>Failed to save the screenshot</source>
-        <translation>فشل في حفظ التقاط الشاشة</translation>
+        <translation>C&apos;hwitet ez eus bet war enrolladur an dapadenn-skramm</translation>
     </message>
     <message>
         <source>Invalid file: %1</source>
-        <translation>ملف غير صالح : %1</translation>
+        <translation>Restr direizh: %1</translation>
     </message>
     <message>
         <source>No matching online subtitles</source>
-        <translation>لم يتم إيجاد ترجمات متطابقة على الإنترنت</translation>
+        <translation>N&apos;eus istitl ebet enlinenn hag a genglotfe</translation>
     </message>
     <message>
         <source>Cannot open file or stream</source>
-        <translation>لا يمكن فتح الملف أو البث</translation>
+        <translation>N&apos;heller ket digeriñ ur restr pe ur froud</translation>
     </message>
     <message>
         <source>Invalid file</source>
-        <translation>ملف غير صالح</translation>
+        <translation>Restr direizh</translation>
     </message>
     <message>
         <source>No video file found</source>
-        <translation>لم يتم العثور على أي فيديو</translation>
+        <translation>N&apos;eus bet kavet restr video ebet</translation>
     </message>
     <message>
         <source>Open File</source>
-        <translation>فتح ملف</translation>
+        <translation>Digeriñ ur restr</translation>
     </message>
     <message>
         <source>Film screenshot</source>
-        <translation>لقطة شاشة للفلم</translation>
+        <translation>Tapadenn-skramm ar film</translation>
     </message>
     <message>
         <source>Taking the screenshots, please wait...</source>
-        <translation>جارٍ التقاط لقطات الشاشة ، يرجى الانتظار ...</translation>
+        <translation>O tapout an tapadennoù-skramm, gortozit mar plij...</translation>
     </message>
     <message>
         <source>OK</source>
-        <translation>موافق</translation>
+        <translation>Mat eo</translation>
     </message>
     <message>
         <source>Please insert a CD/DVD</source>
-        <translation>يرجى إدخال CD/DVD</translation>
+        <translation>Ensoc&apos;hit ur CD/DVD mar plij</translation>
     </message>
     <message>
         <source>Reading DVD files...</source>
-        <translation>جاري قراءة ملفات الـ DVD</translation>
+        <translation>O lenn ar restroù DVD...</translation>
     </message>
     <message>
         <source>4K video may be stuck</source>
-        <translation>فيديو الـ 4K قد يكون معلّق</translation>
+        <translation>Gellout a ra bezañ stanket ar videoioù 4K</translation>
     </message>
     <message>
         <source>Please load the video first</source>
-        <translation>يرجى تحميل الفيديو أولاً</translation>
+        <translation>Kargit ar video da gentañ</translation>
     </message>
     <message>
         <source>Order play</source>
-        <translation>طلبات التشغيل</translation>
+        <translation>Dre urzh</translation>
     </message>
     <message>
         <source>Shuffle play</source>
-        <translation>خلط التشغيل</translation>
+        <translation>Lenn dre-zegouezh</translation>
     </message>
     <message>
         <source>Single play</source>
-        <translation>تشغيل مفرد</translation>
+        <translation>Lenn eeun</translation>
     </message>
     <message>
         <source>Single loop</source>
-        <translation>تكرار مفرد</translation>
+        <translation>Lenn e bouklenn</translation>
     </message>
     <message>
         <source>List loop</source>
-        <translation>تكرار القائمة</translation>
+        <translation>Roll-lenn e bouklenn</translation>
     </message>
     <message>
         <source>The CD/DVD has been ejected</source>
-        <translation>تم إخراج CD/DVD</translation>
+        <translation>Ar CD/DVD a zo bet strinket-maez</translation>
     </message>
     <message>
         <source>All videos (%2 %1)</source>
@@ -599,22 +599,22 @@
     </message>
     <message>
         <source>All videos (*)(%2 %1)</source>
-        <translation type="unfinished"/>
+        <translation>An holl videoioù (*)(%2 %1)</translation>
     </message>
 </context>
 <context>
     <name>dmr::MovieInfo</name>
     <message>
         <source>%1G</source>
-        <translation type="vanished">%1G</translation>
+        <translation type="vanished">%1 Go</translation>
     </message>
     <message>
         <source>%1M</source>
-        <translation type="vanished">%1M</translation>
+        <translation type="vanished">%1 Mo</translation>
     </message>
     <message>
         <source>%1K</source>
-        <translation type="vanished">%1K</translation>
+        <translation type="vanished">%1 Ko</translation>
     </message>
     <message>
         <source>%1</source>
@@ -625,55 +625,55 @@
     <name>dmr::MovieInfoDialog</name>
     <message>
         <source>Film info</source>
-        <translation>معلومات الفلم</translation>
+        <translation>Titouroù ar film</translation>
     </message>
     <message>
         <source>Resolution</source>
-        <translation>الدقة</translation>
+        <translation>Spisder</translation>
     </message>
     <message>
         <source>Duration</source>
-        <translation>المدة</translation>
+        <translation>Padelezh</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation>النوع</translation>
+        <translation>Doare</translation>
     </message>
     <message>
         <source>Size</source>
-        <translation>الحجم</translation>
+        <translation>Ment</translation>
     </message>
     <message>
         <source>Path</source>
-        <translation>مسار</translation>
+        <translation>Hent</translation>
     </message>
     <message>
         <source>Codec info</source>
-        <translation>معلومات الترميز</translation>
+        <translation>Titouroù ar c&apos;hodek</translation>
     </message>
     <message>
         <source>Video CodecID</source>
-        <translation>معرّف ترميز الفيديو</translation>
+        <translation>ID ar c&apos;hodek video</translation>
     </message>
     <message>
         <source>Video CodeRate</source>
-        <translation>معدل ترميز الفيديو</translation>
+        <translation>KodRate ar video</translation>
     </message>
     <message>
         <source>%1 kbps</source>
-        <translation> %1 kbps</translation>
+        <translation>%1 kbps</translation>
     </message>
     <message>
         <source>FPS</source>
-        <translation>إطار في الثانية</translation>
+        <translation>FPS</translation>
     </message>
     <message>
         <source>%1 fps</source>
-        <translation>%1 إطار في الثانية</translation>
+        <translation>%1 fps</translation>
     </message>
     <message>
         <source>Proportion</source>
-        <translation>المقدار</translation>
+        <translation>Kenfeur</translation>
     </message>
     <message>
         <source>%1</source>
@@ -681,142 +681,142 @@
     </message>
     <message>
         <source>Audio info</source>
-        <translation>معلومات الصوت</translation>
+        <translation>Titouroù aodio</translation>
     </message>
     <message>
         <source>Audio CodecID</source>
-        <translation>معرّف ترميز الصوت</translation>
+        <translation>ID ar c&apos;hodek aodio</translation>
     </message>
     <message>
         <source>Audio CodeRate</source>
-        <translation>معدل ترميز الصوت</translation>
+        <translation>Feur ar c&apos;hod aodio</translation>
     </message>
     <message>
         <source>Audio digit</source>
-        <translation>الصوت الرقمي</translation>
+        <translation>Digit aodio</translation>
     </message>
     <message>
         <source>%1 bits</source>
-        <translation> %1 بت</translation>
+        <translation>%1 okted</translation>
     </message>
     <message>
         <source>Channels</source>
-        <translation>القنوات</translation>
+        <translation>Kanolioù</translation>
     </message>
     <message>
         <source>%1 channels</source>
-        <translation>%1 قنوات</translation>
+        <translation>%1 a ganolioù</translation>
     </message>
     <message>
         <source>Sampling</source>
-        <translation>أخذ العينات</translation>
+        <translation>O standilhonañ</translation>
     </message>
     <message>
         <source>%1hz</source>
-        <translation> %1hz</translation>
+        <translation>%1hz</translation>
     </message>
 </context>
 <context>
     <name>dmr::MpvProxy</name>
     <message>
         <source>Internal</source>
-        <translation>داخلي</translation>
+        <translation>Diabarzh</translation>
     </message>
 </context>
 <context>
     <name>dmr::PlayItemWidget</name>
     <message>
         <source>The file does not exist</source>
-        <translation>الملف غير موجود</translation>
+        <translation>N&apos;eus ket eus ar restr</translation>
     </message>
 </context>
 <context>
     <name>dmr::PlaylistWidget</name>
     <message>
         <source>Playlist</source>
-        <translation>قائمة التشغيل</translation>
+        <translation>Roll-lenn</translation>
     </message>
     <message>
         <source>%1 videos</source>
-        <translation>%1 فيديوهات</translation>
+        <translation>%1 video</translation>
     </message>
     <message>
         <source>Empty</source>
-        <translation>فارغ</translation>
+        <translation>Goullo</translation>
     </message>
 </context>
 <context>
     <name>dmr::Settings</name>
     <message>
         <source>%1/Movie%2.jpg</source>
-        <translation> %1/فلم%2.jpg</translation>
+        <translation>%1/Film%2.jpg</translation>
     </message>
     <message>
         <source>%1/Movie%2(%3).jpg</source>
-        <translation>%1/فلم%2(%3).jpg</translation>
+        <translation>%1/Film%2(%3).jpg</translation>
     </message>
     <message>
         <source>Order play</source>
-        <translation>طلبات التشغيل</translation>
+        <translation>Dre urzh</translation>
     </message>
     <message>
         <source>Shuffle play</source>
-        <translation>خلط التشغيل</translation>
+        <translation>Lenn dre-zegouezh</translation>
     </message>
     <message>
         <source>Single play</source>
-        <translation>تشغيل مفرد</translation>
+        <translation>Lenn eeun</translation>
     </message>
     <message>
         <source>Single loop</source>
-        <translation>تكرار مفرد</translation>
+        <translation>Lenn e bouklenn</translation>
     </message>
     <message>
         <source>List loop</source>
-        <translation>تكرار القائمة</translation>
+        <translation>Roll-lenn e bouklenn</translation>
     </message>
 </context>
 <context>
     <name>dmr::ToolboxProxy</name>
     <message>
         <source>Play</source>
-        <translation>تشغيل</translation>
+        <translation>Lenn</translation>
     </message>
     <message>
         <source>Previous</source>
-        <translation>السابق</translation>
+        <translation>Kent</translation>
     </message>
     <message>
         <source>Next</source>
-        <translation>التالي</translation>
+        <translation>Da-heul</translation>
     </message>
     <message>
         <source>Subtitles</source>
-        <translation>الترجمات</translation>
+        <translation>Istitloù</translation>
     </message>
     <message>
         <source>Playlist</source>
-        <translation>قائمة التشغيل</translation>
+        <translation>Roll-lenn</translation>
     </message>
     <message>
         <source>Fullscreen</source>
-        <translation>ملء الشاشة</translation>
+        <translation>Skramm-leun</translation>
     </message>
     <message>
         <source>Play/Pause</source>
-        <translation>تشغيل/إيقاف مؤقت</translation>
+        <translation>Lenn/Ehanañ</translation>
     </message>
     <message>
         <source>play</source>
-        <translation>تشغيل</translation>
+        <translation>lenn</translation>
     </message>
     <message>
         <source>prev</source>
-        <translation>السابق</translation>
+        <translation>kent</translation>
     </message>
     <message>
         <source>next</source>
-        <translation>التالي</translation>
+        <translation>da-heul</translation>
     </message>
     <message>
         <source>fs</source>
@@ -824,15 +824,15 @@
     </message>
     <message>
         <source>list</source>
-        <translation>القائمة</translation>
+        <translation>listenn</translation>
     </message>
     <message>
         <source>Exit fullscreen</source>
-        <translation>خروج من ملء الشاشة</translation>
+        <translation>Kuitaat ar skramm-leun</translation>
     </message>
     <message>
         <source>Pause</source>
-        <translation>إيقاف مؤقت</translation>
+        <translation>Ehanet</translation>
     </message>
 </context>
 </TS>

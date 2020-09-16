@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="fi">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="fi" version="2.1">
 <context>
     <name>QObject</name>
     <message>
@@ -133,7 +131,7 @@
     </message>
     <message>
         <source>Fullscreen</source>
-        <translation>Kokoruutu</translation>
+        <translation>Koko näyttö</translation>
     </message>
     <message>
         <source>Pause/Play</source>
@@ -157,7 +155,7 @@
     </message>
     <message>
         <source>Film screenshot</source>
-        <translation>Filmin kuvakaappaus</translation>
+        <translation>Elokuvan kuvakaappaus</translation>
     </message>
     <message>
         <source>0.5s backward</source>
@@ -173,7 +171,7 @@
     </message>
     <message>
         <source>Exit fullscreen/mini mode</source>
-        <translation>Poistu kokonäytöstä/minitilaan</translation>
+        <translation>Poistu koko näytöstä/minitilasta</translation>
     </message>
     <message>
         <source>Movie</source>
@@ -209,7 +207,7 @@
     </message>
     <message>
         <source>Movie is a full-featured video player, supporting playing local and streaming media in multiple video formats.</source>
-        <translation>Teatteri on videotoistin, joka tukee paikallista ja suoratoistettavaa videotoistoa useissa videoformaateissa.</translation>
+        <translation>Elokuvat on monipuolinen videotoistin, joka tukee paikallista ja suoratoistettavaa mediaa monessa videoformaatissa.</translation>
     </message>
     <message>
         <source>OK</source>
@@ -221,7 +219,7 @@
     </message>
     <message>
         <source>Show thumbnails in progress bar</source>
-        <translation type="unfinished"></translation>
+        <translation>Näytä pikkukuvat edistymispalkissa</translation>
     </message>
 </context>
 <context>
@@ -232,7 +230,7 @@
     </message>
     <message>
         <source>Please enter the URL:</source>
-        <translation>Syötä URL:</translation>
+        <translation>Syötä verkko-osoite:</translation>
     </message>
     <message>
         <source>OK</source>
@@ -247,11 +245,11 @@
     </message>
     <message>
         <source>Fullscreen</source>
-        <translation>Kokoruutu</translation>
+        <translation>Koko näyttö</translation>
     </message>
     <message>
         <source>Always on Top</source>
-        <translation>Aina päällimmäisenä</translation>
+        <translation>Aina ylin</translation>
     </message>
     <message>
         <source>Empty playlist</source>
@@ -271,7 +269,7 @@
     </message>
     <message>
         <source>Open URL</source>
-        <translation>Avaa URL</translation>
+        <translation>Avaa verkko-osoite</translation>
     </message>
     <message>
         <source>Open CD/DVD</source>
@@ -295,7 +293,7 @@
     </message>
     <message>
         <source>Single Play</source>
-        <translation>Toista yksi</translation>
+        <translation>Toista kerran</translation>
     </message>
     <message>
         <source>Single Loop</source>
@@ -375,7 +373,7 @@
     </message>
     <message>
         <source>Film Screenshot</source>
-        <translation>Filmin kuvakaappaus</translation>
+        <translation>Elokuvan kuvakaappaus</translation>
     </message>
     <message>
         <source>Burst Shooting</source>
@@ -407,7 +405,7 @@
     </message>
     <message>
         <source>Open screenshot folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Avaa ruudunkaappauksen kansio</translation>
     </message>
 </context>
 <context>
@@ -545,7 +543,7 @@
     </message>
     <message>
         <source>Film screenshot</source>
-        <translation>Filmin kuvakaappaus</translation>
+        <translation>Elokuvan kuvakaappaus</translation>
     </message>
     <message>
         <source>Taking the screenshots, please wait...</source>
@@ -597,15 +595,11 @@
     </message>
     <message>
         <source>All videos (%2 %1)</source>
-        <translation type="obsolete">Kaikki videot (%1) {2 %1)?}</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>All videos (*)(%2 %1)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Please exit smart dock</source>
-        <translation type="unfinished"></translation>
+        <translation>Kaikki videot (*)(%2 %1)</translation>
     </message>
 </context>
 <context>
@@ -655,31 +649,31 @@
     </message>
     <message>
         <source>Codec info</source>
-        <translation type="unfinished"></translation>
+        <translation>Koodekkin tiedot</translation>
     </message>
     <message>
         <source>Video CodecID</source>
-        <translation type="unfinished"></translation>
+        <translation>Videokoodekki</translation>
     </message>
     <message>
         <source>Video CodeRate</source>
-        <translation type="unfinished"></translation>
+        <translation>Videokoodin nopeus</translation>
     </message>
     <message>
         <source>%1 kbps</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 kbps</translation>
     </message>
     <message>
         <source>FPS</source>
-        <translation type="unfinished"></translation>
+        <translation>Taajuus</translation>
     </message>
     <message>
         <source>%1 fps</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 fps</translation>
     </message>
     <message>
         <source>Proportion</source>
-        <translation type="unfinished"></translation>
+        <translation>Suhde</translation>
     </message>
     <message>
         <source>%1</source>
@@ -687,39 +681,39 @@
     </message>
     <message>
         <source>Audio info</source>
-        <translation type="unfinished"></translation>
+        <translation>Äänen tiedot</translation>
     </message>
     <message>
         <source>Audio CodecID</source>
-        <translation type="unfinished"></translation>
+        <translation>Äänikoodekki</translation>
     </message>
     <message>
         <source>Audio CodeRate</source>
-        <translation type="unfinished"></translation>
+        <translation>Äänikoodin nopeus</translation>
     </message>
     <message>
         <source>Audio digit</source>
-        <translation type="unfinished"></translation>
+        <translation>Ääni digitaalinen</translation>
     </message>
     <message>
         <source>%1 bits</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 bits</translation>
     </message>
     <message>
         <source>Channels</source>
-        <translation type="unfinished"></translation>
+        <translation>Kanavat</translation>
     </message>
     <message>
         <source>%1 channels</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 kanavaa</translation>
     </message>
     <message>
         <source>Sampling</source>
-        <translation type="unfinished"></translation>
+        <translation>Näytteenotto</translation>
     </message>
     <message>
         <source>%1hz</source>
-        <translation type="unfinished"></translation>
+        <translation>%1hz</translation>
     </message>
 </context>
 <context>
@@ -806,7 +800,7 @@
     </message>
     <message>
         <source>Fullscreen</source>
-        <translation>Kokoruutu</translation>
+        <translation>Koko näyttö</translation>
     </message>
     <message>
         <source>Play/Pause</source>
@@ -834,15 +828,11 @@
     </message>
     <message>
         <source>Exit fullscreen</source>
-        <translation>Poistu kokoruudusta</translation>
+        <translation>Poistu koko näytöstä</translation>
     </message>
     <message>
         <source>Pause</source>
         <translation>Pysäytä</translation>
-    </message>
-    <message>
-        <source>sub</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

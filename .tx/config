@@ -12,5 +12,6 @@ type = QT
 [deepin-movie.deepin-movie-desktop]
 file_filter = src/translations/desktop/desktop_<lang>.ts
 source_file = src/translations/desktop/desktop.ts
+preTranslate_file = src/deepin-movie.desktop
 source_lang = en
 type = QT

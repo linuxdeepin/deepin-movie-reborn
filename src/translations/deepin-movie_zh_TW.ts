@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="zh_TW">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="zh_TW" version="2.1">
 <context>
     <name>QObject</name>
     <message>
@@ -13,7 +11,7 @@
     </message>
     <message>
         <source>Network disconnected</source>
-        <translation type="unfinished"></translation>
+        <translation>網路已斷開</translation>
     </message>
     <message>
         <source>You don&apos;t have permission to operate this folder</source>
@@ -173,7 +171,7 @@
     </message>
     <message>
         <source>Exit fullscreen/mini mode</source>
-        <translation type="unfinished"></translation>
+        <translation>退出全螢幕/迷你模式</translation>
     </message>
     <message>
         <source>Movie</source>
@@ -193,7 +191,7 @@
     </message>
     <message>
         <source>Delete from playlist</source>
-        <translation type="unfinished"></translation>
+        <translation>從播放列表刪除</translation>
     </message>
     <message>
         <source>Film info</source>
@@ -201,7 +199,7 @@
     </message>
     <message>
         <source>Burst shooting</source>
-        <translation type="unfinished"></translation>
+        <translation>連拍截圖</translation>
     </message>
     <message>
         <source>Size</source>
@@ -209,19 +207,19 @@
     </message>
     <message>
         <source>Movie is a full-featured video player, supporting playing local and streaming media in multiple video formats.</source>
-        <translation type="unfinished"></translation>
+        <translation>影院是一款支援多種影片格式本機播放和流媒體播放的影片播放器。</translation>
     </message>
     <message>
         <source>OK</source>
         <translation>確認</translation>
     </message>
     <message>
-        <source>Show thumbnails in progress bar</source>
-        <translation type="unfinished"></translation>
+        <source>Default play mode</source>
+        <translation>預設播放模式</translation>
     </message>
     <message>
-        <source>Default play mode</source>
-        <translation type="unfinished"></translation>
+        <source>Show thumbnails in progress bar</source>
+        <translation>滑鼠滑動進度條為膠片格式</translation>
     </message>
 </context>
 <context>
@@ -255,7 +253,7 @@
     </message>
     <message>
         <source>Empty playlist</source>
-        <translation type="unfinished"></translation>
+        <translation>清空播放列表</translation>
     </message>
     <message>
         <source>Film info</source>
@@ -359,11 +357,11 @@
     </message>
     <message>
         <source>Select</source>
-        <translation>選擇</translation>
+        <translation>選擇字幕</translation>
     </message>
     <message>
         <source>Hide</source>
-        <translation>隱藏</translation>
+        <translation>隱藏字幕</translation>
     </message>
     <message>
         <source>Encodings</source>
@@ -379,7 +377,7 @@
     </message>
     <message>
         <source>Burst Shooting</source>
-        <translation>影片預覽圖</translation>
+        <translation>連拍截圖</translation>
     </message>
     <message>
         <source>Playlist</source>
@@ -391,7 +389,7 @@
     </message>
     <message>
         <source>Delete from playlist</source>
-        <translation type="unfinished"></translation>
+        <translation>從播放列表刪除</translation>
     </message>
     <message>
         <source>Display in file manager</source>
@@ -399,15 +397,15 @@
     </message>
     <message>
         <source>Next Frame</source>
-        <translation type="unfinished"></translation>
+        <translation>下一畫格</translation>
     </message>
     <message>
         <source>Previous Frame</source>
-        <translation type="unfinished"></translation>
+        <translation>上一畫格</translation>
     </message>
     <message>
         <source>Open screenshot folder</source>
-        <translation type="unfinished"></translation>
+        <translation>前往截圖資料夾</translation>
     </message>
 </context>
 <context>
@@ -469,7 +467,7 @@
     </message>
     <message>
         <source>Parse failed</source>
-        <translation type="unfinished"></translation>
+        <translation>解析失敗</translation>
     </message>
     <message>
         <source>Mute</source>
@@ -481,7 +479,7 @@
     </message>
     <message>
         <source>Track: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>音軌：%1</translation>
     </message>
     <message>
         <source>Subtitle %1: %2s</source>
@@ -525,11 +523,11 @@
     </message>
     <message>
         <source>No matching online subtitles</source>
-        <translation type="unfinished"></translation>
+        <translation>未找到匹配的線上字幕</translation>
     </message>
     <message>
         <source>Cannot open file or stream</source>
-        <translation type="unfinished"></translation>
+        <translation>打開無法文件或者流</translation>
     </message>
     <message>
         <source>Invalid file</source>
@@ -537,7 +535,7 @@
     </message>
     <message>
         <source>No video file found</source>
-        <translation type="unfinished"></translation>
+        <translation>沒有找到影片檔案</translation>
     </message>
     <message>
         <source>Open File</source>
@@ -549,7 +547,7 @@
     </message>
     <message>
         <source>Taking the screenshots, please wait...</source>
-        <translation type="unfinished"></translation>
+        <translation>正在截圖，請稍候...</translation>
     </message>
     <message>
         <source>OK</source>
@@ -557,55 +555,51 @@
     </message>
     <message>
         <source>Please insert a CD/DVD</source>
-        <translation type="unfinished"></translation>
+        <translation>請插入CD或DVD</translation>
     </message>
     <message>
         <source>Reading DVD files...</source>
-        <translation type="unfinished"></translation>
+        <translation>正在讀取光碟文件...</translation>
     </message>
     <message>
         <source>4K video may be stuck</source>
-        <translation type="unfinished"></translation>
+        <translation>播放4K影片可能會出現卡頓</translation>
     </message>
     <message>
         <source>Please load the video first</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>All videos (%2 %1)</source>
-        <translation type="obsolete">所有影片 (%1) {2 %1)?}</translation>
+        <translation>播放4K影片可能會出現卡頓</translation>
     </message>
     <message>
         <source>Order play</source>
-        <translation type="unfinished"></translation>
+        <translation>順序播放</translation>
     </message>
     <message>
         <source>Shuffle play</source>
-        <translation type="unfinished"></translation>
+        <translation>隨機播放</translation>
     </message>
     <message>
         <source>Single play</source>
-        <translation type="unfinished"></translation>
+        <translation>單獨播放</translation>
     </message>
     <message>
         <source>Single loop</source>
-        <translation type="unfinished"></translation>
+        <translation>單獨循環</translation>
     </message>
     <message>
         <source>List loop</source>
-        <translation type="unfinished"></translation>
+        <translation>列表循環</translation>
     </message>
     <message>
         <source>The CD/DVD has been ejected</source>
-        <translation type="unfinished"></translation>
+        <translation>CD/DVD已彈出</translation>
+    </message>
+    <message>
+        <source>All videos (%2 %1)</source>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>All videos (*)(%2 %1)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Please exit smart dock</source>
-        <translation type="unfinished"></translation>
+        <translation>所有影片 (*)(%2 %1)</translation>
     </message>
 </context>
 <context>
@@ -639,11 +633,11 @@
     </message>
     <message>
         <source>Duration</source>
-        <translation>Duration</translation>
+        <translation>影片長度</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation>Type</translation>
+        <translation>類型</translation>
     </message>
     <message>
         <source>Size</source>
@@ -655,85 +649,85 @@
     </message>
     <message>
         <source>Codec info</source>
-        <translation type="unfinished"></translation>
+        <translation>編碼訊息</translation>
     </message>
     <message>
         <source>Video CodecID</source>
-        <translation type="unfinished"></translation>
+        <translation>影片軌訊息</translation>
     </message>
     <message>
         <source>Video CodeRate</source>
-        <translation type="unfinished"></translation>
+        <translation>影片碼率</translation>
     </message>
     <message>
         <source>%1 kbps</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 kbps</translation>
     </message>
     <message>
         <source>FPS</source>
-        <translation type="unfinished"></translation>
+        <translation>影片幀率</translation>
     </message>
     <message>
         <source>%1 fps</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 fps</translation>
     </message>
     <message>
         <source>Proportion</source>
-        <translation type="unfinished"></translation>
+        <translation>顯示比例</translation>
     </message>
     <message>
         <source>%1</source>
-        <translation type="unfinished">%1</translation>
+        <translation>%1</translation>
     </message>
     <message>
         <source>Audio info</source>
-        <translation type="unfinished"></translation>
+        <translation>音訊訊息</translation>
     </message>
     <message>
         <source>Audio CodecID</source>
-        <translation type="unfinished"></translation>
+        <translation>編碼樣式</translation>
     </message>
     <message>
         <source>Audio CodeRate</source>
-        <translation type="unfinished"></translation>
+        <translation>編碼碼率</translation>
     </message>
     <message>
         <source>Audio digit</source>
-        <translation type="unfinished"></translation>
+        <translation>音訊位數</translation>
     </message>
     <message>
         <source>%1 bits</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 bits</translation>
     </message>
     <message>
         <source>Channels</source>
-        <translation type="unfinished"></translation>
+        <translation>聲道數</translation>
     </message>
     <message>
         <source>%1 channels</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 聲道</translation>
     </message>
     <message>
         <source>Sampling</source>
-        <translation type="unfinished"></translation>
+        <translation>採樣數</translation>
     </message>
     <message>
         <source>%1hz</source>
-        <translation type="unfinished"></translation>
+        <translation>%1hz</translation>
     </message>
 </context>
 <context>
     <name>dmr::MpvProxy</name>
     <message>
         <source>Internal</source>
-        <translation type="unfinished"></translation>
+        <translation>內嵌</translation>
     </message>
 </context>
 <context>
     <name>dmr::PlayItemWidget</name>
     <message>
         <source>The file does not exist</source>
-        <translation type="unfinished"></translation>
+        <translation>文件不存在</translation>
     </message>
 </context>
 <context>
@@ -744,7 +738,7 @@
     </message>
     <message>
         <source>%1 videos</source>
-        <translation type="unfinished"></translation>
+        <translation>%1個影片</translation>
     </message>
     <message>
         <source>Empty</source>
@@ -755,31 +749,31 @@
     <name>dmr::Settings</name>
     <message>
         <source>%1/Movie%2.jpg</source>
-        <translation type="unfinished"></translation>
+        <translation>%1/電影截圖%2.jpg</translation>
     </message>
     <message>
         <source>%1/Movie%2(%3).jpg</source>
-        <translation type="unfinished"></translation>
+        <translation>%1/電影截圖%2（%3）.jpg</translation>
     </message>
     <message>
         <source>Order play</source>
-        <translation type="unfinished"></translation>
+        <translation>順序播放</translation>
     </message>
     <message>
         <source>Shuffle play</source>
-        <translation type="unfinished"></translation>
+        <translation>隨機播放</translation>
     </message>
     <message>
         <source>Single play</source>
-        <translation type="unfinished"></translation>
+        <translation>單獨播放</translation>
     </message>
     <message>
         <source>Single loop</source>
-        <translation type="unfinished"></translation>
+        <translation>單獨循環</translation>
     </message>
     <message>
         <source>List loop</source>
-        <translation type="unfinished"></translation>
+        <translation>列表循環</translation>
     </message>
 </context>
 <context>
@@ -814,23 +808,23 @@
     </message>
     <message>
         <source>play</source>
-        <translation type="unfinished"></translation>
+        <translation>播放</translation>
     </message>
     <message>
         <source>prev</source>
-        <translation type="unfinished"></translation>
+        <translation>上一個</translation>
     </message>
     <message>
         <source>next</source>
-        <translation type="unfinished"></translation>
+        <translation>下一個</translation>
     </message>
     <message>
         <source>fs</source>
-        <translation type="unfinished"></translation>
+        <translation>全螢幕</translation>
     </message>
     <message>
         <source>list</source>
-        <translation type="unfinished"></translation>
+        <translation>播放列表</translation>
     </message>
     <message>
         <source>Exit fullscreen</source>
@@ -839,10 +833,6 @@
     <message>
         <source>Pause</source>
         <translation>暫停</translation>
-    </message>
-    <message>
-        <source>sub</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

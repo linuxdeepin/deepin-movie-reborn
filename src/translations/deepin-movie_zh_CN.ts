@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="zh_CN">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="zh_CN" version="2.1">
 <context>
     <name>QObject</name>
     <message>
@@ -406,10 +404,6 @@
         <translation>上一帧</translation>
     </message>
     <message>
-        <source>Go To Screenshot Folder</source>
-        <translation type="vanished">前往截图文件夹</translation>
-    </message>
-    <message>
         <source>Open screenshot folder</source>
         <translation>前往截图文件夹</translation>
     </message>
@@ -601,15 +595,11 @@
     </message>
     <message>
         <source>All videos (%2 %1)</source>
-        <translation type="vanished">所有视频(%2 %1)</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>All videos (*)(%2 %1)</source>
         <translation>所有视频 (*)(%2 %1)</translation>
-    </message>
-    <message>
-        <source>Please exit smart dock</source>
-        <translation>请退出智能停靠</translation>
     </message>
 </context>
 <context>
@@ -843,10 +833,6 @@
     <message>
         <source>Pause</source>
         <translation>暂停</translation>
-    </message>
-    <message>
-        <source>sub</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>
