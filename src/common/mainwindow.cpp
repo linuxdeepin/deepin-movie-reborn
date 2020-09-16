@@ -865,7 +865,7 @@ MainWindow::MainWindow(QWidget *parent)
             _playState->setIcon(QIcon(":/resources/icons/dark/normal/play-big_normal.svg"));
         }
     });*/
-
+#ifndef __mips__
     _progIndicator = new MovieProgressIndicator(this);
     _progIndicator->setVisible(false);
     connect(_engine, &PlayerEngine::elapsedChanged, [ = ]() {
@@ -875,6 +875,7 @@ MainWindow::MainWindow(QWidget *parent)
             _progIndicator->updateMovieProgress(oldDuration, oldElapsed);
         }
     });
+#endif
 
     // mini ui
     auto *signalMapper = new QSignalMapper(this);
@@ -917,11 +918,13 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(_engine, &PlayerEngine::stateChanged, [ = ]() {
         qInfo() << __func__ << _engine->state();
+#ifndef __mips__
         if (_engine->state() == PlayerEngine::CoreState::Idle) {
             _fullscreentimelable->close();
             _progIndicator->setVisible(false);
             emit frameMenuEnable(false);
         }
+#endif
         if (_engine->state() == PlayerEngine::CoreState::Playing) {
             _miniPlayBtn->setIcon(QIcon(":/resources/icons/light/mini/pause-normal-mini.svg"));
             _miniPlayBtn->setObjectName("MiniPauseBtn");
@@ -1097,6 +1100,7 @@ MainWindow::MainWindow(QWidget *parent)
     }
 #endif
 
+#ifndef __mips__
     _fullscreentimelable = new QLabel;
     _fullscreentimelable->setAttribute(Qt::WA_TranslucentBackground);
     _fullscreentimelable->setWindowFlags(Qt::FramelessWindowHint);
@@ -1111,6 +1115,7 @@ MainWindow::MainWindow(QWidget *parent)
     _fullscreentimebox->addStretch();
     _fullscreentimelable->setLayout(_fullscreentimebox);
     _fullscreentimelable->close();
+#endif
 
     _animationlable = new AnimationLabel;
     _animationlable->setAttribute(Qt::WA_TranslucentBackground);
@@ -1147,6 +1152,7 @@ MainWindow::MainWindow(QWidget *parent)
         this->activateWindow();
     });
 
+#ifndef __mips__
     connect(qApp, &QGuiApplication::fontChanged, this, [ = ](const QFont & font) {
         QFontMetrics fm(DFontSizeManager::instance()->get(DFontSizeManager::T6));
         _toolbox->getfullscreentimeLabel()->setMinimumWidth(fm.width(_toolbox->getfullscreentimeLabel()->text()));
@@ -1156,6 +1162,7 @@ MainWindow::MainWindow(QWidget *parent)
         QRect deskRect = QApplication::desktop()->availableGeometry();
         _fullscreentimelable->setGeometry(deskRect.width() - pixelsWidth - 32, 40, pixelsWidth + 32, 36);
     });
+#endif
 
     connect(dmr::dvd::RetrieveDvdThread::get(), &dmr::dvd::RetrieveDvdThread::sigData, this, &MainWindow::onDvdData);
 
@@ -1323,7 +1330,9 @@ void MainWindow::onWindowStateChanged()
     }
     //WTF: this->geometry() is not size of fullscreen !
     //_progIndicator->move(geometry().width() - _progIndicator->width() - 18, 14);
+#ifndef __mips__
     _progIndicator->setVisible(isFullScreen() && _engine && _engine->state() != PlayerEngine::Idle);
+#endif
     toggleShapeMask();
 
 #ifndef USE_DXCB
@@ -2196,6 +2205,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             requestAction(ActionFactory::TogglePlaylist);
         }
         //this->setWindowState(Qt::WindowNoState);
+#ifndef __mips__
         if (isFullScreen()) {
             //requestAction(ActionFactory::ToggleFullscreen);
             /*if (!fromUI) {
@@ -2205,6 +2215,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                 _fullscreentimelable->close();
             }
         }
+#endif
 
         if (!fromUI) {
             reflectActionToUI(kd);
@@ -2261,9 +2272,11 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             /*if (!fromUI) {
                 reflectActionToUI(ActionFactory::ToggleFullscreen);
             }*/
+#ifndef __mips__
             if (!isFullScreen()) {
                 _fullscreentimelable->close();
             }
+#endif
         }
         break;
     }
@@ -2294,9 +2307,11 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                     _titlebar->setFixedWidth(_lastRectInNormalMode.width());             //bug 39991
                 }
             }
+#ifndef __mips__
             if (!isFullScreen()) {
                 _fullscreentimelable->close();
             }
+#endif
         } else {
             _toolbox->setVolSliderHide();
 //            if (/*!_miniMode && (fromUI || isShortcut) && */windowState() == Qt::WindowNoState) {
@@ -2308,13 +2323,14 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             showFullScreen();
             if (isFullScreen()) {
                 _maxfornormalflag = false;
+#ifndef __mips__
                 if(_engine->state() != PlayerEngine::CoreState::Idle){
                     int pixelsWidth = _toolbox->getfullscreentimeLabel()->width() + _toolbox->getfullscreentimeLabelend()->width();
                     QRect deskRect = QApplication::desktop()->availableGeometry();
                     _fullscreentimelable->setGeometry(deskRect.width() - pixelsWidth - 60, 40, pixelsWidth + 60, 36);
                     _fullscreentimelable->show();
                 }
-
+#endif
             }
         }
         if (!fromUI) {
@@ -3698,9 +3714,11 @@ void MainWindow::LimitWindowize()
 void MainWindow::resizeEvent(QResizeEvent *ev)
 {
     qDebug() << __func__ << geometry();
+#ifndef __mips__
     if (isFullScreen()) {
         _progIndicator->move(geometry().width() - _progIndicator->width() - 18, 8);
     }
+#endif
     // modify 4.1  Limit video to mini mode size by thx
     LimitWindowize();
 
