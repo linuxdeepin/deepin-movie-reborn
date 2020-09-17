@@ -726,23 +726,8 @@ MainWindow::MainWindow(QWidget *parent)
     //this->setMouseTracking(true);
     this->setAttribute(Qt::WA_AcceptTouchEvents);
     _mousePressTimer.setInterval(1300);
-    connect(&_mousePressTimer, &QTimer::timeout, this, [ = ]() {
-        _mousePressTimer.stop();
-        if (_miniMode || _inBurstShootMode || !_mousePressed)
-            return;
+    connect(&_mousePressTimer, &QTimer::timeout, this, &MainWindow::slotmousePressTimerTimeOut);
 
-        if (insideToolsArea(QCursor::pos()))
-            return;
-
-        resumeToolsWindow();
-//        QTimer::singleShot(0, [ = ]() {
-//            qApp->restoreOverrideCursor();
-//            ActionFactory::get().mainContextMenu()->popup(QCursor::pos());
-//        });
-
-        _mousePressed = false;
-        _isTouch = false;
-    });
     //*************
     m_lastVolume = Settings::get().internalOption("last_volume").toInt();;
     bool composited = CompositingManager::get().composited();
@@ -820,22 +805,8 @@ MainWindow::MainWindow(QWidget *parent)
     _toolbox->setFocusPolicy(Qt::NoFocus);
 
     titlebar()->deleteLater();
+    connect(_engine, &PlayerEngine::stateChanged, this, &MainWindow::slotPlayerStateChanged);
 
-    connect(_engine, &PlayerEngine::stateChanged, [ = ]() {
-        setInit(_engine->state() != PlayerEngine::Idle);
-        resumeToolsWindow();
-        updateWindowTitle();
-
-        // delayed checking if engine is still idle, in case other videos are schedulered (next/prev req)
-        // and another resize event will happen after that
-        QTimer::singleShot(100, [ = ]() {
-            if (_engine->state() == PlayerEngine::Idle && !_miniMode
-                    && windowState() == Qt::WindowNoState && !m_bIsFullSreen) {
-                this->setMinimumSize(QSize(614, 500));
-                this->resize(850, 600);
-            }
-        });
-    });
 
     connect(ActionFactory::get().mainContextMenu(), &DMenu::triggered,
             this, &MainWindow::menuItemInvoked);
@@ -843,12 +814,8 @@ MainWindow::MainWindow(QWidget *parent)
             &ActionFactory::get(), &ActionFactory::frameMenuEnable);
     connect(ActionFactory::get().playlistContextMenu(), &DMenu::triggered,
             this, &MainWindow::menuItemInvoked);
-    connect(qApp, &QGuiApplication::focusWindowChanged, [ = ]() {
-        if (qApp->focusWindow() != windowHandle())
-            suspendToolsWindow();
-        else
-            resumeToolsWindow();
-    });
+    connect(qApp, &QGuiApplication::focusWindowChanged, this, &MainWindow::slotFocusWindowChanged);
+
 
     /*_playState = new DIconButton(this);
     //    _playState->setScaledContents(true);
@@ -1018,26 +985,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(_engine, &PlayerEngine::subCodepageChanged, [ = ]() {
         reflectActionToUI(ActionFactory::ActionKind::ChangeSubCodepage);
     });
+    connect(_engine, &PlayerEngine::fileLoaded, this, &MainWindow::slotFileLoaded);
 
-    connect(_engine, &PlayerEngine::fileLoaded, [ = ]() {
-        _retryTimes = 0;
-        if (windowState() == Qt::WindowNoState && _lastRectInNormalMode.isValid()) {
-            const auto &mi = _engine->playlist().currentInfo().mi;
-            //_lastRectInNormalMode.setSize({mi.width, mi.height});    //窗口大小和影片大小无关
-        }
-        this->resizeByConstraints();
-        /*QDesktopWidget desktop;
-        if (desktop.screenCount() > 1) {
-            if (!isFullScreen() && !isMaximized() && !_miniMode) {
-                auto geom = qApp->desktop()->availableGeometry(this);
-                move((geom.width() - this->width()) / 2, (geom.height() - this->height()) / 2);
-            }
-        } else {
-            utils::MoveToCenter(this);
-        }*/
-
-        m_IsFree = true;
-    });
     connect(_engine, &PlayerEngine::videoSizeChanged, [ = ]() {
         this->resizeByConstraints();
     });
@@ -1146,13 +1095,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(&OnlineSubtitle::get(), &OnlineSubtitle::onlineSubtitleStateChanged, this, &MainWindow::checkOnlineSubtitle);
     connect(_engine, &PlayerEngine::mpvErrorLogsChanged, this, &MainWindow::checkErrorMpvLogsChanged);
     connect(_engine, &PlayerEngine::mpvWarningLogsChanged, this, &MainWindow::checkWarningMpvLogsChanged);
-    connect(_engine, &PlayerEngine::urlpause, this, [ = ](bool status) {
-        if (status) {
-            auto msg = QString(tr("Buffering..."));
-            _nwComm->updateWithMessage(msg);
-        }
+    connect(_engine, &PlayerEngine::urlpause, this, &MainWindow::slotUrlpause);
 
-    });
 //    connect(_engine, &PlayerEngine::checkMuted, this, [=](bool mute) {
 //        this->setMusicMuted(!mute);
 //        volumeMonitoring.start();
@@ -1161,16 +1105,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::newProcessInstance, this, [ = ] {
         this->activateWindow();
     });
+    connect(qApp, &QGuiApplication::fontChanged, this, &MainWindow::slotFontChanged);
 
-    connect(qApp, &QGuiApplication::fontChanged, this, [ = ]() {
-        QFontMetrics fm(DFontSizeManager::instance()->get(DFontSizeManager::T6));
-        _toolbox->getfullscreentimeLabel()->setMinimumWidth(fm.width(_toolbox->getfullscreentimeLabel()->text()));
-        _toolbox->getfullscreentimeLabelend()->setMinimumWidth(fm.width(_toolbox->getfullscreentimeLabelend()->text()));
-
-        int pixelsWidth = _toolbox->getfullscreentimeLabel()->width() + _toolbox->getfullscreentimeLabelend()->width();
-        QRect deskRect = QApplication::desktop()->availableGeometry();
-        _fullscreentimelable->setGeometry(deskRect.width() - pixelsWidth - 32, 40, pixelsWidth + 32, 36);
-    });
 
     //connect(dmr::dvd::RetrieveDvdThread::get(), &dmr::dvd::RetrieveDvdThread::sigData, this, &MainWindow::onDvdData);
 
@@ -1200,14 +1136,8 @@ MainWindow::MainWindow(QWidget *parent)
         changedVolumeSlot(vol);
     });
 
-    connect(&volumeMonitoring, &VolumeMonitoring::muteChanged, this, [ = ](bool mute) {
-        //首次启动的时候先判断一次设置的静音状态
-        if (!m_bFirstInit) {
-            this->setMusicMuted(_engine->muted());
-            m_bFirstInit = true;
-        }
-        changedMute(mute);
-    });
+    connect(&volumeMonitoring, &VolumeMonitoring::muteChanged, this, &MainWindow::slotMuteChanged);
+
 
     connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, &MainWindow::updateMiniBtnTheme);
 
@@ -3537,6 +3467,98 @@ void MainWindow::my_setStayOnTop(const QWidget *widget, bool on)
                SubstructureRedirectMask | SubstructureNotifyMask,
                &xev);
     XFlush(display);
+}
+
+void MainWindow::slotmousePressTimerTimeOut()
+{
+    _mousePressTimer.stop();
+    if (_miniMode || _inBurstShootMode || !_mousePressed)
+        return;
+
+    if (insideToolsArea(QCursor::pos()))
+        return;
+
+    resumeToolsWindow();
+    _mousePressed = false;
+    _isTouch = false;
+}
+
+void MainWindow::slotPlayerStateChanged()
+{
+    PlayerEngine *engine = dynamic_cast<PlayerEngine *>(sender());
+    if(!engine) return;
+    setInit(engine->state() != PlayerEngine::Idle);
+    resumeToolsWindow();
+    updateWindowTitle();
+
+    // delayed checking if engine is still idle, in case other videos are schedulered (next/prev req)
+    // and another resize event will happen after that
+    QTimer::singleShot(100, [ = ]() {
+        if (engine->state() == PlayerEngine::Idle && !_miniMode
+                && windowState() == Qt::WindowNoState && !m_bIsFullSreen) {
+            this->setMinimumSize(QSize(614, 500));
+            this->resize(850, 600);
+        }
+    });
+}
+
+void MainWindow::slotFocusWindowChanged()
+{
+    if (qApp->focusWindow() != windowHandle())
+        suspendToolsWindow();
+    else
+        resumeToolsWindow();
+}
+
+void MainWindow::slotElapsedChanged()
+{
+    PlayerEngine *engine = dynamic_cast<PlayerEngine *>(sender());
+    if(engine)
+    {
+        _progIndicator->updateMovieProgress(engine->duration(), engine->elapsed());
+    }
+}
+
+void MainWindow::slotFileLoaded()
+{
+    PlayerEngine *engine = dynamic_cast<PlayerEngine *>(sender());
+    if(!engine) return;
+    _retryTimes = 0;
+//    if (windowState() == Qt::WindowNoState && _lastRectInNormalMode.isValid()) {
+//        const auto &mi = engine->playlist().currentInfo().mi;
+//     }
+    this->resizeByConstraints();
+
+    m_IsFree = true;
+}
+
+void MainWindow::slotUrlpause(bool status)
+{
+    if (status) {
+        auto msg = QString(tr("Buffering..."));
+        _nwComm->updateWithMessage(msg);
+    }
+}
+
+void MainWindow::slotFontChanged(const QFont &/*font*/)
+{
+    QFontMetrics fm(DFontSizeManager::instance()->get(DFontSizeManager::T6));
+    _toolbox->getfullscreentimeLabel()->setMinimumWidth(fm.width(_toolbox->getfullscreentimeLabel()->text()));
+    _toolbox->getfullscreentimeLabelend()->setMinimumWidth(fm.width(_toolbox->getfullscreentimeLabelend()->text()));
+
+    int pixelsWidth = _toolbox->getfullscreentimeLabel()->width() + _toolbox->getfullscreentimeLabelend()->width();
+    QRect deskRect = QApplication::desktop()->availableGeometry();
+    _fullscreentimelable->setGeometry(deskRect.width() - pixelsWidth - 32, 40, pixelsWidth + 32, 36);
+}
+
+void MainWindow::slotMuteChanged(bool mute)
+{
+    //首次启动的时候先判断一次设置的静音状态
+    if (!m_bFirstInit) {
+        this->setMusicMuted(_engine->muted());
+        m_bFirstInit = true;
+    }
+    changedMute(mute);
 }
 
 void MainWindow::checkErrorMpvLogsChanged(const QString prefix, const QString text)

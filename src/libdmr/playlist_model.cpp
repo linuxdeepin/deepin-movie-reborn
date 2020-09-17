@@ -504,6 +504,35 @@ bool PlayItemInfo::refresh()
     return false;
 }
 
+void PlaylistModel::slotStateChanged()
+{
+    PlayerEngine *e = dynamic_cast<PlayerEngine *>(sender());
+    if(!e) return;
+    qDebug() << "model" << "_userRequestingItem" << _userRequestingItem << "state" << e->state();
+    switch (e->state()) {
+    case PlayerEngine::Playing: {
+        auto &pif = currentInfo();
+        if (!pif.url.isLocalFile() && !pif.loaded) {
+            pif.mi.width = e->videoSize().width();
+            pif.mi.height = e->videoSize().height();
+            pif.mi.duration = e->duration();
+            pif.loaded = true;
+            emit itemInfoUpdated(_current);
+        }
+        break;
+    }
+    case PlayerEngine::Paused:
+        break;
+
+    case PlayerEngine::Idle:
+        if (!_userRequestingItem) {
+            stop();
+            playNext(false);
+        }
+        break;
+    }
+}
+
 PlaylistModel::PlaylistModel(PlayerEngine *e)
     : _engine(e)
 {
@@ -519,31 +548,8 @@ PlaylistModel::PlaylistModel(PlayerEngine *e)
                     .arg(qApp->organizationName())
                     .arg(qApp->applicationName());
 
-    connect(e, &PlayerEngine::stateChanged, [ = ]() {
-        qDebug() << "model" << "_userRequestingItem" << _userRequestingItem << "state" << e->state();
-        switch (e->state()) {
-        case PlayerEngine::Playing: {
-            auto &pif = currentInfo();
-            if (!pif.url.isLocalFile() && !pif.loaded) {
-                pif.mi.width = e->videoSize().width();
-                pif.mi.height = e->videoSize().height();
-                pif.mi.duration = e->duration();
-                pif.loaded = true;
-                emit itemInfoUpdated(_current);
-            }
-            break;
-        }
-        case PlayerEngine::Paused:
-            break;
+	connect(e, &PlayerEngine::stateChanged, this, &PlaylistModel::slotStateChanged);
 
-        case PlayerEngine::Idle:
-            if (!_userRequestingItem) {
-                stop();
-                playNext(false);
-            }
-            break;
-        }
-    });
 
 //    _jobWatcher = new QFutureWatcher<PlayItemInfo>();
 //    connect(_jobWatcher, &QFutureWatcher<PlayItemInfo>::finished,

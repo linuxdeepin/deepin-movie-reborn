@@ -63,9 +63,8 @@ NotificationWidget::NotificationWidget(QWidget *parent)
     _timer = new QTimer(this);
     _timer->setInterval(2000);
     _timer->setSingleShot(true);
-    connect(_timer, &QTimer::timeout, [ = ]() {
-        this->hide();
-    });
+    connect(_timer, &QTimer::timeout, this, &QWidget::hide);
+
 
 }
 

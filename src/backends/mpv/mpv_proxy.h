@@ -239,6 +239,8 @@ public slots:
     void volumeDown() override;
     void changeVolume(int val) override;
     void toggleMute() override;
+    //lambda表达式改为槽函数
+    void slotStateChanged();
 
 protected:
     void resizeEvent(QResizeEvent *re) override;

@@ -52,13 +52,7 @@ LineEdit::LineEdit(QWidget *parent)
     _clearAct = new QAction(icon, "", this);
 
     connect(_clearAct, &QAction::triggered, this, &QLineEdit::clear);
-    connect(this, &QLineEdit::textChanged, [ = ](const QString & s) {
-        if (s.isEmpty()) {
-            removeAction(_clearAct);
-        } else {
-            addAction(_clearAct, QLineEdit::TrailingPosition);
-        }
-    });
+	connect(this, &QLineEdit::textChanged, this, &LineEdit::slotTextChanged);
 
 }
 
@@ -70,6 +64,15 @@ void LineEdit::showEvent(QShowEvent *se)
 void LineEdit::resizeEvent(QResizeEvent *re)
 {
     QLineEdit::resizeEvent(re);
+}
+
+void LineEdit::slotTextChanged(const QString &s)
+{
+    if (s.isEmpty()) {
+        removeAction(_clearAct);
+    } else {
+        addAction(_clearAct, QLineEdit::TrailingPosition);
+    }
 }
 
 }

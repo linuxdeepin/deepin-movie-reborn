@@ -153,10 +153,8 @@ void MpvProxy::firstInit()
         _handle = myHandle::myFromRawHandle(mpv_init());
         if (CompositingManager::get().composited()) {
             _gl_widget = new MpvGLWidget(this, _handle);
-            connect(this, &MpvProxy::stateChanged, [ = ]() {
-                _gl_widget->setPlaying(state() != Backend::PlayState::Stopped);
-                _gl_widget->update();
-            });
+            connect(this, &MpvProxy::stateChanged, this, &MpvProxy::slotStateChanged);
+
 
 #if defined(USE_DXCB) || defined(_LIBDMR_)
             _gl_widget->toggleRoundedClip(false);
@@ -993,6 +991,12 @@ void MpvProxy::toggleMute()
         m_bInited = true;
     }
     my_command(_handle, args);
+}
+
+void MpvProxy::slotStateChanged()
+{
+    _gl_widget->setPlaying(state() != Backend::PlayState::Stopped);
+    _gl_widget->update();
 }
 
 void MpvProxy::play()

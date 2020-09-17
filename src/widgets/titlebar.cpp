@@ -106,51 +106,56 @@ Titlebar::Titlebar(QWidget *parent) : DBlurEffectWidget(parent), d_ptr(new Title
     d->m_titlebar->addWidget(d->m_titletxt, Qt::AlignCenter);
 
     d->m_shadowEffect = new QGraphicsDropShadowEffect(this);
-    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, [ = ] {
-        QPalette pa1, pa2;
-        if (d->m_play)
-        {
-            pa1.setColor(QPalette::ButtonText, d->playColor);
-            pa2.setColor(QPalette::WindowText, d->playColor);
-            d->m_titlebar->setPalette(pa1);
-            d->m_titletxt->setPalette(pa2);
-            d->m_shadowEffect->setOffset(d->offsetX, d->offsetY);
-            d->m_shadowEffect->setBlurRadius(d->offsetY);
-            d->m_shadowEffect->setColor(d->darkEffectColor);
-        } else
-        {
-            if (d->m_play) {
-                pa1.setColor(QPalette::ButtonText, d->playColor);
-                pa2.setColor(QPalette::WindowText, d->playColor);
-                d->m_titlebar->setPalette(pa1);
-                d->m_titletxt->setPalette(pa2);
-            } else {
-                if (DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::DarkType) {
-                    pa1.setColor(QPalette::ButtonText, d->playColor);
-                    pa2.setColor(QPalette::WindowText, d->playColor);
-                    d->m_titlebar->setPalette(pa1);
-                    d->m_titletxt->setPalette(pa2);
-                    d->m_shadowEffect->setOffset(d->offsetX, d->offsetY);
-                    d->m_shadowEffect->setBlurRadius(d->offsetY);
-                    d->m_shadowEffect->setColor(d->darkEffectColor);
-                } else {
-                    pa1.setColor(QPalette::ButtonText, QColor(98, 110, 136, 225));
-                    pa2.setColor(QPalette::WindowText, QColor(98, 110, 136, 225));
-                    d->m_titlebar->setPalette(pa1);
-                    d->m_titletxt->setPalette(pa2);
-                    d->m_shadowEffect->setOffset(d->offsetX, d->offsetY);
-                    d->m_shadowEffect->setBlurRadius(d->blurRadius);
-                    d->m_shadowEffect->setColor(d->lightEffectColor);
-                }
-            }
-        }
-        this->setGraphicsEffect(d->m_shadowEffect);
-    });
+    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, &Titlebar::slotThemeTypeChanged);
+    
 }
 
 Titlebar::~Titlebar()
 {
 
+}
+
+void Titlebar::slotThemeTypeChanged()
+{
+    Q_D(const Titlebar);
+    QPalette pa1, pa2;
+    if (d->m_play)
+    {
+        pa1.setColor(QPalette::ButtonText, d->playColor);
+        pa2.setColor(QPalette::WindowText, d->playColor);
+        d->m_titlebar->setPalette(pa1);
+        d->m_titletxt->setPalette(pa2);
+        d->m_shadowEffect->setOffset(d->offsetX, d->offsetY);
+        d->m_shadowEffect->setBlurRadius(d->offsetY);
+        d->m_shadowEffect->setColor(d->darkEffectColor);
+    } else
+    {
+        if (d->m_play) {
+            pa1.setColor(QPalette::ButtonText, d->playColor);
+            pa2.setColor(QPalette::WindowText, d->playColor);
+            d->m_titlebar->setPalette(pa1);
+            d->m_titletxt->setPalette(pa2);
+        } else {
+            if (DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::DarkType) {
+                pa1.setColor(QPalette::ButtonText, d->playColor);
+                pa2.setColor(QPalette::WindowText, d->playColor);
+                d->m_titlebar->setPalette(pa1);
+                d->m_titletxt->setPalette(pa2);
+                d->m_shadowEffect->setOffset(d->offsetX, d->offsetY);
+                d->m_shadowEffect->setBlurRadius(d->offsetY);
+                d->m_shadowEffect->setColor(d->darkEffectColor);
+            } else {
+                pa1.setColor(QPalette::ButtonText, QColor(98, 110, 136, 225));
+                pa2.setColor(QPalette::WindowText, QColor(98, 110, 136, 225));
+                d->m_titlebar->setPalette(pa1);
+                d->m_titletxt->setPalette(pa2);
+                d->m_shadowEffect->setOffset(d->offsetX, d->offsetY);
+                d->m_shadowEffect->setBlurRadius(d->blurRadius);
+                d->m_shadowEffect->setColor(d->lightEffectColor);
+            }
+        }
+    }
+    this->setGraphicsEffect(d->m_shadowEffect);
 }
 
 DTitlebar *Titlebar::titlebar()

@@ -260,6 +260,25 @@ protected slots:
     */
     void progressHoverChanged(int v);
     void updateHoverPreview(const QUrl &url, int secs);
+    //把lambda表达式改为槽函数，modify by myk
+    void slotThemeTypeChanged();
+    void slotLeavePreview();
+    void slotLeaveSlider();
+    void slotSliderPressed();
+    void slotSliderReleased();
+    void slotBaseMuteChanged(QString sk, const QVariant & val);
+    void slotLeaveViewProgBar();
+    void slotVolumeButtonClicked();
+    void slotRequestVolumeUp();
+    void slotRequestVolumeDown();
+    void slotFileLoaded();
+    //原有两个连接，合并为一个
+    void slotElapsedChanged();
+    void slotApplicationStateChanged(Qt::ApplicationState e);
+    void slotPlayListCurrentChanged();
+    void slotPlayListStateChange();
+    void slotUpdateThumbnailTimeOut();
+    void slotProAnimationFinished();
 
 protected:
 //    void paintEvent(QPaintEvent *pe) override;

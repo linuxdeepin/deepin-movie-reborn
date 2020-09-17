@@ -139,6 +139,8 @@ protected:
 private slots:
     void OnFontChanged(const QFont &font);
     void changedHeight(const int);
+    //把lambda表达式改为槽函数，modify by myk
+    void slotThemeTypeChanged();
 
 private:
     QList<DDrawer *> addExpandWidget(const QStringList &titleList);

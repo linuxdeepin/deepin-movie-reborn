@@ -209,6 +209,11 @@ public slots:
     void openItemInFM();
     void showItemInfo();
     void removeClickedItem(bool isShortcut);
+    //把lambda表达式改为槽函数，modify by myk
+    void slotCloseTimeTimeOut();
+    void slotCloseItem(QWidget * w);
+    void slotDoubleClickedItem(QWidget * w);
+    void slotRowsMoved();
 
 protected:
     void contextMenuEvent(QContextMenuEvent *cme) override;

@@ -202,8 +202,15 @@ public slots:
     void syncPostion();
     //设置窗口顶层
     void my_setStayOnTop(const QWidget *widget, bool on);
-
-
+    //lambda表达式改为槽函数
+    void slotmousePressTimerTimeOut();
+    void slotPlayerStateChanged();
+    void slotFocusWindowChanged();
+    void slotElapsedChanged();
+    void slotFileLoaded();
+    void slotUrlpause(bool status);
+    void slotFontChanged(const QFont &font);
+    void slotMuteChanged(bool mute);
 protected:
     void showEvent(QShowEvent *event) override;
     void hideEvent(QHideEvent *event) override;

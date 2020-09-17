@@ -461,10 +461,8 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
     tmp = nullptr;
 
     connect(qApp, &QGuiApplication::fontChanged, this, &MovieInfoDialog::OnFontChanged);
-    connect(DApplicationHelper::instance(), &DApplicationHelper::themeTypeChanged, this, [ = ] {
-        m_fileNameLbl->setForegroundRole(DPalette::BrightText);
-        //title->setForegroundRole(DPalette::Text);
-    });
+    connect(DApplicationHelper::instance(), &DApplicationHelper::themeTypeChanged, this, &MovieInfoDialog::slotThemeTypeChanged);
+
 
 //    if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
 //        closeBt->setNormalPic(INFO_CLOSE_LIGHT);
@@ -537,6 +535,11 @@ void MovieInfoDialog::changedHeight(const int height)
         }
         lastHeight = -1;
     }
+}
+
+void MovieInfoDialog::slotThemeTypeChanged()
+{
+    m_fileNameLbl->setForegroundRole(DPalette::BrightText);
 }
 
 void MovieInfoDialog::addRow(QString title, QString field, QFormLayout *form, QList<DLabel *> &tipLst)
