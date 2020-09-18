@@ -1852,6 +1852,7 @@ void ToolboxProxy::setup()
     _progBar->setObjectName("MovieProgress");
     _progBar->slider()->setOrientation(Qt::Horizontal);
     _progBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+    _progBar->slider()->setFocusPolicy(Qt::FocusPolicy::NoFocus);
 //    _progBar->setFixedHeight(60);
 //    _progBar->setFixedWidth(584);
 //    _progBar->setFixedWidth(1450);
@@ -2026,6 +2027,7 @@ void ToolboxProxy::setup()
     _subBtn->setIconSize(QSize(36, 36));
     _subBtn->setFixedSize(50, 50);
     _subBtn->initToolTip();
+    _subBtn->setFocusPolicy(Qt::FocusPolicy::NoFocus);
     connect(_subBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_subBtn, "sub");
     _right->addWidget(_subBtn);
@@ -2034,11 +2036,13 @@ void ToolboxProxy::setup()
 
     _volBtn = new VolumeButton(bot_toolWgt);
     _volBtn->setFixedSize(50, 50);
+    _volBtn->setFocusPolicy(Qt::FocusPolicy::NoFocus);
 //    connect(_volBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
 //    signalMapper->setMapping(_volBtn, "vol");
 //    _right->addWidget(_volBtn);
     if (CompositingManager::get().composited()) {
         _volSlider = new VolumeSlider(_engine, _mainWindow, _mainWindow);
+        _volSlider->setFocusPolicy(Qt::FocusPolicy::NoFocus);
 
         connect(_volBtn, &VolumeButton::clicked, this, &ToolboxProxy::slotVolumeButtonClicked);
 
@@ -2052,6 +2056,7 @@ void ToolboxProxy::setup()
 //        installHint(_volBtn, _volSlider);
 #else
         _volSlider = new VolumeSlider(_engine, _mainWindow, _mainWindow);
+        _volSlider->setFocusPolicy(Qt::FocusPolicy::NoFocus);
 //        connect(_volBtn, &VolumeButton::entered, [ = ]() {
 //            _volSlider->stopTimer();
 //            _volSlider->show(_mainWindow->width() - _volBtn->width() / 2 - _playBtn->width() - 43,
@@ -2083,6 +2088,7 @@ void ToolboxProxy::setup()
     _fsBtn->setIconSize(QSize(36, 36));
     _fsBtn->setFixedSize(50, 50);
     _fsBtn->initToolTip();
+    _fsBtn->setFocusPolicy(Qt::FocusPolicy::NoFocus);
     connect(_fsBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_fsBtn, "fs");
 
@@ -2096,8 +2102,10 @@ void ToolboxProxy::setup()
     _listBtn->setIconSize(QSize(36, 36));
     _listBtn->setFixedSize(50, 50);
     _listBtn->initToolTip();
+    _listBtn->setFocusPolicy(Qt::FocusPolicy::NoFocus);
 //    _listBtn->setFocusPolicy(Qt::FocusPolicy::TabFocus);
     _listBtn->setCheckable(true);
+
 
     connect(_listBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_listBtn, "list");
