@@ -372,7 +372,7 @@ mpv_handle *MpvProxy::mpv_init()
         my_set_property(h, "wid", m_parentWidget->winId());
     }
     if (QFile::exists("/dev/csmcore")) {
-        my_set_property(h, "vo", "x11");
+        my_set_property(h, "vo", "xv,x11");
         my_set_property(h, "hwdec", "auto");
     }
     qDebug() << __func__ << my_get_property(h, "vo").toString();
