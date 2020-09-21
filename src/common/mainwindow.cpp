@@ -876,6 +876,13 @@ MainWindow::MainWindow(QWidget *parent)
             _progIndicator->updateMovieProgress(oldDuration, oldElapsed);
         }
     });
+    connect(_engine, &PlayerEngine::elapsedChanged, [ = ]() {
+        //及时刷新_isFileLoadNotFinished状态
+        if(_isFileLoadNotFinished && utils::check_wayland_env()){
+            qDebug()<<"_isFileLoadNotFinished = false";
+            _isFileLoadNotFinished = false;
+        }
+    });
 
     // mini ui
     auto *signalMapper = new QSignalMapper(this);
@@ -3075,6 +3082,10 @@ void MainWindow::playList(const QList<QString> &l)
 
 void MainWindow::play(const QUrl &url)
 {
+    if(_isFileLoadNotFinished && utils::check_wayland_env()){
+        qDebug()<<__func__ <<"File Load Not Finished!";
+        return;
+    }
     if (!url.isValid())
         return;
 
@@ -3108,6 +3119,7 @@ void MainWindow::play(const QUrl &url)
         }
     }
     _engine->playByName(url);
+    _isFileLoadNotFinished = true;
 }
 
 void MainWindow::toggleShapeMask()

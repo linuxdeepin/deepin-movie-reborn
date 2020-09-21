@@ -1554,7 +1554,7 @@ ToolboxProxy::~ToolboxProxy()
 //    _loadThread->exit();
 //    delete _loadThread;
     delete _subView;
-    delete _previewer;
+//    delete _previewer;
     delete _previewTime;
 
     if (m_worker) {

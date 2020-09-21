@@ -40,7 +40,7 @@ void ApplicationAdaptor::openFiles(const QStringList& list)
 {
     if(utils::check_wayland_env()){
         QTime current = QTime::currentTime();
-        if(abs(oldTime.msecsTo(current)) > 100){
+        if(abs(oldTime.msecsTo(current)) > 150){
             _mw->playList(list);
         }
     }else{
@@ -59,7 +59,14 @@ void ApplicationAdaptor::openFile(const QString& file)
     } else {
         url = QUrl::fromLocalFile(file);
     }
-    _mw->play(url);
+    if(utils::check_wayland_env()){
+        QTime current = QTime::currentTime();
+        if(abs(oldTime.msecsTo(current)) > 150){
+            _mw->play(url);
+        }
+    }else {
+        _mw->play(url);
+    }
 }
 
 void ApplicationAdaptor::Raise(){
