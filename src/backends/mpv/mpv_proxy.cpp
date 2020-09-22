@@ -325,12 +325,12 @@ mpv_handle *MpvProxy::mpv_init()
     qInfo() << __func__ << get_property(h, "hwdec").toString();
 
 
-//#ifdef __mips__
-//    if (!CompositingManager::get().hascard()) {
-//        qInfo() << "修改音视频同步模式";
-//        set_property(h, "video-sync", "desync");
-//    }
-//#endif
+#ifdef __mips__
+    if (!CompositingManager::get().hascard()) {
+        qInfo() << "修改音视频同步模式";
+        set_property(h, "video-sync", "desync");
+    }
+#endif
     //QLocale locale;
     QString strMovie = QObject::tr("Movie");
     /*if (locale.language() == QLocale::Chinese) { //获取系统语言环境
