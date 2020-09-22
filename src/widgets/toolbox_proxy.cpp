@@ -2988,9 +2988,17 @@ void ToolboxProxy::setVolSliderHide()
 }
 
 void ToolboxProxy::setButtonTooltipHide(){
-    _subBtn->hideToolTip();
-    _listBtn->hideToolTip();
-    _fsBtn->hideToolTip();
+    if(utils::check_wayland_env()){
+        m_playBtnTip->hide();
+        m_prevBtnTip->hide();
+        m_nextBtnTip->hide();
+        m_fsBtnTip->hide();
+        m_listBtnTip->hide();
+    }else{
+        _subBtn->hideToolTip();
+        _listBtn->hideToolTip();
+        _fsBtn->hideToolTip();
+    }
 }
 
 void ToolboxProxy::initToolTip()
@@ -3014,7 +3022,7 @@ void ToolboxProxy::initToolTip()
     });
 
     //lmh0910上一个
-    ButtonToolTip *m_prevBtnTip=new ButtonToolTip(_mainWindow);
+    m_prevBtnTip=new ButtonToolTip(_mainWindow);
     m_prevBtnTip->setText(tr("Previous"));
     connect(_prevBtn, &ButtonBoxButton::entered, [ = ]() {
         m_prevBtnTip->move(40,
@@ -3032,7 +3040,7 @@ void ToolboxProxy::initToolTip()
     });
 
     //lmh0910下一个
-    ButtonToolTip *m_nextBtnTip=new ButtonToolTip(_mainWindow);
+    m_nextBtnTip=new ButtonToolTip(_mainWindow);
     m_nextBtnTip->setText(tr("Next"));
     connect(_nextBtn, &ButtonBoxButton::entered, [ = ]() {
         m_nextBtnTip->move(120,
@@ -3051,7 +3059,7 @@ void ToolboxProxy::initToolTip()
 
 
     //lmh0910全屏按键
-    ButtonToolTip *m_fsBtnTip=new ButtonToolTip(_mainWindow);
+    m_fsBtnTip=new ButtonToolTip(_mainWindow);
     m_fsBtnTip->setText(tr("Fullscreen"));
     connect(_fsBtn, &ToolButton::entered, [ = ]() {
         m_fsBtnTip->move(_mainWindow->width() - _fsBtn->width() / 2 /*- _playBtn->width()*/ - 140,
@@ -3068,7 +3076,7 @@ void ToolboxProxy::initToolTip()
         });
     });
     //lmh0910list按键
-    ButtonToolTip *m_listBtnTip=new ButtonToolTip(_mainWindow);
+    m_listBtnTip=new ButtonToolTip(_mainWindow);
     m_listBtnTip->setText(tr("Playlist"));
     connect(_listBtn, &ToolButton::entered, [ = ]() {
         m_listBtnTip->move(_mainWindow->width() - _listBtn->width() / 2 /*- _playBtn->width()*/ - 20,

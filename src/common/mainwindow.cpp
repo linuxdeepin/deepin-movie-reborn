@@ -2327,6 +2327,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             }
         } else {
             _toolbox->setVolSliderHide();
+            _toolbox->setButtonTooltipHide();
 //            if (/*!_miniMode && (fromUI || isShortcut) && */windowState() == Qt::WindowNoState) {
 //                _lastRectInNormalMode = geometry();
 //            }
