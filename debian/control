@@ -4,7 +4,7 @@ Priority: extra
 Maintainer: Deepin Packages Builder <packages@deepin.com>
 Build-Depends: debhelper, cmake, pkg-config, qttools5-dev-tools,
                 libqt5svg5-dev, qtmultimedia5-dev, qttools5-dev,
-                libqt5x11extras5-dev, libdtkcore5-bin, libdtkwidget-dev,
+                libqt5x11extras5-dev, libdtkcore5-bin, libdtkwidget-dev(= 5.2.2.2-1),
                 libqt5sql5-sqlite,
                 libmpv-dev, libxcb1-dev, libxcb-util0-dev,
                 libffmpegthumbnailer-dev,
