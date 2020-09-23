@@ -31,7 +31,7 @@
 #define _DMR_PLAYLIST_MODEL_H
 
 #include <QtWidgets>
-#include <QtConcurrent>
+//#include <QtConcurrent>
 #include <DApplicationHelper>
 #include <libffmpegthumbnailer/videothumbnailerc.h>
 
