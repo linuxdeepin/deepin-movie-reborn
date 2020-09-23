@@ -3826,6 +3826,8 @@ void MainWindow::capturedMouseReleaseEvent(QMouseEvent *me)
     if (!_windowAbove) {
         my_setStayOnTop(this, false);
     }
+
+    _mouseMoved = false;
 }
 
 static bool _afterDblClick = false;
@@ -3898,7 +3900,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *ev)
 {
     if (!_mousePressed) {
         _afterDblClick = false;
-        _mouseMoved = false;
+        //_mouseMoved = false;
     }
 
     if (qApp->focusWindow() == 0 || !_mousePressed) return;
@@ -3929,7 +3931,8 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *ev)
     }
 
     Utility::cancelWindowMoveResize(winId());
-    _mouseMoved = false;
+    //标题栏位置移动不会进入此事件，导致此标志位不会恢复，移动到capturedMouseReleaseEvent函数中  modify by zhuyuliang
+    //_mouseMoved = false;
 }
 
 void MainWindow::delayedMouseReleaseHandler()
