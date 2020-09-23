@@ -150,6 +150,8 @@ CompositingManager::CompositingManager()
                 _composited = false;
                 qDebug() << "__mips__";
 #else
+                vector<string> drivers = {"zx"};
+                m_setSpecialControls = m_setSpecialControls && is_card_exists(0, drivers);
                 _composited = true;
                 qDebug() << "__X86__";
 #endif
@@ -337,11 +339,17 @@ void CompositingManager::softDecodeCheck(){
         QString drv = QString::fromUtf8(inspur.readAllStandardOutput().trimmed().constData());
         qDebug() << "inspur check : " << drv;
         m_bOnlySoftDecode =  m_bOnlySoftDecode || drv.contains("Inspur");
+		m_setSpecialControls = drv.contains("Ruijie");
     }
 }
 
 bool CompositingManager::isOnlySoftDecode(){
     return m_bOnlySoftDecode;
+}
+
+bool CompositingManager::isSpecialControls()
+{
+    return m_setSpecialControls;
 }
 
 void CompositingManager::detectOpenGLEarly()

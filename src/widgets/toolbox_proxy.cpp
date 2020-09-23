@@ -1139,6 +1139,10 @@ public:
 #elif __sw_64__
         setWindowFlags(Qt::FramelessWindowHint | Qt::BypassWindowManagerHint);
         setAttribute(Qt::WA_NativeWindow);
+#else
+        if (CompositingManager::get().isSpecialControls()) {
+            setAttribute(Qt::WA_NativeWindow);
+        }
 #endif
         setShadowBlurRadius(4);
         setRadius(18);

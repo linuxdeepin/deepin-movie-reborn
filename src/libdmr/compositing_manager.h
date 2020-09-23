@@ -99,6 +99,7 @@ public:
     static bool runningOnNvidia();
     void softDecodeCheck();
     bool isOnlySoftDecode();
+	bool isSpecialControls();
 
 signals:
     void compositingChanged(bool);
@@ -116,6 +117,7 @@ private:
     Platform _platform {Platform::Unknown};
     bool _hasCard;
     bool m_bOnlySoftDecode {false};  //kunpeng920走软解码
+    bool m_setSpecialControls {false};
 };
 }
 
