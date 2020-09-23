@@ -39,26 +39,6 @@
 #undef Bool
 #include <mpv/qthelper.hpp>
 
-#ifdef __x86_64__
-#define LIB_PATH "/lib/x86_64-linux-gnu/libmpv.so.1"
-#endif
-
-#ifdef __sw_64__
-#define LIB_PATH "/lib/sw_64-linux-gnu/libmpv.so.1"
-#endif
-
-#ifdef __aarch64__
-#define LIB_PATH "/lib/aarch64-linux-gnu/libmpv.so.1"
-#endif
-
-#ifdef __mips__
-#define LIB_PATH "/lib/mips64el-linux-gnuabi64/libmpv.so.1"
-#endif
-
-#ifndef LIB_PATH
-#define LIB_PATH "/lib/i386-linux-gnu/libmpv.so.1"
-#endif
-
 typedef mpv_event *(*mpv_waitEvent)(mpv_handle *ctx, double timeout);
 typedef int (*mpv_set_optionString)(mpv_handle *ctx, const char *name, const char *data);
 typedef int (*mpv_setProperty)(mpv_handle *ctx, const char *name, mpv_format format,
@@ -82,16 +62,31 @@ typedef int (*mpvinitialize)(mpv_handle *ctx);
 typedef void (*mpv_freeNode_contents)(mpv_node *node);
 typedef void (*mpv_terminateDestroy)(mpv_handle *ctx);
 
+static QString libPath(const QString &strlib)
+{
+    QDir  dir;
+    QString path  = QLibraryInfo::location(QLibraryInfo::LibrariesPath);
+    dir.setPath(path);
+    QStringList list = dir.entryList(QStringList() << (strlib + "*"), QDir::NoDotAndDotDot | QDir::Files); //filter name with strlib
+    if (list.contains(strlib)) {
+        return strlib;
+    } else {
+        list.sort();
+    }
+
+    Q_ASSERT(list.size() > 0);
+    return list.last();
+}
+
 class myHandle
 {
     struct container {
         container(mpv_handle *h) : mpv(h) {}
         ~container()
         {
-            mpv_terminateDestroy fun = (mpv_terminateDestroy)QLibrary::resolve(LIB_PATH, "mpv_terminate_destroy");
+            mpv_terminateDestroy fun = (mpv_terminateDestroy)QLibrary::resolve(libPath("libmpv.so.1"), "mpv_terminate_destroy");
             fun(mpv);
         }
-
         mpv_handle *mpv;
     };
     QSharedPointer<container> sptr;

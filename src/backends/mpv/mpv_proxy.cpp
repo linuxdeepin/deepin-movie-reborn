@@ -130,20 +130,20 @@ MpvProxy::~MpvProxy()
 void MpvProxy::initMpvFuns()
 {
     qDebug() << "MpvProxy开始initMpvFuns";
-    m_waitEvent = reinterpret_cast<mpv_waitEvent>(QLibrary::resolve(LIB_PATH, "mpv_wait_event"));
-    m_setOptionString = reinterpret_cast<mpv_set_optionString>(QLibrary::resolve(LIB_PATH, "mpv_set_option_string"));
-    m_setProperty = reinterpret_cast<mpv_setProperty>(QLibrary::resolve(LIB_PATH, "mpv_set_property"));
-    m_setPropertyAsync = reinterpret_cast<mpv_setProperty_async>(QLibrary::resolve(LIB_PATH, "mpv_set_property_async"));
-    m_commandNode = reinterpret_cast<mpv_commandNode>(QLibrary::resolve(LIB_PATH, "mpv_command_node"));
-    m_commandNodeAsync = reinterpret_cast<mpv_commandNode_async>(QLibrary::resolve(LIB_PATH, "mpv_command_node_async"));
-    m_getProperty = reinterpret_cast<mpv_getProperty>(QLibrary::resolve(LIB_PATH, "mpv_get_property"));
-    m_observeProperty = reinterpret_cast<mpv_observeProperty>(QLibrary::resolve(LIB_PATH, "mpv_observe_property"));
-    m_eventName = reinterpret_cast<mpv_eventName>(QLibrary::resolve(LIB_PATH, "mpv_event_name"));
-    m_creat = reinterpret_cast<mpvCreate>(QLibrary::resolve(LIB_PATH, "mpv_create"));
-    m_requestLogMessage = reinterpret_cast<mpv_requestLog_messages>(QLibrary::resolve(LIB_PATH, "mpv_request_log_messages"));
-    m_setWakeupCallback = reinterpret_cast<mpv_setWakeup_callback>(QLibrary::resolve(LIB_PATH, "mpv_set_wakeup_callback"));
-    m_initialize = reinterpret_cast<mpvinitialize>(QLibrary::resolve(LIB_PATH, "mpv_initialize"));
-    m_freeNodecontents = reinterpret_cast<mpv_freeNode_contents>(QLibrary::resolve(LIB_PATH, "mpv_free_node_contents"));
+    m_waitEvent = reinterpret_cast<mpv_waitEvent>(QLibrary::resolve(libPath("libmpv.so.1"), "mpv_wait_event"));
+    m_setOptionString = reinterpret_cast<mpv_set_optionString>(QLibrary::resolve(libPath("libmpv.so.1"), "mpv_set_option_string"));
+    m_setProperty = reinterpret_cast<mpv_setProperty>(QLibrary::resolve(libPath("libmpv.so.1"), "mpv_set_property"));
+    m_setPropertyAsync = reinterpret_cast<mpv_setProperty_async>(QLibrary::resolve(libPath("libmpv.so.1"), "mpv_set_property_async"));
+    m_commandNode = reinterpret_cast<mpv_commandNode>(QLibrary::resolve(libPath("libmpv.so.1"), "mpv_command_node"));
+    m_commandNodeAsync = reinterpret_cast<mpv_commandNode_async>(QLibrary::resolve(libPath("libmpv.so.1"), "mpv_command_node_async"));
+    m_getProperty = reinterpret_cast<mpv_getProperty>(QLibrary::resolve(libPath("libmpv.so.1"), "mpv_get_property"));
+    m_observeProperty = reinterpret_cast<mpv_observeProperty>(QLibrary::resolve(libPath("libmpv.so.1"), "mpv_observe_property"));
+    m_eventName = reinterpret_cast<mpv_eventName>(QLibrary::resolve(libPath("libmpv.so.1"), "mpv_event_name"));
+    m_creat = reinterpret_cast<mpvCreate>(QLibrary::resolve(libPath("libmpv.so.1"), "mpv_create"));
+    m_requestLogMessage = reinterpret_cast<mpv_requestLog_messages>(QLibrary::resolve(libPath("libmpv.so.1"), "mpv_request_log_messages"));
+    m_setWakeupCallback = reinterpret_cast<mpv_setWakeup_callback>(QLibrary::resolve(libPath("libmpv.so.1"), "mpv_set_wakeup_callback"));
+    m_initialize = reinterpret_cast<mpvinitialize>(QLibrary::resolve(libPath("libmpv.so.1"), "mpv_initialize"));
+    m_freeNodecontents = reinterpret_cast<mpv_freeNode_contents>(QLibrary::resolve(libPath("libmpv.so.1"), "mpv_free_node_contents"));
 }
 
 void MpvProxy::firstInit()
@@ -380,7 +380,7 @@ mpv_handle *MpvProxy::mpv_init()
 #ifdef __mips__
     if (!CompositingManager::get().hascard()) {
         qInfo() << "修改音视频同步模式";
-        set_property(h, "video-sync", "desync");
+        my_set_property(h, "video-sync", "desync");
     }
 #endif
     //QLocale locale;
