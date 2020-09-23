@@ -72,13 +72,10 @@ void ApplicationAdaptor::openFile(const QString& file)
 }
 
 void ApplicationAdaptor::Raise(){
-    if(utils::check_wayland_env()){
-
-    }else {
-        _mw->showNormal();
-        _mw->raise();
-        _mw->activateWindow();
-    }
+    //提交验证
+    _mw->showNormal();
+    _mw->raise();
+    _mw->activateWindow();
 }
 
 QVariant ApplicationAdaptor::redDBusProperty(const QString &service, const QString &path, const QString &interface, const char *propert)
