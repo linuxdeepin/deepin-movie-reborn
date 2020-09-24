@@ -377,16 +377,16 @@ public:
 #endif
 
 
-#ifdef USE_DXCB
+#ifndef USE_DXCB
+//窗管返回事件过滤器
 class MainWindowPropertyMonitor: public QAbstractNativeEventFilter
 {
 public:
     MainWindowPropertyMonitor(MainWindow *src)
-        : QAbstractNativeEventFilter(), _mw(src), _source(src->windowHandle())
+        : QAbstractNativeEventFilter(), _mw(src)
     {
+        //安装事件过滤器
         qApp->installNativeEventFilter(this);
-
-        //heyi _atomWMState = Utility::internAtom("_NET_WM_STATE");
     }
 
     ~MainWindowPropertyMonitor()
@@ -396,31 +396,48 @@ public:
 
     bool nativeEventFilter(const QByteArray &eventType, void *message, long *)
     {
-        if (Q_LIKELY(eventType == "xcb_generic_event_t")) {
-            xcb_generic_event_t *event = static_cast<xcb_generic_event_t *>(message);
-            switch (event->response_type & ~0x80) {
-            case XCB_PROPERTY_NOTIFY: {
-                xcb_property_notify_event_t *pne = (xcb_property_notify_event_t *)(event);
-                if (pne->atom == _atomWMState && pne->window == (xcb_window_t)_source->winId()) {
-                    //add by xxj ***
-#ifdef heyi
-                    _mw->syncStaysOnTop();
-#endif
-                }
+        xcb_generic_event_t *xevent = (xcb_generic_event_t *)message;
+        uint response_type = xevent->response_type & ~0x80;
+        if(XCB_PROPERTY_NOTIFY == response_type)
+        {
+            auto propertyNotify = reinterpret_cast<xcb_property_notify_event_t *>(xevent);
+            //经过观察发现【专业版】设置窗口总在最前会返回一个351、一个483和一堆327
+            //目前先按照此方法修改，后期在个人版和社区版可能会存在问题
+            //个人版参考378
+            //p.s. 360推测是鼠标点击事件，327推测窗口刷新事件
+            switch (propertyNotify->atom) {
+            case 351:
+                m_start = true;
                 break;
-            }
-
+            case 483:
+                break;
+            case 327:
+                m_start = false;
+                if (!m_list.isEmpty() && m_list.size() == 2) {
+                    //判断是否符合标志位
+                    QList<unsigned int> temp {351, 483};
+                    if (m_list == temp) {
+                        //切换窗口置顶，此处需注意，应用切换可以传递至窗管，窗管无法传递至应用
+                        //所以此处只需单向传递即可
+                        _mw->requestAction(ActionFactory::ActionKind::WindowAbove);
+                    }
+                }
+                m_list.clear();
+                break;
             default:
                 break;
             }
+            if (m_start) {
+                m_list << propertyNotify->atom;
+            }
         }
-
         return false;
     }
 
     MainWindow *_mw {nullptr};
-    QWindow *_source {nullptr};
     xcb_atom_t _atomWMState;
+    QList<unsigned int> m_list;
+    bool m_start {false};
 };
 #endif
 
@@ -1047,7 +1064,7 @@ MainWindow::MainWindow(QWidget *parent)
     this->windowHandle()->installEventFilter(_listener);
 
     //auto mwfm = new MainWindowFocusMonitor(this);
-    //auto mwpm = new MainWindowPropertyMonitor(this);
+    auto mwpm = new MainWindowPropertyMonitor(this);
 
     connect(this, &MainWindow::windowEntered, &MainWindow::resumeToolsWindow);
     connect(this, &MainWindow::windowLeaved, &MainWindow::suspendToolsWindow);
