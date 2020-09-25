@@ -375,6 +375,7 @@ private:
 
     Diskcheckthread m_diskCheckThread;
     bool m_bClosed {false};      //用于景嘉微显卡下过滤metacall事件
+    bool m_bFirstInit {false};   //是否首次播放
 };
 };
 

@@ -1013,6 +1013,10 @@ MainWindow::MainWindow(QWidget *parent)
     });
 
     connect(_engine, &PlayerEngine::fileLoaded, [ = ]() {
+        if (!m_bFirstInit) {
+            this->setMusicMuted(_engine->muted());
+            m_bFirstInit = true;
+        }
         _retryTimes = 0;
         if (windowState() == Qt::WindowNoState && _lastRectInNormalMode.isValid()) {
             const auto &mi = _engine->playlist().currentInfo().mi;
