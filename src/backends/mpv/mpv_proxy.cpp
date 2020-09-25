@@ -1172,7 +1172,7 @@ QImage MpvProxy::takeOneScreenshot()
         auto img = QImage((const uchar *)data, w, h, stride, QImage::Format_RGB32);
         img.bits();
         int rotationdegree = videoRotation();
-        if (rotationdegree) {
+        if (rotationdegree && CompositingManager::get().composited()) {
             QMatrix matrix;
             matrix.rotate(rotationdegree);
             img = QPixmap::fromImage(img).transformed(matrix, Qt::SmoothTransformation).toImage();
