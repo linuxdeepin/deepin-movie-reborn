@@ -3907,8 +3907,6 @@ void MainWindow::updateSizeConstraints()
         }
         m = QSize(614, 500);
     }
-
-    qDebug() << __func__ << m;
     this->setMinimumSize(m);
 }
 
@@ -3933,7 +3931,6 @@ void MainWindow::LimitWindowize()
 
 void MainWindow::resizeEvent(QResizeEvent *ev)
 {
-    qDebug() << __func__ << geometry();
 #ifndef __mips__
     if (m_bIsFullSreen) {
         _progIndicator->move(geometry().width() - _progIndicator->width() - 18, 8);
