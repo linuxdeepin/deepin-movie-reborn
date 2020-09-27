@@ -394,7 +394,8 @@ class SliderTime: public DArrowRectangle
 {
     Q_OBJECT
 public:
-    SliderTime(): DArrowRectangle(DArrowRectangle::ArrowBottom)
+    SliderTime(QWidget* parent=nullptr)
+        :DArrowRectangle(DArrowRectangle::ArrowBottom, DArrowRectangle::FloatWidget,parent)
     {
         setFocusPolicy(Qt::NoFocus);
         setAttribute(Qt::WA_DeleteOnClose);
@@ -409,8 +410,8 @@ public:
         setBorderColor(bgColor);
         setBackgroundColor(bgColor);
 
-        auto *l = new QHBoxLayout;
-        l->setContentsMargins(0, 0, 0, 5);
+        auto *l = new QVBoxLayout();
+        l->setContentsMargins(20, 20, 0, 5);
         _time = new DLabel(this);
         _time->setAlignment(Qt::AlignCenter);
 //        _time->setFixedSize(_size);
@@ -442,9 +443,12 @@ public:
             _time->setFont(_font);
             _time->setFixedSize(fm.width(_time->text()) + 10, fm.height());
         }
-        this->setWidth(_time->width());
-        this->setHeight(_time->height() + 5);
+        this->setWidth(_time->width() + 40);
+        this->setHeight(_time->height() + 30);
         this->setMinimumSize(_miniSize);
+    }
+    void show(){
+        QWidget::show();
     }
 
 private:
@@ -569,7 +573,8 @@ public:
     {
         if (visible) {
             auto pos = this->mapToGlobal(QPoint(0, 0));
-            _sliderTime->show(pos.x() + _indicatorPos.x() + 1, pos.y() + _indicatorPos.y() + 4);
+            //_sliderTime->show(pos.x() + _indicatorPos.x() + 1, pos.y() + _indicatorPos.y() + 4);
+            _sliderTime->show();
         } else {
             _sliderTime->hide();
         }
@@ -1445,7 +1450,7 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
     _previewer = new ThumbnailPreview(_mainWindow);
     _previewer->hide();
 
-    _previewTime  = new SliderTime;
+    _previewTime  = new SliderTime(_mainWindow);
     _previewTime->hide();
 
     _subView = new SubtitlesView(0, _engine);
@@ -2172,7 +2177,14 @@ void ToolboxProxy::updatePreviewTime(qint64 secs, const QPoint &pos)
     QTime time(0, 0, 0);
     QString strTime = time.addSecs(secs).toString("hh:mm:ss");
     _previewTime->setTime(strTime);
-    _previewTime->show(pos.x(), pos.y() + 14);
+    if(utils::check_wayland_env()){
+        _previewTime->move(pos.x() - _previewTime->width() / 2, pos.y() + 20);
+    }else {
+        _previewTime->move(pos.x() - _previewTime->width() / 2, pos.y() - _previewTime->height());
+    }
+
+    _previewTime->show();
+    _previewTime->raise();
 }
 
 void ToolboxProxy::closeAnyPopup()
@@ -2302,9 +2314,17 @@ void ToolboxProxy::progressHoverChanged(int v)
 
     _lastHoverValue = v;
 
-    auto pos = _progBar->mapToGlobal(QPoint(0, TOOLBOX_TOP_EXTENT - 10));
-//    auto pos = _viewProgBar->mapToGlobal(QPoint(0, TOOLBOX_TOP_EXTENT - 10));
-    QPoint p { QCursor::pos().x(), pos.y() };
+    //wayland下 鼠标位置不准确，使用相对于mainwindow位置实现
+    auto mainPos = _mainWindow->mapToGlobal(QPoint(0, 0));
+//    if(utils::check_wayland_env()){
+//        pos = _progBar->mapToGlobal(QPoint(0, -TOOLBOX_HEIGHT + 10));
+//    }
+    QPoint p;
+    if(utils::check_wayland_env()){
+        p = { QCursor::pos().x() - mainPos.x()+ _previewTime->width()/2, _mainWindow->height()-_previewTime->height()/2 - 70 };
+    }else{
+        p = { QCursor::pos().x() - mainPos.x()+ _previewTime->width()/2, _mainWindow->height()-_previewTime->height()/2 + 8 };
+    }
 
     auto proBar = qobject_cast<ViewProgBar *>(sender());
     bool isAudio = _engine->isAudioFile(pif.info.fileName());
