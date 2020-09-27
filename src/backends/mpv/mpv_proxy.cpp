@@ -1279,7 +1279,7 @@ QImage MpvProxy::takeOneScreenshot()
         auto img = QImage(static_cast<const uchar *>(data), w, h, stride, QImage::Format_RGB32);
         img.bits();
         int rotationdegree = videoRotation();
-        if (rotationdegree) {
+        if (rotationdegree && CompositingManager::get().composited()) {      //只有opengl窗口需要自己旋转
             QMatrix matrix;
             matrix.rotate(rotationdegree);
             img = QPixmap::fromImage(img).transformed(matrix, Qt::SmoothTransformation).toImage();
