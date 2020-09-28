@@ -1560,7 +1560,7 @@ ToolboxProxy::~ToolboxProxy()
 //    delete _loadThread;
     delete _subView;
 //    delete _previewer;
-    delete _previewTime;
+//    delete _previewTime;
 
     if (m_worker) {
         m_worker->quitLoad();

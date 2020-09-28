@@ -809,13 +809,15 @@ MainWindow::MainWindow(QWidget *parent)
 
         // delayed checking if engine is still idle, in case other videos are schedulered (next/prev req)
         // and another resize event will happen after that
-        QTimer::singleShot(100, [ = ]() {
-            if (_engine->state() == PlayerEngine::Idle && !_miniMode
-                    && windowState() == Qt::WindowNoState && !window()->isFullScreen()) {
-                this->setMinimumSize(QSize(614, 500));
-                this->resize(850, 600);
-            }
-        });
+        if(!utils::check_wayland_env()){
+            QTimer::singleShot(100, [ = ]() {
+                if (_engine->state() == PlayerEngine::Idle && !_miniMode
+                        && windowState() == Qt::WindowNoState && !window()->isFullScreen()) {
+                    this->setMinimumSize(QSize(614, 500));
+                    this->resize(850, 600);
+                }
+            });
+        }
     });
 
     QFileInfo fi("/dev/mwv206_0");              //景嘉微显卡
