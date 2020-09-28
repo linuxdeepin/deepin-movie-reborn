@@ -264,8 +264,6 @@ void Tip::paintEvent(QPaintEvent *)
     borderPen.setWidthF(penWidthf);
     painter.strokePath(borderPath, borderPen);
 }
-
-}
 #else
 void Tip::paintEvent(QPaintEvent *)
 {
