@@ -9,7 +9,7 @@ Build-Depends: debhelper, cmake, pkg-config, qttools5-dev-tools,
                 libmpv-dev, libxcb1-dev, libxcb-util0-dev,
                 libffmpegthumbnailer-dev,
                 libxcb-shape0-dev,libxcb-ewmh-dev, xcb-proto,
-                x11proto-record-dev, libxtst-dev,
+                x11proto-record-dev, libxtst-dev,libxcursor-dev,
                 libavcodec-dev, libavformat-dev,libavutil-dev,
                 libpulse-dev, libssl-dev, libdvdnav-dev, libgsettings-qt-dev
 Standards-Version: 3.9.8
