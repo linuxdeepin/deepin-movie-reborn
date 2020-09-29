@@ -231,6 +231,16 @@ public:
 
     void updateSlider();                //根据进度条显示更新影片实际进度
     void initThumb();
+
+    /////add for unit test/////
+    DButtonBoxButton* playBtn(){return _playBtn;}
+    DButtonBoxButton* prevBtn(){return _prevBtn;}
+    DButtonBoxButton* nextBtn(){return _nextBtn;}
+    ToolButton* listBtn(){return _listBtn;}
+    ToolButton* fsBtn(){return _fsBtn;}
+    VolumeButton* volBtn(){return _volBtn;}
+
+
 public slots:
     void finishLoadSlot(QSize size);
     void updateplaylisticon();
