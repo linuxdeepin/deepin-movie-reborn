@@ -50,6 +50,8 @@ class ThumbnailWorker: public QThread
 {
     Q_OBJECT
 public:
+    ~ThumbnailWorker();
+
     static ThumbnailWorker &get();
 
     // expected size for ui
@@ -95,6 +97,7 @@ private:
     void runSingle(QPair<QUrl, int> w);
     QPixmap genThumb(const QUrl &url, int secs);
     QString libPath(const QString &strlib);
+    char* m_pCharTime;
 };
 
 }
