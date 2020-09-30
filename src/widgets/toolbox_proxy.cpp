@@ -2435,6 +2435,7 @@ void ToolboxProxy::updateVolumeStateOnStopMode(uint64_t vol){
     if (0 == vol) {
         //静音设置
         _volBtn->changeLevel(VolumeButton::Mute);
+        _mainWindow->requestAction(ActionFactory::ToggleMute);
         //_volBtn->setToolTip(tr("Mute"));
     } else {
         if(_engine->muted())

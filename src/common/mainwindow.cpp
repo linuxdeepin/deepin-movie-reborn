@@ -776,6 +776,8 @@ MainWindow::MainWindow(QWidget *parent)
         Settings::get().setInternalOption("global_volume", 100);
         volume = 100;
     }
+
+    m_displayVolume = volume;
     _engine->changeVolume(volume);
     _engine->changeVolume(100);
     if (Settings::get().internalOption("mute").toBool()) {
