@@ -70,7 +70,7 @@ void QTestMain::testGTest()
     int ret = RUN_ALL_TESTS();
     Q_UNUSED(ret)
 
-    QTimer::singleShot(10000,[=]{ exit(0); });
+    QTimer::singleShot(5000,[=]{ exit(0); });
 }
 
 int main(int argc, char *argv[])

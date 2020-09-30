@@ -120,7 +120,8 @@ add_custom_command(TARGET test
 
     COMMAND echo " =================== do filter begin ==================== "
     COMMAND lcov --remove ./coverageResult/${PROJECT_NAME}_Coverage.info 'CMakeFiles/${PROJECT_NAME}.dir/${PROJECT_NAME}_autogen/*/*'
-    '${PROJECT_NAME}_autogen/*/*/*.cpp' 'googletest/*/*' '*/usr/include/*' '*/tests/*' '/usr/local/*'
+    '${PROJECT_NAME}_autogen/*/*/*.cpp' 'googletest/*/*' '*/usr/include/*' '*/tests/*' '/usr/local/*' '*/src/vendor/dbusextended-qt/*' '*/src/common/filter.cpp'
+    '*/src/common/settings_translation.cpp' '*/src/common/event_monitor.cpp'
     -o ./coverageResult/${PROJECT_NAME}_Coverage_fileter.info
     COMMAND echo " =================== do filter end ==================== "
 

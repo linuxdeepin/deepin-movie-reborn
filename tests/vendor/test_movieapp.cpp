@@ -12,10 +12,11 @@ using namespace dmr;
 TEST(MovieApp, show)
 {
     MainWindow* w = dApp->getMainWindow();
+    w->show();
 
     MovieApp *movieapp = dApp->initMovieApp(w);
 
-    QTimer::singleShot(500,[=]{movieapp->show();});
+    QTimer::singleShot(1000,[=]{movieapp->show();});
 }
 
 //TEST(MovieApp, quit)
