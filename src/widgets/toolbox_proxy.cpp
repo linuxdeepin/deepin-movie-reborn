@@ -2437,6 +2437,10 @@ void ToolboxProxy::updateVolumeStateOnStopMode(uint64_t vol){
         _volBtn->changeLevel(VolumeButton::Mute);
         //_volBtn->setToolTip(tr("Mute"));
     } else {
+        if(_engine->muted())
+        {
+            _mainWindow->requestAction(ActionFactory::ToggleMute);
+        }
         /*if (v != 0) {
             v -= VOLUME_OFFSET;
         }*/

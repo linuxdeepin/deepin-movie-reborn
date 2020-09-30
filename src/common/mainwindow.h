@@ -356,7 +356,6 @@ private:
     VolumeMonitoring volumeMonitoring;
     QString sinkInputPath;
 
-    int m_lastVolume;
     int m_displayVolume;
     int m_oldDisplayVolume;
     bool m_isManual;
