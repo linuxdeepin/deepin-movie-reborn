@@ -91,12 +91,12 @@ static int stringDistance(const QString &s1, const QString &s2)
 
     vector<int> dp(static_cast<vector<int>::size_type>(n + 1));
     for (int i = 0; i < n + 1; i++) dp[static_cast<vector<int>::size_type>(i)] = i;
-    int pred = 0;
+//    int pred = 0;
     int curr = 0;
 
     for (int i = 0; i < m; i++) {
         dp[0] = i;
-        pred = i + 1;
+        int pred = i + 1;
         for (int j = 0; j < n; j++) {
             if (s1[j] == s2[i]) {
                 curr = dp[static_cast<vector<int>::size_type>(j)];

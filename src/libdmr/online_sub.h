@@ -38,8 +38,8 @@
 
 namespace dmr {
 struct ShooterSubtitleMeta {
-    int id; 
-    int delay;
+    int id;     //error warning(cppcheck)
+    int delay;      //error warning(cppcheck)
     QString desc;
     QString ext;
     QString link; // url to download

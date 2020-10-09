@@ -152,7 +152,7 @@ public:
     }
 
 protected:
-    void paintEvent(QPaintEvent *pEvent)
+    void paintEvent(QPaintEvent *)
     {
         QPainter painter(this);
         QImage image(m_strImageUrl);
@@ -228,7 +228,7 @@ class SubtitleItemWidget: public QWidget
     Q_OBJECT
 public:
     friend class SubtitlesView;
-    SubtitleItemWidget(QWidget *parent, SubtitleInfo si): QWidget()
+    SubtitleItemWidget(QWidget *, SubtitleInfo si): QWidget()
     {
         _sid = si["id"].toInt();
 
@@ -2642,10 +2642,10 @@ void ToolboxProxy::updateButtonStates()
 //    _nextBtn->setVisible(vis);
     _nextBtn->setDisabled(!vis);
 
-    vis = _engine->state() != PlayerEngine::CoreState::Idle;
-    if (vis) {
-        vis = _engine->playingMovieInfo().subs.size() > 0;
-    }
+//    vis = _engine->state() != PlayerEngine::CoreState::Idle;
+//    if (vis) {
+//        vis = _engine->playingMovieInfo().subs.size() > 0;
+//    }
     //_subBtn->setVisible(vis);
 }
 

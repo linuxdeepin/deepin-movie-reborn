@@ -54,8 +54,6 @@ static QString ElideText(const QString &text, const QSize &size,
                          QTextOption::WrapMode wordWrap, const QFont &font,
                          Qt::TextElideMode mode, int lineHeight, int lastLineWidth)
 {
-    int height = 0;
-
     QTextLayout textLayout(text);
     QString str;
     QFontMetrics fontMetrics(font);
@@ -72,6 +70,7 @@ static QString ElideText(const QString &text, const QSize &size,
         tmp_str = text.mid(line.textStart(), line.textLength());
         str = tmp_str;
     } else {
+        int height = 0;
         while (line.isValid()) {
             //height += lineHeight;
             line.setLineWidth(size.width());

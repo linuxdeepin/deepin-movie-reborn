@@ -187,8 +187,8 @@ QVariant DBusExtendedAbstractInterface::internalPropGet(const char *propname, vo
         }
 
         // is this metatype registered?
-        const char *expectedSignature = "";
         if (int(metaProperty.type()) != QMetaType::QVariant) {
+            const char *expectedSignature = "";
             expectedSignature = QDBusMetaType::typeToSignature(metaProperty.userType());
             if (nullptr == expectedSignature) {
                 QString errorMessage =

@@ -66,12 +66,12 @@ ThumbnailWorker &ThumbnailWorker::get()
 {
     if (_instance == nullptr) {
         QMutexLocker lock(&_instLock);
-        if (_instance == nullptr) {
+//        if (_instance == nullptr) {
             _instance = new ThumbnailWorker;
 #ifndef __mips__
             (*_instance).start();
 #endif
-        }
+//        }
     }
 
     return *_instance;

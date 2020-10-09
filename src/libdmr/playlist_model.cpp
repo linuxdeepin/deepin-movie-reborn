@@ -223,7 +223,7 @@ public:
         QPixmap thumb_dark;
         bool mi_valid {false};
         bool thumb_valid {false};
-        char m_padding [6];//占位符
+//        char m_padding [6];//占位符
     };
 
     CacheInfo loadFromCache(const QUrl &url)
@@ -340,7 +340,7 @@ struct MovieInfo PlaylistModel::parseFromFile(const QFileInfo &fi, bool *ok)
     int stream_id = -1;
     AVCodecParameters *video_dec_ctx = nullptr;
     AVCodecParameters *audio_dec_ctx = nullptr;
-    AVStream *av_stream = nullptr;
+//    AVStream *av_stream = nullptr;
 
     if (!fi.exists()) {
         if (ok) *ok = false;
@@ -373,11 +373,9 @@ struct MovieInfo PlaylistModel::parseFromFile(const QFileInfo &fi, bool *ok)
 
     int videoRet = -1;
     int audioRet = -1;
-    int video_stream_index = -1;
-    int audio_stream_index = -1;
     AVStream *videoStream = nullptr;
     AVStream *audioStream = nullptr;
-    AVCodec *dec = nullptr;
+//    AVCodec *dec = nullptr;
     //AVDictionary *opts = nullptr;
     videoRet = g_mvideo_av_find_best_stream(av_ctx, AVMEDIA_TYPE_VIDEO, -1, -1, nullptr, 0);
     audioRet = g_mvideo_av_find_best_stream(av_ctx, AVMEDIA_TYPE_AUDIO, -1, -1, nullptr, 0);
@@ -390,6 +388,7 @@ struct MovieInfo PlaylistModel::parseFromFile(const QFileInfo &fi, bool *ok)
 
     //AVCodecParameters *dec_ctx = nullptr;
     if (videoRet >= 0) {
+        int video_stream_index = -1;
         video_stream_index = videoRet;
         videoStream = av_ctx->streams[video_stream_index];
         video_dec_ctx = videoStream->codecpar;
@@ -411,6 +410,7 @@ struct MovieInfo PlaylistModel::parseFromFile(const QFileInfo &fi, bool *ok)
         }
     }
     if (audioRet >= 0) {
+        int audio_stream_index = -1;
         audio_stream_index = audioRet;
         audioStream = av_ctx->streams[audio_stream_index];
         audio_dec_ctx = audioStream->codecpar;
@@ -467,20 +467,22 @@ struct MovieInfo PlaylistModel::parseFromFile(const QFileInfo &fi, bool *ok)
         pTempStream = av_ctx->streams[audioRet];
     }
 
-    while ((tag = g_mvideo_av_dict_get(pTempStream->metadata, "", tag, AV_DICT_IGNORE_SUFFIX)) != nullptr) {
-        if (tag->key && strcmp(tag->key, "rotate") == 0) {
-            mi.raw_rotate = QString(tag->value).toInt();
-            auto vr = (mi.raw_rotate + 360) % 360;
-            if (vr == 90 || vr == 270) {
-                auto tmp = mi.height;
-                mi.height = mi.width;
-                mi.width = tmp;
+    if(nullptr != pTempStream)
+    {
+        while ((tag = g_mvideo_av_dict_get(pTempStream->metadata, "", tag, AV_DICT_IGNORE_SUFFIX)) != nullptr) {
+            if (tag->key && strcmp(tag->key, "rotate") == 0) {
+                mi.raw_rotate = QString(tag->value).toInt();
+                auto vr = (mi.raw_rotate + 360) % 360;
+                if (vr == 90 || vr == 270) {
+                    auto tmp = mi.height;
+                    mi.height = mi.width;
+                    mi.width = tmp;
+                }
+                break;
             }
-            break;
+            qDebug() << "tag:" << tag->key << tag->value;
         }
-        qDebug() << "tag:" << tag->key << tag->value;
     }
-
 
     g_mvideo_avformat_close_input(&av_ctx);
     mi.valid = true;
@@ -1655,11 +1657,11 @@ int PlaylistModel::indexOf(const QUrl &url)
 }
 
 
-LoadThread::LoadThread(PlaylistModel *model, const QList<QUrl> &urls)
+LoadThread::LoadThread(PlaylistModel *model, const QList<QUrl> &urls):_urls(urls)
 {
     _pModel = nullptr;
     _pModel = model;
-    _urls = urls;
+//    _urls = urls;
 }
 LoadThread::~LoadThread()
 {
@@ -1838,12 +1840,12 @@ MovieInfo MovieInfo::parseFromFile(const QFileInfo &fi, bool *ok)
     if (ok) *ok = true;
     return mi;
 }
-#else
-MovieInfo MovieInfo::parseFromFile(const QFileInfo &fi, bool *ok)
-{
-    MovieInfo info;
-    return info;
-}
+//#else
+//MovieInfo MovieInfo::parseFromFile(const QFileInfo &fi, bool *ok)
+//{
+//    MovieInfo info;
+//    return info;
+//}
 #endif
 }
 

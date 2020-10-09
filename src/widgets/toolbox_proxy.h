@@ -77,15 +77,15 @@ class ImageItem : public DLabel
 {
     Q_OBJECT
 public:
-    ImageItem(QPixmap image, bool isblack = false, QWidget *parent = nullptr): DLabel(parent)
+    ImageItem(QPixmap image, bool isblack = false, QWidget *parent = nullptr): DLabel(parent), _pixmap(image)
     {
-        _pixmap = image;
+//        _pixmap = image;
     }
 
 signals:
     void imageItemclicked(int index, int indexNow);
 protected:
-    void paintEvent(QPaintEvent *event)
+    void paintEvent(QPaintEvent *)
     {
         QPainter painter(this);
 //        painter.drawPixmap(rect(),QPixmap(_path).scaled(60,50));
@@ -110,18 +110,18 @@ protected:
         QPen pen;
         pen.setWidth(2);
         if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
-            pen.setColor(QColor(0, 0, 0, 0.1 * 255));
+            pen.setColor(QColor(0, 0, 0, int(0.1 * 255)));
             painter.setPen(pen);
         } else if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
-            pen.setColor(QColor(255, 255, 255, 0.1 * 255));
+            pen.setColor(QColor(255, 255, 255, int(0.1 * 255)));
             painter.setPen(pen);
         }
         painter.setBrush(Qt::NoBrush);
         painter.drawRoundedRect(rect(), 3, 3);
-    };
+    }
 private:
-    int _index;
-    int _indexNow;
+//    int _index;   //not used
+//    int _indexNow;    //not used
     DLabel *_image = nullptr;
     QString _path = nullptr;
     QPixmap _pixmap;
@@ -131,9 +131,9 @@ class IndicatorItem : public QWidget
 {
     Q_OBJECT
 public:
-    IndicatorItem(QWidget *parent = 0): QWidget(parent)
+    IndicatorItem(QWidget *parent = nullptr): QWidget(parent)
     {
-    };
+    }
 
     void setPressed(bool bPressed)
     {
@@ -141,7 +141,7 @@ public:
     }
 
 protected:
-    void paintEvent(QPaintEvent *event)
+    void paintEvent(QPaintEvent *)
     {
         QPainter painter(this);
         QRect backgroundRect = rect();
@@ -170,7 +170,7 @@ protected:
         } else {
             painter.fillRect(backgroundRect, QBrush(QColor(255, 138, 0)));
         }
-    };
+    }
 
 private:
     bool m_bIsPressed {false};
@@ -224,7 +224,7 @@ public:
     {
         if (_progBar_Widget->currentIndex() == 2) {
             return true;
-        }
+        };
     }
 
     void updateProgress(int nValue);    //更新进度条显示

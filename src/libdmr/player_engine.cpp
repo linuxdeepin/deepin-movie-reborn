@@ -878,9 +878,9 @@ void PlayerEngine::changeSoundMode(Backend::SoundMode sm)
         _current->changeSoundMode(sm);
 }
 
-void PlayerEngine::resizeEvent(QResizeEvent *re)
+void PlayerEngine::resizeEvent(QResizeEvent *)
 {
-    bool rounded = !window()->isFullScreen() && !window()->isMaximized();
+    bool rounded = !window()->isFullScreen() && !window()->isMaximized();   //
 
 #if !defined(USE_DXCB) && !defined(_LIBDMR_)
     if (rounded) {

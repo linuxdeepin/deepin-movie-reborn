@@ -73,8 +73,8 @@
 #include <X11/Xlib.h>
 
 //add by heyi
-#define _NET_WM_MOVERESIZE_MOVE              8   /* movement only */
-#define _NET_WM_MOVERESIZE_CANCEL           11   /* cancel operation */
+//#define _NET_WM_MOVERESIZE_MOVE              8   /* movement only */
+//#define _NET_WM_MOVERESIZE_CANCEL           11   /* cancel operation */
 
 #define XATOM_MOVE_RESIZE "_NET_WM_MOVERESIZE"
 #define XDEEPIN_BLUR_REGION "_NET_WM_DEEPIN_BLUR_REGION"
@@ -1064,7 +1064,7 @@ MainWindow::MainWindow(QWidget *parent)
     this->windowHandle()->installEventFilter(_listener);
 
     //auto mwfm = new MainWindowFocusMonitor(this);
-    auto mwpm = new MainWindowPropertyMonitor(this);
+//    auto mwpm = new MainWindowPropertyMonitor(this);
 
     connect(this, &MainWindow::windowEntered, &MainWindow::resumeToolsWindow);
     connect(this, &MainWindow::windowLeaved, &MainWindow::suspendToolsWindow);
@@ -2280,7 +2280,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             requestAction(ActionFactory::TogglePlaylist);
         }
         //this->setWindowState(Qt::WindowNoState);
-        if (m_bIsFullSreen) {
+//        if (m_bIsFullSreen) {
             //requestAction(ActionFactory::ToggleFullscreen);
             /*if (!fromUI) {
                 reflectActionToUI(ActionFactory::ToggleFullscreen);
@@ -2290,7 +2290,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                 _fullscreentimelable->close();
             }
 #endif
-        }
+//        }
 
         if (!fromUI) {
             reflectActionToUI(kd);
@@ -2912,7 +2912,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         auto img = _engine->takeScreenshot();
 
         QString filePath = Settings::get().screenshotNameTemplate();
-        bool success = false;
+        bool success = false;   //条件编译产生误报(cppcheck)
         if (img.isNull())
             qDebug() << __func__ << "pixmap is null";
         else
@@ -3674,8 +3674,8 @@ void MainWindow::closeEvent(QCloseEvent *ev)
         _lastCookie = 0;
     }
 
-    int cur = 0;
     if (Settings::get().isSet(Settings::ResumeFromLast)) {
+        int cur = 0;
         cur = _engine->playlist().current();
         if (cur >= 0) {
             Settings::get().setInternalOption("playlist_pos", cur);
@@ -4507,7 +4507,6 @@ void MainWindow::paintEvent(QPaintEvent *pe)
 //    painter.fillPath(path, bgColor);
 //    painter.setRenderHint(QPainter::Antialiasing, false);
 
-    QImage &bg = bg_dark;
 //    bool rounded = !isFullScreen() && !isMaximized();
 //    if (rounded) {
 //        QPainterPath pp;
@@ -4538,6 +4537,7 @@ void MainWindow::paintEvent(QPaintEvent *pe)
     }
 #endif
     if (_engine->state() == PlayerEngine::Idle) {
+        QImage &bg = bg_dark;
         auto pt = bgRect.center() - QPoint(bg.width() / 2, bg.height() / 2) / devicePixelRatioF();
         painter.drawImage(pt, bg);
     }

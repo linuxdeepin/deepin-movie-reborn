@@ -81,7 +81,7 @@ public:
 
     friend class PlaylistModel;
 
-    PlayerEngine(QWidget *parent = 0);
+    PlayerEngine(QWidget *parent);
     virtual ~PlayerEngine();
 
     // only the last dvd device set
@@ -230,7 +230,7 @@ protected:
     QList<QUrl> collectPlayFiles(const QList<QUrl> &urls);
     QList<QUrl> collectPlayDir(const QDir &dir);
 
-    void resizeEvent(QResizeEvent *re) override;
+    void resizeEvent(QResizeEvent *) override;
     void savePreviousMovieState();
 
     void paintEvent(QPaintEvent *e) override;

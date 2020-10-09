@@ -80,7 +80,7 @@ class MovieProgressIndicator;
 class IconButton: public DPushButton
 {
 public:
-    IconButton(QWidget *parent = 0): DPushButton(parent) {};
+    IconButton(QWidget *parent = 0): DPushButton(parent), m_themeType(0) {}
 
     void setIcon(QIcon icon)
     {

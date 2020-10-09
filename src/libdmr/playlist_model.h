@@ -303,10 +303,10 @@ class GetThumanbil : public QThread
 {
     Q_OBJECT
 public:
-    GetThumanbil(PlaylistModel *model, const QList<QUrl> &urls)
+    GetThumanbil(PlaylistModel *model, const QList<QUrl> &urls):m_model(model), m_urls(urls)
     {
-        m_model = model;
-        m_urls = urls;
+//        m_model = model;
+//        m_urls = urls;
         m_mutex = new QMutex;
         m_itemMutex = new QMutex;
     };

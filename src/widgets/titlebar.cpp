@@ -128,8 +128,7 @@ void Titlebar::slotThemeTypeChanged()
         d->m_shadowEffect->setOffset(d->offsetX, d->offsetY);
         d->m_shadowEffect->setBlurRadius(d->offsetY);
         d->m_shadowEffect->setColor(d->darkEffectColor);
-    } else
-    {
+    } else {
         if (d->m_play) {
             pa1.setColor(QPalette::ButtonText, d->playColor);
             pa2.setColor(QPalette::WindowText, d->playColor);
