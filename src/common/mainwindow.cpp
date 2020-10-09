@@ -1036,7 +1036,7 @@ MainWindow::MainWindow(QWidget *parent)
                     move((geom.width() - this->width()) / 2, (geom.height() - this->height()) / 2);
                 }
             } else {
-                utils::MoveToCenter(this);
+//                utils::MoveToCenter(this);
             }
         }
 
@@ -3744,7 +3744,7 @@ void MainWindow::updateSizeConstraints()
             this->setMinimumSize(m);
             this->setMaximumSize(QWIDGETSIZE_MAX,QWIDGETSIZE_MAX);
             if(_miniMark){
-                this->resize(850,600);
+                //this->resize(850,600);
                 _miniMark = false;
             }
         }
