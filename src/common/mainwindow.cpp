@@ -448,6 +448,7 @@ public:
     explicit MainWindowEventListener(QWidget *target)
         : QObject(target), _window(target->windowHandle())
     {
+        lastCornerEdge = CornerEdge::NoneEdge;
     }
 
     ~MainWindowEventListener() override
@@ -1962,6 +1963,7 @@ bool MainWindow::addCdromPath()
 
 void MainWindow::loadPlayList()
 {
+    _playlist = nullptr;
     _playlist = new PlaylistWidget(this, _engine);
     _playlist->hide();
 //    _playlist->setParent(_toolbox);
@@ -3877,7 +3879,7 @@ void MainWindow::resizeByConstraints(bool forceCentered)
 // 简而言之,只看最长的那个最大为528px.
 void MainWindow::updateSizeConstraints()
 {
-    auto m = size();
+    QSize m;
 
     if (_miniMode) {
         m = QSize(40, 40);
@@ -3891,9 +3893,6 @@ void MainWindow::updateSizeConstraints()
                 qreal ratio = static_cast<qreal>(sz.width()) / sz.height();
                 if (sz.width() > sz.height()) {
                     int w = static_cast<int>(500 * ratio);
-//                    if (w > dRect.width()) {
-//                        w = dRect.width();
-//                    }
                     m = QSize(w, 500);
                 } else {
                     int h = static_cast<int>(614 / ratio);
@@ -3906,7 +3905,7 @@ void MainWindow::updateSizeConstraints()
         } else {
             m = QSize(614, 500);
         }
-        m = QSize(614, 500);
+//        m = QSize(614, 500);
     }
     this->setMinimumSize(m);
 }

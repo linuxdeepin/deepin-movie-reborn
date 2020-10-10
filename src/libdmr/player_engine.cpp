@@ -880,7 +880,7 @@ void PlayerEngine::changeSoundMode(Backend::SoundMode sm)
 
 void PlayerEngine::resizeEvent(QResizeEvent *)
 {
-    bool rounded = !window()->isFullScreen() && !window()->isMaximized();   //
+    bool rounded = !window()->isFullScreen() && !window()->isMaximized();   //条件编译误报
 
 #if !defined(USE_DXCB) && !defined(_LIBDMR_)
     if (rounded) {

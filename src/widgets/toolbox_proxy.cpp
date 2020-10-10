@@ -734,37 +734,18 @@ public:
         _viewProgBarLayout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
         _viewProgBarLayout->setSpacing(1);
 
-        //重新获取胶片进度条长度 by ZhuYuliang
         int pixWidget = 8/*_progBar->width() / 100*/;
-        //当宽度比较宽的时候，就插入两次相同图片
-        if (pixWidget > 500) {
-            pixWidget /= 2;
-            for (int i = 0; i < pm_list.count() * 2 ; i++) {
 
-                ImageItem *label = new ImageItem(pm_list.at(i / 2), false, _back);
-                label->setMouseTracking(true);
-                label->move(i * (pixWidget + 1) + 3, 5);
-                label->setFixedSize(pixWidget, 50);
+        for (int i = 0; i < pm_list.count(); i++) {
+            ImageItem *label = new ImageItem(pm_list.at(i), false, _back);
+            label->setMouseTracking(true);
+            label->move(i * (pixWidget + 1) + 3, 5);
+            label->setFixedSize(pixWidget, 50);
 
-                ImageItem *label_black = new ImageItem(pm_black_list.at(i / 2), true, _front);
-                label_black->setMouseTracking(true);
-                label_black->move(i * (pixWidget + 1) + 3, 5);
-                label_black->setFixedSize(pixWidget, 50);
-
-
-            }
-        } else {
-            for (int i = 0; i < pm_list.count(); i++) {
-                ImageItem *label = new ImageItem(pm_list.at(i), false, _back);
-                label->setMouseTracking(true);
-                label->move(i * (pixWidget + 1) + 3, 5);
-                label->setFixedSize(pixWidget, 50);
-
-                ImageItem *label_black = new ImageItem(pm_black_list.at(i), true, _front);
-                label_black->setMouseTracking(true);
-                label_black->move(i * (pixWidget + 1) + 3, 5);
-                label_black->setFixedSize(pixWidget, 50);
-            }
+            ImageItem *label_black = new ImageItem(pm_black_list.at(i), true, _front);
+            label_black->setMouseTracking(true);
+            label_black->move(i * (pixWidget + 1) + 3, 5);
+            label_black->setFixedSize(pixWidget, 50);
         }
 
         update();
@@ -1510,17 +1491,17 @@ QString libPath(const QString &strlib)
 
 void viewProgBarLoad::initThumb()
 {
-#ifdef __x86_64__
-    const char *path = "/usr/lib/x86_64-linux-gnu/libffmpegthumbnailer.so.4";
-#elif __mips__
-    const char *path = "/usr/lib/mips64el-linux-gnuabi64/libffmpegthumbnailer.so.4";
-#elif __aarch64__
-    const char *path = "/usr/lib/aarch64-linux-gnu/libffmpegthumbnailer.so.4";
-#elif __sw_64__
-    const char *path = "/usr/lib/sw_64-linux-gnu/libffmpegthumbnailer.so.4";
-#else
-    const char *path = "/usr/lib/i386-linux-gnu/libffmpegthumbnailer.so.4";
-#endif
+//#ifdef __x86_64__
+//    const char *path = "/usr/lib/x86_64-linux-gnu/libffmpegthumbnailer.so.4";
+//#elif __mips__
+//    const char *path = "/usr/lib/mips64el-linux-gnuabi64/libffmpegthumbnailer.so.4";
+//#elif __aarch64__
+//    const char *path = "/usr/lib/aarch64-linux-gnu/libffmpegthumbnailer.so.4";
+//#elif __sw_64__
+//    const char *path = "/usr/lib/sw_64-linux-gnu/libffmpegthumbnailer.so.4";
+//#else
+//    const char *path = "/usr/lib/i386-linux-gnu/libffmpegthumbnailer.so.4";
+//#endif
 
     QLibrary library(libPath("libffmpegthumbnailer.so"));
     m_mvideo_thumbnailer = (mvideo_thumbnailer) library.resolve( "video_thumbnailer_create");
