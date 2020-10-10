@@ -1332,7 +1332,7 @@ protected:
 
     void showEvent(QShowEvent *se)
     {
-        m_mouseIn = true;
+        //m_mouseIn = true;   //fix bug 49617
         QWidget::showEvent(se);
     }
 
