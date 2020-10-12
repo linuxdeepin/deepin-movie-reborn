@@ -69,7 +69,14 @@ int main(int argc, char *argv[])
 #if defined(STATIC_LIB)
     DWIDGET_INIT_RESOURCE();
 #endif
-    DApplication::loadDXcbPlugin();
+    /**
+      *This function dtk is obsolete and has no
+      * impact after testing on x86 platform.
+      * If there is a problem with later adaptation,
+      * please give priority to whether there
+      * is any impact here.
+      */
+//    DApplication::loadDXcbPlugin();
 
     DApplication app(argc, argv);
 

@@ -521,7 +521,10 @@ bool CompositingManager::is_device_viable(int id)
         }
 
         int enabled = 0;
-        fscanf(fp, "%d", &enabled);
+        int error = fscanf(fp, "%d", &enabled);
+        if (error < 0) {
+            qInfo() << "someting error";
+        }
         fclose(fp);
 
         // nouveau may write 2, others 1
