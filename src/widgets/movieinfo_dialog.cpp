@@ -54,8 +54,6 @@ static QString ElideText(const QString &text, const QSize &size,
                          QTextOption::WrapMode wordWrap, const QFont &font,
                          Qt::TextElideMode mode, int lineHeight, int lastLineWidth)
 {
-    int height = 0;
-
     QTextLayout textLayout(text);
     QString str;
     QFontMetrics fontMetrics(font);
@@ -72,6 +70,7 @@ static QString ElideText(const QString &text, const QSize &size,
         tmp_str = text.mid(line.textStart(), line.textLength());
         str = tmp_str;
     } else {
+        int height = 0;
         while (line.isValid()) {
             //height += lineHeight;
             line.setLineWidth(size.width());
@@ -111,7 +110,7 @@ static QString ElideText(const QString &text, const QSize &size,
 class ToolTipEvent: public QObject
 {
 public:
-    ToolTipEvent(QObject *parent): QObject(parent) {}
+    explicit ToolTipEvent(QObject *parent): QObject(parent) {}
 
 protected:
     bool eventFilter(QObject *obj, QEvent *event)
@@ -157,7 +156,7 @@ protected:
 class CloseButton : public DPushButton
 {
 public:
-    CloseButton(QWidget *parent) {}
+    explicit CloseButton(QWidget *parent) {}
 protected:
     void paintEvent(QPaintEvent *e) override
     {

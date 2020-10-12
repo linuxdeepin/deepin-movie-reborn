@@ -120,8 +120,8 @@ protected:
         painter.drawRoundedRect(rect(), 3, 3);
     };
 private:
-    int _index;
-    int _indexNow;
+//    int _index;      //not used
+//    int _indexNow;    //not used
     DLabel *_image = nullptr;
     QString _path = nullptr;
     QPixmap _pixmap;

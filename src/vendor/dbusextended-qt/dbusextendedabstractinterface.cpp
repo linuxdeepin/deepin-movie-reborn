@@ -187,9 +187,9 @@ QVariant DBusExtendedAbstractInterface::internalPropGet(const char *propname, vo
         }
 
         // is this metatype registered?
-        const char *expectedSignature = "";
+//        const char *expectedSignature = "";
         if (int(metaProperty.type()) != QMetaType::QVariant) {
-            expectedSignature = QDBusMetaType::typeToSignature(metaProperty.userType());
+            const char *expectedSignature = QDBusMetaType::typeToSignature(metaProperty.userType());
             if (nullptr == expectedSignature) {
                 QString errorMessage =
                     QStringLiteral("Type %1 must be registered with Qt D-Bus "

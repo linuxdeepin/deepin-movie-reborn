@@ -40,7 +40,7 @@ namespace dmr {
 class TitlebarPrivate
 {
 public:
-    TitlebarPrivate(Titlebar *parent) : q_ptr(parent) {}
+    explicit TitlebarPrivate(Titlebar *parent) : q_ptr(parent) {}
 
     QColor          playColor                   = QColor(255, 255, 255, 204);
     QColor          lightEffectColor            = QColor(200, 200, 200, 45);
@@ -130,12 +130,13 @@ void Titlebar::slotThemeTypeChanged()
         d->m_shadowEffect->setColor(d->darkEffectColor);
     } else
     {
-        if (d->m_play) {
-            pa1.setColor(QPalette::ButtonText, d->playColor);
-            pa2.setColor(QPalette::WindowText, d->playColor);
-            d->m_titlebar->setPalette(pa1);
-            d->m_titletxt->setPalette(pa2);
-        } else {
+        ///该条件语句始终为false///
+//        if (d->m_play) {
+//            pa1.setColor(QPalette::ButtonText, d->playColor);
+//            pa2.setColor(QPalette::WindowText, d->playColor);
+//            d->m_titlebar->setPalette(pa1);
+//            d->m_titletxt->setPalette(pa2);
+//        } else {
             if (DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::DarkType) {
                 pa1.setColor(QPalette::ButtonText, d->playColor);
                 pa2.setColor(QPalette::WindowText, d->playColor);
@@ -152,7 +153,7 @@ void Titlebar::slotThemeTypeChanged()
                 d->m_shadowEffect->setOffset(d->offsetX, d->offsetY);
                 d->m_shadowEffect->setBlurRadius(d->blurRadius);
                 d->m_shadowEffect->setColor(d->lightEffectColor);
-            }
+//            }
         }
     }
     this->setGraphicsEffect(d->m_shadowEffect);

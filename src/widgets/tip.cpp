@@ -46,7 +46,7 @@ namespace dmr {
 class TipPrivate
 {
 public:
-    TipPrivate(Tip *parent) : q_ptr(parent) {}
+    explicit TipPrivate(Tip *parent) : q_ptr(parent) {}
 
     void setBackgroundImage(const QPixmap &srcPixmap);
 
@@ -252,13 +252,13 @@ void Tip::paintEvent(QPaintEvent *)
     QRectF borderRect = QRectF(rect());
     auto borderRadius = radius;
     QMarginsF borderMargin(penWidthf / 2, penWidthf / 2, penWidthf / 2, penWidthf / 2);
-    if (outer) {
+//    if (outer) {  //outer值未改变
         borderRadius += penWidthf / 2;
         borderRect = borderRect.marginsAdded(borderMargin).marginsRemoved(shadowMargins);
-    } else {
-        borderRadius -= penWidthf / 2;
-        borderRect = borderRect.marginsRemoved(borderMargin).marginsRemoved(shadowMargins);
-    }
+//    } else {
+//        borderRadius -= penWidthf / 2;
+//        borderRect = borderRect.marginsRemoved(borderMargin).marginsRemoved(shadowMargins);
+//    }
     borderPath.addRoundedRect(borderRect, borderRadius, borderRadius);
     QPen borderPen(borderColor);
     borderPen.setWidthF(penWidthf);

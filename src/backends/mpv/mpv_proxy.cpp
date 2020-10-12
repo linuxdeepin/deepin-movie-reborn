@@ -1299,8 +1299,8 @@ void MpvProxy::stepBurstScreenshot()
 
     auto pos = nextBurstShootPoint();
     my_command(_handle, QList<QVariant> {"seek", pos, "absolute"});
-    int tries = 10;
-    while (tries) {
+//    int tries = 10;
+    while (true) {
         mpv_event *ev = m_waitEvent(_handle, 0.005);
         if (ev->event_id == MPV_EVENT_NONE)
             continue;

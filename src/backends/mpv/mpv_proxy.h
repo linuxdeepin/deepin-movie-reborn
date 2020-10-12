@@ -210,7 +210,7 @@ public:
     mpv_waitEvent m_waitEvent{nullptr};
     mpv_set_optionString m_setOptionString{nullptr};
     mpv_setProperty m_setProperty{nullptr};
-    mpv_setProperty_async m_setPropertyAsync;
+    mpv_setProperty_async m_setPropertyAsync{nullptr};
     mpv_commandNode m_commandNode{nullptr};
     mpv_commandNode_async m_commandNodeAsync{nullptr};
     mpv_getProperty m_getProperty{nullptr};

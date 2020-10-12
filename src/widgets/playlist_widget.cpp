@@ -82,7 +82,7 @@ QString splitText(const QString &text, int width,
 class PlayItemTooltipHandler: public QObject
 {
 public:
-    PlayItemTooltipHandler(QObject *parent): QObject(parent) {}
+    explicit PlayItemTooltipHandler(QObject *parent): QObject(parent) {}
 
 protected:
     bool eventFilter(QObject *obj, QEvent *event)
@@ -677,7 +677,7 @@ private:
 class MainWindowListener: public QObject
 {
 public:
-    MainWindowListener(QObject *parent): QObject(parent) {}
+    explicit MainWindowListener(QObject *parent): QObject(parent) {}
 
 protected:
     bool eventFilter(QObject *obj, QEvent *event)

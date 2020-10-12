@@ -275,9 +275,9 @@ static OpenGLInteropKind _interopKind = OpenGLInteropKind::INTEROP_NONE;
 bool CompositingManager::runningOnVmwgfx()
 {
     static bool s_runningOnVmwgfx = false;
-    static bool s_checked = false;
+//    static bool s_checked = false;
 
-    if (!s_checked) {
+//    if (!s_checked) {
         for (int id = 0; id <= 10; id++) {
             if (!QFile::exists(QString("/sys/class/drm/card%1").arg(id))) break;
             if (is_device_viable(id)) {
@@ -286,7 +286,7 @@ bool CompositingManager::runningOnVmwgfx()
                 break;
             }
         }
-    }
+//    }
 
     return s_runningOnVmwgfx;
 }

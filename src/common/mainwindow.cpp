@@ -330,7 +330,7 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
 class MainWindowFocusMonitor: public QAbstractNativeEventFilter
 {
 public:
-    MainWindowFocusMonitor(MainWindow *src) : QAbstractNativeEventFilter(), _source(src)
+    explicit MainWindowFocusMonitor(MainWindow *src) : QAbstractNativeEventFilter(), _source(src)
     {
         qApp->installNativeEventFilter(this);
     }
@@ -382,7 +382,7 @@ public:
 class MainWindowPropertyMonitor: public QAbstractNativeEventFilter
 {
 public:
-    MainWindowPropertyMonitor(MainWindow *src)
+    explicit MainWindowPropertyMonitor(MainWindow *src)
         : QAbstractNativeEventFilter(), _mw(src)
     {
         //安装事件过滤器
@@ -448,6 +448,7 @@ public:
     explicit MainWindowEventListener(QWidget *target)
         : QObject(target), _window(target->windowHandle())
     {
+        lastCornerEdge = CornerEdge::NoneEdge;
     }
 
     ~MainWindowEventListener() override
@@ -1962,6 +1963,7 @@ bool MainWindow::addCdromPath()
 
 void MainWindow::loadPlayList()
 {
+    _playlist = nullptr;
     _playlist = new PlaylistWidget(this, _engine);
     _playlist->hide();
 //    _playlist->setParent(_toolbox);
@@ -2280,7 +2282,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             requestAction(ActionFactory::TogglePlaylist);
         }
         //this->setWindowState(Qt::WindowNoState);
-        if (m_bIsFullSreen) {
+//        if (m_bIsFullSreen) {
             //requestAction(ActionFactory::ToggleFullscreen);
             /*if (!fromUI) {
                 reflectActionToUI(ActionFactory::ToggleFullscreen);
@@ -2290,7 +2292,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                 _fullscreentimelable->close();
             }
 #endif
-        }
+//        }
 
         if (!fromUI) {
             reflectActionToUI(kd);
@@ -3674,8 +3676,8 @@ void MainWindow::closeEvent(QCloseEvent *ev)
         _lastCookie = 0;
     }
 
-    int cur = 0;
     if (Settings::get().isSet(Settings::ResumeFromLast)) {
+        int cur = 0;
         cur = _engine->playlist().current();
         if (cur >= 0) {
             Settings::get().setInternalOption("playlist_pos", cur);
@@ -3816,21 +3818,20 @@ void MainWindow::resizeByConstraints(bool forceCentered)
     const auto &mi = _engine->playlist().currentInfo().mi;
     auto sz = _engine->videoSize();
 #ifdef __mips__
-//这段代码现在看来没有意义，暂时注释
-//    if (!CompositingManager::get().composited()) {
-//        float w = (float)sz.width();
-//        float h = (float)sz.height();
-//        if ((w / h) > 0.56 && (w / h) < 0.75) {
-//            _engine->setVideoZoom(-(w / h) - 0.1);
-//        } else {
-//            _engine->setVideoZoom(0);
-//        }
+    if (!CompositingManager::get().composited()) {
+        float w = (float)sz.width();
+        float h = (float)sz.height();
+        if ((w / h) > 0.56 && (w / h) < 0.75) {
+            _engine->setVideoZoom(-(w / h) - 0.1);
+        } else {
+            _engine->setVideoZoom(0);
+        }
 
-//        //3.26修改，初始分辨率大于1080P时缩小一半
-//        while (sz.width() >= 1080) {
-//            sz = sz / 2;
-//        }
-//    }
+        //3.26修改，初始分辨率大于1080P时缩小一半
+        while (sz.width() >= 1080) {
+            sz = sz / 2;
+        }
+    }
     _nwComm->syncPosition();
 #endif
     if (sz.isEmpty()) {
@@ -3877,7 +3878,7 @@ void MainWindow::resizeByConstraints(bool forceCentered)
 // 简而言之,只看最长的那个最大为528px.
 void MainWindow::updateSizeConstraints()
 {
-    auto m = size();
+    QSize m;
 
     if (_miniMode) {
         m = QSize(40, 40);
@@ -3906,7 +3907,7 @@ void MainWindow::updateSizeConstraints()
         } else {
             m = QSize(614, 500);
         }
-        m = QSize(614, 500);
+//        m = QSize(614, 500);
     }
     this->setMinimumSize(m);
 }
@@ -4507,7 +4508,6 @@ void MainWindow::paintEvent(QPaintEvent *pe)
 //    painter.fillPath(path, bgColor);
 //    painter.setRenderHint(QPainter::Antialiasing, false);
 
-    QImage &bg = bg_dark;
 //    bool rounded = !isFullScreen() && !isMaximized();
 //    if (rounded) {
 //        QPainterPath pp;
@@ -4538,6 +4538,7 @@ void MainWindow::paintEvent(QPaintEvent *pe)
     }
 #endif
     if (_engine->state() == PlayerEngine::Idle) {
+        QImage &bg = bg_dark;
         auto pt = bgRect.center() - QPoint(bg.width() / 2, bg.height() / 2) / devicePixelRatioF();
         painter.drawImage(pt, bg);
     }

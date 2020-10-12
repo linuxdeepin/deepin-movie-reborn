@@ -139,7 +139,7 @@ class ImageButton: public QPushButton
 {
     Q_OBJECT
 public:
-    ImageButton(QWidget *parent = nullptr)
+    explicit ImageButton(QWidget *parent = nullptr)
         : QPushButton (parent)
     {
 
@@ -167,7 +167,7 @@ private:
 class KeyPressBubbler: public QObject
 {
 public:
-    KeyPressBubbler(QObject *parent): QObject(parent) {}
+    explicit KeyPressBubbler(QObject *parent): QObject(parent) {}
 
 protected:
     bool eventFilter(QObject *obj, QEvent *event)
@@ -186,7 +186,7 @@ protected:
 class TooltipHandler: public QObject
 {
 public:
-    TooltipHandler(QObject *parent): QObject(parent) {}
+    explicit TooltipHandler(QObject *parent): QObject(parent) {}
 
 protected:
     bool eventFilter(QObject *obj, QEvent *event)
@@ -736,35 +736,16 @@ public:
 
         //重新获取胶片进度条长度 by ZhuYuliang
         int pixWidget = 8/*_progBar->width() / 100*/;
-        //当宽度比较宽的时候，就插入两次相同图片
-        if (pixWidget > 500) {
-            pixWidget /= 2;
-            for (int i = 0; i < pm_list.count() * 2 ; i++) {
+        for (int i = 0; i < pm_list.count(); i++) {
+            ImageItem *label = new ImageItem(pm_list.at(i), false, _back);
+            label->setMouseTracking(true);
+            label->move(i * (pixWidget + 1) + 3, 5);
+            label->setFixedSize(pixWidget, 50);
 
-                ImageItem *label = new ImageItem(pm_list.at(i / 2), false, _back);
-                label->setMouseTracking(true);
-                label->move(i * (pixWidget + 1) + 3, 5);
-                label->setFixedSize(pixWidget, 50);
-
-                ImageItem *label_black = new ImageItem(pm_black_list.at(i / 2), true, _front);
-                label_black->setMouseTracking(true);
-                label_black->move(i * (pixWidget + 1) + 3, 5);
-                label_black->setFixedSize(pixWidget, 50);
-
-
-            }
-        } else {
-            for (int i = 0; i < pm_list.count(); i++) {
-                ImageItem *label = new ImageItem(pm_list.at(i), false, _back);
-                label->setMouseTracking(true);
-                label->move(i * (pixWidget + 1) + 3, 5);
-                label->setFixedSize(pixWidget, 50);
-
-                ImageItem *label_black = new ImageItem(pm_black_list.at(i), true, _front);
-                label_black->setMouseTracking(true);
-                label_black->move(i * (pixWidget + 1) + 3, 5);
-                label_black->setFixedSize(pixWidget, 50);
-            }
+            ImageItem *label_black = new ImageItem(pm_black_list.at(i), true, _front);
+            label_black->setMouseTracking(true);
+            label_black->move(i * (pixWidget + 1) + 3, 5);
+            label_black->setFixedSize(pixWidget, 50);
         }
 
         update();
@@ -1332,7 +1313,7 @@ protected:
 
     void showEvent(QShowEvent *se)
     {
-        //m_mouseIn = true;   //fix bug 49617
+        m_mouseIn = true;
         QWidget::showEvent(se);
     }
 
@@ -2642,10 +2623,10 @@ void ToolboxProxy::updateButtonStates()
 //    _nextBtn->setVisible(vis);
     _nextBtn->setDisabled(!vis);
 
-    vis = _engine->state() != PlayerEngine::CoreState::Idle;
-    if (vis) {
-        vis = _engine->playingMovieInfo().subs.size() > 0;
-    }
+//    vis = _engine->state() != PlayerEngine::CoreState::Idle;
+//    if (vis) {
+//        vis = _engine->playingMovieInfo().subs.size() > 0;
+//    }
     //_subBtn->setVisible(vis);
 }
 

@@ -57,21 +57,16 @@ static QMutex _instLock;
 static QMutex _thumbLock;
 static QWaitCondition cond;
 
-ThumbnailWorker::~ThumbnailWorker()
-{
-    free(m_pCharTime);
-}
-
 ThumbnailWorker &ThumbnailWorker::get()
 {
     if (_instance == nullptr) {
         QMutexLocker lock(&_instLock);
-        if (_instance == nullptr) {
+//        if (_instance == nullptr) {
             _instance = new ThumbnailWorker;
 #ifndef __mips__
             (*_instance).start();
 #endif
-        }
+//        }
     }
 
     return *_instance;
@@ -123,8 +118,6 @@ ThumbnailWorker::ThumbnailWorker()
 {
     initThumb();
     m_video_thumbnailer->thumbnail_size = m_video_thumbnailer->thumbnail_size * qApp->devicePixelRatio();
-
-    m_pCharTime = (char*)malloc(20);
 }
 
 QString ThumbnailWorker::libPath(const QString &strlib)
@@ -176,9 +169,7 @@ QPixmap ThumbnailWorker::genThumb(const QUrl &url, int secs)
 
     QTime d(0, 0, 0);
     d = d.addSecs(secs);
-    //memset(m_pChTime,0,strlen(m_pChTime));
-    strcpy(m_pCharTime,d.toString("hh:mm:ss").toLatin1().data());
-    m_video_thumbnailer->seek_time = m_pCharTime;
+    m_video_thumbnailer->seek_time = d.toString("hh:mm:ss").toLatin1().data();
     auto file = QFileInfo(url.toLocalFile()).absoluteFilePath();
     try {
         auto e = QProcessEnvironment::systemEnvironment();
