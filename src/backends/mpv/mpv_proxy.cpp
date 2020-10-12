@@ -276,7 +276,9 @@ mpv_handle *MpvProxy::mpv_init()
         set_property(h, "vo", "libmpv,opengl-cb");
         set_property(h, "vd-lavc-dr", "no");
         set_property(h, "gpu-sw", "on");
-        //set_property(h, "ao", "alsa");
+        if(utils::check_wayland_env()){
+            set_property(h, "ao", "alsa");
+        }
 #endif
     } else {
 #ifdef __mips__
