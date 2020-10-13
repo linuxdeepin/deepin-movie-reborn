@@ -399,6 +399,7 @@ private:
     QTimer _mousePressTimer;
     Diskcheckthread m_diskCheckThread;
     QStringList m_openFiles;
+    QString m_currentHwdec;
     bool m_bProgressChanged {false};        //进度条是否被拖动
     bool m_bFirstInit {false};
     bool m_bLastIsTouch {false};

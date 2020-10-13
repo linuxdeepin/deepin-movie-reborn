@@ -4000,6 +4000,30 @@ void MainWindow::keyPressEvent(QKeyEvent *ev)
         }
         ev->setAccepted(true);
     }
+#ifdef QT_DEBUG
+    //加入一个在调试环境下切换软硬解码的快捷键
+    if (ev->key() == Qt::Key_H) {
+        if ( QApplication::keyboardModifiers () == Qt::ControlModifier)
+        {
+            if (m_currentHwdec == "") {
+                m_currentHwdec = _engine->getBackendProperty("hwdec").toString();
+            }
+            if (m_currentHwdec == "off") {
+                _nwComm->popup("current is off");
+                QWidget::keyPressEvent(ev);
+                return;
+            }
+
+            QString str = _engine->getBackendProperty("hwdec").toString();
+            if (str == "off") {
+                _engine->setBackendProperty("hwdec", m_currentHwdec);
+            } else {
+                _engine->setBackendProperty("hwdec", "off");
+            }
+            _nwComm->popup(QString("hwdec is %1").arg(_engine->getBackendProperty("hwdec").toString()));
+        }
+    }
+#endif
 
     QWidget::keyPressEvent(ev);
 }
