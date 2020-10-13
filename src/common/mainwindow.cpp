@@ -3818,20 +3818,20 @@ void MainWindow::resizeByConstraints(bool forceCentered)
     const auto &mi = _engine->playlist().currentInfo().mi;
     auto sz = _engine->videoSize();
 #ifdef __mips__
-    if (!CompositingManager::get().composited()) {
-        float w = (float)sz.width();
-        float h = (float)sz.height();
-        if ((w / h) > 0.56 && (w / h) < 0.75) {
-            _engine->setVideoZoom(-(w / h) - 0.1);
-        } else {
-            _engine->setVideoZoom(0);
-        }
+//    if (!CompositingManager::get().composited()) {
+//        float w = (float)sz.width();
+//        float h = (float)sz.height();
+//        if ((w / h) > 0.56 && (w / h) < 0.75) {
+//            _engine->setVideoZoom(-(w / h) - 0.1);
+//        } else {
+//            _engine->setVideoZoom(0);
+//        }
 
-        //3.26修改，初始分辨率大于1080P时缩小一半
-        while (sz.width() >= 1080) {
-            sz = sz / 2;
-        }
-    }
+//        //3.26修改，初始分辨率大于1080P时缩小一半
+//        while (sz.width() >= 1080) {
+//            sz = sz / 2;
+//        }
+//    }
     _nwComm->syncPosition();
 #endif
     if (sz.isEmpty()) {
