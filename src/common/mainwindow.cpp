@@ -246,7 +246,6 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
                     return false;
             }
         }
-
         return true;
     };
 
