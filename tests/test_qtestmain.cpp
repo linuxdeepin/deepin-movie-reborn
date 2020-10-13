@@ -46,12 +46,10 @@ private slots:
 
 QTestMain::QTestMain()
 {
-
 }
 
 QTestMain::~QTestMain()
 {
-
 }
 
 void QTestMain::initTestCase()

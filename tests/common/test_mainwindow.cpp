@@ -28,13 +28,20 @@ TEST(MainWindow, loadFile)
     QList<QUrl> listPlayFiles;
 
     listPlayFiles<<QUrl::fromLocalFile("/usr/share/dde-introduction/demo.mp4")\
-                <<QUrl::fromLocalFile("/home/uosf/Music/bensound-sunny.mp3");
+                <<QUrl::fromLocalFile("/usr/share/music/bensound-sunny.mp3");
 
     w->show();
 
     const auto &valids = egine->addPlayFiles(listPlayFiles);
 
     egine->playByName(valids[0]);
+}
+
+TEST(MainWindow, mouseSimulate)
+{
+    MainWindow* w = dApp->getMainWindow();
+
+    w->show();
 
     QTest::mouseMove(w, QPoint(),1000);
 
@@ -44,8 +51,104 @@ TEST(MainWindow, loadFile)
     QTest::mouseDClick(w,Qt::LeftButton,Qt::NoModifier,QPoint(),1000);  //fullscreen
     QTest::mouseDClick(w,Qt::LeftButton,Qt::NoModifier,QPoint(),2000);
 
-    QTest::keyPress(w,Qt::Key_Enter,Qt::AltModifier,2000);
+    QTest::keyPress(w,Qt::Key_Enter,Qt::NoModifier);
+}
 
+TEST(shortcutKey, play)
+{
+    MainWindow* w = dApp->getMainWindow();
+    w->show();
+
+    QTestEventList testEventList;
+    testEventList.addKeyClick(Qt::Key_Space, Qt::NoModifier, 1000); //pause
+    testEventList.addKeyClick(Qt::Key_Space, Qt::NoModifier, 1000); //play
+    testEventList.addKeyClick(Qt::Key_Right, Qt::NoModifier, 1000); //fast forward
+    testEventList.addKeyClick(Qt::Key_Left, Qt::NoModifier, 1000);  //fast backward
+
+    testEventList.addKeyClick(Qt::Key_Return, Qt::NoModifier, 1000);    //fullscreen
+    testEventList.addKeyClick(Qt::Key_F3, Qt::NoModifier, 1000);    //playlist
+    testEventList.addKeyClick(Qt::Key_Down, Qt::NoModifier, 500);
+    testEventList.addKeyClick(Qt::Key_Enter, Qt::NoModifier, 500);
+    testEventList.addKeyClick(Qt::Key_Escape, Qt::NoModifier, 1000);    //quite fullscreen
+
+    testEventList.addKeyClick(Qt::Key_F3, Qt::NoModifier, 1000);    //playlist
+    testEventList.addKeyClick(Qt::Key_Up, Qt::NoModifier, 500);
+    testEventList.addKeyClick(Qt::Key_Delete, Qt::NoModifier, 1000);    //delete from playlist
+
+    //加速播放
+    testEventList.addKeyClick(Qt::Key_Right, Qt::ControlModifier, 300);
+    for (int i = 0; i<7 ;i++) {
+        testEventList.addKeyClick(Qt::Key_Right, Qt::ControlModifier, 50);
+    }
+
+    //减速播放
+    testEventList.addKeyClick(Qt::Key_Left, Qt::ControlModifier, 300);
+    for (int i = 0; i<5 ;i++) {
+        testEventList.addKeyClick(Qt::Key_Left, Qt::ControlModifier, 50);
+    }
+
+    //还原播放速度
+    testEventList.addKeyClick(Qt::Key_R, Qt::ControlModifier, 500);
+
+    //movie info dialog
+    testEventList.addKeyClick(Qt::Key_Return, Qt::AltModifier, 1000);
+    testEventList.addKeyClick(Qt::Key_Escape, Qt::NoModifier, 1000);
+
+    testEventList.simulate(w);
+
+    EXPECT_TRUE(true);
+}
+
+TEST(shortcutKey, volumeAndFrame)
+{
+    MainWindow* w = dApp->getMainWindow();
+    w->show();
+
+    QTestEventList testEventList;
+
+    //mini mode
+    testEventList.addKeyClick(Qt::Key_F2, Qt::NoModifier, 1000);
+    testEventList.addKeyClick(Qt::Key_Escape, Qt::NoModifier, 00);
+
+    //volume
+    for (int i = 0; i<5; i++) {
+        testEventList.addKeyClick(Qt::Key_Down, Qt::ControlModifier | Qt::AltModifier, 100);    //volume up
+    }
+    for (int i = 0; i<2; i++) {
+            testEventList.addKeyClick(Qt::Key_Up, Qt::ControlModifier | Qt::AltModifier, 100);//volume down
+    }
+    testEventList.addKeyClick(Qt::Key_M, Qt::NoModifier, 1000); //mute
+
+    testEventList.addKeyClick(Qt::Key_Left, Qt::ControlModifier | Qt::ShiftModifier, 500); //last frame
+    testEventList.addKeyClick(Qt::Key_Space, Qt::NoModifier, 100); //play
+
+    testEventList.addKeyClick(Qt::Key_Right, Qt::ControlModifier | Qt::ShiftModifier, 500); //next frame
+    testEventList.addKeyClick(Qt::Key_Right, Qt::ControlModifier | Qt::ShiftModifier, 100);
+    testEventList.addKeyClick(Qt::Key_Right, Qt::ControlModifier | Qt::ShiftModifier, 100);
+    testEventList.addKeyClick(Qt::Key_Space, Qt::NoModifier, 300); //play
+
+    testEventList.simulate(w);
+}
+
+TEST(shortcutKey, file)
+{
+    MainWindow* w = dApp->getMainWindow();
+    w->show();
+
+    QTestEventList testEventList;
+
+    //openfile
+//    testEventList.addKeyClick(Qt::Key_O, Qt::ControlModifier, 1000);
+    PlayerEngine* egine =  w->engine();
+    QList<QUrl> listPlayFiles;
+    listPlayFiles<<QUrl::fromLocalFile("/usr/share/dde-introduction/demo.mp4")\
+                <<QUrl::fromLocalFile("/usr/share/music/bensound-sunny.mp3");
+    egine->addPlayFiles(listPlayFiles);
+
+    testEventList.addKeyClick(Qt::Key_PageDown, Qt::NoModifier, 1000);
+    testEventList.addKeyClick(Qt::Key_PageUp, Qt::NoModifier, 1000);
+
+    testEventList.simulate(w);
 }
 
 TEST(ToolBox, togglePlayList)

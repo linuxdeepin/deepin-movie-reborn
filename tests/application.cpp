@@ -19,7 +19,6 @@
 Application::Application(int &argc, char **argv)
     : DApplication(argc, argv)
 {
-
 }
 
 Application::~Application()
@@ -38,20 +37,20 @@ void Application::setMainWindow(MainWindow *window)
     }
 }
 
-MainWindow *Application::getMainWindow()
+MainWindow * Application::getMainWindow()
 {
 //    if(nullptr == m_mainwindow)
 //        m_mainwindow = new MainWindow();
     return m_mainwindow;
 }
 
-Presenter *Application::initPresenter()
+Presenter * Application::initPresenter()
 {
 
     _presenter = new Presenter(getMainWindow());
     return _presenter;
 }
-MovieApp *Application::initMovieApp(MainWindow *mw)
+MovieApp * Application::initMovieApp(MainWindow *mw)
 {
     _movieapp = new MovieApp(mw,this);
     return _movieapp;
