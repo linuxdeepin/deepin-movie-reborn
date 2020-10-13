@@ -330,7 +330,7 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
 class MainWindowFocusMonitor: public QAbstractNativeEventFilter
 {
 public:
-    MainWindowFocusMonitor(MainWindow *src) : QAbstractNativeEventFilter(), _source(src)
+    explicit MainWindowFocusMonitor(MainWindow *src) : QAbstractNativeEventFilter(), _source(src)
     {
         qApp->installNativeEventFilter(this);
     }
@@ -382,7 +382,7 @@ public:
 class MainWindowPropertyMonitor: public QAbstractNativeEventFilter
 {
 public:
-    MainWindowPropertyMonitor(MainWindow *src)
+    explicit MainWindowPropertyMonitor(MainWindow *src)
         : QAbstractNativeEventFilter(), _mw(src)
     {
         //安装事件过滤器

@@ -40,7 +40,7 @@ namespace dmr {
 class TitlebarPrivate
 {
 public:
-    TitlebarPrivate(Titlebar *parent) : q_ptr(parent) {}
+    explicit TitlebarPrivate(Titlebar *parent) : q_ptr(parent) {}
 
     QColor          playColor                   = QColor(255, 255, 255, 204);
     QColor          lightEffectColor            = QColor(200, 200, 200, 45);

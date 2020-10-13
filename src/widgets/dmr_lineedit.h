@@ -39,7 +39,7 @@ namespace dmr {
 
 class LineEdit: public QLineEdit {
 public:
-    LineEdit(QWidget* p = 0);
+    explicit LineEdit(QWidget* p = 0);
 
 protected:
     void showEvent(QShowEvent* se) override;

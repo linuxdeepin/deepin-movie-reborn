@@ -46,7 +46,7 @@ namespace dmr {
 class TipPrivate
 {
 public:
-    TipPrivate(Tip *parent) : q_ptr(parent) {}
+    explicit TipPrivate(Tip *parent) : q_ptr(parent) {}
 
     void setBackgroundImage(const QPixmap &srcPixmap);
 

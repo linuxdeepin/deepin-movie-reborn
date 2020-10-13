@@ -157,7 +157,7 @@ public:
     PlayMode playMode() const;
     void setPlayMode(PlayMode pm);
 
-    PlaylistModel(PlayerEngine *engine);
+    explicit PlaylistModel(PlayerEngine *engine);
     ~PlaylistModel();
 
     qint64 getUrlFileTotalSize(QUrl url, int tryTimes) const;

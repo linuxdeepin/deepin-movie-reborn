@@ -131,7 +131,7 @@ class IndicatorItem : public QWidget
 {
     Q_OBJECT
 public:
-    IndicatorItem(QWidget *parent = nullptr): QWidget(parent)
+    explicit IndicatorItem(QWidget *parent = nullptr): QWidget(parent)
     {
     }
 

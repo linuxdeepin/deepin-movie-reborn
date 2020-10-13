@@ -37,7 +37,7 @@ class PlayerEngine;
 class PlayerWidget: public QWidget {
     Q_OBJECT
 public:
-    PlayerWidget(QWidget *parent = nullptr);
+    explicit PlayerWidget(QWidget *parent = nullptr);
     virtual ~PlayerWidget();
 
     /**

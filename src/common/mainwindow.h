@@ -80,7 +80,7 @@ class MovieProgressIndicator;
 class IconButton: public DPushButton
 {
 public:
-    IconButton(QWidget *parent = 0): DPushButton(parent), m_themeType(0) {}
+    explicit IconButton(QWidget *parent = 0): DPushButton(parent), m_themeType(0) {}
 
     void setIcon(QIcon icon)
     {
@@ -124,7 +124,7 @@ class MainWindow: public DMainWindow
     Q_OBJECT
     Q_PROPERTY(bool inited READ inited WRITE setInit NOTIFY initChanged)
 public:
-    MainWindow(QWidget *parent = 0);
+    explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
     bool inited() const

@@ -40,7 +40,7 @@ class ApplicationAdaptor: public QDBusAbstractAdaptor {
     Q_OBJECT
     Q_CLASSINFO("D-Bus Interface", "com.deepin.movie")
 public:
-    ApplicationAdaptor(MainWindow* mw);
+    explicit ApplicationAdaptor(MainWindow* mw);
     static QVariant redDBusProperty(const QString &service, const QString &path, const QString &interface = QString(), const char *propert = "");
     static QVariant redDBusMethod(const QString &service, const QString &path, const QString &interface, const char *method);
 

@@ -139,7 +139,7 @@ class ImageButton: public QPushButton
 {
     Q_OBJECT
 public:
-    ImageButton(QWidget *parent = nullptr)
+    explicit ImageButton(QWidget *parent = nullptr)
         : QPushButton (parent)
     {
 
@@ -167,7 +167,7 @@ private:
 class KeyPressBubbler: public QObject
 {
 public:
-    KeyPressBubbler(QObject *parent): QObject(parent) {}
+    explicit KeyPressBubbler(QObject *parent): QObject(parent) {}
 
 protected:
     bool eventFilter(QObject *obj, QEvent *event)
@@ -186,7 +186,7 @@ protected:
 class TooltipHandler: public QObject
 {
 public:
-    TooltipHandler(QObject *parent): QObject(parent) {}
+    explicit TooltipHandler(QObject *parent): QObject(parent) {}
 
 protected:
     bool eventFilter(QObject *obj, QEvent *event)

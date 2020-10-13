@@ -1219,7 +1219,7 @@ void PlaylistModel::delayedAppendAsync(const QList<QUrl> &urls)
     struct MapFunctor {
         PlaylistModel *_model = nullptr;
         using result_type = PlayItemInfo;
-        MapFunctor(PlaylistModel *model): _model(model) {}
+        explicit MapFunctor(PlaylistModel *model): _model(model) {}
 
         struct PlayItemInfo operator()(const AppendJob &a)
         {

@@ -38,7 +38,7 @@ namespace dmr {
 class DMRSlider: public DSlider {
     Q_OBJECT
 public:
-    DMRSlider(QWidget *parent = 0);
+    explicit DMRSlider(QWidget *parent = 0);
     virtual ~DMRSlider();
     void setEnableIndication(bool on);
 

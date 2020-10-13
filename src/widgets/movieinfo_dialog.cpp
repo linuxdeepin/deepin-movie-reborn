@@ -110,7 +110,7 @@ static QString ElideText(const QString &text, const QSize &size,
 class ToolTipEvent: public QObject
 {
 public:
-    ToolTipEvent(QObject *parent): QObject(parent) {}
+    explicit ToolTipEvent(QObject *parent): QObject(parent) {}
 
 protected:
     bool eventFilter(QObject *obj, QEvent *event)
@@ -156,7 +156,7 @@ protected:
 class CloseButton : public DPushButton
 {
 public:
-    CloseButton(QWidget *parent) {}
+    explicit CloseButton(QWidget *parent) {}
 protected:
     void paintEvent(QPaintEvent *e) override
     {

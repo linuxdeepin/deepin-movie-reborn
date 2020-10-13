@@ -155,7 +155,7 @@ class FloatingButton: public DPushButton
 {
     Q_OBJECT
 public:
-    FloatingButton(QWidget *p = nullptr) {}
+    explicit FloatingButton(QWidget *p = nullptr) {}
     virtual ~FloatingButton() {}
 
 protected:

@@ -81,7 +81,7 @@ static QString libPath(const QString &strlib)
 class myHandle
 {
     struct container {
-        container(mpv_handle *h) : mpv(h) {}
+        explicit container(mpv_handle *h) : mpv(h) {}
         ~container()
         {
             mpv_terminateDestroy fun = (mpv_terminateDestroy)QLibrary::resolve(libPath("libmpv.so.1"), "mpv_terminate_destroy");
@@ -123,7 +123,7 @@ class MpvProxy: public Backend
 
     struct my_node_autofree {
         mpv_node *ptr;
-        my_node_autofree(mpv_node *a_ptr) : ptr(a_ptr) {}
+        explicit my_node_autofree(mpv_node *a_ptr) : ptr(a_ptr) {}
         ~my_node_autofree()
         {
             mpv_freeNode_contents(ptr);
@@ -131,7 +131,7 @@ class MpvProxy: public Backend
     };
 
 public:
-    MpvProxy(QWidget *parent = 0);
+    explicit MpvProxy(QWidget *parent = 0);
     virtual ~MpvProxy();
 
 //    //add by heyi
@@ -210,7 +210,7 @@ public:
     mpv_waitEvent m_waitEvent{nullptr};
     mpv_set_optionString m_setOptionString{nullptr};
     mpv_setProperty m_setProperty{nullptr};
-    mpv_setProperty_async m_setPropertyAsync;
+    mpv_setProperty_async m_setPropertyAsync{nullptr};
     mpv_commandNode m_commandNode{nullptr};
     mpv_commandNode_async m_commandNodeAsync{nullptr};
     mpv_getProperty m_getProperty{nullptr};

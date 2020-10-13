@@ -57,7 +57,7 @@ class PosterFrame: public QLabel
 {
     Q_OBJECT
 public:
-    PosterFrame(QWidget *parent) : QLabel(parent)
+    explicit PosterFrame(QWidget *parent) : QLabel(parent)
     {
         auto e = new QGraphicsDropShadowEffect(this);
         e->setColor(QColor(0, 0, 0, 76));
@@ -131,7 +131,7 @@ class MovieInfoDialog: public DAbstractDialog
 {
     Q_OBJECT
 public:
-    MovieInfoDialog(const struct PlayItemInfo &);
+    explicit MovieInfoDialog(const struct PlayItemInfo &);
 
 protected:
     void paintEvent(QPaintEvent *ev);

@@ -234,7 +234,7 @@ public:
         Mute
     };
 
-    VolumeButton(QWidget *parent = 0);
+    explicit VolumeButton(QWidget *parent = 0);
     void changeLevel(Level lv);
 
 signals:
