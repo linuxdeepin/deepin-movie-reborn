@@ -103,6 +103,7 @@ public:
 
     void nextFrame() override;
     void previousFrame() override;
+    void MakeCurrent() override;
 
 public slots:
     void play() override;

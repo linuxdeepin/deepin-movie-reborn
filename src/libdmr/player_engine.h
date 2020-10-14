@@ -151,6 +151,8 @@ public:
 
     void nextFrame();
     void previousFrame();
+    //只在wayland下opengl窗口使用
+    void MakeCurrent();
 
     // use with caution
     void setBackendProperty(const QString &, const QVariant &);

@@ -1370,6 +1370,10 @@ void MpvProxy::previousFrame()
     command(_handle, args);
 }
 
+void MpvProxy::MakeCurrent(){
+    _gl_widget->makeCurrent();
+}
+
 QVariant MpvProxy::getProperty(const QString &name)
 {
     return get_property(_handle, name.toUtf8().data());

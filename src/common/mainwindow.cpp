@@ -4401,6 +4401,19 @@ void MainWindow::toggleUIMode()
     }
 
     _miniMode = !_miniMode;
+    if(utils::check_wayland_env()){
+        auto flags = windowFlags();
+        if (_miniMode) {
+            flags |= Qt::X11BypassWindowManagerHint;
+        } else {
+            flags &= ~Qt::X11BypassWindowManagerHint;
+        }
+        //wayland下opengl窗口使用之前必须先调用makeCurrent;
+        _engine->MakeCurrent();
+        setWindowFlags(flags);
+        show();
+    }
+
     qInfo() << __func__ << _miniMode;
 
     if (_miniMode) {
