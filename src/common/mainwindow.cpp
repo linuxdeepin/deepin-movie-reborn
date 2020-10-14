@@ -3883,31 +3883,31 @@ void MainWindow::updateSizeConstraints()
     if (_miniMode) {
         m = QSize(40, 40);
     } else {
-        if (_engine->state() != PlayerEngine::CoreState::Idle) {
-            auto dRect = DApplication::desktop()->availableGeometry();
-            auto sz = _engine->videoSize();
-            if (sz.width() == 0 || sz.height() == 0) {
-                m = QSize(614, 500);
-            } else {
-                qreal ratio = static_cast<qreal>(sz.width()) / sz.height();
-                if (sz.width() > sz.height()) {
-                    int w = static_cast<int>(500 * ratio);
-//                    if (w > dRect.width()) {
-//                        w = dRect.width();
+//        if (_engine->state() != PlayerEngine::CoreState::Idle) {
+//            auto dRect = DApplication::desktop()->availableGeometry();
+//            auto sz = _engine->videoSize();
+//            if (sz.width() == 0 || sz.height() == 0) {
+//                m = QSize(614, 500);
+//            } else {
+//                qreal ratio = static_cast<qreal>(sz.width()) / sz.height();
+//                if (sz.width() > sz.height()) {
+//                    int w = static_cast<int>(500 * ratio);
+////                    if (w > dRect.width()) {
+////                        w = dRect.width();
+////                    }
+//                    m = QSize(w, 500);
+//                } else {
+//                    int h = static_cast<int>(614 / ratio);
+//                    if (h > dRect.height()) {
+//                        h = dRect.height();
 //                    }
-                    m = QSize(w, 500);
-                } else {
-                    int h = static_cast<int>(614 / ratio);
-                    if (h > dRect.height()) {
-                        h = dRect.height();
-                    }
-                    m = QSize(614, h);
-                }
-            }
-        } else {
-            m = QSize(614, 500);
-        }
-//        m = QSize(614, 500);
+//                    m = QSize(614, h);
+//                }
+//            }
+//        } else {
+//            m = QSize(614, 500);
+//        }
+        m = QSize(614, 500);
     }
     this->setMinimumSize(m);
 }
