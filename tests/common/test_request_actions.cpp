@@ -16,23 +16,12 @@
 #include "movieinfo_dialog.h"
 #include <DSettingsDialog>
 
-//TEST(requestAction, fullscreen)
-//{
-//    MainWindow* w = dApp->getMainWindow();
-//    w->show();
-
-//    QTimer::singleShot(2000, w, [=]{w->requestAction(ActionFactory::ActionKind::ToggleFullscreen);});
-
-////    QTimer::singleShot(1000,[=]{QCOMPARE(w->isFullScreen(),true);});
-//}
-
 TEST(requestAction,quitFullScreen)
 {
     MainWindow* w = dApp->getMainWindow();
     w->show();
 
     QTimer::singleShot(4000,[=]{w->requestAction(ActionFactory::ActionKind::QuitFullscreen);});
-//    QTimer::singleShot(1000,[=]{QCOMPARE(w->isFullScreen(),false);});
 }
 
 TEST(requestAction,toggleMini)
@@ -41,7 +30,6 @@ TEST(requestAction,toggleMini)
     w->show();
 
     QTimer::singleShot(6000,[=]{w->requestAction(ActionFactory::ActionKind::ToggleMiniMode);});
-//    QTimer::singleShot(1000,[=]{QCOMPARE(w->isMinimized(),true);});
 }
 
 TEST(requestAction,quitMini)
@@ -50,7 +38,6 @@ TEST(requestAction,quitMini)
     w->show();
 
     QTimer::singleShot(8000,[=]{w->requestAction(ActionFactory::ActionKind::ToggleMiniMode);});
-//    QTimer::singleShot(1000,[=]{QCOMPARE(w->isMinimized(),false);});
 }
 
 TEST(requestAction,windowAbove)
@@ -330,54 +317,3 @@ TEST(requestAction, playlistRemoveItem)
 
     QTimer::singleShot(500,[=]{w->requestAction(ActionFactory::ActionKind::PlaylistRemoveItem);});
 }
-
-/*TEST(requestAction, emptyPlaylist)
-{
-    MainWindow* w = dApp->getMainWindow();
-    w->show();
-
-    QTimer::singleShot(500,[=]{w->requestAction(ActionFactory::ActionKind::EmptyPlaylist);});
-}*/
-
-//TEST(requestAction,quitePlaylist)
-//{
-//    MainWindow *w = dApp->getMainWindow();
-//    w->show();
-
-//    QTimer::singleShot(2000,[=]{w->requestAction(ActionFactory::ActionKind::TogglePlaylist);});
-//    EXPECT_TRUE(false);
-//}
-
-
-/*TEST(MainWindow, menuLightTheme)
-{
-    MainWindow* w = dApp->getMainWindow();
-    w->show();
-
-    QTimer::singleShot(500,[=]{w->requestAction(ActionFactory::ActionKind::LightTheme,true);});
-}
-
-TEST(MainWindow, menuAbout)
-{
-    MainWindow* w = dApp->getMainWindow();
-    w->show();
-
-    QTimer::singleShot(500,[=]{w->requestAction(ActionFactory::ActionKind::About);});
-}
-
-TEST(MainWindow, menuHelp)
-{
-    MainWindow* w = dApp->getMainWindow();
-    w->show();
-
-//    w->requestAction(ActionFactory::ActionKind::Help);
-    QTimer::singleShot(1000,[=]{w->requestAction(ActionFactory::ActionKind::Help);});
-}
-
-TEST(MainWindow, menuExit)
-{
-    MainWindow* w = dApp->getMainWindow();
-    w->show();
-
-    w->requestAction(ActionFactory::ActionKind::Exit);
-}*/
