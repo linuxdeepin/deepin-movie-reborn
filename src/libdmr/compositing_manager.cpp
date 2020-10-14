@@ -308,30 +308,30 @@ bool CompositingManager::runningOnNvidia()
 }
 
 void CompositingManager::softDecodeCheck(){
-//暂时不合
-//    QProcess uname;
-//    char* data = (char*)malloc(100);
-//    uname.start("cat /proc/cpuinfo");
-//    if (uname.waitForStarted()) {
-//        if (uname.waitForFinished()) {
-//            while (uname.readLine(data,99)>0) {
-//                QString strData(data);
-//                QStringList listPara = strData.split(":");
+    QProcess uname;
+    char* data = (char*)malloc(100);
+    uname.start("cat /proc/cpuinfo");
+    if (uname.waitForStarted()) {
+        if (uname.waitForFinished()) {
+            while (uname.readLine(data,99)>0) {
+                QString strData(data);
+                QStringList listPara = strData.split(":");
 
-//                if(listPara.size()<2)
-//                {
-//                    continue;
-//                }
+                if(listPara.size()<2)
+                {
+                    continue;
+                }
 
-//                if(listPara.at(0).contains("model name")
-//                   && listPara.at(1).contains("Kunpeng 920"))
-//                {
-//                    m_bOnlySoftDecode = true;
-//                }
-//            }
-//        }
-//    }
-//    free(data);
+                if(listPara.at(0).contains("model name")
+                   && listPara.at(1).contains("Kunpeng 920"))
+                {
+                    m_bOnlySoftDecode = true;
+                }
+            }
+        }
+    }
+    free(data);
+
     //浪潮 inspur softdecode
     QProcess inspur;
     inspur.start("cat /sys/class/dmi/id/board_vendor");
@@ -402,7 +402,6 @@ void CompositingManager::detectOpenGLEarly()
     }
 
 #endif
-
     detect_run = true;
 }
 
