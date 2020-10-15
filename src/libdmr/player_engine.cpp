@@ -353,13 +353,16 @@ bool PlayerEngine::loadSubtitle(const QFileInfo &fi)
 
     const auto &pmf = _current->playingMovieInfo();
     auto pif = playlist().currentInfo();
+    int i = 0;
     for (const auto &sub : pmf.subs) {
         if (sub["external"].toBool()) {
             auto path = sub["external-filename"].toString();
             if (path == fi.canonicalFilePath()) {
+                this->selectSubtitle(i);
                 return true;
             }
         }
+        ++i;
     }
 
     if (_current->loadSubtitle(fi)) {
@@ -578,6 +581,9 @@ void PlayerEngine::previousFrame()
     if (!_current) return;
     _current->previousFrame();
 }
+void PlayerEngine::MakeCurrent(){
+    _current->MakeCurrent();
+}
 
 void PlayerEngine::play()
 {
@@ -622,8 +628,12 @@ void PlayerEngine::onPlaylistAsyncAppendFinished(const QList<PlayItemInfo> &pil)
         if (id >= 0) {
             _playlist->changeCurrent(id);
             _pendingPlayReq = QUrl();
+        } else {
+            qInfo() << __func__ << "id is:" << id;
         }
         // else, wait for another signal
+    } else {
+        qInfo() << __func__ << _pendingPlayReq;
     }
 }
 
@@ -631,6 +641,7 @@ void PlayerEngine::playByName(const QUrl &url)
 {
     savePreviousMovieState();
     auto id = _playlist->indexOf(url);
+    qDebug() << __func__ << url << "id:" << id;
     if (id >= 0) {
         _playlist->changeCurrent(id);
     } else {
@@ -640,6 +651,7 @@ void PlayerEngine::playByName(const QUrl &url)
 
 void PlayerEngine::playSelected(int id)
 {
+    qDebug() << __func__ << id;
     savePreviousMovieState();
     _playlist->changeCurrent(id);
 }
@@ -730,6 +742,7 @@ void PlayerEngine::firstInit()
 
 bool PlayerEngine::addPlayFile(const QUrl &url)
 {
+    qDebug() << __func__;
     if (isPlayableFile(url)) {
         if (url.isLocalFile())
             _playlist->appendAsync({url});
@@ -774,6 +787,7 @@ QList<QUrl> PlayerEngine::addPlayDir(const QDir &dir)
 
 QList<QUrl> PlayerEngine::addPlayFiles(const QList<QUrl> &urls)
 {
+    qDebug() << __func__;
     QList<QUrl> valids = collectPlayFiles(urls);
     for (auto &url : valids) {
         QString strtp = url.toLocalFile();

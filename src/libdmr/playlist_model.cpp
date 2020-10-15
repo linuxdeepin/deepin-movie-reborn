@@ -61,6 +61,8 @@ mvideo_av_dict_get g_mvideo_av_dict_get = nullptr;
 
 static bool check_wayland()
 {
+    //此处在wayland下也是直接return false
+    return false;
     auto e = QProcessEnvironment::systemEnvironment();
     QString XDG_SESSION_TYPE = e.value(QStringLiteral("XDG_SESSION_TYPE"));
     QString WAYLAND_DISPLAY = e.value(QStringLiteral("WAYLAND_DISPLAY"));
@@ -795,6 +797,7 @@ void PlaylistModel::reshuffle()
 void PlaylistModel::clear()
 {
     _infos.clear();
+    _engine->stop();
     _engine->waitLastEnd();
 
     _current = -1;
@@ -855,14 +858,42 @@ void PlaylistModel::stop()
 
 void PlaylistModel::tryPlayCurrent(bool next)
 {
+    qDebug() << __func__;
     auto &pif = _infos[_current];
     if (pif.refresh()) {
         qDebug() << pif.url.fileName() << "changed";
     }
     emit itemInfoUpdated(_current);
     if (pif.valid) {
-        _engine->requestPlay(_current);
-        emit currentChanged();
+        if(!utils::check_wayland_env()){
+            _engine->requestPlay(_current);
+            emit currentChanged();
+        }else {
+        //本地视频单个循环/列表循环，小于1s视频/无法解码视频，不播放，直接播放下一个
+          if ( (pif.mi.duration <= 1 || pif.thumbnail.isNull()) && pif.url.isLocalFile()) {
+              if (1 == count() || _playMode == PlayMode::SingleLoop || _playMode == PlayMode::SinglePlay) {
+                  qWarning() << "return for video is cannot play and loop play!";
+                  return;
+              }
+              if (_current < count() - 1) {
+                  _current++;
+                  _last = _current;
+              } else {
+                  _current = 0;
+              }
+          }
+          _hasNormalVideo = false;
+          for (auto info : _infos) {
+              if ((info.valid && info.mi.duration > 1 && !info.thumbnail.isNull()) || !pif.url.isLocalFile()) {
+                  _hasNormalVideo = true;
+                  break;
+              }
+          }
+          if (_hasNormalVideo) {
+              _engine->requestPlay(_current);
+              emit currentChanged();
+          }
+        }
     } else {
         _current = -1;
         bool canPlay = false;
@@ -1090,6 +1121,7 @@ static QDebug operator<<(QDebug s, const QFileInfoList &v)
 
 void PlaylistModel::appendSingle(const QUrl &url)
 {
+    qDebug() << __func__;
     if (indexOf(url) >= 0) return;
 
     if (url.isLocalFile()) {

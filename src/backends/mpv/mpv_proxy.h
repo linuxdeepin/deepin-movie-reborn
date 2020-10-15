@@ -221,6 +221,7 @@ public:
     mpv_setWakeup_callback m_setWakeupCallback{nullptr};
     mpvinitialize m_initialize{nullptr};
     mpv_freeNode_contents m_freeNodecontents{nullptr};
+    void MakeCurrent() override;
 
 public slots:
     void play() override;
@@ -271,6 +272,8 @@ private:
     bool _connectStateChange {false};
 
     bool _pauseOnStart {false};
+
+    bool _isJingJia {false};
 
     mpv_handle *mpv_init();
     void processPropertyChange(mpv_event_property *ev);
