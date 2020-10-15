@@ -276,9 +276,10 @@ mpv_handle *MpvProxy::mpv_init()
         set_property(h, "vo", "libmpv,opengl-cb");
         set_property(h, "vd-lavc-dr", "no");
         set_property(h, "gpu-sw", "on");
-        if(utils::check_wayland_env()){
-            set_property(h, "ao", "alsa");
-        }
+//设置alse时，无法使用set_property(h, "audio-client-name", strMovie)设置控制栏中的名字
+//        if(utils::check_wayland_env()){
+//            set_property(h, "ao", "alsa");
+//        }
 #endif
     } else {
 #ifdef __mips__
