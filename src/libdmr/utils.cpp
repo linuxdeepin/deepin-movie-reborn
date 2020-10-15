@@ -35,6 +35,8 @@ namespace dmr {
 namespace utils {
 using namespace std;
 
+static bool isWayland = false;
+
 void ShowInFileManager(const QString &path)
 {
     if (path.isEmpty() || !QFile::exists(path)) {
@@ -168,6 +170,25 @@ bool CompareNames(const QString &fileName1, const QString &fileName2)
         pos += inc;
     }
     return fileName1.localeAwareCompare(fileName2) < 0;
+}
+
+bool first_check_wayland_env(){
+    auto e = QProcessEnvironment::systemEnvironment();
+    QString XDG_SESSION_TYPE = e.value(QStringLiteral("XDG_SESSION_TYPE"));
+    QString WAYLAND_DISPLAY = e.value(QStringLiteral("WAYLAND_DISPLAY"));
+
+    if (XDG_SESSION_TYPE == QLatin1String("wayland") || WAYLAND_DISPLAY.contains(QLatin1String("wayland"), Qt::CaseInsensitive)){
+        isWayland = true;
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+bool check_wayland_env()
+{
+    return isWayland;
 }
 
 // hash the whole file takes amount of time, so just pick some areas to be hashed

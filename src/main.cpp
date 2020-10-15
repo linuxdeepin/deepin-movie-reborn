@@ -56,15 +56,26 @@ DWIDGET_USE_NAMESPACE
 
 int main(int argc, char *argv[])
 {
-#ifdef __mips__
-    if (CompositingManager::get().composited()) {
-        CompositingManager::detectOpenGLEarly();
-        CompositingManager::detectPciID();
+    if(dmr::utils::first_check_wayland_env()){
+        qputenv("QT_WAYLAND_SHELL_INTEGRATION", "kwayland-shell");
+        //qputenv("_d_disableDBusFileDialog", "true");
+        setenv("PULSE_PROP_media.role", "video", 1);
+        QSurfaceFormat format;
+        format.setRenderableType(QSurfaceFormat::OpenGLES);
+        format.setDefaultFormat(format);
+    }else {
+        #ifdef __mips__
+            if (CompositingManager::get().composited()) {
+                CompositingManager::detectOpenGLEarly();
+                CompositingManager::detectPciID();
+            }
+        #else
+//            CompositingManager::detectOpenGLEarly();
+//            CompositingManager::detectPciID();
+        #endif
+        DApplication::loadDXcbPlugin();
     }
-#else
-//    CompositingManager::detectOpenGLEarly();
-//    CompositingManager::detectPciID();
-#endif
+
 
 #if defined(STATIC_LIB)
     DWIDGET_INIT_RESOURCE();
@@ -146,7 +157,8 @@ int main(int argc, char *argv[])
         if (!toOpenFiles.isEmpty()) {
             QDBusInterface iface("com.deepin.movie", "/", "com.deepin.movie");
             if (toOpenFiles.size() == 1) {
-                iface.asyncCall("openFile", toOpenFiles[0]);
+                if(!toOpenFiles[0].contains("QProcess"))
+                    iface.asyncCall("openFile", toOpenFiles[0]);
             } else {
                 iface.asyncCall("openFiles", toOpenFiles);
             }
