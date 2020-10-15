@@ -933,6 +933,9 @@ MainWindow::MainWindow(QWidget *parent)
             emit frameMenuEnable(false);
         }
         if (_engine->state() == PlayerEngine::CoreState::Playing) {
+            if(isFullScreen()){
+                _fullscreentimelable->show();
+            }
             _miniPlayBtn->setIcon(QIcon(":/resources/icons/light/mini/pause-normal-mini.svg"));
             _miniPlayBtn->setObjectName("MiniPauseBtn");
 
