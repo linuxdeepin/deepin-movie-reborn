@@ -2265,7 +2265,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     }
 
     case ActionFactory::ActionKind::TogglePlaylist: {
-        if (_playlist->state() == PlaylistWidget::Closed && !_toolbox->isVisible()) {
+        if (_playlist && _playlist->state() == PlaylistWidget::Closed && !_toolbox->isVisible()) {
             _toolbox->show();
         }
         _playlist->togglePopup();
@@ -2596,23 +2596,6 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                 Settings::get().setInternalOption("global_volume", m_lastVolume);
             }
 
-            //当音量与当前静音状态不符时切换静音状态
-            /*if (nVol == 0 && !_engine->muted()) {
-                changedMute();
-                _nwComm->updateWithMessage(tr("Mute"));
-                m_lastVolume = _engine->volume();
-                Settings::get().setInternalOption("last_volume", _engine->volume());
-            } else if (_engine->muted()) {
-                changedMute();
-                _nwComm->updateWithMessage(tr("Volume: %1%").arg(nVol));
-                m_lastVolume = _engine->volume();
-                Settings::get().setInternalOption("last_volume", _engine->volume());
-            } else {
-                _nwComm->updateWithMessage(tr("Volume: %1%").arg(nVol));
-                m_lastVolume = _engine->volume();
-                Settings::get().setInternalOption("last_volume", _engine->volume());
-                setAudioVolume(nVol);
-            }*/
             if (!_engine->muted()) {
                 _nwComm->updateWithMessage(tr("Volume: %1%").arg(nVol));
             }
@@ -2624,11 +2607,6 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     }
 
     case ActionFactory::ActionKind::VolumeUp: {
-        /*if (_engine->muted()) {
-            changedMute();
-            setMusicMuted(_engine->muted());
-        }*/
-        //_engine->volumeUp();
         m_displayVolume = qMin(m_displayVolume + 10, 200);
         m_oldDisplayVolume = m_displayVolume;
          if(m_displayVolume > 100 && m_displayVolume <= 200)
@@ -2648,14 +2626,12 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     }
 
     case ActionFactory::ActionKind::VolumeDown: {
-        //_engine->volumeDown();
         m_displayVolume = qMax(m_displayVolume - 10, 0);
         m_oldDisplayVolume = m_displayVolume;
         if(m_displayVolume > 100 && m_displayVolume <= 200)
             _engine->changeVolume(m_displayVolume);
         else
             setAudioVolume(m_displayVolume);
-        //int pert = _engine->volume();
         if (m_displayVolume == 0 && !_engine->muted()) {
             _nwComm->updateWithMessage(tr("Volume: %1%").arg(m_displayVolume));
             changedMute();
@@ -2667,10 +2643,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             changedMute();
             setMusicMuted(_engine->muted());
         }
-        /*else if (pert > 0 && _engine->muted()) {
-        changedMute();
-        setMusicMuted(_engine->muted());
-        }*/
+
         m_lastVolume = _engine->volume();
         if (!_engine->muted()) {
             _nwComm->updateWithMessage(tr("Volume: %1%").arg(m_displayVolume));
@@ -3698,7 +3671,7 @@ void MainWindow::wheelEvent(QWheelEvent *we)
     if (insideToolsArea(we->pos()) || insideResizeArea(we->globalPos()))
         return;
 
-    if (_playlist->state() == PlaylistWidget::Opened) {
+    if (_playlist && _playlist->state() == PlaylistWidget::Opened) {
         we->ignore();
         return;
     }
