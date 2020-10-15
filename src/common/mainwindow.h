@@ -326,6 +326,7 @@ private:
     bool _windowAbove {false};
     bool _mouseMoved {false};
     bool _mousePressed {false};
+    bool _isSettingMiniMode{false};
     bool _playlistopen_clicktogglepause {false};
     double _playSpeed {1.0};
 

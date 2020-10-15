@@ -3489,7 +3489,7 @@ void MainWindow::hideEvent(QHideEvent *event)
 {
     if (Settings::get().isSet(Settings::PauseOnMinimize)) {
         if (_engine && _engine->state() == PlayerEngine::Playing) {
-            if (!_quitfullscreenstopflag) {
+            if (!_quitfullscreenstopflag &&  !_isSettingMiniMode) {
                 _pausedOnHide = true;
                 requestAction(ActionFactory::TogglePause);
                 _quitfullscreenstopflag = false;
@@ -3580,7 +3580,7 @@ void MainWindow::showEvent(QShowEvent *event)
     qDebug() << __func__;
     if (_pausedOnHide || Settings::get().isSet(Settings::PauseOnMinimize)) {
         if (_pausedOnHide && _engine && _engine->state() != PlayerEngine::Playing) {
-            if (!_quitfullscreenstopflag) {
+            if (!_quitfullscreenstopflag && !_isSettingMiniMode) {
 #ifdef __aarch64__
                 QVariant l = ApplicationAdaptor::redDBusProperty("com.deepin.SessionManager", "/com/deepin/SessionManager",
                                                                  "com.deepin.SessionManager", "Locked");
@@ -4403,6 +4403,8 @@ void MainWindow::toggleUIMode()
     }
 
     _miniMode = !_miniMode;
+    //wayland下下面的代码回导致调用hideevent（），用此标记防止切换mini模式播放状态被改变
+    _isSettingMiniMode = true;
     if(utils::check_wayland_env()){
         auto flags = windowFlags();
         if (_miniMode) {
@@ -4415,6 +4417,7 @@ void MainWindow::toggleUIMode()
         setWindowFlags(flags);
         show();
     }
+    _isSettingMiniMode = false;
 
     qInfo() << __func__ << _miniMode;
 
