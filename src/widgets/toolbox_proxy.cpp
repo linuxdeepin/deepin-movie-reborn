@@ -1914,15 +1914,18 @@ void ToolboxProxy::setup()
     progBar->setContentsMargins(0, 0, 0, 0);
     progBar->setSpacing(0);
     progBar->setAlignment(Qt::AlignHCenter);
-//    bot->addLayout(progBar);
+    bot_layout->addLayout(progBar);
     progBar->addWidget(_progBar);
 
     QHBoxLayout *viewProgBar = new QHBoxLayout(_progBar_Widget);
     viewProgBar->setContentsMargins(0, 0, 0, 0);
     viewProgBar->setSpacing(0);
     viewProgBar->setAlignment(Qt::AlignHCenter);
-//    bot->addLayout(viewProgBar);
+    bot_layout->addLayout(viewProgBar);
     viewProgBar->addWidget(_viewProgBar);
+
+//    delete viewProgBar;
+//    viewProgBar = nullptr;
 
 //    _progBar_stacked = new QStackedLayout(bot_widget);
 //    _progBar_stacked->setContentsMargins(0, 0, 0, 0);

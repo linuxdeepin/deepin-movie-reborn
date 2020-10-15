@@ -215,11 +215,27 @@ namespace dmr {
 
         for (int i = 0; i < 4; i++) {
             _vboCorners[i].destroy();
+
+            ///指针数组_cornerMasks在mpv_glwidget.cpp 476行申请内存后未释放///
+            delete _cornerMasks[i];
+            _cornerMasks[i] = nullptr;
         }
 
         _vao.destroy();
         _vaoBlend.destroy();
         _vaoCorner.destroy();
+
+        delete _glProgBlend;
+        _glProgBlend = nullptr;
+
+        delete _glProgBlendCorners;
+        _glProgBlendCorners = nullptr;;
+
+        delete _glProg;
+        _glProg = nullptr;
+
+        delete _glProgCorner;
+        _glProgCorner = nullptr;
 
         if (_fbo) delete _fbo;
         //add by heyi

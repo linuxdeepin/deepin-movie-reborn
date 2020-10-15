@@ -839,10 +839,10 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     clearButton->setContentsMargins(0, 0, 0, 70);
     _num->setContentsMargins(0, 0, 0, 0);
 
-
-    auto *vl = new QVBoxLayout;
-    vl->setContentsMargins(0, 0, 0, 0);
-    vl->setSpacing(0);
+    ///未使用代码///
+//    auto *vl = new QVBoxLayout;
+//    vl->setContentsMargins(0, 0, 0, 0);
+//    vl->setSpacing(0);
 //    mainLayout->addLayout(vl, 3);
     QWidget *right = new QWidget();
     auto *rightinfo = new QVBoxLayout;

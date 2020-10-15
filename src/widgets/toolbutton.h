@@ -68,7 +68,7 @@ public:
             resetSize();
         });
 
-        auto *bodyShadow = new QGraphicsDropShadowEffect;
+        auto *bodyShadow = new QGraphicsDropShadowEffect(this);
         bodyShadow->setBlurRadius(10.0);
         bodyShadow->setColor(QColor(0, 0, 0, int(0.1 * 255)));
         bodyShadow->setOffset(0, 2.0);

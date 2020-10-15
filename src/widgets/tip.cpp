@@ -116,7 +116,7 @@ Tip::Tip(const QPixmap &icon, const QString &text, QWidget *parent)
 
     adjustSize();
 
-    auto *bodyShadow = new QGraphicsDropShadowEffect;
+    auto *bodyShadow = new QGraphicsDropShadowEffect(this);
     bodyShadow->setBlurRadius(10.0);
     bodyShadow->setColor(QColor(0, 0, 0, static_cast<int>(0.1 * 255)));
     bodyShadow->setOffset(0, 2.0);

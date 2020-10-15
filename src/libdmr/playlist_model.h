@@ -80,6 +80,7 @@ struct MovieInfo {
     int aDigit;
     int channels;
     int sampling;
+
     static struct MovieInfo parseFromFile(const QFileInfo &fi, bool *ok = nullptr);
     QString durationStr() const
     {
@@ -314,6 +315,10 @@ public:
     ~GetThumanbil()
     {
         m_stop = true;
+        delete m_mutex;
+        m_mutex = nullptr;
+        delete m_itemMutex;
+        m_itemMutex = nullptr;
     };
     //QList<PlayItemInfo> getInfoList() {return m_itemInfo;}
     void stop()
