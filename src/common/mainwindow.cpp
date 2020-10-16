@@ -1067,6 +1067,9 @@ MainWindow::MainWindow(QWidget *parent)
     //auto mwfm = new MainWindowFocusMonitor(this);
 //    auto mwpm = new MainWindowPropertyMonitor(this);
 
+    MainWindowPropertyMonitor* p = new MainWindowPropertyMonitor(this);
+    QAbstractEventDispatcher::instance()->installNativeEventFilter(p);
+
     connect(this, &MainWindow::windowEntered, &MainWindow::resumeToolsWindow);
     connect(this, &MainWindow::windowLeaved, &MainWindow::suspendToolsWindow);
 
