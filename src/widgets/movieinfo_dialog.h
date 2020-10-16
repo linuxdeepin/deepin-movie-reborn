@@ -151,7 +151,7 @@ class MovieInfoDialog: public DAbstractDialog
 {
     Q_OBJECT
 public:
-    MovieInfoDialog(const struct PlayItemInfo &);
+    MovieInfoDialog(const struct PlayItemInfo &,QWidget *);
 
 protected:
     void paintEvent(QPaintEvent *ev);

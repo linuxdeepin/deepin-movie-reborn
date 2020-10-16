@@ -1050,7 +1050,7 @@ void PlaylistWidget::showItemInfo()
     if (!_mouseItem) return;
     auto item = dynamic_cast<PlayItemWidget *>(_mouseItem);
     if (item) {
-        MovieInfoDialog mid(item->_pif);
+        MovieInfoDialog mid(item->_pif,_mw);
         mid.exec();
     }
 }

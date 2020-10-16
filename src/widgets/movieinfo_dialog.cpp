@@ -152,8 +152,8 @@ protected:
     }
 };
 
-MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
-    : DAbstractDialog(nullptr)
+MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif,QWidget *parent)
+    : DAbstractDialog(parent)
 {
     setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint);
     setAttribute(Qt::WA_TranslucentBackground, true);
