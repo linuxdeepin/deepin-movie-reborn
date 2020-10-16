@@ -90,21 +90,26 @@ protected:
         QPainter painter(this);
 //        painter.drawPixmap(rect(),QPixmap(_path).scaled(60,50));
 
-        painter.setRenderHints(QPainter::HighQualityAntialiasing);
-        painter.setRenderHints(QPainter::SmoothPixmapTransform);
-        painter.setRenderHints(QPainter::Antialiasing);
+        painter.setRenderHints(QPainter::HighQualityAntialiasing | QPainter::SmoothPixmapTransform |
+                               QPainter::Antialiasing);
 
         QSize size(_pixmap.size());
         QBitmap mask(size);
+
         QPainter painter1(&mask);
-        painter1.setRenderHint(QPainter::Antialiasing);
-        painter1.setRenderHint(QPainter::SmoothPixmapTransform);
+        painter1.setRenderHints(QPainter::HighQualityAntialiasing | QPainter::SmoothPixmapTransform |
+                                QPainter::Antialiasing);
         painter1.fillRect(mask.rect(), Qt::white);
         painter1.setBrush(QColor(0, 0, 0));
-        painter1.drawRoundedRect(mask.rect(), 3, 3);
+        painter1.drawRoundedRect(mask.rect(), 5, 5);
+
         QPixmap image = _pixmap;
         image.setMask(mask);
 
+        painter.setClipping(true);
+        QPainterPath bg0;
+        bg0.addRoundedRect(rect(), 5, 5);
+        painter.setClipPath(bg0);
         painter.drawPixmap(rect(), image);
 
         QPen pen;
@@ -117,7 +122,7 @@ protected:
             painter.setPen(pen);
         }
         painter.setBrush(Qt::NoBrush);
-        painter.drawRoundedRect(rect(), 3, 3);
+        painter.drawRoundedRect(rect(), 5, 5);
     }
 private:
 //    int _index;   //not used
@@ -407,13 +412,13 @@ private:
     void initThumb();
     PlayerEngine *_engine {nullptr};
     ToolboxProxy *_parent{nullptr};
-    int _vlastHoverValue;
+/*    int _vlastHoverValue;
     QPoint _startPos;
     bool _isBlockSignals;
     QPoint _indicatorPos {0, 0};
     QColor _indicatorColor;
 
-//    viewProgBarLoad *_viewProgBarLoad{nullptr};
+    viewProgBarLoad *_viewProgBarLoad{nullptr};
     QWidget *_back{nullptr};
     QWidget *_front{nullptr};
     DBlurEffectWidget *_indicator{nullptr};
@@ -422,8 +427,9 @@ private:
     QHBoxLayout *_indicatorLayout{nullptr};
     QHBoxLayout *_viewProgBarLayout{nullptr};
     QHBoxLayout *_viewProgBarLayout_black{nullptr};
+*/
     DMRSlider *_progBar {nullptr};
-    QSize _size;
+//    QSize _size;
 
     //加载缩略图是否加载完成，控制线程是否休眠
     bool m_bisload {false};

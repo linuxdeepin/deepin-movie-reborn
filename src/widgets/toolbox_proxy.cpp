@@ -511,6 +511,7 @@ public:
 
     }
 };
+
 class ViewProgBar: public DWidget
 {
     Q_OBJECT
@@ -634,7 +635,7 @@ public:
 
     void setViewProgBar(PlayerEngine *engine, QList<QPixmap>pm_list, QList<QPixmap>pm_black_list)
     {
-
+        _viewProgBarLayout->addStretch();
 //        _viewProgBarLoad =new viewProgBarLoad(engine);
         _engine = engine;
         QLayoutItem *child;
@@ -731,10 +732,18 @@ public:
         }
         */
 //        _back->setLayout(_viewProgBarLayout);
-        _viewProgBarLayout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
+        _viewProgBarLayout->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
         _viewProgBarLayout->setSpacing(1);
 
-        int pixWidget = 8/*_progBar->width() / 100*/;
+        int pixWidget = 40/*_progBar->width() / 100*/;
+
+//        for (int i = 0; i < pm_list.count(); i++) {
+//            ImageItem *label = new ImageItem(pm_list.at(i), false, _back);
+//            label->setMouseTracking(true);
+//            label->setFixedSize(pixWidget, 50);
+//            _viewProgBarLayout->addWidget(label);
+//            _viewProgBarLayout->setSpacing(1);
+//        }
 
         for (int i = 0; i < pm_list.count(); i++) {
             ImageItem *label = new ImageItem(pm_list.at(i), false, _back);
@@ -749,8 +758,6 @@ public:
         }
 
         update();
-
-
     }
     void setWidth()
     {
@@ -1522,12 +1529,13 @@ void viewProgBarLoad::initThumb()
 
 void viewProgBarLoad::loadViewProgBar(QSize size)
 {
-    auto num = int(_progBar->width()-3) / 9/*100*/;
-    auto pixWidget =  8 /*_progBar->width() / 100*/;
+    auto pixWidget =  40;
+    auto num = int(_progBar->width() / (40+1));   //number of thumbnails
+//    auto num = int(_progBar->slider()->width()) / 40/*100*/;
+//    auto pixWidget =  40;
     auto tmp = (_engine->duration() * 1000) / num;
     //auto dpr = qApp->devicePixelRatio();
     QList<QPixmap> pm;
-//    pm.setDevicePixelRatio(dpr);
     QList<QPixmap> pm_black;
 //    pm_black.setDevicePixelRatio(dpr);
 
@@ -1545,7 +1553,6 @@ void viewProgBarLoad::loadViewProgBar(QSize size)
     auto file = QFileInfo(url.toLocalFile()).absoluteFilePath();
 
     for (auto i = 0; i < num ; i++) {
-
         if (m_bQuit == true) {
             qDebug() << "load return";
             return;
@@ -1554,6 +1561,7 @@ void viewProgBarLoad::loadViewProgBar(QSize size)
             qDebug() << "isInterruptionRequested";
             return;
         }
+
         d = d.addMSecs(tmp);
 //        qDebug()<<d;
         m_video_thumbnailer->seek_time = d.toString("hh:mm:ss").toLatin1().data();
@@ -1569,8 +1577,8 @@ void viewProgBarLoad::loadViewProgBar(QSize size)
             pm_black.append(QPixmap::fromImage(img_black.copy(img_black.size().width() / 2 - 4, 0, pixWidget, 50)));
 
         } catch (const std::logic_error &) {
-        }
 
+        }
     }
     pListPixmapMutex->lock();
     _parent->addpm_list(pm);
@@ -1578,8 +1586,6 @@ void viewProgBarLoad::loadViewProgBar(QSize size)
     pListPixmapMutex->unlock();
     emit sigFinishiLoad(size);
     emit finished();
-
-
 }
 
 ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
@@ -1597,45 +1603,46 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
     }
 
     bool composited = CompositingManager::get().composited();
-//    setFrameShape(QFrame::NoFrame);
-//    setFrameShadow(QFrame::Plain);
-//    setLineWidth(0);
-    //setFixedHeight(TOOLBOX_HEIGHT);
-//    setAutoFillBackground(false);
-//    setAttribute(Qt::WA_TranslucentBackground);
+/*   setFrameShape(QFrame::NoFrame);
+    setFrameShadow(QFrame::Plain);
+    setLineWidth(0);
+    setFixedHeight(TOOLBOX_HEIGHT);
+    setAutoFillBackground(false);
+    setAttribute(Qt::WA_TranslucentBackground);
+*/
     if (!composited) {
         setWindowFlags(Qt::FramelessWindowHint | Qt::BypassWindowManagerHint);
         setContentsMargins(0, 0, 0, 0);
         setAttribute(Qt::WA_NativeWindow);
     }
 
-//    QGraphicsDropShadowEffect *shadowEffect = new QGraphicsDropShadowEffect(this);
-//    shadowEffect->setOffset(0, 4);
-//    shadowEffect->setBlurRadius(8);
-//    shadowEffect->setColor(QColor(0, 0, 0, 0.1 * 255));
-//    connect(DApplicationHelper::instance(), &DApplicationHelper::themeTypeChanged, this, [ = ] {
-//        if (DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::LightType)
-//        {
-//            shadowEffect->setColor(QColor(0, 0, 0, 0.1 * 255));
-//            shadowEffect->setOffset(0, 4);
-//            shadowEffect->setBlurRadius(8);
-//        } else if (DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::DarkType)
-//        {
-//            shadowEffect->setColor(QColor(0, 0, 0, 0.2 * 255));
-//            shadowEffect->setOffset(0, 2);
-//            shadowEffect->setBlurRadius(4);
-//        } else
-//        {
-//            shadowEffect->setColor(QColor(0, 0, 0, 0.1 * 255));
-//            shadowEffect->setOffset(0, 4);
-//            shadowEffect->setBlurRadius(8);
-//        }
-//    });
-//    setGraphicsEffect(shadowEffect);
+/*    QGraphicsDropShadowEffect *shadowEffect = new QGraphicsDropShadowEffect(this);
+    shadowEffect->setOffset(0, 4);
+    shadowEffect->setBlurRadius(8);
+    shadowEffect->setColor(QColor(0, 0, 0, 0.1 * 255));
+    connect(DApplicationHelper::instance(), &DApplicationHelper::themeTypeChanged, this, [ = ] {
+        if (DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::LightType)
+        {
+            shadowEffect->setColor(QColor(0, 0, 0, 0.1 * 255));
+            shadowEffect->setOffset(0, 4);
+            shadowEffect->setBlurRadius(8);
+        } else if (DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::DarkType)
+        {
+            shadowEffect->setColor(QColor(0, 0, 0, 0.2 * 255));
+            shadowEffect->setOffset(0, 2);
+            shadowEffect->setBlurRadius(4);
+        } else
+        {
+            shadowEffect->setColor(QColor(0, 0, 0, 0.1 * 255));
+            shadowEffect->setOffset(0, 4);
+            shadowEffect->setBlurRadius(8);
+        }
+    });
+    setGraphicsEffect(shadowEffect);
 
 
-//    DThemeManager::instance()->registerWidget(this);
-
+    DThemeManager::instance()->registerWidget(this);
+*/
 
     paopen = nullptr;
     paClose = nullptr;
@@ -1655,7 +1662,7 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
     _subView->hide();
     setup();
 
-//    _viewProgBarLoad= new viewProgBarLoad(_engine,_progBar,this);
+/*    _viewProgBarLoad= new viewProgBarLoad(_engine,_progBar,this);
 //    _loadThread = new QThread();
 
 //    _viewProgBarLoad->moveToThread(_loadThread);
@@ -1666,6 +1673,7 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
 //        _viewProgBarLoad->loadViewProgBar();
 //    });
 //    connect(_viewProgBarLoad, SIGNAL(sigFinishiLoad(QSize)), this, SLOT(finishLoadSlot(QSize)));
+*/
     connect(DApplicationHelper::instance(), &DApplicationHelper::themeTypeChanged,
             this, &ToolboxProxy::updatePlayState);
     connect(DApplicationHelper::instance(), &DApplicationHelper::themeTypeChanged,
