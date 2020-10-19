@@ -59,7 +59,7 @@ class BurstScreenshotsDialog: public DAbstractDialog
 {
     Q_OBJECT
 public:
-    BurstScreenshotsDialog(const PlayItemInfo &pif);
+    BurstScreenshotsDialog(const PlayItemInfo &pif,QWidget* parent);
     void updateWithFrames(const QList<QPair<QImage, qint64>> &frames);
 
     QString savedPosterPath();

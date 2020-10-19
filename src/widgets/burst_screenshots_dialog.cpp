@@ -37,8 +37,8 @@
 DWIDGET_USE_NAMESPACE
 
 namespace dmr {
-BurstScreenshotsDialog::BurstScreenshotsDialog(const PlayItemInfo& pif)
-    :DAbstractDialog(nullptr)
+BurstScreenshotsDialog::BurstScreenshotsDialog(const PlayItemInfo& pif ,QWidget* parent)
+    :DAbstractDialog(parent)
 {
     auto mi = pif.mi;
 

@@ -2967,7 +2967,7 @@ void MainWindow::onBurstScreenshot(const QImage &frame, qint64 timestamp)
             return;
         }
 
-        BurstScreenshotsDialog bsd(_engine->playlist().currentInfo());
+        BurstScreenshotsDialog bsd(_engine->playlist().currentInfo() ,this);
         bsd.updateWithFrames(_burstShoots);
         auto ret = bsd.exec();
         qDebug() << "BurstScreenshot done";
