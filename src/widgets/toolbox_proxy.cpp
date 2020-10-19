@@ -635,7 +635,6 @@ public:
 
     void setViewProgBar(PlayerEngine *engine, QList<QPixmap>pm_list, QList<QPixmap>pm_black_list)
     {
-        _viewProgBarLayout->addStretch();
 //        _viewProgBarLoad =new viewProgBarLoad(engine);
         _engine = engine;
         QLayoutItem *child;
@@ -745,25 +744,20 @@ public:
 //            _viewProgBarLayout->setSpacing(1);
 //        }
 
+        int start_position = (_progBar->width() - ((pixWidget+1) * pm_list.count() - 1)) / 2;   //开始位置
         for (int i = 0; i < pm_list.count(); i++) {
             ImageItem *label = new ImageItem(pm_list.at(i), false, _back);
             label->setMouseTracking(true);
-            label->move(i * (pixWidget + 1) + 3, 5);
+            label->move(i * (pixWidget + 1) + start_position, 5);
             label->setFixedSize(pixWidget, 50);
 
             ImageItem *label_black = new ImageItem(pm_black_list.at(i), true, _front);
             label_black->setMouseTracking(true);
-            label_black->move(i * (pixWidget + 1) + 3, 5);
+            label_black->move(i * (pixWidget + 1) + start_position, 5);
             label_black->setFixedSize(pixWidget, 50);
         }
 
         update();
-    }
-    void setWidth()
-    {
-//        setFixedWidth(_parent->width() - PROGBAR_SPEC);
-//        _back->setFixedWidth(_parent->width() - PROGBAR_SPEC);
-
     }
 
     void clear()
@@ -1048,28 +1042,28 @@ signals:
     void leavePreview();
 
 protected slots:
-//    void updateTheme()
-//    {
-//        if (qApp->theme() == "dark") {
-//            setBackgroundColor(QColor(23, 23, 23, 255 * 8 / 10));
-//            setBorderColor(QColor(255, 255 ,255, 25));
-//            _time->setStyleSheet(R"(
-//                border-radius: 3px;
-//                background-color: rgba(23, 23, 23, 0.8);
-//                font-size: 12px;
-//                color: #ffffff;
-//            )");
-//        } else {
-//            setBackgroundColor(QColor(255, 255, 255, 255 * 8 / 10));
-//            setBorderColor(QColor(0, 0 ,0, 25));
-//            _time->setStyleSheet(R"(
-//                border-radius: 3px;
-//                background-color: rgba(255, 255, 255, 0.8);
-//                font-size: 12px;
-//                color: #303030;
-//            )");
-//        }
-//    }
+    /*void updateTheme()
+    {
+        if (qApp->theme() == "dark") {
+            setBackgroundColor(QColor(23, 23, 23, 255 * 8 / 10));
+            setBorderColor(QColor(255, 255 ,255, 25));
+            _time->setStyleSheet(R"(
+                border-radius: 3px;
+                background-color: rgba(23, 23, 23, 0.8);
+                font-size: 12px;
+                color: #ffffff;
+            )");
+        } else {
+            setBackgroundColor(QColor(255, 255, 255, 255 * 8 / 10));
+            setBorderColor(QColor(0, 0 ,0, 25));
+            _time->setStyleSheet(R"(
+                border-radius: 3px;
+                background-color: rgba(255, 255, 255, 0.8);
+                font-size: 12px;
+                color: #303030;
+            )");
+        }
+    }*/
 
 protected:
     void paintEvent(QPaintEvent *e) Q_DECL_OVERRIDE{
@@ -1681,16 +1675,16 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
 }
 void ToolboxProxy::finishLoadSlot(QSize size)
 {
-    qDebug() << "humbnail has finished";
+    qDebug() << "thumbnail has finished";
 
     if (pm_list.isEmpty()) return;
 
     if (!_bthumbnailmode) {
         return;
     }
-    if (isStillShowThumbnail) {
-        _viewProgBar->setViewProgBar(_engine, pm_list, pm_black_list);
-    }
+    //    if (isStillShowThumbnail) {
+    _viewProgBar->setViewProgBar(_engine, pm_list, pm_black_list);
+    //    }
 
     if (CompositingManager::get().composited()/* && _loadsize == size*/ && _engine->state() != PlayerEngine::CoreState::Idle) {
         PlayItemInfo info = _engine->playlist().currentInfo();
@@ -1712,7 +1706,7 @@ void ToolboxProxy::setthumbnailmode()
 
 #if !defined (__mips__ ) && !defined(__aarch64__)
     if (Settings::get().isSet(Settings::ShowThumbnailMode)) {
-        isStillShowThumbnail = true;
+//        isStillShowThumbnail = true;
         _bthumbnailmode = true;
         updateThumbnail();
     } else {
@@ -2383,7 +2377,7 @@ void ToolboxProxy::slotRequestVolumeDown()
 
 void ToolboxProxy::slotFileLoaded()
 {
-    _viewProgBar->clear();
+//    _viewProgBar->clear();
     _progBar->slider()->setRange(0, static_cast<int>(_engine->duration()));
 //        _progBar_stacked->setCurrentIndex(1);
     _progBar_Widget->setCurrentIndex(1);
@@ -2488,6 +2482,7 @@ void ToolboxProxy::slotUpdateThumbnailTimeOut()
         return;
     }
 
+    _viewProgBar->clear();  //清除前一次进度条中的缩略图,以便显示新的缩略图
     m_listPixmapMutex.lock();
     pm_list.clear();
     pm_black_list.clear();
@@ -2511,8 +2506,6 @@ void ToolboxProxy::slotUpdateThumbnailTimeOut()
     }
 
     m_worker->load();
-
-
     _progBar_Widget->setCurrentIndex(1);
 }
 
@@ -3027,14 +3020,14 @@ void ToolboxProxy::resizeEvent(QResizeEvent *event)
         _oldsize = event->size();
 //        _progBar->setFixedWidth(width() - PROGBAR_SPEC);
         if (_engine->state() != PlayerEngine::CoreState::Idle) {
-            if (_bthumbnailmode) {
-                isStillShowThumbnail = false;
-                _bthumbnailmode = false;
+            if (_bthumbnailmode) {  //如果进度条为胶片模式，重新加载缩略图并显示
+//                isStillShowThumbnail = false;
+                updateThumbnail();
+//                _bthumbnailmode = false;
                 updateMovieProgress();
             }
             _progBar_Widget->setCurrentIndex(1);
         }
-
     }
 #ifndef __sw_64__
     if (bAnimationFinash ==  false && paopen != nullptr && paClose != nullptr) {
@@ -3109,10 +3102,11 @@ void ToolboxProxy::updateToolTipTheme(ToolButton *btn)
     }
 }
 
-void ToolboxProxy::setViewProgBarWidth()
+///not used function
+/*void ToolboxProxy::setViewProgBarWidth()
 {
     _viewProgBar->setWidth();
-}
+}*/
 
 void ToolboxProxy::setPlaylist(PlaylistWidget *playlist)
 {
