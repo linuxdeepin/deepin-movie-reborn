@@ -156,7 +156,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif,QWidget *parent)
     : DAbstractDialog(parent)
 {
     setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint);
-    setAttribute(Qt::WA_TranslucentBackground, true);
+    //setAttribute(Qt::WA_TranslucentBackground, true);
     m_titleList.clear();
 
     auto layout = new QVBoxLayout(this);
