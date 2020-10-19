@@ -1186,6 +1186,11 @@ MainWindow::MainWindow(QWidget *parent)
     QTimer::singleShot(500, [this]() {
         loadPlayList();
     });
+
+#ifdef __mips__
+    m_pDBus = new QDBusInterface("org.freedesktop.login1","/org/freedesktop/login1","org.freedesktop.login1.Manager",QDBusConnection::systemBus());
+    connect(m_pDBus, SIGNAL(PrepareForSleep(bool)), this, SLOT(sleepStateChanged(bool)));
+#endif
 }
 
 void MainWindow::setupTitlebar()
@@ -4909,6 +4914,20 @@ void MainWindow::diskRemoved(QString strDiskName)
 
     if (strCurrFile.contains(strDiskName)/* && _engine->state() == PlayerEngine::Playing*/)
         _nwComm->updateWithMessage(tr("The CD/DVD has been ejected"));
+}
+
+void MainWindow::sleepStateChanged(bool bSleep)
+{
+    if(bSleep && _engine->state() == PlayerEngine::CoreState::Playing){
+        requestAction(ActionFactory::ActionKind::TogglePause);
+    }
+    else if(!bSleep && windowState()!= Qt::WindowMinimized && _engine->state() == PlayerEngine::CoreState::Paused) {
+        _engine->seekAbsolute(static_cast<int>(_engine->elapsed()));                //在龙芯下需要重新seek下，不然影片会卡住反复横跳
+        requestAction(ActionFactory::ActionKind::TogglePause);
+    }
+    else if (!bSleep && windowState() == Qt::WindowMinimized && _engine->state() == PlayerEngine::CoreState::Paused) {
+        _engine->seekAbsolute(static_cast<int>(_engine->elapsed()));
+    }
 }
 
 #include "mainwindow.moc"

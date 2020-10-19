@@ -44,6 +44,7 @@
 #include "animationlabel.h"
 #include "volumemonitoring.h"
 #include "diskcheckthread.h"
+#include <QDBusAbstractInterface>
 
 //static const int VOLUME_OFFSET = 40;
 
@@ -272,6 +273,8 @@ protected slots:
 
     void updateMiniBtnTheme(int);
     void diskRemoved(QString strDiskName);
+
+    void sleepStateChanged(bool bSleep);
 private:
     void setupTitlebar();
 
@@ -406,6 +409,7 @@ private:
     bool m_bTouchChangeVolume {false};
     bool m_bIsFullSreen {false};
     bool m_bisOverhunderd {false};
+    QDBusInterface* m_pDBus {nullptr};
 };
 };
 
