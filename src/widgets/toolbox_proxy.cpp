@@ -1109,7 +1109,9 @@ public:
         _slider->slider()->setRange(0, 100);
 //        _slider->slider()->setOrientation(Qt::Vertical);
 
-        auto vol = _engine->volume();
+        //修改打开时音量条显示不正确
+        //auto vol = _engine->volume();
+        int vol = Settings::get().internalOption("global_volume").toInt();
         /*if (vol != 0) {
             vol -= VOLUME_OFFSET;
         }*/
