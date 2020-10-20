@@ -207,7 +207,7 @@
     </message>
     <message>
         <source>Movie is a full-featured video player, supporting playing local and streaming media in multiple video formats.</source>
-        <translation>影院是一款支援多種影片格式本機播放和流媒體播放的影片播放器。</translation>
+        <translation>電影是一款支援多種影片格式本機播放和流媒體播放的影片播放器。</translation>
     </message>
     <message>
         <source>OK</source>
@@ -649,7 +649,7 @@
     </message>
     <message>
         <source>Codec info</source>
-        <translation>編碼訊息</translation>
+        <translation>編碼資訊</translation>
     </message>
     <message>
         <source>Video CodecID</source>
@@ -681,7 +681,7 @@
     </message>
     <message>
         <source>Audio info</source>
-        <translation>音訊訊息</translation>
+        <translation>音訊資訊</translation>
     </message>
     <message>
         <source>Audio CodecID</source>
@@ -828,7 +828,7 @@
     </message>
     <message>
         <source>Exit fullscreen</source>
-        <translation>結束全螢幕</translation>
+        <translation>退出全螢幕</translation>
     </message>
     <message>
         <source>Pause</source>
