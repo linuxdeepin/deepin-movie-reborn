@@ -3712,6 +3712,7 @@ void MainWindow::updateSizeConstraints()
 
     if (_miniMode) {
         m = QSize(40, 40);
+//   窗管未实现不能resize时使用
 //        if(utils::check_wayland_env()){
 //            _miniMark = true;
 //            this->setFixedSize(380,213);
@@ -3742,16 +3743,18 @@ void MainWindow::updateSizeConstraints()
             m = QSize(614, 500);
         }
         m = QSize(614, 500);
-        //        if(utils::check_wayland_env()){
-        //
-        //            this->setMaximumSize(QWIDGETSIZE_MAX,QWIDGETSIZE_MAX);
-        //            if(_miniMark){
-        //                //this->resize(850,600);
-        //                _miniMark = false;
-        //            }
-        //        }
+//   窗管未实现不能resize时使用
+//        if(utils::check_wayland_env()){
+//            this->setMinimumSize(m);
+//            this->setMaximumSize(QWIDGETSIZE_MAX,QWIDGETSIZE_MAX);
+//            if(_miniMark){
+//                //this->resize(850,600);
+//                _miniMark = false;
+//            }
+//        }
     }
-      this->setMinimumSize(m);
+    //   窗管未实现不能resize时注释
+    this->setMinimumSize(m);
 
     qDebug() << __func__ << m;
 }
@@ -3833,7 +3836,9 @@ void MainWindow::updateWindowTitle()
 void MainWindow::moveEvent(QMoveEvent *ev)
 {
 #ifdef __aarch64__
-    if (windowState() == Qt::WindowNoState && !_miniMode) {
+    //_isSettingMiniMode 为了setwindowflags时调用show（）后此处会修改_lastRectInNormalMode大小
+    //造成无法还原窗口
+    if (windowState() == Qt::WindowNoState &&  !_isSettingMiniMode && !_miniMode) {
         _lastRectInNormalMode = geometry();
     }
     _nwComm->syncPosition();
@@ -4521,9 +4526,9 @@ void MainWindow::toggleUIMode()
 
 
     } else {
-        //wayland下最新窗管包才使用
-        //if(utils::check_wayland_env())
-         //   updateSizeConstraints();
+//   窗管未实现不能resize时使用
+//        if(utils::check_wayland_env())
+//            updateSizeConstraints();
         setEnableSystemResize(true);
         if (_stateBeforeMiniMode & SBEM_Above) {
             requestAction(ActionFactory::WindowAbove);
