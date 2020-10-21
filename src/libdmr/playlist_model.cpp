@@ -1476,6 +1476,12 @@ struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl &url, const QFil
                     isMusic = true;
                 }
             }
+
+            if(_engine->videoSize().width()<0)   //如果没有视频流，就当做音乐播放
+            {
+                isMusic = true;
+            }
+
             if (isMusic == false) {
                 std::vector<uint8_t> buf;
                 _thumbnailer.generateThumbnail(fi.canonicalFilePath().toUtf8().toStdString(),
