@@ -2515,7 +2515,14 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         changedMute();
         setMusicMuted(_engine->muted());
         if (_engine->muted()) {
-            _nwComm->updateWithMessage(tr("Mute"));
+            if(utils::check_wayland_env()){
+                //wayland 下 先显示0再显示静音
+                QTimer::singleShot(500, [ = ]() {
+                    _nwComm->updateWithMessage(tr("Mute"));
+                });
+            }else{
+                _nwComm->updateWithMessage(tr("Mute"));
+            }
         } else {
             //_nwComm->updateWithMessage(tr("Volume: %1%").arg(_toolbox->DisplayVolume()));
             _nwComm->updateWithMessage(tr("Volume: %1%").arg(m_displayVolume));
