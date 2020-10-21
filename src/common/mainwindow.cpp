@@ -1026,7 +1026,7 @@ MainWindow::MainWindow(QWidget *parent)
         _retryTimes = 0;
         if (windowState() == Qt::WindowNoState && _lastRectInNormalMode.isValid()) {
             const auto &mi = _engine->playlist().currentInfo().mi;
-            if(utils::check_wayland_env())
+            if(utils::check_wayland_env() && !_miniMode)
                 _lastRectInNormalMode.setSize({mi.width, mi.height});
         }
         this->resizeByConstraints();
