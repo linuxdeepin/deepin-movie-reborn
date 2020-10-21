@@ -1336,8 +1336,22 @@ void MainWindow::onWindowStateChanged()
         if (XDG_SESSION_TYPE == QLatin1String("wayland") ||
                 WAYLAND_DISPLAY.contains(QLatin1String("wayland"), Qt::CaseInsensitive)) {
             if (_miniMode) {
-                this->toggleUIMode();
                 this->setWindowState(Qt::WindowMaximized);      //mini model need
+
+                QSize miniModeSize;
+                auto vid_size = _engine->videoSize();
+                qreal ratio = vid_size.width() / (qreal)vid_size.height();
+
+                if (vid_size.width() > vid_size.height()) {
+                    miniModeSize = QSize(380, 380 / ratio);
+                } else {
+                    miniModeSize = QSize(380, 380 * ratio);
+                }
+
+                auto deskGeom = qApp->desktop()->availableGeometry(this);
+                move((deskGeom.width() - this->width()) / 2, (deskGeom.height() - this->height()) / 2);
+                resize(miniModeSize.width(), miniModeSize.height());
+                //this->toggleUIMode();
             }
         }
 
@@ -4470,10 +4484,16 @@ void MainWindow::toggleUIMode()
 
         if (isFullScreen()) {
             _stateBeforeMiniMode |= SBEM_Fullscreen;
-            requestAction(ActionFactory::ToggleFullscreen);
-            //requestAction(ActionFactory::QuitFullscreen);
-            //reflectActionToUI(ActionFactory::ToggleMiniMode);
-            this->setWindowState(Qt::WindowNoState);
+          
+            auto e = QProcessEnvironment::systemEnvironment();
+            QString XDG_SESSION_TYPE = e.value(QStringLiteral("XDG_SESSION_TYPE"));
+            QString WAYLAND_DISPLAY = e.value(QStringLiteral("WAYLAND_DISPLAY"));
+
+            if (!(XDG_SESSION_TYPE == QLatin1String("wayland") &&
+                    WAYLAND_DISPLAY.contains(QLatin1String("wayland"), Qt::CaseInsensitive))) {
+                requestAction(ActionFactory::ToggleFullscreen);
+                this->setWindowState(Qt::WindowNoState);
+            }
         } else if (isMaximized()) {
             _stateBeforeMiniMode |= SBEM_Maximized;
             showNormal();
