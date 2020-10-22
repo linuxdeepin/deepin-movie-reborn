@@ -24,6 +24,7 @@ public:
 signals:
 
 public slots:
+    void slotplay();
     void slotpause();
     void slotplaynext();
     void slotplayprev();
