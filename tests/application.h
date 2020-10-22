@@ -43,7 +43,7 @@ public:
     Application(int &argc, char **argv);
     ~Application();
 
-    bool isRunning();
+//    bool isRunning();
     //test
     void setMainWindow(MainWindow *window);
     MainWindow *getMainWindow();
@@ -51,7 +51,7 @@ public:
     MovieApp * initMovieApp(MainWindow *mw);
 
 private:
-    bool _isRunning;
+//    bool _isRunning;
     MainWindow *m_mainwindow;
     Presenter *_presenter;
     MovieApp *_movieapp;

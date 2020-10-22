@@ -464,7 +464,8 @@ QString audioIndex2str(int index)
     return aa;
 }
 
-QString subtitleIndex2str(int index)
+///not used///
+/*QString subtitleIndex2str(int index)
 {
     QStringList subtitleList1 = {"dvd_subtitle", "dvb_subtitle", "text", "xsub", "ssa",
                                  "mov_text", "hdmv_pgs_subtitle", "dvb_teletext", "srt"
@@ -480,9 +481,10 @@ QString subtitleIndex2str(int index)
         codecMap.insert(i + 96256, subtitleList2[i]);
     }
     return codecMap[index];
-}
+}*/
 
-bool ValidateScreenshotPath(const QString &path)
+///not used///
+/*bool ValidateScreenshotPath(const QString &path)
 {
     auto name = path.trimmed();
     if (name.isEmpty()) return false;
@@ -503,7 +505,7 @@ bool ValidateScreenshotPath(const QString &path)
     }
 
     return true;
-}
+}*/
 
 QImage LoadHiDPIImage(const QString &filename)
 {

@@ -25,10 +25,10 @@ Application::~Application()
 {
 }
 
-bool Application::isRunning()
-{
-    return _isRunning;
-}
+//bool Application::isRunning()
+//{
+//    return _isRunning;
+//}
 
 void Application::setMainWindow(MainWindow *window)
 {

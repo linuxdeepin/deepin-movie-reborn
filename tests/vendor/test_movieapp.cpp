@@ -19,11 +19,14 @@ TEST(MovieApp, show)
     QTimer::singleShot(1000,[=]{movieapp->show();});
 }
 
-//TEST(MovieApp, quit)
-//{
-//    MainWindow* w = dApp->getMainWindow();
+TEST(MovieApp, quit)
+{
+    MainWindow* w = dApp->getMainWindow();
+    PlayerEngine* engine =  w->engine();
 
-//    MovieApp *movieapp = dApp->initMovieApp(w);
+    MovieApp *movieapp = dApp->initMovieApp(w);
 
-//    QTimer::singleShot(500,[=]{movieapp->quit();});
-//}
+    QTimer::singleShot(500,[=]{movieapp->quit();});
+    QTest::qWait(500);
+    w->close();
+}

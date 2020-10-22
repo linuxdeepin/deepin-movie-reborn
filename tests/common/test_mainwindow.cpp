@@ -15,7 +15,30 @@
 #include "src/widgets/toolbox_proxy.h"
 #include "src/widgets/toolbutton.h"
 #include "src/widgets/playlist_widget.h"
+#include "src/widgets/slider.h"
+#include "src/widgets/movieinfo_dialog.h"
+#include "src/widgets/url_dialog.h"
+#include "src/widgets/dmr_lineedit.h"
 
+#include "dmr_settings.h"
+TEST(Settings,settings)
+{
+    using namespace dmr;
+    Settings::get().isSet(Settings::Flag::ClearWhenQuit);
+    Settings::get().isSet(Settings::Flag::ShowThumbnailMode);
+    Settings::get().isSet(Settings::Flag::AutoSearchSimilar);
+    Settings::get().isSet(Settings::Flag::PreviewOnMouseover);
+    Settings::get().isSet(Settings::Flag::MultipleInstance);
+    Settings::get().isSet(Settings::Flag::PauseOnMinimize);
+    Settings::get().settings()->sync();
+
+    Settings::get().commonPlayableProtocols();
+    Settings::get().commonPlayableProtocols();
+    Settings::get().iscommonPlayableProtocol("dvb");
+    Settings::get().screenshotLocation();
+    Settings::get().screenshotNameTemplate();
+    Settings::get().screenshotNameSeqTemplate();
+}
 
 using namespace dmr;
 
@@ -23,7 +46,7 @@ TEST(MainWindow, loadFile)
 {
     MainWindow* w = dApp->getMainWindow();
 
-    PlayerEngine* egine =  w->engine();
+    PlayerEngine* engine =  w->engine();
 
     QList<QUrl> listPlayFiles;
 
@@ -32,9 +55,9 @@ TEST(MainWindow, loadFile)
 
     w->show();
 
-    const auto &valids = egine->addPlayFiles(listPlayFiles);
+    const auto &valids = engine->addPlayFiles(listPlayFiles);
 
-    egine->playByName(valids[0]);
+    engine->playByName(valids[0]);
 }
 
 TEST(MainWindow, mouseSimulate)
@@ -43,18 +66,16 @@ TEST(MainWindow, mouseSimulate)
 
     w->show();
 
-    QTest::mouseMove(w, QPoint(),1000);
-
-    QTest::mouseClick(w,Qt::LeftButton,Qt::NoModifier,QPoint(),2000);//pause
-    QTest::mouseClick(w,Qt::LeftButton,Qt::NoModifier,QPoint(),2000);//play
+    QTest::qWait(3000); //等待加载胶片进度条
+    QTest::mouseMove(w, QPoint(),300);
+    QTest::mouseClick(w,Qt::LeftButton,Qt::NoModifier,QPoint(),500);//pause
+    QTest::mouseClick(w,Qt::LeftButton,Qt::NoModifier,QPoint(),1000);//play
 
     QTest::mouseDClick(w,Qt::LeftButton,Qt::NoModifier,QPoint(),1000);  //fullscreen
-    QTest::mouseDClick(w,Qt::LeftButton,Qt::NoModifier,QPoint(),2000);
-
-    QTest::keyPress(w,Qt::Key_Enter,Qt::NoModifier);
+    QTest::mouseDClick(w,Qt::LeftButton,Qt::NoModifier,QPoint(),1000);
 }
 
-TEST(shortcutKey, play)
+TEST(MainWindow, shortCutPlay)
 {
     MainWindow* w = dApp->getMainWindow();
     w->show();
@@ -64,7 +85,7 @@ TEST(shortcutKey, play)
     //截图
     testEventList.addKeyClick(Qt::Key_A, Qt::AltModifier, 1000);    //screenshot
     testEventList.addKeyClick(Qt::Key_S, Qt::AltModifier, 1000);    //连拍
-    testEventList.addKeyClick(Qt::Key_Return, Qt::NoModifier, 1000);
+//    testEventList.addKeyClick(Qt::Key_Escape, Qt::NoModifier, 1000);
 
     testEventList.addKeyClick(Qt::Key_Space, Qt::NoModifier, 1000); //pause
     testEventList.addKeyClick(Qt::Key_Space, Qt::NoModifier, 1000); //play
@@ -79,6 +100,8 @@ TEST(shortcutKey, play)
 
     testEventList.addKeyClick(Qt::Key_F3, Qt::NoModifier, 1000);    //playlist
     testEventList.addKeyClick(Qt::Key_Up, Qt::NoModifier, 500);
+    testEventList.addKeyClick(Qt::Key_Enter, Qt::NoModifier, 500);
+    testEventList.addKeyClick(Qt::Key_Down, Qt::NoModifier, 500);
     testEventList.addKeyClick(Qt::Key_Delete, Qt::NoModifier, 1000);    //delete from playlist
 
     //加速播放
@@ -96,16 +119,14 @@ TEST(shortcutKey, play)
     //还原播放速度
     testEventList.addKeyClick(Qt::Key_R, Qt::ControlModifier, 500);
 
-    //movie info dialog
-    testEventList.addKeyClick(Qt::Key_Return, Qt::AltModifier, 1000);
-    testEventList.addKeyClick(Qt::Key_Escape, Qt::NoModifier, 1000);
+//    //movie info dialog
+//    testEventList.addKeyClick(Qt::Key_Return, Qt::AltModifier, 1000);
+//    testEventList.addKeyClick(Qt::Key_Escape, Qt::NoModifier, 1000);
 
     testEventList.simulate(w);
-
-    EXPECT_TRUE(true);
 }
 
-TEST(shortcutKey, volumeAndFrame)
+TEST(MainWindow, shortCutVolumeAndFrame)
 {
     MainWindow* w = dApp->getMainWindow();
     w->show();
@@ -114,7 +135,8 @@ TEST(shortcutKey, volumeAndFrame)
 
     //mini mode
     testEventList.addKeyClick(Qt::Key_F2, Qt::NoModifier, 1000);
-    testEventList.addKeyClick(Qt::Key_Escape, Qt::NoModifier, 00);
+    QTest::qWait(2000);
+    testEventList.addKeyClick(Qt::Key_Escape, Qt::NoModifier, 1000);
 
     //volume
     for (int i = 0; i<5; i++) {
@@ -136,7 +158,7 @@ TEST(shortcutKey, volumeAndFrame)
     testEventList.simulate(w);
 }
 
-TEST(shortcutKey, file)
+TEST(MainWindow, reloadFile)
 {
     MainWindow* w = dApp->getMainWindow();
     w->show();
@@ -144,16 +166,56 @@ TEST(shortcutKey, file)
     QTestEventList testEventList;
 
     //openfile
-    PlayerEngine* egine =  w->engine();
+    PlayerEngine* engine =  w->engine();
     QList<QUrl> listPlayFiles;
     listPlayFiles<<QUrl::fromLocalFile("/usr/share/dde-introduction/demo.mp4")\
                 <<QUrl::fromLocalFile("/usr/share/music/bensound-sunny.mp3");
-    egine->addPlayFiles(listPlayFiles);
+    engine->addPlayFiles(listPlayFiles);
 
-    testEventList.addKeyClick(Qt::Key_PageDown, Qt::NoModifier, 1000);
-    testEventList.addKeyClick(Qt::Key_PageUp, Qt::NoModifier, 1000);
+//    testEventList.addKeyClick(Qt::Key_PageDown, Qt::NoModifier, 1000);
+//    testEventList.addKeyClick(Qt::Key_PageUp, Qt::NoModifier, 1000);
 
-    testEventList.simulate(w);
+//    testEventList.simulate(w);
+}
+
+TEST(MainWindow, movieInfoDialog)
+{
+    MainWindow* w = dApp->getMainWindow();
+
+    PlayerEngine *engine  =  w->engine();
+
+    QTest::qWait(1000);
+    MovieInfoDialog mid(engine->playlist().currentInfo());
+    mid.show();
+
+//    QPoint point(mid.x(), mid.y());
+//    qDebug() << point;
+//    QTest::mouseMove(&mid, point, 1000);
+
+    QTest::qWait(2000);
+    mid.close();
+    QTest::qWait(1000);
+
+}
+
+TEST(MainWindow, UrlDialog)
+{
+    MainWindow* w = dApp->getMainWindow();
+//    PlayerEngine *engine  =  w->engine();
+
+    UrlDialog *uDlg = new UrlDialog(w);
+    uDlg->show();
+    LineEdit *lineEdit = uDlg->findChild<LineEdit *>();
+
+    QTest::mouseMove(lineEdit, QPoint(), 500);
+    QTest::keyClicks(lineEdit, QString("www.baidu.com"), Qt::NoModifier, 10);
+
+    QUrl url = uDlg->url();
+    w->play(url);
+
+    QTest::mouseMove(uDlg->getButton(1), QPoint(), 500);
+    QTest::mouseClick(uDlg->getButton(1), Qt::LeftButton, Qt::NoModifier,QPoint(), 1000);
+
 }
 
 TEST(ToolBox, togglePlayList)
@@ -166,11 +228,29 @@ TEST(ToolBox, togglePlayList)
 
     ToolButton *listBtn = toolboxProxy->listBtn();
 
-    QTest::mouseMove(listBtn, QPoint(), 2000);
-    QTest::mouseClick(listBtn, Qt::LeftButton, Qt::NoModifier,QPoint(), 2000);
+    QTest::mouseMove(listBtn, QPoint(), 1000);
+    QTest::mouseClick(listBtn, Qt::LeftButton, Qt::NoModifier,QPoint(), 1000);
 }
 
-TEST(ToolBox,stop)
+TEST(ToolBox, progBar)
+{
+    MainWindow* w = dApp->getMainWindow();
+    w->show();
+
+    ToolboxProxy* toolboxProxy = w->toolbox();
+    toolboxProxy->show();
+
+    DMRSlider *progBarSlider = toolboxProxy->getSlider();
+
+    QTest::mouseMove(progBarSlider->slider(), QPoint(), 500);
+    QTest::mouseClick(progBarSlider->slider(), Qt::LeftButton, Qt::NoModifier, QPoint(), 1000);
+
+    QPoint point(progBarSlider->slider()->x()+20, progBarSlider->slider()->y());
+    QTest::mouseMove(progBarSlider->slider(), point, 1000);
+    QTest::mouseClick(progBarSlider->slider(), Qt::LeftButton, Qt::NoModifier, point, 1000);
+}
+
+TEST(ToolBox, playBtnBox)
 {
     MainWindow* w = dApp->getMainWindow();
     w->show();
@@ -179,59 +259,23 @@ TEST(ToolBox,stop)
     toolboxProxy->show();
 
     DButtonBoxButton* playBtn = toolboxProxy->playBtn();
-
-    QTest::mouseMove(playBtn, QPoint(), 1000);
-//    QTimer::singleShot(2000,[=]{QTest::mouseClick(playBtn,Qt::LeftButton);});
-    QTest::mouseClick(playBtn,Qt::LeftButton,Qt::NoModifier,QPoint(),500);
-}
-
-TEST(ToolBox, play)
-{
-    MainWindow* w = dApp->getMainWindow();
-    w->show();
-
-    ToolboxProxy* toolboxProxy = w->toolbox();
-    toolboxProxy->show();
-
-    DButtonBoxButton* playBtn = toolboxProxy->playBtn();
-
-    QTest::mouseMove(playBtn, QPoint(), 1000);
-//    QTimer::singleShot(2000,[=]{QTest::mouseClick(playBtn,Qt::LeftButton);});
-    QTest::mouseClick(playBtn,Qt::LeftButton,Qt::NoModifier,QPoint(),1000);
-
-}
-
-TEST(ToolBox, playNext)
-{
-    MainWindow* w = dApp->getMainWindow();
-    w->show();
-
-    ToolboxProxy* toolboxProxy = w->toolbox();
-    toolboxProxy->show();
-
     DButtonBoxButton* nextBtn = toolboxProxy->nextBtn();
-
-    QTest::mouseMove(nextBtn, QPoint(), 1000);
-//    QTimer::singleShot(2000,[=]{QTest::mouseClick(nextBtn,Qt::LeftButton);});
-    QTest::mouseClick(nextBtn,Qt::LeftButton,Qt::NoModifier,QPoint(),1000);
-}
-
-TEST(ToolBox, playPrev)
-{
-    MainWindow* w = dApp->getMainWindow();
-    w->show();
-
-    ToolboxProxy* toolboxProxy = w->toolbox();
-    toolboxProxy->show();
-
     DButtonBoxButton* prevBtn = toolboxProxy->prevBtn();
 
-    QTest::mouseMove(prevBtn, QPoint(), 1000);
-//    QTimer::singleShot(2000,[=]{QTest::mouseClick(prevBtn,Qt::LeftButton);});
-    QTest::mouseClick(prevBtn,Qt::LeftButton,Qt::NoModifier,QPoint(),2000);
+    QTest::mouseMove(playBtn, QPoint(), 500);
+    QTest::mouseClick(playBtn,Qt::LeftButton,Qt::NoModifier,QPoint(),1000);//pause
+
+    QTest::mouseMove(playBtn, QPoint(), 500);
+    QTest::mouseClick(playBtn,Qt::LeftButton,Qt::NoModifier,QPoint(),1000);//play
+
+    QTest::mouseMove(nextBtn, QPoint(), 500);
+    QTest::mouseClick(nextBtn,Qt::LeftButton,Qt::NoModifier,QPoint(),1000);
+
+    QTest::mouseMove(prevBtn, QPoint(), 500);
+    QTest::mouseClick(prevBtn,Qt::LeftButton,Qt::NoModifier,QPoint(),1000);
 }
 
-TEST(ToolBox, fullScreen)
+TEST(ToolBox, fullScreenBtn)
 {
     MainWindow* w = dApp->getMainWindow();
     w->show();
@@ -241,23 +285,10 @@ TEST(ToolBox, fullScreen)
 
     ToolButton *fsBtn = toolboxProxy->fsBtn();
 
-    QTest::mouseMove(fsBtn, QPoint(), 1000);
-//    QTimer::singleShot(2000,[=]{QTest::mouseClick(fsBtn,Qt::LeftButton);});
-    QTest::mouseClick(fsBtn,Qt::LeftButton,Qt::NoModifier,QPoint(),2000);
-}
+    QTest::mouseMove(fsBtn, QPoint(), 500);
+    QTest::mouseClick(fsBtn,Qt::LeftButton,Qt::NoModifier,QPoint(),1000);
 
-TEST(ToolBox, quitFullScreen)
-{
-    MainWindow* w = dApp->getMainWindow();
-    w->show();
-
-    ToolboxProxy* toolboxProxy = w->toolbox();
-    toolboxProxy->show();
-
-    ToolButton *fsBtn = toolboxProxy->fsBtn();
-
-    QTest::mouseMove(fsBtn, QPoint(), 1000);
-//    QTimer::singleShot(1000,[=]{QTest::mouseClick(fsBtn,Qt::LeftButton);});
+    QTest::mouseMove(fsBtn, QPoint(), 500);
     QTest::mouseClick(fsBtn,Qt::LeftButton,Qt::NoModifier,QPoint(),1000);
 }
 
@@ -270,14 +301,14 @@ TEST(ToolBox, volBtn)
     toolboxProxy->show();
 
     VolumeButton *volBtn = toolboxProxy->volBtn();
+    VolumeSlider *volSlider = toolboxProxy->getVolSlider();
 
-    QTest::mouseMove(volBtn, QPoint(), 1000);
-//    QTimer::singleShot(1000,[=]{QTest::mouseClick(volBtn,Qt::LeftButton);});
+    QTest::mouseMove(volBtn, QPoint(), 500);
     QTest::mouseClick(volBtn,Qt::LeftButton,Qt::NoModifier,QPoint(),1000);
 
-    QPoint point(volBtn->pos().x(),volBtn->pos().y());
-//    QTest::mouseMove(volBtn,point,1000);
-    QTest::mouseClick(volBtn,Qt::LeftButton,Qt::NoModifier,QPoint(),1000);
+//    QPoint point(volSlider,volBtn->pos().y()-50);
+//    QTest::mouseMove(volBtn, point, 500);
+//    QTest::mouseClick(volBtn,Qt::LeftButton,Qt::NoModifier,QPoint(),1000);
 }
 
 TEST(ToolBox, quitPlayList)
@@ -290,7 +321,6 @@ TEST(ToolBox, quitPlayList)
 
     ToolButton *listBtn = toolboxProxy->listBtn();
 
-    QTest::mouseMove(listBtn, QPoint(), 1000);
-//    QTimer::singleShot(5000,[=]{QTest::mouseClick((QWidget*)listBtn,Qt::LeftButton);});
+    QTest::mouseMove(listBtn, QPoint(), 500);
     QTest::mouseClick(listBtn,Qt::LeftButton,Qt::NoModifier,QPoint(),1000);
 }

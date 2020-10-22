@@ -72,7 +72,6 @@ static QString ElideText(const QString &text, const QSize &size,
     } else {
         int height = 0;
         while (line.isValid()) {
-            //height += lineHeight;
             line.setLineWidth(size.width());
 
             //2020.4.2修改，显示完整路径
