@@ -865,10 +865,10 @@ void PlaylistModel::tryPlayCurrent(bool next)
     }
     emit itemInfoUpdated(_current);
     if (pif.valid) {
-        if(!utils::check_wayland_env()){
+        if(!utils::check_wayland_env()) {
             _engine->requestPlay(_current);
             emit currentChanged();
-        }else {
+        } else {
         //本地视频单个循环/列表循环，小于1s视频/无法解码视频，不播放，直接播放下一个
           if ( (pif.mi.duration <= 1 || pif.thumbnail.isNull()) && pif.url.isLocalFile()) {
               if (1 == count() || _playMode == PlayMode::SingleLoop || _playMode == PlayMode::SinglePlay) {

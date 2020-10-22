@@ -4542,6 +4542,11 @@ void MainWindow::paintEvent(QPaintEvent *pe)
 #endif
     if (_engine->state() == PlayerEngine::Idle) {
         QImage &bg = bg_dark;
+        if(DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
+            QImage img=utils::LoadHiDPIImage(":/resources/icons/dark/init-splash-bac.svg");
+            auto bt = bgRect.center() - QPoint(img.width() / 2, img.height() / 2) / devicePixelRatioF();
+            painter.drawImage(bt, img);
+        }
         auto pt = bgRect.center() - QPoint(bg.width() / 2, bg.height() / 2) / devicePixelRatioF();
         painter.drawImage(pt, bg);
     }
