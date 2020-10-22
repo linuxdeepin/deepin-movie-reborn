@@ -2313,7 +2313,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     case ActionFactory::ActionKind::MovieInfo: {
         if (_engine->state() != PlayerEngine::CoreState::Idle) {
             //if (_engine->isPlayableFile())
-            MovieInfoDialog mid(_engine->playlist().currentInfo());
+            MovieInfoDialog mid(_engine->playlist().currentInfo(),this);
             mid.exec();
         }
         break;

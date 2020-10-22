@@ -41,6 +41,7 @@
 #include "thumbnail_worker.h"
 #include "tip.h"
 #include "utils.h"
+#include "dbus_adpator.h"
 
 //#include <QtWidgets>
 #include <DImageButton>
@@ -213,6 +214,11 @@ protected:
             parent->hide();
             event->ignore();
             break;
+        }
+    case QEvent::MouseMove:{
+            QHelpEvent *he = static_cast<QHelpEvent *>(event);
+            auto tip = obj->property("HintWidget").value<Tip *>();
+            tip->hide();
         }
         default:
             break;
@@ -1033,7 +1039,12 @@ public:
     void updateWithPreview(const QPoint &pos)
     {
         //resizeWithContent();
-        move(pos.x() - this->width() / 2, pos.y() - this->height() + 10);
+        if(utils::check_wayland_env()){
+            move(pos.x() - this->width() / 2, pos.y() + 10);
+        }else {
+            move(pos.x() - this->width() / 2, pos.y() - this->height() + 10);
+        }
+
         show();
         raise();
     }
@@ -1117,7 +1128,8 @@ public:
             setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
         }
 #elif __aarch64__
-        setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
+        if(!utils::check_wayland_env())
+            setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
 #elif __sw_64__
         setWindowFlags(Qt::FramelessWindowHint | Qt::BypassWindowManagerHint);
         setAttribute(Qt::WA_NativeWindow);
@@ -1155,7 +1167,13 @@ public:
         _slider->show();
         _slider->slider()->setRange(0, 100);
 
-        auto vol = _engine->volume();
+        //修改打开时音量条显示不正确
+        int vol = 0;
+        if(utils::check_wayland_env()){
+            vol = Settings::get().internalOption("global_volume").toInt();
+        }else{
+            vol = _engine->volume();
+        }
         /*if (vol != 0) {
             vol -= VOLUME_OFFSET;
         }*/
@@ -1186,7 +1204,9 @@ public:
 #ifdef __x86_64__
         connect(&_autoHideTimer, &QTimer::timeout, this, &VolumeSlider::hide);
 #endif
-
+        if(utils::check_wayland_env()){
+            connect(&_autoHideTimer, &QTimer::timeout, this, &VolumeSlider::hide);
+        }
         //Modify by xiepengfei 2020.5.5
         //修改音量显示逻辑，使之发生变化时从变化源处直接修改显示值而不是从系统中获取
         //此处修改有风险，但为了音量变化曲线问题
@@ -1672,6 +1692,16 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
             this, &ToolboxProxy::updatePlayState);
     connect(DApplicationHelper::instance(), &DApplicationHelper::themeTypeChanged,
             this, &ToolboxProxy::updateplaylisticon);
+
+
+    QFileInfo fi("/dev/mwv206_0");              //景嘉微显卡
+    if (utils::check_wayland_env() && fi.exists()) {
+        _isJinJia = true;
+        connect(&_progressTimer, &QTimer::timeout, [ = ]() {
+            oldDuration = _engine->duration();
+            oldElapsed = _engine->elapsed();
+        });
+    }
 }
 void ToolboxProxy::finishLoadSlot(QSize size)
 {
@@ -1900,6 +1930,14 @@ void ToolboxProxy::setup()
     progBarspec->setContentsMargins(0, 5, 0, 0);
     progBarspec->setSpacing(0);
     progBarspec->setAlignment(Qt::AlignHCenter);
+
+    if(utils::check_wayland_env()){
+        //lmh0706,延时
+        connect(_nextBtn,&DButtonBoxButton::clicked,this,&ToolboxProxy::waitPlay);
+        connect(_playBtn,&DButtonBoxButton::clicked,this,&ToolboxProxy::waitPlay);
+        connect(_prevBtn,&DButtonBoxButton::clicked,this,&ToolboxProxy::waitPlay);
+    }
+
 //    bot->addLayout(progBarspec);
 //    progBarspec->addWidget(_progBarspec);
     _progBar_Widget = new QStackedWidget(bot_toolWgt);
@@ -2272,6 +2310,30 @@ void ToolboxProxy::updateHoverPreview(const QUrl &url, int secs)
     _previewer->updateWithPreview(pm, secs, _engine->videoRotation());
     _previewer->updateWithPreview(p);
 
+}
+
+void ToolboxProxy::waitPlay()
+{
+    if(_playBtn){
+        _playBtn->setEnabled(false);
+    }
+    if(_prevBtn){
+        _prevBtn->setEnabled(false);
+    }
+    if(_nextBtn){
+        _nextBtn->setEnabled(false);
+    }
+    QTimer::singleShot(500,[=]{
+        if(_playBtn){
+            _playBtn->setEnabled(true);
+        }
+        if(_prevBtn&&_engine->playlist().count()>1){
+            _prevBtn->setEnabled(true);
+        }
+        if(_nextBtn&&_engine->playlist().count()>1){
+            _nextBtn->setEnabled(true);
+        }
+    });
 }
 
 void ToolboxProxy::slotThemeTypeChanged()
@@ -3054,6 +3116,11 @@ void ToolboxProxy::resizeEvent(QResizeEvent *event)
     DFloatingWidget::resizeEvent(event);
 }
 
+void ToolboxProxy::mouseMoveEvent(QMouseEvent *ev)
+{
+    setButtonTooltipHide();
+    QWidget::mouseMoveEvent(ev);
+}
 
 void ToolboxProxy::updateTimeLabel()
 {
@@ -3133,6 +3200,120 @@ bool ToolboxProxy::getbAnimationFinash()
 int ToolboxProxy::DisplayVolume()
 {
     return _volSlider->value();
+}
+
+void ToolboxProxy::setVolSliderHide()
+{
+    _volSlider->setVisible(false);
+}
+
+void ToolboxProxy::setButtonTooltipHide(){
+    if(utils::check_wayland_env()){
+//暂待验证
+//        m_playBtnTip->hide();
+//        m_prevBtnTip->hide();
+//        m_nextBtnTip->hide();
+//        m_fsBtnTip->hide();
+//        m_listBtnTip->hide();
+    }else{
+        _subBtn->hideToolTip();
+        _listBtn->hideToolTip();
+        _fsBtn->hideToolTip();
+    }
+}
+
+void ToolboxProxy::initToolTip()
+{
+    //lmh0910播放
+//暂待验证
+//    m_playBtnTip=new ButtonToolTip(_mainWindow);
+//    m_playBtnTip->setText(tr("Play"));
+//    connect(_playBtn, &ButtonBoxButton::entered, [ = ]() {
+//        m_playBtnTip->move(80,
+//                        _mainWindow->height() - TOOLBOX_HEIGHT - 5);
+//        m_playBtnTip->show();
+//        m_playBtnTip->QWidget::activateWindow();
+//        m_playBtnTip->update();
+//        m_playBtnTip->releaseMouse();
+
+//    });
+//    connect(_playBtn, &ButtonBoxButton::leaved, [ = ]() {
+//        QTimer::singleShot(0,[=]{
+//            m_playBtnTip->hide();
+//        });
+//    });
+
+//    //lmh0910上一个
+//    m_prevBtnTip=new ButtonToolTip(_mainWindow);
+//    m_prevBtnTip->setText(tr("Previous"));
+//    connect(_prevBtn, &ButtonBoxButton::entered, [ = ]() {
+//        m_prevBtnTip->move(40,
+//                        _mainWindow->height() - TOOLBOX_HEIGHT - 5);
+//        m_prevBtnTip->show();
+//        m_prevBtnTip->QWidget::activateWindow();
+//        m_prevBtnTip->update();
+//        m_prevBtnTip->releaseMouse();
+
+//    });
+//    connect(_prevBtn, &ButtonBoxButton::leaved, [ = ]() {
+//        QTimer::singleShot(0,[=]{
+//            m_prevBtnTip->hide();
+//        });
+//    });
+
+//    //lmh0910下一个
+//    m_nextBtnTip=new ButtonToolTip(_mainWindow);
+//    m_nextBtnTip->setText(tr("Next"));
+//    connect(_nextBtn, &ButtonBoxButton::entered, [ = ]() {
+//        m_nextBtnTip->move(120,
+//                        _mainWindow->height() - TOOLBOX_HEIGHT - 5);
+//        m_nextBtnTip->show();
+//        m_nextBtnTip->QWidget::activateWindow();
+//        m_nextBtnTip->update();
+//        m_nextBtnTip->releaseMouse();
+
+//    });
+//    connect(_nextBtn, &ButtonBoxButton::leaved, [ = ]() {
+//        QTimer::singleShot(0,[=]{
+//            m_nextBtnTip->hide();
+//        });
+//    });
+
+
+//    //lmh0910全屏按键
+//    m_fsBtnTip=new ButtonToolTip(_mainWindow);
+//    m_fsBtnTip->setText(tr("Fullscreen"));
+//    connect(_fsBtn, &ToolButton::entered, [ = ]() {
+//        m_fsBtnTip->move(_mainWindow->width() - _fsBtn->width() / 2 /*- _playBtn->width()*/ - 140,
+//                        _mainWindow->height() - TOOLBOX_HEIGHT - 5);
+//        m_fsBtnTip->show();
+//        m_fsBtnTip->QWidget::activateWindow();
+//        m_fsBtnTip->update();
+//        m_fsBtnTip->releaseMouse();
+
+//    });
+//    connect(_fsBtn, &ToolButton::leaved, [ = ]() {
+//        QTimer::singleShot(0,[=]{
+//            m_fsBtnTip->hide();
+//        });
+//    });
+//    //lmh0910list按键
+//    m_listBtnTip=new ButtonToolTip(_mainWindow);
+//    m_listBtnTip->setText(tr("Playlist"));
+//    connect(_listBtn, &ToolButton::entered, [ = ]() {
+//        m_listBtnTip->move(_mainWindow->width() - _listBtn->width() / 2 /*- _playBtn->width()*/ - 20,
+//                          _mainWindow->height() - TOOLBOX_HEIGHT - 5);
+//        m_listBtnTip->show();
+//        m_listBtnTip->QWidget::activateWindow();
+//        m_listBtnTip->update();
+//        m_listBtnTip->releaseMouse();
+
+//    });
+//    connect(_listBtn, &ToolButton::leaved, [ = ]() {
+//        QTimer::singleShot(0,[=]{
+//            m_listBtnTip->hide();
+//        });
+//    });
 }
 
 bool ToolboxProxy::getVolSliderIsHided()

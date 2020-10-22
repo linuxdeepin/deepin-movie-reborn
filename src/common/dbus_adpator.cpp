@@ -38,7 +38,7 @@ ApplicationAdaptor::ApplicationAdaptor(MainWindow* mw)
 
 void ApplicationAdaptor::openFiles(const QStringList& list)
 {
-    if(!utils::check_wayland_env()){
+    if(utils::check_wayland_env()){
 	//wayland下快速点击，播放不正常问题
         QTime current = QTime::currentTime();
         if(abs(oldTime.msecsTo(current)) > 800){
@@ -61,7 +61,7 @@ void ApplicationAdaptor::openFile(const QString& file)
     } else {
         url = QUrl::fromLocalFile(file);
     }
-    if(!utils::check_wayland_env()){
+    if(utils::check_wayland_env()){
 	//wayland下快速点击，播放不正常问题
         QTime current = QTime::currentTime();
         if(abs(oldTime.msecsTo(current)) > 800){

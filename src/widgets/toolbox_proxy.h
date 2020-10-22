@@ -79,7 +79,6 @@ class ImageItem : public DLabel
 public:
     ImageItem(QPixmap image, bool isblack = false, QWidget *parent = nullptr): DLabel(parent), _pixmap(image)
     {
-//        _pixmap = image;
     }
 
 signals:
@@ -216,7 +215,13 @@ public:
     QLabel *getfullscreentimeLabelend();
     bool getbAnimationFinash();
     int DisplayVolume();
+    void setVolSliderHide();
     bool getVolSliderIsHided();
+    void setButtonTooltipHide();
+    void updateVolumeStateOnStopMode(uint64_t vol);
+
+     //lmh0910初始化下方按键的tooltip
+     void initToolTip();
     DMRSlider* getSlider()
     {
         return _progBar;
@@ -275,6 +280,8 @@ protected slots:
     */
     void progressHoverChanged(int v);
     void updateHoverPreview(const QUrl &url, int secs);
+    //lmh0706暂停延时，解决乱按卡死问题
+    void waitPlay();
     //把lambda表达式改为槽函数，modify by myk
     void slotThemeTypeChanged();
     void slotLeavePreview();
@@ -299,6 +306,7 @@ protected:
 //    void paintEvent(QPaintEvent *pe) override;
     void showEvent(QShowEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *ev) override;
 private:
     void setup();
     void updateTimeLabel();
@@ -383,6 +391,10 @@ private:
     HintFilter        *hintFilter {nullptr };
     bool m_isMouseIn = false;
     QTimer _hideTime;
+    bool _isJinJia = false;//是否是景嘉微显卡
+    qint64 oldDuration = 0;
+    qint64 oldElapsed = 0;
+    QTimer _progressTimer;
 };
 class viewProgBarLoad: public QThread
 {

@@ -109,7 +109,7 @@ static QString ElideText(const QString &text, const QSize &size,
 class ToolTipEvent: public QObject
 {
 public:
-    explicit ToolTipEvent(QObject *parent): QObject(parent) {}
+    ToolTipEvent(QObject *parent): QObject(parent) {}
 
 protected:
     bool eventFilter(QObject *obj, QEvent *event)
@@ -171,11 +171,16 @@ protected:
     }
 };
 
-MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
-    : DAbstractDialog(nullptr)
+MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent)
+    : DAbstractDialog(parent)
 {
-    setWindowFlags(windowFlags() /*| Qt::WindowStaysOnTopHint*/);  //和其他应用保持统一取消置顶
-    setAttribute(Qt::WA_TranslucentBackground, true);
+   if(utils::check_wayland_env()){
+       setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint);
+   }else{
+       setWindowFlags(windowFlags() /*| Qt::WindowStaysOnTopHint*/);  //和其他应用保持统一取消置顶
+   }
+   //x86上此处设置透明效果无作用
+   //setAttribute(Qt::WA_TranslucentBackground, true);
     m_titleList.clear();
 
     auto layout = new QVBoxLayout(this);

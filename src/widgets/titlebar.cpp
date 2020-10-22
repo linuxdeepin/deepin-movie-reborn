@@ -91,7 +91,8 @@ Titlebar::Titlebar(QWidget *parent) : DBlurEffectWidget(parent), d_ptr(new Title
         QPainter p(&pm);
         p.drawPixmap((w2 - w) / 2, (w2 - w) / 2, logo);
         p.end();
-        d->m_titlebar->setIcon(pm);
+        if(!utils::check_wayland_env())
+            d->m_titlebar->setIcon(pm);
     }
 
     d->m_titlebar->setTitle("");

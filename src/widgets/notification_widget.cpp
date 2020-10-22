@@ -29,6 +29,7 @@
  */
 #include "notification_widget.h"
 #include "event_relayer.h"
+#include "utils.h"
 
 #include <DPlatformWindowHandle>
 #include <dthememanager.h>
@@ -61,7 +62,11 @@ NotificationWidget::NotificationWidget(QWidget *parent)
     _msgLabel->setFrameShape(QFrame::NoFrame);
 
     _timer = new QTimer(this);
-    _timer->setInterval(2000);
+    if(!utils::check_wayland_env()){
+        _timer->setInterval(2000);
+    }else {
+        _timer->setInterval(500);
+    }
     _timer->setSingleShot(true);
     connect(_timer, &QTimer::timeout, this, &QWidget::hide);
 
@@ -96,6 +101,15 @@ void NotificationWidget::syncPosition()
 
     case AnchorNorthWest:
 #ifdef __aarch64__
+        if(!utils::check_wayland_env()){
+            move(geom.topLeft() + _anchorPoint);
+        }
+        else {
+            move(_anchorPoint);
+        }
+#elif  __mips__
+        move(geom.x() + 30, geom.y() + 58);
+#elif __sw_64__
         move(geom.topLeft() + _anchorPoint);
 #elif defined (__mips__)
         move(geom.x() + 30, geom.y() + 58);
