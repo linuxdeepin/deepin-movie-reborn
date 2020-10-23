@@ -865,7 +865,16 @@ MainWindow::MainWindow(QWidget *parent)
     _progIndicator = new MovieProgressIndicator(this);
     _progIndicator->setVisible(false);
     connect(_engine, &PlayerEngine::elapsedChanged, [ = ]() {
-        _progIndicator->updateMovieProgress(_engine->duration(), _engine->elapsed());
+        if (!_isJinJia) {
+            _progIndicator->updateMovieProgress(_engine->duration(), _engine->elapsed());
+        } else {
+            _progIndicator->updateMovieProgress(oldDuration, oldElapsed);
+        }
+        //及时刷新_isFileLoadNotFinished状态
+        if(_isFileLoadNotFinished && utils::check_wayland_env()){
+            qDebug()<<"_isFileLoadNotFinished = false";
+            _isFileLoadNotFinished = false;
+        }
     });
 #endif
 
@@ -1087,7 +1096,7 @@ MainWindow::MainWindow(QWidget *parent)
     _fullscreentimelable->setAttribute(Qt::WA_TranslucentBackground);
     _fullscreentimelable->setWindowFlags(Qt::FramelessWindowHint);
     _fullscreentimelable->setParent(this);
-    if (!composited) {
+    if (!composited && !utils::check_wayland_env()) {
         _fullscreentimelable->setWindowFlags(_fullscreentimelable->windowFlags() | Qt::Dialog);
     }
     _fullscreentimebox = new QHBoxLayout;
@@ -1106,7 +1115,11 @@ MainWindow::MainWindow(QWidget *parent)
     _animationlable->setGeometry(width() / 2 - 100, height() / 2 - 100, 200, 200);
 
 #if defined (__aarch64__) || defined (__mips__)
-    popup = new DFloatingMessage(DFloatingMessage::TransientType, nullptr);
+    if(utils::check_wayland_env()){
+        popup = new DFloatingMessage(DFloatingMessage::TransientType, this);
+    }else{
+        popup = new DFloatingMessage(DFloatingMessage::TransientType, nullptr);        
+    }
     popup->setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
 #else
     popup = new DFloatingMessage(DFloatingMessage::TransientType, this);
@@ -1505,8 +1518,10 @@ void MainWindow::onMonitorMotionNotify(int x, int y)
 MainWindow::~MainWindow()
 {
     qDebug() << __func__;
-    disconnect(_engine, nullptr, nullptr, nullptr);
-    disconnect(&_engine->playlist(), nullptr, nullptr, nullptr);
+    if(!utils::check_wayland_env()){
+        disconnect(_engine, 0, 0, 0);
+        disconnect(&_engine->playlist(), 0, 0, 0);
+    }
 
     if (_lastCookie > 0) {
         utils::UnInhibitStandby(_lastCookie);
@@ -2277,6 +2292,10 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             _toolbox->show();
         }
         _playlist->togglePopup();
+        if(utils::check_wayland_env()){
+            //lmh0710,修复playlist大小不正确
+            updateProxyGeometry();
+        }
         if (!fromUI) {
             reflectActionToUI(kd);
         }
@@ -2573,7 +2592,14 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         changedMute();
         setMusicMuted(_engine->muted());
         if (_engine->muted()) {
-            _nwComm->updateWithMessage(tr("Mute"));
+            if(utils::check_wayland_env()){
+                //wayland 下 先显示0再显示静音
+                QTimer::singleShot(500, [ = ]() {
+                    _nwComm->updateWithMessage(tr("Mute"));
+                });
+            }else{
+                _nwComm->updateWithMessage(tr("Mute"));
+            }
         } else {
             //_nwComm->updateWithMessage(tr("Volume: %1%").arg(_toolbox->DisplayVolume()));
             _nwComm->updateWithMessage(tr("Volume: %1%").arg(m_displayVolume));
@@ -3260,6 +3286,10 @@ void MainWindow::updateProxyGeometry()
 #ifndef __sw_64__
             QRect fixed((10), (view_rect.height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT + 10)),
                         view_rect.width() - 20, TOOLBOX_SPACE_HEIGHT);
+            if(utils::check_wayland_env()){
+                fixed = QRect((10), (view_rect.height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT)),
+                              view_rect.width() - 20, TOOLBOX_SPACE_HEIGHT);
+            }
 #else
             QRect fixed((10), (view_rect.height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT - 1)),
                         view_rect.width() - 20, TOOLBOX_SPACE_HEIGHT);
@@ -3454,6 +3484,8 @@ void MainWindow::syncPostion()
 void MainWindow::my_setStayOnTop(const QWidget *widget, bool on)
 {
     Q_ASSERT(widget);
+    if(utils::check_wayland_env())
+        return;
 
     const auto display = QX11Info::display();
     const auto screen = QX11Info::appScreen();
@@ -3543,10 +3575,24 @@ void MainWindow::slotFileLoaded()
     PlayerEngine *engine = dynamic_cast<PlayerEngine *>(sender());
     if(!engine) return;
     _retryTimes = 0;
-//    if (windowState() == Qt::WindowNoState && _lastRectInNormalMode.isValid()) {
-//        const auto &mi = engine->playlist().currentInfo().mi;
-//     }
+    if (utils::check_wayland_env() && windowState() == Qt::WindowNoState && _lastRectInNormalMode.isValid()) {
+        const auto &mi = engine->playlist().currentInfo().mi;
+        if(!_miniMode)
+            _lastRectInNormalMode.setSize({mi.width, mi.height});
+     }
     this->resizeByConstraints();
+
+    if(utils::check_wayland_env()){
+    QDesktopWidget desktop;
+        if (desktop.screenCount() > 1) {
+            if (!isFullScreen() && !isMaximized() && !_miniMode) {
+                auto geom = qApp->desktop()->availableGeometry(this);
+                move((geom.width() - this->width()) / 2, (geom.height() - this->height()) / 2);
+            }
+        } else {
+//                utils::MoveToCenter(this);
+        }
+    }
 
     m_IsFree = true;
 }
@@ -3672,6 +3718,30 @@ void MainWindow::closeEvent(QCloseEvent *ev)
     }
 
     ev->accept();
+    if(utils::check_wayland_env()){
+#ifndef _LIBDMR_
+    if (Settings::get().isSet(Settings::ClearWhenQuit)) {
+        _engine->playlist().clearPlaylist();
+    } else {
+        //persistently save current playlist
+        _engine->playlist().savePlaylist();
+    }
+#endif
+    // xcb close slow so add this for wayland  by xxj
+    _quitfullscreenstopflag = true;
+    DMainWindow::closeEvent(ev);
+    _engine->stop();
+    disconnect(_engine,nullptr,nullptr,nullptr);
+    disconnect(&_engine->playlist(),nullptr,nullptr,nullptr);
+    if(_engine){
+        delete _engine;
+        _engine = nullptr;
+    }
+    CompositingManager::get().setTestFlag(true);
+    /*lmh0724临时规避退出崩溃问题*/
+        QApplication::quit();
+        _Exit(0);
+    }
 }
 
 void MainWindow::wheelEvent(QWheelEvent *we)
@@ -3795,6 +3865,10 @@ void MainWindow::resizeByConstraints(bool forceCentered)
 
     qDebug() << __func__;
     updateWindowTitle();
+    //lmh0710修复窗口变成影片分辨率问题
+    if(utils::check_wayland_env()){
+        return;
+    }
 
     const auto &mi = _engine->playlist().currentInfo().mi;
     auto sz = _engine->videoSize();
@@ -3838,18 +3912,24 @@ void MainWindow::resizeByConstraints(bool forceCentered)
         QRect r;
         r.setSize(sz);
         r.moveTopLeft({(geom.width() - r.width()) / 2, (geom.height() - r.height()) / 2});
-//        this->setGeometry(r);
-//        this->move(r.x(), r.y());
-//        this->resize(r.width(), r.height());
+        if(utils::check_wayland_env()){
+            this->setGeometry(r);
+            this->move(r.x(), r.y());
+            this->resize(r.width(), r.height());
+        }
+
 #ifdef __aarch64
         _nwComm->syncPosition(r);
 #endif
     } else {
-//        QRect r = this->geometry();
-//        r.setSize(sz);
-//        this->setGeometry(r);
-//        this->move(r.x(), r.y());
-//        this->resize(r.width(), r.height());
+        if(utils::check_wayland_env()){
+            QRect r = this->geometry();
+            r.setSize(sz);
+            this->setGeometry(r);
+            this->move(r.x(), r.y());
+            this->resize(r.width(), r.height());
+        }
+
 #ifdef __aarch64
         _nwComm->syncPosition();
 #endif

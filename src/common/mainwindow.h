@@ -395,12 +395,17 @@ private:
     bool m_IsFree = true;  //播放器是否空闲，和IDel的定义不同
 
     static int _retryTimes;
+    bool _isJinJia = false;//是否是景嘉微显卡
     QTimer _progressTimer;
     //add by heyi 解决触屏右键菜单bug
     int nX = 0, nY = 0;     //左键按下时保存的点
     bool _isTouch = false;          //是否是触摸屏按下
     QTimer _mousePressTimer;
+    qint64 oldDuration = 0;
+    qint64 oldElapsed = 0;
+
     Diskcheckthread m_diskCheckThread;
+    bool _isFileLoadNotFinished{false};
     QStringList m_openFiles;
     QString m_currentHwdec;
     bool m_bProgressChanged {false};        //进度条是否被拖动
