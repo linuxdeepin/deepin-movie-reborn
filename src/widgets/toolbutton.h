@@ -40,6 +40,7 @@
 #include <DPalette>
 #include <DApplicationHelper>
 #include <QGuiApplication>
+#include <QPainterPath>
 #include <QThread>
 
 

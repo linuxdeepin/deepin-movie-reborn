@@ -642,7 +642,7 @@ PlaylistModel::~PlaylistModel()
         savePlaylist();
     }
 #endif
-    if (m_getThumanbil) {
+    if (utils::check_wayland_env() && m_getThumanbil) {
         if (m_getThumanbil->isRunning()) {
             m_getThumanbil->stop();
         }
@@ -1277,6 +1277,7 @@ void PlaylistModel::delayedAppendAsync(const QList<QUrl> &urls)
 
         handleAsyncAppendResults(pil);
     } else {
+        qDebug() << "not wayland";
         if (QThread::idealThreadCount() > 1) {
 //            auto future = QtConcurrent::mapped(_pendingJob, MapFunctor(this));
 //            _jobWatcher->setFuture(future);
@@ -1636,6 +1637,12 @@ struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl &url, const QFil
                     isMusic = true;
                 }
             }
+
+            if(_engine->videoSize().width()<0)   //如果没有视频流，就当做音乐播放
+            {
+                isMusic = true;
+            }
+
             if (isMusic == false) {
                 m_mvideo_thumbnailer_generate_thumbnail_to_buffer(m_video_thumbnailer, fi.canonicalFilePath().toUtf8().data(),  m_image_data);
                 auto img = QImage::fromData(m_image_data->image_data_ptr, static_cast<int>(m_image_data->image_data_size), "png");
