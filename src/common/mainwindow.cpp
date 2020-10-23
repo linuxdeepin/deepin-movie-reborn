@@ -4196,6 +4196,7 @@ void MainWindow::mousePressEvent(QMouseEvent *ev)
     }
 
     posMouseOrigin = mapToGlobal(ev->pos());
+    m_pressPoint = ev->pos();
 }
 
 void MainWindow::mouseDoubleClickEvent(QMouseEvent *ev)
@@ -4345,7 +4346,7 @@ void MainWindow::mouseMoveEvent(QMouseEvent *ev)
     }
 
     if (!CompositingManager::get().composited() && !m_bIsFullSreen) {
-        move(this->pos() + ptDelta);
+        move(pos() + ev->pos() - m_pressPoint);
     } else {
         QWidget::mouseMoveEvent(ev);
     }

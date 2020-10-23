@@ -362,6 +362,7 @@ private:
     //add by heyi
     bool m_bMpvFunsLoad {false};
     QPoint posMouseOrigin;
+    QPoint m_pressPoint;
 
     enum StateBeforeEnterMiniMode {
         SBEM_None = 0x0,
