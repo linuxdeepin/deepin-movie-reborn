@@ -331,7 +331,10 @@ mpv_handle *MpvProxy::mpv_init()
         my_set_property(h, "vo", "libmpv,opengl-cb");
         my_set_property(h, "vd-lavc-dr", "no");
         my_set_property(h, "gpu-sw", "on");
-        //my_set_property(h, "ao", "alsa");
+        //设置alse时，无法使用set_property(h, "audio-client-name", strMovie)设置控制栏中的名字
+	//        if(utils::check_wayland_env()){
+	//            set_property(h, "ao", "alsa");
+	//        }
 #endif
     } else {
 #if defined (__mips__) || defined (__aarch64__)
@@ -393,6 +396,10 @@ mpv_handle *MpvProxy::mpv_init()
     if (QFile::exists("/dev/csmcore")) {
         my_set_property(h, "vo", "xv,x11");
         my_set_property(h, "hwdec", "auto");
+	if(utils::check_wayland_env()){
+        my_set_property(h, "wid", m_parentWidget->winId());
+	}
+	
     }
     qDebug() << __func__ << my_get_property(h, "vo").toString();
     qDebug() << __func__ << my_get_property(h, "hwdec").toString();
@@ -1067,7 +1074,8 @@ void MpvProxy::play()
     if (!_dvdDevice.isEmpty()) {
         opts << QString("dvd-device=%1").arg(_dvdDevice);
     }
-
+//非景嘉微显卡
+    if (!_isJingJia || !utils::check_wayland_env()) {
     // hwdec could be disabled by some codecs, so we need to re-enable it
     if (Settings::get().isSet(Settings::HWAccel)) {
         my_set_property(_handle, "hwdec", "auto-safe");
@@ -1081,6 +1089,7 @@ void MpvProxy::play()
     } else {
         my_set_property(_handle, "hwdec", "off");
     }
+}
 #else
     if (CompositingManager::get().isOnlySoftDecode()) {
         my_set_property(_handle, "hwdec", "off");
@@ -1210,7 +1219,13 @@ qint64 MpvProxy::nextBurstShootPoint()
 
 int MpvProxy::volumeCorrection(int displayVol)
 {
-    int realVol = static_cast<int>((displayVol / 200.0) * 60.0 + 40);
+    int realVol = 0;
+    if(utils::check_wayland_env()){
+        //>100时，mpv按照显示音量：mpv 10：5的比例调节音量
+        realVol = displayVol > 100 ? 100 + (displayVol-100)/10*5 : displayVol;
+    }else{
+        realVol = static_cast<int>((displayVol / 200.0) * 60.0 + 40);
+    }
     return (realVol);
 }
 

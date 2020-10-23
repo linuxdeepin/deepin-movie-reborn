@@ -3912,7 +3912,6 @@ void MainWindow::LimitWindowize()
 
 void MainWindow::resizeEvent(QResizeEvent *ev)
 {
-    auto s = sender();
 #ifndef __mips__
     if (m_bIsFullSreen) {
         _progIndicator->move(geometry().width() - _progIndicator->width() - 18, 8);

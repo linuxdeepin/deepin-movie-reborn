@@ -37,8 +37,19 @@
 
 #include <dthememanager.h>
 #include <DApplication>
+//#include <wayland-client.h>
+//#include "../../window/qplatformnativeinterface.h"
+//qpa/qplatformnativeinterface.h
+#if defined(_WIN32) && !defined(_WIN32_WCE) && !defined(__SCITECH_SNAP__)
+/* Win32 but not WinCE */
+#   define KHRONOS_APIENTRY __stdcall
+#else
+#   define KHRONOS_APIENTRY
+#endif
 DWIDGET_USE_NAMESPACE
-
+#ifndef EGLAPIENTRY
+#define EGLAPIENTRY  KHRONOS_APIENTRY
+#endif
 
 static const char *vs_blend = R"(
 attribute vec2 position;
@@ -59,6 +70,17 @@ uniform sampler2D movie;
 
 void main() {
      gl_FragColor = texture2D(movie, texCoord); 
+}
+)";
+
+static const char* fs_blend_wayland = R"(
+precision mediump float;
+varying vec2 texCoord;
+
+uniform sampler2D movie;
+
+void main() {
+     gl_FragColor = texture2D(movie, texCoord);
 }
 )";
 
@@ -89,7 +111,18 @@ void main() {
 }
 )";
 
+static const char* fs_blend_corner_wayland = R"(
+precision mediump float;
+varying vec2 maskCoord;
+varying vec2 texCoord;
 
+uniform sampler2D movie;
+uniform sampler2D mask;
+
+void main() {
+     gl_FragColor = texture2D(movie, texCoord) * texture2D(mask, maskCoord).a;
+}
+)";
 
 static const char* vs_code = R"(
 attribute vec2 position;
@@ -115,7 +148,33 @@ void main() {
 }
 )";
 
+static const char* fs_code_wayland = R"(
+precision mediump float;
+varying vec2 texCoord;
+
+uniform sampler2D sampler;
+uniform vec4 bg;
+
+void main() {
+    vec4 s = texture2D(sampler, texCoord);
+    gl_FragColor = vec4(s.rgb * s.a + bg.rgb * (1.0 - s.a), 1.0);
+}
+)";
+
 static const char* fs_corner_code = R"(
+varying vec2 texCoord;
+
+uniform sampler2D corner;
+uniform vec4 bg;
+
+void main() {
+    vec4 s = texture2D(corner, texCoord);
+    gl_FragColor = s.a * bg;
+}
+)";
+
+static const char* fs_corner_code_wayland = R"(
+precision mediump float;
 varying vec2 texCoord;
 
 uniform sampler2D corner;
@@ -136,6 +195,18 @@ namespace dmr {
         return nullptr;
     }
 
+    static void* EGLAPIENTRY glMPGetNativeDisplay_EGL(const char* name) {
+        qWarning() << __func__ << name;
+        QPlatformNativeInterface* native = QGuiApplication::platformNativeInterface();
+        //struct wl_display * wl_dpy = (struct wl_display*) (native->nativeResourceForWindow("display",NULL));
+        if (!strcmp(name, "wayland") || !strcmp(name, "wayland")) {
+            //return (void*)wl_dpy;
+            return NULL;
+        }
+        return NULL;
+    }
+
+
     static void *get_proc_address(void *ctx, const char *name) {
         Q_UNUSED(ctx);
         QOpenGLContext *glctx = QOpenGLContext::currentContext();
@@ -143,7 +214,11 @@ namespace dmr {
             return nullptr;
 
         if (!strcmp(name, "glMPGetNativeDisplay")) {
-            return reinterpret_cast<void*>(glMPGetNativeDisplay);
+            if(utils::check_wayland_env()){
+                return (void*)glMPGetNativeDisplay_EGL;
+            }else{
+                return (void*)glMPGetNativeDisplay;
+            }
         }
         return reinterpret_cast<void*>(glctx->getProcAddress(QByteArray(name)));
     }
@@ -258,7 +333,12 @@ namespace dmr {
 
         _glProgBlend = new QOpenGLShaderProgram();
         _glProgBlend->addShaderFromSourceCode(QOpenGLShader::Vertex, vs_blend);
-        _glProgBlend->addShaderFromSourceCode(QOpenGLShader::Fragment, fs_blend);
+        if(utils::check_wayland_env()){
+            _glProgBlend->addShaderFromSourceCode(QOpenGLShader::Fragment, fs_blend_wayland);
+        }else {
+            _glProgBlend->addShaderFromSourceCode(QOpenGLShader::Fragment, fs_blend);
+        }
+
         if (!_glProgBlend->link()) {
             qDebug() << "link failed";
         }
@@ -277,7 +357,12 @@ namespace dmr {
 
         _glProgBlendCorners = new QOpenGLShaderProgram();
         _glProgBlendCorners->addShaderFromSourceCode(QOpenGLShader::Vertex, vs_blend_corner);
-        _glProgBlendCorners->addShaderFromSourceCode(QOpenGLShader::Fragment, fs_blend_corner);
+        if(utils::check_wayland_env()){
+            _glProgBlendCorners->addShaderFromSourceCode(QOpenGLShader::Fragment, fs_blend_corner_wayland);
+        }else{
+            _glProgBlendCorners->addShaderFromSourceCode(QOpenGLShader::Fragment, fs_blend_corner);
+        }
+
         if (!_glProgBlendCorners->link()) {
             qDebug() << "link failed";
         }
@@ -300,7 +385,12 @@ namespace dmr {
 
         _glProg = new QOpenGLShaderProgram();
         _glProg->addShaderFromSourceCode(QOpenGLShader::Vertex, vs_code);
-        _glProg->addShaderFromSourceCode(QOpenGLShader::Fragment, fs_code);
+        if(utils::check_wayland_env()){
+            _glProg->addShaderFromSourceCode(QOpenGLShader::Fragment, fs_code_wayland);
+        }else{
+            _glProg->addShaderFromSourceCode(QOpenGLShader::Fragment, fs_code);
+        }
+
         if (!_glProg->link()) {
             qDebug() << "link failed";
         }
@@ -326,7 +416,12 @@ namespace dmr {
 
             _glProgCorner = new QOpenGLShaderProgram();
             _glProgCorner->addShaderFromSourceCode(QOpenGLShader::Vertex, vs_code);
-            _glProgCorner->addShaderFromSourceCode(QOpenGLShader::Fragment, fs_corner_code);
+            if(utils::check_wayland_env()){
+                _glProgCorner->addShaderFromSourceCode(QOpenGLShader::Fragment, fs_corner_code_wayland);
+            }else{
+                _glProgCorner->addShaderFromSourceCode(QOpenGLShader::Fragment, fs_corner_code);
+            }
+
             if (!_glProgCorner->link()) {
                 qDebug() << "link failed";
             }
@@ -386,13 +481,21 @@ namespace dmr {
         setupBlendPipe();
 
 #ifdef _LIBDMR_
-        toggleRoundedClip(false);
+       if(utils::check_wayland_env()){
+            toggleRoundedClip(true);
+        }else{
+            toggleRoundedClip(false);
+        }
 #else
 #ifndef USE_DXCB
         connect(window()->windowHandle(), &QWindow::windowStateChanged, [=]() {
             auto top = this->topLevelWidget();
             bool rounded = !top->isFullScreen() && !top->isMaximized();
-            toggleRoundedClip(rounded);
+            if(utils::check_wayland_env()){
+                toggleRoundedClip(true);
+            } else {
+                toggleRoundedClip(rounded);
+            }
         });
 #endif
 #endif
@@ -412,6 +515,12 @@ namespace dmr {
             {MPV_RENDER_PARAM_X11_DISPLAY, reinterpret_cast<void*>(QX11Info::display())},
             {MPV_RENDER_PARAM_INVALID, nullptr}
         };
+
+	if(utils::check_wayland_env()){
+            //QPlatformNativeInterface* native = QGuiApplication::platformNativeInterface();
+            //struct wl_display * wl_dpy = (struct wl_display*) (native->nativeResourceForWindow("display",NULL));
+            params[2] = {MPV_RENDER_PARAM_WL_DISPLAY, nullptr};
+        }
 
         //add by heyi
         if(!m_renderCreat) return;
@@ -441,7 +550,7 @@ namespace dmr {
 
     void MpvGLWidget::updateCornerMasks()
     {
-        if (!_doRoundedClipping) return;
+        if (!utils::check_wayland_env() && !_doRoundedClipping) return;
 
         for (int i = 0; i < 4; i++) {
             QSize sz(RADIUS, RADIUS);
@@ -624,8 +733,10 @@ namespace dmr {
 
         updateMovieFbo();
         updateVbo();
-        if (_doRoundedClipping)
+        if (_doRoundedClipping){
             updateVboCorners();
+        }
+        qDebug() << "GL resize" << w << h;
         QOpenGLWidget::resizeGL(w, h);
     }
 
