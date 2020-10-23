@@ -29,6 +29,7 @@
  */
 #ifndef _DMR_PLAYER_BACKEND_H
 #define _DMR_PLAYER_BACKEND_H 
+#define Q_ENUM(x) Q_ENUMS(x) Q_ENUM_IMPL(x)
 
 #include <QtWidgets>
 
@@ -56,19 +57,19 @@ public:
     };
     Q_ENUM(PlayState)
 
-    enum SoundMode {
-        Stereo,
-        Left,
-        Right
-    };
-    Q_ENUM(SoundMode)
-
     enum DebugLevel {
         Info,
         Debug,  // some normal debug info
         Verbose // very verbosed output from backend
     };
     Q_ENUM(DebugLevel)
+
+    enum SoundMode {
+        Stereo,
+        Left,
+        Right
+    };
+    Q_ENUM(SoundMode)
 
     Backend(QWidget *parent = nullptr) {}
     virtual ~Backend() {}
@@ -144,6 +145,7 @@ public:
 
     virtual void nextFrame() = 0;
     virtual void previousFrame() = 0;
+    virtual void MakeCurrent() = 0;
 
     static void setDebugLevel(DebugLevel lvl)
     {

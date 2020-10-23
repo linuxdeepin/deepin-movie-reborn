@@ -47,7 +47,7 @@ public:
         AnchorBottom,
         AnchorNorthWest
     };
-    NotificationWidget(QWidget *parent = 0);
+    explicit NotificationWidget(QWidget *parent = 0);
     void setAnchor(MessageAnchor ma) { _anchor = ma; }
     void setAnchorDistance(int v) { _anchorDist = v; }
     void setAnchorPoint(const QPoint& p) { _anchorPoint = p; }

@@ -54,8 +54,6 @@ static QString ElideText(const QString &text, const QSize &size,
                          QTextOption::WrapMode wordWrap, const QFont &font,
                          Qt::TextElideMode mode, int lineHeight, int lastLineWidth)
 {
-    int height = 0;
-
     QTextLayout textLayout(text);
     QString str;
     QFontMetrics fontMetrics(font);
@@ -72,8 +70,8 @@ static QString ElideText(const QString &text, const QSize &size,
         tmp_str = text.mid(line.textStart(), line.textLength());
         str = tmp_str;
     } else {
+        int height = 0;
         while (line.isValid()) {
-            //height += lineHeight;
             line.setLineWidth(size.width());
 
             //2020.4.2修改，显示完整路径
@@ -157,7 +155,7 @@ protected:
 class CloseButton : public DPushButton
 {
 public:
-    CloseButton(QWidget *parent) {}
+    explicit CloseButton(QWidget *parent) {}
 protected:
     void paintEvent(QPaintEvent *e) override
     {
@@ -173,11 +171,16 @@ protected:
     }
 };
 
-MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
-    : DAbstractDialog(nullptr)
+MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent)
+    : DAbstractDialog(parent)
 {
-    setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint);
-    setAttribute(Qt::WA_TranslucentBackground, true);
+   if(utils::check_wayland_env()){
+       setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint);
+   }else{
+       setWindowFlags(windowFlags() /*| Qt::WindowStaysOnTopHint*/);  //和其他应用保持统一取消置顶
+   }
+   //x86上此处设置透明效果无作用
+   //setAttribute(Qt::WA_TranslucentBackground, true);
     m_titleList.clear();
 
     auto layout = new QVBoxLayout(this);
@@ -461,10 +464,8 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
     tmp = nullptr;
 
     connect(qApp, &QGuiApplication::fontChanged, this, &MovieInfoDialog::OnFontChanged);
-    connect(DApplicationHelper::instance(), &DApplicationHelper::themeTypeChanged, this, [ = ] {
-        m_fileNameLbl->setForegroundRole(DPalette::BrightText);
-        //title->setForegroundRole(DPalette::Text);
-    });
+    connect(DApplicationHelper::instance(), &DApplicationHelper::themeTypeChanged, this, &MovieInfoDialog::slotThemeTypeChanged);
+
 
 //    if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
 //        closeBt->setNormalPic(INFO_CLOSE_LIGHT);
@@ -537,6 +538,11 @@ void MovieInfoDialog::changedHeight(const int height)
         }
         lastHeight = -1;
     }
+}
+
+void MovieInfoDialog::slotThemeTypeChanged()
+{
+    m_fileNameLbl->setForegroundRole(DPalette::BrightText);
 }
 
 void MovieInfoDialog::addRow(QString title, QString field, QFormLayout *form, QList<DLabel *> &tipLst)

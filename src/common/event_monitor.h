@@ -50,7 +50,7 @@ class EventMonitor : public QThread
     Q_OBJECT
 
 public:
-    EventMonitor(QObject *parent = 0);
+    explicit EventMonitor(QObject *parent = nullptr);
     void handleRecordEvent(void *);
 
     void resumeRecording();

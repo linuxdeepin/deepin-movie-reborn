@@ -61,6 +61,8 @@ mvideo_av_dict_get g_mvideo_av_dict_get = nullptr;
 
 static bool check_wayland()
 {
+    //此处在wayland下也是直接return false
+    return false;
     auto e = QProcessEnvironment::systemEnvironment();
     QString XDG_SESSION_TYPE = e.value(QStringLiteral("XDG_SESSION_TYPE"));
     QString WAYLAND_DISPLAY = e.value(QStringLiteral("WAYLAND_DISPLAY"));
@@ -220,9 +222,10 @@ public:
     struct CacheInfo {
         struct MovieInfo mi;
         QPixmap thumb;
+        QPixmap thumb_dark;
         bool mi_valid {false};
         bool thumb_valid {false};
-        char m_padding [6];//占位符
+//        char m_padding [6];//占位符
     };
 
     CacheInfo loadFromCache(const QUrl &url)
@@ -252,8 +255,14 @@ public:
             if (f.open(QIODevice::ReadOnly)) {
                 QDataStream ds(&f);
                 ds >> ci.thumb;
+                ds >> ci.thumb_dark;
                 ci.thumb.setDevicePixelRatio(qApp->devicePixelRatio());
-                ci.thumb_valid = !ci.thumb.isNull();
+                ci.thumb_dark.setDevicePixelRatio(qApp->devicePixelRatio());
+                if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
+                    ci.thumb_valid = !ci.thumb_dark.isNull();
+                } else {
+                    ci.thumb_valid = !ci.thumb.isNull();
+                }
             } else {
                 qWarning() << f.errorString();
             }
@@ -287,6 +296,7 @@ public:
             if (f.open(QIODevice::WriteOnly)) {
                 QDataStream ds(&f);
                 ds << pif.thumbnail;
+                ds << pif.thumbnail_dark;
             } else {
                 qWarning() << f.errorString();
             }
@@ -332,7 +342,7 @@ struct MovieInfo PlaylistModel::parseFromFile(const QFileInfo &fi, bool *ok)
     int stream_id = -1;
     AVCodecParameters *video_dec_ctx = nullptr;
     AVCodecParameters *audio_dec_ctx = nullptr;
-    AVStream *av_stream = nullptr;
+//    AVStream *av_stream = nullptr;
 
     if (!fi.exists()) {
         if (ok) *ok = false;
@@ -365,11 +375,9 @@ struct MovieInfo PlaylistModel::parseFromFile(const QFileInfo &fi, bool *ok)
 
     int videoRet = -1;
     int audioRet = -1;
-    int video_stream_index = -1;
-    int audio_stream_index = -1;
     AVStream *videoStream = nullptr;
     AVStream *audioStream = nullptr;
-    AVCodec *dec = nullptr;
+//    AVCodec *dec = nullptr;
     //AVDictionary *opts = nullptr;
     videoRet = g_mvideo_av_find_best_stream(av_ctx, AVMEDIA_TYPE_VIDEO, -1, -1, nullptr, 0);
     audioRet = g_mvideo_av_find_best_stream(av_ctx, AVMEDIA_TYPE_AUDIO, -1, -1, nullptr, 0);
@@ -382,6 +390,7 @@ struct MovieInfo PlaylistModel::parseFromFile(const QFileInfo &fi, bool *ok)
 
     //AVCodecParameters *dec_ctx = nullptr;
     if (videoRet >= 0) {
+        int video_stream_index = -1;
         video_stream_index = videoRet;
         videoStream = av_ctx->streams[video_stream_index];
         video_dec_ctx = videoStream->codecpar;
@@ -403,6 +412,7 @@ struct MovieInfo PlaylistModel::parseFromFile(const QFileInfo &fi, bool *ok)
         }
     }
     if (audioRet >= 0) {
+        int audio_stream_index = -1;
         audio_stream_index = audioRet;
         audioStream = av_ctx->streams[audio_stream_index];
         audio_dec_ctx = audioStream->codecpar;
@@ -452,28 +462,29 @@ struct MovieInfo PlaylistModel::parseFromFile(const QFileInfo &fi, bool *ok)
         qDebug() << "tag:" << tag->key << tag->value;
     }
 
-    AVStream* pTempStream = nullptr;
-    if(videoRet >= 0) {
+    AVStream *pTempStream = nullptr;
+    if (videoRet >= 0) {
         pTempStream = av_ctx->streams[videoRet];
-    }
-    else if (audioRet >= 0) {
+    } else if (audioRet >= 0) {
         pTempStream = av_ctx->streams[audioRet];
     }
 
-    while ((tag = g_mvideo_av_dict_get(pTempStream->metadata, "", tag, AV_DICT_IGNORE_SUFFIX)) != nullptr) {
-        if (tag->key && strcmp(tag->key, "rotate") == 0) {
-            mi.raw_rotate = QString(tag->value).toInt();
-            auto vr = (mi.raw_rotate + 360) % 360;
-            if (vr == 90 || vr == 270) {
-                auto tmp = mi.height;
-                mi.height = mi.width;
-                mi.width = tmp;
+    if(nullptr != pTempStream)
+    {
+        while ((tag = g_mvideo_av_dict_get(pTempStream->metadata, "", tag, AV_DICT_IGNORE_SUFFIX)) != nullptr) {
+            if (tag->key && strcmp(tag->key, "rotate") == 0) {
+                mi.raw_rotate = QString(tag->value).toInt();
+                auto vr = (mi.raw_rotate + 360) % 360;
+                if (vr == 90 || vr == 270) {
+                    auto tmp = mi.height;
+                    mi.height = mi.width;
+                    mi.width = tmp;
+                }
+                break;
             }
-            break;
+            qDebug() << "tag:" << tag->key << tag->value;
         }
-        qDebug() << "tag:" << tag->key << tag->value;
     }
-
 
     g_mvideo_avformat_close_input(&av_ctx);
     mi.valid = true;
@@ -497,6 +508,35 @@ bool PlayItemInfo::refresh()
     return false;
 }
 
+void PlaylistModel::slotStateChanged()
+{
+    PlayerEngine *e = dynamic_cast<PlayerEngine *>(sender());
+    if(!e) return;
+    qDebug() << "model" << "_userRequestingItem" << _userRequestingItem << "state" << e->state();
+    switch (e->state()) {
+    case PlayerEngine::Playing: {
+        auto &pif = currentInfo();
+        if (!pif.url.isLocalFile() && !pif.loaded) {
+            pif.mi.width = e->videoSize().width();
+            pif.mi.height = e->videoSize().height();
+            pif.mi.duration = e->duration();
+            pif.loaded = true;
+            emit itemInfoUpdated(_current);
+        }
+        break;
+    }
+    case PlayerEngine::Paused:
+        break;
+
+    case PlayerEngine::Idle:
+        if (!_userRequestingItem) {
+            stop();
+            playNext(false);
+        }
+        break;
+    }
+}
+
 PlaylistModel::PlaylistModel(PlayerEngine *e)
     : _engine(e)
 {
@@ -512,31 +552,8 @@ PlaylistModel::PlaylistModel(PlayerEngine *e)
                     .arg(qApp->organizationName())
                     .arg(qApp->applicationName());
 
-    connect(e, &PlayerEngine::stateChanged, [ = ]() {
-        qDebug() << "model" << "_userRequestingItem" << _userRequestingItem << "state" << e->state();
-        switch (e->state()) {
-        case PlayerEngine::Playing: {
-            auto &pif = currentInfo();
-            if (!pif.url.isLocalFile() && !pif.loaded) {
-                pif.mi.width = e->videoSize().width();
-                pif.mi.height = e->videoSize().height();
-                pif.mi.duration = e->duration();
-                pif.loaded = true;
-                emit itemInfoUpdated(_current);
-            }
-            break;
-        }
-        case PlayerEngine::Paused:
-            break;
+	connect(e, &PlayerEngine::stateChanged, this, &PlaylistModel::slotStateChanged);
 
-        case PlayerEngine::Idle:
-            if (!_userRequestingItem) {
-                stop();
-                playNext(false);
-            }
-            break;
-        }
-    });
 
 //    _jobWatcher = new QFutureWatcher<PlayItemInfo>();
 //    connect(_jobWatcher, &QFutureWatcher<PlayItemInfo>::finished,
@@ -544,7 +561,10 @@ PlaylistModel::PlaylistModel(PlayerEngine *e)
 
     stop();
     //loadPlaylist();
-
+#ifdef _LIBDMR_
+    initThumb();
+    initFFmpeg();
+#endif
 #ifndef _LIBDMR_
     if (Settings::get().isSet(Settings::ResumeFromLast)) {
         int restore_pos = Settings::get().internalOption("playlist_pos").toInt();
@@ -558,10 +578,10 @@ QString PlaylistModel::libPath(const QString &strlib)
     QDir  dir;
     QString path  = QLibraryInfo::location(QLibraryInfo::LibrariesPath);
     dir.setPath(path);
-    QStringList list = dir.entryList(QStringList()<<(strlib + "*"),QDir::NoDotAndDotDot |QDir::Files);//filter name with strlib
-    if(list.contains(strlib)){
+    QStringList list = dir.entryList(QStringList() << (strlib + "*"), QDir::NoDotAndDotDot | QDir::Files); //filter name with strlib
+    if (list.contains(strlib)) {
         return strlib;
-    }else{
+    } else {
         list.sort();
     }
 
@@ -622,7 +642,7 @@ PlaylistModel::~PlaylistModel()
         savePlaylist();
     }
 #endif
-    if (m_getThumanbil) {
+    if (utils::check_wayland_env() && m_getThumanbil) {
         if (m_getThumanbil->isRunning()) {
             m_getThumanbil->stop();
         }
@@ -777,6 +797,7 @@ void PlaylistModel::reshuffle()
 void PlaylistModel::clear()
 {
     _infos.clear();
+    _engine->stop();
     _engine->waitLastEnd();
 
     _current = -1;
@@ -837,14 +858,42 @@ void PlaylistModel::stop()
 
 void PlaylistModel::tryPlayCurrent(bool next)
 {
+    qDebug() << __func__;
     auto &pif = _infos[_current];
     if (pif.refresh()) {
         qDebug() << pif.url.fileName() << "changed";
     }
     emit itemInfoUpdated(_current);
     if (pif.valid) {
-        _engine->requestPlay(_current);
-        emit currentChanged();
+        if(!utils::check_wayland_env()) {
+            _engine->requestPlay(_current);
+            emit currentChanged();
+        } else {
+        //本地视频单个循环/列表循环，小于1s视频/无法解码视频，不播放，直接播放下一个
+          if ( (pif.mi.duration <= 1 || pif.thumbnail.isNull()) && pif.url.isLocalFile()) {
+              if (1 == count() || _playMode == PlayMode::SingleLoop || _playMode == PlayMode::SinglePlay) {
+                  qWarning() << "return for video is cannot play and loop play!";
+                  return;
+              }
+              if (_current < count() - 1) {
+                  _current++;
+                  _last = _current;
+              } else {
+                  _current = 0;
+              }
+          }
+          _hasNormalVideo = false;
+          for (auto info : _infos) {
+              if ((info.valid && info.mi.duration > 1 && !info.thumbnail.isNull()) || !pif.url.isLocalFile()) {
+                  _hasNormalVideo = true;
+                  break;
+              }
+          }
+          if (_hasNormalVideo) {
+              _engine->requestPlay(_current);
+              emit currentChanged();
+          }
+        }
     } else {
         _current = -1;
         bool canPlay = false;
@@ -1072,6 +1121,7 @@ static QDebug operator<<(QDebug s, const QFileInfoList &v)
 
 void PlaylistModel::appendSingle(const QUrl &url)
 {
+    qDebug() << __func__;
     if (indexOf(url) >= 0) return;
 
     if (url.isLocalFile()) {
@@ -1201,7 +1251,7 @@ void PlaylistModel::delayedAppendAsync(const QList<QUrl> &urls)
     struct MapFunctor {
         PlaylistModel *_model = nullptr;
         using result_type = PlayItemInfo;
-        MapFunctor(PlaylistModel *model): _model(model) {}
+        explicit MapFunctor(PlaylistModel *model): _model(model) {}
 
         struct PlayItemInfo operator()(const AppendJob &a)
         {
@@ -1227,6 +1277,7 @@ void PlaylistModel::delayedAppendAsync(const QList<QUrl> &urls)
 
         handleAsyncAppendResults(pil);
     } else {
+        qDebug() << "not wayland";
         if (QThread::idealThreadCount() > 1) {
 //            auto future = QtConcurrent::mapped(_pendingJob, MapFunctor(this));
 //            _jobWatcher->setFuture(future);
@@ -1571,8 +1622,11 @@ struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl &url, const QFil
     }
 
     QPixmap pm;
+    QPixmap dark_pm;
     if (ci.thumb_valid) {
         pm = ci.thumb;
+        dark_pm = ci.thumb_dark;
+
         qDebug() << "load cached thumb" << url;
     } else if (ok) {
         try {
@@ -1583,22 +1637,33 @@ struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl &url, const QFil
                     isMusic = true;
                 }
             }
-            if (isMusic == false) {
 
+            if(_engine->videoSize().width()<0)   //如果没有视频流，就当做音乐播放
+            {
+                isMusic = true;
+            }
+
+            if (isMusic == false) {
                 m_mvideo_thumbnailer_generate_thumbnail_to_buffer(m_video_thumbnailer, fi.canonicalFilePath().toUtf8().data(),  m_image_data);
                 auto img = QImage::fromData(m_image_data->image_data_ptr, static_cast<int>(m_image_data->image_data_size), "png");
                 pm = QPixmap::fromImage(img);
+                dark_pm = pm;
             } else {
                 if (getMusicPix(fi, pm) == false) {
-                    pm.load(":/resources/icons/logo-big.svg");
+                    pm.load(":/resources/icons/music-light.svg");
+                }
+                if (getMusicPix(fi, dark_pm) == false) {
+                    dark_pm.load(":/resources/icons/music-dark.svg");
                 }
             }
             pm.setDevicePixelRatio(qApp->devicePixelRatio());
+            dark_pm.setDevicePixelRatio(qApp->devicePixelRatio());
         } catch (const std::logic_error &) {
         }
     }
 
-    PlayItemInfo pif { fi.exists() || !url.isLocalFile(), ok, url, fi, pm, mi };
+    PlayItemInfo pif { fi.exists() || !url.isLocalFile(), ok, url, fi, pm, dark_pm, mi };
+
     if (ok && url.isLocalFile() && (!ci.mi_valid || !ci.thumb_valid)) {
         PersistentManager::get().save(pif);
     }
@@ -1631,11 +1696,11 @@ int PlaylistModel::indexOf(const QUrl &url)
 }
 
 
-LoadThread::LoadThread(PlaylistModel *model, const QList<QUrl> &urls)
+LoadThread::LoadThread(PlaylistModel *model, const QList<QUrl> &urls):_urls(urls)
 {
     _pModel = nullptr;
     _pModel = model;
-    _urls = urls;
+//    _urls = urls;
 }
 LoadThread::~LoadThread()
 {
@@ -1701,7 +1766,7 @@ MovieInfo MovieInfo::parseFromFile(const QFileInfo &fi, bool *ok)
     AVFormatContext *av_ctx = NULL;
     int stream_id = -1;
     AVCodecParameters *dec_ctx = NULL;
-    AVStream* av_stream = nullptr;
+    AVStream *av_stream = nullptr;
 
     if (!fi.exists()) {
         if (ok) *ok = false;
@@ -1732,10 +1797,9 @@ MovieInfo MovieInfo::parseFromFile(const QFileInfo &fi, bool *ok)
         }
     }
 
-    for(int i =0;i<av_ctx->nb_streams;i++){
+    for (int i = 0; i < av_ctx->nb_streams; i++) {
         av_stream = av_ctx->streams[i];
-        if(av_stream->codecpar->codec_type == AVMEDIA_TYPE_VIDEO)
-        {
+        if (av_stream->codecpar->codec_type == AVMEDIA_TYPE_VIDEO) {
             break;
         }
     }
@@ -1757,7 +1821,7 @@ MovieInfo MovieInfo::parseFromFile(const QFileInfo &fi, bool *ok)
     mi.vCodecID = dec_ctx->codec_id;
     mi.vCodeRate = dec_ctx->bit_rate;
     if (av_stream->r_frame_rate.den != 0) {
-         mi.fps = av_stream->r_frame_rate.num / av_stream->r_frame_rate.den;
+        mi.fps = av_stream->r_frame_rate.num / av_stream->r_frame_rate.den;
     } else {
         mi.fps = 0;
     }
@@ -1815,12 +1879,12 @@ MovieInfo MovieInfo::parseFromFile(const QFileInfo &fi, bool *ok)
     if (ok) *ok = true;
     return mi;
 }
-#else
-MovieInfo MovieInfo::parseFromFile(const QFileInfo &fi, bool *ok)
-{
-    MovieInfo info;
-    return info;
-}
+//#else
+//MovieInfo MovieInfo::parseFromFile(const QFileInfo &fi, bool *ok)
+//{
+//    MovieInfo info;
+//    return info;
+//}
 #endif
 }
 

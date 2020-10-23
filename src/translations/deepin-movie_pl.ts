@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="pl">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="pl" version="2.1">
 <context>
     <name>QObject</name>
     <message>
@@ -13,7 +11,7 @@
     </message>
     <message>
         <source>Network disconnected</source>
-        <translation type="unfinished"></translation>
+        <translation>Sieć odłączona</translation>
     </message>
     <message>
         <source>You don&apos;t have permission to operate this folder</source>
@@ -173,7 +171,7 @@
     </message>
     <message>
         <source>Exit fullscreen/mini mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyjdź z trybu pełnoekranowego/mini</translation>
     </message>
     <message>
         <source>Movie</source>
@@ -193,7 +191,7 @@
     </message>
     <message>
         <source>Delete from playlist</source>
-        <translation type="unfinished"></translation>
+        <translation>Usuń z listy odtwarzania</translation>
     </message>
     <message>
         <source>Film info</source>
@@ -201,7 +199,7 @@
     </message>
     <message>
         <source>Burst shooting</source>
-        <translation type="unfinished"></translation>
+        <translation>Zdjęcia seryjne</translation>
     </message>
     <message>
         <source>Size</source>
@@ -209,19 +207,19 @@
     </message>
     <message>
         <source>Movie is a full-featured video player, supporting playing local and streaming media in multiple video formats.</source>
-        <translation type="unfinished"></translation>
+        <translation>Film to w pełni funkcjonalny odtwarzacz wideo, obsługujący odtwarzanie lokalnych i strumieniowych multimediów w wielu formatach wideo.</translation>
     </message>
     <message>
         <source>OK</source>
         <translation>OK</translation>
     </message>
     <message>
-        <source>Show thumbnails in progress bar</source>
-        <translation type="unfinished"></translation>
+        <source>Default play mode</source>
+        <translation>Domyślny tryb odtwarzania</translation>
     </message>
     <message>
-        <source>Default play mode</source>
-        <translation type="unfinished"></translation>
+        <source>Show thumbnails in progress bar</source>
+        <translation>Pokaż miniatury na pasku postępu</translation>
     </message>
 </context>
 <context>
@@ -255,7 +253,7 @@
     </message>
     <message>
         <source>Empty playlist</source>
-        <translation type="unfinished"></translation>
+        <translation>Pusta lista odtwarzania</translation>
     </message>
     <message>
         <source>Film info</source>
@@ -391,7 +389,7 @@
     </message>
     <message>
         <source>Delete from playlist</source>
-        <translation type="unfinished"></translation>
+        <translation>Usuń z listy odtwarzania</translation>
     </message>
     <message>
         <source>Display in file manager</source>
@@ -399,15 +397,15 @@
     </message>
     <message>
         <source>Next Frame</source>
-        <translation type="unfinished"></translation>
+        <translation>Następna klatka</translation>
     </message>
     <message>
         <source>Previous Frame</source>
-        <translation type="unfinished"></translation>
+        <translation>Poprzednia klatka</translation>
     </message>
     <message>
         <source>Open screenshot folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Otwórz folder zrzutów ekranu</translation>
     </message>
 </context>
 <context>
@@ -469,7 +467,7 @@
     </message>
     <message>
         <source>Parse failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Analiza nie powiodła się</translation>
     </message>
     <message>
         <source>Mute</source>
@@ -481,7 +479,7 @@
     </message>
     <message>
         <source>Track: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ścieżka: %1</translation>
     </message>
     <message>
         <source>Subtitle %1: %2s</source>
@@ -525,11 +523,11 @@
     </message>
     <message>
         <source>No matching online subtitles</source>
-        <translation type="unfinished"></translation>
+        <translation>Brak pasujących napisów online</translation>
     </message>
     <message>
         <source>Cannot open file or stream</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie można otworzyć pliku lub strumienia</translation>
     </message>
     <message>
         <source>Invalid file</source>
@@ -537,7 +535,7 @@
     </message>
     <message>
         <source>No video file found</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie znaleziono pliku wideo</translation>
     </message>
     <message>
         <source>Open File</source>
@@ -549,7 +547,7 @@
     </message>
     <message>
         <source>Taking the screenshots, please wait...</source>
-        <translation type="unfinished"></translation>
+        <translation>Robienie zrzutu ekranu, proszę czekać...</translation>
     </message>
     <message>
         <source>OK</source>
@@ -557,55 +555,51 @@
     </message>
     <message>
         <source>Please insert a CD/DVD</source>
-        <translation type="unfinished"></translation>
+        <translation>Proszę włożyć płytę CD/DVD</translation>
     </message>
     <message>
         <source>Reading DVD files...</source>
-        <translation type="unfinished"></translation>
+        <translation>Odczytywanie plików DVD...</translation>
     </message>
     <message>
         <source>4K video may be stuck</source>
-        <translation type="unfinished"></translation>
+        <translation>Wideo 4K może być zablokowane</translation>
     </message>
     <message>
         <source>Please load the video first</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>All videos (%2 %1)</source>
-        <translation type="obsolete">Wszystkie filmy (%1) {2 %1)?}</translation>
+        <translation>Najpierw załaduj wideo</translation>
     </message>
     <message>
         <source>Order play</source>
-        <translation type="unfinished"></translation>
+        <translation>Porządek odtwarzania</translation>
     </message>
     <message>
         <source>Shuffle play</source>
-        <translation type="unfinished"></translation>
+        <translation>Odtwarzanie losowe</translation>
     </message>
     <message>
         <source>Single play</source>
-        <translation type="unfinished"></translation>
+        <translation>Pojedyncze odtwarzanie</translation>
     </message>
     <message>
         <source>Single loop</source>
-        <translation type="unfinished"></translation>
+        <translation>Pojedyncza pętla</translation>
     </message>
     <message>
         <source>List loop</source>
-        <translation type="unfinished"></translation>
+        <translation>Pętla listy</translation>
     </message>
     <message>
         <source>The CD/DVD has been ejected</source>
-        <translation type="unfinished"></translation>
+        <translation>Płyta CD/DVD została wysunięta</translation>
+    </message>
+    <message>
+        <source>All videos (%2 %1)</source>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>All videos (*)(%2 %1)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Please exit smart dock</source>
-        <translation type="unfinished"></translation>
+        <translation>Wszystkie filmy (*)(%2 %1)</translation>
     </message>
 </context>
 <context>
@@ -655,85 +649,85 @@
     </message>
     <message>
         <source>Codec info</source>
-        <translation type="unfinished"></translation>
+        <translation>Informacje o kodekach</translation>
     </message>
     <message>
         <source>Video CodecID</source>
-        <translation type="unfinished"></translation>
+        <translation>Identyfikator kodeka wideo</translation>
     </message>
     <message>
         <source>Video CodeRate</source>
-        <translation type="unfinished"></translation>
+        <translation>Szybkość kodowania wideo</translation>
     </message>
     <message>
         <source>%1 kbps</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 kbps</translation>
     </message>
     <message>
         <source>FPS</source>
-        <translation type="unfinished"></translation>
+        <translation>FPS</translation>
     </message>
     <message>
         <source>%1 fps</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 fps</translation>
     </message>
     <message>
         <source>Proportion</source>
-        <translation type="unfinished"></translation>
+        <translation>Proporcja</translation>
     </message>
     <message>
         <source>%1</source>
-        <translation type="unfinished">%1</translation>
+        <translation>%1</translation>
     </message>
     <message>
         <source>Audio info</source>
-        <translation type="unfinished"></translation>
+        <translation>Informacje audio</translation>
     </message>
     <message>
         <source>Audio CodecID</source>
-        <translation type="unfinished"></translation>
+        <translation>Identyfikator kodeka audio</translation>
     </message>
     <message>
         <source>Audio CodeRate</source>
-        <translation type="unfinished"></translation>
+        <translation>Współczynnik kodowania dźwięku</translation>
     </message>
     <message>
         <source>Audio digit</source>
-        <translation type="unfinished"></translation>
+        <translation>Cyfrowe audio</translation>
     </message>
     <message>
         <source>%1 bits</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 bits</translation>
     </message>
     <message>
         <source>Channels</source>
-        <translation type="unfinished"></translation>
+        <translation>Kanały</translation>
     </message>
     <message>
         <source>%1 channels</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 kanałów</translation>
     </message>
     <message>
         <source>Sampling</source>
-        <translation type="unfinished"></translation>
+        <translation>Próbowanie</translation>
     </message>
     <message>
         <source>%1hz</source>
-        <translation type="unfinished"></translation>
+        <translation>%1hz</translation>
     </message>
 </context>
 <context>
     <name>dmr::MpvProxy</name>
     <message>
         <source>Internal</source>
-        <translation type="unfinished"></translation>
+        <translation>Wewnętrzny</translation>
     </message>
 </context>
 <context>
     <name>dmr::PlayItemWidget</name>
     <message>
         <source>The file does not exist</source>
-        <translation type="unfinished"></translation>
+        <translation>Plik nie istnieje</translation>
     </message>
 </context>
 <context>
@@ -744,7 +738,7 @@
     </message>
     <message>
         <source>%1 videos</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 filmów</translation>
     </message>
     <message>
         <source>Empty</source>
@@ -755,31 +749,31 @@
     <name>dmr::Settings</name>
     <message>
         <source>%1/Movie%2.jpg</source>
-        <translation type="unfinished"></translation>
+        <translation>%1/Movie%2.jpg</translation>
     </message>
     <message>
         <source>%1/Movie%2(%3).jpg</source>
-        <translation type="unfinished"></translation>
+        <translation>%1/Movie%2(%3).jpg</translation>
     </message>
     <message>
         <source>Order play</source>
-        <translation type="unfinished"></translation>
+        <translation>Porządek odtwarzania</translation>
     </message>
     <message>
         <source>Shuffle play</source>
-        <translation type="unfinished"></translation>
+        <translation>Odtwarzanie losowe</translation>
     </message>
     <message>
         <source>Single play</source>
-        <translation type="unfinished"></translation>
+        <translation>Pojedyncze odtwarzanie</translation>
     </message>
     <message>
         <source>Single loop</source>
-        <translation type="unfinished"></translation>
+        <translation>Pojedyncza pętla</translation>
     </message>
     <message>
         <source>List loop</source>
-        <translation type="unfinished"></translation>
+        <translation>Pętla listy</translation>
     </message>
 </context>
 <context>
@@ -814,23 +808,23 @@
     </message>
     <message>
         <source>play</source>
-        <translation type="unfinished"></translation>
+        <translation>Odtwórz</translation>
     </message>
     <message>
         <source>prev</source>
-        <translation type="unfinished"></translation>
+        <translation>poprzedni</translation>
     </message>
     <message>
         <source>next</source>
-        <translation type="unfinished"></translation>
+        <translation>następny</translation>
     </message>
     <message>
         <source>fs</source>
-        <translation type="unfinished"></translation>
+        <translation>fs</translation>
     </message>
     <message>
         <source>list</source>
-        <translation type="unfinished"></translation>
+        <translation>lista</translation>
     </message>
     <message>
         <source>Exit fullscreen</source>
@@ -839,10 +833,6 @@
     <message>
         <source>Pause</source>
         <translation>Wstrzymaj</translation>
-    </message>
-    <message>
-        <source>sub</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

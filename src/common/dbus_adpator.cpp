@@ -28,15 +28,27 @@
  * files in the program, then also delete it here.
  */
 #include "dbus_adpator.h"
+#include "utils.h"
 
 ApplicationAdaptor::ApplicationAdaptor(MainWindow* mw)
     :QDBusAbstractAdaptor(mw), _mw(mw) 
 {
+    oldTime = QTime::currentTime();
 }
 
 void ApplicationAdaptor::openFiles(const QStringList& list)
 {
-    _mw->playList(list);
+    if(utils::check_wayland_env()){
+	//wayland下快速点击，播放不正常问题
+        QTime current = QTime::currentTime();
+        if(abs(oldTime.msecsTo(current)) > 800){
+            oldTime = current;
+            _mw->playList(list);
+        }
+    }else{
+        _mw->playList(list);
+    }
+
 }
 
 void ApplicationAdaptor::openFile(const QString& file) 
@@ -49,7 +61,16 @@ void ApplicationAdaptor::openFile(const QString& file)
     } else {
         url = QUrl::fromLocalFile(file);
     }
-    _mw->play(url);
+    if(utils::check_wayland_env()){
+	//wayland下快速点击，播放不正常问题
+        QTime current = QTime::currentTime();
+        if(abs(oldTime.msecsTo(current)) > 800){
+            oldTime = current;
+            _mw->play(url);
+        }
+    }else {
+        _mw->play(url);
+    }
 }
 
 void ApplicationAdaptor::Raise(){

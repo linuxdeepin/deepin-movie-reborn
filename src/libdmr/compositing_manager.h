@@ -93,12 +93,20 @@ public:
         return _platform;
     }
 
+    bool isTestFlag() const{
+       return _isCoreFlag;
+    }
+    void setTestFlag(bool flag){
+       _isCoreFlag = flag;
+    }
+
     PlayerOptionList getProfile(const QString &name);
     PlayerOptionList getBestProfile(); // best for current platform and env
     static void detectPciID();
     static bool runningOnNvidia();
     void softDecodeCheck();
     bool isOnlySoftDecode();
+	bool isSpecialControls();
 
 signals:
     void compositingChanged(bool);
@@ -114,8 +122,10 @@ private:
 
     bool _composited {false};
     Platform _platform {Platform::Unknown};
+	 bool _isCoreFlag {false};
     bool _hasCard;
     bool m_bOnlySoftDecode {false};  //kunpeng920走软解码
+    bool m_setSpecialControls {false};
 };
 }
 

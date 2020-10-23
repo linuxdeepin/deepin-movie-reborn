@@ -64,7 +64,7 @@ bool HoverFilter::eventFilter(QObject *obj, QEvent *event)
 class HintFilterPrivate
 {
 public:
-    HintFilterPrivate(HintFilter *parent) : q_ptr(parent) {}
+    explicit HintFilterPrivate(HintFilter *parent) : q_ptr(parent) {}
 
     void showHint(QWidget *hint);
 
@@ -113,13 +113,8 @@ HintFilter::HintFilter(QObject *parent)  : QObject(parent), d_ptr(new HintFilter
     Q_D(HintFilter);
     d->delayShowTimer = new QTimer;
     d->delayShowTimer->setInterval(1000);
-    connect(d->delayShowTimer, &QTimer::timeout, this, [ = ]() {
-        if (d->parentWidget) {
-            auto hint = d->parentWidget->property("HintWidget").value<QWidget *>();
-            d->showHint(hint);
-        }
-        d->delayShowTimer->stop();
-    });
+    connect(d->delayShowTimer, &QTimer::timeout, this, &HintFilter::slotDelayShowTimerTimeOut);
+
 }
 
 HintFilter::~HintFilter()
@@ -222,6 +217,16 @@ void HintFilter::showHitsFor(QWidget *w, QWidget *hint)
     d->showHint(hint);
 
     d->hintWidget->setCursor(QCursor(Qt::PointingHandCursor));
+}
+
+void HintFilter::slotDelayShowTimerTimeOut()
+{
+    Q_D(HintFilter);
+    if (d->parentWidget) {
+        auto hint = d->parentWidget->property("HintWidget").value<QWidget *>();
+        d->showHint(hint);
+    }
+    d->delayShowTimer->stop();
 }
 
 HoverShadowFilter::HoverShadowFilter(QObject *parent): QObject(parent)

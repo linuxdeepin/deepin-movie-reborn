@@ -77,51 +77,55 @@ class ImageItem : public DLabel
 {
     Q_OBJECT
 public:
-    ImageItem(QPixmap image, bool isblack = false, QWidget *parent = nullptr): DLabel(parent)
+    ImageItem(QPixmap image, bool isblack = false, QWidget *parent = nullptr): DLabel(parent), _pixmap(image)
     {
-        _pixmap = image;
     }
 
 signals:
     void imageItemclicked(int index, int indexNow);
 protected:
-    void paintEvent(QPaintEvent *event)
+    void paintEvent(QPaintEvent *)
     {
         QPainter painter(this);
 //        painter.drawPixmap(rect(),QPixmap(_path).scaled(60,50));
 
-        painter.setRenderHints(QPainter::HighQualityAntialiasing);
-        painter.setRenderHints(QPainter::SmoothPixmapTransform);
-        painter.setRenderHints(QPainter::Antialiasing);
+        painter.setRenderHints(QPainter::HighQualityAntialiasing | QPainter::SmoothPixmapTransform |
+                               QPainter::Antialiasing);
 
         QSize size(_pixmap.size());
         QBitmap mask(size);
+
         QPainter painter1(&mask);
-        painter1.setRenderHint(QPainter::Antialiasing);
-        painter1.setRenderHint(QPainter::SmoothPixmapTransform);
+        painter1.setRenderHints(QPainter::HighQualityAntialiasing | QPainter::SmoothPixmapTransform |
+                                QPainter::Antialiasing);
         painter1.fillRect(mask.rect(), Qt::white);
         painter1.setBrush(QColor(0, 0, 0));
-        painter1.drawRoundedRect(mask.rect(), 2, 2);
+        painter1.drawRoundedRect(mask.rect(), 5, 5);
+
         QPixmap image = _pixmap;
         image.setMask(mask);
 
+        painter.setClipping(true);
+        QPainterPath bg0;
+        bg0.addRoundedRect(rect(), 5, 5);
+        painter.setClipPath(bg0);
         painter.drawPixmap(rect(), image);
 
         QPen pen;
-        pen.setWidth(1);
+        pen.setWidth(2);
         if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
-            pen.setColor(QColor(0, 0, 0, 0.1 * 255));
+            pen.setColor(QColor(0, 0, 0, int(0.1 * 255)));
             painter.setPen(pen);
         } else if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
-            pen.setColor(QColor(255, 255, 255, 0.1 * 255));
+            pen.setColor(QColor(255, 255, 255, int(0.1 * 255)));
             painter.setPen(pen);
         }
         painter.setBrush(Qt::NoBrush);
-        painter.drawRoundedRect(rect(), 4, 4);
-    };
+        painter.drawRoundedRect(rect(), 5, 5);
+    }
 private:
-    int _index;
-    int _indexNow;
+//    int _index;   //not used
+//    int _indexNow;    //not used
     DLabel *_image = nullptr;
     QString _path = nullptr;
     QPixmap _pixmap;
@@ -131,9 +135,9 @@ class IndicatorItem : public QWidget
 {
     Q_OBJECT
 public:
-    IndicatorItem(QWidget *parent = 0): QWidget(parent)
+    explicit IndicatorItem(QWidget *parent = nullptr): QWidget(parent)
     {
-    };
+    }
 
     void setPressed(bool bPressed)
     {
@@ -141,7 +145,7 @@ public:
     }
 
 protected:
-    void paintEvent(QPaintEvent *event)
+    void paintEvent(QPaintEvent *)
     {
         QPainter painter(this);
         QRect backgroundRect = rect();
@@ -153,21 +157,24 @@ protected:
         QPainterPath bpath;
 
         if (!m_bIsPressed) {
-            bpath.addRect(backgroundRect.marginsRemoved(QMargins(1, 1, 1, 1)));
-            painter.fillPath(bpath, QColor(255, 255, 255, 255));
-
             QPen pen;
             pen.setWidth(1);
             pen.setColor(QColor(0, 0, 0));
             bpath.addRoundedRect(backgroundRect, 3, 3);
             painter.setPen(pen);
+            painter.setBrush(Qt::NoBrush);
             painter.setOpacity(0.4);
-            painter.drawPath(bpath);
+            painter.fillPath(bpath,QColor(0,0,0));
+
+            //改变一下paint的顺序锯齿效果没有那么明显
+            QPainterPath bpath1;
+            painter.setOpacity(1);
+            bpath1.addRoundedRect(backgroundRect.marginsRemoved(QMargins(1, 1, 1, 1)), 3, 3);
+            painter.fillPath(bpath1, QColor(255, 255, 255));
         } else {
             painter.fillRect(backgroundRect, QBrush(QColor(255, 138, 0)));
         }
-
-    };
+    }
 
 private:
     bool m_bIsPressed {false};
@@ -208,7 +215,13 @@ public:
     QLabel *getfullscreentimeLabelend();
     bool getbAnimationFinash();
     int DisplayVolume();
+    void setVolSliderHide();
     bool getVolSliderIsHided();
+    void setButtonTooltipHide();
+    void updateVolumeStateOnStopMode(uint64_t vol);
+
+     //lmh0910初始化下方按键的tooltip
+     void initToolTip();
     DMRSlider* getSlider()
     {
         return _progBar;
@@ -221,13 +234,23 @@ public:
     {
         if (_progBar_Widget->currentIndex() == 2) {
             return true;
-        }
+        };
     }
 
     void updateProgress(int nValue);    //更新进度条显示
 
     void updateSlider();                //根据进度条显示更新影片实际进度
     void initThumb();
+
+    /////add for unit test/////
+    DButtonBoxButton* playBtn(){return _playBtn;}
+    DButtonBoxButton* prevBtn(){return _prevBtn;}
+    DButtonBoxButton* nextBtn(){return _nextBtn;}
+    ToolButton* listBtn(){return _listBtn;}
+    ToolButton* fsBtn(){return _fsBtn;}
+    VolumeButton* volBtn(){return _volBtn;}
+
+
 public slots:
     void finishLoadSlot(QSize size);
     void updateplaylisticon();
@@ -257,11 +280,33 @@ protected slots:
     */
     void progressHoverChanged(int v);
     void updateHoverPreview(const QUrl &url, int secs);
+    //lmh0706暂停延时，解决乱按卡死问题
+    void waitPlay();
+    //把lambda表达式改为槽函数，modify by myk
+    void slotThemeTypeChanged();
+    void slotLeavePreview();
+    void slotLeaveSlider();
+    void slotSliderPressed();
+    void slotSliderReleased();
+    void slotBaseMuteChanged(QString sk, const QVariant & val);
+    void slotLeaveViewProgBar();
+    void slotVolumeButtonClicked();
+    void slotRequestVolumeUp();
+    void slotRequestVolumeDown();
+    void slotFileLoaded();
+    //原有两个连接，合并为一个
+    void slotElapsedChanged();
+    void slotApplicationStateChanged(Qt::ApplicationState e);
+    void slotPlayListCurrentChanged();
+    void slotPlayListStateChange();
+    void slotUpdateThumbnailTimeOut();
+    void slotProAnimationFinished();
 
 protected:
 //    void paintEvent(QPaintEvent *pe) override;
     void showEvent(QShowEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *ev) override;
 private:
     void setup();
     void updateTimeLabel();
@@ -346,6 +391,10 @@ private:
     HintFilter        *hintFilter {nullptr };
     bool m_isMouseIn = false;
     QTimer _hideTime;
+    bool _isJinJia = false;//是否是景嘉微显卡
+    qint64 oldDuration = 0;
+    qint64 oldElapsed = 0;
+    QTimer _progressTimer;
 };
 class viewProgBarLoad: public QThread
 {
@@ -375,13 +424,13 @@ private:
     void initThumb();
     PlayerEngine *_engine {nullptr};
     ToolboxProxy *_parent{nullptr};
-    int _vlastHoverValue;
+/*    int _vlastHoverValue;
     QPoint _startPos;
     bool _isBlockSignals;
     QPoint _indicatorPos {0, 0};
     QColor _indicatorColor;
 
-//    viewProgBarLoad *_viewProgBarLoad{nullptr};
+    viewProgBarLoad *_viewProgBarLoad{nullptr};
     QWidget *_back{nullptr};
     QWidget *_front{nullptr};
     DBlurEffectWidget *_indicator{nullptr};
@@ -390,8 +439,9 @@ private:
     QHBoxLayout *_indicatorLayout{nullptr};
     QHBoxLayout *_viewProgBarLayout{nullptr};
     QHBoxLayout *_viewProgBarLayout_black{nullptr};
+*/
     DMRSlider *_progBar {nullptr};
-    QSize _size;
+//    QSize _size;
 
     //加载缩略图是否加载完成，控制线程是否休眠
     bool m_bisload {false};

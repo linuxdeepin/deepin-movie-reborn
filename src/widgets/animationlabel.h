@@ -11,7 +11,7 @@ class AnimationLabel : public QLabel
     Q_PROPERTY(int fps READ fps WRITE setFps)
 
 public:
-    AnimationLabel(QWidget *parent = nullptr);
+    explicit AnimationLabel(QWidget *parent = nullptr);
 
     void stop();
     void start();

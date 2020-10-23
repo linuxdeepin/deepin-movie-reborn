@@ -43,7 +43,7 @@ class ThumbnailFrame: public QLabel
 {
     Q_OBJECT
 public:
-    ThumbnailFrame(QWidget *parent) : QLabel(parent)
+    explicit ThumbnailFrame(QWidget *parent) : QLabel(parent)
     {
         setFixedSize(178, 100);
         auto e = new QGraphicsDropShadowEffect(this);
@@ -59,7 +59,7 @@ class BurstScreenshotsDialog: public DAbstractDialog
 {
     Q_OBJECT
 public:
-    BurstScreenshotsDialog(const PlayItemInfo &pif);
+    explicit BurstScreenshotsDialog(const PlayItemInfo &pif);
     void updateWithFrames(const QList<QPair<QImage, qint64>> &frames);
 
     QString savedPosterPath();

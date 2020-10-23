@@ -56,20 +56,38 @@ DWIDGET_USE_NAMESPACE
 
 int main(int argc, char *argv[])
 {
-#ifdef __mips__
-    if (CompositingManager::get().composited()) {
-        CompositingManager::detectOpenGLEarly();
-        CompositingManager::detectPciID();
+    if(dmr::utils::first_check_wayland_env()){
+        qputenv("QT_WAYLAND_SHELL_INTEGRATION", "kwayland-shell");
+        //qputenv("_d_disableDBusFileDialog", "true");
+        setenv("PULSE_PROP_media.role", "video", 1);
+        QSurfaceFormat format;
+        format.setRenderableType(QSurfaceFormat::OpenGLES);
+        format.setDefaultFormat(format);
+    }else {
+        #ifdef __mips__
+            if (CompositingManager::get().composited()) {
+                CompositingManager::detectOpenGLEarly();
+                CompositingManager::detectPciID();
+            }
+        #else
+//            CompositingManager::detectOpenGLEarly();
+//            CompositingManager::detectPciID();
+        #endif
+        DApplication::loadDXcbPlugin();
     }
-#else
-//    CompositingManager::detectOpenGLEarly();
-//    CompositingManager::detectPciID();
-#endif
+
 
 #if defined(STATIC_LIB)
     DWIDGET_INIT_RESOURCE();
 #endif
-    DApplication::loadDXcbPlugin();
+    /**
+      *This function dtk is obsolete and has no
+      * impact after testing on x86 platform.
+      * If there is a problem with later adaptation,
+      * please give priority to whether there
+      * is any impact here.
+      */
+//    DApplication::loadDXcbPlugin();
 
     DApplication app(argc, argv);
 
@@ -139,7 +157,8 @@ int main(int argc, char *argv[])
         if (!toOpenFiles.isEmpty()) {
             QDBusInterface iface("com.deepin.movie", "/", "com.deepin.movie");
             if (toOpenFiles.size() == 1) {
-                iface.asyncCall("openFile", toOpenFiles[0]);
+                if(!toOpenFiles[0].contains("QProcess"))
+                    iface.asyncCall("openFile", toOpenFiles[0]);
             } else {
                 iface.asyncCall("openFiles", toOpenFiles);
             }
@@ -170,6 +189,7 @@ int main(int argc, char *argv[])
     mw.resize(850, 600);
     utils::MoveToCenter(&mw);
     mw.show();
+    mw.setOpenFiles(toOpenFiles);
 
     if (!QDBusConnection::sessionBus().isConnected()) {
         qWarning() << "dbus disconnected";
@@ -179,13 +199,13 @@ int main(int argc, char *argv[])
     QDBusConnection::sessionBus().registerService("com.deepin.movie");
     QDBusConnection::sessionBus().registerObject("/", &mw);
 
-    if (!toOpenFiles.isEmpty()) {
-        if (toOpenFiles.size() == 1) {
-            mw.play(toOpenFiles[0]);
-        } else {
-            mw.playList(toOpenFiles);
-        }
-    }
+//    if (!toOpenFiles.isEmpty()) {
+//        if (toOpenFiles.size() == 1) {
+//            mw.play(toOpenFiles[0]);
+//        } else {
+//            mw.playList(toOpenFiles);
+//        }
+//    }
     return app.exec();
 
 }

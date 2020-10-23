@@ -82,7 +82,7 @@ QString splitText(const QString &text, int width,
 class PlayItemTooltipHandler: public QObject
 {
 public:
-    PlayItemTooltipHandler(QObject *parent): QObject(parent) {}
+    explicit PlayItemTooltipHandler(QObject *parent): QObject(parent) {}
 
 protected:
     bool eventFilter(QObject *obj, QEvent *event)
@@ -173,10 +173,14 @@ public:
         _index->setFixedWidth(22);
         l->addWidget(_index);
 
-
         _thumb = new ListPic(_pif.thumbnail.scaled(QSize(42, 24)), this);
+        if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()){
+            _thumb->setPic(_pif.thumbnail_dark);
+        };
 //        _thumb->setPixmap(_pif.thumbnail.scaled(QSize(42,24)));
         l->addWidget(_thumb);
+        QObject::connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, &PlayItemWidget::slotThemeTypeChanged);
+
 
         auto *vl = new QHBoxLayout;
         vl->setContentsMargins(0, 0, 0, 0);
@@ -241,10 +245,8 @@ public:
         t->hide();
         setProperty("HintWidget", QVariant::fromValue<QWidget *>(t));
         installEventFilter(th);
-        connect(_playlist, &PlaylistWidget::sizeChange, this, [ = ] {
-            setFixedWidth(_playlist->width() - 230);
-            //            setFixedSize(_playlist->width(), 36);
-        });
+        connect(_playlist, &PlaylistWidget::sizeChange, this, &PlayItemWidget::slotSizeChange);
+
     }
 
     void updateInfo(const PlayItemInfo &pif)
@@ -324,7 +326,7 @@ public:
         }
         p.end();
 
-        _thumb->setPixmap(dest);
+//        _thumb->setPixmap(dest);
     }
 
     void setHovered(bool v)
@@ -389,6 +391,20 @@ private slots:
     void closeBtnStates(bool bHover)
     {
         setCurItemHovered(bHover);
+    }
+
+    void slotThemeTypeChanged()
+    {
+        if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
+            _thumb->setPic(_pif.thumbnail);
+        };
+        if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
+            _thumb->setPic(_pif.thumbnail_dark);
+        }
+    }
+    void slotSizeChange()
+    {
+        setFixedWidth(_playlist->width() - 230);
     }
 
 
@@ -661,7 +677,7 @@ private:
 class MainWindowListener: public QObject
 {
 public:
-    MainWindowListener(QObject *parent): QObject(parent) {}
+    explicit MainWindowListener(QObject *parent): QObject(parent) {}
 
 protected:
     bool eventFilter(QObject *obj, QEvent *event)
@@ -816,18 +832,17 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     });
 
     leftinfo->addWidget(clearButton);
-    connect(clearButton, &QPushButton::clicked, this, [ = ] {
-        _engine->clearPlaylist();
-    });
+    connect(clearButton, &QPushButton::clicked, _engine, &PlayerEngine::clearPlaylist);
+
     left->setContentsMargins(36, 0, 0, 0);
 //    _title->setContentsMargins(0, 0, 0, 0);
     clearButton->setContentsMargins(0, 0, 0, 70);
     _num->setContentsMargins(0, 0, 0, 0);
 
-
-    auto *vl = new QVBoxLayout;
-    vl->setContentsMargins(0, 0, 0, 0);
-    vl->setSpacing(0);
+    ///未使用代码///
+//    auto *vl = new QVBoxLayout;
+//    vl->setContentsMargins(0, 0, 0, 0);
+//    vl->setSpacing(0);
 //    mainLayout->addLayout(vl, 3);
     QWidget *right = new QWidget();
     auto *rightinfo = new QVBoxLayout;
@@ -880,42 +895,15 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     if (!_closeMapper) {
         _closeMapper = new QSignalMapper(this);
         connect(_closeMapper,
-                static_cast<void(QSignalMapper::*)(QWidget *)>(&QSignalMapper::mapped),
-        [ = ](QWidget * w) {
-            qDebug() << "item close clicked";
-            _clickedItem = w;
-            _mw->requestAction(ActionFactory::ActionKind::PlaylistRemoveItem);
-        });
+                static_cast<void(QSignalMapper::*)(QWidget *)>(&QSignalMapper::mapped), this, &PlaylistWidget::slotCloseItem);
+
     }
 
     if (!_activateMapper) {
         _activateMapper = new QSignalMapper(this);
         connect(_activateMapper,
-                static_cast<void(QSignalMapper::*)(QWidget *)>(&QSignalMapper::mapped),
-        [ = ](QWidget * w) {
-            qDebug() << "item double clicked";
-            QList<QVariant> args;
-            for (int i = 0; i < _playlist->count(); i++) {
-                if (w == _playlist->itemWidget(_playlist->item(i))) {
-                    args << i;
-                    _mw->requestAction(ActionFactory::ActionKind::GotoPlaylistSelected,
-                                       false, args);
+                static_cast<void(QSignalMapper::*)(QWidget *)>(&QSignalMapper::mapped), this, &PlaylistWidget::slotDoubleClickedItem);
 
-                    QTimer *closelistTImer = new QTimer;
-                    closelistTImer->start(500);
-                    connect(closelistTImer, &QTimer::timeout, [ = ]() {
-                        closelistTImer->deleteLater();
-                        togglePopup();
-                        emit _mw->playlistchanged();
-                        _mw->reflectActionToUI(ActionFactory::TogglePlaylist);
-                    });
-                    //togglePopup();
-                    //emit _mw->playlistchanged();
-                    //_mw->reflectActionToUI(ActionFactory::TogglePlaylist);
-                    break;
-                }
-            }
-        });
     }
 
     connect(&_engine->playlist(), &PlaylistModel::emptied, this, &PlaylistWidget::clear);
@@ -940,23 +928,8 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
         }
     });
 
-    connect(_playlist->model(), &QAbstractItemModel::rowsMoved, [ = ]() {
-        if (_lastDragged.first >= 0) {
-            int target = -1;
-            for (int i = 0; i < _playlist->count(); i++) {
-                auto piw = dynamic_cast<PlayItemWidget *>(_playlist->itemWidget(_playlist->item(i)));
-                if (piw == _lastDragged.second) {
-                    target = i;
-                    break;
-                }
-            }
-            qDebug() << "swap " << _lastDragged.first << target;
-            if (target >= 0 && _lastDragged.first != target) {
-                _engine->playlist().switchPosition(_lastDragged.first, target);
-                _lastDragged = {-1, nullptr};
-            }
-        }
-    });
+    connect(_playlist->model(), &QAbstractItemModel::rowsMoved, this, &PlaylistWidget::slotRowsMoved);
+
 }
 
 PlaylistWidget::~PlaylistWidget()
@@ -1063,7 +1036,7 @@ void PlaylistWidget::showItemInfo()
     if (!_mouseItem) return;
     auto item = dynamic_cast<PlayItemWidget *>(_mouseItem);
     if (item) {
-        MovieInfoDialog mid(item->_pif);
+        MovieInfoDialog mid(item->_pif,_mw);
         mid.exec();
     }
 }
@@ -1099,6 +1072,59 @@ void PlaylistWidget::removeClickedItem(bool isShortcut)
                 _engine->playlist().remove(i);
                 break;
             }
+        }
+    }
+}
+
+void PlaylistWidget::slotCloseTimeTimeOut()
+{
+    QTimer *pCloselistTimer = dynamic_cast<QTimer *>(sender());
+    pCloselistTimer->deleteLater();
+    togglePopup();
+    emit _mw->playlistchanged();
+    _mw->reflectActionToUI(ActionFactory::TogglePlaylist);
+}
+
+void PlaylistWidget::slotCloseItem(QWidget *w)
+{
+    qDebug() << "item close clicked";
+    _clickedItem = w;
+    _mw->requestAction(ActionFactory::ActionKind::PlaylistRemoveItem);
+}
+
+void PlaylistWidget::slotDoubleClickedItem(QWidget *w)
+{
+    qDebug() << "item double clicked";
+    QList<QVariant> args;
+    for (int i = 0; i < _playlist->count(); i++) {
+        if (w == _playlist->itemWidget(_playlist->item(i))) {
+            args << i;
+            _mw->requestAction(ActionFactory::ActionKind::GotoPlaylistSelected,
+                               false, args);
+
+            QTimer *closelistTImer = new QTimer;
+            closelistTImer->start(500);
+            connect(closelistTImer, &QTimer::timeout, this, &PlaylistWidget::slotCloseTimeTimeOut);
+            break;
+        }
+    }
+}
+
+void PlaylistWidget::slotRowsMoved()
+{
+    if (_lastDragged.first >= 0) {
+        int target = -1;
+        for (int i = 0; i < _playlist->count(); i++) {
+            auto piw = dynamic_cast<PlayItemWidget *>(_playlist->itemWidget(_playlist->item(i)));
+            if (piw == _lastDragged.second) {
+                target = i;
+                break;
+            }
+        }
+        qDebug() << "swap " << _lastDragged.first << target;
+        if (target >= 0 && _lastDragged.first != target) {
+            _engine->playlist().switchPosition(_lastDragged.first, target);
+            _lastDragged = {-1, nullptr};
         }
     }
 }
@@ -1426,7 +1452,7 @@ void PlaylistWidget::togglePopup()
              _playlist->setAttribute(Qt::WA_TransparentForMouseEvents, false);
         });
 #else
-        _toggling = false;
+        _toggling = false;  //条件编译误报(cppcheck)
         _state = State::Opened;
         emit stateChange();
         setGeometry(fixed);

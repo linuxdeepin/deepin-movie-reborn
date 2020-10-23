@@ -46,12 +46,14 @@ class HintFilter: public QObject
 {
     Q_OBJECT
 public:
-    HintFilter(QObject *parent = 0);
+    explicit HintFilter(QObject *parent = nullptr);
     ~HintFilter();
 
     void hideAll();
     bool eventFilter(QObject *obj, QEvent *event);
     void showHitsFor(QWidget *w, QWidget *hint);
+public slots:
+    void slotDelayShowTimerTimeOut();
 private:
     QScopedPointer<HintFilterPrivate> d_ptr;
     Q_DECLARE_PRIVATE_D(qGetPtrHelper(d_ptr), HintFilter)

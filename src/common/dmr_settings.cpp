@@ -32,6 +32,7 @@
 
 #include "dmr_settings.h"
 #include "compositing_manager.h"
+#include "utils.h"
 #include <qsettingbackend.h>
 
 namespace dmr {
@@ -97,6 +98,10 @@ Settings::Settings()
     auto fontFamliy = _settings->option("subtitle.font.family");
     fontFamliy->setData("items", fontDatabase.families());
     //fontFamliy->setValue(0);
+    QFileInfo fi("/dev/mwv206_0");      //景嘉微显卡默认不勾选预览
+    if (fi.exists() && utils::check_wayland_env()) {
+        setInternalOption("mousepreview",false);
+    }
 }
 
 static QString flag2key(Settings::Flag f)

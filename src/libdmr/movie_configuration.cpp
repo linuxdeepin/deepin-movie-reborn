@@ -53,7 +53,7 @@ static QMutex _instLock;
 class MovieConfigurationBackend: public QObject
 {
 public:
-    MovieConfigurationBackend(MovieConfiguration *cfg): QObject(cfg)
+    explicit MovieConfigurationBackend(MovieConfiguration *cfg): QObject(cfg)
     {
         auto db_dir = QString("%1/%2/%3")
                       .arg(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation))
@@ -96,10 +96,10 @@ public:
         }
 
         if (q.numRowsAffected() > 0) {
-            QSqlQuery q(_db);
-            q.prepare("delete from urls where url = ?");
-            q.addBindValue(url);
-            CHECKED_EXEC(q);
+            QSqlQuery q_l(_db);
+            q_l.prepare("delete from urls where url = ?");
+            q_l.addBindValue(url);
+            CHECKED_EXEC(q_l);
         }
     }
 
@@ -214,9 +214,9 @@ MovieConfiguration &MovieConfiguration::get()
 {
     if (_instance == nullptr) {
         QMutexLocker lock(&_instLock);
-        if (_instance == nullptr) {
+//        if (_instance == nullptr) {
             _instance = new MovieConfiguration;
-        }
+//        }
     }
 
     return *_instance;

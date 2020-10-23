@@ -39,26 +39,6 @@
 #undef Bool
 #include <mpv/qthelper.hpp>
 
-#ifdef __x86_64__
-#define LIB_PATH "/lib/x86_64-linux-gnu/libmpv.so.1"
-#endif
-
-#ifdef __sw_64__
-#define LIB_PATH "/lib/sw_64-linux-gnu/libmpv.so.1"
-#endif
-
-#ifdef __aarch64__
-#define LIB_PATH "/lib/aarch64-linux-gnu/libmpv.so.1"
-#endif
-
-#ifdef __mips__
-#define LIB_PATH "/lib/mips64el-linux-gnuabi64/libmpv.so.1"
-#endif
-
-#ifndef LIB_PATH
-#define LIB_PATH "/lib/i386-linux-gnu/libmpv.so.1"
-#endif
-
 typedef mpv_event *(*mpv_waitEvent)(mpv_handle *ctx, double timeout);
 typedef int (*mpv_set_optionString)(mpv_handle *ctx, const char *name, const char *data);
 typedef int (*mpv_setProperty)(mpv_handle *ctx, const char *name, mpv_format format,
@@ -82,16 +62,31 @@ typedef int (*mpvinitialize)(mpv_handle *ctx);
 typedef void (*mpv_freeNode_contents)(mpv_node *node);
 typedef void (*mpv_terminateDestroy)(mpv_handle *ctx);
 
+static QString libPath(const QString &strlib)
+{
+    QDir  dir;
+    QString path  = QLibraryInfo::location(QLibraryInfo::LibrariesPath);
+    dir.setPath(path);
+    QStringList list = dir.entryList(QStringList() << (strlib + "*"), QDir::NoDotAndDotDot | QDir::Files); //filter name with strlib
+    if (list.contains(strlib)) {
+        return strlib;
+    } else {
+        list.sort();
+    }
+
+    Q_ASSERT(list.size() > 0);
+    return list.last();
+}
+
 class myHandle
 {
     struct container {
-        container(mpv_handle *h) : mpv(h) {}
+        explicit container(mpv_handle *h) : mpv(h) {}
         ~container()
         {
-            mpv_terminateDestroy fun = (mpv_terminateDestroy)QLibrary::resolve(LIB_PATH, "mpv_terminate_destroy");
+            mpv_terminateDestroy fun = (mpv_terminateDestroy)QLibrary::resolve(libPath("libmpv.so.1"), "mpv_terminate_destroy");
             fun(mpv);
         }
-
         mpv_handle *mpv;
     };
     QSharedPointer<container> sptr;
@@ -128,7 +123,7 @@ class MpvProxy: public Backend
 
     struct my_node_autofree {
         mpv_node *ptr;
-        my_node_autofree(mpv_node *a_ptr) : ptr(a_ptr) {}
+        explicit my_node_autofree(mpv_node *a_ptr) : ptr(a_ptr) {}
         ~my_node_autofree()
         {
             mpv_freeNode_contents(ptr);
@@ -136,7 +131,7 @@ class MpvProxy: public Backend
     };
 
 public:
-    MpvProxy(QWidget *parent = 0);
+    explicit MpvProxy(QWidget *parent = 0);
     virtual ~MpvProxy();
 
 //    //add by heyi
@@ -215,7 +210,7 @@ public:
     mpv_waitEvent m_waitEvent{nullptr};
     mpv_set_optionString m_setOptionString{nullptr};
     mpv_setProperty m_setProperty{nullptr};
-    mpv_setProperty_async m_setPropertyAsync;
+    mpv_setProperty_async m_setPropertyAsync{nullptr};
     mpv_commandNode m_commandNode{nullptr};
     mpv_commandNode_async m_commandNodeAsync{nullptr};
     mpv_getProperty m_getProperty{nullptr};
@@ -226,6 +221,7 @@ public:
     mpv_setWakeup_callback m_setWakeupCallback{nullptr};
     mpvinitialize m_initialize{nullptr};
     mpv_freeNode_contents m_freeNodecontents{nullptr};
+    void MakeCurrent() override;
 
 public slots:
     void play() override;
@@ -239,6 +235,8 @@ public slots:
     void volumeDown() override;
     void changeVolume(int val) override;
     void toggleMute() override;
+    //lambda表达式改为槽函数
+    void slotStateChanged();
 
 protected:
     void resizeEvent(QResizeEvent *re) override;
@@ -274,6 +272,8 @@ private:
     bool _connectStateChange {false};
 
     bool _pauseOnStart {false};
+
+    bool _isJingJia {false};
 
     mpv_handle *mpv_init();
     void processPropertyChange(mpv_event_property *ev);

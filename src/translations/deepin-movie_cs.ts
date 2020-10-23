@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="cs">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="cs" version="2.1">
 <context>
     <name>QObject</name>
     <message>
@@ -29,7 +27,7 @@
     </message>
     <message>
         <source>Show video preview on mouseover</source>
-        <translation>Ukázat náhled na obraz při přejetí ukazovátka myši</translation>
+        <translation>Ukázat náhled na obraz při najetí ukazatelem myši</translation>
     </message>
     <message>
         <source>Open a new player for each file played</source>
@@ -41,7 +39,7 @@
     </message>
     <message>
         <source>Remember playback position</source>
-        <translation>Zapamatovat si polohu přehrávání</translation>
+        <translation>Zapamatovat si pozici v přehrávání</translation>
     </message>
     <message>
         <source>Path</source>
@@ -85,7 +83,7 @@
     </message>
     <message>
         <source>Restore Defaults</source>
-        <translation>Obnovit výchozí</translation>
+        <translation>Vrátit na výchozí hodnoty</translation>
     </message>
     <message>
         <source>Open file</source>
@@ -157,7 +155,7 @@
     </message>
     <message>
         <source>Film screenshot</source>
-        <translation>Snímek obrazovky filmu</translation>
+        <translation>Snímek obrazovky z filmu</translation>
     </message>
     <message>
         <source>0.5s backward</source>
@@ -197,7 +195,7 @@
     </message>
     <message>
         <source>Film info</source>
-        <translation>Údaje o filmu</translation>
+        <translation>Informace o filmu</translation>
     </message>
     <message>
         <source>Burst shooting</source>
@@ -209,7 +207,7 @@
     </message>
     <message>
         <source>Movie is a full-featured video player, supporting playing local and streaming media in multiple video formats.</source>
-        <translation>Film je plně vybavený přehrávač obrazových záznamů. Podporuje přehrávání místních a vysílaných záznamů nahraných v mnoha obrazových formátech.</translation>
+        <translation>Filmy je plně vybavený přehrávač obrazových záznamů. Podporuje přehrávání místních a vysílaných záznamů nahraných v mnoha obrazových formátech.</translation>
     </message>
     <message>
         <source>OK</source>
@@ -217,11 +215,11 @@
     </message>
     <message>
         <source>Default play mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Výchozí režim přehrávání</translation>
     </message>
     <message>
         <source>Show thumbnails in progress bar</source>
-        <translation type="unfinished"></translation>
+        <translation>Zobrazovat v liště s ukazatelem postupu náhledy</translation>
     </message>
 </context>
 <context>
@@ -232,7 +230,7 @@
     </message>
     <message>
         <source>Please enter the URL:</source>
-        <translation>Zadejte, prosím, adresu (URL):</translation>
+        <translation>Zadejte adresu (URL):</translation>
     </message>
     <message>
         <source>OK</source>
@@ -259,7 +257,7 @@
     </message>
     <message>
         <source>Film info</source>
-        <translation>Údaje o filmu</translation>
+        <translation>Informace o filmu</translation>
     </message>
     <message>
         <source>Open file</source>
@@ -287,11 +285,11 @@
     </message>
     <message>
         <source>Order Play</source>
-        <translation>Seřadit přehrávání</translation>
+        <translation>Přehrávat popořadě</translation>
     </message>
     <message>
         <source>Shuffle Play</source>
-        <translation>Zamíchat přehrávání</translation>
+        <translation>Přehrávat napřeskáčku</translation>
     </message>
     <message>
         <source>Single Play</source>
@@ -299,7 +297,7 @@
     </message>
     <message>
         <source>Single Loop</source>
-        <translation>Jednoduchá smyčka</translation>
+        <translation>Jedna smyčka</translation>
     </message>
     <message>
         <source>List Loop</source>
@@ -351,11 +349,11 @@
     </message>
     <message>
         <source>Load</source>
-        <translation>Nahrát</translation>
+        <translation>Načíst</translation>
     </message>
     <message>
         <source>Online Search</source>
-        <translation>Hledat na internetu</translation>
+        <translation>Hledat na Internetu</translation>
     </message>
     <message>
         <source>Select</source>
@@ -375,7 +373,7 @@
     </message>
     <message>
         <source>Film Screenshot</source>
-        <translation>Snímek obrazovky filmu</translation>
+        <translation>Snímek obrazovky z filmu</translation>
     </message>
     <message>
         <source>Burst Shooting</source>
@@ -407,7 +405,7 @@
     </message>
     <message>
         <source>Open screenshot folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Otevřít složku, ve které se snímek obrazovky nachází</translation>
     </message>
 </context>
 <context>
@@ -433,7 +431,7 @@
     <name>dmr::MainWindow</name>
     <message>
         <source>Load successfully</source>
-        <translation>Nahráno úspěšně!</translation>
+        <translation>Úspěšně načteno</translation>
     </message>
     <message>
         <source>Load failed</source>
@@ -441,7 +439,7 @@
     </message>
     <message>
         <source>Buffering...</source>
-        <translation>Ukládá se do vyrovnávací paměti...</translation>
+        <translation>Ukládá se do vyrovnávací paměti…</translation>
     </message>
     <message>
         <source>No device found</source>
@@ -493,7 +491,7 @@
     </message>
     <message>
         <source>advanced</source>
-        <translation>Pokročeno</translation>
+        <translation>pokročilé</translation>
     </message>
     <message>
         <source>Speed: %1x</source>
@@ -525,7 +523,7 @@
     </message>
     <message>
         <source>No matching online subtitles</source>
-        <translation>Žádné odpovídající titulky na internetu</translation>
+        <translation>Žádné odpovídající titulky na Internetu</translation>
     </message>
     <message>
         <source>Cannot open file or stream</source>
@@ -537,7 +535,7 @@
     </message>
     <message>
         <source>No video file found</source>
-        <translation>Nenalezen žádný soubor se záznamem obrazu</translation>
+        <translation>Nenalezen žádný soubor s videem</translation>
     </message>
     <message>
         <source>Open File</source>
@@ -549,7 +547,7 @@
     </message>
     <message>
         <source>Taking the screenshots, please wait...</source>
-        <translation>Dělá se snímek obrazovky. Počkejte, prosím...</translation>
+        <translation>Pořizování snímku obrazovky – čekejte…</translation>
     </message>
     <message>
         <source>OK</source>
@@ -557,55 +555,51 @@
     </message>
     <message>
         <source>Please insert a CD/DVD</source>
-        <translation>Vložte, prosím, CD/DVD</translation>
+        <translation>Vložte CD/DVD</translation>
     </message>
     <message>
         <source>Reading DVD files...</source>
-        <translation type="unfinished"></translation>
+        <translation>Čtení souborů z DVD…</translation>
     </message>
     <message>
         <source>4K video may be stuck</source>
-        <translation type="unfinished"></translation>
+        <translation>Video s rozlišením 4K se může zasekávat</translation>
     </message>
     <message>
         <source>Please load the video first</source>
-        <translation type="unfinished"></translation>
+        <translation>Nejprve načtěte video</translation>
     </message>
     <message>
         <source>Order play</source>
-        <translation>Nařídit přehrávání</translation>
+        <translation>Přehrávat popořadě</translation>
     </message>
     <message>
         <source>Shuffle play</source>
-        <translation type="unfinished"></translation>
+        <translation>Přehrávat napřeskáčku</translation>
     </message>
     <message>
         <source>Single play</source>
-        <translation type="unfinished"></translation>
+        <translation>Jedno přehrání</translation>
     </message>
     <message>
         <source>Single loop</source>
-        <translation type="unfinished"></translation>
+        <translation>Jediná smyčka</translation>
     </message>
     <message>
         <source>List loop</source>
-        <translation type="unfinished"></translation>
+        <translation>Smyčka nad seznamem</translation>
     </message>
     <message>
         <source>The CD/DVD has been ejected</source>
-        <translation type="unfinished"></translation>
+        <translation>CD/DVD bylo vysunuto</translation>
     </message>
     <message>
         <source>All videos (%2 %1)</source>
-        <translation type="obsolete">Všechna videa (%1) {2 %1)?}</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>All videos (*)(%2 %1)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Please exit smart dock</source>
-        <translation type="unfinished"></translation>
+        <translation>Všechna videa (*)(%2 %1)</translation>
     </message>
 </context>
 <context>
@@ -631,7 +625,7 @@
     <name>dmr::MovieInfoDialog</name>
     <message>
         <source>Film info</source>
-        <translation>Údaje o filmu</translation>
+        <translation>Informace o filmu</translation>
     </message>
     <message>
         <source>Resolution</source>
@@ -651,35 +645,35 @@
     </message>
     <message>
         <source>Path</source>
-        <translation>Cesta</translation>
+        <translation>Popis umístění</translation>
     </message>
     <message>
         <source>Codec info</source>
-        <translation type="unfinished"></translation>
+        <translation>Údaje o kodeku</translation>
     </message>
     <message>
         <source>Video CodecID</source>
-        <translation type="unfinished"></translation>
+        <translation>ID kodeku obrazového záznamu</translation>
     </message>
     <message>
         <source>Video CodeRate</source>
-        <translation type="unfinished"></translation>
+        <translation>Bitová rychlost videa</translation>
     </message>
     <message>
         <source>%1 kbps</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 kB/s</translation>
     </message>
     <message>
         <source>FPS</source>
-        <translation type="unfinished"></translation>
+        <translation>SN/S</translation>
     </message>
     <message>
         <source>%1 fps</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 SZS</translation>
     </message>
     <message>
         <source>Proportion</source>
-        <translation type="unfinished"></translation>
+        <translation>Poměr</translation>
     </message>
     <message>
         <source>%1</source>
@@ -687,39 +681,39 @@
     </message>
     <message>
         <source>Audio info</source>
-        <translation type="unfinished"></translation>
+        <translation>Údaje o zvuku</translation>
     </message>
     <message>
         <source>Audio CodecID</source>
-        <translation type="unfinished"></translation>
+        <translation>Identif. kodeku zvukového záznamu</translation>
     </message>
     <message>
         <source>Audio CodeRate</source>
-        <translation type="unfinished"></translation>
+        <translation>Bitová rychlost zvuku</translation>
     </message>
     <message>
         <source>Audio digit</source>
-        <translation type="unfinished"></translation>
+        <translation>Zvuk číslo</translation>
     </message>
     <message>
         <source>%1 bits</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 bitů</translation>
     </message>
     <message>
         <source>Channels</source>
-        <translation type="unfinished"></translation>
+        <translation>Kanály</translation>
     </message>
     <message>
         <source>%1 channels</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 kanálů</translation>
     </message>
     <message>
         <source>Sampling</source>
-        <translation type="unfinished"></translation>
+        <translation>Vzorkování</translation>
     </message>
     <message>
         <source>%1hz</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 hz</translation>
     </message>
 </context>
 <context>
@@ -763,23 +757,23 @@
     </message>
     <message>
         <source>Order play</source>
-        <translation>Nařídit přehrávání</translation>
+        <translation>Přehrávat popořadě</translation>
     </message>
     <message>
         <source>Shuffle play</source>
-        <translation type="unfinished"></translation>
+        <translation>Přehrávat napřeskáčku</translation>
     </message>
     <message>
         <source>Single play</source>
-        <translation type="unfinished"></translation>
+        <translation>Jedno přehrání</translation>
     </message>
     <message>
         <source>Single loop</source>
-        <translation type="unfinished"></translation>
+        <translation>Jedna smyčka</translation>
     </message>
     <message>
         <source>List loop</source>
-        <translation type="unfinished"></translation>
+        <translation>Smyčka nad seznamem</translation>
     </message>
 </context>
 <context>
@@ -830,7 +824,7 @@
     </message>
     <message>
         <source>list</source>
-        <translation>Seznam</translation>
+        <translation>seznam</translation>
     </message>
     <message>
         <source>Exit fullscreen</source>
@@ -839,10 +833,6 @@
     <message>
         <source>Pause</source>
         <translation>Pozastavit</translation>
-    </message>
-    <message>
-        <source>sub</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

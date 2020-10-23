@@ -27,10 +27,8 @@ void MovieApp::initMpris(const QString &serviceName)
     mprisPlayer->setCanGoNext(true);
     mprisPlayer->setCanGoPrevious(true);
     mprisPlayer->setCanPause(true);
+	connect(mprisPlayer, &MprisPlayer::quitRequested, this, &MovieApp::quit);
 
-    connect(mprisPlayer, &MprisPlayer::quitRequested, this, [ = ]() {
-        quit();
-    });
 
     _presenter->initMpris(mprisPlayer);
 }

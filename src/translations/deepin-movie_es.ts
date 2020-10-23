@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="es">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="es" version="2.1">
 <context>
     <name>QObject</name>
     <message>
@@ -109,11 +107,11 @@
     </message>
     <message>
         <source>Next frame</source>
-        <translation>Siguiente fotograma</translation>
+        <translation>Cuadro siguiente</translation>
     </message>
     <message>
         <source>Previous frame</source>
-        <translation>Anterior fotograma</translation>
+        <translation>Cuadro anterior</translation>
     </message>
     <message>
         <source>Volume down</source>
@@ -173,7 +171,7 @@
     </message>
     <message>
         <source>Exit fullscreen/mini mode</source>
-        <translation>Salir del modo de pantalla completa/mini</translation>
+        <translation>Salir del modo de pantalla completa/miniatura</translation>
     </message>
     <message>
         <source>Movie</source>
@@ -189,7 +187,7 @@
     </message>
     <message>
         <source>Display shortcuts</source>
-        <translation>Atajos de pantalla</translation>
+        <translation>Mostrar atajos</translation>
     </message>
     <message>
         <source>Delete from playlist</source>
@@ -201,7 +199,7 @@
     </message>
     <message>
         <source>Burst shooting</source>
-        <translation>Disparo en ráfagas</translation>
+        <translation>Captura en ráfagas</translation>
     </message>
     <message>
         <source>Size</source>
@@ -209,7 +207,7 @@
     </message>
     <message>
         <source>Movie is a full-featured video player, supporting playing local and streaming media in multiple video formats.</source>
-        <translation>Vídeo es un reproductor de vídeo con todas las funciones, que admite la reproducción de medios locales y de transmisión en múltiples formatos de vídeo.</translation>
+        <translation>Vídeo de Deepin es un reproductor de vídeo completo, que admite la reproducción de medios locales y de Internet en múltiples formatos.</translation>
     </message>
     <message>
         <source>OK</source>
@@ -221,7 +219,7 @@
     </message>
     <message>
         <source>Show thumbnails in progress bar</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar miniaturas en la barra de progreso</translation>
     </message>
 </context>
 <context>
@@ -243,7 +241,7 @@
     <name>dmr::ActionFactory</name>
     <message>
         <source>Settings</source>
-        <translation>Configuración</translation>
+        <translation>Ajustes</translation>
     </message>
     <message>
         <source>Fullscreen</source>
@@ -279,7 +277,7 @@
     </message>
     <message>
         <source>Mini Mode</source>
-        <translation>Modo Miniatura</translation>
+        <translation>Modo miniatura</translation>
     </message>
     <message>
         <source>Play Mode</source>
@@ -303,7 +301,7 @@
     </message>
     <message>
         <source>List Loop</source>
-        <translation>Repetición en lista</translation>
+        <translation>Repetición de lista</translation>
     </message>
     <message>
         <source>Frame</source>
@@ -355,7 +353,7 @@
     </message>
     <message>
         <source>Online Search</source>
-        <translation>Búsqueda en línea</translation>
+        <translation>Buscar en línea</translation>
     </message>
     <message>
         <source>Select</source>
@@ -363,7 +361,7 @@
     </message>
     <message>
         <source>Hide</source>
-        <translation>Esconder</translation>
+        <translation>Ocultar</translation>
     </message>
     <message>
         <source>Encodings</source>
@@ -395,19 +393,19 @@
     </message>
     <message>
         <source>Display in file manager</source>
-        <translation>Mostrar en administrador de archivos</translation>
+        <translation>Mostrar en el administrador de archivos</translation>
     </message>
     <message>
         <source>Next Frame</source>
-        <translation>Próximo cuadro</translation>
+        <translation>Cuadro siguiente</translation>
     </message>
     <message>
         <source>Previous Frame</source>
-        <translation>Cuadro previo</translation>
+        <translation>Cuadro anterior</translation>
     </message>
     <message>
         <source>Open screenshot folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Abrir carpeta de capturas de pantalla</translation>
     </message>
 </context>
 <context>
@@ -437,7 +435,7 @@
     </message>
     <message>
         <source>Load failed</source>
-        <translation>Carga fallida</translation>
+        <translation>La carga falló</translation>
     </message>
     <message>
         <source>Buffering...</source>
@@ -597,15 +595,11 @@
     </message>
     <message>
         <source>All videos (%2 %1)</source>
-        <translation type="obsolete">Todos los vídeos (%1) {2 %1)?}</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>All videos (*)(%2 %1)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Please exit smart dock</source>
-        <translation type="unfinished"></translation>
+        <translation>Todos los vídeos (*)(%2 %1)</translation>
     </message>
 </context>
 <context>
@@ -659,11 +653,11 @@
     </message>
     <message>
         <source>Video CodecID</source>
-        <translation>ID de codec de video</translation>
+        <translation>ID de codec de vídeo</translation>
     </message>
     <message>
         <source>Video CodeRate</source>
-        <translation>Tasa de codec de video</translation>
+        <translation>Tasa de bits de vídeo</translation>
     </message>
     <message>
         <source>%1 kbps</source>
@@ -695,7 +689,7 @@
     </message>
     <message>
         <source>Audio CodeRate</source>
-        <translation>Tasa de codec de audio</translation>
+        <translation>Tasa de bits de audio</translation>
     </message>
     <message>
         <source>Audio digit</source>
@@ -715,7 +709,7 @@
     </message>
     <message>
         <source>Sampling</source>
-        <translation>Sampling</translation>
+        <translation>Muestreo</translation>
     </message>
     <message>
         <source>%1hz</source>
@@ -779,7 +773,7 @@
     </message>
     <message>
         <source>List loop</source>
-        <translation>Bucle en lista</translation>
+        <translation>Bucle de lista</translation>
     </message>
 </context>
 <context>
@@ -839,10 +833,6 @@
     <message>
         <source>Pause</source>
         <translation>Pausar</translation>
-    </message>
-    <message>
-        <source>sub</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

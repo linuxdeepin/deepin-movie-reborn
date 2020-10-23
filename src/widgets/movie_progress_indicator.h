@@ -36,7 +36,7 @@ namespace dmr {
 class MovieProgressIndicator: public QFrame {
     Q_OBJECT
 public:
-    MovieProgressIndicator(QWidget* parent);
+    explicit MovieProgressIndicator(QWidget* parent);
 
 public slots:
     void updateMovieProgress(qint64 duration, qint64 pos);

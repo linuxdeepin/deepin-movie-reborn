@@ -33,7 +33,7 @@
 class VolumeMonitoringPrivate
 {
 public:
-    VolumeMonitoringPrivate(VolumeMonitoring *parent) : q_ptr(parent) {}
+    explicit VolumeMonitoringPrivate(VolumeMonitoring *parent) : q_ptr(parent) {}
 
     QTimer            timer;
 

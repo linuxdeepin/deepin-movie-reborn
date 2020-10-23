@@ -31,7 +31,8 @@
 #define _DMR_PLAYLIST_MODEL_H
 
 #include <QtWidgets>
-#include <QtConcurrent>
+//#include <QtConcurrent>
+#include <DApplicationHelper>
 #include <libffmpegthumbnailer/videothumbnailerc.h>
 
 #include "utils.h"
@@ -79,6 +80,7 @@ struct MovieInfo {
     int aDigit;
     int channels;
     int sampling;
+
     static struct MovieInfo parseFromFile(const QFileInfo &fi, bool *ok = nullptr);
     QString durationStr() const
     {
@@ -124,6 +126,7 @@ struct PlayItemInfo {
     QUrl url;
     QFileInfo info;
     QPixmap thumbnail;
+    QPixmap thumbnail_dark;
     struct MovieInfo mi;
 
     bool refresh();
@@ -155,7 +158,7 @@ public:
     PlayMode playMode() const;
     void setPlayMode(PlayMode pm);
 
-    PlaylistModel(PlayerEngine *engine);
+    explicit PlaylistModel(PlayerEngine *engine);
     ~PlaylistModel();
 
     qint64 getUrlFileTotalSize(QUrl url, int tryTimes) const;
@@ -209,6 +212,8 @@ private slots:
     void onAsyncAppendFinished();
     void onAsyncFinished();
     void onAsyncUpdate(PlayItemInfo);
+    //把lambda表达式改为槽函数，modify by myk
+    void slotStateChanged();
 
 
 signals:
@@ -232,6 +237,7 @@ private:
     int _count {0};
     int _current {-1};
     int _last {-1};
+    bool _hasNormalVideo{false};
     PlayMode _playMode {PlayMode::OrderPlay};
     QList<PlayItemInfo> _infos;
 
@@ -299,16 +305,20 @@ class GetThumanbil : public QThread
 {
     Q_OBJECT
 public:
-    GetThumanbil(PlaylistModel *model, const QList<QUrl> &urls)
+    GetThumanbil(PlaylistModel *model, const QList<QUrl> &urls):m_model(model), m_urls(urls)
     {
-        m_model = model;
-        m_urls = urls;
+//        m_model = model;
+//        m_urls = urls;
         m_mutex = new QMutex;
         m_itemMutex = new QMutex;
     };
     ~GetThumanbil()
     {
         m_stop = true;
+        delete m_mutex;
+        m_mutex = nullptr;
+        delete m_itemMutex;
+        m_itemMutex = nullptr;
     };
     //QList<PlayItemInfo> getInfoList() {return m_itemInfo;}
     void stop()

@@ -37,12 +37,15 @@
 #include "mpv_proxy.h"
 #include "compositing_manager.h"
 
+#include "dguiapplicationhelper.h"
+
 #ifndef _LIBDMR_
 #include "dmr_settings.h"
 #endif
 
 #include "drecentmanager.h"
 DCORE_USE_NAMESPACE
+DGUI_USE_NAMESPACE
 
 namespace dmr {
 
@@ -68,6 +71,7 @@ PlayerEngine::PlayerEngine(QWidget *parent)
         connect(_current, &Backend::mpvWarningLogsChanged, this, &PlayerEngine::mpvWarningLogsChanged);
         connect(_current, &Backend::urlpause, this, &PlayerEngine::urlpause);
         l->addWidget(_current);
+
         //_current->firstInit();
     }
 
@@ -349,13 +353,16 @@ bool PlayerEngine::loadSubtitle(const QFileInfo &fi)
 
     const auto &pmf = _current->playingMovieInfo();
     auto pif = playlist().currentInfo();
+    int i = 0;
     for (const auto &sub : pmf.subs) {
         if (sub["external"].toBool()) {
             auto path = sub["external-filename"].toString();
             if (path == fi.canonicalFilePath()) {
+                this->selectSubtitle(i);
                 return true;
             }
         }
+        ++i;
     }
 
     if (_current->loadSubtitle(fi)) {
@@ -523,8 +530,14 @@ void PlayerEngine::paintEvent(QPaintEvent *e)
             int x = this->rect().center().x() - pix.width() / 2;
             int y = this->rect().center().y() - pix.height() / 2;
 
-            p.fillRect(rect, QBrush(QColor(255, 255, 255)));
-            p.drawPixmap(x, y, pix);
+            if(DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()){
+                p.fillRect(rect, QBrush(QColor(255, 255, 255)));
+                p.drawPixmap(x, y, pix);
+            }
+            else {
+                p.fillRect(rect, QBrush(QColor(0, 0, 0)));
+                p.drawPixmap(x, y, pix);
+            }
         }
     }
     return QWidget::paintEvent(e);
@@ -567,6 +580,9 @@ void PlayerEngine::previousFrame()
 {
     if (!_current) return;
     _current->previousFrame();
+}
+void PlayerEngine::MakeCurrent(){
+    _current->MakeCurrent();
 }
 
 void PlayerEngine::play()
@@ -612,8 +628,12 @@ void PlayerEngine::onPlaylistAsyncAppendFinished(const QList<PlayItemInfo> &pil)
         if (id >= 0) {
             _playlist->changeCurrent(id);
             _pendingPlayReq = QUrl();
+        } else {
+            qInfo() << __func__ << "id is:" << id;
         }
         // else, wait for another signal
+    } else {
+        qInfo() << __func__ << _pendingPlayReq;
     }
 }
 
@@ -621,6 +641,7 @@ void PlayerEngine::playByName(const QUrl &url)
 {
     savePreviousMovieState();
     auto id = _playlist->indexOf(url);
+    qDebug() << __func__ << url << "id:" << id;
     if (id >= 0) {
         _playlist->changeCurrent(id);
     } else {
@@ -630,6 +651,7 @@ void PlayerEngine::playByName(const QUrl &url)
 
 void PlayerEngine::playSelected(int id)
 {
+    qDebug() << __func__ << id;
     savePreviousMovieState();
     _playlist->changeCurrent(id);
 }
@@ -720,6 +742,7 @@ void PlayerEngine::firstInit()
 
 bool PlayerEngine::addPlayFile(const QUrl &url)
 {
+    qDebug() << __func__;
     if (isPlayableFile(url)) {
         if (url.isLocalFile())
             _playlist->appendAsync({url});
@@ -764,6 +787,7 @@ QList<QUrl> PlayerEngine::addPlayDir(const QDir &dir)
 
 QList<QUrl> PlayerEngine::addPlayFiles(const QList<QUrl> &urls)
 {
+    qDebug() << __func__;
     QList<QUrl> valids = collectPlayFiles(urls);
     for (auto &url : valids) {
         QString strtp = url.toLocalFile();
@@ -868,9 +892,9 @@ void PlayerEngine::changeSoundMode(Backend::SoundMode sm)
         _current->changeSoundMode(sm);
 }
 
-void PlayerEngine::resizeEvent(QResizeEvent *re)
+void PlayerEngine::resizeEvent(QResizeEvent *)
 {
-    bool rounded = !window()->isFullScreen() && !window()->isMaximized();
+    bool rounded = !window()->isFullScreen() && !window()->isMaximized();   //条件编译误报
 
 #if !defined(USE_DXCB) && !defined(_LIBDMR_)
     if (rounded) {

@@ -44,6 +44,7 @@
 #include "animationlabel.h"
 #include "volumemonitoring.h"
 #include "diskcheckthread.h"
+#include <QDBusAbstractInterface>
 
 //static const int VOLUME_OFFSET = 40;
 
@@ -80,7 +81,7 @@ class MovieProgressIndicator;
 class IconButton: public DPushButton
 {
 public:
-    IconButton(QWidget *parent = 0): DPushButton(parent) {};
+    explicit IconButton(QWidget *parent = 0): DPushButton(parent), m_themeType(0) {}
 
     void setIcon(QIcon icon)
     {
@@ -124,7 +125,7 @@ class MainWindow: public DMainWindow
     Q_OBJECT
     Q_PROPERTY(bool inited READ inited WRITE setInit NOTIFY initChanged)
 public:
-    MainWindow(QWidget *parent = 0);
+    explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
     bool inited() const
@@ -180,6 +181,7 @@ public:
     //在读取光盘的时候，直接把光盘挂载点的路径加入到播放列表中 thx
     bool addCdromPath();
     void loadPlayList();
+    void setOpenFiles(QStringList&);
 signals:
     void windowEntered();
     void windowLeaved();
@@ -201,8 +203,15 @@ public slots:
     void syncPostion();
     //设置窗口顶层
     void my_setStayOnTop(const QWidget *widget, bool on);
-
-
+    //lambda表达式改为槽函数
+    void slotmousePressTimerTimeOut();
+    void slotPlayerStateChanged();
+    void slotFocusWindowChanged();
+    void slotElapsedChanged();
+    void slotFileLoaded();
+    void slotUrlpause(bool status);
+    void slotFontChanged(const QFont &font);
+    void slotMuteChanged(bool mute);
 protected:
     void showEvent(QShowEvent *event) override;
     void hideEvent(QHideEvent *event) override;
@@ -264,6 +273,8 @@ protected slots:
 
     void updateMiniBtnTheme(int);
     void diskRemoved(QString strDiskName);
+
+    void sleepStateChanged(bool bSleep);
 private:
     void setupTitlebar();
 
@@ -290,6 +301,7 @@ private:
 
     //Limit video to mini mode size
     void LimitWindowize();
+    void mipsShowFullScreen();
 private:
     DFloatingMessage *popup {nullptr};
     QLabel *_fullscreentimelable {nullptr};
@@ -350,6 +362,7 @@ private:
     //add by heyi
     bool m_bMpvFunsLoad {false};
     QPoint posMouseOrigin;
+    QPoint m_pressPoint;
 
     enum StateBeforeEnterMiniMode {
         SBEM_None = 0x0,
@@ -383,18 +396,26 @@ private:
     bool m_IsFree = true;  //播放器是否空闲，和IDel的定义不同
 
     static int _retryTimes;
+    bool _isJinJia = false;//是否是景嘉微显卡
     QTimer _progressTimer;
     //add by heyi 解决触屏右键菜单bug
     int nX = 0, nY = 0;     //左键按下时保存的点
     bool _isTouch = false;          //是否是触摸屏按下
     QTimer _mousePressTimer;
+    qint64 oldDuration = 0;
+    qint64 oldElapsed = 0;
+
     Diskcheckthread m_diskCheckThread;
+    bool _isFileLoadNotFinished{false};
+    QStringList m_openFiles;
+    QString m_currentHwdec;
     bool m_bProgressChanged {false};        //进度条是否被拖动
     bool m_bFirstInit {false};
     bool m_bLastIsTouch {false};
     bool m_bTouchChangeVolume {false};
     bool m_bIsFullSreen {false};
     bool m_bisOverhunderd {false};
+    QDBusInterface* m_pDBus {nullptr};
 };
 };
 

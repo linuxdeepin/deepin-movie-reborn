@@ -30,6 +30,7 @@
 
 #include "config.h"
 #include "compositing_manager.h"
+#include "utils.h"
 #ifndef _LIBDMR_
 #include "options.h"
 #endif
@@ -117,7 +118,8 @@ CompositingManager::CompositingManager()
 {
     _hasCard = false;
     _platform = PlatformChecker().check();
-
+    dmr::utils::first_check_wayland_env();
+    if(!dmr::utils::check_wayland_env()) {
     softDecodeCheck();   //检测是否是kunpeng920（是否走软解码）
 
     _composited = false;
@@ -150,6 +152,8 @@ CompositingManager::CompositingManager()
                 _composited = false;
                 qDebug() << "__mips__";
 #else
+                vector<string> drivers = {"zx"};
+                m_setSpecialControls = m_setSpecialControls && is_card_exists(0, drivers);
                 _composited = true;
                 qDebug() << "__X86__";
 #endif
@@ -218,14 +222,15 @@ CompositingManager::CompositingManager()
     }
 #endif
     qDebug() << "composited:" << _composited;
-    auto e = QProcessEnvironment::systemEnvironment();
-    QString XDG_SESSION_TYPE = e.value(QStringLiteral("XDG_SESSION_TYPE"));
-    QString WAYLAND_DISPLAY = e.value(QStringLiteral("WAYLAND_DISPLAY"));
+    //wayland环境已经检查了，进入此处是肯定为非wayland
+//    auto e = QProcessEnvironment::systemEnvironment();
+//    QString XDG_SESSION_TYPE = e.value(QStringLiteral("XDG_SESSION_TYPE"));
+//    QString WAYLAND_DISPLAY = e.value(QStringLiteral("WAYLAND_DISPLAY"));
 
-    if (XDG_SESSION_TYPE == QLatin1String("wayland") ||
-            WAYLAND_DISPLAY.contains(QLatin1String("wayland"), Qt::CaseInsensitive)) {
-        _composited = false;
-    }
+//    if (XDG_SESSION_TYPE == QLatin1String("wayland") ||
+//            WAYLAND_DISPLAY.contains(QLatin1String("wayland"), Qt::CaseInsensitive)) {
+//        _composited = false;
+//    }
 #if defined (__mips__) || defined (__aarch64__) || defined (__sw_64__)
     if (_composited) {
         _hasCard = _composited;
@@ -233,6 +238,9 @@ CompositingManager::CompositingManager()
         qDebug() << "hasCard: " << _hasCard;
     }
 #endif
+    }else{
+        _composited = true;
+    }
     qDebug() << __func__ << "Composited is " << _composited;
 }
 
@@ -273,9 +281,9 @@ static OpenGLInteropKind _interopKind = OpenGLInteropKind::INTEROP_NONE;
 bool CompositingManager::runningOnVmwgfx()
 {
     static bool s_runningOnVmwgfx = false;
-    static bool s_checked = false;
+//    static bool s_checked = false;
 
-    if (!s_checked) {
+//    if (!s_checked) {
         for (int id = 0; id <= 10; id++) {
             if (!QFile::exists(QString("/sys/class/drm/card%1").arg(id))) break;
             if (is_device_viable(id)) {
@@ -283,7 +291,7 @@ bool CompositingManager::runningOnVmwgfx()
                 s_runningOnVmwgfx = is_card_exists(id, drivers);
                 break;
             }
-        }
+//        }
     }
 
     return s_runningOnVmwgfx;
@@ -306,30 +314,29 @@ bool CompositingManager::runningOnNvidia()
 }
 
 void CompositingManager::softDecodeCheck(){
-//暂时不合
-//    QProcess uname;
-//    char* data = (char*)malloc(100);
-//    uname.start("cat /proc/cpuinfo");
-//    if (uname.waitForStarted()) {
-//        if (uname.waitForFinished()) {
-//            while (uname.readLine(data,99)>0) {
-//                QString strData(data);
-//                QStringList listPara = strData.split(":");
+    QProcess uname;
+    char* data = (char*)malloc(100);
+    uname.start("cat /proc/cpuinfo");
+    if (uname.waitForStarted()) {
+        if (uname.waitForFinished()) {
+            while (uname.readLine(data,99)>0) {
+                QString strData(data);
+                QStringList listPara = strData.split(":");
 
-//                if(listPara.size()<2)
-//                {
-//                    continue;
-//                }
+                if(listPara.size()<2)
+                {
+                    continue;
+                }
 
-//                if(listPara.at(0).contains("model name")
-//                   && listPara.at(1).contains("Kunpeng 920"))
-//                {
-//                    m_bOnlySoftDecode = true;
-//                }
-//            }
-//        }
-//    }
-//    free(data);
+                if(listPara.at(0).contains("model name")
+                   && listPara.at(1).contains("Kunpeng 920"))
+                {
+                    m_bOnlySoftDecode = true;
+                }
+            }
+        }
+    }
+    free(data);
     //浪潮 inspur softdecode
     QProcess inspur;
     inspur.start("cat /sys/class/dmi/id/board_vendor");
@@ -337,11 +344,17 @@ void CompositingManager::softDecodeCheck(){
         QString drv = QString::fromUtf8(inspur.readAllStandardOutput().trimmed().constData());
         qDebug() << "inspur check : " << drv;
         m_bOnlySoftDecode =  m_bOnlySoftDecode || drv.contains("Inspur");
+		m_setSpecialControls = drv.contains("Ruijie");
     }
 }
 
 bool CompositingManager::isOnlySoftDecode(){
     return m_bOnlySoftDecode;
+}
+
+bool CompositingManager::isSpecialControls()
+{
+    return m_setSpecialControls;
 }
 
 void CompositingManager::detectOpenGLEarly()
@@ -513,7 +526,10 @@ bool CompositingManager::is_device_viable(int id)
         }
 
         int enabled = 0;
-        int aa = fscanf(fp, "%d", &enabled);
+        int error = fscanf(fp, "%d", &enabled);
+        if (error < 0) {
+            qInfo() << "someting error";
+        }
         fclose(fp);
 
         // nouveau may write 2, others 1
@@ -539,13 +555,14 @@ bool CompositingManager::isProprietaryDriver()
 //this is not accurate when proprietary driver used
 bool CompositingManager::isDirectRendered()
 {
-    QProcess xdriinfo;
-    xdriinfo.start("xdriinfo driver 0");
-    if (xdriinfo.waitForStarted() && xdriinfo.waitForFinished()) {
-        QString drv = QString::fromUtf8(xdriinfo.readAllStandardOutput().trimmed().constData());
-        qDebug() << "xdriinfo: " << drv;
-        return !drv.contains("not direct rendering capable");
-    }
+//避免klu 上产生xdriinfo的coredump
+//    QProcess xdriinfo;
+//    xdriinfo.start("xdriinfo driver 0");
+//    if (xdriinfo.waitForStarted() && xdriinfo.waitForFinished()) {
+//        QString drv = QString::fromUtf8(xdriinfo.readAllStandardOutput().trimmed().constData());
+//        qDebug() << "xdriinfo: " << drv;
+//        return !drv.contains("not direct rendering capable");
+//    }
 
     return true;
 }

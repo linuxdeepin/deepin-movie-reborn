@@ -57,7 +57,7 @@ class PosterFrame: public QLabel
 {
     Q_OBJECT
 public:
-    PosterFrame(QWidget *parent) : QLabel(parent)
+    explicit PosterFrame(QWidget *parent) : QLabel(parent)
     {
         auto e = new QGraphicsDropShadowEffect(this);
         e->setColor(QColor(0, 0, 0, 76));
@@ -131,7 +131,7 @@ class MovieInfoDialog: public DAbstractDialog
 {
     Q_OBJECT
 public:
-    MovieInfoDialog(const struct PlayItemInfo &);
+    MovieInfoDialog(const struct PlayItemInfo &,QWidget *);
 
 protected:
     void paintEvent(QPaintEvent *ev);
@@ -139,6 +139,8 @@ protected:
 private slots:
     void OnFontChanged(const QFont &font);
     void changedHeight(const int);
+    //把lambda表达式改为槽函数，modify by myk
+    void slotThemeTypeChanged();
 
 private:
     QList<DDrawer *> addExpandWidget(const QStringList &titleList);

@@ -40,6 +40,7 @@
 #include <DPalette>
 #include <DApplicationHelper>
 #include <QGuiApplication>
+#include <QPainterPath>
 #include <QThread>
 
 
@@ -68,9 +69,9 @@ public:
             resetSize();
         });
 
-        auto *bodyShadow = new QGraphicsDropShadowEffect;
+        auto *bodyShadow = new QGraphicsDropShadowEffect(this);
         bodyShadow->setBlurRadius(10.0);
-        bodyShadow->setColor(QColor(0, 0, 0, 0.1 * 255));
+        bodyShadow->setColor(QColor(0, 0, 0, int(0.1 * 255)));
         bodyShadow->setOffset(0, 2.0);
 //        this->setGraphicsEffect(bodyShadow);
     }
@@ -89,7 +90,7 @@ public:
     }
 
 protected:
-    virtual void paintEvent(QPaintEvent *ev)
+    virtual void paintEvent(QPaintEvent *)
     {
         QPainter pt(this);
         pt.setRenderHint(QPainter::Antialiasing);
@@ -162,15 +163,15 @@ class ToolButton: public DIconButton
 {
     Q_OBJECT
 public:
-    explicit ToolButton(QWidget *parent = 0): DIconButton(parent) {}
-    virtual ~ToolButton() {}
+    explicit ToolButton(QWidget *parent = nullptr): DIconButton(parent) {}
+    virtual ~ToolButton(){}
 
     void initToolTip()
     {
         if (nullptr == m_pToolTip) {
             m_pToolTip = new ToolTip;
         }
-    };
+    }
 
     void showToolTip()
     {
@@ -208,14 +209,14 @@ signals:
     void leaved();
 
 protected:
-    void enterEvent(QEvent *ev) override
+    void enterEvent(QEvent *) override
     {
         emit entered();
-    };
-    void leaveEvent(QEvent *ev) override
+    }
+    void leaveEvent(QEvent *) override
     {
         emit leaved();
-    };
+    }
 
 private:
     ToolTip *m_pToolTip {nullptr};
@@ -234,7 +235,7 @@ public:
         Mute
     };
 
-    VolumeButton(QWidget *parent = 0);
+    explicit VolumeButton(QWidget *parent = 0);
     void changeLevel(Level lv);
 
 signals:

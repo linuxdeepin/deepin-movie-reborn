@@ -130,20 +130,20 @@ MpvProxy::~MpvProxy()
 void MpvProxy::initMpvFuns()
 {
     qDebug() << "MpvProxy开始initMpvFuns";
-    m_waitEvent = reinterpret_cast<mpv_waitEvent>(QLibrary::resolve(LIB_PATH, "mpv_wait_event"));
-    m_setOptionString = reinterpret_cast<mpv_set_optionString>(QLibrary::resolve(LIB_PATH, "mpv_set_option_string"));
-    m_setProperty = reinterpret_cast<mpv_setProperty>(QLibrary::resolve(LIB_PATH, "mpv_set_property"));
-    m_setPropertyAsync = reinterpret_cast<mpv_setProperty_async>(QLibrary::resolve(LIB_PATH, "mpv_set_property_async"));
-    m_commandNode = reinterpret_cast<mpv_commandNode>(QLibrary::resolve(LIB_PATH, "mpv_command_node"));
-    m_commandNodeAsync = reinterpret_cast<mpv_commandNode_async>(QLibrary::resolve(LIB_PATH, "mpv_command_node_async"));
-    m_getProperty = reinterpret_cast<mpv_getProperty>(QLibrary::resolve(LIB_PATH, "mpv_get_property"));
-    m_observeProperty = reinterpret_cast<mpv_observeProperty>(QLibrary::resolve(LIB_PATH, "mpv_observe_property"));
-    m_eventName = reinterpret_cast<mpv_eventName>(QLibrary::resolve(LIB_PATH, "mpv_event_name"));
-    m_creat = reinterpret_cast<mpvCreate>(QLibrary::resolve(LIB_PATH, "mpv_create"));
-    m_requestLogMessage = reinterpret_cast<mpv_requestLog_messages>(QLibrary::resolve(LIB_PATH, "mpv_request_log_messages"));
-    m_setWakeupCallback = reinterpret_cast<mpv_setWakeup_callback>(QLibrary::resolve(LIB_PATH, "mpv_set_wakeup_callback"));
-    m_initialize = reinterpret_cast<mpvinitialize>(QLibrary::resolve(LIB_PATH, "mpv_initialize"));
-    m_freeNodecontents = reinterpret_cast<mpv_freeNode_contents>(QLibrary::resolve(LIB_PATH, "mpv_free_node_contents"));
+    m_waitEvent = reinterpret_cast<mpv_waitEvent>(QLibrary::resolve(libPath("libmpv.so.1"), "mpv_wait_event"));
+    m_setOptionString = reinterpret_cast<mpv_set_optionString>(QLibrary::resolve(libPath("libmpv.so.1"), "mpv_set_option_string"));
+    m_setProperty = reinterpret_cast<mpv_setProperty>(QLibrary::resolve(libPath("libmpv.so.1"), "mpv_set_property"));
+    m_setPropertyAsync = reinterpret_cast<mpv_setProperty_async>(QLibrary::resolve(libPath("libmpv.so.1"), "mpv_set_property_async"));
+    m_commandNode = reinterpret_cast<mpv_commandNode>(QLibrary::resolve(libPath("libmpv.so.1"), "mpv_command_node"));
+    m_commandNodeAsync = reinterpret_cast<mpv_commandNode_async>(QLibrary::resolve(libPath("libmpv.so.1"), "mpv_command_node_async"));
+    m_getProperty = reinterpret_cast<mpv_getProperty>(QLibrary::resolve(libPath("libmpv.so.1"), "mpv_get_property"));
+    m_observeProperty = reinterpret_cast<mpv_observeProperty>(QLibrary::resolve(libPath("libmpv.so.1"), "mpv_observe_property"));
+    m_eventName = reinterpret_cast<mpv_eventName>(QLibrary::resolve(libPath("libmpv.so.1"), "mpv_event_name"));
+    m_creat = reinterpret_cast<mpvCreate>(QLibrary::resolve(libPath("libmpv.so.1"), "mpv_create"));
+    m_requestLogMessage = reinterpret_cast<mpv_requestLog_messages>(QLibrary::resolve(libPath("libmpv.so.1"), "mpv_request_log_messages"));
+    m_setWakeupCallback = reinterpret_cast<mpv_setWakeup_callback>(QLibrary::resolve(libPath("libmpv.so.1"), "mpv_set_wakeup_callback"));
+    m_initialize = reinterpret_cast<mpvinitialize>(QLibrary::resolve(libPath("libmpv.so.1"), "mpv_initialize"));
+    m_freeNodecontents = reinterpret_cast<mpv_freeNode_contents>(QLibrary::resolve(libPath("libmpv.so.1"), "mpv_free_node_contents"));
 }
 
 void MpvProxy::firstInit()
@@ -153,10 +153,8 @@ void MpvProxy::firstInit()
         _handle = myHandle::myFromRawHandle(mpv_init());
         if (CompositingManager::get().composited()) {
             _gl_widget = new MpvGLWidget(this, _handle);
-            connect(this, &MpvProxy::stateChanged, [ = ]() {
-                _gl_widget->setPlaying(state() != Backend::PlayState::Stopped);
-                _gl_widget->update();
-            });
+            connect(this, &MpvProxy::stateChanged, this, &MpvProxy::slotStateChanged);
+
 
 #if defined(USE_DXCB) || defined(_LIBDMR_)
             _gl_widget->toggleRoundedClip(false);
@@ -333,7 +331,10 @@ mpv_handle *MpvProxy::mpv_init()
         my_set_property(h, "vo", "libmpv,opengl-cb");
         my_set_property(h, "vd-lavc-dr", "no");
         my_set_property(h, "gpu-sw", "on");
-        //my_set_property(h, "ao", "alsa");
+        //设置alse时，无法使用set_property(h, "audio-client-name", strMovie)设置控制栏中的名字
+	//        if(utils::check_wayland_env()){
+	//            set_property(h, "ao", "alsa");
+	//        }
 #endif
     } else {
 #if defined (__mips__) || defined (__aarch64__)
@@ -352,21 +353,40 @@ mpv_handle *MpvProxy::mpv_init()
 #ifdef MWV206_0
         QFileInfo fi("/dev/mwv206_0");              //景嘉微显卡目前只支持vo=xv，等日后升级代码需要酌情修改。
         if (fi.exists()) {
+            _isJingJia = true;
             my_set_property(h, "hwdec", "vdpau");
             my_set_property(h, "vo", "vdpau");
         } else {
-            auto e = QProcessEnvironment::systemEnvironment();
-            QString XDG_SESSION_TYPE = e.value(QStringLiteral("XDG_SESSION_TYPE"));
-            QString WAYLAND_DISPLAY = e.value(QStringLiteral("WAYLAND_DISPLAY"));
-
-            if (XDG_SESSION_TYPE == QLatin1String("wayland") ||
-                    WAYLAND_DISPLAY.contains(QLatin1String("wayland"), Qt::CaseInsensitive)) {
-                my_set_property(h, "vo", "gpu,x11,xv");
+            if(!utils::check_wayland_env()){
+#if defined (__mips__) || defined (__aarch64__)
+            if (CompositingManager::get().hascard()) {
+                if(CompositingManager::get().isOnlySoftDecode()){
+                    set_property(h, "hwdec", "off");
+                }
+                else{
+                    set_property(h, "hwdec", "auto-safe");
+                }
+                set_property(h, "vo", "gpu");
             } else {
-                my_set_property(h, "vo", "xv");
+                set_property(h, "vo", "xv,x11");
+                //set_property(h, "ao", "alsa");
             }
+#else
+            my_set_property(h, "vo", "xv,x11");
+#endif
+            }else {
+                auto e = QProcessEnvironment::systemEnvironment();
+                QString XDG_SESSION_TYPE = e.value(QStringLiteral("XDG_SESSION_TYPE"));
+                QString WAYLAND_DISPLAY = e.value(QStringLiteral("WAYLAND_DISPLAY"));
 
-        }
+                if (XDG_SESSION_TYPE == QLatin1String("wayland") ||
+                        WAYLAND_DISPLAY.contains(QLatin1String("wayland"), Qt::CaseInsensitive)) {
+                    my_set_property(h, "vo", "gpu,x11,xv");
+                } else {
+                    my_set_property(h, "vo", "xv");
+                }
+            }
+        }    
 #else
         my_set_property(h, "vo", "gpu,xv,x11");
 #endif
@@ -374,11 +394,22 @@ mpv_handle *MpvProxy::mpv_init()
         my_set_property(h, "wid", m_parentWidget->winId());
     }
     if (QFile::exists("/dev/csmcore")) {
-        my_set_property(h, "vo", "x11");
+        my_set_property(h, "vo", "xv,x11");
         my_set_property(h, "hwdec", "auto");
+	if(utils::check_wayland_env()){
+        my_set_property(h, "wid", m_parentWidget->winId());
+	}
+	
     }
     qDebug() << __func__ << my_get_property(h, "vo").toString();
+    qDebug() << __func__ << my_get_property(h, "hwdec").toString();
 
+#ifdef __mips__
+    if (!CompositingManager::get().hascard()) {
+        qInfo() << "修改音视频同步模式";
+        my_set_property(h, "video-sync", "desync");
+    }
+#endif
     //QLocale locale;
     QString strMovie = QObject::tr("Movie");
     /*if (locale.language() == QLocale::Chinese) { //获取系统语言环境
@@ -534,6 +565,10 @@ const PlayingMovieInfo &MpvProxy::playingMovieInfo()
 
 void MpvProxy::handle_mpv_events()
 {
+    if(utils::check_wayland_env() && CompositingManager::get().isTestFlag()){
+        qDebug()<<"not handle mpv events!";
+        return;
+    }
     while (1) {
         mpv_event *ev = m_waitEvent(_handle, 0.0005);
         if (ev->event_id == MPV_EVENT_NONE)
@@ -576,6 +611,7 @@ void MpvProxy::handle_mpv_events()
                          << "codec: " << my_get_property(_handle, "video-codec")
                          << "format: " << my_get_property(_handle, "video-format");
             }
+            if (!_isJingJia) {
 #ifdef __mips__
             qDebug() << "MPV_EVENT_FILE_LOADED __mips__";
             auto codec = my_get_property(_handle, "video-codec").toString();
@@ -598,6 +634,7 @@ void MpvProxy::handle_mpv_events()
                 }
             }
 #endif
+            }
             setState(PlayState::Playing); //might paused immediately
             emit fileLoaded();
             qDebug() << QString("rotate metadata: dec %1, out %2")
@@ -995,6 +1032,12 @@ void MpvProxy::toggleMute()
     my_command(_handle, args);
 }
 
+void MpvProxy::slotStateChanged()
+{
+    _gl_widget->setPlaying(state() != Backend::PlayState::Stopped);
+    _gl_widget->update();
+}
+
 void MpvProxy::play()
 {
     if (!m_bInited) {
@@ -1031,7 +1074,8 @@ void MpvProxy::play()
     if (!_dvdDevice.isEmpty()) {
         opts << QString("dvd-device=%1").arg(_dvdDevice);
     }
-
+//非景嘉微显卡
+    if (!_isJingJia || !utils::check_wayland_env()) {
     // hwdec could be disabled by some codecs, so we need to re-enable it
     if (Settings::get().isSet(Settings::HWAccel)) {
         my_set_property(_handle, "hwdec", "auto-safe");
@@ -1045,6 +1089,7 @@ void MpvProxy::play()
     } else {
         my_set_property(_handle, "hwdec", "off");
     }
+}
 #else
     if (CompositingManager::get().isOnlySoftDecode()) {
         my_set_property(_handle, "hwdec", "off");
@@ -1052,24 +1097,27 @@ void MpvProxy::play()
         my_set_property(_handle, "hwdec", "auto");
     }
 #endif
+    //非景嘉微显卡
+    if (!utils::check_wayland_env() && !_isJingJia) {
 #ifdef __mips__
-    qDebug() << "play __mips__";
-    auto codec = my_get_property(_handle, "video-codec").toString();
-    if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") || codec.toLower().contains("mpeg2video")) {
-        qDebug() << "my_set_property hwdec no";
-        my_set_property(_handle, "hwdec", "no");
-    }
+	qDebug() << "play __mips__";
+	auto codec = my_get_property(_handle, "video-codec").toString();
+	if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") || codec.toLower().contains("mpeg2video")) {
+	qDebug() << "my_set_property hwdec no";
+	my_set_property(_handle, "hwdec", "no");
+	}
 #endif
 #ifdef __aarch64__
-    qDebug() << "MPV_EVENT_FILE_LOADED aarch64";
-    auto codec = my_get_property(_handle, "video-codec").toString();
-    if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") || codec.toLower().contains("mpeg2video")) {
-        qDebug() << "my_set_property hwdec no";
-        my_set_property(_handle, "hwdec", "no");
-        //qDebug() << "my_set_property hwdec auto-safe";
-        //my_set_property(_handle, "hwdec", "auto-safe");
-    }
+	    qDebug() << "MPV_EVENT_FILE_LOADED aarch64";
+	    auto codec = my_get_property(_handle, "video-codec").toString();
+	    if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") || codec.toLower().contains("mpeg2video")) {
+		qDebug() << "my_set_property hwdec no";
+		my_set_property(_handle, "hwdec", "no");
+		//qDebug() << "my_set_property hwdec auto-safe";
+		//my_set_property(_handle, "hwdec", "auto-safe");
+	    }
 #endif
+    }
     if (opts.size()) {
         //opts << "sub-auto=fuzzy";
         args << "replace" << opts.join(',');
@@ -1171,7 +1219,13 @@ qint64 MpvProxy::nextBurstShootPoint()
 
 int MpvProxy::volumeCorrection(int displayVol)
 {
-    int realVol = static_cast<int>((displayVol / 200.0) * 60.0 + 40);
+    int realVol = 0;
+    if(utils::check_wayland_env()){
+        //>100时，mpv按照显示音量：mpv 10：5的比例调节音量
+        realVol = displayVol > 100 ? 100 + (displayVol-100)/10*5 : displayVol;
+    }else{
+        realVol = static_cast<int>((displayVol / 200.0) * 60.0 + 40);
+    }
     return (realVol);
 }
 
@@ -1269,7 +1323,7 @@ QImage MpvProxy::takeOneScreenshot()
         auto img = QImage(static_cast<const uchar *>(data), w, h, stride, QImage::Format_RGB32);
         img.bits();
         int rotationdegree = videoRotation();
-        if (rotationdegree) {
+        if (rotationdegree && CompositingManager::get().composited()) {      //只有opengl窗口需要自己旋转
             QMatrix matrix;
             matrix.rotate(rotationdegree);
             img = QPixmap::fromImage(img).transformed(matrix, Qt::SmoothTransformation).toImage();
@@ -1289,8 +1343,8 @@ void MpvProxy::stepBurstScreenshot()
 
     auto pos = nextBurstShootPoint();
     my_command(_handle, QList<QVariant> {"seek", pos, "absolute"});
-    int tries = 10;
-    while (tries) {
+//    int tries = 10;
+    while (true) {
         mpv_event *ev = m_waitEvent(_handle, 0.005);
         if (ev->event_id == MPV_EVENT_NONE)
             continue;
@@ -1456,6 +1510,10 @@ void MpvProxy::previousFrame()
 
     QList<QVariant> args = { "frame-back-step"};
     my_command(_handle, args);
+}
+
+void MpvProxy::MakeCurrent(){
+    _gl_widget->makeCurrent();
 }
 
 QVariant MpvProxy::getProperty(const QString &name)

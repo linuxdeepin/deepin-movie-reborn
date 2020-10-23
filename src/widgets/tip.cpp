@@ -33,6 +33,7 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QPainter>
+#include <QPainterPath>
 #include <QGraphicsDropShadowEffect>
 #include <QPropertyAnimation>
 #include <QGraphicsOpacityEffect>
@@ -46,7 +47,7 @@ namespace dmr {
 class TipPrivate
 {
 public:
-    TipPrivate(Tip *parent) : q_ptr(parent) {}
+    explicit TipPrivate(Tip *parent) : q_ptr(parent) {}
 
     void setBackgroundImage(const QPixmap &srcPixmap);
 
@@ -116,7 +117,7 @@ Tip::Tip(const QPixmap &icon, const QString &text, QWidget *parent)
 
     adjustSize();
 
-    auto *bodyShadow = new QGraphicsDropShadowEffect;
+    auto *bodyShadow = new QGraphicsDropShadowEffect(this);
     bodyShadow->setBlurRadius(10.0);
     bodyShadow->setColor(QColor(0, 0, 0, static_cast<int>(0.1 * 255)));
     bodyShadow->setOffset(0, 2.0);
@@ -218,7 +219,7 @@ void Tip::paintEvent(QPaintEvent *)
     Q_D(Tip);
 //    QFrame::paintEvent(e);
 //    return;
-    bool outer = true;
+//    bool outer = true;
 
     QPainter painter(this);
     painter.setRenderHints(QPainter::Antialiasing | QPainter::HighQualityAntialiasing);
@@ -252,19 +253,18 @@ void Tip::paintEvent(QPaintEvent *)
     QRectF borderRect = QRectF(rect());
     auto borderRadius = radius;
     QMarginsF borderMargin(penWidthf / 2, penWidthf / 2, penWidthf / 2, penWidthf / 2);
-    if (outer) {
+    ///outer值未改变，不使用条件语句
+//    if (outer) {
         borderRadius += penWidthf / 2;
         borderRect = borderRect.marginsAdded(borderMargin).marginsRemoved(shadowMargins);
-    } else {
-        borderRadius -= penWidthf / 2;
-        borderRect = borderRect.marginsRemoved(borderMargin).marginsRemoved(shadowMargins);
-    }
+//    } else {
+//        borderRadius -= penWidthf / 2;
+//        borderRect = borderRect.marginsRemoved(borderMargin).marginsRemoved(shadowMargins);
+//    }
     borderPath.addRoundedRect(borderRect, borderRadius, borderRadius);
     QPen borderPen(borderColor);
     borderPen.setWidthF(penWidthf);
     painter.strokePath(borderPath, borderPen);
-}
-
 }
 #else
 void Tip::paintEvent(QPaintEvent *)
