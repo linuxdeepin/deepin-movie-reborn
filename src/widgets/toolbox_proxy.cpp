@@ -2462,7 +2462,7 @@ void ToolboxProxy::updateVolumeStateOnStopMode(uint64_t vol){
 void ToolboxProxy::updateFullState()
 {
     bool isFullscreen = window()->isFullScreen();
-    if (isFullscreen) {
+    if (isFullscreen || _fullscreentimelable->isVisible()) {
 //        _fsBtn->setObjectName("UnfsBtn");
         _fsBtn->setIcon(QIcon::fromTheme("dcc_zoomout"));
         _fsBtn->setTooTipText(tr("Exit fullscreen"));
