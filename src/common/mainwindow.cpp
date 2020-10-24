@@ -1026,8 +1026,14 @@ MainWindow::MainWindow(QWidget *parent)
         _retryTimes = 0;
         if (windowState() == Qt::WindowNoState && _lastRectInNormalMode.isValid()) {
             const auto &mi = _engine->playlist().currentInfo().mi;
-            if(utils::check_wayland_env() && !_miniMode)
-                _lastRectInNormalMode.setSize({mi.width, mi.height});
+            if(utils::check_wayland_env() && !_miniMode){
+                if(utils::check_wayland_env()){
+                    //wayland下存在最大化>全屏->全屏->最大化，窗口超出界面问题。且现在用不着videosize大小窗口
+                    _lastRectInNormalMode.setSize({850,600});
+                }else{
+                    _lastRectInNormalMode.setSize({mi.width, mi.height});
+                }
+            }
         }
         this->resizeByConstraints();
         if(utils::check_wayland_env()){
