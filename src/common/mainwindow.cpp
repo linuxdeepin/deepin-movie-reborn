@@ -818,6 +818,14 @@ MainWindow::MainWindow(QWidget *parent)
     //_engine->changeVolume(volume);
 
     m_displayVolume = volume;
+    if(utils::check_wayland_env()){
+        //_engine->changeVolume(volume);
+        _engine->changeVolume(100);
+        if (Settings::get().internalOption("mute").toBool()) {
+            _engine->toggleMute();
+            Settings::get().setInternalOption("mute", _engine->muted());
+        }
+    }
 
     _toolbox = new ToolboxProxy(this, _engine);
     _toolbox->setFocusPolicy(Qt::NoFocus);
@@ -1312,6 +1320,10 @@ bool MainWindow::event(QEvent *ev)
             }
         }
         onWindowStateChanged();
+    }
+
+    if (utils::check_wayland_env() && m_bClosed && _isJinJia && ev->type() == QEvent::MetaCall) {
+        return true;
     }
 
     return DMainWindow::event(ev);
@@ -2403,7 +2415,10 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             m_bIsFullSreen = false;
             if (_lastWindowState == Qt::WindowMaximized) {
                 _maxfornormalflag = true;
-                showNormal();           //直接最大化会失败
+                if(!utils::check_wayland_env()){
+                    //setWindowFlags(Qt::Window);//wayland 代码
+                    showNormal();           //直接最大化会失败
+                }
                 showMaximized();
             } else {
                 setWindowState(windowState() & ~Qt::WindowFullScreen);
@@ -2411,6 +2426,8 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                     setGeometry(_lastRectInNormalMode);
                     move(_lastRectInNormalMode.x(), _lastRectInNormalMode.y());
                     resize(_lastRectInNormalMode.width(), _lastRectInNormalMode.height());
+                    if(utils::check_wayland_env())
+                        _titlebar->setFixedWidth(_lastRectInNormalMode.width());             //bug 39991
                 }
             }
 #ifndef __mips__
@@ -2419,6 +2436,10 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             }
 #endif
         } else {
+            if(utils::check_wayland_env()){
+                _toolbox->setVolSliderHide();
+                _toolbox->setButtonTooltipHide();
+            }
 //            if (/*!_miniMode && (fromUI || isShortcut) && */windowState() == Qt::WindowNoState) {
 //                _lastRectInNormalMode = geometry();
 //            }
@@ -3167,6 +3188,10 @@ void MainWindow::playList(const QList<QString> &l)
 
 void MainWindow::play(const QUrl &url)
 {
+    if(_isFileLoadNotFinished && utils::check_wayland_env()){
+        qDebug()<<__func__ <<"File Load Not Finished!";
+        return;
+    }
     if (!url.isValid())
         return;
 
@@ -3577,8 +3602,14 @@ void MainWindow::slotFileLoaded()
     _retryTimes = 0;
     if (utils::check_wayland_env() && windowState() == Qt::WindowNoState && _lastRectInNormalMode.isValid()) {
         const auto &mi = engine->playlist().currentInfo().mi;
-        if(!_miniMode)
-            _lastRectInNormalMode.setSize({mi.width, mi.height});
+        if(!_miniMode){
+            if(utils::check_wayland_env()){
+                //wayland下存在最大化>全屏->全屏->最小化，窗口超出界面问题。且现在用不着videosize大小窗口
+                _lastRectInNormalMode.setSize({850,600});
+            }else{
+                _lastRectInNormalMode.setSize({mi.width, mi.height});
+            }
+        }
      }
     this->resizeByConstraints();
 
@@ -3992,6 +4023,15 @@ void MainWindow::LimitWindowize()
 
 void MainWindow::resizeEvent(QResizeEvent *ev)
 {
+    qDebug() << __func__ << geometry();
+    if(utils::check_wayland_env()){
+    //    if (_playlist) {
+    //        _playlist->setFixedWidth(this->width() - 20);
+    //    }
+        if (_toolbox) {
+            _toolbox->setFixedWidth(this->width() - 10);
+        }
+    }
 #ifndef __mips__
     if (m_bIsFullSreen) {
         _progIndicator->move(geometry().width() - _progIndicator->width() - 18, 8);
@@ -4759,10 +4799,12 @@ void MainWindow::toggleUIMode()
 
         if (m_bIsFullSreen) {
             _stateBeforeMiniMode |= SBEM_Fullscreen;
-            requestAction(ActionFactory::ToggleFullscreen);
-            //requestAction(ActionFactory::QuitFullscreen);
-            //reflectActionToUI(ActionFactory::ToggleMiniMode);
-            this->setWindowState(Qt::WindowNoState);
+            if(!utils::check_wayland_env()){
+                requestAction(ActionFactory::ToggleFullscreen);
+                //requestAction(ActionFactory::QuitFullscreen);
+                //reflectActionToUI(ActionFactory::ToggleMiniMode);
+                this->setWindowState(Qt::WindowNoState);
+            }
         } else if (isMaximized()) {
             _stateBeforeMiniMode |= SBEM_Maximized;
             showNormal();

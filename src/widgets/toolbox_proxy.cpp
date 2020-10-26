@@ -2228,6 +2228,9 @@ void ToolboxProxy::installHint(QWidget *w, QWidget *hint)
 
 void ToolboxProxy::updateThumbnail()
 {
+    if(utils::check_wayland_env()){
+        return;
+    }
     //如果打开的是音乐
     QString suffix = _engine->playlist().currentInfo().info.suffix();
     foreach (QString sf, _engine->audio_filetypes) {
@@ -2723,7 +2726,7 @@ void ToolboxProxy::updateVolumeState()
 void ToolboxProxy::updateFullState()
 {
     bool isFullscreen = window()->isFullScreen();
-    if (isFullscreen) {
+    if (isFullscreen || _fullscreentimelable->isVisible()) {
 //        _fsBtn->setObjectName("UnfsBtn");
         _fsBtn->setIcon(QIcon::fromTheme("dcc_zoomout"));
         _fsBtn->setTooTipText(tr("Exit fullscreen"));

@@ -302,6 +302,8 @@ private:
     //Limit video to mini mode size
     void LimitWindowize();
     void mipsShowFullScreen();
+    //hide pop windows when dragging window
+    void hidePopWindow();
 private:
     DFloatingMessage *popup {nullptr};
     QLabel *_fullscreentimelable {nullptr};
@@ -353,6 +355,7 @@ private:
     bool _windowAbove {false};
     bool _mouseMoved {false};
     bool _mousePressed {false};
+    bool _isSettingMiniMode{false};
     bool _playlistopen_clicktogglepause {false};
     double _playSpeed {1.0};
 
@@ -406,6 +409,7 @@ private:
     qint64 oldElapsed = 0;
 
     Diskcheckthread m_diskCheckThread;
+    bool m_bClosed {false};      //用于景嘉微显卡下过滤metacall事件
     bool _isFileLoadNotFinished{false};
     QStringList m_openFiles;
     QString m_currentHwdec;
