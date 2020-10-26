@@ -46,6 +46,9 @@ public:
      */
     PlayerEngine& engine();
     void play(const QUrl& url);
+    void DoneCurrent();
+protected:
+    bool eventFilter(QObject *object, QEvent *e);
 
 protected:
     PlayerEngine *_engine {nullptr};

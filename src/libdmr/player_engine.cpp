@@ -554,6 +554,11 @@ void PlayerEngine::MakeCurrent(){
     _current->MakeCurrent();
 }
 
+void PlayerEngine::DoneCurrent()
+{
+    _current->DoneCurrent();
+}
+
 void PlayerEngine::play()
 {
     if (!_current || !_playlist->count()) return;

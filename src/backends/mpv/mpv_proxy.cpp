@@ -1375,6 +1375,11 @@ void MpvProxy::MakeCurrent(){
     _gl_widget->makeCurrent();
 }
 
+void MpvProxy::DoneCurrent()
+{
+    _gl_widget->doneCurrent();
+}
+
 QVariant MpvProxy::getProperty(const QString &name)
 {
     return get_property(_handle, name.toUtf8().data());

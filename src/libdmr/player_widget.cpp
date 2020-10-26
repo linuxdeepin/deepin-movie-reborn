@@ -39,6 +39,8 @@ PlayerWidget::PlayerWidget(QWidget *parent)
     l->setContentsMargins(0, 0, 0, 0);
     l->addWidget(_engine);
     setLayout(l);
+    if(parent)
+        parent->installEventFilter(this);
 }
 
 PlayerWidget::~PlayerWidget() 
@@ -59,6 +61,25 @@ void PlayerWidget::play(const QUrl& url)
         return;
     }
     _engine->playByName(url);
+}
+void PlayerWidget::DoneCurrent()
+{
+    _engine->DoneCurrent();
+}
+
+bool PlayerWidget::eventFilter(QObject *object, QEvent *e)
+{
+    qDebug() << "e->type"<< e->type();
+//    if(e->type() == QEvent::WindowActivate)
+//    {
+//        _engine->MakeCurrent();
+//    }
+    if(e->type() == QEvent::Close)
+    {
+        _engine->DoneCurrent();
+        return true;
+    }
+    return QWidget::eventFilter(object, e);
 }
 
 }
