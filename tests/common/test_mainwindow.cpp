@@ -185,7 +185,7 @@ TEST(MainWindow, movieInfoDialog)
     PlayerEngine *engine  =  w->engine();
 
     QTest::qWait(1000);
-    MovieInfoDialog mid(engine->playlist().currentInfo());
+    MovieInfoDialog mid(engine->playlist().currentInfo(), w);
     mid.show();
 
 //    QPoint point(mid.x(), mid.y());
@@ -301,7 +301,6 @@ TEST(ToolBox, volBtn)
     toolboxProxy->show();
 
     VolumeButton *volBtn = toolboxProxy->volBtn();
-    VolumeSlider *volSlider = toolboxProxy->getVolSlider();
 
     QTest::mouseMove(volBtn, QPoint(), 500);
     QTest::mouseClick(volBtn,Qt::LeftButton,Qt::NoModifier,QPoint(),1000);
