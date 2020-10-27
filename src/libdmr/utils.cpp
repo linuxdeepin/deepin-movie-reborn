@@ -364,9 +364,10 @@ void UnInhibitPower(uint32_t cookie)
 
 void MoveToCenter(QWidget *w)
 {
-    QDesktopWidget *dw = QApplication::desktop();
-    QRect r = dw->availableGeometry(w);
-
+    //QDesktopWidget *dw = QApplication::desktop();
+    //QRect r = dw->availableGeometry(w);
+    //修复双屏问题
+    QRect r = qApp->primaryScreen()->availableGeometry();
     w->move(r.center() - w->rect().center());
 }
 
