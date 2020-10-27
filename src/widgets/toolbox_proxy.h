@@ -47,6 +47,7 @@
 #include "dguiapplicationhelper.h"
 #include "videoboxbutton.h"
 #include "filter.h"
+#include "toolbutton.h"
 
 #include "thumbnail_worker.h"
 
@@ -329,6 +330,13 @@ private:
 //    DIconButton *_playBtn {nullptr};
 //    DIconButton *_prevBtn {nullptr};
 //    DIconButton *_nextBtn {nullptr};
+
+    //lmh0910DButtonBoxButton替换到ButtonBoxButton
+    ButtonToolTip *m_playBtnTip{nullptr};
+    ButtonToolTip *m_prevBtnTip{nullptr};
+    ButtonToolTip *m_nextBtnTip{nullptr};
+    ButtonToolTip *m_fsBtnTip{nullptr};
+    ButtonToolTip *m_listBtnTip{nullptr};
 
     DButtonBoxButton *_playBtn {nullptr};
     DButtonBoxButton *_prevBtn {nullptr};
