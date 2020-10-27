@@ -5,6 +5,7 @@
 #include <QTimer>
 #include <QAbstractButton>
 #include <DSettingsDialog>
+#include <dwidgetstype.h>
 
 #include <unistd.h>
 #include <gtest/gtest.h>
@@ -19,6 +20,7 @@
 #include "src/widgets/movieinfo_dialog.h"
 #include "src/widgets/url_dialog.h"
 #include "src/widgets/dmr_lineedit.h"
+#include "src/common/actions.h"
 
 #include "dmr_settings.h"
 TEST(Settings,settings)
@@ -75,6 +77,19 @@ TEST(MainWindow, mouseSimulate)
     QTest::mouseDClick(w,Qt::LeftButton,Qt::NoModifier,QPoint(),1000);
 }
 
+TEST(MainWindow, mainContextMenu)
+{
+    MainWindow* w = dApp->getMainWindow();
+    w->show();
+
+    QTest::mouseMove(w, QPoint(),300);
+
+    dmr::ActionFactory::get().mainContextMenu()->popup(QCursor::pos());
+    DMenu *menu = dmr::ActionFactory::get().mainContextMenu()->findChild<DMenu *>();
+//    QTest::mouseMove(menu, QPoint(),500);
+    QTest::qWait(3000);
+}
+
 TEST(MainWindow, shortCutPlay)
 {
     MainWindow* w = dApp->getMainWindow();
@@ -101,6 +116,7 @@ TEST(MainWindow, shortCutPlay)
     testEventList.addKeyClick(Qt::Key_F3, Qt::NoModifier, 1000);    //playlist
     testEventList.addKeyClick(Qt::Key_Up, Qt::NoModifier, 500);
     testEventList.addKeyClick(Qt::Key_Enter, Qt::NoModifier, 500);
+    testEventList.addKeyClick(Qt::Key_F3, Qt::NoModifier, 2000);
     testEventList.addKeyClick(Qt::Key_Down, Qt::NoModifier, 500);
     testEventList.addKeyClick(Qt::Key_Delete, Qt::NoModifier, 1000);    //delete from playlist
 
@@ -140,12 +156,12 @@ TEST(MainWindow, shortCutVolumeAndFrame)
 
     //volume
     for (int i = 0; i<5; i++) {
-        testEventList.addKeyClick(Qt::Key_Down, Qt::ControlModifier | Qt::AltModifier, 100);    //volume up
+        testEventList.addKeyClick(Qt::Key_Down, Qt::ControlModifier | Qt::AltModifier, 50);    //volume up
     }
     for (int i = 0; i<2; i++) {
-            testEventList.addKeyClick(Qt::Key_Up, Qt::ControlModifier | Qt::AltModifier, 100);//volume down
+            testEventList.addKeyClick(Qt::Key_Up, Qt::ControlModifier | Qt::AltModifier, 50);//volume down
     }
-    testEventList.addKeyClick(Qt::Key_M, Qt::NoModifier, 1000); //mute
+    testEventList.addKeyClick(Qt::Key_M, Qt::NoModifier, 500); //mute
 
     testEventList.addKeyClick(Qt::Key_Left, Qt::ControlModifier | Qt::ShiftModifier, 500); //last frame
     testEventList.addKeyClick(Qt::Key_Space, Qt::NoModifier, 100); //play

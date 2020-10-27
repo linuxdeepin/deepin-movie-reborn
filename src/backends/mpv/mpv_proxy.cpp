@@ -1074,22 +1074,22 @@ void MpvProxy::play()
     if (!_dvdDevice.isEmpty()) {
         opts << QString("dvd-device=%1").arg(_dvdDevice);
     }
-//非景嘉微显卡
+    //非景嘉微显卡
     if (!_isJingJia || !utils::check_wayland_env()) {
-    // hwdec could be disabled by some codecs, so we need to re-enable it
-    if (Settings::get().isSet(Settings::HWAccel)) {
-        my_set_property(_handle, "hwdec", "auto-safe");
+        // hwdec could be disabled by some codecs, so we need to re-enable it
+        if (Settings::get().isSet(Settings::HWAccel)) {
+            my_set_property(_handle, "hwdec", "auto-safe");
 #if defined (__mips__) || defined (__aarch64__)
-        if (CompositingManager::get().hascard() && !CompositingManager::get().isOnlySoftDecode()) {
-            my_set_property(_handle, "hwdec", "auto");
+            if (CompositingManager::get().hascard() && !CompositingManager::get().isOnlySoftDecode()) {
+                my_set_property(_handle, "hwdec", "auto");
+            } else {
+                my_set_property(_handle, "hwdec", "off");
+            }
+#endif
         } else {
             my_set_property(_handle, "hwdec", "off");
         }
-#endif
-    } else {
-        my_set_property(_handle, "hwdec", "off");
     }
-}
 #else
     if (CompositingManager::get().isOnlySoftDecode()) {
         my_set_property(_handle, "hwdec", "off");

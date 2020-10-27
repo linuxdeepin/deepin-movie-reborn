@@ -64,6 +64,7 @@ static CompositingManager *_compManager = nullptr;
 class PlatformChecker
 {
 public:
+    PlatformChecker(){}
     Platform check()
     {
         QProcess uname;
@@ -477,13 +478,13 @@ bool CompositingManager::isDriverLoadedCorrectly()
     return true;
 }
 
-void CompositingManager::overrideCompositeMode(bool useCompositing)
+/*void CompositingManager::overrideCompositeMode(bool useCompositing)
 {
     if (_composited != useCompositing) {
         qInfo() << "override composited = " << useCompositing;
         _composited = useCompositing;
     }
-}
+}*/
 
 using namespace std;
 

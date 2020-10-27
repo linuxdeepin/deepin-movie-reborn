@@ -53,7 +53,7 @@ public:
     void setAnchorPoint(const QPoint& p) { _anchorPoint = p; }
 
 public slots:
-    void popupWithIcon(const QString& msg, const QPixmap&);
+//    void popupWithIcon(const QString& msg, const QPixmap&);
     void popup(const QString& msg, bool flag = true);
     void updateWithMessage(const QString& newMsg, bool flag = true);
     void syncPosition();

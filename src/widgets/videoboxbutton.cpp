@@ -95,10 +95,10 @@ void VideoBoxButton::setTransparent(bool flag)
     transparent = flag;
 }
 
-void VideoBoxButton::setAutoChecked(bool flag)
+/*void VideoBoxButton::setAutoChecked(bool flag)
 {
     autoChecked = flag;
-}
+}*/
 
 
 

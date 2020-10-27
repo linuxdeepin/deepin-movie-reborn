@@ -271,8 +271,8 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
             option->setValue(name);
             nameLast = name;
         }
-        QFileInfo fm(name);
-        if ((!fm.isReadable() || !fm.isWritable()) && !name.isEmpty()) {
+        QFileInfo fileinfo(name);
+        if ((!fileinfo.isReadable() || !fileinfo.isWritable()) && !name.isEmpty()) {
             prompt->show();
         }
     });
@@ -1430,7 +1430,7 @@ void MainWindow::handleHelpAction()
     reinterpret_cast<_DApplication *>(dapp)->_DApplication::showHelp();
 }
 
-void MainWindow::changedVolume(int vol)
+/*void MainWindow::changedVolume(int vol)
 {
     _engine->changeVolume(vol);
     Settings::get().setInternalOption("global_volume", vol);
@@ -1438,7 +1438,7 @@ void MainWindow::changedVolume(int vol)
         _nwComm->updateWithMessage(tr("Volume: %1%").arg(vol));
     else
         _nwComm->updateWithMessage(tr("Mute"));
-}
+}*/
 
 void MainWindow::changedVolumeSlot(int vol)
 {
@@ -1949,10 +1949,11 @@ bool MainWindow::set_playlistopen_clicktogglepause(bool playlistopen)
     return _playlistopen_clicktogglepause;
 }
 
-NotificationWidget *MainWindow::get_nwComm()
+/*NotificationWidget *MainWindow::get_nwComm()
 {
     return _nwComm;
-}
+}*/
+
 //排列判断(主要针对光驱)
 static bool compareBarData(const QUrl &url1, const QUrl &url2)
 {

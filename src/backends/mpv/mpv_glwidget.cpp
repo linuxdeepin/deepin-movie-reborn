@@ -197,9 +197,9 @@ namespace dmr {
 
     static void* EGLAPIENTRY glMPGetNativeDisplay_EGL(const char* name) {
         qWarning() << __func__ << name;
-        QPlatformNativeInterface* native = QGuiApplication::platformNativeInterface();
+        //QPlatformNativeInterface* native = QGuiApplication::platformNativeInterface();
         //struct wl_display * wl_dpy = (struct wl_display*) (native->nativeResourceForWindow("display",NULL));
-        if (!strcmp(name, "wayland") || !strcmp(name, "wayland")) {
+        if (!strcmp(name, "wayland")) {
             //return (void*)wl_dpy;
             return NULL;
         }

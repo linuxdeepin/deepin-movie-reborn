@@ -264,7 +264,7 @@ signals:
     void sigstartLoad(QSize size);
 
 protected slots:
-    void updatePosition(const QPoint &p);
+//    void updatePosition(const QPoint &p);
     void buttonClicked(QString id);
     void buttonEnter();
     void buttonLeave();

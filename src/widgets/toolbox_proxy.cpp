@@ -1409,14 +1409,14 @@ protected:
 //    }
 
 private slots:
-    void updateBg()
+    /*void updateBg()
     {
-//        if (qApp->theme() == "dark") {
-//            setBackgroundColor(QColor(49, 49, 49, 255 * 9 / 10));
-//        } else {
-//            setBackgroundColor(QColor(255, 255, 255, 255 * 9 / 10));
-//        }
-    }
+        if (qApp->theme() == "dark") {
+            setBackgroundColor(QColor(49, 49, 49, 255 * 9 / 10));
+        } else {
+            setBackgroundColor(QColor(255, 255, 255, 255 * 9 / 10));
+        }
+    }*/
 
     bool eventFilter(QObject *obj, QEvent *e)
     {
@@ -3009,64 +3009,64 @@ void ToolboxProxy::buttonLeave()
     }
 }
 
-void ToolboxProxy::updatePosition(const QPoint &p)
+/*void ToolboxProxy::updatePosition(const QPoint &p)
 {
     QPoint pos(p);
     pos.ry() += _mainWindow->height() - height();
     windowHandle()->setFramePosition(pos);
-}
+}*/
 
-//void ToolboxProxy::paintEvent(QPaintEvent *pe)
-//{
-//    QPainter painter(this);
-//    painter.setRenderHint(QPainter::Antialiasing);
-//    QRectF bgRect;
-//    bgRect.setSize(size());
-//    const QPalette pal = QGuiApplication::palette();//this->palette();
-//    static int offset = 14;
+/*void ToolboxProxy::paintEvent(QPaintEvent *pe)
+{
+    QPainter painter(this);
+    painter.setRenderHint(QPainter::Antialiasing);
+    QRectF bgRect;
+    bgRect.setSize(size());
+    const QPalette pal = QGuiApplication::palette();//this->palette();
+    static int offset = 14;
 
-//    DGuiApplicationHelper::ColorType themeType = DGuiApplicationHelper::instance()->themeType();
-//    QColor *bgColor, outBdColor, inBdColor;
-//    if (themeType == DGuiApplicationHelper::LightType) {
-//        outBdColor = QColor(0, 0, 0, 25);
-//        inBdColor = QColor(247, 247, 247, 0.4 * 255);
-//        bgColor = new QColor(247, 247, 247, 0.8 * 255);
-//    } else if (themeType == DGuiApplicationHelper::DarkType) {
-//        outBdColor = QColor(0, 0, 0, 0.8 * 255);
-//        inBdColor = QColor(255, 255, 255, 0.05 * 255);
-//        bgColor = new QColor(32, 32, 32, 0.9 * 255);
-//    } else {
-//        outBdColor = QColor(0, 0, 0, 25);
-//        inBdColor = QColor(247, 247, 247, 0.4 * 255);
-//        bgColor = new QColor(247, 247, 247, 0.8 * 255);
-//    }
+    DGuiApplicationHelper::ColorType themeType = DGuiApplicationHelper::instance()->themeType();
+    QColor *bgColor, outBdColor, inBdColor;
+    if (themeType == DGuiApplicationHelper::LightType) {
+        outBdColor = QColor(0, 0, 0, 25);
+        inBdColor = QColor(247, 247, 247, 0.4 * 255);
+        bgColor = new QColor(247, 247, 247, 0.8 * 255);
+    } else if (themeType == DGuiApplicationHelper::DarkType) {
+        outBdColor = QColor(0, 0, 0, 0.8 * 255);
+        inBdColor = QColor(255, 255, 255, 0.05 * 255);
+        bgColor = new QColor(32, 32, 32, 0.9 * 255);
+    } else {
+        outBdColor = QColor(0, 0, 0, 25);
+        inBdColor = QColor(247, 247, 247, 0.4 * 255);
+        bgColor = new QColor(247, 247, 247, 0.8 * 255);
+    }
+
+    {
+        QPainterPath pp;
+        pp.setFillRule(Qt::WindingFill);
+        QPen pen(outBdColor, 1);
+        painter.setPen(pen);
+        pp.addRoundedRect(bgRect, RADIUS_MV, RADIUS_MV);
+        painter.fillPath(pp, *bgColor);
+//        painter.drawPath(pp);
+
+        painter.drawLine(offset, rect().y(), width() - offset, rect().y());
+        painter.drawLine(offset, height(), width() - offset, height());
+        painter.drawLine(rect().x(), offset, rect().x(), height() - offset);
+        painter.drawLine(width(), offset, width(), height() - offset);
+    }
 
 //    {
+//        auto view_rect = bgRect.marginsRemoved(QMargins(1, 1, 1, 1));
 //        QPainterPath pp;
 //        pp.setFillRule(Qt::WindingFill);
-//        QPen pen(outBdColor, 1);
-//        painter.setPen(pen);
-//        pp.addRoundedRect(bgRect, RADIUS_MV, RADIUS_MV);
-//        painter.fillPath(pp, *bgColor);
-////        painter.drawPath(pp);
-
-//        painter.drawLine(offset, rect().y(), width() - offset, rect().y());
-//        painter.drawLine(offset, height(), width() - offset, height());
-//        painter.drawLine(rect().x(), offset, rect().x(), height() - offset);
-//        painter.drawLine(width(), offset, width(), height() - offset);
+//        painter.setPen(inBdColor);
+//        pp.addRoundedRect(view_rect, RADIUS_MV, RADIUS_MV);
+//        painter.drawPath(pp);
 //    }
 
-////    {
-////        auto view_rect = bgRect.marginsRemoved(QMargins(1, 1, 1, 1));
-////        QPainterPath pp;
-////        pp.setFillRule(Qt::WindingFill);
-////        painter.setPen(inBdColor);
-////        pp.addRoundedRect(view_rect, RADIUS_MV, RADIUS_MV);
-////        painter.drawPath(pp);
-////    }
-
-//    QWidget::paintEvent(pe);
-//}
+    QWidget::paintEvent(pe);
+}*/
 
 void ToolboxProxy::showEvent(QShowEvent *event)
 {

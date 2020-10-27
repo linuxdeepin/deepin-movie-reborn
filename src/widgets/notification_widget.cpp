@@ -148,7 +148,7 @@ void NotificationWidget::syncPosition(QRect rect)
     }
 }
 
-void NotificationWidget::popupWithIcon(const QString &msg, const QPixmap &pm)
+/*void NotificationWidget::popupWithIcon(const QString &msg, const QPixmap &pm)
 {
     if (!_icon) {
         _icon = new QLabel;
@@ -169,7 +169,7 @@ void NotificationWidget::popupWithIcon(const QString &msg, const QPixmap &pm)
     show();
     raise();
     _timer->start();
-}
+}*/
 
 void NotificationWidget::popup(const QString &msg, bool flag)
 {

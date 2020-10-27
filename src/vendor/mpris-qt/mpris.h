@@ -85,7 +85,7 @@ public:
     explicit Mpris(QObject *parent = 0);
     ~Mpris();
 
-    static QObject *api_factory(QQmlEngine *, QJSEngine *);
+//    static QObject *api_factory(QQmlEngine *, QJSEngine *);
 
     Q_INVOKABLE static QString metadataToString(Metadata metadata);
 

@@ -190,7 +190,7 @@ public:
 
     void switchPosition(int p1, int p2);
 
-    bool hasPendingAppends();
+//    bool hasPendingAppends();
     void handleAsyncAppendResults(QList<PlayItemInfo> &pil);
     struct PlayItemInfo calculatePlayInfo(const QUrl &, const QFileInfo &fi, bool isDvd = false);
     bool getthreadstate();
