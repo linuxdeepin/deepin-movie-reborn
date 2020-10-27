@@ -2332,13 +2332,15 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         if (isFullScreen()) {
             //del by xxj for 36101
             //_quitfullscreenstopflag = true;
+            //quit fullsrceen setWindowState
+            setWindowState(_lastWindowState);
             if (_lastWindowState == Qt::WindowMaximized) {
                 _maxfornormalflag = true;
                 if(!utils::check_wayland_env())
                     setWindowFlags(Qt::Window);
-                showMaximized();
+//                showMaximized();
             } else {
-                setWindowState(windowState() & ~Qt::WindowFullScreen);
+//                setWindowState(windowState() & ~Qt::WindowFullScreen);
                 if (_lastRectInNormalMode.isValid() && !_miniMode && !isMaximized()) {
                     setGeometry(_lastRectInNormalMode);
                     move(_lastRectInNormalMode.x(), _lastRectInNormalMode.y());
@@ -2358,7 +2360,9 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             //可能存在更好的方法（全屏后更新toolbox状态），后期修改
             if (!_toolbox->getbAnimationFinash())
                 return;
-            showFullScreen();
+//            showFullScreen();
+            //set fullsrceen setWindowState
+            setWindowState(windowState() | Qt::WindowFullScreen);
             if (isFullScreen()) {
                 _maxfornormalflag = false;
                 if(_engine->state() != PlayerEngine::CoreState::Idle){
