@@ -4597,7 +4597,7 @@ void MainWindow::toggleUIMode()
                 });
             }
         }
-
+        utils::MoveToCenter(this);//还原Mini模式窗口居中
         _stateBeforeMiniMode = SBEM_None;
     }
 }
