@@ -342,6 +342,7 @@ private:
     };
     int _stateBeforeMiniMode {0};
     Qt::WindowStates _lastWindowState {Qt::WindowNoState};
+    Qt::WindowStates _preMiniWindowState {Qt::WindowNoState};
 
     uint32_t _lastCookie {0};
     uint32_t _powerCookie {0};

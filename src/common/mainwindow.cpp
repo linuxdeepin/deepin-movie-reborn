@@ -1342,22 +1342,8 @@ void MainWindow::onWindowStateChanged()
         if (XDG_SESSION_TYPE == QLatin1String("wayland") ||
                 WAYLAND_DISPLAY.contains(QLatin1String("wayland"), Qt::CaseInsensitive)) {
             if (_miniMode) {
-                this->setWindowState(Qt::WindowMaximized);      //mini model need
-
-                QSize miniModeSize;
-                auto vid_size = _engine->videoSize();
-                qreal ratio = vid_size.width() / (qreal)vid_size.height();
-
-                if (vid_size.width() > vid_size.height()) {
-                    miniModeSize = QSize(380, 380 / ratio);
-                } else {
-                    miniModeSize = QSize(380, 380 * ratio);
-                }
-
-                auto deskGeom = qApp->desktop()->availableGeometry(this);
-                move((deskGeom.width() - this->width()) / 2, (deskGeom.height() - this->height()) / 2);
-                resize(miniModeSize.width(), miniModeSize.height());
-                //this->toggleUIMode();
+//                this->setWindowState(Qt::WindowMaximized);      //mini model need
+//                this->toggleUIMode();
             }
         }
 
@@ -3818,6 +3804,11 @@ void MainWindow::hidePopWindow()
 void MainWindow::resizeEvent(QResizeEvent *ev)
 {
     qDebug() << __func__ << geometry();
+    //窗口状态切换重写  此处处理setWindowState(Qt::WindowMaxizied)会第二次进入resizeevent，若是以后不会第二次进，请酌情删除
+    if(utils::check_wayland_env() && _preMiniWindowState == Qt::WindowMaximized && _preMiniWindowState != _lastWindowState){
+        setWindowState(_preMiniWindowState);
+       _lastWindowState = _preMiniWindowState;
+    }
     if(utils::check_wayland_env()){
     //    if (_playlist) {
     //        _playlist->setFixedWidth(this->width() - 20);
@@ -4441,6 +4432,22 @@ void MainWindow::toggleUIMode()
     }
 
     _miniMode = !_miniMode;
+
+    //窗口状态改变重写
+    if(utils::check_wayland_env()){
+        if(_miniMode){
+            _preMiniWindowState = windowState();
+            setWindowState(Qt::WindowNoState);
+        }else{
+            if(_lastWindowState == Qt::WindowMaximized){
+                _preMiniWindowState = Qt::WindowMaximized;
+                setWindowState(Qt::WindowMaximized);
+            }else{
+                setWindowState(_preMiniWindowState);
+            }
+        }
+    }
+
     //wayland下下面的代码回导致调用hideevent（），用此标记防止切换mini模式播放状态被改变
     _isSettingMiniMode = true;
     if(utils::check_wayland_env()){
@@ -4513,7 +4520,10 @@ void MainWindow::toggleUIMode()
             }
         } else if (isMaximized()) {
             _stateBeforeMiniMode |= SBEM_Maximized;
-            showNormal();
+            //窗口状态改变重写
+            if(!utils::check_wayland_env()){
+                showNormal();
+            }
         } else {
             _lastRectInNormalMode = geometry();
         }
@@ -4551,7 +4561,10 @@ void MainWindow::toggleUIMode()
 
         auto deskGeom = qApp->desktop()->availableGeometry(this);
         move((deskGeom.width() - this->width()) / 2, (deskGeom.height() - this->height()) / 2); //迷你模式下窗口居中 by zhuyuliang
-        resize(geom.width(), geom.height());
+        //窗口状态改变重写
+        if(!utils::check_wayland_env()){
+            resize(geom.width(), geom.height());
+        }
 
         _miniPlayBtn->move(sz.width() - 12 - _miniPlayBtn->width(),
                            sz.height() - 10 - _miniPlayBtn->height());
@@ -4571,16 +4584,32 @@ void MainWindow::toggleUIMode()
             requestAction(ActionFactory::WindowAbove);
         }
         if (_stateBeforeMiniMode & SBEM_Maximized) {
-            showMaximized();
+            //窗口状态改变重写
+            if(!utils::check_wayland_env()){
+                setWindowState(Qt::WindowMaximized);
+            }
+            //setWindowState(Qt::WindowMaximized);
+            //showMaximized();
         } else if (_stateBeforeMiniMode & SBEM_Fullscreen) {
-            requestAction(ActionFactory::ToggleFullscreen);
+            //窗口状态改变重写
+            if(!utils::check_wayland_env()){
+                requestAction(ActionFactory::ToggleFullscreen);
+            }
+           // requestAction(ActionFactory::ToggleFullscreen);
         } else {
             if (_engine->state() == PlayerEngine::Idle && windowState() == Qt::WindowNoState) {
 //                this->setMinimumSize(QSize(1070, 680));
                 this->resize(850, 600);
             } else {
                 if (_lastRectInNormalMode.isValid() /*&& _engine->videoRotation() == 0  by thx*/) {
-                    resize(_lastRectInNormalMode.size());
+                    //窗口状态改变重写
+                    if(utils::check_wayland_env()){
+                        if(_preMiniWindowState == Qt::WindowNoState){
+                            resize(_lastRectInNormalMode.size());
+                        }
+                    }else{
+                        resize(_lastRectInNormalMode.size());
+                    }
                 } else {
                     resizeByConstraints();
                 }
@@ -4597,7 +4626,6 @@ void MainWindow::toggleUIMode()
                 });
             }
         }
-        utils::MoveToCenter(this);//还原Mini模式窗口居中
         _stateBeforeMiniMode = SBEM_None;
     }
 }
