@@ -220,6 +220,7 @@ public:
     bool getVolSliderIsHided();
     void setButtonTooltipHide();
     void updateVolumeStateOnStopMode(uint64_t vol);
+//    void popupVolSlider();
 
      //lmh0910初始化下方按键的tooltip
      void initToolTip();
@@ -242,6 +243,7 @@ public:
 
     void updateSlider();                //根据进度条显示更新影片实际进度
     void initThumb();
+//    void loadVolSlider();
 
     /////add for unit test/////
     DButtonBoxButton* playBtn(){return _playBtn;}
@@ -389,6 +391,7 @@ private:
 
     QPropertyAnimation *paopen;
     QPropertyAnimation *paClose;
+    QPropertyAnimation *pVolAnimation;
 
     QMutex m_listPixmapMutex;       //缩略图list的锁
 
@@ -477,5 +480,9 @@ private:
 #define TOOLBOX_SPACE_HEIGHT 314
 #define TOOLBOX_HEIGHT  80
 #define TOOLBOX_HEIGHT_EXT (TOOLBOX_HEIGHT + TOOLBOX_TOP_EXTENT)
+#define TOOLBOX_BUTTON_WIDTH 50
+#define TOOLBOX_BUTTON_HEIGHT 50
+#define VOLSLIDER_WIDTH 62
+#define VOLSLIDER_HEIGHT 205
 
 #endif /* ifndef _DMR_TOOLBOX_PROXY_H */

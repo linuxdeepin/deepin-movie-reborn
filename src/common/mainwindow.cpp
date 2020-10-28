@@ -1197,7 +1197,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     //_engine->firstInit();
 
-     _toolbox->setDisplayValue(volume);
+    _toolbox->setDisplayValue(volume);
 
     if (Settings::get().internalOption("mute").toBool()) {
         _engine->toggleMute();
