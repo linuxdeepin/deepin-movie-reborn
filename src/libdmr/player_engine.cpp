@@ -758,6 +758,16 @@ QList<QUrl> PlayerEngine::addPlayFiles(const QList<QUrl> &urls)
 {
     qDebug() << __func__;
     QList<QUrl> valids = collectPlayFiles(urls);
+    for (auto &url : valids) {
+        QString strtp = url.toLocalFile();
+        while (QFileInfo(strtp).isSymLink()) {
+            /*****************************
+             * use oringnal path to replace link path
+             * ***************************/
+            strtp = QFileInfo(strtp).symLinkTarget();
+        }
+        url = QUrl::fromLocalFile(strtp);
+    }
     _playlist->appendAsync(valids);
     return valids;
 }
