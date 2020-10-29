@@ -29,6 +29,7 @@
 #include "dbus_adpator.h"
 #include "dmr_settings.h"
 #include "dbusutils.h"
+#include "utils.h"
 
 class VolumeMonitoringPrivate
 {
@@ -117,11 +118,19 @@ void VolumeMonitoring::timeoutSlot()
     //第一次从dbus里获取的音量可能和实际不匹配，若是第一进入就用实际音量 by zhuyuliang
     if (!_bOpened) {
         Q_EMIT volumeChanged(oldVolume.toInt());
-        Q_EMIT muteChanged(muteV.toBool());
+        if(!utils::check_wayland_env()){
+             Q_EMIT muteChanged(muteV.toBool());
+        }else{
+            Q_EMIT muteChanged(muteV.toBool()|| oldVolume.toBool());
+        }
         _bOpened = true;
     } else {
         if (volume != oldVolume)
             Q_EMIT volumeChanged(volume);
-        Q_EMIT muteChanged(muteV.toBool());
+        if(!utils::check_wayland_env()){
+             Q_EMIT muteChanged(muteV.toBool());
+        }else{
+            Q_EMIT muteChanged(muteV.toBool()|| oldVolume.toBool());
+        }
     }
 }
