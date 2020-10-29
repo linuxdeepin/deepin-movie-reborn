@@ -3805,7 +3805,8 @@ void MainWindow::resizeEvent(QResizeEvent *ev)
 {
     qDebug() << __func__ << geometry();
     //窗口状态切换重写  此处处理setWindowState(Qt::WindowMaxizied)会第二次进入resizeevent，若是以后不会第二次进，请酌情删除
-    if(utils::check_wayland_env() && _preMiniWindowState == Qt::WindowMaximized && _preMiniWindowState != _lastWindowState){
+    if(utils::check_wayland_env() && windowState() != Qt::WindowMaximized &&
+            _preMiniWindowState == Qt::WindowMaximized && _preMiniWindowState != _lastWindowState){
         setWindowState(_preMiniWindowState);
        _lastWindowState = _preMiniWindowState;
     }
