@@ -59,7 +59,13 @@ TEST(MainWindow, loadFile)
 
     const auto &valids = engine->addPlayFiles(listPlayFiles);
 
+    QCOMPARE(engine->isPlayableFile(valids[0]), true);
     engine->playByName(valids[0]);
+
+    QTest::qWait(2000);
+    w->move(0,0);
+    QTest::qWait(500);
+    w->resize(800, 600);
 }
 
 TEST(MainWindow, mouseSimulate)
@@ -224,14 +230,28 @@ TEST(MainWindow, UrlDialog)
     LineEdit *lineEdit = uDlg->findChild<LineEdit *>();
 
     QTest::mouseMove(lineEdit, QPoint(), 500);
-    QTest::keyClicks(lineEdit, QString("www.baidu.com"), Qt::NoModifier, 10);
+    QTest::keyClicks(lineEdit,
+                     QString("https://stream7.iqilu.com/10339/upload_transcode/202002/18/20200218093206z8V1JuPlpe.mp4"),
+                     Qt::NoModifier, 10);
 
-    QUrl url = uDlg->url();
-    w->play(url);
+//    QUrl url = uDlg->url();
+//    w->play(url);
 
     QTest::mouseMove(uDlg->getButton(1), QPoint(), 500);
     QTest::mouseClick(uDlg->getButton(1), Qt::LeftButton, Qt::NoModifier,QPoint(), 1000);
+    auto url = uDlg->url();
+    w->play(url);
+}
 
+
+TEST(MainWindow, subtitle)
+{
+    MainWindow* w = dApp->getMainWindow();
+    PlayerEngine* engine =  w->engine();
+
+    engine->loadSubtitle(QFileInfo(QString("/data/home/uos/Videos/subtitle/Hachiko.A.Dog's.Story.ass")));
+
+    QTest::qWait(2000);
 }
 
 TEST(ToolBox, togglePlayList)
@@ -264,6 +284,13 @@ TEST(ToolBox, progBar)
     QPoint point(progBarSlider->slider()->x()+20, progBarSlider->slider()->y());
     QTest::mouseMove(progBarSlider->slider(), point, 1000);
     QTest::mouseClick(progBarSlider->slider(), Qt::LeftButton, Qt::NoModifier, point, 1000);
+
+    QPoint startPoint(progBarSlider->slider()->x()+30, progBarSlider->slider()->y());
+    QPoint endPoint(progBarSlider->slider()->x()+100, progBarSlider->slider()->y());
+    QTest::mouseMove(progBarSlider->slider(), startPoint, 300);
+    QTest::mousePress(progBarSlider->slider(), Qt::LeftButton, Qt::NoModifier, startPoint, 100);
+    QTest::mouseMove(progBarSlider->slider(), endPoint, 500);
+    QTest::mouseRelease(progBarSlider->slider(), Qt::LeftButton, Qt::NoModifier, endPoint, 500);
 }
 
 TEST(ToolBox, playBtnBox)

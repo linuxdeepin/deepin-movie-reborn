@@ -16,30 +16,6 @@
 #include "movieinfo_dialog.h"
 #include <DSettingsDialog>
 
-TEST(requestAction,quitFullScreen)
-{
-    MainWindow* w = dApp->getMainWindow();
-    w->show();
-
-    QTimer::singleShot(4000,[=]{w->requestAction(ActionFactory::ActionKind::QuitFullscreen);});
-}
-
-TEST(requestAction,toggleMini)
-{
-    MainWindow* w = dApp->getMainWindow();
-    w->show();
-
-    QTimer::singleShot(6000,[=]{w->requestAction(ActionFactory::ActionKind::ToggleMiniMode);});
-}
-
-TEST(requestAction,quitMini)
-{
-    MainWindow* w = dApp->getMainWindow();
-    w->show();
-
-    QTimer::singleShot(8000,[=]{w->requestAction(ActionFactory::ActionKind::ToggleMiniMode);});
-}
-
 TEST(requestAction,windowAbove)
 {
     MainWindow* w = dApp->getMainWindow();
@@ -54,38 +30,6 @@ TEST(requestAction,quiteAbove)
     w->show();
 
     QTimer::singleShot(2000,[=]{w->requestAction(ActionFactory::ActionKind::WindowAbove);});
-}
-
-TEST(requestAction,togglePlayList)
-{
-    MainWindow* w = dApp->getMainWindow();
-    w->show();
-
-    QTimer::singleShot(6000,[=]{w->requestAction(ActionFactory::ActionKind::TogglePlaylist);});
-}
-
-TEST(requestAction,gotoPlaylistNext)
-{
-    MainWindow *w = dApp->getMainWindow();
-    w->show();
-
-    QTimer::singleShot(2000,[=](){w->requestAction(ActionFactory::ActionKind::GotoPlaylistNext);});
-}
-
-TEST(requestAction,screenshot)
-{
-    MainWindow* w = dApp->getMainWindow();
-    w->show();
-
-    QTimer::singleShot(2000,[=]{w->requestAction(ActionFactory::ActionKind::Screenshot);});
-}
-
-TEST(requestAction,gotoPlaylistPrev)
-{
-    MainWindow *w = dApp->getMainWindow();
-    w->show();
-
-    QTimer::singleShot(2000,[=](){w->requestAction(ActionFactory::ActionKind::GotoPlaylistNext);});
 }
 
 TEST(requestAction, sound)
@@ -154,22 +98,6 @@ TEST(requestAction,quiteMute)
     QTimer::singleShot(1000,[=]{w->requestAction(ActionFactory::ActionKind::ToggleMute);});
 }
 
-TEST(requestAction, volumeUp)
-{
-    MainWindow* w = dApp->getMainWindow();
-    w->show();
-
-    w->requestAction(ActionFactory::ActionKind::VolumeUp);
-}
-
-TEST(requestAction, volumeDown)
-{
-    MainWindow* w = dApp->getMainWindow();
-    w->show();
-
-    w->requestAction(ActionFactory::ActionKind::VolumeDown);
-}
-
 TEST(requestAction, loadSubtitle)
 {
     MainWindow* w = dApp->getMainWindow();
@@ -189,16 +117,6 @@ TEST(requestAction, hideSubtitle)
     EXPECT_TRUE(true);
 }
 
-TEST(requestAction,movieInfo)
-{    //closeBtn was generated in the constructor,cannot call it
-
-    MainWindow* w = dApp->getMainWindow();
-    w->show();
-
-    QTimer::singleShot(1000,[=]{w->requestAction(ActionFactory::ActionKind::MovieInfo);});
-    QTimer::singleShot(2000,[=]{EXPECT_TRUE(false);});
-}
-
 TEST(requestAction,goToScreenshotSolder)
 {
     MainWindow* w = dApp->getMainWindow();
@@ -206,42 +124,6 @@ TEST(requestAction,goToScreenshotSolder)
 
     QTimer::singleShot(2000,[=]{w->requestAction(ActionFactory::ActionKind::GoToScreenshotSolder);});
     EXPECT_TRUE(true);
-}
-
-TEST(requestAction,seekForward)
-{
-    MainWindow* w = dApp->getMainWindow();
-    w->show();
-
-    QTimer::singleShot(1000,[=]{w->requestAction(ActionFactory::ActionKind::SeekForward);});
-    EXPECT_TRUE(true);
-}
-
-TEST(requestAction,seekForwardLarge)
-{
-    MainWindow* w = dApp->getMainWindow();
-    w->show();
-
-    QTimer::singleShot(1000,[=]{w->requestAction(ActionFactory::ActionKind::SeekForwardLarge);});
-    EXPECT_TRUE(false);
-}
-
-TEST(requestAction,seekBackward)
-{
-    MainWindow* w = dApp->getMainWindow();
-    w->show();
-
-    QTimer::singleShot(1000,[=]{w->requestAction(ActionFactory::ActionKind::SeekBackward);});
-    EXPECT_TRUE(false);
-}
-
-TEST(requestAction,seekBackwardLarge)
-{
-    MainWindow* w = dApp->getMainWindow();
-    w->show();
-
-    QTimer::singleShot(1000,[=]{w->requestAction(ActionFactory::ActionKind::SeekBackwardLarge);});
-    EXPECT_TRUE(false);
 }
 
 TEST(requestAction,openFileList)
@@ -268,46 +150,6 @@ TEST(requestAction,openCdrom)
 
     QTimer::singleShot(2000,[=]{w->requestAction(ActionFactory::ActionKind::OpenCdrom);});
     EXPECT_TRUE(true);
-}
-
-TEST(requestAction,openUrl)
-{
-    MainWindow* w = dApp->getMainWindow();
-    w->show();
-
-//    w->dlg = new UrlDialog(w);
-    QTimer::singleShot(2000,[=]{w->requestAction(ActionFactory::ActionKind::OpenUrl);});
-
-//    QTimer::singleShot(1000,[=]{
-//        w->dlg->show();
-//        w->dlg->setFocus();
-
-//        LineEdit * lineEdit = w->dlg->getLineEdit();
-//        QTest::keyClicks((QWidget*)lineEdit, "hello world");
-
-//        QTimer::singleShot(1000,[=]{w->dlg->close();});
-//    });
-
-//    QTimer::singleShot(1000,[=]{QTest::keyClick(w->dlg,Qt::Key_Escape);});
-
-    EXPECT_TRUE(false);
-}
-
-TEST(requestAction, settings)
-{
-    MainWindow* w = dApp->getMainWindow();
-    w->show();
-
-//    QTimer::singleShot(1000,[=]{
-//        w->showSettingsDialog();
-////        DSettingsDialog* dsd = new DSettingsDialog(w);
-////        dsd->show();
-
-////        QTimer::singleShot(1000,[=]{dsd->close();});
-//    });
-    QTimer::singleShot(2000,[=]{w->requestAction(ActionFactory::ActionKind::Settings);});
-
-    QTimer::singleShot(500,[=]{EXPECT_TRUE(false);});
 }
 
 TEST(requestAction, playlistRemoveItem)

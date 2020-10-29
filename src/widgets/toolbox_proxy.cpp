@@ -2758,17 +2758,7 @@ void ToolboxProxy::updateFullState()
 void ToolboxProxy::updatePlayState()
 {
     if (_engine->state() == PlayerEngine::CoreState::Playing) {
-        //        _playBtn->setObjectName("PauseBtn");
         if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ) {
-//            _playBtn->setPropertyPic(":/icons/deepin/builtin/light/normal/suspend_normal.svg",
-//                                     ":/icons/deepin/builtin/light/normal/suspend_normal.svg",
-//                                     ":/icons/deepin/builtin/light/press/suspend_press.svg");
-//            _prevBtn->setPropertyPic(":/icons/deepin/builtin/light/normal/last_normal.svg",
-//                                     ":/icons/deepin/builtin/light/normal/last_normal.svg",
-//                                     ":/icons/deepin/builtin/light/press/last_press.svg");
-//            _nextBtn->setPropertyPic(":/icons/deepin/builtin/light/normal/next_normal.svg",
-//                                     ":/icons/deepin/builtin/light/normal/next_normal.svg",
-//                                     ":/icons/deepin/builtin/light/press/next_press.svg");
             DPalette pa;
             pa = _palyBox->palette();
             pa.setColor(DPalette::Light, QColor(255, 255, 255, 255));
@@ -2792,16 +2782,6 @@ void ToolboxProxy::updatePlayState()
             _listBtn->setPalette(pa);
 
         } else {
-//            _playBtn->setPropertyPic(":/icons/deepin/builtin/dark/normal/suspend_normal.svg",
-//                                     ":/icons/deepin/builtin/dark/normal/suspend_normal.svg",
-//                                     ":/icons/deepin/builtin/dark/press/suspend_press.svg");
-//            _prevBtn->setPropertyPic(":/icons/deepin/builtin/dark/normal/last_normal.svg",
-//                                     ":/icons/deepin/builtin/dark/normal/last_normal.svg",
-//                                     ":/icons/deepin/builtin/dark/press/last_press.svg");
-//            _nextBtn->setPropertyPic(":/icons/deepin/builtin/dark/normal/next_normal.svg",
-//                                     ":/icons/deepin/builtin/dark/normal/next_normal.svg",
-//                                     ":/icons/deepin/builtin/dark/press/next_press.svg");
-
             DPalette pa;
             pa = _palyBox->palette();
             pa.setColor(DPalette::Light, QColor(0, 0, 0, 255));
@@ -2823,8 +2803,6 @@ void ToolboxProxy::updatePlayState()
             pa.setColor(DPalette::Light, QColor(0, 0, 0, 255));
             pa.setColor(DPalette::Dark, QColor(0, 0, 0, 255));
             _listBtn->setPalette(pa);
-
-
         }
         _playBtn->setIcon(QIcon::fromTheme("dcc_suspend", QIcon(":/icons/deepin/builtin/light/normal/suspend_normal.svg")));
 	//lmh0910wayland下用这一套tooltip
