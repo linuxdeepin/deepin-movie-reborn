@@ -212,6 +212,7 @@ public slots:
     void slotUrlpause(bool status);
     void slotFontChanged(const QFont &font);
     void slotMuteChanged(bool mute);
+    void slotAwaacelModeChanged(const QString &key, const QVariant &value);     //改变硬解码模式
 protected:
     void showEvent(QShowEvent *event) override;
     void hideEvent(QHideEvent *event) override;
@@ -298,6 +299,7 @@ private:
     void setAudioVolume(int);
     void setMusicMuted(bool muted);
     void popupAdapter(QIcon, QString);
+    void setHwaccelMode(const QVariant &value = -1);
 
     //Limit video to mini mode size
     void LimitWindowize();

@@ -52,7 +52,6 @@ public:
         PreviewOnMouseover,
         MultipleInstance,
         PauseOnMinimize,
-        HWAccel,
     };
 
     static Settings &get();
@@ -110,6 +109,7 @@ signals:
     void subtitleChanged(const QString &, const QVariant &);
     void defaultplaymodechanged(const QString &, const QVariant &);
     void baseMuteChanged(const QString &, const QVariant &);
+    void hwaccelModeChanged(const QString &, const QVariant &);
 
 private:
     Settings();

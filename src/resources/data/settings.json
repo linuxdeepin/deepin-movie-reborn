@@ -118,9 +118,9 @@
                         },
                         {
                             "key": "hwaccel",
-                            "type": "checkbox",
-                            "hide": true,
-                            "default": true
+                            "name": "Hardware acceleration settings",
+                            "type": "combobox",
+                            "default": 0
                         }
                     ]
                 },

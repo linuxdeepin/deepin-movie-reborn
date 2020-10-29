@@ -136,6 +136,8 @@ public:
     int volume() const;
     bool muted() const;
 
+    void changehwaccelMode(Backend::hwaccelMode hwaccelMode);
+
     PlaylistModel &playlist() const
     {
         return *_playlist;

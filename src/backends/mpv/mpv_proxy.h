@@ -197,6 +197,7 @@ public:
 
     void nextFrame() override;
     void previousFrame() override;
+    void changehwaccelMode(hwaccelMode hwaccelMode) override;
 public:
     //add by heyi
     QVariant my_get_property(mpv_handle *ctx, const QString &name) const;
@@ -285,6 +286,7 @@ private:
     qint64 nextBurstShootPoint();
     int volumeCorrection(int);
     bool m_bInited {false};
+    bool m_bHwaccelAuto {true};   //如果设置为不为自动，则不允许此类改变硬件设置
 };
 
 }

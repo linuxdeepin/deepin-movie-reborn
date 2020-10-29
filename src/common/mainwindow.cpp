@@ -1136,7 +1136,9 @@ MainWindow::MainWindow(QWidget *parent)
 //    popup->hide(); //This causes the first screenshot icon to move down
 
     defaultplaymodeinit();
+    setHwaccelMode();
     connect(&Settings::get(), &Settings::defaultplaymodechanged, this, &MainWindow::slotdefaultplaymodechanged);
+    connect(&Settings::get(), &Settings::hwaccelModeChanged, this, &MainWindow::slotAwaacelModeChanged);
 
     connect(this, &MainWindow::playlistchanged, _toolbox, &ToolboxProxy::updateplaylisticon);
 
@@ -3660,6 +3662,16 @@ void MainWindow::slotMuteChanged(bool mute)
     changedMute(mute);
 }
 
+void MainWindow::slotAwaacelModeChanged(const QString &key, const QVariant &value)
+{
+    if (key != "base.play.hwaccel") {
+        qDebug() << "Settings key error";
+        return;
+    }
+
+    setHwaccelMode(value);
+}
+
 void MainWindow::checkErrorMpvLogsChanged(const QString prefix, const QString text)
 {
     QString errorMessage(text);
@@ -4599,6 +4611,28 @@ void MainWindow::popupAdapter(QIcon icon, QString text)
     popup->move((width() - popup->width()) / 2 + geometry().x(), height() - 137 + geometry().y());
 #endif
     popup->show();
+}
+
+void MainWindow::setHwaccelMode(const QVariant &value)
+{
+    QString strHeaccelMode;
+    auto mode_opt = Settings::get().settings()->option("base.play.hwaccel");
+
+    if(value == -1){
+        strHeaccelMode = mode_opt->data("items").toStringList()[mode_opt->value().toInt()];
+    }
+    else {
+        strHeaccelMode = mode_opt->data("items").toStringList()[value.toInt()];
+    }
+    if (strHeaccelMode == tr("Auto")) {
+        _engine->changehwaccelMode(Backend::hwaccelAuto);
+    }
+    else if (strHeaccelMode == tr("Open")) {
+        _engine->changehwaccelMode(Backend::hwaccelOpen);
+    }
+    else if (strHeaccelMode == tr("Close")) {
+        _engine->changehwaccelMode(Backend::hwaccelClose);
+    }
 }
 
 

@@ -216,58 +216,53 @@ mpv_handle *MpvProxy::mpv_init()
     my_set_property(h, "hwdec", "auto-safe");
 
 #else
-    if (Settings::get().isSet(Settings::HWAccel)) {
-        if (composited) {
-            auto disable = Settings::get().disableInterop();
-            auto forced = Settings::get().forcedInterop();
+    if (composited) {
+        auto disable = Settings::get().disableInterop();
+        auto forced = Settings::get().forcedInterop();
 
-            auto interop = QString::fromUtf8("auto");
-            switch (CompositingManager::get().interopKind()) {
-            case OpenGLInteropKind::INTEROP_AUTO:
-                interop = QString::fromUtf8("auto");
-                break;
+        auto interop = QString::fromUtf8("auto");
+        switch (CompositingManager::get().interopKind()) {
+        case OpenGLInteropKind::INTEROP_AUTO:
+            interop = QString::fromUtf8("auto");
+            break;
 
-            case OpenGLInteropKind::INTEROP_VAAPI_EGL:
-                interop = QString::fromUtf8("vaapi-egl");
-                break;
+        case OpenGLInteropKind::INTEROP_VAAPI_EGL:
+            interop = QString::fromUtf8("vaapi-egl");
+            break;
 
-            case OpenGLInteropKind::INTEROP_VAAPI_GLX:
-                interop = QString::fromUtf8("vaapi-glx");
-                break;
+        case OpenGLInteropKind::INTEROP_VAAPI_GLX:
+            interop = QString::fromUtf8("vaapi-glx");
+            break;
 
-            case OpenGLInteropKind::INTEROP_VDPAU_GLX:
-                interop = QString::fromUtf8("vdpau-glx");
-                break;
+        case OpenGLInteropKind::INTEROP_VDPAU_GLX:
+            interop = QString::fromUtf8("vdpau-glx");
+            break;
 
-            default:
-                break;
+        default:
+            break;
 
-            }
+        }
 
-            if (!forced.isEmpty()) {
-                QStringList valids {"vaapi-egl", "vaapi-glx", "vdpau-glx", "auto"};
-                if (valids.contains(forced)) {
-                    interop = forced;
-                }
-            }
-
-            if (!disable) {
-                my_set_property(h, "gpu-hwdec-interop", interop.toUtf8().constData());
-                qDebug() << "-------- set gpu-hwdec-interop = " << interop
-                         << (forced.isEmpty() ? "[detected]" : "[forced]");
-            } else {
-                qDebug() << "-------- gpu-hwdec-interop is disabled by user";
+        if (!forced.isEmpty()) {
+            QStringList valids {"vaapi-egl", "vaapi-glx", "vdpau-glx", "auto"};
+            if (valids.contains(forced)) {
+                interop = forced;
             }
         }
 
-        if (CompositingManager::get().isOnlySoftDecode()) {
-            my_set_property(h, "hwdec", "off");
+        if (!disable) {
+            my_set_property(h, "gpu-hwdec-interop", interop.toUtf8().constData());
+            qDebug() << "-------- set gpu-hwdec-interop = " << interop
+                     << (forced.isEmpty() ? "[detected]" : "[forced]");
         } else {
-            my_set_property(h, "hwdec", "auto-safe");
+            qDebug() << "-------- gpu-hwdec-interop is disabled by user";
         }
+    }
 
-    } else {
+    if (CompositingManager::get().isOnlySoftDecode()) {
         my_set_property(h, "hwdec", "off");
+    } else {
+        my_set_property(h, "hwdec", "auto-safe");
     }
 #endif
 #ifdef __aarch64__
@@ -1075,48 +1070,54 @@ void MpvProxy::play()
         opts << QString("dvd-device=%1").arg(_dvdDevice);
     }
     //非景嘉微显卡
-    if (!_isJingJia || !utils::check_wayland_env()) {
-        // hwdec could be disabled by some codecs, so we need to re-enable it
-        if (Settings::get().isSet(Settings::HWAccel)) {
-            my_set_property(_handle, "hwdec", "auto-safe");
-#if defined (__mips__) || defined (__aarch64__)
-            if (CompositingManager::get().hascard() && !CompositingManager::get().isOnlySoftDecode()) {
-                my_set_property(_handle, "hwdec", "auto");
+    if(m_bHwaccelAuto)
+    {
+        if (!_isJingJia || !utils::check_wayland_env()) {
+            // hwdec could be disabled by some codecs, so we need to re-enable it
+                my_set_property(_handle, "hwdec", "auto-safe");
+    #if defined (__mips__) || defined (__aarch64__)
+                if (CompositingManager::get().hascard() && !CompositingManager::get().isOnlySoftDecode()) {
+                    my_set_property(_handle, "hwdec", "auto");
+                } else {
+                    my_set_property(_handle, "hwdec", "off");
+                }
+    #endif
             } else {
                 my_set_property(_handle, "hwdec", "off");
             }
-#endif
-        } else {
-            my_set_property(_handle, "hwdec", "off");
-        }
     }
 #else
-    if (CompositingManager::get().isOnlySoftDecode()) {
-        my_set_property(_handle, "hwdec", "off");
-    } else {
-        my_set_property(_handle, "hwdec", "auto");
+    if(m_bHwaccelAuto)
+    {
+        if (CompositingManager::get().isOnlySoftDecode()) {
+            my_set_property(_handle, "hwdec", "off");
+        } else {
+            my_set_property(_handle, "hwdec", "auto");
+        }
     }
 #endif
     //非景嘉微显卡
     if (!utils::check_wayland_env() && !_isJingJia) {
-#ifdef __mips__
-	qDebug() << "play __mips__";
-	auto codec = my_get_property(_handle, "video-codec").toString();
-	if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") || codec.toLower().contains("mpeg2video")) {
-	qDebug() << "my_set_property hwdec no";
-	my_set_property(_handle, "hwdec", "no");
-	}
-#endif
-#ifdef __aarch64__
-	    qDebug() << "MPV_EVENT_FILE_LOADED aarch64";
-	    auto codec = my_get_property(_handle, "video-codec").toString();
-	    if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") || codec.toLower().contains("mpeg2video")) {
-		qDebug() << "my_set_property hwdec no";
-		my_set_property(_handle, "hwdec", "no");
-		//qDebug() << "my_set_property hwdec auto-safe";
-		//my_set_property(_handle, "hwdec", "auto-safe");
-	    }
-#endif
+        if(m_bHwaccelAuto)
+        {
+            qDebug() << "play __mips__";
+            auto codec = my_get_property(_handle, "video-codec").toString();
+            if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") || codec.toLower().contains("mpeg2video")) {
+            qDebug() << "my_set_property hwdec no";
+            my_set_property(_handle, "hwdec", "no");
+            }
+        }
+        if(m_bHwaccelAuto)
+        {
+            qDebug() << "MPV_EVENT_FILE_LOADED aarch64";
+            auto codec = my_get_property(_handle, "video-codec").toString();
+            if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") || codec.toLower().contains("mpeg2video")) {
+            qDebug() << "my_set_property hwdec no";
+            my_set_property(_handle, "hwdec", "no");
+            //qDebug() << "my_set_property hwdec auto-safe";
+            my_set_property(_handle, "hwdec", "auto-safe");
+            }
+        }
     }
     if (opts.size()) {
         //opts << "sub-auto=fuzzy";
@@ -1510,6 +1511,28 @@ void MpvProxy::previousFrame()
 
     QList<QVariant> args = { "frame-back-step"};
     my_command(_handle, args);
+}
+
+void MpvProxy::changehwaccelMode(hwaccelMode hwaccelMode)
+{
+    if(!m_bInited){
+        firstInit();
+        m_bInited = true;
+    }
+
+    switch (hwaccelMode) {
+    case hwaccelAuto:
+        m_bHwaccelAuto = true;
+        break;
+    case hwaccelOpen:
+        m_bHwaccelAuto = false;
+        my_set_property(_handle, "hwdec", "auto");
+        break;
+    case hwaccelClose:
+        m_bHwaccelAuto = false;
+        my_set_property(_handle, "hwdec", "off");
+        break;
+    }
 }
 
 void MpvProxy::MakeCurrent(){

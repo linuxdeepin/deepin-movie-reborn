@@ -120,6 +120,63 @@ bool PlayerEngine::isPlayableFile(const QUrl &url)
 
 static QStringList suffixes;
 
+//static const QStringList &buildPlayableDatabase()
+//{
+//    static QStringList mimeTypes = {
+//        "application/ogg",
+//        "application/vnd.apple.mpegurl",
+//        "application/vnd.rn-realmedia",
+//        "application/x-extension-mp4",
+//        "application/x-flac",
+//        "application/x-matroska",
+//        "application/x-ogg",
+//        "application/xspf+xml",
+//        "image/vnd.rn-realpix",
+//        "misc/ultravox",
+//        "video/3gpp",
+//        "video/dv",
+//        "video/mp2t",
+//        "video/mp4",
+//        "video/mp4v-es",
+//        "video/mpeg",
+//        "video/msvideo",
+//        "video/ogg",
+//        "video/quicktime",
+//        "video/vnd.rn-realvideo",
+//        "video/webm",
+//        "video/x-anim",
+//        "video/x-avi",
+//        "video/x-flc",
+//        "video/x-fli",
+//        "video/x-flv",
+//        "video/x-m4v",
+//        "video/x-matroska",
+//        "video/x-mpeg",
+//        "video/x-mpeg2",
+//        "video/x-ms-afs",
+//        "video/x-ms-asf",
+//        "video/x-msvideo",
+//        "video/x-ms-wmv",
+//        "video/x-ms-wmx",
+//        "video/x-ms-wvxvideo",
+//        "video/x-nsv",
+//        "video/x-ogm+ogg",
+//        "video/x-theora",
+//        "video/x-theora+ogg",
+//        "x-content/video-dvd",
+//        "x-content/video-svcd",
+//        "x-content/video-vcd",
+//        "x-scheme-handler/mms",
+//        "x-scheme-handler/rtmp",
+//        "x-scheme-handler/rtsp",
+//    };
+
+//    if (suffixes.isEmpty()) {
+//    }
+
+//    return suffixes;
+//}
+
 bool PlayerEngine::isPlayableFile(const QString &name)
 {
     bool bRes = true;
@@ -434,6 +491,12 @@ bool PlayerEngine::muted() const
 {
     if (!_current) return false;
     return _current->muted();
+}
+
+void PlayerEngine::changehwaccelMode(Backend::hwaccelMode hwaccelMode)
+{
+    if (!_current) return;
+    return _current->changehwaccelMode(hwaccelMode);
 }
 
 void PlayerEngine::toggleMute()
