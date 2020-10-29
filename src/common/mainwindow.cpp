@@ -834,12 +834,12 @@ MainWindow::MainWindow(QWidget *parent)
     connect(_engine, &PlayerEngine::stateChanged, this, &MainWindow::slotPlayerStateChanged);
 
 
-    connect(ActionFactory::get().mainContextMenu(), &DMenu::triggered,
-            this, &MainWindow::menuItemInvoked);
-    connect(this, &MainWindow::frameMenuEnable,
-            &ActionFactory::get(), &ActionFactory::frameMenuEnable);
-    connect(ActionFactory::get().playlistContextMenu(), &DMenu::triggered,
-            this, &MainWindow::menuItemInvoked);
+    connect(ActionFactory::get().mainContextMenu(), &DMenu::triggered, this, &MainWindow::menuItemInvoked);
+
+    connect(this, &MainWindow::frameMenuEnable, &ActionFactory::get(), &ActionFactory::frameMenuEnable);
+    connect(this, &MainWindow::playSpeedMenuEnable, &ActionFactory::get(), &ActionFactory::playSpeedMenuEnable);
+
+    connect(ActionFactory::get().playlistContextMenu(), &DMenu::triggered, this, &MainWindow::menuItemInvoked);
     connect(qApp, &QGuiApplication::focusWindowChanged, this, &MainWindow::slotFocusWindowChanged);
 
 
@@ -932,6 +932,7 @@ MainWindow::MainWindow(QWidget *parent)
             _fullscreentimelable->close();
             _progIndicator->setVisible(false);
             emit frameMenuEnable(false);
+            emit playSpeedMenuEnable(false);
         }
 #endif
         if (_engine->state() == PlayerEngine::CoreState::Playing) {
@@ -943,6 +944,7 @@ MainWindow::MainWindow(QWidget *parent)
             _miniPlayBtn->setObjectName("MiniPauseBtn");
 
             emit frameMenuEnable(true);
+            emit playSpeedMenuEnable(true);
             if (_lastCookie > 0) {
                 utils::UnInhibitStandby(_lastCookie);
                 qDebug() << "uninhibit cookie" << _lastCookie;
@@ -1006,13 +1008,15 @@ MainWindow::MainWindow(QWidget *parent)
     connect(_engine, &PlayerEngine::stateChanged, this, &MainWindow::updateActionsState);
     updateActionsState();
 
+    reflectActionToUI(ActionFactory::OneTimes); //重置播放速度为1倍速
     reflectActionToUI(ActionFactory::DefaultFrame);
     //reflectActionToUI(ActionFactory::OrderPlay);
     reflectActionToUI(ActionFactory::Stereo);
     //requestAction(ActionFactory::ChangeSubCodepage, false, {"auto"});
 
     _lightTheme = Settings::get().internalOption("light_theme").toBool();
-    if (_lightTheme) reflectActionToUI(ActionFactory::LightTheme);
+    if (_lightTheme)
+        reflectActionToUI(ActionFactory::LightTheme);
     prepareSplashImages();
 
     connect(_engine, &PlayerEngine::sidChanged, [ = ]() {
@@ -1913,6 +1917,15 @@ void MainWindow::reflectActionToUI(ActionFactory::ActionKind kd)
     }
 
     case ActionFactory::ActionKind::Stereo:
+    case ActionFactory::ActionKind::OneTimes: {
+        acts = ActionFactory::get().findActionsByKind(kd);
+        auto p = acts.begin();
+        auto old = (*p)->isEnabled();
+        (*p)->setEnabled(false);
+        (*p)->setChecked(!(*p)->isChecked());
+        (*p)->setEnabled(old);
+        break;
+    }
     case ActionFactory::ActionKind::DefaultFrame: {
         qDebug() << __func__ << kd;
         acts = ActionFactory::get().findActionsByKind(kd);
@@ -2528,6 +2541,39 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     case ActionFactory::ActionKind::ListLoop: {
         Settings::get().setInternalOption("playmode", 4);
         _engine->playlist().setPlayMode(PlaylistModel::PlayMode::ListLoop);
+        break;
+    }
+
+    case ActionFactory::ActionKind::ZeroPointFiveTimes: {
+        if(_engine->state() != PlayerEngine::CoreState::Idle){
+            _playSpeed = 0.5;
+            _engine->setPlaySpeed(_playSpeed);
+            _nwComm->updateWithMessage(tr("Speed: %1x").arg(_playSpeed));
+        }
+        break;
+    }
+    case ActionFactory::ActionKind::OneTimes: {
+        if(_engine->state() != PlayerEngine::CoreState::Idle){
+            _playSpeed = 1.0;
+            _engine->setPlaySpeed(_playSpeed);
+            _nwComm->updateWithMessage(tr("Speed: %1x").arg(_playSpeed));
+        }
+        break;
+    }
+    case ActionFactory::ActionKind::OnePointFiveTimes: {
+        if(_engine->state() != PlayerEngine::CoreState::Idle){
+            _playSpeed = 1.5;
+            _engine->setPlaySpeed(_playSpeed);
+            _nwComm->updateWithMessage(tr("Speed: %1x").arg(_playSpeed));
+        }
+        break;
+    }
+    case ActionFactory::ActionKind::Double: {
+        if(_engine->state() != PlayerEngine::CoreState::Idle){
+            _playSpeed = 2.0;
+            _engine->setPlaySpeed(_playSpeed);
+            _nwComm->updateWithMessage(tr("Speed: %1x").arg(_playSpeed));
+        }
         break;
     }
 

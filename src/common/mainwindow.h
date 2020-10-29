@@ -187,6 +187,7 @@ signals:
     void windowLeaved();
     void initChanged();
     void frameMenuEnable(bool);
+    void playSpeedMenuEnable(bool);
     void playlistchanged();
 
 public slots:

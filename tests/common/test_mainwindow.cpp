@@ -75,9 +75,9 @@ TEST(MainWindow, mouseSimulate)
     w->show();
 
     QTest::qWait(3000); //等待加载胶片进度条
-    QTest::mouseMove(w, QPoint(),300);
-    QTest::mouseClick(w,Qt::LeftButton,Qt::NoModifier,QPoint(),500);//pause
-    QTest::mouseClick(w,Qt::LeftButton,Qt::NoModifier,QPoint(),1000);//play
+    QTest::mousePress(w, Qt::LeftButton, Qt::NoModifier, QPoint(), 500);
+    QTest::mouseMove(w, QPoint(w->pos().x()+40, w->pos().y()+50), 300);
+    QTest::mouseRelease(w, Qt::LeftButton, Qt::NoModifier, QPoint(), 1000);
 
     QTest::mouseDClick(w,Qt::LeftButton,Qt::NoModifier,QPoint(),1000);  //fullscreen
     QTest::mouseDClick(w,Qt::LeftButton,Qt::NoModifier,QPoint(),1000);
@@ -93,7 +93,11 @@ TEST(MainWindow, mainContextMenu)
     dmr::ActionFactory::get().mainContextMenu()->popup(QCursor::pos());
     DMenu *menu = dmr::ActionFactory::get().mainContextMenu()->findChild<DMenu *>();
 //    QTest::mouseMove(menu, QPoint(),500);
-    QTest::qWait(3000);
+//    QTest::qWait(3000);
+
+    QTest::mouseMove(w, QPoint(w->pos().x()-20, w->pos().y()), 500);
+    QTest::mouseClick(w, Qt::LeftButton, Qt::NoModifier, QPoint(), 500);//pause
+    QTest::mouseClick(w, Qt::LeftButton, Qt::NoModifier, QPoint(), 1000);//play
 }
 
 TEST(MainWindow, shortCutPlay)

@@ -96,6 +96,12 @@ public:
         SingleLoop,
         ListLoop,
 
+        //play speed
+        ZeroPointFiveTimes,
+        OneTimes,
+        OnePointFiveTimes,
+        Double,
+
         //frame
         DefaultFrame,
         Ratio4x3Frame,
@@ -165,6 +171,7 @@ public:
 
 signals:
     void frameMenuEnable(bool);
+    void playSpeedMenuEnable(bool);
 private:
     ActionFactory() {}
     DMenu *_titlebarMenu {nullptr};
