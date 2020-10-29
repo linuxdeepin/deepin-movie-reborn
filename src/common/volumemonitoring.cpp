@@ -121,7 +121,7 @@ void VolumeMonitoring::timeoutSlot()
         if(!utils::check_wayland_env()){
              Q_EMIT muteChanged(muteV.toBool());
         }else{
-            Q_EMIT muteChanged(muteV.toBool()|| oldVolume.toBool());
+            Q_EMIT muteChanged(muteV.toBool()|| oldMute.toBool());
         }
         _bOpened = true;
     } else {
@@ -130,7 +130,7 @@ void VolumeMonitoring::timeoutSlot()
         if(!utils::check_wayland_env()){
              Q_EMIT muteChanged(muteV.toBool());
         }else{
-            Q_EMIT muteChanged(muteV.toBool()|| oldVolume.toBool());
+            Q_EMIT muteChanged(muteV.toBool()|| oldMute.toBool());
         }
     }
 }
