@@ -235,7 +235,8 @@ public:
         auto t = new Tip(QPixmap(), _pif.mi.title, NULL);
         t->setWindowFlags(Qt::ToolTip | Qt::CustomizeWindowHint);
         t->setText(_pif.mi.title);
-        t->resetSize(QApplication::desktop()->availableGeometry().width());
+        //主副屏切换问题
+        t->resetSize(qApp->primaryScreen()->availableGeometry().width());
         t->setAttribute(Qt::WA_TranslucentBackground);
         t->setProperty("for", QVariant::fromValue<QWidget *>(this));
         t->layout()->setContentsMargins(5, 10, 5, 10);

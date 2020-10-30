@@ -1040,8 +1040,8 @@ MainWindow::MainWindow(QWidget *parent)
         QDesktopWidget desktop;
             if (desktop.screenCount() > 1) {
                 if (!isFullScreen() && !isMaximized() && !_miniMode) {
-                    auto geom = qApp->desktop()->availableGeometry(this);
-                    move((geom.width() - this->width()) / 2, (geom.height() - this->height()) / 2);
+                    //主副屏切换问题
+                    utils::MoveToCenter(this);
                 }
             } else {
 //                utils::MoveToCenter(this);
@@ -1180,7 +1180,9 @@ MainWindow::MainWindow(QWidget *parent)
         _toolbox->getfullscreentimeLabelend()->setMinimumWidth(fm.width(_toolbox->getfullscreentimeLabelend()->text()));
 
         int pixelsWidth = _toolbox->getfullscreentimeLabel()->width() + _toolbox->getfullscreentimeLabelend()->width();
-        QRect deskRect = QApplication::desktop()->availableGeometry();
+        //主副屏切换问题
+        //QRect deskRect = QApplication::desktop()->availableGeometry();
+        QRect deskRect = qApp->primaryScreen()->availableGeometry();
         _fullscreentimelable->setGeometry(deskRect.width() - pixelsWidth - 32, 40, pixelsWidth + 32, 36);
     });
 
@@ -1397,8 +1399,10 @@ void MainWindow::onWindowStateChanged()
         }
     }
     if (isMaximized()) {
-        _animationlable->move(QPoint(QApplication::desktop()->availableGeometry().width() / 2 - 100
-                                     , QApplication::desktop()->availableGeometry().height() / 2 - 100));
+        //主副屏切换问题
+        auto rect = qApp->primaryScreen()->availableGeometry();
+        _animationlable->move(QPoint(rect.width() / 2 - 100
+                                     , rect.height() / 2 - 100));
     }
     if (!isFullScreen() && !isMaximized() && !_miniMode) {
         _animationlable->move(QPoint((_lastRectInNormalMode.width() - _animationlable->width()) / 2,
@@ -2353,7 +2357,8 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                 _maxfornormalflag = false;
                 if(_engine->state() != PlayerEngine::CoreState::Idle){
                     int pixelsWidth = _toolbox->getfullscreentimeLabel()->width() + _toolbox->getfullscreentimeLabelend()->width();
-                    QRect deskRect = QApplication::desktop()->availableGeometry();
+                    //主副屏切换问题
+                    QRect deskRect = qApp->primaryScreen()->availableGeometry();
                     _fullscreentimelable->setGeometry(deskRect.width() - pixelsWidth - 60, 40, pixelsWidth + 60, 36);
                     _fullscreentimelable->show();
                 }
@@ -2364,8 +2369,10 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             reflectActionToUI(kd);
         }
         if (isFullScreen()) {
-            _animationlable->move(QPoint(QApplication::desktop()->availableGeometry().width() / 2 - _animationlable->width() / 2
-                                         , QApplication::desktop()->availableGeometry().height() / 2 - _animationlable->height() / 2));
+            //主副屏切换问题
+//            _animationlable->move(QPoint(QApplication::desktop()->availableGeometry().width() / 2 - _animationlable->width() / 2
+//                                         , QApplication::desktop()->availableGeometry().height() / 2 - _animationlable->height() / 2));
+            utils::MoveToCenter(_animationlable);
         } else {
             _animationlable->move(QPoint((width() - _animationlable->width()) / 2,
                                          (height() - _animationlable->height()) / 2));
@@ -3736,7 +3743,8 @@ void MainWindow::updateSizeConstraints()
 //        }
     } else {
         if (_engine->state() != PlayerEngine::CoreState::Idle) {
-            auto dRect = DApplication::desktop()->availableGeometry();
+            //主副屏切换问题
+            auto dRect = qApp->primaryScreen()->availableGeometry();
             auto sz = _engine->videoSize();
             if (sz.width() == 0 || sz.height() == 0) {
                 m = QSize(614, 500);
@@ -4412,7 +4420,8 @@ void MainWindow::paintEvent(QPaintEvent *pe)
 void MainWindow::toggleUIMode()
 {
     //判断窗口是否靠边停靠（靠边停靠不支持MINI模式）thx
-    QRect deskrect = QApplication::desktop()->availableGeometry();
+    //主副屏切换问题
+    QRect deskrect = qApp->primaryScreen()->availableGeometry();
     QPoint windowPos = pos();
     if (this->geometry() != deskrect) {
         if (windowPos.x() == 0 && (windowPos.y() == 0 ||
@@ -4560,8 +4569,9 @@ void MainWindow::toggleUIMode()
             geom.moveTo(geom.x(), 0);
         }
 
-        auto deskGeom = qApp->desktop()->availableGeometry(this);
-        move((deskGeom.width() - this->width()) / 2, (deskGeom.height() - this->height()) / 2); //迷你模式下窗口居中 by zhuyuliang
+//        auto deskGeom = qApp->desktop()->availableGeometry(this);
+//        move((deskGeom.width() - this->width()) / 2, (deskGeom.height() - this->height()) / 2); //迷你模式下窗口居中 by zhuyuliang
+        utils::MoveToCenter(this);
         //窗口状态改变重写
         if(!utils::check_wayland_env()){
             resize(geom.width(), geom.height());

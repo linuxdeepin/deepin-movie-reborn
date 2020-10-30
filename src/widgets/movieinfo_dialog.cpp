@@ -431,7 +431,8 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif,QWidget *parent)
         m_strFilePath = tmp->text();
         filePathLbl->setToolTip(tmp->text());
         auto t = new Tip(QPixmap(), tmp->text(), nullptr);
-        t->resetSize(QApplication::desktop()->availableGeometry().width());
+        //主副屏切换问题
+        t->resetSize(qApp->primaryScreen()->availableGeometry().width());
         t->setProperty("for", QVariant::fromValue<QWidget *>(filePathLbl));
         filePathLbl->setProperty("HintWidget", QVariant::fromValue<QWidget *>(t));
         filePathLbl->installEventFilter(th);
