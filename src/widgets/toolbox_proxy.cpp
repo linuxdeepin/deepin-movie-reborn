@@ -448,7 +448,7 @@ class SliderTime: public DArrowRectangle
 public:
     SliderTime(): DArrowRectangle(DArrowRectangle::ArrowBottom)
     {
-        setFocusPolicy(Qt::NoFocus);
+        //setFocusPolicy(Qt::NoFocus);
         setAttribute(Qt::WA_DeleteOnClose);
         setWindowFlag(Qt::WindowStaysOnTopHint);
         resize(_miniSize);
@@ -561,7 +561,7 @@ public:
         matrix.rotate(180);
         QPixmap pixmap = utils::LoadHiDPIPixmap(SLIDER_ARROW);
         _sliderArrowUp = new DArrowRectangle(DArrowRectangle::ArrowTop);
-        _sliderArrowUp->setFocusPolicy(Qt::NoFocus);
+        //_sliderArrowUp->setFocusPolicy(Qt::NoFocus);
         _sliderArrowUp->setAttribute(Qt::WA_DeleteOnClose);
         _sliderArrowUp->setWindowFlag(Qt::WindowStaysOnTopHint);
         _sliderArrowUp->setArrowWidth(10);
@@ -1145,7 +1145,7 @@ public:
         setShadowXOffset(0);
         setArrowWidth(20);
         setArrowHeight(15);
-        setFocusPolicy(Qt::NoFocus);
+        //setFocusPolicy(Qt::NoFocus);
         hide();
 
         auto *l = new QVBoxLayout(this);
@@ -1892,7 +1892,7 @@ void ToolboxProxy::setup()
     _progBar->setObjectName("MovieProgress");
     _progBar->slider()->setOrientation(Qt::Horizontal);
     _progBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-    _progBar->slider()->setFocusPolicy(Qt::FocusPolicy::NoFocus);
+    //_progBar->slider()->setFocusPolicy(Qt::FocusPolicy::NoFocus);
 //    _progBar->setFixedHeight(60);
 //    _progBar->setFixedWidth(584);
 //    _progBar->setFixedWidth(1450);
@@ -1920,7 +1920,7 @@ void ToolboxProxy::setup()
 
     _viewProgBar = new ViewProgBar(_progBar, bot_toolWgt);
 //    _viewProgBar->hide();
-    _viewProgBar->setFocusPolicy(Qt::NoFocus);
+    //_viewProgBar->setFocusPolicy(Qt::NoFocus);
 //    _viewProgBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     connect(_viewProgBar, &ViewProgBar::leaveViewProgBar, this, &ToolboxProxy::slotLeaveViewProgBar);
 
@@ -2070,9 +2070,9 @@ void ToolboxProxy::setup()
     list.append(_nextBtn);
     _palyBox->setButtonList(list, false);
 //    _palyBox->setFocusPolicy(Qt::FocusPolicy::NoFocus);
-    _nextBtn->setFocusPolicy(Qt::FocusPolicy::NoFocus);
-    _playBtn->setFocusPolicy(Qt::FocusPolicy::NoFocus);
-    _prevBtn->setFocusPolicy(Qt::FocusPolicy::NoFocus);
+//    _nextBtn->setFocusPolicy(Qt::FocusPolicy::NoFocus);
+//    _playBtn->setFocusPolicy(Qt::FocusPolicy::NoFocus);
+//    _prevBtn->setFocusPolicy(Qt::FocusPolicy::NoFocus);
 
 //    bot->addStretch();
 
@@ -2087,7 +2087,7 @@ void ToolboxProxy::setup()
     _subBtn->setIconSize(QSize(36, 36));
     _subBtn->setFixedSize(50, 50);
     _subBtn->initToolTip();
-    _subBtn->setFocusPolicy(Qt::FocusPolicy::NoFocus);
+    //_subBtn->setFocusPolicy(Qt::FocusPolicy::NoFocus);
     connect(_subBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_subBtn, "sub");
     _right->addWidget(_subBtn);
@@ -2096,13 +2096,13 @@ void ToolboxProxy::setup()
 
     _volBtn = new VolumeButton(bot_toolWgt);
     _volBtn->setFixedSize(50, 50);
-    _volBtn->setFocusPolicy(Qt::FocusPolicy::NoFocus);
+    //_volBtn->setFocusPolicy(Qt::FocusPolicy::NoFocus);
 //    connect(_volBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
 //    signalMapper->setMapping(_volBtn, "vol");
 //    _right->addWidget(_volBtn);
     if (CompositingManager::get().composited()) {
         _volSlider = new VolumeSlider(_engine, _mainWindow, _mainWindow);
-        _volSlider->setFocusPolicy(Qt::FocusPolicy::NoFocus);
+        //_volSlider->setFocusPolicy(Qt::FocusPolicy::NoFocus);
 //        _volSlider->setWindowFlags(Qt::WindowStaysOnTopHint);
 
         connect(_volBtn, &VolumeButton::clicked, this, &ToolboxProxy::slotVolumeButtonClicked);
@@ -2117,7 +2117,7 @@ void ToolboxProxy::setup()
 //        installHint(_volBtn, _volSlider);
 #else
         _volSlider = new VolumeSlider(_engine, _mainWindow, _mainWindow);
-        _volSlider->setFocusPolicy(Qt::FocusPolicy::NoFocus);
+        //_volSlider->setFocusPolicy(Qt::FocusPolicy::NoFocus);
 //        _volSlider->setWindowFlag(Qt::WindowStaysOnTopHint);
         connect(_volBtn, &VolumeButton::clicked, this, &ToolboxProxy::slotVolumeButtonClicked);
 
@@ -2141,7 +2141,7 @@ void ToolboxProxy::setup()
     _fsBtn->setIconSize(QSize(36, 36));
     _fsBtn->setFixedSize(50, 50);
     _fsBtn->initToolTip();
-    _fsBtn->setFocusPolicy(Qt::FocusPolicy::NoFocus);
+    //_fsBtn->setFocusPolicy(Qt::FocusPolicy::NoFocus);
     connect(_fsBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_fsBtn, "fs");
 
@@ -2155,7 +2155,7 @@ void ToolboxProxy::setup()
     _listBtn->setIconSize(QSize(36, 36));
     _listBtn->setFixedSize(50, 50);
     _listBtn->initToolTip();
-    _listBtn->setFocusPolicy(Qt::FocusPolicy::NoFocus);
+    //_listBtn->setFocusPolicy(Qt::FocusPolicy::NoFocus);
 //    _listBtn->setFocusPolicy(Qt::FocusPolicy::TabFocus);
     _listBtn->setCheckable(true);
 
