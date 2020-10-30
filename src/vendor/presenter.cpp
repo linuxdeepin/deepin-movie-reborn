@@ -32,7 +32,7 @@ void Presenter::initMpris(MprisPlayer *mprisPlayer)
     }
     m_mprisplayer = mprisPlayer;
     connect(_mw->engine(), &PlayerEngine::stateChanged, this, &Presenter::slotstateChanged);
-    connect(mprisPlayer, &MprisPlayer::playRequested, this, &Presenter::slotpause);
+    connect(mprisPlayer, &MprisPlayer::playRequested, this, &Presenter::slotplay);
     connect(mprisPlayer, &MprisPlayer::pauseRequested, this, &Presenter::slotpause);
     connect(mprisPlayer, &MprisPlayer::nextRequested, this, &Presenter::slotplaynext);
     connect(mprisPlayer, &MprisPlayer::previousRequested, this, &Presenter::slotplayprev);
@@ -40,7 +40,7 @@ void Presenter::initMpris(MprisPlayer *mprisPlayer)
     connect(mprisPlayer, &MprisPlayer::openUriRequested, this, &Presenter::slotopenUriRequested);
     connect(mprisPlayer, &MprisPlayer::loopStatusRequested, this, &Presenter::slotloopStatusRequested);
     connect(_mw->engine()->getplaylist(), &PlaylistModel::playModeChanged, this, &Presenter::slotplayModeChanged);
-    connect(mprisPlayer, &MprisPlayer::openUriRequested, this, [ = ] {_mw->requestAction(ActionFactory::Exit);});
+    //connect(mprisPlayer, &MprisPlayer::openUriRequested, this, [ = ] {_mw->requestAction(ActionFactory::Exit);});
     connect(mprisPlayer, &MprisPlayer::seekRequested, this, &Presenter::slotseek);
      connect(mprisPlayer, &MprisPlayer::stopRequested, this, &Presenter::slotstop);
     //connect(_mw->engine(),&PlayerEngine::volumeChanged,this,&Presenter::slotvolumeChanged);
@@ -50,6 +50,11 @@ void Presenter::initMpris(MprisPlayer *mprisPlayer)
 //        mprisPlayer->setPosition(pos);
 //    });
 
+}
+
+void Presenter::slotplay()
+{
+    _mw->requestAction(ActionFactory::StartPlay);
 }
 
 void Presenter::slotpause()

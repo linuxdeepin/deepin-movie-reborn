@@ -49,7 +49,7 @@ Settings &Settings::get()
 }
 
 Settings::Settings()
-    : QObject(nullptr)
+    : QObject(nullptr),_configPath(QString())
 {
     _configPath = QString("%1/%2/%3/config.conf")
                   .arg(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation))
@@ -75,6 +75,8 @@ Settings::Settings()
             emit shortcutsChanged(key, value);
         else if (key.startsWith("base.play.playmode"))
             emit defaultplaymodechanged(key, value);
+        else if (key.startsWith("base.play.hwaccel"))
+            emit hwaccelModeChanged(key, value);
         else if (key.startsWith("base.play.mute"))
             emit baseMuteChanged(key, value);
         else if (key.startsWith("base."))
@@ -93,6 +95,13 @@ Settings::Settings()
                      << tr("List loop");
     auto playmodeFamily = _settings->option("base.play.playmode");
     playmodeFamily->setData("items", playmodeDatabase);
+
+    QStringList hwaccelDatabase;
+    hwaccelDatabase << tr("Auto")
+                     << tr("Open")
+                     << tr("Close");
+    auto hwaccelFamily = _settings->option("base.play.hwaccel");
+    hwaccelFamily->setData("items", hwaccelDatabase);
 
     QFontDatabase fontDatabase;
     auto fontFamliy = _settings->option("subtitle.font.family");
@@ -123,8 +132,6 @@ static QString flag2key(Settings::Flag f)
         return "multiinstance";
     case Settings::Flag::PauseOnMinimize:
         return "pauseonmin";
-    case Settings::Flag::HWAccel:
-        return "hwaccel";
     }
 
     return "";

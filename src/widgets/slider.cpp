@@ -271,7 +271,7 @@ void DMRSlider::onValueChanged(const QVariant &v)
 
 }
 
-void DMRSlider::startAnimation(bool reverse)
+/*void DMRSlider::startAnimation(bool reverse)
 {
     if (_hoverAni) {
         _hoverAni->stop();
@@ -291,7 +291,7 @@ void DMRSlider::startAnimation(bool reverse)
     connect(_hoverAni, &QVariantAnimation::valueChanged, this, &DMRSlider::onValueChanged);
     _hoverAni->setDuration(150);
     _hoverAni->start(QVariantAnimation::DeleteWhenStopped);
-}
+}*/
 
 void DMRSlider::enterEvent(QEvent *e)
 {

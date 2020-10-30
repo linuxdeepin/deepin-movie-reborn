@@ -109,7 +109,7 @@ static QString ElideText(const QString &text, const QSize &size,
 class ToolTipEvent: public QObject
 {
 public:
-    ToolTipEvent(QObject *parent): QObject(parent) {}
+    explicit ToolTipEvent(QObject *parent): QObject(parent) {}
 
 protected:
     bool eventFilter(QObject *obj, QEvent *event)

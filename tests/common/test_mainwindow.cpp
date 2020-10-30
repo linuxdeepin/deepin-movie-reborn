@@ -5,6 +5,7 @@
 #include <QTimer>
 #include <QAbstractButton>
 #include <DSettingsDialog>
+#include <dwidgetstype.h>
 
 #include <unistd.h>
 #include <gtest/gtest.h>
@@ -19,6 +20,7 @@
 #include "src/widgets/movieinfo_dialog.h"
 #include "src/widgets/url_dialog.h"
 #include "src/widgets/dmr_lineedit.h"
+#include "src/common/actions.h"
 
 #include "dmr_settings.h"
 TEST(Settings,settings)
@@ -57,7 +59,13 @@ TEST(MainWindow, loadFile)
 
     const auto &valids = engine->addPlayFiles(listPlayFiles);
 
+    QCOMPARE(engine->isPlayableFile(valids[0]), true);
     engine->playByName(valids[0]);
+
+    QTest::qWait(2000);
+    w->move(0,0);
+    QTest::qWait(500);
+    w->resize(800, 600);
 }
 
 TEST(MainWindow, mouseSimulate)
@@ -67,12 +75,29 @@ TEST(MainWindow, mouseSimulate)
     w->show();
 
     QTest::qWait(3000); //等待加载胶片进度条
-    QTest::mouseMove(w, QPoint(),300);
-    QTest::mouseClick(w,Qt::LeftButton,Qt::NoModifier,QPoint(),500);//pause
-    QTest::mouseClick(w,Qt::LeftButton,Qt::NoModifier,QPoint(),1000);//play
+    QTest::mousePress(w, Qt::LeftButton, Qt::NoModifier, QPoint(), 500);
+    QTest::mouseMove(w, QPoint(w->pos().x()+40, w->pos().y()+50), 300);
+    QTest::mouseRelease(w, Qt::LeftButton, Qt::NoModifier, QPoint(), 1000);
 
     QTest::mouseDClick(w,Qt::LeftButton,Qt::NoModifier,QPoint(),1000);  //fullscreen
     QTest::mouseDClick(w,Qt::LeftButton,Qt::NoModifier,QPoint(),1000);
+}
+
+TEST(MainWindow, mainContextMenu)
+{
+    MainWindow* w = dApp->getMainWindow();
+    w->show();
+
+    QTest::mouseMove(w, QPoint(),300);
+
+    dmr::ActionFactory::get().mainContextMenu()->popup(QCursor::pos());
+    DMenu *menu = dmr::ActionFactory::get().mainContextMenu()->findChild<DMenu *>();
+//    QTest::mouseMove(menu, QPoint(),500);
+//    QTest::qWait(3000);
+
+    QTest::mouseMove(w, QPoint(w->pos().x()-20, w->pos().y()), 500);
+    QTest::mouseClick(w, Qt::LeftButton, Qt::NoModifier, QPoint(), 500);//pause
+    QTest::mouseClick(w, Qt::LeftButton, Qt::NoModifier, QPoint(), 1000);//play
 }
 
 TEST(MainWindow, shortCutPlay)
@@ -101,6 +126,7 @@ TEST(MainWindow, shortCutPlay)
     testEventList.addKeyClick(Qt::Key_F3, Qt::NoModifier, 1000);    //playlist
     testEventList.addKeyClick(Qt::Key_Up, Qt::NoModifier, 500);
     testEventList.addKeyClick(Qt::Key_Enter, Qt::NoModifier, 500);
+    testEventList.addKeyClick(Qt::Key_F3, Qt::NoModifier, 2000);
     testEventList.addKeyClick(Qt::Key_Down, Qt::NoModifier, 500);
     testEventList.addKeyClick(Qt::Key_Delete, Qt::NoModifier, 1000);    //delete from playlist
 
@@ -140,12 +166,12 @@ TEST(MainWindow, shortCutVolumeAndFrame)
 
     //volume
     for (int i = 0; i<5; i++) {
-        testEventList.addKeyClick(Qt::Key_Down, Qt::ControlModifier | Qt::AltModifier, 100);    //volume up
+        testEventList.addKeyClick(Qt::Key_Down, Qt::ControlModifier | Qt::AltModifier, 50);    //volume up
     }
     for (int i = 0; i<2; i++) {
-            testEventList.addKeyClick(Qt::Key_Up, Qt::ControlModifier | Qt::AltModifier, 100);//volume down
+            testEventList.addKeyClick(Qt::Key_Up, Qt::ControlModifier | Qt::AltModifier, 50);//volume down
     }
-    testEventList.addKeyClick(Qt::Key_M, Qt::NoModifier, 1000); //mute
+    testEventList.addKeyClick(Qt::Key_M, Qt::NoModifier, 500); //mute
 
     testEventList.addKeyClick(Qt::Key_Left, Qt::ControlModifier | Qt::ShiftModifier, 500); //last frame
     testEventList.addKeyClick(Qt::Key_Space, Qt::NoModifier, 100); //play
@@ -208,14 +234,28 @@ TEST(MainWindow, UrlDialog)
     LineEdit *lineEdit = uDlg->findChild<LineEdit *>();
 
     QTest::mouseMove(lineEdit, QPoint(), 500);
-    QTest::keyClicks(lineEdit, QString("www.baidu.com"), Qt::NoModifier, 10);
+    QTest::keyClicks(lineEdit,
+                     QString("https://stream7.iqilu.com/10339/upload_transcode/202002/18/20200218093206z8V1JuPlpe.mp4"),
+                     Qt::NoModifier, 10);
 
-    QUrl url = uDlg->url();
-    w->play(url);
+//    QUrl url = uDlg->url();
+//    w->play(url);
 
     QTest::mouseMove(uDlg->getButton(1), QPoint(), 500);
     QTest::mouseClick(uDlg->getButton(1), Qt::LeftButton, Qt::NoModifier,QPoint(), 1000);
+    auto url = uDlg->url();
+    w->play(url);
+}
 
+
+TEST(MainWindow, subtitle)
+{
+    MainWindow* w = dApp->getMainWindow();
+    PlayerEngine* engine =  w->engine();
+
+    engine->loadSubtitle(QFileInfo(QString("/data/home/uos/Videos/subtitle/Hachiko.A.Dog's.Story.ass")));
+
+    QTest::qWait(2000);
 }
 
 TEST(ToolBox, togglePlayList)
@@ -248,6 +288,13 @@ TEST(ToolBox, progBar)
     QPoint point(progBarSlider->slider()->x()+20, progBarSlider->slider()->y());
     QTest::mouseMove(progBarSlider->slider(), point, 1000);
     QTest::mouseClick(progBarSlider->slider(), Qt::LeftButton, Qt::NoModifier, point, 1000);
+
+    QPoint startPoint(progBarSlider->slider()->x()+30, progBarSlider->slider()->y());
+    QPoint endPoint(progBarSlider->slider()->x()+100, progBarSlider->slider()->y());
+    QTest::mouseMove(progBarSlider->slider(), startPoint, 300);
+    QTest::mousePress(progBarSlider->slider(), Qt::LeftButton, Qt::NoModifier, startPoint, 100);
+    QTest::mouseMove(progBarSlider->slider(), endPoint, 500);
+    QTest::mouseRelease(progBarSlider->slider(), Qt::LeftButton, Qt::NoModifier, endPoint, 500);
 }
 
 TEST(ToolBox, playBtnBox)

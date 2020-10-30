@@ -187,6 +187,7 @@ signals:
     void windowLeaved();
     void initChanged();
     void frameMenuEnable(bool);
+    void playSpeedMenuEnable(bool);
     void playlistchanged();
 
 public slots:
@@ -212,6 +213,7 @@ public slots:
     void slotUrlpause(bool status);
     void slotFontChanged(const QFont &font);
     void slotMuteChanged(bool mute);
+    void slotAwaacelModeChanged(const QString &key, const QVariant &value);     //改变硬解码模式
 protected:
     void showEvent(QShowEvent *event) override;
     void hideEvent(QHideEvent *event) override;
@@ -266,7 +268,7 @@ protected slots:
 
     void handleHelpAction();
 
-    void changedVolume(int);
+//    void changedVolume(int);
     void changedVolumeSlot(int vol);
     void changedMute();
     void changedMute(bool);
@@ -298,10 +300,13 @@ private:
     void setAudioVolume(int);
     void setMusicMuted(bool muted);
     void popupAdapter(QIcon, QString);
+    void setHwaccelMode(const QVariant &value = -1);
 
     //Limit video to mini mode size
     void LimitWindowize();
     void mipsShowFullScreen();
+    //hide pop windows when dragging window
+    void hidePopWindow();
 private:
     DFloatingMessage *popup {nullptr};
     QLabel *_fullscreentimelable {nullptr};
@@ -353,6 +358,7 @@ private:
     bool _windowAbove {false};
     bool _mouseMoved {false};
     bool _mousePressed {false};
+    bool _isSettingMiniMode{false};
     bool _playlistopen_clicktogglepause {false};
     double _playSpeed {1.0};
 
@@ -406,6 +412,7 @@ private:
     qint64 oldElapsed = 0;
 
     Diskcheckthread m_diskCheckThread;
+    bool m_bClosed {false};      //用于景嘉微显卡下过滤metacall事件
     bool _isFileLoadNotFinished{false};
     QStringList m_openFiles;
     QString m_currentHwdec;

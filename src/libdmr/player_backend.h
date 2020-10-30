@@ -71,6 +71,14 @@ public:
     };
     Q_ENUM(SoundMode)
 
+    enum hwaccelMode
+    {
+        hwaccelAuto = 0,
+        hwaccelOpen,
+        hwaccelClose
+    };
+    Q_ENUM(hwaccelMode)
+
     Backend(QWidget *parent = nullptr) {}
     virtual ~Backend() {}
 
@@ -146,6 +154,7 @@ public:
     virtual void nextFrame() = 0;
     virtual void previousFrame() = 0;
     virtual void MakeCurrent() = 0;
+    virtual void changehwaccelMode(hwaccelMode hwaccelMode) = 0;
 
     static void setDebugLevel(DebugLevel lvl)
     {

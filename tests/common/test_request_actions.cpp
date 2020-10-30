@@ -16,76 +16,15 @@
 #include "movieinfo_dialog.h"
 #include <DSettingsDialog>
 
-TEST(requestAction,quitFullScreen)
-{
-    MainWindow* w = dApp->getMainWindow();
-    w->show();
-
-    QTimer::singleShot(4000,[=]{w->requestAction(ActionFactory::ActionKind::QuitFullscreen);});
-}
-
-TEST(requestAction,toggleMini)
-{
-    MainWindow* w = dApp->getMainWindow();
-    w->show();
-
-    QTimer::singleShot(6000,[=]{w->requestAction(ActionFactory::ActionKind::ToggleMiniMode);});
-}
-
-TEST(requestAction,quitMini)
-{
-    MainWindow* w = dApp->getMainWindow();
-    w->show();
-
-    QTimer::singleShot(8000,[=]{w->requestAction(ActionFactory::ActionKind::ToggleMiniMode);});
-}
-
 TEST(requestAction,windowAbove)
 {
     MainWindow* w = dApp->getMainWindow();
     w->show();
 
-    QTimer::singleShot(2000,[=]{w->requestAction(ActionFactory::ActionKind::WindowAbove);});
-}
-
-TEST(requestAction,quiteAbove)
-{
-    MainWindow* w = dApp->getMainWindow();
-    w->show();
-
-    QTimer::singleShot(2000,[=]{w->requestAction(ActionFactory::ActionKind::WindowAbove);});
-}
-
-TEST(requestAction,togglePlayList)
-{
-    MainWindow* w = dApp->getMainWindow();
-    w->show();
-
-    QTimer::singleShot(6000,[=]{w->requestAction(ActionFactory::ActionKind::TogglePlaylist);});
-}
-
-TEST(requestAction,gotoPlaylistNext)
-{
-    MainWindow *w = dApp->getMainWindow();
-    w->show();
-
-    QTimer::singleShot(2000,[=](){w->requestAction(ActionFactory::ActionKind::GotoPlaylistNext);});
-}
-
-TEST(requestAction,screenshot)
-{
-    MainWindow* w = dApp->getMainWindow();
-    w->show();
-
-    QTimer::singleShot(2000,[=]{w->requestAction(ActionFactory::ActionKind::Screenshot);});
-}
-
-TEST(requestAction,gotoPlaylistPrev)
-{
-    MainWindow *w = dApp->getMainWindow();
-    w->show();
-
-    QTimer::singleShot(2000,[=](){w->requestAction(ActionFactory::ActionKind::GotoPlaylistNext);});
+    QTest::qWait(500);
+    w->requestAction(ActionFactory::ActionKind::WindowAbove);   //置顶
+    QTest::qWait(500);
+    w->requestAction(ActionFactory::ActionKind::WindowAbove);   //取消置顶
 }
 
 TEST(requestAction, sound)
@@ -93,12 +32,12 @@ TEST(requestAction, sound)
     MainWindow* w = dApp->getMainWindow();
     w->show();
 
-    QTimer::singleShot(1000,[=]{
-        w->requestAction(ActionFactory::ActionKind::Stereo);
-        w->requestAction(ActionFactory::ActionKind::LeftChannel);
-        w->requestAction(ActionFactory::ActionKind::RightChannel);
-    });
-    QTimer::singleShot(500,[=]{EXPECT_TRUE(true);});
+    QTest::qWait(300);
+    w->requestAction(ActionFactory::ActionKind::Stereo);
+    QTest::qWait(300);
+    w->requestAction(ActionFactory::ActionKind::LeftChannel);
+    QTest::qWait(300);
+    w->requestAction(ActionFactory::ActionKind::RightChannel);
 }
 
 TEST(requestAction, playMode)
@@ -106,14 +45,31 @@ TEST(requestAction, playMode)
     MainWindow* w = dApp->getMainWindow();
     w->show();
 
-    QTimer::singleShot(1000,[=]{
-        w->requestAction(ActionFactory::ActionKind::OrderPlay);
-        w->requestAction(ActionFactory::ActionKind::ShufflePlay);
-        w->requestAction(ActionFactory::ActionKind::SinglePlay);
-        w->requestAction(ActionFactory::ActionKind::SingleLoop);
-        w->requestAction(ActionFactory::ActionKind::ListLoop);
-    });
-    EXPECT_TRUE(true);
+    QTest::qWait(300);
+    w->requestAction(ActionFactory::ActionKind::OrderPlay);
+    QTest::qWait(300);
+    w->requestAction(ActionFactory::ActionKind::ShufflePlay);
+    QTest::qWait(300);
+    w->requestAction(ActionFactory::ActionKind::SinglePlay);
+    QTest::qWait(300);
+    w->requestAction(ActionFactory::ActionKind::SingleLoop);
+    QTest::qWait(300);
+    w->requestAction(ActionFactory::ActionKind::ListLoop);
+}
+
+TEST(requestAction, playSpeed)
+{
+    MainWindow* w = dApp->getMainWindow();
+    w->show();
+
+    QTest::qWait(300);
+    w->requestAction(ActionFactory::ActionKind::ZeroPointFiveTimes);
+    QTest::qWait(300);
+    w->requestAction(ActionFactory::ActionKind::OneTimes);
+    QTest::qWait(300);
+    w->requestAction(ActionFactory::ActionKind::OnePointFiveTimes);
+    QTest::qWait(300);
+    w->requestAction(ActionFactory::ActionKind::Double);
 }
 
 TEST(requestAction, frame)
@@ -121,193 +77,94 @@ TEST(requestAction, frame)
     MainWindow* w = dApp->getMainWindow();
     w->show();
 
-    QTimer::singleShot(1000,[=]{
-        w->requestAction(ActionFactory::ActionKind::DefaultFrame);
-        w->requestAction(ActionFactory::ActionKind::Ratio4x3Frame);
-        w->requestAction(ActionFactory::ActionKind::Ratio16x9Frame);
-        w->requestAction(ActionFactory::ActionKind::Ratio16x10Frame);
-        w->requestAction(ActionFactory::ActionKind::Ratio185x1Frame);
-        w->requestAction(ActionFactory::ActionKind::Ratio235x1Frame);
+    QTest::qWait(300);
+    w->requestAction(ActionFactory::ActionKind::DefaultFrame);
+    QTest::qWait(300);
+    w->requestAction(ActionFactory::ActionKind::Ratio4x3Frame);
+    QTest::qWait(300);
+    w->requestAction(ActionFactory::ActionKind::Ratio16x9Frame);
+    QTest::qWait(300);
+    w->requestAction(ActionFactory::ActionKind::Ratio16x10Frame);
+    QTest::qWait(300);
+    w->requestAction(ActionFactory::ActionKind::Ratio185x1Frame);
+    QTest::qWait(300);
+    w->requestAction(ActionFactory::ActionKind::Ratio235x1Frame);
 
-        w->requestAction(ActionFactory::ActionKind::ClockwiseFrame);
-        w->requestAction(ActionFactory::ActionKind::CounterclockwiseFrame);
+    QTest::qWait(300);
+    w->requestAction(ActionFactory::ActionKind::ClockwiseFrame);
+    QTest::qWait(300);
+    w->requestAction(ActionFactory::ActionKind::CounterclockwiseFrame);
 
-        w->requestAction(ActionFactory::ActionKind::NextFrame);
-        w->requestAction(ActionFactory::ActionKind::PreviousFrame);
-    });
-    EXPECT_TRUE(true);
+    QTest::qWait(300);
+    w->requestAction(ActionFactory::ActionKind::NextFrame);
+    QTest::qWait(300);
+    w->requestAction(ActionFactory::ActionKind::PreviousFrame);
 }
 
-TEST(requestAction,toggleMute)
+TEST(requestAction,Mute)
 {
     MainWindow* w = dApp->getMainWindow();
     w->show();
 
-    QTimer::singleShot(1000,[=]{w->requestAction(ActionFactory::ActionKind::ToggleMute);});
+    QTest::qWait(200);
+    w->requestAction(ActionFactory::ActionKind::ToggleMute);
+    QTest::qWait(200);
+    w->requestAction(ActionFactory::ActionKind::ToggleMute);
 }
 
-TEST(requestAction,quiteMute)
-{
-    MainWindow* w = dApp->getMainWindow();
-    w->show();
+//TEST(requestAction, subtitle)
+//{
+//    MainWindow* w = dApp->getMainWindow();
+//    w->show();
 
-    QTimer::singleShot(1000,[=]{w->requestAction(ActionFactory::ActionKind::ToggleMute);});
-}
-
-TEST(requestAction, volumeUp)
-{
-    MainWindow* w = dApp->getMainWindow();
-    w->show();
-
-    w->requestAction(ActionFactory::ActionKind::VolumeUp);
-}
-
-TEST(requestAction, volumeDown)
-{
-    MainWindow* w = dApp->getMainWindow();
-    w->show();
-
-    w->requestAction(ActionFactory::ActionKind::VolumeDown);
-}
-
-TEST(requestAction, loadSubtitle)
-{
-    MainWindow* w = dApp->getMainWindow();
-    w->show();
-
-    QTest::mouseClick(w,Qt::RightButton);
-    QTimer::singleShot(1000,[=]{w->requestAction(ActionFactory::ActionKind::LoadSubtitle);});
-    QTimer::singleShot(500,[=]{EXPECT_TRUE(true);});
-}
-
-TEST(requestAction, hideSubtitle)
-{
-    MainWindow* w = dApp->getMainWindow();
-    w->show();
-
-    QTimer::singleShot(500,[=]{w->requestAction(ActionFactory::ActionKind::HideSubtitle);});
-    EXPECT_TRUE(true);
-}
-
-TEST(requestAction,movieInfo)
-{    //closeBtn was generated in the constructor,cannot call it
-
-    MainWindow* w = dApp->getMainWindow();
-    w->show();
-
-    QTimer::singleShot(1000,[=]{w->requestAction(ActionFactory::ActionKind::MovieInfo);});
-    QTimer::singleShot(2000,[=]{EXPECT_TRUE(false);});
-}
+//    QTest::qWait(300);
+//    w->requestAction(ActionFactory::ActionKind::LoadSubtitle);
+//    QTest::qWait(300);
+//    w->requestAction(ActionFactory::ActionKind::HideSubtitle);
+//    QTest::qWait(300);
+//    EXPECT_TRUE(false);
+//}
 
 TEST(requestAction,goToScreenshotSolder)
 {
     MainWindow* w = dApp->getMainWindow();
     w->show();
 
-    QTimer::singleShot(2000,[=]{w->requestAction(ActionFactory::ActionKind::GoToScreenshotSolder);});
+    QTest::qWait(300);
+    w->requestAction(ActionFactory::ActionKind::GoToScreenshotSolder);
     EXPECT_TRUE(true);
 }
 
-TEST(requestAction,seekForward)
-{
-    MainWindow* w = dApp->getMainWindow();
-    w->show();
+//TEST(requestAction,openFileList)
+//{
+//    MainWindow *w = dApp->getMainWindow();
+//    w->show();
 
-    QTimer::singleShot(1000,[=]{w->requestAction(ActionFactory::ActionKind::SeekForward);});
-    EXPECT_TRUE(true);
-}
+//    QTest::qWait(300);
+//    w->requestAction(ActionFactory::ActionKind::OpenFileList);
+//    QTest::qWait(300);
+//    EXPECT_TRUE(false);
+//}
 
-TEST(requestAction,seekForwardLarge)
-{
-    MainWindow* w = dApp->getMainWindow();
-    w->show();
+//TEST(requestAction,openDirectory)
+//{
+//    MainWindow *w = dApp->getMainWindow();
+//    w->show();
 
-    QTimer::singleShot(1000,[=]{w->requestAction(ActionFactory::ActionKind::SeekForwardLarge);});
-    EXPECT_TRUE(false);
-}
-
-TEST(requestAction,seekBackward)
-{
-    MainWindow* w = dApp->getMainWindow();
-    w->show();
-
-    QTimer::singleShot(1000,[=]{w->requestAction(ActionFactory::ActionKind::SeekBackward);});
-    EXPECT_TRUE(false);
-}
-
-TEST(requestAction,seekBackwardLarge)
-{
-    MainWindow* w = dApp->getMainWindow();
-    w->show();
-
-    QTimer::singleShot(1000,[=]{w->requestAction(ActionFactory::ActionKind::SeekBackwardLarge);});
-    EXPECT_TRUE(false);
-}
-
-TEST(requestAction,openFileList)
-{
-    MainWindow *w = dApp->getMainWindow();
-    w->show();
-    QTimer::singleShot(1000,[=]{w->requestAction(ActionFactory::ActionKind::OpenFileList);});
-    QTimer::singleShot(500,[=]{EXPECT_TRUE(false);});
-}
-
-TEST(requestAction,openDirectory)
-{
-    MainWindow *w = dApp->getMainWindow();
-    w->show();
-
-    QTimer::singleShot(1000,[=]{w->requestAction(ActionFactory::ActionKind::OpenDirectory);});
-    QTimer::singleShot(500,[=]{EXPECT_TRUE(false);});
-}
+//    QTest::qWait(300);
+//    w->requestAction(ActionFactory::ActionKind::OpenDirectory);
+//    QTest::qWait(300);
+//    EXPECT_TRUE(false);
+//}
 
 TEST(requestAction,openCdrom)
 {
     MainWindow* w = dApp->getMainWindow();
     w->show();
 
-    QTimer::singleShot(2000,[=]{w->requestAction(ActionFactory::ActionKind::OpenCdrom);});
+    QTest::qWait(300);
+    w->requestAction(ActionFactory::ActionKind::OpenCdrom);
     EXPECT_TRUE(true);
-}
-
-TEST(requestAction,openUrl)
-{
-    MainWindow* w = dApp->getMainWindow();
-    w->show();
-
-//    w->dlg = new UrlDialog(w);
-    QTimer::singleShot(2000,[=]{w->requestAction(ActionFactory::ActionKind::OpenUrl);});
-
-//    QTimer::singleShot(1000,[=]{
-//        w->dlg->show();
-//        w->dlg->setFocus();
-
-//        LineEdit * lineEdit = w->dlg->getLineEdit();
-//        QTest::keyClicks((QWidget*)lineEdit, "hello world");
-
-//        QTimer::singleShot(1000,[=]{w->dlg->close();});
-//    });
-
-//    QTimer::singleShot(1000,[=]{QTest::keyClick(w->dlg,Qt::Key_Escape);});
-
-    EXPECT_TRUE(false);
-}
-
-TEST(requestAction, settings)
-{
-    MainWindow* w = dApp->getMainWindow();
-    w->show();
-
-//    QTimer::singleShot(1000,[=]{
-//        w->showSettingsDialog();
-////        DSettingsDialog* dsd = new DSettingsDialog(w);
-////        dsd->show();
-
-////        QTimer::singleShot(1000,[=]{dsd->close();});
-//    });
-    QTimer::singleShot(2000,[=]{w->requestAction(ActionFactory::ActionKind::Settings);});
-
-    QTimer::singleShot(500,[=]{EXPECT_TRUE(false);});
 }
 
 TEST(requestAction, playlistRemoveItem)
@@ -315,5 +172,6 @@ TEST(requestAction, playlistRemoveItem)
     MainWindow* w = dApp->getMainWindow();
     w->show();
 
-    QTimer::singleShot(500,[=]{w->requestAction(ActionFactory::ActionKind::PlaylistRemoveItem);});
+    QTest::qWait(300);
+    w->requestAction(ActionFactory::ActionKind::PlaylistRemoveItem);
 }

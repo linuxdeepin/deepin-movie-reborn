@@ -42,10 +42,10 @@ Mpris::~Mpris()
 {
 }
 
-QObject *Mpris::api_factory(QQmlEngine *, QJSEngine *)
+/*QObject *Mpris::api_factory(QQmlEngine *, QJSEngine *)
 {
     return new Mpris;
-}
+}*/
 
 QString Mpris::metadataToString(Mpris::Metadata metadata)
 {

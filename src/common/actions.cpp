@@ -111,7 +111,6 @@ DMenu *ActionFactory::mainContextMenu()
         menu->addSeparator();
 
         {
-            //sub menu
             auto *parent = menu;
             auto *menu = new DMenu(tr("Play Mode"));
             auto group = new QActionGroup(menu);
@@ -126,8 +125,23 @@ DMenu *ActionFactory::mainContextMenu()
         }
 
         {
-            //sub menu
+            auto *parent = menu;
+            auto *menu = new DMenu(tr("Play Speed"));
+            auto group = new QActionGroup(menu);
 
+            DEF_ACTION_CHECKED_GROUP(tr("0.5"), ActionKind::ZeroPointFiveTimes, group);
+            DEF_ACTION_CHECKED_GROUP(tr("1.0"), ActionKind::OneTimes, group);
+            DEF_ACTION_CHECKED_GROUP(tr("1.5"), ActionKind::OnePointFiveTimes, group);
+            DEF_ACTION_CHECKED_GROUP(tr("2.0"), ActionKind::Double, group);
+
+            parent->addMenu(menu);
+            menu->setEnabled(false);
+            connect(this, &ActionFactory::playSpeedMenuEnable, this, [ = ](bool statu) {
+                menu->setEnabled(statu);
+            });
+        }
+
+        {
             auto *parent = menu;
             auto *menu = new DMenu(tr("Frame"));
             auto group = new QActionGroup(menu);

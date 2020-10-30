@@ -23,6 +23,7 @@ Application::Application(int &argc, char **argv)
 
 Application::~Application()
 {
+    m_mainwindow->close();
 }
 
 //bool Application::isRunning()

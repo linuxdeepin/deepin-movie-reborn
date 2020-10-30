@@ -184,7 +184,7 @@ void Tip::setBorderColor(QColor borderColor)
     d->borderColor = borderColor;
 }
 
-void Tip::pop(QPoint center)
+/*void Tip::pop(QPoint center)
 {
     Q_D(Tip);
     this->show();
@@ -211,7 +211,7 @@ void Tip::pop(QPoint center)
 //        d->m_interFrame->setGraphicsEffect(nullptr);
 //        this->hide();
 //    });
-}
+}*/
 
 #ifdef _OLD
 void Tip::paintEvent(QPaintEvent *)

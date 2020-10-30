@@ -493,6 +493,12 @@ bool PlayerEngine::muted() const
     return _current->muted();
 }
 
+void PlayerEngine::changehwaccelMode(Backend::hwaccelMode hwaccelMode)
+{
+    if (!_current) return;
+    return _current->changehwaccelMode(hwaccelMode);
+}
+
 void PlayerEngine::toggleMute()
 {
     if (!_current) return;

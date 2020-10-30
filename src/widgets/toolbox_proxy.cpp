@@ -1122,7 +1122,7 @@ public:
     VolumeSlider(PlayerEngine *eng, MainWindow *mw, QWidget *parent)
         : DArrowRectangle(DArrowRectangle::ArrowBottom, DArrowRectangle::FloatWidget, parent), _engine(eng), _mw(mw)
     {
-        setFixedSize(QSize(62, 205));
+//        setFixedSize(QSize(62, 205));
 #ifdef __mips__
         if (!CompositingManager::get().composited()) {
             setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
@@ -1136,6 +1136,7 @@ public:
 #else
         if (CompositingManager::get().isSpecialControls()) {
             setAttribute(Qt::WA_NativeWindow);
+//            setWindowFlags(Qt::WindowStaysOnTopHint);
         }
 #endif
         setShadowBlurRadius(4);
@@ -1147,12 +1148,6 @@ public:
         setFocusPolicy(Qt::NoFocus);
         hide();
 
-//        connect(DThemeManager::instance(), &DThemeManager::themeChanged,
-//                this, &VolumeSlider::updateBg);
-
-//        updateBg();
-
-//        auto *l = new QHBoxLayout;
         auto *l = new QVBoxLayout(this);
         l->setContentsMargins(0, 10, 0, 10);
         l->setSpacing(0);
@@ -1160,12 +1155,13 @@ public:
         setLayout(l);
 
         _slider = new DSlider(Qt::Vertical, this);
-        _slider->setFixedHeight(132);
+//        _slider->setFixedHeight(132);
         _slider->setFixedWidth(24);
         _slider->setIconSize(QSize(12, 12));
         _slider->installEventFilter(this);
         _slider->show();
         _slider->slider()->setRange(0, 100);
+        _slider->slider()->setMinimumHeight(132);
 
         //修改打开时音量条显示不正确
         int vol = 0;
@@ -1174,9 +1170,6 @@ public:
         }else{
             vol = _engine->volume();
         }
-        /*if (vol != 0) {
-            vol -= VOLUME_OFFSET;
-        }*/
         _slider->setValue(vol);
 
         QFont font;
@@ -1191,14 +1184,16 @@ public:
 
         l->addWidget(_slider, 1, Qt::AlignCenter);
 
-        m_pBtnChangeVolume = new ImageButton(this);
-        m_pBtnChangeVolume->setFixedSize(36, 36);
-        m_pBtnChangeVolume->setImage(":/icons/deepin/builtin/dark/texts/dcc_volumemid_36px.svg");
-        connect(m_pBtnChangeVolume, SIGNAL(clicked()), this, SLOT(changeSate()));
+        m_pBtnChangeMute = new ImageButton(this);
+//        m_pBtnChangeMute->setFixedSize(36, 36);
+        m_pBtnChangeMute->setFixedWidth(36);
+        m_pBtnChangeMute->setImage(":/icons/deepin/builtin/dark/texts/dcc_volumemid_36px.svg");
+        connect(m_pBtnChangeMute, SIGNAL(clicked()), this, SLOT(changeSate()));
 
-        l->addWidget(m_pBtnChangeVolume, 0, Qt::AlignHCenter);
+        l->addWidget(m_pBtnChangeMute, 0, Qt::AlignHCenter);
         connect(_slider, &DSlider::valueChanged, this, &VolumeSlider::slotValueChanged);
 
+//        l->setStretchFactor(_slider,1);
 
         _autoHideTimer.setSingleShot(true);
 #ifdef __x86_64__
@@ -1237,22 +1232,23 @@ public:
     }
 
 //修改bug42399,注释掉此段代码
-//#ifdef __mips__
-//    void paintEvent(QPaintEvent *event)
-//    {
-//        bool composited = CompositingManager::get().composited();
-//        if (!m_composited) {
-//            QPainter painter(this);
-//            if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ) {
-//                painter.fillRect(rect(), Qt::white);
-//            } else {
-//                painter.fillRect(rect(), Qt::black);
-//            }
-//        } else {
-//            DArrowRectangle::paintEvent(event);
-//        }
-//    }
-//#endif
+/*#ifdef __mips__
+    void paintEvent(QPaintEvent *event)
+    {
+        bool composited = CompositingManager::get().composited();
+        if (!m_composited) {
+            QPainter painter(this);
+            if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ) {
+                painter.fillRect(rect(), Qt::white);
+            } else {
+                painter.fillRect(rect(), Qt::black);
+            }
+        } else {
+            DArrowRectangle::paintEvent(event);
+        }
+    }
+#endif
+*/
     void stopTimer()
     {
         _autoHideTimer.stop();
@@ -1270,12 +1266,39 @@ public:
         m_bIsMute = bMute;
 
         if (m_bIsMute) {
-            m_pBtnChangeVolume->setImage(":/icons/deepin/builtin/dark/texts/dcc_mute_36px.svg");
+            m_pBtnChangeMute->setImage(":/icons/deepin/builtin/dark/texts/dcc_mute_36px.svg");
         } else {
-            m_pBtnChangeVolume->setImage(":/icons/deepin/builtin/dark/texts/dcc_volumemid_36px.svg");
+            m_pBtnChangeMute->setImage(":/icons/deepin/builtin/dark/texts/dcc_volumemid_36px.svg");
         }
 
-        m_pBtnChangeVolume->repaint();
+        m_pBtnChangeMute->repaint();
+    }
+    void popup()
+    {
+        auto main_rect = _mw->rect();
+        auto view_rect = main_rect.marginsRemoved(QMargins(1, 1, 1, 1));
+
+        QRect end(view_rect.width() - (TOOLBOX_BUTTON_WIDTH * 2 + 30 + (VOLSLIDER_WIDTH - TOOLBOX_BUTTON_WIDTH) / 2),
+                  view_rect.height() - TOOLBOX_HEIGHT - VOLSLIDER_HEIGHT,
+                  VOLSLIDER_WIDTH, VOLSLIDER_HEIGHT);
+        QRect start = end;
+//        start.setY(end.y() - VOLSLIDER_HEIGHT);
+//        int t = end.bottom();
+
+        start.setHeight(0);
+        start.moveBottom(end.bottom());
+
+        pVolAnimation = new QPropertyAnimation(this, "geometry");
+        pVolAnimation->setStartValue(start);
+        pVolAnimation->setEndValue(end);
+        pVolAnimation->setDuration(POPUP_DURATION);
+//        pVolAnimationOpen->setTargetObject(this);
+        pVolAnimation->setEasingCurve(QEasingCurve::Linear);
+        pVolAnimation->start();
+        connect(pVolAnimation, &QPropertyAnimation::finished, [=]{
+            pVolAnimation->deleteLater();
+            pVolAnimation = nullptr;
+        });
     }
 
 public slots:
@@ -1346,77 +1369,76 @@ protected:
     }
 #endif
 
-//    void paintEvent(QPaintEvent * /*event*/)
-//    {
-//        QPainter painter(this);
-//        painter.setRenderHints(QPainter::Antialiasing | QPainter::HighQualityAntialiasing);
-//        QPainterPath path;
+/*    void paintEvent(QPaintEvent *)
+    {
+        QPainter painter(this);
+        painter.setRenderHints(QPainter::Antialiasing | QPainter::HighQualityAntialiasing);
+        QPainterPath path;
 
-//        auto palette = this->palette();
+        auto palette = this->palette();
 
-//        auto penWidthf = 1.0;
-//        auto background = QColor(235,235,235,0.3*255); //palette.background();
-//        auto borderColor = QColor(0,0,0,255*2/10);
+        auto penWidthf = 1.0;
+        auto background = QColor(235,235,235,0.3*255); //palette.background();
+        auto borderColor = QColor(0,0,0,255*2/10);
 
-//        const qreal radius = 20;
-//        const qreal triHeight = 12;
-//        const qreal triWidth = 16;
-//        const qreal height = this->height() - triHeight;
-//        const qreal width = this->width();
+        const qreal radius = 20;
+        const qreal triHeight = 12;
+        const qreal triWidth = 16;
+        const qreal height = this->height() - triHeight;
+        const qreal width = this->width();
 
-//        QRectF topRightRect(QPointF(0, 0),
-//                            QPointF(2 * radius, 2 * radius));
-//        QRectF bottomRightRect(QPointF(0, height - 2 * radius),
-//                               QPointF(2 * radius, height));
-//        QRectF topLeftRect(QPointF(width, 0),
-//                           QPointF(width - 2 * radius, 2 * radius));
-//        QRectF bottomLeftRect(QPointF(width, height),
-//                              QPointF(width - 2 * radius, height - 2 * radius));
+        QRectF topRightRect(QPointF(0, 0),
+                            QPointF(2 * radius, 2 * radius));
+        QRectF bottomRightRect(QPointF(0, height - 2 * radius),
+                               QPointF(2 * radius, height));
+        QRectF topLeftRect(QPointF(width, 0),
+                           QPointF(width - 2 * radius, 2 * radius));
+        QRectF bottomLeftRect(QPointF(width, height),
+                              QPointF(width - 2 * radius, height - 2 * radius));
 
-//        path.moveTo(radius, 0.0);
-//        path.lineTo(width - radius, 0.0);
-//        path.arcTo(topLeftRect, 90.0, 90.0);
-//        path.lineTo(width, height - radius);
-//        path.arcTo(bottomLeftRect, 180.0, -90.0);
-//        path.lineTo(width / 2 + triWidth / 2, height);
-//        path.lineTo(width / 2, height + triHeight);
-//        path.lineTo(width / 2 - triWidth / 2, height);
-//        path.lineTo(radius, height);
+        path.moveTo(radius, 0.0);
+        path.lineTo(width - radius, 0.0);
+        path.arcTo(topLeftRect, 90.0, 90.0);
+        path.lineTo(width, height - radius);
+        path.arcTo(bottomLeftRect, 180.0, -90.0);
+        path.lineTo(width / 2 + triWidth / 2, height);
+        path.lineTo(width / 2, height + triHeight);
+        path.lineTo(width / 2 - triWidth / 2, height);
+        path.lineTo(radius, height);
 
-//        path.arcTo(bottomRightRect, 270.0, -90.0);
-//        path.lineTo(0.0, radius);
+        path.arcTo(bottomRightRect, 270.0, -90.0);
+        path.lineTo(0.0, radius);
 
-//        path.arcTo(topRightRect, 180.0, -90.0);
-//        path.lineTo(radius, 0.0);
+        path.arcTo(topRightRect, 180.0, -90.0);
+        path.lineTo(radius, 0.0);
 
-//        /*
 //        FIXME: light: white
 //        painter.fillPath(path, QColor(49, 49, 49));
 //        FIXME: light: QColor(0, 0, 0, 51)
 //        QPen pen(QColor(0, 0, 0, 0.1 * 255));
-//        */
 
-//        if (0 == 2) {
-//            painter.fillPath(path, QColor(43, 43, 43));
+        if (0 == 2) {
+            painter.fillPath(path, QColor(43, 43, 43));
 
-//        } else {
-//            painter.fillPath(path, background);
-//        }
+        } else {
+            painter.fillPath(path, background);
+        }
 
-//        QPen pen(borderColor);
-//        pen.setWidth(penWidthf);
-//        //painter.strokePath(path, pen);
-//    }
+        QPen pen(borderColor);
+        pen.setWidth(penWidthf);
+        //painter.strokePath(path, pen);
+    }
+*/
 
 private slots:
-    void updateBg()
+    /*void updateBg()
     {
-//        if (qApp->theme() == "dark") {
-//            setBackgroundColor(QColor(49, 49, 49, 255 * 9 / 10));
-//        } else {
-//            setBackgroundColor(QColor(255, 255, 255, 255 * 9 / 10));
-//        }
-    }
+        if (qApp->theme() == "dark") {
+            setBackgroundColor(QColor(49, 49, 49, 255 * 9 / 10));
+        } else {
+            setBackgroundColor(QColor(255, 255, 255, 255 * 9 / 10));
+        }
+    }*/
 
     bool eventFilter(QObject *obj, QEvent *e)
     {
@@ -1438,7 +1460,7 @@ private slots:
     }
 
 private:
-    ImageButton *m_pBtnChangeVolume {nullptr};
+    ImageButton *m_pBtnChangeMute {nullptr};
     QLabel *m_pLabShowVolume {nullptr};
     PlayerEngine *_engine;
     DSlider *_slider;
@@ -1447,6 +1469,7 @@ private:
     bool m_composited = false;
     bool m_mouseIn = false;
     bool m_bIsMute {false};
+    QPropertyAnimation *pVolAnimation;
 };
 
 viewProgBarLoad::viewProgBarLoad(PlayerEngine *engine, DMRSlider *progBar, ToolboxProxy *parent)
@@ -1999,8 +2022,17 @@ void ToolboxProxy::setup()
     _mid->setAlignment(_palyBox, Qt::AlignLeft);
     QList<DButtonBoxButton *> list;
 
+    if(utils::check_wayland_env()){
+        _prevBtn = new ButtonBoxButton("", this);
+        _playBtn = new ButtonBoxButton("", this);
+        _nextBtn = new ButtonBoxButton("", this);
+    }else{
+        _prevBtn = new DButtonBoxButton("", this);
+        _playBtn = new DButtonBoxButton("", this);
+        _nextBtn = new DButtonBoxButton("", this);
+    }
 
-    _prevBtn = new DButtonBoxButton("", this);
+//    _prevBtn = new DButtonBoxButton("", this);
 //    _prevBtn = new VideoBoxButton("", ":/icons/deepin/builtin/light/normal/last_normal.svg",
 //                                  ":/icons/deepin/builtin/light/normal/last_normal.svg",
 //                                  ":/icons/deepin/builtin/light/press/last_normal.svg");
@@ -2013,7 +2045,7 @@ void ToolboxProxy::setup()
 //    _mid->addWidget(_prevBtn);
     list.append(_prevBtn);
 
-    _playBtn = new DButtonBoxButton("", this);
+//    _playBtn = new DButtonBoxButton("", this);
 //    _playBtn = new VideoBoxButton("", ":/resources/icons/light/normal/play_normal2.svg",
 //                                  ":/resources/icons/light/normal/play_normal2.svg",
 //                                  ":/icons/deepin/builtin/light/press/play_press.svg");
@@ -2025,7 +2057,7 @@ void ToolboxProxy::setup()
 //    _mid->addWidget(_playBtn);
     list.append(_playBtn);
 
-    _nextBtn = new DButtonBoxButton("", this);
+//    _nextBtn = new DButtonBoxButton("", this);
 //    _nextBtn = new VideoBoxButton("", ":/icons/deepin/builtin/light/normal/next_normal.svg",
 //                                  ":/icons/deepin/builtin/light/normal/next_normal.svg",
 //                                  ":/icons/deepin/builtin/light/press/next_press.svg");
@@ -2071,6 +2103,7 @@ void ToolboxProxy::setup()
     if (CompositingManager::get().composited()) {
         _volSlider = new VolumeSlider(_engine, _mainWindow, _mainWindow);
         _volSlider->setFocusPolicy(Qt::FocusPolicy::NoFocus);
+//        _volSlider->setWindowFlags(Qt::WindowStaysOnTopHint);
 
         connect(_volBtn, &VolumeButton::clicked, this, &ToolboxProxy::slotVolumeButtonClicked);
 
@@ -2085,15 +2118,7 @@ void ToolboxProxy::setup()
 #else
         _volSlider = new VolumeSlider(_engine, _mainWindow, _mainWindow);
         _volSlider->setFocusPolicy(Qt::FocusPolicy::NoFocus);
-//        connect(_volBtn, &VolumeButton::entered, [ = ]() {
-//            _volSlider->stopTimer();
-//            _volSlider->show(_mainWindow->width() - _volBtn->width() / 2 - _playBtn->width() - 43,
-//                             _mainWindow->height() - TOOLBOX_HEIGHT - 5);
-////            _volSlider->move(mapTo(_mainWindow,_volBtn->pos()).x(),
-////                             mapTo(_mainWindow,_volBtn->pos()).y() - _volSlider->height());
-////            _volSlider->show();
-//            _volSlider->raise();
-//        });
+//        _volSlider->setWindowFlag(Qt::WindowStaysOnTopHint);
         connect(_volBtn, &VolumeButton::clicked, this, &ToolboxProxy::slotVolumeButtonClicked);
 
 #endif
@@ -2140,32 +2165,37 @@ void ToolboxProxy::setup()
     _right->addWidget(_listBtn);
 
     // these tooltips is not used due to deepin ui design
-    auto th = new TooltipHandler(this);
-    QWidget *btns[] = {
-        _playBtn, _prevBtn, _nextBtn, _subBtn, _fsBtn, _listBtn
-    };
-    QString hints[] = {
-        tr("Play/Pause"), tr("Previous"), tr("Next"),
-        tr("Subtitles"), tr("Fullscreen"), tr("Playlist")
-    };
-    QString attrs[] = {
-        tr("play"), tr("prev"), tr("next"),
-        "sub", tr("fs"), tr("list")
-    };
+    //lmh0910wayland下用这一套tooltip
+    if(utils::check_wayland_env()){
+        initToolTip();
+    }else{
+        auto th = new TooltipHandler(this);
+        QWidget *btns[] = {
+            _playBtn, _prevBtn, _nextBtn, _subBtn, _fsBtn, _listBtn
+        };
+        QString hints[] = {
+            tr("Play/Pause"), tr("Previous"), tr("Next"),
+            tr("Subtitles"), tr("Fullscreen"), tr("Playlist")
+        };
+        QString attrs[] = {
+            tr("play"), tr("prev"), tr("next"),
+            "sub", tr("fs"), tr("list")
+        };
 
-    for (unsigned int i = 0; i < sizeof(btns) / sizeof(btns[0]); i++) {
-        if (i < sizeof(btns) / sizeof(btns[0]) / 2) {
-            btns[i]->setToolTip(hints[i]);
-            auto t = new Tip(QPixmap(), hints[i], parentWidget());
-            t->setProperty("for", QVariant::fromValue<QWidget *>(btns[i]));
-            btns[i]->setProperty("HintWidget", QVariant::fromValue<QWidget *>(t));
-            btns[i]->installEventFilter(th);
-        } else {
-            auto btn = dynamic_cast<ToolButton *>(btns[i]);
-            btn->setTooTipText(hints[i]);
-            btn->setProperty("TipId", attrs[i]);
-            connect(btn, &ToolButton::entered, this, &ToolboxProxy::buttonEnter);
-            connect(btn, &ToolButton::leaved, this, &ToolboxProxy::buttonLeave);
+        for (unsigned int i = 0; i < sizeof(btns) / sizeof(btns[0]); i++) {
+            if (i < sizeof(btns) / sizeof(btns[0]) / 2) {
+                btns[i]->setToolTip(hints[i]);
+                auto t = new Tip(QPixmap(), hints[i], parentWidget());
+                t->setProperty("for", QVariant::fromValue<QWidget *>(btns[i]));
+                btns[i]->setProperty("HintWidget", QVariant::fromValue<QWidget *>(t));
+                btns[i]->installEventFilter(th);
+            } else {
+                auto btn = dynamic_cast<ToolButton *>(btns[i]);
+                btn->setTooTipText(hints[i]);
+                btn->setProperty("TipId", attrs[i]);
+                connect(btn, &ToolButton::entered, this, &ToolboxProxy::buttonEnter);
+                connect(btn, &ToolButton::leaved, this, &ToolboxProxy::buttonLeave);
+            }
         }
     }
 
@@ -2228,6 +2258,9 @@ void ToolboxProxy::installHint(QWidget *w, QWidget *hint)
 
 void ToolboxProxy::updateThumbnail()
 {
+    if(utils::check_wayland_env()){
+        return;
+    }
     //如果打开的是音乐
     QString suffix = _engine->playlist().currentInfo().info.suffix();
     foreach (QString sf, _engine->audio_filetypes) {
@@ -2394,6 +2427,7 @@ void ToolboxProxy::slotVolumeButtonClicked()
             _volSlider->show(_mainWindow->width() - _volBtn->width() / 2 - _playBtn->width() - 40,
                              _mainWindow->height() - TOOLBOX_HEIGHT - 2);
             _volSlider->raise();
+            _volSlider->popup();
         } else {
             _volSlider->hide();
         }
@@ -2417,14 +2451,12 @@ void ToolboxProxy::slotVolumeButtonClicked()
             _volSlider->show(_mainWindow->width() - _volBtn->width() / 2 - _playBtn->width() - 43,
                              _mainWindow->height() - TOOLBOX_HEIGHT - 5);
             _volSlider->raise();
+            _volSlider->popup();
         } else {
             _volSlider->hide();
         }
 #endif
     }
-
-
-
 }
 
 void ToolboxProxy::slotRequestVolumeUp()
@@ -2476,8 +2508,6 @@ void ToolboxProxy::slotPlayListCurrentChanged()
 
 void ToolboxProxy::slotPlayListStateChange()
 {
-
-
     if (bAnimationFinash == false) {
         return ;
     }
@@ -2495,11 +2525,6 @@ void ToolboxProxy::slotPlayListStateChange()
         paopen->setEndValue(rcEnd);
         paopen->start();
         connect(paopen, &QPropertyAnimation::finished, this, &ToolboxProxy::slotProAnimationFinished);
-//        connect(paopen, &QPropertyAnimation::finished, [ = ]() {
-//            paopen->deleteLater();
-//            paopen = nullptr;
-//            bAnimationFinash = true;
-//        });
 #else
         QRect rcBegin = this->geometry();
         QRect rcEnd = rcBegin;
@@ -2522,11 +2547,6 @@ void ToolboxProxy::slotPlayListStateChange()
         paClose->setEndValue(rcEnd);
         paClose->start();
         connect(paClose, &QPropertyAnimation::finished, this, &ToolboxProxy::slotProAnimationFinished);
-//        connect(paClose, &QPropertyAnimation::finished, [ = ]() {
-//            paClose->deleteLater();
-//            paClose = nullptr;
-//            bAnimationFinash = true;
-//        });
 #else
         QRect rcBegin = this->geometry();
         QRect rcEnd = rcBegin;
@@ -2723,7 +2743,7 @@ void ToolboxProxy::updateVolumeState()
 void ToolboxProxy::updateFullState()
 {
     bool isFullscreen = window()->isFullScreen();
-    if (isFullscreen) {
+    if (isFullscreen || _fullscreentimelable->isVisible()) {
 //        _fsBtn->setObjectName("UnfsBtn");
         _fsBtn->setIcon(QIcon::fromTheme("dcc_zoomout"));
         _fsBtn->setTooTipText(tr("Exit fullscreen"));
@@ -2738,17 +2758,7 @@ void ToolboxProxy::updateFullState()
 void ToolboxProxy::updatePlayState()
 {
     if (_engine->state() == PlayerEngine::CoreState::Playing) {
-        //        _playBtn->setObjectName("PauseBtn");
         if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ) {
-//            _playBtn->setPropertyPic(":/icons/deepin/builtin/light/normal/suspend_normal.svg",
-//                                     ":/icons/deepin/builtin/light/normal/suspend_normal.svg",
-//                                     ":/icons/deepin/builtin/light/press/suspend_press.svg");
-//            _prevBtn->setPropertyPic(":/icons/deepin/builtin/light/normal/last_normal.svg",
-//                                     ":/icons/deepin/builtin/light/normal/last_normal.svg",
-//                                     ":/icons/deepin/builtin/light/press/last_press.svg");
-//            _nextBtn->setPropertyPic(":/icons/deepin/builtin/light/normal/next_normal.svg",
-//                                     ":/icons/deepin/builtin/light/normal/next_normal.svg",
-//                                     ":/icons/deepin/builtin/light/press/next_press.svg");
             DPalette pa;
             pa = _palyBox->palette();
             pa.setColor(DPalette::Light, QColor(255, 255, 255, 255));
@@ -2772,16 +2782,6 @@ void ToolboxProxy::updatePlayState()
             _listBtn->setPalette(pa);
 
         } else {
-//            _playBtn->setPropertyPic(":/icons/deepin/builtin/dark/normal/suspend_normal.svg",
-//                                     ":/icons/deepin/builtin/dark/normal/suspend_normal.svg",
-//                                     ":/icons/deepin/builtin/dark/press/suspend_press.svg");
-//            _prevBtn->setPropertyPic(":/icons/deepin/builtin/dark/normal/last_normal.svg",
-//                                     ":/icons/deepin/builtin/dark/normal/last_normal.svg",
-//                                     ":/icons/deepin/builtin/dark/press/last_press.svg");
-//            _nextBtn->setPropertyPic(":/icons/deepin/builtin/dark/normal/next_normal.svg",
-//                                     ":/icons/deepin/builtin/dark/normal/next_normal.svg",
-//                                     ":/icons/deepin/builtin/dark/press/next_press.svg");
-
             DPalette pa;
             pa = _palyBox->palette();
             pa.setColor(DPalette::Light, QColor(0, 0, 0, 255));
@@ -2803,12 +2803,16 @@ void ToolboxProxy::updatePlayState()
             pa.setColor(DPalette::Light, QColor(0, 0, 0, 255));
             pa.setColor(DPalette::Dark, QColor(0, 0, 0, 255));
             _listBtn->setPalette(pa);
-
-
         }
-        _playBtn->setToolTip(tr("Pause"));
         _playBtn->setIcon(QIcon::fromTheme("dcc_suspend", QIcon(":/icons/deepin/builtin/light/normal/suspend_normal.svg")));
-    } else {
+	//lmh0910wayland下用这一套tooltip
+        if(utils::check_wayland_env()){
+            m_playBtnTip->setText(tr("Pause"));
+        }
+        else{
+            _playBtn->setToolTip(tr("Pause"));
+        }    
+} else {
         //        _playBtn->setObjectName("PlayBtn");
         if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ) {
 //            _playBtn->setPropertyPic(":/icons/deepin/builtin/light/normal/play_normal.svg",
@@ -2877,7 +2881,13 @@ void ToolboxProxy::updatePlayState()
             _listBtn->setPalette(pa);
 
         }
-        _playBtn->setToolTip(tr("Play"));
+        //lmh0910wayland下用这一套tooltip
+        if(utils::check_wayland_env()){
+            m_playBtnTip->setText(tr("Play"));
+        }
+        else{
+            _playBtn->setToolTip(tr("Play"));
+        }
         _playBtn->setIcon(QIcon::fromTheme("dcc_play", QIcon(":/icons/deepin/builtin/light/normal/play_normal.svg")));
     }
 
@@ -3006,64 +3016,64 @@ void ToolboxProxy::buttonLeave()
     }
 }
 
-void ToolboxProxy::updatePosition(const QPoint &p)
+/*void ToolboxProxy::updatePosition(const QPoint &p)
 {
     QPoint pos(p);
     pos.ry() += _mainWindow->height() - height();
     windowHandle()->setFramePosition(pos);
-}
+}*/
 
-//void ToolboxProxy::paintEvent(QPaintEvent *pe)
-//{
-//    QPainter painter(this);
-//    painter.setRenderHint(QPainter::Antialiasing);
-//    QRectF bgRect;
-//    bgRect.setSize(size());
-//    const QPalette pal = QGuiApplication::palette();//this->palette();
-//    static int offset = 14;
+/*void ToolboxProxy::paintEvent(QPaintEvent *pe)
+{
+    QPainter painter(this);
+    painter.setRenderHint(QPainter::Antialiasing);
+    QRectF bgRect;
+    bgRect.setSize(size());
+    const QPalette pal = QGuiApplication::palette();//this->palette();
+    static int offset = 14;
 
-//    DGuiApplicationHelper::ColorType themeType = DGuiApplicationHelper::instance()->themeType();
-//    QColor *bgColor, outBdColor, inBdColor;
-//    if (themeType == DGuiApplicationHelper::LightType) {
-//        outBdColor = QColor(0, 0, 0, 25);
-//        inBdColor = QColor(247, 247, 247, 0.4 * 255);
-//        bgColor = new QColor(247, 247, 247, 0.8 * 255);
-//    } else if (themeType == DGuiApplicationHelper::DarkType) {
-//        outBdColor = QColor(0, 0, 0, 0.8 * 255);
-//        inBdColor = QColor(255, 255, 255, 0.05 * 255);
-//        bgColor = new QColor(32, 32, 32, 0.9 * 255);
-//    } else {
-//        outBdColor = QColor(0, 0, 0, 25);
-//        inBdColor = QColor(247, 247, 247, 0.4 * 255);
-//        bgColor = new QColor(247, 247, 247, 0.8 * 255);
-//    }
+    DGuiApplicationHelper::ColorType themeType = DGuiApplicationHelper::instance()->themeType();
+    QColor *bgColor, outBdColor, inBdColor;
+    if (themeType == DGuiApplicationHelper::LightType) {
+        outBdColor = QColor(0, 0, 0, 25);
+        inBdColor = QColor(247, 247, 247, 0.4 * 255);
+        bgColor = new QColor(247, 247, 247, 0.8 * 255);
+    } else if (themeType == DGuiApplicationHelper::DarkType) {
+        outBdColor = QColor(0, 0, 0, 0.8 * 255);
+        inBdColor = QColor(255, 255, 255, 0.05 * 255);
+        bgColor = new QColor(32, 32, 32, 0.9 * 255);
+    } else {
+        outBdColor = QColor(0, 0, 0, 25);
+        inBdColor = QColor(247, 247, 247, 0.4 * 255);
+        bgColor = new QColor(247, 247, 247, 0.8 * 255);
+    }
+
+    {
+        QPainterPath pp;
+        pp.setFillRule(Qt::WindingFill);
+        QPen pen(outBdColor, 1);
+        painter.setPen(pen);
+        pp.addRoundedRect(bgRect, RADIUS_MV, RADIUS_MV);
+        painter.fillPath(pp, *bgColor);
+//        painter.drawPath(pp);
+
+        painter.drawLine(offset, rect().y(), width() - offset, rect().y());
+        painter.drawLine(offset, height(), width() - offset, height());
+        painter.drawLine(rect().x(), offset, rect().x(), height() - offset);
+        painter.drawLine(width(), offset, width(), height() - offset);
+    }
 
 //    {
+//        auto view_rect = bgRect.marginsRemoved(QMargins(1, 1, 1, 1));
 //        QPainterPath pp;
 //        pp.setFillRule(Qt::WindingFill);
-//        QPen pen(outBdColor, 1);
-//        painter.setPen(pen);
-//        pp.addRoundedRect(bgRect, RADIUS_MV, RADIUS_MV);
-//        painter.fillPath(pp, *bgColor);
-////        painter.drawPath(pp);
-
-//        painter.drawLine(offset, rect().y(), width() - offset, rect().y());
-//        painter.drawLine(offset, height(), width() - offset, height());
-//        painter.drawLine(rect().x(), offset, rect().x(), height() - offset);
-//        painter.drawLine(width(), offset, width(), height() - offset);
+//        painter.setPen(inBdColor);
+//        pp.addRoundedRect(view_rect, RADIUS_MV, RADIUS_MV);
+//        painter.drawPath(pp);
 //    }
 
-////    {
-////        auto view_rect = bgRect.marginsRemoved(QMargins(1, 1, 1, 1));
-////        QPainterPath pp;
-////        pp.setFillRule(Qt::WindingFill);
-////        painter.setPen(inBdColor);
-////        pp.addRoundedRect(view_rect, RADIUS_MV, RADIUS_MV);
-////        painter.drawPath(pp);
-////    }
-
-//    QWidget::paintEvent(pe);
-//}
+    QWidget::paintEvent(pe);
+}*/
 
 void ToolboxProxy::showEvent(QShowEvent *event)
 {
@@ -3092,7 +3102,8 @@ void ToolboxProxy::resizeEvent(QResizeEvent *event)
         }
     }
 #ifndef __sw_64__
-    if (bAnimationFinash ==  false && paopen != nullptr && paClose != nullptr) {
+    if(!utils::check_wayland_env()){
+        if (bAnimationFinash ==  false && paopen != nullptr && paClose != nullptr) {
 
         _playlist->endAnimation();
         paopen->setDuration(0);
@@ -3111,6 +3122,7 @@ void ToolboxProxy::resizeEvent(QResizeEvent *event)
     }
 
     updateTimeLabel();
+}
 #endif
 
     DFloatingWidget::resizeEvent(event);
@@ -3126,6 +3138,7 @@ void ToolboxProxy::updateTimeLabel()
 {
 
 #ifndef __sw_64__
+    if(!utils::check_wayland_env()){
     // to keep left and right of the same width. which makes play button centered
     _listBtn->setVisible(width() > 300);
     _timeLabel->setVisible(width() > 450);
@@ -3155,6 +3168,7 @@ void ToolboxProxy::updateTimeLabel()
 //        right_geom.setWidth(w);
 //        _right->setGeometry(right_geom);
     //    }
+   }
 #endif
 }
 
@@ -3207,14 +3221,14 @@ void ToolboxProxy::setVolSliderHide()
     _volSlider->setVisible(false);
 }
 
-void ToolboxProxy::setButtonTooltipHide(){
+void ToolboxProxy::setButtonTooltipHide()
+{
     if(utils::check_wayland_env()){
-//暂待验证
-//        m_playBtnTip->hide();
-//        m_prevBtnTip->hide();
-//        m_nextBtnTip->hide();
-//        m_fsBtnTip->hide();
-//        m_listBtnTip->hide();
+        m_playBtnTip->hide();
+        m_prevBtnTip->hide();
+        m_nextBtnTip->hide();
+        m_fsBtnTip->hide();
+        m_listBtnTip->hide();
     }else{
         _subBtn->hideToolTip();
         _listBtn->hideToolTip();
@@ -3224,96 +3238,94 @@ void ToolboxProxy::setButtonTooltipHide(){
 
 void ToolboxProxy::initToolTip()
 {
-    //lmh0910播放
-//暂待验证
-//    m_playBtnTip=new ButtonToolTip(_mainWindow);
-//    m_playBtnTip->setText(tr("Play"));
-//    connect(_playBtn, &ButtonBoxButton::entered, [ = ]() {
-//        m_playBtnTip->move(80,
-//                        _mainWindow->height() - TOOLBOX_HEIGHT - 5);
-//        m_playBtnTip->show();
-//        m_playBtnTip->QWidget::activateWindow();
-//        m_playBtnTip->update();
-//        m_playBtnTip->releaseMouse();
+    if(utils::check_wayland_env()){
+        //lmh0910播放
+        m_playBtnTip=new ButtonToolTip(_mainWindow);
+        m_playBtnTip->setText(tr("Play"));
+        connect(static_cast<ButtonBoxButton*>(_playBtn), &ButtonBoxButton::entered, [ = ]() {
+            m_playBtnTip->move(80,
+                            _mainWindow->height() - TOOLBOX_HEIGHT - 5);
+            m_playBtnTip->show();
+            m_playBtnTip->QWidget::activateWindow();
+            m_playBtnTip->update();
+            m_playBtnTip->releaseMouse();
 
-//    });
-//    connect(_playBtn, &ButtonBoxButton::leaved, [ = ]() {
-//        QTimer::singleShot(0,[=]{
-//            m_playBtnTip->hide();
-//        });
-//    });
+        });
+        connect(static_cast<ButtonBoxButton*>(_playBtn), &ButtonBoxButton::leaved, [ = ]() {
+            QTimer::singleShot(0,[=]{
+                m_playBtnTip->hide();
+            });
+        });
+        //lmh0910上一个
+        m_prevBtnTip=new ButtonToolTip(_mainWindow);
+        m_prevBtnTip->setText(tr("Previous"));
+        connect(static_cast<ButtonBoxButton*>(_prevBtn), &ButtonBoxButton::entered, [ = ]() {
+            m_prevBtnTip->move(40,
+                            _mainWindow->height() - TOOLBOX_HEIGHT - 5);
+            m_prevBtnTip->show();
+            m_prevBtnTip->QWidget::activateWindow();
+            m_prevBtnTip->update();
+            m_prevBtnTip->releaseMouse();
 
-//    //lmh0910上一个
-//    m_prevBtnTip=new ButtonToolTip(_mainWindow);
-//    m_prevBtnTip->setText(tr("Previous"));
-//    connect(_prevBtn, &ButtonBoxButton::entered, [ = ]() {
-//        m_prevBtnTip->move(40,
-//                        _mainWindow->height() - TOOLBOX_HEIGHT - 5);
-//        m_prevBtnTip->show();
-//        m_prevBtnTip->QWidget::activateWindow();
-//        m_prevBtnTip->update();
-//        m_prevBtnTip->releaseMouse();
+        });
+        connect(static_cast<ButtonBoxButton*>(_prevBtn), &ButtonBoxButton::leaved, [ = ]() {
+            QTimer::singleShot(0,[=]{
+                m_prevBtnTip->hide();
+            });
+        });
 
-//    });
-//    connect(_prevBtn, &ButtonBoxButton::leaved, [ = ]() {
-//        QTimer::singleShot(0,[=]{
-//            m_prevBtnTip->hide();
-//        });
-//    });
+        //lmh0910下一个
+        m_nextBtnTip=new ButtonToolTip(_mainWindow);
+        m_nextBtnTip->setText(tr("Next"));
+        connect(static_cast<ButtonBoxButton*>(_nextBtn), &ButtonBoxButton::entered, [ = ]() {
+            m_nextBtnTip->move(120,
+                            _mainWindow->height() - TOOLBOX_HEIGHT - 5);
+            m_nextBtnTip->show();
+            m_nextBtnTip->QWidget::activateWindow();
+            m_nextBtnTip->update();
+            m_nextBtnTip->releaseMouse();
 
-//    //lmh0910下一个
-//    m_nextBtnTip=new ButtonToolTip(_mainWindow);
-//    m_nextBtnTip->setText(tr("Next"));
-//    connect(_nextBtn, &ButtonBoxButton::entered, [ = ]() {
-//        m_nextBtnTip->move(120,
-//                        _mainWindow->height() - TOOLBOX_HEIGHT - 5);
-//        m_nextBtnTip->show();
-//        m_nextBtnTip->QWidget::activateWindow();
-//        m_nextBtnTip->update();
-//        m_nextBtnTip->releaseMouse();
+        });
+        connect(static_cast<ButtonBoxButton*>(_nextBtn), &ButtonBoxButton::leaved, [ = ]() {
+            QTimer::singleShot(0,[=]{
+                m_nextBtnTip->hide();
+            });
+        });
+    }
+    //lmh0910全屏按键
+    m_fsBtnTip=new ButtonToolTip(_mainWindow);
+    m_fsBtnTip->setText(tr("Fullscreen"));
+    connect(_fsBtn, &ToolButton::entered, [ = ]() {
+        m_fsBtnTip->move(_mainWindow->width() - _fsBtn->width() / 2 /*- _playBtn->width()*/ - 140,
+                        _mainWindow->height() - TOOLBOX_HEIGHT - 5);
+        m_fsBtnTip->show();
+        m_fsBtnTip->QWidget::activateWindow();
+        m_fsBtnTip->update();
+        m_fsBtnTip->releaseMouse();
 
-//    });
-//    connect(_nextBtn, &ButtonBoxButton::leaved, [ = ]() {
-//        QTimer::singleShot(0,[=]{
-//            m_nextBtnTip->hide();
-//        });
-//    });
+    });
+    connect(_fsBtn, &ToolButton::leaved, [ = ]() {
+        QTimer::singleShot(0,[=]{
+            m_fsBtnTip->hide();
+        });
+    });
+    //lmh0910list按键
+    m_listBtnTip=new ButtonToolTip(_mainWindow);
+    m_listBtnTip->setText(tr("Playlist"));
+    connect(_listBtn, &ToolButton::entered, [ = ]() {
+        m_listBtnTip->move(_mainWindow->width() - _listBtn->width() / 2 /*- _playBtn->width()*/ - 20,
+                          _mainWindow->height() - TOOLBOX_HEIGHT - 5);
+        m_listBtnTip->show();
+        m_listBtnTip->QWidget::activateWindow();
+        m_listBtnTip->update();
+        m_listBtnTip->releaseMouse();
 
-
-//    //lmh0910全屏按键
-//    m_fsBtnTip=new ButtonToolTip(_mainWindow);
-//    m_fsBtnTip->setText(tr("Fullscreen"));
-//    connect(_fsBtn, &ToolButton::entered, [ = ]() {
-//        m_fsBtnTip->move(_mainWindow->width() - _fsBtn->width() / 2 /*- _playBtn->width()*/ - 140,
-//                        _mainWindow->height() - TOOLBOX_HEIGHT - 5);
-//        m_fsBtnTip->show();
-//        m_fsBtnTip->QWidget::activateWindow();
-//        m_fsBtnTip->update();
-//        m_fsBtnTip->releaseMouse();
-
-//    });
-//    connect(_fsBtn, &ToolButton::leaved, [ = ]() {
-//        QTimer::singleShot(0,[=]{
-//            m_fsBtnTip->hide();
-//        });
-//    });
-//    //lmh0910list按键
-//    m_listBtnTip=new ButtonToolTip(_mainWindow);
-//    m_listBtnTip->setText(tr("Playlist"));
-//    connect(_listBtn, &ToolButton::entered, [ = ]() {
-//        m_listBtnTip->move(_mainWindow->width() - _listBtn->width() / 2 /*- _playBtn->width()*/ - 20,
-//                          _mainWindow->height() - TOOLBOX_HEIGHT - 5);
-//        m_listBtnTip->show();
-//        m_listBtnTip->QWidget::activateWindow();
-//        m_listBtnTip->update();
-//        m_listBtnTip->releaseMouse();
-
-//    });
-//    connect(_listBtn, &ToolButton::leaved, [ = ]() {
-//        QTimer::singleShot(0,[=]{
-//            m_listBtnTip->hide();
-//        });
-//    });
+    });
+    connect(_listBtn, &ToolButton::leaved, [ = ]() {
+        QTimer::singleShot(0,[=]{
+            m_listBtnTip->hide();
+        });
+    });
 }
 
 bool ToolboxProxy::getVolSliderIsHided()

@@ -36,7 +36,7 @@ namespace dmr {
 #ifdef heyi
 namespace dvd {
 
-QString RetrieveDVDTitle(const QString &device)
+/*QString RetrieveDVDTitle(const QString &device)
 {
     qDebug() << "device" << device;
     const char *title = nullptr;
@@ -79,7 +79,7 @@ on_error:
     qWarning() << dvdnav_err_to_string(handle);
     if (handle) dvdnav_close(handle);
     return "";
-}
+}*/
 
 static std::atomic<RetrieveDvdThread *> _instance { nullptr };
 static QMutex _instLock;

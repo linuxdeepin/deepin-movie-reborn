@@ -247,26 +247,30 @@ void MprisPlayerAdaptor::OpenUri(const QString &Uri)
     if (!url.isValid()) {
         player->sendErrorReply(QDBusError::InvalidArgs, QStringLiteral("Wanted to open an url but the url is invalid."));
     }
-
-    if (!player->supportedUriSchemes().contains(url.scheme())) {
-        player->sendErrorReply(QDBusError::NotSupported, QStringLiteral("Wanted to open an url but the scheme is not supported."));
+    else {
+        emit player->openUriRequested(url);
+        return;
     }
 
-    QMimeDatabase db;
-    QMimeType mime;
-    if (url.isLocalFile()) {
-        mime = db.mimeTypeForFile(url.toLocalFile());
-    } else {
-        mime = db.mimeTypeForFile(url.fileName(), QMimeDatabase::MatchExtension);
-    }
-    QStringList mimeNames = mime.aliases();
-    mimeNames.prepend(mime.name());
-    for (int i = 0; i < mimeNames.size(); i++) {
-        if (player->supportedMimeTypes().contains(mimeNames[i])) {
-            emit player->openUriRequested(url);
-            return;
-        }
-    }
+//    if (!player->supportedUriSchemes().contains(url.scheme())) {
+//        player->sendErrorReply(QDBusError::NotSupported, QStringLiteral("Wanted to open an url but the scheme is not supported."));
+//    }
+
+//    QMimeDatabase db;
+//    QMimeType mime;
+//    if (url.isLocalFile()) {
+//        mime = db.mimeTypeForFile(url.toLocalFile());
+//    } else {
+//        mime = db.mimeTypeForFile(url.fileName(), QMimeDatabase::MatchExtension);
+//    }
+//    QStringList mimeNames = mime.aliases();
+//    mimeNames.prepend(mime.name());
+//    for (int i = 0; i < mimeNames.size(); i++) {
+//        if (player->supportedMimeTypes().contains(mimeNames[i])) {
+//            emit player->openUriRequested(url);
+//            return;
+//        }
+//    }
 
     player->sendErrorReply(QDBusError::NotSupported, QStringLiteral("Wanted to open an url but the mime type is not supported."));
 }
@@ -309,8 +313,10 @@ void MprisPlayerAdaptor::Play()
 
     switch (player->playbackStatus()) {
     case Mpris::Stopped:
-    case Mpris::Paused:
         emit player->playRequested();
+        break;
+    case Mpris::Paused:
+        emit player->pauseRequested();
         break;
     case Mpris::Playing:
     default:
@@ -327,28 +333,34 @@ void MprisPlayerAdaptor::PlayPause()
         return;
     }
 
-    switch (player->playbackStatus()) {
-    case Mpris::Playing:
-        if (!player->canPause()) {
-            player->sendErrorReply(QDBusError::NotSupported, QStringLiteral("Wanted to pause but it is not supported."));
-            return;
-        }
-
-        emit player->pauseRequested();
-        break;
-    case Mpris::Stopped:
-    case Mpris::Paused:
-        if (!player->canPlay()) {
-            player->sendErrorReply(QDBusError::NotSupported, QStringLiteral("Wanted to play but it is not supported."));
-            return;
-        }
-
-        emit player->playRequested();
-        break;
-    default:
-        // Nothing to do
-        break;
+    if (!player->canPlay()) {
+        player->sendErrorReply(QDBusError::NotSupported, QStringLiteral("Wanted to play but it is not supported."));
+        return;
     }
+
+    emit player->pauseRequested();
+//    switch (player->playbackStatus()) {
+//    case Mpris::Playing:
+//        if (!player->canPause()) {
+//            player->sendErrorReply(QDBusError::NotSupported, QStringLiteral("Wanted to pause but it is not supported."));
+//            return;
+//        }
+
+//        emit player->pauseRequested();
+//        break;
+//    case Mpris::Stopped:
+//    case Mpris::Paused:
+//        if (!player->canPlay()) {
+//            player->sendErrorReply(QDBusError::NotSupported, QStringLiteral("Wanted to play but it is not supported."));
+//            return;
+//        }
+
+//        emit player->playRequested();
+//        break;
+//    default:
+//        // Nothing to do
+//        break;
+//    }
 }
 
 void MprisPlayerAdaptor::Previous()

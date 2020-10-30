@@ -63,15 +63,15 @@ static bool check_wayland()
 {
     //此处在wayland下也是直接return false
     return false;
-    auto e = QProcessEnvironment::systemEnvironment();
-    QString XDG_SESSION_TYPE = e.value(QStringLiteral("XDG_SESSION_TYPE"));
-    QString WAYLAND_DISPLAY = e.value(QStringLiteral("WAYLAND_DISPLAY"));
+//    auto e = QProcessEnvironment::systemEnvironment();
+//    QString XDG_SESSION_TYPE = e.value(QStringLiteral("XDG_SESSION_TYPE"));
+//    QString WAYLAND_DISPLAY = e.value(QStringLiteral("WAYLAND_DISPLAY"));
 
-    if (XDG_SESSION_TYPE == QLatin1String("wayland") || WAYLAND_DISPLAY.contains(QLatin1String("wayland"), Qt::CaseInsensitive))
-        return true;
-    else {
-        return false;
-    }
+//    if (XDG_SESSION_TYPE == QLatin1String("wayland") || WAYLAND_DISPLAY.contains(QLatin1String("wayland"), Qt::CaseInsensitive))
+//        return true;
+//    else {
+//        return false;
+//    }
 }
 
 //static int open_codec_context(int *stream_idx,
@@ -303,12 +303,12 @@ public:
         }
     }
 
-    bool cacheExists(const QUrl &url)
+    /*bool cacheExists(const QUrl &url)
     {
         auto h = hashUrl(url);
         auto filename = QString("%1/%2").arg(_cacheInfoPath).arg(h);
         return QFile::exists(filename);
-    }
+    }*/
 
 private:
     PersistentManager()
@@ -761,10 +761,10 @@ void PlaylistModel::loadPlaylist()
 }
 
 
-PlaylistModel::PlayMode PlaylistModel::playMode() const
+/*PlaylistModel::PlayMode PlaylistModel::playMode() const
 {
     return _playMode;
-}
+}*/
 
 void PlaylistModel::setPlayMode(PlaylistModel::PlayMode pm)
 {
@@ -1138,8 +1138,9 @@ void PlaylistModel::appendSingle(const QUrl &url)
             std::for_each(fil.begin(), fil.end(), [ = ](const QFileInfo & fi) {
                 auto url = QUrl::fromLocalFile(fi.absoluteFilePath());
                 if (indexOf(url) < 0 && _engine->isPlayableFile(fi.fileName())) {
-                    auto pif = calculatePlayInfo(url, fi);
-                    if (pif.valid) _infos.append(pif);
+                    auto playitem_info = calculatePlayInfo(url, fi);
+                    if (playitem_info.valid)
+                        _infos.append(playitem_info);
                 }
             });
         }
@@ -1173,15 +1174,15 @@ void PlaylistModel::collectionJob(const QList<QUrl> &urls, QList<QUrl> &inputUrl
         if (!_firstLoad && Settings::get().isSet(Settings::AutoSearchSimilar)) {
             auto fil = utils::FindSimilarFiles(fi);
             qDebug() << "auto search similar files" << fil;
-            for (const QFileInfo &fi : fil) {
-                if (fi.isFile()) {
-                    auto url = QUrl::fromLocalFile(fi.absoluteFilePath());
+            for (const QFileInfo &fileinfo : fil) {
+                if (fileinfo.isFile()) {
+                    auto file_url = QUrl::fromLocalFile(fileinfo.absoluteFilePath());
 
-                    if (!_urlsInJob.contains(url.toLocalFile()) && indexOf(url) < 0 &&
-                            _engine->isPlayableFile(fi.fileName())) {
-                        _pendingJob.append(qMakePair(url, fi));
-                        _urlsInJob.insert(url.toLocalFile());
-                        inputUrls.append(url);
+                    if (!_urlsInJob.contains(file_url.toLocalFile()) && indexOf(file_url) < 0 &&
+                            _engine->isPlayableFile(fileinfo.fileName())) {
+                        _pendingJob.append(qMakePair(file_url, fileinfo));
+                        _urlsInJob.insert(file_url.toLocalFile());
+                        inputUrls.append(file_url);
                         //handleAsyncAppendResults(QList<PlayItemInfo>()<<calculatePlayInfo(url,fi));
                     }
                 }
@@ -1438,10 +1439,10 @@ void PlaylistModel::handleAsyncAppendResults(QList<PlayItemInfo> &fil)
     savePlaylist();
 }
 
-bool PlaylistModel::hasPendingAppends()
+/*bool PlaylistModel::hasPendingAppends()
 {
     return _pendingAppendReq.size() > 0 || _pendingJob.size() > 0;
-}
+}*/
 
 //TODO: what if loadfile failed
 void PlaylistModel::append(const QUrl &url)

@@ -53,17 +53,17 @@ public:
 
         auto h = new QHBoxLayout(this);
 
-        auto play = new QPushButton("Play");
-        connect(play, &QPushButton::clicked, &player->engine(), &dmr::PlayerEngine::play);
-        h->addWidget(play);
+        auto playBtn = new QPushButton("Play");
+        connect(playBtn, &QPushButton::clicked, &player->engine(), &dmr::PlayerEngine::play);
+        h->addWidget(playBtn);
 
-        auto pause = new QPushButton("Pause");
-        connect(pause, &QPushButton::clicked, &player->engine(), &dmr::PlayerEngine::pauseResume);
-        h->addWidget(pause);
+        auto pauseBtn = new QPushButton("Pause");
+        connect(pauseBtn, &QPushButton::clicked, &player->engine(), &dmr::PlayerEngine::pauseResume);
+        h->addWidget(pauseBtn);
 
-        auto stop = new QPushButton("stop");
-        connect(stop, &QPushButton::clicked, &player->engine(), &dmr::PlayerEngine::stop);
-        h->addWidget(stop);
+        auto stopBtn = new QPushButton("stop");
+        connect(stopBtn, &QPushButton::clicked, &player->engine(), &dmr::PlayerEngine::stop);
+        h->addWidget(stopBtn);
 
         auto forward = new QPushButton("forward");
         connect(forward, &QPushButton::clicked, [=]() {

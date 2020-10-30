@@ -47,7 +47,8 @@
 #define POPUP_DURATION 350
 
 namespace dmr {
-QString splitText(const QString &text, int width,
+
+/*QString splitText(const QString &text, int width,
                   QTextOption::WrapMode wordWrap, const QFont &font, int lineHeight)
 {
     int height = 0;
@@ -78,7 +79,8 @@ QString splitText(const QString &text, int width,
     textLayout.endLayout();
 
     return str;
-}
+}*/
+
 class PlayItemTooltipHandler: public QObject
 {
 public:
@@ -388,10 +390,10 @@ signals:
     void doubleClicked();
 
 private slots:
-    void closeBtnStates(bool bHover)
+    /*void closeBtnStates(bool bHover)
     {
         setCurItemHovered(bHover);
-    }
+    }*/
 
     void slotThemeTypeChanged()
     {
