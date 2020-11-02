@@ -92,6 +92,7 @@
                         },
                         {
                             "key": "pauseonmin",
+                            "hide": true,
                             "text": "Pause when minimized",
                             "type": "checkbox",
                             "default": true
