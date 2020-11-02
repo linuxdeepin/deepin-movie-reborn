@@ -968,11 +968,21 @@ public:
         QImage image;
         QPalette palette;
         image = rounded.toImage();
-        palette.setBrush(_thumb->backgroundRole(),
-                         QBrush(image.scaled(// 缩放背景图.
-                                    QSize(_thumb->width(), _thumb->height()),
-                                    Qt::IgnoreAspectRatio,
-                                    Qt::SmoothTransformation)));
+        //临时方案
+        if(utils::check_wayland_env()){
+            palette.setBrush(_thumb->backgroundRole(),
+                             QBrush(image.scaled(// 缩放背景图.
+                                        QSize(image.width(), image.height()),
+                                        Qt::IgnoreAspectRatio,
+                                        Qt::SmoothTransformation)));
+        }else{
+            palette.setBrush(_thumb->backgroundRole(),
+                             QBrush(image.scaled(// 缩放背景图.
+                                        QSize(_thumb->width(), _thumb->height()),
+                                        Qt::IgnoreAspectRatio,
+                                        Qt::SmoothTransformation)));
+        }
+
         _thumb->setPalette(palette);
 
 
