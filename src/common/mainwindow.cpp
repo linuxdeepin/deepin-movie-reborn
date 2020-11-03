@@ -514,7 +514,7 @@ protected:
             if (!leftButtonPressed) {
                 //add by heyi  拦截鼠标移动事件
                 mw->judgeMouseInWindow(QCursor::pos());
-                if (mw->insideResizeArea(e->globalPos())) {
+//                if (mw->insideResizeArea(e->globalPos())) {
                     CornerEdge mouseCorner = CornerEdge::NoneEdge;
                     QRect cornerRect;
 
@@ -583,9 +583,9 @@ set_cursor:
 skip_set_cursor:
                     lastCornerEdge = mouseCorner = CornerEdge::NoneEdge;
                     return false;
-                } else {
-                    qApp->setOverrideCursor(window->cursor());
-                }
+//                } else {
+//                    qApp->setOverrideCursor(window->cursor());
+//                }
             } else {
                 if (startResizing) {
                     updateGeometry(lastCornerEdge, e);
@@ -597,7 +597,6 @@ skip_set_cursor:
                     return true;
                 }
             }
-
             break;
         }
 

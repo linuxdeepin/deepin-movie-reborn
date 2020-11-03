@@ -160,6 +160,7 @@ public:
     void requestAction(ActionFactory::ActionKind, bool fromUI = false,
                        QList<QVariant> args = {}, bool shortcut = false);
 
+
     bool insideResizeArea(const QPoint &global_p);
     QMargins dragMargins() const;
 
