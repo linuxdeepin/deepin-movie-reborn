@@ -2333,7 +2333,13 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
 //                setWindowState(windowState() & ~Qt::WindowFullScreen);
                 if (_lastRectInNormalMode.isValid() && !_miniMode && !isMaximized()) {
                     setGeometry(_lastRectInNormalMode);
-                    move(_lastRectInNormalMode.x(), _lastRectInNormalMode.y());
+                    if(utils::check_wayland_env()){
+                         //在wayland下全屏 取消全屏我也不知道_lastRectInNormalMode.y()为什么会变化，暂时先这样改
+                        move(_lastRectInNormalMode.x(), _lastRectInNormalMode.y() - 27);
+                    }else{
+                        move(_lastRectInNormalMode.x(), _lastRectInNormalMode.y());
+                    }
+
                     resize(_lastRectInNormalMode.width(), _lastRectInNormalMode.height());
                     _titlebar->setFixedWidth(_lastRectInNormalMode.width());             //bug 39991
                 }
