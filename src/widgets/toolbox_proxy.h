@@ -328,11 +328,6 @@ private:
     QLabel *_timeLabelend {nullptr};
     VolumeSlider *_volSlider {nullptr};
 
-//    DImageButton *_playBtn {nullptr};
-//    DIconButton *_playBtn {nullptr};
-//    DIconButton *_prevBtn {nullptr};
-//    DIconButton *_nextBtn {nullptr};
-
     //lmh0910DButtonBoxButton替换到ButtonBoxButton
     ButtonToolTip *m_playBtnTip{nullptr};
     ButtonToolTip *m_prevBtnTip{nullptr};
@@ -391,7 +386,6 @@ private:
 
     QPropertyAnimation *paopen;
     QPropertyAnimation *paClose;
-    QPropertyAnimation *pVolAnimation;
 
     QMutex m_listPixmapMutex;       //缩略图list的锁
 

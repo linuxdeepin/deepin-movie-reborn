@@ -3896,36 +3896,36 @@ void MainWindow::showEvent(QShowEvent *event)
                 }
 #endif
     }*/
-//    if (_pausedOnHide || Settings::get().isSet(Settings::PauseOnMinimize)) {
-//        if (_pausedOnHide && _engine && _engine->state() != PlayerEngine::Playing) {
-//            if (_quitfullscreenflag) {
-//                requestAction(ActionFactory::TogglePause);
-//                _quitfullscreenflag = false;
-//            }
+    /*if (_pausedOnHide || Settings::get().isSet(Settings::PauseOnMinimize)) {
+        if (_pausedOnHide && _engine && _engine->state() != PlayerEngine::Playing) {
+            if (_quitfullscreenflag) {
+                requestAction(ActionFactory::TogglePause);
+                _quitfullscreenflag = false;
+            }
 
-//            if (!_quitfullscreenstopflag) {
-//#ifdef __aarch64__
-//                QVariant l = ApplicationAdaptor::redDBusProperty("com.deepin.SessionManager", "/com/deepin/SessionManager",
-//                                                                 "com.deepin.SessionManager", "Locked");
-//                if (l.isValid() && !l.toBool()) {
-//                    qDebug() << "locked_____________" << l;
-//                    //是否锁屏
-//                    if(_engine && _engine->state() != PlayerEngine::Playing){
-//                        requestAction(ActionFactory::TogglePause);
-//                    }
-//                }
-//#endif
-//                    requestAction(ActionFactory::TogglePause);
-//                    _pausedOnHide = false;
-//                    _quitfullscreenstopflag = false;
-//#ifdef __aarch64__
-//                }
-//#endif
-//            } else {
-//                _quitfullscreenstopflag = false;
-//            }
-//        }
-//    }
+            if (!_quitfullscreenstopflag) {
+#ifdef __aarch64__
+                QVariant l = ApplicationAdaptor::redDBusProperty("com.deepin.SessionManager", "/com/deepin/SessionManager",
+                                                                 "com.deepin.SessionManager", "Locked");
+                if (l.isValid() && !l.toBool()) {
+                    qDebug() << "locked_____________" << l;
+                    //是否锁屏
+                    if(_engine && _engine->state() != PlayerEngine::Playing){
+                        requestAction(ActionFactory::TogglePause);
+                    }
+                }
+#endif
+                    requestAction(ActionFactory::TogglePause);
+                    _pausedOnHide = false;
+                    _quitfullscreenstopflag = false;
+#ifdef __aarch64__
+                }
+#endif
+            } else {
+                _quitfullscreenstopflag = false;
+            }
+        }
+    }*/
 
     _titlebar->raise();
     _toolbox->raise();
@@ -3939,6 +3939,10 @@ void MainWindow::showEvent(QShowEvent *event)
         if (_playlist->isVisible())
             updateProxyGeometry();
     }
+//    if(this->focusWidget())
+//    {
+//        qDebug() << this->focusWidget()->objectName();
+//    }
 }
 
 void MainWindow::resizeByConstraints(bool forceCentered)

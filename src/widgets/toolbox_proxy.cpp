@@ -174,7 +174,6 @@ protected:
     bool eventFilter(QObject *obj, QEvent *event)
     {
         if (event->type() == QEvent::KeyPress) {
-            //QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
             QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
             if(keyEvent->key() != Qt::Key_Tab)
             {
@@ -183,6 +182,10 @@ protected:
             } else {
                 return false;
             }
+        }
+        if(event->type() == QEvent::EnabledChange || event->type() == QEvent::ActivationChange)
+        {
+            return true;
         } else {
             // standard event processing
             return QObject::eventFilter(obj, event);
@@ -1128,7 +1131,7 @@ public:
     VolumeSlider(PlayerEngine *eng, MainWindow *mw, QWidget *parent)
         : DArrowRectangle(DArrowRectangle::ArrowBottom, DArrowRectangle::FloatWidget, parent), _engine(eng), _mw(mw)
     {
-//        setFixedSize(QSize(62, 205));
+        //        setFixedSize(QSize(62, 205));
 #ifdef __mips__
         if (!CompositingManager::get().composited()) {
             setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
@@ -1151,7 +1154,6 @@ public:
         setShadowXOffset(0);
         setArrowWidth(20);
         setArrowHeight(15);
-        //setFocusPolicy(Qt::NoFocus);
         hide();
 
         auto *l = new QVBoxLayout(this);
@@ -1168,7 +1170,7 @@ public:
         _slider->show();
         _slider->slider()->setRange(0, 100);
         _slider->slider()->setMinimumHeight(132);
-
+        _slider->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred));
         //修改打开时音量条显示不正确
         int vol = 0;
         if(utils::check_wayland_env()){
@@ -1194,6 +1196,7 @@ public:
 //        m_pBtnChangeMute->setFixedSize(36, 36);
         m_pBtnChangeMute->setFixedWidth(36);
         m_pBtnChangeMute->setImage(":/icons/deepin/builtin/dark/texts/dcc_volumemid_36px.svg");
+        m_pBtnChangeMute->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred));
         connect(m_pBtnChangeMute, SIGNAL(clicked()), this, SLOT(changeSate()));
 
         l->addWidget(m_pBtnChangeMute, 0, Qt::AlignHCenter);
@@ -2011,6 +2014,7 @@ void ToolboxProxy::setup()
 
     _palyBox = new DButtonBox(bot_toolWgt);
     _palyBox->setFixedWidth(120);
+    _palyBox->setFocusPolicy(Qt::NoFocus);
     _mid->addWidget(_palyBox);
     _mid->setAlignment(_palyBox, Qt::AlignLeft);
     QList<DButtonBoxButton *> list;
@@ -2029,6 +2033,7 @@ void ToolboxProxy::setup()
     _prevBtn->setIconSize(QSize(36, 36));
     _prevBtn->setFixedSize(40, 50);
     _prevBtn->setObjectName("PrevBtn");
+    _prevBtn->setFocusPolicy(Qt::TabFocus);
     connect(_prevBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_prevBtn, "prev");
     list.append(_prevBtn);
@@ -2036,6 +2041,7 @@ void ToolboxProxy::setup()
     _playBtn->setIcon(QIcon::fromTheme("dcc_play", QIcon(":/icons/deepin/builtin/light/normal/play_normal.svg")));
     _playBtn->setIconSize(QSize(36, 36));
     _playBtn->setFixedSize(40, 50);
+    _playBtn->setFocusPolicy(Qt::TabFocus);
     connect(_playBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_playBtn, "play");
     list.append(_playBtn);
@@ -2043,6 +2049,7 @@ void ToolboxProxy::setup()
     _nextBtn->setIcon(QIcon::fromTheme("dcc_next", QIcon(":/icons/deepin/builtin/light/normal/next_normal.svg")));
     _nextBtn->setIconSize(QSize(36, 36));
     _nextBtn->setFixedSize(40, 50);
+    _nextBtn->setFocusPolicy(Qt::TabFocus);
     connect(_nextBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_nextBtn, "next");
     list.append(_nextBtn);
@@ -2183,6 +2190,8 @@ void ToolboxProxy::setup()
     auto bubbler = new KeyPressBubbler(this);
     this->installEventFilter(bubbler);
     _playBtn->installEventFilter(bubbler);
+    _prevBtn->installEventFilter(bubbler);
+    nextBtn()->installEventFilter(bubbler);
     connect(qApp, &QGuiApplication::applicationStateChanged, this, &ToolboxProxy::slotApplicationStateChanged);
 
 

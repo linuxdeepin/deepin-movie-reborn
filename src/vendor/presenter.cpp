@@ -37,7 +37,7 @@ void Presenter::initMpris(MprisPlayer *mprisPlayer)
     connect(mprisPlayer, &MprisPlayer::nextRequested, this, &Presenter::slotplaynext);
     connect(mprisPlayer, &MprisPlayer::previousRequested, this, &Presenter::slotplayprev);
     connect(mprisPlayer, &MprisPlayer::volumeRequested, this, &Presenter::slotvolumeRequested);
-    connect(mprisPlayer, &MprisPlayer::openUriRequested, this, &Presenter::slotopenUriRequested);
+    connect(mprisPlayer, &MprisPlayer::openUriRequested, this, &Presenter::slotopenUrlRequested);
     connect(mprisPlayer, &MprisPlayer::loopStatusRequested, this, &Presenter::slotloopStatusRequested);
     connect(_mw->engine()->getplaylist(), &PlaylistModel::playModeChanged, this, &Presenter::slotplayModeChanged);
     //connect(mprisPlayer, &MprisPlayer::openUriRequested, this, [ = ] {_mw->requestAction(ActionFactory::Exit);});
@@ -79,7 +79,7 @@ void Presenter::slotvolumeRequested(double volume)
     _mw->requestAction(ActionFactory::ChangeVolume, 1, arg);
 }
 
-void Presenter::slotopenUriRequested(const QUrl url)
+void Presenter::slotopenUrlRequested(const QUrl url)
 {
     _mw->play(url);
 }
