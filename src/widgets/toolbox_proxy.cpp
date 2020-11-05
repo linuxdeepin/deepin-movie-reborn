@@ -2218,11 +2218,12 @@ void ToolboxProxy::setup()
 
 }
 
-void ToolboxProxy::installHint(QWidget *w, QWidget *hint)
+/*not used yet*/
+/*void ToolboxProxy::installHint(QWidget *w, QWidget *hint)
 {
     w->setProperty("HintWidget", QVariant::fromValue<QWidget *>(hint));
     w->installEventFilter(hintFilter);
-}
+}*/
 
 void ToolboxProxy::updateThumbnail()
 {

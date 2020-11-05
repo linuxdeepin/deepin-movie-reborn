@@ -1341,7 +1341,8 @@ static QList<PlayItemInfo> &SortSimilarFiles(QList<PlayItemInfo> &fil)
     return fil;
 }
 
-void PlaylistModel::onAsyncAppendFinished()
+/*not used yet*/
+/*void PlaylistModel::onAsyncAppendFinished()
 {
     qDebug() << __func__;
 //    auto f = _jobWatcher->future();
@@ -1350,7 +1351,7 @@ void PlaylistModel::onAsyncAppendFinished()
 
     //auto fil = f.results();
     //handleAsyncAppendResults(fil);
-}
+}*/
 
 void PlaylistModel::onAsyncFinished()
 {

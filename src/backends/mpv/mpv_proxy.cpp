@@ -531,8 +531,8 @@ void MpvProxy::pollingEndOfPlayback()
         _polling = false;
     }
 }
-
-void MpvProxy::pollingStartOfPlayback()
+/*not used yet*/
+/*void MpvProxy::pollingStartOfPlayback()
 {
     if (_state == Backend::PlayState::Stopped) {
         _polling = true;
@@ -551,7 +551,7 @@ void MpvProxy::pollingStartOfPlayback()
 
         _polling = false;
     }
-}
+}*/
 
 const PlayingMovieInfo &MpvProxy::playingMovieInfo()
 {

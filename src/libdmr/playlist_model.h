@@ -209,7 +209,7 @@ public slots:
     void clearLoad();
 
 private slots:
-    void onAsyncAppendFinished();
+//    void onAsyncAppendFinished();
     void onAsyncFinished();
     void onAsyncUpdate(PlayItemInfo);
     //把lambda表达式改为槽函数，modify by myk

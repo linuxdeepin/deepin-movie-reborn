@@ -748,10 +748,11 @@ namespace dmr {
         update();
     }
 
-    void MpvGLWidget::setHandle(myHandle h)
+    /*not used yet*/
+    /*void MpvGLWidget::setHandle(myHandle h)
     {
         _handle = h;
-    }
+    }*/
 
     void MpvGLWidget::paintGL() 
     {
@@ -925,7 +926,8 @@ namespace dmr {
         update();
     }
 
-    void MpvGLWidget::setMiniMode(bool val)
+    /*not used yet*/
+    /*void MpvGLWidget::setMiniMode(bool val)
     {
         if (_inMiniMode != val) {
             _inMiniMode = val;
@@ -933,7 +935,7 @@ namespace dmr {
             updateVboCorners();
             update();
         }
-    }
+    }*/
 
     void MpvGLWidget::initMpvFuns()
     {

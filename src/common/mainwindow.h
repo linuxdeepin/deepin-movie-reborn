@@ -256,7 +256,7 @@ protected slots:
     void startBurstShooting();
     void onBurstScreenshot(const QImage &frame, qint64 timestamp);
     void delayedMouseReleaseHandler();
-    void onDvdData(const QString &title);
+//    void onDvdData(const QString &title);
 
 #ifdef USE_DXCB
     void onMonitorButtonPressed(int x, int y);

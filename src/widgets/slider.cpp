@@ -238,7 +238,8 @@ void DMRSlider::forceLeave()
     leaveEvent(nullptr);
 }
 
-void DMRSlider::onAnimationStopped()
+/*not used yet*/
+/*void DMRSlider::onAnimationStopped()
 {
     // need to clear stylesheet when leave slider, since the generated sheet is a
     // little weird.
@@ -247,9 +248,10 @@ void DMRSlider::onAnimationStopped()
 //        setStyleSheet("");
         update();
     }
-}
+}*/
 
-void DMRSlider::onValueChanged(const QVariant &v)
+/*not used yet*/
+/*void DMRSlider::onValueChanged(const QVariant &v)
 {
     // see dmr--ToolProxy.theme to find out the meaning of these values
     // v1 is for groove and sub-page
@@ -269,7 +271,7 @@ void DMRSlider::onValueChanged(const QVariant &v)
 //    setStyleSheet(s);
     update();
 
-}
+}*/
 
 /*void DMRSlider::startAnimation(bool reverse)
 {

@@ -4384,7 +4384,8 @@ void MainWindow::delayedMouseReleaseHandler()
     _afterDblClick = false;
 }
 
-void MainWindow::onDvdData(const QString &title)
+/*not used yet*/
+/*void MainWindow::onDvdData(const QString &title)
 {
     auto mi = _engine->playlist().currentInfo().mi;
 
@@ -4411,7 +4412,7 @@ void MainWindow::onDvdData(const QString &title)
     }
     PlayItemInfo info = _engine->playlist().currentInfo();
     _engine->playByName(info.url);
-}
+}*/
 
 void MainWindow::mouseMoveEvent(QMouseEvent *ev)
 {

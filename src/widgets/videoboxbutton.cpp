@@ -90,10 +90,10 @@ void VideoBoxButton::setPropertyPic(const QString &normalPic, const QString &hov
     this->setIcon(icon);
 }
 
-void VideoBoxButton::setTransparent(bool flag)
+/*void VideoBoxButton::setTransparent(bool flag)
 {
     transparent = flag;
-}
+}*/
 
 /*void VideoBoxButton::setAutoChecked(bool flag)
 {
