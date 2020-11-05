@@ -2428,13 +2428,14 @@ void ToolboxProxy::updateVolumeState()
         //_volBtn->setToolTip(tr("Mute"));
     } else {
         auto v = _engine->volume();
+        auto globalV = Settings::get().internalOption("global_volume");
         /*if (v != 0) {
             v -= VOLUME_OFFSET;
         }*/
         //_volBtn->setToolTip(tr("Volume"));
-        if (v >= 66)
+        if (v >= 66 && globalV >= 66)
             _volBtn->changeLevel(VolumeButton::High);
-        else if (v >= 33)
+        else if (v >= 33 && globalV >= 33)
             _volBtn->changeLevel(VolumeButton::Mid);
         else if (v == 0)
             _volBtn->changeLevel(VolumeButton::Off);
