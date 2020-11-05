@@ -368,7 +368,9 @@ void MoveToCenter(QWidget *w)
     //QRect r = dw->availableGeometry(w);
     //修复双屏问题
     QRect r = qApp->primaryScreen()->availableGeometry();
-    w->move(r.center() - w->rect().center());
+    QRect wrect = w->rect();
+    QPoint rcentor = r.center();
+    w->move(rcentor - QPoint(wrect.width()/2, wrect.height()/2));
 }
 
 QString Time2str(qint64 seconds)

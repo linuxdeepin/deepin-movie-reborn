@@ -1307,7 +1307,8 @@ bool MainWindow::event(QEvent *ev)
 
     if (ev->type() == QEvent::WindowStateChange) {
         auto wse = dynamic_cast<QWindowStateChangeEvent *>(ev);
-        _lastWindowState = wse->oldState();
+        if(_lastWindowState != wse->oldState())
+            _lastWindowState = wse->oldState();
         qDebug() << "------------ _lastWindowState" << _lastWindowState
                  << "current " << windowState();
         //NOTE: windowStateChanged won't be emitted if by draggint to restore. so we need to
@@ -3848,6 +3849,10 @@ void MainWindow::resizeEvent(QResizeEvent *ev)
     if (!isFullScreen() && !_windowAbove) {
         my_setStayOnTop(this, false);
     }
+    if(windowState() == Qt::WindowNoState)
+    {
+        utils::MoveToCenter(this);
+    }
 }
 
 void MainWindow::updateWindowTitle()
@@ -4449,27 +4454,28 @@ void MainWindow::toggleUIMode()
 
     _miniMode = !_miniMode;
 
-    //窗口状态改变重写
-    if(utils::check_wayland_env()){
-        if(_miniMode){
-            _preMiniWindowState = windowState();
-            setWindowState(Qt::WindowNoState);
-        }else{
-            if(_lastWindowState == Qt::WindowMaximized){
-                _preMiniWindowState = Qt::WindowMaximized;
-                setWindowState(Qt::WindowMaximized);
-            }else{
-                setWindowState(_preMiniWindowState);
-            }
-        }
-    }
-
+    //    //窗口状态改变重写
+    //    if(utils::check_wayland_env()){
+    //        if(_miniMode){
+    //            _preMiniWindowState = windowState();
+    //            setWindowState(Qt::WindowNoState);
+    //        }else{
+    //            if(_lastWindowState == Qt::WindowMaximized){
+    //                _preMiniWindowState = Qt::WindowMaximized;
+    //                setWindowState(Qt::WindowMaximized);
+    //            }else{
+    //                setWindowState(_preMiniWindowState);
+    //            }
+    //        }
+    //    }
     //wayland下下面的代码回导致调用hideevent（），用此标记防止切换mini模式播放状态被改变
     _isSettingMiniMode = true;
     if(utils::check_wayland_env()){
         auto flags = windowFlags();
         if (_miniMode) {
             flags |= Qt::X11BypassWindowManagerHint;
+            _preMiniWindowState = windowState();
+            setWindowState(Qt::WindowNoState);
         } else {
             flags &= ~Qt::X11BypassWindowManagerHint;
         }
@@ -4644,6 +4650,19 @@ void MainWindow::toggleUIMode()
             }
         }
         _stateBeforeMiniMode = SBEM_None;
+    }
+    //窗口状态改变重写
+    if(utils::check_wayland_env()){
+        if(!_miniMode){
+            QTimer::singleShot(10, [=]()
+            {
+                setWindowState(_preMiniWindowState);
+                if(_preMiniWindowState == Qt::WindowNoState)
+                {
+                    utils::MoveToCenter(this);
+                }
+            });
+        }
     }
 }
 
