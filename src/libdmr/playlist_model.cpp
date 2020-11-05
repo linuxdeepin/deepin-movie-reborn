@@ -74,53 +74,6 @@ static bool check_wayland()
 //    }
 }
 
-//static int open_codec_context(int *stream_idx,
-//                              AVCodecParameters **dec_ctx, AVFormatContext *fmt_ctx, enum AVMediaType type)
-//{
-//    int ret, stream_index;
-//    AVStream *st;
-//    AVCodec *dec = nullptr;
-//    //AVDictionary *opts = nullptr;
-//    ret = av_find_best_stream(fmt_ctx, type, -1, -1, nullptr, 0);
-//    if (ret < 0) {
-////        qWarning() << "Could not find " << av_get_media_type_string(type)
-////                   << " stream in input file";
-//        return ret;
-//    }
-
-//    stream_index = ret;
-//    st = fmt_ctx->streams[stream_index];
-//#if LIBAVFORMAT_VERSION_MAJOR >= 57 && LIBAVFORMAT_VERSION_MINOR <= 25
-//    *dec_ctx = st->codecpar;
-//    dec = avcodec_find_decoder((*dec_ctx)->codec_id);
-//#else
-//    /* find decoder for the stream */
-//    dec = avcodec_find_decoder(st->codecpar->codec_id);
-//    if (!dec) {
-//        fprintf(stderr, "Failed to find %s codec\n",
-//                av_get_media_type_string(type));
-//        return AVERROR(EINVAL);
-//    }
-//    /* Allocate a codec context for the decoder */
-//    *dec_ctx = avcodec_alloc_context3(dec);
-//    if (!*dec_ctx) {
-//        fprintf(stderr, "Failed to allocate the %s codec context\n",
-//                av_get_media_type_string(type));
-//        return AVERROR(ENOMEM);
-//    }
-//    /* Copy codec parameters from input stream to output codec context */
-//    if ((ret = avcodec_parameters_to_context(*dec_ctx, st->codecpar)) < 0) {
-//        fprintf(stderr, "Failed to copy %s codec parameters to decoder context\n",
-//                av_get_media_type_string(type));
-//        return ret;
-//    }
-//#endif
-
-//    *stream_idx = stream_index;
-//    return 0;
-//}
-
-
 namespace dmr {
 QDebug operator<<(QDebug debug, const struct MovieInfo &mi)
 {
@@ -1459,7 +1412,18 @@ void PlaylistModel::append(const QUrl &url)
 void PlaylistModel::changeCurrent(int pos)
 {
     qDebug() << __func__ << pos;
-    if (pos < 0 || pos >= count() || _current == pos) return;
+    if (pos < 0 || pos >= count()) return;
+    auto mi = items().at(pos).mi;
+    if (mi.fileType == "webm") {
+        auto pif = calculatePlayInfo(items().at(pos).url, items().at(pos).info);
+        items().removeAt(pos);
+        items().insert(pos, pif);
+        emit updateDuration();
+    } else {
+        if (_current == pos) {
+            return;
+        }
+    }
 
     _userRequestingItem = true;
 
@@ -1593,11 +1557,11 @@ struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl &url, const QFil
     bool ok = false;
     struct MovieInfo mi;
     auto ci = PersistentManager::get().loadFromCache(url);
-    if (ci.mi_valid && url.isLocalFile()) {
-        mi = ci.mi;
-        ok = true;
-        qDebug() << "load cached MovieInfo" << mi;
-    } else {
+//    if (ci.mi_valid && url.isLocalFile()) {
+//        mi = ci.mi;
+//        ok = true;
+//        qDebug() << "load cached MovieInfo" << mi;
+//    } else {
 
         mi = parseFromFile(fi, &ok);
         if (isDvd && url.scheme().startsWith("dvd")) {
@@ -1621,7 +1585,7 @@ struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl &url, const QFil
         } else {
             mi.title = fi.fileName();
         }
-    }
+    //}
 
     QPixmap pm;
     QPixmap dark_pm;

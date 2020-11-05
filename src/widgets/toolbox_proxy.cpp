@@ -2169,6 +2169,7 @@ void ToolboxProxy::setup()
     connect(_engine, &PlayerEngine::fileLoaded, this, &ToolboxProxy::slotFileLoaded);
 
     connect(_engine, &PlayerEngine::elapsedChanged, this, &ToolboxProxy::slotElapsedChanged);
+    connect(_engine, &PlayerEngine::updateDuration, this, &ToolboxProxy::slotElapsedChanged);
 
 
     connect(window()->windowHandle(), &QWindow::windowStateChanged, this, &ToolboxProxy::updateFullState);

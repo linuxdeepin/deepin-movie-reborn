@@ -225,6 +225,7 @@ signals:
     void playModeChanged(PlayMode);
     void asyncAppendFinished(const QList<PlayItemInfo> &);
     void itemInfoUpdated(int id);
+    void updateDuration();
 
 private:
     void initThumb();

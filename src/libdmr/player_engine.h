@@ -191,6 +191,7 @@ signals:
     void urlpause(bool status);
 
     void siginitthumbnailseting();
+    void updateDuration();
 
 public slots:
     void play();
