@@ -195,7 +195,7 @@ bool HintFilter::eventFilter(QObject *obj, QEvent *event)
     return QObject::eventFilter(obj, event);
 }
 
-void HintFilter::showHitsFor(QWidget *w, QWidget *hint)
+/*void HintFilter::showHitsFor(QWidget *w, QWidget *hint)
 {
     Q_D(HintFilter);
     if (d->hintWidget) {
@@ -217,7 +217,7 @@ void HintFilter::showHitsFor(QWidget *w, QWidget *hint)
     d->showHint(hint);
 
     d->hintWidget->setCursor(QCursor(Qt::PointingHandCursor));
-}
+}*/
 
 void HintFilter::slotDelayShowTimerTimeOut()
 {

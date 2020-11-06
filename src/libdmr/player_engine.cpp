@@ -92,6 +92,7 @@ PlayerEngine::PlayerEngine(QWidget *parent)
     _playlist = new PlaylistModel(this);
     connect(_playlist, &PlaylistModel::asyncAppendFinished, this,
             &PlayerEngine::onPlaylistAsyncAppendFinished, Qt::DirectConnection);
+    connect(_playlist, &PlaylistModel::updateDuration, this, &PlayerEngine::updateDuration);
 }
 
 PlayerEngine::~PlayerEngine()
@@ -938,11 +939,11 @@ QVariant PlayerEngine::getBackendProperty(const QString &name)
     return QVariant();
 }
 
-void PlayerEngine::setVideoZoom(float val)
+/*void PlayerEngine::setVideoZoom(float val)
 {
     if (_current) {
         _current->setProperty("video-zoom", val);
     }
-}
+}*/
 
 } // end of namespace dmr

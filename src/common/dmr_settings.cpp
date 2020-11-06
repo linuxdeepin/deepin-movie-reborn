@@ -52,9 +52,9 @@ Settings::Settings()
     : QObject(nullptr),_configPath(QString())
 {
     _configPath = QString("%1/%2/%3/config.conf")
-                  .arg(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation))
-                  .arg(qApp->organizationName())
-                  .arg(qApp->applicationName());
+            .arg(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation))
+            .arg(qApp->organizationName())
+            .arg(qApp->applicationName());
     qDebug() << "configPath" << _configPath;
     auto backend = new QSettingBackend(_configPath);
 #if defined (__mips__) || defined (__sw_64__) || defined ( __aarch64__)
@@ -70,7 +70,7 @@ Settings::Settings()
     _settings->setBackend(backend);
 
     connect(_settings, &DSettings::valueChanged,
-    [ = ](const QString & key, const QVariant & value) {
+            [ = ](const QString & key, const QVariant & value) {
         if (key.startsWith("shortcuts."))
             emit shortcutsChanged(key, value);
         else if (key.startsWith("base.play.playmode"))
@@ -98,8 +98,8 @@ Settings::Settings()
 
     QStringList hwaccelDatabase;
     hwaccelDatabase << tr("Auto")
-                     << tr("Open")
-                     << tr("Close");
+                    << tr("Open")
+                    << tr("Close");
     auto hwaccelFamily = _settings->option("base.play.hwaccel");
     hwaccelFamily->setData("items", hwaccelDatabase);
 

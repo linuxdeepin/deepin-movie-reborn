@@ -174,9 +174,18 @@ protected:
     bool eventFilter(QObject *obj, QEvent *event)
     {
         if (event->type() == QEvent::KeyPress) {
-            //QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
-            event->setAccepted(false);
-            return false;
+            QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
+            if(keyEvent->key() != Qt::Key_Tab)
+            {
+                event->setAccepted(false);
+                return true;
+            } else {
+                return false;
+            }
+        }
+        if(event->type() == QEvent::EnabledChange || event->type() == QEvent::ActivationChange)
+        {
+            return true;
         } else {
             // standard event processing
             return QObject::eventFilter(obj, event);
@@ -215,7 +224,7 @@ protected:
             event->ignore();
             break;
         }
-    case QEvent::MouseMove:{
+        case QEvent::MouseMove:{
             QHelpEvent *he = static_cast<QHelpEvent *>(event);
             auto tip = obj->property("HintWidget").value<Tip *>();
             tip->hide();
@@ -448,7 +457,7 @@ class SliderTime: public DArrowRectangle
 public:
     SliderTime(): DArrowRectangle(DArrowRectangle::ArrowBottom)
     {
-        setFocusPolicy(Qt::NoFocus);
+        //setFocusPolicy(Qt::NoFocus);
         setAttribute(Qt::WA_DeleteOnClose);
         setWindowFlag(Qt::WindowStaysOnTopHint);
         resize(_miniSize);
@@ -561,7 +570,7 @@ public:
         matrix.rotate(180);
         QPixmap pixmap = utils::LoadHiDPIPixmap(SLIDER_ARROW);
         _sliderArrowUp = new DArrowRectangle(DArrowRectangle::ArrowTop);
-        _sliderArrowUp->setFocusPolicy(Qt::NoFocus);
+        //_sliderArrowUp->setFocusPolicy(Qt::NoFocus);
         _sliderArrowUp->setAttribute(Qt::WA_DeleteOnClose);
         _sliderArrowUp->setWindowFlag(Qt::WindowStaysOnTopHint);
         _sliderArrowUp->setArrowWidth(10);
@@ -1122,7 +1131,7 @@ public:
     VolumeSlider(PlayerEngine *eng, MainWindow *mw, QWidget *parent)
         : DArrowRectangle(DArrowRectangle::ArrowBottom, DArrowRectangle::FloatWidget, parent), _engine(eng), _mw(mw)
     {
-//        setFixedSize(QSize(62, 205));
+        //        setFixedSize(QSize(62, 205));
 #ifdef __mips__
         if (!CompositingManager::get().composited()) {
             setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
@@ -1145,7 +1154,6 @@ public:
         setShadowXOffset(0);
         setArrowWidth(20);
         setArrowHeight(15);
-        setFocusPolicy(Qt::NoFocus);
         hide();
 
         auto *l = new QVBoxLayout(this);
@@ -1162,7 +1170,7 @@ public:
         _slider->show();
         _slider->slider()->setRange(0, 100);
         _slider->slider()->setMinimumHeight(132);
-
+        _slider->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred));
         //修改打开时音量条显示不正确
         int vol = 0;
         if(utils::check_wayland_env()){
@@ -1188,6 +1196,7 @@ public:
 //        m_pBtnChangeMute->setFixedSize(36, 36);
         m_pBtnChangeMute->setFixedWidth(36);
         m_pBtnChangeMute->setImage(":/icons/deepin/builtin/dark/texts/dcc_volumemid_36px.svg");
+        m_pBtnChangeMute->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred));
         connect(m_pBtnChangeMute, SIGNAL(clicked()), this, SLOT(changeSate()));
 
         l->addWidget(m_pBtnChangeMute, 0, Qt::AlignHCenter);
@@ -1892,10 +1901,7 @@ void ToolboxProxy::setup()
     _progBar->setObjectName("MovieProgress");
     _progBar->slider()->setOrientation(Qt::Horizontal);
     _progBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-    _progBar->slider()->setFocusPolicy(Qt::FocusPolicy::NoFocus);
-//    _progBar->setFixedHeight(60);
-//    _progBar->setFixedWidth(584);
-//    _progBar->setFixedWidth(1450);
+    _progBar->setFocusPolicy(Qt::TabFocus);
     _progBar->slider()->setRange(0, 100);
     _progBar->setValue(0);
     _progBar->setEnableIndication(_engine->state() != PlayerEngine::Idle);
@@ -1916,12 +1922,7 @@ void ToolboxProxy::setup()
 
     connect(&Settings::get(), &Settings::baseMuteChanged, this, &ToolboxProxy::slotBaseMuteChanged);
 
-//    stacked->addWidget(_progBar);
-
     _viewProgBar = new ViewProgBar(_progBar, bot_toolWgt);
-//    _viewProgBar->hide();
-    _viewProgBar->setFocusPolicy(Qt::NoFocus);
-//    _viewProgBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     connect(_viewProgBar, &ViewProgBar::leaveViewProgBar, this, &ToolboxProxy::slotLeaveViewProgBar);
 
 
@@ -1961,17 +1962,12 @@ void ToolboxProxy::setup()
         connect(_prevBtn,&DButtonBoxButton::clicked,this,&ToolboxProxy::waitPlay);
     }
 
-//    bot->addLayout(progBarspec);
-//    progBarspec->addWidget(_progBarspec);
     _progBar_Widget = new QStackedWidget(bot_toolWgt);
     _progBar_Widget->setContentsMargins(0, 0, 0, 0);
     _progBar_Widget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 
     _progBarspec = new DWidget(_progBar_Widget);
     _progBarspec->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-//    _progBarspec->setFixedHeight(12 + TOOLBOX_TOP_EXTENT);
-//    _progBarspec->setFixedWidth(584);
-//    _progBarspec->setFixedWidth(1450);
 
     QHBoxLayout *progBar = new QHBoxLayout(_progBar_Widget);
     progBar->setContentsMargins(0, 0, 0, 0);
@@ -2018,6 +2014,7 @@ void ToolboxProxy::setup()
 
     _palyBox = new DButtonBox(bot_toolWgt);
     _palyBox->setFixedWidth(120);
+    _palyBox->setFocusPolicy(Qt::NoFocus);
     _mid->addWidget(_palyBox);
     _mid->setAlignment(_palyBox, Qt::AlignLeft);
     QList<DButtonBoxButton *> list;
@@ -2032,49 +2029,31 @@ void ToolboxProxy::setup()
         _nextBtn = new DButtonBoxButton("", this);
     }
 
-//    _prevBtn = new DButtonBoxButton("", this);
-//    _prevBtn = new VideoBoxButton("", ":/icons/deepin/builtin/light/normal/last_normal.svg",
-//                                  ":/icons/deepin/builtin/light/normal/last_normal.svg",
-//                                  ":/icons/deepin/builtin/light/press/last_normal.svg");
     _prevBtn->setIcon(QIcon::fromTheme("dcc_last", QIcon(":/icons/deepin/builtin/light/normal/last_normal.svg")));
     _prevBtn->setIconSize(QSize(36, 36));
     _prevBtn->setFixedSize(40, 50);
     _prevBtn->setObjectName("PrevBtn");
+    _prevBtn->setFocusPolicy(Qt::TabFocus);
     connect(_prevBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_prevBtn, "prev");
-//    _mid->addWidget(_prevBtn);
     list.append(_prevBtn);
 
-//    _playBtn = new DButtonBoxButton("", this);
-//    _playBtn = new VideoBoxButton("", ":/resources/icons/light/normal/play_normal2.svg",
-//                                  ":/resources/icons/light/normal/play_normal2.svg",
-//                                  ":/icons/deepin/builtin/light/press/play_press.svg");
     _playBtn->setIcon(QIcon::fromTheme("dcc_play", QIcon(":/icons/deepin/builtin/light/normal/play_normal.svg")));
     _playBtn->setIconSize(QSize(36, 36));
     _playBtn->setFixedSize(40, 50);
+    _playBtn->setFocusPolicy(Qt::TabFocus);
     connect(_playBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_playBtn, "play");
-//    _mid->addWidget(_playBtn);
     list.append(_playBtn);
 
-//    _nextBtn = new DButtonBoxButton("", this);
-//    _nextBtn = new VideoBoxButton("", ":/icons/deepin/builtin/light/normal/next_normal.svg",
-//                                  ":/icons/deepin/builtin/light/normal/next_normal.svg",
-//                                  ":/icons/deepin/builtin/light/press/next_press.svg");
     _nextBtn->setIcon(QIcon::fromTheme("dcc_next", QIcon(":/icons/deepin/builtin/light/normal/next_normal.svg")));
     _nextBtn->setIconSize(QSize(36, 36));
     _nextBtn->setFixedSize(40, 50);
+    _nextBtn->setFocusPolicy(Qt::TabFocus);
     connect(_nextBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_nextBtn, "next");
-//    _mid->addWidget(_nextBtn);
     list.append(_nextBtn);
     _palyBox->setButtonList(list, false);
-//    _palyBox->setFocusPolicy(Qt::FocusPolicy::NoFocus);
-    _nextBtn->setFocusPolicy(Qt::FocusPolicy::NoFocus);
-    _playBtn->setFocusPolicy(Qt::FocusPolicy::NoFocus);
-    _prevBtn->setFocusPolicy(Qt::FocusPolicy::NoFocus);
-
-//    bot->addStretch();
 
     _right = new QHBoxLayout(bot_toolWgt);
     _right->setContentsMargins(0, 0, 0, 0);
@@ -2087,24 +2066,22 @@ void ToolboxProxy::setup()
     _subBtn->setIconSize(QSize(36, 36));
     _subBtn->setFixedSize(50, 50);
     _subBtn->initToolTip();
-    _subBtn->setFocusPolicy(Qt::FocusPolicy::NoFocus);
     connect(_subBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_subBtn, "sub");
-    _right->addWidget(_subBtn);
-
     _subBtn->hide();
+
+    _fsBtn = new ToolButton(bot_toolWgt);
+    _fsBtn->setIcon(QIcon::fromTheme("dcc_zoomin"));
+    _fsBtn->setIconSize(QSize(36, 36));
+    _fsBtn->setFixedSize(50, 50);
+    _fsBtn->initToolTip();
+    connect(_fsBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
+    signalMapper->setMapping(_fsBtn, "fs");
 
     _volBtn = new VolumeButton(bot_toolWgt);
     _volBtn->setFixedSize(50, 50);
-    _volBtn->setFocusPolicy(Qt::FocusPolicy::NoFocus);
-//    connect(_volBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
-//    signalMapper->setMapping(_volBtn, "vol");
-//    _right->addWidget(_volBtn);
     if (CompositingManager::get().composited()) {
         _volSlider = new VolumeSlider(_engine, _mainWindow, _mainWindow);
-        _volSlider->setFocusPolicy(Qt::FocusPolicy::NoFocus);
-//        _volSlider->setWindowFlags(Qt::WindowStaysOnTopHint);
-
         connect(_volBtn, &VolumeButton::clicked, this, &ToolboxProxy::slotVolumeButtonClicked);
 
     } else {
@@ -2117,7 +2094,7 @@ void ToolboxProxy::setup()
 //        installHint(_volBtn, _volSlider);
 #else
         _volSlider = new VolumeSlider(_engine, _mainWindow, _mainWindow);
-        _volSlider->setFocusPolicy(Qt::FocusPolicy::NoFocus);
+//        _volSlider->setFocusPolicy(Qt::FocusPolicy::NoFocus);
 //        _volSlider->setWindowFlag(Qt::WindowStaysOnTopHint);
         connect(_volBtn, &VolumeButton::clicked, this, &ToolboxProxy::slotVolumeButtonClicked);
 
@@ -2134,17 +2111,7 @@ void ToolboxProxy::setup()
     connect(_volBtn, &VolumeButton::requestVolumeUp, this, &ToolboxProxy::slotRequestVolumeUp);
     connect(_volBtn, &VolumeButton::requestVolumeDown, this, &ToolboxProxy::slotRequestVolumeDown);
 
-
-
-    _fsBtn = new ToolButton(bot_toolWgt);
-    _fsBtn->setIcon(QIcon::fromTheme("dcc_zoomin"));
-    _fsBtn->setIconSize(QSize(36, 36));
-    _fsBtn->setFixedSize(50, 50);
-    _fsBtn->initToolTip();
-    _fsBtn->setFocusPolicy(Qt::FocusPolicy::NoFocus);
-    connect(_fsBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
-    signalMapper->setMapping(_fsBtn, "fs");
-
+    _right->addWidget(_subBtn);
     _right->addWidget(_fsBtn);
     _right->addSpacing(10);
     _right->addWidget(_volBtn);
@@ -2155,14 +2122,13 @@ void ToolboxProxy::setup()
     _listBtn->setIconSize(QSize(36, 36));
     _listBtn->setFixedSize(50, 50);
     _listBtn->initToolTip();
-    _listBtn->setFocusPolicy(Qt::FocusPolicy::NoFocus);
-//    _listBtn->setFocusPolicy(Qt::FocusPolicy::TabFocus);
     _listBtn->setCheckable(true);
-
-
     connect(_listBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_listBtn, "list");
     _right->addWidget(_listBtn);
+
+    setTabOrder(_nextBtn, _progBar->slider());
+//    setTabOrder(_prevBtn, _prevBtn);
 
     // these tooltips is not used due to deepin ui design
     //lmh0910wayland下用这一套tooltip
@@ -2203,6 +2169,7 @@ void ToolboxProxy::setup()
     connect(_engine, &PlayerEngine::fileLoaded, this, &ToolboxProxy::slotFileLoaded);
 
     connect(_engine, &PlayerEngine::elapsedChanged, this, &ToolboxProxy::slotElapsedChanged);
+    connect(_engine, &PlayerEngine::updateDuration, this, &ToolboxProxy::slotElapsedChanged);
 
 
     connect(window()->windowHandle(), &QWindow::windowStateChanged, this, &ToolboxProxy::updateFullState);
@@ -2224,6 +2191,8 @@ void ToolboxProxy::setup()
     auto bubbler = new KeyPressBubbler(this);
     this->installEventFilter(bubbler);
     _playBtn->installEventFilter(bubbler);
+    _prevBtn->installEventFilter(bubbler);
+    nextBtn()->installEventFilter(bubbler);
     connect(qApp, &QGuiApplication::applicationStateChanged, this, &ToolboxProxy::slotApplicationStateChanged);
 
 
@@ -2250,11 +2219,12 @@ void ToolboxProxy::setup()
 
 }
 
-void ToolboxProxy::installHint(QWidget *w, QWidget *hint)
+/*not used yet*/
+/*void ToolboxProxy::installHint(QWidget *w, QWidget *hint)
 {
     w->setProperty("HintWidget", QVariant::fromValue<QWidget *>(hint));
     w->installEventFilter(hintFilter);
-}
+}*/
 
 void ToolboxProxy::updateThumbnail()
 {
@@ -3243,8 +3213,7 @@ void ToolboxProxy::initToolTip()
         m_playBtnTip=new ButtonToolTip(_mainWindow);
         m_playBtnTip->setText(tr("Play"));
         connect(static_cast<ButtonBoxButton*>(_playBtn), &ButtonBoxButton::entered, [ = ]() {
-            m_playBtnTip->move(80,
-                            _mainWindow->height() - TOOLBOX_HEIGHT - 5);
+            m_playBtnTip->move(80, _mainWindow->height() - TOOLBOX_HEIGHT - 5);
             m_playBtnTip->show();
             m_playBtnTip->QWidget::activateWindow();
             m_playBtnTip->update();

@@ -29,7 +29,7 @@ public slots:
     void slotplaynext();
     void slotplayprev();
     void slotvolumeRequested(double volume);
-    void slotopenUriRequested(const QUrl url);
+    void slotopenUrlRequested(const QUrl url);
     void slotstateChanged();
     void slotloopStatusRequested(Mpris::LoopStatus loopStatus);
     void slotplayModeChanged(PlaylistModel::PlayMode pm);

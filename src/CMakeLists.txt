@@ -18,9 +18,7 @@ find_package(Qt5Sql)
 
 pkg_check_modules(Dtk REQUIRED IMPORTED_TARGET dtkwidget)
 pkg_check_modules(Dtk REQUIRED IMPORTED_TARGET dtkcore)
-#pkg_check_modules(Mpv REQUIRED IMPORTED_TARGET mpv)
 #pkg_check_modules(Xcb REQUIRED IMPORTED_TARGET xcb)
-#pkg_check_modules(AV REQUIRED IMPORTED_TARGET libavformat libavutil libavcodec)
 # IMPORTED_TARGET failed to work for some of libs under flatpak env
 pkg_check_modules(Other REQUIRED  gsettings-qt)
 
@@ -70,10 +68,6 @@ add_executable(${CMD_NAME} ${SRCS} ${RCS} ${QM})
 
 target_include_directories(${CMD_NAME} PUBLIC ${PROJECT_INCLUDE})
 
-#set(TARGET_LIBS X11 Xtst  PkgConfig::Xcb Qt5::Widgets Qt5::X11Extras Qt5::Network
-#    Qt5::Concurrent Qt5::DBus Qt5::Sql PkgConfig::Dtk PkgConfig::Mpv
-#    PkgConfig::AV  GL)
-
 set(TARGET_LIBS X11 Xtst  Qt5::Widgets Qt5::X11Extras Qt5::Network
     Qt5::DBus Qt5::Sql PkgConfig::Dtk GL)
 
@@ -96,12 +90,10 @@ install(FILES ${PROJECT_SOURCE_DIR}/src/resources/icons/logo-big.svg
 if (CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "mips64")
     SET(CMAKE_CXX_FLAGS "$ENV{CXXFLAGS} -O3 -ftree-vectorize -march=loongson3a -mhard-float -mno-micromips -mno-mips16 -flax-vector-conversions -mloongson-ext2 -mloongson-mmi -Wl,--as-need -fPIE")
     SET(CMAKE_C_FLAGS "$ENV{CFLAGS} -O3 -ftree-vectorize -march=loongson3a -mhard-float -mno-micromips -mno-mips16 -flax-vector-conversions -mloongson-ext2 -mloongson-mmi")
-    #SET(CMAKE_CXX_FLAGS "-Wl,--as-need -fPIE")
     SET(CMAKE_EXE_LINKER_FLAGS "-pie")
 else()
     SET(CMAKE_CXX_FLAGS "$ENV{CXXFLAGS} -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -std=c++14 -O3 -DNDEBUG -fPIC -Wl,--as-need -fPIE")
     SET(CMAKE_C_FLAGS "$ENV{CFLAGS} -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -std=c++14 -O3 -DNDEBUG -fPIC")
-    #SET(CMAKE_CXX_FLAGS "-Wl,--as-need -fPIE")
     SET(CMAKE_EXE_LINKER_FLAGS "-pie")
 endif()
 

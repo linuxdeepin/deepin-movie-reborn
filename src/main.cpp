@@ -73,7 +73,6 @@ int main(int argc, char *argv[])
 //            CompositingManager::detectOpenGLEarly();
 //            CompositingManager::detectPciID();
         #endif
-        DApplication::loadDXcbPlugin();
     }
 
 
@@ -89,7 +88,7 @@ int main(int argc, char *argv[])
       */
 //    DApplication::loadDXcbPlugin();
 
-    DApplication app(argc, argv);
+    DApplication *app = DApplication::globalApplication(argc, argv);
 
 
     // required by mpv
@@ -102,32 +101,32 @@ int main(int argc, char *argv[])
         app.setAttribute(Qt::AA_ForceRasterWidgets, false);
     }
 #else
-    app.setAttribute(Qt::AA_UseHighDpiPixmaps);
+    app->setAttribute(Qt::AA_UseHighDpiPixmaps);
     // overwrite DApplication default value
-    app.setAttribute(Qt::AA_ForceRasterWidgets, false);
+    app->setAttribute(Qt::AA_ForceRasterWidgets, false);
 #endif
 
-    app.setOrganizationName("deepin");
-    app.setApplicationName("deepin-movie");
-    app.setApplicationVersion(DMR_VERSION);
-    app.setProductIcon(utils::LoadHiDPIPixmap(":/resources/icons/logo-big.svg"));
-    app.setWindowIcon(QIcon(":/resources/icons/logo-big.svg"));
+    app->setOrganizationName("deepin");
+    app->setApplicationName("deepin-movie");
+    app->setApplicationVersion(DMR_VERSION);
+    app->setProductIcon(utils::LoadHiDPIPixmap(":/resources/icons/logo-big.svg"));
+    app->setWindowIcon(QIcon(":/resources/icons/logo-big.svg"));
     QString acknowledgementLink = "https://www.deepin.org/acknowledgments/deepin-movie";
-    app.setApplicationAcknowledgementPage(acknowledgementLink);
+    app->setApplicationAcknowledgementPage(acknowledgementLink);
 
     //save theme
     DApplicationSettings saveTheme;
     auto &clm = dmr::CommandLineManager::get();
-    clm.process(app);
+    clm.process(*app);
 
     QStringList toOpenFiles;
     if (clm.positionalArguments().length() > 0) {
         toOpenFiles = clm.positionalArguments();
     }
 
-    app.loadTranslator();
-    app.setApplicationDisplayName(QObject::tr("Movie"));
-    app.setApplicationDescription(QObject::tr(
+    app->loadTranslator();
+    app->setApplicationDisplayName(QObject::tr("Movie"));
+    app->setApplicationDescription(QObject::tr(
                                       "Movie is a full-featured video player, supporting playing local and streaming media in multiple video formats."
                                   ));
 //    "Deepin Movie is a well-designed and full-featured"
@@ -174,11 +173,11 @@ int main(int argc, char *argv[])
 
 
 //    app.setWindowIcon(QIcon(":/resources/icons/logo.svg"));
-    app.setApplicationDisplayName(QObject::tr("Movie"));
-    app.setAttribute(Qt::AA_DontCreateNativeWidgetSiblings, true);
+    app->setApplicationDisplayName(QObject::tr("Movie"));
+    app->setAttribute(Qt::AA_DontCreateNativeWidgetSiblings, true);
 
 //    app.setApplicationVersion(DApplication::buildVersion("20190830"));
-    app.setApplicationVersion(DApplication::buildVersion(VERSION));
+    app->setApplicationVersion(DApplication::buildVersion(VERSION));
     MovieConfiguration::get().init();
 
     QRegExp url_re("\\w+://");
@@ -206,7 +205,7 @@ int main(int argc, char *argv[])
 //            mw.playList(toOpenFiles);
 //        }
 //    }
-    return app.exec();
+    return app->exec();
 
 }
 

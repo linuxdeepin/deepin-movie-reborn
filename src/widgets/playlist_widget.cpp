@@ -743,14 +743,15 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     mainVLayout->setContentsMargins(0, 0, 0, 0);
     mainVLayout->setSpacing(0);
     setLayout(mainVLayout);
+
     auto *mainLayout = new QHBoxLayout();
     mainLayout->setContentsMargins(10, 0, 0, 0);
     mainLayout->setSpacing(0);
     mainLayout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
-    //setLayout(mainLayout);
+
     QWidget *topspec = new QWidget;
     topspec->setFixedHeight(20);
-    //topspec->setFixedHeight(30);
+
     mainVLayout->addWidget(topspec);
     mainVLayout->addLayout(mainLayout);
 
@@ -1026,9 +1027,9 @@ void PlaylistWidget::updateItemStates()
             }
         }
 
-        if (old != piw->state()) {
-//            piw->setStyleSheet(piw->styleSheet());
-        }
+//        if (old != piw->state()) {
+////            piw->setStyleSheet(piw->styleSheet());
+//        }
     }
 
 }

@@ -514,7 +514,7 @@ protected:
             if (!leftButtonPressed) {
                 //add by heyi  拦截鼠标移动事件
                 mw->judgeMouseInWindow(QCursor::pos());
-                if (mw->insideResizeArea(e->globalPos())) {
+//                if (mw->insideResizeArea(e->globalPos())) {
                     CornerEdge mouseCorner = CornerEdge::NoneEdge;
                     QRect cornerRect;
 
@@ -583,9 +583,9 @@ set_cursor:
 skip_set_cursor:
                     lastCornerEdge = mouseCorner = CornerEdge::NoneEdge;
                     return false;
-                } else {
-                    qApp->setOverrideCursor(window->cursor());
-                }
+//                } else {
+//                    qApp->setOverrideCursor(window->cursor());
+//                }
             } else {
                 if (startResizing) {
                     updateGeometry(lastCornerEdge, e);
@@ -597,7 +597,6 @@ skip_set_cursor:
                     return true;
                 }
             }
-
             break;
         }
 
@@ -3897,36 +3896,36 @@ void MainWindow::showEvent(QShowEvent *event)
                 }
 #endif
     }*/
-//    if (_pausedOnHide || Settings::get().isSet(Settings::PauseOnMinimize)) {
-//        if (_pausedOnHide && _engine && _engine->state() != PlayerEngine::Playing) {
-//            if (_quitfullscreenflag) {
-//                requestAction(ActionFactory::TogglePause);
-//                _quitfullscreenflag = false;
-//            }
+    /*if (_pausedOnHide || Settings::get().isSet(Settings::PauseOnMinimize)) {
+        if (_pausedOnHide && _engine && _engine->state() != PlayerEngine::Playing) {
+            if (_quitfullscreenflag) {
+                requestAction(ActionFactory::TogglePause);
+                _quitfullscreenflag = false;
+            }
 
-//            if (!_quitfullscreenstopflag) {
-//#ifdef __aarch64__
-//                QVariant l = ApplicationAdaptor::redDBusProperty("com.deepin.SessionManager", "/com/deepin/SessionManager",
-//                                                                 "com.deepin.SessionManager", "Locked");
-//                if (l.isValid() && !l.toBool()) {
-//                    qDebug() << "locked_____________" << l;
-//                    //是否锁屏
-//                    if(_engine && _engine->state() != PlayerEngine::Playing){
-//                        requestAction(ActionFactory::TogglePause);
-//                    }
-//                }
-//#endif
-//                    requestAction(ActionFactory::TogglePause);
-//                    _pausedOnHide = false;
-//                    _quitfullscreenstopflag = false;
-//#ifdef __aarch64__
-//                }
-//#endif
-//            } else {
-//                _quitfullscreenstopflag = false;
-//            }
-//        }
-//    }
+            if (!_quitfullscreenstopflag) {
+#ifdef __aarch64__
+                QVariant l = ApplicationAdaptor::redDBusProperty("com.deepin.SessionManager", "/com/deepin/SessionManager",
+                                                                 "com.deepin.SessionManager", "Locked");
+                if (l.isValid() && !l.toBool()) {
+                    qDebug() << "locked_____________" << l;
+                    //是否锁屏
+                    if(_engine && _engine->state() != PlayerEngine::Playing){
+                        requestAction(ActionFactory::TogglePause);
+                    }
+                }
+#endif
+                    requestAction(ActionFactory::TogglePause);
+                    _pausedOnHide = false;
+                    _quitfullscreenstopflag = false;
+#ifdef __aarch64__
+                }
+#endif
+            } else {
+                _quitfullscreenstopflag = false;
+            }
+        }
+    }*/
 
     _titlebar->raise();
     _toolbox->raise();
@@ -3940,6 +3939,10 @@ void MainWindow::showEvent(QShowEvent *event)
         if (_playlist->isVisible())
             updateProxyGeometry();
     }
+//    if(this->focusWidget())
+//    {
+//        qDebug() << this->focusWidget()->objectName();
+//    }
 }
 
 void MainWindow::resizeByConstraints(bool forceCentered)
@@ -4381,7 +4384,8 @@ void MainWindow::delayedMouseReleaseHandler()
     _afterDblClick = false;
 }
 
-void MainWindow::onDvdData(const QString &title)
+/*not used yet*/
+/*void MainWindow::onDvdData(const QString &title)
 {
     auto mi = _engine->playlist().currentInfo().mi;
 
@@ -4408,7 +4412,7 @@ void MainWindow::onDvdData(const QString &title)
     }
     PlayItemInfo info = _engine->playlist().currentInfo();
     _engine->playByName(info.url);
-}
+}*/
 
 void MainWindow::mouseMoveEvent(QMouseEvent *ev)
 {

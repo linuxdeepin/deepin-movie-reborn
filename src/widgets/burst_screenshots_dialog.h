@@ -66,7 +66,7 @@ public:
 
 public slots:
     int exec() override;
-    void saveShootings();
+//    void saveShootings();
     void savePoster();
 
 private:

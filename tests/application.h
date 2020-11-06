@@ -53,8 +53,8 @@ public:
 private:
 //    bool _isRunning;
     MainWindow *m_mainwindow;
-    Presenter *_presenter;
-    MovieApp *_movieapp;
+    Presenter *m_presenter{nullptr};
+    MovieApp *m_movieapp;
 };
 
 #endif  // APPLICATION_H_

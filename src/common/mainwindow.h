@@ -160,6 +160,7 @@ public:
     void requestAction(ActionFactory::ActionKind, bool fromUI = false,
                        QList<QVariant> args = {}, bool shortcut = false);
 
+
     bool insideResizeArea(const QPoint &global_p);
     QMargins dragMargins() const;
 
@@ -255,7 +256,7 @@ protected slots:
     void startBurstShooting();
     void onBurstScreenshot(const QImage &frame, qint64 timestamp);
     void delayedMouseReleaseHandler();
-    void onDvdData(const QString &title);
+//    void onDvdData(const QString &title);
 
 #ifdef USE_DXCB
     void onMonitorButtonPressed(int x, int y);

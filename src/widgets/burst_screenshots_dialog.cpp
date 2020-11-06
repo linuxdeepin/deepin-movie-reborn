@@ -185,7 +185,8 @@ void BurstScreenshotsDialog::savePoster()
     DAbstractDialog::accept();
 }
 
-void BurstScreenshotsDialog::saveShootings()
+/*not used yet*/
+/*void BurstScreenshotsDialog::saveShootings()
 {
     int i = 1;
     for (auto &img : _thumbs) {
@@ -193,7 +194,7 @@ void BurstScreenshotsDialog::saveShootings()
         img.first.save(file_path);
     }
     DAbstractDialog::accept();
-}
+}*/
 
 QString BurstScreenshotsDialog::savedPosterPath()
 {

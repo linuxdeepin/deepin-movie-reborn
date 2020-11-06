@@ -24,6 +24,7 @@ Application::Application(int &argc, char **argv)
 Application::~Application()
 {
     m_mainwindow->close();
+    m_movieapp->quit();
 }
 
 //bool Application::isRunning()
@@ -47,12 +48,17 @@ MainWindow * Application::getMainWindow()
 
 Presenter * Application::initPresenter()
 {
-
-    _presenter = new Presenter(getMainWindow());
-    return _presenter;
+    if(m_presenter == nullptr)
+    {
+        m_presenter = new Presenter(getMainWindow());
+    }
+    return m_presenter;
 }
 MovieApp * Application::initMovieApp(MainWindow *mw)
 {
-    _movieapp = new MovieApp(mw,this);
-    return _movieapp;
+    if(m_movieapp == nullptr)
+    {
+        m_movieapp = new MovieApp(mw,this);
+    }
+    return m_movieapp;
 }
