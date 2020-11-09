@@ -59,6 +59,7 @@ void Diskcheckthread::diskChecking()
             }
         }
     } while (!mountFile.atEnd() );
+    mountFile.close();
 
     foreach (QString strDiskName, listDisk) {
         m_mapDisk2Name.clear();

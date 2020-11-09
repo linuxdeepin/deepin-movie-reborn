@@ -194,7 +194,7 @@ QString FastFileHash(const QFileInfo &fi)
         bytes += f.read(4096);
 
     });
-
+    f.close();
     return QString(QCryptographicHash::hash(bytes, QCryptographicHash::Md5).toHex());
 }
 
@@ -207,6 +207,8 @@ QString FullFileHash(const QFileInfo &fi)
     }
 
     auto bytes = f.readAll();
+    f.close();
+
     return QString(QCryptographicHash::hash(bytes, QCryptographicHash::Md5).toHex());
 }
 

@@ -243,6 +243,7 @@ public:
             } else {
                 qWarning() << f.errorString();
             }
+            f.close();
         }
 
         if (ci.mi_valid) {
@@ -264,6 +265,7 @@ public:
             } else {
                 qWarning() << f.errorString();
             }
+            f.close();
         }
 
         return ci;
@@ -286,6 +288,7 @@ public:
             } else {
                 qWarning() << f.errorString();
             }
+            f.close();
         }
 
         if (mi_saved) {
@@ -298,6 +301,7 @@ public:
             } else {
                 qWarning() << f.errorString();
             }
+            f.close();
         }
     }
 

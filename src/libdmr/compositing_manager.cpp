@@ -467,6 +467,7 @@ bool CompositingManager::isDriverLoadedCorrectly()
             return false;
         }
     }
+    f.close();
 
     return true;
 }
@@ -595,7 +596,7 @@ PlayerOptionList CompositingManager::getProfile(const QString &name)
                     ol.push_back(qMakePair(kv[0], kv[1]));
                 }
             }
-
+            f.close();
             return ol;
         }
         ++p;
