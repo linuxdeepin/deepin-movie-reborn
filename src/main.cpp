@@ -70,8 +70,13 @@ int main(int argc, char *argv[])
     DWIDGET_INIT_RESOURCE();
 #endif
     //DApplication::loadDXcbPlugin();
+    DApplication *app = nullptr;
 
-    DApplication *app = DApplication::globalApplication(argc, argv);
+#if (DTK_VERSION < DTK_VERSION_CHECK(5, 4, 0, 0))
+    app = new DApplication(argc, argv);
+#else
+    app = DApplication::globalApplication(argc, argv);
+#endif
 
 
     // required by mpv
