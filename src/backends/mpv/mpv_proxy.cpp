@@ -327,9 +327,9 @@ mpv_handle *MpvProxy::mpv_init()
         my_set_property(h, "vd-lavc-dr", "no");
         my_set_property(h, "gpu-sw", "on");
         //设置alse时，无法使用set_property(h, "audio-client-name", strMovie)设置控制栏中的名字
-	//        if(utils::check_wayland_env()){
-	//            set_property(h, "ao", "alsa");
-	//        }
+        //        if(utils::check_wayland_env()){
+        //            set_property(h, "ao", "alsa");
+        //        }
 #endif
     } else {
 #if defined (__mips__) || defined (__aarch64__)
@@ -354,20 +354,20 @@ mpv_handle *MpvProxy::mpv_init()
         } else {
             if(!utils::check_wayland_env()){
 #if defined (__mips__) || defined (__aarch64__)
-            if (CompositingManager::get().hascard()) {
-                if(CompositingManager::get().isOnlySoftDecode()){
-                    set_property(h, "hwdec", "off");
+                if (CompositingManager::get().hascard()) {
+                    if(CompositingManager::get().isOnlySoftDecode()){
+                        set_property(h, "hwdec", "off");
+                    }
+                    else{
+                        set_property(h, "hwdec", "auto-safe");
+                    }
+                    set_property(h, "vo", "gpu");
+                } else {
+                    set_property(h, "vo", "xv,x11");
+                    //set_property(h, "ao", "alsa");
                 }
-                else{
-                    set_property(h, "hwdec", "auto-safe");
-                }
-                set_property(h, "vo", "gpu");
-            } else {
-                set_property(h, "vo", "xv,x11");
-                //set_property(h, "ao", "alsa");
-            }
 #else
-            my_set_property(h, "vo", "xv,x11");
+                my_set_property(h, "vo", "xv,x11");
 #endif
             }else {
                 auto e = QProcessEnvironment::systemEnvironment();
@@ -381,7 +381,7 @@ mpv_handle *MpvProxy::mpv_init()
                     my_set_property(h, "vo", "xv");
                 }
             }
-        }    
+        }
 #else
         my_set_property(h, "vo", "gpu,xv,x11");
 #endif
@@ -391,10 +391,10 @@ mpv_handle *MpvProxy::mpv_init()
     if (QFile::exists("/dev/csmcore")) {
         my_set_property(h, "vo", "xv,x11");
         my_set_property(h, "hwdec", "auto");
-	if(utils::check_wayland_env()){
-        my_set_property(h, "wid", m_parentWidget->winId());
-	}
-	
+        if(utils::check_wayland_env()){
+            my_set_property(h, "wid", m_parentWidget->winId());
+        }
+
     }
     qDebug() << __func__ << my_get_property(h, "vo").toString();
     qDebug() << __func__ << my_get_property(h, "hwdec").toString();
@@ -1074,17 +1074,17 @@ void MpvProxy::play()
     {
         if (!_isJingJia || !utils::check_wayland_env()) {
             // hwdec could be disabled by some codecs, so we need to re-enable it
-                my_set_property(_handle, "hwdec", "auto-safe");
-    #if defined (__mips__) || defined (__aarch64__)
-                if (CompositingManager::get().hascard() && !CompositingManager::get().isOnlySoftDecode()) {
-                    my_set_property(_handle, "hwdec", "auto");
-                } else {
-                    my_set_property(_handle, "hwdec", "off");
-                }
-    #endif
+            my_set_property(_handle, "hwdec", "auto-safe");
+#if defined (__mips__) || defined (__aarch64__)
+            if (CompositingManager::get().hascard() && !CompositingManager::get().isOnlySoftDecode()) {
+                my_set_property(_handle, "hwdec", "auto");
             } else {
                 my_set_property(_handle, "hwdec", "off");
             }
+#endif
+        } else {
+            my_set_property(_handle, "hwdec", "off");
+        }
     }
 #else
     if(m_bHwaccelAuto)
@@ -1103,8 +1103,8 @@ void MpvProxy::play()
             qDebug() << "play __mips__";
             auto codec = my_get_property(_handle, "video-codec").toString();
             if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") || codec.toLower().contains("mpeg2video")) {
-            qDebug() << "my_set_property hwdec no";
-            my_set_property(_handle, "hwdec", "no");
+                qDebug() << "my_set_property hwdec no";
+                my_set_property(_handle, "hwdec", "no");
             }
         }
         if(m_bHwaccelAuto)
@@ -1112,10 +1112,10 @@ void MpvProxy::play()
             qDebug() << "MPV_EVENT_FILE_LOADED aarch64";
             auto codec = my_get_property(_handle, "video-codec").toString();
             if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") || codec.toLower().contains("mpeg2video")) {
-            qDebug() << "my_set_property hwdec no";
-            my_set_property(_handle, "hwdec", "no");
-            //qDebug() << "my_set_property hwdec auto-safe";
-            my_set_property(_handle, "hwdec", "auto-safe");
+                qDebug() << "my_set_property hwdec no";
+                my_set_property(_handle, "hwdec", "no");
+                //qDebug() << "my_set_property hwdec auto-safe";
+                my_set_property(_handle, "hwdec", "auto-safe");
             }
         }
     }

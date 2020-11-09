@@ -214,9 +214,7 @@ MovieConfiguration &MovieConfiguration::get()
 {
     if (_instance == nullptr) {
         QMutexLocker lock(&_instLock);
-//        if (_instance == nullptr) {
-            _instance = new MovieConfiguration;
-//        }
+        _instance = new MovieConfiguration;
     }
 
     return *_instance;

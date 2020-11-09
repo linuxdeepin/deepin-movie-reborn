@@ -1994,6 +1994,7 @@ bool MainWindow::addCdromPath()
             strCDMountlist.append(strLine.split(" ").at(1));        //A B C 这样的格式，取中间的
         }
     } while (!mountFile.atEnd() );
+    mountFile.close();
 
     if (strCDMountlist.size() == 0)
         return false;
@@ -5104,6 +5105,7 @@ QString MainWindow::probeCdromDevice()
             return strLine.split(" ").at(0);        //A B C 这样的格式，取部分
         }
     } while (!mountFile.atEnd() );
+    mountFile.close();
     return QString();
 }
 
