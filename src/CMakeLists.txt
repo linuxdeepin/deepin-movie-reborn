@@ -16,10 +16,14 @@ find_package(Qt5Network)
 find_package(Qt5Concurrent)
 find_package(Qt5Sql)
 
+option(XCB_PlatForm "ON for xcb platform or OFF for wayland platform" OFF)
+
 pkg_check_modules(Dtk REQUIRED IMPORTED_TARGET dtkwidget)
 pkg_check_modules(Dtk REQUIRED IMPORTED_TARGET dtkcore)
 #pkg_check_modules(Mpv REQUIRED IMPORTED_TARGET mpv)
-#pkg_check_modules(Xcb REQUIRED IMPORTED_TARGET xcb)
+if(XCB_PlatForm)
+pkg_check_modules(Xcb REQUIRED IMPORTED_TARGET xcb xcb-shape)
+endif()
 #pkg_check_modules(AV REQUIRED IMPORTED_TARGET libavformat libavutil libavcodec)
 # IMPORTED_TARGET failed to work for some of libs under flatpak env
 pkg_check_modules(Other REQUIRED  gsettings-qt)
@@ -30,8 +34,13 @@ if (${Dtk_VERSION} LESS 2.0.6.1)
     qt5_add_resources(RCS theme.qrc)
 endif()
 
-
 file(GLOB_RECURSE SRCS LIST_DIRECTORIES false common/*.cpp widgets/*.cpp libdmr/*.cpp vendor/*.cpp vendor/mpris-qt/*.cpp vendor/dbusextended-qt/*.cpp)
+
+if(XCB_PlatForm)
+else()
+    list(REMOVE_ITEM SRCS ${PROJECT_SOURCE_DIR}/src/common/utility_x11.cpp)
+endif()
+
 list(APPEND SRCS main.cpp)
 
 include_directories(
@@ -74,8 +83,13 @@ target_include_directories(${CMD_NAME} PUBLIC ${PROJECT_INCLUDE})
 #    Qt5::Concurrent Qt5::DBus Qt5::Sql PkgConfig::Dtk PkgConfig::Mpv
 #    PkgConfig::AV  GL)
 
-set(TARGET_LIBS X11 Xtst  Qt5::Widgets Qt5::X11Extras Qt5::Network
+if(XCB_PlatForm)
+set(TARGET_LIBS X11 Xtst PkgConfig::Xcb  Qt5::Widgets Qt5::X11Extras Qt5::Network
     Qt5::DBus Qt5::Sql PkgConfig::Dtk GL)
+else()
+    set(TARGET_LIBS X11 Xtst Qt5::Widgets Qt5::X11Extras Qt5::Network
+        Qt5::DBus Qt5::Sql PkgConfig::Dtk GL)
+endif()
 
 target_link_libraries(${CMD_NAME} ${TARGET_LIBS} ${Other_LIBRARIES})
 

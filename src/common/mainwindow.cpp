@@ -72,6 +72,10 @@
 #include <X11/cursorfont.h>
 #include <X11/Xlib.h>
 
+#ifdef XCB_Platform
+#include "utility.h"
+#endif
+
 //add by heyi
 #define _NET_WM_MOVERESIZE_MOVE              8   /* movement only */
 #define _NET_WM_MOVERESIZE_CANCEL           11   /* cancel operation */
@@ -4266,7 +4270,13 @@ void MainWindow::mouseMoveEvent(QMouseEvent *ev)
     }
 
     if (!CompositingManager::get().composited() && !m_bIsFullSreen) {
-        move(this->pos() + ptDelta);
+#ifdef XCB_Platform
+        Utility::startWindowSystemMove(this->winId());
+            return Utility::updateMousePointForWindowMove(this->winId(), ev->globalPos() * devicePixelRatioF());
+#else
+        QWidget::mouseMoveEvent(ev);
+#endif
+
     } else {
         QWidget::mouseMoveEvent(ev);
     }
