@@ -116,7 +116,8 @@ void VolumeMonitoring::timeoutSlot()
     //第一次从dbus里获取的音量可能和实际不匹配，若是第一进入就用实际音量 by zhuyuliang
     if (!_bOpened) {
         Q_EMIT volumeChanged(oldVolume.toInt());
-        Q_EMIT muteChanged(muteV.toBool());
+        Q_EMIT muteChanged(oldMute.toBool());
+      
         _bOpened = true;
     } else {
         if (volume != oldVolume)
