@@ -1281,7 +1281,7 @@ bool MainWindow::event(QEvent *ev)
         //NOTE: windowStateChanged won't be emitted if by draggint to restore. so we need to
         //check window state here.
         //connect(windowHandle(), &QWindow::windowStateChanged, this, &MainWindow::onWindowStateChanged);
-        if (_lastWindowState == Qt::WindowNoState && windowState() == Qt::WindowMinimized) {
+        if (/*_lastWindowState == Qt::WindowNoState &&*/ windowState() & Qt::WindowMinimized) {   //fix bug 53683
             if (Settings::get().isSet(Settings::PauseOnMinimize)) {
                 if (_engine && _engine->state() == PlayerEngine::Playing) {
                     requestAction(ActionFactory::TogglePause);
@@ -1290,7 +1290,7 @@ bool MainWindow::event(QEvent *ev)
                 QList<QAction *> acts = ActionFactory::get().findActionsByKind(ActionFactory::TogglePlaylist);
                 acts.at(0)->setChecked(false);
             }
-        } else if (_lastWindowState == Qt::WindowMinimized && windowState() == Qt::WindowNoState) {
+        } else if (_lastWindowState & Qt::WindowMinimized /*&& windowState() == Qt::WindowNoState*/) {
             if ( Settings::get().isSet(Settings::PauseOnMinimize)) {
                 if (_quitfullscreenflag) {
                     requestAction(ActionFactory::TogglePause);
