@@ -1043,17 +1043,13 @@ void MpvProxy::play()
     }
 
     // hwdec could be disabled by some codecs, so we need to re-enable it
-    if (Settings::get().isSet(Settings::HWAccel)) {
-        my_set_property(_handle, "hwdec", "auto-safe");
+    if (Settings::get().isSet(Settings::HWAccel) && m_bLastIsSpecficFormat) {
+        my_set_property(_handle, "hwdec", "auto");
 #if defined (__mips__) || defined (__aarch64__)
-        if (CompositingManager::get().hascard() && !CompositingManager::get().isOnlySoftDecode()) {
-            my_set_property(_handle, "hwdec", "auto");
-        } else {
+        if (!CompositingManager::get().hascard() || CompositingManager::get().isOnlySoftDecode())) {
             my_set_property(_handle, "hwdec", "off");
         }
 #endif
-    } else {
-        my_set_property(_handle, "hwdec", "off");
     }
 #else
     if (CompositingManager::get().isOnlySoftDecode()) {
@@ -1068,6 +1064,10 @@ void MpvProxy::play()
     if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") || codec.toLower().contains("mpeg2video")) {
         qDebug() << "my_set_property hwdec no";
         my_set_property(_handle, "hwdec", "no");
+        m_bLastIsSpecficFormat = true;
+    }
+    else {
+        m_bLastIsSpecficFormat = false;
     }
 #endif
 #ifdef __aarch64__
@@ -1078,6 +1078,10 @@ void MpvProxy::play()
         my_set_property(_handle, "hwdec", "no");
         //qDebug() << "my_set_property hwdec auto-safe";
         //my_set_property(_handle, "hwdec", "auto-safe");
+        m_bLastIsSpecficFormat = true;
+    }
+    else {
+        m_bLastIsSpecficFormat = false;
     }
 #endif
     if (opts.size()) {
