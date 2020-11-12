@@ -24,6 +24,7 @@ Application::Application(int &argc, char **argv)
 Application::~Application()
 {
     m_mainwindow->close();
+    delete m_mainwindow;
     m_movieapp->quit();
 }
 
@@ -41,8 +42,8 @@ void Application::setMainWindow(MainWindow *window)
 
 MainWindow * Application::getMainWindow()
 {
-//    if(nullptr == m_mainwindow)
-//        m_mainwindow = new MainWindow();
+    if(nullptr == m_mainwindow)
+        m_mainwindow = new MainWindow();
     return m_mainwindow;
 }
 

@@ -515,77 +515,74 @@ protected:
                 //add by heyi  拦截鼠标移动事件
                 mw->judgeMouseInWindow(QCursor::pos());
 //                if (mw->insideResizeArea(e->globalPos())) {
-                    CornerEdge mouseCorner = CornerEdge::NoneEdge;
-                    QRect cornerRect;
+                CornerEdge mouseCorner = CornerEdge::NoneEdge;
+                QRect cornerRect;
 
-                    /// begin set cursor corner type
-                    cornerRect.setSize(QSize(MOUSE_MARGINS * 2, MOUSE_MARGINS * 2));
-                    cornerRect.moveTopLeft(_window->frameGeometry().topLeft());
-                    if (cornerRect.contains(e->globalPos())) {
-                        mouseCorner = CornerEdge::TopLeftCorner;
-                        goto set_cursor;
-                    }
+                /// begin set cursor corner type
+                cornerRect.setSize(QSize(MOUSE_MARGINS * 2, MOUSE_MARGINS * 2));
+                cornerRect.moveTopLeft(_window->frameGeometry().topLeft());
+                if (cornerRect.contains(e->globalPos())) {
+                    mouseCorner = CornerEdge::TopLeftCorner;
+                    goto set_cursor;
+                }
 
-                    cornerRect.moveTopRight(_window->frameGeometry().topRight());
-                    if (cornerRect.contains(e->globalPos())) {
-                        mouseCorner = CornerEdge::TopRightCorner;
-                        goto set_cursor;
-                    }
+                cornerRect.moveTopRight(_window->frameGeometry().topRight());
+                if (cornerRect.contains(e->globalPos())) {
+                    mouseCorner = CornerEdge::TopRightCorner;
+                    goto set_cursor;
+                }
 
-                    cornerRect.moveBottomRight(_window->frameGeometry().bottomRight());
-                    if (cornerRect.contains(e->globalPos())) {
-                        mouseCorner = CornerEdge::BottomRightCorner;
-                        goto set_cursor;
-                    }
+                cornerRect.moveBottomRight(_window->frameGeometry().bottomRight());
+                if (cornerRect.contains(e->globalPos())) {
+                    mouseCorner = CornerEdge::BottomRightCorner;
+                    goto set_cursor;
+                }
 
-                    cornerRect.moveBottomLeft(_window->frameGeometry().bottomLeft());
-                    if (cornerRect.contains(e->globalPos())) {
-                        mouseCorner = CornerEdge::BottomLeftCorner;
-                        goto set_cursor;
-                    }
+                cornerRect.moveBottomLeft(_window->frameGeometry().bottomLeft());
+                if (cornerRect.contains(e->globalPos())) {
+                    mouseCorner = CornerEdge::BottomLeftCorner;
+                    goto set_cursor;
+                }
 
-                    goto skip_set_cursor; // disable edges
+                goto skip_set_cursor; // disable edges
 
-                    /// begin set cursor edge type
-                    if (e->globalX() <= window_visible_rect.x()) {
-                        mouseCorner = CornerEdge::LeftEdge;
-                    } else if (e->globalX() < window_visible_rect.right()) {
-                        if (e->globalY() <= window_visible_rect.y()) {
-                            mouseCorner = CornerEdge::TopEdge;
-                        } else if (e->globalY() >= window_visible_rect.bottom()) {
-                            mouseCorner = CornerEdge::BottomEdge;
-                        } else {
-                            goto skip_set_cursor;
-                        }
-                    } else if (e->globalX() >= window_visible_rect.right()) {
-                        mouseCorner = CornerEdge::RightEdge;
+                /// begin set cursor edge type
+                if (e->globalX() <= window_visible_rect.x()) {
+                    mouseCorner = CornerEdge::LeftEdge;
+                } else if (e->globalX() < window_visible_rect.right()) {
+                    if (e->globalY() <= window_visible_rect.y()) {
+                        mouseCorner = CornerEdge::TopEdge;
+                    } else if (e->globalY() >= window_visible_rect.bottom()) {
+                        mouseCorner = CornerEdge::BottomEdge;
                     } else {
                         goto skip_set_cursor;
                     }
+                } else if (e->globalX() >= window_visible_rect.right()) {
+                    mouseCorner = CornerEdge::RightEdge;
+                } else {
+                    goto skip_set_cursor;
+                }
 set_cursor:
 #ifdef USE_DXCB
 #ifdef __mips__
-                    if (window->property("_d_real_winId").isValid()) {
-                        auto real_wid = window->property("_d_real_winId").toUInt();
-                        Utility::setWindowCursor(real_wid, mouseCorner);
-                    } else {
-                        Utility::setWindowCursor(static_cast<quint32>(window->winId()), mouseCorner);
-                    }
+                if (window->property("_d_real_winId").isValid()) {
+                    auto real_wid = window->property("_d_real_winId").toUInt();
+                    Utility::setWindowCursor(real_wid, mouseCorner);
+                } else {
+                    Utility::setWindowCursor(static_cast<quint32>(window->winId()), mouseCorner);
+                }
 #endif
 #endif
 
-                    if (qApp->mouseButtons() == Qt::LeftButton) {
-                        updateGeometry(mouseCorner, e);
-                    }
-                    lastCornerEdge = mouseCorner;
-                    return true;
+                if (qApp->mouseButtons() == Qt::LeftButton) {
+                    updateGeometry(mouseCorner, e);
+                }
+                lastCornerEdge = mouseCorner;
+                return true;
 
 skip_set_cursor:
-                    lastCornerEdge = mouseCorner = CornerEdge::NoneEdge;
-                    return false;
-//                } else {
-//                    qApp->setOverrideCursor(window->cursor());
-//                }
+                lastCornerEdge = mouseCorner = CornerEdge::NoneEdge;
+                return false;
             } else {
                 if (startResizing) {
                     updateGeometry(lastCornerEdge, e);
@@ -1549,6 +1546,8 @@ MainWindow::~MainWindow()
         utils::UnInhibitPower(_powerCookie);
         _powerCookie = 0;
     }
+    delete _engine;
+    _engine = nullptr;
 
 #ifdef USE_DXCB
     if (_evm) {

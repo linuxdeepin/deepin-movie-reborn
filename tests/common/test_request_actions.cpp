@@ -16,6 +16,33 @@
 #include "movieinfo_dialog.h"
 #include <DSettingsDialog>
 
+TEST(requestAction, onlineSub)
+{
+    MainWindow* w = dApp->getMainWindow();
+    PlayerEngine* engine =  w->engine();
+    QUrl url(QUrl::fromLocalFile("/home/uos/Videos/天空之眼 高清1080P.mp4"));
+
+    if(engine->addPlayFile(url))
+    {
+        engine->playByName(url);
+    }
+
+    QTest::qWait(1000);
+    w->requestAction(ActionFactory::ActionKind::MatchOnlineSubtitle);
+    QTest::qWait(1000);
+    w->requestAction(ActionFactory::ActionKind::HideSubtitle);
+    QTest::qWait(1000);
+    w->requestAction(ActionFactory::ActionKind::HideSubtitle);
+
+    QTestEventList testEventList;
+    testEventList.addKeyClick(Qt::Key_Left, Qt::ShiftModifier,500); //sub delay
+    testEventList.addKeyClick(Qt::Key_Left, Qt::ShiftModifier,500);
+    testEventList.addKeyClick(Qt::Key_Right, Qt::ShiftModifier,500);    //sub advance
+    testEventList.addKeyClick(Qt::Key_Right, Qt::ShiftModifier,500);
+    testEventList.addKeyClick(Qt::Key_Right, Qt::ShiftModifier,500);
+    testEventList.simulate(w);
+}
+
 TEST(requestAction,windowAbove)
 {
     MainWindow* w = dApp->getMainWindow();

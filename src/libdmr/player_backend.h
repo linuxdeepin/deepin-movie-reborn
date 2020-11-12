@@ -133,7 +133,7 @@ public:
     virtual int aid() const = 0;
     virtual int sid() const = 0;
 
-    virtual void changeSoundMode(SoundMode sm) {}
+    virtual void changeSoundMode(SoundMode) = 0;
     virtual int volume() const = 0;
     virtual bool muted() const = 0;
 

@@ -50,6 +50,7 @@ QTestMain::QTestMain()
 
 QTestMain::~QTestMain()
 {
+
 }
 
 void QTestMain::initTestCase()
@@ -60,6 +61,7 @@ void QTestMain::initTestCase()
 void QTestMain::cleanupTestCase()
 {
     qDebug() << "=====stop test=====";
+    exit(0);
 }
 
 void QTestMain::testGTest()
@@ -68,7 +70,7 @@ void QTestMain::testGTest()
     int ret = RUN_ALL_TESTS();
     Q_UNUSED(ret)
 
-    QTimer::singleShot(5000,[=]{ exit(0); });
+//    exit(0);
 }
 
 int main(int argc, char *argv[])

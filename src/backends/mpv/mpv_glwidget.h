@@ -100,7 +100,6 @@ private:
     QOpenGLVertexArrayObject _vao;
     QOpenGLBuffer _vbo;
     QOpenGLTexture *_darkTex {nullptr};
-//    QOpenGLTexture *_darkTexbac {nullptr};
     QOpenGLTexture *_lightTex {nullptr};
     QOpenGLShaderProgram *_glProg {nullptr};
 
@@ -117,7 +116,6 @@ private:
     QOpenGLShaderProgram *_glProgCorner {nullptr};
 
     QImage bg_dark;
-//    QImage bg_dark_bac;
     QImage bg_light;
 
     void updateVbo();
