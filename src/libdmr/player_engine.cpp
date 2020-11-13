@@ -480,7 +480,9 @@ void PlayerEngine::volumeDown()
 
 int PlayerEngine::volume() const
 {
-    if (!_current) return 100;
+    if (!_current)
+        return 100;
+
     return _current->volume();
 }
 

@@ -2625,7 +2625,11 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             if (!_engine->muted()) {
                 _nwComm->updateWithMessage(tr("Volume: %1%").arg(nVol));
             }
-            m_lastVolume = _engine->volume();
+            if(_engine->state() == PlayerEngine::CoreState::Idle){
+                m_lastVolume = m_displayVolume;
+            }else {
+                m_lastVolume = _engine->volume();
+            }
             Settings::get().setInternalOption("global_volume", _toolbox->DisplayVolume());
             setAudioVolume(qMin(nVol, 100));
         }
