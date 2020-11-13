@@ -653,8 +653,15 @@ void MpvProxy::processLogMessage(mpv_event_log_message *ev)
 
     case MPV_LOG_LEVEL_ERROR:
     case MPV_LOG_LEVEL_FATAL:
-        qCritical() << QString("%1: %2").arg(ev->prefix).arg(ev->text);
-        emit mpvErrorLogsChanged(QString(ev->prefix), QString(ev->text));
+    {
+        QString strError = ev->text;
+        if(strError.contains("Failed setup for format vdpau"))
+        {
+            m_bLastIsSpecficFormat = true;
+        }
+        qCritical() << QString("%1: %2").arg(ev->prefix).arg(strError);
+        emit mpvErrorLogsChanged(QString(ev->prefix), strError);
+    }
         break;
 
     case MPV_LOG_LEVEL_INFO:
