@@ -179,7 +179,7 @@ mpv_handle *MpvProxy::mpv_init()
         my_set_property(h, "gpu-hwdec-interop", interop.toUtf8().constData());
         qDebug() << "set gpu-hwdec-interop = " << interop;
     }
-    my_set_property(h, "hwdec", "auto-safe");
+    my_set_property(h, "hwdec", "auto");
 
 #else
     if (composited) {
@@ -228,7 +228,7 @@ mpv_handle *MpvProxy::mpv_init()
     if (CompositingManager::get().isOnlySoftDecode()) {
         my_set_property(h, "hwdec", "off");
     } else {
-        my_set_property(h, "hwdec", "auto-safe");
+        my_set_property(h, "hwdec", "auto");
     }
 #endif
 #ifdef __aarch64__
@@ -246,7 +246,7 @@ mpv_handle *MpvProxy::mpv_init()
             qDebug() << "modify HWDEC no";
             break;
         case 1:
-            my_set_property(h, "hwdec", "auto-safe");
+            my_set_property(h, "hwdec", "auto");
             qDebug() << "modify HWDEC auto";
             break;
         case 2:
@@ -254,8 +254,8 @@ mpv_handle *MpvProxy::mpv_init()
             qDebug() << "modify HWDEC yes";
             break;
         case 3:
-            my_set_property(h, "hwdec", "auto-safe");
-            qDebug() << "modify HWDEC auto-safe";
+            my_set_property(h, "hwdec", "auto");
+            qDebug() << "modify HWDEC auto";
             break;
         case 4:
             my_set_property(h, "hwdec", "vdpau");
@@ -272,9 +272,9 @@ mpv_handle *MpvProxy::mpv_init()
     if (CompositingManager::get().isOnlySoftDecode()) {
         my_set_property(h, "hwdec", "off");
     } else {
-        my_set_property(h, "hwdec", "auto-safe");
+        my_set_property(h, "hwdec", "auto");
     }
-    qDebug() << "modify HWDEC auto-safe";
+    qDebug() << "modify HWDEC auto";
 #endif
     my_set_property(h, "panscan", 1.0);
 
@@ -300,7 +300,7 @@ mpv_handle *MpvProxy::mpv_init()
             if (CompositingManager::get().isOnlySoftDecode()) {
                 my_set_property(h, "hwdec", "off");
             } else {
-                my_set_property(h, "hwdec", "auto-safe");
+                my_set_property(h, "hwdec", "auto");
             }
             my_set_property(h, "vo", "gpu");
         } else {
@@ -322,7 +322,7 @@ mpv_handle *MpvProxy::mpv_init()
                         set_property(h, "hwdec", "off");
                     }
                     else{
-                        set_property(h, "hwdec", "auto-safe");
+                        set_property(h, "hwdec", "auto");
                     }
                     set_property(h, "vo", "gpu");
                 } else {
@@ -574,11 +574,11 @@ void MpvProxy::handle_mpv_events()
             if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") || codec.toLower().contains("mpeg2video")) {
 //                    qDebug() << "my_set_property hwdec no";
 //                    my_set_property(_handle, "hwdec", "no");
-                qDebug() << "my_set_property hwdec auto-safe";
+                qDebug() << "my_set_property hwdec auto";
                 if (CompositingManager::get().isOnlySoftDecode()) {
                     my_set_property(_handle, "hwdec", "off");
                 } else {
-                    my_set_property(_handle, "hwdec", "auto-safe");
+                    my_set_property(_handle, "hwdec", "auto");
                 }
             }
 #endif
@@ -1002,20 +1002,16 @@ void MpvProxy::play()
         opts << QString("dvd-device=%1").arg(_dvdDevice);
     }
     //非景嘉微显卡
-    if(m_bHwaccelAuto)
+    if(m_bHwaccelAuto && m_bLastIsSpecficFormat)
     {
         if (!_isJingJia || !utils::check_wayland_env()) {
             // hwdec could be disabled by some codecs, so we need to re-enable it
-            my_set_property(_handle, "hwdec", "auto-safe");
+            my_set_property(_handle, "hwdec", "auto");
 #if defined (__mips__) || defined (__aarch64__)
-            if (CompositingManager::get().hascard() && !CompositingManager::get().isOnlySoftDecode()) {
-                my_set_property(_handle, "hwdec", "auto");
-            } else {
+            if (!CompositingManager::get().hascard() || CompositingManager::get().isOnlySoftDecode()) {
                 my_set_property(_handle, "hwdec", "off");
             }
 #endif
-        } else {
-            my_set_property(_handle, "hwdec", "off");
         }
     }
 #else
@@ -1037,6 +1033,10 @@ void MpvProxy::play()
             if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") || codec.toLower().contains("mpeg2video")) {
                 qDebug() << "my_set_property hwdec no";
                 my_set_property(_handle, "hwdec", "no");
+                m_bLastIsSpecficFormat = true;
+            }
+            else {
+                m_bLastIsSpecficFormat = false;
             }
         }
         if(m_bHwaccelAuto)
@@ -1046,8 +1046,10 @@ void MpvProxy::play()
             if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") || codec.toLower().contains("mpeg2video")) {
                 qDebug() << "my_set_property hwdec no";
                 my_set_property(_handle, "hwdec", "no");
-                //qDebug() << "my_set_property hwdec auto-safe";
-                my_set_property(_handle, "hwdec", "auto-safe");
+                m_bLastIsSpecficFormat = true;
+            }
+            else {
+                m_bLastIsSpecficFormat = false;
             }
         }
     }

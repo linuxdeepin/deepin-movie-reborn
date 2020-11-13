@@ -286,6 +286,7 @@ private:
     int volumeCorrection(int);
     bool m_bInited {false};
     bool m_bHwaccelAuto {true};   //如果设置为不为自动，则不允许此类改变硬件设置
+	bool m_bLastIsSpecficFormat {false};
 };
 
 }
