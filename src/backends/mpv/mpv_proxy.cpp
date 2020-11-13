@@ -1046,7 +1046,7 @@ void MpvProxy::play()
     if (Settings::get().isSet(Settings::HWAccel) && m_bLastIsSpecficFormat) {
         my_set_property(_handle, "hwdec", "auto");
 #if defined (__mips__) || defined (__aarch64__)
-        if (!CompositingManager::get().hascard() || CompositingManager::get().isOnlySoftDecode())) {
+        if (!CompositingManager::get().hascard() || CompositingManager::get().isOnlySoftDecode()) {
             my_set_property(_handle, "hwdec", "off");
         }
 #endif
