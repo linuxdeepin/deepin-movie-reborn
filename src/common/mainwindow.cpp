@@ -72,6 +72,8 @@
 #include <X11/cursorfont.h>
 #include <X11/Xlib.h>
 
+#define XCB_Platform     //to distinguish xcb or wayland
+
 #ifdef XCB_Platform
 #include "utility.h"
 #endif

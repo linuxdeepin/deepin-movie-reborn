@@ -11,8 +11,6 @@
 /* only defined when build with flatpak */
 //#cmakedefine DTK_DMAN_PORTAL
 
-#define XCB_Platform      //to distinguish xcb or wayland
-
 #define RADIUS 8
 #define RADIUS_MV 18
 
