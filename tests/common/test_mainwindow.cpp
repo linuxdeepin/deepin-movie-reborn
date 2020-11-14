@@ -6,6 +6,7 @@
 #include <QAbstractButton>
 #include <DSettingsDialog>
 #include <dwidgetstype.h>
+#include <QtCore/QMetaObject>
 
 #include <unistd.h>
 #include <gtest/gtest.h>
@@ -47,25 +48,31 @@ using namespace dmr;
 TEST(MainWindow, loadFile)
 {
     MainWindow* w = dApp->getMainWindow();
-
     PlayerEngine* engine =  w->engine();
-
     QList<QUrl> listPlayFiles;
-
     listPlayFiles<<QUrl::fromLocalFile("/usr/share/dde-introduction/demo.mp4")\
                 <<QUrl::fromLocalFile("/usr/share/music/bensound-sunny.mp3");
-
     w->show();
 
     const auto &valids = engine->addPlayFiles(listPlayFiles);
 
     QCOMPARE(engine->isPlayableFile(valids[0]), true);
-    engine->playByName(valids[0]);
+//    engine->playByName(valids[0]);
+
+    QTest::qWait(1000);
+    w->showMinimized();
+    QTest::qWait(2000);
+    w->showNormal();
+    QTest::qWait(2000);
+    w->showMaximized();
+
+//    QMetaObject::invokeMethod(w, "startBurstShooting", Qt::QueuedConnection);
 
     QTest::qWait(2000);
     w->move(0,0);
     QTest::qWait(500);
     w->resize(800, 600);
+
 }
 
 TEST(MainWindow, mouseSimulate)
@@ -74,7 +81,14 @@ TEST(MainWindow, mouseSimulate)
 
     w->show();
 
-//    QTest::qWait(3000); //等待加载胶片进度条
+//    QTest::qWait(3000);
+    //等比缩放
+    QTest::qWait(1000);
+    QTest::mouseMove(w, w->frameGeometry().bottomRight(),500);
+    QTest::mousePress(w, Qt::LeftButton, Qt::NoModifier, w->frameGeometry().bottomRight(), 500);
+    QTest::mouseMove(w, QPoint(900,800), 1000);
+
+    //移动窗口
     QTest::mousePress(w, Qt::LeftButton, Qt::NoModifier, QPoint(), 500);
     QTest::mouseMove(w, QPoint(w->pos().x()+40, w->pos().y()+50), 300);
     QTest::mouseRelease(w, Qt::LeftButton, Qt::NoModifier, QPoint(), 1000);
@@ -161,7 +175,8 @@ TEST(MainWindow, shortCutVolumeAndFrame)
 
     //mini mode
     testEventList.addKeyClick(Qt::Key_F2, Qt::NoModifier, 1000);
-    QTest::qWait(2000);
+    QTest::mouseMove(w, QPoint(), 2000);
+    QTest::qWait(1000);
     testEventList.addKeyClick(Qt::Key_Escape, Qt::NoModifier, 1000);
 
     //volume
@@ -246,7 +261,6 @@ TEST(MainWindow, UrlDialog)
     auto url = uDlg->url();
     w->play(url);
 }
-
 
 TEST(MainWindow, subtitle)
 {

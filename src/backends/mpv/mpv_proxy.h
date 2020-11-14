@@ -280,13 +280,13 @@ private:
     void processPropertyChange(mpv_event_property *ev);
     void processLogMessage(mpv_event_log_message *ev);
     QImage takeOneScreenshot();
-    //void changeProperty(const QString &name, const QVariant &v);
     void updatePlayingMovieInfo();
     void setState(PlayState s);
     qint64 nextBurstShootPoint();
     int volumeCorrection(int);
     bool m_bInited {false};
     bool m_bHwaccelAuto {true};   //如果设置为不为自动，则不允许此类改变硬件设置
+	bool m_bLastIsSpecficFormat {false};
 };
 
 }

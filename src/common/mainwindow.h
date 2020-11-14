@@ -45,7 +45,6 @@
 #include "volumemonitoring.h"
 #include "diskcheckthread.h"
 #include <QDBusAbstractInterface>
-
 //static const int VOLUME_OFFSET = 40;
 
 namespace Dtk {
@@ -136,10 +135,6 @@ public:
     {
         return _engine;
     }
-//    Titlebar *titlebar()
-//    {
-//        return _titlebar;
-//    }
     ToolboxProxy *toolbox()
     {
         return _toolbox;
@@ -159,7 +154,6 @@ public:
 
     void requestAction(ActionFactory::ActionKind, bool fromUI = false,
                        QList<QVariant> args = {}, bool shortcut = false);
-
 
     bool insideResizeArea(const QPoint &global_p);
     QMargins dragMargins() const;
@@ -205,7 +199,6 @@ public slots:
     void syncPostion();
     //设置窗口顶层
     void my_setStayOnTop(const QWidget *widget, bool on);
-    //lambda表达式改为槽函数
     void slotmousePressTimerTimeOut();
     void slotPlayerStateChanged();
     void slotFocusWindowChanged();
@@ -237,7 +230,6 @@ protected:
     void dropEvent(QDropEvent *event) override;
 
     bool event(QEvent *event) override;
-
     void leaveEvent(QEvent *) override;
 
 protected slots:
@@ -317,7 +309,6 @@ private:
     ToolboxProxy *_toolbox {nullptr};
     PlaylistWidget *_playlist {nullptr};
     PlayerEngine *_engine {nullptr};
-    //DIconButton *_playState {nullptr};
     AnimationLabel *_animationlable {nullptr};
     MovieProgressIndicator *_progIndicator {nullptr};
 

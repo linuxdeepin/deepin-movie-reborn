@@ -256,14 +256,8 @@ namespace dmr {
          initMpvFuns();
         setUpdateBehavior(QOpenGLWidget::NoPartialUpdate);
 
-
-
         connect(this, &QOpenGLWidget::frameSwapped, 
                 this, &MpvGLWidget::onFrameSwapped, Qt::DirectConnection);
-
-        //auto fmt = QSurfaceFormat::defaultFormat();
-        //fmt.setAlphaBufferSize(8);
-        //this->setFormat(fmt);
     }
 
     MpvGLWidget::~MpvGLWidget() 
@@ -273,10 +267,6 @@ namespace dmr {
             _darkTex->destroy();
             delete _darkTex;
         }
-//        if (_darkTexbac) {
-//            _darkTexbac->destroy();
-//            delete _darkTexbac;
-//        }
         if (_lightTex) {
             _lightTex->destroy();
             delete _lightTex;
@@ -373,8 +363,6 @@ namespace dmr {
         _vao.create();
         _vao.bind();
 
-//        _darkTexbac = new QOpenGLTexture(bg_dark_bac, QOpenGLTexture::DontGenerateMipMaps);
-//        _darkTexbac->setMinificationFilter(QOpenGLTexture::Linear);
         _darkTex = new QOpenGLTexture(bg_dark, QOpenGLTexture::DontGenerateMipMaps);
         _darkTex->setMinificationFilter(QOpenGLTexture::Linear);
         _lightTex = new QOpenGLTexture(bg_light, QOpenGLTexture::DontGenerateMipMaps);
@@ -431,17 +419,15 @@ namespace dmr {
 
     void MpvGLWidget::prepareSplashImages()
     {
-//        bg_dark = utils::LoadHiDPIImage(":/resources/icons/dark/init-splash.svg");
-//        bg_light = utils::LoadHiDPIImage(":/resources/icons/light/init-splash.svg");
-
-        QPixmap pixmap/*(":/resources/icons/dark/init-splash-bac.svg")*/;
+        QPixmap pixmap;
         QImage img=utils::LoadHiDPIImage(":/resources/icons/dark/init-splash-bac.svg");
         pixmap=pixmap.fromImage(img);
-        QPixmap pixmap2/*(":/resources/icons/dark/init-splash.svg")*/;
+
+        QPixmap pixmap2;
         QImage img1=utils::LoadHiDPIImage(":/resources/icons/dark/init-splash.svg");
         pixmap2=pixmap2.fromImage(img1);
+
         QPainter p(&pixmap);
-//        p.drawPixmap((pixmap.width()-pixmap2.width())/2,(pixmap.height()-pixmap2.height())/2,pixmap2);
         p.drawPixmap(98,127,pixmap2);
         bg_dark=pixmap.toImage();
         bg_dark.setDevicePixelRatio(qApp->devicePixelRatio());
@@ -450,38 +436,34 @@ namespace dmr {
         QImage image(pixmap.size(),QImage::Format_Alpha8);
         image.fill(QColor(0, 0, 0, 0));
         image.setDevicePixelRatio(qApp->devicePixelRatio());
-//        QImage image=utils::LoadHiDPIImage(":/resources/icons/light/init-light-bac.svg");
         pixmap3=pixmap3.fromImage(image);
-        QPixmap pixmap4/*(":/resources/icons/dark/init-splash.svg")*/;
+
+        QPixmap pixmap4;
         QImage img2=utils::LoadHiDPIImage(":/resources/icons/dark/init-splash.svg");
         pixmap4=pixmap4.fromImage(img2);
+
         QPainter p1(&pixmap3);
-//        p1.drawPixmap((pixmap.width()-pixmap4.width())/2,(pixmap.height()-pixmap4.height())/2,pixmap4);
         p1.drawPixmap(98,127,pixmap4);
         bg_light=pixmap3.toImage();
         bg_light.setDevicePixelRatio(qApp->devicePixelRatio());
     }
 
-    void MpvGLWidget::initializeGL() 
+    void MpvGLWidget::initializeGL()
     {
         QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
-        //f->glEnable(GL_BLEND);
-        //f->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         float a = static_cast<float>(16.0 / 255.0);
 
-//        if (qApp->theme() != "dark") a = 252.0 / 255.0;
         if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()){
             a = static_cast<float>(252.0 / 255.0);
         }
         f->glClearColor(a, a, a, 1.0);
-
 
         prepareSplashImages();
         setupIdlePipe();
         setupBlendPipe();
 
 #ifdef _LIBDMR_
-       if(utils::check_wayland_env()){
+        if(utils::check_wayland_env()){
             toggleRoundedClip(true);
         }else{
             toggleRoundedClip(false);
@@ -507,16 +489,16 @@ namespace dmr {
             {MPV_RENDER_PARAM_OPENGL_INIT_PARAMS, &gl_init_params},
 
             /*
-             *    which saves a copy per video frame ("vd-lavc-dr" option
-             *    needs to be enabled, and the rendering backend as well as the
-             *    underlying GPU API/driver needs to have support for it).
-             **/
+                 *    which saves a copy per video frame ("vd-lavc-dr" option
+                 *    needs to be enabled, and the rendering backend as well as the
+                 *    underlying GPU API/driver needs to have support for it).
+                 **/
             //{MPV_RENDER_PARAM_ADVANCED_CONTROL, &adv_control},
             {MPV_RENDER_PARAM_X11_DISPLAY, reinterpret_cast<void*>(QX11Info::display())},
             {MPV_RENDER_PARAM_INVALID, nullptr}
         };
 
-	if(utils::check_wayland_env()){
+        if(utils::check_wayland_env()){
             //QPlatformNativeInterface* native = QGuiApplication::platformNativeInterface();
             //struct wl_display * wl_dpy = (struct wl_display*) (native->nativeResourceForWindow("display",NULL));
             params[2] = {MPV_RENDER_PARAM_WL_DISPLAY, nullptr};
@@ -529,7 +511,7 @@ namespace dmr {
         }
 
         m_callback(_render_ctx, gl_update_callback,
-                reinterpret_cast<void*>(this));
+                   reinterpret_cast<void*>(this));
     }
 
     void MpvGLWidget::updateMovieFbo()
@@ -729,7 +711,6 @@ namespace dmr {
 
     void MpvGLWidget::resizeGL(int w, int h) 
     {
-        //QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
 
         updateMovieFbo();
         updateVbo();

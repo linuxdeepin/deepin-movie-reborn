@@ -88,6 +88,7 @@ static QString hash_file(const QFileInfo &fi)
         mds.append(QString::fromLatin1((const char *)md5, 32));
 #endif
     });
+    f.close();
 
     qDebug() << mds.join(";");
     //Qt seems has a bug that ; will not be encoded as %3B in url query

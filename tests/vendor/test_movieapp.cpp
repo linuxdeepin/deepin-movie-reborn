@@ -12,7 +12,7 @@ using namespace dmr;
 TEST(MovieApp, show)
 {
     MainWindow* w = dApp->getMainWindow();
-    w->show();
+//    w->show();
 
     MovieApp *movieapp = dApp->initMovieApp(w);
 
