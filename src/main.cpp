@@ -56,23 +56,23 @@ DWIDGET_USE_NAMESPACE
 
 int main(int argc, char *argv[])
 {
-    if(dmr::utils::first_check_wayland_env()){
+    if (dmr::utils::first_check_wayland_env()) {
         qputenv("QT_WAYLAND_SHELL_INTEGRATION", "kwayland-shell");
         //qputenv("_d_disableDBusFileDialog", "true");
         setenv("PULSE_PROP_media.role", "video", 1);
         QSurfaceFormat format;
         format.setRenderableType(QSurfaceFormat::OpenGLES);
         format.setDefaultFormat(format);
-    }else {
-        #ifdef __mips__
-            if (CompositingManager::get().composited()) {
-                CompositingManager::detectOpenGLEarly();
-                CompositingManager::detectPciID();
-            }
-        #else
+    } else {
+#ifdef __mips__
+        if (CompositingManager::get().composited()) {
+            CompositingManager::detectOpenGLEarly();
+            CompositingManager::detectPciID();
+        }
+#else
 //            CompositingManager::detectOpenGLEarly();
 //            CompositingManager::detectPciID();
-        #endif
+#endif
     }
 
 
@@ -87,9 +87,12 @@ int main(int argc, char *argv[])
       * is any impact here.
       */
 //    DApplication::loadDXcbPlugin();
-
-    DApplication *app = DApplication::globalApplication(argc, argv);
-
+    DApplication *app = nullptr;
+#if (DTK_VERSION < DTK_VERSION_CHECK(5, 4, 0, 0))
+    app = new DApplication(argc, argv);
+#else
+    app = DApplication::globalApplication(argc, argv);
+#endif
 
     // required by mpv
     setlocale(LC_NUMERIC, "C");
@@ -127,8 +130,8 @@ int main(int argc, char *argv[])
     app->loadTranslator();
     app->setApplicationDisplayName(QObject::tr("Movie"));
     app->setApplicationDescription(QObject::tr(
-                                      "Movie is a full-featured video player, supporting playing local and streaming media in multiple video formats."
-                                  ));
+                                       "Movie is a full-featured video player, supporting playing local and streaming media in multiple video formats."
+                                   ));
 //    "Deepin Movie is a well-designed and full-featured"
 //    " video player with simple borderless design. It supports local and"
 //    " streaming media play with multiple video formats."
@@ -156,7 +159,7 @@ int main(int argc, char *argv[])
         if (!toOpenFiles.isEmpty()) {
             QDBusInterface iface("com.deepin.movie", "/", "com.deepin.movie");
             if (toOpenFiles.size() == 1) {
-                if(!toOpenFiles[0].contains("QProcess"))
+                if (!toOpenFiles[0].contains("QProcess"))
                     iface.asyncCall("openFile", toOpenFiles[0]);
             } else {
                 iface.asyncCall("openFiles", toOpenFiles);
@@ -165,7 +168,7 @@ int main(int argc, char *argv[])
 
         QDBusInterface iface("com.deepin.movie", "/", "com.deepin.movie");
         if (iface.isValid()) {
-             qWarning() << "deepin-movie raise";
+            qWarning() << "deepin-movie raise";
             iface.asyncCall("Raise");
         }
         exit(0);
