@@ -59,11 +59,17 @@ TEST(MainWindow, loadFile)
     QCOMPARE(engine->isPlayableFile(valids[0]), true);
 //    engine->playByName(valids[0]);
 
+    ToolboxProxy* toolboxProxy = w->toolbox();
+    DButtonBoxButton* playBtn = toolboxProxy->playBtn();
+
+    QTest::mouseMove(playBtn, QPoint(), 500);
+    QTest::mouseClick(playBtn,Qt::LeftButton,Qt::NoModifier,QPoint(),1000);//play
+
     QTest::qWait(1000);
     w->showMinimized();
-    QTest::qWait(2000);
+    QTest::qWait(1000);
     w->showNormal();
-    QTest::qWait(2000);
+    QTest::qWait(1000);
     w->showMaximized();
 
 //    QMetaObject::invokeMethod(w, "startBurstShooting", Qt::QueuedConnection);
@@ -79,19 +85,22 @@ TEST(MainWindow, mouseSimulate)
 {
     MainWindow* w = dApp->getMainWindow();
 
-    w->show();
-
-//    QTest::qWait(3000);
-    //等比缩放
+    //缩放窗口
+    /*QPoint bot_right(w->frameGeometry().bottomRight().x()+2, w->frameGeometry().bottomRight().y()+2);
     QTest::qWait(1000);
-    QTest::mouseMove(w, w->frameGeometry().bottomRight(),500);
-    QTest::mousePress(w, Qt::LeftButton, Qt::NoModifier, w->frameGeometry().bottomRight(), 500);
-    QTest::mouseMove(w, QPoint(900,800), 1000);
+    QTest::mouseMove(w, bot_right, 500);
+//    QTest::qWait(10000);
+    QTest::mousePress(w, Qt::LeftButton, Qt::NoModifier, bot_right, 500);
+    QTest::mouseMove(w, QPoint(bot_right.x()+30, bot_right.y()+40), 500);
+    QTest::mouseRelease(w, Qt::LeftButton, Qt::NoModifier, QPoint(bot_right.x()+30, bot_right.y()+40), 500);
 
     //移动窗口
     QTest::mousePress(w, Qt::LeftButton, Qt::NoModifier, QPoint(), 500);
     QTest::mouseMove(w, QPoint(w->pos().x()+40, w->pos().y()+50), 300);
-    QTest::mouseRelease(w, Qt::LeftButton, Qt::NoModifier, QPoint(), 1000);
+    QTest::mouseRelease(w, Qt::LeftButton, Qt::NoModifier, QPoint(), 500);
+
+    QTest::mousePress(w,Qt::LeftButton,Qt::NoModifier,QPoint(),1000);
+    QTest::mouseRelease(w,Qt::LeftButton,Qt::NoModifier,QPoint(),1000);*/
 
     QTest::mouseDClick(w,Qt::LeftButton,Qt::NoModifier,QPoint(),1000);  //fullscreen
     QTest::mouseDClick(w,Qt::LeftButton,Qt::NoModifier,QPoint(),1000);
@@ -126,16 +135,16 @@ TEST(MainWindow, shortCutPlay)
     testEventList.addKeyClick(Qt::Key_S, Qt::AltModifier, 1000);    //连拍
 //    testEventList.addKeyClick(Qt::Key_Escape, Qt::NoModifier, 1000);
 
-    testEventList.addKeyClick(Qt::Key_Space, Qt::NoModifier, 1000); //pause
-    testEventList.addKeyClick(Qt::Key_Space, Qt::NoModifier, 1000); //play
+//    testEventList.addKeyClick(Qt::Key_Space, Qt::NoModifier, 1000); //pause
+//    testEventList.addKeyClick(Qt::Key_Space, Qt::NoModifier, 1000); //play
     testEventList.addKeyClick(Qt::Key_Right, Qt::NoModifier, 1000); //fast forward
     testEventList.addKeyClick(Qt::Key_Left, Qt::NoModifier, 1000);  //fast backward
 
-    testEventList.addKeyClick(Qt::Key_Return, Qt::NoModifier, 1000);    //fullscreen
+//    testEventList.addKeyClick(Qt::Key_Return, Qt::NoModifier, 1000);    //fullscreen
     testEventList.addKeyClick(Qt::Key_F3, Qt::NoModifier, 1000);    //playlist
     testEventList.addKeyClick(Qt::Key_Down, Qt::NoModifier, 500);
     testEventList.addKeyClick(Qt::Key_Enter, Qt::NoModifier, 500);
-    testEventList.addKeyClick(Qt::Key_Escape, Qt::NoModifier, 1000);    //quite fullscreen
+//    testEventList.addKeyClick(Qt::Key_Escape, Qt::NoModifier, 1000);    //quite fullscreen
 
     testEventList.addKeyClick(Qt::Key_F3, Qt::NoModifier, 1000);    //playlist
     testEventList.addKeyClick(Qt::Key_Up, Qt::NoModifier, 500);
@@ -169,13 +178,12 @@ TEST(MainWindow, shortCutPlay)
 TEST(MainWindow, shortCutVolumeAndFrame)
 {
     MainWindow* w = dApp->getMainWindow();
-    w->show();
 
     QTestEventList testEventList;
 
     //mini mode
     testEventList.addKeyClick(Qt::Key_F2, Qt::NoModifier, 1000);
-    QTest::mouseMove(w, QPoint(), 2000);
+    QTest::mouseMove(w, QPoint(), 1000);
     QTest::qWait(1000);
     testEventList.addKeyClick(Qt::Key_Escape, Qt::NoModifier, 1000);
 

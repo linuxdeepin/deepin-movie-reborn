@@ -193,14 +193,10 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
     });
     le->setText(pe);
     nameLast = pe;
-//    icon->setIconVisible(true);
     icon->setIcon(QIcon(":resources/icons/select-normal.svg"));
     icon->setFixedHeight(21);
     layout->addWidget(le);
     layout->addWidget(icon);
-//    icon->setNormalIcon(":resources/icons/select-normal.svg");
-//    icon->setHoverIcon(":resources/icons/select-hover.svg");
-//    icon->setPressIcon(":resources/icons/select-press.svg");
 
     /**
      * createTwoColumWidget在dtk中已被弃用
@@ -276,8 +272,6 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
             prompt->show();
         }
     });
-
-
 
     option->connect(le, &DLineEdit::editingFinished, option, [ = ]() {
 
@@ -514,7 +508,7 @@ protected:
             if (!leftButtonPressed) {
                 //add by heyi  拦截鼠标移动事件
                 mw->judgeMouseInWindow(QCursor::pos());
-//                if (mw->insideResizeArea(e->globalPos())) {
+                //                if (mw->insideResizeArea(e->globalPos())) {
                 CornerEdge mouseCorner = CornerEdge::NoneEdge;
                 QRect cornerRect;
 
@@ -737,19 +731,18 @@ MainWindow::MainWindow(QWidget *parent)
     : DMainWindow(nullptr)
 {
     //add bu heyi
-    //this->setMouseTracking(true);
     this->setAttribute(Qt::WA_AcceptTouchEvents);
     _mousePressTimer.setInterval(1300);
     connect(&_mousePressTimer, &QTimer::timeout, this, &MainWindow::slotmousePressTimerTimeOut);
 
-    //*************
-    m_lastVolume = Settings::get().internalOption("last_volume").toInt();;
+    m_lastVolume = Settings::get().internalOption("last_volume").toInt();
     bool composited = CompositingManager::get().composited();
+    qDebug() << "composited = " << composited;
+
 #ifdef USE_DXCB
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowTitleHint | Qt::WindowMinMaxButtonsHint |
                    Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint);
 #else
-//    setWindowFlags(Qt::FramelessWindowHint);
     setWindowFlags(Qt::Window | Qt::WindowMinMaxButtonsHint |
                    Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint);
 #ifdef Q_OS_MACOS
@@ -763,15 +756,9 @@ MainWindow::MainWindow(QWidget *parent)
         setAttribute(Qt::WA_NoSystemBackground, false);
     }
 
-//    DThemeManager::instance()->registerWidget(this);
-//    setFrameShape(QFrame::NoFrame);
-
 #ifdef USE_DXCB
     if (DApplication::isDXcbPlatform()) {
         _handle = new DPlatformWindowHandle(this, this);
-        //setAttribute(Qt::WA_TranslucentBackground, true);
-        //if (composited)
-        //_handle->setTranslucentBackground(true);_miniPlayBtn
         _handle->setEnableSystemResize(false);
         _handle->setEnableSystemMove(false);
         _handle->setWindowRadius(4);
@@ -785,9 +772,6 @@ MainWindow::MainWindow(QWidget *parent)
     QSizePolicy sp(QSizePolicy::Preferred, QSizePolicy::Preferred);
     sp.setHeightForWidth(true);
     setSizePolicy(sp);
-
-    qDebug() << "composited = " << composited;
-
     setContentsMargins(0, 0, 0, 0);
 
     setupTitlebar();
@@ -799,8 +783,7 @@ MainWindow::MainWindow(QWidget *parent)
         Backend::setDebugLevel(Backend::DebugLevel::Verbose);
     }
     _engine = new PlayerEngine(this);
-    //add by heyi
-    //connect(_engine, &PlayerEngine::mpvFunsLoadOver, this, &MainWindow::firstPlayInit);
+
 #ifndef USE_DXCB
     _engine->move(0, 0);
 #endif
@@ -810,12 +793,10 @@ MainWindow::MainWindow(QWidget *parent)
         Settings::get().setInternalOption("global_volume", 100);
         volume = 100;
     }
-    //heyi need
-    //_engine->changeVolume(volume);
 
     m_displayVolume = volume;
+
     if(utils::check_wayland_env()){
-        //_engine->changeVolume(volume);
         _engine->changeVolume(100);
         if (Settings::get().internalOption("mute").toBool()) {
             _engine->toggleMute();
@@ -827,44 +808,16 @@ MainWindow::MainWindow(QWidget *parent)
     _toolbox->setFocusPolicy(Qt::NoFocus);
 
     titlebar()->deleteLater();
+
     connect(_engine, &PlayerEngine::stateChanged, this, &MainWindow::slotPlayerStateChanged);
-
-
     connect(ActionFactory::get().mainContextMenu(), &DMenu::triggered, this, &MainWindow::menuItemInvoked);
+    connect(ActionFactory::get().playlistContextMenu(), &DMenu::triggered, this, &MainWindow::menuItemInvoked);
 
     connect(this, &MainWindow::frameMenuEnable, &ActionFactory::get(), &ActionFactory::frameMenuEnable);
     connect(this, &MainWindow::playSpeedMenuEnable, &ActionFactory::get(), &ActionFactory::playSpeedMenuEnable);
 
-    connect(ActionFactory::get().playlistContextMenu(), &DMenu::triggered, this, &MainWindow::menuItemInvoked);
     connect(qApp, &QGuiApplication::focusWindowChanged, this, &MainWindow::slotFocusWindowChanged);
 
-
-    /*_playState = new DIconButton(this);
-    //    _playState->setScaledContents(true);
-    _playState->setIcon(QIcon(":/resources/icons/dark/normal/play-big_normal.svg"));
-    _playState->setIconSize(QSize(128, 128));
-    _playState->setObjectName("PlayState");
-    _playState->setFixedSize(128, 128);
-    DPalette pa_cb = DApplicationHelper::instance()->palette(_playState);
-    pa_cb.setBrush(QPalette::Light, QColor(0, 0, 0, 0));
-    pa_cb.setBrush(QPalette::Dark, QColor(0, 0, 0, 0));
-    _playState->setPalette(pa_cb);
-    if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ) {
-        _playState->setIcon(QIcon(":/resources/icons/light/normal/play-big_normal.svg"));
-    }
-    _playState->setVisible(false);
-    connect(_playState, &DIconButton::clicked, [ = ]() {
-        requestAction(ActionFactory::TogglePause, false, {}, true);
-    });
-    QObject::connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::paletteTypeChanged, _playState,
-    [ = ] (DGuiApplicationHelper::ColorType type) {
-
-        if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ) {
-            _playState->setIcon(QIcon(":/resources/icons/light/normal/play-big_normal.svg"));
-        } else {
-            _playState->setIcon(QIcon(":/resources/icons/dark/normal/play-big_normal.svg"));
-        }
-    });*/
 #ifndef __mips__
     _progIndicator = new MovieProgressIndicator(this);
     _progIndicator->setVisible(false);
@@ -884,9 +837,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     // mini ui
     auto *signalMapper = new QSignalMapper(this);
-    connect(signalMapper,
-            static_cast<void(QSignalMapper::*)(const QString &)>(&QSignalMapper::mapped),
-            this, &MainWindow::miniButtonClicked);
+    connect(signalMapper, static_cast<void(QSignalMapper::*)(const QString &)>(&QSignalMapper::mapped), this, &MainWindow::miniButtonClicked);
 
 #ifdef __mips__
     _miniPlayBtn = new IconButton(this);
@@ -899,6 +850,8 @@ MainWindow::MainWindow(QWidget *parent)
 #else
     _miniPlayBtn = new DIconButton(this);
     _miniQuitMiniBtn = new DIconButton(this);
+    _miniCloseBtn = new DIconButton(this);
+
     if (!composited) {
         _labelCover = new QLabel(this);
         _labelCover->setFixedSize(QSize(30, 30));
@@ -908,12 +861,12 @@ MainWindow::MainWindow(QWidget *parent)
         _labelCover->setAutoFillBackground(true);
         _labelCover->setPalette(palette);
     }
-    _miniCloseBtn = new DIconButton(this);
 
     _miniPlayBtn->setFlat(true);
     _miniCloseBtn->setFlat(true);
     _miniQuitMiniBtn->setFlat(true);
 #endif
+
     _miniPlayBtn->setIcon(QIcon(":/resources/icons/light/mini/play-normal-mini.svg"));
     _miniPlayBtn->setIconSize(QSize(30, 30));
     _miniPlayBtn->setFixedSize(QSize(30, 30));
@@ -966,7 +919,6 @@ MainWindow::MainWindow(QWidget *parent)
                 _powerCookie = 0;
             }
         }
-//        _miniPlayBtn->setStyleSheet(_miniPlayBtn->styleSheet());
     });
 
     _miniCloseBtn->setIcon(QIcon(":/resources/icons/light/mini/close-normal.svg"));
@@ -991,12 +943,12 @@ MainWindow::MainWindow(QWidget *parent)
         _miniCloseBtn->setAttribute(Qt::WA_NativeWindow);
         _miniQuitMiniBtn->setAttribute(Qt::WA_NativeWindow);
     }
-    // ~
 
     updateProxyGeometry();
 
     connect(&ShortcutManager::get(), &ShortcutManager::bindingsChanged,
             this, &MainWindow::onBindingsChanged);
+
     ShortcutManager::get().buildBindings();
 
     connect(_engine, SIGNAL(stateChanged()), this, SLOT(update()));
@@ -1006,9 +958,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     reflectActionToUI(ActionFactory::OneTimes); //重置播放速度为1倍速
     reflectActionToUI(ActionFactory::DefaultFrame);
-    //reflectActionToUI(ActionFactory::OrderPlay);
     reflectActionToUI(ActionFactory::Stereo);
-    //requestAction(ActionFactory::ChangeSubCodepage, false, {"auto"});
 
     _lightTheme = Settings::get().internalOption("light_theme").toBool();
     if (_lightTheme)
@@ -1030,12 +980,11 @@ MainWindow::MainWindow(QWidget *parent)
     connect(_engine, &PlayerEngine::videoSizeChanged, [ = ]() {
         this->resizeByConstraints();
     });
-
     connect(_engine, &PlayerEngine::stateChanged, this, &MainWindow::animatePlayState);
     syncPlayState();
 
     connect(_engine, &PlayerEngine::loadOnlineSubtitlesFinished,
-    [this](const QUrl & url, bool success) {//不能去掉 url参数
+            [this](const QUrl & url, bool success) {//不能去掉 url参数
         _nwComm->updateWithMessage(success ? tr("Load successfully") : tr("Load failed"));
     });
 
@@ -1081,9 +1030,6 @@ MainWindow::MainWindow(QWidget *parent)
     _listener = new MainWindowEventListener(this);
     this->windowHandle()->installEventFilter(_listener);
 
-    //auto mwfm = new MainWindowFocusMonitor(this);
-//    auto mwpm = new MainWindowPropertyMonitor(this);
-
     MainWindowPropertyMonitor* p = new MainWindowPropertyMonitor(this);
     QAbstractEventDispatcher::instance()->installNativeEventFilter(p);
 
@@ -1126,14 +1072,13 @@ MainWindow::MainWindow(QWidget *parent)
     if(utils::check_wayland_env()){
         popup = new DFloatingMessage(DFloatingMessage::TransientType, this);
     }else{
-        popup = new DFloatingMessage(DFloatingMessage::TransientType, nullptr);        
+        popup = new DFloatingMessage(DFloatingMessage::TransientType, nullptr);
     }
     popup->setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
 #else
     popup = new DFloatingMessage(DFloatingMessage::TransientType, this);
 #endif
     popup->resize(0, 0);
-//    popup->hide(); //This causes the first screenshot icon to move down
 
     defaultplaymodeinit();
     setHwaccelMode();
@@ -1148,18 +1093,15 @@ MainWindow::MainWindow(QWidget *parent)
     connect(_engine, &PlayerEngine::mpvWarningLogsChanged, this, &MainWindow::checkWarningMpvLogsChanged);
     connect(_engine, &PlayerEngine::urlpause, this, &MainWindow::slotUrlpause);
 
-//    connect(_engine, &PlayerEngine::checkMuted, this, [=](bool mute) {
-//        this->setMusicMuted(!mute);
-//        volumeMonitoring.start();
-//        disconnect(_engine, &PlayerEngine::checkMuted, nullptr, nullptr);
-//    });
+    //    connect(_engine, &PlayerEngine::checkMuted, this, [=](bool mute) {
+    //        this->setMusicMuted(!mute);
+    //        volumeMonitoring.start();
+    //        disconnect(_engine, &PlayerEngine::checkMuted, nullptr, nullptr);
+    //    });
     connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::newProcessInstance, this, [ = ] {
         this->activateWindow();
     });
     connect(qApp, &QGuiApplication::fontChanged, this, &MainWindow::slotFontChanged);
-
-
-    //connect(dmr::dvd::RetrieveDvdThread::get(), &dmr::dvd::RetrieveDvdThread::sigData, this, &MainWindow::onDvdData);
 
     {
         loadWindowState();
@@ -1176,11 +1118,6 @@ MainWindow::MainWindow(QWidget *parent)
         _delayedMouseReleaseTimer.start(1000);
     }*/
 
-    //****************************************
-    //heyi need
-//    if (_engine->muted()) {
-//        _nwComm->updateWithMessage(tr("Mute"));
-//    }
     ThreadPool::instance()->moveToNewThread(&volumeMonitoring);
     volumeMonitoring.start();
     connect(&volumeMonitoring, &VolumeMonitoring::volumeChanged, this, [ = ](int vol) {
@@ -1188,7 +1125,6 @@ MainWindow::MainWindow(QWidget *parent)
     });
 
     connect(&volumeMonitoring, &VolumeMonitoring::muteChanged, this, &MainWindow::slotMuteChanged);
-
 
     connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, &MainWindow::updateMiniBtnTheme);
 
@@ -1256,7 +1192,6 @@ void MainWindow::updateContentGeometry(const QRect &rect)
                          values);
 
 #else
-//    setGeometry(rect);
     move(rect.x(), rect.y());
     resize(rect.width(), rect.height());
 #endif
@@ -1303,7 +1238,6 @@ bool MainWindow::event(QEvent *ev)
                  << "current " << windowState();
         //NOTE: windowStateChanged won't be emitted if by draggint to restore. so we need to
         //check window state here.
-        //connect(windowHandle(), &QWindow::windowStateChanged, this, &MainWindow::onWindowStateChanged);
         if (_lastWindowState == Qt::WindowNoState && windowState() == Qt::WindowMinimized) {
             if (Settings::get().isSet(Settings::PauseOnMinimize)) {
                 if (_engine && _engine->state() == PlayerEngine::Playing) {
@@ -1357,8 +1291,6 @@ void MainWindow::onWindowStateChanged()
             }
         }
     }
-    //WTF: this->geometry() is not size of fullscreen !
-    //_progIndicator->move(geometry().width() - _progIndicator->width() - 18, 14);
 #ifndef __mips__
     _progIndicator->setVisible(m_bIsFullSreen && _engine && _engine->state() != PlayerEngine::Idle);
 #endif
@@ -1446,8 +1378,6 @@ void MainWindow::changedVolumeSlot(int vol)
 {
     setAudioVolume(qMin(vol, 100));
     if (_engine->muted()) {
-        //del by xiangxiaojun for 24834
-        //_engine->toggleMute();
         Settings::get().setInternalOption("mute", _engine->muted());
     }
     if (_engine->volume() <= 100 || vol < 100) {
@@ -1470,7 +1400,6 @@ void MainWindow::changedVolumeSlot(int vol)
 
 void MainWindow::changedMute()
 {
-    //bool mute = _engine->muted();
     _engine->toggleMute();
     Settings::get().setInternalOption("mute", _engine->muted());
 }
@@ -1597,6 +1526,7 @@ bool MainWindow::judgeMouseInWindow(QPoint pos)
     return bRet;
 }
 
+#ifdef USE_DXCB
 void MainWindow::onApplicationStateChanged(Qt::ApplicationState e)
 {
     switch (e) {
@@ -1617,64 +1547,7 @@ void MainWindow::onApplicationStateChanged(Qt::ApplicationState e)
         break;
     }
 }
-
-//void MainWindow::startPlayStateAnimation(bool play)
-//{
-//    auto r = QRect(QPoint(0, 0), QSize(128, 128));
-//    r.moveCenter(rect().center());
-
-//    if (!_playState->graphicsEffect()) {
-//        auto *effect = new QGraphicsOpacityEffect(_playState);
-//        effect->setOpacity(1.0);
-//        _playState->setGraphicsEffect(effect);
-//    }
-
-//    auto duration = 160;
-//    auto curve = QEasingCurve::InOutCubic;
-
-//    auto pa = new QPropertyAnimation(_playState, "geometry");
-//    if (play) {
-//        QRect r2 = r;
-//        pa->setStartValue(r);
-//        r2.setSize({r.width() * 2, r.height() * 2});
-//        r2.moveCenter(r.center());
-//        pa->setEndValue(r2);
-//    } else {
-//        pa->setEndValue(r);
-//        pa->setStartValue(QRect{r.center(), QSize{0, 0}});
-//    }
-//    pa->setDuration(duration);
-//    pa->setEasingCurve(curve);
-
-
-//    auto va = new QVariantAnimation(_playState);
-//    va->setStartValue(0.0);
-//    va->setEndValue(1.0);
-//    va->setDuration(duration);
-//    va->setEasingCurve(curve);
-
-//    connect(va, &QVariantAnimation::valueChanged, [ = ](const QVariant & v) {
-//        if (!play) _playState->setVisible(true);
-//        auto d = v.toFloat();
-//        auto effect = dynamic_cast<QGraphicsOpacityEffect *>(_playState->graphicsEffect());
-//        effect->setOpacity(play ? 1.0 - d : d);
-//        _playState->update();
-//    });
-
-//    if (play) {
-//        connect(va, &QVariantAnimation::stateChanged, [ = ]() {
-//            if (va->state() == QVariantAnimation::Stopped) {
-//                _playState->setVisible(false);
-//            }
-//        });
-//    }
-
-
-//    auto pag = new QParallelAnimationGroup;
-//    pag->addAnimation(va);
-//    pag->addAnimation(pa);
-//    pag->start(QVariantAnimation::DeleteWhenStopped);
-//}
+#endif
 
 void MainWindow::animatePlayState()
 {
@@ -1683,13 +1556,10 @@ void MainWindow::animatePlayState()
     }
 
     if (!_inBurstShootMode && _engine->state() == PlayerEngine::CoreState::Paused) {
-        // startPlayStateAnimation(false);
         if (!_miniMode) {
             _animationlable->setGeometry(width() / 2 - 100, height() / 2 - 100, 200, 200);
             _animationlable->stop();
         }
-        //_playState->raise();
-
     } else if (_engine->state() == PlayerEngine::CoreState::Idle) {
         //_playState->setVisible(false);
 
@@ -1703,21 +1573,9 @@ void MainWindow::syncPlayState()
 {
     auto r = QRect(QPoint(0, 0), QSize(128, 128));
     r.moveCenter(rect().center());
-    //_playState->move(r.topLeft());
 
     if (_miniMode) {
-        //_playState->setVisible(false);
         return;
-    }
-
-    if (!_inBurstShootMode && _engine->state() == PlayerEngine::CoreState::Paused) {
-        //_playState->setGeometry(r);
-        //_playState->setVisible(true);
-        //auto effect = dynamic_cast<QGraphicsOpacityEffect *>(_playState->graphicsEffect());
-        //if (effect) effect->setOpacity(1.0);
-
-    } else {
-        //_playState->setVisible(false);
     }
 }
 
@@ -1826,7 +1684,6 @@ void MainWindow::reflectActionToUI(ActionFactory::ActionKind kd)
                 } else {
                     (*p)->setChecked(true);
                 }
-//                (*p)->setChecked(_playlist->state() != PlaylistWidget::Opened);
             } else {
                 (*p)->setChecked(!(*p)->isChecked());
             }
@@ -1931,7 +1788,6 @@ void MainWindow::reflectActionToUI(ActionFactory::ActionKind kd)
         auto old = (*p)->isEnabled();
         (*p)->setEnabled(false);
         (*p)->setChecked(!(*p)->isChecked());
-        //(*p)->setChecked(true);
         (*p)->setEnabled(old);
         break;
     }
@@ -1943,17 +1799,12 @@ void MainWindow::reflectActionToUI(ActionFactory::ActionKind kd)
         qDebug() << __func__ << kd;
         acts = ActionFactory::get().findActionsByKind(kd);
         auto p = acts.begin();
-        //auto old = (*p)->isEnabled();
-        //(*p)->setEnabled(false);
-        //(*p)->setChecked(!(*p)->isChecked());
         (*p)->setChecked(true);
-        //(*p)->setEnabled(old);
         break;
     }
     default:
         break;
     }
-
 }
 
 bool MainWindow::set_playlistopen_clicktogglepause(bool playlistopen)
@@ -1979,6 +1830,7 @@ static bool compareBarData(const QUrl &url1, const QUrl &url2)
     }
     return false;
 }
+
 bool MainWindow::addCdromPath()
 {
     QStringList strCDMountlist;
@@ -1998,7 +1850,6 @@ bool MainWindow::addCdromPath()
     if (strCDMountlist.size() == 0)
         return false;
 
-
     QList<QUrl> urls = _engine->addPlayDir(strCDMountlist[0]);  //目前只是针对第一个光盘
     qSort(urls.begin(), urls.end(), compareBarData);
     if (urls.size()) {
@@ -2016,7 +1867,6 @@ void MainWindow::loadPlayList()
     _playlist = nullptr;
     _playlist = new PlaylistWidget(this, _engine);
     _playlist->hide();
-//    _playlist->setParent(_toolbox);
     _toolbox->setPlaylist(_playlist);
     _engine->getplaylist()->loadPlaylist();
     _toolbox->initThumb();
@@ -2102,10 +1952,8 @@ void MainWindow::menuItemInvoked(QAction *action)
 void MainWindow::switchTheme()
 {
     _lightTheme = !_lightTheme;
-    //qApp->setTheme(_lightTheme ? "light" : "dark");
     Settings::get().setInternalOption("light_theme", _lightTheme);
 }
-
 
 bool MainWindow::isActionAllowed(ActionFactory::ActionKind kd, bool fromUI, bool isShortcut)
 {
@@ -2310,6 +2158,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     }
 
     case ActionFactory::ActionKind::EmptyPlaylist: {
+        //play list context menu empty playlist
         _engine->clearPlaylist();
         break;
     }
@@ -2335,18 +2184,12 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         if (_playlist->state() == PlaylistWidget::Opened && !m_bIsFullSreen) {
             requestAction(ActionFactory::TogglePlaylist);
         }
-        //this->setWindowState(Qt::WindowNoState);
-//        if (m_bIsFullSreen) {
-            //requestAction(ActionFactory::ToggleFullscreen);
-            /*if (!fromUI) {
-                reflectActionToUI(ActionFactory::ToggleFullscreen);
-            }*/
+
 #ifndef __mips__
-            if (!m_bIsFullSreen) {
-                _fullscreentimelable->close();
-            }
+        if (!m_bIsFullSreen) {
+            _fullscreentimelable->close();
+        }
 #endif
-//        }
 
         if (!fromUI) {
             reflectActionToUI(kd);
@@ -2358,53 +2201,29 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
 
     case ActionFactory::ActionKind::MovieInfo: {
         if (_engine->state() != PlayerEngine::CoreState::Idle) {
-            //if (_engine->isPlayableFile())
             MovieInfoDialog mid(_engine->playlist().currentInfo(),this);
             mid.exec();
         }
         break;
     }
 
-    case ActionFactory::ActionKind::WindowAbove:
+    case ActionFactory::ActionKind::WindowAbove: {
         _windowAbove = !_windowAbove;
-        /**
-         * switch above state by change windowFlags is unacceptable, since it'll
-         * toggle visibility of window.
-         * ```
-            auto flags = windowFlags();
-            if (_windowAbove) {
-                flags |= Qt::WindowStaysOnTopHint;
-            } else {
-                flags &= ~Qt::WindowStaysOnTopHint;
-            }
-            setWindowFlags(flags);
-            show();
-            ```
-        */
-
         my_setStayOnTop(this, _windowAbove);
-
         if (!fromUI) {
             reflectActionToUI(kd);
         }
         break;
+    }
 
     case ActionFactory::ActionKind::QuitFullscreen: {
         if (_miniMode) {
             if (!fromUI) {
                 reflectActionToUI(ActionFactory::ToggleMiniMode);
-                //reflectActionToUI(kd);
             }
             toggleUIMode();
         } else if (m_bIsFullSreen) {
-//            if (_lastWindowState == Qt::WindowMaximized) {
-//                showMaximized();
-//            } else {
             requestAction(ActionFactory::ToggleFullscreen);
-//            }
-            /*if (!fromUI) {
-                reflectActionToUI(ActionFactory::ToggleFullscreen);
-            }*/
 #ifndef __mips__
             if (!m_bIsFullSreen) {
                 _fullscreentimelable->close();
@@ -2415,15 +2234,6 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     }
 
     case ActionFactory::ActionKind::ToggleFullscreen: {
-//        if(_playlist->state() == PlaylistWidget::State::Opened)
-//        {
-//            BindingMap map = ShortcutManager::get().map();
-//            if(map.value(QKeySequence("Return")) == ActionFactory::ToggleFullscreen
-//                 || map.value(QKeySequence("Num+Enter")) == ActionFactory::ToggleFullscreen)
-//            {
-//                return;
-//            }
-//        }
         if (m_bIsFullSreen) {
             //感觉这个参数没什么用，后期观察没有其他用处可以酌情删除
             //_quitfullscreenstopflag = true;
@@ -4804,7 +4614,6 @@ void MainWindow::paintEvent(QPaintEvent *pe)
 
 void MainWindow::toggleUIMode()
 {
-
     //判断窗口是否靠边停靠（靠边停靠不支持MINI模式）thx
     QRect deskrect = QApplication::desktop()->availableGeometry();
     QPoint windowPos = pos();
@@ -4863,18 +4672,13 @@ void MainWindow::toggleUIMode()
     _miniCloseBtn->setEnabled(_miniMode);
     _miniQuitMiniBtn->setEnabled(_miniMode);
 
-
-
     resumeToolsWindow();
 
     if (_miniMode) {
-
         updateSizeConstraints();
         syncPlayState();
         //设置等比缩放
         setEnableSystemResize(false);
-
-
         _stateBeforeMiniMode = SBEM_None;
 
         if (_playlist->state() == PlaylistWidget::Opened) {
@@ -4939,8 +4743,6 @@ void MainWindow::toggleUIMode()
         }
         _miniCloseBtn->move(sz.width() - 15 - _miniCloseBtn->width(), 10);
         _miniQuitMiniBtn->move(14, sz.height() - 10 - _miniQuitMiniBtn->height());
-
-
     } else {
         setEnableSystemResize(true);
         if (_stateBeforeMiniMode & SBEM_Above) {
@@ -4952,7 +4754,6 @@ void MainWindow::toggleUIMode()
             requestAction(ActionFactory::ToggleFullscreen);
         } else {
             if (_engine->state() == PlayerEngine::Idle && windowState() == Qt::WindowNoState) {
-//                this->setMinimumSize(QSize(1070, 680));
                 this->resize(850, 600);
             } else {
                 if (_lastRectInNormalMode.isValid() /*&& _engine->videoRotation() == 0  by thx*/) {
@@ -4962,7 +4763,6 @@ void MainWindow::toggleUIMode()
                 }
             }
         }
-
         syncPlayState();
 
         if (_stateBeforeMiniMode & SBEM_PlaylistOpened &&
@@ -4973,7 +4773,6 @@ void MainWindow::toggleUIMode()
                 });
             }
         }
-
         _stateBeforeMiniMode = SBEM_None;
     }
 }

@@ -235,7 +235,9 @@ protected:
 protected slots:
     void setInit(bool v);
     void menuItemInvoked(QAction *action);
+#ifdef USE_DXCB
     void onApplicationStateChanged(Qt::ApplicationState e);
+#endif
     void onBindingsChanged();
     void updateActionsState();
     void syncPlayState();
@@ -273,7 +275,6 @@ protected slots:
 private:
     void setupTitlebar();
 
-    void startPlayStateAnimation(bool play);
     void handleSettings();
     void updateSizeConstraints();
     void toggleUIMode();
