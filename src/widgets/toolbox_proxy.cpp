@@ -670,94 +670,11 @@ public:
 
             delete child;
         }
-
-
-//        auto *viewProgBarLayout = new QHBoxLayout();
-//        viewProgBarLayout->setContentsMargins(0,5,0,5);
-//        auto tmp = _engine->duration()/64?_engine->duration()/64:1;
-        /*
-        int num = (_parent->width()-PROGBAR_SPEC+1)/9;
-        auto tmp = (_engine->duration()*1000)/num;
-        auto dpr = qApp->devicePixelRatio();
-        QPixmap pm;
-        pm.setDevicePixelRatio(dpr);
-        QPixmap pm_black;
-        pm_black.setDevicePixelRatio(dpr);
-        VideoThumbnailer thumber;
-        //        QTime d(0, 0, 0);
-        QTime d(0, 0, 0,0);
-        thumber.setThumbnailSize(_engine->videoSize().width() * qApp->devicePixelRatio());
-        thumber.setMaintainAspectRatio(true);
-        thumber.setSeekTime(d.toString("hh:mm:ss").toStdString());
-        auto url = _engine->playlist().currentInfo().url;
-        auto file = QFileInfo(url.toLocalFile()).absoluteFilePath();
-
-        //    for(auto i=0;i<(_engine->duration() - tmp);){
-        //          for(auto i=0;i<65;i++){
-         for(auto i=0;i<num;i++){
-        //          for(auto i=0;i<163;i++){
-        //            d = d.addSecs(tmp);
-             d = d.addMSecs(tmp);
-           thumber.setSeekTime(d.toString("hh:mm:ss:ms").toStdString());
-           try {
-               std::vector<uint8_t> buf;
-               thumber.generateThumbnail(file.toUtf8().toStdString(),
-                       ThumbnailerImageType::Png, buf);
-
-               auto img = QImage::fromData(buf.data(), buf.size(), "png");
-        //                auto img_black = QImage::fromData(buf.data(), buf.size(), "png");
-               auto img_tmp = img.scaledToHeight(50);
-               img.scaledToHeight(50);
-
-               QImage img_black = GraizeImage(img_tmp);
-        //                QImage img_black = img_tmp.convertToFormat(QImage::Format_Indexed8);
-
-        //                    img_black.setColorCount(256);
-        //                    for(int i = 0; i < 256; i++)
-        //                    {
-        //                        img_black.setColor(i, qRgb(i, i, i));
-        //                }
-               pm = QPixmap::fromImage(img_tmp.copy(img_tmp.size().width()/2-4,0,8,50));
-        //                pm.setDevicePixelRatio(dpr);
-               pm_black = QBitmap::fromImage(img_black.copy(img_black.size().width()/2-4,0,8,50));
-        //                pm_black.setDevicePixelRatio(dpr);
-
-
-               ImageItem *label = new ImageItem(img_tmp);
-        //                label->setPixmap(pm);
-               label->setFixedSize(8,50);
-        //                label->setBackgroundRole(QPalette::ColorRole::Base);
-               _viewProgBarLayout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
-               _viewProgBarLayout->addWidget(label, 0 , Qt::AlignLeft );
-               _viewProgBarLayout->setSpacing(1);
-
-               ImageItem *label_black = new ImageItem(img_tmp,true,_front);
-               label_black->move(i*9,5);
-        //                label_black->setPixmap(pm_black);
-               label_black->setFixedSize(8,50);
-           } catch (const std::logic_error&) {
-           }
-
-
-        //            _viewProgBarLayout_black->setAlignment(Qt::AlignLeft | Qt::AlignTop);
-        //            _viewProgBarLayout_black->addWidget(label_black, 0 , Qt::AlignLeft );
-        //            _viewProgBarLayout_black->setSpacing(1);
-
-        }
-        */
 //        _back->setLayout(_viewProgBarLayout);
         _viewProgBarLayout->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
         _viewProgBarLayout->setSpacing(1);
 
         int pixWidget = 40/*_progBar->width() / 100*/;
-
-//        for (int i = 0; i < pm_list.count(); i++) {
-//            ImageItem *label = new ImageItem(pm_list.at(i), false, _back);
-//            label->setMouseTracking(true);
-//            label->setFixedSize(pixWidget, 50);
-//            _viewProgBarLayout->addWidget(label);
-//            _viewProgBarLayout->setSpacing(1);
-//        }
 
         int start_position = (_progBar->width() - ((pixWidget+1) * pm_list.count() - 1)) / 2;   //开始位置
         for (int i = 0; i < pm_list.count(); i++) {

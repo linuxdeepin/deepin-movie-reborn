@@ -177,6 +177,8 @@ public:
     bool addCdromPath();
     void loadPlayList();
     void setOpenFiles(QStringList&);
+
+    void testMprisapp();
 signals:
     void windowEntered();
     void windowLeaved();

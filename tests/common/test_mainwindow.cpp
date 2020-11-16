@@ -35,6 +35,8 @@ TEST(Settings,settings)
     Settings::get().isSet(Settings::Flag::PauseOnMinimize);
     Settings::get().settings()->sync();
 
+    Settings::get().setThumbnailState();
+
     Settings::get().commonPlayableProtocols();
     Settings::get().commonPlayableProtocols();
     Settings::get().iscommonPlayableProtocol("dvb");
@@ -356,6 +358,8 @@ TEST(ToolBox, fullScreenBtn)
 
     QTest::mouseMove(fsBtn, QPoint(), 500);
     QTest::mouseClick(fsBtn,Qt::LeftButton,Qt::NoModifier,QPoint(),1000);
+
+    toolboxProxy->updateSlider();
 
     QTest::mouseMove(fsBtn, QPoint(), 500);
     QTest::mouseClick(fsBtn,Qt::LeftButton,Qt::NoModifier,QPoint(),1000);

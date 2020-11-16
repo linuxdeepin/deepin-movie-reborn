@@ -103,6 +103,8 @@ public:
     QString screenshotNameTemplate();
     QString screenshotNameSeqTemplate();
 
+    bool setThumbnailState();
+
 signals:
     void shortcutsChanged(const QString &, const QVariant &);
     void baseChanged(const QString &, const QVariant &);

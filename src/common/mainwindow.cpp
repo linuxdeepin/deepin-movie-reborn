@@ -49,6 +49,7 @@
 #include "dvd_utils.h"
 #include "dbus_adpator.h"
 #include "threadpool.h"
+#include "vendor/movieapp.h"
 
 //#include <QtWidgets>
 #include <QtDBus>
@@ -1142,14 +1143,12 @@ MainWindow::MainWindow(QWidget *parent)
         Settings::get().setInternalOption("mute", _engine->muted());
     }
 
-    QTimer::singleShot(500, [this]() {
+    QTimer::singleShot(50, [this]() {
         loadPlayList();
     });
 
-#ifdef __mips__
     m_pDBus = new QDBusInterface("org.freedesktop.login1","/org/freedesktop/login1","org.freedesktop.login1.Manager",QDBusConnection::systemBus());
     connect(m_pDBus, SIGNAL(PrepareForSleep(bool)), this, SLOT(sleepStateChanged(bool)));
-#endif
 }
 
 void MainWindow::setupTitlebar()
@@ -1883,6 +1882,16 @@ void MainWindow::loadPlayList()
 void MainWindow::setOpenFiles(QStringList &list)
 {
     m_openFiles = list;
+}
+
+void MainWindow::testMprisapp()
+{
+    MovieApp *mpris = new MovieApp(this);
+
+    mpris->initMpris("movie");
+    mpris->show();
+
+    mpris->deleteLater();
 }
 
 void MainWindow::mipsShowFullScreen()
@@ -4406,10 +4415,8 @@ void MainWindow::setAudioVolume(int volume)
     double tVolume = 0.0;
     if (volume == 100 ) {
         tVolume = (volume ) / 100.0 ;
-        //tVolume += 0.000005;
     } else if (volume != 0 ) {
         tVolume = (volume + 1) / 100.0 ;
-        //tVolume += 0.000005;
     }
 
     readSinkInputPath();
@@ -4429,12 +4436,6 @@ void MainWindow::setAudioVolume(int volume)
         //获取是否静音
         QVariant muteV = ApplicationAdaptor::redDBusProperty("com.deepin.daemon.Audio", sinkInputPath,
                                                              "com.deepin.daemon.Audio.SinkInput", "Mute");
-        /*if (tVolume > 0.0) {
-            if (muteV.toBool())
-                ainterface.call(QLatin1String("SetMute"), false);
-        } else if (tVolume < 0.01 && !muteV.toBool())
-            ainterface.call(QLatin1String("SetMute"), true);*/
-        //ainterface.call(QLatin1String("SetMute"), _engine->muted());
     }
 }
 
