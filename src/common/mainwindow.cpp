@@ -816,7 +816,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(this, &MainWindow::frameMenuEnable, &ActionFactory::get(), &ActionFactory::frameMenuEnable);
     connect(this, &MainWindow::playSpeedMenuEnable, &ActionFactory::get(), &ActionFactory::playSpeedMenuEnable);
-
     connect(qApp, &QGuiApplication::focusWindowChanged, this, &MainWindow::slotFocusWindowChanged);
 
 #ifndef __mips__
@@ -957,9 +956,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(_engine, &PlayerEngine::stateChanged, this, &MainWindow::updateActionsState);
     updateActionsState();
 
-    reflectActionToUI(ActionFactory::OneTimes); //重置播放速度为1倍速
-    reflectActionToUI(ActionFactory::DefaultFrame);
-    reflectActionToUI(ActionFactory::Stereo);
+    reflectActionToUI(ActionFactory::ActionKind::OneTimes); //重置播放速度为1倍速
+    reflectActionToUI(ActionFactory::ActionKind::DefaultFrame);
+    reflectActionToUI(ActionFactory::ActionKind::Stereo);
 
     _lightTheme = Settings::get().internalOption("light_theme").toBool();
     if (_lightTheme)
@@ -1108,17 +1107,6 @@ MainWindow::MainWindow(QWidget *parent)
         loadWindowState();
     }
 
-    /*QString playlistFile = QString("%1/%2/%3/playlist")
-                           .arg(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation))
-                           .arg(qApp->organizationName())
-                           .arg(qApp->applicationName());
-    QSettings cfg(playlistFile, QSettings::NativeFormat);
-    cfg.beginGroup("playlist");
-    auto keys = cfg.childKeys();
-    if (Settings::get().isSet(Settings::ResumeFromLast) && keys.size()) {
-        _delayedMouseReleaseTimer.start(1000);
-    }*/
-
     ThreadPool::instance()->moveToNewThread(&volumeMonitoring);
     volumeMonitoring.start();
     connect(&volumeMonitoring, &VolumeMonitoring::volumeChanged, this, [ = ](int vol) {
@@ -1167,7 +1155,6 @@ void MainWindow::setupTitlebar()
     }
     _titlebar->titlebar()->setMenu(ActionFactory::get().titlebarMenu());
     connect(_titlebar->titlebar()->menu(), &DMenu::triggered, this, &MainWindow::menuItemInvoked);
-
 }
 
 void MainWindow::updateContentGeometry(const QRect &rect)
@@ -1774,10 +1761,7 @@ void MainWindow::reflectActionToUI(ActionFactory::ActionKind kd)
     case ActionFactory::ActionKind::OneTimes: {
         acts = ActionFactory::get().findActionsByKind(kd);
         auto p = acts.begin();
-        auto old = (*p)->isEnabled();
-        (*p)->setEnabled(false);
-        (*p)->setChecked(!(*p)->isChecked());
-        (*p)->setEnabled(old);
+        (*p)->setChecked(true);
         break;
     }
     case ActionFactory::ActionKind::DefaultFrame: {
@@ -2378,6 +2362,14 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         }
         break;
     }
+    case ActionFactory::ActionKind::OnePointTwoTimes: {
+        if(_engine->state() != PlayerEngine::CoreState::Idle){
+            _playSpeed = 1.2;
+            _engine->setPlaySpeed(_playSpeed);
+            _nwComm->updateWithMessage(tr("Speed: %1x").arg(_playSpeed));
+        }
+        break;
+    }
     case ActionFactory::ActionKind::OnePointFiveTimes: {
         if(_engine->state() != PlayerEngine::CoreState::Idle){
             _playSpeed = 1.5;
@@ -2435,26 +2427,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         _engine->setVideoAspect(2.35);
         break;
     }
-    /*
-            if (!_engine->muted()) {
-                _engine->changeVolume(0);
-                setAudioVolume(0);
 
-                _engine->toggleMute();
-                Settings::get().setInternalOption("mute", _engine->muted());
-                setMusicMuted(_engine->muted());
-                if (_engine->muted()) {
-                    _nwComm->updateWithMessage(tr("Mute"));
-                    //_engine->changeVolume(0);
-                    //_engine->toggleMute();
-                } else {
-                    double pert = _engine->volume();
-                    _engine->changeVolume(pert);
-                    _nwComm->updateWithMessage(tr("Volume: %1%").arg(pert));
-                }
-            }
-
-    */
     case ActionFactory::ActionKind::ToggleMute: {
         /*if (_engine->muted()) {
             //此处存在修改风险，注意！
@@ -2489,7 +2462,6 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                 _nwComm->updateWithMessage(tr("Mute"));
             }
         } else {
-            //_nwComm->updateWithMessage(tr("Volume: %1%").arg(_toolbox->DisplayVolume()));
             _nwComm->updateWithMessage(tr("Volume: %1%").arg(m_displayVolume));
         }
         break;
@@ -2586,22 +2558,6 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     }
 
     case ActionFactory::ActionKind::GotoPlaylistNext: {
-
-        /* if (_engine->state() == PlayerEngine::CoreState::Idle) {
-             //为了解决快速切换下一曲卡顿的问题
-             QTimer *timer = new QTimer;
-             connect(timer, &QTimer::timeout, [ = ]() {
-                 timer->deleteLater();
-                 if (_engine->state() == PlayerEngine::CoreState::Idle) {
-                     if (isFullScreen() || isMaximized()) {
-                         _movieSwitchedInFsOrMaxed = true;
-                     }
-                     _engine->next();
-                 }
-             });
-             timer->start(500);
-             return ;
-         }*/
         if (m_IsFree == false)
             return ;
 
@@ -2615,38 +2571,6 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     }
 
     case ActionFactory::ActionKind::GotoPlaylistPrev: {
-
-        /* static bool sContinuous = false;
-
-         if (sContinuous == true)
-             return ;
-
-         sContinuous = true;
-
-         QTimer *timer = new QTimer;
-         connect(timer, &QTimer::timeout, [ = ]() {
-             timer->deleteLater();
-
-             sContinuous = false;
-         });
-         timer->start(1000);*/
-
-        /*if (_engine->state() == PlayerEngine::CoreState::Idle) {
-            //为了解决快速切换下一曲卡顿的问题
-            QTimer *timer = new QTimer;
-            connect(timer, &QTimer::timeout, [ = ]() {
-                timer->deleteLater();
-                if (_engine->state() == PlayerEngine::CoreState::Idle) {
-                    if (isFullScreen() || isMaximized()) {
-                        _movieSwitchedInFsOrMaxed = true;
-                    }
-                    _engine->prev();
-                }
-            });
-            timer->start(500);
-            return ;
-        }*/
-
         if (m_IsFree == false)
             return ;
 
@@ -2716,6 +2640,19 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         if(_engine->state() != PlayerEngine::CoreState::Idle){
             _playSpeed = qMin(2.0, _playSpeed + 0.1);
             _engine->setPlaySpeed(_playSpeed);
+            if(qFuzzyCompare(0.5, _playSpeed)){
+                setPlaySpeedMenuChecked(ActionFactory::ActionKind::ZeroPointFiveTimes);
+            } else if (qFuzzyCompare(1.0, _playSpeed)){
+                setPlaySpeedMenuChecked(ActionFactory::ActionKind::OneTimes);
+            } else if (qFuzzyCompare(1.2, _playSpeed)){
+                setPlaySpeedMenuChecked(ActionFactory::ActionKind::OnePointTwoTimes);
+            } else if (qFuzzyCompare(1.5, _playSpeed)){
+                setPlaySpeedMenuChecked(ActionFactory::ActionKind::OnePointFiveTimes);
+            } else if (qFuzzyCompare(2.0, _playSpeed)) {
+                setPlaySpeedMenuChecked(ActionFactory::ActionKind::Double);
+            } else {
+                setPlaySpeedMenuUnchecked();
+            }
             _nwComm->updateWithMessage(tr("Speed: %1x").arg(_playSpeed));
         }
         break;
@@ -2725,6 +2662,19 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         if(_engine->state() != PlayerEngine::CoreState::Idle){
             _playSpeed = qMax(0.1, _playSpeed - 0.1);
             _engine->setPlaySpeed(_playSpeed);
+            if(qFuzzyCompare(0.5, _playSpeed)){
+                setPlaySpeedMenuChecked(ActionFactory::ActionKind::ZeroPointFiveTimes);
+            } else if (qFuzzyCompare(1.0, _playSpeed)){
+                setPlaySpeedMenuChecked(ActionFactory::ActionKind::OneTimes);
+            } else if (qFuzzyCompare(1.2, _playSpeed)){
+                setPlaySpeedMenuChecked(ActionFactory::ActionKind::OnePointTwoTimes);
+            } else if (qFuzzyCompare(1.5, _playSpeed)){
+                setPlaySpeedMenuChecked(ActionFactory::ActionKind::OnePointFiveTimes);
+            } else if (qFuzzyCompare(2.0, _playSpeed)) {
+                setPlaySpeedMenuChecked(ActionFactory::ActionKind::Double);
+            } else {
+                setPlaySpeedMenuUnchecked();
+            }
             _nwComm->updateWithMessage(tr("Speed: %1x").arg(_playSpeed));
         }
         break;
@@ -2844,16 +2794,16 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
 #else
 
 #define POPUP_ADAPTER(icon, text)  do { \
-popup->setIcon(icon);\
-DFontSizeManager::instance()->bind(this, DFontSizeManager::T6);\
-QFont font = DFontSizeManager::instance()->get(DFontSizeManager::T6);\
-QFontMetrics fm(font);\
-auto w = fm.boundingRect(text).width();\
-popup->setMessage(text);\
-popup->resize(w + 70, 52);\
-popup->move((width() - popup->width()) / 2, height() - 127);\
-popup->show();\
-} while (0)
+    popup->setIcon(icon);\
+    DFontSizeManager::instance()->bind(this, DFontSizeManager::T6);\
+    QFont font = DFontSizeManager::instance()->get(DFontSizeManager::T6);\
+    QFontMetrics fm(font);\
+    auto w = fm.boundingRect(text).width();\
+    popup->setMessage(text);\
+    popup->resize(w + 70, 52);\
+    popup->move((width() - popup->width()) / 2, height() - 127);\
+    popup->show();\
+        } while (0)
 
 //        if (!popup) {
 //            popup = new DFloatingMessage(DFloatingMessage::TransientType, this);
@@ -3101,29 +3051,28 @@ void MainWindow::play(const QUrl &url)
 
 void MainWindow::toggleShapeMask()
 {
-//    if (CompositingManager::get().composited()) {
-//        return;
-//    }
+
     return;
 
-#ifndef USE_DXCB
-    if (m_bIsFullSreen || isMaximized()) {
-        clearMask();
-    } else {
-        QPixmap shape(size());
-        shape.setDevicePixelRatio(windowHandle()->devicePixelRatio());
-        shape.fill(Qt::transparent);
+    //this code will never be executed
+//#ifndef USE_DXCB
+//    if (m_bIsFullSreen || isMaximized()) {
+//        clearMask();
+//    } else {
+//        QPixmap shape(size());
+//        shape.setDevicePixelRatio(windowHandle()->devicePixelRatio());
+//        shape.fill(Qt::transparent);
 
-        QPainter p(&shape);
-        p.setRenderHint(QPainter::Antialiasing);
-        QPainterPath pp;
-        pp.addRoundedRect(rect(), RADIUS, RADIUS);
-        p.fillPath(pp, QBrush(Qt::white));
-        p.end();
+//        QPainter p(&shape);
+//        p.setRenderHint(QPainter::Antialiasing);
+//        QPainterPath pp;
+//        pp.addRoundedRect(rect(), RADIUS, RADIUS);
+//        p.fillPath(pp, QBrush(Qt::white));
+//        p.end();
 
-        setMask(shape.mask());
-    }
-#endif
+//        setMask(shape.mask());
+//    }
+//#endif
 }
 
 void MainWindow::updateProxyGeometry()
@@ -3636,7 +3585,7 @@ void MainWindow::closeEvent(QCloseEvent *ev)
     }
 #endif
     // xcb close slow so add this for wayland  by xxj
-    _quitfullscreenstopflag = true;
+//    _quitfullscreenstopflag = true;
     DMainWindow::closeEvent(ev);
     _engine->stop();
     disconnect(_engine,nullptr,nullptr,nullptr);
@@ -4944,4 +4893,51 @@ void MainWindow::sleepStateChanged(bool bSleep)
     }
 }
 
+void MainWindow::setPlaySpeedMenuChecked(ActionFactory::ActionKind kd)
+{
+    QList<QAction *> acts = ActionFactory::get().findActionsByKind(kd);
+    auto p = acts.begin();
+    (*p)->setChecked(true);
+}
+
+void MainWindow::setPlaySpeedMenuUnchecked()
+{
+    QList<QAction *> acts;
+    {
+        acts = ActionFactory::get().findActionsByKind(ActionFactory::ActionKind::ZeroPointFiveTimes);
+        auto p = acts.begin();
+        if((*p)->isChecked()){
+            (*p)->setChecked(false);
+        }
+    }
+    {
+        acts = ActionFactory::get().findActionsByKind(ActionFactory::ActionKind::OneTimes);
+        auto p = acts.begin();
+        if((*p)->isChecked()){
+            (*p)->setChecked(false);
+        }
+    }
+    {
+        acts = ActionFactory::get().findActionsByKind(ActionFactory::ActionKind::OnePointTwoTimes);
+        auto p = acts.begin();
+        if((*p)->isChecked()){
+            (*p)->setChecked(false);
+        }
+    }
+    {
+        acts = ActionFactory::get().findActionsByKind(ActionFactory::ActionKind::OnePointFiveTimes);
+        auto p = acts.begin();
+        if((*p)->isChecked()){
+            (*p)->setChecked(false);
+        }
+    }
+    {
+        acts = ActionFactory::get().findActionsByKind(ActionFactory::ActionKind::Double);
+        auto p = acts.begin();
+        if((*p)->isChecked()){
+            (*p)->setChecked(false);
+        }
+    }
+
+}
 #include "mainwindow.moc"

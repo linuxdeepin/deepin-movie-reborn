@@ -202,3 +202,11 @@ TEST(requestAction, playlistRemoveItem)
     QTest::qWait(300);
     w->requestAction(ActionFactory::ActionKind::PlaylistRemoveItem);
 }
+TEST(requestAction, exit)
+{
+    MainWindow* w = dApp->getMainWindow();
+    w->show();
+
+    QTest::qWait(300);
+    w->requestAction(ActionFactory::ActionKind::Exit);
+}

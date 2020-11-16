@@ -97,12 +97,10 @@ TEST(MainWindow, mouseSimulate)
     QTest::mouseRelease(w, Qt::LeftButton, Qt::NoModifier, QPoint(bot_right.x()+30, bot_right.y()+40), 500);
 
     //移动窗口
-    QTest::mousePress(w, Qt::LeftButton, Qt::NoModifier, QPoint(), 500);
-    QTest::mouseMove(w, QPoint(w->pos().x()+40, w->pos().y()+50), 300);
-    QTest::mouseRelease(w, Qt::LeftButton, Qt::NoModifier, QPoint(), 500);
-
-    QTest::mousePress(w,Qt::LeftButton,Qt::NoModifier,QPoint(),1000);
-    QTest::mouseRelease(w,Qt::LeftButton,Qt::NoModifier,QPoint(),1000);*/
+    QTest::mouseMove(w, QPoint(w->pos().x()+50, w->pos().y()+60), 500);
+    QTest::mousePress(w, Qt::LeftButton, Qt::NoModifier, QPoint(w->pos().x()+50, w->pos().y()+60), 500);
+    QTest::mouseMove(w, QPoint(w->pos().x()+300, w->pos().y()+200), 1000);
+    QTest::mouseRelease(w, Qt::LeftButton, Qt::NoModifier, QPoint(w->pos().x()+300, w->pos().y()+200), 2000);*/
 
     QTest::mouseDClick(w,Qt::LeftButton,Qt::NoModifier,QPoint(),1000);  //fullscreen
     QTest::mouseDClick(w,Qt::LeftButton,Qt::NoModifier,QPoint(),1000);
@@ -155,16 +153,15 @@ TEST(MainWindow, shortCutPlay)
     testEventList.addKeyClick(Qt::Key_Down, Qt::NoModifier, 500);
     testEventList.addKeyClick(Qt::Key_Delete, Qt::NoModifier, 1000);    //delete from playlist
 
+    //减速播放
+    testEventList.addKeyClick(Qt::Key_Left, Qt::ControlModifier, 100);
+    for (int i = 0; i<6 ;i++) {
+        testEventList.addKeyClick(Qt::Key_Left, Qt::ControlModifier, 100);
+    }
     //加速播放
     testEventList.addKeyClick(Qt::Key_Right, Qt::ControlModifier, 300);
-    for (int i = 0; i<7 ;i++) {
-        testEventList.addKeyClick(Qt::Key_Right, Qt::ControlModifier, 50);
-    }
-
-    //减速播放
-    testEventList.addKeyClick(Qt::Key_Left, Qt::ControlModifier, 300);
-    for (int i = 0; i<5 ;i++) {
-        testEventList.addKeyClick(Qt::Key_Left, Qt::ControlModifier, 50);
+    for (int i = 0; i<16 ;i++) {
+        testEventList.addKeyClick(Qt::Key_Right, Qt::ControlModifier, 100);
     }
 
     //还原播放速度

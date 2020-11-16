@@ -303,6 +303,9 @@ private:
     void mipsShowFullScreen();
     //hide pop windows when dragging window
     void hidePopWindow();
+    void setPlaySpeedMenuChecked(ActionFactory::ActionKind);
+    void setPlaySpeedMenuUnchecked();
+
 private:
     DFloatingMessage *popup {nullptr};
     QLabel *_fullscreentimelable {nullptr};
