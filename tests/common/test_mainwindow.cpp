@@ -95,6 +95,13 @@ TEST(MainWindow, mouseSimulate)
 
     QTest::mouseDClick(w,Qt::LeftButton,Qt::NoModifier,QPoint(),1000);  //fullscreen
     QTest::mouseDClick(w,Qt::LeftButton,Qt::NoModifier,QPoint(),1000);
+
+    QTest::qWait(300);
+    w->move(200, 200);
+    w->updateGeometry(CornerEdge::TopLeftCorner, QPoint(100, 100));
+    w->updateGeometry(CornerEdge::TopRightCorner, QPoint(1300, 100));
+    w->updateGeometry(CornerEdge::BottomLeftCorner, QPoint(100, 100));
+    w->updateGeometry(CornerEdge::BottomRightCorner, QPoint(100, 100));
 }
 
 /*TEST(MainWindow, mainContextMenu)

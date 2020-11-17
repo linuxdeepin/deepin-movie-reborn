@@ -56,6 +56,9 @@ class DSettingsDialog;
 
 DWIDGET_USE_NAMESPACE
 
+class MainWindowEventListener;
+
+namespace dmr {
 enum CornerEdge {
     TopLeftCorner = 0,
     TopEdge = 1,
@@ -68,9 +71,6 @@ enum CornerEdge {
     NoneEdge = -1
 };
 
-class MainWindowEventListener;
-
-namespace dmr {
 class ToolboxProxy;
 class EventMonitor;
 class PlaylistWidget;
@@ -181,6 +181,7 @@ public:
 
     void testMprisapp();
     void setShowSetting(bool);
+    void updateGeometry(CornerEdge edge, QPoint p);
 signals:
     void windowEntered();
     void windowLeaved();

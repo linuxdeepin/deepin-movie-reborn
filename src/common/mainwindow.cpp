@@ -617,101 +617,7 @@ private:
     void updateGeometry(CornerEdge edge, QMouseEvent *e)
     {
         auto mw = static_cast<MainWindow *>(parent());
-        bool keep_ratio = mw->engine()->state() != PlayerEngine::CoreState::Idle;
-        auto old_geom = mw->frameGeometry();
-        auto geom = mw->frameGeometry();
-        qreal ratio = static_cast<qreal>(geom.width()) / geom.height();
-
-        // disable edges
-        switch (edge) {
-        case CornerEdge::BottomEdge:
-        case CornerEdge::TopEdge:
-        case CornerEdge::LeftEdge:
-        case CornerEdge::RightEdge:
-        case CornerEdge::NoneEdge:
-            return;
-        default:
-            break;
-        }
-
-        if (keep_ratio) {
-            auto sz = mw->engine()->videoSize();
-            if (sz.isEmpty()) {
-                const auto &mi = mw->engine()->playlist().currentInfo().mi;
-                sz = QSize(mi.width, mi.height);
-            }
-
-            ratio = sz.width() / static_cast<qreal>(sz.height());
-            switch (edge) {
-            case CornerEdge::TopLeftCorner:
-                geom.setLeft(e->globalX());
-                geom.setTop(static_cast<int>(geom.bottom() - geom.width() / ratio));
-                break;
-            case CornerEdge::BottomLeftCorner:
-            case CornerEdge::LeftEdge:
-                geom.setLeft(e->globalX());
-                geom.setHeight(static_cast<int>(geom.width() / ratio));
-                break;
-            case CornerEdge::BottomRightCorner:
-            case CornerEdge::RightEdge:
-                geom.setRight(e->globalX());
-                geom.setHeight(static_cast<int>(geom.width() / ratio));
-                break;
-            case CornerEdge::TopRightCorner:
-            case CornerEdge::TopEdge:
-                geom.setTop(e->globalY());
-                geom.setWidth(static_cast<int>(geom.height() * ratio));
-                break;
-            case CornerEdge::BottomEdge:
-                geom.setBottom(e->globalY());
-                geom.setWidth(static_cast<int>(geom.height() * ratio));
-                break;
-            default:
-                break;
-            }
-        } else {
-            switch (edge) {
-            case CornerEdge::BottomLeftCorner:
-                geom.setBottomLeft(e->globalPos());
-                break;
-            case CornerEdge::TopLeftCorner:
-                geom.setTopLeft(e->globalPos());
-                break;
-            case CornerEdge::LeftEdge:
-                geom.setLeft(e->globalX());
-                break;
-            case CornerEdge::BottomRightCorner:
-                geom.setBottomRight(e->globalPos());
-                break;
-            case CornerEdge::RightEdge:
-                geom.setRight(e->globalX());
-                break;
-            case CornerEdge::TopRightCorner:
-                geom.setTopRight(e->globalPos());
-                break;
-            case CornerEdge::TopEdge:
-                geom.setTop(e->globalY());
-                break;
-            case CornerEdge::BottomEdge:
-                geom.setBottom(e->globalY());
-                break;
-            default:
-                break;
-            }
-        }
-
-        auto min = mw->minimumSize();
-        if (old_geom.width() <= min.width() && geom.left() > old_geom.left()) {
-            geom.setLeft(old_geom.left());
-        }
-        if (old_geom.height() <= min.height() && geom.top() > old_geom.top()) {
-            geom.setTop(old_geom.top());
-        }
-
-        geom.setWidth(qMax(geom.width(), min.width()));
-        geom.setHeight(qMax(geom.height(), min.height()));
-        mw->updateContentGeometry(geom);
-        mw->updateGeometryNotification(geom.size());
+        mw->updateGeometry(edge, e->globalPos());
     }
 
     bool leftButtonPressed {false};
@@ -4950,5 +4856,104 @@ void MainWindow::setPlaySpeedMenuUnchecked()
         }
     }
 
+}
+
+void MainWindow::updateGeometry(CornerEdge edge, QPoint p)
+{
+    bool keep_ratio = engine()->state() != PlayerEngine::CoreState::Idle;
+    auto old_geom = frameGeometry();
+    auto geom = frameGeometry();
+    qreal ratio = static_cast<qreal>(geom.width()) / geom.height();
+
+    // disable edges
+    switch (edge) {
+    case CornerEdge::BottomEdge:
+    case CornerEdge::TopEdge:
+    case CornerEdge::LeftEdge:
+    case CornerEdge::RightEdge:
+    case CornerEdge::NoneEdge:
+        return;
+    default:
+        break;
+    }
+
+    if (keep_ratio) {
+        auto sz = engine()->videoSize();
+        if (sz.isEmpty()) {
+            const auto &mi = engine()->playlist().currentInfo().mi;
+            sz = QSize(mi.width, mi.height);
+        }
+
+        ratio = sz.width() / static_cast<qreal>(sz.height());
+        switch (edge) {
+        case CornerEdge::TopLeftCorner:
+            geom.setLeft(p.x());
+            geom.setTop(static_cast<int>(geom.bottom() - geom.width() / ratio));
+            break;
+        case CornerEdge::BottomLeftCorner:
+        case CornerEdge::LeftEdge:
+            geom.setLeft(p.x());
+            geom.setHeight(static_cast<int>(geom.width() / ratio));
+            break;
+        case CornerEdge::BottomRightCorner:
+        case CornerEdge::RightEdge:
+            geom.setRight(p.x());
+            geom.setHeight(static_cast<int>(geom.width() / ratio));
+            break;
+        case CornerEdge::TopRightCorner:
+        case CornerEdge::TopEdge:
+            geom.setTop(p.y());
+            geom.setWidth(static_cast<int>(geom.height() * ratio));
+            break;
+        case CornerEdge::BottomEdge:
+            geom.setBottom(p.y());
+            geom.setWidth(static_cast<int>(geom.height() * ratio));
+            break;
+        default:
+            break;
+        }
+    } else {
+        switch (edge) {
+        case CornerEdge::BottomLeftCorner:
+            geom.setBottomLeft(p);
+            break;
+        case CornerEdge::TopLeftCorner:
+            geom.setTopLeft(p);
+            break;
+        case CornerEdge::LeftEdge:
+            geom.setLeft(p.x());
+            break;
+        case CornerEdge::BottomRightCorner:
+            geom.setBottomRight(p);
+            break;
+        case CornerEdge::RightEdge:
+            geom.setRight(p.x());
+            break;
+        case CornerEdge::TopRightCorner:
+            geom.setTopRight(p);
+            break;
+        case CornerEdge::TopEdge:
+            geom.setTop(p.y());
+            break;
+        case CornerEdge::BottomEdge:
+            geom.setBottom(p.y());
+            break;
+        default:
+            break;
+        }
+    }
+
+    auto min = minimumSize();
+    if (old_geom.width() <= min.width() && geom.left() > old_geom.left()) {
+        geom.setLeft(old_geom.left());
+    }
+    if (old_geom.height() <= min.height() && geom.top() > old_geom.top()) {
+        geom.setTop(old_geom.top());
+    }
+
+    geom.setWidth(qMax(geom.width(), min.width()));
+    geom.setHeight(qMax(geom.height(), min.height()));
+    updateContentGeometry(geom);
+    updateGeometryNotification(geom.size());
 }
 #include "mainwindow.moc"
