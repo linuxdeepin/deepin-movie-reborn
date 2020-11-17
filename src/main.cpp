@@ -61,17 +61,12 @@ int main(int argc, char *argv[])
         CompositingManager::detectOpenGLEarly();
         CompositingManager::detectPciID();
     }
-#else
-//    CompositingManager::detectOpenGLEarly();
-//    CompositingManager::detectPciID();
 #endif
 
 #if defined(STATIC_LIB)
     DWIDGET_INIT_RESOURCE();
 #endif
-    //DApplication::loadDXcbPlugin();
     DApplication app(argc, argv);
-
 
     // required by mpv
     setlocale(LC_NUMERIC, "C");
