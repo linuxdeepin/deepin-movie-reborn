@@ -122,7 +122,7 @@ private:
 
     bool _composited {false};
     Platform _platform {Platform::Unknown};
-	 bool _isCoreFlag {false};
+    bool _isCoreFlag {false};
     bool _hasCard;
     bool m_bOnlySoftDecode {false};  //kunpeng920走软解码
     bool m_setSpecialControls {false};

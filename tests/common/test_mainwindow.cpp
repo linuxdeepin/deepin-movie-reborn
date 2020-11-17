@@ -1,4 +1,4 @@
-#include <QtTest>
+﻿#include <QtTest>
 #include <QTest>
 #include <QTestEventList>
 #include <QDebug>
@@ -24,9 +24,38 @@
 #include "src/common/actions.h"
 
 #include "dmr_settings.h"
-TEST(Settings,settings)
+using namespace dmr;
+
+TEST(MainWindow, loadFile)
 {
-    using namespace dmr;
+    MainWindow* w = dApp->getMainWindow();
+    PlayerEngine* engine =  w->engine();
+    QList<QUrl> listPlayFiles;
+    listPlayFiles<<QUrl::fromLocalFile("/usr/share/dde-introduction/demo.mp4")\
+                <<QUrl::fromLocalFile("/usr/share/music/bensound-sunny.mp3");
+    w->show();
+//    QTest::qWait(1000);
+//    w->showMinimized();
+//    QTest::qWait(1000);
+//    w->showNormal();
+//    QTest::qWait(1000);
+//    w->showMaximized();
+    QTest::qWait(1000);
+    w->resize(800, 600);
+    QTest::qWait(1000);
+
+    const auto &valids = engine->addPlayFiles(listPlayFiles);
+    QCOMPARE(engine->isPlayableFile(valids[0]), true);
+    engine->playByName(valids[0]);
+
+//    QMetaObject::invokeMethod(w, "startBurstShooting", Qt::QueuedConnection);
+
+    QTest::qWait(500);
+    w->move(0,0);
+}
+
+TEST(MainWindow,settings)
+{
     Settings::get().isSet(Settings::Flag::ClearWhenQuit);
     Settings::get().isSet(Settings::Flag::ShowThumbnailMode);
     Settings::get().isSet(Settings::Flag::AutoSearchSimilar);
@@ -45,48 +74,10 @@ TEST(Settings,settings)
     Settings::get().screenshotNameSeqTemplate();
 }
 
-using namespace dmr;
-
-TEST(MainWindow, loadFile)
-{
-    MainWindow* w = dApp->getMainWindow();
-    PlayerEngine* engine =  w->engine();
-    QList<QUrl> listPlayFiles;
-    listPlayFiles<<QUrl::fromLocalFile("/usr/share/dde-introduction/demo.mp4")\
-                <<QUrl::fromLocalFile("/usr/share/music/bensound-sunny.mp3");
-    w->show();
-
-    const auto &valids = engine->addPlayFiles(listPlayFiles);
-
-    QCOMPARE(engine->isPlayableFile(valids[0]), true);
-//    engine->playByName(valids[0]);
-
-    ToolboxProxy* toolboxProxy = w->toolbox();
-    DButtonBoxButton* playBtn = toolboxProxy->playBtn();
-
-    QTest::mouseMove(playBtn, QPoint(), 500);
-    QTest::mouseClick(playBtn,Qt::LeftButton,Qt::NoModifier,QPoint(),1000);//play
-
-    QTest::qWait(1000);
-    w->showMinimized();
-    QTest::qWait(1000);
-    w->showNormal();
-    QTest::qWait(1000);
-    w->showMaximized();
-
-//    QMetaObject::invokeMethod(w, "startBurstShooting", Qt::QueuedConnection);
-
-    QTest::qWait(2000);
-    w->move(0,0);
-    QTest::qWait(500);
-    w->resize(800, 600);
-
-}
-
 TEST(MainWindow, mouseSimulate)
 {
     MainWindow* w = dApp->getMainWindow();
-
+    QTest::qWait(3000); //等待缩略图加载
     //缩放窗口
     /*QPoint bot_right(w->frameGeometry().bottomRight().x()+2, w->frameGeometry().bottomRight().y()+2);
     QTest::qWait(1000);
@@ -133,18 +124,18 @@ TEST(MainWindow, shortCutPlay)
     //截图
     testEventList.addKeyClick(Qt::Key_A, Qt::AltModifier, 1000);    //screenshot
     testEventList.addKeyClick(Qt::Key_S, Qt::AltModifier, 1000);    //连拍
-//    testEventList.addKeyClick(Qt::Key_Escape, Qt::NoModifier, 1000);
+    //    testEventList.addKeyClick(Qt::Key_Escape, Qt::NoModifier, 1000);
 
-//    testEventList.addKeyClick(Qt::Key_Space, Qt::NoModifier, 1000); //pause
-//    testEventList.addKeyClick(Qt::Key_Space, Qt::NoModifier, 1000); //play
+    //    testEventList.addKeyClick(Qt::Key_Space, Qt::NoModifier, 1000); //pause
+    //    testEventList.addKeyClick(Qt::Key_Space, Qt::NoModifier, 1000); //play
     testEventList.addKeyClick(Qt::Key_Right, Qt::NoModifier, 1000); //fast forward
     testEventList.addKeyClick(Qt::Key_Left, Qt::NoModifier, 1000);  //fast backward
 
-//    testEventList.addKeyClick(Qt::Key_Return, Qt::NoModifier, 1000);    //fullscreen
+    //    testEventList.addKeyClick(Qt::Key_Return, Qt::NoModifier, 1000);    //fullscreen
     testEventList.addKeyClick(Qt::Key_F3, Qt::NoModifier, 1000);    //playlist
     testEventList.addKeyClick(Qt::Key_Down, Qt::NoModifier, 500);
     testEventList.addKeyClick(Qt::Key_Enter, Qt::NoModifier, 500);
-//    testEventList.addKeyClick(Qt::Key_Escape, Qt::NoModifier, 1000);    //quite fullscreen
+    //    testEventList.addKeyClick(Qt::Key_Escape, Qt::NoModifier, 1000);    //quite fullscreen
 
     testEventList.addKeyClick(Qt::Key_F3, Qt::NoModifier, 1000);    //playlist
     testEventList.addKeyClick(Qt::Key_Up, Qt::NoModifier, 500);
@@ -167,9 +158,9 @@ TEST(MainWindow, shortCutPlay)
     //还原播放速度
     testEventList.addKeyClick(Qt::Key_R, Qt::ControlModifier, 500);
 
-//    //movie info dialog
-//    testEventList.addKeyClick(Qt::Key_Return, Qt::AltModifier, 1000);
-//    testEventList.addKeyClick(Qt::Key_Escape, Qt::NoModifier, 1000);
+    //    //movie info dialog
+    //    testEventList.addKeyClick(Qt::Key_Return, Qt::AltModifier, 1000);
+    //    testEventList.addKeyClick(Qt::Key_Escape, Qt::NoModifier, 1000);
 
     testEventList.simulate(w);
 }
@@ -191,7 +182,7 @@ TEST(MainWindow, shortCutVolumeAndFrame)
         testEventList.addKeyClick(Qt::Key_Down, Qt::ControlModifier | Qt::AltModifier, 50);    //volume up
     }
     for (int i = 0; i<2; i++) {
-            testEventList.addKeyClick(Qt::Key_Up, Qt::ControlModifier | Qt::AltModifier, 50);//volume down
+        testEventList.addKeyClick(Qt::Key_Up, Qt::ControlModifier | Qt::AltModifier, 50);//volume down
     }
     testEventList.addKeyClick(Qt::Key_M, Qt::NoModifier, 500); //mute
 
@@ -220,10 +211,10 @@ TEST(MainWindow, reloadFile)
                 <<QUrl::fromLocalFile("/usr/share/music/bensound-sunny.mp3");
     engine->addPlayFiles(listPlayFiles);
 
-//    testEventList.addKeyClick(Qt::Key_PageDown, Qt::NoModifier, 1000);
-//    testEventList.addKeyClick(Qt::Key_PageUp, Qt::NoModifier, 1000);
+    //    testEventList.addKeyClick(Qt::Key_PageDown, Qt::NoModifier, 1000);
+    //    testEventList.addKeyClick(Qt::Key_PageUp, Qt::NoModifier, 1000);
 
-//    testEventList.simulate(w);
+    //    testEventList.simulate(w);
 }
 
 TEST(MainWindow, movieInfoDialog)
@@ -236,20 +227,25 @@ TEST(MainWindow, movieInfoDialog)
     MovieInfoDialog mid(engine->playlist().currentInfo(), w);
     mid.show();
 
-//    QPoint point(mid.x(), mid.y());
-//    qDebug() << point;
-//    QTest::mouseMove(&mid, point, 1000);
+    DLabel *filePathLbl = mid.findChild<DLabel *>("filePathLabel");
+    QTest::qWait(500);
+    QTest::mouseMove(filePathLbl, QPoint(), 500);
+    //    QPoint point(mid.x(), mid.y());
+    //    qDebug() << point;
+    //    QTest::mouseMove(&mid, point, 1000);
 
-    QTest::qWait(2000);
+    QTest::qWait(1000);
+    QTest::mouseMove(w, QPoint(200, 300), 500);
+    QTest::qWait(500);
     mid.close();
-//    QTest::qWait(1000);
+    //    QTest::qWait(1000);
 
 }
 
 TEST(MainWindow, UrlDialog)
 {
     MainWindow* w = dApp->getMainWindow();
-//    PlayerEngine *engine  =  w->engine();
+    //    PlayerEngine *engine  =  w->engine();
 
     UrlDialog *uDlg = new UrlDialog(w);
     uDlg->show();
@@ -260,8 +256,8 @@ TEST(MainWindow, UrlDialog)
                      QString("https://stream7.iqilu.com/10339/upload_transcode/202002/18/20200218093206z8V1JuPlpe.mp4"),
                      Qt::NoModifier, 10);
 
-//    QUrl url = uDlg->url();
-//    w->play(url);
+    //    QUrl url = uDlg->url();
+    //    w->play(url);
 
     QTest::mouseMove(uDlg->getButton(1), QPoint(), 500);
     QTest::mouseClick(uDlg->getButton(1), Qt::LeftButton, Qt::NoModifier,QPoint(), 1000);
@@ -274,9 +270,8 @@ TEST(MainWindow, subtitle)
     MainWindow* w = dApp->getMainWindow();
     PlayerEngine* engine =  w->engine();
 
+    QTest::qWait(1000);
     engine->loadSubtitle(QFileInfo(QString("/data/home/uos/Videos/subtitle/Hachiko.A.Dog's.Story.ass")));
-
-    QTest::qWait(2000);
 }
 
 TEST(ToolBox, togglePlayList)
@@ -375,9 +370,9 @@ TEST(ToolBox, volBtn)
     QTest::mouseMove(volBtn, QPoint(), 500);
     QTest::mouseClick(volBtn,Qt::LeftButton,Qt::NoModifier,QPoint(),1000);
 
-//    QPoint point(volSlider,volBtn->pos().y()-50);
-//    QTest::mouseMove(volBtn, point, 500);
-//    QTest::mouseClick(volBtn,Qt::LeftButton,Qt::NoModifier,QPoint(),1000);
+    //    QPoint point(volSlider,volBtn->pos().y()-50);
+    //    QTest::mouseMove(volBtn, point, 500);
+    //    QTest::mouseClick(volBtn,Qt::LeftButton,Qt::NoModifier,QPoint(),1000);
 }
 
 TEST(ToolBox, quitPlayList)

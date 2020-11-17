@@ -1685,7 +1685,6 @@ void ToolboxProxy::setthumbnailmode()
 
 #if !defined (__mips__ ) && !defined(__aarch64__)
     if (Settings::get().isSet(Settings::ShowThumbnailMode)) {
-//        isStillShowThumbnail = true;
         _bthumbnailmode = true;
         updateThumbnail();
     } else {
