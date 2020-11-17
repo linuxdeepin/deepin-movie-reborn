@@ -50,6 +50,7 @@
 namespace Dtk {
 namespace Widget {
 class DImageButton;
+class DSettingsDialog;
 }
 }
 
@@ -179,6 +180,7 @@ public:
     void setOpenFiles(QStringList&);
 
     void testMprisapp();
+    void setShowSetting(bool);
 signals:
     void windowEntered();
     void windowLeaved();
@@ -277,7 +279,8 @@ protected slots:
 private:
     void setupTitlebar();
 
-    void handleSettings();
+    void handleSettings(DSettingsDialog*);
+    DSettingsDialog* initSettings();
     void updateSizeConstraints();
     void toggleUIMode();
 
@@ -420,6 +423,7 @@ private:
     bool m_bTouchChangeVolume {false};
     bool m_bIsFullSreen {false};
     bool m_bisOverhunderd {false};
+    bool m_bisShowSettingDialog {true};
     QDBusInterface* m_pDBus {nullptr};
 };
 };

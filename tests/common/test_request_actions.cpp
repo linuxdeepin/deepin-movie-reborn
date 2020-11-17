@@ -184,6 +184,18 @@ TEST(requestAction,goToScreenshotSolder)
 //    EXPECT_TRUE(false);
 //}
 
+TEST(requestAction, settings)
+{
+    MainWindow* w = dApp->getMainWindow();
+    w->show();
+
+    w->setShowSetting(false);
+    QTest::qWait(300);
+    w->requestAction(ActionFactory::ActionKind::Settings);
+    QTest::qWait(300);
+    EXPECT_TRUE(true);
+}
+
 TEST(requestAction,openCdrom)
 {
     MainWindow* w = dApp->getMainWindow();

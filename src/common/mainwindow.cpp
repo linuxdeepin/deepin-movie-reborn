@@ -1878,6 +1878,11 @@ void MainWindow::testMprisapp()
     mpris->deleteLater();
 }
 
+void MainWindow::setShowSetting(bool b)
+{
+    m_bisShowSettingDialog = b;
+}
+
 void MainWindow::mipsShowFullScreen()
 {
     QPropertyAnimation *pAn = new QPropertyAnimation(this, "windowOpacity");
@@ -2751,7 +2756,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     }
 
     case ActionFactory::ActionKind::Settings: {
-        handleSettings();
+        handleSettings(initSettings());
         break;
     }
 
@@ -2950,7 +2955,16 @@ void MainWindow::startBurstShooting()
     _engine->burstScreenshot();
 }
 
-void MainWindow::handleSettings()
+void MainWindow::handleSettings(DSettingsDialog* dsd)
+{
+    if (m_bisShowSettingDialog) {
+        dsd->exec();
+    }
+    delete dsd;
+    Settings::get().settings()->sync();
+}
+
+DSettingsDialog *MainWindow::initSettings()
 {
     auto dsd = new DSettingsDialog(this);
     dsd->widgetFactory()->registerWidget("selectableEdit", createSelectableLineEditOptionHandle);
@@ -2970,10 +2984,7 @@ void MainWindow::handleSettings()
     auto reset = dsd->findChild<QPushButton *>("SettingsContentReset");
     reset->setDefault(false);
     reset->setAutoDefault(false);
-
-    dsd->exec();
-    delete dsd;
-    Settings::get().settings()->sync();
+    return dsd;
 }
 
 void MainWindow::playList(const QList<QString> &l)
