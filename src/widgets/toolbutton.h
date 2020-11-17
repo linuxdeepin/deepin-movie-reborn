@@ -73,6 +73,7 @@ protected:
         emit leaved();
     };
 };
+
 class ButtonToolTip :public DArrowRectangle {
     Q_OBJECT
 public:

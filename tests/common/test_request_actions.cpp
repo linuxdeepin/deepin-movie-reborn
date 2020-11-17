@@ -72,15 +72,15 @@ TEST(requestAction, playMode)
     MainWindow* w = dApp->getMainWindow();
     w->show();
 
-    QTest::qWait(300);
+    QTest::qWait(500);
     w->requestAction(ActionFactory::ActionKind::OrderPlay);
-    QTest::qWait(300);
+    QTest::qWait(500);
     w->requestAction(ActionFactory::ActionKind::ShufflePlay);
-    QTest::qWait(300);
+    QTest::qWait(500);
     w->requestAction(ActionFactory::ActionKind::SinglePlay);
-    QTest::qWait(300);
+    QTest::qWait(500);
     w->requestAction(ActionFactory::ActionKind::SingleLoop);
-    QTest::qWait(300);
+    QTest::qWait(500);
     w->requestAction(ActionFactory::ActionKind::ListLoop);
 }
 
@@ -89,13 +89,15 @@ TEST(requestAction, playSpeed)
     MainWindow* w = dApp->getMainWindow();
     w->show();
 
-    QTest::qWait(300);
+    QTest::qWait(500);
     w->requestAction(ActionFactory::ActionKind::ZeroPointFiveTimes);
-    QTest::qWait(300);
+    QTest::qWait(500);
     w->requestAction(ActionFactory::ActionKind::OneTimes);
-    QTest::qWait(300);
+    QTest::qWait(500);
+    w->requestAction(ActionFactory::ActionKind::OnePointTwoTimes);
+    QTest::qWait(500);
     w->requestAction(ActionFactory::ActionKind::OnePointFiveTimes);
-    QTest::qWait(300);
+    QTest::qWait(500);
     w->requestAction(ActionFactory::ActionKind::Double);
 }
 

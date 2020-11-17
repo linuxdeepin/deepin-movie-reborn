@@ -49,7 +49,6 @@ TEST(MainWindow, loadFile)
     engine->playByName(valids[0]);
 
 //    QMetaObject::invokeMethod(w, "startBurstShooting", Qt::QueuedConnection);
-
     QTest::qWait(500);
     w->move(0,0);
 }
@@ -79,25 +78,30 @@ TEST(MainWindow, mouseSimulate)
     MainWindow* w = dApp->getMainWindow();
     QTest::qWait(3000); //等待缩略图加载
     //缩放窗口
-    /*QPoint bot_right(w->frameGeometry().bottomRight().x()+2, w->frameGeometry().bottomRight().y()+2);
-    QTest::qWait(1000);
-    QTest::mouseMove(w, bot_right, 500);
-//    QTest::qWait(10000);
-    QTest::mousePress(w, Qt::LeftButton, Qt::NoModifier, bot_right, 500);
-    QTest::mouseMove(w, QPoint(bot_right.x()+30, bot_right.y()+40), 500);
-    QTest::mouseRelease(w, Qt::LeftButton, Qt::NoModifier, QPoint(bot_right.x()+30, bot_right.y()+40), 500);
+//    QPoint bot_right(w->frameGeometry().bottomRight().x()+2, w->frameGeometry().bottomRight().y()+2);
+//    QTest::qWait(1000);
+//    QTest::mouseMove(w, bot_right, 500);
+////    QTest::qWait(10000);
+//    QTest::mousePress(w, Qt::LeftButton, Qt::NoModifier, bot_right, 500);
+//    QTest::mouseMove(w, QPoint(bot_right.x()+30, bot_right.y()+40), 500);
+//    QTest::mouseRelease(w, Qt::LeftButton, Qt::NoModifier, QPoint(bot_right.x()+30, bot_right.y()+40), 500);
 
-    //移动窗口
-    QTest::mouseMove(w, QPoint(w->pos().x()+50, w->pos().y()+60), 500);
-    QTest::mousePress(w, Qt::LeftButton, Qt::NoModifier, QPoint(w->pos().x()+50, w->pos().y()+60), 500);
-    QTest::mouseMove(w, QPoint(w->pos().x()+300, w->pos().y()+200), 1000);
-    QTest::mouseRelease(w, Qt::LeftButton, Qt::NoModifier, QPoint(w->pos().x()+300, w->pos().y()+200), 2000);*/
+//    //移动窗口
+//    QTest::mouseMove(w, QPoint(w->pos().x()+50, w->pos().y()+60), 500);
+//    QTest::mousePress(w, Qt::LeftButton, Qt::NoModifier, QPoint(w->pos().x()+50, w->pos().y()+60), 500);
+//    QTest::mouseMove(w, QPoint(w->pos().x()+300, w->pos().y()+200), 1000);
+//    QTest::mouseRelease(w, Qt::LeftButton, Qt::NoModifier, QPoint(w->pos().x()+300, w->pos().y()+200), 2000);
 
     QTest::mouseDClick(w,Qt::LeftButton,Qt::NoModifier,QPoint(),1000);  //fullscreen
     QTest::mouseDClick(w,Qt::LeftButton,Qt::NoModifier,QPoint(),1000);
 
     QTest::qWait(300);
     w->move(200, 200);
+    w->updateGeometry(CornerEdge::LeftEdge, QPoint(100, 100));
+    w->updateGeometry(CornerEdge::TopEdge, QPoint(100, 100));
+    w->updateGeometry(CornerEdge::RightEdge, QPoint(100, 100));
+    w->updateGeometry(CornerEdge::BottomEdge, QPoint(100, 100));
+    w->updateGeometry(CornerEdge::NoneEdge, QPoint(100, 100));
     w->updateGeometry(CornerEdge::TopLeftCorner, QPoint(100, 100));
     w->updateGeometry(CornerEdge::TopRightCorner, QPoint(1300, 100));
     w->updateGeometry(CornerEdge::BottomLeftCorner, QPoint(100, 100));
@@ -295,6 +299,33 @@ TEST(ToolBox, togglePlayList)
     QTest::mouseClick(listBtn, Qt::LeftButton, Qt::NoModifier,QPoint(), 1000);
 }
 
+TEST(ToolBox, playListWidget)
+{
+    MainWindow* w = dApp->getMainWindow();
+    ToolboxProxy* toolboxProxy = w->toolbox();
+    ToolButton *listBtn = toolboxProxy->listBtn();
+    PlaylistWidget *playlistWidget = w->playlist();
+    DListWidget *playlist = playlistWidget->get_playlist();
+
+    QTest::mouseMove(playlist->itemWidget(playlist->item(0)), QPoint(), 500);
+    QTest::qWait(1000);
+    QTest::mouseMove(playlist->itemWidget(playlist->item(1)), QPoint(), 500);
+    QTest::mouseClick(playlist->itemWidget(playlist->item(1)), Qt::LeftButton, Qt::NoModifier, QPoint(), 500);
+    QTest::mouseMove(playlist->itemWidget(playlist->item(0)), QPoint(), 500);
+    QTest::mouseClick(playlist->itemWidget(playlist->item(0)), Qt::LeftButton, Qt::NoModifier, QPoint(), 500);
+    QTest::mouseMove(playlist->itemWidget(playlist->item(1)), QPoint(), 500);
+    QTest::mouseDClick(playlist->itemWidget(playlist->item(1)), Qt::LeftButton, Qt::NoModifier, QPoint(), 500);
+
+//    QPoint point(playlist->itemWidget(playlist->item(0))->pos().rx(), playlist->itemWidget(playlist->item(0))->pos().ry()-50);
+    QTest::mouseMove(listBtn, QPoint(), 1000);
+    QTest::mouseClick(listBtn,Qt::LeftButton,Qt::NoModifier,QPoint(),500);
+//    QTest::mouseMove(playlist->itemWidget(playlist->item(1)), QPoint(), 500);
+//    QTest::mousePress(playlist->itemWidget(playlist->item(1)), Qt::RightButton, Qt::NoModifier, QPoint(), 500);
+//    QTest::mouseMove(playlist->itemWidget(playlist->item(0)), point, 1000);
+//    QTest::mouseClick(playlist->itemWidget(playlist->item(0)), Qt::LeftButton, Qt::NoModifier, point, 500);
+//    QTest::qWait(10000);
+}
+
 TEST(ToolBox, progBar)
 {
     MainWindow* w = dApp->getMainWindow();
@@ -338,6 +369,7 @@ TEST(ToolBox, playBtnBox)
     QTest::mouseMove(playBtn, QPoint(), 500);
     QTest::mouseClick(playBtn,Qt::LeftButton,Qt::NoModifier,QPoint(),1000);//play
 
+    QTest::mouseMove(prevBtn, QPoint(), 500);
     QTest::mouseMove(nextBtn, QPoint(), 500);
     QTest::mouseClick(nextBtn,Qt::LeftButton,Qt::NoModifier,QPoint(),1000);
 

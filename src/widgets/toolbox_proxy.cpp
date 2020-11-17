@@ -291,20 +291,21 @@ public:
     }
 
 protected:
-    void showEvent(QShowEvent *se) override
-    {
-        auto fm = _title->fontMetrics();
-        auto shorted = fm.elidedText(_msg, Qt::ElideMiddle, 140 * 2);
-        int h = fm.height();
-        if (fm.width(shorted) > 140) {
-            h *= 2;
-        } else {
-        }
-        _title->setFixedHeight(h);
-        _title->setText(shorted);
+    ///this code is doesn't seem to be in use now,comment out it temporarily
+//    void showEvent(QShowEvent *se) override
+//    {
+//        auto fm = _title->fontMetrics();
+//        auto shorted = fm.elidedText(_msg, Qt::ElideMiddle, 140 * 2);
+//        int h = fm.height();
+//        if (fm.width(shorted) > 140) {
+//            h *= 2;
+//        } else {
+//        }
+//        _title->setFixedHeight(h);
+//        _title->setText(shorted);
 
-        QWidget::showEvent(se);
-    }
+//        QWidget::showEvent(se);
+//    }
 
 private slots:
     void onThemeChanged()
@@ -753,7 +754,6 @@ protected:
 
         DWidget::leaveEvent(e);
     }
-
     void showEvent(QShowEvent *se) override
     {
 //        _time->move((width() - _time->width())/2, 69);
@@ -1173,8 +1173,8 @@ public:
             DArrowRectangle::paintEvent(event);
         }
     }
-#endif
-*/
+#endif*/
+
     void stopTimer()
     {
         _autoHideTimer.stop();
@@ -1625,18 +1625,6 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
     _subView->hide();
     setup();
 
-/*    _viewProgBarLoad= new viewProgBarLoad(_engine,_progBar,this);
-//    _loadThread = new QThread();
-
-//    _viewProgBarLoad->moveToThread(_loadThread);
-//    _loadThread->start();
-
-//    connect(this, SIGNAL(sigstartLoad(QSize)), _viewProgBarLoad, SLOT(loadViewProgBar(QSize)));
-//    connect(this,&ToolboxProxy::sigstartLoad,this,[=]{
-//        _viewProgBarLoad->loadViewProgBar();
-//    });
-//    connect(_viewProgBarLoad, SIGNAL(sigFinishiLoad(QSize)), this, SLOT(finishLoadSlot(QSize)));
-*/
     connect(DApplicationHelper::instance(), &DApplicationHelper::themeTypeChanged,
             this, &ToolboxProxy::updatePlayState);
     connect(DApplicationHelper::instance(), &DApplicationHelper::themeTypeChanged,
