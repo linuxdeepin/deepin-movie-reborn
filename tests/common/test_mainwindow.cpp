@@ -369,12 +369,36 @@ TEST(ToolBox, playBtnBox)
     QTest::mouseMove(playBtn, QPoint(), 500);
     QTest::mouseClick(playBtn,Qt::LeftButton,Qt::NoModifier,QPoint(),1000);//play
 
+    w->requestAction(ActionFactory::ActionKind::OrderPlay);
     QTest::mouseMove(prevBtn, QPoint(), 500);
     QTest::mouseMove(nextBtn, QPoint(), 500);
-    QTest::mouseClick(nextBtn,Qt::LeftButton,Qt::NoModifier,QPoint(),1000);
-
+    QTest::mouseClick(nextBtn,Qt::LeftButton,Qt::NoModifier,QPoint(),1000); //play next
     QTest::mouseMove(prevBtn, QPoint(), 500);
-    QTest::mouseClick(prevBtn,Qt::LeftButton,Qt::NoModifier,QPoint(),1000);
+    QTest::mouseClick(prevBtn,Qt::LeftButton,Qt::NoModifier,QPoint(),1000); //play prev
+
+    w->requestAction(ActionFactory::ActionKind::ShufflePlay);
+    QTest::mouseMove(nextBtn, QPoint(), 500);
+    QTest::mouseClick(nextBtn,Qt::LeftButton,Qt::NoModifier,QPoint(),500); //play next
+    QTest::mouseMove(prevBtn, QPoint(), 500);
+    QTest::mouseClick(prevBtn,Qt::LeftButton,Qt::NoModifier,QPoint(),500); //play prev
+
+    w->requestAction(ActionFactory::ActionKind::SinglePlay);
+    QTest::mouseMove(nextBtn, QPoint(), 500);
+    QTest::mouseClick(nextBtn,Qt::LeftButton,Qt::NoModifier,QPoint(),500); //play next
+    QTest::mouseMove(prevBtn, QPoint(), 500);
+    QTest::mouseClick(prevBtn,Qt::LeftButton,Qt::NoModifier,QPoint(),500); //play prev
+
+    w->requestAction(ActionFactory::ActionKind::SingleLoop);
+    QTest::mouseMove(nextBtn, QPoint(), 500);
+    QTest::mouseClick(nextBtn,Qt::LeftButton,Qt::NoModifier,QPoint(),500); //play next
+    QTest::mouseMove(prevBtn, QPoint(), 500);
+    QTest::mouseClick(prevBtn,Qt::LeftButton,Qt::NoModifier,QPoint(),500); //play prev
+
+    w->requestAction(ActionFactory::ActionKind::ListLoop);
+    QTest::mouseMove(nextBtn, QPoint(), 500);
+    QTest::mouseClick(nextBtn,Qt::LeftButton,Qt::NoModifier,QPoint(),500); //play next
+    QTest::mouseMove(prevBtn, QPoint(), 500);
+    QTest::mouseClick(prevBtn,Qt::LeftButton,Qt::NoModifier,QPoint(),500); //play prev
 }
 
 TEST(ToolBox, fullScreenBtn)

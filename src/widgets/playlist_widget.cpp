@@ -136,7 +136,7 @@ enum ItemState {
 class PlayItemWidget: public QFrame
 {
     Q_OBJECT
-    Q_PROPERTY(QString bg READ getBg WRITE setBg DESIGNABLE true)
+//    Q_PROPERTY(QString bg READ getBg WRITE setBg DESIGNABLE true)
 public:
     friend class PlaylistWidget;
 
@@ -281,7 +281,8 @@ public:
         _index->setText(QString::number(index + 1));
     }
 
-    QString getBg() const
+    ///not used functions,comment out it temporarily
+    /*QString getBg() const
     {
         return _bg;
     }
@@ -329,7 +330,7 @@ public:
         p.end();
 
 //        _thumb->setPixmap(dest);
-    }
+    }*/
 
     void setHovered(bool v)
     {

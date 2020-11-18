@@ -1186,7 +1186,7 @@ void MainWindow::onWindowStateChanged()
 #ifndef __mips__
     _progIndicator->setVisible(m_bIsFullSreen && _engine && _engine->state() != PlayerEngine::Idle);
 #endif
-    toggleShapeMask();
+//    toggleShapeMask();    //该函数直接return
 
 #ifndef USE_DXCB
     if (m_bIsFullSreen) {
@@ -2966,7 +2966,7 @@ void MainWindow::play(const QUrl &url)
     _engine->playByName(url);
 }
 
-void MainWindow::toggleShapeMask()
+/*void MainWindow::toggleShapeMask()
 {
 
     return;
@@ -2990,11 +2990,11 @@ void MainWindow::toggleShapeMask()
 //        setMask(shape.mask());
 //    }
 //#endif
-}
+}*/
 
 void MainWindow::updateProxyGeometry()
 {
-    toggleShapeMask();
+//    toggleShapeMask();    //该函数直接return
 
 #ifdef USE_DXCB
     // border is drawn by dxcb
