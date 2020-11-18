@@ -15,7 +15,19 @@
 #include "titlebar.h"
 
 using namespace dmr;
+TEST(ToolBox, tooltip)
+{
+    MainWindow* w = dApp->getMainWindow();
+    w->show();
 
+    ButtonToolTip *tip = new ButtonToolTip(w);
+    tip->setText("123");
+    tip->show();
+    tip->changeTheme(darkTheme);
+    tip->show();
+
+    tip->deleteLater();
+}
 /*TEST(ToolBox, reloadFile)
 {
     MainWindow* w = dApp->getMainWindow();
