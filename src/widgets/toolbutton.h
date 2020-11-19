@@ -172,7 +172,6 @@ private:
         ThemeTYpe m_themeType;
 };
 
-
 class ToolTip: public QFrame
 {
     Q_OBJECT
@@ -340,7 +339,6 @@ protected:
 private:
     ToolTip *m_pToolTip {nullptr};
 };
-
 
 class VolumeButton: public DIconButton
 {

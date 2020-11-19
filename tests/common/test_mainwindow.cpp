@@ -73,7 +73,7 @@ TEST(MainWindow,settings)
     Settings::get().screenshotNameSeqTemplate();
 }
 
-TEST(MainWindow, mouseSimulate)
+TEST(MainWindow, resizeWindow)
 {
     MainWindow* w = dApp->getMainWindow();
     QTest::qWait(3000); //等待缩略图加载
@@ -92,9 +92,6 @@ TEST(MainWindow, mouseSimulate)
 //    QTest::mouseMove(w, QPoint(w->pos().x()+300, w->pos().y()+200), 1000);
 //    QTest::mouseRelease(w, Qt::LeftButton, Qt::NoModifier, QPoint(w->pos().x()+300, w->pos().y()+200), 2000);
 
-    QTest::mouseDClick(w,Qt::LeftButton,Qt::NoModifier,QPoint(),1000);  //fullscreen
-    QTest::mouseDClick(w,Qt::LeftButton,Qt::NoModifier,QPoint(),1000);
-
     QTest::qWait(300);
     w->move(200, 200);
     w->updateGeometry(CornerEdge::LeftEdge, QPoint(100, 100));
@@ -108,6 +105,30 @@ TEST(MainWindow, mouseSimulate)
     w->updateGeometry(CornerEdge::BottomRightCorner, QPoint(100, 100));
 }
 
+TEST(MainWindow, touch)
+{
+    MainWindow* w = dApp->getMainWindow();
+
+    w->setTouched(true);
+
+    QTest::mouseDClick(w, Qt::LeftButton,Qt::NoModifier, QPoint(), 1000);  //fullscreen
+
+    QCursor::setPos(100,200);
+//    QTest::mouseMove(w, QPoint(100,200), 500);
+    QTest::mousePress(w, Qt::LeftButton, Qt::MetaModifier, QPoint(100,200), 500);
+    QCursor::setPos(400,200);
+    QTest::mouseRelease(w, Qt::LeftButton, Qt::MetaModifier, QPoint(400,200), 500);
+
+    QTest::qWait(1000);
+    QCursor::setPos(400,100);
+    QTest::mousePress(w, Qt::LeftButton, Qt::MetaModifier, QPoint(400,100), 500);
+    QCursor::setPos(400,300);
+    QTest::mouseRelease(w, Qt::LeftButton, Qt::MetaModifier, QPoint(400,300), 500);
+
+//    QTest::qWait(5000);
+    QTest::mouseDClick(w,Qt::LeftButton,Qt::NoModifier,QPoint(),1000);
+    w->setTouched(false);
+}
 /*TEST(MainWindow, mainContextMenu)
 {
     MainWindow* w = dApp->getMainWindow();
@@ -169,10 +190,6 @@ TEST(MainWindow, shortCutPlay)
     //还原播放速度
     testEventList.addKeyClick(Qt::Key_R, Qt::ControlModifier, 500);
 
-    //    //movie info dialog
-    //    testEventList.addKeyClick(Qt::Key_Return, Qt::AltModifier, 1000);
-    //    testEventList.addKeyClick(Qt::Key_Escape, Qt::NoModifier, 1000);
-
     testEventList.simulate(w);
 }
 
@@ -221,11 +238,6 @@ TEST(MainWindow, reloadFile)
     listPlayFiles<<QUrl::fromLocalFile("/usr/share/dde-introduction/demo.mp4")\
                 <<QUrl::fromLocalFile("/usr/share/music/bensound-sunny.mp3");
     engine->addPlayFiles(listPlayFiles);
-
-    //    testEventList.addKeyClick(Qt::Key_PageDown, Qt::NoModifier, 1000);
-    //    testEventList.addKeyClick(Qt::Key_PageUp, Qt::NoModifier, 1000);
-
-    //    testEventList.simulate(w);
 }
 
 TEST(MainWindow, movieInfoDialog)

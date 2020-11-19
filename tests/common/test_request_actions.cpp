@@ -22,16 +22,17 @@ TEST(requestAction, onlineSub)
     PlayerEngine* engine =  w->engine();
     QUrl url(QUrl::fromLocalFile("/home/uos/Videos/天空之眼 高清1080P.mp4"));
 
+    QTest::qWait(200);
     if(engine->addPlayFile(url))
     {
         engine->playByName(url);
     }
 
-    QTest::qWait(1000);
+    QTest::qWait(500);
     w->requestAction(ActionFactory::ActionKind::MatchOnlineSubtitle);
-    QTest::qWait(1000);
+    QTest::qWait(500);
     w->requestAction(ActionFactory::ActionKind::HideSubtitle);
-    QTest::qWait(1000);
+    QTest::qWait(500);
     w->requestAction(ActionFactory::ActionKind::HideSubtitle);
 
     QTestEventList testEventList;
@@ -59,15 +60,15 @@ TEST(requestAction, sound)
     MainWindow* w = dApp->getMainWindow();
     w->show();
 
-    QTest::qWait(300);
+    QTest::qWait(500);
     w->requestAction(ActionFactory::ActionKind::Stereo);
-    QTest::qWait(300);
+    QTest::qWait(500);
     w->requestAction(ActionFactory::ActionKind::LeftChannel);
-    QTest::qWait(300);
+    QTest::qWait(500);
     w->requestAction(ActionFactory::ActionKind::RightChannel);
 }
 
-TEST(requestAction, playMode)
+/*TEST(requestAction, playMode)
 {
     MainWindow* w = dApp->getMainWindow();
     w->show();
@@ -82,7 +83,7 @@ TEST(requestAction, playMode)
     w->requestAction(ActionFactory::ActionKind::SingleLoop);
     QTest::qWait(500);
     w->requestAction(ActionFactory::ActionKind::ListLoop);
-}
+}*/
 
 TEST(requestAction, playSpeed)
 {
@@ -208,14 +209,15 @@ TEST(requestAction,openCdrom)
     EXPECT_TRUE(true);
 }
 
-TEST(requestAction, playlistRemoveItem)
+/*TEST(requestAction, playlistRemoveItem)
 {
     MainWindow* w = dApp->getMainWindow();
     w->show();
 
     QTest::qWait(300);
     w->requestAction(ActionFactory::ActionKind::PlaylistRemoveItem);
-}
+}*/
+
 TEST(requestAction, exit)
 {
     MainWindow* w = dApp->getMainWindow();

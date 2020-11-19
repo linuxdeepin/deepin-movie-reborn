@@ -144,7 +144,13 @@ public:
     {
         return _playlist;
     }
-
+    /**
+     *  用于测试触屏效果
+     */
+    void setTouched(bool touched)
+    {
+         _isTouch = touched;
+    }
     //add by heyi
     /**
      * @brief firstPlayInit 第一次点击播放时，需要加载动态库函数指针然后进行构造未完成的初始化

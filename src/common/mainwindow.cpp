@@ -4117,8 +4117,7 @@ void MainWindow::mouseMoveEvent(QMouseEvent *ev)
             this->posMouseOrigin = ptCurr;
             m_bProgressChanged = true;
             return;
-        }
-        else if(qAbs(ptDelta.x())<qAbs(ptDelta.y())){
+        } else if(qAbs(ptDelta.x())<qAbs(ptDelta.y())){
             if(ptDelta.y()>0){
                 m_bTouchChangeVolume = true;
                 requestAction(ActionFactory::ActionKind::VolumeDown);
