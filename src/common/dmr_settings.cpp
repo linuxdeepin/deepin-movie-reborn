@@ -208,6 +208,13 @@ QString Settings::screenshotNameSeqTemplate()
            .arg(QDateTime::currentDateTime().toString("yyyyMMddhhmmss"));
 }
 
+bool Settings::setThumbnailState()
+{
+    bool s = internalOption("showInthumbnailmode").toBool();
+    emit baseChanged("base.play.showInthumbnailmode", !s);
+    return !s;
+}
+
 void Settings::setGeneralOption(const QString &opt, const QVariant &v)
 {
     settings()->setOption(QString("base.general.%1").arg(opt), v);

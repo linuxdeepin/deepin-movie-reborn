@@ -1608,7 +1608,7 @@ struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl &url, const QFil
                 }
             }
 
-            if(_engine->videoSize().width()<0)   //如果没有视频流，就当做音乐播放
+            if(_engine->state() != dmr::PlayerEngine::Idle && _engine->videoSize().width()<0)   //如果没有视频流，就当做音乐播放
             {
                 isMusic = true;
             }

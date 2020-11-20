@@ -15,7 +15,31 @@
 #include "titlebar.h"
 
 using namespace dmr;
+TEST(ToolBox, buttonBoxButton)
+{
+    MainWindow* w = dApp->getMainWindow();
+    w->show();
 
+    ButtonBoxButton *btn = new ButtonBoxButton("test", w);
+    btn->show();
+    QTest::qWait(500);
+    QTest::mouseMove(btn);
+
+    btn->deleteLater();
+}
+TEST(ToolBox, buttonTooltip)
+{
+    MainWindow* w = dApp->getMainWindow();
+    w->show();
+
+    ButtonToolTip *tip = new ButtonToolTip(w);
+    tip->setText("123");
+    tip->show();
+    tip->changeTheme(darkTheme);
+    tip->show();
+
+    tip->deleteLater();
+}
 /*TEST(ToolBox, reloadFile)
 {
     MainWindow* w = dApp->getMainWindow();

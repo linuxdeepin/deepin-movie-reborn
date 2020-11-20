@@ -131,6 +131,7 @@ DMenu *ActionFactory::mainContextMenu()
 
             DEF_ACTION_CHECKED_GROUP(tr("0.5"), ActionKind::ZeroPointFiveTimes, group);
             DEF_ACTION_CHECKED_GROUP(tr("1.0"), ActionKind::OneTimes, group);
+            DEF_ACTION_CHECKED_GROUP(tr("1.2"), ActionKind::OnePointTwoTimes, group);
             DEF_ACTION_CHECKED_GROUP(tr("1.5"), ActionKind::OnePointFiveTimes, group);
             DEF_ACTION_CHECKED_GROUP(tr("2.0"), ActionKind::Double, group);
 

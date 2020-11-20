@@ -50,11 +50,15 @@
 namespace Dtk {
 namespace Widget {
 class DImageButton;
+class DSettingsDialog;
 }
 }
 
 DWIDGET_USE_NAMESPACE
 
+class MainWindowEventListener;
+
+namespace dmr {
 enum CornerEdge {
     TopLeftCorner = 0,
     TopEdge = 1,
@@ -67,9 +71,6 @@ enum CornerEdge {
     NoneEdge = -1
 };
 
-class MainWindowEventListener;
-
-namespace dmr {
 class ToolboxProxy;
 class EventMonitor;
 class PlaylistWidget;
@@ -143,7 +144,13 @@ public:
     {
         return _playlist;
     }
-
+    /**
+     *  用于测试触屏效果
+     */
+    void setTouched(bool touched)
+    {
+         _isTouch = touched;
+    }
     //add by heyi
     /**
      * @brief firstPlayInit 第一次点击播放时，需要加载动态库函数指针然后进行构造未完成的初始化
@@ -177,6 +184,10 @@ public:
     bool addCdromPath();
     void loadPlayList();
     void setOpenFiles(QStringList&);
+
+    void testMprisapp();
+    void setShowSetting(bool);
+    void updateGeometry(CornerEdge edge, QPoint p);
 signals:
     void windowEntered();
     void windowLeaved();
@@ -235,7 +246,9 @@ protected:
 protected slots:
     void setInit(bool v);
     void menuItemInvoked(QAction *action);
+#ifdef USE_DXCB
     void onApplicationStateChanged(Qt::ApplicationState e);
+#endif
     void onBindingsChanged();
     void updateActionsState();
     void syncPlayState();
@@ -273,8 +286,8 @@ protected slots:
 private:
     void setupTitlebar();
 
-    void startPlayStateAnimation(bool play);
-    void handleSettings();
+    void handleSettings(DSettingsDialog*);
+    DSettingsDialog* initSettings();
     void updateSizeConstraints();
     void toggleUIMode();
 
@@ -300,6 +313,9 @@ private:
     void mipsShowFullScreen();
     //hide pop windows when dragging window
     void hidePopWindow();
+    void setPlaySpeedMenuChecked(ActionFactory::ActionKind);
+    void setPlaySpeedMenuUnchecked();
+
 private:
     DFloatingMessage *popup {nullptr};
     QLabel *_fullscreentimelable {nullptr};
@@ -414,6 +430,7 @@ private:
     bool m_bTouchChangeVolume {false};
     bool m_bIsFullSreen {false};
     bool m_bisOverhunderd {false};
+    bool m_bisShowSettingDialog {true};
     QDBusInterface* m_pDBus {nullptr};
 };
 };

@@ -73,6 +73,7 @@ protected:
         emit leaved();
     };
 };
+
 class ButtonToolTip :public DArrowRectangle {
     Q_OBJECT
 public:
@@ -170,7 +171,6 @@ private:
         QString m_strText = nullptr;
         ThemeTYpe m_themeType;
 };
-
 
 class ToolTip: public QFrame
 {
@@ -339,7 +339,6 @@ protected:
 private:
     ToolTip *m_pToolTip {nullptr};
 };
-
 
 class VolumeButton: public DIconButton
 {

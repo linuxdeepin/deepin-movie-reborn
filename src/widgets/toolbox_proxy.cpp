@@ -54,6 +54,7 @@
 #include <QDBusInterface>
 #include <dthememanager.h>
 #include <iostream>
+#include "../accessibility/ac-deepin-movie-define.h"
 static const int LEFT_MARGIN = 10;
 static const int RIGHT_MARGIN = 10;
 static const int PROGBAR_SPEC = 10 + 120 + 17 + 54 + 10 + 54 + 10 + 170 + 10 + 20;
@@ -291,20 +292,21 @@ public:
     }
 
 protected:
-    void showEvent(QShowEvent *se) override
-    {
-        auto fm = _title->fontMetrics();
-        auto shorted = fm.elidedText(_msg, Qt::ElideMiddle, 140 * 2);
-        int h = fm.height();
-        if (fm.width(shorted) > 140) {
-            h *= 2;
-        } else {
-        }
-        _title->setFixedHeight(h);
-        _title->setText(shorted);
+    ///this code is doesn't seem to be in use now,comment out it temporarily
+//    void showEvent(QShowEvent *se) override
+//    {
+//        auto fm = _title->fontMetrics();
+//        auto shorted = fm.elidedText(_msg, Qt::ElideMiddle, 140 * 2);
+//        int h = fm.height();
+//        if (fm.width(shorted) > 140) {
+//            h *= 2;
+//        } else {
+//        }
+//        _title->setFixedHeight(h);
+//        _title->setText(shorted);
 
-        QWidget::showEvent(se);
-    }
+//        QWidget::showEvent(se);
+//    }
 
 private slots:
     void onThemeChanged()
@@ -670,94 +672,11 @@ public:
 
             delete child;
         }
-
-
-//        auto *viewProgBarLayout = new QHBoxLayout();
-//        viewProgBarLayout->setContentsMargins(0,5,0,5);
-//        auto tmp = _engine->duration()/64?_engine->duration()/64:1;
-        /*
-        int num = (_parent->width()-PROGBAR_SPEC+1)/9;
-        auto tmp = (_engine->duration()*1000)/num;
-        auto dpr = qApp->devicePixelRatio();
-        QPixmap pm;
-        pm.setDevicePixelRatio(dpr);
-        QPixmap pm_black;
-        pm_black.setDevicePixelRatio(dpr);
-        VideoThumbnailer thumber;
-        //        QTime d(0, 0, 0);
-        QTime d(0, 0, 0,0);
-        thumber.setThumbnailSize(_engine->videoSize().width() * qApp->devicePixelRatio());
-        thumber.setMaintainAspectRatio(true);
-        thumber.setSeekTime(d.toString("hh:mm:ss").toStdString());
-        auto url = _engine->playlist().currentInfo().url;
-        auto file = QFileInfo(url.toLocalFile()).absoluteFilePath();
-
-        //    for(auto i=0;i<(_engine->duration() - tmp);){
-        //          for(auto i=0;i<65;i++){
-         for(auto i=0;i<num;i++){
-        //          for(auto i=0;i<163;i++){
-        //            d = d.addSecs(tmp);
-             d = d.addMSecs(tmp);
-           thumber.setSeekTime(d.toString("hh:mm:ss:ms").toStdString());
-           try {
-               std::vector<uint8_t> buf;
-               thumber.generateThumbnail(file.toUtf8().toStdString(),
-                       ThumbnailerImageType::Png, buf);
-
-               auto img = QImage::fromData(buf.data(), buf.size(), "png");
-        //                auto img_black = QImage::fromData(buf.data(), buf.size(), "png");
-               auto img_tmp = img.scaledToHeight(50);
-               img.scaledToHeight(50);
-
-               QImage img_black = GraizeImage(img_tmp);
-        //                QImage img_black = img_tmp.convertToFormat(QImage::Format_Indexed8);
-
-        //                    img_black.setColorCount(256);
-        //                    for(int i = 0; i < 256; i++)
-        //                    {
-        //                        img_black.setColor(i, qRgb(i, i, i));
-        //                }
-               pm = QPixmap::fromImage(img_tmp.copy(img_tmp.size().width()/2-4,0,8,50));
-        //                pm.setDevicePixelRatio(dpr);
-               pm_black = QBitmap::fromImage(img_black.copy(img_black.size().width()/2-4,0,8,50));
-        //                pm_black.setDevicePixelRatio(dpr);
-
-
-               ImageItem *label = new ImageItem(img_tmp);
-        //                label->setPixmap(pm);
-               label->setFixedSize(8,50);
-        //                label->setBackgroundRole(QPalette::ColorRole::Base);
-               _viewProgBarLayout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
-               _viewProgBarLayout->addWidget(label, 0 , Qt::AlignLeft );
-               _viewProgBarLayout->setSpacing(1);
-
-               ImageItem *label_black = new ImageItem(img_tmp,true,_front);
-               label_black->move(i*9,5);
-        //                label_black->setPixmap(pm_black);
-               label_black->setFixedSize(8,50);
-           } catch (const std::logic_error&) {
-           }
-
-
-        //            _viewProgBarLayout_black->setAlignment(Qt::AlignLeft | Qt::AlignTop);
-        //            _viewProgBarLayout_black->addWidget(label_black, 0 , Qt::AlignLeft );
-        //            _viewProgBarLayout_black->setSpacing(1);
-
-        }
-        */
 //        _back->setLayout(_viewProgBarLayout);
         _viewProgBarLayout->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
         _viewProgBarLayout->setSpacing(1);
 
         int pixWidget = 40/*_progBar->width() / 100*/;
-
-//        for (int i = 0; i < pm_list.count(); i++) {
-//            ImageItem *label = new ImageItem(pm_list.at(i), false, _back);
-//            label->setMouseTracking(true);
-//            label->setFixedSize(pixWidget, 50);
-//            _viewProgBarLayout->addWidget(label);
-//            _viewProgBarLayout->setSpacing(1);
-//        }
 
         int start_position = (_progBar->width() - ((pixWidget+1) * pm_list.count() - 1)) / 2;   //开始位置
         for (int i = 0; i < pm_list.count(); i++) {
@@ -836,7 +755,6 @@ protected:
 
         DWidget::leaveEvent(e);
     }
-
     void showEvent(QShowEvent *se) override
     {
 //        _time->move((width() - _time->width())/2, 69);
@@ -1169,6 +1087,9 @@ public:
         _slider->installEventFilter(this);
         _slider->show();
         _slider->slider()->setRange(0, 100);
+        _slider->setObjectName(VOLUME_SLIDER);
+        _slider->slider()->setObjectName(SLIDER);
+        _slider->slider()->setAccessibleName(SLIDER);
         _slider->slider()->setMinimumHeight(132);
         _slider->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred));
         //修改打开时音量条显示不正确
@@ -1193,6 +1114,8 @@ public:
         l->addWidget(_slider, 1, Qt::AlignCenter);
 
         m_pBtnChangeMute = new ImageButton(this);
+        m_pBtnChangeMute->setObjectName(MUTE_BTN);
+        m_pBtnChangeMute->setAccessibleName(MUTE_BTN);
 //        m_pBtnChangeMute->setFixedSize(36, 36);
         m_pBtnChangeMute->setFixedWidth(36);
         m_pBtnChangeMute->setImage(":/icons/deepin/builtin/dark/texts/dcc_volumemid_36px.svg");
@@ -1201,7 +1124,6 @@ public:
 
         l->addWidget(m_pBtnChangeMute, 0, Qt::AlignHCenter);
         connect(_slider, &DSlider::valueChanged, this, &VolumeSlider::slotValueChanged);
-
 //        l->setStretchFactor(_slider,1);
 
         _autoHideTimer.setSingleShot(true);
@@ -1256,8 +1178,8 @@ public:
             DArrowRectangle::paintEvent(event);
         }
     }
-#endif
-*/
+#endif*/
+
     void stopTimer()
     {
         _autoHideTimer.stop();
@@ -1708,18 +1630,6 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
     _subView->hide();
     setup();
 
-/*    _viewProgBarLoad= new viewProgBarLoad(_engine,_progBar,this);
-//    _loadThread = new QThread();
-
-//    _viewProgBarLoad->moveToThread(_loadThread);
-//    _loadThread->start();
-
-//    connect(this, SIGNAL(sigstartLoad(QSize)), _viewProgBarLoad, SLOT(loadViewProgBar(QSize)));
-//    connect(this,&ToolboxProxy::sigstartLoad,this,[=]{
-//        _viewProgBarLoad->loadViewProgBar();
-//    });
-//    connect(_viewProgBarLoad, SIGNAL(sigFinishiLoad(QSize)), this, SLOT(finishLoadSlot(QSize)));
-*/
     connect(DApplicationHelper::instance(), &DApplicationHelper::themeTypeChanged,
             this, &ToolboxProxy::updatePlayState);
     connect(DApplicationHelper::instance(), &DApplicationHelper::themeTypeChanged,
@@ -1768,7 +1678,6 @@ void ToolboxProxy::setthumbnailmode()
 
 #if !defined (__mips__ ) && !defined(__aarch64__)
     if (Settings::get().isSet(Settings::ShowThumbnailMode)) {
-//        isStillShowThumbnail = true;
         _bthumbnailmode = true;
         updateThumbnail();
     } else {
@@ -1835,6 +1744,7 @@ void ToolboxProxy::setup()
     this->blurBackground()->setMode(DBlurEffectWidget::GaussianBlur);
 
     bot_widget = new DBlurEffectWidget(this);
+    bot_widget->setObjectName(BOTTOM_WIDGET);
 //    bot_widget->setBlurBackgroundEnabled(true);
     bot_widget->setBlurRectXRadius(18);
     bot_widget->setBlurRectYRadius(18);
@@ -1863,6 +1773,7 @@ void ToolboxProxy::setup()
     botv->addStretch();
 
     bot_toolWgt = new QWidget(bot_widget);
+    bot_toolWgt->setObjectName(BOTTOM_TOOL_BUTTON_WIDGET);
     bot_toolWgt->setFixedHeight(TOOLBOX_HEIGHT - 10);
     bot_toolWgt->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
     auto *bot_layout = new QHBoxLayout(bot_toolWgt);
@@ -1898,8 +1809,10 @@ void ToolboxProxy::setup()
     DFontSizeManager::instance()->bind(_fullscreentimelableend, DFontSizeManager::T6);
 
     _progBar = new DMRSlider(bot_toolWgt);
-    _progBar->setObjectName("MovieProgress");
+    _progBar->setObjectName(MOVIE_PROGRESS_WIDGET);
     _progBar->slider()->setOrientation(Qt::Horizontal);
+    _progBar->slider()->setObjectName(PROGBAR_SLIDER);
+    _progBar->slider()->setAccessibleName(PROGBAR_SLIDER);
     _progBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     _progBar->setFocusPolicy(Qt::TabFocus);
     _progBar->slider()->setRange(0, 100);
@@ -1963,6 +1876,8 @@ void ToolboxProxy::setup()
     }
 
     _progBar_Widget = new QStackedWidget(bot_toolWgt);
+    _progBar_Widget->setObjectName(PROGBAR_WIDGET);
+    _progBar_Widget->setAccessibleName(PROGBAR_WIDGET);
     _progBar_Widget->setContentsMargins(0, 0, 0, 0);
     _progBar_Widget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 
@@ -2014,6 +1929,7 @@ void ToolboxProxy::setup()
 
     _palyBox = new DButtonBox(bot_toolWgt);
     _palyBox->setFixedWidth(120);
+    _palyBox->setObjectName(PLAY_BUTTOB_BOX);
     _palyBox->setFocusPolicy(Qt::NoFocus);
     _mid->addWidget(_palyBox);
     _mid->setAlignment(_palyBox, Qt::AlignLeft);
@@ -2032,7 +1948,8 @@ void ToolboxProxy::setup()
     _prevBtn->setIcon(QIcon::fromTheme("dcc_last", QIcon(":/icons/deepin/builtin/light/normal/last_normal.svg")));
     _prevBtn->setIconSize(QSize(36, 36));
     _prevBtn->setFixedSize(40, 50);
-    _prevBtn->setObjectName("PrevBtn");
+    _prevBtn->setObjectName(PREV_BUTTON);
+    _prevBtn->setAccessibleName(PREV_BUTTON);
     _prevBtn->setFocusPolicy(Qt::TabFocus);
     connect(_prevBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_prevBtn, "prev");
@@ -2041,7 +1958,8 @@ void ToolboxProxy::setup()
     _playBtn->setIcon(QIcon::fromTheme("dcc_play", QIcon(":/icons/deepin/builtin/light/normal/play_normal.svg")));
     _playBtn->setIconSize(QSize(36, 36));
     _playBtn->setFixedSize(40, 50);
-    _playBtn->setFocusPolicy(Qt::TabFocus);
+    _playBtn->setObjectName(PLAY_BUTTON);
+    _playBtn->setAccessibleName(PLAY_BUTTON);
     connect(_playBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_playBtn, "play");
     list.append(_playBtn);
@@ -2050,6 +1968,8 @@ void ToolboxProxy::setup()
     _nextBtn->setIconSize(QSize(36, 36));
     _nextBtn->setFixedSize(40, 50);
     _nextBtn->setFocusPolicy(Qt::TabFocus);
+    _nextBtn->setObjectName(NEXT_BUTTON);
+    _nextBtn->setAccessibleName(NEXT_BUTTON);
     connect(_nextBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_nextBtn, "next");
     list.append(_nextBtn);
@@ -2071,6 +1991,8 @@ void ToolboxProxy::setup()
     _subBtn->hide();
 
     _fsBtn = new ToolButton(bot_toolWgt);
+    _fsBtn->setObjectName(FS_BUTTON);
+    _fsBtn->setAccessibleName(FS_BUTTON);
     _fsBtn->setIcon(QIcon::fromTheme("dcc_zoomin"));
     _fsBtn->setIconSize(QSize(36, 36));
     _fsBtn->setFixedSize(50, 50);
@@ -2080,13 +2002,17 @@ void ToolboxProxy::setup()
 
     _volBtn = new VolumeButton(bot_toolWgt);
     _volBtn->setFixedSize(50, 50);
+    _volBtn->setObjectName(VOLUME_BUTTON);
+    _volBtn->setAccessibleName(VOLUME_BUTTON);
     if (CompositingManager::get().composited()) {
         _volSlider = new VolumeSlider(_engine, _mainWindow, _mainWindow);
+        _volSlider->setObjectName(VOLUME_SLIDER_WIDGET);
         connect(_volBtn, &VolumeButton::clicked, this, &ToolboxProxy::slotVolumeButtonClicked);
 
     } else {
 #if defined (__mips__) || defined (__aarch64__)
         _volSlider = new VolumeSlider(_engine, _mainWindow, nullptr);
+        _volSlider->setObjectName(VOLUME_SLIDER_WIDGET);
         connect(_volBtn, &VolumeButton::clicked, this, &ToolboxProxy::slotVolumeButtonClicked);
 
 //        _volSlider->setProperty("DelayHide", true);
@@ -2094,6 +2020,7 @@ void ToolboxProxy::setup()
 //        installHint(_volBtn, _volSlider);
 #else
         _volSlider = new VolumeSlider(_engine, _mainWindow, _mainWindow);
+	_volSlider->setObjectName(VOLUME_SLIDER_WIDGET);
 //        _volSlider->setFocusPolicy(Qt::FocusPolicy::NoFocus);
 //        _volSlider->setWindowFlag(Qt::WindowStaysOnTopHint);
         connect(_volBtn, &VolumeButton::clicked, this, &ToolboxProxy::slotVolumeButtonClicked);
@@ -2123,6 +2050,9 @@ void ToolboxProxy::setup()
     _listBtn->setFixedSize(50, 50);
     _listBtn->initToolTip();
     _listBtn->setCheckable(true);
+    _listBtn->setObjectName(PLAYLIST_BUTTON);
+    _listBtn->setAccessibleName(PLAYLIST_BUTTON);
+
     connect(_listBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(_listBtn, "list");
     _right->addWidget(_listBtn);

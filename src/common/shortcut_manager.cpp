@@ -45,8 +45,7 @@ ShortcutManager& ShortcutManager::get()
     }
     return *_shortcutManager;
 }
-
-ShortcutManager::~ShortcutManager() 
+ShortcutManager::~ShortcutManager()
 {
 }
 
@@ -87,51 +86,46 @@ ShortcutManager::ShortcutManager()
         {"previous_frame", ActionFactory::ActionKind::PreviousFrame},
     };
 
-    connect(&Settings::get(), &Settings::shortcutsChanged,
-        [=](QString sk, const QVariant& val) {
-            if (sk.endsWith(".enable")) {
-                auto grp_key = sk.left(sk.lastIndexOf('.'));
-                qDebug() << "update group binding" << grp_key;
+    connect(&Settings::get(), &Settings::shortcutsChanged, [=](QString sk, const QVariant& val) {
+        if (sk.endsWith(".enable")) {
+            auto grp_key = sk.left(sk.lastIndexOf('.'));
+            qDebug() << "update group binding" << grp_key;
 
-                QPointer<DSettingsGroup> shortcuts = Settings::get().shortcuts();
-                auto grps = shortcuts->childGroups();
-                auto grp_ptr = std::find_if(grps.begin(), grps.end(), [=](GroupPtr grp) {
-                    return grp->key() == grp_key;
-                });
+            QPointer<DSettingsGroup> shortcuts = Settings::get().shortcuts();
+            auto grps = shortcuts->childGroups();
+            auto grp_ptr = std::find_if(grps.begin(), grps.end(), [=](GroupPtr grp) {
+                return grp->key() == grp_key;
+            });
 
-                toggleGroupShortcuts(*grp_ptr, val.toBool());
-                emit bindingsChanged();
-                return;
-            }
-
-            sk.remove(0, sk.lastIndexOf('.') + 1);
-
-//            QStringList keyseqs = val.toStringList();
-//            auto modifier = static_cast<Qt::KeyboardModifiers>(keyseqs.value(0).toInt());
-//            auto key = static_cast<Qt::Key>(keyseqs.value(1).toInt());
-
-            qDebug() << "update binding" << sk << QKeySequence(val.toStringList().at(0));
-            QString strKey = QKeySequence(val.toStringList().at(0)).toString();
-            if (strKey.contains("Return")) {
-                _map[QKeySequence(val.toStringList().at(0))] = _keyToAction[sk];
-                strKey = QString("%1Num+Enter").arg(strKey.remove("Return"));
-                _map[strKey] = _keyToAction[sk];
-                qDebug() << val << QKeySequence(strKey) << strKey;
-
-                _map.remove(strKey);
-                _map[strKey] = _keyToAction[sk];
-
-            } else if (strKey.contains("Num+Enter")) {
-                _map[QKeySequence(val.toStringList().at(0))] = _keyToAction[sk];
-                strKey = QString("%1Return").arg(strKey.remove("Num+Enter"));
-                _map[strKey] = _keyToAction[sk];
-                qDebug() << val << QKeySequence(strKey) << strKey;
-            }
-
-            _map.remove(_map.key(_keyToAction[sk]));
-            _map[QKeySequence(val.toStringList().at(0))] = _keyToAction[sk];
+            toggleGroupShortcuts(*grp_ptr, val.toBool());
             emit bindingsChanged();
-        });
+            return;
+        }
+
+        sk.remove(0, sk.lastIndexOf('.') + 1);
+
+        qDebug() << "update binding" << sk << QKeySequence(val.toStringList().at(0));
+        QString strKey = QKeySequence(val.toStringList().at(0)).toString();
+        if (strKey.contains("Return")) {
+            _map[QKeySequence(val.toStringList().at(0))] = _keyToAction[sk];
+            strKey = QString("%1Num+Enter").arg(strKey.remove("Return"));
+            _map[strKey] = _keyToAction[sk];
+            qDebug() << val << QKeySequence(strKey) << strKey;
+
+            _map.remove(strKey);
+            _map[strKey] = _keyToAction[sk];
+
+        } else if (strKey.contains("Num+Enter")) {
+            _map[QKeySequence(val.toStringList().at(0))] = _keyToAction[sk];
+            strKey = QString("%1Return").arg(strKey.remove("Num+Enter"));
+            _map[strKey] = _keyToAction[sk];
+            qDebug() << val << QKeySequence(strKey) << strKey;
+        }
+
+        _map.remove(_map.key(_keyToAction[sk]));
+        _map[QKeySequence(val.toStringList().at(0))] = _keyToAction[sk];
+        emit bindingsChanged();
+    });
 }
 
 void ShortcutManager::buildBindings() 
@@ -147,10 +141,6 @@ void ShortcutManager::toggleGroupShortcuts(GroupPtr grp, bool on)
     auto sub = grp->childOptions();
     std::for_each(sub.begin(), sub.end(), [=](OptionPtr opt) {
         if (opt->viewType() != "shortcut") return;
-
-//        QStringList keyseqs = opt->value().toStringList();
-//        auto modifier = static_cast<Qt::KeyboardModifiers>(keyseqs.value(0).toInt());
-//        auto key = static_cast<Qt::Key>(keyseqs.value(1).toInt());
 
         QString sk = opt->key();
         sk.remove(0, sk.lastIndexOf('.') + 1);
@@ -183,13 +173,6 @@ void ShortcutManager::toggleGroupShortcuts(GroupPtr grp, bool on)
 void ShortcutManager::buildBindingsFromSettings()
 {
     _map.clear();
-    // default builtins 
-//    _map.insert(QKeySequence(Qt::Key_Left), ActionFactory::SeekBackward);
-//    _map.insert(QKeySequence(Qt::Key_Left + Qt::SHIFT), ActionFactory::SeekBackwardLarge);
-//    _map.insert(QKeySequence(Qt::Key_Right), ActionFactory::SeekForward);
-//    _map.insert(QKeySequence(Qt::Key_Right + Qt::SHIFT), ActionFactory::SeekForwardLarge);
-//    _map.insert(QKeySequence(Qt::Key_Space), ActionFactory::TogglePause);
-//    _map.insert(QKeySequence(Qt::Key_Escape), ActionFactory::QuitFullscreen);
     _map.insert(QKeySequence(Qt::Key_Slash + Qt::CTRL + Qt::SHIFT), ActionFactory::ViewShortcut);
 
     QPointer<DSettingsGroup> shortcuts = Settings::get().shortcuts();
@@ -199,12 +182,11 @@ void ShortcutManager::buildBindingsFromSettings()
         auto enabled = Settings::get().settings()->option(grp->key() + ".enable");
         qDebug() << grp->name() << enabled->value();
         Q_ASSERT(enabled && enabled->viewType() == "checkbox");
-        if (!enabled->value().toBool()) 
+        if (!enabled->value().toBool())
             return;
 
         toggleGroupShortcuts(grp, true);
     });
-
 }
 
 QString ShortcutManager::toJson() 
@@ -220,39 +202,18 @@ QString ShortcutManager::toJson()
         QJsonObject jsonGroup;
         jsonGroup.insert("groupName", qApp->translate("QObject", grp->name().toUtf8().data()));
         QJsonArray jsonItems;
- 
+
         auto sub = grp->childOptions();
         std::for_each(sub.begin(), sub.end(), [&](OptionPtr opt) {
             if (opt->viewType() != "shortcut") return;
 
             QStringList keyseqs = opt->value().toStringList();
-//            auto modifier = static_cast<Qt::KeyboardModifiers>(keyseqs.value(0).toInt());
-//            auto key = static_cast<Qt::Key>(keyseqs.value(1).toInt());
-
             QJsonObject jsonItem;
             jsonItem.insert("name", qApp->translate("QObject", opt->name().toUtf8().data()));
             jsonItem.insert("value", QKeySequence(opt->value().toStringList().at(0)).toString(QKeySequence::PortableText));
             jsonItems.append(jsonItem);
 
         });
-
-//        if(grp->name() == "File")
-//        {
-//            QJsonObject jsonItem_space;
-//            jsonItem_space.insert("name", qApp->translate("QObject", ""));
-//            jsonItem_space.insert("value", "");
-//            jsonItems.append(jsonItem_space);
-
-//            QJsonObject jsonItem;
-//            jsonItem.insert("name", qApp->translate("QObject", "Help"));
-//            jsonItem.insert("value", "F1");
-//            jsonItems.append(jsonItem);
-
-//            QJsonObject jsonItem_show;
-//            jsonItem.insert("name", qApp->translate("QObject", "Display shortcuts"));
-//            jsonItem.insert("value", "Ctrl+Shift+?");
-//            jsonItems.append(jsonItem);
-//        }
 
         jsonGroup.insert("groupItems", jsonItems);
         jsonGroups.append(jsonGroup);
@@ -286,19 +247,19 @@ vector<QAction*> ShortcutManager::actionsForBindings()
     while (p != _map.constEnd()) {
         auto *act = new QAction(this);
         switch (p.value()) {
-            case ActionFactory::ActionKind::SeekForward:
-            case ActionFactory::ActionKind::SeekForwardLarge:
-            case ActionFactory::ActionKind::SeekBackward:
-            case ActionFactory::ActionKind::SeekBackwardLarge:
-            case ActionFactory::ActionKind::VolumeUp:
-            case ActionFactory::ActionKind::VolumeDown:
-            case ActionFactory::ActionKind::AccelPlayback:
-            case ActionFactory::ActionKind::DecelPlayback:
-                act->setAutoRepeat(true);
-                break;
-            default:
-                act->setAutoRepeat(false);
-                break;
+        case ActionFactory::ActionKind::SeekForward:
+        case ActionFactory::ActionKind::SeekForwardLarge:
+        case ActionFactory::ActionKind::SeekBackward:
+        case ActionFactory::ActionKind::SeekBackwardLarge:
+        case ActionFactory::ActionKind::VolumeUp:
+        case ActionFactory::ActionKind::VolumeDown:
+        case ActionFactory::ActionKind::AccelPlayback:
+        case ActionFactory::ActionKind::DecelPlayback:
+            act->setAutoRepeat(true);
+            break;
+        default:
+            act->setAutoRepeat(false);
+            break;
         }
         act->setShortcut(p.key());
         //act->setShortcutContext(Qt::ApplicationShortcut);

@@ -99,6 +99,7 @@ public:
         //play speed
         ZeroPointFiveTimes,
         OneTimes,
+        OnePointTwoTimes,
         OnePointFiveTimes,
         Double,
 

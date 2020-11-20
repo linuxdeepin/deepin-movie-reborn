@@ -14,19 +14,11 @@ TEST(MovieApp, show)
     MainWindow* w = dApp->getMainWindow();
 //    w->show();
 
-    MovieApp *movieapp = dApp->initMovieApp(w);
-
-    QTimer::singleShot(1000,[=]{movieapp->show();});
-}
-
-//TEST(MovieApp, quit)
-//{
-//    MainWindow* w = dApp->getMainWindow();
-//    PlayerEngine* engine =  w->engine();
-
 //    MovieApp *movieapp = dApp->initMovieApp(w);
 
-//    QTimer::singleShot(500,[=]{movieapp->quit();});
-//    QTest::qWait(500);
-//    w->close();
-//}
+//    QTimer::singleShot(1000,[=]{movieapp->show();});
+    QTest::qWait(300);
+    w->testMprisapp();
+    w->close();
+}
+

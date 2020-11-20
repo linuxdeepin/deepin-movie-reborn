@@ -181,6 +181,8 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
    }
    //x86上此处设置透明效果无作用
    //setAttribute(Qt::WA_TranslucentBackground, true);
+    this->setObjectName(MOVIE_INFO_DIALOG);
+    this->setAccessibleName(MOVIE_INFO_DIALOG);
     m_titleList.clear();
 
     auto layout = new QVBoxLayout(this);
@@ -189,6 +191,8 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
     setLayout(layout);
 
     CloseButton *closeBt = new CloseButton(this);
+    closeBt->setObjectName(MOVIEINFO_CLOSE_BUTTON);
+    closeBt->setAccessibleName(MOVIEINFO_CLOSE_BUTTON);
     //closeBt->setIcon(QIcon(INFO_CLOSE_LIGHT));
     //DImageButton *closeBt = new DImageButton(this);
     closeBt->setFixedSize(50, 50);
@@ -239,6 +243,9 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
     tipLst.clear();
 
     m_scrollArea = new QScrollArea;
+    m_scrollArea->setObjectName(MOVIE_INFO_SCROLL_AREA);
+    m_scrollArea->setAccessibleName(MOVIE_INFO_SCROLL_AREA);
+    m_scrollArea->viewport()->setObjectName(SCROLL_AREA_VIEWPORT);
     QPalette palette = m_scrollArea->viewport()->palette();
     palette.setBrush(QPalette::Background, Qt::NoBrush);
     m_scrollArea->viewport()->setPalette(palette);
@@ -247,6 +254,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
     m_scrollArea->setWidgetResizable(true);
 
     QWidget *scrollContentWidget = new QWidget(m_scrollArea);
+    scrollContentWidget->setObjectName(MOVIE_INFO_SCROLL_CONTENT);
     QVBoxLayout *scrollWidgetLayout = new QVBoxLayout;
     scrollWidgetLayout->setContentsMargins(0, 0, 10, 10);
     scrollWidgetLayout->setSpacing(10);
@@ -257,6 +265,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
 
     //添加基本信息
     ArrowLine *film = new ArrowLine;
+    film->setObjectName(FILM_INFO_WIDGET);
     film->setTitle(tr("Film info"));
     InfoBottom *infoRect = new InfoBottom;
     scrollWidgetLayout->addWidget(film);
@@ -289,6 +298,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
 
     //添加视频信息
     ArrowLine *video = new ArrowLine;
+    video->setObjectName(CODEC_INFO_WIDGET);
     video->setTitle(tr("Codec info"));
     InfoBottom *videoRect = new InfoBottom;
     scrollWidgetLayout->addWidget(video);
@@ -317,6 +327,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
 
     //添加音频信息
     ArrowLine *audio = new ArrowLine;
+    audio->setObjectName(AUDIO_INFO_WIDGET);
     audio->setTitle(tr("Audio info"));
     InfoBottom *audioRect = new InfoBottom;
     scrollWidgetLayout->addWidget(audio);
@@ -345,90 +356,6 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
 
     setFixedSize(300, 642);
 
-    /*InfoBottom *infoRect = new InfoBottom;
-    infoRect->setFixedSize(280, 135);
-    ml->addWidget(infoRect);
-    ml->setAlignment(infoRect, Qt::AlignHCenter);
-
-    auto *form = new QFormLayout(infoRect);
-    form->setContentsMargins(10, 10, 20, 25);
-    form->setVerticalSpacing(6);
-    form->setHorizontalSpacing(10);
-    form->setLabelAlignment(Qt::AlignLeft);
-    form->setFormAlignment(Qt::AlignCenter);
-
-    QList<DLabel *> tipLst;
-    tipLst.clear();
-
-    auto title = new DLabel(tr("Film info"), this);
-    QFont font = title->font();
-    font.setPixelSize(14);
-    font.setWeight(QFont::Weight::Medium);
-    font.setFamily("SourceHanSansSC");
-    title->setFont(font);
-    form->addRow(title);
-
-    addRow(tr("Type"), mi.fileType, form, tipLst);
-    addRow(tr("Size"), mi.sizeStr(), form, tipLst);
-    addRow(tr("Duration"), mi.durationStr(), form, tipLst);
-
-    DLabel *tmp = new DLabel;
-    DFontSizeManager::instance()->bind(tmp, DFontSizeManager::T8);
-    tmp->setText(mi.filePath);
-    auto fm = tmp->fontMetrics();
-    auto w = fm.width(mi.filePath);
-    addRow(tr("Path"), mi.filePath, form, tipLst);
-
-    //添加视频信息
-    InfoBottom *codecRect = new InfoBottom;
-    codecRect->setFixedSize(280, 145);
-    ml->addSpacing(10);
-    ml->addWidget(codecRect);
-    ml->setAlignment(codecRect, Qt::AlignHCenter);
-
-    auto *codecForm = new QFormLayout(codecRect);
-    codecForm->setContentsMargins(10, 10, 20, 10);
-    codecForm->setVerticalSpacing(6);
-    codecForm->setHorizontalSpacing(10);
-    codecForm->setLabelAlignment(Qt::AlignLeft);
-    codecForm->setFormAlignment(Qt::AlignCenter);
-
-    auto codecTitle = new DLabel(tr("Codec info"), this);
-    codecTitle->setFont(font);
-    codecForm->addRow(codecTitle);
-
-    addRow(tr("Video CodecID"), mi.videoCodec(), codecForm, tipLst);
-    addRow(tr("Video CodeRate"), QString(tr("%1 kbps")).arg(mi.vCodeRate), codecForm, tipLst);
-    addRow(tr("FPS"), QString(tr("%1 fps")).arg(mi.fps), codecForm, tipLst);
-    addRow(tr("Proportion"), QString(tr("%1")).arg(mi.proportion), codecForm, tipLst);
-    addRow(tr("Resolution"), mi.resolution, codecForm, tipLst);
-
-    //添加音频信息
-    InfoBottom *audioRect = new InfoBottom;
-    audioRect->setFixedSize(280, 145);
-    ml->addSpacing(10);
-    ml->addWidget(audioRect);
-    ml->setAlignment(audioRect, Qt::AlignHCenter);
-    //    ml->addSpacing(10);
-
-    auto *audioForm = new QFormLayout(audioRect);
-    audioForm->setContentsMargins(10, 10, 20, 10);
-    audioForm->setVerticalSpacing(6);
-    audioForm->setHorizontalSpacing(10);
-    audioForm->setLabelAlignment(Qt::AlignLeft);
-    audioForm->setFormAlignment(Qt::AlignCenter);
-
-    auto audioTitle = new DLabel(tr("Audio info"), this);
-    audioTitle->setFont(font);
-    title->setFont(font);
-    audioForm->addRow(audioTitle);
-
-    addRow(tr("Audio CodecID"), mi.audioCodec(), audioForm, tipLst);
-    addRow(tr("Audio CodeRate"), QString(tr("%1 kbps")).arg(mi.aCodeRate), audioForm, tipLst);
-    addRow(tr("Audio digit"), QString(tr("%1 bits").arg(mi.aDigit)), audioForm, tipLst);
-    addRow(tr("Channels"), QString(tr("%1 channels")).arg(mi.channels), audioForm, tipLst);
-    addRow(tr("Sampling"), QString(tr("%1hz")).arg(mi.sampling), audioForm, tipLst);*/
-
     if (!m_titleList.isEmpty()) {
         auto f = m_titleList[10]->fontMetrics();
         auto widget = f.boundingRect(m_titleList[10]->text()).width();
@@ -442,6 +369,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
     auto th = new ToolTipEvent(this);
     if (tipLst.size() > 1) {
         auto filePathLbl = tipLst.at(3);
+        filePathLbl->setObjectName("filePathLabel");
         auto codeLabel = m_titleList.at(5);
         qDebug() << "filePathLbl w,h: " << filePathLbl->width() << "," << filePathLbl->height();
         QFontMetrics fm = codeLabel->fontMetrics();
@@ -458,6 +386,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
         t->setProperty("for", QVariant::fromValue<QWidget *>(filePathLbl));
         filePathLbl->setProperty("HintWidget", QVariant::fromValue<QWidget *>(t));
         filePathLbl->installEventFilter(th);
+//        filePathLbl->hide();
     }
 
     delete tmp;

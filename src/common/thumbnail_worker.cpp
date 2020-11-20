@@ -66,12 +66,10 @@ ThumbnailWorker &ThumbnailWorker::get()
 {
     if (_instance == nullptr) {
         QMutexLocker lock(&_instLock);
-//        if (_instance == nullptr) {
-            _instance = new ThumbnailWorker;
+        _instance = new ThumbnailWorker;
 #ifndef __mips__
-            (*_instance).start();
+        (*_instance).start();
 #endif
-//        }
     }
 
     return *_instance;
@@ -92,8 +90,6 @@ QPixmap ThumbnailWorker::getThumb(const QUrl &url, int secs)
     QPixmap pm;
 
     if (_cache.contains(url)) {
-//        auto p = _cache[url].find(secs);
-//        pm = *p;
         pm = _cache[url].value(secs);
     }
 
@@ -104,7 +100,6 @@ void ThumbnailWorker::setPlayerEngine(PlayerEngine *pPlayerEngline)
 {
     _engine = pPlayerEngline;
 }
-
 
 void ThumbnailWorker::requestThumb(const QUrl &url, int secs)
 {
@@ -145,12 +140,6 @@ QString ThumbnailWorker::libPath(const QString &strlib)
 
 void ThumbnailWorker::initThumb()
 {
-//    QLibrary *library = new QLibrary(path);
-//    library->load();
-//    m_setSeekTime = reinterpret_cast<thumb_setSeekTime>(QLibrary::resolve(path, "setSeekTime"));
-//    if (m_setSeekTime == nullptr) {
-//        return;
-//    }
     QLibrary library(libPath("libffmpegthumbnailer.so"));
     m_mvideo_thumbnailer = (mvideo_thumbnailer) library.resolve( "video_thumbnailer_create");
     m_mvideo_thumbnailer_destroy = (mvideo_thumbnailer_destroy) library.resolve( "video_thumbnailer_destroy");
@@ -159,9 +148,7 @@ void ThumbnailWorker::initThumb()
     m_mvideo_thumbnailer_generate_thumbnail_to_buffer = (mvideo_thumbnailer_generate_thumbnail_to_buffer) library.resolve( "video_thumbnailer_generate_thumbnail_to_buffer");
     if (m_mvideo_thumbnailer == nullptr || m_mvideo_thumbnailer_destroy == nullptr
             || m_mvideo_thumbnailer_create_image_data == nullptr || m_mvideo_thumbnailer_destroy_image_data == nullptr
-            || m_mvideo_thumbnailer_generate_thumbnail_to_buffer == nullptr )
-
-    {
+            || m_mvideo_thumbnailer_generate_thumbnail_to_buffer == nullptr ){
         return;
     }
     m_video_thumbnailer = m_mvideo_thumbnailer();

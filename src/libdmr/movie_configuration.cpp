@@ -255,7 +255,7 @@ void MovieConfiguration::append2ListUrl(const QUrl &url, KnownKey key, const QSt
 
 void MovieConfiguration::removeFromListUrl(const QUrl &url, KnownKey key, const QString &val)
 {
-    //add for warning by xxj ,no any means
+    ///add for warning by xxj ,no any means
     val.isNull();
     auto list = getListByUrl(url, key);
 }
@@ -325,7 +325,7 @@ static void _backend_test()
     mc.updateUrl(QUrl("movie1"), "sub-delay", 1.5);
     mc.updateUrl(QUrl("movie2"), "sub-delay", 1.0);
     mc.updateUrl(QUrl("movie1"), "volume", 20);
-    //mc.clear();
+
     auto res = mc.queryByUrl(QUrl("movie1"));
     Q_ASSERT (res.size() == 2);
     qDebug() << res;
