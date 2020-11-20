@@ -42,6 +42,7 @@
 #include <dimagebutton.h>
 #include <dthememanager.h>
 #include <DScrollBar>
+#include "../accessibility/ac-deepin-movie-define.h"
 
 #define PLAYLIST_FIXED_WIDTH 800
 #define POPUP_DURATION 350
@@ -148,7 +149,7 @@ public:
         setProperty("PlayItemThumb", "true");
         setState(ItemState::Normal);
         setFrameShape(QFrame::NoFrame);
-
+        this->setObjectName(PLAYITEM_WIDGET);
         auto kd = "local";
         if (!_pif.url.isLocalFile()) {
             if (_pif.url.scheme().startsWith("dvd")) {
@@ -226,9 +227,10 @@ public:
 
         //_closeBtn = new FloatingButton(this);
         _closeBtn = new DFloatingButton(DStyle::SP_CloseButton, this);
+        _closeBtn->setObjectName(PLAYITEN_CLOSE_BUTTON);
+        _closeBtn->setAccessibleName(PLAYITEN_CLOSE_BUTTON);
         _closeBtn->setIconSize(QSize(28, 28));
         _closeBtn->setFixedSize(25, 25);
-        _closeBtn->setObjectName("CloseBtn");
         _closeBtn->hide();
         connect(_closeBtn, &DFloatingButton::clicked, this, &PlayItemWidget::closeButtonClicked);
         //connect(_closeBtn, &FloatingButton::clicked, this, &PlayItemWidget::closeButtonClicked);
@@ -722,7 +724,8 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     setAttribute(Qt::WA_TranslucentBackground, false);
     //NOTE: set fixed will affect geometry animation
     //setFixedWidth(220);
-
+    this->setObjectName(PLAYLIST_WIDGET);
+//    this->setAccessibleName(PLAYLIST_WIDGET);
 
     paOpen = nullptr;
     paClose = nullptr;
@@ -744,6 +747,7 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     mainVLayout->addLayout(mainLayout);
 
     QWidget *left = new QWidget();
+    left->setObjectName(LEFT_WIDGET);
     left->setFixedSize(197, 288);
     left->setContentsMargins(0, 0, 0, 0);
     left->setAttribute(Qt::WA_TranslucentBackground, false);
@@ -775,6 +779,8 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     leftinfo->addSpacing(6);
 
     DPushButton *clearButton = new DPushButton();
+    clearButton->setObjectName(CLEAR_PLAYLIST_BUTTON);
+    clearButton->setAccessibleName(CLEAR_PLAYLIST_BUTTON);
     clearButton->setIcon(QIcon::fromTheme("dcc_clearlist"));
     clearButton->setText(tr("Empty"));
     DFontSizeManager::instance()->bind(clearButton, DFontSizeManager::T6);
@@ -819,6 +825,7 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
 //    vl->setSpacing(0);
 //    mainLayout->addLayout(vl, 3);
     QWidget *right = new QWidget();
+    right->setObjectName(RIGHT_LIST_WIDGET);
     auto *rightinfo = new QVBoxLayout;
     rightinfo->setContentsMargins(0, 0, 0, 0);
     rightinfo->setSpacing(0);
@@ -833,6 +840,8 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     _playlist->setContentsMargins(0, 0, 0, 0);
     _playlist->viewport()->setAutoFillBackground(false);
     _playlist->setAutoFillBackground(false);
+    _playlist->setObjectName(PLAYLIST);
+    _playlist->viewport()->setObjectName(FILE_LIST);
 
     rightinfo->addWidget(_playlist);
     _playlist->setAttribute(Qt::WA_TranslucentBackground, false);

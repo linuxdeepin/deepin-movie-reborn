@@ -51,6 +51,7 @@
 #include "vendor/presenter.h"
 #include <QSettings>
 
+#include "accessibility/acobjectlist.h"
 DWIDGET_USE_NAMESPACE
 
 
@@ -94,6 +95,7 @@ int main(int argc, char *argv[])
     app = DApplication::globalApplication(argc, argv);
 #endif
 
+    QAccessible::installFactory(accessibleFactory);
     // required by mpv
     setlocale(LC_NUMERIC, "C");
 

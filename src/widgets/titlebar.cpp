@@ -33,6 +33,7 @@
 
 #include <QtGui>
 #include <DThemeManager>
+#include "../accessibility/ac-deepin-movie-define.h"
 
 DWIDGET_USE_NAMESPACE
 
@@ -63,6 +64,8 @@ Titlebar::Titlebar(QWidget *parent) : DBlurEffectWidget(parent), d_ptr(new Title
 
     setAttribute(Qt::WA_TranslucentBackground, false);
     setFocusPolicy(Qt::NoFocus);
+    setObjectName(TITLEBAR);
+    setAccessibleName(TITLEBAR);
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);

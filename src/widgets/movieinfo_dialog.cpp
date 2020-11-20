@@ -181,6 +181,8 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
    }
    //x86上此处设置透明效果无作用
    //setAttribute(Qt::WA_TranslucentBackground, true);
+    this->setObjectName(MOVIE_INFO_DIALOG);
+    this->setAccessibleName(MOVIE_INFO_DIALOG);
     m_titleList.clear();
 
     auto layout = new QVBoxLayout(this);
@@ -189,6 +191,8 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
     setLayout(layout);
 
     CloseButton *closeBt = new CloseButton(this);
+    closeBt->setObjectName(MOVIEINFO_CLOSE_BUTTON);
+    closeBt->setAccessibleName(MOVIEINFO_CLOSE_BUTTON);
     //closeBt->setIcon(QIcon(INFO_CLOSE_LIGHT));
     //DImageButton *closeBt = new DImageButton(this);
     closeBt->setFixedSize(50, 50);
@@ -239,6 +243,9 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
     tipLst.clear();
 
     m_scrollArea = new QScrollArea;
+    m_scrollArea->setObjectName(MOVIE_INFO_SCROLL_AREA);
+    m_scrollArea->setAccessibleName(MOVIE_INFO_SCROLL_AREA);
+    m_scrollArea->viewport()->setObjectName(SCROLL_AREA_VIEWPORT);
     QPalette palette = m_scrollArea->viewport()->palette();
     palette.setBrush(QPalette::Background, Qt::NoBrush);
     m_scrollArea->viewport()->setPalette(palette);
@@ -247,6 +254,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
     m_scrollArea->setWidgetResizable(true);
 
     QWidget *scrollContentWidget = new QWidget(m_scrollArea);
+    scrollContentWidget->setObjectName(MOVIE_INFO_SCROLL_CONTENT);
     QVBoxLayout *scrollWidgetLayout = new QVBoxLayout;
     scrollWidgetLayout->setContentsMargins(0, 0, 10, 10);
     scrollWidgetLayout->setSpacing(10);
@@ -257,6 +265,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
 
     //添加基本信息
     ArrowLine *film = new ArrowLine;
+    film->setObjectName(FILM_INFO_WIDGET);
     film->setTitle(tr("Film info"));
     InfoBottom *infoRect = new InfoBottom;
     scrollWidgetLayout->addWidget(film);
@@ -289,6 +298,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
 
     //添加视频信息
     ArrowLine *video = new ArrowLine;
+    video->setObjectName(CODEC_INFO_WIDGET);
     video->setTitle(tr("Codec info"));
     InfoBottom *videoRect = new InfoBottom;
     scrollWidgetLayout->addWidget(video);
@@ -317,6 +327,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
 
     //添加音频信息
     ArrowLine *audio = new ArrowLine;
+    audio->setObjectName(AUDIO_INFO_WIDGET);
     audio->setTitle(tr("Audio info"));
     InfoBottom *audioRect = new InfoBottom;
     scrollWidgetLayout->addWidget(audio);

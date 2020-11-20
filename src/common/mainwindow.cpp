@@ -72,6 +72,7 @@
 
 #include <X11/cursorfont.h>
 #include <X11/Xlib.h>
+#include "../accessibility/ac-deepin-movie-define.h"
 
 //add by heyi
 //#define _NET_WM_MOVERESIZE_MOVE              8   /* movement only */
@@ -639,6 +640,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     //add bu heyi
     this->setAttribute(Qt::WA_AcceptTouchEvents);
+    this->setObjectName("deepin-movie-mainwindow");
     _mousePressTimer.setInterval(1300);
     connect(&_mousePressTimer, &QTimer::timeout, this, &MainWindow::slotmousePressTimerTimeOut);
 
@@ -713,6 +715,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     _toolbox = new ToolboxProxy(this, _engine);
     _toolbox->setFocusPolicy(Qt::NoFocus);
+    _toolbox->setObjectName(BOTTOM_TOOL_BOX);
 
     titlebar()->deleteLater();
 
@@ -755,6 +758,7 @@ MainWindow::MainWindow(QWidget *parent)
     dynamic_cast<IconButton *>(_miniQuitMiniBtn)->setFlat(true);
 #else
     _miniPlayBtn = new DIconButton(this);
+    _miniPlayBtn->setObjectName("miniPlayButton");
     _miniQuitMiniBtn = new DIconButton(this);
     _miniCloseBtn = new DIconButton(this);
 
@@ -1755,6 +1759,7 @@ void MainWindow::loadPlayList()
 {
     _playlist = nullptr;
     _playlist = new PlaylistWidget(this, _engine);
+//    _playlist->setObjectName(PLAYLIST_WIDGET);
     _playlist->hide();
     _toolbox->setPlaylist(_playlist);
     _engine->getplaylist()->loadPlaylist();
