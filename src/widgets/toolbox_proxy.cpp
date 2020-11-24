@@ -183,10 +183,6 @@ protected:
             } else {
                 return false;
             }
-        }
-        if(event->type() == QEvent::EnabledChange || event->type() == QEvent::ActivationChange)
-        {
-            return true;
         } else {
             // standard event processing
             return QObject::eventFilter(obj, event);
@@ -237,7 +233,8 @@ protected:
         return QObject::eventFilter(obj, event);
     }
 };
-
+//not used class
+/**
 class SubtitlesView;
 class SubtitleItemWidget: public QWidget
 {
@@ -324,7 +321,9 @@ private:
     int _sid {-1};
     QString _msg;
 };
-
+*/
+//not used class
+/**
 class SubtitlesView: public DArrowRectangle
 {
     Q_OBJECT
@@ -452,7 +451,7 @@ private:
     PlayerEngine *_engine {nullptr};
     QListWidget *_subsView {nullptr};
 };
-
+*/
 class SliderTime: public DArrowRectangle
 {
     Q_OBJECT
@@ -622,24 +621,20 @@ public:
         _indicatorPos = {v, rect().y()};
         update();
     }
-
     int getValue()
     {
         return _indicator->x();
     }
-
     int getTimePos()
     {
         return position2progress(QPoint(_indicator->x(), 0));
     }
-
     void setTime(qint64 pos)
     {
         QTime time(0, 0, 0);
         QString strTime = time.addSecs(static_cast<int>(pos)).toString("hh:mm:ss");
         _sliderTime->setTime(strTime);
     }
-
     void setTimeVisible(bool visible)
     {
         if (visible) {
@@ -649,30 +644,26 @@ public:
             _sliderTime->hide();
         }
     }
-
     void setViewProgBar(PlayerEngine *engine, QList<QPixmap>pm_list, QList<QPixmap>pm_black_list)
     {
-//        _viewProgBarLoad =new viewProgBarLoad(engine);
         _engine = engine;
         QLayoutItem *child;
-        while ((child = _viewProgBarLayout->takeAt(0)) != nullptr) {
-            //setParent为NULL，防止删除之后界面不消失
-            if (child->widget()) {
-                child->widget()->setParent(nullptr);
-            }
+//        while ((child = _viewProgBarLayout->takeAt(0)) != nullptr) {
+//            //setParent为NULL，防止删除之后界面不消失
+//            if (child->widget()) {
+//                child->widget()->setParent(nullptr);
+//            }
+//            delete child;
+//        }
 
-            delete child;
-        }
+//        while ((child = _viewProgBarLayout_black->takeAt(0)) != nullptr) {
+//            //setParent为NULL，防止删除之后界面不消失
+//            if (child->widget()) {
+//                child->widget()->setParent(nullptr);
+//            }
+//            delete child;
+//        }
 
-        while ((child = _viewProgBarLayout_black->takeAt(0)) != nullptr) {
-            //setParent为NULL，防止删除之后界面不消失
-            if (child->widget()) {
-                child->widget()->setParent(nullptr);
-            }
-
-            delete child;
-        }
-//        _back->setLayout(_viewProgBarLayout);
         _viewProgBarLayout->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
         _viewProgBarLayout->setSpacing(1);
 
@@ -690,10 +681,8 @@ public:
             label_black->move(i * (pixWidget + 1) + start_position, 5);
             label_black->setFixedSize(pixWidget, 50);
         }
-
         update();
     }
-
     void clear()
     {
         foreach (QLabel *label, _front->findChildren<QLabel *>()) {
@@ -1571,13 +1560,13 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
     }
 
     bool composited = CompositingManager::get().composited();
-/*   setFrameShape(QFrame::NoFrame);
-    setFrameShadow(QFrame::Plain);
-    setLineWidth(0);
-    setFixedHeight(TOOLBOX_HEIGHT);
-    setAutoFillBackground(false);
-    setAttribute(Qt::WA_TranslucentBackground);
-*/
+//    setFrameShape(QFrame::NoFrame);
+//    setFrameShadow(QFrame::Plain);
+//    setLineWidth(0);
+//    setFixedHeight(TOOLBOX_HEIGHT);
+//    setAutoFillBackground(false);
+//    setAttribute(Qt::WA_TranslucentBackground);
+
     if (!composited) {
         setWindowFlags(Qt::FramelessWindowHint | Qt::BypassWindowManagerHint);
         setContentsMargins(0, 0, 0, 0);
@@ -1621,13 +1610,13 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
     pm_black_list.clear();
 
     _previewer = new ThumbnailPreview;
-    _previewer->hide();
+//    _previewer->hide();
 
     _previewTime = new SliderTime;
     _previewTime->hide();
 
-    _subView = new SubtitlesView(nullptr, _engine);
-    _subView->hide();
+//    _subView = new SubtitlesView(nullptr, _engine);
+//    _subView->hide();
     setup();
 
     connect(DApplicationHelper::instance(), &DApplicationHelper::themeTypeChanged,
@@ -1719,7 +1708,7 @@ ToolboxProxy::~ToolboxProxy()
 //    _loadThread->terminate();
 //    _loadThread->exit();
 //    delete _loadThread;
-    delete _subView;
+//    delete _subView;
     delete _previewer;
     delete _previewTime;
 
@@ -2020,7 +2009,7 @@ void ToolboxProxy::setup()
 //        installHint(_volBtn, _volSlider);
 #else
         _volSlider = new VolumeSlider(_engine, _mainWindow, _mainWindow);
-	_volSlider->setObjectName(VOLUME_SLIDER_WIDGET);
+        _volSlider->setObjectName(VOLUME_SLIDER_WIDGET);
 //        _volSlider->setFocusPolicy(Qt::FocusPolicy::NoFocus);
 //        _volSlider->setWindowFlag(Qt::WindowStaysOnTopHint);
         connect(_volBtn, &VolumeButton::clicked, this, &ToolboxProxy::slotVolumeButtonClicked);
@@ -2119,10 +2108,9 @@ void ToolboxProxy::setup()
 //            this, &ToolboxProxy::updateHoverPreview);
 
     auto bubbler = new KeyPressBubbler(this);
-    this->installEventFilter(bubbler);
-    _playBtn->installEventFilter(bubbler);
-    _prevBtn->installEventFilter(bubbler);
-    nextBtn()->installEventFilter(bubbler);
+//    this->installEventFilter(bubbler);
+//    _playBtn->installEventFilter(bubbler);
+//    _prevBtn->installEventFilter(bubbler);
     connect(qApp, &QGuiApplication::applicationStateChanged, this, &ToolboxProxy::slotApplicationStateChanged);
 
 
@@ -2192,9 +2180,9 @@ void ToolboxProxy::closeAnyPopup()
         _previewTime->hide();
     }
 
-    if (_subView->isVisible()) {
-        _subView->hide();
-    }
+//    if (_subView->isVisible()) {
+//        _subView->hide();
+//    }
 
     if (_volSlider->isVisible()) {
         _volSlider->stopTimer();
@@ -2204,7 +2192,7 @@ void ToolboxProxy::closeAnyPopup()
 
 bool ToolboxProxy::anyPopupShown() const
 {
-    return _previewer->isVisible() || _previewTime->isVisible() || _subView->isVisible() || _volSlider->isVisible();
+    return _previewer->isVisible() || _previewTime->isVisible() || _volSlider->isVisible();
 }
 
 void ToolboxProxy::updateHoverPreview(const QUrl &url, int secs)
@@ -2278,8 +2266,7 @@ void ToolboxProxy::slotThemeTypeChanged()
 
 void ToolboxProxy::slotLeavePreview()
 {
-    auto pos =
-        _progBar->mapFromGlobal(QCursor::pos());
+    auto pos = _progBar->mapFromGlobal(QCursor::pos());
     if (!_progBar->geometry().contains(pos)) {
         _previewer->hide();
         _previewTime->hide();
@@ -2792,8 +2779,8 @@ void ToolboxProxy::updatePlayState()
     }
 
     if (_engine->state() == PlayerEngine::CoreState::Idle) {
-        if (_subView->isVisible())
-            _subView->hide();
+//        if (_subView->isVisible())
+//            _subView->hide();
 
         if (_previewer->isVisible()) {
             _previewer->hide();
@@ -2882,13 +2869,14 @@ void ToolboxProxy::buttonClicked(QString id)
     } else if (id == "list") {
         _mainWindow->requestAction(ActionFactory::ActionKind::TogglePlaylist);
         _listBtn->hideToolTip();
-    } else if (id == "sub") {
-        _subView->setVisible(true);
-
-        QPoint pos = _subBtn->parentWidget()->mapToGlobal(_subBtn->pos());
-        pos.ry() = parentWidget()->mapToGlobal(this->pos()).y();
-        _subView->show(pos.x() + _subBtn->width() / 2, pos.y() - 5 + TOOLBOX_TOP_EXTENT);
     }
+//    } else if (id == "sub") {
+//        _subView->setVisible(true);
+
+//        QPoint pos = _subBtn->parentWidget()->mapToGlobal(_subBtn->pos());
+//        pos.ry() = parentWidget()->mapToGlobal(this->pos()).y();
+//        _subView->show(pos.x() + _subBtn->width() / 2, pos.y() - 5 + TOOLBOX_TOP_EXTENT);
+//    }
 }
 
 void ToolboxProxy::buttonEnter()
@@ -3130,7 +3118,7 @@ void ToolboxProxy::setButtonTooltipHide()
         m_fsBtnTip->hide();
         m_listBtnTip->hide();
     }else{
-        _subBtn->hideToolTip();
+//        _subBtn->hideToolTip();
         _listBtn->hideToolTip();
         _fsBtn->hideToolTip();
     }

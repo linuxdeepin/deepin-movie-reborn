@@ -69,7 +69,7 @@ class MainWindow;
 class DMRSlider;
 class ThumbnailPreview;
 class SliderTime;
-class SubtitlesView;
+//class SubtitlesView;
 class VolumeSlider;
 class ViewProgBar;
 class viewProgBarLoad;
@@ -356,7 +356,7 @@ private:
     DWidget *_progBarspec {nullptr};
     ThumbnailPreview *_previewer {nullptr};
     SliderTime *_previewTime {nullptr};
-    SubtitlesView *_subView {nullptr};
+//    SubtitlesView *_subView {nullptr};
     int _lastHoverValue {0};
     QWidget *_bot_spec {nullptr};
     QWidget *bot_toolWgt {nullptr};

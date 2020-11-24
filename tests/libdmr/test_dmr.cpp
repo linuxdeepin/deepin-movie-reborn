@@ -23,7 +23,6 @@ TEST(libdmr, libdmrTest)
     player->engine().changeVolume(120);
     player->play(QUrl::fromLocalFile("/usr/share/dde-introduction/demo.mp4"));
 
-
     auto &mc = MovieConfiguration::get();
     mc.updateUrl(QUrl("movie1"), "sub-delay", -2.5);
     mc.updateUrl(QUrl("movie1"), "sub-delay", 1.5);

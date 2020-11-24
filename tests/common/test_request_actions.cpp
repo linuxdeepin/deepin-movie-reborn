@@ -36,18 +36,17 @@ TEST(requestAction, onlineSub)
     w->requestAction(ActionFactory::ActionKind::HideSubtitle);
 
     QTestEventList testEventList;
-    testEventList.addKeyClick(Qt::Key_Left, Qt::ShiftModifier,500); //sub delay
-    testEventList.addKeyClick(Qt::Key_Left, Qt::ShiftModifier,500);
-    testEventList.addKeyClick(Qt::Key_Right, Qt::ShiftModifier,500);    //sub advance
-    testEventList.addKeyClick(Qt::Key_Right, Qt::ShiftModifier,500);
-    testEventList.addKeyClick(Qt::Key_Right, Qt::ShiftModifier,500);
+    testEventList.addKeyClick(Qt::Key_Left, Qt::ShiftModifier,300); //sub delay
+    testEventList.addKeyClick(Qt::Key_Left, Qt::ShiftModifier,300);
+    testEventList.addKeyClick(Qt::Key_Right, Qt::ShiftModifier,300);    //sub advance
+    testEventList.addKeyClick(Qt::Key_Right, Qt::ShiftModifier,300);
+    testEventList.addKeyClick(Qt::Key_Right, Qt::ShiftModifier,300);
     testEventList.simulate(w);
 }
 
 TEST(requestAction,windowAbove)
 {
     MainWindow* w = dApp->getMainWindow();
-    w->show();
 
     QTest::qWait(500);
     w->requestAction(ActionFactory::ActionKind::WindowAbove);   //置顶
@@ -58,7 +57,6 @@ TEST(requestAction,windowAbove)
 TEST(requestAction, sound)
 {
     MainWindow* w = dApp->getMainWindow();
-    w->show();
 
     QTest::qWait(500);
     w->requestAction(ActionFactory::ActionKind::Stereo);
@@ -88,7 +86,6 @@ TEST(requestAction, sound)
 TEST(requestAction, playSpeed)
 {
     MainWindow* w = dApp->getMainWindow();
-    w->show();
 
     QTest::qWait(500);
     w->requestAction(ActionFactory::ActionKind::ZeroPointFiveTimes);
@@ -105,7 +102,6 @@ TEST(requestAction, playSpeed)
 TEST(requestAction, frame)
 {
     MainWindow* w = dApp->getMainWindow();
-    w->show();
 
     QTest::qWait(300);
     w->requestAction(ActionFactory::ActionKind::DefaultFrame);
@@ -131,34 +127,32 @@ TEST(requestAction, frame)
     w->requestAction(ActionFactory::ActionKind::PreviousFrame);
 }
 
-TEST(requestAction,Mute)
+/*TEST(requestAction,Mute)
+{
+    MainWindow* w = dApp->getMainWindow();
+
+    QTest::qWait(200);
+    w->requestAction(ActionFactory::ActionKind::ToggleMute);
+    QTest::qWait(200);
+    w->requestAction(ActionFactory::ActionKind::ToggleMute);
+}*/
+
+/*TEST(requestAction, subtitle)
 {
     MainWindow* w = dApp->getMainWindow();
     w->show();
 
-    QTest::qWait(200);
-    w->requestAction(ActionFactory::ActionKind::ToggleMute);
-    QTest::qWait(200);
-    w->requestAction(ActionFactory::ActionKind::ToggleMute);
-}
-
-//TEST(requestAction, subtitle)
-//{
-//    MainWindow* w = dApp->getMainWindow();
-//    w->show();
-
-//    QTest::qWait(300);
-//    w->requestAction(ActionFactory::ActionKind::LoadSubtitle);
-//    QTest::qWait(300);
-//    w->requestAction(ActionFactory::ActionKind::HideSubtitle);
-//    QTest::qWait(300);
-//    EXPECT_TRUE(false);
-//}
+    QTest::qWait(300);
+    w->requestAction(ActionFactory::ActionKind::LoadSubtitle);
+    QTest::qWait(300);
+    w->requestAction(ActionFactory::ActionKind::HideSubtitle);
+    QTest::qWait(300);
+    EXPECT_TRUE(false);
+}*/
 
 TEST(requestAction,goToScreenshotSolder)
 {
     MainWindow* w = dApp->getMainWindow();
-    w->show();
 
     QTest::qWait(300);
     w->requestAction(ActionFactory::ActionKind::GoToScreenshotSolder);
@@ -168,7 +162,6 @@ TEST(requestAction,goToScreenshotSolder)
 //TEST(requestAction,openFileList)
 //{
 //    MainWindow *w = dApp->getMainWindow();
-//    w->show();
 
 //    QTest::qWait(300);
 //    w->requestAction(ActionFactory::ActionKind::OpenFileList);
@@ -179,7 +172,6 @@ TEST(requestAction,goToScreenshotSolder)
 //TEST(requestAction,openDirectory)
 //{
 //    MainWindow *w = dApp->getMainWindow();
-//    w->show();
 
 //    QTest::qWait(300);
 //    w->requestAction(ActionFactory::ActionKind::OpenDirectory);
@@ -190,7 +182,6 @@ TEST(requestAction,goToScreenshotSolder)
 TEST(requestAction, settings)
 {
     MainWindow* w = dApp->getMainWindow();
-    w->show();
 
     w->setShowSetting(false);
     QTest::qWait(300);
@@ -202,7 +193,6 @@ TEST(requestAction, settings)
 TEST(requestAction,openCdrom)
 {
     MainWindow* w = dApp->getMainWindow();
-    w->show();
 
     QTest::qWait(300);
     w->requestAction(ActionFactory::ActionKind::OpenCdrom);
@@ -212,7 +202,6 @@ TEST(requestAction,openCdrom)
 /*TEST(requestAction, playlistRemoveItem)
 {
     MainWindow* w = dApp->getMainWindow();
-    w->show();
 
     QTest::qWait(300);
     w->requestAction(ActionFactory::ActionKind::PlaylistRemoveItem);
@@ -221,7 +210,6 @@ TEST(requestAction,openCdrom)
 TEST(requestAction, exit)
 {
     MainWindow* w = dApp->getMainWindow();
-    w->show();
 
     QTest::qWait(300);
     w->requestAction(ActionFactory::ActionKind::Exit);

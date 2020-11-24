@@ -90,4 +90,3 @@ void VolumeButton::wheelEvent(QWheelEvent *we)
 }
 
 }
-

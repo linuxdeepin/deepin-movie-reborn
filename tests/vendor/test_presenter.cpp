@@ -49,6 +49,7 @@ TEST(Presenter, slotloopStatusRequested)
 TEST(Presenter, slotplayModeChanged)
 {
     Presenter *presenter = dApp->initPresenter();
+    MainWindow *w = dApp->getMainWindow();
 
     QTest::qWait(500);
     presenter->slotplayModeChanged(PlaylistModel::PlayMode::OrderPlay);
@@ -58,4 +59,7 @@ TEST(Presenter, slotplayModeChanged)
     presenter->slotplayModeChanged(PlaylistModel::PlayMode::ListLoop);
     QTest::qWait(500);
     presenter->slotplayModeChanged(PlaylistModel::PlayMode::ShufflePlay);
+
+    w->close();
+    delete w;
 }

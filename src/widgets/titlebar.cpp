@@ -235,6 +235,5 @@ void Titlebar::paintEvent(QPaintEvent *pe)
     pp.addRect(rect());
     painter.fillPath(pp, bgColor);
 }
-
 }
 

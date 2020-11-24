@@ -639,7 +639,6 @@ MainWindow::MainWindow(QWidget *parent)
 {
     //add bu heyi
     this->setAttribute(Qt::WA_AcceptTouchEvents);
-    this->setObjectName("deepin-movie-mainwindow");
     _mousePressTimer.setInterval(1300);
     connect(&_mousePressTimer, &QTimer::timeout, this, &MainWindow::slotmousePressTimerTimeOut);
 
@@ -1014,9 +1013,9 @@ MainWindow::MainWindow(QWidget *parent)
     });
     connect(qApp, &QGuiApplication::fontChanged, this, &MainWindow::slotFontChanged);
 
-    {
-        loadWindowState();
-    }
+//    {
+//        loadWindowState();
+//    }
 
     ThreadPool::instance()->moveToNewThread(&volumeMonitoring);
     volumeMonitoring.start();
@@ -3490,9 +3489,9 @@ void MainWindow::closeEvent(QCloseEvent *ev)
 
     _engine->savePlaybackPosition();
 
-    {
-        saveWindowState();
-    }
+//    {
+//        saveWindowState();
+//    }
 
     ev->accept();
     if (utils::check_wayland_env()) {

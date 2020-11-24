@@ -13,14 +13,14 @@
 #include <QMenu>
 #include "presenter.h"
 #include "titlebar.h"
+#include "src/widgets/tip.h"
 
 using namespace dmr;
 TEST(ToolBox, buttonBoxButton)
 {
     MainWindow* w = dApp->getMainWindow();
-    w->show();
-
     ButtonBoxButton *btn = new ButtonBoxButton("test", w);
+
     btn->show();
     QTest::qWait(500);
     QTest::mouseMove(btn);
@@ -30,9 +30,8 @@ TEST(ToolBox, buttonBoxButton)
 TEST(ToolBox, buttonTooltip)
 {
     MainWindow* w = dApp->getMainWindow();
-    w->show();
-
     ButtonToolTip *tip = new ButtonToolTip(w);
+
     tip->setText("123");
     tip->show();
     tip->changeTheme(darkTheme);
@@ -40,6 +39,34 @@ TEST(ToolBox, buttonTooltip)
 
     tip->deleteLater();
 }
+TEST(ToolBox, notificationWidget)
+{
+    MainWindow* w = dApp->getMainWindow();
+    NotificationWidget *nwBottom = new NotificationWidget(w);
+    NotificationWidget *nwNone = new NotificationWidget(w);
+
+    nwBottom->setAnchor(NotificationWidget::AnchorBottom);
+    nwNone->setAnchor(NotificationWidget::AnchorNone);
+    nwBottom->show();
+    nwNone->show();
+    nwBottom->syncPosition(w->geometry());
+    nwNone->syncPosition(w->geometry());
+}
+TEST(ToolBox, tip)
+{
+    MainWindow* w = dApp->getMainWindow();
+    Tip *tip = new Tip(QPixmap(), "", w);
+
+    tip->setText("test");
+    tip->setBackground(QBrush(QColor(Qt::white)));
+    tip->setRadius(2);
+    tip->setBorderColor(QColor(Qt::blue));
+    tip->pop(QPoint(200, 300));
+    QColor color = tip->borderColor();
+    QBrush brush = tip->background();
+    tip->deleteLater();
+}
+\
 /*TEST(ToolBox, reloadFile)
 {
     MainWindow* w = dApp->getMainWindow();
