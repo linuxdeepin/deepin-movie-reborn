@@ -149,7 +149,7 @@ public:
      */
     void setTouched(bool touched)
     {
-         _isTouch = touched;
+        _isTouch = touched;
     }
     //add by heyi
     /**
@@ -183,7 +183,7 @@ public:
     //在读取光盘的时候，直接把光盘挂载点的路径加入到播放列表中 thx
     bool addCdromPath();
     void loadPlayList();
-    void setOpenFiles(QStringList&);
+    void setOpenFiles(QStringList &);
 
     void testMprisapp();
     void setShowSetting(bool);
@@ -286,8 +286,8 @@ protected slots:
 private:
     void setupTitlebar();
 
-    void handleSettings(DSettingsDialog*);
-    DSettingsDialog* initSettings();
+    void handleSettings(DSettingsDialog *);
+    DSettingsDialog *initSettings();
     void updateSizeConstraints();
     void toggleUIMode();
 
@@ -318,7 +318,7 @@ private:
 
 private:
     DFloatingMessage *popup {nullptr};
-    QLabel *_fullscreentimelable {nullptr};
+    QLabel *_fullscreentimelable {nullptr};             //全屏时右上角的影片进度
     QHBoxLayout *_fullscreentimebox {nullptr};
 
     Titlebar *_titlebar {nullptr};
@@ -326,7 +326,7 @@ private:
     PlaylistWidget *_playlist {nullptr};
     PlayerEngine *_engine {nullptr};
     AnimationLabel *_animationlable {nullptr};
-    MovieProgressIndicator *_progIndicator {nullptr};
+    MovieProgressIndicator *_progIndicator {nullptr};   //全屏时右上角的系统时间
 
     QList<QPair<QImage, qint64>> _burstShoots;
     bool _inBurstShootMode {false};
@@ -431,7 +431,7 @@ private:
     bool m_bIsFullSreen {false};
     bool m_bisOverhunderd {false};
     bool m_bisShowSettingDialog {true};
-    QDBusInterface* m_pDBus {nullptr};
+    QDBusInterface *m_pDBus {nullptr};
 };
 };
 

@@ -19,6 +19,5 @@ TEST(MovieApp, show)
 //    QTimer::singleShot(1000,[=]{movieapp->show();});
     QTest::qWait(300);
     w->testMprisapp();
-    w->close();
 }
 

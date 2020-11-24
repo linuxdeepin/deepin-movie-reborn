@@ -139,6 +139,7 @@ static QString flag2key(Settings::Flag f)
 
 bool Settings::isSet(Flag f) const
 {
+    bool ret = false;
     auto subgroups = _settings->group("base")->childGroups();
     auto grp = std::find_if(subgroups.begin(), subgroups.end(), [ = ](GroupPtr grp) {
         return grp->key() == "base.play";
@@ -146,18 +147,17 @@ bool Settings::isSet(Flag f) const
 
     if (grp != subgroups.end()) {
         auto sub = (*grp)->childOptions();
-
         auto key = flag2key(f);
+
         auto p = std::find_if(sub.begin(), sub.end(), [ = ](OptionPtr opt) {
             auto sk = opt->key();
             sk.remove(0, sk.lastIndexOf('.') + 1);
             return sk == key;
         });
 
-        return p != sub.end() && (*p)->value().toBool();
+        ret = (p != sub.end() && (*p)->value().toBool());
     }
-
-    return false;
+    return ret;
 }
 
 QStringList Settings::commonPlayableProtocols() const

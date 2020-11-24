@@ -151,7 +151,8 @@ private:
     QPixmap _pic;
 };
 
-class FloatingButton: public DPushButton
+///be replaced by DFloatingButton
+/*class FloatingButton: public DPushButton
 {
     Q_OBJECT
 public:
@@ -172,6 +173,7 @@ protected:
 signals:
     void mouseHover(bool bFlag);
 };
+*/
 
 class PlayItemWidget;
 

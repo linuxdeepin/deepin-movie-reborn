@@ -797,9 +797,7 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     clearButton->setPalette(pa_cb);
     clearButton->setContentsMargins(0, 0, 0, 0);
 
-    QObject::connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::paletteTypeChanged, clearButton,
-    [ = ] () {
-        //[ = ] (DGuiApplicationHelper::ColorType type) {
+    QObject::connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::paletteTypeChanged, clearButton, [ = ] () {
         DPalette pa_cb = DApplicationHelper::instance()->palette(clearButton);
         if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ) {
             pa_cb.setBrush(QPalette::Light, QColor(100, 100, 100, 255));
