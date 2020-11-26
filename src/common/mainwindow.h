@@ -437,6 +437,7 @@ private:
     bool m_bisShowSettingDialog {true};
     QDBusInterface *m_pDBus {nullptr};
     MainWindowPropertyMonitor *m_pMWPM {nullptr};
+    bool m_isFirstLoadDBus {false};
 };
 
 //窗管返回事件过滤器

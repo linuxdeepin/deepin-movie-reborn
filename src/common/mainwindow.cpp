@@ -770,6 +770,8 @@ MainWindow::MainWindow(QWidget *parent)
         qDebug() << __func__ << _engine->state();
 #ifndef __mips__
         if (_engine->state() == PlayerEngine::CoreState::Idle) {
+            //播放切换时，更新音量dbus 当前的sinkInputPath
+            m_isFirstLoadDBus = false;
             _fullscreentimelable->close();
             _progIndicator->setVisible(false);
             emit frameMenuEnable(false);
@@ -4212,6 +4214,7 @@ void MainWindow::readSinkInputPath()
             continue;
 
         sinkInputPath = curPath.path();
+         m_isFirstLoadDBus = true;
         break;
     }
 }
@@ -4225,7 +4228,8 @@ void MainWindow::setAudioVolume(int volume)
         tVolume = (volume + 1) / 100.0 ;
     }
 
-    readSinkInputPath();
+    if (!m_isFirstLoadDBus)
+        readSinkInputPath();
 
     if (!sinkInputPath.isEmpty()) {
         QDBusInterface ainterface("com.deepin.daemon.Audio", sinkInputPath,
