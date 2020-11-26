@@ -46,7 +46,7 @@
 #include <GL/glx.h>
 #include <GL/glxext.h>
 #undef Bool
-#include <mpv/qthelper.hpp>
+#include "../vendor/qthelper.hpp"
 
 typedef const char *glXGetScreenDriver_t (Display *dpy, int scrNum);
 
