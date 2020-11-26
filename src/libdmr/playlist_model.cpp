@@ -1700,7 +1700,7 @@ static int open_codec_context(int *stream_idx,
 
     stream_index = ret;
     st = fmt_ctx->streams[stream_index];
-#if LIBAVFORMAT_VERSION_MAJOR >= 57 && LIBAVFORMAT_VERSION_MINOR <= 25
+#if LIBAVFORMAT_VERSION_MAJOR >= 57
     *dec_ctx = st->codecpar;
     dec = avcodec_find_decoder((*dec_ctx)->codec_id);
 #else
