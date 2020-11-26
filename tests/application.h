@@ -43,18 +43,18 @@ public:
     Application(int &argc, char **argv);
     ~Application();
 
-//    bool isRunning();
-    //test
     void setMainWindow(MainWindow *window);
+    void setMainWindowWayland(MainWindow *window);
     MainWindow *getMainWindow();
+    MainWindow *getMainWindowWayland();
     Presenter * initPresenter();
     MovieApp * initMovieApp(MainWindow *mw);
 
 private:
-//    bool _isRunning;
-    MainWindow *m_mainwindow;
-    Presenter *m_presenter{nullptr};
-    MovieApp *m_movieapp;
+    MainWindow *m_mainwindow {nullptr};
+    MainWindow *m_mainwindow_wayland {nullptr};
+    Presenter *m_presenter {nullptr};
+    MovieApp *m_movieapp {nullptr};
 };
 
 #endif  // APPLICATION_H_

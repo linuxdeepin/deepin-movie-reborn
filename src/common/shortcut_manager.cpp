@@ -180,7 +180,7 @@ void ShortcutManager::buildBindingsFromSettings()
     });
 }
 
-QString ShortcutManager::toJson()
+/*QString ShortcutManager::toJson()
 {
     QJsonObject shortcutObj;
     QJsonArray jsonGroups;
@@ -228,7 +228,7 @@ QString ShortcutManager::toJson()
 
     QJsonDocument doc(shortcutObj);
     return doc.toJson().data();
-}
+}*/
 
 vector<QAction*> ShortcutManager::actionsForBindings()
 {

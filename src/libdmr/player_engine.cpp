@@ -741,11 +741,11 @@ void PlayerEngine::setDVDDevice(const QString &path)
     _current->setDVDDevice(path);
 }
 
-void PlayerEngine::firstInit()
+/*void PlayerEngine::firstInit()
 {
     _current->firstInit();
     addSubSearchPath(OnlineSubtitle::get().storeLocation());
-}
+}*/
 
 bool PlayerEngine::addPlayFile(const QUrl &url)
 {

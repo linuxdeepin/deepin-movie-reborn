@@ -56,7 +56,7 @@ class ShortcutManager: public QObject {
         const BindingMap& map() const { return _map; }
         vector<QAction*> actionsForBindings();
         void buildBindingsFromSettings();
-        QString toJson();
+//        QString toJson();
 
     public slots:
         void buildBindings();

@@ -66,7 +66,7 @@ TEST(ToolBox, tip)
     QBrush brush = tip->background();
     tip->deleteLater();
 }
-\
+
 /*TEST(ToolBox, reloadFile)
 {
     MainWindow* w = dApp->getMainWindow();

@@ -209,10 +209,10 @@ TEST(requestAction,openCdrom)
     w->requestAction(ActionFactory::ActionKind::PlaylistRemoveItem);
 }*/
 
-TEST(requestAction, exit)
-{
-    MainWindow* w = dApp->getMainWindow();
+//TEST(requestAction, exit)
+//{
+//    MainWindow* w = dApp->getMainWindow();
 
-    QTest::qWait(300);
-    w->requestAction(ActionFactory::ActionKind::Exit);
-}
+//    QTest::qWait(300);
+//    w->requestAction(ActionFactory::ActionKind::Exit);
+//}

@@ -23,20 +23,21 @@ Application::Application(int &argc, char **argv)
 
 Application::~Application()
 {
-    m_mainwindow->close();
-    delete m_mainwindow;
-    m_movieapp->quit();
+//    m_mainwindow->close();
+//    delete m_mainwindow;
+//    m_movieapp->quit();
 }
-
-//bool Application::isRunning()
-//{
-//    return _isRunning;
-//}
 
 void Application::setMainWindow(MainWindow *window)
 {
     if (nullptr != window) {
         m_mainwindow = window;
+    }
+}
+void Application::setMainWindowWayland(MainWindow *window)
+{
+    if (nullptr != window) {
+        m_mainwindow_wayland = window;
     }
 }
 
@@ -46,12 +47,18 @@ MainWindow * Application::getMainWindow()
         m_mainwindow = new MainWindow();
     return m_mainwindow;
 }
+MainWindow * Application::getMainWindowWayland()
+{
+    if(nullptr == m_mainwindow_wayland)
+        m_mainwindow_wayland = new MainWindow();
+    return m_mainwindow_wayland;
+}
 
 Presenter * Application::initPresenter()
 {
     if(m_presenter == nullptr)
     {
-        m_presenter = new Presenter(getMainWindow());
+        m_presenter = new Presenter(getMainWindowWayland());
     }
     return m_presenter;
 }

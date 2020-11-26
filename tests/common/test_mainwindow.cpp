@@ -7,6 +7,7 @@
 #include <DSettingsDialog>
 #include <dwidgetstype.h>
 #include <QtCore/QMetaObject>
+#include <QGuiApplication>
 
 #include <unistd.h>
 #include <gtest/gtest.h>
@@ -23,8 +24,21 @@
 #include "src/widgets/dmr_lineedit.h"
 #include "src/common/actions.h"
 #include "src/backends/mpv/mpv_glwidget.h"
+#include "utils.h"
+#include "dbus_adpator.h"
 
 using namespace dmr;
+TEST(MainWindow, init)
+{
+    MainWindow *w = dApp->getMainWindow();
+    PlayerEngine *engine =  w->engine();
+    int sid;
+
+    sid = engine->sid();
+    engine->isSubVisible();
+    engine->selectSubtitle(0);
+
+}
 
 TEST(MainWindow, loadFile)
 {
@@ -57,6 +71,35 @@ TEST(MainWindow, loadFile)
     w->move(0,0);   
 
     w->customContextMenuRequested(QPoint(200,300));
+}
+
+TEST(MainWindow, DBus)
+{
+    MainWindow *w = dApp->getMainWindow();
+    ApplicationAdaptor *appAdaptor = new ApplicationAdaptor(w);
+
+    QVariant v = ApplicationAdaptor::redDBusProperty("com.deepin.daemon.Audio", "/com/deepin/daemon/Audio",
+                                                     "com.deepin.daemon.Audio", "SinkInputs");
+    if(v.isValid())
+    {
+        QList<QDBusObjectPath> allSinkInputsList = v.value<QList<QDBusObjectPath> >();
+        for (auto curPath : allSinkInputsList) {
+            QVariant name = ApplicationAdaptor::redDBusProperty("com.deepin.daemon.Audio", curPath.path(),
+                                                                 "com.deepin.daemon.Audio.SinkInput", "Name");
+
+            QString strMovie = QObject::tr("Movie");
+            if (!name.isValid() || (!name.toString().contains(strMovie, Qt::CaseInsensitive) && !name.toString().contains("deepin-movie", Qt::CaseInsensitive)))
+                continue;
+
+            QString sinkInputPath = curPath.path();
+            break;
+        }
+    }
+
+    QVariant method = ApplicationAdaptor::redDBusMethod("com.deepin.daemon.Audio", "/com/deepin/daemon/Audio",
+                                                     "com.deepin.daemon.Audio", "SinkInputs");
+    appAdaptor->Raise();
+    appAdaptor->openFile("/usr/share/dde-introduction/demo.mp4");
 }
 
 TEST(MainWindow, resizeWindow)
@@ -202,18 +245,6 @@ TEST(MainWindow, shortCutVolumeAndFrame)
     testEventList.simulate(w);
 }
 
-TEST(MainWindow, reloadFile)
-{
-    MainWindow* w = dApp->getMainWindow();
-
-    //openfile
-    PlayerEngine *engine =  w->engine();
-    QList<QUrl> listPlayFiles;
-    listPlayFiles << QUrl::fromLocalFile("/usr/share/dde-introduction/demo.mp4")\
-                  << QUrl::fromLocalFile("/usr/share/music/bensound-sunny.mp3");
-    engine->addPlayFiles(listPlayFiles);
-}
-
 TEST(MainWindow, progBar)
 {
     MainWindow* w = dApp->getMainWindow();
@@ -269,6 +300,8 @@ TEST(MainWindow, movieInfoDialog)
 
     DGuiApplicationHelper::instance()->setThemeType(DGuiApplicationHelper::LightType);
     emit DGuiApplicationHelper::instance()->paletteTypeChanged(DGuiApplicationHelper::LightType);
+    emit dApp->fontChanged(QFont("Times"));
+
     QTest::qWait(200);
     mid.show();
     QTest::mouseMove(filePathLbl, QPoint(), 500);
@@ -319,6 +352,17 @@ TEST(MainWindow, loadSubtitle)
 
 }
 
+TEST(MainWindow, reloadFile)
+{
+    MainWindow* w = dApp->getMainWindow();
+    PlayerEngine *engine =  w->engine();
+    QList<QUrl> listPlayFiles;
+    listPlayFiles << QUrl::fromLocalFile("/usr/share/dde-introduction/demo.mp4")\
+                  << QUrl::fromLocalFile("/usr/share/music/bensound-sunny.mp3");
+    QTest::qWait(100);
+    engine->addPlayFiles(listPlayFiles);
+}
+
 TEST(ToolBox, togglePlayList)
 {
     MainWindow* w = dApp->getMainWindow();
@@ -346,6 +390,8 @@ TEST(ToolBox, playListWidget)
     QTest::mouseClick(playlist->itemWidget(playlist->item(0)), Qt::LeftButton, Qt::NoModifier, QPoint(), 500);
     QTest::mouseMove(playlist->itemWidget(playlist->item(1)), QPoint(), 500);
     QTest::mouseDClick(playlist->itemWidget(playlist->item(1)), Qt::LeftButton, Qt::NoModifier, QPoint(), 500);
+
+    utils::ShowInFileManager(QString("/usr/share/music/bensound-sunny.mp3"));
 
     QTest::mouseMove(listBtn, QPoint(), 1000);
     QTest::mouseClick(listBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 500);
@@ -387,7 +433,7 @@ TEST(ToolBox, playBtnBox)
     QTest::mouseMove(nextBtn, QPoint(), 500);
     QTest::mouseClick(nextBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 500); //play next
     QTest::mouseMove(prevBtn, QPoint(), 500);
-    QTest::mouseClick(prevBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 500); //play prev
+    QTest::mouseClick(prevBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 600); //play prev
 
     w->requestAction(ActionFactory::ActionKind::ListLoop);
     QTest::mouseMove(nextBtn, QPoint(), 500);

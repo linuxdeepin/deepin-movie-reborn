@@ -35,4 +35,6 @@ TEST(libdmr, libdmrTest)
     mc.updateUrl(QUrl("movie2"), "volume", 40);
     res = mc.queryByUrl(QUrl("movie1"));
     mc.clear();
+
+    delete player;
 }

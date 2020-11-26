@@ -1168,9 +1168,7 @@ void PlaylistModel::appendAsync(const QList<QUrl> &urls)
             m_brunning = m_ploadThread->isRunning();
         }
     } else {
-        //QTimer::singleShot(10, [ = ]() {
         delayedAppendAsync(urls);
-        //});
     }
 }
 
