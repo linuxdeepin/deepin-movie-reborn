@@ -33,6 +33,7 @@
 
 #include <QtGui>
 #include <DThemeManager>
+#include <QPainterPath>
 #include "../accessibility/ac-deepin-movie-define.h"
 
 DWIDGET_USE_NAMESPACE

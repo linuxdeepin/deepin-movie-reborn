@@ -30,6 +30,7 @@
 #include "utils.h"
 #include <QtDBus>
 #include <QtWidgets>
+#include <QPainterPath>
 
 namespace dmr {
 namespace utils {

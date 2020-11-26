@@ -34,6 +34,7 @@
 
 #include <QtX11Extras/QX11Info>
 #include <QLibrary>
+#include <QPainterPath>
 
 #include <dthememanager.h>
 #include <DApplication>

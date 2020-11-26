@@ -1034,11 +1034,16 @@ private:
 class VolumeSlider: public DArrowRectangle
 {
     Q_OBJECT
+
+    enum State {
+        Open,
+        Close
+    };
+
 public:
     VolumeSlider(PlayerEngine *eng, MainWindow *mw, QWidget *parent)
         : DArrowRectangle(DArrowRectangle::ArrowBottom, DArrowRectangle::FloatWidget, parent), _engine(eng), _mw(mw)
     {
-        //        setFixedSize(QSize(62, 205));
 #ifdef __mips__
         if (!CompositingManager::get().composited()) {
             setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
@@ -1070,7 +1075,6 @@ public:
         setLayout(l);
 
         _slider = new DSlider(Qt::Vertical, this);
-//        _slider->setFixedHeight(132);
         _slider->setFixedWidth(24);
         _slider->setIconSize(QSize(12, 12));
         _slider->installEventFilter(this);
@@ -1105,7 +1109,6 @@ public:
         m_pBtnChangeMute = new ImageButton(this);
         m_pBtnChangeMute->setObjectName(MUTE_BTN);
         m_pBtnChangeMute->setAccessibleName(MUTE_BTN);
-//        m_pBtnChangeMute->setFixedSize(36, 36);
         m_pBtnChangeMute->setFixedWidth(36);
         m_pBtnChangeMute->setImage(":/icons/deepin/builtin/dark/texts/dcc_volumemid_36px.svg");
         m_pBtnChangeMute->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred));
@@ -1113,61 +1116,21 @@ public:
 
         l->addWidget(m_pBtnChangeMute, 0, Qt::AlignHCenter);
         connect(_slider, &DSlider::valueChanged, this, &VolumeSlider::slotValueChanged);
-//        l->setStretchFactor(_slider,1);
-
         _autoHideTimer.setSingleShot(true);
 #ifdef __x86_64__
-        connect(&_autoHideTimer, &QTimer::timeout, this, &VolumeSlider::hide);
-#endif
+        connect(&_autoHideTimer, &QTimer::timeout, this, &VolumeSlider::popup);
+#else
         if(utils::check_wayland_env()){
             connect(&_autoHideTimer, &QTimer::timeout, this, &VolumeSlider::hide);
         }
-        //Modify by xiepengfei 2020.5.5
-        //修改音量显示逻辑，使之发生变化时从变化源处直接修改显示值而不是从系统中获取
-        //此处修改有风险，但为了音量变化曲线问题
-        //后期如有方法解决音量变化曲线问题请启用此部分代码并删除setDiaplayValue等相关部分
-        /*connect(_engine, &PlayerEngine::volumeChanged, [ = ]() {
-            auto vol = _engine->volume();
-            auto var = _slider->value();
-            if (abs(var - vol) < 5) {
-                _slider->setValue(var);
-            } else {
-                _slider->setValue(vol);
-            }
-        });*/
-//        m_composited = CompositingManager::get().composited();
-
-//        auto *bodyShadow = new QGraphicsDropShadowEffect;
-//        bodyShadow->setBlurRadius(20.0);
-//        bodyShadow->setColor(QColor(0, 0, 0,  255 / 10));
-//        bodyShadow->setOffset(0, 6.0);
-//        this->setGraphicsEffect(bodyShadow);
+#endif
     }
-
 
     ~VolumeSlider()
     {
 //        disconnect(DThemeManager::instance(), &DThemeManager::themeChanged,
 //                this, &VolumeSlider::updateBg);
     }
-
-//修改bug42399,注释掉此段代码
-/*#ifdef __mips__
-    void paintEvent(QPaintEvent *event)
-    {
-        bool composited = CompositingManager::get().composited();
-        if (!m_composited) {
-            QPainter painter(this);
-            if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ) {
-                painter.fillRect(rect(), Qt::white);
-            } else {
-                painter.fillRect(rect(), Qt::black);
-            }
-        } else {
-            DArrowRectangle::paintEvent(event);
-        }
-    }
-#endif*/
 
     void stopTimer()
     {
@@ -1193,6 +1156,8 @@ public:
 
         m_pBtnChangeMute->repaint();
     }
+
+public slots:
     void popup()
     {
         auto main_rect = _mw->rect();
@@ -1202,23 +1167,68 @@ public:
                   view_rect.height() - TOOLBOX_HEIGHT - VOLSLIDER_HEIGHT,
                   VOLSLIDER_WIDTH, VOLSLIDER_HEIGHT);
         QRect start = end;
-//        start.setY(end.y() - VOLSLIDER_HEIGHT);
-//        int t = end.bottom();
 
         start.setHeight(0);
         start.moveBottom(end.bottom());
 
-        pVolAnimation = new QPropertyAnimation(this, "geometry");
-        pVolAnimation->setStartValue(start);
-        pVolAnimation->setEndValue(end);
-        pVolAnimation->setDuration(POPUP_DURATION);
-//        pVolAnimationOpen->setTargetObject(this);
-        pVolAnimation->setEasingCurve(QEasingCurve::Linear);
-        pVolAnimation->start();
-        connect(pVolAnimation, &QPropertyAnimation::finished, [=]{
-            pVolAnimation->deleteLater();
-            pVolAnimation = nullptr;
-        });
+        if (state == State::Close) {
+            m_anima = new QParallelAnimationGroup;
+            pVolAnimation = new QPropertyAnimation(this, "geometry");
+            pVolAnimation->setStartValue(start);
+            pVolAnimation->setEndValue(end);
+            pVolAnimation->setDuration(200);
+            pVolAnimation->setEasingCurve(QEasingCurve::Linear);
+            pVolAnimTran = new QPropertyAnimation(this, "windowOpacity");
+            pVolAnimTran->setStartValue(0);
+            pVolAnimTran->setEndValue(1);
+            pVolAnimTran->setDuration(200);
+            m_anima->addAnimation(pVolAnimation);
+            m_anima->addAnimation(pVolAnimTran);
+            m_bFinished = true;
+            raise();
+            m_anima->start();
+            connect(m_anima, &QPropertyAnimation::finished, [=]{
+                pVolAnimation->deleteLater();
+                pVolAnimation = nullptr;
+                pVolAnimTran->deleteLater();
+                pVolAnimTran = nullptr;
+                m_anima->deleteLater();
+                m_anima = nullptr;
+                state = Open;
+                m_bFinished = false;
+            });
+        } else {
+            m_anima = new QParallelAnimationGroup;
+            pVolAnimation = new QPropertyAnimation(this, "geometry");
+            pVolAnimation->setStartValue(end);
+            pVolAnimation->setEndValue(start);
+            pVolAnimation->setDuration(200);
+            pVolAnimation->setEasingCurve(QEasingCurve::Linear);
+            pVolAnimTran = new QPropertyAnimation(this, "windowOpacity");
+            pVolAnimTran->setStartValue(1);
+            pVolAnimTran->setEndValue(0);
+            pVolAnimTran->setDuration(200);
+            m_anima->addAnimation(pVolAnimation);
+            m_anima->addAnimation(pVolAnimTran);
+            m_bFinished = true;
+            m_anima->start();
+            connect(m_anima, &QPropertyAnimation::finished, [=]{
+                pVolAnimation->deleteLater();
+                pVolAnimation = nullptr;
+                pVolAnimTran->deleteLater();
+                pVolAnimTran = nullptr;
+                m_anima->deleteLater();
+                m_anima = nullptr;
+                state = Close;
+                hide();
+                m_bFinished = false;
+            });
+        }
+    }
+
+    void hideSlider()
+    {
+        popup();
     }
 
 public slots:
@@ -1251,6 +1261,9 @@ public slots:
             auto var = _slider->value();
             m_pLabShowVolume->setText(QString("%1%").arg(var * 1.0 / _slider->maximum() * 100));
             _mw->requestAction(ActionFactory::ChangeVolume, false, QList<QVariant>() << var);
+    }
+    bool getsliderstate() {
+        return m_bFinished;
     }
 protected:
 #ifdef __x86_64__
@@ -1288,78 +1301,7 @@ protected:
         QWidget::leaveEvent(e);
     }
 #endif
-
-/*    void paintEvent(QPaintEvent *)
-    {
-        QPainter painter(this);
-        painter.setRenderHints(QPainter::Antialiasing | QPainter::HighQualityAntialiasing);
-        QPainterPath path;
-
-        auto palette = this->palette();
-
-        auto penWidthf = 1.0;
-        auto background = QColor(235,235,235,0.3*255); //palette.background();
-        auto borderColor = QColor(0,0,0,255*2/10);
-
-        const qreal radius = 20;
-        const qreal triHeight = 12;
-        const qreal triWidth = 16;
-        const qreal height = this->height() - triHeight;
-        const qreal width = this->width();
-
-        QRectF topRightRect(QPointF(0, 0),
-                            QPointF(2 * radius, 2 * radius));
-        QRectF bottomRightRect(QPointF(0, height - 2 * radius),
-                               QPointF(2 * radius, height));
-        QRectF topLeftRect(QPointF(width, 0),
-                           QPointF(width - 2 * radius, 2 * radius));
-        QRectF bottomLeftRect(QPointF(width, height),
-                              QPointF(width - 2 * radius, height - 2 * radius));
-
-        path.moveTo(radius, 0.0);
-        path.lineTo(width - radius, 0.0);
-        path.arcTo(topLeftRect, 90.0, 90.0);
-        path.lineTo(width, height - radius);
-        path.arcTo(bottomLeftRect, 180.0, -90.0);
-        path.lineTo(width / 2 + triWidth / 2, height);
-        path.lineTo(width / 2, height + triHeight);
-        path.lineTo(width / 2 - triWidth / 2, height);
-        path.lineTo(radius, height);
-
-        path.arcTo(bottomRightRect, 270.0, -90.0);
-        path.lineTo(0.0, radius);
-
-        path.arcTo(topRightRect, 180.0, -90.0);
-        path.lineTo(radius, 0.0);
-
-//        FIXME: light: white
-//        painter.fillPath(path, QColor(49, 49, 49));
-//        FIXME: light: QColor(0, 0, 0, 51)
-//        QPen pen(QColor(0, 0, 0, 0.1 * 255));
-
-        if (0 == 2) {
-            painter.fillPath(path, QColor(43, 43, 43));
-
-        } else {
-            painter.fillPath(path, background);
-        }
-
-        QPen pen(borderColor);
-        pen.setWidth(penWidthf);
-        //painter.strokePath(path, pen);
-    }
-*/
-
 private slots:
-    /*void updateBg()
-    {
-        if (qApp->theme() == "dark") {
-            setBackgroundColor(QColor(49, 49, 49, 255 * 9 / 10));
-        } else {
-            setBackgroundColor(QColor(255, 255, 255, 255 * 9 / 10));
-        }
-    }*/
-
     bool eventFilter(QObject *obj, QEvent *e)
     {
         if (e->type() == QEvent::Wheel) {
@@ -1389,7 +1331,11 @@ private:
     bool m_composited = false;
     bool m_mouseIn = false;
     bool m_bIsMute {false};
-    QPropertyAnimation *pVolAnimation;
+    bool m_bFinished {false};
+    QPropertyAnimation *pVolAnimation {nullptr};
+    QPropertyAnimation *pVolAnimTran {nullptr};
+    QParallelAnimationGroup *m_anima {nullptr};
+    State state {Close};
 };
 
 viewProgBarLoad::viewProgBarLoad(PlayerEngine *engine, DMRSlider *progBar, ToolboxProxy *parent)
@@ -1560,13 +1506,6 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
     }
 
     bool composited = CompositingManager::get().composited();
-//    setFrameShape(QFrame::NoFrame);
-//    setFrameShadow(QFrame::Plain);
-//    setLineWidth(0);
-//    setFixedHeight(TOOLBOX_HEIGHT);
-//    setAutoFillBackground(false);
-//    setAttribute(Qt::WA_TranslucentBackground);
-
     if (!composited) {
         setWindowFlags(Qt::FramelessWindowHint | Qt::BypassWindowManagerHint);
         setContentsMargins(0, 0, 0, 0);
@@ -2186,7 +2125,7 @@ void ToolboxProxy::closeAnyPopup()
 
     if (_volSlider->isVisible()) {
         _volSlider->stopTimer();
-        _volSlider->hide();
+        _volSlider->popup();
     }
 }
 
@@ -2308,19 +2247,17 @@ void ToolboxProxy::slotLeaveViewProgBar()
 
 void ToolboxProxy::slotVolumeButtonClicked()
 {
-    if (CompositingManager::get().composited())
-    {
+    if (_volSlider->getsliderstate())
+        return;
+    if (CompositingManager::get().composited()) {
         if (!_volSlider->isVisible()) {
             _volSlider->show(_mainWindow->width() - _volBtn->width() / 2 - _playBtn->width() - 40,
                              _mainWindow->height() - TOOLBOX_HEIGHT - 2);
-            _volSlider->raise();
             _volSlider->popup();
         } else {
-            _volSlider->hide();
+            _volSlider->popup();
         }
-    }
-    else
-    {
+    } else {
 #if defined (__mips__) || defined (__aarch64__)
         if (!_volSlider->isVisible()) {
             auto pPoint = mapToGlobal(QPoint(this->rect().width(), this->rect().height()));

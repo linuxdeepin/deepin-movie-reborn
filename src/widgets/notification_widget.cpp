@@ -34,6 +34,7 @@
 #include <DPlatformWindowHandle>
 #include <dthememanager.h>
 #include <dapplication.h>
+#include <QPainterPath>
 
 namespace dmr {
 

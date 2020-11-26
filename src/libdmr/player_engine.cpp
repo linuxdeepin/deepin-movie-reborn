@@ -33,11 +33,11 @@
 #include "playlist_model.h"
 #include "movie_configuration.h"
 #include "online_sub.h"
-
 #include "mpv_proxy.h"
 #include "compositing_manager.h"
-
 #include "dguiapplicationhelper.h"
+
+#include <QPainterPath>
 
 #ifndef _LIBDMR_
 #include "dmr_settings.h"

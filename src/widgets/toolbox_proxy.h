@@ -40,14 +40,16 @@
 #include <DIconButton>
 #include <DButtonBox>
 #include <DBlurEffectWidget>
-#include "playlist_widget.h"
 #include <DFrame>
 #include <DLabel>
 #include <DFloatingWidget>
+#include <QPainterPath>
+
 #include "dguiapplicationhelper.h"
 #include "videoboxbutton.h"
 #include "filter.h"
 #include "toolbutton.h"
+#include "playlist_widget.h"
 
 #include "thumbnail_worker.h"
 

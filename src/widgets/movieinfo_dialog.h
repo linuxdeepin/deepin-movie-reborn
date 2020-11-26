@@ -41,6 +41,7 @@
 #include <DGuiApplicationHelper>
 #include <DApplication>
 #include <DArrowLineDrawer>
+#include <QPainterPath>
 
 #include "../accessibility/ac-deepin-movie-define.h"
 

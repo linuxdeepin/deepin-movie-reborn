@@ -42,6 +42,7 @@
 #include <DStyle>
 #include <DLabel>
 #include <DTextEdit>
+#include <QPainterPath>
 
 
 namespace Dtk {

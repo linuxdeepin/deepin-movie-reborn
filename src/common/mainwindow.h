@@ -36,6 +36,7 @@
 #include <DPlatformWindowHandle>
 //#include <QtWidgets>
 #include <DFrame>
+#include <QPainterPath>
 #include "actions.h"
 #include "widgets/titlebar.h"
 #include <DPushButton>
