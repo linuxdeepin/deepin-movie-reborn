@@ -35,7 +35,7 @@
 #include <mpv/render_gl.h>
 #include <mpv_proxy.h>
 #undef Bool
-#include <mpv/qthelper.hpp>
+#include "../../vendor/qthelper.hpp"
 #include <DGuiApplicationHelper>
 //DWIDGET_USE_NAMESPACE
 

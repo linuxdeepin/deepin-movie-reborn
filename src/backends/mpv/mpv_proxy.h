@@ -37,7 +37,7 @@
 #include <player_engine.h>
 #include <xcb/xproto.h>
 #undef Bool
-#include <mpv/qthelper.hpp>
+#include "../../vendor/qthelper.hpp"
 
 typedef mpv_event *(*mpv_waitEvent)(mpv_handle *ctx, double timeout);
 typedef int (*mpv_set_optionString)(mpv_handle *ctx, const char *name, const char *data);
