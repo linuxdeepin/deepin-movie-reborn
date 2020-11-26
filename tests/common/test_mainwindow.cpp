@@ -24,7 +24,6 @@
 #include "src/common/actions.h"
 #include "src/backends/mpv/mpv_glwidget.h"
 
-#include "dmr_settings.h"
 using namespace dmr;
 
 TEST(MainWindow, loadFile)
@@ -60,28 +59,9 @@ TEST(MainWindow, loadFile)
     w->customContextMenuRequested(QPoint(200,300));
 }
 
-TEST(MainWindow, settings)
-{
-    Settings::get().isSet(Settings::Flag::ClearWhenQuit);
-    Settings::get().isSet(Settings::Flag::ShowThumbnailMode);
-    Settings::get().isSet(Settings::Flag::AutoSearchSimilar);
-    Settings::get().isSet(Settings::Flag::PreviewOnMouseover);
-    Settings::get().isSet(Settings::Flag::MultipleInstance);
-    Settings::get().isSet(Settings::Flag::PauseOnMinimize);
-    Settings::get().settings()->sync();
-
-    Settings::get().commonPlayableProtocols();
-    Settings::get().commonPlayableProtocols();
-    Settings::get().iscommonPlayableProtocol("dvb");
-    Settings::get().screenshotLocation();
-    Settings::get().screenshotNameTemplate();
-    Settings::get().screenshotNameSeqTemplate();
-}
-
 TEST(MainWindow, resizeWindow)
 {
     MainWindow *w = dApp->getMainWindow();
-    QTest::qWait(3000); //等待缩略图加载
     //缩放窗口
 //    QPoint bot_right(w->frameGeometry().bottomRight().x()+2, w->frameGeometry().bottomRight().y()+2);
 //    QTest::qWait(1000);
@@ -117,28 +97,19 @@ TEST(MainWindow, touch)
     w->setTouched(true);
 
     QTest::mouseDClick(w, Qt::LeftButton, Qt::NoModifier, QPoint(100, 200), 1000); //fullscreen
-    //QCursor::setPos(100, 200);
+
     QTest::mousePress(w->windowHandle(), Qt::LeftButton, Qt::MetaModifier, QPoint(100, 200), 500);
-    //QCursor::setPos(400, 200);
     QTest::mouseRelease(w->windowHandle(), Qt::LeftButton, Qt::MetaModifier, QPoint(200, 200), 500);
 
     QTest::mousePress(w->windowHandle(), Qt::LeftButton, Qt::MetaModifier, QPoint(200, 200), 500);
-    //QCursor::setPos(400, 200);
     QTest::mouseRelease(w->windowHandle(), Qt::LeftButton, Qt::MetaModifier, QPoint(100, 200), 500);
 
-    QTest::qWait(1000);
-    //QCursor::setPos(400, 100);
     QTest::mousePress(w->windowHandle(), Qt::LeftButton, Qt::MetaModifier, QPoint(400, 100), 500);
-    //QCursor::setPos(400, 300);
     QTest::mouseRelease(w->windowHandle(), Qt::LeftButton, Qt::MetaModifier, QPoint(400, 300), 500);
 
-    w->setTouched(true);
-
     QTest::mousePress(w->windowHandle(), Qt::LeftButton, Qt::MetaModifier, QPoint(400, 300), 500);
-    //QCursor::setPos(400, 300);
     QTest::mouseRelease(w->windowHandle(), Qt::LeftButton, Qt::MetaModifier, QPoint(400, 100), 500);
 
-    QTest::qWait(1000);
     QTest::mouseDClick(w, Qt::LeftButton, Qt::NoModifier, QPoint(), 1000);
     w->setTouched(false);
 }
@@ -169,19 +140,21 @@ TEST(MainWindow, shortCutPlay)
     testEventList.addKeyClick(Qt::Key_A, Qt::AltModifier, 1000);    //screenshot
     testEventList.addKeyClick(Qt::Key_S, Qt::AltModifier, 1000);    //连拍
 
-    testEventList.addKeyClick(Qt::Key_Right, Qt::NoModifier, 1000); //fast forward
-    testEventList.addKeyClick(Qt::Key_Left, Qt::NoModifier, 1000);  //fast backward
+    testEventList.addKeyClick(Qt::Key_Right, Qt::NoModifier, 600); //fast forward
+    for(int i=0; i<4; i++){
+        testEventList.addKeyClick(Qt::Key_Left, Qt::NoModifier, 200);  //fast backward
+    }
 
     //playlist
     testEventList.addKeyClick(Qt::Key_F3, Qt::NoModifier, 1000);    //playlist popup
-    testEventList.addKeyClick(Qt::Key_Down, Qt::NoModifier, 500);
-    testEventList.addKeyClick(Qt::Key_Enter, Qt::NoModifier, 500);      //play selected item
-    testEventList.addKeyClick(Qt::Key_F3, Qt::NoModifier, 1500);    //playlist
-    testEventList.addKeyClick(Qt::Key_Up, Qt::NoModifier, 500);
-    testEventList.addKeyClick(Qt::Key_Enter, Qt::NoModifier, 500);
+    testEventList.addKeyClick(Qt::Key_Down, Qt::NoModifier, 300);
+    testEventList.addKeyClick(Qt::Key_Enter, Qt::NoModifier, 300);      //play selected item
+    testEventList.addKeyClick(Qt::Key_F3, Qt::NoModifier, 1700);    //playlist
+    testEventList.addKeyClick(Qt::Key_Up, Qt::NoModifier, 300);
+    testEventList.addKeyClick(Qt::Key_Enter, Qt::NoModifier, 300);
     testEventList.addKeyClick(Qt::Key_F3, Qt::NoModifier, 1800);
-    testEventList.addKeyClick(Qt::Key_Down, Qt::NoModifier, 500);
-    testEventList.addKeyClick(Qt::Key_Delete, Qt::NoModifier, 500);    //delete from playlist
+    testEventList.addKeyClick(Qt::Key_Down, Qt::NoModifier, 400);
+    testEventList.addKeyClick(Qt::Key_Delete, Qt::NoModifier, 400);    //delete from playlist
 
     //加速播放
     for (int i = 0; i<10 ;i++) {
@@ -241,34 +214,7 @@ TEST(MainWindow, reloadFile)
     engine->addPlayFiles(listPlayFiles);
 }
 
-TEST(MainWindow, movieInfoDialog)
-{
-    MainWindow* w = dApp->getMainWindow();
-    PlayerEngine *engine  =  w->engine();
-    MovieInfoDialog mid(engine->playlist().currentInfo(), w);
-    DLabel *filePathLbl = mid.findChild<DLabel *>("filePathLabel");
-
-    mid.setFont(QFont("Times"));
-    QTest::qWait(500);
-    mid.show();
-    QTest::qWait(500);
-    QTest::mouseMove(filePathLbl, QPoint(), 500);
-    QTest::qWait(1000);
-    QTest::mouseMove(w, QPoint(200, 300), 500);
-    QTest::qWait(200);
-    mid.close();
-
-    DGuiApplicationHelper::instance()->setThemeType(DGuiApplicationHelper::LightType);
-    emit DGuiApplicationHelper::instance()->paletteTypeChanged(DGuiApplicationHelper::LightType);
-    QTest::qWait(200);
-    mid.show();
-    QTest::mouseMove(filePathLbl, QPoint(), 500);
-    QTest::mouseMove(w, QPoint(200, 300), 1000);
-    QTest::qWait(100);
-    mid.close();
-}
-
-TEST(ToolBox, progBar)
+TEST(MainWindow, progBar)
 {
     MainWindow* w = dApp->getMainWindow();
     ToolboxProxy* toolboxProxy = w->toolbox();
@@ -304,6 +250,33 @@ TEST(ToolBox, progBar)
     Settings::get().settings()->setOption("base.play.showInthumbnailmode", false);
 }
 
+TEST(MainWindow, movieInfoDialog)
+{
+    MainWindow* w = dApp->getMainWindow();
+    PlayerEngine *engine  =  w->engine();
+    MovieInfoDialog mid(engine->playlist().currentInfo(), w);
+    DLabel *filePathLbl = mid.findChild<DLabel *>("filePathLabel");
+
+    mid.setFont(QFont("Times"));
+    QTest::qWait(500);
+    mid.show();
+    QTest::qWait(500);
+    QTest::mouseMove(filePathLbl, QPoint(), 500);
+    QTest::qWait(1000);
+    QTest::mouseMove(w, QPoint(200, 300), 500);
+    QTest::qWait(200);
+    mid.close();
+
+    DGuiApplicationHelper::instance()->setThemeType(DGuiApplicationHelper::LightType);
+    emit DGuiApplicationHelper::instance()->paletteTypeChanged(DGuiApplicationHelper::LightType);
+    QTest::qWait(200);
+    mid.show();
+    QTest::mouseMove(filePathLbl, QPoint(), 500);
+    QTest::mouseMove(w, QPoint(200, 300), 1000);
+    QTest::qWait(100);
+    mid.close();
+}
+
 TEST(MainWindow, UrlDialog)
 {
     MainWindow* w = dApp->getMainWindow();
@@ -313,6 +286,12 @@ TEST(MainWindow, UrlDialog)
     uDlg->show();
     QTest::mouseMove(uDlg->getButton(0), QPoint(), 500);
     QTest::mouseClick(uDlg->getButton(0), Qt::LeftButton, Qt::NoModifier,QPoint(), 500);
+
+    uDlg->show();
+    QTest::mouseMove(lineEdit, QPoint(), 500);
+    QTest::keyClicks(lineEdit,QString("mail.263.net/"), Qt::NoModifier, 1);
+    QTest::mouseMove(uDlg->getButton(1), QPoint(), 500);
+    QTest::mouseClick(uDlg->getButton(1), Qt::LeftButton, Qt::NoModifier, QPoint(), 1000);
 
     uDlg->show();
     QTest::mouseMove(lineEdit, QPoint(), 500);
@@ -426,7 +405,8 @@ TEST(ToolBox, fullScreenBtn)
     QTest::mouseMove(fsBtn, QPoint(), 500);
     QTest::mouseClick(fsBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 1000);
 
-    toolboxProxy->updateSlider();
+    DGuiApplicationHelper::instance()->setThemeType(DGuiApplicationHelper::DarkType);
+    emit DGuiApplicationHelper::instance()->paletteTypeChanged(DGuiApplicationHelper::DarkType);
 
     QTest::mouseMove(fsBtn, QPoint(), 500);
     QTest::mouseClick(fsBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 1000);
@@ -452,6 +432,9 @@ TEST(ToolBox, quitPlayList)
     MainWindow* w = dApp->getMainWindow();
     ToolboxProxy* toolboxProxy = w->toolbox();
     ToolButton *listBtn = toolboxProxy->listBtn();
+
+    DGuiApplicationHelper::instance()->setThemeType(DGuiApplicationHelper::UnknownType);
+    emit DGuiApplicationHelper::instance()->paletteTypeChanged(DGuiApplicationHelper::UnknownType);
 
     QTest::mouseMove(listBtn, QPoint(), 500);
     QTest::mouseClick(listBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 1000);

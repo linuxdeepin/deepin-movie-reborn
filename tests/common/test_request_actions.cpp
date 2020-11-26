@@ -90,13 +90,15 @@ TEST(requestAction, playSpeed)
     QTest::qWait(500);
     w->requestAction(ActionFactory::ActionKind::ZeroPointFiveTimes);
     QTest::qWait(500);
-    w->requestAction(ActionFactory::ActionKind::OneTimes);
-    QTest::qWait(500);
     w->requestAction(ActionFactory::ActionKind::OnePointTwoTimes);
     QTest::qWait(500);
     w->requestAction(ActionFactory::ActionKind::OnePointFiveTimes);
     QTest::qWait(500);
     w->requestAction(ActionFactory::ActionKind::Double);
+    QTest::qWait(500);
+    w->requestAction(ActionFactory::ActionKind::OneTimes);
+//    QTest::qWait(500);
+//    w->requestAction(ActionFactory::ActionKind::SeekAbsolute);
 }
 
 TEST(requestAction, frame)

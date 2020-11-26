@@ -67,11 +67,9 @@
 #include <DSettingsWidgetFactory>
 #include <DLineEdit>
 #include <DFileDialog>
-
-#include <QtX11Extras/QX11Info>
-
 #include <X11/cursorfont.h>
 #include <X11/Xlib.h>
+
 #include "../accessibility/ac-deepin-movie-define.h"
 
 //add by heyi
@@ -372,68 +370,54 @@ public:
 };
 #endif
 
-
 #ifndef USE_DXCB
-//窗管返回事件过滤器
-class MainWindowPropertyMonitor: public QAbstractNativeEventFilter
+MainWindowPropertyMonitor::MainWindowPropertyMonitor(MainWindow *src) : QAbstractNativeEventFilter(), _mw(src)
 {
-public:
-    explicit MainWindowPropertyMonitor(MainWindow *src)
-        : QAbstractNativeEventFilter(), _mw(src)
-    {
-        //安装事件过滤器
-        qApp->installNativeEventFilter(this);
-    }
-
-    ~MainWindowPropertyMonitor()
-    {
-        qApp->removeNativeEventFilter(this);
-    }
-
-    bool nativeEventFilter(const QByteArray &eventType, void *message, long *)
-    {
-        xcb_generic_event_t *xevent = (xcb_generic_event_t *)message;
-        uint response_type = xevent->response_type & ~0x80;
-        if (XCB_PROPERTY_NOTIFY == response_type) {
-            auto propertyNotify = reinterpret_cast<xcb_property_notify_event_t *>(xevent);
-            //经过观察发现【专业版】设置窗口总在最前会返回一个351、一个483和一堆327
-            //目前先按照此方法修改，后期在个人版和社区版可能会存在问题
-            //个人版参考378
-            //p.s. 360推测是鼠标点击事件，327推测窗口刷新事件
-            switch (propertyNotify->atom) {
-            case 351:
-                m_start = true;
-                break;
-            case 483:
-                break;
-            case 327:
-                m_start = false;
-                if (!m_list.isEmpty() && m_list.size() == 2) {
-                    //判断是否符合标志位
-                    QList<unsigned int> temp {351, 483};
-                    if (m_list == temp) {
-                        //切换窗口置顶，此处需注意，应用切换可以传递至窗管，窗管无法传递至应用
-                        //所以此处只需单向传递即可
-                        _mw->requestAction(ActionFactory::ActionKind::WindowAbove);
-                    }
+    //安装事件过滤器
+    qApp->installNativeEventFilter(this);
+}
+MainWindowPropertyMonitor::~MainWindowPropertyMonitor()
+{
+    qApp->removeNativeEventFilter(this);
+}
+bool MainWindowPropertyMonitor::nativeEventFilter(const QByteArray &eventType, void *message, long *)
+{
+    xcb_generic_event_t *xevent = (xcb_generic_event_t *)message;
+    uint response_type = xevent->response_type & ~0x80;
+    if (XCB_PROPERTY_NOTIFY == response_type) {
+        auto propertyNotify = reinterpret_cast<xcb_property_notify_event_t *>(xevent);
+        //经过观察发现【专业版】设置窗口总在最前会返回一个351、一个483和一堆327
+        //目前先按照此方法修改，后期在个人版和社区版可能会存在问题
+        //个人版参考378
+        //p.s. 360推测是鼠标点击事件，327推测窗口刷新事件
+        switch (propertyNotify->atom) {
+        case 351:
+            m_start = true;
+            break;
+        case 483:
+            break;
+        case 327:
+            m_start = false;
+            if (!m_list.isEmpty() && m_list.size() == 2) {
+                //判断是否符合标志位
+                QList<unsigned int> temp {351, 483};
+                if (m_list == temp) {
+                    //切换窗口置顶，此处需注意，应用切换可以传递至窗管，窗管无法传递至应用
+                    //所以此处只需单向传递即可
+                    _mw->requestAction(ActionFactory::ActionKind::WindowAbove);
                 }
-                m_list.clear();
-                break;
-            default:
-                break;
             }
-            if (m_start) {
-                m_list << propertyNotify->atom;
-            }
+            m_list.clear();
+            break;
+        default:
+            break;
         }
-        return false;
+        if (m_start) {
+            m_list << propertyNotify->atom;
+        }
     }
-
-    MainWindow *_mw {nullptr};
-    xcb_atom_t _atomWMState;
-    QList<unsigned int> m_list;
-    bool m_start {false};
-};
+    return false;
+}
 #endif
 
 class MainWindowEventListener : public QObject
@@ -940,8 +924,8 @@ MainWindow::MainWindow(QWidget *parent)
     _listener = new MainWindowEventListener(this);
     this->windowHandle()->installEventFilter(_listener);
 
-    MainWindowPropertyMonitor *p = new MainWindowPropertyMonitor(this);
-    QAbstractEventDispatcher::instance()->installNativeEventFilter(p);
+    m_pMWPM = new MainWindowPropertyMonitor(this);
+    QAbstractEventDispatcher::instance()->installNativeEventFilter(m_pMWPM);
 
     connect(this, &MainWindow::windowEntered, &MainWindow::resumeToolsWindow);
     connect(this, &MainWindow::windowLeaved, &MainWindow::suspendToolsWindow);
@@ -1245,7 +1229,7 @@ void MainWindow::onWindowStateChanged()
     }
 }
 
-void MainWindow::handleHelpAction()
+/*void MainWindow::handleHelpAction()
 {
     class _DApplication : public DApplication
     {
@@ -1258,7 +1242,7 @@ void MainWindow::handleHelpAction()
 
     DApplication *dapp = qApp;
     reinterpret_cast<_DApplication *>(dapp)->_DApplication::showHelp();
-}
+}*/
 
 /*void MainWindow::changedVolume(int vol)
 {
@@ -1373,6 +1357,8 @@ MainWindow::~MainWindow()
     }
     delete _engine;
     _engine = nullptr;
+    QAbstractEventDispatcher::instance()->removeNativeEventFilter(m_pMWPM);
+    m_diskCheckThread.stop();
 
 #ifdef USE_DXCB
     if (_evm) {
@@ -1380,9 +1366,10 @@ MainWindow::~MainWindow()
         delete _evm;
     }
 #endif
+
 }
 
-void MainWindow::firstPlayInit()
+/*void MainWindow::firstPlayInit()
 {
 //    if (m_bMpvFunsLoad) return;
 
@@ -1403,7 +1390,7 @@ void MainWindow::firstPlayInit()
 
 //    requestAction(ActionFactory::ChangeSubCodepage, false, {"auto"});
 //    m_bMpvFunsLoad = true;
-}
+}*/
 
 bool MainWindow::judgeMouseInWindow(QPoint pos)
 {
@@ -1589,7 +1576,7 @@ void MainWindow::reflectActionToUI(ActionFactory::ActionKind kd)
         break;
     }
 
-    //迷你模式下判断是否全屏，恢复菜单状态 by zhuyuliang
+        //迷你模式下判断是否全屏，恢复菜单状态 by zhuyuliang
     case ActionFactory::ActionKind::ToggleMiniMode: {
         acts = ActionFactory::get().findActionsByKind(kd);
         auto p = acts[0];
@@ -1825,9 +1812,9 @@ void MainWindow::menuItemInvoked(QAction *action)
                     if (iter.value() == kd) {
                         isiter = true;
                         if ((iter.key() == QKeySequence("Return")
-                                || iter.key() == QKeySequence("Num+Enter")
-                                || iter.key() == QKeySequence("Up")
-                                || iter.key() == QKeySequence("Down")) && isShortcut) {
+                             || iter.key() == QKeySequence("Num+Enter")
+                             || iter.key() == QKeySequence("Up")
+                             || iter.key() == QKeySequence("Down")) && isShortcut) {
                             if (iter.key() == QKeySequence("Up") || iter.key() == QKeySequence("Down")) {
                                 int key;
                                 if (iter.key() == QKeySequence("Up")) {
@@ -1946,9 +1933,9 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         qApp->quit();
         break;
 
-    case ActionFactory::ActionKind::LightTheme:
-        if (fromUI) switchTheme();
-        break;
+//    case ActionFactory::ActionKind::LightTheme:
+//        if (fromUI) switchTheme();
+//        break;
 
     case ActionFactory::ActionKind::OpenCdrom: {
         auto dev = dmr::CommandLineManager::get().dvdDevice();
@@ -2553,46 +2540,12 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     }
 
     case ActionFactory::ActionKind::AccelPlayback: {
-        if (_engine->state() != PlayerEngine::CoreState::Idle) {
-            _playSpeed = qMin(2.0, _playSpeed + 0.1);
-            _engine->setPlaySpeed(_playSpeed);
-            if (qFuzzyCompare(0.5, _playSpeed)) {
-                setPlaySpeedMenuChecked(ActionFactory::ActionKind::ZeroPointFiveTimes);
-            } else if (qFuzzyCompare(1.0, _playSpeed)) {
-                setPlaySpeedMenuChecked(ActionFactory::ActionKind::OneTimes);
-            } else if (qFuzzyCompare(1.2, _playSpeed)) {
-                setPlaySpeedMenuChecked(ActionFactory::ActionKind::OnePointTwoTimes);
-            } else if (qFuzzyCompare(1.5, _playSpeed)) {
-                setPlaySpeedMenuChecked(ActionFactory::ActionKind::OnePointFiveTimes);
-            } else if (qFuzzyCompare(2.0, _playSpeed)) {
-                setPlaySpeedMenuChecked(ActionFactory::ActionKind::Double);
-            } else {
-                setPlaySpeedMenuUnchecked();
-            }
-            _nwComm->updateWithMessage(tr("Speed: %1x").arg(_playSpeed));
-        }
+        adjustPlaybackSpeed(ActionFactory::ActionKind::AccelPlayback);
         break;
     }
 
     case ActionFactory::ActionKind::DecelPlayback: {
-        if (_engine->state() != PlayerEngine::CoreState::Idle) {
-            _playSpeed = qMax(0.1, _playSpeed - 0.1);
-            _engine->setPlaySpeed(_playSpeed);
-            if (qFuzzyCompare(0.5, _playSpeed)) {
-                setPlaySpeedMenuChecked(ActionFactory::ActionKind::ZeroPointFiveTimes);
-            } else if (qFuzzyCompare(1.0, _playSpeed)) {
-                setPlaySpeedMenuChecked(ActionFactory::ActionKind::OneTimes);
-            } else if (qFuzzyCompare(1.2, _playSpeed)) {
-                setPlaySpeedMenuChecked(ActionFactory::ActionKind::OnePointTwoTimes);
-            } else if (qFuzzyCompare(1.5, _playSpeed)) {
-                setPlaySpeedMenuChecked(ActionFactory::ActionKind::OnePointFiveTimes);
-            } else if (qFuzzyCompare(2.0, _playSpeed)) {
-                setPlaySpeedMenuChecked(ActionFactory::ActionKind::Double);
-            } else {
-                setPlaySpeedMenuUnchecked();
-            }
-            _nwComm->updateWithMessage(tr("Speed: %1x").arg(_playSpeed));
-        }
+        adjustPlaybackSpeed(ActionFactory::ActionKind::DecelPlayback);
         break;
     }
 
@@ -2691,10 +2644,8 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         QStringList actions;
         actions << "_open" << tr("View");
 
-
         QVariantMap hints;
         hints["x-deepin-action-_open"] = QString("xdg-open,%1").arg(filePath);
-
 
         QList<QVariant> arg;
         arg << (QCoreApplication::applicationName())                 // appname
@@ -2719,11 +2670,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     popup->resize(w + 70, 52);\
     popup->move((width() - popup->width()) / 2, height() - 127);\
     popup->show();\
-} while (0)
-
-//        if (!popup) {
-//            popup = new DFloatingMessage(DFloatingMessage::TransientType, this);
-//        }
+        } while (0)
         if (success) {
             const QIcon icon = QIcon(":/resources/icons/icon_toast_sucess.svg");
             QString text = QString(tr("The screenshot is saved"));
@@ -2773,7 +2720,6 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
 
         connect(shortcutViewProcess, SIGNAL(finished(int)),
                 shortcutViewProcess, SLOT(deleteLater()));
-
         break;
     }
 
@@ -4795,6 +4741,33 @@ void MainWindow::sleepStateChanged(bool bSleep)
         requestAction(ActionFactory::ActionKind::TogglePause);
     } else if (!bSleep && windowState() == Qt::WindowMinimized && _engine->state() == PlayerEngine::CoreState::Paused) {
         _engine->seekAbsolute(static_cast<int>(_engine->elapsed()));
+    }
+}
+
+void MainWindow::adjustPlaybackSpeed(ActionFactory::ActionKind kd)
+{
+    if (_engine->state() != PlayerEngine::CoreState::Idle) {
+        if (kd == ActionFactory::ActionKind::AccelPlayback) {
+            _playSpeed = qMin(2.0, _playSpeed + 0.1);
+        } else if (kd == ActionFactory::ActionKind::DecelPlayback) {
+            _playSpeed = qMax(0.1, _playSpeed - 0.1);
+        }
+
+        _engine->setPlaySpeed(_playSpeed);
+        if (qFuzzyCompare(0.5, _playSpeed)) {
+            setPlaySpeedMenuChecked(ActionFactory::ActionKind::ZeroPointFiveTimes);
+        } else if (qFuzzyCompare(1.0, _playSpeed)) {
+            setPlaySpeedMenuChecked(ActionFactory::ActionKind::OneTimes);
+        } else if (qFuzzyCompare(1.2, _playSpeed)) {
+            setPlaySpeedMenuChecked(ActionFactory::ActionKind::OnePointTwoTimes);
+        } else if (qFuzzyCompare(1.5, _playSpeed)) {
+            setPlaySpeedMenuChecked(ActionFactory::ActionKind::OnePointFiveTimes);
+        } else if (qFuzzyCompare(2.0, _playSpeed)) {
+            setPlaySpeedMenuChecked(ActionFactory::ActionKind::Double);
+        } else {
+            setPlaySpeedMenuUnchecked();
+        }
+        _nwComm->updateWithMessage(tr("Speed: %1x").arg(_playSpeed));
     }
 }
 

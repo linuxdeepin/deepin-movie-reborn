@@ -2844,7 +2844,7 @@ void ToolboxProxy::buttonClicked(QString id)
     //add by heyi
     static bool bFlags = true;
     if (bFlags) {
-        _mainWindow->firstPlayInit();
+//        _mainWindow->firstPlayInit();
         _mainWindow->repaint();
         bFlags = false;
     }

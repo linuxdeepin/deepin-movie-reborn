@@ -45,7 +45,9 @@
 #include "volumemonitoring.h"
 #include "diskcheckthread.h"
 #include <QDBusAbstractInterface>
-//static const int VOLUME_OFFSET = 40;
+
+#include <QtX11Extras/QX11Info>
+
 
 namespace Dtk {
 namespace Widget {
@@ -77,6 +79,7 @@ class PlaylistWidget;
 class PlayerEngine;
 class NotificationWidget;
 class MovieProgressIndicator;
+class MainWindowPropertyMonitor;
 
 class IconButton: public DPushButton
 {
@@ -155,7 +158,7 @@ public:
     /**
      * @brief firstPlayInit 第一次点击播放时，需要加载动态库函数指针然后进行构造未完成的初始化
      */
-    void firstPlayInit();
+//    void firstPlayInit();
     //判断鼠标是否在窗口内
     bool judgeMouseInWindow(QPoint pos);
 
@@ -272,8 +275,7 @@ protected slots:
     void updateShadow();
 #endif
 
-    void handleHelpAction();
-
+//    void handleHelpAction();
 //    void changedVolume(int);
     void changedVolumeSlot(int vol);
     void changedMute();
@@ -313,6 +315,7 @@ private:
     void mipsShowFullScreen();
     //hide pop windows when dragging window
     void hidePopWindow();
+    void adjustPlaybackSpeed(ActionFactory::ActionKind);
     void setPlaySpeedMenuChecked(ActionFactory::ActionKind);
     void setPlaySpeedMenuUnchecked();
 
@@ -432,8 +435,23 @@ private:
     bool m_bisOverhunderd {false};
     bool m_bisShowSettingDialog {true};
     QDBusInterface *m_pDBus {nullptr};
+    MainWindowPropertyMonitor *m_pMWPM {nullptr};
+};
+
+//窗管返回事件过滤器
+class MainWindowPropertyMonitor: public QAbstractNativeEventFilter
+{
+public:
+    explicit MainWindowPropertyMonitor(MainWindow *);
+    ~MainWindowPropertyMonitor();
+    bool nativeEventFilter(const QByteArray &eventType, void *message, long *);
+    MainWindow *_mw {nullptr};
+    xcb_atom_t _atomWMState;
+    QList<unsigned int> m_list;
+    bool m_start {false};
 };
 };
+
 
 #endif /* ifndef _MAIN_WINDOW_H */
 

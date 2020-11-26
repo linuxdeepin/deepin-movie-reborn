@@ -71,7 +71,6 @@ ThumbnailWorker &ThumbnailWorker::get()
         (*_instance).start();
 #endif
     }
-
     return *_instance;
 }
 

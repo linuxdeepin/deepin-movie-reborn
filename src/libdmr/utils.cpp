@@ -80,7 +80,6 @@ void ShowInFileManager(const QString &path)
     }
 }
 
-
 static int min(int v1, int v2, int v3)
 {
     return std::min(v1, std::min(v2, v3));
@@ -189,6 +188,11 @@ bool first_check_wayland_env(){
 bool check_wayland_env()
 {
     return isWayland;
+}
+
+void set_wayland(bool _b)
+{
+    isWayland = _b;
 }
 
 // hash the whole file takes amount of time, so just pick some areas to be hashed
@@ -573,6 +577,5 @@ QString ElideText(const QString &text, const QSize &size,
 
     return str;
 }
-
 }
 }

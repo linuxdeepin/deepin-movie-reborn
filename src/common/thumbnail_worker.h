@@ -51,18 +51,14 @@ class ThumbnailWorker: public QThread
     Q_OBJECT
 public:
     ~ThumbnailWorker();
-
     static ThumbnailWorker &get();
-
     // expected size for ui
     static QSize thumbSize()
     {
         return {178, 101};
     }
-
     bool isThumbGenerated(const QUrl &url, int secs);
     QPixmap getThumb(const QUrl &url, int secs);
-
     void stop()
     {
         _quit.store(1);
@@ -80,16 +76,15 @@ private:
     QHash<QUrl, QMap<int, QPixmap>> _cache;
     QAtomicInt _quit{0};
     qint64 _cacheSize {0};
-
     video_thumbnailer *m_video_thumbnailer = nullptr;
     image_data *m_image_data = nullptr;
     PlayerEngine *_engine {nullptr};
-
     mvideo_thumbnailer m_mvideo_thumbnailer = nullptr;
     mvideo_thumbnailer_destroy m_mvideo_thumbnailer_destroy = nullptr;
     mvideo_thumbnailer_create_image_data m_mvideo_thumbnailer_create_image_data = nullptr;
     mvideo_thumbnailer_destroy_image_data m_mvideo_thumbnailer_destroy_image_data = nullptr;
     mvideo_thumbnailer_generate_thumbnail_to_buffer m_mvideo_thumbnailer_generate_thumbnail_to_buffer = nullptr;
+    char* m_pCharTime;
 
     ThumbnailWorker();
     void initThumb();
@@ -97,7 +92,6 @@ private:
     void runSingle(QPair<QUrl, int> w);
     QPixmap genThumb(const QUrl &url, int secs);
     QString libPath(const QString &strlib);
-    char* m_pCharTime;
 };
 
 }
