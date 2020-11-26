@@ -1118,7 +1118,7 @@ bool MainWindow::event(QEvent *ev)
                  << "current " << windowState();
         //NOTE: windowStateChanged won't be emitted if by draggint to restore. so we need to
         //check window state here.
-        if (_lastWindowState == Qt::WindowNoState && windowState() == Qt::WindowMinimized) {
+        if (/*_lastWindowState == Qt::WindowNoState &&*/ windowState() & Qt::WindowMinimized) {   //fix bug 53683
             if (Settings::get().isSet(Settings::PauseOnMinimize)) {
                 if (_engine && _engine->state() == PlayerEngine::Playing) {
                     requestAction(ActionFactory::TogglePause);
@@ -1127,8 +1127,8 @@ bool MainWindow::event(QEvent *ev)
                 QList<QAction *> acts = ActionFactory::get().findActionsByKind(ActionFactory::TogglePlaylist);
                 acts.at(0)->setChecked(false);
             }
-        } else if (_lastWindowState == Qt::WindowMinimized && windowState() == Qt::WindowNoState) {
-            if (Settings::get().isSet(Settings::PauseOnMinimize)) {
+        } else if (_lastWindowState & Qt::WindowMinimized /*&& windowState() == Qt::WindowNoState*/) {
+            if ( Settings::get().isSet(Settings::PauseOnMinimize)) {
                 if (_quitfullscreenflag) {
                     requestAction(ActionFactory::TogglePause);
                     _quitfullscreenflag = false;
@@ -4737,7 +4737,7 @@ void MainWindow::sleepStateChanged(bool bSleep)
     if (bSleep && _engine->state() == PlayerEngine::CoreState::Playing) {
         requestAction(ActionFactory::ActionKind::TogglePause);
     } else if (!bSleep && windowState() != Qt::WindowMinimized && _engine->state() == PlayerEngine::CoreState::Paused) {
-        _engine->seekAbsolute(static_cast<int>(_engine->elapsed()));                //在龙芯下需要重新seek下，不然影片会卡住反复横跳
+        _engine->seekAbsolute(static_cast<int>(_engine->elapsed()));                //在硬解模式休眠后需要重新seek下，不然影片会卡住反复横跳
         requestAction(ActionFactory::ActionKind::TogglePause);
     } else if (!bSleep && windowState() == Qt::WindowMinimized && _engine->state() == PlayerEngine::CoreState::Paused) {
         _engine->seekAbsolute(static_cast<int>(_engine->elapsed()));

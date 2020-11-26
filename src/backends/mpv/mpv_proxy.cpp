@@ -563,7 +563,9 @@ void MpvProxy::handle_mpv_events()
 #ifdef __mips__
             qDebug() << "MPV_EVENT_FILE_LOADED __mips__";
             auto codec = my_get_property(_handle, "video-codec").toString();
-            if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") || codec.toLower().contains("mpeg2video")) {
+            auto name = my_get_property(_handle, "filename").toString();
+            if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") || codec.toLower().contains("mpeg2video") ||
+                    name.toLower().contains("wmv")) {
                 qDebug() << "my_set_property hwdec no";
                 my_set_property(_handle, "hwdec", "no");
             }
@@ -634,8 +636,15 @@ void MpvProxy::processLogMessage(mpv_event_log_message *ev)
 
     case MPV_LOG_LEVEL_ERROR:
     case MPV_LOG_LEVEL_FATAL:
-        qCritical() << QString("%1: %2").arg(ev->prefix).arg(ev->text);
-        emit mpvErrorLogsChanged(QString(ev->prefix), QString(ev->text));
+    {
+        QString strError = ev->text;
+        if(strError.contains("Failed setup for format vdpau"))
+        {
+            m_bLastIsSpecficFormat = true;
+        }
+        qCritical() << QString("%1: %2").arg(ev->prefix).arg(strError);
+        emit mpvErrorLogsChanged(QString(ev->prefix), strError);
+    }
         break;
 
     case MPV_LOG_LEVEL_INFO:
