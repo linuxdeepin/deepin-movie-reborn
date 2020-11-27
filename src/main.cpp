@@ -101,9 +101,9 @@ int main(int argc, char *argv[])
 
 #ifdef __mips__
     if (CompositingManager::get().composited()) {
-        app.setAttribute(Qt::AA_UseHighDpiPixmaps);
+        app->setAttribute(Qt::AA_UseHighDpiPixmaps);
         // overwrite DApplication default value
-        app.setAttribute(Qt::AA_ForceRasterWidgets, false);
+        app->setAttribute(Qt::AA_ForceRasterWidgets, false);
     }
 #else
     app->setAttribute(Qt::AA_UseHighDpiPixmaps);
