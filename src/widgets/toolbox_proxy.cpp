@@ -1167,62 +1167,36 @@ public slots:
                   view_rect.height() - TOOLBOX_HEIGHT - VOLSLIDER_HEIGHT,
                   VOLSLIDER_WIDTH, VOLSLIDER_HEIGHT);
         QRect start = end;
+        QRect media = start;
 
-        start.setHeight(0);
-        start.moveBottom(end.bottom());
+        start.setWidth(start.width() + 16);
+        start.setHeight(start.height() + 14);
+        start.moveTo(start.topLeft() - QPoint(8, 14));
+
+        media.setWidth(media.width() - 10);
+        media.setHeight(media.height() - 10);
+        media.moveTo(media.topLeft() + QPoint(5, 10));
 
         if (state == State::Close) {
-            m_anima = new QParallelAnimationGroup;
             pVolAnimation = new QPropertyAnimation(this, "geometry");
-            pVolAnimation->setStartValue(start);
-            pVolAnimation->setEndValue(end);
-            pVolAnimation->setDuration(200);
             pVolAnimation->setEasingCurve(QEasingCurve::Linear);
-            pVolAnimTran = new QPropertyAnimation(this, "windowOpacity");
-            pVolAnimTran->setStartValue(0);
-            pVolAnimTran->setEndValue(1);
-            pVolAnimTran->setDuration(200);
-            m_anima->addAnimation(pVolAnimation);
-            m_anima->addAnimation(pVolAnimTran);
+            pVolAnimation->setKeyValueAt(0, end);
+            pVolAnimation->setKeyValueAt(0.3, start);
+            pVolAnimation->setKeyValueAt(0.75, media);
+            pVolAnimation->setKeyValueAt(1, end);
+            pVolAnimation->setDuration(230);
             m_bFinished = true;
             raise();
-            m_anima->start();
-            connect(m_anima, &QPropertyAnimation::finished, [=]{
+            pVolAnimation->start();
+            connect(pVolAnimation, &QPropertyAnimation::finished, [=]{
                 pVolAnimation->deleteLater();
                 pVolAnimation = nullptr;
-                pVolAnimTran->deleteLater();
-                pVolAnimTran = nullptr;
-                m_anima->deleteLater();
-                m_anima = nullptr;
                 state = Open;
                 m_bFinished = false;
             });
         } else {
-            m_anima = new QParallelAnimationGroup;
-            pVolAnimation = new QPropertyAnimation(this, "geometry");
-            pVolAnimation->setStartValue(end);
-            pVolAnimation->setEndValue(start);
-            pVolAnimation->setDuration(200);
-            pVolAnimation->setEasingCurve(QEasingCurve::Linear);
-            pVolAnimTran = new QPropertyAnimation(this, "windowOpacity");
-            pVolAnimTran->setStartValue(1);
-            pVolAnimTran->setEndValue(0);
-            pVolAnimTran->setDuration(200);
-            m_anima->addAnimation(pVolAnimation);
-            m_anima->addAnimation(pVolAnimTran);
-            m_bFinished = true;
-            m_anima->start();
-            connect(m_anima, &QPropertyAnimation::finished, [=]{
-                pVolAnimation->deleteLater();
-                pVolAnimation = nullptr;
-                pVolAnimTran->deleteLater();
-                pVolAnimTran = nullptr;
-                m_anima->deleteLater();
-                m_anima = nullptr;
                 state = Close;
                 hide();
-                m_bFinished = false;
-            });
         }
     }
 
