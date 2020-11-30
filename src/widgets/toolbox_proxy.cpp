@@ -67,73 +67,73 @@ DWIDGET_USE_NAMESPACE
 
 //thx  wayland chuang kou bai kuai
 #define WAYLAND_BLACK_WINDOW \
-do {\
-    auto systemEnv = QProcessEnvironment::systemEnvironment();\
-    QString XDG_SESSION_TYPE = systemEnv.value(QStringLiteral("XDG_SESSION_TYPE"));\
-    QString WAYLAND_DISPLAY = systemEnv.value(QStringLiteral("WAYLAND_DISPLAY"));\
-    if (XDG_SESSION_TYPE == QLatin1String("wayland") ||\
-            WAYLAND_DISPLAY.contains(QLatin1String("wayland"), Qt::CaseInsensitive)) {\
-        auto colortype = DGuiApplicationHelper::instance()->themeType();\
-        if(colortype == DGuiApplicationHelper::LightType)\
-        {\
-            QPalette pal(qApp->palette());\
-            this->setAutoFillBackground(true);\
-            this->setPalette(pal);\
-            if(_playlist)\
+    do {\
+        auto systemEnv = QProcessEnvironment::systemEnvironment();\
+        QString XDG_SESSION_TYPE = systemEnv.value(QStringLiteral("XDG_SESSION_TYPE"));\
+        QString WAYLAND_DISPLAY = systemEnv.value(QStringLiteral("WAYLAND_DISPLAY"));\
+        if (XDG_SESSION_TYPE == QLatin1String("wayland") ||\
+                WAYLAND_DISPLAY.contains(QLatin1String("wayland"), Qt::CaseInsensitive)) {\
+            auto colortype = DGuiApplicationHelper::instance()->themeType();\
+            if(colortype == DGuiApplicationHelper::LightType)\
             {\
                 QPalette pal(qApp->palette());\
-                _playlist->setAutoFillBackground(true);\
-                _playlist->setPalette(pal);\
+                this->setAutoFillBackground(true);\
+                this->setPalette(pal);\
+                if(_playlist)\
+                {\
+                    QPalette pal(qApp->palette());\
+                    _playlist->setAutoFillBackground(true);\
+                    _playlist->setPalette(pal);\
+                }\
+                if(_engine )\
+                {\
+                    QPalette pal(qApp->palette());\
+                    _engine->setAutoFillBackground(true);\
+                    _engine->setPalette(pal);\
+                }\
             }\
-            if(_engine )\
-            {\
-                QPalette pal(qApp->palette());\
-                _engine->setAutoFillBackground(true);\
-                _engine->setPalette(pal);\
-            }\
-        }\
-        else\
-        {\
-            QPalette pal(qApp->palette());\
-            pal.setColor(QPalette::Background,Qt::black);\
-            this->setAutoFillBackground(true);\
-            this->setPalette(pal);\
-            if(_playlist)\
+            else\
             {\
                 QPalette pal(qApp->palette());\
                 pal.setColor(QPalette::Background,Qt::black);\
-                _playlist->setAutoFillBackground(true);\
-                _playlist->setPalette(pal);\
-            }\
-            if(_engine)\
-            {\
-                QPalette pal(qApp->palette());\
-                pal.setColor(QPalette::Background,Qt::black);\
-                _engine->setAutoFillBackground(true);\
-                _engine->setPalette(pal);\
+                this->setAutoFillBackground(true);\
+                this->setPalette(pal);\
+                if(_playlist)\
+                {\
+                    QPalette pal(qApp->palette());\
+                    pal.setColor(QPalette::Background,Qt::black);\
+                    _playlist->setAutoFillBackground(true);\
+                    _playlist->setPalette(pal);\
+                }\
+                if(_engine)\
+                {\
+                    QPalette pal(qApp->palette());\
+                    pal.setColor(QPalette::Background,Qt::black);\
+                    _engine->setAutoFillBackground(true);\
+                    _engine->setPalette(pal);\
+                }\
             }\
         }\
-    }\
-}while(0)
+    }while(0)
 
 #define THEME_TYPE(colortype) do { \
-    if (colortype == DGuiApplicationHelper::LightType){\
-        QColor backMaskColor(255, 255, 255, 140);\
-        this->blurBackground()->setMaskColor(backMaskColor);\
-        QColor maskColor(255, 255, 255, 76);\
-        bot_widget->setMaskColor(maskColor);\
-    } else if (colortype == DGuiApplicationHelper::DarkType){\
-        QColor backMaskColor(37, 37, 37, 140);\
-        blurBackground()->setMaskColor(backMaskColor);\
-        QColor maskColor(37, 37, 37, 76);\
-        bot_widget->setMaskColor(maskColor);\
-    } else {\
-        QColor backMaskColor(255, 255, 255, 140);\
-        this->blurBackground()->setMaskColor(backMaskColor);\
-        QColor maskColor(255, 255, 255, 76);\
-        bot_widget->setMaskColor(maskColor);\
-    }\
-} while(0);
+        if (colortype == DGuiApplicationHelper::LightType){\
+            QColor backMaskColor(255, 255, 255, 140);\
+            this->blurBackground()->setMaskColor(backMaskColor);\
+            QColor maskColor(255, 255, 255, 76);\
+            bot_widget->setMaskColor(maskColor);\
+        } else if (colortype == DGuiApplicationHelper::DarkType){\
+            QColor backMaskColor(37, 37, 37, 140);\
+            blurBackground()->setMaskColor(backMaskColor);\
+            QColor maskColor(37, 37, 37, 76);\
+            bot_widget->setMaskColor(maskColor);\
+        } else {\
+            QColor backMaskColor(255, 255, 255, 140);\
+            this->blurBackground()->setMaskColor(backMaskColor);\
+            QColor maskColor(255, 255, 255, 76);\
+            bot_widget->setMaskColor(maskColor);\
+        }\
+    } while(0);
 
 namespace dmr {
 
@@ -142,7 +142,7 @@ class ImageButton: public QPushButton
     Q_OBJECT
 public:
     explicit ImageButton(QWidget *parent = nullptr)
-        : QPushButton (parent)
+        : QPushButton(parent)
     {
 
     }
@@ -176,8 +176,7 @@ protected:
     {
         if (event->type() == QEvent::KeyPress) {
             QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
-            if(keyEvent->key() != Qt::Key_Tab)
-            {
+            if (keyEvent->key() != Qt::Key_Tab) {
                 event->setAccepted(false);
                 return true;
             } else {
@@ -221,7 +220,7 @@ protected:
             event->ignore();
             break;
         }
-        case QEvent::MouseMove:{
+        case QEvent::MouseMove: {
             QHelpEvent *he = static_cast<QHelpEvent *>(event);
             auto tip = obj->property("HintWidget").value<Tip *>();
             tip->hide();
@@ -486,7 +485,7 @@ public:
         l->addWidget(_time, Qt::AlignCenter);
         setLayout(l);
         connect(qApp, &QGuiApplication::fontChanged, this, &SliderTime::slotFontChanged);
- 
+
     }
 
     void setTime(const QString &time)
@@ -506,7 +505,7 @@ public:
         this->setMinimumSize(_miniSize);
     }
 public slots:
-    void slotFontChanged(const QFont & font)
+    void slotFontChanged(const QFont &font)
     {
         _font = font;
         _bFontChanged = true;
@@ -610,14 +609,10 @@ public:
     }
     void setValue(int v)
     {
-//        _indicatorPos = {v < 5 ? 5 : v, rect().y()};
-        v += m_nStartPoint;
-        if (_press) {
-            if (v < 3) {
-                v = 3;
-            } else if (v > width() - 2) {
-                v = width() - 2;
-            }
+        if (v < m_nStartPoint) {
+            v = m_nStartPoint;
+        } else if (v > (m_nStartPoint + m_nViewLength)) {
+            v = (m_nStartPoint + m_nViewLength);
         }
         _indicatorPos = {v, rect().y()};
         update();
@@ -711,6 +706,11 @@ public:
         return m_nViewLength;
     }
 
+    int getStartPoint()
+    {
+        return m_nStartPoint;
+    }
+
 private:
     void changeStyle(bool press)
     {
@@ -760,8 +760,9 @@ protected:
     {
         if (!isEnabled()) return;
 
-        if (e->pos().x() >= m_nStartPoint && e->pos().x() <= (m_nStartPoint + m_nViewLength)) {
+        if (e->pos().x() >= 0 && e->pos().x() <= contentsRect().width()) {
             int v = position2progress(e->pos());
+            //if (v < m_nStartPoint && e->pos().x() <= (m_nStartPoint + m_nViewLength))
             if (e->buttons() & Qt::LeftButton) {
                 int distance = (e->pos() - _startPos).manhattanLength();
                 if (distance >= QApplication::startDragDistance()) {
@@ -783,9 +784,6 @@ protected:
     }
     void mousePressEvent(QMouseEvent *e) override
     {
-        if (e->pos().x() < m_nStartPoint || e->pos().x() > (m_nStartPoint + m_nViewLength)) {
-            return DWidget::mouseReleaseEvent(e);
-        }
 
         if (!_press && e->buttons() == Qt::LeftButton && isEnabled()) {
 //            QSlider::mousePressEvent(e);
@@ -797,7 +795,7 @@ protected:
             emit sliderMoved(v);
             emit hoverChanged(v);
             emit mousePressed(true);
-            setValue(e->pos().x() - m_nStartPoint);
+            setValue(e->pos().x());
             setTimeVisible(!_press);
             changeStyle(!_press);
             _press = !_press;
@@ -864,13 +862,24 @@ private:
     DMRSlider *_progBar{nullptr};
     int m_nViewLength;
     int m_nStartPoint;
-    int position2progress(const QPoint &p)
+    int  position2progress(const QPoint &p)
     {
+        int nPosition = 0;
+
         if (!_engine) {
             return 0;
         }
+
+        if (p.x() < m_nStartPoint) {
+            nPosition = m_nStartPoint;
+        } else if (p.x() > (m_nViewLength + m_nStartPoint)) {
+            nPosition = (m_nViewLength + m_nStartPoint);
+        } else {
+            nPosition = p.x();
+        }
+
         auto total = _engine->duration();
-        int span = static_cast<int>(total * (p.x() - m_nStartPoint) / m_nViewLength);
+        int span = static_cast<int>(total * (nPosition - m_nStartPoint) / m_nViewLength);
         return span/* * (p.x())*/;
     }
 
@@ -967,9 +976,9 @@ public:
     void updateWithPreview(const QPoint &pos)
     {
         //resizeWithContent();
-        if(utils::check_wayland_env()){
+        if (utils::check_wayland_env()) {
             move(pos.x() - this->width() / 2, pos.y() + 10);
-        }else {
+        } else {
             move(pos.x() - this->width() / 2, pos.y() - this->height() + 10);
         }
 
@@ -1061,7 +1070,7 @@ public:
             setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
         }
 #elif __aarch64__
-        if(!utils::check_wayland_env())
+        if (!utils::check_wayland_env())
             setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
 #elif __sw_64__
         setWindowFlags(Qt::FramelessWindowHint | Qt::BypassWindowManagerHint);
@@ -1099,9 +1108,9 @@ public:
         _slider->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred));
         //修改打开时音量条显示不正确
         int vol = 0;
-        if(utils::check_wayland_env()){
+        if (utils::check_wayland_env()) {
             vol = Settings::get().internalOption("global_volume").toInt();
-        }else{
+        } else {
             vol = _engine->volume();
         }
         _slider->setValue(vol);
@@ -1132,7 +1141,7 @@ public:
 #ifdef __x86_64__
         connect(&_autoHideTimer, &QTimer::timeout, this, &VolumeSlider::popup);
 #else
-        if(utils::check_wayland_env()){
+        if (utils::check_wayland_env()) {
             connect(&_autoHideTimer, &QTimer::timeout, this, &VolumeSlider::hide);
         }
 #endif
@@ -1281,15 +1290,15 @@ public slots:
             m_bFinished = true;
             raise();
             pVolAnimation->start();
-            connect(pVolAnimation, &QPropertyAnimation::finished, [=]{
+            connect(pVolAnimation, &QPropertyAnimation::finished, [ = ] {
                 pVolAnimation->deleteLater();
                 pVolAnimation = nullptr;
                 state = Open;
                 m_bFinished = false;
             });
         } else {
-                state = Close;
-                hide();
+            state = Close;
+            hide();
         }
     }
 
@@ -1329,7 +1338,8 @@ public slots:
         m_pLabShowVolume->setText(QString("%1%").arg(var * 1.0 / _slider->maximum() * 100));
         _mw->requestAction(ActionFactory::ChangeVolume, false, QList<QVariant>() << var);
     }
-    bool getsliderstate() {
+    bool getsliderstate()
+    {
         return m_bFinished;
     }
     void setThemeSlot(int type)
@@ -1463,10 +1473,10 @@ QString libPath(const QString &strlib)
     QDir  dir;
     QString path  = QLibraryInfo::location(QLibraryInfo::LibrariesPath);
     dir.setPath(path);
-    QStringList list = dir.entryList(QStringList()<<(strlib + "*"),QDir::NoDotAndDotDot |QDir::Files);//filter name with strlib
-    if(list.contains(strlib)){
+    QStringList list = dir.entryList(QStringList() << (strlib + "*"), QDir::NoDotAndDotDot | QDir::Files); //filter name with strlib
+    if (list.contains(strlib)) {
         return strlib;
-    }else{
+    } else {
         list.sort();
     }
 
@@ -1489,14 +1499,14 @@ void viewProgBarLoad::initThumb()
 //#endif
 
     QLibrary library(libPath("libffmpegthumbnailer.so"));
-    m_mvideo_thumbnailer = (mvideo_thumbnailer) library.resolve( "video_thumbnailer_create");
-    m_mvideo_thumbnailer_destroy = (mvideo_thumbnailer_destroy) library.resolve( "video_thumbnailer_destroy");
-    m_mvideo_thumbnailer_create_image_data = (mvideo_thumbnailer_create_image_data) library.resolve( "video_thumbnailer_create_image_data");
-    m_mvideo_thumbnailer_destroy_image_data = (mvideo_thumbnailer_destroy_image_data) library.resolve( "video_thumbnailer_destroy_image_data");
-    m_mvideo_thumbnailer_generate_thumbnail_to_buffer = (mvideo_thumbnailer_generate_thumbnail_to_buffer) library.resolve( "video_thumbnailer_generate_thumbnail_to_buffer");
+    m_mvideo_thumbnailer = (mvideo_thumbnailer) library.resolve("video_thumbnailer_create");
+    m_mvideo_thumbnailer_destroy = (mvideo_thumbnailer_destroy) library.resolve("video_thumbnailer_destroy");
+    m_mvideo_thumbnailer_create_image_data = (mvideo_thumbnailer_create_image_data) library.resolve("video_thumbnailer_create_image_data");
+    m_mvideo_thumbnailer_destroy_image_data = (mvideo_thumbnailer_destroy_image_data) library.resolve("video_thumbnailer_destroy_image_data");
+    m_mvideo_thumbnailer_generate_thumbnail_to_buffer = (mvideo_thumbnailer_generate_thumbnail_to_buffer) library.resolve("video_thumbnailer_generate_thumbnail_to_buffer");
     if (m_mvideo_thumbnailer == nullptr || m_mvideo_thumbnailer_destroy == nullptr
             || m_mvideo_thumbnailer_create_image_data == nullptr || m_mvideo_thumbnailer_destroy_image_data == nullptr
-            || m_mvideo_thumbnailer_generate_thumbnail_to_buffer == nullptr )
+            || m_mvideo_thumbnailer_generate_thumbnail_to_buffer == nullptr)
 
     {
         return;
@@ -1508,14 +1518,11 @@ void viewProgBarLoad::initThumb()
 void viewProgBarLoad::loadViewProgBar(QSize size)
 {
     auto pixWidget =  40;
-    auto num = int(_progBar->width() / (40+1));   //number of thumbnails
-//    auto num = int(_progBar->slider()->width()) / 40/*100*/;
-//    auto pixWidget =  40;
+    auto num = int(_progBar->width() / (40 + 1)); //number of thumbnails
     auto tmp = (_engine->duration() * 1000) / num;
-    //auto dpr = qApp->devicePixelRatio();
+
     QList<QPixmap> pm;
     QList<QPixmap> pm_black;
-//    pm_black.setDevicePixelRatio(dpr);
 
     QTime d(0, 0, 0, 0);
     qDebug() << _engine->videoSize().width();
@@ -1587,33 +1594,33 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
         setAttribute(Qt::WA_NativeWindow);
     }
 
-/*    QGraphicsDropShadowEffect *shadowEffect = new QGraphicsDropShadowEffect(this);
-    shadowEffect->setOffset(0, 4);
-    shadowEffect->setBlurRadius(8);
-    shadowEffect->setColor(QColor(0, 0, 0, 0.1 * 255));
-    connect(DApplicationHelper::instance(), &DApplicationHelper::themeTypeChanged, this, [ = ] {
-        if (DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::LightType)
-        {
-            shadowEffect->setColor(QColor(0, 0, 0, 0.1 * 255));
-            shadowEffect->setOffset(0, 4);
-            shadowEffect->setBlurRadius(8);
-        } else if (DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::DarkType)
-        {
-            shadowEffect->setColor(QColor(0, 0, 0, 0.2 * 255));
-            shadowEffect->setOffset(0, 2);
-            shadowEffect->setBlurRadius(4);
-        } else
-        {
-            shadowEffect->setColor(QColor(0, 0, 0, 0.1 * 255));
-            shadowEffect->setOffset(0, 4);
-            shadowEffect->setBlurRadius(8);
-        }
-    });
-    setGraphicsEffect(shadowEffect);
+    /*    QGraphicsDropShadowEffect *shadowEffect = new QGraphicsDropShadowEffect(this);
+        shadowEffect->setOffset(0, 4);
+        shadowEffect->setBlurRadius(8);
+        shadowEffect->setColor(QColor(0, 0, 0, 0.1 * 255));
+        connect(DApplicationHelper::instance(), &DApplicationHelper::themeTypeChanged, this, [ = ] {
+            if (DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::LightType)
+            {
+                shadowEffect->setColor(QColor(0, 0, 0, 0.1 * 255));
+                shadowEffect->setOffset(0, 4);
+                shadowEffect->setBlurRadius(8);
+            } else if (DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::DarkType)
+            {
+                shadowEffect->setColor(QColor(0, 0, 0, 0.2 * 255));
+                shadowEffect->setOffset(0, 2);
+                shadowEffect->setBlurRadius(4);
+            } else
+            {
+                shadowEffect->setColor(QColor(0, 0, 0, 0.1 * 255));
+                shadowEffect->setOffset(0, 4);
+                shadowEffect->setBlurRadius(8);
+            }
+        });
+        setGraphicsEffect(shadowEffect);
 
 
-    DThemeManager::instance()->registerWidget(this);
-*/
+        DThemeManager::instance()->registerWidget(this);
+    */
 
     paopen = nullptr;
     paClose = nullptr;
@@ -1873,11 +1880,11 @@ void ToolboxProxy::setup()
     progBarspec->setSpacing(0);
     progBarspec->setAlignment(Qt::AlignHCenter);
 
-    if(utils::check_wayland_env()){
+    if (utils::check_wayland_env()) {
         //lmh0706,延时
-        connect(_nextBtn,&DButtonBoxButton::clicked,this,&ToolboxProxy::waitPlay);
-        connect(_playBtn,&DButtonBoxButton::clicked,this,&ToolboxProxy::waitPlay);
-        connect(_prevBtn,&DButtonBoxButton::clicked,this,&ToolboxProxy::waitPlay);
+        connect(_nextBtn, &DButtonBoxButton::clicked, this, &ToolboxProxy::waitPlay);
+        connect(_playBtn, &DButtonBoxButton::clicked, this, &ToolboxProxy::waitPlay);
+        connect(_prevBtn, &DButtonBoxButton::clicked, this, &ToolboxProxy::waitPlay);
     }
 
     _progBar_Widget = new QStackedWidget(bot_toolWgt);
@@ -1911,11 +1918,11 @@ void ToolboxProxy::setup()
     _mid->setAlignment(_palyBox, Qt::AlignLeft);
     QList<DButtonBoxButton *> list;
 
-    if(utils::check_wayland_env()){
+    if (utils::check_wayland_env()) {
         _prevBtn = new ButtonBoxButton("", this);
         _playBtn = new ButtonBoxButton("", this);
         _nextBtn = new ButtonBoxButton("", this);
-    }else{
+    } else {
         _prevBtn = new DButtonBoxButton("", this);
         _playBtn = new DButtonBoxButton("", this);
         _nextBtn = new DButtonBoxButton("", this);
@@ -2038,9 +2045,9 @@ void ToolboxProxy::setup()
 
     // these tooltips is not used due to deepin ui design
     //lmh0910wayland下用这一套tooltip
-    if(utils::check_wayland_env()){
+    if (utils::check_wayland_env()) {
         initToolTip();
-    }else{
+    } else {
         auto th = new TooltipHandler(this);
         QWidget *btns[] = {
             _playBtn, _prevBtn, _nextBtn, _subBtn, _fsBtn, _listBtn
@@ -2133,7 +2140,7 @@ void ToolboxProxy::setup()
 
 void ToolboxProxy::updateThumbnail()
 {
-    if(utils::check_wayland_env()){
+    if (utils::check_wayland_env()) {
         return;
     }
     //如果打开的是音乐
@@ -2222,23 +2229,26 @@ void ToolboxProxy::updateHoverPreview(const QUrl &url, int secs)
 
 void ToolboxProxy::waitPlay()
 {
-    if(_playBtn){
+    if (_playBtn) {
         _playBtn->setEnabled(false);
     }
-    if(_prevBtn){
+    if (_prevBtn) {
         _prevBtn->setEnabled(false);
     }
-    if(_nextBtn){
+    if (_nextBtn) {
         _nextBtn->setEnabled(false);
     }
-    QTimer::singleShot(500,[=]{
-        if(_playBtn){
+    QTimer::singleShot(500, [ = ] {
+        if (_playBtn)
+        {
             _playBtn->setEnabled(true);
         }
-        if(_prevBtn&&_engine->playlist().count()>1){
+        if (_prevBtn && _engine->playlist().count() > 1)
+        {
             _prevBtn->setEnabled(true);
         }
-        if(_nextBtn&&_engine->playlist().count()>1){
+        if (_nextBtn && _engine->playlist().count() > 1)
+        {
             _nextBtn->setEnabled(true);
         }
     });
@@ -2392,7 +2402,7 @@ void ToolboxProxy::slotPlayListStateChange()
         bAnimationFinash = false;
         paopen = new QPropertyAnimation(this, "geometry");
         paopen->setEasingCurve(QEasingCurve::Linear);
-        paopen->setDuration(POPUP_DURATION  ) ;
+        paopen->setDuration(POPUP_DURATION) ;
         paopen->setStartValue(rcBegin);
         paopen->setEndValue(rcEnd);
         paopen->start();
@@ -2414,7 +2424,7 @@ void ToolboxProxy::slotPlayListStateChange()
         rcEnd.setY(rcBegin.y() + TOOLBOX_SPACE_HEIGHT + 7);
         paClose = new QPropertyAnimation(this, "geometry");
         paClose->setEasingCurve(QEasingCurve::Linear);
-        paClose->setDuration(POPUP_DURATION );
+        paClose->setDuration(POPUP_DURATION);
         paClose->setStartValue(rcBegin);
         paClose->setEndValue(rcEnd);
         paClose->start();
@@ -2431,8 +2441,7 @@ void ToolboxProxy::slotPlayListStateChange()
 void ToolboxProxy::slotUpdateThumbnailTimeOut()
 {
     //如果视频长度小于1s应该直接返回不然会UI错误
-    if(_engine->playlist().currentInfo().mi.duration < 1)
-    {
+    if (_engine->playlist().currentInfo().mi.duration < 1) {
         return;
     }
 
@@ -2445,15 +2454,6 @@ void ToolboxProxy::slotUpdateThumbnailTimeOut()
     if (m_worker == nullptr) {
         m_worker = new viewProgBarLoad(_engine, _progBar, this);
         m_worker->setListPixmapMutex(&m_listPixmapMutex);
-        /*connect(m_worker, &viewProgBarLoad::finished, this, [ = ] {
-            if (m_worker)
-            {
-                m_worker->quit();
-                m_worker->wait();
-                delete m_worker;
-                m_worker = nullptr;
-            }
-        });*/
 
         connect(m_worker, SIGNAL(sigFinishiLoad(QSize)), this, SLOT(finishLoadSlot(QSize)));
         m_worker->start();
@@ -2466,14 +2466,11 @@ void ToolboxProxy::slotUpdateThumbnailTimeOut()
 void ToolboxProxy::slotProAnimationFinished()
 {
     QObject *pProAnimation = sender();
-    if(pProAnimation == paopen)
-    {
+    if (pProAnimation == paopen) {
         paopen->deleteLater();
         paopen = nullptr;
         bAnimationFinash = true;
-    }
-    else if(pProAnimation == paClose)
-    {
+    } else if (pProAnimation == paClose) {
         paClose->deleteLater();
         paClose = nullptr;
         bAnimationFinash = true;
@@ -2557,7 +2554,7 @@ void ToolboxProxy::updateMovieProgress()
     int v2 = 0;
     if (d != 0 && e != 0) {
         v = static_cast<int>(_progBar->maximum() * e / d);
-        v2 = static_cast<int>(_viewProgBar->getViewLength() * e / d);
+        v2 = static_cast<int>(_viewProgBar->getViewLength() * e / d + _viewProgBar->getStartPoint());
     }
     if (!_progBar->signalsBlocked()) {
         _progBar->blockSignals(true);
@@ -2630,7 +2627,7 @@ void ToolboxProxy::updateFullState()
 void ToolboxProxy::updatePlayState()
 {
     if (_engine->state() == PlayerEngine::CoreState::Playing) {
-        if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ) {
+        if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
             DPalette pa;
             pa = _palyBox->palette();
             pa.setColor(DPalette::Light, QColor(255, 255, 255, 255));
@@ -2677,16 +2674,15 @@ void ToolboxProxy::updatePlayState()
             _listBtn->setPalette(pa);
         }
         _playBtn->setIcon(QIcon::fromTheme("dcc_suspend", QIcon(":/icons/deepin/builtin/light/normal/suspend_normal.svg")));
-	//lmh0910wayland下用这一套tooltip
-        if(utils::check_wayland_env()){
+        //lmh0910wayland下用这一套tooltip
+        if (utils::check_wayland_env()) {
             m_playBtnTip->setText(tr("Pause"));
-        }
-        else{
+        } else {
             _playBtn->setToolTip(tr("Pause"));
-        }    
-} else {
+        }
+    } else {
         //        _playBtn->setObjectName("PlayBtn");
-        if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ) {
+        if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
 //            _playBtn->setPropertyPic(":/icons/deepin/builtin/light/normal/play_normal.svg",
 //                                     ":/icons/deepin/builtin/light/normal/play_normal.svg",
 //                                     ":/icons/deepin/builtin/light/press/play_press.svg");
@@ -2754,10 +2750,9 @@ void ToolboxProxy::updatePlayState()
 
         }
         //lmh0910wayland下用这一套tooltip
-        if(utils::check_wayland_env()){
+        if (utils::check_wayland_env()) {
             m_playBtnTip->setText(tr("Play"));
-        }
-        else{
+        } else {
             _playBtn->setToolTip(tr("Play"));
         }
         _playBtn->setIcon(QIcon::fromTheme("dcc_play", QIcon(":/icons/deepin/builtin/light/normal/play_normal.svg")));
@@ -2975,27 +2970,27 @@ void ToolboxProxy::resizeEvent(QResizeEvent *event)
         }
     }
 #ifndef __sw_64__
-    if(!utils::check_wayland_env()){
+    if (!utils::check_wayland_env()) {
         if (bAnimationFinash ==  false && paopen != nullptr && paClose != nullptr) {
 
-        _playlist->endAnimation();
-        paopen->setDuration(0);
-        paClose->setDuration(0);
+            _playlist->endAnimation();
+            paopen->setDuration(0);
+            paClose->setDuration(0);
+        }
+
+
+        if (_playlist && _playlist->state() == PlaylistWidget::State::Opened && bAnimationFinash == true) {
+            QRect r(5, _mainWindow->height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT + 7) - _mainWindow->rect().top() - 5,
+                    _mainWindow->rect().width() - 10, (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT + 7));
+            this->setGeometry(r);
+        } else if (_playlist && _playlist->state() == PlaylistWidget::State::Closed && bAnimationFinash == true) {
+            QRect r(5, _mainWindow->height() - TOOLBOX_HEIGHT - _mainWindow->rect().top() - 5,
+                    _mainWindow->rect().width() - 10, TOOLBOX_HEIGHT);
+            this->setGeometry(r);
+        }
+
+        updateTimeLabel();
     }
-
-
-    if (_playlist && _playlist->state() == PlaylistWidget::State::Opened && bAnimationFinash == true) {
-        QRect r(5, _mainWindow->height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT + 7) - _mainWindow->rect().top() - 5,
-                _mainWindow->rect().width() - 10, (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT + 7));
-        this->setGeometry(r);
-    } else if (_playlist && _playlist->state() == PlaylistWidget::State::Closed && bAnimationFinash == true) {
-        QRect r(5, _mainWindow->height() - TOOLBOX_HEIGHT - _mainWindow->rect().top() - 5,
-                _mainWindow->rect().width() - 10, TOOLBOX_HEIGHT);
-        this->setGeometry(r);
-    }
-
-    updateTimeLabel();
-}
 #endif
 
     DFloatingWidget::resizeEvent(event);
@@ -3011,16 +3006,16 @@ void ToolboxProxy::updateTimeLabel()
 {
 
 #ifndef __sw_64__
-    if(!utils::check_wayland_env()){
-    // to keep left and right of the same width. which makes play button centered
-    _listBtn->setVisible(width() > 300);
-    _timeLabel->setVisible(width() > 450);
-    _timeLabelend->setVisible(width() > 450);
+    if (!utils::check_wayland_env()) {
+        // to keep left and right of the same width. which makes play button centered
+        _listBtn->setVisible(width() > 300);
+        _timeLabel->setVisible(width() > 450);
+        _timeLabelend->setVisible(width() > 450);
 //    _viewProgBar->setVisible(width() > 350);
 //    _progBar->setVisible(width() > 350);
-    if (_mainWindow->width() < 1050) {
+        if (_mainWindow->width() < 1050) {
 //        _progBar->hide();
-    }
+        }
 //    if (width() <= 300) {
 //        _progBar->setFixedWidth(width() - PROGBAR_SPEC + 50 + 54 + 10 + 54 + 10 + 10);
 //        _progBarspec->setFixedWidth(width() - PROGBAR_SPEC + 50 + 54 + 10 + 54 + 10 + 10);
@@ -3040,8 +3035,8 @@ void ToolboxProxy::updateTimeLabel()
 //        _timeLabelend->setFixedWidth(left_w );
 //        right_geom.setWidth(w);
 //        _right->setGeometry(right_geom);
-    //    }
-   }
+        //    }
+    }
 #endif
 }
 
@@ -3096,13 +3091,13 @@ void ToolboxProxy::setVolSliderHide()
 
 void ToolboxProxy::setButtonTooltipHide()
 {
-    if(utils::check_wayland_env()){
+    if (utils::check_wayland_env()) {
         m_playBtnTip->hide();
         m_prevBtnTip->hide();
         m_nextBtnTip->hide();
         m_fsBtnTip->hide();
         m_listBtnTip->hide();
-    }else{
+    } else {
 //        _subBtn->hideToolTip();
         _listBtn->hideToolTip();
         _fsBtn->hideToolTip();
@@ -3111,11 +3106,11 @@ void ToolboxProxy::setButtonTooltipHide()
 
 void ToolboxProxy::initToolTip()
 {
-    if(utils::check_wayland_env()){
+    if (utils::check_wayland_env()) {
         //lmh0910播放
-        m_playBtnTip=new ButtonToolTip(_mainWindow);
+        m_playBtnTip = new ButtonToolTip(_mainWindow);
         m_playBtnTip->setText(tr("Play"));
-        connect(static_cast<ButtonBoxButton*>(_playBtn), &ButtonBoxButton::entered, [ = ]() {
+        connect(static_cast<ButtonBoxButton *>(_playBtn), &ButtonBoxButton::entered, [ = ]() {
             m_playBtnTip->move(80, _mainWindow->height() - TOOLBOX_HEIGHT - 5);
             m_playBtnTip->show();
             m_playBtnTip->QWidget::activateWindow();
@@ -3123,53 +3118,53 @@ void ToolboxProxy::initToolTip()
             m_playBtnTip->releaseMouse();
 
         });
-        connect(static_cast<ButtonBoxButton*>(_playBtn), &ButtonBoxButton::leaved, [ = ]() {
-            QTimer::singleShot(0,[=]{
+        connect(static_cast<ButtonBoxButton *>(_playBtn), &ButtonBoxButton::leaved, [ = ]() {
+            QTimer::singleShot(0, [ = ] {
                 m_playBtnTip->hide();
             });
         });
         //lmh0910上一个
-        m_prevBtnTip=new ButtonToolTip(_mainWindow);
+        m_prevBtnTip = new ButtonToolTip(_mainWindow);
         m_prevBtnTip->setText(tr("Previous"));
-        connect(static_cast<ButtonBoxButton*>(_prevBtn), &ButtonBoxButton::entered, [ = ]() {
+        connect(static_cast<ButtonBoxButton *>(_prevBtn), &ButtonBoxButton::entered, [ = ]() {
             m_prevBtnTip->move(40,
-                            _mainWindow->height() - TOOLBOX_HEIGHT - 5);
+                               _mainWindow->height() - TOOLBOX_HEIGHT - 5);
             m_prevBtnTip->show();
             m_prevBtnTip->QWidget::activateWindow();
             m_prevBtnTip->update();
             m_prevBtnTip->releaseMouse();
 
         });
-        connect(static_cast<ButtonBoxButton*>(_prevBtn), &ButtonBoxButton::leaved, [ = ]() {
-            QTimer::singleShot(0,[=]{
+        connect(static_cast<ButtonBoxButton *>(_prevBtn), &ButtonBoxButton::leaved, [ = ]() {
+            QTimer::singleShot(0, [ = ] {
                 m_prevBtnTip->hide();
             });
         });
 
         //lmh0910下一个
-        m_nextBtnTip=new ButtonToolTip(_mainWindow);
+        m_nextBtnTip = new ButtonToolTip(_mainWindow);
         m_nextBtnTip->setText(tr("Next"));
-        connect(static_cast<ButtonBoxButton*>(_nextBtn), &ButtonBoxButton::entered, [ = ]() {
+        connect(static_cast<ButtonBoxButton *>(_nextBtn), &ButtonBoxButton::entered, [ = ]() {
             m_nextBtnTip->move(120,
-                            _mainWindow->height() - TOOLBOX_HEIGHT - 5);
+                               _mainWindow->height() - TOOLBOX_HEIGHT - 5);
             m_nextBtnTip->show();
             m_nextBtnTip->QWidget::activateWindow();
             m_nextBtnTip->update();
             m_nextBtnTip->releaseMouse();
 
         });
-        connect(static_cast<ButtonBoxButton*>(_nextBtn), &ButtonBoxButton::leaved, [ = ]() {
-            QTimer::singleShot(0,[=]{
+        connect(static_cast<ButtonBoxButton *>(_nextBtn), &ButtonBoxButton::leaved, [ = ]() {
+            QTimer::singleShot(0, [ = ] {
                 m_nextBtnTip->hide();
             });
         });
     }
     //lmh0910全屏按键
-    m_fsBtnTip=new ButtonToolTip(_mainWindow);
+    m_fsBtnTip = new ButtonToolTip(_mainWindow);
     m_fsBtnTip->setText(tr("Fullscreen"));
     connect(_fsBtn, &ToolButton::entered, [ = ]() {
         m_fsBtnTip->move(_mainWindow->width() - _fsBtn->width() / 2 /*- _playBtn->width()*/ - 140,
-                        _mainWindow->height() - TOOLBOX_HEIGHT - 5);
+                         _mainWindow->height() - TOOLBOX_HEIGHT - 5);
         m_fsBtnTip->show();
         m_fsBtnTip->QWidget::activateWindow();
         m_fsBtnTip->update();
@@ -3177,16 +3172,16 @@ void ToolboxProxy::initToolTip()
 
     });
     connect(_fsBtn, &ToolButton::leaved, [ = ]() {
-        QTimer::singleShot(0,[=]{
+        QTimer::singleShot(0, [ = ] {
             m_fsBtnTip->hide();
         });
     });
     //lmh0910list按键
-    m_listBtnTip=new ButtonToolTip(_mainWindow);
+    m_listBtnTip = new ButtonToolTip(_mainWindow);
     m_listBtnTip->setText(tr("Playlist"));
     connect(_listBtn, &ToolButton::entered, [ = ]() {
         m_listBtnTip->move(_mainWindow->width() - _listBtn->width() / 2 /*- _playBtn->width()*/ - 20,
-                          _mainWindow->height() - TOOLBOX_HEIGHT - 5);
+                           _mainWindow->height() - TOOLBOX_HEIGHT - 5);
         m_listBtnTip->show();
         m_listBtnTip->QWidget::activateWindow();
         m_listBtnTip->update();
@@ -3194,7 +3189,7 @@ void ToolboxProxy::initToolTip()
 
     });
     connect(_listBtn, &ToolButton::leaved, [ = ]() {
-        QTimer::singleShot(0,[=]{
+        QTimer::singleShot(0, [ = ] {
             m_listBtnTip->hide();
         });
     });
