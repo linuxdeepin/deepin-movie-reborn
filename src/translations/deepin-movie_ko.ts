@@ -47,11 +47,11 @@
     </message>
     <message>
         <source>Basic</source>
-        <translation>기본</translation>
+        <translation>기본 설정</translation>
     </message>
     <message>
         <source>Play</source>
-        <translation>재생</translation>
+        <translation>재생 설정</translation>
     </message>
     <message>
         <source>Screenshot</source>
@@ -115,11 +115,11 @@
     </message>
     <message>
         <source>Volume down</source>
-        <translation>음량 줄이기</translation>
+        <translation>볼륨 낮추기</translation>
     </message>
     <message>
         <source>Volume up</source>
-        <translation>음량 키우기</translation>
+        <translation>볼륨 높이기</translation>
     </message>
     <message>
         <source>Speed up</source>
@@ -131,7 +131,7 @@
     </message>
     <message>
         <source>Fullscreen</source>
-        <translation>전체 화면</translation>
+        <translation>전체화면</translation>
     </message>
     <message>
         <source>Pause/Play</source>
@@ -139,7 +139,7 @@
     </message>
     <message>
         <source>Playlist</source>
-        <translation>재생목록</translation>
+        <translation>재생 목록</translation>
     </message>
     <message>
         <source>Reset speed</source>
@@ -301,7 +301,7 @@
     </message>
     <message>
         <source>List Loop</source>
-        <translation>목록 반복</translation>
+        <translation>전체 반복</translation>
     </message>
     <message>
         <source>Frame</source>
@@ -321,7 +321,7 @@
     </message>
     <message>
         <source>Sound</source>
-        <translation>소리</translation>
+        <translation>사운드</translation>
     </message>
     <message>
         <source>Channel</source>
@@ -381,7 +381,7 @@
     </message>
     <message>
         <source>Playlist</source>
-        <translation>재생목록</translation>
+        <translation>재생 목록</translation>
     </message>
     <message>
         <source>Film Info</source>
@@ -393,7 +393,7 @@
     </message>
     <message>
         <source>Display in file manager</source>
-        <translation>파일 관리자에 표시</translation>
+        <translation>파일 관리자로 열기</translation>
     </message>
     <message>
         <source>Next Frame</source>
@@ -406,6 +406,30 @@
     <message>
         <source>Open screenshot folder</source>
         <translation>스크린샷 폴더 열기</translation>
+    </message>
+    <message>
+        <source>Playback Speed</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>0.5x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>1.0x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>1.2x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>1.5x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>2.0x</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -594,10 +618,6 @@
         <translation>CD/DVD가 배출되었습니다</translation>
     </message>
     <message>
-        <source>All videos (%2 %1)</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
         <source>All videos (*)(%2 %1)</source>
         <translation>모든 동영상 (*)(%2 %1)</translation>
     </message>
@@ -780,7 +800,7 @@
     <name>dmr::ToolboxProxy</name>
     <message>
         <source>Play</source>
-        <translation>재생</translation>
+        <translation>재생 설정</translation>
     </message>
     <message>
         <source>Previous</source>
@@ -833,6 +853,10 @@
     <message>
         <source>Pause</source>
         <translation>일시정지</translation>
+    </message>
+    <message>
+        <source>Mute</source>
+        <translation>음소거</translation>
     </message>
 </context>
 </TS>

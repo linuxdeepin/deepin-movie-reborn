@@ -83,7 +83,7 @@
     </message>
     <message>
         <source>Restore Defaults</source>
-        <translation>Ripristina i valori di default</translation>
+        <translation>Ripristina ai valori predefiniti</translation>
     </message>
     <message>
         <source>Open file</source>
@@ -175,7 +175,7 @@
     </message>
     <message>
         <source>Movie</source>
-        <translation>Movie</translation>
+        <translation>Video</translation>
     </message>
     <message>
         <source>Settings</source>
@@ -346,7 +346,7 @@ Localizzazione italiana a cura di Carofano Massimo Antonio.</translation>
     </message>
     <message>
         <source>Subtitle</source>
-        <translation>Sottototoli</translation>
+        <translation>Sottotitoli</translation>
     </message>
     <message>
         <source>Load</source>
@@ -407,6 +407,30 @@ Localizzazione italiana a cura di Carofano Massimo Antonio.</translation>
     <message>
         <source>Open screenshot folder</source>
         <translation>Apri cartella degli screenshot</translation>
+    </message>
+    <message>
+        <source>Playback Speed</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>0.5x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>1.0x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>1.2x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>1.5x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>2.0x</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -593,10 +617,6 @@ Localizzazione italiana a cura di Carofano Massimo Antonio.</translation>
     <message>
         <source>The CD/DVD has been ejected</source>
         <translation>Il CD/DVD è stato rimosso</translation>
-    </message>
-    <message>
-        <source>All videos (%2 %1)</source>
-        <translation type="unfinished"/>
     </message>
     <message>
         <source>All videos (*)(%2 %1)</source>
@@ -834,6 +854,10 @@ Localizzazione italiana a cura di Carofano Massimo Antonio.</translation>
     <message>
         <source>Pause</source>
         <translation>Pausa</translation>
+    </message>
+    <message>
+        <source>Mute</source>
+        <translation>Muto</translation>
     </message>
 </context>
 </TS>

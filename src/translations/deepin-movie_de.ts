@@ -407,6 +407,30 @@
         <source>Open screenshot folder</source>
         <translation>Bildschirmfotoordner öffnen</translation>
     </message>
+    <message>
+        <source>Playback Speed</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>0.5x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>1.0x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>1.2x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>1.5x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>2.0x</source>
+        <translation type="unfinished"/>
+    </message>
 </context>
 <context>
     <name>dmr::BurstScreenshotsDialog</name>
@@ -592,10 +616,6 @@
     <message>
         <source>The CD/DVD has been ejected</source>
         <translation>Die CD/DVD wurde ausgeworfen</translation>
-    </message>
-    <message>
-        <source>All videos (%2 %1)</source>
-        <translation type="unfinished"/>
     </message>
     <message>
         <source>All videos (*)(%2 %1)</source>
@@ -784,11 +804,11 @@
     </message>
     <message>
         <source>Previous</source>
-        <translation>Vorherige</translation>
+        <translation>Zurück</translation>
     </message>
     <message>
         <source>Next</source>
-        <translation>Nächster Titel</translation>
+        <translation>Weiter</translation>
     </message>
     <message>
         <source>Subtitles</source>
@@ -804,7 +824,7 @@
     </message>
     <message>
         <source>Play/Pause</source>
-        <translation>Wiedergeben/Pausieren</translation>
+        <translation>Abspielen/Pausieren</translation>
     </message>
     <message>
         <source>play</source>
@@ -833,6 +853,10 @@
     <message>
         <source>Pause</source>
         <translation>Pausieren</translation>
+    </message>
+    <message>
+        <source>Mute</source>
+        <translation>Stummschalten</translation>
     </message>
 </context>
 </TS>

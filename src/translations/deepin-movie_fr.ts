@@ -51,7 +51,7 @@
     </message>
     <message>
         <source>Play</source>
-        <translation>Lecture</translation>
+        <translation>Jouer</translation>
     </message>
     <message>
         <source>Screenshot</source>
@@ -59,7 +59,7 @@
     </message>
     <message>
         <source>Shortcuts</source>
-        <translation>Raccourcis </translation>
+        <translation>Raccourcis</translation>
     </message>
     <message>
         <source>File</source>
@@ -83,11 +83,11 @@
     </message>
     <message>
         <source>Restore Defaults</source>
-        <translation>Restaurer les valeurs par défaut</translation>
+        <translation>Restaurer les paramètres par défaut</translation>
     </message>
     <message>
         <source>Open file</source>
-        <translation>Ouvrir le fichier</translation>
+        <translation>Ouvrir un fichier</translation>
     </message>
     <message>
         <source>Open next</source>
@@ -115,7 +115,7 @@
     </message>
     <message>
         <source>Volume down</source>
-        <translation>Diminuer le volume</translation>
+        <translation>Réduction du volume</translation>
     </message>
     <message>
         <source>Volume up</source>
@@ -167,7 +167,7 @@
     </message>
     <message>
         <source>Font</source>
-        <translation>Police</translation>
+        <translation>Polices</translation>
     </message>
     <message>
         <source>Exit fullscreen/mini mode</source>
@@ -187,7 +187,7 @@
     </message>
     <message>
         <source>Display shortcuts</source>
-        <translation>Afficher les raccourcis</translation>
+        <translation>Afficher les raccourcis </translation>
     </message>
     <message>
         <source>Delete from playlist</source>
@@ -241,7 +241,7 @@
     <name>dmr::ActionFactory</name>
     <message>
         <source>Settings</source>
-        <translation>Paramètres </translation>
+        <translation>Paramètres</translation>
     </message>
     <message>
         <source>Fullscreen</source>
@@ -357,7 +357,7 @@
     </message>
     <message>
         <source>Select</source>
-        <translation>Choisir</translation>
+        <translation>Sélectionner</translation>
     </message>
     <message>
         <source>Hide</source>
@@ -407,6 +407,30 @@
         <source>Open screenshot folder</source>
         <translation>Ouvrir le dossier de capture d&apos;écran</translation>
     </message>
+    <message>
+        <source>Playback Speed</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>0.5x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>1.0x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>1.2x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>1.5x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>2.0x</source>
+        <translation type="unfinished"/>
+    </message>
 </context>
 <context>
     <name>dmr::BurstScreenshotsDialog</name>
@@ -420,11 +444,11 @@
     </message>
     <message>
         <source>Size: %1</source>
-        <translation>Taille : %1</translation>
+        <translation>Taille : %1</translation>
     </message>
     <message>
         <source>Save</source>
-        <translation>Sauvegarder</translation>
+        <translation>sauvegarder</translation>
     </message>
 </context>
 <context>
@@ -503,7 +527,7 @@
     </message>
     <message>
         <source>View</source>
-        <translation>Vue</translation>
+        <translation>Afficher</translation>
     </message>
     <message>
         <source>Saved to</source>
@@ -592,10 +616,6 @@
     <message>
         <source>The CD/DVD has been ejected</source>
         <translation>Le CD/DVD a été éjecté</translation>
-    </message>
-    <message>
-        <source>All videos (%2 %1)</source>
-        <translation type="unfinished"/>
     </message>
     <message>
         <source>All videos (*)(%2 %1)</source>
@@ -780,7 +800,7 @@
     <name>dmr::ToolboxProxy</name>
     <message>
         <source>Play</source>
-        <translation>Lecture</translation>
+        <translation>Jouer</translation>
     </message>
     <message>
         <source>Previous</source>
@@ -828,11 +848,15 @@
     </message>
     <message>
         <source>Exit fullscreen</source>
-        <translation>Quitter le mode plein écran</translation>
+        <translation>Quitter le plein écran</translation>
     </message>
     <message>
         <source>Pause</source>
         <translation>Pause</translation>
+    </message>
+    <message>
+        <source>Mute</source>
+        <translation>Muet</translation>
     </message>
 </context>
 </TS>

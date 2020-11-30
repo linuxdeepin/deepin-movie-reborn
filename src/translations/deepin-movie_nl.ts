@@ -131,7 +131,7 @@
     </message>
     <message>
         <source>Fullscreen</source>
-        <translation>Beeldvullend</translation>
+        <translation>Beeldvullende modus</translation>
     </message>
     <message>
         <source>Pause/Play</source>
@@ -407,6 +407,30 @@
         <source>Open screenshot folder</source>
         <translation>Schermfotomap openen</translation>
     </message>
+    <message>
+        <source>Playback Speed</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>0.5x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>1.0x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>1.2x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>1.5x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>2.0x</source>
+        <translation type="unfinished"/>
+    </message>
 </context>
 <context>
     <name>dmr::BurstScreenshotsDialog</name>
@@ -594,10 +618,6 @@
         <translation>De cd/dvd is uitgeworpen</translation>
     </message>
     <message>
-        <source>All videos (%2 %1)</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
         <source>All videos (*)(%2 %1)</source>
         <translation>Alle video&apos;s (*)(%2 %1)</translation>
     </message>
@@ -637,7 +657,7 @@
     </message>
     <message>
         <source>Type</source>
-        <translation>Type</translation>
+        <translation>Soort</translation>
     </message>
     <message>
         <source>Size</source>
@@ -742,7 +762,7 @@
     </message>
     <message>
         <source>Empty</source>
-        <translation>Leeg</translation>
+        <translation>Legen</translation>
     </message>
 </context>
 <context>
@@ -800,7 +820,7 @@
     </message>
     <message>
         <source>Fullscreen</source>
-        <translation>Beeldvullend</translation>
+        <translation>Beeldvullende modus</translation>
     </message>
     <message>
         <source>Play/Pause</source>
@@ -833,6 +853,10 @@
     <message>
         <source>Pause</source>
         <translation>Pauzeren</translation>
+    </message>
+    <message>
+        <source>Mute</source>
+        <translation>Dempen</translation>
     </message>
 </context>
 </TS>

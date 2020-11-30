@@ -55,7 +55,7 @@
     </message>
     <message>
         <source>Screenshot</source>
-        <translation>ئېكران رەسىمگە تۇتۇش</translation>
+        <translation>ئېكران رەسىمى</translation>
     </message>
     <message>
         <source>Shortcuts</source>
@@ -211,7 +211,7 @@
     </message>
     <message>
         <source>OK</source>
-        <translation>جەزىملەشتۈرۈش</translation>
+        <translation>تامام</translation>
     </message>
     <message>
         <source>Default play mode</source>
@@ -234,7 +234,7 @@
     </message>
     <message>
         <source>OK</source>
-        <translation>جەزىملەشتۈرۈش</translation>
+        <translation>تامام</translation>
     </message>
 </context>
 <context>
@@ -281,7 +281,7 @@
     </message>
     <message>
         <source>Play Mode</source>
-        <translation>ھالىتى</translation>
+        <translation>قويۇش ھالىتى</translation>
     </message>
     <message>
         <source>Order Play</source>
@@ -301,7 +301,7 @@
     </message>
     <message>
         <source>List Loop</source>
-        <translation>تىزىملىك ھالقىسى</translation>
+        <translation>ھالقىسىمان تىزىملىك</translation>
     </message>
     <message>
         <source>Frame</source>
@@ -369,7 +369,7 @@
     </message>
     <message>
         <source>Screenshot</source>
-        <translation>ئېكران رەسىمگە تۇتۇش</translation>
+        <translation>ئېكران رەسىمى</translation>
     </message>
     <message>
         <source>Film Screenshot</source>
@@ -406,6 +406,30 @@
     <message>
         <source>Open screenshot folder</source>
         <translation>ئىكران تۇتما قىسقۇچنى ئېچىش</translation>
+    </message>
+    <message>
+        <source>Playback Speed</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>0.5x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>1.0x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>1.2x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>1.5x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>2.0x</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -551,7 +575,7 @@
     </message>
     <message>
         <source>OK</source>
-        <translation>جەزىملەشتۈرۈش</translation>
+        <translation>تامام</translation>
     </message>
     <message>
         <source>Please insert a CD/DVD</source>
@@ -592,10 +616,6 @@
     <message>
         <source>The CD/DVD has been ejected</source>
         <translation>CD / DVD چىقىرىۋېتىلدى</translation>
-    </message>
-    <message>
-        <source>All videos (%2 %1)</source>
-        <translation type="unfinished"/>
     </message>
     <message>
         <source>All videos (*)(%2 %1)</source>
@@ -833,6 +853,10 @@
     <message>
         <source>Pause</source>
         <translation>تورمۇزلاش</translation>
+    </message>
+    <message>
+        <source>Mute</source>
+        <translation>ئاۋازسىز</translation>
     </message>
 </context>
 </TS>

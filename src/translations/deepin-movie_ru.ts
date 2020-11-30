@@ -55,11 +55,11 @@
     </message>
     <message>
         <source>Screenshot</source>
-        <translation>Скриншот</translation>
+        <translation>Снимок</translation>
     </message>
     <message>
         <source>Shortcuts</source>
-        <translation>Сочетание клавиш</translation>
+        <translation>Горячие Клавиши</translation>
     </message>
     <message>
         <source>File</source>
@@ -369,7 +369,7 @@
     </message>
     <message>
         <source>Screenshot</source>
-        <translation>Скриншот</translation>
+        <translation>Снимок</translation>
     </message>
     <message>
         <source>Film Screenshot</source>
@@ -406,6 +406,30 @@
     <message>
         <source>Open screenshot folder</source>
         <translation>Открыть папку &quot;Изображения&quot;</translation>
+    </message>
+    <message>
+        <source>Playback Speed</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>0.5x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>1.0x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>1.2x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>1.5x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>2.0x</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -592,10 +616,6 @@
     <message>
         <source>The CD/DVD has been ejected</source>
         <translation>CD/DVD диск был извлечен.</translation>
-    </message>
-    <message>
-        <source>All videos (%2 %1)</source>
-        <translation type="unfinished"/>
     </message>
     <message>
         <source>All videos (*)(%2 %1)</source>
@@ -788,7 +808,7 @@
     </message>
     <message>
         <source>Next</source>
-        <translation>Следующий</translation>
+        <translation>Далее</translation>
     </message>
     <message>
         <source>Subtitles</source>
@@ -833,6 +853,10 @@
     <message>
         <source>Pause</source>
         <translation>Пауза</translation>
+    </message>
+    <message>
+        <source>Mute</source>
+        <translation>Приглушить</translation>
     </message>
 </context>
 </TS>

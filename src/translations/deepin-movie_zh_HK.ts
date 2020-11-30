@@ -55,15 +55,15 @@
     </message>
     <message>
         <source>Screenshot</source>
-        <translation>截圖設定</translation>
+        <translation>截圖</translation>
     </message>
     <message>
         <source>Shortcuts</source>
-        <translation>捷徑</translation>
+        <translation>快捷键</translation>
     </message>
     <message>
         <source>File</source>
-        <translation>檔</translation>
+        <translation>檔案</translation>
     </message>
     <message>
         <source>Frame/Sound</source>
@@ -83,7 +83,7 @@
     </message>
     <message>
         <source>Restore Defaults</source>
-        <translation>恢復預設值</translation>
+        <translation>恢復默認</translation>
     </message>
     <message>
         <source>Open file</source>
@@ -167,7 +167,7 @@
     </message>
     <message>
         <source>Font</source>
-        <translation>字體</translation>
+        <translation>字体</translation>
     </message>
     <message>
         <source>Exit fullscreen/mini mode</source>
@@ -183,7 +183,7 @@
     </message>
     <message>
         <source>Help</source>
-        <translation>協助</translation>
+        <translation>幫助</translation>
     </message>
     <message>
         <source>Display shortcuts</source>
@@ -203,7 +203,7 @@
     </message>
     <message>
         <source>Size</source>
-        <translation>大小</translation>
+        <translation>字號</translation>
     </message>
     <message>
         <source>Movie is a full-featured video player, supporting playing local and streaming media in multiple video formats.</source>
@@ -309,7 +309,7 @@
     </message>
     <message>
         <source>Default</source>
-        <translation>預設</translation>
+        <translation>默認</translation>
     </message>
     <message>
         <source>Clockwise</source>
@@ -321,7 +321,7 @@
     </message>
     <message>
         <source>Sound</source>
-        <translation>音效</translation>
+        <translation>聲音</translation>
     </message>
     <message>
         <source>Channel</source>
@@ -369,7 +369,7 @@
     </message>
     <message>
         <source>Screenshot</source>
-        <translation>截圖設定</translation>
+        <translation>截圖</translation>
     </message>
     <message>
         <source>Film Screenshot</source>
@@ -407,6 +407,30 @@
         <source>Open screenshot folder</source>
         <translation>前往截圖文件夾</translation>
     </message>
+    <message>
+        <source>Playback Speed</source>
+        <translation>倍速播放</translation>
+    </message>
+    <message>
+        <source>0.5x</source>
+        <translation>0.5x</translation>
+    </message>
+    <message>
+        <source>1.0x</source>
+        <translation>1.0x</translation>
+    </message>
+    <message>
+        <source>1.2x</source>
+        <translation>1.2x</translation>
+    </message>
+    <message>
+        <source>1.5x</source>
+        <translation>1.5x</translation>
+    </message>
+    <message>
+        <source>2.0x</source>
+        <translation>2.0x</translation>
+    </message>
 </context>
 <context>
     <name>dmr::BurstScreenshotsDialog</name>
@@ -420,7 +444,7 @@
     </message>
     <message>
         <source>Size: %1</source>
-        <translation>影片大小：%1</translation>
+        <translation>大小：%1</translation>
     </message>
     <message>
         <source>Save</source>
@@ -503,7 +527,7 @@
     </message>
     <message>
         <source>View</source>
-        <translation>檢視</translation>
+        <translation>查看</translation>
     </message>
     <message>
         <source>Saved to</source>
@@ -594,10 +618,6 @@
         <translation>CD/DVD已彈出</translation>
     </message>
     <message>
-        <source>All videos (%2 %1)</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
         <source>All videos (*)(%2 %1)</source>
         <translation>所有影片 (*)(%2 %1)</translation>
     </message>
@@ -629,7 +649,7 @@
     </message>
     <message>
         <source>Resolution</source>
-        <translation>解析度</translation>
+        <translation>解像度</translation>
     </message>
     <message>
         <source>Duration</source>
@@ -641,7 +661,7 @@
     </message>
     <message>
         <source>Size</source>
-        <translation>大小</translation>
+        <translation>字號</translation>
     </message>
     <message>
         <source>Path</source>
@@ -833,6 +853,10 @@
     <message>
         <source>Pause</source>
         <translation>暫停</translation>
+    </message>
+    <message>
+        <source>Mute</source>
+        <translation>靜音</translation>
     </message>
 </context>
 </TS>

@@ -63,7 +63,7 @@
     </message>
     <message>
         <source>File</source>
-        <translation>الملف</translation>
+        <translation>ملف</translation>
     </message>
     <message>
         <source>Frame/Sound</source>
@@ -241,7 +241,7 @@
     <name>dmr::ActionFactory</name>
     <message>
         <source>Settings</source>
-        <translation>إعدادات</translation>
+        <translation>الإعدادات</translation>
     </message>
     <message>
         <source>Fullscreen</source>
@@ -406,6 +406,30 @@
     <message>
         <source>Open screenshot folder</source>
         <translation>فتح ملف صور الشاشه</translation>
+    </message>
+    <message>
+        <source>Playback Speed</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>0.5x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>1.0x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>1.2x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>1.5x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>2.0x</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -592,10 +616,6 @@
     <message>
         <source>The CD/DVD has been ejected</source>
         <translation>تم إخراج CD/DVD</translation>
-    </message>
-    <message>
-        <source>All videos (%2 %1)</source>
-        <translation type="unfinished"/>
     </message>
     <message>
         <source>All videos (*)(%2 %1)</source>
@@ -833,6 +853,10 @@
     <message>
         <source>Pause</source>
         <translation>إيقاف مؤقت</translation>
+    </message>
+    <message>
+        <source>Mute</source>
+        <translation>صامت</translation>
     </message>
 </context>
 </TS>

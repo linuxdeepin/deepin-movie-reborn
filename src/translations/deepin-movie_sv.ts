@@ -409,6 +409,30 @@
         <source>Open screenshot folder</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Playback Speed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>0.5x</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>1.0x</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>1.2x</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>1.5x</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>2.0x</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>dmr::BurstScreenshotsDialog</name>
@@ -601,10 +625,6 @@
     </message>
     <message>
         <source>All videos (*)(%2 %1)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Please exit smart dock</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -841,8 +861,8 @@
         <translation>Pausa</translation>
     </message>
     <message>
-        <source>sub</source>
-        <translation type="unfinished"></translation>
+        <source>Mute</source>
+        <translation type="unfinished">Tysta</translation>
     </message>
 </context>
 </TS>

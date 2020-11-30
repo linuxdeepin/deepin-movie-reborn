@@ -55,7 +55,7 @@
     </message>
     <message>
         <source>Screenshot</source>
-        <translation>Слика екрана</translation>
+        <translation>Слика Екрана</translation>
     </message>
     <message>
         <source>Shortcuts</source>
@@ -139,7 +139,7 @@
     </message>
     <message>
         <source>Playlist</source>
-        <translation>Листа пуштања</translation>
+        <translation>Листа</translation>
     </message>
     <message>
         <source>Reset speed</source>
@@ -241,7 +241,7 @@
     <name>dmr::ActionFactory</name>
     <message>
         <source>Settings</source>
-        <translation>Подешавања</translation>
+        <translation>Подeшавања</translation>
     </message>
     <message>
         <source>Fullscreen</source>
@@ -297,11 +297,11 @@
     </message>
     <message>
         <source>Single Loop</source>
-        <translation>Понављај видео</translation>
+        <translation>Понављање нумере</translation>
     </message>
     <message>
         <source>List Loop</source>
-        <translation>Понављај листу</translation>
+        <translation>Понављање листе</translation>
     </message>
     <message>
         <source>Frame</source>
@@ -369,7 +369,7 @@
     </message>
     <message>
         <source>Screenshot</source>
-        <translation>Слика екрана</translation>
+        <translation>Слика Екрана</translation>
     </message>
     <message>
         <source>Film Screenshot</source>
@@ -381,7 +381,7 @@
     </message>
     <message>
         <source>Playlist</source>
-        <translation>Листа пуштања</translation>
+        <translation>Листа</translation>
     </message>
     <message>
         <source>Film Info</source>
@@ -406,6 +406,30 @@
     <message>
         <source>Open screenshot folder</source>
         <translation>Отвори фасциклу са сликама екрана</translation>
+    </message>
+    <message>
+        <source>Playback Speed</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>0.5x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>1.0x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>1.2x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>1.5x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>2.0x</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -503,7 +527,7 @@
     </message>
     <message>
         <source>View</source>
-        <translation>Прегледај</translation>
+        <translation>Прикажи</translation>
     </message>
     <message>
         <source>Saved to</source>
@@ -592,10 +616,6 @@
     <message>
         <source>The CD/DVD has been ejected</source>
         <translation>ЦД/ДВД је избачен</translation>
-    </message>
-    <message>
-        <source>All videos (%2 %1)</source>
-        <translation type="unfinished"/>
     </message>
     <message>
         <source>All videos (*)(%2 %1)</source>
@@ -780,7 +800,7 @@
     <name>dmr::ToolboxProxy</name>
     <message>
         <source>Play</source>
-        <translation>Пусти</translation>
+        <translation>Репродукција</translation>
     </message>
     <message>
         <source>Previous</source>
@@ -796,7 +816,7 @@
     </message>
     <message>
         <source>Playlist</source>
-        <translation>Листа пуштања</translation>
+        <translation>Листа</translation>
     </message>
     <message>
         <source>Fullscreen</source>
@@ -833,6 +853,10 @@
     <message>
         <source>Pause</source>
         <translation>Паузирај</translation>
+    </message>
+    <message>
+        <source>Mute</source>
+        <translation>Ућуткај</translation>
     </message>
 </context>
 </TS>

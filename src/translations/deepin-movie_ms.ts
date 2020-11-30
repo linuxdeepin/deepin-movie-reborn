@@ -75,7 +75,7 @@
     </message>
     <message>
         <source>Subtitle</source>
-        <translation>Sarikata</translation>
+        <translation>Sarikata </translation>
     </message>
     <message>
         <source>Font Style</source>
@@ -407,6 +407,30 @@
         <source>Open screenshot folder</source>
         <translation>Buka folder cekupan skrin</translation>
     </message>
+    <message>
+        <source>Playback Speed</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>0.5x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>1.0x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>1.2x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>1.5x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>2.0x</source>
+        <translation type="unfinished"/>
+    </message>
 </context>
 <context>
     <name>dmr::BurstScreenshotsDialog</name>
@@ -592,10 +616,6 @@
     <message>
         <source>The CD/DVD has been ejected</source>
         <translation>CD/DVD telah dilentingkan</translation>
-    </message>
-    <message>
-        <source>All videos (%2 %1)</source>
-        <translation type="unfinished"/>
     </message>
     <message>
         <source>All videos (*)(%2 %1)</source>
@@ -833,6 +853,10 @@
     <message>
         <source>Pause</source>
         <translation>Jeda</translation>
+    </message>
+    <message>
+        <source>Mute</source>
+        <translation>Senyap</translation>
     </message>
 </context>
 </TS>

@@ -407,6 +407,30 @@
         <source>Open screenshot folder</source>
         <translation>Abrir o cartafol de captura de pantalla</translation>
     </message>
+    <message>
+        <source>Playback Speed</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>0.5x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>1.0x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>1.2x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>1.5x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>2.0x</source>
+        <translation type="unfinished"/>
+    </message>
 </context>
 <context>
     <name>dmr::BurstScreenshotsDialog</name>
@@ -594,10 +618,6 @@
         <translation>Expulsouse o CD/DVD</translation>
     </message>
     <message>
-        <source>All videos (%2 %1)</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
         <source>All videos (*)(%2 %1)</source>
         <translation>Todos os vídeos (*)(%2 %1)</translation>
     </message>
@@ -769,7 +789,7 @@
     </message>
     <message>
         <source>Single loop</source>
-        <translation>Single play</translation>
+        <translation>Bucle único</translation>
     </message>
     <message>
         <source>List loop</source>
@@ -833,6 +853,10 @@
     <message>
         <source>Pause</source>
         <translation>Pausar</translation>
+    </message>
+    <message>
+        <source>Mute</source>
+        <translation>Silenciar</translation>
     </message>
 </context>
 </TS>

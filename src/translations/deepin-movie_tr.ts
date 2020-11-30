@@ -55,7 +55,7 @@
     </message>
     <message>
         <source>Screenshot</source>
-        <translation>Ekran Görüntüsü</translation>
+        <translation>Ekran görüntüsü</translation>
     </message>
     <message>
         <source>Shortcuts</source>
@@ -103,7 +103,7 @@
     </message>
     <message>
         <source>Mute</source>
-        <translation>Sessiz</translation>
+        <translation>Sesi kapat</translation>
     </message>
     <message>
         <source>Next frame</source>
@@ -119,7 +119,7 @@
     </message>
     <message>
         <source>Volume up</source>
-        <translation>Sesi arttır</translation>
+        <translation>Sesi yükselt</translation>
     </message>
     <message>
         <source>Speed up</source>
@@ -297,7 +297,7 @@
     </message>
     <message>
         <source>Single Loop</source>
-        <translation>Tek Döngü</translation>
+        <translation>Parça Döngüsü</translation>
     </message>
     <message>
         <source>List Loop</source>
@@ -369,7 +369,7 @@
     </message>
     <message>
         <source>Screenshot</source>
-        <translation>Ekran Görüntüsü</translation>
+        <translation>Ekran görüntüsü</translation>
     </message>
     <message>
         <source>Film Screenshot</source>
@@ -406,6 +406,30 @@
     <message>
         <source>Open screenshot folder</source>
         <translation>Ekran görüntüsü klasörünü aç</translation>
+    </message>
+    <message>
+        <source>Playback Speed</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>0.5x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>1.0x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>1.2x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>1.5x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>2.0x</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -592,10 +616,6 @@
     <message>
         <source>The CD/DVD has been ejected</source>
         <translation>CD/DVD çıkarıldı</translation>
-    </message>
-    <message>
-        <source>All videos (%2 %1)</source>
-        <translation type="unfinished"/>
     </message>
     <message>
         <source>All videos (*)(%2 %1)</source>
@@ -833,6 +853,10 @@
     <message>
         <source>Pause</source>
         <translation>Duraklat</translation>
+    </message>
+    <message>
+        <source>Mute</source>
+        <translation>Sesi kapat</translation>
     </message>
 </context>
 </TS>

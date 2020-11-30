@@ -167,7 +167,7 @@
     </message>
     <message>
         <source>Font</source>
-        <translation>Fontti</translation>
+        <translation>Kirjasin</translation>
     </message>
     <message>
         <source>Exit fullscreen/mini mode</source>
@@ -301,7 +301,7 @@
     </message>
     <message>
         <source>List Loop</source>
-        <translation>Listan jatkuva toisto</translation>
+        <translation>Listan silmukka</translation>
     </message>
     <message>
         <source>Frame</source>
@@ -309,7 +309,7 @@
     </message>
     <message>
         <source>Default</source>
-        <translation>Oletus</translation>
+        <translation>oletus</translation>
     </message>
     <message>
         <source>Clockwise</source>
@@ -406,6 +406,30 @@
     <message>
         <source>Open screenshot folder</source>
         <translation>Avaa ruudunkaappauksen kansio</translation>
+    </message>
+    <message>
+        <source>Playback Speed</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>0.5x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>1.0x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>1.2x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>1.5x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>2.0x</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -592,10 +616,6 @@
     <message>
         <source>The CD/DVD has been ejected</source>
         <translation>CD/DVD on poistettu</translation>
-    </message>
-    <message>
-        <source>All videos (%2 %1)</source>
-        <translation type="unfinished"/>
     </message>
     <message>
         <source>All videos (*)(%2 %1)</source>
@@ -833,6 +853,10 @@
     <message>
         <source>Pause</source>
         <translation>Pysäytä</translation>
+    </message>
+    <message>
+        <source>Mute</source>
+        <translation>Vaienna</translation>
     </message>
 </context>
 </TS>

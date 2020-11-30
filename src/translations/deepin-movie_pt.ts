@@ -83,7 +83,7 @@
     </message>
     <message>
         <source>Restore Defaults</source>
-        <translation>Restaurar Predefinições</translation>
+        <translation>Restaurar predefinições</translation>
     </message>
     <message>
         <source>Open file</source>
@@ -211,7 +211,7 @@
     </message>
     <message>
         <source>OK</source>
-        <translation>OK</translation>
+        <translation>Aceitar</translation>
     </message>
     <message>
         <source>Default play mode</source>
@@ -234,7 +234,7 @@
     </message>
     <message>
         <source>OK</source>
-        <translation>OK</translation>
+        <translation>Aceitar</translation>
     </message>
 </context>
 <context>
@@ -407,6 +407,30 @@
         <source>Open screenshot folder</source>
         <translation>Abrir pasta de captura de ecrã</translation>
     </message>
+    <message>
+        <source>Playback Speed</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>0.5x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>1.0x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>1.2x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>1.5x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>2.0x</source>
+        <translation type="unfinished"/>
+    </message>
 </context>
 <context>
     <name>dmr::BurstScreenshotsDialog</name>
@@ -551,7 +575,7 @@
     </message>
     <message>
         <source>OK</source>
-        <translation>OK</translation>
+        <translation>Aceitar</translation>
     </message>
     <message>
         <source>Please insert a CD/DVD</source>
@@ -592,10 +616,6 @@
     <message>
         <source>The CD/DVD has been ejected</source>
         <translation>O CD/DVD foi ejectado</translation>
-    </message>
-    <message>
-        <source>All videos (%2 %1)</source>
-        <translation type="unfinished"/>
     </message>
     <message>
         <source>All videos (*)(%2 %1)</source>
@@ -833,6 +853,10 @@
     <message>
         <source>Pause</source>
         <translation>Pausa</translation>
+    </message>
+    <message>
+        <source>Mute</source>
+        <translation>Silenciar</translation>
     </message>
 </context>
 </TS>

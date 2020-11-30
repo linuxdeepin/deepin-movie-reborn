@@ -407,6 +407,30 @@
         <source>Open screenshot folder</source>
         <translation>Open screenshot folder</translation>
     </message>
+    <message>
+        <source>Playback Speed</source>
+        <translation>Playback Speed</translation>
+    </message>
+    <message>
+        <source>0.5x</source>
+        <translation>0.5x</translation>
+    </message>
+    <message>
+        <source>1.0x</source>
+        <translation>1.0x</translation>
+    </message>
+    <message>
+        <source>1.2x</source>
+        <translation>1.2x</translation>
+    </message>
+    <message>
+        <source>1.5x</source>
+        <translation>1.5x</translation>
+    </message>
+    <message>
+        <source>2.0x</source>
+        <translation>2.0x</translation>
+    </message>
 </context>
 <context>
     <name>dmr::BurstScreenshotsDialog</name>
@@ -592,10 +616,6 @@
     <message>
         <source>The CD/DVD has been ejected</source>
         <translation>The CD/DVD has been ejected</translation>
-    </message>
-    <message>
-        <source>All videos (%2 %1)</source>
-        <translation type="unfinished"/>
     </message>
     <message>
         <source>All videos (*)(%2 %1)</source>
@@ -833,6 +853,10 @@
     <message>
         <source>Pause</source>
         <translation>Pause</translation>
+    </message>
+    <message>
+        <source>Mute</source>
+        <translation>Mute</translation>
     </message>
 </context>
 </TS>

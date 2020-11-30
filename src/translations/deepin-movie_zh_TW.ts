@@ -59,7 +59,7 @@
     </message>
     <message>
         <source>Shortcuts</source>
-        <translation>快速鍵</translation>
+        <translation>快捷鍵</translation>
     </message>
     <message>
         <source>File</source>
@@ -83,7 +83,7 @@
     </message>
     <message>
         <source>Restore Defaults</source>
-        <translation>還原預設值</translation>
+        <translation>還原至預設值</translation>
     </message>
     <message>
         <source>Open file</source>
@@ -203,11 +203,11 @@
     </message>
     <message>
         <source>Size</source>
-        <translation>圖示</translation>
+        <translation>文字大小</translation>
     </message>
     <message>
         <source>Movie is a full-featured video player, supporting playing local and streaming media in multiple video formats.</source>
-        <translation>影院是一款支援多種影片格式本機播放和流媒體播放的影片播放器。</translation>
+        <translation>電影是一款支援多種影片格式本機播放和流媒體播放的影片播放器。</translation>
     </message>
     <message>
         <source>OK</source>
@@ -407,6 +407,30 @@
         <source>Open screenshot folder</source>
         <translation>前往截圖資料夾</translation>
     </message>
+    <message>
+        <source>Playback Speed</source>
+        <translation>倍速播放</translation>
+    </message>
+    <message>
+        <source>0.5x</source>
+        <translation>0.5x</translation>
+    </message>
+    <message>
+        <source>1.0x</source>
+        <translation>1.0x</translation>
+    </message>
+    <message>
+        <source>1.2x</source>
+        <translation>1.2x</translation>
+    </message>
+    <message>
+        <source>1.5x</source>
+        <translation>1.5x</translation>
+    </message>
+    <message>
+        <source>2.0x</source>
+        <translation>2.0x</translation>
+    </message>
 </context>
 <context>
     <name>dmr::BurstScreenshotsDialog</name>
@@ -503,7 +527,7 @@
     </message>
     <message>
         <source>View</source>
-        <translation>瀏覽</translation>
+        <translation>檢視</translation>
     </message>
     <message>
         <source>Saved to</source>
@@ -594,10 +618,6 @@
         <translation>CD/DVD已彈出</translation>
     </message>
     <message>
-        <source>All videos (%2 %1)</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
         <source>All videos (*)(%2 %1)</source>
         <translation>所有影片 (*)(%2 %1)</translation>
     </message>
@@ -641,7 +661,7 @@
     </message>
     <message>
         <source>Size</source>
-        <translation>圖示</translation>
+        <translation>文字大小</translation>
     </message>
     <message>
         <source>Path</source>
@@ -649,7 +669,7 @@
     </message>
     <message>
         <source>Codec info</source>
-        <translation>編碼訊息</translation>
+        <translation>編碼資訊</translation>
     </message>
     <message>
         <source>Video CodecID</source>
@@ -681,7 +701,7 @@
     </message>
     <message>
         <source>Audio info</source>
-        <translation>音訊訊息</translation>
+        <translation>音訊資訊</translation>
     </message>
     <message>
         <source>Audio CodecID</source>
@@ -784,11 +804,11 @@
     </message>
     <message>
         <source>Previous</source>
-        <translation>上一部</translation>
+        <translation>上一曲</translation>
     </message>
     <message>
         <source>Next</source>
-        <translation>下一部</translation>
+        <translation>下一步</translation>
     </message>
     <message>
         <source>Subtitles</source>
@@ -828,11 +848,15 @@
     </message>
     <message>
         <source>Exit fullscreen</source>
-        <translation>結束全螢幕</translation>
+        <translation>退出全螢幕</translation>
     </message>
     <message>
         <source>Pause</source>
         <translation>暫停</translation>
+    </message>
+    <message>
+        <source>Mute</source>
+        <translation>靜音</translation>
     </message>
 </context>
 </TS>

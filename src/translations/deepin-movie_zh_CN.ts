@@ -325,7 +325,7 @@
     </message>
     <message>
         <source>Channel</source>
-        <translation>声道</translation>
+        <translation>网络通道</translation>
     </message>
     <message>
         <source>Stereo</source>
@@ -357,11 +357,11 @@
     </message>
     <message>
         <source>Select</source>
-        <translation>选择字幕</translation>
+        <translation>选择</translation>
     </message>
     <message>
         <source>Hide</source>
-        <translation>隐藏字幕</translation>
+        <translation>隐藏</translation>
     </message>
     <message>
         <source>Encodings</source>
@@ -407,6 +407,30 @@
         <source>Open screenshot folder</source>
         <translation>前往截图文件夹</translation>
     </message>
+    <message>
+        <source>Playback Speed</source>
+        <translation>倍速播放</translation>
+    </message>
+    <message>
+        <source>0.5x</source>
+        <translation>0.5x</translation>
+    </message>
+    <message>
+        <source>1.0x</source>
+        <translation>1.0x</translation>
+    </message>
+    <message>
+        <source>1.2x</source>
+        <translation>1.2x</translation>
+    </message>
+    <message>
+        <source>1.5x</source>
+        <translation>1.5x</translation>
+    </message>
+    <message>
+        <source>2.0x</source>
+        <translation>2.0x</translation>
+    </message>
 </context>
 <context>
     <name>dmr::BurstScreenshotsDialog</name>
@@ -420,7 +444,7 @@
     </message>
     <message>
         <source>Size: %1</source>
-        <translation>影片大小：%1</translation>
+        <translation>下载大小：%1</translation>
     </message>
     <message>
         <source>Save</source>
@@ -594,10 +618,6 @@
         <translation>CD/DVD已弹出</translation>
     </message>
     <message>
-        <source>All videos (%2 %1)</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
         <source>All videos (*)(%2 %1)</source>
         <translation>所有视频 (*)(%2 %1)</translation>
     </message>
@@ -637,11 +657,11 @@
     </message>
     <message>
         <source>Type</source>
-        <translation>文件类型</translation>
+        <translation>类型</translation>
     </message>
     <message>
         <source>Size</source>
-        <translation>文件大小</translation>
+        <translation>字号</translation>
     </message>
     <message>
         <source>Path</source>
@@ -742,7 +762,7 @@
     </message>
     <message>
         <source>Empty</source>
-        <translation>清空列表</translation>
+        <translation>清空</translation>
     </message>
 </context>
 <context>
@@ -784,11 +804,11 @@
     </message>
     <message>
         <source>Previous</source>
-        <translation>上一个</translation>
+        <translation>上一首</translation>
     </message>
     <message>
         <source>Next</source>
-        <translation>下一个</translation>
+        <translation>下一步</translation>
     </message>
     <message>
         <source>Subtitles</source>
@@ -833,6 +853,10 @@
     <message>
         <source>Pause</source>
         <translation>暂停</translation>
+    </message>
+    <message>
+        <source>Mute</source>
+        <translation>静音</translation>
     </message>
 </context>
 </TS>

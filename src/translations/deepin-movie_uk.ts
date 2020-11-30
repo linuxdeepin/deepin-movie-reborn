@@ -59,7 +59,7 @@
     </message>
     <message>
         <source>Shortcuts</source>
-        <translation>Гарячі клавіші</translation>
+        <translation>Поєднання клавіш</translation>
     </message>
     <message>
         <source>File</source>
@@ -407,6 +407,30 @@
         <source>Open screenshot folder</source>
         <translation>Відкрити теку зі скріншотами</translation>
     </message>
+    <message>
+        <source>Playback Speed</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>0.5x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>1.0x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>1.2x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>1.5x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>2.0x</source>
+        <translation type="unfinished"/>
+    </message>
 </context>
 <context>
     <name>dmr::BurstScreenshotsDialog</name>
@@ -594,10 +618,6 @@
         <translation>Компакт-диск/DVD виштовхнуто</translation>
     </message>
     <message>
-        <source>All videos (%2 %1)</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
         <source>All videos (*)(%2 %1)</source>
         <translation>усі відео (*)(%2 %1)</translation>
     </message>
@@ -629,7 +649,7 @@
     </message>
     <message>
         <source>Resolution</source>
-        <translation>Роздільна здатність</translation>
+        <translation>Роздільність</translation>
     </message>
     <message>
         <source>Duration</source>
@@ -637,7 +657,7 @@
     </message>
     <message>
         <source>Type</source>
-        <translation>Друкувати</translation>
+        <translation>Тип</translation>
     </message>
     <message>
         <source>Size</source>
@@ -784,11 +804,11 @@
     </message>
     <message>
         <source>Previous</source>
-        <translation>Попередній</translation>
+        <translation>Назад</translation>
     </message>
     <message>
         <source>Next</source>
-        <translation>Наступний</translation>
+        <translation>Далі</translation>
     </message>
     <message>
         <source>Subtitles</source>
@@ -833,6 +853,10 @@
     <message>
         <source>Pause</source>
         <translation>Пауза</translation>
+    </message>
+    <message>
+        <source>Mute</source>
+        <translation>Вимкнути звук</translation>
     </message>
 </context>
 </TS>

@@ -43,7 +43,7 @@
     </message>
     <message>
         <source>Path</source>
-        <translation>Cesta</translation>
+        <translation>Popis umístění</translation>
     </message>
     <message>
         <source>Basic</source>
@@ -226,7 +226,7 @@
     <name>UrlDialog</name>
     <message>
         <source>Cancel</source>
-        <translation>Zrušit</translation>
+        <translation>Storno</translation>
     </message>
     <message>
         <source>Please enter the URL:</source>
@@ -297,11 +297,11 @@
     </message>
     <message>
         <source>Single Loop</source>
-        <translation>Jedna smyčka</translation>
+        <translation>Jediná smyčka</translation>
     </message>
     <message>
         <source>List Loop</source>
-        <translation>Smyčka seznamu</translation>
+        <translation>Smyčka nad seznamem</translation>
     </message>
     <message>
         <source>Frame</source>
@@ -406,6 +406,30 @@
     <message>
         <source>Open screenshot folder</source>
         <translation>Otevřít složku, ve které se snímek obrazovky nachází</translation>
+    </message>
+    <message>
+        <source>Playback Speed</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>0.5x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>1.0x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>1.2x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>1.5x</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>2.0x</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -543,7 +567,7 @@
     </message>
     <message>
         <source>Film screenshot</source>
-        <translation>Snímek obrazovky filmu</translation>
+        <translation>Snímek obrazovky z filmu</translation>
     </message>
     <message>
         <source>Taking the screenshots, please wait...</source>
@@ -592,10 +616,6 @@
     <message>
         <source>The CD/DVD has been ejected</source>
         <translation>CD/DVD bylo vysunuto</translation>
-    </message>
-    <message>
-        <source>All videos (%2 %1)</source>
-        <translation type="unfinished"/>
     </message>
     <message>
         <source>All videos (*)(%2 %1)</source>
@@ -769,7 +789,7 @@
     </message>
     <message>
         <source>Single loop</source>
-        <translation>Jedna smyčka</translation>
+        <translation>Jediná smyčka</translation>
     </message>
     <message>
         <source>List loop</source>
@@ -833,6 +853,10 @@
     <message>
         <source>Pause</source>
         <translation>Pozastavit</translation>
+    </message>
+    <message>
+        <source>Mute</source>
+        <translation>Ztlumit</translation>
     </message>
 </context>
 </TS>
