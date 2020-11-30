@@ -611,6 +611,7 @@ public:
     void setValue(int v)
     {
 //        _indicatorPos = {v < 5 ? 5 : v, rect().y()};
+        v += m_nStartPoint;
         if (_press) {
             if (v < 3) {
                 v = 3;
@@ -669,16 +670,17 @@ public:
 
         int pixWidget = 40/*_progBar->width() / 100*/;
 
-        int start_position = (_progBar->width() - ((pixWidget+1) * pm_list.count() - 1)) / 2;   //开始位置
+        m_nViewLength = (pixWidget + 1) * pm_list.count() - 1;
+        m_nStartPoint = (_progBar->width() - m_nViewLength) / 2; //开始位置
         for (int i = 0; i < pm_list.count(); i++) {
             ImageItem *label = new ImageItem(pm_list.at(i), false, _back);
             label->setMouseTracking(true);
-            label->move(i * (pixWidget + 1) + start_position, 5);
+            label->move(i * (pixWidget + 1) + m_nStartPoint, 5);
             label->setFixedSize(pixWidget, 50);
 
             ImageItem *label_black = new ImageItem(pm_black_list.at(i), true, _front);
             label_black->setMouseTracking(true);
-            label_black->move(i * (pixWidget + 1) + start_position, 5);
+            label_black->move(i * (pixWidget + 1) + m_nStartPoint, 5);
             label_black->setFixedSize(pixWidget, 50);
         }
         update();
@@ -702,6 +704,11 @@ public:
         _sliderTime->setVisible(false);
         _sliderArrowDown->setVisible(false);
         _sliderArrowUp->setVisible(false);
+    }
+
+    int getViewLength()
+    {
+        return m_nViewLength;
     }
 
 private:
@@ -753,8 +760,8 @@ protected:
     {
         if (!isEnabled()) return;
 
-        int v = position2progress(e->pos());
-        if (e->pos().x() >= 0 && e->pos().x() <= contentsRect().width()) {
+        if (e->pos().x() >= m_nStartPoint && e->pos().x() <= (m_nStartPoint + m_nViewLength)) {
+            int v = position2progress(e->pos());
             if (e->buttons() & Qt::LeftButton) {
                 int distance = (e->pos() - _startPos).manhattanLength();
                 if (distance >= QApplication::startDragDistance()) {
@@ -776,6 +783,10 @@ protected:
     }
     void mousePressEvent(QMouseEvent *e) override
     {
+        if (e->pos().x() < m_nStartPoint || e->pos().x() > (m_nStartPoint + m_nViewLength)) {
+            return DWidget::mouseReleaseEvent(e);
+        }
+
         if (!_press && e->buttons() == Qt::LeftButton && isEnabled()) {
 //            QSlider::mousePressEvent(e);
             _startPos = e->pos();
@@ -786,7 +797,7 @@ protected:
             emit sliderMoved(v);
             emit hoverChanged(v);
             emit mousePressed(true);
-            setValue(e->pos().x());
+            setValue(e->pos().x() - m_nStartPoint);
             setTimeVisible(!_press);
             changeStyle(!_press);
             _press = !_press;
@@ -851,14 +862,15 @@ private:
     QHBoxLayout *_viewProgBarLayout{nullptr};
     QHBoxLayout *_viewProgBarLayout_black{nullptr};
     DMRSlider *_progBar{nullptr};
+    int m_nViewLength;
+    int m_nStartPoint;
     int position2progress(const QPoint &p)
     {
         if (!_engine) {
             return 0;
         }
         auto total = _engine->duration();
-        //qreal span = (qreal)total * p.x() / (contentsRect().width() - 4);
-        int span = static_cast<int>(total * p.x() / (contentsRect().width() - 4));
+        int span = static_cast<int>(total * (p.x() - m_nStartPoint) / m_nViewLength);
         return span/* * (p.x())*/;
     }
 
@@ -1786,35 +1798,6 @@ void ToolboxProxy::setup()
     _progBarspec = new DWidget(_progBar_Widget);
     _progBarspec->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 
-    QHBoxLayout *progBar = new QHBoxLayout(_progBar_Widget);
-    progBar->setContentsMargins(0, 0, 0, 0);
-    progBar->setSpacing(0);
-    progBar->setAlignment(Qt::AlignHCenter);
-    bot_layout->addLayout(progBar);
-    progBar->addWidget(_progBar);
-
-    QHBoxLayout *viewProgBar = new QHBoxLayout(_progBar_Widget);
-    viewProgBar->setContentsMargins(0, 0, 0, 0);
-    viewProgBar->setSpacing(0);
-    viewProgBar->setAlignment(Qt::AlignHCenter);
-    bot_layout->addLayout(viewProgBar);
-    viewProgBar->addWidget(_viewProgBar);
-
-//    delete viewProgBar;
-//    viewProgBar = nullptr;
-
-//    _progBar_stacked = new QStackedLayout(bot_widget);
-//    _progBar_stacked->setContentsMargins(0, 0, 0, 0);
-//    _progBar_stacked->setStackingMode(QStackedLayout::StackOne);
-//    _progBar_stacked->setAlignment(Qt::AlignCenter);
-//    _progBar_stacked->setSpacing(0);
-//    _progBar_stacked->addWidget(_progBarspec);
-//    _progBar_stacked->addWidget(_progBar);
-//    _progBar_stacked->addWidget(_viewProgBar);
-////    _progBar_stacked->addChildLayout(viewProgBar);
-//    _progBar_stacked->setCurrentIndex(0);
-////    bot->addLayout(_progBar_stacked);
-
     _progBar_Widget->addWidget(_progBarspec);
     _progBar_Widget->addWidget(_progBar);
     _progBar_Widget->addWidget(_viewProgBar);
@@ -2483,7 +2466,7 @@ void ToolboxProxy::updateMovieProgress()
     int v2 = 0;
     if (d != 0 && e != 0) {
         v = static_cast<int>(_progBar->maximum() * e / d);
-        v2 = static_cast<int>((_viewProgBar->rect().width() - 4) * e / d);
+        v2 = static_cast<int>(_viewProgBar->getViewLength() * e / d);
     }
     if (!_progBar->signalsBlocked()) {
         _progBar->blockSignals(true);

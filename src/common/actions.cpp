@@ -45,34 +45,34 @@ ActionFactory &ActionFactory::get()
 }
 
 #define DEF_ACTION(NAME, KD) do { \
-    auto *act = menu->addAction((NAME)); \
-    act->setProperty("kind", KD); \
-    _contextMenuActions.append(act); \
-    connect(act, &QObject::destroyed, [=](QObject* o) { \
-        _contextMenuActions.removeOne((QAction*)o); \
-    }); \
-} while (0)
+        auto *act = menu->addAction((NAME)); \
+        act->setProperty("kind", KD); \
+        _contextMenuActions.append(act); \
+        connect(act, &QObject::destroyed, [=](QObject* o) { \
+            _contextMenuActions.removeOne((QAction*)o); \
+        }); \
+    } while (0)
 
 #define DEF_ACTION_CHECKED(NAME, KD) do { \
-    auto *act = menu->addAction((NAME)); \
-    act->setCheckable(true); \
-    act->setProperty("kind", KD); \
-    _contextMenuActions.append(act); \
-    connect(act, &QObject::destroyed, [=](QObject* o) { \
-        _contextMenuActions.removeOne((QAction*)o); \
-    }); \
-} while (0)
+        auto *act = menu->addAction((NAME)); \
+        act->setCheckable(true); \
+        act->setProperty("kind", KD); \
+        _contextMenuActions.append(act); \
+        connect(act, &QObject::destroyed, [=](QObject* o) { \
+            _contextMenuActions.removeOne((QAction*)o); \
+        }); \
+    } while (0)
 
 #define DEF_ACTION_CHECKED_GROUP(NAME, KD, GROUP) do { \
-    auto *act = menu->addAction((NAME)); \
-    act->setCheckable(true); \
-    act->setProperty("kind", KD); \
-    act->setActionGroup(GROUP); \
-    _contextMenuActions.append(act); \
-    connect(act, &QObject::destroyed, [=](QObject* o) { \
-        _contextMenuActions.removeOne((QAction*)o); \
-    }); \
-} while (0)
+        auto *act = menu->addAction((NAME)); \
+        act->setCheckable(true); \
+        act->setProperty("kind", KD); \
+        act->setActionGroup(GROUP); \
+        _contextMenuActions.append(act); \
+        connect(act, &QObject::destroyed, [=](QObject* o) { \
+            _contextMenuActions.removeOne((QAction*)o); \
+        }); \
+    } while (0)
 
 DMenu *ActionFactory::titlebarMenu()
 {
@@ -126,7 +126,7 @@ DMenu *ActionFactory::mainContextMenu()
 
         {
             auto *parent = menu;
-            auto *menu = new DMenu(tr("Play Speed"));
+            auto *menu = new DMenu(tr("Playback Speed"));
             auto group = new QActionGroup(menu);
 
             DEF_ACTION_CHECKED_GROUP(tr("0.5"), ActionKind::ZeroPointFiveTimes, group);
@@ -348,7 +348,7 @@ void ActionFactory::updateMainActionsForMovie(const PlayingMovieInfo &pmf)
         auto menu = _subtitleMenu;
         menu->clear();
 
-        if(!subgroup){
+        if (!subgroup) {
             subgroup = new QActionGroup(menu); // mem leak ?
         }
         for (int i = 0; i < pmf.subs.size(); i++) {
@@ -364,13 +364,13 @@ void ActionFactory::updateMainActionsForMovie(const PlayingMovieInfo &pmf)
         auto menu = _tracksMenu;
         menu->clear();
 
-        if(!audiosgroup){
+        if (!audiosgroup) {
             audiosgroup = new QActionGroup(menu); // mem leak ?
         }
         for (int i = 0; i < pmf.audios.size(); i++) {
-            if(pmf.audios[i]["title"].toString().compare("[internal]") == 0){
+            if (pmf.audios[i]["title"].toString().compare("[internal]") == 0) {
                 DEF_ACTION_CHECKED_GROUP(tr("Track") + QString::number(i + 1), ActionKind::SelectTrack, audiosgroup);
-            }else {
+            } else {
                 DEF_ACTION_CHECKED_GROUP(pmf.audios[i]["title"].toString(), ActionKind::SelectTrack, audiosgroup);
             }
             auto act = menu->actions().last();
