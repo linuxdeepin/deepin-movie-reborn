@@ -1169,6 +1169,81 @@ public:
         m_pBtnChangeMute->repaint();
     }
 
+protected:
+    void paintEvent(QPaintEvent *)
+    {
+        QPainter painter(this);
+        painter.setRenderHints(QPainter::Antialiasing | QPainter::HighQualityAntialiasing);
+        QPainterPath path;
+
+        auto palette = this->palette();
+
+        auto penWidthf = 1.0;
+        auto background =  palette.background();
+        auto borderColor = m_borderColor;
+
+        const qreal radius = m_radius;
+        const qreal triHeight = 12;
+        const qreal triWidth = 16;
+        const qreal height = this->height() - triHeight;
+        const qreal width = this->width();
+
+        QRectF topRightRect(QPointF(0, 0),
+                            QPointF(2 * radius, 2 * radius));
+        QRectF bottomRightRect(QPointF(0, height - 2 * radius),
+                               QPointF(2 * radius, height));
+        QRectF topLeftRect(QPointF(width, 0),
+                           QPointF(width - 2 * radius, 2 * radius));
+        QRectF bottomLeftRect(QPointF(width, height),
+                              QPointF(width - 30, height - 30));
+
+    #if 0
+        path.moveTo(radius, 0.0);
+        path.lineTo(width - radius, 0.0);
+
+        path.arcTo(topLeftRect, 90.0, 90.0);
+        path.lineTo(width, height - radius);
+        path.lineTo(width / 2, height + triHeight);
+        path.lineTo(0.0, height - radius);
+        path.lineTo(0.0, radius);
+
+        path.arcTo(topRightRect, 180.0, -90.0);
+        path.lineTo(radius, 0.0);
+    #else
+        path.moveTo(radius, 0.0);
+        path.lineTo(width - radius, 0.0);
+        path.arcTo(topLeftRect, 90.0, 90.0);
+        path.lineTo(width, height - radius);
+        path.arcTo(bottomLeftRect, 180.0, -60.0);
+
+        path.lineTo(width / 2 + 3, height + triHeight);
+        path.lineTo(10, height - 2);
+
+        path.arcTo(bottomRightRect, 270.0, -90.0);
+        path.lineTo(0.0,  radius);
+
+        path.arcTo(topRightRect, 180.0, -90.0);
+        path.lineTo(radius, 0.0);
+    #endif
+
+        /*
+        FIXME: light: white
+        painter.fillPath(path, QColor(49, 49, 49));
+        FIXME: light: QColor(0, 0, 0, 51)
+        QPen pen(QColor(0, 0, 0, 0.1 * 255));
+        */
+
+//        if (d->sThemeType == 2) {
+//            painter.fillPath(path, QColor(43, 43, 43));
+//        } else {
+            painter.fillPath(path, background);
+//        }
+
+        QPen pen(borderColor);
+        pen.setWidth(penWidthf);
+        //painter.strokePath(path, pen);
+    }
+
 public slots:
     void popup()
     {
@@ -1183,11 +1258,17 @@ public slots:
 
         start.setWidth(start.width() + 16);
         start.setHeight(start.height() + 14);
-        start.moveTo(start.topLeft() - QPoint(8, 14));
 
         media.setWidth(media.width() - 10);
         media.setHeight(media.height() - 10);
+#ifdef __x86_64__
+        start.moveTo(start.topLeft() - QPoint(8, 14));
         media.moveTo(media.topLeft() + QPoint(5, 10));
+#else
+        end.moveTo(mapToGlobal(QPoint(0, 0)));
+        start.moveTo(mapToGlobal(QPoint(0, 0)) - QPoint(8, 14));
+        media.moveTo(mapToGlobal(QPoint(0, 0)) + QPoint(5, 10));
+#endif
 
         if (state == State::Close) {
             pVolAnimation = new QPropertyAnimation(this, "geometry");
@@ -1226,7 +1307,7 @@ public slots:
         m_mouseIn = false;
         DUtil::TimerSingleShot(100, [this]() {
             if (!m_mouseIn)
-                hide();
+                popup();
         });
 #endif
     }
@@ -1241,12 +1322,12 @@ public slots:
     }
     void slotValueChanged()
     {
-            if (m_bIsMute) {
-                changeSate();
-            }
-            auto var = _slider->value();
-            m_pLabShowVolume->setText(QString("%1%").arg(var * 1.0 / _slider->maximum() * 100));
-            _mw->requestAction(ActionFactory::ChangeVolume, false, QList<QVariant>() << var);
+        if (m_bIsMute) {
+            changeSate();
+        }
+        auto var = _slider->value();
+        m_pLabShowVolume->setText(QString("%1%").arg(var * 1.0 / _slider->maximum() * 100));
+        _mw->requestAction(ActionFactory::ChangeVolume, false, QList<QVariant>() << var);
     }
     bool getsliderstate() {
         return m_bFinished;
@@ -1322,6 +1403,9 @@ private:
     QPropertyAnimation *pVolAnimTran {nullptr};
     QParallelAnimationGroup *m_anima {nullptr};
     State state {Close};
+
+    QColor m_borderColor = QColor(0, 0, 0,  255 * 2 / 10);
+    int m_radius = 20;
 };
 
 viewProgBarLoad::viewProgBarLoad(PlayerEngine *engine, DMRSlider *progBar, ToolboxProxy *parent)
@@ -2223,9 +2307,9 @@ void ToolboxProxy::slotVolumeButtonClicked()
             pPoint.setX(pPoint.x()  - _volBtn->width() / 2 - _playBtn->width() - 43);
             pPoint.setY(pPoint.y() - TOOLBOX_HEIGHT - 5);
             _volSlider->show(pPoint.x(), pPoint.y());
-            _volSlider->raise();
+            _volSlider->popup();
         } else {
-            _volSlider->hide();
+            _volSlider->popup();
         }
 #else
         if (!_volBtn->isVisible()) {
