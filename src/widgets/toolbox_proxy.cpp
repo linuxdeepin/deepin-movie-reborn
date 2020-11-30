@@ -1233,11 +1233,11 @@ protected:
         QPen pen(QColor(0, 0, 0, 0.1 * 255));
         */
 
-//        if (d->sThemeType == 2) {
-//            painter.fillPath(path, QColor(43, 43, 43));
-//        } else {
+        if (m_sThemeType == 2) {
+            painter.fillPath(path, QColor(43, 43, 43));
+        } else {
             painter.fillPath(path, background);
-//        }
+        }
 
         QPen pen(borderColor);
         pen.setWidth(penWidthf);
@@ -1332,6 +1332,10 @@ public slots:
     bool getsliderstate() {
         return m_bFinished;
     }
+    void setThemeSlot(int type)
+    {
+        m_sThemeType = type;
+    }
 protected:
 #ifdef __x86_64__
     void enterEvent(QEvent *e)
@@ -1406,6 +1410,7 @@ private:
 
     QColor m_borderColor = QColor(0, 0, 0,  255 * 2 / 10);
     int m_radius = 20;
+    int m_sThemeType = 0;
 };
 
 viewProgBarLoad::viewProgBarLoad(PlayerEngine *engine, DMRSlider *progBar, ToolboxProxy *parent)
@@ -1632,6 +1637,8 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
             this, &ToolboxProxy::updatePlayState);
     connect(DApplicationHelper::instance(), &DApplicationHelper::themeTypeChanged,
             this, &ToolboxProxy::updateplaylisticon);
+    connect(DApplicationHelper::instance(), &DApplicationHelper::themeTypeChanged,
+            _volSlider, &VolumeSlider::setThemeSlot);
 
 
     QFileInfo fi("/dev/mwv206_0");              //景嘉微显卡
