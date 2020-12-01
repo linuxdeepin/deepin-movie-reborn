@@ -37,18 +37,19 @@
 //#include <QtWidgets>
 #include <DFrame>
 #include <QPainterPath>
-#include "actions.h"
-#include "widgets/titlebar.h"
 #include <DPushButton>
-#include "online_sub.h"
 #include <DFloatingMessage>
+#include <QDBusAbstractInterface>
+#include <QtX11Extras/QX11Info>
+
+#include "widgets/titlebar.h"
 #include "animationlabel.h"
 #include "volumemonitoring.h"
 #include "diskcheckthread.h"
-#include <QDBusAbstractInterface>
+#include "actions.h"
+#include "online_sub.h"
 
-#include <QtX11Extras/QX11Info>
-
+class Presenter;
 
 namespace Dtk {
 namespace Widget {
@@ -192,6 +193,8 @@ public:
     void testMprisapp();
     void setShowSetting(bool);
     void updateGeometry(CornerEdge edge, QPoint p);
+    void setPresenter(Presenter *);
+    int getDisplayVolume();
 signals:
     void windowEntered();
     void windowLeaved();
@@ -438,6 +441,8 @@ private:
     QDBusInterface *m_pDBus {nullptr};
     MainWindowPropertyMonitor *m_pMWPM {nullptr};
     bool m_isFirstLoadDBus {false};
+
+    Presenter *m_presenter {nullptr};
 };
 
 //窗管返回事件过滤器

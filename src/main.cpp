@@ -190,6 +190,7 @@ int main(int argc, char *argv[])
     dmr::MainWindow mw;
     Presenter *presenter = new Presenter(&mw);
 //    mw.setMinimumSize(QSize(1070, 680));
+    mw.setPresenter(presenter);
     mw.resize(850, 600);
     utils::MoveToCenter(&mw);
     mw.show();

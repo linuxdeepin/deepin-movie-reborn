@@ -50,6 +50,7 @@
 #include "dbus_adpator.h"
 #include "threadpool.h"
 #include "vendor/movieapp.h"
+#include "vendor/presenter.h"
 
 //#include <QtWidgets>
 #include <QtDBus>
@@ -2401,6 +2402,8 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             m_lastVolume = _engine->volume();
             Settings::get().setInternalOption("global_volume", _toolbox->DisplayVolume());
             setAudioVolume(qMin(nVol, 100));
+            if (m_presenter)
+                m_presenter->slotvolumeChanged();
         }
         break;
     }
@@ -4920,5 +4923,16 @@ void MainWindow::updateGeometry(CornerEdge edge, QPoint p)
     geom.setHeight(qMax(geom.height(), min.height()));
     updateContentGeometry(geom);
     updateGeometryNotification(geom.size());
+}
+
+void MainWindow::setPresenter(Presenter *p)
+{
+    m_presenter = p;
+    m_presenter->slotvolumeChanged();
+}
+
+int MainWindow::getDisplayVolume()
+{
+    return m_displayVolume;
 }
 #include "mainwindow.moc"
