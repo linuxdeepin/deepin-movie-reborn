@@ -12,6 +12,11 @@
 #include "mpriscontroller.h"
 #include "mprismanager.h"
 
+TEST(Mpris, interface)
+{
+    MainWindow *mw;
+    QDBusConnection *connect = new QDBusConnection("org.mpris.test");
+}
 TEST(Mpris, MprisPlayer)
 {
     MprisPlayer *mprisPlayer = new MprisPlayer();

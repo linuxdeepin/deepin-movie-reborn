@@ -198,8 +198,6 @@ void ActionFactory::forEachInMainMenu(UnaryFunction f)
         ++p;
     }
 }
-
-
 }
 
 #endif /* ifndef _DMR_ACTIONS_H */

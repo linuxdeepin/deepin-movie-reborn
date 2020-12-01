@@ -37,6 +37,8 @@ TEST(requestAction, onlineSub)
 
     QTestEventList testEventList;
     testEventList.addKeyClick(Qt::Key_Left, Qt::ShiftModifier,300); //sub delay
+    QTest::qWait(300);
+    w->requestAction(ActionFactory::ActionKind::SubDelay);
     testEventList.addKeyClick(Qt::Key_Left, Qt::ShiftModifier,300);
     testEventList.addKeyClick(Qt::Key_Right, Qt::ShiftModifier,300);    //sub advance
     testEventList.addKeyClick(Qt::Key_Right, Qt::ShiftModifier,300);
@@ -106,26 +108,26 @@ TEST(requestAction, frame)
     MainWindow* w = dApp->getMainWindow();
 
     QTest::qWait(300);
-    w->requestAction(ActionFactory::ActionKind::DefaultFrame);
-    QTest::qWait(300);
     w->requestAction(ActionFactory::ActionKind::Ratio4x3Frame);
-    QTest::qWait(300);
+    QTest::qWait(400);
     w->requestAction(ActionFactory::ActionKind::Ratio16x9Frame);
-    QTest::qWait(300);
+    QTest::qWait(400);
     w->requestAction(ActionFactory::ActionKind::Ratio16x10Frame);
-    QTest::qWait(300);
+    QTest::qWait(400);
     w->requestAction(ActionFactory::ActionKind::Ratio185x1Frame);
-    QTest::qWait(300);
+    QTest::qWait(400);
     w->requestAction(ActionFactory::ActionKind::Ratio235x1Frame);
+    QTest::qWait(400);
+    w->requestAction(ActionFactory::ActionKind::DefaultFrame);
 
-    QTest::qWait(300);
+    QTest::qWait(400);
     w->requestAction(ActionFactory::ActionKind::ClockwiseFrame);
-    QTest::qWait(300);
+    QTest::qWait(400);
     w->requestAction(ActionFactory::ActionKind::CounterclockwiseFrame);
 
-    QTest::qWait(300);
+    QTest::qWait(400);
     w->requestAction(ActionFactory::ActionKind::NextFrame);
-    QTest::qWait(300);
+    QTest::qWait(400);
     w->requestAction(ActionFactory::ActionKind::PreviousFrame);
 }
 
@@ -161,30 +163,44 @@ TEST(requestAction,goToScreenshotSolder)
     EXPECT_TRUE(true);
 }
 
-//TEST(requestAction,openFileList)
-//{
-//    MainWindow *w = dApp->getMainWindow();
+TEST(requestAction,openFiles)
+{
+    MainWindow *w = dApp->getMainWindow();
 
-//    QTest::qWait(300);
-//    w->requestAction(ActionFactory::ActionKind::OpenFileList);
-//    QTest::qWait(300);
-//    EXPECT_TRUE(false);
-//}
+    QTest::qWait(300);
+    w->requestAction(ActionFactory::ActionKind::OpenFileList);
+    QTest::qWait(100);
+    EXPECT_TRUE(true);
+    w->requestAction(ActionFactory::ActionKind::OpenDirectory);
+    QTest::qWait(100);
+    EXPECT_TRUE(false);
+}
 
-//TEST(requestAction,openDirectory)
-//{
-//    MainWindow *w = dApp->getMainWindow();
+/*TEST(requestAction,openDirectory)
+{
+    MainWindow *w = dApp->getMainWindow();
 
-//    QTest::qWait(300);
-//    w->requestAction(ActionFactory::ActionKind::OpenDirectory);
-//    QTest::qWait(300);
-//    EXPECT_TRUE(false);
-//}
+    QTest::qWait(300);
+    w->requestAction(ActionFactory::ActionKind::OpenDirectory);
+    QTest::qWait(300);
+    EXPECT_TRUE(false);
+}*/
+
+TEST(requestAction, playlistOpenItemInFM)
+{
+    MainWindow* w = dApp->getMainWindow();
+
+    QTest::qWait(100);
+    w->requestAction(ActionFactory::ActionKind::PlaylistOpenItemInFM);
+    utils::ShowInFileManager(QString("/usr/share/music/bensound-sunny.mp3"));
+}
 
 TEST(requestAction, settings)
 {
     MainWindow* w = dApp->getMainWindow();
 
+    Settings::get().settings()->setOption("base.screenshot.location",
+                                          "/home/uos/Pictures/DMovie/deepin movie screenshot");
     w->setShowSetting(false);
     QTest::qWait(300);
     w->requestAction(ActionFactory::ActionKind::Settings);

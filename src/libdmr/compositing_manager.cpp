@@ -241,15 +241,17 @@ CompositingManager::~CompositingManager()
 {
 }
 
+#if defined (__mips__) || defined (__aarch64__)
 bool CompositingManager::hascard()
 {
     return _hasCard;
 }
+#endif
 
 // Attempt to reuse mpv's code for detecting whether we want GLX or EGL (which
 // is tricky to do because of hardware decoding concerns). This is not pretty,
 // but quite effective and without having to duplicate too much GLX/EGL code.
-static QString probeHwdecInterop()
+/*static QString probeHwdecInterop()
 {
 //    auto mpv = mpv::qt::Handle::FromRawHandle(mpv_create());
 //    if (!mpv)
@@ -267,7 +269,7 @@ static QString probeHwdecInterop()
 //    // return "auto"
 //    return mpv::qt::get_property(mpv, "gpu-hwdec-interop").toString();
     return QString("");
-}
+}*/
 
 static OpenGLInteropKind _interopKind = OpenGLInteropKind::INTEROP_NONE;
 

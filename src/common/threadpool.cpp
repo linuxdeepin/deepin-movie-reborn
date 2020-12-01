@@ -25,7 +25,6 @@
 
 ThreadPool::ThreadPool(QObject *parent) : QObject(parent)
 {
-
 }
 
 ThreadPool::~ThreadPool()

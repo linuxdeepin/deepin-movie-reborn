@@ -75,7 +75,9 @@ public:
      */
     static OpenGLInteropKind interopKind();
     static bool runningOnVmwgfx();
+#if defined (__mips__) || defined (__aarch64__)
     bool hascard();
+#endif
 
     /**
      * override auto-detected compositing state.

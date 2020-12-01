@@ -149,19 +149,16 @@ public:
     {
         return _playlist;
     }
-    /**
-     *  用于测试触屏效果
-     */
+    ///用于测试触屏效果
     void setTouched(bool touched)
     {
         _isTouch = touched;
     }
-    //add by heyi
     /**
      * @brief firstPlayInit 第一次点击播放时，需要加载动态库函数指针然后进行构造未完成的初始化
      */
-//    void firstPlayInit();
-    //判断鼠标是否在窗口内
+    //void firstPlayInit();
+    ///判断鼠标是否在窗口内
     bool judgeMouseInWindow(QPoint pos);
 
     void requestAction(ActionFactory::ActionKind, bool fromUI = false,
@@ -191,6 +188,7 @@ public:
     void setOpenFiles(QStringList &);
 
     void testMprisapp();
+    void testCdrom();
     void setShowSetting(bool);
     void updateGeometry(CornerEdge edge, QPoint p);
     void setPresenter(Presenter *);
@@ -214,13 +212,15 @@ public slots:
     void checkErrorMpvLogsChanged(const QString prefix, const QString text);
     void checkWarningMpvLogsChanged(const QString prefix, const QString text);
     void slotdefaultplaymodechanged(const QString &key, const QVariant &value);
+#ifdef __aarch64__ || ifdef __mips__
     void syncPostion();
+#endif
     //设置窗口顶层
     void my_setStayOnTop(const QWidget *widget, bool on);
     void slotmousePressTimerTimeOut();
     void slotPlayerStateChanged();
     void slotFocusWindowChanged();
-    void slotElapsedChanged();
+//    void slotElapsedChanged();
     void slotFileLoaded();
     void slotUrlpause(bool status);
     void slotFontChanged(const QFont &font);

@@ -119,5 +119,3 @@ QVariant ApplicationAdaptor::redDBusMethod(const QString &service, const QString
         return  v;
     }
 }
-
-

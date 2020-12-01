@@ -11,6 +11,8 @@
 #include <unistd.h>
 #include <gtest/gtest.h>
 
+#include "application.h"
+#include "mainwindow.h"
 #include "player_widget.h"
 #include "player_engine.h"
 #include "compositing_manager.h"
@@ -37,4 +39,15 @@ TEST(libdmr, libdmrTest)
     mc.clear();
 
     delete player;
+}
+TEST(libdmr, utils)
+{
+    using namespace dmr;
+
+    MainWindow* w = dApp->getMainWindow();
+
+    utils::CompareNames("/usr/share/dde-introduction/demo.mp4", "/usr/share/dde-introduction/demo.mp4");
+    utils::UnInhibitPower(20);
+    utils::MoveToCenter(w);
+    utils::Time2str(90000);
 }
