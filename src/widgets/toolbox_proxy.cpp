@@ -1131,7 +1131,9 @@ public:
         m_pBtnChangeMute->setObjectName(MUTE_BTN);
         m_pBtnChangeMute->setAccessibleName(MUTE_BTN);
         m_pBtnChangeMute->setFixedWidth(36);
-        m_pBtnChangeMute->setImage(":/icons/deepin/builtin/dark/texts/dcc_volumemid_36px.svg");
+//        m_pBtnChangeMute->setImage(":/icons/deepin/builtin/dark/texts/dcc_volumemid_36px.svg");
+        m_sThemeType = DGuiApplicationHelper::instance()->themeType();
+        volumeIcon();
         m_pBtnChangeMute->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred));
         connect(m_pBtnChangeMute, SIGNAL(clicked()), this, SLOT(changeSate()));
 
@@ -1169,10 +1171,18 @@ public:
 
         m_bIsMute = bMute;
 
-        if (m_bIsMute) {
-            m_pBtnChangeMute->setImage(":/icons/deepin/builtin/dark/texts/dcc_mute_36px.svg");
+        if (m_sThemeType == 2) {
+            if (m_bIsMute) {
+                m_pBtnChangeMute->setImage(":/icons/deepin/builtin/light/actions/mute_checked.svg");
+            } else {
+                m_pBtnChangeMute->setImage(":/icons/deepin/builtin/light/actions/volume_mid_checked.svg");
+            }
         } else {
-            m_pBtnChangeMute->setImage(":/icons/deepin/builtin/dark/texts/dcc_volumemid_36px.svg");
+            if (m_bIsMute) {
+                m_pBtnChangeMute->setImage(":/icons/deepin/builtin/dark/texts/dcc_mute_36px.svg");
+            } else {
+                m_pBtnChangeMute->setImage(":/icons/deepin/builtin/dark/texts/dcc_volumemid_36px.svg");
+            }
         }
 
         m_pBtnChangeMute->repaint();
@@ -1306,7 +1316,23 @@ public slots:
     {
         popup();
     }
-
+private:
+    void volumeIcon()
+    {
+        if (m_sThemeType == 2) {
+            if (m_bIsMute) {
+                m_pBtnChangeMute->setImage(":/icons/deepin/builtin/light/actions/mute_checked.svg");
+            } else {
+                m_pBtnChangeMute->setImage(":/icons/deepin/builtin/light/actions/volume_mid_checked.svg");
+            }
+        } else {
+            if (m_bIsMute) {
+                m_pBtnChangeMute->setImage(":/icons/deepin/builtin/dark/texts/dcc_mute_36px.svg");
+            } else {
+                m_pBtnChangeMute->setImage(":/icons/deepin/builtin/dark/texts/dcc_volumemid_36px.svg");
+            }
+        }
+    }
 public slots:
     void delayedHide()
     {
@@ -1345,6 +1371,20 @@ public slots:
     void setThemeSlot(int type)
     {
         m_sThemeType = type;
+
+        if (m_sThemeType == 2) {
+            if (m_bIsMute) {
+                m_pBtnChangeMute->setImage(":/icons/deepin/builtin/light/actions/mute_checked.svg");
+            } else {
+                m_pBtnChangeMute->setImage(":/icons/deepin/builtin/light/actions/volume_mid_checked.svg");
+            }
+        } else {
+            if (m_bIsMute) {
+                m_pBtnChangeMute->setImage(":/icons/deepin/builtin/dark/texts/dcc_mute_36px.svg");
+            } else {
+                m_pBtnChangeMute->setImage(":/icons/deepin/builtin/dark/texts/dcc_volumemid_36px.svg");
+            }
+        }
     }
 protected:
 #ifdef __x86_64__

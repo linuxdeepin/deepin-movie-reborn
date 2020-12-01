@@ -48,6 +48,10 @@
         <file>light/normal/next_normal.svg</file>
         <file>light/normal/last_normal.svg</file>
         <file>light/checked/episodes_checked.svg</file>
+        <file>light/actions/mute_checked.svg</file>
+        <file>light/actions/volume_checked.svg</file>
+        <file>light/actions/volume_low_checked.svg</file>
+        <file>light/actions/volume_mid_checked.svg</file>
     </qresource>
     <qresource prefix="/icons/deepin/builtin/light"/>
     <qresource prefix="/icons/deepin/builtin/dark"/>
