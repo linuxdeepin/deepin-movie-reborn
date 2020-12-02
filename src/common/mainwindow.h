@@ -212,7 +212,7 @@ public slots:
     void checkErrorMpvLogsChanged(const QString prefix, const QString text);
     void checkWarningMpvLogsChanged(const QString prefix, const QString text);
     void slotdefaultplaymodechanged(const QString &key, const QVariant &value);
-#ifdef __aarch64__ || ifdef __mips__
+#if defined (__aarch64__) || defined (__mips__)
     void syncPostion();
 #endif
     //设置窗口顶层

@@ -163,7 +163,7 @@ TEST(requestAction,goToScreenshotSolder)
     EXPECT_TRUE(true);
 }
 
-TEST(requestAction,openFiles)
+/*TEST(requestAction,openFiles)
 {
     MainWindow *w = dApp->getMainWindow();
 
@@ -174,7 +174,7 @@ TEST(requestAction,openFiles)
     w->requestAction(ActionFactory::ActionKind::OpenDirectory);
     QTest::qWait(100);
     EXPECT_TRUE(false);
-}
+}*/
 
 /*TEST(requestAction,openDirectory)
 {

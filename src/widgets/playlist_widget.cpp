@@ -1105,7 +1105,7 @@ void PlaylistWidget::slotRowsMoved()
     }
 }
 
-void PlaylistWidget::dragEnterEvent(QDragEnterEvent *ev)
+/*void PlaylistWidget::dragEnterEvent(QDragEnterEvent *ev)
 {
     auto md = ev->mimeData();
     qDebug() << md->formats();
@@ -1120,9 +1120,9 @@ void PlaylistWidget::dragEnterEvent(QDragEnterEvent *ev)
     if (ev->mimeData()->hasUrls()) {
         ev->acceptProposedAction();
     }
-}
+}*/
 
-void PlaylistWidget::dragMoveEvent(QDragMoveEvent *ev)
+/*void PlaylistWidget::dragMoveEvent(QDragMoveEvent *ev)
 {
     auto md = ev->mimeData();
     if (md->formats().contains("application/x-qabstractitemmodeldatalist")) {
@@ -1136,9 +1136,9 @@ void PlaylistWidget::dragMoveEvent(QDragMoveEvent *ev)
     if (ev->mimeData()->hasUrls()) {
         ev->acceptProposedAction();
     }
-}
+}*/
 
-void PlaylistWidget::dropEvent(QDropEvent *ev)
+/*void PlaylistWidget::dropEvent(QDropEvent *ev)
 {
     auto md = ev->mimeData();
     if (md->formats().contains("application/x-qabstractitemmodeldatalist")) {
@@ -1167,7 +1167,7 @@ void PlaylistWidget::dropEvent(QDropEvent *ev)
     _engine->addPlayFiles(urls);
 
     ev->acceptProposedAction();
-}
+}*/
 
 
 void PlaylistWidget::contextMenuEvent(QContextMenuEvent *cme)

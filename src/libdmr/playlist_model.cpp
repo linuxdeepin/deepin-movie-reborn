@@ -1158,7 +1158,8 @@ void PlaylistModel::appendAsync(const QList<QUrl> &urls)
         initThumb();
         initFFmpeg();
     }
-    if (check_wayland()) {
+    /// check_wayland() always always return false,comment out the code for now
+    /*if (check_wayland()) {
         if (m_ploadThread == nullptr) {
             m_ploadThread = new LoadThread(this, urls);
             connect(m_ploadThread, &QThread::finished, this, &PlaylistModel::deleteThread);
@@ -1167,14 +1168,15 @@ void PlaylistModel::appendAsync(const QList<QUrl> &urls)
             m_ploadThread->start();
             m_brunning = m_ploadThread->isRunning();
         }
-    } else {
-        delayedAppendAsync(urls);
-    }
+    } else {*/
+    delayedAppendAsync(urls);
+    //}
 }
 
 void PlaylistModel::deleteThread()
 {
-    if (check_wayland()) {
+    /// check_wayland() return false,comment out the code for now
+    /*if (check_wayland()) {
         if (m_ploadThread == nullptr)
             return ;
         if (m_ploadThread->isRunning()) {
@@ -1183,7 +1185,7 @@ void PlaylistModel::deleteThread()
         delete m_ploadThread;
         m_ploadThread = nullptr;
         m_brunning = false;
-    }
+    }*/
 }
 
 void PlaylistModel::delayedAppendAsync(const QList<QUrl> &urls)
@@ -1216,7 +1218,8 @@ void PlaylistModel::delayedAppendAsync(const QList<QUrl> &urls)
         }
     };
 
-    if (check_wayland()) {
+    /// check_wayland() always return false,comment out the code for now
+    /*if (check_wayland()) {
         m_pdataMutex->lock();
         PlayItemInfoList pil;
         for (const auto &a : _pendingJob) {
@@ -1232,7 +1235,7 @@ void PlaylistModel::delayedAppendAsync(const QList<QUrl> &urls)
         m_pdataMutex->unlock();
 
         handleAsyncAppendResults(pil);
-    } else {
+    } else {*/
         qDebug() << "not wayland";
         if (QThread::idealThreadCount() > 1) {
 //            auto future = QtConcurrent::mapped(_pendingJob, MapFunctor(this));
@@ -1266,7 +1269,7 @@ void PlaylistModel::delayedAppendAsync(const QList<QUrl> &urls)
             _urlsInJob.clear();
             handleAsyncAppendResults(pil);
         }
-    }
+    //}
 
 }
 

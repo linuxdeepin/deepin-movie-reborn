@@ -3139,7 +3139,7 @@ void MainWindow::slotdefaultplaymodechanged(const QString &key, const QVariant &
     }
 }
 
-#ifdef __aarch64__ || ifdef __mips__
+#if defined (__aarch64__) || defined (__mips__)
 void MainWindow::syncPostion()
 {
     _nwComm->syncPosition();

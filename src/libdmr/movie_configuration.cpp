@@ -318,6 +318,7 @@ MovieConfiguration::MovieConfiguration()
 {
 }
 
+#ifdef SQL_TEST
 static void _backend_test()
 {
     auto &mc = MovieConfiguration::get();
@@ -339,6 +340,7 @@ static void _backend_test()
     qDebug() << res;
     mc.clear();
 }
+#endif
 
 void MovieConfiguration::init()
 {

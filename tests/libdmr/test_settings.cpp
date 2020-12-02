@@ -76,6 +76,7 @@ TEST(Settings, wayland)
 
     MainWindow *w_wayland = new MainWindow;
 //    setlocale(LC_NUMERIC, "C");
+    auto &mc = MovieConfiguration::get();
     MovieConfiguration::get().init();
     PlayerEngine *engine =  w_wayland->engine();
     ToolboxProxy *toolboxProxy = w_wayland->toolbox();
@@ -89,10 +90,16 @@ TEST(Settings, wayland)
                   << QUrl::fromLocalFile("/usr/share/music/bensound-sunny.mp3");
     QTest::qWait(500);
     w_wayland->show();
-    const auto &valids = engine->addPlayFiles(listPlayFiles);
-    engine->playByName(valids[0]);
 
     Settings::get().settings()->setOption("base.play.showInthumbnailmode", true);
+    Settings::get().settings()->setOption("base.play.resumelast", false);
+
+    QTest::mouseMove(playBtn, QPoint(), 300);
+    QTest::mouseClick(playBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 1000); //play
+
+    QTest::qWait(1000);
+    const auto &valids = engine->addPlayFiles(listPlayFiles);
+    engine->playByName(valids[0]);
 
     w_wayland->requestAction(ActionFactory::ActionKind::ToggleMute);
     QTest::qWait(500);
@@ -111,10 +118,10 @@ TEST(Settings, wayland)
 
     QTest::mouseMove(listBtn, QPoint(), 500);
     QTest::mouseClick(listBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 1000);
-    QTest::mouseMove(playBtn, QPoint(), 500);
-    QTest::mouseClick(playBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 1000); //play next
     QTest::mouseMove(fsBtn, QPoint(), 500);
     QTest::mouseClick(fsBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 1000);
+
+    Settings::get().settings()->setOption("base.play.emptylist", false);
 
     ApplicationAdaptor *appAdaptor = new ApplicationAdaptor(w_wayland);
     appAdaptor->Raise();
@@ -124,7 +131,9 @@ TEST(Settings, wayland)
              <<"/usr/share/music/bensound-sunny.mp3";
     appAdaptor->openFiles(fileList);
 
+
     Settings::get().settings()->setOption("base.play.showInthumbnailmode", false);
+    Settings::get().settings()->setOption("base.play.resumelast", true);
 //    w_wayland->close();
 //    delete w_wayland;
 }

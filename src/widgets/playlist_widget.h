@@ -220,9 +220,9 @@ public slots:
 
 protected:
     void contextMenuEvent(QContextMenuEvent *cme) override;
-    void dragEnterEvent(QDragEnterEvent *event) override;
-    void dragMoveEvent(QDragMoveEvent *event) override;
-    void dropEvent(QDropEvent *event) override;
+//    void dragEnterEvent(QDragEnterEvent *event) override;
+//    void dragMoveEvent(QDragMoveEvent *event) override;
+//    void dropEvent(QDropEvent *event) override;
     void showEvent(QShowEvent *se) override;
     void paintEvent(QPaintEvent *pe) override;
     void resizeEvent(QResizeEvent *ev) override;
