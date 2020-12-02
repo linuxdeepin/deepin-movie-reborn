@@ -3,7 +3,7 @@ host = https://www.transifex.com
 minimum_perc = 80
 mode = developer
 
-[deepin-movie.deepin-movie_v3]
+[deepin-movie.deepin-movie_V3]
 file_filter = src/translations/deepin-movie_<lang>.ts
 source_file = src/translations/deepin-movie.ts
 source_lang = en

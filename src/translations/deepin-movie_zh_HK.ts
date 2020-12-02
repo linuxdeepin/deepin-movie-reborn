@@ -55,15 +55,15 @@
     </message>
     <message>
         <source>Screenshot</source>
-        <translation>截圖</translation>
+        <translation>截圖設定</translation>
     </message>
     <message>
         <source>Shortcuts</source>
-        <translation>快捷键</translation>
+        <translation>捷徑</translation>
     </message>
     <message>
         <source>File</source>
-        <translation>檔案</translation>
+        <translation>檔</translation>
     </message>
     <message>
         <source>Frame/Sound</source>
@@ -83,7 +83,7 @@
     </message>
     <message>
         <source>Restore Defaults</source>
-        <translation>恢復默認</translation>
+        <translation>恢復預設值</translation>
     </message>
     <message>
         <source>Open file</source>
@@ -167,7 +167,7 @@
     </message>
     <message>
         <source>Font</source>
-        <translation>字体</translation>
+        <translation>字體</translation>
     </message>
     <message>
         <source>Exit fullscreen/mini mode</source>
@@ -183,7 +183,7 @@
     </message>
     <message>
         <source>Help</source>
-        <translation>幫助</translation>
+        <translation>協助</translation>
     </message>
     <message>
         <source>Display shortcuts</source>
@@ -203,7 +203,7 @@
     </message>
     <message>
         <source>Size</source>
-        <translation>字號</translation>
+        <translation>大小</translation>
     </message>
     <message>
         <source>Movie is a full-featured video player, supporting playing local and streaming media in multiple video formats.</source>
@@ -309,7 +309,7 @@
     </message>
     <message>
         <source>Default</source>
-        <translation>默認</translation>
+        <translation>預設</translation>
     </message>
     <message>
         <source>Clockwise</source>
@@ -321,7 +321,7 @@
     </message>
     <message>
         <source>Sound</source>
-        <translation>聲音</translation>
+        <translation>音效</translation>
     </message>
     <message>
         <source>Channel</source>
@@ -369,7 +369,7 @@
     </message>
     <message>
         <source>Screenshot</source>
-        <translation>截圖</translation>
+        <translation>截圖設定</translation>
     </message>
     <message>
         <source>Film Screenshot</source>
@@ -444,7 +444,7 @@
     </message>
     <message>
         <source>Size: %1</source>
-        <translation>大小：%1</translation>
+        <translation>影片大小：%1</translation>
     </message>
     <message>
         <source>Save</source>
@@ -527,7 +527,7 @@
     </message>
     <message>
         <source>View</source>
-        <translation>查看</translation>
+        <translation>檢視</translation>
     </message>
     <message>
         <source>Saved to</source>
@@ -649,7 +649,7 @@
     </message>
     <message>
         <source>Resolution</source>
-        <translation>解像度</translation>
+        <translation>解析度</translation>
     </message>
     <message>
         <source>Duration</source>
@@ -661,7 +661,7 @@
     </message>
     <message>
         <source>Size</source>
-        <translation>字號</translation>
+        <translation>大小</translation>
     </message>
     <message>
         <source>Path</source>

@@ -129,11 +129,11 @@ DMenu *ActionFactory::mainContextMenu()
             auto *menu = new DMenu(tr("Playback Speed"));
             auto group = new QActionGroup(menu);
 
-            DEF_ACTION_CHECKED_GROUP(tr("0.5"), ActionKind::ZeroPointFiveTimes, group);
-            DEF_ACTION_CHECKED_GROUP(tr("1.0"), ActionKind::OneTimes, group);
-            DEF_ACTION_CHECKED_GROUP(tr("1.2"), ActionKind::OnePointTwoTimes, group);
-            DEF_ACTION_CHECKED_GROUP(tr("1.5"), ActionKind::OnePointFiveTimes, group);
-            DEF_ACTION_CHECKED_GROUP(tr("2.0"), ActionKind::Double, group);
+            DEF_ACTION_CHECKED_GROUP(tr("0.5x"), ActionKind::ZeroPointFiveTimes, group);
+            DEF_ACTION_CHECKED_GROUP(tr("1.0x"), ActionKind::OneTimes, group);
+            DEF_ACTION_CHECKED_GROUP(tr("1.2x"), ActionKind::OnePointTwoTimes, group);
+            DEF_ACTION_CHECKED_GROUP(tr("1.5x"), ActionKind::OnePointFiveTimes, group);
+            DEF_ACTION_CHECKED_GROUP(tr("2.0x"), ActionKind::Double, group);
 
             parent->addMenu(menu);
             menu->setEnabled(false);

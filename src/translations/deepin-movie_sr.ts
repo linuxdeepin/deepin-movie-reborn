@@ -3,7 +3,7 @@
     <name>QObject</name>
     <message>
         <source>Invalid folder</source>
-        <translation>Неисправна фасцикла</translation>
+        <translation>Неважећа фасцикла</translation>
     </message>
     <message>
         <source>Open folder</source>
@@ -55,7 +55,7 @@
     </message>
     <message>
         <source>Screenshot</source>
-        <translation>Слика Екрана</translation>
+        <translation>Слика екрана</translation>
     </message>
     <message>
         <source>Shortcuts</source>
@@ -219,7 +219,7 @@
     </message>
     <message>
         <source>Show thumbnails in progress bar</source>
-        <translation> Прикажи умањене приказе на траци напретка</translation>
+        <translation>Прикажи умањене приказе на траци напретка</translation>
     </message>
 </context>
 <context>
@@ -297,7 +297,7 @@
     </message>
     <message>
         <source>Single Loop</source>
-        <translation>Понављање нумере</translation>
+        <translation>Понављај видео</translation>
     </message>
     <message>
         <source>List Loop</source>
@@ -369,7 +369,7 @@
     </message>
     <message>
         <source>Screenshot</source>
-        <translation>Слика Екрана</translation>
+        <translation>Слика екрана</translation>
     </message>
     <message>
         <source>Film Screenshot</source>
@@ -409,27 +409,27 @@
     </message>
     <message>
         <source>Playback Speed</source>
-        <translation type="unfinished"/>
+        <translation>Брзина репродукције</translation>
     </message>
     <message>
         <source>0.5x</source>
-        <translation type="unfinished"/>
+        <translation>0.5x</translation>
     </message>
     <message>
         <source>1.0x</source>
-        <translation type="unfinished"/>
+        <translation>1.0x</translation>
     </message>
     <message>
         <source>1.2x</source>
-        <translation type="unfinished"/>
+        <translation>1,2x</translation>
     </message>
     <message>
         <source>1.5x</source>
-        <translation type="unfinished"/>
+        <translation>1.5x</translation>
     </message>
     <message>
         <source>2.0x</source>
-        <translation type="unfinished"/>
+        <translation>2.0x</translation>
     </message>
 </context>
 <context>
@@ -455,7 +455,7 @@
     <name>dmr::MainWindow</name>
     <message>
         <source>Load successfully</source>
-        <translation>Успешно учитавање</translation>
+        <translation>Успешно учитано</translation>
     </message>
     <message>
         <source>Load failed</source>
@@ -463,7 +463,7 @@
     </message>
     <message>
         <source>Buffering...</source>
-        <translation>Прихват...</translation>
+        <translation>Попуна...</translation>
     </message>
     <message>
         <source>No device found</source>

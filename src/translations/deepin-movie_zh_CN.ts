@@ -325,7 +325,7 @@
     </message>
     <message>
         <source>Channel</source>
-        <translation>网络通道</translation>
+        <translation>声道</translation>
     </message>
     <message>
         <source>Stereo</source>
@@ -357,11 +357,11 @@
     </message>
     <message>
         <source>Select</source>
-        <translation>选择</translation>
+        <translation>选择字幕</translation>
     </message>
     <message>
         <source>Hide</source>
-        <translation>隐藏</translation>
+        <translation>隐藏字幕</translation>
     </message>
     <message>
         <source>Encodings</source>
@@ -444,7 +444,7 @@
     </message>
     <message>
         <source>Size: %1</source>
-        <translation>下载大小：%1</translation>
+        <translation>影片大小：%1</translation>
     </message>
     <message>
         <source>Save</source>
@@ -657,11 +657,11 @@
     </message>
     <message>
         <source>Type</source>
-        <translation>类型</translation>
+        <translation>文件类型</translation>
     </message>
     <message>
         <source>Size</source>
-        <translation>字号</translation>
+        <translation>文件大小</translation>
     </message>
     <message>
         <source>Path</source>
@@ -762,7 +762,7 @@
     </message>
     <message>
         <source>Empty</source>
-        <translation>清空</translation>
+        <translation>清空列表</translation>
     </message>
 </context>
 <context>
@@ -804,11 +804,11 @@
     </message>
     <message>
         <source>Previous</source>
-        <translation>上一首</translation>
+        <translation>上一个</translation>
     </message>
     <message>
         <source>Next</source>
-        <translation>下一步</translation>
+        <translation>下一个</translation>
     </message>
     <message>
         <source>Subtitles</source>

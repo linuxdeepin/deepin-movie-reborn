@@ -59,7 +59,7 @@
     </message>
     <message>
         <source>Shortcuts</source>
-        <translation>快捷鍵</translation>
+        <translation>快速鍵</translation>
     </message>
     <message>
         <source>File</source>
@@ -83,7 +83,7 @@
     </message>
     <message>
         <source>Restore Defaults</source>
-        <translation>還原至預設值</translation>
+        <translation>還原預設值</translation>
     </message>
     <message>
         <source>Open file</source>
@@ -203,7 +203,7 @@
     </message>
     <message>
         <source>Size</source>
-        <translation>文字大小</translation>
+        <translation>圖示</translation>
     </message>
     <message>
         <source>Movie is a full-featured video player, supporting playing local and streaming media in multiple video formats.</source>
@@ -527,7 +527,7 @@
     </message>
     <message>
         <source>View</source>
-        <translation>檢視</translation>
+        <translation>瀏覽</translation>
     </message>
     <message>
         <source>Saved to</source>
@@ -661,7 +661,7 @@
     </message>
     <message>
         <source>Size</source>
-        <translation>文字大小</translation>
+        <translation>圖示</translation>
     </message>
     <message>
         <source>Path</source>
@@ -804,11 +804,11 @@
     </message>
     <message>
         <source>Previous</source>
-        <translation>上一曲</translation>
+        <translation>上一部</translation>
     </message>
     <message>
         <source>Next</source>
-        <translation>下一步</translation>
+        <translation>下一部</translation>
     </message>
     <message>
         <source>Subtitles</source>
