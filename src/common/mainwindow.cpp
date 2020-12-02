@@ -2510,6 +2510,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         if (_engine->state() != PlayerEngine::CoreState::Idle) {
             _playSpeed = 1.0;
             _engine->setPlaySpeed(_playSpeed);
+            setPlaySpeedMenuChecked(ActionFactory::ActionKind::OneTimes);
             _nwComm->updateWithMessage(tr("Speed: %1x").arg(_playSpeed));
         }
         break;
@@ -2973,9 +2974,9 @@ void MainWindow::suspendToolsWindow()
         if (_playlist && _playlist->state() == PlaylistWidget::Opened)
             return;
 
-        if (qApp->applicationState() == Qt::ApplicationInactive) {
+//        if (qApp->applicationState() == Qt::ApplicationInactive) {
 
-        } else {
+//        } else {
             // menus  are popped up
             // NOTE: menu keeps focus while hidden, so focusWindow is not used
             if (ActionFactory::get().mainContextMenu()->isVisible() ||
@@ -2992,7 +2993,7 @@ void MainWindow::suspendToolsWindow()
                     return;
                 }
             }
-        }
+//        }
 
         if (_toolbox->anyPopupShown())
             return;
