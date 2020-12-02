@@ -1216,7 +1216,7 @@ protected:
         QRectF bottomLeftRect(QPointF(width, height),
                               QPointF(width - 30, height - 30));
 
-    #if 0
+#if 0
         path.moveTo(radius, 0.0);
         path.lineTo(width - radius, 0.0);
 
@@ -1228,7 +1228,7 @@ protected:
 
         path.arcTo(topRightRect, 180.0, -90.0);
         path.lineTo(radius, 0.0);
-    #else
+#else
         path.moveTo(radius, 0.0);
         path.lineTo(width - radius, 0.0);
         path.arcTo(topLeftRect, 90.0, 90.0);
@@ -1243,7 +1243,7 @@ protected:
 
         path.arcTo(topRightRect, 180.0, -90.0);
         path.lineTo(radius, 0.0);
-    #endif
+#endif
 
         /*
         FIXME: light: white
@@ -1578,7 +1578,7 @@ void viewProgBarLoad::loadViewProgBar(QSize size)
     auto file = QFileInfo(url.toLocalFile()).absoluteFilePath();
 
     for (auto i = 0; i < num ; i++) {
-        if (m_bQuit == true) {
+        if (m_bQuit || m_bisload) {
             qDebug() << "load return";
             return;
         }
@@ -1588,7 +1588,7 @@ void viewProgBarLoad::loadViewProgBar(QSize size)
         }
 
         d = d.addMSecs(tmp);
-//        qDebug()<<d;
+
         m_video_thumbnailer->seek_time = d.toString("hh:mm:ss").toLatin1().data();
         try {
 

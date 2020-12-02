@@ -120,6 +120,7 @@
                             "key": "hwaccel",
                             "name": "Hardware acceleration settings",
                             "type": "combobox",
+                            "hide": true,
                             "default": 0
                         }
                     ]
