@@ -625,8 +625,6 @@ MainWindow::MainWindow(QWidget *parent)
     this->setAttribute(Qt::WA_AcceptTouchEvents);
     _mousePressTimer.setInterval(1300);
     connect(&_mousePressTimer, &QTimer::timeout, this, &MainWindow::slotmousePressTimerTimeOut);
-
-    m_lastVolume = Settings::get().internalOption("last_volume").toInt();
     bool composited = CompositingManager::get().composited();
     qDebug() << "composited = " << composited;
 
@@ -995,10 +993,6 @@ MainWindow::MainWindow(QWidget *parent)
     });
     connect(qApp, &QGuiApplication::fontChanged, this, &MainWindow::slotFontChanged);
 
-    //    {
-    //        loadWindowState();
-    //    }
-
     ThreadPool::instance()->moveToNewThread(&volumeMonitoring);
     volumeMonitoring.start();
     connect(&volumeMonitoring, &VolumeMonitoring::volumeChanged, this, [ = ](int vol) {
@@ -1288,7 +1282,6 @@ void MainWindow::changedMute(bool mute)
     if (mute) {
         _nwComm->updateWithMessage(tr("Mute"));
     } else {
-        _engine->changeVolume(m_lastVolume);
         _nwComm->updateWithMessage(tr("Volume: %1%").arg(_toolbox->DisplayVolume()));
     }
 }
@@ -2029,7 +2022,6 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     case ActionFactory::ActionKind::StartPlay: {
         if (m_bisOverhunderd) {
             _engine->changeVolume(100);
-            Settings::get().setInternalOption("global_volume", m_lastVolume);
             m_bisOverhunderd = false;
         }
         if (_engine->playlist().count() == 0) {
@@ -2134,8 +2126,6 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
 
     case ActionFactory::ActionKind::ToggleFullscreen: {
         if (m_bIsFullSreen) {
-            //感觉这个参数没什么用，后期观察没有其他用处可以酌情删除
-            //_quitfullscreenstopflag = true;
             m_bIsFullSreen = false;
             if (_lastWindowState == Qt::WindowMaximized) {
                 _maxfornormalflag = true;
@@ -2335,27 +2325,6 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     }
 
     case ActionFactory::ActionKind::ToggleMute: {
-        /*if (_engine->muted()) {
-            //此处存在修改风险，注意！
-            if (m_lastVolume == 0) {
-                return;
-            } else if (m_lastVolume == -1) {
-                changedMute();
-                int savedVolume = Settings::get().internalOption("global_volume").toInt();
-                changedVolume(savedVolume);
-                setMusicMuted(false);
-            } else {
-                changedMute();
-                changedVolume(m_lastVolume);
-                setMusicMuted(false);
-            }
-        } else {
-            m_lastVolume = _engine->volume();
-            Settings::get().setInternalOption("last_volume", _engine->volume());
-            changedMute();
-            changedVolume(0);
-            setMusicMuted(true);
-        }*/
         changedMute();
         setMusicMuted(_engine->muted());
         if (_engine->muted()) {
@@ -2377,31 +2346,18 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         if (!args.isEmpty()) {
             int nVol = args[0].toInt();
             m_displayVolume = nVol;
-            if (m_lastVolume == nVol) {
-                if (!_engine->muted()) {
-                    _nwComm->updateWithMessage(tr("Volume: %1%").arg(nVol));
-                }
-                setAudioVolume(qMin(nVol, 100));
-                //音量调整为超过100关闭，再次启动后不会重新设置mpv音量问题
-                if (!m_bFirstInit && nVol >= 100) {
-                    m_bisOverhunderd = true;
-                    //首次启动不初始化mpv
-//                    _engine->changeVolume(nVol);
-//                    Settings::get().setInternalOption("global_volume", m_lastVolume);
-                }
-                return;
-            }
-            if (nVol >= 100) {
-                _engine->changeVolume(nVol);
-                Settings::get().setInternalOption("global_volume", m_lastVolume);
-            }
-
             if (!_engine->muted()) {
                 _nwComm->updateWithMessage(tr("Volume: %1%").arg(nVol));
             }
-            m_lastVolume = _engine->volume();
-            Settings::get().setInternalOption("global_volume", _toolbox->DisplayVolume());
             setAudioVolume(qMin(nVol, 100));
+            //音量调整为超过100关闭，再次启动后不会重新设置mpv音量问题
+            if (!m_bFirstInit && nVol >= 100) {
+                m_bisOverhunderd = true;
+                _engine->changeVolume(nVol);
+                Settings::get().setInternalOption("global_volume", nVol);
+            } else {
+                Settings::get().setInternalOption("global_volume", _toolbox->DisplayVolume());
+            }
             if (m_presenter)
                 m_presenter->slotvolumeChanged();
         }
@@ -2415,7 +2371,6 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             _engine->changeVolume(m_displayVolume);
         else
             setAudioVolume(m_displayVolume);
-        m_lastVolume = _engine->volume();
         if (!_engine->muted()) {
             _nwComm->updateWithMessage(tr("Volume: %1%").arg(m_displayVolume));
         } else if (_engine->muted() && m_displayVolume < 200) {
@@ -2445,8 +2400,6 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
             changedMute();
             setMusicMuted(_engine->muted());
         }
-
-        m_lastVolume = _engine->volume();
         if (!_engine->muted()) {
             _nwComm->updateWithMessage(tr("Volume: %1%").arg(m_displayVolume));
         }
@@ -2458,7 +2411,6 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     case ActionFactory::ActionKind::GotoPlaylistSelected: {
         if (m_bisOverhunderd) {
             _engine->changeVolume(100);
-            Settings::get().setInternalOption("global_volume", m_lastVolume);
             m_bisOverhunderd = false;
         }
         _engine->playSelected(args[0].toInt());
@@ -2916,7 +2868,6 @@ void MainWindow::play(const QUrl &url)
     }
     if (m_bisOverhunderd) {
         _engine->changeVolume(100);
-        Settings::get().setInternalOption("global_volume", m_lastVolume);
         m_bisOverhunderd = false;
     }
     _engine->playByName(url);
@@ -4632,7 +4583,6 @@ void MainWindow::dropEvent(QDropEvent *ev)
 
     if (m_bisOverhunderd) {
         _engine->changeVolume(100);
-        Settings::get().setInternalOption("global_volume", m_lastVolume);
         m_bisOverhunderd = false;
     }
 
