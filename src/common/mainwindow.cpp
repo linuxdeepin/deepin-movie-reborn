@@ -684,6 +684,7 @@ MainWindow::MainWindow(QWidget *parent)
     }
     m_displayVolume = volume;
 
+    _engine->setSubCodepage("auto");
     if (utils::check_wayland_env()) {
         _engine->changeVolume(100);
         if (Settings::get().internalOption("mute").toBool()) {
@@ -850,7 +851,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(_engine, &PlayerEngine::stateChanged, this, &MainWindow::updateActionsState);
     updateActionsState();
 
-    reflectActionToUI(ActionFactory::ActionKind::OneTimes); //重置播放速度为1倍速
+    //勾选右键菜单默认选项
+    reflectActionToUI(ActionFactory::ActionKind::OneTimes);
+    reflectActionToUI(ActionFactory::ActionKind::ChangeSubCodepage);
     reflectActionToUI(ActionFactory::ActionKind::DefaultFrame);
     reflectActionToUI(ActionFactory::ActionKind::Stereo);
 
@@ -1590,11 +1593,11 @@ void MainWindow::reflectActionToUI(ActionFactory::ActionKind kd)
             auto args = ActionFactory::actionArgs(*p);
             if (args[0].toString() == cp) {
                 (*p)->setEnabled(false);
-                if (!(*p)->isChecked())(*p)->setChecked(true);
+                if (!(*p)->isChecked())
+                    (*p)->setChecked(true);
                 (*p)->setEnabled(true);
                 break;
             }
-
             ++p;
         }
         break;
