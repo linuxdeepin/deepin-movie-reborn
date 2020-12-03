@@ -2154,9 +2154,6 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                 _toolbox->setVolSliderHide();
                 _toolbox->setButtonTooltipHide();
             }
-//            if (/*!_miniMode && (fromUI || isShortcut) && */windowState() == Qt::WindowNoState) {
-//                _lastRectInNormalMode = geometry();
-//            }
             //可能存在更好的方法（全屏后更新toolbox状态），后期修改
             if (!_toolbox->getbAnimationFinash())
                 return;
@@ -3641,7 +3638,7 @@ void MainWindow::updateSizeConstraints()
                     int w = static_cast<int>(500 * ratio);
                     m = QSize(w, 500);
                 } else {
-                    int h = static_cast<int>(614 / ratio);
+                    int h = static_cast<int>(614 * ratio);
                     if (h > dRect.height()) {
                         h = dRect.height();
                     }
@@ -3651,7 +3648,6 @@ void MainWindow::updateSizeConstraints()
         } else {
             m = QSize(614, 500);
         }
-//        m = QSize(614, 500);
     }
     this->setMinimumSize(m);
 }
@@ -3679,9 +3675,6 @@ void MainWindow::resizeEvent(QResizeEvent *ev)
 {
     qDebug() << __func__ << geometry();
     if (utils::check_wayland_env()) {
-        //    if (_playlist) {
-        //        _playlist->setFixedWidth(this->width() - 20);
-        //    }
         if (_toolbox) {
             _toolbox->setFixedWidth(this->width() - 10);
         }

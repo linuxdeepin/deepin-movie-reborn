@@ -379,7 +379,7 @@ private:
 
     bool _quitfullscreenstopflag {false};
     bool _quitfullscreenflag{false};
-    bool _maxfornormalflag {false};
+    bool _maxfornormalflag {false};  //is the window maximized
     //add by heyi
     bool m_bMpvFunsLoad {false};
     QPoint posMouseOrigin;
