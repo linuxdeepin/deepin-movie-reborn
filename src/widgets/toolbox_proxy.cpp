@@ -1266,6 +1266,10 @@ protected:
 public slots:
     void popup()
     {
+        if (isHidden()) {
+            state = Close;
+            m_bFinished = false;
+        }
         auto main_rect = _mw->rect();
         auto view_rect = main_rect.marginsRemoved(QMargins(1, 1, 1, 1));
 
@@ -1337,7 +1341,8 @@ public slots:
     void delayedHide()
     {
 #ifdef __x86_64__
-        _autoHideTimer.start(500);
+        if (!isHidden())
+            _autoHideTimer.start(500);
 #else
         m_mouseIn = false;
         DUtil::TimerSingleShot(100, [this]() {
@@ -2375,7 +2380,7 @@ void ToolboxProxy::slotVolumeButtonClicked()
             _volSlider->raise();
             _volSlider->popup();
         } else {
-            _volSlider->hide();
+            _volSlider->popup();
         }
 #endif
     }
