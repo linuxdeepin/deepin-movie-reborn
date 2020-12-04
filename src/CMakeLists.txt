@@ -18,7 +18,7 @@ find_package(Qt5Sql)
 
 pkg_check_modules(Dtk REQUIRED IMPORTED_TARGET dtkwidget)
 pkg_check_modules(Dtk REQUIRED IMPORTED_TARGET dtkcore)
-#pkg_check_modules(Xcb REQUIRED IMPORTED_TARGET xcb)
+pkg_check_modules(Xcb REQUIRED IMPORTED_TARGET xcb xcb-shape)
 # IMPORTED_TARGET failed to work for some of libs under flatpak env
 pkg_check_modules(Other REQUIRED  gsettings-qt)
 
@@ -68,7 +68,7 @@ add_executable(${CMD_NAME} ${SRCS} ${RCS} ${QM})
 
 target_include_directories(${CMD_NAME} PUBLIC ${PROJECT_INCLUDE})
 
-set(TARGET_LIBS X11 Xtst  Qt5::Widgets Qt5::X11Extras Qt5::Network
+set(TARGET_LIBS X11 Xtst PkgConfig::Xcb Qt5::Widgets Qt5::X11Extras Qt5::Network
     Qt5::DBus Qt5::Sql PkgConfig::Dtk GL)
 
 target_link_libraries(${CMD_NAME} ${TARGET_LIBS} ${Other_LIBRARIES})

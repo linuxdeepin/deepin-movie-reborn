@@ -64,7 +64,7 @@ static CompositingManager *_compManager = nullptr;
 class PlatformChecker
 {
 public:
-    PlatformChecker(){}
+    PlatformChecker() {}
     Platform check()
     {
         QProcess uname;
@@ -120,7 +120,7 @@ CompositingManager::CompositingManager()
     _hasCard = false;
     _platform = PlatformChecker().check();
     dmr::utils::first_check_wayland_env();
-    if(!dmr::utils::check_wayland_env()) {
+    if (!dmr::utils::check_wayland_env()) {
         softDecodeCheck();   //检测是否是kunpeng920（是否走软解码）
 
         _composited = false;
@@ -128,7 +128,7 @@ CompositingManager::CompositingManager()
             QGSettings gsettings("com.deepin.deepin-movie", "/com/deepin/deepin-movie/");
             QString aa = gsettings.get("composited").toString();
             if ((gsettings.get("composited").toString() == "DisableComposited"
-                 || gsettings.get("composited").toString() == "EnableComposited")) {
+                    || gsettings.get("composited").toString() == "EnableComposited")) {
                 if (gsettings.keys().contains("composited")) {
                     if (gsettings.get("composited").toString() == "DisableComposited") {
                         _composited = false;
@@ -159,9 +159,9 @@ CompositingManager::CompositingManager()
                     qDebug() << "__X86__";
 #endif
                 } else {
-                    GetScreenDriver = reinterpret_cast<glXGetScreenDriver_t *>(glXGetProcAddressARB (reinterpret_cast<const GLubyte *>("glXGetScreenDriver")));
+                    GetScreenDriver = reinterpret_cast<glXGetScreenDriver_t *>(glXGetProcAddressARB(reinterpret_cast<const GLubyte *>("glXGetScreenDriver")));
                     if (GetScreenDriver) {
-                        const char *name = (*GetScreenDriver) (QX11Info::display(), QX11Info::appScreen());
+                        const char *name = (*GetScreenDriver)(QX11Info::display(), QX11Info::appScreen());
                         qDebug() << "dri driver: " << name;
                         _composited = name != nullptr;
                     }
@@ -185,9 +185,9 @@ CompositingManager::CompositingManager()
             } else if (isDriverLoadedCorrectly() || isDirectRendered()) {
                 _composited = true;
             } else {
-                GetScreenDriver = reinterpret_cast<glXGetScreenDriver_t *>(glXGetProcAddressARB (reinterpret_cast<const GLubyte *>("glXGetScreenDriver")));
+                GetScreenDriver = reinterpret_cast<glXGetScreenDriver_t *>(glXGetProcAddressARB(reinterpret_cast<const GLubyte *>("glXGetScreenDriver")));
                 if (GetScreenDriver) {
-                    const char *name = (*GetScreenDriver) (QX11Info::display(), QX11Info::appScreen());
+                    const char *name = (*GetScreenDriver)(QX11Info::display(), QX11Info::appScreen());
                     qDebug() << "dri driver: " << name;
                     _composited = name != nullptr;
                 }
@@ -231,7 +231,7 @@ CompositingManager::CompositingManager()
             qDebug() << "hasCard: " << _hasCard;
         }
 #endif
-    }else{
+    } else {
         _composited = true;
     }
     qDebug() << __func__ << "Composited is " << _composited;
@@ -279,13 +279,13 @@ bool CompositingManager::runningOnVmwgfx()
 //    static bool s_checked = false;
 
 //    if (!s_checked) {
-        for (int id = 0; id <= 10; id++) {
-            if (!QFile::exists(QString("/sys/class/drm/card%1").arg(id))) break;
-            if (is_device_viable(id)) {
-                vector<string> drivers = {"vmwgfx"};
-                s_runningOnVmwgfx = is_card_exists(id, drivers);
-                break;
-            }
+    for (int id = 0; id <= 10; id++) {
+        if (!QFile::exists(QString("/sys/class/drm/card%1").arg(id))) break;
+        if (is_device_viable(id)) {
+            vector<string> drivers = {"vmwgfx"};
+            s_runningOnVmwgfx = is_card_exists(id, drivers);
+            break;
+        }
 //        }
     }
 
@@ -308,24 +308,23 @@ bool CompositingManager::runningOnNvidia()
     return s_runningOnNvidia;
 }
 
-void CompositingManager::softDecodeCheck(){
+void CompositingManager::softDecodeCheck()
+{
     QProcess uname;
-    char* data = (char*)malloc(100);
+    char *data = (char *)malloc(100);
     uname.start("cat /proc/cpuinfo");
     if (uname.waitForStarted()) {
         if (uname.waitForFinished()) {
-            while (uname.readLine(data,99)>0) {
+            while (uname.readLine(data, 99) > 0) {
                 QString strData(data);
                 QStringList listPara = strData.split(":");
 
-                if(listPara.size()<2)
-                {
+                if (listPara.size() < 2) {
                     continue;
                 }
 
-                if(listPara.at(0).contains("model name")
-                   && listPara.at(1).contains("Kunpeng 920"))
-                {
+                if (listPara.at(0).contains("model name")
+                        && listPara.at(1).contains("Kunpeng 920")) {
                     m_bOnlySoftDecode = true;
                 }
             }
@@ -339,11 +338,12 @@ void CompositingManager::softDecodeCheck(){
         QString drv = QString::fromUtf8(inspur.readAllStandardOutput().trimmed().constData());
         qDebug() << "inspur check : " << drv;
         m_bOnlySoftDecode =  m_bOnlySoftDecode || drv.contains("Inspur");
-		m_setSpecialControls = drv.contains("Ruijie");
+        m_setSpecialControls = drv.contains("Ruijie");
     }
 }
 
-bool CompositingManager::isOnlySoftDecode(){
+bool CompositingManager::isOnlySoftDecode()
+{
     return m_bOnlySoftDecode;
 }
 

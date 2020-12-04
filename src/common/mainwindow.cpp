@@ -73,6 +73,11 @@
 
 #include "../accessibility/ac-deepin-movie-define.h"
 
+#define XCB_Platform     //to distinguish xcb or wayland
+#ifdef XCB_Platform
+#include "utility.h"
+#endif
+
 //add by heyi
 //#define _NET_WM_MOVERESIZE_MOVE              8   /* movement only */
 //#define _NET_WM_MOVERESIZE_CANCEL           11   /* cancel operation */
@@ -248,7 +253,8 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
                 //                if (alert) le->showAlertMessage(QObject::tr("You don't have permission to operate this folder"));
                 return false;
             }
-        } else {
+        } else
+        {
             if (dir.cdUp()) {
                 QFileInfo ch(dir.path());
                 if (!ch.isReadable() || !ch.isWritable())
@@ -310,7 +316,7 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *opt)
     });
 
     option->connect(option, &DTK_CORE_NAMESPACE::DSettingsOption::valueChanged, le,
-                    [ = ](const QVariant & value) {
+    [ = ](const QVariant & value) {
         auto pi = ElideText(value.toString(), {285, fm.height()}, QTextOption::WrapAnywhere,
                             le->font(), Qt::ElideMiddle, fm.height(), 285);
         le->setText(pi);
@@ -541,7 +547,7 @@ protected:
                 } else {
                     goto skip_set_cursor;
                 }
-set_cursor:
+            set_cursor:
 #ifdef USE_DXCB
 #ifdef __mips__
                 if (window->property("_d_real_winId").isValid()) {
@@ -559,7 +565,7 @@ set_cursor:
                 lastCornerEdge = mouseCorner;
                 return true;
 
-skip_set_cursor:
+            skip_set_cursor:
                 lastCornerEdge = mouseCorner = CornerEdge::NoneEdge;
                 return false;
             } else {
@@ -881,7 +887,7 @@ MainWindow::MainWindow(QWidget *parent)
     syncPlayState();
 
     connect(_engine, &PlayerEngine::loadOnlineSubtitlesFinished,
-            [this](const QUrl & url, bool success) {//不能去掉 url参数
+    [this](const QUrl & url, bool success) {//不能去掉 url参数
         _nwComm->updateWithMessage(success ? tr("Load successfully") : tr("Load failed"));
     });
 
@@ -1119,7 +1125,7 @@ bool MainWindow::event(QEvent *ev)
                 acts.at(0)->setChecked(false);
             }
         } else if (_lastWindowState & Qt::WindowMinimized /*&& windowState() == Qt::WindowNoState*/) {
-            if ( Settings::get().isSet(Settings::PauseOnMinimize)) {
+            if (Settings::get().isSet(Settings::PauseOnMinimize)) {
                 if (_quitfullscreenflag) {
                     requestAction(ActionFactory::TogglePause);
                     _quitfullscreenflag = false;
@@ -1567,7 +1573,7 @@ void MainWindow::reflectActionToUI(ActionFactory::ActionKind kd)
         break;
     }
 
-        //迷你模式下判断是否全屏，恢复菜单状态 by zhuyuliang
+    //迷你模式下判断是否全屏，恢复菜单状态 by zhuyuliang
     case ActionFactory::ActionKind::ToggleMiniMode: {
         acts = ActionFactory::get().findActionsByKind(kd);
         auto p = acts[0];
@@ -1811,9 +1817,9 @@ void MainWindow::menuItemInvoked(QAction *action)
                     if (iter.value() == kd) {
                         isiter = true;
                         if ((iter.key() == QKeySequence("Return")
-                             || iter.key() == QKeySequence("Num+Enter")
-                             || iter.key() == QKeySequence("Up")
-                             || iter.key() == QKeySequence("Down")) && isShortcut) {
+                                || iter.key() == QKeySequence("Num+Enter")
+                                || iter.key() == QKeySequence("Up")
+                                || iter.key() == QKeySequence("Down")) && isShortcut) {
                             if (iter.key() == QKeySequence("Up") || iter.key() == QKeySequence("Down")) {
                                 int key;
                                 if (iter.key() == QKeySequence("Up")) {
@@ -2628,7 +2634,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     popup->resize(w + 70, 52);\
     popup->move((width() - popup->width()) / 2, height() - 127);\
     popup->show();\
-        } while (0)
+} while (0)
         if (success) {
             const QIcon icon = QIcon(":/resources/icons/icon_toast_sucess.svg");
             QString text = QString(tr("The screenshot is saved"));
@@ -2977,22 +2983,22 @@ void MainWindow::suspendToolsWindow()
 //        if (qApp->applicationState() == Qt::ApplicationInactive) {
 
 //        } else {
-            // menus  are popped up
-            // NOTE: menu keeps focus while hidden, so focusWindow is not used
-            if (ActionFactory::get().mainContextMenu()->isVisible() ||
-                    ActionFactory::get().titlebarMenu()->isVisible())
-                return;
-            //if (qApp->focusWindow() != windowHandle())
-            //return;
+        // menus  are popped up
+        // NOTE: menu keeps focus while hidden, so focusWindow is not used
+        if (ActionFactory::get().mainContextMenu()->isVisible() ||
+                ActionFactory::get().titlebarMenu()->isVisible())
+            return;
+        //if (qApp->focusWindow() != windowHandle())
+        //return;
 
-            if (_toolbox->isVisible()) {
-                if (insideToolsArea(mapFromGlobal(QCursor::pos())) && !m_bLastIsTouch)
-                    return;
-            } else {
-                if (_toolbox->geometry().contains(mapFromGlobal(QCursor::pos()))) {
-                    return;
-                }
+        if (_toolbox->isVisible()) {
+            if (insideToolsArea(mapFromGlobal(QCursor::pos())) && !m_bLastIsTouch)
+                return;
+        } else {
+            if (_toolbox->geometry().contains(mapFromGlobal(QCursor::pos()))) {
+                return;
             }
+        }
 //        }
 
         if (_toolbox->anyPopupShown())
@@ -4029,7 +4035,13 @@ void MainWindow::mouseMoveEvent(QMouseEvent *ev)
     }
 
     if (!CompositingManager::get().composited() && !m_bIsFullSreen) {
-        move(pos() + ev->pos() - m_pressPoint);
+#ifdef XCB_Platform
+        Utility::startWindowSystemMove(this->winId());
+        return Utility::updateMousePointForWindowMove(this->winId(), ev->globalPos() * devicePixelRatioF());
+#else
+        QWidget::mouseMoveEvent(ev);
+#endif
+
     } else {
         QWidget::mouseMoveEvent(ev);
     }
@@ -4167,7 +4179,7 @@ void MainWindow::readSinkInputPath()
             continue;
 
         sinkInputPath = curPath.path();
-         m_isFirstLoadDBus = true;
+        m_isFirstLoadDBus = true;
         break;
     }
 }
