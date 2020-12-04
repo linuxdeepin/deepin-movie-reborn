@@ -198,7 +198,8 @@ protected:
     bool eventFilter(QObject *obj, QEvent *event)
     {
         switch (event->type()) {
-        case QEvent::ToolTip: {
+        case QEvent::ToolTip:
+        case QEvent::Enter: {
             //QHelpEvent *he = static_cast<QHelpEvent *>(event);
             auto tip = obj->property("HintWidget").value<Tip *>();
             auto btn = tip->property("for").value<QWidget *>();
@@ -1341,8 +1342,8 @@ public slots:
     void delayedHide()
     {
 #ifdef __x86_64__
-        if (!isHidden())
-            _autoHideTimer.start(500);
+ if (!isHidden())
+        _autoHideTimer.start(500);
 #else
         m_mouseIn = false;
         DUtil::TimerSingleShot(100, [this]() {
