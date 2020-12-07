@@ -3307,7 +3307,7 @@ void MainWindow::checkErrorMpvLogsChanged(const QString prefix, const QString te
         //do nothing
     } else if (errorMessage.toLower().contains(QString("fail")) && errorMessage.toLower().contains(QString("open"))) {
         _nwComm->updateWithMessage(tr("Cannot open file or stream"));
-        _engine->playlist().remove(_engine->playlist().count() - 1);
+        _engine->playlist().remove(_engine->playlist().current());
     } else if (errorMessage.toLower().contains(QString("fail")) &&
                (errorMessage.toLower().contains(QString("format")))
               ) {
@@ -3317,7 +3317,7 @@ void MainWindow::checkErrorMpvLogsChanged(const QString prefix, const QString te
         } else {
             _retryTimes = 0;
             _nwComm->updateWithMessage(tr("Invalid file"));
-            _engine->playlist().remove(_engine->playlist().count() - 1);
+            _engine->playlist().remove(_engine->playlist().current());
         }
 //        _engine->playlist().clear();
     } else if (errorMessage.toLower().contains(QString("moov atom not found"))) {
@@ -4392,6 +4392,7 @@ void MainWindow::toggleUIMode()
     }
 
     _miniMode = !_miniMode;
+
     if (utils::check_wayland_env()) {
         auto flags = windowFlags();
         if (_miniMode) {
@@ -4465,9 +4466,9 @@ void MainWindow::toggleUIMode()
             qreal ratio = vid_size.width() / static_cast<qreal>(vid_size.height());
 
             if (vid_size.width() > vid_size.height()) {
-                sz = QSize(380, static_cast<int>(380 / ratio));
+                sz = QSize(380, static_cast<int>(380 / ratio) + 1);
             } else {
-                sz = QSize(380, static_cast<int>(380 * ratio));   //by thx 这样修改mini模式也存在黑边
+                sz = QSize(380, static_cast<int>(380 * ratio) + 1);   //by thx 这样修改mini模式也存在黑边
             }
         }
 
