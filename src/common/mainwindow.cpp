@@ -3328,7 +3328,6 @@ void MainWindow::checkErrorMpvLogsChanged(const QString prefix, const QString te
 //        _engine->playlist().clear();
     } else if (errorMessage.toLower().contains(QString("incomplete frame")) ||
                errorMessage.toLower().contains(QString("MVs not available"))) {
-        _nwComm->updateWithMessage(tr("The CD/DVD has been ejected"));
 //        _engine->playlist().remove(_engine->playlist().current());
     } else if ((errorMessage.toLower().contains(QString("can't"))) &&
                (errorMessage.toLower().contains(QString("open")))) {
