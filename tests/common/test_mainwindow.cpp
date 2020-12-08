@@ -400,8 +400,13 @@ TEST(ToolBox, playListWidget)
     QTest::mouseClick(listBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 500);
 
     //event
+//    emit playlist->model()->rowsMoved(playlistWidget, 0, 1, QModelIndex(), 1);
     QTest::qWait(100);
 //    QContextMenuEvent *cme = new QContextMenuEvent(QContextMenuEvent::Mouse, playlist->itemWidget(playlist->item(0))->rect().center());
+//    QTimer::singleShot(100,[=](){
+//        emit ActionFactory::get().playlistContextMenu()->aboutToHide();
+//        ActionFactory::get().playlistContextMenu()->clear();
+//    });
 //    QApplication::sendEvent(playlist->itemWidget(playlist->item(0)), cme);
 
     QPoint point(playlist->pos().x() + 300, playlist->pos().y() + 60);
@@ -464,7 +469,7 @@ TEST(ToolBox, playBtnBox)
     QTest::mouseClick(prevBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 500); //play prev
 }
 
-TEST(MainWindow, UrlDialog)
+TEST(ToolBox, UrlDialog)
 {
     MainWindow* w = dApp->getMainWindow();
     UrlDialog *uDlg = new UrlDialog(w);
@@ -555,6 +560,9 @@ TEST(ToolBox, mainWindowEvent)
     QApplication::sendEvent(w, &wheelEvent);
 
     QContextMenuEvent *cme = new QContextMenuEvent(QContextMenuEvent::Mouse, w->rect().center());
+    QTimer::singleShot(100,[=](){
+        ActionFactory::get().mainContextMenu()->clear();
+    });
     QApplication::sendEvent(w, cme);
 
     QTest::mouseClick(w, Qt::LeftButton, Qt::NoModifier, QPoint(100,100), 200);

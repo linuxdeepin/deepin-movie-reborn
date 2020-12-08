@@ -36,9 +36,9 @@ include_directories(../src/widgets/dialog)
 include_directories(../src/backends)
 include_directories(../src/backends/mpv)
 
-include_directories(googletest)
-include_directories(googletest/googlemock/include)
-include_directories(googletest/googletest/include)
+#include_directories(googletest)
+#include_directories(googletest/googlemock/include)
+#include_directories(googletest/googletest/include)
 
 #add_subdirectory(googletest)
 
@@ -57,12 +57,12 @@ FILE (GLOB allSource
 #    "./*.cpp" "./*.c")
 
 FILE (GLOB allTestSource
-    "../tests/*.cpp"
-    "../tests/common/*.cpp"
-    "../tests/widgets/*.cpp"
-    "../tests/libdmr/*.cpp"
-    "../tests/backends/*.cpp"
-    "../tests/vendor/*.cpp")
+    "*.cpp"
+    "common/*.cpp"
+    "widgets/*.cpp"
+    "libdmr/*.cpp"
+    "backends/*.cpp"
+    "vendor/*.cpp")
 
 # 定义 header 文件
 FILE (GLOB allHeaders
@@ -109,24 +109,26 @@ set(CMAKE_CXX_OUTPUT_EXTENSION_REPLACE ON)
 set(OBJECT_DIR ${CMAKE_BINARY_DIR}/CMakeFiles/objects)
 
 add_custom_target(test
-    COMMAND mkdir -p coverageResult
+    COMMAND mkdir -p build-ut
+    COMMAND mkdir -p build-ut/report
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 
 add_custom_command(TARGET test
     COMMAND echo " ===================CREAT LCOV REPROT==================== "
     COMMAND lcov --directory ./CMakeFiles/${PROJECT_NAME}.dir --zerocounters
-    COMMAND ./tests/${PROJECT_NAME}
-    COMMAND lcov --directory . --capture --output-file ./coverageResult/${PROJECT_NAME}_Coverage.info
+#    COMMAND ./tests/${PROJECT_NAME}
+    COMMAND ./tests/${PROJECT_NAME} -o ./build-ut/report/report_${PROJECT_NAME}.xml,xml
+    COMMAND lcov --directory . --capture --output-file ./build-ut/${PROJECT_NAME}_Coverage.info
 
     COMMAND echo " =================== do filter begin ==================== "
-    COMMAND lcov --remove ./coverageResult/${PROJECT_NAME}_Coverage.info 'CMakeFiles/${PROJECT_NAME}.dir/${PROJECT_NAME}_autogen/*/*'
+    COMMAND lcov --remove ./build-ut/${PROJECT_NAME}_Coverage.info 'CMakeFiles/${PROJECT_NAME}.dir/${PROJECT_NAME}_autogen/*/*'
     '${PROJECT_NAME}_autogen/*/*/*.cpp' 'googletest/*/*' '*/usr/include/*' '*/tests/*' '/usr/local/*' '*/src/vendor/dbusextended-qt/*' '*/src/common/filter.*'
     '*/src/common/settings_translation.cpp' '*/src/common/event_monitor.cpp' '*/src/widgets/videoboxbutton.cpp' '*/src/common/event_relayer.cpp'
-    -o ./coverageResult/${PROJECT_NAME}_Coverage_fileter.info
+    -o ./build-ut/${PROJECT_NAME}_Coverage_fileter.info
     COMMAND echo " =================== do filter end ==================== "
 
-    COMMAND genhtml -o ./coverageResult/report ./coverageResult/${PROJECT_NAME}_Coverage_fileter.info
-    COMMAND echo " -- Coverage files have been output to ${CMAKE_BINARY_DIR}/coverageResult/report "
+    COMMAND genhtml -o ./build-ut/report ./build-ut/${PROJECT_NAME}_Coverage_fileter.info
+    COMMAND echo " -- Coverage files have been output to ${CMAKE_BINARY_DIR}/build-ut/report "
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
     )
 add_dependencies(test ${PROJECT_NAME})
