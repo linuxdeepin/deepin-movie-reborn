@@ -4679,6 +4679,7 @@ void MainWindow::diskRemoved(QString strDiskName)
 
 void MainWindow::sleepStateChanged(bool bSleep)
 {
+    qInfo() << __func__ << bSleep;
     if (bSleep && _engine->state() == PlayerEngine::CoreState::Playing) {
         requestAction(ActionFactory::ActionKind::TogglePause);
     } else if (!bSleep && windowState() != Qt::WindowMinimized && _engine->state() == PlayerEngine::CoreState::Paused) {

@@ -1867,36 +1867,29 @@ void ToolboxProxy::setup()
     DFontSizeManager::instance()->bind(_fullscreentimelableend, DFontSizeManager::T6);
 
     _progBar = new DMRSlider(bot_toolWgt);
+    _progBar->slider()->setFocusPolicy(Qt::NoFocus);
     _progBar->setObjectName(MOVIE_PROGRESS_WIDGET);
     _progBar->slider()->setOrientation(Qt::Horizontal);
     _progBar->slider()->setObjectName(PROGBAR_SLIDER);
     _progBar->slider()->setAccessibleName(PROGBAR_SLIDER);
     _progBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-    _progBar->setFocusPolicy(Qt::TabFocus);
     _progBar->slider()->setRange(0, 100);
     _progBar->setValue(0);
     _progBar->setEnableIndication(_engine->state() != PlayerEngine::Idle);
-//    _progBar->hide();
-    connect(_previewer, &ThumbnailPreview::leavePreview, this, &ToolboxProxy::slotLeavePreview);
 
+    connect(_previewer, &ThumbnailPreview::leavePreview, this, &ToolboxProxy::slotLeavePreview);
     connect(&Settings::get(), &Settings::baseChanged, this, &ToolboxProxy::setthumbnailmode);
     connect(_engine, &PlayerEngine::siginitthumbnailseting, this, &ToolboxProxy::setthumbnailmode);
-
     connect(_progBar, &DSlider::sliderMoved, this, &ToolboxProxy::setProgress);
     connect(_progBar, &DSlider::valueChanged, this, &ToolboxProxy::setProgress);
     connect(_progBar, &DMRSlider::hoverChanged, this, &ToolboxProxy::progressHoverChanged);
     connect(_progBar, &DMRSlider::leave, this, &ToolboxProxy::slotLeaveSlider);
-
     connect(_progBar, &DMRSlider::sliderPressed, this, &ToolboxProxy::slotSliderPressed);
-
     connect(_progBar, &DMRSlider::sliderReleased, this, &ToolboxProxy::slotSliderReleased);
-
     connect(&Settings::get(), &Settings::baseMuteChanged, this, &ToolboxProxy::slotBaseMuteChanged);
 
     _viewProgBar = new ViewProgBar(_progBar, bot_toolWgt);
     connect(_viewProgBar, &ViewProgBar::leaveViewProgBar, this, &ToolboxProxy::slotLeaveViewProgBar);
-
-
     connect(_viewProgBar, &ViewProgBar::hoverChanged, this, &ToolboxProxy::progressHoverChanged);
     connect(_viewProgBar, &ViewProgBar::sliderMoved, this, &ToolboxProxy::setProgress);
     connect(_viewProgBar, &ViewProgBar::mousePressed, this, &ToolboxProxy::updateTimeVisible);
@@ -1917,10 +1910,7 @@ void ToolboxProxy::setup()
     time->setAlignment(Qt::AlignLeft);
     bot_layout->addLayout(time);
     time->addWidget(_timeLabel);
-
 //    bot->addStretch();
-
-
     QHBoxLayout *progBarspec = new QHBoxLayout(bot_toolWgt);
     progBarspec->setContentsMargins(0, 5, 0, 0);
     progBarspec->setSpacing(0);
