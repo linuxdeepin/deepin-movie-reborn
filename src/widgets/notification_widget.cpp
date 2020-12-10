@@ -39,11 +39,7 @@
 namespace dmr {
 
 NotificationWidget::NotificationWidget(QWidget *parent)
-#ifdef __aarch64__
-    : QFrame(nullptr), _mw(parent)
-#else
     : QFrame(parent), _mw(parent)
-#endif
 {
 //    DThemeManager::instance()->registerWidget(this);
 
