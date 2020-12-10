@@ -538,9 +538,7 @@ public:
         this->_progBar = _progBar;
         _parent = parent;
         setFixedHeight(70);
-//       setFixedWidth(584);
-//        setFixedWidth(parent->width() - PROGBAR_SPEC);
-//       setFixedWidth(1450);
+
         _vlastHoverValue = 0;
         _isBlockSignals = false;
         setMouseTracking(true);
@@ -555,14 +553,9 @@ public:
         _front->setFixedWidth(0);
         _front->setContentsMargins(0, 0, 0, 0);
 
-//       _indicator = new IndicatorBar(this);
-//        _indicator = new DBlurEffectWidget(this);
         _indicator = new IndicatorItem(this);
         _indicator->resize(6, 60);
         _indicator->setObjectName("indicator");
-//        _indicator->setMaskColor(QColor(255, 255, 255));
-//        _indicator->setBlurRectXRadius(2);
-//        _indicator->setBlurRectYRadius(2);
 
         _sliderTime = new SliderTime;
         _sliderTime->hide();
@@ -616,7 +609,6 @@ public:
             v = (m_nStartPoint + m_nViewLength);
         }
         _indicatorPos = {v, rect().y()};
-        update();
     }
     int getValue()
     {
@@ -644,22 +636,6 @@ public:
     void setViewProgBar(PlayerEngine *engine, QList<QPixmap>pm_list, QList<QPixmap>pm_black_list)
     {
         _engine = engine;
-        QLayoutItem *child;
-//        while ((child = _viewProgBarLayout->takeAt(0)) != nullptr) {
-//            //setParent为NULL，防止删除之后界面不消失
-//            if (child->widget()) {
-//                child->widget()->setParent(nullptr);
-//            }
-//            delete child;
-//        }
-
-//        while ((child = _viewProgBarLayout_black->takeAt(0)) != nullptr) {
-//            //setParent为NULL，防止删除之后界面不消失
-//            if (child->widget()) {
-//                child->widget()->setParent(nullptr);
-//            }
-//            delete child;
-//        }
 
         _viewProgBarLayout->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
         _viewProgBarLayout->setSpacing(1);
@@ -718,27 +694,17 @@ private:
         if (!isVisible()) return;
 
         if (press) {
-//            _indicator->changeStyle(press);
             _indicator->setPressed(press);
             _indicator->resize(2, 60);
-//            _indicator->setMaskColor(QColor(255, 138, 0));
-//            _indicator->setBlurRectXRadius(2);
-//            _indicator->setBlurRectYRadius(2);
-//            _sliderTime->setVisible(press);
-            _sliderArrowUp->setVisible(press);
-//            _sliderArrowDown->setVisible(press);
+
         } else {
-//            _indicator->changeStyle(press);
             _indicator->setPressed(press);
             _indicator->resize(6, 60);
-//            _indicator->setMaskColor(QColor(255, 255, 255));
-//            _indicator->setBlurRectXRadius(2);
-//            _indicator->setBlurRectYRadius(2);
         }
     }
 
 signals:
-    void leaveViewProgBar();
+    void leave();
     void hoverChanged(int);
     void sliderMoved(int);
     void indicatorMoved(int);
@@ -748,13 +714,12 @@ protected:
 
     void leaveEvent(QEvent *e) override
     {
-        emit leaveViewProgBar();
+        emit leave();
 
         DWidget::leaveEvent(e);
     }
     void showEvent(QShowEvent *se) override
     {
-//        _time->move((width() - _time->width())/2, 69);
         DWidget::showEvent(se);
     }
     void mouseMoveEvent(QMouseEvent *e) override
@@ -763,7 +728,6 @@ protected:
 
         if (e->pos().x() >= 0 && e->pos().x() <= contentsRect().width()) {
             int v = position2progress(e->pos());
-            //if (v < m_nStartPoint && e->pos().x() <= (m_nStartPoint + m_nViewLength))
             if (e->buttons() & Qt::LeftButton) {
                 int distance = (e->pos() - _startPos).manhattanLength();
                 if (distance >= QApplication::startDragDistance()) {
@@ -772,7 +736,7 @@ protected:
                     emit hoverChanged(v);
                     emit mousePressed(true);
                     setValue(e->pos().x());
-                    setTimeVisible(_press);
+                    repaint();
                 }
             } else {
                 if (_vlastHoverValue != v) {
@@ -787,17 +751,14 @@ protected:
     {
 
         if (!_press && e->buttons() == Qt::LeftButton && isEnabled()) {
-//            QSlider::mousePressEvent(e);
             _startPos = e->pos();
 
             int v = position2progress(e->pos());
-//            setSliderPosition(v);
             _engine->seekAbsolute(v);
             emit sliderMoved(v);
             emit hoverChanged(v);
             emit mousePressed(true);
             setValue(e->pos().x());
-            setTimeVisible(!_press);
             changeStyle(!_press);
             _press = !_press;
         }
@@ -807,8 +768,6 @@ protected:
         emit mousePressed(false);
         if (_press && isEnabled()) {
             changeStyle(!_press);
-            setTimeVisible(!_press);
-            _sliderArrowUp->setVisible(false);
             _press = !_press;
         }
 
@@ -821,17 +780,13 @@ protected:
         _sliderArrowUp->move(pos.x() + _indicatorPos.x() + 1, pos.y() + _indicator->height() - 5);
         _front->setFixedWidth(_indicatorPos.x());
 
-        if (_press) {
-            setTimeVisible(_press);
-        }
+        _sliderArrowUp->setVisible(_press);
+        setTimeVisible(_press);
 
         DWidget::paintEvent(e);
     }
     void resizeEvent(QResizeEvent *event) override
     {
-        //auto i = _parent->width();
-        //auto j = this->width();
-//        setFixedWidth(_parent->width() - PROGBAR_SPEC);
         _back->setFixedWidth(this->width());
 
         DWidget::resizeEvent(event);
@@ -844,12 +799,9 @@ private:
     bool _isBlockSignals;
     QPoint _indicatorPos {0, 0};
     QColor _indicatorColor;
-//    QLabel *_indicator;
     viewProgBarLoad *_viewProgBarLoad{nullptr};
     QWidget *_back{nullptr};
     QWidget *_front{nullptr};
-//    IndicatorBar *_indicator{nullptr};
-    //DBlurEffectWidget *_indicator{nullptr};
     IndicatorItem *_indicator {nullptr};
     SliderTime *_sliderTime{nullptr};
     DLabel *_sliderArrowDown{nullptr};
@@ -1342,8 +1294,8 @@ public slots:
     void delayedHide()
     {
 #ifdef __x86_64__
- if (!isHidden())
-        _autoHideTimer.start(500);
+        if (!isHidden())
+            _autoHideTimer.start(500);
 #else
         m_mouseIn = false;
         DUtil::TimerSingleShot(100, [this]() {
@@ -1880,18 +1832,22 @@ void ToolboxProxy::setup()
     connect(_previewer, &ThumbnailPreview::leavePreview, this, &ToolboxProxy::slotLeavePreview);
     connect(&Settings::get(), &Settings::baseChanged, this, &ToolboxProxy::setthumbnailmode);
     connect(_engine, &PlayerEngine::siginitthumbnailseting, this, &ToolboxProxy::setthumbnailmode);
-    connect(_progBar, &DSlider::sliderMoved, this, &ToolboxProxy::setProgress);
-    connect(_progBar, &DSlider::valueChanged, this, &ToolboxProxy::setProgress);
+
+    //刷新显示预览当前时间的label
     connect(_progBar, &DMRSlider::hoverChanged, this, &ToolboxProxy::progressHoverChanged);
-    connect(_progBar, &DMRSlider::leave, this, &ToolboxProxy::slotLeaveSlider);
+    connect(_progBar, &DMRSlider::sliderMoved, this, &ToolboxProxy::progressHoverChanged);
+    connect(_progBar, &DMRSlider::leave, this, &ToolboxProxy::slotHidePreviewTime);
+
     connect(_progBar, &DMRSlider::sliderPressed, this, &ToolboxProxy::slotSliderPressed);
     connect(_progBar, &DMRSlider::sliderReleased, this, &ToolboxProxy::slotSliderReleased);
     connect(&Settings::get(), &Settings::baseMuteChanged, this, &ToolboxProxy::slotBaseMuteChanged);
 
     _viewProgBar = new ViewProgBar(_progBar, bot_toolWgt);
-    connect(_viewProgBar, &ViewProgBar::leaveViewProgBar, this, &ToolboxProxy::slotLeaveViewProgBar);
+
+
+    //刷新显示预览当前时间的label
     connect(_viewProgBar, &ViewProgBar::hoverChanged, this, &ToolboxProxy::progressHoverChanged);
-    connect(_viewProgBar, &ViewProgBar::sliderMoved, this, &ToolboxProxy::setProgress);
+    connect(_viewProgBar, &ViewProgBar::leave, this, &ToolboxProxy::slotHidePreviewTime);
     connect(_viewProgBar, &ViewProgBar::mousePressed, this, &ToolboxProxy::updateTimeVisible);
 
     auto *signalMapper = new QSignalMapper(this);
@@ -2134,45 +2090,11 @@ void ToolboxProxy::setup()
     updateFullState();
     updateButtonStates();
 
-//    connect(&ThumbnailWorker::get(), &ThumbnailWorker::thumbGenerated,
-//            this, &ToolboxProxy::updateHoverPreview);
-
-    auto bubbler = new KeyPressBubbler(this);
-//    this->installEventFilter(bubbler);
-//    _playBtn->installEventFilter(bubbler);
-//    _prevBtn->installEventFilter(bubbler);
     connect(qApp, &QGuiApplication::applicationStateChanged, this, &ToolboxProxy::slotApplicationStateChanged);
 
-
-    /* _autoResizeTimer.setSingleShot(true);
-     connect(&_autoResizeTimer, &QTimer::timeout, this, [ = ] {
-         if (_oldsize.width() == width())
-         {
-             _viewProgBar->setWidth();
-             if (_engine->state() != PlayerEngine::CoreState::Idle && size() != _loadsize) {
-    #ifdef __mips__
-                 bool bRet = QDBusInterface("com.deepin.wm", "/com/deepin/wm", "com.deepin.wm").property("compositingAllowSwitch").toBool();
-                 if (bRet) { //龙芯平台存在显卡才加载缩略图
-                     updateThumbnail();
-                 }
-    #else
-                 updateThumbnail();
-    #endif
-                 _loadsize = size();
-             }
-         }
-     });*/
     PlaylistModel *playListModel = _engine->getplaylist();
     connect(playListModel, &PlaylistModel::currentChanged, this, &ToolboxProxy::slotPlayListCurrentChanged);
-
 }
-
-/*not used yet*/
-/*void ToolboxProxy::installHint(QWidget *w, QWidget *hint)
-{
-    w->setProperty("HintWidget", QVariant::fromValue<QWidget *>(hint));
-    w->installEventFilter(hintFilter);
-}*/
 
 void ToolboxProxy::updateThumbnail()
 {
@@ -2250,10 +2172,6 @@ void ToolboxProxy::updateHoverPreview(const QUrl &url, int secs)
         return;
     }
 
-    if (!m_mouseFlag) {
-        return;
-    }
-
     auto pos = _viewProgBar->mapToGlobal(QPoint(0, TOOLBOX_TOP_EXTENT - 10));
     QPoint p { QCursor::pos().x(), pos.y() };
 
@@ -2307,11 +2225,10 @@ void ToolboxProxy::slotLeavePreview()
     }
 }
 
-void ToolboxProxy::slotLeaveSlider()
+void ToolboxProxy::slotHidePreviewTime()
 {
     _previewer->hide();
     _previewTime->hide();
-    m_mouseFlag = false;
 }
 
 void ToolboxProxy::slotSliderPressed()
@@ -2322,7 +2239,7 @@ void ToolboxProxy::slotSliderPressed()
 void ToolboxProxy::slotSliderReleased()
 {
     m_mousePree = false;
-    _engine->seekAbsolute(m_mouseRelesePos);
+    _engine->seekAbsolute(_progBar->slider()->sliderPosition());
 }
 
 void ToolboxProxy::slotBaseMuteChanged(QString sk, const QVariant &/*val*/)
@@ -2330,13 +2247,6 @@ void ToolboxProxy::slotBaseMuteChanged(QString sk, const QVariant &/*val*/)
     if (sk == "base.play.mousepreview") {
         _progBar->setEnableIndication(_engine->state() != PlayerEngine::Idle);
     }
-}
-
-void ToolboxProxy::slotLeaveViewProgBar()
-{
-    _previewer->hide();
-    _previewTime->hide();
-    m_mouseFlag = false;
 }
 
 void ToolboxProxy::slotVolumeButtonClicked()
@@ -2518,9 +2428,6 @@ void ToolboxProxy::progressHoverChanged(int v)
     if (_engine->state() == PlayerEngine::CoreState::Idle)
         return;
 
-//    if (!Settings::get().isSet(Settings::PreviewOnMouseover))
-//        return;
-
     if (_volSlider->isVisible())
         return;
 
@@ -2535,39 +2442,19 @@ void ToolboxProxy::progressHoverChanged(int v)
         return;
     }
 
-    m_mouseFlag = true;
-
     _lastHoverValue = v;
 
     auto pos = _progBar->mapToGlobal(QPoint(0, TOOLBOX_TOP_EXTENT - 10));
-//    auto pos = _viewProgBar->mapToGlobal(QPoint(0, TOOLBOX_TOP_EXTENT - 10));
     QPoint p { QCursor::pos().x(), pos.y() };
 
     //auto proBar = qobject_cast<ViewProgBar *>(sender());
     bool isAudio = _engine->isAudioFile(pif.info.fileName());
-    if (/*proBar == _viewProgBar && */!Settings::get().isSet(Settings::PreviewOnMouseover) || isAudio) {
+    if (!Settings::get().isSet(Settings::PreviewOnMouseover) || isAudio) {
         updatePreviewTime(v, p);
         return;
     }
 
     ThumbnailWorker::get().requestThumb(pif.url, v);
-}
-
-void ToolboxProxy::setProgress(int v)
-{
-    m_mouseRelesePos = v;       //记录当前的位置，在鼠标松开的时候使用它设置进度（因为进度条会更新，在鼠标松开的嗯时候不能正确的获取进度）
-
-    progressHoverChanged(_progBar->slider()->sliderPosition()); //更新预览图位置
-
-    if (_engine->state() == PlayerEngine::CoreState::Idle)
-        return;
-
-    //    _engine->seekAbsolute(_progBar->sliderPosition());
-    // _engine->seekAbsolute(v);
-    if (_progBar->slider()->sliderPosition() != _lastHoverValue) {
-        progressHoverChanged(_progBar->slider()->sliderPosition());
-    }
-//    updateMovieProgress();
 }
 
 void ToolboxProxy::updateTimeVisible(bool visible)
@@ -2609,16 +2496,9 @@ void ToolboxProxy::updateButtonStates()
 {
     qDebug() << _engine->playingMovieInfo().subs.size();
     bool vis = _engine->playlist().count() > 1 && _mainWindow->inited();
-//    _prevBtn->setVisible(vis);
-    _prevBtn->setDisabled(!vis);
-//    _nextBtn->setVisible(vis);
-    _nextBtn->setDisabled(!vis);
 
-//    vis = _engine->state() != PlayerEngine::CoreState::Idle;
-//    if (vis) {
-//        vis = _engine->playingMovieInfo().subs.size() > 0;
-//    }
-    //_subBtn->setVisible(vis);
+    _prevBtn->setDisabled(!vis);
+    _nextBtn->setDisabled(!vis);
 }
 
 void ToolboxProxy::updateVolumeState()

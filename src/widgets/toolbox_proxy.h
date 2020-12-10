@@ -167,7 +167,7 @@ protected:
             painter.setPen(pen);
             painter.setBrush(Qt::NoBrush);
             painter.setOpacity(0.4);
-            painter.fillPath(bpath,QColor(0,0,0));
+            painter.fillPath(bpath, QColor(0, 0, 0));
 
             //改变一下paint的顺序锯齿效果没有那么明显
             QPainterPath bpath1;
@@ -224,9 +224,9 @@ public:
     void updateVolumeStateOnStopMode(uint64_t vol);
 //    void popupVolSlider();
 
-     //lmh0910初始化下方按键的tooltip
-     void initToolTip();
-    DMRSlider* getSlider()
+    //lmh0910初始化下方按键的tooltip
+    void initToolTip();
+    DMRSlider *getSlider()
     {
         return _progBar;
     }
@@ -248,12 +248,12 @@ public:
 //    void loadVolSlider();
 
     /////add for unit test/////
-    DButtonBoxButton* playBtn(){return _playBtn;}
-    DButtonBoxButton* prevBtn(){return _prevBtn;}
-    DButtonBoxButton* nextBtn(){return _nextBtn;}
-    ToolButton* listBtn(){return _listBtn;}
-    ToolButton* fsBtn(){return _fsBtn;}
-    VolumeButton* volBtn(){return _volBtn;}
+    DButtonBoxButton *playBtn() {return _playBtn;}
+    DButtonBoxButton *prevBtn() {return _prevBtn;}
+    DButtonBoxButton *nextBtn() {return _nextBtn;}
+    ToolButton *listBtn() {return _listBtn;}
+    ToolButton *fsBtn() {return _fsBtn;}
+    VolumeButton *volBtn() {return _volBtn;}
 
 
 public slots:
@@ -278,7 +278,6 @@ protected slots:
     void updateVolumeState();
     void updateMovieProgress();
     void updateButtonStates();
-    void setProgress(int v);
     void updateTimeVisible(bool visible);
     /**
        更新预览图位置
@@ -290,11 +289,10 @@ protected slots:
     //把lambda表达式改为槽函数，modify by myk
     void slotThemeTypeChanged();
     void slotLeavePreview();
-    void slotLeaveSlider();
+    void slotHidePreviewTime();
     void slotSliderPressed();
     void slotSliderReleased();
-    void slotBaseMuteChanged(QString sk, const QVariant & val);
-    void slotLeaveViewProgBar();
+    void slotBaseMuteChanged(QString sk, const QVariant &val);
     void slotVolumeButtonClicked();
     void slotRequestVolumeUp();
     void slotRequestVolumeDown();
@@ -377,9 +375,7 @@ private:
     QList<QPixmap >pm_black_list ;
 
     viewProgBarLoad *m_worker = nullptr;
-    bool m_mouseFlag = false;
     bool m_mousePree = false;   //thx
-    int m_mouseRelesePos = 0;
     bool _bthumbnailmode;
     bool isStillShowThumbnail{true};
 
@@ -431,22 +427,6 @@ private:
     void initThumb();
     PlayerEngine *_engine {nullptr};
     ToolboxProxy *_parent{nullptr};
-/*    int _vlastHoverValue;
-    QPoint _startPos;
-    bool _isBlockSignals;
-    QPoint _indicatorPos {0, 0};
-    QColor _indicatorColor;
-
-    viewProgBarLoad *_viewProgBarLoad{nullptr};
-    QWidget *_back{nullptr};
-    QWidget *_front{nullptr};
-    DBlurEffectWidget *_indicator{nullptr};
-    QGraphicsColorizeEffect *m_effect{nullptr};
-    QList<QLabel *> labelList ;
-    QHBoxLayout *_indicatorLayout{nullptr};
-    QHBoxLayout *_viewProgBarLayout{nullptr};
-    QHBoxLayout *_viewProgBarLayout_black{nullptr};
-*/
     DMRSlider *_progBar {nullptr};
 //    QSize _size;
 
