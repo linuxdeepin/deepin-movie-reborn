@@ -32,13 +32,9 @@ include_directories(../src/libdmr)
 include_directories(../src/vendor)
 include_directories(../src/vendor/mpris-qt)
 include_directories(../src/vendor/dbusextended-qt)
-include_directories(../src/widgets/dialog)
+#include_directories(../src/widgets/dialog)
 include_directories(../src/backends)
 include_directories(../src/backends/mpv)
-
-#include_directories(googletest)
-#include_directories(googletest/googlemock/include)
-#include_directories(googletest/googletest/include)
 
 #add_subdirectory(googletest)
 
@@ -62,7 +58,8 @@ FILE (GLOB allTestSource
     "widgets/*.cpp"
     "libdmr/*.cpp"
     "backends/*.cpp"
-    "vendor/*.cpp")
+    "vendor/*.cpp"
+    )
 
 # 定义 header 文件
 FILE (GLOB allHeaders
@@ -78,8 +75,8 @@ FILE (GLOB allHeaders
 
 # 定义资源文件
 set(AllQRC
-    ../src/resources.qrc
-    ../src/icons/theme-icons.qrc
+    ../assets/resources.qrc
+    ../assets/icons/theme-icons.qrc
 )
 
 # 设置不删除生成的文件夹内容文件（设置此项是为了翻译后的文件不被删除）

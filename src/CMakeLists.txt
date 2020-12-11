@@ -22,10 +22,10 @@ pkg_check_modules(Xcb REQUIRED IMPORTED_TARGET xcb xcb-shape)
 # IMPORTED_TARGET failed to work for some of libs under flatpak env
 pkg_check_modules(Other REQUIRED  gsettings-qt)
 
-qt5_add_resources(RCS resources.qrc)
-qt5_add_resources(RCS icons/theme-icons.qrc)
+qt5_add_resources(RCS ../assets/resources.qrc)
+qt5_add_resources(RCS ../assets/icons/theme-icons.qrc)
 if (${Dtk_VERSION} LESS 2.0.6.1)
-    qt5_add_resources(RCS theme.qrc)
+    qt5_add_resources(RCS ../assets/theme.qrc)
 endif()
 
 
@@ -54,10 +54,10 @@ add_custom_target(json_i18n ALL
 
 endif ()
 ## translations
-file(GLOB TS LIST_DIRECTORIES false translations/${CMD_NAME}*.ts)
+file(GLOB TS LIST_DIRECTORIES false ../translations/${CMD_NAME}*.ts)
 
 set_source_files_properties(${TS}
-    PROPERTIES OUTPUT_LOCATION ${PROJECT_SOURCE_DIR}/src/translations)
+    PROPERTIES OUTPUT_LOCATION ${PROJECT_SOURCE_DIR}/translations)
 
 if (NOT (${CMAKE_BUILD_TYPE} MATCHES "Debug"))
     qt5_create_translation(QM ${SRCS} ${TS})
@@ -75,14 +75,14 @@ target_link_libraries(${CMD_NAME} ${TARGET_LIBS} ${Other_LIBRARIES})
 
 
 install(TARGETS ${CMD_NAME} DESTINATION bin)
-install(DIRECTORY ${PROJECT_SOURCE_DIR}/src/translations
+install(DIRECTORY ${PROJECT_SOURCE_DIR}/translations
     DESTINATION share/${CMD_NAME}
     FILES_MATCHING PATTERN "*.qm")
-install(FILES ${PROJECT_SOURCE_DIR}/src/deepin-movie.desktop
+install(FILES ${PROJECT_SOURCE_DIR}/deepin-movie.desktop
     DESTINATION share/applications)
 install(FILES ${CMAKE_SOURCE_DIR}/src/libdmr/com.deepin.deepin-movie.gschema.xml
     DESTINATION /usr/share/glib-2.0/schemas)
-install(FILES ${PROJECT_SOURCE_DIR}/src/resources/icons/logo-big.svg
+install(FILES ${PROJECT_SOURCE_DIR}/assets/resources/icons/logo-big.svg
     DESTINATION share/icons/hicolor/scalable/apps
     RENAME deepin-movie.svg)
     
@@ -98,4 +98,4 @@ else()
 endif()
 
 add_subdirectory(libdmr)
-add_subdirectory(test)
+#add_subdirectory(test)
