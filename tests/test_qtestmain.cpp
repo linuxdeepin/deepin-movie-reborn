@@ -28,6 +28,7 @@ using namespace dmr;
 
 #include <gtest/gtest.h>
 #include <gmock/gmock-matchers.h>
+#include <sanitizer/asan_interface.h>
 
 class QTestMain : public QObject
 {
@@ -79,6 +80,7 @@ int main(int argc, char *argv[])
     app.setAttribute(Qt::AA_Use96Dpi, true);
 
     setlocale(LC_NUMERIC, "C");
+//    __sanitizer_set_report_path("asan.log");
 
     QTestMain testMain;
     MainWindow *pMainWindow = new MainWindow();

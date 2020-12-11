@@ -175,7 +175,7 @@ TEST(MainWindow, shortCutPlay)
 //    testEventList.addKeyRelease(Qt::Key_Slash, Qt::ControlModifier | Qt::ShiftModifier, 1000);
     //截图
     testEventList.addKeyClick(Qt::Key_A, Qt::AltModifier, 500);    //screenshot
-    testEventList.addKeyClick(Qt::Key_S, Qt::AltModifier, 1000);    //连拍
+//    testEventList.addKeyClick(Qt::Key_S, Qt::AltModifier, 1000);    //连拍
 
     testEventList.addKeyClick(Qt::Key_Right, Qt::NoModifier, 600); //fast forward
     for(int i=0; i<4; i++){

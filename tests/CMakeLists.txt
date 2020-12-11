@@ -156,5 +156,10 @@ target_link_libraries(${PROJECT_NAME} ${3rd_lib_LIBRARIES} )
 
 target_link_libraries(${PROJECT_NAME} gmock gmock_main gtest gtest_main)
 
+#添加sanitizer配置
+#set(CMAKE_CXX_FLAGS "-fsanitize=undefined,address,leak -fno-omit-frame-pointer")
+#set(CMAKE_C_FLAGS "-fsanitize=undefined,address,leak -fno-omit-frame-pointer")
+#set(CMAKE_L_FLAGS "-fsanitize=undefined,address,leak -fno-omit-frame-pointer")
+
 # 将工程与Qt模块链接起来
 qt5_use_modules(${PROJECT_NAME} ${QtModule})
