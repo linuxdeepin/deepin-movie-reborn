@@ -23,7 +23,7 @@ TEST(libdmr, libdmrTest)
     using namespace dmr;
     PlayerWidget *player = new PlayerWidget();
     player->engine().changeVolume(120);
-    player->play(QUrl::fromLocalFile("/usr/share/dde-introduction/demo.mp4"));
+    player->play(QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/demo.mp4"));
 
     auto &mc = MovieConfiguration::get();
     mc.updateUrl(QUrl("movie1"), "sub-delay", -2.5);
@@ -46,7 +46,7 @@ TEST(libdmr, utils)
 
     MainWindow* w = dApp->getMainWindow();
 
-    utils::CompareNames("/usr/share/dde-introduction/demo.mp4", "/usr/share/dde-introduction/demo.mp4");
+    utils::CompareNames("/data/source/deepin-movie-reborn/movie/demo.mp4", "/data/source/deepin-movie-reborn/movie/demo.mp4");
     utils::UnInhibitPower(20);
     utils::MoveToCenter(w);
     utils::Time2str(90000);

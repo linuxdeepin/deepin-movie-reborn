@@ -71,7 +71,7 @@ TEST(Mpris, interface)
 TEST(Mpris, MprisManager)
 {
     MprisManager *mManager = new MprisManager();
-    QUrl url(QUrl::fromLocalFile("/usr/share/dde-introduction/demo.mp4"));
+    QUrl url(QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/demo.mp4"));
 
     bool singleService = mManager->singleService();
     mManager->setSingleService(true);

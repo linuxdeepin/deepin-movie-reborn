@@ -86,8 +86,8 @@ TEST(Settings, wayland)
     DButtonBoxButton* nextBtn = toolboxProxy->nextBtn();
     DButtonBoxButton* prevBtn = toolboxProxy->prevBtn();
     QList<QUrl> listPlayFiles;
-    listPlayFiles << QUrl::fromLocalFile("/usr/share/dde-introduction/demo.mp4")\
-                  << QUrl::fromLocalFile("/usr/share/music/bensound-sunny.mp3");
+    listPlayFiles << QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/demo.mp4")\
+                  << QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/bensound-sunny.mp3");
     QTest::qWait(500);
     w_wayland->show();
 
@@ -125,10 +125,10 @@ TEST(Settings, wayland)
 
     ApplicationAdaptor *appAdaptor = new ApplicationAdaptor(w_wayland);
     appAdaptor->Raise();
-    appAdaptor->openFile("/usr/share/dde-introduction/demo.mp4");
+    appAdaptor->openFile("/data/source/deepin-movie-reborn/movie/demo.mp4");
     QStringList fileList;
-    fileList << "/usr/share/dde-introduction/demo.mp4"\
-             <<"/usr/share/music/bensound-sunny.mp3";
+    fileList << "/data/source/deepin-movie-reborn/movie/demo.mp4"\
+             <<"/data/source/deepin-movie-reborn/movie/bensound-sunny.mp3";
     appAdaptor->openFiles(fileList);
 
 

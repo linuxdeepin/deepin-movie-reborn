@@ -100,7 +100,10 @@ add_executable(${PROJECT_NAME} ${allHeaders} ${allSource} ${allTestSource}
 #)
 
 # 添加gocv覆盖率文件的输出
-set(CMAKE_CXX_FLAGS "-g -fprofile-arcs -ftest-coverage")
+#set(CMAKE_CXX_FLAGS "-g -fprofile-arcs -ftest-coverage")
+set(CMAKE_CXX_FLAGS "-fsanitize=undefined,address,leak -fno-omit-frame-pointer -g -fprofile-arcs -ftest-coverage")
+set(CMAKE_C_FLAGS "-fsanitize=undefined,address,leak -fno-omit-frame-pointer")
+#set(CMAKE_L_FLAGS "-fsanitize=undefined,address,leak -fno-omit-frame-pointer")
 set(CMAKE_CXX_OUTPUT_EXTENSION_REPLACE ON)
 
 set(OBJECT_DIR ${CMAKE_BINARY_DIR}/CMakeFiles/objects)
@@ -114,7 +117,7 @@ add_custom_command(TARGET test
     COMMAND echo " ===================CREAT LCOV REPROT==================== "
     COMMAND lcov --directory ./CMakeFiles/${PROJECT_NAME}.dir --zerocounters
 #    COMMAND ./tests/${PROJECT_NAME}
-    COMMAND ./tests/${PROJECT_NAME} -o ./build-ut/report/report_${PROJECT_NAME}.xml,xml
+    COMMAND ./tests/${PROJECT_NAME} #-o ./build-ut/report/report_${PROJECT_NAME}.xml,xml
     COMMAND lcov --directory . --capture --output-file ./build-ut/${PROJECT_NAME}_Coverage.info
 
     COMMAND echo " =================== do filter begin ==================== "
@@ -152,11 +155,6 @@ target_link_libraries(${PROJECT_NAME} ${3rd_lib_LIBRARIES} )
 #------------------------------添加第三方库end-------------------------------------
 
 target_link_libraries(${PROJECT_NAME} gmock gmock_main gtest gtest_main)
-
-#添加sanitizer配置
-#set(CMAKE_CXX_FLAGS "-fsanitize=undefined,address,leak -fno-omit-frame-pointer")
-#set(CMAKE_C_FLAGS "-fsanitize=undefined,address,leak -fno-omit-frame-pointer")
-#set(CMAKE_L_FLAGS "-fsanitize=undefined,address,leak -fno-omit-frame-pointer")
 
 # 将工程与Qt模块链接起来
 qt5_use_modules(${PROJECT_NAME} ${QtModule})

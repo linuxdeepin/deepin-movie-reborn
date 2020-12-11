@@ -20,7 +20,7 @@ TEST(requestAction, onlineSub)
 {
     MainWindow* w = dApp->getMainWindow();
     PlayerEngine* engine =  w->engine();
-    QUrl url(QUrl::fromLocalFile("/home/uos/Videos/天空之眼 高清1080P.mp4"));
+    QUrl url(QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/天空之眼 高清1080P.mp4"));
 
     QTest::qWait(200);
     if(engine->addPlayFile(url))
@@ -200,7 +200,7 @@ TEST(requestAction, settings)
     MainWindow* w = dApp->getMainWindow();
 
     Settings::get().settings()->setOption("base.screenshot.location",
-                                          "/home/uos/Pictures/DMovie/deepin movie screenshot");
+                                          "/data/source/deepin-movie-reborn/movie/DMovie");
     w->setShowSetting(false);
     QTest::qWait(300);
     w->requestAction(ActionFactory::ActionKind::Settings);

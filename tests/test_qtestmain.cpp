@@ -69,6 +69,7 @@ void QTestMain::testGTest()
 {
     testing::InitGoogleTest();
     int ret = RUN_ALL_TESTS();
+    __sanitizer_set_report_path("asan.log");
     Q_UNUSED(ret)
 
 //    exit(0);
@@ -80,7 +81,6 @@ int main(int argc, char *argv[])
     app.setAttribute(Qt::AA_Use96Dpi, true);
 
     setlocale(LC_NUMERIC, "C");
-//    __sanitizer_set_report_path("asan.log");
 
     QTestMain testMain;
     MainWindow *pMainWindow = new MainWindow();

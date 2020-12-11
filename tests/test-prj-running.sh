@@ -1,4 +1,5 @@
 #!/bin/bash
+rm -rf /home/uos/.config/deepin-movie-test
 
 rm -rf ../$(dirname $0)/build-ut
 mkdir ../$(dirname $0)/build-ut
@@ -26,7 +27,7 @@ echo ================ do filter end ====================
 genhtml -o ./html ./html/${executable}_Coverage_fileter.info
     
 mv ./html/index.html ./html/cov_${executable}.html
-mv asan.log* asan_${PROJECT_REALNAME}.log
+mv asan.log* asan_${executable}.log
 
 
 nohup x-www-browser ./html/cov_${executable}.html &

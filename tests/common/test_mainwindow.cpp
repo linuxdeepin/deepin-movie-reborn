@@ -49,8 +49,8 @@ TEST(MainWindow, loadFile)
     w->show();
     PlayerEngine *engine =  w->engine();
     QList<QUrl> listPlayFiles;
-    listPlayFiles << QUrl::fromLocalFile("/usr/share/dde-introduction/demo.mp4")\
-                  << QUrl::fromLocalFile("/usr/share/music/bensound-sunny.mp3");
+    listPlayFiles << QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/demo.mp4")\
+                  << QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/bensound-sunny.mp3");
 //    QTest::qWait(500);
 //    w->showMinimized();
 //    QTest::qWait(500);
@@ -100,7 +100,7 @@ TEST(MainWindow, DBus)
     method = DBusUtils::redDBusMethod("com.deepin.daemon.Audio", "/com/deepin/daemon/Audio",
                                                "com.deepin.daemon.Audio", "SinkInputs");
     appAdaptor->Raise();
-    appAdaptor->openFile("/usr/share/dde-introduction/demo.mp4");
+    appAdaptor->openFile("/data/source/deepin-movie-reborn/movie/demo.mp4");
 }
 
 TEST(MainWindow, resizeWindow)
@@ -141,7 +141,7 @@ TEST(MainWindow, touch)
     QStackedWidget * progbarWidget = toolboxProxy->findChild<QStackedWidget *>(PROGBAR_WIDGET);
 
     w->setTouched(true);
-    Settings::get().settings()->setOption("base.play.showInthumbnailmode", true);
+//    Settings::get().settings()->setOption("base.play.showInthumbnailmode", true);
     QTest::mouseDClick(w, Qt::LeftButton, Qt::NoModifier, QPoint(100, 200), 1000); //fullscreen
 
     QTest::mousePress(w->windowHandle(), Qt::LeftButton, Qt::MetaModifier, QPoint(100, 200), 500);
@@ -150,9 +150,9 @@ TEST(MainWindow, touch)
     QTest::mousePress(w->windowHandle(), Qt::LeftButton, Qt::MetaModifier, QPoint(400, 100), 500);
     QTest::mouseRelease(w->windowHandle(), Qt::LeftButton, Qt::MetaModifier, QPoint(400, 300), 500);
 
-    while(progbarWidget->currentIndex() == 1){
-        QTest::qWait(200);
-    }
+//    while(progbarWidget->currentIndex() == 1){
+//        QTest::qWait(200);
+//    }
 
     w->setTouched(true);
     QTest::mousePress(w->windowHandle(), Qt::LeftButton, Qt::MetaModifier, QPoint(300, 200), 500);
@@ -162,7 +162,7 @@ TEST(MainWindow, touch)
     QTest::mouseRelease(w->windowHandle(), Qt::LeftButton, Qt::MetaModifier, QPoint(400, 100), 500);
 
     QTest::mouseDClick(w, Qt::LeftButton, Qt::NoModifier, QPoint(), 1000);
-    Settings::get().settings()->setOption("base.play.showInthumbnailmode", false);
+//    Settings::get().settings()->setOption("base.play.showInthumbnailmode", false);
     w->setTouched(false);
 }
 
@@ -293,24 +293,24 @@ TEST(MainWindow, progBar)
     QApplication::sendEvent(progBarSlider, &wheelEvent);
 
 
-    //胶片模式
-    Settings::get().settings()->setOption("base.play.showInthumbnailmode", true);
+//    //胶片模式
+//    Settings::get().settings()->setOption("base.play.showInthumbnailmode", true);
 
-    while(progbarWidget->currentIndex() == 1){   //等待胶片加载
-        QTest::qWait(200);
-    }
+//    while(progbarWidget->currentIndex() == 1){   //等待胶片加载
+//        QTest::qWait(200);
+//    }
 
-    QWidget *viewProgBar = (QWidget *)toolboxProxy->getViewProBar();
-    startPoint = QPoint(viewProgBar->x() + 100, viewProgBar->y() + 20);
-    endPoint = QPoint(viewProgBar->x() + 20, viewProgBar->y() + 20);
-    QTest::mouseMove(viewProgBar, QPoint(viewProgBar->x() + 50, viewProgBar->y() + 20), 500);
-    QTest::mouseClick(viewProgBar, Qt::LeftButton, Qt::NoModifier, QPoint(viewProgBar->x() + 50, viewProgBar->y() + 20), 500);
-    QTest::mouseMove(viewProgBar, startPoint, 300);
-    QTest::mousePress(viewProgBar, Qt::LeftButton, Qt::NoModifier, startPoint, 100);
-    QTest::mouseMove(viewProgBar, endPoint, 500);
-    QTest::mouseRelease(viewProgBar, Qt::LeftButton, Qt::NoModifier, endPoint, 500);
-    QTest::qWait(500);
-    Settings::get().settings()->setOption("base.play.showInthumbnailmode", false);
+//    QWidget *viewProgBar = (QWidget *)toolboxProxy->getViewProBar();
+//    startPoint = QPoint(viewProgBar->x() + 100, viewProgBar->y() + 20);
+//    endPoint = QPoint(viewProgBar->x() + 20, viewProgBar->y() + 20);
+//    QTest::mouseMove(viewProgBar, QPoint(viewProgBar->x() + 50, viewProgBar->y() + 20), 500);
+//    QTest::mouseClick(viewProgBar, Qt::LeftButton, Qt::NoModifier, QPoint(viewProgBar->x() + 50, viewProgBar->y() + 20), 500);
+//    QTest::mouseMove(viewProgBar, startPoint, 300);
+//    QTest::mousePress(viewProgBar, Qt::LeftButton, Qt::NoModifier, startPoint, 100);
+//    QTest::mouseMove(viewProgBar, endPoint, 500);
+//    QTest::mouseRelease(viewProgBar, Qt::LeftButton, Qt::NoModifier, endPoint, 500);
+//    QTest::qWait(500);
+//    Settings::get().settings()->setOption("base.play.showInthumbnailmode", false);
 }
 
 TEST(MainWindow, movieInfoDialog)
@@ -349,7 +349,7 @@ TEST(MainWindow, loadSubtitle)
 
     //load subtitles
     QTest::qWait(500);
-    engine->loadSubtitle(QFileInfo(QString("/data/home/uos/Videos/subtitle/Hachiko.A.Dog's.Story.ass")));
+    engine->loadSubtitle(QFileInfo(QString("/data/source/deepin-movie-reborn/movie/Hachiko.A.Dog's.Story.ass")));
 
     //subtitle matches video
 //    QTest::qWait(500);
@@ -362,8 +362,8 @@ TEST(MainWindow, reloadFile)
     MainWindow* w = dApp->getMainWindow();
     PlayerEngine *engine =  w->engine();
     QList<QUrl> listPlayFiles;
-    listPlayFiles << QUrl::fromLocalFile("/usr/share/dde-introduction/demo.mp4")\
-                  << QUrl::fromLocalFile("/usr/share/music/bensound-sunny.mp3");
+    listPlayFiles << QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/demo.mp4")\
+                  << QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/bensound-sunny.mp3");
     QTest::qWait(100);
     engine->addPlayFiles(listPlayFiles);
 }
@@ -538,8 +538,8 @@ TEST(ToolBox, mainWindowEvent)
     QList<QUrl> urls;
     QPoint point(w->pos().x() + 20, w->pos().y() +20);
 
-    urls << QUrl::fromLocalFile("/usr/share/dde-introduction/demo.mp4")\
-         << QUrl::fromLocalFile("/usr/share/music/bensound-sunny.mp3");
+    urls << QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/demo.mp4")\
+         << QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/bensound-sunny.mp3");
     mimeData.setUrls(urls);
 
     QDragEnterEvent dragEnter(QPoint(0, 0), Qt::CopyAction, &mimeData, Qt::LeftButton, {});
