@@ -1035,32 +1035,32 @@ void MpvProxy::play()
 #endif
     //非景嘉微显卡
     if (!utils::check_wayland_env() && !_isJingJia) {
-        if(m_bHwaccelAuto)
-        {
+#ifdef __mips__
+        if(m_bHwaccelAuto) {
             qDebug() << "play __mips__";
-            auto codec = my_get_property(_handle, "video-codec").toString();
+            QString codec = my_get_property(_handle, "video-codec").toString();
             if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") || codec.toLower().contains("mpeg2video")) {
                 qDebug() << "my_set_property hwdec no";
                 my_set_property(_handle, "hwdec", "no");
                 m_bLastIsSpecficFormat = true;
-            }
-            else {
+            } else {
                 m_bLastIsSpecficFormat = false;
             }
         }
-        if(m_bHwaccelAuto)
-        {
+#endif
+#ifdef __aarch64__
+        if(m_bHwaccelAuto) {
             qDebug() << "MPV_EVENT_FILE_LOADED aarch64";
-            auto codec = my_get_property(_handle, "video-codec").toString();
+            QString codec = my_get_property(_handle, "video-codec").toString();
             if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") || codec.toLower().contains("mpeg2video")) {
                 qDebug() << "my_set_property hwdec no";
                 my_set_property(_handle, "hwdec", "no");
                 m_bLastIsSpecficFormat = true;
-            }
-            else {
+            } else {
                 m_bLastIsSpecficFormat = false;
             }
         }
+#endif
     }
     if (opts.size()) {
         //opts << "sub-auto=fuzzy";
