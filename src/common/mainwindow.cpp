@@ -70,6 +70,7 @@
 #include <DFileDialog>
 #include <X11/cursorfont.h>
 #include <X11/Xlib.h>
+#include "moviewidget.h"
 
 #include "../accessibility/ac-deepin-movie-define.h"
 
@@ -1018,6 +1019,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     m_pDBus = new QDBusInterface("org.freedesktop.login1", "/org/freedesktop/login1", "org.freedesktop.login1.Manager", QDBusConnection::systemBus());
     connect(m_pDBus, SIGNAL(PrepareForSleep(bool)), this, SLOT(sleepStateChanged(bool)));
+
+    m_pMovieWidget = new MovieWidget(this);
 }
 
 void MainWindow::setupTitlebar()
@@ -1423,8 +1426,22 @@ void MainWindow::onApplicationStateChanged(Qt::ApplicationState e)
 
 void MainWindow::animatePlayState()
 {
+    bool bAudio = false;
+
+    bAudio = _engine->isAudioFile(_engine->playlist().currentInfo().mi.title);
+
     if (_miniMode) {
         return;
+    }
+
+    if (_engine->state() == PlayerEngine::CoreState::Playing && bAudio) {
+        m_pMovieWidget->startPlaying();
+    }
+
+    if ((_engine->state() == PlayerEngine::CoreState::Paused
+            || _engine->state() == PlayerEngine::CoreState::Idle) && bAudio) {
+        m_pMovieWidget->stopPlaying();
+
     }
 
     if (!_inBurstShootMode && _engine->state() == PlayerEngine::CoreState::Paused) {
@@ -1432,12 +1449,6 @@ void MainWindow::animatePlayState()
             _animationlable->setGeometry(width() / 2 - 100, height() / 2 - 100, 200, 200);
             _animationlable->stop();
         }
-    } else if (_engine->state() == PlayerEngine::CoreState::Idle) {
-        //_playState->setVisible(false);
-
-    } else {
-        //do nothing here, startPlayStateAnimation(true) should be started before playback
-        //is restored, or animation will get slow
     }
 }
 
@@ -3258,7 +3269,6 @@ void MainWindow::slotFileLoaded()
 //                utils::MoveToCenter(this);
         }
     }
-
     m_IsFree = true;
 }
 
@@ -3698,6 +3708,8 @@ void MainWindow::resizeEvent(QResizeEvent *ev)
 //    if (!isFullScreen()) {
 //        my_setStayOnTop(this, false);
 //    }
+    m_pMovieWidget->resize(rect().size());
+    m_pMovieWidget->move(0, 0);
 }
 
 void MainWindow::updateWindowTitle()

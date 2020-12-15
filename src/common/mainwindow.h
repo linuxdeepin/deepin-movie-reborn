@@ -82,6 +82,7 @@ class PlayerEngine;
 class NotificationWidget;
 class MovieProgressIndicator;
 class MainWindowPropertyMonitor;
+class MovieWidget;
 
 class IconButton: public DPushButton
 {
@@ -441,6 +442,7 @@ private:
     bool m_isFirstLoadDBus {false};
 
     Presenter *m_presenter {nullptr};
+    MovieWidget *m_pMovieWidget {nullptr};
 };
 
 //窗管返回事件过滤器
