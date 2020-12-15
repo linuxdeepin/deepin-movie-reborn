@@ -1358,8 +1358,6 @@ void PlaylistWidget::endAnimation()
 }
 void PlaylistWidget::togglePopup()
 {
-
-
     if (paOpen != nullptr || paClose != nullptr) {
         return ;
     }

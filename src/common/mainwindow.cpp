@@ -1347,6 +1347,8 @@ MainWindow::~MainWindow()
 
     m_diskCheckThread.stop();
 
+    ThreadPool::instance()->quitAll();
+
 #ifdef USE_DXCB
     if (_evm) {
         disconnect(_evm, 0, 0, 0);
@@ -1700,11 +1702,12 @@ static bool compareBarData(const QUrl &url1, const QUrl &url2)
 
 bool MainWindow::addCdromPath()
 {
+    bool ret =  true;
     QStringList strCDMountlist;
 
     QFile mountFile("/proc/mounts");
     if (mountFile.open(QIODevice::ReadOnly) == false) {
-        return false;
+        ret = false;
     }
     do {
         QString strLine = mountFile.readLine();
@@ -1715,7 +1718,7 @@ bool MainWindow::addCdromPath()
     mountFile.close();
 
     if (strCDMountlist.size() == 0)
-        return false;
+        ret = false;
 
     QList<QUrl> urls = _engine->addPlayDir(strCDMountlist[0]);  //目前只是针对第一个光盘
     qSort(urls.begin(), urls.end(), compareBarData);
@@ -1724,9 +1727,10 @@ bool MainWindow::addCdromPath()
             _engine->playByName(QUrl("playlist://0"));
         _engine->playByName(urls[0]);
     } else {
-        return false;
+        ret = false;
     }
-    return true;
+
+    return ret;
 }
 
 void MainWindow::loadPlayList()
@@ -3945,7 +3949,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *ev)
         }
     }
 
-    //heyiUtility::cancelWindowMoveResize(static_cast<quint32>(winId()));
+    //Utility::cancelWindowMoveResize(static_cast<quint32>(winId()));
     _mouseMoved = false;
 }
 
@@ -4195,6 +4199,7 @@ void MainWindow::setAudioVolume(int volume)
         QVariant muteV = ApplicationAdaptor::redDBusProperty("com.deepin.daemon.Audio", sinkInputPath,
                                                              "com.deepin.daemon.Audio.SinkInput", "Mute");
     }
+    emit volumeChanged();
 }
 
 void MainWindow::setMusicMuted(bool muted)

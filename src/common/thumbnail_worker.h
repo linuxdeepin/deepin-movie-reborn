@@ -89,7 +89,9 @@ private:
     ThumbnailWorker();
     void initThumb();
     void run() override;
+#ifdef __mips__
     void runSingle(QPair<QUrl, int> w);
+#endif
     QPixmap genThumb(const QUrl &url, int secs);
     QString libPath(const QString &strlib);
 };

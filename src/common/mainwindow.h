@@ -200,6 +200,7 @@ signals:
     void frameMenuEnable(bool);
     void playSpeedMenuEnable(bool);
     void playlistchanged();
+    void volumeChanged();
 
 public slots:
     void play(const QUrl &url);
@@ -302,7 +303,7 @@ private:
     bool isActionAllowed(ActionFactory::ActionKind kd, bool fromUI, bool isShortcut);
     QString probeCdromDevice();
     void updateWindowTitle();
-    void toggleShapeMask();
+    //void toggleShapeMask();
     void prepareSplashImages();
     void saveWindowState();
     void loadWindowState();

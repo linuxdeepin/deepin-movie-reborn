@@ -234,6 +234,7 @@ void ThumbnailWorker::run()
     _wq.clear();
 }
 
+#ifdef __mips__
 void ThumbnailWorker::runSingle(QPair<QUrl, int> w)
 {
     if (_cacheSize > SIZE_THRESHOLD) {
@@ -256,6 +257,6 @@ void ThumbnailWorker::runSingle(QPair<QUrl, int> w)
 
     emit thumbGenerated(w.first, w.second);
 }
-
+#endif
 }
 
