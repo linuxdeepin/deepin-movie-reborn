@@ -1485,7 +1485,6 @@ void viewProgBarLoad::initThumb()
         return;
     }
     m_video_thumbnailer = m_mvideo_thumbnailer();
-    m_image_data = m_mvideo_thumbnailer_create_image_data();
 }
 
 void viewProgBarLoad::loadViewProgBar(QSize size)
@@ -1504,6 +1503,10 @@ void viewProgBarLoad::loadViewProgBar(QSize size)
     if (_engine->videoSize().width() > 0 && _engine->videoSize().height() > 0) {
         m_video_thumbnailer->thumbnail_size = (static_cast<int>(50 * (_engine->videoSize().width() / _engine->videoSize().height() * 50)
                                                                 * qApp->devicePixelRatio()));
+    }
+
+    if (m_image_data == nullptr) {
+        m_image_data = m_mvideo_thumbnailer_create_image_data();
     }
 
     m_video_thumbnailer->seek_time = d.toString("hh:mm:ss").toLatin1().data();
@@ -1527,6 +1530,9 @@ void viewProgBarLoad::loadViewProgBar(QSize size)
 
             m_mvideo_thumbnailer_generate_thumbnail_to_buffer(m_video_thumbnailer, file.toUtf8().data(),  m_image_data);
             auto img = QImage::fromData(m_image_data->image_data_ptr, static_cast<int>(m_image_data->image_data_size), "png");
+            if (img.format() == QImage::Format_Invalid) {
+                return;
+            }
             auto img_tmp = img.scaledToHeight(50);
 
 
@@ -1538,6 +1544,10 @@ void viewProgBarLoad::loadViewProgBar(QSize size)
 
         }
     }
+
+    m_mvideo_thumbnailer_destroy_image_data(m_image_data);
+    m_image_data = nullptr;
+
     pListPixmapMutex->lock();
     _parent->addpm_list(pm);
     _parent->addpm_black_list(pm_black);
@@ -2075,6 +2085,8 @@ void ToolboxProxy::setup()
 
 void ToolboxProxy::updateThumbnail()
 {
+    disconnect(m_worker, SIGNAL(sigFinishiLoad(QSize)), this, SLOT(finishLoadSlot(QSize)));
+
     if (utils::check_wayland_env()) {
         return;
     }
@@ -2377,12 +2389,11 @@ void ToolboxProxy::slotUpdateThumbnailTimeOut()
     if (m_worker == nullptr) {
         m_worker = new viewProgBarLoad(_engine, _progBar, this);
         m_worker->setListPixmapMutex(&m_listPixmapMutex);
-
-        connect(m_worker, SIGNAL(sigFinishiLoad(QSize)), this, SLOT(finishLoadSlot(QSize)));
         m_worker->start();
     }
 
     m_worker->load();
+    connect(m_worker, SIGNAL(sigFinishiLoad(QSize)), this, SLOT(finishLoadSlot(QSize)));
     _progBar_Widget->setCurrentIndex(1);
 }
 

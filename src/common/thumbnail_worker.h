@@ -84,7 +84,7 @@ private:
     mvideo_thumbnailer_create_image_data m_mvideo_thumbnailer_create_image_data = nullptr;
     mvideo_thumbnailer_destroy_image_data m_mvideo_thumbnailer_destroy_image_data = nullptr;
     mvideo_thumbnailer_generate_thumbnail_to_buffer m_mvideo_thumbnailer_generate_thumbnail_to_buffer = nullptr;
-    char* m_pCharTime;
+    char *m_pCharTime;
 
     ThumbnailWorker();
     void initThumb();
