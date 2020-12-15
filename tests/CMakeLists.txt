@@ -116,7 +116,6 @@ add_custom_target(test
 add_custom_command(TARGET test
     COMMAND echo " ===================CREAT LCOV REPROT==================== "
     COMMAND lcov --directory ./CMakeFiles/${PROJECT_NAME}.dir --zerocounters
-#    COMMAND ./tests/${PROJECT_NAME}
     COMMAND ./tests/${PROJECT_NAME} #-o ./build-ut/report/report_${PROJECT_NAME}.xml,xml
     COMMAND lcov --directory . --capture --output-file ./build-ut/${PROJECT_NAME}_Coverage.info
 

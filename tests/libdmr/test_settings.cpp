@@ -90,8 +90,9 @@ TEST(Settings, wayland)
                   << QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/bensound-sunny.mp3");
     QTest::qWait(500);
     w_wayland->show();
-
+#if !defined (__mips__ ) && !defined(__aarch64__)
     Settings::get().settings()->setOption("base.play.showInthumbnailmode", true);
+#endif
     Settings::get().settings()->setOption("base.play.resumelast", false);
 
     QTest::mouseMove(playBtn, QPoint(), 300);
@@ -132,7 +133,9 @@ TEST(Settings, wayland)
     appAdaptor->openFiles(fileList);
 
 
+#if !defined (__mips__ ) && !defined(__aarch64__)
     Settings::get().settings()->setOption("base.play.showInthumbnailmode", false);
+#endif
     Settings::get().settings()->setOption("base.play.resumelast", true);
 //    w_wayland->close();
 //    delete w_wayland;

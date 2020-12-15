@@ -245,19 +245,19 @@ TEST(MainWindow, miniMode)
     DIconButton *miniPauseBtn = w->findChild<DIconButton *>("MiniPauseBtn");
     DIconButton *miniQuiteMiniBtn = w->findChild<DIconButton *>("MiniQuitMiniBtn");
 
-    QTest::mouseMove(miniPauseBtn, QPoint(), 500);
-    QTest::mouseClick(miniPauseBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 300);
-    w->customContextMenuRequested(w->pos());
-    QTest::mouseMove(miniQuiteMiniBtn, QPoint(), 300);
-    QTest::mouseClick(miniQuiteMiniBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 300);
+//    QTest::mouseMove(miniPauseBtn, QPoint(), 500);
+//    QTest::mouseClick(miniPauseBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 300);
+//    w->customContextMenuRequested(w->pos());
+//    QTest::mouseMove(miniQuiteMiniBtn, QPoint(), 300);
+//    QTest::mouseClick(miniQuiteMiniBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 300);
     QTest::qWait(1000);
-    w->requestAction(ActionFactory::ActionKind::ToggleMiniMode);
-    DIconButton *miniPlayBtn = w->findChild<DIconButton *>("MiniPlayBtn");
-    DIconButton *miniCloseBtn = w->findChild<DIconButton *>("MiniCloseBtn");
-    QTest::mouseMove(miniPlayBtn, QPoint(), 300);
-    QTest::mouseClick(miniPlayBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 300);
-    QTest::mouseMove(miniCloseBtn, QPoint(), 300);
-    QTest::mouseClick(miniCloseBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 300);
+//    w->requestAction(ActionFactory::ActionKind::ToggleMiniMode);
+//    DIconButton *miniPlayBtn = w->findChild<DIconButton *>("MiniPlayBtn");
+//    DIconButton *miniCloseBtn = w->findChild<DIconButton *>("MiniCloseBtn");
+//    QTest::mouseMove(miniPlayBtn, QPoint(), 300);
+//    QTest::mouseClick(miniPlayBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 300);
+//    QTest::mouseMove(miniCloseBtn, QPoint(), 300);
+//    QTest::mouseClick(miniCloseBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 300);
     w->show();
     QTest::keyClick(w, Qt::Key_Escape, Qt::NoModifier, 1000);
 }
@@ -293,7 +293,8 @@ TEST(MainWindow, progBar)
     QApplication::sendEvent(progBarSlider, &wheelEvent);
 
 
-//    //胶片模式
+    //胶片模式
+//#if !defined (__mips__ ) && !defined(__aarch64__)
 //    Settings::get().settings()->setOption("base.play.showInthumbnailmode", true);
 
 //    while(progbarWidget->currentIndex() == 1){   //等待胶片加载
@@ -310,7 +311,9 @@ TEST(MainWindow, progBar)
 //    QTest::mouseMove(viewProgBar, endPoint, 500);
 //    QTest::mouseRelease(viewProgBar, Qt::LeftButton, Qt::NoModifier, endPoint, 500);
 //    QTest::qWait(500);
+
 //    Settings::get().settings()->setOption("base.play.showInthumbnailmode", false);
+//#endif
 }
 
 TEST(MainWindow, movieInfoDialog)
@@ -444,29 +447,29 @@ TEST(ToolBox, playBtnBox)
     QTest::mouseMove(prevBtn, QPoint(), 500);
     QTest::mouseClick(prevBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 1000); //play prev
 
-    w->requestAction(ActionFactory::ActionKind::ShufflePlay);
-    QTest::mouseMove(nextBtn, QPoint(), 500);
-    QTest::mouseClick(nextBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 500); //play next
-    QTest::mouseMove(prevBtn, QPoint(), 500);
-    QTest::mouseClick(prevBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 500); //play prev
+//    w->requestAction(ActionFactory::ActionKind::ShufflePlay);
+//    QTest::mouseMove(nextBtn, QPoint(), 500);
+//    QTest::mouseClick(nextBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 500); //play next
+//    QTest::mouseMove(prevBtn, QPoint(), 500);
+//    QTest::mouseClick(prevBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 500); //play prev
 
-    w->requestAction(ActionFactory::ActionKind::SinglePlay);
-    QTest::mouseMove(nextBtn, QPoint(), 500);
-    QTest::mouseClick(nextBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 500); //play next
-    QTest::mouseMove(prevBtn, QPoint(), 500);
-    QTest::mouseClick(prevBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 500); //play prev
+//    w->requestAction(ActionFactory::ActionKind::SinglePlay);
+//    QTest::mouseMove(nextBtn, QPoint(), 500);
+//    QTest::mouseClick(nextBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 500); //play next
+//    QTest::mouseMove(prevBtn, QPoint(), 500);
+//    QTest::mouseClick(prevBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 500); //play prev
 
-    w->requestAction(ActionFactory::ActionKind::SingleLoop);
-    QTest::mouseMove(nextBtn, QPoint(), 500);
-    QTest::mouseClick(nextBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 500); //play next
-    QTest::mouseMove(prevBtn, QPoint(), 500);
-    QTest::mouseClick(prevBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 600); //play prev
+//    w->requestAction(ActionFactory::ActionKind::SingleLoop);
+//    QTest::mouseMove(nextBtn, QPoint(), 500);
+//    QTest::mouseClick(nextBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 500); //play next
+//    QTest::mouseMove(prevBtn, QPoint(), 500);
+//    QTest::mouseClick(prevBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 600); //play prev
 
-    w->requestAction(ActionFactory::ActionKind::ListLoop);
-    QTest::mouseMove(nextBtn, QPoint(), 500);
-    QTest::mouseClick(nextBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 500); //play next
-    QTest::mouseMove(prevBtn, QPoint(), 500);
-    QTest::mouseClick(prevBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 500); //play prev
+//    w->requestAction(ActionFactory::ActionKind::ListLoop);
+//    QTest::mouseMove(nextBtn, QPoint(), 500);
+//    QTest::mouseClick(nextBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 500); //play next
+//    QTest::mouseMove(prevBtn, QPoint(), 500);
+//    QTest::mouseClick(prevBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 500); //play prev
 }
 
 TEST(ToolBox, UrlDialog)
@@ -494,6 +497,7 @@ TEST(ToolBox, UrlDialog)
     QTest::mouseClick(uDlg->getButton(1), Qt::LeftButton, Qt::NoModifier, QPoint(), 1000);
     auto url = uDlg->url();
     w->play(url);
+    QTest::qWait(500);
 }
 
 TEST(ToolBox, fullScreenBtn)

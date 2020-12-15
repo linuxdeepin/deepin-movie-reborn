@@ -17,20 +17,16 @@ mkdir -p report
 
 echo " ===================CREAT LCOV REPROT==================== "
 lcov --directory ./tests/CMakeFiles/deepin-movie-test.dir --zerocounters
-./tests/$executable -o ./report/report_$executable.xml,xml
+./tests/$executable
 lcov --directory . --capture --output-file ./html/${executable}_Coverage.info
 
 echo " =================== do filter begin ==================== "
-lcov --remove ./html/${executable}_Coverage.info 'tests/CMakeFiles/${executable}.dir/${executable}_autogen/*/*' '${executable}_autogen/*/*/*.cpp' '*/usr/include/*' '*/tests/*' '/usr/local/*' -o ./html/${executable}_Coverage_fileter.info
+lcov --remove ./html/${executable}_Coverage.info 'tests/CMakeFiles/${executable}.dir/${executable}_autogen/*/*' '${executable}_autogen/*/*/*.cpp' '*/usr/include/*' '*/tests/*' '/usr/local/*' '*/src/vendor/dbusextended-qt/*' '*/src/common/filter.*' '*/src/common/settings_translation.cpp' '*/src/common/event_monitor.cpp' '*/src/widgets/videoboxbutton.cpp' '*/src/common/event_relayer.cpp' -o ./html/${executable}_Coverage_fileter.info
 echo ================ do filter end ==================== 
     
 genhtml -o ./html ./html/${executable}_Coverage_fileter.info
     
 mv ./html/index.html ./html/cov_${executable}.html
 mv asan.log* asan_${executable}.log
-
-
-nohup x-www-browser ./html/cov_${executable}.html &
-nohup x-www-browser ./report/report_$executable.xml &
 
 exit 0

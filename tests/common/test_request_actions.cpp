@@ -28,7 +28,7 @@ TEST(requestAction, onlineSub)
         engine->playByName(url);
     }
 
-    QTest::qWait(500);
+    QTest::qWait(1000);
     w->requestAction(ActionFactory::ActionKind::MatchOnlineSubtitle);
     QTest::qWait(500);
     w->requestAction(ActionFactory::ActionKind::HideSubtitle);
