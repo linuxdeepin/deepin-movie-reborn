@@ -11,6 +11,7 @@ StartupNotify=true
 Type=Application
 X-Deepin-ManualID=deepin-movie
 X-Deepin-Vendor=deepin
+X-Deepin-TurboType=dtkwidget
 
 # Translations:
 # Do not manually modify!
