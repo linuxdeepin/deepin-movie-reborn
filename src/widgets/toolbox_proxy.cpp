@@ -1034,13 +1034,13 @@ public:
             //            setWindowFlags(Qt::WindowStaysOnTopHint);
         }
 #endif
-                setShadowBlurRadius(4);
-                setRadius(18);
-                setShadowYOffset(0);
-                setShadowXOffset(0);
-                setArrowWidth(20);
-                setArrowHeight(15);
-                hide();
+        setShadowBlurRadius(4);
+        setRadius(18);
+        setShadowYOffset(0);
+        setShadowXOffset(0);
+        setArrowWidth(20);
+        setArrowHeight(15);
+        hide();
 
         auto *l = new QVBoxLayout(this);
         l->setContentsMargins(0, 10, 0, 5);
@@ -1275,13 +1275,13 @@ protected:
         const qreal width = this->width();
 
         QRectF topLeftRect(QPointF(0, 0),
-                            QSizeF(2 * radius, 2 * radius));
-        QRectF bottomLeftRect(QPointF(0, height - 2 * radius - triHeight),
-                               QSizeF(2 * radius, 2 * radius));
-        QRectF bottomRightRect(QPointF(width - 2 * radius, height - 2 * radius - triHeight),
-                              QSizeF(2 * radius, 2 * radius));
-        QRectF topRightRect(QPointF(width - 2 * radius, 0),
                            QSizeF(2 * radius, 2 * radius));
+        QRectF bottomLeftRect(QPointF(0, height - 2 * radius - triHeight),
+                              QSizeF(2 * radius, 2 * radius));
+        QRectF bottomRightRect(QPointF(width - 2 * radius, height - 2 * radius - triHeight),
+                               QSizeF(2 * radius, 2 * radius));
+        QRectF topRightRect(QPointF(width - 2 * radius, 0),
+                            QSizeF(2 * radius, 2 * radius));
 
 
         path.moveTo(width, height - radius - triHeight);
@@ -1334,9 +1334,9 @@ private:
             if (m_bIsMute) {
                 m_pBtnChangeMute->setImage(":/icons/deepin/builtin/light/actions/mute_checked.svg");
             } else {
-                if(_slider->value() >= 66)
+                if (_slider->value() >= 66)
                     m_pBtnChangeMute->setImage(":/resources/icons/dark/normal/volume_normal.svg");
-                else if(_slider->value() >= 33)
+                else if (_slider->value() >= 33)
                     m_pBtnChangeMute->setImage(":/resources/icons/dark/normal/volume_mid_normal.svg");
                 else
                     m_pBtnChangeMute->setImage(":/resources/icons/dark/normal/volume_low_normal.svg");
@@ -1345,9 +1345,9 @@ private:
             if (m_bIsMute) {
                 m_pBtnChangeMute->setImage(":/icons/deepin/builtin/dark/texts/dcc_mute_36px.svg");
             } else {
-                if(_slider->value() >= 66)
+                if (_slider->value() >= 66)
                     m_pBtnChangeMute->setImage(":/icons/deepin/builtin/dark/texts/dcc_volume_36px.svg");
-                else if(_slider->value() >= 33)
+                else if (_slider->value() >= 33)
                     m_pBtnChangeMute->setImage(":/icons/deepin/builtin/dark/texts/dcc_volumemid_36px.svg");
                 else
                     m_pBtnChangeMute->setImage(":/icons/deepin/builtin/dark/texts/dcc_volumelow_36px.svg");
@@ -1404,20 +1404,6 @@ viewProgBarLoad::viewProgBarLoad(PlayerEngine *engine, DMRSlider *progBar, Toolb
     initThumb();
 }
 
-void viewProgBarLoad::quitLoad()
-{
-    m_bQuit = true;
-}
-
-void viewProgBarLoad::load()
-{
-    m_mutex.lock();
-    //停止
-    m_bisload = true;
-
-    m_mutex.unlock();
-}
-
 void viewProgBarLoad::setListPixmapMutex(QMutex *pMutex)
 {
     pListPixmapMutex = pMutex;
@@ -1425,20 +1411,7 @@ void viewProgBarLoad::setListPixmapMutex(QMutex *pMutex)
 
 void viewProgBarLoad::run()
 {
-    while (!m_bQuit) {
-        if (m_bisload) {
-
-            m_mutex.lock();
-
-            m_bisload = false;
-            m_mutex.unlock();
-
-            loadViewProgBar(_parent->size());
-        } else {
-            this->sleep(1);
-        }
-    }
-
+    loadViewProgBar(_parent->size());
 }
 
 QString libPath(const QString &strlib)
@@ -1514,10 +1487,6 @@ void viewProgBarLoad::loadViewProgBar(QSize size)
     auto file = QFileInfo(url.toLocalFile()).absoluteFilePath();
 
     for (auto i = 0; i < num ; i++) {
-        if (m_bQuit || m_bisload) {
-            qDebug() << "load return";
-            return;
-        }
         if (isInterruptionRequested()) {
             qDebug() << "isInterruptionRequested";
             return;
@@ -1710,16 +1679,10 @@ void ToolboxProxy::updateplaylisticon()
 ToolboxProxy::~ToolboxProxy()
 {
     ThumbnailWorker::get().stop();
-//    _loadThread->exit();
-//    _loadThread->terminate();
-//    _loadThread->exit();
-//    delete _loadThread;
-//    delete _subView;
     delete _previewer;
     delete _previewTime;
 
     if (m_worker) {
-        m_worker->quitLoad();
         m_worker->wait();
         m_worker->quit();
         m_worker->deleteLater();
@@ -1779,9 +1742,6 @@ void ToolboxProxy::setup()
 
     bot_widget->setLayout(botv);
     stacked->addWidget(bot_widget);
-//    QPalette palette;
-//    palette.setColor(QPalette::Background, QColor(0,0,0,255)); // 最后一项为透明度
-//    bot_widget->setPalette(palette);
 
     _timeLabel = new QLabel(bot_toolWgt);
     _timeLabel->setAlignment(Qt::AlignCenter);
@@ -2115,6 +2075,7 @@ void ToolboxProxy::closeAnyPopup()
 {
     if (_previewer->isVisible()) {
         _previewer->hide();
+        qDebug() << "hide previewer";
     }
 
     if (_previewTime->isVisible()) {
@@ -2150,24 +2111,41 @@ void ToolboxProxy::updateHoverPreview(const QUrl &url, int secs)
     if (_volSlider->isVisible())
         return;
 
-    const auto &pif = _engine->playlist().currentInfo();
+    const PlayItemInfo &pif = _engine->playlist().currentInfo();
     if (!pif.url.isLocalFile())
         return;
 
-    const auto &absPath = pif.info.canonicalFilePath();
+    const QString &absPath = pif.info.canonicalFilePath();
     if (!QFile::exists(absPath)) {
         _previewer->hide();
         _previewTime->hide();
         return;
     }
 
-    auto pos = _viewProgBar->mapToGlobal(QPoint(0, TOOLBOX_TOP_EXTENT - 10));
-    QPoint p { QCursor::pos().x(), pos.y() };
+    if (!m_mouseFlag) {
+        return;
+    }
+
+    int nPosition = 0;
+    qint64 nDuration = _engine->duration();
+    QPoint showPoint = {0, 0};
+
+    if (_progBar->isVisible()) {
+        nPosition = (secs * _progBar->slider()->width()) / nDuration;
+        showPoint = _progBar->mapToGlobal(QPoint(nPosition, TOOLBOX_TOP_EXTENT - 10));
+    } else {
+        nPosition = secs * _viewProgBar->getViewLength() / nDuration + _viewProgBar->getStartPoint();
+        showPoint = _viewProgBar->mapToGlobal(QPoint(nPosition, TOOLBOX_TOP_EXTENT - 10));
+    }
 
     QPixmap pm = ThumbnailWorker::get().getThumb(url, secs);
-    _previewer->updateWithPreview(pm, secs, _engine->videoRotation());
-    _previewer->updateWithPreview(p);
 
+
+    if (!pm.isNull()) {
+        QPoint point { showPoint.x(), showPoint.y() };
+        _previewer->updateWithPreview(pm, secs, _engine->videoRotation());
+        _previewer->updateWithPreview(point);
+    }
 }
 
 void ToolboxProxy::waitPlay()
@@ -2218,6 +2196,7 @@ void ToolboxProxy::slotHidePreviewTime()
 {
     _previewer->hide();
     _previewTime->hide();
+    m_mouseFlag = false;
 }
 
 void ToolboxProxy::slotSliderPressed()
@@ -2389,10 +2368,9 @@ void ToolboxProxy::slotUpdateThumbnailTimeOut()
     if (m_worker == nullptr) {
         m_worker = new viewProgBarLoad(_engine, _progBar, this);
         m_worker->setListPixmapMutex(&m_listPixmapMutex);
-        m_worker->start();
     }
-
-    m_worker->load();
+    m_worker->requestInterruption();
+    QTimer::singleShot(500, this, [ = ] {m_worker->start();});
     connect(m_worker, SIGNAL(sigFinishiLoad(QSize)), this, SLOT(finishLoadSlot(QSize)));
     _progBar_Widget->setCurrentIndex(1);
 }
@@ -2430,17 +2408,7 @@ void ToolboxProxy::progressHoverChanged(int v)
         return;
     }
 
-    _lastHoverValue = v;
-
-    auto pos = _progBar->mapToGlobal(QPoint(0, TOOLBOX_TOP_EXTENT - 10));
-    QPoint p { QCursor::pos().x(), pos.y() };
-
-    //auto proBar = qobject_cast<ViewProgBar *>(sender());
-    bool isAudio = _engine->isAudioFile(pif.info.fileName());
-    if (!Settings::get().isSet(Settings::PreviewOnMouseover) || isAudio) {
-        updatePreviewTime(v, p);
-        return;
-    }
+    m_mouseFlag = true;
 
     ThumbnailWorker::get().requestThumb(pif.url, v);
 }

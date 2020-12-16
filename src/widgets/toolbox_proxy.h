@@ -356,8 +356,6 @@ private:
     DWidget *_progBarspec {nullptr};
     ThumbnailPreview *_previewer {nullptr};
     SliderTime *_previewTime {nullptr};
-//    SubtitlesView *_subView {nullptr};
-    int _lastHoverValue {0};
     QWidget *_bot_spec {nullptr};
     QWidget *bot_toolWgt {nullptr};
 
@@ -375,6 +373,7 @@ private:
     QList<QPixmap >pm_black_list ;
 
     viewProgBarLoad *m_worker = nullptr;
+    bool m_mouseFlag = false;
     bool m_mousePree = false;   //thx
     bool _bthumbnailmode;
     bool isStillShowThumbnail{true};
@@ -404,11 +403,6 @@ class viewProgBarLoad: public QThread
     Q_OBJECT
 public:
     explicit viewProgBarLoad(PlayerEngine *engine = nullptr, DMRSlider *progBar = nullptr, ToolboxProxy *parent = nullptr);
-
-    //退出线程直接调用这个函数
-    void quitLoad();
-    //告诉线程需要加载一个缩略图，线程会停止正在加载的项目，重新加载新的缩略图
-    void load();
     //必须调用这个函数加锁
     void setListPixmapMutex(QMutex *pMutex);
 public slots:
@@ -428,15 +422,6 @@ private:
     PlayerEngine *_engine {nullptr};
     ToolboxProxy *_parent{nullptr};
     DMRSlider *_progBar {nullptr};
-//    QSize _size;
-
-    //加载缩略图是否加载完成，控制线程是否休眠
-    bool m_bisload {false};
-    //是否退出当前线程(退出while(1))
-    bool m_bQuit  {false};
-
-    QMutex m_mutex;
-
     QMutex *pListPixmapMutex;
 
     video_thumbnailer *m_video_thumbnailer = nullptr;

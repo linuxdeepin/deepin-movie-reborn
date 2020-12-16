@@ -118,7 +118,7 @@ ThumbnailWorker::ThumbnailWorker()
     initThumb();
     m_video_thumbnailer->thumbnail_size = m_video_thumbnailer->thumbnail_size * qApp->devicePixelRatio();
 
-    m_pCharTime = (char*)malloc(20);
+    m_pCharTime = (char *)malloc(20);
 }
 
 QString ThumbnailWorker::libPath(const QString &strlib)
@@ -126,10 +126,10 @@ QString ThumbnailWorker::libPath(const QString &strlib)
     QDir  dir;
     QString path  = QLibraryInfo::location(QLibraryInfo::LibrariesPath);
     dir.setPath(path);
-    QStringList list = dir.entryList(QStringList()<<(strlib + "*"),QDir::NoDotAndDotDot |QDir::Files);//filter name with strlib
-    if(list.contains(strlib)){
+    QStringList list = dir.entryList(QStringList() << (strlib + "*"), QDir::NoDotAndDotDot | QDir::Files); //filter name with strlib
+    if (list.contains(strlib)) {
         return strlib;
-    }else{
+    } else {
         list.sort();
     }
 
@@ -140,18 +140,17 @@ QString ThumbnailWorker::libPath(const QString &strlib)
 void ThumbnailWorker::initThumb()
 {
     QLibrary library(libPath("libffmpegthumbnailer.so"));
-    m_mvideo_thumbnailer = (mvideo_thumbnailer) library.resolve( "video_thumbnailer_create");
-    m_mvideo_thumbnailer_destroy = (mvideo_thumbnailer_destroy) library.resolve( "video_thumbnailer_destroy");
-    m_mvideo_thumbnailer_create_image_data = (mvideo_thumbnailer_create_image_data) library.resolve( "video_thumbnailer_create_image_data");
-    m_mvideo_thumbnailer_destroy_image_data = (mvideo_thumbnailer_destroy_image_data) library.resolve( "video_thumbnailer_destroy_image_data");
-    m_mvideo_thumbnailer_generate_thumbnail_to_buffer = (mvideo_thumbnailer_generate_thumbnail_to_buffer) library.resolve( "video_thumbnailer_generate_thumbnail_to_buffer");
+    m_mvideo_thumbnailer = (mvideo_thumbnailer) library.resolve("video_thumbnailer_create");
+    m_mvideo_thumbnailer_destroy = (mvideo_thumbnailer_destroy) library.resolve("video_thumbnailer_destroy");
+    m_mvideo_thumbnailer_create_image_data = (mvideo_thumbnailer_create_image_data) library.resolve("video_thumbnailer_create_image_data");
+    m_mvideo_thumbnailer_destroy_image_data = (mvideo_thumbnailer_destroy_image_data) library.resolve("video_thumbnailer_destroy_image_data");
+    m_mvideo_thumbnailer_generate_thumbnail_to_buffer = (mvideo_thumbnailer_generate_thumbnail_to_buffer) library.resolve("video_thumbnailer_generate_thumbnail_to_buffer");
     if (m_mvideo_thumbnailer == nullptr || m_mvideo_thumbnailer_destroy == nullptr
             || m_mvideo_thumbnailer_create_image_data == nullptr || m_mvideo_thumbnailer_destroy_image_data == nullptr
-            || m_mvideo_thumbnailer_generate_thumbnail_to_buffer == nullptr ){
+            || m_mvideo_thumbnailer_generate_thumbnail_to_buffer == nullptr) {
         return;
     }
     m_video_thumbnailer = m_mvideo_thumbnailer();
-    m_image_data = m_mvideo_thumbnailer_create_image_data();
 }
 
 QPixmap ThumbnailWorker::genThumb(const QUrl &url, int secs)
@@ -160,10 +159,14 @@ QPixmap ThumbnailWorker::genThumb(const QUrl &url, int secs)
     QPixmap pm;
     pm.setDevicePixelRatio(dpr);
 
+    if (m_image_data == nullptr) {
+        m_image_data = m_mvideo_thumbnailer_create_image_data();
+    }
+
     QTime d(0, 0, 0);
     d = d.addSecs(secs);
     //memset(m_pChTime,0,strlen(m_pChTime));
-    strcpy(m_pCharTime,d.toString("hh:mm:ss").toLatin1().data());
+    strcpy(m_pCharTime, d.toString("hh:mm:ss").toLatin1().data());
     m_video_thumbnailer->seek_time = m_pCharTime;
     auto file = QFileInfo(url.toLocalFile()).absoluteFilePath();
     try {
@@ -182,6 +185,9 @@ QPixmap ThumbnailWorker::genThumb(const QUrl &url, int secs)
         pm.setDevicePixelRatio(dpr);
     } catch (const std::logic_error &e) {
     }
+
+    m_mvideo_thumbnailer_destroy_image_data(m_image_data);
+    m_image_data = nullptr;
 
     return pm;
 }
