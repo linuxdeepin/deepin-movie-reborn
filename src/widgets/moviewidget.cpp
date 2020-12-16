@@ -33,8 +33,8 @@ MovieWidget::MovieWidget(QWidget *parent)
 void MovieWidget::startPlaying()
 {
     m_nCounter = 0;
-    m_pTimer->start();
-    show();
+//    m_pTimer->start();
+//    show();
 }
 
 void MovieWidget::stopPlaying()
