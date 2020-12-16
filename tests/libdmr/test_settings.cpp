@@ -88,39 +88,39 @@ TEST(Settings, wayland)
     QList<QUrl> listPlayFiles;
     listPlayFiles << QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/demo.mp4")\
                   << QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/bensound-sunny.mp3");
-    QTest::qWait(500);
+    QTest::qWait(200);
     w_wayland->show();
 #if !defined (__mips__ ) && !defined(__aarch64__)
     Settings::get().settings()->setOption("base.play.showInthumbnailmode", true);
 #endif
     Settings::get().settings()->setOption("base.play.resumelast", false);
 
-    QTest::mouseMove(playBtn, QPoint(), 300);
-    QTest::mouseClick(playBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 1000); //play
+    QTest::mouseMove(playBtn, QPoint(), 100);
+    QTest::mouseClick(playBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 500); //play
 
-    QTest::qWait(1000);
+    QTest::qWait(200);
     const auto &valids = engine->addPlayFiles(listPlayFiles);
     engine->playByName(valids[0]);
 
     w_wayland->requestAction(ActionFactory::ActionKind::ToggleMute);
-    QTest::qWait(500);
-    QTest::mouseMove(fsBtn, QPoint(), 500);
-    QTest::mouseClick(fsBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 1000);
-    QTest::mouseMove(listBtn, QPoint(), 500);
-    QTest::mouseClick(listBtn, Qt::LeftButton, Qt::NoModifier,QPoint(), 1000);
+    QTest::qWait(200);
+    QTest::mouseMove(fsBtn, QPoint(), 200);
+    QTest::mouseClick(fsBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 500);
+    QTest::mouseMove(listBtn, QPoint(), 200);
+    QTest::mouseClick(listBtn, Qt::LeftButton, Qt::NoModifier,QPoint(), 500);
 
-    QTest::mouseMove(nextBtn, QPoint(), 500);
-    QTest::mouseClick(nextBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 1000); //play next
-    QTest::qWait(500);
+    QTest::mouseMove(nextBtn, QPoint(), 200);
+    QTest::mouseClick(nextBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 500); //play next
+    QTest::qWait(200);
     DGuiApplicationHelper::instance()->setThemeType(DGuiApplicationHelper::DarkType);
     emit DGuiApplicationHelper::instance()->paletteTypeChanged(DGuiApplicationHelper::DarkType);
-    QTest::mouseMove(prevBtn, QPoint(), 500);
-    QTest::mouseClick(prevBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 1000); //play prev
+    QTest::mouseMove(prevBtn, QPoint(), 200);
+    QTest::mouseClick(prevBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 500); //play prev
 
-    QTest::mouseMove(listBtn, QPoint(), 500);
-    QTest::mouseClick(listBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 1000);
-    QTest::mouseMove(fsBtn, QPoint(), 500);
-    QTest::mouseClick(fsBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 1000);
+    QTest::mouseMove(listBtn, QPoint(), 200);
+    QTest::mouseClick(listBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 500);
+    QTest::mouseMove(fsBtn, QPoint(), 200);
+    QTest::mouseClick(fsBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 500);
 
     Settings::get().settings()->setOption("base.play.emptylist", false);
 

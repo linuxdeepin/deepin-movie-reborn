@@ -28,21 +28,21 @@ TEST(requestAction, onlineSub)
         engine->playByName(url);
     }
 
-    QTest::qWait(1000);
+    QTest::qWait(500);
     w->requestAction(ActionFactory::ActionKind::MatchOnlineSubtitle);
-    QTest::qWait(500);
+    QTest::qWait(200);
     w->requestAction(ActionFactory::ActionKind::HideSubtitle);
-    QTest::qWait(500);
+    QTest::qWait(200);
     w->requestAction(ActionFactory::ActionKind::HideSubtitle);
 
     QTestEventList testEventList;
-    testEventList.addKeyClick(Qt::Key_Left, Qt::ShiftModifier,300); //sub delay
-    QTest::qWait(300);
+    testEventList.addKeyClick(Qt::Key_Left, Qt::ShiftModifier,100); //sub delay
+//    QTest::qWait(200);
     w->requestAction(ActionFactory::ActionKind::SubDelay);
-    testEventList.addKeyClick(Qt::Key_Left, Qt::ShiftModifier,300);
-    testEventList.addKeyClick(Qt::Key_Right, Qt::ShiftModifier,300);    //sub advance
-    testEventList.addKeyClick(Qt::Key_Right, Qt::ShiftModifier,300);
-    testEventList.addKeyClick(Qt::Key_Right, Qt::ShiftModifier,300);
+    testEventList.addKeyClick(Qt::Key_Left, Qt::ShiftModifier,100);
+    testEventList.addKeyClick(Qt::Key_Right, Qt::ShiftModifier,100);    //sub advance
+    testEventList.addKeyClick(Qt::Key_Right, Qt::ShiftModifier,100);
+    testEventList.addKeyClick(Qt::Key_Right, Qt::ShiftModifier,100);
     testEventList.simulate(w);
 }
 
@@ -61,11 +61,11 @@ TEST(requestAction, sound)
 {
     MainWindow* w = dApp->getMainWindow();
 
-    QTest::qWait(500);
+    QTest::qWait(200);
     w->requestAction(ActionFactory::ActionKind::Stereo);
-    QTest::qWait(500);
+    QTest::qWait(200);
     w->requestAction(ActionFactory::ActionKind::LeftChannel);
-    QTest::qWait(500);
+    QTest::qWait(200);
     w->requestAction(ActionFactory::ActionKind::RightChannel);
 }
 
@@ -90,15 +90,15 @@ TEST(requestAction, playSpeed)
 {
     MainWindow* w = dApp->getMainWindow();
 
-    QTest::qWait(500);
+    QTest::qWait(200);
     w->requestAction(ActionFactory::ActionKind::ZeroPointFiveTimes);
-    QTest::qWait(500);
+    QTest::qWait(200);
     w->requestAction(ActionFactory::ActionKind::OnePointTwoTimes);
-    QTest::qWait(500);
+    QTest::qWait(200);
     w->requestAction(ActionFactory::ActionKind::OnePointFiveTimes);
-    QTest::qWait(500);
+    QTest::qWait(200);
     w->requestAction(ActionFactory::ActionKind::Double);
-    QTest::qWait(500);
+    QTest::qWait(200);
     w->requestAction(ActionFactory::ActionKind::OneTimes);
 //    QTest::qWait(500);
 //    w->requestAction(ActionFactory::ActionKind::SeekAbsolute);
@@ -108,27 +108,27 @@ TEST(requestAction, frame)
 {
     MainWindow* w = dApp->getMainWindow();
 
-    QTest::qWait(300);
+    QTest::qWait(200);
     w->requestAction(ActionFactory::ActionKind::Ratio4x3Frame);
-    QTest::qWait(400);
+    QTest::qWait(200);
     w->requestAction(ActionFactory::ActionKind::Ratio16x9Frame);
-    QTest::qWait(400);
+    QTest::qWait(200);
     w->requestAction(ActionFactory::ActionKind::Ratio16x10Frame);
-    QTest::qWait(400);
+    QTest::qWait(200);
     w->requestAction(ActionFactory::ActionKind::Ratio185x1Frame);
-    QTest::qWait(400);
+    QTest::qWait(200);
     w->requestAction(ActionFactory::ActionKind::Ratio235x1Frame);
-    QTest::qWait(400);
+    QTest::qWait(200);
     w->requestAction(ActionFactory::ActionKind::DefaultFrame);
 
-    QTest::qWait(400);
+    QTest::qWait(200);
     w->requestAction(ActionFactory::ActionKind::ClockwiseFrame);
-    QTest::qWait(400);
+    QTest::qWait(200);
     w->requestAction(ActionFactory::ActionKind::CounterclockwiseFrame);
 
-    QTest::qWait(400);
+    QTest::qWait(200);
     w->requestAction(ActionFactory::ActionKind::NextFrame);
-    QTest::qWait(400);
+    QTest::qWait(200);
     w->requestAction(ActionFactory::ActionKind::PreviousFrame);
 }
 
@@ -159,7 +159,7 @@ TEST(requestAction,goToScreenshotSolder)
 {
     MainWindow* w = dApp->getMainWindow();
 
-    QTest::qWait(300);
+    QTest::qWait(200);
     w->requestAction(ActionFactory::ActionKind::GoToScreenshotSolder);
     EXPECT_TRUE(true);
 }
@@ -203,9 +203,9 @@ TEST(requestAction, settings)
     Settings::get().settings()->setOption("base.screenshot.location",
                                           "/data/source/deepin-movie-reborn/movie/DMovie");
     w->setShowSetting(false);
-    QTest::qWait(300);
+    QTest::qWait(200);
     w->requestAction(ActionFactory::ActionKind::Settings);
-    QTest::qWait(300);
+    QTest::qWait(200);
     EXPECT_TRUE(true);
 }
 
@@ -213,7 +213,7 @@ TEST(requestAction,openCdrom)
 {
     MainWindow* w = dApp->getMainWindow();
 
-    QTest::qWait(300);
+    QTest::qWait(200);
     w->requestAction(ActionFactory::ActionKind::OpenCdrom);
     EXPECT_TRUE(true);
 }

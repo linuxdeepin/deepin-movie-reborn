@@ -22,7 +22,7 @@ TEST(ToolBox, buttonBoxButton)
     ButtonBoxButton *btn = new ButtonBoxButton("test", w);
 
     btn->show();
-    QTest::qWait(500);
+    QTest::qWait(200);
     QTest::mouseMove(btn);
 
     btn->deleteLater();
