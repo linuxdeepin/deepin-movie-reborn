@@ -185,13 +185,13 @@ TEST(MainWindow, shortCutPlay)
     //playlist
     testEventList.addKeyClick(Qt::Key_F3, Qt::NoModifier, 800);    //playlist popup
     testEventList.addKeyClick(Qt::Key_Down, Qt::NoModifier, 400);
-    testEventList.addKeyClick(Qt::Key_Enter, Qt::NoModifier, 300);      //play selected item
+    testEventList.addKeyClick(Qt::Key_Enter, Qt::NoModifier, 500);      //play selected item
     testEventList.addKeyClick(Qt::Key_F3, Qt::NoModifier, 1800);    //playlist
     testEventList.addKeyClick(Qt::Key_Up, Qt::NoModifier, 400);
-    testEventList.addKeyClick(Qt::Key_Enter, Qt::NoModifier, 300);
+    testEventList.addKeyClick(Qt::Key_Enter, Qt::NoModifier, 500);
     testEventList.addKeyClick(Qt::Key_F3, Qt::NoModifier, 1900);
-    testEventList.addKeyClick(Qt::Key_Down, Qt::NoModifier, 400);
-    testEventList.addKeyClick(Qt::Key_Delete, Qt::NoModifier, 200);    //delete from playlist
+    testEventList.addKeyClick(Qt::Key_Down, Qt::NoModifier, 500);
+    testEventList.addKeyClick(Qt::Key_Delete, Qt::NoModifier, 500);    //delete from playlist
 
     //加速播放
     for (int i = 0; i<10 ;i++) {
@@ -575,6 +575,7 @@ TEST(ToolBox, mainWindowEvent)
     QTest::qWait(100);
 }
 
+/*
 TEST(ToolBox, clearPlayList)
 {
     MainWindow* w = dApp->getMainWindow();
@@ -593,6 +594,6 @@ TEST(ToolBox, clearPlayList)
 
     DGuiApplicationHelper::instance()->setThemeType(DGuiApplicationHelper::UnknownType);
     emit DGuiApplicationHelper::instance()->paletteTypeChanged(DGuiApplicationHelper::UnknownType);
-}
+}*/
 
 
