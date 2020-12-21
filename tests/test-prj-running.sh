@@ -11,6 +11,7 @@ make -j8
 
 workdir=$(cd ../$(dirname $0)/build-ut; pwd)
 executable=deepin-movie-test #可执行程序的文件名
+project_name=deepin-movie-reborn
 
 mkdir -p html
 mkdir -p report
@@ -26,7 +27,7 @@ echo ================ do filter end ====================
     
 genhtml -o ./html ./html/${executable}_Coverage_fileter.info
     
-mv ./html/index.html ./html/cov_${executable}.html
-mv asan.log* asan_${executable}.log
+mv ./html/index.html ./html/cov_${project_name}.html
+mv asan.log* asan_${project_name}.log
 
 exit 0

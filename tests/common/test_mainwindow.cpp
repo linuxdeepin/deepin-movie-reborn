@@ -217,7 +217,7 @@ TEST(MainWindow, shortCutPlay)
     qDebug() << __func__ << "playerEngineState:" << engine->state();
     testEventList.simulate(w);
 }
-/*
+
 TEST(MainWindow, shortCutVolumeAndFrame)
 {
     MainWindow* w = dApp->getMainWindow();
@@ -540,7 +540,7 @@ TEST(ToolBox, volBtn)
     QTest::qWait(100);
     QApplication::sendEvent(volBtn, &wheelDownEvent);
 }
-*/
+
 TEST(ToolBox, mainWindowEvent)
 {
     MainWindow *w = dApp->getMainWindow();
