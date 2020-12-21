@@ -1713,12 +1713,11 @@ static bool compareBarData(const QUrl &url1, const QUrl &url2)
 
 bool MainWindow::addCdromPath()
 {
-    bool ret =  true;
     QStringList strCDMountlist;
 
     QFile mountFile("/proc/mounts");
     if (mountFile.open(QIODevice::ReadOnly) == false) {
-        ret = false;
+        return false;
     }
     do {
         QString strLine = mountFile.readLine();
@@ -1729,7 +1728,7 @@ bool MainWindow::addCdromPath()
     mountFile.close();
 
     if (strCDMountlist.size() == 0)
-        ret = false;
+        return false;
 
     QList<QUrl> urls = _engine->addPlayDir(strCDMountlist[0]);  //目前只是针对第一个光盘
     qSort(urls.begin(), urls.end(), compareBarData);
@@ -1738,10 +1737,10 @@ bool MainWindow::addCdromPath()
             _engine->playByName(QUrl("playlist://0"));
         _engine->playByName(urls[0]);
     } else {
-        ret = false;
+        return false;
     }
 
-    return ret;
+    return true;
 }
 
 void MainWindow::loadPlayList()
@@ -2745,9 +2744,14 @@ void MainWindow::onBurstScreenshot(const QImage &frame, qint64 timestamp)
             return;
         }
 
+        int ret;
         BurstScreenshotsDialog bsd(_engine->playlist().currentInfo());
         bsd.updateWithFrames(_burstShoots);
-        auto ret = bsd.exec();
+#ifdef USE_TEST
+        bsd.show();
+#else
+        ret = bsd.exec();
+#endif
         qDebug() << "BurstScreenshot done";
 
         _burstShoots.clear();
@@ -2783,10 +2787,15 @@ void MainWindow::startBurstShooting()
 
 void MainWindow::handleSettings(DSettingsDialog *dsd)
 {
+#ifndef USE_TEST
     if (m_bisShowSettingDialog) {
         dsd->exec();
     }
     delete dsd;
+#else
+    dsd ->show();
+#endif
+
     Settings::get().settings()->sync();
 }
 

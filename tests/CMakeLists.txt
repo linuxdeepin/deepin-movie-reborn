@@ -12,6 +12,9 @@ set(CMAKE_AUTOUIC ON)
 execute_process(COMMAND uname -m OUTPUT_VARIABLE MACH
     ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE)
 
+option (USE_TEST "Use TESTS" ON)
+add_definitions( -DUSE_TEST )
+
 # 设置Qt模块
 set(QtModule Core Gui Widgets Network X11Extras PrintSupport DBus Sql Concurrent LinguistTools Test)
 
