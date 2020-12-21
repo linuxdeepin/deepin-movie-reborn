@@ -2,14 +2,17 @@
 #include <QHBoxLayout>
 #include <QTimer>
 #include <QLabel>
+#include <QPixmap>
+#include <QTransform>
+#include <QApplication>
+#include <QDesktopWidget>
 
 #define DEFAULT_RATION (1.0f*1080/1920)   //背景图片比例
-#define BGTOTAL 310                       //背景图总数
 #define INTERVAL 50                       //刷新间隔
 namespace dmr {
 
 MovieWidget::MovieWidget(QWidget *parent)
-    : QWidget(parent), m_nCounter(0)
+    : QWidget(parent), m_nRotate(0), m_state(PlayState::StateStop)
 {
     m_pLabMovie = nullptr;
     m_pTimer = nullptr;
@@ -20,10 +23,12 @@ MovieWidget::MovieWidget(QWidget *parent)
     setLayout(m_pHBoxLayout);
 
     m_pLabMovie = new QLabel(this);
-    m_pLabMovie->setScaledContents(true);
+    //m_pLabMovie->setScaledContents(true);
     m_pHBoxLayout->addStretch();
     m_pHBoxLayout->addWidget(m_pLabMovie);
     m_pHBoxLayout->addStretch();
+
+    m_pixmapBg.load(":/resources/icons/music_bg.svg");
 
     m_pTimer = new QTimer();
     m_pTimer->setInterval(INTERVAL);
@@ -32,45 +37,61 @@ MovieWidget::MovieWidget(QWidget *parent)
 
 void MovieWidget::startPlaying()
 {
-    m_nCounter = 0;
-//    m_pTimer->start();
-//    show();
+    if (m_state == PlayState::StateStop) {
+        m_nRotate = 0;
+        show();
+    }
+
+    m_pTimer->start();
+    m_state = PlayState::StatePlaying;
 }
 
 void MovieWidget::stopPlaying()
 {
     m_pTimer->stop();
+    m_state = PlayState::StateStop;
     hide();
 }
 
-void MovieWidget::resizeEvent(QResizeEvent *qEvent)
+void MovieWidget::pausePlaying()
 {
-    int nWidth = rect().width();
-    int nHeight = rect().height();
-    if (1.0f * nHeight / nWidth < DEFAULT_RATION) {
-
-        nWidth = static_cast<int>(nHeight / DEFAULT_RATION);
-    } else {
-        nHeight = static_cast<int>(nWidth * DEFAULT_RATION);
-    }
-
-    m_pLabMovie->setFixedSize(nWidth, nHeight);
-
-    DWidget::resizeEvent(qEvent);
+    m_pTimer->stop();
+    m_state = PlayState::StatePause;
 }
 
 void MovieWidget::updateView()
 {
-    QPixmap pixmap;
+    QMatrix matri;
+    QPixmap pixmapBg;
+    float nRatio = 1.0f;
+    QRect rectDesktop;
 
-    pixmap.load(QString(":/resources/icons/movie/pic%1.png").arg(m_nCounter % BGTOTAL, 3, 10, QLatin1Char('0')));
-    m_pLabMovie->setPixmap(pixmap);
+    int nWidth = rect().width();
+    int nHeight = rect().height();
+    rectDesktop = qApp->desktop()->availableGeometry(this);
 
-    if (m_nCounter == BGTOTAL - 1) {
-        m_nCounter = 0;
+    //根据比例缩放背景
+    if (1.0f * nHeight / nWidth < DEFAULT_RATION) {
+
+        nWidth = static_cast<int>(nHeight / DEFAULT_RATION);
+        nRatio = nWidth * 2.0f / rectDesktop.width();
     } else {
-        m_nCounter ++;
+        nHeight = static_cast<int>(nWidth * DEFAULT_RATION);
+        nRatio = nHeight * 2.0f / rectDesktop.height();
     }
+
+    pixmapBg = m_pixmapBg.scaled(static_cast<int>(m_pixmapBg.width() * nRatio),
+                                 static_cast<int>(m_pixmapBg.height() * nRatio), Qt::IgnoreAspectRatio,
+                                 Qt::SmoothTransformation);
+    //旋转背景
+    matri.translate(pixmapBg.width() / 2.0, pixmapBg.height() / 2.0);
+    matri.rotate(m_nRotate);
+    m_nRotate = m_nRotate + 9;           //两秒转一圈
+    matri.translate(-pixmapBg.width() / 2.0, -pixmapBg.height() / 2.0);
+
+    pixmapBg = pixmapBg.transformed(matri, Qt::SmoothTransformation);
+
+    m_pLabMovie->setPixmap(pixmapBg);
 }
 
 }

@@ -1426,22 +1426,8 @@ void MainWindow::onApplicationStateChanged(Qt::ApplicationState e)
 
 void MainWindow::animatePlayState()
 {
-    bool bAudio = false;
-
-    bAudio = _engine->isAudioFile(_engine->playlist().currentInfo().mi.title);
-
     if (_miniMode) {
         return;
-    }
-
-    if (_engine->state() == PlayerEngine::CoreState::Playing && bAudio) {
-        m_pMovieWidget->startPlaying();
-    }
-
-    if ((_engine->state() == PlayerEngine::CoreState::Paused
-            || _engine->state() == PlayerEngine::CoreState::Idle) && bAudio) {
-        m_pMovieWidget->stopPlaying();
-
     }
 
     if (!_inBurstShootMode && _engine->state() == PlayerEngine::CoreState::Paused) {
@@ -3214,6 +3200,7 @@ void MainWindow::slotmousePressTimerTimeOut()
 
 void MainWindow::slotPlayerStateChanged()
 {
+    bool bAudio = false;
     PlayerEngine *engine = dynamic_cast<PlayerEngine *>(sender());
     if (!engine) return;
     setInit(engine->state() != PlayerEngine::Idle);
@@ -3229,6 +3216,17 @@ void MainWindow::slotPlayerStateChanged()
             this->resize(850, 600);
         }
     });
+
+    if (_engine->playlist().count() > 0) {
+        bAudio = _engine->isAudioFile(_engine->playlist().currentInfo().mi.title);
+    }
+    if (_engine->state() == PlayerEngine::CoreState::Playing && bAudio) {
+        m_pMovieWidget->startPlaying();
+    } else if ((_engine->state() == PlayerEngine::CoreState::Paused) && bAudio) {
+        m_pMovieWidget->pausePlaying();
+    } else if (engine->state() == PlayerEngine::CoreState::Idle && bAudio) {
+        m_pMovieWidget->stopPlaying();
+    }
 }
 
 void MainWindow::slotFocusWindowChanged()
@@ -3531,6 +3529,7 @@ void MainWindow::showEvent(QShowEvent *event)
         }
     }*/
 
+    _animationlable->raise();
     _titlebar->raise();
     _toolbox->raise();
     if (_playlist) {
