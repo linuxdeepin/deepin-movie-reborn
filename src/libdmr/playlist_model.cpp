@@ -426,8 +426,7 @@ struct MovieInfo PlaylistModel::parseFromFile(const QFileInfo &fi, bool *ok)
         pTempStream = av_ctx->streams[audioRet];
     }
 
-    if(nullptr != pTempStream)
-    {
+    if (nullptr != pTempStream) {
         while ((tag = g_mvideo_av_dict_get(pTempStream->metadata, "", tag, AV_DICT_IGNORE_SUFFIX)) != nullptr) {
             if (tag->key && strcmp(tag->key, "rotate") == 0) {
                 mi.raw_rotate = QString(tag->value).toInt();
@@ -468,7 +467,7 @@ bool PlayItemInfo::refresh()
 void PlaylistModel::slotStateChanged()
 {
     PlayerEngine *e = dynamic_cast<PlayerEngine *>(sender());
-    if(!e) return;
+    if (!e) return;
     qDebug() << "model" << "_userRequestingItem" << _userRequestingItem << "state" << e->state();
     switch (e->state()) {
     case PlayerEngine::Playing: {
@@ -509,7 +508,7 @@ PlaylistModel::PlaylistModel(PlayerEngine *e)
                     .arg(qApp->organizationName())
                     .arg(qApp->applicationName());
 
-	connect(e, &PlayerEngine::stateChanged, this, &PlaylistModel::slotStateChanged);
+    connect(e, &PlayerEngine::stateChanged, this, &PlaylistModel::slotStateChanged);
 
 
 //    _jobWatcher = new QFutureWatcher<PlayItemInfo>();
@@ -549,14 +548,14 @@ QString PlaylistModel::libPath(const QString &strlib)
 void PlaylistModel::initThumb()
 {
     QLibrary library(libPath("libffmpegthumbnailer.so"));
-    m_mvideo_thumbnailer = (mvideo_thumbnailer) library.resolve( "video_thumbnailer_create");
-    m_mvideo_thumbnailer_destroy = (mvideo_thumbnailer_destroy) library.resolve( "video_thumbnailer_destroy");
-    m_mvideo_thumbnailer_create_image_data = (mvideo_thumbnailer_create_image_data) library.resolve( "video_thumbnailer_create_image_data");
-    m_mvideo_thumbnailer_destroy_image_data = (mvideo_thumbnailer_destroy_image_data) library.resolve( "video_thumbnailer_destroy_image_data");
-    m_mvideo_thumbnailer_generate_thumbnail_to_buffer = (mvideo_thumbnailer_generate_thumbnail_to_buffer) library.resolve( "video_thumbnailer_generate_thumbnail_to_buffer");
+    m_mvideo_thumbnailer = (mvideo_thumbnailer) library.resolve("video_thumbnailer_create");
+    m_mvideo_thumbnailer_destroy = (mvideo_thumbnailer_destroy) library.resolve("video_thumbnailer_destroy");
+    m_mvideo_thumbnailer_create_image_data = (mvideo_thumbnailer_create_image_data) library.resolve("video_thumbnailer_create_image_data");
+    m_mvideo_thumbnailer_destroy_image_data = (mvideo_thumbnailer_destroy_image_data) library.resolve("video_thumbnailer_destroy_image_data");
+    m_mvideo_thumbnailer_generate_thumbnail_to_buffer = (mvideo_thumbnailer_generate_thumbnail_to_buffer) library.resolve("video_thumbnailer_generate_thumbnail_to_buffer");
     if (m_mvideo_thumbnailer == nullptr || m_mvideo_thumbnailer_destroy == nullptr
             || m_mvideo_thumbnailer_create_image_data == nullptr || m_mvideo_thumbnailer_destroy_image_data == nullptr
-            || m_mvideo_thumbnailer_generate_thumbnail_to_buffer == nullptr )
+            || m_mvideo_thumbnailer_generate_thumbnail_to_buffer == nullptr)
 
     {
         return;
@@ -594,9 +593,6 @@ PlaylistModel::~PlaylistModel()
 #ifndef _LIBDMR_
     if (Settings::get().isSet(Settings::ClearWhenQuit)) {
         clearPlaylist();
-    } else {
-        //persistently save current playlist
-        savePlaylist();
     }
 #endif
     if (utils::check_wayland_env() && m_getThumanbil) {
@@ -705,6 +701,8 @@ void PlaylistModel::loadPlaylist()
     }
     cfg.endGroup();
 
+    savePlaylist();
+
     if (urls.size() == 0) {
         _firstLoad = false;
         reshuffle();
@@ -759,6 +757,7 @@ void PlaylistModel::clear()
 
     _current = -1;
     _last = -1;
+    savePlaylist();
     emit emptied();
     emit currentChanged();
     emit countChanged();
@@ -822,34 +821,34 @@ void PlaylistModel::tryPlayCurrent(bool next)
     }
     emit itemInfoUpdated(_current);
     if (pif.valid) {
-        if(!utils::check_wayland_env()) {
+        if (!utils::check_wayland_env()) {
             _engine->requestPlay(_current);
             emit currentChanged();
         } else {
-        //本地视频单个循环/列表循环，小于1s视频/无法解码视频，不播放，直接播放下一个
-          if ( (pif.mi.duration <= 1 || pif.thumbnail.isNull()) && pif.url.isLocalFile()) {
-              if (1 == count() || _playMode == PlayMode::SingleLoop || _playMode == PlayMode::SinglePlay) {
-                  qWarning() << "return for video is cannot play and loop play!";
-                  return;
-              }
-              if (_current < count() - 1) {
-                  _current++;
-                  _last = _current;
-              } else {
-                  _current = 0;
-              }
-          }
-          _hasNormalVideo = false;
-          for (auto info : _infos) {
-              if ((info.valid && info.mi.duration > 1 && !info.thumbnail.isNull()) || !pif.url.isLocalFile()) {
-                  _hasNormalVideo = true;
-                  break;
-              }
-          }
-          if (_hasNormalVideo) {
-              _engine->requestPlay(_current);
-              emit currentChanged();
-          }
+            //本地视频单个循环/列表循环，小于1s视频/无法解码视频，不播放，直接播放下一个
+            if ((pif.mi.duration <= 1 || pif.thumbnail.isNull()) && pif.url.isLocalFile()) {
+                if (1 == count() || _playMode == PlayMode::SingleLoop || _playMode == PlayMode::SinglePlay) {
+                    qWarning() << "return for video is cannot play and loop play!";
+                    return;
+                }
+                if (_current < count() - 1) {
+                    _current++;
+                    _last = _current;
+                } else {
+                    _current = 0;
+                }
+            }
+            _hasNormalVideo = false;
+            for (auto info : _infos) {
+                if ((info.valid && info.mi.duration > 1 && !info.thumbnail.isNull()) || !pif.url.isLocalFile()) {
+                    _hasNormalVideo = true;
+                    break;
+                }
+            }
+            if (_hasNormalVideo) {
+                _engine->requestPlay(_current);
+                emit currentChanged();
+            }
         }
     } else {
         _current = -1;
@@ -1236,39 +1235,39 @@ void PlaylistModel::delayedAppendAsync(const QList<QUrl> &urls)
 
         handleAsyncAppendResults(pil);
     } else {*/
-        qDebug() << "not wayland";
-        if (QThread::idealThreadCount() > 1) {
+    qDebug() << "not wayland";
+    if (QThread::idealThreadCount() > 1) {
 //            auto future = QtConcurrent::mapped(_pendingJob, MapFunctor(this));
 //            _jobWatcher->setFuture(future);
-            if (!m_getThumanbil) {
-                m_getThumanbil = new GetThumanbil(this, t_urls);
-                connect(m_getThumanbil, &GetThumanbil::finished, this, &PlaylistModel::onAsyncFinished);
-                connect(m_getThumanbil, &GetThumanbil::updateItem, this, &PlaylistModel::onAsyncUpdate, Qt::BlockingQueuedConnection);
-                m_isLoadRunning = true;
-                m_getThumanbil->start();
-            } else {
-                if (m_isLoadRunning) {
-                    m_tempList.append(t_urls);
-                } else {
-                    m_getThumanbil->setUrls(t_urls);
-                    m_getThumanbil->start();
-                }
-            }
-            _pendingJob.clear();
-            _urlsInJob.clear();
+        if (!m_getThumanbil) {
+            m_getThumanbil = new GetThumanbil(this, t_urls);
+            connect(m_getThumanbil, &GetThumanbil::finished, this, &PlaylistModel::onAsyncFinished);
+            connect(m_getThumanbil, &GetThumanbil::updateItem, this, &PlaylistModel::onAsyncUpdate, Qt::BlockingQueuedConnection);
+            m_isLoadRunning = true;
+            m_getThumanbil->start();
         } else {
-            PlayItemInfoList pil;
-            for (const auto &a : _pendingJob) {
-                qDebug() << "sync mapping " << a.first.fileName();
-                pil.append(calculatePlayInfo(a.first, a.second));
-                if (m_ploadThread && m_ploadThread->isRunning()) {
-                    m_ploadThread->msleep(10);
-                }
+            if (m_isLoadRunning) {
+                m_tempList.append(t_urls);
+            } else {
+                m_getThumanbil->setUrls(t_urls);
+                m_getThumanbil->start();
             }
-            _pendingJob.clear();
-            _urlsInJob.clear();
-            handleAsyncAppendResults(pil);
         }
+        _pendingJob.clear();
+        _urlsInJob.clear();
+    } else {
+        PlayItemInfoList pil;
+        for (const auto &a : _pendingJob) {
+            qDebug() << "sync mapping " << a.first.fileName();
+            pil.append(calculatePlayInfo(a.first, a.second));
+            if (m_ploadThread && m_ploadThread->isRunning()) {
+                m_ploadThread->msleep(10);
+            }
+        }
+        _pendingJob.clear();
+        _urlsInJob.clear();
+        handleAsyncAppendResults(pil);
+    }
     //}
 
 }
@@ -1382,6 +1381,7 @@ void PlaylistModel::handleAsyncAppendResults(QList<PlayItemInfo> &fil)
         else
             _infos += fil;
         reshuffle();
+        savePlaylist();
         _firstLoad = false;
         emit itemsAppended();
         emit countChanged();
@@ -1410,6 +1410,7 @@ void PlaylistModel::append(const QUrl &url)
 
     appendSingle(url);
     reshuffle();
+    savePlaylist();
     emit itemsAppended();
     emit countChanged();
 }
@@ -1443,7 +1444,7 @@ void PlaylistModel::changeCurrent(int pos)
 void PlaylistModel::switchPosition(int src, int target)
 {
     //Q_ASSERT_X(0, "playlist", "not implemented");
-    Q_ASSERT (src < _infos.size() && target < _infos.size());
+    Q_ASSERT(src < _infos.size() && target < _infos.size());
     _infos.move(src, target);
 
     int min = qMin(src, target);
@@ -1468,7 +1469,7 @@ void PlaylistModel::switchPosition(int src, int target)
 PlayItemInfo &PlaylistModel::currentInfo()
 {
     //Q_ASSERT (_infos.size() > 0 && _current >= 0);
-    Q_ASSERT (_infos.size() > 0);
+    Q_ASSERT(_infos.size() > 0);
 
     if (_current >= 0)
         return _infos[_current];
@@ -1479,7 +1480,7 @@ PlayItemInfo &PlaylistModel::currentInfo()
 
 const PlayItemInfo &PlaylistModel::currentInfo() const
 {
-    Q_ASSERT (_infos.size() > 0 && _current >= 0);
+    Q_ASSERT(_infos.size() > 0 && _current >= 0);
     return _infos[_current];
 }
 
@@ -1568,28 +1569,28 @@ struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl &url, const QFil
 //        qDebug() << "load cached MovieInfo" << mi;
 //    } else {
 
-        mi = parseFromFile(fi, &ok);
-        if (isDvd && url.scheme().startsWith("dvd")) {
-            QString dev = url.path();
-            if (dev.isEmpty()) dev = "/dev/sr0";
+    mi = parseFromFile(fi, &ok);
+    if (isDvd && url.scheme().startsWith("dvd")) {
+        QString dev = url.path();
+        if (dev.isEmpty()) dev = "/dev/sr0";
 #ifdef heyi
-            dmr::dvd::RetrieveDvdThread::get()->startDvd(dev);
+        dmr::dvd::RetrieveDvdThread::get()->startDvd(dev);
 #endif
 //            mi.title = dmr::dvd::RetrieveDVDTitle(dev);
 //            if (mi.title.isEmpty()) {
 //              mi.title = "DVD";
 //            }
 //            mi.valid = true;
-        } else if (!url.isLocalFile()) {
-            QString msg = url.fileName();
-            if (msg != "sr0" || msg != "cdrom") {
-                if (msg.isEmpty()) msg = url.path();
-                mi.title = msg;
-                mi.valid = true;
-            }
-        } else {
-            mi.title = fi.fileName();
+    } else if (!url.isLocalFile()) {
+        QString msg = url.fileName();
+        if (msg != "sr0" || msg != "cdrom") {
+            if (msg.isEmpty()) msg = url.path();
+            mi.title = msg;
+            mi.valid = true;
         }
+    } else {
+        mi.title = fi.fileName();
+    }
     //}
 
     QPixmap pm;
@@ -1609,8 +1610,7 @@ struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl &url, const QFil
                 }
             }
 
-            if(_engine->state() != dmr::PlayerEngine::Idle && _engine->videoSize().width()<0)   //如果没有视频流，就当做音乐播放
-            {
+            if (_engine->state() != dmr::PlayerEngine::Idle && _engine->videoSize().width() < 0) { //如果没有视频流，就当做音乐播放
                 isMusic = true;
             }
 
@@ -1667,7 +1667,7 @@ int PlaylistModel::indexOf(const QUrl &url)
 }
 
 
-LoadThread::LoadThread(PlaylistModel *model, const QList<QUrl> &urls):_urls(urls)
+LoadThread::LoadThread(PlaylistModel *model, const QList<QUrl> &urls): _urls(urls)
 {
     _pModel = nullptr;
     _pModel = model;
