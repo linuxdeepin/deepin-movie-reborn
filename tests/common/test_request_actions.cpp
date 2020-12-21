@@ -202,7 +202,7 @@ TEST(requestAction, settings)
 
     Settings::get().settings()->setOption("base.screenshot.location",
                                           "/data/source/deepin-movie-reborn/movie/DMovie");
-    w->setShowSetting(false);
+    w->setShowSetting(true);
     QTest::qWait(200);
     w->requestAction(ActionFactory::ActionKind::Settings);
     QTest::qWait(200);

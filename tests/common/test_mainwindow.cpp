@@ -27,6 +27,7 @@
 #include "utils.h"
 #include "dbus_adpator.h"
 #include "dbusutils.h"
+#include "burst_screenshots_dialog.h"
 
 using namespace dmr;
 TEST(MainWindow, init)
@@ -51,10 +52,6 @@ TEST(MainWindow, loadFile)
     QList<QUrl> listPlayFiles;
     listPlayFiles << QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/demo.mp4")\
                   << QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/bensound-sunny.mp3");
-//    QTest::qWait(500);
-//    w->showMinimized();
-//    QTest::qWait(500);
-//    w->showNormal();
 
     const auto &valids = engine->addPlayFiles(listPlayFiles);
     QCOMPARE(engine->isPlayableFile(valids[0]), true);
@@ -170,12 +167,17 @@ TEST(MainWindow, shortCutPlay)
 {
     MainWindow* w = dApp->getMainWindow();
     QTestEventList testEventList;
+    PlayerEngine *engine =  w->engine();
 
 //    testEventList.addKeyClick(Qt::Key_Slash, Qt::ControlModifier | Qt::ShiftModifier, 500);
 //    testEventList.addKeyRelease(Qt::Key_Slash, Qt::ControlModifier | Qt::ShiftModifier, 1000);
     //截图
     testEventList.addKeyClick(Qt::Key_A, Qt::AltModifier, 500);    //screenshot
-//    testEventList.addKeyClick(Qt::Key_S, Qt::AltModifier, 1000);    //连拍
+    testEventList.addKeyClick(Qt::Key_S, Qt::AltModifier, 1000);    //连拍
+    BurstScreenshotsDialog bsd(engine->playlist().currentInfo());
+    bsd.show();
+    QTest::qWait(500);
+    bsd.close();
 
     testEventList.addKeyClick(Qt::Key_Right, Qt::NoModifier, 300); //fast forward
     for(int i=0; i<4; i++){
@@ -189,9 +191,13 @@ TEST(MainWindow, shortCutPlay)
     testEventList.addKeyClick(Qt::Key_F3, Qt::NoModifier, 1800);    //playlist
     testEventList.addKeyClick(Qt::Key_Up, Qt::NoModifier, 400);
     testEventList.addKeyClick(Qt::Key_Enter, Qt::NoModifier, 500);
-    testEventList.addKeyClick(Qt::Key_F3, Qt::NoModifier, 1900);
-    testEventList.addKeyClick(Qt::Key_Down, Qt::NoModifier, 500);
-    testEventList.addKeyClick(Qt::Key_Delete, Qt::NoModifier, 500);    //delete from playlist
+    qDebug() << __func__ << "playlist_count:" << engine->playlist().count();
+//    if(engine->playlist().count() >= 2)
+//    {
+//        testEventList.addKeyClick(Qt::Key_F3, Qt::NoModifier, 1900);
+//        testEventList.addKeyClick(Qt::Key_Down, Qt::NoModifier, 500);
+//        testEventList.addKeyClick(Qt::Key_Delete, Qt::NoModifier, 500);    //delete from playlist
+//    }
 
     //加速播放
     for (int i = 0; i<10 ;i++) {
@@ -208,9 +214,10 @@ TEST(MainWindow, shortCutPlay)
 //    testEventList.addKeyClick(Qt::Key_Tab, Qt::NoModifier, 300);
 //    testEventList.addKeyClick(Qt::Key_Tab, Qt::NoModifier, 300);
 
+    qDebug() << __func__ << "playerEngineState:" << engine->state();
     testEventList.simulate(w);
 }
-
+/*
 TEST(MainWindow, shortCutVolumeAndFrame)
 {
     MainWindow* w = dApp->getMainWindow();
@@ -533,7 +540,7 @@ TEST(ToolBox, volBtn)
     QTest::qWait(100);
     QApplication::sendEvent(volBtn, &wheelDownEvent);
 }
-
+*/
 TEST(ToolBox, mainWindowEvent)
 {
     MainWindow *w = dApp->getMainWindow();
