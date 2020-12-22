@@ -1,18 +1,21 @@
 #include "moviewidget.h"
+
 #include <QHBoxLayout>
 #include <QTimer>
 #include <QLabel>
 #include <QPixmap>
-#include <QTransform>
 #include <QApplication>
 #include <QDesktopWidget>
+#include <QPainter>
 
-#define DEFAULT_RATION (1.0f*1080/1920)   //背景图片比例
-#define INTERVAL 50                       //刷新间隔
+#define DEFAULT_RATION (1.0f*1080/1920)     //背景图片比例
+#define INTERVAL 50                         //刷新间隔
+#define ROTATE_ANGLE 360/(1000*2.5/INTERVAL)  //2.5秒转一圈
+
 namespace dmr {
 
 MovieWidget::MovieWidget(QWidget *parent)
-    : QWidget(parent), m_nRotate(0), m_state(PlayState::StateStop)
+    : QWidget(parent), m_nRotate(0), m_nWidthNote(0), m_state(PlayState::StateStop)
 {
     m_pLabMovie = nullptr;
     m_pTimer = nullptr;
@@ -23,12 +26,13 @@ MovieWidget::MovieWidget(QWidget *parent)
     setLayout(m_pHBoxLayout);
 
     m_pLabMovie = new QLabel(this);
-    //m_pLabMovie->setScaledContents(true);
     m_pHBoxLayout->addStretch();
     m_pHBoxLayout->addWidget(m_pLabMovie);
     m_pHBoxLayout->addStretch();
 
     m_pixmapBg.load(":/resources/icons/music_bg.svg");
+    m_pixmapNote.load(":/resources/icons/music_note.svg");
+    m_nWidthNote = m_pixmapNote.width();
 
     m_pTimer = new QTimer();
     m_pTimer->setInterval(INTERVAL);
@@ -61,13 +65,26 @@ void MovieWidget::pausePlaying()
 
 void MovieWidget::updateView()
 {
-    QMatrix matri;
     QPixmap pixmapBg;
     float nRatio = 1.0f;
     QRect rectDesktop;
+    int nWidth = 0;
+    int nHeight = 0;
 
-    int nWidth = rect().width();
-    int nHeight = rect().height();
+    pixmapBg = m_pixmapBg;
+
+    //绘制旋转音符
+    QPainter painter(&pixmapBg);
+    painter.translate(pixmapBg.width() / 2.0, pixmapBg.height() / 2.0);
+    painter.rotate(m_nRotate);
+    painter.translate(-pixmapBg.width() / 2.0, -pixmapBg.height() / 2.0);
+    painter.setRenderHints(QPainter::HighQualityAntialiasing | QPainter::SmoothPixmapTransform | QPainter::Antialiasing);
+    painter.drawPixmap(pixmapBg.width() / 2 - m_nWidthNote / 2, pixmapBg.height() / 2 - m_nWidthNote / 2, m_nWidthNote, m_nWidthNote, m_pixmapNote);
+
+    m_nRotate += ROTATE_ANGLE;
+
+    nWidth = rect().width();
+    nHeight = rect().height();
     rectDesktop = qApp->desktop()->availableGeometry(this);
 
     //根据比例缩放背景
@@ -80,18 +97,10 @@ void MovieWidget::updateView()
         nRatio = nHeight * 2.0f / rectDesktop.height();
     }
 
-    pixmapBg = m_pixmapBg.scaled(static_cast<int>(m_pixmapBg.width() * nRatio),
-                                 static_cast<int>(m_pixmapBg.height() * nRatio), Qt::IgnoreAspectRatio,
-                                 Qt::SmoothTransformation);
-    //旋转背景
-    matri.translate(pixmapBg.width() / 2.0, pixmapBg.height() / 2.0);
-    matri.rotate(m_nRotate);
-    m_nRotate = m_nRotate + 9;           //两秒转一圈
-    matri.translate(-pixmapBg.width() / 2.0, -pixmapBg.height() / 2.0);
-
-    pixmapBg = pixmapBg.transformed(matri, Qt::SmoothTransformation);
-
-    m_pLabMovie->setPixmap(pixmapBg);
+    QPixmap pixmapFinal = pixmapBg.scaled(static_cast<int>(pixmapBg.width() * nRatio),
+                                          static_cast<int>(pixmapBg.height() * nRatio), Qt::IgnoreAspectRatio,
+                                          Qt::SmoothTransformation);
+    m_pLabMovie->setPixmap(pixmapFinal);
 }
 
 }

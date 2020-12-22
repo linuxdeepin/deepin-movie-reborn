@@ -216,5 +216,6 @@
         <file>resources/icons/stop/17.png</file>
         <file>resources/icons/stop/18.png</file>
         <file>resources/icons/music_bg.svg</file>
+        <file>resources/icons/music_note.svg</file>
     </qresource>
 </RCC>

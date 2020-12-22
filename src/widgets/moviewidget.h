@@ -37,7 +37,9 @@ private:
     QTimer *m_pTimer;
     QHBoxLayout *m_pHBoxLayout;
     QPixmap m_pixmapBg;
-    int m_nRotate;
+    QPixmap m_pixmapNote;
+    int m_nRotate;     //旋转角度
+    int m_nWidthNote;  //音符边长
     PlayState m_state;
 };
 
