@@ -245,6 +245,7 @@ public:
 
     void updateSlider();                //根据进度条显示更新影片实际进度
     void initThumb();
+    void updateSliderPoint(QPoint);
 //    void loadVolSlider();
 
     /////add for unit test/////

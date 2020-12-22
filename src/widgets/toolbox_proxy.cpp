@@ -1127,6 +1127,14 @@ public:
     }
 
 public slots:
+    void updatePoint(QPoint point)
+    {
+        QRect main_rect = _mw->rect();
+        QRect view_rect = main_rect.marginsRemoved(QMargins(1, 1, 1, 1));
+        m_point = point + QPoint(view_rect.width() - (TOOLBOX_BUTTON_WIDTH * 2 + 30 + (VOLSLIDER_WIDTH - TOOLBOX_BUTTON_WIDTH) / 2),
+                                 view_rect.height() - TOOLBOX_HEIGHT - VOLSLIDER_HEIGHT);
+    }
+
     void popup()
     {
         if (isHidden()) {
@@ -1151,9 +1159,9 @@ public slots:
         start.moveTo(start.topLeft() - QPoint(8, 14));
         media.moveTo(media.topLeft() + QPoint(5, 10));
 #else
-        end.moveTo(mapToGlobal(QPoint(0, 0)));
-        start.moveTo(mapToGlobal(QPoint(0, 0)) - QPoint(8, 14));
-        media.moveTo(mapToGlobal(QPoint(0, 0)) + QPoint(5, 10));
+        end.moveTo(m_point);
+        start.moveTo(m_point - QPoint(8, 14));
+        media.moveTo(m_point + QPoint(5, 10));
 #endif
 
         if (state == State::Close) {
@@ -1394,6 +1402,7 @@ private:
     QColor m_borderColor = QColor(0, 0, 0,  255 * 2 / 10);
     int m_radius = 20;
     int m_sThemeType = 0;
+    QPoint m_point {0, 0};
 };
 
 viewProgBarLoad::viewProgBarLoad(PlayerEngine *engine, DMRSlider *progBar, ToolboxProxy *parent)
@@ -3109,6 +3118,11 @@ void ToolboxProxy::initThumb()
     ThumbnailWorker::get().setPlayerEngine(_engine);
     connect(&ThumbnailWorker::get(), &ThumbnailWorker::thumbGenerated,
             this, &ToolboxProxy::updateHoverPreview);
+}
+
+void ToolboxProxy::updateSliderPoint(QPoint point)
+{
+    _volSlider->updatePoint(point);
 }
 }
 #undef THEME_TYPE

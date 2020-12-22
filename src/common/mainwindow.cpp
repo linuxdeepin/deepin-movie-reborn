@@ -3745,14 +3745,16 @@ void MainWindow::moveEvent(QMoveEvent *ev)
     qDebug() << "进入moveEvent";
     QWidget::moveEvent(ev);
 #ifdef __aarch64__
+    _toolbox->updateSliderPoint(mapToGlobal(QPoint(0, 0)));
     if (windowState() == Qt::WindowNoState && !_miniMode) {
         _lastRectInNormalMode = geometry();
     }
     _nwComm->syncPosition();
 #elif  __mips__
-    _nwComm->syncPosition();
+   _toolbox->updateSliderPoint(mapToGlobal(QPoint(0, 0)));
+   _nwComm->syncPosition();
 #else
-    updateGeometryNotification(geometry().size());
+   updateGeometryNotification(geometry().size());
 #endif
 }
 
