@@ -1021,6 +1021,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_pDBus, SIGNAL(PrepareForSleep(bool)), this, SLOT(sleepStateChanged(bool)));
 
     m_pMovieWidget = new MovieWidget(this);
+    m_pMovieWidget->hide();
 }
 
 void MainWindow::setupTitlebar()
@@ -3751,10 +3752,10 @@ void MainWindow::moveEvent(QMoveEvent *ev)
     }
     _nwComm->syncPosition();
 #elif  __mips__
-   _toolbox->updateSliderPoint(mapToGlobal(QPoint(0, 0)));
-   _nwComm->syncPosition();
+    _toolbox->updateSliderPoint(mapToGlobal(QPoint(0, 0)));
+    _nwComm->syncPosition();
 #else
-   updateGeometryNotification(geometry().size());
+    updateGeometryNotification(geometry().size());
 #endif
 }
 
@@ -4452,6 +4453,10 @@ void MainWindow::toggleUIMode()
     _miniCloseBtn->setEnabled(_miniMode);
     _miniQuitMiniBtn->setEnabled(_miniMode);
 
+    _miniPlayBtn->raise();
+    _miniCloseBtn->raise();
+    _miniQuitMiniBtn->raise();
+
     resumeToolsWindow();
 
     if (_miniMode) {
@@ -4488,13 +4493,17 @@ void MainWindow::toggleUIMode()
 
         auto sz = QSize(380, 380);
         if (_engine->state() != PlayerEngine::CoreState::Idle) {
+            qreal ratio = 1920 * 1.0 / 1080;
             auto vid_size = _engine->videoSize();
-            qreal ratio = vid_size.width() / static_cast<qreal>(vid_size.height());
 
-            if (vid_size.width() > vid_size.height()) {
+            if (vid_size.height() > 0 && vid_size.width() >= vid_size.height()) {
+                ratio = vid_size.width() / static_cast<qreal>(vid_size.height());
                 sz = QSize(380, static_cast<int>(380 / ratio) + 1);
+            } else if (vid_size.height() > 0 && vid_size.width() < vid_size.height()) {
+                ratio = vid_size.width() / static_cast<qreal>(vid_size.height());
+                sz = QSize(380, static_cast<int>(380 * ratio) + 1);
             } else {
-                sz = QSize(380, static_cast<int>(380 * ratio) + 1);   //by thx 这样修改mini模式也存在黑边
+                sz = QSize(380, static_cast<int>(380 / ratio) + 1);
             }
         }
 
