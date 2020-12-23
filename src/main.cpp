@@ -57,6 +57,7 @@ DWIDGET_USE_NAMESPACE
 
 int main(int argc, char *argv[])
 {
+#ifdef __aarch64__
     if (dmr::utils::first_check_wayland_env()) {
         qputenv("QT_WAYLAND_SHELL_INTEGRATION", "kwayland-shell");
         //qputenv("_d_disableDBusFileDialog", "true");
@@ -64,19 +65,14 @@ int main(int argc, char *argv[])
         QSurfaceFormat format;
         format.setRenderableType(QSurfaceFormat::OpenGLES);
         format.setDefaultFormat(format);
-    } else {
-#ifdef __mips__
-        if (CompositingManager::get().composited()) {
-            CompositingManager::detectOpenGLEarly();
-            CompositingManager::detectPciID();
-        }
-#else
-//            CompositingManager::detectOpenGLEarly();
-//            CompositingManager::detectPciID();
-#endif
     }
-
-
+#endif
+#ifdef __mips__
+    if (CompositingManager::get().composited()) {
+        CompositingManager::detectOpenGLEarly();
+        CompositingManager::detectPciID();
+    }
+#endif
 #if defined(STATIC_LIB)
     DWIDGET_INIT_RESOURCE();
 #endif

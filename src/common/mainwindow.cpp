@@ -669,7 +669,6 @@ MainWindow::MainWindow(QWidget *parent)
     sp.setHeightForWidth(true);
     setSizePolicy(sp);
     setContentsMargins(0, 0, 0, 0);
-
     setupTitlebar();
 
     auto &clm = dmr::CommandLineManager::get();
@@ -690,8 +689,6 @@ MainWindow::MainWindow(QWidget *parent)
         volume = 100;
     }
     m_displayVolume = volume;
-
-    _engine->setSubCodepage("auto");
     if (utils::check_wayland_env()) {
         _engine->changeVolume(100);
         if (Settings::get().internalOption("mute").toBool()) {
@@ -709,7 +706,6 @@ MainWindow::MainWindow(QWidget *parent)
     connect(_engine, &PlayerEngine::stateChanged, this, &MainWindow::slotPlayerStateChanged);
     connect(ActionFactory::get().mainContextMenu(), &DMenu::triggered, this, &MainWindow::menuItemInvoked);
     connect(ActionFactory::get().playlistContextMenu(), &DMenu::triggered, this, &MainWindow::menuItemInvoked);
-
     connect(this, &MainWindow::frameMenuEnable, &ActionFactory::get(), &ActionFactory::frameMenuEnable);
     connect(this, &MainWindow::playSpeedMenuEnable, &ActionFactory::get(), &ActionFactory::playSpeedMenuEnable);
     connect(qApp, &QGuiApplication::focusWindowChanged, this, &MainWindow::slotFocusWindowChanged);
@@ -837,12 +833,10 @@ MainWindow::MainWindow(QWidget *parent)
     }
 
     updateProxyGeometry();
+    ShortcutManager::get().buildBindings();
 
     connect(&ShortcutManager::get(), &ShortcutManager::bindingsChanged,
             this, &MainWindow::onBindingsChanged);
-
-    ShortcutManager::get().buildBindings();
-
     connect(_engine, SIGNAL(stateChanged()), this, SLOT(update()));
     connect(_engine, &PlayerEngine::tracksChanged, this, &MainWindow::updateActionsState);
     connect(_engine, &PlayerEngine::stateChanged, this, &MainWindow::updateActionsState);
@@ -955,7 +949,6 @@ MainWindow::MainWindow(QWidget *parent)
     _fullscreentimelable->setLayout(_fullscreentimebox);
     _fullscreentimelable->close();
 #endif
-
     _animationlable = new AnimationLabel;
     _animationlable->setAttribute(Qt::WA_TranslucentBackground);
     _animationlable->setWindowFlags(Qt::FramelessWindowHint);
@@ -972,22 +965,16 @@ MainWindow::MainWindow(QWidget *parent)
 #else
     popup = new DFloatingMessage(DFloatingMessage::TransientType, this);
 #endif
-
     popup->resize(0, 0);
-
     defaultplaymodeinit();
-    setHwaccelMode();
+
     connect(&Settings::get(), &Settings::defaultplaymodechanged, this, &MainWindow::slotdefaultplaymodechanged);
-    connect(&Settings::get(), &Settings::hwaccelModeChanged, this, &MainWindow::slotAwaacelModeChanged);
-
     connect(this, &MainWindow::playlistchanged, _toolbox, &ToolboxProxy::updateplaylisticon);
-
     connect(_engine, &PlayerEngine::onlineStateChanged, this, &MainWindow::checkOnlineState);
     connect(&OnlineSubtitle::get(), &OnlineSubtitle::onlineSubtitleStateChanged, this, &MainWindow::checkOnlineSubtitle);
     connect(_engine, &PlayerEngine::mpvErrorLogsChanged, this, &MainWindow::checkErrorMpvLogsChanged);
     connect(_engine, &PlayerEngine::mpvWarningLogsChanged, this, &MainWindow::checkWarningMpvLogsChanged);
     connect(_engine, &PlayerEngine::urlpause, this, &MainWindow::slotUrlpause);
-
     connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::newProcessInstance, this, [ = ] {
         this->activateWindow();
     });
@@ -998,21 +985,19 @@ MainWindow::MainWindow(QWidget *parent)
     connect(&volumeMonitoring, &VolumeMonitoring::volumeChanged, this, [ = ](int vol) {
         changedVolumeSlot(vol);
     });
-
     connect(&volumeMonitoring, &VolumeMonitoring::muteChanged, this, &MainWindow::slotMuteChanged);
     connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, &MainWindow::updateMiniBtnTheme);
 
     ThreadPool::instance()->moveToNewThread(&m_diskCheckThread);
     m_diskCheckThread.start();
-
     connect(&m_diskCheckThread, &Diskcheckthread::diskRemove, this, &MainWindow::diskRemoved);
-    _toolbox->setDisplayValue(volume);
 
     if (Settings::get().internalOption("mute").toBool()) {
         _engine->toggleMute();
         Settings::get().setInternalOption("mute", _engine->muted());
     }
 
+    _toolbox->setDisplayValue(m_displayVolume);
     QTimer::singleShot(50, [this]() {
         loadPlayList();
     });
@@ -1581,7 +1566,13 @@ void MainWindow::reflectActionToUI(ActionFactory::ActionKind kd)
     }
 
     case ActionFactory::ActionKind::ChangeSubCodepage: {
-        auto cp = _engine->subCodepage();
+        //mpv未初始化时返回默认值auto
+        QString cp;
+        if (m_bFirstInit) {
+            cp = _engine->subCodepage();
+        } else {
+            cp = "auto";
+        }
         qDebug() << "codepage" << cp;
         acts = ActionFactory::get().findActionsByKind(kd);
         auto p = acts.begin();
