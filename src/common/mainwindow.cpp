@@ -996,9 +996,9 @@ MainWindow::MainWindow(QWidget *parent)
         _engine->toggleMute();
         Settings::get().setInternalOption("mute", _engine->muted());
     }
-
-    _toolbox->setDisplayValue(m_displayVolume);
-    QTimer::singleShot(50, [this]() {
+    _toolbox->setInitVolume(m_displayVolume);
+    QTimer::singleShot(500, [this]() {
+        _nwComm->updateWithMessage(tr("Volume: %1%").arg(m_displayVolume));
         loadPlayList();
     });
 

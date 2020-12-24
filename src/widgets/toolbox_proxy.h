@@ -255,13 +255,12 @@ public:
     ToolButton *listBtn() {return _listBtn;}
     ToolButton *fsBtn() {return _fsBtn;}
     VolumeButton *volBtn() {return _volBtn;}
-
-
 public slots:
     void finishLoadSlot(QSize size);
     void updateplaylisticon();
     void setthumbnailmode();
     void setDisplayValue(int);
+    void setInitVolume(int v);
 signals:
     void requestPlay();
     void requestPause();
@@ -384,12 +383,8 @@ private:
 
     QPropertyAnimation *paopen;
     QPropertyAnimation *paClose;
-
     QMutex m_listPixmapMutex;       //缩略图list的锁
-
-
     QString m_UrloldThumbUrl;       //当前加载的文件，目的是为缩略图服务
-
     DBlurEffectWidget *bot_widget {nullptr };
     HintFilter        *hintFilter {nullptr };
     bool m_isMouseIn = false;
@@ -398,6 +393,7 @@ private:
     qint64 oldDuration = 0;
     qint64 oldElapsed = 0;
     QTimer _progressTimer;
+    int m_initVolume = -1;
 };
 class viewProgBarLoad: public QThread
 {

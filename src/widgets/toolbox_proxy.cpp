@@ -158,7 +158,7 @@ protected:
     {
         QPainter painter(this);
         QImage image(m_strImageUrl);
-
+ 
         painter.setRenderHints(QPainter::Antialiasing | QPainter::HighQualityAntialiasing);
         painter.drawImage(rect(), image);
     }
@@ -231,7 +231,7 @@ protected:
             break;
         }
         // standard event processing
-        return QObject::eventFilter(obj, event);
+        return QObject::eventFilter(obj, event); 
     }
 };
 //not used class
@@ -1677,6 +1677,11 @@ void ToolboxProxy::setDisplayValue(int v)
     _volSlider->setValue(v);
 }
 
+void ToolboxProxy::setInitVolume(int v)
+{
+    m_initVolume = v;
+}
+
 void ToolboxProxy::updateplaylisticon()
 {
     if (_listBtn->isChecked() && DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
@@ -2230,6 +2235,15 @@ void ToolboxProxy::slotVolumeButtonClicked()
 {
     if (_volSlider->getsliderstate())
         return;
+    /*
+     * 设置-2为已经完成第一次打开设置音量
+     * -1为初始化数值
+     * 大于等于零表示为已完成初始化
+     */
+    if (m_initVolume >= 0) {
+        setDisplayValue(m_initVolume);
+        m_initVolume = -2;
+    }
     if (CompositingManager::get().composited()) {
         if (!_volSlider->isVisible()) {
             _volSlider->show(_mainWindow->width() - _volBtn->width() / 2 - _playBtn->width() - 40,
