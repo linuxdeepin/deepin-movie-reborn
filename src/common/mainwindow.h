@@ -385,6 +385,7 @@ private:
     bool m_bMpvFunsLoad {false};
     QPoint posMouseOrigin;
     QPoint m_pressPoint;
+    bool m_bStartMini {false};
 
     enum StateBeforeEnterMiniMode {
         SBEM_None = 0x0,
@@ -434,7 +435,6 @@ private:
     bool m_bFirstInit {false};
     bool m_bLastIsTouch {false};
     bool m_bTouchChangeVolume {false};
-    bool m_bIsFullSreen {false};
     bool m_bisOverhunderd {false};
     bool m_bisShowSettingDialog {true};
     QDBusInterface *m_pDBus {nullptr};
