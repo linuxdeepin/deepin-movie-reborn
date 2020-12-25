@@ -1910,6 +1910,10 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
 {
     qDebug() << "kd = " << kd << "fromUI " << fromUI << (isShortcut ? "shortcut" : "");
 
+    if (!_toolbox->getbAnimationFinash()) {
+        return;
+    }
+
     if (!isActionAllowed(kd, fromUI, isShortcut)) {
         qDebug() << kd << "disallowed";
         return;
@@ -2063,20 +2067,25 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     }
 
     case ActionFactory::ActionKind::ToggleMiniMode: {
-        if (_playlist->state() == PlaylistWidget::Opened && !m_bIsFullSreen) {
+        int nDelayTime = 0;
+        if (_playlist->state() == PlaylistWidget::Opened) {
             requestAction(ActionFactory::TogglePlaylist);
+            nDelayTime = 500;
         }
 
+        QTimer::singleShot(nDelayTime, this, [ = ] {
 #ifndef __mips__
-        if (!m_bIsFullSreen) {
-            _fullscreentimelable->close();
-        }
+            if (!m_bIsFullSreen)
+            {
+                _fullscreentimelable->close();
+            }
 #endif
-
-        if (!fromUI) {
-            reflectActionToUI(kd);
-        }
-        toggleUIMode();
+            if (!fromUI)
+            {
+                reflectActionToUI(kd);
+            }
+            toggleUIMode();
+        });
 
         break;
     }
@@ -2522,29 +2531,25 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     }
 
     case ActionFactory::ActionKind::TogglePause: {
-        if (!_playlistopen_clicktogglepause) {
-            if (_engine->state() == PlayerEngine::Idle && isShortcut) {
-                if (_engine->getplaylist()->getthreadstate()) {
-                    qDebug() << "playlist loadthread is running";
-                    break;
-                }
-                requestAction(ActionFactory::StartPlay);
-            } else {
-                if (_engine->state() == PlayerEngine::Paused) {
-                    //startPlayStateAnimation(true);
-                    if (!_miniMode) {
-                        _animationlable->setGeometry(width() / 2 - 100, height() / 2 - 100, 200, 200);
-                        _animationlable->start();
-                    }
-                    QTimer::singleShot(160, [ = ]() {
-                        _engine->pauseResume();
-                    });
-                } else {
-                    _engine->pauseResume();
-                }
+        if (_engine->state() == PlayerEngine::Idle && isShortcut) {
+            if (_engine->getplaylist()->getthreadstate()) {
+                qDebug() << "playlist loadthread is running";
+                break;
             }
+            requestAction(ActionFactory::StartPlay);
         } else {
-            _playlistopen_clicktogglepause = false;
+            if (_engine->state() == PlayerEngine::Paused) {
+                //startPlayStateAnimation(true);
+                if (!_miniMode) {
+                    _animationlable->setGeometry(width() / 2 - 100, height() / 2 - 100, 200, 200);
+                    _animationlable->start();
+                }
+                QTimer::singleShot(160, [ = ]() {
+                    _engine->pauseResume();
+                });
+            } else {
+                _engine->pauseResume();
+            }
         }
         break;
     }
@@ -4457,17 +4462,10 @@ void MainWindow::toggleUIMode()
         setEnableSystemResize(false);
         _stateBeforeMiniMode = SBEM_None;
 
-        if (_playlist->state() == PlaylistWidget::Opened) {
-            _stateBeforeMiniMode |= SBEM_PlaylistOpened;
-            requestAction(ActionFactory::TogglePlaylist);
-        }
-
         if (m_bIsFullSreen) {
             _stateBeforeMiniMode |= SBEM_Fullscreen;
             if (!utils::check_wayland_env()) {
                 requestAction(ActionFactory::ToggleFullscreen);
-                //requestAction(ActionFactory::QuitFullscreen);
-                //reflectActionToUI(ActionFactory::ToggleMiniMode);
                 this->setWindowState(Qt::WindowNoState);
             }
         } else if (isMaximized()) {

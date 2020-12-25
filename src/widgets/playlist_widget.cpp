@@ -177,7 +177,7 @@ public:
         l->addWidget(_index);
 
         _thumb = new ListPic(_pif.thumbnail.scaled(QSize(42, 24)), this);
-        if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()){
+        if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
             _thumb->setPic(_pif.thumbnail_dark);
         };
 //        _thumb->setPixmap(_pif.thumbnail.scaled(QSize(42,24)));
@@ -331,7 +331,7 @@ public:
         }
         p.end();
 
-//        _thumb->setPixmap(dest);
+    //        _thumb->setPixmap(dest);
     }*/
 
     void setHovered(bool v)
@@ -535,7 +535,7 @@ protected:
             DPalette pa = DApplicationHelper::instance()->palette(this);
             pa.setBrush(DPalette::Text, pa.color(DPalette::Highlight));
             QColor bgColor(255, 255, 255, static_cast<int>(255 * 0.05));
-            if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ) {
+            if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
                 bgColor = QColor(0, 0, 0, static_cast<int>(255 * 0.05));
             }
 
@@ -678,18 +678,33 @@ protected:
             QMouseEvent *me = static_cast<QMouseEvent *>(event);
 
             if (me->buttons() == Qt::LeftButton) {
-                auto *plw = dynamic_cast<PlaylistWidget *>(parent());
-                auto *mw = dynamic_cast<MainWindow *>(plw->parent());
+                if (!m_bClicked) {
+                    m_bClicked = true;
+                    m_lastPoint = me->globalPos();
 
-                if (mw->insideResizeArea(me->globalPos()))
-                    return false;
+                    QTimer::singleShot(200, this, [ = ] {
+                        if (!m_bClicked)
+                        {
+                            return;
+                        }
+                        m_bClicked = false;
+                        auto *plw = dynamic_cast<PlaylistWidget *>(parent());
+                        auto *mw = dynamic_cast<MainWindow *>(plw->parent());
 
-                if (plw->state() == PlaylistWidget::Opened && !plw->underMouse()) {
-                    mw->requestAction(ActionFactory::ActionKind::TogglePlaylist);
-                    mw->set_playlistopen_clicktogglepause(true);
+                        if (mw->insideResizeArea(m_lastPoint))
+                            return;
+                        if (plw->state() == PlaylistWidget::Opened && !plw->underMouse())
+                        {
+                            mw->requestAction(ActionFactory::ActionKind::TogglePlaylist);
+                            mw->set_playlistopen_clicktogglepause(true);
+                        }
+                    });
                 }
             }
             return false;
+        } else if (event->type() == QEvent::MouseButtonDblClick) {
+            m_bClicked = false;
+            return QObject::eventFilter(obj, event);
         } else if (event->type() == QEvent::KeyRelease) {
             QKeyEvent *key = static_cast<QKeyEvent *>(event);
             if (key->key() == Qt::Key_Return || key->key() == Qt::Key_Enter) {
@@ -713,6 +728,10 @@ protected:
             return QObject::eventFilter(obj, event);
         }
     }
+
+private:
+    bool m_bClicked {false};
+    QPoint m_lastPoint;
 };
 
 PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
@@ -786,7 +805,7 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     DFontSizeManager::instance()->bind(clearButton, DFontSizeManager::T6);
 
     DPalette pa_cb = DApplicationHelper::instance()->palette(clearButton);
-    if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ) {
+    if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
         pa_cb.setBrush(QPalette::Light, QColor(100, 100, 100, 255));
         pa_cb.setBrush(QPalette::Dark, QColor(92, 92, 92, 255));
     } else {
@@ -797,9 +816,9 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     clearButton->setPalette(pa_cb);
     clearButton->setContentsMargins(0, 0, 0, 0);
 
-    QObject::connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::paletteTypeChanged, clearButton, [ = ] () {
+    QObject::connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::paletteTypeChanged, clearButton, [ = ]() {
         DPalette pa_cb = DApplicationHelper::instance()->palette(clearButton);
-        if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ) {
+        if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
             pa_cb.setBrush(QPalette::Light, QColor(100, 100, 100, 255));
             pa_cb.setBrush(QPalette::Dark, QColor(92, 92, 92, 255));
         } else {
@@ -1012,7 +1031,7 @@ void PlaylistWidget::showItemInfo()
     if (!_mouseItem) return;
     auto item = dynamic_cast<PlayItemWidget *>(_mouseItem);
     if (item) {
-        MovieInfoDialog mid(item->_pif,_mw);
+        MovieInfoDialog mid(item->_pif, _mw);
         mid.exec();
     }
 }
@@ -1407,7 +1426,7 @@ void PlaylistWidget::togglePopup()
         setVisible(!isVisible());
 #endif
     } else {
-         _playlist->setAttribute(Qt::WA_TransparentForMouseEvents, true);
+        _playlist->setAttribute(Qt::WA_TransparentForMouseEvents, true);
         setVisible(!isVisible());
         _toggling = true;
 #ifdef __x86_64__
@@ -1423,7 +1442,7 @@ void PlaylistWidget::togglePopup()
         connect(paClose, &QPropertyAnimation::finished, [ = ]() {
             paClose->deleteLater();
             paClose = nullptr;
-             _playlist->setAttribute(Qt::WA_TransparentForMouseEvents, false);
+            _playlist->setAttribute(Qt::WA_TransparentForMouseEvents, false);
         });
 #else
         _toggling = false;  //条件编译误报(cppcheck)
