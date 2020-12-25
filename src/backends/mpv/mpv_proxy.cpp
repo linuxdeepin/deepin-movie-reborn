@@ -315,13 +315,12 @@ mpv_handle *MpvProxy::mpv_init()
             my_set_property(h, "hwdec", "vdpau");
             my_set_property(h, "vo", "vdpau");
         } else {
-            if(!utils::check_wayland_env()){
+            if (!utils::check_wayland_env()) {
 #if defined (__mips__) || defined (__aarch64__)
                 if (CompositingManager::get().hascard()) {
-                    if(CompositingManager::get().isOnlySoftDecode()){
+                    if (CompositingManager::get().isOnlySoftDecode()) {
                         set_property(h, "hwdec", "off");
-                    }
-                    else{
+                    } else {
                         set_property(h, "hwdec", "auto");
                     }
                     set_property(h, "vo", "gpu");
@@ -332,7 +331,7 @@ mpv_handle *MpvProxy::mpv_init()
 #else
                 my_set_property(h, "vo", "xv,x11");
 #endif
-            }else {
+            } else {
                 auto e = QProcessEnvironment::systemEnvironment();
                 QString XDG_SESSION_TYPE = e.value(QStringLiteral("XDG_SESSION_TYPE"));
                 QString WAYLAND_DISPLAY = e.value(QStringLiteral("WAYLAND_DISPLAY"));
@@ -354,7 +353,7 @@ mpv_handle *MpvProxy::mpv_init()
     if (QFile::exists("/dev/csmcore")) {
         my_set_property(h, "vo", "xv,x11");
         my_set_property(h, "hwdec", "auto");
-        if(utils::check_wayland_env()){
+        if (utils::check_wayland_env()) {
             my_set_property(h, "wid", m_parentWidget->winId());
         }
 
@@ -513,8 +512,8 @@ const PlayingMovieInfo &MpvProxy::playingMovieInfo()
 
 void MpvProxy::handle_mpv_events()
 {
-    if(utils::check_wayland_env() && CompositingManager::get().isTestFlag()){
-        qDebug()<<"not handle mpv events!";
+    if (utils::check_wayland_env() && CompositingManager::get().isTestFlag()) {
+        qDebug() << "not handle mpv events!";
         return;
     }
     while (1) {
@@ -561,28 +560,28 @@ void MpvProxy::handle_mpv_events()
             }
             if (!_isJingJia) {
 #ifdef __mips__
-            qDebug() << "MPV_EVENT_FILE_LOADED __mips__";
-            auto codec = my_get_property(_handle, "video-codec").toString();
-            auto name = my_get_property(_handle, "filename").toString();
-            if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") || codec.toLower().contains("mpeg2video") ||
-                    name.toLower().contains("wmv")) {
-                qDebug() << "my_set_property hwdec no";
-                my_set_property(_handle, "hwdec", "no");
-            }
+                qDebug() << "MPV_EVENT_FILE_LOADED __mips__";
+                auto codec = my_get_property(_handle, "video-codec").toString();
+                auto name = my_get_property(_handle, "filename").toString();
+                if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") || codec.toLower().contains("mpeg2video") ||
+                        name.toLower().contains("wmv")) {
+                    qDebug() << "my_set_property hwdec no";
+                    my_set_property(_handle, "hwdec", "no");
+                }
 #endif
 #ifdef __aarch64__
-            qDebug() << "MPV_EVENT_FILE_LOADED aarch64";
-            auto codec = my_get_property(_handle, "video-codec").toString();
-            if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") || codec.toLower().contains("mpeg2video")) {
+                qDebug() << "MPV_EVENT_FILE_LOADED aarch64";
+                auto codec = my_get_property(_handle, "video-codec").toString();
+                if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") || codec.toLower().contains("mpeg2video")) {
 //                    qDebug() << "my_set_property hwdec no";
 //                    my_set_property(_handle, "hwdec", "no");
-                qDebug() << "my_set_property hwdec auto";
-                if (CompositingManager::get().isOnlySoftDecode()) {
-                    my_set_property(_handle, "hwdec", "off");
-                } else {
-                    my_set_property(_handle, "hwdec", "auto");
+                    qDebug() << "my_set_property hwdec auto";
+                    if (CompositingManager::get().isOnlySoftDecode()) {
+                        my_set_property(_handle, "hwdec", "off");
+                    } else {
+                        my_set_property(_handle, "hwdec", "auto");
+                    }
                 }
-            }
 #endif
             }
             setState(PlayState::Playing); //might paused immediately
@@ -635,17 +634,15 @@ void MpvProxy::processLogMessage(mpv_event_log_message *ev)
         break;
 
     case MPV_LOG_LEVEL_ERROR:
-    case MPV_LOG_LEVEL_FATAL:
-    {
+    case MPV_LOG_LEVEL_FATAL: {
         QString strError = ev->text;
-        if(strError.contains("Failed setup for format vdpau"))
-        {
+        if (strError.contains("Failed setup for format vdpau")) {
             m_bLastIsSpecficFormat = true;
         }
         qCritical() << QString("%1: %2").arg(ev->prefix).arg(strError);
         emit mpvErrorLogsChanged(QString(ev->prefix), strError);
     }
-        break;
+    break;
 
     case MPV_LOG_LEVEL_INFO:
         qInfo() << QString("%1: %2").arg(ev->prefix).arg(ev->text);
@@ -723,7 +720,7 @@ bool MpvProxy::loadSubtitle(const QFileInfo &fi)
         return false;
 
     QList<QVariant> args = { "sub-add", fi.absoluteFilePath(), "select" };
-    qDebug () << args;
+    qDebug() << args;
     QVariant id = my_command(_handle, args);
     if (id.canConvert<ErrorReturn>()) {
         return false;
@@ -960,7 +957,7 @@ bool MpvProxy::muted() const
 void MpvProxy::toggleMute()
 {
     QList<QVariant> args = { "cycle", "mute" };
-    qDebug () << args;
+    qDebug() << args;
     if (!m_bInited) {
         firstInit();
         m_bInited = true;
@@ -1011,8 +1008,7 @@ void MpvProxy::play()
         opts << QString("dvd-device=%1").arg(_dvdDevice);
     }
     //非景嘉微显卡
-    if(m_bHwaccelAuto && m_bLastIsSpecficFormat)
-    {
+    if (m_bHwaccelAuto && m_bLastIsSpecficFormat) {
         if (!_isJingJia || !utils::check_wayland_env()) {
             // hwdec could be disabled by some codecs, so we need to re-enable it
             my_set_property(_handle, "hwdec", "auto");
@@ -1024,8 +1020,7 @@ void MpvProxy::play()
         }
     }
 #else
-    if(m_bHwaccelAuto)
-    {
+    if (m_bHwaccelAuto) {
         if (CompositingManager::get().isOnlySoftDecode()) {
             my_set_property(_handle, "hwdec", "off");
         } else {
@@ -1036,7 +1031,7 @@ void MpvProxy::play()
     //非景嘉微显卡
     if (!utils::check_wayland_env() && !_isJingJia) {
 #ifdef __mips__
-        if(m_bHwaccelAuto) {
+        if (m_bHwaccelAuto) {
             qDebug() << "play __mips__";
             QString codec = my_get_property(_handle, "video-codec").toString();
             if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") || codec.toLower().contains("mpeg2video")) {
@@ -1049,7 +1044,7 @@ void MpvProxy::play()
         }
 #endif
 #ifdef __aarch64__
-        if(m_bHwaccelAuto) {
+        if (m_bHwaccelAuto) {
             qDebug() << "MPV_EVENT_FILE_LOADED aarch64";
             QString codec = my_get_property(_handle, "video-codec").toString();
             if (codec.toLower().contains("wmv3") || codec.toLower().contains("wmv2") || codec.toLower().contains("mpeg2video")) {
@@ -1067,7 +1062,7 @@ void MpvProxy::play()
         args << "replace" << opts.join(',');
     }
 
-    qDebug () << args;
+    qDebug() << args;
     my_command(_handle, args);
     my_set_property(_handle, "pause", _pauseOnStart);
 
@@ -1105,8 +1100,12 @@ void MpvProxy::pauseResume()
 
 void MpvProxy::stop()
 {
+    if (!m_bInited) {
+        firstInit();
+        m_bInited = true;
+    }
     QList<QVariant> args = { "stop" };
-    qDebug () << args;
+    qDebug() << args;
     my_command(_handle, args);
 }
 
@@ -1164,10 +1163,10 @@ qint64 MpvProxy::nextBurstShootPoint()
 int MpvProxy::volumeCorrection(int displayVol)
 {
     int realVol = 0;
-    if(utils::check_wayland_env()){
+    if (utils::check_wayland_env()) {
         //>100时，mpv按照显示音量：mpv 10：5的比例调节音量
-        realVol = displayVol > 100 ? 100 + (displayVol-100)/10*5 : displayVol;
-    }else{
+        realVol = displayVol > 100 ? 100 + (displayVol - 100) / 10 * 5 : displayVol;
+    } else {
         realVol = static_cast<int>((displayVol / 200.0) * 60.0 + 40);
     }
     return (realVol);
@@ -1328,7 +1327,7 @@ void MpvProxy::seekForward(int secs)
 
     if (_pendingSeek) return;
     QList<QVariant> args = { "seek", QVariant(secs), "relative+exact" };
-    qDebug () << args;
+    qDebug() << args;
     my_command_async(_handle, args, AsyncReplyTag::SEEK);
     _pendingSeek = true;
 }
@@ -1340,7 +1339,7 @@ void MpvProxy::seekBackward(int secs)
     if (_pendingSeek) return;
     if (secs > 0) secs = -secs;
     QList<QVariant> args = { "seek", QVariant(secs), "relative+exact" };
-    qDebug () << args;
+    qDebug() << args;
     my_command_async(_handle, args, AsyncReplyTag::SEEK);
     _pendingSeek = true;
 }
@@ -1351,7 +1350,7 @@ void MpvProxy::seekAbsolute(int pos)
 
     if (_pendingSeek) return;
     QList<QVariant> args = { "seek", QVariant(pos), "absolute" };
-    qDebug () << args;
+    qDebug() << args;
     //command(_handle, args);
     _pendingSeek = true;
     my_command_async(_handle, args, AsyncReplyTag::SEEK);
@@ -1454,7 +1453,7 @@ void MpvProxy::previousFrame()
 
 void MpvProxy::changehwaccelMode(hwaccelMode hwaccelMode)
 {
-    if(!m_bInited){
+    if (!m_bInited) {
         firstInit();
         m_bInited = true;
     }
@@ -1474,7 +1473,8 @@ void MpvProxy::changehwaccelMode(hwaccelMode hwaccelMode)
     }
 }
 
-void MpvProxy::MakeCurrent(){
+void MpvProxy::MakeCurrent()
+{
     _gl_widget->makeCurrent();
 }
 

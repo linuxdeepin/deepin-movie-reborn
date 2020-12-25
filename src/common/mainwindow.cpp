@@ -833,10 +833,10 @@ MainWindow::MainWindow(QWidget *parent)
     }
 
     updateProxyGeometry();
-    ShortcutManager::get().buildBindings();
 
     connect(&ShortcutManager::get(), &ShortcutManager::bindingsChanged,
             this, &MainWindow::onBindingsChanged);
+    ShortcutManager::get().buildBindings();          //绑定要放在connect后
     connect(_engine, SIGNAL(stateChanged()), this, SLOT(update()));
     connect(_engine, &PlayerEngine::tracksChanged, this, &MainWindow::updateActionsState);
     connect(_engine, &PlayerEngine::stateChanged, this, &MainWindow::updateActionsState);
