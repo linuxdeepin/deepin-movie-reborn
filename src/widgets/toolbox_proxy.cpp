@@ -1410,6 +1410,7 @@ viewProgBarLoad::viewProgBarLoad(PlayerEngine *engine, DMRSlider *progBar, Toolb
     _parent = parent;
     _engine = engine;
     _progBar = progBar;
+    m_seekTime = new char[12];
     initThumb();
 }
 
@@ -1478,7 +1479,7 @@ void viewProgBarLoad::loadViewProgBar(QSize size)
     QList<QPixmap> pm;
     QList<QPixmap> pm_black;
 
-    QTime d(0, 0, 0, 0);
+    QTime time(0, 0, 0, 0);
     qDebug() << _engine->videoSize().width();
     qDebug() << _engine->videoSize().height();
     qDebug() << qApp->devicePixelRatio();
@@ -1491,7 +1492,11 @@ void viewProgBarLoad::loadViewProgBar(QSize size)
         m_image_data = m_mvideo_thumbnailer_create_image_data();
     }
 
-    m_video_thumbnailer->seek_time = d.toString("hh:mm:ss").toLatin1().data();
+//    m_video_thumbnailer->seek_time = d.toString("hh:mm:ss").toLatin1().data();
+    int length = strlen(time.toString("hh:mm:ss").toLatin1().data());
+    memcpy(m_seekTime, time.toString("hh:mm:ss").toLatin1().data(), length + 1);
+    m_video_thumbnailer->seek_time = m_seekTime;
+
     auto url = _engine->playlist().currentInfo().url;
     auto file = QFileInfo(url.toLocalFile()).absoluteFilePath();
 
@@ -1501,9 +1506,11 @@ void viewProgBarLoad::loadViewProgBar(QSize size)
             return;
         }
 
-        d = d.addMSecs(tmp);
+        time = time.addMSecs(tmp);
 
-        m_video_thumbnailer->seek_time = d.toString("hh:mm:ss").toLatin1().data();
+//        m_video_thumbnailer->seek_time = d.toString("hh:mm:ss").toLatin1().data();
+        memcpy(m_seekTime, time.toString("hh:mm:ss").toLatin1().data(), length + 1);
+        m_video_thumbnailer->seek_time = m_seekTime;
         try {
 
             m_mvideo_thumbnailer_generate_thumbnail_to_buffer(m_video_thumbnailer, file.toUtf8().data(),  m_image_data);

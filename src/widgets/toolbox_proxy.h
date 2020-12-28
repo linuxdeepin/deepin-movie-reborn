@@ -420,6 +420,7 @@ private:
     ToolboxProxy *_parent{nullptr};
     DMRSlider *_progBar {nullptr};
     QMutex *pListPixmapMutex;
+    char *m_seekTime;
 
     video_thumbnailer *m_video_thumbnailer = nullptr;
     image_data *m_image_data = nullptr;
