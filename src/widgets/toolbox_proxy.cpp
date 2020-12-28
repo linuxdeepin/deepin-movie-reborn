@@ -158,7 +158,7 @@ protected:
     {
         QPainter painter(this);
         QImage image(m_strImageUrl);
- 
+
         painter.setRenderHints(QPainter::Antialiasing | QPainter::HighQualityAntialiasing);
         painter.drawImage(rect(), image);
     }
@@ -231,7 +231,7 @@ protected:
             break;
         }
         // standard event processing
-        return QObject::eventFilter(obj, event); 
+        return QObject::eventFilter(obj, event);
     }
 };
 //not used class
@@ -1899,6 +1899,7 @@ void ToolboxProxy::setup()
     _playBtn->setIcon(QIcon::fromTheme("dcc_play", QIcon(":/icons/deepin/builtin/light/normal/play_normal.svg")));
     _playBtn->setIconSize(QSize(36, 36));
     _playBtn->setFixedSize(40, 50);
+    _playBtn->setFocusPolicy(Qt::TabFocus);
     _playBtn->setObjectName(PLAY_BUTTON);
     _playBtn->setAccessibleName(PLAY_BUTTON);
     connect(_playBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
@@ -1934,6 +1935,7 @@ void ToolboxProxy::setup()
     _fsBtn = new ToolButton(bot_toolWgt);
     _fsBtn->setObjectName(FS_BUTTON);
     _fsBtn->setAccessibleName(FS_BUTTON);
+    _fsBtn->setFocusPolicy(Qt::TabFocus);
     _fsBtn->setIcon(QIcon::fromTheme("dcc_zoomin"));
     _fsBtn->setIconSize(QSize(36, 36));
     _fsBtn->setFixedSize(50, 50);
@@ -1943,6 +1945,7 @@ void ToolboxProxy::setup()
 
     _volBtn = new VolumeButton(bot_toolWgt);
     _volBtn->setFixedSize(50, 50);
+    _volBtn->setFocusPolicy(Qt::TabFocus);
     _volBtn->setObjectName(VOLUME_BUTTON);
     _volBtn->setAccessibleName(VOLUME_BUTTON);
     if (CompositingManager::get().composited()) {
@@ -1962,9 +1965,7 @@ void ToolboxProxy::setup()
 //        installHint(_volBtn, _volSlider);
 #else
         _volSlider = new VolumeSlider(_engine, _mainWindow, _mainWindow);
-        _volSlider->setObjectName(VOLUME_SLIDER_WIDGET);
-//        _volSlider->setFocusPolicy(Qt::FocusPolicy::NoFocus);
-//        _volSlider->setWindowFlag(Qt::WindowStaysOnTopHint);
+        _volSlider->setObjectName(VOLUME_SLIDER_WIDGET);;
         connect(_volBtn, &VolumeButton::clicked, this, &ToolboxProxy::slotVolumeButtonClicked);
         connect(_mainWindow, &MainWindow::volumeChanged, _volSlider, &VolumeSlider::slotVolumeChanged);
 #endif
@@ -1989,6 +1990,7 @@ void ToolboxProxy::setup()
     _listBtn = new ToolButton(bot_toolWgt);
     _listBtn->setIcon(QIcon::fromTheme("dcc_episodes"));
     _listBtn->setIconSize(QSize(36, 36));
+    _listBtn->setFocusPolicy(Qt::TabFocus);
     _listBtn->setFixedSize(50, 50);
     _listBtn->initToolTip();
     _listBtn->setCheckable(true);
@@ -1999,7 +2001,7 @@ void ToolboxProxy::setup()
     signalMapper->setMapping(_listBtn, "list");
     _right->addWidget(_listBtn);
 
-    setTabOrder(_nextBtn, _progBar->slider());
+//    setTabOrder(_nextBtn, _progBar->slider());
 //    setTabOrder(_prevBtn, _prevBtn);
 
     // these tooltips is not used due to deepin ui design

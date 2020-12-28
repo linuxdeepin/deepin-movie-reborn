@@ -697,7 +697,7 @@ MainWindow::MainWindow(QWidget *parent)
     }
 
     _toolbox = new ToolboxProxy(this, _engine);
-    _toolbox->setFocusPolicy(Qt::NoFocus);
+    this->setFocusPolicy(Qt::StrongFocus);
     _toolbox->setObjectName(BOTTOM_TOOL_BOX);
 
     titlebar()->deleteLater();
