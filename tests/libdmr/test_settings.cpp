@@ -59,7 +59,7 @@ TEST(Settings, shortcut)
 //    Settings::get().settings()->setOption("play.global_volume", 120);
 }
 
-TEST(Settings, wayland)
+/*TEST(Settings, wayland)
 {
     MainWindow *w = dApp->getMainWindow();
     w->close();
@@ -139,4 +139,4 @@ TEST(Settings, wayland)
     Settings::get().settings()->setOption("base.play.resumelast", true);
 //    w_wayland->close();
 //    delete w_wayland;
-}
+}*/
