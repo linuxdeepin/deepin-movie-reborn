@@ -162,7 +162,7 @@ public:
     void setBackendProperty(const QString &, const QVariant &);
     QVariant getBackendProperty(const QString &);
 
-//    void setVideoZoom(float);
+    void setVideoZoom(float);
 
 signals:
     void tracksChanged();

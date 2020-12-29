@@ -490,8 +490,7 @@ QString audioIndex2str(int index)
     return codecMap[index];
 }*/
 
-///not used///
-/*bool ValidateScreenshotPath(const QString &path)
+bool ValidateScreenshotPath(const QString &path)
 {
     auto name = path.trimmed();
     if (name.isEmpty()) return false;
@@ -512,7 +511,7 @@ QString audioIndex2str(int index)
     }
 
     return true;
-}*/
+}
 
 QImage LoadHiDPIImage(const QString &filename)
 {
