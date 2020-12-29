@@ -26,9 +26,8 @@ MovieWidget::MovieWidget(QWidget *parent)
     setLayout(m_pHBoxLayout);
 
     m_pLabMovie = new QLabel(this);
-    m_pHBoxLayout->addStretch();
+    m_pLabMovie->setAlignment(Qt::AlignCenter);
     m_pHBoxLayout->addWidget(m_pLabMovie);
-    m_pHBoxLayout->addStretch();
 
     m_pixmapBg.load(":/resources/icons/music_bg.svg");
     m_pixmapNote.load(":/resources/icons/music_note.svg");
@@ -37,6 +36,10 @@ MovieWidget::MovieWidget(QWidget *parent)
     m_pTimer = new QTimer();
     m_pTimer->setInterval(INTERVAL);
     connect(m_pTimer, &QTimer::timeout, this, &MovieWidget::updateView);
+
+    QPalette palette;
+    palette.setBrush(QPalette::Base, Qt::black);
+    this->setPalette(palette);
 }
 
 void MovieWidget::startPlaying()

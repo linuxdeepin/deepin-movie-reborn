@@ -779,7 +779,12 @@ MainWindow::MainWindow(QWidget *parent)
             _miniPlayBtn->setIcon(QIcon(":/resources/icons/light/mini/pause-normal-mini.svg"));
             _miniPlayBtn->setObjectName("MiniPauseBtn");
 
-            emit frameMenuEnable(true);
+            if (_engine->playlist().count() > 0 && !_engine->isAudioFile(_engine->playlist().currentInfo().mi.title)) {
+                emit frameMenuEnable(true);
+                setMusicShortKeyState(true);
+            } else {
+                setMusicShortKeyState(false);
+            }
             emit playSpeedMenuEnable(true);
             if (_lastCookie > 0) {
                 utils::UnInhibitStandby(_lastCookie);
@@ -4792,6 +4797,30 @@ void MainWindow::setPlaySpeedMenuUnchecked()
         }
     }
 
+}
+
+void MainWindow::setMusicShortKeyState(bool bState)
+{
+    ActionFactory::ActionKind actionKind;
+    foreach (auto action, this->actions()) {
+        actionKind = (ActionFactory::ActionKind)action->property("kind").toInt();
+        switch (actionKind) {
+        case ActionFactory::Screenshot:
+        case ActionFactory::BurstScreenshot:
+        case ActionFactory::GoToScreenshotSolder:
+        case ActionFactory::DefaultFrame:
+        case ActionFactory::Ratio4x3Frame:
+        case ActionFactory::Ratio16x9Frame:
+        case ActionFactory::Ratio16x10Frame:
+        case ActionFactory::Ratio185x1Frame:
+        case ActionFactory::Ratio235x1Frame:
+        case ActionFactory::ClockwiseFrame:
+        case ActionFactory::CounterclockwiseFrame:
+        case ActionFactory::NextFrame:
+        case ActionFactory::PreviousFrame:
+            action->setEnabled(bState);
+        }
+    }
 }
 
 void MainWindow::updateGeometry(CornerEdge edge, QPoint p)

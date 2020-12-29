@@ -324,6 +324,7 @@ private:
     void adjustPlaybackSpeed(ActionFactory::ActionKind);
     void setPlaySpeedMenuChecked(ActionFactory::ActionKind);
     void setPlaySpeedMenuUnchecked();
+    void setMusicShortKeyState(bool bState);
 
 private:
     DFloatingMessage *popup {nullptr};
