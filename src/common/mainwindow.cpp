@@ -3228,7 +3228,7 @@ void MainWindow::slotPlayerStateChanged()
         m_pMovieWidget->startPlaying();
     } else if ((_engine->state() == PlayerEngine::CoreState::Paused) && bAudio) {
         m_pMovieWidget->pausePlaying();
-    } else if (engine->state() == PlayerEngine::CoreState::Idle && bAudio) {
+    } else if (engine->state() == PlayerEngine::CoreState::Idle) {
         m_pMovieWidget->stopPlaying();
     }
 }

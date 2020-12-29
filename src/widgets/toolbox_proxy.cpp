@@ -2312,7 +2312,7 @@ void ToolboxProxy::slotElapsedChanged()
 {
     quint64 url = static_cast<quint64>(-1);
     if (_engine->playlist().current() != -1) {
-        url = static_cast<quint64>(_engine->playlist().items()[_engine->playlist().current()].mi.duration);
+        url = static_cast<quint64>(_engine->duration());
     }
     updateTimeInfo(static_cast<qint64>(url), _engine->elapsed(), _timeLabel, _timeLabelend, true);
     updateTimeInfo(static_cast<qint64>(url), _engine->elapsed(), _fullscreentimelable, _fullscreentimelableend, false);
@@ -2461,6 +2461,9 @@ void ToolboxProxy::updateMovieProgress()
         return ;
     auto d = _engine->duration();
     auto e = _engine->elapsed();
+    if (d > _progBar->maximum()) {
+        d = _progBar->maximum();
+    }
     int v = 0;
     int v2 = 0;
     if (d != 0 && e != 0) {

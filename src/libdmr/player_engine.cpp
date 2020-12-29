@@ -253,7 +253,7 @@ void PlayerEngine::onBackendStateChanged()
     QString WAYLAND_DISPLAY = systemEnv.value(QStringLiteral("WAYLAND_DISPLAY"));
     if (XDG_SESSION_TYPE == QLatin1String("wayland") ||
             WAYLAND_DISPLAY.contains(QLatin1String("wayland"), Qt::CaseInsensitive)) {
-        if ( _state == CoreState::Idle) {
+        if (_state == CoreState::Idle) {
             QPalette pal(qApp->palette());
             this->setAutoFillBackground(true);
             this->setPalette(pal);
@@ -334,7 +334,7 @@ void PlayerEngine::onSubtitlesDownloaded(const QUrl &url, const QList<QString> &
     bool res = false;
 
     for (auto &filename : filenames) {
-        if ( true == _current->loadSubtitle(filename)) {
+        if (true == _current->loadSubtitle(filename)) {
             res = true;
         } else {
             QFile::remove(filename);
@@ -525,7 +525,7 @@ void PlayerEngine::paintEvent(QPaintEvent *e)
     QPainter p(this);
 
     if (_playlist->count() > 0 && _state != Idle) {
-        bIsMusic = isAudioFile( _playlist->currentInfo().mi.title);
+        bIsMusic = isAudioFile(_playlist->currentInfo().mi.title);
     }
 
     if (!CompositingManager::get().composited()) {
@@ -537,11 +537,10 @@ void PlayerEngine::paintEvent(QPaintEvent *e)
             int x = this->rect().center().x() - pix.width() / 2;
             int y = this->rect().center().y() - pix.height() / 2;
 
-            if(DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()){
+            if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
                 p.fillRect(rect, QBrush(QColor(255, 255, 255)));
                 p.drawPixmap(x, y, pix);
-            }
-            else {
+            } else {
                 p.fillRect(rect, QBrush(QColor(0, 0, 0)));
                 p.drawPixmap(x, y, pix);
             }
@@ -588,7 +587,8 @@ void PlayerEngine::previousFrame()
     if (!_current) return;
     _current->previousFrame();
 }
-void PlayerEngine::MakeCurrent(){
+void PlayerEngine::MakeCurrent()
+{
     _current->MakeCurrent();
 }
 
@@ -860,9 +860,9 @@ qint64 PlayerEngine::elapsed() const
     if (!_playlist) return 0;
     if (_playlist->count() == 0) return 0;
     if (_playlist->current() < 0) return 0;
-    qint64 nDuration = _playlist->items()[_playlist->current()].mi.duration;        //因为文件信息的持续时间和MPV返回的持续有些差别，所以，我们使用文件返回的持续时间
+    qint64 nDuration = _current->duration();        //因为文件信息的持续时间和MPV返回的持续有些差别，所以，我们使用文件返回的持续时间
     qint64 nElapsed = _current->elapsed();
-    if (nElapsed < 0 )
+    if (nElapsed < 0)
         return 0;
     if (nElapsed > nDuration)
         return nDuration;
