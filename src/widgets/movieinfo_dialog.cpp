@@ -372,11 +372,11 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
         filePathLbl->setObjectName("filePathLabel");
         auto codeLabel = m_titleList.at(5);
         qDebug() << "filePathLbl w,h: " << filePathLbl->width() << "," << filePathLbl->height();
-        QFontMetrics fm = codeLabel->fontMetrics();
-        filePathLbl->setMinimumWidth(qMin(160, 250 - fm.boundingRect(codeLabel->text()).width()));
+        QFontMetrics fm_cl = codeLabel->fontMetrics();
+        filePathLbl->setMinimumWidth(qMin(160, 250 - fm_cl.boundingRect(codeLabel->text()).width()));
         qDebug() << "filePathLbl w,h: " << filePathLbl->width() << "," << filePathLbl->height();
-        auto fp = ElideText(tmp->text(), {filePathLbl->width(), fm.height()}, QTextOption::WrapAnywhere,
-                            filePathLbl->font(), Qt::ElideRight, fm.height(), filePathLbl->width());
+        auto fp = ElideText(tmp->text(), {filePathLbl->width(), fm_cl.height()}, QTextOption::WrapAnywhere,
+                            filePathLbl->font(), Qt::ElideRight, fm_cl.height(), filePathLbl->width());
         filePathLbl->setText(fp);
         m_filePathLbl = filePathLbl;
         m_strFilePath = tmp->text();

@@ -1071,7 +1071,7 @@ void MpvProxy::play()
     // all ready, then load extra subs from db
     // this keeps order of subs
     QTimer::singleShot(100, [this]() {
-        auto cfg = MovieConfiguration::get().queryByUrl(_file);
+        auto mcfg = MovieConfiguration::get().queryByUrl(_file);
         auto ext_subs = MovieConfiguration::get().getListByUrl(_file, ConfigKnownKey::ExternalSubs);
         for (const auto &sub : ext_subs) {
             if (!QFile::exists(sub)) {
@@ -1081,9 +1081,9 @@ void MpvProxy::play()
             }
         }
 
-        auto key = MovieConfiguration::knownKey2String(ConfigKnownKey::SubId);
-        if (cfg.contains(key)) {
-            selectSubtitle(cfg[key].toInt());
+        auto key_s = MovieConfiguration::knownKey2String(ConfigKnownKey::SubId);
+        if (mcfg.contains(key_s)) {
+            selectSubtitle(mcfg[key_s].toInt());
         }
     });
 #endif

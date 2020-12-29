@@ -76,9 +76,9 @@ DWIDGET_USE_NAMESPACE
             auto colortype = DGuiApplicationHelper::instance()->themeType();\
             if(colortype == DGuiApplicationHelper::LightType)\
             {\
-                QPalette pal(qApp->palette());\
+                QPalette palette(qApp->palette());\
                 this->setAutoFillBackground(true);\
-                this->setPalette(pal);\
+                this->setPalette(palette);\
                 if(_playlist)\
                 {\
                     QPalette pal(qApp->palette());\
@@ -94,10 +94,10 @@ DWIDGET_USE_NAMESPACE
             }\
             else\
             {\
-                QPalette pal(qApp->palette());\
-                pal.setColor(QPalette::Background,Qt::black);\
+                QPalette palette(qApp->palette());\
+                palette.setColor(QPalette::Background,Qt::black);\
                 this->setAutoFillBackground(true);\
-                this->setPalette(pal);\
+                this->setPalette(palette);\
                 if(_playlist)\
                 {\
                     QPalette pal(qApp->palette());\

@@ -45,7 +45,7 @@ ActionFactory &ActionFactory::get()
 }
 
 #define DEF_ACTION(NAME, KD) do { \
-        auto *act = menu->addAction((NAME)); \
+        auto *act = menu_p->addAction((NAME)); \
         act->setProperty("kind", KD); \
         _contextMenuActions.append(act); \
         connect(act, &QObject::destroyed, [=](QObject* o) { \
@@ -54,8 +54,17 @@ ActionFactory &ActionFactory::get()
     } while (0)
 
 #define DEF_ACTION_CHECKED(NAME, KD) do { \
-        auto *act = menu->addAction((NAME)); \
+        auto *act = menu_p->addAction((NAME)); \
         act->setCheckable(true); \
+        act->setProperty("kind", KD); \
+        _contextMenuActions.append(act); \
+        connect(act, &QObject::destroyed, [=](QObject* o) { \
+            _contextMenuActions.removeOne((QAction*)o); \
+        }); \
+    } while (0)
+
+#define DEF_ACTION_GROUP(NAME, KD, GROUP) do { \
+        auto *act = menu->addAction((NAME)); \
         act->setProperty("kind", KD); \
         _contextMenuActions.append(act); \
         connect(act, &QObject::destroyed, [=](QObject* o) { \
@@ -77,19 +86,19 @@ ActionFactory &ActionFactory::get()
 DMenu *ActionFactory::titlebarMenu()
 {
     if (!_titlebarMenu) {
-        auto *menu = new DMenu();
+        auto *menu_p = new DMenu();
 
         DEF_ACTION(tr("Open file"), ActionKind::OpenFileList);
         DEF_ACTION(tr("Open folder"), ActionKind::OpenDirectory);
         DEF_ACTION(tr("Settings"), ActionKind::Settings);
 //        DEF_ACTION_CHECKED(tr("Light theme"), ActionKind::LightTheme);
-        menu->addSeparator();
+        menu_p->addSeparator();
         // these seems added by titlebar itself
         //DEF_ACTION("About", ActionKind::About);
         //DEF_ACTION("Help", ActionKind::Help);
         //DEF_ACTION("Exit", ActionKind::Exit);
 
-        _titlebarMenu = menu;
+        _titlebarMenu = menu_p;
     }
     return _titlebarMenu;
 }
@@ -97,21 +106,21 @@ DMenu *ActionFactory::titlebarMenu()
 DMenu *ActionFactory::mainContextMenu()
 {
     if (!_contextMenu) {
-        auto *menu = new DMenu();
+        auto *menu_p = new DMenu();
 
         DEF_ACTION(tr("Open file"), ActionKind::OpenFileList);
         DEF_ACTION(tr("Open folder"), ActionKind::OpenDirectory);
         DEF_ACTION(tr("Open URL"), ActionKind::OpenUrl);
         DEF_ACTION(tr("Open CD/DVD"), ActionKind::OpenCdrom);
-        menu->addSeparator();
+        menu_p->addSeparator();
 
         DEF_ACTION_CHECKED(tr("Fullscreen"), ActionKind::ToggleFullscreen);
         DEF_ACTION_CHECKED(tr("Mini Mode"), ActionKind::ToggleMiniMode);
         DEF_ACTION_CHECKED(tr("Always on Top"), ActionKind::WindowAbove);
-        menu->addSeparator();
+        menu_p->addSeparator();
 
         {
-            auto *parent = menu;
+            auto *parent = menu_p;
             auto *menu = new DMenu(tr("Play Mode"));
             auto group = new QActionGroup(menu);
 
@@ -125,7 +134,7 @@ DMenu *ActionFactory::mainContextMenu()
         }
 
         {
-            auto *parent = menu;
+            auto *parent = menu_p;
             auto *menu = new DMenu(tr("Playback Speed"));
             auto group = new QActionGroup(menu);
 
@@ -143,7 +152,7 @@ DMenu *ActionFactory::mainContextMenu()
         }
 
         {
-            auto *parent = menu;
+            auto *parent = menu_p;
             auto *menu = new DMenu(tr("Frame"));
             auto group = new QActionGroup(menu);
 
@@ -155,12 +164,12 @@ DMenu *ActionFactory::mainContextMenu()
             DEF_ACTION_CHECKED_GROUP(("2.35:1"), ActionKind::Ratio235x1Frame, group);
             menu->addSeparator();
 
-            DEF_ACTION(tr("Clockwise"), ActionKind::ClockwiseFrame);
-            DEF_ACTION(tr("Counterclockwise"), ActionKind::CounterclockwiseFrame);
+            DEF_ACTION_GROUP(tr("Clockwise"), ActionKind::ClockwiseFrame, group);
+            DEF_ACTION_GROUP(tr("Counterclockwise"), ActionKind::CounterclockwiseFrame, group);
             menu->addSeparator();
 
-            DEF_ACTION(tr("Next Frame"), ActionKind::NextFrame);
-            DEF_ACTION(tr("Previous Frame"), ActionKind::PreviousFrame);
+            DEF_ACTION_GROUP(tr("Next Frame"), ActionKind::NextFrame, group);
+            DEF_ACTION_GROUP(tr("Previous Frame"), ActionKind::PreviousFrame, group);
 
             parent->addMenu(menu);
             menu->setEnabled(false);
@@ -170,12 +179,12 @@ DMenu *ActionFactory::mainContextMenu()
         }
 
         {
-            //sub menu
-            auto *parent = menu;
+            //sound menu
+            auto *parent = menu_p;
             auto *menu = new DMenu(tr("Sound"));
             _sound = menu;
             {
-                auto *parent = menu;
+                auto *parent_channel = menu;
                 auto *menu = new DMenu(tr("Channel"));
                 _soundMenu = menu;
                 auto group = new QActionGroup(menu);
@@ -183,38 +192,40 @@ DMenu *ActionFactory::mainContextMenu()
                 DEF_ACTION_CHECKED_GROUP(tr("Stereo"), ActionKind::Stereo, group);
                 DEF_ACTION_CHECKED_GROUP(tr("Left channel"), ActionKind::LeftChannel, group);
                 DEF_ACTION_CHECKED_GROUP(tr("Right channel"), ActionKind::RightChannel, group);
-                parent->addMenu(menu);
+                parent_channel->addMenu(menu);
             }
 
             {
-                auto *parent = menu;
+                auto *parent_track = menu;
                 auto *menu = new DMenu(tr("Track"));
                 _tracksMenu = menu;
                 //DEF_ACTION(tr("Select Track"), ActionKind::SelectTrack);
-                parent->addMenu(menu);
+                parent_track->addMenu(menu);
             }
             parent->addMenu(menu);
         }
 
         {
             //sub menu
-            auto *parent = menu;
+            auto *parent = menu_p;
             auto *menu = new DMenu(tr("Subtitle"));
-            DEF_ACTION(tr("Load"), ActionKind::LoadSubtitle);
-            DEF_ACTION(tr("Online Search"), ActionKind::MatchOnlineSubtitle);
+            auto group = new QActionGroup(menu);
+
+            DEF_ACTION_GROUP(tr("Load"), ActionKind::LoadSubtitle, group);
+            DEF_ACTION_GROUP(tr("Online Search"), ActionKind::MatchOnlineSubtitle, group);
             //DEF_ACTION(tr("Select"), ActionKind::SelectSubtitle);
             {
-                auto *parent = menu;
+                auto *parent_select = menu;
                 auto *menu = new DMenu(tr("Select"));
                 _subtitleMenu = menu;
-                parent->addMenu(menu);
+                parent_select->addMenu(menu);
             }
-            DEF_ACTION_CHECKED(tr("Hide"), ActionKind::HideSubtitle);
+            DEF_ACTION_CHECKED_GROUP(tr("Hide"), ActionKind::HideSubtitle, group);
 
             {
-                auto *parent = menu;
+                auto *parent_encoding = menu;
                 auto *menu = new DMenu(tr("Encodings"));
-                auto group = new QActionGroup(menu);
+                auto group_encoding = new QActionGroup(menu);
 
                 //title <-> codepage
                 static QVector<QPair<QString, QString>> list = {
@@ -266,14 +277,14 @@ DMenu *ActionFactory::mainContextMenu()
 
                 auto p = list.begin();
                 while (p != list.end()) {
-                    DEF_ACTION_CHECKED_GROUP(p->first, ActionKind::ChangeSubCodepage, group);
+                    DEF_ACTION_CHECKED_GROUP(p->first, ActionKind::ChangeSubCodepage, group_encoding);
                     auto act = menu->actions().last();
                     act->setProperty("args", QList<QVariant>() << p->second);
                     if (p->second == "auto") menu->addSeparator();
                     p++;
                 }
 
-                parent->addMenu(menu);
+                parent_encoding->addMenu(menu);
             }
 
             parent->addMenu(menu);
@@ -281,11 +292,13 @@ DMenu *ActionFactory::mainContextMenu()
 
         {
             //sub menu
-            auto *parent = menu;
+            auto *parent = menu_p;
             auto *menu = new DMenu(tr("Screenshot"));
-            DEF_ACTION(tr("Film Screenshot"), ActionKind::Screenshot);
-            DEF_ACTION(tr("Burst Shooting"), ActionKind::BurstScreenshot);
-            DEF_ACTION(tr("Open screenshot folder"), ActionKind::GoToScreenshotSolder);
+            auto group = new QActionGroup(menu);
+
+            DEF_ACTION_GROUP(tr("Film Screenshot"), ActionKind::Screenshot, group);
+            DEF_ACTION_GROUP(tr("Burst Shooting"), ActionKind::BurstScreenshot, group);
+            DEF_ACTION_GROUP(tr("Open screenshot folder"), ActionKind::GoToScreenshotSolder, group);
             menu->setEnabled(false);
             parent->addMenu(menu);
             connect(this, &ActionFactory::frameMenuEnable, this, [ = ](bool statu) {
@@ -293,13 +306,13 @@ DMenu *ActionFactory::mainContextMenu()
             });
         }
 
-        menu->addSeparator();
+        menu_p->addSeparator();
 
         DEF_ACTION_CHECKED(tr("Playlist"), ActionKind::TogglePlaylist);
         DEF_ACTION(tr("Film Info"), ActionKind::MovieInfo);
         DEF_ACTION(tr("Settings"), ActionKind::Settings);
 
-        _contextMenu = menu;
+        _contextMenu = menu_p;
     }
 
     return _contextMenu;
@@ -308,7 +321,7 @@ DMenu *ActionFactory::mainContextMenu()
 DMenu *ActionFactory::playlistContextMenu()
 {
     if (!_playlistMenu) {
-        auto *menu = new DMenu();
+        auto *menu_p = new DMenu();
 
 
         DEF_ACTION(tr("Delete from playlist"), ActionKind::PlaylistRemoveItem);
@@ -316,7 +329,7 @@ DMenu *ActionFactory::playlistContextMenu()
         DEF_ACTION(tr("Display in file manager"), ActionKind::PlaylistOpenItemInFM);
         DEF_ACTION(tr("Film info"), ActionKind::PlaylistItemInfo);
 
-        _playlistMenu = menu;
+        _playlistMenu = menu_p;
     }
 
     return _playlistMenu;

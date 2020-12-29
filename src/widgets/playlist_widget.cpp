@@ -816,14 +816,14 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     clearButton->setPalette(pa_cb);
     clearButton->setContentsMargins(0, 0, 0, 0);
 
-    QObject::connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::paletteTypeChanged, clearButton, [ = ]() {
-        DPalette pa_cb = DApplicationHelper::instance()->palette(clearButton);
-        if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
-            pa_cb.setBrush(QPalette::Light, QColor(100, 100, 100, 255));
-            pa_cb.setBrush(QPalette::Dark, QColor(92, 92, 92, 255));
+    QObject::connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::paletteTypeChanged, clearButton, [ = ] () {
+        DPalette pa_cBtn = DApplicationHelper::instance()->palette(clearButton);
+        if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ) {
+            pa_cBtn.setBrush(QPalette::Light, QColor(100, 100, 100, 255));
+            pa_cBtn.setBrush(QPalette::Dark, QColor(92, 92, 92, 255));
         } else {
-            pa_cb.setBrush(QPalette::Light, QColor(85, 84, 84, 255));
-            pa_cb.setBrush(QPalette::Dark, QColor(65, 65, 65, 255));
+            pa_cBtn.setBrush(QPalette::Light, QColor(85, 84, 84, 255));
+            pa_cBtn.setBrush(QPalette::Dark, QColor(65, 65, 65, 255));
         }
         clearButton->setPalette(pa_cb);
     });
@@ -1231,9 +1231,9 @@ void PlaylistWidget::showEvent(QShowEvent *se)
 void PlaylistWidget::removeItem(int idx)
 {
     qDebug() << "idx = " << idx;
-    auto item = this->_playlist->takeItem(idx);
-    if (item) {
-        delete item;
+    auto item_remove = this->_playlist->takeItem(idx);
+    if (item_remove) {
+        delete item_remove;
     }
 
     this->_playlist->update();

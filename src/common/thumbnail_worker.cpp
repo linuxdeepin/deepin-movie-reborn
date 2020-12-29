@@ -124,8 +124,8 @@ ThumbnailWorker::ThumbnailWorker()
 QString ThumbnailWorker::libPath(const QString &strlib)
 {
     QDir  dir;
-    QString path  = QLibraryInfo::location(QLibraryInfo::LibrariesPath);
-    dir.setPath(path);
+    QString lib_path  = QLibraryInfo::location(QLibraryInfo::LibrariesPath);
+    dir.setPath(lib_path);
     QStringList list = dir.entryList(QStringList() << (strlib + "*"), QDir::NoDotAndDotDot | QDir::Files); //filter name with strlib
     if (list.contains(strlib)) {
         return strlib;
