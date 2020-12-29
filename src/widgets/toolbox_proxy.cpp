@@ -1144,9 +1144,13 @@ public slots:
         QRect main_rect = _mw->rect();
         QRect view_rect = main_rect.marginsRemoved(QMargins(1, 1, 1, 1));
 
-        QRect end(view_rect.width() - (TOOLBOX_BUTTON_WIDTH * 2 + 30 + (VOLSLIDER_WIDTH - TOOLBOX_BUTTON_WIDTH) / 2),
-                  view_rect.height() - TOOLBOX_HEIGHT - VOLSLIDER_HEIGHT,
-                  VOLSLIDER_WIDTH, VOLSLIDER_HEIGHT);
+        int x = view_rect.width() - (TOOLBOX_BUTTON_WIDTH * 2 + 30 + (VOLSLIDER_WIDTH - TOOLBOX_BUTTON_WIDTH) / 2);
+        int y = view_rect.height() - TOOLBOX_HEIGHT - VOLSLIDER_HEIGHT;
+#ifndef __x86_64__
+        //在arm及mips平台下音量条上移了10个像素
+        y += 10;
+#endif
+        QRect end(x, y, VOLSLIDER_WIDTH, VOLSLIDER_HEIGHT);
         QRect start = end;
         QRect media = start;
 
