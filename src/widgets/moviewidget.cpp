@@ -37,8 +37,9 @@ MovieWidget::MovieWidget(QWidget *parent)
     m_pTimer->setInterval(INTERVAL);
     connect(m_pTimer, &QTimer::timeout, this, &MovieWidget::updateView);
 
+    setAutoFillBackground(true);
     QPalette palette;
-    palette.setBrush(QPalette::Base, Qt::black);
+    palette.setBrush(QPalette::Background, Qt::black);
     this->setPalette(palette);
 }
 
