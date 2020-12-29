@@ -55,7 +55,9 @@ TEST(MainWindow, loadFile)
 
     const auto &valids = engine->addPlayFiles(listPlayFiles);
     QCOMPARE(engine->isPlayableFile(valids[0]), true);
-    engine->playByName(valids[0]);
+    if(!valids.empty()){
+        engine->playByName(valids[0]);
+    }
 
     w->checkOnlineState(false);
     QTest::qWait(200);
@@ -137,9 +139,10 @@ TEST(MainWindow, touch)
     ToolboxProxy* toolboxProxy = w->toolbox();
     QStackedWidget * progbarWidget = toolboxProxy->findChild<QStackedWidget *>(PROGBAR_WIDGET);
 
-    w->setTouched(true);
-//    Settings::get().settings()->setOption("base.play.showInthumbnailmode", true);
     QTest::mouseDClick(w, Qt::LeftButton, Qt::NoModifier, QPoint(100, 200), 500); //fullscreen
+#if !defined (__mips__ ) && !defined(__aarch64__)
+    w->setTouched(true);
+    Settings::get().settings()->setOption("base.play.showInthumbnailmode", true);
 
     QTest::mousePress(w->windowHandle(), Qt::LeftButton, Qt::MetaModifier, QPoint(100, 200), 200);
     QTest::mouseRelease(w->windowHandle(), Qt::LeftButton, Qt::MetaModifier, QPoint(200, 200), 200);
@@ -147,9 +150,10 @@ TEST(MainWindow, touch)
     QTest::mousePress(w->windowHandle(), Qt::LeftButton, Qt::MetaModifier, QPoint(400, 100), 200);
     QTest::mouseRelease(w->windowHandle(), Qt::LeftButton, Qt::MetaModifier, QPoint(400, 300), 200);
 
-//    while(progbarWidget->currentIndex() == 1){
-//        QTest::qWait(200);
-//    }
+    while(progbarWidget->currentIndex() == 1){
+        QTest::qWait(200);
+    }
+#endif
 
     w->setTouched(true);
     QTest::mousePress(w->windowHandle(), Qt::LeftButton, Qt::MetaModifier, QPoint(300, 200), 200);
@@ -159,7 +163,10 @@ TEST(MainWindow, touch)
     QTest::mouseRelease(w->windowHandle(), Qt::LeftButton, Qt::MetaModifier, QPoint(400, 100), 200);
 
     QTest::mouseDClick(w, Qt::LeftButton, Qt::NoModifier, QPoint(), 200);
-//    Settings::get().settings()->setOption("base.play.showInthumbnailmode", false);
+
+#if !defined (__mips__ ) && !defined(__aarch64__)
+    Settings::get().settings()->setOption("base.play.showInthumbnailmode", false);
+#endif
     w->setTouched(false);
 }
 
@@ -301,26 +308,26 @@ TEST(MainWindow, progBar)
 
 
     //胶片模式
-//#if !defined (__mips__ ) && !defined(__aarch64__)
-//    Settings::get().settings()->setOption("base.play.showInthumbnailmode", true);
+#if !defined (__mips__ ) && !defined(__aarch64__)
+    Settings::get().settings()->setOption("base.play.showInthumbnailmode", true);
 
-//    while(progbarWidget->currentIndex() == 1){   //等待胶片加载
-//        QTest::qWait(200);
-//    }
+    while(progbarWidget->currentIndex() == 1){   //等待胶片加载
+        QTest::qWait(200);
+    }
 
-//    QWidget *viewProgBar = (QWidget *)toolboxProxy->getViewProBar();
-//    startPoint = QPoint(viewProgBar->x() + 100, viewProgBar->y() + 20);
-//    endPoint = QPoint(viewProgBar->x() + 20, viewProgBar->y() + 20);
-//    QTest::mouseMove(viewProgBar, QPoint(viewProgBar->x() + 50, viewProgBar->y() + 20), 500);
-//    QTest::mouseClick(viewProgBar, Qt::LeftButton, Qt::NoModifier, QPoint(viewProgBar->x() + 50, viewProgBar->y() + 20), 500);
-//    QTest::mouseMove(viewProgBar, startPoint, 300);
-//    QTest::mousePress(viewProgBar, Qt::LeftButton, Qt::NoModifier, startPoint, 100);
-//    QTest::mouseMove(viewProgBar, endPoint, 500);
-//    QTest::mouseRelease(viewProgBar, Qt::LeftButton, Qt::NoModifier, endPoint, 500);
-//    QTest::qWait(500);
+    QWidget *viewProgBar = (QWidget *)toolboxProxy->getViewProBar();
+    startPoint = QPoint(viewProgBar->x() + 100, viewProgBar->y() + 20);
+    endPoint = QPoint(viewProgBar->x() + 20, viewProgBar->y() + 20);
+    QTest::mouseMove(viewProgBar, QPoint(viewProgBar->x() + 50, viewProgBar->y() + 20), 500);
+    QTest::mouseClick(viewProgBar, Qt::LeftButton, Qt::NoModifier, QPoint(viewProgBar->x() + 50, viewProgBar->y() + 20), 500);
+    QTest::mouseMove(viewProgBar, startPoint, 300);
+    QTest::mousePress(viewProgBar, Qt::LeftButton, Qt::NoModifier, startPoint, 100);
+    QTest::mouseMove(viewProgBar, endPoint, 500);
+    QTest::mouseRelease(viewProgBar, Qt::LeftButton, Qt::NoModifier, endPoint, 500);
+    QTest::qWait(500);
 
-//    Settings::get().settings()->setOption("base.play.showInthumbnailmode", false);
-//#endif
+    Settings::get().settings()->setOption("base.play.showInthumbnailmode", false);
+#endif
 }
 
 TEST(MainWindow, movieInfoDialog)

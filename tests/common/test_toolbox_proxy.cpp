@@ -16,13 +16,13 @@
 #include "src/widgets/tip.h"
 
 using namespace dmr;
-TEST(ToolBox, buttonBoxButton)
+/*TEST(ToolBox, buttonBoxButton)
 {
     MainWindow* w = dApp->getMainWindow();
     ButtonBoxButton *btn = new ButtonBoxButton("test", w);
 
     btn->show();
-    QTest::qWait(200);
+    QTest::qWait(400);
     QTest::mouseMove(btn);
 
     btn->deleteLater();
@@ -65,7 +65,7 @@ TEST(ToolBox, tip)
     QColor color = tip->borderColor();
     QBrush brush = tip->background();
     tip->deleteLater();
-}
+}*/
 
 /*TEST(ToolBox, reloadFile)
 {

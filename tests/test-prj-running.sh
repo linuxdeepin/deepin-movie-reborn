@@ -7,7 +7,7 @@ cd ../$(dirname $0)/build-ut
 
 #export QT_SELECT=qt5
 cmake -DCMAKE_BUILD_TYPE=Debug ..
-make -j8
+make -j16
 
 workdir=$(cd ../$(dirname $0)/build-ut; pwd)
 executable=deepin-movie-test #可执行程序的文件名
