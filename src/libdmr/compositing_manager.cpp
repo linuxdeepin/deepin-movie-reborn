@@ -120,7 +120,7 @@ CompositingManager::CompositingManager()
     _hasCard = false;
     _platform = PlatformChecker().check();
 #ifdef __aarch64__
-    if (!dmr::utils::check_wayland_env()) {
+    if (dmr::utils::check_wayland_env()) {
         _composited = true;
         qDebug() << __func__ << "Composited is " << _composited;
         return;
@@ -133,7 +133,7 @@ CompositingManager::CompositingManager()
         QGSettings gsettings("com.deepin.deepin-movie", "/com/deepin/deepin-movie/");
         QString aa = gsettings.get("composited").toString();
         if ((gsettings.get("composited").toString() == "DisableComposited"
-             || gsettings.get("composited").toString() == "EnableComposited")) {
+                || gsettings.get("composited").toString() == "EnableComposited")) {
             if (gsettings.keys().contains("composited")) {
                 if (gsettings.get("composited").toString() == "DisableComposited") {
                     _composited = false;
