@@ -275,6 +275,7 @@ private:
     bool _pauseOnStart {false};
 
     bool _isJingJia {false};
+    QString m_strInitVo;
 
     mpv_handle *mpv_init();
     void processPropertyChange(mpv_event_property *ev);
@@ -286,7 +287,7 @@ private:
     int volumeCorrection(int);
     bool m_bInited {false};
     bool m_bHwaccelAuto {true};   //如果设置为不为自动，则不允许此类改变硬件设置
-	bool m_bLastIsSpecficFormat {false};
+    bool m_bLastIsSpecficFormat {false};
 };
 
 }

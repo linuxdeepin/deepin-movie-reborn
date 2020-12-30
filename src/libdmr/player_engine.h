@@ -66,11 +66,10 @@ public:
     Q_ENUM(CoreState)
 
     // filetypes supported by mpv: https://github.com/mpv-player/mpv/blob/master/player/external_files.c
-    const QStringList audio_filetypes = {"*.mp3", "*.ogg", "*.wav", "*.wma", "*.m4a", "*.aac", "*.ac3", "*.ape", "*.flac", "*.ra", "*.mka", "*.dts", "*.opus", "*.amr"};
-    const QStringList video_filetypes = {
-        "*.avs2"/*支持avs2视频格式*/, "*.3g2", "*.3ga", "*.3gp", "*.3gp2", "*.3gpp", "*.amv", "*.asf", "*.asx", "*.avf", "*.avi", "*.bdm", "*.bdmv", "*.bik", "*.clpi", "*.cpi", "*.dat", "*.divx", "*.drc", "*.dv", "*.dvr-ms", "*.f4v", "*.flv", "*.gvi", "*.gxf", "*.hdmov", "*.hlv", "*.iso", "*.letv", "*.lrv", "*.m1v", "*.m2p", "*.m2t", "*.m2ts", "*.m2v", "*.m3u", "*.m3u8", "*.m4v", "*.mkv", "*.moov", "*.mov", "*.mov", "*.mp2", "*.mp2v", "*.mp4", "*.mp4v", "*.mpe", "*.mpeg", "*.mpeg1", "*.mpeg2", "*.mpeg4", "*.mpg", "*.mpl", "*.mpls", "*.mpv", "*.mpv2", "*.mqv", "*.mts", "*.mts", "*.mtv", "*.mxf", "*.mxg", "*.nsv", "*.nuv", "*.ogg", "*.ogm", "*.ogv", "*.ogx", "*.ps", "*.qt", "*.qtvr", "*.ram", "*.rec", "*.rm", "*.rm", "*.rmj", "*.rmm", "*.rms", "*.rmvb", "*.rmx", "*.rp", "*.rpl", "*.rv", "*.rvx", "*.thp", "*.tod", "*.tp", "*.trp", "*.ts", "*.tts", "*.txd", "*.vcd", "*.vdr", "*.vob", "*.vp8", "*.vro", "*.webm", "*.wm", "*.wmv", "*.wtv", "*.xesc", "*.xspf"
-    };
-    const QStringList subtitle_suffixs = {"ass", "sub", "srt", "aqt", "jss", "gsub", "ssf", "ssa", "smi", "usf", "idx"};
+    const static QStringList audio_filetypes;
+    const static QStringList video_filetypes;
+
+    const static QStringList subtitle_suffixs;
 
     /* backend like mpv will asynchronously report end of playback.
      * there are situations when we need to see the end-event before
@@ -96,7 +95,7 @@ public:
 
     bool isPlayableFile(const QUrl &url);
     bool isPlayableFile(const QString &name);
-    bool isAudioFile(const QString &name);
+    static bool isAudioFile(const QString &name);
 
     // only supports (+/-) 0, 90, 180, 270
     int videoRotation() const;

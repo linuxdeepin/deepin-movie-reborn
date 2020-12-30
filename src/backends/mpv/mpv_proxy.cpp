@@ -285,10 +285,12 @@ mpv_handle *MpvProxy::mpv_init()
         m_setOptionString(h, "opengl-hwdec-interop", "auto");
         m_setOptionString(h, "hwdec", "auto");
         qDebug() << "-------- __mips__hwdec____________";
+        m_strInitVo = "opengl-cb";
 #else
         my_set_property(h, "vo", "libmpv,opengl-cb");
         my_set_property(h, "vd-lavc-dr", "no");
         my_set_property(h, "gpu-sw", "on");
+        m_strInitVo = "libmpv,opengl-cb";
         //设置alse时，无法使用set_property(h, "audio-client-name", strMovie)设置控制栏中的名字
         //        if(utils::check_wayland_env()){
         //            set_property(h, "ao", "alsa");
@@ -303,9 +305,11 @@ mpv_handle *MpvProxy::mpv_init()
                 my_set_property(h, "hwdec", "auto");
             }
             my_set_property(h, "vo", "gpu");
+            m_strInitVo = "gpu";
         } else {
             my_set_property(h, "vo", "xv,x11");
             my_set_property(h, "ao", "alsa");
+            m_strInitVo = "xv,x11";
         }
 #else
 #ifdef MWV206_0
@@ -314,6 +318,7 @@ mpv_handle *MpvProxy::mpv_init()
             _isJingJia = true;
             my_set_property(h, "hwdec", "vdpau");
             my_set_property(h, "vo", "vdpau");
+            m_strInitVo = "vdpau";
         } else {
             if (!utils::check_wayland_env()) {
 #if defined (__mips__) || defined (__aarch64__)
@@ -324,12 +329,15 @@ mpv_handle *MpvProxy::mpv_init()
                         set_property(h, "hwdec", "auto");
                     }
                     set_property(h, "vo", "gpu");
+                    m_strInitVo = "gpu";
                 } else {
                     set_property(h, "vo", "xv,x11");
+                    m_strInitVo = "xv,x11";
                     //set_property(h, "ao", "alsa");
                 }
 #else
                 my_set_property(h, "vo", "xv,x11");
+                m_strInitVo = "xv,x11";
 #endif
             } else {
                 auto e = QProcessEnvironment::systemEnvironment();
@@ -339,13 +347,16 @@ mpv_handle *MpvProxy::mpv_init()
                 if (XDG_SESSION_TYPE == QLatin1String("wayland") ||
                         WAYLAND_DISPLAY.contains(QLatin1String("wayland"), Qt::CaseInsensitive)) {
                     my_set_property(h, "vo", "gpu,x11,xv");
+                    m_strInitVo = "gpu,x11,xv";
                 } else {
                     my_set_property(h, "vo", "xv");
+                    m_strInitVo = "xv";
                 }
             }
         }
 #else
         my_set_property(h, "vo", "gpu,xv,x11");
+        m_strInitVo = "gpu,xv,x11";
 #endif
 #endif
         my_set_property(h, "wid", m_parentWidget->winId());
@@ -356,7 +367,7 @@ mpv_handle *MpvProxy::mpv_init()
         if (utils::check_wayland_env()) {
             my_set_property(h, "wid", m_parentWidget->winId());
         }
-
+        m_strInitVo = "xv,x11";
     }
     qDebug() << __func__ << my_get_property(h, "vo").toString();
     qDebug() << __func__ << my_get_property(h, "hwdec").toString();
@@ -976,6 +987,12 @@ void MpvProxy::play()
     if (!m_bInited) {
         firstInit();
         m_bInited = true;
+    }
+
+    if (PlayerEngine::isAudioFile(_file.toString())) {
+        my_set_property(_handle, "vo", "null");
+    } else {
+        my_set_property(_handle, "vo", m_strInitVo);
     }
 
     QList<QVariant> args = { "loadfile" };
