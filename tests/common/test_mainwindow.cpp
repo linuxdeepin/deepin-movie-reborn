@@ -586,7 +586,7 @@ TEST(ToolBox, mainWindowEvent)
     QTest::mouseClick(w, Qt::LeftButton, Qt::NoModifier, QPoint(100,100), 200);
     QTest::qWait(100);
 //    w->testCdrom();
-    QTest::qWait(100);
+    QTest::qWait(500);
 }
 
 /*
