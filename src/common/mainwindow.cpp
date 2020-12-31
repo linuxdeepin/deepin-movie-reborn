@@ -1787,6 +1787,10 @@ void MainWindow::mipsShowFullScreen()
 void MainWindow::menuItemInvoked(QAction *action)
 {
     auto kd = ActionFactory::actionKind(action);
+    if(kd == dmr::ActionFactory::Invalid)
+    {
+        return;
+    }
     auto isShortcut = ActionFactory::isActionFromShortcut(action);
     if (ActionFactory::actionHasArgs(action)) {
         requestAction(kd, !isShortcut, ActionFactory::actionArgs(action), isShortcut);
