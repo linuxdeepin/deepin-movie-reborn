@@ -776,8 +776,8 @@ void PlaylistModel::remove(int pos)
     _last = _current;
     if (_engine->state() != PlayerEngine::Idle) {
         if (_current == pos) {
-            _last = _current;
             _current = -1;
+            _last = _current;
             _engine->waitLastEnd();
 
         } else if (pos < _current) {
@@ -786,8 +786,8 @@ void PlaylistModel::remove(int pos)
         }
     } else {
         if (_current == pos) {
-            _last = _current;
             _current = -1;
+            _last = _current;
             _engine->waitLastEnd();
         }
     }
