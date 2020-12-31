@@ -56,16 +56,16 @@ TEST(MainWindow, loadFile)
     const auto &valids = engine->addPlayFiles(listPlayFiles);
     QCOMPARE(engine->isPlayableFile(valids[0]), true);
     if(!valids.empty()){
-        engine->playByName(valids[0]);
+      engine->playByName(valids[0]);
     }
 
     w->checkOnlineState(false);
-    QTest::qWait(200);
-    w->resize(900, 700);
-    QTest::qWait(200);
-    w->resize(300, 300);
-    QTest::qWait(200);
-    w->requestAction(ActionFactory::ActionKind::MatchOnlineSubtitle);
+   // QTest::qWait(200);
+   // w->resize(900, 700);
+   // QTest::qWait(200);
+   // w->resize(300, 300);
+   // QTest::qWait(200);
+   // w->requestAction(ActionFactory::ActionKind::MatchOnlineSubtitle);
     QTest::qWait(200);
     DGuiApplicationHelper::instance()->setThemeType(DGuiApplicationHelper::DarkType);
     emit DGuiApplicationHelper::instance()->paletteTypeChanged(DGuiApplicationHelper::DarkType);
@@ -102,7 +102,7 @@ TEST(MainWindow, DBus)
     appAdaptor->openFile("/data/source/deepin-movie-reborn/movie/demo.mp4");
 }
 
-TEST(MainWindow, resizeWindow)
+/*TEST(MainWindow, resizeWindow)
 {
     MainWindow *w = dApp->getMainWindow();
     //缩放窗口
@@ -169,7 +169,7 @@ TEST(MainWindow, touch)
 #endif
     w->setTouched(false);
 }
-
+*/
 TEST(MainWindow, shortCutPlay)
 {
     MainWindow* w = dApp->getMainWindow();
@@ -179,14 +179,14 @@ TEST(MainWindow, shortCutPlay)
 //    testEventList.addKeyClick(Qt::Key_Slash, Qt::ControlModifier | Qt::ShiftModifier, 500);
 //    testEventList.addKeyRelease(Qt::Key_Slash, Qt::ControlModifier | Qt::ShiftModifier, 1000);
     //截图
-    testEventList.addKeyClick(Qt::Key_A, Qt::AltModifier, 500);    //screenshot
-    testEventList.addKeyClick(Qt::Key_S, Qt::AltModifier, 1000);    //连拍
-    BurstScreenshotsDialog bsd(engine->playlist().currentInfo());
-    bsd.show();
-    QTest::qWait(500);
-    bsd.close();
+  //  testEventList.addKeyClick(Qt::Key_A, Qt::AltModifier, 500);    //screenshot
+   // testEventList.addKeyClick(Qt::Key_S, Qt::AltModifier, 1000);    //连拍
+   // BurstScreenshotsDialog bsd(engine->playlist().currentInfo());
+   // bsd.show();
+   // QTest::qWait(500);
+   // bsd.close();
 
-    testEventList.addKeyClick(Qt::Key_Right, Qt::NoModifier, 300); //fast forward
+   /* testEventList.addKeyClick(Qt::Key_Right, Qt::NoModifier, 300); //fast forward
     for(int i=0; i<4; i++){
         testEventList.addKeyClick(Qt::Key_Left, Qt::NoModifier, 200);  //fast backward
     }
@@ -222,9 +222,9 @@ TEST(MainWindow, shortCutPlay)
 //    testEventList.addKeyClick(Qt::Key_Tab, Qt::NoModifier, 300);
 
     qDebug() << __func__ << "playerEngineState:" << engine->state();
-    testEventList.simulate(w);
+    testEventList.simulate(w);*/
 }
-
+/*
 TEST(MainWindow, shortCutVolumeAndFrame)
 {
     MainWindow* w = dApp->getMainWindow();
@@ -341,10 +341,10 @@ TEST(MainWindow, movieInfoDialog)
     QTest::qWait(200);
     mid.show();
     QTest::qWait(200);
-    QTest::mouseMove(filePathLbl, QPoint(), 200);
-    QTest::qWait(700);
-    QTest::mouseMove(w, QPoint(200, 300), 200);
-    QTest::qWait(50);
+    //QTest::mouseMove(filePathLbl, QPoint(), 200);
+   // QTest::qWait(700);
+    //QTest::mouseMove(w, QPoint(200, 300), 200);
+    //QTest::qWait(50);
     mid.close();
 
     DGuiApplicationHelper::instance()->setThemeType(DGuiApplicationHelper::LightType);
@@ -353,12 +353,12 @@ TEST(MainWindow, movieInfoDialog)
 
     QTest::qWait(100);
     mid.show();
-    QTest::mouseMove(filePathLbl, QPoint(), 200);
-    QTest::mouseMove(w, QPoint(200, 300), 700);
+    //QTest::mouseMove(filePathLbl, QPoint(), 200);
+    //QTest::mouseMove(w, QPoint(200, 300), 700);
     QTest::qWait(100);
     mid.close();
 }
-
+*/
 TEST(MainWindow, loadSubtitle)
 {
     MainWindow *w = dApp->getMainWindow();
@@ -385,7 +385,7 @@ TEST(MainWindow, reloadFile)
     engine->addPlayFiles(listPlayFiles);
 }
 
-TEST(ToolBox, togglePlayList)
+/*TEST(ToolBox, togglePlayList)
 {
     MainWindow* w = dApp->getMainWindow();
     ToolboxProxy* toolboxProxy = w->toolbox();
@@ -485,7 +485,7 @@ TEST(ToolBox, playBtnBox)
 //    QTest::mouseMove(prevBtn, QPoint(), 500);
 //    QTest::mouseClick(prevBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 500); //play prev
 }
-
+*/
 TEST(ToolBox, UrlDialog)
 {
     MainWindow* w = dApp->getMainWindow();
@@ -513,7 +513,7 @@ TEST(ToolBox, UrlDialog)
     w->play(url);
     QTest::qWait(300);
 }
-
+/*
 TEST(ToolBox, fullScreenBtn)
 {
     MainWindow* w = dApp->getMainWindow();
@@ -529,15 +529,15 @@ TEST(ToolBox, fullScreenBtn)
     QTest::mouseMove(fsBtn, QPoint(), 200);
     QTest::mouseClick(fsBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 500);
 }
-
+*/
 TEST(ToolBox, volBtn)
 {
     MainWindow* w = dApp->getMainWindow();
     ToolboxProxy* toolboxProxy = w->toolbox();
     VolumeButton *volBtn = toolboxProxy->volBtn();
 
-    QTest::mouseMove(volBtn, QPoint(), 200);
-    QTest::mouseClick(volBtn,Qt::LeftButton,Qt::NoModifier,QPoint(),500);
+    //QTest::mouseMove(volBtn, QPoint(), 200);
+    //QTest::mouseClick(volBtn,Qt::LeftButton,Qt::NoModifier,QPoint(),500);
 
     QWheelEvent wheelUpEvent(volBtn->rect().center(), 20, Qt::NoButton, Qt::NoModifier);
     QWheelEvent wheelDownEvent(volBtn->rect().center(), -20, Qt::NoButton, Qt::NoModifier);
@@ -574,8 +574,8 @@ TEST(ToolBox, mainWindowEvent)
     QVERIFY(drop.isAccepted());
     QCOMPARE(drop.dropAction(), Qt::CopyAction);
 
-    QWheelEvent wheelEvent = QWheelEvent(QPoint(0, 0), 20, Qt::MidButton, Qt::NoModifier);
-    QApplication::sendEvent(w, &wheelEvent);
+    //QWheelEvent wheelEvent = QWheelEvent(QPoint(0, 0), 20, Qt::MidButton, Qt::NoModifier);
+   // QApplication::sendEvent(w, &wheelEvent);
 
     QContextMenuEvent *cme = new QContextMenuEvent(QContextMenuEvent::Mouse, w->rect().center());
     QTimer::singleShot(100,[=](){
