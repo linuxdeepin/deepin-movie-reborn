@@ -15,7 +15,7 @@
 namespace dmr {
 
 MovieWidget::MovieWidget(QWidget *parent)
-    : QWidget(parent), m_nRotate(0), m_nWidthNote(0), m_state(PlayState::StateStop)
+    : DWidget(parent), m_nRotate(0), m_nWidthNote(0), m_state(PlayState::StateStop)
 {
     m_pLabMovie = nullptr;
     m_pTimer = nullptr;
@@ -36,11 +36,6 @@ MovieWidget::MovieWidget(QWidget *parent)
     m_pTimer = new QTimer();
     m_pTimer->setInterval(INTERVAL);
     connect(m_pTimer, &QTimer::timeout, this, &MovieWidget::updateView);
-
-    setAutoFillBackground(true);
-    QPalette palette;
-    palette.setBrush(QPalette::Background, Qt::black);
-    this->setPalette(palette);
 }
 
 void MovieWidget::startPlaying()
