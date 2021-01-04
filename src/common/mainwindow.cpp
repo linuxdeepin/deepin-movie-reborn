@@ -783,6 +783,7 @@ MainWindow::MainWindow(QWidget *parent)
                 emit frameMenuEnable(true);
                 setMusicShortKeyState(true);
             } else {
+                emit frameMenuEnable(false);
                 setMusicShortKeyState(false);
             }
             emit playSpeedMenuEnable(true);
@@ -1787,8 +1788,7 @@ void MainWindow::mipsShowFullScreen()
 void MainWindow::menuItemInvoked(QAction *action)
 {
     auto kd = ActionFactory::actionKind(action);
-    if(kd == dmr::ActionFactory::Invalid)
-    {
+    if (kd == dmr::ActionFactory::Invalid) {
         return;
     }
     auto isShortcut = ActionFactory::isActionFromShortcut(action);
