@@ -38,7 +38,7 @@ TEST(libdmr, libdmrTest)
     res = mc.queryByUrl(QUrl("movie1"));
     mc.clear();
 
-    delete player;
+//    delete player;
 }
 TEST(libdmr, utils)
 {

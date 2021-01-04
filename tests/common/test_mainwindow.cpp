@@ -551,7 +551,6 @@ TEST(ToolBox, volBtn)
 TEST(ToolBox, mainWindowEvent)
 {
     MainWindow *w = dApp->getMainWindow();
-    MainWindow wm;
     QMimeData mimeData;
     QList<QUrl> urls;
     QPoint point(w->pos().x() + 20, w->pos().y() +20);
@@ -583,7 +582,7 @@ TEST(ToolBox, mainWindowEvent)
     });
     QApplication::sendEvent(w, cme);
 
-    QTest::mouseClick(w, Qt::LeftButton, Qt::NoModifier, QPoint(100,100), 200);
+//    QTest::mouseClick(w, Qt::LeftButton, Qt::NoModifier, QPoint(100,100), 200);
     QTest::qWait(100);
 //    w->testCdrom();
     QTest::qWait(500);
