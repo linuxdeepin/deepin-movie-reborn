@@ -2729,6 +2729,7 @@ void MainWindow::onBurstScreenshot(const QImage &frame, qint64 timestamp)
         _engine->stopBurstScreenshot();
         _inBurstShootMode = false;
         _toolbox->setEnabled(true);
+        _titlebar->titlebar()->setEnabled(true);
         if (_listener) _listener->setEnabled(!_miniMode);
 
         if (frame.isNull()) {
@@ -2771,6 +2772,7 @@ void MainWindow::startBurstShooting()
 {
     _inBurstShootMode = true;
     _toolbox->setEnabled(false);
+    _titlebar->titlebar()->setEnabled(false);
     if (_listener) _listener->setEnabled(false);
 
     _pausedBeforeBurst = _engine->paused();
