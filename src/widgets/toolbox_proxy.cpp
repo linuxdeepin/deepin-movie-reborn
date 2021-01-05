@@ -1956,7 +1956,7 @@ void ToolboxProxy::setup()
 
     } else {
 #if defined (__mips__) || defined (__aarch64__)
-        _volSlider = new VolumeSlider(_engine, _mainWindow, nullptr);
+        _volSlider = new VolumeSlider(_engine, _mainWindow, _mainWindow);
         _volSlider->setObjectName(VOLUME_SLIDER_WIDGET);
         connect(_volBtn, &VolumeButton::clicked, this, &ToolboxProxy::slotVolumeButtonClicked);
 
