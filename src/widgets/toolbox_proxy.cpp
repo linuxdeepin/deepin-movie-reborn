@@ -771,6 +771,9 @@ protected:
             _press = !_press;
         }
 
+        _sliderArrowUp->setVisible(_press);
+        setTimeVisible(_press);
+
         DWidget::mouseReleaseEvent(e);
     }
     void paintEvent(QPaintEvent *e) override
