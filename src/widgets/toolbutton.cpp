@@ -45,9 +45,9 @@ void VolumeButton::changeLevel(Level lv)
     if (_lv != lv) {
         switch (lv) {
         case Level::Mute:
+        case Level::Off:
             setIcon(QIcon::fromTheme("dcc_mute"));
             break;
-        case Level::Off:
         case Level::Low:
             setIcon(QIcon::fromTheme("dcc_volumelow"));
             break;

@@ -2499,13 +2499,10 @@ void ToolboxProxy::updateVolumeState()
         _volBtn->setToolTip(tr("Mute"));
         _volSlider->setMute(true);
     } else {
-//        auto v = _engine->volume();
         int v = _volSlider->value();
-        _volSlider->setMute(false);
-        /*if (v != 0) {
-            v -= VOLUME_OFFSET;
-        }*/
-        //_volBtn->setToolTip(tr("Volume"));
+        if (v > 0) {
+            _volSlider->setMute(false);
+        }
         if (v >= 66)
             _volBtn->changeLevel(VolumeButton::High);
         else if (v >= 33)
