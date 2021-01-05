@@ -20,6 +20,7 @@
 #include "mainwindow.h"
 #include "movie_configuration.h"
 #include <QTest>
+#include "player_widget.h"
 
 using namespace dmr;
 

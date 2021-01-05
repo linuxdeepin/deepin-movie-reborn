@@ -22,7 +22,7 @@ using namespace utils;
 {
     MainWindow *w = dApp->getMainWindow();
     w->close();
-    delete w;
+//    delete w;
 
     qputenv("QT_WAYLAND_SHELL_INTEGRATION", "kwayland-shell");
     //qputenv("_d_disableDBusFileDialog", "true");
@@ -71,8 +71,8 @@ using namespace utils;
     QTest::mouseMove(nextBtn, QPoint(), 200);
     QTest::mouseClick(nextBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 500); //play next
     QTest::qWait(200);
-    DGuiApplicationHelper::instance()->setThemeType(DGuiApplicationHelper::DarkType);
-    emit DGuiApplicationHelper::instance()->paletteTypeChanged(DGuiApplicationHelper::DarkType);
+//    DGuiApplicationHelper::instance()->setThemeType(DGuiApplicationHelper::DarkType);
+//    emit DGuiApplicationHelper::instance()->paletteTypeChanged(DGuiApplicationHelper::DarkType);
     QTest::mouseMove(prevBtn, QPoint(), 200);
     QTest::mouseClick(prevBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 500); //play prev
 

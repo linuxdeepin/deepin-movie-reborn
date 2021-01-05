@@ -35,15 +35,15 @@ TEST(requestAction, onlineSub)
     QTest::qWait(200);
     w->requestAction(ActionFactory::ActionKind::HideSubtitle);
 
-//    QTestEventList testEventList;
-//    testEventList.addKeyClick(Qt::Key_Left, Qt::ShiftModifier,100); //sub delay
-////    QTest::qWait(200);
-//    w->requestAction(ActionFactory::ActionKind::SubDelay);
-//    testEventList.addKeyClick(Qt::Key_Left, Qt::ShiftModifier,100);
-//    testEventList.addKeyClick(Qt::Key_Right, Qt::ShiftModifier,100);    //sub advance
-//    testEventList.addKeyClick(Qt::Key_Right, Qt::ShiftModifier,100);
-//    testEventList.addKeyClick(Qt::Key_Right, Qt::ShiftModifier,100);
-//    testEventList.simulate(w);
+    QTestEventList testEventList;
+    testEventList.addKeyClick(Qt::Key_Left, Qt::ShiftModifier,100); //sub delay
+//    QTest::qWait(200);
+    w->requestAction(ActionFactory::ActionKind::SubDelay);
+    testEventList.addKeyClick(Qt::Key_Left, Qt::ShiftModifier,100);
+    testEventList.addKeyClick(Qt::Key_Right, Qt::ShiftModifier,100);    //sub advance
+    testEventList.addKeyClick(Qt::Key_Right, Qt::ShiftModifier,100);
+    testEventList.addKeyClick(Qt::Key_Right, Qt::ShiftModifier,100);
+    testEventList.simulate(w);
 }
 
 //will cause the program abort of arm platform
@@ -69,7 +69,7 @@ TEST(requestAction, sound)
     w->requestAction(ActionFactory::ActionKind::RightChannel);
 }
 
-/*TEST(requestAction, playMode)
+TEST(requestAction, playMode)
 {
     MainWindow* w = dApp->getMainWindow();
     w->show();
@@ -84,7 +84,7 @@ TEST(requestAction, sound)
     w->requestAction(ActionFactory::ActionKind::SingleLoop);
     QTest::qWait(500);
     w->requestAction(ActionFactory::ActionKind::ListLoop);
-}*/
+}
 
 TEST(requestAction, playSpeed)
 {

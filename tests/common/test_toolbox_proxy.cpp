@@ -26,7 +26,7 @@ using namespace dmr;
     QTest::mouseMove(btn);
 
     btn->deleteLater();
-}
+}*/
 TEST(ToolBox, buttonTooltip)
 {
     MainWindow* w = dApp->getMainWindow();
@@ -65,7 +65,7 @@ TEST(ToolBox, tip)
     QColor color = tip->borderColor();
     QBrush brush = tip->background();
     tip->deleteLater();
-}*/
+}
 
 /*TEST(ToolBox, reloadFile)
 {

@@ -9,28 +9,28 @@
 
 using namespace dmr;
 
-//TEST(Presenter, slotpause)
-//{
-//    Presenter *presenter = dApp->initPresenter();
+TEST(Presenter, slotpause)
+{
+    Presenter *presenter = dApp->initPresenter();
 
-//    QTest::qWait(500);
-//    presenter->slotopenUrlRequested(QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/bensound-sunny.mp3"));
-//    QTest::qWait(500);
-//    presenter->slotplay();
-//    QTest::qWait(1000);
-//    presenter->slotpause();
-//    QTest::qWait(1000);
-//    presenter->slotplaynext();
-//    QTest::qWait(1000);
-//    presenter->slotplayprev();
-//    QTest::qWait(500);
-//    presenter->slotvolumeRequested(1.5);
-//    QTest::qWait(500);
-//    presenter->slotstateChanged();
-//    QTest::qWait(500);
-//    presenter->slotvolumeChanged();
+    QTest::qWait(500);
+    presenter->slotopenUrlRequested(QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/bensound-sunny.mp3"));
+    QTest::qWait(500);
+    presenter->slotplay();
+    QTest::qWait(1000);
+    presenter->slotpause();
+    QTest::qWait(1000);
+    presenter->slotplaynext();
+    QTest::qWait(1000);
+    presenter->slotplayprev();
+    QTest::qWait(500);
+    presenter->slotvolumeRequested(1.5);
+    QTest::qWait(500);
+    presenter->slotstateChanged();
+    QTest::qWait(500);
+    presenter->slotvolumeChanged();
 
-//}
+}
 
 TEST(Presenter, slotloopStatusRequested)
 {

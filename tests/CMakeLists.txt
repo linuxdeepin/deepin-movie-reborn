@@ -85,7 +85,6 @@ set(AllQRC
 # 设置不删除生成的文件夹内容文件（设置此项是为了翻译后的文件不被删除）
 set_directory_properties(PROPERTIES CLEAN_NO_CUSTOM 1)
 
-
 # 添加需要安装的模块
 add_executable(${PROJECT_NAME} ${allHeaders} ${allSource} ${allTestSource}
     ${AllQRC}
