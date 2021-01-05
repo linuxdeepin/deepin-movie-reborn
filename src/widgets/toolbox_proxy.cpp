@@ -1137,10 +1137,6 @@ public slots:
 
     void popup()
     {
-        if (isHidden()) {
-            state = Close;
-            m_bFinished = false;
-        }
         QRect main_rect = _mw->rect();
         QRect view_rect = main_rect.marginsRemoved(QMargins(1, 1, 1, 1));
 
@@ -1168,7 +1164,7 @@ public slots:
         media.moveTo(m_point + QPoint(5, 10));
 #endif
 
-        if (state == State::Close) {
+        if (state == State::Close && isVisible()) {
             pVolAnimation = new QPropertyAnimation(this, "geometry");
             pVolAnimation->setEasingCurve(QEasingCurve::Linear);
             pVolAnimation->setKeyValueAt(0, end);
