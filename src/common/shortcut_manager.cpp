@@ -88,7 +88,7 @@ ShortcutManager::ShortcutManager()
     connect(&Settings::get(), &Settings::shortcutsChanged, [=](QString sk, const QVariant& val) {
         if (sk.endsWith(".enable")) {
             auto grp_key = sk.left(sk.lastIndexOf('.'));
-            qDebug() << "update group binding" << grp_key;
+            qInfo() << "update group binding" << grp_key;
 
             QPointer<DSettingsGroup> shortcuts = Settings::get().shortcuts();
             auto grps = shortcuts->childGroups();
@@ -101,13 +101,13 @@ ShortcutManager::ShortcutManager()
             return;
         }
         sk.remove(0, sk.lastIndexOf('.') + 1);
-        qDebug() << "update binding" << sk << QKeySequence(val.toStringList().at(0));
+        qInfo() << "update binding" << sk << QKeySequence(val.toStringList().at(0));
         QString strKey = QKeySequence(val.toStringList().at(0)).toString();
         if (strKey.contains("Return")) {
             _map[QKeySequence(val.toStringList().at(0))] = _keyToAction[sk];
             strKey = QString("%1Num+Enter").arg(strKey.remove("Return"));
             _map[strKey] = _keyToAction[sk];
-            qDebug() << val << QKeySequence(strKey) << strKey;
+            qInfo() << val << QKeySequence(strKey) << strKey;
 
             _map.remove(strKey);
             _map[strKey] = _keyToAction[sk];
@@ -115,7 +115,7 @@ ShortcutManager::ShortcutManager()
             _map[QKeySequence(val.toStringList().at(0))] = _keyToAction[sk];
             strKey = QString("%1Return").arg(strKey.remove("Num+Enter"));
             _map[strKey] = _keyToAction[sk];
-            qDebug() << val << QKeySequence(strKey) << strKey;
+            qInfo() << val << QKeySequence(strKey) << strKey;
         }
         _map.remove(_map.key(_keyToAction[sk]));
         _map[QKeySequence(val.toStringList().at(0))] = _keyToAction[sk];
@@ -143,13 +143,13 @@ void ShortcutManager::toggleGroupShortcuts(GroupPtr grp, bool on)
             _map[QKeySequence(opt->value().toStringList().at(0))] = _keyToAction[sk];
             strKey = QString("%1Num+Enter").arg(strKey.remove("Return"));
             _map[strKey] = _keyToAction[sk];
-            qDebug() << opt->name() << QKeySequence(strKey) << strKey;
+            qInfo() << opt->name() << QKeySequence(strKey) << strKey;
 
         } else if (strKey.contains("Num+Enter")) {
             _map[QKeySequence(opt->value().toStringList().at(0))] = _keyToAction[sk];
             strKey = QString("%1Return").arg(strKey.remove("Num+Enter"));
             _map[strKey] = _keyToAction[sk];
-            qDebug() << opt->name() << QKeySequence(strKey) << strKey;
+            qInfo() << opt->name() << QKeySequence(strKey) << strKey;
         }
 
         if (on) {
@@ -171,7 +171,7 @@ void ShortcutManager::buildBindingsFromSettings()
     auto subgroups = shortcuts->childGroups();
     std::for_each(subgroups.begin(), subgroups.end(), [=](GroupPtr grp) {
         auto enabled = Settings::get().settings()->option(grp->key() + ".enable");
-        qDebug() << grp->name() << enabled->value();
+        qInfo() << grp->name() << enabled->value();
         Q_ASSERT(enabled && enabled->viewType() == "checkbox");
         if (!enabled->value().toBool())
             return;
@@ -188,7 +188,7 @@ QString ShortcutManager::toJson()
     QPointer<DSettingsGroup> shortcuts = Settings::get().shortcuts();
     auto subgroups = shortcuts->childGroups();
     std::for_each(subgroups.begin(), subgroups.end(), [&](GroupPtr grp) {
-        qDebug() << grp->name();
+        qInfo() << grp->name();
 
         QJsonObject jsonGroup;
         jsonGroup.insert("groupName", qApp->translate("QObject", grp->name().toUtf8().data()));

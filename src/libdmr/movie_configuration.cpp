@@ -130,7 +130,7 @@ public:
 
     void updateUrl(const QUrl &url, const QString &key, const QVariant &val)
     {
-        qDebug() << url << key << val;
+        qInfo() << url << key << val;
 
         _db.transaction();
 
@@ -329,7 +329,7 @@ static void _backend_test()
 
     auto res = mc.queryByUrl(QUrl("movie1"));
     Q_ASSERT (res.size() == 2);
-    qDebug() << res;
+    qInfo() << res;
 
     mc.removeUrl(QUrl("movie1"));
     mc.updateUrl(QUrl("movie1"), "volume", 30);
@@ -337,7 +337,7 @@ static void _backend_test()
 
     res = mc.queryByUrl(QUrl("movie1"));
     Q_ASSERT (res.size() == 1);
-    qDebug() << res;
+    qInfo() << res;
     mc.clear();
 }
 #endif

@@ -88,7 +88,7 @@ void AnimationLabel::onPlayAnimationChanged(const QVariant &value)
     m_fileName = QString(":/resources/icons/stop/%1.png").arg(value.toInt());
 
     m_pixmap = QPixmap(m_fileName);
-    qDebug() << m_fileName << value.toInt();
+    qInfo() << m_fileName << value.toInt();
 
     update();
 }
@@ -98,7 +98,7 @@ void AnimationLabel::onPauseAnimationChanged(const QVariant &value)
     m_fileName = QString(":/resources/icons/start/%1.png").arg(value.toInt());
 
     m_pixmap = QPixmap(m_fileName);
-    qDebug() << m_fileName << value.toInt();
+    qInfo() << m_fileName << value.toInt();
 
     update();
 }

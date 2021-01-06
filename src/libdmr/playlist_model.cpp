@@ -239,7 +239,7 @@ public:
                 QDataStream ds(&f);
                 ds << pif.mi;
                 mi_saved = true;
-                qDebug() << "cache" << pif.url << "->" << h;
+                qInfo() << "cache" << pif.url << "->" << h;
             } else {
                 qWarning() << f.errorString();
             }
@@ -413,10 +413,10 @@ struct MovieInfo PlaylistModel::parseFromFile(const QFileInfo &fi, bool *ok)
         if (tag->key && strcmp(tag->key, "creation_time") == 0) {
             auto dt = QDateTime::fromString(tag->value, Qt::ISODate);
             mi.creation = dt.toString();
-            qDebug() << __func__ << dt.toString();
+            qInfo() << __func__ << dt.toString();
             break;
         }
-        qDebug() << "tag:" << tag->key << tag->value;
+        qInfo() << "tag:" << tag->key << tag->value;
     }
 
     AVStream *pTempStream = nullptr;
@@ -438,7 +438,7 @@ struct MovieInfo PlaylistModel::parseFromFile(const QFileInfo &fi, bool *ok)
                 }
                 break;
             }
-            qDebug() << "tag:" << tag->key << tag->value;
+            qInfo() << "tag:" << tag->key << tag->value;
         }
     }
 
@@ -468,7 +468,7 @@ void PlaylistModel::slotStateChanged()
 {
     PlayerEngine *e = dynamic_cast<PlayerEngine *>(sender());
     if (!e) return;
-    qDebug() << "model" << "_userRequestingItem" << _userRequestingItem << "state" << e->state();
+    qInfo() << "model" << "_userRequestingItem" << _userRequestingItem << "state" << e->state();
     switch (e->state()) {
     case PlayerEngine::Playing: {
         auto &pif = currentInfo();
@@ -585,7 +585,7 @@ void PlaylistModel::initFFmpeg()
 
 PlaylistModel::~PlaylistModel()
 {
-    qDebug() << __func__;
+    qInfo() << __func__;
     //delete _jobWatcher;
 
     delete m_pdataMutex;
@@ -632,18 +632,18 @@ qint64 PlaylistModel::getUrlFileTotalSize(QUrl url, int tryTimes) const
         loop.exec();
 
         if (reply->error() != QNetworkReply::NoError) {
-            qDebug() << reply->errorString();
+            qInfo() << reply->errorString();
             continue;
         }
         QVariant var = reply->header(QNetworkRequest::ContentLengthHeader);
         size = var.toLongLong();
         reply->deleteLater();
-//        qDebug() << reply->hasRawHeader("Content-Encoding ");
-//        qDebug() << reply->hasRawHeader("Content-Language");
-//        qDebug() << reply->hasRawHeader("Content-Length");
-//        qDebug() << reply->hasRawHeader("Content-Type");
-//        qDebug() << reply->hasRawHeader("Last-Modified");
-//        qDebug() << reply->hasRawHeader("Expires");
+//        qInfo() << reply->hasRawHeader("Content-Encoding ");
+//        qInfo() << reply->hasRawHeader("Content-Language");
+//        qInfo() << reply->hasRawHeader("Content-Length");
+//        qInfo() << reply->hasRawHeader("Content-Type");
+//        qInfo() << reply->hasRawHeader("Last-Modified");
+//        qInfo() << reply->hasRawHeader("Expires");
 
         break;
 
@@ -672,7 +672,7 @@ void PlaylistModel::savePlaylist()
     for (int i = 0; i < count(); ++i) {
         const auto &pif = _infos[i];
         cfg.setValue(QString::number(i), pif.url);
-        qDebug() << "save " << pif.url;
+        qInfo() << "save " << pif.url;
     }
     cfg.endGroup();
     cfg.sync();
@@ -746,7 +746,7 @@ void PlaylistModel::reshuffle()
     std::mt19937 g(rd());
 
     std::shuffle(_playOrder.begin(), _playOrder.end(), g);
-    qDebug() << _playOrder;
+    qInfo() << _playOrder;
 }
 
 void PlaylistModel::clear()
@@ -801,7 +801,7 @@ void PlaylistModel::remove(int pos)
     emit countChanged();
 
 
-    qDebug() << _last << _current;
+    qInfo() << _last << _current;
     _userRequestingItem = false;
     savePlaylist();
 }
@@ -814,10 +814,10 @@ void PlaylistModel::stop()
 
 void PlaylistModel::tryPlayCurrent(bool next)
 {
-    qDebug() << __func__;
+    qInfo() << __func__;
     auto &pif = _infos[_current];
     if (pif.refresh()) {
-        qDebug() << pif.url.fileName() << "changed";
+        qInfo() << pif.url.fileName() << "changed";
     }
     emit itemInfoUpdated(_current);
     if (pif.valid) {
@@ -887,7 +887,7 @@ void PlaylistModel::clearLoad()
 void PlaylistModel::playNext(bool fromUser)
 {
     if (count() == 0) return;
-    qDebug() << "playmode" << _playMode << "fromUser" << fromUser
+    qInfo() << "playmode" << _playMode << "fromUser" << fromUser
              << "last" << _last << "current" << _current;
 
     _userRequestingItem = fromUser;
@@ -939,7 +939,7 @@ void PlaylistModel::playNext(bool fromUser)
             reshuffle();
         }
         _shufflePlayed++;
-        qDebug() << "shuffle next " << _shufflePlayed - 1;
+        qInfo() << "shuffle next " << _shufflePlayed - 1;
         _engine->waitLastEnd();
         _last = _current = _playOrder[_shufflePlayed - 1];
         tryPlayCurrent(true);
@@ -981,7 +981,7 @@ void PlaylistModel::playNext(bool fromUser)
 void PlaylistModel::playPrev(bool fromUser)
 {
     if (count() == 0) return;
-    qDebug() << "playmode" << _playMode << "fromUser" << fromUser
+    qInfo() << "playmode" << _playMode << "fromUser" << fromUser
              << "last" << _last << "current" << _current;
 
     _userRequestingItem = fromUser;
@@ -1032,7 +1032,7 @@ void PlaylistModel::playPrev(bool fromUser)
             _shufflePlayed = _playOrder.size();
         }
         _shufflePlayed--;
-        qDebug() << "shuffle prev " << _shufflePlayed - 1;
+        qInfo() << "shuffle prev " << _shufflePlayed - 1;
         _engine->waitLastEnd();
         _last = _current = _playOrder[_shufflePlayed - 1];
         tryPlayCurrent(false);
@@ -1077,7 +1077,7 @@ static QDebug operator<<(QDebug s, const QFileInfoList &v)
 
 void PlaylistModel::appendSingle(const QUrl &url)
 {
-    qDebug() << __func__;
+    qInfo() << __func__;
     if (indexOf(url) >= 0) return;
 
     if (url.isLocalFile()) {
@@ -1090,7 +1090,7 @@ void PlaylistModel::appendSingle(const QUrl &url)
 #ifndef _LIBDMR_
         if (Settings::get().isSet(Settings::AutoSearchSimilar)) {
             auto fil = utils::FindSimilarFiles(fi);
-            qDebug() << "auto search similar files" << fil;
+            qInfo() << "auto search similar files" << fil;
             std::for_each(fil.begin(), fil.end(), [ = ](const QFileInfo & fi) {
                 auto url = QUrl::fromLocalFile(fi.absoluteFilePath());
                 if (indexOf(url) < 0 && _engine->isPlayableFile(fi.fileName())) {
@@ -1117,19 +1117,19 @@ void PlaylistModel::collectionJob(const QList<QUrl> &urls, QList<QUrl> &inputUrl
             continue;
 
         m_loadFile.append(url);
-        qDebug() << __func__ << _infos.size() << "index is" << aa << url;
+        qInfo() << __func__ << _infos.size() << "index is" << aa << url;
         QFileInfo fi(url.toLocalFile());
         if (!_firstLoad && (!fi.exists() || !fi.isFile())) continue;
 
         _pendingJob.append(qMakePair(url, fi));
         _urlsInJob.insert(url.toLocalFile());
         inputUrls.append(url);
-        qDebug() << "append " << url.fileName();
+        qInfo() << "append " << url.fileName();
 
 #ifndef _LIBDMR_
         if (!_firstLoad && Settings::get().isSet(Settings::AutoSearchSimilar)) {
             auto fil = utils::FindSimilarFiles(fi);
-            qDebug() << "auto search similar files" << fil;
+            qInfo() << "auto search similar files" << fil;
             for (const QFileInfo &fileinfo : fil) {
                 if (fileinfo.isFile()) {
                     auto file_url = QUrl::fromLocalFile(fileinfo.absoluteFilePath());
@@ -1147,7 +1147,7 @@ void PlaylistModel::collectionJob(const QList<QUrl> &urls, QList<QUrl> &inputUrl
 #endif
     }
 
-    qDebug() << "input size" << urls.size() << "output size" << _urlsInJob.size()
+    qInfo() << "input size" << urls.size() << "output size" << _urlsInJob.size()
              << "_pendingJob: " << _pendingJob.size();
 }
 
@@ -1212,7 +1212,7 @@ void PlaylistModel::delayedAppendAsync(const QList<QUrl> &urls)
 
         struct PlayItemInfo operator()(const AppendJob &a)
         {
-            qDebug() << "mapping " << a.first.fileName();
+            qInfo() << "mapping " << a.first.fileName();
             return _model->calculatePlayInfo(a.first, a.second);
         }
     };
@@ -1222,7 +1222,7 @@ void PlaylistModel::delayedAppendAsync(const QList<QUrl> &urls)
         m_pdataMutex->lock();
         PlayItemInfoList pil;
         for (const auto &a : _pendingJob) {
-            qDebug() << "sync mapping " << a.first.fileName();
+            qInfo() << "sync mapping " << a.first.fileName();
             pil.append(calculatePlayInfo(a.first, a.second));
             if (m_ploadThread && m_ploadThread->isRunning()) {
                 m_ploadThread->msleep(10);
@@ -1235,7 +1235,7 @@ void PlaylistModel::delayedAppendAsync(const QList<QUrl> &urls)
 
         handleAsyncAppendResults(pil);
     } else {*/
-    qDebug() << "not wayland";
+    qInfo() << "not wayland";
     if (QThread::idealThreadCount() > 1) {
 //            auto future = QtConcurrent::mapped(_pendingJob, MapFunctor(this));
 //            _jobWatcher->setFuture(future);
@@ -1258,7 +1258,7 @@ void PlaylistModel::delayedAppendAsync(const QList<QUrl> &urls)
     } else {
         PlayItemInfoList pil;
         for (const auto &a : _pendingJob) {
-            qDebug() << "sync mapping " << a.first.fileName();
+            qInfo() << "sync mapping " << a.first.fileName();
             pil.append(calculatePlayInfo(a.first, a.second));
             if (m_ploadThread && m_ploadThread->isRunning()) {
                 m_ploadThread->msleep(10);
@@ -1301,7 +1301,7 @@ static QList<PlayItemInfo> &SortSimilarFiles(QList<PlayItemInfo> &fil)
 /*not used yet*/
 /*void PlaylistModel::onAsyncAppendFinished()
 {
-    qDebug() << __func__;
+    qInfo() << __func__;
 //    auto f = _jobWatcher->future();
     _pendingJob.clear();
     _urlsInJob.clear();
@@ -1313,14 +1313,14 @@ static QList<PlayItemInfo> &SortSimilarFiles(QList<PlayItemInfo> &fil)
 void PlaylistModel::onAsyncFinished()
 {
 //    QList<PlayItemInfo> fil = m_getThumanbil->getInfoList();
-//    qDebug() << __func__ << "size" << fil.size() << "info size" << _infos.size();
+//    qInfo() << __func__ << "size" << fil.size() << "info size" << _infos.size();
 //    for (int i = 0; i < fil.size();i++) {
 //        if (indexOf(fil[i].url) >= 0) {
 //            fil.removeAt(i);
 //        }
 //    }
     m_isLoadRunning = false;
-    //qDebug() << fil.size();
+    //qInfo() << fil.size();
     m_getThumanbil->clearItem();
     //handleAsyncAppendResults(fil);
     if (!m_tempList.isEmpty()) {
@@ -1363,7 +1363,7 @@ void PlaylistModel::onAsyncUpdate(PlayItemInfo fil)
 
 void PlaylistModel::handleAsyncAppendResults(QList<PlayItemInfo> &fil)
 {
-    qDebug() << __func__ << fil.size();
+    qInfo() << __func__ << fil.size();
     if (!fil.size())
         return;
     if (!_firstLoad) {
@@ -1374,7 +1374,7 @@ void PlaylistModel::handleAsyncAppendResults(QList<PlayItemInfo> &fil)
         fil.erase(last, fil.end());
     }
 
-    qDebug() << "collected items" << fil.count();
+    qInfo() << "collected items" << fil.count();
     if (fil.size()) {
         if (!_firstLoad)
             _infos += SortSimilarFiles(fil);
@@ -1417,7 +1417,7 @@ void PlaylistModel::append(const QUrl &url)
 
 void PlaylistModel::changeCurrent(int pos)
 {
-    qDebug() << __func__ << pos;
+    qInfo() << __func__ << pos;
     if (pos < 0 || pos >= count()) return;
     auto mi = items().at(pos).mi;
     if (mi.fileType == "webm") {
@@ -1566,7 +1566,7 @@ struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl &url, const QFil
 //    if (ci.mi_valid && url.isLocalFile()) {
 //        mi = ci.mi;
 //        ok = true;
-//        qDebug() << "load cached MovieInfo" << mi;
+//        qInfo() << "load cached MovieInfo" << mi;
 //    } else {
 
     mi = parseFromFile(fi, &ok);
@@ -1599,7 +1599,7 @@ struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl &url, const QFil
         pm = ci.thumb;
         dark_pm = ci.thumb_dark;
 
-        qDebug() << "load cached thumb" << url;
+        qInfo() << "load cached thumb" << url;
     } else if (ok) {
         try {
             //如果打开的是音乐就读取音乐缩略图
@@ -1821,10 +1821,10 @@ MovieInfo MovieInfo::parseFromFile(const QFileInfo &fi, bool *ok)
         if (tag->key && strcmp(tag->key, "creation_time") == 0) {
             auto dt = QDateTime::fromString(tag->value, Qt::ISODate);
             mi.creation = dt.toString();
-            qDebug() << __func__ << dt.toString();
+            qInfo() << __func__ << dt.toString();
             break;
         }
-        qDebug() << "tag:" << tag->key << tag->value;
+        qInfo() << "tag:" << tag->key << tag->value;
     }
 
     tag = NULL;
@@ -1840,7 +1840,7 @@ MovieInfo MovieInfo::parseFromFile(const QFileInfo &fi, bool *ok)
             }
             break;
         }
-        qDebug() << "tag:" << tag->key << tag->value;
+        qInfo() << "tag:" << tag->key << tag->value;
     }
 
 

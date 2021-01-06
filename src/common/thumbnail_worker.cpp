@@ -216,7 +216,7 @@ void ThumbnailWorker::run()
             QMutexLocker lock(&_thumbLock);
             //TODO: optimize: need a lru map
             if (_cacheSize > SIZE_THRESHOLD) {
-                qDebug() << "thumb cache size exceeds maximum, clean up";
+                qInfo() << "thumb cache size exceeds maximum, clean up";
                 _cache.clear();
                 _cacheSize = 0;
             }
@@ -231,7 +231,7 @@ void ThumbnailWorker::run()
 
             QTime d(0, 0, 0);
             d = d.addSecs(w.second);
-            qDebug() << "thumb for " << w.first << d.toString("hh:mm:ss");
+            qInfo() << "thumb for " << w.first << d.toString("hh:mm:ss");
         }
 
         emit thumbGenerated(w.first, w.second);
@@ -244,7 +244,7 @@ void ThumbnailWorker::run()
 void ThumbnailWorker::runSingle(QPair<QUrl, int> w)
 {
     if (_cacheSize > SIZE_THRESHOLD) {
-        qDebug() << "thumb cache size exceeds maximum, clean up";
+        qInfo() << "thumb cache size exceeds maximum, clean up";
         _cache.clear();
         _cacheSize = 0;
     }
@@ -258,7 +258,7 @@ void ThumbnailWorker::runSingle(QPair<QUrl, int> w)
 
         QTime d(0, 0, 0);
         d = d.addSecs(w.second);
-        qDebug() << "thumb for " << w.first << d.toString("hh:mm:ss");
+        qInfo() << "thumb for " << w.first << d.toString("hh:mm:ss");
     }
 
     emit thumbGenerated(w.first, w.second);

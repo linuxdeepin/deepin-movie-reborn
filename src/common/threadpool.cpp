@@ -35,7 +35,7 @@ ThreadPool::~ThreadPool()
 QThread *ThreadPool::newThread()
 {
     auto thread = new QThread;
-//    qDebug() << "add <<<<<<<" << thread;
+//    qInfo() << "add <<<<<<<" << thread;
     m_pool.push_back(thread);
     return thread;
 }
@@ -49,16 +49,16 @@ void ThreadPool::moveToNewThread(QObject *obj)
 
 void ThreadPool::manager(QThread *thread)
 {
-//    qDebug() << "manager <<<<<<<" << thread;
+//    qInfo() << "manager <<<<<<<" << thread;
     m_pool.push_back(thread);
 }
 
 void ThreadPool::quitAll()
 {
     for (auto thread : m_pool) {
-//        qDebug() << thread;
+//        qInfo() << thread;
         thread->quit();
         thread->wait(2000);
     }
-    qDebug() << "all thread quit";
+    qInfo() << "all thread quit";
 }

@@ -103,9 +103,9 @@ void MprisRootAdaptor::setFullscreen(bool value)
     // We cannot send an error reply in a property setter so we just
     // complain here
     if (value) {
-        qDebug() << Q_FUNC_INFO << "Requested to fullscreen, but not supported";
+        qInfo() << Q_FUNC_INFO << "Requested to fullscreen, but not supported";
     } else {
-        qDebug() << Q_FUNC_INFO << "Requested to unfullscreen, but not supported";
+        qInfo() << Q_FUNC_INFO << "Requested to unfullscreen, but not supported";
     }
 }
 

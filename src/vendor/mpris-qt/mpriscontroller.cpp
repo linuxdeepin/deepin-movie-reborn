@@ -117,7 +117,7 @@ bool MprisController::isValid() const
 bool MprisController::quit()
 {
     if (!canQuit()) {
-        qDebug() << Q_FUNC_INFO << "The method is not allowed";
+        qInfo() << Q_FUNC_INFO << "The method is not allowed";
         return false;
     }
 
@@ -132,7 +132,7 @@ bool MprisController::quit()
 bool MprisController::raise()
 {
     if (!canRaise()) {
-        qDebug() << Q_FUNC_INFO << "The method is not allowed";
+        qInfo() << Q_FUNC_INFO << "The method is not allowed";
         return false;
     }
 
@@ -148,7 +148,7 @@ bool MprisController::raise()
 bool MprisController::next()
 {
     if (!canGoNext()) {
-        qDebug() << Q_FUNC_INFO << "The method is not allowed";
+        qInfo() << Q_FUNC_INFO << "The method is not allowed";
         return false;
     }
 
@@ -163,17 +163,17 @@ bool MprisController::next()
 bool MprisController::openUri(const QUrl &uri)
 {
     if (!canControl()) {
-        qDebug() << Q_FUNC_INFO << "The method is not allowed";
+        qInfo() << Q_FUNC_INFO << "The method is not allowed";
         return false;
     }
 
     if (!uri.isValid()) {
-        qDebug() << Q_FUNC_INFO << "The uri is invalid";
+        qInfo() << Q_FUNC_INFO << "The uri is invalid";
         return false;
     }
 
     if (!m_mprisRootInterface->supportedUriSchemes().contains(uri.scheme())) {
-        qDebug() << Q_FUNC_INFO << "The scheme is not supported";
+        qInfo() << Q_FUNC_INFO << "The scheme is not supported";
         return false;
     }
 
@@ -196,14 +196,14 @@ bool MprisController::openUri(const QUrl &uri)
         }
     }
 
-    qDebug() << Q_FUNC_INFO << "The mime type is not supported";
+    qInfo() << Q_FUNC_INFO << "The mime type is not supported";
     return false;
 }
 
 bool MprisController::pause()
 {
     if (!canPause()) {
-        qDebug() << Q_FUNC_INFO << "The method is not allowed";
+        qInfo() << Q_FUNC_INFO << "The method is not allowed";
         return false;
     }
 
@@ -218,7 +218,7 @@ bool MprisController::pause()
 bool MprisController::play()
 {
     if (!canPlay()) {
-        qDebug() << Q_FUNC_INFO << "The method is not allowed";
+        qInfo() << Q_FUNC_INFO << "The method is not allowed";
         return false;
     }
 
@@ -233,7 +233,7 @@ bool MprisController::play()
 bool MprisController::playPause()
 {
     if (!canPause()) {
-        qDebug() << Q_FUNC_INFO << "The method is not allowed";
+        qInfo() << Q_FUNC_INFO << "The method is not allowed";
         return false;
     }
 
@@ -248,7 +248,7 @@ bool MprisController::playPause()
 bool MprisController::previous()
 {
     if (!canGoPrevious()) {
-        qDebug() << Q_FUNC_INFO << "The method is not allowed";
+        qInfo() << Q_FUNC_INFO << "The method is not allowed";
         return false;
     }
 
@@ -263,7 +263,7 @@ bool MprisController::previous()
 bool MprisController::seek(qlonglong offset)
 {
     if (!canSeek()) {
-        qDebug() << Q_FUNC_INFO << "The method is not allowed";
+        qInfo() << Q_FUNC_INFO << "The method is not allowed";
         return false;
     }
 
@@ -278,13 +278,13 @@ bool MprisController::seek(qlonglong offset)
 bool MprisController::setPosition(qlonglong position)
 {
     if (!canSeek()) {
-        qDebug() << Q_FUNC_INFO << "The method is not allowed";
+        qInfo() << Q_FUNC_INFO << "The method is not allowed";
         return false;
     }
 
     QVariant trackId = m_mprisPlayerInterface->metadata()[Mpris::metadataToString(Mpris::TrackId)];
     if (!trackId.isValid()) {
-        qDebug() << Q_FUNC_INFO << "Unknown trackId in which to set the position";
+        qInfo() << Q_FUNC_INFO << "Unknown trackId in which to set the position";
         return false;
     }
 
@@ -294,13 +294,13 @@ bool MprisController::setPosition(qlonglong position)
 bool MprisController::setPosition(const QString &aTrackId, qlonglong position)
 {
     if (!canSeek()) {
-        qDebug() << Q_FUNC_INFO << "The method is not allowed";
+        qInfo() << Q_FUNC_INFO << "The method is not allowed";
         return false;
     }
 
     QDBusObjectPath trackId(aTrackId);
     if (trackId.path().isEmpty()) {
-        qDebug() << Q_FUNC_INFO << "trackId doesn't map to a valid DBus object path";
+        qInfo() << Q_FUNC_INFO << "trackId doesn't map to a valid DBus object path";
         return false;
     }
 
@@ -309,7 +309,7 @@ bool MprisController::setPosition(const QString &aTrackId, qlonglong position)
         qlonglong reportedLength = length.toLongLong();
 
         if (position < 0 || position > reportedLength) {
-            qDebug() << Q_FUNC_INFO << "Unknown trackId in which to set the position";
+            qInfo() << Q_FUNC_INFO << "Unknown trackId in which to set the position";
             return false;
         }
     }
@@ -325,7 +325,7 @@ bool MprisController::setPosition(const QString &aTrackId, qlonglong position)
 bool MprisController::stop()
 {
     if (!canControl()) {
-        qDebug() << Q_FUNC_INFO << "The method is not allowed";
+        qInfo() << Q_FUNC_INFO << "The method is not allowed";
         return false;
     }
 

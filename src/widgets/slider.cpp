@@ -252,7 +252,7 @@ void DMRSlider::forceLeave()
             .arg(v2).arg(v2 + 0.000001)
             .arg(v3).arg(v3 + 0.000001)
             .arg(v4).arg(v4 + 0.000001);
-    //qDebug() << "-------- interpolate " << v1 << v2 << v3 << v4;
+    //qInfo() << "-------- interpolate " << v1 << v2 << v3 << v4;
     //    setStyleSheet(s);
     update();
 
@@ -297,7 +297,7 @@ void DMRSlider::enterEvent(QEvent *e)
 void DMRSlider::wheelEvent(QWheelEvent *e)
 {
     if (e->buttons() == Qt::MiddleButton && e->modifiers() == Qt::NoModifier) {
-        qDebug() << "angleDelta" << e->angleDelta();
+        qInfo() << "angleDelta" << e->angleDelta();
     }
     e->accept();
 }

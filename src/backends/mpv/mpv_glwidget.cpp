@@ -232,7 +232,7 @@ namespace dmr {
 
     void MpvGLWidget::onNewFrame()
     {
-        //qDebug() << __func__;
+        //qInfo() << __func__;
         if (window()->isMinimized()) {
             makeCurrent();
             paintGL();
@@ -246,7 +246,7 @@ namespace dmr {
 
     void MpvGLWidget::onFrameSwapped()
     {
-        //qDebug() << "frame swapped";
+        //qInfo() << "frame swapped";
 
         if(!m_context_report) return;
         m_context_report(_render_ctx);
@@ -331,7 +331,7 @@ namespace dmr {
         }
 
         if (!_glProgBlend->link()) {
-            qDebug() << "link failed";
+            qInfo() << "link failed";
         }
         _glProgBlend->bind();
         _vboBlend.bind();
@@ -355,7 +355,7 @@ namespace dmr {
         }
 
         if (!_glProgBlendCorners->link()) {
-            qDebug() << "link failed";
+            qInfo() << "link failed";
         }
     }
 
@@ -381,7 +381,7 @@ namespace dmr {
         }
 
         if (!_glProg->link()) {
-            qDebug() << "link failed";
+            qInfo() << "link failed";
         }
         _glProg->bind();
 
@@ -412,7 +412,7 @@ namespace dmr {
             }
 
             if (!_glProgCorner->link()) {
-                qDebug() << "link failed";
+                qInfo() << "link failed";
             }
             _vaoCorner.release();
         }
@@ -718,7 +718,7 @@ namespace dmr {
         if (_doRoundedClipping){
             updateVboCorners();
         }
-        qDebug() << "GL resize" << w << h;
+        qInfo() << "GL resize" << w << h;
         QOpenGLWidget::resizeGL(w, h);
     }
 
@@ -921,7 +921,7 @@ namespace dmr {
 
     void MpvGLWidget::initMpvFuns()
     {
-        qDebug() << "MpvGLWidget开始initMpvFuns";
+        qInfo() << "MpvGLWidget开始initMpvFuns";
         m_callback = reinterpret_cast<mpv_render_contextSet_update_callback>(QLibrary::resolve(libPath("libmpv.so.1"), "mpv_render_context_set_update_callback"));
         m_context_report = reinterpret_cast<mpv_render_contextReport_swap>(QLibrary::resolve(libPath("libmpv.so.1"), "mpv_render_context_report_swap"));
         m_renderContex = reinterpret_cast<mpv_renderContext_free>(QLibrary::resolve(libPath("libmpv.so.1"), "mpv_render_context_free"));

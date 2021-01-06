@@ -90,7 +90,7 @@ static QString hash_file(const QFileInfo &fi)
     });
     f.close();
 
-    qDebug() << mds.join(";");
+    qInfo() << mds.join(";");
     //Qt seems has a bug that ; will not be encoded as %3B in url query
     return mds.join("%3B");
 }
@@ -169,17 +169,17 @@ void OnlineSubtitle::replyReceived(QNetworkReply *reply)
                 subtitlesDownloadComplete();
             }
         }
-        qDebug() << reply->errorString();
+        qInfo() << reply->errorString();
         reply->deleteLater();
         return;
     }
 
     if (reply->property("type") == "meta") {
         auto data = reply->readAll();
-        qDebug() << "data size " << data.size() << static_cast<int>(data[0]);
+        qInfo() << "data size " << data.size() << static_cast<int>(data[0]);
         // fix bug 24817 by ZhuYuliang
         if ((0 == data.size()) || (((data.size() == 1) && (static_cast<int>(data[0]) == -1)) || (static_cast<int>(data[0]) == 255))) {
-            qDebug() << "no subtitle found";
+            qInfo() << "no subtitle found";
             _lastReason = FailReason::NoSubFound;
             emit onlineSubtitleStateChanged(_lastReason);
             reply->deleteLater();
@@ -188,7 +188,7 @@ void OnlineSubtitle::replyReceived(QNetworkReply *reply)
 
         auto json = QJsonDocument::fromJson(data);
         if (json.isArray()) {
-            qDebug() << json;
+            qInfo() << json;
             _subs.clear();
 
             for (auto v : json.array()) {
@@ -221,7 +221,7 @@ void OnlineSubtitle::replyReceived(QNetworkReply *reply)
         auto disposition = reply->header(QNetworkRequest::ContentDispositionHeader);
         if (disposition.isValid()) {
             //set name to disposition filename
-            qDebug() << disposition;
+            qInfo() << disposition;
         } else if (reply->hasRawHeader("Content-Disposition")) {
             QByteArray name;
             auto bytes = reply->rawHeader("Content-Disposition");
@@ -261,7 +261,7 @@ void OnlineSubtitle::replyReceived(QNetworkReply *reply)
             QFile::remove(path);
         } else {
             _subs[id].local = path;
-            qDebug() << "save to " << path;
+            qInfo() << "save to " << path;
         }
 
         if (_pendingDownloads <= 0) {
@@ -286,7 +286,7 @@ bool OnlineSubtitle::hasHashConflict(const QString &path, const QString &tmpl, Q
         s = s.replace(QRegExp("\\[\\d+\\]"), "");
         if (tmpl == s) {
             auto h = utils::FullFileHash(di.fileInfo());
-            qDebug() << "found " << di.fileName() << h;
+            qInfo() << "found " << di.fileName() << h;
             if (h == md5) {
                 conflictPath = di.filePath();
                 return true;
@@ -311,7 +311,7 @@ void OnlineSubtitle::downloadSubtitles()
         req.setUrl(url);
 
         auto *reply = _nam->get(req);
-        //qDebug() << __func__ << sub.link << url;
+        //qInfo() << __func__ << sub.link << url;
         reply->setProperty("type", "sub");
         reply->setProperty("id", sub.id);
     }
@@ -342,7 +342,7 @@ void OnlineSubtitle::requestSubtitle(const QUrl &url)
     params.setQuery(q);
     auto data = params.query(QUrl::FullyEncoded).toUtf8();
 
-    //qDebug() << req_url << params.query(QUrl::FullyEncoded);
+    //qInfo() << req_url << params.query(QUrl::FullyEncoded);
 
     QNetworkRequest req;
     req.setUrl(shooter.apiurl);

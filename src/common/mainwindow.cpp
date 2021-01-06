@@ -350,7 +350,7 @@ public:
                 xcb_leave_notify_event_t *dne = (xcb_leave_notify_event_t *)event;
                 auto w = _source->windowHandle();
                 if (dne->event == w->winId()) {
-                    qDebug() << "---------  leave " << dne->event << dne->child;
+                    qInfo() << "---------  leave " << dne->event << dne->child;
                     emit _source->windowLeaved();
                 }
                 break;
@@ -360,7 +360,7 @@ public:
                 xcb_enter_notify_event_t *dne = (xcb_enter_notify_event_t *)event;
                 auto w = _source->windowHandle();
                 if (dne->event == w->winId()) {
-                    qDebug() << "---------  enter " << dne->event << dne->child;
+                    qInfo() << "---------  enter " << dne->event << dne->child;
                     emit _source->windowEntered();
                 }
                 break;
@@ -632,7 +632,7 @@ MainWindow::MainWindow(QWidget *parent)
     _mousePressTimer.setInterval(1300);
     connect(&_mousePressTimer, &QTimer::timeout, this, &MainWindow::slotmousePressTimerTimeOut);
     bool composited = CompositingManager::get().composited();
-    qDebug() << "composited = " << composited;
+    qInfo() << "composited = " << composited;
 
 #ifdef USE_DXCB
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowTitleHint | Qt::WindowMinMaxButtonsHint |
@@ -720,7 +720,7 @@ MainWindow::MainWindow(QWidget *parent)
         }
         //及时刷新_isFileLoadNotFinished状态
         if (_isFileLoadNotFinished && utils::check_wayland_env()) {
-            qDebug() << "_isFileLoadNotFinished = false";
+            qInfo() << "_isFileLoadNotFinished = false";
             _isFileLoadNotFinished = false;
         }
     });
@@ -756,7 +756,7 @@ MainWindow::MainWindow(QWidget *parent)
     signalMapper->setMapping(_miniPlayBtn, "play");
 
     connect(_engine, &PlayerEngine::stateChanged, [ = ]() {
-        qDebug() << __func__ << _engine->state();
+        qInfo() << __func__ << _engine->state();
 
 #ifndef __mips__
         if (_engine->state() == PlayerEngine::CoreState::Idle) {
@@ -789,7 +789,7 @@ MainWindow::MainWindow(QWidget *parent)
             emit playSpeedMenuEnable(true);
             if (_lastCookie > 0) {
                 utils::UnInhibitStandby(_lastCookie);
-                qDebug() << "uninhibit cookie" << _lastCookie;
+                qInfo() << "uninhibit cookie" << _lastCookie;
                 _lastCookie = 0;
             }
             if (_powerCookie > 0) {
@@ -804,7 +804,7 @@ MainWindow::MainWindow(QWidget *parent)
 
             if (_lastCookie > 0) {
                 utils::UnInhibitStandby(_lastCookie);
-                qDebug() << "uninhibit cookie" << _lastCookie;
+                qInfo() << "uninhibit cookie" << _lastCookie;
                 _lastCookie = 0;
             }
             if (_powerCookie > 0) {
@@ -935,7 +935,7 @@ MainWindow::MainWindow(QWidget *parent)
         _titlebar->windowHandle()->installEventFilter(_listener);
         _toolbox->windowHandle()->installEventFilter(_listener);
     }
-    qDebug() << "event listener";
+    qInfo() << "event listener";
 #endif
 
 #ifndef __mips__
@@ -1082,10 +1082,10 @@ bool MainWindow::event(QEvent *ev)
     //add by heyi
     //判断是否停止右键菜单定时器
     if (_mousePressed) {
-//        qDebug() << "mapToGlobal(QCursor::pos()).x() = " << mapToGlobal(QCursor::pos()).x() << "mapToGlobal(QCursor::pos()).y()= " << mapToGlobal(QCursor::pos()).y();
+//        qInfo() << "mapToGlobal(QCursor::pos()).x() = " << mapToGlobal(QCursor::pos()).x() << "mapToGlobal(QCursor::pos()).y()= " << mapToGlobal(QCursor::pos()).y();
         if (qAbs(nX - mapToGlobal(QCursor::pos()).x()) > 50 || qAbs(nY - mapToGlobal(QCursor::pos()).y()) > 50) {
             if (_mousePressTimer.isActive()) {
-                qDebug() << "结束定时器";
+                qInfo() << "结束定时器";
                 _mousePressTimer.stop();
                 _mousePressed = false;
             }
@@ -1095,7 +1095,7 @@ bool MainWindow::event(QEvent *ev)
     if (ev->type() == QEvent::WindowStateChange) {
         auto wse = dynamic_cast<QWindowStateChangeEvent *>(ev);
         _lastWindowState = wse->oldState();
-        qDebug() << "------------ _lastWindowState" << _lastWindowState
+        qInfo() << "------------ _lastWindowState" << _lastWindowState
                  << "current " << windowState();
         //NOTE: windowStateChanged won't be emitted if by draggint to restore. so we need to
         //check window state here.
@@ -1134,7 +1134,7 @@ void MainWindow::leaveEvent(QEvent *)
 
 void MainWindow::onWindowStateChanged()
 {
-    qDebug() << windowState();
+    qInfo() << windowState();
     if (!_miniMode && !isFullScreen()) {
         _titlebar->setVisible(_toolbox->isVisible());
     } else {
@@ -1291,7 +1291,7 @@ void MainWindow::onMonitorButtonPressed(int x, int y)
     if (geometry().marginsRemoved(m).contains(p)) {
         auto w = qApp->topLevelAt(p);
         if (w && w == this) {
-            qDebug() << __func__ << "click inside main window";
+            qInfo() << __func__ << "click inside main window";
             last_wm_pos = QPoint(x, y);
             last_engine_pos = windowHandle()->framePosition();
             clicked = true;
@@ -1302,7 +1302,7 @@ void MainWindow::onMonitorButtonPressed(int x, int y)
 void MainWindow::onMonitorButtonReleased(int x, int y)
 {
     if (clicked) {
-        qDebug() << __func__;
+        qInfo() << __func__;
         clicked = false;
     }
 }
@@ -1318,7 +1318,7 @@ void MainWindow::onMonitorMotionNotify(int x, int y)
 
 MainWindow::~MainWindow()
 {
-    qDebug() << __func__;
+    qInfo() << __func__;
     if (!utils::check_wayland_env()) {
         disconnect(_engine, 0, 0, 0);
         disconnect(&_engine->playlist(), 0, 0, 0);
@@ -1326,7 +1326,7 @@ MainWindow::~MainWindow()
 
     if (_lastCookie > 0) {
         utils::UnInhibitStandby(_lastCookie);
-        qDebug() << "uninhibit cookie" << _lastCookie;
+        qInfo() << "uninhibit cookie" << _lastCookie;
         _lastCookie = 0;
     }
     if (_powerCookie > 0) {
@@ -1398,7 +1398,7 @@ void MainWindow::onApplicationStateChanged(Qt::ApplicationState e)
     switch (e) {
     case Qt::ApplicationActive:
         if (qApp->focusWindow())
-            qDebug() << QString("focus window 0x%1").arg(qApp->focusWindow()->winId(), 0, 16);
+            qInfo() << QString("focus window 0x%1").arg(qApp->focusWindow()->winId(), 0, 16);
         qApp->setActiveWindow(this);
         _evm->resumeRecording();
         resumeToolsWindow();
@@ -1441,7 +1441,7 @@ void MainWindow::syncPlayState()
 
 void MainWindow::onBindingsChanged()
 {
-    qDebug() << __func__;
+    qInfo() << __func__;
     {
         auto actions = this->actions();
         this->actions().clear();
@@ -1515,7 +1515,7 @@ void MainWindow::updateActionsState()
 #ifndef __mips__
     bool window_is_above = atoms.contains(atomStateAbove);
     if (window_is_above != _windowAbove) {
-        qDebug() << "syncStaysOnTop: window_is_above" << window_is_above;
+        qInfo() << "syncStaysOnTop: window_is_above" << window_is_above;
         requestAction(ActionFactory::WindowAbove);
     }
 #endif
@@ -1531,7 +1531,7 @@ void MainWindow::reflectActionToUI(ActionFactory::ActionKind kd)
     case ActionFactory::ActionKind::LightTheme:
     case ActionFactory::ActionKind::TogglePlaylist:
     case ActionFactory::ActionKind::HideSubtitle: {
-        qDebug() << __func__ << kd;
+        qInfo() << __func__ << kd;
         acts = ActionFactory::get().findActionsByKind(kd);
         auto p = acts.begin();
         while (p != acts.end()) {
@@ -1578,7 +1578,7 @@ void MainWindow::reflectActionToUI(ActionFactory::ActionKind kd)
         } else {
             cp = "auto";
         }
-        qDebug() << "codepage" << cp;
+        qInfo() << "codepage" << cp;
         acts = ActionFactory::get().findActionsByKind(kd);
         auto p = acts.begin();
         while (p != acts.end()) {
@@ -1619,7 +1619,7 @@ void MainWindow::reflectActionToUI(ActionFactory::ActionKind kd)
             }
         }
 
-        qDebug() << __func__ << kd << "idx = " << idx;
+        qInfo() << __func__ << kd << "idx = " << idx;
         acts = ActionFactory::get().findActionsByKind(kd);
         auto p = acts.begin();
         while (p != acts.end()) {
@@ -1645,7 +1645,7 @@ void MainWindow::reflectActionToUI(ActionFactory::ActionKind kd)
         break;
     }
     case ActionFactory::ActionKind::DefaultFrame: {
-        qDebug() << __func__ << kd;
+        qInfo() << __func__ << kd;
         acts = ActionFactory::get().findActionsByKind(kd);
         auto p = acts.begin();
         auto old = (*p)->isEnabled();
@@ -1659,7 +1659,7 @@ void MainWindow::reflectActionToUI(ActionFactory::ActionKind kd)
     case ActionFactory::ActionKind::SinglePlay:
     case ActionFactory::ActionKind::SingleLoop:
     case ActionFactory::ActionKind::ListLoop: {
-        qDebug() << __func__ << kd;
+        qInfo() << __func__ << kd;
         acts = ActionFactory::get().findActionsByKind(kd);
         auto p = acts.begin();
         (*p)->setChecked(true);
@@ -1916,14 +1916,14 @@ bool MainWindow::isActionAllowed(ActionFactory::ActionKind kd, bool fromUI, bool
 void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                                QList<QVariant> args, bool isShortcut)
 {
-    qDebug() << "kd = " << kd << "fromUI " << fromUI << (isShortcut ? "shortcut" : "");
+    qInfo() << "kd = " << kd << "fromUI " << fromUI << (isShortcut ? "shortcut" : "");
 
     if (!_toolbox->getbAnimationFinash()) {
         return;
     }
 
     if (!isActionAllowed(kd, fromUI, isShortcut)) {
-        qDebug() << kd << "disallowed";
+        qInfo() << kd << "disallowed";
         return;
     }
 
@@ -2544,7 +2544,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     case ActionFactory::ActionKind::TogglePause: {
         if (_engine->state() == PlayerEngine::Idle && isShortcut) {
             if (_engine->getplaylist()->getthreadstate()) {
-                qDebug() << "playlist loadthread is running";
+                qInfo() << "playlist loadthread is running";
                 break;
             }
             requestAction(ActionFactory::StartPlay);
@@ -2592,7 +2592,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
         QString filePath = Settings::get().screenshotNameTemplate();
         bool success = false;   //条件编译产生误报(cppcheck)
         if (img.isNull())
-            qDebug() << __func__ << "pixmap is null";
+            qInfo() << __func__ << "pixmap is null";
         else
             success = img.save(filePath);
 
@@ -2651,7 +2651,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
 
     case ActionFactory::ActionKind::GoToScreenshotSolder: {
         QString filePath = Settings::get().screenshotLocation();
-        qDebug() << __func__ << filePath;
+        qInfo() << __func__ << filePath;
         QProcess *fp = new QProcess();
         QObject::connect(fp, SIGNAL(finished(int)), fp, SLOT(deleteLater()));
         fp->start("dde-file-manager", QStringList(filePath));
@@ -2716,7 +2716,7 @@ void MainWindow::onBurstScreenshot(const QImage &frame, qint64 timestamp)
         popup->show();\
     } while (0)
 
-    qDebug() << _burstShoots.size();
+    qInfo() << _burstShoots.size();
     if (!frame.isNull()) {
         auto msg = QString(tr("Taking the screenshots, please wait..."));
         _nwComm->updateWithMessage(msg);
@@ -2747,7 +2747,7 @@ void MainWindow::onBurstScreenshot(const QImage &frame, qint64 timestamp)
 #else
         ret = bsd.exec();
 #endif
-        qDebug() << "BurstScreenshot done";
+        qInfo() << "BurstScreenshot done";
 
         _burstShoots.clear();
         if (!_pausedBeforeBurst)
@@ -2824,7 +2824,7 @@ void MainWindow::playList(const QList<QString> &l)
 
     QList<QUrl> urls;
     for (const auto &filename : l) {
-        qDebug() << filename;
+        qInfo() << filename;
         QUrl url;
         if (url_re.indexIn(filename) == 0) {
             url = QUrl::fromPercentEncoding(filename.toUtf8());
@@ -2848,7 +2848,7 @@ void MainWindow::playList(const QList<QString> &l)
 void MainWindow::play(const QUrl &url)
 {
     if (_isFileLoadNotFinished && utils::check_wayland_env()) {
-        qDebug() << __func__ << "File Load Not Finished!";
+        qInfo() << __func__ << "File Load Not Finished!";
         return;
     }
     if (!url.isValid())
@@ -3088,7 +3088,7 @@ void MainWindow::checkOnlineSubtitle(const OnlineSubtitle::FailReason reason)
 void MainWindow::checkWarningMpvLogsChanged(const QString prefix, const QString text)
 {
     QString warningMessage(text);
-    qDebug() << "checkWarningMpvLogsChanged" << text;
+    qInfo() << "checkWarningMpvLogsChanged" << text;
     if (warningMessage.contains(QString("Hardware does not support image size 3840x2160"))) {
         requestAction(ActionFactory::TogglePause);
 
@@ -3121,7 +3121,7 @@ void MainWindow::checkWarningMpvLogsChanged(const QString prefix, const QString 
 void MainWindow::slotdefaultplaymodechanged(const QString &key, const QVariant &value)
 {
     if (key != "base.play.playmode") {
-        qDebug() << "Settings key error";
+        qInfo() << "Settings key error";
         return;
     }
     auto mode_opt = Settings::get().settings()->option("base.play.playmode");
@@ -3323,7 +3323,7 @@ void MainWindow::slotMuteChanged(bool mute)
 void MainWindow::slotAwaacelModeChanged(const QString &key, const QVariant &value)
 {
     if (key != "base.play.hwaccel") {
-        qDebug() << "Settings key error";
+        qInfo() << "Settings key error";
         return;
     }
 
@@ -3333,7 +3333,7 @@ void MainWindow::slotAwaacelModeChanged(const QString &key, const QVariant &valu
 void MainWindow::checkErrorMpvLogsChanged(const QString prefix, const QString text)
 {
     QString errorMessage(text);
-    qDebug() << "checkErrorMpvLogsChanged" << text;
+    qInfo() << "checkErrorMpvLogsChanged" << text;
     if (errorMessage.toLower().contains(QString("avformat_open_input() failed"))) {
         //do nothing
     } else if (errorMessage.toLower().contains(QString("fail")) && errorMessage.toLower().contains(QString("open"))) {
@@ -3397,10 +3397,10 @@ void MainWindow::checkErrorMpvLogsChanged(const QString prefix, const QString te
 
 void MainWindow::closeEvent(QCloseEvent *ev)
 {
-    qDebug() << __func__;
+    qInfo() << __func__;
     if (_lastCookie > 0) {
         utils::UnInhibitStandby(_lastCookie);
-        qDebug() << "uninhibit cookie" << _lastCookie;
+        qInfo() << "uninhibit cookie" << _lastCookie;
         _lastCookie = 0;
     }
 
@@ -3487,7 +3487,7 @@ void MainWindow::hideEvent(QHideEvent *event)
 }
 void MainWindow::showEvent(QShowEvent *event)
 {
-    qDebug() << __func__;
+    qInfo() << __func__;
     /*最大化，全屏，取消全屏，会先调用hideevent,再调用showevent，此时播放状态尚未切换，导致逻辑出错*/
     if (_maxfornormalflag)
         return;
@@ -3500,7 +3500,7 @@ void MainWindow::showEvent(QShowEvent *event)
                 QVariant l = ApplicationAdaptor::redDBusProperty("com.deepin.SessionManager", "/com/deepin/SessionManager",
                                                                  "com.deepin.SessionManager", "Locked");
                 if (l.isValid() && !l.toBool()) {
-                    qDebug() << "locked_____________" << l;
+                    qInfo() << "locked_____________" << l;
                     //是否锁屏
                     if(_engine && _engine->state() != PlayerEngine::Playing){
                         requestAction(ActionFactory::TogglePause);
@@ -3520,7 +3520,7 @@ void MainWindow::showEvent(QShowEvent *event)
                 QVariant l = ApplicationAdaptor::redDBusProperty("com.deepin.SessionManager", "/com/deepin/SessionManager",
                                                                  "com.deepin.SessionManager", "Locked");
                 if (l.isValid() && !l.toBool()) {
-                    qDebug() << "locked_____________" << l;
+                    qInfo() << "locked_____________" << l;
                     //是否锁屏
                     if(_engine && _engine->state() != PlayerEngine::Playing){
                         requestAction(ActionFactory::TogglePause);
@@ -3548,13 +3548,13 @@ void MainWindow::showEvent(QShowEvent *event)
     resumeToolsWindow();
 
     if (!qgetenv("FLATPAK_APPID").isEmpty()) {
-        qDebug() << "workaround for flatpak";
+        qInfo() << "workaround for flatpak";
         if (_playlist->isVisible())
             updateProxyGeometry();
     }
 //    if(this->focusWidget())
 //    {
-//        qDebug() << this->focusWidget()->objectName();
+//        qInfo() << this->focusWidget()->objectName();
 //    }
 }
 
@@ -3569,7 +3569,7 @@ void MainWindow::resizeByConstraints(bool forceCentered)
         return;
     }
 
-    qDebug() << __func__;
+    qInfo() << __func__;
     updateWindowTitle();
     //lmh0710修复窗口变成影片分辨率问题
     if (utils::check_wayland_env()) {
@@ -3598,7 +3598,7 @@ void MainWindow::resizeByConstraints(bool forceCentered)
 #endif
     if (sz.isEmpty()) {
         sz = QSize(mi.width, mi.height);
-        qDebug() << mi.width << mi.height;
+        qInfo() << mi.width << mi.height;
     }
 
     auto geom = qApp->desktop()->availableGeometry(this);
@@ -3606,7 +3606,7 @@ void MainWindow::resizeByConstraints(bool forceCentered)
         sz.scale(geom.width(), geom.height(), Qt::KeepAspectRatio);
     }
 
-    qDebug() << "original: " << size() << "requested: " << sz;
+    qInfo() << "original: " << size() << "requested: " << sz;
 #ifdef __aarch64
     _nwComm->syncPosition(this->geometry());
     QRect rect = this->geometry();
@@ -3697,7 +3697,7 @@ void MainWindow::LimitWindowize()
 
 void MainWindow::resizeEvent(QResizeEvent *ev)
 {
-    qDebug() << __func__ << geometry();
+    qInfo() << __func__ << geometry();
     if (utils::check_wayland_env()) {
         if (_toolbox) {
             _toolbox->setFixedWidth(this->width() - 10);
@@ -3752,7 +3752,7 @@ void MainWindow::updateWindowTitle()
 
 void MainWindow::moveEvent(QMoveEvent *ev)
 {
-    qDebug() << "进入moveEvent";
+    qInfo() << "进入moveEvent";
     QWidget::moveEvent(ev);
 #ifdef __aarch64__
     _toolbox->updateSliderPoint(mapToGlobal(QPoint(0, 0)));
@@ -3894,7 +3894,7 @@ void MainWindow::mousePressEvent(QMouseEvent *ev)
 
             nX = mapToGlobal(QCursor::pos()).x();
             nY = mapToGlobal(QCursor::pos()).y();
-            qDebug() << "已经进入触屏按下事件" << nX << nY;
+            qInfo() << "已经进入触屏按下事件" << nX << nY;
             _mousePressTimer.start();
         }
         /*if (_playState->isVisible()) {
@@ -3911,9 +3911,9 @@ void MainWindow::mousePressEvent(QMouseEvent *ev)
 
 void MainWindow::mouseDoubleClickEvent(QMouseEvent *ev)
 {
-    qDebug() << "进入mouseDoubleClickEvent";
+    qInfo() << "进入mouseDoubleClickEvent";
     if (!_miniMode && this->_engine->getplaylist()->getthreadstate()) {
-        qDebug() << "playlist loadthread is running";
+        qInfo() << "playlist loadthread is running";
         return;
     }
     if (!_miniMode && !_inBurstShootMode) {
@@ -3954,7 +3954,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *ev)
         bFlags = false;
     }
 
-    qDebug() << "进入mouseReleaseEvent";
+    qInfo() << "进入mouseReleaseEvent";
     QWidget::mouseReleaseEvent(ev);
     if (!_mousePressed) {
         _afterDblClick = false;
@@ -4071,7 +4071,7 @@ void MainWindow::mouseMoveEvent(QMouseEvent *ev)
 
 void MainWindow::contextMenuEvent(QContextMenuEvent *cme)
 {
-    qDebug() << "进入contextMenuEvent";
+    qInfo() << "进入contextMenuEvent";
     if (_miniMode || _inBurstShootMode)
         return;
 
@@ -4122,7 +4122,7 @@ void MainWindow::subtitleMatchVideo(const QString &fileName)
     QFileInfoList list = dir.entryInfoList();
     for (int i = 0; i < list.size(); ++i) {
         QFileInfo info = list.at(i);
-        qDebug() << info.absoluteFilePath() << endl;
+        qInfo() << info.absoluteFilePath() << endl;
 //        if (info.completeBaseName() == subfileInfo.completeBaseName()) {
         if (subfileInfo.fileName().contains(info.completeBaseName())) {
             videoName = info.absoluteFilePath();
@@ -4185,10 +4185,10 @@ void MainWindow::readSinkInputPath()
         return;
 
     QList<QDBusObjectPath> allSinkInputsList = v.value<QList<QDBusObjectPath> >();
-//    qDebug() << "allSinkInputsListSize: " << allSinkInputsList.size();
+//    qInfo() << "allSinkInputsListSize: " << allSinkInputsList.size();
 
     for (auto curPath : allSinkInputsList) {
-//        qDebug() << "path: " << curPath.path();
+//        qInfo() << "path: " << curPath.path();
 
         QVariant nameV = ApplicationAdaptor::redDBusProperty("com.deepin.daemon.Audio", curPath.path(),
                                                              "com.deepin.daemon.Audio.SinkInput", "Name");
@@ -4569,7 +4569,7 @@ void MainWindow::toggleUIMode()
 
 void MainWindow::miniButtonClicked(QString id)
 {
-    qDebug() << id;
+    qInfo() << id;
     if (id == "play") {
         if (_engine->state() == PlayerEngine::CoreState::Idle) {
             requestAction(ActionFactory::ActionKind::StartPlay);
@@ -4603,7 +4603,7 @@ void MainWindow::dropEvent(QDropEvent *ev)
 {
     //add by heyi 拖动进来时先初始化窗口
     //firstPlayInit();
-    qDebug() << ev->mimeData()->formats();
+    qInfo() << ev->mimeData()->formats();
     if (!ev->mimeData()->hasUrls()) {
         return;
     }

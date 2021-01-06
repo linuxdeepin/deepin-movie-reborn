@@ -50,7 +50,7 @@ void ShowInFileManager(const QString &path)
     query.addQueryItem("selectUrl", QUrl::fromLocalFile(path).toString());
     url.setQuery(query);*/
 
-    qDebug() << __func__ << url.toString();
+    qInfo() << __func__ << url.toString();
 
     // Try dde-file-manager
     QProcess *fp = new QProcess();
@@ -67,14 +67,14 @@ void ShowInFileManager(const QString &path)
         if (iface.isValid()) {
             // Convert filepath to URI first.
             const QStringList uris = { QUrl::fromLocalFile(path).toString() };
-            qDebug() << "freedesktop.FileManager";
+            qInfo() << "freedesktop.FileManager";
             // StartupId is empty here.
             QDBusPendingCall call = iface.asyncCall("ShowItems", uris, "");
             Q_UNUSED(call);
         }
         // Try to launch other file manager if nautilus is invalid
         else {
-            qDebug() << "desktopService::openUrl";
+            qInfo() << "desktopService::openUrl";
             QDesktopServices::openUrl(QUrl::fromLocalFile(QFileInfo(path).dir().absolutePath()));
         }
         fp->deleteLater();
@@ -158,7 +158,7 @@ bool CompareNames(const QString &fileName1, const QString &fileName2)
         auto pos2 = rd.indexIn(fileName2, pos);
         if (pos == pos2) {
             auto id2 = fileName2.midRef(pos, rd.matchedLength());
-            //qDebug() << "id compare " << id1 << id2;
+            //qInfo() << "id compare " << id1 << id2;
             if (id1 != id2) {
                 bool ok1, ok2;
                 bool v = id1.toInt(&ok1) < id2.toInt(&ok2);
@@ -333,7 +333,7 @@ uint32_t InhibitStandby()
         return reply.value();
     }
 
-    qDebug() << reply.error().message();
+    qInfo() << reply.error().message();
     return 0;
 }
 
@@ -356,7 +356,7 @@ uint32_t InhibitPower()
         return reply.value();
     }
 
-    qDebug() << reply.error().message();
+    qInfo() << reply.error().message();
     return 0;
 }
 

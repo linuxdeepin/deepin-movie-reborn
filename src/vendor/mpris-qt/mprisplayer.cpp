@@ -69,10 +69,10 @@ MprisPlayer::MprisPlayer(QObject *parent)
     QDBusConnection connection = QDBusConnection::sessionBus();
 
     if (!connection.isConnected()) {
-        qDebug() << "connection.isConnected";
+        qInfo() << "connection.isConnected";
 //        qmlInfo(this) << "Failed attempting to connect to DBus";
     } else if (!connection.registerObject(mprisObjectPath, this)) {
-        qDebug() << "Failed attempting to register object path. Already registered?";
+        qInfo() << "Failed attempting to register object path. Already registered?";
 //        qmlInfo(this) << "Failed attempting to register object path. Already registered?";
     }
 }

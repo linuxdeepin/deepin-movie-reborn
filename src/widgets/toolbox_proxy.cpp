@@ -414,7 +414,7 @@ protected slots:
 
         auto pmf = _engine->playingMovieInfo();
         auto sid = _engine->sid();
-        qDebug() << "sid" << sid;
+        qInfo() << "sid" << sid;
 
         for (const auto &sub : pmf.subs) {
             auto item = new QListWidgetItem();
@@ -439,7 +439,7 @@ protected slots:
             siw->setCurrent(siw->sid() == sid);
         }
 
-        qDebug() << "current " << _subsView->currentRow();
+        qInfo() << "current " << _subsView->currentRow();
     }
 
     void onItemClicked(QListWidgetItem *item)
@@ -480,7 +480,7 @@ public:
         _time->setForegroundRole(DPalette::Text);
         DPalette pa = DApplicationHelper::instance()->palette(_time);
         QColor color = pa.textLively().color();
-        qDebug() << color.name();
+        qInfo() << color.name();
         pa.setColor(DPalette::Text, color);
         _time->setPalette(pa);
         _time->setFont(DFontSizeManager::instance()->get(DFontSizeManager::T8));
@@ -1371,7 +1371,7 @@ private slots:
     {
         if (e->type() == QEvent::Wheel) {
             QWheelEvent *we = static_cast<QWheelEvent *>(e);
-            qDebug() << we->angleDelta() << we->modifiers() << we->buttons();
+            qInfo() << we->angleDelta() << we->modifiers() << we->buttons();
             if (we->buttons() == Qt::NoButton && we->modifiers() == Qt::NoModifier) {
                 if (_slider->value() == _slider->maximum() && we->angleDelta().y() > 0) {
                     //keep increasing volume
@@ -1483,9 +1483,9 @@ void viewProgBarLoad::loadViewProgBar(QSize size)
     QList<QPixmap> pm_black;
 
     QTime time(0, 0, 0, 0);
-    qDebug() << _engine->videoSize().width();
-    qDebug() << _engine->videoSize().height();
-    qDebug() << qApp->devicePixelRatio();
+    qInfo() << _engine->videoSize().width();
+    qInfo() << _engine->videoSize().height();
+    qInfo() << qApp->devicePixelRatio();
     if (_engine->videoSize().width() > 0 && _engine->videoSize().height() > 0) {
         m_video_thumbnailer->thumbnail_size = (static_cast<int>(50 * (_engine->videoSize().width() / _engine->videoSize().height() * 50)
                                                                 * qApp->devicePixelRatio()));
@@ -1505,7 +1505,7 @@ void viewProgBarLoad::loadViewProgBar(QSize size)
 
     for (auto i = 0; i < num ; i++) {
         if (isInterruptionRequested()) {
-            qDebug() << "isInterruptionRequested";
+            qInfo() << "isInterruptionRequested";
             return;
         }
 
@@ -1630,7 +1630,7 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
 }
 void ToolboxProxy::finishLoadSlot(QSize size)
 {
-    qDebug() << "thumbnail has finished";
+    qInfo() << "thumbnail has finished";
 
     if (pm_list.isEmpty()) return;
 
@@ -2084,7 +2084,7 @@ void ToolboxProxy::updateThumbnail()
         }
     }
 
-    qDebug() << "worker" << m_worker;
+    qInfo() << "worker" << m_worker;
     QTimer::singleShot(1000, this, &ToolboxProxy::slotUpdateThumbnailTimeOut);
 
 }
@@ -2101,7 +2101,7 @@ void ToolboxProxy::closeAnyPopup()
 {
     if (_previewer->isVisible()) {
         _previewer->hide();
-        qDebug() << "hide previewer";
+        qInfo() << "hide previewer";
     }
 
     if (_previewTime->isVisible()) {
@@ -2488,7 +2488,7 @@ void ToolboxProxy::updateMovieProgress()
 
 void ToolboxProxy::updateButtonStates()
 {
-    qDebug() << _engine->playingMovieInfo().subs.size();
+    qInfo() << _engine->playingMovieInfo().subs.size();
     bool vis = _engine->playlist().count() > 1 && _mainWindow->inited();
 
     _prevBtn->setDisabled(!vis);
@@ -2739,7 +2739,7 @@ void ToolboxProxy::buttonClicked(QString id)
 
     if (!isVisible()) return;
 
-    qDebug() << __func__ << id;
+    qInfo() << __func__ << id;
     if (id == "play") {
         if (_engine->state() == PlayerEngine::CoreState::Idle) {
             _mainWindow->requestAction(ActionFactory::ActionKind::StartPlay);

@@ -74,7 +74,7 @@ void ApplicationAdaptor::openFile(const QString& file)
 }
 
 void ApplicationAdaptor::Raise(){
-    qDebug()<<"raise window from dbus";
+    qInfo()<<"raise window from dbus";
     _mw->showNormal();
     _mw->raise();
     _mw->activateWindow();
@@ -87,7 +87,7 @@ QVariant ApplicationAdaptor::redDBusProperty(const QString &service, const QStri
                               interface,
                               QDBusConnection::sessionBus());
     if (!ainterface.isValid()) {
-        qDebug() << qPrintable(QDBusConnection::sessionBus().lastError().message());
+        qInfo() << qPrintable(QDBusConnection::sessionBus().lastError().message());
         QVariant v(0) ;
         return  v;
     }
@@ -103,7 +103,7 @@ QVariant ApplicationAdaptor::redDBusMethod(const QString &service, const QString
                               interface,
                               QDBusConnection::sessionBus());
     if (!ainterface.isValid()) {
-        qDebug() <<  "error:" << qPrintable(QDBusConnection::sessionBus().lastError().message());
+        qInfo() <<  "error:" << qPrintable(QDBusConnection::sessionBus().lastError().message());
         QVariant v(0) ;
         return  v;
     }
@@ -114,7 +114,7 @@ QVariant ApplicationAdaptor::redDBusMethod(const QString &service, const QString
         QVariant v(0) ;
         return  v;
     } else {
-        qDebug() << "error1:" << qPrintable(QDBusConnection::sessionBus().lastError().message());
+        qInfo() << "error1:" << qPrintable(QDBusConnection::sessionBus().lastError().message());
         QVariant v(0) ;
         return  v;
     }

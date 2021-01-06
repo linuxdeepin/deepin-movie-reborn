@@ -935,7 +935,7 @@ void PlaylistWidget::updateSelectItem(const int key)
 {
     auto curItem = _playlist->currentItem();
     auto curRow = _playlist->row(curItem);
-    qDebug() << "prevRow..." << curRow;
+    qInfo() << "prevRow..." << curRow;
     PlayItemWidget *prevItemWgt = nullptr;
     if (curItem) {
         prevItemWgt = reinterpret_cast<PlayItemWidget *>(_playlist->itemWidget(curItem));
@@ -952,7 +952,7 @@ void PlaylistWidget::updateSelectItem(const int key)
         }
 
         _playlist->setCurrentRow(_index);
-        qDebug() << "Enter Key_Up..." << _index;
+        qInfo() << "Enter Key_Up..." << _index;
         auto curItemWgt = reinterpret_cast<PlayItemWidget *>(_playlist->itemWidget(_playlist->item(_index)));
         if (prevItemWgt) {
             prevItemWgt->setBIsSelect(false);
@@ -967,7 +967,7 @@ void PlaylistWidget::updateSelectItem(const int key)
         }
         _index = curRow + 1;
         _playlist->setCurrentRow(_index);
-        qDebug() << "Enter Key_Down..." << _index;
+        qInfo() << "Enter Key_Down..." << _index;
         auto curItemWgt = reinterpret_cast<PlayItemWidget *>(_playlist->itemWidget(_playlist->item(_index)));
         if (prevItemWgt) {
             prevItemWgt->setBIsSelect(false);
@@ -997,7 +997,7 @@ void PlaylistWidget::updateItemInfo(int id)
 
 void PlaylistWidget::updateItemStates()
 {
-    qDebug() << __func__ << _playlist->count() << "current = " << _engine->playlist().current();
+    qInfo() << __func__ << _playlist->count() << "current = " << _engine->playlist().current();
 
     //int len = _playlist->count();
     for (int i = 0; i < _playlist->count(); i++) {
@@ -1050,7 +1050,7 @@ void PlaylistWidget::removeClickedItem(bool isShortcut)
     if (isShortcut) {
         for (int i = 0; i < _playlist->count(); i++) {
             auto piw = dynamic_cast<PlayItemWidget *>(_playlist->itemWidget(_playlist->item(i)));
-            qDebug() << piw->getBIsSelect();
+            qInfo() << piw->getBIsSelect();
             if (piw->getBIsSelect()) {
                 _engine->playlist().remove(i);
                 return;
@@ -1061,7 +1061,7 @@ void PlaylistWidget::removeClickedItem(bool isShortcut)
     if (!_clickedItem) return;
     auto piw = dynamic_cast<PlayItemWidget *>(_clickedItem);
     if (piw) {
-        qDebug() << __func__;
+        qInfo() << __func__;
         for (int i = 0; i < _playlist->count(); i++) {
             if (_clickedItem == _playlist->itemWidget(_playlist->item(i))) {
                 _engine->playlist().remove(i);
@@ -1082,14 +1082,14 @@ void PlaylistWidget::slotCloseTimeTimeOut()
 
 void PlaylistWidget::slotCloseItem(QWidget *w)
 {
-    qDebug() << "item close clicked";
+    qInfo() << "item close clicked";
     _clickedItem = w;
     _mw->requestAction(ActionFactory::ActionKind::PlaylistRemoveItem);
 }
 
 void PlaylistWidget::slotDoubleClickedItem(QWidget *w)
 {
-    qDebug() << "item double clicked";
+    qInfo() << "item double clicked";
     QList<QVariant> args;
     for (int i = 0; i < _playlist->count(); i++) {
         if (w == _playlist->itemWidget(_playlist->item(i))) {
@@ -1116,7 +1116,7 @@ void PlaylistWidget::slotRowsMoved()
                 break;
             }
         }
-        qDebug() << "swap " << _lastDragged.first << target;
+        qInfo() << "swap " << _lastDragged.first << target;
         if (target >= 0 && _lastDragged.first != target) {
             _engine->playlist().switchPosition(_lastDragged.first, target);
             _lastDragged = {-1, nullptr};
@@ -1127,7 +1127,7 @@ void PlaylistWidget::slotRowsMoved()
 /*void PlaylistWidget::dragEnterEvent(QDragEnterEvent *ev)
 {
     auto md = ev->mimeData();
-    qDebug() << md->formats();
+    qInfo() << md->formats();
     if (md->formats().contains("application/x-qabstractitemmodeldatalist")) {
         if (!_playlist->selectedItems().contains(_playlist->itemAt(ev->pos()))) {
             _playlist->setDropIndicatorShown(true);
@@ -1172,7 +1172,7 @@ void PlaylistWidget::slotRowsMoved()
             stream >> row >> col >> roleDataMap;
             auto piw = dynamic_cast<PlayItemWidget *>(_playlist->itemWidget(_playlist->item(row)));
             _lastDragged = qMakePair(row, piw);
-            qDebug() << "drag to move " << row << piw->_pif.url;
+            qInfo() << "drag to move " << row << piw->_pif.url;
         }
 
         QWidget::dropEvent(ev);
@@ -1230,7 +1230,7 @@ void PlaylistWidget::showEvent(QShowEvent *se)
 
 void PlaylistWidget::removeItem(int idx)
 {
-    qDebug() << "idx = " << idx;
+    qInfo() << "idx = " << idx;
     auto item_remove = this->_playlist->takeItem(idx);
     if (item_remove) {
         delete item_remove;
@@ -1260,7 +1260,7 @@ void PlaylistWidget::removeItem(int idx)
 
 void PlaylistWidget::appendItems()
 {
-    qDebug() << __func__;
+    qInfo() << __func__;
 
     auto items = _engine->playlist().items();
     auto p = items.begin() + this->_playlist->count();
@@ -1308,7 +1308,7 @@ void PlaylistWidget::slotShowSelectItem(QListWidgetItem *item)
 void PlaylistWidget::OnItemChanged(QListWidgetItem *current, QListWidgetItem *previous)
 {
     auto prevRow = _playlist->row(previous);
-    qDebug() << "changed prevRow..." << prevRow;
+    qInfo() << "changed prevRow..." << prevRow;
     QPalette pe;
     if (previous) {
         auto prevItemWgt = reinterpret_cast<PlayItemWidget *>(_playlist->itemWidget(previous));
@@ -1318,7 +1318,7 @@ void PlaylistWidget::OnItemChanged(QListWidgetItem *current, QListWidgetItem *pr
     }
 
     if (current) {
-        qDebug() << "changed curRow..." << _playlist->row(current);
+        qInfo() << "changed curRow..." << _playlist->row(current);
         auto curItemWgt = reinterpret_cast<PlayItemWidget *>(_playlist->itemWidget(current));
         if (curItemWgt) {
             curItemWgt->setBIsSelect(true);
@@ -1328,7 +1328,7 @@ void PlaylistWidget::OnItemChanged(QListWidgetItem *current, QListWidgetItem *pr
 
 void PlaylistWidget::loadPlaylist()
 {
-    qDebug() << __func__;
+    qInfo() << __func__;
     _playlist->clear();
 
 

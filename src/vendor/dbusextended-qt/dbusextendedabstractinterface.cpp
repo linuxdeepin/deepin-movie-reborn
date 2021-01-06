@@ -63,7 +63,7 @@ void DBusExtendedAbstractInterface::getAllProperties()
     if (!isValid()) {
         QString errorMessage = QStringLiteral("This Extended DBus interface is not valid yet.");
         m_lastExtendedError = QDBusMessage::createError(QDBusError::Failed, errorMessage);
-        qDebug() << Q_FUNC_INFO << errorMessage;
+        qInfo() << Q_FUNC_INFO << errorMessage;
         return;
     }
 
@@ -162,7 +162,7 @@ QVariant DBusExtendedAbstractInterface::internalPropGet(const char *propname, vo
         if (!isValid()) {
             QString errorMessage = QStringLiteral("This Extended DBus interface is not valid yet.");
             m_lastExtendedError = QDBusMessage::createError(QDBusError::Failed, errorMessage);
-            qDebug() << Q_FUNC_INFO << errorMessage;
+            qInfo() << Q_FUNC_INFO << errorMessage;
             return QVariant();
         }
 
@@ -219,7 +219,7 @@ void DBusExtendedAbstractInterface::internalPropSet(const char *propname, const 
         if (!isValid()) {
             QString errorMessage = QStringLiteral("This interface is not yet valid");
             m_lastExtendedError = QDBusMessage::createError(QDBusError::Failed, errorMessage);
-            qDebug() << Q_FUNC_INFO << errorMessage;
+            qInfo() << Q_FUNC_INFO << errorMessage;
             return;
         }
 
@@ -346,7 +346,7 @@ void DBusExtendedAbstractInterface::onPropertiesChanged(const QString& interface
             int propertyIndex = metaObject()->indexOfProperty(i.key().toLatin1().constData());
 
             if (-1 == propertyIndex) {
-                qDebug() << Q_FUNC_INFO << "Got unknown changed property" <<  i.key();
+                qInfo() << Q_FUNC_INFO << "Got unknown changed property" <<  i.key();
             } else {
                 QVariant value = demarshall(interface(), metaObject()->property(propertyIndex), i.value(), &m_lastExtendedError);
 
@@ -363,7 +363,7 @@ void DBusExtendedAbstractInterface::onPropertiesChanged(const QString& interface
         QStringList::const_iterator j = invalidatedProperties.constBegin();
         while (j != invalidatedProperties.constEnd()) {
             if (-1 == metaObject()->indexOfProperty(j->toLatin1().constData())) {
-                qDebug() << Q_FUNC_INFO << "Got unknown invalidated property" <<  *j;
+                qInfo() << Q_FUNC_INFO << "Got unknown invalidated property" <<  *j;
             } else {
                 m_lastExtendedError = QDBusError();
                 emit propertyInvalidated(*j);
@@ -432,7 +432,7 @@ QVariant DBusExtendedAbstractInterface::demarshall(const QString &interface, con
         *error = QDBusError();
     } else {
         *error = QDBusMessage::createError(QDBusError::InvalidSignature, errorMessage);
-        qDebug() << Q_FUNC_INFO << errorMessage;
+        qInfo() << Q_FUNC_INFO << errorMessage;
     }
 
     return result;

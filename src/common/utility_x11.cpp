@@ -306,7 +306,7 @@ QByteArray Utility::windowProperty(quint32 WId, xcb_atom_t propAtom, xcb_atom_t 
     }
 
     if (err != nullptr) {
-        qDebug() << "get property error";
+        qInfo() << "get property error";
         free(err);
     }
 
@@ -334,7 +334,7 @@ QList<xcb_atom_t> Utility::windowNetWMState(quint32 WId)
     }
 
     if (err != nullptr) {
-        qDebug() << "get property error";
+        qInfo() << "get property error";
         free(err);
     }
 

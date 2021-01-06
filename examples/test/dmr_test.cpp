@@ -47,7 +47,7 @@ public:
         l->addWidget(player);
 
         QObject::connect(&player->engine(), &dmr::PlayerEngine::stateChanged, [=]() {
-            qDebug() << "----------------new state: " << player->engine().state();
+            qInfo() << "----------------new state: " << player->engine().state();
         });
         player->engine().changeVolume(120);
 

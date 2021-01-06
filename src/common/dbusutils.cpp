@@ -23,8 +23,8 @@ QVariant DBusUtils::redDBusProperty(const QString &service, const QString &path,
                               interface,
                               QDBusConnection::sessionBus());
     if (!ainterface.isValid()) {
-//        qDebug() << qPrintable(QDBusConnection::sessionBus().lastError().message());
-        //qDebug() << " QDBusInterface ainterface isValid" << path << propert;
+//        qInfo() << qPrintable(QDBusConnection::sessionBus().lastError().message());
+        //qInfo() << " QDBusInterface ainterface isValid" << path << propert;
         QVariant v(0) ;
         mutex.unlock();
         return  v;
@@ -41,7 +41,7 @@ QVariant DBusUtils::redDBusMethod(const QString &service, const QString &path, c
                               interface,
                               QDBusConnection::sessionBus());
     if (!ainterface.isValid()) {
-        //qDebug() <<  "error:" << qPrintable(QDBusConnection::sessionBus().lastError().message());
+        //qInfo() <<  "error:" << qPrintable(QDBusConnection::sessionBus().lastError().message());
         QVariant v(0) ;
         return  v;
     }
@@ -52,7 +52,7 @@ QVariant DBusUtils::redDBusMethod(const QString &service, const QString &path, c
         QVariant v(0) ;
         return  v;
     } else {
-        //qDebug() << "error1:" << qPrintable(QDBusConnection::sessionBus().lastError().message());
+        //qInfo() << "error1:" << qPrintable(QDBusConnection::sessionBus().lastError().message());
         QVariant v(0) ;
         return  v;
     }

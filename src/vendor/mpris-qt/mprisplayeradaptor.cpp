@@ -124,7 +124,7 @@ void MprisPlayerAdaptor::setLoopStatus(const QString &value)
 
     // We cannot send an error reply in a property setter so we just
     // complain here
-    qDebug() << Q_FUNC_INFO << "Requested to modify the loop status but it is not supported.";
+    qInfo() << Q_FUNC_INFO << "Requested to modify the loop status but it is not supported.";
 }
 
 double MprisPlayerAdaptor::maximumRate() const
@@ -181,7 +181,7 @@ void MprisPlayerAdaptor::setRate(double value)
 
     // We cannot send an error reply in a property setter so we just
     // complain here
-    qDebug() << Q_FUNC_INFO << errorMessage;
+    qInfo() << Q_FUNC_INFO << errorMessage;
 }
 
 bool MprisPlayerAdaptor::shuffle() const
@@ -199,7 +199,7 @@ void MprisPlayerAdaptor::setShuffle(bool value)
 
     // We cannot send an error reply in a property setter so we just
     // complain here
-    qDebug() << Q_FUNC_INFO << "Requested to modify the shuffle but it is not supported.";
+    qInfo() << Q_FUNC_INFO << "Requested to modify the shuffle but it is not supported.";
 }
 
 double MprisPlayerAdaptor::volume() const
@@ -217,7 +217,7 @@ void MprisPlayerAdaptor::setVolume(double value)
 
     // We cannot send an error reply in a property setter so we just
     // complain here
-    qDebug() << Q_FUNC_INFO << "Requested to modify the volume but it is not supported.";
+    qInfo() << Q_FUNC_INFO << "Requested to modify the volume but it is not supported.";
 }
 
 void MprisPlayerAdaptor::Next()

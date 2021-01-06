@@ -38,7 +38,7 @@ namespace dvd {
 
 /*QString RetrieveDVDTitle(const QString &device)
 {
-    qDebug() << "device" << device;
+    qInfo() << "device" << device;
     const char *title = nullptr;
 
     dvdnav_t *handle = nullptr;
@@ -132,14 +132,14 @@ void RetrieveDvdThread::run()
         if (_quit.load()) break;
 
         auto title = getDvdMsg(m_dev);
-        qDebug() << "-----" << title;
+        qInfo() << "-----" << title;
         emit sigData(title);
     } while (false);
 }
 
 QString RetrieveDvdThread::getDvdMsg(const QString &device)
 {
-    qDebug() << "device" << device;
+    qInfo() << "device" << device;
     const char *title = nullptr;
 
     dvdnav_t *handle = nullptr;

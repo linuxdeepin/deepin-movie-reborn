@@ -356,7 +356,7 @@ QList<QAction *> ActionFactory::findActionsByKind(ActionKind target_kd)
 
 void ActionFactory::updateMainActionsForMovie(const PlayingMovieInfo &pmf)
 {
-    qDebug() << __func__;
+    qInfo() << __func__;
     if (_subtitleMenu) {
         auto menu = _subtitleMenu;
         menu->clear();

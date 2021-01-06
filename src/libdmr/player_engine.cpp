@@ -113,7 +113,7 @@ PlayerEngine::~PlayerEngine()
         delete _current;
         _current = nullptr;
     }
-    qDebug() << __func__;
+    qInfo() << __func__;
 }
 
 bool PlayerEngine::isPlayableFile(const QUrl &url)
@@ -218,7 +218,7 @@ void PlayerEngine::updateSubStyles()
         sz /= scale;
         /* magic scale number 2.0 comes from my mind, test with my eyes... */
         sz *= 2.0;
-        qDebug() << "update sub " << font << sz;
+        qInfo() << "update sub " << font << sz;
         updateSubStyle(font, sz);
     }
 #endif
@@ -655,7 +655,7 @@ void PlayerEngine::playByName(const QUrl &url)
 {
     savePreviousMovieState();
     auto id = _playlist->indexOf(url);
-    qDebug() << __func__ << url << "id:" << id;
+    qInfo() << __func__ << url << "id:" << id;
     if (id >= 0) {
         _playlist->changeCurrent(id);
     } else {
@@ -665,7 +665,7 @@ void PlayerEngine::playByName(const QUrl &url)
 
 void PlayerEngine::playSelected(int id)
 {
-    qDebug() << __func__ << id;
+    qInfo() << __func__ << id;
     savePreviousMovieState();
     _playlist->changeCurrent(id);
 }
@@ -756,7 +756,7 @@ void PlayerEngine::setDVDDevice(const QString &path)
 
 bool PlayerEngine::addPlayFile(const QUrl &url)
 {
-    qDebug() << __func__;
+    qInfo() << __func__;
     if (isPlayableFile(url)) {
         if (url.isLocalFile())
             _playlist->appendAsync({url});
@@ -801,7 +801,7 @@ QList<QUrl> PlayerEngine::addPlayDir(const QDir &dir)
 
 QList<QUrl> PlayerEngine::addPlayFiles(const QList<QUrl> &urls)
 {
-    qDebug() << __func__;
+    qInfo() << __func__;
     QList<QUrl> valids = collectPlayFiles(urls);
     for (auto &url : valids) {
         QString strtp = url.toLocalFile();
@@ -819,14 +819,14 @@ QList<QUrl> PlayerEngine::addPlayFiles(const QList<QUrl> &urls)
 
 QList<QUrl> PlayerEngine::collectPlayFiles(const QList<QUrl> &urls)
 {
-    qDebug() << urls;
+    qInfo() << urls;
     //NOTE: take care of loop, we don't recursive, it seems safe now
     QList<QUrl> valids;
     for (const auto &url : urls) {
         if (url.isLocalFile()) {
             QFileInfo fi(url.toLocalFile());
             if (!fi.exists()) {
-                qDebug() << url << "don't exist";
+                qInfo() << url << "don't exist";
                 continue;
             }
 
@@ -838,7 +838,7 @@ QList<QUrl> PlayerEngine::collectPlayFiles(const QList<QUrl> &urls)
             }
 
             if (!url.isValid() || !isPlayableFile(url)) {
-                qDebug() << url << "not valid or playable";
+                qInfo() << url << "not valid or playable";
                 continue;
             }
 

@@ -70,7 +70,7 @@ bool EventRelayer::nativeEventFilter(const QByteArray &eventType, void *message,
             if (cne->window == _source->winId()) {
                 QPoint p(cne->x, cne->y);
                 if (p != _target->framePosition()) {
-                    //qDebug() << "cne: " << QRect(cne->x, cne->y, cne->width, cne->height)
+                    //qInfo() << "cne: " << QRect(cne->x, cne->y, cne->width, cne->height)
                     //<< "origin: " << _source->framePosition()
                     //<< "dest: " << _target->framePosition();
                     emit targetNeedsUpdatePosition(QPoint(cne->x, cne->y));

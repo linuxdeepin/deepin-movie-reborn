@@ -55,7 +55,7 @@ Settings::Settings()
             .arg(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation))
             .arg(qApp->organizationName())
             .arg(qApp->applicationName());
-    qDebug() << "configPath" << _configPath;
+    qInfo() << "configPath" << _configPath;
     auto backend = new QSettingBackend(_configPath);
 #if defined (__mips__) || defined (__sw_64__) || defined ( __aarch64__)
     /*if (!CompositingManager::get().composited()) {
@@ -85,7 +85,7 @@ Settings::Settings()
             emit subtitleChanged(key, value);
     });
 
-    qDebug() << "keys" << _settings->keys();
+    qInfo() << "keys" << _settings->keys();
 
     QStringList playmodeDatabase;
     playmodeDatabase << tr("Order play")

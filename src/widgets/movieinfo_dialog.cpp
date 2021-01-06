@@ -230,7 +230,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
 
     m_fileNameLbl = new DLabel(this);
     m_fileNameLbl->setMinimumWidth(260);
-    qDebug() << "fileNameLbl w,h: " << m_fileNameLbl->width() << "," << m_fileNameLbl->height();
+    qInfo() << "fileNameLbl w,h: " << m_fileNameLbl->width() << "," << m_fileNameLbl->height();
     DFontSizeManager::instance()->bind(m_fileNameLbl, DFontSizeManager::T8);
     m_fileNameLbl->setForegroundRole(DPalette::BrightText);
     m_fileNameLbl->setText(m_fileNameLbl->fontMetrics().elidedText(QFileInfo(mi.filePath).fileName(), Qt::ElideMiddle, 260));
@@ -371,10 +371,10 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
         auto filePathLbl = tipLst.at(3);
         filePathLbl->setObjectName("filePathLabel");
         auto codeLabel = m_titleList.at(5);
-        qDebug() << "filePathLbl w,h: " << filePathLbl->width() << "," << filePathLbl->height();
+        qInfo() << "filePathLbl w,h: " << filePathLbl->width() << "," << filePathLbl->height();
         QFontMetrics fm_cl = codeLabel->fontMetrics();
         filePathLbl->setMinimumWidth(qMin(160, 250 - fm_cl.boundingRect(codeLabel->text()).width()));
-        qDebug() << "filePathLbl w,h: " << filePathLbl->width() << "," << filePathLbl->height();
+        qInfo() << "filePathLbl w,h: " << filePathLbl->width() << "," << filePathLbl->height();
         auto fp = ElideText(tmp->text(), {filePathLbl->width(), fm_cl.height()}, QTextOption::WrapAnywhere,
                             filePathLbl->font(), Qt::ElideRight, fm_cl.height(), filePathLbl->width());
         filePathLbl->setText(fp);
@@ -419,14 +419,14 @@ void MovieInfoDialog::OnFontChanged(const QFont &font)
 {
     QFontMetrics fm(font);
 
-    qDebug() << "fileNameLbl w,h: " << m_fileNameLbl->width() << "," << m_fileNameLbl->height();
+    qInfo() << "fileNameLbl w,h: " << m_fileNameLbl->width() << "," << m_fileNameLbl->height();
     QString strFileName = m_fileNameLbl->fontMetrics().elidedText(QFileInfo(m_strFilePath).fileName(), Qt::ElideMiddle, m_fileNameLbl->width());
     m_fileNameLbl->setText(strFileName);
 
     if (m_filePathLbl) {
-        qDebug() << "filePathLbl w,h: " << m_filePathLbl->width() << "," << m_filePathLbl->height();
+        qInfo() << "filePathLbl w,h: " << m_filePathLbl->width() << "," << m_filePathLbl->height();
         auto w = fm.width(m_strFilePath);
-        qDebug() << "font width: " << w;
+        qInfo() << "font width: " << w;
         auto fp = ElideText(m_strFilePath, {m_filePathLbl->width(), fm.height()}, QTextOption::WrapAnywhere,
                             m_filePathLbl->font(), Qt::ElideRight, fm.height(), m_filePathLbl->width());
         m_filePathLbl->setText(fp);
