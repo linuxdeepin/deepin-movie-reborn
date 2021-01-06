@@ -11,7 +11,7 @@ class AnimationLabel : public QLabel
     Q_PROPERTY(int fps READ fps WRITE setFps)
 
 public:
-    explicit AnimationLabel(QWidget *parent = nullptr);
+    explicit AnimationLabel(QWidget *parent = nullptr, QWidget *mw = nullptr, bool composited = false);
 
     void stop();
     void start();
@@ -19,6 +19,7 @@ public:
 private:
     void initPauseAnimation();
     void initPlayAnimation();
+    void setGeometryByMainWindow(QWidget *mw);
 
 public slots:
 
@@ -27,6 +28,12 @@ public slots:
 
 protected:
     void paintEvent(QPaintEvent *e);
+    //显示事件
+    void showEvent(QShowEvent *e) override;
+    //界面移动事件
+    void moveEvent(QMoveEvent *e) override;
+    //鼠标释放事件
+    void mouseReleaseEvent(QMouseEvent *ev) override;
 
     QPixmap m_pixmap;
 
@@ -37,7 +44,8 @@ protected:
     QSequentialAnimationGroup *m_pauseGroup {nullptr};
     QPropertyAnimation *m_pauseShow {nullptr};
     QPropertyAnimation *m_pauseHide {nullptr};
-
+    QWidget* _mw {nullptr};
+    bool _composited {false};
     QString m_fileName;
 };
 

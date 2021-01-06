@@ -954,10 +954,15 @@ MainWindow::MainWindow(QWidget *parent)
     _fullscreentimelable->setLayout(_fullscreentimebox);
     _fullscreentimelable->close();
 #endif
-    _animationlable = new AnimationLabel;
+    if(CompositingManager::get().composited()) {//MPV OPengL渲染方式，需指定父窗口
+        _animationlable = new AnimationLabel(this, this, true);
+    }
+    else {//MPV绑定wid方式，父窗口为NULL
+        _animationlable = new AnimationLabel(NULL, this, false);
+    }
     _animationlable->setAttribute(Qt::WA_TranslucentBackground);
     _animationlable->setWindowFlags(Qt::FramelessWindowHint);
-    _animationlable->setParent(this);
+//    _animationlable->setParent(this);
     _animationlable->setGeometry(width() / 2 - 100, height() / 2 - 100, 200, 200);
 
 #if defined (__aarch64__) || defined (__mips__)
@@ -3728,6 +3733,10 @@ void MainWindow::resizeEvent(QResizeEvent *ev)
 //    }
     m_pMovieWidget->resize(rect().size());
     m_pMovieWidget->move(0, 0);
+    if(!CompositingManager::get().composited())
+    {
+        _animationlable->move(0, 0);
+    }
 }
 
 void MainWindow::updateWindowTitle()
@@ -4024,6 +4033,10 @@ void MainWindow::delayedMouseReleaseHandler()
 
 void MainWindow::mouseMoveEvent(QMouseEvent *ev)
 {
+    if(!CompositingManager::get().composited())
+    {
+        _animationlable->hide();
+    }
     QPoint ptCurr = mapToGlobal(ev->pos());
     QPoint ptDelta = ptCurr - this->posMouseOrigin;
 
