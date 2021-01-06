@@ -1218,6 +1218,10 @@ void PlaylistWidget::contextMenuEvent(QContextMenuEvent *cme)
     }
 
     ActionFactory::get().playlistContextMenu()->popup(cme->globalPos());
+#ifdef USE_TEST
+    ActionFactory::get().playlistContextMenu()->hide();
+    ActionFactory::get().playlistContextMenu()->clear();
+#endif
 }
 
 void PlaylistWidget::showEvent(QShowEvent *se)

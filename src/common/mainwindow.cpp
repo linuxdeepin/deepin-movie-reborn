@@ -1973,9 +1973,13 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     }
 
     case ActionFactory::ActionKind::OpenDirectory: {
+#ifndef USE_TEST
         QString name = DFileDialog::getExistingDirectory(this, tr("Open folder"),
                                                          lastOpenedPath(),
                                                          DFileDialog::DontResolveSymlinks);
+#else
+        QString name("/data/source/deepin-movie-reborn/movie");
+#endif
 
         QFileInfo fi(name);
         if (fi.isDir() && fi.exists()) {
@@ -1991,11 +1995,17 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
 
     case ActionFactory::ActionKind::OpenFileList: {
         //允许影院打开音乐文件进行播放
+#ifndef USE_TEST
         QStringList filenames = DFileDialog::getOpenFileNames(this, tr("Open File"),
                                                               lastOpenedPath(),
                                                               tr("All videos (*)(%2 %1)").arg(_engine->video_filetypes.join(" "))
                                                               .arg(_engine->audio_filetypes.join(" ")), nullptr,
                                                               DFileDialog::HideNameFilterDetails);
+#else
+        QStringList filenames;
+        filenames << QString("/data/source/deepin-movie-reborn/movie/demo.mp4")\
+                  << QString("/data/source/deepin-movie-reborn/movie/bensound-sunny.mp3");
+#endif
 
         QList<QUrl> urls;
         if (filenames.size()) {
@@ -2530,9 +2540,13 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     }
 
     case ActionFactory::ActionKind::LoadSubtitle: {
+#ifndef USE_TEST
         QString filename = DFileDialog::getOpenFileName(this, tr("Open File"),
                                                         lastOpenedPath(),
                                                         tr("Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)"));
+#else
+        QString filename("/data/source/deepin-movie-reborn/Hachiko.A.Dog's.Story.ass");
+#endif
         if (QFileInfo(filename).exists()) {
             if (_engine->state() == PlayerEngine::Idle)
                 subtitleMatchVideo(filename);
@@ -2794,6 +2808,7 @@ void MainWindow::handleSettings(DSettingsDialog *dsd)
     }
     delete dsd;
 #else
+    dsd->setObjectName("DSettingsDialog");
     dsd ->show();
 #endif
 
@@ -4621,6 +4636,8 @@ void MainWindow::dropEvent(QDropEvent *ev)
         return;
     }
 
+//    qDebug() << ev->pos() << ev->mouseButtons() << ev->keyboardModifiers() << ev->dropAction();
+
     if (m_bisOverhunderd) {
         _engine->changeVolume(100);
         m_bisOverhunderd = false;
@@ -4670,7 +4687,6 @@ void MainWindow::dropEvent(QDropEvent *ev)
                 auto msg = QString(tr("Invalid file: %1").arg(url.fileName()));
                 _nwComm->updateWithMessage(msg);
             });
-
             ms += 1000;
         }
     }

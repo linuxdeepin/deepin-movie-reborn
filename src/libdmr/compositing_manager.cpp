@@ -133,7 +133,7 @@ CompositingManager::CompositingManager()
         QGSettings gsettings("com.deepin.deepin-movie", "/com/deepin/deepin-movie/");
         QString aa = gsettings.get("composited").toString();
         if ((gsettings.get("composited").toString() == "DisableComposited"
-                || gsettings.get("composited").toString() == "EnableComposited")) {
+             || gsettings.get("composited").toString() == "EnableComposited")) {
             if (gsettings.keys().contains("composited")) {
                 if (gsettings.get("composited").toString() == "DisableComposited") {
                     _composited = false;
@@ -351,7 +351,7 @@ void CompositingManager::detectOpenGLEarly()
 
     if (detect_run) return;
 
-    //never execute code
+    ///function probeHwdecInterop() always returns QString(""), this code was not used
 //    auto probed = probeHwdecInterop();
 //    qInfo() << "probeHwdecInterop" << probed
 //             << qgetenv("QT_XCB_GL_INTERGRATION");
