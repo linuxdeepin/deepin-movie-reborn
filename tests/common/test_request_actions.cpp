@@ -132,7 +132,7 @@ TEST(requestAction, frame)
     w->requestAction(ActionFactory::ActionKind::PreviousFrame);
 }
 
-/*TEST(requestAction,Mute)
+TEST(requestAction,Mute)
 {
     MainWindow* w = dApp->getMainWindow();
 
@@ -140,20 +140,19 @@ TEST(requestAction, frame)
     w->requestAction(ActionFactory::ActionKind::ToggleMute);
     QTest::qWait(200);
     w->requestAction(ActionFactory::ActionKind::ToggleMute);
-}*/
+}
 
-/*TEST(requestAction, subtitle)
+TEST(requestAction, subtitle)
 {
     MainWindow* w = dApp->getMainWindow();
     w->show();
 
     QTest::qWait(300);
     w->requestAction(ActionFactory::ActionKind::LoadSubtitle);
-    QTest::qWait(300);
+    QTest::qWait(100);
     w->requestAction(ActionFactory::ActionKind::HideSubtitle);
-    QTest::qWait(300);
-    EXPECT_TRUE(false);
-}*/
+    QTest::qWait(100);
+}
 
 TEST(requestAction,goToScreenshotSolder)
 {
@@ -164,18 +163,21 @@ TEST(requestAction,goToScreenshotSolder)
     EXPECT_TRUE(true);
 }
 
-/*TEST(requestAction,openFiles)
+TEST(requestAction,openFiles)
 {
     MainWindow *w = dApp->getMainWindow();
 
     QTest::qWait(300);
     w->requestAction(ActionFactory::ActionKind::OpenFileList);
     QTest::qWait(100);
-    EXPECT_TRUE(true);
+
     w->requestAction(ActionFactory::ActionKind::OpenDirectory);
     QTest::qWait(100);
-    EXPECT_TRUE(false);
-}*/
+
+    w->requestAction(ActionFactory::ActionKind::PlaylistOpenItemInFM);
+    utils::ShowInFileManager(QString("/usr/share/music/bensound-sunny.mp3"));
+    QTest::qWait(100);
+}
 
 /*TEST(requestAction,openDirectory)
 {
@@ -185,7 +187,7 @@ TEST(requestAction,goToScreenshotSolder)
     w->requestAction(ActionFactory::ActionKind::OpenDirectory);
     QTest::qWait(300);
     EXPECT_TRUE(false);
-}*/
+}
 
 TEST(requestAction, playlistOpenItemInFM)
 {
@@ -195,7 +197,7 @@ TEST(requestAction, playlistOpenItemInFM)
     w->requestAction(ActionFactory::ActionKind::PlaylistOpenItemInFM);
     utils::ShowInFileManager(QString("/usr/share/music/bensound-sunny.mp3"));
 }
-
+*/
 TEST(requestAction, settings)
 {
     MainWindow* w = dApp->getMainWindow();

@@ -42,6 +42,16 @@ TEST(MainWindow, init)
     engine->videoAspect();
     engine->volumeUp();
     engine->setDVDDevice("/data/home/");
+
+    QMimeData mimeData;
+    QList<QUrl> urls;
+    urls << QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/demo.mp4");
+    mimeData.setUrls(urls);
+    // Drop inside the mainwindow
+    QDropEvent drop(w->pos(), Qt::CopyAction, &mimeData, Qt::NoButton, Qt::NoModifier);
+    QApplication::sendEvent(w, &drop);
+    QVERIFY(drop.isAccepted());
+    QCOMPARE(drop.dropAction(), Qt::CopyAction);
 }
 
 TEST(MainWindow, loadFile)
@@ -61,12 +71,12 @@ TEST(MainWindow, loadFile)
 
     qDebug() << __func__ << "MainWindow.loadFile:" << engine->state();
     w->checkOnlineState(false);
-   // QTest::qWait(200);
-   // w->resize(900, 700);
-   // QTest::qWait(200);
-   // w->resize(300, 300);
-   // QTest::qWait(200);
-   // w->requestAction(ActionFactory::ActionKind::MatchOnlineSubtitle);
+    QTest::qWait(200);
+    w->resize(900, 700);
+    QTest::qWait(200);
+    w->resize(300, 300);
+    QTest::qWait(200);
+    w->requestAction(ActionFactory::ActionKind::MatchOnlineSubtitle);
     QTest::qWait(200);
     DGuiApplicationHelper::instance()->setThemeType(DGuiApplicationHelper::DarkType);
     emit DGuiApplicationHelper::instance()->paletteTypeChanged(DGuiApplicationHelper::DarkType);
@@ -79,6 +89,9 @@ TEST(MainWindow, DBus)
     DBusUtils utils;
     QVariant v = ApplicationAdaptor::redDBusProperty("com.deepin.daemon.Audio", "/com/deepin/daemon/Audio",
                                                      "com.deepin.daemon.Audio", "SinkInputs");
+    QVariant v_invalid = ApplicationAdaptor::redDBusProperty("com.test", "/test", "com.test", "SinkInputs");
+    v_invalid = DBusUtils::redDBusProperty("com.test", "/test", "com.test", "SinkInputs");
+
     if(v.isValid())
     {
         QList<QDBusObjectPath> allSinkInputsList = v.value<QList<QDBusObjectPath> >();
@@ -97,31 +110,18 @@ TEST(MainWindow, DBus)
 
     QVariant method = ApplicationAdaptor::redDBusMethod("com.deepin.daemon.Audio", "/com/deepin/daemon/Audio",
                                                      "com.deepin.daemon.Audio", "SinkInputs");
+    QVariant method_invalid = ApplicationAdaptor::redDBusMethod("com.test", "/com/test", "com.test", "SinkInputs");
     method = DBusUtils::redDBusMethod("com.deepin.daemon.Audio", "/com/deepin/daemon/Audio",
                                                "com.deepin.daemon.Audio", "SinkInputs");
+    method_invalid = DBusUtils::redDBusMethod("com.test", "/com/test", "com.test", "SinkInputs");
     appAdaptor->Raise();
     appAdaptor->openFile("/data/source/deepin-movie-reborn/movie/demo.mp4");
 }
 
-/*TEST(MainWindow, resizeWindow)
+TEST(MainWindow, resizeWindow)
 {
     MainWindow *w = dApp->getMainWindow();
     //缩放窗口
-//    QPoint bot_right(w->frameGeometry().bottomRight().x()+2, w->frameGeometry().bottomRight().y()+2);
-//    QTest::qWait(1000);
-//    QTest::mouseMove(w->windowHandle(), bot_right, 500);
-////    QTest::qWait(10000);
-//    QTest::mousePress(w->windowHandle(), Qt::LeftButton, Qt::NoModifier, bot_right, 500);
-//    QTest::mouseMove(w->windowHandle(), QPoint(bot_right.x()+30, bot_right.y()+40), 500);
-//    QTest::mouseRelease(w->windowHandle(), Qt::LeftButton, Qt::NoModifier, QPoint(bot_right.x()+30, bot_right.y()+40), 500);
-
-//    //移动窗口
-//    QTest::mouseMove(w, QPoint(w->pos().x()+50, w->pos().y()+60), 500);
-//    QTest::mousePress(w, Qt::LeftButton, Qt::NoModifier, QPoint(w->pos().x()+50, w->pos().y()+60), 500);
-//    QTest::mouseMove(w, QPoint(w->pos().x()+300, w->pos().y()+200), 1000);
-//    QTest::mouseRelease(w, Qt::LeftButton, Qt::NoModifier, QPoint(w->pos().x()+300, w->pos().y()+200), 2000);
-
-//    QTest::qWait(300);
     w->move(200, 200);
     w->updateGeometry(CornerEdge::LeftEdge, QPoint(100, 100));
     w->updateGeometry(CornerEdge::TopEdge, QPoint(100, 100));
@@ -133,18 +133,23 @@ TEST(MainWindow, DBus)
     w->updateGeometry(CornerEdge::BottomLeftCorner, QPoint(100, 100));
     w->updateGeometry(CornerEdge::BottomRightCorner, QPoint(100, 100));
 }
-*/
+
 TEST(MainWindow, touch)
 {
     MainWindow *w = dApp->getMainWindow();
     ToolboxProxy* toolboxProxy = w->toolbox();
     QStackedWidget * progbarWidget = toolboxProxy->findChild<QStackedWidget *>(PROGBAR_WIDGET);
 
-    QTest::mouseDClick(w, Qt::LeftButton, Qt::NoModifier, QPoint(100, 200), 500); //fullscreen
+    if(!w->isFullScreen()){
+        qDebug() << __func__ << "进入全屏";
+        QTest::mouseDClick(w, Qt::LeftButton, Qt::NoModifier, QPoint(), 500); //fullscreen
+    }
+
 #if !defined (__mips__ ) && !defined(__aarch64__)
     w->setTouched(true);
     Settings::get().settings()->setOption("base.play.showInthumbnailmode", true);
 
+    QTest::qWait(500);
     QTest::mousePress(w->windowHandle(), Qt::LeftButton, Qt::MetaModifier, QPoint(100, 200), 200);
     QTest::mouseRelease(w->windowHandle(), Qt::LeftButton, Qt::MetaModifier, QPoint(200, 200), 200);
 
@@ -163,11 +168,13 @@ TEST(MainWindow, touch)
     QTest::mousePress(w->windowHandle(), Qt::LeftButton, Qt::MetaModifier, QPoint(400, 300), 200);
     QTest::mouseRelease(w->windowHandle(), Qt::LeftButton, Qt::MetaModifier, QPoint(400, 100), 200);
 
-    QTest::mouseDClick(w, Qt::LeftButton, Qt::NoModifier, QPoint(), 200);
-
 //#if !defined (__mips__ ) && !defined(__aarch64__)
     Settings::get().settings()->setOption("base.play.showInthumbnailmode", false);
 #endif
+    if(w->isFullScreen()){
+        //quit fullscreen
+        QTest::mouseDClick(w, Qt::LeftButton, Qt::NoModifier, QPoint(), 200);
+    }
     w->setTouched(false);
 }
 
@@ -185,19 +192,17 @@ TEST(MainWindow, shortCutPlay)
     }
 
     //shortcut view
-//    QKeyEvent keypress(QEvent::KeyPress, Qt::Key_Slash, Qt::ControlModifier | Qt::ShiftModifier);
-//    QApplication::sendEvent(w, &keypress);
+//    testEventList.addKeyClick(Qt::Key_Slash, Qt::ControlModifier | Qt::ShiftModifier, 500);
 
-    //shortcut view
-    testEventList.addKeyClick(Qt::Key_Slash, Qt::ControlModifier | Qt::ShiftModifier, 500);
-
-    //screenshot
-    testEventList.addKeyClick(Qt::Key_A, Qt::AltModifier, 500);
-    //burst screenshot
     BurstScreenshotsDialog bsd(engine->playlist().currentInfo());
     bsd.show();
     QTest::qWait(500);
     bsd.close();
+
+    //screenshot
+    qDebug() << __func__ << "start screenshot" << engine->state();
+    testEventList.addKeyClick(Qt::Key_A, Qt::AltModifier, 500);
+    //burst screenshot
     testEventList.addKeyClick(Qt::Key_S, Qt::AltModifier, 1000);
 
     testEventList.addKeyClick(Qt::Key_Right, Qt::NoModifier, 300); //fast forward
@@ -268,6 +273,14 @@ TEST(MainWindow, shortCutVolumeAndFrame)
 TEST(MainWindow, miniMode)
 {
     MainWindow* w = dApp->getMainWindow();
+    PlayerEngine *engine =  w->engine();
+
+    engine->playByName(QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/demo.mp4"));
+    qDebug() << __func__ << engine->state() << engine->playlist().count();
+
+    while(engine->state() == PlayerEngine::CoreState::Idle){
+        QTest::qWait(100);
+    }
 
     QTest::keyClick(w, Qt::Key_F2, Qt::NoModifier, 500);
     DIconButton *miniPauseBtn = w->findChild<DIconButton *>("MiniPauseBtn");
@@ -286,7 +299,7 @@ TEST(MainWindow, miniMode)
 //    QTest::mouseClick(miniPlayBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 300);
 //    QTest::mouseMove(miniCloseBtn, QPoint(), 300);
 //    QTest::mouseClick(miniCloseBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 300);
-    w->show();
+//    w->show();
     QTest::keyClick(w, Qt::Key_Escape, Qt::NoModifier, 1000);
 }
 
@@ -335,7 +348,6 @@ TEST(MainWindow, progBar)
 
     QWheelEvent wheelEvent = QWheelEvent(endPoint, 20, Qt::MidButton, Qt::NoModifier);
     QApplication::sendEvent(progBarSlider, &wheelEvent);
-
 
     //胶片模式
 #if !defined (__mips__ ) && !defined(__aarch64__)
@@ -422,16 +434,6 @@ TEST(MainWindow, reloadFile)
     engine->addPlayFiles(listPlayFiles);
 }
 
-TEST(ToolBox, togglePlayList)
-{
-    MainWindow* w = dApp->getMainWindow();
-    ToolboxProxy* toolboxProxy = w->toolbox();
-    ToolButton *listBtn = toolboxProxy->listBtn();
-
-    QTest::mouseMove(listBtn, QPoint(), 200);
-    QTest::mouseClick(listBtn, Qt::LeftButton, Qt::NoModifier,QPoint(), 500);
-}
-
 TEST(ToolBox, playListWidget)
 {
     MainWindow *w = dApp->getMainWindow();
@@ -441,8 +443,11 @@ TEST(ToolBox, playListWidget)
     DListWidget *playlist = playlistWidget->get_playlist();
     DFloatingButton *playItemCloseBtn;
 
-    QTest::mouseMove(playlist->itemWidget(playlist->item(0)), QPoint(), 200);
-    QTest::qWait(500);
+    QTest::mouseMove(listBtn, QPoint(), 200);
+    QTest::mouseClick(listBtn, Qt::LeftButton, Qt::NoModifier,QPoint(), 300);
+
+    QTest::mouseMove(playlist->itemWidget(playlist->item(0)), QPoint(), 700);
+    QTest::qWait(700);
     QTest::mouseMove(playlist->itemWidget(playlist->item(1)), QPoint(), 200);
     QTest::mouseClick(playlist->itemWidget(playlist->item(1)), Qt::LeftButton, Qt::NoModifier, QPoint(), 200);
     QTest::mouseMove(playlist->itemWidget(playlist->item(0)), QPoint(), 200);
@@ -604,13 +609,13 @@ TEST(ToolBox, mainWindowEvent)
     qApp->sendEvent(w, &dragMove);
 
     // Drop inside the mainwindow
-    QDropEvent drop(QPoint(0, 0), Qt::CopyAction, &mimeData, Qt::LeftButton, {});
+    QDropEvent drop(QPoint(0, 0), Qt::CopyAction, &mimeData, Qt::NoButton, {});
     QApplication::sendEvent(w, &drop);
     QVERIFY(drop.isAccepted());
     QCOMPARE(drop.dropAction(), Qt::CopyAction);
 
-//    QWheelEvent wheelEvent = QWheelEvent(QPoint(0, 0), 20, Qt::MidButton, Qt::NoModifier);
-//    QApplication::sendEvent(w, &wheelEvent);
+    QWheelEvent wheelEvent = QWheelEvent(QPoint(0, 0), 20, Qt::MidButton, Qt::NoModifier);
+    QApplication::sendEvent(w, &wheelEvent);
 
     QContextMenuEvent *cme = new QContextMenuEvent(QContextMenuEvent::Mouse, w->rect().center());
     QTimer::singleShot(100,[=](){
@@ -620,6 +625,10 @@ TEST(ToolBox, mainWindowEvent)
 
     QTest::mouseClick(w, Qt::LeftButton, Qt::NoModifier, QPoint(100,100), 200);
     QTest::qWait(100);
+    //shortcut view
+    QKeyEvent keypress(QEvent::KeyPress, Qt::Key_Slash, Qt::ControlModifier | Qt::ShiftModifier);
+    QApplication::sendEvent(w, &keypress);
+
     w->testCdrom();
     QTest::qWait(500);
 }

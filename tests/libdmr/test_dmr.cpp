@@ -12,7 +12,6 @@
 #include <gtest/gtest.h>
 
 #include "application.h"
-#include "mainwindow.h"
 #include "player_widget.h"
 #include "player_engine.h"
 #include "compositing_manager.h"
@@ -38,8 +37,10 @@ TEST(libdmr, libdmrTest)
     res = mc.queryByUrl(QUrl("movie1"));
     mc.clear();
 
-//    delete player;
+    QTest::qWait(100);
+    delete player;
 }
+
 TEST(libdmr, utils)
 {
     using namespace dmr;
@@ -50,4 +51,33 @@ TEST(libdmr, utils)
     utils::UnInhibitPower(20);
     utils::MoveToCenter(w);
     utils::Time2str(90000);
+    utils::ValidateScreenshotPath(QString("/data/source/deepin-movie-reborn"));
+    utils::ValidateScreenshotPath(QString("~/uos"));
 }
+
+TEST(libdmr, compositingManager)
+{
+    if (CompositingManager::get().composited()) {
+        CompositingManager::detectOpenGLEarly();
+        CompositingManager::detectPciID();
+    }
+    bool run = CompositingManager::get().runningOnNvidia();
+    qDebug() << __func__ << "isRunningOnNvidia:  " << run ;
+    run = CompositingManager::get().runningOnVmwgfx();
+    qDebug() << __func__ << "isRunningOnVmwgfx:  " << run ;
+    CompositingManager::get().setTestFlag(CompositingManager::get().isTestFlag());
+}
+
+TEST(libdmr, movieConfiguration)
+{
+    MovieConfiguration::get().removeFromListUrl(
+                QUrl("/data/source/deepin-movie-reborn/Hachiko.A.Dog's.Story.ass"),
+                ConfigKnownKey::ExternalSubs, QString());
+}
+
+TEST(libdmr, onlineSub)
+{
+//    OnlineSubtitle::get().subtitlesDownloadComplete();
+//    OnlineSubtitle::get().downloadSubtitles();
+}
+
