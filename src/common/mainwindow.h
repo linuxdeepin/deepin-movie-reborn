@@ -170,6 +170,7 @@ public:
 
     void capturedMousePressEvent(QMouseEvent *me);
     void capturedMouseReleaseEvent(QMouseEvent *me);
+    void capturedKeyEvent(QKeyEvent *pEvent);
 
     void syncStaysOnTop();
     void updateGeometryNotification(const QSize &sz);

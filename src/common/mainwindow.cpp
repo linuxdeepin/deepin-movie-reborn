@@ -151,14 +151,12 @@ static QString ElideText(const QString &text, const QSize &size,
         }
 
         line.setLineWidth(size.width());
-
         const QString &tmp_str = text.mid(line.textStart(), line.textLength());
 
         if (tmp_str.indexOf('\n'))
             height += lineHeight;
 
         str += tmp_str;
-
         line = textLayout.createLine();
 
         if (line.isValid())
@@ -452,6 +450,14 @@ protected:
 
         switch (static_cast<int>(event->type()))
         {
+        case QEvent::MouseMove+1: { //响应tab按钮
+            QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
+            if (keyEvent->key() == Qt::Key_Tab) {
+                auto mw = static_cast<MainWindow *>(parent());
+                mw->capturedKeyEvent(keyEvent);
+            }
+            break;
+        }
         case QEvent::MouseButtonPress: {
             if (!enabled) return false;
             QMouseEvent *e = static_cast<QMouseEvent *>(event);
@@ -697,7 +703,6 @@ MainWindow::MainWindow(QWidget *parent)
     }
 
     _toolbox = new ToolboxProxy(this, _engine);
-    this->setFocusPolicy(Qt::StrongFocus);
     _toolbox->setObjectName(BOTTOM_TOOL_BOX);
 
     titlebar()->deleteLater();
@@ -954,10 +959,9 @@ MainWindow::MainWindow(QWidget *parent)
     _fullscreentimelable->setLayout(_fullscreentimebox);
     _fullscreentimelable->close();
 #endif
-    if(CompositingManager::get().composited()) {//MPV OPengL渲染方式，需指定父窗口
+    if (CompositingManager::get().composited()) { //MPV OPengL渲染方式，需指定父窗口
         _animationlable = new AnimationLabel(this, this, true);
-    }
-    else {//MPV绑定wid方式，父窗口为NULL
+    } else { //MPV绑定wid方式，父窗口为NULL
         _animationlable = new AnimationLabel(NULL, this, false);
     }
     _animationlable->setAttribute(Qt::WA_TranslucentBackground);
@@ -1101,7 +1105,7 @@ bool MainWindow::event(QEvent *ev)
         auto wse = dynamic_cast<QWindowStateChangeEvent *>(ev);
         _lastWindowState = wse->oldState();
         qInfo() << "------------ _lastWindowState" << _lastWindowState
-                 << "current " << windowState();
+                << "current " << windowState();
         //NOTE: windowStateChanged won't be emitted if by draggint to restore. so we need to
         //check window state here.
         if (windowState() & Qt::WindowMinimized) {   //fix bug 53683
@@ -3050,6 +3054,7 @@ void MainWindow::suspendToolsWindow()
 
         _titlebar->hide();
         _toolbox->hide();
+        _toolbox->setFocus();
     } else {
         if (_autoHideTimer.isActive())
             return;
@@ -3748,8 +3753,7 @@ void MainWindow::resizeEvent(QResizeEvent *ev)
 //    }
     m_pMovieWidget->resize(rect().size());
     m_pMovieWidget->move(0, 0);
-    if(!CompositingManager::get().composited())
-    {
+    if (!CompositingManager::get().composited()) {
         _animationlable->move(0, 0);
     }
 }
@@ -3896,6 +3900,17 @@ void MainWindow::capturedMouseReleaseEvent(QMouseEvent *me)
     ** add by xiepengfei
     ********/
     //my_setStayOnTop(this, false);
+}
+
+void MainWindow::capturedKeyEvent(QKeyEvent *pEvent)
+{
+    if (pEvent->key() == Qt::Key_Tab) {
+        if (!isFullScreen()) {
+            _titlebar->show();
+        }
+        _toolbox->show();
+        _autoHideTimer.start(AUTOHIDE_TIMEOUT);  //如果点击tab键，重置计时器
+    }
 }
 
 static bool _afterDblClick = false;
@@ -4048,8 +4063,7 @@ void MainWindow::delayedMouseReleaseHandler()
 
 void MainWindow::mouseMoveEvent(QMouseEvent *ev)
 {
-    if(!CompositingManager::get().composited())
-    {
+    if (!CompositingManager::get().composited()) {
         _animationlable->hide();
     }
     QPoint ptCurr = mapToGlobal(ev->pos());
