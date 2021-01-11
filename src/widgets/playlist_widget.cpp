@@ -123,8 +123,7 @@ protected:
         default:
             break;
         }
-        // standard event processing
-        return QObject::eventFilter(obj, event);
+        return QObject::eventFilter(obj, event); // standard event processing
     }
 };
 
@@ -235,7 +234,6 @@ public:
         connect(_closeBtn, &DFloatingButton::clicked, this, &PlayItemWidget::closeButtonClicked);
         //connect(_closeBtn, &FloatingButton::clicked, this, &PlayItemWidget::closeButtonClicked);
         //connect(_closeBtn, &FloatingButton::mouseHover, this, &PlayItemWidget::closeBtnStates);
-
 
         setToolTip(_pif.mi.title);
         auto th = new PlayItemTooltipHandler(this);
@@ -705,7 +703,7 @@ protected:
         } else if (event->type() == QEvent::MouseButtonDblClick) {
             m_bClicked = false;
             return QObject::eventFilter(obj, event);
-        } else if (event->type() == QEvent::KeyRelease) {
+        }/* else if (event->type() == QEvent::KeyRelease) { //这段代码会导致Enter播放列表后，播放列表关闭
             QKeyEvent *key = static_cast<QKeyEvent *>(event);
             if (key->key() == Qt::Key_Return || key->key() == Qt::Key_Enter) {
                 auto *plw = dynamic_cast<PlaylistWidget *>(parent());
@@ -723,7 +721,7 @@ protected:
                 }
             }
             return false;
-        } else {
+        }*/ else {
             // standard event processing
             return QObject::eventFilter(obj, event);
         }
@@ -802,6 +800,7 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     clearButton->setAccessibleName(CLEAR_PLAYLIST_BUTTON);
     clearButton->setIcon(QIcon::fromTheme("dcc_clearlist"));
     clearButton->setText(tr("Empty"));
+    clearButton->setFocusPolicy(Qt::TabFocus);
     DFontSizeManager::instance()->bind(clearButton, DFontSizeManager::T6);
 
     DPalette pa_cb = DApplicationHelper::instance()->palette(clearButton);
@@ -816,9 +815,9 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     clearButton->setPalette(pa_cb);
     clearButton->setContentsMargins(0, 0, 0, 0);
 
-    QObject::connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::paletteTypeChanged, clearButton, [ = ] () {
+    QObject::connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::paletteTypeChanged, clearButton, [ = ]() {
         DPalette pa_cBtn = DApplicationHelper::instance()->palette(clearButton);
-        if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ) {
+        if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
             pa_cBtn.setBrush(QPalette::Light, QColor(100, 100, 100, 255));
             pa_cBtn.setBrush(QPalette::Dark, QColor(92, 92, 92, 255));
         } else {
@@ -975,6 +974,8 @@ void PlaylistWidget::updateSelectItem(const int key)
         if (curItemWgt) {
             curItemWgt->setBIsSelect(true);
         }
+    } else if (key == Qt::Key_Enter || key == Qt::Key_Return) {
+        slotDoubleClickedItem(prevItemWgt); //Enter键播放
     }
 }
 
