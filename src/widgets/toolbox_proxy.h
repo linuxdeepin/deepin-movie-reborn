@@ -394,6 +394,7 @@ private:
     qint64 oldElapsed = 0;
     QTimer _progressTimer;
     int m_initVolume = -1;
+    bool m_bCanPlay = false; //判断是否能进行曲目切换的标志位
 };
 class viewProgBarLoad: public QThread
 {

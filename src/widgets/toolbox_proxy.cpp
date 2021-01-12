@@ -1332,10 +1332,9 @@ private:
                 m_pBtnChangeMute->setIcon(QIcon::fromTheme("dcc_volume"));
             else if (m_slider->value() >= 33)
                 m_pBtnChangeMute->setIcon(QIcon::fromTheme("dcc_volumemid"));
-            else if (m_slider->value() == 0){
+            else if (m_slider->value() == 0) {
                 m_pBtnChangeMute->setIcon(QIcon::fromTheme("dcc_mute"));
-            }
-            else
+            } else
                 m_pBtnChangeMute->setIcon(QIcon::fromTheme("dcc_volumelow"));
         }
     }
@@ -2460,8 +2459,7 @@ void ToolboxProxy::updateButtonStates()
     qInfo() << _engine->playingMovieInfo().subs.size();
     bool vis = _engine->playlist().count() > 1 && _mainWindow->inited();
 
-    _prevBtn->setDisabled(!vis);
-    _nextBtn->setDisabled(!vis);
+    m_bCanPlay = vis;  //防止连续切换上下曲目
 }
 
 void ToolboxProxy::updateVolumeState()
@@ -2719,9 +2717,9 @@ void ToolboxProxy::buttonClicked(QString id)
         _mainWindow->requestAction(ActionFactory::ActionKind::ToggleFullscreen);
     } else if (id == "vol") {
         _mainWindow->requestAction(ActionFactory::ActionKind::ToggleMute);
-    } else if (id == "prev") {
+    } else if (id == "prev" && m_bCanPlay) {  //如果影片未加载完成，则不播放上一曲
         _mainWindow->requestAction(ActionFactory::ActionKind::GotoPlaylistPrev);
-    } else if (id == "next") {
+    } else if (id == "next" && m_bCanPlay) {
         _mainWindow->requestAction(ActionFactory::ActionKind::GotoPlaylistNext);
     } else if (id == "list") {
         _mainWindow->requestAction(ActionFactory::ActionKind::TogglePlaylist);
