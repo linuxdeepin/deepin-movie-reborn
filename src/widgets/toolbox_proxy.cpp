@@ -52,6 +52,7 @@
 #include <DSlider>
 #include <DUtil>
 #include <QDBusInterface>
+#include <DToolButton>
 #include <dthememanager.h>
 #include <iostream>
 #include "../accessibility/ac-deepin-movie-define.h"
@@ -137,14 +138,14 @@ DWIDGET_USE_NAMESPACE
 
 namespace dmr {
 
-class ImageButton: public QPushButton
+///temporarily unused class
+/*class ImageButton: public QPushButton
 {
     Q_OBJECT
 public:
     explicit ImageButton(QWidget *parent = nullptr)
         : QPushButton(parent)
     {
-
     }
 
     void setImage(QString strUrl)
@@ -165,7 +166,7 @@ protected:
 
 private:
     QString m_strImageUrl;
-};
+};*/
 
 class KeyPressBubbler: public QObject
 {
@@ -1034,34 +1035,45 @@ public:
 #else
         if (CompositingManager::get().isSpecialControls()) {
             setAttribute(Qt::WA_NativeWindow);
-            //            setWindowFlags(Qt::WindowStaysOnTopHint);
         }
 #endif
-        setShadowBlurRadius(4);
+        /*setShadowBlurRadius(4);
         setRadius(18);
         setShadowYOffset(0);
         setShadowXOffset(0);
         setArrowWidth(20);
-        setArrowHeight(15);
+        setArrowHeight(15);*/
         hide();
 
-        auto *l = new QVBoxLayout(this);
-        l->setContentsMargins(0, 10, 0, 5);
-        l->setSpacing(0);
+        setFixedSize(62, 201);  //volSlider's width and height
+        QVBoxLayout *vLayout = new QVBoxLayout(this);
+        vLayout->setContentsMargins(2, 16, 2, 14);  //内边距，与UI沟通确定
+        vLayout->setSpacing(0);
+        setLayout(vLayout);
 
-        setLayout(l);
+        QFont font;
+        font.setFamily("SourceHanSansSC");
+        font.setPixelSize(14);
+        font.setWeight(QFont::Medium);
 
-        _slider = new DSlider(Qt::Vertical, this);
-        _slider->setFixedWidth(24);
-        _slider->setIconSize(QSize(12, 12));
-        _slider->installEventFilter(this);
-        _slider->show();
-        _slider->slider()->setRange(0, 100);
-        _slider->setObjectName(VOLUME_SLIDER);
-        _slider->slider()->setObjectName(SLIDER);
-        _slider->slider()->setAccessibleName(SLIDER);
-        _slider->slider()->setMinimumHeight(132);
-        _slider->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred));
+        vLayout->addStretch();
+        m_pLabShowVolume = new QLabel(_mw);
+        m_pLabShowVolume->setFont(font);
+        m_pLabShowVolume->setAlignment(Qt::AlignCenter);
+        m_pLabShowVolume->setText("0%");
+        vLayout->addWidget(m_pLabShowVolume, 0, Qt::AlignCenter);
+
+        m_slider = new DSlider(Qt::Vertical, this);
+        m_slider->setFixedWidth(24);
+        m_slider->setIconSize(QSize(15, 15));
+        m_slider->installEventFilter(this);
+        m_slider->show();
+        m_slider->slider()->setRange(0, 100);
+        m_slider->setObjectName(VOLUME_SLIDER);
+        m_slider->slider()->setObjectName(SLIDER);
+        m_slider->slider()->setAccessibleName(SLIDER);
+        m_slider->slider()->setMinimumHeight(120);
+        m_slider->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred));
         //修改打开时音量条显示不正确
         int vol = 0;
         if (utils::check_wayland_env()) {
@@ -1069,54 +1081,44 @@ public:
         } else {
             vol = _engine->volume();
         }
-        _slider->setValue(vol);
+        m_slider->setValue(vol);
+        vLayout->addWidget(m_slider, 1, Qt::AlignCenter);
 
-        QFont font;
-        font.setFamily("SourceHanSansSC");
-        font.setPixelSize(14);
-        font.setWeight(500);
-        m_pLabShowVolume = new QLabel(this);
-        m_pLabShowVolume->setFont(font);
-        m_pLabShowVolume->setAlignment(Qt::AlignCenter);
-        m_pLabShowVolume->setText("0%");
-        l->addWidget(m_pLabShowVolume, 0, Qt::AlignCenter);
-
-        l->addWidget(_slider, 1, Qt::AlignCenter);
-
-        m_pBtnChangeMute = new ImageButton(this);
+        m_pBtnChangeMute = new DToolButton(this);
         m_pBtnChangeMute->setObjectName(MUTE_BTN);
         m_pBtnChangeMute->setAccessibleName(MUTE_BTN);
-        m_pBtnChangeMute->setFixedWidth(36);
-        m_sThemeType = DGuiApplicationHelper::instance()->themeType();
-        setVolumeIcon(m_sThemeType);
+        m_pBtnChangeMute->setToolButtonStyle(Qt::ToolButtonIconOnly);
+        //m_pBtnChangeMute->installEventFilter(this);
+        //同时设置按钮与图标的尺寸，改变其默认比例
+        m_pBtnChangeMute->setFixedSize(30, 30);
+        m_pBtnChangeMute->setIconSize(QSize(30, 30));
+        flushVolumeIcon();
         m_pBtnChangeMute->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred));
-        connect(m_pBtnChangeMute, SIGNAL(clicked()), this, SLOT(changeSate()));
+        vLayout->addStretch(10);
+        vLayout->addWidget(m_pBtnChangeMute, 0, Qt::AlignHCenter);
+        vLayout->addStretch();
 
-        l->addWidget(m_pBtnChangeMute, 0, Qt::AlignHCenter);
-//        m_pBtnChangeMute->hide();
-        connect(_slider, &DSlider::valueChanged, this, &VolumeSlider::slotValueChanged);
-        _autoHideTimer.setSingleShot(true);
+        connect(m_slider, &DSlider::valueChanged, this, &VolumeSlider::slotSliderValueChanged);
+        connect(m_pBtnChangeMute, SIGNAL(clicked()), this, SLOT(changeSate()));
+        connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged,
+                this, &VolumeSlider::setThemeType);
+
+        m_autoHideTimer.setSingleShot(true);
 #ifdef __x86_64__
-        connect(&_autoHideTimer, &QTimer::timeout, this, &VolumeSlider::popup);
+        connect(&m_autoHideTimer, &QTimer::timeout, this, &VolumeSlider::popup);
 #else
         if (utils::check_wayland_env()) {
-            connect(&_autoHideTimer, &QTimer::timeout, this, &VolumeSlider::hide);
+            connect(&m_autoHideTimer, &QTimer::timeout, this, &VolumeSlider::hide);
         }
 #endif
     }
-
-    ~VolumeSlider()
-    {
-//        disconnect(DThemeManager::instance(), &DThemeManager::themeChanged,
-//                this, &VolumeSlider::updateBg);
-    }
     void stopTimer()
     {
-        _autoHideTimer.stop();
+        m_autoHideTimer.stop();
     }
     int value()
     {
-        return _slider->value();
+        return m_slider->value();
     }
     void setMute(bool bMute)
     {
@@ -1124,9 +1126,55 @@ public:
             return;
         }
         m_bIsMute = bMute;
+        flushVolumeIcon();
+    }
+    void initBgImage()
+    {
+        QPainter painter;
+        QColor bgColor = this->palette().background().color();
+        const qreal radius = 20;
+        const qreal triHeight = 30;
+        const qreal height = this->height() - triHeight;
+        const qreal width = this->width();
 
-        setVolumeIcon(DGuiApplicationHelper::instance()->themeType());
-        m_pBtnChangeMute->repaint();
+        m_bgImage = QPixmap(this->size());
+        m_bgImage.fill(QColor(0, 0, 0, 0));
+        painter.begin(&m_bgImage);
+        painter.setRenderHints(QPainter::Antialiasing | QPainter::HighQualityAntialiasing);
+
+        // 背景上矩形，半边
+        QPainterPath pathRect;
+        pathRect.moveTo(radius, 0);
+        pathRect.lineTo(width / 2, 0);
+        pathRect.lineTo(width / 2, height);
+        pathRect.lineTo(0, height);
+        pathRect.lineTo(0, radius);
+        pathRect.arcTo(QRectF(QPointF(0, 0), QPointF(2 * radius, 2 * radius)), 180.0, -90.0);
+
+        // 背景下三角，半边
+        qreal radius1 = radius / 2;
+        QPainterPath pathTriangle;
+        pathTriangle.moveTo(0, height - radius1);
+        pathTriangle.arcTo(QRectF(QPointF(0, height - radius1), QSizeF(2 * radius1, 2 * radius1)), 180, 60);
+        pathTriangle.lineTo(width / 2, this->height());
+        qreal radius2 = radius / 4;
+        pathTriangle.arcTo(QRectF(QPointF(width / 2 - radius2, this->height() - radius2 * 2 - 2), QSizeF(2 * radius2, 2 * radius2)), 220, 100);
+        pathTriangle.lineTo(width / 2, height);
+
+        // 正向绘制
+        painter.fillPath(pathRect, bgColor);
+        painter.fillPath(pathTriangle, bgColor);
+
+        // 平移坐标系
+        painter.translate(width, 0);
+        // 坐标系X反转
+        painter.scale(-1, 1);
+
+        // 反向绘制
+        painter.fillPath(pathRect, bgColor);
+        painter.fillPath(pathTriangle, bgColor);
+
+        painter.end();
     }
 
 public slots:
@@ -1137,7 +1185,6 @@ public slots:
         m_point = point + QPoint(view_rect.width() - (TOOLBOX_BUTTON_WIDTH * 2 + 30 + (VOLSLIDER_WIDTH - TOOLBOX_BUTTON_WIDTH) / 2),
                                  view_rect.height() - TOOLBOX_HEIGHT - VOLSLIDER_HEIGHT);
     }
-
     void popup()
     {
         QRect main_rect = _mw->rect();
@@ -1155,7 +1202,6 @@ public slots:
 
         start.setWidth(start.width() + 16);
         start.setHeight(start.height() + 14);
-
         media.setWidth(media.width() - 10);
         media.setHeight(media.height() - 10);
 #ifdef __x86_64__
@@ -1195,13 +1241,13 @@ public slots:
     }
     void slotVolumeChanged()
     {
-        setVolumeIcon(DGuiApplicationHelper::instance()->themeType());
+        flushVolumeIcon();
     }
     void delayedHide()
     {
 #ifdef __x86_64__
         if (!isHidden())
-            _autoHideTimer.start(500);
+            m_autoHideTimer.start(500);
 #else
         m_mouseIn = false;
         DUtil::TimerSingleShot(100, [this]() {
@@ -1212,36 +1258,38 @@ public slots:
     }
     void setValue(int v)
     {
-        _slider->setValue(v);
-        m_pLabShowVolume->setText(QString("%1%").arg(v * 1.0 / _slider->maximum() * 100));
+        m_slider->setValue(v);
+        m_pLabShowVolume->setText(QString("%1%").arg(v * 1.0 / m_slider->maximum() * 100));
     }
     void changeSate()
     {
         _mw->requestAction(ActionFactory::ToggleMute);
     }
-    void slotValueChanged()
+    void slotSliderValueChanged()
     {
         if (m_bIsMute) {
             changeSate();
         }
-        auto var = _slider->value();
-        m_pLabShowVolume->setText(QString("%1%").arg(var * 1.0 / _slider->maximum() * 100));
+        auto var = m_slider->value();
+        m_pLabShowVolume->setText(QString("%1%").arg(var * 1.0 / m_slider->maximum() * 100));
         _mw->requestAction(ActionFactory::ChangeVolume, false, QList<QVariant>() << var);
     }
     bool getsliderstate()
     {
         return m_bFinished;
     }
-    void setThemeSlot(int type)
+    void setThemeType(int type)
     {
-        setVolumeIcon(type);
+        Q_UNUSED(type)
+
+        initBgImage();
     }
 
 protected:
     void enterEvent(QEvent *e)
     {
 #ifdef __x86_64__
-        _autoHideTimer.stop();
+        m_autoHideTimer.stop();
 #else
         m_mouseIn = true;
         QWidget::leaveEvent(e);
@@ -1250,16 +1298,18 @@ protected:
     void showEvent(QShowEvent *se)
     {
 #ifdef __x86_64__
-        _autoHideTimer.stop();
+        m_autoHideTimer.stop();
 #else
         //m_mouseIn = true;   //fix bug 49617
         QWidget::showEvent(se);
 #endif
+        initBgImage();
+        QWidget::showEvent(se);
     }
     void leaveEvent(QEvent *e)
     {
 #ifdef __x86_64__
-        _autoHideTimer.start(500);
+        m_autoHideTimer.start(500);
 #else
         m_mouseIn = false;
         delayedHide();
@@ -1269,100 +1319,24 @@ protected:
     void paintEvent(QPaintEvent *)
     {
         QPainter painter(this);
-        painter.setRenderHints(QPainter::Antialiasing | QPainter::HighQualityAntialiasing);
-        QPainterPath path;
-        path.setFillRule(Qt::WindingFill);
-
-        QPalette palette = this->palette();
-
-//        float penWidthf = 1.0;
-        QBrush background =  palette.background();
-        QColor borderColor = m_borderColor;
-
-        const qreal radius = m_radius;
-        const qreal triHeight = 12;
-//        const qreal triWidth = 16;
-        const qreal height = this->height();
-        const qreal width = this->width();
-
-        QRectF topLeftRect(QPointF(0, 0),
-                           QSizeF(2 * radius, 2 * radius));
-        QRectF bottomLeftRect(QPointF(0, height - 2 * radius - triHeight),
-                              QSizeF(2 * radius, 2 * radius));
-        QRectF bottomRightRect(QPointF(width - 2 * radius, height - 2 * radius - triHeight),
-                               QSizeF(2 * radius, 2 * radius));
-        QRectF topRightRect(QPointF(width - 2 * radius, 0),
-                            QSizeF(2 * radius, 2 * radius));
-
-
-        path.moveTo(width, height - radius - triHeight);
-        path.lineTo(width,  radius);
-        path.arcTo(topRightRect, 0.0, 90.0);
-        path.lineTo(radius,  0.0);
-        path.arcTo(topLeftRect, 90.0, 90.0);
-        path.lineTo(0, height - radius - triHeight);    //0,173
-        path.arcTo(bottomLeftRect, 180.0, 30.0);
-        path.lineTo(width / 2, height);
-
-        path.lineTo(width, height - radius - triHeight);
-        path.arcTo(bottomRightRect, 0.0, -30.0);
-//        path.arcTo(width - 2 * radius, height - triHeight -2 * radius, 2 * radius, 2 * radius, 0.0, -30);
-        path.lineTo(width / 2, height);
-        path.lineTo(width, height - radius - triHeight);
-
-        /*
-        FIXME: light: white
-        painter.fillPath(path, QColor(49, 49, 49));
-        FIXME: light: QColor(0, 0, 0, 51)
-        QPen pen(QColor(0, 0, 0, 0.1 * 255));
-        */
-
-        QPen pen(QColor(43, 43, 43));
-        pen.setWidthF(1.0);
-        if (m_sThemeType == DGuiApplicationHelper::DarkType) {
-            painter.setPen(pen);
-            painter.setBrush(QBrush(QColor(43, 43, 43)));
-            painter.drawPath(path);
-//            painter.fillPath(path, QColor(43, 43, 43));
-        } else {
-            pen.setColor(background.color());
-            painter.setPen(pen);
-            painter.setBrush(background);
-            painter.drawPath(path);
-//            painter.fillPath(path, background);
-        }
-
-//        QPen pen(borderColor);
-//        pen.setWidth(penWidthf);
-        //painter.strokePath(path, pen);
+        painter.drawPixmap(0, 0, m_bgImage);
     }
 
 private:
-    void setVolumeIcon(int type)
+    void flushVolumeIcon()
     {
-        m_sThemeType = type;
-        if (m_sThemeType == DGuiApplicationHelper::DarkType) {
-            if (m_bIsMute) {
-                m_pBtnChangeMute->setImage(":/icons/deepin/builtin/light/actions/mute_checked.svg");
-            } else {
-                if (_slider->value() >= 66)
-                    m_pBtnChangeMute->setImage(":/resources/icons/dark/normal/volume_normal.svg");
-                else if (_slider->value() >= 33)
-                    m_pBtnChangeMute->setImage(":/resources/icons/dark/normal/volume_mid_normal.svg");
-                else
-                    m_pBtnChangeMute->setImage(":/resources/icons/dark/normal/volume_low_normal.svg");
-            }
+        if (m_bIsMute) {
+            m_pBtnChangeMute->setIcon(QIcon::fromTheme("dcc_mute"));
         } else {
-            if (m_bIsMute) {
-                m_pBtnChangeMute->setImage(":/icons/deepin/builtin/dark/texts/dcc_mute_36px.svg");
-            } else {
-                if (_slider->value() >= 66)
-                    m_pBtnChangeMute->setImage(":/icons/deepin/builtin/dark/texts/dcc_volume_36px.svg");
-                else if (_slider->value() >= 33)
-                    m_pBtnChangeMute->setImage(":/icons/deepin/builtin/dark/texts/dcc_volumemid_36px.svg");
-                else
-                    m_pBtnChangeMute->setImage(":/icons/deepin/builtin/dark/texts/dcc_volumelow_36px.svg");
+            if (m_slider->value() >= 66)
+                m_pBtnChangeMute->setIcon(QIcon::fromTheme("dcc_volume"));
+            else if (m_slider->value() >= 33)
+                m_pBtnChangeMute->setIcon(QIcon::fromTheme("dcc_volumemid"));
+            else if (m_slider->value() == 0){
+                m_pBtnChangeMute->setIcon(QIcon::fromTheme("dcc_mute"));
             }
+            else
+                m_pBtnChangeMute->setIcon(QIcon::fromTheme("dcc_volumelow"));
         }
     }
 
@@ -1373,7 +1347,7 @@ private slots:
             QWheelEvent *we = static_cast<QWheelEvent *>(e);
             qInfo() << we->angleDelta() << we->modifiers() << we->buttons();
             if (we->buttons() == Qt::NoButton && we->modifiers() == Qt::NoModifier) {
-                if (_slider->value() == _slider->maximum() && we->angleDelta().y() > 0) {
+                if (m_slider->value() == m_slider->maximum() && we->angleDelta().y() > 0) {
                     //keep increasing volume
                     _mw->requestAction(ActionFactory::VolumeUp);
                 } else {
@@ -1387,26 +1361,24 @@ private slots:
     }
 
 private:
-    ImageButton *m_pBtnChangeMute {nullptr};
+    DToolButton *m_pBtnChangeMute {nullptr};
     QLabel *m_pLabShowVolume {nullptr};
     PlayerEngine *_engine;
-    DSlider *_slider;
+    DSlider *m_slider;
     MainWindow *_mw;
-    QTimer _autoHideTimer;
-//    bool m_composited = false;
+    QTimer m_autoHideTimer;
     bool m_mouseIn = false;
     bool m_bIsMute {false};
     bool m_bFinished {false};
     QPropertyAnimation *pVolAnimation {nullptr};
-//    QPropertyAnimation *pVolAnimTran {nullptr};
-//    QParallelAnimationGroup *m_anima {nullptr};
     State state {Close};
-
-    QColor m_borderColor = QColor(0, 0, 0,  255 * 2 / 10);
-    int m_radius = 20;
-    int m_sThemeType = 0;
+    //QColor m_borderColor = QColor(0, 0, 0,  255 * 2 / 10);
+    //int m_radius = 20;
+    //int m_sThemeType = 0;
     QPoint m_point {0, 0};
+    QPixmap m_bgImage;
 };
+
 
 viewProgBarLoad::viewProgBarLoad(PlayerEngine *engine, DMRSlider *progBar, ToolboxProxy *parent)
 {
@@ -1615,9 +1587,6 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
             this, &ToolboxProxy::updatePlayState);
     connect(DApplicationHelper::instance(), &DApplicationHelper::themeTypeChanged,
             this, &ToolboxProxy::updateplaylisticon);
-    connect(DApplicationHelper::instance(), &DApplicationHelper::themeTypeChanged,
-            _volSlider, &VolumeSlider::setThemeSlot);
-
 
     QFileInfo fi("/dev/mwv206_0");              //景嘉微显卡
     if (utils::check_wayland_env() && fi.exists()) {
