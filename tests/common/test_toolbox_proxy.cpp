@@ -27,6 +27,7 @@ using namespace dmr;
 
     btn->deleteLater();
 }*/
+
 TEST(ToolBox, buttonTooltip)
 {
     MainWindow* w = dApp->getMainWindow();
@@ -39,6 +40,7 @@ TEST(ToolBox, buttonTooltip)
 
     tip->deleteLater();
 }
+
 TEST(ToolBox, notificationWidget)
 {
     MainWindow* w = dApp->getMainWindow();
@@ -52,6 +54,7 @@ TEST(ToolBox, notificationWidget)
     nwBottom->syncPosition(w->geometry());
     nwNone->syncPosition(w->geometry());
 }
+
 TEST(ToolBox, tip)
 {
     MainWindow* w = dApp->getMainWindow();

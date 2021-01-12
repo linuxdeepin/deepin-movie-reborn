@@ -179,25 +179,6 @@ TEST(requestAction,openFiles)
     QTest::qWait(100);
 }
 
-/*TEST(requestAction,openDirectory)
-{
-    MainWindow *w = dApp->getMainWindow();
-
-    QTest::qWait(300);
-    w->requestAction(ActionFactory::ActionKind::OpenDirectory);
-    QTest::qWait(300);
-    EXPECT_TRUE(false);
-}
-
-TEST(requestAction, playlistOpenItemInFM)
-{
-    MainWindow* w = dApp->getMainWindow();
-
-    QTest::qWait(100);
-    w->requestAction(ActionFactory::ActionKind::PlaylistOpenItemInFM);
-    utils::ShowInFileManager(QString("/usr/share/music/bensound-sunny.mp3"));
-}
-*/
 TEST(requestAction, settings)
 {
     MainWindow* w = dApp->getMainWindow();
@@ -220,18 +201,3 @@ TEST(requestAction,openCdrom)
     EXPECT_TRUE(true);
 }
 
-/*TEST(requestAction, playlistRemoveItem)
-{
-    MainWindow* w = dApp->getMainWindow();
-
-    QTest::qWait(300);
-    w->requestAction(ActionFactory::ActionKind::PlaylistRemoveItem);
-}*/
-
-//TEST(requestAction, exit)
-//{
-//    MainWindow* w = dApp->getMainWindow();
-
-//    QTest::qWait(300);
-//    w->requestAction(ActionFactory::ActionKind::Exit);
-//}

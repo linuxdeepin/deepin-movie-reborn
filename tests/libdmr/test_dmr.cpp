@@ -53,6 +53,8 @@ TEST(libdmr, utils)
     utils::Time2str(90000);
     utils::ValidateScreenshotPath(QString("/data/source/deepin-movie-reborn"));
     utils::ValidateScreenshotPath(QString("~/uos"));
+    utils::MakeRoundedPixmap(QPixmap("/data/source/deepin-movie-reborn/test.jpg"), 10, 10);
+    utils::MakeRoundedPixmap(QSize(20, 30), QPixmap("/data/source/deepin-movie-reborn/test.jpg"), 10, 10, 20);
 }
 
 TEST(libdmr, compositingManager)

@@ -5,6 +5,7 @@
 #include <QTimer>
 #include "application.h"
 #include <unistd.h>
+#define private public
 #include "src/vendor/mpris-qt/mpris.h"
 #include "src/vendor/mpris-qt/mprisplayer.h"
 #include "src/vendor/mpris-qt/mprisplayer_p.h"
@@ -73,6 +74,7 @@ TEST(Mpris, MprisManager)
     MprisManager *mManager = new MprisManager();
     QUrl url(QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/demo.mp4"));
 
+    //public
     bool singleService = mManager->singleService();
     mManager->setSingleService(true);
 
@@ -105,6 +107,15 @@ TEST(Mpris, MprisManager)
         mManager->pause();
     }
 
+    qlonglong position = mManager->position();
+    mManager->requestPosition();
+    Mpris::PlaybackStatus playbackStatus = mManager->playbackStatus();
+    QVariantMap metadata = mManager->metadata();
+    QString identity = mManager->identity();
+    bool isShuffle = mManager->shuffle();
+    double volume = mManager->volume();
+    QStringList supportedUriSchemes = mManager->supportedUriSchemes();
+    QStringList supportedMimeTypes = mManager->supportedMimeTypes();
     double rate = mManager->rate();
     mManager->setRate(1.5);
     mManager->seek(200);
@@ -204,7 +215,7 @@ TEST(Mpris, MprisPlayer)
     volume = obj_mp_adaptor->property("Volume").toDouble();
     obj_mp_adaptor->setProperty("Volume", 50);
 
-//    mpAdaptor->OpenUri("/usr/share/dde-introduction/demo.mp4");
+    mpAdaptor->OpenUri("/usr/share/dde-introduction/demo.mp4");
 //    mpAdaptor->Play();
 //    QTest::qWait(100);
 //    mpAdaptor->Pause();
@@ -213,6 +224,20 @@ TEST(Mpris, MprisPlayer)
 //    mpAdaptor->Previous();
 //    mpAdaptor->Seek(235);
 //    mpAdaptor->Stop();
+    QTest::qWait(100);
+    mpAdaptor->onCanControlChanged();
+    mpAdaptor->onCanGoNextChanged();
+    mpAdaptor->onCanGoPreviousChanged();
+    mpAdaptor->onCanPauseChanged();
+    mpAdaptor->onCanPlayChanged();
+    mpAdaptor->onCanSeekChanged();
+    mpAdaptor->onLoopStatusChanged();
+    mpAdaptor->onMaximumRateChanged();
+    mpAdaptor->onMetadataChanged();
+    mpAdaptor->onMinimumRateChanged();
+    mpAdaptor->onPlaybackStatusChanged();
+    mpAdaptor->onRateChanged();
+    mpAdaptor->onShuffleChanged();
 
 
     ///////
@@ -226,9 +251,11 @@ TEST(Mpris, MprisPlayer)
     identity = obj_mr_adaptor->property("Identity").toString();
 
 
-//    delete mprisPlayer;
+    QTest::qWait(200);
+    delete mprisPlayer;
 //    delete mrAdaptor;
 }
+
 TEST(Mpris, MprisController)
 {
     MprisController *controller;
