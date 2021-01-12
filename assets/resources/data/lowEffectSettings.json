@@ -181,7 +181,7 @@
                             "key": "fullscreen",
                             "name": "Fullscreen",
                             "type": "shortcut",
-                            "default": "Return"
+                            "default": "Alt+Return"
                         },
                         {
                             "key": "exitfullscreen",
@@ -223,7 +223,7 @@
                             "key": "movie_info",
                             "name": "Film info",
                             "type": "shortcut",
-                            "default": "Alt+Return"
+                            "default": "Ctrl+I"
                         }
                     ]
                 },
