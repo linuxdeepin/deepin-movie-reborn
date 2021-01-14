@@ -795,15 +795,15 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     leftinfo->addWidget(_num);
     leftinfo->addSpacing(6);
 
-    DPushButton *clearButton = new DPushButton();
-    clearButton->setObjectName(CLEAR_PLAYLIST_BUTTON);
-    clearButton->setAccessibleName(CLEAR_PLAYLIST_BUTTON);
-    clearButton->setIcon(QIcon::fromTheme("dcc_clearlist"));
-    clearButton->setText(tr("Empty"));
-    clearButton->setFocusPolicy(Qt::TabFocus);
-    DFontSizeManager::instance()->bind(clearButton, DFontSizeManager::T6);
+    m_pClearButton = new DPushButton();
+    m_pClearButton->setObjectName(CLEAR_PLAYLIST_BUTTON);
+    m_pClearButton->setAccessibleName(CLEAR_PLAYLIST_BUTTON);
+    m_pClearButton->setIcon(QIcon::fromTheme("dcc_clearlist"));
+    m_pClearButton->setText(tr("Empty"));
+    m_pClearButton->setFocusPolicy(Qt::TabFocus);
+    DFontSizeManager::instance()->bind(m_pClearButton, DFontSizeManager::T6);
 
-    DPalette pa_cb = DApplicationHelper::instance()->palette(clearButton);
+    DPalette pa_cb = DApplicationHelper::instance()->palette(m_pClearButton);
     if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
         pa_cb.setBrush(QPalette::Light, QColor(100, 100, 100, 255));
         pa_cb.setBrush(QPalette::Dark, QColor(92, 92, 92, 255));
@@ -812,11 +812,11 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
         pa_cb.setBrush(QPalette::Dark, QColor(65, 65, 65, 255));
     }
     pa_cb.setBrush(QPalette::ButtonText, QColor(255, 255, 255, 255));
-    clearButton->setPalette(pa_cb);
-    clearButton->setContentsMargins(0, 0, 0, 0);
+    m_pClearButton->setPalette(pa_cb);
+    m_pClearButton->setContentsMargins(0, 0, 0, 0);
 
-    QObject::connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::paletteTypeChanged, clearButton, [ = ]() {
-        DPalette pa_cBtn = DApplicationHelper::instance()->palette(clearButton);
+    QObject::connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::paletteTypeChanged, m_pClearButton, [ = ]() {
+        DPalette pa_cBtn = DApplicationHelper::instance()->palette(m_pClearButton);
         if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
             pa_cBtn.setBrush(QPalette::Light, QColor(100, 100, 100, 255));
             pa_cBtn.setBrush(QPalette::Dark, QColor(92, 92, 92, 255));
@@ -824,15 +824,15 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
             pa_cBtn.setBrush(QPalette::Light, QColor(85, 84, 84, 255));
             pa_cBtn.setBrush(QPalette::Dark, QColor(65, 65, 65, 255));
         }
-        clearButton->setPalette(pa_cb);
+        m_pClearButton->setPalette(pa_cb);
     });
 
-    leftinfo->addWidget(clearButton);
-    connect(clearButton, &QPushButton::clicked, _engine, &PlayerEngine::clearPlaylist);
+    leftinfo->addWidget(m_pClearButton);
+    connect(m_pClearButton, &QPushButton::clicked, _engine, &PlayerEngine::clearPlaylist);
 
     left->setContentsMargins(36, 0, 0, 0);
 //    _title->setContentsMargins(0, 0, 0, 0);
-    clearButton->setContentsMargins(0, 0, 0, 70);
+    m_pClearButton->setContentsMargins(0, 0, 0, 70);
     _num->setContentsMargins(0, 0, 0, 0);
 
     ///未使用代码///
@@ -975,7 +975,11 @@ void PlaylistWidget::updateSelectItem(const int key)
             curItemWgt->setBIsSelect(true);
         }
     } else if (key == Qt::Key_Enter || key == Qt::Key_Return) {
-        slotDoubleClickedItem(prevItemWgt); //Enter键播放
+        if (m_pClearButton == focusWidget()) {   //focus在清空按钮上则清空列表
+            _engine->clearPlaylist();
+        } else {
+            slotDoubleClickedItem(prevItemWgt);  //Enter键播放
+        }
     }
 }
 
