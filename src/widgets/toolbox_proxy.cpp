@@ -1045,7 +1045,7 @@ public:
         setArrowHeight(15);*/
         hide();
 
-        setFixedSize(62, 201);  //volSlider's width and height
+        setFixedSize(VOLSLIDER_WIDTH, VOLSLIDER_HEIGHT);
         QVBoxLayout *vLayout = new QVBoxLayout(this);
         vLayout->setContentsMargins(2, 16, 2, 14);  //内边距，与UI沟通确定
         vLayout->setSpacing(0);
@@ -1057,7 +1057,8 @@ public:
         font.setWeight(QFont::Medium);
 
         vLayout->addStretch();
-        m_pLabShowVolume = new QLabel(_mw);
+        m_pLabShowVolume = new DLabel(_mw);
+        m_pLabShowVolume->setForegroundRole(QPalette::BrightText);
         m_pLabShowVolume->setFont(font);
         m_pLabShowVolume->setAlignment(Qt::AlignCenter);
         m_pLabShowVolume->setText("0%");
@@ -1361,7 +1362,7 @@ private slots:
 
 private:
     DToolButton *m_pBtnChangeMute {nullptr};
-    QLabel *m_pLabShowVolume {nullptr};
+    DLabel *m_pLabShowVolume {nullptr};
     PlayerEngine *_engine;
     DSlider *m_slider;
     MainWindow *_mw;
