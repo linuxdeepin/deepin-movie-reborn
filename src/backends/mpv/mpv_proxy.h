@@ -236,6 +236,7 @@ public slots:
     void volumeDown() override;
     void changeVolume(int val) override;
     void toggleMute() override;
+    void setMute(bool bMute) override;
     //lambda表达式改为槽函数
     void slotStateChanged();
 

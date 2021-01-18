@@ -55,35 +55,39 @@ enum ThemeTYpe {
     defaultTheme
 };
 
-class ButtonBoxButton:public DButtonBoxButton {
+class ButtonBoxButton: public DButtonBoxButton
+{
     Q_OBJECT
 public:
     explicit ButtonBoxButton(const QString &text, QWidget *parent = nullptr)
-        :DButtonBoxButton(text, parent)
+        : DButtonBoxButton(text, parent)
     {};
 
 signals:
     void entered();
     void leaved();
 protected:
-    void enterEvent(QEvent *ev) override {
+    void enterEvent(QEvent *ev) override
+    {
         emit entered();
     };
-    void leaveEvent(QEvent *ev) override {
+    void leaveEvent(QEvent *ev) override
+    {
         emit leaved();
     };
 };
 
-class ButtonToolTip :public DArrowRectangle {
+class ButtonToolTip : public DArrowRectangle
+{
     Q_OBJECT
 public:
     explicit ButtonToolTip(QWidget *parent = nullptr)
-        :DArrowRectangle(DArrowRectangle::ArrowBottom, DArrowRectangle::FloatWidget,parent)
+        : DArrowRectangle(DArrowRectangle::ArrowBottom, DArrowRectangle::FloatWidget, parent)
     {
         setAttribute(Qt::WA_DeleteOnClose);
         setAttribute(Qt::WA_TranslucentBackground);
         resetSize();
-        connect(qApp, &QGuiApplication::fontChanged, this, [=] {
+        connect(qApp, &QGuiApplication::fontChanged, this, [ = ] {
             resetSize();
         });
         auto *bodyShadow = new QGraphicsDropShadowEffect;
@@ -95,15 +99,18 @@ public:
         setArrowHeight(1);
         hide();
     }
-    virtual ~ButtonToolTip(){};
-    void setText(const QString& strText) {
+    virtual ~ButtonToolTip() {};
+    void setText(const QString &strText)
+    {
         m_strText = strText;
     }
-    void changeTheme(ThemeTYpe themeType = defaultTheme) {
+    void changeTheme(ThemeTYpe themeType = defaultTheme)
+    {
         m_themeType = themeType;
         update();
     }
-    void show(){
+    void show()
+    {
         if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
             changeTheme(lightTheme);
         } else if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
@@ -115,24 +122,24 @@ public:
         QWidget::show();
     }
 protected:
-    virtual void resizeEvent(QResizeEvent *ev) {
+    virtual void resizeEvent(QResizeEvent *ev)
+    {
         resetSize();
         update();
         return QWidget::resizeEvent(ev);
     }
-    virtual void paintEvent(QPaintEvent *ev) {
+    virtual void paintEvent(QPaintEvent *ev)
+    {
         QPainter pt(this);
         pt.setRenderHint(QPainter::Antialiasing);
 
         if (lightTheme == m_themeType) {
             pt.setPen(QColor(0, 0, 0, 10));
             pt.setBrush(QBrush(QColor(247, 247, 247, 220)));
-        }
-        else if (darkTheme == m_themeType) {
+        } else if (darkTheme == m_themeType) {
             pt.setPen(QColor(255, 255, 255, 10));
             pt.setBrush(QBrush(QColor(42, 42, 42, 220)));
-        }
-        else {
+        } else {
             pt.setPen(QColor(0, 0, 0, 10));
             pt.setBrush(QBrush(QColor(247, 247, 247, 220)));
         }
@@ -155,21 +162,22 @@ protected:
         QFontMetrics fm(font);
         auto w = fm.boundingRect(m_strText).width();
         auto h = fm.height();
-        pt.drawText((rect.width() - w)/2, (rect.height() + h/2)/2, m_strText);
+        pt.drawText((rect.width() - w) / 2, (rect.height() + h / 2) / 2, m_strText);
     }
 
-    void resetSize() {
+    void resetSize()
+    {
         DFontSizeManager::instance()->bind(this, DFontSizeManager::T8);
         QFont font = DFontSizeManager::instance()->get(DFontSizeManager::T8);
         QFontMetrics fm(font);
         auto w = fm.boundingRect(m_strText).width();
         auto h = fm.height();
-        resize(w+14, h+8);
+        resize(w + 14, h + 8);
     }
 
 private:
-        QString m_strText = nullptr;
-        ThemeTYpe m_themeType;
+    QString m_strText = nullptr;
+    ThemeTYpe m_themeType;
 };
 
 class ToolTip: public QFrame
@@ -282,7 +290,7 @@ class ToolButton: public DIconButton
     Q_OBJECT
 public:
     explicit ToolButton(QWidget *parent = nullptr): DIconButton(parent) {}
-    virtual ~ToolButton(){}
+    virtual ~ToolButton() {}
 
     void initToolTip()
     {
@@ -344,16 +352,10 @@ class VolumeButton: public DIconButton
 {
     Q_OBJECT
 public:
-    enum Level {
-        Off,
-        Low,
-        Mid,
-        High,
-        Mute
-    };
-
     explicit VolumeButton(QWidget *parent = 0);
-    void changeLevel(Level lv);
+    void changeStyle();
+    void setVolume(int nVolume);
+    void setMute(bool bMute);
 
 signals:
     void entered();
@@ -368,7 +370,8 @@ protected:
 
 private:
     QString _name;
-    Level _lv {Mute};
+    int m_nVolume;
+    bool m_bMute;
 };
 
 }

@@ -41,7 +41,6 @@
 #include "thumbnail_worker.h"
 #include "tip.h"
 #include "utils.h"
-#include "dbus_adpator.h"
 
 //#include <QtWidgets>
 #include <DImageButton>
@@ -1009,377 +1008,6 @@ private:
     QGraphicsDropShadowEffect *m_shadow_effect{nullptr};
 };
 
-class VolumeSlider: public DArrowRectangle
-{
-    Q_OBJECT
-
-    enum State {
-        Open,
-        Close
-    };
-
-public:
-    VolumeSlider(PlayerEngine *eng, MainWindow *mw, QWidget *parent)
-        : DArrowRectangle(DArrowRectangle::ArrowBottom, DArrowRectangle::FloatWidget, parent), _engine(eng), _mw(mw)
-    {
-#ifdef __mips__
-        if (!CompositingManager::get().composited()) {
-            setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
-        }
-#elif __aarch64__
-        if (!utils::check_wayland_env())
-            setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
-#elif __sw_64__
-        setWindowFlags(Qt::FramelessWindowHint | Qt::BypassWindowManagerHint);
-        setAttribute(Qt::WA_NativeWindow);
-#else
-        if (CompositingManager::get().isSpecialControls()) {
-            setAttribute(Qt::WA_NativeWindow);
-        }
-#endif
-        /*setShadowBlurRadius(4);
-        setRadius(18);
-        setShadowYOffset(0);
-        setShadowXOffset(0);
-        setArrowWidth(20);
-        setArrowHeight(15);*/
-        hide();
-
-        setFixedSize(VOLSLIDER_WIDTH, VOLSLIDER_HEIGHT);
-        QVBoxLayout *vLayout = new QVBoxLayout(this);
-        vLayout->setContentsMargins(2, 16, 2, 14);  //内边距，与UI沟通确定
-        vLayout->setSpacing(0);
-        setLayout(vLayout);
-
-        QFont font;
-        font.setFamily("SourceHanSansSC");
-        font.setPixelSize(14);
-        font.setWeight(QFont::Medium);
-
-        vLayout->addStretch();
-        m_pLabShowVolume = new DLabel(_mw);
-        m_pLabShowVolume->setForegroundRole(QPalette::BrightText);
-        m_pLabShowVolume->setFont(font);
-        m_pLabShowVolume->setAlignment(Qt::AlignCenter);
-        m_pLabShowVolume->setText("0%");
-        vLayout->addWidget(m_pLabShowVolume, 0, Qt::AlignCenter);
-
-        m_slider = new DSlider(Qt::Vertical, this);
-        m_slider->setFixedWidth(24);
-        m_slider->setIconSize(QSize(15, 15));
-        m_slider->installEventFilter(this);
-        m_slider->show();
-        m_slider->slider()->setRange(0, 100);
-        m_slider->setObjectName(VOLUME_SLIDER);
-        m_slider->slider()->setObjectName(SLIDER);
-        m_slider->slider()->setAccessibleName(SLIDER);
-        m_slider->slider()->setMinimumHeight(120);
-        m_slider->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred));
-        //修改打开时音量条显示不正确
-        int vol = 0;
-        if (utils::check_wayland_env()) {
-            vol = Settings::get().internalOption("global_volume").toInt();
-        } else {
-            vol = _engine->volume();
-        }
-        m_slider->setValue(vol);
-        vLayout->addWidget(m_slider, 1, Qt::AlignCenter);
-
-        m_pBtnChangeMute = new DToolButton(this);
-        m_pBtnChangeMute->setObjectName(MUTE_BTN);
-        m_pBtnChangeMute->setAccessibleName(MUTE_BTN);
-        m_pBtnChangeMute->setToolButtonStyle(Qt::ToolButtonIconOnly);
-        //m_pBtnChangeMute->installEventFilter(this);
-        //同时设置按钮与图标的尺寸，改变其默认比例
-        m_pBtnChangeMute->setFixedSize(30, 30);
-        m_pBtnChangeMute->setIconSize(QSize(30, 30));
-        flushVolumeIcon();
-        m_pBtnChangeMute->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred));
-        vLayout->addStretch(10);
-        vLayout->addWidget(m_pBtnChangeMute, 0, Qt::AlignHCenter);
-        vLayout->addStretch();
-
-        connect(m_slider, &DSlider::valueChanged, this, &VolumeSlider::slotSliderValueChanged);
-        connect(m_pBtnChangeMute, SIGNAL(clicked()), this, SLOT(changeSate()));
-        connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged,
-                this, &VolumeSlider::setThemeType);
-
-        m_autoHideTimer.setSingleShot(true);
-#ifdef __x86_64__
-        connect(&m_autoHideTimer, &QTimer::timeout, this, &VolumeSlider::popup);
-#else
-        if (utils::check_wayland_env()) {
-            connect(&m_autoHideTimer, &QTimer::timeout, this, &VolumeSlider::hide);
-        }
-#endif
-    }
-    void stopTimer()
-    {
-        m_autoHideTimer.stop();
-    }
-    int value()
-    {
-        return m_slider->value();
-    }
-    void setMute(bool bMute)
-    {
-        if (m_bIsMute == bMute) {
-            return;
-        }
-        m_bIsMute = bMute;
-        flushVolumeIcon();
-    }
-    void initBgImage()
-    {
-        QPainter painter;
-        QColor bgColor = this->palette().background().color();
-        const qreal radius = 20;
-        const qreal triHeight = 30;
-        const qreal height = this->height() - triHeight;
-        const qreal width = this->width();
-
-        m_bgImage = QPixmap(this->size());
-        m_bgImage.fill(QColor(0, 0, 0, 0));
-        painter.begin(&m_bgImage);
-        painter.setRenderHints(QPainter::Antialiasing | QPainter::HighQualityAntialiasing);
-
-        // 背景上矩形，半边
-        QPainterPath pathRect;
-        pathRect.moveTo(radius, 0);
-        pathRect.lineTo(width / 2, 0);
-        pathRect.lineTo(width / 2, height);
-        pathRect.lineTo(0, height);
-        pathRect.lineTo(0, radius);
-        pathRect.arcTo(QRectF(QPointF(0, 0), QPointF(2 * radius, 2 * radius)), 180.0, -90.0);
-
-        // 背景下三角，半边
-        qreal radius1 = radius / 2;
-        QPainterPath pathTriangle;
-        pathTriangle.moveTo(0, height - radius1);
-        pathTriangle.arcTo(QRectF(QPointF(0, height - radius1), QSizeF(2 * radius1, 2 * radius1)), 180, 60);
-        pathTriangle.lineTo(width / 2, this->height());
-        qreal radius2 = radius / 4;
-        pathTriangle.arcTo(QRectF(QPointF(width / 2 - radius2, this->height() - radius2 * 2 - 2), QSizeF(2 * radius2, 2 * radius2)), 220, 100);
-        pathTriangle.lineTo(width / 2, height);
-
-        // 正向绘制
-        painter.fillPath(pathRect, bgColor);
-        painter.fillPath(pathTriangle, bgColor);
-
-        // 平移坐标系
-        painter.translate(width, 0);
-        // 坐标系X反转
-        painter.scale(-1, 1);
-
-        // 反向绘制
-        painter.fillPath(pathRect, bgColor);
-        painter.fillPath(pathTriangle, bgColor);
-
-        painter.end();
-    }
-
-public slots:
-    void updatePoint(QPoint point)
-    {
-        QRect main_rect = _mw->rect();
-        QRect view_rect = main_rect.marginsRemoved(QMargins(1, 1, 1, 1));
-        m_point = point + QPoint(view_rect.width() - (TOOLBOX_BUTTON_WIDTH * 2 + 30 + (VOLSLIDER_WIDTH - TOOLBOX_BUTTON_WIDTH) / 2),
-                                 view_rect.height() - TOOLBOX_HEIGHT - VOLSLIDER_HEIGHT);
-    }
-    void popup()
-    {
-        QRect main_rect = _mw->rect();
-        QRect view_rect = main_rect.marginsRemoved(QMargins(1, 1, 1, 1));
-
-        int x = view_rect.width() - (TOOLBOX_BUTTON_WIDTH * 2 + 30 + (VOLSLIDER_WIDTH - TOOLBOX_BUTTON_WIDTH) / 2);
-        int y = view_rect.height() - TOOLBOX_HEIGHT - VOLSLIDER_HEIGHT;
-#ifndef __x86_64__
-        //在arm及mips平台下音量条上移了10个像素
-        y += 10;
-#endif
-        QRect end(x, y, VOLSLIDER_WIDTH, VOLSLIDER_HEIGHT);
-        QRect start = end;
-        QRect media = start;
-
-        start.setWidth(start.width() + 16);
-        start.setHeight(start.height() + 14);
-        media.setWidth(media.width() - 10);
-        media.setHeight(media.height() - 10);
-#ifdef __x86_64__
-        start.moveTo(start.topLeft() - QPoint(8, 14));
-        media.moveTo(media.topLeft() + QPoint(5, 10));
-#else
-        end.moveTo(m_point);
-        start.moveTo(m_point - QPoint(8, 14));
-        media.moveTo(m_point + QPoint(5, 10));
-#endif
-
-        if (state == State::Close && isVisible()) {
-            pVolAnimation = new QPropertyAnimation(this, "geometry");
-            pVolAnimation->setEasingCurve(QEasingCurve::Linear);
-            pVolAnimation->setKeyValueAt(0, end);
-            pVolAnimation->setKeyValueAt(0.3, start);
-            pVolAnimation->setKeyValueAt(0.75, media);
-            pVolAnimation->setKeyValueAt(1, end);
-            pVolAnimation->setDuration(230);
-            m_bFinished = true;
-            raise();
-            pVolAnimation->start();
-            connect(pVolAnimation, &QPropertyAnimation::finished, [ = ] {
-                pVolAnimation->deleteLater();
-                pVolAnimation = nullptr;
-                state = Open;
-                m_bFinished = false;
-            });
-        } else {
-            state = Close;
-            hide();
-        }
-    }
-    void hideSlider()
-    {
-        popup();
-    }
-    void slotVolumeChanged()
-    {
-        flushVolumeIcon();
-    }
-    void delayedHide()
-    {
-#ifdef __x86_64__
-        if (!isHidden())
-            m_autoHideTimer.start(500);
-#else
-        m_mouseIn = false;
-        DUtil::TimerSingleShot(100, [this]() {
-            if (!m_mouseIn)
-                popup();
-        });
-#endif
-    }
-    void setValue(int v)
-    {
-        m_slider->setValue(v);
-        m_pLabShowVolume->setText(QString("%1%").arg(v * 1.0 / m_slider->maximum() * 100));
-    }
-    void changeSate()
-    {
-        _mw->requestAction(ActionFactory::ToggleMute);
-    }
-    void slotSliderValueChanged()
-    {
-        if (m_bIsMute) {
-            changeSate();
-        }
-        auto var = m_slider->value();
-        m_pLabShowVolume->setText(QString("%1%").arg(var * 1.0 / m_slider->maximum() * 100));
-        _mw->requestAction(ActionFactory::ChangeVolume, false, QList<QVariant>() << var);
-    }
-    bool getsliderstate()
-    {
-        return m_bFinished;
-    }
-    void setThemeType(int type)
-    {
-        Q_UNUSED(type)
-
-        initBgImage();
-    }
-
-protected:
-    void enterEvent(QEvent *e)
-    {
-#ifdef __x86_64__
-        m_autoHideTimer.stop();
-#else
-        m_mouseIn = true;
-        QWidget::leaveEvent(e);
-#endif
-    }
-    void showEvent(QShowEvent *se)
-    {
-#ifdef __x86_64__
-        m_autoHideTimer.stop();
-#else
-        //m_mouseIn = true;   //fix bug 49617
-        QWidget::showEvent(se);
-#endif
-        initBgImage();
-        QWidget::showEvent(se);
-    }
-    void leaveEvent(QEvent *e)
-    {
-#ifdef __x86_64__
-        m_autoHideTimer.start(500);
-#else
-        m_mouseIn = false;
-        delayedHide();
-        QWidget::leaveEvent(e);
-#endif
-    }
-    void paintEvent(QPaintEvent *)
-    {
-        QPainter painter(this);
-        painter.drawPixmap(0, 0, m_bgImage);
-    }
-
-private:
-    void flushVolumeIcon()
-    {
-        if (m_bIsMute) {
-            m_pBtnChangeMute->setIcon(QIcon::fromTheme("dcc_mute"));
-        } else {
-            if (m_slider->value() >= 66)
-                m_pBtnChangeMute->setIcon(QIcon::fromTheme("dcc_volume"));
-            else if (m_slider->value() >= 33)
-                m_pBtnChangeMute->setIcon(QIcon::fromTheme("dcc_volumemid"));
-            else if (m_slider->value() == 0) {
-                m_pBtnChangeMute->setIcon(QIcon::fromTheme("dcc_mute"));
-            } else
-                m_pBtnChangeMute->setIcon(QIcon::fromTheme("dcc_volumelow"));
-        }
-    }
-
-private slots:
-    bool eventFilter(QObject *obj, QEvent *e)
-    {
-        if (e->type() == QEvent::Wheel) {
-            QWheelEvent *we = static_cast<QWheelEvent *>(e);
-            qInfo() << we->angleDelta() << we->modifiers() << we->buttons();
-            if (we->buttons() == Qt::NoButton && we->modifiers() == Qt::NoModifier) {
-                if (m_slider->value() == m_slider->maximum() && we->angleDelta().y() > 0) {
-                    //keep increasing volume
-                    _mw->requestAction(ActionFactory::VolumeUp);
-                } else {
-                    _mw->requestAction(we->angleDelta().y() > 0 ? ActionFactory::VolumeUp : ActionFactory::VolumeDown);
-                }
-            }
-            return false;
-        } else {
-            return QObject::eventFilter(obj, e);
-        }
-    }
-
-private:
-    DToolButton *m_pBtnChangeMute {nullptr};
-    DLabel *m_pLabShowVolume {nullptr};
-    PlayerEngine *_engine;
-    DSlider *m_slider;
-    MainWindow *_mw;
-    QTimer m_autoHideTimer;
-    bool m_mouseIn = false;
-    bool m_bIsMute {false};
-    bool m_bFinished {false};
-    QPropertyAnimation *pVolAnimation {nullptr};
-    State state {Close};
-    //QColor m_borderColor = QColor(0, 0, 0,  255 * 2 / 10);
-    //int m_radius = 20;
-    //int m_sThemeType = 0;
-    QPoint m_point {0, 0};
-    QPixmap m_bgImage;
-};
-
-
 viewProgBarLoad::viewProgBarLoad(PlayerEngine *engine, DMRSlider *progBar, ToolboxProxy *parent)
 {
     _parent = parent;
@@ -1651,16 +1279,6 @@ void ToolboxProxy::setthumbnailmode()
 
 }
 
-void ToolboxProxy::setDisplayValue(int v)
-{
-    _volSlider->setValue(v);
-}
-
-void ToolboxProxy::setInitVolume(int v)
-{
-    m_initVolume = v;
-}
-
 void ToolboxProxy::updateplaylisticon()
 {
     if (_listBtn->isChecked() && DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
@@ -1921,14 +1539,13 @@ void ToolboxProxy::setup()
     _volBtn->setObjectName(VOLUME_BUTTON);
     _volBtn->setAccessibleName(VOLUME_BUTTON);
     if (CompositingManager::get().composited()) {
-        _volSlider = new VolumeSlider(_engine, _mainWindow, _mainWindow);
+        _volSlider = new VolumeSlider(_mainWindow, _mainWindow);
         _volSlider->setObjectName(VOLUME_SLIDER_WIDGET);
         connect(_volBtn, &VolumeButton::clicked, this, &ToolboxProxy::slotVolumeButtonClicked);
-        connect(_mainWindow, &MainWindow::volumeChanged, _volSlider, &VolumeSlider::slotVolumeChanged);
 
     } else {
 #if defined (__mips__) || defined (__aarch64__)
-        _volSlider = new VolumeSlider(_engine, _mainWindow, _mainWindow);
+        _volSlider = new VolumeSlider(_mainWindow, _mainWindow);
         _volSlider->setObjectName(VOLUME_SLIDER_WIDGET);
         connect(_volBtn, &VolumeButton::clicked, this, &ToolboxProxy::slotVolumeButtonClicked);
 
@@ -1936,10 +1553,9 @@ void ToolboxProxy::setup()
 //        _volSlider->setProperty("NoDelayShow", true);
 //        installHint(_volBtn, _volSlider);
 #else
-        _volSlider = new VolumeSlider(_engine, _mainWindow, _mainWindow);
+        _volSlider = new VolumeSlider(_mainWindow, _mainWindow);
         _volSlider->setObjectName(VOLUME_SLIDER_WIDGET);;
         connect(_volBtn, &VolumeButton::clicked, this, &ToolboxProxy::slotVolumeButtonClicked);
-        connect(_mainWindow, &MainWindow::volumeChanged, _volSlider, &VolumeSlider::slotVolumeChanged);
 #endif
     }
 #ifdef __x86_64__
@@ -1950,8 +1566,12 @@ void ToolboxProxy::setup()
         _volSlider->delayedHide();
     });
 #endif
-    connect(_volBtn, &VolumeButton::requestVolumeUp, this, &ToolboxProxy::slotRequestVolumeUp);
-    connect(_volBtn, &VolumeButton::requestVolumeDown, this, &ToolboxProxy::slotRequestVolumeDown);
+    connect(_volSlider, &VolumeSlider::sigVolumeChanged, this, &ToolboxProxy::slotVolumeChanged);
+    connect(_volSlider, &VolumeSlider::sigMuteStateChanged, this, &ToolboxProxy::slotMuteStateChanged);
+    connect(_volBtn, &VolumeButton::requestVolumeUp, _volSlider, &VolumeSlider::volumeUp);
+    connect(_volBtn, &VolumeButton::requestVolumeDown, _volSlider, &VolumeSlider::volumeDown);
+
+    _volSlider->initVolume();
 
     _right->addWidget(_subBtn);
     _right->addWidget(_fsBtn);
@@ -2019,14 +1639,11 @@ void ToolboxProxy::setup()
 
 
     connect(window()->windowHandle(), &QWindow::windowStateChanged, this, &ToolboxProxy::updateFullState);
-    connect(_engine, &PlayerEngine::muteChanged, this, &ToolboxProxy::updateVolumeState);
-    connect(_engine, &PlayerEngine::volumeChanged, this, &ToolboxProxy::updateVolumeState);
 
     connect(_engine, &PlayerEngine::tracksChanged, this, &ToolboxProxy::updateButtonStates);
     connect(_engine, &PlayerEngine::fileLoaded, this, &ToolboxProxy::updateButtonStates);
     connect(&_engine->playlist(), &PlaylistModel::countChanged, this, &ToolboxProxy::updateButtonStates);
     connect(_mainWindow, &MainWindow::initChanged, this, &ToolboxProxy::updateButtonStates);
-    connect(_mainWindow, &MainWindow::volumeChanged, this, &ToolboxProxy::updateVolumeState);
 
     updatePlayState();
     updateFullState();
@@ -2221,10 +1838,6 @@ void ToolboxProxy::slotVolumeButtonClicked()
      * -1为初始化数值
      * 大于等于零表示为已完成初始化
      */
-    if (m_initVolume >= 0) {
-        setDisplayValue(m_initVolume);
-        m_initVolume = -2;
-    }
     if (CompositingManager::get().composited()) {
         if (!_volSlider->isVisible()) {
             _volSlider->show(_mainWindow->width() - _volBtn->width() / 2 - _playBtn->width() - 40,
@@ -2257,16 +1870,6 @@ void ToolboxProxy::slotVolumeButtonClicked()
         }
 #endif
     }
-}
-
-void ToolboxProxy::slotRequestVolumeUp()
-{
-    _mainWindow->requestAction(ActionFactory::ActionKind::VolumeUp);
-}
-
-void ToolboxProxy::slotRequestVolumeDown()
-{
-    _mainWindow->requestAction(ActionFactory::ActionKind::VolumeDown);
 }
 
 void ToolboxProxy::slotFileLoaded()
@@ -2393,6 +1996,35 @@ void ToolboxProxy::slotProAnimationFinished()
     }
 }
 
+void ToolboxProxy::slotVolumeChanged(int nVolume)
+{
+    _volBtn->setVolume(nVolume);
+
+    emit sigVolumeChanged(nVolume);
+}
+
+void ToolboxProxy::slotMuteStateChanged(bool bMute)
+{
+    _volBtn->setMute(bMute);
+
+    emit sigMuteStateChanged(bMute);
+}
+
+void ToolboxProxy::volumeUp()
+{
+    _volSlider->volumeUp();
+}
+
+void ToolboxProxy::volumeDown()
+{
+    _volSlider->volumeDown();
+}
+
+void ToolboxProxy::changeMuteState()
+{
+    _volSlider->muteButtnClicked();
+}
+
 void ToolboxProxy::progressHoverChanged(int v)
 {
     if (_engine->state() == PlayerEngine::CoreState::Idle)
@@ -2461,28 +2093,6 @@ void ToolboxProxy::updateButtonStates()
     bool vis = _engine->playlist().count() > 1 && _mainWindow->inited();
 
     m_bCanPlay = vis;  //防止连续切换上下曲目
-}
-
-void ToolboxProxy::updateVolumeState()
-{
-    if (_engine->muted()) {
-        _volBtn->changeLevel(VolumeButton::Mute);
-        _volBtn->setToolTip(tr("Mute"));
-        _volSlider->setMute(true);
-    } else {
-        int v = _volSlider->value();
-        if (v > 0) {
-            _volSlider->setMute(false);
-        }
-        if (v >= 66)
-            _volBtn->changeLevel(VolumeButton::High);
-        else if (v >= 33)
-            _volBtn->changeLevel(VolumeButton::Mid);
-        else if (v == 0)
-            _volBtn->changeLevel(VolumeButton::Off);
-        else
-            _volBtn->changeLevel(VolumeButton::Low);
-    }
 }
 
 void ToolboxProxy::updateFullState()
@@ -2953,11 +2563,6 @@ QLabel *ToolboxProxy::getfullscreentimeLabelend()
 bool ToolboxProxy::getbAnimationFinash()
 {
     return  bAnimationFinash;
-}
-
-int ToolboxProxy::DisplayVolume()
-{
-    return _volSlider->value();
 }
 
 void ToolboxProxy::setVolSliderHide()

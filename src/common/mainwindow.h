@@ -44,7 +44,6 @@
 
 #include "widgets/titlebar.h"
 #include "animationlabel.h"
-#include "volumemonitoring.h"
 #include "diskcheckthread.h"
 #include "actions.h"
 #include "online_sub.h"
@@ -227,8 +226,9 @@ public slots:
     void slotFileLoaded();
     void slotUrlpause(bool status);
     void slotFontChanged(const QFont &font);
-    void slotMuteChanged(bool mute);
+    void slotMuteChanged(bool bMute);
     void slotAwaacelModeChanged(const QString &key, const QVariant &value);     //改变硬解码模式
+    void slotVolumeChanged(int nVolume);
 protected:
     void showEvent(QShowEvent *event) override;
     void hideEvent(QHideEvent *event) override;
@@ -281,13 +281,6 @@ protected slots:
 
     void updateShadow();
 #endif
-
-//    void handleHelpAction();
-//    void changedVolume(int);
-    void changedVolumeSlot(int vol);
-    void changedMute();
-    void changedMute(bool);
-
     void updateMiniBtnTheme(int);
     void diskRemoved(QString strDiskName);
 
@@ -410,10 +403,8 @@ private:
     QUrl m_dvdUrl {QUrl()};
     QProcess *shortcutViewProcess {nullptr};
 
-    VolumeMonitoring volumeMonitoring;
     QString sinkInputPath;
     int m_displayVolume;
-    int m_oldDisplayVolume;
     bool m_isManual;
 
     bool m_IsFree = true;  //播放器是否空闲，和IDel的定义不同
@@ -437,7 +428,6 @@ private:
     bool m_bFirstInit {false};
     bool m_bLastIsTouch {false};
     bool m_bTouchChangeVolume {false};
-    bool m_bisOverhunderd {false};
     bool m_bisShowSettingDialog {true};
     QDBusInterface *m_pDBus {nullptr};
     MainWindowPropertyMonitor *m_pMWPM {nullptr};

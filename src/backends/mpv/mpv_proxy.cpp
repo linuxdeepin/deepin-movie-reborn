@@ -219,7 +219,7 @@ mpv_handle *MpvProxy::mpv_init()
         if (!disable) {
             my_set_property(h, "gpu-hwdec-interop", interop.toUtf8().constData());
             qInfo() << "-------- set gpu-hwdec-interop = " << interop
-                     << (forced.isEmpty() ? "[detected]" : "[forced]");
+                    << (forced.isEmpty() ? "[detected]" : "[forced]");
         } else {
             qInfo() << "-------- gpu-hwdec-interop is disabled by user";
         }
@@ -566,8 +566,8 @@ void MpvProxy::handle_mpv_events()
 
             if (_gl_widget) {
                 qInfo() << "hwdec-interop" << my_get_property(_handle, "gpu-hwdec-interop")
-                         << "codec: " << my_get_property(_handle, "video-codec")
-                         << "format: " << my_get_property(_handle, "video-format");
+                        << "codec: " << my_get_property(_handle, "video-codec")
+                        << "format: " << my_get_property(_handle, "video-format");
             }
             if (!_isJingJia) {
 #ifdef __mips__
@@ -598,8 +598,8 @@ void MpvProxy::handle_mpv_events()
             setState(PlayState::Playing); //might paused immediately
             emit fileLoaded();
             qInfo() << QString("rotate metadata: dec %1, out %2")
-                     .arg(my_get_property(_handle, "video-dec-params/rotate").toInt())
-                     .arg(my_get_property(_handle, "video-params/rotate").toInt());
+                    .arg(my_get_property(_handle, "video-dec-params/rotate").toInt())
+                    .arg(my_get_property(_handle, "video-params/rotate").toInt());
             break;
         }
         case MPV_EVENT_VIDEO_RECONFIG: {
@@ -617,7 +617,7 @@ void MpvProxy::handle_mpv_events()
 #endif
             mpv_event_end_file *ev_ef = reinterpret_cast<mpv_event_end_file *>(ev->data);
             qInfo() << m_eventName(ev->event_id) <<
-                     "reason " << ev_ef->reason;
+                    "reason " << ev_ef->reason;
 
             setState(PlayState::Stopped);
             break;
@@ -976,6 +976,16 @@ void MpvProxy::toggleMute()
     my_command(_handle, args);
 }
 
+void MpvProxy::setMute(bool bMute)
+{
+    if (!m_bInited) {
+        firstInit();
+        m_bInited = true;
+    }
+
+    my_set_property(_handle, "mute", bMute);
+}
+
 void MpvProxy::slotStateChanged()
 {
     _gl_widget->setPlaying(state() != Backend::PlayState::Stopped);
@@ -1186,7 +1196,7 @@ int MpvProxy::volumeCorrection(int displayVol)
     } else {
         realVol = static_cast<int>((displayVol / 200.0) * 60.0 + 40);
     }
-    return (realVol);
+    return (realVol == 40 ? 0 : realVol);
 }
 
 QVariant MpvProxy::my_get_property(mpv_handle *ctx, const QString &name) const

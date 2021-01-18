@@ -210,6 +210,7 @@ public slots:
     void volumeDown();
     void changeVolume(int val);
     void toggleMute();
+    void setMute(bool bMute);
 
 protected slots:
     void onBackendStateChanged();

@@ -688,20 +688,6 @@ MainWindow::MainWindow(QWidget *parent)
     _engine->move(0, 0);
 #endif
 
-    int volume = Settings::get().internalOption("global_volume").toInt();
-    if (volume > 100) {
-        Settings::get().setInternalOption("global_volume", 100);
-        volume = 100;
-    }
-    m_displayVolume = volume;
-    if (utils::check_wayland_env()) {
-        _engine->changeVolume(100);
-        if (Settings::get().internalOption("mute").toBool()) {
-            _engine->toggleMute();
-            Settings::get().setInternalOption("mute", _engine->muted());
-        }
-    }
-
     _toolbox = new ToolboxProxy(this, _engine);
     _toolbox->setObjectName(BOTTOM_TOOL_BOX);
 
@@ -713,6 +699,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(this, &MainWindow::frameMenuEnable, &ActionFactory::get(), &ActionFactory::frameMenuEnable);
     connect(this, &MainWindow::playSpeedMenuEnable, &ActionFactory::get(), &ActionFactory::playSpeedMenuEnable);
     connect(qApp, &QGuiApplication::focusWindowChanged, this, &MainWindow::slotFocusWindowChanged);
+
+    connect(_toolbox, &ToolboxProxy::sigVolumeChanged, this, &MainWindow::slotVolumeChanged);
+    connect(_toolbox, &ToolboxProxy::sigMuteStateChanged, this, &MainWindow::slotMuteChanged);
 
 #ifndef __mips__
     _progIndicator = new MovieProgressIndicator(this);
@@ -993,26 +982,13 @@ MainWindow::MainWindow(QWidget *parent)
         this->activateWindow();
     });
     connect(qApp, &QGuiApplication::fontChanged, this, &MainWindow::slotFontChanged);
-
-    ThreadPool::instance()->moveToNewThread(&volumeMonitoring);
-    volumeMonitoring.start();
-    connect(&volumeMonitoring, &VolumeMonitoring::volumeChanged, this, [ = ](int vol) {
-        changedVolumeSlot(vol);
-    });
-    connect(&volumeMonitoring, &VolumeMonitoring::muteChanged, this, &MainWindow::slotMuteChanged);
     connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, &MainWindow::updateMiniBtnTheme);
 
     ThreadPool::instance()->moveToNewThread(&m_diskCheckThread);
     m_diskCheckThread.start();
     connect(&m_diskCheckThread, &Diskcheckthread::diskRemove, this, &MainWindow::diskRemoved);
 
-    if (Settings::get().internalOption("mute").toBool()) {
-        _engine->toggleMute();
-        Settings::get().setInternalOption("mute", _engine->muted());
-    }
-    _toolbox->setInitVolume(m_displayVolume);
     QTimer::singleShot(500, [this]() {
-        _nwComm->updateWithMessage(tr("Volume: %1%").arg(m_displayVolume));
         loadPlayList();
     });
 
@@ -1222,76 +1198,6 @@ void MainWindow::onWindowStateChanged()
     }
 }
 
-/*void MainWindow::handleHelpAction()
-{
-    class _DApplication : public DApplication
-    {
-    public:
-        inline void showHelp()
-        {
-            DApplication::handleHelpAction();
-        }
-    };
-
-    DApplication *dapp = qApp;
-    reinterpret_cast<_DApplication *>(dapp)->_DApplication::showHelp();
-}*/
-
-/*void MainWindow::changedVolume(int vol)
-{
-    _engine->changeVolume(vol);
-    Settings::get().setInternalOption("global_volume", vol);
-    if (vol != 0)
-        _nwComm->updateWithMessage(tr("Volume: %1%").arg(vol));
-    else
-        _nwComm->updateWithMessage(tr("Mute"));
-}*/
-
-void MainWindow::changedVolumeSlot(int vol)
-{
-    setAudioVolume(qMin(vol, 100));
-    if (_engine->muted()) {
-        Settings::get().setInternalOption("mute", _engine->muted());
-    }
-    if (_engine->volume() <= 100 || vol < 100) {
-        _engine->changeVolume(vol);
-        Settings::get().setInternalOption("global_volume", vol);
-    }
-    _toolbox->setDisplayValue(qMin(vol, 100));
-    if (m_oldDisplayVolume == m_displayVolume) {
-        return;
-    }
-    //fix bug 24816 by ZhuYuliang
-    if (!_engine->muted()) {
-        _nwComm->updateWithMessage(tr("Volume: %1%").arg(m_displayVolume));
-    } else {
-        QTimer::singleShot(1000, [ = ]() {
-            _nwComm->updateWithMessage(tr("Mute"));
-        });
-    }
-}
-
-void MainWindow::changedMute()
-{
-    _engine->toggleMute();
-    Settings::get().setInternalOption("mute", _engine->muted());
-}
-
-void MainWindow::changedMute(bool mute)
-{
-    bool oldMute = Settings::get().internalOption("mute").toBool();
-    if (oldMute == mute) {
-        return;
-    }
-    _engine->toggleMute();
-    Settings::get().setInternalOption("mute", mute);
-    if (mute) {
-        _nwComm->updateWithMessage(tr("Mute"));
-    } else {
-        _nwComm->updateWithMessage(tr("Volume: %1%").arg(_toolbox->DisplayVolume()));
-    }
-}
-
 #ifdef USE_DXCB
 static QPoint last_engine_pos;
 static QPoint last_wm_pos;
@@ -1364,29 +1270,6 @@ MainWindow::~MainWindow()
 #endif
 
 }
-
-/*void MainWindow::firstPlayInit()
-{
-//    if (m_bMpvFunsLoad) return;
-
-//    _engine->firstInit();
-
-//    int volume = Settings::get().internalOption("global_volume").toInt();
-//    if (volume > 100) {
-//        Settings::get().setInternalOption("global_volume", 100);
-//        volume = 100;
-//    }
-
-//    //heyi need
-//    _engine->changeVolume(volume);
-
-//    if (_engine->muted()) {
-//        _nwComm->updateWithMessage(tr("Mute"));
-//    }
-
-//    requestAction(ActionFactory::ChangeSubCodepage, false, {"auto"});
-//    m_bMpvFunsLoad = true;
-}*/
 
 bool MainWindow::judgeMouseInWindow(QPoint pos)
 {
@@ -2046,10 +1929,6 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     }
 
     case ActionFactory::ActionKind::StartPlay: {
-        if (m_bisOverhunderd) {
-            _engine->changeVolume(100);
-            m_bisOverhunderd = false;
-        }
         if (_engine->playlist().count() == 0) {
             requestAction(ActionFactory::ActionKind::OpenFileList);
         } else {
@@ -2356,94 +2235,21 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     }
 
     case ActionFactory::ActionKind::ToggleMute: {
-        changedMute();
-        setMusicMuted(_engine->muted());
-        if (_engine->muted()) {
-            if (utils::check_wayland_env()) {
-                //wayland 下 先显示0再显示静音
-                QTimer::singleShot(500, [ = ]() {
-                    _nwComm->updateWithMessage(tr("Mute"));
-                });
-            } else {
-                _nwComm->updateWithMessage(tr("Mute"));
-            }
-        } else {
-            _nwComm->updateWithMessage(tr("Volume: %1%").arg(m_displayVolume));
-        }
-        break;
-    }
-
-    case ActionFactory::ActionKind::ChangeVolume: {
-        if (!args.isEmpty()) {
-            int nVol = args[0].toInt();
-            m_displayVolume = nVol;
-            if (!_engine->muted()) {
-                _nwComm->updateWithMessage(tr("Volume: %1%").arg(nVol));
-            }
-            setAudioVolume(qMin(nVol, 100));
-            //音量调整为超过100关闭，再次启动后不会重新设置mpv音量问题
-            if (!m_bFirstInit && nVol >= 100) {
-                m_bisOverhunderd = true;
-                _engine->changeVolume(nVol);
-                Settings::get().setInternalOption("global_volume", nVol);
-            } else {
-                Settings::get().setInternalOption("global_volume", _toolbox->DisplayVolume());
-            }
-            if (m_presenter)
-                m_presenter->slotvolumeChanged();
-        }
+        _toolbox->changeMuteState();
         break;
     }
 
     case ActionFactory::ActionKind::VolumeUp: {
-        m_displayVolume = qMin(m_displayVolume + 10, 200);
-        m_oldDisplayVolume = m_displayVolume;
-        if (m_displayVolume > 100 && m_displayVolume <= 200)
-            _engine->changeVolume(m_displayVolume);
-        else
-            setAudioVolume(m_displayVolume);
-        if (!_engine->muted()) {
-            _nwComm->updateWithMessage(tr("Volume: %1%").arg(m_displayVolume));
-        } else if (_engine->muted() && m_displayVolume < 200) {
-            changedMute();
-            setMusicMuted(_engine->muted());
-        }
-        _toolbox->setDisplayValue(qMin(m_displayVolume, 100));
-        Settings::get().setInternalOption("global_volume", m_displayVolume);
+        _toolbox->volumeUp();
         break;
     }
 
     case ActionFactory::ActionKind::VolumeDown: {
-        m_displayVolume = qMax(m_displayVolume - 10, 0);
-        m_oldDisplayVolume = m_displayVolume;
-        if (m_displayVolume > 100 && m_displayVolume <= 200)
-            _engine->changeVolume(m_displayVolume);
-        else
-            setAudioVolume(m_displayVolume);
-        if (m_displayVolume == 0 && !_engine->muted()) {
-            _nwComm->updateWithMessage(tr("Volume: %1%").arg(m_displayVolume));
-            changedMute();
-            QTimer::singleShot(500, [ = ]() {
-                _nwComm->updateWithMessage(tr("Mute"));
-            });
-            setAudioVolume(0);
-        } else if (m_displayVolume > 0 && _engine->muted()) {
-            changedMute();
-            setMusicMuted(_engine->muted());
-        }
-        if (!_engine->muted()) {
-            _nwComm->updateWithMessage(tr("Volume: %1%").arg(m_displayVolume));
-        }
-        _toolbox->setDisplayValue(qMin(m_displayVolume, 100));
-        Settings::get().setInternalOption("global_volume", m_displayVolume);
+        _toolbox->volumeDown();
         break;
     }
 
     case ActionFactory::ActionKind::GotoPlaylistSelected: {
-        if (m_bisOverhunderd) {
-            _engine->changeVolume(100);
-            m_bisOverhunderd = false;
-        }
         _engine->playSelected(args[0].toInt());
         break;
     }
@@ -2911,10 +2717,6 @@ void MainWindow::play(const QUrl &url)
             return;
         }
     }
-    if (m_bisOverhunderd) {
-        _engine->changeVolume(100);
-        m_bisOverhunderd = false;
-    }
     _engine->playByName(url);
 }
 
@@ -3339,14 +3141,13 @@ void MainWindow::slotFontChanged(const QFont &/*font*/)
 #endif
 }
 
-void MainWindow::slotMuteChanged(bool mute)
+void MainWindow::slotMuteChanged(bool bMute)
 {
-    //首次启动的时候先判断一次设置的静音状态
-    if (!m_bFirstInit) {
-        this->setMusicMuted(_engine->muted());
-        m_bFirstInit = true;
+    _engine->setMute(bMute);
+
+    if (bMute) {
+        _nwComm->updateWithMessage(tr("Mute"));
     }
-    changedMute(mute);
 }
 
 void MainWindow::slotAwaacelModeChanged(const QString &key, const QVariant &value)
@@ -3357,6 +3158,19 @@ void MainWindow::slotAwaacelModeChanged(const QString &key, const QVariant &valu
     }
 
     setHwaccelMode(value);
+}
+
+void MainWindow::slotVolumeChanged(int nVolume)
+{
+    _engine->changeVolume(nVolume);
+
+    if (nVolume == 0) {
+        _nwComm->updateWithMessage(tr("Mute"));
+    } else {
+        _nwComm->updateWithMessage(tr("Volume: %1%").arg(nVolume));
+    }
+
+    m_displayVolume = nVolume;
 }
 
 void MainWindow::checkErrorMpvLogsChanged(const QString prefix, const QString text)
@@ -3940,12 +3754,6 @@ void MainWindow::mousePressEvent(QMouseEvent *ev)
             qInfo() << "已经进入触屏按下事件" << nX << nY;
             _mousePressTimer.start();
         }
-        /*if (_playState->isVisible()) {
-            //_playState->setState(DImageButton::Press);
-            QMouseEvent me(QEvent::MouseButtonPress, {}, ev->button(), ev->buttons(), ev->modifiers());
-            qApp->sendEvent(_playState, &me);
-        }*/
-        //posMouseOrigin = QCursor::pos();
     }
 
     posMouseOrigin = mapToGlobal(ev->pos());
@@ -4007,11 +3815,6 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *ev)
     if (qApp->focusWindow() == nullptr || !_mousePressed) return;
 
     _mousePressed = false;
-    /*if (_playState->isVisible()) {
-        //QMouseEvent me(QEvent::MouseButtonRelease, {}, ev->button(), ev->buttons(), ev->modifiers());
-        //qApp->sendEvent(_playState, &me);
-    //        _playState->setState(DImageButton::Normal);
-    }*/
 
     // dtk has a bug, DImageButton propagates mouseReleaseEvent event when it responded to.
     if (!insideResizeArea(ev->globalPos()) && !_mouseMoved && (_playlist->state() != PlaylistWidget::Opened)) {
@@ -4034,36 +3837,6 @@ void MainWindow::delayedMouseReleaseHandler()
         requestAction(ActionFactory::TogglePause, false, {}, true);
     _afterDblClick = false;
 }
-
-/*not used yet*/
-/*void MainWindow::onDvdData(const QString &title)
-{
-    auto mi = _engine->playlist().currentInfo().mi;
-
-    if ("dvd open failed" == title) {
-        mi.valid = false;
-    } else {
-        mi.title = title;
-        if (mi.title.isEmpty()) {
-            mi.title = "DVD";
-        }
-        mi.valid = true;
-    }
-
-    if (!mi.valid) {
-        _nwDvd->setVisible(false);
-        auto msg = QString(tr("No video file found"));
-        _nwComm->updateWithMessage(msg);
-
-        if (m_dvdUrl.scheme().startsWith("dvd")) {
-            int cur = _engine->playlist().indexOf(m_dvdUrl);
-            _engine->playlist().remove(cur);
-        }
-        return;
-    }
-    PlayItemInfo info = _engine->playlist().currentInfo();
-    _engine->playByName(info.url);
-}*/
 
 void MainWindow::mouseMoveEvent(QMouseEvent *ev)
 {
@@ -4138,22 +3911,6 @@ void MainWindow::prepareSplashImages()
     bg_light = utils::LoadHiDPIImage(":/resources/icons/light/init-splash.svg");
 }
 
-/*void MainWindow::saveWindowState()
-{
-//    QSettings settings;
-//    settings.beginGroup(objectName());
-//    settings.setValue("geometry", saveGeometry());
-//    settings.endGroup();
-}*/
-
-/*void MainWindow::loadWindowState()
-{
-//    QSettings settings;
-//    settings.beginGroup(objectName());
-//    restoreGeometry(settings.value("geometry", saveGeometry()).toByteArray());
-    //    settings.endGroup();
-}*/
-
 void MainWindow::subtitleMatchVideo(const QString &fileName)
 {
     auto videoName = fileName;
@@ -4220,82 +3977,6 @@ void MainWindow::defaultplaymodeinit()
         requestAction(ActionFactory::ListLoop);
         reflectActionToUI(ActionFactory::ListLoop);
     }
-}
-
-void MainWindow::readSinkInputPath()
-{
-    QVariant v = ApplicationAdaptor::redDBusProperty("com.deepin.daemon.Audio", "/com/deepin/daemon/Audio",
-                                                     "com.deepin.daemon.Audio", "SinkInputs");
-
-    if (!v.isValid())
-        return;
-
-    QList<QDBusObjectPath> allSinkInputsList = v.value<QList<QDBusObjectPath> >();
-//    qInfo() << "allSinkInputsListSize: " << allSinkInputsList.size();
-
-    for (auto curPath : allSinkInputsList) {
-//        qInfo() << "path: " << curPath.path();
-
-        QVariant nameV = ApplicationAdaptor::redDBusProperty("com.deepin.daemon.Audio", curPath.path(),
-                                                             "com.deepin.daemon.Audio.SinkInput", "Name");
-
-        QString strMovie = QObject::tr("Movie");
-        if (!nameV.isValid() || (!nameV.toString().contains(strMovie, Qt::CaseInsensitive) && !nameV.toString().contains("deepin-movie", Qt::CaseInsensitive)))
-            continue;
-
-        sinkInputPath = curPath.path();
-        m_isFirstLoadDBus = true;
-        break;
-    }
-}
-
-void MainWindow::setAudioVolume(int volume)
-{
-    double tVolume = 0.0;
-    if (volume == 100) {
-        tVolume = (volume) / 100.0 ;
-    } else if (volume != 0) {
-        tVolume = (volume + 1) / 100.0 ;
-    }
-
-    if (!m_isFirstLoadDBus)
-        readSinkInputPath();
-
-    if (!sinkInputPath.isEmpty()) {
-        QDBusInterface ainterface("com.deepin.daemon.Audio", sinkInputPath,
-                                  "com.deepin.daemon.Audio.SinkInput", QDBusConnection::sessionBus());
-        if (!ainterface.isValid()) {
-            return;
-        }
-        //调用设置音量
-        ainterface.call(QLatin1String("SetVolume"), tVolume, false);
-
-        if (qFuzzyCompare(tVolume, 0.0))
-            ainterface.call(QLatin1String("SetMute"), true);
-
-        //获取是否静音
-        QVariant muteV = ApplicationAdaptor::redDBusProperty("com.deepin.daemon.Audio", sinkInputPath,
-                                                             "com.deepin.daemon.Audio.SinkInput", "Mute");
-    }
-    emit volumeChanged();
-}
-
-void MainWindow::setMusicMuted(bool muted)
-{
-    readSinkInputPath();
-    if (!sinkInputPath.isEmpty()) {
-        QDBusInterface ainterface("com.deepin.daemon.Audio", sinkInputPath,
-                                  "com.deepin.daemon.Audio.SinkInput",
-                                  QDBusConnection::sessionBus());
-        if (!ainterface.isValid()) {
-            return;
-        }
-
-        //调用设置音量
-        ainterface.call(QLatin1String("SetMute"), muted);
-    }
-
-    return;
 }
 
 void MainWindow::popupAdapter(QIcon icon, QString text)
@@ -4652,13 +4333,6 @@ void MainWindow::dropEvent(QDropEvent *ev)
     qInfo() << ev->mimeData()->formats();
     if (!ev->mimeData()->hasUrls()) {
         return;
-    }
-
-//    qDebug() << ev->pos() << ev->mouseButtons() << ev->keyboardModifiers() << ev->dropAction();
-
-    if (m_bisOverhunderd) {
-        _engine->changeVolume(100);
-        m_bisOverhunderd = false;
     }
 
     QList<QUrl> urls = ev->mimeData()->urls();

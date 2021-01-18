@@ -28,7 +28,7 @@
  * files in the program, then also delete it here.
  */
 #ifndef _DMR_PLAYER_BACKEND_H
-#define _DMR_PLAYER_BACKEND_H 
+#define _DMR_PLAYER_BACKEND_H
 #define Q_ENUM(x) Q_ENUMS(x) Q_ENUM_IMPL(x)
 
 #include <QtWidgets>
@@ -71,8 +71,7 @@ public:
     };
     Q_ENUM(SoundMode)
 
-    enum hwaccelMode
-    {
+    enum hwaccelMode {
         hwaccelAuto = 0,
         hwaccelOpen,
         hwaccelClose
@@ -119,10 +118,10 @@ public:
     virtual void updateSubStyle(const QString &font, int sz) = 0;
     virtual void setSubCodepage(const QString &cp) = 0;
     virtual QString subCodepage() = 0;
-    virtual void addSubSearchPath(const QString& path) = 0;
+    virtual void addSubSearchPath(const QString &path) = 0;
     //add by heyi
     virtual void firstInit() = 0;
-    virtual bool loadSubtitle(const QFileInfo& fi) = 0;
+    virtual bool loadSubtitle(const QFileInfo &fi) = 0;
     virtual void toggleSubtitle() = 0;
     virtual bool isSubVisible() = 0;
     virtual void selectSubtitle(int id) = 0;
@@ -191,6 +190,7 @@ public slots:
     virtual void volumeDown() = 0;
     virtual void changeVolume(int val) = 0;
     virtual void toggleMute() = 0;
+    virtual void setMute(bool bMute) = 0;
 
 protected:
     PlayState _state { PlayState::Stopped };

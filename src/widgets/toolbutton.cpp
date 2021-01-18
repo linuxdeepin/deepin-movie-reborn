@@ -33,34 +33,37 @@
 
 namespace dmr {
 VolumeButton::VolumeButton(QWidget *parent)
-    : DIconButton(parent)
+    : DIconButton(parent), m_nVolume(100), m_bMute(false)
 {
-    changeLevel(Level::High);
     setIcon(QIcon::fromTheme("dcc_volume"));
     setIconSize(QSize(36, 36));
 }
 
-void VolumeButton::changeLevel(Level lv)
+void VolumeButton::setVolume(int nVolume)
 {
-    if (_lv != lv) {
-        switch (lv) {
-        case Level::Mute:
-        case Level::Off:
-            setIcon(QIcon::fromTheme("dcc_mute"));
-            break;
-        case Level::Low:
-            setIcon(QIcon::fromTheme("dcc_volumelow"));
-            break;
-        case Level::Mid:
-            setIcon(QIcon::fromTheme("dcc_volumemid"));
-            break;
-        case Level::High:
-            setIcon(QIcon::fromTheme("dcc_volume"));
-            break;
-        }
-        //        setStyleSheet(styleSheet());
-        _lv = lv;
-    }
+    m_nVolume = nVolume;
+
+    changeStyle();
+}
+
+void VolumeButton::setMute(bool bMute)
+{
+    m_bMute = bMute;
+
+    changeStyle();
+}
+
+void VolumeButton::changeStyle()
+{
+    if (m_nVolume >= 66)      //根据音量大小改变图标，更直观的表现
+        setIcon(QIcon::fromTheme("dcc_volume"));
+    else if (m_nVolume >= 33)
+        setIcon(QIcon::fromTheme("dcc_volumemid"));
+    else
+        setIcon(QIcon::fromTheme("dcc_volumelow"));
+
+    if (m_bMute || m_nVolume == 0)
+        setIcon(QIcon::fromTheme("dcc_mute"));
 }
 
 void VolumeButton::enterEvent(QEvent *ev)

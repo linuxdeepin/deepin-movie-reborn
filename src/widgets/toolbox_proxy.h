@@ -50,10 +50,9 @@
 #include "filter.h"
 #include "toolbutton.h"
 #include "playlist_widget.h"
-
 #include "thumbnail_worker.h"
-
 #include "slider.h"
+#include "volumeslider.h"
 
 namespace Dtk {
 namespace Widget {
@@ -217,7 +216,6 @@ public:
     QLabel *getfullscreentimeLabel();
     QLabel *getfullscreentimeLabelend();
     bool getbAnimationFinash();
-    int DisplayVolume();
     void setVolSliderHide();
     bool getVolSliderIsHided();
     void setButtonTooltipHide();
@@ -246,7 +244,9 @@ public:
     void updateSlider();                //根据进度条显示更新影片实际进度
     void initThumb();
     void updateSliderPoint(QPoint);
-//    void loadVolSlider();
+    void volumeUp();
+    void volumeDown();
+    void changeMuteState();
 
     /////add for unit test/////
     DButtonBoxButton *playBtn() {return _playBtn;}
@@ -259,14 +259,14 @@ public slots:
     void finishLoadSlot(QSize size);
     void updateplaylisticon();
     void setthumbnailmode();
-    void setDisplayValue(int);
-    void setInitVolume(int v);
 signals:
     void requestPlay();
     void requestPause();
     void requestNextInList();
     void requesstPrevInList();
     void sigstartLoad(QSize size);
+    void sigVolumeChanged(int nVolume);
+    void sigMuteStateChanged(bool bMute);
 
 protected slots:
 //    void updatePosition(const QPoint &p);
@@ -275,7 +275,6 @@ protected slots:
     void buttonLeave();
     void updatePlayState();
     void updateFullState();
-    void updateVolumeState();
     void updateMovieProgress();
     void updateButtonStates();
     void updateTimeVisible(bool visible);
@@ -294,8 +293,6 @@ protected slots:
     void slotSliderReleased();
     void slotBaseMuteChanged(QString sk, const QVariant &val);
     void slotVolumeButtonClicked();
-    void slotRequestVolumeUp();
-    void slotRequestVolumeDown();
     void slotFileLoaded();
     //原有两个连接，合并为一个
     void slotElapsedChanged();
@@ -304,6 +301,8 @@ protected slots:
     void slotPlayListStateChange();
     void slotUpdateThumbnailTimeOut();
     void slotProAnimationFinished();
+    void slotVolumeChanged(int nVolume);
+    void slotMuteStateChanged(bool bMute);
 
 protected:
 //    void paintEvent(QPaintEvent *pe) override;
@@ -393,7 +392,6 @@ private:
     qint64 oldDuration = 0;
     qint64 oldElapsed = 0;
     QTimer _progressTimer;
-    int m_initVolume = -1;
     bool m_bCanPlay = false; //判断是否能进行曲目切换的标志位
 };
 class viewProgBarLoad: public QThread
