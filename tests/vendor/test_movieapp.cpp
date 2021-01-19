@@ -9,9 +9,10 @@
 
 using namespace dmr;
 
-TEST(MovieApp, show)
+TEST(MovieApp, testMprisapp)
 {
-    MainWindow* w = dApp->getMainWindow();
+    MainWindow* w = new MainWindow();
+    Settings::get().settings()->setOption("base.play.emptylist", true); //退出时清空播放列表
 //    w->show();
 
 //    MovieApp *movieapp = dApp->initMovieApp(w);

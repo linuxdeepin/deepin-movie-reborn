@@ -5,6 +5,8 @@ rm -rf ../$(dirname $0)/build-ut
 mkdir ../$(dirname $0)/build-ut
 cd ../$(dirname $0)/build-ut
 
+export QT_QPA_PLATFORM=''
+export QTEST_FUNCTION_TIMEOUT='400000'
 #export QT_SELECT=qt5
 cmake -DCMAKE_BUILD_TYPE=Debug ..
 make -j16
@@ -29,5 +31,7 @@ genhtml -o ./html ./html/${executable}_Coverage_fileter.info
     
 mv ./html/index.html ./html/cov_${project_name}.html
 mv asan.log* asan_${project_name}.log
+
+ls report/
 
 exit 0

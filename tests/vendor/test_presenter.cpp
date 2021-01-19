@@ -9,7 +9,7 @@
 
 using namespace dmr;
 
-TEST(Presenter, slotpause)
+/*TEST(Presenter, slotplay)
 {
     Presenter *presenter = dApp->initPresenter();
 
@@ -30,7 +30,7 @@ TEST(Presenter, slotpause)
     QTest::qWait(500);
     presenter->slotvolumeChanged();
 
-}
+}*/
 
 TEST(Presenter, slotloopStatusRequested)
 {

@@ -41,9 +41,9 @@ TEST(Wayland, wayland)
     ToolboxProxy *toolboxProxy = w_wayland->toolbox();
     ToolButton *listBtn = toolboxProxy->listBtn();
     ToolButton *fsBtn = toolboxProxy->fsBtn();
-    DButtonBoxButton* playBtn = toolboxProxy->playBtn();
-    DButtonBoxButton* nextBtn = toolboxProxy->nextBtn();
-    DButtonBoxButton* prevBtn = toolboxProxy->prevBtn();
+    ButtonBoxButton* playBtn = static_cast<ButtonBoxButton *>(toolboxProxy->playBtn());
+    ButtonBoxButton* nextBtn = static_cast<ButtonBoxButton *>(toolboxProxy->nextBtn());
+    ButtonBoxButton* prevBtn = static_cast<ButtonBoxButton *>(toolboxProxy->prevBtn());
     QList<QUrl> listPlayFiles;
     listPlayFiles << QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/demo.mp4")\
                   << QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/bensound-sunny.mp3");
@@ -73,6 +73,7 @@ TEST(Wayland, wayland)
         QTest::mouseClick(fsBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 500);
         QTest::mouseMove(listBtn, QPoint(), 200);
         QTest::mouseClick(listBtn, Qt::LeftButton, Qt::NoModifier,QPoint(), 500);
+        fsBtn->showToolTip();
 
         QTest::mouseMove(nextBtn, QPoint(), 200);
         QTest::mouseClick(nextBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 500); //play next
@@ -96,6 +97,14 @@ TEST(Wayland, wayland)
     fileList << "/data/source/deepin-movie-reborn/movie/demo.mp4"\
              <<"/data/source/deepin-movie-reborn/movie/bensound-sunny.mp3";
     appAdaptor->openFiles(fileList);
+
+
+    QEvent enterEvent(QEvent::Enter);
+    QEvent leaveEvent(QEvent::Leave);
+    QApplication::sendEvent(playBtn, &enterEvent);
+    QApplication::sendEvent(playBtn, &leaveEvent);
+    QApplication::sendEvent(fsBtn, &enterEvent);
+    QApplication::sendEvent(fsBtn, &leaveEvent);
 
 
 #if !defined (__mips__ ) && !defined(__aarch64__)

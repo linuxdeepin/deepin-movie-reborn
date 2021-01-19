@@ -56,5 +56,6 @@ TEST(Settings, shortcut)
     Settings::get().settings()->setOption("subtitle.font.size", 20);
     Settings::get().settings()->setOption("base.play.hwaccel", 1);
     emit Settings::get().hwaccelModeChanged("base.play.hwaccel", 1);
+
 //    Settings::get().settings()->setOption("play.global_volume", 120);
 }

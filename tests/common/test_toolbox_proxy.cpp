@@ -70,20 +70,14 @@ TEST(ToolBox, tip)
     tip->deleteLater();
 }
 
-/*TEST(ToolBox, reloadFile)
+TEST(ToolBox, animationLabel)
 {
-    MainWindow* w = dApp->getMainWindow();
-    w->show();
+    MainWindow *mw = new MainWindow();
+    AnimationLabel *aLabel = new AnimationLabel(mw, mw, false);
+    aLabel->show();
 
-    PlayerEngine* egine =  w->engine();
-
-    QList<QUrl> listPlayFiles;
-
-    listPlayFiles<<QUrl::fromLocalFile("/home/uosf/Videos/3.mp4")\
-                <<QUrl::fromLocalFile("/home/uosf/Videos/4.mp4")\
-               <<QUrl::fromLocalFile("/home/uosf/Music/music1.mp3");
-
-    const auto &valids = egine->addPlayFiles(listPlayFiles);
-
-    egine->playByName(valids[0]);
-}*/
+    QEvent moveEvent(QEvent::Move);
+    QMouseEvent releaseEvent(QEvent::MouseButtonRelease, QPoint(0,0), Qt::LeftButton, Qt::NoButton, Qt::NoModifier);
+    QApplication::sendEvent(aLabel, &moveEvent);
+    QApplication::sendEvent(aLabel, &releaseEvent);
+}

@@ -77,9 +77,3 @@ TEST(libdmr, movieConfiguration)
                 ConfigKnownKey::ExternalSubs, QString());
 }
 
-TEST(libdmr, onlineSub)
-{
-//    OnlineSubtitle::get().subtitlesDownloadComplete();
-//    OnlineSubtitle::get().downloadSubtitles();
-}
-

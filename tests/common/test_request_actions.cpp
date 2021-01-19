@@ -72,18 +72,50 @@ TEST(requestAction, sound)
 TEST(requestAction, playMode)
 {
     MainWindow* w = dApp->getMainWindow();
+    PlayerEngine *engine =  w->engine();
+    QList<QUrl> listPlayFiles;
+
+    listPlayFiles << QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/demo.mp4")\
+                  << QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/bensound-sunny.mp3");
+
+    const QList<QUrl> &valids = engine->addPlayFiles(listPlayFiles);
+    qDebug() << __func__ << valids;
     w->show();
 
-    QTest::qWait(500);
+    QTest::qWait(100);
     w->requestAction(ActionFactory::ActionKind::OrderPlay);
+    QTest::qWait(100);
+    w->requestAction(ActionFactory::ActionKind::GotoPlaylistNext);
     QTest::qWait(500);
+    w->requestAction(ActionFactory::ActionKind::GotoPlaylistPrev);
+
+    QTest::qWait(300);
     w->requestAction(ActionFactory::ActionKind::ShufflePlay);
+    QTest::qWait(100);
+    w->requestAction(ActionFactory::ActionKind::GotoPlaylistNext);
     QTest::qWait(500);
+    w->requestAction(ActionFactory::ActionKind::GotoPlaylistPrev);
+
+    QTest::qWait(300);
     w->requestAction(ActionFactory::ActionKind::SinglePlay);
+    QTest::qWait(100);
+    w->requestAction(ActionFactory::ActionKind::GotoPlaylistNext);
     QTest::qWait(500);
+    w->requestAction(ActionFactory::ActionKind::GotoPlaylistPrev);
+
+    QTest::qWait(300);
     w->requestAction(ActionFactory::ActionKind::SingleLoop);
+    QTest::qWait(100);
+    w->requestAction(ActionFactory::ActionKind::GotoPlaylistNext);
     QTest::qWait(500);
+    w->requestAction(ActionFactory::ActionKind::GotoPlaylistPrev);
+
+    QTest::qWait(300);
     w->requestAction(ActionFactory::ActionKind::ListLoop);
+    QTest::qWait(100);
+    w->requestAction(ActionFactory::ActionKind::GotoPlaylistNext);
+    QTest::qWait(500);
+    w->requestAction(ActionFactory::ActionKind::GotoPlaylistPrev);
 }
 
 TEST(requestAction, playSpeed)
@@ -132,7 +164,7 @@ TEST(requestAction, frame)
     w->requestAction(ActionFactory::ActionKind::PreviousFrame);
 }
 
-TEST(requestAction,Mute)
+TEST(requestAction,mute)
 {
     MainWindow* w = dApp->getMainWindow();
 
@@ -145,10 +177,13 @@ TEST(requestAction,Mute)
 TEST(requestAction, subtitle)
 {
     MainWindow* w = dApp->getMainWindow();
+    PlayerEngine *engine =  w->engine();
     w->show();
 
     QTest::qWait(300);
     w->requestAction(ActionFactory::ActionKind::LoadSubtitle);
+    QTest::qWait(100);
+    engine->loadSubtitle(QFileInfo(QString("/data/source/deepin-movie-reborn/movie/Hachiko.A.Dog's.Story.ass")));
     QTest::qWait(100);
     w->requestAction(ActionFactory::ActionKind::HideSubtitle);
     QTest::qWait(100);
