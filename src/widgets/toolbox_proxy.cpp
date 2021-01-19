@@ -1833,6 +1833,8 @@ void ToolboxProxy::slotVolumeButtonClicked()
 {
     if (_volSlider->getsliderstate())
         return;
+    //与其他按键保持一致，工具栏隐藏时不响应
+    if (!isVisible()) return;
     /*
      * 设置-2为已经完成第一次打开设置音量
      * -1为初始化数值
