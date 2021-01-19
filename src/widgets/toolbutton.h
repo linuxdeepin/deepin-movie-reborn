@@ -367,6 +367,7 @@ protected:
     void enterEvent(QEvent *ev) override;
     void leaveEvent(QEvent *ev) override;
     void wheelEvent(QWheelEvent *wev) override;
+    void focusOutEvent(QFocusEvent *ev);
 
 private:
     QString _name;

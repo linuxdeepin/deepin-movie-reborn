@@ -92,4 +92,11 @@ void VolumeButton::wheelEvent(QWheelEvent *we)
     }
 }
 
+//tab键焦点移出时同鼠标移出，响应自动隐藏
+void VolumeButton::focusOutEvent(QFocusEvent *ev)
+{
+    emit leaved();
+    DIconButton::focusOutEvent(ev);
+}
+
 }

@@ -2040,6 +2040,8 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
     }
 
     case ActionFactory::ActionKind::ToggleFullscreen: {
+        //音量条控件打开时全屏位置异常，全屏时关掉音量条
+        _toolbox->closeAnyPopup();
         if (isFullScreen()) {
             if (_lastWindowState == Qt::WindowMaximized) {
                 _maxfornormalflag = true;

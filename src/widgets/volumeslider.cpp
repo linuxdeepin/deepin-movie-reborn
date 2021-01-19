@@ -57,6 +57,7 @@ VolumeSlider::VolumeSlider(MainWindow *mw, QWidget *parent)
     m_slider->slider()->setAccessibleName(SLIDER);
     m_slider->slider()->setMinimumHeight(120);
     m_slider->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred));
+    m_slider->slider()->setFocusPolicy(Qt::NoFocus);
     vLayout->addWidget(m_slider, 1, Qt::AlignCenter);
 
     m_pBtnChangeMute = new DToolButton(this);
@@ -68,6 +69,7 @@ VolumeSlider::VolumeSlider(MainWindow *mw, QWidget *parent)
     m_pBtnChangeMute->setFixedSize(30, 30);
     m_pBtnChangeMute->setIconSize(QSize(30, 30));
     m_pBtnChangeMute->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred));
+    m_pBtnChangeMute->setFocusPolicy(Qt::NoFocus);
     vLayout->addStretch(10);
     vLayout->addWidget(m_pBtnChangeMute, 0, Qt::AlignHCenter);
     vLayout->addStretch();
