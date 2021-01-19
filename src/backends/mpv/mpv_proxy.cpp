@@ -66,6 +66,9 @@ static void mpv_callback(void *d)
 MpvProxy::MpvProxy(QWidget *parent)
     : Backend(parent)
 {
+    m_mapWaitSet.clear();
+    m_vecWaitCommand.clear();
+
     m_parentWidget = parent;
     if (!CompositingManager::get().composited()) {
         setWindowFlags(Qt::FramelessWindowHint);
@@ -134,6 +137,24 @@ void MpvProxy::firstInit()
             // _gl_widget->initMpvFuns();
             // }
         }
+    }
+
+    m_bInited = true;
+    initSetting();
+}
+
+void MpvProxy::initSetting()
+{
+    QMapIterator<QString, QVariant> mapItor(m_mapWaitSet);
+    while (mapItor.hasNext()) {
+        mapItor.next();
+        my_set_property(_handle, mapItor.key(), mapItor.value());
+    }
+
+    QVectorIterator<QVariant> vecItor(m_vecWaitCommand);
+    while (vecItor.hasNext()) {
+        my_command(_handle, vecItor.peekNext());
+        vecItor.next();
     }
 }
 
@@ -722,11 +743,6 @@ bool MpvProxy::loadSubtitle(const QFileInfo &fi)
 {
     //movie could be in an inner state that marked as Stopped when loadfile executes
     //if (state() == PlayState::Stopped) { return true; }
-    if (!m_bInited) {
-        firstInit();
-        m_bInited = true;
-    }
-
     if (!fi.exists())
         return false;
 
@@ -779,11 +795,6 @@ void MpvProxy::addSubSearchPath(const QString &path)
 
 void MpvProxy::setSubCodepage(const QString &cp)
 {
-    if (!m_bInited) {
-        m_bInited = true;
-        firstInit();
-    }
-
     auto cp2 = cp;
     if (!cp.startsWith("+") && cp != "auto")
         cp2.prepend('+');
@@ -903,11 +914,6 @@ void MpvProxy::changeSoundMode(SoundMode sm)
 
 void MpvProxy::volumeUp()
 {
-    if (!m_bInited) {
-        firstInit();
-        m_bInited = true;
-    }
-
     if (volume() >= 200)
         return;
 
@@ -916,11 +922,6 @@ void MpvProxy::volumeUp()
 
 void MpvProxy::changeVolume(int val)
 {
-    if (!m_bInited) {
-        firstInit();
-        m_bInited = true;
-    }
-
     my_set_property(_handle, "volume", volumeCorrection(val));
 }
 
@@ -969,20 +970,11 @@ void MpvProxy::toggleMute()
 {
     QList<QVariant> args = { "cycle", "mute" };
     qInfo() << args;
-    if (!m_bInited) {
-        firstInit();
-        m_bInited = true;
-    }
     my_command(_handle, args);
 }
 
 void MpvProxy::setMute(bool bMute)
 {
-    if (!m_bInited) {
-        firstInit();
-        m_bInited = true;
-    }
-
     my_set_property(_handle, "mute", bMute);
 }
 
@@ -996,7 +988,6 @@ void MpvProxy::play()
 {
     if (!m_bInited) {
         firstInit();
-        m_bInited = true;
     }
 
     if (PlayerEngine::isAudioFile(_file.toString())) {
@@ -1127,10 +1118,6 @@ void MpvProxy::pauseResume()
 
 void MpvProxy::stop()
 {
-    if (!m_bInited) {
-        firstInit();
-        m_bInited = true;
-    }
     QList<QVariant> args = { "stop" };
     qInfo() << args;
     my_command(_handle, args);
@@ -1213,6 +1200,12 @@ QVariant MpvProxy::my_get_property(mpv_handle *ctx, const QString &name) const
 int MpvProxy::my_set_property(mpv_handle *ctx, const QString &name, const QVariant &v)
 {
     node_builder node(v);
+
+    if (!m_bInited) {
+        m_mapWaitSet.insert(name, v);
+        return 0;
+    }
+
     if (!m_setProperty) return 0;
     return m_setProperty(ctx, name.toUtf8().data(), MPV_FORMAT_NODE, node.node());
 }
@@ -1241,6 +1234,11 @@ QVariant MpvProxy::my_get_property_variant(mpv_handle *ctx, const QString &name)
 
 QVariant MpvProxy::my_command(mpv_handle *ctx, const QVariant &args)
 {
+    if (!m_bInited) {
+        m_vecWaitCommand.append(args);
+        return QVariant();
+    }
+
     node_builder node(args);
     mpv_node res;
     int err = m_commandNode(ctx, node.node(), &res);
@@ -1480,11 +1478,6 @@ void MpvProxy::previousFrame()
 
 void MpvProxy::changehwaccelMode(hwaccelMode hwaccelMode)
 {
-    if (!m_bInited) {
-        firstInit();
-        m_bInited = true;
-    }
-
     switch (hwaccelMode) {
     case hwaccelAuto:
         m_bHwaccelAuto = true;

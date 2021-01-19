@@ -5,7 +5,8 @@ rm -rf ../$(dirname $0)/build-ut
 mkdir ../$(dirname $0)/build-ut
 cd ../$(dirname $0)/build-ut
 
-export QT_QPA_PLATFORM=''
+export QT_QPA_PLATFORM=
+echo $QT_QPA_PLATFORM
 export QTEST_FUNCTION_TIMEOUT='400000'
 #export QT_SELECT=qt5
 cmake -DCMAKE_BUILD_TYPE=Debug ..

@@ -95,22 +95,15 @@ VolumeSlider::VolumeSlider(MainWindow *mw, QWidget *parent)
 
 VolumeSlider::~VolumeSlider()
 {
-    Settings::get().setInternalOption("global_volume", m_nVolume > 100 ? 100 : m_nVolume);
-    Settings::get().setInternalOption("mute", m_bIsMute);
 }
 
 void VolumeSlider::initVolume()
 {
-    QTimer::singleShot(500, this, [ = ] {   //延迟加载，先等待主界面加载
-        //初始化音量
-        int nVolume = Settings::get().internalOption("global_volume").toInt();
-        changeVolume(nVolume);
+    int nVolume = Settings::get().internalOption("global_volume").toInt();
+    bool bMute = Settings::get().internalOption("mute").toBool();
 
-        bool bMute = Settings::get().internalOption("mute").toBool();
-        changeMuteState(bMute);
-
-        refreshIcon();
-    });
+    changeMuteState(bMute);
+    changeVolume(nVolume);
 }
 
 void VolumeSlider::stopTimer()
@@ -319,7 +312,7 @@ void VolumeSlider::changeVolume(int nVolume)
 {
     if (nVolume <= 0) {
         nVolume = 0;
-    } else if (nVolume > 200) { 
+    } else if (nVolume > 200) {
         nVolume = 200;
     }
 
@@ -346,11 +339,16 @@ void VolumeSlider::changeMuteState(bool bMute)
 {
     //disconnect(&volumeMonitoring, &VolumeMonitoring::muteChanged, this, &VolumeSlider::changeMuteState);
 
-    if (m_bIsMute != bMute) {
-        m_bIsMute = bMute;
-        //setMute(bMute);
-        emit sigMuteStateChanged(bMute);
+    if (m_bIsMute == bMute || m_nVolume == 0) {
+        return;
     }
+
+    //setMute(bMute);
+    m_bIsMute = bMute;
+    refreshIcon();
+    Settings::get().setInternalOption("mute", m_bIsMute);
+
+    emit sigMuteStateChanged(bMute);
 
     //connect(&volumeMonitoring, &VolumeMonitoring::muteChanged, this, &VolumeSlider::changeMuteState);
 }
@@ -365,7 +363,9 @@ void VolumeSlider::volumeChanged(int nVolume)
 
     refreshIcon();
 
-    sigVolumeChanged(nVolume);
+    Settings::get().setInternalOption("global_volume", m_nVolume > 100 ? 100 : m_nVolume);
+
+    emit sigVolumeChanged(nVolume);
 
     //setAudioVolume(nVolume);
 
@@ -392,8 +392,6 @@ void VolumeSlider::refreshIcon()
 void VolumeSlider::muteButtnClicked()
 {
     changeMuteState(!m_bIsMute);
-
-    refreshIcon();
 }
 
 bool VolumeSlider::getsliderstate()

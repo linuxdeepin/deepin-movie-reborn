@@ -146,6 +146,8 @@ public:
      */
     void firstInit();
 
+    void initSetting();
+
     const PlayingMovieInfo &playingMovieInfo() override;
     // mpv plays all files by default  (I hope)
     bool isPlayable() const override
@@ -289,6 +291,8 @@ private:
     bool m_bInited {false};
     bool m_bHwaccelAuto {true};   //如果设置为不为自动，则不允许此类改变硬件设置
     bool m_bLastIsSpecficFormat {false};
+    QMap<QString, QVariant> m_mapWaitSet;  //等待mpv初始化后设置的参数
+    QVector<QVariant> m_vecWaitCommand;    //等待mpv初始化后设置的参数
 };
 
 }
