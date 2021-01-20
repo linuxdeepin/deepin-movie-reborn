@@ -226,6 +226,7 @@ public:
 
         //_closeBtn = new FloatingButton(this);
         _closeBtn = new DFloatingButton(DStyle::SP_CloseButton, this);
+        _closeBtn->setFocusPolicy(Qt::NoFocus);
         _closeBtn->setObjectName(PLAYITEN_CLOSE_BUTTON);
         _closeBtn->setAccessibleName(PLAYITEN_CLOSE_BUTTON);
         _closeBtn->setIconSize(QSize(28, 28));
@@ -851,7 +852,6 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
 
     _playlist = new DListWidget();
     _playlist->setAttribute(Qt::WA_DeleteOnClose);
-    _playlist->setFocusPolicy(Qt::NoFocus);
     _playlist->setFixedSize(width() - 205, 288);
     _playlist->setContentsMargins(0, 0, 0, 0);
     _playlist->viewport()->setAutoFillBackground(false);
@@ -880,6 +880,8 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
         _playlist->setWindowFlags(Qt::FramelessWindowHint | Qt::BypassWindowManagerHint);
         _playlist->setAttribute(Qt::WA_NativeWindow);
     }
+
+    setTabOrder(m_pClearButton, _playlist);
 
 #ifndef USE_DXCB
     auto *mwl = new MainWindowListener(this);
