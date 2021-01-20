@@ -27,7 +27,7 @@ VolumeSlider::VolumeSlider(MainWindow *mw, QWidget *parent)
 
     hide();
 
-    setFixedSize(62, 201);  //volSlider's width and height
+    setFixedSize(VOLSLIDER_WIDTH, VOLSLIDER_HEIGHT);
     QVBoxLayout *vLayout = new QVBoxLayout(this);
     vLayout->setContentsMargins(2, 16, 2, 14);  //内边距，与UI沟通确定
     vLayout->setSpacing(0);
@@ -39,7 +39,8 @@ VolumeSlider::VolumeSlider(MainWindow *mw, QWidget *parent)
     font.setWeight(QFont::Medium);
 
     vLayout->addStretch();
-    m_pLabShowVolume = new QLabel(_mw);
+    m_pLabShowVolume = new DLabel(_mw);
+    m_pLabShowVolume->setForegroundRole(QPalette::BrightText);
     m_pLabShowVolume->setFont(font);
     m_pLabShowVolume->setAlignment(Qt::AlignCenter);
     m_pLabShowVolume->setText("0%");
@@ -436,14 +437,11 @@ void VolumeSlider::leaveEvent(QEvent *e)
     QWidget::leaveEvent(e);
 #endif
 }
-
 void VolumeSlider::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
     painter.drawPixmap(0, 0, m_bgImage);
 }
-
-
 bool VolumeSlider::eventFilter(QObject *obj, QEvent *e)
 {
     if (e->type() == QEvent::Wheel) {

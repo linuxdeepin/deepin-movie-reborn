@@ -70,7 +70,7 @@ private:
 
 private:
     DToolButton *m_pBtnChangeMute {nullptr};
-    QLabel *m_pLabShowVolume {nullptr};
+    DLabel *m_pLabShowVolume {nullptr};
     DSlider *m_slider;
     MainWindow *_mw;
     QTimer m_autoHideTimer;
