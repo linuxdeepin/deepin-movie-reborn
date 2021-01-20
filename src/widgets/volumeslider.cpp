@@ -102,11 +102,13 @@ VolumeSlider::~VolumeSlider()
 
 void VolumeSlider::initVolume()
 {
-    int nVolume = Settings::get().internalOption("global_volume").toInt();
-    bool bMute = Settings::get().internalOption("mute").toBool();
+    QTimer::singleShot(100, this, [ = ] { //延迟加载等待信号槽连接
+        int nVolume = Settings::get().internalOption("global_volume").toInt();
+        bool bMute = Settings::get().internalOption("mute").toBool();
 
-    changeMuteState(bMute);
-    changeVolume(nVolume);
+        changeMuteState(bMute);
+        changeVolume(nVolume);
+    });
 }
 
 void VolumeSlider::stopTimer()
