@@ -106,8 +106,10 @@ void VolumeSlider::initVolume()
         int nVolume = Settings::get().internalOption("global_volume").toInt();
         bool bMute = Settings::get().internalOption("mute").toBool();
 
-        changeMuteState(bMute);
         changeVolume(nVolume);
+        changeMuteState(bMute);
+
+        refreshIcon();           //保证初始化音量和配置文件中音量一致时，也能得到刷新
     });
 }
 
@@ -183,7 +185,6 @@ QString VolumeSlider::readSinkInputPath()
 
         QVariant nameV = ApplicationAdaptor::redDBusProperty("com.deepin.daemon.Audio", curPath.path(),
                                                              "com.deepin.daemon.Audio.SinkInput", "Name");
-
         QString strMovie = QObject::tr("Movie");
         if (!nameV.isValid() || (!nameV.toString().contains(strMovie, Qt::CaseInsensitive) && !nameV.toString().contains("deepin-movie", Qt::CaseInsensitive)))
             continue;
