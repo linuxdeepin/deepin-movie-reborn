@@ -509,15 +509,15 @@ void PlayerEngine::changehwaccelMode(Backend::hwaccelMode hwaccelMode)
 
 void PlayerEngine::toggleMute()
 {
-//    if (!_current) return;
-//    //发送信号通知初始化库函数
-//    if (!m_bMpvFunsLoad) {
-//        emit mpvFunsLoadOver();
-//        m_bMpvFunsLoad = true;
-//    }
+    if (!_current) return;
+    //发送信号通知初始化库函数
+    if (!m_bMpvFunsLoad) {
+        emit mpvFunsLoadOver();
+        m_bMpvFunsLoad = true;
+    }
 
-//    _current->toggleMute();
-//    emit volumeChanged();
+    _current->toggleMute();
+    emit volumeChanged();
 }
 
 void PlayerEngine::setMute(bool bMute)
