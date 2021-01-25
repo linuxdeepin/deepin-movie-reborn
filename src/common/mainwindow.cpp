@@ -998,9 +998,9 @@ MainWindow::MainWindow(QWidget *parent)
     m_pMovieWidget = new MovieWidget(this);
     m_pMovieWidget->hide();
 
-    QTimer::singleShot(100, this, [ = ] {    //把焦点设回工具栏
-        _toolbox->setFocus();
-    });
+//    QTimer::singleShot(100, this, [ = ] {    //把焦点设回工具栏
+//        _toolbox->setFocus();
+//    });
 }
 
 void MainWindow::setupTitlebar()
@@ -2862,7 +2862,9 @@ void MainWindow::suspendToolsWindow()
 
         _titlebar->hide();
         _toolbox->hide();
-        _toolbox->setFocus();
+        //reset focus to mainWindow when the titlebar and toolbox is hedden
+        //the tab focus will be re-executed in the order set
+        this->setFocus();
     } else {
         if (_autoHideTimer.isActive())
             return;

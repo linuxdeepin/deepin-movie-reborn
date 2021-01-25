@@ -71,6 +71,7 @@ Titlebar::Titlebar(QWidget *parent) : DBlurEffectWidget(parent), d_ptr(new Title
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
     d->m_titlebar = new DTitlebar(this);
+    d->m_titlebar->setFocusPolicy(Qt::NoFocus);
     layout->addWidget(d->m_titlebar);
     setLayout(layout);
 

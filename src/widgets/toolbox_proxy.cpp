@@ -1375,12 +1375,12 @@ void ToolboxProxy::setup()
     DFontSizeManager::instance()->bind(_fullscreentimelableend, DFontSizeManager::T6);
 
     _progBar = new DMRSlider(bot_toolWgt);
-    _progBar->slider()->setFocusPolicy(Qt::NoFocus);
     _progBar->setObjectName(MOVIE_PROGRESS_WIDGET);
-    _progBar->slider()->setOrientation(Qt::Horizontal);
+    _progBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     _progBar->slider()->setObjectName(PROGBAR_SLIDER);
     _progBar->slider()->setAccessibleName(PROGBAR_SLIDER);
-    _progBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+    _progBar->slider()->setOrientation(Qt::Horizontal);
+    _progBar->slider()->setFocusPolicy(Qt::TabFocus);
     _progBar->slider()->setRange(0, 100);
     _progBar->setValue(0);
     _progBar->setEnableIndication(_engine->state() != PlayerEngine::Idle);
@@ -1593,8 +1593,8 @@ void ToolboxProxy::setup()
     signalMapper->setMapping(_listBtn, "list");
     _right->addWidget(_listBtn);
 
-//    setTabOrder(_nextBtn, _progBar->slider());
-//    setTabOrder(_prevBtn, _prevBtn);
+    //将进度条的Tab键次序移动到nextBtn之后
+    setTabOrder(_nextBtn, _progBar->slider());
 
     // these tooltips is not used due to deepin ui design
     //lmh0910wayland下用这一套tooltip

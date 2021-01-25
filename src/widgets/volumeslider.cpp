@@ -28,6 +28,7 @@ VolumeSlider::VolumeSlider(MainWindow *mw, QWidget *parent)
     hide();
 
     setFixedSize(VOLSLIDER_WIDTH, VOLSLIDER_HEIGHT);
+    setFocusPolicy(Qt::TabFocus);
     QVBoxLayout *vLayout = new QVBoxLayout(this);
     vLayout->setContentsMargins(2, 16, 2, 14);  //内边距，与UI沟通确定
     vLayout->setSpacing(0);
