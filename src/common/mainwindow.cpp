@@ -1320,7 +1320,7 @@ void MainWindow::animatePlayState()
     if (!_inBurstShootMode && _engine->state() == PlayerEngine::CoreState::Paused) {
         if (!_miniMode) {
             _animationlable->setGeometry(width() / 2 - 100, height() / 2 - 100, 200, 200);
-            _animationlable->stop();
+            _animationlable->pauseAnimation();
         }
     }
 }
@@ -2388,7 +2388,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                 //startPlayStateAnimation(true);
                 if (!_miniMode) {
                     _animationlable->setGeometry(width() / 2 - 100, height() / 2 - 100, 200, 200);
-                    _animationlable->start();
+                    _animationlable->playAnimation();
                 }
                 QTimer::singleShot(160, [ = ]() {
                     _engine->pauseResume();
@@ -2945,7 +2945,7 @@ void MainWindow::checkWarningMpvLogsChanged(const QString prefix, const QString 
             //startPlayStateAnimation(true);
             if (!_miniMode) {
                 _animationlable->setGeometry(width() / 2 - 100, height() / 2 - 100, 200, 200);
-                _animationlable->start();
+                _animationlable->playAnimation();
             }
             _engine->pauseResume();
         });
