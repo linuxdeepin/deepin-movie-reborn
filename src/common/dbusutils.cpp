@@ -19,6 +19,7 @@ QVariant DBusUtils::redDBusProperty(const QString &service, const QString &path,
 {
     // 创建QDBusInterface接口
     mutex.lock();
+
     QDBusInterface ainterface(service, path,
                               interface,
                               QDBusConnection::sessionBus());
