@@ -252,7 +252,7 @@ namespace dmr {
         m_context_report(_render_ctx);
     }
 
-    MpvGLWidget::MpvGLWidget(QWidget *parent, myHandle h)
+    MpvGLWidget::MpvGLWidget(QWidget *parent, MpvHandle h)
         :QOpenGLWidget(parent), _handle(h) { 
          initMpvFuns();
         setUpdateBehavior(QOpenGLWidget::NoPartialUpdate);

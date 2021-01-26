@@ -4170,7 +4170,7 @@ void MainWindow::toggleUIMode()
             flags &= ~Qt::X11BypassWindowManagerHint;
         }
         //wayland下opengl窗口使用之前必须先调用makeCurrent;
-        _engine->MakeCurrent();
+        _engine->makeCurrent();
         setWindowFlags(flags);
         show();
     }

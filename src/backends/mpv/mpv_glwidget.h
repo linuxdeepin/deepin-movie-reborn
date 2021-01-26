@@ -58,7 +58,7 @@ class MpvGLWidget : public QOpenGLWidget
 public:
     friend class MpvProxy;
 
-    MpvGLWidget(QWidget *parent, myHandle h);
+    MpvGLWidget(QWidget *parent, MpvHandle h);
     virtual ~MpvGLWidget();
 
     /*
@@ -70,7 +70,7 @@ public:
      * @brief setHandle 设置句柄
      * @param h 传入的句柄
      */
-    void setHandle(myHandle h);
+    void setHandle(MpvHandle h);
 
 protected:
     void initializeGL() override;
@@ -90,7 +90,7 @@ protected slots:
     void onFrameSwapped();
 
 private:
-    myHandle _handle;
+    MpvHandle _handle;
     mpv_render_context *_render_ctx {nullptr};
 
     bool _playing {false};

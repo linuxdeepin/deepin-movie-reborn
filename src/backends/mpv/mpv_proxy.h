@@ -62,14 +62,14 @@ typedef int (*mpvinitialize)(mpv_handle *ctx);
 typedef void (*mpv_freeNode_contents)(mpv_node *node);
 typedef void (*mpv_terminateDestroy)(mpv_handle *ctx);
 
-static QString libPath(const QString &strlib)
+static QString libPath(const QString &sLib)
 {
-    QDir  dir;
+    QDir dir;
     QString path  = QLibraryInfo::location(QLibraryInfo::LibrariesPath);
     dir.setPath(path);
-    QStringList list = dir.entryList(QStringList() << (strlib + "*"), QDir::NoDotAndDotDot | QDir::Files); //filter name with strlib
-    if (list.contains(strlib)) {
-        return strlib;
+    QStringList list = dir.entryList(QStringList() << (sLib + "*"), QDir::NoDotAndDotDot | QDir::Files); //filter name with strlib
+    if (list.contains(sLib)) {
+        return sLib;
     } else {
         list.sort();
     }
@@ -78,16 +78,16 @@ static QString libPath(const QString &strlib)
     return list.last();
 }
 
-class myHandle
+class MpvHandle
 {
     struct container {
-        explicit container(mpv_handle *h) : mpv(h) {}
+        explicit container(mpv_handle *pHandle) : m_pHandle(pHandle) {}
         ~container()
         {
-            mpv_terminateDestroy fun = (mpv_terminateDestroy)QLibrary::resolve(libPath("libmpv.so.1"), "mpv_terminate_destroy");
-            fun(mpv);
+            mpv_terminateDestroy func = (mpv_terminateDestroy)QLibrary::resolve(libPath("libmpv.so.1"), "mpv_terminate_destroy");
+            func(m_pHandle);
         }
-        mpv_handle *mpv;
+        mpv_handle *m_pHandle;
     };
     QSharedPointer<container> sptr;
 public:
@@ -99,17 +99,17 @@ public:
     // destroying the mpv_handle.
     // Never create multiple wrappers from the same raw mpv_handle; copy the
     // wrapper instead (that's what it's for).
-    static myHandle myFromRawHandle(mpv_handle *handle)
+    static MpvHandle fromRawHandle(mpv_handle *pHandle)
     {
-        myHandle h;
-        h.sptr = QSharedPointer<container>(new container(handle));
-        return h;
+        MpvHandle mpvHandle;
+        mpvHandle.sptr = QSharedPointer<container>(new container(pHandle));
+        return mpvHandle;
     }
 
     // Return the raw handle; for use with the libmpv C API.
     operator mpv_handle *() const
     {
-        return sptr ? (*sptr).mpv : 0;
+        return sptr ? (*sptr).m_pHandle : 0;
     }
 };
 
@@ -117,18 +117,25 @@ namespace dmr {
 using namespace mpv::qt;
 class MpvGLWidget;
 
+/**
+ * @file 封装mpv播放引擎
+ */
+
 class MpvProxy: public Backend
 {
     Q_OBJECT
 
     struct my_node_autofree {
-        mpv_node *ptr;
-        explicit my_node_autofree(mpv_node *a_ptr) : ptr(a_ptr) {}
+        mpv_node *pNode;
+        explicit my_node_autofree(mpv_node *pValue) : pNode(pValue) {}
         ~my_node_autofree()
         {
-            mpv_freeNode_contents(ptr);
+            mpv_freeNode_contents(pNode);
         }
     };
+
+signals:
+    void has_mpv_events();
 
 public:
     explicit MpvProxy(QWidget *parent = 0);
@@ -139,158 +146,292 @@ public:
      * @brief initMpvFuns   初始化MPV动态调用库函数
      */
     void initMpvFuns();
-
     //add by heyi
     /**
      * @brief firstInit 第一次播放需要初库始化函数指针
      */
     void firstInit();
-
+    /**
+     * @brief 初始化mpv设置
+     */
     void initSetting();
-
+    /**
+     * @brief 正在播放影片的影片信息
+     */
     const PlayingMovieInfo &playingMovieInfo() override;
     // mpv plays all files by default  (I hope)
     bool isPlayable() const override
     {
         return true;
     }
-
     // polling until current playback ended
     void pollingEndOfPlayback();
     // polling until current playback started
     void pollingStartOfPlayback();
-
+    /**
+     * @brief 获取影片时间长
+     */
     qint64 duration() const override;
+    /**
+     * @brief 获取影片当前进度
+     */
     qint64 elapsed() const override;
+    /**
+     * @brief 获取当前影片显示大小
+     */
     QSize videoSize() const override;
-    void setPlaySpeed(double times) override;
+    /**
+     * @brief 设置播放速度
+     * @param 范围0.01-100
+     */
+    void setPlaySpeed(double dTimes) override;
+    /**
+     * @brief 播放记录，记录播放到当前时刻
+     */
     void savePlaybackPosition() override;
-
-    bool loadSubtitle(const QFileInfo &fi) override;
+    /**
+     * @brief 加载字幕
+     */
+    bool loadSubtitle(const QFileInfo &fileInfo) override;
+    /**
+     * @brief 显示或隐藏字幕
+     */
     void toggleSubtitle() override;
+    /**
+     * @brief 获取字幕显示状态
+     * @return 是否可见
+     */
     bool isSubVisible() override;
-    void selectSubtitle(int id) override;
+    /**
+     * @brief 选择字幕
+     */
+    void selectSubtitle(int nId) override;
+    /**
+     * @brief 返回当前字幕id
+     */
     int sid() const override;
-    void setSubDelay(double secs) override;
+    /**
+     * @brief 设置字幕延时
+     * @param 延时多少秒
+     */
+    void setSubDelay(double dSecs) override;
+    /**
+     * @brief 返回当前字幕延时
+     */
     double subDelay() const override;
-    void updateSubStyle(const QString &font, int sz) override;
-    void setSubCodepage(const QString &cp) override;
+    /**
+     * @brief 设置字幕样式
+     * @param 字幕字体
+     * @param 字幕大小
+     */
+    void updateSubStyle(const QString &sFont, int nSize) override;
+    /**
+     * @brief 设置编码
+     */
+    void setSubCodepage(const QString &sCodePage) override;
+    /**
+     * @brief 返回当前编码
+     */
     QString subCodepage() override;
-    void addSubSearchPath(const QString &path) override;
-
-    void selectTrack(int id) override;
+    /**
+     * @brief 设置在线字幕路径
+     */
+    void addSubSearchPath(const QString &sPath) override;
+    /**
+     * @brief 设置声道
+     */
+    void selectTrack(int nId) override;
+    /**
+     * @brief 返回当前声道
+     */
     int aid() const override;
-
-    void changeSoundMode(SoundMode sm) override;
+    /**
+     * @brief 设置声道模式
+     * @param 声道模式（左声道、右声道、立体声）
+     */
+    void changeSoundMode(SoundMode soundMode) override;
+    /**
+     * @brief 获取mpv音量
+     */
     int volume() const override;
+    /**
+     * @brief 获取mpv静音状态
+     */
     bool muted() const override;
-
-    void setVideoAspect(double r) override;
+    /**
+     * @brief 设置画面比例
+     * @param 宽高比
+     */
+    void setVideoAspect(double dValue) override;
+    /**
+     * @brief 获取当前画面比例
+     * @return 画面比例
+     */
     double videoAspect() const override;
+    /**
+     * @brief 获取画面旋转角度
+     */
     int videoRotation() const override;
-    void setVideoRotation(int degree) override;
-
+    /**
+     * @brief 设置影片旋转角度
+     */
+    void setVideoRotation(int nDegree) override;
+    /**
+     * @brief 画面截图
+     */
     QImage takeScreenshot() override;
+    /**
+     * @brief 画面连拍截图
+     */
     void burstScreenshot() override; //initial the start of burst screenshotting
+    /**
+     * @brief 停止连拍截图
+     */
     void stopBurstScreenshot() override;
-
+    /**
+     * @brief 获取mpv参数值
+     * @param 要获取值的参数
+     * @return 返回的参数值
+     */
     QVariant getProperty(const QString &) override;
+    /**
+     * @brief 设置mpv参数值
+     * @param 想要设置值的参数
+     * @param 设置的值
+     */
     void setProperty(const QString &, const QVariant &) override;
-
+    /**
+     * @brief 播放下一帧画面
+     */
     void nextFrame() override;
+    /**
+     * @brief 播放上一帧画面
+     */
     void previousFrame() override;
+    /**
+     * @brief 设置硬解码方式
+     */
     void changehwaccelMode(hwaccelMode hwaccelMode) override;
-public:
-    //add by heyi
-    QVariant my_get_property(mpv_handle *ctx, const QString &name) const;
-    int my_set_property(mpv_handle *ctx, const QString &name, const QVariant &v);
-    bool my_command_async(mpv_handle *ctx, const QVariant &args, uint64_t tag);
-    int my_set_property_async(mpv_handle *ctx, const QString &name,
-                              const QVariant &v, uint64_t tag);
-    QVariant my_get_property_variant(mpv_handle *ctx, const QString &name);
-    QVariant my_command(mpv_handle *ctx, const QVariant &args);
 
-    mpv_waitEvent m_waitEvent{nullptr};
-    mpv_set_optionString m_setOptionString{nullptr};
-    mpv_setProperty m_setProperty{nullptr};
-    mpv_setProperty_async m_setPropertyAsync{nullptr};
-    mpv_commandNode m_commandNode{nullptr};
-    mpv_commandNode_async m_commandNodeAsync{nullptr};
-    mpv_getProperty m_getProperty{nullptr};
-    mpv_observeProperty m_observeProperty{nullptr};
-    mpv_eventName m_eventName{nullptr};
-    mpvCreate m_creat{nullptr};
-    mpv_requestLog_messages m_requestLogMessage{nullptr};
-    mpv_setWakeup_callback m_setWakeupCallback{nullptr};
-    mpvinitialize m_initialize{nullptr};
-    mpv_freeNode_contents m_freeNodecontents{nullptr};
-    void MakeCurrent() override;
+    void makeCurrent() override;
 
 public slots:
+    /**
+     * @brief 播放当前影片
+     */
     void play() override;
+    /**
+     * @brief 暂停或恢复暂停
+     */
     void pauseResume() override;
+    /**
+     * @brief 终止播放
+     */
     void stop() override;
-
-    void seekForward(int secs) override;
-    void seekBackward(int secs) override;
-    void seekAbsolute(int pos) override;
+    /**
+     * @brief 向前seek
+     * @param 当前往前多少秒
+     */
+    void seekForward(int nSecs) override;
+    /**
+     * @brief 向后seek
+     * @param 当前往后多少秒
+     */
+    void seekBackward(int nSecs) override;
+    /**
+     * @brief seek到某个位置
+     * @param 某个进度点(秒)
+     */
+    void seekAbsolute(int nPos) override;
+    /**
+     * @brief 加音量
+     */
     void volumeUp() override;
+    /**
+     * @brief 减音量
+     */
     void volumeDown() override;
-    void changeVolume(int val) override;
+    /**
+     * @brief 调整音量大小
+     */
+    void changeVolume(int nVol) override;
+    /**
+     * @brief 循环改变静音状态
+     */
     void toggleMute() override;
+    /**
+     * @brief 指定改变静音状态
+     */
     void setMute(bool bMute) override;
-    //lambda表达式改为槽函数
-    void slotStateChanged();
 
 protected:
-    void resizeEvent(QResizeEvent *re) override;
-    void showEvent(QShowEvent *re) override;
+    void initMember();      //初始化成员变量
+    void resizeEvent(QResizeEvent *pEvent) override;
+    void showEvent(QShowEvent *pEvent) override;
 
 protected slots:
     void handle_mpv_events();
     void stepBurstScreenshot();
-
-signals:
-    void has_mpv_events();
+    void slotStateChanged();
 
 private:
-    myHandle _handle;
-    MpvGLWidget *_gl_widget{nullptr};
-    QWidget *m_parentWidget;
-
-    bool _inBurstShotting {false};
-    QVariant _posBeforeBurst;
-    qint64 _burstStart {0};
-    QList<qint64> _burstPoints;
-
-    qint64 _startPlayDuration {0};
-
-    bool _pendingSeek {false};
-    PlayingMovieInfo _pmf;
-    int _videoRotation {0};
-
-    bool _polling {false};
-
-    bool _externalSubJustLoaded {false};
-
-    bool _connectStateChange {false};
-
-    bool _pauseOnStart {false};
-
-    bool _isJingJia {false};
-    QString m_strInitVo;
-
-    mpv_handle *mpv_init();
-    void processPropertyChange(mpv_event_property *ev);
-    void processLogMessage(mpv_event_log_message *ev);
+    mpv_handle *mpv_init();   //初始化mpv
+    void processPropertyChange(mpv_event_property *pEvent);
+    void processLogMessage(mpv_event_log_message *pEvent);
     QImage takeOneScreenshot();
     void updatePlayingMovieInfo();
-    void setState(PlayState s);
+    void setState(PlayState state);
     qint64 nextBurstShootPoint();
     int volumeCorrection(int);
-    bool m_bInited {false};
-    bool m_bHwaccelAuto {true};   //如果设置为不为自动，则不允许此类改变硬件设置
-    bool m_bLastIsSpecficFormat {false};
+
+    //add by heyi
+    QVariant my_get_property(mpv_handle *pHandle, const QString &sName) const;
+    int my_set_property(mpv_handle *pHandle, const QString &sName, const QVariant &value);
+    bool my_command_async(mpv_handle *pHandle, const QVariant &args, uint64_t tag);
+    int my_set_property_async(mpv_handle *pHandle, const QString &sName,
+                              const QVariant &v, uint64_t tag);
+    QVariant my_get_property_variant(mpv_handle *pHandle, const QString &sName);
+    QVariant my_command(mpv_handle *pHandle, const QVariant &args);
+
+private:
+    mpv_waitEvent m_waitEvent;
+    mpv_set_optionString m_setOptionString;
+    mpv_setProperty m_setProperty;
+    mpv_setProperty_async m_setPropertyAsync;
+    mpv_commandNode m_commandNode;
+    mpv_commandNode_async m_commandNodeAsync;
+    mpv_getProperty m_getProperty;
+    mpv_observeProperty m_observeProperty;
+    mpv_eventName m_eventName;
+    mpvCreate m_creat;
+    mpv_requestLog_messages m_requestLogMessage;
+    mpv_setWakeup_callback m_setWakeupCallback;
+    mpvinitialize m_initialize;
+    mpv_freeNode_contents m_freeNodecontents;
+
+    MpvHandle m_handle;                    //mpv句柄
+    MpvGLWidget *m_pMpvGLwidget;           //opengl窗口
+    QWidget *m_pParentWidget;
+    PlayingMovieInfo m_movieInfo;          //播放过的影片的信息
+
+    QString m_sInitVo;                     //初始vo方式
+    QVariant m_posBeforeBurst;             //截图前影片播放位置
+    QList<qint64> m_listBurstPoints;       //存储连拍截图截图位置
+
+    qint64 m_nBurstStart;                  //记录连拍截图次数
+    qint64 m_nStartPlayDuration;           //mpv播放视频的起始位置
+
+    bool m_bPendingSeek;
+    bool m_bInBurstShotting;               //是否停止连拍截图
+
+    bool m_bPolling;
+    bool m_bExternalSubJustLoaded;         //是否加载在线字幕
+    bool m_bConnectStateChange;
+    bool m_bPauseOnStart;                  //mpv是否在暂停中
+    bool m_bIsJingJia;                     //是否在景嘉微平台上
+    bool m_bInited;                        //mpv是否已经初始化
+    bool m_bHwaccelAuto;                   //如果设置为不为自动，则不允许此类改变硬件设置
+    bool m_bLastIsSpecficFormat;           //上一曲是否是特殊格式的影片，如果是则应该重新设置vo
     QMap<QString, QVariant> m_mapWaitSet;  //等待mpv初始化后设置的参数
     QVector<QVariant> m_vecWaitCommand;    //等待mpv初始化后设置的参数
 };

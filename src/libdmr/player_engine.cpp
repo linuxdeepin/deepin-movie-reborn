@@ -599,9 +599,9 @@ void PlayerEngine::previousFrame()
     if (!_current) return;
     _current->previousFrame();
 }
-void PlayerEngine::MakeCurrent()
+void PlayerEngine::makeCurrent()
 {
-    _current->MakeCurrent();
+    _current->makeCurrent();
 }
 
 void PlayerEngine::play()
