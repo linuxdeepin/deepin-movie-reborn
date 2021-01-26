@@ -27,42 +27,59 @@
  * version.  If you delete this exception statement from all source
  * files in the program, then also delete it here.
  */
+/**
+ * @file
+ * 此文件为打开url时的输入框。
+ */
 #include "dmr_lineedit.h"
 
 namespace dmr {
-
+/**
+ * @brief LineEdit 构造函数
+ * @param parent 父窗口
+ */
 LineEdit::LineEdit(QWidget *parent)
     : QLineEdit(parent)
 {
+    //参考设计图
     setFixedHeight(30);
 
     QIcon icon;
     icon.addFile(":/resources/icons/input_clear_normal.svg", QSize(), QIcon::Normal);
     icon.addFile(":/resources/icons/input_clear_press.svg", QSize(), QIcon::Selected);
     icon.addFile(":/resources/icons/input_clear_hover.svg", QSize(), QIcon::Active);
-    _clearAct = new QAction(icon, "", this);
+    m_pClearAct = new QAction(icon, "", this);
 
-    connect(_clearAct, &QAction::triggered, this, &QLineEdit::clear);
+    connect(m_pClearAct, &QAction::triggered, this, &QLineEdit::clear);
 	connect(this, &QLineEdit::textChanged, this, &LineEdit::slotTextChanged);
 
 }
-
-void LineEdit::showEvent(QShowEvent *se)
+/**
+ * @brief showEvent 重载显示事件
+ * @param pShowEvent 显示事件
+ */
+void LineEdit::showEvent(QShowEvent *pShowEvent)
 {
-    QLineEdit::showEvent(se);
+    QLineEdit::showEvent(pShowEvent);
 }
-
-void LineEdit::resizeEvent(QResizeEvent *re)
+/**
+ * @brief resizeEvent 重载界面大小改变事件
+ * @param pResizeEvent 界面大小改变事件
+ */
+void LineEdit::resizeEvent(QResizeEvent *pResizeEvent)
 {
-    QLineEdit::resizeEvent(re);
+    QLineEdit::resizeEvent(pResizeEvent);
 }
-
-void LineEdit::slotTextChanged(const QString &s)
+/**
+ * @brief slotTextChanged 文本变化槽函数
+ * @param sText 输入框内的文本
+ */
+void LineEdit::slotTextChanged(const QString &sText)
 {
-    if (s.isEmpty()) {
-        removeAction(_clearAct);
+    if (sText.isEmpty()) {
+        removeAction(m_pClearAct);
     } else {
-        addAction(_clearAct, QLineEdit::TrailingPosition);
+        addAction(m_pClearAct, QLineEdit::TrailingPosition);
     }
 }
 
