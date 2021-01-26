@@ -27,22 +27,29 @@
  * version.  If you delete this exception statement from all source
  * files in the program, then also delete it here.
  */
+/**
+  *@file 这个文件是负责实现全屏展示进度控件相关
+  */
 #include "movie_progress_indicator.h"
 #include "utils.h"
 
-
 namespace dmr {
-
+/**
+ * @brief MovieProgressIndicator 构造函数
+ * @param parent 父窗口
+ */
 MovieProgressIndicator::MovieProgressIndicator(QWidget *parent)
     : QFrame(parent)
 {
-    QFont ft;
-    ft.setPixelSize(14);
-    QFontMetrics fm(ft);
-    this->setFont(ft);
+    initMember();
 
-    _fixedSize = QSize(qMax(52, fm.width("999:99")), fm.height() + 10);
-    this->setFixedSize(_fixedSize);
+    QFont font;
+    //参考设计图
+    font.setPixelSize(14);
+    QFontMetrics fontMetrics(font);
+    this->setFont(font);
+    m_fixedSize = QSize(qMax(52, fontMetrics.width("999:99")), fontMetrics.height() + 10);
+    this->setFixedSize(m_fixedSize);
     if(!utils::check_wayland_env()){
 #if defined (__mips__) || defined (__aarch64__) || defined (__sw_64__)
     this->setAttribute(Qt::WA_TranslucentBackground);
@@ -51,41 +58,54 @@ MovieProgressIndicator::MovieProgressIndicator(QWidget *parent)
 #endif
     }
 }
-
-void MovieProgressIndicator::paintEvent(QPaintEvent *pe)
+/**
+ * @brief paintEvent 重载绘制事件函数
+ * @param pPaintEvent
+ */
+void MovieProgressIndicator::paintEvent(QPaintEvent *pPaintEvent)
 {
-    auto time_text = QTime::currentTime().toString("hh:mm");
+    QString sTimeText = QTime::currentTime().toString("hh:mm");
+    QPainter painter(this);
+    painter.setFont(font());
+    painter.setPen(QColor(255, 255, 255, static_cast<int>(255 * .4)));
 
-    QPainter p(this);
+    QFontMetrics fontMetrics(font());
+    QRect fontRect = fontMetrics.boundingRect(sTimeText);
+    fontRect.moveCenter(QPoint(rect().center().x(), fontRect.height() / 2));
+    painter.drawText(fontRect, sTimeText);
 
-    p.setFont(font());
-    p.setPen(QColor(255, 255, 255, static_cast<int>(255 * .4)));
-
-    QFontMetrics fm(font());
-    auto fr = fm.boundingRect(time_text);
-    fr.moveCenter(QPoint(rect().center().x(), fr.height() / 2));
-    p.drawText(fr, time_text);
-
-
-    QPoint pos((_fixedSize.width() - 48) / 2, rect().height() - 5);
-    int pert = static_cast<int>(qMin(_pert * 10, 10.0));
+    QPoint pos((m_fixedSize.width() - 48) / 2, rect().height() - 5);
+    int pert = static_cast<int>(qMin(m_pert * 10, 10.0));
     for (int i = 0; i < 10; i++) {
         if (i >= pert) {
-            p.fillRect(QRect(pos, QSize(3, 3)), QColor(255, 255, 255, static_cast<int>(255 * .25)));
+            painter.fillRect(QRect(pos, QSize(3, 3)), QColor(255, 255, 255, static_cast<int>(255 * .25)));
         } else {
-            p.fillRect(QRect(pos, QSize(3, 3)), QColor(255, 255, 255, static_cast<int>(255 * .5)));
+            painter.fillRect(QRect(pos, QSize(3, 3)), QColor(255, 255, 255, static_cast<int>(255 * .5)));
         }
         pos.rx() += 5;
     }
 
-    QFrame::paintEvent(pe);
+    QFrame::paintEvent(pPaintEvent);
 }
-
+/**
+ * @brief initMember 初始化成员变量
+ */
+void MovieProgressIndicator::initMember()
+{
+    m_nElapsed = 0;
+    m_pert = 0;
+    m_fixedSize = QSize(0, 0);
+}
+/**
+ * @brief updateMovieProgress 更新电影进度控件
+ * @param duration 总时长
+ * @param pos 当前时长
+ */
 void MovieProgressIndicator::updateMovieProgress(qint64 duration, qint64 pos)
 {
-    _elapsed = pos;
+    m_nElapsed = pos;
     if (duration != 0)
-        _pert = static_cast<qreal>(pos / duration);
+        m_pert = static_cast<qreal>(pos / duration);
     update();
 }
 
