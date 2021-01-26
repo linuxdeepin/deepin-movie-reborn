@@ -37,168 +37,141 @@
 DWIDGET_USE_NAMESPACE
 
 namespace dmr {
-BurstScreenshotsDialog::BurstScreenshotsDialog(const PlayItemInfo &pif)
+/**
+* @brief BurstScreenshotsDialog 构造函数
+* @param strPlayItemInfo 播放项信息
+*/
+BurstScreenshotsDialog::BurstScreenshotsDialog(const PlayItemInfo &PlayItemInfo)
     : DAbstractDialog(nullptr)
 {
-    auto mi = pif.mi;
+    MovieInfo strMovieInfo = PlayItemInfo.mi;
 
     //title
-    m_titlebar = new DTitlebar(this);
-    m_titlebar->setFixedHeight(50);
-    m_titlebar->layout()->setContentsMargins(0, 0, 0, 0);
-    m_titlebar->setMenuVisible(false);
-    m_titlebar->setIcon(QIcon::fromTheme(":/resources/icons/logo-big.svg"));
-    m_titlebar->setFixedWidth(590);
-    m_titlebar->setTitle(mi.title);
-    m_titlebar->setBackgroundTransparent(true);
-
+    m_pTitlebar = new DTitlebar(this);
+    m_pTitlebar->setFixedHeight(50);
+    m_pTitlebar->layout()->setContentsMargins(0, 0, 0, 0);
+    m_pTitlebar->setMenuVisible(false);
+    m_pTitlebar->setIcon(QIcon::fromTheme(":/resources/icons/logo-big.svg"));
+    //参考设计图
+    m_pTitlebar->setFixedWidth(590);
+    m_pTitlebar->setTitle(strMovieInfo.title);
+    m_pTitlebar->setBackgroundTransparent(true);
+    //参考设计图
     setFixedSize(600, 700);
-
+    const int nStretch = 1;
     //title bottom
-    auto *trb = new QHBoxLayout;
-    trb->setContentsMargins(0, 0, 0, 0);
-    trb->setSpacing(0);
-    trb->addStretch(1);
+    QHBoxLayout *pTitleLayout = new QHBoxLayout;
+    pTitleLayout->setContentsMargins(0, 0, 0, 0);
+    pTitleLayout->setSpacing(0);
+    pTitleLayout->addStretch(nStretch);
     {
-        auto lb = new QLabel(tr("Duration: %1").arg(mi.durationStr()), this);
-//        lb->setStyleSheet("color: rgba(48, 48, 48, 60%); font-size: 12px;");
-        trb->addWidget(lb);
-        trb->addStretch(1);
+        QLabel *pDurationLabel = new QLabel(tr("Duration: %1").arg(strMovieInfo.durationStr()), this);
+        pTitleLayout->addWidget(pDurationLabel);
+        pTitleLayout->addStretch(nStretch);
     }
     {
-        auto lb = new QLabel(tr("Resolution: %1").arg(mi.resolution), this);
-//        lb->setStyleSheet("color: rgba(48, 48, 48, 60%); font-size: 12px;");
-        trb->addWidget(lb);
-        trb->addStretch(1);
+        QLabel *pResolutionLabel = new QLabel(tr("Resolution: %1").arg(strMovieInfo.resolution), this);
+        pTitleLayout->addWidget(pResolutionLabel);
+        pTitleLayout->addStretch(nStretch);
     }
     {
-        auto lb = new QLabel(tr("Size: %1").arg(mi.sizeStr()), this);
-//        lb->setStyleSheet("color: rgba(48, 48, 48, 60%); font-size: 12px;");
-        trb->addWidget(lb);
-        trb->addStretch(1);
+        QLabel *pSizeLabel = new QLabel(tr("Size: %1").arg(strMovieInfo.sizeStr()), this);
+        pTitleLayout->addWidget(pSizeLabel);
+        pTitleLayout->addStretch(nStretch);
     }
 
     // main content
-    auto *ml = new QVBoxLayout;
-    ml->setContentsMargins(0, 10, 0, 0);
+    QVBoxLayout *pMainContent = new QVBoxLayout;
+    pMainContent->setContentsMargins(0, 10, 0, 0);
 
-    _grid = new QGridLayout();
-    _grid->setHorizontalSpacing(12);
-    _grid->setVerticalSpacing(15);
-    _grid->setContentsMargins(0, 0, 0, 0);
-    ml->addLayout(_grid);
-    _grid->setColumnMinimumWidth(0, 160);
-    _grid->setColumnMinimumWidth(1, 160);
-    _grid->setColumnMinimumWidth(2, 160);
+    m_pGrid = new QGridLayout();
+    //参考设计图
+    m_pGrid->setHorizontalSpacing(12);
+    m_pGrid->setVerticalSpacing(15);
+    m_pGrid->setContentsMargins(0, 0, 0, 0);
+    pMainContent->addLayout(m_pGrid);
+    m_pGrid->setColumnMinimumWidth(0, 160);
+    m_pGrid->setColumnMinimumWidth(1, 160);
+    m_pGrid->setColumnMinimumWidth(2, 160);
 
-    auto *bl = new QHBoxLayout;
-    bl->setContentsMargins(0, 13, 0, 0);
-    bl->addStretch(1);
+    QHBoxLayout *pButtonContent = new QHBoxLayout;
+    pButtonContent->setContentsMargins(0, 13, 0, 0);
+    pButtonContent->addStretch(1);
 
-    _saveBtn = new QPushButton(tr("Save"));
-    _saveBtn->setObjectName("SaveBtn");
-    connect(_saveBtn, &QPushButton::clicked, this, &BurstScreenshotsDialog::savePoster);
-    _saveBtn->setFixedSize(70, 30);
+    m_pSaveBtn = new QPushButton(tr("Save"));
+    m_pSaveBtn->setObjectName("SaveBtn");
+    connect(m_pSaveBtn, &QPushButton::clicked, this, &BurstScreenshotsDialog::savePoster);
+    m_pSaveBtn->setFixedSize(70, 30);
+    m_pSaveBtn->setDefault(true);
+    pButtonContent->addWidget(m_pSaveBtn);
+    pMainContent->addLayout(pButtonContent);
+    QVBoxLayout *pMainlayout = new QVBoxLayout;
+    pMainlayout->setContentsMargins(10, 0, 10, 15);
+    pMainlayout->setSpacing(0);
+    pMainlayout->addWidget(m_pTitlebar);
+    pMainlayout->addLayout(pTitleLayout);
+    pMainlayout->addLayout(pMainContent);
 
-    QString addition = R"(
-    QPushButton#SaveBtn {
-        font-size: 12px;
-        color: #2ca7f8;
-        border: 1px solid #2ca7f8;
-        border-radius: 4px;
-        background: qlineargradient(x1: 0, y1: 0 x2: 0, y2: 1, stop:0 rgba(255, 255, 255, 0.4), stop:1 rgba(253, 253, 253, 0.4));
-    }
-
-    QPushButton#SaveBtn:hover {
-        background: qlineargradient(x1: 0, y1: 0 x2: 0, y2: 1, stop:0 "#8ccfff", stop:1 "#4bb8ff");
-        color: "#fff";
-        border: 1px solid rgba(0, 117, 243, 0.2);
-    }
-
-    QPushButton#SaveBtn:pressed {
-        background: qlineargradient(x1: 0, y1: 0 x2: 0, y2: 1, stop:0 "#0b8cff", stop:1 "#0aa1ff");
-        color: "#fff";
-        border: 1px solid rgba(29, 129, 255, 0.3);
-    }
-
-    QPushButton#SaveBtn:disabled {
-        background: qlineargradient(x1: 0, y1: 0 x2: 0, y2: 1, stop:0 rgba(255, 255, 255, 0.4), stop:1 rgba(253, 253, 253, 0.4));
-        color: "#AEAEAE";
-        border: 1px solid rgba(0,0,0,0.04);
-    }
-    )";
-    _saveBtn->setDefault(true);
-//    _saveBtn->setStyleSheet(addition);
-
-    bl->addWidget(_saveBtn);
-    ml->addLayout(bl);
-
-//    QWidget  *mainContent = new QWidget;
-//    mainContent->setLayout(ml);
-//    addContent(mainContent, Qt::AlignCenter);
-    QVBoxLayout *mainlayout = new QVBoxLayout;
-    mainlayout->setContentsMargins(10, 0, 10, 15);
-    mainlayout->setSpacing(0);
-    mainlayout->addWidget(m_titlebar);
-    mainlayout->addLayout(trb);
-    mainlayout->addLayout(ml);
-
-    setLayout(mainlayout);
+    setLayout(pMainlayout);
 }
 
+/**
+ * @brief updateWithFrames 更新截图图像
+ * @param frames 截图图像
+ */
 void BurstScreenshotsDialog::updateWithFrames(const QList<QPair<QImage, qint64>> &frames)
 {
-    auto dpr = qApp->devicePixelRatio();
-    QSize sz(static_cast<int>(178 * dpr), static_cast<int>(100 * dpr));
+    qreal devicePixelRatio = qApp->devicePixelRatio();
+    //参考设计图
+    QSize size(static_cast<int>(178 * devicePixelRatio), static_cast<int>(100 * devicePixelRatio));
 
-    int count = 0;
+    int nCount = 0;
     for (auto frame : frames) {
-        auto scaled = frame.first.scaled(sz.width() - 2, sz.height() - 2,
+        auto scaled = frame.first.scaled(size.width() - 2, size.height() - 2,
                                          Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-        auto *l = new ThumbnailFrame(this);
+        ThumbnailFrame *pThumbnailFrame = new ThumbnailFrame(this);
 
-        int r = count / 3;
-        int c = count % 3;
+        int nRowCount = nCount / 3;
+        int nColumn = nCount % 3;
 
-        auto pm = QPixmap::fromImage(scaled);
-        pm.setDevicePixelRatio(dpr);
-        pm = utils::MakeRoundedPixmap(sz, pm, 2, 2, frame.second);
-        l->setPixmap(pm);
-        _grid->addWidget(l, r, c);
-        count++;
+        QPixmap pixmap = QPixmap::fromImage(scaled);
+        pixmap.setDevicePixelRatio(devicePixelRatio);
+        pixmap = utils::MakeRoundedPixmap(size, pixmap, 2, 2, frame.second);
+        pThumbnailFrame->setPixmap(pixmap);
+        m_pGrid->addWidget(pThumbnailFrame, nRowCount, nColumn);
+        nCount++;
     }
-
-    _thumbs = frames;
 }
 
+/**
+ * @brief exec 返回执行函数的标识符
+ * @return 执行函数的标识符
+ */
 int BurstScreenshotsDialog::exec()
 {
     return DAbstractDialog::exec();
 }
 
+/**
+ * @brief savePoster 保存截图
+ */
 void BurstScreenshotsDialog::savePoster()
 {
-    m_titlebar->setFixedWidth(610);
-    auto img = this->grab(rect().marginsRemoved(QMargins(10, 0, 10, 45)));
-    _posterPath = Settings::get().screenshotNameTemplate();
-    img.save(_posterPath);
+    //参考设计图
+    m_pTitlebar->setFixedWidth(610);
+    QPixmap img = this->grab(rect().marginsRemoved(QMargins(10, 0, 10, 45)));
+    m_sPosterPath = Settings::get().screenshotNameTemplate();
+    img.save(m_sPosterPath);
     DAbstractDialog::accept();
 }
 
-/*not used yet*/
-/*void BurstScreenshotsDialog::saveShootings()
-{
-    int i = 1;
-    for (auto &img : _thumbs) {
-        auto file_path = Settings::get().screenshotNameSeqTemplate().arg(i++);
-        img.first.save(file_path);
-    }
-    DAbstractDialog::accept();
-}*/
-
+/**
+ * @brief savedPosterPath 保存截图路径
+ * @return 返回设置的截图保存路径
+ */
 QString BurstScreenshotsDialog::savedPosterPath()
 {
-    return _posterPath;
+    return m_sPosterPath;
 }
 
 }
