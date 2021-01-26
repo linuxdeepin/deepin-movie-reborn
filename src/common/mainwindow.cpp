@@ -3166,15 +3166,17 @@ void MainWindow::slotAwaacelModeChanged(const QString &key, const QVariant &valu
 
 void MainWindow::slotVolumeChanged(int nVolume)
 {
+    m_displayVolume = nVolume;
     _engine->changeVolume(nVolume);
+    if (m_pPresenter) {
+        m_pPresenter->slotvolumeChanged();
+    }
 
     if (nVolume == 0) {
         _nwComm->updateWithMessage(tr("Mute"));
     } else {
         _nwComm->updateWithMessage(tr("Volume: %1%").arg(nVolume));
     }
-
-    m_displayVolume = nVolume;
 }
 
 void MainWindow::checkErrorMpvLogsChanged(const QString prefix, const QString text)
@@ -4655,8 +4657,8 @@ void MainWindow::updateGeometry(CornerEdge edge, QPoint p)
 
 void MainWindow::setPresenter(Presenter *p)
 {
-    m_presenter = p;
-    m_presenter->slotvolumeChanged();
+    m_pPresenter = p;
+    m_pPresenter->slotvolumeChanged();
 }
 
 int MainWindow::getDisplayVolume()

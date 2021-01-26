@@ -433,7 +433,7 @@ private:
     MainWindowPropertyMonitor *m_pMWPM {nullptr};
     bool m_isFirstLoadDBus {false};
 
-    Presenter *m_presenter {nullptr};
+    Presenter *m_pPresenter {nullptr};
     MovieWidget *m_pMovieWidget {nullptr};
 };
 
