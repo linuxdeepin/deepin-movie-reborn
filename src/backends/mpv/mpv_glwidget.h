@@ -61,10 +61,10 @@ public:
     MpvGLWidget(QWidget *parent, MpvHandle h);
     virtual ~MpvGLWidget();
 
-    /*
+    /**
      * rounded clipping consumes a lot of resources, and performs bad on 4K video
      */
-    void toggleRoundedClip(bool val);
+    void toggleRoundedClip(bool bFalse);
     //add by heyi
     /**
      * @brief setHandle 设置句柄
@@ -74,7 +74,7 @@ public:
 
 protected:
     void initializeGL() override;
-    void resizeGL(int w, int h) override;
+    void resizeGL(int nWidth, int nHeight) override;
     void paintGL() override;
 
     void setPlaying(bool);
@@ -90,34 +90,7 @@ protected slots:
     void onFrameSwapped();
 
 private:
-    MpvHandle _handle;
-    mpv_render_context *_render_ctx {nullptr};
-
-    bool _playing {false};
-    bool _inMiniMode {false};
-    bool _doRoundedClipping {true};
-
-    QOpenGLVertexArrayObject _vao;
-    QOpenGLBuffer _vbo;
-    QOpenGLTexture *_darkTex {nullptr};
-    QOpenGLTexture *_lightTex {nullptr};
-    QOpenGLShaderProgram *_glProg {nullptr};
-
-    QOpenGLVertexArrayObject _vaoBlend;
-    QOpenGLBuffer _vboBlend;
-    QOpenGLShaderProgram *_glProgBlend {nullptr};
-    QOpenGLFramebufferObject *_fbo {nullptr};
-    QOpenGLShaderProgram *_glProgBlendCorners {nullptr};
-
-    //textures for corner
-    QOpenGLVertexArrayObject _vaoCorner;
-    QOpenGLTexture *_cornerMasks[4] {nullptr,};
-    QOpenGLBuffer _vboCorners[4];
-    QOpenGLShaderProgram *_glProgCorner {nullptr};
-
-    QImage bg_dark;
-    QImage bg_light;
-
+    void initMember();
     void updateVbo();
     void updateVboCorners();
     void updateVboBlend();
@@ -130,13 +103,42 @@ private:
 
     void prepareSplashImages();
 
+private:
+    MpvHandle m_handle;                //mpv句柄
+    mpv_render_context *m_pRenderCtx;  //mpv渲染上下文
+
+    bool m_bPlaying;                   //记录播放状态
+    bool m_bInMiniMode;                //是否是最小化
+    bool m_bDoRoundedClipping;         //
+
+    QOpenGLVertexArrayObject m_vao;    //顶点数组对象
+    QOpenGLBuffer m_vbo;               //顶点缓冲对象
+    QOpenGLTexture *m_pDarkTex;        //深色主题背景纹理
+    QOpenGLTexture *m_pLightTex;       //浅色主题背景纹理
+    QOpenGLShaderProgram *m_pGlProg;
+
+    QOpenGLVertexArrayObject m_vaoBlend;
+    QOpenGLBuffer m_vboBlend;
+    QOpenGLShaderProgram *m_pGlProgBlend;
+    QOpenGLFramebufferObject *m_pFbo;
+    QOpenGLShaderProgram *m_pGlProgBlendCorners;
+
+    //textures for corner
+    QOpenGLVertexArrayObject m_vaoCorner;
+    QOpenGLTexture *m_pCornerMasks[4];
+    QOpenGLBuffer m_vboCorners[4];
+    QOpenGLShaderProgram *m_pGlProgCorner; //着色器程序
+
+    QImage m_imgBgDark;                    //深色主题背景图
+    QImage m_imgBgLight;                   //浅色主题背景图
+
     //add by heyi
-    mpv_render_contextSet_update_callback m_callback{nullptr};
-    mpv_render_contextReport_swap m_context_report{nullptr};
-    mpv_renderContext_free m_renderContex{nullptr};
-    mpv_renderContext_create m_renderCreat{nullptr};
-    mpv_renderContext_render m_renderContexRender{nullptr};
-    mpv_renderContext_update m_renderContextUpdate{nullptr};
+    mpv_render_contextSet_update_callback m_callback;
+    mpv_render_contextReport_swap m_context_report;
+    mpv_renderContext_free m_renderContex;
+    mpv_renderContext_create m_renderCreat;
+    mpv_renderContext_render m_renderContexRender;
+    mpv_renderContext_update m_renderContextUpdate;
 };
 
 }

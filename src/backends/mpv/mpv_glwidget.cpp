@@ -202,44 +202,42 @@ namespace dmr {
         //struct wl_display * wl_dpy = (struct wl_display*) (native->nativeResourceForWindow("display",NULL));
         if (!strcmp(name, "wayland")) {
             //return (void*)wl_dpy;
-            return NULL;
+            return nullptr;
         }
-        return NULL;
+        return nullptr;
     }
 
-
-    static void *get_proc_address(void *ctx, const char *name) {
-        Q_UNUSED(ctx);
-        QOpenGLContext *glctx = QOpenGLContext::currentContext();
-        if (!glctx)
+    static void *get_proc_address(void *pCtx, const char *pName) {
+        Q_UNUSED(pCtx);
+        QOpenGLContext *pGLCtx = QOpenGLContext::currentContext();
+        if (!pGLCtx)
             return nullptr;
 
-        if (!strcmp(name, "glMPGetNativeDisplay")) {
+        if (!strcmp(pName, "glMPGetNativeDisplay")) {
             if(utils::check_wayland_env()){
                 return (void*)glMPGetNativeDisplay_EGL;
             }else{
                 return (void*)glMPGetNativeDisplay;
             }
         }
-        return reinterpret_cast<void*>(glctx->getProcAddress(QByteArray(name)));
+        return reinterpret_cast<void*>(pGLCtx->getProcAddress(QByteArray(pName)));
     }
 
-    static void gl_update_callback(void *cb_ctx)
+    static void gl_update_callback(void *pCtx)
     {
-        MpvGLWidget *w = static_cast<MpvGLWidget*>(cb_ctx);
-        QMetaObject::invokeMethod(w, "onNewFrame");
+        MpvGLWidget *pWid = static_cast<MpvGLWidget*>(pCtx);
+        QMetaObject::invokeMethod(pWid, "onNewFrame");
     }
 
     void MpvGLWidget::onNewFrame()
     {
-        //qInfo() << __func__;
         if (window()->isMinimized()) {
             makeCurrent();
             paintGL();
             context()->swapBuffers(context()->surface());
             doneCurrent();
         } else {
-            m_renderContextUpdate(_render_ctx);
+            m_renderContextUpdate(m_pRenderCtx);
             update();
         }
     }
@@ -249,12 +247,16 @@ namespace dmr {
         //qInfo() << "frame swapped";
 
         if(!m_context_report) return;
-        m_context_report(_render_ctx);
+        m_context_report(m_pRenderCtx);
     }
 
     MpvGLWidget::MpvGLWidget(QWidget *parent, MpvHandle h)
-        :QOpenGLWidget(parent), _handle(h) { 
-         initMpvFuns();
+        :QOpenGLWidget(parent), m_handle(h) {
+
+        initMember();
+
+        initMpvFuns();
+
         setUpdateBehavior(QOpenGLWidget::NoPartialUpdate);
 
         connect(this, &QOpenGLWidget::frameSwapped, 
@@ -264,53 +266,53 @@ namespace dmr {
     MpvGLWidget::~MpvGLWidget() 
     {
         makeCurrent();
-        if (_darkTex) {
-            _darkTex->destroy();
-            delete _darkTex;
+        if (m_pDarkTex) {
+            m_pDarkTex->destroy();
+            delete m_pDarkTex;
         }
-        if (_lightTex) {
-            _lightTex->destroy();
-            delete _lightTex;
+        if (m_pLightTex) {
+            m_pLightTex->destroy();
+            delete m_pLightTex;
         }
 
-        for (auto mask: _cornerMasks) {
+        for (auto mask: m_pCornerMasks) {
             if (mask) mask->destroy();
         }
 
-        _vbo.destroy();
+        m_vbo.destroy();
 
         for (int i = 0; i < 4; i++) {
-            _vboCorners[i].destroy();
+            m_vboCorners[i].destroy();
 
-            ///指针数组_cornerMasks在mpv_glwidget.cpp 476行申请内存后未释放///
-            delete _cornerMasks[i];
-            _cornerMasks[i] = nullptr;
+            ///指针数组m_pCornerMasks在mpv_glwidget.cpp 476行申请内存后未释放///
+            delete m_pCornerMasks[i];
+            m_pCornerMasks[i] = nullptr;
         }
 
-        _vao.destroy();
-        _vaoBlend.destroy();
-        _vaoCorner.destroy();
+        m_vao.destroy();
+        m_vaoBlend.destroy();
+        m_vaoCorner.destroy();
 
-        delete _glProgBlend;
-        _glProgBlend = nullptr;
+        delete m_pGlProgBlend;
+        m_pGlProgBlend = nullptr;
 
-        delete _glProgBlendCorners;
-        _glProgBlendCorners = nullptr;;
+        delete m_pGlProgBlendCorners;
+        m_pGlProgBlendCorners = nullptr;;
 
-        delete _glProg;
-        _glProg = nullptr;
+        delete m_pGlProg;
+        m_pGlProg = nullptr;
 
-        delete _glProgCorner;
-        _glProgCorner = nullptr;
+        delete m_pGlProgCorner;
+        m_pGlProgCorner = nullptr;
 
-        if (_fbo) delete _fbo;
+        if (m_pFbo) delete m_pFbo;
         //add by heyi
-        if (_render_ctx) m_callback(_render_ctx, nullptr, nullptr);
+        if (m_pRenderCtx) m_callback(m_pRenderCtx, nullptr, nullptr);
         // Until this call is done, we need to make sure the player remains
         // alive. This is done implicitly with the mpv::qt::Handle instance
         // in this class.
-        m_renderContex(_render_ctx);
-        //mpv_render_context_free(_render_ctx);
+        m_renderContex(m_pRenderCtx);
+        //mpv_render_context_free(m_pRenderCtx);
         doneCurrent();
     }
 
@@ -318,103 +320,103 @@ namespace dmr {
     {
         updateMovieFbo();
 
-        _vaoBlend.create();
-        _vaoBlend.bind();
+        m_vaoBlend.create();
+        m_vaoBlend.bind();
         updateVboBlend();
 
-        _glProgBlend = new QOpenGLShaderProgram();
-        _glProgBlend->addShaderFromSourceCode(QOpenGLShader::Vertex, vs_blend);
+        m_pGlProgBlend = new QOpenGLShaderProgram();
+        m_pGlProgBlend->addShaderFromSourceCode(QOpenGLShader::Vertex, vs_blend);
         if(utils::check_wayland_env()){
-            _glProgBlend->addShaderFromSourceCode(QOpenGLShader::Fragment, fs_blend_wayland);
+            m_pGlProgBlend->addShaderFromSourceCode(QOpenGLShader::Fragment, fs_blend_wayland);
         }else {
-            _glProgBlend->addShaderFromSourceCode(QOpenGLShader::Fragment, fs_blend);
+            m_pGlProgBlend->addShaderFromSourceCode(QOpenGLShader::Fragment, fs_blend);
         }
 
-        if (!_glProgBlend->link()) {
+        if (!m_pGlProgBlend->link()) {
             qInfo() << "link failed";
         }
-        _glProgBlend->bind();
-        _vboBlend.bind();
+        m_pGlProgBlend->bind();
+        m_vboBlend.bind();
 
-        int vLocBlend = _glProgBlend->attributeLocation("position");
-        int coordLocBlend = _glProgBlend->attributeLocation("vTexCoord");
-        _glProgBlend->enableAttributeArray(vLocBlend);
-        _glProgBlend->setAttributeBuffer(vLocBlend, GL_FLOAT, 0, 2, 6*sizeof(GLfloat));
-        _glProgBlend->enableAttributeArray(coordLocBlend);
-        _glProgBlend->setAttributeBuffer(coordLocBlend, GL_FLOAT, 2*sizeof(GLfloat), 2, 6*sizeof(GLfloat));
-        _glProgBlend->setUniformValue("movie", 0);
-        _glProgBlend->release();
-        _vaoBlend.release();
+        int vLocBlend = m_pGlProgBlend->attributeLocation("position");
+        int coordLocBlend = m_pGlProgBlend->attributeLocation("vTexCoord");
+        m_pGlProgBlend->enableAttributeArray(vLocBlend);
+        m_pGlProgBlend->setAttributeBuffer(vLocBlend, GL_FLOAT, 0, 2, 6*sizeof(GLfloat));
+        m_pGlProgBlend->enableAttributeArray(coordLocBlend);
+        m_pGlProgBlend->setAttributeBuffer(coordLocBlend, GL_FLOAT, 2*sizeof(GLfloat), 2, 6*sizeof(GLfloat));
+        m_pGlProgBlend->setUniformValue("movie", 0);
+        m_pGlProgBlend->release();
+        m_vaoBlend.release();
 
-        _glProgBlendCorners = new QOpenGLShaderProgram();
-        _glProgBlendCorners->addShaderFromSourceCode(QOpenGLShader::Vertex, vs_blend_corner);
+        m_pGlProgBlendCorners = new QOpenGLShaderProgram();
+        m_pGlProgBlendCorners->addShaderFromSourceCode(QOpenGLShader::Vertex, vs_blend_corner);
         if(utils::check_wayland_env()){
-            _glProgBlendCorners->addShaderFromSourceCode(QOpenGLShader::Fragment, fs_blend_corner_wayland);
+            m_pGlProgBlendCorners->addShaderFromSourceCode(QOpenGLShader::Fragment, fs_blend_corner_wayland);
         }else{
-            _glProgBlendCorners->addShaderFromSourceCode(QOpenGLShader::Fragment, fs_blend_corner);
+            m_pGlProgBlendCorners->addShaderFromSourceCode(QOpenGLShader::Fragment, fs_blend_corner);
         }
 
-        if (!_glProgBlendCorners->link()) {
+        if (!m_pGlProgBlendCorners->link()) {
             qInfo() << "link failed";
         }
     }
 
     void MpvGLWidget::setupIdlePipe()
     {
-        _vao.create();
-        _vao.bind();
+        m_vao.create();
+        m_vao.bind();
 
-        _darkTex = new QOpenGLTexture(bg_dark, QOpenGLTexture::DontGenerateMipMaps);
-        _darkTex->setMinificationFilter(QOpenGLTexture::Linear);
-        _lightTex = new QOpenGLTexture(bg_light, QOpenGLTexture::DontGenerateMipMaps);
-        _lightTex->setMinificationFilter(QOpenGLTexture::Linear);
+        m_pDarkTex = new QOpenGLTexture(m_imgBgDark, QOpenGLTexture::DontGenerateMipMaps);
+        m_pDarkTex->setMinificationFilter(QOpenGLTexture::Linear);
+        m_pLightTex = new QOpenGLTexture(m_imgBgLight, QOpenGLTexture::DontGenerateMipMaps);
+        m_pLightTex->setMinificationFilter(QOpenGLTexture::Linear);
 
         updateVbo();
-        _vbo.bind();
+        m_vbo.bind();
 
-        _glProg = new QOpenGLShaderProgram();
-        _glProg->addShaderFromSourceCode(QOpenGLShader::Vertex, vs_code);
+        m_pGlProg = new QOpenGLShaderProgram();
+        m_pGlProg->addShaderFromSourceCode(QOpenGLShader::Vertex, vs_code);
         if(utils::check_wayland_env()){
-            _glProg->addShaderFromSourceCode(QOpenGLShader::Fragment, fs_code_wayland);
+            m_pGlProg->addShaderFromSourceCode(QOpenGLShader::Fragment, fs_code_wayland);
         }else{
-            _glProg->addShaderFromSourceCode(QOpenGLShader::Fragment, fs_code);
+            m_pGlProg->addShaderFromSourceCode(QOpenGLShader::Fragment, fs_code);
         }
 
-        if (!_glProg->link()) {
+        if (!m_pGlProg->link()) {
             qInfo() << "link failed";
         }
-        _glProg->bind();
+        m_pGlProg->bind();
 
-        int vertexLoc = _glProg->attributeLocation("position");
-        int coordLoc = _glProg->attributeLocation("vTexCoord");
-        _glProg->enableAttributeArray(vertexLoc);
-        _glProg->setAttributeBuffer(vertexLoc, GL_FLOAT, 0, 2, 4*sizeof(GLfloat));
-        _glProg->enableAttributeArray(coordLoc);
-        _glProg->setAttributeBuffer(coordLoc, GL_FLOAT, 2*sizeof(GLfloat), 2, 4*sizeof(GLfloat));
-        _glProg->setUniformValue("sampler", 0);
-        _glProg->release();
-        _vao.release();
+        int vertexLoc = m_pGlProg->attributeLocation("position");
+        int coordLoc = m_pGlProg->attributeLocation("vTexCoord");
+        m_pGlProg->enableAttributeArray(vertexLoc);
+        m_pGlProg->setAttributeBuffer(vertexLoc, GL_FLOAT, 0, 2, 4*sizeof(GLfloat));
+        m_pGlProg->enableAttributeArray(coordLoc);
+        m_pGlProg->setAttributeBuffer(coordLoc, GL_FLOAT, 2*sizeof(GLfloat), 2, 4*sizeof(GLfloat));
+        m_pGlProg->setUniformValue("sampler", 0);
+        m_pGlProg->release();
+        m_vao.release();
 
         {
-            _vaoCorner.create();
-            _vaoCorner.bind();
+            m_vaoCorner.create();
+            m_vaoCorner.bind();
 
             // setting up corners
             updateVboCorners();
             updateCornerMasks();
 
-            _glProgCorner = new QOpenGLShaderProgram();
-            _glProgCorner->addShaderFromSourceCode(QOpenGLShader::Vertex, vs_code);
+            m_pGlProgCorner = new QOpenGLShaderProgram();
+            m_pGlProgCorner->addShaderFromSourceCode(QOpenGLShader::Vertex, vs_code);
             if(utils::check_wayland_env()){
-                _glProgCorner->addShaderFromSourceCode(QOpenGLShader::Fragment, fs_corner_code_wayland);
+                m_pGlProgCorner->addShaderFromSourceCode(QOpenGLShader::Fragment, fs_corner_code_wayland);
             }else{
-                _glProgCorner->addShaderFromSourceCode(QOpenGLShader::Fragment, fs_corner_code);
+                m_pGlProgCorner->addShaderFromSourceCode(QOpenGLShader::Fragment, fs_corner_code);
             }
 
-            if (!_glProgCorner->link()) {
+            if (!m_pGlProgCorner->link()) {
                 qInfo() << "link failed";
             }
-            _vaoCorner.release();
+            m_vaoCorner.release();
         }
     }
 
@@ -428,10 +430,10 @@ namespace dmr {
         QImage img1=utils::LoadHiDPIImage(":/resources/icons/dark/init-splash.svg");
         pixmap2=pixmap2.fromImage(img1);
 
-        QPainter p(&pixmap);
-        p.drawPixmap(98,127,pixmap2);
-        bg_dark=pixmap.toImage();
-        bg_dark.setDevicePixelRatio(qApp->devicePixelRatio());
+        QPainter painter(&pixmap);
+        painter.drawPixmap(98,127,pixmap2);
+        m_imgBgDark=pixmap.toImage();
+        m_imgBgDark.setDevicePixelRatio(qApp->devicePixelRatio());
 
         QPixmap pixmap3;
         QImage image(pixmap.size(),QImage::Format_Alpha8);
@@ -443,21 +445,21 @@ namespace dmr {
         QImage img2=utils::LoadHiDPIImage(":/resources/icons/dark/init-splash.svg");
         pixmap4=pixmap4.fromImage(img2);
 
-        QPainter p1(&pixmap3);
-        p1.drawPixmap(98,127,pixmap4);
-        bg_light=pixmap3.toImage();
-        bg_light.setDevicePixelRatio(qApp->devicePixelRatio());
+        QPainter painter1(&pixmap3);
+        painter1.drawPixmap(98,127,pixmap4);
+        m_imgBgLight = pixmap3.toImage();
+        m_imgBgLight.setDevicePixelRatio(qApp->devicePixelRatio());
     }
 
     void MpvGLWidget::initializeGL()
     {
-        QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
+        QOpenGLFunctions *pGLFunction = QOpenGLContext::currentContext()->functions();
         float a = static_cast<float>(16.0 / 255.0);
 
         if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()){
             a = static_cast<float>(252.0 / 255.0);
         }
-        f->glClearColor(a, a, a, 1.0);
+        pGLFunction->glClearColor(a, a, a, 1.0);
 
         prepareSplashImages();
         setupIdlePipe();
@@ -472,8 +474,8 @@ namespace dmr {
 #else
 #ifndef USE_DXCB
         connect(window()->windowHandle(), &QWindow::windowStateChanged, [=]() {
-            auto top = this->topLevelWidget();
-            bool rounded = !top->isFullScreen() && !top->isMaximized();
+            QWidget* pTopWid = this->topLevelWidget();
+            bool rounded = !pTopWid->isFullScreen() && !pTopWid->isMaximized();
             if(utils::check_wayland_env()){
                 toggleRoundedClip(true);
             } else {
@@ -507,42 +509,42 @@ namespace dmr {
 
         //add by heyi
         if(!m_renderCreat) return;
-        if (m_renderCreat(&_render_ctx, _handle, params) < 0) {
+        if (m_renderCreat(&m_pRenderCtx, m_handle, params) < 0) {
             std::runtime_error("can not init mpv gl");
         }
 
-        m_callback(_render_ctx, gl_update_callback,
+        m_callback(m_pRenderCtx, gl_update_callback,
                    reinterpret_cast<void*>(this));
     }
 
     void MpvGLWidget::updateMovieFbo()
     {
-        if (!_doRoundedClipping) return;
+        if (!m_bDoRoundedClipping) return;
 
         auto desiredSize = size() * qApp->devicePixelRatio();
 
-        if (_fbo) {
-            if (_fbo->size() == desiredSize) {
+        if (m_pFbo) {
+            if (m_pFbo->size() == desiredSize) {
                 return;
             }
-            _fbo->release();
-            delete _fbo;
+            m_pFbo->release();
+            delete m_pFbo;
         }
-        _fbo = new QOpenGLFramebufferObject(desiredSize);
+        m_pFbo = new QOpenGLFramebufferObject(desiredSize);
     }
 
     void MpvGLWidget::updateCornerMasks()
     {
-        if (!utils::check_wayland_env() && !_doRoundedClipping) return;
+        if (!utils::check_wayland_env() && !m_bDoRoundedClipping) return;
 
         for (int i = 0; i < 4; i++) {
             QSize sz(RADIUS, RADIUS);
             QImage img(sz, QImage::Format_ARGB32);
             img.fill(Qt::transparent);
 
-            QPainter p;
-            p.begin(&img);
-            p.setRenderHint(QPainter::Antialiasing);
+            QPainter painter;
+            painter.begin(&img);
+            painter.setRenderHint(QPainter::Antialiasing);
             QPainterPath pp;
             switch (i) {
                 case 0:
@@ -575,23 +577,23 @@ namespace dmr {
                 default: return;
             }
 
-            p.setPen(Qt::red);
-            p.setBrush(Qt::red);
-            p.drawPath(pp);
-            p.end();
+            painter.setPen(Qt::red);
+            painter.setBrush(Qt::red);
+            painter.drawPath(pp);
+            painter.end();
 
-            if (_cornerMasks[i] == nullptr) {
-                _cornerMasks[i] = new QOpenGLTexture(img, QOpenGLTexture::DontGenerateMipMaps);
-                _cornerMasks[i]->setMinificationFilter(QOpenGLTexture::Linear);
-                _cornerMasks[i]->setWrapMode(QOpenGLTexture::ClampToEdge);
+            if (m_pCornerMasks[i] == nullptr) {
+                m_pCornerMasks[i] = new QOpenGLTexture(img, QOpenGLTexture::DontGenerateMipMaps);
+                m_pCornerMasks[i]->setMinificationFilter(QOpenGLTexture::Linear);
+                m_pCornerMasks[i]->setWrapMode(QOpenGLTexture::ClampToEdge);
             }
         }
     }
 
     void MpvGLWidget::updateVboBlend()
     {
-        if (!_vboBlend.isCreated()) {
-            _vboBlend.create();
+        if (!m_vboBlend.isCreated()) {
+            m_vboBlend.create();
         }
 
         GLfloat x1 = -1.0f;
@@ -614,9 +616,9 @@ namespace dmr {
             x1, y2, s1, t2, 0.0f, 0.0f
         };
 
-        _vboBlend.bind();
-        _vboBlend.allocate(vdata, sizeof(vdata));
-        _vboBlend.release();
+        m_vboBlend.bind();
+        m_vboBlend.allocate(vdata, sizeof(vdata));
+        m_vboBlend.release();
     }
 
     void MpvGLWidget::updateVboCorners()
@@ -633,8 +635,8 @@ namespace dmr {
         };
 
         for (int i = 0; i < 4; i++) {
-            if (!_vboCorners[i].isCreated()) {
-                _vboCorners[i].create();
+            if (!m_vboCorners[i].isCreated()) {
+                m_vboCorners[i].create();
             }
 
             auto r2 = QRect(pos[i], tex_sz);
@@ -665,23 +667,23 @@ namespace dmr {
                 x2, y2,  1.0f, 0.0f,  s2, t1,
                 x1, y2,  0.0f, 0.0f,  s1, t1,
             };
-            _vboCorners[i].bind();
-            _vboCorners[i].allocate(vdata, sizeof(vdata));
-            _vboCorners[i].release();
+            m_vboCorners[i].bind();
+            m_vboCorners[i].allocate(vdata, sizeof(vdata));
+            m_vboCorners[i].release();
         }
     }
 
     void MpvGLWidget::updateVbo()
     {
-        if (!_vbo.isCreated()) {
-            _vbo.create();
+        if (!m_vbo.isCreated()) {
+            m_vbo.create();
         }
         //HACK: we assume if any of width or height is 380, then we are in mini mode
         auto vp = rect().size();
 
-        auto bg_size = QSizeF(bg_dark.size()) / devicePixelRatioF();
-        _inMiniMode = vp.width() <= 380 || vp.height() <= 380;
-        auto tex_sz = _inMiniMode ? bg_size/2 : bg_size;
+        auto bg_size = QSizeF(m_imgBgDark.size()) / devicePixelRatioF();
+        m_bInMiniMode = vp.width() <= 380 || vp.height() <= 380;
+        auto tex_sz = m_bInMiniMode ? bg_size/2 : bg_size;
 
         auto r = QRectF(0, 0, vp.width(), vp.height());
         auto r2 = QRectF(r.center() - QPointF(tex_sz.width()/2, tex_sz.height()/2), tex_sz);
@@ -705,202 +707,230 @@ namespace dmr {
             x2, y2, 1.0f, 0.0f,
             x1, y2, 0.0f, 0.0f
         };
-        _vbo.bind();
-        _vbo.allocate(vdata, sizeof(vdata));
-        _vbo.release();
+        m_vbo.bind();
+        m_vbo.allocate(vdata, sizeof(vdata));
+        m_vbo.release();
     }
 
-    void MpvGLWidget::resizeGL(int w, int h) 
+    void MpvGLWidget::resizeGL(int nWidth, int nHeight)
     {
 
         updateMovieFbo();
         updateVbo();
-        if (_doRoundedClipping){
+        if (m_bDoRoundedClipping){
             updateVboCorners();
         }
-        qInfo() << "GL resize" << w << h;
-        QOpenGLWidget::resizeGL(w, h);
+        qInfo() << "GL resize" << nWidth << nHeight;
+        QOpenGLWidget::resizeGL(nWidth, nHeight);
     }
 
-    void MpvGLWidget::toggleRoundedClip(bool val)
+    void MpvGLWidget::toggleRoundedClip(bool bFalse)
     {
-        _doRoundedClipping = val;
+        m_bDoRoundedClipping = bFalse;
         makeCurrent();
         updateMovieFbo();
         update();
     }
 
+    void MpvGLWidget::initMember()
+    {
+        m_pRenderCtx = nullptr;
+
+        m_bPlaying = false;
+        m_bInMiniMode= false;
+
+        m_bDoRoundedClipping=true;
+        m_pDarkTex = nullptr;
+        m_pLightTex = nullptr;
+        m_pGlProg = nullptr;
+        m_pGlProgBlend  = nullptr;
+        m_pFbo = nullptr;
+        m_pGlProgBlendCorners = nullptr;
+        m_pGlProgCorner = nullptr;
+        m_pCornerMasks[0] = nullptr;
+        m_pCornerMasks[1] = nullptr;
+        m_pCornerMasks[2] = nullptr;
+        m_pCornerMasks[3] = nullptr;
+
+        m_callback = nullptr;
+        m_context_report = nullptr;
+        m_renderContex = nullptr;
+        m_renderCreat = nullptr;
+        m_renderContexRender = nullptr;
+        m_renderContextUpdate = nullptr;
+    }
+
     /*not used yet*/
     /*void MpvGLWidget::setHandle(myHandle h)
     {
-        _handle = h;
+        m_handle = h;
     }*/
 
     void MpvGLWidget::paintGL() 
     {
-        QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
-        if (_playing) {
+        QOpenGLFunctions *pGLFunction = QOpenGLContext::currentContext()->functions();
+        if (m_bPlaying) {
 
-            auto dpr = qApp->devicePixelRatio();
+            qreal dpr = qApp->devicePixelRatio();
             QSize scaled = size() * dpr;
-            int flip = 1;
+            int nFlip = 1;
 
-            if (!_doRoundedClipping) {
+            if (!m_bDoRoundedClipping) {
                 mpv_opengl_fbo fbo {
                     static_cast<int>(defaultFramebufferObject()), scaled.width(), scaled.height(), 0
                 };
 
                 mpv_render_param params[] = {
                     {MPV_RENDER_PARAM_OPENGL_FBO, &fbo},
-                    {MPV_RENDER_PARAM_FLIP_Y, &flip},
+                    {MPV_RENDER_PARAM_FLIP_Y, &nFlip},
                     {MPV_RENDER_PARAM_INVALID, nullptr}
                 };
 
-                m_renderContexRender(_render_ctx, params);
+                m_renderContexRender(m_pRenderCtx, params);
             } else {
-                f->glEnable(GL_BLEND);
-                f->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                pGLFunction->glEnable(GL_BLEND);
+                pGLFunction->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-                _fbo->bind();
+                m_pFbo->bind();
 
                 mpv_opengl_fbo fbo {
-                    static_cast<int>(_fbo->handle()), scaled.width(), scaled.height(), 0
+                    static_cast<int>(m_pFbo->handle()), scaled.width(), scaled.height(), 0
                 };
 
                 mpv_render_param params[] = {
                     {MPV_RENDER_PARAM_OPENGL_FBO, &fbo},
-                    {MPV_RENDER_PARAM_FLIP_Y, &flip},
+                    {MPV_RENDER_PARAM_FLIP_Y, &nFlip},
                     {MPV_RENDER_PARAM_INVALID, nullptr}
                 };
 
-                m_renderContexRender(_render_ctx, params);
+                m_renderContexRender(m_pRenderCtx, params);
 
-                _fbo->release();
+                m_pFbo->release();
 
                 {
-                    QOpenGLVertexArrayObject::Binder vaoBind(&_vaoBlend);
-                    _glProgBlend->bind();
-                    f->glActiveTexture(GL_TEXTURE0);
-                    f->glBindTexture(GL_TEXTURE_2D, _fbo->texture());
-                    f->glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-                    f->glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-                    f->glDrawArrays(GL_TRIANGLES, 0, 6);
-                    _glProgBlend->release();
+                    QOpenGLVertexArrayObject::Binder vaoBind(&m_vaoBlend);
+                    m_pGlProgBlend->bind();
+                    pGLFunction->glActiveTexture(GL_TEXTURE0);
+                    pGLFunction->glBindTexture(GL_TEXTURE_2D, m_pFbo->texture());
+                    pGLFunction->glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+                    pGLFunction->glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+                    pGLFunction->glDrawArrays(GL_TRIANGLES, 0, 6);
+                    m_pGlProgBlend->release();
                 }
 
                 {
-                    f->glBlendFunc(GL_SRC_ALPHA, GL_ZERO);
+                    pGLFunction->glBlendFunc(GL_SRC_ALPHA, GL_ZERO);
                     // blend corners
-                    //QOpenGLVertexArrayObject::Binder vaoBind(&_vaoCorner);
+                    //QOpenGLVertexArrayObject::Binder vaoBind(&m_vaoCorner);
 
                     for (int i = 0; i < 4; i++) {
-                        _glProgBlendCorners->bind();
-                        _vboCorners[i].bind();
+                        m_pGlProgBlendCorners->bind();
+                        m_vboCorners[i].bind();
 
-                        int vertexLoc = _glProgBlendCorners->attributeLocation("position");
-                        int maskLoc = _glProgBlendCorners->attributeLocation("maskTexCoord");
-                        int coordLoc = _glProgBlendCorners->attributeLocation("vTexCoord");
-                        _glProgBlendCorners->enableAttributeArray(vertexLoc);
-                        _glProgBlendCorners->setAttributeBuffer(vertexLoc, GL_FLOAT, 0, 2, 6*sizeof(GLfloat));
-                        _glProgBlendCorners->enableAttributeArray(maskLoc);
-                        _glProgBlendCorners->setAttributeBuffer(maskLoc, GL_FLOAT, 2*sizeof(GLfloat), 2, 6*sizeof(GLfloat));
-                        _glProgBlendCorners->enableAttributeArray(coordLoc);
-                        _glProgBlendCorners->setAttributeBuffer(coordLoc, GL_FLOAT, 4*sizeof(GLfloat), 2, 6*sizeof(GLfloat));
-                        _glProgBlendCorners->setUniformValue("movie", 0);
-                        _glProgBlendCorners->setUniformValue("mask", 1);
+                        int nVertexLoc = m_pGlProgBlendCorners->attributeLocation("position");
+                        int nMaskLoc = m_pGlProgBlendCorners->attributeLocation("maskTexCoord");
+                        int nCoordLoc = m_pGlProgBlendCorners->attributeLocation("vTexCoord");
+                        m_pGlProgBlendCorners->enableAttributeArray(nVertexLoc);
+                        m_pGlProgBlendCorners->setAttributeBuffer(nVertexLoc, GL_FLOAT, 0, 2, 6*sizeof(GLfloat));
+                        m_pGlProgBlendCorners->enableAttributeArray(nMaskLoc);
+                        m_pGlProgBlendCorners->setAttributeBuffer(nMaskLoc, GL_FLOAT, 2*sizeof(GLfloat), 2, 6*sizeof(GLfloat));
+                        m_pGlProgBlendCorners->enableAttributeArray(nCoordLoc);
+                        m_pGlProgBlendCorners->setAttributeBuffer(nCoordLoc, GL_FLOAT, 4*sizeof(GLfloat), 2, 6*sizeof(GLfloat));
+                        m_pGlProgBlendCorners->setUniformValue("movie", 0);
+                        m_pGlProgBlendCorners->setUniformValue("mask", 1);
 
-                        f->glActiveTexture(GL_TEXTURE0);
-                        f->glBindTexture(GL_TEXTURE_2D, _fbo->texture());
+                        pGLFunction->glActiveTexture(GL_TEXTURE0);
+                        pGLFunction->glBindTexture(GL_TEXTURE_2D, m_pFbo->texture());
 
-                        f->glActiveTexture(GL_TEXTURE1);
-                        _cornerMasks[i]->bind();
+                        pGLFunction->glActiveTexture(GL_TEXTURE1);
+                        m_pCornerMasks[i]->bind();
 
-                        f->glDrawArrays(GL_TRIANGLES, 0, 6);
+                        pGLFunction->glDrawArrays(GL_TRIANGLES, 0, 6);
 
-                        _cornerMasks[i]->release();
-                        _glProgBlendCorners->release();
-                        _vboCorners[i].release();
+                        m_pCornerMasks[i]->release();
+                        m_pGlProgBlendCorners->release();
+                        m_vboCorners[i].release();
                     }
                 }
 
-                f->glDisable(GL_BLEND);
+                pGLFunction->glDisable(GL_BLEND);
             }
 
         } else {
-            f->glEnable(GL_BLEND);
-            f->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-            auto clr = QColor(37, 37, 37, 255);
-            float a = 37.0f / 255.0f;
+            pGLFunction->glEnable(GL_BLEND);
+            pGLFunction->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            QColor color = QColor(37, 37, 37, 255);
+            float fRation = 37.0f / 255.0f;
 //            if (qApp->theme() != "dark") {
 //                clr = QColor(252, 252, 252, 255);
 //                a = 252.0 / 255.0;
 //            }
             if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()){
-                clr = QColor(252, 252, 252, 255);
-                a = 252.0f / 255.0f;
+                color = QColor(252, 252, 252, 255);
+                fRation = 252.0f / 255.0f;
             }
-            f->glClearColor(a, a, a, 1.0);
-            f->glClear(GL_COLOR_BUFFER_BIT);
+            pGLFunction->glClearColor(fRation, fRation, fRation, 1.0);
+            pGLFunction->glClear(GL_COLOR_BUFFER_BIT);
 
             for(int i = 0;i < 2 ;i ++){
                 {
-                    QOpenGLVertexArrayObject::Binder vaoBind(&_vao);
-                    _vbo.bind();
-                    _glProg->bind();
-                    _glProg->setUniformValue("bg", clr);
+                    QOpenGLVertexArrayObject::Binder vaoBind(&m_vao);
+                    m_vbo.bind();
+                    m_pGlProg->bind();
+                    m_pGlProg->setUniformValue("bg", color);
 
-                    QOpenGLTexture *tex = _lightTex;
+                    QOpenGLTexture *pGLTexture = m_pLightTex;
                     DGuiApplicationHelper::ColorType themeType = DGuiApplicationHelper::instance()->themeType();
                     //                if (qApp->theme() == "dark") {
                     if (themeType == DGuiApplicationHelper::DarkType) {
-                        tex = _darkTex;
+                        pGLTexture = m_pDarkTex;
                     }
-                    tex->bind();
-                    f->glActiveTexture(GL_TEXTURE0);
-                    f->glDrawArrays(GL_TRIANGLES, 0, 6);
-                    tex->release();
-                    _glProg->release();
-                    _vbo.release();
+                    pGLTexture->bind();
+                    pGLFunction->glActiveTexture(GL_TEXTURE0);
+                    pGLFunction->glDrawArrays(GL_TRIANGLES, 0, 6);
+                    pGLTexture->release();
+                    m_pGlProg->release();
+                    m_vbo.release();
                 }
             }
 
-            if (_doRoundedClipping) {
-                f->glBlendFunc(GL_SRC_ALPHA, GL_ZERO);
+            if (m_bDoRoundedClipping) {
+                pGLFunction->glBlendFunc(GL_SRC_ALPHA, GL_ZERO);
                 // blend corners
-                QOpenGLVertexArrayObject::Binder vaoBind(&_vaoCorner);
+                QOpenGLVertexArrayObject::Binder vaoBind(&m_vaoCorner);
 
                 for (int i = 0; i < 4; i++) {
-                    _glProgCorner->bind();
-                    _vboCorners[i].bind();
+                    m_pGlProgCorner->bind();
+                    m_vboCorners[i].bind();
 
-                    int vertexLoc = _glProgCorner->attributeLocation("position");
-                    int coordLoc = _glProgCorner->attributeLocation("vTexCoord");
-                    _glProgCorner->enableAttributeArray(vertexLoc);
-                    _glProgCorner->setAttributeBuffer(vertexLoc, GL_FLOAT, 0, 2, 6*sizeof(GLfloat));
-                    _glProgCorner->enableAttributeArray(coordLoc);
-                    _glProgCorner->setAttributeBuffer(coordLoc, GL_FLOAT, 2*sizeof(GLfloat), 2, 6*sizeof(GLfloat));
-                    _glProgCorner->setUniformValue("bg", clr);
+                    int vertexLoc = m_pGlProgCorner->attributeLocation("position");
+                    int coordLoc = m_pGlProgCorner->attributeLocation("vTexCoord");
+                    m_pGlProgCorner->enableAttributeArray(vertexLoc);
+                    m_pGlProgCorner->setAttributeBuffer(vertexLoc, GL_FLOAT, 0, 2, 6*sizeof(GLfloat));
+                    m_pGlProgCorner->enableAttributeArray(coordLoc);
+                    m_pGlProgCorner->setAttributeBuffer(coordLoc, GL_FLOAT, 2*sizeof(GLfloat), 2, 6*sizeof(GLfloat));
+                    m_pGlProgCorner->setUniformValue("bg", color);
                     
-                    f->glActiveTexture(GL_TEXTURE0);
-                    _cornerMasks[i]->bind();
+                    pGLFunction->glActiveTexture(GL_TEXTURE0);
+                    m_pCornerMasks[i]->bind();
 
-                    f->glDrawArrays(GL_TRIANGLES, 0, 6);
+                    pGLFunction->glDrawArrays(GL_TRIANGLES, 0, 6);
 
-                    _cornerMasks[i]->release();
-                    _glProgCorner->release();
-                    _vboCorners[i].release();
+                    m_pCornerMasks[i]->release();
+                    m_pGlProgCorner->release();
+                    m_vboCorners[i].release();
                 }
             }
 
-            f->glDisable(GL_BLEND);
+            pGLFunction->glDisable(GL_BLEND);
 
         }
     }
 
-    void MpvGLWidget::setPlaying(bool val)
+    void MpvGLWidget::setPlaying(bool bFalse)
     {
-        if (_playing != val) {
-            _playing = val;
+        if (m_bPlaying != bFalse) {
+            m_bPlaying = bFalse;
         }
         updateVbo();
         updateVboCorners();
@@ -911,8 +941,8 @@ namespace dmr {
     /*not used yet*/
     /*void MpvGLWidget::setMiniMode(bool val)
     {
-        if (_inMiniMode != val) {
-            _inMiniMode = val;
+        if (m_bInMiniMode != val) {
+            m_bInMiniMode = val;
             updateVbo();
             updateVboCorners();
             update();
