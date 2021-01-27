@@ -27,11 +27,16 @@
  * version.  If you delete this exception statement from all source
  * files in the program, then also delete it here.
  */
+/**
+ *@file 这个文件是影片信息窗口相关的类
+ */
 #ifndef _DMR_MOVIE_INFO_DIALOG_H
 #define _DMR_MOVIE_INFO_DIALOG_H
 
 #include <QtWidgets>
 #include <QGuiApplication>
+#include <QPainterPath>
+
 #include <DDialog>
 #include <DImageButton>
 #include <DLabel>
@@ -41,7 +46,6 @@
 #include <DGuiApplicationHelper>
 #include <DApplication>
 #include <DArrowLineDrawer>
-#include <QPainterPath>
 
 #include "../accessibility/ac-deepin-movie-define.h"
 
@@ -56,38 +60,60 @@ DGUI_USE_NAMESPACE
 
 namespace dmr {
 struct PlayItemInfo;
+/**
+ * @brief The PosterFrame class
+ * 影片信息中的缩略图控件
+ */
 class PosterFrame: public QLabel
 {
     Q_OBJECT
 public:
+    /**
+     * @brief PosterFrame 构造函数
+     * @param parent 父窗口
+     */
     explicit PosterFrame(QWidget *parent) : QLabel(parent)
     {
-        auto e = new QGraphicsDropShadowEffect(this);
-        e->setColor(QColor(0, 0, 0, 76));
-        e->setOffset(0, 3);
-        e->setBlurRadius(6);
-        setGraphicsEffect(e);
+        QGraphicsDropShadowEffect *pShadowEffect = new QGraphicsDropShadowEffect(this);
+        //参考设计图
+        pShadowEffect->setColor(QColor(0, 0, 0, 76));
+        pShadowEffect->setOffset(0, 3);
+        pShadowEffect->setBlurRadius(6);
+        setGraphicsEffect(pShadowEffect);
     }
 };
 
+/**
+ * @brief The InfoBottom class
+ * 这个是一个信息的窗口，在影片信息中有多个信息分类，
+ * 每个分类占一个这样的小窗口
+ */
 class InfoBottom: public DFrame
 {
     Q_OBJECT
 public:
+    /**
+     * @brief InfoBottom 构造函数
+     */
     InfoBottom() {}
 
 protected:
-    virtual void paintEvent(QPaintEvent *ev)
+    /**
+     * @brief paintEvent 重载绘制事件函数
+     * @param pPaintEvent 绘制事件
+     */
+    virtual void paintEvent(QPaintEvent *pPaintEvent)
     {
-        QPainter pt(this);
-        pt.setRenderHint(QPainter::Antialiasing);
+        QPainter painter(this);
+        painter.setRenderHint(QPainter::Antialiasing);
 
+        //这部分颜色参考设计图
         if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
-            pt.setPen(Qt::NoPen);
-            pt.setBrush(QBrush(QColor(255, 255, 255, 0)));
+            painter.setPen(Qt::NoPen);
+            painter.setBrush(QBrush(QColor(255, 255, 255, 0)));
         } else if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
-            pt.setPen(Qt::NoPen);
-            pt.setBrush(QBrush(QColor(45, 45, 45, 0)));
+            painter.setPen(Qt::NoPen);
+            painter.setBrush(QBrush(QColor(45, 45, 45, 0)));
         }
 
         QRect rect = this->rect();
@@ -96,28 +122,40 @@ protected:
 
         QPainterPath painterPath;
         painterPath.addRoundedRect(rect, 10, 10);
-        pt.drawPath(painterPath);
+        painter.drawPath(painterPath);
     }
 };
 
+/**
+ * @brief The ArrowLine class
+ * 这个类是负责将每个信息分类进行折叠
+ */
 class ArrowLine: public DArrowLineDrawer
 {
     Q_OBJECT
 public:
+    /**
+     * @brief ArrowLine 构造函数
+     */
     ArrowLine() {}
 
 protected:
-    virtual void paintEvent(QPaintEvent *ev)
+    /**
+     * @brief paintEvent 重载绘制事件函数
+     * @param pPaintEvent 绘制事件
+     */
+    virtual void paintEvent(QPaintEvent *pPaintEvent)
     {
-        QPainter pt(this);
-        pt.setRenderHint(QPainter::Antialiasing);
+        QPainter painter(this);
+        painter.setRenderHint(QPainter::Antialiasing);
 
+        //这里的参考设计图
         if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
-            pt.setPen(QColor(0, 0, 0, 0.05 * 255));
-            pt.setBrush(QBrush(QColor(255, 255, 255, 255 * 0.7)));
+            painter.setPen(QColor(0, 0, 0, 0.05 * 255));
+            painter.setBrush(QBrush(QColor(255, 255, 255, 255 * 0.7)));
         } else if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
-            pt.setPen(QColor(255, 255, 255, 20));
-            pt.setBrush(QBrush(QColor(45, 45, 45, 250 * 0.7)));
+            painter.setPen(QColor(255, 255, 255, 20));
+            painter.setBrush(QBrush(QColor(45, 45, 45, 250 * 0.7)));
         }
 
         QRect rect = this->rect();
@@ -125,39 +163,72 @@ protected:
         rect.setHeight(rect.height() - 1);
 
         QPainterPath painterPath;
+        //圆角参考设计图
         painterPath.addRoundedRect(rect, 10, 10);
-        pt.drawPath(painterPath);
+        painter.drawPath(painterPath);
     }
 };
-
+/**
+ * @brief The MovieInfoDialog class
+ * 这个类是影片信息大窗口的类
+ */
 class MovieInfoDialog: public DAbstractDialog
 {
     Q_OBJECT
 public:
-    MovieInfoDialog(const struct PlayItemInfo &,QWidget *);
+    /**
+     * @brief MovieInfoDialog 构造函数
+     * @param strPlayItemInfo 播放项的相关信息
+     * @param pParent 父窗口
+     */
+    MovieInfoDialog(const struct PlayItemInfo &strPlayItemInfo, QWidget *pParent);
 
 protected:
-    void paintEvent(QPaintEvent *ev);
+    /**
+     * @brief paintEvent 重载绘制事件函数
+     * @param pPaintEvent 绘制事件
+     */
+    void paintEvent(QPaintEvent *pPaintEvent);
 
 private slots:
-    void OnFontChanged(const QFont &font);
+    /**
+     * @brief onFontChanged 字体变化槽函数（跟随系统变化）
+     * @param font 变化后的字体
+     */
+    void onFontChanged(const QFont &font);
+    /**
+     * @brief changedHeight 高度变化槽函数
+     */
     void changedHeight(const int);
     //把lambda表达式改为槽函数，modify by myk
+    /**
+     * @brief slotThemeTypeChanged
+     * 主题变化槽函数
+     */
     void slotThemeTypeChanged();
 
 private:
-    QList<DDrawer *> addExpandWidget(const QStringList &titleList);
-    void initExpand(QVBoxLayout *layout, DDrawer *expand);
-    void addRow(QString, QString, QFormLayout *, QList<DLabel *> &);
+    /**
+     * @brief addRow 增加信息条目函数
+     * @param title 信息名称
+     * @param field 信息内容
+     * @param form 布局管理
+     * @retval tipList 传回当前添加信息的label控件
+     */
+    void addRow(QString sTitle, QString sField, QFormLayout *pForm, QList<DLabel *> &tipList);
+    /**
+     * @brief initMember 初始化成员变量
+     */
+    void initMember();
 
 private:
-    DLabel *m_fileNameLbl {nullptr};
-    DLabel *m_filePathLbl {nullptr};
-    QString m_strFilePath {QString()};
-    QList<DLabel *> m_titleList;
-    QList<DDrawer *> m_expandGroup;
-    QScrollArea *m_scrollArea;
-    int lastHeight {-1};
+    DLabel *m_pFileNameLbl;             ///文件名控件
+    DLabel *m_pFilePathLbl;             ///文件路径控件
+    QString m_sFilePath;                ///文件路径
+    QList<DLabel *> m_titleList;        ///信息label控件列表
+    QList<DDrawer *> m_expandGroup;     ///信息分类组列表
+    QScrollArea *m_pScrollArea;         ///包含多个分类组的滚动条窗口
+    int m_nLastHeight;                  ///保存上次文本高度
 };
 
 

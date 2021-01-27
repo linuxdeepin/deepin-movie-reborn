@@ -27,6 +27,9 @@
  * version.  If you delete this exception statement from all source
  * files in the program, then also delete it here.
  */
+/**
+ *@file 这个文件是影片信息窗口相关的类
+ */
 #include "movieinfo_dialog.h"
 #include "mpv_proxy.h"
 #include "playlist_model.h"
@@ -42,14 +45,18 @@
 
 DWIDGET_USE_NAMESPACE
 
-//#define MV_BASE_INFO tr("Film info")
-//#define MV_FILE_TYPE tr("File type")
-//#define MV_RESOLUTION tr("Resolution")
-//#define MV_FILE_SIZE tr("File size")
-//#define MV_DURATION tr("Duration")
-//#define MV_FILE_PATH tr("File path")
-
 namespace dmr {
+/**
+ * @brief ElideText 根据字体大小调整字体缩减
+ * @param text 全部的文本
+ * @param size 控件的大小
+ * @param wordWrap 文本包装的类型
+ * @param font 字体
+ * @param mode 指定省略号的位置
+ * @param lineHeight 行高
+ * @param lastLineWidth 保存的宽度
+ * @return 返回省略后的文本
+ */
 static QString ElideText(const QString &text, const QSize &size,
                          QTextOption::WrapMode wordWrap, const QFont &font,
                          Qt::TextElideMode mode, int lineHeight, int lastLineWidth)
@@ -73,27 +80,12 @@ static QString ElideText(const QString &text, const QSize &size,
         int height = 0;
         while (line.isValid()) {
             line.setLineWidth(size.width());
-
-            //2020.4.2修改，显示完整路径
-            /*if (textLayout.lineCount() == 2) {
-                QStringList strLst;
-                if (!text.isEmpty()) {
-                    strLst = text.split(tmp_str);
-                }
-
-                if (fontMetrics.boundingRect(strLst.last()).width() > line.width() - 1) {
-                    str += fontMetrics.elidedText(strLst.last(), mode, lastLineWidth);
-                    break;
-                }
-            }*/
-
             tmp_str = text.mid(line.textStart(), line.textLength());
 
             if (tmp_str.indexOf('\n'))
                 height += lineHeight;
 
             str += tmp_str;
-
             line = textLayout.createLine();
 
             if (line.isValid())
@@ -106,12 +98,26 @@ static QString ElideText(const QString &text, const QSize &size,
     return str;
 }
 
+/**
+ * @brief The ToolTipEvent class
+ * 鼠标悬停时的tooltip类
+ */
 class ToolTipEvent: public QObject
 {
 public:
+    /**
+     * @brief ToolTipEvent 构造函数
+     * @param parent 父窗口
+     */
     explicit ToolTipEvent(QObject *parent): QObject(parent) {}
 
 protected:
+    /**
+     * @brief eventFilter 事件过滤器
+     * @param obj 过滤的对象
+     * @param event 事件
+     * @return 是否继续执行
+     */
     bool eventFilter(QObject *obj, QEvent *event)
     {
         switch (event->type()) {
@@ -124,14 +130,10 @@ protected:
             tip->show();
             tip->raise();
             tip->adjustSize();
-
-//            QPoint pos = btn->pos();
-//            pos.rx() = tip->parentWidget()->rect().width()/2 - tip->width()/2;
-//            pos.ry() = tip->parentWidget()->rect().bottom() - tip->height() - btn->height() - 15;
-            auto pos = he->globalPos() + QPoint{0, 0};
-            auto dw = qApp->desktop()->availableGeometry(btn).width();
-            if (pos.x() + tip->width() > dw) {
-                pos.rx() = dw - tip->width();
+            QPoint pos = he->globalPos() + QPoint{0, 0};
+            int nDesktopWidth = qApp->desktop()->availableGeometry(btn).width();
+            if (pos.x() + tip->width() > nDesktopWidth) {
+                pos.rx() = nDesktopWidth - tip->width();
             }
             pos.ry() = pos.y() - tip->height();
             tip->move(pos);
@@ -151,13 +153,24 @@ protected:
         return QObject::eventFilter(obj, event);
     }
 };
-
+/**
+ * @brief The CloseButton class
+ * 影片信息窗口关闭按钮
+ */
 class CloseButton : public DPushButton
 {
 public:
+    /**
+     * @brief CloseButton 构造函数
+     * @param parent 父窗口
+     */
     explicit CloseButton(QWidget *parent) {}
 protected:
-    void paintEvent(QPaintEvent *e) override
+    /**
+     * @brief paintEvent 重载绘制事件函数
+     * @param pPaintEvent 绘制事件
+     */
+    void paintEvent(QPaintEvent *pPaintEvent) override
     {
         QPainter painter(this);
         QRect rect = this->rect();
@@ -170,22 +183,23 @@ protected:
         }
     }
 };
-
+/**
+ * @brief MovieInfoDialog 构造函数
+ */
 MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent)
     : DAbstractDialog(parent)
 {
+    initMember();
    if(utils::check_wayland_env()){
        setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint);
    }else{
        setWindowFlags(windowFlags() /*| Qt::WindowStaysOnTopHint*/);  //和其他应用保持统一取消置顶
    }
-   //x86上此处设置透明效果无作用
-   //setAttribute(Qt::WA_TranslucentBackground, true);
     this->setObjectName(MOVIE_INFO_DIALOG);
     this->setAccessibleName(MOVIE_INFO_DIALOG);
     m_titleList.clear();
 
-    auto layout = new QVBoxLayout(this);
+    QVBoxLayout *layout = new QVBoxLayout(this);
     layout->setSpacing(0);
     layout->setContentsMargins(0, 0, 0, 0);
     setLayout(layout);
@@ -193,75 +207,70 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
     CloseButton *closeBt = new CloseButton(this);
     closeBt->setObjectName(MOVIEINFO_CLOSE_BUTTON);
     closeBt->setAccessibleName(MOVIEINFO_CLOSE_BUTTON);
-    //closeBt->setIcon(QIcon(INFO_CLOSE_LIGHT));
-    //DImageButton *closeBt = new DImageButton(this);
     closeBt->setFixedSize(50, 50);
     connect(closeBt, &CloseButton::clicked, this, &MovieInfoDialog::close);
     layout->addWidget(closeBt, 0, Qt::AlignTop | Qt::AlignRight);
 
-    const auto &mi = pif.mi;
+    const MovieInfo &strMovieInfo = pif.mi;
 
-    auto *ml = new QVBoxLayout;
-    ml->setContentsMargins(10, 0, 0, 0);
-    ml->setSpacing(0);
-    layout->addLayout(ml);
+    QVBoxLayout *pMainLayout = new QVBoxLayout;
+    pMainLayout->setContentsMargins(10, 0, 0, 0);
+    pMainLayout->setSpacing(0);
+    layout->addLayout(pMainLayout);
 
-    auto *pm = new PosterFrame(this);
-    pm->setWindowOpacity(1);
-    pm->setFixedHeight(128);
+    PosterFrame *pPosterFrame = new PosterFrame(this);
+    pPosterFrame->setWindowOpacity(1);
+    pPosterFrame->setFixedHeight(128);
 
-    auto dpr = qApp->devicePixelRatio();
+    qreal pixelRatio = qApp->devicePixelRatio();
     QPixmap cover;
     if (pif.thumbnail.isNull()) {
         cover = (utils::LoadHiDPIPixmap(LOGO_BIG));
     } else {
         QSize sz(220, 128);
-        sz *= dpr;
+        sz *= pixelRatio;
         auto img = pif.thumbnail.scaledToWidth(sz.width(), Qt::SmoothTransformation);
         cover = img.copy(0, (img.height() - sz.height()) / 2, sz.width(), sz.height());
-        cover.setDevicePixelRatio(dpr);
+        cover.setDevicePixelRatio(pixelRatio);
     }
     cover = utils::MakeRoundedPixmap(cover, 8, 8);
-    pm->setPixmap(cover);
-    pm->ensurePolished();
-    ml->addWidget(pm);
-    ml->setAlignment(pm, Qt::AlignHCenter);
-    ml->addSpacing(9);
+    pPosterFrame->setPixmap(cover);
+    pPosterFrame->ensurePolished();
+    pMainLayout->addWidget(pPosterFrame);
+    pMainLayout->setAlignment(pPosterFrame, Qt::AlignHCenter);
+    pMainLayout->addSpacing(9);
 
-    m_fileNameLbl = new DLabel(this);
-    m_fileNameLbl->setMinimumWidth(260);
-    qInfo() << "fileNameLbl w,h: " << m_fileNameLbl->width() << "," << m_fileNameLbl->height();
-    DFontSizeManager::instance()->bind(m_fileNameLbl, DFontSizeManager::T8);
-    m_fileNameLbl->setForegroundRole(DPalette::BrightText);
-    m_fileNameLbl->setText(m_fileNameLbl->fontMetrics().elidedText(QFileInfo(mi.filePath).fileName(), Qt::ElideMiddle, 260));
-    m_fileNameLbl->setAlignment(Qt::AlignCenter);
-    ml->addWidget(m_fileNameLbl);
-    ml->setAlignment(m_fileNameLbl, Qt::AlignHCenter);
-    ml->addSpacing(50);
+    m_pFileNameLbl->setMinimumWidth(260);
+    DFontSizeManager::instance()->bind(m_pFileNameLbl, DFontSizeManager::T8);
+    m_pFileNameLbl->setForegroundRole(DPalette::BrightText);
+    m_pFileNameLbl->setText(m_pFileNameLbl->fontMetrics().elidedText(QFileInfo(strMovieInfo.filePath).fileName(), Qt::ElideMiddle, 260));
+    m_pFileNameLbl->setAlignment(Qt::AlignCenter);
+    pMainLayout->addWidget(m_pFileNameLbl);
+    pMainLayout->setAlignment(m_pFileNameLbl, Qt::AlignHCenter);
+    pMainLayout->addSpacing(50);
 
     QList<DLabel *> tipLst;
     tipLst.clear();
 
-    m_scrollArea = new QScrollArea;
-    m_scrollArea->setObjectName(MOVIE_INFO_SCROLL_AREA);
-    m_scrollArea->setAccessibleName(MOVIE_INFO_SCROLL_AREA);
-    m_scrollArea->viewport()->setObjectName(SCROLL_AREA_VIEWPORT);
-    QPalette palette = m_scrollArea->viewport()->palette();
+    m_pScrollArea->setObjectName(MOVIE_INFO_SCROLL_AREA);
+    m_pScrollArea->setAccessibleName(MOVIE_INFO_SCROLL_AREA);
+    m_pScrollArea->viewport()->setObjectName(SCROLL_AREA_VIEWPORT);
+    QPalette palette = m_pScrollArea->viewport()->palette();
     palette.setBrush(QPalette::Background, Qt::NoBrush);
-    m_scrollArea->viewport()->setPalette(palette);
-    m_scrollArea->setFrameShape(QFrame::Shape::NoFrame);
-    ml->addWidget(m_scrollArea);
-    m_scrollArea->setWidgetResizable(true);
+    m_pScrollArea->viewport()->setPalette(palette);
+    m_pScrollArea->setFrameShape(QFrame::Shape::NoFrame);
+    pMainLayout->addWidget(m_pScrollArea);
+    m_pScrollArea->setWidgetResizable(true);
 
-    QWidget *scrollContentWidget = new QWidget(m_scrollArea);
+    QWidget *scrollContentWidget = new QWidget(m_pScrollArea);
     scrollContentWidget->setObjectName(MOVIE_INFO_SCROLL_CONTENT);
     QVBoxLayout *scrollWidgetLayout = new QVBoxLayout;
     scrollWidgetLayout->setContentsMargins(0, 0, 10, 10);
     scrollWidgetLayout->setSpacing(10);
     scrollContentWidget->setLayout(scrollWidgetLayout);
-    m_scrollArea->setWidget(scrollContentWidget);
-    m_scrollArea->setWidgetResizable(true);
-    m_scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOff);
+    m_pScrollArea->setWidget(scrollContentWidget);
+    m_pScrollArea->setWidgetResizable(true);
+    m_pScrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOff);
 
     //添加基本信息
     ArrowLine *film = new ArrowLine;
@@ -277,24 +286,24 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
     //infoRect->setFixedSize(280, 132);
     film->setExpand(true);
     m_expandGroup.append(film);
-    auto *form = new QFormLayout(infoRect);
-    form->setContentsMargins(10, 5, 20, 16);
-    form->setVerticalSpacing(6);
-    form->setHorizontalSpacing(10);
-    form->setLabelAlignment(Qt::AlignLeft);
-    form->setFormAlignment(Qt::AlignCenter);
+    QFormLayout *pFormLayout = new QFormLayout(infoRect);
+    pFormLayout->setContentsMargins(10, 5, 20, 16);
+    pFormLayout->setVerticalSpacing(6);
+    pFormLayout->setHorizontalSpacing(10);
+    pFormLayout->setLabelAlignment(Qt::AlignLeft);
+    pFormLayout->setFormAlignment(Qt::AlignCenter);
     DEnhancedWidget *hanceedWidget = new DEnhancedWidget(film);
     connect(hanceedWidget, &DEnhancedWidget::heightChanged, this, &MovieInfoDialog::changedHeight);
 
-    addRow(tr("Type"), mi.fileType, form, tipLst);
-    addRow(tr("Size"), mi.sizeStr(), form, tipLst);
-    addRow(tr("Duration"), mi.durationStr(), form, tipLst);
+    addRow(tr("Type"), strMovieInfo.fileType, pFormLayout, tipLst);
+    addRow(tr("Size"), strMovieInfo.sizeStr(), pFormLayout, tipLst);
+    addRow(tr("Duration"), strMovieInfo.durationStr(), pFormLayout, tipLst);
     DLabel *tmp = new DLabel;
     DFontSizeManager::instance()->bind(tmp, DFontSizeManager::T8);
-    tmp->setText(mi.filePath);
-    auto fm = tmp->fontMetrics();
-    auto w = fm.width(mi.filePath);
-    addRow(tr("Path"), mi.filePath, form, tipLst);
+    tmp->setText(strMovieInfo.filePath);
+    QFontMetrics fontMetrics = tmp->fontMetrics();
+    auto w = fontMetrics.width(strMovieInfo.filePath);
+    addRow(tr("Path"), strMovieInfo.filePath, pFormLayout, tipLst);
 
     //添加视频信息
     ArrowLine *video = new ArrowLine;
@@ -310,20 +319,20 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
     //videoRect->setFixedSize(280, 136);
     video->setExpand(true);
     m_expandGroup.append(video);
-    auto *videoForm = new QFormLayout(videoRect);
-    videoForm->setContentsMargins(10, 5, 20, 19);
-    videoForm->setVerticalSpacing(6);
-    videoForm->setHorizontalSpacing(10);
-    videoForm->setLabelAlignment(Qt::AlignLeft);
-    videoForm->setFormAlignment(Qt::AlignCenter);
+    QFormLayout *pVideoFormLayout = new QFormLayout(videoRect);
+    pVideoFormLayout->setContentsMargins(10, 5, 20, 19);
+    pVideoFormLayout->setVerticalSpacing(6);
+    pVideoFormLayout->setHorizontalSpacing(10);
+    pVideoFormLayout->setLabelAlignment(Qt::AlignLeft);
+    pVideoFormLayout->setFormAlignment(Qt::AlignCenter);
     DEnhancedWidget *videoWidget = new DEnhancedWidget(video);
     connect(videoWidget, &DEnhancedWidget::heightChanged, this, &MovieInfoDialog::changedHeight);
 
-    addRow(tr("Video CodecID"), mi.videoCodec(), videoForm, tipLst);
-    addRow(tr("Video CodeRate"), QString(tr("%1 kbps")).arg(mi.vCodeRate), videoForm, tipLst);
-    addRow(tr("FPS"), QString(tr("%1 fps")).arg(mi.fps), videoForm, tipLst);
-    addRow(tr("Proportion"), QString(tr("%1")).arg(static_cast<double>(mi.proportion)), videoForm, tipLst);
-    addRow(tr("Resolution"), mi.resolution, videoForm, tipLst);
+    addRow(tr("Video CodecID"), strMovieInfo.videoCodec(), pVideoFormLayout, tipLst);
+    addRow(tr("Video CodeRate"), QString(tr("%1 kbps")).arg(strMovieInfo.vCodeRate), pVideoFormLayout, tipLst);
+    addRow(tr("FPS"), QString(tr("%1 fps")).arg(strMovieInfo.fps), pVideoFormLayout, tipLst);
+    addRow(tr("Proportion"), QString(tr("%1")).arg(static_cast<double>(strMovieInfo.proportion)), pVideoFormLayout, tipLst);
+    addRow(tr("Resolution"), strMovieInfo.resolution, pVideoFormLayout, tipLst);
 
     //添加音频信息
     ArrowLine *audio = new ArrowLine;
@@ -348,11 +357,11 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
     DEnhancedWidget *audioWidget = new DEnhancedWidget(audio);
     connect(audioWidget, &DEnhancedWidget::heightChanged, this, &MovieInfoDialog::changedHeight);
 
-    addRow(tr("Audio CodecID"), mi.audioCodec(), audioForm, tipLst);
-    addRow(tr("Audio CodeRate"), QString(tr("%1 kbps")).arg(mi.aCodeRate), audioForm, tipLst);
-    addRow(tr("Audio digit"), QString(tr("%1 bits").arg(mi.aDigit)), audioForm, tipLst);
-    addRow(tr("Channels"), QString(tr("%1 channels")).arg(mi.channels), audioForm, tipLst);
-    addRow(tr("Sampling"), QString(tr("%1hz")).arg(mi.sampling), audioForm, tipLst);
+    addRow(tr("Audio CodecID"), strMovieInfo.audioCodec(), audioForm, tipLst);
+    addRow(tr("Audio CodeRate"), QString(tr("%1 kbps")).arg(strMovieInfo.aCodeRate), audioForm, tipLst);
+    addRow(tr("Audio digit"), QString(tr("%1 bits").arg(strMovieInfo.aDigit)), audioForm, tipLst);
+    addRow(tr("Channels"), QString(tr("%1 channels")).arg(strMovieInfo.channels), audioForm, tipLst);
+    addRow(tr("Sampling"), QString(tr("%1hz")).arg(strMovieInfo.sampling), audioForm, tipLst);
 
     setFixedSize(300, 642);
 
@@ -368,75 +377,68 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
 
     auto th = new ToolTipEvent(this);
     if (tipLst.size() > 1) {
-        auto filePathLbl = tipLst.at(3);
-        filePathLbl->setObjectName("filePathLabel");
+        DLabel *pFilePathLbl = tipLst.at(3);
+        pFilePathLbl->setObjectName("filePathLabel");
         auto codeLabel = m_titleList.at(5);
-        qInfo() << "filePathLbl w,h: " << filePathLbl->width() << "," << filePathLbl->height();
         QFontMetrics fm_cl = codeLabel->fontMetrics();
-        filePathLbl->setMinimumWidth(qMin(160, 250 - fm_cl.boundingRect(codeLabel->text()).width()));
-        qInfo() << "filePathLbl w,h: " << filePathLbl->width() << "," << filePathLbl->height();
-        auto fp = ElideText(tmp->text(), {filePathLbl->width(), fm_cl.height()}, QTextOption::WrapAnywhere,
-                            filePathLbl->font(), Qt::ElideRight, fm_cl.height(), filePathLbl->width());
-        filePathLbl->setText(fp);
-        m_filePathLbl = filePathLbl;
-        m_strFilePath = tmp->text();
-        filePathLbl->setToolTip(tmp->text());
+        pFilePathLbl->setMinimumWidth(qMin(160, 250 - fm_cl.boundingRect(codeLabel->text()).width()));
+        auto fp = ElideText(tmp->text(), {pFilePathLbl->width(), fm_cl.height()}, QTextOption::WrapAnywhere,
+                            pFilePathLbl->font(), Qt::ElideRight, fm_cl.height(), pFilePathLbl->width());
+        pFilePathLbl->setText(fp);
+        m_pFilePathLbl = pFilePathLbl;
+        m_sFilePath = tmp->text();
+        pFilePathLbl->setToolTip(tmp->text());
         auto t = new Tip(QPixmap(), tmp->text(), nullptr);
         t->resetSize(QApplication::desktop()->availableGeometry().width());
-        t->setProperty("for", QVariant::fromValue<QWidget *>(filePathLbl));
-        filePathLbl->setProperty("HintWidget", QVariant::fromValue<QWidget *>(t));
-        filePathLbl->installEventFilter(th);
+        t->setProperty("for", QVariant::fromValue<QWidget *>(pFilePathLbl));
+        pFilePathLbl->setProperty("HintWidget", QVariant::fromValue<QWidget *>(t));
+        pFilePathLbl->installEventFilter(th);
 //        filePathLbl->hide();
     }
 
     delete tmp;
     tmp = nullptr;
 
-    connect(qApp, &QGuiApplication::fontChanged, this, &MovieInfoDialog::OnFontChanged);
+    connect(qApp, &QGuiApplication::fontChanged, this, &MovieInfoDialog::onFontChanged);
     connect(DApplicationHelper::instance(), &DApplicationHelper::themeTypeChanged, this, &MovieInfoDialog::slotThemeTypeChanged);
 
-
-//    if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
-//        closeBt->setNormalPic(INFO_CLOSE_LIGHT);
-//    } else if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
-//        closeBt->setNormalPic(INFO_CLOSE_DARK);
-//    } else {
-//        closeBt->setNormalPic(INFO_CLOSE_LIGHT);
-//    }
     m_expandGroup.at(0)->setExpand(true);
     m_expandGroup.at(1)->setExpand(true);
     m_expandGroup.at(2)->setExpand(true);
 }
-
+/**
+ * @brief paintEvent 重载绘制事件函数
+ * @param pPaintEvent 绘制事件
+ */
 void MovieInfoDialog::paintEvent(QPaintEvent *ev)
 {
     QPainter painter(this);
     painter.fillRect(this->rect(), QColor(0, 0, 0, static_cast<int>(255 * 0.8)));
     QDialog::paintEvent(ev);
 }
-
-void MovieInfoDialog::OnFontChanged(const QFont &font)
+/**
+ * @brief onFontChanged 字体变化槽函数（跟随系统变化）
+ * @param font 变化后的字体
+ */
+void MovieInfoDialog::onFontChanged(const QFont &font)
 {
     QFontMetrics fm(font);
+    QString strFileName = m_pFileNameLbl->fontMetrics().elidedText(QFileInfo(m_sFilePath).fileName(), Qt::ElideMiddle, m_pFileNameLbl->width());
+    m_pFileNameLbl->setText(strFileName);
 
-    qInfo() << "fileNameLbl w,h: " << m_fileNameLbl->width() << "," << m_fileNameLbl->height();
-    QString strFileName = m_fileNameLbl->fontMetrics().elidedText(QFileInfo(m_strFilePath).fileName(), Qt::ElideMiddle, m_fileNameLbl->width());
-    m_fileNameLbl->setText(strFileName);
-
-    if (m_filePathLbl) {
-        qInfo() << "filePathLbl w,h: " << m_filePathLbl->width() << "," << m_filePathLbl->height();
-        auto w = fm.width(m_strFilePath);
-        qInfo() << "font width: " << w;
-        auto fp = ElideText(m_strFilePath, {m_filePathLbl->width(), fm.height()}, QTextOption::WrapAnywhere,
-                            m_filePathLbl->font(), Qt::ElideRight, fm.height(), m_filePathLbl->width());
-        m_filePathLbl->setText(fp);
+    if (m_pFilePathLbl) {
+        QString sFilePath = ElideText(m_sFilePath, {m_pFilePathLbl->width(), fm.height()}, QTextOption::WrapAnywhere,
+                            m_pFilePathLbl->font(), Qt::ElideRight, fm.height(), m_pFilePathLbl->width());
+        m_pFilePathLbl->setText(sFilePath);
     }
 }
-
+/**
+ * @brief changedHeight 高度变化槽函数
+ */
 void MovieInfoDialog::changedHeight(const int height)
 {
-    if (lastHeight == -1) {
-        lastHeight = height;
+    if (m_nLastHeight == -1) {
+        m_nLastHeight = height;
     } else {
         //xpf修改此过程
         int h = 10;
@@ -455,45 +457,57 @@ void MovieInfoDialog::changedHeight(const int height)
         } else {
             h = h + 32 + 10;
         }
-//        foreach (DDrawer *drawer, m_expandGroup) {
-//            h = h + drawer->height() + 10;
-//        }
         h += 260;
         if (h > 642) {
             this->setFixedHeight(642);
         } else {
             setFixedHeight(h);
-            //QTimer::singleShot(50, this, [ = ] {this->setFixedHeight(h);});
         }
-        lastHeight = -1;
+        m_nLastHeight = -1;
     }
 }
-
+/**
+ * @brief slotThemeTypeChanged
+ * 主题变化槽函数
+ */
 void MovieInfoDialog::slotThemeTypeChanged()
 {
-    m_fileNameLbl->setForegroundRole(DPalette::BrightText);
+    m_pFileNameLbl->setForegroundRole(DPalette::BrightText);
 }
-
-void MovieInfoDialog::addRow(QString title, QString field, QFormLayout *form, QList<DLabel *> &tipLst)
+/**
+ * @brief addRow 增加信息条目函数
+ * @param title 信息名称
+ * @param field 信息内容
+ * @param form 布局管理
+ * @retval tipList 传回当前添加信息的label控件
+ */
+void MovieInfoDialog::addRow(QString sTitle, QString sField, QFormLayout *pForm, QList<DLabel *> &tipList)
 {
-    auto f = new DLabel(title, this);
+    auto f = new DLabel(sTitle, this);
     f->setAlignment(Qt::AlignLeft | Qt::AlignTop);
     f->setMinimumSize(60, 20);
-    //DFontSizeManager::instance()->bind(f, DFontSizeManager::T8, 0);
-    //f->setForegroundRole(DPalette::WindowText);
     QFont font = f->font();
     font.setPixelSize(12);
     font.setWeight(QFont::Weight::Normal);
     font.setFamily("SourceHanSansSC");
-    //f->setFont(font);
-    auto t = new DLabel(field, this);
+    auto t = new DLabel(sField, this);
     t->setAlignment(Qt::AlignLeft | Qt::AlignTop);
     t->setMinimumHeight(20);
     t->setWordWrap(true);
-    //t->setFont(font);
-    form->addRow(f, t);
-    tipLst.append(t);
+    pForm->addRow(f, t);
+    tipList.append(t);
     m_titleList.append(f);
+}
+/**
+ * @brief initMember 初始化成员变量
+ */
+void MovieInfoDialog::initMember()
+{
+    m_pFileNameLbl = new DLabel(this);
+    m_pFilePathLbl = nullptr;
+    m_sFilePath = QString();
+    m_pScrollArea = new QScrollArea;
+    m_nLastHeight = -1;
 }
 
 }
