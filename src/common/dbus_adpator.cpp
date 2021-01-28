@@ -1,4 +1,4 @@
-/* 
+/*
  * (c) 2017, Deepin Technology Co., Ltd. <support@deepin.org>
  *
  * This program is free software; you can redistribute it and/or
@@ -30,87 +30,95 @@
 #include "dbus_adpator.h"
 #include "utils.h"
 
-ApplicationAdaptor::ApplicationAdaptor(MainWindow* mw)
-    :QDBusAbstractAdaptor(mw), _mw(mw) 
+ApplicationAdaptor::ApplicationAdaptor(MainWindow *pMainWid)
+    : QDBusAbstractAdaptor(pMainWid)
 {
-    oldTime = QTime::currentTime();
+    initMember();
+
+    m_pMainWindow = pMainWid;
+
+    m_oldTime = QTime::currentTime();
 }
 
-void ApplicationAdaptor::openFiles(const QStringList& list)
+void ApplicationAdaptor::openFiles(const QStringList &listFiles)
 {
-    if(utils::check_wayland_env()){
-	//wayland下快速点击，播放不正常问题
+    if (utils::check_wayland_env()) {
+        // wayland下快速点击，播放不正常问题
         QTime current = QTime::currentTime();
-        if(abs(oldTime.msecsTo(current)) > 800){
-            oldTime = current;
-            _mw->playList(list);
+        if (abs(m_oldTime.msecsTo(current)) > 800) {
+            m_oldTime = current;
+            m_pMainWindow->playList(listFiles);
         }
-    }else{
-        _mw->playList(list);
+    } else {
+        m_pMainWindow->playList(listFiles);
     }
-
 }
 
-void ApplicationAdaptor::openFile(const QString& file) 
+void ApplicationAdaptor::openFile(const QString &sFile)
 {
     QRegExp url_re("\\w+://");
 
     QUrl url;
-    if (url_re.indexIn(file) == 0) {
-        url = QUrl(file);
+    if (url_re.indexIn(sFile) == 0) {
+        url = QUrl(sFile);
     } else {
-        url = QUrl::fromLocalFile(file);
+        url = QUrl::fromLocalFile(sFile);
     }
-    if(utils::check_wayland_env()){
-	//wayland下快速点击，播放不正常问题
+    if (utils::check_wayland_env()) {
+        // wayland下快速点击，播放不正常问题
         QTime current = QTime::currentTime();
-        if(abs(oldTime.msecsTo(current)) > 800){
-            oldTime = current;
-            _mw->play(url);
+        if (abs(m_oldTime.msecsTo(current)) > 800) {
+            m_oldTime = current;
+            m_pMainWindow->play(url);
         }
-    }else {
-        _mw->play(url);
+    } else {
+        m_pMainWindow->play(url);
     }
 }
 
-void ApplicationAdaptor::Raise(){
-    qInfo()<<"raise window from dbus";
-    _mw->showNormal();
-    _mw->raise();
-    _mw->activateWindow();
+void ApplicationAdaptor::Raise()
+{
+    qInfo() << "raise window from dbus";
+    m_pMainWindow->showNormal();
+    m_pMainWindow->raise();
+    m_pMainWindow->activateWindow();
 }
 
-QVariant ApplicationAdaptor::redDBusProperty(const QString &service, const QString &path, const QString &interface, const char *propert)
+void ApplicationAdaptor::initMember()
+{
+    m_pMainWindow = nullptr;
+}
+
+QVariant ApplicationAdaptor::redDBusProperty(const QString &sService, const QString &sPath, const QString &sInterface, const char *pPropert)
 {
     // 创建QDBusInterface接口
-    QDBusInterface ainterface(service, path,
-                              interface,
+    QDBusInterface ainterface(sService, sPath,
+                              sInterface,
                               QDBusConnection::sessionBus());
     if (!ainterface.isValid()) {
         qInfo() << qPrintable(QDBusConnection::sessionBus().lastError().message());
         QVariant v(0) ;
         return  v;
     }
-    //调用远程的value方法
+    // 调用远程的value方法
     QList<QByteArray> q = ainterface.dynamicPropertyNames();
-    QVariant v = ainterface.property(propert);
+    QVariant v = ainterface.property(pPropert);
     return  v;
 }
-QVariant ApplicationAdaptor::redDBusMethod(const QString &service, const QString &path, const QString &interface, const char *method)
+QVariant ApplicationAdaptor::redDBusMethod(const QString &sService, const QString &sPath, const QString &sInterface, const char *pMethod)
 {
     // 创建QDBusInterface接口
-    QDBusInterface ainterface(service, path,
-                              interface,
+    QDBusInterface ainterface(sService, sPath,
+                              sInterface,
                               QDBusConnection::sessionBus());
     if (!ainterface.isValid()) {
         qInfo() <<  "error:" << qPrintable(QDBusConnection::sessionBus().lastError().message());
         QVariant v(0) ;
         return  v;
     }
-    //调用远程的value方法
-    QDBusReply<QDBusVariant> reply = ainterface.call(method);
+    // 调用远程的value方法
+    QDBusReply<QDBusVariant> reply = ainterface.call(pMethod);
     if (reply.isValid()) {
-//        return reply.value();
         QVariant v(0) ;
         return  v;
     } else {
