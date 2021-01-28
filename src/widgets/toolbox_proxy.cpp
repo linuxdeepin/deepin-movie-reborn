@@ -2027,6 +2027,14 @@ void ToolboxProxy::changeMuteState()
     _volSlider->muteButtnClicked();
 }
 
+void ToolboxProxy::playlistClosedByEsc()
+{
+    if(_playlist->isFocusInPlaylist()){
+        _mainWindow->requestAction(ActionFactory::TogglePlaylist);
+        _listBtn->setFocus();   //焦点回到播放列表按钮
+    }
+}
+
 void ToolboxProxy::progressHoverChanged(int v)
 {
     if (_engine->state() == PlayerEngine::CoreState::Idle)

@@ -186,8 +186,10 @@ public:
         Opened,
         Closed,
     };
+
     PlaylistWidget(QWidget *, PlayerEngine *);
     virtual ~PlaylistWidget();
+
     State state() const
     {
         return _state;
@@ -196,23 +198,25 @@ public:
     {
         return _toggling;
     }
-    void updateSelectItem(const int key);
-    void clear();
     DListWidget *get_playlist()
     {
         return _playlist;
     }
+    void updateSelectItem(const int key);
+    void clear();
     void endAnimation();
+    bool isFocusInPlaylist();
+
 signals:
     void stateChange();
     void sizeChange();
+
 public slots:
     void togglePopup();
     void loadPlaylist();
     void openItemInFM();
     void showItemInfo();
     void removeClickedItem(bool isShortcut);
-    //把lambda表达式改为槽函数，modify by myk
     void slotCloseTimeTimeOut();
     void slotCloseItem(QWidget *w);
     void slotDoubleClickedItem(QWidget *w);
@@ -226,18 +230,17 @@ protected:
     void showEvent(QShowEvent *se) override;
     void paintEvent(QPaintEvent *pe) override;
     void resizeEvent(QResizeEvent *ev) override;
+    bool eventFilter(QObject *obj, QEvent *event) override;
 
 protected slots:
     void updateItemStates();
     void updateItemInfo(int);
     void appendItems();
     void removeItem(int);
-
     void slotShowSelectItem(QListWidgetItem *);
     void OnItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
 
 private:
-
     PlayerEngine *_engine {nullptr};
     MainWindow *_mw {nullptr};
     QWidget *_mouseItem {nullptr};

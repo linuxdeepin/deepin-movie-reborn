@@ -244,6 +244,7 @@ public:
     void volumeUp();
     void volumeDown();
     void changeMuteState();
+    void playlistClosedByEsc();
 
     /////add for unit test/////
     DButtonBoxButton *playBtn() {return _playBtn;}

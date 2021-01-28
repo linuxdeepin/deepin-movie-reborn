@@ -736,24 +736,21 @@ private:
 PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     : QWidget(mw), _engine(mpv), _mw(static_cast<MainWindow *>(mw))
 {
-//    DThemeManager::instance()->registerWidget(this);
-
     bool composited = CompositingManager::get().composited();
     setAttribute(Qt::WA_TranslucentBackground, false);
     //NOTE: set fixed will affect geometry animation
     //setFixedWidth(220);
     this->setObjectName(PLAYLIST_WIDGET);
-//    this->setAccessibleName(PLAYLIST_WIDGET);
 
     paOpen = nullptr;
     paClose = nullptr;
 
-    auto *mainVLayout = new QVBoxLayout(this);
+    QVBoxLayout *mainVLayout = new QVBoxLayout(this);
     mainVLayout->setContentsMargins(0, 0, 0, 0);
     mainVLayout->setSpacing(0);
     setLayout(mainVLayout);
 
-    auto *mainLayout = new QHBoxLayout();
+    QHBoxLayout *mainLayout = new QHBoxLayout();
     mainLayout->setContentsMargins(10, 0, 0, 0);
     mainLayout->setSpacing(0);
     mainLayout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
@@ -802,6 +799,7 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     m_pClearButton->setIcon(QIcon::fromTheme("dcc_clearlist"));
     m_pClearButton->setText(tr("Empty"));
     m_pClearButton->setFocusPolicy(Qt::TabFocus);
+    m_pClearButton->installEventFilter(this);
     DFontSizeManager::instance()->bind(m_pClearButton, DFontSizeManager::T6);
 
     DPalette pa_cb = DApplicationHelper::instance()->palette(m_pClearButton);
@@ -836,11 +834,6 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     m_pClearButton->setContentsMargins(0, 0, 0, 70);
     _num->setContentsMargins(0, 0, 0, 0);
 
-    ///未使用代码///
-//    auto *vl = new QVBoxLayout;
-//    vl->setContentsMargins(0, 0, 0, 0);
-//    vl->setSpacing(0);
-//    mainLayout->addLayout(vl, 3);
     QWidget *right = new QWidget();
     right->setObjectName(RIGHT_LIST_WIDGET);
     auto *rightinfo = new QVBoxLayout;
@@ -854,6 +847,7 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     _playlist->setAttribute(Qt::WA_DeleteOnClose);
     _playlist->setFixedSize(width() - 205, 288);
     _playlist->setContentsMargins(0, 0, 0, 0);
+    _playlist->installEventFilter(this);
     _playlist->viewport()->setAutoFillBackground(false);
     _playlist->setAutoFillBackground(false);
     _playlist->setObjectName(PLAYLIST);
@@ -992,7 +986,6 @@ void PlaylistWidget::clear()
     _num->setText(s);
     _engine->getplaylist()->clearLoad();
 }
-
 
 void PlaylistWidget::updateItemInfo(int id)
 {
@@ -1386,6 +1379,16 @@ void PlaylistWidget::endAnimation()
         paClose->setDuration(0);
     }
 }
+
+bool PlaylistWidget::isFocusInPlaylist()
+{
+    if(m_pClearButton == focusWidget() || _playlist == focusWidget()){
+        return true;
+    } else {
+        return false;
+    }
+}
+
 void PlaylistWidget::togglePopup()
 {
     if (paOpen != nullptr || paClose != nullptr) {
@@ -1412,6 +1415,10 @@ void PlaylistWidget::togglePopup()
     if (_state == State::Opened) {
         Q_ASSERT(isVisible());
 
+        if (isFocusInPlaylist()) {
+            //以除Esc以外的其它方式收起播放列表，焦点切换到主窗口，防止随机出现在其它控件上
+            _mw->setFocus();
+        }
 #ifdef __x86_64__
         paOpen = new QPropertyAnimation(this, "geometry");
         paOpen->setEasingCurve(QEasingCurve::Linear);
@@ -1426,9 +1433,6 @@ void PlaylistWidget::togglePopup()
             paOpen->deleteLater();
             paOpen = nullptr;
             setVisible(!isVisible());
-            //_toggling = false;
-            //_state = State::Closed;
-            //emit stateChange();
         });
 #else
         _toggling = false;
@@ -1514,6 +1518,39 @@ void PlaylistWidget::resizeEvent(QResizeEvent *ev)
     QWidget::resizeEvent(ev);
 }
 
+bool PlaylistWidget::eventFilter(QObject *obj, QEvent *event)
+{
+    if(obj == m_pClearButton){
+        if (event->type() == QEvent::FocusOut){
+            if(_playlist->count() <= 0){
+                //如果播放列表为空，清空按钮上的焦点不向后传递
+                return true;
+            }
+        }
+    } else if (obj == _playlist){
+        switch(event->type()){
+        case QEvent::FocusIn: {
+            if(_playlist->count()){
+                //焦点切换到播放列表，选中第一个条目
+                _playlist->setCurrentRow(0);
+            }
+            return true;
+        }
+        case QEvent::KeyPress:{
+            QKeyEvent *keyPressEv = static_cast<QKeyEvent *>(event);
+            if(keyPressEv->key() ==Qt::Key_Tab){
+                //将焦点设置到清空按钮上，实现焦点循环
+                m_pClearButton->setFocus();
+                return true;
+            }
+            break;
+        }
+        default:
+            break;
+        }
+    }
+    return QObject::eventFilter(obj, event); // standard event processing
+}
 }
 
 #include "playlist_widget.moc"

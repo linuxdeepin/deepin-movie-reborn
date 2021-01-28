@@ -2035,6 +2035,11 @@ void MainWindow::requestAction(ActionFactory::ActionKind kd, bool fromUI,
                 _fullscreentimelable->close();
             }
 #endif
+        } else {
+            //当焦点在播放列表上按下Esc键，播放列表收起，焦点回到列表按钮上
+            if(_playlist->state() == PlaylistWidget::Opened){
+                _toolbox->playlistClosedByEsc();
+            }
         }
         break;
     }
