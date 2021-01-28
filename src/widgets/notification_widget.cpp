@@ -31,7 +31,6 @@
  *@file 这个文件是实现影院左上角信息弹窗
  */
 #include "notification_widget.h"
-#include "event_relayer.h"
 #include "utils.h"
 
 #include <DPlatformWindowHandle>
@@ -63,9 +62,9 @@ NotificationWidget::NotificationWidget(QWidget *parent)
     m_pMsgLabel->setFrameShape(QFrame::NoFrame);
 
     m_pTimer = new QTimer(this);
-    if(!utils::check_wayland_env()){
+    if (!utils::check_wayland_env()) {
         m_pTimer->setInterval(2000);
-    }else {
+    } else {
         m_pTimer->setInterval(500);
     }
     m_pTimer->setSingleShot(true);
@@ -108,10 +107,9 @@ void NotificationWidget::syncPosition()
 
     case ANCHOR_NORTH_WEST:
 #ifdef __aarch64__
-        if(!utils::check_wayland_env()){
+        if (!utils::check_wayland_env()) {
             move(geom.topLeft() + m_anchorPoint);
-        }
-        else {
+        } else {
             move(m_anchorPoint);
         }
 #elif  __mips__
@@ -217,7 +215,7 @@ void NotificationWidget::paintEvent(QPaintEvent *pPaintEvent)
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
 
-    bool bLight = (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() );
+    bool bLight = (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType());
     QColor color = QColor(23, 23, 23, 255 * 8 / 10);
     QColor borderColor = QColor(255, 255, 255, 25);
     if (bLight) {

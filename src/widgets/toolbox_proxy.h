@@ -47,7 +47,6 @@
 
 #include "dguiapplicationhelper.h"
 #include "videoboxbutton.h"
-#include "filter.h"
 #include "toolbutton.h"
 #include "playlist_widget.h"
 #include "thumbnail_worker.h"
@@ -385,7 +384,6 @@ private:
     QMutex m_listPixmapMutex;       //缩略图list的锁
     QString m_UrloldThumbUrl;       //当前加载的文件，目的是为缩略图服务
     DBlurEffectWidget *bot_widget {nullptr };
-    HintFilter        *hintFilter {nullptr };
     bool m_isMouseIn = false;
     QTimer _hideTime;
     bool _isJinJia = false;//是否是景嘉微显卡

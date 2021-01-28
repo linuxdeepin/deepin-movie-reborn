@@ -31,7 +31,6 @@
 
 #include "toolbox_proxy.h"
 #include "mainwindow.h"
-#include "event_relayer.h"
 #include "compositing_manager.h"
 #include "player_engine.h"
 #include "toolbutton.h"
