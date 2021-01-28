@@ -47,8 +47,8 @@ TEST(ToolBox, notificationWidget)
     NotificationWidget *nwBottom = new NotificationWidget(w);
     NotificationWidget *nwNone = new NotificationWidget(w);
 
-    nwBottom->setAnchor(NotificationWidget::AnchorBottom);
-    nwNone->setAnchor(NotificationWidget::AnchorNone);
+    nwBottom->setAnchor(NotificationWidget::ANCHOR_BOTTOM);
+    nwNone->setAnchor(NotificationWidget::ANCHOR_NONE);
     nwBottom->show();
     nwNone->show();
     nwBottom->syncPosition(w->geometry());

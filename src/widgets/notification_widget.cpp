@@ -27,6 +27,9 @@
  * version.  If you delete this exception statement from all source
  * files in the program, then also delete it here.
  */
+/**
+ *@file 这个文件是实现影院左上角信息弹窗
+ */
 #include "notification_widget.h"
 #include "event_relayer.h"
 #include "utils.h"
@@ -37,13 +40,14 @@
 #include <QPainterPath>
 
 namespace dmr {
-
+/**
+ * @brief NotificationWidget 构造函数
+ * @param parent 父窗口
+ */
 NotificationWidget::NotificationWidget(QWidget *parent)
-    : QFrame(parent), _mw(parent)
+    : QFrame(parent), m_pMainWindow(parent)
 {
-//    DThemeManager::instance()->registerWidget(this);
-
-    //setFrameShape(QFrame::NoFrame);
+    initMember();
     setObjectName("NotificationFrame");
 
 #if defined (__mips__) || defined (__aarch64__)
@@ -51,193 +55,204 @@ NotificationWidget::NotificationWidget(QWidget *parent)
     setAttribute(Qt::WA_TranslucentBackground, true);
 #endif
 
-    _layout = new QHBoxLayout();
-    _layout->setContentsMargins(0, 0, 0, 0);
-    setLayout(_layout);
+    m_pMainLayout = new QHBoxLayout();
+    m_pMainLayout->setContentsMargins(0, 0, 0, 0);
+    setLayout(m_pMainLayout);
 
-    _msgLabel = new QLabel();
-    _msgLabel->setFrameShape(QFrame::NoFrame);
+    m_pMsgLabel = new QLabel();
+    m_pMsgLabel->setFrameShape(QFrame::NoFrame);
 
-    _timer = new QTimer(this);
+    m_pTimer = new QTimer(this);
     if(!utils::check_wayland_env()){
-        _timer->setInterval(2000);
+        m_pTimer->setInterval(2000);
     }else {
-        _timer->setInterval(500);
+        m_pTimer->setInterval(500);
     }
-    _timer->setSingleShot(true);
-    connect(_timer, &QTimer::timeout, this, &QWidget::hide);
-
-
+    m_pTimer->setSingleShot(true);
+    connect(m_pTimer, &QTimer::timeout, this, &QWidget::hide);
 }
-
+/**
+ * @brief showEvent 重载显示事件函数
+ * @param pShowEvent 显示事件
+ */
 void NotificationWidget::showEvent(QShowEvent *event)
 {
     ensurePolished();
-    if (_layout->indexOf(_icon) == -1) {
-        resize(_msgLabel->sizeHint().width() + _layout->contentsMargins().left()
-               + _layout->contentsMargins().right(), height());
+    if (m_pMainLayout->indexOf(m_pIconLabel) == -1) {
+        resize(m_pMsgLabel->sizeHint().width() + m_pMainLayout->contentsMargins().left()
+               + m_pMainLayout->contentsMargins().right(), height());
         adjustSize();
     }
     syncPosition();
 
     QFrame::showEvent(event);
 }
-
+/**
+ * @brief resizeEvent 重载大小变化事件函数
+ * @param pResizeEvent 大小变化事件
+ */
 void NotificationWidget::resizeEvent(QResizeEvent *re)
 {
     QFrame::resizeEvent(re);
 }
-
+/**
+ * @brief syncPosition 同步控件位置
+ */
 void NotificationWidget::syncPosition()
 {
-    auto geom = _mw->geometry();
-    switch (_anchor) {
-    case AnchorBottom:
-        move(geom.center().x() - size().width() / 2, geom.bottom() - _anchorDist - height());
+    QRect geom = m_pMainWindow->geometry();
+    switch (m_pAnchor) {
+    case ANCHOR_BOTTOM:
+        move(geom.center().x() - size().width() / 2, geom.bottom() - m_nAnchorDist - height());
         break;
 
-    case AnchorNorthWest:
+    case ANCHOR_NORTH_WEST:
 #ifdef __aarch64__
         if(!utils::check_wayland_env()){
-            move(geom.topLeft() + _anchorPoint);
+            move(geom.topLeft() + m_anchorPoint);
         }
         else {
-            move(_anchorPoint);
+            move(m_anchorPoint);
         }
 #elif  __mips__
         move(geom.x() + 30, geom.y() + 58);
 #elif __sw_64__
-        move(geom.topLeft() + _anchorPoint);
+        move(geom.topLeft() + m_anchorPoint);
 #elif defined (__mips__)
         move(geom.x() + 30, geom.y() + 58);
 #else
-        move(_anchorPoint);
+        move(m_anchorPoint);
 #endif
         break;
 
-    case AnchorNone:
+    case ANCHOR_NONE:
         move(geom.center().x() - size().width() / 2, geom.center().y() - size().height() / 2);
         break;
     }
 }
-
+/**
+ * @brief syncPosition 同步控件位置
+ * @param rect 控件的位置
+ */
 void NotificationWidget::syncPosition(QRect rect)
 {
-    auto geom = rect;
-    switch (_anchor) {
-    case AnchorBottom:
-        move(geom.center().x() - size().width() / 2, geom.bottom() - _anchorDist - height());
+    QRect geom = rect;
+    switch (m_pAnchor) {
+    case ANCHOR_BOTTOM:
+        move(geom.center().x() - size().width() / 2, geom.bottom() - m_nAnchorDist - height());
         break;
 
-    case AnchorNorthWest:
+    case ANCHOR_NORTH_WEST:
 #ifdef __aarch64__
-        move(geom.topLeft() + _anchorPoint);
+        move(geom.topLeft() + m_anchorPoint);
 #elif  defined (__mips__)
         move(geom.x() + 30, geom.y() + 58);
 #else
-        move(_anchorPoint);
+        move(m_anchorPoint);
 #endif
         break;
 
-    case AnchorNone:
+    case ANCHOR_NONE:
         move(geom.center().x() - size().width() / 2, geom.center().y() - size().height() / 2);
         break;
     }
 }
-
-/*void NotificationWidget::popupWithIcon(const QString &msg, const QPixmap &pm)
-{
-    if (!_icon) {
-        _icon = new QLabel;
-        _icon->setFrameShape(QFrame::NoFrame);
-    }
-    _icon->setPixmap(pm);
-    _icon->setVisible(true);
-
-    _layout->setContentsMargins(12, 6, 12, 6);
-    if (_layout->indexOf(_icon) == -1)
-        _layout->addWidget(_icon);
-    if (_layout->indexOf(_msgLabel) == -1)
-        _layout->addWidget(_msgLabel, 1);
-
-    setFixedHeight(40);
-    _layout->update();
-    _msgLabel->setText(msg);
-    show();
-    raise();
-    _timer->start();
-}*/
-
+/**
+ * @brief popup 显示函数
+ * @param msg 传入信息内容
+ * @param flag 是否自动隐藏，默认为是
+ */
 void NotificationWidget::popup(const QString &msg, bool flag)
 {
-    _layout->setContentsMargins(14, 4, 14, 4);
-    if (_layout->indexOf(_msgLabel) == -1) {
-        _layout->addWidget(_msgLabel);
+    m_pMainLayout->setContentsMargins(14, 4, 14, 4);
+    if (m_pMainLayout->indexOf(m_pMsgLabel) == -1) {
+        m_pMainLayout->addWidget(m_pMsgLabel);
     }
     setFixedHeight(30);
-    _msgLabel->setText(msg);
+    m_pMsgLabel->setText(msg);
     show();
     raise();
 
     if (flag) {
-        _timer->start();
+        m_pTimer->start();
     }
 }
-
+/**
+ * @brief updateWithMessage 更新显示信息
+ * @param newMsg 显示信息
+ * @param flag 是否自动隐藏，默认为是
+ */
 void NotificationWidget::updateWithMessage(const QString &newMsg, bool flag)
 {
-    if (_icon) {
-        _icon->setVisible(false);
+    if (m_pIconLabel) {
+        m_pIconLabel->setVisible(false);
     }
 
-    QFont ft;
-    ft.setPixelSize(12);
-    QFontMetrics fm(ft);
-    auto msg = fm.elidedText(newMsg, Qt::ElideMiddle, _mw->width() - 12 - 12 - 60);
+    QFont font;
+    font.setPixelSize(12);
+    QFontMetrics fontMetrics(font);
+    QString sMsg = fontMetrics.elidedText(newMsg, Qt::ElideMiddle, m_pMainWindow->width() - 12 - 12 - 60);
 
     if (isVisible()) {
-        _msgLabel->setText(msg);
-        resize(_msgLabel->sizeHint().width() + _layout->contentsMargins().left()
-               + _layout->contentsMargins().right(), height());
+        m_pMsgLabel->setText(sMsg);
+        resize(m_pMsgLabel->sizeHint().width() + m_pMainLayout->contentsMargins().left()
+               + m_pMainLayout->contentsMargins().right(), height());
         adjustSize();
 
         if (flag) {
-            _timer->start();
+            m_pTimer->start();
         }
-
     } else {
-        popup(msg, flag);
+        popup(sMsg, flag);
     }
 }
-
-void NotificationWidget::paintEvent(QPaintEvent *pe)
+/**
+ * @brief paintEvent 重载绘制事件函数
+ * @param pPaintEvent 绘制事件
+ */
+void NotificationWidget::paintEvent(QPaintEvent *pPaintEvent)
 {
-    float RADIUS = 8;
-    QPainter p(this);
-    p.setRenderHint(QPainter::Antialiasing);
+    //参考设计图
+    const float fRadius = 8;
+    QPainter painter(this);
+    painter.setRenderHint(QPainter::Antialiasing);
 
-    bool light = (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() );
-    auto bg_clr = QColor(23, 23, 23, 255 * 8 / 10);
-    auto border_clr = QColor(255, 255, 255, 25);
-    if (light) {
-        bg_clr = QColor(252, 252, 252, 255 * 8 / 10);
-        border_clr = QColor(0, 0, 0, 25);
+    bool bLight = (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() );
+    QColor color = QColor(23, 23, 23, 255 * 8 / 10);
+    QColor borderColor = QColor(255, 255, 255, 25);
+    if (bLight) {
+        color = QColor(252, 252, 252, 255 * 8 / 10);
+        borderColor = QColor(0, 0, 0, 25);
     }
 
-    p.fillRect(rect(), Qt::transparent);
+    painter.fillRect(rect(), Qt::transparent);
     {
-        QPainterPath pp;
-        pp.addRoundedRect(rect(), static_cast<qreal>(RADIUS), static_cast<qreal>(RADIUS));
-        p.setPen(border_clr);
-        p.drawPath(pp);
+        QPainterPath painterPath;
+        painterPath.addRoundedRect(rect(), static_cast<qreal>(fRadius), static_cast<qreal>(fRadius));
+        painter.setPen(borderColor);
+        painter.drawPath(painterPath);
     }
 
-    auto view_rect = rect().marginsRemoved(QMargins(1, 1, 1, 1));
-    QPainterPath pp;
-    pp.addRoundedRect(view_rect, static_cast<qreal>(RADIUS), static_cast<qreal>(RADIUS));
-    p.fillPath(pp, bg_clr);
+    QRect viewRect = rect().marginsRemoved(QMargins(1, 1, 1, 1));
+    QPainterPath painterPath;
+    painterPath.addRoundedRect(viewRect, static_cast<qreal>(fRadius), static_cast<qreal>(fRadius));
+    painter.fillPath(painterPath, color);
 
-    QFrame::paintEvent(pe);
+    QFrame::paintEvent(pPaintEvent);
+}
+/**
+ * @brief initMember 初始化成员变量
+ */
+void NotificationWidget::initMember()
+{
+    m_pMsgLabel = nullptr;
+    m_pIconLabel = nullptr;
+    m_pTimer = nullptr;
+    m_pFrame = nullptr;
+    m_pMainLayout = nullptr;
+    m_pAnchor = ANCHOR_NONE;
+    m_nAnchorDist = 10;
+    m_bIsWheel = true;
 }
 
 }

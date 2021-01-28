@@ -883,12 +883,12 @@ MainWindow::MainWindow(QWidget *parent)
 
     _nwComm = new NotificationWidget(this);
     _nwComm->setFixedHeight(30);
-    _nwComm->setAnchor(NotificationWidget::AnchorNorthWest);
+    _nwComm->setAnchor(NotificationWidget::ANCHOR_NORTH_WEST);
     _nwComm->setAnchorPoint(QPoint(30, 58));
     _nwComm->hide();
     _nwDvd = new NotificationWidget(this);
     _nwDvd->setFixedHeight(30);
-    _nwDvd->setAnchor(NotificationWidget::AnchorNorthWest);
+    _nwDvd->setAnchor(NotificationWidget::ANCHOR_NORTH_WEST);
     _nwDvd->setAnchorPoint(QPoint(30, 58));
     _nwDvd->hide();
 
