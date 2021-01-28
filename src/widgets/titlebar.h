@@ -27,6 +27,9 @@
  * version.  If you delete this exception statement from all source
  * files in the program, then also delete it here.
  */
+/**
+ * @file 此文件实现标题栏相关
+ */
 #ifndef DMR_TITLEBAR_H
 #define DMR_TITLEBAR_H 
 #include <QScopedPointer>
@@ -42,22 +45,49 @@ DWIDGET_USE_NAMESPACE
 
 namespace dmr {
 class TitlebarPrivate;
+/**
+ * @brief The Titlebar class
+ * 实现标题栏
+ */
 class Titlebar : public DBlurEffectWidget
 {
     Q_OBJECT
 
 public:
+    /**
+     * @brief Titlebar 构造函数
+     * @param parent 父窗口
+     */
     explicit Titlebar(QWidget *parent = 0);
     ~Titlebar();
 
+    /**
+     * @brief titlebar 获取标题栏对象指针
+     * @return titlebar指针
+     */
     DTitlebar *titlebar();
-    void setTitletxt(const QString &title);
+    /**
+     * @brief setTitletxt 设置标题栏文本
+     * @param title 标题栏文本
+     */
+    void setTitletxt(const QString &sTitle);
+    /**
+     * @brief setTitleBarBackground 设置标题栏背景是否为播放状态样式
+     * @param flag 传入是否为播放状态
+     */
     void setTitleBarBackground(bool flag);
 public slots:
 	//把lambda表达式改为槽函数，modify by myk
+    /**
+     * @brief slotThemeTypeChanged 主题变化事件槽函数
+     */
     void slotThemeTypeChanged();
 protected:
-    virtual void paintEvent(QPaintEvent *e) override;
+    /**
+     * @brief paintEvent 绘制事件函数
+     * @param pPaintEvent 绘制事件
+     */
+    virtual void paintEvent(QPaintEvent *pPaintEvent) override;
 
 private:
     QScopedPointer<TitlebarPrivate> d_ptr;

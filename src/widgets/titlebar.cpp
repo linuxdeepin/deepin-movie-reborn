@@ -58,7 +58,10 @@ public:
     Titlebar *q_ptr;
     Q_DECLARE_PUBLIC(Titlebar)
 };
-
+/**
+ * @brief Titlebar 构造函数
+ * @param parent 父窗口
+ */
 Titlebar::Titlebar(QWidget *parent) : DBlurEffectWidget(parent), d_ptr(new TitlebarPrivate(this))
 {
     Q_D(Titlebar);
@@ -112,8 +115,7 @@ Titlebar::Titlebar(QWidget *parent) : DBlurEffectWidget(parent), d_ptr(new Title
     d->m_titlebar->addWidget(d->m_titletxt, Qt::AlignCenter);
 
     d->m_shadowEffect = new QGraphicsDropShadowEffect(this);
-    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, &Titlebar::slotThemeTypeChanged);
-    
+    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, &Titlebar::slotThemeTypeChanged);   
 }
 
 Titlebar::~Titlebar()
@@ -155,23 +157,31 @@ void Titlebar::slotThemeTypeChanged()
     }
     this->setGraphicsEffect(d->m_shadowEffect);
 }
-
+/**
+ * @brief titlebar 获取标题栏对象指针
+ * @return titlebar指针
+ */
 DTitlebar *Titlebar::titlebar()
 {
     Q_D(const Titlebar);
     return d->m_titlebar;
 }
-
+/**
+ * @brief setTitletxt 设置标题栏文本
+ * @param title 标题栏文本
+ */
 void Titlebar::setTitletxt(const QString &title)
 {
     Q_D(const Titlebar);
     d->m_titletxt->setText(title);
 }
-
+/**
+ * @brief setTitleBarBackground 设置标题栏背景是否为播放状态样式
+ * @param flag 传入是否为播放状态
+ */
 void Titlebar::setTitleBarBackground(bool flag)
 {
     Q_D(Titlebar);
-
 
     QPalette pa1, pa2;
 
@@ -214,7 +224,10 @@ void Titlebar::setTitleBarBackground(bool flag)
 
     update();
 }
-
+/**
+ * @brief paintEvent 绘制事件函数
+ * @param pPaintEvent 绘制事件
+ */
 void Titlebar::paintEvent(QPaintEvent *pe)
 {
     Q_D(const Titlebar);
