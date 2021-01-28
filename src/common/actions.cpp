@@ -1,3 +1,4 @@
+
 /*
  * (c) 2017, Deepin Technology Co., Ltd. <support@deepin.org>
  *
@@ -30,203 +31,171 @@
 #include "config.h"
 #include "actions.h"
 #include "player_engine.h"
-
 namespace dmr {
-
-static ActionFactory *_factory = nullptr;
-
+static ActionFactory *pActionFactory = nullptr;
 ActionFactory &ActionFactory::get()
 {
-    if (_factory == nullptr) {
-        _factory = new ActionFactory();
+    if (pActionFactory == nullptr) {
+        pActionFactory = new ActionFactory();
     }
-
-    return *_factory;
+    return *pActionFactory;
 }
-
 #define DEF_ACTION(NAME, KD) do { \
-        auto *act = menu_p->addAction((NAME)); \
-        act->setProperty("kind", KD); \
-        _contextMenuActions.append(act); \
-        connect(act, &QObject::destroyed, [=](QObject* o) { \
-            _contextMenuActions.removeOne((QAction*)o); \
+        QAction *pAct = pMenu->addAction((NAME)); \
+        pAct->setProperty("kind", KD); \
+        m_listContextMenuActions.append(pAct); \
+        connect(pAct, &QObject::destroyed, [=](QObject* o) { \
+            m_listContextMenuActions.removeOne((QAction*)o); \
         }); \
     } while (0)
-
 #define DEF_ACTION_CHECKED(NAME, KD) do { \
-        auto *act = menu_p->addAction((NAME)); \
-        act->setCheckable(true); \
-        act->setProperty("kind", KD); \
-        _contextMenuActions.append(act); \
-        connect(act, &QObject::destroyed, [=](QObject* o) { \
-            _contextMenuActions.removeOne((QAction*)o); \
+        QAction *pAct = pMenu->addAction((NAME)); \
+        pAct->setCheckable(true); \
+        pAct->setProperty("kind", KD); \
+        m_listContextMenuActions.append(pAct); \
+        connect(pAct, &QObject::destroyed, [=](QObject* o) { \
+            m_listContextMenuActions.removeOne((QAction*)o); \
         }); \
     } while (0)
-
 #define DEF_ACTION_GROUP(NAME, KD, GROUP) do { \
-        auto *act = menu->addAction((NAME)); \
-        act->setProperty("kind", KD); \
-        _contextMenuActions.append(act); \
-        connect(act, &QObject::destroyed, [=](QObject* o) { \
-            _contextMenuActions.removeOne((QAction*)o); \
+        QAction *pAct = pMenu->addAction((NAME)); \
+        pAct->setProperty("kind", KD); \
+        m_listContextMenuActions.append(pAct); \
+        connect(pAct, &QObject::destroyed, [=](QObject* o) { \
+            m_listContextMenuActions.removeOne((QAction*)o); \
         }); \
     } while (0)
-
 #define DEF_ACTION_CHECKED_GROUP(NAME, KD, GROUP) do { \
-        auto *act = menu->addAction((NAME)); \
-        act->setCheckable(true); \
-        act->setProperty("kind", KD); \
-        act->setActionGroup(GROUP); \
-        _contextMenuActions.append(act); \
-        connect(act, &QObject::destroyed, [=](QObject* o) { \
-            _contextMenuActions.removeOne((QAction*)o); \
+        QAction *pAct = pMenu->addAction((NAME)); \
+        pAct->setCheckable(true); \
+        pAct->setProperty("kind", KD); \
+        pAct->setActionGroup(GROUP); \
+        m_listContextMenuActions.append(pAct); \
+        connect(pAct, &QObject::destroyed, [=](QObject* o) { \
+            m_listContextMenuActions.removeOne((QAction*)o); \
         }); \
     } while (0)
-
 DMenu *ActionFactory::titlebarMenu()
 {
-    if (!_titlebarMenu) {
-        auto *menu_p = new DMenu();
-
+    if (!m_pTitlebarMenu) {
+        DMenu *pMenu = new DMenu();
         DEF_ACTION(tr("Open file"), ActionKind::OpenFileList);
         DEF_ACTION(tr("Open folder"), ActionKind::OpenDirectory);
         DEF_ACTION(tr("Settings"), ActionKind::Settings);
 //        DEF_ACTION_CHECKED(tr("Light theme"), ActionKind::LightTheme);
-        menu_p->addSeparator();
+        pMenu->addSeparator();
         // these seems added by titlebar itself
         //DEF_ACTION("About", ActionKind::About);
         //DEF_ACTION("Help", ActionKind::Help);
         //DEF_ACTION("Exit", ActionKind::Exit);
-
-        _titlebarMenu = menu_p;
+        m_pTitlebarMenu = pMenu;
     }
-    return _titlebarMenu;
+    return m_pTitlebarMenu;
 }
-
 DMenu *ActionFactory::mainContextMenu()
 {
-    if (!_contextMenu) {
-        auto *menu_p = new DMenu();
-
+    if (!m_pContextMenu) {
+        DMenu *pMenu = new DMenu();
         DEF_ACTION(tr("Open file"), ActionKind::OpenFileList);
         DEF_ACTION(tr("Open folder"), ActionKind::OpenDirectory);
         DEF_ACTION(tr("Open URL"), ActionKind::OpenUrl);
         DEF_ACTION(tr("Open CD/DVD"), ActionKind::OpenCdrom);
-        menu_p->addSeparator();
-
+        pMenu->addSeparator();
         DEF_ACTION_CHECKED(tr("Fullscreen"), ActionKind::ToggleFullscreen);
         DEF_ACTION_CHECKED(tr("Mini Mode"), ActionKind::ToggleMiniMode);
         DEF_ACTION_CHECKED(tr("Always on Top"), ActionKind::WindowAbove);
-        menu_p->addSeparator();
-
+        pMenu->addSeparator();
         {
-            auto *parent = menu_p;
-            auto *menu = new DMenu(tr("Play Mode"));
-            auto group = new QActionGroup(menu);
-
-            DEF_ACTION_CHECKED_GROUP(tr("Order Play"), ActionKind::OrderPlay, group);
-            DEF_ACTION_CHECKED_GROUP(tr("Shuffle Play"), ActionKind::ShufflePlay, group);
-            DEF_ACTION_CHECKED_GROUP(tr("Single Play"), ActionKind::SinglePlay, group);
-            DEF_ACTION_CHECKED_GROUP(tr("Single Loop"), ActionKind::SingleLoop, group);
-            DEF_ACTION_CHECKED_GROUP(tr("List Loop"), ActionKind::ListLoop, group);
-
-            parent->addMenu(menu);
+            DMenu *pParent = pMenu;         //这里使用代码块和局部变量为了使结构清晰
+            DMenu *pMenu = new DMenu(tr("Play Mode"));
+            QActionGroup *pActionGroup = new QActionGroup(pMenu);
+            DEF_ACTION_CHECKED_GROUP(tr("Order Play"), ActionKind::OrderPlay, pActionGroup);
+            DEF_ACTION_CHECKED_GROUP(tr("Shuffle Play"), ActionKind::ShufflePlay, pActionGroup);
+            DEF_ACTION_CHECKED_GROUP(tr("Single Play"), ActionKind::SinglePlay, pActionGroup);
+            DEF_ACTION_CHECKED_GROUP(tr("Single Loop"), ActionKind::SingleLoop, pActionGroup);
+            DEF_ACTION_CHECKED_GROUP(tr("List Loop"), ActionKind::ListLoop, pActionGroup);
+            pParent->addMenu(pMenu);
         }
-
         {
-            auto *parent = menu_p;
-            auto *menu = new DMenu(tr("Playback Speed"));
-            auto group = new QActionGroup(menu);
-
-            DEF_ACTION_CHECKED_GROUP(tr("0.5x"), ActionKind::ZeroPointFiveTimes, group);
-            DEF_ACTION_CHECKED_GROUP(tr("1.0x"), ActionKind::OneTimes, group);
-            DEF_ACTION_CHECKED_GROUP(tr("1.2x"), ActionKind::OnePointTwoTimes, group);
-            DEF_ACTION_CHECKED_GROUP(tr("1.5x"), ActionKind::OnePointFiveTimes, group);
-            DEF_ACTION_CHECKED_GROUP(tr("2.0x"), ActionKind::Double, group);
-
-            parent->addMenu(menu);
-            menu->setEnabled(false);
+            DMenu *pParent = pMenu;
+            DMenu *pMenu = new DMenu(tr("Playback Speed"));
+            QActionGroup *pActionGroup = new QActionGroup(pMenu);
+            DEF_ACTION_CHECKED_GROUP(tr("0.5x"), ActionKind::ZeroPointFiveTimes, pActionGroup);
+            DEF_ACTION_CHECKED_GROUP(tr("1.0x"), ActionKind::OneTimes, pActionGroup);
+            DEF_ACTION_CHECKED_GROUP(tr("1.2x"), ActionKind::OnePointTwoTimes, pActionGroup);
+            DEF_ACTION_CHECKED_GROUP(tr("1.5x"), ActionKind::OnePointFiveTimes, pActionGroup);
+            DEF_ACTION_CHECKED_GROUP(tr("2.0x"), ActionKind::Double, pActionGroup);
+            pParent->addMenu(pMenu);
+            pMenu->setEnabled(false);
             connect(this, &ActionFactory::playSpeedMenuEnable, this, [ = ](bool statu) {
-                menu->setEnabled(statu);
+                pMenu->setEnabled(statu);
             });
         }
-
         {
-            auto *parent = menu_p;
-            auto *menu = new DMenu(tr("Frame"));
-            auto group = new QActionGroup(menu);
-
-            DEF_ACTION_CHECKED_GROUP(tr("Default"), ActionKind::DefaultFrame, group);
-            DEF_ACTION_CHECKED_GROUP(("4:3"), ActionKind::Ratio4x3Frame, group);
-            DEF_ACTION_CHECKED_GROUP(("16:9"), ActionKind::Ratio16x9Frame, group);
-            DEF_ACTION_CHECKED_GROUP(("16:10"), ActionKind::Ratio16x10Frame, group);
-            DEF_ACTION_CHECKED_GROUP(("1.85:1"), ActionKind::Ratio185x1Frame, group);
-            DEF_ACTION_CHECKED_GROUP(("2.35:1"), ActionKind::Ratio235x1Frame, group);
-            menu->addSeparator();
-
-            DEF_ACTION_GROUP(tr("Clockwise"), ActionKind::ClockwiseFrame, group);
-            DEF_ACTION_GROUP(tr("Counterclockwise"), ActionKind::CounterclockwiseFrame, group);
-            menu->addSeparator();
-
-            DEF_ACTION_GROUP(tr("Next Frame"), ActionKind::NextFrame, group);
-            DEF_ACTION_GROUP(tr("Previous Frame"), ActionKind::PreviousFrame, group);
-
-            parent->addMenu(menu);
-            menu->setEnabled(false);
+            DMenu *pParent = pMenu;
+            DMenu *pMenu = new DMenu(tr("Frame"));
+            QActionGroup *pActionGroup = new QActionGroup(pMenu);
+            DEF_ACTION_CHECKED_GROUP(tr("Default"), ActionKind::DefaultFrame, pActionGroup);
+            DEF_ACTION_CHECKED_GROUP(("4:3"), ActionKind::Ratio4x3Frame, pActionGroup);
+            DEF_ACTION_CHECKED_GROUP(("16:9"), ActionKind::Ratio16x9Frame, pActionGroup);
+            DEF_ACTION_CHECKED_GROUP(("16:10"), ActionKind::Ratio16x10Frame, pActionGroup);
+            DEF_ACTION_CHECKED_GROUP(("1.85:1"), ActionKind::Ratio185x1Frame, pActionGroup);
+            DEF_ACTION_CHECKED_GROUP(("2.35:1"), ActionKind::Ratio235x1Frame, pActionGroup);
+            pMenu->addSeparator();
+            DEF_ACTION_GROUP(tr("Clockwise"), ActionKind::ClockwiseFrame, pActionGroup);
+            DEF_ACTION_GROUP(tr("Counterclockwise"), ActionKind::CounterclockwiseFrame, pActionGroup);
+            pMenu->addSeparator();
+            DEF_ACTION_GROUP(tr("Next Frame"), ActionKind::NextFrame, pActionGroup);
+            DEF_ACTION_GROUP(tr("Previous Frame"), ActionKind::PreviousFrame, pActionGroup);
+            pParent->addMenu(pMenu);
+            pMenu->setEnabled(false);
             connect(this, &ActionFactory::frameMenuEnable, this, [ = ](bool statu) {
-                menu->setEnabled(statu);
+                pMenu->setEnabled(statu);
             });
         }
-
         {
-            //sound menu
-            auto *parent = menu_p;
-            auto *menu = new DMenu(tr("Sound"));
-            _sound = menu;
+            //sound pMenu
+            DMenu *pParent = pMenu;
+            DMenu *pMenu = new DMenu(tr("Sound"));
+            m_pSound = pMenu;
             {
-                auto *parent_channel = menu;
-                auto *menu = new DMenu(tr("Channel"));
-                _soundMenu = menu;
-                auto group = new QActionGroup(menu);
-
-                DEF_ACTION_CHECKED_GROUP(tr("Stereo"), ActionKind::Stereo, group);
-                DEF_ACTION_CHECKED_GROUP(tr("Left channel"), ActionKind::LeftChannel, group);
-                DEF_ACTION_CHECKED_GROUP(tr("Right channel"), ActionKind::RightChannel, group);
-                parent_channel->addMenu(menu);
+                DMenu *pParent_channel = pMenu;
+                DMenu *pMenu = new DMenu(tr("Channel"));
+                m_pSoundMenu = pMenu;
+                QActionGroup *pActionGroup = new QActionGroup(pMenu);
+                DEF_ACTION_CHECKED_GROUP(tr("Stereo"), ActionKind::Stereo, pActionGroup);
+                DEF_ACTION_CHECKED_GROUP(tr("Left channel"), ActionKind::LeftChannel, pActionGroup);
+                DEF_ACTION_CHECKED_GROUP(tr("Right channel"), ActionKind::RightChannel, pActionGroup);
+                pParent_channel->addMenu(pMenu);
             }
-
             {
-                auto *parent_track = menu;
-                auto *menu = new DMenu(tr("Track"));
-                _tracksMenu = menu;
+                DMenu *parent_track = pMenu;
+                DMenu *pMenu = new DMenu(tr("Track"));
+                m_pTracksMenu = pMenu;
                 //DEF_ACTION(tr("Select Track"), ActionKind::SelectTrack);
-                parent_track->addMenu(menu);
+                parent_track->addMenu(pMenu);
             }
-            parent->addMenu(menu);
+            pParent->addMenu(pMenu);
         }
-
         {
-            //sub menu
-            auto *parent = menu_p;
-            auto *menu = new DMenu(tr("Subtitle"));
-            auto group = new QActionGroup(menu);
-
-            DEF_ACTION_GROUP(tr("Load"), ActionKind::LoadSubtitle, group);
-            DEF_ACTION_GROUP(tr("Online Search"), ActionKind::MatchOnlineSubtitle, group);
+            //sub pMenu
+            DMenu *pParent = pMenu;
+            DMenu *pMenu = new DMenu(tr("Subtitle"));
+            QActionGroup *pActionGroup = new QActionGroup(pMenu);
+            DEF_ACTION_GROUP(tr("Load"), ActionKind::LoadSubtitle, pActionGroup);
+            DEF_ACTION_GROUP(tr("Online Search"), ActionKind::MatchOnlineSubtitle, pActionGroup);
             //DEF_ACTION(tr("Select"), ActionKind::SelectSubtitle);
             {
-                auto *parent_select = menu;
-                auto *menu = new DMenu(tr("Select"));
-                _subtitleMenu = menu;
-                parent_select->addMenu(menu);
+                DMenu *pParent_select = pMenu;
+                DMenu *pMenu = new DMenu(tr("Select"));
+                m_pSubtitleMenu = pMenu;
+                pParent_select->addMenu(pMenu);
             }
-            DEF_ACTION_CHECKED_GROUP(tr("Hide"), ActionKind::HideSubtitle, group);
-
+            DEF_ACTION_CHECKED_GROUP(tr("Hide"), ActionKind::HideSubtitle, pActionGroup);
             {
-                auto *parent_encoding = menu;
-                auto *menu = new DMenu(tr("Encodings"));
-                auto group_encoding = new QActionGroup(menu);
-
+                DMenu *parent_encoding = pMenu;
+                DMenu *pMenu = new DMenu(tr("Encodings"));
+                QActionGroup *pGroup_encoding = new QActionGroup(pMenu);
                 //title <-> codepage
                 static QVector<QPair<QString, QString>> list = {
                     {"Auto", "auto"},
@@ -274,128 +243,122 @@ DMenu *ActionFactory::mainContextMenu()
                     {"Western European (LATIN1)", "LATIN1"},
                     {"Western European (LATIN-9)", "LATIN-9"}
                 };
-
                 auto p = list.begin();
                 while (p != list.end()) {
-                    DEF_ACTION_CHECKED_GROUP(p->first, ActionKind::ChangeSubCodepage, group_encoding);
-                    auto act = menu->actions().last();
-                    act->setProperty("args", QList<QVariant>() << p->second);
-                    if (p->second == "auto") menu->addSeparator();
+                    DEF_ACTION_CHECKED_GROUP(p->first, ActionKind::ChangeSubCodepage, pGroup_encoding);
+                    QAction *pAct = pMenu->actions().last();
+                    pAct->setProperty("args", QList<QVariant>() << p->second);
+                    if (p->second == "auto") pMenu->addSeparator();
                     p++;
                 }
-
-                parent_encoding->addMenu(menu);
+                parent_encoding->addMenu(pMenu);
             }
-
-            parent->addMenu(menu);
+            pParent->addMenu(pMenu);
         }
-
         {
-            //sub menu
-            auto *parent = menu_p;
-            auto *menu = new DMenu(tr("Screenshot"));
-            auto group = new QActionGroup(menu);
-
-            DEF_ACTION_GROUP(tr("Film Screenshot"), ActionKind::Screenshot, group);
-            DEF_ACTION_GROUP(tr("Burst Shooting"), ActionKind::BurstScreenshot, group);
-            DEF_ACTION_GROUP(tr("Open screenshot folder"), ActionKind::GoToScreenshotSolder, group);
-            menu->setEnabled(false);
-            parent->addMenu(menu);
+            //sub pMenu
+            DMenu *parent = pMenu;
+            DMenu *pMenu = new DMenu(tr("Screenshot"));
+            QActionGroup *pActionGroup = new QActionGroup(pMenu);
+            DEF_ACTION_GROUP(tr("Film Screenshot"), ActionKind::Screenshot, pActionGroup);
+            DEF_ACTION_GROUP(tr("Burst Shooting"), ActionKind::BurstScreenshot, pActionGroup);
+            DEF_ACTION_GROUP(tr("Open screenshot folder"), ActionKind::GoToScreenshotSolder, pActionGroup);
+            pMenu->setEnabled(false);
+            parent->addMenu(pMenu);
             connect(this, &ActionFactory::frameMenuEnable, this, [ = ](bool statu) {
-                menu->setEnabled(statu);
+                pMenu->setEnabled(statu);
             });
         }
-
-        menu_p->addSeparator();
-
+        pMenu->addSeparator();
         DEF_ACTION_CHECKED(tr("Playlist"), ActionKind::TogglePlaylist);
         DEF_ACTION(tr("Film Info"), ActionKind::MovieInfo);
         DEF_ACTION(tr("Settings"), ActionKind::Settings);
-
-        _contextMenu = menu_p;
+        m_pContextMenu = pMenu;
     }
-
-    return _contextMenu;
+    return m_pContextMenu;
 }
-
 DMenu *ActionFactory::playlistContextMenu()
 {
-    if (!_playlistMenu) {
-        auto *menu_p = new DMenu();
-
-
+    if (!m_pPlaylistMenu) {
+        DMenu *pMenu = new DMenu();
         DEF_ACTION(tr("Delete from playlist"), ActionKind::PlaylistRemoveItem);
         DEF_ACTION(tr("Empty playlist"), ActionKind::EmptyPlaylist);
         DEF_ACTION(tr("Display in file manager"), ActionKind::PlaylistOpenItemInFM);
         DEF_ACTION(tr("Film info"), ActionKind::PlaylistItemInfo);
-
-        _playlistMenu = menu_p;
+        m_pPlaylistMenu = pMenu;
     }
-
-    return _playlistMenu;
-
+    return m_pPlaylistMenu;
 }
-
 QList<QAction *> ActionFactory::findActionsByKind(ActionKind target_kd)
 {
-    QList<QAction *> res;
-    auto p = _contextMenuActions.begin();
-    while (p != _contextMenuActions.end()) {
+    QList<QAction *> listAction;
+    QList<QAction *>::iterator itor = m_listContextMenuActions.begin();
+    while (itor != m_listContextMenuActions.end()) {
 #if QT_VERSION < QT_VERSION_CHECK(5, 7, 0)
         auto kd = (ActionKind)(*p)->property("kind").value<int>();
 #else
-        auto kd = (*p)->property("kind").value<ActionKind>();
+        auto kd = (*itor)->property("kind").value<ActionKind>();
 #endif
         if (kd == target_kd) {
-            res.append(*p);
+            listAction.append(*itor);
         }
-        ++p;
+        ++itor;
     }
-    return res;
+    return listAction;
 }
-
 void ActionFactory::updateMainActionsForMovie(const PlayingMovieInfo &pmf)
 {
     qInfo() << __func__;
-    if (_subtitleMenu) {
-        auto menu = _subtitleMenu;
-        menu->clear();
-
-        if (!subgroup) {
-            subgroup = new QActionGroup(menu); // mem leak ?
+    if (m_pSubtitleMenu) {
+        DMenu *pMenu = m_pSubtitleMenu;
+        pMenu->clear();
+        if (!m_pSubgroup) {
+            m_pSubgroup = new QActionGroup(pMenu); // mem leak ?
         }
         for (int i = 0; i < pmf.subs.size(); i++) {
-            DEF_ACTION_CHECKED_GROUP(pmf.subs[i]["title"].toString(), ActionKind::SelectSubtitle, subgroup);
-            auto act = menu->actions().last();
-            act->setProperty("args", QList<QVariant>() << i);
+            DEF_ACTION_CHECKED_GROUP(pmf.subs[i]["title"].toString(), ActionKind::SelectSubtitle, m_pSubgroup);
+            QAction *pAct = pMenu->actions().last();
+            pAct->setProperty("args", QList<QVariant>() << i);
         }
-
-        _subtitleMenu->setEnabled(pmf.subs.size() > 0);
+        m_pSubtitleMenu->setEnabled(pmf.subs.size() > 0);
     }
-
-    if (_subtitleMenu) {
-        auto menu = _tracksMenu;
-        menu->clear();
-
-        if (!audiosgroup) {
-            audiosgroup = new QActionGroup(menu); // mem leak ?
+    if (m_pSubtitleMenu) {
+        DMenu *pMenu = m_pTracksMenu;
+        pMenu->clear();
+        if (!m_pAudiosgroup) {
+            m_pAudiosgroup = new QActionGroup(pMenu); // mem leak ?
         }
         for (int i = 0; i < pmf.audios.size(); i++) {
             if (pmf.audios[i]["title"].toString().compare("[internal]") == 0) {
-                DEF_ACTION_CHECKED_GROUP(tr("Track") + QString::number(i + 1), ActionKind::SelectTrack, audiosgroup);
+                DEF_ACTION_CHECKED_GROUP(tr("Track") + QString::number(i + 1), ActionKind::SelectTrack, m_pAudiosgroup);
             } else {
-                DEF_ACTION_CHECKED_GROUP(pmf.audios[i]["title"].toString(), ActionKind::SelectTrack, audiosgroup);
+                DEF_ACTION_CHECKED_GROUP(pmf.audios[i]["title"].toString(), ActionKind::SelectTrack, m_pAudiosgroup);
             }
-            auto act = menu->actions().last();
-            act->setProperty("args", QList<QVariant>() << i);
+            QAction *pAct = pMenu->actions().last();
+            pAct->setProperty("args", QList<QVariant>() << i);
         }
-
-        _tracksMenu->setEnabled(pmf.audios.size() > 0);
-        _soundMenu->setEnabled(pmf.audios.size() > 0);
-        _sound->setEnabled(pmf.audios.size() > 0);
+        m_pTracksMenu->setEnabled(pmf.audios.size() > 0);
+        m_pSoundMenu->setEnabled(pmf.audios.size() > 0);
+        m_pSound->setEnabled(pmf.audios.size() > 0);
     }
 }
-
+ActionFactory::ActionFactory()
+{
+    initMember();
+}
+void ActionFactory::initMember()
+{
+    m_pTitlebarMenu = nullptr;
+    m_pContextMenu = nullptr;
+    m_pSubtitleMenu = nullptr;
+    m_pTracksMenu = nullptr;
+    m_pSoundMenu = nullptr;
+    m_pPlaylistMenu = nullptr;
+    m_pSound = nullptr;
+    m_pSubgroup = nullptr;
+    m_pAudiosgroup = nullptr;
+    m_listContextMenuActions.clear();
+}
 #undef DEF_ACTION
 #undef DEF_ACTION_CHECKED
 }
