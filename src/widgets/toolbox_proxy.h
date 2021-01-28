@@ -237,9 +237,7 @@ public:
             return true;
         };
     }
-
     void updateProgress(int nValue);    //更新进度条显示
-
     void updateSlider();                //根据进度条显示更新影片实际进度
     void initThumb();
     void updateSliderPoint(QPoint);
@@ -254,10 +252,12 @@ public:
     ToolButton *listBtn() {return _listBtn;}
     ToolButton *fsBtn() {return _fsBtn;}
     VolumeButton *volBtn() {return _volBtn;}
+
 public slots:
     void finishLoadSlot(QSize size);
     void updateplaylisticon();
     void setthumbnailmode();
+
 signals:
     void requestPlay();
     void requestPause();
@@ -284,7 +284,6 @@ protected slots:
     void updateHoverPreview(const QUrl &url, int secs);
     //lmh0706暂停延时，解决乱按卡死问题
     void waitPlay();
-    //把lambda表达式改为槽函数，modify by myk
     void slotThemeTypeChanged();
     void slotLeavePreview();
     void slotHidePreviewTime();
@@ -293,7 +292,6 @@ protected slots:
     void slotBaseMuteChanged(QString sk, const QVariant &val);
     void slotVolumeButtonClicked();
     void slotFileLoaded();
-    //原有两个连接，合并为一个
     void slotElapsedChanged();
     void slotApplicationStateChanged(Qt::ApplicationState e);
     void slotPlayListCurrentChanged();
@@ -308,6 +306,8 @@ protected:
     void showEvent(QShowEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
     void mouseMoveEvent(QMouseEvent *ev) override;
+    bool eventFilter(QObject *obj, QEvent *ev) override;
+
 private:
     void setup();
     void updateTimeLabel();

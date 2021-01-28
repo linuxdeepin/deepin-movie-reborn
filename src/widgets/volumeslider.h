@@ -24,6 +24,7 @@ class VolumeSlider: public DArrowRectangle
 {
     Q_OBJECT
 
+public:
     enum State {
         Open,
         Close
@@ -37,12 +38,15 @@ public:
     VolumeSlider(MainWindow *mw, QWidget *parent);
     ~VolumeSlider();
 
+    State state() const {return m_state;}
     void initVolume();   //初始化音量
     void initBgImage();
     void stopTimer();
     void popup();        //弹起音量条
     void updatePoint(QPoint point);
     bool getsliderstate();
+    int getVolume();   //获取当前实际音量
+    void changeVolume(int nVolume);    //改变控件音量
 
 public slots:
     void volumeUp();                   //滚轮加音量
@@ -59,9 +63,7 @@ protected:
     void leaveEvent(QEvent *e);
     void paintEvent(QPaintEvent *);
     bool eventFilter(QObject *obj, QEvent *e);
-
     void refreshIcon();                //刷新图标
-    void changeVolume(int nVolume);    //改变控件音量
 
 private:
     QString readSinkInputPath();       //获取dbus接口的地址
@@ -77,7 +79,7 @@ private:
     bool m_bIsMute {false};
     bool m_bFinished {false};
     QPropertyAnimation *pVolAnimation {nullptr};
-    State state {Close};
+    State m_state {Close};
     QPoint m_point {0, 0};
     QPixmap m_bgImage;
     bool m_mouseIn {false};

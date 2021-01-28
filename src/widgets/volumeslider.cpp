@@ -280,7 +280,7 @@ void VolumeSlider::popup()
     media.moveTo(m_point + QPoint(5, 10));
 #endif
 
-    if (state == State::Close && isVisible()) {
+    if (m_state == State::Close && isVisible()) {
         pVolAnimation = new QPropertyAnimation(this, "geometry");
         pVolAnimation->setEasingCurve(QEasingCurve::Linear);
         pVolAnimation->setKeyValueAt(0, end);
@@ -294,11 +294,11 @@ void VolumeSlider::popup()
         connect(pVolAnimation, &QPropertyAnimation::finished, [ = ] {
             pVolAnimation->deleteLater();
             pVolAnimation = nullptr;
-            state = Open;
+            m_state = Open;
             m_bFinished = false;
         });
     } else {
-        state = Close;
+        m_state = Close;
         hide();
     }
 }
@@ -405,6 +405,12 @@ bool VolumeSlider::getsliderstate()
 {
     return m_bFinished;
 }
+
+int VolumeSlider::getVolume()
+{
+    return m_nVolume;
+}
+
 void VolumeSlider::setThemeType(int type)
 {
     Q_UNUSED(type)
@@ -446,6 +452,7 @@ void VolumeSlider::paintEvent(QPaintEvent *)
     QPainter painter(this);
     painter.drawPixmap(0, 0, m_bgImage);
 }
+
 bool VolumeSlider::eventFilter(QObject *obj, QEvent *e)
 {
     if (e->type() == QEvent::Wheel) {

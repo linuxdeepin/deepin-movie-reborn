@@ -1533,6 +1533,7 @@ void ToolboxProxy::setup()
     signalMapper->setMapping(_fsBtn, "fs");
 
     _volBtn = new VolumeButton(bot_toolWgt);
+    _volBtn->installEventFilter(this);
     _volBtn->setFixedSize(50, 50);
     _volBtn->setFocusPolicy(Qt::TabFocus);
     _volBtn->setObjectName(VOLUME_BUTTON);
@@ -2487,6 +2488,29 @@ void ToolboxProxy::mouseMoveEvent(QMouseEvent *ev)
 {
     setButtonTooltipHide();
     QWidget::mouseMoveEvent(ev);
+}
+
+bool ToolboxProxy::eventFilter(QObject *obj, QEvent *ev)
+{
+    if(obj == _volBtn)
+    {
+        if(ev->type() == QEvent::KeyPress && (_volSlider->state() == VolumeSlider::Open)){
+            QKeyEvent *keyEvent = static_cast<QKeyEvent *>(ev);
+            int nCurVolume = _volSlider->getVolume();
+            //如果音量条升起且上下键按下，以步长为5调整音量
+            if(keyEvent->key() == Qt::Key_Up){
+                _volSlider->changeVolume(qMin(nCurVolume + 5, 200));
+                return true;
+            } else if(keyEvent->key() == Qt::Key_Down){
+                _volSlider->changeVolume(qMax(nCurVolume - 5, 0));
+                return true;
+            } else {
+                return QObject::eventFilter(obj, ev);
+            }
+        } else {
+            return QObject::eventFilter(obj, ev);
+        }
+    }
 }
 
 void ToolboxProxy::updateTimeLabel()
