@@ -37,40 +37,40 @@
 
 namespace dmr {
 using namespace Dtk::Core;
-static Settings *_theSettings = nullptr;
+static Settings *s_pTheSettings = nullptr;
 
 Settings &Settings::get()
 {
-    if (!_theSettings) {
-        _theSettings = new Settings;
+    if (!s_pTheSettings) {
+        s_pTheSettings = new Settings;
     }
 
-    return *_theSettings;
+    return *s_pTheSettings;
 }
 
 Settings::Settings()
-    : QObject(nullptr),_configPath(QString())
+    : QObject(nullptr), m_sConfigPath(QString())
 {
-    _configPath = QString("%1/%2/%3/config.conf")
-            .arg(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation))
-            .arg(qApp->organizationName())
-            .arg(qApp->applicationName());
-    qInfo() << "configPath" << _configPath;
-    auto backend = new QSettingBackend(_configPath);
+    m_sConfigPath = QString("%1/%2/%3/config.conf")
+                    .arg(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation))
+                    .arg(qApp->organizationName())
+                    .arg(qApp->applicationName());
+    qInfo() << "configPath" << m_sConfigPath;
+    QSettingBackend *pBackend = new QSettingBackend(m_sConfigPath);
 #if defined (__mips__) || defined (__sw_64__) || defined ( __aarch64__)
     /*if (!CompositingManager::get().composited()) {
-        _settings = DSettings::fromJsonFile(":/resources/data/lowEffectSettings.json");
+        m_pSettings = DSettings::fromJsonFile(":/resources/data/lowEffectSettings.json");
     } else {
-        _settings = DSettings::fromJsonFile(":/resources/data/settings.json");
+        m_pSettings = DSettings::fromJsonFile(":/resources/data/settings.json");
     }*/
-    _settings = DSettings::fromJsonFile(":/resources/data/lowEffectSettings.json");
+    m_pSettings = DSettings::fromJsonFile(":/resources/data/lowEffectSettings.json");
 #else
-    _settings = DSettings::fromJsonFile(":/resources/data/settings.json");
+    m_pSettings = DSettings::fromJsonFile(":/resources/data/settings.json");
 #endif
-    _settings->setBackend(backend);
+    m_pSettings->setBackend(pBackend);
 
-    connect(_settings, &DSettings::valueChanged,
-            [ = ](const QString & key, const QVariant & value) {
+    connect(m_pSettings, &DSettings::valueChanged,
+    [ = ](const QString & key, const QVariant & value) {
         if (key.startsWith("shortcuts."))
             emit shortcutsChanged(key, value);
         else if (key.startsWith("base.play.playmode"))
@@ -85,7 +85,7 @@ Settings::Settings()
             emit subtitleChanged(key, value);
     });
 
-    qInfo() << "keys" << _settings->keys();
+    qInfo() << "keys" << m_pSettings->keys();
 
     QStringList playmodeDatabase;
     playmodeDatabase << tr("Order play")
@@ -93,23 +93,23 @@ Settings::Settings()
                      << tr("Single play")
                      << tr("Single loop")
                      << tr("List loop");
-    auto playmodeFamily = _settings->option("base.play.playmode");
+    auto playmodeFamily = m_pSettings->option("base.play.playmode");
     playmodeFamily->setData("items", playmodeDatabase);
 
     QStringList hwaccelDatabase;
     hwaccelDatabase << tr("Auto")
                     << tr("Open")
                     << tr("Close");
-    auto hwaccelFamily = _settings->option("base.play.hwaccel");
+    auto hwaccelFamily = m_pSettings->option("base.play.hwaccel");
     hwaccelFamily->setData("items", hwaccelDatabase);
 
     QFontDatabase fontDatabase;
-    auto fontFamliy = _settings->option("subtitle.font.family");
+    auto fontFamliy = m_pSettings->option("subtitle.font.family");
     fontFamliy->setData("items", fontDatabase.families());
     //fontFamliy->setValue(0);
     QFileInfo fi("/dev/mwv206_0");      //景嘉微显卡默认不勾选预览
     if (fi.exists() && utils::check_wayland_env()) {
-        setInternalOption("mousepreview",false);
+        setInternalOption("mousepreview", false);
     }
 }
 
@@ -137,27 +137,27 @@ static QString flag2key(Settings::Flag f)
     return "";
 }
 
-bool Settings::isSet(Flag f) const
+bool Settings::isSet(Flag flag) const
 {
-    bool ret = false;
-    auto subgroups = _settings->group("base")->childGroups();
-    auto grp = std::find_if(subgroups.begin(), subgroups.end(), [ = ](GroupPtr grp) {
+    bool bRet = false;
+    QList<QPointer<DSettingsGroup> > listSubGroups = m_pSettings->group("base")->childGroups();
+    QList<QPointer<DSettingsGroup> >::iterator itor = std::find_if(listSubGroups.begin(), listSubGroups.end(), [ = ](GroupPtr grp) {
         return grp->key() == "base.play";
     });
 
-    if (grp != subgroups.end()) {
-        auto sub = (*grp)->childOptions();
-        auto key = flag2key(f);
+    if (itor != listSubGroups.end()) {
+        QList<QPointer<DSettingsOption> > sub = (*itor)->childOptions();
+        QString sKey = flag2key(flag);
 
-        auto p = std::find_if(sub.begin(), sub.end(), [ = ](OptionPtr opt) {
-            auto sk = opt->key();
-            sk.remove(0, sk.lastIndexOf('.') + 1);
-            return sk == key;
+        QList<QPointer<DSettingsOption> >::iterator p = std::find_if(sub.begin(), sub.end(), [ = ](OptionPtr opt) {
+            QString sOptKey = opt->key();
+            sOptKey.remove(0, sOptKey.lastIndexOf('.') + 1);
+            return sOptKey == sKey;
         });
 
-        ret = (p != sub.end() && (*p)->value().toBool());
+        bRet = (p != sub.end() && (*p)->value().toBool());
     }
-    return ret;
+    return bRet;
 }
 
 QStringList Settings::commonPlayableProtocols() const
@@ -171,10 +171,10 @@ QStringList Settings::commonPlayableProtocols() const
     };
 }
 
-bool Settings::iscommonPlayableProtocol(const QString &scheme) const
+bool Settings::iscommonPlayableProtocol(const QString &sScheme) const
 {
     for (auto pro : commonPlayableProtocols()) {
-        if (pro == scheme)
+        if (pro == sScheme)
             return true;
     }
 
@@ -183,17 +183,17 @@ bool Settings::iscommonPlayableProtocol(const QString &scheme) const
 
 QString Settings::screenshotLocation()
 {
-    QString save_path = settings()->value("base.screenshot.location").toString();
-    if (save_path.size() && save_path[0] == '~') {
-        save_path.replace(0, 1, QDir::homePath());
+    QString sSavePath = settings()->value("base.screenshot.location").toString();
+    if (sSavePath.size() && sSavePath[0] == '~') {
+        sSavePath.replace(0, 1, QDir::homePath());
     }
 
-    if (!QFileInfo(save_path).exists()) {
-        QDir d;
-        d.mkpath(save_path);
+    if (!QFileInfo(sSavePath).exists()) {
+        QDir dir;
+        dir.mkpath(sSavePath);
     }
 
-    return save_path;
+    return sSavePath;
 }
 
 QString Settings::screenshotNameTemplate()
@@ -208,32 +208,25 @@ QString Settings::screenshotNameSeqTemplate()
            .arg(QDateTime::currentDateTime().toString("yyyyMMddhhmmss"));
 }
 
-bool Settings::setThumbnailState()
+void Settings::setGeneralOption(const QString &sOpt, const QVariant &var)
 {
-    bool s = internalOption("showInthumbnailmode").toBool();
-    emit baseChanged("base.play.showInthumbnailmode", !s);
-    return !s;
-}
-
-void Settings::setGeneralOption(const QString &opt, const QVariant &v)
-{
-    settings()->setOption(QString("base.general.%1").arg(opt), v);
+    settings()->setOption(QString("base.general.%1").arg(sOpt), var);
     settings()->sync();
 }
 
-QVariant Settings::generalOption(const QString &opt)
+QVariant Settings::generalOption(const QString &sOpt)
 {
-    return settings()->getOption(QString("base.general.%1").arg(opt));
+    return settings()->getOption(QString("base.general.%1").arg(sOpt));
 }
 
-QVariant Settings::internalOption(const QString &opt)
+QVariant Settings::internalOption(const QString &sOpt)
 {
-    return settings()->getOption(QString("base.play.%1").arg(opt));
+    return settings()->getOption(QString("base.play.%1").arg(sOpt));
 }
 
-void Settings::setInternalOption(const QString &opt, const QVariant &v)
+void Settings::setInternalOption(const QString &sOpt, const QVariant &var)
 {
-    settings()->setOption(QString("base.play.%1").arg(opt), v);
+    settings()->setOption(QString("base.play.%1").arg(sOpt), var);
     settings()->sync();
 }
 

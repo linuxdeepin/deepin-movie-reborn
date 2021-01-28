@@ -36,7 +36,6 @@ TEST(Settings, settings)
     Settings::get().screenshotNameSeqTemplate();
 
     QString path("/usr/share/dde-introduction");
-    Settings::get().setThumbnailState();
     Settings::get().setGeneralOption("last_open_path", path);
     QVariant v = Settings::get().generalOption("last_open_path");
 

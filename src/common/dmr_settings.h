@@ -39,10 +39,51 @@
 
 namespace dmr {
 using namespace Dtk::Core;
-
+/**
+ * @file 配置文件管理类，封装读取和保存配置文件等操作
+ */
 class Settings: public QObject
 {
     Q_OBJECT
+    
+signals:
+    /**
+     * @brief shortcuts配置值变化后发送的信号
+     * @param 某一功能
+     * @param 快捷键
+     */
+    void shortcutsChanged(const QString &, const QVariant &);
+    /**
+     * @brief base配置值变化后发送的信号
+     * @param base下的某一配置
+     * @param 配置的值
+     */
+    void baseChanged(const QString &, const QVariant &);
+    /**
+     * @brief subtitle配置值变化后发送的信号
+     * @param subtitle下的某一配置
+     * @param 配置的值
+     */
+    void subtitleChanged(const QString &, const QVariant &);
+    /**
+     * @brief base.play.playmode配置值变化后发送的信号
+     * @param base.play.playmode下的某一配置
+     * @param 配置的值
+     */
+    void defaultplaymodechanged(const QString &, const QVariant &);
+    /**
+     * @brief base.play.mute配置值变化后发送的信号
+     * @param base.play.mute下的某一配置
+     * @param 配置的值
+     */
+    void baseMuteChanged(const QString &, const QVariant &);
+    /**
+     * @brief base.play.hwaccel配置值变化后发送的信号
+     * @param base.play.hwaccel下的某一配置
+     * @param 配置的值
+     */
+    void hwaccelModeChanged(const QString &, const QVariant &);
+    
 public:
     enum Flag {
         ClearWhenQuit,
@@ -53,71 +94,134 @@ public:
         MultipleInstance,
         PauseOnMinimize,
     };
-
+    /**
+     * @brief 获取类单列对象
+     */
     static Settings &get();
+    /**
+     * @brief 获取类单列对象
+     * @param 返回配置文件路径
+     */
     QString configPath() const
     {
-        return _configPath;
+        return m_sConfigPath;
     }
+    /**
+     * @brief 获取DSetting指针
+     * @param DSetting指针
+     */
     QPointer<DSettings> settings()
     {
-        return _settings;
+        return m_pSettings;
     }
-
-    QPointer<DSettingsGroup> group(const QString &name)
+    /**
+     * @brief 返回对应sname的分组配置
+     * @param DSettingsGroup类指针
+     */
+    QPointer<DSettingsGroup> group(const QString &sName)
     {
-        return settings()->group(name);
+        return settings()->group(sName);
     }
+    /**
+     * @brief 返回对应shortcuts的分组配置
+     * @param DSettingsGroup类指针
+     */
     QPointer<DSettingsGroup> shortcuts()
     {
         return group("shortcuts");
     }
+    /**
+     * @brief 返回对应base的分组配置
+     * @param DSettingsGroup类指针
+     */
     QPointer<DSettingsGroup> base()
     {
         return group("base");
     }
+    /**
+     * @brief 返回对应subtitle的分组配置
+     * @param DSettingsGroup类指针
+     */
     QPointer<DSettingsGroup> subtitle()
     {
         return group("subtitle");
     }
-
-    void setGeneralOption(const QString &opt, const QVariant &v);
-    QVariant generalOption(const QString &opt);
-
-    void setInternalOption(const QString &opt, const QVariant &v);
-    QVariant internalOption(const QString &opt);
+    /**
+     * @brief 设置base.general分组下的配置值
+     * @param 配置项名
+     * @param 配置值
+     */
+    void setGeneralOption(const QString &sOpt, const QVariant &var);
+    /**
+     * @brief 返回base.general的配置值
+     * @param 配置项名
+     * @return 配置值
+     */
+    QVariant generalOption(const QString &sOpt);
+    /**
+     * @brief 设置base.play分组下的配置值
+     * @param 配置项名
+     * @param 配置值
+     */
+    void setInternalOption(const QString &sOpt, const QVariant &var);
+    /**
+     * @brief 返回base.play的配置值
+     * @param 配置项名
+     * @return 配置值
+     */
+    QVariant internalOption(const QString &sOpt);
 
     // user override for mpv opengl interop
+    /**
+     * @brief 返回forced_interop的配置值
+     * @return 配置值
+     */
     QString forcedInterop();
     // disable interop at all
+    /**
+     * @brief 返回disable_interop的配置值
+     * @return 配置值
+     */
     bool disableInterop();
 
     // convient helpers
-
+    /**
+     * @brief 返回Flag枚举中某一配置的值(bool)
+     * @return 配置的值
+     */
     bool isSet(Flag f) const;
-
+    /**
+     * @brief 返回影院支持的协议
+     * @return 播发协议集合
+     */
     QStringList commonPlayableProtocols() const;
-    bool iscommonPlayableProtocol(const QString &scheme) const;
-
+    /**
+     * @brief 判断影院是否支持改协议
+     * @param 协议
+     * @return 是否支持
+     */
+    bool iscommonPlayableProtocol(const QString &sScheme) const;
+    /**
+     * @brief 返回截图路径
+     * @return 截图路径
+     */
     QString screenshotLocation();
+    /**
+     * @brief 返回截图路径
+     * @return 截图路径
+     */
     QString screenshotNameTemplate();
+    /**
+     * @brief 生成连拍截图文件名
+     * @return 截图文件名
+     */
     QString screenshotNameSeqTemplate();
-
-    bool setThumbnailState();
-
-signals:
-    void shortcutsChanged(const QString &, const QVariant &);
-    void baseChanged(const QString &, const QVariant &);
-    void subtitleChanged(const QString &, const QVariant &);
-    void defaultplaymodechanged(const QString &, const QVariant &);
-    void baseMuteChanged(const QString &, const QVariant &);
-    void hwaccelModeChanged(const QString &, const QVariant &);
 
 private:
     Settings();
 
-    QPointer<DSettings> _settings;
-    QString _configPath;
+    QPointer<DSettings> m_pSettings;   ///DSetting指针
+    QString m_sConfigPath;             ///配置文件路径
 };
 
 }
