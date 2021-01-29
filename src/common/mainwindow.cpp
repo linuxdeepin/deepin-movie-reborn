@@ -688,6 +688,8 @@ MainWindow::MainWindow(QWidget *parent)
     _engine->move(0, 0);
 #endif
 
+    //初始化显示音量与音量条控件一致
+    m_displayVolume = 100;
     _toolbox = new ToolboxProxy(this, _engine);
     _toolbox->setObjectName(BOTTOM_TOOL_BOX);
 
