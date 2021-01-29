@@ -8,6 +8,7 @@
 #include <dwidgetstype.h>
 #include <QtCore/QMetaObject>
 #include <QGuiApplication>
+#include <QWidget>
 
 #include <unistd.h>
 #include <gtest/gtest.h>
@@ -53,6 +54,65 @@ TEST(MainWindow, init)
     QApplication::sendEvent(w, &drop);
     QVERIFY(drop.isAccepted());
     QCOMPARE(drop.dropAction(), Qt::CopyAction);
+}
+
+TEST(MainWindow, tabInteraction)
+{
+    MainWindow *w = dApp->getMainWindow();
+    PlayerEngine *engine =  w->engine();
+    ToolboxProxy* toolboxProxy = w->toolbox();
+    ToolButton *fsBtn = toolboxProxy->fsBtn();
+    VolumeButton *volBtn = toolboxProxy->volBtn();
+    ToolButton *listBtn = toolboxProxy->listBtn();
+    PlaylistWidget *playlistWidget;
+    DListWidget *playlist;
+    QList<QUrl> listPlayFiles;
+    QTestEventList testEventList;
+
+    w->show();
+
+    listPlayFiles << QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/demo.mp4")\
+                  << QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/天空之眼 高清1080P.mp4")\
+                  << QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/bensound-sunny.mp3");
+
+    const QList<QUrl> &valids = engine->addPlayFiles(listPlayFiles);
+
+    QTest::qWait(500);
+
+    //volume control
+    volBtn->setFocus();
+    QTest::keyClick(volBtn, Qt::Key_Enter, Qt::NoModifier, 200);
+    QTest::qWait(500);
+    for(int i = 0; i < 5; i++){
+        QTest::keyClick(volBtn, Qt::Key_Down, Qt::NoModifier, 100); //volume down 5
+    }
+    for(int i = 0; i < 10; i++){
+        QTest::keyClick(volBtn, Qt::Key_Up, Qt::NoModifier, 100); //volume up 5
+    }
+
+    //play list
+    playlistWidget = w->playlist();
+    playlist = playlistWidget->get_playlist();
+    listBtn->setFocus();
+    QTest::qWait(500);
+    QTest::keyClick(listBtn, Qt::Key_Enter, Qt::NoModifier, 200);
+    QTest::keyClick(listBtn, Qt::Key_Tab, Qt::NoModifier, 200);
+    QTest::keyClick(playlistWidget, Qt::Key_Tab, Qt::NoModifier, 500);
+    QTest::keyClick(playlist, Qt::Key_Tab, Qt::NoModifier, 500);
+    QTest::keyClick(playlistWidget, Qt::Key_Enter, Qt::NoModifier, 500);    //clear playlist
+    for(int i = 0; i < 3; i++){
+        QTest::keyClick(playlist, Qt::Key_Tab, Qt::NoModifier, 100);
+    }
+    QTest::keyClick(w, Qt::Key_Escape, Qt::NoModifier, 500);    //close playlist by Esc
+
+    QTest::qWait(500);
+    engine->addPlayFiles(listPlayFiles);
+    QTest::keyClick(listBtn, Qt::Key_Enter, Qt::NoModifier, 1000);
+    QTest::keyClick(listBtn, Qt::Key_Tab, Qt::NoModifier, 200);
+    QTest::keyClick(playlistWidget, Qt::Key_Tab, Qt::NoModifier, 500);
+    QTest::keyClick(playlistWidget, Qt::Key_Down, Qt::NoModifier, 500);
+    QTest::keyClick(playlistWidget, Qt::Key_Up, Qt::NoModifier, 500);
+    QTest::keyClick(playlist, Qt::Key_Enter, Qt::NoModifier, 500);
 }
 
 TEST(MainWindow, loadFile)
