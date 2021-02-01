@@ -37,16 +37,16 @@
 #include <X11/extensions/record.h>
 #undef Bool
 
-void callback(XPointer ptr, XRecordInterceptData *data)
+void callback(XPointer ptr, XRecordInterceptData *pData)
 {
-    (reinterpret_cast<dmr::EventMonitor *>(ptr))->handleRecordEvent(data);
+    (reinterpret_cast<dmr::EventMonitor *>(ptr))->handleRecordEvent(pData);
 }
 
 namespace dmr {
 
 EventMonitor::EventMonitor(QObject *parent) : QThread(parent)
 {
-    isPress = false;
+    m_bIsPress = false;
 }
 
 void EventMonitor::run()
@@ -56,27 +56,26 @@ void EventMonitor::run()
         fprintf(stderr, "unable to open display\n");
         return;
     }
-
     // Receive from ALL clients, including future clients.
     //XRecordClientSpec clients = XRecordAllClients;
     XRecordClientSpec clients = XRecordCurrentClients;
-    XRecordRange *range = XRecordAllocRange();
-    if (range == nullptr) {
+    XRecordRange *pRange = XRecordAllocRange();
+    if (pRange == nullptr) {
         fprintf(stderr, "unable to allocate XRecordRange\n");
         return;
     }
 
-    memset(range, 0, sizeof(XRecordRange));
-    range->device_events.first = ButtonPress;
-    range->device_events.last  = MotionNotify;
+    memset(pRange, 0, sizeof(XRecordRange));
+    pRange->device_events.first = ButtonPress;
+    pRange->device_events.last  = MotionNotify;
 
     // And create the XRECORD context.
-    XRecordContext context = XRecordCreateContext (display, 0, &clients, 1, &range, 1);
+    XRecordContext context = XRecordCreateContext(display, 0, &clients, 1, &pRange, 1);
     if (context == 0) {
         fprintf(stderr, "XRecordCreateContext failed\n");
         return;
     }
-    XFree(range);
+    XFree(pRange);
 
     XSync(display, True);
 
@@ -92,28 +91,28 @@ void EventMonitor::run()
     }
 }
 
-void EventMonitor::handleRecordEvent(void *dat)
+void EventMonitor::handleRecordEvent(void *pValue)
 {
-    XRecordInterceptData *data = (XRecordInterceptData *)dat;
-    if (!_recording) {
-        XRecordFreeData(data);
+    XRecordInterceptData *pData = (XRecordInterceptData *)pValue;
+    if (!m_recording) {
+        XRecordFreeData(pData);
         return;
     }
 
-    if (data->category == XRecordFromServer) {
-        xEvent *event = (xEvent *)data->data;
+    if (pData->category == XRecordFromServer) {
+        xEvent *event = (xEvent *)pData->data;
         switch (event->u.u.type) {
         case ButtonPress:
             if (event->u.u.detail != WheelUp &&
                     event->u.u.detail != WheelDown &&
                     event->u.u.detail != WheelLeft &&
                     event->u.u.detail != WheelRight) {
-                isPress = true;
+                m_bIsPress = true;
                 emit buttonedPress(event->u.keyButtonPointer.rootX, event->u.keyButtonPointer.rootY);
             }
             break;
         case MotionNotify:
-            if (isPress) {
+            if (m_bIsPress) {
                 emit buttonedDrag(event->u.keyButtonPointer.rootX, event->u.keyButtonPointer.rootY);
             }
             break;
@@ -122,7 +121,7 @@ void EventMonitor::handleRecordEvent(void *dat)
                     event->u.u.detail != WheelDown &&
                     event->u.u.detail != WheelLeft &&
                     event->u.u.detail != WheelRight) {
-                isPress = false;
+                m_bIsPress = false;
                 emit buttonedRelease(event->u.keyButtonPointer.rootX, event->u.keyButtonPointer.rootY);
             }
             break;
@@ -131,25 +130,25 @@ void EventMonitor::handleRecordEvent(void *dat)
         }
     }
 
-    XRecordFreeData(data);
+    XRecordFreeData(pData);
 }
 
 void EventMonitor::resumeRecording()
 {
-    if (!_recording) {
-        _recording = 1;
+    if (!m_recording) {
+        m_recording = 1;
     }
 }
 
 void EventMonitor::suspendRecording()
 {
-    if (_recording) {
-        if (isPress) {
-            isPress = false;
-            auto p = QCursor::pos();
-            emit buttonedRelease(p.x(), p.y());
+    if (m_recording) {
+        if (m_bIsPress) {
+            m_bIsPress = false;
+            QPoint pos = QCursor::pos();
+            emit buttonedRelease(pos.x(), pos.y());
         }
-        _recording = 0;
+        m_recording = 0;
     }
 }
 
