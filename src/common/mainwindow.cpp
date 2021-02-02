@@ -3142,6 +3142,8 @@ void MainWindow::slotMuteChanged(bool bMute)
 
     if (bMute) {
         m_pCommHintWid->updateWithMessage(tr("Mute"));
+    } else {
+        m_pCommHintWid->updateWithMessage(tr("Volume: %1%").arg(m_nDisplayVolume));   // 取消静音时显示音量提示
     }
 }
 
