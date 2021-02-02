@@ -9,6 +9,7 @@
 
 using namespace dmr;
 
+#ifndef __mips__
 TEST(MovieApp, testMprisapp)
 {
     MainWindow* w = new MainWindow();
@@ -21,4 +22,4 @@ TEST(MovieApp, testMprisapp)
     QTest::qWait(300);
     w->testMprisapp();
 }
-
+#endif

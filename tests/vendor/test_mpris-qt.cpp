@@ -128,7 +128,7 @@ TEST(Mpris, MprisManager)
         mManager->quit();
     }
 }
-
+#ifndef __mips__
 TEST(Mpris, MprisPlayer)
 {
     MprisPlayer *mprisPlayer = new MprisPlayer();
@@ -255,7 +255,7 @@ TEST(Mpris, MprisPlayer)
     delete mprisPlayer;
 //    delete mrAdaptor;
 }
-
+#endif
 TEST(Mpris, MprisController)
 {
     MprisController *controller;

@@ -29,7 +29,9 @@ using namespace dmr;
 
 #include <gtest/gtest.h>
 #include <gmock/gmock-matchers.h>
+#ifndef __mips__
 #include <sanitizer/asan_interface.h>
+#endif
 
 class QTestMain : public QObject
 {
@@ -71,7 +73,9 @@ void QTestMain::testGTest()
     testing::GTEST_FLAG(output) = "xml:./report/report_deepin-movie-reborn.xml";
     testing::InitGoogleTest();
     int ret = RUN_ALL_TESTS();
+#ifndef __mips__
     __sanitizer_set_report_path("asan.log");
+#endif
     Q_UNUSED(ret)
 
 //    exit(0);

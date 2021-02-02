@@ -56,6 +56,7 @@ TEST(MainWindow, init)
     QCOMPARE(drop.dropAction(), Qt::CopyAction);
 }
 
+#ifndef __mips__
 TEST(MainWindow, tabInteraction)
 {
     MainWindow *w = dApp->getMainWindow();
@@ -114,6 +115,7 @@ TEST(MainWindow, tabInteraction)
     QTest::keyClick(playlistWidget, Qt::Key_Up, Qt::NoModifier, 500);
     QTest::keyClick(playlist, Qt::Key_Enter, Qt::NoModifier, 500);
 }
+#endif
 
 TEST(MainWindow, loadFile)
 {

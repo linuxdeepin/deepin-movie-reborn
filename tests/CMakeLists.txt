@@ -102,10 +102,14 @@ add_executable(${PROJECT_NAME} ${allHeaders} ${allSource} ${allTestSource}
 #)
 
 # 添加gocv覆盖率文件的输出
-#set(CMAKE_CXX_FLAGS "-g -fprofile-arcs -ftest-coverage")
-set(CMAKE_CXX_FLAGS "-fsanitize=undefined,address,leak -fno-omit-frame-pointer -g -fprofile-arcs -ftest-coverage")
-set(CMAKE_C_FLAGS "-fsanitize=undefined,address,leak -fno-omit-frame-pointer")
-#set(CMAKE_L_FLAGS "-fsanitize=undefined,address,leak -fno-omit-frame-pointer")
+if (CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "mips64")
+    set(CMAKE_CXX_FLAGS "-g -fprofile-arcs -ftest-coverage")    #mips平台下不进行内存检测
+else()
+    set(CMAKE_CXX_FLAGS "-fsanitize=undefined,address,leak -fno-omit-frame-pointer -g -fprofile-arcs -ftest-coverage")
+    set(CMAKE_C_FLAGS "-fsanitize=undefined,address,leak -fno-omit-frame-pointer")
+    #set(CMAKE_L_FLAGS "-fsanitize=undefined,address,leak -fno-omit-frame-pointer")
+endif()
+
 set(CMAKE_CXX_OUTPUT_EXTENSION_REPLACE ON)
 
 set(OBJECT_DIR ${CMAKE_BINARY_DIR}/CMakeFiles/objects)
