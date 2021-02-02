@@ -312,7 +312,7 @@ mpv_handle *MpvProxy::mpv_init()
         //        }
 #endif
     } else {
-#if defined (__mips__) || defined (__aarch64__)
+#if defined (__mips__) || defined (__aarch64__) || defined (__sw_64__)
         if (CompositingManager::get().hascard()) {
             if (CompositingManager::get().isOnlySoftDecode()) {
                 my_set_property(pHandle, "hwdec", "off");
@@ -336,7 +336,7 @@ mpv_handle *MpvProxy::mpv_init()
             m_sInitVo = "vdpau";
         } else {
             if (!utils::check_wayland_env()) {
-#if defined (__mips__) || defined (__aarch64__)
+#if defined (__mips__) || defined (__aarch64__) || defined (__sw_64__)
                 if (CompositingManager::get().hascard()) {
                     if (CompositingManager::get().isOnlySoftDecode()) {
                         set_property(pHandle, "hwdec", "off");
@@ -447,7 +447,7 @@ mpv_handle *MpvProxy::mpv_init()
     auto p = ol.begin();
     while (p != ol.end()) {
         if (!p->first.startsWith("#")) {
-#if !defined (__mips__ ) && !defined(__aarch64__)
+#if !defined (__mips__ ) && !defined(__aarch64__) && !defined(__sw_64__)
 #ifdef MWV206_0
             QFileInfo fi("/dev/mwv206_0");              //景嘉微显卡目前只支持vo=xv，等日后升级代码需要酌情修改。
             if (!fi.exists()) {
@@ -1059,7 +1059,7 @@ void MpvProxy::play()
         if (!m_bIsJingJia || !utils::check_wayland_env()) {
             // hwdec could be disabled by some codecs, so we need to re-enable it
             my_set_property(m_handle, "hwdec", "auto");
-#if defined (__mips__) || defined (__aarch64__)
+#if defined (__mips__) || defined (__aarch64__) || defined (__sw_64__)
             if (!CompositingManager::get().hascard() || CompositingManager::get().isOnlySoftDecode()) {
                 my_set_property(m_handle, "hwdec", "off");
             }
