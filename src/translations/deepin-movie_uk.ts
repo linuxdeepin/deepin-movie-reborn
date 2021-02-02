@@ -217,6 +217,10 @@
         <source>Default play mode</source>
         <translation>Типовий режим відтворення</translation>
     </message>
+    <message>
+        <source>Show thumbnails in progress bar</source>
+        <translation>Показувати ескізи на панелі виконання</translation>
+    </message>
 </context>
 <context>
     <name>UrlDialog</name>
@@ -398,6 +402,10 @@
     <message>
         <source>Previous Frame</source>
         <translation>Попередній кадр</translation>
+    </message>
+    <message>
+        <source>Open screenshot folder</source>
+        <translation>Відкрити теку зі скріншотами</translation>
     </message>
 </context>
 <context>
@@ -585,24 +593,32 @@
         <source>The CD/DVD has been ejected</source>
         <translation>Компакт-диск/DVD виштовхнуто</translation>
     </message>
+    <message>
+        <source>All videos (%2 %1)</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>All videos (*)(%2 %1)</source>
+        <translation>усі відео (*)(%2 %1)</translation>
+    </message>
 </context>
 <context>
     <name>dmr::MovieInfo</name>
     <message>
         <source>%1G</source>
-        <translation>%1G</translation>
+        <translation type="vanished">%1G</translation>
     </message>
     <message>
         <source>%1M</source>
-        <translation>%1M</translation>
+        <translation type="vanished">%1M</translation>
     </message>
     <message>
         <source>%1K</source>
-        <translation>%1K</translation>
+        <translation type="vanished">%1K</translation>
     </message>
     <message>
         <source>%1</source>
-        <translation>%1</translation>
+        <translation type="vanished">%1</translation>
     </message>
 </context>
 <context>
@@ -633,31 +649,31 @@
     </message>
     <message>
         <source>Codec info</source>
-        <translation type="unfinished"/>
+        <translation>Інформація про кодек</translation>
     </message>
     <message>
         <source>Video CodecID</source>
-        <translation type="unfinished"/>
+        <translation>Відео CodecID</translation>
     </message>
     <message>
         <source>Video CodeRate</source>
-        <translation type="unfinished"/>
+        <translation>Відео CodeRate</translation>
     </message>
     <message>
         <source>%1 kbps</source>
-        <translation type="unfinished"/>
+        <translation>%1 kbps</translation>
     </message>
     <message>
         <source>FPS</source>
-        <translation type="unfinished"/>
+        <translation>FPS</translation>
     </message>
     <message>
         <source>%1 fps</source>
-        <translation type="unfinished"/>
+        <translation>%1 fps</translation>
     </message>
     <message>
         <source>Proportion</source>
-        <translation type="unfinished"/>
+        <translation>Пропорція</translation>
     </message>
     <message>
         <source>%1</source>
@@ -665,39 +681,39 @@
     </message>
     <message>
         <source>Audio info</source>
-        <translation type="unfinished"/>
+        <translation>Аудіоінформація</translation>
     </message>
     <message>
         <source>Audio CodecID</source>
-        <translation type="unfinished"/>
+        <translation>Аудіо CodecID</translation>
     </message>
     <message>
         <source>Audio CodeRate</source>
-        <translation type="unfinished"/>
+        <translation>Аудіо CodeRate</translation>
     </message>
     <message>
         <source>Audio digit</source>
-        <translation type="unfinished"/>
+        <translation>Звукова цифра</translation>
     </message>
     <message>
         <source>%1 bits</source>
-        <translation type="unfinished"/>
+        <translation>%1 bits</translation>
     </message>
     <message>
         <source>Channels</source>
-        <translation type="unfinished"/>
+        <translation>Канали</translation>
     </message>
     <message>
         <source>%1 channels</source>
-        <translation type="unfinished"/>
+        <translation>%1 канали</translation>
     </message>
     <message>
         <source>Sampling</source>
-        <translation type="unfinished"/>
+        <translation>Дискретизація</translation>
     </message>
     <message>
         <source>%1hz</source>
-        <translation type="unfinished"/>
+        <translation>%1hz</translation>
     </message>
 </context>
 <context>

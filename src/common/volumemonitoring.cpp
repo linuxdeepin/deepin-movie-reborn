@@ -28,11 +28,12 @@
 
 #include "dbus_adpator.h"
 #include "dmr_settings.h"
+#include "dbusutils.h"
 
 class VolumeMonitoringPrivate
 {
 public:
-    VolumeMonitoringPrivate(VolumeMonitoring *parent) : q_ptr(parent) {}
+    explicit VolumeMonitoringPrivate(VolumeMonitoring *parent) : q_ptr(parent) {}
 
     QTimer            timer;
 
@@ -44,6 +45,7 @@ VolumeMonitoring::VolumeMonitoring(QObject *parent)
     : QObject(parent), d_ptr(new VolumeMonitoringPrivate(this))
 {
     Q_D(VolumeMonitoring);
+    _bOpened = false;
     connect(&d->timer, SIGNAL(timeout()), this, SLOT(timeoutSlot()));
 }
 
@@ -66,8 +68,8 @@ void VolumeMonitoring::stop()
 
 void VolumeMonitoring::timeoutSlot()
 {
-    QVariant v = ApplicationAdaptor::redDBusProperty("com.deepin.daemon.Audio", "/com/deepin/daemon/Audio",
-                                                     "com.deepin.daemon.Audio", "SinkInputs");
+    QVariant v = DBusUtils::redDBusProperty("com.deepin.daemon.Audio", "/com/deepin/daemon/Audio",
+                                            "com.deepin.daemon.Audio", "SinkInputs");
 
     if (!v.isValid())
         return;
@@ -76,10 +78,11 @@ void VolumeMonitoring::timeoutSlot()
 
     QString sinkInputPath;
     for (auto curPath : allSinkInputsList) {
-        QVariant nameV = ApplicationAdaptor::redDBusProperty("com.deepin.daemon.Audio", curPath.path(),
-                                                             "com.deepin.daemon.Audio.SinkInput", "Name");
+        QVariant nameV = DBusUtils::redDBusProperty("com.deepin.daemon.Audio", curPath.path(),
+                                                    "com.deepin.daemon.Audio.SinkInput", "Name");
 
-        if (!nameV.isValid() || (!nameV.toString().contains( "mpv", Qt::CaseInsensitive) && !nameV.toString().contains("deepin-movie", Qt::CaseInsensitive)))
+        QString movieStr = QObject::tr("Movie");
+        if (!nameV.isValid() || (!nameV.toString().contains( movieStr, Qt::CaseInsensitive) && !nameV.toString().contains("deepin-movie", Qt::CaseInsensitive)))
             continue;
 
         sinkInputPath = curPath.path();
@@ -96,23 +99,29 @@ void VolumeMonitoring::timeoutSlot()
     }
 
     //获取音量
-    QVariant volumeV = ApplicationAdaptor::redDBusProperty("com.deepin.daemon.Audio", sinkInputPath,
-                                                           "com.deepin.daemon.Audio.SinkInput", "Volume");
+    QVariant volumeV = DBusUtils::redDBusProperty("com.deepin.daemon.Audio", sinkInputPath,
+                                                  "com.deepin.daemon.Audio.SinkInput", "Volume");
 
     //获取音量
-    QVariant muteV = ApplicationAdaptor::redDBusProperty("com.deepin.daemon.Audio", sinkInputPath,
-                                                         "com.deepin.daemon.Audio.SinkInput", "Mute");
+    QVariant muteV = DBusUtils::redDBusProperty("com.deepin.daemon.Audio", sinkInputPath,
+                                                "com.deepin.daemon.Audio.SinkInput", "Mute");
 
-    double temp = volumeV.toDouble();
-    int volume = (volumeV.toDouble() +  0.001) * 100 ;
-    bool mute = muteV.toBool();
+    // int temp = volumeV.toDouble();
+    int volume = static_cast<int>(volumeV.toDouble() * 100);
+//   int volume = (volumeV.toDouble() +  0.001) * 100;
 
     auto oldMute = Settings::get().internalOption("mute");
     auto oldVolume = Settings::get().internalOption("global_volume");
 
-
-    if (volume != oldVolume && !oldMute.toBool())
-        Q_EMIT volumeChanged(volume);
-    //if (mute != oldMute)
-    Q_EMIT muteChanged(muteV.toBool());
+    //第一次从dbus里获取的音量可能和实际不匹配，若是第一进入就用实际音量 by zhuyuliang
+    if (!_bOpened) {
+        Q_EMIT volumeChanged(oldVolume.toInt());
+        Q_EMIT muteChanged(oldMute.toBool());
+      
+        _bOpened = true;
+    } else {
+        if (volume != oldVolume)
+            Q_EMIT volumeChanged(volume);
+        Q_EMIT muteChanged(muteV.toBool());
+    }
 }

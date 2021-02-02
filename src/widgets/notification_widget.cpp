@@ -1,4 +1,4 @@
-/* 
+/*
  * (c) 2017, Deepin Technology Co., Ltd. <support@deepin.org>
  *
  * This program is free software; you can redistribute it and/or
@@ -28,7 +28,6 @@
  * files in the program, then also delete it here.
  */
 #include "notification_widget.h"
-#include "utility.h"
 #include "event_relayer.h"
 
 #include <DPlatformWindowHandle>
@@ -38,14 +37,23 @@
 namespace dmr {
 
 NotificationWidget::NotificationWidget(QWidget *parent)
-    :QFrame(parent), _mw(parent)
+#ifdef __aarch64__
+    : QFrame(nullptr), _mw(parent)
+#else
+    : QFrame(parent), _mw(parent)
+#endif
 {
 //    DThemeManager::instance()->registerWidget(this);
 
     //setFrameShape(QFrame::NoFrame);
     setObjectName("NotificationFrame");
 
-    _layout = new QHBoxLayout;
+#if defined (__mips__) || defined (__aarch64__)
+    setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
+    setAttribute(Qt::WA_TranslucentBackground, true);
+#endif
+
+    _layout = new QHBoxLayout();
     _layout->setContentsMargins(0, 0, 0, 0);
     setLayout(_layout);
 
@@ -55,7 +63,8 @@ NotificationWidget::NotificationWidget(QWidget *parent)
     _timer = new QTimer(this);
     _timer->setInterval(2000);
     _timer->setSingleShot(true);
-    connect(_timer, &QTimer::timeout, [=]() {this->hide();});
+    connect(_timer, &QTimer::timeout, this, &QWidget::hide);
+
 
 }
 
@@ -63,36 +72,69 @@ void NotificationWidget::showEvent(QShowEvent *event)
 {
     ensurePolished();
     if (_layout->indexOf(_icon) == -1) {
-        resize(_msgLabel->sizeHint().width() + _layout->contentsMargins().left() 
-                + _layout->contentsMargins().right(), height());
+        resize(_msgLabel->sizeHint().width() + _layout->contentsMargins().left()
+               + _layout->contentsMargins().right(), height());
         adjustSize();
     }
     syncPosition();
+
+    QFrame::showEvent(event);
 }
 
 void NotificationWidget::resizeEvent(QResizeEvent *re)
 {
+    QFrame::resizeEvent(re);
 }
 
 void NotificationWidget::syncPosition()
 {
     auto geom = _mw->geometry();
     switch (_anchor) {
-        case AnchorBottom:
-            move(geom.center().x() - size().width()/2, geom.bottom() - _anchorDist - height());
-            break;
+    case AnchorBottom:
+        move(geom.center().x() - size().width() / 2, geom.bottom() - _anchorDist - height());
+        break;
 
-        case AnchorNorthWest:
-            move(_anchorPoint);
-            break;
+    case AnchorNorthWest:
+#ifdef __aarch64__
+        move(geom.topLeft() + _anchorPoint);
+#elif defined (__mips__)
+        move(geom.x() + 30, geom.y() + 58);
+#else
+        move(_anchorPoint);
+#endif
+        break;
 
-        case AnchorNone:
-            move(geom.center().x() - size().width()/2, geom.center().y() - size().height()/2);
-            break;
+    case AnchorNone:
+        move(geom.center().x() - size().width() / 2, geom.center().y() - size().height() / 2);
+        break;
     }
 }
 
-void NotificationWidget::popupWithIcon(const QString& msg, const QPixmap& pm)
+void NotificationWidget::syncPosition(QRect rect)
+{
+    auto geom = rect;
+    switch (_anchor) {
+    case AnchorBottom:
+        move(geom.center().x() - size().width() / 2, geom.bottom() - _anchorDist - height());
+        break;
+
+    case AnchorNorthWest:
+#ifdef __aarch64__
+        move(geom.topLeft() + _anchorPoint);
+#elif  defined (__mips__)
+        move(geom.x() + 30, geom.y() + 58);
+#else
+        move(_anchorPoint);
+#endif
+        break;
+
+    case AnchorNone:
+        move(geom.center().x() - size().width() / 2, geom.center().y() - size().height() / 2);
+        break;
+    }
+}
+
+void NotificationWidget::popupWithIcon(const QString &msg, const QPixmap &pm)
 {
     if (!_icon) {
         _icon = new QLabel;
@@ -115,7 +157,7 @@ void NotificationWidget::popupWithIcon(const QString& msg, const QPixmap& pm)
     _timer->start();
 }
 
-void NotificationWidget::popup(const QString& msg, bool flag)
+void NotificationWidget::popup(const QString &msg, bool flag)
 {
     _layout->setContentsMargins(14, 4, 14, 4);
     if (_layout->indexOf(_msgLabel) == -1) {
@@ -131,7 +173,7 @@ void NotificationWidget::popup(const QString& msg, bool flag)
     }
 }
 
-void NotificationWidget::updateWithMessage(const QString& newMsg, bool flag)
+void NotificationWidget::updateWithMessage(const QString &newMsg, bool flag)
 {
     if (_icon) {
         _icon->setVisible(false);
@@ -144,8 +186,8 @@ void NotificationWidget::updateWithMessage(const QString& newMsg, bool flag)
 
     if (isVisible()) {
         _msgLabel->setText(msg);
-        resize(_msgLabel->sizeHint().width() + _layout->contentsMargins().left() 
-                + _layout->contentsMargins().right(), height());
+        resize(_msgLabel->sizeHint().width() + _layout->contentsMargins().left()
+               + _layout->contentsMargins().right(), height());
         adjustSize();
 
         if (flag) {
@@ -157,12 +199,12 @@ void NotificationWidget::updateWithMessage(const QString& newMsg, bool flag)
     }
 }
 
-void NotificationWidget::paintEvent(QPaintEvent* pe)
+void NotificationWidget::paintEvent(QPaintEvent *pe)
 {
     float RADIUS = 8;
     QPainter p(this);
     p.setRenderHint(QPainter::Antialiasing);
-    
+
     bool light = (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() );
     auto bg_clr = QColor(23, 23, 23, 255 * 8 / 10);
     auto border_clr = QColor(255, 255, 255, 25);
@@ -174,15 +216,17 @@ void NotificationWidget::paintEvent(QPaintEvent* pe)
     p.fillRect(rect(), Qt::transparent);
     {
         QPainterPath pp;
-        pp.addRoundedRect(rect(), RADIUS, RADIUS);
+        pp.addRoundedRect(rect(), static_cast<qreal>(RADIUS), static_cast<qreal>(RADIUS));
         p.setPen(border_clr);
         p.drawPath(pp);
     }
 
     auto view_rect = rect().marginsRemoved(QMargins(1, 1, 1, 1));
     QPainterPath pp;
-    pp.addRoundedRect(view_rect, RADIUS, RADIUS);
+    pp.addRoundedRect(view_rect, static_cast<qreal>(RADIUS), static_cast<qreal>(RADIUS));
     p.fillPath(pp, bg_clr);
+
+    QFrame::paintEvent(pe);
 }
 
 }

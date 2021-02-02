@@ -50,8 +50,8 @@ ShortcutManager::~ShortcutManager()
 {
 }
 
-ShortcutManager::ShortcutManager() 
-    :QObject(0)
+ShortcutManager::ShortcutManager()
+    : QObject(nullptr)
 {
     _keyToAction = {
         {"pause_play", ActionFactory::ActionKind::TogglePause},
@@ -154,9 +154,6 @@ void ShortcutManager::toggleGroupShortcuts(GroupPtr grp, bool on)
 
         QString sk = opt->key();
         sk.remove(0, sk.lastIndexOf('.') + 1);
-        qDebug() << opt->name()
-                 << QKeySequence(opt->value().toStringList().at(0))
-                 << QKeySequence(opt->value().toStringList().at(0)).toString();
         QString strKey = QKeySequence(opt->value().toStringList().at(0)).toString();
 
         if (strKey.contains("Return")) {
@@ -176,7 +173,6 @@ void ShortcutManager::toggleGroupShortcuts(GroupPtr grp, bool on)
 
         if (on) {
             _map[strKey] = _keyToAction[sk];
-            qDebug() << opt->name() << QKeySequence(strKey) << strKey;
             _map[QKeySequence(opt->value().toStringList().at(0))] = _keyToAction[sk];
         } else {
             _map.remove(QKeySequence(opt->value().toStringList().at(0)));
@@ -309,8 +305,6 @@ vector<QAction*> ShortcutManager::actionsForBindings()
         act->setProperty("kind", p.value());
         act->setProperty("origin", "shortcut");
         actions.push_back(act);
-
-        qDebug() << "action " << p.key() << p.value();
         ++p;
     }
 

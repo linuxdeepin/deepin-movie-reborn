@@ -67,7 +67,7 @@
     </message>
     <message>
         <source>Frame/Sound</source>
-        <translation>Image/Son</translation>
+        <translation>Image / Son</translation>
     </message>
     <message>
         <source>Playback</source>
@@ -91,11 +91,11 @@
     </message>
     <message>
         <source>Open next</source>
-        <translation>Ouvrir suivant</translation>
+        <translation>Ouvrir le suivant</translation>
     </message>
     <message>
         <source>Open previous</source>
-        <translation>Ouvrir précédent</translation>
+        <translation>Ouvrir le précédent</translation>
     </message>
     <message>
         <source>Mini mode</source>
@@ -135,7 +135,7 @@
     </message>
     <message>
         <source>Pause/Play</source>
-        <translation>Pause/Lecture</translation>
+        <translation>Pause / Lecture</translation>
     </message>
     <message>
         <source>Playlist</source>
@@ -171,7 +171,7 @@
     </message>
     <message>
         <source>Exit fullscreen/mini mode</source>
-        <translation>Quitter le mode plein écran/mini</translation>
+        <translation>Quitter le plein écran / mode mini</translation>
     </message>
     <message>
         <source>Movie</source>
@@ -187,7 +187,7 @@
     </message>
     <message>
         <source>Display shortcuts</source>
-        <translation>Afficher raccourcis </translation>
+        <translation>Afficher les raccourcis</translation>
     </message>
     <message>
         <source>Delete from playlist</source>
@@ -216,6 +216,10 @@
     <message>
         <source>Default play mode</source>
         <translation>Mode de lecture par défaut</translation>
+    </message>
+    <message>
+        <source>Show thumbnails in progress bar</source>
+        <translation>Afficher les vignettes dans la barre de progression</translation>
     </message>
 </context>
 <context>
@@ -349,7 +353,7 @@
     </message>
     <message>
         <source>Online Search</source>
-        <translation>Recherche en ligne</translation>
+        <translation>Rechercher en ligne</translation>
     </message>
     <message>
         <source>Select</source>
@@ -393,26 +397,30 @@
     </message>
     <message>
         <source>Next Frame</source>
-        <translation>Cadre suivante</translation>
+        <translation>Image suivante</translation>
     </message>
     <message>
         <source>Previous Frame</source>
-        <translation>Cadre précédent</translation>
+        <translation>Image précédente </translation>
+    </message>
+    <message>
+        <source>Open screenshot folder</source>
+        <translation>Ouvrir le dossier de capture d&apos;écran</translation>
     </message>
 </context>
 <context>
     <name>dmr::BurstScreenshotsDialog</name>
     <message>
         <source>Duration: %1</source>
-        <translation>Durée : %1</translation>
+        <translation>Durée : %1</translation>
     </message>
     <message>
         <source>Resolution: %1</source>
-        <translation>Résolution : %1</translation>
+        <translation>Résolution : %1</translation>
     </message>
     <message>
         <source>Size: %1</source>
-        <translation>Taille : %1</translation>
+        <translation>Taille : %1</translation>
     </message>
     <message>
         <source>Save</source>
@@ -471,7 +479,7 @@
     </message>
     <message>
         <source>Track: %1</source>
-        <translation>Piste : %1</translation>
+        <translation>Piste : %1</translation>
     </message>
     <message>
         <source>Subtitle %1: %2s</source>
@@ -585,24 +593,32 @@
         <source>The CD/DVD has been ejected</source>
         <translation>Le CD/DVD a été éjecté</translation>
     </message>
+    <message>
+        <source>All videos (%2 %1)</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>All videos (*)(%2 %1)</source>
+        <translation>Toutes vidéos (*)(%2 %1)</translation>
+    </message>
 </context>
 <context>
     <name>dmr::MovieInfo</name>
     <message>
         <source>%1G</source>
-        <translation>%1 GO</translation>
+        <translation type="vanished">%1 Go</translation>
     </message>
     <message>
         <source>%1M</source>
-        <translation>%1 MO</translation>
+        <translation type="vanished">%1 Mo</translation>
     </message>
     <message>
         <source>%1K</source>
-        <translation>%1 KO</translation>
+        <translation type="vanished">%1 Ko</translation>
     </message>
     <message>
         <source>%1</source>
-        <translation>%1</translation>
+        <translation type="vanished">%1</translation>
     </message>
 </context>
 <context>
@@ -633,31 +649,31 @@
     </message>
     <message>
         <source>Codec info</source>
-        <translation type="unfinished"/>
+        <translation>Informations sur le codec</translation>
     </message>
     <message>
         <source>Video CodecID</source>
-        <translation type="unfinished"/>
+        <translation>ID du codec vidéo</translation>
     </message>
     <message>
         <source>Video CodeRate</source>
-        <translation type="unfinished"/>
+        <translation>CodeRate vidéo</translation>
     </message>
     <message>
         <source>%1 kbps</source>
-        <translation type="unfinished"/>
+        <translation>%1 kops</translation>
     </message>
     <message>
         <source>FPS</source>
-        <translation type="unfinished"/>
+        <translation>FPS</translation>
     </message>
     <message>
         <source>%1 fps</source>
-        <translation type="unfinished"/>
+        <translation>%1 fps</translation>
     </message>
     <message>
         <source>Proportion</source>
-        <translation type="unfinished"/>
+        <translation>Proportion</translation>
     </message>
     <message>
         <source>%1</source>
@@ -665,39 +681,39 @@
     </message>
     <message>
         <source>Audio info</source>
-        <translation type="unfinished"/>
+        <translation>Infos audio</translation>
     </message>
     <message>
         <source>Audio CodecID</source>
-        <translation type="unfinished"/>
+        <translation>ID du codec audio</translation>
     </message>
     <message>
         <source>Audio CodeRate</source>
-        <translation type="unfinished"/>
+        <translation>Taux de code audio</translation>
     </message>
     <message>
         <source>Audio digit</source>
-        <translation type="unfinished"/>
+        <translation>Audio digit</translation>
     </message>
     <message>
         <source>%1 bits</source>
-        <translation type="unfinished"/>
+        <translation>%1 octets</translation>
     </message>
     <message>
         <source>Channels</source>
-        <translation type="unfinished"/>
+        <translation>Chaînes</translation>
     </message>
     <message>
         <source>%1 channels</source>
-        <translation type="unfinished"/>
+        <translation>%1 chaînes</translation>
     </message>
     <message>
         <source>Sampling</source>
-        <translation type="unfinished"/>
+        <translation>Échantillonnage</translation>
     </message>
     <message>
         <source>%1hz</source>
-        <translation type="unfinished"/>
+        <translation>%1hz</translation>
     </message>
 </context>
 <context>
@@ -788,7 +804,7 @@
     </message>
     <message>
         <source>Play/Pause</source>
-        <translation>Lecture / Pause</translation>
+        <translation>Lecture / Pause</translation>
     </message>
     <message>
         <source>play</source>

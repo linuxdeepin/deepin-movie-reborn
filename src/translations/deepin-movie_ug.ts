@@ -217,6 +217,10 @@
         <source>Default play mode</source>
         <translation>كۆڭۈلدىكى قويۇش شەكلى</translation>
     </message>
+    <message>
+        <source>Show thumbnails in progress bar</source>
+        <translation>ئىلگىرىلەش ستونىدا كىچىك كۆرۈنۈشنى كۆرسىتىڭ</translation>
+    </message>
 </context>
 <context>
     <name>UrlDialog</name>
@@ -398,6 +402,10 @@
     <message>
         <source>Previous Frame</source>
         <translation>ئالدىنقى رامكا</translation>
+    </message>
+    <message>
+        <source>Open screenshot folder</source>
+        <translation>ئىكران تۇتما قىسقۇچنى ئېچىش</translation>
     </message>
 </context>
 <context>
@@ -585,24 +593,32 @@
         <source>The CD/DVD has been ejected</source>
         <translation>CD / DVD چىقىرىۋېتىلدى</translation>
     </message>
+    <message>
+        <source>All videos (%2 %1)</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>All videos (*)(%2 %1)</source>
+        <translation>بارلىق سىنلار (*)(%2 %1)</translation>
+    </message>
 </context>
 <context>
     <name>dmr::MovieInfo</name>
     <message>
         <source>%1G</source>
-        <translation>%1G</translation>
+        <translation type="vanished">%1G</translation>
     </message>
     <message>
         <source>%1M</source>
-        <translation>%1M</translation>
+        <translation type="vanished">%1M</translation>
     </message>
     <message>
         <source>%1K</source>
-        <translation>%1K</translation>
+        <translation type="vanished">%1K</translation>
     </message>
     <message>
         <source>%1</source>
-        <translation>1%</translation>
+        <translation type="vanished">1%</translation>
     </message>
 </context>
 <context>
@@ -633,31 +649,31 @@
     </message>
     <message>
         <source>Codec info</source>
-        <translation type="unfinished"/>
+        <translation>ئۇچۇرىCodec</translation>
     </message>
     <message>
         <source>Video CodecID</source>
-        <translation type="unfinished"/>
+        <translation>سىن CodecID</translation>
     </message>
     <message>
         <source>Video CodeRate</source>
-        <translation type="unfinished"/>
+        <translation>سىن كودلاش نىسپىتى</translation>
     </message>
     <message>
         <source>%1 kbps</source>
-        <translation type="unfinished"/>
+        <translation>%1 kbps</translation>
     </message>
     <message>
         <source>FPS</source>
-        <translation type="unfinished"/>
+        <translation>FPS</translation>
     </message>
     <message>
         <source>%1 fps</source>
-        <translation type="unfinished"/>
+        <translation>%1 fps</translation>
     </message>
     <message>
         <source>Proportion</source>
-        <translation type="unfinished"/>
+        <translation>نىسبەت</translation>
     </message>
     <message>
         <source>%1</source>
@@ -665,39 +681,39 @@
     </message>
     <message>
         <source>Audio info</source>
-        <translation type="unfinished"/>
+        <translation>ئاۋاز ئۇچۇرى</translation>
     </message>
     <message>
         <source>Audio CodecID</source>
-        <translation type="unfinished"/>
+        <translation>ئۈن CodecID</translation>
     </message>
     <message>
         <source>Audio CodeRate</source>
-        <translation type="unfinished"/>
+        <translation>ئۈن كودلاش نىسپىتى</translation>
     </message>
     <message>
         <source>Audio digit</source>
-        <translation type="unfinished"/>
+        <translation>ئاۋاز رەقىمى</translation>
     </message>
     <message>
         <source>%1 bits</source>
-        <translation type="unfinished"/>
+        <translation>%1 بىت</translation>
     </message>
     <message>
         <source>Channels</source>
-        <translation type="unfinished"/>
+        <translation>قانال</translation>
     </message>
     <message>
         <source>%1 channels</source>
-        <translation type="unfinished"/>
+        <translation>%1 قانال</translation>
     </message>
     <message>
         <source>Sampling</source>
-        <translation type="unfinished"/>
+        <translation>ئۆرنەك</translation>
     </message>
     <message>
         <source>%1hz</source>
-        <translation type="unfinished"/>
+        <translation>%1hz</translation>
     </message>
 </context>
 <context>

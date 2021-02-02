@@ -215,7 +215,11 @@
     </message>
     <message>
         <source>Default play mode</source>
-        <translation type="unfinished"/>
+        <translation>Режим воспроизведения по умолчанию</translation>
+    </message>
+    <message>
+        <source>Show thumbnails in progress bar</source>
+        <translation>Показать эскизы в прогресс-баре</translation>
     </message>
 </context>
 <context>
@@ -399,6 +403,10 @@
         <source>Previous Frame</source>
         <translation>Предыдущий кадр</translation>
     </message>
+    <message>
+        <source>Open screenshot folder</source>
+        <translation>Открыть папку &quot;Изображения&quot;</translation>
+    </message>
 </context>
 <context>
     <name>dmr::BurstScreenshotsDialog</name>
@@ -539,7 +547,7 @@
     </message>
     <message>
         <source>Taking the screenshots, please wait...</source>
-        <translation type="unfinished"/>
+        <translation>Снимки экрана, пожалуйста, подождите...</translation>
     </message>
     <message>
         <source>OK</source>
@@ -547,19 +555,19 @@
     </message>
     <message>
         <source>Please insert a CD/DVD</source>
-        <translation type="unfinished"/>
+        <translation>Пожалуйста, вставьте CD/DVD диск</translation>
     </message>
     <message>
         <source>Reading DVD files...</source>
-        <translation type="unfinished"/>
+        <translation>Чтение DVD-файлов...</translation>
     </message>
     <message>
         <source>4K video may be stuck</source>
-        <translation type="unfinished"/>
+        <translation>4K видео может зависать</translation>
     </message>
     <message>
         <source>Please load the video first</source>
-        <translation type="unfinished"/>
+        <translation>Пожалуйста, сначала загрузите видео</translation>
     </message>
     <message>
         <source>Order play</source>
@@ -583,26 +591,34 @@
     </message>
     <message>
         <source>The CD/DVD has been ejected</source>
+        <translation>CD/DVD диск был извлечен.</translation>
+    </message>
+    <message>
+        <source>All videos (%2 %1)</source>
         <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>All videos (*)(%2 %1)</source>
+        <translation>Все видео (*)(%2 %1)</translation>
     </message>
 </context>
 <context>
     <name>dmr::MovieInfo</name>
     <message>
         <source>%1G</source>
-        <translation>%1G</translation>
+        <translation type="vanished">%1G</translation>
     </message>
     <message>
         <source>%1M</source>
-        <translation>%1M</translation>
+        <translation type="vanished">%1M</translation>
     </message>
     <message>
         <source>%1K</source>
-        <translation>%1K</translation>
+        <translation type="vanished">%1K</translation>
     </message>
     <message>
         <source>%1</source>
-        <translation>%1</translation>
+        <translation type="vanished">%1</translation>
     </message>
 </context>
 <context>
@@ -633,31 +649,31 @@
     </message>
     <message>
         <source>Codec info</source>
-        <translation type="unfinished"/>
+        <translation>Информация о кодеке</translation>
     </message>
     <message>
         <source>Video CodecID</source>
-        <translation type="unfinished"/>
+        <translation>Видео-кодек ID</translation>
     </message>
     <message>
         <source>Video CodeRate</source>
-        <translation type="unfinished"/>
+        <translation>Скорость кодирования видео</translation>
     </message>
     <message>
         <source>%1 kbps</source>
-        <translation type="unfinished"/>
+        <translation>%1 кбит</translation>
     </message>
     <message>
         <source>FPS</source>
-        <translation type="unfinished"/>
+        <translation>FPS</translation>
     </message>
     <message>
         <source>%1 fps</source>
-        <translation type="unfinished"/>
+        <translation>%1 fps</translation>
     </message>
     <message>
         <source>Proportion</source>
-        <translation type="unfinished"/>
+        <translation>Пропорция</translation>
     </message>
     <message>
         <source>%1</source>
@@ -665,39 +681,39 @@
     </message>
     <message>
         <source>Audio info</source>
-        <translation type="unfinished"/>
+        <translation>Аудиоинформация</translation>
     </message>
     <message>
         <source>Audio CodecID</source>
-        <translation type="unfinished"/>
+        <translation>Аудио-кодек ID</translation>
     </message>
     <message>
         <source>Audio CodeRate</source>
-        <translation type="unfinished"/>
+        <translation>Скорость кодирования звука</translation>
     </message>
     <message>
         <source>Audio digit</source>
-        <translation type="unfinished"/>
+        <translation>Цифровой звук</translation>
     </message>
     <message>
         <source>%1 bits</source>
-        <translation type="unfinished"/>
+        <translation>%1 бит</translation>
     </message>
     <message>
         <source>Channels</source>
-        <translation type="unfinished"/>
+        <translation>Каналы</translation>
     </message>
     <message>
         <source>%1 channels</source>
-        <translation type="unfinished"/>
+        <translation>%1 канал</translation>
     </message>
     <message>
         <source>Sampling</source>
-        <translation type="unfinished"/>
+        <translation>Выборка</translation>
     </message>
     <message>
         <source>%1hz</source>
-        <translation type="unfinished"/>
+        <translation>%1 Гц</translation>
     </message>
 </context>
 <context>

@@ -42,6 +42,11 @@ MovieProgressIndicator::MovieProgressIndicator(QWidget *parent)
 
     _fixedSize = QSize(qMax(52, fm.width("999:99")), fm.height() + 10);
     this->setFixedSize(_fixedSize);
+#if defined (__mips__) || defined (__aarch64__) || defined (__sw_64__)
+    this->setAttribute(Qt::WA_TranslucentBackground);
+    this->setWindowFlags(Qt::FramelessWindowHint);
+    setWindowFlags(this->windowFlags() | Qt::Dialog);
+#endif
 }
 
 void MovieProgressIndicator::paintEvent(QPaintEvent *pe)
@@ -51,7 +56,7 @@ void MovieProgressIndicator::paintEvent(QPaintEvent *pe)
     QPainter p(this);
 
     p.setFont(font());
-    p.setPen(QColor(255, 255, 255, 255 * .4));
+    p.setPen(QColor(255, 255, 255, static_cast<int>(255 * .4)));
 
     QFontMetrics fm(font());
     auto fr = fm.boundingRect(time_text);
@@ -60,21 +65,24 @@ void MovieProgressIndicator::paintEvent(QPaintEvent *pe)
 
 
     QPoint pos((_fixedSize.width() - 48) / 2, rect().height() - 5);
-    int pert = qMin(_pert * 10, 10.0);
+    int pert = static_cast<int>(qMin(_pert * 10, 10.0));
     for (int i = 0; i < 10; i++) {
         if (i >= pert) {
-            p.fillRect(QRect(pos, QSize(3, 3)), QColor(255, 255, 255, 255 * .25));
+            p.fillRect(QRect(pos, QSize(3, 3)), QColor(255, 255, 255, static_cast<int>(255 * .25)));
         } else {
-            p.fillRect(QRect(pos, QSize(3, 3)), QColor(255, 255, 255, 255 * .5));
+            p.fillRect(QRect(pos, QSize(3, 3)), QColor(255, 255, 255, static_cast<int>(255 * .5)));
         }
         pos.rx() += 5;
     }
+
+    QFrame::paintEvent(pe);
 }
 
 void MovieProgressIndicator::updateMovieProgress(qint64 duration, qint64 pos)
 {
     _elapsed = pos;
-    _pert = (qreal)pos / duration;
+    if (duration != 0)
+        _pert = static_cast<qreal>(pos / duration);
     update();
 }
 

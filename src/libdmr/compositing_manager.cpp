@@ -115,7 +115,10 @@ CompositingManager &CompositingManager::get()
 
 CompositingManager::CompositingManager()
 {
+    _hasCard = false;
     _platform = PlatformChecker().check();
+
+    softDecodeCheck();   //检测是否是kunpeng920（是否走软解码）
 
     _composited = false;
     if (QGSettings::isSchemaInstalled("com.deepin.deepin-movie")) {
@@ -138,8 +141,12 @@ CompositingManager::CompositingManager()
             } else if (isDriverLoadedCorrectly() || isDirectRendered()) {
 #ifdef __aarch64__
                 _composited = false;
-                qDebug() << "__aarch64__";
-#elif __mips__
+                qDebug() << "__aarch64__  isDirectRendered";
+                if (isDriverLoadedCorrectly()) {    //如果有独立显卡
+                    _composited = true;
+                    qDebug() << "__aarch64__  isDriverLoadedCorrectly";
+                }
+#elif defined (__mips__)
                 _composited = false;
                 qDebug() << "__mips__";
 #else
@@ -147,9 +154,9 @@ CompositingManager::CompositingManager()
                 qDebug() << "__X86__";
 #endif
             } else {
-                GetScreenDriver = (glXGetScreenDriver_t *)glXGetProcAddressARB ((const GLubyte *)"glXGetScreenDriver");
+                GetScreenDriver = reinterpret_cast<glXGetScreenDriver_t *>(glXGetProcAddressARB(reinterpret_cast<const GLubyte *>("glXGetScreenDriver")));
                 if (GetScreenDriver) {
-                    const char *name = (*GetScreenDriver) (QX11Info::display(), QX11Info::appScreen());
+                    const char *name = (*GetScreenDriver)(QX11Info::display(), QX11Info::appScreen());
                     qDebug() << "dri driver: " << name;
                     _composited = name != nullptr;
                     //        } else {
@@ -177,9 +184,9 @@ CompositingManager::CompositingManager()
         } else if (isDriverLoadedCorrectly() || isDirectRendered()) {
             _composited = true;
         } else {
-            GetScreenDriver = (glXGetScreenDriver_t *)glXGetProcAddressARB ((const GLubyte *)"glXGetScreenDriver");
+            GetScreenDriver = reinterpret_cast<glXGetScreenDriver_t *>(glXGetProcAddressARB(reinterpret_cast<const GLubyte *>("glXGetScreenDriver")));
             if (GetScreenDriver) {
-                const char *name = (*GetScreenDriver) (QX11Info::display(), QX11Info::appScreen());
+                const char *name = (*GetScreenDriver)(QX11Info::display(), QX11Info::appScreen());
                 qDebug() << "dri driver: " << name;
                 _composited = name != nullptr;
                 //        } else {
@@ -211,10 +218,31 @@ CompositingManager::CompositingManager()
     }
 #endif
     qDebug() << "composited:" << _composited;
+    auto e = QProcessEnvironment::systemEnvironment();
+    QString XDG_SESSION_TYPE = e.value(QStringLiteral("XDG_SESSION_TYPE"));
+    QString WAYLAND_DISPLAY = e.value(QStringLiteral("WAYLAND_DISPLAY"));
+
+    if (XDG_SESSION_TYPE == QLatin1String("wayland") ||
+            WAYLAND_DISPLAY.contains(QLatin1String("wayland"), Qt::CaseInsensitive)) {
+        _composited = false;
+    }
+#if defined (__mips__) || defined (__aarch64__) || defined (__sw_64__)
+    if (_composited) {
+        _hasCard = _composited;
+        _composited = false;
+        qDebug() << "hasCard: " << _hasCard;
+    }
+#endif
+    qDebug() << __func__ << "Composited is " << _composited;
 }
 
 CompositingManager::~CompositingManager()
 {
+}
+
+bool CompositingManager::hascard()
+{
+    return _hasCard;
 }
 
 // Attempt to reuse mpv's code for detecting whether we want GLX or EGL (which
@@ -222,21 +250,22 @@ CompositingManager::~CompositingManager()
 // but quite effective and without having to duplicate too much GLX/EGL code.
 static QString probeHwdecInterop()
 {
-    auto mpv = mpv::qt::Handle::FromRawHandle(mpv_create());
-    if (!mpv)
-        return "";
-    mpv::qt::set_property(mpv, "hwdec-preload", "auto");
-    // Actually creating a window is required. There is currently no way to keep
-    // this window hidden or invisible.
-    mpv::qt::set_property(mpv, "force-window", true);
-    // As a mitigation, put the window in the top/right corner, and make it as
-    // small as possible by forcing 1x1 size and removing window borders.
-    mpv::qt::set_property(mpv, "geometry", "1x1+0+0");
-    mpv::qt::set_property(mpv, "border", false);
-    if (mpv_initialize(mpv) < 0)
-        return "";
-    // return "auto"
-    return mpv::qt::get_property(mpv, "gpu-hwdec-interop").toString();
+//    auto mpv = mpv::qt::Handle::FromRawHandle(mpv_create());
+//    if (!mpv)
+//        return "";
+//    mpv::qt::set_property(mpv, "hwdec-preload", "auto");
+//    // Actually creating a window is required. There is currently no way to keep
+//    // this window hidden or invisible.
+//    mpv::qt::set_property(mpv, "force-window", true);
+//    // As a mitigation, put the window in the top/right corner, and make it as
+//    // small as possible by forcing 1x1 size and removing window borders.
+//    mpv::qt::set_property(mpv, "geometry", "1x1+0+0");
+//    mpv::qt::set_property(mpv, "border", false);
+//    if (mpv_initialize(mpv) < 0)
+//        return "";
+//    // return "auto"
+//    return mpv::qt::get_property(mpv, "gpu-hwdec-interop").toString();
+    return QString("");
 }
 
 static OpenGLInteropKind _interopKind = OpenGLInteropKind::INTEROP_NONE;
@@ -244,18 +273,18 @@ static OpenGLInteropKind _interopKind = OpenGLInteropKind::INTEROP_NONE;
 bool CompositingManager::runningOnVmwgfx()
 {
     static bool s_runningOnVmwgfx = false;
-    static bool s_checked = false;
+//    static bool s_checked = false;
 
-    if (!s_checked) {
-        for (int id = 0; id <= 10; id++) {
-            if (!QFile::exists(QString("/sys/class/drm/card%1").arg(id))) break;
-            if (is_device_viable(id)) {
-                vector<string> drivers = {"vmwgfx"};
-                s_runningOnVmwgfx = is_card_exists(id, drivers);
-                break;
-            }
+//    if (!s_checked) {
+    for (int id = 0; id <= 10; id++) {
+        if (!QFile::exists(QString("/sys/class/drm/card%1").arg(id))) break;
+        if (is_device_viable(id)) {
+            vector<string> drivers = {"vmwgfx"};
+            s_runningOnVmwgfx = is_card_exists(id, drivers);
+            break;
         }
     }
+//    }
 
     return s_runningOnVmwgfx;
 }
@@ -274,6 +303,56 @@ bool CompositingManager::runningOnNvidia()
     }
 
     return s_runningOnNvidia;
+}
+
+void CompositingManager::softDecodeCheck()
+{
+    QProcess uname;
+    char *data = (char *)malloc(100);
+    uname.start("cat /proc/cpuinfo");
+    if (uname.waitForStarted()) {
+        if (uname.waitForFinished()) {
+            while (uname.readLine(data, 99) > 0) {
+                QString strData(data);
+                QStringList listPara = strData.split(":");
+
+                if (listPara.size() < 2) {
+                    continue;
+                }
+
+                if (listPara.at(0).contains("model name")
+                        && listPara.at(1).contains("Kunpeng 920")) {
+                    m_bOnlySoftDecode = true;
+                }
+            }
+        }
+    }
+    free(data);
+
+    //浪潮 inspur softdecode
+    QProcess inspur;
+    inspur.start("cat /sys/class/dmi/id/board_vendor");
+    if (inspur.waitForStarted() && inspur.waitForFinished()) {
+        QString drv = QString::fromUtf8(inspur.readAllStandardOutput().trimmed().constData());
+        qDebug() << "inspur check : " << drv;
+        m_bOnlySoftDecode =  m_bOnlySoftDecode || drv.contains("Inspur");
+        m_setSpecialControls = drv.contains("Ruijie");
+    }
+}
+
+bool CompositingManager::isOnlySoftDecode()
+{
+    return m_bOnlySoftDecode;
+}
+
+bool CompositingManager::isSpecialControls()
+{
+    return m_setSpecialControls;
+}
+
+bool CompositingManager::isZXIntgraphics()
+{
+    return m_bZXIntgraphics;
 }
 
 void CompositingManager::detectOpenGLEarly()
@@ -311,7 +390,14 @@ void CompositingManager::detectOpenGLEarly()
     if (CompositingManager::runningOnNvidia()) {
         qputenv("QT_XCB_GL_INTEGRATION", "xcb_glx");
     } else if (!CompositingManager::runningOnVmwgfx()) {
-        qputenv("QT_XCB_GL_INTEGRATION", "xcb_egl");
+        auto e = QProcessEnvironment::systemEnvironment();
+        QString XDG_SESSION_TYPE = e.value(QStringLiteral("XDG_SESSION_TYPE"));
+        QString WAYLAND_DISPLAY = e.value(QStringLiteral("WAYLAND_DISPLAY"));
+
+        if (XDG_SESSION_TYPE != QLatin1String("wayland") &&
+                !WAYLAND_DISPLAY.contains(QLatin1String("wayland"), Qt::CaseInsensitive)) {
+            qputenv("QT_XCB_GL_INTEGRATION", "xcb_egl");
+        }
     }
 #else
     if (_interopKind == INTEROP_VAAPI_EGL) {
@@ -319,7 +405,6 @@ void CompositingManager::detectOpenGLEarly()
     }
 
 #endif
-
     detect_run = true;
 }
 
@@ -358,6 +443,7 @@ bool CompositingManager::isDriverLoadedCorrectly()
     static QRegExp aiglx_err("\\(EE\\)\\s+AIGLX error");
     static QRegExp dri_ok("direct rendering: DRI\\d+ enabled");
     static QRegExp swrast("GLX: Initialized DRISWRAST");
+    static QRegExp regZX("loading driver: zx");
 
     QString xorglog = QString("/var/log/Xorg.%1.log").arg(QX11Info::appScreen());
     qDebug() << "check " << xorglog;
@@ -384,7 +470,12 @@ bool CompositingManager::isDriverLoadedCorrectly()
             qDebug() << "swrast driver used";
             return false;
         }
+
+        if (regZX.indexIn(ln) != -1) {
+            m_bZXIntgraphics = true;
+        }
     }
+    f.close();
 
     return true;
 }
@@ -438,7 +529,7 @@ bool CompositingManager::is_device_viable(int id)
         }
 
         int enabled = 0;
-        fscanf(fp, "%d", &enabled);
+        int aa = fscanf(fp, "%d", &enabled);
         fclose(fp);
 
         // nouveau may write 2, others 1
@@ -453,7 +544,7 @@ bool CompositingManager::isProprietaryDriver()
     for (int id = 0; id <= 10; id++) {
         if (!QFile::exists(QString("/sys/class/drm/card%1").arg(id))) break;
         if (is_device_viable(id)) {
-            vector<string> drivers = {"nvidia", "fglrx", "vmwgfx", "hibmc-drm", "radeon", "i915"};
+            vector<string> drivers = {"nvidia", "fglrx", "vmwgfx", "hibmc-drm", "radeon", "i915", "amdgpu"};
             return is_card_exists(id, drivers);
         }
     }
@@ -469,7 +560,7 @@ bool CompositingManager::isDirectRendered()
     if (xdriinfo.waitForStarted() && xdriinfo.waitForFinished()) {
         QString drv = QString::fromUtf8(xdriinfo.readAllStandardOutput().trimmed().constData());
         qDebug() << "xdriinfo: " << drv;
-        return !drv.contains("not direct rendering capable");
+        return !drv.contains("not direct rendering capable") || !drv.contains("xz");
     }
 
     return true;
@@ -513,7 +604,7 @@ PlayerOptionList CompositingManager::getProfile(const QString &name)
                     ol.push_back(qMakePair(kv[0], kv[1]));
                 }
             }
-
+            f.close();
             return ol;
         }
         ++p;

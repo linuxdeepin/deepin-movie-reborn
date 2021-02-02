@@ -217,6 +217,10 @@
         <source>Default play mode</source>
         <translation type="unfinished"/>
     </message>
+    <message>
+        <source>Show thumbnails in progress bar</source>
+        <translation type="unfinished"/>
+    </message>
 </context>
 <context>
     <name>UrlDialog</name>
@@ -398,6 +402,10 @@
     <message>
         <source>Previous Frame</source>
         <translation>Ankstesnis kadras</translation>
+    </message>
+    <message>
+        <source>Open screenshot folder</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -585,24 +593,32 @@
         <source>The CD/DVD has been ejected</source>
         <translation type="unfinished"/>
     </message>
+    <message>
+        <source>All videos (%2 %1)</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>All videos (*)(%2 %1)</source>
+        <translation type="unfinished"/>
+    </message>
 </context>
 <context>
     <name>dmr::MovieInfo</name>
     <message>
         <source>%1G</source>
-        <translation>%1G</translation>
+        <translation type="vanished">%1G</translation>
     </message>
     <message>
         <source>%1M</source>
-        <translation>%1M</translation>
+        <translation type="vanished">%1M</translation>
     </message>
     <message>
         <source>%1K</source>
-        <translation>%1K</translation>
+        <translation type="vanished">%1K</translation>
     </message>
     <message>
         <source>%1</source>
-        <translation>%1</translation>
+        <translation type="vanished">%1</translation>
     </message>
 </context>
 <context>

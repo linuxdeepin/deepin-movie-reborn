@@ -1,4 +1,4 @@
-/* 
+/*
  * (c) 2017, Deepin Technology Co., Ltd. <support@deepin.org>
  *
  * This program is free software; you can redistribute it and/or
@@ -37,47 +37,50 @@
 
 namespace dmr {
 
-EventRelayer::EventRelayer(QWindow* src, QWindow *dest)
-    :QObject(), QAbstractNativeEventFilter(), _source(src), _target(dest) {
+EventRelayer::EventRelayer(QWindow *src, QWindow *dest)
+    : QObject(), QAbstractNativeEventFilter(), _source(src), _target(dest)
+{
 #if 0
     int screen = 0;
     xcb_screen_t *s = xcb_aux_get_screen (QX11Info::connection(), screen);
-    const uint32_t data[] = { 
+    const uint32_t data[] = {
         XCB_EVENT_MASK_PROPERTY_CHANGE | XCB_EVENT_MASK_STRUCTURE_NOTIFY |
-            XCB_EVENT_MASK_EXPOSURE
+        XCB_EVENT_MASK_EXPOSURE
 
     };
     xcb_change_window_attributes (QX11Info::connection(), _source->winId(),
-            XCB_CW_EVENT_MASK, data);
+                                  XCB_CW_EVENT_MASK, data);
 
 #endif
     qApp->installNativeEventFilter(this);
 }
 
-EventRelayer::~EventRelayer() {
+EventRelayer::~EventRelayer()
+{
     qApp->removeNativeEventFilter(this);
 }
 
-bool EventRelayer::nativeEventFilter(const QByteArray &eventType, void *message, long *) {
-    if(Q_LIKELY(eventType == "xcb_generic_event_t")) {
-        xcb_generic_event_t* event = static_cast<xcb_generic_event_t *>(message);
+bool EventRelayer::nativeEventFilter(const QByteArray &eventType, void *message, long *)
+{
+    if (Q_LIKELY(eventType == "xcb_generic_event_t")) {
+        xcb_generic_event_t *event = static_cast<xcb_generic_event_t *>(message);
         switch (event->response_type & ~0x80) {
-            case XCB_CONFIGURE_NOTIFY: {
-                xcb_configure_notify_event_t *cne = (xcb_configure_notify_event_t*)event;
-                if (cne->window == _source->winId()) {
-                    QPoint p(cne->x, cne->y);
-                    if (p != _target->framePosition()) {
-                        //qDebug() << "cne: " << QRect(cne->x, cne->y, cne->width, cne->height)
-                            //<< "origin: " << _source->framePosition()
-                            //<< "dest: " << _target->framePosition();
-                        emit targetNeedsUpdatePosition(QPoint(cne->x, cne->y));
-                    }
+        case XCB_CONFIGURE_NOTIFY: {
+            xcb_configure_notify_event_t *cne = reinterpret_cast<xcb_configure_notify_event_t *>(event);
+            if (cne->window == _source->winId()) {
+                QPoint p(cne->x, cne->y);
+                if (p != _target->framePosition()) {
+                    //qDebug() << "cne: " << QRect(cne->x, cne->y, cne->width, cne->height)
+                    //<< "origin: " << _source->framePosition()
+                    //<< "dest: " << _target->framePosition();
+                    emit targetNeedsUpdatePosition(QPoint(cne->x, cne->y));
                 }
-                break;
             }
+            break;
+        }
 
-            default:
-                break;
+        default:
+            break;
         }
     }
 

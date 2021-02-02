@@ -31,14 +31,28 @@
 #define _DMR_PLAYLIST_MODEL_H
 
 #include <QtWidgets>
-#include <QtConcurrent>
-#include <libffmpegthumbnailer/videothumbnailer.h>
+//#include <QtConcurrent>
+#include <DApplicationHelper>
+#include <libffmpegthumbnailer/videothumbnailerc.h>
 
 #include "utils.h"
 #include <QNetworkReply>
+#include <QMutex>
+
+#include <libffmpegthumbnailer/videothumbnailerc.h>
+
+typedef video_thumbnailer *(*mvideo_thumbnailer)();
+typedef void (*mvideo_thumbnailer_destroy)(video_thumbnailer *thumbnailer);
+/* create image_data structure */
+typedef image_data *(*mvideo_thumbnailer_create_image_data)(void);
+/* destroy image_data structure */
+typedef void (*mvideo_thumbnailer_destroy_image_data)(image_data *data);
+typedef int (*mvideo_thumbnailer_generate_thumbnail_to_buffer)(video_thumbnailer *thumbnailer, const char *movie_filename, image_data *generated_image_data);
+
 namespace dmr {
-using namespace ffmpegthumbnailer;
 class PlayerEngine;
+class LoadThread;
+class GetThumanbil;
 
 struct MovieInfo {
     bool valid;
@@ -66,7 +80,6 @@ struct MovieInfo {
     int aDigit;
     int channels;
     int sampling;
-
     static struct MovieInfo parseFromFile(const QFileInfo &fi, bool *ok = nullptr);
     QString durationStr() const
     {
@@ -112,6 +125,7 @@ struct PlayItemInfo {
     QUrl url;
     QFileInfo info;
     QPixmap thumbnail;
+    QPixmap thumbnail_dark;
     struct MovieInfo mi;
 
     bool refresh();
@@ -120,6 +134,7 @@ struct PlayItemInfo {
 using AppendJob = QPair<QUrl, QFileInfo>; // async job
 using PlayItemInfoList = QList<PlayItemInfo>;
 using UrlList = QList<QUrl>;
+
 
 class PlaylistModel: public QObject
 {
@@ -152,7 +167,7 @@ public:
     void append(const QUrl &);
 
     void appendAsync(const QList<QUrl> &);
-    void collectionJob(const QList<QUrl> &);
+    void collectionJob(const QList<QUrl> &, QList<QUrl> &);
 
     void playNext(bool fromUser);
     void playPrev(bool fromUser);
@@ -175,13 +190,30 @@ public:
     void switchPosition(int p1, int p2);
 
     bool hasPendingAppends();
+    void handleAsyncAppendResults(QList<PlayItemInfo> &pil);
+    struct PlayItemInfo calculatePlayInfo(const QUrl &, const QFileInfo &fi, bool isDvd = false);
+    bool getthreadstate();
+    void savePlaylist();
+    void clearPlaylist();
+    QList<QUrl> getLoadList()
+    {
+        return m_loadFile;
+    };
+    void loadPlaylist();
 
 public slots:
     void changeCurrent(int);
+    void delayedAppendAsync(const QList<QUrl> &);
+    void deleteThread();
+    void clearLoad();
 
 private slots:
     void onAsyncAppendFinished();
-    void delayedAppendAsync(const QList<QUrl> &);
+    void onAsyncFinished();
+    void onAsyncUpdate(PlayItemInfo);
+    //把lambda表达式改为槽函数，modify by myk
+    void slotStateChanged();
+
 
 signals:
     void countChanged();
@@ -194,6 +226,11 @@ signals:
     void itemInfoUpdated(int id);
 
 private:
+    void initThumb();
+    void initFFmpeg();
+    bool getMusicPix(const QFileInfo &fi, QPixmap &rImg);
+    struct MovieInfo parseFromFile(const QFileInfo &fi, bool *ok = nullptr);
+    QString libPath(const QString &strlib);
     // when app starts, and the first time to load playlist
     bool _firstLoad {true};
     int _count {0};
@@ -214,20 +251,116 @@ private:
 
     bool _userRequestingItem {false};
 
-    VideoThumbnailer _thumbnailer;
+    video_thumbnailer *m_video_thumbnailer = nullptr;
+    image_data *m_image_data = nullptr;
+
+    mvideo_thumbnailer m_mvideo_thumbnailer = nullptr;
+    mvideo_thumbnailer_destroy m_mvideo_thumbnailer_destroy = nullptr;
+    mvideo_thumbnailer_create_image_data m_mvideo_thumbnailer_create_image_data = nullptr;
+    mvideo_thumbnailer_destroy_image_data m_mvideo_thumbnailer_destroy_image_data = nullptr;
+    mvideo_thumbnailer_generate_thumbnail_to_buffer m_mvideo_thumbnailer_generate_thumbnail_to_buffer = nullptr;
+
     PlayerEngine *_engine {nullptr};
 
     QString _playlistFile;
 
-    struct PlayItemInfo calculatePlayInfo(const QUrl &, const QFileInfo &fi, bool isDvd = false);
+    LoadThread *m_ploadThread;
+    GetThumanbil *m_getThumanbil {nullptr};
+    QMutex *m_pdataMutex;
+    bool m_brunning;
+    QList<QUrl> m_tempList;
+    QList<QUrl> m_loadFile;
+    bool m_isLoadRunning {false};
+    bool m_initFFmpeg {false};
+
     void reshuffle();
-    void savePlaylist();
-    void loadPlaylist();
-    void clearPlaylist();
     void appendSingle(const QUrl &);
     void tryPlayCurrent(bool next);
-    void handleAsyncAppendResults(QList<PlayItemInfo> &pil);
+
 };
+
+
+class LoadThread: public QThread
+{
+    Q_OBJECT
+
+public:
+    LoadThread(PlaylistModel *model, const QList<QUrl> &urls);
+    ~LoadThread();
+
+public:
+    void run();
+
+private:
+    PlaylistModel *_pModel;
+    QList<QUrl> _urls;
+
+    QList<AppendJob> _pendingJob; // async job
+    QSet<QString> _urlsInJob;  // url list
+};
+
+class GetThumanbil : public QThread
+{
+    Q_OBJECT
+public:
+    GetThumanbil(PlaylistModel *model, const QList<QUrl> &urls)
+    {
+        m_model = model;
+        m_urls = urls;
+        m_mutex = new QMutex;
+        m_itemMutex = new QMutex;
+    };
+    ~GetThumanbil()
+    {
+        m_stop = true;
+    };
+    //QList<PlayItemInfo> getInfoList() {return m_itemInfo;}
+    void stop()
+    {
+        m_stop = true;
+    };
+    void setUrls(QList<QUrl> urls)
+    {
+        m_mutex->lock();
+        m_urls = urls;
+        m_mutex->unlock();
+    };
+    void clearItem()
+    {
+        m_itemMutex->lock();
+        //m_itemInfo.clear();
+        m_urls.clear();
+        m_itemMutex->unlock();
+    };
+
+    void run()
+    {
+        m_mutex->lock();
+        QList<QUrl> urls = m_urls;
+        m_mutex->unlock();
+        foreach (QUrl url, urls) {
+            QFileInfo info(url.path());
+            m_itemMutex->lock();
+            //m_itemInfo.append();
+            emit updateItem(m_model->calculatePlayInfo(url, info, false));
+            m_itemMutex->unlock();
+            m_isFinished = true;
+            if (m_stop) break;
+        }
+    }
+
+signals:
+    void updateItem(PlayItemInfo);
+private:
+    PlaylistModel *m_model;
+    QList<QUrl> m_urls;
+    //QList<PlayItemInfo> m_itemInfo;
+    QMutex *m_mutex;
+    QMutex *m_itemMutex;
+    bool m_isFinished {true};
+    bool m_stop {false};
+};
+
 
 }
 

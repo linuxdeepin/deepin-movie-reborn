@@ -67,7 +67,7 @@ void Presenter::slotplayprev()
 void Presenter::slotvolumeRequested(double volume)
 {
     QList<QVariant> arg;
-    arg.append((volume + 0.4) * 100.0);
+    arg.append((volume + 0.001) * 100.0);
     _mw->requestAction(ActionFactory::ChangeVolume, 1, arg);
 }
 
@@ -125,11 +125,7 @@ void Presenter::slotvolumeChanged()
     if (_mw->engine()->muted()) {
         m_mprisplayer->setVolume(0.0);
     } else {
-        double pert = _mw->engine()->volume();
-        if (pert == 0.0) {
-            m_mprisplayer->setVolume(pert / 100.0);
-        } else {
-            m_mprisplayer->setVolume((pert - 40.0) / 100.0);
-        }
+        double pert = _mw->getDisplayVolume();
+        m_mprisplayer->setVolume(pert);
     }
 }

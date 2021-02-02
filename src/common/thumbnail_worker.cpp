@@ -1,4 +1,4 @@
-/* 
+/*
  * (c) 2017, Deepin Technology Co., Ltd. <support@deepin.org>
  *
  * This program is free software; you can redistribute it and/or
@@ -30,39 +30,55 @@
 #include "thumbnail_worker.h"
 #include <atomic>
 #include <mutex>
+#include "player_engine.h"
+#include <QLibrary>
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <dlfcn.h>
 
 #define SIZE_THRESHOLD (10 * 1<<20)
+#ifdef __x86_64__
+const char *path = "/usr/lib/x86_64-linux-gnu/libffmpegthumbnailer.so.4";
+#elif __mips__
+const char *path = "/usr/lib/mips64el-linux-gnuabi64/libffmpegthumbnailer.so.4";
+#elif __aarch64__
+const char *path = "/usr/lib/aarch64-linux-gnu/libffmpegthumbnailer.so.4";
+#elif __sw_64__
+const char *path = "/usr/lib/sw_64-linux-gnu/libffmpegthumbnailer.so.4";
+#else
+const char *path = "/usr/lib/i386-linux-gnu/libffmpegthumbnailer.so.4";
+#endif
 
 namespace dmr {
-static std::atomic<ThumbnailWorker*> _instance { nullptr };
+static std::atomic<ThumbnailWorker *> _instance { nullptr };
 static QMutex _instLock;
 
 static QMutex _thumbLock;
 static QWaitCondition cond;
 
-ThumbnailWorker& ThumbnailWorker::get()
+ThumbnailWorker &ThumbnailWorker::get()
 {
     if (_instance == nullptr) {
         QMutexLocker lock(&_instLock);
-        if (_instance == nullptr) {
+//        if (_instance == nullptr) {
             _instance = new ThumbnailWorker;
             (*_instance).start();
-        }
     }
 
     return *_instance;
 }
 
-bool ThumbnailWorker::isThumbGenerated(const QUrl& url, int secs)
+bool ThumbnailWorker::isThumbGenerated(const QUrl &url, int secs)
 {
     QMutexLocker lock(&_thumbLock);
     if (!_cache.contains(url)) return false;
 
-    const auto& l = _cache[url];
+    const auto &l = _cache[url];
     return l.contains(secs);
 }
 
-QPixmap ThumbnailWorker::getThumb(const QUrl& url, int secs)
+QPixmap ThumbnailWorker::getThumb(const QUrl &url, int secs)
 {
     QMutexLocker lock(&_thumbLock);
     QPixmap pm;
@@ -76,23 +92,68 @@ QPixmap ThumbnailWorker::getThumb(const QUrl& url, int secs)
     return pm;
 }
 
+void ThumbnailWorker::setPlayerEngine(PlayerEngine *pPlayerEngline)
+{
+    _engine = pPlayerEngline;
+}
 
-void ThumbnailWorker::requestThumb(const QUrl& url, int secs)
+
+void ThumbnailWorker::requestThumb(const QUrl &url, int secs)
 {
     if (_thumbLock.tryLock()) {
         _wq.push_front(qMakePair(url, secs));
         cond.wakeOne();
         _thumbLock.unlock();
-    } 
+    }
 }
 
 ThumbnailWorker::ThumbnailWorker()
 {
-    thumber.setThumbnailSize(thumbSize().width() * qApp->devicePixelRatio());
-    thumber.setMaintainAspectRatio(true);
+    initThumb();
+    m_video_thumbnailer->thumbnail_size = m_video_thumbnailer->thumbnail_size * qApp->devicePixelRatio();
 }
 
-QPixmap ThumbnailWorker::genThumb(const QUrl& url, int secs)
+QString ThumbnailWorker::libPath(const QString &strlib)
+{
+    QDir  dir;
+    QString path  = QLibraryInfo::location(QLibraryInfo::LibrariesPath);
+    dir.setPath(path);
+    QStringList list = dir.entryList(QStringList()<<(strlib + "*"),QDir::NoDotAndDotDot |QDir::Files);//filter name with strlib
+    if(list.contains(strlib)){
+        return strlib;
+    }else{
+        list.sort();
+    }
+
+    Q_ASSERT(list.size() > 0);
+    return list.last();
+}
+
+void ThumbnailWorker::initThumb()
+{
+//    QLibrary *library = new QLibrary(path);
+//    library->load();
+//    m_setSeekTime = reinterpret_cast<thumb_setSeekTime>(QLibrary::resolve(path, "setSeekTime"));
+//    if (m_setSeekTime == nullptr) {
+//        return;
+//    }
+    QLibrary library(libPath("libffmpegthumbnailer.so"));
+    m_mvideo_thumbnailer = (mvideo_thumbnailer) library.resolve( "video_thumbnailer_create");
+    m_mvideo_thumbnailer_destroy = (mvideo_thumbnailer_destroy) library.resolve( "video_thumbnailer_destroy");
+    m_mvideo_thumbnailer_create_image_data = (mvideo_thumbnailer_create_image_data) library.resolve( "video_thumbnailer_create_image_data");
+    m_mvideo_thumbnailer_destroy_image_data = (mvideo_thumbnailer_destroy_image_data) library.resolve( "video_thumbnailer_destroy_image_data");
+    m_mvideo_thumbnailer_generate_thumbnail_to_buffer = (mvideo_thumbnailer_generate_thumbnail_to_buffer) library.resolve( "video_thumbnailer_generate_thumbnail_to_buffer");
+    if (m_mvideo_thumbnailer == nullptr || m_mvideo_thumbnailer_destroy == nullptr
+            || m_mvideo_thumbnailer_create_image_data == nullptr || m_mvideo_thumbnailer_destroy_image_data == nullptr
+            || m_mvideo_thumbnailer_generate_thumbnail_to_buffer == nullptr )
+    {
+        return;
+    }
+    m_video_thumbnailer = m_mvideo_thumbnailer();
+    m_image_data = m_mvideo_thumbnailer_create_image_data();
+}
+
+QPixmap ThumbnailWorker::genThumb(const QUrl &url, int secs)
 {
     auto dpr = qApp->devicePixelRatio();
     QPixmap pm;
@@ -100,18 +161,23 @@ QPixmap ThumbnailWorker::genThumb(const QUrl& url, int secs)
 
     QTime d(0, 0, 0);
     d = d.addSecs(secs);
-    thumber.setSeekTime(d.toString("hh:mm:ss").toStdString());
+    m_video_thumbnailer->seek_time = d.toString("hh:mm:ss").toLatin1().data();
     auto file = QFileInfo(url.toLocalFile()).absoluteFilePath();
     try {
-        std::vector<uint8_t> buf;
-        thumber.generateThumbnail(file.toUtf8().toStdString(),
-                ThumbnailerImageType::Png, buf);
+        auto e = QProcessEnvironment::systemEnvironment();
+        QString XDG_SESSION_TYPE = e.value(QStringLiteral("XDG_SESSION_TYPE"));
+        QString WAYLAND_DISPLAY = e.value(QStringLiteral("WAYLAND_DISPLAY"));
 
-        auto img = QImage::fromData(buf.data(), buf.size(), "png");
+        if (XDG_SESSION_TYPE == QLatin1String("wayland") ||
+                WAYLAND_DISPLAY.contains(QLatin1String("wayland"), Qt::CaseInsensitive)) {
+            return pm;
+        }
+        m_mvideo_thumbnailer_generate_thumbnail_to_buffer(m_video_thumbnailer, file.toUtf8().data(),  m_image_data);
+        auto img = QImage::fromData(m_image_data->image_data_ptr, static_cast<int>(m_image_data->image_data_size), "png");
 
         pm = QPixmap::fromImage(img.scaled(thumbSize() * dpr, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
         pm.setDevicePixelRatio(dpr);
-    } catch (const std::logic_error&) {
+    } catch (const std::logic_error &e) {
     }
 
     return pm;
@@ -136,7 +202,7 @@ void ThumbnailWorker::run()
         }
 
         if (_quit.load()) break;
-        
+
         {
             QMutexLocker lock(&_thumbLock);
             //TODO: optimize: need a lru map
@@ -164,6 +230,5 @@ void ThumbnailWorker::run()
 
     _wq.clear();
 }
-
 }
 

@@ -66,12 +66,12 @@ public:
     Q_ENUM(CoreState)
 
     // filetypes supported by mpv: https://github.com/mpv-player/mpv/blob/master/player/external_files.c
-    const QStringList audio_filetypes {"*.mp3", "*.ogg", "*.wav", "*.wma", "*.m4a", "*.aac", "*.ac3", "*.ape", "*.flac", "*.ra", "*.mka", "*.dts", "*.opus"};
-    const QStringList video_filetypes {
+    const QStringList audio_filetypes = {"*.mp3", "*.ogg", "*.wav", "*.wma", "*.m4a", "*.aac", "*.ac3", "*.ape", "*.flac", "*.ra", "*.mka", "*.dts", "*.opus"};
+    const QStringList video_filetypes = {
         "*.3g2", "*.3ga", "*.3gp", "*.3gp2", "*.3gpp", "*.amv", "*.asf", "*.asx", "*.avf", "*.avi", "*.bdm", "*.bdmv", "*.bik", "*.clpi", "*.cpi", "*.dat", "*.divx", "*.drc", "*.dv", "*.dvr-ms", "*.f4v", "*.flv", "*.gvi", "*.gxf", "*.hdmov", "*.hlv", "*.iso", "*.letv", "*.lrv", "*.m1v", "*.m2p", "*.m2t", "*.m2ts", "*.m2v", "*.m3u", "*.m3u8", "*.m4v", "*.mkv", "*.moov", "*.mov", "*.mov", "*.mp2", "*.mp2v", "*.mp4", "*.mp4v", "*.mpe", "*.mpeg", "*.mpeg1", "*.mpeg2", "*.mpeg4", "*.mpg", "*.mpl", "*.mpls", "*.mpv", "*.mpv2", "*.mqv", "*.mts", "*.mts", "*.mtv", "*.mxf", "*.mxg", "*.nsv", "*.nuv", "*.ogg", "*.ogm", "*.ogv", "*.ogx", "*.ps", "*.qt", "*.qtvr", "*.ram", "*.rec", "*.rm", "*.rm", "*.rmj", "*.rmm", "*.rms", "*.rmvb", "*.rmx", "*.rp", "*.rpl", "*.rv", "*.rvx", "*.thp", "*.tod", "*.tp", "*.trp", "*.ts", "*.tts", "*.txd", "*.vcd", "*.vdr", "*.vob", "*.vp8", "*.vro", "*.webm", "*.wm", "*.wmv", "*.wtv", "*.xesc", "*.xspf"
     };
 
-    const QStringList subtitle_suffixs {"ass", "sub", "srt", "aqt", "jss", "gsub", "ssf", "ssa", "smi", "usf", "idx"};
+    const QStringList subtitle_suffixs = {"ass", "sub", "srt", "aqt", "jss", "gsub", "ssf", "ssa", "smi", "usf", "idx"};
 
     /* backend like mpv will asynchronously report end of playback.
      * there are situations when we need to see the end-event before
@@ -86,6 +86,9 @@ public:
 
     // only the last dvd device set
     void setDVDDevice(const QString &path);
+    //add by heyi
+    //第一次播放需要初库始化函数指针
+    void firstInit();
 
     bool addPlayFile(const QUrl &url);
     QList<QUrl> addPlayDir(const QDir &dir); // return collected valid urls
@@ -155,6 +158,8 @@ public:
     void setBackendProperty(const QString &, const QVariant &);
     QVariant getBackendProperty(const QString &);
 
+    void setVideoZoom(float);
+
 signals:
     void tracksChanged();
     void elapsedChanged();
@@ -168,6 +173,8 @@ signals:
     void subCodepageChanged();
 
     void loadOnlineSubtitlesFinished(const QUrl &url, bool success);
+    //add by heyi mpv函数加载完毕
+    void mpvFunsLoadOver();
 
     //emit during burst screenshotting
     void notifyScreenshot(const QImage &frame, qint64 time);
@@ -178,6 +185,8 @@ signals:
     void mpvErrorLogsChanged(const QString prefix, const QString text);
     void mpvWarningLogsChanged(const QString prefix, const QString text);
     void urlpause(bool status);
+
+    void siginitthumbnailseting();
 
 public slots:
     void play();
@@ -215,12 +224,16 @@ protected:
     QUrl _pendingPlayReq;
 
     bool _playingRequest {false};
+    //add by heyi
+    bool m_bMpvFunsLoad {false};
 
     QList<QUrl> collectPlayFiles(const QList<QUrl> &urls);
     QList<QUrl> collectPlayDir(const QDir &dir);
 
     void resizeEvent(QResizeEvent *re) override;
     void savePreviousMovieState();
+
+    void paintEvent(QPaintEvent *e) override;
 
 private:
     QNetworkConfigurationManager _networkConfigMng;

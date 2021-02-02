@@ -42,6 +42,8 @@
 #include <DApplication>
 #include <DArrowLineDrawer>
 
+#include "../accessibility/ac-deepin-movie-define.h"
+
 #define LINE_MAX_WIDTH 200
 #define LINE_HEIGHT 30
 const QString LOGO_BIG = ":/resources/icons/logo-big.svg";
@@ -139,6 +141,8 @@ protected:
 private slots:
     void OnFontChanged(const QFont &font);
     void changedHeight(const int);
+    //把lambda表达式改为槽函数，modify by myk
+    void slotThemeTypeChanged();
 
 private:
     QList<DDrawer *> addExpandWidget(const QStringList &titleList);

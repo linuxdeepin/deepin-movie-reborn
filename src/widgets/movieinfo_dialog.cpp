@@ -36,6 +36,8 @@
 #include <QScrollArea>
 #include <QDebug>
 
+#include <DPushButton>
+
 #include <denhancedwidget.h>
 
 DWIDGET_USE_NAMESPACE
@@ -52,8 +54,6 @@ static QString ElideText(const QString &text, const QSize &size,
                          QTextOption::WrapMode wordWrap, const QFont &font,
                          Qt::TextElideMode mode, int lineHeight, int lastLineWidth)
 {
-    int height = 0;
-
     QTextLayout textLayout(text);
     QString str;
     QFontMetrics fontMetrics(font);
@@ -70,6 +70,7 @@ static QString ElideText(const QString &text, const QSize &size,
         tmp_str = text.mid(line.textStart(), line.textLength());
         str = tmp_str;
     } else {
+        int height = 0;
         while (line.isValid()) {
             //height += lineHeight;
             line.setLineWidth(size.width());
@@ -109,7 +110,7 @@ static QString ElideText(const QString &text, const QSize &size,
 class ToolTipEvent: public QObject
 {
 public:
-    ToolTipEvent(QObject *parent): QObject(parent) {}
+    explicit ToolTipEvent(QObject *parent): QObject(parent) {}
 
 protected:
     bool eventFilter(QObject *obj, QEvent *event)
@@ -142,7 +143,7 @@ protected:
             auto parent = obj->property("HintWidget").value<Tip *>();
             parent->hide();
             event->ignore();
-
+            break;
         }
         default:
             break;
@@ -152,11 +153,32 @@ protected:
     }
 };
 
+class CloseButton : public DPushButton
+{
+public:
+    explicit CloseButton(QWidget *parent) {}
+protected:
+    void paintEvent(QPaintEvent *e) override
+    {
+        QPainter painter(this);
+        QRect rect = this->rect();
+        if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
+            painter.drawPixmap(rect, QPixmap(INFO_CLOSE_LIGHT));
+        } else if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
+            painter.drawPixmap(rect, QPixmap(INFO_CLOSE_DARK));
+        } else {
+            painter.drawPixmap(rect, QPixmap(INFO_CLOSE_LIGHT));
+        }
+    }
+};
+
 MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
     : DAbstractDialog(nullptr)
 {
-    setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint);
+    setWindowFlags(windowFlags() /*| Qt::WindowStaysOnTopHint*/);  //和其他应用保持统一取消置顶
     setAttribute(Qt::WA_TranslucentBackground, true);
+    this->setObjectName(MOVIE_INFO_DIALOG);
+    this->setAccessibleName(MOVIE_INFO_DIALOG);
     m_titleList.clear();
 
     auto layout = new QVBoxLayout(this);
@@ -164,9 +186,13 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
     layout->setContentsMargins(0, 0, 0, 0);
     setLayout(layout);
 
-    DImageButton *closeBt = new DImageButton(this);
+    CloseButton *closeBt = new CloseButton(this);
+    closeBt->setObjectName(MOVIEINFO_CLOSE_BUTTON);
+    closeBt->setAccessibleName(MOVIEINFO_CLOSE_BUTTON);
+    //closeBt->setIcon(QIcon(INFO_CLOSE_LIGHT));
+    //DImageButton *closeBt = new DImageButton(this);
     closeBt->setFixedSize(50, 50);
-    connect(closeBt, &DImageButton::clicked, this, &MovieInfoDialog::close);
+    connect(closeBt, &CloseButton::clicked, this, &MovieInfoDialog::close);
     layout->addWidget(closeBt, 0, Qt::AlignTop | Qt::AlignRight);
 
     const auto &mi = pif.mi;
@@ -199,10 +225,12 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
     ml->addSpacing(9);
 
     m_fileNameLbl = new DLabel(this);
+    m_fileNameLbl->setMinimumWidth(260);
     qDebug() << "fileNameLbl w,h: " << m_fileNameLbl->width() << "," << m_fileNameLbl->height();
     DFontSizeManager::instance()->bind(m_fileNameLbl, DFontSizeManager::T8);
     m_fileNameLbl->setForegroundRole(DPalette::BrightText);
     m_fileNameLbl->setText(m_fileNameLbl->fontMetrics().elidedText(QFileInfo(mi.filePath).fileName(), Qt::ElideMiddle, 260));
+    m_fileNameLbl->setAlignment(Qt::AlignCenter);
     ml->addWidget(m_fileNameLbl);
     ml->setAlignment(m_fileNameLbl, Qt::AlignHCenter);
     ml->addSpacing(50);
@@ -211,6 +239,9 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
     tipLst.clear();
 
     m_scrollArea = new QScrollArea;
+    m_scrollArea->setObjectName(MOVIE_INFO_SCROLL_AREA);
+    m_scrollArea->setAccessibleName(MOVIE_INFO_SCROLL_AREA);
+    m_scrollArea->viewport()->setObjectName(SCROLL_AREA_VIEWPORT);
     QPalette palette = m_scrollArea->viewport()->palette();
     palette.setBrush(QPalette::Background, Qt::NoBrush);
     m_scrollArea->viewport()->setPalette(palette);
@@ -219,6 +250,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
     m_scrollArea->setWidgetResizable(true);
 
     QWidget *scrollContentWidget = new QWidget(m_scrollArea);
+    scrollContentWidget->setObjectName(MOVIE_INFO_SCROLL_CONTENT);
     QVBoxLayout *scrollWidgetLayout = new QVBoxLayout;
     scrollWidgetLayout->setContentsMargins(0, 0, 10, 10);
     scrollWidgetLayout->setSpacing(10);
@@ -229,6 +261,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
 
     //添加基本信息
     ArrowLine *film = new ArrowLine;
+    film->setObjectName(FILM_INFO_WIDGET);
     film->setTitle(tr("Film info"));
     InfoBottom *infoRect = new InfoBottom;
     scrollWidgetLayout->addWidget(film);
@@ -261,6 +294,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
 
     //添加视频信息
     ArrowLine *video = new ArrowLine;
+    video->setObjectName(CODEC_INFO_WIDGET);
     video->setTitle(tr("Codec info"));
     InfoBottom *videoRect = new InfoBottom;
     scrollWidgetLayout->addWidget(video);
@@ -284,11 +318,12 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
     addRow(tr("Video CodecID"), mi.videoCodec(), videoForm, tipLst);
     addRow(tr("Video CodeRate"), QString(tr("%1 kbps")).arg(mi.vCodeRate), videoForm, tipLst);
     addRow(tr("FPS"), QString(tr("%1 fps")).arg(mi.fps), videoForm, tipLst);
-    addRow(tr("Proportion"), QString(tr("%1")).arg(mi.proportion), videoForm, tipLst);
+    addRow(tr("Proportion"), QString(tr("%1")).arg(static_cast<double>(mi.proportion)), videoForm, tipLst);
     addRow(tr("Resolution"), mi.resolution, videoForm, tipLst);
 
     //添加音频信息
     ArrowLine *audio = new ArrowLine;
+    audio->setObjectName(AUDIO_INFO_WIDGET);
     audio->setTitle(tr("Audio info"));
     InfoBottom *audioRect = new InfoBottom;
     scrollWidgetLayout->addWidget(audio);
@@ -436,18 +471,16 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
     tmp = nullptr;
 
     connect(qApp, &QGuiApplication::fontChanged, this, &MovieInfoDialog::OnFontChanged);
-    connect(DApplicationHelper::instance(), &DApplicationHelper::themeTypeChanged, this, [ = ] {
-        m_fileNameLbl->setForegroundRole(DPalette::BrightText);
-        //title->setForegroundRole(DPalette::Text);
-    });
+    connect(DApplicationHelper::instance(), &DApplicationHelper::themeTypeChanged, this, &MovieInfoDialog::slotThemeTypeChanged);
 
-    if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
-        closeBt->setNormalPic(INFO_CLOSE_LIGHT);
-    } else if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
-        closeBt->setNormalPic(INFO_CLOSE_DARK);
-    } else {
-        closeBt->setNormalPic(INFO_CLOSE_LIGHT);
-    }
+
+//    if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
+//        closeBt->setNormalPic(INFO_CLOSE_LIGHT);
+//    } else if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
+//        closeBt->setNormalPic(INFO_CLOSE_DARK);
+//    } else {
+//        closeBt->setNormalPic(INFO_CLOSE_LIGHT);
+//    }
     m_expandGroup.at(0)->setExpand(true);
     m_expandGroup.at(1)->setExpand(true);
     m_expandGroup.at(2)->setExpand(true);
@@ -456,7 +489,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif)
 void MovieInfoDialog::paintEvent(QPaintEvent *ev)
 {
     QPainter painter(this);
-    painter.fillRect(this->rect(), QColor(0, 0, 0, 255 * 0.8));
+    painter.fillRect(this->rect(), QColor(0, 0, 0, static_cast<int>(255 * 0.8)));
     QDialog::paintEvent(ev);
 }
 
@@ -512,6 +545,11 @@ void MovieInfoDialog::changedHeight(const int height)
         }
         lastHeight = -1;
     }
+}
+
+void MovieInfoDialog::slotThemeTypeChanged()
+{
+    m_fileNameLbl->setForegroundRole(DPalette::BrightText);
 }
 
 void MovieInfoDialog::addRow(QString title, QString field, QFormLayout *form, QList<DLabel *> &tipLst)

@@ -31,20 +31,23 @@
 #define _DMR_MAIN_WINDOW_H
 
 #include <QObject>
+#include <QDBusAbstractInterface>
 #include <DMainWindow>
 #include <DTitlebar>
 #include <DPlatformWindowHandle>
-//#include <QtWidgets>
 #include <DFrame>
+#include <DPushButton>
+#include <DFloatingMessage>
+
 #include "actions.h"
 #include "widgets/titlebar.h"
-#include <DPushButton>
 #include "online_sub.h"
-#include <DFloatingMessage>
 #include "animationlabel.h"
 #include "volumemonitoring.h"
+#include "diskcheckthread.h"
 
 //static const int VOLUME_OFFSET = 40;
+class Presenter;
 
 namespace Dtk {
 namespace Widget {
@@ -53,7 +56,17 @@ class DImageButton;
 }
 
 DWIDGET_USE_NAMESPACE
-
+enum CornerEdge {
+    TopLeftCorner = 0,
+    TopEdge = 1,
+    TopRightCorner = 2,
+    RightEdge = 3,
+    BottomRightCorner = 4,
+    BottomEdge = 5,
+    BottomLeftCorner = 6,
+    LeftEdge = 7,
+    NoneEdge = -1
+};
 
 class MainWindowEventListener;
 
@@ -68,7 +81,7 @@ class MovieProgressIndicator;
 class IconButton: public DPushButton
 {
 public:
-    IconButton(QWidget *parent = 0): DPushButton(parent) {};
+    IconButton(QWidget *parent = 0): DPushButton(parent), m_themeType(0) {};
 
     void setIcon(QIcon icon)
     {
@@ -136,8 +149,17 @@ public:
         return _playlist;
     }
 
+    //add by heyi
+    /**
+     * @brief firstPlayInit 第一次点击播放时，需要加载动态库函数指针然后进行构造未完成的初始化
+     */
+    void firstPlayInit();
+    //判断鼠标是否在窗口内
+    bool judgeMouseInWindow(QPoint pos);
+
     void requestAction(ActionFactory::ActionKind, bool fromUI = false,
                        QList<QVariant> args = {}, bool shortcut = false);
+
 
     bool insideResizeArea(const QPoint &global_p);
     QMargins dragMargins() const;
@@ -156,6 +178,14 @@ public:
 
     bool set_playlistopen_clicktogglepause(bool playlistopen);
     NotificationWidget *get_nwComm();
+
+    //在读取光盘的时候，直接把光盘挂载点的路径加入到播放列表中 thx
+    bool addCdromPath();
+    void loadPlayList();
+    void setOpenFiles(QStringList&);
+    void setPresenter(Presenter *);
+    int getDisplayVolume();
+
 signals:
     void windowEntered();
     void windowLeaved();
@@ -174,8 +204,18 @@ public slots:
     void checkErrorMpvLogsChanged(const QString prefix, const QString text);
     void checkWarningMpvLogsChanged(const QString prefix, const QString text);
     void slotdefaultplaymodechanged(const QString &key, const QVariant &value);
-
-
+    void syncPostion();
+    //设置窗口顶层
+    void my_setStayOnTop(const QWidget *widget, bool on);
+    //lambda表达式改为槽函数
+    void slotmousePressTimerTimeOut();
+    void slotPlayerStateChanged();
+    void slotFocusWindowChanged();
+    void slotElapsedChanged();
+    void slotFileLoaded();
+    void slotUrlpause(bool status);
+    void slotFontChanged(const QFont &font);
+    void slotMuteChanged(bool mute);
 protected:
     void showEvent(QShowEvent *event) override;
     void hideEvent(QHideEvent *event) override;
@@ -236,6 +276,9 @@ protected slots:
     void changedMute(bool);
 
     void updateMiniBtnTheme(int);
+    void diskRemoved(QString strDiskName);
+
+    void sleepStateChanged(bool bSleep);
 private:
     void setupTitlebar();
 
@@ -258,9 +301,11 @@ private:
     void readSinkInputPath();
     void setAudioVolume(int);
     void setMusicMuted(bool muted);
+    void popupAdapter(QIcon, QString);
 
     //Limit video to mini mode size
     void LimitWindowize();
+    void mipsShowFullScreen();
 private:
     DFloatingMessage *popup {nullptr};
     QLabel *_fullscreentimelable {nullptr};
@@ -287,6 +332,7 @@ private:
     DIconButton *_miniCloseBtn {nullptr};
     DIconButton *_miniQuitMiniBtn {nullptr};
 #endif
+    QLabel *_labelCover {nullptr};
 
     QImage bg_dark;
     QImage bg_light;
@@ -315,7 +361,11 @@ private:
     double _playSpeed {1.0};
 
     bool _quitfullscreenstopflag {false};
+    bool _quitfullscreenflag{false};
     bool _maxfornormalflag {false};
+    //add by heyi
+    bool m_bMpvFunsLoad {false};
+    QPoint posMouseOrigin;
 
     enum StateBeforeEnterMiniMode {
         SBEM_None = 0x0,
@@ -342,7 +392,28 @@ private:
     QString sinkInputPath;
 
     int m_lastVolume;
+    int m_displayVolume;
+    int m_oldDisplayVolume;
     bool m_isManual;
+
+    bool m_IsFree = true;  //播放器是否空闲，和IDel的定义不同
+
+    static int _retryTimes;
+    QTimer _progressTimer;
+    //add by heyi 解决触屏右键菜单bug
+    int nX = 0, nY = 0;     //左键按下时保存的点
+    bool _isTouch = false;          //是否是触摸屏按下
+    QTimer _mousePressTimer;
+    Diskcheckthread m_diskCheckThread;
+    QStringList m_openFiles;
+    bool m_bProgressChanged {false};        //进度条是否被拖动
+    bool m_bFirstInit {false};
+    bool m_bLastIsTouch {false};
+    bool m_bTouchChangeVolume {false};
+    bool m_bIsFullSreen {false};
+    bool m_bisOverhunderd {false};
+    QDBusInterface* m_pDBus {nullptr};
+    Presenter *m_presenter {nullptr};
 };
 };
 

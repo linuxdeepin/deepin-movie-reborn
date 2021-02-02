@@ -34,6 +34,7 @@
 
 namespace dmr {
 namespace utils {
+static unsigned int  DAYSECONDS = 86400;
 void ShowInFileManager(const QString &path);
 bool CompareNames(const QString &fileName1, const QString &fileName2);
 bool IsNamesSimilar(const QString &s1, const QString &s2);

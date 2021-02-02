@@ -1,4 +1,4 @@
-/* 
+/*
  * (c) 2017, Deepin Technology Co., Ltd. <support@deepin.org>
  *
  * This program is free software; you can redistribute it and/or
@@ -28,7 +28,7 @@
  * files in the program, then also delete it here.
  */
 #ifndef _DMR_TOOLBUTTON_H
-#define _DMR_TOOLBUTTON_H 
+#define _DMR_TOOLBUTTON_H
 
 //#include <QtWidgets>
 #include <QWidget>
@@ -53,16 +53,18 @@ enum ThemeTYpe {
     defaultTheme
 };
 
-class ToolTip: public QFrame {
+class ToolTip: public QFrame
+{
     Q_OBJECT
 public:
     explicit ToolTip(QWidget *parent = nullptr)
-        : QFrame(parent) {
+        : QFrame(parent)
+    {
         setAttribute(Qt::WA_DeleteOnClose);
         setWindowFlags(windowFlags() | Qt::ToolTip);
         setAttribute(Qt::WA_TranslucentBackground);
         resetSize();
-        connect(qApp, &QGuiApplication::fontChanged, this, [=] {
+        connect(qApp, &QGuiApplication::fontChanged, this, [ = ] {
             resetSize();
         });
 
@@ -72,32 +74,33 @@ public:
         bodyShadow->setOffset(0, 2.0);
 //        this->setGraphicsEffect(bodyShadow);
     }
-    virtual ~ToolTip(){}
+    virtual ~ToolTip() {}
 
-    void setText(const QString& strText) {
+    void setText(const QString &strText)
+    {
         m_strText = strText;
         resetSize();
     }
 
-    void changeTheme(ThemeTYpe themeType = defaultTheme) {
+    void changeTheme(ThemeTYpe themeType = defaultTheme)
+    {
         m_themeType = themeType;
         update();
     }
 
 protected:
-    virtual void paintEvent(QPaintEvent *ev) {
+    virtual void paintEvent(QPaintEvent *ev)
+    {
         QPainter pt(this);
         pt.setRenderHint(QPainter::Antialiasing);
 
         if (lightTheme == m_themeType) {
             pt.setPen(QColor(0, 0, 0, 10));
             pt.setBrush(QBrush(QColor(247, 247, 247, 220)));
-        }
-        else if (darkTheme == m_themeType) {
+        } else if (darkTheme == m_themeType) {
             pt.setPen(QColor(255, 255, 255, 10));
             pt.setBrush(QBrush(QColor(42, 42, 42, 220)));
-        }
-        else {
+        } else {
             pt.setPen(QColor(0, 0, 0, 10));
             pt.setBrush(QBrush(QColor(247, 247, 247, 220)));
         }
@@ -128,23 +131,25 @@ protected:
         QFontMetrics fm(font);
         auto w = fm.boundingRect(m_strText).width();
         auto h = fm.height();
-        pt.drawText((rect.width() - w)/2, (rect.height() + h/2)/2, m_strText);
+        pt.drawText((rect.width() - w) / 2, (rect.height() + h / 2) / 2, m_strText);
     }
 
-    virtual void resizeEvent(QResizeEvent *ev) {
+    virtual void resizeEvent(QResizeEvent *ev)
+    {
         resetSize();
         update();
         return QWidget::resizeEvent(ev);
     }
 
 private:
-    void resetSize() {
+    void resetSize()
+    {
         DFontSizeManager::instance()->bind(this, DFontSizeManager::T8);
         QFont font = DFontSizeManager::instance()->get(DFontSizeManager::T8);
         QFontMetrics fm(font);
         auto w = fm.boundingRect(m_strText).width();
         auto h = fm.height();
-        resize(w+14, h+8);
+        resize(w + 14, h + 8);
     }
 
 private:
@@ -153,21 +158,24 @@ private:
     QString m_strText = nullptr;
 };
 
-class ToolButton: public DIconButton {
+class ToolButton: public DIconButton
+{
     Q_OBJECT
 public:
-    explicit ToolButton(QWidget* parent = 0): DIconButton(parent) {}
-    virtual ~ToolButton(){}
+    explicit ToolButton(QWidget *parent = 0): DIconButton(parent) {}
+    virtual ~ToolButton() {}
 
-    void initToolTip() {
+    void initToolTip()
+    {
         if (nullptr == m_pToolTip) {
             m_pToolTip = new ToolTip;
         }
     };
 
-    void showToolTip() {
+    void showToolTip()
+    {
         QPoint pos = this->parentWidget()->mapToGlobal(this->pos());
-        pos.rx() = pos.x() + (this->width() - m_pToolTip->width())/2;
+        pos.rx() = pos.x() + (this->width() - m_pToolTip->width()) / 2;
         pos.ry() = pos.y() - 40;
 
         if (nullptr != m_pToolTip) {
@@ -177,18 +185,21 @@ public:
         }
     }
 
-    void hideToolTip() {
+    void hideToolTip()
+    {
         if (nullptr != m_pToolTip) {
             QThread::msleep(10);
             m_pToolTip->hide();
         }
     }
 
-    void changeTheme(ThemeTYpe themeType = defaultTheme) {
+    void changeTheme(ThemeTYpe themeType = defaultTheme)
+    {
         m_pToolTip->changeTheme(themeType);
     }
 
-    void setTooTipText(const QString& strTip) {
+    void setTooTipText(const QString &strTip)
+    {
         m_pToolTip->setText(strTip);
     }
 
@@ -197,10 +208,12 @@ signals:
     void leaved();
 
 protected:
-    void enterEvent(QEvent *ev) override {
+    void enterEvent(QEvent *ev) override
+    {
         emit entered();
     };
-    void leaveEvent(QEvent *ev) override {
+    void leaveEvent(QEvent *ev) override
+    {
         emit leaved();
     };
 
@@ -209,7 +222,8 @@ private:
 };
 
 
-class VolumeButton: public DIconButton {
+class VolumeButton: public DIconButton
+{
     Q_OBJECT
 public:
     enum Level {
@@ -220,7 +234,7 @@ public:
         Mute
     };
 
-    VolumeButton(QWidget* parent = 0);
+    VolumeButton(QWidget *parent = 0);
     void changeLevel(Level lv);
 
 signals:
@@ -232,7 +246,7 @@ signals:
 protected:
     void enterEvent(QEvent *ev) override;
     void leaveEvent(QEvent *ev) override;
-    void wheelEvent(QWheelEvent* wev) override;
+    void wheelEvent(QWheelEvent *wev) override;
 
 private:
     QString _name;

@@ -42,7 +42,8 @@ DWIDGET_USE_NAMESPACE
 
 namespace dmr {
 class TitlebarPrivate;
-class Titlebar : public DTitlebar {
+class Titlebar : public DBlurEffectWidget
+{
     Q_OBJECT
 
 public:
@@ -52,7 +53,9 @@ public:
     DTitlebar *titlebar();
     void setTitletxt(const QString &title);
     void setTitleBarBackground(bool flag);
-
+public slots:
+	//把lambda表达式改为槽函数，modify by myk
+    void slotThemeTypeChanged();
 protected:
     virtual void paintEvent(QPaintEvent *e) override;
 

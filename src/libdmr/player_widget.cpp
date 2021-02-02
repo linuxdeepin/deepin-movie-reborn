@@ -1,4 +1,4 @@
-/* 
+/*
  * (c) 2017, Deepin Technology Co., Ltd. <support@deepin.org>
  *
  * This program is free software; you can redistribute it and/or
@@ -33,6 +33,7 @@
 namespace dmr {
 
 PlayerWidget::PlayerWidget(QWidget *parent)
+    : QWidget (parent)
 {
     _engine = new PlayerEngine(this);
     auto *l = new QVBoxLayout;
@@ -41,18 +42,18 @@ PlayerWidget::PlayerWidget(QWidget *parent)
     setLayout(l);
 }
 
-PlayerWidget::~PlayerWidget() 
+PlayerWidget::~PlayerWidget()
 {
 }
 
-PlayerEngine& PlayerWidget::engine()
+PlayerEngine &PlayerWidget::engine()
 {
     return *_engine;
 }
 
-void PlayerWidget::play(const QUrl& url)
+void PlayerWidget::play(const QUrl &url)
 {
-    if (!url.isValid()) 
+    if (!url.isValid())
         return;
 
     if (!_engine->addPlayFile(url)) {

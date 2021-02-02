@@ -1,4 +1,4 @@
-/* 
+/*
  * (c) 2017, Deepin Technology Co., Ltd. <support@deepin.org>
  *
  * This program is free software; you can redistribute it and/or
@@ -31,18 +31,18 @@
 
 namespace dmr {
 
-LineEdit::LineEdit(QWidget* parent)
-    :QLineEdit(parent)
+LineEdit::LineEdit(QWidget *parent)
+    : QLineEdit(parent)
 {
     setFixedHeight(30);
 //    setStyleSheet(R"(
-//	QLineEdit {
+//  QLineEdit {
 //        font-size: 11px;
-//		border-radius: 3px;
-//		background-color: #ffffff;
-//		border: 1px solid rgba(0, 0, 0, 0.08);
+//      border-radius: 3px;
+//      background-color: #ffffff;
+//      border: 1px solid rgba(0, 0, 0, 0.08);
 //        color: #303030;
-//	}
+//  }
 //    )");
 
     QIcon icon;
@@ -52,22 +52,27 @@ LineEdit::LineEdit(QWidget* parent)
     _clearAct = new QAction(icon, "", this);
 
     connect(_clearAct, &QAction::triggered, this, &QLineEdit::clear);
-    connect(this, &QLineEdit::textChanged, [=](const QString& s) {
-        if (s.isEmpty()) {
-            removeAction(_clearAct);
-        } else {
-            addAction(_clearAct, QLineEdit::TrailingPosition);
-        }
-    });
+	connect(this, &QLineEdit::textChanged, this, &LineEdit::slotTextChanged);
 
 }
 
-void LineEdit::showEvent(QShowEvent* se)
+void LineEdit::showEvent(QShowEvent *se)
 {
+    QLineEdit::showEvent(se);
 }
 
-void LineEdit::resizeEvent(QResizeEvent* re)
+void LineEdit::resizeEvent(QResizeEvent *re)
 {
+    QLineEdit::resizeEvent(re);
+}
+
+void LineEdit::slotTextChanged(const QString &s)
+{
+    if (s.isEmpty()) {
+        removeAction(_clearAct);
+    } else {
+        addAction(_clearAct, QLineEdit::TrailingPosition);
+    }
 }
 
 }

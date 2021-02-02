@@ -75,6 +75,7 @@ public:
      */
     static OpenGLInteropKind interopKind();
     static bool runningOnVmwgfx();
+    bool hascard();
 
     /**
      * override auto-detected compositing state.
@@ -96,6 +97,10 @@ public:
     PlayerOptionList getBestProfile(); // best for current platform and env
     static void detectPciID();
     static bool runningOnNvidia();
+    void softDecodeCheck();
+    bool isOnlySoftDecode();
+    bool isSpecialControls();
+    bool isZXIntgraphics();
 
 signals:
     void compositingChanged(bool);
@@ -111,6 +116,10 @@ private:
 
     bool _composited {false};
     Platform _platform {Platform::Unknown};
+    bool _hasCard;
+    bool m_bOnlySoftDecode {false};  //kunpeng920走软解码
+    bool m_setSpecialControls {false};
+    bool m_bZXIntgraphics {false};   //兆芯集显
 };
 }
 

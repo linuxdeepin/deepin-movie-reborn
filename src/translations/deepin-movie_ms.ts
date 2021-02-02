@@ -217,6 +217,10 @@
         <source>Default play mode</source>
         <translation>Mod main lalai</translation>
     </message>
+    <message>
+        <source>Show thumbnails in progress bar</source>
+        <translation>Tunjuk lakaran kenit dalam palang kemajuan</translation>
+    </message>
 </context>
 <context>
     <name>UrlDialog</name>
@@ -398,6 +402,10 @@
     <message>
         <source>Previous Frame</source>
         <translation>Bingkai Terdahulu</translation>
+    </message>
+    <message>
+        <source>Open screenshot folder</source>
+        <translation>Buka folder cekupan skrin</translation>
     </message>
 </context>
 <context>
@@ -585,24 +593,32 @@
         <source>The CD/DVD has been ejected</source>
         <translation>CD/DVD telah dilentingkan</translation>
     </message>
+    <message>
+        <source>All videos (%2 %1)</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>All videos (*)(%2 %1)</source>
+        <translation>Semua video (*)(%2 %1)</translation>
+    </message>
 </context>
 <context>
     <name>dmr::MovieInfo</name>
     <message>
         <source>%1G</source>
-        <translation>%1G</translation>
+        <translation type="vanished">%1G</translation>
     </message>
     <message>
         <source>%1M</source>
-        <translation>%1M</translation>
+        <translation type="vanished">%1M</translation>
     </message>
     <message>
         <source>%1K</source>
-        <translation>%1K</translation>
+        <translation type="vanished">%1K</translation>
     </message>
     <message>
         <source>%1</source>
-        <translation>%1</translation>
+        <translation type="vanished">%1</translation>
     </message>
 </context>
 <context>
@@ -633,31 +649,31 @@
     </message>
     <message>
         <source>Codec info</source>
-        <translation type="unfinished"/>
+        <translation>Maklumat kodeks</translation>
     </message>
     <message>
         <source>Video CodecID</source>
-        <translation type="unfinished"/>
+        <translation>IDKodeks Video</translation>
     </message>
     <message>
         <source>Video CodeRate</source>
-        <translation type="unfinished"/>
+        <translation>KadarKod Video</translation>
     </message>
     <message>
         <source>%1 kbps</source>
-        <translation type="unfinished"/>
+        <translation>%1 kbps</translation>
     </message>
     <message>
         <source>FPS</source>
-        <translation type="unfinished"/>
+        <translation>FPS</translation>
     </message>
     <message>
         <source>%1 fps</source>
-        <translation type="unfinished"/>
+        <translation>%1 fps</translation>
     </message>
     <message>
         <source>Proportion</source>
-        <translation type="unfinished"/>
+        <translation>Perkadaran</translation>
     </message>
     <message>
         <source>%1</source>
@@ -665,39 +681,39 @@
     </message>
     <message>
         <source>Audio info</source>
-        <translation type="unfinished"/>
+        <translation>Maklumat audio</translation>
     </message>
     <message>
         <source>Audio CodecID</source>
-        <translation type="unfinished"/>
+        <translation>IDKodeks Audio</translation>
     </message>
     <message>
         <source>Audio CodeRate</source>
-        <translation type="unfinished"/>
+        <translation>KadarKod Audio</translation>
     </message>
     <message>
         <source>Audio digit</source>
-        <translation type="unfinished"/>
+        <translation>Digit audio</translation>
     </message>
     <message>
         <source>%1 bits</source>
-        <translation type="unfinished"/>
+        <translation>%1 bit</translation>
     </message>
     <message>
         <source>Channels</source>
-        <translation type="unfinished"/>
+        <translation>Saluran</translation>
     </message>
     <message>
         <source>%1 channels</source>
-        <translation type="unfinished"/>
+        <translation>%1 saluran</translation>
     </message>
     <message>
         <source>Sampling</source>
-        <translation type="unfinished"/>
+        <translation>Persampelan</translation>
     </message>
     <message>
         <source>%1hz</source>
-        <translation type="unfinished"/>
+        <translation>%1hz</translation>
     </message>
 </context>
 <context>

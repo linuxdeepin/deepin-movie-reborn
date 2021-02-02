@@ -19,6 +19,7 @@ public:
     void initConnection();
     void initMpris(const QString &serviceName);
     void show();
+public slots:
     void quit();
 
 private:

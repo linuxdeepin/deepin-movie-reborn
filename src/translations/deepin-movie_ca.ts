@@ -217,6 +217,10 @@
         <source>Default play mode</source>
         <translation>Mode de reproducció per defecte</translation>
     </message>
+    <message>
+        <source>Show thumbnails in progress bar</source>
+        <translation>Mostra les miniatures a la barra de progrés</translation>
+    </message>
 </context>
 <context>
     <name>UrlDialog</name>
@@ -398,6 +402,10 @@
     <message>
         <source>Previous Frame</source>
         <translation>Fotograma anterior</translation>
+    </message>
+    <message>
+        <source>Open screenshot folder</source>
+        <translation>Obre la carpeta de captures</translation>
     </message>
 </context>
 <context>
@@ -585,24 +593,32 @@
         <source>The CD/DVD has been ejected</source>
         <translation>S&apos;ha expulsat el CD / DVD.</translation>
     </message>
+    <message>
+        <source>All videos (%2 %1)</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>All videos (*)(%2 %1)</source>
+        <translation>Tots els vídeos (*)(%2 %1)</translation>
+    </message>
 </context>
 <context>
     <name>dmr::MovieInfo</name>
     <message>
         <source>%1G</source>
-        <translation>%1 G</translation>
+        <translation type="vanished">%1 G</translation>
     </message>
     <message>
         <source>%1M</source>
-        <translation>%1 M</translation>
+        <translation type="vanished">%1 M</translation>
     </message>
     <message>
         <source>%1K</source>
-        <translation>%1 K</translation>
+        <translation type="vanished">%1 K</translation>
     </message>
     <message>
         <source>%1</source>
-        <translation>%1</translation>
+        <translation type="vanished">%1</translation>
     </message>
 </context>
 <context>
@@ -633,31 +649,31 @@
     </message>
     <message>
         <source>Codec info</source>
-        <translation type="unfinished"/>
+        <translation>Informació del còdec</translation>
     </message>
     <message>
         <source>Video CodecID</source>
-        <translation type="unfinished"/>
+        <translation>ID del còdec de vídeo</translation>
     </message>
     <message>
         <source>Video CodeRate</source>
-        <translation type="unfinished"/>
+        <translation>Taxa de codi del vídeo</translation>
     </message>
     <message>
         <source>%1 kbps</source>
-        <translation type="unfinished"/>
+        <translation>%1 kbps</translation>
     </message>
     <message>
         <source>FPS</source>
-        <translation type="unfinished"/>
+        <translation>FPS</translation>
     </message>
     <message>
         <source>%1 fps</source>
-        <translation type="unfinished"/>
+        <translation>%1 fps</translation>
     </message>
     <message>
         <source>Proportion</source>
-        <translation type="unfinished"/>
+        <translation>Proporció</translation>
     </message>
     <message>
         <source>%1</source>
@@ -665,39 +681,39 @@
     </message>
     <message>
         <source>Audio info</source>
-        <translation type="unfinished"/>
+        <translation>Informació de l&apos;àudio</translation>
     </message>
     <message>
         <source>Audio CodecID</source>
-        <translation type="unfinished"/>
+        <translation>ID del còdec d&apos;àudio</translation>
     </message>
     <message>
         <source>Audio CodeRate</source>
-        <translation type="unfinished"/>
+        <translation>Taxa de codi de l&apos;àudio</translation>
     </message>
     <message>
         <source>Audio digit</source>
-        <translation type="unfinished"/>
+        <translation>Dígit d&apos;àudio</translation>
     </message>
     <message>
         <source>%1 bits</source>
-        <translation type="unfinished"/>
+        <translation>%1 bits</translation>
     </message>
     <message>
         <source>Channels</source>
-        <translation type="unfinished"/>
+        <translation>Canals</translation>
     </message>
     <message>
         <source>%1 channels</source>
-        <translation type="unfinished"/>
+        <translation>%1 canals</translation>
     </message>
     <message>
         <source>Sampling</source>
-        <translation type="unfinished"/>
+        <translation>Exemple</translation>
     </message>
     <message>
         <source>%1hz</source>
-        <translation type="unfinished"/>
+        <translation>%1 hz</translation>
     </message>
 </context>
 <context>

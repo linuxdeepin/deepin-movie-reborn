@@ -217,6 +217,10 @@
         <source>Default play mode</source>
         <translation>Modo padrão de reprodução</translation>
     </message>
+    <message>
+        <source>Show thumbnails in progress bar</source>
+        <translation>Exibir miniaturas na barra de progresso</translation>
+    </message>
 </context>
 <context>
     <name>UrlDialog</name>
@@ -399,6 +403,10 @@
         <source>Previous Frame</source>
         <translation>Quadro Anterior</translation>
     </message>
+    <message>
+        <source>Open screenshot folder</source>
+        <translation>Abrir a pasta de captura de tela</translation>
+    </message>
 </context>
 <context>
     <name>dmr::BurstScreenshotsDialog</name>
@@ -555,11 +563,11 @@
     </message>
     <message>
         <source>4K video may be stuck</source>
-        <translation>Vídeo em 4K poderá travar</translation>
+        <translation>O vídeo em 4K poderá travar</translation>
     </message>
     <message>
         <source>Please load the video first</source>
-        <translation>Primeiro, carregue o vídeo</translation>
+        <translation>Carregue o vídeo</translation>
     </message>
     <message>
         <source>Order play</source>
@@ -575,7 +583,7 @@
     </message>
     <message>
         <source>Single loop</source>
-        <translation>Repetir Uma Vez</translation>
+        <translation>Repetir uma vez</translation>
     </message>
     <message>
         <source>List loop</source>
@@ -585,24 +593,32 @@
         <source>The CD/DVD has been ejected</source>
         <translation>O CD/DVD foi ejetado</translation>
     </message>
+    <message>
+        <source>All videos (%2 %1)</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>All videos (*)(%2 %1)</source>
+        <translation>Todos os Vídeos (*)(%2 %1)</translation>
+    </message>
 </context>
 <context>
     <name>dmr::MovieInfo</name>
     <message>
         <source>%1G</source>
-        <translation>%1G</translation>
+        <translation type="vanished">%1 GB</translation>
     </message>
     <message>
         <source>%1M</source>
-        <translation>%1M</translation>
+        <translation type="vanished">%1 MB</translation>
     </message>
     <message>
         <source>%1K</source>
-        <translation>%1K</translation>
+        <translation type="vanished">%1 kB</translation>
     </message>
     <message>
         <source>%1</source>
-        <translation>%1</translation>
+        <translation type="vanished">%1</translation>
     </message>
 </context>
 <context>
@@ -633,31 +649,31 @@
     </message>
     <message>
         <source>Codec info</source>
-        <translation type="unfinished"/>
+        <translation>Informação de codec</translation>
     </message>
     <message>
         <source>Video CodecID</source>
-        <translation type="unfinished"/>
+        <translation>ID do Codec de Vídeo</translation>
     </message>
     <message>
         <source>Video CodeRate</source>
-        <translation type="unfinished"/>
+        <translation>Taxa de Bits do Vídeo</translation>
     </message>
     <message>
         <source>%1 kbps</source>
-        <translation type="unfinished"/>
+        <translation>%1 kbps</translation>
     </message>
     <message>
         <source>FPS</source>
-        <translation type="unfinished"/>
+        <translation>FPS</translation>
     </message>
     <message>
         <source>%1 fps</source>
-        <translation type="unfinished"/>
+        <translation>%1 fps</translation>
     </message>
     <message>
         <source>Proportion</source>
-        <translation type="unfinished"/>
+        <translation>Proporção</translation>
     </message>
     <message>
         <source>%1</source>
@@ -665,39 +681,39 @@
     </message>
     <message>
         <source>Audio info</source>
-        <translation type="unfinished"/>
+        <translation>Informação de áudio</translation>
     </message>
     <message>
         <source>Audio CodecID</source>
-        <translation type="unfinished"/>
+        <translation>ID do Codec de Áudio</translation>
     </message>
     <message>
         <source>Audio CodeRate</source>
-        <translation type="unfinished"/>
+        <translation>Taxa de Bits do Áudio</translation>
     </message>
     <message>
         <source>Audio digit</source>
-        <translation type="unfinished"/>
+        <translation>Áudio digital</translation>
     </message>
     <message>
         <source>%1 bits</source>
-        <translation type="unfinished"/>
+        <translation>%1 bits</translation>
     </message>
     <message>
         <source>Channels</source>
-        <translation type="unfinished"/>
+        <translation>Canais</translation>
     </message>
     <message>
         <source>%1 channels</source>
-        <translation type="unfinished"/>
+        <translation>%1 canais</translation>
     </message>
     <message>
         <source>Sampling</source>
-        <translation type="unfinished"/>
+        <translation>Amostragem</translation>
     </message>
     <message>
         <source>%1hz</source>
-        <translation type="unfinished"/>
+        <translation>%1 hz</translation>
     </message>
 </context>
 <context>

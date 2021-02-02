@@ -67,7 +67,7 @@ template <typename T> void Mpris::getEnumStringsAndSize(const char ***strings, i
         *strings = metadataStrings;
         *size = arraySize(metadataStrings);
     } else {
-        *strings = 0;
+        *strings = nullptr;
         *size = 0;
     }
 }

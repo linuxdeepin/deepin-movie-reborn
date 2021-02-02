@@ -3,39 +3,39 @@
     <name>QObject</name>
     <message>
         <source>Invalid folder</source>
-        <translation>Érvénytelen könyvtár</translation>
+        <translation>Érvénytelen mappa</translation>
     </message>
     <message>
         <source>Open folder</source>
-        <translation>Könytár megnyitása</translation>
+        <translation>Mappa megnyitása</translation>
     </message>
     <message>
         <source>Network disconnected</source>
-        <translation type="unfinished"/>
+        <translation>A hálózat lecsatlakozva</translation>
     </message>
     <message>
         <source>You don&apos;t have permission to operate this folder</source>
-        <translation>Nincs jogosultságod a mappa használatához</translation>
+        <translation>Nincs jogosultsága a mappa használatához</translation>
     </message>
     <message>
         <source>Auto add similar files to play</source>
-        <translation>Automatikus hozzáadás a lejátszási listához</translation>
+        <translation>Automatikusan adjon hozzá hasonló fájlokat a lejátszáshoz</translation>
     </message>
     <message>
         <source>Clear playlist when exit</source>
-        <translation>Kilépéskor törölje a lejátszási listát</translation>
+        <translation>Ürítse ki a lejátszási listát kilépéskor</translation>
     </message>
     <message>
         <source>Show video preview on mouseover</source>
-        <translation>Videó előnézet megjelenítése az egérmutató alatt</translation>
+        <translation>A videó előnézetének megjelenítése az egérmutató alatt</translation>
     </message>
     <message>
         <source>Open a new player for each file played</source>
-        <translation>Minden lejátszás új ablakban</translation>
+        <translation>Nyisson meg egy új lejátszót minden lejátszott fájlhoz</translation>
     </message>
     <message>
         <source>Pause when minimized</source>
-        <translation>Minimalizáláskor szünetel a lejátszás</translation>
+        <translation>Szüneteltetés kis méret esetén </translation>
     </message>
     <message>
         <source>Remember playback position</source>
@@ -83,11 +83,11 @@
     </message>
     <message>
         <source>Restore Defaults</source>
-        <translation>Alaphelyzetbe állítás</translation>
+        <translation>Alapértelmezések visszaállítása</translation>
     </message>
     <message>
         <source>Open file</source>
-        <translation>Fájl megnyitás</translation>
+        <translation>Fájl megnyitása</translation>
     </message>
     <message>
         <source>Open next</source>
@@ -99,7 +99,7 @@
     </message>
     <message>
         <source>Mini mode</source>
-        <translation>Mini mód</translation>
+        <translation>Minilejátszó mód</translation>
     </message>
     <message>
         <source>Mute</source>
@@ -123,7 +123,7 @@
     </message>
     <message>
         <source>Speed up</source>
-        <translation>Felgyorsítás </translation>
+        <translation>Sebesség növelése</translation>
     </message>
     <message>
         <source>Speed down</source>
@@ -143,23 +143,23 @@
     </message>
     <message>
         <source>Reset speed</source>
-        <translation>Lejátszási sebesség alaphelyzetbe állítás</translation>
+        <translation>Lejátszási sebesség alaphelyzetbe állítása</translation>
     </message>
     <message>
         <source>Rewind</source>
-        <translation>Hátra</translation>
+        <translation>Visszatekerés</translation>
     </message>
     <message>
         <source>Forward</source>
-        <translation>Előre</translation>
+        <translation>Előretekerés</translation>
     </message>
     <message>
         <source>Film screenshot</source>
-        <translation>Film pillanatkép készítése</translation>
+        <translation>Film képernyőkép készítése</translation>
     </message>
     <message>
         <source>0.5s backward</source>
-        <translation>0,5 másodperccel visza</translation>
+        <translation>0,5 másodperccel vissza</translation>
     </message>
     <message>
         <source>0.5s forward</source>
@@ -171,7 +171,7 @@
     </message>
     <message>
         <source>Exit fullscreen/mini mode</source>
-        <translation type="unfinished"/>
+        <translation>Kilépés a teljes képernyős/minilejátszó módból</translation>
     </message>
     <message>
         <source>Movie</source>
@@ -183,15 +183,15 @@
     </message>
     <message>
         <source>Help</source>
-        <translation>Súgó</translation>
+        <translation>Segítség</translation>
     </message>
     <message>
         <source>Display shortcuts</source>
-        <translation>Billentyűzetparancsok megjelenítése</translation>
+        <translation>Gyorsbillentyűk megjelenítése</translation>
     </message>
     <message>
         <source>Delete from playlist</source>
-        <translation type="unfinished"/>
+        <translation>Törlés a lejátszási listáról</translation>
     </message>
     <message>
         <source>Film info</source>
@@ -199,7 +199,7 @@
     </message>
     <message>
         <source>Burst shooting</source>
-        <translation type="unfinished"/>
+        <translation>Sorozatfelvétel</translation>
     </message>
     <message>
         <source>Size</source>
@@ -207,22 +207,30 @@
     </message>
     <message>
         <source>Movie is a full-featured video player, supporting playing local and streaming media in multiple video formats.</source>
-        <translation type="unfinished"/>
+        <translation>A Film egy teljes funkcionalitású videolejátszó, amely támogatja a helyi és az adatfolyam média lejátszását többféle videoformátumban.</translation>
     </message>
     <message>
         <source>OK</source>
         <translation>OK</translation>
+    </message>
+    <message>
+        <source>Default play mode</source>
+        <translation>Alapértelmezett lejátszási mód</translation>
+    </message>
+    <message>
+        <source>Show thumbnails in progress bar</source>
+        <translation>Indexképek megjelenítése a folyamatsávon</translation>
     </message>
 </context>
 <context>
     <name>UrlDialog</name>
     <message>
         <source>Cancel</source>
-        <translation>Mégse</translation>
+        <translation>Mégsem</translation>
     </message>
     <message>
         <source>Please enter the URL:</source>
-        <translation>Kérem írja be a web-címet:</translation>
+        <translation>Kérjük írja be az URL-t:</translation>
     </message>
     <message>
         <source>OK</source>
@@ -241,11 +249,11 @@
     </message>
     <message>
         <source>Always on Top</source>
-        <translation>Mindig látsszon</translation>
+        <translation>Mindig felül</translation>
     </message>
     <message>
         <source>Empty playlist</source>
-        <translation type="unfinished"/>
+        <translation>Lejátszási lista ürítése</translation>
     </message>
     <message>
         <source>Film info</source>
@@ -253,23 +261,23 @@
     </message>
     <message>
         <source>Open file</source>
-        <translation>Fájl megnyitás</translation>
+        <translation>Fájl megnyitása</translation>
     </message>
     <message>
         <source>Open folder</source>
-        <translation>Könytár megnyitása</translation>
+        <translation>Mappa megnyitása</translation>
     </message>
     <message>
         <source>Open URL</source>
-        <translation>URL megnyitás</translation>
+        <translation>URL megnyitása</translation>
     </message>
     <message>
         <source>Open CD/DVD</source>
-        <translation>CD/DVD lejátszása</translation>
+        <translation>CD/DVD megnyitása</translation>
     </message>
     <message>
         <source>Mini Mode</source>
-        <translation>Mini mód</translation>
+        <translation>Minilejátszó mód</translation>
     </message>
     <message>
         <source>Play Mode</source>
@@ -277,23 +285,23 @@
     </message>
     <message>
         <source>Order Play</source>
-        <translation>Lejátszás elrendezése</translation>
+        <translation>Rendezett lejátszás</translation>
     </message>
     <message>
         <source>Shuffle Play</source>
-        <translation>Lejátszás részletekben</translation>
+        <translation>Véletlenszerű lejátszás</translation>
     </message>
     <message>
         <source>Single Play</source>
-        <translation>Lejátszás egyesével</translation>
+        <translation>Egy lejátszása</translation>
     </message>
     <message>
         <source>Single Loop</source>
-        <translation>Újra játszás</translation>
+        <translation>Egy ismétlése</translation>
     </message>
     <message>
         <source>List Loop</source>
-        <translation>Újrajátszás listáról</translation>
+        <translation>Lista ismétlése</translation>
     </message>
     <message>
         <source>Frame</source>
@@ -333,7 +341,7 @@
     </message>
     <message>
         <source>Track</source>
-        <translation>Szám</translation>
+        <translation>Útvonal</translation>
     </message>
     <message>
         <source>Subtitle</source>
@@ -345,7 +353,7 @@
     </message>
     <message>
         <source>Online Search</source>
-        <translation>Keresés online</translation>
+        <translation>Online keresés</translation>
     </message>
     <message>
         <source>Select</source>
@@ -357,7 +365,7 @@
     </message>
     <message>
         <source>Encodings</source>
-        <translation>Kódolás</translation>
+        <translation>Kódolások</translation>
     </message>
     <message>
         <source>Screenshot</source>
@@ -377,23 +385,27 @@
     </message>
     <message>
         <source>Film Info</source>
-        <translation>Információ a filmről</translation>
+        <translation>Film információ</translation>
     </message>
     <message>
         <source>Delete from playlist</source>
-        <translation type="unfinished"/>
+        <translation>Törlés a lejátszási listáról</translation>
     </message>
     <message>
         <source>Display in file manager</source>
-        <translation>Megjelenítés fájlkezelőben</translation>
+        <translation>Megjelenítés a fájlkezelőben</translation>
     </message>
     <message>
         <source>Next Frame</source>
-        <translation type="unfinished"/>
+        <translation>Következő képkocka</translation>
     </message>
     <message>
         <source>Previous Frame</source>
-        <translation type="unfinished"/>
+        <translation>Előző képkocka</translation>
+    </message>
+    <message>
+        <source>Open screenshot folder</source>
+        <translation>Képernyőkép mappa megnyitása</translation>
     </message>
 </context>
 <context>
@@ -408,34 +420,34 @@
     </message>
     <message>
         <source>Size: %1</source>
-        <translation>méret: %1</translation>
+        <translation>Méret: %1</translation>
     </message>
     <message>
         <source>Save</source>
-        <translation>Ment</translation>
+        <translation>Mentés</translation>
     </message>
 </context>
 <context>
     <name>dmr::MainWindow</name>
     <message>
         <source>Load successfully</source>
-        <translation>Sikeres betöltés</translation>
+        <translation>Sikeresen betöltve</translation>
     </message>
     <message>
         <source>Load failed</source>
-        <translation>Sikertelen betöltés</translation>
+        <translation>A betöltés sikertelen</translation>
     </message>
     <message>
         <source>Buffering...</source>
-        <translation>Töltés...</translation>
+        <translation>Pufferelés...</translation>
     </message>
     <message>
         <source>No device found</source>
-        <translation>Nem található az eszköz</translation>
+        <translation>Nem található eszköz</translation>
     </message>
     <message>
         <source>Open folder</source>
-        <translation>Könytár megnyitása</translation>
+        <translation>Mappa megnyitása</translation>
     </message>
     <message>
         <source>All videos (%1)</source>
@@ -455,7 +467,7 @@
     </message>
     <message>
         <source>Parse failed</source>
-        <translation type="unfinished"/>
+        <translation>Az elemzés nem sikerült</translation>
     </message>
     <message>
         <source>Mute</source>
@@ -467,7 +479,7 @@
     </message>
     <message>
         <source>Track: %1</source>
-        <translation type="unfinished"/>
+        <translation>Útvonal: %1</translation>
     </message>
     <message>
         <source>Subtitle %1: %2s</source>
@@ -475,11 +487,11 @@
     </message>
     <message>
         <source>delayed</source>
-        <translation>időzítve</translation>
+        <translation>késleltetve</translation>
     </message>
     <message>
         <source>advanced</source>
-        <translation>Kibővített</translation>
+        <translation>haladó</translation>
     </message>
     <message>
         <source>Speed: %1x</source>
@@ -495,7 +507,7 @@
     </message>
     <message>
         <source>Saved to</source>
-        <translation>Elmentve</translation>
+        <translation>Mentve ide</translation>
     </message>
     <message>
         <source>The screenshot is saved</source>
@@ -503,7 +515,7 @@
     </message>
     <message>
         <source>Failed to save the screenshot</source>
-        <translation>Képernyőkép mentése sikertelen</translation>
+        <translation>A képernyőkép mentése sikertelen</translation>
     </message>
     <message>
         <source>Invalid file: %1</source>
@@ -511,11 +523,11 @@
     </message>
     <message>
         <source>No matching online subtitles</source>
-        <translation type="unfinished"/>
+        <translation>Nincs megfelelő online felirat</translation>
     </message>
     <message>
         <source>Cannot open file or stream</source>
-        <translation type="unfinished"/>
+        <translation>Nem lehet megnyitni a fájlt vagy az adatfolyamot</translation>
     </message>
     <message>
         <source>Invalid file</source>
@@ -523,7 +535,7 @@
     </message>
     <message>
         <source>No video file found</source>
-        <translation type="unfinished"/>
+        <translation>Nem található videófájl</translation>
     </message>
     <message>
         <source>Open File</source>
@@ -531,11 +543,11 @@
     </message>
     <message>
         <source>Film screenshot</source>
-        <translation>Film pillanatkép készítése</translation>
+        <translation>Film képernyőkép készítése</translation>
     </message>
     <message>
         <source>Taking the screenshots, please wait...</source>
-        <translation type="unfinished"/>
+        <translation>Képernyőkép készítése, kérjük várjon...</translation>
     </message>
     <message>
         <source>OK</source>
@@ -543,38 +555,70 @@
     </message>
     <message>
         <source>Please insert a CD/DVD</source>
-        <translation type="unfinished"/>
+        <translation>Kérjük helyezzen be CD/DVD-t</translation>
     </message>
     <message>
         <source>Reading DVD files...</source>
-        <translation type="unfinished"/>
+        <translation>DVD-fájlok olvasása...</translation>
     </message>
     <message>
         <source>4K video may be stuck</source>
-        <translation type="unfinished"/>
+        <translation>A 4K videó megakadhat</translation>
     </message>
     <message>
         <source>Please load the video first</source>
+        <translation>Kérjük először töltse be a videót</translation>
+    </message>
+    <message>
+        <source>Order play</source>
+        <translation>Rendezett lejátszás</translation>
+    </message>
+    <message>
+        <source>Shuffle play</source>
+        <translation>Véletlenszerű lejátszás</translation>
+    </message>
+    <message>
+        <source>Single play</source>
+        <translation>Egy lejátszása</translation>
+    </message>
+    <message>
+        <source>Single loop</source>
+        <translation>Egy ismétlése</translation>
+    </message>
+    <message>
+        <source>List loop</source>
+        <translation>Lista ismétlése</translation>
+    </message>
+    <message>
+        <source>The CD/DVD has been ejected</source>
+        <translation>A CD / DVD kiadása megtörtént</translation>
+    </message>
+    <message>
+        <source>All videos (%2 %1)</source>
         <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>All videos (*)(%2 %1)</source>
+        <translation>Összes videó (*)(%2 %1)</translation>
     </message>
 </context>
 <context>
     <name>dmr::MovieInfo</name>
     <message>
         <source>%1G</source>
-        <translation type="unfinished"/>
+        <translation type="vanished">%1G</translation>
     </message>
     <message>
         <source>%1M</source>
-        <translation type="unfinished"/>
+        <translation type="vanished">%1M</translation>
     </message>
     <message>
         <source>%1K</source>
-        <translation type="unfinished"/>
+        <translation type="vanished">%1K</translation>
     </message>
     <message>
         <source>%1</source>
-        <translation>%1</translation>
+        <translation type="vanished">%1</translation>
     </message>
 </context>
 <context>
@@ -589,7 +633,7 @@
     </message>
     <message>
         <source>Duration</source>
-        <translation>Tartam</translation>
+        <translation>Időtartam</translation>
     </message>
     <message>
         <source>Type</source>
@@ -603,19 +647,87 @@
         <source>Path</source>
         <translation>Elérési útvonal</translation>
     </message>
+    <message>
+        <source>Codec info</source>
+        <translation>Kodek információ</translation>
+    </message>
+    <message>
+        <source>Video CodecID</source>
+        <translation>Videó Kodek azonosító</translation>
+    </message>
+    <message>
+        <source>Video CodeRate</source>
+        <translation>Videó Kodek arány</translation>
+    </message>
+    <message>
+        <source>%1 kbps</source>
+        <translation>%1 kbps</translation>
+    </message>
+    <message>
+        <source>FPS</source>
+        <translation>FPS</translation>
+    </message>
+    <message>
+        <source>%1 fps</source>
+        <translation>%1 fps</translation>
+    </message>
+    <message>
+        <source>Proportion</source>
+        <translation>Arány</translation>
+    </message>
+    <message>
+        <source>%1</source>
+        <translation>%1</translation>
+    </message>
+    <message>
+        <source>Audio info</source>
+        <translation>Audió információ</translation>
+    </message>
+    <message>
+        <source>Audio CodecID</source>
+        <translation>Audió Kodek azonosító</translation>
+    </message>
+    <message>
+        <source>Audio CodeRate</source>
+        <translation>Audió Kodek ráta</translation>
+    </message>
+    <message>
+        <source>Audio digit</source>
+        <translation>Audió kód</translation>
+    </message>
+    <message>
+        <source>%1 bits</source>
+        <translation>%1 bit</translation>
+    </message>
+    <message>
+        <source>Channels</source>
+        <translation>Csatornák</translation>
+    </message>
+    <message>
+        <source>%1 channels</source>
+        <translation>%1 csatorna</translation>
+    </message>
+    <message>
+        <source>Sampling</source>
+        <translation>Mintavétel</translation>
+    </message>
+    <message>
+        <source>%1hz</source>
+        <translation>%1hz</translation>
+    </message>
 </context>
 <context>
     <name>dmr::MpvProxy</name>
     <message>
         <source>Internal</source>
-        <translation type="unfinished"/>
+        <translation>Belső</translation>
     </message>
 </context>
 <context>
     <name>dmr::PlayItemWidget</name>
     <message>
         <source>The file does not exist</source>
-        <translation type="unfinished"/>
+        <translation>A fájl nem létezik</translation>
     </message>
 </context>
 <context>
@@ -626,7 +738,7 @@
     </message>
     <message>
         <source>%1 videos</source>
-        <translation type="unfinished"/>
+        <translation>%1 videó</translation>
     </message>
     <message>
         <source>Empty</source>
@@ -637,11 +749,31 @@
     <name>dmr::Settings</name>
     <message>
         <source>%1/Movie%2.jpg</source>
-        <translation type="unfinished"/>
+        <translation>%1/Movie%2.jpg</translation>
     </message>
     <message>
         <source>%1/Movie%2(%3).jpg</source>
-        <translation type="unfinished"/>
+        <translation>%1/Movie%2(%3).jpg</translation>
+    </message>
+    <message>
+        <source>Order play</source>
+        <translation>Rendezett lejátszás</translation>
+    </message>
+    <message>
+        <source>Shuffle play</source>
+        <translation>Véletlenszerű lejátszás</translation>
+    </message>
+    <message>
+        <source>Single play</source>
+        <translation>Egy lejátszása</translation>
+    </message>
+    <message>
+        <source>Single loop</source>
+        <translation>Egy ismétlése</translation>
+    </message>
+    <message>
+        <source>List loop</source>
+        <translation>Lista ismétlése</translation>
     </message>
 </context>
 <context>
@@ -676,23 +808,23 @@
     </message>
     <message>
         <source>play</source>
-        <translation type="unfinished"/>
+        <translation>lejátszás</translation>
     </message>
     <message>
         <source>prev</source>
-        <translation type="unfinished"/>
+        <translation>előző</translation>
     </message>
     <message>
         <source>next</source>
-        <translation type="unfinished"/>
+        <translation>következő</translation>
     </message>
     <message>
         <source>fs</source>
-        <translation type="unfinished"/>
+        <translation>fs</translation>
     </message>
     <message>
         <source>list</source>
-        <translation type="unfinished"/>
+        <translation>lista</translation>
     </message>
     <message>
         <source>Exit fullscreen</source>
@@ -700,7 +832,7 @@
     </message>
     <message>
         <source>Pause</source>
-        <translation>Szünet</translation>
+        <translation>Szüneteltetés</translation>
     </message>
 </context>
 </TS>

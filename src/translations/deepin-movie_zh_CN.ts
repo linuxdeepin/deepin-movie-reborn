@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="zh_CN">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="zh_CN" version="2.1">
 <context>
     <name>QObject</name>
     <message>
@@ -219,6 +217,10 @@
         <source>Default play mode</source>
         <translation>默认播放模式</translation>
     </message>
+    <message>
+        <source>Show thumbnails in progress bar</source>
+        <translation>鼠标滑动进度条为胶片格式</translation>
+    </message>
 </context>
 <context>
     <name>UrlDialog</name>
@@ -402,7 +404,7 @@
         <translation>上一帧</translation>
     </message>
     <message>
-        <source>Go To Screenshot Folder</source>
+        <source>Open screenshot folder</source>
         <translation>前往截图文件夹</translation>
     </message>
 </context>
@@ -590,6 +592,14 @@
     <message>
         <source>The CD/DVD has been ejected</source>
         <translation>CD/DVD已弹出</translation>
+    </message>
+    <message>
+        <source>All videos (%2 %1)</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>All videos (*)(%2 %1)</source>
+        <translation>所有视频 (*)(%2 %1)</translation>
     </message>
 </context>
 <context>

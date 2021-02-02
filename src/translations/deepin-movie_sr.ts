@@ -217,6 +217,10 @@
         <source>Default play mode</source>
         <translation>Подразумевани режим пуштања</translation>
     </message>
+    <message>
+        <source>Show thumbnails in progress bar</source>
+        <translation> Прикажи умањене приказе на траци напретка</translation>
+    </message>
 </context>
 <context>
     <name>UrlDialog</name>
@@ -399,6 +403,10 @@
         <source>Previous Frame</source>
         <translation>Претходни кадар</translation>
     </message>
+    <message>
+        <source>Open screenshot folder</source>
+        <translation>Отвори фасциклу са сликама екрана</translation>
+    </message>
 </context>
 <context>
     <name>dmr::BurstScreenshotsDialog</name>
@@ -443,7 +451,7 @@
     </message>
     <message>
         <source>All videos (%1)</source>
-        <translation>Сви видео снимци (%1)</translation>
+        <translation>Сви видео записи (%1)</translation>
     </message>
     <message>
         <source>Stereo</source>
@@ -585,24 +593,32 @@
         <source>The CD/DVD has been ejected</source>
         <translation>ЦД/ДВД је избачен</translation>
     </message>
+    <message>
+        <source>All videos (%2 %1)</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>All videos (*)(%2 %1)</source>
+        <translation>Сви видео записи (*)(%2 %1)</translation>
+    </message>
 </context>
 <context>
     <name>dmr::MovieInfo</name>
     <message>
         <source>%1G</source>
-        <translation>%1G</translation>
+        <translation type="vanished">%1G</translation>
     </message>
     <message>
         <source>%1M</source>
-        <translation>%1M</translation>
+        <translation type="vanished">%1M</translation>
     </message>
     <message>
         <source>%1K</source>
-        <translation>%1K</translation>
+        <translation type="vanished">%1K</translation>
     </message>
     <message>
         <source>%1</source>
-        <translation>%1</translation>
+        <translation type="vanished">%1</translation>
     </message>
 </context>
 <context>
@@ -621,7 +637,7 @@
     </message>
     <message>
         <source>Type</source>
-        <translation>Тип</translation>
+        <translation>Врста</translation>
     </message>
     <message>
         <source>Size</source>
@@ -637,27 +653,27 @@
     </message>
     <message>
         <source>Video CodecID</source>
-        <translation>ИД видео кодека</translation>
+        <translation>Видео кодек</translation>
     </message>
     <message>
         <source>Video CodeRate</source>
-        <translation type="unfinished"/>
+        <translation>Брзина кода</translation>
     </message>
     <message>
         <source>%1 kbps</source>
-        <translation type="unfinished"/>
+        <translation>%1 kbps</translation>
     </message>
     <message>
         <source>FPS</source>
-        <translation type="unfinished"/>
+        <translation>ФПС</translation>
     </message>
     <message>
         <source>%1 fps</source>
-        <translation type="unfinished"/>
+        <translation>%1 fps</translation>
     </message>
     <message>
         <source>Proportion</source>
-        <translation type="unfinished"/>
+        <translation>Размера</translation>
     </message>
     <message>
         <source>%1</source>
@@ -665,39 +681,39 @@
     </message>
     <message>
         <source>Audio info</source>
-        <translation type="unfinished"/>
+        <translation>Аудио подаци</translation>
     </message>
     <message>
         <source>Audio CodecID</source>
-        <translation type="unfinished"/>
+        <translation>Аудио кодек</translation>
     </message>
     <message>
         <source>Audio CodeRate</source>
-        <translation type="unfinished"/>
+        <translation>Брзина кода</translation>
     </message>
     <message>
         <source>Audio digit</source>
-        <translation type="unfinished"/>
+        <translation>Дигит. звук</translation>
     </message>
     <message>
         <source>%1 bits</source>
-        <translation type="unfinished"/>
+        <translation>%1 bits</translation>
     </message>
     <message>
         <source>Channels</source>
-        <translation type="unfinished"/>
+        <translation>Канали</translation>
     </message>
     <message>
         <source>%1 channels</source>
-        <translation type="unfinished"/>
+        <translation>%1 канала</translation>
     </message>
     <message>
         <source>Sampling</source>
-        <translation type="unfinished"/>
+        <translation>Узорковање</translation>
     </message>
     <message>
         <source>%1hz</source>
-        <translation type="unfinished"/>
+        <translation>%1hz</translation>
     </message>
 </context>
 <context>
@@ -718,7 +734,7 @@
     <name>dmr::PlaylistWidget</name>
     <message>
         <source>Playlist</source>
-        <translation>Листа пуштања</translation>
+        <translation>Листа</translation>
     </message>
     <message>
         <source>%1 videos</source>
@@ -726,7 +742,7 @@
     </message>
     <message>
         <source>Empty</source>
-        <translation>Празно</translation>
+        <translation>Испразни</translation>
     </message>
 </context>
 <context>

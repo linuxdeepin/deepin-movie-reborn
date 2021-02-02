@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="en">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="en" version="2.1">
 <context>
     <name>QObject</name>
     <message>
@@ -219,6 +217,10 @@
         <source>Default play mode</source>
         <translation>Default play mode</translation>
     </message>
+    <message>
+        <source>Show thumbnails in progress bar</source>
+        <translation>Show thumbnails in progress bar</translation>
+    </message>
 </context>
 <context>
     <name>UrlDialog</name>
@@ -400,6 +402,10 @@
     <message>
         <source>Previous Frame</source>
         <translation>Previous Frame</translation>
+    </message>
+    <message>
+        <source>Open screenshot folder</source>
+        <translation>Open screenshot folder</translation>
     </message>
 </context>
 <context>
@@ -587,24 +593,32 @@
         <source>The CD/DVD has been ejected</source>
         <translation>The CD/DVD has been ejected</translation>
     </message>
+    <message>
+        <source>All videos (%2 %1)</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>All videos (*)(%2 %1)</source>
+        <translation>All videos (*)(%2 %1)</translation>
+    </message>
 </context>
 <context>
     <name>dmr::MovieInfo</name>
     <message>
         <source>%1G</source>
-        <translation>%1G</translation>
+        <translation type="vanished">%1G</translation>
     </message>
     <message>
         <source>%1M</source>
-        <translation>%1M</translation>
+        <translation type="vanished">%1M</translation>
     </message>
     <message>
         <source>%1K</source>
-        <translation>%1K</translation>
+        <translation type="vanished">%1K</translation>
     </message>
     <message>
         <source>%1</source>
-        <translation>%1</translation>
+        <translation type="vanished">%1</translation>
     </message>
 </context>
 <context>
@@ -635,71 +649,71 @@
     </message>
     <message>
         <source>Codec info</source>
-        <translation type="unfinished"></translation>
+        <translation>Codec info</translation>
     </message>
     <message>
         <source>Video CodecID</source>
-        <translation type="unfinished"></translation>
+        <translation>Video CodecID</translation>
     </message>
     <message>
         <source>Video CodeRate</source>
-        <translation type="unfinished"></translation>
+        <translation>Video CodeRate</translation>
     </message>
     <message>
         <source>%1 kbps</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 kbps</translation>
     </message>
     <message>
         <source>FPS</source>
-        <translation type="unfinished"></translation>
+        <translation>FPS</translation>
     </message>
     <message>
         <source>%1 fps</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 fps</translation>
     </message>
     <message>
         <source>Proportion</source>
-        <translation type="unfinished"></translation>
+        <translation>Proportion</translation>
     </message>
     <message>
         <source>%1</source>
-        <translation type="unfinished">%1</translation>
+        <translation>%1</translation>
     </message>
     <message>
         <source>Audio info</source>
-        <translation type="unfinished"></translation>
+        <translation>Audio info</translation>
     </message>
     <message>
         <source>Audio CodecID</source>
-        <translation type="unfinished"></translation>
+        <translation>Audio CodecID</translation>
     </message>
     <message>
         <source>Audio CodeRate</source>
-        <translation type="unfinished"></translation>
+        <translation>Audio CodeRate</translation>
     </message>
     <message>
         <source>Audio digit</source>
-        <translation type="unfinished"></translation>
+        <translation>Audio digit</translation>
     </message>
     <message>
         <source>%1 bits</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 bits</translation>
     </message>
     <message>
         <source>Channels</source>
-        <translation type="unfinished"></translation>
+        <translation>Channels</translation>
     </message>
     <message>
         <source>%1 channels</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 channels</translation>
     </message>
     <message>
         <source>Sampling</source>
-        <translation type="unfinished"></translation>
+        <translation>Sampling</translation>
     </message>
     <message>
         <source>%1hz</source>
-        <translation type="unfinished"></translation>
+        <translation>%1hz</translation>
     </message>
 </context>
 <context>

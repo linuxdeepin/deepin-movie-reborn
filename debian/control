@@ -17,13 +17,13 @@ Homepage: https://www.deepin.org/
 
 Package: deepin-movie
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, va-driver-all
+Depends: ${shlibs:Depends}, ${misc:Depends}, va-driver-all, libavcodec58(>= 7:4.0), libavformat58(>= 7:4.1), libavutil56(>= 7:4.0), libffmpegthumbnailer4v5, libmpv1(>= 0.29), libpulse0(>= 0.99.1), libqt5concurrent5(>= 5.6.0~rc)
 Description: movie player
  Movie is a full-featured video player, supporting playing local and streaming media in multiple video formats.
 
 Package: libdmr
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}, libavcodec58(>= 7:4.0), libavformat58(>= 7:4.1), libavutil56(>= 7:4.0), libffmpegthumbnailer4v5, libmpv1(>= 0.29), libpulse0(>= 0.99.1), libqt5concurrent5(>= 5.6.0~rc)
 Multi-Arch: same
 Description: movie player widget library 
  deepin movie player widget library

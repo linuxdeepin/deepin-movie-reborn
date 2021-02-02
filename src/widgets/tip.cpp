@@ -1,4 +1,4 @@
-/* 
+/*
  * (c) 2017, Deepin Technology Co., Ltd. <support@deepin.org>
  *
  * This program is free software; you can redistribute it and/or
@@ -42,12 +42,11 @@
 #include <DLabel>
 
 DWIDGET_USE_NAMESPACE
-namespace dmr
-{
+namespace dmr {
 class TipPrivate
 {
 public:
-    TipPrivate(Tip *parent) : q_ptr(parent) {}
+    explicit TipPrivate(Tip *parent) : q_ptr(parent) {}
 
     void setBackgroundImage(const QPixmap &srcPixmap);
 
@@ -55,7 +54,7 @@ public:
     int             radius              = 8;
     int             shadowWidth         = 20;
     QMargins        shadowMargins       = QMargins(20, 20, 20, 20);
-    QColor          borderColor         = QColor(0, 0, 0, 0.2 * 255);
+    QColor          borderColor         = QColor(0, 0, 0, static_cast<int>(0.2 * 255));
 
     DLabel          *textLable          = nullptr;
     QFrame          *m_interFrame       = nullptr;
@@ -119,7 +118,7 @@ Tip::Tip(const QPixmap &icon, const QString &text, QWidget *parent)
 
     auto *bodyShadow = new QGraphicsDropShadowEffect;
     bodyShadow->setBlurRadius(10.0);
-    bodyShadow->setColor(QColor(0, 0, 0, 0.1 * 255));
+    bodyShadow->setColor(QColor(0, 0, 0, static_cast<int>(0.1 * 255)));
     bodyShadow->setOffset(0, 2.0);
 //    this->setGraphicsEffect(bodyShadow);
     hide();
@@ -133,9 +132,11 @@ Tip::~Tip()
 
 }
 
-void Tip::enterEvent(QEvent* e)
+void Tip::enterEvent(QEvent *e)
 {
     hide();
+
+    QFrame::enterEvent(e);
 }
 
 QBrush Tip::background() const
@@ -251,19 +252,17 @@ void Tip::paintEvent(QPaintEvent *)
     QRectF borderRect = QRectF(rect());
     auto borderRadius = radius;
     QMarginsF borderMargin(penWidthf / 2, penWidthf / 2, penWidthf / 2, penWidthf / 2);
-    if (outer) {
+//    if (outer) {  //outer值未改变
         borderRadius += penWidthf / 2;
         borderRect = borderRect.marginsAdded(borderMargin).marginsRemoved(shadowMargins);
-    } else {
-        borderRadius -= penWidthf / 2;
-        borderRect = borderRect.marginsRemoved(borderMargin).marginsRemoved(shadowMargins);
-    }
+//    } else {
+//        borderRadius -= penWidthf / 2;
+//        borderRect = borderRect.marginsRemoved(borderMargin).marginsRemoved(shadowMargins);
+//    }
     borderPath.addRoundedRect(borderRect, borderRadius, borderRadius);
     QPen borderPen(borderColor);
     borderPen.setWidthF(penWidthf);
     painter.strokePath(borderPath, borderPen);
-}
-
 }
 #else
 void Tip::paintEvent(QPaintEvent *)
@@ -281,18 +280,16 @@ void Tip::paintEvent(QPaintEvent *)
 //        d->textLable->setPalette(pa_name);
 //    });
 
-    if(DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
+    if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
         pt.setPen(QColor(0, 0, 0, 10));
         pt.setBrush(QBrush(QColor(247, 247, 247, 220)));
-    }
-    else if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
+    } else if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
         pt.setPen(QColor(255, 255, 255, 10));
         pt.setBrush(QBrush(QColor(42, 42, 42, 220)));
-    }
-    else {
+    } else {
         pt.setPen(QColor(0, 0, 0, 10));
         pt.setBrush(QBrush(QColor(247, 247, 247, 220)));
-    }  
+    }
 
     QRect rect = this->rect();
     rect.setWidth(rect.width() - 1);

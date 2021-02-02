@@ -47,7 +47,7 @@ DBusExtendedAbstractInterface::DBusExtendedAbstractInterface(const QString &serv
     : QDBusAbstractInterface(service, path, interface, connection, parent)
     , m_sync(false)
     , m_useCache(false)
-    , m_getAllPendingCallWatcher(0)
+    , m_getAllPendingCallWatcher(nullptr)
     , m_propertiesChangedConnected(false)
 {
 }
@@ -187,10 +187,10 @@ QVariant DBusExtendedAbstractInterface::internalPropGet(const char *propname, vo
         }
 
         // is this metatype registered?
-        const char *expectedSignature = "";
+//        const char *expectedSignature = "";
         if (int(metaProperty.type()) != QMetaType::QVariant) {
-            expectedSignature = QDBusMetaType::typeToSignature(metaProperty.userType());
-            if (0 == expectedSignature) {
+            const char *expectedSignature = QDBusMetaType::typeToSignature(metaProperty.userType());
+            if (nullptr == expectedSignature) {
                 QString errorMessage =
                     QStringLiteral("Type %1 must be registered with Qt D-Bus "
                                    "before it can be used to read property "
@@ -317,7 +317,7 @@ void DBusExtendedAbstractInterface::onAsyncSetPropertyFinished(DBusExtendedPendi
 
 void DBusExtendedAbstractInterface::onAsyncGetAllPropertiesFinished(QDBusPendingCallWatcher *watcher)
 {
-    m_getAllPendingCallWatcher = 0;
+    m_getAllPendingCallWatcher = nullptr;
 
     QDBusPendingReply<QVariantMap> reply = *watcher;
 
@@ -377,7 +377,7 @@ void DBusExtendedAbstractInterface::onPropertiesChanged(const QString& interface
 QVariant DBusExtendedAbstractInterface::demarshall(const QString &interface, const QMetaProperty &metaProperty, const QVariant &value, QDBusError *error)
 {
     Q_ASSERT(metaProperty.isValid());
-    Q_ASSERT(error != 0);
+    Q_ASSERT(error != nullptr);
 
     if (value.userType() == metaProperty.userType()) {
         // No need demarshalling. Passing back straight away ...
@@ -385,7 +385,7 @@ QVariant DBusExtendedAbstractInterface::demarshall(const QString &interface, con
         return value;
     }
 
-    QVariant result = QVariant(metaProperty.userType(), (void*)0);
+    QVariant result = QVariant(metaProperty.userType(), nullptr);
     QString errorMessage;
     const char *expectedSignature = QDBusMetaType::typeToSignature(metaProperty.userType());
 

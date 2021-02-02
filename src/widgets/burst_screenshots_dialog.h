@@ -1,4 +1,4 @@
-/* 
+/*
  * (c) 2017, Deepin Technology Co., Ltd. <support@deepin.org>
  *
  * This program is free software; you can redistribute it and/or
@@ -28,7 +28,7 @@
  * files in the program, then also delete it here.
  */
 #ifndef _DMR_BURST_SCREENSHOTS_DIALOG_H
-#define _DMR_BURST_SCREENSHOTS_DIALOG_H 
+#define _DMR_BURST_SCREENSHOTS_DIALOG_H
 
 #include <QtWidgets>
 #include <DDialog>
@@ -37,13 +37,14 @@
 DWIDGET_USE_NAMESPACE
 
 namespace dmr {
-class PlayerEngine;
 class PlayItemInfo;
 
-class ThumbnailFrame: public QLabel { 
+class ThumbnailFrame: public QLabel
+{
     Q_OBJECT
 public:
-    ThumbnailFrame(QWidget* parent) :QLabel(parent) {
+    ThumbnailFrame(QWidget *parent) : QLabel(parent)
+    {
         setFixedSize(178, 100);
         auto e = new QGraphicsDropShadowEffect(this);
         e->setColor(QColor(0, 0, 0, 255 * 2 / 10));
@@ -54,11 +55,12 @@ public:
 };
 
 
-class BurstScreenshotsDialog: public DAbstractDialog {
+class BurstScreenshotsDialog: public DAbstractDialog
+{
     Q_OBJECT
 public:
-    BurstScreenshotsDialog(const PlayItemInfo& pif);
-    void updateWithFrames(const QList<QPair<QImage, qint64>>& frames);
+    BurstScreenshotsDialog(const PlayItemInfo &pif);
+    void updateWithFrames(const QList<QPair<QImage, qint64>> &frames);
 
     QString savedPosterPath();
 
@@ -72,7 +74,7 @@ private:
     QPushButton *_saveBtn {nullptr};
     QList<QPair<QImage, qint64>> _thumbs;
     QString _posterPath;
-    DTitlebar* m_titlebar;
+    DTitlebar *m_titlebar;
 };
 }
 

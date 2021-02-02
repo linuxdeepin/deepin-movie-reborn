@@ -44,7 +44,9 @@ public:
 protected:
     void showEvent(QShowEvent* se) override;
     void resizeEvent(QResizeEvent* re) override;
-
+public slots:
+	//把lambda表达式改为槽函数，modify by myk
+    void slotTextChanged(const QString & s);
 private:
     QAction *_clearAct {nullptr};
 };

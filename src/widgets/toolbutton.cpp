@@ -1,4 +1,4 @@
-/* 
+/*
  * (c) 2017, Deepin Technology Co., Ltd. <support@deepin.org>
  *
  * This program is free software; you can redistribute it and/or
@@ -32,12 +32,12 @@
 #include <DApplication>
 
 namespace dmr {
-VolumeButton::VolumeButton(QWidget* parent)
+VolumeButton::VolumeButton(QWidget *parent)
     : DIconButton(parent)
 {
     changeLevel(Level::High);
     setIcon(QIcon::fromTheme("dcc_volume"));
-    setIconSize(QSize(36,36));
+    setIconSize(QSize(36, 36));
 }
 
 void VolumeButton::changeLevel(Level lv)
@@ -45,14 +45,18 @@ void VolumeButton::changeLevel(Level lv)
     if (_lv != lv) {
         switch (lv) {
         case Level::Mute:
-            setIcon(QIcon::fromTheme("dcc_mute")); break;
+            setIcon(QIcon::fromTheme("dcc_mute"));
+            break;
         case Level::Off:
         case Level::Low:
-            setIcon(QIcon::fromTheme("dcc_volumelow")); break;
+            setIcon(QIcon::fromTheme("dcc_volumelow"));
+            break;
         case Level::Mid:
-            setIcon(QIcon::fromTheme("dcc_volumemid")); break;
+            setIcon(QIcon::fromTheme("dcc_volumemid"));
+            break;
         case Level::High:
-            setIcon(QIcon::fromTheme("dcc_volume")); break;
+            setIcon(QIcon::fromTheme("dcc_volume"));
+            break;
         }
         //        setStyleSheet(styleSheet());
         _lv = lv;
@@ -62,14 +66,18 @@ void VolumeButton::changeLevel(Level lv)
 void VolumeButton::enterEvent(QEvent *ev)
 {
     emit entered();
+
+    DIconButton::enterEvent(ev);
 }
 
 void VolumeButton::leaveEvent(QEvent *ev)
 {
     emit leaved();
+
+    DIconButton::leaveEvent(ev);
 }
 
-void VolumeButton::wheelEvent(QWheelEvent* we)
+void VolumeButton::wheelEvent(QWheelEvent *we)
 {
     //qDebug() << we->angleDelta() << we->modifiers() << we->buttons();
     if (we->buttons() == Qt::NoButton && we->modifiers() == Qt::NoModifier) {

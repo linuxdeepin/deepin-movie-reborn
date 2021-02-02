@@ -1,4 +1,4 @@
-/* 
+/*
  * (c) 2017, Deepin Technology Co., Ltd. <support@deepin.org>
  *
  * This program is free software; you can redistribute it and/or
@@ -38,7 +38,7 @@
 namespace dmr {
 static OnlineSubtitle *_instance = nullptr;
 
-using RequestFunc = QString (const QFileInfo& fi);
+using RequestFunc = QString (const QFileInfo &fi);
 
 struct SubtitleProvider {
     QString apiurl;
@@ -47,13 +47,13 @@ struct SubtitleProvider {
 
 static SubtitleProvider shooter;
 
-static QString hash_file(const QFileInfo& fi)
+static QString hash_file(const QFileInfo &fi)
 {
     auto sz = fi.size();
     QList<qint64> offsets = {
         4096,
         sz / 3 * 2,
-        sz / 3, 
+        sz / 3,
         sz - 8192
     };
 
@@ -81,20 +81,21 @@ static QString hash_file(const QFileInfo& fi)
         char hex[] = "0123456789ABCDEF";
         char md5[32];
         for (int i = 0; i < 16; i++) {
-            md5[i*2] = hex[out[i] >> 4];
-            md5[i*2+1] = hex[out[i] & 0xf];
+            md5[i * 2] = hex[out[i] >> 4];
+            md5[i * 2 + 1] = hex[out[i] & 0xf];
         }
 
-        mds.append(QString::fromLatin1((const char*)md5, 32));
+        mds.append(QString::fromLatin1((const char *)md5, 32));
 #endif
     });
+    f.close();
 
     qDebug() << mds.join(";");
     //Qt seems has a bug that ; will not be encoded as %3B in url query
     return mds.join("%3B");
 }
 
-OnlineSubtitle& OnlineSubtitle::get()
+OnlineSubtitle &OnlineSubtitle::get()
 {
     if (_instance == nullptr) {
         _instance = new OnlineSubtitle;
@@ -106,15 +107,15 @@ OnlineSubtitle& OnlineSubtitle::get()
 OnlineSubtitle::OnlineSubtitle()
 {
     shooter.apiurl = "http://www.shooter.cn/api/subapi.php";
-    shooter.reqfn = [](const QFileInfo& fi) {
+    shooter.reqfn = [](const QFileInfo & fi) {
         if (!fi.exists()) return "";
         return "";
     };
 
     _defaultLocation = QString("%1/%2/%3/subtitles")
-        .arg(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation))
-        .arg(qApp->organizationName())
-        .arg(qApp->applicationName());
+                       .arg(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation))
+                       .arg(qApp->organizationName())
+                       .arg(qApp->applicationName());
     QDir d;
     d.mkpath(_defaultLocation);
 
@@ -125,7 +126,7 @@ OnlineSubtitle::OnlineSubtitle()
 void OnlineSubtitle::subtitlesDownloadComplete()
 {
     QList<QString> files;
-    for (auto& sub: _subs) {
+    for (auto &sub : _subs) {
         if (!sub.local.isEmpty())
             files.append(sub.local); // filter out some index files (idx e.g.)
     }
@@ -136,7 +137,7 @@ void OnlineSubtitle::subtitlesDownloadComplete()
     _lastReason = FailReason::NoError;
 }
 
-QString OnlineSubtitle::findAvailableName(const QString& tmpl, int id)
+QString OnlineSubtitle::findAvailableName(const QString &tmpl, int id)
 {
     QString name_tmpl = tmpl;
     int i = tmpl.lastIndexOf('.');
@@ -153,13 +154,13 @@ QString OnlineSubtitle::findAvailableName(const QString& tmpl, int id)
             return path;
         }
         c++;
-    } while (c < (1<<16));
+    } while (c < (1 << 16));
     return tmpl;
 }
 
-void OnlineSubtitle::replyReceived(QNetworkReply* reply)
+void OnlineSubtitle::replyReceived(QNetworkReply *reply)
 {
-    reply->deleteLater();
+    //reply->deleteLater();
     if (reply->error() != QNetworkReply::NoError) {
         if (reply->property("type") == "sub") {
             _pendingDownloads--;
@@ -169,16 +170,19 @@ void OnlineSubtitle::replyReceived(QNetworkReply* reply)
             }
         }
         qDebug() << reply->errorString();
+        reply->deleteLater();
         return;
     }
 
     if (reply->property("type") == "meta") {
         auto data = reply->readAll();
-        qDebug() << "data size " << data.size() << (int)data[0];
-        if ((0 == data.size()) || (data.size() == 1 && (int)data[0] == -1)) {
+        qDebug() << "data size " << data.size() << static_cast<int>(data[0]);
+        // fix bug 24817 by ZhuYuliang
+        if ((0 == data.size()) || (((data.size() == 1) && (static_cast<int>(data[0]) == -1)) || (static_cast<int>(data[0]) == 255))) {
             qDebug() << "no subtitle found";
             _lastReason = FailReason::NoSubFound;
             emit onlineSubtitleStateChanged(_lastReason);
+            reply->deleteLater();
             return;
         }
 
@@ -187,10 +191,10 @@ void OnlineSubtitle::replyReceived(QNetworkReply* reply)
             qDebug() << json;
             _subs.clear();
 
-            for (auto v: json.array()) {
+            for (auto v : json.array()) {
                 if (v.isObject()) {
                     auto obj = v.toObject();
-                    for (auto f: obj["Files"].toArray()) {
+                    for (auto f : obj["Files"].toArray()) {
                         auto fi = f.toObject();
 
                         ShooterSubtitleMeta meta;
@@ -221,7 +225,7 @@ void OnlineSubtitle::replyReceived(QNetworkReply* reply)
         } else if (reply->hasRawHeader("Content-Disposition")) {
             QByteArray name;
             auto bytes = reply->rawHeader("Content-Disposition");
-            for (auto h: bytes.split(';')) {
+            for (auto h : bytes.split(';')) {
                 auto kv = h.split('=');
                 if (kv.size() == 2 && kv[0].trimmed() == "filename") {
                     name = kv[1].trimmed();
@@ -235,7 +239,7 @@ void OnlineSubtitle::replyReceived(QNetworkReply* reply)
         } else {
             int id = reply->property("id").toInt();
             name_tmpl = QString("%1.%2").arg(_lastReqVideo.completeBaseName())
-                .arg(_subs[id].ext);
+                        .arg(_subs[id].ext);
         }
         reply->close();
 
@@ -247,6 +251,7 @@ void OnlineSubtitle::replyReceived(QNetworkReply* reply)
                 f.write(data);
             }
             f.flush();
+            f.close();
         }
 
         _pendingDownloads--;
@@ -264,26 +269,26 @@ void OnlineSubtitle::replyReceived(QNetworkReply* reply)
             subtitlesDownloadComplete();
         }
     }
+    reply->deleteLater();
 }
 
-bool OnlineSubtitle::hasHashConflict(const QString& path, const QString& tmpl, QString& conflictPath)
+bool OnlineSubtitle::hasHashConflict(const QString &path, const QString &tmpl, QString &conflictPath)
 {
     QFileInfo fi(path);
     auto md5 = utils::FullFileHash(fi);
-    
+
     QDirIterator di(fi.path());
     while (di.hasNext()) {
         di.next();
         auto s = di.fileName();
-        if (fi.fileName() == di.fileName()) 
+        if (fi.fileName() == di.fileName())
             continue;
 
         s = s.replace(QRegExp("\\[\\d+\\]"), "");
         if (tmpl == s) {
             auto h = utils::FullFileHash(di.fileInfo());
             qDebug() << "found " << di.fileName() << h;
-            if (h == md5)
-            {
+            if (h == md5) {
                 conflictPath = di.filePath();
                 return true;
             }
@@ -297,7 +302,7 @@ void OnlineSubtitle::downloadSubtitles()
 {
     _pendingDownloads = _subs.size();
 
-    for (auto& sub: _subs) {
+    for (auto &sub : _subs) {
         QNetworkRequest req;
         //QUrl url(sub.link.toUtf8());
         auto s = sub.link;
@@ -318,7 +323,7 @@ QString OnlineSubtitle::storeLocation()
     return _defaultLocation;
 }
 
-void OnlineSubtitle::requestSubtitle(const QUrl& url)
+void OnlineSubtitle::requestSubtitle(const QUrl &url)
 {
     QFileInfo fi(url.toLocalFile());
     QString h = hash_file(fi);

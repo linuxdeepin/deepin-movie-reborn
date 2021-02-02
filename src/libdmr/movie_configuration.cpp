@@ -1,4 +1,4 @@
-/* 
+/*
  * (c) 2017, Deepin Technology Co., Ltd. <support@deepin.org>
  *
  * This program is free software; you can redistribute it and/or
@@ -34,9 +34,8 @@
 #include <QtSql>
 #include <atomic>
 
-namespace dmr 
-{
-static std::atomic<MovieConfiguration*> _instance { nullptr };
+namespace dmr {
+static std::atomic<MovieConfiguration *> _instance { nullptr };
 static QMutex _instLock;
 
 #define CHECKED_EXEC(q) do { \
@@ -54,12 +53,12 @@ static QMutex _instLock;
 class MovieConfigurationBackend: public QObject
 {
 public:
-    MovieConfigurationBackend(MovieConfiguration* cfg): QObject(cfg)
+    explicit MovieConfigurationBackend(MovieConfiguration *cfg): QObject(cfg)
     {
         auto db_dir = QString("%1/%2/%3")
-            .arg(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation))
-            .arg(qApp->organizationName())
-            .arg(qApp->applicationName());
+                      .arg(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation))
+                      .arg(qApp->organizationName())
+                      .arg(qApp->applicationName());
 
         QDir d;
         d.mkpath(db_dir);
@@ -73,18 +72,18 @@ public:
         if (!ts.contains("urls") || !ts.contains("infos")) {
             QSqlQuery q(_db);
             if (!q.exec("create table if not exists urls (url TEXT primary key, "
-                    "md5 TEXT, timestamp DATETIME)")) {
+                        "md5 TEXT, timestamp DATETIME)")) {
                 qCritical() << q.lastError();
             }
 
             if (!q.exec("create table if not exists infos (url TEXT, "
-                    "key TEXT, value BLOB, primary key (url, key))")) {
+                        "key TEXT, value BLOB, primary key (url, key))")) {
                 qCritical() << q.lastError();
             }
         }
     }
 
-    void deleteUrl(const QUrl& url)
+    void deleteUrl(const QUrl &url)
     {
         _db.transaction();
 
@@ -95,7 +94,7 @@ public:
             _db.commit();
             return;
         }
-        
+
         if (q.numRowsAffected() > 0) {
             QSqlQuery q(_db);
             q.prepare("delete from urls where url = ?");
@@ -104,7 +103,7 @@ public:
         }
     }
 
-    bool urlExists(const QUrl& url)
+    bool urlExists(const QUrl &url)
     {
         QSqlQuery q(_db);
         q.prepare("select url from urls where url = ? limit 1");
@@ -129,7 +128,7 @@ public:
         _db.rollback();
     }
 
-    void updateUrl(const QUrl& url, const QString& key, const QVariant& val)
+    void updateUrl(const QUrl &url, const QString &key, const QVariant &val)
     {
         qDebug() << url << key << val;
 
@@ -163,7 +162,7 @@ public:
         _db.commit();
     }
 
-    QVariant queryValueByUrlKey(const QUrl& url, const QString& key)
+    QVariant queryValueByUrlKey(const QUrl &url, const QString &key)
     {
         if (!urlExists(url))
             return {};
@@ -181,7 +180,7 @@ public:
         return QVariant();
     }
 
-    QMap<QString, QVariant> queryByUrl(const QUrl& url)
+    QMap<QString, QVariant> queryByUrl(const QUrl &url)
     {
         if (!urlExists(url))
             return {};
@@ -199,34 +198,36 @@ public:
         return res;
     }
 
-    ~MovieConfigurationBackend()
-    {
-        _db.close();
-        QSqlDatabase::removeDatabase(_db.connectionName());
-    }
+    ~MovieConfigurationBackend();
 
 private:
     QSqlDatabase _db;
 };
 
-MovieConfiguration& MovieConfiguration::get()
+MovieConfigurationBackend::~MovieConfigurationBackend()
+{
+    _db.close();
+    QSqlDatabase::removeDatabase(_db.connectionName());
+}
+
+MovieConfiguration &MovieConfiguration::get()
 {
     if (_instance == nullptr) {
         QMutexLocker lock(&_instLock);
-        if (_instance == nullptr) {
+//        if (_instance == nullptr) {
             _instance = new MovieConfiguration;
-        }
+//        }
     }
 
     return *_instance;
 }
 
-void MovieConfiguration::removeUrl(const QUrl& url)
+void MovieConfiguration::removeUrl(const QUrl &url)
 {
     _backend->deleteUrl(url);
 }
 
-bool MovieConfiguration::urlExists(const QUrl& url)
+bool MovieConfiguration::urlExists(const QUrl &url)
 {
     return _backend->urlExists(url);
 }
@@ -236,17 +237,17 @@ void MovieConfiguration::clear()
     _backend->clear();
 }
 
-void MovieConfiguration::updateUrl(const QUrl& url, const QString& key, const QVariant& val)
+void MovieConfiguration::updateUrl(const QUrl &url, const QString &key, const QVariant &val)
 {
     _backend->updateUrl(url, key, val);
 }
 
-void MovieConfiguration::updateUrl(const QUrl& url, KnownKey key, const QVariant& val)
+void MovieConfiguration::updateUrl(const QUrl &url, KnownKey key, const QVariant &val)
 {
     updateUrl(url, knownKey2String(key), val);
 }
 
-void MovieConfiguration::append2ListUrl(const QUrl& url, KnownKey key, const QString& val)
+void MovieConfiguration::append2ListUrl(const QUrl &url, KnownKey key, const QString &val)
 {
     auto list = getByUrl(url, knownKey2String(key)).toString().split(';', QString::SkipEmptyParts);
     auto bytes = val.toUtf8().toBase64();
@@ -254,50 +255,57 @@ void MovieConfiguration::append2ListUrl(const QUrl& url, KnownKey key, const QSt
     updateUrl(url, key, list.join(';'));
 }
 
-void MovieConfiguration::removeFromListUrl(const QUrl& url, KnownKey key, const QString& val)
+void MovieConfiguration::removeFromListUrl(const QUrl &url, KnownKey key, const QString &val)
 {
+    //add for warning by xxj ,no any means
+    val.isNull();
     auto list = getListByUrl(url, key);
-
 }
 
 QString MovieConfiguration::knownKey2String(KnownKey kk)
 {
     switch (kk) {
-        case KnownKey::SubDelay: return "sub-delay";
-        case KnownKey::SubCodepage: return "sub-codepage";
-        case KnownKey::SubId: return "sid";
-        case KnownKey::StartPos: return "start";
-        case KnownKey::ExternalSubs: return "external-subs";
-        default: return "";
+    case KnownKey::SubDelay:
+        return "sub-delay";
+    case KnownKey::SubCodepage:
+        return "sub-codepage";
+    case KnownKey::SubId:
+        return "sid";
+    case KnownKey::StartPos:
+        return "start";
+    case KnownKey::ExternalSubs:
+        return "external-subs";
+    default:
+        return "";
     }
 }
 
-QStringList MovieConfiguration::getListByUrl(const QUrl& url, KnownKey key)
+QStringList MovieConfiguration::getListByUrl(const QUrl &url, KnownKey key)
 {
     return decodeList(getByUrl(url, knownKey2String(key)));
 }
 
-QStringList MovieConfiguration::decodeList(const QVariant& val)
+QStringList MovieConfiguration::decodeList(const QVariant &val)
 {
     auto list = val.toString().split(';', QString::SkipEmptyParts);
-    std::transform(list.begin(), list.end(), list.begin(), [](const QString& s) {
+    std::transform(list.begin(), list.end(), list.begin(), [](const QString & s) {
         return QByteArray::fromBase64(s.toUtf8());
     });
 
     return list;
 }
 
-QVariant MovieConfiguration::getByUrl(const QUrl& url, const QString& key)
+QVariant MovieConfiguration::getByUrl(const QUrl &url, const QString &key)
 {
     return _backend->queryValueByUrlKey(url, key);
 }
 
-QVariant MovieConfiguration::getByUrl(const QUrl& url, KnownKey key)
+QVariant MovieConfiguration::getByUrl(const QUrl &url, KnownKey key)
 {
     return getByUrl(url, knownKey2String(key));
 }
 
-QMap<QString, QVariant> MovieConfiguration::queryByUrl(const QUrl& url)
+QMap<QString, QVariant> MovieConfiguration::queryByUrl(const QUrl &url)
 {
     return _backend->queryByUrl(url);
 }
@@ -308,13 +316,13 @@ MovieConfiguration::~MovieConfiguration()
 }
 
 MovieConfiguration::MovieConfiguration()
-    :QObject(0)
+    : QObject(nullptr)
 {
 }
 
 static void _backend_test()
 {
-    auto& mc = MovieConfiguration::get();
+    auto &mc = MovieConfiguration::get();
     mc.updateUrl(QUrl("movie1"), "sub-delay", -2.5);
     mc.updateUrl(QUrl("movie1"), "sub-delay", 1.5);
     mc.updateUrl(QUrl("movie2"), "sub-delay", 1.0);
