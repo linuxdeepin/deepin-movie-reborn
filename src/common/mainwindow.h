@@ -86,7 +86,7 @@ class MovieWidget;
 class IconButton: public DPushButton
 {
 public:
-    explicit IconButton(QWidget *parent = 0): DPushButton(parent), m_themeType(0) {}
+    explicit IconButton(QWidget *parent = 0): DPushButton(parent), m_nThemeType(0) {}
 
     void setIcon(QIcon icon)
     {
@@ -94,22 +94,22 @@ public:
         DPushButton::setIcon(m_icon);
     };
 
-    void changeTheme(int themeType = 0)
+    void changeTheme(int nThemeType = 0)
     {
-        m_themeType = themeType;
+        m_nThemeType = nThemeType;
         update();
     }
 protected:
-    void paintEvent(QPaintEvent *event)
+    void paintEvent(QPaintEvent *pEvent)
     {
         QPainter painter(this);
         QRect backgroundRect = rect();
         //QPainterPath bp1;
         //bp1.addRoundedRect(backgroundRect, 2, 2);
         painter.setPen(Qt::NoPen);
-        if (m_themeType == 1) {
+        if (m_nThemeType == 1) {
             painter.setBrush(QBrush(QColor(247, 247, 247, 220)));
-        } else if (m_themeType == 2) {
+        } else if (m_nThemeType == 2) {
             painter.setBrush(QBrush(QColor(42, 42, 42, 220)));
         } else {
             painter.setBrush(QBrush(QColor(247, 247, 247, 220)));
@@ -118,195 +118,266 @@ protected:
         painterPath.addRoundedRect(backgroundRect, 15, 15);
         painter.drawPath(painterPath);
 
-        DPushButton::paintEvent(event);
+        DPushButton::paintEvent(pEvent);
     };
 private:
     QIcon m_icon;
-    int m_themeType;
+    int m_nThemeType;
 };
 
+/**
+ * @file 主窗口，负责显示和交互
+ */
 class MainWindow: public DMainWindow
 {
     Q_OBJECT
     Q_PROPERTY(bool inited READ inited WRITE setInit NOTIFY initChanged)
+
+signals:
+    /**
+     * @brief dxcb下窗口激活信号
+     */
+    void windowEntered();
+    /**
+     * @brief dxcb下窗口失去焦点信号
+     */
+    void windowLeaved();
+    /**
+     * @brief 播放状态改变信号
+     */
+    void initChanged();
+    /**
+     * @brief 画面菜单是否可用信号
+     */
+    void frameMenuEnable(bool);
+    /**
+     * @brief 播放速度菜单是否可用信号
+     */
+    void playSpeedMenuEnable(bool);
+    /**
+     * @brief 主窗口，负责显示和交互
+     */
+    void playlistchanged();
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-
+    /**
+     * @brief 返回窗口播放状态
+     */
     bool inited() const
     {
-        return _inited;
-    }
-    PlayerEngine *engine()
-    {
-        return _engine;
-    }
-    ToolboxProxy *toolbox()
-    {
-        return _toolbox;
-    }
-    PlaylistWidget *playlist()
-    {
-        return _playlist;
-    }
-    ///用于测试触屏效果
-    void setTouched(bool touched)
-    {
-        _isTouch = touched;
+        return m_bInited;
     }
     /**
-     * @brief firstPlayInit 第一次点击播放时，需要加载动态库函数指针然后进行构造未完成的初始化
+     * @brief 返回播放引擎对象
+     * @return 播放引擎指针
      */
-    //void firstPlayInit();
-    ///判断鼠标是否在窗口内
+    PlayerEngine *engine()
+    {
+        return m_pEngine;
+    }
+    /**
+     * @brief 返回工具栏对象
+     * @return 工具栏指针
+     */
+    ToolboxProxy *toolbox()
+    {
+        return m_pToolbox;
+    }
+    /**
+     * @brief 返回播放列表对象
+     * @return 播放列表指针
+     */
+    PlaylistWidget *playlist()
+    {
+        return m_pPlaylist;
+    }
+    /**
+     * @brief 用于测试触屏效果
+     */
+    void setTouched(bool bTouched)
+    {
+        m_bIsTouch = bTouched;
+    }
+    /**
+     * @brief 判断鼠标是否在窗口内
+     * @param 当前鼠标焦点
+     * @return 是否在窗口内
+     */
     bool judgeMouseInWindow(QPoint pos);
-
-    void requestAction(ActionFactory::ActionKind, bool fromUI = false,
-                       QList<QVariant> args = {}, bool shortcut = false);
-
-    bool insideResizeArea(const QPoint &global_p);
+    /**
+     * @brief 处理菜单事件
+     * @param 菜单项id，表明菜单功能
+     * @param 是否是鼠标操作
+     * @param 菜单项带的参数
+     * @param 是否是快捷键
+     */
+    void requestAction(ActionFactory::ActionKind, bool bFromUI = false,
+                       QList<QVariant> args = {}, bool bShortcut = false);
+    bool insideResizeArea(const QPoint &globalPos);
     QMargins dragMargins() const;
-
-    void capturedMousePressEvent(QMouseEvent *me);
-    void capturedMouseReleaseEvent(QMouseEvent *me);
+    void capturedMousePressEvent(QMouseEvent *pEvent);
+    void capturedMouseReleaseEvent(QMouseEvent *pEvent);
     void capturedKeyEvent(QKeyEvent *pEvent);
-
     void syncStaysOnTop();
-    void updateGeometryNotification(const QSize &sz);
-
+    void updateGeometryNotification(const QSize &size);
     void updateContentGeometry(const QRect &rect);
-
     static QString lastOpenedPath();
-
     void reflectActionToUI(ActionFactory::ActionKind);
-
-    bool set_playlistopen_clicktogglepause(bool playlistopen);
+    bool set_playlistopen_clicktogglepause(bool bPlaylistopen);
     NotificationWidget *get_nwComm();
-
-    //在读取光盘的时候，直接把光盘挂载点的路径加入到播放列表中 thx
+    /**
+     * @brief 在读取光盘的时候，直接把光盘挂载点的路径加入到播放列表中
+     */
     bool addCdromPath();
+    /**
+     * @brief 初始化播放列表
+     */
     void loadPlayList();
     void setOpenFiles(QStringList &);
-
     void testMprisapp();
     void testCdrom();
     void setShowSetting(bool);
-    void updateGeometry(CornerEdge edge, QPoint p);
+    void updateGeometry(CornerEdge edge, QPoint pos);
     void setPresenter(Presenter *);
+    /**
+     * @brief 获取播放音量
+     * @return 播放音量
+     */
     int getDisplayVolume();
-signals:
-    void windowEntered();
-    void windowLeaved();
-    void initChanged();
-    void frameMenuEnable(bool);
-    void playSpeedMenuEnable(bool);
-    void playlistchanged();
-    void volumeChanged();
 
 public slots:
+    /**
+     * @brief 根据url地址播放影片
+     * @param 影片路径
+     */
     void play(const QUrl &url);
-    void playList(const QList<QString> &l);
+
+    void playList(const QList<QString> &listFiles);
     void updateProxyGeometry();
     void suspendToolsWindow();
     void resumeToolsWindow();
-    void checkOnlineState(const bool isOnline);
+    void checkOnlineState(const bool bIsOnline);
     void checkOnlineSubtitle(const OnlineSubtitle::FailReason reason);
-    void checkErrorMpvLogsChanged(const QString prefix, const QString text);
-    void checkWarningMpvLogsChanged(const QString prefix, const QString text);
-    void slotdefaultplaymodechanged(const QString &key, const QVariant &value);
+    void checkErrorMpvLogsChanged(const QString sPrefix, const QString sText);
+    void checkWarningMpvLogsChanged(const QString sPrefix, const QString sText);
+    void slotdefaultplaymodechanged(const QString &sKey, const QVariant &value);
 #if defined (__aarch64__) || defined (__mips__)
     void syncPostion();
 #endif
-    //设置窗口顶层
-    void my_setStayOnTop(const QWidget *widget, bool on);
+    /**
+     * @brief 设置窗口顶层
+     */
+    void my_setStayOnTop(const QWidget *pWidget, bool bOn);
+
     void slotmousePressTimerTimeOut();
+    /**
+     * @brief 播放引擎状态改变
+     */
     void slotPlayerStateChanged();
+    /**
+     * @brief 窗口焦点改变
+     */
     void slotFocusWindowChanged();
-//    void slotElapsedChanged();
+    /**
+     * @brief 文件加载成功后做的后续操作
+     */
     void slotFileLoaded();
-    void slotUrlpause(bool status);
+    /**
+     * @brief 显示是否在缓冲中
+     */
+    void slotUrlpause(bool bStatus);
+    /**
+     * @brief 根据字体大小改变显示
+     */
     void slotFontChanged(const QFont &font);
+    /**
+     * @brief 改变静音状态
+     */
     void slotMuteChanged(bool bMute);
-    void slotAwaacelModeChanged(const QString &key, const QVariant &value);     //改变硬解码模式
+    /**
+     * @brief 改变硬解码模式
+     */
+    void slotAwaacelModeChanged(const QString &sKey, const QVariant &value);
+    /**
+     * @brief 用于测试触屏效果
+     */
     void slotVolumeChanged(int nVolume);
 protected:
-    void showEvent(QShowEvent *event) override;
-    void hideEvent(QHideEvent *event) override;
-    void closeEvent(QCloseEvent *ev) override;
-    void resizeEvent(QResizeEvent *ev) override;
-    void mouseMoveEvent(QMouseEvent *ev) override;
-    void mousePressEvent(QMouseEvent *ev) override;
-    void mouseDoubleClickEvent(QMouseEvent *ev) override;
-    void mouseReleaseEvent(QMouseEvent *ev) override;
-    void focusInEvent(QFocusEvent *fe) override;
-    void wheelEvent(QWheelEvent *we) override;
+    void showEvent(QShowEvent *pEvent) override;
+    void hideEvent(QHideEvent *pEvent) override;
+    void closeEvent(QCloseEvent *pEvent) override;
+    void resizeEvent(QResizeEvent *pEvent) override;
+    void mouseMoveEvent(QMouseEvent *pEvent) override;
+    void mousePressEvent(QMouseEvent *pEvent) override;
+    void mouseDoubleClickEvent(QMouseEvent *pEvent) override;
+    void mouseReleaseEvent(QMouseEvent *pEvent) override;
+    void focusInEvent(QFocusEvent *pEvent) override;
+    void wheelEvent(QWheelEvent *pEvent) override;
 
-    void keyPressEvent(QKeyEvent *ev) override;
-    void keyReleaseEvent(QKeyEvent *ev) override;
+    void keyPressEvent(QKeyEvent *pEvent) override;
+    void keyReleaseEvent(QKeyEvent *pEvent) override;
     void moveEvent(QMoveEvent *ev) override;
-    void contextMenuEvent(QContextMenuEvent *cme) override;
-    void paintEvent(QPaintEvent *) override;
-    void dragEnterEvent(QDragEnterEvent *event) override;
-    void dragMoveEvent(QDragMoveEvent *event) override;
-    void dropEvent(QDropEvent *event) override;
+    void contextMenuEvent(QContextMenuEvent *pEvent) override;
+    void paintEvent(QPaintEvent *pEvent) override;
+    void dragEnterEvent(QDragEnterEvent *pEvent) override;
+    void dragMoveEvent(QDragMoveEvent *pEvent) override;
+    void dropEvent(QDropEvent *pEvent) override;
 
-    bool event(QEvent *event) override;
-    void leaveEvent(QEvent *) override;
+    bool event(QEvent *pEvent) override;
+    void leaveEvent(QEvent *pEvent) override;
 
 protected slots:
-    void setInit(bool v);
-    void menuItemInvoked(QAction *action);
+    void setInit(bool bInit);
+    void menuItemInvoked(QAction *pAction);
 #ifdef USE_DXCB
     void onApplicationStateChanged(Qt::ApplicationState e);
 #endif
     void onBindingsChanged();
     void updateActionsState();
-    void syncPlayState();
     void animatePlayState();
-    void resizeByConstraints(bool forceCentered = false);
+    void resizeByConstraints(bool bForceCentered = false);
     void onWindowStateChanged();
 
-    void miniButtonClicked(QString id);
+    void miniButtonClicked(QString sId);
 
     void startBurstShooting();
-    void onBurstScreenshot(const QImage &frame, qint64 timestamp);
+    void onBurstScreenshot(const QImage &imgFrame, qint64 timestamp);
     void delayedMouseReleaseHandler();
-//    void onDvdData(const QString &title);
-
 #ifdef USE_DXCB
-    void onMonitorButtonPressed(int x, int y);
-    void onMonitorMotionNotify(int x, int y);
+    void onMonitorButtonPressed(int nX, int nY);
+    void onMonitorMotionNotify(int nX, int nY);
     _miniPlayBtn
-    void onMonitorButtonReleased(int x, int y);
+    void onMonitorButtonReleased(int nX, int nY);
 
     void updateShadow();
 #endif
     void updateMiniBtnTheme(int);
-    void diskRemoved(QString strDiskName);
+    void diskRemoved(QString sDiskName);
 
     void sleepStateChanged(bool bSleep);
 private:
+    void initMember();
     void setupTitlebar();
-
     void handleSettings(DSettingsDialog *);
     DSettingsDialog *initSettings();
     void updateSizeConstraints();
     void toggleUIMode();
 
-    bool insideToolsArea(const QPoint &p);
+    bool insideToolsArea(const QPoint &pos);
     void switchTheme();
-    bool isActionAllowed(ActionFactory::ActionKind kd, bool fromUI, bool isShortcut);
+    bool isActionAllowed(ActionFactory::ActionKind kd, bool bFromUI, bool bIsShortcut);
     QString probeCdromDevice();
     void updateWindowTitle();
     //void toggleShapeMask();
     void prepareSplashImages();
     void saveWindowState();
     void loadWindowState();
-    void subtitleMatchVideo(const QString &fileName);
+    void subtitleMatchVideo(const QString &sFileName);
     void defaultplaymodeinit();
     void readSinkInputPath();
     void setAudioVolume(int);
-    void setMusicMuted(bool muted);
+    void setMusicMuted(bool bMuted);
     void popupAdapter(QIcon, QString);
     void setHwaccelMode(const QVariant &value = -1);
 
@@ -321,66 +392,50 @@ private:
     void setMusicShortKeyState(bool bState);
 
 private:
-    DFloatingMessage *popup {nullptr};
-    QLabel *_fullscreentimelable {nullptr};             //全屏时右上角的影片进度
-    QHBoxLayout *_fullscreentimebox {nullptr};
-
-    Titlebar *_titlebar {nullptr};
-    ToolboxProxy *_toolbox {nullptr};
-    PlaylistWidget *_playlist {nullptr};
-    PlayerEngine *_engine {nullptr};
-    AnimationLabel *_animationlable {nullptr};
-    MovieProgressIndicator *_progIndicator {nullptr};   //全屏时右上角的系统时间
-
-    QList<QPair<QImage, qint64>> _burstShoots;
-    bool _inBurstShootMode {false};
-    bool _pausedBeforeBurst {false};
-
+    DFloatingMessage *m_pPopupWid;                  ///操作提示窗
+    QLabel *m_pFullScreenTimeLable;                 ///全屏时右上角的影片进度
+    QHBoxLayout *m_pFullScreenTimeLayout;           ///右上角的影片进度框布局器
+    Titlebar *m_pTitlebar;                          ///标题栏
+    ToolboxProxy *m_pToolbox;                       ///工具栏
+    PlaylistWidget *m_pPlaylist;                    ///播放列表
+    PlayerEngine *m_pEngine;                        ///播放引擎
+    AnimationLabel *m_pAnimationlable;              ///点击暂停和播放时动画
+    MovieProgressIndicator *m_pProgIndicator;       ///全屏时右上角的系统时间
+    QList<QPair<QImage, qint64>> m_listBurstShoots; ///存储连拍截图
+    bool m_bInBurstShootMode;                       ///是否处于截图状态
+    bool m_bPausedBeforeBurst;                      ///截图时暂停播放
 #ifdef __mips__
-    QAbstractButton *_miniPlayBtn {nullptr};
-    QAbstractButton *_miniCloseBtn {nullptr};
-    QAbstractButton *_miniQuitMiniBtn {nullptr};
+    QAbstractButton *m_pMiniPlayBtn;
+    QAbstractButton *m_pMiniCloseBtn;
+    QAbstractButton *m_pMiniQuitMiniBtn;
 #else
-    DIconButton *_miniPlayBtn {nullptr};
-    DIconButton *_miniCloseBtn {nullptr};
-    DIconButton *_miniQuitMiniBtn {nullptr};
+    DIconButton *m_pMiniPlayBtn;                    ///迷你模式播放按钮
+    DIconButton *m_pMiniCloseBtn;                   ///迷你模式关闭按钮
+    DIconButton *m_pMiniQuitMiniBtn;                ///退出迷你模式按钮
 #endif
 
-    QImage bg_dark;
-    QImage bg_light;
+    QImage m_imgBgDark;
+    QImage m_imgBgLight;
+    bool m_bMiniMode;                               ///记录迷你模式
+    QRect m_lastRectInNormalMode;                   /// used to restore to recent geometry when quit fullscreen or minVolumeMonitoringi mode
+    bool m_bInited;                                 /// the first time a play happens, we consider it inited.
+    EventMonitor *m_pEventMonitor;                  ///x11事件处理器
+    bool m_bMovieSwitchedInFsOrMaxed;               /// track if next/prev is triggered in fs/maximized mode
+    bool m_bDelayedResizeByConstraint;
+    bool m_bLightTheme;                             ///是否是浅色主题
+    bool m_bWindowAbove;                            ///是否是置顶窗口
+    bool m_bMouseMoved;                             ///鼠标是否按下移动
+    bool m_bMousePressed;                           ///鼠标是否安下
+    bool m_bPlaylistopen_clicktogglepause;
+    double m_dPlaySpeed;                            ///当前播放速度
 
-    bool _miniMode {false};
-    /// used to restore to recent geometry when quit fullscreen or minVolumeMonitoringi mode
-    QRect _lastRectInNormalMode;
-
-    // the first time a play happens, we consider it inited.
-    bool _inited {false};
-
-    DPlatformWindowHandle *_handle {nullptr};
-    EventMonitor *_evm {nullptr};
-
-    bool _pausedOnHide {false};
-    // track if next/prev is triggered in fs/maximized mode
-    bool _movieSwitchedInFsOrMaxed {false};
-    bool _delayedResizeByConstraint {false};
-
-    //toggle-able states
-    bool _lightTheme {false};
-    bool _windowAbove {false};
-    bool _mouseMoved {false};
-    bool _mousePressed {false};
-    bool _isSettingMiniMode{false};
-    bool _playlistopen_clicktogglepause {false};
-    double _playSpeed {1.0};
-
-    bool _quitfullscreenstopflag {false};
-    bool _quitfullscreenflag{false};
-    bool _maxfornormalflag {false};  //is the window maximized
+    bool m_bQuitfullscreenstopflag;
+    bool m_bQuitfullscreenflag;
+    bool m_bMaxfornormalflag;                       ///is the window maximized
     //add by heyi
-    bool m_bMpvFunsLoad {false};
-    QPoint posMouseOrigin;
-    QPoint m_pressPoint;
-    bool m_bStartMini {false};
+    QPoint m_posMouseOrigin;                        ///记录前一次鼠标移动点
+    QPoint m_pressPoint;                            ///记录当前鼠标按下时的点
+    bool m_bStartMini;                              ///开始进入迷你模式
 
     enum StateBeforeEnterMiniMode {
         SBEM_None = 0x0,
@@ -389,52 +444,43 @@ private:
         SBEM_PlaylistOpened = 0x04,
         SBEM_Maximized = 0x08,
     };
-    int _stateBeforeMiniMode {0};
-    Qt::WindowStates _lastWindowState {Qt::WindowNoState};
-
-    uint32_t _lastCookie {0};
-    uint32_t _powerCookie {0};
-
-    MainWindowEventListener *_listener {nullptr};
-    NotificationWidget *_nwDvd {nullptr};
-    NotificationWidget *_nwComm {nullptr};
-    QTimer _autoHideTimer;
-    QTimer _delayedMouseReleaseTimer;
-    QUrl m_dvdUrl {QUrl()};
-    QProcess *shortcutViewProcess {nullptr};
-
-    QString sinkInputPath;
-    int m_displayVolume;
-    bool m_isManual;
-
-    bool m_IsFree = true;  //播放器是否空闲，和IDel的定义不同
-
-    static int _retryTimes;
-    bool _isJinJia = false;//是否是景嘉微显卡
-    QTimer _progressTimer;
+    int m_nStateBeforeMiniMode;
+    Qt::WindowStates m_lastWindowState;
+    uint32_t m_nLastCookie;
+    uint32_t m_nPowerCookie;
+    MainWindowEventListener *m_pEventListener;
+    NotificationWidget *m_pDVDHintWid;               ///dvd读取提示
+    NotificationWidget *m_pCommHintWid;              ///窗口左上角提示
+    QTimer m_autoHideTimer;
+    QTimer m_delayedMouseReleaseTimer;
+    QUrl m_dvdUrl;                                   ///播放dvd的url
+    QProcess *m_pShortcutViewProcess;
+    int m_nDisplayVolume;                            ///记录播放音量
+    bool m_bIsFree;                                  ///播放器是否空闲，和IDel的定义不同
+    static int m_nRetryTimes;                        ///播放失败后重试次数
+    bool m_bIsJinJia;                                ///是否是景嘉微显卡
     //add by heyi 解决触屏右键菜单bug
-    int nX = 0, nY = 0;     //左键按下时保存的点
-    bool _isTouch = false;          //是否是触摸屏按下
-    QTimer _mousePressTimer;
-    qint64 oldDuration = 0;
-    qint64 oldElapsed = 0;
-
+    int m_nLastPressX;                               ///左键按下时保存的点
+    int m_nLastPressY;                               ///左键按下时保存的点
+    bool m_bIsTouch;                                 ///是否是触摸屏按下
+    QTimer m_mousePressTimer;
+    qint64 m_nOldDuration;
+    qint64 m_nOldElapsed;
     Diskcheckthread m_diskCheckThread;
-    bool m_bClosed {false};      //用于景嘉微显卡下过滤metacall事件
-    bool _isFileLoadNotFinished{false};
-    QStringList m_openFiles;
-    QString m_currentHwdec;
-    bool m_bProgressChanged {false};        //进度条是否被拖动
-    bool m_bFirstInit {false};
-    bool m_bLastIsTouch {false};
-    bool m_bTouchChangeVolume {false};
-    bool m_bisShowSettingDialog {true};
-    QDBusInterface *m_pDBus {nullptr};
-    MainWindowPropertyMonitor *m_pMWPM {nullptr};
-    bool m_isFirstLoadDBus {false};
-
-    Presenter *m_pPresenter {nullptr};
-    MovieWidget *m_pMovieWidget {nullptr};
+    bool m_bClosed;                                  ///用于景嘉微显卡下过滤metacall事件
+    bool m_bIsFileLoadNotFinished;
+    QStringList m_listOpenFiles;
+    QString m_sCurrentHwdec;                         ///当前的硬解码模式
+    bool m_bProgressChanged;                         ///进度条是否被拖动
+    bool m_bFirstInit;
+    bool m_bLastIsTouch;
+    bool m_bTouchChangeVolume;                       ///是否触发了触屏改变音量
+    bool m_bIsShowSettingDialog;
+    QDBusInterface *m_pDBus;
+    MainWindowPropertyMonitor *m_pMWPM;
+    bool m_bIsFirstLoadDBus;
+    Presenter *m_pPresenter;
+    MovieWidget *m_pMovieWidget;
 };
 
 //窗管返回事件过滤器
@@ -444,10 +490,10 @@ public:
     explicit MainWindowPropertyMonitor(MainWindow *);
     ~MainWindowPropertyMonitor();
     bool nativeEventFilter(const QByteArray &eventType, void *message, long *);
-    MainWindow *_mw {nullptr};
-    xcb_atom_t _atomWMState;
+    MainWindow *m_pMainWindow {nullptr};
+    xcb_atom_t m_atomWMState;
     QList<unsigned int> m_list;
-    bool m_start {false};
+    bool m_bStart;
 };
 };
 
