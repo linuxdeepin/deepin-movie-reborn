@@ -1619,7 +1619,7 @@ void MainWindow::loadPlayList()
     m_pPlaylist->hide();
     m_pToolbox->setPlaylist(m_pPlaylist);
     m_pEngine->getplaylist()->loadPlaylist();
-    m_pToolbox->initThumb();
+    m_pToolbox->initThumbThread();
 
     if (!m_listOpenFiles.isEmpty()) {
         if (m_listOpenFiles.size() == 1) {
@@ -3600,13 +3600,15 @@ void MainWindow::moveEvent(QMoveEvent *pEvent)
     qInfo() << "进入moveEvent";
     QWidget::moveEvent(pEvent);
 #ifdef __aarch64__
-    m_pToolbox->updateSliderPoint(mapToGlobal(QPoint(0, 0)));
+    QPoint relativePoint = mapToGlobal(QPoint(0, 0));
+    m_pToolbox->updateSliderPoint(relativePoint);
     if (windowState() == Qt::WindowNoState && !m_bMiniMode) {
         m_lastRectInNormalMode = geometry();
     }
     m_pCommHintWid->syncPosition();
 #elif  __mips__
-    m_pToolbox->updateSliderPoint(mapToGlobal(QPoint(0, 0)));
+    QPoint relativePoint = mapToGlobal(QPoint(0, 0));
+    m_pToolbox->updateSliderPoint(relativePoint);
     m_pCommHintWid->syncPosition();
 #else
     updateGeometryNotification(geometry().size());

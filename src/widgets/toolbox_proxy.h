@@ -27,6 +27,9 @@
  * version.  If you delete this exception statement from all source
  * files in the program, then also delete it here.
  */
+/**
+ * @file 此文件中实现播放窗口工具栏相关内容
+ */
 #ifndef _DMR_TOOLBOX_PROXY_H
 #define _DMR_TOOLBOX_PROXY_H
 
@@ -78,22 +81,26 @@ class ImageItem : public DLabel
 {
     Q_OBJECT
 public:
-    ImageItem(QPixmap image, bool isblack = false, QWidget *parent = nullptr): DLabel(parent), _pixmap(image)
+    /**
+     * @brief ImageItem 实现胶片整体的窗口布局
+     * @param image 胶片
+     * @param bIsblack 是否为灰色胶片
+     * @param parent 父窗口
+     */
+    ImageItem(QPixmap image, bool bIsblack = false, QWidget *parent = nullptr): DLabel(parent), m_pixmap(image)
     {
     }
-
-signals:
-    void imageItemclicked(int index, int indexNow);
 protected:
+    /**
+     * @brief paintEvent 绘制事件函数
+     */
     void paintEvent(QPaintEvent *)
     {
         QPainter painter(this);
-//        painter.drawPixmap(rect(),QPixmap(_path).scaled(60,50));
-
         painter.setRenderHints(QPainter::HighQualityAntialiasing | QPainter::SmoothPixmapTransform |
                                QPainter::Antialiasing);
 
-        QSize size(_pixmap.size());
+        QSize size(m_pixmap.size());
         QBitmap mask(size);
 
         QPainter painter1(&mask);
@@ -103,7 +110,7 @@ protected:
         painter1.setBrush(QColor(0, 0, 0));
         painter1.drawRoundedRect(mask.rect(), 5, 5);
 
-        QPixmap image = _pixmap;
+        QPixmap image = m_pixmap;
         image.setMask(mask);
 
         painter.setClipping(true);
@@ -125,27 +132,38 @@ protected:
         painter.drawRoundedRect(rect(), 5, 5);
     }
 private:
-//    int _index;   //not used
-//    int _indexNow;    //not used
-    DLabel *_image = nullptr;
-    QString _path = nullptr;
-    QPixmap _pixmap;
+    QPixmap m_pixmap;    ///胶片的图像
 };
 
+/**
+ * @brief The IndicatorItem class
+ * 实现胶片模式时，播放进度光标显示
+ */
 class IndicatorItem : public QWidget
 {
     Q_OBJECT
 public:
+    /**
+     * @brief IndicatorItem 构造函数
+     * @param parent 父窗口
+     */
     explicit IndicatorItem(QWidget *parent = nullptr): QWidget(parent)
     {
+        initMember();
     }
-
+    /**
+     * @brief setPressed 设置是否按下
+     * @param bPressed 按下标志位
+     */
     void setPressed(bool bPressed)
     {
         m_bIsPressed = bPressed;
     }
 
 protected:
+    /**
+     * @brief paintEvent 绘制事件函数
+     */
     void paintEvent(QPaintEvent *)
     {
         QPainter painter(this);
@@ -177,252 +195,484 @@ protected:
         }
     }
 
-private:
-    bool m_bIsPressed {false};
-};
+    void initMember()
+    {
+        m_bIsPressed = false;
+    }
 
+private:
+    bool m_bIsPressed;    ///鼠标是否按下
+};
+/**
+ * @brief The ToolboxProxy class
+ * 实现影院工具栏
+ */
 class ToolboxProxy: public DFloatingWidget
 {
     Q_OBJECT
 public:
-    ToolboxProxy(QWidget *mainWindow, PlayerEngine *);
+    /**
+     * @brief ToolboxProxy 构造函数
+     * @param mainWindow 主窗口
+     * @param pPlayerEngine 播放引擎对象指针
+     */
+    ToolboxProxy(QWidget *mainWindow, PlayerEngine *pPlayerEngine);
+    /**
+     * @brief ~ToolboxProxy 析构函数
+     */
     virtual ~ToolboxProxy() override;
-
-    void updateTimeInfo(qint64 duration, qint64 pos, QLabel *_timeLabel,
-                        QLabel *_timeLabelend, bool flag);
+    /**
+     * @brief updateTimeInfo 更新工具栏中播放时间显示
+     * @param duration 视频总时长
+     * @param pos 当前播放的时间点
+     * @param pTimeLabel 当前播放时间
+     * @param pTimeLabelend 视频总时长
+     * @param flag 是否为全屏的控件
+     */
+    void updateTimeInfo(qint64 duration, qint64 pos, QLabel *pTimeLabel,
+                        QLabel *pTimeLabelend, bool flag);
+    /**
+     * @brief anyPopupShown 是否存在一些弹出显示窗口
+     * @return true时为有，false为无
+     */
     bool anyPopupShown() const;
+    /**
+     * @brief closeAnyPopup 关闭所有弹窗效果
+     */
     void closeAnyPopup();
-    void setViewProgBarWidth();
-    void setPlaylist(PlaylistWidget *playlist);
-    void addLabel_list(ImageItem *label)
+    /**
+     * @brief setPlaylist 传递播放列表指针
+     * @param playlist 播放列表对象指针
+     */
+    void setPlaylist(PlaylistWidget *pPlaylist);
+    /**
+     * @brief addpmList 将读取到的缩略图加载到列表中
+     * @param pm 缩略图图像
+     */
+    void addpmList(QList<QPixmap> &pm)
     {
-        label_list.append(label);
+        m_pmList.clear();
+        m_pmList.append(pm);
     }
-    void addLabel_black_list(ImageItem *label_black)
+    /**
+     * @brief addpmBlackList 将读取到的缩略图加载到灰色列表中
+     * @param pm_black 缩略图图像
+     */
+    void addpmBlackList(QList<QPixmap> &pmBlack)
     {
-        label_black_list.append(label_black);
+        m_pmBlackList.clear();
+        m_pmBlackList.append(pmBlack);
     }
-    void addpm_list(QList<QPixmap> &pm)
-    {
-        pm_list.clear();
-        pm_list.append(pm);
-    }
-    void addpm_black_list(QList<QPixmap> &pm_black)
-    {
-        pm_black_list.clear();
-        pm_black_list.append(pm_black);
-    }
+    /**
+     * @brief getfullscreentimeLabel 获取全屏时当前播放时间控件
+     * @return 返回label控件指针
+     */
     QLabel *getfullscreentimeLabel();
+    /**
+     * @brief getfullscreentimeLabelend 获取全屏时当前播放总时长控件
+     * @return 返回label控件指针
+     */
     QLabel *getfullscreentimeLabelend();
+    /**
+     * @brief getbAnimationFinash 查看是否动画已结束
+     * @return 动画进行中标志位
+     */
     bool getbAnimationFinash();
+    /**
+     * @brief setVolSliderHide 将音量条控件隐藏
+     */
     void setVolSliderHide();
+    /**
+     * @brief getVolSliderIsHided 获取音量条状态
+     * @return 返回音量条的隐藏状态
+     */
     bool getVolSliderIsHided();
+    /**
+     * @brief setButtonTooltipHide 将按键上的悬停显示内容隐藏
+     */
     void setButtonTooltipHide();
-    void updateVolumeStateOnStopMode(uint64_t vol);
-//    void popupVolSlider();
-
-    //lmh0910初始化下方按键的tooltip
+    /**
+     * @brief initToolTip 初始化按键上访提示
+     */
     void initToolTip();
+    /**
+     * @brief getSlider 获取进度条
+     * @return 进度条对象
+     */
     DMRSlider *getSlider()
     {
-        return _progBar;
+        return m_pProgBar;
     }
+    /**
+     * @brief getViewProBar 获取胶片模式进度
+     * @return 返回胶片窗口
+     */
     ViewProgBar *getViewProBar()
     {
-        return _viewProgBar;
+        return m_pViewProgBar;
     }
-    bool isViewProgress()
-    {
-        if (_progBar_Widget->currentIndex() == 2) {
-            return true;
-        };
-    }
-    void updateProgress(int nValue);    //更新进度条显示
-    void updateSlider();                //根据进度条显示更新影片实际进度
-    void initThumb();
-    void updateSliderPoint(QPoint);
+    /**
+     * @brief updateProgress 更新播放进度条显示
+     * @param nValue 进度条的值
+     */
+    void updateProgress(int nValue);
+    /**
+     * @brief updateSlider 根据进度条显示更新影片实际进度
+     */
+    void updateSlider();
+    /**
+     * @brief initThumb 初始化加载胶片线程
+     */
+    void initThumbThread();
+    /**
+     * @brief updateSliderPoint 非x86平台下更新音量条控件位置
+     * @param point 传入主窗口左上角顶点在屏幕的位置
+     */
+    void updateSliderPoint(QPoint &point);
+    /**
+     * @brief volumeUp 鼠标滚轮增加音量
+     */
     void volumeUp();
+    /**
+     * @brief volumeUp 鼠标滚轮减少音量
+     */
     void volumeDown();
+    /**
+     * @brief changeMuteState 切换静音模式
+     */
     void changeMuteState();
+    /**
+     * @brief playlistClosedByEsc Esc关闭播放列表
+     */
     void playlistClosedByEsc();
 
     /////add for unit test/////
-    DButtonBoxButton *playBtn() {return _playBtn;}
-    DButtonBoxButton *prevBtn() {return _prevBtn;}
-    DButtonBoxButton *nextBtn() {return _nextBtn;}
-    ToolButton *listBtn() {return _listBtn;}
-    ToolButton *fsBtn() {return _fsBtn;}
-    VolumeButton *volBtn() {return _volBtn;}
+    DButtonBoxButton *playBtn() {return m_pPlayBtn;}
+    DButtonBoxButton *prevBtn() {return m_pPrevBtn;}
+    DButtonBoxButton *nextBtn() {return m_pNextBtn;}
+    ToolButton *listBtn() {return m_pListBtn;}
+    ToolButton *fsBtn() {return m_pFullScreenBtn;}
+    VolumeButton *volBtn() {return m_pVolBtn;}
 
 public slots:
+    /**
+     * @brief finishLoadSlot 缩略图线程加载完成槽函数
+     * @param size 主窗口大小，
+     * TODO(xxxpengfei)：此处窗口大小没用，请在1050前去除并梳理逻辑
+     */
     void finishLoadSlot(QSize size);
+    /**
+     * @brief updateplaylisticon 切换主题时更新播放列表图标
+     */
     void updateplaylisticon();
+    /**
+     * @brief setthumbnailmode 设置胶片进度条的模式
+     */
     void setthumbnailmode();
 
 signals:
-    void requestPlay();
-    void requestPause();
-    void requestNextInList();
-    void requesstPrevInList();
-    void sigstartLoad(QSize size);
-    void sigVolumeChanged(int nVolume);
-    void sigMuteStateChanged(bool bMute);
+    /**
+     * @brief sigVolumeChanged 音量变化返回主窗口信号
+     * @param nVolume 变化后的音量值
+     */
+    void sigVolumeChanged(int &nVolume);
+    /**
+     * @brief sigMuteStateChanged 静音状态变化后返回主窗口的信号
+     * @param bMute 静音状态
+     */
+    void sigMuteStateChanged(bool &bMute);
 
 protected slots:
-//    void updatePosition(const QPoint &p);
+    /**
+     * @brief buttonClicked 处理信号转发器发送的信号
+     * @param id 发出信号的对象id
+     */
     void buttonClicked(QString id);
+    /**
+     * @brief buttonEnter 工具栏按钮进入事件槽函数
+     */
     void buttonEnter();
+    /**
+     * @brief buttonLeave 工具栏按钮离开事件槽函数
+     */
     void buttonLeave();
+    /**
+     * @brief updatePlayState 更新不同播放状态下工具栏状态
+     */
     void updatePlayState();
+    /**
+     * @brief updateFullState 更新全屏状态下工具栏状态
+     */
     void updateFullState();
+    /**
+     * @brief updateMovieProgress 更新影片进度条
+     */
     void updateMovieProgress();
+    /**
+     * @brief updateButtonStates
+     */
     void updateButtonStates();
     void updateTimeVisible(bool visible);
     /**
-       更新预览图位置
-    */
+     * @brief progressHoverChanged 更新预览图的位置
+     * @param v 鼠标悬停的位置
+     */
     void progressHoverChanged(int v);
+    /**
+     * @brief updateHoverPreview 更新悬停时间进度
+     * @param url 文件url
+     * @param secs 当前时间
+     */
     void updateHoverPreview(const QUrl &url, int secs);
-    //lmh0706暂停延时，解决乱按卡死问题
+    /**
+     * @brief waitPlay 等待延时播放
+     */
     void waitPlay();
+    /**
+     * @brief slotThemeTypeChanged 主题变化槽函数
+     */
     void slotThemeTypeChanged();
+    /**
+     * @brief slotLeavePreview 鼠标离开胶片进度条槽函数
+     */
     void slotLeavePreview();
+    /**
+     * @brief slotHidePreviewTime 鼠标离开后隐藏事件控件显示
+     */
     void slotHidePreviewTime();
+    /**
+     * @brief slotSliderPressed 进度条鼠标按下槽函数
+     */
     void slotSliderPressed();
+    /**
+     * @brief slotSliderReleased 进度条鼠标释放槽函数
+     */
     void slotSliderReleased();
+    /**
+     * @brief slotBaseMuteChanged 静音
+     * @param sk
+     * @param val
+     */
     void slotBaseMuteChanged(QString sk, const QVariant &val);
+    /**
+     * @brief slotVolumeButtonClicked 音量按键单击事件槽函数
+     */
     void slotVolumeButtonClicked();
+    /**
+     * @brief slotFileLoaded 文件加载槽函数
+     */
     void slotFileLoaded();
+    /**
+     * @brief slotElapsedChanged 当前播放时长变化槽函数
+     */
     void slotElapsedChanged();
+    /**
+     * @brief slotApplicationStateChanged 应用状态变化才敢三个月
+     * @param e 状态
+     */
     void slotApplicationStateChanged(Qt::ApplicationState e);
-    void slotPlayListCurrentChanged();
+    /**
+     * @brief slotPlayListStateChange 播放列表状态变化槽函数
+     */
     void slotPlayListStateChange();
+    /**
+     * @brief slotUpdateThumbnailTimeOut 超时更新胶片
+     */
     void slotUpdateThumbnailTimeOut();
+    /**
+     * @brief slotProAnimationFinished 动画结束槽函数
+     */
     void slotProAnimationFinished();
+    /**
+     * @brief slotVolumeChanged 音量变化槽函数
+     * @param nVolume 音量值
+     */
     void slotVolumeChanged(int nVolume);
+    /**
+     * @brief slotMuteStateChanged 静音状态变化槽函数
+     * @param bMute 静音状态
+     */
     void slotMuteStateChanged(bool bMute);
 
 protected:
-//    void paintEvent(QPaintEvent *pe) override;
+    /**
+     * @brief showEvent 显示事件函数
+     * @param event 显示事件
+     */
     void showEvent(QShowEvent *event) override;
+    /**
+     * @brief resizeEvent 窗口大小变化事件函数
+     * @param event 大小变化事件
+     */
     void resizeEvent(QResizeEvent *event) override;
+    /**
+     * @brief mouseMoveEvent 鼠标移动事件函数
+     * @param ev 鼠标移动事件
+     */
     void mouseMoveEvent(QMouseEvent *ev) override;
+    /**
+     * @brief eventFilter 事件过滤器
+     * @param obj 事件发出对象
+     * @param ev 过滤到的事件
+     * @return 返回是否继续执行
+     */
     bool eventFilter(QObject *obj, QEvent *ev) override;
 
 private:
+    /**
+     * @brief setup 初始化工具栏布局
+     */
     void setup();
+    /**
+     * @brief updateTimeLabel 界面显示或大小变化时更新控件显示状态
+     */
     void updateTimeLabel();
+    /**
+     * @brief updateToolTipTheme 更新按钮悬浮框主题
+     * @param btn 对应的按钮
+     */
     void updateToolTipTheme(ToolButton *btn);
+    /**
+     * @brief updateThumbnail 更新播放列表中的缩略图显示
+     */
     void updateThumbnail();
+    /**
+     * @brief updatePreviewTime 更新胶片模式下鼠标点击时时间框的显示
+     * @param secs 当前时间
+     * @param pos 当前位置点
+     */
     void updatePreviewTime(qint64 secs, const QPoint &pos);
-    void installHint(QWidget *w, QWidget *hint);
+    /**
+     * @brief initMember 初始化成员变量
+     */
+    void initMember();
 
-    QLabel *_fullscreentimelable {nullptr};
-    QLabel *_fullscreentimelableend {nullptr};
+    MainWindow *m_pMainWindow;          ///主窗口
+    PlayerEngine *m_pEngine;            ///播放引擎
+    PlaylistWidget *m_pPlaylist;        ///播放列表窗口
 
-    MainWindow *_mainWindow {nullptr};
-    PlayerEngine *_engine {nullptr};
-    PlaylistWidget *_playlist {nullptr};
-    QLabel *_timeLabel {nullptr};
-    QLabel *_timeLabelend {nullptr};
-    VolumeSlider *_volSlider {nullptr};
+    DWidget *m_pProgBarspec;             ///进度条部分第一个窗口
+    QWidget *m_pBotSpec;                 ///
+    QWidget *m_pBotToolWgt;              ///
+    QStackedWidget *m_pProgBar_Widget;   ///
+    DBlurEffectWidget *bot_widget;       ///
+
+    QHBoxLayout *_mid;                   ///
+    QHBoxLayout *_right;                 ///
+
+    QLabel *m_pFullscreentimelable;      ///全屏下视频当前播放时长控件
+    QLabel *m_pFullscreentimelableend;   ///全屏下视频总时长控件
+    QLabel *m_pTimeLabel;                ///视频当前播放时长控件
+    QLabel *m_pTimeLabelend;             ///视频总时长的控件
+    VolumeSlider *m_pVolSlider;          ///音量条控件窗口
+    ViewProgBar *m_pViewProgBar;         ///胶片模式窗口
+    DMRSlider *m_pProgBar;               ///音量条滑动条控件
+    ThumbnailPreview *m_pPreviewer;      ///胶片模式视图
+    SliderTime *m_pPreviewTime;          ///
+
+    DButtonBoxButton *m_pPlayBtn;        ///播放按钮
+    DButtonBoxButton *m_pPrevBtn;        ///上一个按钮
+    DButtonBoxButton *m_pNextBtn;        ///下一个按钮
+    DButtonBox *m_pPalyBox;              ///按钮组
+    VolumeButton *m_pVolBtn;             ///音量按钮
+    //TODO(xxxpengfei):字幕按钮没用，请在1050前去掉
+    ToolButton *m_pSubBtn;               ///字幕按钮
+    ToolButton *m_pListBtn;              ///播放列表按钮
+    ToolButton *m_pFullScreenBtn;        ///全屏按钮
 
     //lmh0910DButtonBoxButton替换到ButtonBoxButton
-    ButtonToolTip *m_playBtnTip{nullptr};
-    ButtonToolTip *m_prevBtnTip{nullptr};
-    ButtonToolTip *m_nextBtnTip{nullptr};
-    ButtonToolTip *m_fsBtnTip{nullptr};
-    ButtonToolTip *m_listBtnTip{nullptr};
+    ButtonToolTip *m_pPlayBtnTip;        ///播放按钮的悬浮提示
+    ButtonToolTip *m_pPrevBtnTip;        ///上一个按钮的悬浮提示
+    ButtonToolTip *m_pNextBtnTip;        ///下一个按钮的悬浮提示
+    ButtonToolTip *m_pFullScreenBtnTip;  ///全屏按钮的悬浮提示
+    ButtonToolTip *m_pListBtnTip;        ///播放列表按钮的悬浮提示
 
-    DButtonBoxButton *_playBtn {nullptr};
-    DButtonBoxButton *_prevBtn {nullptr};
-    DButtonBoxButton *_nextBtn {nullptr};
-    DButtonBox *_palyBox{nullptr};
+    viewProgBarLoad *m_pWorker;          ///获取胶片的线程
+    QPropertyAnimation *m_pPaOpen;       ///工具栏升起动画
+    QPropertyAnimation *m_pPaClose;      ///工具栏降下动画
 
-//    DIconButton *_subBtn {nullptr};
-    VolumeButton *_volBtn {nullptr};
-//    DIconButton *_listBtn {nullptr};
-//    DIconButton *_fsBtn {nullptr};
-    ToolButton *_subBtn {nullptr};
-    ToolButton *_listBtn {nullptr};
-    ToolButton *_fsBtn {nullptr};
+    QList<QPixmap > m_pmList;
+    QList<QPixmap > m_pmBlackList;
 
-    QHBoxLayout *_mid{nullptr};
-    QHBoxLayout *_right{nullptr};
-    ViewProgBar *_viewProgBar{nullptr};
+    QMutex m_listPixmapMutex;       ///缩略图list的锁
 
-    DMRSlider *_progBar {nullptr};
-    DWidget *_progBarspec {nullptr};
-    ThumbnailPreview *_previewer {nullptr};
-    SliderTime *_previewTime {nullptr};
-    QWidget *_bot_spec {nullptr};
-    QWidget *bot_toolWgt {nullptr};
-
-//    QStackedLayout *_progBar_stacked {nullptr};
-    QStackedWidget *_progBar_Widget {nullptr};
-    QTimer _autoResizeTimer;
-    QSize _oldsize;
-    QSize _loadsize;
-    bool _isresize;
-//    viewProgBarLoad *_viewProgBarLoad{nullptr};
-//    QThread *_loadThread{nullptr};
-    QList<ImageItem *>label_list ;
-    QList<ImageItem *>label_black_list;
-    QList<QPixmap >pm_list ;
-    QList<QPixmap >pm_black_list ;
-
-    viewProgBarLoad *m_worker = nullptr;
-    bool m_mouseFlag = false;
-    bool m_mousePree = false;   //thx
-    bool _bthumbnailmode;
-    bool isStillShowThumbnail{true};
-
-    //动画是否完成
-    bool bAnimationFinash {true};
-
-    QPropertyAnimation *paopen;
-    QPropertyAnimation *paClose;
-    QMutex m_listPixmapMutex;       //缩略图list的锁
-    QString m_UrloldThumbUrl;       //当前加载的文件，目的是为缩略图服务
-    DBlurEffectWidget *bot_widget {nullptr };
-    bool m_isMouseIn = false;
-    QTimer _hideTime;
-    bool _isJinJia = false;//是否是景嘉微显卡
-    qint64 oldDuration = 0;
-    qint64 oldElapsed = 0;
-    QTimer _progressTimer;
-    bool m_bCanPlay = false; //判断是否能进行曲目切换的标志位
+    bool m_bMouseFlag;
+    bool m_bMousePree;              ///
+    bool m_bThumbnailmode;          ///
+    bool m_bAnimationFinash;        ///动画是否完成
+    bool m_bCanPlay;                ///判断是否能进行曲目切换的标志位
 };
+/**
+ * @brief The viewProgBarLoad class
+ * 加载胶片线程
+ */
 class viewProgBarLoad: public QThread
 {
     Q_OBJECT
 public:
+    /**
+     * @brief viewProgBarLoad 构造函数
+     * @param engine 播放引擎
+     * @param progBar 进度条
+     * @param parent 父窗口
+     */
     explicit viewProgBarLoad(PlayerEngine *engine = nullptr, DMRSlider *progBar = nullptr, ToolboxProxy *parent = nullptr);
-    //必须调用这个函数加锁
+    /**
+     * @brief setListPixmapMutex 设置图像表线程锁
+     * @param pMutex 锁
+     *
+     * 必须调用这个函数加锁
+     */
     void setListPixmapMutex(QMutex *pMutex);
 public slots:
+    /**
+     * @brief loadViewProgBar 加载胶片
+     * @param size 窗口大小
+     */
     void loadViewProgBar(QSize size);
 signals:
+    /**
+     * @brief leaveViewProgBar 离开胶片进度条信号
+     */
     void leaveViewProgBar();
+    /**
+     * @brief hoverChanged 悬停位置改变
+     */
     void hoverChanged(int);
+    /**
+     * @brief sliderMoved 进度条移动信号
+     */
     void sliderMoved(int);
-    void indicatorMoved(int);
+    /**
+     * @brief sigFinishiLoad 胶片模式加载完成信号
+     * @param size 窗口尺寸
+     */
     void sigFinishiLoad(QSize size);
+    /**
+     * @brief finished 线程结束信号
+     */
     void finished();
 
 protected:
     void run();
 private:
+    /**
+     * @brief initThumb 动态初始化缩略图获取
+     */
     void initThumb();
-    PlayerEngine *_engine {nullptr};
-    ToolboxProxy *_parent{nullptr};
-    DMRSlider *_progBar {nullptr};
-    QMutex *pListPixmapMutex;
-    char *m_seekTime;
+    /**
+     * @brief initMember 初始化成员变量
+     */
+    void initMember();
+
+    PlayerEngine *m_pEngine;      ///播放引擎
+    ToolboxProxy *m_pParent;      ///主窗口
+    DMRSlider *m_pProgBar;        ///胶片模式窗口
+    QMutex *m_pListPixmapMutex;   ///线程锁
+    char *m_seekTime;             ///图像时间
 
     video_thumbnailer *m_video_thumbnailer = nullptr;
     image_data *m_image_data = nullptr;
-
     mvideo_thumbnailer m_mvideo_thumbnailer = nullptr;
     mvideo_thumbnailer_destroy m_mvideo_thumbnailer_destroy = nullptr;
     mvideo_thumbnailer_create_image_data m_mvideo_thumbnailer_create_image_data = nullptr;

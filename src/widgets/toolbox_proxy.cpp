@@ -78,17 +78,17 @@ DWIDGET_USE_NAMESPACE
                 QPalette palette(qApp->palette());\
                 this->setAutoFillBackground(true);\
                 this->setPalette(palette);\
-                if(_playlist)\
+                if(m_pPlaylist)\
                 {\
                     QPalette pal(qApp->palette());\
-                    _playlist->setAutoFillBackground(true);\
-                    _playlist->setPalette(pal);\
+                    m_pPlaylist->setAutoFillBackground(true);\
+                    m_pPlaylist->setPalette(pal);\
                 }\
-                if(_engine )\
+                if(m_pEngine )\
                 {\
                     QPalette pal(qApp->palette());\
-                    _engine->setAutoFillBackground(true);\
-                    _engine->setPalette(pal);\
+                    m_pEngine->setAutoFillBackground(true);\
+                    m_pEngine->setPalette(pal);\
                 }\
             }\
             else\
@@ -97,19 +97,19 @@ DWIDGET_USE_NAMESPACE
                 palette.setColor(QPalette::Background,Qt::black);\
                 this->setAutoFillBackground(true);\
                 this->setPalette(palette);\
-                if(_playlist)\
+                if(m_pPlaylist)\
                 {\
                     QPalette pal(qApp->palette());\
                     pal.setColor(QPalette::Background,Qt::black);\
-                    _playlist->setAutoFillBackground(true);\
-                    _playlist->setPalette(pal);\
+                    m_pPlaylist->setAutoFillBackground(true);\
+                    m_pPlaylist->setPalette(pal);\
                 }\
-                if(_engine)\
+                if(m_pEngine)\
                 {\
                     QPalette pal(qApp->palette());\
                     pal.setColor(QPalette::Background,Qt::black);\
-                    _engine->setAutoFillBackground(true);\
-                    _engine->setPalette(pal);\
+                    m_pEngine->setAutoFillBackground(true);\
+                    m_pEngine->setPalette(pal);\
                 }\
             }\
         }\
@@ -135,66 +135,26 @@ DWIDGET_USE_NAMESPACE
     } while(0);
 
 namespace dmr {
-
-///temporarily unused class
-/*class ImageButton: public QPushButton
-{
-    Q_OBJECT
-public:
-    explicit ImageButton(QWidget *parent = nullptr)
-        : QPushButton(parent)
-    {
-    }
-
-    void setImage(QString strUrl)
-    {
-        m_strImageUrl = strUrl;
-        repaint();
-    }
-
-protected:
-    void paintEvent(QPaintEvent *)
-    {
-        QPainter painter(this);
-        QImage image(m_strImageUrl);
-
-        painter.setRenderHints(QPainter::Antialiasing | QPainter::HighQualityAntialiasing);
-        painter.drawImage(rect(), image);
-    }
-
-private:
-    QString m_strImageUrl;
-};*/
-
-class KeyPressBubbler: public QObject
-{
-public:
-    explicit KeyPressBubbler(QObject *parent): QObject(parent) {}
-
-protected:
-    bool eventFilter(QObject *obj, QEvent *event)
-    {
-        if (event->type() == QEvent::KeyPress) {
-            QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
-            if (keyEvent->key() != Qt::Key_Tab) {
-                event->setAccepted(false);
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            // standard event processing
-            return QObject::eventFilter(obj, event);
-        }
-    }
-};
-
+/**
+ * @brief The TooltipHandler class
+ * 鼠标悬停事件过滤器
+ */
 class TooltipHandler: public QObject
 {
 public:
+    /**
+     * @brief TooltipHandler 构造函数
+     * @param parent 父窗口
+     */
     explicit TooltipHandler(QObject *parent): QObject(parent) {}
 
 protected:
+    /**
+     * @brief eventFilter 事件过滤器
+     * @param obj 事件对象
+     * @param event 事件
+     * @return 返回是否继续执行
+     */
     bool eventFilter(QObject *obj, QEvent *event)
     {
         switch (event->type()) {
@@ -233,235 +193,24 @@ protected:
         return QObject::eventFilter(obj, event);
     }
 };
-//not used class
 /**
-class SubtitlesView;
-class SubtitleItemWidget: public QWidget
-{
-    Q_OBJECT
-public:
-    friend class SubtitlesView;
-    SubtitleItemWidget(QWidget *, SubtitleInfo si): QWidget()
-    {
-        _sid = si["id"].toInt();
-
-//        DThemeManager::instance()->registerWidget(this, QStringList() << "current");
-
-        setFixedWidth(200);
-
-        auto *l = new QHBoxLayout(this);
-        setLayout(l);
-        l->setContentsMargins(0, 0, 0, 0);
-
-        _msg = si["title"].toString();
-        auto shorted = fontMetrics().elidedText(_msg, Qt::ElideMiddle, 140 * 2);
-        _title = new QLabel(shorted);
-        _title->setWordWrap(true);
-        l->addWidget(_title, 1);
-
-        _selectedLabel = new QLabel(this);
-        l->addWidget(_selectedLabel);
-
-        connect(DThemeManager::instance(), &DThemeManager::themeChanged,
-                this, &SubtitleItemWidget::onThemeChanged);
-        onThemeChanged();
-    }
-
-    int sid() const
-    {
-        return _sid;
-    }
-
-    void setCurrent(bool v)
-    {
-        if (v) {
-            //auto name = QString(":/resources/icons/%1/subtitle-selected.svg").arg(qApp->theme());
-            auto name = QString(":/resources/icons/%1/subtitle-selected.svg").arg(DThemeManager::instance()->theme());
-            _selectedLabel->setPixmap(QPixmap(name));
-        } else {
-            _selectedLabel->clear();
-        }
-
-        setProperty("current", v ? "true" : "false");
-//        setStyleSheet(this->styleSheet());
-        style()->unpolish(_title);
-        style()->polish(_title);
-    }
-
-protected:
-    ///this code is doesn't seem to be in use now,comment out it temporarily
-//    void showEvent(QShowEvent *se) override
-//    {
-//        auto fm = _title->fontMetrics();
-//        auto shorted = fm.elidedText(_msg, Qt::ElideMiddle, 140 * 2);
-//        int h = fm.height();
-//        if (fm.width(shorted) > 140) {
-//            h *= 2;
-//        } else {
-//        }
-//        _title->setFixedHeight(h);
-//        _title->setText(shorted);
-
-//        QWidget::showEvent(se);
-//    }
-
-private slots:
-    void onThemeChanged()
-    {
-        if (property("current").toBool()) {
-            //auto name = QString(":/resources/icons/%1/subtitle-selected.svg").arg(qApp->theme());
-            auto name = QString(":/resources/icons/%1/subtitle-selected.svg").arg(DThemeManager::instance()->theme());
-            _selectedLabel->setPixmap(QPixmap(name));
-        }
-    }
-
-private:
-    QLabel *_selectedLabel {nullptr};
-    QLabel *_title {nullptr};
-    int _sid {-1};
-    QString _msg;
-};
-*/
-//not used class
-/**
-class SubtitlesView: public DArrowRectangle
-{
-    Q_OBJECT
-public:
-    SubtitlesView(QWidget *p, PlayerEngine *e)
-        : DArrowRectangle(DArrowRectangle::ArrowBottom, p), _engine{e}
-    {
-        setWindowFlags(Qt::Popup);
-
-//        DThemeManager::instance()->registerWidget(this);
-
-        setMinimumHeight(20);
-        setShadowBlurRadius(4);
-        setRadius(4);
-        setShadowYOffset(3);
-        setShadowXOffset(0);
-        setArrowWidth(8);
-        setArrowHeight(6);
-
-        QSizePolicy sz_policy(QSizePolicy::Fixed, QSizePolicy::Preferred);
-        setSizePolicy(sz_policy);
-
-        setFixedWidth(220);
-
-        auto *l = new QHBoxLayout(this);
-        l->setContentsMargins(8, 2, 8, 2);
-        l->setSpacing(0);
-        setLayout(l);
-
-        _subsView = new QListWidget(this);
-        _subsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-        _subsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-        _subsView->setResizeMode(QListView::Adjust);
-        _subsView->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
-        _subsView->setSelectionMode(QListWidget::SingleSelection);
-        _subsView->setSelectionBehavior(QListWidget::SelectItems);
-        l->addWidget(_subsView);
-
-        connect(_subsView, &QListWidget::itemClicked, this, &SubtitlesView::onItemClicked);
-        connect(_engine, &PlayerEngine::tracksChanged, this, &SubtitlesView::populateSubtitles);
-        connect(_engine, &PlayerEngine::sidChanged, this, &SubtitlesView::onSidChanged);
-
-        connect(DThemeManager::instance(), &DThemeManager::themeChanged,
-                this, &SubtitlesView::onThemeChanged);
-        onThemeChanged();
-    }
-
-protected:
-    void showEvent(QShowEvent *se) override
-    {
-        ensurePolished();
-        populateSubtitles();
-        setFixedHeight(_subsView->height() + 4);
-    }
-
-protected slots:
-    void onThemeChanged()
-    {
-        if (DThemeManager::instance()->theme() == "dark") {
-            setBackgroundColor(DBlurEffectWidget::DarkColor);
-        } else {
-            setBackgroundColor(DBlurEffectWidget::LightColor);
-        }
-    }
-
-    void batchUpdateSizeHints()
-    {
-        QSize sz(0, 0);
-        if (isVisible()) {
-            for (int i = 0; i < _subsView->count(); i++) {
-                auto item = _subsView->item(i);
-                auto w = _subsView->itemWidget(item);
-                item->setSizeHint(w->sizeHint());
-                sz += w->sizeHint();
-                sz += QSize(0, 2);
-            }
-        }
-        sz += QSize(0, 2);
-        _subsView->setFixedHeight(sz.height());
-    }
-
-    void populateSubtitles()
-    {
-        _subsView->clear();
-        _subsView->adjustSize();
-        adjustSize();
-
-        auto pmf = _engine->playingMovieInfo();
-        auto sid = _engine->sid();
-        qInfo() << "sid" << sid;
-
-        for (const auto &sub : pmf.subs) {
-            auto item = new QListWidgetItem();
-            auto siw = new SubtitleItemWidget(this, sub);
-            _subsView->addItem(item);
-            _subsView->setItemWidget(item, siw);
-            auto v = (sid == sub["id"].toInt());
-            siw->setCurrent(v);
-            if (v) {
-                _subsView->setCurrentItem(item);
-            }
-        }
-
-        batchUpdateSizeHints();
-    }
-
-    void onSidChanged()
-    {
-        auto sid = _engine->sid();
-        for (int i = 0; i < _subsView->count(); ++i) {
-            auto siw = static_cast<SubtitleItemWidget *>(_subsView->itemWidget(_subsView->item(i)));
-            siw->setCurrent(siw->sid() == sid);
-        }
-
-        qInfo() << "current " << _subsView->currentRow();
-    }
-
-    void onItemClicked(QListWidgetItem *item)
-    {
-        auto id = _subsView->row(item);
-        _engine->selectSubtitle(id);
-    }
-
-private:
-    PlayerEngine *_engine {nullptr};
-    QListWidget *_subsView {nullptr};
-};
-*/
+ * @brief The SliderTime class 进度条事件显示类
+ */
 class SliderTime: public DArrowRectangle
 {
     Q_OBJECT
 public:
+    /**
+     * @brief SliderTime 构造函数
+     */
     SliderTime(): DArrowRectangle(DArrowRectangle::ArrowBottom)
     {
+        initMember();
+
         //setFocusPolicy(Qt::NoFocus);
         setAttribute(Qt::WA_DeleteOnClose);
         setWindowFlag(Qt::WindowStaysOnTopHint);
-        resize(_miniSize);
+        resize(m_miniSize);
         setRadius(4);
         setArrowWidth(10);
         setArrowHeight(5);
@@ -471,135 +220,151 @@ public:
         setBorderColor(bgColor);
         setBackgroundColor(bgColor);
 
-        auto *l = new QHBoxLayout;
-        l->setContentsMargins(0, 0, 0, 5);
-        _time = new DLabel(this);
-        _time->setAlignment(Qt::AlignCenter);
+        QHBoxLayout *layout = new QHBoxLayout;
+        layout->setContentsMargins(0, 0, 0, 5);
+        m_pTime = new DLabel(this);
+        m_pTime->setAlignment(Qt::AlignCenter);
 //        _time->setFixedSize(_size);
-        _time->setForegroundRole(DPalette::Text);
-        DPalette pa = DApplicationHelper::instance()->palette(_time);
+        m_pTime->setForegroundRole(DPalette::Text);
+        DPalette pa = DApplicationHelper::instance()->palette(m_pTime);
         QColor color = pa.textLively().color();
         qInfo() << color.name();
         pa.setColor(DPalette::Text, color);
-        _time->setPalette(pa);
-        _time->setFont(DFontSizeManager::instance()->get(DFontSizeManager::T8));
-        l->addWidget(_time, Qt::AlignCenter);
-        setLayout(l);
+        m_pTime->setPalette(pa);
+        m_pTime->setFont(DFontSizeManager::instance()->get(DFontSizeManager::T8));
+        layout->addWidget(m_pTime, Qt::AlignCenter);
+        setLayout(layout);
         connect(qApp, &QGuiApplication::fontChanged, this, &SliderTime::slotFontChanged);
 
     }
 
+    /**
+     * @brief setTime 设置时间
+     * @param time 时间
+     */
     void setTime(const QString &time)
     {
-        _time->setText(time);
+        m_pTime->setText(time);
 
-        if (!_bFontChanged) {
-            QFontMetrics fm(DFontSizeManager::instance()->get(DFontSizeManager::T8));
-            _time->setFixedSize(fm.width(_time->text()) + 5, fm.height());
+        if (!m_bFontChanged) {
+            QFontMetrics fontMetrics (DFontSizeManager::instance()->get(DFontSizeManager::T8));
+            m_pTime->setFixedSize(fontMetrics.width(m_pTime->text()) + 5, fontMetrics.height());
         } else {
-            QFontMetrics fm(_font);
-            _time->setFont(_font);
-            _time->setFixedSize(fm.width(_time->text()) + 10, fm.height());
+            QFontMetrics fontMetrics (m_font);
+            m_pTime->setFont(m_font);
+            m_pTime->setFixedSize(fontMetrics.width(m_pTime->text()) + 10, fontMetrics.height());
         }
-        this->setWidth(_time->width());
-        this->setHeight(_time->height() + 5);
-        this->setMinimumSize(_miniSize);
+        this->setWidth(m_pTime->width());
+        this->setHeight(m_pTime->height() + 5);
+        this->setMinimumSize(m_miniSize);
     }
 public slots:
+    /**
+     * @brief slotFontChanged 字体变化槽函数
+     * @param font 字体
+     */
     void slotFontChanged(const QFont &font)
     {
-        _font = font;
-        _bFontChanged = true;
+        m_font = font;
+        m_bFontChanged = true;
     }
 private:
-    DLabel *_time {nullptr};
-    QSize _miniSize = QSize(58, 25);
-    QFont _font {QFont()};
-    bool _bFontChanged {false};
-};
-
-class ViewProgBarItem: public QLabel
-{
-    Q_OBJECT
-public:
-    ViewProgBarItem(QImage *image, QWidget *parent = nullptr)
+    /**
+     * @brief initMember 初始化成员变量
+     */
+    void initMember()
     {
-
+        m_pTime = nullptr;
+        m_miniSize = QSize(58, 25);
+        m_font = {QFont()};
+        m_bFontChanged = false;
     }
+
+    DLabel *m_pTime;
+    QSize m_miniSize;
+    QFont m_font;
+    bool m_bFontChanged;
 };
 
+/**
+ * @brief The ViewProgBar class 胶片模式窗口
+ */
 class ViewProgBar: public DWidget
 {
     Q_OBJECT
 public:
-    ViewProgBar(DMRSlider *_progBar, QWidget *parent = nullptr)
+    /**
+     * @brief ViewProgBar 构造函数
+     * @param m_pProgBar 进度条
+     * @param parent 父窗口
+     */
+    ViewProgBar(DMRSlider *m_pProgBar, QWidget *parent = nullptr)
     {
         //传入进度条，以便重新获取胶片进度条长度 by ZhuYuliang
-        this->_progBar = _progBar;
+        this->m_pProgBar = m_pProgBar;
         _parent = parent;
         setFixedHeight(70);
 
-        _vlastHoverValue = 0;
-        _isBlockSignals = false;
+         m_bIsBlockSignals = false;
         setMouseTracking(true);
 
-        _back = new QWidget(this);
-        _back->setFixedHeight(60);
-        _back->setFixedWidth(this->width());
-        _back->setContentsMargins(0, 0, 0, 0);
+        m_pBack = new QWidget(this);
+        m_pBack->setFixedHeight(60);
+        m_pBack->setFixedWidth(this->width());
+        m_pBack->setContentsMargins(0, 0, 0, 0);
 
-        _front = new QWidget(this);
-        _front->setFixedHeight(60);
-        _front->setFixedWidth(0);
-        _front->setContentsMargins(0, 0, 0, 0);
+        m_pFront = new QWidget(this);
+        m_pFront->setFixedHeight(60);
+        m_pFront->setFixedWidth(0);
+        m_pFront->setContentsMargins(0, 0, 0, 0);
 
-        _indicator = new IndicatorItem(this);
-        _indicator->resize(6, 60);
-        _indicator->setObjectName("indicator");
+        m_pIndicator = new IndicatorItem(this);
+        m_pIndicator->resize(6, 60);
+        m_pIndicator->setObjectName("indicator");
 
-        _sliderTime = new SliderTime;
-        _sliderTime->hide();
+        m_pSliderTime = new SliderTime;
+        m_pSliderTime->hide();
 
         QMatrix matrix;
         matrix.rotate(180);
         QPixmap pixmap = utils::LoadHiDPIPixmap(SLIDER_ARROW);
-        _sliderArrowUp = new DArrowRectangle(DArrowRectangle::ArrowTop);
-        //_sliderArrowUp->setFocusPolicy(Qt::NoFocus);
-        _sliderArrowUp->setAttribute(Qt::WA_DeleteOnClose);
-        _sliderArrowUp->setWindowFlag(Qt::WindowStaysOnTopHint);
-        _sliderArrowUp->setArrowWidth(10);
-        _sliderArrowUp->setArrowHeight(7);
+        m_pSliderArrowUp = new DArrowRectangle(DArrowRectangle::ArrowTop);
+        //m_pSliderArrowUp->setFocusPolicy(Qt::NoFocus);
+        m_pSliderArrowUp->setAttribute(Qt::WA_DeleteOnClose);
+        m_pSliderArrowUp->setWindowFlag(Qt::WindowStaysOnTopHint);
+        m_pSliderArrowUp->setArrowWidth(10);
+        m_pSliderArrowUp->setArrowHeight(7);
         const QPalette pa = QGuiApplication::palette();
         QColor bgColor = pa.color(QPalette::Highlight);
-        _sliderArrowUp->setBackgroundColor(bgColor);
-        _sliderArrowUp->setFixedSize(10, 7);
-        _sliderArrowUp->hide();
-        _sliderArrowDown = new DLabel(this);
-        _sliderArrowDown->setFixedSize(20, 18);
-        _sliderArrowDown->setPixmap(pixmap.transformed(matrix, Qt::SmoothTransformation));
-        _sliderArrowDown->hide();
+        m_pSliderArrowUp->setBackgroundColor(bgColor);
+        m_pSliderArrowUp->setFixedSize(10, 7);
+        m_pSliderArrowUp->hide();
+        m_pSliderArrowDown = new DLabel(this);
+        m_pSliderArrowDown->setFixedSize(20, 18);
+        m_pSliderArrowDown->setPixmap(pixmap.transformed(matrix, Qt::SmoothTransformation));
+        m_pSliderArrowDown->hide();
 
-        _back->setMouseTracking(true);
-        _front->setMouseTracking(true);
-        _indicator->setMouseTracking(true);
+        m_pBack->setMouseTracking(true);
+        m_pFront->setMouseTracking(true);
+        m_pIndicator->setMouseTracking(true);
 
-        _viewProgBarLayout = new QHBoxLayout(_back);
-        _viewProgBarLayout->setContentsMargins(0, 5, 0, 5);
-        _back->setLayout(_viewProgBarLayout);
+        m_pViewProgBarLayout = new QHBoxLayout(m_pBack);
+        m_pViewProgBarLayout->setContentsMargins(0, 5, 0, 5);
+        m_pBack->setLayout(m_pViewProgBarLayout);
 
-        _viewProgBarLayout_black = new QHBoxLayout(_front);
-        _viewProgBarLayout_black->setContentsMargins(0, 5, 0, 5);
-        _front->setLayout(_viewProgBarLayout_black);
+        m_pViewProgBarLayout_black = new QHBoxLayout(m_pFront);
+        m_pViewProgBarLayout_black->setContentsMargins(0, 5, 0, 5);
+        m_pFront->setLayout(m_pViewProgBarLayout_black);
 
     }
 //    virtual ~ViewProgBar();
     void setIsBlockSignals(bool isBlockSignals)
     {
-        _isBlockSignals = isBlockSignals;
+         m_bIsBlockSignals = isBlockSignals;
     }
     bool getIsBlockSignals()
     {
-        return _isBlockSignals;
+        return  m_bIsBlockSignals;
     }
     void setValue(int v)
     {
@@ -608,74 +373,82 @@ public:
         } else if (v > (m_nStartPoint + m_nViewLength)) {
             v = (m_nStartPoint + m_nViewLength);
         }
-        _indicatorPos = {v, rect().y()};
+        m_IndicatorPos = {v, rect().y()};
     }
     int getValue()
     {
-        return _indicator->x();
+        return m_pIndicator->x();
     }
     int getTimePos()
     {
-        return position2progress(QPoint(_indicator->x(), 0));
+        return position2progress(QPoint(m_pIndicator->x(), 0));
     }
     void setTime(qint64 pos)
     {
         QTime time(0, 0, 0);
         QString strTime = time.addSecs(static_cast<int>(pos)).toString("hh:mm:ss");
-        _sliderTime->setTime(strTime);
+        m_pSliderTime->setTime(strTime);
     }
     void setTimeVisible(bool visible)
     {
         if (visible) {
             auto pos = this->mapToGlobal(QPoint(0, 0));
-            _sliderTime->show(pos.x() + _indicatorPos.x() + 1, pos.y() + _indicatorPos.y() + 4);
+            m_pSliderTime->show(pos.x() + m_IndicatorPos.x() + 1, pos.y() + m_IndicatorPos.y() + 4);
         } else {
-            _sliderTime->hide();
+            m_pSliderTime->hide();
         }
     }
-    void setViewProgBar(PlayerEngine *engine, QList<QPixmap>pm_list, QList<QPixmap>pm_black_list)
+    /**
+     * @brief setViewProgBar 设置胶片模式位置
+     * @param pEngine 播放引擎对象指针
+     * @param pmList 彩色胶片图像列表
+     * @param pmBlackList 灰色胶片图像列表
+     */
+    void setViewProgBar(PlayerEngine *pEngine, QList<QPixmap> pmList, QList<QPixmap> pmBlackList)
     {
-        _engine = engine;
+        m_pEngine = pEngine;
 
-        _viewProgBarLayout->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
-        _viewProgBarLayout->setSpacing(1);
+        m_pViewProgBarLayout->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
+        m_pViewProgBarLayout->setSpacing(1);
 
-        int pixWidget = 40/*_progBar->width() / 100*/;
-
-        m_nViewLength = (pixWidget + 1) * pm_list.count() - 1;
-        m_nStartPoint = (_progBar->width() - m_nViewLength) / 2; //开始位置
-        for (int i = 0; i < pm_list.count(); i++) {
-            ImageItem *label = new ImageItem(pm_list.at(i), false, _back);
+        /*这段代码将胶片添加到两个label中，一个label置灰，一个彩色，通过光标调整两个label的位置
+         *以实现通过光标来显示播放过的位置
+         */
+        const int nPixWidget = 40/*m_pProgBar->width() / 100*/;
+        m_nViewLength = (nPixWidget + 1) * pmList.count() - 1;
+        m_nStartPoint = (m_pProgBar->width() - m_nViewLength) / 2; //开始位置
+        for (int i = 0; i < pmList.count(); i++) {
+            ImageItem *label = new ImageItem(pmList.at(i), false, m_pBack);
             label->setMouseTracking(true);
-            label->move(i * (pixWidget + 1) + m_nStartPoint, 5);
-            label->setFixedSize(pixWidget, 50);
+            label->move(i * (nPixWidget + 1) + m_nStartPoint, 5);
+            label->setFixedSize(nPixWidget, 50);
 
-            ImageItem *label_black = new ImageItem(pm_black_list.at(i), true, _front);
+            ImageItem *label_black = new ImageItem(pmBlackList.at(i), true, m_pFront);
             label_black->setMouseTracking(true);
-            label_black->move(i * (pixWidget + 1) + m_nStartPoint, 5);
-            label_black->setFixedSize(pixWidget, 50);
+            label_black->move(i * (nPixWidget + 1) + m_nStartPoint, 5);
+            label_black->setFixedSize(nPixWidget, 50);
         }
         update();
     }
     void clear()
     {
-        foreach (QLabel *label, _front->findChildren<QLabel *>()) {
+        foreach (QLabel *label, m_pFront->findChildren<QLabel *>()) {
             if (label) {
                 label->deleteLater();
                 label = nullptr;
             }
         }
 
-        foreach (QLabel *label, _back->findChildren<QLabel *>()) {
+        foreach (QLabel *label, m_pBack->findChildren<QLabel *>()) {
             if (label) {
                 label->deleteLater();
                 label = nullptr;
             }
         }
 
-        _sliderTime->setVisible(false);
-        _sliderArrowDown->setVisible(false);
-        _sliderArrowUp->setVisible(false);
+        m_pSliderTime->setVisible(false);
+        m_pSliderArrowDown->setVisible(false);
+        m_pSliderArrowUp->setVisible(false);
     }
 
     int getViewLength()
@@ -694,12 +467,12 @@ private:
         if (!isVisible()) return;
 
         if (press) {
-            _indicator->setPressed(press);
-            _indicator->resize(2, 60);
+            m_pIndicator->setPressed(press);
+            m_pIndicator->resize(2, 60);
 
         } else {
-            _indicator->setPressed(press);
-            _indicator->resize(6, 60);
+            m_pIndicator->setPressed(press);
+            m_pIndicator->resize(6, 60);
         }
     }
 
@@ -707,7 +480,6 @@ signals:
     void leave();
     void hoverChanged(int);
     void sliderMoved(int);
-    void indicatorMoved(int);
     void mousePressed(bool pressed);
 
 protected:
@@ -728,9 +500,9 @@ protected:
         if (e->pos().x() >= 0 && e->pos().x() <= contentsRect().width()) {
             int v = position2progress(e->pos());
             if (e->buttons() & Qt::LeftButton) {
-                int distance = (e->pos() - _startPos).manhattanLength();
+                int distance = (e->pos() -  m_startPos).manhattanLength();
                 if (distance >= QApplication::startDragDistance()) {
-                    _engine->seekAbsolute(v);
+                    m_pEngine->seekAbsolute(v);
                     emit sliderMoved(v);
                     emit hoverChanged(v);
                     emit mousePressed(true);
@@ -738,10 +510,10 @@ protected:
                     repaint();
                 }
             } else {
-                if (_vlastHoverValue != v) {
+                if ( m_nVlastHoverValue != v) {
                     emit hoverChanged(v);
                 }
-                _vlastHoverValue = v;
+                 m_nVlastHoverValue = v;
             }
         }
         e->accept();
@@ -749,79 +521,56 @@ protected:
     void mousePressEvent(QMouseEvent *e) override
     {
 
-        if (!_press && e->buttons() == Qt::LeftButton && isEnabled()) {
-            _startPos = e->pos();
+        if (!m_bPress && e->buttons() == Qt::LeftButton && isEnabled()) {
+             m_startPos = e->pos();
 
             int v = position2progress(e->pos());
-            _engine->seekAbsolute(v);
+            m_pEngine->seekAbsolute(v);
             emit sliderMoved(v);
             emit hoverChanged(v);
             emit mousePressed(true);
             setValue(e->pos().x());
-            changeStyle(!_press);
-            _press = !_press;
+            changeStyle(!m_bPress);
+            m_bPress = !m_bPress;
         }
     }
     void mouseReleaseEvent(QMouseEvent *e) override
     {
         emit mousePressed(false);
-        if (_press && isEnabled()) {
-            changeStyle(!_press);
-            _press = !_press;
+        if (m_bPress && isEnabled()) {
+            changeStyle(!m_bPress);
+            m_bPress = !m_bPress;
         }
 
-        _sliderArrowUp->setVisible(_press);
-        setTimeVisible(_press);
+        m_pSliderArrowUp->setVisible(m_bPress);
+        setTimeVisible(m_bPress);
 
         DWidget::mouseReleaseEvent(e);
     }
     void paintEvent(QPaintEvent *e) override
     {
-        _indicator->move(_indicatorPos.x(), _indicatorPos.y());
+        m_pIndicator->move(m_IndicatorPos.x(), m_IndicatorPos.y());
         QPoint pos = this->mapToGlobal(QPoint(0, 0));
-        _sliderArrowUp->move(pos.x() + _indicatorPos.x() + 1, pos.y() + _indicator->height() - 5);
-        _front->setFixedWidth(_indicatorPos.x());
+        m_pSliderArrowUp->move(pos.x() + m_IndicatorPos.x() + 1, pos.y() + m_pIndicator->height() - 5);
+        m_pFront->setFixedWidth(m_IndicatorPos.x());
 
-        _sliderArrowUp->setVisible(_press);
-        setTimeVisible(_press);
+        m_pSliderArrowUp->setVisible(m_bPress);
+        setTimeVisible(m_bPress);
 
         DWidget::paintEvent(e);
     }
     void resizeEvent(QResizeEvent *event) override
     {
-        _back->setFixedWidth(this->width());
+        m_pBack->setFixedWidth(this->width());
 
         DWidget::resizeEvent(event);
     }
 private:
-    PlayerEngine *_engine {nullptr};
-    QWidget *_parent{nullptr};
-    int _vlastHoverValue;
-    QPoint _startPos;
-    bool _isBlockSignals;
-    QPoint _indicatorPos {0, 0};
-    QColor _indicatorColor;
-    viewProgBarLoad *_viewProgBarLoad{nullptr};
-    QWidget *_back{nullptr};
-    QWidget *_front{nullptr};
-    IndicatorItem *_indicator {nullptr};
-    SliderTime *_sliderTime{nullptr};
-    DLabel *_sliderArrowDown{nullptr};
-    DArrowRectangle *_sliderArrowUp{nullptr};
-    bool _press{false};
-    QGraphicsColorizeEffect *m_effect{nullptr};
-    QList<QLabel *> labelList ;
-    QHBoxLayout *_indicatorLayout{nullptr};
-    QHBoxLayout *_viewProgBarLayout{nullptr};
-    QHBoxLayout *_viewProgBarLayout_black{nullptr};
-    DMRSlider *_progBar{nullptr};
-    int m_nViewLength;
-    int m_nStartPoint;
     int  position2progress(const QPoint &p)
     {
         int nPosition = 0;
 
-        if (!_engine) {
+        if (!m_pEngine) {
             return 0;
         }
 
@@ -833,11 +582,56 @@ private:
             nPosition = p.x();
         }
 
-        auto total = _engine->duration();
+        auto total = m_pEngine->duration();
         int span = static_cast<int>(total * (nPosition - m_nStartPoint) / m_nViewLength);
         return span/* * (p.x())*/;
     }
 
+    void initMemeber()
+    {
+        m_pEngine = nullptr;
+        _parent = nullptr;
+        m_pViewProgBarLoad = nullptr;
+        m_pBack = nullptr;
+        m_pFront = nullptr;
+        m_pIndicator  = nullptr;
+        m_pSliderTime = nullptr;
+        m_pSliderArrowDown = nullptr;
+        m_pSliderArrowUp = nullptr;
+        m_pIndicatorLayout = nullptr;
+        m_pViewProgBarLayout = nullptr;
+        m_pViewProgBarLayout_black = nullptr;
+        m_pProgBar = nullptr;
+        m_nViewLength = 0;
+        m_nStartPoint = 0;
+        m_nVlastHoverValue = 0;
+        m_startPos = QPoint(0, 0);
+        m_IndicatorPos  = QPoint(0, 0);
+        m_bPress = false;
+        m_bIsBlockSignals = false;
+    }
+
+    PlayerEngine *m_pEngine;
+    QWidget *_parent;
+    int  m_nVlastHoverValue;
+    QPoint  m_startPos;
+    bool  m_bIsBlockSignals;
+    QPoint m_IndicatorPos;
+    QColor _indicatorColor;
+    viewProgBarLoad *m_pViewProgBarLoad;
+    QWidget *m_pBack;
+    QWidget *m_pFront;
+    IndicatorItem *m_pIndicator;
+    SliderTime *m_pSliderTime;
+    DLabel *m_pSliderArrowDown;
+    DArrowRectangle *m_pSliderArrowUp;
+    bool m_bPress;
+    QHBoxLayout *m_pIndicatorLayout;
+    QHBoxLayout *m_pViewProgBarLayout;
+    QHBoxLayout *m_pViewProgBarLayout_black;
+    DMRSlider *m_pProgBar;
+    int m_nViewLength;
+    int m_nStartPoint;
 };
 
 class ThumbnailPreview: public QWidget
@@ -853,23 +647,6 @@ public:
         setAttribute(Qt::WA_TranslucentBackground);
 
         setObjectName("ThumbnailPreview");
-
-//        setFixedSize(ThumbnailWorker::thumbSize().width(),ThumbnailWorker::thumbSize().height()+10);
-
-//        setWidth(ThumbnailWorker::thumbSize().width());
-//        setHeight(ThumbnailWorker::thumbSize().height());
-//        resize(QSize(106, 66));
-//        setShadowBlurRadius(2);
-//        setRadius(2);
-//        setRadius(16);
-//        setBorderWidth(1);
-//        setBorderColor(QColor(255, 255, 255, 26));
-
-//        setShadowYOffset(4);
-//        setShadowXOffset(0);
-//        setShadowBlurRadius(6);
-//        setArrowWidth(0);
-//        setArrowHeight(0);
 
         auto *l = new QVBoxLayout;
 //        l->setContentsMargins(0, 0, 0, 10);
@@ -944,30 +721,6 @@ public:
 signals:
     void leavePreview();
 
-protected slots:
-    /*void updateTheme()
-    {
-        if (qApp->theme() == "dark") {
-            setBackgroundColor(QColor(23, 23, 23, 255 * 8 / 10));
-            setBorderColor(QColor(255, 255 ,255, 25));
-            _time->setStyleSheet(R"(
-                border-radius: 3px;
-                background-color: rgba(23, 23, 23, 0.8);
-                font-size: 12px;
-                color: #ffffff;
-            )");
-        } else {
-            setBackgroundColor(QColor(255, 255, 255, 255 * 8 / 10));
-            setBorderColor(QColor(0, 0 ,0, 25));
-            _time->setStyleSheet(R"(
-                border-radius: 3px;
-                background-color: rgba(255, 255, 255, 0.8);
-                font-size: 12px;
-                color: #303030;
-            )");
-        }
-    }*/
-
 protected:
     void paintEvent(QPaintEvent *e) Q_DECL_OVERRIDE{
         m_shadow_effect->setOffset(0, 0);
@@ -1009,21 +762,22 @@ private:
 
 viewProgBarLoad::viewProgBarLoad(PlayerEngine *engine, DMRSlider *progBar, ToolboxProxy *parent)
 {
-    _parent = parent;
-    _engine = engine;
-    _progBar = progBar;
+    initMember();
+    m_pParent = parent;
+    m_pEngine = engine;
+    m_pProgBar = progBar;
     m_seekTime = new char[12];
     initThumb();
 }
 
 void viewProgBarLoad::setListPixmapMutex(QMutex *pMutex)
 {
-    pListPixmapMutex = pMutex;
+    m_pListPixmapMutex = pMutex;
 }
 
 void viewProgBarLoad::run()
 {
-    loadViewProgBar(_parent->size());
+    loadViewProgBar(m_pParent->size());
 }
 
 QString libPath(const QString &strlib)
@@ -1072,21 +826,26 @@ void viewProgBarLoad::initThumb()
     m_video_thumbnailer = m_mvideo_thumbnailer();
 }
 
+void viewProgBarLoad::initMember()
+{
+    m_pEngine = nullptr;
+    m_pParent = nullptr;
+    m_pProgBar = nullptr;
+    m_pListPixmapMutex = nullptr;
+}
+
 void viewProgBarLoad::loadViewProgBar(QSize size)
 {
     auto pixWidget =  40;
-    auto num = int(_progBar->width() / (40 + 1)); //number of thumbnails
-    auto tmp = (_engine->duration() * 1000) / num;
+    auto num = int(m_pProgBar->width() / (40 + 1)); //number of thumbnails
+    auto tmp = (m_pEngine->duration() * 1000) / num;
 
-    QList<QPixmap> pm;
-    QList<QPixmap> pm_black;
+    QList<QPixmap> pmList;
+    QList<QPixmap> pmBlackList;
 
     QTime time(0, 0, 0, 0);
-    qInfo() << _engine->videoSize().width();
-    qInfo() << _engine->videoSize().height();
-    qInfo() << qApp->devicePixelRatio();
-    if (_engine->videoSize().width() > 0 && _engine->videoSize().height() > 0) {
-        m_video_thumbnailer->thumbnail_size = (static_cast<int>(50 * (_engine->videoSize().width() / _engine->videoSize().height() * 50)
+    if (m_pEngine->videoSize().width() > 0 && m_pEngine->videoSize().height() > 0) {
+        m_video_thumbnailer->thumbnail_size = (static_cast<int>(50 * (m_pEngine->videoSize().width() / m_pEngine->videoSize().height() * 50)
                                                                 * qApp->devicePixelRatio()));
     }
 
@@ -1099,7 +858,7 @@ void viewProgBarLoad::loadViewProgBar(QSize size)
     memcpy(m_seekTime, time.toString("hh:mm:ss").toLatin1().data(), length + 1);
     m_video_thumbnailer->seek_time = m_seekTime;
 
-    auto url = _engine->playlist().currentInfo().url;
+    auto url = m_pEngine->playlist().currentInfo().url;
     auto file = QFileInfo(url.toLocalFile()).absoluteFilePath();
 
     for (auto i = 0; i < num ; i++) {
@@ -1123,9 +882,9 @@ void viewProgBarLoad::loadViewProgBar(QSize size)
             auto img_tmp = img.scaledToHeight(50);
 
 
-            pm.append(QPixmap::fromImage(img_tmp.copy(img_tmp.size().width() / 2 - 4, 0, pixWidget, 50))); //-2 为了1px的内边框
+            pmList.append(QPixmap::fromImage(img_tmp.copy(img_tmp.size().width() / 2 - 4, 0, pixWidget, 50))); //-2 为了1px的内边框
             QImage img_black = img_tmp.convertToFormat(QImage::Format_Grayscale8);
-            pm_black.append(QPixmap::fromImage(img_black.copy(img_black.size().width() / 2 - 4, 0, pixWidget, 50)));
+            pmBlackList.append(QPixmap::fromImage(img_black.copy(img_black.size().width() / 2 - 4, 0, pixWidget, 50)));
 
         } catch (const std::logic_error &) {
 
@@ -1135,26 +894,31 @@ void viewProgBarLoad::loadViewProgBar(QSize size)
     m_mvideo_thumbnailer_destroy_image_data(m_image_data);
     m_image_data = nullptr;
 
-    pListPixmapMutex->lock();
-    _parent->addpm_list(pm);
-    _parent->addpm_black_list(pm_black);
-    pListPixmapMutex->unlock();
+    m_pListPixmapMutex->lock();
+    m_pParent->addpmList(pmList);
+    m_pParent->addpmBlackList(pmBlackList);
+    m_pListPixmapMutex->unlock();
     emit sigFinishiLoad(size);
     emit finished();
 }
-
+/**
+ * @brief ToolboxProxy 构造函数
+ * @param mainWindow 主窗口
+ * @param pPlayerEngine 播放引擎对象指针
+ */
 ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
     : DFloatingWidget(mainWindow),
-      _mainWindow(static_cast<MainWindow *>(mainWindow)),
-      _engine(proxy)
+      m_pMainWindow(static_cast<MainWindow *>(mainWindow)),
+      m_pEngine(proxy)
 {
+    initMember();
     auto systemEnv = QProcessEnvironment::systemEnvironment();
     QString XDG_SESSION_TYPE = systemEnv.value(QStringLiteral("XDG_SESSION_TYPE"));
     QString WAYLAND_DISPLAY = systemEnv.value(QStringLiteral("WAYLAND_DISPLAY"));
 
     if (XDG_SESSION_TYPE == QLatin1String("wayland") ||
             WAYLAND_DISPLAY.contains(QLatin1String("wayland"), Qt::CaseInsensitive)) {
-        _bthumbnailmode = false;
+        m_bThumbnailmode = false;
     }
 
     bool composited = CompositingManager::get().composited();
@@ -1164,114 +928,63 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
         setAttribute(Qt::WA_NativeWindow);
     }
 
-    /*    QGraphicsDropShadowEffect *shadowEffect = new QGraphicsDropShadowEffect(this);
-        shadowEffect->setOffset(0, 4);
-        shadowEffect->setBlurRadius(8);
-        shadowEffect->setColor(QColor(0, 0, 0, 0.1 * 255));
-        connect(DApplicationHelper::instance(), &DApplicationHelper::themeTypeChanged, this, [ = ] {
-            if (DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::LightType)
-            {
-                shadowEffect->setColor(QColor(0, 0, 0, 0.1 * 255));
-                shadowEffect->setOffset(0, 4);
-                shadowEffect->setBlurRadius(8);
-            } else if (DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::DarkType)
-            {
-                shadowEffect->setColor(QColor(0, 0, 0, 0.2 * 255));
-                shadowEffect->setOffset(0, 2);
-                shadowEffect->setBlurRadius(4);
-            } else
-            {
-                shadowEffect->setColor(QColor(0, 0, 0, 0.1 * 255));
-                shadowEffect->setOffset(0, 4);
-                shadowEffect->setBlurRadius(8);
-            }
-        });
-        setGraphicsEffect(shadowEffect);
-
-
-        DThemeManager::instance()->registerWidget(this);
-    */
-
-    paopen = nullptr;
-    paClose = nullptr;
-
-    label_list.clear();
-    label_black_list.clear();
-    pm_list.clear();
-    pm_black_list.clear();
-
-    _previewer = new ThumbnailPreview;
-//    _previewer->hide();
-
-    _previewTime = new SliderTime;
-    _previewTime->hide();
-
-//    _subView = new SubtitlesView(nullptr, _engine);
-//    _subView->hide();
+    m_pPreviewer = new ThumbnailPreview;
+    m_pPreviewTime = new SliderTime;
+    m_pPreviewTime->hide();
     setup();
 
     connect(DApplicationHelper::instance(), &DApplicationHelper::themeTypeChanged,
             this, &ToolboxProxy::updatePlayState);
     connect(DApplicationHelper::instance(), &DApplicationHelper::themeTypeChanged,
             this, &ToolboxProxy::updateplaylisticon);
-
-    QFileInfo fi("/dev/mwv206_0");              //景嘉微显卡
-    if (utils::check_wayland_env() && fi.exists()) {
-        _isJinJia = true;
-        connect(&_progressTimer, &QTimer::timeout, [ = ]() {
-            oldDuration = _engine->duration();
-            oldElapsed = _engine->elapsed();
-        });
-    }
 }
 void ToolboxProxy::finishLoadSlot(QSize size)
 {
     qInfo() << "thumbnail has finished";
 
-    if (pm_list.isEmpty()) return;
+    if (m_pmList.isEmpty()) return;
 
-    if (!_bthumbnailmode) {
+    if (!m_bThumbnailmode) {
         return;
     }
-    //    if (isStillShowThumbnail) {
-    _viewProgBar->setViewProgBar(_engine, pm_list, pm_black_list);
+    //    if (m_bIsStillShowThumbnail) {
+    m_pViewProgBar->setViewProgBar(m_pEngine, m_pmList, m_pmBlackList);
     //    }
 
-    if (CompositingManager::get().composited()/* && _loadsize == size*/ && _engine->state() != PlayerEngine::CoreState::Idle) {
-        PlayItemInfo info = _engine->playlist().currentInfo();
+    if (CompositingManager::get().composited()/* && _loadsize == size*/ && m_pEngine->state() != PlayerEngine::CoreState::Idle) {
+        PlayItemInfo info = m_pEngine->playlist().currentInfo();
         if (!info.url.isLocalFile()) {
             // Url and DVD without thumbnail
 //            if (!info.url.scheme().startsWith("dvd")) {
             return;
 //            }
         }
-        _progBar_Widget->setCurrentIndex(2);
+        m_pProgBar_Widget->setCurrentIndex(2);
     }
 }
 
 void ToolboxProxy::setthumbnailmode()
 {
-    if (_engine->state() == PlayerEngine::CoreState::Idle) {
+    if (m_pEngine->state() == PlayerEngine::CoreState::Idle) {
         return;
     }
 
 #if !defined (__mips__ ) && !defined(__aarch64__)
     if (Settings::get().isSet(Settings::ShowThumbnailMode)) {
-        _bthumbnailmode = true;
+        m_bThumbnailmode = true;
         updateThumbnail();
     } else {
-        _bthumbnailmode = false;
+        m_bThumbnailmode = false;
         updateMovieProgress();
-        _progBar_Widget->setCurrentIndex(1);   //恢复进度条模式 by zhuyuliang
+        m_pProgBar_Widget->setCurrentIndex(1);   //恢复进度条模式 by zhuyuliang
     }
 #else
     bool composited = CompositingManager::get().composited();
     if (composited) {
-        isStillShowThumbnail = true;
-        _bthumbnailmode = true;
+        m_bThumbnailmode = true;
         updateThumbnail();
     } else {
-        _bthumbnailmode = false;
+        m_bThumbnailmode = false;
         updateMovieProgress();
     }
 #endif
@@ -1280,22 +993,25 @@ void ToolboxProxy::setthumbnailmode()
 
 void ToolboxProxy::updateplaylisticon()
 {
-    if (_listBtn->isChecked() && DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
-        _listBtn->setIcon(QIcon(":/icons/deepin/builtin/light/checked/episodes_checked.svg"));
+    if (m_pListBtn->isChecked() && DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
+        m_pListBtn->setIcon(QIcon(":/icons/deepin/builtin/light/checked/episodes_checked.svg"));
     } else {
-        _listBtn->setIcon(QIcon::fromTheme("dcc_episodes"));
+        m_pListBtn->setIcon(QIcon::fromTheme("dcc_episodes"));
     }
 }
+/**
+ * @brief ~ToolboxProxy 析构函数
+ */
 ToolboxProxy::~ToolboxProxy()
 {
     ThumbnailWorker::get().stop();
-    delete _previewer;
-    delete _previewTime;
+    delete m_pPreviewer;
+    delete m_pPreviewTime;
 
-    if (m_worker) {
-        m_worker->wait();
-        m_worker->quit();
-        m_worker->deleteLater();
+    if (m_pWorker) {
+        m_pWorker->wait();
+        m_pWorker->quit();
+        m_pWorker->deleteLater();
     }
 }
 
@@ -1332,269 +1048,263 @@ void ToolboxProxy::setup()
     botv->setSpacing(10);
 //    auto *bot = new QHBoxLayout();
 
-    _bot_spec = new QWidget(bot_widget);
-    _bot_spec->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
-    _bot_spec->setFixedWidth(width());
-//    _bot_spec->setFixedHeight(TOOLBOX_SPACE_HEIGHT);
-    _bot_spec->setVisible(false);
-    botv->addWidget(_bot_spec);
+    m_pBotSpec = new QWidget(bot_widget);
+    m_pBotSpec->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
+    m_pBotSpec->setFixedWidth(width());
+    m_pBotSpec->setVisible(false);
+    botv->addWidget(m_pBotSpec);
     botv->addStretch();
 
-    bot_toolWgt = new QWidget(bot_widget);
-    bot_toolWgt->setObjectName(BOTTOM_TOOL_BUTTON_WIDGET);
-    bot_toolWgt->setFixedHeight(TOOLBOX_HEIGHT - 10);
-    bot_toolWgt->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
-    auto *bot_layout = new QHBoxLayout(bot_toolWgt);
+    m_pBotToolWgt = new QWidget(bot_widget);
+    m_pBotToolWgt->setObjectName(BOTTOM_TOOL_BUTTON_WIDGET);
+    m_pBotToolWgt->setFixedHeight(TOOLBOX_HEIGHT - 10);
+    m_pBotToolWgt->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+    auto *bot_layout = new QHBoxLayout(m_pBotToolWgt);
     bot_layout->setContentsMargins(LEFT_MARGIN, 0, RIGHT_MARGIN, 0);
     bot_layout->setSpacing(0);
-    bot_toolWgt->setLayout(bot_layout);
-    botv->addWidget(bot_toolWgt);
+    m_pBotToolWgt->setLayout(bot_layout);
+    botv->addWidget(m_pBotToolWgt);
 
     bot_widget->setLayout(botv);
     stacked->addWidget(bot_widget);
 
-    _timeLabel = new QLabel(bot_toolWgt);
-    _timeLabel->setAlignment(Qt::AlignCenter);
-    _fullscreentimelable = new QLabel("");
-    _fullscreentimelable->setAttribute(Qt::WA_DeleteOnClose);
-    _fullscreentimelable->setForegroundRole(DPalette::Text);
+    m_pTimeLabel = new QLabel(m_pBotToolWgt);
+    m_pTimeLabel->setAlignment(Qt::AlignCenter);
+    m_pFullscreentimelable = new QLabel("");
+    m_pFullscreentimelable->setAttribute(Qt::WA_DeleteOnClose);
+    m_pFullscreentimelable->setForegroundRole(DPalette::Text);
 
-    DFontSizeManager::instance()->bind(_timeLabel, DFontSizeManager::T6);
-    _timeLabel->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    _fullscreentimelable->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    DFontSizeManager::instance()->bind(_fullscreentimelable, DFontSizeManager::T6);
-    _timeLabelend = new QLabel(bot_toolWgt);
-    _timeLabelend->setAlignment(Qt::AlignCenter);
-    _fullscreentimelableend = new QLabel("");
-    _fullscreentimelableend->setAttribute(Qt::WA_DeleteOnClose);
-    _fullscreentimelableend->setForegroundRole(DPalette::Text);
-    _timeLabelend->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    DFontSizeManager::instance()->bind(_timeLabelend, DFontSizeManager::T6);
-    _fullscreentimelableend->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    DFontSizeManager::instance()->bind(_fullscreentimelableend, DFontSizeManager::T6);
+    DFontSizeManager::instance()->bind(m_pTimeLabel, DFontSizeManager::T6);
+    m_pTimeLabel->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    m_pFullscreentimelable->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    DFontSizeManager::instance()->bind(m_pFullscreentimelable, DFontSizeManager::T6);
+    m_pTimeLabelend = new QLabel(m_pBotToolWgt);
+    m_pTimeLabelend->setAlignment(Qt::AlignCenter);
+    m_pFullscreentimelableend = new QLabel("");
+    m_pFullscreentimelableend->setAttribute(Qt::WA_DeleteOnClose);
+    m_pFullscreentimelableend->setForegroundRole(DPalette::Text);
+    m_pTimeLabelend->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    DFontSizeManager::instance()->bind(m_pTimeLabelend, DFontSizeManager::T6);
+    m_pFullscreentimelableend->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    DFontSizeManager::instance()->bind(m_pFullscreentimelableend, DFontSizeManager::T6);
 
-    _progBar = new DMRSlider(bot_toolWgt);
-    _progBar->setObjectName(MOVIE_PROGRESS_WIDGET);
-    _progBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-    _progBar->slider()->setObjectName(PROGBAR_SLIDER);
-    _progBar->slider()->setAccessibleName(PROGBAR_SLIDER);
-    _progBar->slider()->setOrientation(Qt::Horizontal);
-    _progBar->slider()->setFocusPolicy(Qt::TabFocus);
-    _progBar->slider()->setRange(0, 100);
-    _progBar->setValue(0);
-    _progBar->setEnableIndication(_engine->state() != PlayerEngine::Idle);
+    m_pProgBar = new DMRSlider(m_pBotToolWgt);
+    m_pProgBar->setObjectName(MOVIE_PROGRESS_WIDGET);
+    m_pProgBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+    m_pProgBar->slider()->setObjectName(PROGBAR_SLIDER);
+    m_pProgBar->slider()->setAccessibleName(PROGBAR_SLIDER);
+    m_pProgBar->slider()->setOrientation(Qt::Horizontal);
+    m_pProgBar->slider()->setFocusPolicy(Qt::TabFocus);
+    m_pProgBar->slider()->setRange(0, 100);
+    m_pProgBar->setValue(0);
+    m_pProgBar->setEnableIndication(m_pEngine->state() != PlayerEngine::Idle);
 
-    connect(_previewer, &ThumbnailPreview::leavePreview, this, &ToolboxProxy::slotLeavePreview);
+    connect(m_pPreviewer, &ThumbnailPreview::leavePreview, this, &ToolboxProxy::slotLeavePreview);
     connect(&Settings::get(), &Settings::baseChanged, this, &ToolboxProxy::setthumbnailmode);
-    connect(_engine, &PlayerEngine::siginitthumbnailseting, this, &ToolboxProxy::setthumbnailmode);
+    connect(m_pEngine, &PlayerEngine::siginitthumbnailseting, this, &ToolboxProxy::setthumbnailmode);
 
     //刷新显示预览当前时间的label
-    connect(_progBar, &DMRSlider::hoverChanged, this, &ToolboxProxy::progressHoverChanged);
-    connect(_progBar, &DMRSlider::sliderMoved, this, &ToolboxProxy::progressHoverChanged);
-    connect(_progBar, &DMRSlider::leave, this, &ToolboxProxy::slotHidePreviewTime);
+    connect(m_pProgBar, &DMRSlider::hoverChanged, this, &ToolboxProxy::progressHoverChanged);
+    connect(m_pProgBar, &DMRSlider::sliderMoved, this, &ToolboxProxy::progressHoverChanged);
+    connect(m_pProgBar, &DMRSlider::leave, this, &ToolboxProxy::slotHidePreviewTime);
 
-    connect(_progBar, &DMRSlider::sliderPressed, this, &ToolboxProxy::slotSliderPressed);
-    connect(_progBar, &DMRSlider::sliderReleased, this, &ToolboxProxy::slotSliderReleased);
+    connect(m_pProgBar, &DMRSlider::sliderPressed, this, &ToolboxProxy::slotSliderPressed);
+    connect(m_pProgBar, &DMRSlider::sliderReleased, this, &ToolboxProxy::slotSliderReleased);
     connect(&Settings::get(), &Settings::baseMuteChanged, this, &ToolboxProxy::slotBaseMuteChanged);
 
-    _viewProgBar = new ViewProgBar(_progBar, bot_toolWgt);
+    m_pViewProgBar = new ViewProgBar(m_pProgBar, m_pBotToolWgt);
 
 
     //刷新显示预览当前时间的label
-    connect(_viewProgBar, &ViewProgBar::hoverChanged, this, &ToolboxProxy::progressHoverChanged);
-    connect(_viewProgBar, &ViewProgBar::leave, this, &ToolboxProxy::slotHidePreviewTime);
-    connect(_viewProgBar, &ViewProgBar::mousePressed, this, &ToolboxProxy::updateTimeVisible);
+    connect(m_pViewProgBar, &ViewProgBar::hoverChanged, this, &ToolboxProxy::progressHoverChanged);
+    connect(m_pViewProgBar, &ViewProgBar::leave, this, &ToolboxProxy::slotHidePreviewTime);
+    connect(m_pViewProgBar, &ViewProgBar::mousePressed, this, &ToolboxProxy::updateTimeVisible);
 
     auto *signalMapper = new QSignalMapper(this);
     connect(signalMapper, static_cast<void(QSignalMapper::*)(const QString &)>(&QSignalMapper::mapped),
             this, &ToolboxProxy::buttonClicked);
 
-    _mid = new QHBoxLayout(bot_toolWgt);
+    _mid = new QHBoxLayout(m_pBotToolWgt);
     _mid->setContentsMargins(0, 0, 0, 0);
     _mid->setSpacing(0);
     _mid->setAlignment(Qt::AlignLeft);
     bot_layout->addLayout(_mid);
 
-    QHBoxLayout *time = new QHBoxLayout(bot_toolWgt);
+    QHBoxLayout *time = new QHBoxLayout(m_pBotToolWgt);
     time->setContentsMargins(11, 9, 11, 9);
     time->setSpacing(0);
     time->setAlignment(Qt::AlignLeft);
     bot_layout->addLayout(time);
-    time->addWidget(_timeLabel);
+    time->addWidget(m_pTimeLabel);
 //    bot->addStretch();
-    QHBoxLayout *progBarspec = new QHBoxLayout(bot_toolWgt);
+    QHBoxLayout *progBarspec = new QHBoxLayout(m_pBotToolWgt);
     progBarspec->setContentsMargins(0, 5, 0, 0);
     progBarspec->setSpacing(0);
     progBarspec->setAlignment(Qt::AlignHCenter);
 
     if (utils::check_wayland_env()) {
         //lmh0706,延时
-        connect(_nextBtn, &DButtonBoxButton::clicked, this, &ToolboxProxy::waitPlay);
-        connect(_playBtn, &DButtonBoxButton::clicked, this, &ToolboxProxy::waitPlay);
-        connect(_prevBtn, &DButtonBoxButton::clicked, this, &ToolboxProxy::waitPlay);
+        connect(m_pNextBtn, &DButtonBoxButton::clicked, this, &ToolboxProxy::waitPlay);
+        connect(m_pPlayBtn, &DButtonBoxButton::clicked, this, &ToolboxProxy::waitPlay);
+        connect(m_pPrevBtn, &DButtonBoxButton::clicked, this, &ToolboxProxy::waitPlay);
     }
 
-    _progBar_Widget = new QStackedWidget(bot_toolWgt);
-    _progBar_Widget->setObjectName(PROGBAR_WIDGET);
-    _progBar_Widget->setAccessibleName(PROGBAR_WIDGET);
-    _progBar_Widget->setContentsMargins(0, 0, 0, 0);
-    _progBar_Widget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+    m_pProgBar_Widget = new QStackedWidget(m_pBotToolWgt);
+    m_pProgBar_Widget->setObjectName(PROGBAR_WIDGET);
+    m_pProgBar_Widget->setAccessibleName(PROGBAR_WIDGET);
+    m_pProgBar_Widget->setContentsMargins(0, 0, 0, 0);
+    m_pProgBar_Widget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 
-    _progBarspec = new DWidget(_progBar_Widget);
-    _progBarspec->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+    m_pProgBarspec = new DWidget(m_pProgBar_Widget);
+    m_pProgBarspec->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 
-    _progBar_Widget->addWidget(_progBarspec);
-    _progBar_Widget->addWidget(_progBar);
-    _progBar_Widget->addWidget(_viewProgBar);
-    _progBar_Widget->setCurrentIndex(0);
-    progBarspec->addWidget(_progBar_Widget);
+    m_pProgBar_Widget->addWidget(m_pProgBarspec);
+    m_pProgBar_Widget->addWidget(m_pProgBar);
+    m_pProgBar_Widget->addWidget(m_pViewProgBar);
+    m_pProgBar_Widget->setCurrentIndex(0);
+    progBarspec->addWidget(m_pProgBar_Widget);
     bot_layout->addLayout(progBarspec);
 
-    QHBoxLayout *timeend = new QHBoxLayout(bot_toolWgt);
+    QHBoxLayout *timeend = new QHBoxLayout(m_pBotToolWgt);
     timeend->setContentsMargins(10, 10, 10, 10);
     timeend->setSpacing(0);
     timeend->setAlignment(Qt::AlignRight);
     bot_layout->addLayout(timeend);
-    timeend->addWidget(_timeLabelend);
+    timeend->addWidget(m_pTimeLabelend);
 
-    _palyBox = new DButtonBox(bot_toolWgt);
-    _palyBox->setFixedWidth(120);
-    _palyBox->setObjectName(PLAY_BUTTOB_BOX);
-    _palyBox->setFocusPolicy(Qt::NoFocus);
-    _mid->addWidget(_palyBox);
-    _mid->setAlignment(_palyBox, Qt::AlignLeft);
+    m_pPalyBox = new DButtonBox(m_pBotToolWgt);
+    m_pPalyBox->setFixedWidth(120);
+    m_pPalyBox->setObjectName(PLAY_BUTTOB_BOX);
+    m_pPalyBox->setFocusPolicy(Qt::NoFocus);
+    _mid->addWidget(m_pPalyBox);
+    _mid->setAlignment(m_pPalyBox, Qt::AlignLeft);
     QList<DButtonBoxButton *> list;
 
     if (utils::check_wayland_env()) {
-        _prevBtn = new ButtonBoxButton("", this);
-        _playBtn = new ButtonBoxButton("", this);
-        _nextBtn = new ButtonBoxButton("", this);
+        m_pPrevBtn = new ButtonBoxButton("", this);
+        m_pPlayBtn = new ButtonBoxButton("", this);
+        m_pNextBtn = new ButtonBoxButton("", this);
     } else {
-        _prevBtn = new DButtonBoxButton("", this);
-        _playBtn = new DButtonBoxButton("", this);
-        _nextBtn = new DButtonBoxButton("", this);
+        m_pPrevBtn = new DButtonBoxButton("", this);
+        m_pPlayBtn = new DButtonBoxButton("", this);
+        m_pNextBtn = new DButtonBoxButton("", this);
     }
 
-    _prevBtn->setIcon(QIcon::fromTheme("dcc_last", QIcon(":/icons/deepin/builtin/light/normal/last_normal.svg")));
-    _prevBtn->setIconSize(QSize(36, 36));
-    _prevBtn->setFixedSize(40, 50);
-    _prevBtn->setObjectName(PREV_BUTTON);
-    _prevBtn->setAccessibleName(PREV_BUTTON);
-    _prevBtn->setFocusPolicy(Qt::TabFocus);
-    connect(_prevBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
-    signalMapper->setMapping(_prevBtn, "prev");
-    list.append(_prevBtn);
+    m_pPrevBtn->setIcon(QIcon::fromTheme("dcc_last", QIcon(":/icons/deepin/builtin/light/normal/last_normal.svg")));
+    m_pPrevBtn->setIconSize(QSize(36, 36));
+    m_pPrevBtn->setFixedSize(40, 50);
+    m_pPrevBtn->setObjectName(PREV_BUTTON);
+    m_pPrevBtn->setAccessibleName(PREV_BUTTON);
+    m_pPrevBtn->setFocusPolicy(Qt::TabFocus);
+    connect(m_pPrevBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
+    signalMapper->setMapping(m_pPrevBtn, "prev");
+    list.append(m_pPrevBtn);
 
-    _playBtn->setIcon(QIcon::fromTheme("dcc_play", QIcon(":/icons/deepin/builtin/light/normal/play_normal.svg")));
-    _playBtn->setIconSize(QSize(36, 36));
-    _playBtn->setFixedSize(40, 50);
-    _playBtn->setFocusPolicy(Qt::TabFocus);
-    _playBtn->setObjectName(PLAY_BUTTON);
-    _playBtn->setAccessibleName(PLAY_BUTTON);
-    connect(_playBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
-    signalMapper->setMapping(_playBtn, "play");
-    list.append(_playBtn);
+    m_pPlayBtn->setIcon(QIcon::fromTheme("dcc_play", QIcon(":/icons/deepin/builtin/light/normal/play_normal.svg")));
+    m_pPlayBtn->setIconSize(QSize(36, 36));
+    m_pPlayBtn->setFixedSize(40, 50);
+    m_pPlayBtn->setFocusPolicy(Qt::TabFocus);
+    m_pPlayBtn->setObjectName(PLAY_BUTTON);
+    m_pPlayBtn->setAccessibleName(PLAY_BUTTON);
+    connect(m_pPlayBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
+    signalMapper->setMapping(m_pPlayBtn, "play");
+    list.append(m_pPlayBtn);
 
-    _nextBtn->setIcon(QIcon::fromTheme("dcc_next", QIcon(":/icons/deepin/builtin/light/normal/next_normal.svg")));
-    _nextBtn->setIconSize(QSize(36, 36));
-    _nextBtn->setFixedSize(40, 50);
-    _nextBtn->setFocusPolicy(Qt::TabFocus);
-    _nextBtn->setObjectName(NEXT_BUTTON);
-    _nextBtn->setAccessibleName(NEXT_BUTTON);
-    connect(_nextBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
-    signalMapper->setMapping(_nextBtn, "next");
-    list.append(_nextBtn);
-    _palyBox->setButtonList(list, false);
+    m_pNextBtn->setIcon(QIcon::fromTheme("dcc_next", QIcon(":/icons/deepin/builtin/light/normal/next_normal.svg")));
+    m_pNextBtn->setIconSize(QSize(36, 36));
+    m_pNextBtn->setFixedSize(40, 50);
+    m_pNextBtn->setFocusPolicy(Qt::TabFocus);
+    m_pNextBtn->setObjectName(NEXT_BUTTON);
+    m_pNextBtn->setAccessibleName(NEXT_BUTTON);
+    connect(m_pNextBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
+    signalMapper->setMapping(m_pNextBtn, "next");
+    list.append(m_pNextBtn);
+    m_pPalyBox->setButtonList(list, false);
 
-    _right = new QHBoxLayout(bot_toolWgt);
+    _right = new QHBoxLayout(m_pBotToolWgt);
     _right->setContentsMargins(0, 0, 0, 0);
     _right->setSizeConstraint(QLayout::SetFixedSize);
     _right->setSpacing(0);
     bot_layout->addLayout(_right);
 
-    _subBtn = new ToolButton(bot_toolWgt);
-    _subBtn->setIcon(QIcon::fromTheme("dcc_episodes"));
-    _subBtn->setIconSize(QSize(36, 36));
-    _subBtn->setFixedSize(50, 50);
-    _subBtn->initToolTip();
-    connect(_subBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
-    signalMapper->setMapping(_subBtn, "sub");
-    _subBtn->hide();
+    m_pSubBtn = new ToolButton(m_pBotToolWgt);
+    m_pSubBtn->setIcon(QIcon::fromTheme("dcc_episodes"));
+    m_pSubBtn->setIconSize(QSize(36, 36));
+    m_pSubBtn->setFixedSize(50, 50);
+    m_pSubBtn->initToolTip();
+    connect(m_pSubBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
+    signalMapper->setMapping(m_pSubBtn, "sub");
+    m_pSubBtn->hide();
 
-    _fsBtn = new ToolButton(bot_toolWgt);
-    _fsBtn->setObjectName(FS_BUTTON);
-    _fsBtn->setAccessibleName(FS_BUTTON);
-    _fsBtn->setFocusPolicy(Qt::TabFocus);
-    _fsBtn->setIcon(QIcon::fromTheme("dcc_zoomin"));
-    _fsBtn->setIconSize(QSize(36, 36));
-    _fsBtn->setFixedSize(50, 50);
-    _fsBtn->initToolTip();
-    connect(_fsBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
-    signalMapper->setMapping(_fsBtn, "fs");
+    m_pFullScreenBtn = new ToolButton(m_pBotToolWgt);
+    m_pFullScreenBtn->setObjectName(FS_BUTTON);
+    m_pFullScreenBtn->setAccessibleName(FS_BUTTON);
+    m_pFullScreenBtn->setFocusPolicy(Qt::TabFocus);
+    m_pFullScreenBtn->setIcon(QIcon::fromTheme("dcc_zoomin"));
+    m_pFullScreenBtn->setIconSize(QSize(36, 36));
+    m_pFullScreenBtn->setFixedSize(50, 50);
+    m_pFullScreenBtn->initToolTip();
+    connect(m_pFullScreenBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
+    signalMapper->setMapping(m_pFullScreenBtn, "fs");
 
-    _volBtn = new VolumeButton(bot_toolWgt);
-    _volBtn->installEventFilter(this);
-    _volBtn->setFixedSize(50, 50);
-    _volBtn->setFocusPolicy(Qt::TabFocus);
-    _volBtn->setObjectName(VOLUME_BUTTON);
-    _volBtn->setAccessibleName(VOLUME_BUTTON);
+    m_pVolBtn = new VolumeButton(m_pBotToolWgt);
+    m_pVolBtn->installEventFilter(this);
+    m_pVolBtn->setFixedSize(50, 50);
+    m_pVolBtn->setFocusPolicy(Qt::TabFocus);
+    m_pVolBtn->setObjectName(VOLUME_BUTTON);
+    m_pVolBtn->setAccessibleName(VOLUME_BUTTON);
     if (CompositingManager::get().composited()) {
-        _volSlider = new VolumeSlider(_mainWindow, _mainWindow);
-        _volSlider->setObjectName(VOLUME_SLIDER_WIDGET);
-        connect(_volBtn, &VolumeButton::clicked, this, &ToolboxProxy::slotVolumeButtonClicked);
+        m_pVolSlider = new VolumeSlider(m_pMainWindow, m_pMainWindow);
+        m_pVolSlider->setObjectName(VOLUME_SLIDER_WIDGET);
+        connect(m_pVolBtn, &VolumeButton::clicked, this, &ToolboxProxy::slotVolumeButtonClicked);
 
     } else {
 #if defined (__mips__) || defined (__aarch64__)
-        _volSlider = new VolumeSlider(_mainWindow, _mainWindow);
-        _volSlider->setObjectName(VOLUME_SLIDER_WIDGET);
-        connect(_volBtn, &VolumeButton::clicked, this, &ToolboxProxy::slotVolumeButtonClicked);
-
-//        _volSlider->setProperty("DelayHide", true);
-//        _volSlider->setProperty("NoDelayShow", true);
-//        installHint(_volBtn, _volSlider);
+        m_pVolSlider = new VolumeSlider(m_pMainWindow, m_pMainWindow);
+        m_pVolSlider->setObjectName(VOLUME_SLIDER_WIDGET);
+        connect(m_pVolBtn, &VolumeButton::clicked, this, &ToolboxProxy::slotVolumeButtonClicked);
 #else
-        _volSlider = new VolumeSlider(_mainWindow, _mainWindow);
-        _volSlider->setObjectName(VOLUME_SLIDER_WIDGET);;
-        connect(_volBtn, &VolumeButton::clicked, this, &ToolboxProxy::slotVolumeButtonClicked);
+        m_pVolSlider = new VolumeSlider(m_pMainWindow, m_pMainWindow);
+        m_pVolSlider->setObjectName(VOLUME_SLIDER_WIDGET);;
+        connect(m_pVolBtn, &VolumeButton::clicked, this, &ToolboxProxy::slotVolumeButtonClicked);
 #endif
     }
 #ifdef __x86_64__
-    connect(_volBtn, &VolumeButton::leaved, _volSlider, &VolumeSlider::delayedHide);
+    connect(m_pVolBtn, &VolumeButton::leaved, m_pVolSlider, &VolumeSlider::delayedHide);
 #else
-    connect(_volBtn, &VolumeButton::leaved, [ = ]() {
-        m_isMouseIn = false;
-        _volSlider->delayedHide();
+    connect(m_pVolBtn, &VolumeButton::leaved, [ = ]() {
+        m_pVolSlider->delayedHide();
     });
 #endif
-    connect(_volSlider, &VolumeSlider::sigVolumeChanged, this, &ToolboxProxy::slotVolumeChanged);
-    connect(_volSlider, &VolumeSlider::sigMuteStateChanged, this, &ToolboxProxy::slotMuteStateChanged);
-    connect(_volBtn, &VolumeButton::requestVolumeUp, _volSlider, &VolumeSlider::volumeUp);
-    connect(_volBtn, &VolumeButton::requestVolumeDown, _volSlider, &VolumeSlider::volumeDown);
+    connect(m_pVolSlider, &VolumeSlider::sigVolumeChanged, this, &ToolboxProxy::slotVolumeChanged);
+    connect(m_pVolSlider, &VolumeSlider::sigMuteStateChanged, this, &ToolboxProxy::slotMuteStateChanged);
+    connect(m_pVolBtn, &VolumeButton::requestVolumeUp, m_pVolSlider, &VolumeSlider::volumeUp);
+    connect(m_pVolBtn, &VolumeButton::requestVolumeDown, m_pVolSlider, &VolumeSlider::volumeDown);
 
-    _volSlider->initVolume();
+    m_pVolSlider->initVolume();
 
-    _right->addWidget(_subBtn);
-    _right->addWidget(_fsBtn);
+    _right->addWidget(m_pSubBtn);
+    _right->addWidget(m_pFullScreenBtn);
     _right->addSpacing(10);
-    _right->addWidget(_volBtn);
+    _right->addWidget(m_pVolBtn);
     _right->addSpacing(10);
 
-    _listBtn = new ToolButton(bot_toolWgt);
-    _listBtn->setIcon(QIcon::fromTheme("dcc_episodes"));
-    _listBtn->setIconSize(QSize(36, 36));
-    _listBtn->setFocusPolicy(Qt::TabFocus);
-    _listBtn->setFixedSize(50, 50);
-    _listBtn->initToolTip();
-    _listBtn->setCheckable(true);
-    _listBtn->setObjectName(PLAYLIST_BUTTON);
-    _listBtn->setAccessibleName(PLAYLIST_BUTTON);
+    m_pListBtn = new ToolButton(m_pBotToolWgt);
+    m_pListBtn->setIcon(QIcon::fromTheme("dcc_episodes"));
+    m_pListBtn->setIconSize(QSize(36, 36));
+    m_pListBtn->setFocusPolicy(Qt::TabFocus);
+    m_pListBtn->setFixedSize(50, 50);
+    m_pListBtn->initToolTip();
+    m_pListBtn->setCheckable(true);
+    m_pListBtn->setObjectName(PLAYLIST_BUTTON);
+    m_pListBtn->setAccessibleName(PLAYLIST_BUTTON);
 
-    connect(_listBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
-    signalMapper->setMapping(_listBtn, "list");
-    _right->addWidget(_listBtn);
+    connect(m_pListBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
+    signalMapper->setMapping(m_pListBtn, "list");
+    _right->addWidget(m_pListBtn);
 
     //将进度条的Tab键次序移动到nextBtn之后
-    setTabOrder(_nextBtn, _progBar->slider());
+    setTabOrder(m_pNextBtn, m_pProgBar->slider());
 
     // these tooltips is not used due to deepin ui design
     //lmh0910wayland下用这一套tooltip
@@ -1603,7 +1313,7 @@ void ToolboxProxy::setup()
     } else {
         auto th = new TooltipHandler(this);
         QWidget *btns[] = {
-            _playBtn, _prevBtn, _nextBtn, _subBtn, _fsBtn, _listBtn
+            m_pPlayBtn, m_pPrevBtn, m_pNextBtn, m_pSubBtn, m_pFullScreenBtn, m_pListBtn
         };
         QString hints[] = {
             tr("Play/Pause"), tr("Previous"), tr("Next"),
@@ -1631,46 +1341,43 @@ void ToolboxProxy::setup()
         }
     }
 
-    connect(_engine, &PlayerEngine::stateChanged, this, &ToolboxProxy::updatePlayState);
-    connect(_engine, &PlayerEngine::fileLoaded, this, &ToolboxProxy::slotFileLoaded);
+    connect(m_pEngine, &PlayerEngine::stateChanged, this, &ToolboxProxy::updatePlayState);
+    connect(m_pEngine, &PlayerEngine::fileLoaded, this, &ToolboxProxy::slotFileLoaded);
 
-    connect(_engine, &PlayerEngine::elapsedChanged, this, &ToolboxProxy::slotElapsedChanged);
-    connect(_engine, &PlayerEngine::updateDuration, this, &ToolboxProxy::slotElapsedChanged);
+    connect(m_pEngine, &PlayerEngine::elapsedChanged, this, &ToolboxProxy::slotElapsedChanged);
+    connect(m_pEngine, &PlayerEngine::updateDuration, this, &ToolboxProxy::slotElapsedChanged);
 
 
     connect(window()->windowHandle(), &QWindow::windowStateChanged, this, &ToolboxProxy::updateFullState);
 
-    connect(_engine, &PlayerEngine::tracksChanged, this, &ToolboxProxy::updateButtonStates);
-    connect(_engine, &PlayerEngine::fileLoaded, this, &ToolboxProxy::updateButtonStates);
-    connect(&_engine->playlist(), &PlaylistModel::countChanged, this, &ToolboxProxy::updateButtonStates);
-    connect(_mainWindow, &MainWindow::initChanged, this, &ToolboxProxy::updateButtonStates);
+    connect(m_pEngine, &PlayerEngine::tracksChanged, this, &ToolboxProxy::updateButtonStates);
+    connect(m_pEngine, &PlayerEngine::fileLoaded, this, &ToolboxProxy::updateButtonStates);
+    connect(&m_pEngine->playlist(), &PlaylistModel::countChanged, this, &ToolboxProxy::updateButtonStates);
+    connect(m_pMainWindow, &MainWindow::initChanged, this, &ToolboxProxy::updateButtonStates);
 
     updatePlayState();
     updateFullState();
     updateButtonStates();
 
     connect(qApp, &QGuiApplication::applicationStateChanged, this, &ToolboxProxy::slotApplicationStateChanged);
-
-    PlaylistModel *playListModel = _engine->getplaylist();
-    connect(playListModel, &PlaylistModel::currentChanged, this, &ToolboxProxy::slotPlayListCurrentChanged);
 }
 
 void ToolboxProxy::updateThumbnail()
 {
-    disconnect(m_worker, SIGNAL(sigFinishiLoad(QSize)), this, SLOT(finishLoadSlot(QSize)));
+    disconnect(m_pWorker, SIGNAL(sigFinishiLoad(QSize)), this, SLOT(finishLoadSlot(QSize)));
 
     if (utils::check_wayland_env()) {
         return;
     }
     //如果打开的是音乐
-    QString suffix = _engine->playlist().currentInfo().info.suffix();
-    foreach (QString sf, _engine->audio_filetypes) {
+    QString suffix = m_pEngine->playlist().currentInfo().info.suffix();
+    foreach (QString sf, m_pEngine->audio_filetypes) {
         if (sf.right(sf.size() - 2) == suffix) {
             return;
         }
     }
 
-    qInfo() << "worker" << m_worker;
+    qInfo() << "worker" << m_pWorker;
     QTimer::singleShot(1000, this, &ToolboxProxy::slotUpdateThumbnailTimeOut);
 
 }
@@ -1679,75 +1386,134 @@ void ToolboxProxy::updatePreviewTime(qint64 secs, const QPoint &pos)
 {
     QTime time(0, 0, 0);
     QString strTime = time.addSecs(static_cast<int>(secs)).toString("hh:mm:ss");
-    _previewTime->setTime(strTime);
-    _previewTime->show(pos.x(), pos.y() + 14);
+    m_pPreviewTime->setTime(strTime);
+    m_pPreviewTime->show(pos.x(), pos.y() + 14);
 }
 
+void ToolboxProxy::initMember()
+{
+    m_pmList.clear();
+    m_pmBlackList.clear();
+
+    m_pPlaylist = nullptr;
+
+    m_pProgBarspec = nullptr;
+    m_pBotSpec = nullptr;
+    m_pBotToolWgt = nullptr;
+    m_pProgBar_Widget = nullptr;
+    bot_widget = nullptr;
+
+    _mid= nullptr;
+    _right= nullptr;
+
+    m_pFullscreentimelable = nullptr;
+    m_pFullscreentimelableend = nullptr;
+    m_pTimeLabel = nullptr;
+    m_pTimeLabelend = nullptr;
+    m_pViewProgBar = nullptr;
+    m_pViewProgBar= nullptr;
+    m_pProgBar = nullptr;
+    m_pPreviewer = nullptr;
+    m_pPreviewTime = nullptr;
+
+    m_pPlayBtn = nullptr;
+    m_pPrevBtn = nullptr;
+    m_pNextBtn = nullptr;
+    m_pPalyBox = nullptr;
+    m_pVolBtn = nullptr;
+    m_pSubBtn = nullptr;
+    m_pListBtn = nullptr;
+    m_pFullScreenBtn = nullptr;
+
+    m_pPlayBtnTip = nullptr;
+    m_pPrevBtnTip = nullptr;
+    m_pNextBtnTip = nullptr;
+    m_pFullScreenBtnTip = nullptr;
+    m_pListBtnTip = nullptr;
+
+    m_pWorker = nullptr;
+    m_pPaOpen = nullptr;
+    m_pPaClose = nullptr;
+
+    m_bMouseFlag = false;
+    m_bMousePree = false;
+    m_bThumbnailmode = false;
+    m_bAnimationFinash = true;
+    m_bCanPlay = false;
+}
+
+/**
+ * @brief closeAnyPopup 关闭所有弹窗效果
+ */
 void ToolboxProxy::closeAnyPopup()
 {
-    if (_previewer->isVisible()) {
-        _previewer->hide();
+    if (m_pPreviewer->isVisible()) {
+        m_pPreviewer->hide();
         qInfo() << "hide previewer";
     }
 
-    if (_previewTime->isVisible()) {
-        _previewTime->hide();
+    if (m_pPreviewTime->isVisible()) {
+        m_pPreviewTime->hide();
     }
 
 //    if (_subView->isVisible()) {
 //        _subView->hide();
 //    }
 
-    if (_volSlider->isVisible()) {
-        _volSlider->stopTimer();
-        _volSlider->popup();
+    if (m_pVolSlider->isVisible()) {
+        m_pVolSlider->stopTimer();
+        m_pVolSlider->popup();
     }
 }
-
+/**
+ * @brief anyPopupShown 是否存在一些弹出显示窗口
+ * @return true时为有，false为无
+ */
 bool ToolboxProxy::anyPopupShown() const
 {
-    return _previewer->isVisible() || _previewTime->isVisible() || _volSlider->isVisible();
+    //返回鼠标悬停缩略图、鼠标悬停时间弹窗、音量弹窗是否有弹出
+    return m_pPreviewer->isVisible() || m_pPreviewTime->isVisible() || m_pViewProgBar->isVisible();
 }
 
 void ToolboxProxy::updateHoverPreview(const QUrl &url, int secs)
 {
-    if (_engine->state() == PlayerEngine::CoreState::Idle)
+    if (m_pEngine->state() == PlayerEngine::CoreState::Idle)
         return;
 
-    if (_engine->playlist().currentInfo().url != url)
+    if (m_pEngine->playlist().currentInfo().url != url)
         return;
 
     if (!Settings::get().isSet(Settings::PreviewOnMouseover))
         return;
 
-    if (_volSlider->isVisible())
+    if (m_pViewProgBar->isVisible())
         return;
 
-    const PlayItemInfo &pif = _engine->playlist().currentInfo();
+    const PlayItemInfo &pif = m_pEngine->playlist().currentInfo();
     if (!pif.url.isLocalFile())
         return;
 
     const QString &absPath = pif.info.canonicalFilePath();
     if (!QFile::exists(absPath)) {
-        _previewer->hide();
-        _previewTime->hide();
+        m_pPreviewer->hide();
+        m_pPreviewTime->hide();
         return;
     }
 
-    if (!m_mouseFlag) {
+    if (!m_bMouseFlag) {
         return;
     }
 
     int nPosition = 0;
-    qint64 nDuration = _engine->duration();
+    qint64 nDuration = m_pEngine->duration();
     QPoint showPoint = {0, 0};
 
-    if (_progBar->isVisible()) {
-        nPosition = (secs * _progBar->slider()->width()) / nDuration;
-        showPoint = _progBar->mapToGlobal(QPoint(nPosition, TOOLBOX_TOP_EXTENT - 10));
+    if (m_pProgBar->isVisible()) {
+        nPosition = (secs * m_pProgBar->slider()->width()) / nDuration;
+        showPoint = m_pProgBar->mapToGlobal(QPoint(nPosition, TOOLBOX_TOP_EXTENT - 10));
     } else {
-        nPosition = secs * _viewProgBar->getViewLength() / nDuration + _viewProgBar->getStartPoint();
-        showPoint = _viewProgBar->mapToGlobal(QPoint(nPosition, TOOLBOX_TOP_EXTENT - 10));
+        nPosition = secs * m_pViewProgBar->getViewLength() / nDuration + m_pViewProgBar->getStartPoint();
+        showPoint = m_pViewProgBar->mapToGlobal(QPoint(nPosition, TOOLBOX_TOP_EXTENT - 10));
     }
 
     QPixmap pm = ThumbnailWorker::get().getThumb(url, secs);
@@ -1755,34 +1521,34 @@ void ToolboxProxy::updateHoverPreview(const QUrl &url, int secs)
 
     if (!pm.isNull()) {
         QPoint point { showPoint.x(), showPoint.y() };
-        _previewer->updateWithPreview(pm, secs, _engine->videoRotation());
-        _previewer->updateWithPreview(point);
+        m_pPreviewer->updateWithPreview(pm, secs, m_pEngine->videoRotation());
+        m_pPreviewer->updateWithPreview(point);
     }
 }
 
 void ToolboxProxy::waitPlay()
 {
-    if (_playBtn) {
-        _playBtn->setEnabled(false);
+    if (m_pPlayBtn) {
+        m_pPlayBtn->setEnabled(false);
     }
-    if (_prevBtn) {
-        _prevBtn->setEnabled(false);
+    if (m_pPrevBtn) {
+        m_pPrevBtn->setEnabled(false);
     }
-    if (_nextBtn) {
-        _nextBtn->setEnabled(false);
+    if (m_pNextBtn) {
+        m_pNextBtn->setEnabled(false);
     }
     QTimer::singleShot(500, [ = ] {
-        if (_playBtn)
+        if (m_pPlayBtn)
         {
-            _playBtn->setEnabled(true);
+            m_pPlayBtn->setEnabled(true);
         }
-        if (_prevBtn && _engine->playlist().count() > 1)
+        if (m_pPrevBtn && m_pEngine->playlist().count() > 1)
         {
-            _prevBtn->setEnabled(true);
+            m_pPrevBtn->setEnabled(true);
         }
-        if (_nextBtn && _engine->playlist().count() > 1)
+        if (m_pNextBtn && m_pEngine->playlist().count() > 1)
         {
-            _nextBtn->setEnabled(true);
+            m_pNextBtn->setEnabled(true);
         }
     });
 }
@@ -1796,42 +1562,42 @@ void ToolboxProxy::slotThemeTypeChanged()
 
 void ToolboxProxy::slotLeavePreview()
 {
-    auto pos = _progBar->mapFromGlobal(QCursor::pos());
-    if (!_progBar->geometry().contains(pos)) {
-        _previewer->hide();
-        _previewTime->hide();
-        _progBar->forceLeave();
+    auto pos = m_pProgBar->mapFromGlobal(QCursor::pos());
+    if (!m_pProgBar->geometry().contains(pos)) {
+        m_pPreviewer->hide();
+        m_pPreviewTime->hide();
+        m_pProgBar->forceLeave();
     }
 }
 
 void ToolboxProxy::slotHidePreviewTime()
 {
-    _previewer->hide();
-    _previewTime->hide();
-    m_mouseFlag = false;
+    m_pPreviewer->hide();
+    m_pPreviewTime->hide();
+    m_bMouseFlag = false;
 }
 
 void ToolboxProxy::slotSliderPressed()
 {
-    m_mousePree = true;
+    m_bMousePree = true;
 }
 
 void ToolboxProxy::slotSliderReleased()
 {
-    m_mousePree = false;
-    _engine->seekAbsolute(_progBar->slider()->sliderPosition());
+    m_bMousePree = false;
+    m_pEngine->seekAbsolute(m_pProgBar->slider()->sliderPosition());
 }
 
 void ToolboxProxy::slotBaseMuteChanged(QString sk, const QVariant &/*val*/)
 {
     if (sk == "base.play.mousepreview") {
-        _progBar->setEnableIndication(_engine->state() != PlayerEngine::Idle);
+        m_pProgBar->setEnableIndication(m_pEngine->state() != PlayerEngine::Idle);
     }
 }
 
 void ToolboxProxy::slotVolumeButtonClicked()
 {
-    if (_volSlider->getsliderstate())
+    if (m_pVolSlider->getsliderstate())
         return;
     //与其他按键保持一致，工具栏隐藏时不响应
     if (!isVisible()) return;
@@ -1841,34 +1607,34 @@ void ToolboxProxy::slotVolumeButtonClicked()
      * 大于等于零表示为已完成初始化
      */
     if (CompositingManager::get().composited()) {
-        if (!_volSlider->isVisible()) {
-            _volSlider->show(_mainWindow->width() - _volBtn->width() / 2 - _playBtn->width() - 40,
-                             _mainWindow->height() - TOOLBOX_HEIGHT - 2);
-            _volSlider->popup();
+        if (!m_pVolSlider->isVisible()) {
+            m_pVolSlider->show(m_pMainWindow->width() - m_pVolBtn->width() / 2 - m_pPlayBtn->width() - 40,
+                             m_pMainWindow->height() - TOOLBOX_HEIGHT - 2);
+            m_pVolSlider->popup();
         } else {
-            _volSlider->popup();
+            m_pVolSlider->popup();
         }
     } else {
 #if defined (__mips__) || defined (__aarch64__)
-        if (!_volSlider->isVisible()) {
+        if (!m_pVolSlider->isVisible()) {
             auto pPoint = mapToGlobal(QPoint(this->rect().width(), this->rect().height()));
-            _volSlider->adjustSize();
+            m_pVolSlider->adjustSize();
 
-            pPoint.setX(pPoint.x()  - _volBtn->width() / 2 - _playBtn->width() - 43);
+            pPoint.setX(pPoint.x()  - m_pVolBtn->width() / 2 - m_pPlayBtn->width() - 43);
             pPoint.setY(pPoint.y() - TOOLBOX_HEIGHT - 5);
-            _volSlider->show(pPoint.x(), pPoint.y());
-            _volSlider->popup();
+            m_pVolSlider->show(pPoint.x(), pPoint.y());
+            m_pVolSlider->popup();
         } else {
-            _volSlider->popup();
+            m_pVolSlider->popup();
         }
 #else
-        if (!_volBtn->isVisible()) {
-            _volSlider->show(_mainWindow->width() - _volBtn->width() / 2 - _playBtn->width() - 43,
-                             _mainWindow->height() - TOOLBOX_HEIGHT - 5);
-            _volSlider->raise();
-            _volSlider->popup();
+        if (!m_pVolBtn->isVisible()) {
+            m_pVolSlider->show(m_pMainWindow->width() - m_pVolBtn->width() / 2 - m_pPlayBtn->width() - 43,
+                             m_pMainWindow->height() - TOOLBOX_HEIGHT - 5);
+            m_pVolSlider->raise();
+            m_pVolSlider->popup();
         } else {
-            _volSlider->popup();
+            m_pVolSlider->popup();
         }
 #endif
     }
@@ -1876,26 +1642,23 @@ void ToolboxProxy::slotVolumeButtonClicked()
 
 void ToolboxProxy::slotFileLoaded()
 {
-//    _viewProgBar->clear();
-    _progBar->slider()->setRange(0, static_cast<int>(_engine->duration()));
-//        _progBar_stacked->setCurrentIndex(1);
-    _progBar_Widget->setCurrentIndex(1);
-    _loadsize = size();
+    m_pProgBar->slider()->setRange(0, static_cast<int>(m_pEngine->duration()));
+    m_pProgBar_Widget->setCurrentIndex(1);
     update();
-    //        updateThumbnail();
 }
 
 void ToolboxProxy::slotElapsedChanged()
 {
     quint64 url = static_cast<quint64>(-1);
-    if (_engine->playlist().current() != -1) {
-        url = static_cast<quint64>(_engine->duration());
+    if (m_pEngine->playlist().current() != -1) {
+        url = static_cast<quint64>(m_pEngine->duration());
     }
-    updateTimeInfo(static_cast<qint64>(url), _engine->elapsed(), _timeLabel, _timeLabelend, true);
-    updateTimeInfo(static_cast<qint64>(url), _engine->elapsed(), _fullscreentimelable, _fullscreentimelableend, false);
+    //TODO(xxxpengfei):此处代码同时更新全屏的时长并未判断全屏状态，请维护同事查看是否存在优化空间
+    updateTimeInfo(static_cast<qint64>(url), m_pEngine->elapsed(), m_pTimeLabel, m_pTimeLabelend, true);
+    updateTimeInfo(static_cast<qint64>(url), m_pEngine->elapsed(), m_pFullscreentimelable, m_pFullscreentimelableend, false);
     QFontMetrics fm(DFontSizeManager::instance()->get(DFontSizeManager::T6));
-    _fullscreentimelable->setMinimumWidth(fm.width(_fullscreentimelable->text()));
-    _fullscreentimelableend->setMinimumWidth(fm.width(_fullscreentimelableend->text()));
+    m_pFullscreentimelable->setMinimumWidth(fm.width(m_pFullscreentimelable->text()));
+    m_pFullscreentimelableend->setMinimumWidth(fm.width(m_pFullscreentimelableend->text()));
     updateMovieProgress();
 }
 
@@ -1906,52 +1669,47 @@ void ToolboxProxy::slotApplicationStateChanged(Qt::ApplicationState e)
     }
 }
 
-void ToolboxProxy::slotPlayListCurrentChanged()
-{
-    _autoResizeTimer.start(1000);
-}
-
 void ToolboxProxy::slotPlayListStateChange()
 {
-    if (bAnimationFinash == false) {
+    if (m_bAnimationFinash == false) {
         return ;
     }
 
-    if (_playlist->state() == PlaylistWidget::State::Opened) {
+    if (m_pPlaylist->state() == PlaylistWidget::State::Opened) {
 #ifdef __x86_64__
         QRect rcBegin = this->geometry();
         QRect rcEnd = rcBegin;
         rcEnd.setY(rcBegin.y() - TOOLBOX_SPACE_HEIGHT - 7);
-        bAnimationFinash = false;
-        paopen = new QPropertyAnimation(this, "geometry");
-        paopen->setEasingCurve(QEasingCurve::Linear);
-        paopen->setDuration(POPUP_DURATION) ;
-        paopen->setStartValue(rcBegin);
-        paopen->setEndValue(rcEnd);
-        paopen->start();
-        connect(paopen, &QPropertyAnimation::finished, this, &ToolboxProxy::slotProAnimationFinished);
+        m_bAnimationFinash = false;
+        m_pPaOpen = new QPropertyAnimation(this, "geometry");
+        m_pPaOpen->setEasingCurve(QEasingCurve::Linear);
+        m_pPaOpen->setDuration(POPUP_DURATION) ;
+        m_pPaOpen->setStartValue(rcBegin);
+        m_pPaOpen->setEndValue(rcEnd);
+        m_pPaOpen->start();
+        connect(m_pPaOpen, &QPropertyAnimation::finished, this, &ToolboxProxy::slotProAnimationFinished);
 #else
         QRect rcBegin = this->geometry();
         QRect rcEnd = rcBegin;
         rcEnd.setY(rcBegin.y() - TOOLBOX_SPACE_HEIGHT - 7);
         setGeometry(rcEnd);
 #endif
-        _listBtn->setChecked(true);
+        m_pListBtn->setChecked(true);
     } else {
-        _listBtn->setChecked(false);
+        m_pListBtn->setChecked(false);
 #ifdef __x86_64__
-        bAnimationFinash = false;
+        m_bAnimationFinash = false;
 
         QRect rcBegin = this->geometry();
         QRect rcEnd = rcBegin;
         rcEnd.setY(rcBegin.y() + TOOLBOX_SPACE_HEIGHT + 7);
-        paClose = new QPropertyAnimation(this, "geometry");
-        paClose->setEasingCurve(QEasingCurve::Linear);
-        paClose->setDuration(POPUP_DURATION);
-        paClose->setStartValue(rcBegin);
-        paClose->setEndValue(rcEnd);
-        paClose->start();
-        connect(paClose, &QPropertyAnimation::finished, this, &ToolboxProxy::slotProAnimationFinished);
+        m_pPaClose = new QPropertyAnimation(this, "geometry");
+        m_pPaClose->setEasingCurve(QEasingCurve::Linear);
+        m_pPaClose->setDuration(POPUP_DURATION);
+        m_pPaClose->setStartValue(rcBegin);
+        m_pPaClose->setEndValue(rcEnd);
+        m_pPaClose->start();
+        connect(m_pPaClose, &QPropertyAnimation::finished, this, &ToolboxProxy::slotProAnimationFinished);
 #else
         QRect rcBegin = this->geometry();
         QRect rcEnd = rcBegin;
@@ -1964,97 +1722,105 @@ void ToolboxProxy::slotPlayListStateChange()
 void ToolboxProxy::slotUpdateThumbnailTimeOut()
 {
     //如果视频长度小于1s应该直接返回不然会UI错误
-    if (_engine->playlist().currentInfo().mi.duration < 1) {
+    if (m_pEngine->playlist().currentInfo().mi.duration < 1) {
         return;
     }
 
-    _viewProgBar->clear();  //清除前一次进度条中的缩略图,以便显示新的缩略图
+    m_pViewProgBar->clear();  //清除前一次进度条中的缩略图,以便显示新的缩略图
     m_listPixmapMutex.lock();
-    pm_list.clear();
-    pm_black_list.clear();
+    m_pmList.clear();
+    m_pmBlackList.clear();
     m_listPixmapMutex.unlock();
 
-    if (m_worker == nullptr) {
-        m_worker = new viewProgBarLoad(_engine, _progBar, this);
-        m_worker->setListPixmapMutex(&m_listPixmapMutex);
+    if (m_pWorker == nullptr) {
+        m_pWorker = new viewProgBarLoad(m_pEngine, m_pProgBar, this);
+        m_pWorker->setListPixmapMutex(&m_listPixmapMutex);
     }
-    m_worker->requestInterruption();
-    QTimer::singleShot(500, this, [ = ] {m_worker->start();});
-    connect(m_worker, SIGNAL(sigFinishiLoad(QSize)), this, SLOT(finishLoadSlot(QSize)));
-    _progBar_Widget->setCurrentIndex(1);
+    m_pWorker->requestInterruption();
+    QTimer::singleShot(500, this, [ = ] {m_pWorker->start();});
+    connect(m_pWorker, SIGNAL(sigFinishiLoad(QSize)), this, SLOT(finishLoadSlot(QSize)));
+    m_pProgBar_Widget->setCurrentIndex(1);
 }
 
 void ToolboxProxy::slotProAnimationFinished()
 {
     QObject *pProAnimation = sender();
-    if (pProAnimation == paopen) {
-        paopen->deleteLater();
-        paopen = nullptr;
-        bAnimationFinash = true;
-    } else if (pProAnimation == paClose) {
-        paClose->deleteLater();
-        paClose = nullptr;
-        bAnimationFinash = true;
+    if (pProAnimation == m_pPaOpen) {
+        m_pPaOpen->deleteLater();
+        m_pPaOpen = nullptr;
+        m_bAnimationFinash = true;
+    } else if (pProAnimation == m_pPaClose) {
+        m_pPaClose->deleteLater();
+        m_pPaClose = nullptr;
+        m_bAnimationFinash = true;
     }
 }
 
 void ToolboxProxy::slotVolumeChanged(int nVolume)
 {
-    _volBtn->setVolume(nVolume);
+    m_pVolBtn->setVolume(nVolume);
 
     emit sigVolumeChanged(nVolume);
 }
 
 void ToolboxProxy::slotMuteStateChanged(bool bMute)
 {
-    _volBtn->setMute(bMute);
+    m_pVolBtn->setMute(bMute);
 
     emit sigMuteStateChanged(bMute);
 }
-
+/**
+ * @brief volumeUp 鼠标滚轮增加音量
+ */
 void ToolboxProxy::volumeUp()
 {
-    _volSlider->volumeUp();
+    m_pVolSlider->volumeUp();
 }
-
+/**
+ * @brief volumeUp 鼠标滚轮减少音量
+ */
 void ToolboxProxy::volumeDown()
 {
-    _volSlider->volumeDown();
+    m_pVolSlider->volumeDown();
 }
-
+/**
+ * @brief changeMuteState 切换静音模式
+ */
 void ToolboxProxy::changeMuteState()
 {
-    _volSlider->muteButtnClicked();
+    m_pVolSlider->muteButtnClicked();
 }
-
+/**
+ * @brief playlistClosedByEsc Esc关闭播放列表
+ */
 void ToolboxProxy::playlistClosedByEsc()
 {
-    if(_playlist->isFocusInPlaylist()){
-        _mainWindow->requestAction(ActionFactory::TogglePlaylist);
-        _listBtn->setFocus();   //焦点回到播放列表按钮
+    if(m_pPlaylist->isFocusInPlaylist()){
+        m_pMainWindow->requestAction(ActionFactory::TogglePlaylist);
+        m_pListBtn->setFocus();   //焦点回到播放列表按钮
     }
 }
 
 void ToolboxProxy::progressHoverChanged(int v)
 {
-    if (_engine->state() == PlayerEngine::CoreState::Idle)
+    if (m_pEngine->state() == PlayerEngine::CoreState::Idle)
         return;
 
-    if (_volSlider->isVisible())
+    if (m_pViewProgBar->isVisible())
         return;
 
-    const auto &pif = _engine->playlist().currentInfo();
+    const auto &pif = m_pEngine->playlist().currentInfo();
     if (!pif.url.isLocalFile())
         return;
 
     const auto &absPath = pif.info.canonicalFilePath();
     if (!QFile::exists(absPath)) {
-        _previewer->hide();
-        _previewTime->hide();
+        m_pPreviewer->hide();
+        m_pPreviewTime->hide();
         return;
     }
 
-    m_mouseFlag = true;
+    m_bMouseFlag = true;
 
     ThumbnailWorker::get().requestThumb(pif.url, v);
 }
@@ -2064,43 +1830,43 @@ void ToolboxProxy::updateTimeVisible(bool visible)
     if (Settings::get().isSet(Settings::PreviewOnMouseover))
         return;
 
-    if (_previewTime) {
-        _previewTime->setVisible(!visible);
+    if (m_pPreviewTime) {
+        m_pPreviewTime->setVisible(!visible);
     }
 }
 
 void ToolboxProxy::updateMovieProgress()
 {
-    if (m_mousePree == true)
+    if (m_bMousePree == true)
         return ;
-    auto d = _engine->duration();
-    auto e = _engine->elapsed();
-    if (d > _progBar->maximum()) {
-        d = _progBar->maximum();
+    auto d = m_pEngine->duration();
+    auto e = m_pEngine->elapsed();
+    if (d > m_pProgBar->maximum()) {
+        d = m_pProgBar->maximum();
     }
     int v = 0;
     int v2 = 0;
     if (d != 0 && e != 0) {
-        v = static_cast<int>(_progBar->maximum() * e / d);
-        v2 = static_cast<int>(_viewProgBar->getViewLength() * e / d + _viewProgBar->getStartPoint());
+        v = static_cast<int>(m_pProgBar->maximum() * e / d);
+        v2 = static_cast<int>(m_pViewProgBar->getViewLength() * e / d + m_pViewProgBar->getStartPoint());
     }
-    if (!_progBar->signalsBlocked()) {
-        _progBar->blockSignals(true);
-        _progBar->setValue(v);
-        _progBar->blockSignals(false);
+    if (!m_pProgBar->signalsBlocked()) {
+        m_pProgBar->blockSignals(true);
+        m_pProgBar->setValue(v);
+        m_pProgBar->blockSignals(false);
     }
-    if (!_viewProgBar->getIsBlockSignals()) {
-        _viewProgBar->setIsBlockSignals(true);
-        _viewProgBar->setValue(v2);
-        _viewProgBar->setTime(e);
-        _viewProgBar->setIsBlockSignals(false);
+    if (!m_pViewProgBar->getIsBlockSignals()) {
+        m_pViewProgBar->setIsBlockSignals(true);
+        m_pViewProgBar->setValue(v2);
+        m_pViewProgBar->setTime(e);
+        m_pViewProgBar->setIsBlockSignals(false);
     }
 }
 
 void ToolboxProxy::updateButtonStates()
 {
-    qInfo() << _engine->playingMovieInfo().subs.size();
-    bool vis = _engine->playlist().count() > 1 && _mainWindow->inited();
+    qInfo() << m_pEngine->playingMovieInfo().subs.size();
+    bool vis = m_pEngine->playlist().count() > 1 && m_pMainWindow->inited();
 
     m_bCanPlay = vis;  //防止连续切换上下曲目
 }
@@ -2108,206 +1874,213 @@ void ToolboxProxy::updateButtonStates()
 void ToolboxProxy::updateFullState()
 {
     bool isFullscreen = window()->isFullScreen();
-    if (isFullscreen || _fullscreentimelable->isVisible()) {
-//        _fsBtn->setObjectName("UnfsBtn");
-        _fsBtn->setIcon(QIcon::fromTheme("dcc_zoomout"));
-        _fsBtn->setTooTipText(tr("Exit fullscreen"));
+    if (isFullscreen || m_pFullscreentimelable->isVisible()) {
+//        m_pFullScreenBtn->setObjectName("UnfsBtn");
+        m_pFullScreenBtn->setIcon(QIcon::fromTheme("dcc_zoomout"));
+        m_pFullScreenBtn->setTooTipText(tr("Exit fullscreen"));
     } else {
-//        _fsBtn->setObjectName("FsBtn");
-        _fsBtn->setIcon(QIcon::fromTheme("dcc_zoomin"));
-        _fsBtn->setTooTipText(tr("Fullscreen"));
+//        m_pFullScreenBtn->setObjectName("FsBtn");
+        m_pFullScreenBtn->setIcon(QIcon::fromTheme("dcc_zoomin"));
+        m_pFullScreenBtn->setTooTipText(tr("Fullscreen"));
     }
-//    _fsBtn->setStyleSheet(_playBtn->styleSheet());
+//    m_pFullScreenBtn->setStyleSheet(m_pPlayBtn->styleSheet());
 }
 
 void ToolboxProxy::updatePlayState()
 {
-    if (_engine->state() == PlayerEngine::CoreState::Playing) {
+    if (m_pEngine->state() == PlayerEngine::CoreState::Playing) {
         if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
             DPalette pa;
-            pa = _palyBox->palette();
+            pa = m_pPalyBox->palette();
             pa.setColor(DPalette::Light, QColor(255, 255, 255, 255));
             pa.setColor(DPalette::Dark, QColor(255, 255, 255, 255));
             pa.setColor(DPalette::Button, QColor(255, 255, 255, 255));
-            _palyBox->setPalette(pa);
+            m_pPalyBox->setPalette(pa);
 
-            pa = _volBtn->palette();
+            pa = m_pVolBtn->palette();
             pa.setColor(DPalette::Light, QColor(255, 255, 255, 255));
             pa.setColor(DPalette::Dark, QColor(255, 255, 255, 255));
-            _volBtn->setPalette(pa);
+            m_pVolBtn->setPalette(pa);
 
-            pa = _fsBtn->palette();
+            pa = m_pFullScreenBtn->palette();
             pa.setColor(DPalette::Light, QColor(255, 255, 255, 255));
             pa.setColor(DPalette::Dark, QColor(255, 255, 255, 255));
-            _fsBtn->setPalette(pa);
+            m_pFullScreenBtn->setPalette(pa);
 
-            pa = _listBtn->palette();
+            pa = m_pListBtn->palette();
             pa.setColor(DPalette::Light, QColor(255, 255, 255, 255));
             pa.setColor(DPalette::Dark, QColor(255, 255, 255, 255));
-            _listBtn->setPalette(pa);
+            m_pListBtn->setPalette(pa);
 
         } else {
             DPalette pa;
-            pa = _palyBox->palette();
+            pa = m_pPalyBox->palette();
             pa.setColor(DPalette::Light, QColor(0, 0, 0, 255));
             pa.setColor(DPalette::Dark, QColor(0, 0, 0, 255));
             pa.setColor(DPalette::Button, QColor(0, 0, 0, 255));
-            _palyBox->setPalette(pa);
+            m_pPalyBox->setPalette(pa);
 
-            pa = _volBtn->palette();
+            pa = m_pVolBtn->palette();
             pa.setColor(DPalette::Light, QColor(0, 0, 0, 255));
             pa.setColor(DPalette::Dark, QColor(0, 0, 0, 255));
-            _volBtn->setPalette(pa);
+            m_pVolBtn->setPalette(pa);
 
-            pa = _fsBtn->palette();
+            pa = m_pFullScreenBtn->palette();
             pa.setColor(DPalette::Light, QColor(0, 0, 0, 255));
             pa.setColor(DPalette::Dark, QColor(0, 0, 0, 255));
-            _fsBtn->setPalette(pa);
+            m_pFullScreenBtn->setPalette(pa);
 
-            pa = _listBtn->palette();
+            pa = m_pListBtn->palette();
             pa.setColor(DPalette::Light, QColor(0, 0, 0, 255));
             pa.setColor(DPalette::Dark, QColor(0, 0, 0, 255));
-            _listBtn->setPalette(pa);
+            m_pListBtn->setPalette(pa);
         }
-        _playBtn->setIcon(QIcon::fromTheme("dcc_suspend", QIcon(":/icons/deepin/builtin/light/normal/suspend_normal.svg")));
+        m_pPlayBtn->setIcon(QIcon::fromTheme("dcc_suspend", QIcon(":/icons/deepin/builtin/light/normal/suspend_normal.svg")));
         //lmh0910wayland下用这一套tooltip
         if (utils::check_wayland_env()) {
-            m_playBtnTip->setText(tr("Pause"));
+            m_pPlayBtnTip->setText(tr("Pause"));
         } else {
-            _playBtn->setToolTip(tr("Pause"));
+            m_pPlayBtn->setToolTip(tr("Pause"));
         }
     } else {
-        //        _playBtn->setObjectName("PlayBtn");
+        //        m_pPlayBtn->setObjectName("PlayBtn");
         if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
-//            _playBtn->setPropertyPic(":/icons/deepin/builtin/light/normal/play_normal.svg",
+//            m_pPlayBtn->setPropertyPic(":/icons/deepin/builtin/light/normal/play_normal.svg",
 //                                     ":/icons/deepin/builtin/light/normal/play_normal.svg",
-//                                     ":/icons/deepin/builtin/light/press/play_press.svg");
-//            _prevBtn->setPropertyPic(":/icons/deepin/builtin/light/normal/last_normal.svg",
+//                                     ":/icons/deepin/builtin/light/press/playm_bPress.svg");
+//            m_pPrevBtn->setPropertyPic(":/icons/deepin/builtin/light/normal/last_normal.svg",
 //                                     ":/icons/deepin/builtin/light/normal/last_normal.svg",
-//                                     ":/icons/deepin/builtin/light/press/last_press.svg");
-//            _nextBtn->setPropertyPic(":/icons/deepin/builtin/light/normal/next_normal.svg",
+//                                     ":/icons/deepin/builtin/light/press/lastm_bPress.svg");
+//            m_pNextBtn->setPropertyPic(":/icons/deepin/builtin/light/normal/next_normal.svg",
 //                                     ":/icons/deepin/builtin/light/normal/next_normal.svg",
-//                                     ":/icons/deepin/builtin/light/press/next_press.svg");
+//                                     ":/icons/deepin/builtin/light/press/nextm_bPress.svg");
 
             DPalette pa;
-            pa = _palyBox->palette();
+            pa = m_pPalyBox->palette();
             pa.setColor(DPalette::Light, QColor(255, 255, 255, 255));
             pa.setColor(DPalette::Dark, QColor(255, 255, 255, 255));
             pa.setColor(DPalette::Button, QColor(255, 255, 255, 255));
-            _palyBox->setPalette(pa);
+            m_pPalyBox->setPalette(pa);
 
 
-            pa = _volBtn->palette();
+            pa = m_pVolBtn->palette();
             pa.setColor(DPalette::Light, QColor(255, 255, 255, 255));
             pa.setColor(DPalette::Dark, QColor(255, 255, 255, 255));
-            _volBtn->setPalette(pa);
+            m_pVolBtn->setPalette(pa);
 
-            pa = _fsBtn->palette();
+            pa = m_pFullScreenBtn->palette();
             pa.setColor(DPalette::Light, QColor(255, 255, 255, 255));
             pa.setColor(DPalette::Dark, QColor(255, 255, 255, 255));
-            _fsBtn->setPalette(pa);
+            m_pFullScreenBtn->setPalette(pa);
 
-            pa = _listBtn->palette();
+            pa = m_pListBtn->palette();
             pa.setColor(DPalette::Light, QColor(255, 255, 255, 255));
             pa.setColor(DPalette::Dark, QColor(255, 255, 255, 255));
-            _listBtn->setPalette(pa);
+            m_pListBtn->setPalette(pa);
 
         } else {
-//            _playBtn->setPropertyPic(":/icons/deepin/builtin/dark/normal/play_normal.svg",
+//            m_pPlayBtn->setPropertyPic(":/icons/deepin/builtin/dark/normal/play_normal.svg",
 //                                     ":/icons/deepin/builtin/dark/normal/play_normal.svg",
-//                                     ":/icons/deepin/builtin/dark/press/play_press.svg");
-//            _prevBtn->setPropertyPic(":/icons/deepin/builtin/dark/normal/last_normal.svg",
+//                                     ":/icons/deepin/builtin/dark/press/playm_bPress.svg");
+//            m_pPrevBtn->setPropertyPic(":/icons/deepin/builtin/dark/normal/last_normal.svg",
 //                                     ":/icons/deepin/builtin/dark/normal/last_normal.svg",
-//                                     ":/icons/deepin/builtin/dark/press/last_press.svg");
-//            _nextBtn->setPropertyPic(":/icons/deepin/builtin/dark/normal/next_normal.svg",
+//                                     ":/icons/deepin/builtin/dark/press/lastm_bPress.svg");
+//            m_pNextBtn->setPropertyPic(":/icons/deepin/builtin/dark/normal/next_normal.svg",
 //                                     ":/icons/deepin/builtin/dark/normal/next_normal.svg",
-//                                     ":/icons/deepin/builtin/dark/press/next_press.svg");
+//                                     ":/icons/deepin/builtin/dark/press/nextm_bPress.svg");
             DPalette pa;
-            pa = _palyBox->palette();
+            pa = m_pPalyBox->palette();
             pa.setColor(DPalette::Light, QColor(0, 0, 0, 255));
             pa.setColor(DPalette::Dark, QColor(0, 0, 0, 255));
             pa.setColor(DPalette::Button, QColor(0, 0, 0, 255));
-            _palyBox->setPalette(pa);
+            m_pPalyBox->setPalette(pa);
 
-            pa = _volBtn->palette();
+            pa = m_pVolBtn->palette();
             pa.setColor(DPalette::Light, QColor(0, 0, 0, 255));
             pa.setColor(DPalette::Dark, QColor(0, 0, 0, 255));
-            _volBtn->setPalette(pa);
+            m_pVolBtn->setPalette(pa);
 
-            pa = _fsBtn->palette();
+            pa = m_pFullScreenBtn->palette();
             pa.setColor(DPalette::Light, QColor(0, 0, 0, 255));
             pa.setColor(DPalette::Dark, QColor(0, 0, 0, 255));
-            _fsBtn->setPalette(pa);
+            m_pFullScreenBtn->setPalette(pa);
 
-            pa = _listBtn->palette();
+            pa = m_pListBtn->palette();
             pa.setColor(DPalette::Light, QColor(0, 0, 0, 255));
             pa.setColor(DPalette::Dark, QColor(0, 0, 0, 255));
-            _listBtn->setPalette(pa);
+            m_pListBtn->setPalette(pa);
 
         }
         //lmh0910wayland下用这一套tooltip
         if (utils::check_wayland_env()) {
-            m_playBtnTip->setText(tr("Play"));
+            m_pPlayBtnTip->setText(tr("Play"));
         } else {
-            _playBtn->setToolTip(tr("Play"));
+            m_pPlayBtn->setToolTip(tr("Play"));
         }
-        _playBtn->setIcon(QIcon::fromTheme("dcc_play", QIcon(":/icons/deepin/builtin/light/normal/play_normal.svg")));
+        m_pPlayBtn->setIcon(QIcon::fromTheme("dcc_play", QIcon(":/icons/deepin/builtin/light/normal/play_normal.svg")));
     }
 
-    if (_engine->state() == PlayerEngine::CoreState::Idle) {
+    if (m_pEngine->state() == PlayerEngine::CoreState::Idle) {
 //        if (_subView->isVisible())
 //            _subView->hide();
 
-        if (_previewer->isVisible()) {
-            _previewer->hide();
+        if (m_pPreviewer->isVisible()) {
+            m_pPreviewer->hide();
         }
 
-        if (_previewTime->isVisible()) {
-            _previewTime->hide();
+        if (m_pPreviewTime->isVisible()) {
+            m_pPreviewTime->hide();
         }
 
-        if (_progBar->isVisible()) {
-            _progBar->setVisible(false);
+        if (m_pProgBar->isVisible()) {
+            m_pProgBar->setVisible(false);
         }
-//        _progBarspec->show();
-//        _progBar->hide();
-//        _progBar_stacked->setCurrentIndex(0);
-        _progBar_Widget->setCurrentIndex(0);
+//        m_pProgBarspec->show();
+//        m_pProgBar->hide();
+//        m_pProgBar_stacked->setCurrentIndex(0);
+        m_pProgBar_Widget->setCurrentIndex(0);
         setProperty("idle", true);
     } else {
         setProperty("idle", false);
-//        _progBar->show();
-//        _progBar->setVisible(true);
-//        _progBarspec->hide();
-//        _progBar_stacked->setCurrentIndex(1);
-//        _progBar_Widget->setCurrentIndex(1);
+//        m_pProgBar->show();
+//        m_pProgBar->setVisible(true);
+//        m_pProgBarspec->hide();
+//        m_pProgBar_stacked->setCurrentIndex(1);
+//        m_pProgBar_Widget->setCurrentIndex(1);
     }
 
-    auto on = (_engine->state() != PlayerEngine::CoreState::Idle);
-    _progBar->setEnabled(on);
-    _progBar->setEnableIndication(on);
+    auto on = (m_pEngine->state() != PlayerEngine::CoreState::Idle);
+    m_pProgBar->setEnabled(on);
+    m_pProgBar->setEnableIndication(on);
 //    setStyleSheet(styleSheet());
 }
-
-void ToolboxProxy::updateTimeInfo(qint64 duration, qint64 pos, QLabel *_timeLabel, QLabel *_timeLabelend, bool flag)
+/**
+ * @brief updateTimeInfo 更新工具栏中播放时间显示
+ * @param duration 视频总时长
+ * @param pos 当前播放的时间点
+ * @param pTimeLabel 当前播放时间
+ * @param pTimeLabelend 视频总时长
+ * @param flag 是否为全屏的控件
+ */
+void ToolboxProxy::updateTimeInfo(qint64 duration, qint64 pos, QLabel *pTimeLabel, QLabel *pTimeLabelend, bool flag)
 {
-    if (_engine->state() == PlayerEngine::CoreState::Idle) {
-        _timeLabel->setText("");
-        _timeLabelend->setText("");
+    if (m_pEngine->state() == PlayerEngine::CoreState::Idle) {
+        pTimeLabel->setText("");
+        pTimeLabelend->setText("");
 
     } else {
         //mpv returns a slightly different duration from movieinfo.duration
-        //_timeLabel->setText(QString("%2/%1").arg(utils::Time2str(duration))
+        //m_pTimeLabel->setText(QString("%2/%1").arg(utils::Time2str(duration))
         //.arg(utils::Time2str(pos)));
         if (1 == flag) {
-            _timeLabel->setText(QString("%1")
+            pTimeLabel->setText(QString("%1")
                                 .arg(utils::Time2str(pos)));
-            _timeLabelend->setText(QString("%1")
+            pTimeLabelend->setText(QString("%1")
                                    .arg(utils::Time2str(duration)));
         } else {
-            _timeLabel->setText(QString("%1 %2")
+            pTimeLabel->setText(QString("%1 %2")
                                 .arg(utils::Time2str(pos)).arg("/"));
-            _timeLabelend->setText(QString("%1")
+            pTimeLabelend->setText(QString("%1")
                                    .arg(utils::Time2str(duration)));
         }
 
@@ -2320,8 +2093,8 @@ void ToolboxProxy::buttonClicked(QString id)
     //add by heyi
     static bool bFlags = true;
     if (bFlags) {
-//        _mainWindow->firstPlayInit();
-        _mainWindow->repaint();
+//        m_pMainWindow->firstPlayInit();
+        m_pMainWindow->repaint();
         bFlags = false;
     }
 
@@ -2329,29 +2102,29 @@ void ToolboxProxy::buttonClicked(QString id)
 
     qInfo() << __func__ << id;
     if (id == "play") {
-        if (_engine->state() == PlayerEngine::CoreState::Idle) {
-            _mainWindow->requestAction(ActionFactory::ActionKind::StartPlay);
+        if (m_pEngine->state() == PlayerEngine::CoreState::Idle) {
+            m_pMainWindow->requestAction(ActionFactory::ActionKind::StartPlay);
         } else {
-            _mainWindow->requestAction(ActionFactory::ActionKind::TogglePause);
+            m_pMainWindow->requestAction(ActionFactory::ActionKind::TogglePause);
         }
     } else if (id == "fs") {
-        _mainWindow->requestAction(ActionFactory::ActionKind::ToggleFullscreen);
+        m_pMainWindow->requestAction(ActionFactory::ActionKind::ToggleFullscreen);
     } else if (id == "vol") {
-        _mainWindow->requestAction(ActionFactory::ActionKind::ToggleMute);
+        m_pMainWindow->requestAction(ActionFactory::ActionKind::ToggleMute);
     } else if (id == "prev" && m_bCanPlay) {  //如果影片未加载完成，则不播放上一曲
-        _mainWindow->requestAction(ActionFactory::ActionKind::GotoPlaylistPrev);
+        m_pMainWindow->requestAction(ActionFactory::ActionKind::GotoPlaylistPrev);
     } else if (id == "next" && m_bCanPlay) {
-        _mainWindow->requestAction(ActionFactory::ActionKind::GotoPlaylistNext);
+        m_pMainWindow->requestAction(ActionFactory::ActionKind::GotoPlaylistNext);
     } else if (id == "list") {
-        _mainWindow->requestAction(ActionFactory::ActionKind::TogglePlaylist);
-        _listBtn->hideToolTip();
+        m_pMainWindow->requestAction(ActionFactory::ActionKind::TogglePlaylist);
+        m_pListBtn->hideToolTip();
     }
 //    } else if (id == "sub") {
 //        _subView->setVisible(true);
 
-//        QPoint pos = _subBtn->parentWidget()->mapToGlobal(_subBtn->pos());
+//        QPoint pos = m_pSubBtn->parentWidget()->mapToGlobal(m_pSubBtn->pos());
 //        pos.ry() = parentWidget()->mapToGlobal(this->pos()).y();
-//        _subView->show(pos.x() + _subBtn->width() / 2, pos.y() - 5 + TOOLBOX_TOP_EXTENT);
+//        _subView->show(pos.x() + m_pSubBtn->width() / 2, pos.y() - 5 + TOOLBOX_TOP_EXTENT);
 //    }
 }
 
@@ -2383,7 +2156,7 @@ void ToolboxProxy::buttonLeave()
 /*void ToolboxProxy::updatePosition(const QPoint &p)
 {
     QPoint pos(p);
-    pos.ry() += _mainWindow->height() - height();
+    pos.ry() += m_pMainWindow->height() - height();
     windowHandle()->setFramePosition(pos);
 }*/
 
@@ -2448,40 +2221,32 @@ void ToolboxProxy::showEvent(QShowEvent *event)
 
 void ToolboxProxy::resizeEvent(QResizeEvent *event)
 {
-    if (_autoResizeTimer.isActive()) {
-        _autoResizeTimer.stop();
-    }
     if (event->oldSize().width() != event->size().width()) {
-        _autoResizeTimer.start(1000);
-        _oldsize = event->size();
-//        _progBar->setFixedWidth(width() - PROGBAR_SPEC);
-        if (_engine->state() != PlayerEngine::CoreState::Idle) {
-            if (_bthumbnailmode) {  //如果进度条为胶片模式，重新加载缩略图并显示
-//                isStillShowThumbnail = false;
+        if (m_pEngine->state() != PlayerEngine::CoreState::Idle) {
+            if (m_bThumbnailmode) {  //如果进度条为胶片模式，重新加载缩略图并显示
                 updateThumbnail();
-//                _bthumbnailmode = false;
                 updateMovieProgress();
             }
-            _progBar_Widget->setCurrentIndex(1);
+            m_pProgBar_Widget->setCurrentIndex(1);
         }
     }
 #ifndef __sw_64__
     if (!utils::check_wayland_env()) {
-        if (bAnimationFinash ==  false && paopen != nullptr && paClose != nullptr) {
+        if (m_bAnimationFinash ==  false && m_pPaOpen != nullptr && m_pPaClose != nullptr) {
 
-            _playlist->endAnimation();
-            paopen->setDuration(0);
-            paClose->setDuration(0);
+            m_pPlaylist->endAnimation();
+            m_pPaOpen->setDuration(0);
+            m_pPaClose->setDuration(0);
         }
 
 
-        if (_playlist && _playlist->state() == PlaylistWidget::State::Opened && bAnimationFinash == true) {
-            QRect r(5, _mainWindow->height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT + 7) - _mainWindow->rect().top() - 5,
-                    _mainWindow->rect().width() - 10, (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT + 7));
+        if (m_pPlaylist && m_pPlaylist->state() == PlaylistWidget::State::Opened && m_bAnimationFinash == true) {
+            QRect r(5, m_pMainWindow->height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT + 7) - m_pMainWindow->rect().top() - 5,
+                    m_pMainWindow->rect().width() - 10, (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT + 7));
             this->setGeometry(r);
-        } else if (_playlist && _playlist->state() == PlaylistWidget::State::Closed && bAnimationFinash == true) {
-            QRect r(5, _mainWindow->height() - TOOLBOX_HEIGHT - _mainWindow->rect().top() - 5,
-                    _mainWindow->rect().width() - 10, TOOLBOX_HEIGHT);
+        } else if (m_pPlaylist && m_pPlaylist->state() == PlaylistWidget::State::Closed && m_bAnimationFinash == true) {
+            QRect r(5, m_pMainWindow->height() - TOOLBOX_HEIGHT - m_pMainWindow->rect().top() - 5,
+                    m_pMainWindow->rect().width() - 10, TOOLBOX_HEIGHT);
             this->setGeometry(r);
         }
 
@@ -2500,17 +2265,17 @@ void ToolboxProxy::mouseMoveEvent(QMouseEvent *ev)
 
 bool ToolboxProxy::eventFilter(QObject *obj, QEvent *ev)
 {
-    if(obj == _volBtn)
+    if(obj == m_pVolBtn)
     {
-        if(ev->type() == QEvent::KeyPress && (_volSlider->state() == VolumeSlider::Open)){
+        if(ev->type() == QEvent::KeyPress && (m_pVolSlider->state() == VolumeSlider::Open)){
             QKeyEvent *keyEvent = static_cast<QKeyEvent *>(ev);
-            int nCurVolume = _volSlider->getVolume();
+            int nCurVolume = m_pVolSlider->getVolume();
             //如果音量条升起且上下键按下，以步长为5调整音量
             if(keyEvent->key() == Qt::Key_Up){
-                _volSlider->changeVolume(qMin(nCurVolume + 5, 200));
+                m_pVolSlider->changeVolume(qMin(nCurVolume + 5, 200));
                 return true;
             } else if(keyEvent->key() == Qt::Key_Down){
-                _volSlider->changeVolume(qMax(nCurVolume - 5, 0));
+                m_pVolSlider->changeVolume(qMax(nCurVolume - 5, 0));
                 return true;
             } else {
                 return QObject::eventFilter(obj, ev);
@@ -2520,41 +2285,18 @@ bool ToolboxProxy::eventFilter(QObject *obj, QEvent *ev)
         }
     }
 }
-
+/**
+ * @brief updateTimeLabel 界面显示或大小变化时更新控件显示状态
+ */
 void ToolboxProxy::updateTimeLabel()
 {
 
 #ifndef __sw_64__
     if (!utils::check_wayland_env()) {
         // to keep left and right of the same width. which makes play button centered
-        _listBtn->setVisible(width() > 300);
-        _timeLabel->setVisible(width() > 450);
-        _timeLabelend->setVisible(width() > 450);
-//    _viewProgBar->setVisible(width() > 350);
-//    _progBar->setVisible(width() > 350);
-        if (_mainWindow->width() < 1050) {
-//        _progBar->hide();
-        }
-//    if (width() <= 300) {
-//        _progBar->setFixedWidth(width() - PROGBAR_SPEC + 50 + 54 + 10 + 54 + 10 + 10);
-//        _progBarspec->setFixedWidth(width() - PROGBAR_SPEC + 50 + 54 + 10 + 54 + 10 + 10);
-//    } else if (width() <= 450) {
-//        _progBar->setFixedWidth(width() - PROGBAR_SPEC + 54 + 54 + 10);
-//        _progBarspec->setFixedWidth(width() - PROGBAR_SPEC + 54 + 54 + 10);
-//    }
-
-//    if (width() > 400) {
-//        auto right_geom = _right->geometry();
-//        int left_w = 54;
-//        _timeLabel->show();
-//        _timeLabelend->show();
-//        int w = qMax(left_w, right_geom.width());
-////        int w = left_w;
-//        _timeLabel->setFixedWidth(left_w );
-//        _timeLabelend->setFixedWidth(left_w );
-//        right_geom.setWidth(w);
-//        _right->setGeometry(right_geom);
-        //    }
+        m_pListBtn->setVisible(width() > 300);
+        m_pTimeLabel->setVisible(width() > 450);
+        m_pTimeLabelend->setVisible(width() > 450);
     }
 #endif
 }
@@ -2570,51 +2312,45 @@ void ToolboxProxy::updateToolTipTheme(ToolButton *btn)
     }
 }
 
-///not used function
-/*void ToolboxProxy::setViewProgBarWidth()
+void ToolboxProxy::setPlaylist(PlaylistWidget *pPlaylist)
 {
-    _viewProgBar->setWidth();
-}*/
-
-void ToolboxProxy::setPlaylist(PlaylistWidget *playlist)
-{
-    _playlist = playlist;
+    m_pPlaylist = pPlaylist;
     WAYLAND_BLACK_WINDOW;
-    connect(_playlist, &PlaylistWidget::stateChange, this, &ToolboxProxy::slotPlayListStateChange);
+    connect(m_pPlaylist, &PlaylistWidget::stateChange, this, &ToolboxProxy::slotPlayListStateChange);
 
 }
 QLabel *ToolboxProxy::getfullscreentimeLabel()
 {
-    return _fullscreentimelable;
+    return m_pFullscreentimelable;
 }
 
 QLabel *ToolboxProxy::getfullscreentimeLabelend()
 {
-    return _fullscreentimelableend;
+    return m_pFullscreentimelableend;
 }
 
 bool ToolboxProxy::getbAnimationFinash()
 {
-    return  bAnimationFinash;
+    return  m_bAnimationFinash;
 }
 
 void ToolboxProxy::setVolSliderHide()
 {
-    _volSlider->setVisible(false);
+    m_pVolSlider->setVisible(false);
 }
 
 void ToolboxProxy::setButtonTooltipHide()
 {
     if (utils::check_wayland_env()) {
-        m_playBtnTip->hide();
-        m_prevBtnTip->hide();
-        m_nextBtnTip->hide();
-        m_fsBtnTip->hide();
-        m_listBtnTip->hide();
+        m_pPlayBtnTip->hide();
+        m_pPrevBtnTip->hide();
+        m_pNextBtnTip->hide();
+        m_pFullScreenBtnTip->hide();
+        m_pListBtnTip->hide();
     } else {
-//        _subBtn->hideToolTip();
-        _listBtn->hideToolTip();
-        _fsBtn->hideToolTip();
+//        m_pSubBtn->hideToolTip();
+        m_pListBtn->hideToolTip();
+        m_pFullScreenBtn->hideToolTip();
     }
 }
 
@@ -2622,139 +2358,149 @@ void ToolboxProxy::initToolTip()
 {
     if (utils::check_wayland_env()) {
         //lmh0910播放
-        m_playBtnTip = new ButtonToolTip(_mainWindow);
-        m_playBtnTip->setText(tr("Play"));
-        connect(static_cast<ButtonBoxButton *>(_playBtn), &ButtonBoxButton::entered, [ = ]() {
-            m_playBtnTip->move(80, _mainWindow->height() - TOOLBOX_HEIGHT - 5);
-            m_playBtnTip->show();
-            m_playBtnTip->QWidget::activateWindow();
-            m_playBtnTip->update();
-            m_playBtnTip->releaseMouse();
+        m_pPlayBtnTip = new ButtonToolTip(m_pMainWindow);
+        m_pPlayBtnTip->setText(tr("Play"));
+        connect(static_cast<ButtonBoxButton *>(m_pPlayBtn), &ButtonBoxButton::entered, [ = ]() {
+            m_pPlayBtnTip->move(80, m_pMainWindow->height() - TOOLBOX_HEIGHT - 5);
+            m_pPlayBtnTip->show();
+            m_pPlayBtnTip->QWidget::activateWindow();
+            m_pPlayBtnTip->update();
+            m_pPlayBtnTip->releaseMouse();
 
         });
-        connect(static_cast<ButtonBoxButton *>(_playBtn), &ButtonBoxButton::leaved, [ = ]() {
+        connect(static_cast<ButtonBoxButton *>(m_pPlayBtn), &ButtonBoxButton::leaved, [ = ]() {
             QTimer::singleShot(0, [ = ] {
-                m_playBtnTip->hide();
+                m_pPlayBtnTip->hide();
             });
         });
         //lmh0910上一个
-        m_prevBtnTip = new ButtonToolTip(_mainWindow);
-        m_prevBtnTip->setText(tr("Previous"));
-        connect(static_cast<ButtonBoxButton *>(_prevBtn), &ButtonBoxButton::entered, [ = ]() {
-            m_prevBtnTip->move(40,
-                               _mainWindow->height() - TOOLBOX_HEIGHT - 5);
-            m_prevBtnTip->show();
-            m_prevBtnTip->QWidget::activateWindow();
-            m_prevBtnTip->update();
-            m_prevBtnTip->releaseMouse();
+        m_pPrevBtnTip = new ButtonToolTip(m_pMainWindow);
+        m_pPrevBtnTip->setText(tr("Previous"));
+        connect(static_cast<ButtonBoxButton *>(m_pPrevBtn), &ButtonBoxButton::entered, [ = ]() {
+            m_pPrevBtnTip->move(40,
+                               m_pMainWindow->height() - TOOLBOX_HEIGHT - 5);
+            m_pPrevBtnTip->show();
+            m_pPrevBtnTip->QWidget::activateWindow();
+            m_pPrevBtnTip->update();
+            m_pPrevBtnTip->releaseMouse();
 
         });
-        connect(static_cast<ButtonBoxButton *>(_prevBtn), &ButtonBoxButton::leaved, [ = ]() {
+        connect(static_cast<ButtonBoxButton *>(m_pPrevBtn), &ButtonBoxButton::leaved, [ = ]() {
             QTimer::singleShot(0, [ = ] {
-                m_prevBtnTip->hide();
+                m_pPrevBtnTip->hide();
             });
         });
 
         //lmh0910下一个
-        m_nextBtnTip = new ButtonToolTip(_mainWindow);
-        m_nextBtnTip->setText(tr("Next"));
-        connect(static_cast<ButtonBoxButton *>(_nextBtn), &ButtonBoxButton::entered, [ = ]() {
-            m_nextBtnTip->move(120,
-                               _mainWindow->height() - TOOLBOX_HEIGHT - 5);
-            m_nextBtnTip->show();
-            m_nextBtnTip->QWidget::activateWindow();
-            m_nextBtnTip->update();
-            m_nextBtnTip->releaseMouse();
+        m_pNextBtnTip = new ButtonToolTip(m_pMainWindow);
+        m_pNextBtnTip->setText(tr("Next"));
+        connect(static_cast<ButtonBoxButton *>(m_pNextBtn), &ButtonBoxButton::entered, [ = ]() {
+            m_pNextBtnTip->move(120,
+                               m_pMainWindow->height() - TOOLBOX_HEIGHT - 5);
+            m_pNextBtnTip->show();
+            m_pNextBtnTip->QWidget::activateWindow();
+            m_pNextBtnTip->update();
+            m_pNextBtnTip->releaseMouse();
 
         });
-        connect(static_cast<ButtonBoxButton *>(_nextBtn), &ButtonBoxButton::leaved, [ = ]() {
+        connect(static_cast<ButtonBoxButton *>(m_pNextBtn), &ButtonBoxButton::leaved, [ = ]() {
             QTimer::singleShot(0, [ = ] {
-                m_nextBtnTip->hide();
+                m_pNextBtnTip->hide();
             });
         });
     }
     //lmh0910全屏按键
-    m_fsBtnTip = new ButtonToolTip(_mainWindow);
-    m_fsBtnTip->setText(tr("Fullscreen"));
-    connect(_fsBtn, &ToolButton::entered, [ = ]() {
-        m_fsBtnTip->move(_mainWindow->width() - _fsBtn->width() / 2 /*- _playBtn->width()*/ - 140,
-                         _mainWindow->height() - TOOLBOX_HEIGHT - 5);
-        m_fsBtnTip->show();
-        m_fsBtnTip->QWidget::activateWindow();
-        m_fsBtnTip->update();
-        m_fsBtnTip->releaseMouse();
+    m_pFullScreenBtnTip = new ButtonToolTip(m_pMainWindow);
+    m_pFullScreenBtnTip->setText(tr("Fullscreen"));
+    connect(m_pFullScreenBtn, &ToolButton::entered, [ = ]() {
+        m_pFullScreenBtnTip->move(m_pMainWindow->width() - m_pFullScreenBtn->width() / 2 /*- m_pPlayBtn->width()*/ - 140,
+                         m_pMainWindow->height() - TOOLBOX_HEIGHT - 5);
+        m_pFullScreenBtnTip->show();
+        m_pFullScreenBtnTip->QWidget::activateWindow();
+        m_pFullScreenBtnTip->update();
+        m_pFullScreenBtnTip->releaseMouse();
 
     });
-    connect(_fsBtn, &ToolButton::leaved, [ = ]() {
+    connect(m_pFullScreenBtn, &ToolButton::leaved, [ = ]() {
         QTimer::singleShot(0, [ = ] {
-            m_fsBtnTip->hide();
+            m_pFullScreenBtnTip->hide();
         });
     });
     //lmh0910list按键
-    m_listBtnTip = new ButtonToolTip(_mainWindow);
-    m_listBtnTip->setText(tr("Playlist"));
-    connect(_listBtn, &ToolButton::entered, [ = ]() {
-        m_listBtnTip->move(_mainWindow->width() - _listBtn->width() / 2 /*- _playBtn->width()*/ - 20,
-                           _mainWindow->height() - TOOLBOX_HEIGHT - 5);
-        m_listBtnTip->show();
-        m_listBtnTip->QWidget::activateWindow();
-        m_listBtnTip->update();
-        m_listBtnTip->releaseMouse();
+    m_pListBtnTip = new ButtonToolTip(m_pMainWindow);
+    m_pListBtnTip->setText(tr("Playlist"));
+    connect(m_pListBtn, &ToolButton::entered, [ = ]() {
+        m_pListBtnTip->move(m_pMainWindow->width() - m_pListBtn->width() / 2 /*- m_pPlayBtn->width()*/ - 20,
+                           m_pMainWindow->height() - TOOLBOX_HEIGHT - 5);
+        m_pListBtnTip->show();
+        m_pListBtnTip->QWidget::activateWindow();
+        m_pListBtnTip->update();
+        m_pListBtnTip->releaseMouse();
 
     });
-    connect(_listBtn, &ToolButton::leaved, [ = ]() {
+    connect(m_pListBtn, &ToolButton::leaved, [ = ]() {
         QTimer::singleShot(0, [ = ] {
-            m_listBtnTip->hide();
+            m_pListBtnTip->hide();
         });
     });
 }
 
 bool ToolboxProxy::getVolSliderIsHided()
 {
-    return _volSlider->isHidden();
+    return m_pVolSlider->isHidden();
 }
-
+/**
+ * @brief updateProgress 更新播放进度条显示
+ * @param nValue 进度条的值
+ */
 void ToolboxProxy::updateProgress(int nValue)
 {
-    int nDuration = static_cast<int>(_engine->duration());
+    int nDuration = static_cast<int>(m_pEngine->duration());
 
-    if (_progBar_Widget->currentIndex() == 1) {              //进度条模式
+    if (m_pProgBar_Widget->currentIndex() == 1) {              //进度条模式
 
-        int nCurrPos = _progBar->value() + nValue * nDuration / _progBar->width();
-        if (!_progBar->signalsBlocked()) {
-            _progBar->blockSignals(true);
+        int nCurrPos = m_pProgBar->value() + nValue * nDuration / m_pProgBar->width();
+        if (!m_pProgBar->signalsBlocked()) {
+            m_pProgBar->blockSignals(true);
         }
 
-        _progBar->slider()->setSliderPosition(nCurrPos);
-        _progBar->slider()->setValue(nCurrPos);
+        m_pProgBar->slider()->setSliderPosition(nCurrPos);
+        m_pProgBar->slider()->setValue(nCurrPos);
     } else {
-        _viewProgBar->setIsBlockSignals(true);
-        _viewProgBar->setValue(_viewProgBar->getValue() + nValue);
+        m_pViewProgBar->setIsBlockSignals(true);
+        m_pViewProgBar->setValue(m_pViewProgBar->getValue() + nValue);
     }
 }
-
+/**
+ * @brief updateSlider 根据进度条显示更新影片实际进度
+ */
 void ToolboxProxy::updateSlider()
 {
-    if (_progBar_Widget->currentIndex() == 1) {
-        _engine->seekAbsolute(_progBar->value());
+    if (m_pProgBar_Widget->currentIndex() == 1) {
+        m_pEngine->seekAbsolute(m_pProgBar->value());
 
-        _progBar->blockSignals(false);
+        m_pProgBar->blockSignals(false);
     } else {
-        _engine->seekAbsolute(_viewProgBar->getTimePos());
-        _viewProgBar->setIsBlockSignals(false);
+        m_pEngine->seekAbsolute(m_pViewProgBar->getTimePos());
+        m_pViewProgBar->setIsBlockSignals(false);
     }
 }
-
-void ToolboxProxy::initThumb()
+/**
+ * @brief initThumb 初始化加载胶片线程
+ */
+void ToolboxProxy::initThumbThread()
 {
-    ThumbnailWorker::get().setPlayerEngine(_engine);
+    ThumbnailWorker::get().setPlayerEngine(m_pEngine);
     connect(&ThumbnailWorker::get(), &ThumbnailWorker::thumbGenerated,
             this, &ToolboxProxy::updateHoverPreview);
 }
-
-void ToolboxProxy::updateSliderPoint(QPoint point)
+/**
+ * @brief updateSliderPoint 非x86平台下更新音量条控件位置
+ * @param point 传入主窗口左上角顶点在屏幕的位置
+ */
+void ToolboxProxy::updateSliderPoint(QPoint &point)
 {
-    _volSlider->updatePoint(point);
+    m_pVolSlider->updatePoint(point);
 }
 }
 #undef THEME_TYPE
