@@ -2859,7 +2859,7 @@ void MainWindow::suspendToolsWindow()
         m_pToolbox->hide();
         //reset focus to mainWindow when the titlebar and toolbox is hedden
         //the tab focus will be re-executed in the order set
-        this->setFocus();
+        m_pTitlebar->setFocus();
     } else {
         if (m_autoHideTimer.isActive())
             return;
