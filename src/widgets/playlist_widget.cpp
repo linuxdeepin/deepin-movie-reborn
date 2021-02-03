@@ -1521,14 +1521,21 @@ void PlaylistWidget::resizeEvent(QResizeEvent *ev)
 bool PlaylistWidget::eventFilter(QObject *obj, QEvent *event)
 {
     if(obj == m_pClearButton){
-        if (event->type() == QEvent::FocusOut){
-            if(_playlist->count() <= 0){
+        //焦点在清空按键上禁用上下键
+        if (event->type() == QEvent::KeyPress) {
+            if (static_cast<QKeyEvent*>(event)->key() == Qt::Key_Up ||
+                    static_cast<QKeyEvent*>(event)->key() == Qt::Key_Down) {
+                return true;
+            }
+        }
+        if (event->type() == QEvent::FocusOut) {
+            if (_playlist->count() <= 0){
                 //如果播放列表为空，清空按钮上的焦点不向后传递
                 return true;
             }
         }
-    } else if (obj == _playlist){
-        switch(event->type()){
+    } else if (obj == _playlist) {
+        switch (event->type()) {
         case QEvent::FocusIn: {
             if(_playlist->count()){
                 //焦点切换到播放列表，选中第一个条目

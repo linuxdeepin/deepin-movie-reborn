@@ -1952,6 +1952,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
         if (m_bStartMini) {
             return;
         }
+        m_pPlaylist->setFocus();
         if (m_pPlaylist && m_pPlaylist->state() == PlaylistWidget::Closed && !m_pToolbox->isVisible()) {
             m_pToolbox->show();
         }
