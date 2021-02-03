@@ -2277,13 +2277,10 @@ bool ToolboxProxy::eventFilter(QObject *obj, QEvent *ev)
             } else if(keyEvent->key() == Qt::Key_Down){
                 m_pVolSlider->changeVolume(qMax(nCurVolume - 5, 0));
                 return true;
-            } else {
-                return QObject::eventFilter(obj, ev);
             }
-        } else {
-            return QObject::eventFilter(obj, ev);
         }
     }
+    return QObject::eventFilter(obj, ev);
 }
 /**
  * @brief updateTimeLabel 界面显示或大小变化时更新控件显示状态
