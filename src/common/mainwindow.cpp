@@ -2251,6 +2251,9 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
     }
 
     case ActionFactory::ActionKind::GotoPlaylistNext: {
+        //防止焦点在上/下一曲按钮上切换时焦点跳到下一个按钮上
+        //下同
+        setFocus();
         if (m_bIsFree == false)
             return ;
 
@@ -2264,6 +2267,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
     }
 
     case ActionFactory::ActionKind::GotoPlaylistPrev: {
+        setFocus();
         if (m_bIsFree == false)
             return ;
 

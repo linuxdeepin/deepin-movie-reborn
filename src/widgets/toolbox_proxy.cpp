@@ -1868,6 +1868,16 @@ void ToolboxProxy::updateButtonStates()
     qInfo() << m_pEngine->playingMovieInfo().subs.size();
     bool vis = m_pEngine->playlist().count() > 1 && m_pMainWindow->inited();
 
+    //播放状态为空闲或播放列表只有一项时，将上下一曲按钮置灰
+    if (m_pEngine->state() == PlayerEngine::CoreState::Idle ||
+            m_pEngine->getplaylist()->items().size() <= 1) {
+        m_pPrevBtn->setDisabled(true);
+        m_pNextBtn->setDisabled(true);
+    } else {
+        m_pPrevBtn->setEnabled(true);
+        m_pNextBtn->setEnabled(true);
+    }
+
     m_bCanPlay = vis;  //防止连续切换上下曲目
 }
 
