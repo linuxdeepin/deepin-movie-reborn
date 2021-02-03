@@ -1009,7 +1009,6 @@ ToolboxProxy::~ToolboxProxy()
     delete m_pPreviewTime;
 
     if (m_pWorker) {
-        m_pWorker->wait();
         m_pWorker->quit();
         m_pWorker->deleteLater();
     }
