@@ -247,10 +247,10 @@ public:
         m_pTime->setText(time);
 
         if (!m_bFontChanged) {
-            QFontMetrics fontMetrics (DFontSizeManager::instance()->get(DFontSizeManager::T8));
+            QFontMetrics fontMetrics(DFontSizeManager::instance()->get(DFontSizeManager::T8));
             m_pTime->setFixedSize(fontMetrics.width(m_pTime->text()) + 5, fontMetrics.height());
         } else {
-            QFontMetrics fontMetrics (m_font);
+            QFontMetrics fontMetrics(m_font);
             m_pTime->setFont(m_font);
             m_pTime->setFixedSize(fontMetrics.width(m_pTime->text()) + 10, fontMetrics.height());
         }
@@ -305,7 +305,7 @@ public:
         _parent = parent;
         setFixedHeight(70);
 
-         m_bIsBlockSignals = false;
+        m_bIsBlockSignals = false;
         setMouseTracking(true);
 
         m_pBack = new QWidget(this);
@@ -360,7 +360,7 @@ public:
 //    virtual ~ViewProgBar();
     void setIsBlockSignals(bool isBlockSignals)
     {
-         m_bIsBlockSignals = isBlockSignals;
+        m_bIsBlockSignals = isBlockSignals;
     }
     bool getIsBlockSignals()
     {
@@ -510,10 +510,10 @@ protected:
                     repaint();
                 }
             } else {
-                if ( m_nVlastHoverValue != v) {
+                if (m_nVlastHoverValue != v) {
                     emit hoverChanged(v);
                 }
-                 m_nVlastHoverValue = v;
+                m_nVlastHoverValue = v;
             }
         }
         e->accept();
@@ -522,7 +522,7 @@ protected:
     {
 
         if (!m_bPress && e->buttons() == Qt::LeftButton && isEnabled()) {
-             m_startPos = e->pos();
+            m_startPos = e->pos();
 
             int v = position2progress(e->pos());
             m_pEngine->seekAbsolute(v);
@@ -1056,7 +1056,7 @@ void ToolboxProxy::setup()
 
     m_pBotToolWgt = new QWidget(bot_widget);
     m_pBotToolWgt->setObjectName(BOTTOM_TOOL_BUTTON_WIDGET);
-    m_pBotToolWgt->setFixedHeight(TOOLBOX_HEIGHT - 10);
+    m_pBotToolWgt->setFixedHeight(TOOLBOX_HEIGHT - 12);
     m_pBotToolWgt->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
     auto *bot_layout = new QHBoxLayout(m_pBotToolWgt);
     bot_layout->setContentsMargins(LEFT_MARGIN, 0, RIGHT_MARGIN, 0);
@@ -1402,15 +1402,15 @@ void ToolboxProxy::initMember()
     m_pProgBar_Widget = nullptr;
     bot_widget = nullptr;
 
-    _mid= nullptr;
-    _right= nullptr;
+    _mid = nullptr;
+    _right = nullptr;
 
     m_pFullscreentimelable = nullptr;
     m_pFullscreentimelableend = nullptr;
     m_pTimeLabel = nullptr;
     m_pTimeLabelend = nullptr;
     m_pViewProgBar = nullptr;
-    m_pViewProgBar= nullptr;
+    m_pViewProgBar = nullptr;
     m_pProgBar = nullptr;
     m_pPreviewer = nullptr;
     m_pPreviewTime = nullptr;
@@ -1608,7 +1608,7 @@ void ToolboxProxy::slotVolumeButtonClicked()
     if (CompositingManager::get().composited()) {
         if (!m_pVolSlider->isVisible()) {
             m_pVolSlider->show(m_pMainWindow->width() - m_pVolBtn->width() / 2 - m_pPlayBtn->width() - 40,
-                             m_pMainWindow->height() - TOOLBOX_HEIGHT - 2);
+                               m_pMainWindow->height() - TOOLBOX_HEIGHT - 2);
             m_pVolSlider->popup();
         } else {
             m_pVolSlider->popup();
@@ -1629,7 +1629,7 @@ void ToolboxProxy::slotVolumeButtonClicked()
 #else
         if (!m_pVolBtn->isVisible()) {
             m_pVolSlider->show(m_pMainWindow->width() - m_pVolBtn->width() / 2 - m_pPlayBtn->width() - 43,
-                             m_pMainWindow->height() - TOOLBOX_HEIGHT - 5);
+                               m_pMainWindow->height() - TOOLBOX_HEIGHT - 5);
             m_pVolSlider->raise();
             m_pVolSlider->popup();
         } else {
@@ -1794,7 +1794,7 @@ void ToolboxProxy::changeMuteState()
  */
 void ToolboxProxy::playlistClosedByEsc()
 {
-    if(m_pPlaylist->isFocusInPlaylist()){
+    if (m_pPlaylist->isFocusInPlaylist()) {
         m_pMainWindow->requestAction(ActionFactory::TogglePlaylist);
         m_pListBtn->setFocus();   //焦点回到播放列表按钮
     }
@@ -2274,16 +2274,15 @@ void ToolboxProxy::mouseMoveEvent(QMouseEvent *ev)
 
 bool ToolboxProxy::eventFilter(QObject *obj, QEvent *ev)
 {
-    if(obj == m_pVolBtn)
-    {
-        if(ev->type() == QEvent::KeyPress && (m_pVolSlider->state() == VolumeSlider::Open)){
+    if (obj == m_pVolBtn) {
+        if (ev->type() == QEvent::KeyPress && (m_pVolSlider->state() == VolumeSlider::Open)) {
             QKeyEvent *keyEvent = static_cast<QKeyEvent *>(ev);
             int nCurVolume = m_pVolSlider->getVolume();
             //如果音量条升起且上下键按下，以步长为5调整音量
-            if(keyEvent->key() == Qt::Key_Up){
+            if (keyEvent->key() == Qt::Key_Up) {
                 m_pVolSlider->changeVolume(qMin(nCurVolume + 5, 200));
                 return true;
-            } else if(keyEvent->key() == Qt::Key_Down){
+            } else if (keyEvent->key() == Qt::Key_Down) {
                 m_pVolSlider->changeVolume(qMax(nCurVolume - 5, 0));
                 return true;
             }
@@ -2384,7 +2383,7 @@ void ToolboxProxy::initToolTip()
         m_pPrevBtnTip->setText(tr("Previous"));
         connect(static_cast<ButtonBoxButton *>(m_pPrevBtn), &ButtonBoxButton::entered, [ = ]() {
             m_pPrevBtnTip->move(40,
-                               m_pMainWindow->height() - TOOLBOX_HEIGHT - 5);
+                                m_pMainWindow->height() - TOOLBOX_HEIGHT - 5);
             m_pPrevBtnTip->show();
             m_pPrevBtnTip->QWidget::activateWindow();
             m_pPrevBtnTip->update();
@@ -2402,7 +2401,7 @@ void ToolboxProxy::initToolTip()
         m_pNextBtnTip->setText(tr("Next"));
         connect(static_cast<ButtonBoxButton *>(m_pNextBtn), &ButtonBoxButton::entered, [ = ]() {
             m_pNextBtnTip->move(120,
-                               m_pMainWindow->height() - TOOLBOX_HEIGHT - 5);
+                                m_pMainWindow->height() - TOOLBOX_HEIGHT - 5);
             m_pNextBtnTip->show();
             m_pNextBtnTip->QWidget::activateWindow();
             m_pNextBtnTip->update();
@@ -2420,7 +2419,7 @@ void ToolboxProxy::initToolTip()
     m_pFullScreenBtnTip->setText(tr("Fullscreen"));
     connect(m_pFullScreenBtn, &ToolButton::entered, [ = ]() {
         m_pFullScreenBtnTip->move(m_pMainWindow->width() - m_pFullScreenBtn->width() / 2 /*- m_pPlayBtn->width()*/ - 140,
-                         m_pMainWindow->height() - TOOLBOX_HEIGHT - 5);
+                                  m_pMainWindow->height() - TOOLBOX_HEIGHT - 5);
         m_pFullScreenBtnTip->show();
         m_pFullScreenBtnTip->QWidget::activateWindow();
         m_pFullScreenBtnTip->update();
@@ -2437,7 +2436,7 @@ void ToolboxProxy::initToolTip()
     m_pListBtnTip->setText(tr("Playlist"));
     connect(m_pListBtn, &ToolButton::entered, [ = ]() {
         m_pListBtnTip->move(m_pMainWindow->width() - m_pListBtn->width() / 2 /*- m_pPlayBtn->width()*/ - 20,
-                           m_pMainWindow->height() - TOOLBOX_HEIGHT - 5);
+                            m_pMainWindow->height() - TOOLBOX_HEIGHT - 5);
         m_pListBtnTip->show();
         m_pListBtnTip->QWidget::activateWindow();
         m_pListBtnTip->update();
