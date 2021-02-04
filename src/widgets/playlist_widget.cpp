@@ -1540,7 +1540,10 @@ bool PlaylistWidget::eventFilter(QObject *obj, QEvent *event)
         case QEvent::FocusIn: {
             if(_playlist->count()){
                 //焦点切换到播放列表，选中第一个条目
-                _playlist->setCurrentRow(0);
+                if (_playlist->currentRow() != 0) {
+                    _playlist->setCurrentRow(0);
+                    _index = 0;
+                }
             }
             return true;
         }
