@@ -300,6 +300,7 @@ public:
      */
     ViewProgBar(DMRSlider *m_pProgBar, QWidget *parent = nullptr)
     {
+        initMemeber();
         //传入进度条，以便重新获取胶片进度条长度 by ZhuYuliang
         this->m_pProgBar = m_pProgBar;
         _parent = parent;
@@ -1471,7 +1472,7 @@ void ToolboxProxy::closeAnyPopup()
 bool ToolboxProxy::anyPopupShown() const
 {
     //返回鼠标悬停缩略图、鼠标悬停时间弹窗、音量弹窗是否有弹出
-    return m_pPreviewer->isVisible() || m_pPreviewTime->isVisible() || m_pViewProgBar->isVisible();
+    return m_pPreviewer->isVisible() || m_pPreviewTime->isVisible() || m_pVolSlider->isVisible();
 }
 
 void ToolboxProxy::updateHoverPreview(const QUrl &url, int secs)
