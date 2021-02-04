@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="tr">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="tr" version="2.1">
 <context>
     <name>QObject</name>
     <message>
@@ -411,27 +409,27 @@
     </message>
     <message>
         <source>Playback Speed</source>
-        <translation type="unfinished"></translation>
+        <translation>Oynatım Hızı</translation>
     </message>
     <message>
         <source>0.5x</source>
-        <translation type="unfinished"></translation>
+        <translation>0.5x</translation>
     </message>
     <message>
         <source>1.0x</source>
-        <translation type="unfinished"></translation>
+        <translation>1.0x</translation>
     </message>
     <message>
         <source>1.2x</source>
-        <translation type="unfinished"></translation>
+        <translation>1.2x</translation>
     </message>
     <message>
         <source>1.5x</source>
-        <translation type="unfinished"></translation>
+        <translation>1.5x</translation>
     </message>
     <message>
         <source>2.0x</source>
-        <translation type="unfinished"></translation>
+        <translation>2.0x</translation>
     </message>
 </context>
 <context>
@@ -623,22 +621,6 @@
         <source>All videos (*)(%2 %1)</source>
         <translation>Tüm videolar (*)(%2 %1)</translation>
     </message>
-    <message>
-        <source>Auto</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Open</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Please exit smart dock</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>dmr::MovieInfo</name>
@@ -813,18 +795,6 @@
         <source>List loop</source>
         <translation>Liste döngüsü</translation>
     </message>
-    <message>
-        <source>Auto</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Open</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>dmr::ToolboxProxy</name>
@@ -887,10 +857,6 @@
     <message>
         <source>Mute</source>
         <translation>Sesi kapat</translation>
-    </message>
-    <message>
-        <source>sub</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

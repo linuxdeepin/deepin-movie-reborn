@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="fr">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="fr" version="2.1">
 <context>
     <name>QObject</name>
     <message>
@@ -232,7 +230,7 @@
     </message>
     <message>
         <source>Please enter the URL:</source>
-        <translation>Veuillez entrer l&apos;URL&#xa0;:</translation>
+        <translation>Veuillez entrer l&apos;URL :</translation>
     </message>
     <message>
         <source>OK</source>
@@ -438,11 +436,11 @@
     <name>dmr::BurstScreenshotsDialog</name>
     <message>
         <source>Duration: %1</source>
-        <translation>Durée&#xa0;: %1</translation>
+        <translation>Durée : %1</translation>
     </message>
     <message>
         <source>Resolution: %1</source>
-        <translation>Résolution&#xa0;: %1</translation>
+        <translation>Résolution : %1</translation>
     </message>
     <message>
         <source>Size: %1</source>
@@ -501,15 +499,15 @@
     </message>
     <message>
         <source>Volume: %1%</source>
-        <translation>Volume&#xa0;: %1%</translation>
+        <translation>Volume : %1%</translation>
     </message>
     <message>
         <source>Track: %1</source>
-        <translation>Piste&#xa0;: %1</translation>
+        <translation>Piste : %1</translation>
     </message>
     <message>
         <source>Subtitle %1: %2s</source>
-        <translation>Sous-titre %1&#xa0;: %2s</translation>
+        <translation>Sous-titre %1 : %2s</translation>
     </message>
     <message>
         <source>delayed</source>
@@ -521,7 +519,7 @@
     </message>
     <message>
         <source>Speed: %1x</source>
-        <translation>Vitesse&#xa0;: %1x</translation>
+        <translation>Vitesse : %1x</translation>
     </message>
     <message>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</source>
@@ -545,7 +543,7 @@
     </message>
     <message>
         <source>Invalid file: %1</source>
-        <translation>Fichier non valide&#xa0;: %1</translation>
+        <translation>Fichier non valide : %1</translation>
     </message>
     <message>
         <source>No matching online subtitles</source>
@@ -622,22 +620,6 @@
     <message>
         <source>All videos (*)(%2 %1)</source>
         <translation>Toutes vidéos (*)(%2 %1)</translation>
-    </message>
-    <message>
-        <source>Auto</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Open</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Please exit smart dock</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -813,18 +795,6 @@
         <source>List loop</source>
         <translation>Répéter la liste</translation>
     </message>
-    <message>
-        <source>Auto</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Open</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>dmr::ToolboxProxy</name>
@@ -887,10 +857,6 @@
     <message>
         <source>Mute</source>
         <translation>Muet</translation>
-    </message>
-    <message>
-        <source>sub</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

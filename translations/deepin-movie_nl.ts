@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="nl">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="nl" version="2.1">
 <context>
     <name>QObject</name>
     <message>
@@ -623,22 +621,6 @@
         <source>All videos (*)(%2 %1)</source>
         <translation>Alle video&apos;s (*)(%2 %1)</translation>
     </message>
-    <message>
-        <source>Auto</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Open</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Please exit smart dock</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>dmr::MovieInfo</name>
@@ -813,18 +795,6 @@
         <source>List loop</source>
         <translation>Lijst herhalen</translation>
     </message>
-    <message>
-        <source>Auto</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Open</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>dmr::ToolboxProxy</name>
@@ -887,10 +857,6 @@
     <message>
         <source>Mute</source>
         <translation>Dempen</translation>
-    </message>
-    <message>
-        <source>sub</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

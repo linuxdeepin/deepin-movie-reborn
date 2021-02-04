@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="it">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="it" version="2.1">
 <context>
     <name>QObject</name>
     <message>
@@ -624,22 +622,6 @@ Localizzazione italiana a cura di Carofano Massimo Antonio.</translation>
         <source>All videos (*)(%2 %1)</source>
         <translation>Tutti i video (*)(%2 %1)</translation>
     </message>
-    <message>
-        <source>Auto</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Open</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Please exit smart dock</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>dmr::MovieInfo</name>
@@ -814,18 +796,6 @@ Localizzazione italiana a cura di Carofano Massimo Antonio.</translation>
         <source>List loop</source>
         <translation>Ripetizione di Gruppo</translation>
     </message>
-    <message>
-        <source>Auto</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Open</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>dmr::ToolboxProxy</name>
@@ -888,10 +858,6 @@ Localizzazione italiana a cura di Carofano Massimo Antonio.</translation>
     <message>
         <source>Mute</source>
         <translation>Muto</translation>
-    </message>
-    <message>
-        <source>sub</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

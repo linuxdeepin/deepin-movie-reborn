@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="de">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="de" version="2.1">
 <context>
     <name>QObject</name>
     <message>
@@ -411,27 +409,27 @@
     </message>
     <message>
         <source>Playback Speed</source>
-        <translation type="unfinished"></translation>
+        <translation>Wiedergabegeschwindigkeit</translation>
     </message>
     <message>
         <source>0.5x</source>
-        <translation type="unfinished"></translation>
+        <translation>0,5 x</translation>
     </message>
     <message>
         <source>1.0x</source>
-        <translation type="unfinished"></translation>
+        <translation>1,0 x</translation>
     </message>
     <message>
         <source>1.2x</source>
-        <translation type="unfinished"></translation>
+        <translation>1,2 x</translation>
     </message>
     <message>
         <source>1.5x</source>
-        <translation type="unfinished"></translation>
+        <translation>1,5 x</translation>
     </message>
     <message>
         <source>2.0x</source>
-        <translation type="unfinished"></translation>
+        <translation>2,0 x</translation>
     </message>
 </context>
 <context>
@@ -521,7 +519,7 @@
     </message>
     <message>
         <source>Speed: %1x</source>
-        <translation>Geschwindigkeit: %1x</translation>
+        <translation>Geschwindigkeit: %1 x</translation>
     </message>
     <message>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</source>
@@ -622,22 +620,6 @@
     <message>
         <source>All videos (*)(%2 %1)</source>
         <translation>Alle Videos (*)(%2 %1)</translation>
-    </message>
-    <message>
-        <source>Auto</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Open</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Please exit smart dock</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -787,11 +769,11 @@
     <name>dmr::Settings</name>
     <message>
         <source>%1/Movie%2.jpg</source>
-        <translation>%1/Movie%2.jpg</translation>
+        <translation>%1/Film%2.jpg</translation>
     </message>
     <message>
         <source>%1/Movie%2(%3).jpg</source>
-        <translation>%1/Movie%2(%3).jpg</translation>
+        <translation>%1/Film%2(%3).jpg</translation>
     </message>
     <message>
         <source>Order play</source>
@@ -812,18 +794,6 @@
     <message>
         <source>List loop</source>
         <translation>Liste wiederholen</translation>
-    </message>
-    <message>
-        <source>Auto</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Open</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -887,10 +857,6 @@
     <message>
         <source>Mute</source>
         <translation>Stummschalten</translation>
-    </message>
-    <message>
-        <source>sub</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

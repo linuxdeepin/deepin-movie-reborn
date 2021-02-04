@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="gl_ES">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="gl_ES" version="2.1">
 <context>
     <name>QObject</name>
     <message>
@@ -21,11 +19,11 @@
     </message>
     <message>
         <source>Auto add similar files to play</source>
-        <translation>Engadir automáticamente ficheiros similares para reproducir</translation>
+        <translation>Engadir automaticamente ficheiros similares para reproducir</translation>
     </message>
     <message>
         <source>Clear playlist when exit</source>
-        <translation>Baleirar a listaxe de reprodución cando saia</translation>
+        <translation>Baleirar a listaxe de reprodución ao saír</translation>
     </message>
     <message>
         <source>Show video preview on mouseover</source>
@@ -37,7 +35,7 @@
     </message>
     <message>
         <source>Pause when minimized</source>
-        <translation>Pausar cando está minimizado</translation>
+        <translation>Por en pausa ao minimizar</translation>
     </message>
     <message>
         <source>Remember playback position</source>
@@ -85,7 +83,7 @@
     </message>
     <message>
         <source>Restore Defaults</source>
-        <translation>Restablecer o predefinido</translation>
+        <translation>Restablecer predefinidos</translation>
     </message>
     <message>
         <source>Open file</source>
@@ -173,11 +171,11 @@
     </message>
     <message>
         <source>Exit fullscreen/mini mode</source>
-        <translation>Saír do modo mini / pantalla completa</translation>
+        <translation>Saír da pantalla completa/modo reducido</translation>
     </message>
     <message>
         <source>Movie</source>
-        <translation>Vídeo</translation>
+        <translation>Filme</translation>
     </message>
     <message>
         <source>Settings</source>
@@ -209,7 +207,7 @@
     </message>
     <message>
         <source>Movie is a full-featured video player, supporting playing local and streaming media in multiple video formats.</source>
-        <translation>A película é un reprodutor de vídeo completo, que admite reproducir medios locais e de transmisión en varios formatos de vídeo.</translation>
+        <translation>Filmes é un completo reprodutor de vídeo, que soporta tanto a reprodución de medios locais como a transmisión en diferentes formatos.</translation>
     </message>
     <message>
         <source>OK</source>
@@ -217,7 +215,7 @@
     </message>
     <message>
         <source>Default play mode</source>
-        <translation>Modo de reprodución predeterminado</translation>
+        <translation>Modo de reprodución predefinido</translation>
     </message>
     <message>
         <source>Show thumbnails in progress bar</source>
@@ -251,7 +249,7 @@
     </message>
     <message>
         <source>Always on Top</source>
-        <translation>Sempre visible</translation>
+        <translation>Sempre visíbel</translation>
     </message>
     <message>
         <source>Empty playlist</source>
@@ -291,7 +289,7 @@
     </message>
     <message>
         <source>Shuffle Play</source>
-        <translation>Reprodución aleatoria</translation>
+        <translation>Reprodución ao chou</translation>
     </message>
     <message>
         <source>Single Play</source>
@@ -307,7 +305,7 @@
     </message>
     <message>
         <source>Frame</source>
-        <translation>Fotograma</translation>
+        <translation>Cadro</translation>
     </message>
     <message>
         <source>Default</source>
@@ -355,7 +353,7 @@
     </message>
     <message>
         <source>Online Search</source>
-        <translation>Buscar na rede</translation>
+        <translation>Pescuda na rede</translation>
     </message>
     <message>
         <source>Select</source>
@@ -411,27 +409,27 @@
     </message>
     <message>
         <source>Playback Speed</source>
-        <translation type="unfinished"></translation>
+        <translation>Velocidade de reprodución</translation>
     </message>
     <message>
         <source>0.5x</source>
-        <translation type="unfinished"></translation>
+        <translation>0.5x</translation>
     </message>
     <message>
         <source>1.0x</source>
-        <translation type="unfinished"></translation>
+        <translation>1.0x</translation>
     </message>
     <message>
         <source>1.2x</source>
-        <translation type="unfinished"></translation>
+        <translation>1.2x</translation>
     </message>
     <message>
         <source>1.5x</source>
-        <translation type="unfinished"></translation>
+        <translation>1.5x</translation>
     </message>
     <message>
         <source>2.0x</source>
-        <translation type="unfinished"></translation>
+        <translation>2.0x</translation>
     </message>
 </context>
 <context>
@@ -465,7 +463,7 @@
     </message>
     <message>
         <source>Buffering...</source>
-        <translation>Enviando ao buffer...</translation>
+        <translation>Enviando ao búfer...</translation>
     </message>
     <message>
         <source>No device found</source>
@@ -573,7 +571,7 @@
     </message>
     <message>
         <source>Taking the screenshots, please wait...</source>
-        <translation>Tomando as capturas de pantalla, agarde ...</translation>
+        <translation>Tomando as capturas de pantalla, agarde...</translation>
     </message>
     <message>
         <source>OK</source>
@@ -593,7 +591,7 @@
     </message>
     <message>
         <source>Please load the video first</source>
-        <translation>Carga o vídeo primeiro</translation>
+        <translation>Por favor, carga o vídeo primeiro</translation>
     </message>
     <message>
         <source>Order play</source>
@@ -622,22 +620,6 @@
     <message>
         <source>All videos (*)(%2 %1)</source>
         <translation>Todos os vídeos (*)(%2 %1)</translation>
-    </message>
-    <message>
-        <source>Auto</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Open</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Please exit smart dock</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -719,19 +701,19 @@
     </message>
     <message>
         <source>Audio info</source>
-        <translation>Información do audio</translation>
+        <translation>Información do son</translation>
     </message>
     <message>
         <source>Audio CodecID</source>
-        <translation>CodecID de audio</translation>
+        <translation>CodecID de son</translation>
     </message>
     <message>
         <source>Audio CodeRate</source>
-        <translation>Código de audio</translation>
+        <translation>Código de son</translation>
     </message>
     <message>
         <source>Audio digit</source>
-        <translation>Díxito de audio</translation>
+        <translation>Son dixital</translation>
     </message>
     <message>
         <source>%1 bits</source>
@@ -813,18 +795,6 @@
         <source>List loop</source>
         <translation>Lista en bucle</translation>
     </message>
-    <message>
-        <source>Auto</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Open</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>dmr::ToolboxProxy</name>
@@ -887,10 +857,6 @@
     <message>
         <source>Mute</source>
         <translation>Silenciar</translation>
-    </message>
-    <message>
-        <source>sub</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

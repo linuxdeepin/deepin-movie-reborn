@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="zh_HK">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="zh_HK" version="2.1">
 <context>
     <name>QObject</name>
     <message>
@@ -61,7 +59,7 @@
     </message>
     <message>
         <source>Shortcuts</source>
-        <translation>捷徑</translation>
+        <translation>快捷鍵</translation>
     </message>
     <message>
         <source>File</source>
@@ -85,7 +83,7 @@
     </message>
     <message>
         <source>Restore Defaults</source>
-        <translation>恢復預設值</translation>
+        <translation>恢復默認</translation>
     </message>
     <message>
         <source>Open file</source>
@@ -343,7 +341,7 @@
     </message>
     <message>
         <source>Track</source>
-        <translation>歌曲</translation>
+        <translation>音軌</translation>
     </message>
     <message>
         <source>Subtitle</source>
@@ -395,7 +393,7 @@
     </message>
     <message>
         <source>Display in file manager</source>
-        <translation>於檔案管理員顯示</translation>
+        <translation>在檔案管理員顯示</translation>
     </message>
     <message>
         <source>Next Frame</source>
@@ -623,22 +621,6 @@
         <source>All videos (*)(%2 %1)</source>
         <translation>所有影片 (*)(%2 %1)</translation>
     </message>
-    <message>
-        <source>Auto</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Open</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Please exit smart dock</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>dmr::MovieInfo</name>
@@ -813,18 +795,6 @@
         <source>List loop</source>
         <translation>列表循環</translation>
     </message>
-    <message>
-        <source>Auto</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Open</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>dmr::ToolboxProxy</name>
@@ -887,10 +857,6 @@
     <message>
         <source>Mute</source>
         <translation>靜音</translation>
-    </message>
-    <message>
-        <source>sub</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

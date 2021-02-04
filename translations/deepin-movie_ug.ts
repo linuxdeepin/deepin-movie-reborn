@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="ug">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="ug" version="2.1">
 <context>
     <name>QObject</name>
     <message>
@@ -201,7 +199,7 @@
     </message>
     <message>
         <source>Burst shooting</source>
-        <translation>Burst shooting</translation>
+        <translation>ئۇلاپ تارتىش</translation>
     </message>
     <message>
         <source>Size</source>
@@ -307,7 +305,7 @@
     </message>
     <message>
         <source>Frame</source>
-        <translation>Frame</translation>
+        <translation>كاندۇك</translation>
     </message>
     <message>
         <source>Default</source>
@@ -351,7 +349,7 @@
     </message>
     <message>
         <source>Load</source>
-        <translation>Load</translation>
+        <translation>يۈكلەۋاتىدۇ</translation>
     </message>
     <message>
         <source>Online Search</source>
@@ -379,7 +377,7 @@
     </message>
     <message>
         <source>Burst Shooting</source>
-        <translation>ئاتلاش ھالىتى</translation>
+        <translation>ئۇلاپ تارتىش</translation>
     </message>
     <message>
         <source>Playlist</source>
@@ -411,38 +409,38 @@
     </message>
     <message>
         <source>Playback Speed</source>
-        <translation type="unfinished"></translation>
+        <translation>قويۇش سۈرئىتى</translation>
     </message>
     <message>
         <source>0.5x</source>
-        <translation type="unfinished"></translation>
+        <translation>0.5x</translation>
     </message>
     <message>
         <source>1.0x</source>
-        <translation type="unfinished"></translation>
+        <translation>1.0x</translation>
     </message>
     <message>
         <source>1.2x</source>
-        <translation type="unfinished"></translation>
+        <translation>1.2x</translation>
     </message>
     <message>
         <source>1.5x</source>
-        <translation type="unfinished"></translation>
+        <translation>1.5x</translation>
     </message>
     <message>
         <source>2.0x</source>
-        <translation type="unfinished"></translation>
+        <translation>2.0x</translation>
     </message>
 </context>
 <context>
     <name>dmr::BurstScreenshotsDialog</name>
     <message>
         <source>Duration: %1</source>
-        <translation>Duration:% 1</translation>
+        <translation>داۋاملاشتۇرۇش ۋاقتى:%1</translation>
     </message>
     <message>
         <source>Resolution: %1</source>
-        <translation>ئېنىقلىق دەرىجىسى:% 1</translation>
+        <translation>ئېنىقلىق دەرىجىسى: %1</translation>
     </message>
     <message>
         <source>Size: %1</source>
@@ -465,7 +463,7 @@
     </message>
     <message>
         <source>Buffering...</source>
-        <translation>Buffering ...</translation>
+        <translation>بۇففېرلىنىۋاتىدۇ...</translation>
     </message>
     <message>
         <source>No device found</source>
@@ -477,7 +475,7 @@
     </message>
     <message>
         <source>All videos (%1)</source>
-        <translation>بارلىق سىنلار (% 1)</translation>
+        <translation>بارلىق سىنلار (%1)</translation>
     </message>
     <message>
         <source>Stereo</source>
@@ -501,15 +499,15 @@
     </message>
     <message>
         <source>Volume: %1%</source>
-        <translation>ئاۋاز مىقدارى:% 1</translation>
+        <translation>ئاۋاز مىقدارى:%1%</translation>
     </message>
     <message>
         <source>Track: %1</source>
-        <translation>پىروگرامما تىزىملىكى:% 1</translation>
+        <translation>پىروگرامما تىزىملىكى: %1</translation>
     </message>
     <message>
         <source>Subtitle %1: %2s</source>
-        <translation>خەت نۇسخىسى% 1:% 2s</translation>
+        <translation>خەت نۇسخىسى %1: %2s</translation>
     </message>
     <message>
         <source>delayed</source>
@@ -521,7 +519,7 @@
     </message>
     <message>
         <source>Speed: %1x</source>
-        <translation>سۈرئەت:% 1x</translation>
+        <translation>سۈرئەت: %1x</translation>
     </message>
     <message>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</source>
@@ -545,7 +543,7 @@
     </message>
     <message>
         <source>Invalid file: %1</source>
-        <translation>ئىناۋەتسىز ھۆججەت:% 1</translation>
+        <translation>ئىناۋەتسىز ھۆججەت: %1</translation>
     </message>
     <message>
         <source>No matching online subtitles</source>
@@ -622,22 +620,6 @@
     <message>
         <source>All videos (*)(%2 %1)</source>
         <translation>بارلىق سىنلار (*)(%2 %1)</translation>
-    </message>
-    <message>
-        <source>Auto</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Open</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Please exit smart dock</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -776,7 +758,7 @@
     </message>
     <message>
         <source>%1 videos</source>
-        <translation>% 1 سىن</translation>
+        <translation>%1 سىن</translation>
     </message>
     <message>
         <source>Empty</source>
@@ -787,11 +769,11 @@
     <name>dmr::Settings</name>
     <message>
         <source>%1/Movie%2.jpg</source>
-        <translation>% 1 / كىنو% 2.jpg</translation>
+        <translation>%1 / كىنو %2.jpg</translation>
     </message>
     <message>
         <source>%1/Movie%2(%3).jpg</source>
-        <translation>% 1 / كىنو% 2 (% 3) .jpg</translation>
+        <translation>%1 / كىنو %2 (%3) .jpg</translation>
     </message>
     <message>
         <source>Order play</source>
@@ -812,18 +794,6 @@
     <message>
         <source>List loop</source>
         <translation>تىزىملىك ھالقىسى</translation>
-    </message>
-    <message>
-        <source>Auto</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Open</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -887,10 +857,6 @@
     <message>
         <source>Mute</source>
         <translation>ئاۋازسىز</translation>
-    </message>
-    <message>
-        <source>sub</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>
