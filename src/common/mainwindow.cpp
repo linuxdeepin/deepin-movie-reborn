@@ -142,7 +142,7 @@ static QString ElideText(const QString &sText, const QSize &size,
 
     while (line.isValid()) {
         nHeight += nLineHeight;
-      
+
         if (nHeight + nLineHeight >= size.height()) {
             sElideText += fontMetrics.elidedText(sText.mid(line.textStart() + line.textLength() + 1),
                                                  mode, nLastLineWidth);
@@ -368,7 +368,7 @@ public:
         }
         return false;
     }
-
+    
     MainWindow *_source;
 };
 #endif
@@ -1961,21 +1961,23 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
         /* The focus of the clear list button when the playlist is raised is also handled here.
          * Cancel the focus of the shortcut key when it is raised to avoid this problem
          */
-        if (bIsShortcut && toolbox()->getListBtnFocus()) {
-            setFocus();
-        }
-        if (m_pPlaylist && m_pPlaylist->state() == PlaylistWidget::Closed && !m_pToolbox->isVisible()) {
-            m_pToolbox->show();
-        }
-        m_pPlaylist->togglePopup();
-        if (utils::check_wayland_env()) {
-            //lmh0710,修复playlist大小不正确
-            updateProxyGeometry();
-        }
-        if (!bFromUI) {
-            reflectActionToUI(actionKind);
-        }
-        this->resumeToolsWindow();
+        QTimer::singleShot(150, [ = ]() {    //延时是为了解决在窗口变化同时操作时，因窗口size未确定导致显示异常
+            if (bIsShortcut && toolbox()->getListBtnFocus()) {
+                setFocus();
+            }
+            if (m_pPlaylist && m_pPlaylist->state() == PlaylistWidget::Closed && !m_pToolbox->isVisible()) {
+                m_pToolbox->show();
+            }
+            m_pPlaylist->togglePopup();
+            if (utils::check_wayland_env()) {
+                //lmh0710,修复playlist大小不正确
+                updateProxyGeometry();
+            }
+            if (!bFromUI) {
+                reflectActionToUI(actionKind);
+            }
+            this->resumeToolsWindow();
+        });
 
         break;
     }
