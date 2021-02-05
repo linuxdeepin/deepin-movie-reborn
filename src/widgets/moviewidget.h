@@ -63,7 +63,7 @@ public:
      * @brief MovieWidget 播放动画显示窗口
      * @param parent 父窗口
      */
-    MovieWidget(QWidget *parent = nullptr);
+    explicit MovieWidget(QWidget *parent = nullptr);
 
 public slots:
     /**

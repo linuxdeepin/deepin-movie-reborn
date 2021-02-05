@@ -913,9 +913,8 @@ void PlayerEngine::changeSoundMode(Backend::SoundMode sm)
 
 void PlayerEngine::resizeEvent(QResizeEvent *)
 {
-    bool rounded = !window()->isFullScreen() && !window()->isMaximized();   //条件编译误报
-
 #if !defined(USE_DXCB) && !defined(_LIBDMR_)
+    bool rounded = !window()->isFullScreen() && !window()->isMaximized();
     if (rounded) {
         QPixmap shape(size());
         shape.fill(Qt::transparent);
@@ -951,11 +950,11 @@ QVariant PlayerEngine::getBackendProperty(const QString &name)
     return QVariant();
 }
 
-void PlayerEngine::setVideoZoom(float val)
+/*void PlayerEngine::setVideoZoom(float val)
 {
     if (_current) {
         _current->setProperty("video-zoom", val);
     }
-}
+}*/
 
 } // end of namespace dmr

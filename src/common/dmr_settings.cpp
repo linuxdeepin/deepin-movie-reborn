@@ -49,12 +49,12 @@ Settings &Settings::get()
 }
 
 Settings::Settings()
-    : QObject(nullptr), m_sConfigPath(QString())
+    : QObject(nullptr), m_sConfigPath("%1/%2/%3/config.conf")
 {
-    m_sConfigPath = QString("%1/%2/%3/config.conf")
-                    .arg(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation))
-                    .arg(qApp->organizationName())
-                    .arg(qApp->applicationName());
+    m_sConfigPath = m_sConfigPath
+            .arg(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation))
+            .arg(qApp->organizationName())
+            .arg(qApp->applicationName());
     qInfo() << "configPath" << m_sConfigPath;
     QSettingBackend *pBackend = new QSettingBackend(m_sConfigPath);
 #if defined (__mips__) || defined (__sw_64__) || defined ( __aarch64__)
@@ -173,12 +173,18 @@ QStringList Settings::commonPlayableProtocols() const
 
 bool Settings::iscommonPlayableProtocol(const QString &sScheme) const
 {
-    for (auto pro : commonPlayableProtocols()) {
-        if (pro == sScheme)
-            return true;
-    }
+//    for (auto pro : commonPlayableProtocols()) {
+//        if (pro == sScheme)
+//            return true;
+//    }
+//    return false;
 
-    return false;
+    bool result = std::any_of(commonPlayableProtocols().begin(),
+                              commonPlayableProtocols().end(), [&](QString &_pro){
+        return _pro == sScheme;
+    });
+
+    return result;
 }
 
 QString Settings::screenshotLocation()

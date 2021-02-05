@@ -41,7 +41,7 @@ ActionFactory &ActionFactory::get()
     return *pActionFactory;
 }
 #define DEF_ACTION(NAME, KD) do { \
-        QAction *pAct = pMenu->addAction((NAME)); \
+        QAction *pAct = pMenu_p->addAction((NAME)); \
         pAct->setProperty("kind", KD); \
         m_listContextMenuActions.append(pAct); \
         connect(pAct, &QObject::destroyed, [=](QObject* o) { \
@@ -49,7 +49,7 @@ ActionFactory &ActionFactory::get()
         }); \
     } while (0)
 #define DEF_ACTION_CHECKED(NAME, KD) do { \
-        QAction *pAct = pMenu->addAction((NAME)); \
+        QAction *pAct = pMenu_p->addAction((NAME)); \
         pAct->setCheckable(true); \
         pAct->setProperty("kind", KD); \
         m_listContextMenuActions.append(pAct); \
@@ -78,35 +78,35 @@ ActionFactory &ActionFactory::get()
 DMenu *ActionFactory::titlebarMenu()
 {
     if (!m_pTitlebarMenu) {
-        DMenu *pMenu = new DMenu();
+        DMenu *pMenu_p = new DMenu();
         DEF_ACTION(tr("Open file"), ActionKind::OpenFileList);
         DEF_ACTION(tr("Open folder"), ActionKind::OpenDirectory);
         DEF_ACTION(tr("Settings"), ActionKind::Settings);
 //        DEF_ACTION_CHECKED(tr("Light theme"), ActionKind::LightTheme);
-        pMenu->addSeparator();
+        pMenu_p->addSeparator();
         // these seems added by titlebar itself
         //DEF_ACTION("About", ActionKind::About);
         //DEF_ACTION("Help", ActionKind::Help);
         //DEF_ACTION("Exit", ActionKind::Exit);
-        m_pTitlebarMenu = pMenu;
+        m_pTitlebarMenu = pMenu_p;
     }
     return m_pTitlebarMenu;
 }
 DMenu *ActionFactory::mainContextMenu()
 {
     if (!m_pContextMenu) {
-        DMenu *pMenu = new DMenu();
+        DMenu *pMenu_p = new DMenu();
         DEF_ACTION(tr("Open file"), ActionKind::OpenFileList);
         DEF_ACTION(tr("Open folder"), ActionKind::OpenDirectory);
         DEF_ACTION(tr("Open URL"), ActionKind::OpenUrl);
         DEF_ACTION(tr("Open CD/DVD"), ActionKind::OpenCdrom);
-        pMenu->addSeparator();
+        pMenu_p->addSeparator();
         DEF_ACTION_CHECKED(tr("Fullscreen"), ActionKind::ToggleFullscreen);
         DEF_ACTION_CHECKED(tr("Mini Mode"), ActionKind::ToggleMiniMode);
         DEF_ACTION_CHECKED(tr("Always on Top"), ActionKind::WindowAbove);
-        pMenu->addSeparator();
+        pMenu_p->addSeparator();
         {
-            DMenu *pParent = pMenu;         //这里使用代码块和局部变量为了使结构清晰
+            DMenu *pParent = pMenu_p;         //这里使用代码块和局部变量为了使结构清晰
             DMenu *pMenu = new DMenu(tr("Play Mode"));
             QActionGroup *pActionGroup = new QActionGroup(pMenu);
             DEF_ACTION_CHECKED_GROUP(tr("Order Play"), ActionKind::OrderPlay, pActionGroup);
@@ -117,7 +117,7 @@ DMenu *ActionFactory::mainContextMenu()
             pParent->addMenu(pMenu);
         }
         {
-            DMenu *pParent = pMenu;
+            DMenu *pParent = pMenu_p;
             DMenu *pMenu = new DMenu(tr("Playback Speed"));
             QActionGroup *pActionGroup = new QActionGroup(pMenu);
             DEF_ACTION_CHECKED_GROUP(tr("0.5x"), ActionKind::ZeroPointFiveTimes, pActionGroup);
@@ -132,7 +132,7 @@ DMenu *ActionFactory::mainContextMenu()
             });
         }
         {
-            DMenu *pParent = pMenu;
+            DMenu *pParent = pMenu_p;
             DMenu *pMenu = new DMenu(tr("Frame"));
             QActionGroup *pActionGroup = new QActionGroup(pMenu);
             DEF_ACTION_CHECKED_GROUP(tr("Default"), ActionKind::DefaultFrame, pActionGroup);
@@ -155,7 +155,7 @@ DMenu *ActionFactory::mainContextMenu()
         }
         {
             //sound pMenu
-            DMenu *pParent = pMenu;
+            DMenu *pParent = pMenu_p;
             DMenu *pMenu = new DMenu(tr("Sound"));
             m_pSound = pMenu;
             {
@@ -179,7 +179,7 @@ DMenu *ActionFactory::mainContextMenu()
         }
         {
             //sub pMenu
-            DMenu *pParent = pMenu;
+            DMenu *pParent = pMenu_p;
             DMenu *pMenu = new DMenu(tr("Subtitle"));
             QActionGroup *pActionGroup = new QActionGroup(pMenu);
             DEF_ACTION_GROUP(tr("Load"), ActionKind::LoadSubtitle, pActionGroup);
@@ -257,7 +257,7 @@ DMenu *ActionFactory::mainContextMenu()
         }
         {
             //sub pMenu
-            DMenu *parent = pMenu;
+            DMenu *parent = pMenu_p;
             DMenu *pMenu = new DMenu(tr("Screenshot"));
             QActionGroup *pActionGroup = new QActionGroup(pMenu);
             DEF_ACTION_GROUP(tr("Film Screenshot"), ActionKind::Screenshot, pActionGroup);
@@ -269,23 +269,23 @@ DMenu *ActionFactory::mainContextMenu()
                 pMenu->setEnabled(statu);
             });
         }
-        pMenu->addSeparator();
+        pMenu_p->addSeparator();
         DEF_ACTION_CHECKED(tr("Playlist"), ActionKind::TogglePlaylist);
         DEF_ACTION(tr("Film Info"), ActionKind::MovieInfo);
         DEF_ACTION(tr("Settings"), ActionKind::Settings);
-        m_pContextMenu = pMenu;
+        m_pContextMenu = pMenu_p;
     }
     return m_pContextMenu;
 }
 DMenu *ActionFactory::playlistContextMenu()
 {
     if (!m_pPlaylistMenu) {
-        DMenu *pMenu = new DMenu();
+        DMenu *pMenu_p = new DMenu();
         DEF_ACTION(tr("Delete from playlist"), ActionKind::PlaylistRemoveItem);
         DEF_ACTION(tr("Empty playlist"), ActionKind::EmptyPlaylist);
         DEF_ACTION(tr("Display in file manager"), ActionKind::PlaylistOpenItemInFM);
         DEF_ACTION(tr("Film info"), ActionKind::PlaylistItemInfo);
-        m_pPlaylistMenu = pMenu;
+        m_pPlaylistMenu = pMenu_p;
     }
     return m_pPlaylistMenu;
 }

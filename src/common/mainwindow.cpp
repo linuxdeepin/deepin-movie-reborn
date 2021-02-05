@@ -1647,6 +1647,7 @@ void MainWindow::setOpenFiles(QStringList &list)
     m_listOpenFiles = list;
 }
 
+#ifdef USE_TEST
 void MainWindow::testMprisapp()
 {
     MovieApp *pMpris = new MovieApp(this);
@@ -1664,11 +1665,7 @@ void MainWindow::testCdrom()
     sleepStateChanged(false);
     subtitleMatchVideo("/data/home/uos/Videos/subtitle/Hachiko.A.Dog's.Story.ass");
 }
-
-void MainWindow::setShowSetting(bool bFalse)
-{
-    m_bIsShowSettingDialog = bFalse;
-}
+#endif
 
 void MainWindow::mipsShowFullScreen()
 {
@@ -2635,9 +2632,7 @@ void MainWindow::startBurstShooting()
 void MainWindow::handleSettings(DSettingsDialog *dsd)
 {
 #ifndef USE_TEST
-    if (m_bIsShowSettingDialog) {
-        dsd->exec();
-    }
+    dsd->exec();
     delete dsd;
 #else
     dsd->setObjectName("DSettingsDialog");
@@ -3169,7 +3164,7 @@ void MainWindow::slotMuteChanged(bool bMute)
     }
 }
 
-void MainWindow::slotAwaacelModeChanged(const QString &sKey, const QVariant &value)
+/*void MainWindow::slotAwaacelModeChanged(const QString &sKey, const QVariant &value)
 {
     if (sKey != "base.play.hwaccel") {
         qInfo() << "Settings key error";
@@ -3177,7 +3172,7 @@ void MainWindow::slotAwaacelModeChanged(const QString &sKey, const QVariant &val
     }
 
     setHwaccelMode(value);
-}
+}*/
 
 void MainWindow::slotVolumeChanged(int nVolume)
 {
@@ -4019,7 +4014,7 @@ void MainWindow::popupAdapter(QIcon icon, QString sText)
     m_pPopupWid->show();
 }
 
-void MainWindow::setHwaccelMode(const QVariant &value)
+/*void MainWindow::setHwaccelMode(const QVariant &value)
 {
     QString sHeaccelMode;
     auto mode_opt = Settings::get().settings()->option("base.play.hwaccel");
@@ -4036,7 +4031,7 @@ void MainWindow::setHwaccelMode(const QVariant &value)
     } else if (sHeaccelMode == tr("Close")) {
         m_pEngine->changehwaccelMode(Backend::hwaccelClose);
     }
-}
+}*/
 
 QString MainWindow::lastOpenedPath()
 {
@@ -4527,7 +4522,6 @@ void MainWindow::initMember()
     m_bFirstInit = false;
     m_bLastIsTouch = false;
     m_bTouchChangeVolume = false;
-    m_bIsShowSettingDialog = true;
     m_bIsFree = true;
     m_bIsJinJia = false;
     m_bIsTouch = false;

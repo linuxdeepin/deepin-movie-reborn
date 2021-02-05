@@ -205,14 +205,13 @@ public:
 public slots:
     void changeCurrent(int);
     void delayedAppendAsync(const QList<QUrl> &);
-    void deleteThread();
+//    void deleteThread();
     void clearLoad();
 
 private slots:
 //    void onAsyncAppendFinished();
     void onAsyncFinished();
     void onAsyncUpdate(PlayItemInfo);
-    //把lambda表达式改为槽函数，modify by myk
     void slotStateChanged();
 
 

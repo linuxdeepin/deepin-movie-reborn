@@ -59,7 +59,7 @@ mvideo_av_dump_format g_mvideo_av_dump_format = nullptr;
 mvideo_avformat_close_input g_mvideo_avformat_close_input = nullptr;
 mvideo_av_dict_get g_mvideo_av_dict_get = nullptr;
 
-static bool check_wayland()
+/*static bool check_wayland()
 {
     //此处在wayland下也是直接return false
     return false;
@@ -72,7 +72,7 @@ static bool check_wayland()
 //    else {
 //        return false;
 //    }
-}
+}*/
 
 namespace dmr {
 QDebug operator<<(QDebug debug, const struct MovieInfo &mi)
@@ -1172,8 +1172,8 @@ void PlaylistModel::appendAsync(const QList<QUrl> &urls)
     //}
 }
 
-void PlaylistModel::deleteThread()
-{
+//void PlaylistModel::deleteThread()
+//{
     /// check_wayland() return false,comment out the code for now
     /*if (check_wayland()) {
         if (m_ploadThread == nullptr)
@@ -1185,7 +1185,7 @@ void PlaylistModel::deleteThread()
         m_ploadThread = nullptr;
         m_brunning = false;
     }*/
-}
+//}
 
 void PlaylistModel::delayedAppendAsync(const QList<QUrl> &urls)
 {

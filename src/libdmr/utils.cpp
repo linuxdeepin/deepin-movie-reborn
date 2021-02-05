@@ -191,10 +191,12 @@ bool check_wayland_env()
     return isWayland;
 }
 
+#ifdef USE_TEST
 void set_wayland(bool _b)
 {
     isWayland = _b;
 }
+#endif
 
 // hash the whole file takes amount of time, so just pick some areas to be hashed
 QString FastFileHash(const QFileInfo &fi)

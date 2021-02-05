@@ -235,8 +235,11 @@ public:
      */
     void loadPlayList();
     void setOpenFiles(QStringList &);
+
+#ifdef USE_TEST
     void testMprisapp();
     void testCdrom();
+#endif
     void setShowSetting(bool);
     void updateGeometry(CornerEdge edge, QPoint pos);
     void setPresenter(Presenter *);
@@ -298,7 +301,7 @@ public slots:
     /**
      * @brief 改变硬解码模式
      */
-    void slotAwaacelModeChanged(const QString &sKey, const QVariant &value);
+    //void slotAwaacelModeChanged(const QString &sKey, const QVariant &value);
     /**
      * @brief 用于测试触屏效果
      */
@@ -379,7 +382,7 @@ private:
     void setAudioVolume(int);
     void setMusicMuted(bool bMuted);
     void popupAdapter(QIcon, QString);
-    void setHwaccelMode(const QVariant &value = -1);
+    //void setHwaccelMode(const QVariant &value = -1);
 
     //Limit video to mini mode size
     void LimitWindowize();
@@ -432,7 +435,6 @@ private:
     bool m_bQuitfullscreenstopflag;
     bool m_bQuitfullscreenflag;
     bool m_bMaxfornormalflag;                       ///is the window maximized
-    //add by heyi
     QPoint m_posMouseOrigin;                        ///记录前一次鼠标移动点
     QPoint m_pressPoint;                            ///记录当前鼠标按下时的点
     bool m_bStartMini;                              ///开始进入迷你模式
@@ -475,7 +477,6 @@ private:
     bool m_bFirstInit;
     bool m_bLastIsTouch;
     bool m_bTouchChangeVolume;                       ///是否触发了触屏改变音量
-    bool m_bIsShowSettingDialog;
     QDBusInterface *m_pDBus;
     MainWindowPropertyMonitor *m_pMWPM;
     bool m_bIsFirstLoadDBus;
@@ -490,6 +491,7 @@ public:
     explicit MainWindowPropertyMonitor(MainWindow *);
     ~MainWindowPropertyMonitor();
     bool nativeEventFilter(const QByteArray &eventType, void *message, long *);
+
     MainWindow *m_pMainWindow {nullptr};
     xcb_atom_t m_atomWMState;
     QList<unsigned int> m_list;

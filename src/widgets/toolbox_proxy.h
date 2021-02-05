@@ -548,7 +548,7 @@ private:
      * @param secs 当前时间
      * @param pos 当前位置点
      */
-    void updatePreviewTime(qint64 secs, const QPoint &pos);
+    //void updatePreviewTime(qint64 secs, const QPoint &pos);
     /**
      * @brief initMember 初始化成员变量
      */

@@ -46,7 +46,7 @@ namespace qt {
 class Handle	
 {	
     struct container {	
-        container(mpv_handle *h) : mpv(h) {}	
+        explicit container(mpv_handle *h) : mpv(h) {}
         ~container() { mpv_terminate_destroy(mpv); }	
         mpv_handle *mpv;	
     };	
@@ -103,7 +103,7 @@ static inline QVariant node_to_variant(const mpv_node *node)
 }	
 
 struct node_builder {	
-    node_builder(const QVariant& v) {	
+    explicit node_builder(const QVariant& v) {
         set(&node_, v);	
     }	
     ~node_builder() {	
@@ -226,7 +226,7 @@ private:
  */	
 struct node_autofree {	
     mpv_node *ptr;	
-    node_autofree(mpv_node *a_ptr) : ptr(a_ptr) {}	
+    explicit node_autofree(mpv_node *a_ptr) : ptr(a_ptr) {}
     ~node_autofree() { mpv_free_node_contents(ptr); }	
 };	
 

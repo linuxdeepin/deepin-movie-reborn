@@ -108,7 +108,7 @@ void Utility::updateMousePointForWindowMove(quint32 WId, const QPoint &globalPos
     xcb_flush(QX11Info::connection());
 }
 
-void Utility::setFrameExtents(quint32 WId, const QMargins &margins)
+/*void Utility::setFrameExtents(quint32 WId, const QMargins &margins)
 {
     xcb_atom_t frameExtents = internAtom("_GTK_FRAME_EXTENTS");
 
@@ -125,7 +125,7 @@ void Utility::setFrameExtents(quint32 WId, const QMargins &margins)
     };
 
     xcb_change_property(QX11Info::connection(), XCB_PROP_MODE_REPLACE, WId, frameExtents, XCB_ATOM_CARDINAL, 32, 4, value);
-}
+}*/
 
 void Utility::setRectangles(quint32 WId, const QRegion &region, bool onlyInput)
 {
@@ -145,7 +145,7 @@ void Utility::setRectangles(quint32 WId, const QVector<xcb_rectangle_t> &rectang
                          XCB_CLIP_ORDERING_YX_BANDED, WId, 0, 0, rectangles.size(), rectangles.constData());
 }
 
-void Utility::setShapePath(quint32 WId, const QPainterPath &path, bool onlyInput)
+/*void Utility::setShapePath(quint32 WId, const QPainterPath &path, bool onlyInput)
 {
     if (path.isEmpty()) {
         return setRectangles(WId, QVector<xcb_rectangle_t>(), onlyInput);
@@ -167,7 +167,7 @@ void Utility::setShapePath(quint32 WId, const QPainterPath &path, bool onlyInput
     }
 
     setRectangles(WId, rectangles, onlyInput);
-}
+}*/
 
 void Utility::sendMoveResizeMessage(quint32 WId, uint32_t action, QPoint globalPos, Qt::MouseButton qbutton)
 {
@@ -232,10 +232,10 @@ QVector<xcb_rectangle_t> Utility::qregion2XcbRectangles(const QRegion &region)
     return rectangles;
 }
 
-void Utility::startWindowSystemResize(quint32 WId, CornerEdge cornerEdge, const QPoint &globalPos)
+/*void Utility::startWindowSystemResize(quint32 WId, CornerEdge cornerEdge, const QPoint &globalPos)
 {
     sendMoveResizeMessage(WId, cornerEdge, globalPos);
-}
+}*/
 
 static xcb_cursor_t CornerEdge2Xcb_cursor_t(Utility::CornerEdge ce)
 {
@@ -279,7 +279,7 @@ bool Utility::setWindowCursor(quint32 WId, Utility::CornerEdge ce)
     return result == Success;
 }
 
-QRegion Utility::regionAddMargins(const QRegion &region, const QMargins &margins, const QPoint &offset)
+/*QRegion Utility::regionAddMargins(const QRegion &region, const QMargins &margins, const QPoint &offset)
 {
     QRegion tmp;
 
@@ -288,9 +288,9 @@ QRegion Utility::regionAddMargins(const QRegion &region, const QMargins &margins
     }
 
     return tmp;
-}
+}*/
 
-QByteArray Utility::windowProperty(quint32 WId, xcb_atom_t propAtom, xcb_atom_t typeAtom, quint32 len)
+/*QByteArray Utility::windowProperty(quint32 WId, xcb_atom_t propAtom, xcb_atom_t typeAtom, quint32 len)
 {
     QByteArray data;
     xcb_connection_t* conn = QX11Info::connection();
@@ -311,9 +311,9 @@ QByteArray Utility::windowProperty(quint32 WId, xcb_atom_t propAtom, xcb_atom_t 
     }
 
     return data;
-}
+}*/
 
-QList<xcb_atom_t> Utility::windowNetWMState(quint32 WId)
+/*QList<xcb_atom_t> Utility::windowNetWMState(quint32 WId)
 {
     QList<xcb_atom_t> res;
 
@@ -339,16 +339,16 @@ QList<xcb_atom_t> Utility::windowNetWMState(quint32 WId)
     }
 
     return res;
-}
+}*/
 
-void Utility::setWindowProperty(quint32 WId, xcb_atom_t propAtom, xcb_atom_t typeAtom, const void *data, quint32 len, uint8_t format)
+/*void Utility::setWindowProperty(quint32 WId, xcb_atom_t propAtom, xcb_atom_t typeAtom, const void *data, quint32 len, uint8_t format)
 {
     xcb_connection_t* conn = QX11Info::connection();
     xcb_change_property(conn, XCB_PROP_MODE_REPLACE, WId, propAtom, typeAtom, format, len, data);
     xcb_flush(conn);
-}
+}*/
 
-void Utility::setStayOnTop(const QWidget *widget, bool on)
+/*void Utility::setStayOnTop(const QWidget *widget, bool on)
 {
     Q_ASSERT(widget);
 
@@ -381,5 +381,5 @@ void Utility::setStayOnTop(const QWidget *widget, bool on)
                SubstructureRedirectMask | SubstructureNotifyMask,
                &xev);
     XFlush(display);
-}
+}*/
 

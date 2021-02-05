@@ -1382,13 +1382,13 @@ void ToolboxProxy::updateThumbnail()
 
 }
 
-void ToolboxProxy::updatePreviewTime(qint64 secs, const QPoint &pos)
+/*void ToolboxProxy::updatePreviewTime(qint64 secs, const QPoint &pos)
 {
     QTime time(0, 0, 0);
     QString strTime = time.addSecs(static_cast<int>(secs)).toString("hh:mm:ss");
     m_pPreviewTime->setTime(strTime);
     m_pPreviewTime->show(pos.x(), pos.y() + 14);
-}
+}*/
 
 void ToolboxProxy::initMember()
 {
@@ -1506,7 +1506,7 @@ void ToolboxProxy::updateHoverPreview(const QUrl &url, int secs)
 
     int nPosition = 0;
     qint64 nDuration = m_pEngine->duration();
-    QPoint showPoint = {0, 0};
+    QPoint showPoint;
 
     if (m_pProgBar->isVisible()) {
         nPosition = (secs * m_pProgBar->slider()->width()) / nDuration;

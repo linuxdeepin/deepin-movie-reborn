@@ -513,22 +513,13 @@ protected:
         QRectF bgRect;
         bgRect.setSize(size());
         const DPalette pal = QGuiApplication::palette();//this->palette();
-//            DPalette pa = DApplicationHelper::instance()->palette(this);
-//            pa.setBrush(DPalette::WindowText, pa.color(DPalette::TextWarning));
         DStyleHelper styleHelper;
         QStyleOption option;
         if (!(_index->text().toInt() % 2)) {
-
-//            QColor fillColor = styleHelper.getColor(static_cast<const QStyleOption *>(&option), pa, DPalette::ItemBackground);
-//            painter.setBrush(QBrush(fillColor));
-//            painter->fillPath(path, fillColor);
-//            QColor bgColor(0,0,0,8);
             QColor bgColor  = pal.color(DPalette::AlternateBase);
-
             QPainterPath pp;
             pp.addRoundedRect(bgRect, 8, 8);
             painter.fillPath(pp, bgColor);
-
         }
         if (_hovered) {
             DPalette pa = DApplicationHelper::instance()->palette(this);
@@ -543,17 +534,14 @@ protected:
             painter.fillPath(pp, bgColor);
 
         }
-
-        QGraphicsOpacityEffect *opacityEffect = new QGraphicsOpacityEffect;
-        _time->setGraphicsEffect(opacityEffect);
-        QGraphicsOpacityEffect *opacityEffect_1 = new QGraphicsOpacityEffect;
-        _index->setGraphicsEffect(opacityEffect_1);
-
         if (state() == ItemState::Playing) {
+            QGraphicsOpacityEffect *opacityEffect = new QGraphicsOpacityEffect;
+            QGraphicsOpacityEffect *opacityEffect_1 = new QGraphicsOpacityEffect;
             DPalette pa = DApplicationHelper::instance()->palette(this);
+
+            _time->setGraphicsEffect(opacityEffect);
+            _index->setGraphicsEffect(opacityEffect_1);
             pa.setBrush(DPalette::Text, pa.color(DPalette::Highlight));
-//            setPalette(pa);
-//            _name->setPalette(pa);
             if (!m_bIsSelect) {
                 _name->setForegroundRole(DPalette::Highlight);
                 _index->setForegroundRole(DPalette::Highlight);
@@ -563,27 +551,21 @@ protected:
                 _index->setForegroundRole(DPalette::BrightText);
                 _time->setForegroundRole(DPalette::BrightText);
             }
-            opacityEffect_1->setOpacity(1.0);
             opacityEffect->setOpacity(1.0);
-//            _name->setFontWeight(QFont::Weight::Medium);
             DFontSizeManager::instance()->bind(_name, DFontSizeManager::T6, QFont::Medium);
             DFontSizeManager::instance()->bind(_index, DFontSizeManager::T6, QFont::Medium);
             DFontSizeManager::instance()->bind(_time, DFontSizeManager::T6, QFont::Medium);
-//            QColor bgColor  = pal.color(DPalette::ToolTipBase);
-
         } else {
-//            DPalette pa_name = DApplicationHelper::instance()->palette(_name);
-//            pa_name.setBrush(DPalette::Text, pa_name.color(DPalette::ToolTipText));
-//            _name->setPalette(pa_name);
-//            _name->setFontWeight(QFont::Weight::Normal);
+            QGraphicsOpacityEffect *opacityEffect = new QGraphicsOpacityEffect;
+            QGraphicsOpacityEffect *opacityEffect_1 = new QGraphicsOpacityEffect;
+
             _name->setForegroundRole(DPalette::ToolTipText);
             _index->setForegroundRole(DPalette::BrightText);
             _time->setForegroundRole(DPalette::BrightText);
-            QGraphicsOpacityEffect *opacityEffect = new QGraphicsOpacityEffect;
+
             _time->setGraphicsEffect(opacityEffect);
             opacityEffect->setOpacity(0.5);
 
-            QGraphicsOpacityEffect *opacityEffect_1 = new QGraphicsOpacityEffect;
             _index->setGraphicsEffect(opacityEffect_1);
             if (m_bIsSelect) {
                 opacityEffect_1->setOpacity(1.0);
@@ -608,10 +590,6 @@ protected:
             _closeBtn->show();
             _closeBtn->raise();
             QColor bgColor = Dtk::Gui::DGuiApplicationHelper::instance()->applicationPalette().highlight().color();
-//            if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType() ) {
-//                bgColor = QColor(0, 0, 0, 51);
-//            }
-
             QPainterPath pp;
             pp.addRoundedRect(bgRect, 8, 8);
             painter.fillPath(pp, bgColor);
