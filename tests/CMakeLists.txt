@@ -24,20 +24,19 @@ project(deepin-movie-test)
 # 查找Qt相关的库链接
 find_package(Qt5 REQUIRED ${QtModule})
 
+
 # 包含源码文件夹
 include_directories(${CMAKE_INCLUDE_CURRENT_DIR})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
-include_directories(../src)
-include_directories(../src/common)
-include_directories(../src/widgets)
-include_directories(../src/libdmr)
-include_directories(../src/vendor)
-include_directories(../src/vendor/mpris-qt)
-include_directories(../src/vendor/dbusextended-qt)
+include_directories(./../src)
+include_directories(./../src/common)
+include_directories(./../src/widgets)
+include_directories(./../src/libdmr)
+include_directories(./../src/vendor)
 #include_directories(../src/widgets/dialog)
-include_directories(../src/backends)
-include_directories(../src/backends/mpv)
+include_directories(./../src/backends)
+include_directories(./../src/backends/mpv)
 
 #add_subdirectory(googletest)
 
@@ -47,8 +46,6 @@ FILE (GLOB allSource
     ../src/widgets/*.cpp
     ../src/libdmr/*.cpp
     ../src/vendor/*.cpp
-    ../src/vendor/mpris-qt/*.cpp
-    ../src/vendor/dbusextended-qt/*.cpp
     ../src/backends/mpv/*.cpp
     ../src/backends/*.cpp
     )
@@ -127,7 +124,7 @@ add_custom_command(TARGET test
 
     COMMAND echo " =================== do filter begin ==================== "
     COMMAND lcov --remove ./build-ut/${PROJECT_NAME}_Coverage.info 'CMakeFiles/${PROJECT_NAME}.dir/${PROJECT_NAME}_autogen/*/*'
-    '${PROJECT_NAME}_autogen/*/*/*.cpp' 'googletest/*/*' '*/usr/include/*' '*/tests/*' '/usr/local/*' '*/src/vendor/dbusextended-qt/*' '*/src/common/filter.*'
+    '${PROJECT_NAME}_autogen/*/*/*.cpp' 'googletest/*/*' '*/usr/include/*' '*/tests/*' '/usr/local/*' '*/src/common/filter.*'
     '*/src/common/settings_translation.cpp' '*/src/common/event_monitor.cpp' '*/src/widgets/videoboxbutton.cpp' '*/src/common/event_relayer.cpp'
     -o ./build-ut/${PROJECT_NAME}_Coverage_fileter.info
     COMMAND echo " =================== do filter end ==================== "
@@ -141,16 +138,16 @@ add_dependencies(test ${PROJECT_NAME})
 #------------------------------ 添加第三方库  DTK -------------------------------
 # 使用第三方库需要用到的一个包
 find_package(PkgConfig REQUIRED)
-set(TARGET_LIBS X11 Xext Xtst PkgConfig::Xcb Qt5::Widgets Qt5::X11Extras Qt5::Network
-    Qt5::Concurrent Qt5::DBus Qt5::Sql PkgConfig::Dtk
-    PkgConfig::Mpv
-    PkgConfig::AV pthread GL)
+#set(TARGET_LIBS X11 Xext Xtst PkgConfig::Xcb Qt5::Widgets Qt5::X11Extras Qt5::Network
+#    Qt5::Concurrent Qt5::DBus Qt5::Sql PkgConfig::Dtk
+#    PkgConfig::Mpv PkgConfig::MPRIS PkgConfig::DBusextended
+#    PkgConfig::AV pthread GL)
 # 检查第三方库(这里检查了名字为dtkwidget的库和名字为dtkgui的库)，然后取名3rd_lib
 pkg_check_modules(3rd_lib REQUIRED
         dtkwidget dtkgui libffmpegthumbnailer
         libpulse libpulse-simple openssl dvdnav gsettings-qt gtest mpv x11 xext xtst xcb gl
         libavformat libavcodec libavutil
-        xcb-aux xcb-proto xcb-ewmh xcb-shape
+        xcb-aux xcb-proto xcb-ewmh xcb-shape mpris-qt5 dbusextended-qt5
         )
 # 添加第三方库的所有文件夹路径到工程中来(注意 *_INCLUDE_DIRS)
 target_include_directories(${PROJECT_NAME} PUBLIC ${3rd_lib_INCLUDE_DIRS} )

@@ -19,6 +19,8 @@ find_package(Qt5Sql)
 pkg_check_modules(Dtk REQUIRED IMPORTED_TARGET dtkwidget)
 pkg_check_modules(Dtk REQUIRED IMPORTED_TARGET dtkcore)
 pkg_check_modules(Xcb REQUIRED IMPORTED_TARGET xcb xcb-shape)
+pkg_check_modules(MPRIS REQUIRED IMPORTED_TARGET mpris-qt5)
+pkg_check_modules(DBusextended REQUIRED IMPORTED_TARGET dbusextended-qt5)
 # IMPORTED_TARGET failed to work for some of libs under flatpak env
 pkg_check_modules(Other REQUIRED  gsettings-qt)
 
@@ -29,13 +31,8 @@ if (${Dtk_VERSION} LESS 2.0.6.1)
 endif()
 
 
-file(GLOB_RECURSE SRCS LIST_DIRECTORIES false common/*.cpp widgets/*.cpp libdmr/*.cpp vendor/*.cpp vendor/mpris-qt/*.cpp vendor/dbusextended-qt/*.cpp)
+file(GLOB_RECURSE SRCS LIST_DIRECTORIES false common/*.cpp widgets/*.cpp libdmr/*.cpp vendor/*.cpp)
 list(APPEND SRCS main.cpp)
-
-include_directories(
-        ${CMAKE_CURRENT_SOURCE_DIR}/vendor/mpris-qt
-        ${CMAKE_CURRENT_SOURCE_DIR}/vendor/dbusextended-qt
-)
 
 # mpv backend
 file(GLOB_RECURSE MPV_SRCS LIST_DIRECTORIES false backends/mpv/*.cpp)
@@ -69,7 +66,7 @@ add_executable(${CMD_NAME} ${SRCS} ${RCS} ${QM})
 target_include_directories(${CMD_NAME} PUBLIC ${PROJECT_INCLUDE})
 
 set(TARGET_LIBS X11 Xtst PkgConfig::Xcb Qt5::Widgets Qt5::X11Extras Qt5::Network
-    Qt5::DBus Qt5::Sql PkgConfig::Dtk GL)
+    Qt5::DBus Qt5::Sql PkgConfig::Dtk PkgConfig::MPRIS PkgConfig::DBusextended GL)
 
 target_link_libraries(${CMD_NAME} ${TARGET_LIBS} ${Other_LIBRARIES})
 

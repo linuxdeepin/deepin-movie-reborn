@@ -2,7 +2,6 @@
 #define MOVIEAPP_H
 
 #include <QObject>
-#include <Mpris>
 #include <MprisPlayer>
 #include "mainwindow.h"
 #include "presenter.h"
