@@ -154,10 +154,6 @@ signals:
      * @brief 播放速度菜单是否可用信号
      */
     void playSpeedMenuEnable(bool);
-    /**
-     * @brief 主窗口，负责显示和交互
-     */
-    void playlistchanged();
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();

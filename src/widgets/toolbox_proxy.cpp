@@ -1676,6 +1676,8 @@ void ToolboxProxy::slotPlayListStateChange()
     }
 
     if (m_pPlaylist->state() == PlaylistWidget::State::Opened) {
+        m_pListBtn->setChecked(true);
+        m_pListBtn->setEnabled(false);
 #ifdef __x86_64__
         QRect rcBegin = this->geometry();
         QRect rcEnd = rcBegin;
@@ -1694,9 +1696,9 @@ void ToolboxProxy::slotPlayListStateChange()
         rcEnd.setY(rcBegin.y() - TOOLBOX_SPACE_HEIGHT - 7);
         setGeometry(rcEnd);
 #endif
-        m_pListBtn->setChecked(true);
     } else {
         m_pListBtn->setChecked(false);
+        m_pListBtn->setEnabled(false);
 #ifdef __x86_64__
         m_bAnimationFinash = false;
 
@@ -1744,6 +1746,7 @@ void ToolboxProxy::slotUpdateThumbnailTimeOut()
 
 void ToolboxProxy::slotProAnimationFinished()
 {
+    m_pListBtn->setEnabled(true);
     QObject *pProAnimation = sender();
     if (pProAnimation == m_pPaOpen) {
         m_pPaOpen->deleteLater();

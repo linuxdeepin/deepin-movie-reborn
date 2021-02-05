@@ -142,11 +142,10 @@ static QString ElideText(const QString &sText, const QSize &size,
 
     while (line.isValid()) {
         nHeight += nLineHeight;
-
+      
         if (nHeight + nLineHeight >= size.height()) {
             sElideText += fontMetrics.elidedText(sText.mid(line.textStart() + line.textLength() + 1),
                                                  mode, nLastLineWidth);
-
             break;
         }
 
@@ -983,7 +982,6 @@ MainWindow::MainWindow(QWidget *parent)
     defaultplaymodeinit();
 
     connect(&Settings::get(), &Settings::defaultplaymodechanged, this, &MainWindow::slotdefaultplaymodechanged);
-    connect(this, &MainWindow::playlistchanged, m_pToolbox, &ToolboxProxy::updateplaylisticon);
     connect(m_pEngine, &PlayerEngine::onlineStateChanged, this, &MainWindow::checkOnlineState);
     connect(&OnlineSubtitle::get(), &OnlineSubtitle::onlineSubtitleStateChanged, this, &MainWindow::checkOnlineSubtitle);
     connect(m_pEngine, &PlayerEngine::mpvErrorLogsChanged, this, &MainWindow::checkErrorMpvLogsChanged);
@@ -1196,7 +1194,6 @@ void MainWindow::onWindowStateChanged()
     if (isMinimized()) {
         if (m_pPlaylist->state() == PlaylistWidget::Opened) {
             m_pPlaylist->togglePopup();
-            emit playlistchanged();
         }
     }
     if (isMaximized()) {
@@ -1979,7 +1976,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
             reflectActionToUI(actionKind);
         }
         this->resumeToolsWindow();
-        emit playlistchanged();
+
         break;
     }
 
