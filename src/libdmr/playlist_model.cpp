@@ -839,12 +839,13 @@ void PlaylistModel::tryPlayCurrent(bool next)
                 }
             }
             _hasNormalVideo = false;
-            for (auto info : _infos) {
-                if ((info.valid && info.mi.duration > 1 && !info.thumbnail.isNull()) || !pif.url.isLocalFile()) {
-                    _hasNormalVideo = true;
-                    break;
-                }
+            bool result = std::any_of(_infos.begin(), _infos.end(), [ = ](const PlayItemInfo & info) {
+                return (info.valid && info.mi.duration > 1 && !info.thumbnail.isNull()) || !pif.url.isLocalFile();
+            });
+            if (result) {
+                _hasNormalVideo = true;
             }
+
             if (_hasNormalVideo) {
                 _engine->requestPlay(_current);
                 emit currentChanged();
@@ -865,12 +866,14 @@ void PlaylistModel::tryPlayCurrent(bool next)
                 _last = count() - 1;
             }
         }
-        for (auto info : _infos) {
-            if (info.valid) {
-                canPlay = true;
-                break;
-            }
+
+        bool result = std::any_of(_infos.begin(), _infos.end(), [](const PlayItemInfo & info) {
+            return info.valid;
+        });
+        if (result) {
+            canPlay = true;
         }
+
         if (canPlay) {
             emit currentChanged();
             if (next) playNext(false);
@@ -888,7 +891,7 @@ void PlaylistModel::playNext(bool fromUser)
 {
     if (count() == 0) return;
     qInfo() << "playmode" << _playMode << "fromUser" << fromUser
-             << "last" << _last << "current" << _current;
+            << "last" << _last << "current" << _current;
 
     _userRequestingItem = fromUser;
 
@@ -982,7 +985,7 @@ void PlaylistModel::playPrev(bool fromUser)
 {
     if (count() == 0) return;
     qInfo() << "playmode" << _playMode << "fromUser" << fromUser
-             << "last" << _last << "current" << _current;
+            << "last" << _last << "current" << _current;
 
     _userRequestingItem = fromUser;
 
@@ -1148,7 +1151,7 @@ void PlaylistModel::collectionJob(const QList<QUrl> &urls, QList<QUrl> &inputUrl
     }
 
     qInfo() << "input size" << urls.size() << "output size" << _urlsInJob.size()
-             << "_pendingJob: " << _pendingJob.size();
+            << "_pendingJob: " << _pendingJob.size();
 }
 
 void PlaylistModel::appendAsync(const QList<QUrl> &urls)
@@ -1174,17 +1177,17 @@ void PlaylistModel::appendAsync(const QList<QUrl> &urls)
 
 //void PlaylistModel::deleteThread()
 //{
-    /// check_wayland() return false,comment out the code for now
-    /*if (check_wayland()) {
-        if (m_ploadThread == nullptr)
-            return ;
-        if (m_ploadThread->isRunning()) {
-            m_ploadThread->wait();
-        }
-        delete m_ploadThread;
-        m_ploadThread = nullptr;
-        m_brunning = false;
-    }*/
+/// check_wayland() return false,comment out the code for now
+/*if (check_wayland()) {
+    if (m_ploadThread == nullptr)
+        return ;
+    if (m_ploadThread->isRunning()) {
+        m_ploadThread->wait();
+    }
+    delete m_ploadThread;
+    m_ploadThread = nullptr;
+    m_brunning = false;
+}*/
 //}
 
 void PlaylistModel::delayedAppendAsync(const QList<QUrl> &urls)
@@ -1527,16 +1530,16 @@ bool PlaylistModel::getMusicPix(const QFileInfo &fi, QPixmap &rImg)
     QString path = "/usr/lib/i386-linux-gnu/";
 #endif
     QLibrary library(libPath("libavformat.so"));
-    mvideo_avformat_open_input g_mvideo_avformat_open_input = (mvideo_avformat_open_input) library.resolve("avformat_open_input");
-    mvideo_avformat_find_stream_info g_mvideo_avformat_find_stream_info = (mvideo_avformat_find_stream_info) library.resolve("avformat_find_stream_info");
+    mvideo_avformat_open_input g_mvideo_avformat_open_input_temp = (mvideo_avformat_open_input) library.resolve("avformat_open_input");
+    mvideo_avformat_find_stream_info g_mvideo_avformat_find_stream_info_temp = (mvideo_avformat_find_stream_info) library.resolve("avformat_find_stream_info");
 
-    auto ret = g_mvideo_avformat_open_input(&av_ctx, fi.filePath().toUtf8().constData(), nullptr, nullptr);
+    auto ret = g_mvideo_avformat_open_input_temp(&av_ctx, fi.filePath().toUtf8().constData(), nullptr, nullptr);
     if (ret < 0) {
         qWarning() << "avformat: could not open input";
         return false;
     }
 
-    if (g_mvideo_avformat_find_stream_info(av_ctx, nullptr) < 0) {
+    if (g_mvideo_avformat_find_stream_info_temp(av_ctx, nullptr) < 0) {
         qWarning() << "av_find_stream_info failed";
         return false;
     }

@@ -1,4 +1,4 @@
-/* 
+/*
  * (c) 2017, Deepin Technology Co., Ltd. <support@deepin.org>
  *
  * This program is free software; you can redistribute it and/or
@@ -28,7 +28,7 @@
  * files in the program, then also delete it here.
  */
 #ifndef _DMR_TIP_H
-#define _DMR_TIP_H 
+#define _DMR_TIP_H
 #include <QFrame>
 #include <QGuiApplication>
 #include <DPalette>
@@ -37,8 +37,7 @@
 #include <QApplication>
 #include <QDesktopWidget>
 
-namespace dmr
-{
+namespace dmr {
 class TipPrivate;
 class Tip : public QFrame
 {
@@ -52,6 +51,7 @@ public:
                  QWidget *parent = 0);
     ~Tip();
 
+    //单元测试在使用
     void pop(QPoint center);
 
     int radius() const;
@@ -66,7 +66,7 @@ public slots:
 
 protected:
     virtual void paintEvent(QPaintEvent *) Q_DECL_OVERRIDE;
-    void enterEvent(QEvent* e) override;
+    void enterEvent(QEvent *e) override;
     virtual void resizeEvent(QResizeEvent *ev) Q_DECL_OVERRIDE;
 
 public:

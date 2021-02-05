@@ -172,16 +172,16 @@ bool CompareNames(const QString &fileName1, const QString &fileName2)
     return fileName1.localeAwareCompare(fileName2) < 0;
 }
 
-bool first_check_wayland_env(){
+bool first_check_wayland_env()
+{
     auto e = QProcessEnvironment::systemEnvironment();
     QString XDG_SESSION_TYPE = e.value(QStringLiteral("XDG_SESSION_TYPE"));
     QString WAYLAND_DISPLAY = e.value(QStringLiteral("WAYLAND_DISPLAY"));
 
-    if (XDG_SESSION_TYPE == QLatin1String("wayland") || WAYLAND_DISPLAY.contains(QLatin1String("wayland"), Qt::CaseInsensitive)){
+    if (XDG_SESSION_TYPE == QLatin1String("wayland") || WAYLAND_DISPLAY.contains(QLatin1String("wayland"), Qt::CaseInsensitive)) {
         isWayland = true;
         return true;
-    }
-    else {
+    } else {
         return false;
     }
 }
@@ -381,15 +381,14 @@ void MoveToCenter(QWidget *w)
 QString Time2str(qint64 seconds)
 {
     QTime d(0, 0, 0);
-    if(seconds < DAYSECONDS){
+    if (seconds < DAYSECONDS) {
         d = d.addSecs(static_cast<int>(seconds));
         return d.toString("hh:mm:ss");
-    }
-    else {
+    } else {
         d = d.addSecs(static_cast<int>(seconds));
-        int add = static_cast<int>(seconds / DAYSECONDS)*24;
+        int add = static_cast<int>(seconds / DAYSECONDS) * 24;
         QString dayOut =  d.toString("hh:mm:ss");
-        dayOut.replace(0,2,QString::number(add + dayOut.left(2).toInt()));
+        dayOut.replace(0, 2, QString::number(add + dayOut.left(2).toInt()));
         return dayOut;
     }
 }
@@ -492,6 +491,7 @@ QString audioIndex2str(int index)
     return codecMap[index];
 }*/
 
+//cppcheck 单元测试在用
 bool ValidateScreenshotPath(const QString &path)
 {
     auto name = path.trimmed();

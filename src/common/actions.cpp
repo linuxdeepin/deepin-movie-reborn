@@ -160,20 +160,20 @@ DMenu *ActionFactory::mainContextMenu()
             m_pSound = pMenu;
             {
                 DMenu *pParent_channel = pMenu;
-                DMenu *pMenu = new DMenu(tr("Channel"));
-                m_pSoundMenu = pMenu;
-                QActionGroup *pActionGroup = new QActionGroup(pMenu);
+                DMenu *pMenutemp = new DMenu(tr("Channel"));
+                m_pSoundMenu = pMenutemp;
+                QActionGroup *pActionGroup = new QActionGroup(pMenutemp);
                 DEF_ACTION_CHECKED_GROUP(tr("Stereo"), ActionKind::Stereo, pActionGroup);
                 DEF_ACTION_CHECKED_GROUP(tr("Left channel"), ActionKind::LeftChannel, pActionGroup);
                 DEF_ACTION_CHECKED_GROUP(tr("Right channel"), ActionKind::RightChannel, pActionGroup);
-                pParent_channel->addMenu(pMenu);
+                pParent_channel->addMenu(pMenutemp);
             }
             {
                 DMenu *parent_track = pMenu;
-                DMenu *pMenu = new DMenu(tr("Track"));
-                m_pTracksMenu = pMenu;
+                DMenu *pMenutemp = new DMenu(tr("Track"));
+                m_pTracksMenu = pMenutemp;
                 //DEF_ACTION(tr("Select Track"), ActionKind::SelectTrack);
-                parent_track->addMenu(pMenu);
+                parent_track->addMenu(pMenutemp);
             }
             pParent->addMenu(pMenu);
         }
@@ -187,15 +187,15 @@ DMenu *ActionFactory::mainContextMenu()
             //DEF_ACTION(tr("Select"), ActionKind::SelectSubtitle);
             {
                 DMenu *pParent_select = pMenu;
-                DMenu *pMenu = new DMenu(tr("Select"));
-                m_pSubtitleMenu = pMenu;
-                pParent_select->addMenu(pMenu);
+                DMenu *pMenutemp = new DMenu(tr("Select"));
+                m_pSubtitleMenu = pMenutemp;
+                pParent_select->addMenu(pMenutemp);
             }
             DEF_ACTION_CHECKED_GROUP(tr("Hide"), ActionKind::HideSubtitle, pActionGroup);
             {
                 DMenu *parent_encoding = pMenu;
-                DMenu *pMenu = new DMenu(tr("Encodings"));
-                QActionGroup *pGroup_encoding = new QActionGroup(pMenu);
+                DMenu *pMenutemp = new DMenu(tr("Encodings"));
+                QActionGroup *pGroup_encoding = new QActionGroup(pMenutemp);
                 //title <-> codepage
                 static QVector<QPair<QString, QString>> list = {
                     {"Auto", "auto"},
@@ -259,6 +259,7 @@ DMenu *ActionFactory::mainContextMenu()
             //sub pMenu
             DMenu *parent = pMenu_p;
             DMenu *pMenu = new DMenu(tr("Screenshot"));
+            //cppcheck 误报
             QActionGroup *pActionGroup = new QActionGroup(pMenu);
             DEF_ACTION_GROUP(tr("Film Screenshot"), ActionKind::Screenshot, pActionGroup);
             DEF_ACTION_GROUP(tr("Burst Shooting"), ActionKind::BurstScreenshot, pActionGroup);

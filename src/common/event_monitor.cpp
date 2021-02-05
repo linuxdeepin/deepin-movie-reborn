@@ -37,6 +37,7 @@
 #include <X11/extensions/record.h>
 #undef Bool
 
+//cppcheck 修改
 void callback(XPointer ptr, XRecordInterceptData *pData)
 {
     (reinterpret_cast<dmr::EventMonitor *>(ptr))->handleRecordEvent(pData);
@@ -49,6 +50,7 @@ EventMonitor::EventMonitor(QObject *parent) : QThread(parent)
     m_bIsPress = false;
 }
 
+//cppcheck 误报
 void EventMonitor::run()
 {
     Display *display = XOpenDisplay(nullptr);

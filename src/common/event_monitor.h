@@ -86,6 +86,7 @@ signals:
      */
     void buttonedRelease(int nPosX, int nPosY);
 
+//cppcheck 误报
 protected:
     void run();
 

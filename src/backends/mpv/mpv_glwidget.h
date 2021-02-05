@@ -73,6 +73,9 @@ public:
     void setHandle(MpvHandle h);
 
 protected:
+    /**
+     * @brief opengl初始化 cppcheck误报
+     */
     void initializeGL() override;
     void resizeGL(int nWidth, int nHeight) override;
     void paintGL() override;

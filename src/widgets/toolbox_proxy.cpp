@@ -771,6 +771,12 @@ viewProgBarLoad::viewProgBarLoad(PlayerEngine *engine, DMRSlider *progBar, Toolb
     initThumb();
 }
 
+viewProgBarLoad::~viewProgBarLoad()
+{
+    delete [] m_seekTime;
+    m_seekTime = nullptr;
+}
+
 void viewProgBarLoad::setListPixmapMutex(QMutex *pMutex)
 {
     m_pListPixmapMutex = pMutex;

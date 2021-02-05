@@ -1,4 +1,4 @@
-/* 
+/*
  * (c) 2017, Deepin Technology Co., Ltd. <support@deepin.org>
  *
  * This program is free software; you can redistribute it and/or
@@ -36,9 +36,9 @@
 
 namespace dmr {
 using namespace Dtk::Core;
-static ShortcutManager* _shortcutManager = nullptr;
+static ShortcutManager *_shortcutManager = nullptr;
 
-ShortcutManager& ShortcutManager::get() 
+ShortcutManager &ShortcutManager::get()
 {
     if (!_shortcutManager) {
         _shortcutManager = new ShortcutManager();
@@ -49,50 +49,48 @@ ShortcutManager::~ShortcutManager()
 {
 }
 ShortcutManager::ShortcutManager()
-    : QObject(nullptr)
+    : QObject(nullptr), _keyToAction({
+    {"pause_play", ActionFactory::ActionKind::TogglePause},
+    {"seek_forward", ActionFactory::ActionKind::SeekForward},
+    {"seek_forward_large", ActionFactory::ActionKind::SeekForwardLarge},
+    {"seek_backward", ActionFactory::ActionKind::SeekBackward},
+    {"seek_backward_large", ActionFactory::ActionKind::SeekBackwardLarge},
+    {"fullscreen", ActionFactory::ActionKind::ToggleFullscreen},
+    {"exitfullscreen", ActionFactory::ActionKind::QuitFullscreen},
+    {"playlist", ActionFactory::ActionKind::TogglePlaylist},
+    {"accel", ActionFactory::ActionKind::AccelPlayback},
+    {"decel", ActionFactory::ActionKind::DecelPlayback},
+    {"reset", ActionFactory::ActionKind::ResetPlayback},
+    {"delete_from_playlist", ActionFactory::ActionKind::PlaylistRemoveItem},
+    {"movie_info", ActionFactory::ActionKind::MovieInfo},
+
+    {"mini", ActionFactory::ActionKind::ToggleMiniMode},
+    {"vol_up", ActionFactory::ActionKind::VolumeUp},
+    {"vol_down", ActionFactory::ActionKind::VolumeDown},
+    {"mute", ActionFactory::ActionKind::ToggleMute},
+
+    {"open_file", ActionFactory::ActionKind::OpenFileList},
+    {"playlist_next", ActionFactory::ActionKind::GotoPlaylistNext},
+    {"playlist_prev", ActionFactory::ActionKind::GotoPlaylistPrev},
+
+    {"sub_forward", ActionFactory::ActionKind::SubForward},
+    {"sub_backward", ActionFactory::ActionKind::SubDelay},
+
+    {"screenshot", ActionFactory::ActionKind::Screenshot},
+    {"burst_screenshot", ActionFactory::ActionKind::BurstScreenshot},
+
+    {"next_frame", ActionFactory::ActionKind::NextFrame},
+    {"previous_frame", ActionFactory::ActionKind::PreviousFrame},
+})
 {
-    _keyToAction = {
-        {"pause_play", ActionFactory::ActionKind::TogglePause},
-        {"seek_forward", ActionFactory::ActionKind::SeekForward},
-        {"seek_forward_large", ActionFactory::ActionKind::SeekForwardLarge},
-        {"seek_backward", ActionFactory::ActionKind::SeekBackward},
-        {"seek_backward_large", ActionFactory::ActionKind::SeekBackwardLarge},
-        {"fullscreen", ActionFactory::ActionKind::ToggleFullscreen},
-        {"exitfullscreen", ActionFactory::ActionKind::QuitFullscreen},
-        {"playlist", ActionFactory::ActionKind::TogglePlaylist},
-        {"accel", ActionFactory::ActionKind::AccelPlayback},
-        {"decel", ActionFactory::ActionKind::DecelPlayback},
-        {"reset", ActionFactory::ActionKind::ResetPlayback},
-        {"delete_from_playlist", ActionFactory::ActionKind::PlaylistRemoveItem},
-        {"movie_info", ActionFactory::ActionKind::MovieInfo},
-
-        {"mini", ActionFactory::ActionKind::ToggleMiniMode},
-        {"vol_up", ActionFactory::ActionKind::VolumeUp},
-        {"vol_down", ActionFactory::ActionKind::VolumeDown},
-        {"mute", ActionFactory::ActionKind::ToggleMute},
-
-        {"open_file", ActionFactory::ActionKind::OpenFileList},
-        {"playlist_next", ActionFactory::ActionKind::GotoPlaylistNext},
-        {"playlist_prev", ActionFactory::ActionKind::GotoPlaylistPrev},
-
-        {"sub_forward", ActionFactory::ActionKind::SubForward},
-        {"sub_backward", ActionFactory::ActionKind::SubDelay},
-
-        {"screenshot", ActionFactory::ActionKind::Screenshot},
-        {"burst_screenshot", ActionFactory::ActionKind::BurstScreenshot},
-
-        {"next_frame", ActionFactory::ActionKind::NextFrame},
-        {"previous_frame", ActionFactory::ActionKind::PreviousFrame},
-    };
-
-    connect(&Settings::get(), &Settings::shortcutsChanged, [=](QString sk, const QVariant& val) {
+    connect(&Settings::get(), &Settings::shortcutsChanged, [ = ](QString sk, const QVariant & val) {
         if (sk.endsWith(".enable")) {
             auto grp_key = sk.left(sk.lastIndexOf('.'));
             qInfo() << "update group binding" << grp_key;
 
             QPointer<DSettingsGroup> shortcuts = Settings::get().shortcuts();
             auto grps = shortcuts->childGroups();
-            auto grp_ptr = std::find_if(grps.begin(), grps.end(), [=](GroupPtr grp) {
+            auto grp_ptr = std::find_if(grps.begin(), grps.end(), [ = ](GroupPtr grp) {
                 return grp->key() == grp_key;
             });
 
@@ -123,7 +121,7 @@ ShortcutManager::ShortcutManager()
     });
 }
 
-void ShortcutManager::buildBindings() 
+void ShortcutManager::buildBindings()
 {
     buildBindingsFromSettings();
     emit bindingsChanged();
@@ -132,7 +130,7 @@ void ShortcutManager::buildBindings()
 void ShortcutManager::toggleGroupShortcuts(GroupPtr grp, bool on)
 {
     auto sub = grp->childOptions();
-    std::for_each(sub.begin(), sub.end(), [=](OptionPtr opt) {
+    std::for_each(sub.begin(), sub.end(), [ = ](OptionPtr opt) {
         if (opt->viewType() != "shortcut") return;
 
         QString sk = opt->key();
@@ -169,7 +167,7 @@ void ShortcutManager::buildBindingsFromSettings()
     QPointer<DSettingsGroup> shortcuts = Settings::get().shortcuts();
 
     auto subgroups = shortcuts->childGroups();
-    std::for_each(subgroups.begin(), subgroups.end(), [=](GroupPtr grp) {
+    std::for_each(subgroups.begin(), subgroups.end(), [ = ](GroupPtr grp) {
         auto enabled = Settings::get().settings()->option(grp->key() + ".enable");
         qInfo() << grp->name() << enabled->value();
         Q_ASSERT(enabled && enabled->viewType() == "checkbox");
@@ -230,9 +228,9 @@ QString ShortcutManager::toJson()
     return doc.toJson().data();
 }
 
-vector<QAction*> ShortcutManager::actionsForBindings()
+vector<QAction *> ShortcutManager::actionsForBindings()
 {
-    vector<QAction*> actions;
+    vector<QAction *> actions;
     auto p = _map.constBegin();
     while (p != _map.constEnd()) {
         auto *act = new QAction(this);

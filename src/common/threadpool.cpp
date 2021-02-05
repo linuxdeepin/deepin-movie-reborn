@@ -47,12 +47,6 @@ void ThreadPool::moveToNewThread(QObject *obj)
     work->start();
 }
 
-void ThreadPool::manager(QThread *thread)
-{
-//    qInfo() << "manager <<<<<<<" << thread;
-    m_pool.push_back(thread);
-}
-
 void ThreadPool::quitAll()
 {
     for (auto thread : m_pool) {

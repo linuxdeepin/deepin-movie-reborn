@@ -47,10 +47,11 @@ public:
     VideoBoxButton(const QString &text, const QString &normalPic, const QString &hoverPic,
                    const QString &pressPic, const QString &checkedPic = QString(), QWidget *parent = nullptr);
 
-    void setPropertyPic(QString propertyName, const QVariant &value, const QString &normalPic, const QString &hoverPic,
-                        const QString &pressPic, const QString &checkedPic = QString());
-    void setPropertyPic(const QString &normalPic, const QString &hoverPic,
-                        const QString &pressPic, const QString &checkedPic = QString());
+//    cppcheck修改
+//    void setPropertyPic(QString propertyName, const QVariant &value, const QString &normalPic, const QString &hoverPic,
+//                        const QString &pressPic, const QString &checkedPic = QString());
+//    void setPropertyPic(const QString &normalPic, const QString &hoverPic,
+//                        const QString &pressPic, const QString &checkedPic = QString());
 
     void setTransparent(bool flag);
     void setAutoChecked(bool flag);

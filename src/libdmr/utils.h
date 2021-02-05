@@ -64,6 +64,9 @@ QString videoIndex2str(int);
 QString audioIndex2str(int);
 QString subtitleIndex2str(int);
 
+/**
+ * @brief 检查截屏路径是否存在 cppcheck在使用
+ */
 bool ValidateScreenshotPath(const QString &path);
 
 QString ElideText(const QString &text, const QSize &size,

@@ -67,7 +67,8 @@ protected:
 
 private:
     QString readSinkInputPath();       //获取dbus接口的地址
-    void setAudioVolume(int volume);   //回设dock栏应用音量
+//    cppckeck修改
+//    void setAudioVolume(int volume);   //回设dock栏应用音量
     void setMute(bool muted);          //回设dock栏应用静音状态
 
 private:

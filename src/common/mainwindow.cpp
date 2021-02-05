@@ -1771,7 +1771,7 @@ bool MainWindow::isActionAllowed(ActionFactory::ActionKind actionKind, bool from
 
     if (isShortcut) {
         PlayingMovieInfo pmf = m_pEngine->playingMovieInfo();
-        bool bRet = true;
+        bool bRet = true;//cppcheck 误报
         switch (actionKind) {
         case ActionFactory::Screenshot:
         case ActionFactory::ToggleMiniMode:

@@ -133,7 +133,7 @@ CompositingManager::CompositingManager()
         QGSettings gsettings("com.deepin.deepin-movie", "/com/deepin/deepin-movie/");
         QString aa = gsettings.get("composited").toString();
         if ((gsettings.get("composited").toString() == "DisableComposited"
-             || gsettings.get("composited").toString() == "EnableComposited")) {
+                || gsettings.get("composited").toString() == "EnableComposited")) {
             if (gsettings.keys().contains("composited")) {
                 if (gsettings.get("composited").toString() == "DisableComposited") {
                     _composited = false;
@@ -466,13 +466,14 @@ bool CompositingManager::isDriverLoadedCorrectly()
     return true;
 }
 
-void CompositingManager::overrideCompositeMode(bool useCompositing)
-{
-    if (_composited != useCompositing) {
-        qInfo() << "override composited = " << useCompositing;
-        _composited = useCompositing;
-    }
-}
+//cppcheck 修改
+//void CompositingManager::overrideCompositeMode(bool useCompositing)
+//{
+//    if (_composited != useCompositing) {
+//        qInfo() << "override composited = " << useCompositing;
+//        _composited = useCompositing;
+//    }
+//}
 
 using namespace std;
 

@@ -34,7 +34,7 @@ VideoBoxButton::VideoBoxButton(const QString &text, QWidget *parent)
 
 VideoBoxButton::VideoBoxButton(const QString &text, const QString &normalPic, const QString &hoverPic,
                                const QString &pressPic, const QString &checkedPic, QWidget *parent)
-    : DButtonBoxButton (text, parent)
+    : DButtonBoxButton(text, parent)
 {
     defaultPicPath.normalPicPath = normalPic;
     defaultPicPath.hoverPicPath = hoverPic;
@@ -53,42 +53,43 @@ VideoBoxButton::VideoBoxButton(const QString &text, const QString &normalPic, co
     this->setIcon(icon);
 }
 
-void VideoBoxButton::setPropertyPic(QString propertyName, const QVariant &value,
-                                    const QString &normalPic, const QString &hoverPic, const QString &pressPic, const QString &checkedPic)
-{
-    VideoPicPathInfo curPicPath;
-    curPicPath.normalPicPath = normalPic;
-    curPicPath.hoverPicPath = hoverPic;
-    curPicPath.pressPicPath = pressPic;
-    curPicPath.checkedPicPath = checkedPic;
+// cppcheck修改
+//void VideoBoxButton::setPropertyPic(QString propertyName, const QVariant &value,
+//                                    const QString &normalPic, const QString &hoverPic, const QString &pressPic, const QString &checkedPic)
+//{
+//    VideoPicPathInfo curPicPath;
+//    curPicPath.normalPicPath = normalPic;
+//    curPicPath.hoverPicPath = hoverPic;
+//    curPicPath.pressPicPath = pressPic;
+//    curPicPath.checkedPicPath = checkedPic;
 
-    if (propertyPicPaths.first == propertyName && propertyPicPaths.second.contains(value)) {
-        propertyPicPaths.second[value] = curPicPath;
-    } else {
-        QMap<QVariant, VideoPicPathInfo> curPicPathInfo;
-        curPicPathInfo.insert(value, curPicPath);
-        propertyPicPaths.first = propertyName;
-        propertyPicPaths.second = curPicPathInfo;
-    }
-    QIcon icon;
-    icon.addFile(normalPic);
+//    if (propertyPicPaths.first == propertyName && propertyPicPaths.second.contains(value)) {
+//        propertyPicPaths.second[value] = curPicPath;
+//    } else {
+//        QMap<QVariant, VideoPicPathInfo> curPicPathInfo;
+//        curPicPathInfo.insert(value, curPicPath);
+//        propertyPicPaths.first = propertyName;
+//        propertyPicPaths.second = curPicPathInfo;
+//    }
+//    QIcon icon;
+//    icon.addFile(normalPic);
 
-    this->setIconSize(QSize(36, 36));
-    this->setIcon(icon);
-}
+//    this->setIconSize(QSize(36, 36));
+//    this->setIcon(icon);
+//}
 
-void VideoBoxButton::setPropertyPic(const QString &normalPic, const QString &hoverPic, const QString &pressPic, const QString &checkedPic)
-{
-    defaultPicPath.normalPicPath = normalPic;
-    defaultPicPath.hoverPicPath = hoverPic;
-    defaultPicPath.pressPicPath = pressPic;
-    defaultPicPath.checkedPicPath = checkedPic;
-    QIcon icon;
-    icon.addFile(normalPic);
+//void VideoBoxButton::setPropertyPic(const QString &normalPic, const QString &hoverPic, const QString &pressPic, const QString &checkedPic)
+//{
+//    defaultPicPath.normalPicPath = normalPic;
+//    defaultPicPath.hoverPicPath = hoverPic;
+//    defaultPicPath.pressPicPath = pressPic;
+//    defaultPicPath.checkedPicPath = checkedPic;
+//    QIcon icon;
+//    icon.addFile(normalPic);
 
-    this->setIconSize(QSize(36, 36));
-    this->setIcon(icon);
-}
+//    this->setIconSize(QSize(36, 36));
+//    this->setIcon(icon);
+//}
 
 /*void VideoBoxButton::setTransparent(bool flag)
 {

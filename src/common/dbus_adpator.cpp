@@ -40,6 +40,7 @@ ApplicationAdaptor::ApplicationAdaptor(MainWindow *pMainWid)
     m_oldTime = QTime::currentTime();
 }
 
+//cppcheck 单元测试 wayland下再用
 void ApplicationAdaptor::openFiles(const QStringList &listFiles)
 {
     if (utils::check_wayland_env()) {
@@ -54,6 +55,7 @@ void ApplicationAdaptor::openFiles(const QStringList &listFiles)
     }
 }
 
+//cppcheck 单元测试在用
 void ApplicationAdaptor::openFile(const QString &sFile)
 {
     QRegExp url_re("\\w+://");
@@ -105,6 +107,8 @@ QVariant ApplicationAdaptor::redDBusProperty(const QString &sService, const QStr
     QVariant v = ainterface.property(pPropert);
     return  v;
 }
+
+//cppcheck 单元测试在使用
 QVariant ApplicationAdaptor::redDBusMethod(const QString &sService, const QString &sPath, const QString &sInterface, const char *pMethod)
 {
     // 创建QDBusInterface接口

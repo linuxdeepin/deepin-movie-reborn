@@ -486,6 +486,9 @@ class MainWindowPropertyMonitor: public QAbstractNativeEventFilter
 public:
     explicit MainWindowPropertyMonitor(MainWindow *);
     ~MainWindowPropertyMonitor();
+    /**
+     * @brief 事件过滤器 cppcheck 误报
+     */
     bool nativeEventFilter(const QByteArray &eventType, void *message, long *);
 
     MainWindow *m_pMainWindow {nullptr};

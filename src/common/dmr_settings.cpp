@@ -52,9 +52,9 @@ Settings::Settings()
     : QObject(nullptr), m_sConfigPath("%1/%2/%3/config.conf")
 {
     m_sConfigPath = m_sConfigPath
-            .arg(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation))
-            .arg(qApp->organizationName())
-            .arg(qApp->applicationName());
+                    .arg(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation))
+                    .arg(qApp->organizationName())
+                    .arg(qApp->applicationName());
     qInfo() << "configPath" << m_sConfigPath;
     QSettingBackend *pBackend = new QSettingBackend(m_sConfigPath);
 #if defined (__mips__) || defined (__sw_64__) || defined ( __aarch64__)
@@ -180,7 +180,7 @@ bool Settings::iscommonPlayableProtocol(const QString &sScheme) const
 //    return false;
 
     bool result = std::any_of(commonPlayableProtocols().begin(),
-                              commonPlayableProtocols().end(), [&](QString &_pro){
+    commonPlayableProtocols().end(), [&](QString & _pro) {
         return _pro == sScheme;
     });
 
@@ -208,6 +208,7 @@ QString Settings::screenshotNameTemplate()
            .arg(QDateTime::currentDateTime().toString("yyyyMMddhhmmss"));
 }
 
+//cppcheck 单元测试使用
 QString Settings::screenshotNameSeqTemplate()
 {
     return tr("%1/Movie%2(%3).jpg").arg(screenshotLocation())

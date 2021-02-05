@@ -624,6 +624,7 @@ public:
      * @param parent 父窗口
      */
     explicit viewProgBarLoad(PlayerEngine *engine = nullptr, DMRSlider *progBar = nullptr, ToolboxProxy *parent = nullptr);
+
     /**
      * @brief setListPixmapMutex 设置图像表线程锁
      * @param pMutex 锁
@@ -631,6 +632,11 @@ public:
      * 必须调用这个函数加锁
      */
     void setListPixmapMutex(QMutex *pMutex);
+    /**
+     * @brief setListPixmapMutex 设置图像表线程锁
+     * 必须调用这个函数加锁
+     */
+    ~viewProgBarLoad();
 public slots:
     /**
      * @brief loadViewProgBar 加载胶片

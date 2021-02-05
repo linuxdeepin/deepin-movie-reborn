@@ -192,6 +192,7 @@ QPixmap ThumbnailWorker::genThumb(const QUrl &url, int secs)
     return pm;
 }
 
+//cppcheck 误报
 void ThumbnailWorker::run()
 {
     setPriority(QThread::IdlePriority);

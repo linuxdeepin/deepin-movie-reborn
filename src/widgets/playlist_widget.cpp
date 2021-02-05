@@ -1420,7 +1420,6 @@ void PlaylistWidget::togglePopup()
     } else {
         _playlist->setAttribute(Qt::WA_TransparentForMouseEvents, true);
         setVisible(!isVisible());
-        _toggling = true;
 #ifdef __x86_64__
         paClose = new QPropertyAnimation(this, "geometry");
         paClose->setEasingCurve(QEasingCurve::Linear);

@@ -229,6 +229,7 @@ namespace dmr {
         QMetaObject::invokeMethod(pWid, "onNewFrame");
     }
 
+    //cppcheck 被QMetaObject::invokeMethod使用
     void MpvGLWidget::onNewFrame()
     {
         if (window()->isMinimized()) {
@@ -451,6 +452,7 @@ namespace dmr {
         m_imgBgLight.setDevicePixelRatio(qApp->devicePixelRatio());
     }
 
+    //cppcheck误报
     void MpvGLWidget::initializeGL()
     {
         QOpenGLFunctions *pGLFunction = QOpenGLContext::currentContext()->functions();
