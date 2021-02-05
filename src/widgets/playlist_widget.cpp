@@ -1458,7 +1458,9 @@ void PlaylistWidget::togglePopup()
             paClose->deleteLater();
             paClose = nullptr;
             _playlist->setAttribute(Qt::WA_TransparentForMouseEvents, false);
-            m_pClearButton->setFocus();
+            if (_mw->toolbox()->getListBtnFocus()) {
+                m_pClearButton->setFocus();
+            }
         });
 #else
         _toggling = false;  //条件编译误报(cppcheck)

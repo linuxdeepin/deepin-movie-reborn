@@ -312,6 +312,13 @@ public:
         return m_pViewProgBar;
     }
     /**
+     * @brief getListBtnFocus
+     * 获取播放列表按钮焦点状态
+     * 用于判断是否为tab键升起
+     * @return 焦点状态
+     */
+    bool getListBtnFocus();
+    /**
      * @brief updateProgress 更新播放进度条显示
      * @param nValue 进度条的值
      */

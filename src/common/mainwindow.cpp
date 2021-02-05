@@ -430,9 +430,11 @@ class MainWindowEventListener : public QObject
     Q_OBJECT
 public:
     explicit MainWindowEventListener(QWidget *pTarget)
-        : QObject(pTarget), m_pWindow(pTarget->windowHandle())
+        : QObject(pTarget)
     {
         lastCornerEdge = CornerEdge::NoneEdge;
+        m_pMainWindow = static_cast<MainWindow *>(pTarget);
+        m_pWindow = pTarget->windowHandle();
     }
 
     ~MainWindowEventListener() override
@@ -491,6 +493,15 @@ protected:
             QMouseEvent *pMouseEvent = static_cast<QMouseEvent *>(pEvent);
             pMainWindow->resumeToolsWindow();
 
+            /* If the focus is on the playlist button, move the mouse to cancel the focus
+             * In order to avoid the enter key to expand and the mouse click to expand the playlist
+             * There is a problem here, if the mouse does not move, click directly,
+             * Will cause focus to appear on the clear list button
+             * Please refer to the maintainer whether to add an event filter to the ListBtn
+             */
+            if (m_pMainWindow->toolbox()->getListBtnFocus()) {
+                m_pMainWindow->setFocus();
+            }
             //If window is maximized ,need quit maximize state when resizing
             if (m_bStartResizing && (pMainWindow->windowState() & Qt::WindowMaximized)) {
                 pMainWindow->setWindowState(pMainWindow->windowState() & (~Qt::WindowMaximized));
@@ -619,6 +630,7 @@ private:
     bool m_bEnabled {true};
     CornerEdge lastCornerEdge;
     QWindow *m_pWindow;
+    MainWindow *m_pMainWindow;
 };
 
 #ifdef USE_DXCB
@@ -1951,6 +1963,12 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
     case ActionFactory::ActionKind::TogglePlaylist: {
         if (m_bStartMini) {
             return;
+        }
+        /* The focus of the clear list button when the playlist is raised is also handled here.
+         * Cancel the focus of the shortcut key when it is raised to avoid this problem
+         */
+        if (bIsShortcut && toolbox()->getListBtnFocus()) {
+            setFocus();
         }
         if (m_pPlaylist && m_pPlaylist->state() == PlaylistWidget::Closed && !m_pToolbox->isVisible()) {
             m_pToolbox->show();

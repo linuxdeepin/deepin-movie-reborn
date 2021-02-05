@@ -2451,6 +2451,11 @@ void ToolboxProxy::initToolTip()
     });
 }
 
+bool ToolboxProxy::getListBtnFocus()
+{
+    return m_pListBtn->hasFocus();
+}
+
 bool ToolboxProxy::getVolSliderIsHided()
 {
     return m_pVolSlider->isHidden();
