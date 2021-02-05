@@ -1958,7 +1958,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
     }
 
     case ActionFactory::ActionKind::TogglePlaylist: {
-        if (m_bStartMini) {
+        if (m_bStartMini || m_bMiniMode) {
             return;
         }
         /* The focus of the clear list button when the playlist is raised is also handled here.
