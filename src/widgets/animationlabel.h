@@ -45,7 +45,7 @@
  *
  * 实现在切换播放、暂停状态的时候显示的动画效果。
  */
-class AnimationLabel : public QLabel
+class AnimationLabel : public QFrame
 {
     Q_PROPERTY(int fps READ fps WRITE setFps)
 

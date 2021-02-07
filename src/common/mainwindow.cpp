@@ -958,14 +958,7 @@ MainWindow::MainWindow(QWidget *parent)
     m_pFullScreenTimeLable->setLayout(m_pFullScreenTimeLayout);
     m_pFullScreenTimeLable->close();
 #endif
-    if (CompositingManager::get().composited()) { //MPV OPengL渲染方式，需指定父窗口
-        m_pAnimationlable = new AnimationLabel(this, this, true);
-    } else { //MPV绑定wid方式，父窗口为NULL
-        m_pAnimationlable = new AnimationLabel(NULL, this, false);
-    }
-    m_pAnimationlable->setAttribute(Qt::WA_TranslucentBackground);
-    m_pAnimationlable->setWindowFlags(Qt::FramelessWindowHint);
-//    m_pAnimationlable->setParent(this);
+    m_pAnimationlable = new AnimationLabel(this, this, bComposited);
     m_pAnimationlable->setGeometry(width() / 2 - 100, height() / 2 - 100, 200, 200);
 
 #if defined (__aarch64__) || defined (__mips__)

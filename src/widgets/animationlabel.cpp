@@ -50,14 +50,15 @@ using namespace dmr;
  * @param bComposited 是否为opengl渲染
  */
 AnimationLabel::AnimationLabel(QWidget *parent, QWidget *pMainWindow, bool bComposited)
-    : QLabel(parent)
+    : QFrame(parent)
 {
     initMember(pMainWindow, bComposited);
-    this->resize(200, 200);
-    //MPV绑定wid方式默认隐藏
-    if(!bComposited) {
+    if (!bComposited) {
+        setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
+        setAttribute(Qt::WA_TranslucentBackground, true);
         hide();
     }
+    this->resize(200, 200);
 }
 
 /**
@@ -218,7 +219,7 @@ void AnimationLabel::paintEvent(QPaintEvent *e)
     painter.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
     painter.drawPixmap(rect(), m_pixmap);
 
-    QLabel::paintEvent(e);
+    QFrame::paintEvent(e);
 }
 
 /**
@@ -230,7 +231,7 @@ void AnimationLabel::showEvent(QShowEvent *e)
     if(!m_bComposited) { //MPV绑定wid方式通过mainwindow获取显示坐标
         setGeometryByMainWindow(m_pMainWindow);
     }
-    QLabel::showEvent(e);
+    QFrame::showEvent(e);
 }
 
 /**
@@ -242,7 +243,7 @@ void AnimationLabel::moveEvent(QMoveEvent *e)
     if(!m_bComposited) {//MPV绑定wid方式通过mainwindow获取显示坐标
         setGeometryByMainWindow(m_pMainWindow);
     }
-    return QLabel::moveEvent(e);
+    return QFrame::moveEvent(e);
 }
 
 /**
