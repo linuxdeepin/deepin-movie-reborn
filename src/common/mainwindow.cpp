@@ -368,7 +368,7 @@ public:
         }
         return false;
     }
-    
+
     MainWindow *_source;
 };
 #endif
@@ -1679,7 +1679,7 @@ void MainWindow::mipsShowFullScreen()
 void MainWindow::menuItemInvoked(QAction *pAction)
 {
     ActionFactory::ActionKind actionKind = ActionFactory::actionKind(pAction);
-    if (actionKind == dmr::ActionFactory::Invalid) {
+    if (actionKind == dmr::ActionFactory::Invalid || !m_pEngine || !m_pPlaylist) {  //如果未初始化触发快捷键会导致崩溃
         return;
     }
     bool bIsShortcut = ActionFactory::isActionFromShortcut(pAction);
