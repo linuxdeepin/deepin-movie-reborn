@@ -1486,7 +1486,7 @@ void ToolboxProxy::updateHoverPreview(const QUrl &url, int secs)
     if (!Settings::get().isSet(Settings::PreviewOnMouseover))
         return;
 
-    if (m_pViewProgBar->isVisible())
+    if (m_pVolSlider->isVisible())
         return;
 
     const PlayItemInfo &pif = m_pEngine->playlist().currentInfo();
@@ -1810,7 +1810,7 @@ void ToolboxProxy::progressHoverChanged(int nValue)
     if (m_pEngine->state() == PlayerEngine::CoreState::Idle)
         return;
 
-    if (m_pViewProgBar->isVisible())
+    if (m_pVolSlider->isVisible())
         return;
 
     const auto &pif = m_pEngine->playlist().currentInfo();
