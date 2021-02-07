@@ -1677,8 +1677,9 @@ void ToolboxProxy::slotPlayListStateChange()
 
     if (m_pPlaylist->state() == PlaylistWidget::State::Opened) {
         m_pListBtn->setChecked(true);
-        m_pListBtn->setEnabled(false);
+        //非x86平台播放列表切换不展示动画,故按键状态不做限制
 #ifdef __x86_64__
+        m_pListBtn->setEnabled(false);
         QRect rcBegin = this->geometry();
         QRect rcEnd = rcBegin;
         rcEnd.setY(rcBegin.y() - TOOLBOX_SPACE_HEIGHT - 7);
@@ -1698,8 +1699,8 @@ void ToolboxProxy::slotPlayListStateChange()
 #endif
     } else {
         m_pListBtn->setChecked(false);
-        m_pListBtn->setEnabled(false);
 #ifdef __x86_64__
+        m_pListBtn->setEnabled(false);
         m_bAnimationFinash = false;
 
         QRect rcBegin = this->geometry();
