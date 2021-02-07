@@ -109,8 +109,6 @@ void VolumeSlider::initVolume()
 
         changeVolume(nVolume);
         changeMuteState(bMute);
-
-        refreshIcon();           //保证初始化音量和配置文件中音量一致时，也能得到刷新
     });
 }
 
@@ -327,7 +325,9 @@ void VolumeSlider::changeVolume(int nVolume)
 
     m_slider->setValue(nVolume > 100 ? 100 : nVolume);  //音量实际能改变200,但是音量条最大支持到100
 
-    if (nVolume > 100) {
+    //1.保证初始化音量(100)和配置文件中音量一致时，也能得到刷新
+    //2.m_slider的最大值为100,如果大于100必须主动调用
+    if (nVolume >= 100) {
         volumeChanged(nVolume);
     }
 }
