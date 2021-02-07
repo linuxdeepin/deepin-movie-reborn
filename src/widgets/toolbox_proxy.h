@@ -548,7 +548,7 @@ private:
      * @param secs 当前时间
      * @param pos 当前位置点
      */
-    //void updatePreviewTime(qint64 secs, const QPoint &pos);
+    void updatePreviewTime(qint64 secs, const QPoint &pos);
     /**
      * @brief initMember 初始化成员变量
      */
@@ -575,7 +575,7 @@ private:
     ViewProgBar *m_pViewProgBar;         ///胶片模式窗口
     DMRSlider *m_pProgBar;               ///音量条滑动条控件
     ThumbnailPreview *m_pPreviewer;      ///胶片模式视图
-    SliderTime *m_pPreviewTime;          ///
+    SliderTime *m_pPreviewTime;          ///鼠标hover进度条时显示在进度条上方的时间控件（非鼠标悬停显示预览时）
 
     DButtonBoxButton *m_pPlayBtn;        ///播放按钮
     DButtonBoxButton *m_pPrevBtn;        ///上一个按钮

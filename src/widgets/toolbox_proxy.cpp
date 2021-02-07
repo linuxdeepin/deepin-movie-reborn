@@ -1382,13 +1382,13 @@ void ToolboxProxy::updateThumbnail()
 
 }
 
-/*void ToolboxProxy::updatePreviewTime(qint64 secs, const QPoint &pos)
+void ToolboxProxy::updatePreviewTime(qint64 secs, const QPoint &pos)
 {
     QTime time(0, 0, 0);
     QString strTime = time.addSecs(static_cast<int>(secs)).toString("hh:mm:ss");
     m_pPreviewTime->setTime(strTime);
     m_pPreviewTime->show(pos.x(), pos.y() + 14);
-}*/
+}
 
 void ToolboxProxy::initMember()
 {
@@ -1805,7 +1805,7 @@ void ToolboxProxy::playlistClosedByEsc()
     }
 }
 
-void ToolboxProxy::progressHoverChanged(int v)
+void ToolboxProxy::progressHoverChanged(int nValue)
 {
     if (m_pEngine->state() == PlayerEngine::CoreState::Idle)
         return;
@@ -1826,7 +1826,16 @@ void ToolboxProxy::progressHoverChanged(int v)
 
     m_bMouseFlag = true;
 
-    ThumbnailWorker::get().requestThumb(pif.url, v);
+    QPoint pos = m_pProgBar->mapToGlobal(QPoint(0, TOOLBOX_TOP_EXTENT - 10));
+    QPoint point { QCursor::pos().x(), pos.y() };
+
+    bool bIsAudio = m_pEngine->isAudioFile(pif.info.fileName());
+    if (!Settings::get().isSet(Settings::PreviewOnMouseover) || bIsAudio) {
+        updatePreviewTime(nValue, point);
+        return;
+    }
+
+    ThumbnailWorker::get().requestThumb(pif.url, nValue);
 }
 
 void ToolboxProxy::updateTimeVisible(bool visible)
