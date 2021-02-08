@@ -1675,6 +1675,7 @@ void ToolboxProxy::slotPlayListStateChange()
         return ;
     }
 
+    closeAnyPopup();
     if (m_pPlaylist->state() == PlaylistWidget::State::Opened) {
         m_pListBtn->setChecked(true);
         //非x86平台播放列表切换不展示动画,故按键状态不做限制

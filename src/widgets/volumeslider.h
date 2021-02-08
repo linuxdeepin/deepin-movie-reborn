@@ -85,6 +85,7 @@ private:
     bool m_mouseIn {false};
     int m_nVolume;                      //记录实际音量(实际音量最大值为200,显示最大到100)
     VolumeMonitoring volumeMonitoring;  //监听dock栏应用音量变化
+    bool m_bHideWhenFinished;           ///等待动画结束后隐藏
 };
 }
 

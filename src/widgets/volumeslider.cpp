@@ -24,6 +24,7 @@ VolumeSlider::VolumeSlider(MainWindow *mw, QWidget *parent)
     }
 #endif
     m_nVolume = 100;
+    m_bHideWhenFinished = false;
 
     hide();
 
@@ -278,6 +279,12 @@ void VolumeSlider::popup()
     media.moveTo(m_point + QPoint(5, 10));
 #endif
 
+    //动画未完成，等待动画结束后再隐藏控件
+    if (pVolAnimation) {
+        m_bHideWhenFinished = true;
+        return;
+    }
+
     if (m_state == State::Close && isVisible()) {
         pVolAnimation = new QPropertyAnimation(this, "geometry");
         pVolAnimation->setEasingCurve(QEasingCurve::Linear);
@@ -294,6 +301,10 @@ void VolumeSlider::popup()
             pVolAnimation = nullptr;
             m_state = Open;
             m_bFinished = false;
+            if (m_bHideWhenFinished) {
+                popup();
+                m_bHideWhenFinished = false;
+            }
         });
     } else {
         m_state = Close;
