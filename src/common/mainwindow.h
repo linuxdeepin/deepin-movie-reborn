@@ -478,6 +478,7 @@ private:
     bool m_bIsFirstLoadDBus;
     Presenter *m_pPresenter;
     MovieWidget *m_pMovieWidget;
+    bool m_bFinishLoadList;                           ///初始打开时是否完成加载播放列表
 };
 
 //窗管返回事件过滤器

@@ -999,6 +999,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     QTimer::singleShot(500, [this]() {
         loadPlayList();
+        m_bFinishLoadList = true;
     });
 
     m_pDBus = new QDBusInterface("org.freedesktop.login1", "/org/freedesktop/login1", "org.freedesktop.login1.Manager", QDBusConnection::systemBus());
@@ -1880,6 +1881,9 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
     }
 
     case ActionFactory::ActionKind::OpenFileList: {
+        if (m_pEngine->getplaylist()->items().isEmpty() && !m_bFinishLoadList) {
+            return;
+        }
         //允许影院打开音乐文件进行播放
 #ifndef USE_TEST
         QStringList filenames = DFileDialog::getOpenFileNames(this, tr("Open File"),
@@ -4524,6 +4528,7 @@ void MainWindow::initMember()
     m_bIsFree = true;
     m_bIsJinJia = false;
     m_bIsTouch = false;
+    m_bFinishLoadList = false;
 
     m_nDisplayVolume = 100;
     m_nLastPressX = 0;
