@@ -1874,6 +1874,9 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
     }
 
     case ActionFactory::ActionKind::OpenFileList: {
+        if (QDateTime::currentMSecsSinceEpoch() - m_pToolbox->getMouseTime() < 500) {
+            return;
+        }
         if (m_pEngine->getplaylist()->items().isEmpty() && !m_bFinishLoadList) {
             return;
         }

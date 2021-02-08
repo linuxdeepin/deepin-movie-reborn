@@ -352,6 +352,11 @@ public:
      * @brief playlistClosedByEsc Esc关闭播放列表
      */
     void playlistClosedByEsc();
+    /**
+     * @brief getMouseTime 获取之前鼠标点击的时间
+     * @return 时间
+     */
+    qint64 getMouseTime();
 
     /////add for unit test/////
     DButtonBoxButton *playBtn() {return m_pPlayBtn;}
@@ -602,6 +607,8 @@ private:
     QList<QPixmap > m_pmBlackList;
 
     QMutex m_listPixmapMutex;       ///缩略图list的锁
+
+    qint64 m_nClickTime;            ///鼠标点击时间
 
     bool m_bMouseFlag;
     bool m_bMousePree;              ///

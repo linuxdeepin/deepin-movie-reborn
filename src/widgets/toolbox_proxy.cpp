@@ -1441,6 +1441,8 @@ void ToolboxProxy::initMember()
     m_pPaOpen = nullptr;
     m_pPaClose = nullptr;
 
+    m_nClickTime = 0;
+
     m_bMouseFlag = false;
     m_bMousePree = false;
     m_bThumbnailmode = false;
@@ -1779,6 +1781,11 @@ void ToolboxProxy::slotMuteStateChanged(bool bMute)
     m_pVolBtn->setMute(bMute);
 
     emit sigMuteStateChanged(bMute);
+}
+
+qint64 ToolboxProxy::getMouseTime()
+{
+    return m_nClickTime;
 }
 /**
  * @brief volumeUp 鼠标滚轮增加音量
@@ -2146,6 +2153,7 @@ void ToolboxProxy::buttonClicked(QString id)
     } else if (id == "next" && m_bCanPlay) {
         m_pMainWindow->requestAction(ActionFactory::ActionKind::GotoPlaylistNext);
     } else if (id == "list") {
+        m_nClickTime = QDateTime::currentMSecsSinceEpoch();
         m_pMainWindow->requestAction(ActionFactory::ActionKind::TogglePlaylist);
         m_pListBtn->hideToolTip();
     }
