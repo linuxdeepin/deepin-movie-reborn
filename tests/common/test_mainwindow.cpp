@@ -97,9 +97,6 @@ TEST(MainWindow, tabInteraction)
     listBtn->setFocus();
     QTest::qWait(500);
     QTest::keyClick(listBtn, Qt::Key_Enter, Qt::NoModifier, 200);
-    QTest::keyClick(listBtn, Qt::Key_Tab, Qt::NoModifier, 200);
-    QTest::keyClick(playlistWidget, Qt::Key_Tab, Qt::NoModifier, 500);
-    QTest::keyClick(playlist, Qt::Key_Tab, Qt::NoModifier, 500);
     QTest::keyClick(playlistWidget, Qt::Key_Enter, Qt::NoModifier, 500);    //clear playlist
     for(int i = 0; i < 3; i++){
         QTest::keyClick(playlist, Qt::Key_Tab, Qt::NoModifier, 100);
@@ -108,8 +105,8 @@ TEST(MainWindow, tabInteraction)
 
     QTest::qWait(500);
     engine->addPlayFiles(listPlayFiles);
+    listBtn->setFocus();
     QTest::keyClick(listBtn, Qt::Key_Enter, Qt::NoModifier, 1000);
-    QTest::keyClick(listBtn, Qt::Key_Tab, Qt::NoModifier, 200);
     QTest::keyClick(playlistWidget, Qt::Key_Tab, Qt::NoModifier, 500);
     QTest::keyClick(playlistWidget, Qt::Key_Down, Qt::NoModifier, 500);
     QTest::keyClick(playlistWidget, Qt::Key_Up, Qt::NoModifier, 500);
