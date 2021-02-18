@@ -206,6 +206,13 @@ public:
     void clear();
     void endAnimation();
     bool isFocusInPlaylist();
+    /**
+     * @brief resetFocusAttribute
+     * 重置键盘交互属性，确保置首条只有tab键交互生效
+     *
+     * @param atr true为执行，false为跳过
+     */
+    void resetFocusAttribute(bool &atr);
 
 signals:
     void stateChange();
@@ -251,7 +258,6 @@ private:
     State _state {Closed};
     DLabel *_num {nullptr};
     DLabel *_title {nullptr};
-    bool _toggling {false};
     /// < original row, data>
     QPair<int, PlayItemWidget *> _lastDragged {-1, nullptr};
     int _index {0};
@@ -261,6 +267,9 @@ private:
     QPropertyAnimation *paOpen ;
     QPropertyAnimation *paClose ;
     DPushButton *m_pClearButton;
+
+    bool _toggling {false};
+    bool m_bButtonFocusOut {false};       ///键盘交互标志位
 };
 }
 

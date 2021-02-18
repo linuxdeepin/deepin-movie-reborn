@@ -458,10 +458,18 @@ protected:
             QKeyEvent *pKeyEvent = static_cast<QKeyEvent *>(pEvent);
             if (pKeyEvent->key() == Qt::Key_Tab) {
                 pMainWindow->capturedKeyEvent(pKeyEvent);
+                //Only the tab key interactive response is set to the first
+                if (m_pMainWindow->playlist()->isFocusInPlaylist()) {
+                    bool bFocusAttribute = true;
+                    m_pMainWindow->playlist()->resetFocusAttribute(bFocusAttribute);
+                }
             }
             break;
         }
         case QEvent::MouseButtonPress: {
+            //Mouse operation does not respond to the first item
+            bool bFocusAttribute = false;
+            m_pMainWindow->playlist()->resetFocusAttribute(bFocusAttribute);
             if (!m_bEnabled) return false;
             QMouseEvent *pMouseEvent = static_cast<QMouseEvent *>(pEvent);
             setLeftButtonPressed(true);

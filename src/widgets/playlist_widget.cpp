@@ -897,7 +897,6 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     });
 
     connect(_playlist->model(), &QAbstractItemModel::rowsMoved, this, &PlaylistWidget::slotRowsMoved);
-
 }
 
 PlaylistWidget::~PlaylistWidget()
@@ -1307,6 +1306,11 @@ void PlaylistWidget::OnItemChanged(QListWidgetItem *current, QListWidgetItem *pr
     }
 }
 
+void PlaylistWidget::resetFocusAttribute(bool &atr)
+{
+    m_bButtonFocusOut = atr;
+}
+
 void PlaylistWidget::loadPlaylist()
 {
     qInfo() << __func__;
@@ -1392,6 +1396,8 @@ void PlaylistWidget::togglePopup()
     if (_state == State::Opened) {
         Q_ASSERT(isVisible());
 
+        //Set this judgment to false when the playlist is collapsed
+        m_bButtonFocusOut = false;
         if (isFocusInPlaylist()) {
             //以除Esc以外的其它方式收起播放列表，焦点切换到主窗口，防止随机出现在其它控件上
             _mw->setFocus();
@@ -1517,10 +1523,15 @@ bool PlaylistWidget::eventFilter(QObject *obj, QEvent *event)
         switch (event->type()) {
         case QEvent::FocusIn: {
             if (_playlist->count()) {
+                //The judgment here is to prevent the focus from shifting during mouse operation
+                if (!m_bButtonFocusOut) {
+                    return true;
+                }
                 //焦点切换到播放列表，选中第一个条目
                 if (_playlist->currentRow() != 0) {
                     _playlist->setCurrentRow(0);
                     _index = 0;
+                    m_bButtonFocusOut = false;
                 }
             }
             return true;
