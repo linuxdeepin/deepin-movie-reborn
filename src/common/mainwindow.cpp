@@ -2115,6 +2115,8 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
         }
 
         activateWindow();
+        //Set focus back to main window after full screen, Prevent focus from going to the toolbar
+        setFocus();
         break;
     }
 
@@ -4367,21 +4369,6 @@ void MainWindow::dropEvent(QDropEvent *pEvent)
         // check if the dropped file is a subtitle.
         QFileInfo fileInfo(urls.first().toLocalFile());
         if (m_pEngine->subtitle_suffixs.contains(fileInfo.suffix())) {
-            // notice that the file loaded but won't automatically selected.
-//            const PlayingMovieInfo &pmf = m_pEngine->playingMovieInfo();
-//            for (const SubtitleInfo &sub : pmf.subs) {
-//                if (sub["external"].toBool()) {
-//                    QString path = sub["external-filename"].toString();
-//                    if (path == fileInfo.canonicalFilePath()) {
-//                        m_pEngine->selectSubtitle(pmf.subs.indexOf(sub));
-//                        break;
-//                    }
-//                }
-//            }
-
-//            QPixmap icon = utils::LoadHiDPIPixmap(QString(":/resources/icons/%1.svg").arg(succ ? "success" : "fail"));
-//            m_pCommHintWid->popupWithIcon(succ ? tr("Load successfully") : tr("Load failed"), icon);
-
             // Search for video files with the same name as the subtitles and play the video file.
             if (m_pEngine->state() == PlayerEngine::Idle)
                 subtitleMatchVideo(urls.first().toLocalFile());
