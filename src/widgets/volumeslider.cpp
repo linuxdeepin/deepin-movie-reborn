@@ -81,7 +81,6 @@ VolumeSlider::VolumeSlider(MainWindow *mw, QWidget *parent)
     connect(m_pBtnChangeMute, SIGNAL(clicked()), this, SLOT(muteButtnClicked()));
     connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged,
             this, &VolumeSlider::setThemeType);
-
     m_autoHideTimer.setSingleShot(true);
 #ifdef __x86_64__
     connect(&m_autoHideTimer, &QTimer::timeout, this, &VolumeSlider::popup);
@@ -302,7 +301,8 @@ void VolumeSlider::popup()
             pVolAnimation = nullptr;
             m_state = Open;
             m_bFinished = false;
-            if (m_bHideWhenFinished) {
+            if (m_bHideWhenFinished)
+            {
                 popup();
                 m_bHideWhenFinished = false;
             }
@@ -331,6 +331,10 @@ void VolumeSlider::changeVolume(int nVolume)
         nVolume = 0;
     } else if (nVolume > 200) {
         nVolume = 200;
+    }
+
+    if (nVolume > 0 && m_bIsMute) {      //音量改变时改变静音状态
+        changeMuteState(false);
     }
 
     m_nVolume = nVolume;
