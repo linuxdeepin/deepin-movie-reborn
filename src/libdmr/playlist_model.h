@@ -201,6 +201,11 @@ public:
         return m_loadFile;
     };
     void loadPlaylist();
+    /**
+     * @brief getThumanbilRunning 获取加载线程是否运行
+     * @return 返回是否正在运行
+     */
+    bool getThumanbilRunning();
 
 public slots:
     void changeCurrent(int);

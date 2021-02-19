@@ -714,6 +714,22 @@ void PlaylistModel::loadPlaylist()
     delayedAppendAsync(urls);
     //});
 }
+/**
+ * @brief getThumanbilRunning 获取加载线程是否运行
+ * @return 返回是否正在运行
+ */
+bool PlaylistModel::getThumanbilRunning()
+{
+    if (m_getThumanbil) {
+        if (m_getThumanbil->isRunning()) {
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        return false;
+    }
+}
 
 
 /*PlaylistModel::PlayMode PlaylistModel::playMode() const
