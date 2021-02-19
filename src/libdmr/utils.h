@@ -72,6 +72,12 @@ bool ValidateScreenshotPath(const QString &path);
 QString ElideText(const QString &text, const QSize &size,
                   QTextOption::WrapMode wordWrap, const QFont &font,
                   Qt::TextElideMode mode, int lineHeight, int lastLineWidth);
+/**
+ * @brief 获取播放配置
+ * @param 配置文件path
+ * @param 配置保存的map
+ */
+void getPlayProperty(const char *path, QMap<QString, QString> *&proMap);
 }
 }
 

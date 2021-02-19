@@ -95,11 +95,13 @@ public:
         return _platform;
     }
 
-    bool isTestFlag() const{
-       return _isCoreFlag;
+    bool isTestFlag() const
+    {
+        return _isCoreFlag;
     }
-    void setTestFlag(bool flag){
-       _isCoreFlag = flag;
+    void setTestFlag(bool flag)
+    {
+        _isCoreFlag = flag;
     }
 
     PlayerOptionList getProfile(const QString &name);
@@ -108,7 +110,8 @@ public:
     static bool runningOnNvidia();
     void softDecodeCheck();
     bool isOnlySoftDecode();
-	bool isSpecialControls();
+    bool isSpecialControls();
+    void getMpvConfig(QMap<QString, QString> *&aimMap);
 
 signals:
     void compositingChanged(bool);
@@ -128,6 +131,8 @@ private:
     bool _hasCard;
     bool m_bOnlySoftDecode {false};  //kunpeng920走软解码
     bool m_setSpecialControls {false};
+    //保存配置
+    QMap<QString, QString> *m_pMpvConfig;
 };
 }
 

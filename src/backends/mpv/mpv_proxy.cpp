@@ -133,7 +133,7 @@ void MpvProxy::firstInit()
             m_pMpvGLwidget->show();
         }
     }
-  
+
     m_bInited = true;
     initSetting();
 }
@@ -463,6 +463,15 @@ mpv_handle *MpvProxy::mpv_init()
             qInfo() << "ignore(commented out)" << p->first << "=" << p->second;
         }
         ++p;
+    }
+
+    //设置hwdec和vo配置
+    CompositingManager::get().getMpvConfig(m_pConfig);
+    QMap<QString, QString>::iterator iter = m_pConfig->begin();
+    qInfo() << __func__ << "First set mpv propertys!!";
+    while (iter != m_pConfig->end()) {
+        my_set_property(pHandle, iter.key(), iter.value());
+        iter++;
     }
 
     return pHandle;
@@ -1011,6 +1020,7 @@ void MpvProxy::initMember()
     m_setWakeupCallback = nullptr;
     m_initialize = nullptr;
     m_freeNodecontents = nullptr;
+    m_pConfig = nullptr;
 }
 
 void MpvProxy::play()
@@ -1108,6 +1118,15 @@ void MpvProxy::play()
     }
 
     qInfo() << listArgs;
+
+    //设置播放参数
+    QMap<QString, QString>::iterator iter = m_pConfig->begin();
+    qInfo() << __func__ << "Set mpv propertys!!";
+    while (iter != m_pConfig->end()) {
+        my_set_property(m_handle, iter.key(), iter.value());
+        iter++;
+    }
+
     my_command(m_handle, listArgs);
     my_set_property(m_handle, "pause", m_bPauseOnStart);
 

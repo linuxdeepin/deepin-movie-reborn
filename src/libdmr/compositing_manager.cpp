@@ -118,6 +118,7 @@ CompositingManager &CompositingManager::get()
 CompositingManager::CompositingManager()
 {
     _hasCard = false;
+    m_pMpvConfig = nullptr;
     _platform = PlatformChecker().check();
 #ifdef __aarch64__
     if (dmr::utils::check_wayland_env()) {
@@ -227,11 +228,22 @@ CompositingManager::CompositingManager()
         qInfo() << "hasCard: " << _hasCard;
     }
 #endif
+    //读取配置
+    m_pMpvConfig = new QMap<QString, QString>;
+    utils::getPlayProperty("/etc/mpv/play.conf", m_pMpvConfig);
+    if (m_pMpvConfig->contains("vo")) {
+        QString value = m_pMpvConfig->find("vo").value();
+        if ("libmpv" == value) {
+            _composited = true;//libmpv只能走opengl
+        }
+    }
     qInfo() << __func__ << "Composited is " << _composited;
 }
 
 CompositingManager::~CompositingManager()
 {
+    delete m_pMpvConfig;
+    m_pMpvConfig = nullptr;
 }
 
 #if defined (__mips__) || defined (__aarch64__)
@@ -422,6 +434,14 @@ void CompositingManager::detectPciID()
                 }
             }
         }
+    }
+}
+
+void CompositingManager::getMpvConfig(QMap<QString, QString> *&aimMap)
+{
+    aimMap = nullptr;
+    if (nullptr != m_pMpvConfig) {
+        aimMap = m_pMpvConfig;
     }
 }
 

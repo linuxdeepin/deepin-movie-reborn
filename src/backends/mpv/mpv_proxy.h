@@ -434,6 +434,8 @@ private:
     bool m_bLastIsSpecficFormat;           //上一曲是否是特殊格式的影片，如果是则应该重新设置vo
     QMap<QString, QVariant> m_mapWaitSet;  //等待mpv初始化后设置的参数
     QVector<QVariant> m_vecWaitCommand;    //等待mpv初始化后设置的参数
+    //mpv播放配置
+    QMap<QString, QString> *m_pConfig;
 };
 
 }

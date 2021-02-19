@@ -579,5 +579,33 @@ QString ElideText(const QString &text, const QSize &size,
 
     return str;
 }
+
+void getPlayProperty(const char *path, QMap<QString, QString> *&proMap)
+{
+    QFileInfo fi(path);
+    if ((fi.exists() && fi.isFile()) && fi.isReadable()) {
+        QFile file(path);
+        if (file.open(QIODevice::ReadOnly) | QIODevice::Text) {
+            QByteArray t;
+            int index = 0;
+            while (!file.atEnd()) {
+                t = file.readLine();
+                QList<QByteArray> list = t.split('=');
+                index++;
+                if (2 == list.size()) {
+                    QString temp = list.back();
+                    temp = temp.mid(0, temp.length() - 1);//去除/n
+                    proMap->insert(list.first(), temp);
+                } else {
+                    qWarning() << __func__ << QString("config line:%1 has error ").arg(index);
+                    continue;
+                }
+            }
+        }
+        file.close();
+    } else {
+        qWarning() << __func__ << "file path error!!!!!";
+    }
+}
 }
 }
