@@ -456,7 +456,8 @@ protected:
         {
         case QEvent::MouseMove+1: { //响应tab按钮
             QKeyEvent *pKeyEvent = static_cast<QKeyEvent *>(pEvent);
-            if (pKeyEvent->key() == Qt::Key_Tab) {
+            //根据需求迷你模式不响应tab键交互
+            if (pKeyEvent->key() == Qt::Key_Tab && !m_pMainWindow->getMiniMode()) {
                 pMainWindow->capturedKeyEvent(pKeyEvent);
                 //Only the tab key interactive response is set to the first
                 if (m_pMainWindow->playlist()->isFocusInPlaylist()) {
@@ -2012,7 +2013,8 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
             }
             toggleUIMode();
         });
-
+        //Prevent abnormal focus position due to window state changes
+        setFocus();
         break;
     }
 
@@ -4745,5 +4747,13 @@ void MainWindow::setPresenter(Presenter *pPresenter)
 int MainWindow::getDisplayVolume()
 {
     return m_nDisplayVolume;
+}
+/**
+ * @brief getMiniMode 获取迷你模式状态
+ * @return 返回窗口是否为迷你模式
+ */
+bool MainWindow::getMiniMode()
+{
+    return m_bMiniMode;
 }
 #include "mainwindow.moc"

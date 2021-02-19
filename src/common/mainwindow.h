@@ -244,6 +244,11 @@ public:
      * @return 播放音量
      */
     int getDisplayVolume();
+    /**
+     * @brief getMiniMode 获取迷你模式状态
+     * @return 返回窗口是否为迷你模式
+     */
+    bool getMiniMode();
 
 public slots:
     /**
