@@ -1811,7 +1811,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
 {
     qInfo() << "actionKind = " << actionKind << "fromUI " << bFromUI << (bIsShortcut ? "shortcut" : "");
 
-    if (!m_pToolbox->getbAnimationFinash()) {
+    if (!m_pToolbox->getbAnimationFinash() || m_bStartAnimation) {
         return;
     }
 
@@ -1969,7 +1969,9 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
         /* The focus of the clear list button when the playlist is raised is also handled here.
          * Cancel the focus of the shortcut key when it is raised to avoid this problem
          */
+        m_bStartAnimation = true;
         QTimer::singleShot(150, [ = ]() {    //延时是为了解决在窗口变化同时操作时，因窗口size未确定导致显示异常
+            m_bStartAnimation = false;
             if (bIsShortcut && toolbox()->getListBtnFocus()) {
                 setFocus();
             }
@@ -4520,6 +4522,7 @@ void MainWindow::initMember()
     m_bIsFree = true;
     m_bIsJinJia = false;
     m_bIsTouch = false;
+    m_bStartAnimation = false;
 
     m_nDisplayVolume = 100;
     m_nLastPressX = 0;

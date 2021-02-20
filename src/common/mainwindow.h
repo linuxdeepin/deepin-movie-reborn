@@ -478,6 +478,7 @@ private:
     bool m_bFirstInit;
     bool m_bLastIsTouch;
     bool m_bTouchChangeVolume;                       ///是否触发了触屏改变音量
+    bool m_bStartAnimation;                           ///是否开始动画，如果开始不允许做其他操作
     QDBusInterface *m_pDBus;
     MainWindowPropertyMonitor *m_pMWPM;
     bool m_bIsFirstLoadDBus;
