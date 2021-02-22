@@ -1448,6 +1448,7 @@ void ToolboxProxy::initMember()
     m_bThumbnailmode = false;
     m_bAnimationFinash = true;
     m_bCanPlay = false;
+    m_bSetListBtnFocus = false;
 }
 
 /**
@@ -1766,7 +1767,12 @@ void ToolboxProxy::slotProAnimationFinished()
         m_pPaClose->deleteLater();
         m_pPaClose = nullptr;
         m_bAnimationFinash = true;
+        //Wait for the animation to end before setting the focus
+        if (m_bSetListBtnFocus) {
+            m_pListBtn->setFocus();
+        }
     }
+//    m_bSetListBtnFocus = false;
 }
 
 void ToolboxProxy::slotVolumeChanged(int nVolume)
@@ -1786,6 +1792,19 @@ void ToolboxProxy::slotMuteStateChanged(bool bMute)
 qint64 ToolboxProxy::getMouseTime()
 {
     return m_nClickTime;
+}
+
+void ToolboxProxy::clearPlayListFocus()
+{
+    if (m_pPlaylist->isFocusInPlaylist()) {
+        m_pPlaylist->clearFocus();
+    }
+    m_bSetListBtnFocus = false;
+}
+
+void ToolboxProxy::setBtnFocusSign(bool sign)
+{
+    m_bSetListBtnFocus = sign;
 }
 /**
  * @brief volumeUp 鼠标滚轮增加音量
@@ -1813,9 +1832,10 @@ void ToolboxProxy::changeMuteState()
  */
 void ToolboxProxy::playlistClosedByEsc()
 {
-    if (m_pPlaylist->isFocusInPlaylist()) {
+    if (m_pPlaylist->isFocusInPlaylist() && m_bSetListBtnFocus) {
+//        m_bSetListBtnFocus = true;
         m_pMainWindow->requestAction(ActionFactory::TogglePlaylist);
-        m_pListBtn->setFocus();   //焦点回到播放列表按钮
+//        m_pListBtn->setFocus();   //焦点回到播放列表按钮
     }
 }
 

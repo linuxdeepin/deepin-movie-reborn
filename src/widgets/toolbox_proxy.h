@@ -357,6 +357,16 @@ public:
      * @return 时间
      */
     qint64 getMouseTime();
+    /**
+     * @brief clearPlayListFocus
+     * 清空播放列表中的焦点并将标志位重置
+     * esc降下设回焦点
+     */
+    void clearPlayListFocus();
+    /**
+     * @brief setBtnFocusSign 设置标志位
+     */
+    void setBtnFocusSign(bool);
 
     /////add for unit test/////
     DButtonBoxButton *playBtn() {return m_pPlayBtn;}
@@ -615,6 +625,7 @@ private:
     bool m_bThumbnailmode;          ///
     bool m_bAnimationFinash;        ///动画是否完成
     bool m_bCanPlay;                ///判断是否能进行曲目切换的标志位
+    bool m_bSetListBtnFocus;        ///设置播放列表按钮焦点标志位
 };
 /**
  * @brief The viewProgBarLoad class

@@ -1513,11 +1513,16 @@ bool PlaylistWidget::eventFilter(QObject *obj, QEvent *event)
                 return true;
             }
         }
-        if (event->type() == QEvent::FocusOut) {
+        switch (event->type()) {
+        case QEvent::FocusIn:
+            _mw->toolbox()->setBtnFocusSign(true);
+            break;
+        case QEvent::FocusOut:
             if (_playlist->count() <= 0) {
                 //如果播放列表为空，清空按钮上的焦点不向后传递
                 return true;
             }
+            break;
         }
     } else if (obj == _playlist) {
         switch (event->type()) {
