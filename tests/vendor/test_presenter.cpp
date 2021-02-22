@@ -9,9 +9,9 @@
 
 using namespace dmr;
 
-/*TEST(Presenter, slotplay)
+TEST(Presenter, slotplay)
 {
-    Presenter *presenter = dApp->initPresenter();
+    Presenter *presenter = dApp->getPresenter();
 
     QTest::qWait(500);
     presenter->slotopenUrlRequested(QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/bensound-sunny.mp3"));
@@ -30,11 +30,11 @@ using namespace dmr;
     QTest::qWait(500);
     presenter->slotvolumeChanged();
 
-}*/
+}
 
 TEST(Presenter, slotloopStatusRequested)
 {
-    Presenter *presenter = dApp->initPresenter();
+    Presenter *presenter = dApp->getPresenter();
 
     QTest::qWait(500);
     presenter->slotloopStatusRequested(Mpris::LoopStatus::None);
@@ -48,7 +48,7 @@ TEST(Presenter, slotloopStatusRequested)
 
 TEST(Presenter, slotplayModeChanged)
 {
-    Presenter *presenter = dApp->initPresenter();
+    Presenter *presenter = dApp->getPresenter();
 
     QTest::qWait(500);
     presenter->slotplayModeChanged(PlaylistModel::PlayMode::OrderPlay);

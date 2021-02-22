@@ -344,6 +344,7 @@ TEST(MainWindow, miniMode)
     }
     qDebug() << __func__ << engine->state() << "playlist count:" << engine->playlist().count();
 
+    w->getMiniMode();
     QTest::keyClick(w, Qt::Key_F2, Qt::NoModifier, 500);
 #if defined(__aarch64__)
     DIconButton *miniPauseBtn = w->findChild<DIconButton *>("MiniPlayBtn");
@@ -716,3 +717,4 @@ TEST(ToolBox, clearPlayList)
     DGuiApplicationHelper::instance()->setThemeType(DGuiApplicationHelper::UnknownType);
     emit DGuiApplicationHelper::instance()->paletteTypeChanged(DGuiApplicationHelper::UnknownType);
 }
+

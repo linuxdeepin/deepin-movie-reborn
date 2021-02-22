@@ -47,7 +47,7 @@ public:
     void setMainWindowWayland(MainWindow *window);
     MainWindow *getMainWindow();
     MainWindow *getMainWindowWayland();
-    Presenter * initPresenter();
+    Presenter * getPresenter();
     MovieApp * initMovieApp(MainWindow *mw);
 
 private:

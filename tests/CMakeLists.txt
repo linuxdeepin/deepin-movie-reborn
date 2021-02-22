@@ -34,7 +34,6 @@ include_directories(./../src/common)
 include_directories(./../src/widgets)
 include_directories(./../src/libdmr)
 include_directories(./../src/vendor)
-#include_directories(../src/widgets/dialog)
 include_directories(./../src/backends)
 include_directories(./../src/backends/mpv)
 
@@ -49,8 +48,6 @@ FILE (GLOB allSource
     ../src/backends/mpv/*.cpp
     ../src/backends/*.cpp
     )
-#FILE (GLOB allTestSource
-#    "./*.cpp" "./*.c")
 
 FILE (GLOB allTestSource
     "*.cpp"
@@ -59,18 +56,6 @@ FILE (GLOB allTestSource
     "libdmr/*.cpp"
     "backends/*.cpp"
     "vendor/*.cpp"
-    )
-
-# 定义 header 文件
-FILE (GLOB allHeaders
-    "../src/*.hpp"  "../src/application.h"
-    "../src/drawshape/*.hpp"  "../src/drawshape/*.h"
-    "../src/frame/*.hpp"  "../src/frame/*.h"
-    "../src/qtsingleapplication/*.hpp"  "../src/qtsingleapplication/*.h"
-    "../src/service/*.hpp"  "../src/service/*.h"
-    "../src/utils/*.hpp"  "../src/utils/*.h"
-    "../src/widgets/*.hpp"  "../src/widgets/*.h"
-    "../src/widgets/dialog/*.hpp"  "../src/widgets/dialog/*.h"
     )
 
 # 定义资源文件
@@ -83,7 +68,7 @@ set(AllQRC
 set_directory_properties(PROPERTIES CLEAN_NO_CUSTOM 1)
 
 # 添加需要安装的模块
-add_executable(${PROJECT_NAME} ${allHeaders} ${allSource} ${allTestSource}
+add_executable(${PROJECT_NAME} ${allSource} ${allTestSource}
     ${AllQRC}
     )
 ## Make sure to clean up the coverage folder

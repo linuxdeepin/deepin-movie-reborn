@@ -54,7 +54,7 @@ MainWindow * Application::getMainWindowWayland()
     return m_mainwindow_wayland;
 }
 
-Presenter * Application::initPresenter()
+Presenter * Application::getPresenter()
 {
     if(m_presenter == nullptr)
     {

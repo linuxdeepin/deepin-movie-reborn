@@ -47,7 +47,9 @@ TEST(libdmr, utils)
 
     MainWindow* w = dApp->getMainWindow();
 
-    utils::CompareNames("/data/source/deepin-movie-reborn/movie/demo.mp4", "/data/source/deepin-movie-reborn/movie/demo.mp4");
+    bool ret = utils::CompareNames("/data/source/deepin-movie-reborn/movie/demo.mp4", "/data/source/deepin-movie-reborn/movie/demo.mp3");
+    ret = utils::CompareNames("/data/source/deepin-movie-reborn/movie/demo.mp4", "/data/source/deepin-movie-reborn//movie/demo.mp4");
+    //QCOMPARE(ret, true);
     utils::UnInhibitPower(20);
     utils::MoveToCenter(w);
     utils::Time2str(90000);
@@ -55,6 +57,17 @@ TEST(libdmr, utils)
     utils::ValidateScreenshotPath(QString("~/uos"));
     utils::MakeRoundedPixmap(QPixmap("/data/source/deepin-movie-reborn/test.jpg"), 10, 10);
     utils::MakeRoundedPixmap(QSize(20, 30), QPixmap("/data/source/deepin-movie-reborn/test.jpg"), 10, 10, 20);
+    utils::ShowInFileManager("/data/source/deepin-movie-reborn/movie/demo.mp4");
+    utils::ShowInFileManager("/data/source/deepin-movie-reborn/test");  //path is not exist
+}
+
+TEST(libdmr, playlistModel)
+{
+    MainWindow *w = dApp->getMainWindow();
+    PlayerEngine *engine =  w->engine();
+    engine->playlist().savePlaylist();
+    engine->playlist().clearPlaylist();
+
 }
 
 TEST(libdmr, compositingManager)
