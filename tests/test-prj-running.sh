@@ -1,5 +1,5 @@
 #!/bin/bash
-rm -rf /home/uos/.config/deepin-movie-test
+rm -rf ${HOME}/.config/deepin-movie-test
 
 rm -rf ../$(dirname $0)/build-ut
 mkdir ../$(dirname $0)/build-ut
