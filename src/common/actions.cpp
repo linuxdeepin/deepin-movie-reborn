@@ -194,8 +194,8 @@ DMenu *ActionFactory::mainContextMenu()
             DEF_ACTION_CHECKED_GROUP(tr("Hide"), ActionKind::HideSubtitle, pActionGroup);
             {
                 DMenu *parent_encoding = pMenu;
-                DMenu *pMenutemp = new DMenu(tr("Encodings"));
-                QActionGroup *pGroup_encoding = new QActionGroup(pMenutemp);
+                DMenu *pMenu = new DMenu(tr("Encodings"));
+                QActionGroup *pGroup_encoding = new QActionGroup(pMenu);
                 //title <-> codepage
                 static QVector<QPair<QString, QString>> list = {
                     {"Auto", "auto"},
