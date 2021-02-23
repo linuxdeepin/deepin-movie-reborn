@@ -42,6 +42,7 @@ VolumeSlider::VolumeSlider(MainWindow *mw, QWidget *parent)
 
     vLayout->addStretch();
     m_pLabShowVolume = new DLabel(_mw);
+    DFontSizeManager::instance()->bind(m_pLabShowVolume, DFontSizeManager::T6);
     m_pLabShowVolume->setForegroundRole(QPalette::BrightText);
     m_pLabShowVolume->setFont(font);
     m_pLabShowVolume->setAlignment(Qt::AlignCenter);
