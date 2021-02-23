@@ -333,10 +333,6 @@ void VolumeSlider::changeVolume(int nVolume)
         nVolume = 200;
     }
 
-    if (nVolume > 0 && m_bIsMute) {      //音量改变时改变静音状态
-        changeMuteState(false);
-    }
-
     m_nVolume = nVolume;
 
     m_slider->setValue(nVolume > 100 ? 100 : nVolume);  //音量实际能改变200,但是音量条最大支持到100
@@ -382,6 +378,10 @@ void VolumeSlider::volumeChanged(int nVolume)
 
     if (m_nVolume != nVolume) {
         m_nVolume = nVolume;
+    }
+
+    if (m_nVolume > 0 && m_bIsMute) {      //音量改变时改变静音状态
+        changeMuteState(false);
     }
 
     refreshIcon();
