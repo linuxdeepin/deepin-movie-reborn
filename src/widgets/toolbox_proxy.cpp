@@ -117,20 +117,13 @@ DWIDGET_USE_NAMESPACE
 
 #define THEME_TYPE(colortype) do { \
         if (colortype == DGuiApplicationHelper::LightType){\
-            QColor backMaskColor(255, 255, 255, 140);\
+            QColor backMaskColor(255, 255, 255, 180);\
             this->blurBackground()->setMaskColor(backMaskColor);\
-            QColor maskColor(255, 255, 255, 76);\
-            bot_widget->setMaskColor(maskColor);\
+            bot_widget->setMaskColor(backMaskColor);\
         } else if (colortype == DGuiApplicationHelper::DarkType){\
             QColor backMaskColor(37, 37, 37, 140);\
             blurBackground()->setMaskColor(backMaskColor);\
-            QColor maskColor(37, 37, 37, 76);\
-            bot_widget->setMaskColor(maskColor);\
-        } else {\
-            QColor backMaskColor(255, 255, 255, 140);\
-            this->blurBackground()->setMaskColor(backMaskColor);\
-            QColor maskColor(255, 255, 255, 76);\
-            bot_widget->setMaskColor(maskColor);\
+            bot_widget->setMaskColor(backMaskColor);\
         }\
     } while(0);
 
@@ -1032,6 +1025,7 @@ void ToolboxProxy::setup()
     this->blurBackground()->setRadius(30);
     this->blurBackground()->setBlurEnabled(true);
     this->blurBackground()->setMode(DBlurEffectWidget::GaussianBlur);
+
 
     bot_widget = new DBlurEffectWidget(this);
     bot_widget->setObjectName(BOTTOM_WIDGET);
