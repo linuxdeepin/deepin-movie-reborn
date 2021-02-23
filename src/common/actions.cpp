@@ -160,13 +160,13 @@ DMenu *ActionFactory::mainContextMenu()
             m_pSound = pMenu;
             {
                 DMenu *pParent_channel = pMenu;
-                DMenu *pMenutemp = new DMenu(tr("Channel"));
-                m_pSoundMenu = pMenutemp;
-                QActionGroup *pActionGroup = new QActionGroup(pMenutemp);
+                DMenu *pMenu = new DMenu(tr("Channel"));
+                m_pSoundMenu = pMenu;
+                QActionGroup *pActionGroup = new QActionGroup(pMenu);
                 DEF_ACTION_CHECKED_GROUP(tr("Stereo"), ActionKind::Stereo, pActionGroup);
                 DEF_ACTION_CHECKED_GROUP(tr("Left channel"), ActionKind::LeftChannel, pActionGroup);
                 DEF_ACTION_CHECKED_GROUP(tr("Right channel"), ActionKind::RightChannel, pActionGroup);
-                pParent_channel->addMenu(pMenutemp);
+                pParent_channel->addMenu(pMenu);
             }
             {
                 DMenu *parent_track = pMenu;
