@@ -204,7 +204,7 @@ public:
         setAttribute(Qt::WA_DeleteOnClose);
         setWindowFlag(Qt::WindowStaysOnTopHint);
         resize(m_miniSize);
-        setRadius(4);
+        setRadius(8);
         setArrowWidth(10);
         setArrowHeight(5);
         const QPalette pal = QGuiApplication::palette();
