@@ -1411,7 +1411,7 @@ void PlaylistWidget::togglePopup()
         _toggling = false;
         _state = State::Closed;
         emit stateChange();
-        paOpen->start();
+        paOpen->start();    //down
         connect(paOpen, &QPropertyAnimation::finished, [ = ]() {
             paOpen->deleteLater();
             paOpen = nullptr;
@@ -1435,7 +1435,7 @@ void PlaylistWidget::togglePopup()
         _toggling = false;
         _state = State::Opened;
         emit stateChange();
-        paClose->start();
+        paClose->start();   //up
         connect(paClose, &QPropertyAnimation::finished, [ = ]() {
             paClose->deleteLater();
             paClose = nullptr;

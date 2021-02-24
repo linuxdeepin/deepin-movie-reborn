@@ -2899,7 +2899,10 @@ void MainWindow::suspendToolsWindow()
         }
 
         m_pTitlebar->hide();
-        m_pToolbox->hide();
+
+        if(m_pToolbox->getbAnimationFinash()) {
+            m_pToolbox->hide();
+        }
         //reset focus to mainWindow when the titlebar and toolbox is hedden
         //the tab focus will be re-executed in the order set
         m_pTitlebar->setFocus();
