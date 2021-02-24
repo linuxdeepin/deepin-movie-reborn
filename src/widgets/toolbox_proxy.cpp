@@ -1742,6 +1742,7 @@ void ToolboxProxy::slotPlayListStateChange()
     closeAnyPopup();
     if (m_pPlaylist->state() == PlaylistWidget::State::Opened) {
         m_pListBtn->setChecked(true);
+        m_pListBtn->setIcon(QIcon(":/icons/deepin/builtin/light/checked/episodes_checked.svg"));
         //非x86平台播放列表切换不展示动画,故按键状态不做限制
 #ifdef __x86_64__
         m_pListBtn->setEnabled(false);
@@ -1764,6 +1765,7 @@ void ToolboxProxy::slotPlayListStateChange()
 #endif
     } else {
         m_pListBtn->setChecked(false);
+        m_pListBtn->setIcon(QIcon::fromTheme("dcc_episodes"));
 #ifdef __x86_64__
         m_pListBtn->setEnabled(false);
         m_bAnimationFinash = false;
