@@ -1671,6 +1671,10 @@ void MainWindow::testCdrom()
     sleepStateChanged(false);
     subtitleMatchVideo("/data/home/uos/Videos/subtitle/Hachiko.A.Dog's.Story.ass");
 }
+void MainWindow::setCurrentHwdec(QString str)
+{
+    m_sCurrentHwdec = str;
+}
 #endif
 
 void MainWindow::mipsShowFullScreen()

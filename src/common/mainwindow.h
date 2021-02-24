@@ -235,6 +235,7 @@ public:
 #ifdef USE_TEST
     void testMprisapp();
     void testCdrom();
+    void setCurrentHwdec(QString);
 #endif
     void setShowSetting(bool);
     void updateGeometry(CornerEdge edge, QPoint pos);
