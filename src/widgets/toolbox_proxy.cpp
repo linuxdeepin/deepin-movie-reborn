@@ -1917,6 +1917,19 @@ void ToolboxProxy::progressHoverChanged(int nValue)
 
     QPoint pos = m_pProgBar->mapToGlobal(QPoint(0, TOOLBOX_TOP_EXTENT - 10));
     QPoint point { QCursor::pos().x(), pos.y() };
+    QPoint startPoint = mapToGlobal(QPoint(m_pProgBar_Widget->x(), 0));
+    QPoint endPoint = mapToGlobal(QPoint(m_pProgBar_Widget->x() + m_pProgBar->width(), 0));
+
+    /*********************************
+    * 时长显示不能超出进度条
+    * ********************************/
+    if (point.x() < startPoint.x()) {
+        point.setX(startPoint.x());
+    }
+
+    if (point.x() > endPoint.x()) {
+        point.setX(endPoint.x());
+    }
 
     bool bIsAudio = m_pEngine->isAudioFile(pif.info.fileName());
     if (!Settings::get().isSet(Settings::PreviewOnMouseover) || bIsAudio) {
