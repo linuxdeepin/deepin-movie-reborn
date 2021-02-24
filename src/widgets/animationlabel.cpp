@@ -71,9 +71,6 @@ void AnimationLabel::pauseAnimation()
 
     m_pPlayAnimationGroup->start();
     if(!isVisible()) {
-        if(!m_bComposited) { //设置显示顺序
-            setWindowFlag(Qt::WindowStaysOnTopHint);
-        }
         show();
     }
 }
@@ -88,9 +85,6 @@ void AnimationLabel::playAnimation()
 
     m_pPauseAnimationGroup->start();
     if(!isVisible()) {
-        if(!m_bComposited) {//设置显示顺序
-            setWindowFlag(Qt::WindowStaysOnTopHint);
-        }
         show();
     }
 }
