@@ -472,6 +472,9 @@ protected:
             break;
         }
         case QEvent::MouseButtonPress: {
+            if (!m_pMainWindow->playlist()) {
+                return true;
+            }
             if (m_pMainWindow->playlist()->state() == PlaylistWidget::State::Opened) {
                 m_pMainWindow->toolbox()->clearPlayListFocus();
             }
@@ -3661,7 +3664,7 @@ void MainWindow::moveEvent(QMoveEvent *pEvent)
 
 void MainWindow::keyPressEvent(QKeyEvent *pEvent)
 {
-    if ((m_pPlaylist->state() == PlaylistWidget::Opened) && pEvent->modifiers() == Qt::NoModifier) {
+    if (m_pPlaylist && (m_pPlaylist->state() == PlaylistWidget::Opened) && pEvent->modifiers() == Qt::NoModifier) {
         if (pEvent) {
             m_pPlaylist->updateSelectItem(pEvent->key());
         }
