@@ -235,3 +235,12 @@ TEST(requestAction,openCdrom)
     EXPECT_TRUE(true);
 }
 
+TEST(requestAction,changeSubCodepage)
+{
+    MainWindow* w = dApp->getMainWindow();
+
+    QTest::qWait(200);
+    QList<QVariant> list = {"test"};
+    w->requestAction(ActionFactory::ActionKind::ChangeSubCodepage, false, list);
+}
+

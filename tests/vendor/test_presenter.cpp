@@ -29,7 +29,10 @@ TEST(Presenter, slotplay)
     presenter->slotstateChanged();
     QTest::qWait(500);
     presenter->slotvolumeChanged();
-
+    QTest::qWait(500);
+    presenter->slotstop();
+    QTest::qWait(500);
+    presenter->slotseek(qlonglong(200));
 }
 
 TEST(Presenter, slotloopStatusRequested)

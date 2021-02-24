@@ -84,8 +84,10 @@ TEST(MainWindow, tabInteraction)
     volBtn->setFocus();
     QTest::keyClick(volBtn, Qt::Key_Enter, Qt::NoModifier, 200);
     QTest::qWait(500);
+
+    toolboxProxy->changeMuteState();
     for(int i = 0; i < 5; i++){
-        QTest::keyClick(volBtn, Qt::Key_Down, Qt::NoModifier, 100); //volume down 5
+        QTest::keyClick(volBtn, Qt::Key_Down, Qt::NoModifier, 100); //volume up 5
     }
     for(int i = 0; i < 10; i++){
         QTest::keyClick(volBtn, Qt::Key_Up, Qt::NoModifier, 100); //volume up 5
@@ -176,6 +178,21 @@ TEST(MainWindow, DBus)
     method_invalid = DBusUtils::redDBusMethod("com.test", "/com/test", "com.test", "SinkInputs");
     appAdaptor->Raise();
     appAdaptor->openFile("/data/source/deepin-movie-reborn/movie/demo.mp4");
+}
+
+TEST(MainWindow, hwdecChange)
+{
+    MainWindow *w = dApp->getMainWindow();
+    PlayerEngine *engine =  w->engine();
+
+    engine->changehwaccelMode(Backend::hwaccelClose);
+    QTest::keyClick(w, Qt::Key_H, Qt::ControlModifier, 500);
+
+    engine->changehwaccelMode(Backend::hwaccelAuto);
+    engine->setBackendProperty("hwdec", "auto");
+    w->setCurrentHwdec("");
+    QTest::keyClick(w, Qt::Key_H, Qt::ControlModifier, 1000);
+    QTest::keyClick(w, Qt::Key_H, Qt::ControlModifier, 500);
 }
 
 TEST(MainWindow, resizeWindow)
