@@ -932,6 +932,7 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
     m_pPreviewTime = new SliderTime;
     m_pPreviewTime->hide();
     setup();
+    slotThemeTypeChanged();
 
     connect(DApplicationHelper::instance(), &DApplicationHelper::themeTypeChanged,
             this, &ToolboxProxy::updatePlayState);
@@ -1561,6 +1562,66 @@ void ToolboxProxy::slotThemeTypeChanged()
     auto type = DGuiApplicationHelper::instance()->themeType();
     WAYLAND_BLACK_WINDOW;
     THEME_TYPE(type);
+
+    // 组合按钮无边框
+    QColor framecolor("#FFFFFF");
+    framecolor.setAlphaF(0.00);
+    QString rStr;
+    if (type == 1) {
+        QColor maskColor(247, 247, 247);
+        maskColor.setAlphaF(0.60);
+        rStr = "light";
+
+        DPalette pa;
+        pa = m_pFullScreenBtn->palette();
+        pa.setColor(DPalette::Light, QColor("#FFFFFF"));
+        pa.setColor(DPalette::Dark, QColor("#FFFFFF"));
+        pa.setColor(DPalette::ButtonText, QColor(Qt::black));
+        // 单个按钮边框
+        QColor btnframecolor("#000000");
+        btnframecolor.setAlphaF(0.00);
+        pa.setColor(DPalette::FrameBorder, btnframecolor);
+        // 取消阴影
+        pa.setColor(DPalette::Shadow, btnframecolor);
+        DApplicationHelper::instance()->setPalette(m_pFullScreenBtn, pa);
+        DApplicationHelper::instance()->setPalette(m_pVolBtn, pa);
+        DApplicationHelper::instance()->setPalette(m_pListBtn, pa);
+
+        DPalette pl = m_pPalyBox ->palette();
+        pl.setColor(DPalette::Button, QColor("#FFFFFF"));
+        //这个地方会导致按钮setdisable设置失效，按钮无法置灰
+//        pl.setColor(DPalette::ButtonText, QColor(Qt::black));
+        pl.setColor(DPalette::FrameBorder, framecolor);
+        pl.setColor(DPalette::Shadow, framecolor);
+        DApplicationHelper::instance()->setPalette(m_pPalyBox, pl);
+    } else {
+        QColor maskColor(32, 32, 32);
+        maskColor.setAlphaF(0.80);
+        rStr = "dark";
+
+        DPalette pa;
+        pa = m_pFullScreenBtn->palette();
+        QColor btnMaskColor("#000000");
+        btnMaskColor.setAlphaF(0.30);
+        pa.setColor(DPalette::Light, btnMaskColor);
+        pa.setColor(DPalette::Dark, btnMaskColor);
+        pa.setColor(DPalette::ButtonText, QColor("#c5cfe0"));
+        pa.setColor(DPalette::FrameBorder, framecolor);
+        // 取消阴影
+        pa.setColor(DPalette::Shadow, framecolor);
+        DApplicationHelper::instance()->setPalette(m_pFullScreenBtn, pa);
+        DApplicationHelper::instance()->setPalette(m_pVolBtn, pa);
+        DApplicationHelper::instance()->setPalette(m_pListBtn, pa);
+
+        DPalette pl = m_pPalyBox ->palette();
+        QColor btnColor("#000000");
+        btnColor.setAlphaF(0.60);
+        pl.setColor(DPalette::Button, btnColor);
+//        pl.setColor(DPalette::ButtonText, QColor("#c5cfe0"));
+        pl.setColor(DPalette::FrameBorder, framecolor);
+        pl.setColor(DPalette::Shadow, framecolor);
+        DApplicationHelper::instance()->setPalette(m_pPalyBox, pl);
+    }
 }
 
 void ToolboxProxy::slotLeavePreview()
