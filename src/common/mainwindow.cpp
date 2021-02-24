@@ -4317,6 +4317,9 @@ void MainWindow::toggleUIMode()
         } else if (m_nStateBeforeMiniMode & SBEM_Fullscreen) {
             requestAction(ActionFactory::ToggleFullscreen);
         } else {
+            if(m_pToolbox->listBtn()->isChecked()) {
+                m_pToolbox->listBtn()->setChecked(false);
+            }
             if (m_pEngine->state() == PlayerEngine::Idle && windowState() == Qt::WindowNoState) {
                 this->resize(850, 600);
             } else {
