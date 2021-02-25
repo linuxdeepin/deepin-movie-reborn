@@ -66,7 +66,8 @@ struct MovieInfo {
     int raw_rotate;
     qint64 fileSize;
     qint64 duration;
-    int width, height;
+    int width = -1;
+    int height = -1;
 
     //3.4添加视频信息
     //视频流信息

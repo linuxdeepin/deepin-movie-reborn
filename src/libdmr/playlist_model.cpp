@@ -1632,7 +1632,7 @@ struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl &url, const QFil
             //此处判断导致非播放状态下导入无视频流视频加载缩略图错误
             //暂时去掉，后期如有异常请排查此处逻辑
             //by xxxx
-            if (/*_engine->state() != dmr::PlayerEngine::Idle && */_engine->videoSize().width() < 0) { //如果没有视频流，就当做音乐播放
+            if (/*_engine->state() != dmr::PlayerEngine::Idle && */mi.width < 0 || mi.height < 0) { //如果没有视频流，就当做音乐播放
                 isMusic = true;
             }
 
