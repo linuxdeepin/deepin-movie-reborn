@@ -119,7 +119,7 @@ protected:
      * @brief 重载鼠标释放事件函数
      * @param event:qt鼠标事件
      */
-    void mouseReleaseEvent(QMouseEvent *event) override;
+//    void mouseReleaseEvent(QMouseEvent *event) override;
 
     QSequentialAnimationGroup *m_pPlayAnimationGroup;     ///切换播放状态动画组
     QPropertyAnimation        *m_pPlayShowAnimation;      ///切换播放状态显示动画

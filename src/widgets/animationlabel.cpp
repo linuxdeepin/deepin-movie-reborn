@@ -53,6 +53,7 @@ AnimationLabel::AnimationLabel(QWidget *parent, QWidget *pMainWindow, bool bComp
     : QFrame(parent)
 {
     initMember(pMainWindow, bComposited);
+    setAttribute(Qt::WA_TransparentForMouseEvents);
     if (!bComposited) {
         setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
         setAttribute(Qt::WA_TranslucentBackground, true);
@@ -244,15 +245,16 @@ void AnimationLabel::moveEvent(QMoveEvent *e)
  * @brief 重载鼠标释放事件函数
  * @param event:qt鼠标事件
  */
-void AnimationLabel::mouseReleaseEvent(QMouseEvent *ev)
-{
-    if(!m_bComposited)
-    {
-        if (ev->button() == Qt::LeftButton) {
-            if(m_pMainWindow){//鼠标左键释放时暂停与恢复
-                (static_cast<MainWindow *>(m_pMainWindow))->requestAction(ActionFactory::TogglePause);
-            }
-        }
-    }
-    return QWidget::mouseReleaseEvent(ev);
-}
+//修改为鼠标事件穿透，暂时注释掉鼠标事件重载
+//void AnimationLabel::mouseReleaseEvent(QMouseEvent *ev)
+//{
+//    if(!m_bComposited)
+//    {
+//        if (ev->button() == Qt::LeftButton) {
+//            if(m_pMainWindow){//鼠标左键释放时暂停与恢复
+//                (static_cast<MainWindow *>(m_pMainWindow))->requestAction(ActionFactory::TogglePause);
+//            }
+//        }
+//    }
+//    return QWidget::mouseReleaseEvent(ev);
+//}
