@@ -731,6 +731,20 @@ bool PlaylistModel::getThumanbilRunning()
     }
 }
 
+bool PlaylistModel::isMediaFile(QString sFileName)
+{
+    QFileInfo fileInfo(sFileName);
+    bool *bRet = new bool();
+    MovieInfo movieInfo;
+    movieInfo = parseFromFile(fileInfo, bRet);
+
+    if (!*bRet) {
+        return false;
+    }
+
+    return movieInfo.valid;
+}
+
 
 /*PlaylistModel::PlayMode PlaylistModel::playMode() const
 {

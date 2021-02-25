@@ -61,7 +61,7 @@ TEST(MainWindow, tabInteraction)
 {
     MainWindow *w = dApp->getMainWindow();
     PlayerEngine *engine =  w->engine();
-    ToolboxProxy* toolboxProxy = w->toolbox();
+    ToolboxProxy *toolboxProxy = w->toolbox();
     ToolButton *fsBtn = toolboxProxy->fsBtn();
     VolumeButton *volBtn = toolboxProxy->volBtn();
     ToolButton *listBtn = toolboxProxy->listBtn();
@@ -76,6 +76,7 @@ TEST(MainWindow, tabInteraction)
                   << QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/天空之眼 高清1080P.mp4")\
                   << QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/bensound-sunny.mp3");
 
+    engine->playlist().loadPlaylist();
     const QList<QUrl> &valids = engine->addPlayFiles(listPlayFiles);
 
     QTest::qWait(500);
@@ -86,10 +87,10 @@ TEST(MainWindow, tabInteraction)
     QTest::qWait(500);
 
     toolboxProxy->changeMuteState();
-    for(int i = 0; i < 5; i++){
+    for (int i = 0; i < 5; i++) {
         QTest::keyClick(volBtn, Qt::Key_Down, Qt::NoModifier, 100); //volume up 5
     }
-    for(int i = 0; i < 10; i++){
+    for (int i = 0; i < 10; i++) {
         QTest::keyClick(volBtn, Qt::Key_Up, Qt::NoModifier, 100); //volume up 5
     }
 
@@ -100,7 +101,7 @@ TEST(MainWindow, tabInteraction)
     QTest::qWait(500);
     QTest::keyClick(listBtn, Qt::Key_Enter, Qt::NoModifier, 200);
     QTest::keyClick(playlistWidget, Qt::Key_Enter, Qt::NoModifier, 500);    //clear playlist
-    for(int i = 0; i < 3; i++){
+    for (int i = 0; i < 3; i++) {
         QTest::keyClick(playlist, Qt::Key_Tab, Qt::NoModifier, 100);
     }
     QTest::keyClick(w, Qt::Key_Escape, Qt::NoModifier, 500);    //close playlist by Esc
@@ -127,8 +128,8 @@ TEST(MainWindow, loadFile)
 
     const QList<QUrl> &valids = engine->addPlayFiles(listPlayFiles);
     QCOMPARE(engine->isPlayableFile(valids[0]), true);
-    if(!valids.empty()){
-      engine->playByName(valids[0]);
+    if (!valids.empty()) {
+        engine->playByName(valids[0]);
     }
 
     qDebug() << __func__ << "MainWindow.loadFile:" << engine->state();
@@ -154,12 +155,11 @@ TEST(MainWindow, DBus)
     QVariant v_invalid = ApplicationAdaptor::redDBusProperty("com.test", "/test", "com.test", "SinkInputs");
     v_invalid = DBusUtils::redDBusProperty("com.test", "/test", "com.test", "SinkInputs");
 
-    if(v.isValid())
-    {
+    if (v.isValid()) {
         QList<QDBusObjectPath> allSinkInputsList = v.value<QList<QDBusObjectPath> >();
         for (auto curPath : allSinkInputsList) {
             QVariant name = ApplicationAdaptor::redDBusProperty("com.deepin.daemon.Audio", curPath.path(),
-                                                                 "com.deepin.daemon.Audio.SinkInput", "Name");
+                                                                "com.deepin.daemon.Audio.SinkInput", "Name");
 
             QString strMovie = QObject::tr("Movie");
             if (!name.isValid() || (!name.toString().contains(strMovie, Qt::CaseInsensitive) && !name.toString().contains("deepin-movie", Qt::CaseInsensitive)))
@@ -171,10 +171,10 @@ TEST(MainWindow, DBus)
     }
 
     QVariant method = ApplicationAdaptor::redDBusMethod("com.deepin.daemon.Audio", "/com/deepin/daemon/Audio",
-                                                     "com.deepin.daemon.Audio", "SinkInputs");
+                                                        "com.deepin.daemon.Audio", "SinkInputs");
     QVariant method_invalid = ApplicationAdaptor::redDBusMethod("com.test", "/com/test", "com.test", "SinkInputs");
     method = DBusUtils::redDBusMethod("com.deepin.daemon.Audio", "/com/deepin/daemon/Audio",
-                                               "com.deepin.daemon.Audio", "SinkInputs");
+                                      "com.deepin.daemon.Audio", "SinkInputs");
     method_invalid = DBusUtils::redDBusMethod("com.test", "/com/test", "com.test", "SinkInputs");
     appAdaptor->Raise();
     appAdaptor->openFile("/data/source/deepin-movie-reborn/movie/demo.mp4");
@@ -214,10 +214,10 @@ TEST(MainWindow, resizeWindow)
 TEST(MainWindow, touch)
 {
     MainWindow *w = dApp->getMainWindow();
-    ToolboxProxy* toolboxProxy = w->toolbox();
-    QStackedWidget * progbarWidget = toolboxProxy->findChild<QStackedWidget *>(PROGBAR_WIDGET);
+    ToolboxProxy *toolboxProxy = w->toolbox();
+    QStackedWidget *progbarWidget = toolboxProxy->findChild<QStackedWidget *>(PROGBAR_WIDGET);
 
-    if(!w->isFullScreen()){
+    if (!w->isFullScreen()) {
         qDebug() << __func__ << "进入全屏";
         QTest::mouseDClick(w, Qt::LeftButton, Qt::NoModifier, QPoint(), 500); //fullscreen
     }
@@ -233,7 +233,7 @@ TEST(MainWindow, touch)
     QTest::mousePress(w->windowHandle(), Qt::LeftButton, Qt::MetaModifier, QPoint(400, 100), 200);
     QTest::mouseRelease(w->windowHandle(), Qt::LeftButton, Qt::MetaModifier, QPoint(400, 300), 200);
 
-    while(progbarWidget->currentIndex() == 1){
+    while (progbarWidget->currentIndex() == 1) {
         QTest::qWait(200);
     }
 
@@ -246,7 +246,7 @@ TEST(MainWindow, touch)
 
     Settings::get().settings()->setOption("base.play.showInthumbnailmode", false);
 #endif
-    if(w->isFullScreen()){
+    if (w->isFullScreen()) {
         //quit fullscreen
         QTest::mouseDClick(w, Qt::LeftButton, Qt::NoModifier, QPoint(), 200);
     }
@@ -255,7 +255,7 @@ TEST(MainWindow, touch)
 
 TEST(MainWindow, shortCutPlay)
 {
-    MainWindow* w = dApp->getMainWindow();
+    MainWindow *w = dApp->getMainWindow();
     QTestEventList testEventList;
     PlayerEngine *engine =  w->engine();
 
@@ -263,7 +263,7 @@ TEST(MainWindow, shortCutPlay)
     qDebug() << __func__ << "playerEngineState:" << engine->state()
              << "playlistCount:" << engine->playlist().count();
 
-    while(engine->state() == PlayerEngine::CoreState::Idle){
+    while (engine->state() == PlayerEngine::CoreState::Idle) {
         QTest::qWait(100);
     }
 
@@ -282,7 +282,7 @@ TEST(MainWindow, shortCutPlay)
     testEventList.addKeyClick(Qt::Key_S, Qt::AltModifier, 1000);
 
     testEventList.addKeyClick(Qt::Key_Right, Qt::NoModifier, 300); //fast forward
-    for(int i=0; i<4; i++){
+    for (int i = 0; i < 4; i++) {
         testEventList.addKeyClick(Qt::Key_Left, Qt::NoModifier, 200);  //fast backward
     }
 
@@ -294,8 +294,7 @@ TEST(MainWindow, shortCutPlay)
     testEventList.addKeyClick(Qt::Key_Up, Qt::NoModifier, 400);
     testEventList.addKeyClick(Qt::Key_Enter, Qt::NoModifier, 500);
     qDebug() << __func__ << "playlist_count:" << engine->playlist().count();
-    if(engine->playlist().count() >= 2)
-    {
+    if (engine->playlist().count() >= 2) {
         testEventList.addKeyClick(Qt::Key_F3, Qt::NoModifier, 1900);    //playlist popup
         testEventList.addKeyClick(Qt::Key_Down, Qt::NoModifier, 500);
         testEventList.addKeyClick(Qt::Key_Delete, Qt::NoModifier, 500);    //delete from playlist
@@ -303,11 +302,11 @@ TEST(MainWindow, shortCutPlay)
     }
 
     //加速播放
-    for (int i = 0; i<10 ;i++) {
+    for (int i = 0; i < 10 ; i++) {
         testEventList.addKeyClick(Qt::Key_Right, Qt::ControlModifier, 50);
     }
     //减速播放
-    for (int i = 0; i<16 ;i++) {
+    for (int i = 0; i < 16 ; i++) {
         testEventList.addKeyClick(Qt::Key_Left, Qt::ControlModifier, 50);
     }
 
@@ -323,15 +322,15 @@ TEST(MainWindow, shortCutPlay)
 
 TEST(MainWindow, shortCutVolumeAndFrame)
 {
-    MainWindow* w = dApp->getMainWindow();
+    MainWindow *w = dApp->getMainWindow();
     QTestEventList testEventList;
 
     //volume
     testEventList.addKeyClick(Qt::Key_Down, Qt::ControlModifier | Qt::AltModifier, 20);    //volume down
-    for (int i = 0; i<11; i++) {
+    for (int i = 0; i < 11; i++) {
         testEventList.addKeyClick(Qt::Key_Up, Qt::ControlModifier | Qt::AltModifier, 10);//volume up
     }
-    for (int i = 0; i<20; i++) {
+    for (int i = 0; i < 20; i++) {
         testEventList.addKeyClick(Qt::Key_Down, Qt::ControlModifier | Qt::AltModifier, 10);    //volume down
     }
 
@@ -350,13 +349,13 @@ TEST(MainWindow, shortCutVolumeAndFrame)
 //will cause the program abort of arm platform
 TEST(MainWindow, miniMode)
 {
-    MainWindow* w = dApp->getMainWindow();
+    MainWindow *w = dApp->getMainWindow();
     PlayerEngine *engine =  w->engine();
 
     engine->playByName(QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/demo.mp4"));
     qDebug() << __func__ << engine->state() << "playlist count:" << engine->playlist().count();
 
-    while(engine->state() == PlayerEngine::CoreState::Idle){
+    while (engine->state() == PlayerEngine::CoreState::Idle) {
         QTest::qWait(100);
     }
     qDebug() << __func__ << engine->state() << "playlist count:" << engine->playlist().count();
@@ -370,7 +369,7 @@ TEST(MainWindow, miniMode)
 #endif
     DIconButton *miniQuiteMiniBtn = w->findChild<DIconButton *>("MiniQuitMiniBtn");
 
-    if(miniPauseBtn && miniQuiteMiniBtn){
+    if (miniPauseBtn && miniQuiteMiniBtn) {
         QTest::mouseMove(miniPauseBtn, QPoint(), 1000);
         QTest::mouseClick(miniPauseBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 300);
         //w->customContextMenuRequested(w->pos());
@@ -381,7 +380,7 @@ TEST(MainWindow, miniMode)
     QTest::qWait(500);
     w->requestAction(ActionFactory::ActionKind::ToggleMiniMode);
 
-    if(miniPauseBtn){
+    if (miniPauseBtn) {
         DIconButton *miniCloseBtn = w->findChild<DIconButton *>("MiniCloseBtn");
         QTest::mouseMove(miniPauseBtn, QPoint(), 300);
         QTest::mouseClick(miniPauseBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 300);
@@ -394,11 +393,11 @@ TEST(MainWindow, miniMode)
 
 TEST(MainWindow, progBar)
 {
-    MainWindow* w = dApp->getMainWindow();
+    MainWindow *w = dApp->getMainWindow();
     PlayerEngine *engine =  w->engine();
-    ToolboxProxy* toolboxProxy = w->toolbox();
+    ToolboxProxy *toolboxProxy = w->toolbox();
     DMRSlider *progBarSlider = toolboxProxy->getSlider();
-    QStackedWidget * progbarWidget = toolboxProxy->findChild<QStackedWidget *>(PROGBAR_WIDGET);
+    QStackedWidget *progbarWidget = toolboxProxy->findChild<QStackedWidget *>(PROGBAR_WIDGET);
 
     engine->playByName(QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/demo.mp4"));
 
@@ -409,8 +408,8 @@ TEST(MainWindow, progBar)
     QTest::mouseMove(progBarSlider->slider(), point, 200);
     QTest::mouseClick(progBarSlider->slider(), Qt::LeftButton, Qt::NoModifier, point, 200);
     //拖动
-    QPoint startPoint(progBarSlider->slider()->x()+100, progBarSlider->slider()->y());
-    QPoint endPoint(progBarSlider->slider()->x()+10, progBarSlider->slider()->y());
+    QPoint startPoint(progBarSlider->slider()->x() + 100, progBarSlider->slider()->y());
+    QPoint endPoint(progBarSlider->slider()->x() + 10, progBarSlider->slider()->y());
     QTest::mouseMove(progBarSlider->slider(), startPoint, 200);
     QTest::mousePress(progBarSlider->slider(), Qt::LeftButton, Qt::NoModifier, startPoint, 100);
     QTest::mouseMove(progBarSlider->slider(), endPoint, 200);
@@ -445,7 +444,7 @@ TEST(MainWindow, progBar)
 #if !defined (__mips__ ) && !defined(__aarch64__)
     Settings::get().settings()->setOption("base.play.showInthumbnailmode", true);
 
-    while(progbarWidget->currentIndex() == 1){   //等待胶片加载
+    while (progbarWidget->currentIndex() == 1) { //等待胶片加载
         QTest::qWait(200);
     }
 
@@ -466,12 +465,12 @@ TEST(MainWindow, progBar)
 
 TEST(MainWindow, movieInfoDialog)
 {
-    MainWindow* w = dApp->getMainWindow();
+    MainWindow *w = dApp->getMainWindow();
     PlayerEngine *engine  =  w->engine();
     engine->playByName(QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/demo.mp4"));
     qDebug() << __func__ << engine->state() << engine->playlist().count();
 
-    while(engine->state() == PlayerEngine::CoreState::Idle){
+    while (engine->state() == PlayerEngine::CoreState::Idle) {
         QTest::qWait(100);
     }
 
@@ -485,7 +484,7 @@ TEST(MainWindow, movieInfoDialog)
     QTest::qWait(200);
     mid.show();
     QTest::qWait(200);
-    if(filePathLbl){
+    if (filePathLbl) {
         QTest::mouseMove(filePathLbl, QPoint(), 200);
         QTest::qWait(700);  //wait 700ms for tooltip event
         QApplication::sendEvent(filePathLbl, &toolTipEvent);
@@ -500,7 +499,7 @@ TEST(MainWindow, movieInfoDialog)
 
     QTest::qWait(100);
     mid.show();
-    if(filePathLbl){
+    if (filePathLbl) {
         QTest::mouseMove(filePathLbl, QPoint(), 100);
         QApplication::sendEvent(filePathLbl, &toolTipEvent);
         QTest::mouseMove(w, QPoint(200, 300), 800);
@@ -511,7 +510,7 @@ TEST(MainWindow, movieInfoDialog)
 
 TEST(MainWindow, reloadFile)
 {
-    MainWindow* w = dApp->getMainWindow();
+    MainWindow *w = dApp->getMainWindow();
     PlayerEngine *engine =  w->engine();
     QList<QUrl> listPlayFiles;
     listPlayFiles << QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/demo.mp4")\
@@ -533,7 +532,7 @@ TEST(ToolBox, playListWidget)
     QEvent leaveEvent(QEvent::Leave);
 
     QTest::mouseMove(listBtn, QPoint(), 200);
-    QTest::mouseClick(listBtn, Qt::LeftButton, Qt::NoModifier,QPoint(), 300);   //playlist popup
+    QTest::mouseClick(listBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 300);  //playlist popup
 
     QTest::mouseMove(playlist->itemWidget(playlist->item(0)), QPoint(), 700);
     QTest::qWait(1000);
@@ -560,7 +559,7 @@ TEST(ToolBox, playListWidget)
 //    QApplication::sendEvent(playlist->itemWidget(playlist->item(0)), cme);
 
     QPoint point(playlist->pos().x() + 300, playlist->pos().y() + 60);
-    QTest::mouseMove(w,point,200);
+    QTest::mouseMove(w, point, 200);
     QWheelEvent wheelEvent = QWheelEvent(point, 20, Qt::MidButton, Qt::NoModifier);
     QApplication::sendEvent(w, &wheelEvent);
 
@@ -576,13 +575,13 @@ TEST(ToolBox, playListWidget)
 
 TEST(ToolBox, playBtnBox)
 {
-    MainWindow* w = dApp->getMainWindow();
+    MainWindow *w = dApp->getMainWindow();
     PlayerEngine *engine =  w->engine();
     QList<QUrl> listPlayFiles;
-    ToolboxProxy* toolboxProxy = w->toolbox();
-    DButtonBoxButton* playBtn = toolboxProxy->playBtn();
-    DButtonBoxButton* nextBtn = toolboxProxy->nextBtn();
-    DButtonBoxButton* prevBtn = toolboxProxy->prevBtn();
+    ToolboxProxy *toolboxProxy = w->toolbox();
+    DButtonBoxButton *playBtn = toolboxProxy->playBtn();
+    DButtonBoxButton *nextBtn = toolboxProxy->nextBtn();
+    DButtonBoxButton *prevBtn = toolboxProxy->prevBtn();
 
     listPlayFiles << QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/demo.mp4")\
                   << QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/bensound-sunny.mp3");
@@ -596,7 +595,7 @@ TEST(ToolBox, playBtnBox)
     QApplication::sendEvent(playBtn, &leaveEvent);
 
     QTest::mouseMove(playBtn, QPoint(), 200);
-    QTest::mouseClick(playBtn,Qt::LeftButton,Qt::NoModifier,QPoint(),500);//pause
+    QTest::mouseClick(playBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 500); //pause
     QTest::mouseMove(w, QPoint(200, 300), 200);
     QTest::mouseMove(playBtn, QPoint(), 200);
     QTest::mouseClick(playBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 500); //play
@@ -608,17 +607,17 @@ TEST(ToolBox, playBtnBox)
 
 TEST(ToolBox, UrlDialog)
 {
-    MainWindow* w = dApp->getMainWindow();
+    MainWindow *w = dApp->getMainWindow();
     UrlDialog *uDlg = new UrlDialog(w);
     LineEdit *lineEdit = uDlg->findChild<LineEdit *>();
 
     uDlg->show();
     QTest::mouseMove(uDlg->getButton(0), QPoint(), 200);
-    QTest::mouseClick(uDlg->getButton(0), Qt::LeftButton, Qt::NoModifier,QPoint(), 200);
+    QTest::mouseClick(uDlg->getButton(0), Qt::LeftButton, Qt::NoModifier, QPoint(), 200);
 
     uDlg->show();
     QTest::mouseMove(lineEdit, QPoint(), 200);
-    QTest::keyClicks(lineEdit,QString("mail.263.net/"), Qt::NoModifier, 1);
+    QTest::keyClicks(lineEdit, QString("mail.263.net/"), Qt::NoModifier, 1);
     QTest::mouseMove(uDlg->getButton(1), QPoint(), 200);
     QTest::mouseClick(uDlg->getButton(1), Qt::LeftButton, Qt::NoModifier, QPoint(), 200);
 
@@ -636,8 +635,8 @@ TEST(ToolBox, UrlDialog)
 
 TEST(ToolBox, fullScreenBtn)
 {
-    MainWindow* w = dApp->getMainWindow();
-    ToolboxProxy* toolboxProxy = w->toolbox();
+    MainWindow *w = dApp->getMainWindow();
+    ToolboxProxy *toolboxProxy = w->toolbox();
     ToolButton *fsBtn = toolboxProxy->fsBtn();
 
     QTest::mouseMove(fsBtn, QPoint(), 200);
@@ -652,12 +651,12 @@ TEST(ToolBox, fullScreenBtn)
 
 TEST(ToolBox, volBtn)
 {
-    MainWindow* w = dApp->getMainWindow();
-    ToolboxProxy* toolboxProxy = w->toolbox();
+    MainWindow *w = dApp->getMainWindow();
+    ToolboxProxy *toolboxProxy = w->toolbox();
     VolumeButton *volBtn = toolboxProxy->volBtn();
 
     QTest::mouseMove(volBtn, QPoint(), 200);
-    QTest::mouseClick(volBtn,Qt::LeftButton,Qt::NoModifier,QPoint(),500);
+    QTest::mouseClick(volBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 500);
 
     QWheelEvent wheelUpEvent(volBtn->rect().center(), 20, Qt::NoButton, Qt::NoModifier);
     QWheelEvent wheelDownEvent(volBtn->rect().center(), -20, Qt::NoButton, Qt::NoModifier);
@@ -677,7 +676,7 @@ TEST(ToolBox, mainWindowEvent)
     MainWindow *w = dApp->getMainWindow();
     QMimeData mimeData;
     QList<QUrl> urls;
-    QPoint point(w->pos().x() + 20, w->pos().y() +20);
+    QPoint point(w->pos().x() + 20, w->pos().y() + 20);
     urls << QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/demo.mp4")\
          << QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/bensound-sunny.mp3");
     mimeData.setUrls(urls);
@@ -700,12 +699,12 @@ TEST(ToolBox, mainWindowEvent)
     QApplication::sendEvent(w, &wheelEvent);
 
     QContextMenuEvent *cme = new QContextMenuEvent(QContextMenuEvent::Mouse, w->rect().center());
-    QTimer::singleShot(100,[=](){
+    QTimer::singleShot(100, [ = ]() {
         ActionFactory::get().mainContextMenu()->clear();
     });
     QApplication::sendEvent(w, cme);
 
-    QTest::mouseClick(w, Qt::LeftButton, Qt::NoModifier, QPoint(100,100), 200);
+    QTest::mouseClick(w, Qt::LeftButton, Qt::NoModifier, QPoint(100, 100), 200);
     QTest::qWait(100);
     //shortcut view
     QKeyEvent keypress(QEvent::KeyPress, Qt::Key_Slash, Qt::ControlModifier | Qt::ShiftModifier);
@@ -717,8 +716,8 @@ TEST(ToolBox, mainWindowEvent)
 
 TEST(ToolBox, clearPlayList)
 {
-    MainWindow* w = dApp->getMainWindow();
-    ToolboxProxy* toolboxProxy = w->toolbox();
+    MainWindow *w = dApp->getMainWindow();
+    ToolboxProxy *toolboxProxy = w->toolbox();
     ToolButton *listBtn = toolboxProxy->listBtn();
     DPushButton *playlistClearBtn = w->findChild<DPushButton *>(CLEAR_PLAYLIST_BUTTON);
 

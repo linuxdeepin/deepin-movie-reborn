@@ -208,6 +208,8 @@ public:
      */
     bool getThumanbilRunning();
 
+    bool isMediaFile(QString sFileName);    //判断一个文件是否是多媒体文件
+
 public slots:
     void changeCurrent(int);
     void delayedAppendAsync(const QList<QUrl> &);
@@ -311,7 +313,7 @@ class GetThumanbil : public QThread
 {
     Q_OBJECT
 public:
-    GetThumanbil(PlaylistModel *model, const QList<QUrl> &urls):m_model(model), m_urls(urls)
+    GetThumanbil(PlaylistModel *model, const QList<QUrl> &urls): m_model(model), m_urls(urls)
     {
 //        m_model = model;
 //        m_urls = urls;

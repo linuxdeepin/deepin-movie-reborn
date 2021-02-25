@@ -118,8 +118,11 @@ PlayerEngine::~PlayerEngine()
 
 bool PlayerEngine::isPlayableFile(const QUrl &url)
 {
+    // 根据后缀不能准确判断一个文件是否能播放
+    // 用是否包含音视频流判断更为准确
     if (url.isLocalFile()) {
-        return (isPlayableFile(url.path()) || isAudioFile(url.path()));
+        //return (isPlayableFile(url.path()) || isAudioFile(url.path()));
+        return (isPlayableFile(url.path()) && _playlist->isMediaFile(url.path()));
     } else {
         // for a networked url, there is no way to know if it's playable right now
         return true;
