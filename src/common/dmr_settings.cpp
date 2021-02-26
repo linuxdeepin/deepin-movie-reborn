@@ -179,8 +179,8 @@ bool Settings::iscommonPlayableProtocol(const QString &sScheme) const
 //    }
 //    return false;
 
-    bool result = std::any_of(commonPlayableProtocols().begin(),
-    commonPlayableProtocols().end(), [&](QString & _pro) {
+    QStringList list = commonPlayableProtocols();
+    bool result = std::any_of(list.begin(), list.end(), [&](QString & _pro) {
         return _pro == sScheme;
     });
 
