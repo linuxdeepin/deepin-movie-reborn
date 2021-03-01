@@ -57,6 +57,15 @@ ActionFactory &ActionFactory::get()
             m_listContextMenuActions.removeOne((QAction*)o); \
         }); \
     } while (0)
+#define DEF_ACTION_CHECKED_NEW(NAME, KD) do { \
+        QAction *pAct = pMenu->addAction((NAME)); \
+        pAct->setCheckable(true); \
+        pAct->setProperty("kind", KD); \
+        m_listContextMenuActions.append(pAct); \
+        connect(pAct, &QObject::destroyed, [=](QObject* o) { \
+            m_listContextMenuActions.removeOne((QAction*)o); \
+        }); \
+    } while (0)
 #define DEF_ACTION_GROUP(NAME, KD, GROUP) do { \
         QAction *pAct = pMenu->addAction((NAME)); \
         pAct->setProperty("kind", KD); \
@@ -191,7 +200,7 @@ DMenu *ActionFactory::mainContextMenu()
                 m_pSubtitleMenu = pMenutemp;
                 pParent_select->addMenu(pMenutemp);
             }
-            DEF_ACTION_CHECKED_GROUP(tr("Hide"), ActionKind::HideSubtitle, pActionGroup);
+            DEF_ACTION_CHECKED_NEW(tr("Hide"), ActionKind::HideSubtitle);
             {
                 DMenu *parent_encoding = pMenu;
                 DMenu *pMenu = new DMenu(tr("Encodings"));
