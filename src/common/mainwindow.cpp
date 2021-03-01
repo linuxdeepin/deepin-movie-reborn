@@ -2898,14 +2898,13 @@ void MainWindow::suspendToolsWindow()
             }
         }
 
-        m_pTitlebar->hide();
-
-        if(m_pToolbox->getbAnimationFinash()) {
+        if (m_pToolbox->getbAnimationFinash()) {
             m_pToolbox->hide();
         }
         //reset focus to mainWindow when the titlebar and toolbox is hedden
         //the tab focus will be re-executed in the order set
         m_pTitlebar->setFocus();
+        m_pTitlebar->hide();        //隐藏操作应放在设置焦点后
     } else {
         if (m_autoHideTimer.isActive())
             return;
@@ -4320,7 +4319,7 @@ void MainWindow::toggleUIMode()
         } else if (m_nStateBeforeMiniMode & SBEM_Fullscreen) {
             requestAction(ActionFactory::ToggleFullscreen);
         } else {
-            if(m_pToolbox->listBtn()->isChecked()) {
+            if (m_pToolbox->listBtn()->isChecked()) {
                 m_pToolbox->listBtn()->setChecked(false);
             }
             if (m_pEngine->state() == PlayerEngine::Idle && windowState() == Qt::WindowNoState) {
