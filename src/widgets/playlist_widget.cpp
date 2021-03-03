@@ -516,7 +516,13 @@ protected:
         DStyleHelper styleHelper;
         QStyleOption option;
         if (!(_index->text().toInt() % 2)) {
-            QColor bgColor  = pal.color(DPalette::AlternateBase);
+            QColor bgColor;
+            if (DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::DarkType) {
+                bgColor = QColor(255, 255, 255);
+                bgColor.setAlphaF(0.05);
+            } else {
+                bgColor = pal.color(DPalette::AlternateBase);
+            }
             QPainterPath pp;
             pp.addRoundedRect(bgRect, 8, 8);
             painter.fillPath(pp, bgColor);
