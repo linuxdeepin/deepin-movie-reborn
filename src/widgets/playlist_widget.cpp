@@ -552,9 +552,6 @@ protected:
                 _time->setForegroundRole(DPalette::BrightText);
             }
             opacityEffect->setOpacity(1.0);
-            DFontSizeManager::instance()->bind(_name, DFontSizeManager::T6, QFont::Medium);
-            DFontSizeManager::instance()->bind(_index, DFontSizeManager::T6, QFont::Medium);
-            DFontSizeManager::instance()->bind(_time, DFontSizeManager::T6, QFont::Medium);
         } else {
             QGraphicsOpacityEffect *opacityEffect = new QGraphicsOpacityEffect;
             QGraphicsOpacityEffect *opacityEffect_1 = new QGraphicsOpacityEffect;
@@ -572,10 +569,6 @@ protected:
             } else {
                 opacityEffect_1->setOpacity(0.5);
             }
-
-            DFontSizeManager::instance()->bind(_name, DFontSizeManager::T6, QFont::Normal);
-            DFontSizeManager::instance()->bind(_index, DFontSizeManager::T6, QFont::Normal);
-            DFontSizeManager::instance()->bind(_time, DFontSizeManager::T6, QFont::Normal);
         }
 
         if (!_pif.valid) {
@@ -585,7 +578,6 @@ protected:
         }
 
         if (m_bIsSelect) {
-
             _time->hide();
             _closeBtn->show();
             _closeBtn->raise();
@@ -623,7 +615,6 @@ protected:
                 _index->setPalette(pe);
             }
         }
-
         QFrame::paintEvent(pe);
     }
 
@@ -1257,6 +1248,7 @@ void PlaylistWidget::appendItems()
         _closeMapper->setMapping(w, w);
         _activateMapper->setMapping(w, w);
         ++p;
+
     }
     QString s = QString(tr("%1 videos")).arg(_playlist->count());
     _num->setText(s);
