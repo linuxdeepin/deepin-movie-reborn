@@ -476,7 +476,6 @@ private:
     QStringList m_listOpenFiles;
     QString m_sCurrentHwdec;                         ///当前的硬解码模式
     bool m_bProgressChanged;                         ///进度条是否被拖动
-    bool m_bFirstInit;
     bool m_bLastIsTouch;
     bool m_bTouchChangeVolume;                       ///是否触发了触屏改变音量
     bool m_bStartAnimation;                           ///是否开始动画，如果开始不允许做其他操作

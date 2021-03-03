@@ -889,9 +889,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_pEngine, &PlayerEngine::aidChanged, [ = ]() {
         reflectActionToUI(ActionFactory::ActionKind::SelectTrack);
     });
-    connect(m_pEngine, &PlayerEngine::subCodepageChanged, [ = ]() {
-        reflectActionToUI(ActionFactory::ActionKind::ChangeSubCodepage);
-    });
+//    connect(m_pEngine, &PlayerEngine::subCodepageChanged, [ = ]() {
+//        reflectActionToUI(ActionFactory::ActionKind::ChangeSubCodepage);
+//    });
     connect(m_pEngine, &PlayerEngine::fileLoaded, this, &MainWindow::slotFileLoaded);
 
     connect(m_pEngine, &PlayerEngine::videoSizeChanged, [ = ]() {
@@ -1479,11 +1479,7 @@ void MainWindow::reflectActionToUI(ActionFactory::ActionKind actionKind)
     case ActionFactory::ActionKind::ChangeSubCodepage: {
         //mpv未初始化时返回默认值auto
         QString sCodePage;
-        if (m_bFirstInit) {
-            sCodePage = m_pEngine->subCodepage();
-        } else {
-            sCodePage = "auto";
-        }
+        sCodePage = m_pEngine->subCodepage();
         qInfo() << "codepage" << sCodePage;
         listActs = ActionFactory::get().findActionsByKind(actionKind);
         auto p = listActs.begin();
@@ -4539,7 +4535,6 @@ void MainWindow::initMember()
     m_bIsFileLoadNotFinished = false;
     m_bIsFirstLoadDBus = false;
     m_bProgressChanged = false;
-    m_bFirstInit = false;
     m_bLastIsTouch = false;
     m_bTouchChangeVolume = false;
     m_bIsFree = true;

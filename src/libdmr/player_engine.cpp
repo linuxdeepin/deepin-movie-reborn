@@ -417,7 +417,12 @@ double PlayerEngine::subDelay() const
 
 QString PlayerEngine::subCodepage()
 {
-    return _current->subCodepage();
+    if (_current->subCodepage().isEmpty()) {
+        return "auto";
+    } else {
+        return _current->subCodepage();
+    }
+
 }
 
 void PlayerEngine::setSubCodepage(const QString &cp)
@@ -425,7 +430,7 @@ void PlayerEngine::setSubCodepage(const QString &cp)
     if (!_current) return;
     _current->setSubCodepage(cp);
 
-    emit subCodepageChanged();
+//    emit subCodepageChanged();
 }
 
 void PlayerEngine::addSubSearchPath(const QString &path)
