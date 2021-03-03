@@ -117,11 +117,13 @@ DWIDGET_USE_NAMESPACE
 
 #define THEME_TYPE(colortype) do { \
         if (colortype == DGuiApplicationHelper::LightType){\
-            QColor backMaskColor(255, 255, 255, 180);\
+            QColor backMaskColor(247, 247, 247);\
+            backMaskColor.setAlphaF(0.6);\
             this->blurBackground()->setMaskColor(backMaskColor);\
             bot_widget->setMaskColor(backMaskColor);\
         } else if (colortype == DGuiApplicationHelper::DarkType){\
-            QColor backMaskColor(37, 37, 37, 140);\
+            QColor backMaskColor(32, 32, 32);\
+            backMaskColor.setAlphaF(0.5);\
             blurBackground()->setMaskColor(backMaskColor);\
             bot_widget->setMaskColor(backMaskColor);\
         }\
