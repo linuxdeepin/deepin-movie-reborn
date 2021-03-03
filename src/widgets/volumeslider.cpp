@@ -37,7 +37,6 @@ VolumeSlider::VolumeSlider(MainWindow *mw, QWidget *parent)
 
     QFont font;
     font.setFamily("SourceHanSansSC");
-    font.setPixelSize(14);
     font.setWeight(QFont::Medium);
 
     vLayout->addStretch();
