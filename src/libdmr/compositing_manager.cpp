@@ -297,6 +297,11 @@ bool CompositingManager::runningOnVmwgfx()
     return s_runningOnVmwgfx;
 }
 
+bool CompositingManager::isPadSystem()
+{
+    return false;
+}
+
 bool CompositingManager::runningOnNvidia()
 {
     static bool s_runningOnNvidia = false;

@@ -188,9 +188,15 @@ int main(int argc, char *argv[])
     Presenter *presenter = new Presenter(&mw);
 //    mw.setMinimumSize(QSize(1070, 680));
     mw.setPresenter(presenter);
-    mw.resize(850, 600);
-    utils::MoveToCenter(&mw);
-    mw.show();
+    if(CompositingManager::isPadSystem()) {
+        ///平板模式下全屏显示
+        mw.showMaximized();
+    } else {
+        mw.resize(850, 600);
+        utils::MoveToCenter(&mw);
+        mw.show();
+    }
+
     mw.setOpenFiles(toOpenFiles);
 
     if (!QDBusConnection::sessionBus().isConnected()) {
