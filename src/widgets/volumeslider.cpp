@@ -27,8 +27,6 @@ VolumeSlider::VolumeSlider(MainWindow *mw, QWidget *parent)
     m_bHideWhenFinished = false;
 
     hide();
-
-    setFixedSize(VOLSLIDER_WIDTH, VOLSLIDER_HEIGHT);
     setFocusPolicy(Qt::TabFocus);
     QVBoxLayout *vLayout = new QVBoxLayout(this);
     vLayout->setContentsMargins(2, 16, 2, 14);  //内边距，与UI沟通确定
@@ -115,55 +113,6 @@ void VolumeSlider::initVolume()
 void VolumeSlider::stopTimer()
 {
     m_autoHideTimer.stop();
-}
-
-void VolumeSlider::initBgImage()
-{
-    QPainter painter;
-    QColor bgColor = this->palette().background().color();
-    const qreal radius = 20;
-    const qreal triHeight = 30;
-    const qreal height = this->height() - triHeight;
-    const qreal width = this->width();
-
-    m_bgImage = QPixmap(this->size());
-    m_bgImage.fill(QColor(0, 0, 0, 0));
-    painter.begin(&m_bgImage);
-    painter.setRenderHints(QPainter::Antialiasing | QPainter::HighQualityAntialiasing);
-
-    // 背景上矩形，半边
-    QPainterPath pathRect;
-    pathRect.moveTo(radius, 0);
-    pathRect.lineTo(width / 2, 0);
-    pathRect.lineTo(width / 2, height);
-    pathRect.lineTo(0, height);
-    pathRect.lineTo(0, radius);
-    pathRect.arcTo(QRectF(QPointF(0, 0), QPointF(2 * radius, 2 * radius)), 180.0, -90.0);
-
-    // 背景下三角，半边
-    qreal radius1 = radius / 2;
-    QPainterPath pathTriangle;
-    pathTriangle.moveTo(0, height - radius1);
-    pathTriangle.arcTo(QRectF(QPointF(0, height - radius1), QSizeF(2 * radius1, 2 * radius1)), 180, 60);
-    pathTriangle.lineTo(width / 2, this->height());
-    qreal radius2 = radius / 4;
-    pathTriangle.arcTo(QRectF(QPointF(width / 2 - radius2, this->height() - radius2 * 2 - 2), QSizeF(2 * radius2, 2 * radius2)), 220, 100);
-    pathTriangle.lineTo(width / 2, height);
-
-    // 正向绘制
-    painter.fillPath(pathRect, bgColor);
-    painter.fillPath(pathTriangle, bgColor);
-
-    // 平移坐标系
-    painter.translate(width, 0);
-    // 坐标系X反转
-    painter.scale(-1, 1);
-
-    // 反向绘制
-    painter.fillPath(pathRect, bgColor);
-    painter.fillPath(pathTriangle, bgColor);
-
-    painter.end();
 }
 
 QString VolumeSlider::readSinkInputPath()
@@ -430,8 +379,6 @@ int VolumeSlider::getVolume()
 void VolumeSlider::setThemeType(int type)
 {
     Q_UNUSED(type)
-
-    initBgImage();
 }
 
 void VolumeSlider::enterEvent(QEvent *e)
@@ -450,7 +397,6 @@ void VolumeSlider::showEvent(QShowEvent *se)
 #else
     QWidget::showEvent(se);
 #endif
-    initBgImage();
     QWidget::showEvent(se);
 }
 void VolumeSlider::leaveEvent(QEvent *e)
@@ -465,8 +411,48 @@ void VolumeSlider::leaveEvent(QEvent *e)
 }
 void VolumeSlider::paintEvent(QPaintEvent *)
 {
+    double dRation = this->height() * 1.0 / VOLSLIDER_HEIGHT;
     QPainter painter(this);
-    painter.drawPixmap(0, 0, m_bgImage);
+    QColor bgColor = this->palette().background().color();
+    const qreal radius = 20 * dRation;
+    const qreal triHeight = 30 * dRation;
+    const qreal height = this->height() - triHeight;
+    const qreal width = this->width();
+
+    painter.setRenderHints(QPainter::Antialiasing | QPainter::HighQualityAntialiasing);
+
+    // 背景上矩形
+    //这里要一次绘制不然中间会出现虚线
+    QPainterPath pathRect;
+    pathRect.moveTo(radius, 0);
+    pathRect.lineTo(width - radius, 0);
+    pathRect.arcTo(QRectF(QPointF(width - 2 * radius, 0), QPointF(width, 2 * radius)), 90.0, -90.0);
+    pathRect.lineTo(width, height);
+    pathRect.lineTo(0, height);
+    pathRect.lineTo(0, radius);
+    pathRect.arcTo(QRectF(QPointF(0, 0), QPointF(2 * radius, 2 * radius)), 180.0, -90.0);
+
+    // 背景下三角，半边
+    qreal radius1 = radius / 2;
+    QPainterPath pathTriangle;
+    pathTriangle.moveTo(0, height - radius1);
+    pathTriangle.arcTo(QRectF(QPointF(0, height - radius1), QSizeF(2 * radius1, 2 * radius1)), 180, 60);
+    pathTriangle.lineTo(width / 2, this->height());
+    qreal radius2 = radius / 4;
+    pathTriangle.arcTo(QRectF(QPointF(width / 2 - radius2, this->height() - radius2 * 2 - 2), QSizeF(2 * radius2, 2 * radius2)), 220, 130);
+    pathTriangle.lineTo(width / 2, height);
+
+    // 正向绘制
+    painter.fillPath(pathRect, bgColor);
+    painter.fillPath(pathTriangle, bgColor);
+
+    // 平移坐标系
+    painter.translate(width, 0);
+    // 坐标系X反转
+    painter.scale(-1, 1);
+
+    // 反向绘制
+    painter.fillPath(pathTriangle, bgColor);
 }
 
 bool VolumeSlider::eventFilter(QObject *obj, QEvent *e)

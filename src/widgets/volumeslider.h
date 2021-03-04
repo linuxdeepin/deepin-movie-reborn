@@ -40,7 +40,6 @@ public:
 
     State state() const {return m_state;}
     void initVolume();   //初始化音量
-    void initBgImage();
     void stopTimer();
     void popup();        //弹起音量条
     void updatePoint(QPoint point);
