@@ -914,7 +914,7 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
       m_pEngine(proxy)
 {
     initMember();
-    auto systemEnv = QProcessEnvironment::systemEnvironment();
+    QProcessEnvironment systemEnv = QProcessEnvironment::systemEnvironment();
     QString XDG_SESSION_TYPE = systemEnv.value(QStringLiteral("XDG_SESSION_TYPE"));
     QString WAYLAND_DISPLAY = systemEnv.value(QStringLiteral("WAYLAND_DISPLAY"));
 
@@ -1019,7 +1019,7 @@ ToolboxProxy::~ToolboxProxy()
 
 void ToolboxProxy::setup()
 {
-    auto *stacked = new QStackedLayout(this);
+    QStackedLayout *stacked = new QStackedLayout(this);
     stacked->setContentsMargins(0, 0, 0, 0);
     stacked->setStackingMode(QStackedLayout::StackAll);
     setLayout(stacked);
@@ -1046,7 +1046,7 @@ void ToolboxProxy::setup()
 
 //    auto *bot_widget = new QWidget(this);
     bot_widget->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    auto *botv = new QVBoxLayout(bot_widget);
+    QVBoxLayout *botv = new QVBoxLayout(bot_widget);
     botv->setContentsMargins(0, 0, 0, 0);
     botv->setSpacing(10);
 //    auto *bot = new QHBoxLayout();
@@ -1062,7 +1062,7 @@ void ToolboxProxy::setup()
     m_pBotToolWgt->setObjectName(BOTTOM_TOOL_BUTTON_WIDGET);
     m_pBotToolWgt->setFixedHeight(TOOLBOX_HEIGHT - 12);
     m_pBotToolWgt->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
-    auto *bot_layout = new QHBoxLayout(m_pBotToolWgt);
+    QHBoxLayout *bot_layout = new QHBoxLayout(m_pBotToolWgt);
     bot_layout->setContentsMargins(LEFT_MARGIN, 0, RIGHT_MARGIN, 0);
     bot_layout->setSpacing(0);
     m_pBotToolWgt->setLayout(bot_layout);
@@ -1247,6 +1247,10 @@ void ToolboxProxy::setup()
     m_pFullScreenBtn->setIconSize(QSize(36, 36));
     m_pFullScreenBtn->setFixedSize(50, 50);
     m_pFullScreenBtn->initToolTip();
+    if (CompositingManager::isPadSystem()) {
+        ///There is no fullscreen switch in pad mode,so hide the button
+        m_pFullScreenBtn->hide();
+    }
     connect(m_pFullScreenBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(m_pFullScreenBtn, "fs");
 

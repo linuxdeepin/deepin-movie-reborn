@@ -2074,6 +2074,10 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
 
     case ActionFactory::ActionKind::ToggleFullscreen: {
         //音量条控件打开时全屏位置异常，全屏时关掉音量条
+        if (CompositingManager::isPadSystem()) {
+            ///pad mode does not respond to fullscreen events
+            return;
+        }
         m_pToolbox->closeAnyPopup();
         if (isFullScreen()) {
             if (m_lastWindowState == Qt::WindowMaximized) {
