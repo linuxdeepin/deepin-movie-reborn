@@ -3947,6 +3947,9 @@ void MainWindow::contextMenuEvent(QContextMenuEvent *pEvent)
     if (insideToolsArea(pEvent->pos()))
         return;
 
+    if (CompositingManager::isPadSystem())
+        return;
+
     resumeToolsWindow();
     QTimer::singleShot(0, [ = ]() {
         qApp->restoreOverrideCursor();

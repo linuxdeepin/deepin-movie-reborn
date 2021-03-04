@@ -31,6 +31,8 @@
 #include "config.h"
 #include "actions.h"
 #include "player_engine.h"
+#include "compositing_manager.h"
+
 namespace dmr {
 static ActionFactory *pActionFactory = nullptr;
 ActionFactory &ActionFactory::get()
@@ -89,18 +91,94 @@ DMenu *ActionFactory::titlebarMenu()
     if (!m_pTitlebarMenu) {
         DMenu *pMenu_p = new DMenu();
         DEF_ACTION(tr("Open file"), ActionKind::OpenFileList);
-        DEF_ACTION(tr("Open folder"), ActionKind::OpenDirectory);
-        DEF_ACTION(tr("Settings"), ActionKind::Settings);
-//        DEF_ACTION_CHECKED(tr("Light theme"), ActionKind::LightTheme);
-        pMenu_p->addSeparator();
-        // these seems added by titlebar itself
-        //DEF_ACTION("About", ActionKind::About);
-        //DEF_ACTION("Help", ActionKind::Help);
-        //DEF_ACTION("Exit", ActionKind::Exit);
+        if (!CompositingManager::isPadSystem()) {
+            DEF_ACTION(tr("Open folder"), ActionKind::OpenDirectory);
+            DEF_ACTION(tr("Settings"), ActionKind::Settings);
+            //DEF_ACTION_CHECKED(tr("Light theme"), ActionKind::LightTheme);
+            pMenu_p->addSeparator();
+            // these seems added by titlebar itself
+            //DEF_ACTION("About", ActionKind::About);
+            //DEF_ACTION("Help", ActionKind::Help);
+            //DEF_ACTION("Exit", ActionKind::Exit);
+        } else {
+            m_pTitlebarMenu = pMenu_p;
+            {
+                DMenu *pParent = pMenu_p;
+                DMenu *pMenu = new DMenu(tr("Play Mode"));
+                QActionGroup *pActionGroup = new QActionGroup(pMenu);
+                DEF_ACTION_CHECKED_GROUP(tr("Order Play"), ActionKind::OrderPlay, pActionGroup);
+                DEF_ACTION_CHECKED_GROUP(tr("Shuffle Play"), ActionKind::ShufflePlay, pActionGroup);
+                DEF_ACTION_CHECKED_GROUP(tr("Single Play"), ActionKind::SinglePlay, pActionGroup);
+                DEF_ACTION_CHECKED_GROUP(tr("Single Loop"), ActionKind::SingleLoop, pActionGroup);
+                DEF_ACTION_CHECKED_GROUP(tr("List Loop"), ActionKind::ListLoop, pActionGroup);
+                pParent->addMenu(pMenu);
+            }
+            {
+                DMenu *pParent = pMenu_p;
+                DMenu *pMenu = new DMenu(tr("Frame"));
+                QActionGroup *pActionGroup = new QActionGroup(pMenu);
+                DEF_ACTION_CHECKED_GROUP(tr("Default"), ActionKind::DefaultFrame, pActionGroup);
+                DEF_ACTION_CHECKED_GROUP(("4:3"), ActionKind::Ratio4x3Frame, pActionGroup);
+                DEF_ACTION_CHECKED_GROUP(("16:9"), ActionKind::Ratio16x9Frame, pActionGroup);
+                DEF_ACTION_CHECKED_GROUP(("16:10"), ActionKind::Ratio16x10Frame, pActionGroup);
+                DEF_ACTION_CHECKED_GROUP(("1.85:1"), ActionKind::Ratio185x1Frame, pActionGroup);
+                DEF_ACTION_CHECKED_GROUP(("2.35:1"), ActionKind::Ratio235x1Frame, pActionGroup);
+                pMenu->addSeparator();
+                DEF_ACTION_GROUP(tr("Clockwise"), ActionKind::ClockwiseFrame, pActionGroup);
+                DEF_ACTION_GROUP(tr("Counterclockwise"), ActionKind::CounterclockwiseFrame, pActionGroup);
+                pMenu->addSeparator();
+                DEF_ACTION_GROUP(tr("Next Frame"), ActionKind::NextFrame, pActionGroup);
+                DEF_ACTION_GROUP(tr("Previous Frame"), ActionKind::PreviousFrame, pActionGroup);
+                pParent->addMenu(pMenu);
+                pMenu->setEnabled(false);
+                connect(this, &ActionFactory::frameMenuEnable, this, [ = ](bool statu) {
+                    pMenu->setEnabled(statu);
+                });
+            }
+            {
+                DMenu *pParent = pMenu_p;
+                DMenu *pMenu = new DMenu(tr("Playback Speed"));
+                QActionGroup *pActionGroup = new QActionGroup(pMenu);
+                DEF_ACTION_CHECKED_GROUP(tr("0.5x"), ActionKind::ZeroPointFiveTimes, pActionGroup);
+                DEF_ACTION_CHECKED_GROUP(tr("1.0x"), ActionKind::OneTimes, pActionGroup);
+                DEF_ACTION_CHECKED_GROUP(tr("1.2x"), ActionKind::OnePointTwoTimes, pActionGroup);
+                DEF_ACTION_CHECKED_GROUP(tr("1.5x"), ActionKind::OnePointFiveTimes, pActionGroup);
+                DEF_ACTION_CHECKED_GROUP(tr("2.0x"), ActionKind::Double, pActionGroup);
+                pParent->addMenu(pMenu);
+                pMenu->setEnabled(false);
+                connect(this, &ActionFactory::playSpeedMenuEnable, this, [ = ](bool statu) {
+                    pMenu->setEnabled(statu);
+                });
+            }
+            {
+                DMenu *pParent = pMenu_p;
+                DMenu *pMenu = new DMenu(tr("Sound"));
+                m_pSound = pMenu;
+                {
+                    DMenu *pParent_channel = pMenu;
+                    DMenu *pMenu = new DMenu(tr("Channel"));
+                    m_pSoundMenu = pMenu;
+                    QActionGroup *pActionGroup = new QActionGroup(pMenu);
+                    DEF_ACTION_CHECKED_GROUP(tr("Stereo"), ActionKind::Stereo, pActionGroup);
+                    DEF_ACTION_CHECKED_GROUP(tr("Left channel"), ActionKind::LeftChannel, pActionGroup);
+                    DEF_ACTION_CHECKED_GROUP(tr("Right channel"), ActionKind::RightChannel, pActionGroup);
+                    pParent_channel->addMenu(pMenu);
+                }
+                {
+                    DMenu *parent_track = pMenu;
+                    DMenu *pMenutemp = new DMenu(tr("Track"));
+                    m_pTracksMenu = pMenutemp;
+                    parent_track->addMenu(pMenutemp);
+                }
+                pParent->addMenu(pMenu);
+            }
+        }
+
         m_pTitlebarMenu = pMenu_p;
     }
     return m_pTitlebarMenu;
 }
+
 DMenu *ActionFactory::mainContextMenu()
 {
     if (!m_pContextMenu) {
