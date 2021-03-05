@@ -213,19 +213,19 @@ void VolumeSlider::popup()
 #endif
     QRect end(x, y, VOLSLIDER_WIDTH, VOLSLIDER_HEIGHT);
     QRect start = end;
-    QRect media = start;
+//    QRect media = start;
 
-    start.setWidth(start.width() + 16);
-    start.setHeight(start.height() + 14);
-    media.setWidth(media.width() - 10);
-    media.setHeight(media.height() - 10);
+    start.setWidth(start.width() + 12);
+    start.setHeight(start.height() + 10);
+//    media.setWidth(media.width() - 10);
+//    media.setHeight(media.height() - 10);
 #ifdef __x86_64__
-    start.moveTo(start.topLeft() - QPoint(8, 14));
-    media.moveTo(media.topLeft() + QPoint(5, 10));
+    start.moveTo(start.topLeft() - QPoint(6, 10));
+//    media.moveTo(media.topLeft() + QPoint(5, 10));
 #else
     end.moveTo(m_point);
     start.moveTo(m_point - QPoint(8, 14));
-    media.moveTo(m_point + QPoint(5, 10));
+//    media.moveTo(m_point + QPoint(5, 10));
 #endif
 
     //动画未完成，等待动画结束后再隐藏控件
@@ -239,7 +239,7 @@ void VolumeSlider::popup()
         pVolAnimation->setEasingCurve(QEasingCurve::Linear);
         pVolAnimation->setKeyValueAt(0, end);
         pVolAnimation->setKeyValueAt(0.3, start);
-        pVolAnimation->setKeyValueAt(0.75, media);
+//        pVolAnimation->setKeyValueAt(0.75, media);
         pVolAnimation->setKeyValueAt(1, end);
         pVolAnimation->setDuration(230);
         m_bFinished = true;
