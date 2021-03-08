@@ -103,6 +103,7 @@ const char kAtomNameWmSkipTaskbar[] = "_NET_WM_STATE_SKIP_TASKBAR";
 const char kAtomNameWmSkipPager[] = "_NET_WM_STATE_SKIP_PAGER";
 
 #define AUTOHIDE_TIMEOUT 2000
+#define AUTOHIDE_TIME_PAD 5000   //time of the toolbox auto hide
 #include <DToast>
 DWIDGET_USE_NAMESPACE
 
@@ -2943,7 +2944,12 @@ void MainWindow::resumeToolsWindow()
     }
 
 _finish:
-    m_autoHideTimer.start(AUTOHIDE_TIMEOUT);
+    if(!CompositingManager::isPadSystem()) {
+        m_autoHideTimer.start(AUTOHIDE_TIMEOUT);
+    } else {
+        m_autoHideTimer.start(AUTOHIDE_TIME_PAD);
+    }
+
 }
 
 void MainWindow::checkOnlineState(const bool bIsOnline)
@@ -3884,7 +3890,12 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *ev)
 void MainWindow::delayedMouseReleaseHandler()
 {
     if ((!s_bAfterDblClick && !m_bLastIsTouch) || m_bMiniMode)
-        requestAction(ActionFactory::TogglePause, false, {}, true);
+        if (!CompositingManager::isPadSystem()) {
+            requestAction(ActionFactory::TogglePause, false, {}, true);
+        } else {
+            resumeToolsWindow();    //平板模式下，点击窗口显示工具栏
+        }
+
     s_bAfterDblClick = false;
 }
 
