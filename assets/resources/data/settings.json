@@ -143,11 +143,18 @@
                     "hide": true,
                     "options": [
                         {
+                            "key": "pad_load_path",
+                            "name": "",
+                            "type": "selectableEdit",
+                            "default": "~/Videos"
+                        },
+                        {
                             "key": "last_open_path",
                             "name": "",
                             "type": "selectableEdit",
                             "default": ""
                         }
+
                     ]
                 }
             ]

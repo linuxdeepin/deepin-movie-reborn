@@ -1012,6 +1012,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     QTimer::singleShot(500, [this]() {
         loadPlayList();
+        if (CompositingManager::isPadSystem()) {  //平板模式加载默认文件夹
+            m_pEngine->addPlayDir(padLoadPath());
+        }
     });
 
     m_pDBus = new QDBusInterface("org.freedesktop.login1", "/org/freedesktop/login1", "org.freedesktop.login1.Manager", QDBusConnection::systemBus());
@@ -1651,6 +1654,21 @@ void MainWindow::loadPlayList()
 void MainWindow::setOpenFiles(QStringList &list)
 {
     m_listOpenFiles = list;
+}
+
+QString MainWindow::padLoadPath()
+{
+    QString sLoadPath = Settings::get().generalOption("pad_load_path").toString();
+    QDir lastDir(sLoadPath);
+    if (sLoadPath.isEmpty() || !lastDir.exists()) {
+        sLoadPath = QStandardPaths::writableLocation(QStandardPaths::MoviesLocation);
+        QDir newLastDir(sLoadPath);
+        if (!newLastDir.exists()) {
+            sLoadPath = QDir::currentPath();
+        }
+    }
+
+    return sLoadPath;
 }
 
 #ifdef USE_TEST

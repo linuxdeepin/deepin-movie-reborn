@@ -231,6 +231,10 @@ public:
      */
     void loadPlayList();
     void setOpenFiles(QStringList &);
+    /**
+     * @brief 平板模式下视频加载路径
+     */
+    QString padLoadPath();
 
 #ifdef USE_TEST
     void testMprisapp();
