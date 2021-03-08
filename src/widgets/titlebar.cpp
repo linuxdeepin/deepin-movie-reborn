@@ -49,7 +49,7 @@ public:
     QColor          darkEffectColor             = QColor(30, 30, 30, 50);
     qreal           offsetX                     = 0;
     qreal           offsetY                     = 15;
-    qreal           blurRadius                  = 50;
+    qreal           blurRadius                  = 52;
     QGraphicsDropShadowEffect *m_shadowEffect   = nullptr;
     DTitlebar       *m_titlebar                 = nullptr;
     DLabel          *m_titletxt                 = nullptr;
@@ -99,7 +99,7 @@ Titlebar::Titlebar(QWidget *parent) : DBlurEffectWidget(parent), d_ptr(new Title
         QPainter p(&pm);
         p.drawPixmap((w2 - w) / 2, (w2 - w) / 2, logo);
         p.end();
-        if(!utils::check_wayland_env())
+        if (!utils::check_wayland_env())
             d->m_titlebar->setIcon(pm);
     }
 
@@ -115,7 +115,7 @@ Titlebar::Titlebar(QWidget *parent) : DBlurEffectWidget(parent), d_ptr(new Title
     d->m_titlebar->addWidget(d->m_titletxt, Qt::AlignCenter);
 
     d->m_shadowEffect = new QGraphicsDropShadowEffect(this);
-    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, &Titlebar::slotThemeTypeChanged);   
+    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, &Titlebar::slotThemeTypeChanged);
 }
 
 Titlebar::~Titlebar()
@@ -127,8 +127,7 @@ void Titlebar::slotThemeTypeChanged()
 {
     Q_D(const Titlebar);
     QPalette pa1, pa2;
-    if (d->m_play)
-    {
+    if (d->m_play) {
         pa1.setColor(QPalette::ButtonText, d->playColor);
         pa2.setColor(QPalette::WindowText, d->playColor);
         d->m_titlebar->setPalette(pa1);
