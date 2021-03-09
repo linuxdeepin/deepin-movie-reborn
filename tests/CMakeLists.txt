@@ -16,7 +16,7 @@ option (USE_TEST "Use TESTS" ON)
 add_definitions( -DUSE_TEST )
 
 # 设置Qt模块
-set(QtModule Core Gui Widgets Network X11Extras PrintSupport DBus Sql Concurrent LinguistTools Test)
+set(QtModule Core Gui Widgets Network X11Extras PrintSupport DBus Sql Svg Concurrent LinguistTools Test)
 
 # 设置工程名字
 project(deepin-movie-test)

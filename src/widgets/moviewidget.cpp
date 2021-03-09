@@ -43,6 +43,8 @@
 #define DEFAULT_RATION (1.0f*1080/1920)     //背景图片比例
 #define INTERVAL 50                         //刷新间隔
 #define ROTATE_ANGLE 360/(1000*2.5/INTERVAL)  //2.5秒转一圈
+#define DEFAULT_BGLENGTH 174                //背景边长
+#define DEFAULT_NTLENGTH 48                 //音符边长
 
 namespace dmr {
 /**
@@ -61,9 +63,8 @@ MovieWidget::MovieWidget(QWidget *parent)
     m_pLabMovie->setAlignment(Qt::AlignCenter);
     m_pHBoxLayout->addWidget(m_pLabMovie);
 
-    m_pixmapBg.load(":/resources/icons/music_bg.svg");
-    m_pixmapNote.load(":/resources/icons/music_note.svg");
-    m_nWidthNote = m_pixmapNote.width();
+    m_pBgRender = new QSvgRenderer(QString(":/resources/icons/music_bg.svg"));
+    m_pNoteRender = new QSvgRenderer(QString(":/resources/icons/music_note.svg"));
 
     m_pTimer = new QTimer();
     m_pTimer->setInterval(INTERVAL);
@@ -108,21 +109,10 @@ void MovieWidget::pausePlaying()
  */
 void MovieWidget::updateView()
 {
-    QPixmap pixmapBg;
     float fRatio = 1.0f;
     QRect rectDesktop;
     int nWidth = 0;
     int nHeight = 0;
-
-    pixmapBg = m_pixmapBg;
-
-    //绘制旋转音符
-    QPainter painter(&pixmapBg);
-    painter.translate(pixmapBg.width() / 2.0, pixmapBg.height() / 2.0);
-    painter.rotate(m_nRotate);
-    painter.translate(-pixmapBg.width() / 2.0, -pixmapBg.height() / 2.0);
-    painter.setRenderHints(QPainter::HighQualityAntialiasing | QPainter::SmoothPixmapTransform | QPainter::Antialiasing);
-    painter.drawPixmap(pixmapBg.width() / 2 - m_nWidthNote / 2, pixmapBg.height() / 2 - m_nWidthNote / 2, m_nWidthNote, m_nWidthNote, m_pixmapNote);
 
     m_nRotate += ROTATE_ANGLE;
 
@@ -140,10 +130,24 @@ void MovieWidget::updateView()
         fRatio = nHeight * 2.0f / rectDesktop.height();
     }
 
-    QPixmap pixmapFinal = pixmapBg.scaled(static_cast<int>(pixmapBg.width() * fRatio),
-                                          static_cast<int>(pixmapBg.height() * fRatio), Qt::IgnoreAspectRatio,
-                                          Qt::SmoothTransformation);
-    m_pLabMovie->setPixmap(pixmapFinal);
+    int nBgLength = static_cast<int>(DEFAULT_BGLENGTH * fRatio);
+    int nNoteLength = static_cast<int>(DEFAULT_NTLENGTH * fRatio);
+    QRect rect((nBgLength - nNoteLength) / 2, (nBgLength - nNoteLength) / 2, nNoteLength, nNoteLength);
+
+    QPixmap pixmapBg(nBgLength, nBgLength);
+    pixmapBg.fill(Qt::transparent);
+
+    QPainter painter(&pixmapBg);
+    m_pBgRender->render(&painter);         //绘制背景
+
+    painter.translate(pixmapBg.width() / 2.0, pixmapBg.height() / 2.0);
+    painter.rotate(m_nRotate);
+    painter.translate(-pixmapBg.width() / 2.0, -pixmapBg.height() / 2.0);
+    painter.setRenderHints(QPainter::HighQualityAntialiasing | QPainter::SmoothPixmapTransform | QPainter::Antialiasing);
+
+    m_pNoteRender->render(&painter, rect);  //绘制音符
+
+    m_pLabMovie->setPixmap(pixmapBg);
 }
 /**
  * @brief initMember 初始化成员变量

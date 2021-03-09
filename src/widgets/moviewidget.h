@@ -35,6 +35,7 @@
 
 #include <DWidget>
 #include <QResizeEvent>
+#include <QSvgRenderer>
 
 DWIDGET_USE_NAMESPACE
 
@@ -95,11 +96,11 @@ private:
     QLabel *m_pLabMovie;          ///显示动画的控件
     QTimer *m_pTimer;             ///控制动画播放速度的时间
     QHBoxLayout *m_pHBoxLayout;   ///窗口布局管理
-    QPixmap m_pixmapBg;           ///底下胶片的图像
-    QPixmap m_pixmapNote;         ///上层音符的图像
     int m_nRotate;                ///旋转角度
     int m_nWidthNote;             ///音符边长
     PlayState m_state;            ///播放状态
+    QSvgRenderer *m_pBgRender;
+    QSvgRenderer *m_pNoteRender;
 };
 
 }

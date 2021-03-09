@@ -14,6 +14,7 @@ find_package(Qt5Network)
 find_package(Qt5X11Extras)
 find_package(Qt5Sql)
 find_package(Qt5DBus)
+find_package(Qt5Svg)
 
 pkg_check_modules(Dtk REQUIRED IMPORTED_TARGET dtkwidget)
 pkg_check_modules(AV REQUIRED IMPORTED_TARGET libavformat libavutil libavcodec)
