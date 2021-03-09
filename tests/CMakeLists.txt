@@ -50,12 +50,13 @@ FILE (GLOB allSource
     )
 
 FILE (GLOB allTestSource
-    "*.cpp"
-    "common/*.cpp"
-    "widgets/*.cpp"
-    "libdmr/*.cpp"
-    "backends/*.cpp"
-    "vendor/*.cpp"
+    *.cpp
+    common/*.cpp
+    widgets/*.cpp
+    libdmr/*.cpp
+    backends/*.cpp
+    vendor/*.cpp
+    stub/*.cpp
     )
 
 # 定义资源文件
@@ -71,17 +72,6 @@ set_directory_properties(PROPERTIES CLEAN_NO_CUSTOM 1)
 add_executable(${PROJECT_NAME} ${allSource} ${allTestSource}
     ${AllQRC}
     )
-## Make sure to clean up the coverage folder
-#set_property(DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES coverage)
-
-## Create the gcov-clean target. This cleans the build as well as generated
-## .gcda and .gcno files.
-#add_custom_target(scrub
-#COMMAND ${CMAKE_MAKE_PROGRAM} clean
-#COMMAND rm -f ${OBJECT_DIR}/*.gcno
-#COMMAND rm -f ${OBJECT_DIR}/*.gcda
-#WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-#)
 
 # 添加gocv覆盖率文件的输出
 if (CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "mips64")

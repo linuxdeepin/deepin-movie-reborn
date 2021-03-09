@@ -22,6 +22,8 @@ TEST(requestAction, onlineSub)
     PlayerEngine* engine =  w->engine();
     QUrl url(QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/天空之眼 高清1080P.mp4"));
 
+    w->show();
+
     QTest::qWait(500);
     if(engine->addPlayFile(url))
     {

@@ -3004,7 +3004,12 @@ void MainWindow::checkWarningMpvLogsChanged(const QString sPrefix, const QString
         effect->setBlurRadius(4);
         pDialog->getButton(0)->setFixedWidth(340);
         pDialog->getButton(0)->setGraphicsEffect(effect);
+#ifndef USE_TEST
         pDialog->exec();
+#else
+        pDialog->show();
+      	pDialog->deleteLater();
+#endif
         QTimer::singleShot(500, [ = ]() {
             //startPlayStateAnimation(true);
             if (!m_bMiniMode) {

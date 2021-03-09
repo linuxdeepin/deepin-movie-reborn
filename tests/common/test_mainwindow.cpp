@@ -13,6 +13,7 @@
 #include <unistd.h>
 #include <gtest/gtest.h>
 
+#define protected public
 #include "application.h"
 #include "src/common/mainwindow.h"
 #include "src/libdmr/player_engine.h"
@@ -26,17 +27,44 @@
 #include "src/common/actions.h"
 #include "src/backends/mpv/mpv_glwidget.h"
 #include "utils.h"
+#include "actions.h"
 #include "dbus_adpator.h"
 #include "dbusutils.h"
 #include "burst_screenshots_dialog.h"
 #include "mpv_proxy.h"
+#include "stub/stub.h"
+#include "stub/stub_function.h"
 
 using namespace dmr;
+TEST(PadMode, mainWindow)
+{
+    Stub stub;
+    //Stub stub1;
+    stub.set(ADDR(CompositingManager, isPadSystem), StubFunc::isPadSystemTrue_stub);
+    stub.set(ADDR(CompositingManager, composited), StubFunc::isCompositedFalse_stub);
+    QTest::qWait(1000);
+    MainWindow mw;
+    QTest::qWait(100);
+    mw.show();
+
+    QTest::qWait(800);
+    mw.requestAction(ActionFactory::ActionKind::StartPlay);
+
+    QTest::mouseClick(&mw, Qt::LeftButton, Qt::NoModifier, QPoint(), 500);
+
+    QTest::qWait(500);
+    stub.reset(ADDR(CompositingManager, isPadSystem));
+    stub.reset(ADDR(CompositingManager, composited));
+    mw.close();
+}
+
 TEST(MainWindow, init)
 {
     MainWindow *w = dApp->getMainWindow();
     PlayerEngine *engine =  w->engine();
     int sid;
+
+    w->checkWarningMpvLogsChanged("test","Hardware does not support image size 3840x2160");
 
     sid = engine->sid();
     engine->isSubVisible();
@@ -178,6 +206,13 @@ TEST(MainWindow, DBus)
     method_invalid = DBusUtils::redDBusMethod("com.test", "/com/test", "com.test", "SinkInputs");
     appAdaptor->Raise();
     appAdaptor->openFile("/data/source/deepin-movie-reborn/movie/demo.mp4");
+
+    //QDBusInterface *m_pDBus = new QDBusInterface("org.freedesktop.login1", "/org/freedesktop/login1", "org.freedesktop.login1.Manager", QDBusConnection::systemBus());
+    w->sleepStateChanged(true);
+    Stub stub;
+    stub.set(ADDR(PlayerEngine, state), StubFunc::playerEngineState_Paused_stub);
+    w->sleepStateChanged(false);
+    stub.reset(ADDR(PlayerEngine, state));
 }
 
 TEST(MainWindow, hwdecChange)
@@ -283,7 +318,7 @@ TEST(MainWindow, shortCutPlay)
 
     testEventList.addKeyClick(Qt::Key_Right, Qt::NoModifier, 300); //fast forward
     for (int i = 0; i < 4; i++) {
-        testEventList.addKeyClick(Qt::Key_Left, Qt::NoModifier, 200);  //fast backward
+        testEventList.addKeyClick(Qt::Key_Left, Qt::NoModifier, 300);  //fast backward
     }
 
     //playlist
@@ -732,5 +767,8 @@ TEST(ToolBox, clearPlayList)
 
     DGuiApplicationHelper::instance()->setThemeType(DGuiApplicationHelper::UnknownType);
     emit DGuiApplicationHelper::instance()->paletteTypeChanged(DGuiApplicationHelper::UnknownType);
+
+    QTest::qWait(500);
+    w->close();
 }
 
