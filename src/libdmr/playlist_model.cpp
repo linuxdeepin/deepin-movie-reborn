@@ -35,6 +35,8 @@
 #endif
 #include "dvd_utils.h"
 
+#include <QSvgRenderer>
+
 #include <random>
 extern "C" {
 #include <libavformat/avformat.h>
@@ -1626,8 +1628,10 @@ struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl &url, const QFil
     }
     //}
 
-    QPixmap pm;
-    QPixmap dark_pm;
+    QPixmap pm(42, 24);       //默认图标大小42,24
+    QPixmap dark_pm(42, 24);
+    pm.fill(Qt::transparent);
+    dark_pm.fill(Qt::transparent);
     if (ci.thumb_valid) {
         pm = ci.thumb;
         dark_pm = ci.thumb_dark;
@@ -1657,10 +1661,14 @@ struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl &url, const QFil
                 dark_pm = pm;
             } else {
                 if (getMusicPix(fi, pm) == false) {
-                    pm.load(":/resources/icons/music-light.svg");
+                    QPainter painter(&pm);
+                    QSvgRenderer svgRender(QString(":/resources/icons/music-light.svg"));
+                    svgRender.render(&painter);
                 }
                 if (getMusicPix(fi, dark_pm) == false) {
-                    dark_pm.load(":/resources/icons/music-dark.svg");
+                    QPainter painter(&dark_pm);
+                    QSvgRenderer svgRender(QString(":/resources/icons/music-dark.svg"));
+                    svgRender.render(&painter);
                 }
             }
             pm.setDevicePixelRatio(qApp->devicePixelRatio());
