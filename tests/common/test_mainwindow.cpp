@@ -14,8 +14,9 @@
 #include <gtest/gtest.h>
 
 #define protected public
-#include "application.h"
 #include "src/common/mainwindow.h"
+#undef protected
+#include "application.h"
 #include "src/libdmr/player_engine.h"
 #include "src/widgets/toolbox_proxy.h"
 #include "src/widgets/toolbutton.h"
@@ -64,7 +65,7 @@ TEST(MainWindow, init)
     PlayerEngine *engine =  w->engine();
     int sid;
 
-    w->checkWarningMpvLogsChanged("test","Hardware does not support image size 3840x2160");
+    w->checkWarningMpvLogsChanged("test", "Hardware does not support image size 3840x2160");
 
     sid = engine->sid();
     engine->isSubVisible();
