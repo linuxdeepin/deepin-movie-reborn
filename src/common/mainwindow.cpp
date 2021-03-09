@@ -1020,6 +1020,10 @@ MainWindow::MainWindow(QWidget *parent)
     m_pDBus = new QDBusInterface("org.freedesktop.login1", "/org/freedesktop/login1", "org.freedesktop.login1.Manager", QDBusConnection::systemBus());
     connect(m_pDBus, SIGNAL(PrepareForSleep(bool)), this, SLOT(sleepStateChanged(bool)));
 
+    QDBusConnection::sessionBus().connect("com.deepin.SessionManager", "/com/deepin/SessionManager",
+                                          "org.freedesktop.DBus.Properties", "PropertiesChanged", this,
+                                          SLOT(onSysLockState(QString, QVariantMap, QStringList)));
+
     m_pMovieWidget = new MovieWidget(this);
     m_pMovieWidget->hide();
 
@@ -2962,7 +2966,7 @@ void MainWindow::resumeToolsWindow()
     }
 
 _finish:
-    if(!CompositingManager::isPadSystem()) {
+    if (!CompositingManager::isPadSystem()) {
         m_autoHideTimer.start(AUTOHIDE_TIMEOUT);
     } else {
         m_autoHideTimer.start(AUTOHIDE_TIME_PAD);
@@ -3008,7 +3012,7 @@ void MainWindow::checkWarningMpvLogsChanged(const QString sPrefix, const QString
         pDialog->exec();
 #else
         pDialog->show();
-      	pDialog->deleteLater();
+        pDialog->deleteLater();
 #endif
         QTimer::singleShot(500, [ = ]() {
             //startPlayStateAnimation(true);
@@ -4696,6 +4700,13 @@ void MainWindow::setMusicShortKeyState(bool bState)
         case ActionFactory::PreviousFrame:
             action->setEnabled(bState);
         }
+    }
+}
+
+void MainWindow::onSysLockState(QString, QVariantMap key2value, QStringList)
+{
+    if (key2value.value("Locked").value<bool>() && m_pEngine->state() == PlayerEngine::CoreState::Playing) {
+        requestAction(ActionFactory::TogglePause);
     }
 }
 

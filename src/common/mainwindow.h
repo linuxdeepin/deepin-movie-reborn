@@ -365,6 +365,10 @@ protected slots:
     void diskRemoved(QString sDiskName);
 
     void sleepStateChanged(bool bSleep);
+    /**
+     * @brief 响应锁屏dbus信号
+     */
+    void onSysLockState(QString serviceName, QVariantMap key2value, QStringList);
 private:
     void initMember();
     void setupTitlebar();
