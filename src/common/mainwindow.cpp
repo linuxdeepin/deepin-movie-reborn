@@ -3988,12 +3988,40 @@ void MainWindow::contextMenuEvent(QContextMenuEvent *pEvent)
     if (CompositingManager::isPadSystem())
         return;
 
-    resumeToolsWindow();
-    QTimer::singleShot(0, [ = ]() {
-        qApp->restoreOverrideCursor();
-        ActionFactory::get().mainContextMenu()->popup(QCursor::pos());
-    });
-    pEvent->accept();
+    //通过窗口id查询窗口状态是否置顶，同步右键菜单中的选项状态
+    QProcess above;
+    QStringList options;
+    options << "-c" << QString("xprop -id %1 | grep '_NET_WM_STATE(ATOM)'").arg(winId());
+    above.start("bash", options);
+    if (above.waitForStarted() && above.waitForFinished()) {
+        QString drv = QString::fromUtf8(above.readAllStandardOutput().trimmed().constData());
+        if (drv.contains("_NET_WM_STATE_ABOVE") != m_bWindowAbove) {
+//            requestAction(ActionFactory::WindowAbove);
+            m_bWindowAbove = drv.contains("_NET_WM_STATE_ABOVE");
+            reflectActionToUI(ActionFactory::WindowAbove);
+        }
+
+        resumeToolsWindow();
+        QTimer::singleShot(0, [ = ]() {
+            qApp->restoreOverrideCursor();
+            ActionFactory::get().mainContextMenu()->popup(QCursor::pos());
+        });
+        pEvent->accept();
+    }
+//此段为通过xcb接口查询窗口状态，nItem为状态列表中的个数，properties为返回状态列表
+//代码暂时无法实现需求，勿删
+//    const auto display = QX11Info::display();
+//    const auto screen = QX11Info::appScreen();
+//    Atom atom = XInternAtom(display, "_NET_WM_STATE", true);
+//    Atom type;
+//    int format;
+//    unsigned long nItem, bytesAfter;
+//    unsigned char *properties = NULL;
+//    XGetWindowProperty(display, QX11Info::appRootWindow(screen), atom, 0, (~0L), False, AnyPropertyType, &type, &format, &nItem, &bytesAfter, &properties);
+//    qInfo() << atom << nItem;
+//    int iItem;
+//    for (iItem = 0; iItem < nItem; ++iItem)
+//        qInfo() << ((long *)(properties))[iItem];
 }
 
 void MainWindow::prepareSplashImages()
