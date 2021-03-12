@@ -1305,6 +1305,7 @@ void ToolboxProxy::setup()
     m_pListBtn->setCheckable(true);
     m_pListBtn->setObjectName(PLAYLIST_BUTTON);
     m_pListBtn->setAccessibleName(PLAYLIST_BUTTON);
+    m_pListBtn->installEventFilter(this);
 
     connect(m_pListBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(m_pListBtn, "list");
@@ -1739,7 +1740,7 @@ void ToolboxProxy::slotApplicationStateChanged(Qt::ApplicationState e)
     }
 }
 
-void ToolboxProxy::slotPlayListStateChange()
+void ToolboxProxy::slotPlayListStateChange(bool isShortcut)
 {
     if (m_bAnimationFinash == false) {
         return ;
@@ -1747,11 +1748,14 @@ void ToolboxProxy::slotPlayListStateChange()
 
     closeAnyPopup();
     if (m_pPlaylist->state() == PlaylistWidget::State::Opened) {
-        m_pListBtn->setChecked(true);
-        m_pListBtn->setIcon(QIcon(":/icons/deepin/builtin/light/checked/episodes_checked.svg"));
         //非x86平台播放列表切换不展示动画,故按键状态不做限制
 #ifdef __x86_64__
-        m_pListBtn->setEnabled(false);
+        if (isShortcut && m_pListBtn->isChecked()) {
+                m_pListBtn->setIcon(QIcon(":/icons/deepin/builtin/light/checked/episodes_checked.svg"));
+        } else {
+            m_pListBtn->setChecked(true);
+            m_pListBtn->setIcon(QIcon(":/icons/deepin/builtin/light/checked/episodes_checked.svg"));
+        }
         QRect rcBegin = this->geometry();
         QRect rcEnd = rcBegin;
         rcEnd.setY(rcBegin.y() - TOOLBOX_SPACE_HEIGHT - 7);
@@ -1764,17 +1768,22 @@ void ToolboxProxy::slotPlayListStateChange()
         m_pPaOpen->start();
         connect(m_pPaOpen, &QPropertyAnimation::finished, this, &ToolboxProxy::slotProAnimationFinished);
 #else
+        Q_UNUSED(isShortcut);
         QRect rcBegin = this->geometry();
         QRect rcEnd = rcBegin;
         rcEnd.setY(rcBegin.y() - TOOLBOX_SPACE_HEIGHT - 7);
         setGeometry(rcEnd);
 #endif
     } else {
-        m_pListBtn->setChecked(false);
-        m_pListBtn->setIcon(QIcon::fromTheme("dcc_episodes"));
 #ifdef __x86_64__
-        m_pListBtn->setEnabled(false);
         m_bAnimationFinash = false;
+
+        if (isShortcut && !m_pListBtn->isChecked()) {
+            m_pListBtn->setIcon(QIcon::fromTheme("dcc_episodes"));
+        } else {
+            m_pListBtn->setChecked(false);
+            m_pListBtn->setIcon(QIcon::fromTheme("dcc_episodes"));
+        }
 
         QRect rcBegin = this->geometry();
         QRect rcEnd = rcBegin;
@@ -1787,6 +1796,7 @@ void ToolboxProxy::slotPlayListStateChange()
         m_pPaClose->start();
         connect(m_pPaClose, &QPropertyAnimation::finished, this, &ToolboxProxy::slotProAnimationFinished);
 #else
+        Q_UNUSED(isShortcut);
         QRect rcBegin = this->geometry();
         QRect rcEnd = rcBegin;
         rcEnd.setY(rcBegin.y() + TOOLBOX_SPACE_HEIGHT + 7);
@@ -2410,6 +2420,16 @@ bool ToolboxProxy::eventFilter(QObject *obj, QEvent *ev)
             } else if (keyEvent->key() == Qt::Key_Down) {
                 m_pVolSlider->changeVolume(qMax(nCurVolume - 5, 0));
                 return true;
+            }
+        }
+    }
+    if (obj == m_pListBtn) {
+        if (ev->type() == QEvent::MouseButtonRelease) {
+            if (m_pPlaylist->state() == PlaylistWidget::State::Opened && m_pListBtn->isChecked()) {
+                    m_pListBtn->setChecked(!m_pListBtn->isChecked());
+            }
+            if (m_pPlaylist->state() == PlaylistWidget::State::Closed && !m_pListBtn->isChecked()) {
+                    m_pListBtn->setChecked(!m_pListBtn->isChecked());
             }
         }
     }

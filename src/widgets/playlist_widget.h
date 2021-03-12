@@ -215,11 +215,17 @@ public:
     void resetFocusAttribute(bool &atr);
 
 signals:
-    void stateChange();
+    void stateChange(bool isShortcut);
     void sizeChange();
 
 public slots:
-    void togglePopup();
+    /**
+     * @brief togglePopup
+     * 播放列表升起/降下
+     *
+     * @param isShortcut 该函数是否通过快捷键触发
+     */
+    void togglePopup(bool isShortcut);
     void loadPlaylist();
     void openItemInFM();
     void showItemInfo();

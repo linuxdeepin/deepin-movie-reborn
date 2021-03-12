@@ -496,7 +496,7 @@ protected slots:
     /**
      * @brief slotPlayListStateChange 播放列表状态变化槽函数
      */
-    void slotPlayListStateChange();
+    void slotPlayListStateChange(bool isShortcut);
     /**
      * @brief slotUpdateThumbnailTimeOut 超时更新胶片
      */

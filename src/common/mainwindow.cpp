@@ -1213,7 +1213,7 @@ void MainWindow::onWindowStateChanged()
 
     if (isMinimized()) {
         if (m_pPlaylist->state() == PlaylistWidget::Opened) {
-            m_pPlaylist->togglePopup();
+            m_pPlaylist->togglePopup(false);
         }
     }
     if (isMaximized()) {
@@ -2015,7 +2015,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
             if (m_pPlaylist && m_pPlaylist->state() == PlaylistWidget::Closed && !m_pToolbox->isVisible()) {
                 m_pToolbox->show();
             }
-            m_pPlaylist->togglePopup();
+            m_pPlaylist->togglePopup(bIsShortcut);
             if (utils::check_wayland_env()) {
                 //lmh0710,修复playlist大小不正确
                 updateProxyGeometry();

@@ -1049,7 +1049,7 @@ void PlaylistWidget::slotCloseTimeTimeOut()
 {
     QTimer *pCloselistTimer = dynamic_cast<QTimer *>(sender());
     pCloselistTimer->deleteLater();
-    togglePopup();
+    togglePopup(false);
     _mw->reflectActionToUI(ActionFactory::TogglePlaylist);
 }
 
@@ -1368,7 +1368,7 @@ bool PlaylistWidget::isFocusInPlaylist()
     }
 }
 
-void PlaylistWidget::togglePopup()
+void PlaylistWidget::togglePopup(bool isShortcut)
 {
     if (paOpen != nullptr || paClose != nullptr) {
         return ;
@@ -1408,7 +1408,7 @@ void PlaylistWidget::togglePopup()
         paOpen->setEndValue(shrunk);;
         _toggling = false;
         _state = State::Closed;
-        emit stateChange();
+        emit stateChange(isShortcut);
         paOpen->start();    //down
         connect(paOpen, &QPropertyAnimation::finished, [ = ]() {
             paOpen->deleteLater();
@@ -1418,7 +1418,7 @@ void PlaylistWidget::togglePopup()
 #else
         _toggling = false;
         _state = State::Closed;
-        emit stateChange();
+        emit stateChange(isShortcut);
         setVisible(!isVisible());
 #endif
     } else {
@@ -1432,7 +1432,7 @@ void PlaylistWidget::togglePopup()
         paClose->setEndValue(fixed);
         _toggling = false;
         _state = State::Opened;
-        emit stateChange();
+        emit stateChange(isShortcut);
         paClose->start();   //up
         connect(paClose, &QPropertyAnimation::finished, [ = ]() {
             paClose->deleteLater();
@@ -1445,7 +1445,7 @@ void PlaylistWidget::togglePopup()
 #else
         _toggling = false;  //条件编译误报(cppcheck)
         _state = State::Opened;
-        emit stateChange();
+        emit stateChange(isShortcut);
         setGeometry(fixed);
 #endif
     }
