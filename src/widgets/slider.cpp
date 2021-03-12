@@ -1,5 +1,9 @@
 /*
- * (c) 2017, Deepin Technology Co., Ltd. <support@deepin.org>
+ * Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
+ *
+ * Author:     zhuyuliang <zhuyuliang@uniontech.com>
+ *
+ * Maintainer: liuzheng <liuzheng@uniontech.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as

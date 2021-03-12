@@ -3,9 +3,7 @@ Upstream-Name: deepin-movie-reborn
 Source: https://github.com/linuxdeepin/deepin-movie-reborn
 
 Files: *
-Copyright: 2012 huoshaohui@linuxdeepin.com
-           2011-2012 wangyong@deepin.com
-           2012-2017, Deepin Technology Co., Ltd.
+Copyright: 2021, Deepin Technology Co., Ltd.
 License: GPL-3+ with OpenSSL exception
 
 Files: debian/*
