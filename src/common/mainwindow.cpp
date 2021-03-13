@@ -4614,6 +4614,7 @@ void MainWindow::initMember()
     m_bIsJinJia = false;
     m_bIsTouch = false;
     m_bStartAnimation = false;
+    m_bStateInLock = false;
 
     m_nDisplayVolume = 100;
     m_nLastPressX = 0;
@@ -4734,6 +4735,10 @@ void MainWindow::setMusicShortKeyState(bool bState)
 void MainWindow::onSysLockState(QString, QVariantMap key2value, QStringList)
 {
     if (key2value.value("Locked").value<bool>() && m_pEngine->state() == PlayerEngine::CoreState::Playing) {
+        m_bStateInLock = true;
+        requestAction(ActionFactory::TogglePause);
+    } else if (!key2value.value("Locked").value<bool>() && m_bStateInLock) {
+        m_bStateInLock = false;
         requestAction(ActionFactory::TogglePause);
     }
 }
