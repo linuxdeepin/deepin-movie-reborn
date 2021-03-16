@@ -4553,11 +4553,14 @@ void MainWindow::sleepStateChanged(bool bSleep)
 {
     qInfo() << __func__ << bSleep;
     if (bSleep && m_pEngine->state() == PlayerEngine::CoreState::Playing) {
+        m_bStateInLock = true;
         requestAction(ActionFactory::ActionKind::TogglePause);
-    } else if (!bSleep && windowState() != Qt::WindowMinimized && m_pEngine->state() == PlayerEngine::CoreState::Paused) {
+    } else if (!bSleep && m_bStateInLock && windowState() != Qt::WindowMinimized && m_pEngine->state() == PlayerEngine::CoreState::Paused) {
+        m_bStateInLock = false;
         m_pEngine->seekAbsolute(static_cast<int>(m_pEngine->elapsed()));                //在硬解模式休眠后需要重新seek下，不然影片会卡住反复横跳
         requestAction(ActionFactory::ActionKind::TogglePause);
-    } else if (!bSleep && windowState() == Qt::WindowMinimized && m_pEngine->state() == PlayerEngine::CoreState::Paused) {
+    } else if (!bSleep && m_bStateInLock && windowState() == Qt::WindowMinimized && m_pEngine->state() == PlayerEngine::CoreState::Paused) {
+        m_bStateInLock = false;
         m_pEngine->seekAbsolute(static_cast<int>(m_pEngine->elapsed()));
     }
 }
