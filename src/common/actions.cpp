@@ -153,28 +153,6 @@ DMenu *ActionFactory::titlebarMenu()
                     pMenu->setEnabled(statu);
                 });
             }
-            {
-                DMenu *pParent = pMenu_p;
-                DMenu *pMenu = new DMenu(tr("Sound"));
-                m_pSound = pMenu;
-                {
-                    DMenu *pParent_channel = pMenu;
-                    DMenu *pMenu = new DMenu(tr("Channel"));
-                    m_pSoundMenu = pMenu;
-                    QActionGroup *pActionGroup = new QActionGroup(pMenu);
-                    DEF_ACTION_CHECKED_GROUP(tr("Stereo"), ActionKind::Stereo, pActionGroup);
-                    DEF_ACTION_CHECKED_GROUP(tr("Left channel"), ActionKind::LeftChannel, pActionGroup);
-                    DEF_ACTION_CHECKED_GROUP(tr("Right channel"), ActionKind::RightChannel, pActionGroup);
-                    pParent_channel->addMenu(pMenu);
-                }
-                {
-                    DMenu *parent_track = pMenu;
-                    DMenu *pMenutemp = new DMenu(tr("Track"));
-                    m_pTracksMenu = pMenutemp;
-                    parent_track->addMenu(pMenutemp);
-                }
-                pParent->addMenu(pMenu);
-            }
         }
 
         m_pTitlebarMenu = pMenu_p;

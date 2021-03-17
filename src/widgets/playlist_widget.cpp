@@ -148,7 +148,6 @@ public:
         : QFrame(), _pif {pif}, _listWidget {list}, _playlist{parent}
     {
 //        DThemeManager::instance()->registerWidget(this, QStringList() << "PlayItemThumb");
-
         setProperty("PlayItemThumb", "true");
         setState(ItemState::Normal);
         setFrameShape(QFrame::NoFrame);
@@ -723,6 +722,7 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
 
     paOpen = nullptr;
     paClose = nullptr;
+    pSelectItemWgt = nullptr;
 
     QVBoxLayout *mainVLayout = new QVBoxLayout(this);
     mainVLayout->setContentsMargins(0, 0, 0, 0);
@@ -1177,24 +1177,33 @@ void PlaylistWidget::contextMenuEvent(QContextMenuEvent *cme)
         on_item = true;
     }
 
-    auto piw = dynamic_cast<PlayItemWidget *>(_mouseItem);
-    auto menu = ActionFactory::get().playlistContextMenu();
-    for (auto act : menu->actions()) {
-        auto prop = static_cast<ActionFactory::ActionKind>(act->property("kind").toInt());
-        bool on = true;
-        if (prop == ActionFactory::ActionKind::PlaylistOpenItemInFM) {
-            on = on_item && piw->_pif.valid && piw->_pif.url.isLocalFile();
-        } else if (prop == ActionFactory::ActionKind::PlaylistRemoveItem) {
-            on = on_item;
-        } else if (prop == ActionFactory::ActionKind::PlaylistItemInfo) {
-            on = on_item && piw->_pif.valid;
-        } else {
-            on = _playlist->count() > 0 ? true : false;
+    if (CompositingManager::get().isPadSystem()) {
+        if (pSelectItemWgt) {
+            pSelectItemWgt->setBIsSelect(false);
         }
-        act->setEnabled(on);
-    }
+        auto piw = dynamic_cast<PlayItemWidget *>(_mouseItem);
+        piw->setBIsSelect(true);
+        pSelectItemWgt = piw;
+    } else {
+        auto piw = dynamic_cast<PlayItemWidget *>(_mouseItem);
+        auto menu = ActionFactory::get().playlistContextMenu();
+        for (auto act : menu->actions()) {
+            auto prop = static_cast<ActionFactory::ActionKind>(act->property("kind").toInt());
+            bool on = true;
+            if (prop == ActionFactory::ActionKind::PlaylistOpenItemInFM) {
+                on = on_item && piw->_pif.valid && piw->_pif.url.isLocalFile();
+            } else if (prop == ActionFactory::ActionKind::PlaylistRemoveItem) {
+                on = on_item;
+            } else if (prop == ActionFactory::ActionKind::PlaylistItemInfo) {
+                on = on_item && piw->_pif.valid;
+            } else {
+                on = _playlist->count() > 0 ? true : false;
+            }
+            act->setEnabled(on);
+        }
 
-    ActionFactory::get().playlistContextMenu()->popup(cme->globalPos());
+        ActionFactory::get().playlistContextMenu()->popup(cme->globalPos());
+    }
 #ifdef USE_TEST
     ActionFactory::get().playlistContextMenu()->hide();
     ActionFactory::get().playlistContextMenu()->clear();
@@ -1212,8 +1221,14 @@ void PlaylistWidget::showEvent(QShowEvent *se)
 void PlaylistWidget::removeItem(int idx)
 {
     qInfo() << "idx = " << idx;
-    auto item_remove = this->_playlist->takeItem(idx);
+    auto item_remove = this->_playlist->item(idx);
     if (item_remove) {
+        QWidget *pItem = _playlist->itemWidget(item_remove);
+        PlayItemWidget *pCurItem = dynamic_cast<PlayItemWidget *>(pItem);
+        if (pCurItem == pSelectItemWgt) {
+            pSelectItemWgt = nullptr;            //如果删除的是原来选中的则置空
+        }
+        item_remove = this->_playlist->takeItem(idx);
         delete item_remove;
     }
 
@@ -1270,41 +1285,47 @@ void PlaylistWidget::appendItems()
 
 void PlaylistWidget::slotShowSelectItem(QListWidgetItem *item)
 {
-//    auto curItem = _playlist->currentItem();
-//    if (curItem) {
-//        auto itemWidget = reinterpret_cast<PlayItemWidget *>(_playlist->itemWidget(curItem));
-//        if (itemWidget) {
-//            itemWidget->setBIsSelect(false);
-//        }
-//    }
+    PlayItemWidget *pWidget = nullptr;
 
     if (item) {
         _playlist->setCurrentItem(item);
-        auto pWidget = reinterpret_cast<PlayItemWidget *>(_playlist->itemWidget(item));
-        if (pWidget) {
-            pWidget->setBIsSelect(true);
+        pWidget = reinterpret_cast<PlayItemWidget *>(_playlist->itemWidget(item));
+        if (!pWidget) {
+            return;
         }
+    }
+
+    if (CompositingManager::get().isPadSystem()) {
+        pWidget->doDoubleClick();
+        if (pSelectItemWgt) {
+            pSelectItemWgt->setBIsSelect(false);
+            pSelectItemWgt = nullptr;
+        }
+    } else {
+        pWidget->setBIsSelect(true);
     }
 }
 
 void PlaylistWidget::OnItemChanged(QListWidgetItem *current, QListWidgetItem *previous)
 {
-    auto prevRow = _playlist->row(previous);
-    qInfo() << "changed prevRow..." << prevRow;
-    QPalette pe;
+    PlayItemWidget *prevItemWgt = nullptr;
+    PlayItemWidget *curItemWgt = nullptr;
+
     if (previous) {
-        auto prevItemWgt = reinterpret_cast<PlayItemWidget *>(_playlist->itemWidget(previous));
-        if (prevItemWgt) {
-            prevItemWgt->setBIsSelect(false);
-        }
+        prevItemWgt = reinterpret_cast<PlayItemWidget *>(_playlist->itemWidget(previous));
     }
 
     if (current) {
-        qInfo() << "changed curRow..." << _playlist->row(current);
-        auto curItemWgt = reinterpret_cast<PlayItemWidget *>(_playlist->itemWidget(current));
-        if (curItemWgt) {
-            curItemWgt->setBIsSelect(true);
-        }
+        curItemWgt = reinterpret_cast<PlayItemWidget *>(_playlist->itemWidget(current));
+    }
+
+    if (!prevItemWgt || !curItemWgt) {
+        return;
+    }
+
+    if (!CompositingManager::get().isPadSystem()) {
+        prevItemWgt->setBIsSelect(false);
+        curItemWgt->setBIsSelect(true);
     }
 }
 

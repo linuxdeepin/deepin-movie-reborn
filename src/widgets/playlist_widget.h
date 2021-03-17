@@ -267,7 +267,7 @@ private:
     /// < original row, data>
     QPair<int, PlayItemWidget *> _lastDragged {-1, nullptr};
     int _index {0};
-    PlayItemWidget *_selectItemWgt;
+    PlayItemWidget *pSelectItemWgt;
     void batchUpdateSizeHints();
 
     QPropertyAnimation *paOpen ;
