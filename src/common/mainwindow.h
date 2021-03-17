@@ -449,6 +449,7 @@ private:
     QPoint m_pressPoint;                            ///记录当前鼠标按下时的点
     bool m_bStartMini;                              ///开始进入迷你模式
     bool m_bStateInLock;                            ///锁屏时播放状态
+    bool m_bStartSleep;                             ///是否进入休眠状态
 
     enum StateBeforeEnterMiniMode {
         SBEM_None = 0x0,

@@ -4552,16 +4552,23 @@ void MainWindow::diskRemoved(QString strDiskName)
 void MainWindow::sleepStateChanged(bool bSleep)
 {
     qInfo() << __func__ << bSleep;
-    if (bSleep && m_pEngine->state() == PlayerEngine::CoreState::Playing) {
-        m_bStateInLock = true;
-        requestAction(ActionFactory::ActionKind::TogglePause);
-    } else if (!bSleep && m_bStateInLock && windowState() != Qt::WindowMinimized && m_pEngine->state() == PlayerEngine::CoreState::Paused) {
-        m_bStateInLock = false;
-        m_pEngine->seekAbsolute(static_cast<int>(m_pEngine->elapsed()));                //在硬解模式休眠后需要重新seek下，不然影片会卡住反复横跳
-        requestAction(ActionFactory::ActionKind::TogglePause);
-    } else if (!bSleep && m_bStateInLock && windowState() == Qt::WindowMinimized && m_pEngine->state() == PlayerEngine::CoreState::Paused) {
-        m_bStateInLock = false;
+
+    if (m_bStateInLock) {                //休眠唤醒后会先执行锁屏操作,如果已经进行锁屏操作则忽略休眠唤醒信号
+        m_bStartSleep = bSleep;
         m_pEngine->seekAbsolute(static_cast<int>(m_pEngine->elapsed()));
+        return;
+    }
+
+    if (!bSleep) {
+        m_pEngine->seekAbsolute(static_cast<int>(m_pEngine->elapsed()));      //保证休眠后不管是否播放都不会卡帧
+    }
+
+    if (bSleep && m_pEngine->state() == PlayerEngine::CoreState::Playing) {
+        m_bStartSleep = true;
+        requestAction(ActionFactory::ActionKind::TogglePause);
+    } else if (!bSleep && m_pEngine->state() == PlayerEngine::CoreState::Paused && m_bStartSleep) {
+        m_bStartSleep = false;
+        requestAction(ActionFactory::ActionKind::TogglePause);
     }
 }
 
@@ -4622,6 +4629,7 @@ void MainWindow::initMember()
     m_bIsTouch = false;
     m_bStartAnimation = false;
     m_bStateInLock = false;
+    m_bStartSleep = false;
 
     m_nDisplayVolume = 100;
     m_nLastPressX = 0;
@@ -4741,6 +4749,10 @@ void MainWindow::setMusicShortKeyState(bool bState)
 
 void MainWindow::onSysLockState(QString, QVariantMap key2value, QStringList)
 {
+    if (m_bStartSleep) {
+        m_bStateInLock = true;       //如果进入了休眠状态后进入锁屏,则默认执行了暂停操作
+    }
+
     if (key2value.value("Locked").value<bool>() && m_pEngine->state() == PlayerEngine::CoreState::Playing) {
         m_bStateInLock = true;
         requestAction(ActionFactory::TogglePause);
