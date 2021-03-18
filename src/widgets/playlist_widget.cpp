@@ -1310,22 +1310,20 @@ void PlaylistWidget::OnItemChanged(QListWidgetItem *current, QListWidgetItem *pr
 {
     PlayItemWidget *prevItemWgt = nullptr;
     PlayItemWidget *curItemWgt = nullptr;
+    bool bIsPad = CompositingManager::get().isPadSystem();
 
     if (previous) {
         prevItemWgt = reinterpret_cast<PlayItemWidget *>(_playlist->itemWidget(previous));
+        if (!bIsPad && prevItemWgt) {
+            prevItemWgt->setBIsSelect(false);
+        }
     }
 
     if (current) {
         curItemWgt = reinterpret_cast<PlayItemWidget *>(_playlist->itemWidget(current));
-    }
-
-    if (!prevItemWgt || !curItemWgt) {
-        return;
-    }
-
-    if (!CompositingManager::get().isPadSystem()) {
-        prevItemWgt->setBIsSelect(false);
-        curItemWgt->setBIsSelect(true);
+        if (!bIsPad && curItemWgt) {
+            curItemWgt->setBIsSelect(true);
+        }
     }
 }
 
