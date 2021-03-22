@@ -55,7 +55,7 @@ Presenter::Presenter(MainWindow *mw, QObject *parent)
     mprisPlayer->setCanGoPrevious(true);
     mprisPlayer->setCanPause(true);
     mprisPlayer->setCanSeek(true);
-    mprisPlayer->setCanShowInUI(false);
+    //mprisPlayer->setCanShowInUI(false);
     initMpris(mprisPlayer);
 }
 
@@ -76,7 +76,7 @@ void Presenter::initMpris(MprisPlayer *mprisPlayer)
     connect(_mw->engine()->getplaylist(), &PlaylistModel::playModeChanged, this, &Presenter::slotplayModeChanged);
     //connect(mprisPlayer, &MprisPlayer::openUriRequested, this, [ = ] {_mw->requestAction(ActionFactory::Exit);});
     connect(mprisPlayer, &MprisPlayer::seekRequested, this, &Presenter::slotseek);
-     connect(mprisPlayer, &MprisPlayer::stopRequested, this, &Presenter::slotstop);
+    connect(mprisPlayer, &MprisPlayer::stopRequested, this, &Presenter::slotstop);
     //connect(_mw->engine(),&PlayerEngine::volumeChanged,this,&Presenter::slotvolumeChanged);
 
 //    connect(_mw->toolbox()->get_progBar(), &Presenter::progrossChanged,
