@@ -1,4 +1,4 @@
-# Movie|../common/deepin_movie_96.svg|
+# Movie|deepin-movie|
 
 ## Overview
 
@@ -78,8 +78,8 @@ You can play films in the following ways:
 
 ### Forward/Rewind
 
-1. On the Movie interface, drag the control bar to forward or rewind the film.
-2. On the Movie interface, press![Right](../common/Right.svg)or ![Left](../common/Left.svg) on the keyboard to fast rewind the film.
+1. On the Movie interface, drag the progress bar to forward or rewind the film.
+2. On the Movie interface, press![Right](../common/Right.svg)or ![Left](../common/Left.svg) on the keyboard to fast forward or rewind rewind the film.
 
 >![notes](../common/notes.svg) Notes: If you are using a computer equipped with a touchscreen, slide leftward with one finger on the video picture area to rewind and rightward to forward in fullscreen mode.
 
@@ -116,7 +116,7 @@ Right-click on the Movie interface and you can:
 
 >  ![tips](../common/tips.svg)Tips: You can also use shortcuts to adjust the playback speed. Speed up/down is relative to the original play speed. The video playback speed increases/decreases by 0.1 times in default mode each time when it is sped up/down. The maximum playback speed is 2 times faster than the original speed and the minimum playback speed is 10 times slower than the original speed.
 >
-> - Press and hold **Ctrl **+ ![Right](../common/Right.svg) or ![Left](../common/Left.svg) on the keyboard and the playback speed will increase or decrease.
+> - Press and hold **Ctrl**+ ![Right](../common/Right.svg) or ![Left](../common/Left.svg) on the keyboard and the playback speed will increase or decrease.
 > - Press ![R](../common/R.svg)to restore the original speed.
 
 ![Playback](fig/playbackspeed.png)
@@ -168,7 +168,7 @@ Right-click on the Movie interface and you can:
 
 ## Playlist Management
 
-You can enter the playlist to add or delete the video files.
+You can enter the playlist to manage the existing video files.
 
 ### Delete Film from the Playlist
 
