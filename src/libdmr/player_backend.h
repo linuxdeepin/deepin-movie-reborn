@@ -29,7 +29,6 @@
  */
 #ifndef _DMR_PLAYER_BACKEND_H
 #define _DMR_PLAYER_BACKEND_H
-#define Q_ENUM(x) Q_ENUMS(x) Q_ENUM_IMPL(x)
 
 #include <QtWidgets>
 
