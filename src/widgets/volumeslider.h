@@ -61,6 +61,7 @@ protected:
     void showEvent(QShowEvent *se);
     void leaveEvent(QEvent *e);
     void paintEvent(QPaintEvent *);
+    void keyPressEvent(QKeyEvent *pEvent);
     bool eventFilter(QObject *obj, QEvent *e);
     void refreshIcon();                //刷新图标
 

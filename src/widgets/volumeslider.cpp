@@ -475,6 +475,20 @@ void VolumeSlider::paintEvent(QPaintEvent *)
     painter.fillPath(pathTriangle, bgColor);
 }
 
+void VolumeSlider::keyPressEvent(QKeyEvent *pEvent)
+{
+#if defined (__mips__) && defined (__aarch64__)     // mips和arm模式下,键盘交互升起音量条焦点在音量条,所以键盘事件被音量条截获
+    int nCurVolume = getVolume();
+    if (pEvent->key() == Qt::Key_Up) {
+        changeVolume(qMin(nCurVolume + 5, 200));
+    } else if (pEvent->key() == Qt::Key_Down) {
+        changeVolume(qMax(nCurVolume - 5, 0));
+    }
+#endif
+
+    DArrowRectangle::keyPressEvent(pEvent);
+}
+
 bool VolumeSlider::eventFilter(QObject *obj, QEvent *e)
 {
     if (e->type() == QEvent::Wheel) {

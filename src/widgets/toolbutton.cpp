@@ -99,7 +99,11 @@ void VolumeButton::wheelEvent(QWheelEvent *we)
 //tab键焦点移出时同鼠标移出，响应自动隐藏
 void VolumeButton::focusOutEvent(QFocusEvent *ev)
 {
+    // mips和arm音量条属性为QTool,升起时焦点会在音量条上
+    // 所以不能使用焦点是否变化来让音量调消失
+#if !defined (__mips__) && !defined (__aarch64__)
     emit leaved();
+#endif
     DIconButton::focusOutEvent(ev);
 }
 

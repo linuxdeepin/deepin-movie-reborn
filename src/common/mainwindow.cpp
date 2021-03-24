@@ -2078,6 +2078,11 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
     }
 
     case ActionFactory::ActionKind::QuitFullscreen: {
+        if (!m_pToolbox->getVolSliderIsHided()) {
+            m_pToolbox->setVolSliderHide();       // esc降下音量条
+            break;
+        }
+
         if (m_bMiniMode) {
             if (!bFromUI) {
                 reflectActionToUI(ActionFactory::ToggleMiniMode);

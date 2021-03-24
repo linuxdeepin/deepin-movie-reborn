@@ -1755,7 +1755,7 @@ void ToolboxProxy::slotPlayListStateChange(bool isShortcut)
         //非x86平台播放列表切换不展示动画,故按键状态不做限制
 #ifdef __x86_64__
         if (isShortcut && m_pListBtn->isChecked()) {
-                m_pListBtn->setIcon(QIcon(":/icons/deepin/builtin/light/checked/episodes_checked.svg"));
+            m_pListBtn->setIcon(QIcon(":/icons/deepin/builtin/light/checked/episodes_checked.svg"));
         } else {
             m_pListBtn->setChecked(true);
             m_pListBtn->setIcon(QIcon(":/icons/deepin/builtin/light/checked/episodes_checked.svg"));
@@ -2430,10 +2430,10 @@ bool ToolboxProxy::eventFilter(QObject *obj, QEvent *ev)
     if (obj == m_pListBtn) {
         if (ev->type() == QEvent::MouseButtonRelease) {
             if (m_pPlaylist->state() == PlaylistWidget::State::Opened && m_pListBtn->isChecked()) {
-                    m_pListBtn->setChecked(!m_pListBtn->isChecked());
+                m_pListBtn->setChecked(!m_pListBtn->isChecked());
             }
             if (m_pPlaylist->state() == PlaylistWidget::State::Closed && !m_pListBtn->isChecked()) {
-                    m_pListBtn->setChecked(!m_pListBtn->isChecked());
+                m_pListBtn->setChecked(!m_pListBtn->isChecked());
             }
         }
     }
@@ -2490,7 +2490,9 @@ bool ToolboxProxy::getbAnimationFinash()
 
 void ToolboxProxy::setVolSliderHide()
 {
-    m_pVolSlider->setVisible(false);
+    if (m_pVolSlider->isVisible()) {
+        m_pVolSlider->popup();
+    }
 }
 
 void ToolboxProxy::setButtonTooltipHide()
