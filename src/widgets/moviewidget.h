@@ -36,20 +36,21 @@
 #include <DWidget>
 #include <QResizeEvent>
 #include <QSvgRenderer>
+#include <QGraphicsView>
+#include <QGraphicsSvgItem>
 
 DWIDGET_USE_NAMESPACE
 
 class QTimer;
 class QHBoxLayout;
 class QLabel;
-class QPixmap;
 
 namespace dmr {
 /**
  * @brief The MovieWidget class
  * 播放音乐时动画效果显示窗口类
  */
-class MovieWidget: public DWidget
+class MovieWidget: public QGraphicsView
 {
     Q_OBJECT
 
@@ -93,14 +94,14 @@ public slots:
     void initMember();
 
 private:
-    QLabel *m_pLabMovie;          ///显示动画的控件
+    QGraphicsSvgItem *m_pBgSvgItem;
+    QGraphicsSvgItem *m_pNoteSvgItem;
+    QGraphicsScene *m_pScene;
     QTimer *m_pTimer;             ///控制动画播放速度的时间
-    QHBoxLayout *m_pHBoxLayout;   ///窗口布局管理
     int m_nRotate;                ///旋转角度
-    int m_nWidthNote;             ///音符边长
     PlayState m_state;            ///播放状态
-    QSvgRenderer *m_pBgRender;
-    QSvgRenderer *m_pNoteRender;
+    QSvgRenderer *m_pBgRender;    ///背景render
+    QSvgRenderer *m_pNoteRender;  ///音符render
 };
 
 }

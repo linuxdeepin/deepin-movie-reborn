@@ -34,13 +34,9 @@
 /**
  *@file 这个文件是播放音乐时显示的窗口动画
  */
-#include <QHBoxLayout>
 #include <QTimer>
-#include <QLabel>
-#include <QPixmap>
 #include <QApplication>
 #include <QDesktopWidget>
-#include <QPainter>
 
 #include "moviewidget.h"
 
@@ -56,19 +52,32 @@ namespace dmr {
  * @param parent 父窗口
  */
 MovieWidget::MovieWidget(QWidget *parent)
-    : DWidget(parent), m_nRotate(0), m_nWidthNote(0), m_state(PlayState::STATE_STOP)
+    : QGraphicsView(parent)
 {
     initMember();
-    m_pHBoxLayout = new QHBoxLayout(this);
-    m_pHBoxLayout->setContentsMargins(QMargins(0, 0, 0, 0));
-    setLayout(m_pHBoxLayout);
 
-    m_pLabMovie = new QLabel(this);
-    m_pLabMovie->setAlignment(Qt::AlignCenter);
-    m_pHBoxLayout->addWidget(m_pLabMovie);
+    setAlignment(Qt::AlignCenter);
+    setFrameShape(QFrame::Shape::NoFrame);
+
+    m_pScene = new QGraphicsScene;
+    m_pScene->setBackgroundBrush(QBrush(QColor(0, 0, 0)));
+    this->setScene(m_pScene);
 
     m_pBgRender = new QSvgRenderer(QString(":/resources/icons/music_bg.svg"));
     m_pNoteRender = new QSvgRenderer(QString(":/resources/icons/music_note.svg"));
+
+    m_pBgSvgItem = new QGraphicsSvgItem;
+    m_pNoteSvgItem = new QGraphicsSvgItem;
+    m_pBgSvgItem->setSharedRenderer(m_pBgRender);
+    m_pNoteSvgItem->setSharedRenderer(m_pNoteRender);
+    m_pBgSvgItem->setCacheMode(QGraphicsItem::NoCache);
+    m_pNoteSvgItem->setCacheMode(QGraphicsItem::NoCache);
+    m_pBgSvgItem->setPos((m_pScene->width() - DEFAULT_BGLENGTH) / 2, (m_pScene->height() - DEFAULT_BGLENGTH) / 2);
+    m_pNoteSvgItem->setPos((m_pScene->width() - m_pNoteSvgItem->boundingRect().width()) / 2, (m_pScene->height() -  m_pNoteSvgItem->boundingRect().width())  / 2);
+
+    m_pScene->addItem(m_pBgSvgItem);
+    m_pScene->addItem(m_pNoteSvgItem);
+    m_pScene->setSceneRect(m_pBgSvgItem->boundingRect());
 
     m_pTimer = new QTimer();
     m_pTimer->setInterval(INTERVAL);
@@ -113,7 +122,7 @@ void MovieWidget::pausePlaying()
  */
 void MovieWidget::updateView()
 {
-    float fRatio = 1.0f;
+    qreal fRatio = 1.0;
     QRect rectDesktop;
     int nWidth = 0;
     int nHeight = 0;
@@ -126,41 +135,36 @@ void MovieWidget::updateView()
 
     //根据比例缩放背景
     if (1.0f * nHeight / nWidth < DEFAULT_RATION) {
-
         nWidth = static_cast<int>(nHeight / DEFAULT_RATION);
-        fRatio = nWidth * 2.0f / rectDesktop.width();
+        fRatio = nWidth * 2.0 / rectDesktop.width();
     } else {
         nHeight = static_cast<int>(nWidth * DEFAULT_RATION);
-        fRatio = nHeight * 2.0f / rectDesktop.height();
+        fRatio = nHeight * 2.0 / rectDesktop.height();
     }
 
-    int nBgLength = static_cast<int>(DEFAULT_BGLENGTH * fRatio);
-    int nNoteLength = static_cast<int>(DEFAULT_NTLENGTH * fRatio);
-    QRect rect((nBgLength - nNoteLength) / 2, (nBgLength - nNoteLength) / 2, nNoteLength, nNoteLength);
+    m_pBgSvgItem->setScale(fRatio);
+    m_pNoteSvgItem->setScale(fRatio);
 
-    QPixmap pixmapBg(nBgLength, nBgLength);
-    pixmapBg.fill(Qt::transparent);
+    m_pBgSvgItem->setPos((m_pScene->width() - DEFAULT_BGLENGTH * fRatio) / 2, (m_pScene->height() - DEFAULT_BGLENGTH * fRatio) / 2);
+    m_pNoteSvgItem->setPos((m_pScene->width() - m_pNoteSvgItem->boundingRect().width()) / 2, (m_pScene->height() -  m_pNoteSvgItem->boundingRect().width())  / 2);
+    m_pNoteSvgItem->setTransformOriginPoint(24, 24);
 
-    QPainter painter(&pixmapBg);
-    m_pBgRender->render(&painter);         //绘制背景
-
-    painter.translate(pixmapBg.width() / 2.0, pixmapBg.height() / 2.0);
-    painter.rotate(m_nRotate);
-    painter.translate(-pixmapBg.width() / 2.0, -pixmapBg.height() / 2.0);
-    painter.setRenderHints(QPainter::HighQualityAntialiasing | QPainter::SmoothPixmapTransform | QPainter::Antialiasing);
-
-    m_pNoteRender->render(&painter, rect);  //绘制音符
-
-    m_pLabMovie->setPixmap(pixmapBg);
+    m_nRotate += ROTATE_ANGLE;
+    m_pNoteSvgItem->setRotation(m_nRotate);
 }
 /**
  * @brief initMember 初始化成员变量
  */
 void MovieWidget::initMember()
 {
-    m_pLabMovie = nullptr;
+    m_nRotate = 0;
+    m_state = PlayState::STATE_STOP;
     m_pTimer = nullptr;
-    m_pHBoxLayout = nullptr;
+    m_pBgSvgItem = nullptr;
+    m_pNoteSvgItem = nullptr;
+    m_pScene = nullptr;
+    m_pBgRender = nullptr;
+    m_pNoteRender = nullptr;
 }
 
 }
