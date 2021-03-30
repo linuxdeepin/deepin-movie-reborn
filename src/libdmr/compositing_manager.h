@@ -104,6 +104,7 @@ public:
     {
         _isCoreFlag = flag;
     }
+    bool isZXIntgraphics() const;
 
     PlayerOptionList getProfile(const QString &name);
     PlayerOptionList getBestProfile(); // best for current platform and env
@@ -122,6 +123,10 @@ private:
     bool isDriverLoadedCorrectly();
     bool isDirectRendered();
     bool isProprietaryDriver();
+    /**
+     * @brief initMember 初始化成员变量
+     */
+    void initMember();
 
     static bool is_device_viable(int id);
     static bool is_card_exists(int id, const std::vector<std::string> &drivers);
@@ -129,9 +134,10 @@ private:
     bool _composited {false};
     Platform _platform {Platform::Unknown};
     bool _isCoreFlag {false};
-    bool _hasCard;
+    bool m_bHasCard;
     bool m_bOnlySoftDecode {false};  //kunpeng920走软解码
     bool m_setSpecialControls {false};
+    bool m_bZXIntgraphics;
     //保存配置
     QMap<QString, QString> *m_pMpvConfig;
 };

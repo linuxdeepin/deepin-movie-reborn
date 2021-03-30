@@ -316,70 +316,44 @@ mpv_handle *MpvProxy::mpv_init()
         //        }
 #endif
     } else {
-#if defined (__mips__) || defined (__aarch64__) || defined (__sw_64__)
-        if (CompositingManager::get().hascard()) {
-            if (CompositingManager::get().isOnlySoftDecode()) {
-                my_set_property(pHandle, "hwdec", "off");
-            } else {
-                my_set_property(pHandle, "hwdec", "auto");
-            }
-            my_set_property(pHandle, "vo", "gpu");
-            m_sInitVo = "gpu";
-        } else {
-            my_set_property(pHandle, "vo", "xv,x11");
-            my_set_property(pHandle, "ao", "alsa");
-            m_sInitVo = "xv,x11";
-        }
-#else
-#ifdef MWV206_0
         QFileInfo fi("/dev/mwv206_0");              //景嘉微显卡目前只支持vo=xv，等日后升级代码需要酌情修改。
         if (fi.exists()) {
-            m_bIsJingJia = true;
-            my_set_property(pHandle, "hwdec", "vdpau");
-            my_set_property(pHandle, "vo", "vdpau");
-            m_sInitVo = "vdpau";
+            my_set_property(m_handle, "hwdec", "vdpau,vdpau-copy,vaapi,vaapi-copy");
+            my_set_property(m_handle, "vo", "vdpau,xv,x11");
+            m_sInitVo = "vdpau,xv,x11";
+        } else if (QFile::exists("/dev/csmcore")) {
+            my_set_property(m_handle, "vo", "xv,x11");
+            my_set_property(m_handle, "hwdec", "auto");
+            m_sInitVo = "xv,x11";
         } else {
-            if (!utils::check_wayland_env()) {
-#if defined (__mips__) || defined (__aarch64__) || defined (__sw_64__)
-                if (CompositingManager::get().hascard()) {
-                    if (CompositingManager::get().isOnlySoftDecode()) {
-                        set_property(pHandle, "hwdec", "off");
-                    } else {
-                        set_property(pHandle, "hwdec", "auto");
-                    }
-                    set_property(pHandle, "vo", "gpu");
-                    m_sInitVo = "gpu";
-                } else {
-                    set_property(pHandle, "vo", "xv,x11");
-                    m_sInitVo = "xv,x11";
-                    //set_property(pHandle, "ao", "alsa");
-                }
-#else
-                my_set_property(pHandle, "vo", "xv,x11");
-                m_sInitVo = "xv,x11";
-#endif
+            if (CompositingManager::get().isOnlySoftDecode()) {
+                my_set_property(m_handle, "hwdec", "off");
             } else {
-                auto e = QProcessEnvironment::systemEnvironment();
-                QString XDG_SESSION_TYPE = e.value(QStringLiteral("XDG_SESSION_TYPE"));
-                QString WAYLAND_DISPLAY = e.value(QStringLiteral("WAYLAND_DISPLAY"));
-
-                if (XDG_SESSION_TYPE == QLatin1String("wayland") ||
-                        WAYLAND_DISPLAY.contains(QLatin1String("wayland"), Qt::CaseInsensitive)) {
-                    my_set_property(pHandle, "vo", "gpu,x11,xv");
-                    m_sInitVo = "gpu,x11,xv";
-                } else {
-                    my_set_property(pHandle, "vo", "xv");
-                    m_sInitVo = "xv";
-                }
+                my_set_property(m_handle, "hwdec", "auto");
             }
-        }
+#if !defined (__x86_64__)
+            if (CompositingManager::get().hascard()) {
+                my_set_property(m_handle, "vo", "vdpau,gpu,x11");
+                m_sInitVo = "vdpau,gpu,x11";
+            } else {
+#if defined (__mips__)
+               qInfo() << "修改音视频同步模式";
+               my_set_property(m_handle, "video-sync", "desync");
+#endif
+            }
+            my_set_property(m_handle, "vo", "xv,x11");
+            my_set_property(m_handle, "ao", "alsa");
+            m_sInitVo = "xv,x11";
 #else
-        my_set_property(pHandle, "vo", "gpu,xv,x11");
-        m_sInitVo = "gpu,xv,x11";
+            //TODO(xxxxpengfei)：暂未处理intel集显情况
+            if (CompositingManager::get().isZXIntgraphics()) {
+                my_set_property(m_handle, "vo", "gpu");
+            }
 #endif
-#endif
-        my_set_property(pHandle, "wid", m_pParentWidget->winId());
+        }
+        my_set_property(m_handle, "wid", m_pParentWidget->winId());
     }
+
     if (QFile::exists("/dev/csmcore")) {
         my_set_property(pHandle, "vo", "xv,x11");
         my_set_property(pHandle, "hwdec", "auto");
@@ -391,14 +365,7 @@ mpv_handle *MpvProxy::mpv_init()
     qInfo() << __func__ << my_get_property(pHandle, "vo").toString();
     qInfo() << __func__ << my_get_property(pHandle, "hwdec").toString();
 
-#ifdef __mips__
-    if (!CompositingManager::get().hascard()) {
-        qInfo() << "修改音视频同步模式";
-        my_set_property(pHandle, "video-sync", "desync");
-    }
-#endif
     QString strMovie = QObject::tr("Movie");
-
     //设置音量名称
     my_set_property(pHandle, "audio-client-name", strMovie);
     //my_set_property(pHandle, "keepaspect-window", "no");

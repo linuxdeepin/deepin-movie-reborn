@@ -121,9 +121,7 @@ CompositingManager &CompositingManager::get()
 
 CompositingManager::CompositingManager()
 {
-    _hasCard = false;
-    m_pMpvConfig = nullptr;
-    _platform = PlatformChecker().check();
+    initMember();
 #ifdef __aarch64__
     if (dmr::utils::check_wayland_env()) {
         _composited = true;
@@ -227,9 +225,9 @@ CompositingManager::CompositingManager()
     qInfo() << "composited:" << _composited;
 #if defined (__mips__) || defined (__aarch64__) || defined (__sw_64__)
     if (_composited) {
-        _hasCard = _composited;
+        m_bHasCard = _composited;
         _composited = false;
-        qInfo() << "hasCard: " << _hasCard;
+        qInfo() << "hasCard: " << m_bHasCard;
     }
 #endif
     //读取配置
@@ -253,7 +251,7 @@ CompositingManager::~CompositingManager()
 #if defined (__mips__) || defined (__aarch64__)
 bool CompositingManager::hascard()
 {
-    return _hasCard;
+    return m_bHasCard;
 }
 #endif
 
@@ -304,6 +302,11 @@ bool CompositingManager::runningOnVmwgfx()
 bool CompositingManager::isPadSystem()
 {
     return false;
+}
+
+bool CompositingManager::isZXIntgraphics() const
+{
+    return m_bZXIntgraphics;
 }
 
 bool CompositingManager::runningOnNvidia()
@@ -464,6 +467,7 @@ bool CompositingManager::isDriverLoadedCorrectly()
     static QRegExp aiglx_err("\\(EE\\)\\s+AIGLX error");
     static QRegExp dri_ok("direct rendering: DRI\\d+ enabled");
     static QRegExp swrast("GLX: Initialized DRISWRAST");
+    static QRegExp regZX("loading driver: zx");
 
     QString xorglog = QString("/var/log/Xorg.%1.log").arg(QX11Info::appScreen());
     qInfo() << "check " << xorglog;
@@ -489,6 +493,10 @@ bool CompositingManager::isDriverLoadedCorrectly()
         if (swrast.indexIn(ln) != -1) {
             qInfo() << "swrast driver used";
             return false;
+        }
+
+        if (regZX.indexIn(ln) != -1) {
+            m_bZXIntgraphics = true;
         }
     }
     f.close();
@@ -567,6 +575,15 @@ bool CompositingManager::isProprietaryDriver()
     }
 
     return false;
+}
+
+void CompositingManager::initMember()
+{
+    m_pMpvConfig = nullptr;
+    _platform = PlatformChecker().check();
+
+    m_bZXIntgraphics = false;
+    m_bHasCard = false;
 }
 
 //this is not accurate when proprietary driver used
