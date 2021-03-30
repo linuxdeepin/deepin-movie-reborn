@@ -37,6 +37,7 @@
 #include <QTimer>
 #include <QApplication>
 #include <QDesktopWidget>
+#include "compositing_manager.h"
 
 #include "moviewidget.h"
 
@@ -56,6 +57,10 @@ MovieWidget::MovieWidget(QWidget *parent)
 {
     initMember();
 
+    if (!CompositingManager::get().composited()) {
+        winId();
+    }
+
     setAlignment(Qt::AlignCenter);
     setFrameShape(QFrame::Shape::NoFrame);
 
@@ -72,12 +77,12 @@ MovieWidget::MovieWidget(QWidget *parent)
     m_pNoteSvgItem->setSharedRenderer(m_pNoteRender);
     m_pBgSvgItem->setCacheMode(QGraphicsItem::NoCache);
     m_pNoteSvgItem->setCacheMode(QGraphicsItem::NoCache);
+    m_pScene->setSceneRect(m_pBgSvgItem->boundingRect());   //要在设置位置之前，不然动画会跳动
     m_pBgSvgItem->setPos((m_pScene->width() - DEFAULT_BGLENGTH) / 2, (m_pScene->height() - DEFAULT_BGLENGTH) / 2);
     m_pNoteSvgItem->setPos((m_pScene->width() - m_pNoteSvgItem->boundingRect().width()) / 2, (m_pScene->height() -  m_pNoteSvgItem->boundingRect().width())  / 2);
 
     m_pScene->addItem(m_pBgSvgItem);
     m_pScene->addItem(m_pNoteSvgItem);
-    m_pScene->setSceneRect(m_pBgSvgItem->boundingRect());
 
     m_pTimer = new QTimer();
     m_pTimer->setInterval(INTERVAL);
@@ -151,6 +156,7 @@ void MovieWidget::updateView()
 
     m_nRotate += ROTATE_ANGLE;
     m_pNoteSvgItem->setRotation(m_nRotate);
+    viewport()->update();
 }
 /**
  * @brief initMember 初始化成员变量

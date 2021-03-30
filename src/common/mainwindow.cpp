@@ -1030,6 +1030,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     m_pMovieWidget = new MovieWidget(this);
     m_pMovieWidget->hide();
+    if (!CompositingManager::get().composited()) {
+        m_pMovieWidget->windowHandle()->installEventFilter(m_pEventListener);
+    }
 
 //    QTimer::singleShot(100, this, [ = ] {    //把焦点设回工具栏
 //        m_pToolbox->setFocus();
