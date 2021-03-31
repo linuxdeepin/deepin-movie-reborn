@@ -248,7 +248,7 @@ CompositingManager::~CompositingManager()
     m_pMpvConfig = nullptr;
 }
 
-#if defined (__mips__) || defined (__aarch64__)
+#if defined (__mips__) || defined (__aarch64__) || defined (__sw_64__)
 bool CompositingManager::hascard()
 {
     return m_bHasCard;
