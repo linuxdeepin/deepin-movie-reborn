@@ -743,8 +743,7 @@ TEST(ToolBox, mainWindowEvent)
     QTest::mouseClick(w, Qt::LeftButton, Qt::NoModifier, QPoint(100, 100), 200);
     QTest::qWait(100);
     //shortcut view
-    QKeyEvent keypress(QEvent::KeyPress, Qt::Key_Slash, Qt::ControlModifier | Qt::ShiftModifier);
-    QApplication::sendEvent(w, &keypress);
+    QTest::keyPress(w, Qt::Key_Slash, Qt::ControlModifier | Qt::ShiftModifier, 100);
 
     w->testCdrom();
     QTest::qWait(500);
