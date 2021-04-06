@@ -5,6 +5,9 @@ rm -rf ../$(dirname $0)/build-ut
 mkdir ../$(dirname $0)/build-ut
 cd ../$(dirname $0)/build-ut
 
+platform=`uname -m`
+echo ${platform}
+
 export QT_QPA_PLATFORM=
 echo $QT_QPA_PLATFORM
 export QTEST_FUNCTION_TIMEOUT='400000'
@@ -25,7 +28,12 @@ lcov --directory ./tests/CMakeFiles/deepin-movie-test.dir --zerocounters
 lcov --directory . --capture --output-file ./html/${executable}_Coverage.info
 
 echo " =================== do filter begin ==================== "
-lcov --remove ./html/${executable}_Coverage.info 'tests/CMakeFiles/${executable}.dir/${executable}_autogen/*/*' '${executable}_autogen/*/*/*.cpp' '*/usr/include/*' '*/tests/*' '/usr/local/*' '*/src/vendor/dbusextended-qt/*' '*/src/common/filter.*' '*/src/common/utility_x11.*' '*/src/common/settings_translation.cpp' '*/src/common/event_monitor.cpp' '*/src/widgets/videoboxbutton.cpp' '*/src/common/event_relayer.cpp' -o ./html/${executable}_Coverage_fileter.info
+if [ ${platform} = x86_64 ];then 
+lcov --remove ./html/${executable}_Coverage.info 'tests/CMakeFiles/${executable}.dir/${executable}_autogen/*/*' '${executable}_autogen/*/*/*.cpp' '*/usr/include/*' '*/tests/*' '/usr/local/*' '*/src/common/utility_x11.*' '*/src/common/settings_translation.cpp' '*/src/common/event_monitor.cpp' '*/src/widgets/videoboxbutton.cpp' -o ./html/${executable}_Coverage_fileter.info
+else
+lcov --remove ./html/${executable}_Coverage.info 'tests/CMakeFiles/${executable}.dir/${executable}_autogen/*/*' '${executable}_autogen/*/*/*.cpp' '*/usr/include/*' '*/tests/*' '/usr/local/*' '*/src/common/utility_x11.*' '*/src/common/settings_translation.cpp' '*/src/common/event_monitor.cpp' '*/src/widgets/videoboxbutton.cpp' '*/src/backends/mpv/mpv_glwidget.cpp' '*/src/common/thumbnail_worker.*' -o ./html/${executable}_Coverage_fileter.info
+echo true
+fi
 echo " =================== do filter end ====================== "
     
 genhtml -o ./html ./html/${executable}_Coverage_fileter.info
