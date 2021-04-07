@@ -55,8 +55,37 @@
 #include "vendor/presenter.h"
 #include <QSettings>
 
+
+#include <stdio.h>
+#include <unistd.h>
+#include <fcntl.h>
+
 #include "accessibility/acobjectlist.h"
 DWIDGET_USE_NAMESPACE
+
+bool runSingleInstance()
+{
+    QString userName = QDir::homePath().section("/", -1, -1);
+    std::string path = ("/home/" + userName + "/.cache/deepin/deepin-movie/").toStdString();
+    QDir tdir(path.c_str());
+    if (!tdir.exists()) {
+        tdir.mkpath(path.c_str());
+    }
+
+    path += "single";
+    int fd = open(path.c_str(), O_WRONLY | O_CREAT, 0644);
+    int flock = lockf(fd, F_TLOCK, 0);
+
+    if (fd == -1) {
+        qInfo() << strerror(errno);
+        return false;
+    }
+    if (flock == -1) {
+        qInfo() << strerror(errno);
+        return false;
+    }
+    return true;
+}
 
 
 int main(int argc, char *argv[])
@@ -149,15 +178,7 @@ int main(int argc, char *argv[])
 
     bool singleton = !dmr::Settings::get().isSet(dmr::Settings::MultipleInstance);
 
-    QString strUserPath = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
-
-    QSharedMemory shared_memory(strUserPath + "deepinmovie");
-
-    if (shared_memory.attach()) {
-        shared_memory.detach();
-    }
-
-    if (singleton && !shared_memory.create(1)) {
+    if (singleton && !runSingleInstance()) {
         qInfo() << "another deepin movie instance has started";
         if (!toOpenFiles.isEmpty()) {
             QDBusInterface iface("com.deepin.movie", "/", "com.deepin.movie");
@@ -177,7 +198,6 @@ int main(int argc, char *argv[])
         exit(0);
     }
 
-
 //    app.setWindowIcon(QIcon(":/resources/icons/logo.svg"));
     app->setApplicationDisplayName(QObject::tr("Movie"));
     app->setAttribute(Qt::AA_DontCreateNativeWidgetSiblings, true);
@@ -192,7 +212,7 @@ int main(int argc, char *argv[])
     Presenter *presenter = new Presenter(&mw);
 //    mw.setMinimumSize(QSize(1070, 680));
     mw.setPresenter(presenter);
-    if(CompositingManager::isPadSystem()) {
+    if (CompositingManager::isPadSystem()) {
         ///平板模式下全屏显示
         mw.showMaximized();
     } else {
