@@ -341,9 +341,9 @@ mpv_handle *MpvProxy::mpv_init()
                my_set_property(m_handle, "video-sync", "desync");
 #endif
             }
-            my_set_property(m_handle, "vo", "xv,x11");
+            my_set_property(m_handle, "vo", "gpu,xv,x11");
             my_set_property(m_handle, "ao", "alsa");
-            m_sInitVo = "xv,x11";
+            m_sInitVo = "gpu,xv,x11";
 #else
             //TODO(xxxxpengfei)：暂未处理intel集显情况
             if (CompositingManager::get().isZXIntgraphics()) {
