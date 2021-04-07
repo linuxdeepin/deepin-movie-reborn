@@ -375,6 +375,7 @@ public:
     ToolButton *listBtn() {return m_pListBtn;}
     ToolButton *fsBtn() {return m_pFullScreenBtn;}
     VolumeButton *volBtn() {return m_pVolBtn;}
+    void setThumbnailmode(bool is_thumbnailmode) {m_bThumbnailmode = is_thumbnailmode;}
 
 public slots:
     /**
@@ -573,7 +574,7 @@ private:
     PlayerEngine *m_pEngine;            ///播放引擎
     PlaylistWidget *m_pPlaylist;        ///播放列表窗口
 
-    DWidget *m_pProgBarspec;             ///进度条部分第一个窗口
+    DWidget *m_pProgBarspec;             ///空白进度条窗口
     QWidget *m_pBotSpec;                 ///
     QWidget *m_pBotToolWgt;              ///
     QStackedWidget *m_pProgBar_Widget;   ///
@@ -587,8 +588,8 @@ private:
     QLabel *m_pTimeLabel;                ///视频当前播放时长控件
     QLabel *m_pTimeLabelend;             ///视频总时长的控件
     VolumeSlider *m_pVolSlider;          ///音量条控件窗口
-    ViewProgBar *m_pViewProgBar;         ///胶片模式窗口
-    DMRSlider *m_pProgBar;               ///音量条滑动条控件
+    ViewProgBar *m_pViewProgBar;         ///胶片模式进度条窗口
+    DMRSlider *m_pProgBar;               ///滑动条模式进度条窗口
     ThumbnailPreview *m_pPreviewer;      ///胶片模式视图
     SliderTime *m_pPreviewTime;          ///鼠标hover进度条时显示在进度条上方的时间控件（非鼠标悬停显示预览时）
 
@@ -622,7 +623,7 @@ private:
 
     bool m_bMouseFlag;
     bool m_bMousePree;              ///
-    bool m_bThumbnailmode;          ///
+    bool m_bThumbnailmode;          ///进度条是否为胶片模式
     bool m_bAnimationFinash;        ///动画是否完成
     bool m_bCanPlay;                ///判断是否能进行曲目切换的标志位
     bool m_bSetListBtnFocus;        ///设置播放列表按钮焦点标志位

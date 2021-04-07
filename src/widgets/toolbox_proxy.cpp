@@ -520,7 +520,6 @@ protected:
     }
     void mousePressEvent(QMouseEvent *e) override
     {
-
         if (!m_bPress && e->buttons() == Qt::LeftButton && isEnabled()) {
             m_startPos = e->pos();
 
