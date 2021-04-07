@@ -482,7 +482,6 @@ TEST(MainWindow, progBar)
     ////胶片模式
 #if !defined (__mips__ ) && !defined(__aarch64__)
     Settings::get().settings()->setOption("base.play.showInthumbnailmode", true);
-
     while (progbarWidget->currentIndex() == 1) { //等待胶片加载
         QTest::qWait(200);
     }
@@ -509,21 +508,41 @@ TEST(MainWindow, ViewProgBar)
     ToolboxProxy *toolboxProxy = w->toolbox();
     DMRSlider *progBarSlider = toolboxProxy->getSlider();
     QStackedWidget *progbarWidget = toolboxProxy->findChild<QStackedWidget *>(PROGBAR_WIDGET);
+    QList<QPixmap> pmList;
+    pmList.append(QPixmap(QString("/data/source/deepin-movie-reborn/test.jpg")));
 
     engine->playByName(QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/demo.mp4"));
 
-    progbarWidget->setCurrentIndex(2);
+//    viewProgBarLoad *loadWorker = new viewProgBarLoad(engine, progBarSlider, toolboxProxy);
+//    QTest::qWait(200);
+//    loadWorker->start();
+//    QObject::connect(loadWorker, SIGNAL(sigFinishiLoad(QSize)), toolboxProxy, SLOT(finishLoadSlot(QSize)));
+
+    //loadWorker->loadViewProgBar(QSize(500, 50));
+    //progbarWidget->setCurrentIndex(2);
+
+    toolboxProxy->setThumbnailmode(true);
+    toolboxProxy->resize(400,60);
+
+//    QTest::qWait(1000);
 
     QWidget *viewProgBar = (QWidget *)toolboxProxy->getViewProBar();
-    QPoint startPoint = QPoint(viewProgBar->x() + 100, viewProgBar->y() + 20);
-    QPoint endPoint = QPoint(viewProgBar->x() + 20, viewProgBar->y() + 20);
-    QTest::mouseMove(viewProgBar, QPoint(viewProgBar->x() + 50, viewProgBar->y() + 20), 500);
-    QTest::mouseClick(viewProgBar, Qt::LeftButton, Qt::NoModifier, QPoint(viewProgBar->x() + 50, viewProgBar->y() + 20), 500);
-    QTest::mouseMove(viewProgBar, startPoint, 300);
-    QTest::mousePress(viewProgBar, Qt::LeftButton, Qt::NoModifier, startPoint, 100);
-    QTest::mouseMove(viewProgBar, endPoint, 500);
-    QTest::mouseRelease(viewProgBar, Qt::LeftButton, Qt::NoModifier, endPoint, 500);
-    QTest::qWait(500);
+    viewProgBar->show();
+    QTest::qWait(200);
+    QMouseEvent mouseMove(QEvent::MouseMove, QPoint(200, 20), Qt::NoButton, Qt::NoButton, Qt::NoModifier);
+    QApplication::sendEvent(viewProgBar, &mouseMove);
+    QMouseEvent mousePress(QEvent::MouseButtonPress, QPoint(200, 20), Qt::LeftButton, Qt::NoButton, Qt::NoModifier);
+    QApplication::sendEvent(viewProgBar, &mousePress);
+    mouseMove = QMouseEvent(QEvent::MouseMove, QPoint(250, 20), Qt::LeftButton, Qt::NoButton, Qt::NoModifier);
+    QApplication::sendEvent(viewProgBar, &mouseMove);
+    QMouseEvent mousRelease(QEvent::MouseButtonRelease, QPoint(250, 20), Qt::LeftButton, Qt::NoButton, Qt::NoModifier);
+    QApplication::sendEvent(viewProgBar, &mousRelease);
+
+    QEvent leave(QEvent::Leave);
+    QApplication::sendEvent(viewProgBar, &leave);
+
+//    QObject::disconnect(loadWorker, SIGNAL(sigFinishiLoad(QSize)), toolboxProxy, SLOT(finishLoadSlot(QSize)));
+    QTest::qWait(200);
 }
 
 TEST(MainWindow, movieInfoDialog)
