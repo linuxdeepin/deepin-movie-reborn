@@ -37,7 +37,7 @@
 #include "stub/stub_function.h"
 
 using namespace dmr;
-TEST(PadMode, mainWindow)
+/*TEST(PadMode, mainWindow)
 {
     Stub stub;
     //Stub stub1;
@@ -57,7 +57,7 @@ TEST(PadMode, mainWindow)
     stub.reset(ADDR(CompositingManager, isPadSystem));
     stub.reset(ADDR(CompositingManager, composited));
     mw.close();
-}
+}*/
 
 TEST(MainWindow, init)
 {
@@ -385,7 +385,6 @@ TEST(MainWindow, shortCutVolumeAndFrame)
     testEventList.simulate(w);
 }
 
-//will cause the program abort of arm platform
 TEST(MainWindow, miniMode)
 {
     MainWindow *w = dApp->getMainWindow();
@@ -441,6 +440,10 @@ TEST(MainWindow, progBar)
     engine->playByName(QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/demo.mp4"));
 
     ////进度条模式
+    QMouseEvent hover(QEvent::HoverEnter, QPoint(progBarSlider->pos().x(), progBarSlider->pos().y()),
+                      Qt::NoButton, Qt::NoButton, Qt::NoModifier);
+    QApplication::sendEvent(progBarSlider, &hover);
+
     QPoint point(progBarSlider->slider()->x() + 30, progBarSlider->slider()->y());
     QTest::mouseMove(progBarSlider->slider(), point, 200);
     QTest::mouseMove(progBarSlider->slider(), QPoint(point.x(), point.y() - 40), 200);
@@ -542,7 +545,21 @@ TEST(MainWindow, ViewProgBar)
     QApplication::sendEvent(viewProgBar, &leave);
 
 //    QObject::disconnect(loadWorker, SIGNAL(sigFinishiLoad(QSize)), toolboxProxy, SLOT(finishLoadSlot(QSize)));
-    QTest::qWait(200);
+    QTest::qWait(600);
+}
+
+TEST(MainWindow, ThumbnailPreview)
+{
+    MainWindow *w = dApp->getMainWindow();
+    PlayerEngine *engine =  w->engine();
+    ToolboxProxy *toolboxProxy = w->toolbox();
+    DMRSlider *progBarSlider = toolboxProxy->getSlider();
+    QStackedWidget *progbarWidget = toolboxProxy->findChild<QStackedWidget *>(PROGBAR_WIDGET);
+
+    ThumbnailWorker::get().setPlayerEngine(engine);
+    ThumbnailWorker::get().requestThumb(QUrl("/data/source/deepin-movie-reborn/movie/demo.mp4"),
+                                        200);
+
 }
 
 TEST(MainWindow, movieInfoDialog)
@@ -625,6 +642,11 @@ TEST(ToolBox, playListWidget)
     QEvent tooltipEvent(QEvent::ToolTip);
     QEvent leaveEvent(QEvent::Leave);
 
+    QEnterEvent enterEvent(QPoint(0, 0), listBtn->pos(), QPoint(0, 0));
+    QApplication::sendEvent(listBtn, &enterEvent);
+    QApplication::sendEvent(listBtn, &leaveEvent);
+    QTest::qWait(100);
+
     QTest::mouseMove(listBtn, QPoint(), 200);
     QTest::mouseClick(listBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 300);  //playlist popup
 
@@ -688,6 +710,14 @@ TEST(ToolBox, playBtnBox)
     QApplication::sendEvent(playBtn, &mouseMove);
     QApplication::sendEvent(playBtn, &leaveEvent);
 
+    QApplication::sendEvent(nextBtn, &enterEvent);
+    QApplication::sendEvent(nextBtn, &mouseMove);
+    QApplication::sendEvent(nextBtn, &leaveEvent);
+
+    QApplication::sendEvent(prevBtn, &enterEvent);
+    QApplication::sendEvent(prevBtn, &mouseMove);
+    QApplication::sendEvent(prevBtn, &leaveEvent);
+
     QTest::mouseMove(playBtn, QPoint(), 200);
     QTest::mouseClick(playBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 500); //pause
     QTest::mouseMove(w, QPoint(200, 300), 200);
@@ -738,6 +768,12 @@ TEST(ToolBox, fullScreenBtn)
 
     DGuiApplicationHelper::instance()->setThemeType(DGuiApplicationHelper::DarkType);
     emit DGuiApplicationHelper::instance()->paletteTypeChanged(DGuiApplicationHelper::DarkType);
+
+    QEvent enter(QEvent::Enter);
+    QApplication::sendEvent(fsBtn, &enter);
+
+    QEvent leave(QEvent::Leave);
+    QApplication::sendEvent(fsBtn, &leave);
 
     QTest::mouseMove(fsBtn, QPoint(), 200);
     QTest::mouseClick(fsBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 500);
