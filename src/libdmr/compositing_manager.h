@@ -76,7 +76,7 @@ public:
     static OpenGLInteropKind interopKind();
     static bool runningOnVmwgfx();
     static bool isPadSystem();   //是否是平板设备
-#if defined (__mips__) || defined (__aarch64__) || defined (__sw_64__)
+#if !defined (__x86_64__)
     bool hascard();
 #endif
 

@@ -223,7 +223,7 @@ CompositingManager::CompositingManager()
     }
 #endif
     qInfo() << "composited:" << _composited;
-#if defined (__mips__) || defined (__aarch64__) || defined (__sw_64__)
+#if !defined (__x86_64__)
     if (_composited) {
         m_bHasCard = _composited;
         _composited = false;
@@ -248,7 +248,7 @@ CompositingManager::~CompositingManager()
     m_pMpvConfig = nullptr;
 }
 
-#if defined (__mips__) || defined (__aarch64__) || defined (__sw_64__)
+#if !defined (__x86_64__)
 bool CompositingManager::hascard()
 {
     return m_bHasCard;
