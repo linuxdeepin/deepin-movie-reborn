@@ -17,6 +17,8 @@ bool isCompositedFalse_stub();
 
 PlayerEngine::CoreState playerEngineState_Paused_stub(void* obj);
 
+void createSelectableLineEditOptionHandle_lambda_stub(void *obj);
+
 }
 
 #endif // STUB_FUNCTION_H

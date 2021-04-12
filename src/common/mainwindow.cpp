@@ -269,9 +269,13 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *pObj)
     };
 
     pSettingOption->connect(pPushButton, &DPushButton::clicked, [ = ]() {
+#ifndef USE_TEST
         QString sName = DFileDialog::getExistingDirectory(nullptr, QObject::tr("Open folder"),
                                                           MainWindow::lastOpenedPath(),
                                                           DFileDialog::ShowDirsOnly | DFileDialog::DontResolveSymlinks);
+#else
+        QString sName = "/data/source/deepin-movie-reborn/movie/DMovie";
+#endif
         if (validate(sName, false)) {
             pSettingOption->setValue(sName);
             sNameLast = sName;

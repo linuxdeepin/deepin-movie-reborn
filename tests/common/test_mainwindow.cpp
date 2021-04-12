@@ -14,8 +14,10 @@
 #include <gtest/gtest.h>
 
 #define protected public
+#define private public
 #include "src/common/mainwindow.h"
 #undef protected
+#undef private
 #include "application.h"
 #include "src/libdmr/player_engine.h"
 #include "src/widgets/toolbox_proxy.h"
@@ -34,10 +36,12 @@
 #include "burst_screenshots_dialog.h"
 #include "mpv_proxy.h"
 #include "stub/stub.h"
+#include "stub/addr_any.h"
 #include "stub/stub_function.h"
 
 using namespace dmr;
-/*TEST(PadMode, mainWindow)
+#ifndef __x86_64__
+TEST(PadMode, mainWindow)
 {
     Stub stub;
     //Stub stub1;
@@ -57,7 +61,8 @@ using namespace dmr;
     stub.reset(ADDR(CompositingManager, isPadSystem));
     stub.reset(ADDR(CompositingManager, composited));
     mw.close();
-}*/
+}
+#endif
 
 TEST(MainWindow, init)
 {
@@ -617,6 +622,33 @@ TEST(MainWindow, VolumeMonitoring)
     QTest::qWait(100);
     volMonitor.stop();
     QTest::qWait(100);
+}
+
+TEST(MainWindow, SettingsDialog)
+{
+    MainWindow *w = dApp->getMainWindow();
+
+    DSettingsDialog *settingsDialog = w->initSettings();
+    DLineEdit *savePathEdit = settingsDialog->findChild<DLineEdit *>("OptionSelectableLineEdit");
+    QList<DPushButton *> Btns = settingsDialog->findChildren<DPushButton *>();
+
+    if(savePathEdit) {
+        emit savePathEdit->focusChanged(true);
+        emit savePathEdit->textEdited("/data/source/deepin-movie-reborn/movie/DMovie");
+        emit savePathEdit->editingFinished();
+    }
+
+//    AddrAny any;
+//    std::map<std::string, void*> result;
+//    any.get_local_func_addr_symtab("^createSelectableLineEditOptionHandle()$", result);
+//    Stub stub;
+//    std::map<std::string, void *>::iterator it;
+//    for(it = result.begin(); it != result.end(); ++it) {
+//        stub.set(it->second, StubFunc::createSelectableLineEditOptionHandle_lambda_stub);
+//    }
+    if(Btns[0]) {
+        emit Btns[0]->clicked(false);
+    }
 }
 
 TEST(MainWindow, reloadFile)

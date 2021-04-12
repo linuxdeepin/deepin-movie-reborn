@@ -21,4 +21,8 @@ PlayerEngine::CoreState playerEngineState_Paused_stub(void* obj)
     return PlayerEngine::CoreState::Paused;
 }
 
+void createSelectableLineEditOptionHandle_lambda_stub(void *obj)
+{
+    qDebug() << "shortcut save path btn clicked.";
+}
 }
