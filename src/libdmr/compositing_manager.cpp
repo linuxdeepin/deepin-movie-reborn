@@ -162,7 +162,7 @@ CompositingManager::CompositingManager()
                 qInfo() << "__mips__";
 #else
                 vector<string> drivers = {"zx"};
-                m_setSpecialControls = m_setSpecialControls && is_card_exists(0, drivers);
+                m_setSpecialControls = m_setSpecialControls || is_card_exists(0, drivers);
                 _composited = true;
                 qInfo() << "__X86__";
 #endif
