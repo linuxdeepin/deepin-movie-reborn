@@ -46,6 +46,7 @@ public:
     bool getsliderstate();
     int getVolume();   //获取当前实际音量
     void changeVolume(int nVolume);    //改变控件音量
+    void calculationStep(int iAngleDelta);   //计算滚轮滚动的步进并判断步进值是否大于等于120;普通鼠标的滚轮精度为120转动一刻为120*1/8=15度
 
 public slots:
     void volumeUp();                   //滚轮加音量
@@ -87,6 +88,9 @@ private:
     int m_nVolume;                      //记录实际音量(实际音量最大值为200,显示最大到100)
     VolumeMonitoring volumeMonitoring;  //监听dock栏应用音量变化
     bool m_bHideWhenFinished;           ///等待动画结束后隐藏
+
+    int m_iStep;                 //鼠标灵敏度的步进
+    bool m_bIsWheel;             //是否是通过滚轮调节音量
 };
 }
 

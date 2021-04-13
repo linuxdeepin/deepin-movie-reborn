@@ -1897,6 +1897,14 @@ void ToolboxProxy::volumeDown()
     m_pVolSlider->volumeDown();
 }
 /**
+ * @brief calculationStep 计算鼠标滚轮滚动的步进
+ * @param iAngleDelta 鼠标滚动的距离
+ */
+void ToolboxProxy::calculationStep(int iAngleDelta)
+{
+    m_pVolSlider->calculationStep(iAngleDelta);
+}
+/**
  * @brief changeMuteState 切换静音模式
  */
 void ToolboxProxy::changeMuteState()

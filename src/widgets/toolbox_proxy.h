@@ -341,9 +341,14 @@ public:
      */
     void volumeUp();
     /**
-     * @brief volumeUp 鼠标滚轮减少音量
+     * @brief volumeDown 鼠标滚轮减少音量
      */
     void volumeDown();
+    /**
+     * @brief calculationStep 计算鼠标滚轮滚动的步进
+     * @param angleDelta 鼠标滚动的距离
+     */
+    void calculationStep(int iAngleDelta);
     /**
      * @brief changeMuteState 切换静音模式
      */

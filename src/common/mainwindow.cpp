@@ -2320,12 +2320,18 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
     }
 
     case ActionFactory::ActionKind::VolumeUp: {
+        //使用鼠标滚轮调节音量时会执行此步骤
+        if(m_iAngleDelta != 0) m_pToolbox->calculationStep(m_iAngleDelta);
         m_pToolbox->volumeUp();
+        m_iAngleDelta = 0;
         break;
     }
 
     case ActionFactory::ActionKind::VolumeDown: {
+        //使用鼠标滚轮调节音量时会执行此步骤
+        if(m_iAngleDelta != 0) m_pToolbox->calculationStep(m_iAngleDelta);
         m_pToolbox->volumeDown();
+        m_iAngleDelta = 0;
         break;
     }
 
@@ -3396,6 +3402,7 @@ void MainWindow::wheelEvent(QWheelEvent *pEvent)
     }
 
     if (pEvent->buttons() == Qt::NoButton && pEvent->modifiers() == Qt::NoModifier && m_pToolbox->getVolSliderIsHided()) {
+        m_iAngleDelta = pEvent->angleDelta().y() ;
         requestAction(pEvent->angleDelta().y() > 0 ? ActionFactory::VolumeUp : ActionFactory::VolumeDown);
     }
 }
@@ -4652,6 +4659,8 @@ void MainWindow::initMember()
     m_nLastCookie = 0;
     m_nPowerCookie = 0;
     m_dPlaySpeed = 1.0;
+    m_iAngleDelta = 0;
+
     m_lastWindowState = Qt::WindowNoState;
 
     m_dvdUrl.clear();

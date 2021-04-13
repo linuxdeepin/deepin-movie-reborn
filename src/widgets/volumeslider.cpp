@@ -20,6 +20,7 @@
  */
 #include "volumeslider.h"
 #include "toolbox_proxy.h"
+#include "dbusutils.h"
 
 DWIDGET_USE_NAMESPACE
 
@@ -43,6 +44,8 @@ VolumeSlider::VolumeSlider(MainWindow *mw, QWidget *parent)
         setAttribute(Qt::WA_NativeWindow);
     }
 #endif
+    m_iStep = 0;
+    m_bIsWheel = false;
     m_nVolume = 100;
     m_bHideWhenFinished = false;
 
@@ -313,14 +316,52 @@ void VolumeSlider::changeVolume(int nVolume)
     }
 }
 
+void VolumeSlider::calculationStep(int iAngleDelta){
+    //int wheelSpeed;
+    m_bIsWheel = true;
+    //获取系统鼠标滚轮灵敏度
+    //QVariant v = DBusUtils::redDBusProperty("com.deepin.daemon.InputDevices", "/com/deepin/daemon/InputDevices","com.deepin.daemon.InputDevices", "WheelSpeed");
+    //if (!v.isValid()){
+    //    wheelSpeed = 1;
+    //}else{
+    //    wheelSpeed = v.toInt();
+    //    //wheelSpeed = 1;
+    //}
+    //iAngleDelta = iAngleDelta/wheelSpeed;
+
+    if((m_iStep > 0 && iAngleDelta > 0) || (m_iStep < 0 && iAngleDelta < 0)){
+        m_iStep += iAngleDelta;
+   }else{
+        m_iStep = iAngleDelta;
+    }
+}
+
 void VolumeSlider::volumeUp()
 {
-    changeVolume(qMin(m_nVolume + 10, 200));
+    if(m_bIsWheel){
+        if(qAbs(m_iStep) >= 120){
+            m_nVolume += qAbs(m_iStep) / 120 * 10;
+            changeVolume(qMin(m_nVolume, 200));
+            m_iStep = 0;
+        }
+    }else{
+        changeVolume(qMin(m_nVolume + 10, 200));
+    }
+
 }
 
 void VolumeSlider::volumeDown()
 {
-    changeVolume(qMax(m_nVolume - 10, 0));
+    if(m_bIsWheel){
+        if(qAbs(m_iStep) >= 120){
+            m_nVolume -= qAbs(m_iStep) / 120 * 10 ;
+            changeVolume(qMax(m_nVolume, 0));
+            m_iStep = 0;
+        }
+    }else{
+        changeVolume(qMax(m_nVolume - 10, 0));
+    }
+
 }
 
 void VolumeSlider::changeMuteState(bool bMute)
@@ -495,7 +536,8 @@ bool VolumeSlider::eventFilter(QObject *obj, QEvent *e)
         QWheelEvent *we = static_cast<QWheelEvent *>(e);
         qInfo() << we->angleDelta() << we->modifiers() << we->buttons();
         if (we->buttons() == Qt::NoButton && we->modifiers() == Qt::NoModifier) {
-            if (we->angleDelta().y() > 0) {
+            calculationStep(we->angleDelta().y());
+            if (we->angleDelta().y() > 0 ) {
                 volumeUp();
             } else {
                 volumeDown();
