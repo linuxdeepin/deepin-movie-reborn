@@ -60,8 +60,8 @@ typedef AVDictionaryEntry *(*mvideo_av_dict_get)(const AVDictionary *m, const ch
 mvideo_avformat_open_input g_mvideo_avformat_open_input = nullptr;
 mvideo_avformat_find_stream_info g_mvideo_avformat_find_stream_info = nullptr;
 mvideo_av_find_best_stream g_mvideo_av_find_best_stream = nullptr;
-mvideo_avcodec_find_decoder g_mvideo_avcodec_find_decoder = nullptr;
-mvideo_av_dump_format g_mvideo_av_dump_format = nullptr;
+//mvideo_avcodec_find_decoder g_mvideo_avcodec_find_decoder = nullptr;
+//mvideo_av_dump_format g_mvideo_av_dump_format = nullptr;
 mvideo_avformat_close_input g_mvideo_avformat_close_input = nullptr;
 mvideo_av_dict_get g_mvideo_av_dict_get = nullptr;
 
@@ -302,7 +302,7 @@ struct MovieInfo PlaylistModel::parseFromFile(const QFileInfo &fi, bool *ok)
     struct MovieInfo mi;
     mi.valid = false;
     AVFormatContext *av_ctx = nullptr;
-    int stream_id = -1;
+//    int stream_id = -1;
     AVCodecParameters *video_dec_ctx = nullptr;
     AVCodecParameters *audio_dec_ctx = nullptr;
 //    AVStream *av_stream = nullptr;
@@ -389,7 +389,7 @@ struct MovieInfo PlaylistModel::parseFromFile(const QFileInfo &fi, bool *ok)
 //    dec = g_mvideo_avcodec_find_decoder((video_dec_ctx)->codec_id);
 //    stream_id = video_stream_index;
 
-    g_mvideo_av_dump_format(av_ctx, 0, fi.fileName().toUtf8().constData(), 0);
+//    g_mvideo_av_dump_format(av_ctx, 0, fi.fileName().toUtf8().constData(), 0);
 
 //    for (int i = 0; i < av_ctx->nb_streams; i++) {
 //        av_stream = av_ctx->streams[i];
@@ -425,28 +425,28 @@ struct MovieInfo PlaylistModel::parseFromFile(const QFileInfo &fi, bool *ok)
         qInfo() << "tag:" << tag->key << tag->value;
     }
 
-    AVStream *pTempStream = nullptr;
-    if (videoRet >= 0) {
-        pTempStream = av_ctx->streams[videoRet];
-    } else if (audioRet >= 0) {
-        pTempStream = av_ctx->streams[audioRet];
-    }
+//    AVStream *pTempStream = nullptr;
+//    if (videoRet >= 0) {
+//        pTempStream = av_ctx->streams[videoRet];
+//    } else if (audioRet >= 0) {
+//        pTempStream = av_ctx->streams[audioRet];
+//    }
 
-    if (nullptr != pTempStream) {
-        while ((tag = g_mvideo_av_dict_get(pTempStream->metadata, "", tag, AV_DICT_IGNORE_SUFFIX)) != nullptr) {
-            if (tag->key && strcmp(tag->key, "rotate") == 0) {
-                mi.raw_rotate = QString(tag->value).toInt();
-                auto vr = (mi.raw_rotate + 360) % 360;
-                if (vr == 90 || vr == 270) {
-                    auto tmp = mi.height;
-                    mi.height = mi.width;
-                    mi.width = tmp;
-                }
-                break;
-            }
-            qInfo() << "tag:" << tag->key << tag->value;
-        }
-    }
+//    if (nullptr != pTempStream) {
+//        while ((tag = g_mvideo_av_dict_get(pTempStream->metadata, "", tag, AV_DICT_IGNORE_SUFFIX)) != nullptr) {
+//            if (tag->key && strcmp(tag->key, "rotate") == 0) {
+//                mi.raw_rotate = QString(tag->value).toInt();
+//                auto vr = (mi.raw_rotate + 360) % 360;
+//                if (vr == 90 || vr == 270) {
+//                    auto tmp = mi.height;
+//                    mi.height = mi.width;
+//                    mi.width = tmp;
+//                }
+//                break;
+//            }
+//            qInfo() << "tag:" << tag->key << tag->value;
+//        }
+//    }
 
     g_mvideo_avformat_close_input(&av_ctx);
     mi.valid = true;
@@ -580,12 +580,12 @@ void PlaylistModel::initFFmpeg()
     g_mvideo_avformat_open_input = (mvideo_avformat_open_input) avformatLibrary.resolve("avformat_open_input");
     g_mvideo_avformat_find_stream_info = (mvideo_avformat_find_stream_info) avformatLibrary.resolve("avformat_find_stream_info");
     g_mvideo_av_find_best_stream = (mvideo_av_find_best_stream) avformatLibrary.resolve("av_find_best_stream");
-    g_mvideo_av_dump_format = (mvideo_av_dump_format) avformatLibrary.resolve("av_dump_format");
+//    g_mvideo_av_dump_format = (mvideo_av_dump_format) avformatLibrary.resolve("av_dump_format");
     g_mvideo_avformat_close_input = (mvideo_avformat_close_input) avformatLibrary.resolve("avformat_close_input");
 
     g_mvideo_av_dict_get = (mvideo_av_dict_get) avutilLibrary.resolve("av_dict_get");
 
-    g_mvideo_avcodec_find_decoder = (mvideo_avcodec_find_decoder) avcodecLibrary.resolve("avcodec_find_decoder");
+//    g_mvideo_avcodec_find_decoder = (mvideo_avcodec_find_decoder) avcodecLibrary.resolve("avcodec_find_decoder");
     m_initFFmpeg = true;
 }
 

@@ -3599,8 +3599,8 @@ void MainWindow::updateSizeConstraints()
         size = QSize(40, 40);
     } else {
         if (m_pEngine->state() != PlayerEngine::CoreState::Idle) {
-            auto dRect = DApplication::desktop()->availableGeometry();
-            auto sz = m_pEngine->videoSize();
+            QRect dRect = DApplication::desktop()->availableGeometry();
+            QSize sz = m_pEngine->videoSize();
             if (sz.width() == 0 || sz.height() == 0) {
                 size = QSize(614, 500);
             } else {
