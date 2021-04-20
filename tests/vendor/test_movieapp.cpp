@@ -6,20 +6,40 @@
 #include "application.h"
 #include <unistd.h>
 #include "src/vendor/movieapp.h"
+#include "movie_configuration.h"
 
 using namespace dmr;
 
 #ifndef __mips__
 TEST(MovieApp, testMprisapp)
 {
-    MainWindow* w = new MainWindow();
-    Settings::get().settings()->setOption("base.play.emptylist", true); //退出时清空播放列表
-//    w->show();
+    MainWindow* w = new MainWindow;
+    auto &mc = MovieConfiguration::get();
+    MovieConfiguration::get().init();
+    PlayerEngine *engine =  w->engine();
+    ToolboxProxy *toolboxProxy = w->toolbox();
 
-//    MovieApp *movieapp = dApp->initMovieApp(w);
+    w->resize(850, 600);
+    utils::MoveToCenter(w);
+    w->show();
+
+//    QTest::qWait(500);
+    Settings::get().settings()->setOption("base.play.emptylist", true); //退出时清空播放列表
+
+    MovieApp *movieapp = new MovieApp(w);
+    movieapp->initMpris("movie");
+    movieapp->show();
+
+//    QTest::qWait(300);
+    movieapp->quit();
+    movieapp->deleteLater();
+    movieapp = nullptr;
+
+    w->deleteLater();
+    w = nullptr;
 
 //    QTimer::singleShot(1000,[=]{movieapp->show();});
-    QTest::qWait(300);
-    w->testMprisapp();
+//    QTest::qWait(300);
+//    w->testMprisapp();
 }
 #endif

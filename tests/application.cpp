@@ -50,6 +50,14 @@ MainWindow * Application::getMainWindow()
 MainWindow * Application::getMainWindowWayland()
 {
     if(nullptr == m_mainwindow_wayland)
+        qputenv("QT_WAYLAND_SHELL_INTEGRATION", "kwayland-shell");
+        //qputenv("_d_disableDBusFileDialog", "true");
+        setenv("PULSE_PROP_media.role", "video", 1);
+        QSurfaceFormat format;
+        format.setRenderableType(QSurfaceFormat::OpenGLES);
+        format.setDefaultFormat(format);
+        utils::set_wayland(true);
+        bool iswayland = utils::first_check_wayland_env();
         m_mainwindow_wayland = new MainWindow();
     return m_mainwindow_wayland;
 }

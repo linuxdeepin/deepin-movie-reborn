@@ -5,6 +5,7 @@
 #include <QAbstractButton>
 #include <DSettingsDialog>
 #include <dwidgetstype.h>
+#include <QDir>
 
 #include <unistd.h>
 #include <gtest/gtest.h>
@@ -20,21 +21,13 @@ using namespace utils;
 
 TEST(Wayland, wayland)
 {
-    MainWindow *w = dApp->getMainWindow();
-    w->close();
-    delete w;
-    w = nullptr;
+//    QTest::qWait(500);
 
-    qputenv("QT_WAYLAND_SHELL_INTEGRATION", "kwayland-shell");
-    //qputenv("_d_disableDBusFileDialog", "true");
-    setenv("PULSE_PROP_media.role", "video", 1);
-    QSurfaceFormat format;
-    format.setRenderableType(QSurfaceFormat::OpenGLES);
-    format.setDefaultFormat(format);
-    utils::set_wayland(true);
-    bool iswayland = utils::first_check_wayland_env();
-
-    MainWindow *w_wayland = new MainWindow;
+    QString homePath = QDir::homePath();
+    QStringList command;
+    command << "-rf" << QString("%1/.config/deepin-movie-test").arg(homePath);
+    QProcess::execute("rm", command);
+    MainWindow *w_wayland = dApp->getMainWindowWayland();
     auto &mc = MovieConfiguration::get();
     MovieConfiguration::get().init();
     PlayerEngine *engine =  w_wayland->engine();
@@ -45,11 +38,17 @@ TEST(Wayland, wayland)
     ButtonBoxButton* nextBtn = static_cast<ButtonBoxButton *>(toolboxProxy->nextBtn());
     ButtonBoxButton* prevBtn = static_cast<ButtonBoxButton *>(toolboxProxy->prevBtn());
     QList<QUrl> listPlayFiles;
+
+//    QTest::qWait(200);
+    w_wayland->resize(850, 600);
+    w_wayland->show();
+
+//    QTest::qWait(800);
+
     listPlayFiles << QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/demo.mp4")\
                   << QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/bensound-sunny.mp3");
     const auto &valids = engine->addPlayFiles(listPlayFiles);
-    QTest::qWait(200);
-    w_wayland->show();
+
 
 #if !defined (__mips__ ) && !defined(__aarch64__)
     Settings::get().settings()->setOption("base.play.showInthumbnailmode", true);
@@ -63,12 +62,12 @@ TEST(Wayland, wayland)
 //        QTest::mouseMove(playBtn, QPoint(), 100);
 //        QTest::mouseClick(playBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 500); //play
 
-        QTest::qWait(200);
+//        QTest::qWait(200);
         const auto &valids = engine->addPlayFiles(listPlayFiles);
         engine->playByName(valids[0]);
 
         w_wayland->requestAction(ActionFactory::ActionKind::ToggleMute);
-        QTest::qWait(200);
+//        QTest::qWait(200);
         QTest::mouseMove(fsBtn, QPoint(), 200);
         QTest::mouseClick(fsBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 500);
         QTest::mouseMove(listBtn, QPoint(), 200);
@@ -77,7 +76,7 @@ TEST(Wayland, wayland)
 
         QTest::mouseMove(nextBtn, QPoint(), 200);
         QTest::mouseClick(nextBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 500); //play next
-        QTest::qWait(200);
+//        QTest::qWait(200);
 //    DGuiApplicationHelper::instance()->setThemeType(DGuiApplicationHelper::DarkType);
 //    emit DGuiApplicationHelper::instance()->paletteTypeChanged(DGuiApplicationHelper::DarkType);
         QTest::mouseMove(prevBtn, QPoint(), 200);

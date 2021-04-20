@@ -115,6 +115,10 @@ TEST(MainWindow, tabInteraction)
 
     QTest::qWait(500);
 
+    QKeyEvent *tabEvent = new QKeyEvent(QEvent::KeyPress, Qt::Key_Tab, Qt::NoModifier);
+    QApplication::sendEvent(w, tabEvent);
+    QApplication::sendEvent(w->windowHandle(), tabEvent);
+
     //volume control
     volBtn->setFocus();
     QTest::keyClick(volBtn, Qt::Key_Enter, Qt::NoModifier, 200);
@@ -628,6 +632,7 @@ TEST(MainWindow, SettingsDialog)
 {
     MainWindow *w = dApp->getMainWindow();
 
+    emit dApp->fontChanged(QFont("Helvetica"));
     DSettingsDialog *settingsDialog = w->initSettings();
     DLineEdit *savePathEdit = settingsDialog->findChild<DLineEdit *>("OptionSelectableLineEdit");
     QList<DPushButton *> Btns = settingsDialog->findChildren<DPushButton *>();

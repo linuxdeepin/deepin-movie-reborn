@@ -6,59 +6,89 @@
 #include "application.h"
 #include <unistd.h>
 #include "src/vendor/presenter.h"
+#include "movie_configuration.h"
 
 using namespace dmr;
 
 TEST(Presenter, slotplay)
 {
-    Presenter *presenter = dApp->getPresenter();
+//    MainWindow *w = dApp->getMainWindowWayland();
+    MainWindow *w = new MainWindow;
+    MovieConfiguration::get().init();
+    Presenter *presenter = new Presenter(w);
 
-    QTest::qWait(500);
     presenter->slotopenUrlRequested(QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/bensound-sunny.mp3"));
-    QTest::qWait(500);
     presenter->slotplay();
-    QTest::qWait(1000);
     presenter->slotpause();
-    QTest::qWait(1000);
     presenter->slotplaynext();
-    QTest::qWait(1000);
     presenter->slotplayprev();
-    QTest::qWait(500);
     presenter->slotvolumeRequested(1.5);
-    QTest::qWait(500);
     presenter->slotstateChanged();
-    QTest::qWait(500);
     presenter->slotvolumeChanged();
-    QTest::qWait(500);
-    presenter->slotstop();
-    QTest::qWait(500);
+
+
     presenter->slotseek(qlonglong(200));
-}
 
-TEST(Presenter, slotloopStatusRequested)
-{
-    Presenter *presenter = dApp->getPresenter();
-
-    QTest::qWait(500);
     presenter->slotloopStatusRequested(Mpris::LoopStatus::None);
-    QTest::qWait(500);
+
     presenter->slotloopStatusRequested(Mpris::LoopStatus::Track);
-    QTest::qWait(500);
+
     presenter->slotloopStatusRequested(Mpris::LoopStatus::Playlist);
-    QTest::qWait(500);
+
     presenter->slotloopStatusRequested(Mpris::LoopStatus::InvalidLoopStatus);
-}
 
-TEST(Presenter, slotplayModeChanged)
-{
-    Presenter *presenter = dApp->getPresenter();
-
-    QTest::qWait(500);
     presenter->slotplayModeChanged(PlaylistModel::PlayMode::OrderPlay);
-    QTest::qWait(500);
+
     presenter->slotplayModeChanged(PlaylistModel::PlayMode::SingleLoop);
-    QTest::qWait(500);
+
     presenter->slotplayModeChanged(PlaylistModel::PlayMode::ListLoop);
-    QTest::qWait(500);
+
     presenter->slotplayModeChanged(PlaylistModel::PlayMode::ShufflePlay);
+
+    presenter->slotstop();
+
+    presenter->deleteLater();
+    presenter = nullptr;
+
+//    w->close();
+//    w->deleteLater();
+//    w = nullptr;
 }
+
+//TEST(Presenter, slotloopStatusRequested)
+//{
+////    Presenter *presenter = dApp->getPresenter();
+//    MainWindow w;
+////    auto &mc = MovieConfiguration::get();
+//    MovieConfiguration::get().init();
+////    PlayerEngine *engine =  w->engine();
+//    Presenter *presenter = new Presenter(&w);
+
+////    QTest::qWait(500);
+//    presenter->slotloopStatusRequested(Mpris::LoopStatus::None);
+////    QTest::qWait(500);
+//    presenter->slotloopStatusRequested(Mpris::LoopStatus::Track);
+////    QTest::qWait(500);
+//    presenter->slotloopStatusRequested(Mpris::LoopStatus::Playlist);
+////    QTest::qWait(500);
+//    presenter->slotloopStatusRequested(Mpris::LoopStatus::InvalidLoopStatus);
+//}
+
+//TEST(Presenter, slotplayModeChanged)
+//{
+////    Presenter *presenter = dApp->getPresenter();
+//    MainWindow w;
+////    auto &mc = MovieConfiguration::get();
+//    MovieConfiguration::get().init();
+////    PlayerEngine *engine =  w->engine();
+//    Presenter *presenter = new Presenter(&w);
+
+////    QTest::qWait(500);
+//    presenter->slotplayModeChanged(PlaylistModel::PlayMode::OrderPlay);
+////    QTest::qWait(500);
+//    presenter->slotplayModeChanged(PlaylistModel::PlayMode::SingleLoop);
+////    QTest::qWait(500);
+//    presenter->slotplayModeChanged(PlaylistModel::PlayMode::ListLoop);
+////    QTest::qWait(500);
+//    presenter->slotplayModeChanged(PlaylistModel::PlayMode::ShufflePlay);
+//}
