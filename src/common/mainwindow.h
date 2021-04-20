@@ -348,7 +348,7 @@ protected slots:
     void resizeByConstraints(bool bForceCentered = false);
     void onWindowStateChanged();
 
-    void miniButtonClicked(QString sId);
+    void miniButtonClicked(const QString &sId);
 
     void startBurstShooting();
     void onBurstScreenshot(const QImage &imgFrame, qint64 timestamp);

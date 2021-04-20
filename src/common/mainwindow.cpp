@@ -4439,7 +4439,7 @@ void MainWindow::toggleUIMode()
     m_bStartMini = false;
 }
 
-void MainWindow::miniButtonClicked(QString id)
+void MainWindow::miniButtonClicked(const QString &id)
 {
     qInfo() << id;
     if (id == "play") {

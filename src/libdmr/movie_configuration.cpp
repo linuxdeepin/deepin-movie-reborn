@@ -70,7 +70,10 @@ public:
         auto db_path = QString("%1/movies.db").arg(db_dir);
         _db = QSqlDatabase::addDatabase("QSQLITE");
         _db.setDatabaseName(db_path);
-        _db.open();
+        if(!_db.open()) {
+            qCritical() << "open the movies database error";
+            return;
+        }
 
         auto ts = _db.tables(QSql::Tables);
         if (!ts.contains("urls") || !ts.contains("infos")) {
@@ -89,81 +92,96 @@ public:
 
     void deleteUrl(const QUrl &url)
     {
-        _db.transaction();
+        if(_db.transaction()) {
+            QSqlQuery q(_db);
+            if(q.prepare("delete from infos where url = ?")) {
+                q.addBindValue(url);
+                if (!q.exec()) {
+                    if(!_db.commit()) {
+                        qCritical() << _db.lastError();
+                    }
+                    return;
+                }
+            }
 
-        QSqlQuery q(_db);
-        q.prepare("delete from infos where url = ?");
-        q.addBindValue(url);
-        if (!q.exec()) {
-            _db.commit();
-            return;
-        }
-
-        if (q.numRowsAffected() > 0) {
-            QSqlQuery q_l(_db);
-            q_l.prepare("delete from urls where url = ?");
-            q_l.addBindValue(url);
-            CHECKED_EXEC(q_l);
+            if (q.numRowsAffected() > 0) {
+                QSqlQuery q_l(_db);
+                if(q_l.prepare("delete from urls where url = ?")) {
+                    q_l.addBindValue(url);
+                    CHECKED_EXEC(q_l);
+                }
+            }
         }
     }
 
     bool urlExists(const QUrl &url)
     {
         QSqlQuery q(_db);
-        q.prepare("select url from urls where url = ? limit 1");
-        q.addBindValue(url);
-        CHECKED_EXEC(q);
+        if(q.prepare("select url from urls where url = ? limit 1")) {
+            q.addBindValue(url);
+            CHECKED_EXEC(q);
+        }
 
         return q.first();
     }
 
     void clear()
     {
-        _db.transaction();
+        if(_db.transaction()) {
+            QSqlQuery q(_db);
+            if (q.exec("delete from infos")) {
+                if (q.exec("delete from urls")) {
+                    if(!_db.commit()) {
+                        qCritical() << _db.lastError();
+                    }
+                    return;
+                }
+            }
 
-        QSqlQuery q(_db);
-        if (q.exec("delete from infos")) {
-            if (q.exec("delete from urls")) {
-                _db.commit();
-                return;
+            if(!_db.rollback()) {
+                qCritical() << _db.lastError();
             }
         }
-
-        _db.rollback();
     }
 
     void updateUrl(const QUrl &url, const QString &key, const QVariant &val)
     {
         qInfo() << url << key << val;
 
-        _db.transaction();
+        if(_db.transaction()) {
+            if (!urlExists(url)) {
+                QString md5;
+                if (url.isLocalFile()) {
+                    md5 = utils::FastFileHash(QFileInfo(url.toLocalFile()));
+                } else {
+                    md5 = QString(QCryptographicHash::hash(url.toString().toUtf8(), QCryptographicHash::Md5).toHex());
+                }
 
-        if (!urlExists(url)) {
-            QString md5;
-            if (url.isLocalFile()) {
-                md5 = utils::FastFileHash(QFileInfo(url.toLocalFile()));
-            } else {
-                md5 = QString(QCryptographicHash::hash(url.toString().toUtf8(), QCryptographicHash::Md5).toHex());
+                QSqlQuery q(_db);
+                if(q.prepare("insert into urls (url, md5, timestamp) values (?, ?, ?)")) {
+                    q.addBindValue(url);
+                    q.addBindValue(md5);
+                    q.addBindValue(QDateTime::currentDateTimeUtc());
+                    if (!q.exec()) {
+                        if(!_db.rollback()) {
+                            qCritical() << _db.lastError();
+                        }
+                        return;
+                    }
+                }
             }
 
             QSqlQuery q(_db);
-            q.prepare("insert into urls (url, md5, timestamp) values (?, ?, ?)");
-            q.addBindValue(url);
-            q.addBindValue(md5);
-            q.addBindValue(QDateTime::currentDateTimeUtc());
-            if (!q.exec()) {
-                _db.rollback();
-                return;
+            if(q.prepare("replace into infos (url, key, value) values (?, ?, ?)")) {
+                q.addBindValue(url);
+                q.addBindValue(key);
+                q.addBindValue(val);
+                CHECKED_EXEC(q);
+                if(!_db.commit()) {
+                    qCritical() << _db.lastError();
+                }
             }
         }
-
-        QSqlQuery q(_db);
-        q.prepare("replace into infos (url, key, value) values (?, ?, ?)");
-        q.addBindValue(url);
-        q.addBindValue(key);
-        q.addBindValue(val);
-        CHECKED_EXEC(q);
-        _db.commit();
     }
 
     QVariant queryValueByUrlKey(const QUrl &url, const QString &key)
@@ -172,13 +190,14 @@ public:
             return {};
 
         QSqlQuery q(_db);
-        q.prepare("select value from infos where url = ? and key = ?");
-        q.addBindValue(url);
-        q.addBindValue(key);
-        CHECKED_EXEC(q);
+        if(q.prepare("select value from infos where url = ? and key = ?")) {
+            q.addBindValue(url);
+            q.addBindValue(key);
+            CHECKED_EXEC(q);
 
-        if (q.next()) {
-            return q.value(0);
+            if (q.next()) {
+                return q.value(0);
+            }
         }
 
         return QVariant();
@@ -190,9 +209,10 @@ public:
             return {};
 
         QSqlQuery q(_db);
-        q.prepare("select key, value from infos where url = ?");
-        q.addBindValue(url);
-        CHECKED_EXEC(q);
+        if(q.prepare("select key, value from infos where url = ?")) {
+            q.addBindValue(url);
+            CHECKED_EXEC(q);
+        }
 
         QMap<QString, QVariant> res;
         while (q.next()) {
@@ -260,7 +280,7 @@ void MovieConfiguration::append2ListUrl(const QUrl &url, KnownKey key, const QSt
 void MovieConfiguration::removeFromListUrl(const QUrl &url, KnownKey key, const QString &val)
 {
     ///add for warning by xxj ,no any means
-    val.isNull();
+    //val.isNull();
     auto list = getListByUrl(url, key);
 }
 
