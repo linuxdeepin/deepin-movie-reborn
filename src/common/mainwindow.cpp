@@ -2321,7 +2321,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
 
     case ActionFactory::ActionKind::VolumeUp: {
         //使用鼠标滚轮调节音量时会执行此步骤
-        if(m_iAngleDelta != 0) m_pToolbox->calculationStep(m_iAngleDelta);
+        if (m_iAngleDelta != 0) m_pToolbox->calculationStep(m_iAngleDelta);
         m_pToolbox->volumeUp();
         m_iAngleDelta = 0;
         break;
@@ -2329,7 +2329,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
 
     case ActionFactory::ActionKind::VolumeDown: {
         //使用鼠标滚轮调节音量时会执行此步骤
-        if(m_iAngleDelta != 0) m_pToolbox->calculationStep(m_iAngleDelta);
+        if (m_iAngleDelta != 0) m_pToolbox->calculationStep(m_iAngleDelta);
         m_pToolbox->volumeDown();
         m_iAngleDelta = 0;
         break;
@@ -3850,6 +3850,7 @@ void MainWindow::mousePressEvent(QMouseEvent *pEvent)
 
     if (qApp->focusWindow() == nullptr) return;
     if (pEvent->buttons() == Qt::LeftButton) {
+        m_bStartMove = true;
         m_bMousePressed = true;
         //add by heyi
         if (!m_mousePressTimer.isActive() && m_bIsTouch) {
@@ -3910,6 +3911,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *ev)
         repaint();
         bFlags = false;
     }
+    m_bStartMove = false;
 
     qInfo() << "进入mouseReleaseEvent";
     QWidget::mouseReleaseEvent(ev);
@@ -3983,14 +3985,14 @@ void MainWindow::mouseMoveEvent(QMouseEvent *pEvent)
         }
     }
 
-    if (!CompositingManager::get().composited() && !isFullScreen()) {
+    if (!CompositingManager::get().composited() && !isFullScreen() && m_bStartMove) {
+        m_bStartMove = false;
 #ifdef XCB_Platform
         Utility::startWindowSystemMove(this->winId());
         return Utility::updateMousePointForWindowMove(this->winId(), pEvent->globalPos() * devicePixelRatioF());
 #else
         QWidget::mouseMoveEvent(pEvent);
 #endif
-
     } else {
         QWidget::mouseMoveEvent(pEvent);
     }
@@ -4649,6 +4651,7 @@ void MainWindow::initMember()
     m_bStartAnimation = false;
     m_bStateInLock = false;
     m_bStartSleep = false;
+    m_bStartMove = false;
 
     m_nDisplayVolume = 100;
     m_nLastPressX = 0;
