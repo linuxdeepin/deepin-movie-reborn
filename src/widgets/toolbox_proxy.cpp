@@ -1702,10 +1702,13 @@ void ToolboxProxy::slotVolumeButtonClicked()
             m_pVolSlider->popup();
         }
 #else
-        if (!m_pVolBtn->isVisible()) {
-            m_pVolSlider->show(m_pMainWindow->width() - m_pVolBtn->width() / 2 - m_pPlayBtn->width() - 43,
-                               m_pMainWindow->height() - TOOLBOX_HEIGHT - 5);
-            m_pVolSlider->raise();
+        if (!m_pVolSlider->isVisible()) {
+            auto pPoint = mapToGlobal(QPoint(this->rect().width(), this->rect().height()));
+            m_pVolSlider->adjustSize();
+
+            pPoint.setX(pPoint.x() - m_pVolBtn->width() / 2 - m_pPlayBtn->width() - 43);
+            pPoint.setY(pPoint.y() - TOOLBOX_HEIGHT - 5);
+            m_pVolSlider->show(pPoint.x(), pPoint.y());
             m_pVolSlider->popup();
         } else {
             m_pVolSlider->popup();

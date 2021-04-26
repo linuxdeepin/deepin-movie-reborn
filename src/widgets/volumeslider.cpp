@@ -30,19 +30,16 @@ VolumeSlider::VolumeSlider(MainWindow *mw, QWidget *parent)
     : DArrowRectangle(DArrowRectangle::ArrowBottom, DArrowRectangle::FloatWidget, parent), _mw(mw)
 {
 #ifdef __mips__
-    if (!CompositingManager::get().composited()) {
         setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
-    }
 #elif __aarch64__
-    if (!utils::check_wayland_env())
         setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
 #elif __sw_64__
-    setWindowFlags(Qt::FramelessWindowHint | Qt::BypassWindowManagerHint);
-    setAttribute(Qt::WA_NativeWindow);
-#else
-    if (CompositingManager::get().isSpecialControls()) {
+        setWindowFlags(Qt::FramelessWindowHint | Qt::BypassWindowManagerHint);
         setAttribute(Qt::WA_NativeWindow);
-    }
+#elif __x86_64__
+        if (!CompositingManager::get().composited()) {
+            setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
+        }
 #endif
     m_iStep = 0;
     m_bIsWheel = false;
@@ -243,7 +240,12 @@ void VolumeSlider::popup()
 //    media.setWidth(media.width() - 10);
 //    media.setHeight(media.height() - 10);
 #ifdef __x86_64__
-    start.moveTo(start.topLeft() - QPoint(6, 10));
+    if(CompositingManager::get().composited()) {
+        start.moveTo(start.topLeft() - QPoint(6, 10));
+    } else {
+        end.moveTo(m_point);
+        start.moveTo(m_point - QPoint(8, 14));
+    }
 //    media.moveTo(media.topLeft() + QPoint(5, 10));
 #else
     end.moveTo(m_point);

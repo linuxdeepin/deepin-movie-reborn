@@ -3716,7 +3716,12 @@ void MainWindow::moveEvent(QMoveEvent *pEvent)
     m_pToolbox->updateSliderPoint(relativePoint);
     m_pCommHintWid->syncPosition();
 #else
-    updateGeometryNotification(geometry().size());
+    if(CompositingManager::get().composited()) {
+        updateGeometryNotification(geometry().size());
+    } else {
+        QPoint relativePoint = mapToGlobal(QPoint(0, 0));
+        m_pToolbox->updateSliderPoint(relativePoint);
+    }
 #endif
 }
 
