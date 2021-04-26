@@ -67,7 +67,7 @@ add_executable(${CMD_NAME} ${SRCS} ${RCS} ${QM})
 target_include_directories(${CMD_NAME} PUBLIC ${PROJECT_INCLUDE})
 
 set(TARGET_LIBS X11 Xtst PkgConfig::Xcb Qt5::Widgets Qt5::X11Extras Qt5::Network
-    Qt5::DBus Qt5::Sql Qt5::Svg PkgConfig::Dtk PkgConfig::MPRIS PkgConfig::DBusextended GL)
+    Qt5::DBus Qt5::Sql Qt5::Svg PkgConfig::Dtk PkgConfig::MPRIS PkgConfig::DBusextended GL va va-x11)
 
 target_link_libraries(${CMD_NAME} ${TARGET_LIBS} ${Other_LIBRARIES})
 

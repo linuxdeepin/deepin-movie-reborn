@@ -51,6 +51,7 @@
 #include <xcb/xcb_aux.h>
 #include <QX11Info>
 #include <QLibrary>
+#include <va/va_x11.h>
 
 namespace dmr {
 using namespace mpv::qt;
@@ -1216,10 +1217,28 @@ QVariant MpvProxy::my_get_property(mpv_handle *pHandle, const QString &sName) co
 
 int MpvProxy::my_set_property(mpv_handle *pHandle, const QString &sName, const QVariant &v)
 {
-    node_builder node(v);
+    QVariant sValue = v;
+    //设置mpv硬解码时，检测是否支持硬解，不支持则设置为软解
+    if(sName.compare("hwdec") == 0 && v.toString().compare("auto") == 0 && !utils::check_wayland_env())
+    {
+        Display *x11=QX11Info::display();
+        VADisplay *display = (VADisplay *)vaGetDisplay(x11);
+        int major, minor;
+        int status = -1;
+        try {
+            status = vaInitialize(display, &major, &minor);
+        }
+        catch (...) {
+            status = -1;
+        }
+        if(status != VA_STATUS_SUCCESS) {
+            sValue = "no";
+        }
+    }
+    node_builder node(sValue);
 
     if (!m_bInited) {
-        m_mapWaitSet.insert(sName, v);
+        m_mapWaitSet.insert(sName, sValue);
         return 0;
     }
 

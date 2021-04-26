@@ -122,7 +122,7 @@ pkg_check_modules(3rd_lib REQUIRED
         dtkwidget dtkgui libffmpegthumbnailer
         libpulse libpulse-simple openssl dvdnav gsettings-qt gtest mpv x11 xext xtst xcb gl
         libavformat libavcodec libavutil
-        xcb-aux xcb-proto xcb-ewmh xcb-shape mpris-qt5 dbusextended-qt5
+        xcb-aux xcb-proto xcb-ewmh xcb-shape mpris-qt5 dbusextended-qt5 libva libva-x11
         )
 # 添加第三方库的所有文件夹路径到工程中来(注意 *_INCLUDE_DIRS)
 target_include_directories(${PROJECT_NAME} PUBLIC ${3rd_lib_INCLUDE_DIRS} )
