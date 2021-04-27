@@ -161,9 +161,11 @@ CompositingManager::CompositingManager()
                 _composited = false;
                 qInfo() << "__mips__";
 #else
-                vector<string> drivers = {"zx"};
-                m_setSpecialControls = m_setSpecialControls || is_card_exists(0, drivers);
-                _composited = true;
+                if (m_bZXIntgraphics) { //兆芯集显设置_composited为false
+                    _composited = false;
+                } else {
+                    _composited = true;
+                }
                 qInfo() << "__X86__";
 #endif
             } else {
