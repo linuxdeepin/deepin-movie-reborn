@@ -3716,7 +3716,7 @@ void MainWindow::moveEvent(QMoveEvent *pEvent)
     m_pToolbox->updateSliderPoint(relativePoint);
     m_pCommHintWid->syncPosition();
 #else
-    if(CompositingManager::get().composited()) {
+    if (CompositingManager::get().composited()) {
         updateGeometryNotification(geometry().size());
     } else {
         QPoint relativePoint = mapToGlobal(QPoint(0, 0));
@@ -3990,15 +3990,18 @@ void MainWindow::mouseMoveEvent(QMouseEvent *pEvent)
         }
     }
 
-    if (!CompositingManager::get().composited() && !isFullScreen() && m_bStartMove) {
-        m_bStartMove = false;
+    if (!CompositingManager::get().composited() && !isFullScreen()) {
 #ifdef XCB_Platform
         Utility::startWindowSystemMove(this->winId());
-        return Utility::updateMousePointForWindowMove(this->winId(), pEvent->globalPos() * devicePixelRatioF());
+        if (m_bStartMove) {
+            m_bStartMove = false;
+            return Utility::updateMousePointForWindowMove(this->winId(), pEvent->globalPos() * devicePixelRatioF());
 #else
         QWidget::mouseMoveEvent(pEvent);
 #endif
-    } else {
+        }
+    } else
+    {
         QWidget::mouseMoveEvent(pEvent);
     }
 
