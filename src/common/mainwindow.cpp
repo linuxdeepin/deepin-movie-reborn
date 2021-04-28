@@ -1186,13 +1186,8 @@ void MainWindow::onWindowStateChanged()
     //    toggleShapeMask();    //该函数直接return
 
 #ifndef USE_DXCB
-    if (isFullScreen()) {
-        m_pTitlebar->move(0, 0);
-        m_pEngine->move(0, 0);
-    } else {
-        m_pTitlebar->move(0, 0);
-        m_pEngine->move(0, 0);
-    }
+    m_pTitlebar->move(0, 0);
+    m_pEngine->move(0, 0);
 #endif
 
     if (!isFullScreen() && !isMaximized()) {
@@ -1687,15 +1682,6 @@ QString MainWindow::padLoadPath()
 }
 
 #ifdef USE_TEST
-void MainWindow::testMprisapp()
-{
-    MovieApp *pMpris = new MovieApp(this);
-
-    pMpris->initMpris("movie");
-    pMpris->show();
-
-    pMpris->deleteLater();
-}
 void MainWindow::testCdrom()
 {
     this->addCdromPath();

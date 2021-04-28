@@ -51,8 +51,8 @@ extern "C" {
 typedef int (*mvideo_avformat_open_input)(AVFormatContext **ps, const char *url, AVInputFormat *fmt, AVDictionary **options);
 typedef int (*mvideo_avformat_find_stream_info)(AVFormatContext *ic, AVDictionary **options);
 typedef int (*mvideo_av_find_best_stream)(AVFormatContext *ic, enum AVMediaType type, int wanted_stream_nb, int related_stream, AVCodec **decoder_ret, int flags);
-typedef AVCodec *(*mvideo_avcodec_find_decoder)(enum AVCodecID id);
-typedef void (*mvideo_av_dump_format)(AVFormatContext *ic, int index, const char *url, int is_output);
+//typedef AVCodec *(*mvideo_avcodec_find_decoder)(enum AVCodecID id);
+//typedef void (*mvideo_av_dump_format)(AVFormatContext *ic, int index, const char *url, int is_output);
 typedef void (*mvideo_avformat_close_input)(AVFormatContext **s);
 typedef AVDictionaryEntry *(*mvideo_av_dict_get)(const AVDictionary *m, const char *key, const AVDictionaryEntry *prev, int flags);
 
@@ -81,7 +81,7 @@ mvideo_av_dict_get g_mvideo_av_dict_get = nullptr;
 }*/
 
 namespace dmr {
-QDebug operator<<(QDebug debug, const struct MovieInfo &mi)
+/*QDebug operator<<(QDebug debug, const struct MovieInfo &mi)
 {
     debug << "MovieInfo{"
           << mi.valid
@@ -107,6 +107,7 @@ QDebug operator<<(QDebug debug, const struct MovieInfo &mi)
           << "}";
     return debug;
 }
+*/
 
 QDataStream &operator<< (QDataStream &st, const MovieInfo &mi)
 {

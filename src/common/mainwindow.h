@@ -237,11 +237,9 @@ public:
     QString padLoadPath();
 
 #ifdef USE_TEST
-    void testMprisapp();
     void testCdrom();
     void setCurrentHwdec(QString);
 #endif
-    void setShowSetting(bool);
     void updateGeometry(CornerEdge edge, QPoint pos);
     void setPresenter(Presenter *);
     /**
@@ -309,7 +307,7 @@ public slots:
      */
     //void slotAwaacelModeChanged(const QString &sKey, const QVariant &value);
     /**
-     * @brief 用于测试触屏效果
+     * @brief 音量改变槽函数
      */
     void slotVolumeChanged(int nVolume);
 protected:
