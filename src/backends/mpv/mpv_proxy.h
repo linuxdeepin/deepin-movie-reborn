@@ -419,7 +419,6 @@ private:
     QList<qint64> m_listBurstPoints;       //存储连拍截图截图位置
 
     qint64 m_nBurstStart;                  //记录连拍截图次数
-    qint64 m_nStartPlayDuration;           //mpv播放视频的起始位置
 
     bool m_bPendingSeek;
     bool m_bInBurstShotting;               //是否停止连拍截图

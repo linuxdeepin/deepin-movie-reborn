@@ -695,10 +695,6 @@ void MpvProxy::processPropertyChange(mpv_event_property *pEvent)
         } else {
             if (state() != PlayState::Stopped) {
                 setState(PlayState::Playing);
-                if (m_nStartPlayDuration != 0) {
-                    seekAbsolute(static_cast<int>(m_nStartPlayDuration));
-                    m_nStartPlayDuration = 0;
-                }
             }
         }
     } else if (sName == "core-idle") {
@@ -811,10 +807,10 @@ void MpvProxy::savePlaybackPosition()
 
 #ifndef _LIBDMR_
     MovieConfiguration::get().updateUrl(this->_file, ConfigKnownKey::SubId, sid());
-    if (elapsed() - 10 >= 0) {
-        MovieConfiguration::get().updateUrl(this->_file, ConfigKnownKey::StartPos, elapsed() - 10);
+    if (duration() - elapsed() >= 5) {
+        MovieConfiguration::get().updateUrl(this->_file, ConfigKnownKey::StartPos, elapsed());
     } else {
-        MovieConfiguration::get().updateUrl(this->_file, ConfigKnownKey::StartPos, 10);
+        MovieConfiguration::get().updateUrl(this->_file, ConfigKnownKey::StartPos, elapsed() - 1);
     }
 #endif
 }
@@ -956,7 +952,6 @@ void MpvProxy::slotStateChanged()
 void MpvProxy::initMember()
 {
     m_nBurstStart = 0;
-    m_nStartPlayDuration = 0;
 
     m_pMpvGLwidget = nullptr;
     m_pParentWidget = nullptr;
@@ -1019,8 +1014,7 @@ void MpvProxy::play()
     auto cfg = MovieConfiguration::get().queryByUrl(_file);
     auto key = MovieConfiguration::knownKey2String(ConfigKnownKey::StartPos);
     if (Settings::get().isSet(Settings::ResumeFromLast) && cfg.contains(key)) {
-        //listOpts << QString("start=%1").arg(0);   //如果视频长度小于1s这段代码会导致视频无法播放
-        m_nStartPlayDuration = cfg[key].toInt();
+        listOpts << QString("start=%1").arg(cfg[key].toInt());   //如果视频长度小于1s这段代码会导致视频无法播放
     }
 
     key = MovieConfiguration::knownKey2String(ConfigKnownKey::SubCodepage);
