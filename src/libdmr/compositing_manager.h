@@ -76,6 +76,9 @@ public:
     static OpenGLInteropKind interopKind();
     static bool runningOnVmwgfx();
     static bool isPadSystem();   //是否是平板设备
+    static bool isCanHwdec();
+    static void setCanHwdec(bool bCanHwdec);
+
 #if !defined (__x86_64__)
     bool hascard();
 #endif
@@ -117,7 +120,8 @@ public:
 
 signals:
     void compositingChanged(bool);
-
+public:
+    static bool m_bCanHwdec;//是否支持硬解，true支持，false不支持
 private:
     CompositingManager();
     bool isDriverLoadedCorrectly();

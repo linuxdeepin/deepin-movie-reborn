@@ -59,6 +59,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <va/va_x11.h>
 
 #include "accessibility/acobjectlist.h"
 DWIDGET_USE_NAMESPACE
@@ -87,9 +88,32 @@ bool runSingleInstance()
     return true;
 }
 
+#ifdef __x86_64__
+//进程检测是否支持硬解
+void checkIsCanHwdec(int argc, char *argv[])
+{
+    QApplication a(argc, argv);
+    Display *x11=QX11Info::display();
+    VADisplay *display = (VADisplay *)vaGetDisplay(x11);
+    int major, minor;
+    int status = 0;
+    try {
+        status = vaInitialize(display, &major, &minor);
+    }
+    catch (...) {
+        status = -1;
+    }
+    exit(status);
+}
+#endif
 
 int main(int argc, char *argv[])
 {
+#ifdef __x86_64__
+    if(argc==2 && strcmp(argv[1],"hwdec") == 0) {
+        checkIsCanHwdec(argc, argv);
+    }
+#endif
 #ifdef __aarch64__
     if (dmr::utils::first_check_wayland_env()) {
         qputenv("QT_WAYLAND_SHELL_INTEGRATION", "kwayland-shell");

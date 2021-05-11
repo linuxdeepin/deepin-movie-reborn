@@ -121,6 +121,27 @@ void MpvProxy::initMpvFuns()
 
 void MpvProxy::firstInit()
 {
+#ifdef __x86_64__
+    //第一次运行deepin-movie，检测是否支持硬解
+    QString procName = QCoreApplication::applicationFilePath();
+    QProcess proc;
+    proc.start(procName, QStringList() << "hwdec");
+    if (!proc.waitForFinished())
+              return;
+    //检测进程退出码
+    if(proc.exitCode() != QProcess::NormalExit)
+    {
+        CompositingManager::setCanHwdec(false);
+    } else {//检测进程日志输出
+        QByteArray result = proc.readAllStandardError();
+        qInfo() << "deepin-movie hwdec: " << result;
+        if(result.toLower().contains("not supported")) {
+            CompositingManager::setCanHwdec(false);
+        } else {
+            CompositingManager::setCanHwdec(true);
+        }
+    }
+#endif
     initMpvFuns();
     if (m_creat) {
         m_handle = MpvHandle::fromRawHandle(mpv_init());
@@ -1212,23 +1233,17 @@ QVariant MpvProxy::my_get_property(mpv_handle *pHandle, const QString &sName) co
 int MpvProxy::my_set_property(mpv_handle *pHandle, const QString &sName, const QVariant &v)
 {
     QVariant sValue = v;
+#ifdef __x86_64__
+    bool composited = CompositingManager::get().composited();
     //设置mpv硬解码时，检测是否支持硬解，不支持则设置为软解
-    if(sName.compare("hwdec") == 0 && v.toString().compare("auto") == 0 && !utils::check_wayland_env())
+    if(sName.compare("hwdec") == 0 && v.toString().compare("auto") == 0 && !utils::check_wayland_env() && composited)
     {
-        Display *x11=QX11Info::display();
-        VADisplay *display = (VADisplay *)vaGetDisplay(x11);
-        int major, minor;
-        int status = -1;
-        try {
-            status = vaInitialize(display, &major, &minor);
-        }
-        catch (...) {
-            status = -1;
-        }
-        if(status != VA_STATUS_SUCCESS) {
+        if(!CompositingManager::isCanHwdec())
+        {
             sValue = "no";
         }
     }
+#endif
     node_builder node(sValue);
 
     if (!m_bInited) {

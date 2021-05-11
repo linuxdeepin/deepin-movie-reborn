@@ -62,6 +62,7 @@ namespace dmr {
 using namespace std;
 
 static CompositingManager *_compManager = nullptr;
+bool CompositingManager::m_bCanHwdec = true;
 
 #define C2Q(cs) (QString::fromUtf8((cs).c_str()))
 
@@ -304,6 +305,16 @@ bool CompositingManager::runningOnVmwgfx()
 bool CompositingManager::isPadSystem()
 {
     return false;
+}
+
+bool CompositingManager::isCanHwdec()
+{
+    return m_bCanHwdec;
+}
+
+void CompositingManager::setCanHwdec(bool bCanHwdec)
+{
+    m_bCanHwdec = bCanHwdec;
 }
 
 bool CompositingManager::isZXIntgraphics() const
