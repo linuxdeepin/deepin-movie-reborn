@@ -98,6 +98,11 @@ public slots:
      * @param 当前显示图像的序号
      */
     void onPauseAnimationChanged(const QVariant &value);
+    /**
+     * @brief 隐藏当前窗口
+     * @param
+     */
+    void onHideAnimation();
 
 protected:
     /**

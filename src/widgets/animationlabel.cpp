@@ -133,8 +133,8 @@ void AnimationLabel::initPauseAnimation()
     connect(m_pPauseHideAnimation, &QPropertyAnimation::valueChanged, this,
             &AnimationLabel::onPauseAnimationChanged);
     if(!m_bComposited) {//MPV绑定wid方式动画停止后隐藏
-        connect(m_pPauseHideAnimation, &QSequentialAnimationGroup::finished, this, &AnimationLabel::hide);
-        connect(m_pPlayAnimationGroup, &QSequentialAnimationGroup::finished, this, &AnimationLabel::hide);
+        connect(m_pPauseHideAnimation, &QSequentialAnimationGroup::finished, this, &AnimationLabel::onHideAnimation);
+        connect(m_pPlayAnimationGroup, &QSequentialAnimationGroup::finished, this, &AnimationLabel::onHideAnimation);
     }
 
     m_pPauseAnimationGroup->addAnimation(m_pPauseShowAnimation);
@@ -206,6 +206,14 @@ void AnimationLabel::onPauseAnimationChanged(const QVariant &value)
     m_sFileName = QString(":/resources/icons/start/%1.png").arg(value.toInt());
     m_pixmap = QPixmap(m_sFileName);
     update();
+}
+
+void AnimationLabel::onHideAnimation()
+{
+    hide();
+    if(m_pMainWindow) {
+        m_pMainWindow->update();
+    }
 }
 
 /**
