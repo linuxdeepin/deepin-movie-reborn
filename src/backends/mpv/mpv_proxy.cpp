@@ -121,6 +121,7 @@ void MpvProxy::initMpvFuns()
 
 void MpvProxy::firstInit()
 {
+#ifndef _LIBDMR_
 #ifdef __x86_64__
     //第一次运行deepin-movie，检测是否支持硬解
     QString procName = QCoreApplication::applicationFilePath();
@@ -141,6 +142,7 @@ void MpvProxy::firstInit()
             CompositingManager::setCanHwdec(true);
         }
     }
+#endif
 #endif
     initMpvFuns();
     if (m_creat) {
@@ -1233,6 +1235,7 @@ QVariant MpvProxy::my_get_property(mpv_handle *pHandle, const QString &sName) co
 int MpvProxy::my_set_property(mpv_handle *pHandle, const QString &sName, const QVariant &v)
 {
     QVariant sValue = v;
+#ifndef _LIBDMR_
 #ifdef __x86_64__
     bool composited = CompositingManager::get().composited();
     //设置mpv硬解码时，检测是否支持硬解，不支持则设置为软解
@@ -1244,6 +1247,12 @@ int MpvProxy::my_set_property(mpv_handle *pHandle, const QString &sName, const Q
         }
     }
 #endif
+#else
+   if(sName.compare("hwdec") == 0) {
+       sValue = "no";
+   }
+#endif
+
     node_builder node(sValue);
 
     if (!m_bInited) {
