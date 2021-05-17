@@ -367,6 +367,7 @@ protected slots:
      * @brief 响应锁屏dbus信号
      */
     void onSysLockState(QString serviceName, QVariantMap key2value, QStringList);
+    void slotProperChanged(QString, QVariantMap key2value, QStringList);
 private:
     void initMember();
     void setupTitlebar();

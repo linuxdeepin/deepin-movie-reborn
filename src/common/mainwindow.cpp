@@ -666,6 +666,45 @@ private:
 #define SHADOW_COLOR_ACTIVE QColor(0, 0, 0, 255 * 0.6)
 #endif
 
+struct SessionInfo
+{
+    QString sessionId;
+    uint userId;
+    QString userName;
+    QString seatId;
+    QDBusObjectPath sessionPath;
+};
+typedef QList<SessionInfo> SessionInfoList;
+
+Q_DECLARE_METATYPE(SessionInfoList);
+Q_DECLARE_METATYPE(SessionInfo);
+
+inline QDBusArgument &operator<<(QDBusArgument &argument, const SessionInfo& sessionInfo)
+{
+    argument.beginStructure();
+    argument << sessionInfo.sessionId;
+    argument << sessionInfo.userId;
+    argument << sessionInfo.userName;
+    argument << sessionInfo.seatId;
+    argument << sessionInfo.sessionPath;
+    argument.endStructure();
+
+    return argument;
+}
+
+inline const QDBusArgument &operator>>(const QDBusArgument &argument, SessionInfo &sessionInfo)
+{
+    argument.beginStructure();
+    argument >> sessionInfo.sessionId;
+    argument >> sessionInfo.userId;
+    argument >> sessionInfo.userName;
+    argument >> sessionInfo.seatId;
+    argument >> sessionInfo.sessionPath;
+    argument.endStructure();
+
+    return argument;
+}
+
 MainWindow::MainWindow(QWidget *parent)
     : DMainWindow(nullptr)
 {
@@ -1038,9 +1077,15 @@ MainWindow::MainWindow(QWidget *parent)
         m_pMovieWidget->windowHandle()->installEventFilter(m_pEventListener);
     }
 
-//    QTimer::singleShot(100, this, [ = ] {    //把焦点设回工具栏
-//        m_pToolbox->setFocus();
-//    });
+    qDBusRegisterMetaType<SessionInfo>();
+    qDBusRegisterMetaType<SessionInfoList>();
+    QDBusPendingReply<SessionInfoList> reply = m_pDBus->call("ListSessions");
+    QString path = reply.value().last().sessionPath.path();
+
+    QDBusConnection::systemBus().connect("org.freedesktop.login1", path,
+                                          "org.freedesktop.login1.Properties", "PropertiesChanged", this,
+                                          SLOT(slotProperChanged(QString, QVariantMap, QStringList)));
+    qInfo() << "session Path is :" << path;
 }
 
 void MainWindow::setupTitlebar()
@@ -4777,6 +4822,14 @@ void MainWindow::onSysLockState(QString, QVariantMap key2value, QStringList)
     } else if (!key2value.value("Locked").value<bool>() && m_bStateInLock) {
         m_bStateInLock = false;
         requestAction(ActionFactory::TogglePause);
+    }
+}
+
+void MainWindow::slotProperChanged(QString, QVariantMap key2value, QStringList)
+{
+    qInfo() << __func__ << key2value;
+    if (key2value.value("Active").value<bool>() && m_pEngine->state() == PlayerEngine::CoreState::Playing) {
+        m_pEngine->seekAbsolute(m_pEngine->elapsed());
     }
 }
 
