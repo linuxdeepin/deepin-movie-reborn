@@ -483,7 +483,6 @@ void MpvProxy::setState(PlayState state)
     }
 }
 
-
 void MpvProxy::pollingEndOfPlayback()
 {
     if (_state != Backend::Stopped) {
@@ -1034,8 +1033,8 @@ void MpvProxy::play()
         listArgs << _file.url();
     }
 #ifndef _LIBDMR_
-    auto cfg = MovieConfiguration::get().queryByUrl(_file);
-    auto key = MovieConfiguration::knownKey2String(ConfigKnownKey::StartPos);
+    QMap<QString, QVariant> cfg = MovieConfiguration::get().queryByUrl(_file);
+    QString key = MovieConfiguration::knownKey2String(ConfigKnownKey::StartPos);
     if (Settings::get().isSet(Settings::ResumeFromLast) && cfg.contains(key)) {
         listOpts << QString("start=%1").arg(cfg[key].toInt());   //如果视频长度小于1s这段代码会导致视频无法播放
     }
@@ -1053,7 +1052,7 @@ void MpvProxy::play()
     if (!_dvdDevice.isEmpty()) {
         listOpts << QString("dvd-device=%1").arg(_dvdDevice);
     }
-    //非景嘉微显卡
+
     if (m_bHwaccelAuto && m_bLastIsSpecficFormat) {
         if (!m_bIsJingJia || !utils::check_wayland_env()) {
             // hwdec could be disabled by some codecs, so we need to re-enable it
@@ -1073,35 +1072,24 @@ void MpvProxy::play()
             my_set_property(m_handle, "hwdec", "auto");
         }
     }
+#endif   
+        //非景嘉微显卡
+        if (!utils::check_wayland_env() && !m_bIsJingJia) {
+            if (m_bHwaccelAuto) {
+                QString sCodec = my_get_property(m_handle, "video-codec").toString();
+                bool autoHwdec = sCodec.toLower().contains("wmv3") || sCodec.toLower().contains("wmv");
+#if !defined (__x86_64__)
+                autoHwdec = autoHwdec || sCodec.toLower().contains("mpeg2video");
 #endif
-    //非景嘉微显卡
-    if (!utils::check_wayland_env() && !m_bIsJingJia) {
-#ifdef __mips__
-        if (m_bHwaccelAuto) {
-            QString sCodec = my_get_property(m_handle, "video-codec").toString();
-            if (sCodec.toLower().contains("wmv3") || sCodec.toLower().contains("wmv2") || sCodec.toLower().contains("mpeg2video")) {
-                qInfo() << "my_set_property hwdec no";
-                my_set_property(m_handle, "hwdec", "no");
-                m_bLastIsSpecficFormat = true;
-            } else {
-                m_bLastIsSpecficFormat = false;
+                if (autoHwdec) {
+                    qInfo() << "my_set_property hwdec no";
+                    my_set_property(m_handle, "hwdec", "no");
+                } else {
+                    my_set_property(m_handle, "hwdec", "auto");
+                }
             }
         }
-#endif
-#ifdef __aarch64__
-        if (m_bHwaccelAuto) {
-            qInfo() << "MPV_EVENT_FILE_LOADED aarch64";
-            QString sCodec = my_get_property(m_handle, "video-codec").toString();
-            if (sCodec.toLower().contains("wmv3") || sCodec.toLower().contains("wmv2") || sCodec.toLower().contains("mpeg2video")) {
-                qInfo() << "my_set_property hwdec no";
-                my_set_property(m_handle, "hwdec", "no");
-                m_bLastIsSpecficFormat = true;
-            } else {
-                m_bLastIsSpecficFormat = false;
-            }
-        }
-#endif
-    }
+
     if (listOpts.size()) {
         listArgs << "replace" << listOpts.join(',');
     }
