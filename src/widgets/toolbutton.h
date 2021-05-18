@@ -44,6 +44,8 @@
 #include <QThread>
 #include <DArrowRectangle>
 #include <DButtonBox>
+#include <QDBusInterface>
+#include <QDBusReply>
 
 DWIDGET_USE_NAMESPACE
 
@@ -200,6 +202,11 @@ public:
         bodyShadow->setColor(QColor(0, 0, 0, int(0.1 * 255)));
         bodyShadow->setOffset(0, 2.0);
 //        this->setGraphicsEffect(bodyShadow);
+
+        m_pWMDBus = new QDBusInterface("com.deepin.WMSwitcher","/com/deepin/WMSwitcher","com.deepin.WMSwitcher",QDBusConnection::sessionBus());
+        QDBusReply<QString> reply = m_pWMDBus->call("CurrentWM");
+        m_bIsWM = reply.value().contains("deepin wm");
+        connect(m_pWMDBus, SIGNAL(WMChanged(QString)), this, SLOT(slotWMChanged(QString)));
     }
     virtual ~ToolTip() {}
 
@@ -214,6 +221,17 @@ public:
         m_themeType = themeType;
         update();
     }
+
+public slots:
+    void slotWMChanged(QString msg)
+    {
+        if (msg.contains("deepin metacity")) {
+            m_bIsWM = false;
+        } else {
+            m_bIsWM = true;
+        }
+    }
+
 
 protected:
     virtual void paintEvent(QPaintEvent *)
@@ -233,25 +251,20 @@ protected:
         }
 
         QRect rect = this->rect();
-        rect.setWidth(rect.width() - 1);
-        rect.setHeight(rect.height() - 1);
         QPainterPath painterPath;
-        painterPath.addRoundedRect(rect, 8, 8);
+        if (m_bIsWM) {
+            rect.setWidth(rect.width() - 1);
+            rect.setHeight(rect.height() - 1);
+            painterPath.addRoundedRect(rect, 8, 8);
+        } else {
+            painterPath.addRoundedRect(rect, 0, 0);
+        }
         pt.drawPath(painterPath);
 
         DPalette pal_text = DApplicationHelper::instance()->palette(this);
         pal_text.setBrush(DPalette::Text, pal_text.color(DPalette::ToolTipText));
         this->setPalette(pal_text);
         pt.setPen(pal_text.color(DPalette::ToolTipText));
-//        if (lightTheme == m_themeType) {
-//            pt.setPen(QColor(55, 55, 55));
-//        }
-//        else if (darkTheme == m_themeType) {
-//            pt.setPen(QColor("#C0C6D4"));
-//        }
-//        else {
-//            pt.setPen(QColor(55, 55, 55));
-//        }
 
         DFontSizeManager::instance()->bind(this, DFontSizeManager::T8);
         QFont font = DFontSizeManager::instance()->get(DFontSizeManager::T8);
@@ -283,6 +296,8 @@ private:
     bool m_bTheme;
     ThemeTYpe m_themeType;
     QString m_strText = nullptr;
+    QDBusInterface* m_pWMDBus {nullptr};
+    bool m_bIsWM {false};
 };
 
 class ToolButton: public DIconButton

@@ -41,6 +41,7 @@
 #include <QGraphicsDropShadowEffect>
 #include <QPropertyAnimation>
 #include <QGraphicsOpacityEffect>
+#include <QDBusReply>
 
 #include <DUtil>
 #include <dthememanager.h>
@@ -118,6 +119,11 @@ Tip::Tip(const QPixmap &icon, const QString &text, QWidget *parent)
     bodyShadow->setColor(QColor(0, 0, 0, static_cast<int>(0.1 * 255)));
     bodyShadow->setOffset(0, 2.0);
     hide();
+
+    m_pWMDBus = new QDBusInterface("com.deepin.WMSwitcher","/com/deepin/WMSwitcher","com.deepin.WMSwitcher",QDBusConnection::sessionBus());
+    QDBusReply<QString> reply = m_pWMDBus->call("CurrentWM");
+    bIsWM = reply.value().contains("deepin wm");
+    connect(m_pWMDBus, SIGNAL(WMChanged(QString)), this, SLOT(slotWMChanged(QString)));
 }
 
 Tip::~Tip()
@@ -174,6 +180,15 @@ void Tip::setBorderColor(QColor borderColor)
 {
     Q_D(Tip);
     d->borderColor = borderColor;
+}
+
+void Tip::slotWMChanged(QString msg)
+{
+    if (msg.contains("deepin metacity")) {
+        bIsWM = false;
+    } else {
+        bIsWM = true;
+    }
 }
 
 void Tip::pop(QPoint center)
@@ -241,10 +256,14 @@ void Tip::paintEvent(QPaintEvent *)
     }
 
     QRect rect = this->rect();
-    rect.setWidth(rect.width() - 1);
-    rect.setHeight(rect.height() - 1);
     QPainterPath painterPath;
-    painterPath.addRoundedRect(rect, d->radius, d->radius);
+    if (bIsWM) {
+        rect.setWidth(rect.width() - 1);
+        rect.setHeight(rect.height() - 1);
+        painterPath.addRoundedRect(rect, d->radius, d->radius);
+    } else {
+        painterPath.addRect(rect);
+    }
     pt.drawPath(painterPath);
 
 }
