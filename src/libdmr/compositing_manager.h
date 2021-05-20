@@ -92,6 +92,9 @@ public:
     // this actually means opengl rendering is capable
     bool composited() const
     {
+#if defined (_LIBDMR_)
+        return true;
+#endif
         return _composited;
     }
     Platform platform() const
