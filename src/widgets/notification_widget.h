@@ -38,6 +38,8 @@
 #include <DBlurEffectWidget>
 #include <DGuiApplicationHelper>
 
+#include "compositing_manager.h"
+
 DWIDGET_USE_NAMESPACE
 
 namespace dmr {

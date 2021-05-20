@@ -47,6 +47,7 @@
 #include "diskcheckthread.h"
 #include "actions.h"
 #include "online_sub.h"
+#include "compositing_manager.h"
 
 class Presenter;
 
@@ -123,6 +124,39 @@ protected:
 private:
     QIcon m_icon;
     int m_nThemeType;
+};
+class FloatingMessageWindow: public DFloatingMessage
+{
+public:
+ using DFloatingMessage::DFloatingMessage;
+
+private:
+    void paintEvent(QPaintEvent *event) override
+    {
+#if defined(__arrch64__) || defined(__mips__)
+        QPainter painter(this);
+        QColor color = QColor(23, 23, 23, 255 * 8 / 10);
+        if(DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
+            color = QColor(252, 252, 252, 255 * 8 / 10);
+        } /*else {
+            QColor color = QColor(23, 23, 23, 255 * 8 / 10);
+        }*/
+
+        painter.fillRect(rect(), color);
+#else
+        if (!CompositingManager::get().composited()) {
+            QPainter painter(this);
+            QColor color = QColor(23, 23, 23, 255 * 8 / 10);
+            if(DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
+                color = QColor(252, 252, 252, 255 * 8 / 10);
+            }
+            painter.fillRect(rect(), color);
+        } else {
+            DFloatingMessage::paintEvent(event);
+        }
+
+#endif
+    }
 };
 
 /**

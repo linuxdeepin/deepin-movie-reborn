@@ -227,20 +227,28 @@ void NotificationWidget::paintEvent(QPaintEvent *pPaintEvent)
         borderColor = QColor(0, 0, 0, 25);
     }
 
-    painter.fillRect(rect(), Qt::transparent);
-    {
+#if defined(__arrch64__) || defined(__mips__)
+    painter.fillRect(rect(), color);
+#else
+    if (!CompositingManager::get().composited()) {
+        painter.fillRect(rect(), color);
+    } else {
+        painter.fillRect(rect(), Qt::transparent);
+        {
+            QPainterPath painterPath;
+            painterPath.addRoundedRect(rect(), static_cast<qreal>(fRadius), static_cast<qreal>(fRadius));
+            painter.setPen(borderColor);
+            painter.drawPath(painterPath);
+        }
+
+        QRect viewRect = rect().marginsRemoved(QMargins(1, 1, 1, 1));
         QPainterPath painterPath;
-        painterPath.addRoundedRect(rect(), static_cast<qreal>(fRadius), static_cast<qreal>(fRadius));
-        painter.setPen(borderColor);
-        painter.drawPath(painterPath);
+        painterPath.addRoundedRect(viewRect, static_cast<qreal>(fRadius), static_cast<qreal>(fRadius));
+        painter.fillPath(painterPath, color);
+
+        QFrame::paintEvent(pPaintEvent);
     }
-
-    QRect viewRect = rect().marginsRemoved(QMargins(1, 1, 1, 1));
-    QPainterPath painterPath;
-    painterPath.addRoundedRect(viewRect, static_cast<qreal>(fRadius), static_cast<qreal>(fRadius));
-    painter.fillPath(painterPath, color);
-
-    QFrame::paintEvent(pPaintEvent);
+#endif
 }
 /**
  * @brief initMember 初始化成员变量

@@ -37,7 +37,6 @@
 #include "toolbox_proxy.h"
 #include "actions.h"
 #include "event_monitor.h"
-#include "compositing_manager.h"
 #include "shortcut_manager.h"
 #include "dmr_settings.h"
 #include "movieinfo_dialog.h"
@@ -1036,7 +1035,7 @@ MainWindow::MainWindow(QWidget *parent)
     }
     m_pPopupWid->setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
 #else
-    m_pPopupWid = new DFloatingMessage(DFloatingMessage::TransientType, this);
+    m_pPopupWid = new FloatingMessageWindow(FloatingMessageWindow::TransientType, this);
 #endif
     m_pPopupWid->resize(0, 0);
     defaultplaymodeinit();
