@@ -447,7 +447,7 @@ protected slots:
      */
     void progressHoverChanged(int v);
     /**
-     * @brief updateHoverPreview 更新悬停时间进度
+     * @brief updateHoverPreview 更新悬停时预览缩略图
      * @param url 文件url
      * @param secs 当前时间
      */
@@ -529,6 +529,11 @@ protected:
      */
     void showEvent(QShowEvent *event) override;
     /**
+     * @brief paintEvent 重绘事件函数
+     * @param event 重绘事件
+     */
+    void paintEvent(QPaintEvent *event) override;
+    /**
      * @brief resizeEvent 窗口大小变化事件函数
      * @param event 大小变化事件
      */
@@ -595,8 +600,8 @@ private:
     VolumeSlider *m_pVolSlider;          ///音量条控件窗口
     ViewProgBar *m_pViewProgBar;         ///胶片模式进度条窗口
     DMRSlider *m_pProgBar;               ///滑动条模式进度条窗口
-    ThumbnailPreview *m_pPreviewer;      ///胶片模式视图
-    SliderTime *m_pPreviewTime;          ///鼠标hover进度条时显示在进度条上方的时间控件（非鼠标悬停显示预览时）
+    ThumbnailPreview *m_pPreviewer;      ///鼠标悬停时进度条预览胶片控件
+    SliderTime *m_pPreviewTime;          ///鼠标悬停时进度条预览时间控件
 
     DButtonBoxButton *m_pPlayBtn;        ///播放按钮
     DButtonBoxButton *m_pPrevBtn;        ///上一个按钮

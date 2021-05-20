@@ -60,7 +60,7 @@
 #include "../accessibility/ac-deepin-movie-define.h"
 static const int LEFT_MARGIN = 10;
 static const int RIGHT_MARGIN = 10;
-static const int PROGBAR_SPEC = 10 + 120 + 17 + 54 + 10 + 54 + 10 + 170 + 10 + 20;
+//static const int PROGBAR_SPEC = 10 + 120 + 17 + 54 + 10 + 54 + 10 + 170 + 10 + 20;
 
 static const QString SLIDER_ARROW = ":resources/icons/slider.svg";
 
@@ -1035,7 +1035,6 @@ void ToolboxProxy::setup()
 
     bot_widget = new DBlurEffectWidget(this);
     bot_widget->setObjectName(BOTTOM_WIDGET);
-//    bot_widget->setBlurBackgroundEnabled(true);
     bot_widget->setBlurRectXRadius(18);
     bot_widget->setBlurRectYRadius(18);
     bot_widget->setRadius(30);
@@ -1045,14 +1044,10 @@ void ToolboxProxy::setup()
     THEME_TYPE(type);
     connect(DApplicationHelper::instance(), &DApplicationHelper::themeTypeChanged, this, &ToolboxProxy::slotThemeTypeChanged);
 
-
-
-//    auto *bot_widget = new QWidget(this);
     bot_widget->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
     QVBoxLayout *botv = new QVBoxLayout(bot_widget);
     botv->setContentsMargins(0, 0, 0, 0);
     botv->setSpacing(10);
-//    auto *bot = new QHBoxLayout();
 
     m_pBotSpec = new QWidget(bot_widget);
     m_pBotSpec->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
@@ -1142,7 +1137,6 @@ void ToolboxProxy::setup()
     time->setAlignment(Qt::AlignLeft);
     bot_layout->addLayout(time);
     time->addWidget(m_pTimeLabel);
-//    bot->addStretch();
     QHBoxLayout *progBarspec = new QHBoxLayout(m_pBotToolWgt);
     progBarspec->setContentsMargins(0, 5, 0, 0);
     progBarspec->setSpacing(0);
@@ -1263,29 +1257,12 @@ void ToolboxProxy::setup()
     m_pVolBtn->setFocusPolicy(Qt::TabFocus);
     m_pVolBtn->setObjectName(VOLUME_BUTTON);
     m_pVolBtn->setAccessibleName(VOLUME_BUTTON);
-    if (CompositingManager::get().composited()) {
-        m_pVolSlider = new VolumeSlider(m_pMainWindow, m_pMainWindow);
-        m_pVolSlider->setObjectName(VOLUME_SLIDER_WIDGET);
-        connect(m_pVolBtn, &VolumeButton::clicked, this, &ToolboxProxy::slotVolumeButtonClicked);
 
-    } else {
-#if defined (__mips__) || defined (__aarch64__)
-        m_pVolSlider = new VolumeSlider(m_pMainWindow, m_pMainWindow);
-        m_pVolSlider->setObjectName(VOLUME_SLIDER_WIDGET);
-        connect(m_pVolBtn, &VolumeButton::clicked, this, &ToolboxProxy::slotVolumeButtonClicked);
-#else
-        m_pVolSlider = new VolumeSlider(m_pMainWindow, m_pMainWindow);
-        m_pVolSlider->setObjectName(VOLUME_SLIDER_WIDGET);;
-        connect(m_pVolBtn, &VolumeButton::clicked, this, &ToolboxProxy::slotVolumeButtonClicked);
-#endif
-    }
-#ifdef __x86_64__
+    m_pVolSlider = new VolumeSlider(m_pMainWindow, m_pMainWindow);
+    m_pVolSlider->setObjectName(VOLUME_SLIDER_WIDGET);
+
+    connect(m_pVolBtn, &VolumeButton::clicked, this, &ToolboxProxy::slotVolumeButtonClicked);
     connect(m_pVolBtn, &VolumeButton::leaved, m_pVolSlider, &VolumeSlider::delayedHide);
-#else
-    connect(m_pVolBtn, &VolumeButton::leaved, [ = ]() {
-        m_pVolSlider->delayedHide();
-    });
-#endif
     connect(m_pVolSlider, &VolumeSlider::sigVolumeChanged, this, &ToolboxProxy::slotVolumeChanged);
     connect(m_pVolSlider, &VolumeSlider::sigMuteStateChanged, this, &ToolboxProxy::slotMuteStateChanged);
     connect(m_pVolBtn, &VolumeButton::requestVolumeUp, m_pVolSlider, &VolumeSlider::volumeUp);
@@ -1354,10 +1331,8 @@ void ToolboxProxy::setup()
 
     connect(m_pEngine, &PlayerEngine::stateChanged, this, &ToolboxProxy::updatePlayState);
     connect(m_pEngine, &PlayerEngine::fileLoaded, this, &ToolboxProxy::slotFileLoaded);
-
     connect(m_pEngine, &PlayerEngine::elapsedChanged, this, &ToolboxProxy::slotElapsedChanged);
     connect(m_pEngine, &PlayerEngine::updateDuration, this, &ToolboxProxy::slotElapsedChanged);
-
 
     connect(window()->windowHandle(), &QWindow::windowStateChanged, this, &ToolboxProxy::updateFullState);
 
@@ -1469,10 +1444,6 @@ void ToolboxProxy::closeAnyPopup()
     if (m_pPreviewTime->isVisible()) {
         m_pPreviewTime->hide();
     }
-
-//    if (_subView->isVisible()) {
-//        _subView->hide();
-//    }
 
     if (m_pVolSlider->isVisible()) {
         m_pVolSlider->stopTimer();
@@ -1689,19 +1660,6 @@ void ToolboxProxy::slotVolumeButtonClicked()
             m_pVolSlider->popup();
         }
     } else {
-#if defined (__mips__) || defined (__aarch64__)
-        if (!m_pVolSlider->isVisible()) {
-            auto pPoint = mapToGlobal(QPoint(this->rect().width(), this->rect().height()));
-            m_pVolSlider->adjustSize();
-
-            pPoint.setX(pPoint.x()  - m_pVolBtn->width() / 2 - m_pPlayBtn->width() - 43);
-            pPoint.setY(pPoint.y() - TOOLBOX_HEIGHT - 5);
-            m_pVolSlider->show(pPoint.x(), pPoint.y());
-            m_pVolSlider->popup();
-        } else {
-            m_pVolSlider->popup();
-        }
-#else
         if (!m_pVolSlider->isVisible()) {
             auto pPoint = mapToGlobal(QPoint(this->rect().width(), this->rect().height()));
             m_pVolSlider->adjustSize();
@@ -1713,7 +1671,6 @@ void ToolboxProxy::slotVolumeButtonClicked()
         } else {
             m_pVolSlider->popup();
         }
-#endif
     }
 }
 
@@ -2377,6 +2334,33 @@ void ToolboxProxy::showEvent(QShowEvent *event)
     DFloatingWidget::showEvent(event);
 }
 
+void ToolboxProxy::paintEvent(QPaintEvent *event)
+{
+#if defined (__mips__) || defined (__aarch64__)
+    QPainter painter(this);
+    QRectF bgRect;
+    QPainterPath path;
+    bgRect.setSize(size());
+    setFixedWidth(m_pMainWindow->width());
+    move(0, m_pMainWindow->height() - this->height());
+    path.addRect(bgRect);
+    painter.fillPath(path, this->palette().background());
+#else
+    if (!CompositingManager::get().composited()) {
+        QPainter painter(this);
+        QRectF bgRect;
+        QPainterPath path;
+        bgRect.setSize(size());
+        setFixedWidth(m_pMainWindow->width());
+        move(0, m_pMainWindow->height() - this->height());
+        path.addRect(bgRect);
+        painter.fillPath(path, this->palette().background());
+    } else {
+        DFloatingWidget::paintEvent(event);
+    }
+#endif
+}
+
 void ToolboxProxy::resizeEvent(QResizeEvent *event)
 {
     if (event->oldSize().width() != event->size().width()) {
@@ -2391,12 +2375,10 @@ void ToolboxProxy::resizeEvent(QResizeEvent *event)
 #ifndef __sw_64__
     if (!utils::check_wayland_env()) {
         if (m_bAnimationFinash ==  false && m_pPaOpen != nullptr && m_pPaClose != nullptr) {
-
             m_pPlaylist->endAnimation();
             m_pPaOpen->setDuration(0);
             m_pPaClose->setDuration(0);
         }
-
 
         if (m_pPlaylist && m_pPlaylist->state() == PlaylistWidget::State::Opened && m_bAnimationFinash == true) {
             QRect r(5, m_pMainWindow->height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT + 7) - m_pMainWindow->rect().top() - 5,
@@ -2454,7 +2436,6 @@ bool ToolboxProxy::eventFilter(QObject *obj, QEvent *ev)
  */
 void ToolboxProxy::updateTimeLabel()
 {
-
 #ifndef __sw_64__
     if (!utils::check_wayland_env()) {
         // to keep left and right of the same width. which makes play button centered

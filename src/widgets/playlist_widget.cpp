@@ -717,7 +717,6 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     bool composited = CompositingManager::get().composited();
     setAttribute(Qt::WA_TranslucentBackground, false);
     //NOTE: set fixed will affect geometry animation
-    //setFixedWidth(220);
     this->setObjectName(PLAYLIST_WIDGET);
 
     paOpen = nullptr;
@@ -809,7 +808,6 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     connect(m_pClearButton, &QPushButton::clicked, _engine, &PlayerEngine::clearPlaylist);
 
     left->setContentsMargins(36, 0, 0, 0);
-//    _title->setContentsMargins(0, 0, 0, 0);
     m_pClearButton->setContentsMargins(0, 0, 0, 70);
     _num->setContentsMargins(0, 0, 0, 0);
 
@@ -977,7 +975,6 @@ void PlaylistWidget::updateItemStates()
 {
     qInfo() << __func__ << _playlist->count() << "current = " << _engine->playlist().current();
 
-    //int len = _playlist->count();
     for (int i = 0; i < _playlist->count(); i++) {
         auto piw = dynamic_cast<PlayItemWidget *>(_playlist->itemWidget(_playlist->item(i)));
 
@@ -996,12 +993,7 @@ void PlaylistWidget::updateItemStates()
 
             }
         }
-
-//        if (old != piw->state()) {
-////            piw->setStyleSheet(piw->styleSheet());
-//        }
     }
-
 }
 
 void PlaylistWidget::showItemInfo()
