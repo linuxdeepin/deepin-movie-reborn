@@ -30,16 +30,16 @@ VolumeSlider::VolumeSlider(MainWindow *mw, QWidget *parent)
     : DArrowRectangle(DArrowRectangle::ArrowBottom, DArrowRectangle::FloatWidget, parent), _mw(mw)
 {
 #ifdef __mips__
-        setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
+    setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
 #elif __aarch64__
-        setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
+    setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
 #elif __sw_64__
-        setWindowFlags(Qt::FramelessWindowHint | Qt::BypassWindowManagerHint);
-        setAttribute(Qt::WA_NativeWindow);
+    setWindowFlags(Qt::FramelessWindowHint | Qt::BypassWindowManagerHint);
+    setAttribute(Qt::WA_NativeWindow);
 #elif __x86_64__
-        if (!CompositingManager::get().composited()) {
-            setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
-        }
+    if (!CompositingManager::get().composited()) {
+        setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
+    }
 #endif
     m_iStep = 0;
     m_bIsWheel = false;
@@ -85,7 +85,6 @@ VolumeSlider::VolumeSlider(MainWindow *mw, QWidget *parent)
     m_pBtnChangeMute->setObjectName(MUTE_BTN);
     m_pBtnChangeMute->setAccessibleName(MUTE_BTN);
     m_pBtnChangeMute->setToolButtonStyle(Qt::ToolButtonIconOnly);
-    //m_pBtnChangeMute->installEventFilter(this);
     //同时设置按钮与图标的尺寸，改变其默认比例
     m_pBtnChangeMute->setFixedSize(30, 30);
     m_pBtnChangeMute->setIconSize(QSize(30, 30));
@@ -146,11 +145,8 @@ QString VolumeSlider::readSinkInputPath()
         return strPath;
 
     QList<QDBusObjectPath> allSinkInputsList = v.value<QList<QDBusObjectPath> >();
-    //    qInfo() << "allSinkInputsListSize: " << allSinkInputsList.size();
 
     for (auto curPath : allSinkInputsList) {
-        //        qInfo() << "path: " << curPath.path();
-
         QVariant nameV = ApplicationAdaptor::redDBusProperty("com.deepin.daemon.Audio", curPath.path(),
                                                              "com.deepin.daemon.Audio.SinkInput", "Name");
         QString strMovie = QObject::tr("Movie");
@@ -160,7 +156,6 @@ QString VolumeSlider::readSinkInputPath()
         strPath = curPath.path();
         break;
     }
-
     return strPath;
 }
 
@@ -233,12 +228,9 @@ void VolumeSlider::popup()
 #endif
     QRect end(x, y, VOLSLIDER_WIDTH, VOLSLIDER_HEIGHT);
     QRect start = end;
-//    QRect media = start;
 
     start.setWidth(start.width() + 12);
     start.setHeight(start.height() + 10);
-//    media.setWidth(media.width() - 10);
-//    media.setHeight(media.height() - 10);
 #ifdef __x86_64__
     if(CompositingManager::get().composited()) {
         start.moveTo(start.topLeft() - QPoint(6, 10));
@@ -246,11 +238,9 @@ void VolumeSlider::popup()
         end.moveTo(m_point);
         start.moveTo(m_point - QPoint(8, 14));
     }
-//    media.moveTo(media.topLeft() + QPoint(5, 10));
 #else
     end.moveTo(m_point);
     start.moveTo(m_point - QPoint(8, 14));
-//    media.moveTo(m_point + QPoint(5, 10));
 #endif
 
     //动画未完成，等待动画结束后再隐藏控件
@@ -264,7 +254,6 @@ void VolumeSlider::popup()
         pVolAnimation->setEasingCurve(QEasingCurve::Linear);
         pVolAnimation->setKeyValueAt(0, end);
         pVolAnimation->setKeyValueAt(0.3, start);
-//        pVolAnimation->setKeyValueAt(0.75, media);
         pVolAnimation->setKeyValueAt(1, end);
         pVolAnimation->setDuration(230);
         m_bFinished = true;
@@ -275,8 +264,7 @@ void VolumeSlider::popup()
             pVolAnimation = nullptr;
             m_state = Open;
             m_bFinished = false;
-            if (m_bHideWhenFinished)
-            {
+            if (m_bHideWhenFinished) {
                 popup();
                 m_bHideWhenFinished = false;
             }
@@ -331,25 +319,24 @@ void VolumeSlider::calculationStep(int iAngleDelta){
     //}
     //iAngleDelta = iAngleDelta/wheelSpeed;
 
-    if((m_iStep > 0 && iAngleDelta > 0) || (m_iStep < 0 && iAngleDelta < 0)){
+    if ((m_iStep > 0 && iAngleDelta > 0) || (m_iStep < 0 && iAngleDelta < 0)) {
         m_iStep += iAngleDelta;
-   }else{
+    } else {
         m_iStep = iAngleDelta;
     }
 }
 
 void VolumeSlider::volumeUp()
 {
-    if(m_bIsWheel){
-        if(qAbs(m_iStep) >= 120){
+    if (m_bIsWheel) {
+        if(qAbs(m_iStep) >= 120) {
             m_nVolume += qAbs(m_iStep) / 120 * 10;
             changeVolume(qMin(m_nVolume, 200));
             m_iStep = 0;
         }
-    }else{
+    } else {
         changeVolume(qMin(m_nVolume + 10, 200));
     }
-
 }
 
 void VolumeSlider::volumeDown()
@@ -474,48 +461,65 @@ void VolumeSlider::leaveEvent(QEvent *e)
 }
 void VolumeSlider::paintEvent(QPaintEvent *)
 {
-    double dRation = this->height() * 1.0 / VOLSLIDER_HEIGHT;
     QPainter painter(this);
     QColor bgColor = this->palette().background().color();
-    const qreal radius = 20 * dRation;
-    const qreal triHeight = 30 * dRation;
-    const qreal height = this->height() - triHeight;
-    const qreal width = this->width();
 
-    painter.setRenderHints(QPainter::Antialiasing | QPainter::HighQualityAntialiasing);
+#if defined (__mips__) || defined (__aarch64__)
+    ///arm和mips下控件圆角显示有黑边,在此重绘
+//    pathRect.moveTo(2, 2);
+//    pathRect.lineTo(VOLSLIDER_WIDTH - 2, 2);
+//    pathRect.lineTo(VOLSLIDER_WIDTH - 2, VOLSLIDER_HEIGHT);
+//    pathRect.lineTo(2, VOLSLIDER_HEIGHT);
 
-    // 背景上矩形
-    //这里要一次绘制不然中间会出现虚线
-    QPainterPath pathRect;
-    pathRect.moveTo(radius, 0);
-    pathRect.lineTo(width - radius, 0);
-    pathRect.arcTo(QRectF(QPointF(width - 2 * radius, 0), QPointF(width, 2 * radius)), 90.0, -90.0);
-    pathRect.lineTo(width, height);
-    pathRect.lineTo(0, height);
-    pathRect.lineTo(0, radius);
-    pathRect.arcTo(QRectF(QPointF(0, 0), QPointF(2 * radius, 2 * radius)), 180.0, -90.0);
+//    painter.fillPath(pathRect, bgColor);
 
-    // 背景下三角，半边
-    qreal radius1 = radius / 2;
-    QPainterPath pathTriangle;
-    pathTriangle.moveTo(0, height - radius1);
-    pathTriangle.arcTo(QRectF(QPointF(0, height - radius1), QSizeF(2 * radius1, 2 * radius1)), 180, 60);
-    pathTriangle.lineTo(width / 2, this->height());
-    qreal radius2 = radius / 4;
-    pathTriangle.arcTo(QRectF(QPointF(width / 2 - radius2, this->height() - radius2 * 2 - 2), QSizeF(2 * radius2, 2 * radius2)), 220, 130);
-    pathTriangle.lineTo(width / 2, height);
+    painter.fillRect(rect(), bgColor);
+#else
+    if (!CompositingManager::get().composited()) {
+        painter.fillRect(rect(), bgColor);
+    } else {
+        double dRation = this->height() * 1.0 / VOLSLIDER_HEIGHT;
+        const qreal radius = 20 * dRation;
+        const qreal triHeight = 30 * dRation;
+        const qreal height = this->height() - triHeight;
+        const qreal width = this->width();
 
-    // 正向绘制
-    painter.fillPath(pathRect, bgColor);
-    painter.fillPath(pathTriangle, bgColor);
+        painter.setRenderHints(QPainter::Antialiasing | QPainter::HighQualityAntialiasing);
 
-    // 平移坐标系
-    painter.translate(width, 0);
-    // 坐标系X反转
-    painter.scale(-1, 1);
+        // 背景上矩形
+        //这里要一次绘制不然中间会出现虚线
+        QPainterPath pathRect;
+        pathRect.moveTo(radius, 0);
+        pathRect.lineTo(width - radius, 0);
+        pathRect.arcTo(QRectF(QPointF(width - 2 * radius, 0), QPointF(width, 2 * radius)), 90.0, -90.0);
+        pathRect.lineTo(width, height);
+        pathRect.lineTo(0, height);
+        pathRect.lineTo(0, radius);
+        pathRect.arcTo(QRectF(QPointF(0, 0), QPointF(2 * radius, 2 * radius)), 180.0, -90.0);
 
-    // 反向绘制
-    painter.fillPath(pathTriangle, bgColor);
+        // 背景下三角，半边
+        qreal radius1 = radius / 2;
+        QPainterPath pathTriangle;
+        pathTriangle.moveTo(0, height - radius1);
+        pathTriangle.arcTo(QRectF(QPointF(0, height - radius1), QSizeF(2 * radius1, 2 * radius1)), 180, 60);
+        pathTriangle.lineTo(width / 2, this->height());
+        qreal radius2 = radius / 4;
+        pathTriangle.arcTo(QRectF(QPointF(width / 2 - radius2, this->height() - radius2 * 2 - 2), QSizeF(2 * radius2, 2 * radius2)), 220, 130);
+        pathTriangle.lineTo(width / 2, height);
+
+        // 正向绘制
+        painter.fillPath(pathRect, bgColor);
+        painter.fillPath(pathTriangle, bgColor);
+
+        // 平移坐标系
+        painter.translate(width, 0);
+        // 坐标系X反转
+        painter.scale(-1, 1);
+
+        // 反向绘制
+        painter.fillPath(pathTriangle, bgColor);
+    }
+#endif
 }
 
 void VolumeSlider::keyPressEvent(QKeyEvent *pEvent)
