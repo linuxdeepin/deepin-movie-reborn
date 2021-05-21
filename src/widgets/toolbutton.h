@@ -239,15 +239,19 @@ protected:
         QPainter pt(this);
         pt.setRenderHint(QPainter::Antialiasing);
 
+        int transparency = 220;
+        if (!m_bIsWM) {
+            transparency = 255;
+        }
         if (lightTheme == m_themeType) {
             pt.setPen(QColor(0, 0, 0, 10));
-            pt.setBrush(QBrush(QColor(247, 247, 247, 220)));
+            pt.setBrush(QBrush(QColor(247, 247, 247, transparency)));
         } else if (darkTheme == m_themeType) {
             pt.setPen(QColor(255, 255, 255, 10));
-            pt.setBrush(QBrush(QColor(42, 42, 42, 220)));
+            pt.setBrush(QBrush(QColor(42, 42, 42, transparency)));
         } else {
             pt.setPen(QColor(0, 0, 0, 10));
-            pt.setBrush(QBrush(QColor(247, 247, 247, 220)));
+            pt.setBrush(QBrush(QColor(247, 247, 247, transparency)));
         }
 
         QRect rect = this->rect();
