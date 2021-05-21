@@ -1389,16 +1389,27 @@ void PlaylistWidget::togglePopup(bool isShortcut)
         return ;
     }
 
-    auto main_rect = _mw->rect();
+    QRect main_rect = _mw->rect();
 #ifdef USE_DXCB
-    auto view_rect = main_rect;
+    QRect view_rect = main_rect;
 #else
-    auto view_rect = main_rect.marginsRemoved(QMargins(1, 1, 1, 1));
+    QRect view_rect = main_rect.marginsRemoved(QMargins(1, 1, 1, 1));
 #endif
-//    QRect fixed((10), (view_rect.height() - 394),
-//                view_rect.width() - 20, (384 - 70));
-    QRect fixed((10), (view_rect.height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT + 10)),
-                view_rect.width() - 20, TOOLBOX_SPACE_HEIGHT + 10);
+
+    QRect fixed;
+#if defined(__arrch64__) || defined(__mips__)
+    // y坐标下移5个像素点,避免播放列表上部超出toolbox范围
+    fixed.setRect(10, (view_rect.height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT + 10) + 5),
+                  view_rect.width() - 20, TOOLBOX_SPACE_HEIGHT + 10);
+#else
+    if (!CompositingManager::get().composited()) {
+        fixed.setRect(10, (view_rect.height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT + 10) + 5),
+                      view_rect.width() - 20, TOOLBOX_SPACE_HEIGHT + 10);
+    } else {
+        fixed.setRect(10, (view_rect.height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT + 10)),
+                      view_rect.width() - 20, TOOLBOX_SPACE_HEIGHT + 10);
+    }
+#endif
 
     QRect shrunk = fixed;
     shrunk.setHeight(0);
