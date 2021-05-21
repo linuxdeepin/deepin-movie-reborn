@@ -63,7 +63,16 @@ AnimationLabel::AnimationLabel(QWidget *parent, QWidget *pMainWindow, bool bComp
         setAttribute(Qt::WA_TranslucentBackground, true);
         hide();
     }
-    this->resize(200, 200);
+
+#if !defined (__arrch64__) || defined (__mips__)
+    if (CompositingManager::get().composited()) {
+        this->resize(200, 200);
+    } else {
+        this->resize(100, 100);
+    }
+#else
+    this->resize(100, 100);
+#endif
 }
 
 /**
@@ -192,8 +201,17 @@ void AnimationLabel::setGeometryByMainWindow(QWidget *pMainWindow)
  */
 void AnimationLabel::onPlayAnimationChanged(const QVariant &value)
 {
-    m_sFileName = QString(":/resources/icons/stop/%1.png").arg(value.toInt());
+#if defined (__arrch64__) || defined (__mips__)
+    m_sFileName = QString(":/resources/icons/stop_new/%1.png").arg(value.toInt());
+#else
+    if(!CompositingManager::get().composited()) {
+        m_sFileName = QString(":/resources/icons/stop_new/%1.png").arg(value.toInt());
+    } else{
+        m_sFileName = QString(":/resources/icons/stop/%1.png").arg(value.toInt());
+    }
+#endif
     m_pixmap = QPixmap(m_sFileName);
+    m_bitmap = QBitmap(m_sFileName);
     update();
 }
 
@@ -203,8 +221,17 @@ void AnimationLabel::onPlayAnimationChanged(const QVariant &value)
  */
 void AnimationLabel::onPauseAnimationChanged(const QVariant &value)
 {
+#if defined (__arrch64__) || defined (__mips__)
+    m_sFileName = QString(":/resources/icons/start_new/%1.png").arg(value.toInt());
+#else
+    if(!CompositingManager::get().composited()) {
+        m_sFileName = QString(":/resources/icons/start_new/%1.png").arg(value.toInt());
+    } else {
     m_sFileName = QString(":/resources/icons/start/%1.png").arg(value.toInt());
+    }
+#endif
     m_pixmap = QPixmap(m_sFileName);
+    m_bitmap = QBitmap(m_sFileName);
     update();
 }
 

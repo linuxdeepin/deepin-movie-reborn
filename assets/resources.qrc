@@ -217,5 +217,41 @@
         <file>resources/icons/stop/18.png</file>
         <file>resources/icons/music_bg.svg</file>
         <file>resources/icons/music_note.svg</file>
+        <file>resources/icons/start_new/1.png</file>
+        <file>resources/icons/start_new/2.png</file>
+        <file>resources/icons/start_new/3.png</file>
+        <file>resources/icons/start_new/4.png</file>
+        <file>resources/icons/start_new/5.png</file>
+        <file>resources/icons/start_new/6.png</file>
+        <file>resources/icons/start_new/7.png</file>
+        <file>resources/icons/start_new/8.png</file>
+        <file>resources/icons/start_new/9.png</file>
+        <file>resources/icons/start_new/10.png</file>
+        <file>resources/icons/start_new/11.png</file>
+        <file>resources/icons/start_new/12.png</file>
+        <file>resources/icons/start_new/13.png</file>
+        <file>resources/icons/start_new/14.png</file>
+        <file>resources/icons/start_new/15.png</file>
+        <file>resources/icons/start_new/16.png</file>
+        <file>resources/icons/start_new/17.png</file>
+        <file>resources/icons/start_new/18.png</file>
+        <file>resources/icons/stop_new/1.png</file>
+        <file>resources/icons/stop_new/2.png</file>
+        <file>resources/icons/stop_new/3.png</file>
+        <file>resources/icons/stop_new/4.png</file>
+        <file>resources/icons/stop_new/5.png</file>
+        <file>resources/icons/stop_new/6.png</file>
+        <file>resources/icons/stop_new/7.png</file>
+        <file>resources/icons/stop_new/8.png</file>
+        <file>resources/icons/stop_new/9.png</file>
+        <file>resources/icons/stop_new/10.png</file>
+        <file>resources/icons/stop_new/11.png</file>
+        <file>resources/icons/stop_new/12.png</file>
+        <file>resources/icons/stop_new/13.png</file>
+        <file>resources/icons/stop_new/14.png</file>
+        <file>resources/icons/stop_new/15.png</file>
+        <file>resources/icons/stop_new/16.png</file>
+        <file>resources/icons/stop_new/17.png</file>
+        <file>resources/icons/stop_new/18.png</file>
     </qresource>
 </RCC>

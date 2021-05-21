@@ -1025,7 +1025,10 @@ MainWindow::MainWindow(QWidget *parent)
     m_pFullScreenTimeLable->close();
 #endif
     m_pAnimationlable = new AnimationLabel(this, this, bComposited);
-    m_pAnimationlable->setGeometry(width() / 2 - 100, height() / 2 - 100, 200, 200);
+#if !defined (__arrch64__) || defined (__mips__)
+    if(CompositingManager::get().composited())
+        m_pAnimationlable->setGeometry(width() / 2 - 100, height() / 2 - 100, 200, 200);
+#endif
 
 #if defined (__aarch64__) || defined (__mips__)
     if (utils::check_wayland_env()) {
@@ -1397,7 +1400,10 @@ void MainWindow::animatePlayState()
 
     if (!m_bInBurstShootMode && m_pEngine->state() == PlayerEngine::CoreState::Paused) {
         if (!m_bMiniMode) {
-            m_pAnimationlable->setGeometry(width() / 2 - 100, height() / 2 - 100, 200, 200);
+#if !defined (__arrch64__) || defined (__mips__)
+            if(CompositingManager::get().composited())
+                m_pAnimationlable->setGeometry(width() / 2 - 100, height() / 2 - 100, 200, 200);
+#endif
             m_pAnimationlable->pauseAnimation();
         }
     }
@@ -2505,7 +2511,10 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
             if (m_pEngine->state() == PlayerEngine::Paused) {
                 //startPlayStateAnimation(true);
                 if (!m_bMiniMode) {
-                    m_pAnimationlable->setGeometry(width() / 2 - 100, height() / 2 - 100, 200, 200);
+#if !defined (__arrch64__) || defined (__mips__)
+                    if(CompositingManager::get().composited())
+                        m_pAnimationlable->setGeometry(width() / 2 - 100, height() / 2 - 100, 200, 200);
+#endif
                     m_pAnimationlable->playAnimation();
                 }
                 QTimer::singleShot(160, [ = ]() {
@@ -3069,7 +3078,10 @@ void MainWindow::checkWarningMpvLogsChanged(const QString sPrefix, const QString
         QTimer::singleShot(500, [ = ]() {
             //startPlayStateAnimation(true);
             if (!m_bMiniMode) {
-                m_pAnimationlable->setGeometry(width() / 2 - 100, height() / 2 - 100, 200, 200);
+#if !defined (__arrch64__) || defined (__mips__)
+                if(CompositingManager::get().composited())
+                    m_pAnimationlable->setGeometry(width() / 2 - 100, height() / 2 - 100, 200, 200);
+#endif
                 m_pAnimationlable->playAnimation();
             }
             m_pEngine->pauseResume();
