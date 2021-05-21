@@ -644,31 +644,38 @@ public:
         // the player is in fullscreen mode.
         setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
         setAttribute(Qt::WA_TranslucentBackground);
-
         setObjectName("ThumbnailPreview");
 
+        m_pWMDBus = new QDBusInterface("com.deepin.WMSwitcher","/com/deepin/WMSwitcher","com.deepin.WMSwitcher",QDBusConnection::sessionBus());
+        QDBusReply<QString> reply = m_pWMDBus->call("CurrentWM");
+        m_bIsWM = reply.value().contains("deepin wm");
+        connect(m_pWMDBus, SIGNAL(WMChanged(QString)), this, SLOT(slotWMChanged(QString)));
+
         auto *l = new QVBoxLayout;
-//        l->setContentsMargins(0, 0, 0, 10);
-        l->setContentsMargins(1, 0, 0, 0);
+        l->setContentsMargins(0, 0, 0, 0);
 
         _thumb = new DFrame(this);
-        DStyle::setFrameRadius(_thumb, 8);
+        if (m_bIsWM) {
+            DStyle::setFrameRadius(_thumb, 8);
+        } else {
+            DStyle::setFrameRadius(_thumb, 0);
+        }
 
         //_thumb->setFixedSize(ThumbnailWorker::thumbSize());
         l->addWidget(_thumb/*,Qt::AlignTop*/);
         setLayout(l);
-
-//        connect(DThemeManager::instance(), &DThemeManager::themeChanged,
-//                this, &ThumbnailPreview::updateTheme);
-//        updateTheme();
-
 //        winId(); // force backed window to be created
         m_shadow_effect = new QGraphicsDropShadowEffect(this);
     }
 
     void updateWithPreview(const QPixmap &pm, qint64 secs, int rotation)
     {
-        auto rounded = utils::MakeRoundedPixmap(pm, 4, 4, rotation);
+        QPixmap rounded;
+        if (m_bIsWM) {
+            rounded = utils::MakeRoundedPixmap(pm, 4, 4, rotation);
+        } else {
+            rounded = pm;
+        }
 
         if (rounded.width() == 0)
             return;
@@ -697,11 +704,6 @@ public:
                                     Qt::IgnoreAspectRatio,
                                     Qt::SmoothTransformation)));
         _thumb->setPalette(palette);
-
-
-        if (isVisible()) {
-//            move(QCursor::pos().x(), frameGeometry().y() + height()+0);
-        }
     }
 
     void updateWithPreview(const QPoint &pos)
@@ -715,6 +717,16 @@ public:
 
         show();
         raise();
+    }
+public slots:
+    void slotWMChanged(QString msg) {
+        if (msg.contains("deepin metacity")) {
+            m_bIsWM = false;
+            DStyle::setFrameRadius(_thumb, 0);
+        } else {
+            m_bIsWM = true;
+            DStyle::setFrameRadius(_thumb, 8);
+        }
     }
 
 signals:
@@ -747,16 +759,20 @@ private:
         pixmap = pixmap.scaled(size * dpr, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
         pixmap.setDevicePixelRatio(dpr);
         _thumb->setFixedSize(size);
-//        this->setFixedWidth(_thumb->width());
-//        this->setFixedHeight(_thumb->height() + 10);
-        this->setFixedWidth(_thumb->width() + 2);
-        this->setFixedHeight(_thumb->height() + 2);
+        int offect = 2;
+        if (!m_bIsWM) {
+            offect = 0;
+        }
+        this->setFixedWidth(_thumb->width() + offect);
+        this->setFixedHeight(_thumb->height() + offect);
     }
 
 private:
     DFrame *_thumb {nullptr};
     int m_thumbnailFixed = 106;
     QGraphicsDropShadowEffect *m_shadow_effect{nullptr};
+    QDBusInterface *m_pWMDBus{nullptr};
+    bool m_bIsWM{false};
 };
 
 viewProgBarLoad::viewProgBarLoad(PlayerEngine *engine, DMRSlider *progBar, ToolboxProxy *parent)
