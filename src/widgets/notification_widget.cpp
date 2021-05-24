@@ -228,9 +228,11 @@ void NotificationWidget::paintEvent(QPaintEvent *pPaintEvent)
     }
 
 #if defined(__arrch64__) || defined(__mips__)
+    color.setAlpha(255);
     painter.fillRect(rect(), color);
 #else
     if (!CompositingManager::get().composited()) {
+        color.setAlpha(255);
         painter.fillRect(rect(), color);
     } else {
         painter.fillRect(rect(), Qt::transparent);
