@@ -116,12 +116,8 @@ void NotificationWidget::syncPosition()
         } else {
             move(m_anchorPoint);
         }
-#elif  __mips__
-        move(geom.x() + 30, geom.y() + 58);
-#elif __sw_64__
+#elif defined (__sw_64__) || defined (__mips__)
         move(geom.topLeft() + m_anchorPoint);
-#elif defined (__mips__)
-        move(geom.x() + 30, geom.y() + 58);
 #else
         move(m_anchorPoint);
 #endif

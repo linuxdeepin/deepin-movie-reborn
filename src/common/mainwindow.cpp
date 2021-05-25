@@ -665,8 +665,7 @@ private:
 #define SHADOW_COLOR_ACTIVE QColor(0, 0, 0, 255 * 0.6)
 #endif
 
-struct SessionInfo
-{
+struct SessionInfo {
     QString sessionId;
     uint userId;
     QString userName;
@@ -678,7 +677,7 @@ typedef QList<SessionInfo> SessionInfoList;
 Q_DECLARE_METATYPE(SessionInfoList);
 Q_DECLARE_METATYPE(SessionInfo);
 
-inline QDBusArgument &operator<<(QDBusArgument &argument, const SessionInfo& sessionInfo)
+inline QDBusArgument &operator<<(QDBusArgument &argument, const SessionInfo &sessionInfo)
 {
     argument.beginStructure();
     argument << sessionInfo.sessionId;
@@ -813,12 +812,31 @@ MainWindow::MainWindow(QWidget *parent)
     m_pMiniPlayBtn = new DIconButton(this);
     m_pMiniQuitMiniBtn = new DIconButton(this);
     m_pMiniCloseBtn = new DIconButton(this);
+    if (!CompositingManager::get().composited()) {
+        QPalette palette;
+        palette.setColor(m_pMiniPlayBtn->backgroundRole(), Qt::black);
+        m_pMiniPlayBtn->setAutoFillBackground(true);
+        m_pMiniQuitMiniBtn->setAutoFillBackground(true);
+        m_pMiniCloseBtn->setAutoFillBackground(true);
+        m_pMiniPlayBtn->setPalette(palette);
+        m_pMiniQuitMiniBtn->setPalette(palette);
+        m_pMiniCloseBtn->setPalette(palette);
+    }
+#if defined(__arrch64__) || defined(__mips__)
+    QPalette palette;
+    palette.setColor(m_pMiniPlayBtn->backgroundRole(), Qt::black);
+    m_pMiniPlayBtn->setAutoFillBackground(true);
+    m_pMiniQuitMiniBtn->setAutoFillBackground(true);
+    m_pMiniCloseBtn->setAutoFillBackground(true);
+    m_pMiniPlayBtn->setPalette(palette);
+    m_pMiniQuitMiniBtn->setPalette(palette);
+    m_pMiniCloseBtn->setPalette(palette);
+#endif
 
     m_pMiniPlayBtn->setFlat(true);
     m_pMiniCloseBtn->setFlat(true);
     m_pMiniQuitMiniBtn->setFlat(true);
 #endif
-
     m_pMiniPlayBtn->setIcon(QIcon(":/resources/icons/light/mini/play-normal-mini.svg"));
     m_pMiniPlayBtn->setIconSize(QSize(30, 30));
     m_pMiniPlayBtn->setFixedSize(QSize(30, 30));
@@ -1026,7 +1044,7 @@ MainWindow::MainWindow(QWidget *parent)
 #endif
     m_pAnimationlable = new AnimationLabel(this, this, bComposited);
 #if !defined (__arrch64__) || defined (__mips__)
-    if(CompositingManager::get().composited())
+    if (CompositingManager::get().composited())
         m_pAnimationlable->setGeometry(width() / 2 - 100, height() / 2 - 100, 200, 200);
 #endif
 
@@ -1085,8 +1103,8 @@ MainWindow::MainWindow(QWidget *parent)
     QString path = reply.value().last().sessionPath.path();
 
     QDBusConnection::systemBus().connect("org.freedesktop.login1", path,
-                                          "org.freedesktop.login1.Properties", "PropertiesChanged", this,
-                                          SLOT(slotProperChanged(QString, QVariantMap, QStringList)));
+                                         "org.freedesktop.login1.Properties", "PropertiesChanged", this,
+                                         SLOT(slotProperChanged(QString, QVariantMap, QStringList)));
     qInfo() << "session Path is :" << path;
 }
 
@@ -1401,7 +1419,7 @@ void MainWindow::animatePlayState()
     if (!m_bInBurstShootMode && m_pEngine->state() == PlayerEngine::CoreState::Paused) {
         if (!m_bMiniMode) {
 #if !defined (__arrch64__) || defined (__mips__)
-            if(CompositingManager::get().composited())
+            if (CompositingManager::get().composited())
                 m_pAnimationlable->setGeometry(width() / 2 - 100, height() / 2 - 100, 200, 200);
 #endif
             m_pAnimationlable->pauseAnimation();
@@ -2512,7 +2530,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
                 //startPlayStateAnimation(true);
                 if (!m_bMiniMode) {
 #if !defined (__arrch64__) || defined (__mips__)
-                    if(CompositingManager::get().composited())
+                    if (CompositingManager::get().composited())
                         m_pAnimationlable->setGeometry(width() / 2 - 100, height() / 2 - 100, 200, 200);
 #endif
                     m_pAnimationlable->playAnimation();
@@ -3079,7 +3097,7 @@ void MainWindow::checkWarningMpvLogsChanged(const QString sPrefix, const QString
             //startPlayStateAnimation(true);
             if (!m_bMiniMode) {
 #if !defined (__arrch64__) || defined (__mips__)
-                if(CompositingManager::get().composited())
+                if (CompositingManager::get().composited())
                     m_pAnimationlable->setGeometry(width() / 2 - 100, height() / 2 - 100, 200, 200);
 #endif
                 m_pAnimationlable->playAnimation();
@@ -4392,6 +4410,7 @@ void MainWindow::toggleUIMode()
     resumeToolsWindow();
 
     if (m_bMiniMode) {
+        m_pCommHintWid->setAnchorPoint(QPoint(15, 11));    //迷你模式下提示位置稍有不同
         updateSizeConstraints();
         //设置等比缩放
         setEnableSystemResize(false);
@@ -4454,6 +4473,7 @@ void MainWindow::toggleUIMode()
         m_pMiniCloseBtn->move(sz.width() - 15 - m_pMiniCloseBtn->width(), 10);
         m_pMiniQuitMiniBtn->move(14, sz.height() - 10 - m_pMiniQuitMiniBtn->height());
     } else {
+        m_pCommHintWid->setAnchorPoint(QPoint(30, 58));
         setEnableSystemResize(true);
         if (m_nStateBeforeMiniMode & SBEM_Above) {
             requestAction(ActionFactory::WindowAbove);
