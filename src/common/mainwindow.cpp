@@ -1050,9 +1050,9 @@ MainWindow::MainWindow(QWidget *parent)
 
 #if defined (__aarch64__) || defined (__mips__)
     if (utils::check_wayland_env()) {
-        m_pPopupWid = new DFloatingMessage(DFloatingMessage::TransientType, this);
+        m_pPopupWid = new FloatingMessageWindow(DFloatingMessage::TransientType, this);
     } else {
-        m_pPopupWid = new DFloatingMessage(DFloatingMessage::TransientType, nullptr);
+        m_pPopupWid = new FloatingMessageWindow(DFloatingMessage::TransientType, nullptr);
     }
     m_pPopupWid->setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
 #else

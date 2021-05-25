@@ -933,7 +933,7 @@ void PlayerEngine::resizeEvent(QResizeEvent *)
 
         QPainter p(&shape);
         QPainterPath pp;
-        pp.addRoundedRect(rect(), RADIUS, RADIUS);
+        pp.addRect(rect());
         p.fillPath(pp, QBrush(Qt::white));
         p.end();
 
