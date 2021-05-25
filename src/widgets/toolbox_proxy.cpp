@@ -1060,7 +1060,15 @@ void ToolboxProxy::setup()
     bot_widget->setBlurRectXRadius(18);
     bot_widget->setBlurRectYRadius(18);
     bot_widget->setRadius(30);
-    bot_widget->setBlurEnabled(true);
+#if defined (__arrch64__) || defined (__mips__)
+    bot_widget->setBlurEnabled(false);
+#else
+    if(!CompositingManager::get().composited()) {
+        bot_widget->setBlurEnabled(false);
+    } else {
+        bot_widget->setBlurEnabled(true);
+    }
+#endif
     bot_widget->setMode(DBlurEffectWidget::GaussianBlur);
     auto type = DGuiApplicationHelper::instance()->themeType();
     THEME_TYPE(type);
@@ -1570,7 +1578,7 @@ void ToolboxProxy::slotThemeTypeChanged()
     QColor framecolor("#FFFFFF");
     framecolor.setAlphaF(0.00);
     QString rStr;
-    if (type == 1) {
+    if (type == DGuiApplicationHelper::LightType) {
         QColor maskColor(247, 247, 247);
         maskColor.setAlphaF(0.60);
         rStr = "light";
@@ -1947,7 +1955,6 @@ void ToolboxProxy::progressHoverChanged(int nValue)
         updatePreviewTime(nValue, point);
         return;
     }
-
     ThumbnailWorker::get().requestThumb(pif.url, nValue);
 }
 
@@ -2011,15 +2018,12 @@ void ToolboxProxy::updateFullState()
 {
     bool isFullscreen = window()->isFullScreen();
     if (isFullscreen || m_pFullscreentimelable->isVisible()) {
-//        m_pFullScreenBtn->setObjectName("UnfsBtn");
         m_pFullScreenBtn->setIcon(QIcon::fromTheme("dcc_zoomout"));
         m_pFullScreenBtn->setTooTipText(tr("Exit fullscreen"));
     } else {
-//        m_pFullScreenBtn->setObjectName("FsBtn");
         m_pFullScreenBtn->setIcon(QIcon::fromTheme("dcc_zoomin"));
         m_pFullScreenBtn->setTooTipText(tr("Fullscreen"));
     }
-//    m_pFullScreenBtn->setStyleSheet(m_pPlayBtn->styleSheet());
 }
 
 void ToolboxProxy::updatePlayState()
@@ -2079,18 +2083,7 @@ void ToolboxProxy::updatePlayState()
             m_pPlayBtn->setToolTip(tr("Pause"));
         }
     } else {
-        //        m_pPlayBtn->setObjectName("PlayBtn");
         if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
-//            m_pPlayBtn->setPropertyPic(":/icons/deepin/builtin/light/normal/play_normal.svg",
-//                                     ":/icons/deepin/builtin/light/normal/play_normal.svg",
-//                                     ":/icons/deepin/builtin/light/press/playm_bPress.svg");
-//            m_pPrevBtn->setPropertyPic(":/icons/deepin/builtin/light/normal/last_normal.svg",
-//                                     ":/icons/deepin/builtin/light/normal/last_normal.svg",
-//                                     ":/icons/deepin/builtin/light/press/lastm_bPress.svg");
-//            m_pNextBtn->setPropertyPic(":/icons/deepin/builtin/light/normal/next_normal.svg",
-//                                     ":/icons/deepin/builtin/light/normal/next_normal.svg",
-//                                     ":/icons/deepin/builtin/light/press/nextm_bPress.svg");
-
             DPalette pa;
             pa = m_pPalyBox->palette();
             pa.setColor(DPalette::Light, QColor(255, 255, 255, 255));
@@ -2115,15 +2108,6 @@ void ToolboxProxy::updatePlayState()
             m_pListBtn->setPalette(pa);
 
         } else {
-//            m_pPlayBtn->setPropertyPic(":/icons/deepin/builtin/dark/normal/play_normal.svg",
-//                                     ":/icons/deepin/builtin/dark/normal/play_normal.svg",
-//                                     ":/icons/deepin/builtin/dark/press/playm_bPress.svg");
-//            m_pPrevBtn->setPropertyPic(":/icons/deepin/builtin/dark/normal/last_normal.svg",
-//                                     ":/icons/deepin/builtin/dark/normal/last_normal.svg",
-//                                     ":/icons/deepin/builtin/dark/press/lastm_bPress.svg");
-//            m_pNextBtn->setPropertyPic(":/icons/deepin/builtin/dark/normal/next_normal.svg",
-//                                     ":/icons/deepin/builtin/dark/normal/next_normal.svg",
-//                                     ":/icons/deepin/builtin/dark/press/nextm_bPress.svg");
             DPalette pa;
             pa = m_pPalyBox->palette();
             pa.setColor(DPalette::Light, QColor(0, 0, 0, 255));
@@ -2157,8 +2141,6 @@ void ToolboxProxy::updatePlayState()
     }
 
     if (m_pEngine->state() == PlayerEngine::CoreState::Idle) {
-//        if (_subView->isVisible())
-//            _subView->hide();
 
         if (m_pPreviewer->isVisible()) {
             m_pPreviewer->hide();
@@ -2171,24 +2153,15 @@ void ToolboxProxy::updatePlayState()
         if (m_pProgBar->isVisible()) {
             m_pProgBar->setVisible(false);
         }
-//        m_pProgBarspec->show();
-//        m_pProgBar->hide();
-//        m_pProgBar_stacked->setCurrentIndex(0);
         m_pProgBar_Widget->setCurrentIndex(0);
         setProperty("idle", true);
     } else {
         setProperty("idle", false);
-//        m_pProgBar->show();
-//        m_pProgBar->setVisible(true);
-//        m_pProgBarspec->hide();
-//        m_pProgBar_stacked->setCurrentIndex(1);
-//        m_pProgBar_Widget->setCurrentIndex(1);
     }
 
     auto on = (m_pEngine->state() != PlayerEngine::CoreState::Idle);
     m_pProgBar->setEnabled(on);
     m_pProgBar->setEnableIndication(on);
-//    setStyleSheet(styleSheet());
 }
 /**
  * @brief updateTimeInfo 更新工具栏中播放时间显示
@@ -2360,23 +2333,25 @@ void ToolboxProxy::paintEvent(QPaintEvent *event)
 {
 #if defined (__mips__) || defined (__aarch64__)
     QPainter painter(this);
-    QRectF bgRect;
-    QPainterPath path;
-    bgRect.setSize(size());
+
     setFixedWidth(m_pMainWindow->width());
     move(0, m_pMainWindow->height() - this->height());
-    path.addRect(bgRect);
-    painter.fillPath(path, this->palette().background());
+    if(DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
+        painter.fillRect(rect(), QBrush(QColor(31, 31, 31)));
+    } else {
+        painter.fillRect(rect(), this->palette().background());
+    }
 #else
     if (!CompositingManager::get().composited()) {
         QPainter painter(this);
-        QRectF bgRect;
-        QPainterPath path;
-        bgRect.setSize(size());
+
         setFixedWidth(m_pMainWindow->width());
         move(0, m_pMainWindow->height() - this->height());
-        path.addRect(bgRect);
-        painter.fillPath(path, this->palette().background());
+        if(DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
+            painter.fillRect(rect(), QBrush(QColor(31, 31, 31)));
+        } else {
+            painter.fillRect(rect(), this->palette().background());
+        }
     } else {
         DFloatingWidget::paintEvent(event);
     }

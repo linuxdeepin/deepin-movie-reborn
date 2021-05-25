@@ -113,7 +113,6 @@ void AnimationLabel::initMember(QWidget *pMainwindow, bool bComposited)
     initPlayAnimation();
     initPauseAnimation();
     m_pMainWindow = pMainwindow;
-    m_bComposited = bComposited;
     m_sFileName = "";
 }
 
@@ -141,7 +140,7 @@ void AnimationLabel::initPauseAnimation()
     m_pPauseHideAnimation->setEndValue(nHideAnimationNum);
     connect(m_pPauseHideAnimation, &QPropertyAnimation::valueChanged, this,
             &AnimationLabel::onPauseAnimationChanged);
-    if(!m_bComposited) {//MPV绑定wid方式动画停止后隐藏
+    if(!CompositingManager::get().composited()) {//MPV绑定wid方式动画停止后隐藏
         connect(m_pPauseHideAnimation, &QSequentialAnimationGroup::finished, this, &AnimationLabel::onHideAnimation);
         connect(m_pPlayAnimationGroup, &QSequentialAnimationGroup::finished, this, &AnimationLabel::onHideAnimation);
     }
@@ -262,7 +261,7 @@ void AnimationLabel::paintEvent(QPaintEvent *e)
  */
 void AnimationLabel::showEvent(QShowEvent *e)
 {
-    if(!m_bComposited) { //MPV绑定wid方式通过mainwindow获取显示坐标
+    if(!CompositingManager::get().composited()) { //MPV绑定wid方式通过mainwindow获取显示坐标
         setGeometryByMainWindow(m_pMainWindow);
     }
     QFrame::showEvent(e);
@@ -274,7 +273,7 @@ void AnimationLabel::showEvent(QShowEvent *e)
  */
 void AnimationLabel::moveEvent(QMoveEvent *e)
 {
-    if(!m_bComposited) {//MPV绑定wid方式通过mainwindow获取显示坐标
+    if(!CompositingManager::get().composited()) {//MPV绑定wid方式通过mainwindow获取显示坐标
         setGeometryByMainWindow(m_pMainWindow);
     }
     return QFrame::moveEvent(e);

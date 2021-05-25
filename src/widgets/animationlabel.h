@@ -134,7 +134,6 @@ protected:
     QPropertyAnimation        *m_pPauseShowAnimation;     ///切换暂停状态显示动画
     QPropertyAnimation        *m_pPauseHideAnimation;     ///切换暂停状态隐藏动画
     QWidget                   *m_pMainWindow;             ///主窗口指针
-    bool                       m_bComposited;             ///是否为opengl渲染
     QPixmap                    m_pixmap;                  ///当前动画显示的图像
     QBitmap                    m_bitmap;
     QString                    m_sFileName;               ///动画当前显示的图像文件
