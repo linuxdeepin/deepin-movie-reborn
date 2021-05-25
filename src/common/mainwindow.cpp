@@ -2171,6 +2171,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
             ///pad mode does not respond to fullscreen events
             return;
         }
+        m_pAnimationlable->hide();
         m_pToolbox->closeAnyPopup();
         if (isFullScreen()) {
             if (m_lastWindowState == Qt::WindowMaximized) {
