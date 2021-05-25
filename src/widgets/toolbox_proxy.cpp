@@ -738,6 +738,12 @@ protected:
         m_shadow_effect->setColor(Qt::gray);
         m_shadow_effect->setBlurRadius(8);
         setGraphicsEffect(m_shadow_effect);
+        if (!m_bIsWM) {
+            QPainter painter(this);
+            QPainterPath path;
+            path.addRect(rect());
+            painter.fillPath(path, QColor(230, 230, 230));
+        }
 
         QWidget::paintEvent(e);
     }
