@@ -3738,6 +3738,15 @@ void MainWindow::resizeEvent(QResizeEvent *pEvent)
     if (!CompositingManager::get().composited()) {
         m_pAnimationlable->move(0, 0);
     }
+
+    QPoint relativePoint = mapToGlobal(QPoint(0, 0));
+#if defined (__aarch64__) || defined (__mips__)
+    m_pToolbox->updateSliderPoint(relativePoint);
+#else
+    if (!CompositingManager::get().composited()) {
+        m_pToolbox->updateSliderPoint(relativePoint);
+    }
+#endif
 }
 
 void MainWindow::updateWindowTitle()

@@ -235,12 +235,12 @@ void VolumeSlider::popup()
     if(CompositingManager::get().composited()) {
         start.moveTo(start.topLeft() - QPoint(6, 10));
     } else {
-        end.moveTo(m_point);
-        start.moveTo(m_point - QPoint(8, 14));
+        end.moveTo(m_point + QPoint(6, 0));
+        start.moveTo(m_point - QPoint(0, 14));
     }
 #else
-    end.moveTo(m_point);
-    start.moveTo(m_point - QPoint(8, 14));
+    end.moveTo(m_point + QPoint(6, 0));
+    start.moveTo(m_point - QPoint(0, 14));
 #endif
 
     //动画未完成，等待动画结束后再隐藏控件
@@ -466,13 +466,6 @@ void VolumeSlider::paintEvent(QPaintEvent *)
 
 #if defined (__mips__) || defined (__aarch64__)
     ///arm和mips下控件圆角显示有黑边,在此重绘
-//    pathRect.moveTo(2, 2);
-//    pathRect.lineTo(VOLSLIDER_WIDTH - 2, 2);
-//    pathRect.lineTo(VOLSLIDER_WIDTH - 2, VOLSLIDER_HEIGHT);
-//    pathRect.lineTo(2, VOLSLIDER_HEIGHT);
-
-//    painter.fillPath(pathRect, bgColor);
-
     painter.fillRect(rect(), bgColor);
 #else
     if (!CompositingManager::get().composited()) {
