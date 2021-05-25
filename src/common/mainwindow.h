@@ -529,6 +529,7 @@ private:
     bool m_bIsFirstLoadDBus;
     Presenter *m_pPresenter;
     MovieWidget *m_pMovieWidget;
+    qint64 m_nFullscreenTime;                         ///全屏操作间隔时间
 };
 
 //窗管返回事件过滤器

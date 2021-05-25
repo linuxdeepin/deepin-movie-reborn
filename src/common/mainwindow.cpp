@@ -2166,6 +2166,11 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
     }
 
     case ActionFactory::ActionKind::ToggleFullscreen: {
+        if (QDateTime::currentMSecsSinceEpoch() - m_nFullscreenTime < 600) {
+            return;
+        } else {
+            m_nFullscreenTime = QDateTime::currentMSecsSinceEpoch();
+        }
         //音量条控件打开时全屏位置异常，全屏时关掉音量条
         if (CompositingManager::isPadSystem()) {
             ///pad mode does not respond to fullscreen events
@@ -2520,6 +2525,11 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
     }
 
     case ActionFactory::ActionKind::TogglePause: {
+        if (QDateTime::currentMSecsSinceEpoch() - m_nFullscreenTime < 500) {
+            return;
+        } else {
+            m_nFullscreenTime = QDateTime::currentMSecsSinceEpoch();
+        }
         if (m_pEngine->state() == PlayerEngine::Idle && bIsShortcut) {
             if (m_pEngine->getplaylist()->getthreadstate()) {
                 qInfo() << "playlist loadthread is running";
@@ -4743,6 +4753,7 @@ void MainWindow::initMember()
     m_nPowerCookie = 0;
     m_dPlaySpeed = 1.0;
     m_iAngleDelta = 0;
+    m_nFullscreenTime = 0;
 
     m_lastWindowState = Qt::WindowNoState;
 
