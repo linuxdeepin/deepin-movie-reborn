@@ -642,11 +642,11 @@ public:
         setAttribute(Qt::WA_DeleteOnClose);
         // FIXME(hualet): Qt::Tooltip will cause Dock to show up even
         // the player is in fullscreen mode.
-        setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
+        setWindowFlags(Qt::ToolTip | Qt::FramelessWindowHint);
         setAttribute(Qt::WA_TranslucentBackground);
         setObjectName("ThumbnailPreview");
 
-        m_pWMDBus = new QDBusInterface("com.deepin.WMSwitcher","/com/deepin/WMSwitcher","com.deepin.WMSwitcher",QDBusConnection::sessionBus());
+        m_pWMDBus = new QDBusInterface("com.deepin.WMSwitcher", "/com/deepin/WMSwitcher", "com.deepin.WMSwitcher", QDBusConnection::sessionBus());
         QDBusReply<QString> reply = m_pWMDBus->call("CurrentWM");
         m_bIsWM = reply.value().contains("deepin wm");
         connect(m_pWMDBus, SIGNAL(WMChanged(QString)), this, SLOT(slotWMChanged(QString)));
@@ -719,7 +719,8 @@ public:
         raise();
     }
 public slots:
-    void slotWMChanged(QString msg) {
+    void slotWMChanged(QString msg)
+    {
         if (msg.contains("deepin metacity")) {
             m_bIsWM = false;
             DStyle::setFrameRadius(_thumb, 0);
@@ -738,7 +739,8 @@ protected:
         m_shadow_effect->setColor(Qt::gray);
         m_shadow_effect->setBlurRadius(8);
         setGraphicsEffect(m_shadow_effect);
-        if (!m_bIsWM) {
+        if (!m_bIsWM)
+        {
             QPainter painter(this);
             QPainterPath path;
             path.addRect(rect());
@@ -1063,7 +1065,7 @@ void ToolboxProxy::setup()
 #if defined (__arrch64__) || defined (__mips__)
     bot_widget->setBlurEnabled(false);
 #else
-    if(!CompositingManager::get().composited()) {
+    if (!CompositingManager::get().composited()) {
         bot_widget->setBlurEnabled(false);
     } else {
         bot_widget->setBlurEnabled(true);
@@ -2336,7 +2338,7 @@ void ToolboxProxy::paintEvent(QPaintEvent *event)
 
     setFixedWidth(m_pMainWindow->width());
     move(0, m_pMainWindow->height() - this->height());
-    if(DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
+    if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
         painter.fillRect(rect(), QBrush(QColor(31, 31, 31)));
     } else {
         painter.fillRect(rect(), this->palette().background());
@@ -2347,7 +2349,7 @@ void ToolboxProxy::paintEvent(QPaintEvent *event)
 
         setFixedWidth(m_pMainWindow->width());
         move(0, m_pMainWindow->height() - this->height());
-        if(DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
+        if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
             painter.fillRect(rect(), QBrush(QColor(31, 31, 31)));
         } else {
             painter.fillRect(rect(), this->palette().background());
