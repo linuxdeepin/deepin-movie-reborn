@@ -800,18 +800,13 @@ MainWindow::MainWindow(QWidget *parent)
     QSignalMapper *pSignalMapper = new QSignalMapper(this);
     connect(pSignalMapper, static_cast<void(QSignalMapper::*)(const QString &)>(&QSignalMapper::mapped), this, &MainWindow::miniButtonClicked);
 
-#ifdef __mips__
-    m_pMiniPlayBtn = new IconButton(this);
-    m_pMiniCloseBtn = new IconButton(this);
-    m_pMiniQuitMiniBtn = new IconButton(this);
-
-    dynamic_cast<IconButton *>(m_pMiniPlayBtn)->setFlat(true);
-    dynamic_cast<IconButton *>(m_pMiniCloseBtn)->setFlat(true);
-    dynamic_cast<IconButton *>(m_pMiniQuitMiniBtn)->setFlat(true);
-#else
     m_pMiniPlayBtn = new DIconButton(this);
     m_pMiniQuitMiniBtn = new DIconButton(this);
     m_pMiniCloseBtn = new DIconButton(this);
+
+    m_pMiniPlayBtn->setFlat(true);
+    m_pMiniCloseBtn->setFlat(true);
+    m_pMiniQuitMiniBtn->setFlat(true);
     if (!CompositingManager::get().composited()) {
         QPalette palette;
         palette.setColor(m_pMiniPlayBtn->backgroundRole(), Qt::black);
@@ -831,11 +826,6 @@ MainWindow::MainWindow(QWidget *parent)
     m_pMiniPlayBtn->setPalette(palette);
     m_pMiniQuitMiniBtn->setPalette(palette);
     m_pMiniCloseBtn->setPalette(palette);
-#endif
-
-    m_pMiniPlayBtn->setFlat(true);
-    m_pMiniCloseBtn->setFlat(true);
-    m_pMiniQuitMiniBtn->setFlat(true);
 #endif
     m_pMiniPlayBtn->setIcon(QIcon(":/resources/icons/light/mini/play-normal-mini.svg"));
     m_pMiniPlayBtn->setIconSize(QSize(30, 30));

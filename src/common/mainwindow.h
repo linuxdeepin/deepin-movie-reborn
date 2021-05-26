@@ -128,7 +128,7 @@ private:
 class FloatingMessageWindow: public DFloatingMessage
 {
 public:
- using DFloatingMessage::DFloatingMessage;
+    using DFloatingMessage::DFloatingMessage;
 
 private:
     void paintEvent(QPaintEvent *event) override
@@ -136,7 +136,7 @@ private:
 #if defined(__arrch64__) || defined(__mips__)
         QPainter painter(this);
         QColor color = QColor(23, 23, 23, 255 * 8 / 10);
-        if(DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
+        if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
             color = QColor(252, 252, 252, 255 * 8 / 10);
         } /*else {
             QColor color = QColor(23, 23, 23, 255 * 8 / 10);
@@ -147,7 +147,7 @@ private:
         if (!CompositingManager::get().composited()) {
             QPainter painter(this);
             QColor color = QColor(23, 23, 23, 255 * 8 / 10);
-            if(DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
+            if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
                 color = QColor(252, 252, 252, 255 * 8 / 10);
             }
             painter.fillRect(rect(), color);
@@ -450,15 +450,9 @@ private:
     QList<QPair<QImage, qint64>> m_listBurstShoots; ///存储连拍截图
     bool m_bInBurstShootMode;                       ///是否处于截图状态
     bool m_bPausedBeforeBurst;                      ///截图时暂停播放
-#ifdef __mips__
-    QAbstractButton *m_pMiniPlayBtn;
-    QAbstractButton *m_pMiniCloseBtn;
-    QAbstractButton *m_pMiniQuitMiniBtn;
-#else
     DIconButton *m_pMiniPlayBtn;                    ///迷你模式播放按钮
     DIconButton *m_pMiniCloseBtn;                   ///迷你模式关闭按钮
     DIconButton *m_pMiniQuitMiniBtn;                ///退出迷你模式按钮
-#endif
 
     QImage m_imgBgDark;
     QImage m_imgBgLight;

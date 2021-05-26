@@ -57,7 +57,6 @@ NotificationWidget::NotificationWidget(QWidget *parent)
     setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
     setAttribute(Qt::WA_TranslucentBackground, true);
 #endif
-
     m_pMainLayout = new QHBoxLayout();
     m_pMainLayout->setContentsMargins(0, 0, 0, 0);
     setLayout(m_pMainLayout);
@@ -142,9 +141,13 @@ void NotificationWidget::syncPosition(QRect rect)
 
     case ANCHOR_NORTH_WEST:
 #ifdef __aarch64__
+        if (!utils::check_wayland_env()) {
+            move(geom.topLeft() + m_anchorPoint);
+        } else {
+            move(m_anchorPoint);
+        }
+#elif defined (__sw_64__) || defined (__mips__)
         move(geom.topLeft() + m_anchorPoint);
-#elif  defined (__mips__)
-        move(geom.x() + 30, geom.y() + 58);
 #else
         move(m_anchorPoint);
 #endif
@@ -200,6 +203,7 @@ void NotificationWidget::updateWithMessage(const QString &newMsg, bool flag)
         if (flag) {
             m_pTimer->start();
         }
+        syncPosition();
     } else {
         popup(sMsg, flag);
     }
