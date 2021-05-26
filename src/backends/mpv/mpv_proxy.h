@@ -156,6 +156,11 @@ public:
      */
     void initSetting();
     /**
+     * @brief updateRoundClip 更新opengl绘制圆角
+     * @param roundClip 是否为圆角
+     */
+    void updateRoundClip(bool roundClip);
+    /**
      * @brief 正在播放影片的影片信息
      */
     const PlayingMovieInfo &playingMovieInfo() override;

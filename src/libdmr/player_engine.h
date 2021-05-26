@@ -160,6 +160,7 @@ public:
     void setBackendProperty(const QString &, const QVariant &);
     QVariant getBackendProperty(const QString &);
 
+    void toggleRoundedClip(bool roundClip);
 //    void setVideoZoom(float);
 
 signals:

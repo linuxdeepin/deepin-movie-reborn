@@ -824,7 +824,7 @@ namespace dmr {
                     m_pGlProgBlend->release();
                 }
 
-                {
+                if (m_bDoRoundedClipping) {
                     pGLFunction->glBlendFunc(GL_SRC_ALPHA, GL_ZERO);
                     // blend corners
                     //QOpenGLVertexArrayObject::Binder vaoBind(&m_vaoCorner);

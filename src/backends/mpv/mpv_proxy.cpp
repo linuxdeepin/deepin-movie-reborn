@@ -181,6 +181,13 @@ void MpvProxy::initSetting()
     }
 }
 
+void MpvProxy::updateRoundClip(bool roundClip)
+{
+#ifdef __x86_64__
+    m_pMpvGLwidget->toggleRoundedClip(roundClip);
+#endif
+}
+
 mpv_handle *MpvProxy::mpv_init()
 {
     //test by heyi

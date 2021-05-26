@@ -962,6 +962,11 @@ QVariant PlayerEngine::getBackendProperty(const QString &name)
     return QVariant();
 }
 
+void PlayerEngine::toggleRoundedClip(bool roundClip)
+{
+    dynamic_cast<MpvProxy *>(_current)->updateRoundClip(roundClip);
+}
+
 /*void PlayerEngine::setVideoZoom(float val)
 {
     if (_current) {

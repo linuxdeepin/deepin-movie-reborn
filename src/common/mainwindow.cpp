@@ -4389,6 +4389,7 @@ void MainWindow::toggleUIMode()
     }
 
     m_bMiniMode = !m_bMiniMode;
+    m_pEngine->toggleRoundedClip(!m_bMiniMode);
 
     if (utils::check_wayland_env()) {
         Qt::WindowFlags flags = windowFlags();
