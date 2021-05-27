@@ -1768,6 +1768,7 @@ void ToolboxProxy::slotPlayListStateChange(bool isShortcut)
         QRect rcEnd = rcBegin;
         rcEnd.setY(rcBegin.y() - TOOLBOX_SPACE_HEIGHT - 7);
         setGeometry(rcEnd);
+        m_pListBtn->setChecked(true);
 #endif
     } else {
 #ifdef __x86_64__
@@ -1796,6 +1797,7 @@ void ToolboxProxy::slotPlayListStateChange(bool isShortcut)
         QRect rcEnd = rcBegin;
         rcEnd.setY(rcBegin.y() + TOOLBOX_SPACE_HEIGHT + 7);
         setGeometry(rcEnd);
+        m_pListBtn->setChecked(false);
 #endif
     }
 }
@@ -2348,7 +2350,12 @@ void ToolboxProxy::paintEvent(QPaintEvent *event)
         QPainter painter(this);
 
         setFixedWidth(m_pMainWindow->width());
-        move(0, m_pMainWindow->height() - this->height());
+        //使偏移位置与初始化偏移的位置相同
+        int widthOffset = 0;
+#ifdef __x86_64
+        widthOffset = 5;
+#endif
+        move(widthOffset, m_pMainWindow->height() - this->height());
         if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
             painter.fillRect(rect(), QBrush(QColor(31, 31, 31)));
         } else {
@@ -2378,13 +2385,17 @@ void ToolboxProxy::resizeEvent(QResizeEvent *event)
             m_pPaOpen->setDuration(0);
             m_pPaClose->setDuration(0);
         }
-
+        //使偏移位置与初始化偏移的位置相同
+        int widthOffset = 0;
+#ifdef __x86_64
+        widthOffset = 5;
+#endif
         if (m_pPlaylist && m_pPlaylist->state() == PlaylistWidget::State::Opened && m_bAnimationFinash == true) {
-            QRect r(5, m_pMainWindow->height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT + 7) - m_pMainWindow->rect().top() - 5,
+            QRect r(widthOffset, m_pMainWindow->height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT + 7) - m_pMainWindow->rect().top() - widthOffset,
                     m_pMainWindow->rect().width() - 10, (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT + 7));
             this->setGeometry(r);
         } else if (m_pPlaylist && m_pPlaylist->state() == PlaylistWidget::State::Closed && m_bAnimationFinash == true) {
-            QRect r(5, m_pMainWindow->height() - TOOLBOX_HEIGHT - m_pMainWindow->rect().top() - 5,
+            QRect r(widthOffset, m_pMainWindow->height() - TOOLBOX_HEIGHT - m_pMainWindow->rect().top() - widthOffset,
                     m_pMainWindow->rect().width() - 10, TOOLBOX_HEIGHT);
             this->setGeometry(r);
         }
@@ -2418,6 +2429,8 @@ bool ToolboxProxy::eventFilter(QObject *obj, QEvent *ev)
             }
         }
     }
+
+#ifdef __x86_64
     if (obj == m_pListBtn) {
         if (ev->type() == QEvent::MouseButtonRelease) {
             if (m_pPlaylist->state() == PlaylistWidget::State::Opened && m_pListBtn->isChecked()) {
@@ -2428,6 +2441,8 @@ bool ToolboxProxy::eventFilter(QObject *obj, QEvent *ev)
             }
         }
     }
+#endif
+
     return QObject::eventFilter(obj, ev);
 }
 /**
