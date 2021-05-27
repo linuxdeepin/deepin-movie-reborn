@@ -188,6 +188,10 @@ signals:
      * @brief 播放速度菜单是否可用信号
      */
     void playSpeedMenuEnable(bool);
+    /**
+     * @brief 窗口特效变化信号
+     */
+    void WMChanged(bool isWM);
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
@@ -344,6 +348,7 @@ public slots:
      * @brief 音量改变槽函数
      */
     void slotVolumeChanged(int nVolume);
+    void slotWMChanged(QString msg);
 protected:
     void showEvent(QShowEvent *pEvent) override;
     void hideEvent(QHideEvent *pEvent) override;
@@ -524,6 +529,8 @@ private:
     Presenter *m_pPresenter;
     MovieWidget *m_pMovieWidget;
     qint64 m_nFullscreenTime;                         ///全屏操作间隔时间
+    QDBusInterface* m_pWMDBus {nullptr};              ///窗口特效dbus接口
+    bool m_bIsWM {true};                                ///是否开启窗口特效
 };
 
 //窗管返回事件过滤器

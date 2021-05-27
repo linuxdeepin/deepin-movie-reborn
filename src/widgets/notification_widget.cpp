@@ -61,8 +61,9 @@ NotificationWidget::NotificationWidget(QWidget *parent)
     m_pMainLayout->setContentsMargins(0, 0, 0, 0);
     setLayout(m_pMainLayout);
 
-    m_pMsgLabel = new QLabel();
+    m_pMsgLabel = new DLabel();
     m_pMsgLabel->setFrameShape(QFrame::NoFrame);
+    m_pMsgLabel->setForegroundRole(QPalette::ToolTipText);
 
     m_pTimer = new QTimer(this);
     if (!utils::check_wayland_env()) {
@@ -220,20 +221,56 @@ void NotificationWidget::paintEvent(QPaintEvent *pPaintEvent)
     painter.setRenderHint(QPainter::Antialiasing);
 
     bool bLight = (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType());
-    QColor color = QColor(23, 23, 23, 255 * 8 / 10);
-    QColor borderColor = QColor(255, 255, 255, 25);
+    QColor color = QColor(42, 42, 42);
+    QColor borderColor = QColor("#C0C6D4");
+    borderColor.setAlpha(25);
+
     if (bLight) {
-        color = QColor(252, 252, 252, 255 * 8 / 10);
+        color = QColor(252, 252, 252);
         borderColor = QColor(0, 0, 0, 25);
     }
 
-#if defined(__arrch64__) || defined(__mips__)
-    color.setAlpha(255);
-    painter.fillRect(rect(), color);
-#else
-    if (!CompositingManager::get().composited()) {
+#if defined (__aarch64__) || defined (__mips__)
+    if(m_bIsWM) {
+        painter.fillRect(rect(), Qt::transparent);
+        {
+            QPainterPath painterPath;
+            painterPath.addRoundedRect(rect(), static_cast<qreal>(fRadius), static_cast<qreal>(fRadius));
+            borderColor.setAlpha(255 * 0.05);
+            painter.setPen(borderColor);
+            painter.drawPath(painterPath);
+        }
+
+        QRect viewRect = rect().marginsRemoved(QMargins(1, 1, 1, 1));
+        QPainterPath painterPath;
+        painterPath.addRoundedRect(viewRect, static_cast<qreal>(fRadius), static_cast<qreal>(fRadius));
+        color.setAlpha(255 * 0.6);
+        painter.fillPath(painterPath, color);
+
+        QFrame::paintEvent(pPaintEvent);
+    } else {
+        if(bLight)
+            color.setNamedColor("#F7F7F7");
         color.setAlpha(255);
         painter.fillRect(rect(), color);
+
+        if(bLight)
+            color.setNamedColor("#F2F2F2");
+        painter.setPen(color);
+        painter.drawRect(rect());
+
+    }
+#else
+    if (!CompositingManager::get().composited()) {
+        if(bLight)
+            color.setNamedColor("#F7F7F7");
+        color.setAlpha(255);
+        painter.fillRect(rect(), color);
+
+        if(bLight)
+            color.setNamedColor("#F2F2F2");
+        painter.setPen(color);
+        painter.drawRect(rect());
     } else {
         painter.fillRect(rect(), Qt::transparent);
         {
@@ -246,6 +283,7 @@ void NotificationWidget::paintEvent(QPaintEvent *pPaintEvent)
         QRect viewRect = rect().marginsRemoved(QMargins(1, 1, 1, 1));
         QPainterPath painterPath;
         painterPath.addRoundedRect(viewRect, static_cast<qreal>(fRadius), static_cast<qreal>(fRadius));
+        color.setAlpha(255 * 0.6);
         painter.fillPath(painterPath, color);
 
         QFrame::paintEvent(pPaintEvent);

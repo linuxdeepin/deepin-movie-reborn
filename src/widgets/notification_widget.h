@@ -37,6 +37,7 @@
 
 #include <DBlurEffectWidget>
 #include <DGuiApplicationHelper>
+#include <DLabel>
 
 #include "compositing_manager.h"
 
@@ -75,6 +76,8 @@ public:
      * @param p 位置点
      */
     void setAnchorPoint(const QPoint& p) { m_anchorPoint = p; }
+
+    void setWM(bool isWM) { m_bIsWM = isWM; }
 
 public slots:
     /**
@@ -123,7 +126,7 @@ private:
 
 private:
     QWidget *m_pMainWindow;       ///主窗口
-    QLabel *m_pMsgLabel;          ///文本信息label控件
+    DLabel *m_pMsgLabel;          ///文本信息label控件
     QLabel *m_pIconLabel;         ///图标Label控件
     QTimer *m_pTimer;             ///消失定时器
     QFrame *m_pFrame;             ///
@@ -132,6 +135,7 @@ private:
     int m_nAnchorDist;            ///
     QPoint m_anchorPoint;         ///控件位置点
     bool m_bIsWheel;              ///
+    bool m_bIsWM;
 };
 
 }

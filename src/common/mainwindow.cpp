@@ -1032,6 +1032,13 @@ MainWindow::MainWindow(QWidget *parent)
     m_pFullScreenTimeLable->setLayout(m_pFullScreenTimeLayout);
     m_pFullScreenTimeLable->close();
 #endif
+
+    m_pWMDBus = new QDBusInterface("com.deepin.WMSwitcher","/com/deepin/WMSwitcher","com.deepin.WMSwitcher",QDBusConnection::sessionBus());
+    QDBusReply<QString> reply_string = m_pWMDBus->call("CurrentWM");
+    m_bIsWM = reply_string.value().contains("deepin wm");
+    m_pCommHintWid->setWM(m_bIsWM);
+    connect(m_pWMDBus, SIGNAL(WMChanged(QString)), this, SLOT(slotWMChanged(QString)));
+
     m_pAnimationlable = new AnimationLabel(this, this, bComposited);
 #if !defined (__arrch64__) || defined (__mips__)
     if (CompositingManager::get().composited())
@@ -3335,6 +3342,16 @@ void MainWindow::slotVolumeChanged(int nVolume)
     } else {
         m_pCommHintWid->updateWithMessage(tr("Volume: %1%").arg(nVolume));
     }
+}
+
+void MainWindow::slotWMChanged(QString msg)
+{
+    if (msg.contains("deepin metacity")) {
+        m_bIsWM = false;
+    } else {
+        m_bIsWM = true;
+    }
+    m_pCommHintWid->setWM(m_bIsWM);
 }
 
 void MainWindow::checkErrorMpvLogsChanged(const QString sPrefix, const QString sText)
