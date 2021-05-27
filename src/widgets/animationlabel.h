@@ -41,6 +41,7 @@
 #include <QTimer>
 #include <QBitmap>
 
+
 /**
  * @brief The AnimationLabel class
  *
@@ -66,6 +67,7 @@ public:
      * @brief 由暂停状态变为播放状态
      */
     void playAnimation();
+    void setWM(bool);
 
 private:
     /**
@@ -135,8 +137,8 @@ protected:
     QPropertyAnimation        *m_pPauseHideAnimation;     ///切换暂停状态隐藏动画
     QWidget                   *m_pMainWindow;             ///主窗口指针
     QPixmap                    m_pixmap;                  ///当前动画显示的图像
-    QBitmap                    m_bitmap;
     QString                    m_sFileName;               ///动画当前显示的图像文件
+    bool                       m_bIsWM;
 };
 
 #endif  // ANIMATIONLABEL_H

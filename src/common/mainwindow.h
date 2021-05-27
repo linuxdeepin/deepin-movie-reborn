@@ -349,6 +349,7 @@ public slots:
      */
     void slotVolumeChanged(int nVolume);
     void slotWMChanged(QString msg);
+
 protected:
     void showEvent(QShowEvent *pEvent) override;
     void hideEvent(QHideEvent *pEvent) override;
@@ -360,7 +361,6 @@ protected:
     void mouseReleaseEvent(QMouseEvent *pEvent) override;
     void focusInEvent(QFocusEvent *pEvent) override;
     void wheelEvent(QWheelEvent *pEvent) override;
-
     void keyPressEvent(QKeyEvent *pEvent) override;
     void keyReleaseEvent(QKeyEvent *pEvent) override;
     void moveEvent(QMoveEvent *ev) override;
@@ -369,7 +369,6 @@ protected:
     void dragEnterEvent(QDragEnterEvent *pEvent) override;
     void dragMoveEvent(QDragMoveEvent *pEvent) override;
     void dropEvent(QDropEvent *pEvent) override;
-
     bool event(QEvent *pEvent) override;
     void leaveEvent(QEvent *pEvent) override;
 
@@ -384,9 +383,7 @@ protected slots:
     void animatePlayState();
     void resizeByConstraints(bool bForceCentered = false);
     void onWindowStateChanged();
-
     void miniButtonClicked(const QString &sId);
-
     void startBurstShooting();
     void onBurstScreenshot(const QImage &imgFrame, qint64 timestamp);
     void delayedMouseReleaseHandler();
@@ -400,13 +397,13 @@ protected slots:
 #endif
     void updateMiniBtnTheme(int);
     void diskRemoved(QString sDiskName);
-
     void sleepStateChanged(bool bSleep);
     /**
      * @brief 响应锁屏dbus信号
      */
     void onSysLockState(QString serviceName, QVariantMap key2value, QStringList);
     void slotProperChanged(QString, QVariantMap key2value, QStringList);
+
 private:
     void initMember();
     void setupTitlebar();
@@ -414,7 +411,6 @@ private:
     DSettingsDialog *initSettings();
     void updateSizeConstraints();
     void toggleUIMode();
-
     bool insideToolsArea(const QPoint &pos);
     void switchTheme();
     bool isActionAllowed(ActionFactory::ActionKind kd, bool bFromUI, bool bIsShortcut);
@@ -431,7 +427,6 @@ private:
     void setMusicMuted(bool bMuted);
     void popupAdapter(QIcon, QString);
     //void setHwaccelMode(const QVariant &value = -1);
-
     //Limit video to mini mode size
     void LimitWindowize();
     void mipsShowFullScreen();
@@ -530,7 +525,7 @@ private:
     MovieWidget *m_pMovieWidget;
     qint64 m_nFullscreenTime;                         ///全屏操作间隔时间
     QDBusInterface* m_pWMDBus {nullptr};              ///窗口特效dbus接口
-    bool m_bIsWM {true};                                ///是否开启窗口特效
+    bool m_bIsWM {true};                              ///是否开启窗口特效
 };
 
 //窗管返回事件过滤器

@@ -64,14 +64,15 @@ AnimationLabel::AnimationLabel(QWidget *parent, QWidget *pMainWindow, bool bComp
         hide();
     }
 
-#if !defined (__arrch64__) || defined (__mips__)
-    if (CompositingManager::get().composited()) {
-        this->resize(200, 200);
-    } else {
-        this->resize(100, 100);
-    }
+#ifdef __x86_64__
+    if(!CompositingManager::get().composited())
+        resize(100, 100);
 #else
-    this->resize(100, 100);
+    if(m_bIsWM){
+        resize(200, 200);
+    } else {
+        resize(100, 100);
+    }
 #endif
 }
 
@@ -83,6 +84,12 @@ void AnimationLabel::pauseAnimation()
     if (m_pPauseAnimationGroup && m_pPauseAnimationGroup->state() == QAbstractAnimation::Running)
         m_pPauseAnimationGroup->stop();
 
+#ifndef __x86_64__
+    if (m_bIsWM)
+        setFixedSize(200, 200);
+    else
+        setFixedSize(100, 100);
+#endif
     m_pPlayAnimationGroup->start();
     if(!isVisible()) {
         show();
@@ -97,10 +104,21 @@ void AnimationLabel::playAnimation()
     if (m_pPlayAnimationGroup && m_pPlayAnimationGroup->state() == QAbstractAnimation::Running)
         m_pPlayAnimationGroup->stop();
 
+#ifndef __x86_64__
+    if (m_bIsWM)
+        setFixedSize(200, 200);
+    else
+        setFixedSize(100, 100);
+#endif
     m_pPauseAnimationGroup->start();
     if(!isVisible()) {
         show();
     }
+}
+
+void AnimationLabel::setWM(bool isWM)
+{
+    m_bIsWM = isWM;
 }
 
 /**
@@ -200,17 +218,21 @@ void AnimationLabel::setGeometryByMainWindow(QWidget *pMainWindow)
  */
 void AnimationLabel::onPlayAnimationChanged(const QVariant &value)
 {
-#if defined (__arrch64__) || defined (__mips__)
-    m_sFileName = QString(":/resources/icons/stop_new/%1.png").arg(value.toInt());
+#if defined (__aarch64__) || defined (__mips__)
+    if (m_bIsWM) {
+        m_sFileName = QString(":/resources/icons/stop/%1.png").arg(value.toInt());
+    } else {
+        m_sFileName = QString(":/resources/icons/stop_new/%1.png").arg(value.toInt());
+    }
+
 #else
     if(!CompositingManager::get().composited()) {
         m_sFileName = QString(":/resources/icons/stop_new/%1.png").arg(value.toInt());
-    } else{
+    } else {
         m_sFileName = QString(":/resources/icons/stop/%1.png").arg(value.toInt());
-    }
+}
 #endif
     m_pixmap = QPixmap(m_sFileName);
-    m_bitmap = QBitmap(m_sFileName);
     update();
 }
 
@@ -220,17 +242,21 @@ void AnimationLabel::onPlayAnimationChanged(const QVariant &value)
  */
 void AnimationLabel::onPauseAnimationChanged(const QVariant &value)
 {
-#if defined (__arrch64__) || defined (__mips__)
-    m_sFileName = QString(":/resources/icons/start_new/%1.png").arg(value.toInt());
+#if defined (__aarch64__) || defined (__mips__)
+    if (m_bIsWM) {
+        m_sFileName = QString(":/resources/icons/start/%1.png").arg(value.toInt());
+    } else {
+        m_sFileName = QString(":/resources/icons/start_new/%1.png").arg(value.toInt());
+    }
+
 #else
     if(!CompositingManager::get().composited()) {
         m_sFileName = QString(":/resources/icons/start_new/%1.png").arg(value.toInt());
     } else {
-    m_sFileName = QString(":/resources/icons/start/%1.png").arg(value.toInt());
+        m_sFileName = QString(":/resources/icons/start/%1.png").arg(value.toInt());
     }
 #endif
     m_pixmap = QPixmap(m_sFileName);
-    m_bitmap = QBitmap(m_sFileName);
     update();
 }
 
