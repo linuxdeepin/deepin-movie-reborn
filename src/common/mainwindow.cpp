@@ -800,9 +800,9 @@ MainWindow::MainWindow(QWidget *parent)
     QSignalMapper *pSignalMapper = new QSignalMapper(this);
     connect(pSignalMapper, static_cast<void(QSignalMapper::*)(const QString &)>(&QSignalMapper::mapped), this, &MainWindow::miniButtonClicked);
 
-    m_pMiniPlayBtn = new DIconButton(this);
-    m_pMiniQuitMiniBtn = new DIconButton(this);
-    m_pMiniCloseBtn = new DIconButton(this);
+    m_pMiniPlayBtn = new IconButton(this);
+    m_pMiniQuitMiniBtn = new IconButton(this);
+    m_pMiniCloseBtn = new IconButton(this);
 
     m_pMiniPlayBtn->setFlat(true);
     m_pMiniCloseBtn->setFlat(true);
@@ -4693,9 +4693,9 @@ QString MainWindow::probeCdromDevice()
 void MainWindow::updateMiniBtnTheme(int nType)
 {
 #ifdef __mips__
-    dynamic_cast<IconButton *>(m_pMiniPlayBtn)->changeTheme(nType);
-    dynamic_cast<IconButton *>(m_pMiniCloseBtn)->changeTheme(nType);
-    dynamic_cast<IconButton *>(m_pMiniQuitMiniBtn)->changeTheme(nType);
+    m_pMiniPlayBtn->changeTheme(nType);
+    m_pMiniCloseBtn->changeTheme(nType);
+    m_pMiniQuitMiniBtn->changeTheme(nType);
 #endif
 }
 
