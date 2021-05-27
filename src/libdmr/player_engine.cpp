@@ -788,20 +788,20 @@ QList<QUrl> PlayerEngine::collectPlayDir(const QDir &dir)
 {
     QList<QUrl> urls;
     QString strtp;
-
-    //取消递归  by thx
-    QDirIterator di(dir, QDirIterator::NoIteratorFlags);
-    while (di.hasNext()) {
-        di.next();
-        if (di.fileInfo().isFile() && isPlayableFile(di.fileName())) {
-            strtp = di.filePath();
+    QDir di(dir);
+    di.setFilter(QDir::AllEntries | QDir::NoDotAndDotDot);
+    for (auto file : di.entryInfoList()) {
+        if (file.isFile() && isPlayableFile(file.fileName())) {//读取视频文件
+            strtp = file.filePath();
             while (QFileInfo(strtp).isSymLink()) {
-                /*****************************
-                 * use oringnal path to replace link path
-                 * ***************************/
                 strtp = QFileInfo(strtp).symLinkTarget();
             }
             urls.append(QUrl::fromLocalFile(strtp));
+        } else if (file.isDir()) {//读取子目录的视频文件
+            auto rsUrsList = collectPlayDir(file.absoluteFilePath());
+            if (rsUrsList.size() > 0) {
+                urls.append(rsUrsList);
+            }
         }
     }
 
