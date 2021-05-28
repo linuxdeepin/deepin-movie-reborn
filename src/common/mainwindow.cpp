@@ -1033,7 +1033,7 @@ MainWindow::MainWindow(QWidget *parent)
     m_pFullScreenTimeLable->close();
 #endif
 
-    m_pWMDBus = new QDBusInterface("com.deepin.WMSwitcher","/com/deepin/WMSwitcher","com.deepin.WMSwitcher",QDBusConnection::sessionBus());
+    m_pWMDBus = new QDBusInterface("com.deepin.WMSwitcher", "/com/deepin/WMSwitcher", "com.deepin.WMSwitcher", QDBusConnection::sessionBus());
     QDBusReply<QString> reply_string = m_pWMDBus->call("CurrentWM");
     m_bIsWM = reply_string.value().contains("deepin wm");
     m_pCommHintWid->setWM(m_bIsWM);
@@ -1054,18 +1054,8 @@ MainWindow::MainWindow(QWidget *parent)
         m_pAnimationlable->setGeometry(width() / 2 - 100, height() / 2 - 100, 200, 200);
     }
 #endif
-
-#if defined (__aarch64__) || defined (__mips__)
-    if (utils::check_wayland_env()) {
-        m_pPopupWid = new FloatingMessageWindow(DFloatingMessage::TransientType, this);
-    } else {
-        m_pPopupWid = new FloatingMessageWindow(DFloatingMessage::TransientType, nullptr);
-    }
-    m_pPopupWid->setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
-#else
-    m_pPopupWid = new FloatingMessageWindow(FloatingMessageWindow::TransientType, this);
-#endif
-    m_pPopupWid->resize(0, 0);
+    m_pPopupWid = new MessageWindow(this);
+    m_pPopupWid->hide();
     defaultplaymodeinit();
 
     connect(&Settings::get(), &Settings::defaultplaymodechanged, this, &MainWindow::slotdefaultplaymodechanged);
@@ -3899,11 +3889,14 @@ void MainWindow::capturedMousePressEvent(QMouseEvent *pEvent)
 {
     m_bMouseMoved = false;
     m_bMousePressed = false;
-#ifdef __aarch64__
+#if defined (__aarch64__) || defined (__mips__)
     m_pCommHintWid->hide();
-#elif __mips__
-    m_pCommHintWid->hide();
+    m_pPopupWid->hide();
 #endif
+    if (!CompositingManager::get().composited()) {
+        m_pCommHintWid->hide();
+        m_pPopupWid->hide();
+    }
     if (qApp->focusWindow() == nullptr) return;
 
     if (pEvent->buttons() == Qt::LeftButton) {
@@ -3977,12 +3970,14 @@ void MainWindow::mousePressEvent(QMouseEvent *pEvent)
 {
     m_bMouseMoved = false;
     m_bMousePressed = false;
-#ifdef __aarch64__
+#if defined (__aarch64__) || defined (__mips__)
     m_pCommHintWid->hide();
-#elif __mips__
-    m_pCommHintWid->hide();
+    m_pPopupWid->hide();
 #endif
-
+    if (!CompositingManager::get().composited()) {
+        m_pCommHintWid->hide();
+        m_pPopupWid->hide();
+    }
     if (qApp->focusWindow() == nullptr) return;
     if (pEvent->buttons() == Qt::LeftButton) {
         m_bStartMove = true;
@@ -4269,13 +4264,19 @@ void MainWindow::popupAdapter(QIcon icon, QString sText)
     QFontMetrics fm(font);
     auto w = fm.boundingRect(sText).width();
     m_pPopupWid->setMessage(sText);
-    m_pPopupWid->resize(w + 70, 52);
-#ifdef __x86_64__
-    m_pPopupWid->move((width() - m_pPopupWid->width()) / 2, height() - 127);
+    m_pPopupWid->resize(w + 60, 40);
+#if defined (__aarch64__) || defined (__mips__)
+    m_pPopupWid->move((width() - m_pPopupWid->width()) / 2 + geometry().x(), height() - 127 + geometry().y());
 #else
-    m_pPopupWid->move((width() - m_pPopupWid->width()) / 2 + geometry().x(), height() - 137 + geometry().y());
+    m_pPopupWid->move((width() - m_pPopupWid->width()) / 2, height() - 127);
 #endif
+    if (!CompositingManager::get().composited()) {
+        m_pPopupWid->move((width() - m_pPopupWid->width()) / 2 + geometry().x(), height() - 127 + geometry().y());
+    } else {
+        m_pPopupWid->move((width() - m_pPopupWid->width()) / 2, height() - 127);
+    }
     m_pPopupWid->show();
+    m_pPopupWid->raise();
 }
 
 /*void MainWindow::setHwaccelMode(const QVariant &value)

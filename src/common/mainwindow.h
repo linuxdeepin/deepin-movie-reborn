@@ -125,6 +125,102 @@ private:
     QIcon m_icon;
     int m_nThemeType;
 };
+
+class MessageWindow: public QWidget
+{
+    Q_OBJECT
+public:
+    explicit MessageWindow(QWidget *parent = nullptr):
+        QWidget(parent)
+    {
+        setWindowFlags(Qt::FramelessWindowHint);
+        if (!CompositingManager::get().composited()) {
+            setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
+        }
+#if defined (__aarch64__) || defined (__mips__)
+        setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
+#endif
+        m_pTimer = new QTimer(this);
+
+        setFixedHeight(40);
+        QHBoxLayout *mainLayout = new QHBoxLayout;
+        setLayout(mainLayout);
+        mainLayout->setContentsMargins(12, 0, 0, 0);
+        mainLayout->setSpacing(10);
+
+        m_pIconBtn = new DIconButton(this);
+        m_pTextLabel = new DLabel(this);
+
+        m_pIconBtn->setFlat(true);
+        m_pIconBtn->setFocusPolicy(Qt::NoFocus);
+        m_pIconBtn->setAttribute(Qt::WA_TransparentForMouseEvents);
+        m_pIconBtn->setFixedSize(20, 40);
+        m_pIconBtn->setIconSize(QSize(30, 30));
+
+        m_pTextLabel->setWordWrap(true);
+        m_pTextLabel->setFixedHeight(40);
+        m_pTextLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+        QPalette pe;
+        pe.setColor(QPalette::WindowText, QColor(65, 77, 104));
+        m_pTextLabel->setPalette(pe);
+
+        mainLayout->addWidget(m_pIconBtn);
+        mainLayout->addWidget(m_pTextLabel);
+
+        m_pTimer->setInterval(4000);
+        m_pTimer->setSingleShot(true);
+        connect(m_pTimer, &QTimer::timeout, this, &QWidget::close);
+    }
+
+    void setIcon(const QIcon &ico)
+    {
+        m_pIconBtn->setIcon(ico);
+    }
+
+    void setMessage(const QString &str)
+    {
+        m_pTextLabel->setText(str);
+    }
+protected:
+    void showEvent(QShowEvent *event)
+    {
+        if (m_pTimer) {
+            m_pTimer->start();
+        }
+    }
+private:
+    void paintEvent(QPaintEvent *event) override
+    {
+        const float fRadius = 18;
+        QPainter painter(this);
+        painter.setRenderHint(QPainter::Antialiasing);
+
+        bool bLight = (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType());
+        QColor color = QColor(37, 37, 37);
+        if (bLight) {
+            color = QColor(247, 247, 247);
+        }
+
+#if defined(__arrch64__) || defined(__mips__)
+        painter.fillRect(rect(), color);
+#else
+        if (!CompositingManager::get().composited()) {
+            painter.fillRect(rect(), color);
+        } else {
+            painter.fillRect(rect(), Qt::transparent);
+            QPainterPath painterPath;
+            painterPath.addRoundedRect(rect(), static_cast<qreal>(fRadius), static_cast<qreal>(fRadius));
+            painter.fillPath(painterPath, color);
+        }
+#endif
+        QWidget::paintEvent(event);
+    }
+private:
+    QTimer *m_pTimer {nullptr};
+    DIconButton *m_pIconBtn {nullptr};
+    DLabel *m_pTextLabel{nullptr};
+};
+
 class FloatingMessageWindow: public DFloatingMessage
 {
 public:
@@ -438,7 +534,7 @@ private:
     void setMusicShortKeyState(bool bState);
 
 private:
-    DFloatingMessage *m_pPopupWid;                  ///操作提示窗
+    MessageWindow *m_pPopupWid;
     QLabel *m_pFullScreenTimeLable;                 ///全屏时右上角的影片进度
     QHBoxLayout *m_pFullScreenTimeLayout;           ///右上角的影片进度框布局器
     Titlebar *m_pTitlebar;                          ///标题栏
@@ -524,7 +620,7 @@ private:
     Presenter *m_pPresenter;
     MovieWidget *m_pMovieWidget;
     qint64 m_nFullscreenTime;                         ///全屏操作间隔时间
-    QDBusInterface* m_pWMDBus {nullptr};              ///窗口特效dbus接口
+    QDBusInterface *m_pWMDBus {nullptr};              ///窗口特效dbus接口
     bool m_bIsWM {true};                              ///是否开启窗口特效
 };
 
