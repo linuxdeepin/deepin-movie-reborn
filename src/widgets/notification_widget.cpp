@@ -63,7 +63,13 @@ NotificationWidget::NotificationWidget(QWidget *parent)
 
     m_pMsgLabel = new DLabel();
     m_pMsgLabel->setFrameShape(QFrame::NoFrame);
-    m_pMsgLabel->setForegroundRole(QPalette::ToolTipText);
+    //添加在两种主题下文字效果，使其更加明显
+    int nType = DGuiApplicationHelper::instance()->themeType();
+    if (nType == 2) {
+        m_pMsgLabel->setForegroundRole(DPalette::TextLively);
+    } else {
+        m_pMsgLabel->setForegroundRole(QPalette::ToolTipText);
+    }
 
     m_pTimer = new QTimer(this);
     if (!utils::check_wayland_env()) {
@@ -73,6 +79,15 @@ NotificationWidget::NotificationWidget(QWidget *parent)
     }
     m_pTimer->setSingleShot(true);
     connect(m_pTimer, &QTimer::timeout, this, &QWidget::hide);
+
+    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, [=](int nType) {
+        if (nType == 2) {
+            m_pMsgLabel->setForegroundRole(DPalette::TextLively);
+        } else {
+            m_pMsgLabel->setForegroundRole(QPalette::ToolTipText);
+        }
+    });
+
 }
 /**
  * @brief showEvent 重载显示事件函数
@@ -222,11 +237,12 @@ void NotificationWidget::paintEvent(QPaintEvent *pPaintEvent)
 
     bool bLight = (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType());
 
-    QColor color = QColor(42, 42, 42, 255 * 0.8);
+    //按照ui建议，突出文字
+    QColor color = QColor(42, 42, 42, 255 * 0.95);
     QColor borderColor = QColor(0, 0, 0, 255 * 0.3);
 
     if (bLight) {
-        color = QColor(247, 247, 247, 255 * 0.8);
+        color = QColor(247, 247, 247, 255 * 0.95);
         borderColor = QColor(0, 0, 0, 255 * 0.05);
     }
 

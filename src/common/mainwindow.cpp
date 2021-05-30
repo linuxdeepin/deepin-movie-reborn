@@ -800,9 +800,9 @@ MainWindow::MainWindow(QWidget *parent)
     QSignalMapper *pSignalMapper = new QSignalMapper(this);
     connect(pSignalMapper, static_cast<void(QSignalMapper::*)(const QString &)>(&QSignalMapper::mapped), this, &MainWindow::miniButtonClicked);
 
-    m_pMiniPlayBtn = new IconButton(this);
-    m_pMiniQuitMiniBtn = new IconButton(this);
-    m_pMiniCloseBtn = new IconButton(this);
+    m_pMiniPlayBtn = new DIconButton(this);
+    m_pMiniQuitMiniBtn = new DIconButton(this);
+    m_pMiniCloseBtn = new DIconButton(this);
 
     m_pMiniPlayBtn->setFlat(true);
     m_pMiniCloseBtn->setFlat(true);
@@ -1068,7 +1068,7 @@ MainWindow::MainWindow(QWidget *parent)
         this->activateWindow();
     });
     connect(qApp, &QGuiApplication::fontChanged, this, &MainWindow::slotFontChanged);
-    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, &MainWindow::updateMiniBtnTheme);
+//    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, &MainWindow::updateMiniBtnTheme);
 
     ThreadPool::instance()->moveToNewThread(&m_diskCheckThread);
     m_diskCheckThread.start();
@@ -2644,11 +2644,11 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
     m_pPopupWid->show();\
 } while (0)
         if (bSuccess) {
-            const QIcon icon = QIcon(":/resources/icons/icon_toast_sucess.svg");
+            const QIcon icon = QIcon(":/resources/icons/short_ok.svg");
             QString sText = QString(tr("The screenshot is saved"));
             popupAdapter(icon, sText);
         } else {
-            const QIcon icon = QIcon(":/resources/icons/icon_toast_fail.svg");
+            const QIcon icon = QIcon(":/resources/icons/short_fail.svg");
             QString sText = QString(tr("Failed to save the screenshot"));
             popupAdapter(icon, sText);
         }
@@ -2766,11 +2766,11 @@ void MainWindow::onBurstScreenshot(const QImage &frame, qint64 timestamp)
         if (nRet == QDialog::Accepted) {
             QString sPosterPath = burstScreenshotsDialog.savedPosterPath();
             if (QFileInfo::exists(sPosterPath)) {
-                const QIcon icon = QIcon(":/resources/icons/icon_toast_sucess.svg");
+                const QIcon icon = QIcon(":/resources/icons/short_ok.svg");
                 QString sText = QString(tr("The screenshot is saved"));
                 popupAdapter(icon, sText);
             } else {
-                const QIcon icon = QIcon(":/resources/icons/icon_toast_fail.svg");
+                const QIcon icon = QIcon(":/resources/icons/short_fail.svg");
                 QString sText = QString(tr("Failed to save the screenshot"));
                 popupAdapter(icon, sText);
             }
@@ -4264,7 +4264,7 @@ void MainWindow::popupAdapter(QIcon icon, QString sText)
     QFontMetrics fm(font);
     auto w = fm.boundingRect(sText).width();
     m_pPopupWid->setMessage(sText);
-    m_pPopupWid->resize(w + 60, 40);
+    m_pPopupWid->resize(w + 70, 40);
 #if defined (__aarch64__) || defined (__mips__)
     m_pPopupWid->move((width() - m_pPopupWid->width()) / 2 + geometry().x(), height() - 127 + geometry().y());
 #else
@@ -4694,9 +4694,9 @@ QString MainWindow::probeCdromDevice()
 void MainWindow::updateMiniBtnTheme(int nType)
 {
 #ifdef __mips__
-    m_pMiniPlayBtn->changeTheme(nType);
-    m_pMiniCloseBtn->changeTheme(nType);
-    m_pMiniQuitMiniBtn->changeTheme(nType);
+//    m_pMiniPlayBtn->changeTheme(nType);
+//    m_pMiniCloseBtn->changeTheme(nType);
+//    m_pMiniQuitMiniBtn->changeTheme(nType);
 #endif
 }
 

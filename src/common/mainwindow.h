@@ -145,7 +145,7 @@ public:
         setFixedHeight(40);
         QHBoxLayout *mainLayout = new QHBoxLayout;
         setLayout(mainLayout);
-        mainLayout->setContentsMargins(12, 0, 0, 0);
+        mainLayout->setContentsMargins(12, 3, 0, 0);
         mainLayout->setSpacing(10);
 
         m_pIconBtn = new DIconButton(this);
@@ -154,15 +154,20 @@ public:
         m_pIconBtn->setFlat(true);
         m_pIconBtn->setFocusPolicy(Qt::NoFocus);
         m_pIconBtn->setAttribute(Qt::WA_TransparentForMouseEvents);
-        m_pIconBtn->setFixedSize(20, 40);
+        //宽度太小导致截图失败图表被裁剪
+        m_pIconBtn->setFixedSize(30, 30);
         m_pIconBtn->setIconSize(QSize(30, 30));
 
         m_pTextLabel->setWordWrap(true);
-        m_pTextLabel->setFixedHeight(40);
-        m_pTextLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-        QPalette pe;
-        pe.setColor(QPalette::WindowText, QColor(65, 77, 104));
-        m_pTextLabel->setPalette(pe);
+        //DIconButton中icon尺寸与button尺寸不一致，导致图表与问题不对齐
+        m_pTextLabel->setFixedHeight(25);
+        m_pTextLabel->setAlignment(Qt::AlignLeft | Qt::AlignTop);
+        //DLabel自动设置字体颜色，无需单独设置
+//        QPalette pe;
+//        pe.setColor(QPalette::WindowText, QColor(65, 77, 104));
+//        pe.setColor(QPalette::WindowText);
+//        QPalette::WindowText;
+//        m_pTextLabel->setPalette(pe);
 
         mainLayout->addWidget(m_pIconBtn);
         mainLayout->addWidget(m_pTextLabel);
@@ -534,7 +539,7 @@ private:
     void setMusicShortKeyState(bool bState);
 
 private:
-    MessageWindow *m_pPopupWid;
+    MessageWindow *m_pPopupWid;                     ///截图提示窗口
     QLabel *m_pFullScreenTimeLable;                 ///全屏时右上角的影片进度
     QHBoxLayout *m_pFullScreenTimeLayout;           ///右上角的影片进度框布局器
     Titlebar *m_pTitlebar;                          ///标题栏
@@ -546,9 +551,9 @@ private:
     QList<QPair<QImage, qint64>> m_listBurstShoots; ///存储连拍截图
     bool m_bInBurstShootMode;                       ///是否处于截图状态
     bool m_bPausedBeforeBurst;                      ///截图时暂停播放
-    IconButton *m_pMiniPlayBtn;                    ///迷你模式播放按钮
-    IconButton *m_pMiniCloseBtn;                   ///迷你模式关闭按钮
-    IconButton *m_pMiniQuitMiniBtn;                ///退出迷你模式按钮
+    DIconButton *m_pMiniPlayBtn;                    ///迷你模式播放按钮
+    DIconButton *m_pMiniCloseBtn;                   ///迷你模式关闭按钮
+    DIconButton *m_pMiniQuitMiniBtn;                ///退出迷你模式按钮
 
     QImage m_imgBgDark;
     QImage m_imgBgLight;

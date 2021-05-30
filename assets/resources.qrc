@@ -6,8 +6,6 @@
         <file>resources/profiles/composited.profile</file>
         <file>resources/profiles/default.profile</file>
         <file>resources/profiles/failsafe.profile</file>
-        <file>resources/icons/icon_toast_fail.svg</file>
-        <file>resources/icons/icon_toast_sucess.svg</file>
         <file>resources/icons/input_clear_hover.svg</file>
         <file>resources/icons/input_clear_normal.svg</file>
         <file>resources/icons/input_clear_press.svg</file>
@@ -253,5 +251,7 @@
         <file>resources/icons/stop_new/16.png</file>
         <file>resources/icons/stop_new/17.png</file>
         <file>resources/icons/stop_new/18.png</file>
+        <file>resources/icons/short_fail.svg</file>
+        <file>resources/icons/short_ok.svg</file>
     </qresource>
 </RCC>
