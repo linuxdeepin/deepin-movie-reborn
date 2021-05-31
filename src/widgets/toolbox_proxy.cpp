@@ -716,7 +716,6 @@ public:
         }
 
         show();
-        raise();
     }
 public slots:
     void slotWMChanged(QString msg)
