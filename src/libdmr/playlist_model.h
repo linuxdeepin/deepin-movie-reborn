@@ -359,7 +359,8 @@ public:
             emit updateItem(m_model->calculatePlayInfo(url, info, false));
             m_itemMutex->unlock();
             m_isFinished = true;
-            if (m_stop) break;
+            if (m_stop)
+                break;
         }
     }
 

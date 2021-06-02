@@ -590,7 +590,7 @@ private:
     {
         m_pEngine = nullptr;
         _parent = nullptr;
-        m_pViewProgBarLoad = nullptr;
+//        m_pViewProgBarLoad = nullptr;
         m_pBack = nullptr;
         m_pFront = nullptr;
         m_pIndicator  = nullptr;
@@ -617,7 +617,7 @@ private:
     bool  m_bIsBlockSignals;
     QPoint m_IndicatorPos;
     QColor _indicatorColor;
-    viewProgBarLoad *m_pViewProgBarLoad;
+//    viewProgBarLoad *m_pViewProgBarLoad;
     QWidget *m_pBack;
     QWidget *m_pFront;
     IndicatorItem *m_pIndicator;
@@ -927,7 +927,7 @@ void viewProgBarLoad::loadViewProgBar(QSize size)
     m_pParent->addpmBlackList(pmBlackList);
     m_pListPixmapMutex->unlock();
     emit sigFinishiLoad(size);
-    emit finished();
+//    emit finished();
 }
 /**
  * @brief ToolboxProxy 构造函数

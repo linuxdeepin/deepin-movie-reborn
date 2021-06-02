@@ -693,7 +693,7 @@ signals:
     /**
      * @brief finished 线程结束信号
      */
-    void finished();
+//    void finished();
 
 protected:
     void run();

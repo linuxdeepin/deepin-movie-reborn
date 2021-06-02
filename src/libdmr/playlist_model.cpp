@@ -609,6 +609,12 @@ PlaylistModel::~PlaylistModel()
         m_getThumanbil->wait();
         delete m_getThumanbil;
         m_getThumanbil = nullptr;
+    } else if (m_getThumanbil) {
+        if (m_getThumanbil->isRunning()) {
+            m_getThumanbil->stop();
+        }
+        m_getThumanbil->deleteLater();
+        m_getThumanbil = nullptr;
     }
 }
 
@@ -1603,11 +1609,6 @@ struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl &url, const QFil
     bool ok = false;
     struct MovieInfo mi;
     auto ci = PersistentManager::get().loadFromCache(url);
-//    if (ci.mi_valid && url.isLocalFile()) {
-//        mi = ci.mi;
-//        ok = true;
-//        qInfo() << "load cached MovieInfo" << mi;
-//    } else {
 
     mi = parseFromFile(fi, &ok);
     if (isDvd && url.scheme().startsWith("dvd")) {
@@ -1616,11 +1617,6 @@ struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl &url, const QFil
 #ifdef heyi
         dmr::dvd::RetrieveDvdThread::get()->startDvd(dev);
 #endif
-//            mi.title = dmr::dvd::RetrieveDVDTitle(dev);
-//            if (mi.title.isEmpty()) {
-//              mi.title = "DVD";
-//            }
-//            mi.valid = true;
     } else if (!url.isLocalFile()) {
         QString msg = url.fileName();
         if (msg != "sr0" || msg != "cdrom") {
@@ -1631,7 +1627,6 @@ struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl &url, const QFil
     } else {
         mi.title = fi.fileName();
     }
-    //}
 
     QPixmap pm(42, 24);       //默认图标大小42,24
     QPixmap dark_pm(42, 24);
