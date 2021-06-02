@@ -51,6 +51,7 @@ FILE (GLOB allSource
 
 FILE (GLOB allTestSource
     *.cpp
+    *.sh
     common/*.cpp
     widgets/*.cpp
     libdmr/*.cpp
@@ -79,7 +80,7 @@ if (CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "mips64")
 else()
     set(CMAKE_CXX_FLAGS "-fsanitize=undefined,address,leak -fno-omit-frame-pointer -g -fprofile-arcs -ftest-coverage")
     set(CMAKE_C_FLAGS "-fsanitize=undefined,address,leak -fno-omit-frame-pointer")
-    #set(CMAKE_L_FLAGS "-fsanitize=undefined,address,leak -fno-omit-frame-pointer")
+    set(CMAKE_L_FLAGS "-fsanitize=undefined,address,leak -fno-omit-frame-pointer")
 endif()
 
 set(CMAKE_CXX_OUTPUT_EXTENSION_REPLACE ON)

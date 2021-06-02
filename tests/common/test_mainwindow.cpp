@@ -40,7 +40,6 @@
 #include "stub/stub_function.h"
 
 using namespace dmr;
-#ifndef __x86_64__
 TEST(PadMode, mainWindow)
 {
     Stub stub;
@@ -61,8 +60,8 @@ TEST(PadMode, mainWindow)
     stub.reset(ADDR(CompositingManager, isPadSystem));
     stub.reset(ADDR(CompositingManager, composited));
     mw.close();
+    QTest::qWait(2000);
 }
-#endif
 
 TEST(MainWindow, init)
 {
@@ -179,8 +178,9 @@ TEST(MainWindow, loadFile)
     QTest::qWait(200);
     w->requestAction(ActionFactory::ActionKind::MatchOnlineSubtitle);
     QTest::qWait(200);
-    DGuiApplicationHelper::instance()->setThemeType(DGuiApplicationHelper::DarkType);
-    emit DGuiApplicationHelper::instance()->paletteTypeChanged(DGuiApplicationHelper::DarkType);
+//    DGuiApplicationHelper::instance()->setThemeType(DGuiApplicationHelper::DarkType);
+//    emit DGuiApplicationHelper::instance()->paletteTypeChanged(DGuiApplicationHelper::DarkType);
+//    dApp->setProperty("themeType", DGuiApplicationHelper::DarkType);
 }
 
 TEST(MainWindow, DBus)
@@ -602,7 +602,7 @@ TEST(MainWindow, movieInfoDialog)
     }
     mid.close();
 
-    DGuiApplicationHelper::instance()->setThemeType(DGuiApplicationHelper::LightType);
+//    DGuiApplicationHelper::instance()->setThemeType(DGuiApplicationHelper::LightType);
     emit DGuiApplicationHelper::instance()->paletteTypeChanged(DGuiApplicationHelper::LightType);
 
     QTest::qWait(100);
@@ -803,7 +803,7 @@ TEST(ToolBox, fullScreenBtn)
     QTest::mouseMove(fsBtn, QPoint(), 200);
     QTest::mouseClick(fsBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 500);
 
-    DGuiApplicationHelper::instance()->setThemeType(DGuiApplicationHelper::DarkType);
+//    DGuiApplicationHelper::instance()->setThemeType(DGuiApplicationHelper::DarkType);
     emit DGuiApplicationHelper::instance()->paletteTypeChanged(DGuiApplicationHelper::DarkType);
 
     QEvent enter(QEvent::Enter);
@@ -899,7 +899,7 @@ TEST(ToolBox, clearPlayList)
     QTest::mouseMove(listBtn, QPoint(), 200);
     QTest::mouseClick(listBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 200);
 
-    DGuiApplicationHelper::instance()->setThemeType(DGuiApplicationHelper::UnknownType);
+//    DGuiApplicationHelper::instance()->setThemeType(DGuiApplicationHelper::UnknownType);
     emit DGuiApplicationHelper::instance()->paletteTypeChanged(DGuiApplicationHelper::UnknownType);
 
     QTest::qWait(500);

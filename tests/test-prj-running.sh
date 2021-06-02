@@ -1,5 +1,6 @@
 #!/bin/bash
 rm -rf ${HOME}/.config/deepin-movie-test
+rm -rf ${HOME}/Pictures/DMovie
 
 rm -rf ../$(dirname $0)/build-ut
 mkdir ../$(dirname $0)/build-ut
