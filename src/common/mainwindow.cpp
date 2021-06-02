@@ -1100,7 +1100,7 @@ MainWindow::MainWindow(QWidget *parent)
     QString path = reply.value().last().sessionPath.path();
 
     QDBusConnection::systemBus().connect("org.freedesktop.login1", path,
-                                         "org.freedesktop.login1.Properties", "PropertiesChanged", this,
+                                         "org.freedesktop.DBus.Properties", "PropertiesChanged", this,
                                          SLOT(slotProperChanged(QString, QVariantMap, QStringList)));
     qInfo() << "session Path is :" << path;
 }
