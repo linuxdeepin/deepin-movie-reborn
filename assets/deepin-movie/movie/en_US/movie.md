@@ -26,6 +26,8 @@ Movie is a video player with simple interface and smooth performance, which is c
 
 On the Movie interface, press **Ctrl + Shift + ?** to view shortcuts. Proficiency in shortcuts will greatly improve your efficiency.
 
+> ![tips](../common/tips.svg) Tips: You can view the shortcuts any time during your video playback.
+
 ![1|shortcut](fig/shortcut.png)
 
 ## Main Interface
@@ -110,7 +112,8 @@ Right-click on the Movie interface and you can:
 1. Right-click on the Movie interface.
 2. Select **Playback Speed** and select the corresponding playback speed as needed in the dropdown list.
 
-> ![tips](../common/tips.svg)Tips: You can also use shortcuts to adjust the playback speed. Speed up/down is relative to the original play speed. The video playback speed increases/decreases by 0.1 times in default mode each time when it is sped up/down. The maximum playback speed is 2 times faster than the original speed and the minimum playback speed is 10 times slower than the original speed.
+>  ![tips](../common/tips.svg)Tips: You can also use shortcuts to adjust the playback speed. Speed up/down is relative to the original play speed. The video playback speed increases/decreases by 0.1 times in default mode each time when it is sped up/down. The maximum playback speed is 2 times faster than the original speed and the minimum playback speed is 10 times slower than the original speed.
+>
 > - Press and hold **Ctrl**+ ![Right](../common/Right.svg) or ![Left](../common/Left.svg) on the keyboard and the playback speed will increase or decrease.
 > - Press ![R](../common/R.svg)to restore the original speed.
 
@@ -202,7 +205,7 @@ You can set the basic information, shortcut keys, and subtitles.
    - Check the **Show video preview on mouseover** box to show the film preview when you move the mouse over the progress bar.
    - Check the **Show thumbnails in progress bar** and a preview window will be displayed when you move the mouse over the progress bar.
 
-      >![notes](../common/notes.svg) Notes: This feature is only available on X86 platform. 
+   >![notes](../common/notes.svg) Notes: This feature is only available on X86 platform. 
 
    - Check the **Pause when minimized** to pause the playback automatically when minimizing the Movie window.
    - Select one mode from the **Default play mode** dropdown list and Movie will run in such mode next time.
