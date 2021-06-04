@@ -1628,10 +1628,8 @@ struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl &url, const QFil
         mi.title = fi.fileName();
     }
 
-    QPixmap pm(42, 24);       //默认图标大小42,24
-    QPixmap dark_pm(42, 24);
-    pm.fill(Qt::transparent);
-    dark_pm.fill(Qt::transparent);
+    QPixmap pm;
+    QPixmap dark_pm;
     if (ci.thumb_valid) {
         pm = ci.thumb;
         dark_pm = ci.thumb_dark;
@@ -1659,17 +1657,6 @@ struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl &url, const QFil
                 auto img = QImage::fromData(m_image_data->image_data_ptr, static_cast<int>(m_image_data->image_data_size), "png");
                 pm = QPixmap::fromImage(img);
                 dark_pm = pm;
-            } else {
-                if (getMusicPix(fi, pm) == false) {
-                    QPainter painter(&pm);
-                    QSvgRenderer svgRender(QString(":/resources/icons/music-light.svg"));
-                    svgRender.render(&painter);
-                }
-                if (getMusicPix(fi, dark_pm) == false) {
-                    QPainter painter(&dark_pm);
-                    QSvgRenderer svgRender(QString(":/resources/icons/music-dark.svg"));
-                    svgRender.render(&painter);
-                }
             }
             pm.setDevicePixelRatio(qApp->devicePixelRatio());
             dark_pm.setDevicePixelRatio(qApp->devicePixelRatio());

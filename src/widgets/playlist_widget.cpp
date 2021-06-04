@@ -147,7 +147,8 @@ public:
     PlayItemWidget(const PlayItemInfo &pif, QListWidget *list = nullptr, int index = 0, PlaylistWidget *parent = nullptr)
         : QFrame(), _pif {pif}, _listWidget {list}, _playlist{parent}
     {
-//        DThemeManager::instance()->registerWidget(this, QStringList() << "PlayItemThumb");
+        _thumb = nullptr;
+        m_pSvgWidget = nullptr;
         setProperty("PlayItemThumb", "true");
         setState(ItemState::Normal);
         setFrameShape(QFrame::NoFrame);
@@ -178,12 +179,31 @@ public:
         _index->setFixedWidth(22);
         l->addWidget(_index);
 
-        _thumb = new ListPic(_pif.thumbnail.scaled(QSize(42, 24)), this);
+        bool bDarkTheme = false;
         if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
-            _thumb->setPic(_pif.thumbnail_dark);
-        };
-//        _thumb->setPixmap(_pif.thumbnail.scaled(QSize(42,24)));
-        l->addWidget(_thumb);
+            bDarkTheme = true;
+        }
+
+        if (_pif.thumbnail.isNull() && _pif.thumbnail_dark.isNull()) {
+            if (bDarkTheme) {
+                m_pSvgWidget = new QSvgWidget(QString(":/resources/icons/music-dark.svg"), this);
+            } else {
+                m_pSvgWidget = new QSvgWidget(QString(":/resources/icons/music-light.svg"), this);
+            }
+            m_pSvgWidget->setFixedSize(42, 24);
+        } else {
+            if (bDarkTheme) {
+                _thumb = new ListPic(_pif.thumbnail_dark.scaled(QSize(42, 24)), this);
+            } else {
+                _thumb = new ListPic(_pif.thumbnail.scaled(QSize(42, 24)), this);
+            }
+        }
+
+        if (_thumb) {
+            l->addWidget(_thumb);
+        } else {
+            l->addWidget(m_pSvgWidget);
+        }
         QObject::connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, &PlayItemWidget::slotThemeTypeChanged);
 
 
@@ -196,21 +216,13 @@ public:
 
         _name = new DLabel(this);
         _name->setProperty("Name", true);
-//        _name->setReadOnly(true);
-//        _name->setAcceptRichText(false);
-//        _name->setWordWrapMode(QTextOption::NoWrap);
-//        _name->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-//        _name->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         _name->setFrameShape(QFrame::NoFrame);
         _name->setTextInteractionFlags(Qt::NoTextInteraction);
         _name->setFixedWidth(width() - 180);
-//        _name->setStyleSheet("background: red;");
         _name->installEventFilter(this);
-//        _name->viewport()->setAutoFillBackground(false);
         _name->setAutoFillBackground(false);
 
         vl->addWidget(_name);
-//        vl->addStretch(1);
 
         _time = new DLabel(this);
         DFontSizeManager::instance()->bind(_time, DFontSizeManager::T9);
@@ -220,14 +232,10 @@ public:
             setState(ItemState::Invalid);
             _time->setText(tr("The file does not exist"));
         }
-//        vl->addWidget(_time);
         vl->addStretch();
         l->addWidget(_time);
         l->addSpacing(10);
 
-//        setBg(QString(":/resources/icons/%1/normal/film-bg.svg").arg(qApp->theme()));
-
-        //_closeBtn = new FloatingButton(this);
         _closeBtn = new DFloatingButton(DStyle::SP_CloseButton, this);
         _closeBtn->setFocusPolicy(Qt::NoFocus);
         _closeBtn->setObjectName(PLAYITEN_CLOSE_BUTTON);
@@ -236,8 +244,6 @@ public:
         _closeBtn->setFixedSize(25, 25);
         _closeBtn->hide();
         connect(_closeBtn, &DFloatingButton::clicked, this, &PlayItemWidget::closeButtonClicked);
-        //connect(_closeBtn, &FloatingButton::clicked, this, &PlayItemWidget::closeButtonClicked);
-        //connect(_closeBtn, &FloatingButton::mouseHover, this, &PlayItemWidget::closeBtnStates);
 
         setToolTip(_pif.mi.title);
         auto th = new PlayItemTooltipHandler(this);
@@ -254,6 +260,19 @@ public:
         connect(_playlist, &PlaylistWidget::sizeChange, this, &PlayItemWidget::slotSizeChange);
 
     }
+    
+    ~PlayItemWidget() override
+    {
+        if (m_pSvgWidget) {
+            delete  m_pSvgWidget;
+            m_pSvgWidget = nullptr;
+        }
+
+        if (_thumb) {
+            delete _thumb;
+            _thumb = nullptr;
+        }
+    }
 
     void updateInfo(const PlayItemInfo &pif)
     {
@@ -266,7 +285,6 @@ public:
             setState(ItemState::Invalid);
             _time->setText(tr("The file does not exist"));
         }
-//        setStyleSheet(styleSheet());
         update();
     }
 
@@ -285,63 +303,11 @@ public:
         _index->setText(QString::number(index + 1));
     }
 
-    ///not used functions,comment out it temporarily
-    /*QString getBg() const
-    {
-        return _bg;
-    }
-    void setBg(const QString &s)
-    {
-        _bg = s;
-
-        auto dpr = qApp->devicePixelRatio();
-
-        QPixmap pm = QPixmap::fromImage(utils::LoadHiDPIImage(s));
-
-        QPixmap dest(pm.size());
-        dest.setDevicePixelRatio(dpr);
-        dest.fill(Qt::transparent);
-        QPainter p(&dest);
-
-        if (state() == ItemState::Invalid) {
-            p.setOpacity(0.5);
-        }
-
-        // thumb size
-        QSize sz(22, 40);
-        sz *= dpr;
-
-        p.drawPixmap(0, 0, pm);
-
-        if (!_pif.thumbnail.isNull()) {
-            auto img = _pif.thumbnail.scaledToHeight(sz.height(), Qt::SmoothTransformation);
-            img.setDevicePixelRatio(dpr);
-
-            QPointF target_pos((pm.width() - sz.width()) / 2, (pm.height() - sz.height()) / 2);
-            target_pos /= dpr;
-
-            QRectF src_rect((img.width() - sz.width()) / 2, (img.height() - sz.height()) / 2,
-                            sz.width(), sz.height());
-            p.drawPixmap(target_pos, img, src_rect);
-
-        }
-
-        if (state() == ItemState::Playing) {
-            QPointF pos((pm.width() - _play.width()) / 2, (pm.height() - _play.height()) / 2);
-            pos /= dpr;
-            p.drawPixmap(pos, _play);
-        }
-        p.end();
-
-    //        _thumb->setPixmap(dest);
-    }*/
-
     void setHovered(bool v)
     {
         if (_hovered != v) {
             _hovered = v;
             setProperty("hovered", v);
-//            setStyleSheet(styleSheet());
         }
     }
 
@@ -384,7 +350,6 @@ public:
             setState(ItemState::Invalid);
             _time->setText(tr("The file does not exist"));
         }
-//        setStyleSheet(styleSheet());
         if (!_pif.url.isLocalFile() || _pif.info.exists()) {
             emit doubleClicked();
         }
@@ -395,17 +360,21 @@ signals:
     void doubleClicked();
 
 private slots:
-    /*void closeBtnStates(bool bHover)
-    {
-        setCurItemHovered(bHover);
-    }*/
     void slotThemeTypeChanged()
     {
         if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
-            _thumb->setPic(_pif.thumbnail);
+            if (_thumb) {
+                _thumb->setPic(_pif.thumbnail);
+            } else {
+                m_pSvgWidget->load(QString(":/resources/icons/music-light.svg"));
+            }
         };
         if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
-            _thumb->setPic(_pif.thumbnail_dark);
+            if (_thumb) {
+                _thumb->setPic(_pif.thumbnail_dark);
+            } else {
+                m_pSvgWidget->load(QString(":/resources/icons/music-dark.svg"));
+            }
         }
     }
     void slotSizeChange()
@@ -417,9 +386,6 @@ protected:
     void updateClosePosition()
     {
         auto margin = 10;
-//        auto pl = dynamic_cast<QListWidget *>(parentWidget()->parentWidget());
-//        if (pl->verticalScrollBar()->isVisible())
-//            margin = 10;
         _closeBtn->move(width() - _closeBtn->width() - margin,
                         (height() - _closeBtn->height()) / 2);
     }
@@ -459,20 +425,10 @@ protected:
     bool event(QEvent *ee) override
     {
         if (ee->type() == QEvent::Resize) {
-//            int text_height = _name->document()->size().height();
             _name->setFixedHeight(36);
         }
 
         if (ee->type() == QEvent::Move) {
-//            _closeBtn->hide();
-//            if (isVisible()) {
-//                auto pos = _listWidget->mapFromGlobal(QCursor::pos());
-//                auto r = QRect(mapTo(_listWidget, QPoint()), size());
-//                if (r.contains(pos)) {
-//                    _closeBtn->show();
-//                    _closeBtn->raise();
-//                }
-//            }
         }
 
         return QFrame::event(ee);
@@ -481,26 +437,12 @@ protected:
     {
         _name->setText(utils::ElideText(_pif.mi.title, {width() - 242, 36}, QTextOption::NoWrap,
                                         _name->font(), Qt::ElideRight, 18, width() - 242));
-//        _name->viewport()->setCursor(Qt::ArrowCursor);
         _name->setCursor(Qt::ArrowCursor);
-//        _name->document()->setDocumentMargin(0.0);
-//        int text_height = _name->document()->size().height();
         _name->setFixedHeight(36);
     }
     void showEvent(QShowEvent *se) override
     {
         updateNameText();
-
-//        QTimer::singleShot(0, [=]() {
-//            auto pos = _listWidget->mapFromGlobal(QCursor::pos());
-//            auto r = QRect(mapTo(_listWidget, QPoint()), size());
-//            if (r.contains(pos)) {
-//                _closeBtn->show();
-//                _closeBtn->raise();
-//                updateClosePosition();
-//            }
-//        });
-
         QFrame::showEvent(se);
     }
     void mouseDoubleClickEvent(QMouseEvent *me) override
@@ -631,6 +573,7 @@ private:
     QString _bg;
     DLabel *_index;
     ListPic *_thumb;
+    QSvgWidget *m_pSvgWidget;
     DLabel *_name;
     DLabel *_time;
     QPixmap _play;

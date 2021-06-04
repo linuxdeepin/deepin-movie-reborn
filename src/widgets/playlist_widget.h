@@ -43,7 +43,7 @@
 #include <DLabel>
 #include <DTextEdit>
 #include <QPainterPath>
-
+#include <QSvgWidget>
 
 namespace Dtk {
 namespace Widget {
