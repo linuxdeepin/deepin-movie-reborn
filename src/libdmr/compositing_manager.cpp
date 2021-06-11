@@ -230,6 +230,7 @@ CompositingManager::CompositingManager()
     if (_composited) {
         m_bHasCard = _composited;
         _composited = false;
+        m_bOnlySoftDecode = false;
         qInfo() << "hasCard: " << m_bHasCard;
     }
 #endif
