@@ -109,6 +109,11 @@ void checkIsCanHwdec(int argc, char *argv[])
 
 int main(int argc, char *argv[])
 {
+    //for qt5platform-plugins load DPlatformIntegration or DPlatformIntegrationParent
+    if (!QString(qgetenv("XDG_CURRENT_DESKTOP")).toLower().startsWith("deepin")){
+        setenv("XDG_CURRENT_DESKTOP", "Deepin", 1);
+    }
+
 #ifdef __x86_64__
     if(argc==2 && strcmp(argv[1],"hwdec") == 0) {
         checkIsCanHwdec(argc, argv);

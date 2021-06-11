@@ -617,6 +617,14 @@ void MpvProxy::handle_mpv_events()
                 }
 #endif
             }
+            //设置播放参数
+            QMap<QString, QString>::iterator iter = m_pConfig->begin();
+            qInfo() << __func__ << "Set mpv propertys!!";
+            while (iter != m_pConfig->end()) {
+                my_set_property(m_handle, iter.key(), iter.value());
+                iter++;
+            }
+
             setState(PlayState::Playing); //might paused immediately
             emit fileLoaded();
             qInfo() << QString("rotate metadata: dec %1, out %2")
@@ -1083,17 +1091,22 @@ void MpvProxy::play()
         //非景嘉微显卡
         if (!utils::check_wayland_env() && !m_bIsJingJia) {
             if (m_bHwaccelAuto) {
-                QString sCodec = my_get_property(m_handle, "video-codec").toString();
-                bool autoHwdec = sCodec.toLower().contains("wmv3") || sCodec.toLower().contains("wmv");
-#if !defined (__x86_64__)
-                autoHwdec = autoHwdec || sCodec.toLower().contains("mpeg2video");
-#endif
+                PlayItemInfo currentInfo = dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist()->currentInfo();
+                auto codec = currentInfo.mi.videoCodec();
+                auto name = _file.fileName();
+                bool autoHwdec = codec.toLower().contains("wmv") || name.toLower().contains("wmv");
+            #if !defined (__x86_64__)
+                autoHwdec = autoHwdec || codec.toLower().contains("mpeg2video");
+            #endif
                 if (autoHwdec) {
                     qInfo() << "my_set_property hwdec no";
                     my_set_property(m_handle, "hwdec", "no");
                 } else {
-                    my_set_property(m_handle, "hwdec", "auto");
-                }
+                    if (CompositingManager::get().isOnlySoftDecode()) {
+                        my_set_property(m_handle, "hwdec", "no");
+                    } else {
+                        my_set_property(m_handle, "hwdec", "auto");
+                    }                }
             }
         }
 
