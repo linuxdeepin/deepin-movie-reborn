@@ -296,7 +296,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
     pFormLayout->setHorizontalSpacing(10);
     pFormLayout->setLabelAlignment(Qt::AlignLeft);
     pFormLayout->setFormAlignment(Qt::AlignCenter);
-    DEnhancedWidget *hanceedWidget = new DEnhancedWidget(film);
+    DEnhancedWidget *hanceedWidget = new DEnhancedWidget(film, this);
     connect(hanceedWidget, &DEnhancedWidget::heightChanged, this, &MovieInfoDialog::changedHeight);
 
     addRow(tr("Type"), strMovieInfo.fileType, pFormLayout, tipLst);
@@ -329,7 +329,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
     pVideoFormLayout->setHorizontalSpacing(10);
     pVideoFormLayout->setLabelAlignment(Qt::AlignLeft);
     pVideoFormLayout->setFormAlignment(Qt::AlignCenter);
-    DEnhancedWidget *videoWidget = new DEnhancedWidget(video);
+    DEnhancedWidget *videoWidget = new DEnhancedWidget(video, this);
     connect(videoWidget, &DEnhancedWidget::heightChanged, this, &MovieInfoDialog::changedHeight);
 
     addRow(tr("Video CodecID"), strMovieInfo.videoCodec(), pVideoFormLayout, tipLst);

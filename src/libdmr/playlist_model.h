@@ -255,7 +255,7 @@ private:
 
     QList<AppendJob> _pendingJob; // async job
     QSet<QString> _urlsInJob;  // url list
-    QFutureWatcher<PlayItemInfo> *_jobWatcher {nullptr};
+    // QFutureWatcher<PlayItemInfo> *_jobWatcher {nullptr};
 
     QQueue<UrlList> _pendingAppendReq;
 
