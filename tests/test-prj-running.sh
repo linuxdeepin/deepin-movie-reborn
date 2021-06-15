@@ -11,7 +11,7 @@ echo ${platform}
 
 export QT_QPA_PLATFORM=
 echo $QT_QPA_PLATFORM
-export QTEST_FUNCTION_TIMEOUT='400000'
+export QTEST_FUNCTION_TIMEOUT='500000'
 #export QT_SELECT=qt5
 cmake -DCMAKE_BUILD_TYPE=Debug ..
 make -j16

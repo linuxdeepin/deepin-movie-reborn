@@ -58,6 +58,7 @@ FILE (GLOB allTestSource
     backends/*.cpp
     vendor/*.cpp
     stub/*.cpp
+    *.sh
     )
 
 # 定义资源文件

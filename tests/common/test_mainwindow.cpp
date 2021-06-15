@@ -153,6 +153,9 @@ TEST(MainWindow, tabInteraction)
     QTest::keyClick(playlistWidget, Qt::Key_Down, Qt::NoModifier, 500);
     QTest::keyClick(playlistWidget, Qt::Key_Up, Qt::NoModifier, 500);
     QTest::keyClick(playlist, Qt::Key_Enter, Qt::NoModifier, 500);
+
+    delete tabEvent;
+    tabEvent = nullptr;
 }
 #endif
 
