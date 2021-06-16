@@ -176,6 +176,7 @@ int main(int argc, char *argv[])
     app->setWindowIcon(QIcon(":/resources/icons/logo-big.svg"));
     QString acknowledgementLink = "https://www.deepin.org/acknowledgments/deepin-movie";
     app->setApplicationAcknowledgementPage(acknowledgementLink);
+    app->setApplicationVersion(DApplication::buildVersion(VERSION));
 
     //save theme
     DApplicationSettings saveTheme;
@@ -232,7 +233,6 @@ int main(int argc, char *argv[])
     app->setAttribute(Qt::AA_DontCreateNativeWidgetSiblings, true);
 
 //    app.setApplicationVersion(DApplication::buildVersion("20190830"));
-    app->setApplicationVersion(DApplication::buildVersion(VERSION));
     MovieConfiguration::get().init();
 
     QRegExp url_re("\\w+://");
