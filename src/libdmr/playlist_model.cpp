@@ -51,8 +51,6 @@ extern "C" {
 typedef int (*mvideo_avformat_open_input)(AVFormatContext **ps, const char *url, AVInputFormat *fmt, AVDictionary **options);
 typedef int (*mvideo_avformat_find_stream_info)(AVFormatContext *ic, AVDictionary **options);
 typedef int (*mvideo_av_find_best_stream)(AVFormatContext *ic, enum AVMediaType type, int wanted_stream_nb, int related_stream, AVCodec **decoder_ret, int flags);
-//typedef AVCodec *(*mvideo_avcodec_find_decoder)(enum AVCodecID id);
-//typedef void (*mvideo_av_dump_format)(AVFormatContext *ic, int index, const char *url, int is_output);
 typedef void (*mvideo_avformat_close_input)(AVFormatContext **s);
 typedef AVDictionaryEntry *(*mvideo_av_dict_get)(const AVDictionary *m, const char *key, const AVDictionaryEntry *prev, int flags);
 
@@ -60,55 +58,10 @@ typedef AVDictionaryEntry *(*mvideo_av_dict_get)(const AVDictionary *m, const ch
 mvideo_avformat_open_input g_mvideo_avformat_open_input = nullptr;
 mvideo_avformat_find_stream_info g_mvideo_avformat_find_stream_info = nullptr;
 mvideo_av_find_best_stream g_mvideo_av_find_best_stream = nullptr;
-//mvideo_avcodec_find_decoder g_mvideo_avcodec_find_decoder = nullptr;
-//mvideo_av_dump_format g_mvideo_av_dump_format = nullptr;
 mvideo_avformat_close_input g_mvideo_avformat_close_input = nullptr;
 mvideo_av_dict_get g_mvideo_av_dict_get = nullptr;
 
-/*static bool check_wayland()
-{
-    //此处在wayland下也是直接return false
-    return false;
-//    auto e = QProcessEnvironment::systemEnvironment();
-//    QString XDG_SESSION_TYPE = e.value(QStringLiteral("XDG_SESSION_TYPE"));
-//    QString WAYLAND_DISPLAY = e.value(QStringLiteral("WAYLAND_DISPLAY"));
-
-//    if (XDG_SESSION_TYPE == QLatin1String("wayland") || WAYLAND_DISPLAY.contains(QLatin1String("wayland"), Qt::CaseInsensitive))
-//        return true;
-//    else {
-//        return false;
-//    }
-}*/
-
 namespace dmr {
-/*QDebug operator<<(QDebug debug, const struct MovieInfo &mi)
-{
-    debug << "MovieInfo{"
-          << mi.valid
-          << mi.title
-          << mi.fileType
-          << mi.resolution
-          << mi.filePath
-          << mi.creation
-          << mi.raw_rotate
-          << mi.fileSize
-          << mi.duration
-          << mi.width
-          << mi.height
-          << mi.vCodecID
-          << mi.vCodeRate
-          << mi.fps
-          << mi.proportion
-          << mi.aCodeID
-          << mi.aCodeRate
-          << mi.aDigit
-          << mi.channels
-          << mi.sampling
-          << "}";
-    return debug;
-}
-*/
-
 QDataStream &operator<< (QDataStream &st, const MovieInfo &mi)
 {
     st << mi.valid;
@@ -453,9 +406,6 @@ PlaylistModel::PlaylistModel(PlayerEngine *e)
     m_pdataMutex = new QMutex();
     m_ploadThread = nullptr;
     m_brunning = false;
-    //initThumb();
-    //m_video_thumbnailer->thumbnail_size = 400 * qApp->devicePixelRatio();
-    //av_register_all();
 
     _playlistFile = QString("%1/%2/%3/playlist")
                     .arg(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation))
@@ -464,13 +414,8 @@ PlaylistModel::PlaylistModel(PlayerEngine *e)
 
     connect(e, &PlayerEngine::stateChanged, this, &PlaylistModel::slotStateChanged);
 
-
-//    _jobWatcher = new QFutureWatcher<PlayItemInfo>();
-//    connect(_jobWatcher, &QFutureWatcher<PlayItemInfo>::finished,
-//            this, &PlaylistModel::onAsyncAppendFinished);
-
     stop();
-    //loadPlaylist();
+
 #ifdef _LIBDMR_
     initThumb();
     initFFmpeg();
@@ -537,7 +482,6 @@ void PlaylistModel::initFFmpeg()
 PlaylistModel::~PlaylistModel()
 {
     qInfo() << __func__;
-    //delete _jobWatcher;
 
     delete m_pdataMutex;
 
@@ -1145,19 +1089,7 @@ void PlaylistModel::appendAsync(const QList<QUrl> &urls)
         initThumb();
         initFFmpeg();
     }
-    /// check_wayland() always always return false,comment out the code for now
-    /*if (check_wayland()) {
-        if (m_ploadThread == nullptr) {
-            m_ploadThread = new LoadThread(this, urls);
-            connect(m_ploadThread, &QThread::finished, this, &PlaylistModel::deleteThread);
-        }
-        if (!m_ploadThread->isRunning()) {
-            m_ploadThread->start();
-            m_brunning = m_ploadThread->isRunning();
-        }
-    } else {*/
     delayedAppendAsync(urls);
-    //}
 }
 
 //void PlaylistModel::deleteThread()
@@ -1598,6 +1530,12 @@ struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl &url, const QFil
             }
             pm.setDevicePixelRatio(qApp->devicePixelRatio());
             dark_pm.setDevicePixelRatio(qApp->devicePixelRatio());
+
+            if(!m_image_data) {
+                m_mvideo_thumbnailer_destroy_image_data(m_image_data);
+                m_image_data = nullptr;
+            }
+
         } catch (const std::logic_error &) {
         }
     }

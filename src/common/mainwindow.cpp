@@ -1365,6 +1365,10 @@ MainWindow::~MainWindow()
     }
 #endif
 
+    if (m_pShortcutViewProcess) {
+        m_pShortcutViewProcess->deleteLater();
+        m_pShortcutViewProcess = nullptr;
+    }
 }
 
 bool MainWindow::judgeMouseInWindow(QPoint pos)

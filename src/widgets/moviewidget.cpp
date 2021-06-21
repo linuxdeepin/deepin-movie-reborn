@@ -88,6 +88,11 @@ MovieWidget::MovieWidget(QWidget *parent)
     m_pTimer->setInterval(INTERVAL);
     connect(m_pTimer, &QTimer::timeout, this, &MovieWidget::updateView);
 }
+MovieWidget::~MovieWidget()
+{
+    m_pTimer->deleteLater();
+    m_pTimer = nullptr;
+}
 /**
  * @brief startPlaying
  * 开始播放时的槽函数

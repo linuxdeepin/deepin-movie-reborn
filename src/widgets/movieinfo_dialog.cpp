@@ -358,7 +358,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
     audioForm->setHorizontalSpacing(10);
     audioForm->setLabelAlignment(Qt::AlignLeft);
     audioForm->setFormAlignment(Qt::AlignCenter);
-    DEnhancedWidget *audioWidget = new DEnhancedWidget(audio);
+    DEnhancedWidget *audioWidget = new DEnhancedWidget(audio, this);
     connect(audioWidget, &DEnhancedWidget::heightChanged, this, &MovieInfoDialog::changedHeight);
 
     addRow(tr("Audio CodecID"), strMovieInfo.audioCodec(), audioForm, tipLst);

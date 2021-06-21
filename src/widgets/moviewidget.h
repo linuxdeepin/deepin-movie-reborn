@@ -66,6 +66,7 @@ public:
      * @param parent 父窗口
      */
     explicit MovieWidget(QWidget *parent = nullptr);
+    ~MovieWidget();
 
 public slots:
     /**
