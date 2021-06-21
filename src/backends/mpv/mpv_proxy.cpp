@@ -362,18 +362,20 @@ mpv_handle *MpvProxy::mpv_init()
             } else {
                 my_set_property(m_handle, "hwdec", "auto");
             }
-#if !defined (__x86_64__)
-            if (CompositingManager::get().hascard()) {
-                my_set_property(m_handle, "vo", "vdpau,gpu,x11");
-                m_sInitVo = "vdpau,gpu,x11";
-            } else {
 #if defined (__mips__)
-               qInfo() << "修改音视频同步模式";
-               my_set_property(m_handle, "video-sync", "desync");
-#endif
+            if (!CompositingManager::get().hascard()) {
+                qInfo() << "修改音视频同步模式";
+                my_set_property(m_handle, "video-sync", "desync");
             }
-            my_set_property(m_handle, "vo", "gpu,xv,x11");
+            my_set_property(m_handle, "vo", "vdpau,gpu,x11");
             my_set_property(m_handle, "ao", "alsa");
+            m_sInitVo = "vdpau,gpu,x11";
+#elif defined (__sw_64__)
+            //Synchronously modify the video output of the SW platform vdpau(powered by zhangfl)
+            my_set_property(m_handle, "vo", "vdpau,gpu,x11");
+            m_sInitVo = "vdpau,gpu,x11";
+#elif defined (__aarch64__)
+            my_set_property(m_handle, "vo", "gpu,xv,x11");
             m_sInitVo = "gpu,xv,x11";
 #else
             //TODO(xxxxpengfei)：暂未处理intel集显情况
