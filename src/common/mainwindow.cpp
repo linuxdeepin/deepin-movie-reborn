@@ -1734,7 +1734,7 @@ void MainWindow::loadPlayList()
 
     if (!m_listOpenFiles.isEmpty()) {
         if (m_listOpenFiles.size() == 1) {
-            play(m_listOpenFiles[0]);
+            play(QUrl::fromLocalFile(m_listOpenFiles[0]));
         } else {
             playList(m_listOpenFiles);
         }
