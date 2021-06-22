@@ -374,6 +374,7 @@ public:
             v = (m_nStartPoint + m_nViewLength);
         }
         m_IndicatorPos = {v, rect().y()};
+        update();
     }
     int getValue()
     {
@@ -972,24 +973,20 @@ void ToolboxProxy::finishLoadSlot(QSize size)
     qInfo() << "thumbnail has finished";
 
     if (m_pmList.isEmpty()) return;
-
     if (!m_bThumbnailmode) {
         return;
     }
-    //    if (m_bIsStillShowThumbnail) {
     m_pViewProgBar->setViewProgBar(m_pEngine, m_pmList, m_pmBlackList);
-    //    }
 
-    if (CompositingManager::get().composited()/* && _loadsize == size*/ && m_pEngine->state() != PlayerEngine::CoreState::Idle) {
+#if defined(__x86_64__)
+    if (m_pEngine->state() != PlayerEngine::CoreState::Idle) {
         PlayItemInfo info = m_pEngine->playlist().currentInfo();
         if (!info.url.isLocalFile()) {
-            // Url and DVD without thumbnail
-//            if (!info.url.scheme().startsWith("dvd")) {
             return;
-//            }
         }
         m_pProgBar_Widget->setCurrentIndex(2);
     }
+#endif
 }
 
 void ToolboxProxy::setthumbnailmode()
@@ -998,7 +995,7 @@ void ToolboxProxy::setthumbnailmode()
         return;
     }
 
-#if !defined (__mips__ ) && !defined(__aarch64__)
+#if defined (__x86_64__ )
     if (Settings::get().isSet(Settings::ShowThumbnailMode)) {
         m_bThumbnailmode = true;
         updateThumbnail();
@@ -2371,7 +2368,9 @@ void ToolboxProxy::resizeEvent(QResizeEvent *event)
     if (event->oldSize().width() != event->size().width()) {
         if (m_pEngine->state() != PlayerEngine::CoreState::Idle) {
             if (m_bThumbnailmode) {  //如果进度条为胶片模式，重新加载缩略图并显示
+#if defined (__x86_64__ )
                 updateThumbnail();
+#endif
                 updateMovieProgress();
             }
             m_pProgBar_Widget->setCurrentIndex(1);
