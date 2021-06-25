@@ -37,6 +37,7 @@
 #include <fcntl.h>
 #include </usr/include/linux/cdrom.h>
 #include <QFile>
+#include <unistd.h>
 
 Diskcheckthread::Diskcheckthread()
 {
@@ -87,6 +88,7 @@ void Diskcheckthread::diskChecking()
                     m_mapDisk2Name.remove(strDiskPath);
                 }
             }
+            close(nFd);
         }
     } while (!mountFile.atEnd());
     mountFile.close();
