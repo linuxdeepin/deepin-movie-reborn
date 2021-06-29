@@ -1734,7 +1734,11 @@ void MainWindow::loadPlayList()
 
     if (!m_listOpenFiles.isEmpty()) {
         if (m_listOpenFiles.size() == 1) {
-            play(QUrl::fromLocalFile(m_listOpenFiles[0]));
+            if (QUrl(m_listOpenFiles[0]).isLocalFile()) {
+                play(m_listOpenFiles[0]);
+            } else {
+                play(QUrl::fromLocalFile(m_listOpenFiles[0]));
+            }
         } else {
             playList(m_listOpenFiles);
         }
@@ -2871,11 +2875,6 @@ void MainWindow::play(const QUrl &url)
         activateWindow();
     }
 
-//    if (!m_pEngine->addPlayFile(url)) {
-//        auto msg = QString(tr("Invalid file: %1").arg(url.fileName()));
-//        m_pCommHintWid->updateWithMessage(msg);
-//        return;
-//    }
     if (url.scheme().startsWith("dvd")) {
         m_dvdUrl = url;
         if (!m_pEngine->addPlayFile(url)) {
@@ -2885,9 +2884,7 @@ void MainWindow::play(const QUrl &url)
         } else {
             // todo: Disable toolbar buttons
             auto msg = QString(tr("Reading DVD files..."));
-//            m_pDVDHintWid->updateWithMessage(msg, false);
             m_pDVDHintWid->updateWithMessage(msg, true);
-//            return;
         }
     } else {
         if (!m_pEngine->addPlayFile(url)) {
