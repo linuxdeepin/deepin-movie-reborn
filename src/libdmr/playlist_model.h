@@ -255,7 +255,6 @@ private:
 
     QList<AppendJob> _pendingJob; // async job
     QSet<QString> _urlsInJob;  // url list
-    // QFutureWatcher<PlayItemInfo> *_jobWatcher {nullptr};
 
     QQueue<UrlList> _pendingAppendReq;
 
@@ -282,6 +281,7 @@ private:
     QList<QUrl> m_loadFile;
     bool m_isLoadRunning {false};
     bool m_initFFmpeg {false};
+    bool m_bInitThumb {false};
 
     void reshuffle();
     void appendSingle(const QUrl &);

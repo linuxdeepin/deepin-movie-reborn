@@ -886,6 +886,9 @@ TEST(ToolBox, mainWindowEvent)
 
     w->testCdrom();
     QTest::qWait(500);
+
+    delete cme;
+    cme = nullptr;
 }
 
 TEST(ToolBox, clearPlayList)

@@ -797,6 +797,11 @@ viewProgBarLoad::~viewProgBarLoad()
 {
     delete [] m_seekTime;
     m_seekTime = nullptr;
+
+    if (m_video_thumbnailer != nullptr) {
+        m_mvideo_thumbnailer_destroy(m_video_thumbnailer);
+        m_video_thumbnailer = nullptr;
+    }
 }
 
 void viewProgBarLoad::setListPixmapMutex(QMutex *pMutex)
@@ -827,31 +832,20 @@ QString libPath(const QString &strlib)
 
 void viewProgBarLoad::initThumb()
 {
-//#ifdef __x86_64__
-//    const char *path = "/usr/lib/x86_64-linux-gnu/libffmpegthumbnailer.so.4";
-//#elif __mips__
-//    const char *path = "/usr/lib/mips64el-linux-gnuabi64/libffmpegthumbnailer.so.4";
-//#elif __aarch64__
-//    const char *path = "/usr/lib/aarch64-linux-gnu/libffmpegthumbnailer.so.4";
-//#elif __sw_64__
-//    const char *path = "/usr/lib/sw_64-linux-gnu/libffmpegthumbnailer.so.4";
-//#else
-//    const char *path = "/usr/lib/i386-linux-gnu/libffmpegthumbnailer.so.4";
-//#endif
-
     QLibrary library(libPath("libffmpegthumbnailer.so"));
     m_mvideo_thumbnailer = (mvideo_thumbnailer) library.resolve("video_thumbnailer_create");
     m_mvideo_thumbnailer_destroy = (mvideo_thumbnailer_destroy) library.resolve("video_thumbnailer_destroy");
     m_mvideo_thumbnailer_create_image_data = (mvideo_thumbnailer_create_image_data) library.resolve("video_thumbnailer_create_image_data");
     m_mvideo_thumbnailer_destroy_image_data = (mvideo_thumbnailer_destroy_image_data) library.resolve("video_thumbnailer_destroy_image_data");
     m_mvideo_thumbnailer_generate_thumbnail_to_buffer = (mvideo_thumbnailer_generate_thumbnail_to_buffer) library.resolve("video_thumbnailer_generate_thumbnail_to_buffer");
+
     if (m_mvideo_thumbnailer == nullptr || m_mvideo_thumbnailer_destroy == nullptr
             || m_mvideo_thumbnailer_create_image_data == nullptr || m_mvideo_thumbnailer_destroy_image_data == nullptr
             || m_mvideo_thumbnailer_generate_thumbnail_to_buffer == nullptr)
-
     {
         return;
     }
+
     m_video_thumbnailer = m_mvideo_thumbnailer();
 }
 

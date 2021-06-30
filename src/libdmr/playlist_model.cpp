@@ -447,21 +447,25 @@ QString PlaylistModel::libPath(const QString &strlib)
 void PlaylistModel::initThumb()
 {
     QLibrary library(libPath("libffmpegthumbnailer.so"));
+
     m_mvideo_thumbnailer = (mvideo_thumbnailer) library.resolve("video_thumbnailer_create");
     m_mvideo_thumbnailer_destroy = (mvideo_thumbnailer_destroy) library.resolve("video_thumbnailer_destroy");
     m_mvideo_thumbnailer_create_image_data = (mvideo_thumbnailer_create_image_data) library.resolve("video_thumbnailer_create_image_data");
     m_mvideo_thumbnailer_destroy_image_data = (mvideo_thumbnailer_destroy_image_data) library.resolve("video_thumbnailer_destroy_image_data");
     m_mvideo_thumbnailer_generate_thumbnail_to_buffer = (mvideo_thumbnailer_generate_thumbnail_to_buffer) library.resolve("video_thumbnailer_generate_thumbnail_to_buffer");
+
     if (m_mvideo_thumbnailer == nullptr || m_mvideo_thumbnailer_destroy == nullptr
             || m_mvideo_thumbnailer_create_image_data == nullptr || m_mvideo_thumbnailer_destroy_image_data == nullptr
             || m_mvideo_thumbnailer_generate_thumbnail_to_buffer == nullptr)
-
     {
         return;
     }
+
     m_video_thumbnailer = m_mvideo_thumbnailer();
     m_image_data = m_mvideo_thumbnailer_create_image_data();
     m_video_thumbnailer->thumbnail_size = 400 * qApp->devicePixelRatio();
+
+    m_bInitThumb = true;
 }
 
 void PlaylistModel::initFFmpeg()
@@ -490,20 +494,22 @@ PlaylistModel::~PlaylistModel()
         clearPlaylist();
     }
 #endif
-    if (utils::check_wayland_env() && m_getThumanbil) {
-        if (m_getThumanbil->isRunning()) {
-            m_getThumanbil->stop();
-        }
-        m_getThumanbil->wait();
-        delete m_getThumanbil;
-        m_getThumanbil = nullptr;
-    } else if (m_getThumanbil) {
+    if (m_getThumanbil) {
         if (m_getThumanbil->isRunning()) {
             m_getThumanbil->stop();
         }
         m_getThumanbil->deleteLater();
         m_getThumanbil = nullptr;
     }
+    if (m_video_thumbnailer != nullptr) {
+        m_mvideo_thumbnailer_destroy(m_video_thumbnailer);
+        m_video_thumbnailer = nullptr;
+    }
+    if (m_image_data != nullptr) {
+        m_mvideo_thumbnailer_destroy_image_data(m_image_data);
+        m_image_data = nullptr;
+    }
+
 }
 
 qint64 PlaylistModel::getUrlFileTotalSize(QUrl url, int tryTimes) const
@@ -581,8 +587,12 @@ void PlaylistModel::savePlaylist()
 
 void PlaylistModel::loadPlaylist()
 {
-    initThumb();
-    initFFmpeg();
+    if (!m_initFFmpeg) {
+        initFFmpeg();
+    }
+    if (!m_bInitThumb) {
+        initThumb();
+    }
     QList<QUrl> urls;
 
     QSettings cfg(_playlistFile, QSettings::NativeFormat);
@@ -1086,26 +1096,13 @@ void PlaylistModel::collectionJob(const QList<QUrl> &urls, QList<QUrl> &inputUrl
 void PlaylistModel::appendAsync(const QList<QUrl> &urls)
 {
     if (!m_initFFmpeg) {
-        initThumb();
         initFFmpeg();
+    }
+    if (!m_bInitThumb) {
+        initThumb();
     }
     delayedAppendAsync(urls);
 }
-
-//void PlaylistModel::deleteThread()
-//{
-/// check_wayland() return false,comment out the code for now
-/*if (check_wayland()) {
-    if (m_ploadThread == nullptr)
-        return ;
-    if (m_ploadThread->isRunning()) {
-        m_ploadThread->wait();
-    }
-    delete m_ploadThread;
-    m_ploadThread = nullptr;
-    m_brunning = false;
-}*/
-//}
 
 void PlaylistModel::delayedAppendAsync(const QList<QUrl> &urls)
 {
@@ -1137,28 +1134,8 @@ void PlaylistModel::delayedAppendAsync(const QList<QUrl> &urls)
         }
     };
 
-    /// check_wayland() always return false,comment out the code for now
-    /*if (check_wayland()) {
-        m_pdataMutex->lock();
-        PlayItemInfoList pil;
-        for (const auto &a : _pendingJob) {
-            qInfo() << "sync mapping " << a.first.fileName();
-            pil.append(calculatePlayInfo(a.first, a.second));
-            if (m_ploadThread && m_ploadThread->isRunning()) {
-                m_ploadThread->msleep(10);
-            }
-        }
-        _pendingJob.clear();
-        _urlsInJob.clear();
-
-        m_pdataMutex->unlock();
-
-        handleAsyncAppendResults(pil);
-    } else {*/
     qInfo() << "not wayland";
     if (QThread::idealThreadCount() > 1) {
-//            auto future = QtConcurrent::mapped(_pendingJob, MapFunctor(this));
-//            _jobWatcher->setFuture(future);
         if (!m_getThumanbil) {
             m_getThumanbil = new GetThumanbil(this, t_urls);
             connect(m_getThumanbil, &GetThumanbil::finished, this, &PlaylistModel::onAsyncFinished);
@@ -1188,8 +1165,6 @@ void PlaylistModel::delayedAppendAsync(const QList<QUrl> &urls)
         _urlsInJob.clear();
         handleAsyncAppendResults(pil);
     }
-    //}
-
 }
 
 static QList<PlayItemInfo> &SortSimilarFiles(QList<PlayItemInfo> &fil)
@@ -1232,13 +1207,6 @@ static QList<PlayItemInfo> &SortSimilarFiles(QList<PlayItemInfo> &fil)
 
 void PlaylistModel::onAsyncFinished()
 {
-//    QList<PlayItemInfo> fil = m_getThumanbil->getInfoList();
-//    qInfo() << __func__ << "size" << fil.size() << "info size" << _infos.size();
-//    for (int i = 0; i < fil.size();i++) {
-//        if (indexOf(fil[i].url) >= 0) {
-//            fil.removeAt(i);
-//        }
-//    }
     m_isLoadRunning = false;
     //qInfo() << fil.size();
     m_getThumanbil->clearItem();
@@ -1530,12 +1498,6 @@ struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl &url, const QFil
             }
             pm.setDevicePixelRatio(qApp->devicePixelRatio());
             dark_pm.setDevicePixelRatio(qApp->devicePixelRatio());
-
-            if(!m_image_data) {
-                m_mvideo_thumbnailer_destroy_image_data(m_image_data);
-                m_image_data = nullptr;
-            }
-
         } catch (const std::logic_error &) {
         }
     }
