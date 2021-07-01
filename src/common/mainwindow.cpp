@@ -829,7 +829,7 @@ MainWindow::MainWindow(QWidget *parent)
 #endif
     m_pMiniPlayBtn->setIcon(QIcon(":/resources/icons/light/mini/play-normal-mini.svg"));
     m_pMiniPlayBtn->setIconSize(QSize(30, 30));
-    m_pMiniPlayBtn->setFixedSize(QSize(30, 30));
+    m_pMiniPlayBtn->setFixedSize(QSize(35, 35));
     m_pMiniPlayBtn->setObjectName("MiniPlayBtn");
     connect(m_pMiniPlayBtn, SIGNAL(clicked()), pSignalMapper, SLOT(map()));
     pSignalMapper->setMapping(m_pMiniPlayBtn, "play");
@@ -895,14 +895,14 @@ MainWindow::MainWindow(QWidget *parent)
 
     m_pMiniCloseBtn->setIcon(QIcon(":/resources/icons/light/mini/close-normal.svg"));
     m_pMiniCloseBtn->setIconSize(QSize(30, 30));
-    m_pMiniCloseBtn->setFixedSize(QSize(30, 30));
+    m_pMiniCloseBtn->setFixedSize(QSize(35, 35));
     m_pMiniCloseBtn->setObjectName("MiniCloseBtn");
     connect(m_pMiniCloseBtn, SIGNAL(clicked()), pSignalMapper, SLOT(map()));
     pSignalMapper->setMapping(m_pMiniCloseBtn, "close");
 
     m_pMiniQuitMiniBtn->setIcon(QIcon(":/resources/icons/light/mini/restore-normal-mini.svg"));
     m_pMiniQuitMiniBtn->setIconSize(QSize(30, 30));
-    m_pMiniQuitMiniBtn->setFixedSize(QSize(30, 30));
+    m_pMiniQuitMiniBtn->setFixedSize(QSize(35, 35));
     m_pMiniQuitMiniBtn->setObjectName("MiniQuitMiniBtn");
     connect(m_pMiniQuitMiniBtn, SIGNAL(clicked()), pSignalMapper, SLOT(map()));
     pSignalMapper->setMapping(m_pMiniQuitMiniBtn, "quit_mini");

@@ -672,7 +672,7 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     setLayout(mainVLayout);
 
     QHBoxLayout *mainLayout = new QHBoxLayout();
-    mainLayout->setContentsMargins(10, 0, 0, 0);
+    mainLayout->setContentsMargins(10, 0, 10, 0);
     mainLayout->setSpacing(0);
     mainLayout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
 
