@@ -320,7 +320,6 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
     video->setFixedSize(280, 136);
     videoRect->setFixedWidth(280);
     videoRect->setMinimumHeight(136);
-    //videoRect->setFixedSize(280, 136);
     video->setExpand(true);
     m_expandGroup.append(video);
     QFormLayout *pVideoFormLayout = new QFormLayout(videoRect);
@@ -333,7 +332,9 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
     connect(videoWidget, &DEnhancedWidget::heightChanged, this, &MovieInfoDialog::changedHeight);
 
     addRow(tr("Video CodecID"), strMovieInfo.videoCodec(), pVideoFormLayout, tipLst);
-    addRow(tr("Video CodeRate"), QString(tr("%1 kbps")).arg(strMovieInfo.vCodeRate), pVideoFormLayout, tipLst);
+    addRow(tr("Video CodeRate"), strMovieInfo.vCodeRate > 1000 ?
+               QString(tr("%1 kbps")).arg(strMovieInfo.vCodeRate / 1000)
+             : QString(tr("%1 bps")).arg(strMovieInfo.vCodeRate), pVideoFormLayout, tipLst);
     addRow(tr("FPS"), QString(tr("%1 fps")).arg(strMovieInfo.fps), pVideoFormLayout, tipLst);
     addRow(tr("Proportion"), QString(tr("%1")).arg(static_cast<double>(strMovieInfo.proportion)), pVideoFormLayout, tipLst);
     addRow(tr("Resolution"), strMovieInfo.resolution, pVideoFormLayout, tipLst);
@@ -362,7 +363,9 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
     connect(audioWidget, &DEnhancedWidget::heightChanged, this, &MovieInfoDialog::changedHeight);
 
     addRow(tr("Audio CodecID"), strMovieInfo.audioCodec(), audioForm, tipLst);
-    addRow(tr("Audio CodeRate"), QString(tr("%1 kbps")).arg(strMovieInfo.aCodeRate), audioForm, tipLst);
+    addRow(tr("Audio CodeRate"), strMovieInfo.aCodeRate > 1000 ?
+               QString(tr("%1 kbps")).arg(strMovieInfo.aCodeRate / 1000)
+             : QString(tr("%1 bps")).arg(strMovieInfo.aCodeRate), audioForm, tipLst);
     addRow(tr("Audio digit"), QString(tr("%1 bits").arg(strMovieInfo.aDigit)), audioForm, tipLst);
     addRow(tr("Channels"), QString(tr("%1 channels")).arg(strMovieInfo.channels), audioForm, tipLst);
     addRow(tr("Sampling"), QString(tr("%1hz")).arg(strMovieInfo.sampling), audioForm, tipLst);
