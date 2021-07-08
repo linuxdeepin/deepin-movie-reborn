@@ -106,21 +106,23 @@ ShortcutManager::ShortcutManager()
         qInfo() << "update binding" << sk << QKeySequence(val.toStringList().at(0));
         QString strKey = QKeySequence(val.toStringList().at(0)).toString();
         if (strKey.contains("Return")) {
-            _map[QKeySequence(val.toStringList().at(0))] = _keyToAction[sk];
-            strKey = QString("%1Num+Enter").arg(strKey.remove("Return"));
+            strKey = QString("%1Return").arg(strKey.remove("Return"));
             _map[strKey] = _keyToAction[sk];
+            if (QString("Return") == strKey) {
+                _map.remove(QString("Enter"));
+            }
             qInfo() << val << QKeySequence(strKey) << strKey;
-
-            _map.remove(strKey);
-            _map[strKey] = _keyToAction[sk];
         } else if (strKey.contains("Num+Enter")) {
-            _map[QKeySequence(val.toStringList().at(0))] = _keyToAction[sk];
-            strKey = QString("%1Return").arg(strKey.remove("Num+Enter"));
+            strKey = QString("%1Enter").arg(strKey.remove("Num+Enter"));
             _map[strKey] = _keyToAction[sk];
+            if (QString("Enter") == strKey) {
+                _map.remove(QString("Return"));
+            }
             qInfo() << val << QKeySequence(strKey) << strKey;
+        } else {
+            _map.remove(_map.key(_keyToAction[sk]));
+            _map[QKeySequence(val.toStringList().at(0))] = _keyToAction[sk];
         }
-        _map.remove(_map.key(_keyToAction[sk]));
-        _map[QKeySequence(val.toStringList().at(0))] = _keyToAction[sk];
         emit bindingsChanged();
     });
 }
@@ -142,14 +144,11 @@ void ShortcutManager::toggleGroupShortcuts(GroupPtr grp, bool on)
         QString strKey = QKeySequence(opt->value().toStringList().at(0)).toString();
 
         if (strKey.contains("Return")) {
-            _map[QKeySequence(opt->value().toStringList().at(0))] = _keyToAction[sk];
-            strKey = QString("%1Num+Enter").arg(strKey.remove("Return"));
+            strKey = QString("%1Return").arg(strKey.remove("Return"));
             _map[strKey] = _keyToAction[sk];
             qInfo() << opt->name() << QKeySequence(strKey) << strKey;
-
         } else if (strKey.contains("Num+Enter")) {
-            _map[QKeySequence(opt->value().toStringList().at(0))] = _keyToAction[sk];
-            strKey = QString("%1Return").arg(strKey.remove("Num+Enter"));
+            strKey = QString("%1Enter").arg(strKey.remove("Num+Enter"));
             _map[strKey] = _keyToAction[sk];
             qInfo() << opt->name() << QKeySequence(strKey) << strKey;
         }

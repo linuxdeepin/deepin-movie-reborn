@@ -1814,7 +1814,7 @@ void MainWindow::menuItemInvoked(QAction *pAction)
                     if (iter.value() == actionKind) {
                         bIsiter = true;
                         if ((iter.key() == QKeySequence("Return")
-                                || iter.key() == QKeySequence("Num+Enter")
+                                || iter.key() == QKeySequence("Enter")
                                 || iter.key() == QKeySequence("Up")
                                 || iter.key() == QKeySequence("Down")) && bIsShortcut) {
                             if (iter.key() == QKeySequence("Up") || iter.key() == QKeySequence("Down")) {
