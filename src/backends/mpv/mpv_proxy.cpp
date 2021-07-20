@@ -328,6 +328,47 @@ mpv_handle *MpvProxy::mpv_init()
 #endif
     my_set_property(pHandle, "panscan", 1.0);
 
+    QFileInfo fi("/dev/mwv206_0");              //景嘉微显卡目前只支持vo=xv，等日后升级代码需要酌情修改。
+    if (fi.exists()) {
+        my_set_property(m_handle, "hwdec", "vdpau,vdpau-copy,vaapi,vaapi-copy");
+        my_set_property(m_handle, "vo", "vdpau,xv,x11");
+        m_sInitVo = "vdpau,xv,x11";
+    } else if (QFile::exists("/dev/csmcore")) {
+        my_set_property(m_handle, "vo", "xv,x11");
+        my_set_property(m_handle, "hwdec", "auto");
+        if (utils::check_wayland_env()) {
+            my_set_property(pHandle, "wid", m_pParentWidget->winId());
+        }
+        m_sInitVo = "xv,x11";
+    } else {
+        if (CompositingManager::get().isOnlySoftDecode()) {
+            my_set_property(m_handle, "hwdec", "off");
+        } else {
+            my_set_property(m_handle, "hwdec", "auto");
+        }
+#if defined (__mips__)
+        if (!CompositingManager::get().hascard()) {
+            qInfo() << "修改音视频同步模式";
+            my_set_property(m_handle, "video-sync", "desync");
+        }
+        my_set_property(m_handle, "vo", "vdpau,gpu,x11");
+        my_set_property(m_handle, "ao", "alsa");
+        m_sInitVo = "vdpau,gpu,x11";
+#elif defined (__sw_64__)
+        //Synchronously modify the video output of the SW platform vdpau(powered by zhangfl)
+        my_set_property(m_handle, "vo", "vdpau,gpu,x11");
+        m_sInitVo = "vdpau,gpu,x11";
+#elif defined (__aarch64__)
+        my_set_property(m_handle, "vo", "gpu,xv,x11");
+        m_sInitVo = "gpu,xv,x11";
+#else
+        //TODO(xxxxpengfei)：暂未处理intel集显情况
+        if (CompositingManager::get().isZXIntgraphics()) {
+            my_set_property(m_handle, "vo", "gpu");
+        }
+#endif
+    }
+
     if (composited) {
 #ifdef __mips__
         m_setOptionString(pHandle, "vo", "opengl-cb");
@@ -347,54 +388,17 @@ mpv_handle *MpvProxy::mpv_init()
         //        }
 #endif
     } else {
-        QFileInfo fi("/dev/mwv206_0");              //景嘉微显卡目前只支持vo=xv，等日后升级代码需要酌情修改。
-        if (fi.exists()) {
-            my_set_property(m_handle, "hwdec", "vdpau,vdpau-copy,vaapi,vaapi-copy");
-            my_set_property(m_handle, "vo", "vdpau,xv,x11");
-            m_sInitVo = "vdpau,xv,x11";
-        } else if (QFile::exists("/dev/csmcore")) {
-            my_set_property(m_handle, "vo", "xv,x11");
-            my_set_property(m_handle, "hwdec", "auto");
-            m_sInitVo = "xv,x11";
-        } else {
-            if (CompositingManager::get().isOnlySoftDecode()) {
-                my_set_property(m_handle, "hwdec", "off");
-            } else {
-                my_set_property(m_handle, "hwdec", "auto");
-            }
-#if defined (__mips__)
-            if (!CompositingManager::get().hascard()) {
-                qInfo() << "修改音视频同步模式";
-                my_set_property(m_handle, "video-sync", "desync");
-            }
-            my_set_property(m_handle, "vo", "vdpau,gpu,x11");
-            my_set_property(m_handle, "ao", "alsa");
-            m_sInitVo = "vdpau,gpu,x11";
-#elif defined (__sw_64__)
-            //Synchronously modify the video output of the SW platform vdpau(powered by zhangfl)
-            my_set_property(m_handle, "vo", "vdpau,gpu,x11");
-            m_sInitVo = "vdpau,gpu,x11";
-#elif defined (__aarch64__)
-            my_set_property(m_handle, "vo", "gpu,xv,x11");
-            m_sInitVo = "gpu,xv,x11";
-#else
-            //TODO(xxxxpengfei)：暂未处理intel集显情况
-            if (CompositingManager::get().isZXIntgraphics()) {
-                my_set_property(m_handle, "vo", "gpu");
-            }
-#endif
-        }
         my_set_property(m_handle, "wid", m_pParentWidget->winId());
     }
 
-    if (QFile::exists("/dev/csmcore")) {
-        my_set_property(pHandle, "vo", "xv,x11");
-        my_set_property(pHandle, "hwdec", "auto");
-        if (utils::check_wayland_env()) {
-            my_set_property(pHandle, "wid", m_pParentWidget->winId());
-        }
-        m_sInitVo = "xv,x11";
-    }
+//    if (QFile::exists("/dev/csmcore")) {
+//        my_set_property(pHandle, "vo", "xv,x11");
+//        my_set_property(pHandle, "hwdec", "auto");
+//        if (utils::check_wayland_env()) {
+//            my_set_property(pHandle, "wid", m_pParentWidget->winId());
+//        }
+//        m_sInitVo = "xv,x11";
+//    }
     qInfo() << __func__ << my_get_property(pHandle, "vo").toString();
     qInfo() << __func__ << my_get_property(pHandle, "hwdec").toString();
 
@@ -1102,12 +1106,17 @@ void MpvProxy::play()
         qInfo() << "my_set_property hwdec no";
         my_set_property(m_handle, "hwdec", "no");
     } else {
-        if (CompositingManager::get().isOnlySoftDecode()) {
-            my_set_property(m_handle, "hwdec", "no");
+        QFileInfo fi("/dev/mwv206_0");
+        if (fi.exists()) {
+            my_set_property(m_handle, "hwdec", "vdpau,vdpau-copy,vaapi,vaapi-copy");
         } else {
-            my_set_property(m_handle, "hwdec", "auto");
-        }                }
-
+            if (CompositingManager::get().isOnlySoftDecode()) {
+                my_set_property(m_handle, "hwdec", "no");
+            } else {
+                my_set_property(m_handle, "hwdec", "auto");
+            }
+        }
+    }
 
     if (listOpts.size()) {
         listArgs << "replace" << listOpts.join(',');
