@@ -1367,7 +1367,13 @@ void ToolboxProxy::setup()
     updateFullState();
     updateButtonStates();
 
-    connect(qApp, &QGuiApplication::applicationStateChanged, this, &ToolboxProxy::slotApplicationStateChanged);
+    if (CompositingManager::get().composited()) {
+        connect(qApp, &QGuiApplication::applicationStateChanged, this, &ToolboxProxy::slotApplicationStateChanged);
+    } else {
+#if !defined (__x86_64__)
+        connect(qApp, &QGuiApplication::applicationStateChanged, this, &ToolboxProxy::slotApplicationStateChanged);
+#endif
+    }
 }
 
 void ToolboxProxy::updateThumbnail()

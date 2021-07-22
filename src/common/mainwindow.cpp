@@ -3978,6 +3978,7 @@ void MainWindow::mousePressEvent(QMouseEvent *pEvent)
     if (!CompositingManager::get().composited()) {
         m_pCommHintWid->hide();
         m_pPopupWid->hide();
+        m_pToolbox->closeAnyPopup();
     }
     if (qApp->focusWindow() == nullptr) return;
     if (pEvent->buttons() == Qt::LeftButton) {
