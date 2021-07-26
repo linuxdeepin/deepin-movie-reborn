@@ -38,7 +38,7 @@ class QTestMain : public QObject
     Q_OBJECT
 
 public:
-    QTestMain();
+    QTestMain(int &argc, char **argv);
     ~QTestMain();
 
 private slots:
@@ -46,10 +46,16 @@ private slots:
     void cleanupTestCase();
 
     void testGTest();
+
+private:
+    int m_argc;
+    char **m_argv;
 };
 
-QTestMain::QTestMain()
+QTestMain::QTestMain(int &argc, char **argv)
 {
+    m_argc = argc;
+    m_argv = argv;
 }
 
 QTestMain::~QTestMain()
@@ -71,7 +77,7 @@ void QTestMain::cleanupTestCase()
 void QTestMain::testGTest()
 {
     testing::GTEST_FLAG(output) = "xml:./report/report_deepin-movie-reborn.xml";
-    testing::InitGoogleTest();
+    testing::InitGoogleTest(&m_argc,m_argv);
     int ret = RUN_ALL_TESTS();
 #ifndef __mips__
     __sanitizer_set_report_path("asan.log");
@@ -88,7 +94,7 @@ int main(int argc, char *argv[])
 
     setlocale(LC_NUMERIC, "C");
 
-    QTestMain testMain;
+    QTestMain testMain(argc, argv);
     MainWindow *pMainWindow = new MainWindow();
     MovieConfiguration::get().init();
     app.setMainWindow(pMainWindow);

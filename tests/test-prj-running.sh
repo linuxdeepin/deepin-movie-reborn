@@ -9,6 +9,7 @@ cd ../$(dirname $0)/build-ut
 platform=`uname -m`
 echo ${platform}
 
+export DISPLAY=":0"
 export QT_QPA_PLATFORM=
 echo $QT_QPA_PLATFORM
 export QTEST_FUNCTION_TIMEOUT='500000'

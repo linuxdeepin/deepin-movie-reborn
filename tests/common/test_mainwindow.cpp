@@ -165,7 +165,7 @@ TEST(MainWindow, loadFile)
     w->show();
     PlayerEngine *engine =  w->engine();
     QList<QUrl> listPlayFiles;
-    listPlayFiles << QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/demo.mp4")\
+    listPlayFiles << QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/demo.mp4")
                   << QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/bensound-sunny.mp3");
 
     const QList<QUrl> &valids = engine->addPlayFiles(listPlayFiles);
@@ -399,49 +399,49 @@ TEST(MainWindow, shortCutVolumeAndFrame)
     testEventList.simulate(w);
 }
 
-TEST(MainWindow, miniMode)
-{
-    MainWindow *w = dApp->getMainWindow();
-    PlayerEngine *engine =  w->engine();
+//TEST(MainWindow, miniMode)
+//{
+//    MainWindow *w = dApp->getMainWindow();
+//    PlayerEngine *engine =  w->engine();
 
-    engine->playByName(QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/demo.mp4"));
-    qDebug() << __func__ << engine->state() << "playlist count:" << engine->playlist().count();
+//    engine->playByName(QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/demo.mp4"));
+//    qDebug() << __func__ << engine->state() << "playlist count:" << engine->playlist().count();
 
-    while (engine->state() == PlayerEngine::CoreState::Idle) {
-        QTest::qWait(100);
-    }
-    qDebug() << __func__ << engine->state() << "playlist count:" << engine->playlist().count();
+//    while (engine->state() == PlayerEngine::CoreState::Idle) {
+//        QTest::qWait(100);
+//    }
+//    qDebug() << __func__ << engine->state() << "playlist count:" << engine->playlist().count();
 
-    w->getMiniMode();
-    QTest::keyClick(w, Qt::Key_F2, Qt::NoModifier, 500);
-#if defined(__aarch64__)
-    DIconButton *miniPauseBtn = w->findChild<DIconButton *>("MiniPlayBtn");
-#else
-    DIconButton *miniPauseBtn = w->findChild<DIconButton *>("MiniPauseBtn");
-#endif
-    DIconButton *miniQuiteMiniBtn = w->findChild<DIconButton *>("MiniQuitMiniBtn");
+//    w->getMiniMode();
+//    QTest::keyClick(w, Qt::Key_F2, Qt::NoModifier, 500);
+//#if defined(__aarch64__)
+//    DIconButton *miniPauseBtn = w->findChild<DIconButton *>("MiniPlayBtn");
+//#else
+//    DIconButton *miniPauseBtn = w->findChild<DIconButton *>("MiniPauseBtn");
+//#endif
+//    DIconButton *miniQuiteMiniBtn = w->findChild<DIconButton *>("MiniQuitMiniBtn");
 
-    if (miniPauseBtn && miniQuiteMiniBtn) {
-        QTest::mouseMove(miniPauseBtn, QPoint(), 1000);
-        QTest::mouseClick(miniPauseBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 300);
-        //w->customContextMenuRequested(w->pos());
-        QTest::mouseMove(miniQuiteMiniBtn, QPoint(), 300);
-        QTest::mouseClick(miniQuiteMiniBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 300);
-    }
+//    if (miniPauseBtn && miniQuiteMiniBtn) {
+//        QTest::mouseMove(miniPauseBtn, QPoint(), 1000);
+//        QTest::mouseClick(miniPauseBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 300);
+//        //w->customContextMenuRequested(w->pos());
+//        QTest::mouseMove(miniQuiteMiniBtn, QPoint(), 300);
+//        QTest::mouseClick(miniQuiteMiniBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 300);
+//    }
 
-    QTest::qWait(500);
-    w->requestAction(ActionFactory::ActionKind::ToggleMiniMode);
+//    QTest::qWait(500);
+//    w->requestAction(ActionFactory::ActionKind::ToggleMiniMode);
 
-    if (miniPauseBtn) {
-        DIconButton *miniCloseBtn = w->findChild<DIconButton *>("MiniCloseBtn");
-        QTest::mouseMove(miniPauseBtn, QPoint(), 300);
-        QTest::mouseClick(miniPauseBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 300);
-        QTest::mouseMove(miniCloseBtn, QPoint(), 300);
-        QTest::mouseClick(miniCloseBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 300);
-        w->show();
-    }
-    QTest::keyClick(w, Qt::Key_Escape, Qt::NoModifier, 1000);
-}
+//    if (miniPauseBtn) {
+//        DIconButton *miniCloseBtn = w->findChild<DIconButton *>("MiniCloseBtn");
+//        QTest::mouseMove(miniPauseBtn, QPoint(), 300);
+//        QTest::mouseClick(miniPauseBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 300);
+//        QTest::mouseMove(miniCloseBtn, QPoint(), 300);
+//        QTest::mouseClick(miniCloseBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 300);
+//        w->show();
+//    }
+//    QTest::keyClick(w, Qt::Key_Escape, Qt::NoModifier, 1000);
+//}
 
 TEST(MainWindow, progBar)
 {

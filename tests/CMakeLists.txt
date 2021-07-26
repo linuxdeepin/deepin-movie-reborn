@@ -122,10 +122,11 @@ find_package(PkgConfig REQUIRED)
 # 检查第三方库(这里检查了名字为dtkwidget的库和名字为dtkgui的库)，然后取名3rd_lib
 pkg_check_modules(3rd_lib REQUIRED
         dtkwidget dtkgui libffmpegthumbnailer
-        libpulse libpulse-simple openssl dvdnav gsettings-qt gtest mpv x11 xext xtst xcb gl
+        libpulse openssl dvdnav gsettings-qt  mpv x11 xext xtst xcb gl
         libavformat libavcodec libavutil
         xcb-aux xcb-proto xcb-ewmh xcb-shape mpris-qt5 dbusextended-qt5 libva libva-x11
         )
+    #libpulse-simple xcb-aux gtest
 # 添加第三方库的所有文件夹路径到工程中来(注意 *_INCLUDE_DIRS)
 target_include_directories(${PROJECT_NAME} PUBLIC ${3rd_lib_INCLUDE_DIRS} )
 
