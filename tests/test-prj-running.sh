@@ -26,7 +26,7 @@ mkdir -p report
 
 echo " ===================CREAT LCOV REPROT==================== "
 lcov --directory ./tests/CMakeFiles/deepin-movie-test.dir --zerocounters
-./tests/$executable
+ASAN_OPTIONS="fast_unwind_on_malloc=1" ./tests/$executable
 lcov --directory . --capture --output-file ./html/${executable}_Coverage.info
 
 echo " =================== do filter begin ==================== "
