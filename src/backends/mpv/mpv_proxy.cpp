@@ -276,7 +276,7 @@ mpv_handle *MpvProxy::mpv_init()
     }
 
     if (CompositingManager::get().isOnlySoftDecode()) {
-        my_set_property(pHandle, "hwdec", "off");
+        my_set_property(pHandle, "hwdec", "no");
     } else {
         my_set_property(pHandle, "hwdec", "auto");
     }
@@ -320,7 +320,7 @@ mpv_handle *MpvProxy::mpv_init()
         }
     }*/
     if (CompositingManager::get().isOnlySoftDecode()) {
-        my_set_property(pHandle, "hwdec", "off");
+        my_set_property(pHandle, "hwdec", "no");
     } else {
         my_set_property(pHandle, "hwdec", "auto");
     }
@@ -342,7 +342,7 @@ mpv_handle *MpvProxy::mpv_init()
         m_sInitVo = "xv,x11";
     } else {
         if (CompositingManager::get().isOnlySoftDecode()) {
-            my_set_property(m_handle, "hwdec", "off");
+            my_set_property(m_handle, "hwdec", "no");
         } else {
             my_set_property(m_handle, "hwdec", "auto");
         }
@@ -1080,7 +1080,7 @@ void MpvProxy::play()
             my_set_property(m_handle, "hwdec", "auto");
 #if defined (__mips__) || defined (__aarch64__) || defined (__sw_64__)
             if (!CompositingManager::get().hascard() || CompositingManager::get().isOnlySoftDecode()) {
-                my_set_property(m_handle, "hwdec", "off");
+                my_set_property(m_handle, "hwdec", "no");
             }
 #endif
         }
@@ -1088,7 +1088,7 @@ void MpvProxy::play()
 #else
     if (m_bHwaccelAuto) {
         if (CompositingManager::get().isOnlySoftDecode()) {
-            my_set_property(m_handle, "hwdec", "off");
+            my_set_property(m_handle, "hwdec", "no");
         } else {
             my_set_property(m_handle, "hwdec", "auto");
         }

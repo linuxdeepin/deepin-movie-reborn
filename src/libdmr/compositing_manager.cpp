@@ -369,6 +369,10 @@ void CompositingManager::softDecodeCheck()
         QString drv = QString::fromUtf8(inspur.readAllStandardOutput().trimmed().constData());
         qInfo() << "inspur check : " << drv;
         m_bOnlySoftDecode =  m_bOnlySoftDecode || drv.contains("Inspur");
+        //添加曙光N卡平台软解方案，解决s3唤醒进程丢失问题
+        if (runningOnNvidia() && drv.contains("Sugon")) {
+            m_bOnlySoftDecode = true;
+        }
         m_setSpecialControls = drv.contains("Ruijie");
     }
 }
