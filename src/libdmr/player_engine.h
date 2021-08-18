@@ -168,7 +168,7 @@ public:
 
     //获取视频关信息
     MovieInfo getMovieInfo(const QUrl &url, bool *is);
-    //获取第一帧图片
+    //获取视频第一帧图片
     QImage getMovieCover(const QUrl &url);
 
 signals:
