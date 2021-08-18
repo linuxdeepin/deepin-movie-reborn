@@ -967,6 +967,53 @@ void PlayerEngine::toggleRoundedClip(bool roundClip)
     dynamic_cast<MpvProxy *>(_current)->updateRoundClip(roundClip);
 }
 
+MovieInfo PlayerEngine::getMovieInfo(const QUrl &url, bool *is)
+{
+    if (url.isLocalFile()) {
+        QFileInfo fi(url.toLocalFile());
+        if (fi.exists()) {
+            return playlist().parseFromFile(fi, is);
+        } else {
+            *is = false;
+            return MovieInfo();
+        }
+    } else {
+        *is = false;
+        return MovieInfo();
+    }
+}
+
+QImage PlayerEngine::getMovieCover(const QUrl &url)
+{
+    typedef void (*mvideo_thumbnailer_destroy_image_data)(image_data *data);
+    typedef int (*mvideo_thumbnailer_generate_thumbnail_to_buffer)(video_thumbnailer *thumbnailer, const char *movie_filename, image_data *generated_image_data);
+    QLibrary library(libPath("libffmpegthumbnailer.so"));
+    mvideo_thumbnailer mvideoThumbnailer = (mvideo_thumbnailer) library.resolve("video_thumbnailer_create");
+    mvideo_thumbnailer_destroy mvideoThumbnailerDestroy = (mvideo_thumbnailer_destroy) library.resolve("video_thumbnailer_destroy");
+    mvideo_thumbnailer_create_image_data mvideoThumbnailerCreateImageData = (mvideo_thumbnailer_create_image_data) library.resolve("video_thumbnailer_create_image_data");
+    mvideo_thumbnailer_destroy_image_data mvideoThumbnailerDestroyImageData = (mvideo_thumbnailer_destroy_image_data) library.resolve("video_thumbnailer_destroy_image_data");
+    mvideo_thumbnailer_generate_thumbnail_to_buffer mvideoThumbnailerGenerateThumbnailToBuffer = (mvideo_thumbnailer_generate_thumbnail_to_buffer) library.resolve("video_thumbnailer_generate_thumbnail_to_buffer");
+    video_thumbnailer *videoThumbnailer = mvideoThumbnailer();
+    if (mvideoThumbnailer == nullptr
+            || mvideoThumbnailerDestroy == nullptr
+            || mvideoThumbnailerCreateImageData == nullptr
+            || mvideoThumbnailerDestroyImageData == nullptr
+            || mvideoThumbnailerGenerateThumbnailToBuffer == nullptr
+            || videoThumbnailer == nullptr) {
+        return QImage();
+    }
+    videoThumbnailer->thumbnail_size = THUMBNAIL_SIZE;
+    videoThumbnailer->seek_time = SEEK_TIME;
+    image_data *image_data = mvideoThumbnailerCreateImageData();
+    QString file = QFileInfo(url.toLocalFile()).absoluteFilePath();
+    mvideoThumbnailerGenerateThumbnailToBuffer(videoThumbnailer, file.toUtf8().data(), image_data);
+    QImage img = QImage::fromData(image_data->image_data_ptr, static_cast<int>(image_data->image_data_size), "png");
+    mvideoThumbnailerDestroy(videoThumbnailer);
+    mvideoThumbnailerDestroyImageData(image_data);
+    image_data = nullptr;
+    return img;
+}
+
 /*void PlayerEngine::setVideoZoom(float val)
 {
     if (_current) {

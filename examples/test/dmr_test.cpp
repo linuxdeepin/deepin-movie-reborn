@@ -46,6 +46,29 @@ public:
         player = new dmr::PlayerWidget;
         l->addWidget(player);
 
+        //获取视频信息demo
+        bool is = false;
+        dmr::MovieInfo mi = player->engine().getMovieInfo(QUrl("file:///usr/share/dde-introduction/demo.mp4"),&is);
+        if (is) {
+            qInfo() << "# 文件类型:"<< mi.fileType
+                    << "# 文件大小:"<< mi.sizeStr()
+                    << "# 时长:" << mi.durationStr()
+                    << "# 文件路径:"<< mi.filePath
+                    << "# 视频流信息:" << mi.videoCodec()
+                    << "# 视频码率:"<< mi.vCodeRate << "bps"
+                    << "# 视频帧率:"<< mi.fps << "fps"
+                    << "# 视频显示比例:" << QString(tr("%1")).arg(static_cast<double>(mi.proportion))
+                    << "# 视频分辨率:"<< mi.resolution
+                    << "# 音频编码样式:"<< mi.audioCodec()
+                    << "# 音频编码码率:"<< mi.aCodeRate << "bps"
+                    << "# 音频位数:"<< mi.aDigit << "bits"
+                    << "# 声道数:"<< mi.channels << "声道"
+                    << "# 采样数:"<< mi.sampling << "hz";
+        }
+        //获取预览图demo
+        QImage img = player->engine().getMovieCover(QUrl("file:///usr/share/dde-introduction/demo.mp4"));
+        img.save(QStandardPaths::writableLocation(QStandardPaths::HomeLocation) + "/Desktop/test.png");
+
         QObject::connect(&player->engine(), &dmr::PlayerEngine::stateChanged, [=]() {
             qInfo() << "----------------new state: " << player->engine().state();
         });
