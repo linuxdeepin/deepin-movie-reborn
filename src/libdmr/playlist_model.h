@@ -41,6 +41,9 @@
 
 #include <libffmpegthumbnailer/videothumbnailerc.h>
 
+#define THUMBNAIL_SIZE 500
+#define SEEK_TIME "00:00:01"
+
 typedef video_thumbnailer *(*mvideo_thumbnailer)();
 typedef void (*mvideo_thumbnailer_destroy)(video_thumbnailer *thumbnailer);
 /* create image_data structure */
@@ -210,6 +213,12 @@ public:
 
     bool isMediaFile(QString sFileName);    //判断一个文件是否是多媒体文件
 
+    //获取视频信息
+    MovieInfo getMovieInfo(const QUrl &url, bool *is);
+
+    //获取视频首帧图片
+    QImage getMovieCover(const QUrl &url);
+
 public slots:
     void changeCurrent(int);
     void delayedAppendAsync(const QList<QUrl> &);
@@ -286,7 +295,7 @@ private:
     void reshuffle();
     void appendSingle(const QUrl &);
     void tryPlayCurrent(bool next);
-
+    bool m_bCoverInit {false};
 };
 
 

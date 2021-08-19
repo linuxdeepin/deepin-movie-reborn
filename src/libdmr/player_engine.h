@@ -37,9 +37,6 @@
 #include <online_sub.h>
 #include <QNetworkConfigurationManager>
 
-#define THUMBNAIL_SIZE 500
-#define SEEK_TIME "00:00:01"
-
 namespace dmr {
 class PlaylistModel;
 
@@ -165,11 +162,6 @@ public:
 
     void toggleRoundedClip(bool roundClip);
 //    void setVideoZoom(float);
-
-    //获取视频关信息
-    MovieInfo getMovieInfo(const QUrl &url, bool *is);
-    //获取视频第一帧图片
-    QImage getMovieCover(const QUrl &url);
 
 signals:
     void tracksChanged();

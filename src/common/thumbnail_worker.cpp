@@ -159,7 +159,6 @@ void ThumbnailWorker::initThumb()
             || m_video_thumbnailer == nullptr) {
         return;
     }
-    m_video_thumbnailer = m_mvideo_thumbnailer();
 }
 
 QPixmap ThumbnailWorker::genThumb(const QUrl &url, int secs)

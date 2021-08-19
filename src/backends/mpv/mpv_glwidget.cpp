@@ -56,6 +56,10 @@ DWIDGET_USE_NAMESPACE
 #define EGLAPIENTRY  KHRONOS_APIENTRY
 #endif
 
+#ifndef GLAPIENTRY
+#define GLAPIENTRY
+#endif
+
 static const char *vs_blend = R"(
 attribute vec2 position;
 attribute vec2 vTexCoord;
