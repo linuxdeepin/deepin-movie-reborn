@@ -1244,8 +1244,9 @@ QVariant MpvProxy::my_get_property(mpv_handle *pHandle, const QString &sName) co
     int err = m_getProperty(pHandle, sName.toUtf8().data(), MPV_FORMAT_NODE, &node);
     if (err < 0)
         return QVariant::fromValue(ErrorReturn(err));
-    my_node_autofree f(&node);
-    return node_to_variant(&node);
+    auto variant = node_to_variant(&node);
+    m_freeNodecontents(&node);
+    return variant;
 }
 
 int MpvProxy::my_set_property(mpv_handle *pHandle, const QString &sName, const QVariant &v)
@@ -1277,7 +1278,8 @@ int MpvProxy::my_set_property(mpv_handle *pHandle, const QString &sName, const Q
     }
 
     if (!m_setProperty) return 0;
-    return m_setProperty(pHandle, sName.toUtf8().data(), MPV_FORMAT_NODE, node.node());
+    int res = m_setProperty(pHandle, sName.toUtf8().data(), MPV_FORMAT_NODE, node.node());
+    return res;
 }
 
 bool MpvProxy::my_command_async(mpv_handle *pHandle, const QVariant &args, uint64_t tag)
@@ -1314,8 +1316,9 @@ QVariant MpvProxy::my_command(mpv_handle *pHandle, const QVariant &args)
     int nErr = m_commandNode(pHandle, node.node(), &res);
     if (nErr < 0)
         return QVariant::fromValue(ErrorReturn(nErr));
-    my_node_autofree f(&res);
-    return node_to_variant(&res);
+    auto variant = node_to_variant(&res);
+    m_freeNodecontents(&res);
+    return variant;
 }
 
 QImage MpvProxy::takeOneScreenshot()
@@ -1330,8 +1333,6 @@ QImage MpvProxy::takeOneScreenshot()
         qWarning() << "screenshot raw failed";
         return QImage();
     }
-
-    my_node_autofree f(&res);
 
     Q_ASSERT(res.format == MPV_FORMAT_NODE_MAP);
 
@@ -1366,9 +1367,11 @@ QImage MpvProxy::takeOneScreenshot()
             matrix.rotate(rotationdegree);
             img = QPixmap::fromImage(img).transformed(matrix, Qt::SmoothTransformation).toImage();
         }
+        m_freeNodecontents(&res);
         return img;
     }
 
+    m_freeNodecontents(&res);
     qInfo() << "failed";
     return QImage();
 }

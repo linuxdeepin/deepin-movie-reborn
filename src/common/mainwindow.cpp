@@ -1334,6 +1334,12 @@ void MainWindow::onMonitorMotionNotify(int nX, int nY)
 MainWindow::~MainWindow()
 {
     qInfo() << __func__;
+    if (m_pEventListener) {
+        this->windowHandle()->removeEventFilter(m_pEventListener);
+        delete m_pEventListener;
+        m_pEventListener = nullptr;
+    }
+
     if (!utils::check_wayland_env()) {
         disconnect(m_pEngine, 0, 0, 0);
         disconnect(&m_pEngine->playlist(), 0, 0, 0);
