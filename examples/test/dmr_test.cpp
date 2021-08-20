@@ -116,10 +116,6 @@ int main(int argc, char *argv[])
     if (argc == 2)
         mw->play(QString::fromUtf8(argv[1]));
 
-    app.exec();
-
-    delete mw;
-
     //api支持多线程demo
     QThread *thread = new QThread();
     dmr::PlaylistModel *playModel = new dmr::PlaylistModel(nullptr);
@@ -146,8 +142,14 @@ int main(int argc, char *argv[])
         //获取预览图 demo
         QImage img = playModel->getMovieCover(QUrl("file:///usr/share/dde-introduction/demo.mp4"));
         img.save(QStandardPaths::writableLocation(QStandardPaths::HomeLocation) + "/Desktop/test.png");
+
+        QImage img1 = playModel->getMovieCover(QUrl("file:///usr/share/dde-introduction/demo.mp4"));
+        img1.save(QStandardPaths::writableLocation(QStandardPaths::HomeLocation) + "/Desktop/test1.png");
     }
-    
+    playModel->deleteLater();
+    app.exec();
+
+    delete mw;
     return 0;
 }
 

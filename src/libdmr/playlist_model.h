@@ -295,7 +295,6 @@ private:
     void reshuffle();
     void appendSingle(const QUrl &);
     void tryPlayCurrent(bool next);
-    bool m_bCoverInit {false};
 };
 
 

@@ -447,24 +447,24 @@ QString PlaylistModel::libPath(const QString &strlib)
 void PlaylistModel::initThumb()
 {
     QLibrary library(libPath("libffmpegthumbnailer.so"));
-
     m_mvideo_thumbnailer = (mvideo_thumbnailer) library.resolve("video_thumbnailer_create");
     m_mvideo_thumbnailer_destroy = (mvideo_thumbnailer_destroy) library.resolve("video_thumbnailer_destroy");
     m_mvideo_thumbnailer_create_image_data = (mvideo_thumbnailer_create_image_data) library.resolve("video_thumbnailer_create_image_data");
     m_mvideo_thumbnailer_destroy_image_data = (mvideo_thumbnailer_destroy_image_data) library.resolve("video_thumbnailer_destroy_image_data");
     m_mvideo_thumbnailer_generate_thumbnail_to_buffer = (mvideo_thumbnailer_generate_thumbnail_to_buffer) library.resolve("video_thumbnailer_generate_thumbnail_to_buffer");
+    m_video_thumbnailer = m_mvideo_thumbnailer();
 
-    if (m_mvideo_thumbnailer == nullptr || m_mvideo_thumbnailer_destroy == nullptr
-            || m_mvideo_thumbnailer_create_image_data == nullptr || m_mvideo_thumbnailer_destroy_image_data == nullptr
-            || m_mvideo_thumbnailer_generate_thumbnail_to_buffer == nullptr)
-    {
+    if (m_mvideo_thumbnailer == nullptr
+            || m_mvideo_thumbnailer_destroy == nullptr
+            || m_mvideo_thumbnailer_create_image_data == nullptr
+            || m_mvideo_thumbnailer_destroy_image_data == nullptr
+            || m_mvideo_thumbnailer_generate_thumbnail_to_buffer == nullptr
+            || m_video_thumbnailer == nullptr) {
         return;
     }
 
-    m_video_thumbnailer = m_mvideo_thumbnailer();
     m_image_data = m_mvideo_thumbnailer_create_image_data();
     m_video_thumbnailer->thumbnail_size = 400 * qApp->devicePixelRatio();
-
     m_bInitThumb = true;
 }
 
@@ -672,14 +672,10 @@ MovieInfo PlaylistModel::getMovieInfo(const QUrl &url, bool *is)
 
 QImage PlaylistModel::getMovieCover(const QUrl &url)
 {
-    if (!m_bCoverInit) {
-        QLibrary library(libPath("libffmpegthumbnailer.so"));
-        m_mvideo_thumbnailer = (mvideo_thumbnailer) library.resolve("video_thumbnailer_create");
-        m_mvideo_thumbnailer_destroy = (mvideo_thumbnailer_destroy) library.resolve("video_thumbnailer_destroy");
-        m_mvideo_thumbnailer_create_image_data = (mvideo_thumbnailer_create_image_data) library.resolve("video_thumbnailer_create_image_data");
-        m_mvideo_thumbnailer_destroy_image_data = (mvideo_thumbnailer_destroy_image_data) library.resolve("video_thumbnailer_destroy_image_data");
-        m_mvideo_thumbnailer_generate_thumbnail_to_buffer = (mvideo_thumbnailer_generate_thumbnail_to_buffer) library.resolve("video_thumbnailer_generate_thumbnail_to_buffer");
-        m_video_thumbnailer = m_mvideo_thumbnailer();
+    if (!m_bInitThumb) {
+        initThumb();
+        m_mvideo_thumbnailer_destroy_image_data(m_image_data);
+        m_image_data = nullptr;
     }
 
     if (m_mvideo_thumbnailer == nullptr
@@ -697,7 +693,6 @@ QImage PlaylistModel::getMovieCover(const QUrl &url)
     QString file = QFileInfo(url.toLocalFile()).absoluteFilePath();
     m_mvideo_thumbnailer_generate_thumbnail_to_buffer(m_video_thumbnailer, file.toUtf8().data(), m_image_data);
     QImage img = QImage::fromData(m_image_data->image_data_ptr, static_cast<int>(m_image_data->image_data_size), "png");
-    m_mvideo_thumbnailer_destroy(m_video_thumbnailer);
     m_mvideo_thumbnailer_destroy_image_data(m_image_data);
     m_image_data = nullptr;
     return img;
