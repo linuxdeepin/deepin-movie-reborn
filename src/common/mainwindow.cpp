@@ -1059,6 +1059,8 @@ MainWindow::MainWindow(QWidget *parent)
     defaultplaymodeinit();
 
     connect(&Settings::get(), &Settings::defaultplaymodechanged, this, &MainWindow::slotdefaultplaymodechanged);
+    connect(&Settings::get(), &Settings::setDecodeModel, this, &MainWindow::onSetDecodeModel,Qt::DirectConnection);
+    connect(&Settings::get(), &Settings::refreshDecode, this, &MainWindow::onRefreshDecode,Qt::DirectConnection);
     connect(m_pEngine, &PlayerEngine::onlineStateChanged, this, &MainWindow::checkOnlineState);
     connect(&OnlineSubtitle::get(), &OnlineSubtitle::onlineSubtitleStateChanged, this, &MainWindow::checkOnlineSubtitle);
     connect(m_pEngine, &PlayerEngine::mpvErrorLogsChanged, this, &MainWindow::checkErrorMpvLogsChanged);
@@ -1103,6 +1105,9 @@ MainWindow::MainWindow(QWidget *parent)
                                          "org.freedesktop.DBus.Properties", "PropertiesChanged", this,
                                          SLOT(slotProperChanged(QString, QVariantMap, QStringList)));
     qInfo() << "session Path is :" << path;
+    connect(dynamic_cast<MpvProxy *>(m_pEngine->getMpvProxy()),&MpvProxy::crashCheck,&Settings::get(),&Settings::crashCheck);
+    //解码初始化
+    decodeInit();
 }
 
 void MainWindow::setupTitlebar()
@@ -3186,6 +3191,17 @@ void MainWindow::slotdefaultplaymodechanged(const QString &sKey, const QVariant 
     }
 }
 
+void MainWindow::onSetDecodeModel(const QString &key, const QVariant &value)
+{
+    Q_UNUSED(key);
+    dynamic_cast<MpvProxy*>(m_pEngine->getMpvProxy())->setDecodeModel(value);
+}
+
+void MainWindow::onRefreshDecode()
+{
+    dynamic_cast<MpvProxy*>(m_pEngine->getMpvProxy())->refreshDecode();
+}
+
 #if defined (__aarch64__) || defined (__mips__)
 void MainWindow::syncPostion()
 {
@@ -4261,6 +4277,19 @@ void MainWindow::defaultplaymodeinit()
     } else if (sMode == tr("List loop")) {
         requestAction(ActionFactory::ListLoop);
         reflectActionToUI(ActionFactory::ListLoop);
+    }
+}
+
+void MainWindow::decodeInit()
+{
+    //崩溃检测
+    bool bcatch = Settings::get().settings()->getOption(QString("set.start.crash")).toBool();
+    if (bcatch) {
+        dynamic_cast<MpvProxy*>(m_pEngine->getMpvProxy())->setDecodeModel(DecodeMode::AUTO);
+        Settings::get().settings()->setOption(QString("base.decode.select"),DecodeMode::AUTO);
+    } else {
+        int value = Settings::get().settings()->getOption(QString("base.decode.select")).toInt();
+        dynamic_cast<MpvProxy*>(m_pEngine->getMpvProxy())->setDecodeModel(value);
     }
 }
 

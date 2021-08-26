@@ -519,6 +519,11 @@ void PlayerEngine::changehwaccelMode(Backend::hwaccelMode hwaccelMode)
     return _current->changehwaccelMode(hwaccelMode);
 }
 
+Backend *PlayerEngine::getMpvProxy()
+{
+    return _current;
+}
+
 void PlayerEngine::toggleMute()
 {
     if (!_current) return;

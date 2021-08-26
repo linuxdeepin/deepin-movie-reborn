@@ -72,6 +72,16 @@ signals:
      */
     void defaultplaymodechanged(const QString &, const QVariant &);
     /**
+      * @brief base.decode.select 配置值变化后发送的信号
+      * @param base.decode.select 下的某一配置
+      * @param 配置的值
+      */
+    void setDecodeModel(const QString &, const QVariant &);
+    /**
+      * @brief 刷新解码方式
+      */
+    void refreshDecode();
+    /**
      * @brief base.play.mute配置值变化后发送的信号
      * @param base.play.mute下的某一配置
      * @param 配置的值
@@ -216,6 +226,16 @@ public:
      * @return 截图文件名
      */
     QString screenshotNameSeqTemplate();
+
+public slots:
+    /**
+     * @brief 崩溃检测
+     */
+    void crashCheck();
+    /**
+     * @brief 设置崩溃状态
+     */
+    void onSetCrash();
 
 private:
     Settings();

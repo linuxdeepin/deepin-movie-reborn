@@ -101,6 +101,11 @@ MpvProxy::~MpvProxy()
     }
 }
 
+void MpvProxy::setDecodeModel(const QVariant &value)
+{
+    m_decodeMode = static_cast<DecodeMode>(value.toInt());
+}
+
 void MpvProxy::initMpvFuns()
 {
     m_waitEvent = reinterpret_cast<mpv_waitEvent>(QLibrary::resolve(libPath("libmpv.so.1"), "mpv_wait_event"));
@@ -274,12 +279,12 @@ mpv_handle *MpvProxy::mpv_init()
             qInfo() << "-------- gpu-hwdec-interop is disabled by user";
         }
     }
-
-    if (CompositingManager::get().isOnlySoftDecode()) {
-        my_set_property(pHandle, "hwdec", "no");
-    } else {
-        my_set_property(pHandle, "hwdec", "auto");
-    }
+//重复逻辑
+//    if (CompositingManager::get().isOnlySoftDecode()) {
+//        my_set_property(pHandle, "hwdec", "no");
+//    } else {
+//        my_set_property(pHandle, "hwdec", "auto");
+//    }
 #endif
 #ifdef __aarch64__
     /*QString path = QString("%1/%2/%3/conf")
@@ -328,24 +333,29 @@ mpv_handle *MpvProxy::mpv_init()
 #endif
     my_set_property(pHandle, "panscan", 1.0);
 
-    QFileInfo fi("/dev/mwv206_0");              //景嘉微显卡目前只支持vo=xv，等日后升级代码需要酌情修改。
-    if (fi.exists()) {
-        my_set_property(m_handle, "hwdec", "vdpau,vdpau-copy,vaapi,vaapi-copy");
-        my_set_property(m_handle, "vo", "vdpau,xv,x11");
-        m_sInitVo = "vdpau,xv,x11";
-    } else if (QFile::exists("/dev/csmcore")) {
-        my_set_property(m_handle, "vo", "xv,x11");
-        my_set_property(m_handle, "hwdec", "auto");
-        if (utils::check_wayland_env()) {
-            my_set_property(pHandle, "wid", m_pParentWidget->winId());
-        }
-        m_sInitVo = "xv,x11";
-    } else {
-        if (CompositingManager::get().isOnlySoftDecode()) {
+    if (DecodeMode::SOFTWARE == m_decodeMode) { //1.设置软解
+        my_set_property(m_handle, "hwdec", "no");
+    } else if (DecodeMode::HARDWARE == m_decodeMode) { //2.设置硬解
+        //2.1特殊硬件
+        //景嘉微显卡目前只支持vo=xv，等日后升级代码需要酌情修改。
+        QFileInfo fi("/dev/mwv206_0");
+        if (fi.exists()) { //2.1.1景嘉微
+            my_set_property(m_handle, "hwdec", "vdpau,vdpau-copy,vaapi,vaapi-copy");
+            my_set_property(m_handle, "vo", "vdpau,xv,x11");
+            m_sInitVo = "vdpau,xv,x11";
+        } else if (QFile::exists("/dev/csmcore")) { //2.1.2中船重工
+            my_set_property(m_handle, "vo", "xv,x11");
+            my_set_property(m_handle, "hwdec", "auto");
+            if (utils::check_wayland_env()) {
+                my_set_property(pHandle, "wid", m_pParentWidget->winId());
+            }
+            m_sInitVo = "xv,x11";
+        } else if (CompositingManager::get().isOnlySoftDecode()) {//2.1.3 鲲鹏920 || 曙光+英伟达 || 浪潮
             my_set_property(m_handle, "hwdec", "no");
-        } else {
+        } else { //2.2非特殊硬件
             my_set_property(m_handle, "hwdec", "auto");
         }
+
 #if defined (__mips__)
         if (!CompositingManager::get().hascard()) {
             qInfo() << "修改音视频同步模式";
@@ -367,6 +377,8 @@ mpv_handle *MpvProxy::mpv_init()
             my_set_property(m_handle, "vo", "gpu");
         }
 #endif
+    } else { //3.设置自动
+        my_set_property(m_handle, "hwdec", "auto");
     }
 
     if (composited) {
@@ -992,6 +1004,64 @@ void MpvProxy::slotStateChanged()
     m_pMpvGLwidget->update();
 }
 
+void MpvProxy::refreshDecode()
+{
+    if (DecodeMode::SOFTWARE == m_decodeMode) { //1.设置软解
+        my_set_property(m_handle, "hwdec", "no");
+    } else if (DecodeMode::HARDWARE == m_decodeMode) {//2.设置硬解
+        //2.1 特殊格式
+        PlayItemInfo currentInfo = dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist()->currentInfo();
+        auto codec = currentInfo.mi.videoCodec();
+        auto name = _file.fileName();
+        bool isSoftCodec = codec.toLower().contains("wmv") || name.toLower().contains("wmv");
+#if !defined (__x86_64__)
+        isSoftCodec = isSoftCodec || codec.toLower().contains("mpeg2video");
+#endif
+        if (isSoftCodec) {
+            qInfo() << "my_set_property hwdec no";
+            my_set_property(m_handle, "hwdec", "no");
+        } else { //2.2 非特殊格式
+            //2.2.1 特殊硬件
+            QFileInfo fi("/dev/mwv206_0"); //2.2.1.1 景嘉微
+            if (fi.exists()) {
+                my_set_property(m_handle, "hwdec", "vdpau,vdpau-copy,vaapi,vaapi-copy");
+            } else if (CompositingManager::get().isOnlySoftDecode()) { //2.2.1.2 鲲鹏920 || 曙光+英伟达 || 浪潮
+                my_set_property(m_handle, "hwdec", "no");
+            } else { //2.2.2 非特殊硬件 + 非特殊格式
+                my_set_property(m_handle, "hwdec", "auto");
+            }
+        }
+    } else { //3.设置自动
+#ifndef _LIBDMR_
+#if defined (__mips__) || defined (__aarch64__) || defined (__sw_64__)
+        //龙芯 ||（ 鲲鹏920 || 曙光+英伟达 || 浪潮 ）
+        if (!CompositingManager::get().hascard() || CompositingManager::get().isOnlySoftDecode()) {
+            my_set_property(m_handle, "hwdec", "no");
+        }
+#else
+        my_set_property(m_handle, "hwdec", "auto");
+#endif
+#else
+        if (CompositingManager::get().isOnlySoftDecode()) { // 鲲鹏920 || 曙光+英伟达 || 浪潮
+            my_set_property(m_handle, "hwdec", "no");
+        } else {
+            my_set_property(m_handle, "hwdec", "auto");
+        }
+#endif
+
+        //play.conf
+        CompositingManager::get().getMpvConfig(m_pConfig);
+        QMap<QString, QString>::iterator iter = m_pConfig->begin();
+        while (iter != m_pConfig->end()) {
+            if (iter.key().contains(QString("hwdec"))) {
+                my_set_property(m_handle, iter.key(), iter.value());
+                break;
+            }
+            iter++;
+        }
+    }
+}
+
 void MpvProxy::initMember()
 {
     m_nBurstStart = 0;
@@ -1074,49 +1144,30 @@ void MpvProxy::play()
         listOpts << QString("dvd-device=%1").arg(_dvdDevice);
     }
 
-    if (m_bHwaccelAuto && m_bLastIsSpecficFormat) {
-        if (!m_bIsJingJia || !utils::check_wayland_env()) {
-            // hwdec could be disabled by some codecs, so we need to re-enable it
-            my_set_property(m_handle, "hwdec", "auto");
-#if defined (__mips__) || defined (__aarch64__) || defined (__sw_64__)
-            if (!CompositingManager::get().hascard() || CompositingManager::get().isOnlySoftDecode()) {
-                my_set_property(m_handle, "hwdec", "no");
-            }
-#endif
-        }
-    }
-#else
-    if (m_bHwaccelAuto) {
-        if (CompositingManager::get().isOnlySoftDecode()) {
-            my_set_property(m_handle, "hwdec", "no");
-        } else {
-            my_set_property(m_handle, "hwdec", "auto");
-        }
-    }
+//注：m_bHwaccelAuto 好像是废弃了,初始化为false,此处未执行
+//    if (m_bHwaccelAuto && m_bLastIsSpecficFormat) {
+//        if (!m_bIsJingJia || !utils::check_wayland_env()) {
+//            // hwdec could be disabled by some codecs, so we need to re-enable it
+//            my_set_property(m_handle, "hwdec", "auto");
+//#if defined (__mips__) || defined (__aarch64__) || defined (__sw_64__)
+//            if (!CompositingManager::get().hascard() || CompositingManager::get().isOnlySoftDecode()) {
+//                my_set_property(m_handle, "hwdec", "no");
+//            }
+//#endif
+//        }
+//    }
+//#else
+//    if (m_bHwaccelAuto) {
+//        if (CompositingManager::get().isOnlySoftDecode()) {
+//            my_set_property(m_handle, "hwdec", "no");
+//        } else {
+//            my_set_property(m_handle, "hwdec", "auto");
+//        }
+//    }
 #endif   
 
-    PlayItemInfo currentInfo = dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist()->currentInfo();
-    auto codec = currentInfo.mi.videoCodec();
-    auto name = _file.fileName();
-    bool autoHwdec = codec.toLower().contains("wmv") || name.toLower().contains("wmv");
-#if !defined (__x86_64__)
-    autoHwdec = autoHwdec || codec.toLower().contains("mpeg2video");
-#endif
-    if (autoHwdec) {
-        qInfo() << "my_set_property hwdec no";
-        my_set_property(m_handle, "hwdec", "no");
-    } else {
-        QFileInfo fi("/dev/mwv206_0");
-        if (fi.exists()) {
-            my_set_property(m_handle, "hwdec", "vdpau,vdpau-copy,vaapi,vaapi-copy");
-        } else {
-            if (CompositingManager::get().isOnlySoftDecode()) {
-                my_set_property(m_handle, "hwdec", "no");
-            } else {
-                my_set_property(m_handle, "hwdec", "auto");
-            }
-        }
-    }
+    //刷新解码模式
+    refreshDecode();
 
     if (listOpts.size()) {
         listArgs << "replace" << listOpts.join(',');

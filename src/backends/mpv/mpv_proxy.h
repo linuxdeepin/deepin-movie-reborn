@@ -117,6 +117,13 @@ namespace dmr {
 using namespace mpv::qt;
 class MpvGLWidget;
 
+//解码模式
+enum DecodeMode {
+    AUTO = 0,
+    HARDWARE,
+    SOFTWARE
+};
+
 /**
  * @file 封装mpv播放引擎
  */
@@ -137,9 +144,23 @@ class MpvProxy: public Backend
 signals:
     void has_mpv_events();
 
+    /**
+    * @brief 崩溃检测
+    */
+    void crashCheck();
+
 public:
     explicit MpvProxy(QWidget *parent = 0);
     virtual ~MpvProxy();
+
+    /**
+     * @brief 设置解码模式
+     */
+    void setDecodeModel(const QVariant &value);
+    /**
+     * @brief 刷新解码方式
+     */
+    void refreshDecode();
 
 //    //add by heyi
     /**
@@ -440,6 +461,9 @@ private:
     QVector<QVariant> m_vecWaitCommand;    //等待mpv初始化后设置的参数
     //mpv播放配置
     QMap<QString, QString> *m_pConfig;
+
+    //解码模式
+    DecodeMode m_decodeMode {DecodeMode::AUTO};
 };
 
 }

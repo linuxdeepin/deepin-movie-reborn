@@ -79,6 +79,14 @@ Settings::Settings()
             emit shortcutsChanged(key, value);
         else if (key.startsWith("base.play.playmode"))
             emit defaultplaymodechanged(key, value);
+        else if (key.startsWith("base.decode.select")) {
+            //设置解码模式
+            emit setDecodeModel(key, value);
+            //刷新解码模式
+            emit refreshDecode();
+            //崩溃检测
+            crashCheck();
+        }
         else if (key.startsWith("base.play.hwaccel"))
             emit hwaccelModeChanged(key, value);
         else if (key.startsWith("base.play.mute"))
@@ -219,10 +227,25 @@ QString Settings::screenshotNameSeqTemplate()
            .arg(QDateTime::currentDateTime().toString("yyyyMMddhhmmss"));
 }
 
+void Settings::onSetCrash()
+{
+    settings()->setOption(QString("set.start.crash"),false);
+    settings()->sync();
+}
+
 void Settings::setGeneralOption(const QString &sOpt, const QVariant &var)
 {
     settings()->setOption(QString("base.general.%1").arg(sOpt), var);
     settings()->sync();
+}
+
+void Settings::crashCheck()
+{
+    //重置崩溃检测状态位
+    settings()->setOption(QString("set.start.crash"),true);
+    settings()->sync();
+    //崩溃检测
+    QTimer::singleShot(1000, this, &Settings::onSetCrash);
 }
 
 QVariant Settings::generalOption(const QString &sOpt)

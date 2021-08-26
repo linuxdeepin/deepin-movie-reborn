@@ -408,6 +408,14 @@ public slots:
     void checkErrorMpvLogsChanged(const QString sPrefix, const QString sText);
     void checkWarningMpvLogsChanged(const QString sPrefix, const QString sText);
     void slotdefaultplaymodechanged(const QString &sKey, const QVariant &value);
+    /**
+    * @brief 设置解码模式
+    */
+    void onSetDecodeModel(const QString &key, const QVariant &value);
+    /**
+    * @brief 刷新解码模式
+    */
+    void onRefreshDecode();
 #if defined (__aarch64__) || defined (__mips__)
     void syncPostion();
 #endif
@@ -523,6 +531,10 @@ private:
     void loadWindowState();
     void subtitleMatchVideo(const QString &sFileName);
     void defaultplaymodeinit();
+    /**
+    * @brief 解码初始化
+    */
+    void decodeInit();
     void readSinkInputPath();
     void setAudioVolume(int);
     void setMusicMuted(bool bMuted);

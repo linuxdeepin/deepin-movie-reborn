@@ -140,6 +140,9 @@ public:
     {
         return *_playlist;
     }
+
+    Backend * getMpvProxy();
+
     PlaylistModel *getplaylist()
     {
         return _playlist;
