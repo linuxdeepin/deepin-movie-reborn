@@ -238,6 +238,8 @@ void VolumeSlider::popup()
         end.moveTo(m_point + QPoint(6, 0));
         start.moveTo(m_point - QPoint(0, 14));
     }
+#elif __sw_64__
+    start.moveTo(start.topLeft() - QPoint(6, 10));
 #else
     end.moveTo(m_point + QPoint(6, 0));
     start.moveTo(m_point - QPoint(0, 14));
