@@ -1960,7 +1960,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
             sDev = probeCdromDevice();
         }
         if (sDev.isEmpty()) {
-            m_pCommHintWid->updateWithMessage(tr("No device found"));
+            m_pCommHintWid->updateWithMessage(tr("Cannot play the disc"));
             break;
         }
 
