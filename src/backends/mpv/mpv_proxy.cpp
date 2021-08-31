@@ -37,6 +37,8 @@
 #include "mpv_glwidget.h"
 #include "compositing_manager.h"
 #include "player_engine.h"
+#include "hwdec_probe.h"
+
 #ifndef _LIBDMR_
 #include "dmr_settings.h"
 #include "movie_configuration.h"
@@ -1006,6 +1008,9 @@ void MpvProxy::slotStateChanged()
 
 void MpvProxy::refreshDecode()
 {
+    QList<QString> canHwTypes;
+    bool bIsCanHwDec = HwdecProbe::get()->isFileCanHwdec(_file.url(), canHwTypes);
+
     if (DecodeMode::SOFTWARE == m_decodeMode) { //1.设置软解
         my_set_property(m_handle, "hwdec", "no");
     } else if (DecodeMode::HARDWARE == m_decodeMode) {//2.设置硬解
@@ -1028,7 +1033,8 @@ void MpvProxy::refreshDecode()
             } else if (CompositingManager::get().isOnlySoftDecode()) { //2.2.1.2 鲲鹏920 || 曙光+英伟达 || 浪潮
                 my_set_property(m_handle, "hwdec", "no");
             } else { //2.2.2 非特殊硬件 + 非特殊格式
-                my_set_property(m_handle, "hwdec", "auto");
+
+                bIsCanHwDec ? my_set_property(m_handle, "hwdec", canHwTypes.join(',')) : my_set_property(m_handle, "hwdec", "no");
             }
         }
     } else { //3.设置自动
@@ -1039,13 +1045,13 @@ void MpvProxy::refreshDecode()
             my_set_property(m_handle, "hwdec", "no");
         }
 #else
-        my_set_property(m_handle, "hwdec", "auto");
+    bIsCanHwDec ? my_set_property(m_handle, "hwdec", canHwTypes.join(',')) : my_set_property(m_handle, "hwdec", "no");
 #endif
 #else
         if (CompositingManager::get().isOnlySoftDecode()) { // 鲲鹏920 || 曙光+英伟达 || 浪潮
             my_set_property(m_handle, "hwdec", "no");
         } else {
-            my_set_property(m_handle, "hwdec", "auto");
+            bIsCanHwDec ? my_set_property(m_handle, "hwdec", canHwTypes.join(',')) : my_set_property(m_handle, "hwdec", "no");
         }
 #endif
 

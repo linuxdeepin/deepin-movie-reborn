@@ -12,7 +12,8 @@ include_directories(${CMAKE_INCLUDE_CURRENT_DIR})
 
 file(GLOB_RECURSE SRCS LIST_DIRECTORIES false *.cpp)
 file(GLOB_RECURSE MPV_SRCS LIST_DIRECTORIES false ../backends/mpv/*.cpp)
-list(APPEND SRCS player_widget.cpp ${MPV_SRCS})
+file(GLOB_RECURSE HWDEC_SRCS ../common/hwdec_probe.cpp)
+list(APPEND SRCS player_widget.cpp ${MPV_SRCS} ${HWDEC_SRCS})
 
 add_library(${CMD_NAME} SHARED ${SRCS})
 set_target_properties(${CMD_NAME} PROPERTIES VERSION 0.1.0 SOVERSION 0.1)
