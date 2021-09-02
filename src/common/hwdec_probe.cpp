@@ -69,19 +69,17 @@
 
 namespace dmr {
 
-HwdecProbe* HwdecProbe::m_ffmpegProbe = nullptr;
+HwdecProbe HwdecProbe::m_ffmpegProbe;
 
 HwdecProbe::HwdecProbe():m_hwDeviceCtx(nullptr)
 {
+    m_ffmpegProbe.initffmpegInterface();
+    m_ffmpegProbe.getHwTypes();
 }
 
-HwdecProbe* HwdecProbe::get()
+HwdecProbe& HwdecProbe::get()
 {
-    if (nullptr == m_ffmpegProbe) {
-        m_ffmpegProbe = new HwdecProbe();
-        m_ffmpegProbe->initffmpegInterface();
-        m_ffmpegProbe->getHwTypes();
-    }
+
 
     return m_ffmpegProbe;
 }

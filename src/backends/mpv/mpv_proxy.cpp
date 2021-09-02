@@ -1009,7 +1009,7 @@ void MpvProxy::slotStateChanged()
 void MpvProxy::refreshDecode()
 {
     QList<QString> canHwTypes;
-    bool bIsCanHwDec = HwdecProbe::get()->isFileCanHwdec(_file.url(), canHwTypes);
+    //bool bIsCanHwDec = HwdecProbe::get().isFileCanHwdec(_file.url(), canHwTypes);
 
     if (DecodeMode::SOFTWARE == m_decodeMode) { //1.设置软解
         my_set_property(m_handle, "hwdec", "no");
@@ -1033,8 +1033,8 @@ void MpvProxy::refreshDecode()
             } else if (CompositingManager::get().isOnlySoftDecode()) { //2.2.1.2 鲲鹏920 || 曙光+英伟达 || 浪潮
                 my_set_property(m_handle, "hwdec", "no");
             } else { //2.2.2 非特殊硬件 + 非特殊格式
-
-                bIsCanHwDec ? my_set_property(m_handle, "hwdec", canHwTypes.join(',')) : my_set_property(m_handle, "hwdec", "no");
+                 my_set_property(m_handle, "hwdec","auto");
+                //bIsCanHwDec ? my_set_property(m_handle, "hwdec", canHwTypes.join(',')) : my_set_property(m_handle, "hwdec", "no");
             }
         }
     } else { //3.设置自动
@@ -1045,13 +1045,15 @@ void MpvProxy::refreshDecode()
             my_set_property(m_handle, "hwdec", "no");
         }
 #else
-    bIsCanHwDec ? my_set_property(m_handle, "hwdec", canHwTypes.join(',')) : my_set_property(m_handle, "hwdec", "no");
+    my_set_property(m_handle, "hwdec","auto");
+    //bIsCanHwDec ? my_set_property(m_handle, "hwdec", canHwTypes.join(',')) : my_set_property(m_handle, "hwdec", "no");
 #endif
 #else
         if (CompositingManager::get().isOnlySoftDecode()) { // 鲲鹏920 || 曙光+英伟达 || 浪潮
             my_set_property(m_handle, "hwdec", "no");
         } else {
-            bIsCanHwDec ? my_set_property(m_handle, "hwdec", canHwTypes.join(',')) : my_set_property(m_handle, "hwdec", "no");
+             my_set_property(m_handle, "hwdec","auto");
+            //bIsCanHwDec ? my_set_property(m_handle, "hwdec", canHwTypes.join(',')) : my_set_property(m_handle, "hwdec", "no");
         }
 #endif
 

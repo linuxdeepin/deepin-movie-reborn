@@ -111,7 +111,7 @@ namespace dmr {
          * @brief 获取对象指针
          * @return 对象指针
          */
-        static HwdecProbe* get();
+        static HwdecProbe& get();
 
         /**
          * @brief 判断文件是否可以用硬解播放
@@ -151,7 +151,7 @@ namespace dmr {
 
     private:
         //单例指针
-        static HwdecProbe*             m_ffmpegProbe;
+        static HwdecProbe             m_ffmpegProbe;
         //硬解设备上下文
         AVBufferRef                     *m_hwDeviceCtx;
         //所有硬解类型
