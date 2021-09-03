@@ -87,6 +87,7 @@ Titlebar::Titlebar(QWidget *parent) : DBlurEffectWidget(parent), d_ptr(new Title
     d->m_titlebar->setBackgroundTransparent(false);
     d->m_titlebar->setBlurBackground(true);
 
+    QTimer::singleShot(500, this, [&]()
     {
         auto dpr = qApp->devicePixelRatio();
         int w2 = static_cast<int>(32 * dpr);
@@ -103,9 +104,11 @@ Titlebar::Titlebar(QWidget *parent) : DBlurEffectWidget(parent), d_ptr(new Title
         QPainter p(&pm);
         p.drawPixmap((w2 - w) / 2, (w2 - w) / 2, logo);
         p.end();
+
         if (!utils::check_wayland_env())
-            d->m_titlebar->setIcon(pm);
+            this->setIcon(pm);
     }
+    );
 
     d->m_titlebar->setTitle("");
     d->m_titletxt = new DLabel(this);
@@ -125,6 +128,12 @@ Titlebar::Titlebar(QWidget *parent) : DBlurEffectWidget(parent), d_ptr(new Title
 Titlebar::~Titlebar()
 {
 
+}
+
+void Titlebar::setIcon(QPixmap& mp)
+{
+    Q_D(const Titlebar);
+    d->m_titlebar->setIcon(mp);
 }
 
 void Titlebar::slotThemeTypeChanged()

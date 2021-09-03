@@ -110,20 +110,22 @@ void MpvProxy::setDecodeModel(const QVariant &value)
 
 void MpvProxy::initMpvFuns()
 {
-    m_waitEvent = reinterpret_cast<mpv_waitEvent>(QLibrary::resolve(libPath("libmpv.so.1"), "mpv_wait_event"));
-    m_setOptionString = reinterpret_cast<mpv_set_optionString>(QLibrary::resolve(libPath("libmpv.so.1"), "mpv_set_option_string"));
-    m_setProperty = reinterpret_cast<mpv_setProperty>(QLibrary::resolve(libPath("libmpv.so.1"), "mpv_set_property"));
-    m_setPropertyAsync = reinterpret_cast<mpv_setProperty_async>(QLibrary::resolve(libPath("libmpv.so.1"), "mpv_set_property_async"));
-    m_commandNode = reinterpret_cast<mpv_commandNode>(QLibrary::resolve(libPath("libmpv.so.1"), "mpv_command_node"));
-    m_commandNodeAsync = reinterpret_cast<mpv_commandNode_async>(QLibrary::resolve(libPath("libmpv.so.1"), "mpv_command_node_async"));
-    m_getProperty = reinterpret_cast<mpv_getProperty>(QLibrary::resolve(libPath("libmpv.so.1"), "mpv_get_property"));
-    m_observeProperty = reinterpret_cast<mpv_observeProperty>(QLibrary::resolve(libPath("libmpv.so.1"), "mpv_observe_property"));
-    m_eventName = reinterpret_cast<mpv_eventName>(QLibrary::resolve(libPath("libmpv.so.1"), "mpv_event_name"));
-    m_creat = reinterpret_cast<mpvCreate>(QLibrary::resolve(libPath("libmpv.so.1"), "mpv_create"));
-    m_requestLogMessage = reinterpret_cast<mpv_requestLog_messages>(QLibrary::resolve(libPath("libmpv.so.1"), "mpv_request_log_messages"));
-    m_setWakeupCallback = reinterpret_cast<mpv_setWakeup_callback>(QLibrary::resolve(libPath("libmpv.so.1"), "mpv_set_wakeup_callback"));
-    m_initialize = reinterpret_cast<mpvinitialize>(QLibrary::resolve(libPath("libmpv.so.1"), "mpv_initialize"));
-    m_freeNodecontents = reinterpret_cast<mpv_freeNode_contents>(QLibrary::resolve(libPath("libmpv.so.1"), "mpv_free_node_contents"));
+    QLibrary mpvLibrary(libPath("libmpv.so.1"));
+
+    m_waitEvent = reinterpret_cast<mpv_waitEvent>(mpvLibrary.resolve("mpv_wait_event"));
+    m_setOptionString = reinterpret_cast<mpv_set_optionString>(mpvLibrary.resolve("mpv_set_option_string"));
+    m_setProperty = reinterpret_cast<mpv_setProperty>(mpvLibrary.resolve("mpv_set_property"));
+    m_setPropertyAsync = reinterpret_cast<mpv_setProperty_async>(mpvLibrary.resolve("mpv_set_property_async"));
+    m_commandNode = reinterpret_cast<mpv_commandNode>(mpvLibrary.resolve("mpv_command_node"));
+    m_commandNodeAsync = reinterpret_cast<mpv_commandNode_async>(mpvLibrary.resolve("mpv_command_node_async"));
+    m_getProperty = reinterpret_cast<mpv_getProperty>(mpvLibrary.resolve("mpv_get_property"));
+    m_observeProperty = reinterpret_cast<mpv_observeProperty>(mpvLibrary.resolve("mpv_observe_property"));
+    m_eventName = reinterpret_cast<mpv_eventName>(mpvLibrary.resolve("mpv_event_name"));
+    m_creat = reinterpret_cast<mpvCreate>(mpvLibrary.resolve("mpv_create"));
+    m_requestLogMessage = reinterpret_cast<mpv_requestLog_messages>(mpvLibrary.resolve("mpv_request_log_messages"));
+    m_setWakeupCallback = reinterpret_cast<mpv_setWakeup_callback>(mpvLibrary.resolve("mpv_set_wakeup_callback"));
+    m_initialize = reinterpret_cast<mpvinitialize>(mpvLibrary.resolve("mpv_initialize"));
+    m_freeNodecontents = reinterpret_cast<mpv_freeNode_contents>(mpvLibrary.resolve("mpv_free_node_contents"));
 }
 
 void MpvProxy::firstInit()

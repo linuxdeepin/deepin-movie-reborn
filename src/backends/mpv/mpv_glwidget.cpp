@@ -962,11 +962,12 @@ namespace dmr {
     void MpvGLWidget::initMpvFuns()
     {
         qInfo() << "MpvGLWidget开始initMpvFuns";
-        m_callback = reinterpret_cast<mpv_render_contextSet_update_callback>(QLibrary::resolve(libPath("libmpv.so.1"), "mpv_render_context_set_update_callback"));
-        m_context_report = reinterpret_cast<mpv_render_contextReport_swap>(QLibrary::resolve(libPath("libmpv.so.1"), "mpv_render_context_report_swap"));
-        m_renderContex = reinterpret_cast<mpv_renderContext_free>(QLibrary::resolve(libPath("libmpv.so.1"), "mpv_render_context_free"));
-        m_renderCreat = reinterpret_cast<mpv_renderContext_create>(QLibrary::resolve(libPath("libmpv.so.1"), "mpv_render_context_create"));
-        m_renderContexRender = reinterpret_cast<mpv_renderContext_render>(QLibrary::resolve(libPath("libmpv.so.1"), "mpv_render_context_render"));
-        m_renderContextUpdate = reinterpret_cast<mpv_renderContext_update>(QLibrary::resolve(libPath("libmpv.so.1"), "mpv_render_context_update"));
+        QLibrary mpvLibrary(libPath("libmpv.so.1"));
+        m_callback = reinterpret_cast<mpv_render_contextSet_update_callback>(mpvLibrary.resolve("mpv_render_context_set_update_callback"));
+        m_context_report = reinterpret_cast<mpv_render_contextReport_swap>(mpvLibrary.resolve("mpv_render_context_report_swap"));
+        m_renderContex = reinterpret_cast<mpv_renderContext_free>(mpvLibrary.resolve("mpv_render_context_free"));
+        m_renderCreat = reinterpret_cast<mpv_renderContext_create>(mpvLibrary.resolve("mpv_render_context_create"));
+        m_renderContexRender = reinterpret_cast<mpv_renderContext_render>(mpvLibrary.resolve("mpv_render_context_render"));
+        m_renderContextUpdate = reinterpret_cast<mpv_renderContext_update>(mpvLibrary.resolve("mpv_render_context_update"));
     }
 }

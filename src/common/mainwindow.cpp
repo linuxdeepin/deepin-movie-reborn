@@ -741,8 +741,6 @@ MainWindow::MainWindow(QWidget *parent)
         connect(qApp, &QGuiApplication::focusWindowChanged, this, &MainWindow::updateShadow);
         updateShadow();
     }
-#else
-    winId();
 #endif
 
     QSizePolicy sp(QSizePolicy::Preferred, QSizePolicy::Preferred);
@@ -998,22 +996,26 @@ MainWindow::MainWindow(QWidget *parent)
     connect(this, &MainWindow::windowLeaved, &MainWindow::suspendToolsWindow);
 
 #else
-    m_pEventListener = new MainWindowEventListener(this);
-    this->windowHandle()->installEventFilter(m_pEventListener);
+    QTimer::singleShot(500, [this](){
+        winId();
+        m_pEventListener = new MainWindowEventListener(this);
+        this->windowHandle()->installEventFilter(m_pEventListener);
 
     m_pMWPM = new MainWindowPropertyMonitor(this);
     QAbstractEventDispatcher::instance()->installNativeEventFilter(m_pMWPM);
 
-    connect(this, &MainWindow::windowEntered, &MainWindow::resumeToolsWindow);
-    connect(this, &MainWindow::windowLeaved, &MainWindow::suspendToolsWindow);
+        connect(this, &MainWindow::windowEntered, &MainWindow::resumeToolsWindow);
+        connect(this, &MainWindow::windowLeaved, &MainWindow::suspendToolsWindow);
+        bool bComposited1 = CompositingManager::get().composited();;
+        if (!bComposited1) {
+            if (m_pEngine->windowHandle())
+                m_pEngine->windowHandle()->installEventFilter(m_pEventListener);
+            m_pTitlebar->windowHandle()->installEventFilter(m_pEventListener);
+            m_pToolbox->windowHandle()->installEventFilter(m_pEventListener);
+        }
+        qInfo() << "event listener";
+    } );
 
-    if (!bComposited) {
-        if (m_pEngine->windowHandle())
-            m_pEngine->windowHandle()->installEventFilter(m_pEventListener);
-        m_pTitlebar->windowHandle()->installEventFilter(m_pEventListener);
-        m_pToolbox->windowHandle()->installEventFilter(m_pEventListener);
-    }
-    qInfo() << "event listener";
 #endif
 
 #ifndef __mips__
@@ -1076,7 +1078,7 @@ MainWindow::MainWindow(QWidget *parent)
     m_diskCheckThread.start();
     connect(&m_diskCheckThread, &Diskcheckthread::diskRemove, this, &MainWindow::diskRemoved);
 
-    QTimer::singleShot(500, [this]() {
+    QTimer::singleShot(300, [this]() {
         loadPlayList();
         if (CompositingManager::isPadSystem()) {  //平板模式加载默认文件夹
             m_pEngine->addPlayDir(padLoadPath());

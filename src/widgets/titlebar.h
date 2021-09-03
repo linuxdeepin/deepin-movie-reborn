@@ -76,6 +76,11 @@ public:
      * @param flag 传入是否为播放状态
      */
     void setTitleBarBackground(bool flag);
+    /**
+     * @brief setIcon设置标图标
+     * @param mp 图标
+     */
+    void setIcon(QPixmap& mp);
 public slots:
 	//把lambda表达式改为槽函数，modify by myk
     /**
