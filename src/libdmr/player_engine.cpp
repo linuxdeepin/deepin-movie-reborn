@@ -128,8 +128,11 @@ bool PlayerEngine::isPlayableFile(const QUrl &url)
         //return (isPlayableFile(url.path()) || isAudioFile(url.path()));
         return (isPlayableFile(url.path()) && _playlist->isMediaFile(url.path()));
     } else {
-        // for a networked url, there is no way to know if it's playable right now
-        return true;
+        if (url.scheme().startsWith("dvd")) {
+            return (isPlayableFile(url.path()) && _playlist->isMediaFile(url.path()));
+        } else { // for a networked url, there is no way to know if it's playable right now
+            return true;
+        }
     }
 }
 

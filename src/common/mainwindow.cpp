@@ -2891,7 +2891,7 @@ void MainWindow::play(const QUrl &url)
     if (url.scheme().startsWith("dvd")) {
         m_dvdUrl = url;
         if (!m_pEngine->addPlayFile(url)) {
-            auto msg = QString(tr("No video file found"));
+            auto msg = QString(tr("Cannot play the disc"));
             m_pCommHintWid->updateWithMessage(msg);
             return;
         } else {
