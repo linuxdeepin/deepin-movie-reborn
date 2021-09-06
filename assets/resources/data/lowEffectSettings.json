@@ -5,6 +5,26 @@
             "name": "Basic",
             "groups": [
                 {
+                    "key": "set",
+                    "name": "set",
+                    "hide": true,
+                    "groups": [
+                        {
+                            "key": "start",
+                            "name": "start",
+                            "hide": true,
+                            "options": [
+                                {
+                                    "key": "crash",
+                                    "type": "checkbox",
+                                    "hide": true,
+                                    "default": false
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
                     "key": "play",
                     "name": "Play",
                     "options": [
@@ -115,6 +135,23 @@
                             "type": "checkbox",
                             "hide": true,
                             "default": true
+                        }
+                    ]
+                },
+                {
+                    "key": "decode",
+                    "name": "Decoding",
+                    "options": [
+                        {
+                            "key": "select",
+                            "text": "",
+                            "type": "radiogroup",
+                            "items": [
+                                "Auto select (Recommended)",
+                                "Hardware decoding",
+                                "Software decoding"
+                            ],
+                            "default": 0
                         }
                     ]
                 },
