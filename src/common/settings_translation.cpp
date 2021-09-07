@@ -85,5 +85,9 @@ void GenerateSettingTranslate()
     auto group_shortcuts_help = QObject::tr("Help");
     auto group_shortcuts_showshortcuts = QObject::tr("Display shortcuts");
     auto group_settings = QObject::tr("Settings");
+    auto group_decoding = QObject::tr("Decoding");
+    auto group_decoding_auto = QObject::tr("Auto select (Recommended)");
+    auto group_decoding_hardware = QObject::tr("Hardware decoding");
+    auto group_decoding_software = QObject::tr("Software decoding");
 }
 
