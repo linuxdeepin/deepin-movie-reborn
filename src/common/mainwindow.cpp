@@ -2039,7 +2039,11 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
                 urls.append(QUrl::fromLocalFile(filename));
             }
             const QList<QUrl> &valids = m_pEngine->addPlayFiles(urls);
-            m_pEngine->playByName(valids[0]);
+            if (valids.size()) {
+                m_pEngine->playByName(valids[0]);
+            } else {
+                m_pCommHintWid->updateWithMessage(tr("Invalid file"));
+            }
         }
         break;
     }
