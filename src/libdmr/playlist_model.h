@@ -190,6 +190,7 @@ public:
     int current() const;
     const PlayItemInfo &currentInfo() const;
     PlayItemInfo &currentInfo();
+    int size() const;
     int indexOf(const QUrl &url);
 
     void switchPosition(int p1, int p2);

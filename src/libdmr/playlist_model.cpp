@@ -1410,6 +1410,11 @@ PlayItemInfo &PlaylistModel::currentInfo()
     return _infos[0];
 }
 
+int PlaylistModel::size() const
+{
+    return _infos.size();
+}
+
 const PlayItemInfo &PlaylistModel::currentInfo() const
 {
     Q_ASSERT(_infos.size() > 0 && _current >= 0);

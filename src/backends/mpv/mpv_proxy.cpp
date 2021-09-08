@@ -1017,13 +1017,17 @@ void MpvProxy::refreshDecode()
         my_set_property(m_handle, "hwdec", "no");
     } else if (DecodeMode::HARDWARE == m_decodeMode) {//2.设置硬解
         //2.1 特殊格式
-        PlayItemInfo currentInfo = dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist()->currentInfo();
-        auto codec = currentInfo.mi.videoCodec();
-        auto name = _file.fileName();
-        bool isSoftCodec = codec.toLower().contains("wmv") || name.toLower().contains("wmv");
+        bool isSoftCodec = false;
+        if (0 < dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist()->size()) {
+            PlayItemInfo currentInfo = dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist()->currentInfo();
+            auto codec = currentInfo.mi.videoCodec();
+            auto name = _file.fileName();
+            isSoftCodec = codec.toLower().contains("wmv") || name.toLower().contains("wmv");
 #if !defined (__x86_64__)
-        isSoftCodec = isSoftCodec || codec.toLower().contains("mpeg2video");
+            isSoftCodec = isSoftCodec || codec.toLower().contains("mpeg2video");
 #endif
+        }
+
         if (isSoftCodec) {
             qInfo() << "my_set_property hwdec no";
             my_set_property(m_handle, "hwdec", "no");
