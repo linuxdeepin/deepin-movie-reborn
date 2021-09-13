@@ -1171,6 +1171,9 @@ void MainWindow::updateShadow()
 
 bool MainWindow::event(QEvent *pEvent)
 {
+    if (pEvent->type() == QEvent::UpdateRequest || pEvent->type() == QEvent::Paint)
+        return DMainWindow::event(pEvent);
+
     if (pEvent->type() == QEvent::TouchBegin) {
         //判定是否是触屏
         this->m_posMouseOrigin = mapToGlobal(QCursor::pos());

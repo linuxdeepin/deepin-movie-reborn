@@ -150,7 +150,7 @@ public:
         _thumb = nullptr;
         m_pSvgWidget = nullptr;
         setProperty("PlayItemThumb", "true");
-        setState(ItemState::Normal);
+        //setState(ItemState::Normal);
         setFrameShape(QFrame::NoFrame);
         this->setObjectName(PLAYITEM_WIDGET);
         auto kd = "local";
@@ -259,6 +259,11 @@ public:
         installEventFilter(th);
         connect(_playlist, &PlaylistWidget::sizeChange, this, &PlayItemWidget::slotSizeChange);
 
+        m_opacityEffect = new QGraphicsOpacityEffect;
+        _time->setGraphicsEffect(m_opacityEffect);
+        m_opacityEffect_1 = new QGraphicsOpacityEffect;
+        _index->setGraphicsEffect(m_opacityEffect_1);
+        setState(ItemState::Normal);
     }
     
     ~PlayItemWidget() override
@@ -291,7 +296,43 @@ public:
     void setState(ItemState is)
     {
         setProperty("ItemState", is);
-        update();
+
+        if (state() == ItemState::Playing) {
+            DPalette pa = DApplicationHelper::instance()->palette(this);
+            pa.setBrush(DPalette::Text, pa.color(DPalette::Highlight));
+
+            if (!m_bIsSelect) {
+                _name->setForegroundRole(DPalette::Highlight);
+                _index->setForegroundRole(DPalette::Highlight);
+                _time->setForegroundRole(DPalette::Highlight);
+            } else {
+                _name->setForegroundRole(DPalette::ToolTipText);
+                _index->setForegroundRole(DPalette::BrightText);
+                _time->setForegroundRole(DPalette::BrightText);
+            }
+
+            m_opacityEffect_1->setOpacity(1.0);
+            m_opacityEffect->setOpacity(1.0);
+            DFontSizeManager::instance()->bind(_name, DFontSizeManager::T6, QFont::Medium);
+            DFontSizeManager::instance()->bind(_index, DFontSizeManager::T6, QFont::Medium);
+            DFontSizeManager::instance()->bind(_time, DFontSizeManager::T6, QFont::Medium);
+
+        } else if (state() == ItemState::Normal) {
+            _name->setForegroundRole(DPalette::ToolTipText);
+            _index->setForegroundRole(DPalette::BrightText);
+            _time->setForegroundRole(DPalette::BrightText);
+            m_opacityEffect->setOpacity(0.5);
+
+            if (m_bIsSelect) {
+                m_opacityEffect_1->setOpacity(1.0);
+            } else {
+                m_opacityEffect_1->setOpacity(0.5);
+            }
+
+            DFontSizeManager::instance()->bind(_name, DFontSizeManager::T6, QFont::Normal);
+            DFontSizeManager::instance()->bind(_index, DFontSizeManager::T6, QFont::Normal);
+            DFontSizeManager::instance()->bind(_time, DFontSizeManager::T6, QFont::Normal);
+        }
     }
 
     ItemState state() const
@@ -337,7 +378,39 @@ public:
     void setBIsSelect(bool bIsSelect)
     {
         m_bIsSelect = bIsSelect;
-        update();
+
+        if (m_bIsSelect) {
+            _time->hide();
+            _closeBtn->show();
+            _closeBtn->raise();
+            QPalette pe;
+            if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
+                pe.setColor(QPalette::ToolTipText, Qt::white);
+                _name->setPalette(pe);
+                pe.setColor(QPalette::BrightText, Qt::white);
+                _index->setPalette(pe);
+            } else if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
+                pe.setColor(QPalette::ToolTipText, Qt::white);
+                _name->setPalette(pe);
+                pe.setColor(QPalette::BrightText, Qt::white);
+                _index->setPalette(pe);
+            }
+        } else {
+            _time->show();
+            _closeBtn->hide();
+            QPalette pe;
+            if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
+                pe.setColor(QPalette::ToolTipText, Qt::black);
+                _name->setPalette(pe);
+                pe.setColor(QPalette::BrightText, Qt::black);
+                _index->setPalette(pe);
+            } else if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
+                pe.setColor(QPalette::ToolTipText, Qt::white);
+                _name->setPalette(pe);
+                pe.setColor(QPalette::BrightText, Qt::white);
+                _index->setPalette(pe);
+            }
+        }
     }
 
     void doDoubleClick()
@@ -457,9 +530,10 @@ protected:
         painter.setRenderHint(QPainter::Antialiasing);
         QRectF bgRect;
         bgRect.setSize(size());
-        const DPalette pal = QGuiApplication::palette();//this->palette();
+        const DPalette pal = QGuiApplication::palette();
         DStyleHelper styleHelper;
         QStyleOption option;
+
         if (!(_index->text().toInt() % 2)) {
             QColor bgColor;
             if (DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::DarkType) {
@@ -472,6 +546,7 @@ protected:
             pp.addRoundedRect(bgRect, 8, 8);
             painter.fillPath(pp, bgColor);
         }
+
         if (_hovered) {
             DPalette pa = DApplicationHelper::instance()->palette(this);
             pa.setBrush(DPalette::Text, pa.color(DPalette::Highlight));
@@ -485,42 +560,6 @@ protected:
             painter.fillPath(pp, bgColor);
 
         }
-        if (state() == ItemState::Playing) {
-            QGraphicsOpacityEffect *opacityEffect = new QGraphicsOpacityEffect;
-            QGraphicsOpacityEffect *opacityEffect_1 = new QGraphicsOpacityEffect;
-            DPalette pa = DApplicationHelper::instance()->palette(this);
-
-            _time->setGraphicsEffect(opacityEffect);
-            _index->setGraphicsEffect(opacityEffect_1);
-            pa.setBrush(DPalette::Text, pa.color(DPalette::Highlight));
-            if (!m_bIsSelect) {
-                _name->setForegroundRole(DPalette::Highlight);
-                _index->setForegroundRole(DPalette::Highlight);
-                _time->setForegroundRole(DPalette::Highlight);
-            } else {
-                _name->setForegroundRole(DPalette::ToolTipText);
-                _index->setForegroundRole(DPalette::BrightText);
-                _time->setForegroundRole(DPalette::BrightText);
-            }
-            opacityEffect->setOpacity(1.0);
-        } else {
-            QGraphicsOpacityEffect *opacityEffect = new QGraphicsOpacityEffect;
-            QGraphicsOpacityEffect *opacityEffect_1 = new QGraphicsOpacityEffect;
-
-            _name->setForegroundRole(DPalette::ToolTipText);
-            _index->setForegroundRole(DPalette::BrightText);
-            _time->setForegroundRole(DPalette::BrightText);
-
-            _time->setGraphicsEffect(opacityEffect);
-            opacityEffect->setOpacity(0.5);
-
-            _index->setGraphicsEffect(opacityEffect_1);
-            if (m_bIsSelect) {
-                opacityEffect_1->setOpacity(1.0);
-            } else {
-                opacityEffect_1->setOpacity(0.5);
-            }
-        }
 
         if (!_pif.valid) {
             setState(ItemState::Invalid);
@@ -528,44 +567,6 @@ protected:
             _time->setText(tr("The file does not exist"));
         }
 
-        if (m_bIsSelect) {
-            _time->hide();
-            _closeBtn->show();
-            _closeBtn->raise();
-            QColor bgColor = Dtk::Gui::DGuiApplicationHelper::instance()->applicationPalette().highlight().color();
-            QPainterPath pp;
-            pp.addRoundedRect(bgRect, 8, 8);
-            painter.fillPath(pp, bgColor);
-
-            QPalette pe;
-            if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
-                pe.setColor(QPalette::ToolTipText, Qt::white);
-                _name->setPalette(pe);
-                pe.setColor(QPalette::BrightText, Qt::white);
-                _index->setPalette(pe);
-            } else if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
-                pe.setColor(QPalette::ToolTipText, Qt::white);
-                _name->setPalette(pe);
-                pe.setColor(QPalette::BrightText, Qt::white);
-                _index->setPalette(pe);
-            }
-        } else {
-            _time->show();
-            _closeBtn->hide();
-
-            QPalette pe;
-            if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
-                pe.setColor(QPalette::ToolTipText, Qt::black);
-                _name->setPalette(pe);
-                pe.setColor(QPalette::BrightText, Qt::black);
-                _index->setPalette(pe);
-            } else if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
-                pe.setColor(QPalette::ToolTipText, Qt::white);
-                _name->setPalette(pe);
-                pe.setColor(QPalette::BrightText, Qt::white);
-                _index->setPalette(pe);
-            }
-        }
         QFrame::paintEvent(pe);
     }
 
@@ -584,6 +585,8 @@ private:
     bool _hovered {false};
     PlaylistWidget *_playlist{nullptr};
     bool m_bIsSelect = false;
+    QGraphicsOpacityEffect *m_opacityEffect {nullptr};
+    QGraphicsOpacityEffect *m_opacityEffect_1 {nullptr};
 };
 
 class MainWindowListener: public QObject
@@ -1426,17 +1429,8 @@ void PlaylistWidget::paintEvent(QPaintEvent *pe)
     painter.setRenderHint(QPainter::Antialiasing);
     QRectF bgRect;
     bgRect.setSize(size());
-    const QPalette pal = QGuiApplication::palette();//this->palette();
-    //QColor bgColor = pal.color(QPalette::ToolTipBase);
-
     QPainterPath pp;
     pp.addRoundedRect(bgRect, 18, 18);
-    if (_title && _num) {
-        _title->setForegroundRole(DPalette::ToolTipText);
-        _num->setForegroundRole(DPalette::BrightText);
-    }
-
-
     QWidget::paintEvent(pe);
 }
 
