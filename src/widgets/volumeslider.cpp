@@ -331,6 +331,7 @@ void VolumeSlider::calculationStep(int iAngleDelta){
 void VolumeSlider::volumeUp()
 {
     if (m_bIsWheel) {
+        m_bIsWheel = false;
         if(qAbs(m_iStep) >= 120) {
             m_nVolume += qAbs(m_iStep) / 120 * 10;
             changeVolume(qMin(m_nVolume, 200));
@@ -344,6 +345,7 @@ void VolumeSlider::volumeUp()
 void VolumeSlider::volumeDown()
 {
     if(m_bIsWheel){
+        m_bIsWheel = false;
         if(qAbs(m_iStep) >= 120){
             m_nVolume -= qAbs(m_iStep) / 120 * 10 ;
             changeVolume(qMax(m_nVolume, 0));

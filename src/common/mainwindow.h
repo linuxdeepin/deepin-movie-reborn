@@ -504,7 +504,6 @@ protected slots:
 
     void updateShadow();
 #endif
-    void updateMiniBtnTheme(int);
     void diskRemoved(QString sDiskName);
     void sleepStateChanged(bool bSleep);
     /**
@@ -527,7 +526,6 @@ private:
     void updateWindowTitle();
     //void toggleShapeMask();
     void prepareSplashImages();
-    void saveWindowState();
     void loadWindowState();
     void subtitleMatchVideo(const QString &sFileName);
     void defaultplaymodeinit();
