@@ -561,6 +561,13 @@ protected:
 
         }
 
+        if (m_bIsSelect) {
+            QColor bgColor = Dtk::Gui::DGuiApplicationHelper::instance()->applicationPalette().highlight().color();
+            QPainterPath pp;
+            pp.addRoundedRect(bgRect, 8, 8);
+            painter.fillPath(pp, bgColor);
+        }
+
         if (!_pif.valid) {
             setState(ItemState::Invalid);
             _name->setForegroundRole(DPalette::TextTips);
