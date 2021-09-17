@@ -1099,7 +1099,7 @@ void MpvProxy::initMember()
     m_bHwaccelAuto = false;
     m_bLastIsSpecficFormat = false;
 
-    m_sInitVo.clear();
+    m_sInitVo = "gpu,xv,x11";//初始化vo数据
     m_listBurstPoints.clear();
     m_mapWaitSet.clear();
     m_vecWaitCommand.clear();
