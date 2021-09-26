@@ -1430,14 +1430,13 @@ void MainWindow::animatePlayState()
         if (!m_bMiniMode) {
 #ifdef __x86_64__
             if (!CompositingManager::get().composited()) {
-                m_pAnimationlable->setGeometry(width() / 2 - 100, height() / 2, 100, 100);
+                m_pAnimationlable->resize(100, 100);
             } else {
                 m_pAnimationlable->setGeometry(width() / 2 - 100, height() / 2 - 100, 200, 200);
             }
 #else
             if (!m_bIsWM) {
                 m_pAnimationlable->resize(100, 100);
-                m_pAnimationlable->setGeometry(width() / 2 - 100, height() / 2, 100, 100);
             } else {
                 m_pAnimationlable->resize(200, 200);
                 m_pAnimationlable->setGeometry(width() / 2 - 100, height() / 2 - 100, 200, 200);
@@ -2574,14 +2573,13 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
                 if (!m_bMiniMode) {
 #ifdef __x86_64__
                     if (!CompositingManager::get().composited()) {
-                        m_pAnimationlable->setGeometry(width() / 2 - 100, height() / 2, 100, 100);
+                        m_pAnimationlable->resize(100, 100);
                     } else {
                         m_pAnimationlable->setGeometry(width() / 2 - 100, height() / 2 - 100, 200, 200);
                     }
 #else
                     if (!m_bIsWM) {
                         m_pAnimationlable->resize(100, 100);
-                        m_pAnimationlable->setGeometry(width() / 2 - 100, height() / 2, 100, 100);
                     } else {
                         m_pAnimationlable->resize(200, 200);
                         m_pAnimationlable->setGeometry(width() / 2 - 100, height() / 2 - 100, 200, 200);
@@ -3145,13 +3143,13 @@ void MainWindow::checkWarningMpvLogsChanged(const QString sPrefix, const QString
             if (!m_bMiniMode) {
 #ifdef __x86_64__
                 if (!CompositingManager::get().composited()) {
-                    m_pAnimationlable->setGeometry(width() / 2 - 100, height() / 2, 100, 100);
+                    m_pAnimationlable->resize(100, 100);
                 } else {
                     m_pAnimationlable->setGeometry(width() / 2 - 100, height() / 2 - 100, 200, 200);
                 }
 #else
                 if (!m_bIsWM) {
-                    m_pAnimationlable->setGeometry(width() / 2 - 100, height() / 2, 100, 100);
+                    m_pAnimationlable->resize(100, 100);
                 } else {
                     m_pAnimationlable->setGeometry(width() / 2 - 100, height() / 2 - 100, 200, 200);
                 }
