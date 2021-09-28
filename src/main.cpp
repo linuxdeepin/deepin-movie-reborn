@@ -119,7 +119,7 @@ int main(int argc, char *argv[])
         checkIsCanHwdec(argc, argv);
     }
 #endif
-#ifdef __aarch64__
+//#ifdef __aarch64__ //wayland平台支持影院播放
     if (dmr::utils::first_check_wayland_env()) {
         qputenv("QT_WAYLAND_SHELL_INTEGRATION", "kwayland-shell");
         //qputenv("_d_disableDBusFileDialog", "true");
@@ -128,7 +128,7 @@ int main(int argc, char *argv[])
         format.setRenderableType(QSurfaceFormat::OpenGLES);
         format.setDefaultFormat(format);
     }
-#endif
+//#endif
 #ifdef __mips__
     if (CompositingManager::get().composited()) {
         CompositingManager::detectOpenGLEarly();
