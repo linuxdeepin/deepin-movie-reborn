@@ -123,13 +123,20 @@ CompositingManager &CompositingManager::get()
 CompositingManager::CompositingManager()
 {
     initMember();
-#ifdef __aarch64__
     if (dmr::utils::check_wayland_env()) {
         _composited = true;
+        //读取配置
+        m_pMpvConfig = new QMap<QString, QString>;
+        utils::getPlayProperty("/etc/mpv/play.conf", m_pMpvConfig);
+        if (m_pMpvConfig->contains("vo")) {
+            QString value = m_pMpvConfig->find("vo").value();
+            if ("libmpv" == value) {
+                _composited = true;//libmpv只能走opengl
+            }
+        }
         qInfo() << __func__ << "Composited is " << _composited;
         return;
     }
-#endif
     softDecodeCheck();   //检测是否是kunpeng920（是否走软解码）
 
     _composited = false;
