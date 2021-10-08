@@ -4516,7 +4516,7 @@ void MainWindow::dropEvent(QDropEvent *pEvent)
         }
     }
 
-    {
+    if (urls.size() != valids.size()) { //fix bug97327 by fengli
         QSet<QUrl> all = urls.toSet();
         QSet<QUrl> accepted = valids.toSet();
         QList<QUrl> invalids = all.subtract(accepted).toList();
