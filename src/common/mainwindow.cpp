@@ -1477,13 +1477,14 @@ void MainWindow::updateActionsState()
         switch (actionKind) {
         case ActionFactory::ActionKind::Screenshot:
         case ActionFactory::ActionKind::MatchOnlineSubtitle:
-        case ActionFactory::ActionKind::BurstScreenshot:
         case ActionFactory::ActionKind::ToggleMiniMode:
         case ActionFactory::ActionKind::ToggleFullscreen:
         case ActionFactory::ActionKind::WindowAbove:
             bRet = m_pEngine->state() != PlayerEngine::Idle;
             break;
-
+        case ActionFactory::ActionKind::BurstScreenshot:
+            bRet = m_pEngine->duration() > 40;
+            break;
         case ActionFactory::ActionKind::MovieInfo:
             bRet = m_pEngine->state() != PlayerEngine::Idle;
             if (bRet) {
