@@ -66,8 +66,13 @@ DWIDGET_USE_NAMESPACE
 
 bool runSingleInstance()
 {
+    std::string path;
     QString userName = QDir::homePath().section("/", -1, -1);
-    std::string path = ("/home/" + userName + "/.cache/deepin/deepin-movie/").toStdString();
+    if (userName == "root") {
+        path = "/tmp/deepin-movie/";
+    } else {
+        path = ("/home/" + userName + "/.cache/deepin/deepin-movie/").toStdString();
+    }
     QDir tdir(path.c_str());
     if (!tdir.exists()) {
         tdir.mkpath(path.c_str());
