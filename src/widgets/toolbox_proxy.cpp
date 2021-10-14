@@ -709,12 +709,7 @@ public:
 
     void updateWithPreview(const QPoint &pos)
     {
-        //resizeWithContent();
-        if (utils::check_wayland_env()) {
-            move(pos.x() - this->width() / 2, pos.y() + 10);
-        } else {
-            move(pos.x() - this->width() / 2, pos.y() - this->height() + 10);
-        }
+        move(pos.x() - this->width() / 2, pos.y() - this->height() + 10);
 
         show();
     }

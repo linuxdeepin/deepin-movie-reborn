@@ -178,14 +178,6 @@ QPixmap ThumbnailWorker::genThumb(const QUrl &url, int secs)
     m_video_thumbnailer->seek_time = m_pCharTime;
     auto file = QFileInfo(url.toLocalFile()).absoluteFilePath();
     try {
-        auto e = QProcessEnvironment::systemEnvironment();
-        QString XDG_SESSION_TYPE = e.value(QStringLiteral("XDG_SESSION_TYPE"));
-        QString WAYLAND_DISPLAY = e.value(QStringLiteral("WAYLAND_DISPLAY"));
-
-        if (XDG_SESSION_TYPE == QLatin1String("wayland") ||
-                WAYLAND_DISPLAY.contains(QLatin1String("wayland"), Qt::CaseInsensitive)) {
-            return pm;
-        }
         m_mvideo_thumbnailer_generate_thumbnail_to_buffer(m_video_thumbnailer, file.toUtf8().data(),  m_image_data);
         auto img = QImage::fromData(m_image_data->image_data_ptr, static_cast<int>(m_image_data->image_data_size), "png");
 
