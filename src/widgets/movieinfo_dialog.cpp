@@ -197,7 +197,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
    if(utils::check_wayland_env()){
        setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint);
    }else{
-       setWindowFlags(windowFlags() /*| Qt::WindowStaysOnTopHint*/);  //和其他应用保持统一取消置顶
+       setWindowFlags(windowFlags());
    }
     this->setObjectName(MOVIE_INFO_DIALOG);
     this->setAccessibleName(MOVIE_INFO_DIALOG);
@@ -246,7 +246,6 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
 
     m_pFileNameLbl->setMinimumWidth(260);
     DFontSizeManager::instance()->bind(m_pFileNameLbl, DFontSizeManager::T8);
-    m_pFileNameLbl->setForegroundRole(DPalette::BrightText);
     m_pFileNameLbl->setText(m_pFileNameLbl->fontMetrics().elidedText(QFileInfo(strMovieInfo.filePath).fileName(), Qt::ElideMiddle, 260));
     m_pFileNameLbl->setAlignment(Qt::AlignCenter);
     pMainLayout->addWidget(m_pFileNameLbl);
@@ -280,14 +279,16 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
     ArrowLine *film = new ArrowLine;
     film->setObjectName(FILM_INFO_WIDGET);
     film->setTitle(tr("Film info"));
+    //去掉分割线
+    film->setSeparatorVisible(false);
+    film->setExpandedSeparatorVisible(false);
     InfoBottom *infoRect = new InfoBottom;
     scrollWidgetLayout->addWidget(film);
     scrollWidgetLayout->setAlignment(film, Qt::AlignHCenter);
     film->setContent(infoRect);
     film->setFixedWidth(280);
     infoRect->setFixedWidth(280);
-    infoRect->setMinimumHeight(132);
-    //infoRect->setFixedSize(280, 132);
+//    infoRect->setMinimumHeight(132);
     film->setExpand(true);
     m_expandGroup.append(film);
     QFormLayout *pFormLayout = new QFormLayout(infoRect);
@@ -313,6 +314,8 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
     ArrowLine *video = new ArrowLine;
     video->setObjectName(CODEC_INFO_WIDGET);
     video->setTitle(tr("Codec info"));
+    video->setSeparatorVisible(false);
+    video->setExpandedSeparatorVisible(false);
     InfoBottom *videoRect = new InfoBottom;
     scrollWidgetLayout->addWidget(video);
     scrollWidgetLayout->setAlignment(video, Qt::AlignHCenter);
@@ -343,6 +346,8 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
     ArrowLine *audio = new ArrowLine;
     audio->setObjectName(AUDIO_INFO_WIDGET);
     audio->setTitle(tr("Audio info"));
+    audio->setSeparatorVisible(false);
+    audio->setExpandedSeparatorVisible(false);
     InfoBottom *audioRect = new InfoBottom;
     scrollWidgetLayout->addWidget(audio);
     scrollWidgetLayout->setAlignment(audio, Qt::AlignHCenter);
@@ -350,7 +355,6 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
     audio->setFixedWidth(280);
     audioRect->setFixedWidth(280);
     audioRect->setMinimumHeight(136);
-    //audioRect->setFixedSize(280, 136);
     audio->setExpand(true);
     m_expandGroup.append(audio);
     auto *audioForm = new QFormLayout(audioRect);
@@ -400,7 +404,6 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
         t->setProperty("for", QVariant::fromValue<QWidget *>(pFilePathLbl));
         pFilePathLbl->setProperty("HintWidget", QVariant::fromValue<QWidget *>(t));
         pFilePathLbl->installEventFilter(th);
-//        filePathLbl->hide();
     }
 
     delete tmp;
@@ -493,14 +496,19 @@ void MovieInfoDialog::addRow(QString sTitle, QString sField, QFormLayout *pForm,
     auto f = new DLabel(sTitle, this);
     f->setAlignment(Qt::AlignLeft | Qt::AlignTop);
     f->setMinimumSize(60, 20);
-    QFont font = f->font();
-    font.setPixelSize(12);
-    font.setWeight(QFont::Weight::Normal);
-    font.setFamily("SourceHanSansSC");
+    DFontSizeManager::instance()->bind(f, DFontSizeManager::T8);
+    DPalette pa1 = DApplicationHelper::instance()->palette(f);
+    pa1.setBrush(DPalette::Text, pa1.color(DPalette::TextTitle));
+    f->setPalette(pa1);
+
     auto t = new DLabel(sField, this);
     t->setAlignment(Qt::AlignLeft | Qt::AlignTop);
     t->setMinimumHeight(20);
     t->setWordWrap(true);
+    DFontSizeManager::instance()->bind(t, DFontSizeManager::T8);
+    DPalette pa2 = DApplicationHelper::instance()->palette(t);
+    pa2.setBrush(DPalette::Text, pa2.color(DPalette::TextTitle));
+    t->setPalette(pa2);
     pForm->addRow(f, t);
     tipList.append(t);
     m_titleList.append(f);

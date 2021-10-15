@@ -146,26 +146,18 @@ protected:
      */
     virtual void paintEvent(QPaintEvent *pPaintEvent)
     {
+        Q_UNUSED(pPaintEvent);
         QPainter painter(this);
-        painter.setRenderHint(QPainter::Antialiasing);
+        QRectF bgRect;
+        bgRect.setSize(size());
+        const QPalette pal = QGuiApplication::palette();
+        QColor bgColor = pal.color(QPalette::Background);
 
-        //这里的参考设计图
-        if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
-            painter.setPen(QColor(0, 0, 0, 0.05 * 255));
-            painter.setBrush(QBrush(QColor(255, 255, 255, 255 * 0.7)));
-        } else if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
-            painter.setPen(QColor(255, 255, 255, 20));
-            painter.setBrush(QBrush(QColor(45, 45, 45, 250 * 0.7)));
-        }
-
-        QRect rect = this->rect();
-        rect.setWidth(rect.width() - 1);
-        rect.setHeight(rect.height() - 1);
-
-        QPainterPath painterPath;
-        //圆角参考设计图
-        painterPath.addRoundedRect(rect, 10, 10);
-        painter.drawPath(painterPath);
+        QPainterPath path;
+        path.addRoundedRect(bgRect, 8, 8);
+        painter.setRenderHint(QPainter::Antialiasing, true);
+        painter.fillPath(path, bgColor);
+        painter.setRenderHint(QPainter::Antialiasing, false);
     }
 };
 /**
