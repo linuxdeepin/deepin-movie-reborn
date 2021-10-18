@@ -865,7 +865,43 @@ namespace dmr {
 
                 pGLFunction->glDisable(GL_BLEND);
             }
-
+#ifdef __x86_64__
+            QWidget *topWidget = topLevelWidget();
+            if(topWidget && (topWidget->isFullScreen())) {//全屏状态播放时更新显示进度
+                QString time_text = QTime::currentTime().toString("hh:mm");
+                QRect rectTime = QRect(rect().width() - 90, 0, 90, 40);
+                QPainter painter;
+                painter.begin(this);
+                QPen pen;
+                pen.setColor(QColor(255, 255, 255, 255 * .4));
+                painter.setPen(pen);
+                QFontMetrics fm(font());
+                auto fr = fm.boundingRect(time_text);
+                fr.moveCenter(rectTime.center());
+                //显示系统时间
+                painter.drawText(fr,time_text);
+                QPoint pos((rectTime.topLeft().x() + 20), rectTime.topLeft().y() + rectTime.height() - 5);
+                int pert = qMin(m_pert * 10, 10.0);
+                for (int i = 0; i < 10; i++) {//显示影院视频播放进度
+                    if (i >= pert) {
+                        painter.fillRect(QRect(pos, QSize(3, 3)), QColor(255, 255, 255, 255 * .25));
+                    } else {
+                        painter.fillRect(QRect(pos, QSize(3, 3)), QColor(255, 255, 255, 255 * .5));
+                    }
+                    pos.rx() += 5;
+                }
+                QRect rectMovieTime = QRect(rect().width() - 175, 46, 175, 20);
+                if(m_strPlayTime.isNull() || m_strPlayTime.isEmpty()) return;
+                QPalette Palette;
+                pen.setColor(Palette.color(QPalette::Text));
+                painter.setPen(pen);
+                fr = fm.boundingRect(m_strPlayTime);
+                fr.moveCenter(rectMovieTime.center());
+                //显示影院视频播放时间与总时间
+                painter.drawText(fr,m_strPlayTime);
+                painter.end();
+            }
+#endif
         } else {
             pGLFunction->glEnable(GL_BLEND);
             pGLFunction->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -936,6 +972,15 @@ namespace dmr {
 
         }
     }
+#ifdef __x86_64__
+    void MpvGLWidget::updateMovieProgress(qint64 duration, qint64 pos)
+    {
+        m_pert = (qreal)pos / duration;//更新影院播放进度
+        QString sCurtime = QString("%1 %2").arg(utils::Time2str(pos)).arg("/ ");
+        QString stime = QString("%1").arg(utils::Time2str(duration));
+        m_strPlayTime = sCurtime + stime;//更新影院当前播放时长
+    }
+#endif
 
     void MpvGLWidget::setPlaying(bool bFalse)
     {

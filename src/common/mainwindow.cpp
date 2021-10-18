@@ -845,10 +845,12 @@ MainWindow::MainWindow(QWidget *parent)
 
         if (m_pEngine->state() == PlayerEngine::CoreState::Playing) {
 #ifndef __mips__
+#ifndef __x86_64__
             if (isFullScreen()) {
                 m_pFullScreenTimeLable->show();
                 m_pProgIndicator->setVisible(true);
             }
+#endif
 #endif
             m_pMiniPlayBtn->setIcon(QIcon(":/resources/icons/light/mini/pause-normal-mini.svg"));
             m_pMiniPlayBtn->setObjectName("MiniPauseBtn");
@@ -1246,7 +1248,9 @@ void MainWindow::onWindowStateChanged()
         }
     }
 #ifndef __mips__
+#ifndef __x86_64__
     m_pProgIndicator->setVisible(isFullScreen() && m_pEngine && m_pEngine->state() != PlayerEngine::Idle);
+#endif
 #endif
     //    toggleShapeMask();    //该函数直接return
 
@@ -2245,6 +2249,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
             if (isFullScreen()) {
                 m_bMaxfornormalflag = false;
 #ifndef __mips__
+#ifndef __x86_64__
                 if (m_pEngine->state() != PlayerEngine::CoreState::Idle) {
                     int pixelsWidth = m_pToolbox->getfullscreentimeLabel()->width() + m_pToolbox->getfullscreentimeLabelend()->width();
                     QRect deskRect = QApplication::desktop()->availableGeometry();
@@ -2252,6 +2257,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
                     m_pFullScreenTimeLable->setGeometry(deskRect.width() - pixelsWidth - 60, 40, pixelsWidth + 60, 36);
                     m_pFullScreenTimeLable->show();
                 }
+#endif
 #endif
             }
         }

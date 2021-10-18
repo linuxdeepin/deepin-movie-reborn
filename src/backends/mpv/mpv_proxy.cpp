@@ -159,7 +159,12 @@ void MpvProxy::firstInit()
         if (CompositingManager::get().composited()) {
             m_pMpvGLwidget = new MpvGLWidget(this, m_handle);
             connect(this, &MpvProxy::stateChanged, this, &MpvProxy::slotStateChanged);
-
+#ifdef __x86_64__
+            connect(this, &MpvProxy::elapsedChanged, [ this ]() {//更新opengl显示进度
+                m_pMpvGLwidget->updateMovieProgress(duration(), elapsed());
+                m_pMpvGLwidget->update();
+            });
+#endif
 #if defined(USE_DXCB) || defined(_LIBDMR_)
             m_pMpvGLwidget->toggleRoundedClip(false);
 #endif

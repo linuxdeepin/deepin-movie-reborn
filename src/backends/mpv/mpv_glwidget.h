@@ -87,6 +87,10 @@ protected:
      * @brief initMpvFuns 第一次播放需要初库始化函数指针
      */
     void initMpvFuns();
+#ifdef __x86_64__
+    //更新全屏时影院播放进度
+    void updateMovieProgress(qint64 duration, qint64 pos);
+#endif
 
 protected slots:
     void onNewFrame();
@@ -142,6 +146,10 @@ private:
     mpv_renderContext_create m_renderCreat;
     mpv_renderContext_render m_renderContexRender;
     mpv_renderContext_update m_renderContextUpdate;
+#ifdef __x86_64__
+    qreal m_pert; //影院播放进度
+    QString m_strPlayTime; //播放时间显示；
+#endif
 };
 
 }
