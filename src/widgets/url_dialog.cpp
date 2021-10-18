@@ -39,49 +39,60 @@
 DWIDGET_USE_NAMESPACE
 
 namespace dmr {
-UrlDialog::UrlDialog(QWidget *parent)
-    : DDialog(parent)
-{
-    addButtons(QStringList() << QApplication::translate("UrlDialog", "Cancel")
-               << QApplication::translate("UrlDialog", "OK"));
-    setOnButtonClickedClose(false);
-    setDefaultButton(1);
-    setIcon(QIcon(":/resources/icons/logo-big.svg"));
-    setMessage(QApplication::translate("UrlDialog", "Please enter the URL:"));
+    UrlDialog::UrlDialog(QWidget *parent)
+        : DDialog(parent)
+    {
+        addButtons(QStringList() << QApplication::translate("UrlDialog", "Cancel")
+                   << QApplication::translate("UrlDialog", "OK"));
+        setOnButtonClickedClose(false);
+        setDefaultButton(1);
+        setIcon(QIcon(":/resources/icons/logo-big.svg"));
+        setMessage(QApplication::translate("UrlDialog", "Please enter the URL:"));
 
-    _le = new LineEdit;
-    addContent(_le);
+        m_lineEdit = new LineEdit(this);
+        addContent(m_lineEdit);
+        m_lineEdit->setFocusPolicy(Qt::StrongFocus);
+        this->setFocusProxy(m_lineEdit);
 
+        if (m_lineEdit->text().isEmpty()) {
+            getButton(1)->setEnabled(false);
+        }
 
-    connect(getButton(0), &QAbstractButton::clicked, this, [ = ] {
-        done(QDialog::Rejected);
-    });
-    connect(getButton(1), &QAbstractButton::clicked, this, [ = ] {
-        done(QDialog::Accepted);
-    });
+        connect(getButton(0), &QAbstractButton::clicked, this, [ = ] {
+            done(QDialog::Rejected);
+        });
+        connect(getButton(1), &QAbstractButton::clicked, this, [ = ] {
+            done(QDialog::Accepted);
+        });
+        connect(m_lineEdit, &QLineEdit::textChanged, this, &UrlDialog::slotTextchanged);
+    }
 
-    _le->setFocusPolicy(Qt::StrongFocus);
-    this->setFocusProxy(_le);
-}
+    QUrl UrlDialog::url() const
+    {
+        auto u = QUrl(m_lineEdit->text(), QUrl::StrictMode);
+        if (u.isLocalFile() || u.scheme().isEmpty())
+            return QUrl();
 
-QUrl UrlDialog::url() const
-{
-    auto u = QUrl(_le->text(), QUrl::StrictMode);
-    if (u.isLocalFile() || u.scheme().isEmpty())
-        return QUrl();
+        if (!Settings::get().iscommonPlayableProtocol(u.scheme()))
+            return QUrl();
 
-    if (!Settings::get().iscommonPlayableProtocol(u.scheme()))
-        return QUrl();
+        return u;
+    }
 
-    return u;
-}
+    void UrlDialog::showEvent(QShowEvent *se)
+    {
+        m_lineEdit->setFocus();
 
-void UrlDialog::showEvent(QShowEvent *se)
-{
-    _le->setFocus();
+        DDialog::showEvent(se);
+    }
 
-    DDialog::showEvent(se);
-}
-
+    void UrlDialog::slotTextchanged()
+    {
+        if (m_lineEdit->text().isEmpty()) {
+            getButton(1)->setEnabled(false);
+        } else {
+            getButton(1)->setEnabled(true);
+        }
+    }
 }
 

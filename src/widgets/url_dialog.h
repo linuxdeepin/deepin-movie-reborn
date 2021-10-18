@@ -45,10 +45,13 @@ public:
     explicit UrlDialog(QWidget* parent = 0);
     QUrl url() const;
 
+public:
+    void slotTextchanged();
+
 protected:
     void showEvent(QShowEvent* se) override;
 
 private:
-    LineEdit *_le {nullptr};
+    LineEdit *m_lineEdit {nullptr};
 };
 }
