@@ -1735,7 +1735,6 @@ void MainWindow::loadPlayList()
 {
     m_pPlaylist = nullptr;
     m_pPlaylist = new PlaylistWidget(this, m_pEngine);
-//    m_pPlaylist->setObjectName(PLAYLIST_WIDGET);
     m_pPlaylist->hide();
     m_pToolbox->setPlaylist(m_pPlaylist);
     m_pEngine->getplaylist()->loadPlaylist();

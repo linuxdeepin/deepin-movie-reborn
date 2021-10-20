@@ -1787,7 +1787,8 @@ void ToolboxProxy::slotPlayListStateChange(bool isShortcut)
         QRect rcBegin = this->geometry();
         QRect rcEnd = rcBegin;
         rcEnd.setY(rcBegin.y() + TOOLBOX_SPACE_HEIGHT + 7);
-        setGeometry(rcEnd);
+        if (!utils::check_wayland_env())
+            setGeometry(rcEnd);
         m_pListBtn->setChecked(false);
 #endif
     }

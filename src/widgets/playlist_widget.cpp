@@ -669,7 +669,6 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
 {
     bool composited = CompositingManager::get().composited();
     setAttribute(Qt::WA_TranslucentBackground, false);
-    //NOTE: set fixed will affect geometry animation
     this->setObjectName(PLAYLIST_WIDGET);
 
     paOpen = nullptr;
@@ -1426,6 +1425,7 @@ void PlaylistWidget::togglePopup(bool isShortcut)
         _state = State::Opened;
         emit stateChange(isShortcut);
         setGeometry(fixed);
+        _playlist->setAttribute(Qt::WA_TransparentForMouseEvents, false);
 #endif
     }
 }

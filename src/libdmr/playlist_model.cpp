@@ -804,36 +804,38 @@ void PlaylistModel::tryPlayCurrent(bool next)
     }
     emit itemInfoUpdated(_current);
     if (pif.valid) {
-        if (!utils::check_wayland_env()) {
-            _engine->requestPlay(_current);
-            emit currentChanged();
-        } else {
-            //本地视频单个循环/列表循环，小于1s视频/无法解码视频，不播放，直接播放下一个
-            if ((pif.mi.duration <= 1 || pif.thumbnail.isNull()) && pif.url.isLocalFile()) {
-                if (1 == count() || _playMode == PlayMode::SingleLoop || _playMode == PlayMode::SinglePlay) {
-                    qWarning() << "return for video is cannot play and loop play!";
-                    return;
-                }
-                if (_current < count() - 1) {
-                    _current++;
-                    _last = _current;
-                } else {
-                    _current = 0;
-                }
-            }
-            _hasNormalVideo = false;
-            bool result = std::any_of(_infos.begin(), _infos.end(), [ = ](const PlayItemInfo & info) {
-                return (info.valid && info.mi.duration > 1 && !info.thumbnail.isNull()) || !pif.url.isLocalFile();
-            });
-            if (result) {
-                _hasNormalVideo = true;
-            }
+//        if (!utils::check_wayland_env()) {
+        _engine->requestPlay(_current);
+        emit currentChanged();
+        // This code is useless at present.If there is
+        // no problem in the future,can consider deleting it.
+//        } else {
+//            //本地视频单个循环/列表循环，小于1s视频/无法解码视频，不播放，直接播放下一个
+//            if ((pif.mi.duration <= 1 || pif.thumbnail.isNull()) && pif.url.isLocalFile()) {
+//                if (1 == count() || _playMode == PlayMode::SingleLoop || _playMode == PlayMode::SinglePlay) {
+//                    qWarning() << "return for video is cannot play and loop play!";
+//                    return;
+//                }
+//                if (_current < count() - 1) {
+//                    _current++;
+//                    _last = _current;
+//                } else {
+//                    _current = 0;
+//                }
+//            }
+//            _hasNormalVideo = false;
+//            bool result = std::any_of(_infos.begin(), _infos.end(), [ = ](const PlayItemInfo & info) {
+//                return (info.valid && info.mi.duration > 1 && !info.thumbnail.isNull()) || !pif.url.isLocalFile();
+//            });
+//            if (result) {
+//                _hasNormalVideo = true;
+//            }
 
-            if (_hasNormalVideo) {
-                _engine->requestPlay(_current);
-                emit currentChanged();
-            }
-        }
+//            if (_hasNormalVideo) {
+//                _engine->requestPlay(_current);
+//                emit currentChanged();
+//            }
+//        }
     } else {
         _current = -1;
         bool canPlay = false;
