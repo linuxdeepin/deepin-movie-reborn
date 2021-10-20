@@ -126,11 +126,7 @@ void NotificationWidget::syncPosition()
 
     case ANCHOR_NORTH_WEST:
 #ifdef __aarch64__
-        if (!utils::check_wayland_env()) {
-            move(geom.topLeft() + m_anchorPoint);
-        } else {
-            move(m_anchorPoint);
-        }
+        move(geom.topLeft() + m_anchorPoint);
 #elif defined (__sw_64__) || defined (__mips__)
         move(geom.topLeft() + m_anchorPoint);
 #else
