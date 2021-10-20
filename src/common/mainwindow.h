@@ -573,7 +573,6 @@ private:
     EventMonitor *m_pEventMonitor;                  ///x11事件处理器
     bool m_bMovieSwitchedInFsOrMaxed;               /// track if next/prev is triggered in fs/maximized mode
     bool m_bDelayedResizeByConstraint;
-    bool m_bLightTheme;                             ///是否是浅色主题
     bool m_bWindowAbove;                            ///是否是置顶窗口
     bool m_bMouseMoved;                             ///鼠标是否按下移动
     bool m_bMousePressed;                           ///鼠标是否安下
@@ -637,6 +636,8 @@ private:
     qint64 m_nFullscreenTime;                         ///全屏操作间隔时间
     QDBusInterface *m_pWMDBus {nullptr};              ///窗口特效dbus接口
     bool m_bIsWM {true};                              ///是否开启窗口特效
+    bool m_isSettingMiniMode{false};                  ///mini mode setting status
+    Qt::WindowStates m_preMiniWindowState {Qt::WindowNoState};  ///window state before mini mode
 };
 
 //窗管返回事件过滤器

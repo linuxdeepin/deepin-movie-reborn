@@ -97,7 +97,6 @@ DMenu *ActionFactory::titlebarMenu()
         if (!CompositingManager::isPadSystem()) {
             DEF_ACTION(tr("Open folder"), ActionKind::OpenDirectory);
             DEF_ACTION(tr("Settings"), ActionKind::Settings);
-            //DEF_ACTION_CHECKED(tr("Light theme"), ActionKind::LightTheme);
             pMenu_p->addSeparator();
             // these seems added by titlebar itself
             //DEF_ACTION("About", ActionKind::About);

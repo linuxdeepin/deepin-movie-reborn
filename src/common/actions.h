@@ -58,7 +58,6 @@ public:
         OpenDirectory,
         StartPlay,
         Settings,
-        LightTheme,
         About,
         Help,
         Exit,

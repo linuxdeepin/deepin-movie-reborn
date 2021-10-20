@@ -929,9 +929,6 @@ MainWindow::MainWindow(QWidget *parent)
     reflectActionToUI(ActionFactory::ActionKind::DefaultFrame);
     reflectActionToUI(ActionFactory::ActionKind::Stereo);
 
-    m_bLightTheme = Settings::get().internalOption("light_theme").toBool();
-    if (m_bLightTheme)
-        reflectActionToUI(ActionFactory::LightTheme);
     prepareSplashImages();
 
     connect(m_pEngine, &PlayerEngine::sidChanged, [ = ]() {
@@ -1235,17 +1232,17 @@ void MainWindow::onWindowStateChanged()
         m_pTitlebar->setVisible(m_pToolbox->isVisible());
     } else {
         m_pTitlebar->setVisible(false);
-        auto e = QProcessEnvironment::systemEnvironment();
-        QString XDG_SESSION_TYPE = e.value(QStringLiteral("XDG_SESSION_TYPE"));
-        QString WAYLAND_DISPLAY = e.value(QStringLiteral("WAYLAND_DISPLAY"));
+//        auto e = QProcessEnvironment::systemEnvironment();
+//        QString XDG_SESSION_TYPE = e.value(QStringLiteral("XDG_SESSION_TYPE"));
+//        QString WAYLAND_DISPLAY = e.value(QStringLiteral("WAYLAND_DISPLAY"));
 
-        if (XDG_SESSION_TYPE == QLatin1String("wayland") ||
-                WAYLAND_DISPLAY.contains(QLatin1String("wayland"), Qt::CaseInsensitive)) {
-            if (m_bMiniMode) {
-                this->toggleUIMode();
-                this->setWindowState(Qt::WindowMaximized);      //mini model need
-            }
-        }
+//        if (XDG_SESSION_TYPE == QLatin1String("wayland") ||
+//                WAYLAND_DISPLAY.contains(QLatin1String("wayland"), Qt::CaseInsensitive)) {
+//            if (m_bMiniMode) {
+//                this->toggleUIMode();
+//                this->setWindowState(Qt::WindowMaximized);      //mini model need
+//            }
+//        }
     }
 #ifndef __mips__
 #ifndef __x86_64__
@@ -1541,7 +1538,6 @@ void MainWindow::reflectActionToUI(ActionFactory::ActionKind actionKind)
     switch (actionKind) {
     case ActionFactory::ActionKind::WindowAbove:
     case ActionFactory::ActionKind::ToggleFullscreen:
-    case ActionFactory::ActionKind::LightTheme:
     case ActionFactory::ActionKind::TogglePlaylist:
     case ActionFactory::ActionKind::HideSubtitle: {
         qInfo() << __func__ << actionKind;
@@ -1860,12 +1856,6 @@ void MainWindow::menuItemInvoked(QAction *pAction)
     }
 }
 
-/*void MainWindow::switchTheme()
-{
-    m_bLightTheme = !m_bLightTheme;
-    Settings::get().setInternalOption("light_theme", m_bLightTheme);
-}*/
-
 bool MainWindow::isActionAllowed(ActionFactory::ActionKind actionKind, bool fromUI, bool isShortcut)
 {
     if (m_bInBurstShootMode) {
@@ -1951,10 +1941,6 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
     case ActionFactory::ActionKind::Exit:
         qApp->quit();
         break;
-
-//    case ActionFactory::ActionKind::LightTheme:
-//        if (fromUI) switchTheme();
-//        break;
 
     case ActionFactory::ActionKind::OpenCdrom: {
         QString sDev = dmr::CommandLineManager::get().dvdDevice();
@@ -3698,7 +3684,7 @@ void MainWindow::updateGeometryNotification(const QSize &sz)
         m_pCommHintWid->updateWithMessage(sMsg);
     }
 
-    if (windowState() == Qt::WindowNoState && !m_bMiniMode) {
+    if (windowState() == Qt::WindowNoState &&  !m_isSettingMiniMode && !m_bMiniMode) {
         m_lastRectInNormalMode = geometry();
     }
 }
@@ -3783,7 +3769,7 @@ void MainWindow::moveEvent(QMoveEvent *pEvent)
 #ifdef __aarch64__
     QPoint relativePoint = mapToGlobal(QPoint(0, 0));
     m_pToolbox->updateSliderPoint(relativePoint);
-    if (windowState() == Qt::WindowNoState && !m_bMiniMode) {
+    if (windowState() == Qt::WindowNoState &&  !m_isSettingMiniMode && !m_bMiniMode) {
         m_lastRectInNormalMode = geometry();
     }
     m_pCommHintWid->syncPosition();
@@ -4320,20 +4306,34 @@ void MainWindow::toggleUIMode()
     }
 
     m_bMiniMode = !m_bMiniMode;
+    m_isSettingMiniMode = true;
     m_pEngine->toggleRoundedClip(!m_bMiniMode);
 
     if (utils::check_wayland_env()) {
         Qt::WindowFlags flags = windowFlags();
         if (m_bMiniMode) {
             flags |= Qt::X11BypassWindowManagerHint;
+            m_preMiniWindowState = windowState();
+            setWindowState(Qt::WindowNoState);
+            setWindowFlags(flags);
+            show();
         } else {
             flags &= ~Qt::X11BypassWindowManagerHint;
+            setWindowFlags(flags);
+            show();
+            if (m_preMiniWindowState == Qt::WindowMaximized) {
+                move(0, 0);
+                showMaximized();
+            } else if (m_preMiniWindowState & Qt::WindowFullScreen) {
+                move(0, 0);
+                showFullScreen();
+            } else {
+                showNormal();
+            }
         }
-        //wayland下opengl窗口使用之前必须先调用makeCurrent;
-        m_pEngine->makeCurrent();
-        setWindowFlags(flags);
-        show();
+
     }
+    m_isSettingMiniMode = false;
 
     qInfo() << __func__ << m_bMiniMode;
 
@@ -4345,7 +4345,6 @@ void MainWindow::toggleUIMode()
     if (m_pEventListener) m_pEventListener->setEnabled(!m_bMiniMode);
 
     m_pTitlebar->setVisible(!m_bMiniMode);
-    //m_pToolbox->setVisible(!m_bMiniMode);
 
     m_pMiniPlayBtn->setVisible(m_bMiniMode);
     m_pMiniCloseBtn->setVisible(m_bMiniMode);
@@ -4643,7 +4642,6 @@ void MainWindow::initMember()
     m_bInited = false;
     m_bMovieSwitchedInFsOrMaxed = false;
     m_bDelayedResizeByConstraint = false;
-    m_bLightTheme = false;
     m_bWindowAbove = false;
     m_bMouseMoved = false;
     m_bMousePressed = false;
