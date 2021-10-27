@@ -610,7 +610,6 @@ private:
     int m_nDisplayVolume;                            ///记录播放音量
     bool m_bIsFree;                                  ///播放器是否空闲，和IDel的定义不同
     static int m_nRetryTimes;                        ///播放失败后重试次数
-    bool m_bIsJinJia;                                ///是否是景嘉微显卡
     //add by heyi 解决触屏右键菜单bug
     int m_nLastPressX;                               ///左键按下时保存的点
     int m_nLastPressY;                               ///左键按下时保存的点

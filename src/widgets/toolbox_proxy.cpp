@@ -1197,15 +1197,9 @@ void ToolboxProxy::setup()
     _mid->setAlignment(m_pPalyBox, Qt::AlignLeft);
     QList<DButtonBoxButton *> list;
 
-    if (utils::check_wayland_env()) {
-        m_pPrevBtn = new ButtonBoxButton("", this);
-        m_pPlayBtn = new ButtonBoxButton("", this);
-        m_pNextBtn = new ButtonBoxButton("", this);
-    } else {
-        m_pPrevBtn = new DButtonBoxButton("", this);
-        m_pPlayBtn = new DButtonBoxButton("", this);
-        m_pNextBtn = new DButtonBoxButton("", this);
-    }
+    m_pPrevBtn = new DButtonBoxButton("", this);
+    m_pPlayBtn = new DButtonBoxButton("", this);
+    m_pNextBtn = new DButtonBoxButton("", this);
 
     m_pPrevBtn->setIcon(QIcon::fromTheme("dcc_last", QIcon(":/icons/deepin/builtin/light/normal/last_normal.svg")));
     m_pPrevBtn->setIconSize(QSize(36, 36));
@@ -1787,8 +1781,7 @@ void ToolboxProxy::slotPlayListStateChange(bool isShortcut)
         QRect rcBegin = this->geometry();
         QRect rcEnd = rcBegin;
         rcEnd.setY(rcBegin.y() + TOOLBOX_SPACE_HEIGHT + 7);
-        if (!utils::check_wayland_env())
-            setGeometry(rcEnd);
+        setGeometry(rcEnd);
         m_pListBtn->setChecked(false);
 #endif
     }

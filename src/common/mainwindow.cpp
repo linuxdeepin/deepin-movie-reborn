@@ -778,11 +778,7 @@ MainWindow::MainWindow(QWidget *parent)
     m_pProgIndicator = new MovieProgressIndicator(this);
     m_pProgIndicator->setVisible(false);
     connect(m_pEngine, &PlayerEngine::elapsedChanged, [ = ]() {
-        if (!m_bIsJinJia) {
-            m_pProgIndicator->updateMovieProgress(m_pEngine->duration(), m_pEngine->elapsed());
-        } else {
-            m_pProgIndicator->updateMovieProgress(m_nOldDuration, m_nOldElapsed);
-        }
+        m_pProgIndicator->updateMovieProgress(m_pEngine->duration(), m_pEngine->elapsed());
         //及时刷新m_bIsFileLoadNotFinished状态
         if (m_bIsFileLoadNotFinished && utils::check_wayland_env()) {
             qInfo() << "m_bIsFileLoadNotFinished = false";
@@ -1212,7 +1208,7 @@ bool MainWindow::event(QEvent *pEvent)
         onWindowStateChanged();
     }
 
-    if (utils::check_wayland_env() && m_bClosed && m_bIsJinJia && pEvent->type() == QEvent::MetaCall) {
+    if (utils::check_wayland_env() && m_bClosed && pEvent->type() == QEvent::MetaCall) {
         return true;
     }
 
@@ -2099,10 +2095,6 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
                 m_pToolbox->show();
             }
             m_pPlaylist->togglePopup(bIsShortcut);
-            if (utils::check_wayland_env()) {
-                //lmh0710,修复playlist大小不正确
-                updateProxyGeometry();
-            }
             if (!bFromUI) {
                 reflectActionToUI(actionKind);
             }
@@ -2149,7 +2141,16 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
 
     case ActionFactory::ActionKind::WindowAbove: {
         m_bWindowAbove = !m_bWindowAbove;
-        my_setStayOnTop(this, m_bWindowAbove);
+        if (!utils::check_wayland_env()) {
+            my_setStayOnTop(this, m_bWindowAbove);
+        } else {
+            if (m_bWindowAbove) {
+                setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint);
+            } else {
+                setWindowFlags(windowFlags() & ~Qt::WindowStaysOnTopHint);
+            }
+        }
+        show();
         if (!bFromUI) {
             reflectActionToUI(actionKind);
         }
@@ -3201,8 +3202,6 @@ void MainWindow::syncPostion()
 void MainWindow::my_setStayOnTop(const QWidget *pWidget, bool bOn)
 {
     Q_ASSERT(pWidget);
-    if (utils::check_wayland_env())
-        return;
 
     const auto display = QX11Info::display();
     const auto screen = QX11Info::appScreen();
@@ -4043,10 +4042,10 @@ void MainWindow::mouseMoveEvent(QMouseEvent *pEvent)
         if (m_bStartMove) {
             m_bStartMove = false;
             return Utility::updateMousePointForWindowMove(this->winId(), pEvent->globalPos() * devicePixelRatioF());
+        }
 #else
         QWidget::mouseMoveEvent(pEvent);
 #endif
-        }
     } else {
         QWidget::mouseMoveEvent(pEvent);
     }
@@ -4067,26 +4066,31 @@ void MainWindow::contextMenuEvent(QContextMenuEvent *pEvent)
     if (CompositingManager::isPadSystem())
         return;
 
-    //通过窗口id查询窗口状态是否置顶，同步右键菜单中的选项状态
-    QProcess above;
-    QStringList options;
-    options << "-c" << QString("xprop -id %1 | grep '_NET_WM_STATE(ATOM)'").arg(winId());
-    above.start("bash", options);
-    if (above.waitForStarted() && above.waitForFinished()) {
-        QString drv = QString::fromUtf8(above.readAllStandardOutput().trimmed().constData());
-        if (drv.contains("_NET_WM_STATE_ABOVE") != m_bWindowAbove) {
-//            requestAction(ActionFactory::WindowAbove);
-            m_bWindowAbove = drv.contains("_NET_WM_STATE_ABOVE");
-            reflectActionToUI(ActionFactory::WindowAbove);
+    if (utils::check_wayland_env()) {
+        //TODO(xxxxp):need to communicate with the window manager how to get the window top status
+    } else {
+        //通过窗口id查询窗口状态是否置顶，同步右键菜单中的选项状态
+        QProcess above;
+        QStringList options;
+        options << "-c" << QString("xprop -id %1 | grep '_NET_WM_STATE(ATOM)'").arg(winId());
+        above.start("bash", options);
+        if (above.waitForStarted() && above.waitForFinished()) {
+            QString drv = QString::fromUtf8(above.readAllStandardOutput().trimmed().constData());
+            if (drv.contains("_NET_WM_STATE_ABOVE") != m_bWindowAbove) {
+    //            requestAction(ActionFactory::WindowAbove);
+                m_bWindowAbove = drv.contains("_NET_WM_STATE_ABOVE");
+                reflectActionToUI(ActionFactory::WindowAbove);
+            }
         }
-
-        resumeToolsWindow();
-        QTimer::singleShot(0, [ = ]() {
-            qApp->restoreOverrideCursor();
-            ActionFactory::get().mainContextMenu()->popup(QCursor::pos());
-        });
-        pEvent->accept();
     }
+
+    resumeToolsWindow();
+    QTimer::singleShot(0, [ = ]() {
+        qApp->restoreOverrideCursor();
+        ActionFactory::get().mainContextMenu()->popup(QCursor::pos());
+    });
+    pEvent->accept();
+
 //此段为通过xcb接口查询窗口状态，nItem为状态列表中的个数，properties为返回状态列表
 //代码暂时无法实现需求，勿删
 //    const auto display = QX11Info::display();
@@ -4425,9 +4429,6 @@ void MainWindow::toggleUIMode()
     } else {
         m_pCommHintWid->setAnchorPoint(QPoint(30, 58));
         setEnableSystemResize(true);
-        if (m_nStateBeforeMiniMode & SBEM_Above) {
-            requestAction(ActionFactory::WindowAbove);
-        }
         if (m_nStateBeforeMiniMode & SBEM_Maximized) {
             showMaximized();
         } else if (m_nStateBeforeMiniMode & SBEM_Fullscreen) {
@@ -4439,12 +4440,16 @@ void MainWindow::toggleUIMode()
             if (m_pEngine->state() == PlayerEngine::Idle && windowState() == Qt::WindowNoState) {
                 this->resize(850, 600);
             } else {
-                if (m_lastRectInNormalMode.isValid() /*&& m_pEngine->videoRotation() == 0  by thx*/) {
+                if (m_lastRectInNormalMode.isValid()) {
                     resize(m_lastRectInNormalMode.size());
                 } else {
                     resizeByConstraints();
                 }
             }
+        }
+
+        if (m_nStateBeforeMiniMode & SBEM_Above) {
+            requestAction(ActionFactory::WindowAbove);
         }
 
         if (m_nStateBeforeMiniMode & SBEM_PlaylistOpened &&
@@ -4656,7 +4661,6 @@ void MainWindow::initMember()
     m_bLastIsTouch = false;
     m_bTouchChangeVolume = false;
     m_bIsFree = true;
-    m_bIsJinJia = false;
     m_bIsTouch = false;
     m_bStartAnimation = false;
     m_bStateInLock = false;

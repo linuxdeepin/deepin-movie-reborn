@@ -1354,7 +1354,7 @@ void PlaylistWidget::togglePopup(bool isShortcut)
     fixed.setRect(10, (view_rect.height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT + 10) + 5),
                   view_rect.width() - 20, TOOLBOX_SPACE_HEIGHT + 10);
 #else
-    if (!CompositingManager::get().composited()) {
+    if (!CompositingManager::get().composited() || utils::check_wayland_env()) {
         fixed.setRect(10, (view_rect.height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT + 10) + 5),
                       view_rect.width() - 20, TOOLBOX_SPACE_HEIGHT + 10);
     } else {

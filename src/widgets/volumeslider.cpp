@@ -106,12 +106,6 @@ VolumeSlider::VolumeSlider(MainWindow *mw, QWidget *parent)
         connect(&m_autoHideTimer, &QTimer::timeout, this, &VolumeSlider::hide);
     }
 #endif
-
-//与dock栏音量的dbus通信接口暂时注释
-//    ThreadPool::instance()->moveToNewThread(&volumeMonitoring);
-//    volumeMonitoring.start();
-//    connect(&volumeMonitoring, &VolumeMonitoring::volumeChanged, this, &VolumeSlider::changeVolume);
-//    connect(&volumeMonitoring, &VolumeMonitoring::muteChanged, this, &VolumeSlider::changeMuteState);
 }
 
 VolumeSlider::~VolumeSlider()
@@ -158,36 +152,6 @@ QString VolumeSlider::readSinkInputPath()
     }
     return strPath;
 }
-
-//    cppckeck修改
-//void VolumeSlider::setAudioVolume(int volume)
-//{
-//    double tVolume = 0.0;
-//    if (volume == 100) {
-//        tVolume = (volume) / 100.0 ;
-//    } else if (volume != 0) {
-//        tVolume = (volume + 1) / 100.0 ;
-//    }
-
-//    QString sinkInputPath = readSinkInputPath();
-
-//    if (!sinkInputPath.isEmpty()) {
-//        QDBusInterface ainterface("com.deepin.daemon.Audio", sinkInputPath,
-//                                  "com.deepin.daemon.Audio.SinkInput", QDBusConnection::sessionBus());
-//        if (!ainterface.isValid()) {
-//            return;
-//        }
-//        //调用设置音量
-//        ainterface.call(QLatin1String("SetVolume"), tVolume, false);
-
-//        if (qFuzzyCompare(tVolume, 0.0))
-//            ainterface.call(QLatin1String("SetMute"), true);
-
-//        //获取是否静音
-//        QVariant muteV = ApplicationAdaptor::redDBusProperty("com.deepin.daemon.Audio", sinkInputPath,
-//                                                             "com.deepin.daemon.Audio.SinkInput", "Mute");
-//    }
-//}
 
 void VolumeSlider::setMute(bool muted)
 {
