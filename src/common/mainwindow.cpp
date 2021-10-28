@@ -2795,6 +2795,8 @@ void MainWindow::onBurstScreenshot(const QImage &frame, qint64 timestamp)
 
 void MainWindow::startBurstShooting()
 {
+    //Repair 40S video corresponding to the corresponding connected screenshot
+    if (m_pEngine->duration() <= 40) return;
     m_bInBurstShootMode = true;
     m_pToolbox->setEnabled(false);
     m_pTitlebar->titlebar()->setEnabled(false);
