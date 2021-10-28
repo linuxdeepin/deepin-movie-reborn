@@ -52,40 +52,6 @@
 #define POPUP_DURATION 350
 
 namespace dmr {
-
-/*QString splitText(const QString &text, int width,
-                  QTextOption::WrapMode wordWrap, const QFont &font, int lineHeight)
-{
-    int height = 0;
-
-    QTextLayout textLayout(text);
-    QString str;
-
-    textLayout.setFont(font);
-    const_cast<QTextOption *>(&textLayout.textOption())->setWrapMode(wordWrap);
-
-    textLayout.beginLayout();
-    QTextLine line = textLayout.createLine();
-    while (line.isValid()) {
-        height += lineHeight;
-
-        line.setLineWidth(width);
-        const QString &tmp_str = text.mid(line.textStart(), line.textLength());
-        if (tmp_str.indexOf('\n'))
-            height += lineHeight;
-
-        str += tmp_str;
-        line = textLayout.createLine();
-
-        if (line.isValid())
-            str.append("\n");
-    }
-
-    textLayout.endLayout();
-
-    return str;
-}*/
-
 class PlayItemTooltipHandler: public QObject
 {
 public:
@@ -97,20 +63,16 @@ protected:
         switch (event->type()) {
         case QEvent::ToolTip: {
             QHelpEvent *he = static_cast<QHelpEvent *>(event);
-            auto tip = obj->property("HintWidget").value<Tip *>();
-            auto item = tip->property("for").value<QWidget *>();
-            auto lb = tip->findChild<DLabel *>("TipText");
+            Tip *tip = obj->property("HintWidget").value<Tip *>();
+            QWidget *item = tip->property("for").value<QWidget *>();
+            DLabel *lb = tip->findChild<DLabel *>("TipText");
             lb->setAlignment(Qt::AlignLeft);
-
-//            auto msg = splitText(item->toolTip(), 200, QTextOption::WordWrap, lb->font(),
-//                                 lb->fontMetrics().height());
-//            lb->setText(msg);
             tip->update();
             tip->show();
             tip->adjustSize();
             tip->raise();
-            auto pos = he->globalPos() + QPoint{0, 10};
-            auto dw = qApp->desktop()->availableGeometry(item).width();
+            QPoint pos = he->globalPos() + QPoint{0, 10};
+            int dw = qApp->desktop()->availableGeometry(item).width();
             if (pos.x() + tip->width() > dw) {
                 pos.rx() = dw - tip->width();
             }
@@ -140,7 +102,6 @@ enum ItemState {
 class PlayItemWidget: public QFrame
 {
     Q_OBJECT
-//    Q_PROPERTY(QString bg READ getBg WRITE setBg DESIGNABLE true)
 public:
     friend class PlaylistWidget;
 

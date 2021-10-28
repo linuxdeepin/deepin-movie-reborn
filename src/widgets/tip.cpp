@@ -244,7 +244,7 @@ void Tip::paintEvent(QPaintEvent *)
     QPainter pt(this);
     pt.setRenderHint(QPainter::Antialiasing);
 
-    int transparency = 220;
+    int transparency = 245;
     if (!bIsWM) {
         transparency = 255;
     }
