@@ -434,7 +434,18 @@ void VolumeSlider::paintEvent(QPaintEvent *)
 
 #if defined (__mips__) || defined (__aarch64__)
     ///arm和mips下控件圆角显示有黑边,在此重绘
-    painter.fillRect(rect(), bgColor);
+    if (!utils::check_wayland_env()) {
+        painter.fillRect(rect(), bgColor);
+    } else{
+        //NOTE: The window shadow cannot be displayed putside the window under wayland,
+        // so the window is reduced to form an inner margin of 1 pixel for shadow display.
+        QRect rect = this->rect();
+        rect.setTopLeft(QPoint(1, 1));
+        rect.setSize(QSize(VOLSLIDER_WIDTH - 2, VOLSLIDER_HEIGHT - 2));
+
+        painter.fillRect(rect, bgColor);
+    }
+
 #else
     if (!CompositingManager::get().composited()) {
         painter.fillRect(rect(), bgColor);
