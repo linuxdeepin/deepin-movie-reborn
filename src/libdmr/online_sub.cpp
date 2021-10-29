@@ -36,7 +36,6 @@
 #include "utils.h"
 
 #include <functional>
-#include <openssl/md5.h>
 
 
 namespace dmr {
