@@ -363,16 +363,17 @@ signals:
 private slots:
     void slotThemeTypeChanged()
     {
-        QPalette pa;
+//        QPalette pa;
         if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
             if (_thumb) {
                 _thumb->setPic(_pif.thumbnail);
             } else {
                 m_pSvgWidget->load(QString(":/resources/icons/music-light.svg"));
             }
-            pa.setColor(QPalette::BrightText, Qt::black);
-            _name->setPalette(pa);
-            _index->setPalette(pa);
+//            pa.setColor(QPalette::BrightText, Qt::black);
+//            _name->setPalette(pa);
+//            _index->setPalette(pa);
+            updateForeground();
         };
         if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
             if (_thumb) {
@@ -380,9 +381,10 @@ private slots:
             } else {
                 m_pSvgWidget->load(QString(":/resources/icons/music-dark.svg"));
             }
-            pa.setColor(QPalette::BrightText, Qt::white);
-            _name->setPalette(pa);
-            _index->setPalette(pa);
+//            pa.setColor(QPalette::BrightText, Qt::white);
+//            _name->setPalette(pa);
+//            _index->setPalette(pa);
+            updateForeground();
         }
     }
     void slotSizeChange()
