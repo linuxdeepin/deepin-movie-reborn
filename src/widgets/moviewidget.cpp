@@ -63,6 +63,7 @@ MovieWidget::MovieWidget(QWidget *parent)
 
     setAlignment(Qt::AlignCenter);
     setFrameShape(QFrame::Shape::NoFrame);
+    setAcceptDrops(true);
 
     m_pScene = new QGraphicsScene;
     m_pScene->setBackgroundBrush(QBrush(QColor(0, 0, 0)));
@@ -176,6 +177,16 @@ void MovieWidget::initMember()
     m_pScene = nullptr;
     m_pBgRender = nullptr;
     m_pNoteRender = nullptr;
+}
+
+void MovieWidget::dropEvent(QDropEvent *e)
+{
+    parent()->event(e);
+}
+
+void MovieWidget::dragMoveEvent(QDragMoveEvent *e)
+{
+    e->accept();
 }
 
 }

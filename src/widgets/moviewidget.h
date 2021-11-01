@@ -94,6 +94,10 @@ public slots:
      */
     void initMember();
 
+protected:
+    void dropEvent(QDropEvent *) override;
+    void dragMoveEvent(QDragMoveEvent *) override;
+
 private:
     QGraphicsSvgItem *m_pBgSvgItem;
     QGraphicsSvgItem *m_pNoteSvgItem;
