@@ -203,17 +203,24 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
     this->setAccessibleName(MOVIE_INFO_DIALOG);
     m_titleList.clear();
 
+    bool checkWayland = utils::check_wayland_env();
     QVBoxLayout *layout = new QVBoxLayout(this);
     layout->setSpacing(0);
-    layout->setContentsMargins(0, 0, 0, 0);
+    if (checkWayland) {
+        layout->setContentsMargins(0, 50, 0, 0);
+    } else {
+        layout->setContentsMargins(0, 0, 0, 0);
+    }
     setLayout(layout);
 
-    CloseButton *closeBt = new CloseButton(this);
-    closeBt->setObjectName(MOVIEINFO_CLOSE_BUTTON);
-    closeBt->setAccessibleName(MOVIEINFO_CLOSE_BUTTON);
-    closeBt->setFixedSize(50, 50);
-    connect(closeBt, &CloseButton::clicked, this, &MovieInfoDialog::close);
-    layout->addWidget(closeBt, 0, Qt::AlignTop | Qt::AlignRight);
+    if (!checkWayland) {
+        CloseButton *closeBt = new CloseButton(this);
+        closeBt->setObjectName(MOVIEINFO_CLOSE_BUTTON);
+        closeBt->setAccessibleName(MOVIEINFO_CLOSE_BUTTON);
+        closeBt->setFixedSize(50, 50);
+        connect(closeBt, &CloseButton::clicked, this, &MovieInfoDialog::close);
+        layout->addWidget(closeBt, 0, Qt::AlignTop | Qt::AlignRight);
+    }
 
     const MovieInfo &strMovieInfo = pif.mi;
 
