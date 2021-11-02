@@ -636,6 +636,40 @@ private:
     QPoint m_lastPoint;
 };
 
+/**
+ * @brief 获取播放列表内的所有鼠标事件
+ *
+*/
+class MouseEventListener: public QObject
+{
+public:
+    explicit MouseEventListener(QObject *parent): QObject(parent) {}
+    void setListWidget(DListWidget* listWidget)
+    {
+        m_pListWidget = listWidget;
+    }
+
+protected:
+    bool eventFilter(QObject *obj, QEvent *event)
+    {
+        if (event->type() == QEvent::MouseButtonPress) {
+            QMouseEvent *pMouseEvent = static_cast<QMouseEvent *>(event);
+            if (pMouseEvent->buttons() == Qt::LeftButton && !m_pListWidget->itemAt(pMouseEvent->pos())) {
+                PlayItemWidget *pItem = reinterpret_cast<PlayItemWidget *>(m_pListWidget->itemWidget(m_pListWidget->currentItem()));
+                if(pItem)
+                {
+                    pItem->setBIsSelect(false); // 点击播放列表空白处，取消item选中效果
+                    m_pListWidget->update();
+                }
+            }
+        }
+
+        return QObject::eventFilter(obj, event);
+    }
+private:
+    DListWidget* m_pListWidget;
+};
+
 PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     : QWidget(mw), _engine(mpv), _mw(static_cast<MainWindow *>(mw))
 {
@@ -765,6 +799,11 @@ PlaylistWidget::PlaylistWidget(QWidget *mw, PlayerEngine *mpv)
     _playlist->setSpacing(0);
     _playlist->viewport()->setAcceptDrops(true);
     _playlist->setDragEnabled(true);
+
+    MouseEventListener* pListener = new MouseEventListener(this);
+    pListener->setListWidget(_playlist);
+    _playlist->viewport()->installEventFilter(pListener);
+    this->installEventFilter(pListener);
 
     connect(_playlist, &DListWidget::itemClicked, this, &PlaylistWidget::slotShowSelectItem);
     connect(_playlist, &DListWidget::currentItemChanged, this, &PlaylistWidget::OnItemChanged);
