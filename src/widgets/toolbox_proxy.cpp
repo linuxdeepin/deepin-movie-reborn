@@ -1197,9 +1197,9 @@ void ToolboxProxy::setup()
     _mid->setAlignment(m_pPalyBox, Qt::AlignLeft);
     QList<DButtonBoxButton *> list;
 
-    m_pPrevBtn = new DButtonBoxButton("", this);
-    m_pPlayBtn = new DButtonBoxButton("", this);
-    m_pNextBtn = new DButtonBoxButton("", this);
+    m_pPrevBtn = new ButtonBoxButton("", this);
+    m_pPlayBtn = new ButtonBoxButton("", this);
+    m_pNextBtn = new ButtonBoxButton("", this);
 
     m_pPrevBtn->setIcon(QIcon::fromTheme("dcc_last", QIcon(":/icons/deepin/builtin/light/normal/last_normal.svg")));
     m_pPrevBtn->setIconSize(QSize(36, 36));
@@ -2508,7 +2508,7 @@ void ToolboxProxy::initToolTip()
         //lmh0910播放
         m_pPlayBtnTip = new ButtonToolTip(m_pMainWindow);
         m_pPlayBtnTip->setText(tr("Play"));
-        connect(static_cast<ButtonBoxButton *>(m_pPlayBtn), &ButtonBoxButton::entered, [ = ]() {
+        connect(m_pPlayBtn, &ButtonBoxButton::entered, [ = ]() {
             m_pPlayBtnTip->move(80, m_pMainWindow->height() - TOOLBOX_HEIGHT - 5);
             m_pPlayBtnTip->show();
             m_pPlayBtnTip->QWidget::activateWindow();
@@ -2516,7 +2516,7 @@ void ToolboxProxy::initToolTip()
             m_pPlayBtnTip->releaseMouse();
 
         });
-        connect(static_cast<ButtonBoxButton *>(m_pPlayBtn), &ButtonBoxButton::leaved, [ = ]() {
+        connect(m_pPlayBtn, &ButtonBoxButton::leaved, [ = ]() {
             QTimer::singleShot(0, [ = ] {
                 m_pPlayBtnTip->hide();
             });
@@ -2524,7 +2524,7 @@ void ToolboxProxy::initToolTip()
         //lmh0910上一个
         m_pPrevBtnTip = new ButtonToolTip(m_pMainWindow);
         m_pPrevBtnTip->setText(tr("Previous"));
-        connect(static_cast<ButtonBoxButton *>(m_pPrevBtn), &ButtonBoxButton::entered, [ = ]() {
+        connect(m_pPrevBtn, &ButtonBoxButton::entered, [ = ]() {
             m_pPrevBtnTip->move(40,
                                 m_pMainWindow->height() - TOOLBOX_HEIGHT - 5);
             m_pPrevBtnTip->show();
@@ -2533,7 +2533,7 @@ void ToolboxProxy::initToolTip()
             m_pPrevBtnTip->releaseMouse();
 
         });
-        connect(static_cast<ButtonBoxButton *>(m_pPrevBtn), &ButtonBoxButton::leaved, [ = ]() {
+        connect(m_pPrevBtn, &ButtonBoxButton::leaved, [ = ]() {
             QTimer::singleShot(0, [ = ] {
                 m_pPrevBtnTip->hide();
             });

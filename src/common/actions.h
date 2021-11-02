@@ -32,6 +32,7 @@
 #define _DMR_ACTIONS_H
 #include <QtWidgets>
 #include <DMenu>
+#include <QPointer>
 DWIDGET_USE_NAMESPACE
 namespace dmr {
 class PlayingMovieInfo;
@@ -202,7 +203,7 @@ private:
     DMenu *m_pSoundMenu;           ///声道操作子菜单
     DMenu *m_pPlaylistMenu;        ///播放列表子菜单
     DMenu *m_pSound;               ///声音操作子菜单
-    QList<QAction *> m_listContextMenuActions; ///保存所有菜单项的索引
+    QList<QPointer<QAction>> m_listContextMenuActions; ///保存所有菜单项的索引
     QActionGroup *m_pSubgroup;     ///声道子菜单分组
     QActionGroup *m_pAudiosgroup;  ///音轨子菜单分组
 };
@@ -211,6 +212,11 @@ void ActionFactory::forEachInMainMenu(UnaryFunction f)
 {
     auto p = m_listContextMenuActions.begin();
     while (p != m_listContextMenuActions.end()) {
+        if(!*p)
+        {
+            m_listContextMenuActions.removeOne(*p);
+            continue;
+        }
         if (strcmp((*p)->metaObject()->className(), "QAction") == 0)
             f(*p);
         ++p;

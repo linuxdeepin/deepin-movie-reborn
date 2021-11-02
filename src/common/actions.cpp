@@ -46,48 +46,33 @@ ActionFactory &ActionFactory::get()
     return *pActionFactory;
 }
 #define DEF_ACTION(NAME, KD) do { \
-        QAction *pAct = pMenu_p->addAction((NAME)); \
+        QPointer<QAction> pAct = pMenu_p->addAction((NAME)); \
         pAct->setProperty("kind", KD); \
         m_listContextMenuActions.append(pAct); \
-        connect(pAct, &QObject::destroyed, [=](QObject* o) { \
-            m_listContextMenuActions.removeOne((QAction*)o); \
-        }); \
     } while (0)
 #define DEF_ACTION_CHECKED(NAME, KD) do { \
-        QAction *pAct = pMenu_p->addAction((NAME)); \
+        QPointer<QAction> pAct = pMenu_p->addAction((NAME)); \
         pAct->setCheckable(true); \
         pAct->setProperty("kind", KD); \
         m_listContextMenuActions.append(pAct); \
-        connect(pAct, &QObject::destroyed, [=](QObject* o) { \
-            m_listContextMenuActions.removeOne((QAction*)o); \
-        }); \
     } while (0)
 #define DEF_ACTION_CHECKED_NEW(NAME, KD) do { \
-        QAction *pAct = pMenu->addAction((NAME)); \
+        QPointer<QAction> pAct = pMenu->addAction((NAME)); \
         pAct->setCheckable(true); \
         pAct->setProperty("kind", KD); \
         m_listContextMenuActions.append(pAct); \
-        connect(pAct, &QObject::destroyed, [=](QObject* o) { \
-            m_listContextMenuActions.removeOne((QAction*)o); \
-        }); \
     } while (0)
 #define DEF_ACTION_GROUP(NAME, KD, GROUP) do { \
-        QAction *pAct = pMenu->addAction((NAME)); \
+        QPointer<QAction> pAct = pMenu->addAction((NAME)); \
         pAct->setProperty("kind", KD); \
         m_listContextMenuActions.append(pAct); \
-        connect(pAct, &QObject::destroyed, [=](QObject* o) { \
-            m_listContextMenuActions.removeOne((QAction*)o); \
-        }); \
     } while (0)
 #define DEF_ACTION_CHECKED_GROUP(NAME, KD, GROUP) do { \
-        QAction *pAct = pMenu->addAction((NAME)); \
+        QPointer<QAction> pAct = pMenu->addAction((NAME)); \
         pAct->setCheckable(true); \
         pAct->setProperty("kind", KD); \
         pAct->setActionGroup(GROUP); \
         m_listContextMenuActions.append(pAct); \
-        connect(pAct, &QObject::destroyed, [=](QObject* o) { \
-            m_listContextMenuActions.removeOne((QAction*)o); \
-        }); \
     } while (0)
 DMenu *ActionFactory::titlebarMenu()
 {
@@ -360,7 +345,7 @@ DMenu *ActionFactory::playlistContextMenu()
 QList<QAction *> ActionFactory::findActionsByKind(ActionKind target_kd)
 {
     QList<QAction *> listAction;
-    QList<QAction *>::iterator itor = m_listContextMenuActions.begin();
+    auto itor = m_listContextMenuActions.begin();
     while (itor != m_listContextMenuActions.end()) {
 #if QT_VERSION < QT_VERSION_CHECK(5, 7, 0)
         auto kd = (ActionKind)(*p)->property("kind").value<int>();

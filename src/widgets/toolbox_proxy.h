@@ -603,9 +603,9 @@ private:
     ThumbnailPreview *m_pPreviewer;      ///鼠标悬停时进度条预览胶片控件
     SliderTime *m_pPreviewTime;          ///鼠标悬停时进度条预览时间控件
 
-    DButtonBoxButton *m_pPlayBtn;        ///播放按钮
-    DButtonBoxButton *m_pPrevBtn;        ///上一个按钮
-    DButtonBoxButton *m_pNextBtn;        ///下一个按钮
+    ButtonBoxButton *m_pPlayBtn;        ///播放按钮
+    ButtonBoxButton *m_pPrevBtn;        ///上一个按钮
+    ButtonBoxButton *m_pNextBtn;        ///下一个按钮
     DButtonBox *m_pPalyBox;              ///按钮组
     VolumeButton *m_pVolBtn;             ///音量按钮
     //TODO(xxxpengfei):字幕按钮没用，请在1050前去掉
