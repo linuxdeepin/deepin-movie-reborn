@@ -66,6 +66,8 @@ protected:
             Tip *tip = obj->property("HintWidget").value<Tip *>();
             QWidget *item = tip->property("for").value<QWidget *>();
             DLabel *lb = tip->findChild<DLabel *>("TipText");
+            if (tip->isVisible())
+                return true; //tip弹出后不再更新位置
             lb->setAlignment(Qt::AlignLeft);
             tip->update();
             tip->show();
