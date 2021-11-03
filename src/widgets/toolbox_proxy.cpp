@@ -1369,9 +1369,6 @@ void ToolboxProxy::updateThumbnail()
 {
     disconnect(m_pWorker, SIGNAL(sigFinishiLoad(QSize)), this, SLOT(finishLoadSlot(QSize)));
 
-    if (utils::check_wayland_env()) {
-        return;
-    }
     //如果打开的是音乐
     QString suffix = m_pEngine->playlist().currentInfo().info.suffix();
     foreach (QString sf, m_pEngine->audio_filetypes) {
