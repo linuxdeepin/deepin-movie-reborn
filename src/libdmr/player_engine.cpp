@@ -560,7 +560,7 @@ void PlayerEngine::paintEvent(QPaintEvent *e)
         bIsMusic = isAudioFile(_playlist->currentInfo().mi.title);
     }
 
-    if (!CompositingManager::get().composited()) {
+    if (!CompositingManager::get().composited() || utils::check_wayland_env()) {  // wayland下不会进入mainwindow的paintevent函数导致图标未绘制
         if (_state != Idle && bIsMusic) {
             p.fillRect(rect, QBrush(QColor(0, 0, 0)));
         } else {
