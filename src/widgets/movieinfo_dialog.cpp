@@ -125,7 +125,6 @@ protected:
     bool eventFilter(QObject *obj, QEvent *event)
     {
         switch (event->type()) {
-//        case QEvent::Enter:
         case QEvent::ToolTip: {
             QHelpEvent *he = static_cast<QHelpEvent *>(event);
             auto tip = obj->property("HintWidget").value<Tip *>();
@@ -187,6 +186,7 @@ protected:
         }
     }
 };
+
 /**
  * @brief MovieInfoDialog 构造函数
  */
@@ -196,9 +196,8 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
     initMember();
    if(utils::check_wayland_env()){
        setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint);
-   }else{
-       setWindowFlags(windowFlags());
    }
+
     this->setObjectName(MOVIE_INFO_DIALOG);
     this->setAccessibleName(MOVIE_INFO_DIALOG);
     m_titleList.clear();
@@ -269,8 +268,8 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
     palette.setBrush(QPalette::Background, Qt::NoBrush);
     m_pScrollArea->viewport()->setPalette(palette);
     m_pScrollArea->setFrameShape(QFrame::Shape::NoFrame);
-    pMainLayout->addWidget(m_pScrollArea);
     m_pScrollArea->setWidgetResizable(true);
+    pMainLayout->addWidget(m_pScrollArea);
 
     QWidget *scrollContentWidget = new QWidget(m_pScrollArea);
     scrollContentWidget->setObjectName(MOVIE_INFO_SCROLL_CONTENT);
@@ -314,7 +313,6 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
     DFontSizeManager::instance()->bind(tmp, DFontSizeManager::T8);
     tmp->setText(strMovieInfo.filePath);
     QFontMetrics fontMetrics = tmp->fontMetrics();
-    auto w = fontMetrics.width(strMovieInfo.filePath);
     addRow(tr("Path"), strMovieInfo.filePath, pFormLayout, tipLst);
 
     //添加视频信息
@@ -364,7 +362,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
     audioRect->setMinimumHeight(136);
     audio->setExpand(true);
     m_expandGroup.append(audio);
-    auto *audioForm = new QFormLayout(audioRect);
+    QFormLayout *audioForm = new QFormLayout(audioRect);
     audioForm->setContentsMargins(10, 5, 20, 16);
     audioForm->setVerticalSpacing(6);
     audioForm->setHorizontalSpacing(10);
@@ -454,34 +452,20 @@ void MovieInfoDialog::onFontChanged(const QFont &font)
  */
 void MovieInfoDialog::changedHeight(const int height)
 {
-    if (m_nLastHeight == -1) {
-        m_nLastHeight = height;
-    } else {
-        //xpf修改此过程
-        int h = 10;
-        if (m_expandGroup.at(0)->expand()) {
-            h = h + 164;
-        } else {
-            h = h + 32;
-        }
-        if (m_expandGroup.at(1)->expand()) {
-            h = h + 168 + 10;
-        } else {
-            h = h + 32 + 10;
-        }
-        if (m_expandGroup.at(2)->expand()) {
-            h = h + 168 + 10;
-        } else {
-            h = h + 32 + 10;
-        }
-        h += 260;
-        if (h > 642) {
-            this->setFixedHeight(642);
-        } else {
-            setFixedHeight(h);
-        }
-        m_nLastHeight = -1;
+    QRect rc = geometry();
+    int expandsHeight = 30;
+    QList<DDrawer *>::const_iterator expand = m_expandGroup.cbegin();
+
+    while (expand != m_expandGroup.cend()) {
+        expandsHeight += (*expand)->height();
+        ++expand;
     }
+
+    expandsHeight += contentsMargins().top() + contentsMargins().bottom();
+    rc.setHeight(expandsHeight + 250);
+
+    setGeometry(rc);
+    this->setFixedHeight(qMin(615, expandsHeight + 250));
 }
 /**
  * @brief slotThemeTypeChanged
