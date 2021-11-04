@@ -528,14 +528,13 @@ bool CompositingManager::isDriverLoadedCorrectly()
     return true;
 }
 
-//cppcheck 修改
-//void CompositingManager::overrideCompositeMode(bool useCompositing)
-//{
-//    if (_composited != useCompositing) {
-//        qInfo() << "override composited = " << useCompositing;
-//        _composited = useCompositing;
-//    }
-//}
+void CompositingManager::overrideCompositeMode(bool useCompositing)
+{
+    if (_composited != useCompositing) {
+        qInfo() << "override composited = " << useCompositing;
+        _composited = useCompositing;
+    }
+}
 
 using namespace std;
 

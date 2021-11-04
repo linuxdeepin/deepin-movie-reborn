@@ -86,6 +86,7 @@ public:
     /**
      * override auto-detected compositing state.
      * should call this right before player engine gets instantiated.
+     * it has been deprecated but cannot remove due to ABI
      */
     void overrideCompositeMode(bool useCompositing);
 
