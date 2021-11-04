@@ -70,14 +70,10 @@ void ApplicationAdaptor::openFile(const QString &sFile)
     } else {
         url = QUrl::fromLocalFile(sFile);
     }
-    if (utils::check_wayland_env()) {
-        // wayland下快速点击，播放不正常问题
-        QTime current = QTime::currentTime();
-        if (abs(m_oldTime.msecsTo(current)) > 800) {
-            m_oldTime = current;
-            m_pMainWindow->play(url);
-        }
-    } else {
+
+    QTime current = QTime::currentTime();
+    if (abs(m_oldTime.msecsTo(current)) > 800) {
+        m_oldTime = current;
         m_pMainWindow->play(url);
     }
 }
