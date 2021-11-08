@@ -54,7 +54,8 @@ NotificationWidget::NotificationWidget(QWidget *parent)
     setObjectName("NotificationFrame");
 
 #if defined (__mips__) || defined (__aarch64__)
-    setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
+    if (!utils::check_wayland_env())
+        setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
     setAttribute(Qt::WA_TranslucentBackground, true);
 #endif
     m_pMainLayout = new QHBoxLayout();
