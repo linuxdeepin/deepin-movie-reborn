@@ -89,8 +89,9 @@ public:
     void firstInit();
 
     bool addPlayFile(const QUrl &url);
-    QList<QUrl> addPlayDir(const QDir &dir); // return collected valid urls
-    //returned list contains only accepted valid items
+    // return collected valid urls
+    QList<QUrl> addPlayDir(const QDir &dir);
+    // returned list contains only accepted valid items
     QList<QUrl> addPlayFiles(const QList<QUrl> &urls);
 
     bool isPlayableFile(const QUrl &url);

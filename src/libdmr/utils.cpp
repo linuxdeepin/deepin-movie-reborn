@@ -125,7 +125,7 @@ static int stringDistance(const QString &s1, const QString &s2)
 
 bool IsNamesSimilar(const QString &s1, const QString &s2)
 {
-    auto dist = stringDistance(s1, s2);
+    int dist = stringDistance(s1, s2);
     return (dist >= 0 && dist <= 4); //TODO: check ext.
 }
 
@@ -145,13 +145,6 @@ QFileInfoList FindSimilarFiles(const QFileInfo &fi)
         }
 
     }
-
-    //struct {
-    //bool operator()(const QFileInfo& fi1, const QFileInfo& fi2) const {
-    //return CompareNames(fi1.fileName(), fi2.fileName());
-    //}
-    //} SortByDigits;
-    //std::sort(fil.begin(), fil.end(), SortByDigits);
     return fil;
 }
 

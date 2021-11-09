@@ -623,10 +623,7 @@ void PlaylistModel::loadPlaylist()
 
     delayedAppendAsync(urls);
 }
-/**
- * @brief getThumanbilRunning 获取加载线程是否运行
- * @return 返回是否正在运行
- */
+
 bool PlaylistModel::getThumanbilRunning()
 {
     if (m_getThumanbil) {
@@ -1077,7 +1074,7 @@ void PlaylistModel::appendSingle(const QUrl &url)
 
 #ifndef _LIBDMR_
         if (Settings::get().isSet(Settings::AutoSearchSimilar)) {
-            auto fil = utils::FindSimilarFiles(fi);
+            QFileInfoList fil = utils::FindSimilarFiles(fi);
             qInfo() << "auto search similar files" << fil;
             std::for_each(fil.begin(), fil.end(), [ = ](const QFileInfo & fi) {
                 auto url = QUrl::fromLocalFile(fi.absoluteFilePath());
@@ -1116,8 +1113,16 @@ void PlaylistModel::collectionJob(const QList<QUrl> &urls, QList<QUrl> &inputUrl
 
 #ifndef _LIBDMR_
         if (!_firstLoad && Settings::get().isSet(Settings::AutoSearchSimilar)) {
-            auto fil = utils::FindSimilarFiles(fi);
+            QFileInfoList fil = utils::FindSimilarFiles(fi);
+            //NOTE: The searched files are out of order, so they are sorted here
+            struct {
+                bool operator()(const QFileInfo& fi1, const QFileInfo& fi2) const {
+                    return utils::CompareNames(fi1.fileName(), fi2.fileName());
+                }
+            } SortByDigits;
+            std::sort(fil.begin(), fil.end(), SortByDigits);
             qInfo() << "auto search similar files" << fil;
+
             for (const QFileInfo &fileinfo : fil) {
                 if (fileinfo.isFile()) {
                     auto file_url = QUrl::fromLocalFile(fileinfo.absoluteFilePath());

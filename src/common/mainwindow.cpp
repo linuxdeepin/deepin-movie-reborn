@@ -1966,7 +1966,6 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
         }
 
         if (addCdromPath() == false) {
-            //m_pCommHintWid->updateWithMessage(tr("No device found"));
             QUrl url(QString("dvd:///%1").arg(sDev));
             play(url);
         }
@@ -2944,45 +2943,10 @@ void MainWindow::play(const QUrl &url)
     m_pEngine->playByName(url);
 }
 
-/*void MainWindow::toggleShapeMask()
-{
-
-    return;
-
-    //this code will never be executed
-//#ifndef USE_DXCB
-//    if (isFullScreen() || isMaximized()) {
-//        clearMask();
-//    } else {
-//        QPixmap shape(size());
-//        shape.setDevicePixelRatio(windowHandle()->devicePixelRatio());
-//        shape.fill(Qt::transparent);
-
-//        QPainter p(&shape);
-//        p.setRenderHint(QPainter::Antialiasing);
-//        QPainterPath pp;
-//        pp.addRoundedRect(rect(), RADIUS, RADIUS);
-//        p.fillPath(pp, QBrush(Qt::white));
-//        p.end();
-
-//        setMask(shape.mask());
-//    }
-//#endif
-}*/
-
 void MainWindow::updateProxyGeometry()
 {
-//    toggleShapeMask();    //该函数直接return
-
-#ifdef USE_DXCB
-    // border is drawn by dxcb
-    auto view_rect = rect();
-#else
-    // leave one pixel for border
-//    auto view_rect = rect().marginsRemoved(QMargins(1, 1, 1, 1));
-//    if (isFullScreen()) view_rect = rect();
     QRect view_rect = rect();
-#endif
+
     m_pEngine->resize(view_rect.size());
 
     if (!m_bMiniMode) {
@@ -3049,8 +3013,6 @@ void MainWindow::suspendToolsWindow()
         if (ActionFactory::get().mainContextMenu()->isVisible() ||
                 ActionFactory::get().titlebarMenu()->isVisible())
             return;
-        //if (qApp->focusWindow() != windowHandle())
-        //return;
 
         if (m_pToolbox->isVisible()) {
             if (insideToolsArea(mapFromGlobal(QCursor::pos())) && !m_bLastIsTouch)
@@ -3363,8 +3325,6 @@ void MainWindow::slotFileLoaded()
                 QRect geom = qApp->desktop()->availableGeometry(this);
                 move((geom.width() - this->width()) / 2, (geom.height() - this->height()) / 2);
             }
-        } else {
-//                utils::MoveToCenter(this);
         }
     }
     m_bIsFree = true;

@@ -82,8 +82,6 @@ PlayerEngine::PlayerEngine(QWidget *parent)
         connect(_current, &Backend::mpvWarningLogsChanged, this, &PlayerEngine::mpvWarningLogsChanged);
         connect(_current, &Backend::urlpause, this, &PlayerEngine::urlpause);
         l->addWidget(_current);
-
-        //_current->firstInit();
     }
 
     connect(&_networkConfigMng, &QNetworkConfigurationManager::onlineStateChanged, this, &PlayerEngine::onlineStateChanged);
@@ -97,8 +95,6 @@ PlayerEngine::PlayerEngine(QWidget *parent)
 
     connect(&OnlineSubtitle::get(), &OnlineSubtitle::subtitlesDownloadedFor,
             this, &PlayerEngine::onSubtitlesDownloaded);
-    //heyi need
-    //addSubSearchPath(OnlineSubtitle::get().storeLocation());
 
     _playlist = new PlaylistModel(this);
     connect(_playlist, &PlaylistModel::asyncAppendFinished, this,
@@ -125,7 +121,6 @@ bool PlayerEngine::isPlayableFile(const QUrl &url)
     // 根据后缀不能准确判断一个文件是否能播放
     // 用是否包含音视频流判断更为准确
     if (url.isLocalFile()) {
-        //return (isPlayableFile(url.path()) || isAudioFile(url.path()));
         return (isPlayableFile(url.path()) && _playlist->isMediaFile(url.path()));
     } else {
         if (url.scheme().startsWith("dvd")) {
@@ -679,7 +674,7 @@ void PlayerEngine::onPlaylistAsyncAppendFinished(const QList<PlayItemInfo> &pil)
 void PlayerEngine::playByName(const QUrl &url)
 {
     savePreviousMovieState();
-    auto id = _playlist->indexOf(url);
+    int id = _playlist->indexOf(url);
     qInfo() << __func__ << url << "id:" << id;
     if (id >= 0) {
         _playlist->changeCurrent(id);
@@ -818,7 +813,7 @@ QList<QUrl> PlayerEngine::collectPlayDir(const QDir &dir)
 
 QList<QUrl> PlayerEngine::addPlayDir(const QDir &dir)
 {
-    auto valids = collectPlayDir(dir);
+    QList<QUrl> valids = collectPlayDir(dir);
     _playlist->appendAsync(valids);
     return valids;
 }
@@ -952,8 +947,6 @@ void PlayerEngine::resizeEvent(QResizeEvent *)
 #endif
 
 }
-
-
 
 void PlayerEngine::setBackendProperty(const QString &name, const QVariant &val)
 {

@@ -524,7 +524,6 @@ private:
     bool isActionAllowed(ActionFactory::ActionKind kd, bool bFromUI, bool bIsShortcut);
     QString probeCdromDevice();
     void updateWindowTitle();
-    //void toggleShapeMask();
     void prepareSplashImages();
     void loadWindowState();
     void subtitleMatchVideo(const QString &sFileName);
