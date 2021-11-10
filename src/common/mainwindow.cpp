@@ -2492,6 +2492,10 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
     }
 
     case ActionFactory::ActionKind::SubDelay: {
+        if (m_pEngine->playingMovieInfo().subs.isEmpty()) {
+            m_pCommHintWid->updateWithMessage(tr("123123123"));
+            break;
+        }
         m_pEngine->setSubDelay(0.5);
         double dDelay = m_pEngine->subDelay();
         m_pCommHintWid->updateWithMessage(tr("Subtitle %1: %2s")
@@ -2500,6 +2504,10 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
     }
 
     case ActionFactory::ActionKind::SubForward: {
+        if (m_pEngine->playingMovieInfo().subs.isEmpty()) {
+            m_pCommHintWid->updateWithMessage(tr("123123123"));
+            break;
+        }
         m_pEngine->setSubDelay(-0.5);
         double dDelay = m_pEngine->subDelay();
         m_pCommHintWid->updateWithMessage(tr("Subtitle %1: %2s")
