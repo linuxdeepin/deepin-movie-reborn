@@ -3645,27 +3645,30 @@ void MainWindow::updateSizeConstraints()
     if (m_bMiniMode) {
         size = QSize(40, 40);
     } else {
-        if (m_pEngine->state() != PlayerEngine::CoreState::Idle) {
-            QRect dRect = DApplication::desktop()->availableGeometry();
-            QSize sz = m_pEngine->videoSize();
-            if (sz.width() == 0 || sz.height() == 0) {
-                size = QSize(614, 500);
-            } else {
-                qreal ratio = static_cast<qreal>(sz.width()) / sz.height();
-                if (sz.width() > sz.height()) {
-                    int w = static_cast<int>(500 * ratio);
-                    size = QSize(w, 500);
-                } else {
-                    int h = static_cast<int>(614 * ratio);
-                    if (h > dRect.height()) {
-                        h = dRect.height();
-                    }
-                    size = QSize(614, h);
-                }
-            }
-        } else {
-            size = QSize(614, 500);
-        }
+        //This function seems to be mentally and weak, and it is unknown.
+        //powered by xxxxp
+//        if (m_pEngine->state() != PlayerEngine::CoreState::Idle) {
+//            QRect dRect = DApplication::desktop()->availableGeometry();
+//            QSize sz = m_pEngine->videoSize();
+//            if (sz.width() == 0 || sz.height() == 0) {
+//                size = QSize(614, 500);
+//            } else {
+//                qreal ratio = static_cast<qreal>(sz.width()) / sz.height();
+//                if (sz.width() > sz.height()) {
+//                    int w = static_cast<int>(500 * ratio);
+//                    size = QSize(w, 500);
+//                } else {
+//                    int h = static_cast<int>(614 * ratio);
+//                    if (h > dRect.height()) {
+//                        h = dRect.height();
+//                    }
+//                    size = QSize(614, h);
+//                }
+//            }
+//        } else {
+//            size = QSize(614, 500);
+//        }
+        size = QSize(614, 500);
     }
     this->setMinimumSize(size);
 }
