@@ -1761,7 +1761,10 @@ void MainWindow::loadPlayList()
 
 void MainWindow::setOpenFiles(QStringList &list)
 {
-    m_listOpenFiles = list;
+    //统一使用绝对路径，避免重复视频导入播放列表
+    for(QString fileName: list) {
+        m_listOpenFiles.append(QFileInfo(fileName).absoluteFilePath());
+    }
 }
 
 QString MainWindow::padLoadPath()
