@@ -1334,6 +1334,16 @@ void MainWindow::onMonitorMotionNotify(int nX, int nY)
 MainWindow::~MainWindow()
 {
     qInfo() << __func__;
+    //Do not enter CloseEvent when exiting from the title bar menu, so add the save function here
+    //powered by xxxxp
+    if (Settings::get().isSet(Settings::ResumeFromLast)) {
+        int nCur = 0;
+        nCur = m_pEngine->playlist().current();
+        if (nCur >= 0) {
+            Settings::get().setInternalOption("playlist_pos", nCur);
+        }
+    }
+    m_pEngine->savePlaybackPosition();
     if (m_pEventListener) {
         this->windowHandle()->removeEventFilter(m_pEventListener);
         delete m_pEventListener;
