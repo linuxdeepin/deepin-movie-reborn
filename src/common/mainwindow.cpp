@@ -4044,7 +4044,10 @@ void MainWindow::contextMenuEvent(QContextMenuEvent *pEvent)
         return;
 
     if (utils::check_wayland_env()) {
-        //TODO(xxxxp):need to communicate with the window manager how to get the window top status
+        if (windowHandle()->flags().testFlag(Qt::WindowStaysOnTopHint) != m_bWindowAbove) {
+            m_bWindowAbove = !m_bWindowAbove;
+            reflectActionToUI(ActionFactory::WindowAbove);
+        }
     } else {
         //通过窗口id查询窗口状态是否置顶，同步右键菜单中的选项状态
         QProcess above;
