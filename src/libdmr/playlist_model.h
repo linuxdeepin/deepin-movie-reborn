@@ -167,7 +167,14 @@ public:
 
     qint64 getUrlFileTotalSize(QUrl url, int tryTimes) const;
 
+    /**
+     * @brief clear 清空播放列表
+     */
     void clear();
+    /**
+     * @brief remove 移除播放列表中的选定项
+     * @param pos 传入的删除项
+     */
     void remove(int pos);
     void append(const QUrl &);
 

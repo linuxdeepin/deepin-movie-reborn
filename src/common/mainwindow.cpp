@@ -3410,59 +3410,34 @@ void MainWindow::checkErrorMpvLogsChanged(const QString sPrefix, const QString s
         m_pCommHintWid->updateWithMessage(tr("Cannot open file or stream"));
         m_pEngine->playlist().remove(m_pEngine->playlist().current());
     } else if (sErrorMessage.toLower().contains(QString("fail")) &&
-               (sErrorMessage.toLower().contains(QString("format")))
-              ) {
-        if (m_nRetryTimes < 10) {
-            m_nRetryTimes++;
-            requestAction(ActionFactory::ActionKind::StartPlay);
-        } else {
-            m_nRetryTimes = 0;
-            m_pCommHintWid->updateWithMessage(tr("Invalid file"));
+               (sErrorMessage.toLower().contains(QString("format")))) {
+        //Open the URL there is three cases of legal paths, illegal paths, and semi-legal
+        //paths, which only processes the prefix legality, the suffix is not legal
+        //please refer to other places to modify
+        //powered by xxxxp
+        if (!m_pEngine->playlist().currentInfo().mi.title.isEmpty()) {
+            m_pCommHintWid->updateWithMessage(tr("Parse failed"));
             m_pEngine->playlist().remove(m_pEngine->playlist().current());
+        } else {
+            if (m_nRetryTimes < 10) {
+                m_nRetryTimes++;
+                requestAction(ActionFactory::ActionKind::StartPlay);
+            } else {
+                m_nRetryTimes = 0;
+                m_pCommHintWid->updateWithMessage(tr("Invalid file"));
+                m_pEngine->playlist().remove(m_pEngine->playlist().current());
+            }
         }
-//        m_pEngine->playlist().clear();
     } else if (sErrorMessage.toLower().contains(QString("moov atom not found"))) {
         m_pCommHintWid->updateWithMessage(tr("Invalid file"));
-//        m_pEngine->playlist().clear();
     } else if (sErrorMessage.toLower().contains(QString("couldn't open dvd device"))) {
         m_pCommHintWid->updateWithMessage(tr("Please insert a CD/DVD"));
-//        m_pEngine->playlist().clear();
     } else if (sErrorMessage.toLower().contains(QString("incomplete frame")) ||
                sErrorMessage.toLower().contains(QString("MVs not available"))) {
-//        m_pEngine->playlist().remove(m_pEngine->playlist().current());
     } else if ((sErrorMessage.toLower().contains(QString("can't"))) &&
                (sErrorMessage.toLower().contains(QString("open")))) {
         m_pCommHintWid->updateWithMessage(tr("No video file found"));
-//        m_pEngine->playlist().clear();
     }
-    //4k播放不显示提示框
-    /*else if (errorMessage.contains(QString("Hardware does not support image size 3840x2160"))) {
-        requestAction(ActionFactory::TogglePause);
-
-        DDialog *dialog = new DDialog;
-        dialog->setFixedWidth(440);
-        QImage icon = utils::LoadHiDPIImage(":/resources/icons/warning.svg");
-        QPixmap pix = QPixmap::fromImage(icon);
-        dialog->setIcon(QIcon(pix));
-        dialog->setMessage(tr("4K video may be stuck"));
-        dialog->addButton(tr("OK"), true, DDialog::ButtonRecommend);
-        QGraphicsDropShadowEffect *effect = new QGraphicsDropShadowEffect();
-        effect->setOffset(0, 4);
-        effect->setColor(QColor(0, 145, 255, 76));
-        effect->setBlurRadius(4);
-        dialog->getButton(0)->setFixedWidth(340);
-        dialog->getButton(0)->setGraphicsEffect(effect);
-        dialog->exec();
-        QTimer::singleShot(500, [ = ]() {
-            //startPlayStateAnimation(true);
-            if (!m_bMiniMode) {
-                m_pAnimationlable->setGeometry(width() / 2 - 100, height() / 2 - 100, 200, 200);
-                m_pAnimationlable->start();
-            }
-            m_pEngine->pauseResume();
-        });
-    }*/
-
 }
 
 void MainWindow::closeEvent(QCloseEvent *pEvent)
