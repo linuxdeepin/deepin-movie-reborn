@@ -48,10 +48,6 @@
 #define DEFAULT_NTLENGTH 48                 //音符边长
 
 namespace dmr {
-/**
- * @brief MovieWidget 播放动画显示窗口
- * @param parent 父窗口
- */
 MovieWidget::MovieWidget(QWidget *parent)
     : QGraphicsView(parent)
 {
@@ -64,6 +60,7 @@ MovieWidget::MovieWidget(QWidget *parent)
     setAlignment(Qt::AlignCenter);
     setFrameShape(QFrame::Shape::NoFrame);
     setAcceptDrops(true);
+    setAttribute(Qt::WA_TransparentForMouseEvents, true);
 
     m_pScene = new QGraphicsScene;
     m_pScene->setBackgroundBrush(QBrush(QColor(0, 0, 0)));
@@ -89,15 +86,13 @@ MovieWidget::MovieWidget(QWidget *parent)
     m_pTimer->setInterval(INTERVAL);
     connect(m_pTimer, &QTimer::timeout, this, &MovieWidget::updateView);
 }
+
 MovieWidget::~MovieWidget()
 {
     m_pTimer->deleteLater();
     m_pTimer = nullptr;
 }
-/**
- * @brief startPlaying
- * 开始播放时的槽函数
- */
+
 void MovieWidget::startPlaying()
 {
     if (m_state == PlayState::STATE_STOP) {
@@ -108,29 +103,20 @@ void MovieWidget::startPlaying()
     m_pTimer->start();
     m_state = PlayState::STATE_PLAYING;
 }
-/**
- * @brief stopPlaying
- * 停止播放时的槽函数
- */
+
 void MovieWidget::stopPlaying()
 {
     m_pTimer->stop();
     m_state = PlayState::STATE_STOP;
     hide();
 }
-/**
- * @brief pausePlaying
- * 暂停播放时的槽函数
- */
+
 void MovieWidget::pausePlaying()
 {
     m_pTimer->stop();
     m_state = PlayState::STATE_PAUSE;
 }
-/**
- * @brief updateView
- * 更新窗口函数
- */
+
 void MovieWidget::updateView()
 {
     qreal fRatio = 1.0;
@@ -164,9 +150,7 @@ void MovieWidget::updateView()
     m_pNoteSvgItem->setRotation(m_nRotate);
     viewport()->update();
 }
-/**
- * @brief initMember 初始化成员变量
- */
+
 void MovieWidget::initMember()
 {
     m_nRotate = 0;
@@ -187,6 +171,11 @@ void MovieWidget::dropEvent(QDropEvent *e)
 void MovieWidget::dragMoveEvent(QDragMoveEvent *e)
 {
     e->accept();
+}
+
+void MovieWidget::mouseMoveEvent(QMouseEvent *e)
+{
+    parent()->event(e);
 }
 
 }

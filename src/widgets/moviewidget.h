@@ -97,6 +97,11 @@ public slots:
 protected:
     void dropEvent(QDropEvent *) override;
     void dragMoveEvent(QDragMoveEvent *) override;
+    /**
+     * @brief mouseMoveEvent 鼠标移动事件
+     * @param 鼠标事件
+     */
+    void mouseMoveEvent(QMouseEvent *) override;
 
 private:
     QGraphicsSvgItem *m_pBgSvgItem;
