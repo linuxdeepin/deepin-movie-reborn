@@ -1086,6 +1086,11 @@ MainWindow::MainWindow(QWidget *parent)
     if (!CompositingManager::get().composited()) {
         m_pMovieWidget->windowHandle()->installEventFilter(m_pEventListener);
     }
+#ifdef __aarch64__
+    connect(m_pMovieWidget, &MovieWidget::mouseMoveNoButton, this, [=](){
+        resumeToolsWindow();
+    });
+#endif
 
     qDBusRegisterMetaType<SessionInfo>();
     qDBusRegisterMetaType<SessionInfoList>();

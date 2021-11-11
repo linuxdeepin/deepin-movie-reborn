@@ -61,6 +61,7 @@ MovieWidget::MovieWidget(QWidget *parent)
     setFrameShape(QFrame::Shape::NoFrame);
     setAcceptDrops(true);
     setAttribute(Qt::WA_TransparentForMouseEvents, true);
+    setMouseTracking(true);
 
     m_pScene = new QGraphicsScene;
     m_pScene->setBackgroundBrush(QBrush(QColor(0, 0, 0)));
@@ -176,6 +177,10 @@ void MovieWidget::dragMoveEvent(QDragMoveEvent *e)
 void MovieWidget::mouseMoveEvent(QMouseEvent *e)
 {
     parent()->event(e);
+
+#ifdef __aarch64__
+    emit mouseMoveNoButton();
+#endif
 }
 
 }

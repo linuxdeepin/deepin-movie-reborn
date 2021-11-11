@@ -94,6 +94,14 @@ public slots:
      */
     void initMember();
 
+#ifdef __aarch64__
+signals:
+    /**
+     * @brief mouseMoveNoButton 鼠标移动时信号，解决播放音乐窗口鼠标移动无法唤起工具栏
+     */
+    void mouseMoveNoButton();
+#endif
+
 protected:
     void dropEvent(QDropEvent *) override;
     void dragMoveEvent(QDragMoveEvent *) override;
