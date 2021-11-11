@@ -2118,6 +2118,19 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
     }
 
     case ActionFactory::ActionKind::ToggleMiniMode: {
+        //Когда вы быстро переключаете мини-режим, переключение полноэкранной
+        //задержки не до тех пор, пока есть случай, когда размер окна ненормальный.
+        //
+        //Обратите внимание, что это приведет к переключению на мини-режим,
+        //быстро нажмите кнопку Mini Mode, не снимая мини-режима
+        //Когда возникает эта проблема, вы можете попытаться сократить
+        //время задержки (пожалуйста, синхронизируйте мини-режим и полную задержку операции экрана)
+        //Но будьте осторожны, эта операция может вызвать другие проблемы.
+        //Поддерживается xxxxp.
+        if (QDateTime::currentMSecsSinceEpoch() - m_nFullscreenTime < 600) {
+            return;
+        }
+
         int nDelayTime = 0;
         if (m_pPlaylist->state() == PlaylistWidget::Opened) {
             requestAction(ActionFactory::TogglePlaylist);
@@ -4338,7 +4351,6 @@ void MainWindow::toggleUIMode()
                 showNormal();
             }
         }
-
     }
     m_isSettingMiniMode = false;
 
