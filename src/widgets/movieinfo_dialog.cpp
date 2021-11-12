@@ -191,12 +191,12 @@ protected:
  * @brief MovieInfoDialog 构造函数
  */
 MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent)
-    : DAbstractDialog(parent)
+    : DDialog(parent)
 {
     initMember();
-   if(utils::check_wayland_env()){
-       setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint);
-   }
+    if(utils::check_wayland_env()){
+        setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint);
+    }
 
     this->setObjectName(MOVIE_INFO_DIALOG);
     this->setAccessibleName(MOVIE_INFO_DIALOG);
@@ -210,23 +210,16 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
     } else {
         layout->setContentsMargins(0, 0, 0, 0);
     }
-    setLayout(layout);
 
-    if (!checkWayland) {
-        CloseButton *closeBt = new CloseButton(this);
-        closeBt->setObjectName(MOVIEINFO_CLOSE_BUTTON);
-        closeBt->setAccessibleName(MOVIEINFO_CLOSE_BUTTON);
-        closeBt->setFixedSize(50, 50);
-        connect(closeBt, &CloseButton::clicked, this, &MovieInfoDialog::close);
-        layout->addWidget(closeBt, 0, Qt::AlignTop | Qt::AlignRight);
-    }
+    DWidget *content = new DWidget();
+    addContent(content);
 
     const MovieInfo &strMovieInfo = pif.mi;
 
     QVBoxLayout *pMainLayout = new QVBoxLayout;
-    pMainLayout->setContentsMargins(10, 0, 0, 0);
+    pMainLayout->setContentsMargins(0, 0, 0, 0);
     pMainLayout->setSpacing(0);
-    layout->addLayout(pMainLayout);
+    content->setLayout(pMainLayout);
 
     PosterFrame *pPosterFrame = new PosterFrame(this);
     pPosterFrame->setWindowOpacity(1);
@@ -274,7 +267,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
     QWidget *scrollContentWidget = new QWidget(m_pScrollArea);
     scrollContentWidget->setObjectName(MOVIE_INFO_SCROLL_CONTENT);
     QVBoxLayout *scrollWidgetLayout = new QVBoxLayout;
-    scrollWidgetLayout->setContentsMargins(0, 0, 10, 10);
+    scrollWidgetLayout->setContentsMargins(0, 0, 0, 0);
     scrollWidgetLayout->setSpacing(10);
     scrollContentWidget->setLayout(scrollWidgetLayout);
     m_pScrollArea->setWidget(scrollContentWidget);
@@ -462,10 +455,10 @@ void MovieInfoDialog::changedHeight(const int height)
     }
 
     expandsHeight += contentsMargins().top() + contentsMargins().bottom();
-    rc.setHeight(expandsHeight + 250);
+    rc.setHeight(expandsHeight + 265);
 
     setGeometry(rc);
-    this->setFixedHeight(qMin(615, expandsHeight + 250));
+    this->setFixedHeight(qMin(615, expandsHeight + 265));
 }
 /**
  * @brief slotThemeTypeChanged

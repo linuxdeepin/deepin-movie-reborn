@@ -164,7 +164,7 @@ protected:
  * @brief The MovieInfoDialog class
  * 这个类是影片信息大窗口的类
  */
-class MovieInfoDialog: public DAbstractDialog
+class MovieInfoDialog: public DDialog
 {
     Q_OBJECT
 public:
