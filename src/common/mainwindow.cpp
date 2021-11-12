@@ -2131,7 +2131,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
         //время задержки (пожалуйста, синхронизируйте мини-режим и полную задержку операции экрана)
         //Но будьте осторожны, эта операция может вызвать другие проблемы.
         //Поддерживается xxxxp.
-        if (QDateTime::currentMSecsSinceEpoch() - m_nFullscreenTime < 600) {
+        if (QDateTime::currentMSecsSinceEpoch() - m_nFullscreenTime < 600 || m_bMouseMoved) {
             return;
         }
 
@@ -3827,6 +3827,7 @@ void MainWindow::capturedMousePressEvent(QMouseEvent *pEvent)
 
 void MainWindow::capturedMouseReleaseEvent(QMouseEvent *pEvent)
 {
+    m_bMouseMoved = false;
     if (m_bIsTouch) {
         m_bLastIsTouch = true;
         m_bIsTouch = false;
