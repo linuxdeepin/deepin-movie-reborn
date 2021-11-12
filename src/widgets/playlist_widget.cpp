@@ -943,9 +943,9 @@ void PlaylistWidget::openItemInFM()
 
 void PlaylistWidget::removeClickedItem(bool isShortcut)
 {
-    if (isShortcut) {
+    if (isShortcut && isVisible()) {
         for (int i = 0; i < _playlist->count(); i++) {
-            auto piw = dynamic_cast<PlayItemWidget *>(_playlist->itemWidget(_playlist->item(i)));
+            PlayItemWidget * piw = dynamic_cast<PlayItemWidget *>(_playlist->itemWidget(_playlist->item(i)));
             qInfo() << piw->getBIsSelect();
             if (piw->getBIsSelect()) {
                 _engine->playlist().remove(i);
@@ -955,7 +955,7 @@ void PlaylistWidget::removeClickedItem(bool isShortcut)
     }
 
     if (!_clickedItem) return;
-    auto piw = dynamic_cast<PlayItemWidget *>(_clickedItem);
+    PlayItemWidget * piw = dynamic_cast<PlayItemWidget *>(_clickedItem);
     if (piw) {
         qInfo() << __func__;
         for (int i = 0; i < _playlist->count(); i++) {
@@ -1082,7 +1082,6 @@ void PlaylistWidget::slotRowsMoved()
 
     ev->acceptProposedAction();
 }*/
-
 
 void PlaylistWidget::contextMenuEvent(QContextMenuEvent *cme)
 {
@@ -1423,21 +1422,9 @@ void PlaylistWidget::resizeEvent(QResizeEvent *ev)
 #else
     auto view_rect = main_rect.marginsRemoved(QMargins(1, 1, 1, 1));
 #endif
-//#ifdef __aarch64__
-//    QRect fixed(15, (view_rect.height() - 394),
-//                view_rect.width() - 20, (384 - 100));
-
-////    _playlist->setFixedWidth(width() - 235);
-//    //_playlist->setFixedWidth(fixed.width() - 235);
-//    _playlist->setFixedSize(fixed.width() - 221, fixed.height());
-//    move(fixed.topLeft() - QPoint(10, 0));
-//#else
     QRect fixed((view_rect.width() - 10), (view_rect.height() - 394),
                 view_rect.width() - 20, (384 - 70));
-
-//    _playlist->setFixedWidth(width() - 235);
     _playlist->setFixedWidth(fixed.width() - 205);
-//#endif
     emit sizeChange();
 
     QTimer::singleShot(100, this, &PlaylistWidget::batchUpdateSizeHints);

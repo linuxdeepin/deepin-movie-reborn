@@ -206,13 +206,6 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *pObj)
     pLayout->addWidget(pLineEdit);
     pLayout->addWidget(pPushButton);
 
-    /**
-     * createTwoColumWidget在dtk中已被弃用
-     * 修改警告重新创建窗口
-     */
-    //DSettingsWidgetFactory *settingWidget = new DSettingsWidgetFactory(main);
-    //auto optionWidget = DSettingsWidgetFactory::createTwoColumWidget(option, main);
-
     QWidget *pOptionWidget = new QWidget;
     pOptionWidget->setObjectName("OptionFrame");
 
@@ -1061,7 +1054,6 @@ MainWindow::MainWindow(QWidget *parent)
         this->activateWindow();
     });
     connect(qApp, &QGuiApplication::fontChanged, this, &MainWindow::slotFontChanged);
-//    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, &MainWindow::updateMiniBtnTheme);
 
     ThreadPool::instance()->moveToNewThread(&m_diskCheckThread);
     m_diskCheckThread.start();

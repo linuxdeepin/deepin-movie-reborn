@@ -2493,7 +2493,6 @@ void ToolboxProxy::setButtonTooltipHide()
         m_pFullScreenBtnTip->hide();
         m_pListBtnTip->hide();
     } else {
-//        m_pSubBtn->hideToolTip();
         m_pListBtn->hideToolTip();
         m_pFullScreenBtn->hideToolTip();
     }
