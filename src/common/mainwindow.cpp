@@ -2129,6 +2129,10 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
             return;
         }
 
+        if (!CompositingManager::get().composited()) {
+            m_pAnimationlable->hide();
+        }
+
         int nDelayTime = 0;
         if (m_pPlaylist->state() == PlaylistWidget::Opened) {
             requestAction(ActionFactory::TogglePlaylist);
