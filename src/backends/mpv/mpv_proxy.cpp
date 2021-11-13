@@ -1019,11 +1019,7 @@ void MpvProxy::refreshDecode()
     //bool bIsCanHwDec = HwdecProbe::get().isFileCanHwdec(_file.url(), canHwTypes);
 
     if (DecodeMode::SOFTWARE == m_decodeMode) { //1.设置软解
-#if defined __mips__
-        my_set_property(m_handle, "hwdec", "auto");
-#else
         my_set_property(m_handle, "hwdec", "no");
-#endif
     } else if (DecodeMode::HARDWARE == m_decodeMode) {//2.设置硬解
         //2.1 特殊格式
         bool isSoftCodec = false;
