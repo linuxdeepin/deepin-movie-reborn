@@ -2585,9 +2585,9 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
     }
 
     case ActionFactory::ActionKind::TogglePause: {
-        if (QDateTime::currentMSecsSinceEpoch() - m_nFullscreenTime < 500) {
+        if (windowState() == Qt::WindowFullScreen && QDateTime::currentMSecsSinceEpoch() - m_nFullscreenTime < 500) {
             return;
-        } else {
+        } else if(windowState() == Qt::WindowFullScreen) {
             m_nFullscreenTime = QDateTime::currentMSecsSinceEpoch();
         }
         if (m_pEngine->state() == PlayerEngine::Idle && bIsShortcut) {
