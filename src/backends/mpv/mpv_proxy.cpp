@@ -349,7 +349,13 @@ mpv_handle *MpvProxy::mpv_init()
         //景嘉微显卡目前只支持vo=xv，等日后升级代码需要酌情修改。
         QFileInfo fi("/dev/mwv206_0");
         if (fi.exists()) { //2.1.1景嘉微
-            my_set_property(m_handle, "hwdec", "vdpau,vdpau-copy,vaapi,vaapi-copy");
+            QDir sdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv206"); //判断是否安装核外驱动
+            if(sdir.exists())
+            {
+                 my_set_property(m_handle, "hwdec", "vdpau");
+            }else {
+                 my_set_property(m_handle, "hwdec", "auto");
+            }
             my_set_property(m_handle, "vo", "vdpau,xv,x11");
             m_sInitVo = "vdpau,xv,x11";
         } else if (QFile::exists("/dev/csmcore")) { //2.1.2中船重工
@@ -378,8 +384,10 @@ mpv_handle *MpvProxy::mpv_init()
         my_set_property(m_handle, "vo", "vdpau,gpu,x11");
         m_sInitVo = "vdpau,gpu,x11";
 #elif defined (__aarch64__)
-        my_set_property(m_handle, "vo", "gpu,xv,x11");
-        m_sInitVo = "gpu,xv,x11";
+        if (!fi.exists()) { //2.1.1景嘉微 
+            my_set_property(m_handle, "vo", "gpu,xv,x11");
+            m_sInitVo = "gpu,xv,x11";
+        }
 #else
         //TODO(xxxxpengfei)：暂未处理intel集显情况
         if (CompositingManager::get().isZXIntgraphics()) {
@@ -1040,7 +1048,13 @@ void MpvProxy::refreshDecode()
             //2.2.1 特殊硬件
             QFileInfo fi("/dev/mwv206_0"); //2.2.1.1 景嘉微
             if (fi.exists()) {
-                my_set_property(m_handle, "hwdec", "vdpau,vdpau-copy,vaapi,vaapi-copy");
+                QDir sdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv206"); //判断是否安装核外驱动
+                if(sdir.exists())
+                {
+                     my_set_property(m_handle, "hwdec", "vdpau");
+                }else {
+                     my_set_property(m_handle, "hwdec", "auto");
+                }
             } else if (CompositingManager::get().isOnlySoftDecode()) { //2.2.1.2 鲲鹏920 || 曙光+英伟达 || 浪潮
                 my_set_property(m_handle, "hwdec", "no");
             } else { //2.2.2 非特殊硬件 + 非特殊格式
