@@ -4577,17 +4577,17 @@ void MainWindow::sleepStateChanged(bool bSleep)
         m_pEngine->seekAbsolute(static_cast<int>(m_pEngine->elapsed()));
         return;
     }
-
-    if (!bSleep) {
-        m_pEngine->seekAbsolute(static_cast<int>(m_pEngine->elapsed()));      //保证休眠后不管是否播放都不会卡帧
-    }
-
     if (bSleep && m_pEngine->state() == PlayerEngine::CoreState::Playing) {
         m_bStartSleep = true;
         requestAction(ActionFactory::ActionKind::TogglePause);
     } else if (!bSleep && m_pEngine->state() == PlayerEngine::CoreState::Paused && m_bStartSleep) {
         m_bStartSleep = false;
-        requestAction(ActionFactory::ActionKind::TogglePause);
+        QTimer::singleShot(500, [=](){
+                    requestAction(ActionFactory::ActionKind::TogglePause);
+                    if (!bSleep) {
+                        m_pEngine->seekAbsolute(static_cast<int>(m_pEngine->elapsed()));      //保证休眠后不管是否播放都不会卡帧
+                    }
+         });
     }
 }
 
