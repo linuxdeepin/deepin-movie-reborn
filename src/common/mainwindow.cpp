@@ -838,6 +838,8 @@ MainWindow::MainWindow(QWidget *parent)
             if (isFullScreen()) {
                 m_pFullScreenTimeLable->show();
                 m_pProgIndicator->setVisible(true);
+                activateWindow();    // show other window make mainwindow deactivate
+                setFocus();
             }
 #endif
 #endif
