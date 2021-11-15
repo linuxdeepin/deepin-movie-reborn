@@ -178,7 +178,7 @@ void MovieWidget::mouseMoveEvent(QMouseEvent *e)
 {
     parent()->event(e);
 
-#ifdef __aarch64__
+#if defined (__aarch64__) || defined (__mips__)
     emit mouseMoveNoButton();
 #endif
 }

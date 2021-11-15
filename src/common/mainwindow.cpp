@@ -1080,7 +1080,7 @@ MainWindow::MainWindow(QWidget *parent)
     if (!CompositingManager::get().composited()) {
         m_pMovieWidget->windowHandle()->installEventFilter(m_pEventListener);
     }
-#ifdef __aarch64__
+#if defined (__aarch64__) || defined (__mips__)
     connect(m_pMovieWidget, &MovieWidget::mouseMoveNoButton, this, [=](){
         resumeToolsWindow();
     });
