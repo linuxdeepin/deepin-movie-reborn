@@ -87,22 +87,24 @@ Titlebar::Titlebar(QWidget *parent) : DBlurEffectWidget(parent), d_ptr(new Title
     d->m_titlebar->setBackgroundTransparent(false);
     d->m_titlebar->setBlurBackground(true);
 
-    QTimer::singleShot(500, this, [&]()
+    QTimer::singleShot(100, this, [&]() //fix the bug that the app icon will delay by fl
     {
-        auto dpr = qApp->devicePixelRatio();
-        int w2 = static_cast<int>(32 * dpr);
+        qreal dpr = qApp->devicePixelRatio();
+//        int w2 = static_cast<int>(32 * dpr);
         int w = static_cast<int>(32 * dpr);
 
         QIcon icon = QIcon::fromTheme("deepin-movie");
-        auto logo = icon.pixmap(QSize(32, 32))
+        QPixmap logo = icon.pixmap(QSize(32, 32))
                     .scaled(w, w, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 
         logo.setDevicePixelRatio(dpr);
-        QPixmap pm(w2, w2);
+//        QPixmap pm(w2, w2);
+        QPixmap pm(w, w);
         pm.setDevicePixelRatio(dpr);
         pm.fill(Qt::transparent);
         QPainter p(&pm);
-        p.drawPixmap((w2 - w) / 2, (w2 - w) / 2, logo);
+//        p.drawPixmap((w2 - w) / 2, (w2 - w) / 2, logo);
+        p.drawPixmap(0, 0, logo);
         p.end();
 
         if (!utils::check_wayland_env())
@@ -113,11 +115,6 @@ Titlebar::Titlebar(QWidget *parent) : DBlurEffectWidget(parent), d_ptr(new Title
     d->m_titlebar->setTitle("");
     d->m_titletxt = new DLabel(this);
     d->m_titletxt->setText("");
-//    QGraphicsDropShadowEffect* shadowEffect = new QGraphicsDropShadowEffect(d->m_titletxt);
-//    shadowEffect->setOffset(0, 1);
-//    shadowEffect->setColor(QColor(0,0,0,127));
-//    shadowEffect->setBlurRadius(1);
-//    d->m_titletxt->setGraphicsEffect(shadowEffect);
     d->m_titletxt->setFont(DFontSizeManager::instance()->get(DFontSizeManager::T7));
     d->m_titlebar->addWidget(d->m_titletxt, Qt::AlignCenter);
 
