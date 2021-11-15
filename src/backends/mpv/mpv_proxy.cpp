@@ -1429,6 +1429,13 @@ QVariant MpvProxy::my_command(mpv_handle *pHandle, const QVariant &args)
 
 QImage MpvProxy::takeOneScreenshot()
 {
+    bool bNeedRotate = false;
+    QString strVO = getProperty("current-vo").toString();  // the image by screenshot wont rotate when vo=vdpau
+
+    if(strVO.compare("vdpau", Qt::CaseInsensitive) == 0) {
+        bNeedRotate = true;
+    }
+
     if (state() == PlayState::Stopped) return QImage();
 
     QList<QVariant> args = {"screenshot-raw"};
@@ -1468,7 +1475,7 @@ QImage MpvProxy::takeOneScreenshot()
         auto img = QImage(static_cast<const uchar *>(pData), w, h, stride, QImage::Format_RGB32);
         img.bits();
         int rotationdegree = videoRotation();
-        if (rotationdegree && CompositingManager::get().composited()) {      //只有opengl窗口需要自己旋转
+        if (rotationdegree && (CompositingManager::get().composited() || bNeedRotate)) {      //只有opengl窗口需要自己旋转
             QMatrix matrix;
             matrix.rotate(rotationdegree);
             img = QPixmap::fromImage(img).transformed(matrix, Qt::SmoothTransformation).toImage();
