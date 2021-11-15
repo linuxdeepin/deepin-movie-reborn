@@ -2521,7 +2521,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
 
     case ActionFactory::ActionKind::SubDelay: {
         if (m_pEngine->playingMovieInfo().subs.isEmpty()) {
-            m_pCommHintWid->updateWithMessage(tr("123123123"));
+            m_pCommHintWid->updateWithMessage(tr("Unable to adjust the subtitle"));
             break;
         }
         m_pEngine->setSubDelay(0.5);
@@ -2533,7 +2533,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
 
     case ActionFactory::ActionKind::SubForward: {
         if (m_pEngine->playingMovieInfo().subs.isEmpty()) {
-            m_pCommHintWid->updateWithMessage(tr("123123123"));
+            m_pCommHintWid->updateWithMessage(tr("Unable to adjust the subtitle"));
             break;
         }
         m_pEngine->setSubDelay(-0.5);
