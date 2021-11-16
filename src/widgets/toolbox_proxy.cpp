@@ -994,14 +994,9 @@ void ToolboxProxy::setthumbnailmode()
         m_pProgBar_Widget->setCurrentIndex(1);   //恢复进度条模式 by zhuyuliang
     }
 #else
-    bool composited = CompositingManager::get().composited();
-    if (composited) {
-        m_bThumbnailmode = true;
-        updateThumbnail();
-    } else {
-        m_bThumbnailmode = false;
-        updateMovieProgress();
-    }
+    //no thunbnail progress bar is loaded except amd plantform
+    m_bThumbnailmode = false;
+    updateMovieProgress();
 #endif
 
 }
