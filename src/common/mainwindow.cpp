@@ -3412,7 +3412,7 @@ void MainWindow::checkErrorMpvLogsChanged(const QString sPrefix, const QString s
         //paths, which only processes the prefix legality, the suffix is not legal
         //please refer to other places to modify
         //powered by xxxxp
-        if (!m_pEngine->playlist().currentInfo().mi.title.isEmpty()) {
+        if (m_pEngine->playlist().currentInfo().mi.title.isEmpty()) {
             m_pCommHintWid->updateWithMessage(tr("Parse failed"));
             m_pEngine->playlist().remove(m_pEngine->playlist().current());
         } else {
