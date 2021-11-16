@@ -395,7 +395,20 @@ mpv_handle *MpvProxy::mpv_init()
         }
 #endif
     } else { //3.设置自动
-        my_set_property(m_handle, "hwdec", "auto");
+        QFileInfo fi("/dev/mwv206_0");
+        if (fi.exists()) { //2.1.1景嘉微
+            QDir sdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv206"); //判断是否安装核外驱动
+            if(sdir.exists())
+            {
+                 my_set_property(m_handle, "hwdec", "vdpau");
+            }else {
+                 my_set_property(m_handle, "hwdec", "auto");
+            }
+            my_set_property(m_handle, "vo", "vdpau,xv,x11");
+            m_sInitVo = "vdpau,xv,x11";
+        } else {
+            my_set_property(m_handle, "hwdec", "auto");
+        }
     }
 
     if (composited) {
@@ -1081,7 +1094,16 @@ void MpvProxy::refreshDecode()
             //bIsCanHwDec ? my_set_property(m_handle, "hwdec", canHwTypes.join(',')) : my_set_property(m_handle, "hwdec", "no");
         }
 #endif
-
+        QFileInfo fi("/dev/mwv206_0"); //2.2.1.1 景嘉微
+        if (fi.exists()) {
+            QDir sdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv206"); //判断是否安装核外驱动
+            if(sdir.exists())
+            {
+                 my_set_property(m_handle, "hwdec", "vdpau");
+            }else {
+                 my_set_property(m_handle, "hwdec", "auto");
+            }
+        }
         //play.conf
         CompositingManager::get().getMpvConfig(m_pConfig);
         QMap<QString, QString>::iterator iter = m_pConfig->begin();
