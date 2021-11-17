@@ -421,7 +421,12 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
 void MovieInfoDialog::paintEvent(QPaintEvent *ev)
 {
     QPainter painter(this);
-    painter.fillRect(this->rect(), QColor(0, 0, 0, static_cast<int>(255 * 0.8)));
+    if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
+        painter.fillRect(this->rect(), QColor(255, 255, 255, static_cast<int>(255 * 0.8)));
+    } else {
+        painter.fillRect(this->rect(), QColor(0, 0, 0, static_cast<int>(255 * 0.8)));
+    }
+
     QDialog::paintEvent(ev);
 }
 /**
