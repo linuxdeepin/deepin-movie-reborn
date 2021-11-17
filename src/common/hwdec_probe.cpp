@@ -73,8 +73,8 @@ HwdecProbe HwdecProbe::m_ffmpegProbe;
 
 HwdecProbe::HwdecProbe():m_hwDeviceCtx(nullptr)
 {
-    m_ffmpegProbe.initffmpegInterface();
-    m_ffmpegProbe.getHwTypes();
+//    m_ffmpegProbe.initffmpegInterface();
+//    m_ffmpegProbe.getHwTypes();
 }
 
 HwdecProbe& HwdecProbe::get()
