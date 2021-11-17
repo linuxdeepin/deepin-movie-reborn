@@ -87,30 +87,23 @@ Titlebar::Titlebar(QWidget *parent) : DBlurEffectWidget(parent), d_ptr(new Title
     d->m_titlebar->setBackgroundTransparent(false);
     d->m_titlebar->setBlurBackground(true);
 
-    QTimer::singleShot(100, this, [&]() //fix the bug that the app icon will delay by fl
-    {
-        qreal dpr = qApp->devicePixelRatio();
-//        int w2 = static_cast<int>(32 * dpr);
-        int w = static_cast<int>(32 * dpr);
+    qreal dpr = qApp->devicePixelRatio();
+    int w = static_cast<int>(32 * dpr);
 
-        QIcon icon = QIcon::fromTheme("deepin-movie");
-        QPixmap logo = icon.pixmap(QSize(32, 32))
-                    .scaled(w, w, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    QIcon icon = QIcon::fromTheme("deepin-movie");
+    QPixmap logo = icon.pixmap(QSize(32, 32))
+            .scaled(w, w, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 
-        logo.setDevicePixelRatio(dpr);
-//        QPixmap pm(w2, w2);
-        QPixmap pm(w, w);
-        pm.setDevicePixelRatio(dpr);
-        pm.fill(Qt::transparent);
-        QPainter p(&pm);
-//        p.drawPixmap((w2 - w) / 2, (w2 - w) / 2, logo);
-        p.drawPixmap(0, 0, logo);
-        p.end();
+    logo.setDevicePixelRatio(dpr);
+    QPixmap pm(w, w);
+    pm.setDevicePixelRatio(dpr);
+    pm.fill(Qt::transparent);
+    QPainter p(&pm);
+    p.drawPixmap(0, 0, logo);
+    p.end();
 
-        if (!utils::check_wayland_env())
-            this->setIcon(pm);
-    }
-    );
+    if (!utils::check_wayland_env())
+        this->setIcon(pm);
 
     d->m_titlebar->setTitle("");
     d->m_titletxt = new DLabel(this);
