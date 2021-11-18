@@ -506,6 +506,7 @@ protected slots:
 #endif
     void diskRemoved(QString sDiskName);
     void sleepStateChanged(bool bSleep);
+    void lockStateChanged(bool bLock);
     /**
      * @brief 响应锁屏dbus信号
      */

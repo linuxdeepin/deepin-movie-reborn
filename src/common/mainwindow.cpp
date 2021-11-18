@@ -1071,9 +1071,9 @@ MainWindow::MainWindow(QWidget *parent)
     m_pDBus = new QDBusInterface("org.freedesktop.login1", "/org/freedesktop/login1", "org.freedesktop.login1.Manager", QDBusConnection::systemBus());
     connect(m_pDBus, SIGNAL(PrepareForSleep(bool)), this, SLOT(sleepStateChanged(bool)));
 
-    QDBusConnection::sessionBus().connect("com.deepin.SessionManager", "/com/deepin/SessionManager",
-                                          "org.freedesktop.DBus.Properties", "PropertiesChanged", this,
-                                          SLOT(onSysLockState(QString, QVariantMap, QStringList)));
+    QDBusConnection::sessionBus().connect("com.deepin.dde.shutdownFront", "/com/deepin/dde/lockFront",
+                                          "com.deepin.dde.lockFront", "Visible", this,
+                                          SLOT(lockStateChanged(bool)));
 
     m_pMovieWidget = new MovieWidget(this);
     m_pMovieWidget->hide();
@@ -4570,22 +4570,31 @@ void MainWindow::sleepStateChanged(bool bSleep)
 {
     qInfo() << __func__ << bSleep;
 
-    if (m_bStateInLock) {                //休眠唤醒后会先执行锁屏操作,如果已经进行锁屏操作则忽略休眠唤醒信号
-        m_bStartSleep = bSleep;
-        m_pEngine->seekAbsolute(static_cast<int>(m_pEngine->elapsed()));
-        return;
-    }
+    //if (m_bStateInLock) {                //休眠唤醒后会先执行锁屏操作,如果已经进行锁屏操作则忽略休眠唤醒信号
+     //   m_bStartSleep = bSleep;
+     //   m_pEngine->seekAbsolute(static_cast<int>(m_pEngine->elapsed()));
+    //    return;
+    //}
     if (bSleep && m_pEngine->state() == PlayerEngine::CoreState::Playing) {
         m_bStartSleep = true;
         requestAction(ActionFactory::ActionKind::TogglePause);
-    } else if (!bSleep && m_pEngine->state() == PlayerEngine::CoreState::Paused && m_bStartSleep) {
+    } else if (!bSleep && m_pEngine->state() == PlayerEngine::CoreState::Paused) {
         m_bStartSleep = false;
+        m_pEngine->seekAbsolute(static_cast<int>(m_pEngine->elapsed()));      //保证休眠后不管是否播放都不会卡帧
+    }
+}
+
+void MainWindow::lockStateChanged(bool bLock)
+{
+    qInfo() << __func__ << bLock;
+    if (bLock && m_pEngine->state() == PlayerEngine::CoreState::Playing && !m_bStateInLock) {
+        m_bStateInLock = true;
+        requestAction(ActionFactory::ActionKind::TogglePause);
+    } else if (!bLock && m_pEngine->state() == PlayerEngine::CoreState::Paused && m_bStateInLock) {
+        m_bStateInLock = false;
         QTimer::singleShot(500, [=](){
-                    requestAction(ActionFactory::ActionKind::TogglePause);
-                    if (!bSleep) {
-                        m_pEngine->seekAbsolute(static_cast<int>(m_pEngine->elapsed()));      //保证休眠后不管是否播放都不会卡帧
-                    }
-         });
+            requestAction(ActionFactory::ActionKind::TogglePause);
+        });
     }
 }
 
