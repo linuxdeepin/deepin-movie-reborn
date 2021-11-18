@@ -1112,7 +1112,10 @@ void PlaylistModel::collectionJob(const QList<QUrl> &urls, QList<QUrl> &inputUrl
         qInfo() << "append " << url.fileName();
 
 #ifndef _LIBDMR_
-        if (!_firstLoad && Settings::get().isSet(Settings::AutoSearchSimilar)) {
+        //去除加载多个文件是自动加载相似文件功能
+        //fix: 101698
+        //powered by xxxxp
+        if (!_firstLoad && Settings::get().isSet(Settings::AutoSearchSimilar) && (urls.size() == 1)) {
             QFileInfoList fil = utils::FindSimilarFiles(fi);
             //NOTE: The searched files are out of order, so they are sorted here
             struct {
