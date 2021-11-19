@@ -1036,7 +1036,6 @@ void ToolboxProxy::setup()
     this->blurBackground()->setBlurEnabled(true);
     this->blurBackground()->setMode(DBlurEffectWidget::GaussianBlur);
 
-
     bot_widget = new DBlurEffectWidget(this);
     bot_widget->setObjectName(BOTTOM_WIDGET);
     bot_widget->setBlurRectXRadius(18);
@@ -2000,10 +1999,16 @@ void ToolboxProxy::updateFullState()
     bool isFullscreen = window()->isFullScreen();
     if (isFullscreen || m_pFullscreentimelable->isVisible()) {
         m_pFullScreenBtn->setIcon(QIcon::fromTheme("dcc_zoomout"));
-        m_pFullScreenBtn->setTooTipText(tr("Exit fullscreen"));
+        if (utils::check_wayland_env())
+            m_pFullScreenBtnTip->setText(tr("Exit fullscreen"));
+        else
+            m_pFullScreenBtn->setTooTipText(tr("Exit fullscreen"));
     } else {
         m_pFullScreenBtn->setIcon(QIcon::fromTheme("dcc_zoomin"));
-        m_pFullScreenBtn->setTooTipText(tr("Fullscreen"));
+        if (utils::check_wayland_env())
+            m_pFullScreenBtnTip->setText(tr("Fullscreen"));
+        else
+            m_pFullScreenBtn->setTooTipText(tr("Fullscreen"));
     }
 }
 

@@ -397,6 +397,10 @@ public slots:
      * @brief setthumbnailmode 设置胶片进度条的模式
      */
     void setthumbnailmode();
+    /**
+     * @brief updateFullState 更新全屏状态下工具栏状态
+     */
+    void updateFullState();
 
 signals:
     /**
@@ -428,10 +432,7 @@ protected slots:
      * @brief updatePlayState 更新不同播放状态下工具栏状态
      */
     void updatePlayState();
-    /**
-     * @brief updateFullState 更新全屏状态下工具栏状态
-     */
-    void updateFullState();
+
     /**
      * @brief updateMovieProgress 更新影片进度条
      */

@@ -2284,6 +2284,14 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
         activateWindow();
         //Set focus back to main window after full screen, Prevent focus from going to the toolbar
         setFocus();
+
+        // fixed bug 103560
+        // the window state change signal is not sent under wayland, so call directly here
+        // if the problem is fixed in the future, please remove this code
+        if (utils::check_wayland_env()) {
+            m_pToolbox->updateFullState();
+        }
+
         break;
     }
 
