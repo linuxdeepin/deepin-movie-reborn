@@ -94,22 +94,10 @@ public slots:
      */
     void initMember();
 
-#if defined (__aarch64__) || defined (__mips__)
-signals:
-    /**
-     * @brief mouseMoveNoButton 鼠标移动时信号，解决播放音乐窗口鼠标移动无法唤起工具栏
-     */
-    void mouseMoveNoButton();
-#endif
-
 protected:
-    void dropEvent(QDropEvent *) override;
-    void dragMoveEvent(QDragMoveEvent *) override;
-    /**
-     * @brief mouseMoveEvent 鼠标移动事件
-     * @param 鼠标事件
-     */
-    void mouseMoveEvent(QMouseEvent *) override;
+    void mousePressEvent(QMouseEvent* pEvent) override;
+
+    void mouseReleaseEvent(QMouseEvent* pEvent) override;
 
 private:
     QGraphicsSvgItem *m_pBgSvgItem;

@@ -59,9 +59,7 @@ MovieWidget::MovieWidget(QWidget *parent)
 
     setAlignment(Qt::AlignCenter);
     setFrameShape(QFrame::Shape::NoFrame);
-    setAcceptDrops(true);
     setAttribute(Qt::WA_TransparentForMouseEvents, true);
-    setMouseTracking(true);
 
     m_pScene = new QGraphicsScene;
     m_pScene->setBackgroundBrush(QBrush(QColor(0, 0, 0)));
@@ -164,23 +162,14 @@ void MovieWidget::initMember()
     m_pNoteRender = nullptr;
 }
 
-void MovieWidget::dropEvent(QDropEvent *e)
+void MovieWidget::mousePressEvent(QMouseEvent *pEvent)
 {
-    parent()->event(e);
+    pEvent->ignore();
 }
 
-void MovieWidget::dragMoveEvent(QDragMoveEvent *e)
+void MovieWidget::mouseReleaseEvent(QMouseEvent *pEvent)
 {
-    e->accept();
-}
-
-void MovieWidget::mouseMoveEvent(QMouseEvent *e)
-{
-    parent()->event(e);
-
-#if defined (__aarch64__) || defined (__mips__)
-    emit mouseMoveNoButton();
-#endif
+    pEvent->ignore();
 }
 
 }

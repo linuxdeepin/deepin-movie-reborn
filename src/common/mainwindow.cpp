@@ -980,9 +980,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(this, &MainWindow::windowLeaved, &MainWindow::suspendToolsWindow);
 
 #else
+    winId();
+    m_pEventListener = new MainWindowEventListener(this);
     QTimer::singleShot(500, [this](){
-        winId();
-        m_pEventListener = new MainWindowEventListener(this);
         this->windowHandle()->installEventFilter(m_pEventListener);
 
         m_pMWPM = new MainWindowPropertyMonitor(this);
@@ -1080,11 +1080,6 @@ MainWindow::MainWindow(QWidget *parent)
     if (!CompositingManager::get().composited()) {
         m_pMovieWidget->windowHandle()->installEventFilter(m_pEventListener);
     }
-#if defined (__aarch64__) || defined (__mips__)
-    connect(m_pMovieWidget, &MovieWidget::mouseMoveNoButton, this, [=](){
-        resumeToolsWindow();
-    });
-#endif
 
     qDBusRegisterMetaType<SessionInfo>();
     qDBusRegisterMetaType<SessionInfoList>();
