@@ -609,8 +609,6 @@ private:
     ButtonBoxButton *m_pNextBtn;        ///下一个按钮
     DButtonBox *m_pPalyBox;              ///按钮组
     VolumeButton *m_pVolBtn;             ///音量按钮
-    //TODO(xxxpengfei):字幕按钮没用，请在1050前去掉
-    ToolButton *m_pSubBtn;               ///字幕按钮
     ToolButton *m_pListBtn;              ///播放列表按钮
     ToolButton *m_pFullScreenBtn;        ///全屏按钮
 

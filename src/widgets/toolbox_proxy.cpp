@@ -1132,7 +1132,7 @@ void ToolboxProxy::setup()
     connect(m_pViewProgBar, &ViewProgBar::leave, this, &ToolboxProxy::slotHidePreviewTime);
     connect(m_pViewProgBar, &ViewProgBar::mousePressed, this, &ToolboxProxy::updateTimeVisible);
 
-    auto *signalMapper = new QSignalMapper(this);
+    QSignalMapper *signalMapper = new QSignalMapper(this);
     connect(signalMapper, static_cast<void(QSignalMapper::*)(const QString &)>(&QSignalMapper::mapped),
             this, &ToolboxProxy::buttonClicked);
 
@@ -1232,15 +1232,6 @@ void ToolboxProxy::setup()
     _right->setSpacing(0);
     bot_layout->addLayout(_right);
 
-    m_pSubBtn = new ToolButton(m_pBotToolWgt);
-    m_pSubBtn->setIcon(QIcon::fromTheme("dcc_episodes"));
-    m_pSubBtn->setIconSize(QSize(36, 36));
-    m_pSubBtn->setFixedSize(50, 50);
-    m_pSubBtn->initToolTip();
-    connect(m_pSubBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
-    signalMapper->setMapping(m_pSubBtn, "sub");
-    m_pSubBtn->hide();
-
     m_pFullScreenBtn = new ToolButton(m_pBotToolWgt);
     m_pFullScreenBtn->setObjectName(FS_BUTTON);
     m_pFullScreenBtn->setAccessibleName(FS_BUTTON);
@@ -1275,7 +1266,6 @@ void ToolboxProxy::setup()
 
     m_pVolSlider->initVolume();
 
-    _right->addWidget(m_pSubBtn);
     _right->addWidget(m_pFullScreenBtn);
     _right->addSpacing(10);
     _right->addWidget(m_pVolBtn);
@@ -1304,28 +1294,28 @@ void ToolboxProxy::setup()
     if (utils::check_wayland_env()) {
         initToolTip();
     } else {
-        auto th = new TooltipHandler(this);
+        TooltipHandler *th = new TooltipHandler(this);
         QWidget *btns[] = {
-            m_pPlayBtn, m_pPrevBtn, m_pNextBtn, m_pSubBtn, m_pFullScreenBtn, m_pListBtn
+            m_pPlayBtn, m_pPrevBtn, m_pNextBtn, m_pFullScreenBtn, m_pListBtn
         };
         QString hints[] = {
             tr("Play/Pause"), tr("Previous"), tr("Next"),
-            tr("Subtitles"), tr("Fullscreen"), tr("Playlist")
+            tr("Fullscreen"), tr("Playlist")
         };
         QString attrs[] = {
             tr("play"), tr("prev"), tr("next"),
-            "sub", tr("fs"), tr("list")
+            tr("fs"), tr("list")
         };
 
         for (unsigned int i = 0; i < sizeof(btns) / sizeof(btns[0]); i++) {
-            if (i < sizeof(btns) / sizeof(btns[0]) / 2) {
+            if (i < 3) { //first three buttons prev/play/next
                 btns[i]->setToolTip(hints[i]);
-                auto t = new Tip(QPixmap(), hints[i], parentWidget());
+                Tip *t = new Tip(QPixmap(), hints[i], parentWidget());
                 t->setProperty("for", QVariant::fromValue<QWidget *>(btns[i]));
                 btns[i]->setProperty("HintWidget", QVariant::fromValue<QWidget *>(t));
                 btns[i]->installEventFilter(th);
             } else {
-                auto btn = dynamic_cast<ToolButton *>(btns[i]);
+                ToolButton *btn = dynamic_cast<ToolButton *>(btns[i]);
                 btn->setTooTipText(hints[i]);
                 btn->setProperty("TipId", attrs[i]);
                 connect(btn, &ToolButton::entered, this, &ToolboxProxy::buttonEnter);
@@ -1415,7 +1405,6 @@ void ToolboxProxy::initMember()
     m_pNextBtn = nullptr;
     m_pPalyBox = nullptr;
     m_pVolBtn = nullptr;
-    m_pSubBtn = nullptr;
     m_pListBtn = nullptr;
     m_pFullScreenBtn = nullptr;
 
@@ -2215,13 +2204,6 @@ void ToolboxProxy::buttonClicked(QString id)
         m_pMainWindow->requestAction(ActionFactory::ActionKind::TogglePlaylist);
         m_pListBtn->hideToolTip();
     }
-//    } else if (id == "sub") {
-//        _subView->setVisible(true);
-
-//        QPoint pos = m_pSubBtn->parentWidget()->mapToGlobal(m_pSubBtn->pos());
-//        pos.ry() = parentWidget()->mapToGlobal(this->pos()).y();
-//        _subView->show(pos.x() + m_pSubBtn->width() / 2, pos.y() - 5 + TOOLBOX_TOP_EXTENT);
-//    }
 }
 
 void ToolboxProxy::buttonEnter()
