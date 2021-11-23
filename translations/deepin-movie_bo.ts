@@ -698,7 +698,7 @@
         <location filename="../src/common/mainwindow.cpp" line="2524"/>
         <location filename="../src/common/mainwindow.cpp" line="2536"/>
         <source>Unable to adjust the subtitle</source>
-        <translation type="unfinished"/>
+        <translation>ད་ལྟའི་ཡི་གེ་སྙོམ་སྒྲིག་བྱེད་ཐབས་མེད།</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2529"/>
@@ -859,7 +859,7 @@
         <location filename="../src/common/mainwindow.cpp" line="4278"/>
         <location filename="../src/common/mainwindow.cpp" line="4286"/>
         <source>Please exit smart dock</source>
-        <translation type="unfinished"/>
+        <translation>Please exit smart dock</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="4566"/>

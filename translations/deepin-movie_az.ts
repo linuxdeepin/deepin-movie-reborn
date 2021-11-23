@@ -698,7 +698,7 @@
         <location filename="../src/common/mainwindow.cpp" line="2524"/>
         <location filename="../src/common/mainwindow.cpp" line="2536"/>
         <source>Unable to adjust the subtitle</source>
-        <translation type="unfinished"/>
+        <translation>Alt yazını tənzimləmək mümkün deyil</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2529"/>
