@@ -10,8 +10,8 @@ Movie is a video player with simple interface and smooth performance, which is c
 
 ### Run Movie
 
-1. Run ![deepin_launcher](../common/deepin_launcher.svg) in the dock to enter the Launcher interface.
-2. Locate ![movie_24](../common/movie_24.svg) by scrolling the mouse wheel or searching "movie" in the Launcher interface and click it to run.
+1. Click the Launcher icon ![deepin_launcher](../common/deepin_launcher.svg) in the Dock to enter the Launcher interface.
+2. Locate Movie ![movie_24](../common/movie_24.svg) by scrolling the mouse wheel or searching "movie" in the Launcher interface and click it to run.
 3. Right-click ![movie_24](../common/movie_24.svg) and you can:
  - Click **Send to desktop** to create a desktop shortcut.
  - Click **Send to dock** to fix it in the Dock.
@@ -25,8 +25,6 @@ Movie is a video player with simple interface and smooth performance, which is c
 ### View Shortcuts
 
 On the Movie interface, press **Ctrl + Shift + ?** to view shortcuts. Proficiency in shortcuts will greatly improve your efficiency.
-
-> ![tips](../common/tips.svg) Tips: You can view the shortcuts any time during your video playback.
 
 ![1|shortcut](fig/shortcut.png)
 
@@ -65,19 +63,20 @@ You can play films in the following ways:
 - On the Movie interface, right-click or click ![menu](../common/icon_menu.svg) to select **Open file** and open the File Manager to select a film file.
 - On the Movie interface, right-click or click ![menu](../common/icon_menu.svg) to select **Open folder**. All the audiovisual files in the folder are displayed in the playlist and will be played in turn. 
 - On the Movie interface, right-click, select **Open URL**, and paste the address to play the film.
+
+> ![attention](../common/attention.svg) Attention: Make sure your network is well-connected before playing online videos with Movie.
+
 - On the Movie interface, right-click and select **Open CD/DVD** to play the films in CD/DVD.
 - Drag the file/folder directly to the Movie interface to play local films.
 
 > ![notes](../common/notes.svg) Notes: If you are using a computer equipped with a touchscreen, hold down the film file with one finger and drag it to the Movie interface to play the film.
-
-> ![attention](../common/attention.svg) Attention: Make sure your network is well connected before playing online videos with Movie.
 
 ![0|open](fig/open.png)
 
 ### Forward/Rewind
 
 - On the Movie interface, drag the progress bar to forward or rewind the film.
-- On the Movie interface, press![Right](../common/Right.svg)or ![Left](../common/Left.svg) on the keyboard to fast forward or rewind rewind the film.
+- On the Movie interface, press ![Right](../common/Right.svg) or ![Left](../common/Left.svg) on the keyboard to fast forward or rewind rewind the film.
 
 >![notes](../common/notes.svg) Notes: If you are using a computer equipped with a touchscreen, slide leftward with one finger on the video picture area to rewind and rightward to forward in the fullscreen mode.
 
@@ -114,8 +113,8 @@ Right-click on the Movie interface and you can:
 
 >  ![tips](../common/tips.svg)Tips: You can also use shortcuts to adjust the playback speed. Speed up/down is relative to the original play speed. The video playback speed increases/decreases by 0.1 times in default mode each time when it is sped up/down. The maximum playback speed is 2 times faster than the original speed and the minimum playback speed is 10 times slower than the original speed.
 >
-> - Press and hold **Ctrl**+ ![Right](../common/Right.svg) or ![Left](../common/Left.svg) on the keyboard and the playback speed will increase or decrease.
-> - Press ![R](../common/R.svg)to restore the original speed.
+> - Press and hold **Ctrl** + ![Right](../common/Right.svg) or ![Left](../common/Left.svg) on the keyboard and the playback speed will increase or decrease.
+> - Press ![R](../common/R.svg) to restore the original speed.
 
 ![Playback](fig/playbackspeed.png)
 
@@ -125,7 +124,7 @@ Right-click on the Movie interface and you can:
 2. Select **Frame** and you can:
  - Adjust the film aspect ratio between 4:3, 16:9, 16:10, 1.85:1, and 2.35:1.
  - Rotate the film frame clockwise or counterclockwise.
- - Jump to previous frame or next frame.
+ - Jump to the previous frame or next frame.
 
 ![0|frame](fig/frame.png)
 
@@ -192,36 +191,40 @@ You can enter the playlist to manage the existing video files.
 On the main menu, you can open files/folders, switch window themes, view help manual, and get more information about Movie.
 ### Settings
 
-You can set the basic information, shortcut keys, and subtitles.
+Click ![menu](../common/icon_menu.svg) > **Settings** on the Movie interface and you can set the basic information, shortcut keys, and subtitles.
 
 #### Basic Settings
 
-1. Right-click or click ![menu](../common/icon_menu.svg) on the Movie interface.
-2. Click **Settings** > **Basic**.
-3. In the option **Play**, you can:
-   - Check the **Clear playlist when exit** box to clear the playlist when you exit Movie.
-   - Check the **Remember playback position** box to resume the film automatically from the last position played when Movie runs.
-   - Check the **Auto add similar files to play **box to add the similar film files in the same folder to the playlist for playback in order.
-   - Check the **Show video preview on mouseover** box to show the film preview when you move the mouse over the progress bar.
-   - Check the **Show thumbnails in progress bar** and a preview window will be displayed when you move the mouse over the progress bar.
+**Play Settings**
 
-   >![notes](../common/notes.svg) Notes: This feature is only available on X86 platform. 
+- Check the **Clear playlist when exit** box to clear the playlist when you exit Movie.
+- Check the **Remember playback position** box to resume the film automatically from the last position played when Movie runs.
+- Check the **Auto add similar files to play **box to add the similar film files in the same folder to the playlist for playback in order.
+- Check the **Show video preview on mouseover** box to show the film preview when the mouse hovers  over the progress bar.
+- Check the **Show thumbnails in progress bar** and a preview window will be displayed when you move the mouse over the progress bar.
 
-   - Check the **Pause when minimized** to pause the playback automatically when minimizing the Movie window.
-   - Select one mode from the **Default play mode** dropdown list and Movie will run in such mode next time.
-4.  Under the **Screenshot** option, you can select the path to save screenshots as you wish.
+>![notes](../common/notes.svg) Notes: This feature is only available on the X86 platform. 
+
+- Check the **Pause when minimized** to pause the playback automatically when minimizing the Movie window.
+- Select one mode from the **Default play mode** dropdown list and Movie will run in such mode next time.
+
+**Decoding Settings**
+
+- **Auto select**: Select the proper decoding manner automatically according to the device configuration.
+- **Hard decoding**: Decode the video by hardware.
+- **Soft decoding**: Decode the video by software. 
+
+**Screenshot Settings** 
+
+You can select the path to save screenshots as you wish.
 
 #### Shortcuts Settings
 
-1. Right-click or click ![icon_menu](../common/icon_menu.svg) on the Movie interface.
-2. Select **Settings** > **Shortcuts**.
-3. You can select and input new shortcuts.
+You can view and custom shortcuts.
 
 #### Subtitle Settings
 
-1. Right-click or click ![icon_menu](../common/icon_menu.svg) on the Movie interface.
-2. Select **Settings** > **Subtitle**.
-3. You can set the font and font size for subtitles.
+You can set the font and font size for subtitles.
 
 
 ### Theme
