@@ -3406,7 +3406,8 @@ void MainWindow::checkErrorMpvLogsChanged(const QString sPrefix, const QString s
     qInfo() << "checkErrorMpvLogsChanged" << sText;
     if (sErrorMessage.toLower().contains(QString("avformat_open_input() failed"))) {
         //do nothing
-    } else if (sErrorMessage.toLower().contains(QString("fail")) && sErrorMessage.toLower().contains(QString("open"))) {
+    } else if (sErrorMessage.toLower().contains(QString("fail")) && sErrorMessage.toLower().contains(QString("open"))
+               && !sErrorMessage.toLower().contains(QString("dlopen"))) {
         m_pCommHintWid->updateWithMessage(tr("Cannot open file or stream"));
         m_pEngine->playlist().remove(m_pEngine->playlist().current());
     } else if (sErrorMessage.toLower().contains(QString("fail")) &&
