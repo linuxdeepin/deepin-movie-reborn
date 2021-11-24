@@ -1239,7 +1239,6 @@ void MainWindow::onWindowStateChanged()
     m_pProgIndicator->setVisible(isFullScreen() && m_pEngine && m_pEngine->state() != PlayerEngine::Idle);
 #endif
 #endif
-    //    toggleShapeMask();    //该函数直接return
 
 #ifndef USE_DXCB
     m_pTitlebar->move(0, 0);
@@ -3807,6 +3806,8 @@ void MainWindow::keyReleaseEvent(QKeyEvent *pEvent)
     QWidget::keyReleaseEvent(pEvent);
 }
 
+static bool s_bAfterDblClick = false;
+
 void MainWindow::capturedMousePressEvent(QMouseEvent *pEvent)
 {
     m_bMouseMoved = false;
@@ -3830,7 +3831,6 @@ void MainWindow::capturedMousePressEvent(QMouseEvent *pEvent)
 
 void MainWindow::capturedMouseReleaseEvent(QMouseEvent *pEvent)
 {
-    m_bMouseMoved = false;
     if (m_bIsTouch) {
         m_bLastIsTouch = true;
         m_bIsTouch = false;
@@ -3856,6 +3856,31 @@ void MainWindow::capturedMouseReleaseEvent(QMouseEvent *pEvent)
             this->resizeByConstraints(true);
         });
     }
+
+    m_bStartMove = false;
+
+    if (!m_bMousePressed) {
+        s_bAfterDblClick = false;
+        m_bMouseMoved = false;
+    }
+
+    if (qApp->focusWindow() == nullptr || !m_bMousePressed)
+        return;
+
+    m_bMousePressed = false;
+
+    // dtk has a bug, DImageButton propagates mouseReleaseEvent event when it responded to.
+    if (!insideResizeArea(pEvent->globalPos()) && !m_bMouseMoved && (m_pPlaylist->state() != PlaylistWidget::Opened)) {
+        if (!insideToolsArea(pEvent->pos())) {
+            m_delayedMouseReleaseTimer.start(120);
+        } else {
+            if (m_pEngine->state() == PlayerEngine::CoreState::Idle) {
+                m_delayedMouseReleaseTimer.start(120);
+            }
+        }
+    }
+
+    m_bMouseMoved = false;
 }
 
 void MainWindow::capturedKeyEvent(QKeyEvent *pEvent)
@@ -3869,7 +3894,6 @@ void MainWindow::capturedKeyEvent(QKeyEvent *pEvent)
     }
 }
 
-static bool s_bAfterDblClick = false;
 void MainWindow::mousePressEvent(QMouseEvent *pEvent)
 {
     m_bMouseMoved = false;
@@ -3902,6 +3926,22 @@ void MainWindow::mousePressEvent(QMouseEvent *pEvent)
     m_pressPoint = pEvent->pos();
 }
 
+void MainWindow::mouseReleaseEvent(QMouseEvent *ev)
+{
+    /// NOTE: 为了其它控件的鼠标操作与MainWindow一致，统一使用capturedMouseReleaseEvent()捕获鼠标释放
+    /// 事件，若无特殊要求，请尽量在capturedMouseReleaseEvent()进行处理。
+
+    // 以下代码貌似没什么用，可以考虑去掉
+    static bool bFlags = true;
+    if (bFlags) {
+        repaint();
+        bFlags = false;
+    }
+
+    qInfo() << __func__ << "进入mouseReleaseEvent";
+    QWidget::mouseReleaseEvent(ev);
+}
+
 void MainWindow::mouseDoubleClickEvent(QMouseEvent *pEvent)
 {
     qInfo() << __func__ << "进入mouseDoubleClickEvent";
@@ -3921,71 +3961,10 @@ void MainWindow::mouseDoubleClickEvent(QMouseEvent *pEvent)
     }
 }
 
-bool MainWindow::insideToolsArea(const QPoint &p)
-{
-    return m_pTitlebar->geometry().contains(p) || m_pToolbox->geometry().contains(p);
-}
-
-QMargins MainWindow::dragMargins() const
-{
-    return QMargins {MOUSE_MARGINS, MOUSE_MARGINS, MOUSE_MARGINS, MOUSE_MARGINS};
-}
-
-bool MainWindow::insideResizeArea(const QPoint &globalPos)
-{
-    const QRect window_visible_rect = frameGeometry() - dragMargins();
-    return !window_visible_rect.contains(globalPos);
-}
-
-void MainWindow::mouseReleaseEvent(QMouseEvent *ev)
-{
-    static bool bFlags = true;
-    if (bFlags) {
-        repaint();
-        bFlags = false;
-    }
-    m_bStartMove = false;
-
-    qInfo() << __func__ << "进入mouseReleaseEvent";
-    QWidget::mouseReleaseEvent(ev);
-    if (!m_bMousePressed) {
-        s_bAfterDblClick = false;
-        m_bMouseMoved = false;
-    }
-
-    if (qApp->focusWindow() == nullptr || !m_bMousePressed) return;
-
-    m_bMousePressed = false;
-
-    // dtk has a bug, DImageButton propagates mouseReleaseEvent event when it responded to.
-    if (!insideResizeArea(ev->globalPos()) && !m_bMouseMoved && (m_pPlaylist->state() != PlaylistWidget::Opened)) {
-        if (!insideToolsArea(ev->pos())) {
-            m_delayedMouseReleaseTimer.start(120);
-        } else {
-            if (m_pEngine->state() == PlayerEngine::CoreState::Idle) {
-                m_delayedMouseReleaseTimer.start(120);
-            }
-        }
-    }
-
-    //Utility::cancelWindowMoveResize(static_cast<quint32>(winId()));
-    m_bMouseMoved = false;
-}
-
-void MainWindow::delayedMouseReleaseHandler()
-{
-    if ((!s_bAfterDblClick && !m_bLastIsTouch) || m_bMiniMode)
-        if (!CompositingManager::isPadSystem()) {
-            requestAction(ActionFactory::TogglePause, false, {}, true);
-        } else {
-            resumeToolsWindow();    //平板模式下，点击窗口显示工具栏
-        }
-
-    s_bAfterDblClick = false;
-}
-
 void MainWindow::mouseMoveEvent(QMouseEvent *pEvent)
 {
+    if (m_bStartMini)
+        return;
     qInfo() << __func__ << "进入mouseMoveEvent";
     if (!CompositingManager::get().composited()) {
         m_pAnimationlable->hide();
@@ -4024,6 +4003,8 @@ void MainWindow::mouseMoveEvent(QMouseEvent *pEvent)
         Utility::startWindowSystemMove(this->winId());
         if (m_bStartMove) {
             m_bStartMove = false;
+            this->m_posMouseOrigin = ptCurr;
+            m_bMouseMoved = true;
             return Utility::updateMousePointForWindowMove(this->winId(), pEvent->globalPos() * devicePixelRatioF());
         }
 #else
@@ -4091,6 +4072,35 @@ void MainWindow::contextMenuEvent(QContextMenuEvent *pEvent)
 //    int iItem;
 //    for (iItem = 0; iItem < nItem; ++iItem)
 //        qInfo() << ((long *)(properties))[iItem];
+}
+
+bool MainWindow::insideToolsArea(const QPoint &p)
+{
+    return m_pTitlebar->geometry().contains(p) || m_pToolbox->geometry().contains(p) ||
+            m_pMiniPlayBtn->geometry().contains(p)|| m_pMiniCloseBtn->geometry().contains(p) || m_pMiniQuitMiniBtn->geometry().contains(p);
+}
+
+QMargins MainWindow::dragMargins() const
+{
+    return QMargins {MOUSE_MARGINS, MOUSE_MARGINS, MOUSE_MARGINS, MOUSE_MARGINS};
+}
+
+bool MainWindow::insideResizeArea(const QPoint &globalPos)
+{
+    const QRect window_visible_rect = frameGeometry() - dragMargins();
+    return !window_visible_rect.contains(globalPos);
+}
+
+void MainWindow::delayedMouseReleaseHandler()
+{
+    if ((!s_bAfterDblClick && !m_bLastIsTouch) || m_bMiniMode)
+        if (!CompositingManager::isPadSystem()) {
+            requestAction(ActionFactory::TogglePause, false, {}, true);
+        } else {
+            resumeToolsWindow();    //平板模式下，点击窗口显示工具栏
+        }
+
+    s_bAfterDblClick = false;
 }
 
 void MainWindow::prepareSplashImages()
@@ -4330,7 +4340,6 @@ void MainWindow::toggleUIMode()
     } else {
         m_pTitlebar->titlebar()->setDisableFlags(nullptr);
     }
-    if (m_pEventListener) m_pEventListener->setEnabled(!m_bMiniMode);
 
     m_pTitlebar->setVisible(!m_bMiniMode);
 
