@@ -2224,7 +2224,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
         m_pToolbox->closeAnyPopup();
 
         if (isFullScreen()) {
-            if (m_lastWindowState == Qt::WindowMaximized) {
+            if (m_bMaximized) {
                 m_bMaxfornormalflag = true;
                 if (!utils::check_wayland_env()) {
                     //setWindowFlags(Qt::Window);//wayland 代码
@@ -2254,6 +2254,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
             //可能存在更好的方法（全屏后更新toolbox状态），后期修改
             if (!m_pToolbox->getbAnimationFinash())
                 return;
+            m_bMaximized = isMaximized();  // 记录全屏前是否是最大化窗口
             mipsShowFullScreen();
             if (isFullScreen()) {
                 m_bMaxfornormalflag = false;
@@ -3663,7 +3664,7 @@ void MainWindow::updateGeometryNotification(const QSize &sz)
         m_pCommHintWid->updateWithMessage(sMsg);
     }
 
-    if (windowState() == Qt::WindowNoState &&  !m_isSettingMiniMode && !m_bMiniMode) {
+    if (windowState() == Qt::WindowNoState &&  !m_isSettingMiniMode && !m_bMiniMode && !m_bMaximized) {
         m_lastRectInNormalMode = geometry();
     }
 }
@@ -4659,6 +4660,7 @@ void MainWindow::initMember()
     m_bStateInLock = false;
     m_bStartSleep = false;
     m_bStartMove = false;
+    m_bMaximized = false;
 
     m_nDisplayVolume = 100;
     m_nLastPressX = 0;
