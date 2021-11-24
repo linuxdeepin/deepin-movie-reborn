@@ -60,6 +60,7 @@ MovieWidget::MovieWidget(QWidget *parent)
     setAlignment(Qt::AlignCenter);
     setFrameShape(QFrame::Shape::NoFrame);
     setAttribute(Qt::WA_TransparentForMouseEvents, true);
+    setMouseTracking(true);
 
     m_pScene = new QGraphicsScene;
     m_pScene->setBackgroundBrush(QBrush(QColor(0, 0, 0)));
@@ -170,6 +171,11 @@ void MovieWidget::mousePressEvent(QMouseEvent *pEvent)
 void MovieWidget::mouseReleaseEvent(QMouseEvent *pEvent)
 {
     pEvent->ignore();
+}
+
+void MovieWidget::mouseMoveEvent(QMouseEvent *pEvent)
+{
+     pEvent->ignore();
 }
 
 }

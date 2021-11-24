@@ -99,6 +99,8 @@ protected:
 
     void mouseReleaseEvent(QMouseEvent* pEvent) override;
 
+    void mouseMoveEvent(QMouseEvent* pEvent) override;
+
 private:
     QGraphicsSvgItem *m_pBgSvgItem;
     QGraphicsSvgItem *m_pNoteSvgItem;
