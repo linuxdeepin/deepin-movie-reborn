@@ -31,6 +31,7 @@
  * version.  If you delete this exception statement from all source
  * files in the program, then also delete it here.
  */
+/*
 #include <QtTest>
 #include <QTest>
 #include <QTestEventList>
@@ -148,3 +149,4 @@ TEST(Wayland, wayland)
     delete w_wayland;
     w_wayland = nullptr;
 }
+*/
