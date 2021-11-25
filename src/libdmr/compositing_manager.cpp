@@ -382,6 +382,24 @@ void CompositingManager::softDecodeCheck()
         }
         m_setSpecialControls = drv.contains("Ruijie");
     }
+
+    //判断N卡驱动版本
+    QFile nvidiaVersion("/proc/driver/nvidia/version");
+    if (nvidiaVersion.open(QIODevice::ReadOnly)) {
+        QString str = nvidiaVersion.readLine();
+        int start = str.indexOf("Module");
+        start += 6;
+        QString version = str.mid(start, 6);
+        while (version.left(1) == " ") {
+            start++;
+            version = str.mid(start, 6);
+        }
+        qInfo() << "nvidia version :" << version;
+        if (version.toFloat() >= 460.39) {
+            m_bOnlySoftDecode = true;
+        }
+        nvidiaVersion.close();
+    }
 }
 
 bool CompositingManager::isOnlySoftDecode()
