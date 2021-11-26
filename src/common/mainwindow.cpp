@@ -3874,7 +3874,7 @@ void MainWindow::capturedMouseReleaseEvent(QMouseEvent *pEvent)
         if (!insideToolsArea(pEvent->pos())) {
             m_delayedMouseReleaseTimer.start(120);
         } else {
-            if (m_pEngine->state() == PlayerEngine::CoreState::Idle) {
+            if (m_pEngine->state() == PlayerEngine::CoreState::Idle && !insideToolsArea(pEvent->pos())) {
                 m_delayedMouseReleaseTimer.start(120);
             }
         }
