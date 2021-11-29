@@ -1884,6 +1884,11 @@ void ToolboxProxy::playlistClosedByEsc()
 
 void ToolboxProxy::progressHoverChanged(int nValue)
 {
+    if(m_pProgBar->slider()->value() == 0)   // 没有时长信息的影片不需要预览
+    {
+        return;
+    }
+
     if (m_pEngine->state() == PlayerEngine::CoreState::Idle)
         return;
 

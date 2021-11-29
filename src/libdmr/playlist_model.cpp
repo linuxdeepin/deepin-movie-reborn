@@ -303,6 +303,7 @@ struct MovieInfo PlaylistModel::parseFromFile(const QFileInfo &fi, bool *ok)
         mi.height = video_dec_ctx->height;
         mi.vCodecID = video_dec_ctx->codec_id;
         mi.vCodeRate = video_dec_ctx->bit_rate;
+        mi.strFmtName = av_ctx->iformat->name;
 
         if (videoStream->r_frame_rate.den != 0) {
             mi.fps = videoStream->r_frame_rate.num / videoStream->r_frame_rate.den;

@@ -72,6 +72,7 @@ struct MovieInfo {
     int width = -1;
     int height = -1;
 
+    QString strFmtName; // 文件封装名
     //3.4添加视频信息
     //视频流信息
     int vCodecID;
@@ -120,6 +121,19 @@ struct MovieInfo {
             return QString(QT_TR_NOOP("%1K")).arg((double)fileSize / K, 0, 'f', 1);
         }
         return QString(QT_TR_NOOP("%1")).arg(fileSize);
+    }
+    /**
+     * @brief 判断是否是H.264裸流，因为没有时长等信息所以需要对此类型单独判断
+     * @return 是否是裸流
+     */
+    bool isNakedStream() const
+    {
+        bool bFlag = false;
+
+        if(strFmtName.compare("h264",Qt::CaseInsensitive) == 0)
+            bFlag = true;
+
+        return bFlag;
     }
 };
 

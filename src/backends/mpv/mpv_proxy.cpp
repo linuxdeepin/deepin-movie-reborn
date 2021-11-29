@@ -1160,11 +1160,17 @@ void MpvProxy::initMember()
 
 void MpvProxy::play()
 {
+    bool bNakedStream = false;
     QList<QVariant> listArgs = { "loadfile" };
     QStringList listOpts = { };
 
     if (!m_bInited) {
         firstInit();
+    }
+
+    if (0 < dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist()->size()) {
+        PlayItemInfo currentInfo = dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist()->currentInfo();
+        bNakedStream = currentInfo.mi.isNakedStream();
     }
 
     if (PlayerEngine::isAudioFile(_file.toString())) {
@@ -1181,7 +1187,7 @@ void MpvProxy::play()
 #ifndef _LIBDMR_
     QMap<QString, QVariant> cfg = MovieConfiguration::get().queryByUrl(_file);
     QString key = MovieConfiguration::knownKey2String(ConfigKnownKey::StartPos);
-    if (Settings::get().isSet(Settings::ResumeFromLast) && cfg.contains(key)) {
+    if (Settings::get().isSet(Settings::ResumeFromLast) && cfg.contains(key) && !bNakedStream) {   // 裸流没有时长，seek会崩溃
         listOpts << QString("start=%1").arg(cfg[key].toInt());   //如果视频长度小于1s这段代码会导致视频无法播放
     }
 
@@ -1219,7 +1225,7 @@ void MpvProxy::play()
 //            my_set_property(m_handle, "hwdec", "auto");
 //        }
 //    }
-#endif   
+#endif
 
     //刷新解码模式
     refreshDecode();
