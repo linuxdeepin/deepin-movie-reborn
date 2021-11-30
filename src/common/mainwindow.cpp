@@ -2551,6 +2551,11 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
     }
 
     case ActionFactory::ActionKind::SubDelay: {
+        if(m_pEngine->state() == PlayerEngine::CoreState::Playing
+                && m_pEngine->playlist().currentInfo().mi.isNakedStream()) {
+            slotUnsupported();
+            break;
+        }
         if (m_pEngine->playingMovieInfo().subs.isEmpty()) {
             m_pCommHintWid->updateWithMessage(tr("Unable to adjust the subtitle"));
             break;
@@ -2563,6 +2568,11 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
     }
 
     case ActionFactory::ActionKind::SubForward: {
+        if(m_pEngine->state() == PlayerEngine::CoreState::Playing
+                && m_pEngine->playlist().currentInfo().mi.isNakedStream()) {
+            slotUnsupported();
+            break;
+        }
         if (m_pEngine->playingMovieInfo().subs.isEmpty()) {
             m_pCommHintWid->updateWithMessage(tr("Unable to adjust the subtitle"));
             break;

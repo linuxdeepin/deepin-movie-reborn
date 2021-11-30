@@ -975,6 +975,8 @@ namespace dmr {
 #ifdef __x86_64__
     void MpvGLWidget::updateMovieProgress(qint64 duration, qint64 pos)
     {
+        if (pos > duration)
+            pos = duration;
         m_pert = (qreal)pos / duration;//更新影院播放进度
         QString sCurtime = QString("%1 %2").arg(utils::Time2str(pos)).arg("/ ");
         QString stime = QString("%1").arg(utils::Time2str(duration));
