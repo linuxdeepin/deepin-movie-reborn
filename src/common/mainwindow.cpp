@@ -757,7 +757,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     titlebar()->deleteLater();
 
-    connect(m_pToolbox, &ToolboxProxy::sigPromptInfo, this, &MainWindow::slotPromptInfo);
+    connect(m_pToolbox, &ToolboxProxy::sigUnsupported, this, &MainWindow::slotUnsupported);
     connect(m_pEngine, &PlayerEngine::stateChanged, this, &MainWindow::slotPlayerStateChanged);
     connect(ActionFactory::get().mainContextMenu(), &DMenu::triggered, this, &MainWindow::menuItemInvoked);
     connect(ActionFactory::get().playlistContextMenu(), &DMenu::triggered, this, &MainWindow::menuItemInvoked);
@@ -2439,8 +2439,9 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
     }
 
     case ActionFactory::ActionKind::ToggleMute: {
-        if(m_pEngine->state() == PlayerEngine::CoreState::Playing && m_pEngine->playlist().currentInfo().mi.isNakedStream()) {
-            slotPromptInfo(tr("The action is not supported in this video"));
+        if(m_pEngine->state() == PlayerEngine::CoreState::Playing
+                && m_pEngine->playlist().currentInfo().mi.isNakedStream()) {
+            slotUnsupported();
         } else {
             m_pToolbox->changeMuteState();
         }
@@ -2450,7 +2451,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
     case ActionFactory::ActionKind::VolumeUp: {
         if(m_pEngine->state() == PlayerEngine::CoreState::Playing
                 && m_pEngine->playlist().currentInfo().mi.isNakedStream()) {
-            slotPromptInfo(tr("The action is not supported in this video"));
+            slotUnsupported();
         } else {
             //使用鼠标滚轮调节音量时会执行此步骤
             if (m_iAngleDelta != 0) m_pToolbox->calculationStep(m_iAngleDelta);
@@ -2463,7 +2464,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
     case ActionFactory::ActionKind::VolumeDown: {
         if(m_pEngine->state() == PlayerEngine::CoreState::Playing
                 && m_pEngine->playlist().currentInfo().mi.isNakedStream()) {
-            slotPromptInfo(tr("The action is not supported in this video"));
+            slotUnsupported();
         } else {
             //使用鼠标滚轮调节音量时会执行此步骤
             if (m_iAngleDelta != 0) m_pToolbox->calculationStep(m_iAngleDelta);
@@ -2655,7 +2656,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
     case ActionFactory::ActionKind::SeekBackward: {
         if(m_pEngine->state() == PlayerEngine::CoreState::Playing
                 && m_pEngine->playlist().currentInfo().mi.isNakedStream()) {
-            slotPromptInfo(tr("The action is not supported in this video"));
+            slotUnsupported();
         } else {
             m_pEngine->seekBackward(5);
         }
@@ -2665,7 +2666,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
     case ActionFactory::ActionKind::SeekForward: {
         if(m_pEngine->state() == PlayerEngine::CoreState::Playing
                 && m_pEngine->playlist().currentInfo().mi.isNakedStream()) {
-            slotPromptInfo(tr("The action is not supported in this video"));
+            slotUnsupported();
         } else {
             m_pEngine->seekForward(5);
         }
@@ -2759,7 +2760,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
     case ActionFactory::ActionKind::BurstScreenshot: {
         if(m_pEngine->state() == PlayerEngine::CoreState::Playing
                 && m_pEngine->playlist().currentInfo().mi.isNakedStream()) {
-            slotPromptInfo(tr("The action is not supported in this video"));
+            slotUnsupported();
         } else {
             startBurstShooting();
         }
@@ -4851,9 +4852,9 @@ void MainWindow::slotProperChanged(QString, QVariantMap key2value, QStringList)
     }
 }
 
-void MainWindow::slotPromptInfo(QString strInfo)
+void MainWindow::slotUnsupported()
 {
-    m_pCommHintWid->updateWithMessage(strInfo);
+    m_pCommHintWid->updateWithMessage(tr("The action is not supported in this video"));
 }
 
 void MainWindow::updateGeometry(CornerEdge edge, QPoint pos)

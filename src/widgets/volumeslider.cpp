@@ -394,7 +394,7 @@ bool VolumeSlider::event(QEvent *pEvent)
         }
         else if (pMouseEvent->type() == QEvent::MouseMove) {
             if(m_bPress) {
-                emit sigPromptInfo(tr("The action is not supported in this video"));
+                emit sigUnsupported();
             }
         }
         return true;
@@ -536,7 +536,7 @@ bool VolumeSlider::eventFilter(QObject *obj, QEvent *e)
 {
     if (e->type() == QEvent::Wheel) {
         if(!isEnabled()) {
-            emit sigPromptInfo(tr("The action is not supported in this video"));
+            emit sigUnsupported();
             return false;
         }
         QWheelEvent *we = static_cast<QWheelEvent *>(e);

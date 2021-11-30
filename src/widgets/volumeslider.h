@@ -67,10 +67,9 @@ signals:
     void sigVolumeChanged(int nValue);
     void sigMuteStateChanged(bool bMute);
     /**
-      * @brief 提示信息发送信号
-      * @param 提示信息
+      * @brief 功能不支持信号
       */
-    void sigPromptInfo(QString strInfo);
+    void sigUnsupported();
 
 public:
     VolumeSlider(MainWindow *mw, QWidget *parent);

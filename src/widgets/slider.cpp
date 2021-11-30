@@ -246,7 +246,7 @@ bool DMRSlider::event(QEvent *pEvent)
         }
         else if (pMouseEvent->type() == QEvent::MouseMove) {
             if(m_bPress) {
-                emit sigPromptInfo(tr("The action is not supported in this video"));
+                emit sigUnsupported();
             }
         }
         return true;

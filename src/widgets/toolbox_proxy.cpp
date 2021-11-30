@@ -1111,7 +1111,7 @@ void ToolboxProxy::setup()
     m_pProgBar->setValue(0);
     m_pProgBar->setEnableIndication(m_pEngine->state() != PlayerEngine::Idle);
 
-    connect(m_pProgBar, &DMRSlider::sigPromptInfo, this, &ToolboxProxy::sigPromptInfo);
+    connect(m_pProgBar, &DMRSlider::sigUnsupported, this, &ToolboxProxy::sigUnsupported);
     connect(m_pPreviewer, &ThumbnailPreview::leavePreview, this, &ToolboxProxy::slotLeavePreview);
     connect(&Settings::get(), &Settings::baseChanged, this, &ToolboxProxy::setthumbnailmode);
     connect(m_pEngine, &PlayerEngine::siginitthumbnailseting, this, &ToolboxProxy::setthumbnailmode);
@@ -1258,7 +1258,7 @@ void ToolboxProxy::setup()
     m_pVolSlider = new VolumeSlider(m_pMainWindow, m_pMainWindow);
     m_pVolSlider->setObjectName(VOLUME_SLIDER_WIDGET);
 
-    connect(m_pVolSlider, &VolumeSlider::sigPromptInfo, this, &ToolboxProxy::sigPromptInfo);
+    connect(m_pVolSlider, &VolumeSlider::sigUnsupported, this, &ToolboxProxy::sigUnsupported);
     connect(m_pVolBtn, &VolumeButton::clicked, this, &ToolboxProxy::slotVolumeButtonClicked);
     connect(m_pVolBtn, &VolumeButton::leaved, m_pVolSlider, &VolumeSlider::delayedHide);
     connect(m_pVolSlider, &VolumeSlider::sigVolumeChanged, this, &ToolboxProxy::slotVolumeChanged);
@@ -1850,7 +1850,7 @@ void ToolboxProxy::setBtnFocusSign(bool sign)
 void ToolboxProxy::volumeUp()
 {
     if(!m_pVolSlider->isEnabled()) {    // 不能调节音量需要给出提示
-        emit sigPromptInfo(tr("The action is not supported in this video"));
+        emit sigUnsupported();
     } else {
         m_pVolSlider->volumeUp();
     }
@@ -1861,7 +1861,7 @@ void ToolboxProxy::volumeUp()
 void ToolboxProxy::volumeDown()
 {
     if(!m_pVolSlider->isEnabled()) {
-        emit sigPromptInfo(tr("The action is not supported in this video"));
+        emit sigUnsupported();
     } else {
         m_pVolSlider->volumeDown();
     }
