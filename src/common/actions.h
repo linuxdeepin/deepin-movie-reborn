@@ -51,6 +51,10 @@ signals:
      * @brief 播放速度菜单状态改变信号
      */
     void playSpeedMenuEnable(bool);
+    /**
+      * @brief 字幕菜单状态改变信号
+      */
+    void subtitleMenuEnable(bool);
 public:
     enum ActionKind {
         Invalid = 0,

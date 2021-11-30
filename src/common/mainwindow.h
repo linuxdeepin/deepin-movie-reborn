@@ -290,6 +290,10 @@ signals:
      */
     void playSpeedMenuEnable(bool);
     /**
+     * @brief 字幕菜单是否可用信号
+     */
+    void subtitleMenuEnable(bool);
+    /**
      * @brief 窗口特效变化信号
      */
     void WMChanged(bool isWM);

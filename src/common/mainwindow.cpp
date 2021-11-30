@@ -763,6 +763,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ActionFactory::get().playlistContextMenu(), &DMenu::triggered, this, &MainWindow::menuItemInvoked);
     connect(this, &MainWindow::frameMenuEnable, &ActionFactory::get(), &ActionFactory::frameMenuEnable);
     connect(this, &MainWindow::playSpeedMenuEnable, &ActionFactory::get(), &ActionFactory::playSpeedMenuEnable);
+    connect(this, &MainWindow::subtitleMenuEnable, &ActionFactory::get(), &ActionFactory::subtitleMenuEnable);
     connect(qApp, &QGuiApplication::focusWindowChanged, this, &MainWindow::slotFocusWindowChanged);
 
     connect(m_pToolbox, &ToolboxProxy::sigVolumeChanged, this, &MainWindow::slotVolumeChanged);
@@ -821,6 +822,13 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(m_pEngine, &PlayerEngine::stateChanged, [ = ]() {
         qInfo() << __func__ << m_pEngine->state();
+
+        if (m_pEngine->state() == PlayerEngine::CoreState::Playing
+                && m_pEngine->playlist().currentInfo().mi.isNakedStream()) {
+            emit subtitleMenuEnable(false);
+        } else {
+            emit subtitleMenuEnable(true);
+        }
 
 #ifndef __mips__
         if (m_pEngine->state() == PlayerEngine::CoreState::Idle) {
@@ -2431,24 +2439,38 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
     }
 
     case ActionFactory::ActionKind::ToggleMute: {
-        m_pToolbox->changeMuteState();
+        if(m_pEngine->state() == PlayerEngine::CoreState::Playing && m_pEngine->playlist().currentInfo().mi.isNakedStream()) {
+            slotPromptInfo(tr("The action is not supported in this video"));
+        } else {
+            m_pToolbox->changeMuteState();
+        }
         break;
     }
 
     case ActionFactory::ActionKind::VolumeUp: {
-        //使用鼠标滚轮调节音量时会执行此步骤
-        if (m_iAngleDelta != 0) m_pToolbox->calculationStep(m_iAngleDelta);
-        m_pToolbox->volumeUp();
-        m_iAngleDelta = 0;
+        if(m_pEngine->state() == PlayerEngine::CoreState::Playing
+                && m_pEngine->playlist().currentInfo().mi.isNakedStream()) {
+            slotPromptInfo(tr("The action is not supported in this video"));
+        } else {
+            //使用鼠标滚轮调节音量时会执行此步骤
+            if (m_iAngleDelta != 0) m_pToolbox->calculationStep(m_iAngleDelta);
+            m_pToolbox->volumeUp();
+            m_iAngleDelta = 0;
+        }
         break;
     }
 
     case ActionFactory::ActionKind::VolumeDown: {
-        //使用鼠标滚轮调节音量时会执行此步骤
-        if (m_iAngleDelta != 0) m_pToolbox->calculationStep(m_iAngleDelta);
-        m_pToolbox->volumeDown();
-        m_iAngleDelta = 0;
-        break;
+        if(m_pEngine->state() == PlayerEngine::CoreState::Playing
+                && m_pEngine->playlist().currentInfo().mi.isNakedStream()) {
+            slotPromptInfo(tr("The action is not supported in this video"));
+        } else {
+            //使用鼠标滚轮调节音量时会执行此步骤
+            if (m_iAngleDelta != 0) m_pToolbox->calculationStep(m_iAngleDelta);
+            m_pToolbox->volumeDown();
+            m_iAngleDelta = 0;
+            break;
+        }
     }
 
     case ActionFactory::ActionKind::GotoPlaylistSelected: {
@@ -2631,12 +2653,22 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
     }
 
     case ActionFactory::ActionKind::SeekBackward: {
-        m_pEngine->seekBackward(5);
+        if(m_pEngine->state() == PlayerEngine::CoreState::Playing
+                && m_pEngine->playlist().currentInfo().mi.isNakedStream()) {
+            slotPromptInfo(tr("The action is not supported in this video"));
+        } else {
+            m_pEngine->seekBackward(5);
+        }
         break;
     }
 
     case ActionFactory::ActionKind::SeekForward: {
-        m_pEngine->seekForward(5);
+        if(m_pEngine->state() == PlayerEngine::CoreState::Playing
+                && m_pEngine->playlist().currentInfo().mi.isNakedStream()) {
+            slotPromptInfo(tr("The action is not supported in this video"));
+        } else {
+            m_pEngine->seekForward(5);
+        }
         break;
     }
 
@@ -2725,7 +2757,12 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
     }
 
     case ActionFactory::ActionKind::BurstScreenshot: {
-        startBurstShooting();
+        if(m_pEngine->state() == PlayerEngine::CoreState::Playing
+                && m_pEngine->playlist().currentInfo().mi.isNakedStream()) {
+            slotPromptInfo(tr("The action is not supported in this video"));
+        } else {
+            startBurstShooting();
+        }
         break;
     }
 

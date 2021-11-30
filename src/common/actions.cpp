@@ -306,6 +306,9 @@ DMenu *ActionFactory::mainContextMenu()
                 parent_encoding->addMenu(pMenu);
             }
             pParent->addMenu(pMenu);
+            connect(this, &ActionFactory::subtitleMenuEnable, this, [ = ](bool statu) {
+                pMenu->setEnabled(statu);
+            });
         }
         {
             //sub pMenu
