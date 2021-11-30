@@ -1765,7 +1765,11 @@ void MainWindow::setOpenFiles(QStringList &list)
 {
     //统一使用绝对路径，避免重复视频导入播放列表
     for(QString fileName: list) {
-        m_listOpenFiles.append(QFileInfo(fileName).absoluteFilePath());
+        if (QUrl(fileName).isLocalFile()) {
+            m_listOpenFiles.append(fileName);
+        } else {
+            m_listOpenFiles.append(QFileInfo(fileName).absoluteFilePath());
+        }
     }
 }
 
@@ -2962,9 +2966,15 @@ void MainWindow::play(const QUrl &url)
         activateWindow();
     }
 
-    if (url.scheme().startsWith("dvd")) {
-        m_dvdUrl = url;
-        if (!m_pEngine->addPlayFile(url)) {
+    QString filePath = url.toLocalFile();
+    while (QFileInfo(filePath).isSymLink()) {
+        filePath = QFileInfo(filePath).symLinkTarget();
+    }
+    QUrl realUrl = QUrl::fromLocalFile(filePath);
+
+    if (realUrl.scheme().startsWith("dvd")) {
+        m_dvdUrl = realUrl;
+        if (!m_pEngine->addPlayFile(realUrl)) {
             auto msg = QString(tr("Cannot play the disc"));
             m_pCommHintWid->updateWithMessage(msg);
             return;
@@ -2974,13 +2984,13 @@ void MainWindow::play(const QUrl &url)
             m_pDVDHintWid->updateWithMessage(msg, true);
         }
     } else {
-        if (!m_pEngine->addPlayFile(url)) {
-            auto msg = QString(tr("Invalid file: %1").arg(url.fileName()));
+        if (!m_pEngine->addPlayFile(realUrl)) {
+            auto msg = QString(tr("Invalid file: %1").arg(realUrl.fileName()));
             m_pCommHintWid->updateWithMessage(msg);
             return;
         }
     }
-    m_pEngine->playByName(url);
+    m_pEngine->playByName(realUrl);
 }
 
 void MainWindow::updateProxyGeometry()
