@@ -4135,7 +4135,7 @@ void MainWindow::contextMenuEvent(QContextMenuEvent *pEvent)
 
 bool MainWindow::insideToolsArea(const QPoint &p)
 {
-    return m_pTitlebar->geometry().contains(p) || m_pToolbox->geometry().contains(p) ||
+    return m_pTitlebar->geometry().contains(p) || m_pToolbox->geometry().contains(p) || m_pToolbox->volumeSlider()->geometry().contains(p) ||
             m_pMiniPlayBtn->geometry().contains(p)|| m_pMiniCloseBtn->geometry().contains(p) || m_pMiniQuitMiniBtn->geometry().contains(p);
 }
 

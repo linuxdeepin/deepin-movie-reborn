@@ -373,6 +373,11 @@ public:
      */
     void setBtnFocusSign(bool);
 
+    VolumeSlider *volumeSlider()
+    {
+        return m_pVolSlider;
+    }
+
     /////add for unit test/////
     DButtonBoxButton *playBtn() {return m_pPlayBtn;}
     DButtonBoxButton *prevBtn() {return m_pPrevBtn;}

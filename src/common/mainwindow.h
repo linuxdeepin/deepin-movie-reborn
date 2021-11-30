@@ -226,7 +226,8 @@ private:
     DLabel *m_pTextLabel{nullptr};
 };
 
-class FloatingMessageWindow: public DFloatingMessage
+// 未使用，可删除
+/*class FloatingMessageWindow: public DFloatingMessage
 {
 public:
     using DFloatingMessage::DFloatingMessage;
@@ -239,9 +240,7 @@ private:
         QColor color = QColor(23, 23, 23, 255 * 8 / 10);
         if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
             color = QColor(252, 252, 252, 255 * 8 / 10);
-        } /*else {
-            QColor color = QColor(23, 23, 23, 255 * 8 / 10);
-        }*/
+        }
 
         painter.fillRect(rect(), color);
 #else
@@ -258,7 +257,7 @@ private:
 
 #endif
     }
-};
+};*/
 
 /**
  * @file 主窗口，负责显示和交互
