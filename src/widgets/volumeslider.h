@@ -66,6 +66,11 @@ public:
 signals:
     void sigVolumeChanged(int nValue);
     void sigMuteStateChanged(bool bMute);
+    /**
+      * @brief 提示信息发送信号
+      * @param 提示信息
+      */
+    void sigPromptInfo(QString strInfo);
 
 public:
     VolumeSlider(MainWindow *mw, QWidget *parent);
@@ -99,6 +104,8 @@ protected:
     bool eventFilter(QObject *obj, QEvent *e);
     void refreshIcon();                //刷新图标
 
+    bool event(QEvent* pEvent) override;
+
 private:
     QString readSinkInputPath();       //获取dbus接口的地址
 //    cppckeck修改
@@ -124,6 +131,7 @@ private:
 
     int m_iStep;                 //鼠标灵敏度的步进
     bool m_bIsWheel;             //是否是通过滚轮调节音量
+    bool m_bPress;               ///鼠标按下标志
 };
 }
 

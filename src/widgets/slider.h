@@ -79,7 +79,11 @@ signals:
      * @brief enter 鼠标进入信号
      */
     void enter();
-
+    /**
+      * @brief 提示信息发送信号
+      * @param 提示信息
+      */
+    void sigPromptInfo(QString strInfo);
 protected:
     /**
      * @brief onValueChanged 进度条值改变槽函数
@@ -133,6 +137,8 @@ protected:
      */
     void initMember();
 
+    bool event(QEvent* pEvent) override;
+
 private:
     /**
      * @brief position2progress 像素点到进度条位置转换
@@ -152,6 +158,7 @@ private:
     int m_nLastHoverValue;                    ///上次悬停的位置
     QPoint m_indicatorPos;                    ///鼠标悬停的位置
     QColor m_indicatorColor;                  ///鼠标悬停活动色
+    bool m_bPress;                            ///鼠标是否按下
 };
 
 }

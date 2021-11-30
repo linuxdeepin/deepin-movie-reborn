@@ -1111,6 +1111,7 @@ void ToolboxProxy::setup()
     m_pProgBar->setValue(0);
     m_pProgBar->setEnableIndication(m_pEngine->state() != PlayerEngine::Idle);
 
+    connect(m_pProgBar, &DMRSlider::sigPromptInfo, this, &ToolboxProxy::sigPromptInfo);
     connect(m_pPreviewer, &ThumbnailPreview::leavePreview, this, &ToolboxProxy::slotLeavePreview);
     connect(&Settings::get(), &Settings::baseChanged, this, &ToolboxProxy::setthumbnailmode);
     connect(m_pEngine, &PlayerEngine::siginitthumbnailseting, this, &ToolboxProxy::setthumbnailmode);
@@ -1257,6 +1258,7 @@ void ToolboxProxy::setup()
     m_pVolSlider = new VolumeSlider(m_pMainWindow, m_pMainWindow);
     m_pVolSlider->setObjectName(VOLUME_SLIDER_WIDGET);
 
+    connect(m_pVolSlider, &VolumeSlider::sigPromptInfo, this, &ToolboxProxy::sigPromptInfo);
     connect(m_pVolBtn, &VolumeButton::clicked, this, &ToolboxProxy::slotVolumeButtonClicked);
     connect(m_pVolBtn, &VolumeButton::leaved, m_pVolSlider, &VolumeSlider::delayedHide);
     connect(m_pVolSlider, &VolumeSlider::sigVolumeChanged, this, &ToolboxProxy::slotVolumeChanged);
@@ -1325,6 +1327,7 @@ void ToolboxProxy::setup()
     }
 
     connect(m_pEngine, &PlayerEngine::stateChanged, this, &ToolboxProxy::updatePlayState);
+    connect(m_pEngine, &PlayerEngine::stateChanged, this, &ToolboxProxy::updateButtonStates);   // 控件状态变化由updateButtonStates统一处理
     connect(m_pEngine, &PlayerEngine::fileLoaded, this, &ToolboxProxy::slotFileLoaded);
     connect(m_pEngine, &PlayerEngine::elapsedChanged, this, &ToolboxProxy::slotElapsedChanged);
     connect(m_pEngine, &PlayerEngine::updateDuration, this, &ToolboxProxy::slotElapsedChanged);
@@ -1846,14 +1849,22 @@ void ToolboxProxy::setBtnFocusSign(bool sign)
  */
 void ToolboxProxy::volumeUp()
 {
-    m_pVolSlider->volumeUp();
+    if(!m_pVolSlider->isEnabled()) {    // 不能调节音量需要给出提示
+        emit sigPromptInfo(tr("The action is not supported in this video"));
+    } else {
+        m_pVolSlider->volumeUp();
+    }
 }
 /**
  * @brief volumeUp 鼠标滚轮减少音量
  */
 void ToolboxProxy::volumeDown()
 {
-    m_pVolSlider->volumeDown();
+    if(!m_pVolSlider->isEnabled()) {
+        emit sigPromptInfo(tr("The action is not supported in this video"));
+    } else {
+        m_pVolSlider->volumeDown();
+    }
 }
 /**
  * @brief calculationStep 计算鼠标滚轮滚动的步进
@@ -1972,6 +1983,23 @@ void ToolboxProxy::updateMovieProgress()
 
 void ToolboxProxy::updateButtonStates()
 {
+    bool bNakedStream = false;
+
+    if(m_pEngine->state() != PlayerEngine::CoreState::Idle) {
+        bNakedStream = m_pEngine->getplaylist()->currentInfo().mi.isNakedStream();
+        if(bNakedStream){                                             // 如果正在播放的视频是裸流不支持音量调节和进度调节
+            m_pProgBar->setEnabled(false);
+            m_pProgBar->setEnableIndication(false);
+            m_pVolSlider->setEnabled(false);
+        }else {
+            m_pProgBar->setEnabled(true);
+            m_pProgBar->setEnableIndication(true);
+            m_pVolSlider->setEnabled(true);
+        }
+    } else {
+        m_pVolSlider->setEnabled(true);
+    }
+
     qInfo() << m_pEngine->playingMovieInfo().subs.size();
     bool vis = m_pEngine->playlist().count() > 1 && m_pMainWindow->inited();
 
@@ -2138,10 +2166,6 @@ void ToolboxProxy::updatePlayState()
     } else {
         setProperty("idle", false);
     }
-
-    auto on = (m_pEngine->state() != PlayerEngine::CoreState::Idle);
-    m_pProgBar->setEnabled(on);
-    m_pProgBar->setEnableIndication(on);
 }
 /**
  * @brief updateTimeInfo 更新工具栏中播放时间显示

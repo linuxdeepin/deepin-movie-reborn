@@ -413,6 +413,11 @@ signals:
      * @param bMute 静音状态
      */
     void sigMuteStateChanged(bool &bMute);
+    /**
+      * @brief 提示信息发送信号
+      * @param 提示信息
+      */
+    void sigPromptInfo(QString strInfo);
 
 protected slots:
     /**

@@ -757,6 +757,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     titlebar()->deleteLater();
 
+    connect(m_pToolbox, &ToolboxProxy::sigPromptInfo, this, &MainWindow::slotPromptInfo);
     connect(m_pEngine, &PlayerEngine::stateChanged, this, &MainWindow::slotPlayerStateChanged);
     connect(ActionFactory::get().mainContextMenu(), &DMenu::triggered, this, &MainWindow::menuItemInvoked);
     connect(ActionFactory::get().playlistContextMenu(), &DMenu::triggered, this, &MainWindow::menuItemInvoked);
@@ -4811,6 +4812,11 @@ void MainWindow::slotProperChanged(QString, QVariantMap key2value, QStringList)
     if (key2value.value("Active").value<bool>() && m_pEngine->state() == PlayerEngine::CoreState::Playing) {
         m_pEngine->seekAbsolute(m_pEngine->elapsed());
     }
+}
+
+void MainWindow::slotPromptInfo(QString strInfo)
+{
+    m_pCommHintWid->updateWithMessage(strInfo);
 }
 
 void MainWindow::updateGeometry(CornerEdge edge, QPoint pos)

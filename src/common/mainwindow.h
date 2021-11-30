@@ -512,6 +512,7 @@ protected slots:
      */
     void onSysLockState(QString serviceName, QVariantMap key2value, QStringList);
     void slotProperChanged(QString, QVariantMap key2value, QStringList);
+    void slotPromptInfo(QString strInfo);
 
 private:
     void initMember();
