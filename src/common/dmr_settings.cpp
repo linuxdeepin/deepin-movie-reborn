@@ -216,8 +216,10 @@ QString Settings::screenshotLocation()
 
 QString Settings::screenshotNameTemplate()
 {
-    return tr("%1/Movie%2.jpg").arg(screenshotLocation())
-           .arg(QDateTime::currentDateTime().toString("yyyyMMddhhmmss"));
+    QString strMovie = QObject::tr("Movie");
+    QString path = screenshotLocation() + QDir::separator() + strMovie +
+            QDateTime::currentDateTime().toString("yyyyMMddhhmmss") + QString(".jpg");
+    return path;
 }
 
 //cppcheck 单元测试使用
