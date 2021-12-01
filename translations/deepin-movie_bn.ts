@@ -230,6 +230,22 @@
         <source>OK</source>
         <translation type="unfinished">ঠিক আছে</translation>
     </message>
+    <message>
+        <source>Decoding</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Auto select (Recommended)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hardware decoding</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Software decoding</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>UrlDialog</name>
@@ -476,7 +492,7 @@
     </message>
     <message>
         <source>No device found</source>
-        <translation>কোনো ডিভাইস পাওয়া যায়নি</translation>
+        <translation type="vanished">কোনো ডিভাইস পাওয়া যায়নি</translation>
     </message>
     <message>
         <source>Open folder</source>
@@ -635,19 +651,19 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Auto</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Open</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Please exit smart dock</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot play the disc</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to adjust the subtitle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The action is not supported in this video</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -764,6 +780,10 @@
         <source>%1hz</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>%1 bps</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>dmr::MpvProxy</name>
@@ -853,7 +873,7 @@
     </message>
     <message>
         <source>Subtitles</source>
-        <translation>সাবটাইটেল সমূহ</translation>
+        <translation type="vanished">সাবটাইটেল সমূহ</translation>
     </message>
     <message>
         <source>Playlist</source>
@@ -897,7 +917,7 @@
     </message>
     <message>
         <source>Mute</source>
-        <translation type="unfinished">নীরব</translation>
+        <translation type="obsolete">নীরব</translation>
     </message>
     <message>
         <source>sub</source>

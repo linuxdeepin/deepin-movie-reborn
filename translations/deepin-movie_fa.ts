@@ -230,6 +230,22 @@
         <source>OK</source>
         <translation type="unfinished">باشه</translation>
     </message>
+    <message>
+        <source>Decoding</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Auto select (Recommended)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hardware decoding</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Software decoding</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>UrlDialog</name>
@@ -476,7 +492,7 @@
     </message>
     <message>
         <source>No device found</source>
-        <translation>دستگاهی پیدا نشد</translation>
+        <translation type="vanished">دستگاهی پیدا نشد</translation>
     </message>
     <message>
         <source>Open folder</source>
@@ -635,19 +651,19 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Auto</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Open</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Please exit smart dock</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot play the disc</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to adjust the subtitle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The action is not supported in this video</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -764,6 +780,10 @@
         <source>%1hz</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>%1 bps</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>dmr::MpvProxy</name>
@@ -853,7 +873,7 @@
     </message>
     <message>
         <source>Subtitles</source>
-        <translation>زیرنویس ها</translation>
+        <translation type="vanished">زیرنویس ها</translation>
     </message>
     <message>
         <source>Playlist</source>
@@ -897,7 +917,7 @@
     </message>
     <message>
         <source>Mute</source>
-        <translation type="unfinished">بی صدا</translation>
+        <translation type="obsolete">بی صدا</translation>
     </message>
     <message>
         <source>sub</source>

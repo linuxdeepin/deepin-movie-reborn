@@ -12,229 +12,249 @@
         <translation type="vanished">डीपइन मूवी अच्छी तरह से बनाया हुआ पूरी तरह से एक वीडियो प्लेयर है। जो स्थानीय और इंटरनेट मीडिया फ़ाइल के कई प्रारूप में कार्य करता है।</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="232"/>
+        <location filename="../src/common/mainwindow.cpp" line="227"/>
         <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="248"/>
+        <location filename="../src/common/mainwindow.cpp" line="243"/>
         <source>Invalid folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="269"/>
+        <location filename="../src/common/mainwindow.cpp" line="265"/>
         <source>Open folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3057"/>
+        <location filename="../src/common/mainwindow.cpp" line="3160"/>
         <source>Network disconnected</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="230"/>
+        <location filename="../src/common/mainwindow.cpp" line="225"/>
         <source>You don&apos;t have permission to operate this folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/settings_translation.cpp" line="5"/>
+        <location filename="../src/common/settings_translation.cpp" line="38"/>
         <source>Auto add similar files to play</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/settings_translation.cpp" line="6"/>
+        <location filename="../src/common/settings_translation.cpp" line="39"/>
         <source>Clear playlist when exit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/settings_translation.cpp" line="7"/>
+        <location filename="../src/common/settings_translation.cpp" line="40"/>
         <source>Show thumbnails in progress bar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/settings_translation.cpp" line="8"/>
+        <location filename="../src/common/settings_translation.cpp" line="41"/>
         <source>Show video preview on mouseover</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/settings_translation.cpp" line="9"/>
+        <location filename="../src/common/settings_translation.cpp" line="42"/>
         <source>Open a new player for each file played</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/settings_translation.cpp" line="10"/>
+        <location filename="../src/common/settings_translation.cpp" line="43"/>
         <source>Pause when minimized</source>
         <translation>नीचे करने पर रोकें</translation>
     </message>
     <message>
-        <location filename="../src/common/settings_translation.cpp" line="11"/>
+        <location filename="../src/common/settings_translation.cpp" line="44"/>
         <source>Remember playback position</source>
         <translation>प्लेबैक स्थिति याद रखें</translation>
     </message>
     <message>
-        <location filename="../src/common/settings_translation.cpp" line="12"/>
+        <location filename="../src/common/settings_translation.cpp" line="45"/>
         <source>Default play mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/settings_translation.cpp" line="13"/>
+        <location filename="../src/common/settings_translation.cpp" line="46"/>
         <source>Path</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/settings_translation.cpp" line="14"/>
+        <location filename="../src/common/settings_translation.cpp" line="47"/>
         <source>Basic</source>
         <translation>मौलिक</translation>
     </message>
     <message>
-        <location filename="../src/common/settings_translation.cpp" line="15"/>
+        <location filename="../src/common/settings_translation.cpp" line="48"/>
         <source>Play</source>
         <translation>चलायें</translation>
     </message>
     <message>
-        <location filename="../src/common/settings_translation.cpp" line="16"/>
-        <location filename="../src/common/settings_translation.cpp" line="21"/>
+        <location filename="../src/common/settings_translation.cpp" line="49"/>
+        <location filename="../src/common/settings_translation.cpp" line="54"/>
         <source>Screenshot</source>
         <translation>स्क्रीनशॉट</translation>
     </message>
     <message>
-        <location filename="../src/common/settings_translation.cpp" line="17"/>
+        <location filename="../src/common/settings_translation.cpp" line="50"/>
         <source>Shortcuts</source>
         <translation>शॉर्टकट</translation>
     </message>
     <message>
-        <location filename="../src/common/settings_translation.cpp" line="18"/>
+        <location filename="../src/common/settings_translation.cpp" line="51"/>
         <source>File</source>
         <translation>फ़ाइल </translation>
     </message>
     <message>
-        <location filename="../src/common/settings_translation.cpp" line="19"/>
+        <location filename="../src/common/settings_translation.cpp" line="52"/>
         <source>Frame/Sound</source>
         <translation>ढांचा / ध्वनि</translation>
     </message>
     <message>
-        <location filename="../src/common/settings_translation.cpp" line="20"/>
+        <location filename="../src/common/settings_translation.cpp" line="53"/>
         <source>Playback</source>
         <translation>पुनर्चलन</translation>
     </message>
     <message>
-        <location filename="../src/common/settings_translation.cpp" line="22"/>
-        <location filename="../src/common/settings_translation.cpp" line="23"/>
+        <location filename="../src/common/settings_translation.cpp" line="55"/>
+        <location filename="../src/common/settings_translation.cpp" line="56"/>
         <source>Subtitle</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/settings_translation.cpp" line="24"/>
+        <location filename="../src/common/settings_translation.cpp" line="57"/>
         <source>Font Style</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/settings_translation.cpp" line="25"/>
+        <location filename="../src/common/settings_translation.cpp" line="58"/>
         <source>Restore Defaults</source>
         <translation>डिफॉल्ट्स पुनःस्थापित करें</translation>
     </message>
     <message>
-        <location filename="../src/common/settings_translation.cpp" line="26"/>
+        <location filename="../src/common/settings_translation.cpp" line="59"/>
         <source>Open file</source>
         <translation>फ़ाइल खोलें</translation>
     </message>
     <message>
-        <location filename="../src/common/settings_translation.cpp" line="27"/>
+        <location filename="../src/common/settings_translation.cpp" line="60"/>
         <source>Open next</source>
         <translation>अगला खोलें</translation>
     </message>
     <message>
-        <location filename="../src/common/settings_translation.cpp" line="28"/>
+        <location filename="../src/common/settings_translation.cpp" line="61"/>
         <source>Open previous</source>
         <translation>पिछला खोलें</translation>
     </message>
     <message>
-        <location filename="../src/common/settings_translation.cpp" line="29"/>
+        <location filename="../src/common/settings_translation.cpp" line="62"/>
         <source>Mini mode</source>
         <translation>छोटा विधा</translation>
     </message>
     <message>
-        <location filename="../src/common/settings_translation.cpp" line="30"/>
+        <location filename="../src/common/settings_translation.cpp" line="63"/>
         <source>Mute</source>
         <translation>मूक</translation>
     </message>
     <message>
-        <location filename="../src/common/settings_translation.cpp" line="31"/>
+        <location filename="../src/common/settings_translation.cpp" line="64"/>
         <source>Next frame</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/settings_translation.cpp" line="32"/>
+        <location filename="../src/common/settings_translation.cpp" line="65"/>
         <source>Previous frame</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/settings_translation.cpp" line="33"/>
+        <location filename="../src/common/settings_translation.cpp" line="66"/>
         <source>Volume down</source>
         <translation>आवाज घटाएँ</translation>
     </message>
     <message>
-        <location filename="../src/common/settings_translation.cpp" line="34"/>
+        <location filename="../src/common/settings_translation.cpp" line="67"/>
         <source>Volume up</source>
         <translation>आवाज बढ़ाएँ</translation>
     </message>
     <message>
-        <location filename="../src/common/settings_translation.cpp" line="35"/>
+        <location filename="../src/common/settings_translation.cpp" line="68"/>
         <source>Speed up</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/settings_translation.cpp" line="36"/>
+        <location filename="../src/common/settings_translation.cpp" line="69"/>
         <source>Speed down</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/settings_translation.cpp" line="37"/>
+        <location filename="../src/common/settings_translation.cpp" line="70"/>
         <source>Fullscreen</source>
         <translation>पूर्ण पटल</translation>
     </message>
     <message>
-        <location filename="../src/common/settings_translation.cpp" line="38"/>
+        <location filename="../src/common/settings_translation.cpp" line="71"/>
         <source>Pause/Play</source>
         <translation>विराम/शुरू</translation>
     </message>
     <message>
-        <location filename="../src/common/settings_translation.cpp" line="39"/>
+        <location filename="../src/common/settings_translation.cpp" line="72"/>
         <source>Playlist</source>
         <translation>चलाने की सूची</translation>
     </message>
     <message>
-        <location filename="../src/common/settings_translation.cpp" line="40"/>
+        <location filename="../src/common/settings_translation.cpp" line="73"/>
         <source>Reset speed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/settings_translation.cpp" line="41"/>
+        <location filename="../src/common/settings_translation.cpp" line="74"/>
         <source>Delete from playlist</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/settings_translation.cpp" line="42"/>
+        <location filename="../src/common/settings_translation.cpp" line="75"/>
         <source>Film info</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/settings_translation.cpp" line="45"/>
+        <location filename="../src/common/settings_translation.cpp" line="78"/>
         <source>Burst shooting</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/settings_translation.cpp" line="50"/>
+        <location filename="../src/common/settings_translation.cpp" line="83"/>
         <source>Size</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/settings_translation.cpp" line="43"/>
+        <location filename="../src/common/settings_translation.cpp" line="88"/>
+        <source>Decoding</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/common/settings_translation.cpp" line="89"/>
+        <source>Auto select (Recommended)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/common/settings_translation.cpp" line="90"/>
+        <source>Hardware decoding</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/common/settings_translation.cpp" line="91"/>
+        <source>Software decoding</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/common/settings_translation.cpp" line="76"/>
         <source>Rewind</source>
         <translation>रिवाइंड </translation>
     </message>
     <message>
-        <location filename="../src/common/settings_translation.cpp" line="44"/>
+        <location filename="../src/common/settings_translation.cpp" line="77"/>
         <source>Forward</source>
         <translation>आगे</translation>
     </message>
@@ -243,59 +263,59 @@
         <translation type="vanished">बर्स्ट स्क्रीनशॉट</translation>
     </message>
     <message>
-        <location filename="../src/common/settings_translation.cpp" line="46"/>
+        <location filename="../src/common/settings_translation.cpp" line="79"/>
         <source>Film screenshot</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/settings_translation.cpp" line="47"/>
+        <location filename="../src/common/settings_translation.cpp" line="80"/>
         <source>0.5s backward</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/settings_translation.cpp" line="48"/>
+        <location filename="../src/common/settings_translation.cpp" line="81"/>
         <source>0.5s forward</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/settings_translation.cpp" line="49"/>
+        <location filename="../src/common/settings_translation.cpp" line="82"/>
         <source>Font</source>
         <translation>फॉन्ट</translation>
     </message>
     <message>
-        <location filename="../src/common/settings_translation.cpp" line="51"/>
+        <location filename="../src/common/settings_translation.cpp" line="84"/>
         <source>Exit fullscreen/mini mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/backends/mpv/mpv_proxy.cpp" line="371"/>
-        <location filename="../src/main.cpp" line="133"/>
-        <location filename="../src/main.cpp" line="181"/>
+        <location filename="../src/backends/mpv/mpv_proxy.cpp" line="447"/>
+        <location filename="../src/main.cpp" line="199"/>
+        <location filename="../src/main.cpp" line="237"/>
+        <location filename="../src/widgets/volumeslider.cpp" line="147"/>
         <location filename="../src/common/volumemonitoring.cpp" line="84"/>
-        <location filename="../src/common/mainwindow.cpp" line="4160"/>
         <source>Movie</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="134"/>
+        <location filename="../src/main.cpp" line="200"/>
         <source>Movie is a full-featured video player, supporting playing local and streaming media in multiple video formats.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/shortcut_manager.cpp" line="213"/>
-        <location filename="../src/common/settings_translation.cpp" line="54"/>
+        <location filename="../src/common/shortcut_manager.cpp" line="214"/>
+        <location filename="../src/common/settings_translation.cpp" line="87"/>
         <source>Settings</source>
         <translation type="unfinished">व्यवस्था</translation>
     </message>
     <message>
-        <location filename="../src/common/shortcut_manager.cpp" line="216"/>
-        <location filename="../src/common/settings_translation.cpp" line="52"/>
+        <location filename="../src/common/shortcut_manager.cpp" line="217"/>
+        <location filename="../src/common/settings_translation.cpp" line="85"/>
         <source>Help</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/shortcut_manager.cpp" line="221"/>
-        <location filename="../src/common/settings_translation.cpp" line="53"/>
+        <location filename="../src/common/shortcut_manager.cpp" line="222"/>
+        <location filename="../src/common/settings_translation.cpp" line="86"/>
         <source>Display shortcuts</source>
         <translation type="unfinished"></translation>
     </message>
@@ -303,12 +323,12 @@
 <context>
     <name>UrlDialog</name>
     <message>
-        <location filename="../src/widgets/url_dialog.cpp" line="41"/>
+        <location filename="../src/widgets/url_dialog.cpp" line="45"/>
         <source>Cancel</source>
         <translation>रद्द करो</translation>
     </message>
     <message>
-        <location filename="../src/widgets/url_dialog.cpp" line="42"/>
+        <location filename="../src/widgets/url_dialog.cpp" line="46"/>
         <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
@@ -317,7 +337,7 @@
         <translation type="vanished">पुष्टि</translation>
     </message>
     <message>
-        <location filename="../src/widgets/url_dialog.cpp" line="46"/>
+        <location filename="../src/widgets/url_dialog.cpp" line="50"/>
         <source>Please enter the URL:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -326,240 +346,258 @@
     <name>dmr::ActionFactory</name>
     <message>
         <location filename="../src/common/actions.cpp" line="84"/>
-        <location filename="../src/common/actions.cpp" line="300"/>
+        <location filename="../src/common/actions.cpp" line="331"/>
         <source>Settings</source>
         <translation>व्यवस्था</translation>
     </message>
     <message>
-        <location filename="../src/common/actions.cpp" line="108"/>
+        <location filename="../src/common/actions.cpp" line="156"/>
         <source>Fullscreen</source>
         <translation>पूर्ण पटल</translation>
     </message>
     <message>
-        <location filename="../src/common/actions.cpp" line="110"/>
+        <location filename="../src/common/actions.cpp" line="158"/>
         <source>Always on Top</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/actions.cpp" line="132"/>
+        <location filename="../src/common/actions.cpp" line="129"/>
+        <location filename="../src/common/actions.cpp" line="175"/>
         <source>0.5x</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/actions.cpp" line="133"/>
+        <location filename="../src/common/actions.cpp" line="130"/>
+        <location filename="../src/common/actions.cpp" line="176"/>
         <source>1.0x</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/actions.cpp" line="134"/>
+        <location filename="../src/common/actions.cpp" line="131"/>
+        <location filename="../src/common/actions.cpp" line="177"/>
         <source>1.2x</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/actions.cpp" line="135"/>
+        <location filename="../src/common/actions.cpp" line="132"/>
+        <location filename="../src/common/actions.cpp" line="178"/>
         <source>1.5x</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/actions.cpp" line="136"/>
+        <location filename="../src/common/actions.cpp" line="133"/>
+        <location filename="../src/common/actions.cpp" line="179"/>
         <source>2.0x</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/actions.cpp" line="162"/>
+        <location filename="../src/common/actions.cpp" line="117"/>
+        <location filename="../src/common/actions.cpp" line="200"/>
         <source>Next Frame</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/actions.cpp" line="163"/>
+        <location filename="../src/common/actions.cpp" line="118"/>
+        <location filename="../src/common/actions.cpp" line="201"/>
         <source>Previous Frame</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/actions.cpp" line="315"/>
+        <location filename="../src/common/actions.cpp" line="341"/>
         <source>Empty playlist</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/actions.cpp" line="317"/>
+        <location filename="../src/common/actions.cpp" line="343"/>
         <source>Film info</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/actions.cpp" line="82"/>
-        <location filename="../src/common/actions.cpp" line="102"/>
+        <location filename="../src/common/actions.cpp" line="81"/>
+        <location filename="../src/common/actions.cpp" line="151"/>
         <source>Open file</source>
         <translation>फ़ाइल खोलें</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="83"/>
-        <location filename="../src/common/actions.cpp" line="103"/>
+        <location filename="../src/common/actions.cpp" line="152"/>
         <source>Open folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/actions.cpp" line="104"/>
+        <location filename="../src/common/actions.cpp" line="153"/>
         <source>Open URL</source>
         <translation>पता खोलें</translation>
     </message>
     <message>
-        <location filename="../src/common/actions.cpp" line="105"/>
+        <location filename="../src/common/actions.cpp" line="154"/>
         <source>Open CD/DVD</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/actions.cpp" line="109"/>
+        <location filename="../src/common/actions.cpp" line="157"/>
         <source>Mini Mode</source>
         <translation>मिनी मोड </translation>
     </message>
     <message>
-        <location filename="../src/common/actions.cpp" line="115"/>
+        <location filename="../src/common/actions.cpp" line="94"/>
+        <location filename="../src/common/actions.cpp" line="162"/>
         <source>Play Mode</source>
         <translation>प्ले मोड </translation>
     </message>
     <message>
-        <location filename="../src/common/actions.cpp" line="118"/>
+        <location filename="../src/common/actions.cpp" line="96"/>
+        <location filename="../src/common/actions.cpp" line="164"/>
         <source>Order Play</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/actions.cpp" line="119"/>
+        <location filename="../src/common/actions.cpp" line="97"/>
+        <location filename="../src/common/actions.cpp" line="165"/>
         <source>Shuffle Play</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/actions.cpp" line="120"/>
+        <location filename="../src/common/actions.cpp" line="98"/>
+        <location filename="../src/common/actions.cpp" line="166"/>
         <source>Single Play</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/actions.cpp" line="121"/>
+        <location filename="../src/common/actions.cpp" line="99"/>
+        <location filename="../src/common/actions.cpp" line="167"/>
         <source>Single Loop</source>
         <translation>सिंगल लूप</translation>
     </message>
     <message>
-        <location filename="../src/common/actions.cpp" line="122"/>
+        <location filename="../src/common/actions.cpp" line="100"/>
+        <location filename="../src/common/actions.cpp" line="168"/>
         <source>List Loop</source>
         <translation>लिस्ट लूप</translation>
     </message>
     <message>
-        <location filename="../src/common/actions.cpp" line="129"/>
+        <location filename="../src/common/actions.cpp" line="127"/>
+        <location filename="../src/common/actions.cpp" line="173"/>
         <source>Playback Speed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/actions.cpp" line="147"/>
+        <location filename="../src/common/actions.cpp" line="105"/>
+        <location filename="../src/common/actions.cpp" line="188"/>
         <source>Frame</source>
         <translation>ढांचा</translation>
     </message>
     <message>
-        <location filename="../src/common/actions.cpp" line="150"/>
+        <location filename="../src/common/actions.cpp" line="107"/>
+        <location filename="../src/common/actions.cpp" line="190"/>
         <source>Default</source>
         <translation>मूल</translation>
     </message>
     <message>
-        <location filename="../src/common/actions.cpp" line="158"/>
+        <location filename="../src/common/actions.cpp" line="114"/>
+        <location filename="../src/common/actions.cpp" line="197"/>
         <source>Clockwise</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/actions.cpp" line="159"/>
+        <location filename="../src/common/actions.cpp" line="115"/>
+        <location filename="../src/common/actions.cpp" line="198"/>
         <source>Counterclockwise</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/actions.cpp" line="175"/>
+        <location filename="../src/common/actions.cpp" line="211"/>
         <source>Sound</source>
         <translation>ध्वनि</translation>
     </message>
     <message>
-        <location filename="../src/common/actions.cpp" line="179"/>
+        <location filename="../src/common/actions.cpp" line="215"/>
         <source>Channel</source>
         <translation>चैनल </translation>
     </message>
     <message>
-        <location filename="../src/common/actions.cpp" line="183"/>
+        <location filename="../src/common/actions.cpp" line="218"/>
         <source>Stereo</source>
         <translation>स्टीरियो</translation>
     </message>
     <message>
-        <location filename="../src/common/actions.cpp" line="184"/>
+        <location filename="../src/common/actions.cpp" line="219"/>
         <source>Left channel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/actions.cpp" line="185"/>
+        <location filename="../src/common/actions.cpp" line="220"/>
         <source>Right channel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/actions.cpp" line="191"/>
-        <location filename="../src/common/actions.cpp" line="372"/>
+        <location filename="../src/common/actions.cpp" line="225"/>
+        <location filename="../src/common/actions.cpp" line="389"/>
         <source>Track</source>
         <translation>गाना </translation>
     </message>
     <message>
-        <location filename="../src/common/actions.cpp" line="202"/>
+        <location filename="../src/common/actions.cpp" line="235"/>
         <source>Subtitle</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/actions.cpp" line="203"/>
+        <location filename="../src/common/actions.cpp" line="237"/>
         <source>Load</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/actions.cpp" line="204"/>
+        <location filename="../src/common/actions.cpp" line="238"/>
         <source>Online Search</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/actions.cpp" line="208"/>
+        <location filename="../src/common/actions.cpp" line="242"/>
         <source>Select</source>
         <translation>चुनो</translation>
     </message>
     <message>
-        <location filename="../src/common/actions.cpp" line="212"/>
+        <location filename="../src/common/actions.cpp" line="246"/>
         <source>Hide</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/actions.cpp" line="216"/>
+        <location filename="../src/common/actions.cpp" line="249"/>
         <source>Encodings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/actions.cpp" line="285"/>
+        <location filename="../src/common/actions.cpp" line="316"/>
         <source>Screenshot</source>
         <translation>स्क्रीनशॉट</translation>
     </message>
     <message>
-        <location filename="../src/common/actions.cpp" line="286"/>
+        <location filename="../src/common/actions.cpp" line="319"/>
         <source>Film Screenshot</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/actions.cpp" line="287"/>
+        <location filename="../src/common/actions.cpp" line="320"/>
         <source>Burst Shooting</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/actions.cpp" line="288"/>
+        <location filename="../src/common/actions.cpp" line="321"/>
         <source>Open screenshot folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/actions.cpp" line="298"/>
+        <location filename="../src/common/actions.cpp" line="329"/>
         <source>Playlist</source>
         <translation>चलाने की सूची</translation>
     </message>
     <message>
-        <location filename="../src/common/actions.cpp" line="299"/>
+        <location filename="../src/common/actions.cpp" line="330"/>
         <source>Film Info</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/actions.cpp" line="314"/>
+        <location filename="../src/common/actions.cpp" line="340"/>
         <source>Delete from playlist</source>
         <translation type="unfinished"></translation>
     </message>
@@ -568,7 +606,7 @@
         <translation type="vanished">चलाने की सूची साफ करें</translation>
     </message>
     <message>
-        <location filename="../src/common/actions.cpp" line="316"/>
+        <location filename="../src/common/actions.cpp" line="342"/>
         <source>Display in file manager</source>
         <translation>फ़ाइल मैनेजर में प्रदर्शित करें</translation>
     </message>
@@ -576,22 +614,22 @@
 <context>
     <name>dmr::BurstScreenshotsDialog</name>
     <message>
-        <location filename="../src/widgets/burst_screenshots_dialog.cpp" line="63"/>
+        <location filename="../src/widgets/burst_screenshots_dialog.cpp" line="72"/>
         <source>Duration: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/widgets/burst_screenshots_dialog.cpp" line="69"/>
+        <location filename="../src/widgets/burst_screenshots_dialog.cpp" line="77"/>
         <source>Resolution: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/widgets/burst_screenshots_dialog.cpp" line="75"/>
+        <location filename="../src/widgets/burst_screenshots_dialog.cpp" line="82"/>
         <source>Size: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/widgets/burst_screenshots_dialog.cpp" line="98"/>
+        <location filename="../src/widgets/burst_screenshots_dialog.cpp" line="105"/>
         <source>Save</source>
         <translation>संचित करें</translation>
     </message>
@@ -599,32 +637,27 @@
 <context>
     <name>dmr::MainWindow</name>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="881"/>
-        <location filename="../src/common/mainwindow.cpp" line="2524"/>
-        <location filename="../src/common/mainwindow.cpp" line="4603"/>
+        <location filename="../src/common/mainwindow.cpp" line="950"/>
+        <location filename="../src/common/mainwindow.cpp" line="2620"/>
+        <location filename="../src/common/mainwindow.cpp" line="4575"/>
         <source>Load successfully</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="881"/>
-        <location filename="../src/common/mainwindow.cpp" line="2524"/>
-        <location filename="../src/common/mainwindow.cpp" line="2527"/>
-        <location filename="../src/common/mainwindow.cpp" line="4603"/>
+        <location filename="../src/common/mainwindow.cpp" line="950"/>
+        <location filename="../src/common/mainwindow.cpp" line="2620"/>
+        <location filename="../src/common/mainwindow.cpp" line="2623"/>
+        <location filename="../src/common/mainwindow.cpp" line="4575"/>
         <source>Load failed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3264"/>
+        <location filename="../src/common/mainwindow.cpp" line="3396"/>
         <source>Buffering...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="1941"/>
-        <source>No device found</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/common/mainwindow.cpp" line="1967"/>
+        <location filename="../src/common/mainwindow.cpp" line="1991"/>
         <source>Open folder</source>
         <translation type="unfinished"></translation>
     </message>
@@ -633,22 +666,22 @@
         <translation type="vanished">फ़ाइल खोलें</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2010"/>
+        <location filename="../src/common/mainwindow.cpp" line="2053"/>
         <source>All videos (%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2284"/>
+        <location filename="../src/common/mainwindow.cpp" line="2406"/>
         <source>Stereo</source>
         <translation type="unfinished">स्टीरियो</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2289"/>
+        <location filename="../src/common/mainwindow.cpp" line="2411"/>
         <source>Left channel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2294"/>
+        <location filename="../src/common/mainwindow.cpp" line="2416"/>
         <source>Right channel</source>
         <translation type="unfinished"></translation>
     </message>
@@ -657,174 +690,169 @@
         <translation type="vanished">मूक</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="1960"/>
+        <location filename="../src/common/mainwindow.cpp" line="1983"/>
+        <location filename="../src/common/mainwindow.cpp" line="3479"/>
         <source>Parse failed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="1262"/>
-        <location filename="../src/common/mainwindow.cpp" line="1282"/>
-        <location filename="../src/common/mainwindow.cpp" line="2330"/>
-        <location filename="../src/common/mainwindow.cpp" line="2333"/>
-        <location filename="../src/common/mainwindow.cpp" line="2392"/>
+        <location filename="../src/common/mainwindow.cpp" line="3419"/>
+        <location filename="../src/common/mainwindow.cpp" line="3444"/>
         <source>Mute</source>
         <translation type="unfinished">मूक</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="1259"/>
-        <location filename="../src/common/mainwindow.cpp" line="1284"/>
-        <location filename="../src/common/mainwindow.cpp" line="2336"/>
-        <location filename="../src/common/mainwindow.cpp" line="2346"/>
-        <location filename="../src/common/mainwindow.cpp" line="2371"/>
-        <location filename="../src/common/mainwindow.cpp" line="2389"/>
-        <location filename="../src/common/mainwindow.cpp" line="2400"/>
+        <location filename="../src/common/mainwindow.cpp" line="3421"/>
+        <location filename="../src/common/mainwindow.cpp" line="3446"/>
         <source>Volume: %1%</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="1985"/>
-        <location filename="../src/common/mainwindow.cpp" line="2008"/>
-        <location filename="../src/common/mainwindow.cpp" line="2516"/>
+        <location filename="../src/common/mainwindow.cpp" line="2019"/>
+        <location filename="../src/common/mainwindow.cpp" line="2051"/>
+        <location filename="../src/common/mainwindow.cpp" line="2609"/>
         <source>Open File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="1987"/>
+        <location filename="../src/common/mainwindow.cpp" line="2021"/>
         <source>All videos (*)(%2 %1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2444"/>
+        <location filename="../src/common/mainwindow.cpp" line="2518"/>
         <source>Track: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2482"/>
-        <location filename="../src/common/mainwindow.cpp" line="2490"/>
+        <location filename="../src/common/mainwindow.cpp" line="2565"/>
+        <location filename="../src/common/mainwindow.cpp" line="2582"/>
         <source>Subtitle %1: %2s</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2483"/>
-        <location filename="../src/common/mainwindow.cpp" line="2491"/>
+        <location filename="../src/common/mainwindow.cpp" line="2566"/>
+        <location filename="../src/common/mainwindow.cpp" line="2583"/>
         <source>delayed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2483"/>
-        <location filename="../src/common/mainwindow.cpp" line="2491"/>
+        <location filename="../src/common/mainwindow.cpp" line="2566"/>
+        <location filename="../src/common/mainwindow.cpp" line="2583"/>
         <source>advanced</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2245"/>
-        <location filename="../src/common/mainwindow.cpp" line="2253"/>
-        <location filename="../src/common/mainwindow.cpp" line="2261"/>
-        <location filename="../src/common/mainwindow.cpp" line="2269"/>
-        <location filename="../src/common/mainwindow.cpp" line="2277"/>
-        <location filename="../src/common/mainwindow.cpp" line="2510"/>
-        <location filename="../src/common/mainwindow.cpp" line="4716"/>
+        <location filename="../src/common/mainwindow.cpp" line="2367"/>
+        <location filename="../src/common/mainwindow.cpp" line="2375"/>
+        <location filename="../src/common/mainwindow.cpp" line="2383"/>
+        <location filename="../src/common/mainwindow.cpp" line="2391"/>
+        <location filename="../src/common/mainwindow.cpp" line="2399"/>
+        <location filename="../src/common/mainwindow.cpp" line="2602"/>
+        <location filename="../src/common/mainwindow.cpp" line="4776"/>
         <source>Speed: %1x</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2518"/>
+        <location filename="../src/common/mainwindow.cpp" line="1965"/>
+        <location filename="../src/common/mainwindow.cpp" line="2988"/>
+        <source>Cannot play the disc</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/common/mainwindow.cpp" line="2560"/>
+        <location filename="../src/common/mainwindow.cpp" line="2577"/>
+        <source>Unable to adjust the subtitle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/common/mainwindow.cpp" line="2611"/>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2599"/>
+        <location filename="../src/common/mainwindow.cpp" line="2719"/>
         <source>View</source>
         <translation>देखें</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2608"/>
+        <location filename="../src/common/mainwindow.cpp" line="2728"/>
         <source>Film screenshot</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2713"/>
+        <location filename="../src/common/mainwindow.cpp" line="2838"/>
         <source>Taking the screenshots, please wait...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2854"/>
+        <location filename="../src/common/mainwindow.cpp" line="2993"/>
         <source>Reading DVD files...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3080"/>
+        <location filename="../src/common/mainwindow.cpp" line="3183"/>
         <source>4K video may be stuck</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3081"/>
+        <location filename="../src/common/mainwindow.cpp" line="3184"/>
         <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3110"/>
-        <location filename="../src/common/mainwindow.cpp" line="4125"/>
+        <location filename="../src/common/mainwindow.cpp" line="3229"/>
+        <location filename="../src/common/mainwindow.cpp" line="4221"/>
         <source>Order play</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3114"/>
-        <location filename="../src/common/mainwindow.cpp" line="4128"/>
+        <location filename="../src/common/mainwindow.cpp" line="3232"/>
+        <location filename="../src/common/mainwindow.cpp" line="4224"/>
         <source>Shuffle play</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3118"/>
-        <location filename="../src/common/mainwindow.cpp" line="4131"/>
+        <location filename="../src/common/mainwindow.cpp" line="3235"/>
+        <location filename="../src/common/mainwindow.cpp" line="4227"/>
         <source>Single play</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3122"/>
-        <location filename="../src/common/mainwindow.cpp" line="4134"/>
+        <location filename="../src/common/mainwindow.cpp" line="3238"/>
+        <location filename="../src/common/mainwindow.cpp" line="4230"/>
         <source>Single loop</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3126"/>
-        <location filename="../src/common/mainwindow.cpp" line="4137"/>
+        <location filename="../src/common/mainwindow.cpp" line="3241"/>
+        <location filename="../src/common/mainwindow.cpp" line="4233"/>
         <source>List loop</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3327"/>
+        <location filename="../src/common/mainwindow.cpp" line="3494"/>
         <source>Please insert a CD/DVD</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="4245"/>
-        <source>Auto</source>
+        <location filename="../src/common/mainwindow.cpp" line="4877"/>
+        <source>The action is not supported in this video</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="4247"/>
-        <source>Open</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/common/mainwindow.cpp" line="4249"/>
-        <source>Close</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/common/mainwindow.cpp" line="4379"/>
-        <location filename="../src/common/mainwindow.cpp" line="4387"/>
+        <location filename="../src/common/mainwindow.cpp" line="4352"/>
+        <location filename="../src/common/mainwindow.cpp" line="4360"/>
         <source>Please exit smart dock</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="4677"/>
+        <location filename="../src/common/mainwindow.cpp" line="4639"/>
         <source>The CD/DVD has been ejected</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="4116"/>
+        <location filename="../src/common/mainwindow.cpp" line="4212"/>
         <source>Please load the video first</source>
         <translation type="unfinished"></translation>
     </message>
@@ -833,30 +861,30 @@
         <translation type="vanished">मूवी स्क्रीनशॉट</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2609"/>
+        <location filename="../src/common/mainwindow.cpp" line="2729"/>
         <source>Saved to</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2630"/>
-        <location filename="../src/common/mainwindow.cpp" line="2746"/>
+        <location filename="../src/common/mainwindow.cpp" line="2750"/>
+        <location filename="../src/common/mainwindow.cpp" line="2877"/>
         <source>The screenshot is saved</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2634"/>
-        <location filename="../src/common/mainwindow.cpp" line="2750"/>
+        <location filename="../src/common/mainwindow.cpp" line="2754"/>
+        <location filename="../src/common/mainwindow.cpp" line="2881"/>
         <source>Failed to save the screenshot</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2861"/>
-        <location filename="../src/common/mainwindow.cpp" line="4617"/>
+        <location filename="../src/common/mainwindow.cpp" line="2998"/>
+        <location filename="../src/common/mainwindow.cpp" line="4589"/>
         <source>Invalid file: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3064"/>
+        <location filename="../src/common/mainwindow.cpp" line="3167"/>
         <source>No matching online subtitles</source>
         <translation type="unfinished"></translation>
     </message>
@@ -865,19 +893,19 @@
         <translation type="obsolete">पुष्टि</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3309"/>
+        <location filename="../src/common/mainwindow.cpp" line="3470"/>
         <source>Cannot open file or stream</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3319"/>
-        <location filename="../src/common/mainwindow.cpp" line="3324"/>
+        <location filename="../src/common/mainwindow.cpp" line="2044"/>
+        <location filename="../src/common/mainwindow.cpp" line="3487"/>
+        <location filename="../src/common/mainwindow.cpp" line="3492"/>
         <source>Invalid file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2849"/>
-        <location filename="../src/common/mainwindow.cpp" line="3334"/>
+        <location filename="../src/common/mainwindow.cpp" line="3499"/>
         <source>No video file found</source>
         <translation type="unfinished"></translation>
     </message>
@@ -889,118 +917,124 @@
         <translation type="vanished">अवधि:</translation>
     </message>
     <message>
-        <location filename="../src/widgets/movieinfo_dialog.cpp" line="269"/>
+        <location filename="../src/widgets/movieinfo_dialog.cpp" line="280"/>
         <source>Film info</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/widgets/movieinfo_dialog.cpp" line="289"/>
+        <location filename="../src/widgets/movieinfo_dialog.cpp" line="302"/>
         <source>Type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/widgets/movieinfo_dialog.cpp" line="290"/>
+        <location filename="../src/widgets/movieinfo_dialog.cpp" line="303"/>
         <source>Size</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/widgets/movieinfo_dialog.cpp" line="297"/>
+        <location filename="../src/widgets/movieinfo_dialog.cpp" line="309"/>
         <source>Path</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/widgets/movieinfo_dialog.cpp" line="302"/>
+        <location filename="../src/widgets/movieinfo_dialog.cpp" line="314"/>
         <source>Codec info</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/widgets/movieinfo_dialog.cpp" line="322"/>
+        <location filename="../src/widgets/movieinfo_dialog.cpp" line="335"/>
         <source>Video CodecID</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/widgets/movieinfo_dialog.cpp" line="323"/>
+        <location filename="../src/widgets/movieinfo_dialog.cpp" line="336"/>
         <source>Video CodeRate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/widgets/movieinfo_dialog.cpp" line="323"/>
-        <location filename="../src/widgets/movieinfo_dialog.cpp" line="352"/>
+        <location filename="../src/widgets/movieinfo_dialog.cpp" line="337"/>
+        <location filename="../src/widgets/movieinfo_dialog.cpp" line="369"/>
         <source>%1 kbps</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/widgets/movieinfo_dialog.cpp" line="324"/>
+        <location filename="../src/widgets/movieinfo_dialog.cpp" line="338"/>
+        <location filename="../src/widgets/movieinfo_dialog.cpp" line="370"/>
+        <source>%1 bps</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/widgets/movieinfo_dialog.cpp" line="339"/>
         <source>FPS</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/widgets/movieinfo_dialog.cpp" line="324"/>
+        <location filename="../src/widgets/movieinfo_dialog.cpp" line="339"/>
         <source>%1 fps</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/widgets/movieinfo_dialog.cpp" line="325"/>
+        <location filename="../src/widgets/movieinfo_dialog.cpp" line="340"/>
         <source>Proportion</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/widgets/movieinfo_dialog.cpp" line="325"/>
+        <location filename="../src/widgets/movieinfo_dialog.cpp" line="340"/>
         <source>%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/widgets/movieinfo_dialog.cpp" line="326"/>
+        <location filename="../src/widgets/movieinfo_dialog.cpp" line="341"/>
         <source>Resolution</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/widgets/movieinfo_dialog.cpp" line="331"/>
+        <location filename="../src/widgets/movieinfo_dialog.cpp" line="346"/>
         <source>Audio info</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/widgets/movieinfo_dialog.cpp" line="351"/>
+        <location filename="../src/widgets/movieinfo_dialog.cpp" line="367"/>
         <source>Audio CodecID</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/widgets/movieinfo_dialog.cpp" line="352"/>
+        <location filename="../src/widgets/movieinfo_dialog.cpp" line="368"/>
         <source>Audio CodeRate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/widgets/movieinfo_dialog.cpp" line="353"/>
+        <location filename="../src/widgets/movieinfo_dialog.cpp" line="371"/>
         <source>Audio digit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/widgets/movieinfo_dialog.cpp" line="353"/>
+        <location filename="../src/widgets/movieinfo_dialog.cpp" line="371"/>
         <source>%1 bits</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/widgets/movieinfo_dialog.cpp" line="354"/>
+        <location filename="../src/widgets/movieinfo_dialog.cpp" line="372"/>
         <source>Channels</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/widgets/movieinfo_dialog.cpp" line="354"/>
+        <location filename="../src/widgets/movieinfo_dialog.cpp" line="372"/>
         <source>%1 channels</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/widgets/movieinfo_dialog.cpp" line="355"/>
+        <location filename="../src/widgets/movieinfo_dialog.cpp" line="373"/>
         <source>Sampling</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/widgets/movieinfo_dialog.cpp" line="355"/>
+        <location filename="../src/widgets/movieinfo_dialog.cpp" line="373"/>
         <source>%1hz</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/widgets/movieinfo_dialog.cpp" line="291"/>
+        <location filename="../src/widgets/movieinfo_dialog.cpp" line="304"/>
         <source>Duration</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1008,7 +1042,7 @@
 <context>
     <name>dmr::MpvProxy</name>
     <message>
-        <location filename="../src/backends/mpv/mpv_proxy.cpp" line="1428"/>
+        <location filename="../src/backends/mpv/mpv_proxy.cpp" line="1640"/>
         <source>Internal</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1016,10 +1050,10 @@
 <context>
     <name>dmr::PlayItemWidget</name>
     <message>
-        <location filename="../src/widgets/playlist_widget.cpp" line="219"/>
-        <location filename="../src/widgets/playlist_widget.cpp" line="265"/>
-        <location filename="../src/widgets/playlist_widget.cpp" line="383"/>
-        <location filename="../src/widgets/playlist_widget.cpp" line="603"/>
+        <location filename="../src/widgets/playlist_widget.cpp" line="191"/>
+        <location filename="../src/widgets/playlist_widget.cpp" line="249"/>
+        <location filename="../src/widgets/playlist_widget.cpp" line="315"/>
+        <location filename="../src/widgets/playlist_widget.cpp" line="500"/>
         <source>The file does not exist</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1027,20 +1061,20 @@
 <context>
     <name>dmr::PlaylistWidget</name>
     <message>
-        <location filename="../src/widgets/playlist_widget.cpp" line="759"/>
+        <location filename="../src/widgets/playlist_widget.cpp" line="673"/>
         <source>Playlist</source>
         <translation type="unfinished">चलाने की सूची</translation>
     </message>
     <message>
-        <location filename="../src/widgets/playlist_widget.cpp" line="785"/>
+        <location filename="../src/widgets/playlist_widget.cpp" line="699"/>
         <source>Empty</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/widgets/playlist_widget.cpp" line="965"/>
-        <location filename="../src/widgets/playlist_widget.cpp" line="1238"/>
-        <location filename="../src/widgets/playlist_widget.cpp" line="1262"/>
-        <location filename="../src/widgets/playlist_widget.cpp" line="1335"/>
+        <location filename="../src/widgets/playlist_widget.cpp" line="887"/>
+        <location filename="../src/widgets/playlist_widget.cpp" line="1170"/>
+        <location filename="../src/widgets/playlist_widget.cpp" line="1195"/>
+        <location filename="../src/widgets/playlist_widget.cpp" line="1277"/>
         <source>%1 videos</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1048,52 +1082,52 @@
 <context>
     <name>dmr::Settings</name>
     <message>
-        <location filename="../src/common/dmr_settings.cpp" line="91"/>
+        <location filename="../src/common/dmr_settings.cpp" line="103"/>
         <source>Order play</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/dmr_settings.cpp" line="92"/>
+        <location filename="../src/common/dmr_settings.cpp" line="104"/>
         <source>Shuffle play</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/dmr_settings.cpp" line="93"/>
+        <location filename="../src/common/dmr_settings.cpp" line="105"/>
         <source>Single play</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/dmr_settings.cpp" line="94"/>
+        <location filename="../src/common/dmr_settings.cpp" line="106"/>
         <source>Single loop</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/dmr_settings.cpp" line="95"/>
+        <location filename="../src/common/dmr_settings.cpp" line="107"/>
         <source>List loop</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/dmr_settings.cpp" line="100"/>
+        <location filename="../src/common/dmr_settings.cpp" line="112"/>
         <source>Auto</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/dmr_settings.cpp" line="101"/>
+        <location filename="../src/common/dmr_settings.cpp" line="113"/>
         <source>Open</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/dmr_settings.cpp" line="102"/>
+        <location filename="../src/common/dmr_settings.cpp" line="114"/>
         <source>Close</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/dmr_settings.cpp" line="201"/>
+        <location filename="../src/common/dmr_settings.cpp" line="219"/>
         <source>%1/Movie%2.jpg</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/dmr_settings.cpp" line="207"/>
+        <location filename="../src/common/dmr_settings.cpp" line="226"/>
         <source>%1/Movie%2(%3).jpg</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1101,95 +1135,95 @@
 <context>
     <name>dmr::ToolboxProxy</name>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2670"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2672"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="3028"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2144"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2146"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2517"/>
         <source>Play</source>
         <translation>चलायें</translation>
     </message>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2048"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="3044"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="1304"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2533"/>
         <source>Previous</source>
         <translation>पिछला</translation>
     </message>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2048"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="3062"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="1304"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2551"/>
         <source>Next</source>
         <translation>आगे</translation>
     </message>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2049"/>
         <source>Subtitles</source>
-        <translation>उपशीर्षक</translation>
+        <translation type="vanished">उपशीर्षक</translation>
     </message>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2049"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="3097"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="1305"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2586"/>
         <source>Playlist</source>
         <translation>चलाने की सूची</translation>
     </message>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2049"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2538"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="3080"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="1305"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2031"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2033"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2569"/>
         <source>Fullscreen</source>
         <translation>पूर्ण पटल</translation>
     </message>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2048"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="1304"/>
         <source>Play/Pause</source>
         <translation>बजाएं/रोकें </translation>
     </message>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2052"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="1308"/>
         <source>play</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2052"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="1308"/>
         <source>prev</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2052"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="1308"/>
         <source>next</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2053"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2785"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2798"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="1309"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2245"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2258"/>
         <source>fs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2053"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2785"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2798"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="1309"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2245"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2258"/>
         <source>list</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2508"/>
         <source>Mute</source>
-        <translation type="unfinished">मूक</translation>
+        <translation type="obsolete">मूक</translation>
     </message>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2534"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2025"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2027"/>
         <source>Exit fullscreen</source>
         <translation>पूर्ण स्क्रीन से बाहर आयें</translation>
     </message>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2595"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2597"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2089"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2091"/>
         <source>Pause</source>
         <translation>विराम</translation>
     </message>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2785"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2798"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2245"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2258"/>
         <source>sub</source>
         <translation type="unfinished"></translation>
     </message>

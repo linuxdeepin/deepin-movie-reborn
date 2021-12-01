@@ -1,11 +1,13 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS language="id" version="2.1">
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.1" language="id">
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/backends/mpv/mpv_proxy.cpp" line="434"/>
+        <location filename="../src/backends/mpv/mpv_proxy.cpp" line="447"/>
         <location filename="../src/main.cpp" line="199"/>
         <location filename="../src/main.cpp" line="237"/>
-        <location filename="../src/widgets/volumeslider.cpp" line="146"/>
+        <location filename="../src/widgets/volumeslider.cpp" line="147"/>
         <location filename="../src/common/volumemonitoring.cpp" line="84"/>
         <source>Movie</source>
         <translation>Film</translation>
@@ -13,7 +15,7 @@
     <message>
         <location filename="../src/main.cpp" line="200"/>
         <source>Movie is a full-featured video player, supporting playing local and streaming media in multiple video formats.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/common/shortcut_manager.cpp" line="214"/>
@@ -228,7 +230,7 @@
     <message>
         <location filename="../src/common/settings_translation.cpp" line="78"/>
         <source>Burst shooting</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="79"/>
@@ -263,22 +265,22 @@
     <message>
         <location filename="../src/common/settings_translation.cpp" line="88"/>
         <source>Decoding</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="89"/>
         <source>Auto select (Recommended)</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="90"/>
         <source>Hardware decoding</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="91"/>
         <source>Software decoding</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="225"/>
@@ -301,7 +303,7 @@
         <translation>Buka Folder</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3098"/>
+        <location filename="../src/common/mainwindow.cpp" line="3160"/>
         <source>Network disconnected</source>
         <translation>Jaringan terputus</translation>
     </message>
@@ -340,7 +342,7 @@
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="84"/>
-        <location filename="../src/common/actions.cpp" line="328"/>
+        <location filename="../src/common/actions.cpp" line="331"/>
         <source>Settings</source>
         <translation>Pengaturan</translation>
     </message>
@@ -408,19 +410,19 @@
         <location filename="../src/common/actions.cpp" line="117"/>
         <location filename="../src/common/actions.cpp" line="200"/>
         <source>Next Frame</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="118"/>
         <location filename="../src/common/actions.cpp" line="201"/>
         <source>Previous Frame</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="127"/>
         <location filename="../src/common/actions.cpp" line="173"/>
         <source>Playback Speed</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="129"/>
@@ -504,7 +506,7 @@
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="225"/>
-        <location filename="../src/common/actions.cpp" line="386"/>
+        <location filename="../src/common/actions.cpp" line="389"/>
         <source>Track</source>
         <translation>Lagu</translation>
     </message>
@@ -536,55 +538,55 @@
     <message>
         <location filename="../src/common/actions.cpp" line="249"/>
         <source>Encodings</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/actions.cpp" line="313"/>
+        <location filename="../src/common/actions.cpp" line="316"/>
         <source>Screenshot</source>
         <translation>Tangkapan Layar</translation>
     </message>
     <message>
-        <location filename="../src/common/actions.cpp" line="316"/>
+        <location filename="../src/common/actions.cpp" line="319"/>
         <source>Film Screenshot</source>
         <translation>Tangkapan layar Film</translation>
     </message>
     <message>
-        <location filename="../src/common/actions.cpp" line="317"/>
+        <location filename="../src/common/actions.cpp" line="320"/>
         <source>Burst Shooting</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/actions.cpp" line="318"/>
+        <location filename="../src/common/actions.cpp" line="321"/>
         <source>Open screenshot folder</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/actions.cpp" line="326"/>
+        <location filename="../src/common/actions.cpp" line="329"/>
         <source>Playlist</source>
         <translation>Daftar Putar</translation>
     </message>
     <message>
-        <location filename="../src/common/actions.cpp" line="327"/>
+        <location filename="../src/common/actions.cpp" line="330"/>
         <source>Film Info</source>
         <translation>Info Film</translation>
     </message>
     <message>
-        <location filename="../src/common/actions.cpp" line="337"/>
+        <location filename="../src/common/actions.cpp" line="340"/>
         <source>Delete from playlist</source>
         <translation>Hapus dari daftar putar</translation>
     </message>
     <message>
-        <location filename="../src/common/actions.cpp" line="338"/>
+        <location filename="../src/common/actions.cpp" line="341"/>
         <source>Empty playlist</source>
         <translation>Daftar putar kosong</translation>
     </message>
     <message>
-        <location filename="../src/common/actions.cpp" line="339"/>
+        <location filename="../src/common/actions.cpp" line="342"/>
         <source>Display in file manager</source>
         <translation>Tampilkan dalam manajer berkas</translation>
     </message>
     <message>
-        <location filename="../src/common/actions.cpp" line="340"/>
+        <location filename="../src/common/actions.cpp" line="343"/>
         <source>Film info</source>
         <translation>Info Film</translation>
     </message>
@@ -615,256 +617,261 @@
 <context>
     <name>dmr::MainWindow</name>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="941"/>
-        <location filename="../src/common/mainwindow.cpp" line="2579"/>
-        <location filename="../src/common/mainwindow.cpp" line="4502"/>
+        <location filename="../src/common/mainwindow.cpp" line="950"/>
+        <location filename="../src/common/mainwindow.cpp" line="2620"/>
+        <location filename="../src/common/mainwindow.cpp" line="4575"/>
         <source>Load successfully</source>
         <translation>Berhasil dimuat</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="941"/>
-        <location filename="../src/common/mainwindow.cpp" line="2579"/>
-        <location filename="../src/common/mainwindow.cpp" line="2582"/>
-        <location filename="../src/common/mainwindow.cpp" line="4502"/>
+        <location filename="../src/common/mainwindow.cpp" line="950"/>
+        <location filename="../src/common/mainwindow.cpp" line="2620"/>
+        <location filename="../src/common/mainwindow.cpp" line="2623"/>
+        <location filename="../src/common/mainwindow.cpp" line="4575"/>
         <source>Load failed</source>
         <translation>Gagal dimuat</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="1958"/>
-        <location filename="../src/common/mainwindow.cpp" line="2926"/>
+        <location filename="../src/common/mainwindow.cpp" line="1965"/>
+        <location filename="../src/common/mainwindow.cpp" line="2988"/>
         <source>Cannot play the disc</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="1976"/>
-        <location filename="../src/common/mainwindow.cpp" line="3416"/>
+        <location filename="../src/common/mainwindow.cpp" line="1983"/>
+        <location filename="../src/common/mainwindow.cpp" line="3479"/>
         <source>Parse failed</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="1984"/>
+        <location filename="../src/common/mainwindow.cpp" line="1991"/>
         <source>Open folder</source>
         <translation>Buka Folder</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2012"/>
-        <location filename="../src/common/mainwindow.cpp" line="2044"/>
-        <location filename="../src/common/mainwindow.cpp" line="2568"/>
+        <location filename="../src/common/mainwindow.cpp" line="2019"/>
+        <location filename="../src/common/mainwindow.cpp" line="2051"/>
+        <location filename="../src/common/mainwindow.cpp" line="2609"/>
         <source>Open File</source>
         <translation>Buka Berkas</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2014"/>
+        <location filename="../src/common/mainwindow.cpp" line="2021"/>
         <source>All videos (*)(%2 %1)</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2046"/>
+        <location filename="../src/common/mainwindow.cpp" line="2053"/>
         <source>All videos (%1)</source>
         <translation>Semua video (%1)</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2351"/>
-        <location filename="../src/common/mainwindow.cpp" line="2359"/>
         <location filename="../src/common/mainwindow.cpp" line="2367"/>
         <location filename="../src/common/mainwindow.cpp" line="2375"/>
         <location filename="../src/common/mainwindow.cpp" line="2383"/>
-        <location filename="../src/common/mainwindow.cpp" line="2561"/>
-        <location filename="../src/common/mainwindow.cpp" line="4693"/>
+        <location filename="../src/common/mainwindow.cpp" line="2391"/>
+        <location filename="../src/common/mainwindow.cpp" line="2399"/>
+        <location filename="../src/common/mainwindow.cpp" line="2602"/>
+        <location filename="../src/common/mainwindow.cpp" line="4776"/>
         <source>Speed: %1x</source>
         <translation>Cepat: %1x</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2390"/>
+        <location filename="../src/common/mainwindow.cpp" line="2406"/>
         <source>Stereo</source>
         <translation>Stereo</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2395"/>
+        <location filename="../src/common/mainwindow.cpp" line="2411"/>
         <source>Left channel</source>
         <translation>Kanal kiri</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2400"/>
+        <location filename="../src/common/mainwindow.cpp" line="2416"/>
         <source>Right channel</source>
         <translation>Kanal kanan</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2487"/>
+        <location filename="../src/common/mainwindow.cpp" line="2518"/>
         <source>Track: %1</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2524"/>
-        <location filename="../src/common/mainwindow.cpp" line="2536"/>
+        <location filename="../src/common/mainwindow.cpp" line="2560"/>
+        <location filename="../src/common/mainwindow.cpp" line="2577"/>
         <source>Unable to adjust the subtitle</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2529"/>
-        <location filename="../src/common/mainwindow.cpp" line="2541"/>
+        <location filename="../src/common/mainwindow.cpp" line="2565"/>
+        <location filename="../src/common/mainwindow.cpp" line="2582"/>
         <source>Subtitle %1: %2s</source>
         <translation>Translasi %1: %2s</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2530"/>
-        <location filename="../src/common/mainwindow.cpp" line="2542"/>
+        <location filename="../src/common/mainwindow.cpp" line="2566"/>
+        <location filename="../src/common/mainwindow.cpp" line="2583"/>
         <source>delayed</source>
         <translation>Penundaan</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2530"/>
-        <location filename="../src/common/mainwindow.cpp" line="2542"/>
+        <location filename="../src/common/mainwindow.cpp" line="2566"/>
+        <location filename="../src/common/mainwindow.cpp" line="2583"/>
         <source>advanced</source>
         <translation>Terkini</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2570"/>
+        <location filename="../src/common/mainwindow.cpp" line="2611"/>
         <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</source>
         <translation>Translasi (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2668"/>
+        <location filename="../src/common/mainwindow.cpp" line="2719"/>
         <source>View</source>
         <translation>Lihat</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2677"/>
+        <location filename="../src/common/mainwindow.cpp" line="2728"/>
         <source>Film screenshot</source>
         <translation>Tangkapan layar Film</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2678"/>
+        <location filename="../src/common/mainwindow.cpp" line="2729"/>
         <source>Saved to</source>
         <translation>Disimpan ke</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2699"/>
-        <location filename="../src/common/mainwindow.cpp" line="2821"/>
+        <location filename="../src/common/mainwindow.cpp" line="2750"/>
+        <location filename="../src/common/mainwindow.cpp" line="2877"/>
         <source>The screenshot is saved</source>
         <translation>Tangkapan layar di simpan</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2703"/>
-        <location filename="../src/common/mainwindow.cpp" line="2825"/>
+        <location filename="../src/common/mainwindow.cpp" line="2754"/>
+        <location filename="../src/common/mainwindow.cpp" line="2881"/>
         <source>Failed to save the screenshot</source>
         <translation>Gagal menyimpan tangkapan layar</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2782"/>
+        <location filename="../src/common/mainwindow.cpp" line="2838"/>
         <source>Taking the screenshots, please wait...</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2931"/>
+        <location filename="../src/common/mainwindow.cpp" line="2993"/>
         <source>Reading DVD files...</source>
         <translation>Membaca berkas-berkas DVD...</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2936"/>
-        <location filename="../src/common/mainwindow.cpp" line="4516"/>
+        <location filename="../src/common/mainwindow.cpp" line="2998"/>
+        <location filename="../src/common/mainwindow.cpp" line="4589"/>
         <source>Invalid file: %1</source>
         <translation>Berkas tidak valid: %1</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3105"/>
+        <location filename="../src/common/mainwindow.cpp" line="3167"/>
         <source>No matching online subtitles</source>
         <translation>Tidak menemukan terjemahan daring yang cocok</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3121"/>
+        <location filename="../src/common/mainwindow.cpp" line="3183"/>
         <source>4K video may be stuck</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3122"/>
+        <location filename="../src/common/mainwindow.cpp" line="3184"/>
         <source>OK</source>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3167"/>
-        <location filename="../src/common/mainwindow.cpp" line="4147"/>
+        <location filename="../src/common/mainwindow.cpp" line="3229"/>
+        <location filename="../src/common/mainwindow.cpp" line="4221"/>
         <source>Order play</source>
         <translation>Urutan memainkan</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3170"/>
-        <location filename="../src/common/mainwindow.cpp" line="4150"/>
+        <location filename="../src/common/mainwindow.cpp" line="3232"/>
+        <location filename="../src/common/mainwindow.cpp" line="4224"/>
         <source>Shuffle play</source>
         <translation>Mainkan acak</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3173"/>
-        <location filename="../src/common/mainwindow.cpp" line="4153"/>
+        <location filename="../src/common/mainwindow.cpp" line="3235"/>
+        <location filename="../src/common/mainwindow.cpp" line="4227"/>
         <source>Single play</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3176"/>
-        <location filename="../src/common/mainwindow.cpp" line="4156"/>
+        <location filename="../src/common/mainwindow.cpp" line="3238"/>
+        <location filename="../src/common/mainwindow.cpp" line="4230"/>
         <source>Single loop</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3179"/>
-        <location filename="../src/common/mainwindow.cpp" line="4159"/>
+        <location filename="../src/common/mainwindow.cpp" line="3241"/>
+        <location filename="../src/common/mainwindow.cpp" line="4233"/>
         <source>List loop</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3334"/>
+        <location filename="../src/common/mainwindow.cpp" line="3396"/>
         <source>Buffering...</source>
         <translation>Penyanggaan ...</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3357"/>
-        <location filename="../src/common/mainwindow.cpp" line="3382"/>
+        <location filename="../src/common/mainwindow.cpp" line="3419"/>
+        <location filename="../src/common/mainwindow.cpp" line="3444"/>
         <source>Mute</source>
         <translation>Senyap</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3359"/>
-        <location filename="../src/common/mainwindow.cpp" line="3384"/>
+        <location filename="../src/common/mainwindow.cpp" line="3421"/>
+        <location filename="../src/common/mainwindow.cpp" line="3446"/>
         <source>Volume: %1%</source>
         <translation>Volume: %1%</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3407"/>
+        <location filename="../src/common/mainwindow.cpp" line="3470"/>
         <source>Cannot open file or stream</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="2037"/>
-        <location filename="../src/common/mainwindow.cpp" line="3424"/>
-        <location filename="../src/common/mainwindow.cpp" line="3429"/>
+        <location filename="../src/common/mainwindow.cpp" line="4877"/>
+        <source>The action is not supported in this video</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/common/mainwindow.cpp" line="2044"/>
+        <location filename="../src/common/mainwindow.cpp" line="3487"/>
+        <location filename="../src/common/mainwindow.cpp" line="3492"/>
         <source>Invalid file</source>
         <translation>Berkas tidak valid</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3431"/>
+        <location filename="../src/common/mainwindow.cpp" line="3494"/>
         <source>Please insert a CD/DVD</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3436"/>
+        <location filename="../src/common/mainwindow.cpp" line="3499"/>
         <source>No video file found</source>
         <translation>Tidak ditemukan berkas video</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="4138"/>
+        <location filename="../src/common/mainwindow.cpp" line="4212"/>
         <source>Please load the video first</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="4278"/>
-        <location filename="../src/common/mainwindow.cpp" line="4286"/>
+        <location filename="../src/common/mainwindow.cpp" line="4352"/>
+        <location filename="../src/common/mainwindow.cpp" line="4360"/>
         <source>Please exit smart dock</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="4566"/>
+        <location filename="../src/common/mainwindow.cpp" line="4639"/>
         <source>The CD/DVD has been ejected</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -902,12 +909,12 @@
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="335"/>
         <source>Video CodecID</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="336"/>
         <source>Video CodeRate</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="337"/>
@@ -919,7 +926,7 @@
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="338"/>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="370"/>
         <source>%1 bps</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="339"/>
@@ -954,17 +961,17 @@
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="367"/>
         <source>Audio CodecID</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="368"/>
         <source>Audio CodeRate</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="371"/>
         <source>Audio digit</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="371"/>
@@ -984,7 +991,7 @@
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="373"/>
         <source>Sampling</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/widgets/movieinfo_dialog.cpp" line="373"/>
@@ -995,7 +1002,7 @@
 <context>
     <name>dmr::MpvProxy</name>
     <message>
-        <location filename="../src/backends/mpv/mpv_proxy.cpp" line="1610"/>
+        <location filename="../src/backends/mpv/mpv_proxy.cpp" line="1640"/>
         <source>Internal</source>
         <translation>Internal</translation>
     </message>
@@ -1047,17 +1054,17 @@
     <message>
         <location filename="../src/common/dmr_settings.cpp" line="105"/>
         <source>Single play</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/common/dmr_settings.cpp" line="106"/>
         <source>Single loop</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/common/dmr_settings.cpp" line="107"/>
         <source>List loop</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/common/dmr_settings.cpp" line="112"/>
@@ -1088,92 +1095,93 @@
 <context>
     <name>dmr::ToolboxProxy</name>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="1318"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="1304"/>
         <source>Play/Pause</source>
         <translation>Mainkan/Jeda</translation>
     </message>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="1318"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2522"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="1304"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2533"/>
         <source>Previous</source>
         <translation>Sebelumnya</translation>
     </message>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="1318"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2540"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="1304"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2551"/>
         <source>Next</source>
         <translation>Selanjutnya</translation>
     </message>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="1319"/>
         <source>Subtitles</source>
-        <translation>Terjemahan</translation>
+        <translation type="vanished">Terjemahan</translation>
     </message>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="1319"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2011"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2558"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="1305"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2031"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2033"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2569"/>
         <source>Fullscreen</source>
         <translation>Layar Penuh</translation>
     </message>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="1319"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2575"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="1305"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2586"/>
         <source>Playlist</source>
         <translation>Daftar Putar</translation>
     </message>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="1322"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="1308"/>
         <source>play</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="1322"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="1308"/>
         <source>prev</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="1322"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="1308"/>
         <source>next</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="1323"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2234"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2247"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="1309"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2245"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2258"/>
         <source>fs</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="1323"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2234"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2247"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="1309"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2245"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2258"/>
         <source>list</source>
         <translation>daftar</translation>
     </message>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2008"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2025"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2027"/>
         <source>Exit fullscreen</source>
         <translation>Keluar layar penuh</translation>
     </message>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2067"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2069"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2089"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2091"/>
         <source>Pause</source>
         <translation>Jeda</translation>
     </message>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2122"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2124"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2506"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2144"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2146"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2517"/>
         <source>Play</source>
         <translation>Putar</translation>
     </message>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2234"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2247"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2245"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2258"/>
         <source>sub</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>
