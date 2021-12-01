@@ -214,7 +214,8 @@ public:
         t->layout()->setContentsMargins(5, 10, 5, 10);
         t->hide();
         setProperty("HintWidget", QVariant::fromValue<QWidget *>(t));
-        installEventFilter(th);
+        if (!utils::check_wayland_env())
+            installEventFilter(th);
         connect(_playlist, &PlaylistWidget::sizeChange, this, &PlayItemWidget::slotSizeChange);
 
         m_opacityEffect = new QGraphicsOpacityEffect;
