@@ -1101,13 +1101,13 @@
         <location filename="../src/widgets/toolbox_proxy.cpp" line="1304"/>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="2533"/>
         <source>Previous</source>
-        <translation>上一部</translation>
+        <translation>上一個</translation>
     </message>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="1304"/>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="2551"/>
         <source>Next</source>
-        <translation>下一部</translation>
+        <translation>下一個</translation>
     </message>
     <message>
         <source>Subtitles</source>

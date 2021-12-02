@@ -836,7 +836,7 @@
     <message>
         <location filename="../src/common/mainwindow.cpp" line="4877"/>
         <source>The action is not supported in this video</source>
-        <translation type="unfinished"/>
+        <translation>Veprimi nuk mbulohet në këtë video</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2044"/>
