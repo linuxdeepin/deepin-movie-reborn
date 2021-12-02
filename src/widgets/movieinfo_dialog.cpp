@@ -202,15 +202,6 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
     this->setAccessibleName(MOVIE_INFO_DIALOG);
     m_titleList.clear();
 
-    bool checkWayland = utils::check_wayland_env();
-    QVBoxLayout *layout = new QVBoxLayout(this);
-    layout->setSpacing(0);
-    if (checkWayland) {
-        layout->setContentsMargins(0, 50, 0, 0);
-    } else {
-        layout->setContentsMargins(0, 0, 0, 0);
-    }
-
     DWidget *content = new DWidget();
     addContent(content);
 
