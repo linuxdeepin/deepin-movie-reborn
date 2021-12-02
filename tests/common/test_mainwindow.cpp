@@ -122,6 +122,47 @@ TEST(MainWindow, init)
     QApplication::sendEvent(w, &drop);
     QVERIFY(drop.isAccepted());
     QCOMPARE(drop.dropAction(), Qt::CopyAction);
+    QTest::qWait(100);
+}
+
+TEST(MainWindow, nakedstream)
+{
+    MainWindow *w = dApp->getMainWindow();
+    ToolboxProxy *toolboxProxy = w->toolbox();
+    DMRSlider* dmrSlider = toolboxProxy->getSlider();
+    VolumeSlider* volumeSlider = toolboxProxy->volumeSlider();
+    VolumeButton *volBtn = toolboxProxy->volBtn();
+    PlayerEngine *engine =  w->engine();
+    QList<QUrl> listPlayFiles;
+    listPlayFiles << QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/test.264");
+
+    w->show();
+    engine->playlist().loadPlaylist();
+    engine->playlist().clear();
+    engine->addPlayFiles(listPlayFiles);
+    QTest::qWait(200);
+    engine->playByName(QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/test.264"));
+
+    QTest::mousePress(dmrSlider, Qt::LeftButton, Qt::NoModifier, QPoint(), 100);
+    QTest::mouseMove(dmrSlider, QPoint(), 100);
+    QTest::mouseRelease(dmrSlider, Qt::LeftButton, Qt::NoModifier, QPoint(), 100);
+    QTest::keyClick(dmrSlider, Qt::Key_Left, Qt::NoModifier, 200);
+    QTest::keyClick(dmrSlider, Qt::Key_Right, Qt::NoModifier, 200);
+
+    QTest::mouseClick(volBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 200);
+    QTest::qWait(500);
+    QTest::mousePress(volumeSlider, Qt::LeftButton, Qt::NoModifier, QPoint(), 100);
+    QTest::mouseMove(volumeSlider, QPoint(), 100);
+    QTest::mouseRelease(volumeSlider, Qt::LeftButton, Qt::NoModifier, QPoint(), 100);
+    QTest::keyClick(dmrSlider, Qt::Key_M, Qt::NoModifier, 200);
+    QTest::keyClick(w, Qt::Key_Up, Qt::ControlModifier | Qt::AltModifier, 200);
+    QTest::keyClick(w, Qt::Key_Down, Qt::ControlModifier | Qt::AltModifier, 200);
+
+    // reset case
+    QTest::mouseMove(volBtn, QPoint(), 200);
+    QTest::keyClick(volBtn, Qt::Key_Enter, Qt::NoModifier, 200);
+    QTest::qWait(1000);
+    engine->playByName(QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/demo.mp4"));
 }
 
 #ifndef __mips__
