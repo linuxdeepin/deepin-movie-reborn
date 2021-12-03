@@ -484,35 +484,6 @@ void PlaylistModel::initFFmpeg()
     m_initFFmpeg = true;
 }
 
-PlaylistModel::~PlaylistModel()
-{
-    qInfo() << __func__;
-
-    delete m_pdataMutex;
-
-#ifndef _LIBDMR_
-    if (Settings::get().isSet(Settings::ClearWhenQuit)) {
-        clearPlaylist();
-    }
-#endif
-    if (m_getThumanbil) {
-        if (m_getThumanbil->isRunning()) {
-            m_getThumanbil->stop();
-        }
-        m_getThumanbil->deleteLater();
-        m_getThumanbil = nullptr;
-    }
-    if (m_video_thumbnailer != nullptr) {
-        m_mvideo_thumbnailer_destroy(m_video_thumbnailer);
-        m_video_thumbnailer = nullptr;
-    }
-    if (m_image_data != nullptr) {
-        m_mvideo_thumbnailer_destroy_image_data(m_image_data);
-        m_image_data = nullptr;
-    }
-
-}
-
 qint64 PlaylistModel::getUrlFileTotalSize(QUrl url, int tryTimes) const
 {
     qint64 size = -1;
@@ -802,38 +773,8 @@ void PlaylistModel::tryPlayCurrent(bool next)
     }
     emit itemInfoUpdated(_current);
     if (pif.valid) {
-//        if (!utils::check_wayland_env()) {
         _engine->requestPlay(_current);
         emit currentChanged();
-        // This code is useless at present.If there is
-        // no problem in the future,can consider deleting it.
-//        } else {
-//            //本地视频单个循环/列表循环，小于1s视频/无法解码视频，不播放，直接播放下一个
-//            if ((pif.mi.duration <= 1 || pif.thumbnail.isNull()) && pif.url.isLocalFile()) {
-//                if (1 == count() || _playMode == PlayMode::SingleLoop || _playMode == PlayMode::SinglePlay) {
-//                    qWarning() << "return for video is cannot play and loop play!";
-//                    return;
-//                }
-//                if (_current < count() - 1) {
-//                    _current++;
-//                    _last = _current;
-//                } else {
-//                    _current = 0;
-//                }
-//            }
-//            _hasNormalVideo = false;
-//            bool result = std::any_of(_infos.begin(), _infos.end(), [ = ](const PlayItemInfo & info) {
-//                return (info.valid && info.mi.duration > 1 && !info.thumbnail.isNull()) || !pif.url.isLocalFile();
-//            });
-//            if (result) {
-//                _hasNormalVideo = true;
-//            }
-
-//            if (_hasNormalVideo) {
-//                _engine->requestPlay(_current);
-//                emit currentChanged();
-//            }
-//        }
     } else {
         _current = -1;
         bool canPlay = false;
@@ -1595,6 +1536,34 @@ int PlaylistModel::indexOf(const QUrl &url)
     return static_cast<int>(std::distance(_infos.begin(), p));
 }
 
+PlaylistModel::~PlaylistModel()
+{
+    qInfo() << __func__;
+
+    delete m_pdataMutex;
+
+#ifndef _LIBDMR_
+    if (Settings::get().isSet(Settings::ClearWhenQuit)) {
+        clearPlaylist();
+    }
+#endif
+    if (m_getThumanbil) {
+        if (m_getThumanbil->isRunning()) {
+            m_getThumanbil->stop();
+        }
+        m_getThumanbil->deleteLater();
+        m_getThumanbil = nullptr;
+    }
+    if (m_video_thumbnailer != nullptr) {
+        m_mvideo_thumbnailer_destroy(m_video_thumbnailer);
+        m_video_thumbnailer = nullptr;
+    }
+    if (m_image_data != nullptr) {
+        m_mvideo_thumbnailer_destroy_image_data(m_image_data);
+        m_image_data = nullptr;
+    }
+
+}
 
 LoadThread::LoadThread(PlaylistModel *model, const QList<QUrl> &urls): _urls(urls)
 {
