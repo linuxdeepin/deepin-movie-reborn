@@ -1750,11 +1750,7 @@ void MainWindow::loadPlayList()
 
     if (!m_listOpenFiles.isEmpty()) {
         if (m_listOpenFiles.size() == 1) {
-            if (QUrl(m_listOpenFiles[0]).isLocalFile()) {
-                play(m_listOpenFiles[0]);
-            } else {
-                play(QUrl::fromLocalFile(m_listOpenFiles[0]));
-            }
+            play(QUrl::fromLocalFile(m_listOpenFiles[0]));
         } else {
             playList(m_listOpenFiles);
         }
@@ -1765,11 +1761,19 @@ void MainWindow::setOpenFiles(QStringList &list)
 {
     //统一使用绝对路径，避免重复视频导入播放列表
     for(QString fileName: list) {
+        QString filePath;
         if (QUrl(fileName).isLocalFile()) {
-            m_listOpenFiles.append(fileName);
+            filePath = QUrl(fileName).toLocalFile();
         } else {
-            m_listOpenFiles.append(QFileInfo(fileName).absoluteFilePath());
+            filePath = QFileInfo(fileName).absoluteFilePath();
         }
+
+        while (QFileInfo(filePath).isSymLink()) {
+            filePath = QFileInfo(filePath).symLinkTarget();
+        }
+        QUrl realUrl = QUrl::fromLocalFile(filePath);
+
+        m_listOpenFiles.append(realUrl.toLocalFile());
     }
 }
 
@@ -2976,15 +2980,9 @@ void MainWindow::play(const QUrl &url)
         activateWindow();
     }
 
-    QString filePath = url.toLocalFile();
-    while (QFileInfo(filePath).isSymLink()) {
-        filePath = QFileInfo(filePath).symLinkTarget();
-    }
-    QUrl realUrl = QUrl::fromLocalFile(filePath);
-
-    if (realUrl.scheme().startsWith("dvd")) {
-        m_dvdUrl = realUrl;
-        if (!m_pEngine->addPlayFile(realUrl)) {
+    if (url.scheme().startsWith("dvd")) {
+        m_dvdUrl = url;
+        if (!m_pEngine->addPlayFile(url)) {
             auto msg = QString(tr("Cannot play the disc"));
             m_pCommHintWid->updateWithMessage(msg);
             return;
@@ -2994,13 +2992,13 @@ void MainWindow::play(const QUrl &url)
             m_pDVDHintWid->updateWithMessage(msg, true);
         }
     } else {
-        if (!m_pEngine->addPlayFile(realUrl)) {
-            auto msg = QString(tr("Invalid file: %1").arg(realUrl.fileName()));
+        if (!m_pEngine->addPlayFile(url)) {
+            auto msg = QString(tr("Invalid file: %1").arg(url.fileName()));
             m_pCommHintWid->updateWithMessage(msg);
             return;
         }
     }
-    m_pEngine->playByName(realUrl);
+    m_pEngine->playByName(url);
 }
 
 void MainWindow::updateProxyGeometry()

@@ -220,13 +220,6 @@ public:
         }
     }
 
-    /*bool cacheExists(const QUrl &url)
-    {
-        auto h = hashUrl(url);
-        auto filename = QString("%1/%2").arg(_cacheInfoPath).arg(h);
-        return QFile::exists(filename);
-    }*/
-
 private:
     PersistentManager()
     {
@@ -327,6 +320,11 @@ struct MovieInfo PlaylistModel::parseFromFile(const QFileInfo &fi, bool *ok)
         mi.aDigit = audio_dec_ctx->format;
         mi.channels = audio_dec_ctx->channels;
         mi.sampling = audio_dec_ctx->sample_rate;
+
+#ifdef USE_TEST
+        QPixmap musicimage;
+        getMusicPix(fi, musicimage);
+#endif
     }
 
     auto duration = av_ctx->duration == AV_NOPTS_VALUE ? 0 : av_ctx->duration;
@@ -517,16 +515,7 @@ qint64 PlaylistModel::getUrlFileTotalSize(QUrl url, int tryTimes) const
         QVariant var = reply->header(QNetworkRequest::ContentLengthHeader);
         size = var.toLongLong();
         reply->deleteLater();
-//        qInfo() << reply->hasRawHeader("Content-Encoding ");
-//        qInfo() << reply->hasRawHeader("Content-Language");
-//        qInfo() << reply->hasRawHeader("Content-Length");
-//        qInfo() << reply->hasRawHeader("Content-Type");
-//        qInfo() << reply->hasRawHeader("Last-Modified");
-//        qInfo() << reply->hasRawHeader("Expires");
-
         break;
-
-
     } while (tryTimes--);
 
 
@@ -1404,17 +1393,6 @@ bool PlaylistModel::getMusicPix(const QFileInfo &fi, QPixmap &rImg)
         return false;
     }
 
-#ifdef __x86_64__
-    QString path = "/usr/lib/x86_64-linux-gnu/";
-#elif __mips__
-    QString path = "/usr/lib/mips64el-linux-gnuabi64/";
-#elif __aarch64__
-    QString path = "/usr/lib/aarch64-linux-gnu/";
-#elif __sw_64__
-    QString path = "/usr/lib/sw_64-linux-gnu/";
-#else
-    QString path = "/usr/lib/i386-linux-gnu/";
-#endif
     QLibrary library(libPath("libavformat.so"));
     mvideo_avformat_open_input g_mvideo_avformat_open_input_temp = (mvideo_avformat_open_input) library.resolve("avformat_open_input");
     mvideo_avformat_close_input g_mvideo_avformat_close_input = (mvideo_avformat_close_input) library.resolve("avformat_close_input");
