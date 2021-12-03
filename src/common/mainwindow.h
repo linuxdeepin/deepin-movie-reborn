@@ -81,7 +81,6 @@ class PlaylistWidget;
 class PlayerEngine;
 class NotificationWidget;
 class MovieProgressIndicator;
-class MainWindowPropertyMonitor;
 class MovieWidget;
 
 class IconButton: public DPushButton
@@ -162,12 +161,6 @@ public:
         //DIconButton中icon尺寸与button尺寸不一致，导致图表与问题不对齐
         m_pTextLabel->setFixedHeight(25);
         m_pTextLabel->setAlignment(Qt::AlignLeft | Qt::AlignTop);
-        //DLabel自动设置字体颜色，无需单独设置
-//        QPalette pe;
-//        pe.setColor(QPalette::WindowText, QColor(65, 77, 104));
-//        pe.setColor(QPalette::WindowText);
-//        QPalette::WindowText;
-//        m_pTextLabel->setPalette(pe);
 
         mainLayout->addWidget(m_pIconBtn);
         mainLayout->addWidget(m_pTextLabel);
@@ -225,39 +218,6 @@ private:
     DIconButton *m_pIconBtn {nullptr};
     DLabel *m_pTextLabel{nullptr};
 };
-
-// 未使用，可删除
-/*class FloatingMessageWindow: public DFloatingMessage
-{
-public:
-    using DFloatingMessage::DFloatingMessage;
-
-private:
-    void paintEvent(QPaintEvent *event) override
-    {
-#if defined(__arrch64__) || defined(__mips__)
-        QPainter painter(this);
-        QColor color = QColor(23, 23, 23, 255 * 8 / 10);
-        if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
-            color = QColor(252, 252, 252, 255 * 8 / 10);
-        }
-
-        painter.fillRect(rect(), color);
-#else
-        if (!CompositingManager::get().composited()) {
-            QPainter painter(this);
-            QColor color = QColor(23, 23, 23, 255 * 8 / 10);
-            if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
-                color = QColor(252, 252, 252, 255 * 8 / 10);
-            }
-            painter.fillRect(rect(), color);
-        } else {
-            DFloatingMessage::paintEvent(event);
-        }
-
-#endif
-    }
-};*/
 
 /**
  * @file 主窗口，负责显示和交互
@@ -632,7 +592,6 @@ private:
     int m_iAngleDelta;                                ///鼠标滚轮滚动的距离
     bool m_bStartAnimation;                           ///是否开始动画，如果开始不允许做其他操作
     QDBusInterface *m_pDBus;
-    MainWindowPropertyMonitor *m_pMWPM;
     bool m_bIsFirstLoadDBus;
     Presenter *m_pPresenter;
     MovieWidget *m_pMovieWidget;
@@ -642,23 +601,6 @@ private:
     bool m_isSettingMiniMode{false};                  ///mini mode setting status
     Qt::WindowStates m_preMiniWindowState {Qt::WindowNoState};  ///window state before mini mode
     bool m_bMaximized;                                ///全屏前最大化窗口记录        
-};
-
-//窗管返回事件过滤器
-class MainWindowPropertyMonitor: public QAbstractNativeEventFilter
-{
-public:
-    explicit MainWindowPropertyMonitor(MainWindow *);
-    ~MainWindowPropertyMonitor();
-    /**
-     * @brief 事件过滤器 cppcheck 误报
-     */
-    bool nativeEventFilter(const QByteArray &eventType, void *message, long *);
-
-    MainWindow *m_pMainWindow {nullptr};
-    xcb_atom_t m_atomWMState;
-    QList<unsigned int> m_list;
-    bool m_bStart;
 };
 };
 

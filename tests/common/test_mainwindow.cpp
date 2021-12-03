@@ -428,6 +428,13 @@ TEST(MainWindow, shortCutPlay)
         testEventList.addKeyClick(Qt::Key_F3, Qt::NoModifier, 500);
     }
 
+    if (w->engine()->state() == PlayerEngine::Idle) {
+        w->engine()->playByName(QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/demo.mp4"));
+    }
+    while (w->engine()->state() == PlayerEngine::Idle) {
+        QTest::qWait(200);
+    }
+
     //加速播放
     for (int i = 0; i < 10 ; i++) {
         testEventList.addKeyClick(Qt::Key_Right, Qt::ControlModifier, 50);
@@ -486,8 +493,10 @@ TEST(MainWindow, miniMode)
     }
     qDebug() << __func__ << engine->state() << "playlist count:" << engine->playlist().count();
 
-    w->getMiniMode();
     QTest::keyClick(w, Qt::Key_F2, Qt::NoModifier, 500);
+    if (!w->getMiniMode()) {
+        w->requestAction(ActionFactory::ActionKind::ToggleMiniMode);
+    }
 #if defined(__aarch64__)
     DIconButton *miniPauseBtn = w->findChild<DIconButton *>("MiniPlayBtn");
 #else
@@ -863,6 +872,12 @@ TEST(ToolBox, UrlDialog)
 
     uDlg->show();
     QTest::mouseMove(lineEdit, QPoint(), 200);
+    QTest::keyClicks(lineEdit, QString("https://www.baidu.com"), Qt::NoModifier, 1);
+    QTest::mouseMove(uDlg->getButton(1), QPoint(), 200);
+    QTest::mouseClick(uDlg->getButton(1), Qt::LeftButton, Qt::NoModifier, QPoint(), 200);
+
+    uDlg->show();
+    QTest::mouseMove(lineEdit, QPoint(), 200);
     QTest::keyClicks(lineEdit,
                      QString("https://stream7.iqilu.com/10339/upload_transcode/202002/18/20200218093206z8V1JuPlpe.mp4"),
                      Qt::NoModifier, 1);
@@ -881,6 +896,9 @@ TEST(ToolBox, fullScreenBtn)
 
     QTest::mouseMove(fsBtn, QPoint(), 200);
     QTest::mouseClick(fsBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 500);
+
+    QContextMenuEvent context(QContextMenuEvent::Mouse, QPoint(200, 200));
+    QApplication::sendEvent(w, &context);
 
 //    DGuiApplicationHelper::instance()->setThemeType(DGuiApplicationHelper::DarkType);
     emit DGuiApplicationHelper::instance()->paletteTypeChanged(DGuiApplicationHelper::DarkType);

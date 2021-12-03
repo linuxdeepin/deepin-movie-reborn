@@ -101,6 +101,10 @@ TEST(libdmr, playlistModel)
     engine->playlist().savePlaylist();
     engine->playlist().clearPlaylist();
 
+    QUrl url = QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/demo.mp4");
+    bool is = false;
+    engine->playlist().getMovieInfo(url, &is);
+    engine->playlist().getMovieCover(url);
 }
 
 TEST(libdmr, compositingManager)

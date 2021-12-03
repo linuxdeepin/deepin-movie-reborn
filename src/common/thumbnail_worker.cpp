@@ -42,17 +42,6 @@
 #include <dlfcn.h>
 
 #define SIZE_THRESHOLD (10 * 1<<20)
-#ifdef __x86_64__
-const char *path = "/usr/lib/x86_64-linux-gnu/libffmpegthumbnailer.so.4";
-#elif __mips__
-const char *path = "/usr/lib/mips64el-linux-gnuabi64/libffmpegthumbnailer.so.4";
-#elif __aarch64__
-const char *path = "/usr/lib/aarch64-linux-gnu/libffmpegthumbnailer.so.4";
-#elif __sw_64__
-const char *path = "/usr/lib/sw_64-linux-gnu/libffmpegthumbnailer.so.4";
-#else
-const char *path = "/usr/lib/i386-linux-gnu/libffmpegthumbnailer.so.4";
-#endif
 
 namespace dmr {
 static std::atomic<ThumbnailWorker *> _instance { nullptr };

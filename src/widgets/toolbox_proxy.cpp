@@ -778,37 +778,6 @@ private:
     bool m_bIsWM{false};
 };
 
-viewProgBarLoad::viewProgBarLoad(PlayerEngine *engine, DMRSlider *progBar, ToolboxProxy *parent)
-{
-    initMember();
-    m_pParent = parent;
-    m_pEngine = engine;
-    m_pProgBar = progBar;
-    m_seekTime = new char[12];
-    initThumb();
-}
-
-viewProgBarLoad::~viewProgBarLoad()
-{
-    delete [] m_seekTime;
-    m_seekTime = nullptr;
-
-    if (m_video_thumbnailer != nullptr) {
-        m_mvideo_thumbnailer_destroy(m_video_thumbnailer);
-        m_video_thumbnailer = nullptr;
-    }
-}
-
-void viewProgBarLoad::setListPixmapMutex(QMutex *pMutex)
-{
-    m_pListPixmapMutex = pMutex;
-}
-
-void viewProgBarLoad::run()
-{
-    loadViewProgBar(m_pParent->size());
-}
-
 QString libPath(const QString &strlib)
 {
     QDir  dir;
@@ -1007,20 +976,6 @@ void ToolboxProxy::updateplaylisticon()
         m_pListBtn->setIcon(QIcon(":/icons/deepin/builtin/light/checked/episodes_checked.svg"));
     } else {
         m_pListBtn->setIcon(QIcon::fromTheme("dcc_episodes"));
-    }
-}
-/**
- * @brief ~ToolboxProxy 析构函数
- */
-ToolboxProxy::~ToolboxProxy()
-{
-    ThumbnailWorker::get().stop();
-    delete m_pPreviewer;
-    delete m_pPreviewTime;
-
-    if (m_pWorker) {
-        m_pWorker->quit();
-        m_pWorker->deleteLater();
     }
 }
 
@@ -1241,10 +1196,6 @@ void ToolboxProxy::setup()
     m_pFullScreenBtn->setIconSize(QSize(36, 36));
     m_pFullScreenBtn->setFixedSize(50, 50);
     m_pFullScreenBtn->initToolTip();
-    if (CompositingManager::isPadSystem()) {
-        ///There is no fullscreen switch in pad mode,so hide the button
-        m_pFullScreenBtn->hide();
-    }
     connect(m_pFullScreenBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(m_pFullScreenBtn, "fs");
 
@@ -2260,65 +2211,6 @@ void ToolboxProxy::buttonLeave()
     }
 }
 
-/*void ToolboxProxy::updatePosition(const QPoint &p)
-{
-    QPoint pos(p);
-    pos.ry() += m_pMainWindow->height() - height();
-    windowHandle()->setFramePosition(pos);
-}*/
-
-/*void ToolboxProxy::paintEvent(QPaintEvent *pe)
-{
-    QPainter painter(this);
-    painter.setRenderHint(QPainter::Antialiasing);
-    QRectF bgRect;
-    bgRect.setSize(size());
-    const QPalette pal = QGuiApplication::palette();//this->palette();
-    static int offset = 14;
-
-    DGuiApplicationHelper::ColorType themeType = DGuiApplicationHelper::instance()->themeType();
-    QColor *bgColor, outBdColor, inBdColor;
-    if (themeType == DGuiApplicationHelper::LightType) {
-        outBdColor = QColor(0, 0, 0, 25);
-        inBdColor = QColor(247, 247, 247, 0.4 * 255);
-        bgColor = new QColor(247, 247, 247, 0.8 * 255);
-    } else if (themeType == DGuiApplicationHelper::DarkType) {
-        outBdColor = QColor(0, 0, 0, 0.8 * 255);
-        inBdColor = QColor(255, 255, 255, 0.05 * 255);
-        bgColor = new QColor(32, 32, 32, 0.9 * 255);
-    } else {
-        outBdColor = QColor(0, 0, 0, 25);
-        inBdColor = QColor(247, 247, 247, 0.4 * 255);
-        bgColor = new QColor(247, 247, 247, 0.8 * 255);
-    }
-
-    {
-        QPainterPath pp;
-        pp.setFillRule(Qt::WindingFill);
-        QPen pen(outBdColor, 1);
-        painter.setPen(pen);
-        pp.addRoundedRect(bgRect, RADIUS_MV, RADIUS_MV);
-        painter.fillPath(pp, *bgColor);
-//        painter.drawPath(pp);
-
-        painter.drawLine(offset, rect().y(), width() - offset, rect().y());
-        painter.drawLine(offset, height(), width() - offset, height());
-        painter.drawLine(rect().x(), offset, rect().x(), height() - offset);
-        painter.drawLine(width(), offset, width(), height() - offset);
-    }
-
-//    {
-//        auto view_rect = bgRect.marginsRemoved(QMargins(1, 1, 1, 1));
-//        QPainterPath pp;
-//        pp.setFillRule(Qt::WindingFill);
-//        painter.setPen(inBdColor);
-//        pp.addRoundedRect(view_rect, RADIUS_MV, RADIUS_MV);
-//        painter.drawPath(pp);
-//    }
-
-    QWidget::paintEvent(pe);
-}*/
-
 void ToolboxProxy::showEvent(QShowEvent *event)
 {
     updateTimeLabel();
@@ -2662,6 +2554,53 @@ void ToolboxProxy::updateSliderPoint(QPoint &point)
 {
     m_pVolSlider->updatePoint(point);
 }
+
+/**
+ * @brief ~ToolboxProxy 析构函数
+ */
+ToolboxProxy::~ToolboxProxy()
+{
+    ThumbnailWorker::get().stop();
+    delete m_pPreviewer;
+    delete m_pPreviewTime;
+
+    if (m_pWorker) {
+        m_pWorker->quit();
+        m_pWorker->deleteLater();
+    }
+}
+
+viewProgBarLoad::viewProgBarLoad(PlayerEngine *engine, DMRSlider *progBar, ToolboxProxy *parent)
+{
+    initMember();
+    m_pParent = parent;
+    m_pEngine = engine;
+    m_pProgBar = progBar;
+    m_seekTime = new char[12];
+    initThumb();
+}
+
+void viewProgBarLoad::setListPixmapMutex(QMutex *pMutex)
+{
+    m_pListPixmapMutex = pMutex;
+}
+
+void viewProgBarLoad::run()
+{
+    loadViewProgBar(m_pParent->size());
+}
+
+viewProgBarLoad::~viewProgBarLoad()
+{
+    delete [] m_seekTime;
+    m_seekTime = nullptr;
+
+    if (m_video_thumbnailer != nullptr) {
+        m_mvideo_thumbnailer_destroy(m_video_thumbnailer);
+        m_video_thumbnailer = nullptr;
+    }
+}
+
 }
 #undef THEME_TYPE
 #include "toolbox_proxy.moc"

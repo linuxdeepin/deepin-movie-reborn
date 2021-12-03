@@ -374,57 +374,6 @@ public:
 };
 #endif
 
-#ifndef USE_DXCB
-MainWindowPropertyMonitor::MainWindowPropertyMonitor(MainWindow *pParent) : QAbstractNativeEventFilter(), m_pMainWindow(pParent)
-{
-    m_bStart = false;
-    //安装事件过滤器
-    qApp->installNativeEventFilter(this);
-}
-MainWindowPropertyMonitor::~MainWindowPropertyMonitor()
-{
-    qApp->removeNativeEventFilter(this);
-}
-bool MainWindowPropertyMonitor::nativeEventFilter(const QByteArray &eventType, void *message, long *)
-{
-    xcb_generic_event_t *xevent = (xcb_generic_event_t *)message;
-    uint response_type = xevent->response_type & ~0x80;
-    if (XCB_PROPERTY_NOTIFY == response_type) {
-        auto propertyNotify = reinterpret_cast<xcb_property_notify_event_t *>(xevent);
-        //经过观察发现【专业版】设置窗口总在最前会返回一个351、一个483和一堆327
-        //目前先按照此方法修改，后期在个人版和社区版可能会存在问题
-        //个人版参考378
-        //p.s. 360推测是鼠标点击事件，327推测窗口刷新事件
-        switch (propertyNotify->atom) {
-        case 351:
-            m_bStart = true;
-            break;
-        case 483:
-            break;
-        case 327:
-            m_bStart = false;
-            if (!m_list.isEmpty() && m_list.size() == 2) {
-                //判断是否符合标志位
-                QList<unsigned int> temp {351, 483};
-                if (m_list == temp) {
-                    //切换窗口置顶，此处需注意，应用切换可以传递至窗管，窗管无法传递至应用
-                    //所以此处只需单向传递即可
-                    m_pMainWindow->requestAction(ActionFactory::ActionKind::WindowAbove);
-                }
-            }
-            m_list.clear();
-            break;
-        default:
-            break;
-        }
-        if (m_bStart) {
-            m_list << propertyNotify->atom;
-        }
-    }
-    return false;
-}
-#endif
-
 class MainWindowEventListener : public QObject
 {
     Q_OBJECT
@@ -994,9 +943,6 @@ MainWindow::MainWindow(QWidget *parent)
     QTimer::singleShot(500, [this](){
         this->windowHandle()->installEventFilter(m_pEventListener);
 
-        m_pMWPM = new MainWindowPropertyMonitor(this);
-        QAbstractEventDispatcher::instance()->installNativeEventFilter(m_pMWPM);
-
         connect(this, &MainWindow::windowEntered, &MainWindow::resumeToolsWindow);
         connect(this, &MainWindow::windowLeaved, &MainWindow::suspendToolsWindow);
         bool bComposited1 = CompositingManager::get().composited();;
@@ -1332,62 +1278,6 @@ void MainWindow::onMonitorMotionNotify(int nX, int nY)
     }
 }
 #endif
-
-MainWindow::~MainWindow()
-{
-    qInfo() << __func__;
-    //Do not enter CloseEvent when exiting from the title bar menu, so add the save function here
-    //powered by xxxxp
-    if (Settings::get().isSet(Settings::ResumeFromLast)) {
-        int nCur = 0;
-        nCur = m_pEngine->playlist().current();
-        if (nCur >= 0) {
-            Settings::get().setInternalOption("playlist_pos", nCur);
-        }
-    }
-    m_pEngine->savePlaybackPosition();
-    if (m_pEventListener) {
-        this->windowHandle()->removeEventFilter(m_pEventListener);
-        delete m_pEventListener;
-        m_pEventListener = nullptr;
-    }
-
-    if (!utils::check_wayland_env()) {
-        disconnect(m_pEngine, 0, 0, 0);
-        disconnect(&m_pEngine->playlist(), 0, 0, 0);
-    }
-
-    if (m_nLastCookie > 0) {
-        utils::UnInhibitStandby(m_nLastCookie);
-        qInfo() << "uninhibit cookie" << m_nLastCookie;
-        m_nLastCookie = 0;
-    }
-    if (m_nPowerCookie > 0) {
-        utils::UnInhibitPower(m_nPowerCookie);
-        m_nPowerCookie = 0;
-    }
-    delete m_pEngine;
-    m_pEngine = nullptr;
-
-    delete m_pMWPM;
-    m_pMWPM = nullptr;
-
-    m_diskCheckThread.stop();
-
-    ThreadPool::instance()->quitAll();
-
-#ifdef USE_DXCB
-    if (_evm) {
-        disconnect(_evm, 0, 0, 0);
-        delete _evm;
-    }
-#endif
-
-    if (m_pShortcutViewProcess) {
-        m_pShortcutViewProcess->deleteLater();
-        m_pShortcutViewProcess = nullptr;
-    }
-}
 
 bool MainWindow::judgeMouseInWindow(QPoint pos)
 {
@@ -4270,25 +4160,6 @@ void MainWindow::popupAdapter(QIcon icon, QString sText)
     m_pPopupWid->raise();
 }
 
-/*void MainWindow::setHwaccelMode(const QVariant &value)
-{
-    QString sHeaccelMode;
-    auto mode_opt = Settings::get().settings()->option("base.play.hwaccel");
-
-    if (value == -1) {
-        sHeaccelMode = mode_opt->data("items").toStringList()[mode_opt->value().toInt()];
-    } else {
-        sHeaccelMode = mode_opt->data("items").toStringList()[value.toInt()];
-    }
-    if (sHeaccelMode == tr("Auto")) {
-        m_pEngine->changehwaccelMode(Backend::hwaccelAuto);
-    } else if (sHeaccelMode == tr("Open")) {
-        m_pEngine->changehwaccelMode(Backend::hwaccelOpen);
-    } else if (sHeaccelMode == tr("Close")) {
-        m_pEngine->changehwaccelMode(Backend::hwaccelClose);
-    }
-}*/
-
 QString MainWindow::lastOpenedPath()
 {
     QString lastPath = Settings::get().generalOption("last_open_path").toString();
@@ -4686,7 +4557,6 @@ void MainWindow::initMember()
     m_pCommHintWid = nullptr;
     m_pShortcutViewProcess = nullptr;
     m_pDBus = nullptr;
-    m_pMWPM = nullptr;
     m_pPresenter = nullptr;
     m_pMovieWidget = nullptr;
     m_bInBurstShootMode = false;
@@ -4988,5 +4858,58 @@ int MainWindow::getDisplayVolume()
 bool MainWindow::getMiniMode()
 {
     return m_bMiniMode;
+}
+
+MainWindow::~MainWindow()
+{
+    qInfo() << __func__;
+    //Do not enter CloseEvent when exiting from the title bar menu, so add the save function here
+    //powered by xxxxp
+    if (Settings::get().isSet(Settings::ResumeFromLast)) {
+        int nCur = 0;
+        nCur = m_pEngine->playlist().current();
+        if (nCur >= 0) {
+            Settings::get().setInternalOption("playlist_pos", nCur);
+        }
+    }
+    m_pEngine->savePlaybackPosition();
+    if (m_pEventListener) {
+        this->windowHandle()->removeEventFilter(m_pEventListener);
+        delete m_pEventListener;
+        m_pEventListener = nullptr;
+    }
+
+    if (!utils::check_wayland_env()) {
+        disconnect(m_pEngine, 0, 0, 0);
+        disconnect(&m_pEngine->playlist(), 0, 0, 0);
+    }
+
+    if (m_nLastCookie > 0) {
+        utils::UnInhibitStandby(m_nLastCookie);
+        qInfo() << "uninhibit cookie" << m_nLastCookie;
+        m_nLastCookie = 0;
+    }
+    if (m_nPowerCookie > 0) {
+        utils::UnInhibitPower(m_nPowerCookie);
+        m_nPowerCookie = 0;
+    }
+    delete m_pEngine;
+    m_pEngine = nullptr;
+
+    m_diskCheckThread.stop();
+
+    ThreadPool::instance()->quitAll();
+
+#ifdef USE_DXCB
+    if (_evm) {
+        disconnect(_evm, 0, 0, 0);
+        delete _evm;
+    }
+#endif
+
+    if (m_pShortcutViewProcess) {
+        m_pShortcutViewProcess->deleteLater();
+        m_pShortcutViewProcess = nullptr;
+    }
 }
 #include "mainwindow.moc"

@@ -109,10 +109,6 @@ VolumeSlider::VolumeSlider(MainWindow *mw, QWidget *parent)
 #endif
 }
 
-VolumeSlider::~VolumeSlider()
-{
-}
-
 void VolumeSlider::initVolume()
 {
     QTimer::singleShot(100, this, [ = ] { //延迟加载等待信号槽连接
@@ -121,6 +117,8 @@ void VolumeSlider::initVolume()
 
         changeVolume(nVolume);
         changeMuteState(bMute);
+
+        setMute(bMute);
     });
 }
 
@@ -324,26 +322,18 @@ void VolumeSlider::volumeDown()
 
 void VolumeSlider::changeMuteState(bool bMute)
 {
-    //disconnect(&volumeMonitoring, &VolumeMonitoring::muteChanged, this, &VolumeSlider::changeMuteState);
-
     if (m_bIsMute == bMute || m_nVolume == 0) {
         return;
     }
 
-    //setMute(bMute);
     m_bIsMute = bMute;
     refreshIcon();
     Settings::get().setInternalOption("mute", m_bIsMute);
-
     emit sigMuteStateChanged(bMute);
-
-    //connect(&volumeMonitoring, &VolumeMonitoring::muteChanged, this, &VolumeSlider::changeMuteState);
 }
 
 void VolumeSlider::volumeChanged(int nVolume)
 {
-    //disconnect(&volumeMonitoring, &VolumeMonitoring::volumeChanged, this, &VolumeSlider::changeVolume);
-
     if (m_nVolume != nVolume) {
         m_nVolume = nVolume;
     }
@@ -353,14 +343,9 @@ void VolumeSlider::volumeChanged(int nVolume)
     }
 
     refreshIcon();
-
     Settings::get().setInternalOption("global_volume", m_nVolume > 100 ? 100 : m_nVolume);
 
     emit sigVolumeChanged(nVolume);
-
-    //setAudioVolume(nVolume);
-
-    //connect(&volumeMonitoring, &VolumeMonitoring::volumeChanged, this, &VolumeSlider::changeVolume);
 }
 
 void VolumeSlider::refreshIcon()
@@ -553,6 +538,10 @@ bool VolumeSlider::eventFilter(QObject *obj, QEvent *e)
     } else {
         return QObject::eventFilter(obj, e);
     }
+}
+
+VolumeSlider::~VolumeSlider()
+{
 }
 
 }
