@@ -392,6 +392,18 @@ public slots:
 
 protected:
     void initMember();      //初始化成员变量
+    /**
+     * @brief initMpvFuns   初始化gpuinfo硬解探测函数
+     */
+    void initGpuInfoFuns();
+    /**
+     * @brief 是否支持硬件解码
+     */
+    bool isSurportHardWareDecode(const QString sDecodeName, const int &nVideoWidth, const int &nVideoHeight);
+    /**
+     * @brief 获取探测解码值
+     */
+    int getDecodeProbeValue(const QString sDecodeName);
     void resizeEvent(QResizeEvent *pEvent) override;
     void showEvent(QShowEvent *pEvent) override;
 
@@ -434,6 +446,8 @@ private:
     mpv_setWakeup_callback m_setWakeupCallback;
     mpvinitialize m_initialize;
     mpv_freeNode_contents m_freeNodecontents;
+    void *m_gpuInfo; //解码探测函数指针
+
 
     MpvHandle m_handle;                    //mpv句柄
     MpvGLWidget *m_pMpvGLwidget;           //opengl窗口

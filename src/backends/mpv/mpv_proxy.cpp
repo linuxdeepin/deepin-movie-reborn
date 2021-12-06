@@ -63,6 +63,63 @@ enum AsyncReplyTag {
     CHANNEL,
     SPEED
 };
+typedef enum {
+  UN_KNOW = 0, //初始值
+  MPEG1 , //下面为各种视频格式
+  MPEG2,
+  MPEG4,
+  H264,
+  VC1 ,
+  DIVX4 ,
+  DIVX5,
+  HEVC,
+  _MAXNULL //超限处理
+}decoder_profile; //视频格式解码请求值
+typedef  int VdpBool;
+typedef enum  {
+  decoder_profiles_MPEG1 = 0,   //     {"MPEG1", VDP_DECODER_PROFILE_MPEG1},
+  decoder_profiles_MPEG2_SIMPLE,    //     {"MPEG2_SIMPLE", VDP_DECODER_PROFILE_MPEG2_SIMPLE},
+  decoder_profiles_MPEG2_MAIN ,  //     {"MPEG2_MAIN", VDP_DECODER_PROFILE_MPEG2_MAIN},
+  decoder_profiles_H264_BASELINE,    //     {"H264_BASELINE", VDP_DECODER_PROFILE_H264_BASELINE},
+  decoder_profiles_H264_MAIN,    //     {"H264_MAIN", VDP_DECODER_PROFILE_H264_MAIN},
+  decoder_profiles_H264_HIGH,    //     {"H264_HIGH", VDP_DECODER_PROFILE_H264_HIGH},
+  decoder_profiles_VC1_SIMPLE ,   //     {"VC1_SIMPLE", VDP_DECODER_PROFILE_VC1_SIMPLE},
+  decoder_profiles_VC1_MAIN,    //     {"VC1_MAIN", VDP_DECODER_PROFILE_VC1_MAIN},
+  decoder_profiles_VC1_ADVANCED ,   //     {"VC1_ADVANCED", VDP_DECODER_PROFILE_VC1_ADVANCED},
+  decoder_profiles_MPEG4_PART2_SP,    //     {"MPEG4_PART2_SP", VDP_DECODER_PROFILE_MPEG4_PART2_SP},
+  decoder_profiles_MPEG4_PART2_ASP,    //     {"MPEG4_PART2_ASP", VDP_DECODER_PROFILE_MPEG4_PART2_ASP},
+  decoder_profiles_DIVX4_QMOBILE,    //     {"DIVX4_QMOBILE", VDP_DECODER_PROFILE_DIVX4_QMOBILE},
+  decoder_profiles_DIVX4_MOBILE,    //     {"DIVX4_MOBILE", VDP_DECODER_PROFILE_DIVX4_MOBILE},
+  decoder_profiles_DIVX4_HOME_THEATER ,   //     {"DIVX4_HOME_THEATER", VDP_DECODER_PROFILE_DIVX4_HOME_THEATER},
+  decoder_profiles_DIVX4_HD_1080P ,   //     {"DIVX4_HD_1080P", VDP_DECODER_PROFILE_DIVX4_HD_1080P},
+  decoder_profiles_DIVX5_QMOBILE,    //     {"DIVX5_QMOBILE", VDP_DECODER_PROFILE_DIVX5_QMOBILE},
+  decoder_profiles_DIVX5_MOBILE ,   //     {"DIVX5_MOBILE", VDP_DECODER_PROFILE_DIVX5_MOBILE},
+  decoder_profiles_DIVX5_HOME_THEATER,    //     {"DIVX5_HOME_THEATER", VDP_DECODER_PROFILE_DIVX5_HOME_THEATER},
+  decoder_profiles_DIVX5_HD_1080P,    //     {"DIVX5_HD_1080P", VDP_DECODER_PROFILE_DIVX5_HD_1080P},
+  decoder_profiles_H264_CONSTRAINED_BASELINE ,   //     {"H264_CONSTRAINED_BASELINE", VDP_DECODER_PROFILE_H264_CONSTRAINED_BASELINE},
+  decoder_profiles_H264_EXTENDED ,   //     {"H264_EXTENDED", VDP_DECODER_PROFILE_H264_EXTENDED},
+  decoder_profiles_H264_PROGRESSIVE_HIGH,    //     {"H264_PROGRESSIVE_HIGH", VDP_DECODER_PROFILE_H264_PROGRESSIVE_HIGH},
+  decoder_profiles_H264_CONSTRAINED_HIGH,    //     {"H264_CONSTRAINED_HIGH", VDP_DECODER_PROFILE_H264_CONSTRAINED_HIGH},
+  decoder_profiles_H264_HIGH_444_PREDICTIVE,    //     {"H264_HIGH_444_PREDICTIVE", VDP_DECODER_PROFILE_H264_HIGH_444_PREDICTIVE},
+  decoder_profiles_HEVC_MAIN ,   //     {"HEVC_MAIN", VDP_DECODER_PROFILE_HEVC_MAIN},
+  decoder_profiles_HEVC_MAIN_10,    //     {"HEVC_MAIN_10", VDP_DECODER_PROFILE_HEVC_MAIN_10},
+  decoder_profiles_HEVC_MAIN_STILL,    //     {"HEVC_MAIN_STILL", VDP_DECODER_PROFILE_HEVC_MAIN_STILL},
+  decoder_profiles_HEVC_MAIN_12,    //     {"HEVC_MAIN_12", VDP_DECODER_PROFILE_HEVC_MAIN_12},
+  decoder_profiles_HEVC_MAIN_444,    //     {"HEVC_MAIN_444", VDP_DECODER_PROFILE_HEVC_MAIN_444},
+  _decoder_maxnull
+}VDP_Decoder_e;
+#define  RET_INFO_LENTH_MAX  (512)
+typedef struct  {
+  VDP_Decoder_e  func; //具体值的功能查询
+  VdpBool is_supported; //是否支持具体值硬解码
+  uint32_t max_width;//最大支持视频宽度
+  uint32_t max_height;//最大支持视频高度
+  uint32_t max_level; //最大支持等级
+  uint32_t max_macroblocks;//最大宏块大小
+  char ret_info[RET_INFO_LENTH_MAX];//支持的列表
+}VDP_Decoder_t;
+//返回值大于0表示支持硬解， index 视频格式解码请求值， result 返回解码支持信息
+typedef unsigned int (*gpu_decoderInfo)(decoder_profile index, VDP_Decoder_t *result );
 
 static void mpv_callback(void *d)
 {
@@ -128,6 +185,17 @@ void MpvProxy::initMpvFuns()
     m_freeNodecontents = reinterpret_cast<mpv_freeNode_contents>(mpvLibrary.resolve("mpv_free_node_contents"));
 }
 
+void MpvProxy::initGpuInfoFuns()
+{
+    QString path = QLibraryInfo::location(QLibraryInfo::LibrariesPath)+ QDir::separator() + "libgpuinfo.so";
+    if(!QFileInfo(path).exists()) {
+        m_gpuInfo = NULL;
+        return;
+    }
+    QLibrary mpvLibrary(libPath("libgpuinfo.so"));
+    m_gpuInfo = reinterpret_cast<void *>(mpvLibrary.resolve("vdp_Iter_decoderInfo"));
+}
+
 void MpvProxy::firstInit()
 {
 #ifndef _LIBDMR_
@@ -154,6 +222,7 @@ void MpvProxy::firstInit()
 #endif
 #endif
     initMpvFuns();
+    initGpuInfoFuns();
     if (m_creat) {
         m_handle = MpvHandle::fromRawHandle(mpv_init());
         if (CompositingManager::get().composited()) {
@@ -591,6 +660,37 @@ void MpvProxy::pollingEndOfPlayback()
 const PlayingMovieInfo &MpvProxy::playingMovieInfo()
 {
     return m_movieInfo;
+}
+
+bool MpvProxy::isSurportHardWareDecode(const QString sDecodeName, const int &nVideoWidth, const int &nVideoHeight)
+{
+    bool isHardWare = true;//未安装探测工具默认支持硬解
+    decoder_profile decoderValue = decoder_profile::UN_KNOW; //初始化支持解码值
+    decoderValue = (decoder_profile)getDecodeProbeValue(sDecodeName); //根据视频格式获取解码值
+    if(decoderValue != decoder_profile::UN_KNOW ) {//开始探测是否支持硬解码
+        VDP_Decoder_t *probeDecode = new VDP_Decoder_t;
+        if(m_gpuInfo) {
+            int nSurport =  ((gpu_decoderInfo)m_gpuInfo)(decoderValue, probeDecode);
+            isHardWare = (nSurport > 0 && probeDecode->max_width >= nVideoWidth
+                    &&  probeDecode->max_height >= nVideoHeight);//nSurport大于0表示支持，硬解码支持的最大宽高必须大于或等于视频的宽高
+        }
+        delete probeDecode;
+    }
+    return isHardWare;
+}
+
+int MpvProxy::getDecodeProbeValue(const QString sDecodeName)
+{
+    QStringList sNameList;
+    sNameList << "MPEG1" << "MPEG2" << "MPEG4" << "H264" << "VC1" << "DIVX4" << "DIVX5" << "HEVC";
+    int nCount = sNameList.count();
+    for(int i = 0; i < nCount; i++ ){//匹配硬解支持的视频格式
+        QString sValue = sNameList.at(i);
+        if(sDecodeName.toUpper().contains(sValue)) {
+            return (int)decoder_profile(decoder_profile::UN_KNOW + 1 + i);
+        }
+    }
+    return (int)decoder_profile::UN_KNOW;
 }
 
 void MpvProxy::handle_mpv_events()
@@ -1052,6 +1152,10 @@ void MpvProxy::refreshDecode()
 #if !defined (__x86_64__)
             isSoftCodec = isSoftCodec || codec.toLower().contains("mpeg2video");
 #endif
+            //探测硬解码
+            if(!isSoftCodec) {
+                isSoftCodec = !isSurportHardWareDecode(codec, currentInfo.mi.width, currentInfo.mi.height);
+            }
         }
 
         if (isSoftCodec) {
@@ -1156,6 +1260,7 @@ void MpvProxy::initMember()
     m_initialize = nullptr;
     m_freeNodecontents = nullptr;
     m_pConfig = nullptr;
+    m_gpuInfo = nullptr;
 }
 
 void MpvProxy::play()
