@@ -2368,8 +2368,8 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
             if (m_iAngleDelta != 0) m_pToolbox->calculationStep(m_iAngleDelta);
             m_pToolbox->volumeDown();
             m_iAngleDelta = 0;
-            break;
         }
+        break;
     }
 
     case ActionFactory::ActionKind::GotoPlaylistSelected: {
