@@ -2337,7 +2337,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
     }
 
     case ActionFactory::ActionKind::ToggleMute: {
-        if(m_pEngine->state() == PlayerEngine::CoreState::Playing
+        if(m_pEngine->state() != PlayerEngine::CoreState::Idle
                 && m_pEngine->playlist().currentInfo().mi.isNakedStream()) {
             slotUnsupported();
         } else {
@@ -2347,7 +2347,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
     }
 
     case ActionFactory::ActionKind::VolumeUp: {
-        if(m_pEngine->state() == PlayerEngine::CoreState::Playing
+        if(m_pEngine->state() != PlayerEngine::CoreState::Idle
                 && m_pEngine->playlist().currentInfo().mi.isNakedStream()) {
             slotUnsupported();
         } else {
@@ -2360,7 +2360,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
     }
 
     case ActionFactory::ActionKind::VolumeDown: {
-        if(m_pEngine->state() == PlayerEngine::CoreState::Playing
+        if(m_pEngine->state() != PlayerEngine::CoreState::Idle
                 && m_pEngine->playlist().currentInfo().mi.isNakedStream()) {
             slotUnsupported();
         } else {
@@ -2445,7 +2445,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
     }
 
     case ActionFactory::ActionKind::SubDelay: {
-        if(m_pEngine->state() == PlayerEngine::CoreState::Playing
+        if(m_pEngine->state() != PlayerEngine::CoreState::Idle
                 && m_pEngine->playlist().currentInfo().mi.isNakedStream()) {
             slotUnsupported();
             break;
@@ -2462,7 +2462,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
     }
 
     case ActionFactory::ActionKind::SubForward: {
-        if(m_pEngine->state() == PlayerEngine::CoreState::Playing
+        if(m_pEngine->state() != PlayerEngine::CoreState::Idle
                 && m_pEngine->playlist().currentInfo().mi.isNakedStream()) {
             slotUnsupported();
             break;
@@ -2562,7 +2562,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
     }
 
     case ActionFactory::ActionKind::SeekBackward: {
-        if(m_pEngine->state() == PlayerEngine::CoreState::Playing
+        if(m_pEngine->state() != PlayerEngine::CoreState::Idle
                 && m_pEngine->playlist().currentInfo().mi.isNakedStream()) {
             slotUnsupported();
         } else {
@@ -2572,7 +2572,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
     }
 
     case ActionFactory::ActionKind::SeekForward: {
-        if(m_pEngine->state() == PlayerEngine::CoreState::Playing
+        if(m_pEngine->state() != PlayerEngine::CoreState::Idle
                 && m_pEngine->playlist().currentInfo().mi.isNakedStream()) {
             slotUnsupported();
         } else {
@@ -2666,7 +2666,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
     }
 
     case ActionFactory::ActionKind::BurstScreenshot: {
-        if(m_pEngine->state() == PlayerEngine::CoreState::Playing
+        if(m_pEngine->state() != PlayerEngine::CoreState::Idle
                 && m_pEngine->playlist().currentInfo().mi.isNakedStream()) {
             slotUnsupported();
         } else {
