@@ -4437,7 +4437,11 @@ void MainWindow::dropEvent(QDropEvent *pEvent)
         QFileInfo fileInfo(urls.first().toLocalFile());
         if (m_pEngine->subtitle_suffixs.contains(fileInfo.suffix())) {
             // Search for video files with the same name as the subtitles and play the video file.
-            if (m_pEngine->state() == PlayerEngine::Idle)
+            if(m_pEngine->state() != PlayerEngine::CoreState::Idle
+                    && m_pEngine->playlist().currentInfo().mi.isNakedStream()) {
+                return;
+            }
+            else if (m_pEngine->state() == PlayerEngine::Idle)
                 subtitleMatchVideo(urls.first().toLocalFile());
             else {
                 bool succ = m_pEngine->loadSubtitle(fileInfo);
