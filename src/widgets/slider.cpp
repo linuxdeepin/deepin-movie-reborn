@@ -228,7 +228,6 @@ void DMRSlider::initMember()
     m_bDown = false;
     m_bIndicatorEnabled = false;
     m_bShowIndicator = false;
-    m_bPress = false;
     m_nLastHoverValue = 0;
     m_indicatorPos = {0, 0};
 }
@@ -239,15 +238,7 @@ bool DMRSlider::event(QEvent *pEvent)
     if(!isEnabled() && pMouseEvent)                  // 进度条不能使用时需要给出提示
     {
         if(pMouseEvent->type() == QEvent::MouseButtonPress) {
-            m_bPress = true;
-        }
-        else if(pMouseEvent->type() == QEvent::MouseButtonRelease) {
-            m_bPress = false;
-        }
-        else if (pMouseEvent->type() == QEvent::MouseMove) {
-            if(m_bPress) {
-                emit sigUnsupported();
-            }
+            emit sigUnsupported();
         }
         return true;
     }

@@ -157,7 +157,6 @@ private:
     int m_nLastHoverValue;                    ///上次悬停的位置
     QPoint m_indicatorPos;                    ///鼠标悬停的位置
     QColor m_indicatorColor;                  ///鼠标悬停活动色
-    bool m_bPress;                            ///鼠标是否按下
 };
 
 }
