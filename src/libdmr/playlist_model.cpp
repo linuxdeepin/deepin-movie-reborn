@@ -84,6 +84,7 @@ QDataStream &operator<< (QDataStream &st, const MovieInfo &mi)
     st << mi.aDigit;
     st << mi.channels;
     st << mi.sampling;
+    st << mi.strFmtName;
     return st;
 }
 
@@ -109,6 +110,7 @@ QDataStream &operator>> (QDataStream &st, MovieInfo &mi)
     st >> mi.aDigit;
     st >> mi.channels;
     st >> mi.sampling;
+    st >> mi.strFmtName;
     return st;
 }
 
@@ -1667,6 +1669,7 @@ MovieInfo MovieInfo::parseFromFile(const QFileInfo &fi, bool *ok)
 
     mi.vCodecID = dec_ctx->codec_id;
     mi.vCodeRate = dec_ctx->bit_rate;
+    mi.strFmtName = av_ctx->iformat->name;
     if (av_stream->r_frame_rate.den != 0) {
         mi.fps = av_stream->r_frame_rate.num / av_stream->r_frame_rate.den;
     } else {

@@ -60,14 +60,7 @@ void VolumeButton::setMute(bool bMute)
 
 void VolumeButton::setButtonEnable(bool bFlag)
 {
-    QIcon icon;
-    DGuiApplicationHelper::ColorType colorType = DGuiApplicationHelper::instance()->themeType();
-
-    if (colorType == DGuiApplicationHelper::LightType) {                 // 设置在不同主题下按钮的不可用状态
-        icon = QIcon(":/icons/deepin/builtin/light/actions/dcc_volumedisable_36px.svg");
-    } else {
-        icon = QIcon(":/icons/deepin/builtin/dark/texts/dcc_volumedisable_36px.svg");
-    }
+    QIcon icon = QIcon::fromTheme("dcc_volumedisable");
 
     if (bFlag) {
         setEnabled(true);
@@ -76,7 +69,6 @@ void VolumeButton::setButtonEnable(bool bFlag)
         setEnabled(false);
         setIcon(icon);
     }
-
 }
 
 void VolumeButton::changeStyle()
