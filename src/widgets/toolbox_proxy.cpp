@@ -1491,6 +1491,8 @@ void ToolboxProxy::waitPlay()
 
 void ToolboxProxy::slotThemeTypeChanged()
 {
+    QPalette textPalette;
+    bool bNakedStream = false;
     auto type = DGuiApplicationHelper::instance()->themeType();
     WAYLAND_BLACK_WINDOW;
     THEME_TYPE(type);
@@ -1500,6 +1502,8 @@ void ToolboxProxy::slotThemeTypeChanged()
     framecolor.setAlphaF(0.00);
     QString rStr;
     if (type == DGuiApplicationHelper::LightType) {
+        textPalette.setColor(QPalette::WindowText, QColor(0, 0, 0, 40));   // 浅色背景下时长显示置灰
+
         QColor maskColor(247, 247, 247);
         maskColor.setAlphaF(0.60);
         rStr = "light";
@@ -1527,6 +1531,8 @@ void ToolboxProxy::slotThemeTypeChanged()
         pl.setColor(DPalette::Shadow, framecolor);
         DApplicationHelper::instance()->setPalette(m_pPalyBox, pl);
     } else {
+        textPalette.setColor(QPalette::WindowText, QColor(255, 255, 255, 40));   // 深色背景下时长显示置灰
+
         QColor maskColor(32, 32, 32);
         maskColor.setAlphaF(0.80);
         rStr = "dark";
@@ -1553,6 +1559,22 @@ void ToolboxProxy::slotThemeTypeChanged()
         pl.setColor(DPalette::FrameBorder, framecolor);
         pl.setColor(DPalette::Shadow, framecolor);
         DApplicationHelper::instance()->setPalette(m_pPalyBox, pl);
+    }
+
+    if(m_pEngine->state() != PlayerEngine::CoreState::Idle) {
+        bNakedStream = m_pEngine->getplaylist()->currentInfo().mi.isNakedStream();
+        if(bNakedStream){
+            m_pTimeLabel->setPalette(textPalette);
+            m_pTimeLabelend->setPalette(textPalette);
+        } else {
+            textPalette.setColor(QPalette::WindowText, DApplication::palette().windowText().color());
+            m_pTimeLabel->setPalette(textPalette);
+            m_pTimeLabelend->setPalette(textPalette);
+        }
+    } else {
+        textPalette.setColor(QPalette::WindowText, DApplication::palette().windowText().color());
+        m_pTimeLabel->setPalette(textPalette);
+        m_pTimeLabelend->setPalette(textPalette);
     }
 }
 
@@ -1934,7 +1956,14 @@ void ToolboxProxy::updateMovieProgress()
 
 void ToolboxProxy::updateButtonStates()
 {
+    QPalette palette;              // 时长显示的颜色，在某些情况下变化字体颜色区别功能
     bool bNakedStream = false;
+
+    if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
+        palette.setColor(QPalette::WindowText, QColor(0, 0, 0, 40));       // 浅色背景下置灰
+    } else {
+        palette.setColor(QPalette::WindowText, QColor(255, 255, 255, 40)); // 深色背景下置灰
+    }
 
     if(m_pEngine->state() != PlayerEngine::CoreState::Idle) {
         bNakedStream = m_pEngine->getplaylist()->currentInfo().mi.isNakedStream();
@@ -1942,13 +1971,24 @@ void ToolboxProxy::updateButtonStates()
             m_pProgBar->setEnabled(false);
             m_pProgBar->setEnableIndication(false);
             m_pVolSlider->setEnabled(false);
+
+            m_pTimeLabel->setPalette(palette);             // 如果正在播放的视频是裸流置灰
+            m_pTimeLabelend->setPalette(palette);
         }else {
             m_pProgBar->setEnabled(true);
             m_pProgBar->setEnableIndication(true);
             m_pVolSlider->setEnabled(true);
+
+            palette.setColor(QPalette::WindowText, DApplication::palette().windowText().color());
+            m_pTimeLabel->setPalette(palette);
+            m_pTimeLabelend->setPalette(palette);
         }
     } else {
         m_pVolSlider->setEnabled(true);
+
+        palette.setColor(QPalette::WindowText, DApplication::palette().windowText().color());
+        m_pTimeLabel->setPalette(palette);
+        m_pTimeLabelend->setPalette(palette);
     }
 
     qInfo() << m_pEngine->playingMovieInfo().subs.size();
