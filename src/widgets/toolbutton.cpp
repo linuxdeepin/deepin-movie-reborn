@@ -41,6 +41,7 @@ VolumeButton::VolumeButton(QWidget *parent)
 {
     setIcon(QIcon::fromTheme("dcc_volume"));
     setIconSize(QSize(36, 36));
+    installEventFilter(this);
 }
 
 void VolumeButton::setVolume(int nVolume)
@@ -55,6 +56,27 @@ void VolumeButton::setMute(bool bMute)
     m_bMute = bMute;
 
     changeStyle();
+}
+
+void VolumeButton::setButtonEnable(bool bFlag)
+{
+    QIcon icon;
+    DGuiApplicationHelper::ColorType colorType = DGuiApplicationHelper::instance()->themeType();
+
+    if (colorType == DGuiApplicationHelper::LightType) {                 // 设置在不同主题下按钮的不可用状态
+        icon = QIcon(":/icons/deepin/builtin/light/actions/dcc_volumedisable_36px.svg");
+    } else {
+        icon = QIcon(":/icons/deepin/builtin/dark/texts/dcc_volumedisable_36px.svg");
+    }
+
+    if (bFlag) {
+        setEnabled(true);
+        changeStyle();
+    } else {
+        setEnabled(false);
+        setIcon(icon);
+    }
+
 }
 
 void VolumeButton::changeStyle()
@@ -105,6 +127,20 @@ void VolumeButton::focusOutEvent(QFocusEvent *ev)
     emit leaved();
 #endif
     DIconButton::focusOutEvent(ev);
+}
+
+bool VolumeButton::eventFilter(QObject *obj, QEvent *e)
+{
+    QMouseEvent* pMouseEvent = dynamic_cast<QMouseEvent*>(e);
+    if(!isEnabled() && pMouseEvent)                  // 音量按钮不能使用时需要给出提示
+    {
+        if(pMouseEvent->type() == QEvent::MouseButtonPress) {
+           emit sigUnsupported();
+        }
+        return false;
+    }
+
+    return QObject::eventFilter(obj, e);
 }
 
 }

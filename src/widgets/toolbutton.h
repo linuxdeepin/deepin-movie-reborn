@@ -375,18 +375,24 @@ public:
     void changeStyle();
     void setVolume(int nVolume);
     void setMute(bool bMute);
+    void setButtonEnable(bool bFlag);
 
 signals:
     void entered();
     void leaved();
     void requestVolumeUp();
     void requestVolumeDown();
+    /**
+      * @brief 功能不支持信号
+      */
+    void sigUnsupported();
 
 protected:
     void enterEvent(QEvent *ev) override;
     void leaveEvent(QEvent *ev) override;
     void wheelEvent(QWheelEvent *wev) override;
     void focusOutEvent(QFocusEvent *ev);
+    bool eventFilter(QObject *obj, QEvent *e);
 
 private:
     QString _name;

@@ -1209,7 +1209,7 @@ void ToolboxProxy::setup()
     m_pVolSlider = new VolumeSlider(m_pMainWindow, m_pMainWindow);
     m_pVolSlider->setObjectName(VOLUME_SLIDER_WIDGET);
 
-    connect(m_pVolSlider, &VolumeSlider::sigUnsupported, this, &ToolboxProxy::sigUnsupported);
+    connect(m_pVolBtn, &VolumeButton ::sigUnsupported, this, &ToolboxProxy::sigUnsupported);
     connect(m_pVolBtn, &VolumeButton::clicked, this, &ToolboxProxy::slotVolumeButtonClicked);
     connect(m_pVolBtn, &VolumeButton::leaved, m_pVolSlider, &VolumeSlider::delayedHide);
     connect(m_pVolSlider, &VolumeSlider::sigVolumeChanged, this, &ToolboxProxy::slotVolumeChanged);
@@ -1566,15 +1566,21 @@ void ToolboxProxy::slotThemeTypeChanged()
         if(bNakedStream){
             m_pTimeLabel->setPalette(textPalette);
             m_pTimeLabelend->setPalette(textPalette);
+
+            m_pVolBtn->setButtonEnable(false);
         } else {
             textPalette.setColor(QPalette::WindowText, DApplication::palette().windowText().color());
             m_pTimeLabel->setPalette(textPalette);
             m_pTimeLabelend->setPalette(textPalette);
+
+            m_pVolBtn->setButtonEnable(true);
         }
     } else {
         textPalette.setColor(QPalette::WindowText, DApplication::palette().windowText().color());
         m_pTimeLabel->setPalette(textPalette);
         m_pTimeLabelend->setPalette(textPalette);
+
+        m_pVolBtn->setButtonEnable(true);
     }
 }
 
@@ -1974,6 +1980,8 @@ void ToolboxProxy::updateButtonStates()
 
             m_pTimeLabel->setPalette(palette);             // 如果正在播放的视频是裸流置灰
             m_pTimeLabelend->setPalette(palette);
+
+            m_pVolBtn->setButtonEnable(false);
         }else {
             m_pProgBar->setEnabled(true);
             m_pProgBar->setEnableIndication(true);
@@ -1982,6 +1990,8 @@ void ToolboxProxy::updateButtonStates()
             palette.setColor(QPalette::WindowText, DApplication::palette().windowText().color());
             m_pTimeLabel->setPalette(palette);
             m_pTimeLabelend->setPalette(palette);
+
+            m_pVolBtn->setButtonEnable(true);
         }
     } else {
         m_pVolSlider->setEnabled(true);
@@ -1989,6 +1999,8 @@ void ToolboxProxy::updateButtonStates()
         palette.setColor(QPalette::WindowText, DApplication::palette().windowText().color());
         m_pTimeLabel->setPalette(palette);
         m_pTimeLabelend->setPalette(palette);
+
+         m_pVolBtn->setButtonEnable(true);
     }
 
     qInfo() << m_pEngine->playingMovieInfo().subs.size();

@@ -45,7 +45,6 @@ VolumeSlider::VolumeSlider(MainWindow *mw, QWidget *parent)
     m_bIsWheel = false;
     m_nVolume = 100;
     m_bHideWhenFinished = false;
-    m_bPress = false;
 
     hide();
     setFocusPolicy(Qt::TabFocus);
@@ -365,29 +364,6 @@ void VolumeSlider::refreshIcon()
     m_pLabShowVolume->setText(QString("%1%").arg(nValue * 1.0 / m_slider->maximum() * 100));
 }
 
-bool VolumeSlider::event(QEvent *pEvent)
-{
-    QMouseEvent* pMouseEvent = dynamic_cast<QMouseEvent*>(pEvent);
-
-    if(!isEnabled() && pMouseEvent)       // 音量条不能使用时需要给出提示
-    {
-        if(pMouseEvent->type() == QEvent::MouseButtonPress) {
-            m_bPress = true;
-        }
-        else if(pMouseEvent->type() == QEvent::MouseButtonRelease) {
-            m_bPress = false;
-        }
-        else if (pMouseEvent->type() == QEvent::MouseMove) {
-            if(m_bPress) {
-                emit sigUnsupported();
-            }
-        }
-        return true;
-    }
-
-    return DArrowRectangle::event(pEvent);
-}
-
 void VolumeSlider::muteButtnClicked()
 {
     changeMuteState(!m_bIsMute);
@@ -520,10 +496,6 @@ void VolumeSlider::keyPressEvent(QKeyEvent *pEvent)
 bool VolumeSlider::eventFilter(QObject *obj, QEvent *e)
 {
     if (e->type() == QEvent::Wheel) {
-        if(!isEnabled()) {
-            emit sigUnsupported();
-            return false;
-        }
         QWheelEvent *we = static_cast<QWheelEvent *>(e);
         qInfo() << we->angleDelta() << we->modifiers() << we->buttons();
         if (we->buttons() == Qt::NoButton && we->modifiers() == Qt::NoModifier) {
