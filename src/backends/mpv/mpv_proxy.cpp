@@ -273,7 +273,6 @@ void MpvProxy::updateRoundClip(bool roundClip)
 
 mpv_handle *MpvProxy::mpv_init()
 {
-    //test by heyi
     mpv_handle *pHandle =  static_cast<mpv_handle *>(m_creat());
     bool composited = CompositingManager::get().composited();
 
@@ -357,51 +356,9 @@ mpv_handle *MpvProxy::mpv_init()
             qInfo() << "-------- gpu-hwdec-interop is disabled by user";
         }
     }
-//重复逻辑
-//    if (CompositingManager::get().isOnlySoftDecode()) {
-//        my_set_property(pHandle, "hwdec", "no");
-//    } else {
-//        my_set_property(pHandle, "hwdec", "auto");
-//    }
 #endif
+
 #ifdef __aarch64__
-    /*QString path = QString("%1/%2/%3/conf")
-                   .arg(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation))
-                   .arg(qApp->organizationName())
-                   .arg(qApp->applicationName());
-    QFile configFile(path);
-    if (configFile.exists()) {
-        configFile.open(QIODevice::ReadOnly);
-        int index = configFile.readLine().left(1).toInt();
-        switch (index) {
-        case 0:
-            my_set_property(pHandle, "hwdec", "no");
-            qInfo() << "modify HWDEC no";
-            break;
-        case 1:
-            my_set_property(pHandle, "hwdec", "auto");
-            qInfo() << "modify HWDEC auto";
-            break;
-        case 2:
-            my_set_property(pHandle, "hwdec", "yes");
-            qInfo() << "modify HWDEC yes";
-            break;
-        case 3:
-            my_set_property(pHandle, "hwdec", "auto");
-            qInfo() << "modify HWDEC auto";
-            break;
-        case 4:
-            my_set_property(pHandle, "hwdec", "vdpau");
-            qInfo() << "modify HWDEC vdpau";
-            break;
-        case 5:
-            my_set_property(pHandle, "hwdec", "vaapi");
-            qInfo() << "modify HWDEC vaapi";
-            break;
-        default:
-            break;
-        }
-    }*/
     if (CompositingManager::get().isOnlySoftDecode()) {
         my_set_property(pHandle, "hwdec", "no");
     } else {
@@ -409,6 +366,7 @@ mpv_handle *MpvProxy::mpv_init()
     }
     qInfo() << "modify HWDEC auto";
 #endif
+
     my_set_property(pHandle, "panscan", 1.0);
 
     if (DecodeMode::SOFTWARE == m_decodeMode) { //1.设置软解
@@ -422,7 +380,7 @@ mpv_handle *MpvProxy::mpv_init()
             if(sdir.exists())
             {
                  my_set_property(m_handle, "hwdec", "vdpau");
-            }else {
+            } else {
                  my_set_property(m_handle, "hwdec", "auto");
             }
             my_set_property(m_handle, "vo", "vdpau,xv,x11");
@@ -467,10 +425,9 @@ mpv_handle *MpvProxy::mpv_init()
         QFileInfo fi("/dev/mwv206_0");
         if (fi.exists()) { //2.1.1景嘉微
             QDir sdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv206"); //判断是否安装核外驱动
-            if(sdir.exists())
-            {
+            if(sdir.exists()) {
                  my_set_property(m_handle, "hwdec", "vdpau");
-            }else {
+            } else {
                  my_set_property(m_handle, "hwdec", "auto");
             }
             my_set_property(m_handle, "vo", "vdpau,xv,x11");
@@ -493,25 +450,13 @@ mpv_handle *MpvProxy::mpv_init()
         my_set_property(pHandle, "vd-lavc-dr", "no");
         my_set_property(pHandle, "gpu-sw", "on");
         m_sInitVo = "libmpv,opengl-cb";
-        //设置alse时，无法使用set_property(pHandle, "audio-client-name", strMovie)设置控制栏中的名字
-        //        if(utils::check_wayland_env()){
-        //            set_property(pHandle, "ao", "alsa");
-        //        }
 #endif
     } else {
         my_set_property(m_handle, "wid", m_pParentWidget->winId());
     }
 
-//    if (QFile::exists("/dev/csmcore")) {
-//        my_set_property(pHandle, "vo", "xv,x11");
-//        my_set_property(pHandle, "hwdec", "auto");
-//        if (utils::check_wayland_env()) {
-//            my_set_property(pHandle, "wid", m_pParentWidget->winId());
-//        }
-//        m_sInitVo = "xv,x11";
-//    }
-    qInfo() << __func__ << my_get_property(pHandle, "vo").toString();
-    qInfo() << __func__ << my_get_property(pHandle, "hwdec").toString();
+    qInfo() << __func__ << "vo:" << my_get_property(pHandle, "vo").toString();
+    qInfo() << __func__  << "hwdec:" << my_get_property(pHandle, "hwdec").toString();
 
     QString strMovie = QObject::tr("Movie");
     //设置音量名称
@@ -635,27 +580,6 @@ void MpvProxy::pollingEndOfPlayback()
         m_bPolling = false;
     }
 }
-/*not used yet*/
-/*void MpvProxy::pollingStartOfPlayback()
-{
-    if (_state == Backend::PlayState::Stopped) {
-        m_bPolling = true;
-
-        while (_state == Backend::Stopped) {
-            mpv_event *ev = m_waitEvent(m_handle, 0.005);
-            if (ev->event_id == MPV_EVENT_NONE)
-                continue;
-
-            if (ev->event_id == MPV_EVENT_FILE_LOADED) {
-                qInfo() << "start of playback";
-                setState(Backend::Playing);
-                break;
-            }
-        }
-
-        m_bPolling = false;
-    }
-}*/
 
 const PlayingMovieInfo &MpvProxy::playingMovieInfo()
 {
@@ -1181,15 +1105,20 @@ void MpvProxy::refreshDecode()
         }
     } else { //3.设置自动
 #ifndef _LIBDMR_
+
 #if defined (__aarch64__) || defined (__sw_64__)
         // 鲲鹏920 || 曙光+英伟达 || 浪潮
         if (!CompositingManager::get().hascard() || CompositingManager::get().isOnlySoftDecode()) {
             my_set_property(m_handle, "hwdec", "no");
         }
 #else
-    my_set_property(m_handle, "hwdec","auto");
-    //bIsCanHwDec ? my_set_property(m_handle, "hwdec", canHwTypes.join(',')) : my_set_property(m_handle, "hwdec", "no");
+        if(CompositingManager::get().isOnlySoftDecode()) {
+            my_set_property(m_handle, "hwdec","no");
+        } else {
+            my_set_property(m_handle, "hwdec","auto");
+        }
 #endif
+
 #else
         if (CompositingManager::get().isOnlySoftDecode()) { // 鲲鹏920 || 曙光+英伟达 || 浪潮
             my_set_property(m_handle, "hwdec", "no");
@@ -1204,10 +1133,11 @@ void MpvProxy::refreshDecode()
             if(sdir.exists())
             {
                  my_set_property(m_handle, "hwdec", "vdpau");
-            }else {
+            } else {
                  my_set_property(m_handle, "hwdec", "auto");
             }
         }
+
         //play.conf
         CompositingManager::get().getMpvConfig(m_pConfig);
         QMap<QString, QString>::iterator iter = m_pConfig->begin();
