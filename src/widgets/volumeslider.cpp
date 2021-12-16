@@ -32,7 +32,7 @@ VolumeSlider::VolumeSlider(MainWindow *mw, QWidget *parent)
 #ifdef __mips__
     setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
 #elif __aarch64__
-    setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
+    setWindowFlags(Qt::ToolTip | Qt::FramelessWindowHint);
 #elif __sw_64__
     setWindowFlags(Qt::FramelessWindowHint | Qt::BypassWindowManagerHint);
     setAttribute(Qt::WA_NativeWindow);

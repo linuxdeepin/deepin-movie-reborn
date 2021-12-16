@@ -56,7 +56,7 @@ NotificationWidget::NotificationWidget(QWidget *parent)
 #if defined (__mips__) || defined (__aarch64__)
     QTimer::singleShot(100, this, [=](){
         //此属性在wayland下会造成MainWindow最大化按钮消失，在此做延时处理
-        setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
+        setWindowFlags(Qt::ToolTip | Qt::FramelessWindowHint);
     });
     setAttribute(Qt::WA_TranslucentBackground, true);
 #endif

@@ -1630,7 +1630,7 @@ void ToolboxProxy::slotVolumeButtonClicked()
      * -1为初始化数值
      * 大于等于零表示为已完成初始化
      */
-    if (CompositingManager::get().composited()) {
+    if (CompositingManager::get().composited() && !utils::check_wayland_env()) {
         if (!m_pVolSlider->isVisible()) {
             m_pVolSlider->show(m_pMainWindow->width() - m_pVolBtn->width() / 2 - m_pPlayBtn->width() - 40,
                                m_pMainWindow->height() - TOOLBOX_HEIGHT - 2);
