@@ -2062,6 +2062,9 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
 
     case ActionFactory::ActionKind::MovieInfo: {
         if (m_pEngine->state() != PlayerEngine::CoreState::Idle) {
+            //fix 107355
+            //Add a mouse display to prevent the target is hidden
+            qApp->setOverrideCursor(Qt::ArrowCursor);
             MovieInfoDialog mid(m_pEngine->playlist().currentInfo(), this);
             mid.exec();
         }
