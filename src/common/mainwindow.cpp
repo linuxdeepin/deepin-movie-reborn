@@ -245,11 +245,9 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *pObj)
             }
 
             if (!fi.isReadable() || !fi.isWritable()) {
-                //                if (alert) le->showAlertMessage(QObject::tr("You don't have permission to operate this folder"));
                 return false;
             }
-        } else
-        {
+        } else {
             if (dir.cdUp()) {
                 QFileInfo ch(dir.path());
                 if (!ch.isReadable() || !ch.isWritable())
@@ -302,8 +300,6 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *pObj)
             } else if (pn == sElideText) {
                 pLineEdit->setText(sElideText);
             } else {
-                //                option->setValue(option->defaultValue());//设置为默认路径
-                //                le->setText(option->defaultValue().toString());
                 pSettingOption->setValue(sNameLast);
                 pLineEdit->setText(nmls);
             }
@@ -4027,8 +4023,13 @@ void MainWindow::contextMenuEvent(QContextMenuEvent *pEvent)
 bool MainWindow::insideToolsArea(const QPoint &p)
 {
 #ifdef __x86_64__
-    return m_pTitlebar->geometry().contains(p) || m_pToolbox->geometry().contains(p) || m_pToolbox->volumeSlider()->geometry().contains(p) ||
-            m_pMiniPlayBtn->geometry().contains(p)|| m_pMiniCloseBtn->geometry().contains(p) || m_pMiniQuitMiniBtn->geometry().contains(p);
+    if (!CompositingManager::get().composited()) {
+        return m_pTitlebar->geometry().contains(p) || m_pToolbox->rect().contains(p) || m_pToolbox->volumeSlider()->geometry().contains(p) ||
+                m_pMiniPlayBtn->geometry().contains(p)|| m_pMiniCloseBtn->geometry().contains(p) || m_pMiniQuitMiniBtn->geometry().contains(p);
+    } else {
+        return m_pTitlebar->geometry().contains(p) || m_pToolbox->geometry().contains(p) || m_pToolbox->volumeSlider()->geometry().contains(p) ||
+                m_pMiniPlayBtn->geometry().contains(p)|| m_pMiniCloseBtn->geometry().contains(p) || m_pMiniQuitMiniBtn->geometry().contains(p);
+    }
 #else
     return m_pTitlebar->geometry().contains(p) || m_pToolbox->rect().contains(p) || m_pToolbox->volumeSlider()->geometry().contains(p) ||
             m_pMiniPlayBtn->geometry().contains(p)|| m_pMiniCloseBtn->geometry().contains(p) || m_pMiniQuitMiniBtn->geometry().contains(p);
