@@ -1964,7 +1964,8 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
                         m_pCommHintWid->updateWithMessage(msg);
                     }
                 });
-                if (Settings::get().isSet(Settings::ResumeFromLast)) {
+                QVariant panscan = m_pEngine->getBackendProperty("panscan");
+                if (panscan.isNull() && Settings::get().isSet(Settings::ResumeFromLast)) {
                     int restore_pos = Settings::get().internalOption("playlist_pos").toInt();
                     restore_pos = qMax(qMin(restore_pos, m_pEngine->playlist().count() - 1), 0);
                     requestAction(ActionFactory::ActionKind::GotoPlaylistSelected, false, {restore_pos});
