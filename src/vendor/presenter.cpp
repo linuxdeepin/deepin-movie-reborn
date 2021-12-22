@@ -55,7 +55,9 @@ Presenter::Presenter(MainWindow *mw, QObject *parent)
     mprisPlayer->setCanGoPrevious(true);
     mprisPlayer->setCanPause(true);
     mprisPlayer->setCanSeek(true);
+#ifndef _LIBMPR_
     mprisPlayer->setCanShowInUI(false);
+#endif
     initMpris(mprisPlayer);
 }
 
