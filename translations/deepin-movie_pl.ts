@@ -41,7 +41,7 @@
     <message>
         <location filename="../src/common/settings_translation.cpp" line="39"/>
         <source>Clear playlist when exit</source>
-        <translation>Wyczyść listę odtwarzania przy wyjściu</translation>
+        <translation>Wyczyść playlistę przy wyjściu</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="40"/>
@@ -71,7 +71,7 @@
     <message>
         <location filename="../src/common/settings_translation.cpp" line="45"/>
         <source>Default play mode</source>
-        <translation>Domyślny tryb odtwarzania</translation>
+        <translation>Domyślna kolejność odtwarzania</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="46"/>
@@ -107,7 +107,7 @@
     <message>
         <location filename="../src/common/settings_translation.cpp" line="52"/>
         <source>Frame/Sound</source>
-        <translation>Klatka/Dźwięk</translation>
+        <translation>Obraz/Dźwięk</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="53"/>
@@ -198,7 +198,7 @@
     <message>
         <location filename="../src/common/settings_translation.cpp" line="72"/>
         <source>Playlist</source>
-        <translation>Lista odtwarzania</translation>
+        <translation>Playlista</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="73"/>
@@ -208,7 +208,7 @@
     <message>
         <location filename="../src/common/settings_translation.cpp" line="74"/>
         <source>Delete from playlist</source>
-        <translation>Usuń z listy odtwarzania</translation>
+        <translation>Usuń z playlisty</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="75"/>
@@ -238,12 +238,12 @@
     <message>
         <location filename="../src/common/settings_translation.cpp" line="80"/>
         <source>0.5s backward</source>
-        <translation>0,5 s do tyłu</translation>
+        <translation>0.5s do tyłu</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="81"/>
         <source>0.5s forward</source>
-        <translation>0,5 s do przodu</translation>
+        <translation>0.5s do przodu</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="82"/>
@@ -348,25 +348,25 @@
         <location filename="../src/common/actions.cpp" line="94"/>
         <location filename="../src/common/actions.cpp" line="162"/>
         <source>Play Mode</source>
-        <translation>Tryb odtwarzania</translation>
+        <translation>Kolejność odtwarzania</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="96"/>
         <location filename="../src/common/actions.cpp" line="164"/>
         <source>Order Play</source>
-        <translation>Uporządkowane</translation>
+        <translation>Uporządkowana</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="97"/>
         <location filename="../src/common/actions.cpp" line="165"/>
         <source>Shuffle Play</source>
-        <translation>Losowe</translation>
+        <translation>Losowa</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="98"/>
         <location filename="../src/common/actions.cpp" line="166"/>
         <source>Single Play</source>
-        <translation>Pojedyncze</translation>
+        <translation>Pojedyncze odtworzenie</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="99"/>
@@ -378,13 +378,13 @@
         <location filename="../src/common/actions.cpp" line="100"/>
         <location filename="../src/common/actions.cpp" line="168"/>
         <source>List Loop</source>
-        <translation>Zapętl listę</translation>
+        <translation>Zapętlona lista</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="105"/>
         <location filename="../src/common/actions.cpp" line="188"/>
         <source>Frame</source>
-        <translation>Klatka</translation>
+        <translation>Obraz</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="107"/>
@@ -561,7 +561,7 @@
     <message>
         <location filename="../src/common/actions.cpp" line="329"/>
         <source>Playlist</source>
-        <translation>Lista odtwarzania</translation>
+        <translation>Playlista</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="330"/>
@@ -571,12 +571,12 @@
     <message>
         <location filename="../src/common/actions.cpp" line="340"/>
         <source>Delete from playlist</source>
-        <translation>Usuń z listy odtwarzania</translation>
+        <translation>Usuń z playlisty</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="341"/>
         <source>Empty playlist</source>
-        <translation>Pusta lista odtwarzania</translation>
+        <translation>Wyczyść playlistę</translation>
     </message>
     <message>
         <location filename="../src/common/actions.cpp" line="342"/>
@@ -785,19 +785,19 @@
         <location filename="../src/common/mainwindow.cpp" line="3229"/>
         <location filename="../src/common/mainwindow.cpp" line="4221"/>
         <source>Order play</source>
-        <translation>Uporządkowane</translation>
+        <translation>Uporządkowana</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3232"/>
         <location filename="../src/common/mainwindow.cpp" line="4224"/>
         <source>Shuffle play</source>
-        <translation>Odtwarzanie losowe</translation>
+        <translation>Losowa</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3235"/>
         <location filename="../src/common/mainwindow.cpp" line="4227"/>
         <source>Single play</source>
-        <translation>Pojedyncze odtwarzanie</translation>
+        <translation>Pojedyncze odtworzenie</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3238"/>
@@ -809,7 +809,7 @@
         <location filename="../src/common/mainwindow.cpp" line="3241"/>
         <location filename="../src/common/mainwindow.cpp" line="4233"/>
         <source>List loop</source>
-        <translation>Zapętl listę</translation>
+        <translation>Zapętlona lista</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3396"/>
@@ -1021,7 +1021,7 @@
     <message>
         <location filename="../src/widgets/playlist_widget.cpp" line="673"/>
         <source>Playlist</source>
-        <translation>Lista odtwarzania</translation>
+        <translation>Playlista</translation>
     </message>
     <message>
         <location filename="../src/widgets/playlist_widget.cpp" line="699"/>
@@ -1042,17 +1042,17 @@
     <message>
         <location filename="../src/common/dmr_settings.cpp" line="103"/>
         <source>Order play</source>
-        <translation>Uporządkowane</translation>
+        <translation>Uporządkowana</translation>
     </message>
     <message>
         <location filename="../src/common/dmr_settings.cpp" line="104"/>
         <source>Shuffle play</source>
-        <translation>Odtwarzanie losowe</translation>
+        <translation>Losowa</translation>
     </message>
     <message>
         <location filename="../src/common/dmr_settings.cpp" line="105"/>
         <source>Single play</source>
-        <translation>Pojedyncze</translation>
+        <translation>Pojedyncze odtworzenie</translation>
     </message>
     <message>
         <location filename="../src/common/dmr_settings.cpp" line="106"/>
@@ -1062,7 +1062,7 @@
     <message>
         <location filename="../src/common/dmr_settings.cpp" line="107"/>
         <source>List loop</source>
-        <translation>Zapętl listę</translation>
+        <translation>Zapętlona lista</translation>
     </message>
     <message>
         <location filename="../src/common/dmr_settings.cpp" line="112"/>
@@ -1125,7 +1125,7 @@
         <location filename="../src/widgets/toolbox_proxy.cpp" line="1305"/>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="2586"/>
         <source>Playlist</source>
-        <translation>Lista odtwarzania</translation>
+        <translation>Playlista</translation>
     </message>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="1308"/>

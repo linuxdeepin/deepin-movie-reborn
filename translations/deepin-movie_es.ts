@@ -836,7 +836,7 @@
     <message>
         <location filename="../src/common/mainwindow.cpp" line="4877"/>
         <source>The action is not supported in this video</source>
-        <translation type="unfinished"/>
+        <translation>La acción no es compatible con este vídeo</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2044"/>
@@ -864,7 +864,7 @@
         <location filename="../src/common/mainwindow.cpp" line="4352"/>
         <location filename="../src/common/mainwindow.cpp" line="4360"/>
         <source>Please exit smart dock</source>
-        <translation>Por favor, salga de smart dock</translation>
+        <translation>Por favor, salga de dock inteligente</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="4639"/>

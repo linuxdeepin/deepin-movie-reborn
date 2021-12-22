@@ -46,7 +46,7 @@
     <message>
         <location filename="../src/common/settings_translation.cpp" line="40"/>
         <source>Show thumbnails in progress bar</source>
-        <translation>ئىلگىرىلەش ستونىدا كىچىك كۆرۈنۈشنى كۆرسىتىڭ</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="41"/>
@@ -836,7 +836,7 @@
     <message>
         <location filename="../src/common/mainwindow.cpp" line="4877"/>
         <source>The action is not supported in this video</source>
-        <translation type="unfinished"/>
+        <translation>نۆۋەتتىكى سىن بۇ ئىقتىدارنى قوللىمايدۇ</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2044"/>

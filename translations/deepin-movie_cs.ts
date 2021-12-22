@@ -311,7 +311,7 @@
     <message>
         <location filename="../src/widgets/url_dialog.cpp" line="45"/>
         <source>Cancel</source>
-        <translation>Storno</translation>
+        <translation>Zrušit</translation>
     </message>
     <message>
         <location filename="../src/widgets/url_dialog.cpp" line="46"/>
@@ -698,7 +698,7 @@
         <location filename="../src/common/mainwindow.cpp" line="2560"/>
         <location filename="../src/common/mainwindow.cpp" line="2577"/>
         <source>Unable to adjust the subtitle</source>
-        <translation type="unfinished"/>
+        <translation>Nelze upravit titulek</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2565"/>
@@ -836,7 +836,7 @@
     <message>
         <location filename="../src/common/mainwindow.cpp" line="4877"/>
         <source>The action is not supported in this video</source>
-        <translation type="unfinished"/>
+        <translation>Činnost není v tomto videu podporována</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2044"/>

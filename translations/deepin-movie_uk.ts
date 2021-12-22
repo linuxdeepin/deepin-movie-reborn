@@ -836,7 +836,7 @@
     <message>
         <location filename="../src/common/mainwindow.cpp" line="4877"/>
         <source>The action is not supported in this video</source>
-        <translation type="unfinished"/>
+        <translation>Підтримки такої дії у цьому відео не передбачено</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2044"/>

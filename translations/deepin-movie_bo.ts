@@ -46,7 +46,7 @@
     <message>
         <location filename="../src/common/settings_translation.cpp" line="40"/>
         <source>Show thumbnails in progress bar</source>
-        <translation>ཙི་གུ་འགུལ་བའི་མྱུར་ཚད་དེ་པིང་ཤོག་གི་རྣམ་བཞག་ཡིན།</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="41"/>
@@ -836,7 +836,7 @@
     <message>
         <location filename="../src/common/mainwindow.cpp" line="4877"/>
         <source>The action is not supported in this video</source>
-        <translation type="unfinished"/>
+        <translation>ད་ལྟའི་བརྙན་འཕྲིན་འོག་ནུས་པ་དེར་རྒྱབ་སྐྱོར་མེད།</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2044"/>

@@ -46,7 +46,7 @@
     <message>
         <location filename="../src/common/settings_translation.cpp" line="40"/>
         <source>Show thumbnails in progress bar</source>
-        <translation>鼠标滑动进度条为胶片格式</translation>
+        <translation>进度条显示为胶片样式</translation>
     </message>
     <message>
         <location filename="../src/common/settings_translation.cpp" line="41"/>

@@ -698,7 +698,7 @@
         <location filename="../src/common/mainwindow.cpp" line="2560"/>
         <location filename="../src/common/mainwindow.cpp" line="2577"/>
         <source>Unable to adjust the subtitle</source>
-        <translation type="unfinished"/>
+        <translation>Incapaz de ajustar a legenda</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2565"/>
@@ -836,7 +836,7 @@
     <message>
         <location filename="../src/common/mainwindow.cpp" line="4877"/>
         <source>The action is not supported in this video</source>
-        <translation type="unfinished"/>
+        <translation>A ação não é suportada neste vídeo</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2044"/>
@@ -864,7 +864,7 @@
         <location filename="../src/common/mainwindow.cpp" line="4352"/>
         <location filename="../src/common/mainwindow.cpp" line="4360"/>
         <source>Please exit smart dock</source>
-        <translation>Sair da smart dock</translation>
+        <translation>Sair da doca inteligente</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="4639"/>
