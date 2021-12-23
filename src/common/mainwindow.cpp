@@ -3692,16 +3692,12 @@ void MainWindow::moveEvent(QMoveEvent *pEvent)
 {
     qInfo() << __func__ << "进入moveEvent";
     QWidget::moveEvent(pEvent);
-#ifdef __aarch64__
+#ifndef __x86_64__
     QPoint relativePoint = mapToGlobal(QPoint(0, 0));
     m_pToolbox->updateSliderPoint(relativePoint);
     if (windowState() == Qt::WindowNoState &&  !m_isSettingMiniMode && !m_bMiniMode) {
         m_lastRectInNormalMode = geometry();
     }
-    m_pCommHintWid->syncPosition();
-#elif  __mips__
-    QPoint relativePoint = mapToGlobal(QPoint(0, 0));
-    m_pToolbox->updateSliderPoint(relativePoint);
     m_pCommHintWid->syncPosition();
 #else
     if (CompositingManager::get().composited()) {
