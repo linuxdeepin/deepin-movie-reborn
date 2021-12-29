@@ -19,7 +19,10 @@ find_package(Qt5Svg)
 pkg_check_modules(Dtk REQUIRED IMPORTED_TARGET dtkwidget)
 pkg_check_modules(AV REQUIRED IMPORTED_TARGET libavformat libavutil libavcodec)
 
-set(SRCS dmr_test.cpp)
+# 定义 source 文件
+FILE (GLOB SRCS
+    *.cpp
+    )
 
 add_executable(${CMD_NAME} ${SRCS})
 

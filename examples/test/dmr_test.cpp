@@ -27,78 +27,8 @@
  * version.  If you delete this exception statement from all source
  * files in the program, then also delete it here.
  */
-#include <player_widget.h>
-#include <player_engine.h>
-#include <compositing_manager.h>
-#include <QtWidgets>
 
-class Window: public QWidget {
-    Q_OBJECT
-public:
-    Window() {
-
-        auto l = new QVBoxLayout(this);
-
-        //if (dmr::CompositingManager::get().composited()) {
-            //dmr::CompositingManager::get().overrideCompositeMode(false);
-        //}
-
-        player = new dmr::PlayerWidget;
-        l->addWidget(player);
-
-        QObject::connect(&player->engine(), &dmr::PlayerEngine::stateChanged, [=]() {
-            qInfo() << "----------------new state: " << player->engine().state();
-        });
-        player->engine().changeVolume(120);
-
-        auto h = new QHBoxLayout(this);
-
-        auto playBtn = new QPushButton("Play");
-        connect(playBtn, &QPushButton::clicked, &player->engine(), &dmr::PlayerEngine::play);
-        h->addWidget(playBtn);
-
-        auto pauseBtn = new QPushButton("Pause");
-        connect(pauseBtn, &QPushButton::clicked, &player->engine(), &dmr::PlayerEngine::pauseResume);
-        h->addWidget(pauseBtn);
-
-        auto stopBtn = new QPushButton("stop");
-        connect(stopBtn, &QPushButton::clicked, &player->engine(), &dmr::PlayerEngine::stop);
-        h->addWidget(stopBtn);
-
-        auto forward = new QPushButton("forward");
-        connect(forward, &QPushButton::clicked, [=]() {
-                player->engine().seekForward(60);
-        });
-        h->addWidget(forward);
-
-        auto volumeUp = new QPushButton("volUp");
-        connect(volumeUp, &QPushButton::clicked, &player->engine(), &dmr::PlayerEngine::volumeUp);
-        h->addWidget(volumeUp);
-
-        auto volumeDown = new QPushButton("volDown");
-        connect(volumeDown, &QPushButton::clicked, &player->engine(), &dmr::PlayerEngine::volumeDown);
-        h->addWidget(volumeDown);
-
-        auto keep = new QPushButton("KeepOpen");
-        connect(keep, &QPushButton::clicked, &player->engine(), [this]() {
-            this->player->engine().setBackendProperty("keep-open", "yes");
-        });
-        this->player->engine().setBackendProperty("pause-on-start", "true");
-        h->addWidget(keep);
-
-        l->addLayout(h);
-        setLayout(l);
-        
-    }
-
-    void play(const QUrl& url) {
-        if (player->engine().isPlayableFile(url))
-            player->play(url);
-    }
-
-private:
-    dmr::PlayerWidget *player {nullptr};
-};
+#include "window.h"
 
 int main(int argc, char *argv[])
 {
@@ -152,5 +82,3 @@ int main(int argc, char *argv[])
     delete mw;
     return 0;
 }
-
-#include "dmr_test.moc"
