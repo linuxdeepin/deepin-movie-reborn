@@ -76,7 +76,7 @@ void QTestMain::cleanupTestCase()
 
 void QTestMain::testGTest()
 {
-    testing::GTEST_FLAG(output) = "xml:./report/report_deepin-movie-reborn.xml";
+    testing::GTEST_FLAG(output) = "xml:./report/report_deepin-movie-test.xml";
     testing::InitGoogleTest(&m_argc,m_argv);
     int ret = RUN_ALL_TESTS();
 #ifndef __mips__

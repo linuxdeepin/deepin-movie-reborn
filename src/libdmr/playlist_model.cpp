@@ -341,6 +341,7 @@ struct MovieInfo PlaylistModel::parseFromFile(const QFileInfo &fi, bool *ok)
     mi.resolution = QString("%1x%2").arg(mi.width).arg(mi.height);
     mi.title = fi.fileName(); //FIXME this
     mi.filePath = fi.canonicalFilePath();
+    qInfo() << __func__ << "created:" << fi.created() << "       toString:" << fi.created().toString();
     mi.creation = fi.created().toString();
     mi.fileSize = fi.size();
     mi.fileType = fi.suffix();
