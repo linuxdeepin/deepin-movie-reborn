@@ -127,11 +127,11 @@ struct MovieInfo {
      * @brief 判断是否是H.264裸流，因为没有时长等信息所以需要对此类型单独判断
      * @return 是否是裸流
      */
-    bool isNakedStream() const
+    bool isRawFormat() const
     {
         bool bFlag = false;
 #ifndef _LIBDMR_
-        if(strFmtName.compare("h264",Qt::CaseInsensitive) == 0)
+        if(strFmtName.contains("raw",Qt::CaseInsensitive))
             bFlag = true;
 #endif
 
@@ -234,8 +234,6 @@ public:
      * @return 返回是否正在运行
      */
     bool getThumanbilRunning();
-
-    bool isMediaFile(QString sFileName);    //判断一个文件是否是多媒体文件
 
     //获取视频信息
     MovieInfo getMovieInfo(const QUrl &url, bool *is);

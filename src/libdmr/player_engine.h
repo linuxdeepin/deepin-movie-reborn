@@ -93,10 +93,26 @@ public:
     QList<QUrl> addPlayDir(const QDir &dir);
     // returned list contains only accepted valid items
     QList<QUrl> addPlayFiles(const QList<QUrl> &urls);
-
+    /**
+     * @brief addPlayFiles 添加播放文件
+     * @param 文件集合
+     * @return 返回已添加成功的文件
+     */
+    QList<QUrl> addPlayFiles(const QList<QString> &lstFile);
+    /**
+     * @brief isPlayableFile 判断一个文件是否可以播放
+     * @param url 文件url
+     * @return 是否可以播放
+     */
     bool isPlayableFile(const QUrl &url);
+    /**
+     * @brief isPlayableFile 判断一个文件是否可以播放
+     * @param url 文件路径
+     * @return 是否可以播放
+     */
     bool isPlayableFile(const QString &name);
     static bool isAudioFile(const QString &name);
+    static bool isSubtitle(const QString &name);
 
     // only supports (+/-) 0, 90, 180, 270
     int videoRotation() const;
@@ -195,6 +211,7 @@ signals:
 
     void siginitthumbnailseting();
     void updateDuration();
+    void sigInvalidFile(QString strFileName);
 
 public slots:
     void play();
@@ -235,9 +252,6 @@ protected:
     bool _playingRequest {false};
     //add by heyi
     bool m_bMpvFunsLoad {false};
-
-    QList<QUrl> collectPlayFiles(const QList<QUrl> &urls);
-    QList<QUrl> collectPlayDir(const QDir &dir);
 
     void resizeEvent(QResizeEvent *) override;
     void savePreviousMovieState();

@@ -91,6 +91,7 @@ protected:
     //更新全屏时影院播放进度
     void updateMovieProgress(qint64 duration, qint64 pos);
 #endif
+    void setRawFormatFlag(bool bRawFormat);
 
 protected slots:
     void onNewFrame();
@@ -150,6 +151,7 @@ private:
     qreal m_pert; //影院播放进度
     QString m_strPlayTime; //播放时间显示；
 #endif
+    bool m_bRawFormat;     // 播放内容为原始格式文件标志
 };
 
 }

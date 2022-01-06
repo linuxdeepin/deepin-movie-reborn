@@ -52,10 +52,10 @@ void ApplicationAdaptor::openFiles(const QStringList &listFiles)
         QTime current = QTime::currentTime();
         if (abs(m_oldTime.msecsTo(current)) > 800) {
             m_oldTime = current;
-            m_pMainWindow->playList(listFiles);
+            m_pMainWindow->play(listFiles);
         }
     } else {
-        m_pMainWindow->playList(listFiles);
+        m_pMainWindow->play(listFiles);
     }
 }
 
@@ -74,7 +74,7 @@ void ApplicationAdaptor::openFile(const QString &sFile)
     QTime current = QTime::currentTime();
     if (abs(m_oldTime.msecsTo(current)) > 800) {
         m_oldTime = current;
-        m_pMainWindow->play(url);
+        m_pMainWindow->play({url.toString()});
     }
 }
 

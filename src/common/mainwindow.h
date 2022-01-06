@@ -360,9 +360,7 @@ public slots:
      * @brief 根据url地址播放影片
      * @param 影片路径
      */
-    void play(const QUrl &url);
-
-    void playList(const QList<QString> &listFiles);
+    void play(const QList<QString> &listFiles);
     void updateProxyGeometry();
     void suspendToolsWindow();
     void resumeToolsWindow();
@@ -476,6 +474,7 @@ protected slots:
     void onSysLockState(QString serviceName, QVariantMap key2value, QStringList);
     void slotProperChanged(QString, QVariantMap key2value, QStringList);
     void slotUnsupported();
+    void slotInvalidFile(QString strFileName);
 
 private:
     void initMember();

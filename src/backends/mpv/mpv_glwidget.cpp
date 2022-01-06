@@ -768,6 +768,7 @@ namespace dmr {
         m_renderCreat = nullptr;
         m_renderContexRender = nullptr;
         m_renderContextUpdate = nullptr;
+        m_bRawFormat = false;
     }
 
     /*not used yet*/
@@ -894,6 +895,13 @@ namespace dmr {
                 if(m_strPlayTime.isNull() || m_strPlayTime.isEmpty()) return;
                 QPalette Palette;
                 pen.setColor(Palette.color(QPalette::Text));
+                if (m_bRawFormat) {
+                    if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
+                        pen.setColor(QColor(0, 0, 0, 40));
+                    } else {
+                        pen.setColor(QColor(255, 255, 255, 40));
+                    }
+                }
                 painter.setPen(pen);
                 fr = fm.boundingRect(m_strPlayTime);
                 fr.moveCenter(rectMovieTime.center());
@@ -983,6 +991,11 @@ namespace dmr {
         m_strPlayTime = sCurtime + stime;//更新影院当前播放时长
     }
 #endif
+  
+    void MpvGLWidget::setRawFormatFlag(bool bRawFormat)
+    {
+        m_bRawFormat = bRawFormat;
+    }
 
     void MpvGLWidget::setPlaying(bool bFalse)
     {

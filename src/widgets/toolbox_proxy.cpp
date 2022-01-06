@@ -44,6 +44,7 @@
 #include "thumbnail_worker.h"
 #include "tip.h"
 #include "utils.h"
+#include "filefilter.h"
 
 //#include <QtWidgets>
 #include <DImageButton>
@@ -1309,10 +1310,9 @@ void ToolboxProxy::updateThumbnail()
 
     //如果打开的是音乐
     QString suffix = m_pEngine->playlist().currentInfo().info.suffix();
-    foreach (QString sf, m_pEngine->audio_filetypes) {
-        if (sf.right(sf.size() - 2) == suffix) {
-            return;
-        }
+
+    if (m_pEngine->isAudioFile(m_pEngine->playlist().currentInfo().info.absoluteFilePath())) {
+        return;
     }
 
     qInfo() << "worker" << m_pWorker;
@@ -1492,7 +1492,7 @@ void ToolboxProxy::waitPlay()
 void ToolboxProxy::slotThemeTypeChanged()
 {
     QPalette textPalette;
-    bool bNakedStream = false;
+    bool bRawFormat = false;
     auto type = DGuiApplicationHelper::instance()->themeType();
     WAYLAND_BLACK_WINDOW;
     THEME_TYPE(type);
@@ -1503,6 +1503,7 @@ void ToolboxProxy::slotThemeTypeChanged()
     QString rStr;
     if (type == DGuiApplicationHelper::LightType) {
         textPalette.setColor(QPalette::WindowText, QColor(0, 0, 0, 40));   // 浅色背景下时长显示置灰
+        textPalette.setColor(QPalette::Text, QColor(0, 0, 0, 40));
 
         QColor maskColor(247, 247, 247);
         maskColor.setAlphaF(0.60);
@@ -1532,6 +1533,7 @@ void ToolboxProxy::slotThemeTypeChanged()
         DApplicationHelper::instance()->setPalette(m_pPalyBox, pl);
     } else {
         textPalette.setColor(QPalette::WindowText, QColor(255, 255, 255, 40));   // 深色背景下时长显示置灰
+        textPalette.setColor(QPalette::Text, QColor(255, 255, 255, 40));
 
         QColor maskColor(32, 32, 32);
         maskColor.setAlphaF(0.80);
@@ -1562,23 +1564,40 @@ void ToolboxProxy::slotThemeTypeChanged()
     }
 
     if(m_pEngine->state() != PlayerEngine::CoreState::Idle) {
-        bNakedStream = m_pEngine->getplaylist()->currentInfo().mi.isNakedStream();
-        if(bNakedStream){
+        bRawFormat = m_pEngine->getplaylist()->currentInfo().mi.isRawFormat();
+        if(bRawFormat && !FileFilter::instance()->isAudio(m_pEngine->playlist().currentInfo().url)) {
             m_pTimeLabel->setPalette(textPalette);
             m_pTimeLabelend->setPalette(textPalette);
+            m_pFullscreentimelable->setPalette(textPalette);
+            m_pFullscreentimelableend->setPalette(textPalette);
 
             m_pVolBtn->setButtonEnable(false);
-        } else {
-            textPalette.setColor(QPalette::WindowText, DApplication::palette().windowText().color());
+        }
+        else if (bRawFormat) {
             m_pTimeLabel->setPalette(textPalette);
             m_pTimeLabelend->setPalette(textPalette);
+            m_pFullscreentimelable->setPalette(textPalette);
+            m_pFullscreentimelableend->setPalette(textPalette);
+        }
+        else {
+            textPalette.setColor(QPalette::WindowText, DApplication::palette().windowText().color());
+            textPalette.setColor(QPalette::Text, DApplication::palette().text().color());
+
+            m_pTimeLabel->setPalette(textPalette);
+            m_pTimeLabelend->setPalette(textPalette);
+            m_pFullscreentimelable->setPalette(textPalette);
+            m_pFullscreentimelableend->setPalette(textPalette);
 
             m_pVolBtn->setButtonEnable(true);
         }
     } else {
         textPalette.setColor(QPalette::WindowText, DApplication::palette().windowText().color());
+        textPalette.setColor(QPalette::Text, DApplication::palette().text().color());
+
         m_pTimeLabel->setPalette(textPalette);
         m_pTimeLabelend->setPalette(textPalette);
+        m_pFullscreentimelable->setPalette(textPalette);
+        m_pFullscreentimelableend->setPalette(textPalette);
 
         m_pVolBtn->setButtonEnable(true);
     }
@@ -1914,7 +1933,7 @@ void ToolboxProxy::progressHoverChanged(int nValue)
         point.setX(endPoint.x());
     }
 
-    bool bIsAudio = m_pEngine->isAudioFile(pif.info.fileName());
+    bool bIsAudio = m_pEngine->isAudioFile(pif.info.absoluteFilePath());
     if (!Settings::get().isSet(Settings::PreviewOnMouseover) || bIsAudio) {
         updatePreviewTime(nValue, point);
         return;
@@ -1963,33 +1982,49 @@ void ToolboxProxy::updateMovieProgress()
 void ToolboxProxy::updateButtonStates()
 {
     QPalette palette;              // 时长显示的颜色，在某些情况下变化字体颜色区别功能
-    bool bNakedStream = false;
+    bool bRawFormat = false;
 
     if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
         palette.setColor(QPalette::WindowText, QColor(0, 0, 0, 40));       // 浅色背景下置灰
+        palette.setColor(QPalette::Text, QColor(0, 0, 0, 40));
     } else {
         palette.setColor(QPalette::WindowText, QColor(255, 255, 255, 40)); // 深色背景下置灰
+        palette.setColor(QPalette::Text, QColor(255, 255, 255, 40));
     }
 
     if(m_pEngine->state() != PlayerEngine::CoreState::Idle) {
-        bNakedStream = m_pEngine->getplaylist()->currentInfo().mi.isNakedStream();
-        if(bNakedStream){                                             // 如果正在播放的视频是裸流不支持音量调节和进度调节
+        bRawFormat = m_pEngine->getplaylist()->currentInfo().mi.isRawFormat();
+        if(bRawFormat && !FileFilter::instance()->isAudio(m_pEngine->playlist().currentInfo().url)){                                             // 如果正在播放的视频是裸流不支持音量调节和进度调节
             m_pProgBar->setEnabled(false);
             m_pProgBar->setEnableIndication(false);
             m_pVolSlider->setEnabled(false);
 
             m_pTimeLabel->setPalette(palette);             // 如果正在播放的视频是裸流置灰
             m_pTimeLabelend->setPalette(palette);
+            m_pFullscreentimelable->setPalette(palette);
+            m_pFullscreentimelableend->setPalette(palette);
 
             m_pVolBtn->setButtonEnable(false);
-        }else {
+        } else if (bRawFormat) {
+            m_pProgBar->setEnabled(false);
+            m_pProgBar->setEnableIndication(false);
+
+            m_pTimeLabel->setPalette(palette);
+            m_pTimeLabelend->setPalette(palette);
+            m_pFullscreentimelable->setPalette(palette);
+            m_pFullscreentimelableend->setPalette(palette);
+        } else {
             m_pProgBar->setEnabled(true);
             m_pProgBar->setEnableIndication(true);
             m_pVolSlider->setEnabled(true);
 
             palette.setColor(QPalette::WindowText, DApplication::palette().windowText().color());
+            palette.setColor(QPalette::Text, DApplication::palette().text().color());
+
             m_pTimeLabel->setPalette(palette);
             m_pTimeLabelend->setPalette(palette);
+            m_pFullscreentimelable->setPalette(palette);
+            m_pFullscreentimelableend->setPalette(palette);
 
             m_pVolBtn->setButtonEnable(true);
         }
@@ -1997,8 +2032,12 @@ void ToolboxProxy::updateButtonStates()
         m_pVolSlider->setEnabled(true);
 
         palette.setColor(QPalette::WindowText, DApplication::palette().windowText().color());
+        palette.setColor(QPalette::Text, DApplication::palette().text().color());
+
         m_pTimeLabel->setPalette(palette);
         m_pTimeLabelend->setPalette(palette);
+        m_pFullscreentimelable->setPalette(palette);
+        m_pFullscreentimelableend->setPalette(palette);
 
          m_pVolBtn->setButtonEnable(true);
     }

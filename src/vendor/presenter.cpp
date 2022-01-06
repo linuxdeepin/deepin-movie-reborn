@@ -117,7 +117,7 @@ void Presenter::slotvolumeRequested(double volume)
 
 void Presenter::slotopenUrlRequested(const QUrl url)
 {
-    _mw->play(url);
+    _mw->play({url.toString()});
 }
 
 void Presenter::slotstateChanged()

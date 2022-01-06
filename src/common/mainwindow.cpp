@@ -54,6 +54,7 @@
 #include "threadpool.h"
 #include "vendor/movieapp.h"
 #include "vendor/presenter.h"
+#include "filefilter.h"
 
 //#include <QtWidgets>
 #include <QtDBus>
@@ -704,6 +705,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(m_pToolbox, &ToolboxProxy::sigUnsupported, this, &MainWindow::slotUnsupported);
     connect(m_pEngine, &PlayerEngine::stateChanged, this, &MainWindow::slotPlayerStateChanged);
+    connect(m_pEngine, &PlayerEngine::sigInvalidFile, this, &MainWindow::slotInvalidFile);
     connect(ActionFactory::get().mainContextMenu(), &DMenu::triggered, this, &MainWindow::menuItemInvoked);
     connect(ActionFactory::get().playlistContextMenu(), &DMenu::triggered, this, &MainWindow::menuItemInvoked);
     connect(this, &MainWindow::frameMenuEnable, &ActionFactory::get(), &ActionFactory::frameMenuEnable);
@@ -769,7 +771,7 @@ MainWindow::MainWindow(QWidget *parent)
         qInfo() << __func__ << m_pEngine->state();
 
         if (m_pEngine->state() == PlayerEngine::CoreState::Playing
-                && m_pEngine->playlist().currentInfo().mi.isNakedStream()) {
+                && m_pEngine->playlist().currentInfo().mi.isRawFormat()) {
             emit subtitleMenuEnable(false);
         } else {
             emit subtitleMenuEnable(true);
@@ -800,7 +802,7 @@ MainWindow::MainWindow(QWidget *parent)
             m_pMiniPlayBtn->setIcon(QIcon(":/resources/icons/light/mini/pause-normal-mini.svg"));
             m_pMiniPlayBtn->setObjectName("MiniPauseBtn");
 
-            if (m_pEngine->playlist().count() > 0 && !m_pEngine->isAudioFile(m_pEngine->playlist().currentInfo().mi.title)) {
+            if (m_pEngine->playlist().count() > 0 && !m_pEngine->isAudioFile(m_pEngine->playlist().currentInfo().mi.filePath)) {
                 emit frameMenuEnable(true);
                 setMusicShortKeyState(true);
             } else {
@@ -1612,15 +1614,7 @@ bool MainWindow::addCdromPath()
     if (strCDMountlist.size() == 0)
         return false;
 
-    QList<QUrl> urls = m_pEngine->addPlayDir(strCDMountlist[0]);  //目前只是针对第一个光盘
-    qSort(urls.begin(), urls.end(), compareBarData);
-    if (urls.size()) {
-        if (m_pEngine->state() == PlayerEngine::CoreState::Idle)
-            m_pEngine->playByName(QUrl("playlist://0"));
-        m_pEngine->playByName(urls[0]);
-    } else {
-        return false;
-    }
+    play({strCDMountlist[0]});
 
     return true;
 }
@@ -1634,33 +1628,12 @@ void MainWindow::loadPlayList()
     m_pEngine->getplaylist()->loadPlaylist();
     m_pToolbox->initThumbThread();
 
-    if (!m_listOpenFiles.isEmpty()) {
-        if (m_listOpenFiles.size() == 1) {
-            play(QUrl::fromLocalFile(m_listOpenFiles[0]));
-        } else {
-            playList(m_listOpenFiles);
-        }
-    }
+    play(m_listOpenFiles);
 }
 
 void MainWindow::setOpenFiles(QStringList &list)
 {
-    //统一使用绝对路径，避免重复视频导入播放列表
-    for(QString fileName: list) {
-        QString filePath;
-        if (QUrl(fileName).isLocalFile()) {
-            filePath = QUrl(fileName).toLocalFile();
-        } else {
-            filePath = QFileInfo(fileName).absoluteFilePath();
-        }
-
-        while (QFileInfo(filePath).isSymLink()) {
-            filePath = QFileInfo(filePath).symLinkTarget();
-        }
-        QUrl realUrl = QUrl::fromLocalFile(filePath);
-
-        m_listOpenFiles.append(realUrl.toLocalFile());
-    }
+    m_listOpenFiles = list;
 }
 
 QString MainWindow::padLoadPath()
@@ -1857,8 +1830,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
         }
 
         if (addCdromPath() == false) {
-            QUrl url(QString("dvd:///%1").arg(sDev));
-            play(url);
+            play({QString("dvd:///%1").arg(sDev)});
         }
         break;
     }
@@ -1868,7 +1840,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
         if (dlg.exec() == QDialog::Accepted) {
             QUrl url = dlg.url();
             if (url.isValid()) {
-                play(url);
+                play({url.toString()});
             } else {
                 m_pCommHintWid->updateWithMessage(tr("Parse failed"));
             }
@@ -1889,10 +1861,9 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
         if (fi.isDir() && fi.exists()) {
             Settings::get().setGeneralOption("last_open_path", fi.path());
 
-            QList<QUrl> urls = m_pEngine->addPlayDir(name);
-            if (urls.size()) {
-                m_pEngine->playByName(QUrl("playlist://0"));
-            }
+            m_pEngine->blockSignals(true);
+            play({name});
+             m_pEngine->blockSignals(false);
         }
         break;
     }
@@ -1906,47 +1877,52 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
         }
         //允许影院打开音乐文件进行播放
 #ifndef USE_TEST
-        QStringList filenames = DFileDialog::getOpenFileNames(this, tr("Open File"),
-                                                              lastOpenedPath(),
-                                                              tr("All videos (*)(%2 %1)").arg(m_pEngine->video_filetypes.join(" "))
-                                                              .arg(m_pEngine->audio_filetypes.join(" ")), nullptr,
-                                                              DFileDialog::HideNameFilterDetails);
+        DFileDialog fileDialog;
+        QStringList filenames;
+        fileDialog.setNameFilters({QString("Suffix filter (%1 %2)").arg(m_pEngine->video_filetypes.join(" "))
+                                   .arg(m_pEngine->audio_filetypes.join(" ")), "All (*)"});
+        fileDialog.setDirectory(lastOpenedPath());
+        fileDialog.setFileMode(QFileDialog::ExistingFiles);
+
+        if (fileDialog.exec() == QDialog::Accepted) {
+            filenames = fileDialog.selectedFiles();
+        } else {
+            break;
+        }
 #else
         QStringList filenames;
         filenames << QString("/data/source/deepin-movie-reborn/movie/demo.mp4")\
                   << QString("/data/source/deepin-movie-reborn/movie/bensound-sunm_nLastPressY.mp3");
 #endif
 
-        QList<QUrl> urls;
         if (filenames.size()) {
             QFileInfo fileInfo(filenames[0]);
             if (fileInfo.exists()) {
                 Settings::get().setGeneralOption("last_open_path", fileInfo.path());
             }
-
-            for (const auto &filename : filenames) {
-                urls.append(QUrl::fromLocalFile(filename));
-            }
-            const QList<QUrl> &valids = m_pEngine->addPlayFiles(urls);
-            if (valids.size()) {
-                m_pEngine->playByName(valids[0]);
-            } else {
-                m_pCommHintWid->updateWithMessage(tr("Invalid file"));
-            }
+            play(filenames);
         }
         break;
     }
 
     case ActionFactory::ActionKind::OpenFile: {
-        QString filename = DFileDialog::getOpenFileName(this, tr("Open File"),
-                                                        lastOpenedPath(),
-                                                        tr("All videos (%1)").arg(m_pEngine->video_filetypes.join(" ")), nullptr,
-                                                        DFileDialog::HideNameFilterDetails);
-        QFileInfo fileInfo(filename);
+        DFileDialog fileDialog;
+        QStringList filename;
+        fileDialog.setNameFilters({QString("Suffix filter (%1 %2)").arg(m_pEngine->video_filetypes.join(" "))
+                                   .arg(m_pEngine->audio_filetypes.join(" ")), "All (*)"});
+        fileDialog.setDirectory(lastOpenedPath());
+        fileDialog.setFileMode(QFileDialog::ExistingFiles);
+
+        if (fileDialog.exec() == QDialog::Accepted) {
+            filename = fileDialog.selectedFiles();
+        } else {
+            break;
+        }
+        QFileInfo fileInfo(filename[0]);
         if (fileInfo.exists()) {
             Settings::get().setGeneralOption("last_open_path", fileInfo.path());
 
-            play(QUrl::fromLocalFile(filename));
+            play({filename[0]});
         }
         break;
     }
@@ -2338,7 +2314,8 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
 
     case ActionFactory::ActionKind::ToggleMute: {
         if(m_pEngine->state() != PlayerEngine::CoreState::Idle
-                && m_pEngine->playlist().currentInfo().mi.isNakedStream()) {
+                && m_pEngine->playlist().currentInfo().mi.isRawFormat()
+                && !FileFilter::instance()->isAudio(m_pEngine->playlist().currentInfo().url)) {
             slotUnsupported();
         } else {
             m_pToolbox->changeMuteState();
@@ -2348,7 +2325,8 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
 
     case ActionFactory::ActionKind::VolumeUp: {
         if(m_pEngine->state() != PlayerEngine::CoreState::Idle
-                && m_pEngine->playlist().currentInfo().mi.isNakedStream()) {
+                && m_pEngine->playlist().currentInfo().mi.isRawFormat()
+                && !FileFilter::instance()->isAudio(m_pEngine->playlist().currentInfo().url)) {
             slotUnsupported();
         } else {
             //使用鼠标滚轮调节音量时会执行此步骤
@@ -2361,7 +2339,8 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
 
     case ActionFactory::ActionKind::VolumeDown: {
         if(m_pEngine->state() != PlayerEngine::CoreState::Idle
-                && m_pEngine->playlist().currentInfo().mi.isNakedStream()) {
+                && m_pEngine->playlist().currentInfo().mi.isRawFormat()
+                && !FileFilter::instance()->isAudio(m_pEngine->playlist().currentInfo().url)) {
             slotUnsupported();
         } else {
             //使用鼠标滚轮调节音量时会执行此步骤
@@ -2446,7 +2425,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
 
     case ActionFactory::ActionKind::SubDelay: {
         if(m_pEngine->state() != PlayerEngine::CoreState::Idle
-                && m_pEngine->playlist().currentInfo().mi.isNakedStream()) {
+                && m_pEngine->playlist().currentInfo().mi.isRawFormat()) {
             slotUnsupported();
             break;
         }
@@ -2463,7 +2442,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
 
     case ActionFactory::ActionKind::SubForward: {
         if(m_pEngine->state() != PlayerEngine::CoreState::Idle
-                && m_pEngine->playlist().currentInfo().mi.isNakedStream()) {
+                && m_pEngine->playlist().currentInfo().mi.isRawFormat()) {
             slotUnsupported();
             break;
         }
@@ -2500,17 +2479,24 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
 
     case ActionFactory::ActionKind::LoadSubtitle: {
 #ifndef USE_TEST
-        QString filename = DFileDialog::getOpenFileName(this, tr("Open File"),
-                                                        lastOpenedPath(),
-                                                        tr("Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)"));
+        DFileDialog fileDialog;
+        QStringList filename;
+        fileDialog.setNameFilters({"Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)","All (*)"});
+        fileDialog.setDirectory(lastOpenedPath());
+
+        if (fileDialog.exec() == QDialog::Accepted) {
+            filename = fileDialog.selectedFiles();
+        } else {
+            break;
+        }
 #else
         QString filename("/data/source/deepin-movie-reborn/Hachiko.A.Dog's.Story.ass");
 #endif
-        if (QFileInfo(filename).exists()) {
+        if (QFileInfo(filename[0]).exists()) {
             if (m_pEngine->state() == PlayerEngine::Idle)
-                subtitleMatchVideo(filename);
+                subtitleMatchVideo(filename[0]);
             else {
-                auto success = m_pEngine->loadSubtitle(QFileInfo(filename));
+                auto success = m_pEngine->loadSubtitle(QFileInfo(filename[0]));
                 m_pCommHintWid->updateWithMessage(success ? tr("Load successfully") : tr("Load failed"));
             }
         } else {
@@ -2563,7 +2549,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
 
     case ActionFactory::ActionKind::SeekBackward: {
         if(m_pEngine->state() != PlayerEngine::CoreState::Idle
-                && m_pEngine->playlist().currentInfo().mi.isNakedStream()) {
+                && m_pEngine->playlist().currentInfo().mi.isRawFormat()) {
             slotUnsupported();
         } else {
             m_pEngine->seekBackward(5);
@@ -2573,7 +2559,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
 
     case ActionFactory::ActionKind::SeekForward: {
         if(m_pEngine->state() != PlayerEngine::CoreState::Idle
-                && m_pEngine->playlist().currentInfo().mi.isNakedStream()) {
+                && m_pEngine->playlist().currentInfo().mi.isRawFormat()) {
             slotUnsupported();
         } else {
             m_pEngine->seekForward(5);
@@ -2667,7 +2653,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
 
     case ActionFactory::ActionKind::BurstScreenshot: {
         if(m_pEngine->state() != PlayerEngine::CoreState::Idle
-                && m_pEngine->playlist().currentInfo().mi.isNakedStream()) {
+                && m_pEngine->playlist().currentInfo().mi.isRawFormat()) {
             slotUnsupported();
         } else {
             startBurstShooting();
@@ -2830,49 +2816,21 @@ DSettingsDialog *MainWindow::initSettings()
     return pDSettingDilog;
 }
 
-void MainWindow::playList(const QList<QString> &listFiles)
-{
-    static QRegExp url_re("\\w+://");
-
-    QList<QUrl> urls;
-    for (const auto &filename : listFiles) {
-        qInfo() << filename;
-        QUrl url;
-        if (url_re.indexIn(filename) == 0) {
-            url = QUrl::fromPercentEncoding(filename.toUtf8());
-            if (!url.isValid())
-                url = QUrl(filename);
-        } else {
-            url = QUrl::fromLocalFile(filename);
-        }
-        if (url.isValid())
-            urls.append(url);
-    }
-    const QList<QUrl> &valids = m_pEngine->addPlayFiles(urls);
-    if (valids.size()) {
-        if (!isHidden()) {
-            activateWindow();
-        }
-        m_pEngine->playByName(valids[0]);
-    }
-}
-
-void MainWindow::play(const QUrl &url)
+void MainWindow::play(const QList<QString> &listFiles)
 {
     if (m_bIsFileLoadNotFinished && utils::check_wayland_env()) {
         qInfo() << __func__ << "File Load Not Finished!";
         return;
     }
-    if (!url.isValid())
-        return;
 
-    if (!isHidden()) {
-        activateWindow();
-    }
+    QList<QUrl> lstValid;
 
-    if (url.scheme().startsWith("dvd")) {
-        m_dvdUrl = url;
-        if (!m_pEngine->addPlayFile(url)) {
+    if (listFiles.isEmpty())
+        m_pEngine->play();
+
+    if (listFiles.count() == 1 && QUrl(listFiles[0]).scheme().startsWith("dvd")) {
+        m_dvdUrl = QUrl(listFiles[0]);
+        if (!m_pEngine->addPlayFile(m_dvdUrl)) {
             auto msg = QString(tr("Cannot play the disc"));
             m_pCommHintWid->updateWithMessage(msg);
             return;
@@ -2881,14 +2839,19 @@ void MainWindow::play(const QUrl &url)
             auto msg = QString(tr("Reading DVD files..."));
             m_pDVDHintWid->updateWithMessage(msg, true);
         }
-    } else {
-        if (!m_pEngine->addPlayFile(url)) {
-            auto msg = QString(tr("Invalid file: %1").arg(url.fileName()));
-            m_pCommHintWid->updateWithMessage(msg);
-            return;
-        }
+
+        m_pEngine->playByName(m_dvdUrl);
+        return;
     }
-    m_pEngine->playByName(url);
+
+    lstValid = m_pEngine->addPlayFiles(listFiles);  // 先添加到播放列表再播放
+
+    if(lstValid.count() > 0) {
+        if (!isHidden()) {
+            activateWindow();
+        }
+        m_pEngine->playByName(lstValid[0]);
+    }
 }
 
 void MainWindow::updateProxyGeometry()
@@ -3219,7 +3182,7 @@ void MainWindow::slotPlayerStateChanged()
     });
 
     if (m_pEngine->playlist().count() > 0) {
-        bAudio = m_pEngine->isAudioFile(m_pEngine->playlist().currentInfo().mi.title);
+        bAudio = m_pEngine->isAudioFile(m_pEngine->playlist().currentInfo().mi.filePath);
     }
     if (m_pEngine->state() == PlayerEngine::CoreState::Playing && bAudio) {
         m_pMovieWidget->startPlaying();
@@ -4070,8 +4033,6 @@ void MainWindow::subtitleMatchVideo(const QString &sFileName)
     QDir dir(subfileInfo.canonicalPath());
     dir.setFilter(QDir::Files | QDir::Hidden | QDir::NoSymLinks);
     dir.setSorting(QDir::Size | QDir::Reversed);
-    QStringList videofile_suffixs = m_pEngine->video_filetypes;
-    dir.setNameFilters(videofile_suffixs);
 
     QFileInfoList list = dir.entryInfoList();
     for (int i = 0; i < list.size(); ++i) {
@@ -4089,7 +4050,7 @@ void MainWindow::subtitleMatchVideo(const QString &sFileName)
     if (vfileInfo.exists()) {
         Settings::get().setGeneralOption("last_open_path", vfileInfo.path());
 
-        play(QUrl::fromLocalFile(sVideoName));
+        play({sVideoName});
 
         // Select the current subtitle display
         const PlayingMovieInfo &pmf = m_pEngine->playingMovieInfo();
@@ -4434,17 +4395,19 @@ void MainWindow::dropEvent(QDropEvent *pEvent)
     if (!pEvent->mimeData()->hasUrls()) {
         return;
     }
-
+    QList<QString> lstFile;
     QList<QUrl> urls = pEvent->mimeData()->urls();
-    QList<QUrl> valids = m_pEngine->addPlayFiles(urls);
 
-    if (urls.count() == 1 && valids.count() == 0) {
+    for (QUrl strUrl : urls)
+        lstFile << strUrl.toString();
+
+    if (urls.count() == 1) {
         // check if the dropped file is a subtitle.
         QFileInfo fileInfo(urls.first().toLocalFile());
-        if (m_pEngine->subtitle_suffixs.contains(fileInfo.suffix())) {
+        if (m_pEngine->isSubtitle(fileInfo.absoluteFilePath())) {
             // Search for video files with the same name as the subtitles and play the video file.
             if(m_pEngine->state() != PlayerEngine::CoreState::Idle
-                    && m_pEngine->playlist().currentInfo().mi.isNakedStream()) {
+                    && m_pEngine->playlist().currentInfo().mi.isRawFormat()) {
                 return;
             }
             else if (m_pEngine->state() == PlayerEngine::Idle)
@@ -4458,27 +4421,8 @@ void MainWindow::dropEvent(QDropEvent *pEvent)
         }
     }
 
-    if (urls.size() != valids.size()) { //fix bug97327 by fengli
-        QSet<QUrl> all = urls.toSet();
-        QSet<QUrl> accepted = valids.toSet();
-        QList<QUrl> invalids = all.subtract(accepted).toList();
-        int nTimeCount = 0;
-        for (const auto &url : invalids) {
-            QTimer::singleShot(nTimeCount, [ = ]() {
-                QString sMsg = QString(tr("Invalid file: %1").arg(url.fileName()));
-                m_pCommHintWid->updateWithMessage(sMsg);
-            });
-            nTimeCount += 1000;
-        }
-    }
+    play(lstFile);
 
-    if (valids.size()) {
-        if (valids.size() == 1) {
-            m_pEngine->playByName(valids[0]);
-        } else {
-            m_pEngine->playByName(QUrl("playlist://0"));
-        }
-    }
     pEvent->acceptProposedAction();
 }
 
@@ -4753,6 +4697,18 @@ void MainWindow::slotProperChanged(QString, QVariantMap key2value, QStringList)
 void MainWindow::slotUnsupported()
 {
     m_pCommHintWid->updateWithMessage(tr("The action is not supported in this video"));
+}
+
+void MainWindow::slotInvalidFile(QString strFileName)
+{
+    static int showTime = -1000;
+
+    showTime += 1000;
+
+    QTimer::singleShot(showTime, [=]{
+       showTime = showTime - 1000;
+       m_pCommHintWid->updateWithMessage(QString(tr("Invalid file: %1").arg(strFileName)));
+    });
 }
 
 void MainWindow::updateGeometry(CornerEdge edge, QPoint pos)

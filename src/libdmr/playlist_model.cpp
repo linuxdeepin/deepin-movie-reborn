@@ -303,7 +303,7 @@ struct MovieInfo PlaylistModel::parseFromFile(const QFileInfo &fi, bool *ok)
         mi.vCodecID = video_dec_ctx->codec_id;
         mi.vCodeRate = video_dec_ctx->bit_rate;
 #ifndef _LIBDMR_
-        mi.strFmtName = av_ctx->iformat->name;
+        mi.strFmtName = av_ctx->iformat->long_name;
 #endif
 
         if (videoStream->r_frame_rate.den != 0) {
@@ -345,7 +345,9 @@ struct MovieInfo PlaylistModel::parseFromFile(const QFileInfo &fi, bool *ok)
     mi.creation = fi.created().toString();
     mi.fileSize = fi.size();
     mi.fileType = fi.suffix();
-
+#ifndef _LIBDMR_
+    mi.strFmtName = av_ctx->iformat->long_name;
+#endif
     AVDictionaryEntry *tag = nullptr;
     while ((tag = g_mvideo_av_dict_get(av_ctx->metadata, "", tag, AV_DICT_IGNORE_SUFFIX)) != nullptr) {
         if (tag->key && strcmp(tag->key, "creation_time") == 0) {
@@ -605,20 +607,6 @@ bool PlaylistModel::getThumanbilRunning()
     } else {
         return false;
     }
-}
-
-bool PlaylistModel::isMediaFile(QString sFileName)
-{
-    QFileInfo fileInfo(sFileName);
-    bool bRet = false;
-    MovieInfo movieInfo;
-    movieInfo = parseFromFile(fileInfo, &bRet);
-
-    if (!bRet) {
-        return false;
-    }
-
-    return movieInfo.valid;
 }
 
 MovieInfo PlaylistModel::getMovieInfo(const QUrl &url, bool *is)
@@ -1018,7 +1006,7 @@ void PlaylistModel::appendSingle(const QUrl &url)
             qInfo() << "auto search similar files" << fil;
             std::for_each(fil.begin(), fil.end(), [ = ](const QFileInfo & fi) {
                 auto url = QUrl::fromLocalFile(fi.absoluteFilePath());
-                if (indexOf(url) < 0 && _engine->isPlayableFile(fi.fileName())) {
+                if (indexOf(url) < 0 && _engine->isPlayableFile(fi.absoluteFilePath())) {
                     auto playitem_info = calculatePlayInfo(url, fi);
                     if (playitem_info.valid)
                         _infos.append(playitem_info);
@@ -1071,7 +1059,7 @@ void PlaylistModel::collectionJob(const QList<QUrl> &urls, QList<QUrl> &inputUrl
                     auto file_url = QUrl::fromLocalFile(fileinfo.absoluteFilePath());
 
                     if (!_urlsInJob.contains(file_url.toLocalFile()) && indexOf(file_url) < 0 &&
-                            _engine->isPlayableFile(fileinfo.fileName())) {
+                            _engine->isPlayableFile(fileinfo.absoluteFilePath())) {
                         _pendingJob.append(qMakePair(file_url, fileinfo));
                         _urlsInJob.insert(file_url.toLocalFile());
                         inputUrls.append(file_url);
@@ -1677,7 +1665,7 @@ MovieInfo MovieInfo::parseFromFile(const QFileInfo &fi, bool *ok)
     mi.vCodecID = dec_ctx->codec_id;
     mi.vCodeRate = dec_ctx->bit_rate;
 #ifndef _LIBDMR_
-    mi.strFmtName = av_ctx->iformat->name;
+    mi.strFmtName = av_ctx->iformat->long_name;
 #endif
     if (av_stream->r_frame_rate.den != 0) {
         mi.fps = av_stream->r_frame_rate.num / av_stream->r_frame_rate.den;

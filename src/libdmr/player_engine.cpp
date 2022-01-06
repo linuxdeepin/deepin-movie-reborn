@@ -40,6 +40,7 @@
 #include "mpv_proxy.h"
 #include "compositing_manager.h"
 #include "dguiapplicationhelper.h"
+#include "filefilter.h"
 
 #include <QPainterPath>
 
@@ -123,90 +124,43 @@ PlayerEngine::~PlayerEngine()
 
 bool PlayerEngine::isPlayableFile(const QUrl &url)
 {
-    // 根据后缀不能准确判断一个文件是否能播放
-    // 用是否包含音视频流判断更为准确
-    if (url.isLocalFile()) {
-        return (isPlayableFile(url.path()) && _playlist->isMediaFile(url.path()));
-    } else {
-        if (url.scheme().startsWith("dvd")) {
-            return (isPlayableFile(url.path()) && _playlist->isMediaFile(url.path()));
-        } else { // for a networked url, there is no way to know if it's playable right now
-            return true;
-        }
+    if (FileFilter::instance()->isMediaFile(url)) {
+        return true;
+    } else {    // 网络文件不提示
+        emit sigInvalidFile(QFileInfo(url.toString()).fileName());
+        return false;
     }
 }
 
 static QStringList suffixes;
 
-//static const QStringList &buildPlayableDatabase()
-//{
-//    static QStringList mimeTypes = {
-//        "application/ogg",
-//        "application/vnd.apple.mpegurl",
-//        "application/vnd.rn-realmedia",
-//        "application/x-extension-mp4",
-//        "application/x-flac",
-//        "application/x-matroska",
-//        "application/x-ogg",
-//        "application/xspf+xml",
-//        "image/vnd.rn-realpix",
-//        "misc/ultravox",
-//        "video/3gpp",
-//        "video/dv",
-//        "video/mp2t",
-//        "video/mp4",
-//        "video/mp4v-es",
-//        "video/mpeg",
-//        "video/msvideo",
-//        "video/ogg",
-//        "video/quicktime",
-//        "video/vnd.rn-realvideo",
-//        "video/webm",
-//        "video/x-anim",
-//        "video/x-avi",
-//        "video/x-flc",
-//        "video/x-fli",
-//        "video/x-flv",
-//        "video/x-m4v",
-//        "video/x-matroska",
-//        "video/x-mpeg",
-//        "video/x-mpeg2",
-//        "video/x-ms-afs",
-//        "video/x-ms-asf",
-//        "video/x-msvideo",
-//        "video/x-ms-wmv",
-//        "video/x-ms-wmx",
-//        "video/x-ms-wvxvideo",
-//        "video/x-nsv",
-//        "video/x-ogm+ogg",
-//        "video/x-theora",
-//        "video/x-theora+ogg",
-//        "x-content/video-dvd",
-//        "x-content/video-svcd",
-//        "x-content/video-vcd",
-//        "x-scheme-handler/mms",
-//        "x-scheme-handler/rtmp",
-//        "x-scheme-handler/rtsp",
-//    };
-
-//    if (suffixes.isEmpty()) {
-//    }
-
-//    return suffixes;
-//}
-
 bool PlayerEngine::isPlayableFile(const QString &name)
 {
-    bool bRes = true;
-    auto suffix = QString("*") + name.mid(name.lastIndexOf('.'));
-    bRes =  video_filetypes.contains(suffix, Qt::CaseInsensitive) | audio_filetypes.contains(suffix, Qt::CaseInsensitive);
-    return bRes;
+    QUrl url = FileFilter::instance()->fileTransfer(name);
+
+    if (FileFilter::instance()->isMediaFile(url))
+    {
+        return true;
+    }
+
+    if (url.isLocalFile()) {   // 网络文件不提示
+        emit sigInvalidFile(QFileInfo(url.toString()).fileName());
+        return false;
+    }
 }
 
 bool PlayerEngine::isAudioFile(const QString &name)
 {
-    auto suffix = QString("*") + name.mid(name.lastIndexOf('.'));
-    return  audio_filetypes.contains(suffix, Qt::CaseInsensitive);
+    QUrl url = FileFilter::instance()->fileTransfer(name);
+
+    return FileFilter::instance()->isAudio(url);
+}
+
+bool PlayerEngine::isSubtitle(const QString &name)
+{
+    QUrl url = FileFilter::instance()->fileTransfer(name);
+
+    return FileFilter::instance()->isSubtitle(url);
 }
 
 void PlayerEngine::updateSubStyles()
@@ -557,7 +511,7 @@ void PlayerEngine::paintEvent(QPaintEvent *e)
     QPainter p(this);
 
     if (_playlist->count() > 0 && _state != Idle) {
-        bIsMusic = isAudioFile(_playlist->currentInfo().mi.title);
+        bIsMusic = isAudioFile(_playlist->currentInfo().mi.filePath);
     }
 
     if (!CompositingManager::get().composited() || utils::check_wayland_env()) {  // wayland下不会进入mainwindow的paintevent函数导致图标未绘制
@@ -773,52 +727,22 @@ void PlayerEngine::setDVDDevice(const QString &path)
     _current->setDVDDevice(path);
 }
 
-/*void PlayerEngine::firstInit()
-{
-    _current->firstInit();
-    addSubSearchPath(OnlineSubtitle::get().storeLocation());
-}*/
-
 bool PlayerEngine::addPlayFile(const QUrl &url)
 {
-    qInfo() << __func__;
-    if (isPlayableFile(url)) {
-        if (url.isLocalFile())
-            _playlist->appendAsync({url});
-        else
-            _playlist->append(url);
-        return true;
-    }
-    return false;
-}
+    QUrl realUrl;
 
-QList<QUrl> PlayerEngine::collectPlayDir(const QDir &dir)
-{
-    QList<QUrl> urls;
-    QString strtp;
-    QDir di(dir);
-    di.setFilter(QDir::AllEntries | QDir::NoDotAndDotDot);
-    for (auto file : di.entryInfoList()) {
-        if (file.isFile() && isPlayableFile(file.fileName())) {//读取视频文件
-            strtp = file.filePath();
-            while (QFileInfo(strtp).isSymLink()) {
-                strtp = QFileInfo(strtp).symLinkTarget();
-            }
-            urls.append(QUrl::fromLocalFile(strtp));
-        } else if (file.isDir()) {//读取子目录的视频文件
-            auto rsUrsList = collectPlayDir(file.absoluteFilePath());
-            if (rsUrsList.size() > 0) {
-                urls.append(rsUrsList);
-            }
-        }
-    }
+    realUrl = FileFilter::instance()->fileTransfer(url.toString());
+    if (!isPlayableFile(realUrl))
+        return false;
 
-    return urls;
+    _playlist->append({realUrl});
+    return true;
 }
 
 QList<QUrl> PlayerEngine::addPlayDir(const QDir &dir)
 {
-    QList<QUrl> valids = collectPlayDir(dir);
+    QList<QUrl> valids = FileFilter::instance()->filterDir(dir);
+
     struct {
         bool operator()(const QUrl& fi1, const QUrl& fi2) const {
             static QRegExp rd("\\d+");
@@ -846,60 +770,45 @@ QList<QUrl> PlayerEngine::addPlayDir(const QDir &dir)
             return fileName1.localeAwareCompare(fileName2) < 0;
         }
     } SortByDigits;
+
     std::sort(valids.begin(), valids.end(), SortByDigits);
+    valids = addPlayFiles(valids);
     _playlist->appendAsync(valids);
+
     return valids;
 }
-
 
 QList<QUrl> PlayerEngine::addPlayFiles(const QList<QUrl> &urls)
 {
     qInfo() << __func__;
-    QList<QUrl> valids = collectPlayFiles(urls);
-    for (auto &url : valids) {
-        QString strtp = url.toLocalFile();
-        while (QFileInfo(strtp).isSymLink()) {
-            /*****************************
-             * use oringnal path to replace link path
-             * ***************************/
-            strtp = QFileInfo(strtp).symLinkTarget();
-        }
-        url = QUrl::fromLocalFile(strtp);
+    QList<QUrl> valids;
+
+    for (QUrl url : urls) {
+        if (isPlayableFile(url))
+            valids << url;
     }
+
     _playlist->appendAsync(valids);
     return valids;
 }
 
-QList<QUrl> PlayerEngine::collectPlayFiles(const QList<QUrl> &urls)
+QList<QUrl> PlayerEngine::addPlayFiles(const QList<QString> &lstFile)
 {
-    qInfo() << urls;
-    //NOTE: take care of loop, we don't recursive, it seems safe now
+    qInfo() << __func__;
     QList<QUrl> valids;
-    for (const auto &url : urls) {
-        if (url.isLocalFile()) {
-            QFileInfo fi(url.toLocalFile());
-            if (!fi.exists()) {
-                qInfo() << url << "don't exist";
-                continue;
-            }
+    QUrl realUrl;
 
-            if (fi.isDir()) {
-                auto subs = collectPlayDir(fi.absoluteFilePath());
-                valids += subs;
-                valids += url;
-                continue;
-            }
-
-            if (!url.isValid() || !isPlayableFile(url)) {
-                qInfo() << url << "not valid or playable";
-                continue;
-            }
-
-            valids.append(url);
+    for (QString strFile : lstFile) {
+        if (QFileInfo(strFile).isDir()) {
+            valids << FileFilter::instance()->filterDir(strFile);
+        }
+        else {
+            realUrl = FileFilter::instance()->fileTransfer(strFile);
+            valids << realUrl;
         }
     }
 
-    return valids;
+    return addPlayFiles(valids);
 }
 
 qint64 PlayerEngine::duration() const

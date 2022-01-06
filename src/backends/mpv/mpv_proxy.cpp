@@ -543,12 +543,25 @@ mpv_handle *MpvProxy::mpv_init()
 
 void MpvProxy::setState(PlayState state)
 {
+    bool bRawFormat = false;
+
+    if (0 < dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist()->size()) {
+        PlayItemInfo currentInfo = dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist()->currentInfo();
+        bRawFormat = currentInfo.mi.isRawFormat();
+    }
+
     if (_state != state) {
         _state = state;
         if (m_pMpvGLwidget) {
             m_pMpvGLwidget->setPlaying(state != PlayState::Stopped);
         }
         emit stateChanged();
+    }
+
+    if (bRawFormat) {
+        m_pMpvGLwidget->setRawFormatFlag(true);
+    } else {
+        m_pMpvGLwidget->setRawFormatFlag(false);
     }
 }
 
@@ -1195,7 +1208,7 @@ void MpvProxy::initMember()
 
 void MpvProxy::play()
 {
-    bool bNakedStream = false;
+    bool bRawFormat = false;
     QList<QVariant> listArgs = { "loadfile" };
     QStringList listOpts = { };
 
@@ -1205,7 +1218,7 @@ void MpvProxy::play()
 
     if (0 < dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist()->size()) {
         PlayItemInfo currentInfo = dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist()->currentInfo();
-        bNakedStream = currentInfo.mi.isNakedStream();
+        bRawFormat = currentInfo.mi.isRawFormat();
     }
 
     if (PlayerEngine::isAudioFile(_file.toString())) {
@@ -1222,7 +1235,7 @@ void MpvProxy::play()
 #ifndef _LIBDMR_
     QMap<QString, QVariant> cfg = MovieConfiguration::get().queryByUrl(_file);
     QString key = MovieConfiguration::knownKey2String(ConfigKnownKey::StartPos);
-    if (Settings::get().isSet(Settings::ResumeFromLast) && cfg.contains(key) && !bNakedStream) {   // 裸流没有时长，seek会崩溃
+    if (Settings::get().isSet(Settings::ResumeFromLast) && cfg.contains(key) && !bRawFormat) {   // 裸流没有时长，seek会崩溃
         listOpts << QString("start=%1").arg(cfg[key].toInt());   //如果视频长度小于1s这段代码会导致视频无法播放
     }
 
@@ -1620,7 +1633,18 @@ QSize MpvProxy::videoSize() const
 
 qint64 MpvProxy::duration() const
 {
-    return my_get_property(m_handle, "duration").value<qint64>();
+    bool bRawFormat = false;
+
+    if (0 < dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist()->size()) {
+        PlayItemInfo currentInfo = dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist()->currentInfo();
+        bRawFormat = currentInfo.mi.isRawFormat();
+    }
+
+    if (bRawFormat) {     // 因为格式众多时长输出不同，这里做统一处理不显示时长
+        return 0;
+    }else {
+        return my_get_property(m_handle, "duration").value<qint64>();
+    }
 }
 
 
