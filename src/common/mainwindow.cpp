@@ -1863,7 +1863,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
 
             m_pEngine->blockSignals(true);
             play({name});
-             m_pEngine->blockSignals(false);
+            m_pEngine->blockSignals(false);
         }
         break;
     }
@@ -1894,7 +1894,6 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
         filenames << QString("/data/source/deepin-movie-reborn/movie/demo.mp4")\
                   << QString("/data/source/deepin-movie-reborn/movie/bensound-sunm_nLastPressY.mp3");
 #endif
-
         if (filenames.size()) {
             QFileInfo fileInfo(filenames[0]);
             if (fileInfo.exists()) {
@@ -4395,11 +4394,18 @@ void MainWindow::dropEvent(QDropEvent *pEvent)
     if (!pEvent->mimeData()->hasUrls()) {
         return;
     }
+    QList<QString> lstUrl;
     QList<QString> lstFile;
     QList<QUrl> urls = pEvent->mimeData()->urls();
 
     for (QUrl strUrl : urls)
-        lstFile << strUrl.toString();
+    {
+        if(QFileInfo(strUrl.toLocalFile()).isDir()){
+            lstUrl << strUrl.toString();
+        } else {
+            lstFile << strUrl.toString();
+        }
+    }
 
     if (urls.count() == 1) {
         // check if the dropped file is a subtitle.
@@ -4422,6 +4428,10 @@ void MainWindow::dropEvent(QDropEvent *pEvent)
     }
 
     play(lstFile);
+
+    m_pEngine->blockSignals(true);      // 打开文件夹时不提示
+    play(lstUrl);
+    m_pEngine->blockSignals(false);
 
     pEvent->acceptProposedAction();
 }

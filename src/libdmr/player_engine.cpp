@@ -799,13 +799,12 @@ QList<QUrl> PlayerEngine::addPlayFiles(const QList<QString> &lstFile)
     QUrl realUrl;
 
     for (QString strFile : lstFile) {
-        if (QFileInfo(strFile).isDir()) {
-            valids << FileFilter::instance()->filterDir(strFile);
-        }
-        else {
-            realUrl = FileFilter::instance()->fileTransfer(strFile);
-            valids << realUrl;
-        }
+          realUrl = FileFilter::instance()->fileTransfer(strFile);
+          if (QFileInfo(realUrl.path()).isDir()) {
+              valids << FileFilter::instance()->filterDir(QDir(realUrl.path()));
+          } else {
+              valids << realUrl;
+          }
     }
 
     return addPlayFiles(valids);
