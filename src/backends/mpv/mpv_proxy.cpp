@@ -558,10 +558,8 @@ void MpvProxy::setState(PlayState state)
         emit stateChanged();
     }
 
-    if (bRawFormat) {
-        m_pMpvGLwidget->setRawFormatFlag(true);
-    } else {
-        m_pMpvGLwidget->setRawFormatFlag(false);
+    if (m_pMpvGLwidget) {
+        m_pMpvGLwidget->setRawFormatFlag(bRawFormat);
     }
 }
 
