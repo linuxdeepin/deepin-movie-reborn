@@ -493,7 +493,7 @@
     </message>
     <message>
         <source>All videos (%1)</source>
-        <translation>Всички видеа (%1)</translation>
+        <translation type="vanished">Всички видеа (%1)</translation>
     </message>
     <message>
         <source>Stereo</source>
@@ -581,7 +581,7 @@
     </message>
     <message>
         <source>Open File</source>
-        <translation>Отвори файл</translation>
+        <translation type="vanished">Отвори файл</translation>
     </message>
     <message>
         <source>Film screenshot</source>
@@ -640,10 +640,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>All videos (*)(%2 %1)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Please exit smart dock</source>
         <translation type="unfinished"></translation>
     </message>
@@ -657,6 +653,18 @@
     </message>
     <message>
         <source>The action is not supported in this video</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>All (*)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Audio (%1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Video (%1)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -809,10 +817,6 @@
 </context>
 <context>
     <name>dmr::Settings</name>
-    <message>
-        <source>%1/Movie%2.jpg</source>
-        <translation type="unfinished"></translation>
-    </message>
     <message>
         <source>%1/Movie%2(%3).jpg</source>
         <translation type="unfinished"></translation>
