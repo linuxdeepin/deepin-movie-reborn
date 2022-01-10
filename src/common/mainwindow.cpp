@@ -2477,9 +2477,9 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
     }
 
     case ActionFactory::ActionKind::LoadSubtitle: {
+        QStringList filename;
 #ifndef USE_TEST
         DFileDialog fileDialog;
-        QStringList filename;
         fileDialog.setNameFilters({"Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)","All (*)"});
         fileDialog.setDirectory(lastOpenedPath());
 
@@ -2489,7 +2489,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
             break;
         }
 #else
-        QString filename("/data/source/deepin-movie-reborn/Hachiko.A.Dog's.Story.ass");
+        filename = QStringList({"/data/source/deepin-movie-reborn/Hachiko.A.Dog's.Story.ass"});
 #endif
         if (QFileInfo(filename[0]).exists()) {
             if (m_pEngine->state() == PlayerEngine::Idle)

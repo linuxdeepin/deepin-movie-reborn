@@ -42,6 +42,7 @@
 #include <QtCore/QMetaObject>
 #include <QGuiApplication>
 #include <QWidget>
+#include <QFileInfo>
 
 #include <unistd.h>
 #include <gtest/gtest.h>
@@ -883,8 +884,8 @@ TEST(ToolBox, UrlDialog)
                      Qt::NoModifier, 1);
     QTest::mouseMove(uDlg->getButton(1), QPoint(), 200);
     QTest::mouseClick(uDlg->getButton(1), Qt::LeftButton, Qt::NoModifier, QPoint(), 200);
-    auto url = uDlg->url();
-    w->play(url);
+    auto url = uDlg->url().toString();
+    w->play({url});
     QTest::qWait(300);
 }
 
