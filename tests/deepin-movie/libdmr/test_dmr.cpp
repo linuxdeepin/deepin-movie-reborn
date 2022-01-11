@@ -55,7 +55,9 @@ TEST(libdmr, libdmrTest)
     using namespace dmr;
     PlayerWidget *player = new PlayerWidget();
     player->engine().changeVolume(120);
+#ifndef __aarch64__
     player->play(QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/demo.mp4"));
+#endif
 
     auto &mc = MovieConfiguration::get();
     mc.updateUrl(QUrl("movie1"), "sub-delay", -2.5);
