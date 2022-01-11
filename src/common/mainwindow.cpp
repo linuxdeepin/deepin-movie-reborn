@@ -1879,8 +1879,9 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
 #ifndef USE_TEST
         DFileDialog fileDialog;
         QStringList filenames;
-        fileDialog.setNameFilters({QString("Suffix filter (%1 %2)").arg(m_pEngine->video_filetypes.join(" "))
-                                   .arg(m_pEngine->audio_filetypes.join(" ")), "All (*)"});
+        fileDialog.setNameFilters({tr("All (*)"), QString("Video (%1)").arg(m_pEngine->video_filetypes.join(" ")),
+                                   QString("Audio (%1)").arg(m_pEngine->audio_filetypes.join(" "))});
+        fileDialog.selectNameFilter(QString("Video (%1)").arg(m_pEngine->video_filetypes.join(" ")));
         fileDialog.setDirectory(lastOpenedPath());
         fileDialog.setFileMode(QFileDialog::ExistingFiles);
 
@@ -1907,8 +1908,9 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
     case ActionFactory::ActionKind::OpenFile: {
         DFileDialog fileDialog;
         QStringList filename;
-        fileDialog.setNameFilters({QString("Suffix filter (%1 %2)").arg(m_pEngine->video_filetypes.join(" "))
-                                   .arg(m_pEngine->audio_filetypes.join(" ")), "All (*)"});
+        fileDialog.setNameFilters({tr("All (*)"), QString("Video (%1)").arg(m_pEngine->video_filetypes.join(" ")),
+                                   QString("Audio (%1)").arg(m_pEngine->audio_filetypes.join(" "))});
+        fileDialog.selectNameFilter(QString("Video (%1)").arg(m_pEngine->video_filetypes.join(" ")));
         fileDialog.setDirectory(lastOpenedPath());
         fileDialog.setFileMode(QFileDialog::ExistingFiles);
 
@@ -2480,7 +2482,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
         QStringList filename;
 #ifndef USE_TEST
         DFileDialog fileDialog;
-        fileDialog.setNameFilters({"Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)","All (*)"});
+        fileDialog.setNameFilter(tr("Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)","All (*)"));
         fileDialog.setDirectory(lastOpenedPath());
 
         if (fileDialog.exec() == QDialog::Accepted) {
