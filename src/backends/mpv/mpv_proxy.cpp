@@ -371,7 +371,7 @@ mpv_handle *MpvProxy::mpv_init()
 
     if (DecodeMode::SOFTWARE == m_decodeMode) { //1.设置软解
         my_set_property(m_handle, "hwdec", "no");
-    } else if (DecodeMode::HARDWARE == m_decodeMode) { //2.设置硬解
+    } else if (DecodeMode::AUTO == m_decodeMode) { //2.设置自动
         //2.1特殊硬件
         //景嘉微显卡目前只支持vo=xv，等日后升级代码需要酌情修改。
         QFileInfo fi("/dev/mwv206_0");
@@ -421,7 +421,7 @@ mpv_handle *MpvProxy::mpv_init()
             my_set_property(m_handle, "vo", "gpu");
         }
 #endif
-    } else { //3.设置自动
+    } else { //3.设置硬解
         QFileInfo fi("/dev/mwv206_0");
         if (fi.exists()) { //2.1.1景嘉微
             QDir sdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv206"); //判断是否安装核外驱动
@@ -1076,7 +1076,7 @@ void MpvProxy::refreshDecode()
 
     if (DecodeMode::SOFTWARE == m_decodeMode) { //1.设置软解
         my_set_property(m_handle, "hwdec", "no");
-    } else if (DecodeMode::HARDWARE == m_decodeMode) {//2.设置硬解
+    } else if (DecodeMode::AUTO == m_decodeMode) {//2.设置自动
         //2.1 特殊格式
         bool isSoftCodec = false;
         if (0 < dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist()->size()) {
@@ -1114,7 +1114,7 @@ void MpvProxy::refreshDecode()
                 //bIsCanHwDec ? my_set_property(m_handle, "hwdec", canHwTypes.join(',')) : my_set_property(m_handle, "hwdec", "no");
             }
         }
-    } else { //3.设置自动
+    } else { //3.设置硬解
 #ifndef _LIBDMR_
 
 #if defined (__aarch64__) || defined (__sw_64__)
