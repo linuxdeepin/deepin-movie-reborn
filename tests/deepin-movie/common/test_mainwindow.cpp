@@ -53,6 +53,7 @@
 #undef protected
 #undef private
 #include "application.h"
+#include "src/libdmr/filefilter.h"
 #include "src/libdmr/player_engine.h"
 #include "src/widgets/toolbox_proxy.h"
 #include "src/widgets/toolbutton.h"
@@ -141,7 +142,6 @@ TEST(MainWindow, nakedstream)
     engine->playlist().loadPlaylist();
     engine->playlist().clear();
     engine->addPlayFiles(listPlayFiles);
-    QTest::qWait(200);
     engine->playByName(QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/test.264"));
 
     QTest::mousePress(dmrSlider, Qt::LeftButton, Qt::NoModifier, QPoint(), 100);
@@ -261,6 +261,9 @@ TEST(MainWindow, loadFile)
 //    DGuiApplicationHelper::instance()->setThemeType(DGuiApplicationHelper::DarkType);
 //    emit DGuiApplicationHelper::instance()->paletteTypeChanged(DGuiApplicationHelper::DarkType);
 //    dApp->setProperty("themeType", DGuiApplicationHelper::DarkType);
+
+    // video judge
+    EXPECT_TRUE(FileFilter::instance()->isVideo(listPlayFiles[0]));
 }
 
 TEST(MainWindow, DBus)
@@ -341,6 +344,10 @@ TEST(MainWindow, touch)
     MainWindow *w = dApp->getMainWindow();
     ToolboxProxy *toolboxProxy = w->toolbox();
     QStackedWidget *progbarWidget = toolboxProxy->findChild<QStackedWidget *>(PROGBAR_WIDGET);
+
+    PlayerEngine *engine =  w->engine();
+    engine->stop();
+    engine->playByName(QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/demo.mp4"));
 
     if (!w->isFullScreen()) {
         qDebug() << __func__ << "进入全屏";
@@ -943,7 +950,8 @@ TEST(ToolBox, mainWindowEvent)
     QList<QUrl> urls;
     QPoint point(w->pos().x() + 20, w->pos().y() + 20);
     urls << QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/demo.mp4")\
-         << QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/bensound-sunny.mp3");
+         << QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/bensound-sunny.mp3") \
+         << QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/Hachiko.A.Dog's.Story.ass");
     mimeData.setUrls(urls);
 
     QDragEnterEvent dragEnter(QPoint(0, 0), Qt::CopyAction, &mimeData, Qt::LeftButton, {});
