@@ -573,26 +573,9 @@ void PlaylistModel::loadPlaylist()
     for (int i = 0; i < keys.size(); ++i) {
         auto url = cfg.value(QString::number(i)).toUrl();
         if (indexOf(url) >= 0) continue;
-
-        if (url.isLocalFile()) {
-            urls.append(url);
-
-        } else {
-            auto pif = calculatePlayInfo(url, QFileInfo());
-            _infos.append(pif);
-        }
+        urls.append(url);
     }
     cfg.endGroup();
-
-    savePlaylist();
-
-    if (urls.size() == 0) {
-        _firstLoad = false;
-        reshuffle();
-        emit countChanged();
-        return;
-    }
-
     delayedAppendAsync(urls);
 }
 
@@ -1026,49 +1009,55 @@ void PlaylistModel::collectionJob(const QList<QUrl> &urls, QList<QUrl> &inputUrl
         int aa = indexOf(url);
         if (m_loadFile.contains(url))
             continue;
-        if (!url.isValid() || indexOf(url) >= 0 || !url.isLocalFile() || _urlsInJob.contains(url.toLocalFile()))
+        if (!url.isValid() || indexOf(url) >= 0 || _urlsInJob.contains(url.toLocalFile()))
             continue;
 
         m_loadFile.append(url);
         qInfo() << __func__ << _infos.size() << "index is" << aa << url;
-        QFileInfo fi(url.toLocalFile());
-        if (!_firstLoad && (!fi.exists() || !fi.isFile())) continue;
 
-        _pendingJob.append(qMakePair(url, fi));
-        _urlsInJob.insert(url.toLocalFile());
-        inputUrls.append(url);
-        qInfo() << "append " << url.fileName();
+        if(url.isLocalFile()) {
+            QFileInfo fi(url.toLocalFile());
+            if (!_firstLoad && (!fi.exists() || !fi.isFile())) continue;
+            _pendingJob.append(qMakePair(url, fi));
+            _urlsInJob.insert(url.toLocalFile());
+            inputUrls.append(url);
+            qInfo() << "append " << url.fileName();
 
-#ifndef _LIBDMR_
-        //去除加载多个文件是自动加载相似文件功能
-        //fix: 101698
-        //powered by xxxxp
-        if (!_firstLoad && Settings::get().isSet(Settings::AutoSearchSimilar) && (urls.size() == 1)) {
-            QFileInfoList fil = utils::FindSimilarFiles(fi);
-            //NOTE: The searched files are out of order, so they are sorted here
-            struct {
-                bool operator()(const QFileInfo& fi1, const QFileInfo& fi2) const {
-                    return utils::CompareNames(fi1.fileName(), fi2.fileName());
-                }
-            } SortByDigits;
-            std::sort(fil.begin(), fil.end(), SortByDigits);
-            qInfo() << "auto search similar files" << fil;
+    #ifndef _LIBDMR_
+            //去除加载多个文件是自动加载相似文件功能
+            //fix: 101698
+            //powered by xxxxp
+            if (!_firstLoad && Settings::get().isSet(Settings::AutoSearchSimilar) && (urls.size() == 1)) {
+                QFileInfoList fil = utils::FindSimilarFiles(fi);
+                //NOTE: The searched files are out of order, so they are sorted here
+                struct {
+                    bool operator()(const QFileInfo& fi1, const QFileInfo& fi2) const {
+                        return utils::CompareNames(fi1.fileName(), fi2.fileName());
+                    }
+                } SortByDigits;
+                std::sort(fil.begin(), fil.end(), SortByDigits);
+                qInfo() << "auto search similar files" << fil;
 
-            for (const QFileInfo &fileinfo : fil) {
-                if (fileinfo.isFile()) {
-                    auto file_url = QUrl::fromLocalFile(fileinfo.absoluteFilePath());
+                for (const QFileInfo &fileinfo : fil) {
+                    if (fileinfo.isFile()) {
+                        auto file_url = QUrl::fromLocalFile(fileinfo.absoluteFilePath());
 
-                    if (!_urlsInJob.contains(file_url.toLocalFile()) && indexOf(file_url) < 0 &&
-                            _engine->isPlayableFile(fileinfo.absoluteFilePath())) {
-                        _pendingJob.append(qMakePair(file_url, fileinfo));
-                        _urlsInJob.insert(file_url.toLocalFile());
-                        inputUrls.append(file_url);
-                        //handleAsyncAppendResults(QList<PlayItemInfo>()<<calculatePlayInfo(url,fi));
+                        if (!_urlsInJob.contains(file_url.toLocalFile()) && indexOf(file_url) < 0 &&
+                                _engine->isPlayableFile(fileinfo.absoluteFilePath())) {
+                            _pendingJob.append(qMakePair(file_url, fileinfo));
+                            _urlsInJob.insert(file_url.toLocalFile());
+                            inputUrls.append(file_url);
+                            //handleAsyncAppendResults(QList<PlayItemInfo>()<<calculatePlayInfo(url,fi));
+                        }
                     }
                 }
             }
+    #endif
+        } else {
+            _pendingJob.append(qMakePair(url, QFileInfo()));
+            _urlsInJob.insert(url.toString());
+            inputUrls.append(url);
         }
-#endif
     }
 
     qInfo() << "input size" << urls.size() << "output size" << _urlsInJob.size()

@@ -98,6 +98,7 @@ bool FileFilter::isMediaFile(QUrl url)
     }
 
     nStreamNum = static_cast<int>(av_ctx->nb_streams);
+    strFormatName = av_ctx->iformat->long_name;
 
     if(nStreamNum > 0 && !strFormatName.contains("Tele-typewriter")
             && !strMimeType.startsWith("image/"))       // 排除文本文件，如果只用mimetype判断会遗漏部分原始格式文件如：h264裸流
