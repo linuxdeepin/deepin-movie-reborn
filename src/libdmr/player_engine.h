@@ -260,6 +260,7 @@ protected:
 
 private:
     QNetworkConfigurationManager _networkConfigMng;
+    bool m_bAudio;
 };
 }
 

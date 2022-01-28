@@ -58,13 +58,19 @@ PlayerEngine &PlayerWidget::engine()
 
 void PlayerWidget::play(const QUrl &url)
 {
-    if (!url.isValid())
+    QUrl realUrl = url;;
+
+    if(QFileInfo(url.path()).isFile())
+    {
+        realUrl = QUrl::fromLocalFile(url.path());
+    }
+    if (!realUrl.isValid())
         return;
 
-    if (!_engine->addPlayFile(url)) {
+    if (!_engine->addPlayFile(realUrl)) {
         return;
     }
-    _engine->playByName(url);
+    _engine->playByName(realUrl);
 }
 
 }

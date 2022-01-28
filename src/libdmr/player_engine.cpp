@@ -69,6 +69,7 @@ const QStringList PlayerEngine::subtitle_suffixs = {"ass", "sub", "srt", "aqt", 
 PlayerEngine::PlayerEngine(QWidget *parent)
     : QWidget(parent)
 {
+    m_bAudio = false;
     auto *l = new QVBoxLayout(this);
     l->setContentsMargins(0, 0, 0, 0);
 
@@ -203,7 +204,9 @@ void PlayerEngine::onBackendStateChanged()
     switch (_current->state()) {
     case Backend::PlayState::Playing:
         _state = CoreState::Playing;
-
+        if (_playlist->count() > 0) {
+            m_bAudio = isAudioFile(_playlist->currentInfo().mi.filePath);
+        }
         //playing . emit thumbnail progress mode signal with setting file
         emit siginitthumbnailseting();
         break;
@@ -506,16 +509,11 @@ void PlayerEngine::savePreviousMovieState()
 
 void PlayerEngine::paintEvent(QPaintEvent *e)
 {
-    bool bIsMusic = false;
     QRect rect = this->rect();
     QPainter p(this);
 
-    if (_playlist->count() > 0 && _state != Idle) {
-        bIsMusic = isAudioFile(_playlist->currentInfo().mi.filePath);
-    }
-
     if (!CompositingManager::get().composited() || utils::check_wayland_env()) {  // wayland下不会进入mainwindow的paintevent函数导致图标未绘制
-        if (_state != Idle && bIsMusic) {
+        if (_state != Idle && m_bAudio) {
             p.fillRect(rect, QBrush(QColor(0, 0, 0)));
         } else {
             QImage icon = utils::LoadHiDPIImage(":/resources/icons/light/init-splash.svg");
