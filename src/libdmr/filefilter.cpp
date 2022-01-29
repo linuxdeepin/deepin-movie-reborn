@@ -85,6 +85,9 @@ bool FileFilter::isMediaFile(QUrl url)
 
     AVFormatContext *av_ctx = nullptr;
 
+    if(!url.isLocalFile()) {   // url 文件不做判断,默认可以播放
+        return true;
+    }
 
     nRet = g_mvideo_avformat_open_input(&av_ctx, url.toString().toUtf8().constData(), nullptr, nullptr);
 
@@ -138,7 +141,7 @@ QUrl FileFilter::fileTransfer(QString strFile)
         strFile = QUrl(strFile).toLocalFile();
     }
 
-    if (QFileInfo(strFile).isFile()) {      // 如果是软链接则需要找到真实路径
+    if (QFileInfo(strFile).isFile() || QFileInfo(strFile).isDir()) {      // 如果是软链接则需要找到真实路径
         while (QFileInfo(strFile).isSymLink()) {
             strFile = QFileInfo(strFile).symLinkTarget();
         }
@@ -158,6 +161,10 @@ bool FileFilter::isAudio(QUrl url)
     bool bAudio = false;
 
     AVFormatContext *av_ctx = nullptr;
+
+    if(!url.isLocalFile()) {   // url 文件不做判断
+        return false;
+    }
 
     nRet = g_mvideo_avformat_open_input(&av_ctx, url.toString().toUtf8().constData(), nullptr, nullptr);
 

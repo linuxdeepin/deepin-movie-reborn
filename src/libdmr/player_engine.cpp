@@ -799,7 +799,8 @@ QList<QUrl> PlayerEngine::addPlayFiles(const QList<QString> &lstFile)
     for (QString strFile : lstFile) {
           realUrl = FileFilter::instance()->fileTransfer(strFile);
           if (QFileInfo(realUrl.path()).isDir()) {
-              valids << FileFilter::instance()->filterDir(QDir(realUrl.path()));
+              if (realUrl.isLocalFile())          // 保证不是网络路径
+                  valids << FileFilter::instance()->filterDir(QDir(realUrl.path()));
           } else {
               valids << realUrl;
           }
