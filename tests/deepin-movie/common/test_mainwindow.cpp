@@ -901,6 +901,17 @@ TEST(ToolBox, fullScreenBtn)
     MainWindow *w = dApp->getMainWindow();
     ToolboxProxy *toolboxProxy = w->toolbox();
     ToolButton *fsBtn = toolboxProxy->fsBtn();
+    PlayerEngine *engine =  w->engine();
+
+    QList<QUrl> listPlayFiles;
+    listPlayFiles << QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/demo.mp4")
+                  << QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/bensound-sunny.mp3");
+
+    const QList<QUrl> &valids = engine->addPlayFiles(listPlayFiles);
+    QCOMPARE(engine->isPlayableFile(valids[0]), true);
+    if (!valids.empty()) {
+        engine->playByName(valids[0]);
+    }
 
     QTest::mouseMove(fsBtn, QPoint(), 200);
     QTest::mouseClick(fsBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 500);

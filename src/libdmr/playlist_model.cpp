@@ -1330,6 +1330,9 @@ PlayItemInfo &PlaylistModel::currentInfo()
     //Q_ASSERT (_infos.size() > 0 && _current >= 0);
     Q_ASSERT(_infos.size() > 0);
 
+    if (_last >= _infos.size())
+        _last = -1;
+
     if (_current >= 0)
         return _infos[_current];
     if (_last >= 0)

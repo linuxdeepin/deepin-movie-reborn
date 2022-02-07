@@ -1640,7 +1640,7 @@ qint64 MpvProxy::duration() const
 
     if (bRawFormat) {     // 因为格式众多时长输出不同，这里做统一处理不显示时长
         return 0;
-    }else {
+    } else {
         return my_get_property(m_handle, "duration").value<qint64>();
     }
 }
