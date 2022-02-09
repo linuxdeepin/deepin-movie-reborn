@@ -1,28 +1,19 @@
 #!/bin/bash
-pwd
-cd ../test-deepin-movie/build-ut
+
+#workdir=$(cd ../$(dirname $0)/deepin-movie/build-ut; pwd)
+executable=deepin-movie-test #可执行程序的文件名
 
 platform=`uname -m`
 echo ${platform}
 
-export DISPLAY=":0"
-export QT_QPA_PLATFORM=
-echo $QT_QPA_PLATFORM
-export QTEST_FUNCTION_TIMEOUT='500000'
-#export QT_SELECT=qt5
-cmake -DCMAKE_BUILD_TYPE=Debug ../../
-make -j16
-
-#workdir=$(cd ../$(dirname $0)/deepin-movie/build-ut; pwd)
-executable=deepin-movie-test #可执行程序的文件名
-project_name=deepin-movie-reborn
+cd ./tests/deepin-movie/
 
 mkdir -p html
 mkdir -p report
 
 echo " ===================CREAT LCOV REPROT==================== "
-lcov --directory ./tests/CMakeFiles/deepin-movie-test.dir --zerocounters
-ASAN_OPTIONS="fast_unwind_on_malloc=1" ./tests/deepin-movie/$executable
+lcov --directory ./CMakeFiles/deepin-movie-test.dir --zerocounters
+ASAN_OPTIONS="fast_unwind_on_malloc=1" ./$executable
 lcov --directory . --capture --output-file ./html/${executable}_Coverage.info
 
 echo " =================== do filter begin ==================== "
@@ -36,13 +27,13 @@ echo " =================== do filter end ====================== "
     
 genhtml -o ./html ./html/${executable}_Coverage_fileter.info
     
-mv ./html/index.html ./html/cov_${project_name}.html
-mv asan.log* asan_${project_name}.log
+mv ./html/index.html ./html/cov_${executable}.html
+mv asan.log* asan_${executable}.log
 
-cp -r ./html/ ../../build-ut/
-cp -r ./report/ ../../build-ut/
-cp ./asan_${project_name}.log ../../build-ut
+cp -r ./html/ ../../
+cp -r ./report/ ../../
+cp ./asan_${executable}.log ../../
 
-ls report/
+#ls report/
 
 exit 0

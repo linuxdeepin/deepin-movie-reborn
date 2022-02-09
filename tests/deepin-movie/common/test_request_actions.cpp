@@ -245,7 +245,7 @@ TEST(requestAction,openFiles)
     QTest::qWait(100);
 
     w->requestAction(ActionFactory::ActionKind::PlaylistOpenItemInFM);
-    utils::ShowInFileManager(QString("/usr/share/music/bensound-sunny.mp3"));
+//    utils::ShowInFileManager(QString("/usr/share/music/bensound-sunny.mp3"));
     QTest::qWait(100);
 }
 
