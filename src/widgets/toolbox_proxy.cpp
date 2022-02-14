@@ -1731,7 +1731,7 @@ void ToolboxProxy::slotPlayListStateChange(bool isShortcut)
 void ToolboxProxy::slotUpdateThumbnailTimeOut()
 {
     //如果视频长度小于1s应该直接返回不然会UI错误
-    if (m_pEngine->playlist().currentInfo().mi.duration < 1) {
+    if (m_pEngine->duration() < 1) {
         return;
     }
 
