@@ -1893,7 +1893,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
 #else
         QStringList filenames;
         filenames << QString("/data/source/deepin-movie-reborn/movie/demo.mp4")\
-                  << QString("/data/source/deepin-movie-reborn/movie/bensound-sunm_nLastPressY.mp3");
+                  << QString("/data/source/deepin-movie-reborn/movie/bensound-sunny.mp3");
 #endif
         if (filenames.size()) {
             QFileInfo fileInfo(filenames[0]);

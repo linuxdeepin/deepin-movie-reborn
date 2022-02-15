@@ -259,6 +259,7 @@ TEST(requestAction,goToScreenshotSolder)
     EXPECT_TRUE(true);
 }
 
+#ifndef __aarch64__
 TEST(requestAction,openFiles)
 {
     MainWindow *w = dApp->getMainWindow();
@@ -268,12 +269,13 @@ TEST(requestAction,openFiles)
     QTest::qWait(500);
 
     w->requestAction(ActionFactory::ActionKind::OpenDirectory);
-    QTest::qWait(500);
+    QTest::qWait(2000);
 
     w->requestAction(ActionFactory::ActionKind::PlaylistOpenItemInFM);
-//    utils::ShowInFileManager(QString("/usr/share/music/bensound-sunny.mp3"));
+    utils::ShowInFileManager(QString("/usr/share/music/bensound-sunny.mp3"));
     QTest::qWait(100);
 }
+#endif
 
 TEST(requestAction, settings)
 {
