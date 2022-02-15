@@ -108,6 +108,11 @@ TEST(requestAction, playMode)
 {
     MainWindow* w = dApp->getMainWindow();
     PlayerEngine *engine =  w->engine();
+    ToolboxProxy *toolboxProxy = w->toolbox();
+    DButtonBoxButton *playBtn = toolboxProxy->playBtn();
+    DButtonBoxButton *nextBtn = toolboxProxy->nextBtn();
+    DButtonBoxButton *prevBtn = toolboxProxy->prevBtn();
+
     QList<QUrl> listPlayFiles;
 
     listPlayFiles << QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/demo.mp4")\
@@ -120,37 +125,58 @@ TEST(requestAction, playMode)
     QTest::qWait(100);
     w->requestAction(ActionFactory::ActionKind::OrderPlay);
     QTest::qWait(100);
-    w->requestAction(ActionFactory::ActionKind::GotoPlaylistNext);
+//    w->requestAction(ActionFactory::ActionKind::GotoPlaylistNext);
+    QTest::mouseMove(nextBtn, QPoint(), 200);
+    QTest::mouseClick(nextBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 600);
     QTest::qWait(500);
-    w->requestAction(ActionFactory::ActionKind::GotoPlaylistPrev);
+//    w->requestAction(ActionFactory::ActionKind::GotoPlaylistPrev);
+    QTest::mouseMove(prevBtn, QPoint(), 200);
+    QTest::mouseClick(prevBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 600);
 
     QTest::qWait(300);
     w->requestAction(ActionFactory::ActionKind::ShufflePlay);
     QTest::qWait(100);
-    w->requestAction(ActionFactory::ActionKind::GotoPlaylistNext);
+//    w->requestAction(ActionFactory::ActionKind::GotoPlaylistNext);
+    QTest::mouseMove(nextBtn, QPoint(), 200);
+    QTest::mouseClick(nextBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 600);
     QTest::qWait(500);
-    w->requestAction(ActionFactory::ActionKind::GotoPlaylistPrev);
+//    w->requestAction(ActionFactory::ActionKind::GotoPlaylistPrev);
+    QTest::mouseMove(prevBtn, QPoint(), 200);
+    QTest::mouseClick(prevBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 600);
+
 
     QTest::qWait(300);
     w->requestAction(ActionFactory::ActionKind::SinglePlay);
     QTest::qWait(100);
-    w->requestAction(ActionFactory::ActionKind::GotoPlaylistNext);
+//    w->requestAction(ActionFactory::ActionKind::GotoPlaylistNext);
+    QTest::mouseMove(nextBtn, QPoint(), 200);
+    QTest::mouseClick(nextBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 600);
     QTest::qWait(500);
-    w->requestAction(ActionFactory::ActionKind::GotoPlaylistPrev);
+//    w->requestAction(ActionFactory::ActionKind::GotoPlaylistPrev);
+    QTest::mouseMove(prevBtn, QPoint(), 200);
+    QTest::mouseClick(prevBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 600);
 
     QTest::qWait(300);
     w->requestAction(ActionFactory::ActionKind::SingleLoop);
     QTest::qWait(100);
-    w->requestAction(ActionFactory::ActionKind::GotoPlaylistNext);
+//    w->requestAction(ActionFactory::ActionKind::GotoPlaylistNext);
+    QTest::mouseMove(nextBtn, QPoint(), 200);
+    QTest::mouseClick(nextBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 600);
     QTest::qWait(500);
-    w->requestAction(ActionFactory::ActionKind::GotoPlaylistPrev);
+//    w->requestAction(ActionFactory::ActionKind::GotoPlaylistPrev);
+    QTest::mouseMove(prevBtn, QPoint(), 200);
+    QTest::mouseClick(prevBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 600);
 
     QTest::qWait(300);
     w->requestAction(ActionFactory::ActionKind::ListLoop);
     QTest::qWait(100);
-    w->requestAction(ActionFactory::ActionKind::GotoPlaylistNext);
+//    w->requestAction(ActionFactory::ActionKind::GotoPlaylistNext);
+    QTest::mouseMove(nextBtn, QPoint(), 200);
+    QTest::mouseClick(nextBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 600);
     QTest::qWait(500);
-    w->requestAction(ActionFactory::ActionKind::GotoPlaylistPrev);
+//    w->requestAction(ActionFactory::ActionKind::GotoPlaylistPrev);
+    QTest::mouseMove(prevBtn, QPoint(), 200);
+    QTest::mouseClick(prevBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 600);
 }
 
 TEST(requestAction, playSpeed)
@@ -239,10 +265,10 @@ TEST(requestAction,openFiles)
 
     QTest::qWait(300);
     w->requestAction(ActionFactory::ActionKind::OpenFileList);
-    QTest::qWait(100);
+    QTest::qWait(500);
 
     w->requestAction(ActionFactory::ActionKind::OpenDirectory);
-    QTest::qWait(100);
+    QTest::qWait(500);
 
     w->requestAction(ActionFactory::ActionKind::PlaylistOpenItemInFM);
 //    utils::ShowInFileManager(QString("/usr/share/music/bensound-sunny.mp3"));
