@@ -84,7 +84,7 @@ QDataStream &operator<< (QDataStream &st, const MovieInfo &mi)
     st << mi.aDigit;
     st << mi.channels;
     st << mi.sampling;
-#ifndef _LIBDMR_
+#ifdef _MOVIE_USE_
     st << mi.strFmtName;
 #endif
     return st;
@@ -112,7 +112,7 @@ QDataStream &operator>> (QDataStream &st, MovieInfo &mi)
     st >> mi.aDigit;
     st >> mi.channels;
     st >> mi.sampling;
-#ifndef _LIBDMR_
+#ifdef _MOVIE_USE_
     st >> mi.strFmtName;
 #endif
     return st;
@@ -302,7 +302,7 @@ struct MovieInfo PlaylistModel::parseFromFile(const QFileInfo &fi, bool *ok)
         mi.height = video_dec_ctx->height;
         mi.vCodecID = video_dec_ctx->codec_id;
         mi.vCodeRate = video_dec_ctx->bit_rate;
-#ifndef _LIBDMR_
+#ifdef _MOVIE_USE_
         mi.strFmtName = av_ctx->iformat->long_name;
 #endif
 
@@ -345,7 +345,7 @@ struct MovieInfo PlaylistModel::parseFromFile(const QFileInfo &fi, bool *ok)
     mi.creation = fi.created().toString();
     mi.fileSize = fi.size();
     mi.fileType = fi.suffix();
-#ifndef _LIBDMR_
+#ifdef _MOVIE_USE_
     mi.strFmtName = av_ctx->iformat->long_name;
 #endif
     AVDictionaryEntry *tag = nullptr;
@@ -1653,7 +1653,7 @@ MovieInfo MovieInfo::parseFromFile(const QFileInfo &fi, bool *ok)
 
     mi.vCodecID = dec_ctx->codec_id;
     mi.vCodeRate = dec_ctx->bit_rate;
-#ifndef _LIBDMR_
+#ifdef _MOVIE_USE_
     mi.strFmtName = av_ctx->iformat->long_name;
 #endif
     if (av_stream->r_frame_rate.den != 0) {

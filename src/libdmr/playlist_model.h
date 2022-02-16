@@ -71,9 +71,6 @@ struct MovieInfo {
     qint64 duration;
     int width = -1;
     int height = -1;
-#ifndef _LIBDMR_
-    QString strFmtName; // 文件封装名
-#endif
     //3.4添加视频信息
     //视频流信息
     int vCodecID;
@@ -86,6 +83,9 @@ struct MovieInfo {
     int aDigit;
     int channels;
     int sampling;
+#ifdef _MOVIE_USE_
+    QString strFmtName; // 文件封装名
+#endif
 
     static struct MovieInfo parseFromFile(const QFileInfo &fi, bool *ok = nullptr);
     QString durationStr() const
@@ -130,7 +130,7 @@ struct MovieInfo {
     bool isRawFormat() const
     {
         bool bFlag = false;
-#ifndef _LIBDMR_
+#ifdef _MOVIE_USE_
         if(strFmtName.contains("raw",Qt::CaseInsensitive))
             bFlag = true;
 #endif
