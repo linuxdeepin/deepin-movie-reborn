@@ -53,13 +53,6 @@ NotificationWidget::NotificationWidget(QWidget *parent)
     initMember();
     setObjectName("NotificationFrame");
 
-#if defined (__mips__) || defined (__aarch64__)
-    QTimer::singleShot(100, this, [=](){
-        //此属性在wayland下会造成MainWindow最大化按钮消失，在此做延时处理
-        setWindowFlags(Qt::ToolTip | Qt::FramelessWindowHint);
-    });
-    setAttribute(Qt::WA_TranslucentBackground, true);
-#endif
     m_pMainLayout = new QHBoxLayout();
     m_pMainLayout->setContentsMargins(0, 0, 0, 0);
     setLayout(m_pMainLayout);
@@ -128,13 +121,7 @@ void NotificationWidget::syncPosition()
         break;
 
     case ANCHOR_NORTH_WEST:
-#ifdef __aarch64__
-        move(geom.topLeft() + m_anchorPoint);
-#elif defined (__sw_64__) || defined (__mips__)
-        move(geom.topLeft() + m_anchorPoint);
-#else
         move(m_anchorPoint);
-#endif
         break;
 
     case ANCHOR_NONE:
@@ -155,17 +142,7 @@ void NotificationWidget::syncPosition(QRect rect)
         break;
 
     case ANCHOR_NORTH_WEST:
-#ifdef __aarch64__
-        if (!utils::check_wayland_env()) {
-            move(geom.topLeft() + m_anchorPoint);
-        } else {
-            move(m_anchorPoint);
-        }
-#elif defined (__sw_64__) || defined (__mips__)
-        move(geom.topLeft() + m_anchorPoint);
-#else
         move(m_anchorPoint);
-#endif
         break;
 
     case ANCHOR_NONE:
@@ -244,62 +221,20 @@ void NotificationWidget::paintEvent(QPaintEvent *pPaintEvent)
         color = QColor(247, 247, 247, 255 * 0.95);
         borderColor = QColor(0, 0, 0, 255 * 0.05);
     }
-
-#if defined (__aarch64__) || defined (__mips__)
-    if(m_bIsWM) {
-        painter.fillRect(rect(), Qt::transparent);
-        {
-            QPainterPath painterPath;
-            painterPath.addRoundedRect(rect(), static_cast<qreal>(fRadius), static_cast<qreal>(fRadius));
-            painter.setPen(borderColor);
-            painter.drawPath(painterPath);
-        }
-
-        QRect viewRect = rect().marginsRemoved(QMargins(1, 1, 1, 1));
+    painter.fillRect(rect(), Qt::transparent);
+    {
         QPainterPath painterPath;
         painterPath.addRoundedRect(rect(), static_cast<qreal>(fRadius), static_cast<qreal>(fRadius));
-        painter.fillPath(painterPath, color);
-
-        QFrame::paintEvent(pPaintEvent);
-    } else {
-        color.setAlpha(255);
-        painter.fillRect(rect(), color);
-
-        if(bLight)
-            borderColor.setNamedColor("#F2F2F2");
-        else
-            borderColor.setNamedColor("#1C1C1C");
         painter.setPen(borderColor);
-        painter.drawRect(rect());
+        painter.drawPath(painterPath);
     }
-#else
-    if (!CompositingManager::get().composited()) {
-        color.setAlpha(255);
-        painter.fillRect(rect(), color);
 
-        if(bLight)
-            borderColor.setNamedColor("#F2F2F2");
-        else
-            borderColor.setNamedColor("#1C1C1C");
-        painter.setPen(borderColor);
-        painter.drawRect(rect());
-    } else {
-        painter.fillRect(rect(), Qt::transparent);
-        {
-            QPainterPath painterPath;
-            painterPath.addRoundedRect(rect(), static_cast<qreal>(fRadius), static_cast<qreal>(fRadius));
-            painter.setPen(borderColor);
-            painter.drawPath(painterPath);
-        }
+    QRect viewRect = rect().marginsRemoved(QMargins(1, 1, 1, 1));
+    QPainterPath painterPath;
+    painterPath.addRoundedRect(rect(), static_cast<qreal>(fRadius), static_cast<qreal>(fRadius));
+    painter.fillPath(painterPath, color);
 
-        QRect viewRect = rect().marginsRemoved(QMargins(1, 1, 1, 1));
-        QPainterPath painterPath;
-        painterPath.addRoundedRect(rect(), static_cast<qreal>(fRadius), static_cast<qreal>(fRadius));
-        painter.fillPath(painterPath, color);
-
-        QFrame::paintEvent(pPaintEvent);
-    }
-#endif
+    QFrame::paintEvent(pPaintEvent);
 }
 /**
  * @brief initMember 初始化成员变量

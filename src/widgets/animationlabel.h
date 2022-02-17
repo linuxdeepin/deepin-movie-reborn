@@ -56,9 +56,8 @@ public:
      * @brief AnimationLabel构造函数
      * @param parent 父窗口
      * @param pMainWindow 主窗口
-     * @param bComposited 是否为opengl渲染
      */
-    explicit AnimationLabel(QWidget *parent = nullptr, QWidget *pMainWindow = nullptr, bool bComposited = false);
+    explicit AnimationLabel(QWidget *parent = nullptr, QWidget *pMainWindow = nullptr);
     /**
      * @brief 由播放状态变为暂停状态
      */
@@ -73,9 +72,8 @@ private:
     /**
      * @brief 初始化成员变量
      * @param mainwindow 主窗口指针
-     * @param composited 是否为opengl渲染
      */
-    void initMember(QWidget *pMainwindow, bool bComposited);
+    void initMember(QWidget *pMainwindow);
     /**
      * @brief 初始化切换暂停时的动画组
      */
@@ -84,11 +82,6 @@ private:
      * @brief 初始化切换播放时的动画组
      */
     void initPlayAnimation();
-    /**
-     * @brief 设置此窗口在主窗口的位置
-     * @param pMainWindow 主窗口
-     */
-    void setGeometryByMainWindow(QWidget *pMainWindow);
 
 public slots:
     /**

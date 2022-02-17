@@ -34,6 +34,7 @@
 #include "src/widgets/toolbox_proxy.h"
 #include "src/widgets/toolbutton.h"
 #include "src/widgets/playlist_widget.h"
+#include "src/widgets/notification_widget.h"
 #include <gtest/gtest.h>
 #include "src/common/mainwindow.h"
 #include "src/libdmr/player_engine.h"
@@ -106,7 +107,7 @@ TEST(ToolBox, tip)
 TEST(ToolBox, animationLabel)
 {
     MainWindow *mw = new MainWindow();
-    AnimationLabel *aLabel = new AnimationLabel(mw, mw, false);
+    AnimationLabel *aLabel = new AnimationLabel(mw, mw);
     aLabel->show();
 
     QEvent moveEvent(QEvent::Move);

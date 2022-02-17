@@ -22,6 +22,7 @@ cmake -DCMAKE_BUILD_TYPE=Debug ../
 make -j16
 
 
+#../tests/deepin-movie-platform/ut-build-run.sh
 ../tests/deepin-movie/ut-build-run.sh
 ../tests/ut_dmr-test/ut-build-run.sh
 

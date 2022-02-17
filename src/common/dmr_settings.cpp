@@ -41,15 +41,14 @@
 
 namespace dmr {
 using namespace Dtk::Core;
-static Settings *s_pTheSettings = nullptr;
-
+Settings *Settings::m_pTheSettings = nullptr;
 Settings &Settings::get()
 {
-    if (!s_pTheSettings) {
-        s_pTheSettings = new Settings;
+    if (!m_pTheSettings) {
+        m_pTheSettings = new Settings;
     }
 
-    return *s_pTheSettings;
+    return *m_pTheSettings;
 }
 
 Settings::Settings()
@@ -62,11 +61,6 @@ Settings::Settings()
     qInfo() << "configPath" << m_sConfigPath;
     QSettingBackend *pBackend = new QSettingBackend(m_sConfigPath);
 #if defined (__mips__) || defined (__sw_64__) || defined ( __aarch64__)
-    /*if (!CompositingManager::get().composited()) {
-        m_pSettings = DSettings::fromJsonFile(":/resources/data/lowEffectSettings.json");
-    } else {
-        m_pSettings = DSettings::fromJsonFile(":/resources/data/settings.json");
-    }*/
     m_pSettings = DSettings::fromJsonFile(":/resources/data/lowEffectSettings.json");
 #else
     m_pSettings = DSettings::fromJsonFile(":/resources/data/settings.json");
@@ -125,7 +119,7 @@ Settings::Settings()
     }
 }
 
-static QString flag2key(Settings::Flag f)
+QString Settings::flag2key(Settings::Flag f)
 {
     switch (f) {
     case Settings::Flag::ClearWhenQuit:

@@ -4,11 +4,12 @@
 #include <QObject>
 #include <MprisPlayer>
 #include "mainwindow.h"
+#include "platform/platform_mainwindow.h"
 #include "mpv_proxy.h"
 #include "player_engine.h"
 #include "dmr_settings.h"
-#include "notification_widget.h"
-#include "toolbox_proxy.h"
+#include "platform/platform_notification_widget.h"
+#include "platform/platform_toolbox_proxy.h"
 #include "playlist_model.h"
 
 using namespace dmr;
@@ -18,6 +19,7 @@ class Presenter : public QObject
     Q_OBJECT
 public:
     explicit Presenter(MainWindow* mw, QObject *parent = nullptr);
+    explicit Presenter(Platform_MainWindow* mw, QObject *parent = nullptr);
 
     void initMpris(MprisPlayer *mprisPlayer);
 
@@ -38,6 +40,7 @@ public slots:
     void slotstop();
 private:
     MainWindow* _mw = nullptr;
+    Platform_MainWindow* _platform_mw = nullptr;
     MprisPlayer* m_mprisplayer=nullptr;
 };
 

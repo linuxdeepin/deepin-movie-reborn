@@ -4,6 +4,7 @@
 #include <QObject>
 #include <MprisPlayer>
 #include "mainwindow.h"
+#include "platform/platform_mainwindow.h"
 #include "presenter.h"
 
 using namespace dmr;
@@ -13,6 +14,7 @@ class MovieApp : public QObject
 {
 public:
     MovieApp(MainWindow* mw, QObject* parent = nullptr);
+    MovieApp(Platform_MainWindow* mw, QObject* parent = nullptr);
 
     void initUI();
     void initConnection();
@@ -22,7 +24,8 @@ public slots:
     void quit();
 
 private:
-    MainWindow* _mw;
+    MainWindow* _mw = nullptr;
+    Platform_MainWindow* _mw_platform = nullptr;
     Presenter* _presenter = nullptr;
 
 };

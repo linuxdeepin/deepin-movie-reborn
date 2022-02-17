@@ -268,8 +268,8 @@ TEST(requestAction,openFiles)
     w->requestAction(ActionFactory::ActionKind::OpenFileList);
     QTest::qWait(500);
 
-    w->requestAction(ActionFactory::ActionKind::OpenDirectory);
-    QTest::qWait(2000);
+//    w->requestAction(ActionFactory::ActionKind::OpenDirectory);
+//    QTest::qWait(2000);
 
     w->requestAction(ActionFactory::ActionKind::PlaylistOpenItemInFM);
     utils::ShowInFileManager(QString("/usr/share/music/bensound-sunny.mp3"));

@@ -54,13 +54,6 @@ MovieProgressIndicator::MovieProgressIndicator(QWidget *parent)
     this->setFont(font);
     m_fixedSize = QSize(qMax(52, fontMetrics.width("999:99")), fontMetrics.height() + 10);
     this->setFixedSize(m_fixedSize);
-    if(!utils::check_wayland_env()){
-#if defined (__mips__) || defined (__aarch64__) || defined (__sw_64__)
-    this->setAttribute(Qt::WA_TranslucentBackground);
-    this->setWindowFlags(Qt::FramelessWindowHint);
-    setWindowFlags(this->windowFlags() | Qt::Dialog);
-#endif
-    }
 }
 /**
  * @brief paintEvent 重载绘制事件函数
@@ -109,7 +102,7 @@ void MovieProgressIndicator::updateMovieProgress(qint64 duration, qint64 pos)
 {
     m_nElapsed = pos;
     if (duration != 0)
-        m_pert = static_cast<qreal>(pos / duration);
+        m_pert = static_cast<qreal>(((float)pos) / duration);
     update();
 }
 

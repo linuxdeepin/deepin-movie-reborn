@@ -317,12 +317,10 @@ public:
     void capturedMousePressEvent(QMouseEvent *pEvent);
     void capturedMouseReleaseEvent(QMouseEvent *pEvent);
     void capturedKeyEvent(QKeyEvent *pEvent);
-    void syncStaysOnTop();
     void updateGeometryNotification(const QSize &size);
     void updateContentGeometry(const QRect &rect);
     static QString lastOpenedPath();
     void reflectActionToUI(ActionFactory::ActionKind);
-    bool set_playlistopen_clicktogglepause(bool bPlaylistopen);
     NotificationWidget *get_nwComm();
     /**
      * @brief 在读取光盘的时候，直接把光盘挂载点的路径加入到播放列表中
@@ -377,9 +375,6 @@ public slots:
     * @brief 刷新解码模式
     */
     void onRefreshDecode();
-#if defined (__aarch64__) || defined (__mips__)
-    void syncPostion();
-#endif
     /**
      * @brief 设置窗口顶层
      */
@@ -539,18 +534,15 @@ private:
     bool m_bWindowAbove;                            ///是否是置顶窗口
     bool m_bMouseMoved;                             ///鼠标是否按下移动
     bool m_bMousePressed;                           ///鼠标是否安下
-    bool m_bPlaylistopen_clicktogglepause;
     double m_dPlaySpeed;                            ///当前播放速度
 
-    bool m_bQuitfullscreenstopflag;
-    bool m_bQuitfullscreenflag;
+    bool m_bQuitfullscreenflag;                     ///记录最小化前是否为播放状态
     bool m_bMaxfornormalflag;                       ///is the window maximized
     QPoint m_posMouseOrigin;                        ///记录前一次鼠标移动点
     QPoint m_pressPoint;                            ///记录当前鼠标按下时的点
     bool m_bStartMini;                              ///开始进入迷你模式
     bool m_bStateInLock;                            ///锁屏时播放状态
     bool m_bStartSleep;                             ///是否进入休眠状态
-    bool m_bStartMove;                              ///窗口是否开始移动
 
     enum StateBeforeEnterMiniMode {
         SBEM_None = 0x0,
@@ -578,11 +570,7 @@ private:
     int m_nLastPressY;                               ///左键按下时保存的点
     bool m_bIsTouch;                                 ///是否是触摸屏按下
     QTimer m_mousePressTimer;
-    qint64 m_nOldDuration;
-    qint64 m_nOldElapsed;
     Diskcheckthread m_diskCheckThread;
-    bool m_bClosed;                                  ///用于景嘉微显卡下过滤metacall事件
-    bool m_bIsFileLoadNotFinished;
     QStringList m_listOpenFiles;
     QString m_sCurrentHwdec;                         ///当前的硬解码模式
     bool m_bProgressChanged;                         ///进度条是否被拖动
@@ -591,7 +579,6 @@ private:
     int m_iAngleDelta;                                ///鼠标滚轮滚动的距离
     bool m_bStartAnimation;                           ///是否开始动画，如果开始不允许做其他操作
     QDBusInterface *m_pDBus;
-    bool m_bIsFirstLoadDBus;
     Presenter *m_pPresenter;
     MovieWidget *m_pMovieWidget;
     qint64 m_nFullscreenTime;                         ///全屏操作间隔时间

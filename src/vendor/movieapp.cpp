@@ -40,6 +40,13 @@ MovieApp::MovieApp(MainWindow* mw, QObject* parent)
     initMpris("Deepinmovie");
 }
 
+MovieApp::MovieApp(Platform_MainWindow *mw, QObject *parent)
+    :QObject(parent), _mw_platform(mw)
+{
+    _presenter = new Presenter(_mw_platform);
+    initMpris("Deepinmovie");
+}
+
 void MovieApp::initMpris(const QString &serviceName)
 {
     MprisPlayer* mprisPlayer =  new MprisPlayer();
@@ -73,5 +80,9 @@ void MovieApp::show()
 
 void MovieApp::quit()
 {
-    _mw->requestAction(ActionFactory::Exit);
+    if(_mw)
+        _mw->requestAction(ActionFactory::Exit);
+    else if (_mw_platform) {
+         _mw_platform->requestAction(ActionFactory::Exit);
+    }
 }

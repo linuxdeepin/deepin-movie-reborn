@@ -562,7 +562,6 @@ protected:
                             return;
                         if (plw->state() == PlaylistWidget::Opened && !plw->underMouse()) {
                             mw->requestAction(ActionFactory::ActionKind::TogglePlaylist);
-                            mw->set_playlistopen_clicktogglepause(true);
                         }
                     });
                 }
@@ -1323,19 +1322,15 @@ void PlaylistWidget::togglePopup(bool isShortcut)
 #endif
 
     QRect fixed;
-#if defined(__arrch64__) || defined(__mips__)
-    // y坐标下移5个像素点,避免播放列表上部超出toolbox范围
-    fixed.setRect(10, (view_rect.height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT + 10) + 5),
-                  view_rect.width() - 20, TOOLBOX_SPACE_HEIGHT + 10);
-#else
-    if (!CompositingManager::get().composited() || utils::check_wayland_env()) {
-        fixed.setRect(10, (view_rect.height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT + 10) + 5),
-                      view_rect.width() - 20, TOOLBOX_SPACE_HEIGHT + 10);
-    } else {
+    if(CompositingManager::get().platform() == X86) {
         fixed.setRect(10, (view_rect.height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT + 10)),
                       view_rect.width() - 20, TOOLBOX_SPACE_HEIGHT + 10);
+
     }
-#endif
+    else {
+        fixed.setRect(10, (view_rect.height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT + 10) + 5),
+                             view_rect.width() - 20, TOOLBOX_SPACE_HEIGHT + 10);
+    }
 
     QRect shrunk = fixed;
     shrunk.setHeight(0);

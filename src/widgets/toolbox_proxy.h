@@ -567,10 +567,6 @@ private:
      */
     void setup();
     /**
-     * @brief updateTimeLabel 界面显示或大小变化时更新控件显示状态
-     */
-    void updateTimeLabel();
-    /**
      * @brief updateToolTipTheme 更新按钮悬浮框主题
      * @param btn 对应的按钮
      */

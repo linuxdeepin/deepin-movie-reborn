@@ -52,6 +52,8 @@
 #undef Bool
 #include "../vendor/qthelper.hpp"
 
+#define BUFFERSIZE 255
+
 typedef const char *glXGetScreenDriver_t (Display *dpy, int scrNum);
 
 static glXGetScreenDriver_t *GetScreenDriver;
@@ -93,7 +95,7 @@ public:
 
                 } else if (machine.find("mips") != string::npos) { // loongson
                     qInfo() << "match loongson";
-                    _pf = Platform::Alpha;
+                    _pf = Platform::Mips;
                 } else if (machine.find("aarch64") != string::npos) { // ARM64
                     qInfo() << "match arm";
                     _pf = Platform::Arm64;
@@ -140,107 +142,32 @@ CompositingManager::CompositingManager()
     softDecodeCheck();   //检测是否是kunpeng920（是否走软解码）
 
     _composited = false;
-    if (QGSettings::isSchemaInstalled("com.deepin.deepin-movie")) {
-        QGSettings gsettings("com.deepin.deepin-movie", "/com/deepin/deepin-movie/");
-        QString aa = gsettings.get("composited").toString();
-        if ((gsettings.get("composited").toString() == "DisableComposited"
-                || gsettings.get("composited").toString() == "EnableComposited")) {
-            if (gsettings.keys().contains("composited")) {
-                if (gsettings.get("composited").toString() == "DisableComposited") {
-                    _composited = false;
-                } else if (gsettings.get("composited").toString() == "EnableComposited") {
-                    _composited = true;
-                }
-            }
-        } else {
-            if (QProcessEnvironment::systemEnvironment().value("SANDBOX") == "flatpak") {
-                _composited = QFile::exists("/dev/dri/card0");
-            } else if (isProprietaryDriver()) {
+    QGSettings gsettings("com.deepin.deepin-movie", "/com/deepin/deepin-movie/");
+    QString aa = gsettings.get("composited").toString();
+    if ((gsettings.get("composited").toString() == "DisableComposited"
+            || gsettings.get("composited").toString() == "EnableComposited")) {
+        if (gsettings.keys().contains("composited")) {
+            if (gsettings.get("composited").toString() == "DisableComposited") {
+                _composited = false;
+            } else if (gsettings.get("composited").toString() == "EnableComposited") {
                 _composited = true;
-            } else if (isDriverLoadedCorrectly() || isDirectRendered()) {
-#ifdef __aarch64__
+            }
+        }
+    } else {
+        bool isDriverLoaded = isDriverLoadedCorrectly();
+        if (_platform == Platform::X86) {
+            if (m_bZXIntgraphics) {
                 _composited = false;
-                qInfo() << "__aarch64__  isDirectRendered";
-                if (isDriverLoadedCorrectly()) {    //如果有独立显卡
-                    _composited = true;
-                    qInfo() << "__aarch64__  isDriverLoadedCorrectly";
-                }
-#elif defined (__mips__)
-                _composited = false;
-                qInfo() << "__mips__";
-#else
-                if (m_bZXIntgraphics) { //兆芯集显设置_composited为false
-                    _composited = false;
-                } else {
-                    _composited = true;
-                }
-                qInfo() << "__X86__";
-#endif
             } else {
-                GetScreenDriver = reinterpret_cast<glXGetScreenDriver_t *>(glXGetProcAddressARB(reinterpret_cast<const GLubyte *>("glXGetScreenDriver")));
-                if (GetScreenDriver) {
-                    const char *name = (*GetScreenDriver)(QX11Info::display(), QX11Info::appScreen());
-                    qInfo() << "dri driver: " << name;
-                    _composited = name != nullptr;
-                }
-            }
-
-#ifndef _LIBDMR_
-            auto v = CommandLineManager::get().openglMode();
-            if (v == "off") {
-                _composited = false;
-            } else if (v == "on") {
                 _composited = true;
             }
-#endif
-        }
-        qInfo() << "From gsetting, composition about opengl :" << gsettings.get("composited").toString();
-    } else { /* if(gsettings.get("composited").toString() == "Default")*/
-        if (QProcessEnvironment::systemEnvironment().value("SANDBOX") == "flatpak") {
-            _composited = QFile::exists("/dev/dri/card0");
-        } else if (isProprietaryDriver()) {
-            _composited = true;
-        } else if (isDriverLoadedCorrectly() || isDirectRendered()) {
-            _composited = true;
         } else {
-            GetScreenDriver = reinterpret_cast<glXGetScreenDriver_t *>(glXGetProcAddressARB(reinterpret_cast<const GLubyte *>("glXGetScreenDriver")));
-            if (GetScreenDriver) {
-                const char *name = (*GetScreenDriver)(QX11Info::display(), QX11Info::appScreen());
-                qInfo() << "dri driver: " << name;
-                _composited = name != nullptr;
-            }
-        }
-
-#ifndef _LIBDMR_
-        auto v = CommandLineManager::get().openglMode();
-        if (v == "off") {
+            if (_platform == Platform::Arm64 && isDriverLoaded)
+                m_bHasCard = true;
             _composited = false;
-        } else if (v == "on") {
-            _composited = true;
         }
-#endif
     }
-#ifdef MWV206_0
-    QFileInfo fi("/dev/mwv206_0"); //景嘉微显卡目前只支持vo=xv，等日后升级代码需要酌情修改。
-    if (fi.exists()) {
-        _composited = false;
-    }
-#endif
-#ifdef __mips__
-    bool bRet = QDBusInterface("com.deepin.wm", "/com/deepin/wm", "com.deepin.wm").property("compositingAllowSwitch").toBool();
-    if (!bRet) {
-        _composited = false;   //2020.3.19龙芯增加显卡需保留检测显卡方案
-    }
-#endif
-    qInfo() << "composited:" << _composited;
-#if !defined (__x86_64__)
-    if (_composited) {
-        m_bHasCard = _composited;
-        _composited = false;
-        m_bOnlySoftDecode = false;
-        qInfo() << "hasCard: " << m_bHasCard;
-    }
-#endif
+
     //读取配置
     m_pMpvConfig = new QMap<QString, QString>;
     utils::getPlayProperty("/etc/mpv/play.conf", m_pMpvConfig);
@@ -250,6 +177,18 @@ CompositingManager::CompositingManager()
             _composited = true;//libmpv只能走opengl
         }
     }
+    //单元测试
+#ifdef USE_TEST
+    utils::getPlayProperty("/data/source/deepin-movie-reborn/movie/play.conf", m_pMpvConfig);
+    if (m_pMpvConfig->contains("vo")) {
+        QString value = m_pMpvConfig->find("vo").value();
+        if ("libmpv" == value) {
+            _composited = true;//libmpv只能走opengl
+        } else {
+            _composited = false;//libmpv只能走opengl
+        }
+    }
+#endif
     qInfo() << __func__ << "Composited is " << _composited;
 }
 
@@ -348,40 +287,42 @@ bool CompositingManager::runningOnNvidia()
 
 void CompositingManager::softDecodeCheck()
 {
-    QProcess uname;
-    char *data = (char *)malloc(100);
-    uname.start("cat /proc/cpuinfo");
-    if (uname.waitForStarted()) {
-        if (uname.waitForFinished()) {
-            while (uname.readLine(data, 99) > 0) {
-                QString strData(data);
-                QStringList listPara = strData.split(":");
-
-                if (listPara.size() < 2) {
-                    continue;
-                }
-
-                if (listPara.at(0).contains("model name")
-                        && listPara.at(1).contains("Kunpeng 920")) {
-                    m_bOnlySoftDecode = true;
-                }
+    //获取cpu型号
+    QFile cpuInfo("/proc/cpuinfo");
+    if (cpuInfo.open(QIODevice::ReadOnly)) {
+        QString line = cpuInfo.readLine();
+        while (!cpuInfo.atEnd()) {
+            line = cpuInfo.readLine();
+            QStringList listPara = line.split(":");
+            qInfo() << listPara;
+            if (listPara.size() < 2) {
+                continue;
+            }
+            if (listPara.at(0).contains("model name")) {
+                m_cpuModelName = listPara.at(1);
+                break;
             }
         }
+        cpuInfo.close();
     }
-    free(data);
-    //浪潮 inspur softdecode
-    QProcess inspur;
-    inspur.start("cat /sys/class/dmi/id/board_vendor");
-    if (inspur.waitForStarted() && inspur.waitForFinished()) {
-        QString drv = QString::fromUtf8(inspur.readAllStandardOutput().trimmed().constData());
-        qInfo() << "inspur check : " << drv;
-        m_bOnlySoftDecode =  m_bOnlySoftDecode || drv.contains("Inspur");
-        //添加曙光N卡平台软解方案，解决s3唤醒进程丢失问题
-        if (runningOnNvidia() && drv.contains("Sugon")) {
-            m_bOnlySoftDecode = true;
+
+    //获取设备名
+    QFile board("/sys/class/dmi/id/board_vendor");
+    if (board.open(QIODevice::ReadOnly)) {
+        QString line = board.readLine();
+        while (!board.atEnd()) {
+            m_boardVendor = line;
+            break;
         }
-        m_setSpecialControls = drv.contains("Ruijie");
+        board.close();
     }
+
+    if ((runningOnNvidia() && m_boardVendor.contains("Sugon"))
+            || m_cpuModelName.contains("Kunpeng 920")) {
+        m_bOnlySoftDecode = true;
+    }
+
+    m_setSpecialControls = m_boardVendor.contains("Ruijie");
 
     //判断N卡驱动版本
     QFile nvidiaVersion("/proc/driver/nvidia/version");

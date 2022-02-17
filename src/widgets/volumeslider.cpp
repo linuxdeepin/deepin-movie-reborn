@@ -29,18 +29,8 @@ namespace dmr {
 VolumeSlider::VolumeSlider(MainWindow *mw, QWidget *parent)
     : DArrowRectangle(DArrowRectangle::ArrowBottom, DArrowRectangle::FloatWidget, parent), _mw(mw)
 {
-#ifdef __mips__
-    setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
-#elif __aarch64__
-    setWindowFlags(Qt::ToolTip | Qt::FramelessWindowHint);
-#elif __sw_64__
-    setWindowFlags(Qt::FramelessWindowHint | Qt::BypassWindowManagerHint);
-    setAttribute(Qt::WA_NativeWindow);
-#elif __x86_64__
-    if (!CompositingManager::get().composited()) {
-        setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
-    }
-#endif
+    if (CompositingManager::get().platform() != Platform::X86)
+        setWindowFlags(Qt::ToolTip | Qt::FramelessWindowHint);
     m_iStep = 0;
     m_bIsWheel = false;
     m_nVolume = 100;
@@ -99,13 +89,7 @@ VolumeSlider::VolumeSlider(MainWindow *mw, QWidget *parent)
     connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged,
             this, &VolumeSlider::setThemeType);
     m_autoHideTimer.setSingleShot(true);
-#ifdef __x86_64__
     connect(&m_autoHideTimer, &QTimer::timeout, this, &VolumeSlider::popup);
-#else
-    if (utils::check_wayland_env()) {
-        connect(&m_autoHideTimer, &QTimer::timeout, this, &VolumeSlider::hide);
-    }
-#endif
 }
 
 void VolumeSlider::initVolume()
@@ -184,28 +168,17 @@ void VolumeSlider::popup()
 
     int x = view_rect.width() - (TOOLBOX_BUTTON_WIDTH * 2 + 30 + (VOLSLIDER_WIDTH - TOOLBOX_BUTTON_WIDTH) / 2);
     int y = view_rect.height() - TOOLBOX_HEIGHT - VOLSLIDER_HEIGHT;
-#ifndef __x86_64__
-    //在arm及mips平台下音量条上移了10个像素
-    y += 10;
-#endif
     QRect end(x, y, VOLSLIDER_WIDTH, VOLSLIDER_HEIGHT);
     QRect start = end;
 
     start.setWidth(start.width() + 12);
     start.setHeight(start.height() + 10);
-#ifdef __x86_64__
-    if(CompositingManager::get().composited()) {
+    if(CompositingManager::get().platform() == Platform::X86) {
         start.moveTo(start.topLeft() - QPoint(6, 10));
     } else {
         end.moveTo(m_point + QPoint(6, 0));
         start.moveTo(m_point - QPoint(0, 14));
     }
-#elif __sw_64__
-    start.moveTo(start.topLeft() - QPoint(6, 10));
-#else
-    end.moveTo(m_point + QPoint(6, 0));
-    start.moveTo(m_point - QPoint(0, 14));
-#endif
 
     //动画未完成，等待动画结束后再隐藏控件
     if (pVolAnimation) {
@@ -240,16 +213,11 @@ void VolumeSlider::popup()
 }
 void VolumeSlider::delayedHide()
 {
-#ifdef __x86_64__
-    if (!isHidden())
-        m_autoHideTimer.start(500);
-#else
     m_mouseIn = false;
     DUtil::TimerSingleShot(100, [this]() {
         if (!m_mouseIn)
             popup();
     });
-#endif
 }
 void VolumeSlider::changeVolume(int nVolume)
 {
@@ -271,17 +239,7 @@ void VolumeSlider::changeVolume(int nVolume)
 }
 
 void VolumeSlider::calculationStep(int iAngleDelta){
-    //int wheelSpeed;
     m_bIsWheel = true;
-    //获取系统鼠标滚轮灵敏度
-    //QVariant v = DBusUtils::redDBusProperty("com.deepin.daemon.InputDevices", "/com/deepin/daemon/InputDevices","com.deepin.daemon.InputDevices", "WheelSpeed");
-    //if (!v.isValid()){
-    //    wheelSpeed = 1;
-    //}else{
-    //    wheelSpeed = v.toInt();
-    //    //wheelSpeed = 1;
-    //}
-    //iAngleDelta = iAngleDelta/wheelSpeed;
 
     if ((m_iStep > 0 && iAngleDelta > 0) || (m_iStep < 0 && iAngleDelta < 0)) {
         m_iStep += iAngleDelta;
@@ -386,54 +344,28 @@ void VolumeSlider::setThemeType(int type)
 
 void VolumeSlider::enterEvent(QEvent *e)
 {
-#ifdef __x86_64__
-    m_autoHideTimer.stop();
-#else
     m_mouseIn = true;
     QWidget::leaveEvent(e);
-#endif
 }
 void VolumeSlider::showEvent(QShowEvent *se)
 {
-#ifdef __x86_64__
-    m_autoHideTimer.stop();
-#else
-    QWidget::showEvent(se);
-#endif
     QWidget::showEvent(se);
 }
 void VolumeSlider::leaveEvent(QEvent *e)
 {
-#ifdef __x86_64__
-    m_autoHideTimer.start(500);
-#else
     m_mouseIn = false;
     delayedHide();
     QWidget::leaveEvent(e);
-#endif
 }
 void VolumeSlider::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
     QColor bgColor = this->palette().background().color();
-
-#if defined (__mips__) || defined (__aarch64__)
-    ///arm和mips下控件圆角显示有黑边,在此重绘
-    if (!utils::check_wayland_env()) {
-        painter.fillRect(rect(), bgColor);
-    } else{
-        //NOTE: The window shadow cannot be displayed putside the window under wayland,
-        // so the window is reduced to form an inner margin of 1 pixel for shadow display.
+    if(CompositingManager::get().platform() != Platform::X86) {
         QRect rect = this->rect();
-        rect.setTopLeft(QPoint(1, 1));
-        rect.setSize(QSize(VOLSLIDER_WIDTH - 2, VOLSLIDER_HEIGHT - 2));
-
-        painter.fillRect(rect, bgColor);
-    }
-
-#else
-    if (!CompositingManager::get().composited()) {
-        painter.fillRect(rect(), bgColor);
+                rect.setTopLeft(QPoint(1, 1));
+                rect.setSize(QSize(VOLSLIDER_WIDTH - 2, VOLSLIDER_HEIGHT - 2));
+                painter.fillRect(rect, bgColor);
     } else {
         double dRation = this->height() * 1.0 / VOLSLIDER_HEIGHT;
         const qreal radius = 20 * dRation;
@@ -476,20 +408,10 @@ void VolumeSlider::paintEvent(QPaintEvent *)
         // 反向绘制
         painter.fillPath(pathTriangle, bgColor);
     }
-#endif
 }
 
 void VolumeSlider::keyPressEvent(QKeyEvent *pEvent)
 {
-#if defined (__mips__) || defined (__aarch64__)     // mips和arm模式下,键盘交互升起音量条焦点在音量条,所以键盘事件被音量条截获
-    int nCurVolume = getVolume();
-    if (pEvent->key() == Qt::Key_Up) {
-        changeVolume(qMin(nCurVolume + 5, 200));
-    } else if (pEvent->key() == Qt::Key_Down) {
-        changeVolume(qMax(nCurVolume - 5, 0));
-    }
-#endif
-
     DArrowRectangle::keyPressEvent(pEvent);
 }
 

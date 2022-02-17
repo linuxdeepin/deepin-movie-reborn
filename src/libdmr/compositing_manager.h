@@ -148,6 +148,9 @@ private:
     bool m_bZXIntgraphics;
     //保存配置
     QMap<QString, QString> *m_pMpvConfig;
+
+    QString m_cpuModelName;
+    QString m_boardVendor;
 };
 }
 

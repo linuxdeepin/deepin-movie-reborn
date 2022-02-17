@@ -226,6 +226,12 @@ public:
      * @return 截图文件名
      */
     QString screenshotNameSeqTemplate();
+    /**
+     * @brief 获取键值
+     * @return 键值
+     */
+    static QString flag2key(Settings::Flag f);
+
 
 public slots:
     /**
@@ -242,6 +248,7 @@ private:
 
     QPointer<DSettings> m_pSettings;   ///DSetting指针
     QString m_sConfigPath;             ///配置文件路径
+    static Settings *m_pTheSettings;   ///单例唯一实例
 };
 
 }

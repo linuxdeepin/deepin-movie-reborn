@@ -47,14 +47,10 @@ ApplicationAdaptor::ApplicationAdaptor(MainWindow *pMainWid)
 //cppcheck 单元测试 wayland下再用
 void ApplicationAdaptor::openFiles(const QStringList &listFiles)
 {
-    if (utils::check_wayland_env()) {
-        // wayland下快速点击，播放不正常问题
-        QTime current = QTime::currentTime();
-        if (abs(m_oldTime.msecsTo(current)) > 800) {
-            m_oldTime = current;
-            m_pMainWindow->play(listFiles);
-        }
-    } else {
+    // 快速点击，播放不正常问题
+    QTime current = QTime::currentTime();
+    if (abs(m_oldTime.msecsTo(current)) > 800) {
+        m_oldTime = current;
         m_pMainWindow->play(listFiles);
     }
 }

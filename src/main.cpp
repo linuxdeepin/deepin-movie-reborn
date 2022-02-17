@@ -47,8 +47,10 @@
 #include "options.h"
 #include "dmr_settings.h"
 #include "mainwindow.h"
-#include "dbus_adpator.h"
+#include "platform/platform_mainwindow.h"
+#include "platform/platform_dbus_adpator.h"
 #include "compositing_manager.h"
+#include "dbus_adpator.h"
 #include "utils.h"
 #include "movie_configuration.h"
 #include "vendor/movieapp.h"
@@ -129,9 +131,11 @@ int main(int argc, char *argv[])
         qputenv("QT_WAYLAND_SHELL_INTEGRATION", "kwayland-shell");
         //qputenv("_d_disableDBusFileDialog", "true");
         setenv("PULSE_PROP_media.role", "video", 1);
+#ifndef __x86_64__
         QSurfaceFormat format;
         format.setRenderableType(QSurfaceFormat::OpenGLES);
         format.setDefaultFormat(format);
+#endif
     }
 //#endif
 #ifdef __mips__
@@ -242,28 +246,57 @@ int main(int argc, char *argv[])
 
     QRegExp url_re("\\w+://");
 
-    dmr::MainWindow mw;
-    Presenter *presenter = new Presenter(&mw);
-//    mw.setMinimumSize(QSize(1070, 680));
-    mw.setPresenter(presenter);
-    if (CompositingManager::isPadSystem()) {
-        ///平板模式下全屏显示
-        mw.showMaximized();
+    if (CompositingManager::get().composited()) {
+        dmr::MainWindow mw;
+        Presenter *presenter = new Presenter(&mw);
+    //    mw.setMinimumSize(QSize(1070, 680));
+        mw.setPresenter(presenter);
+        if (CompositingManager::isPadSystem()) {
+            ///平板模式下全屏显示
+            mw.showMaximized();
+        } else {
+            mw.resize(850, 600);
+            utils::MoveToCenter(&mw);
+            mw.show();
+        }
+
+        mw.setOpenFiles(toOpenFiles);
+
+        if (!QDBusConnection::sessionBus().isConnected()) {
+            qWarning() << "dbus disconnected";
+        }
+
+        ApplicationAdaptor adaptor(&mw);
+        QDBusConnection::sessionBus().registerService("com.deepin.movie");
+        QDBusConnection::sessionBus().registerObject("/", &mw);
+
+        return app->exec();
     } else {
-        mw.resize(850, 600);
-        utils::MoveToCenter(&mw);
-        mw.show();
+        dmr::Platform_MainWindow platform_mw;
+        Presenter *presenter = new Presenter(&platform_mw);
+    //    mw.setMinimumSize(QSize(1070, 680));
+        platform_mw.setPresenter(presenter);
+        if (CompositingManager::isPadSystem()) {
+            ///平板模式下全屏显示
+            platform_mw.showMaximized();
+        } else {
+            platform_mw.resize(850, 600);
+            utils::MoveToCenter(&platform_mw);
+            platform_mw.show();
+        }
+
+        platform_mw.setOpenFiles(toOpenFiles);
+
+        if (!QDBusConnection::sessionBus().isConnected()) {
+            qWarning() << "dbus disconnected";
+        }
+
+        Platform_ApplicationAdaptor adaptor(&platform_mw);
+        QDBusConnection::sessionBus().registerService("com.deepin.movie");
+        QDBusConnection::sessionBus().registerObject("/", &platform_mw);
+
+        return app->exec();
     }
-
-    mw.setOpenFiles(toOpenFiles);
-
-    if (!QDBusConnection::sessionBus().isConnected()) {
-        qWarning() << "dbus disconnected";
-    }
-
-    ApplicationAdaptor adaptor(&mw);
-    QDBusConnection::sessionBus().registerService("com.deepin.movie");
-    QDBusConnection::sessionBus().registerObject("/", &mw);
 
 //    if (!toOpenFiles.isEmpty()) {
 //        if (toOpenFiles.size() == 1) {
@@ -272,7 +305,5 @@ int main(int argc, char *argv[])
 //            mw.playList(toOpenFiles);
 //        }
 //    }
-    return app->exec();
-
 }
 

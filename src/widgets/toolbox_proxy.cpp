@@ -779,7 +779,7 @@ private:
     bool m_bIsWM{false};
 };
 
-QString libPath(const QString &strlib)
+static QString libPath(const QString &strlib)
 {
     QDir  dir;
     QString path  = QLibraryInfo::location(QLibraryInfo::LibrariesPath);
@@ -824,9 +824,9 @@ void viewProgBarLoad::initMember()
 
 void viewProgBarLoad::loadViewProgBar(QSize size)
 {
-    auto pixWidget =  40;
-    auto num = int(m_pProgBar->width() / (40 + 1)); //number of thumbnails
-    auto tmp = (m_pEngine->duration() * 1000) / num;
+    int pixWidget =  40;
+    int num = int(m_pProgBar->width() / (40 + 1)); //number of thumbnails
+    int tmp = (num == 0) ? 0: (m_pEngine->duration() * 1000) / num;
 
     QList<QPixmap> pmList;
     QList<QPixmap> pmBlackList;
@@ -900,20 +900,8 @@ ToolboxProxy::ToolboxProxy(QWidget *mainWindow, PlayerEngine *proxy)
       m_pEngine(proxy)
 {
     initMember();
-    QProcessEnvironment systemEnv = QProcessEnvironment::systemEnvironment();
-    QString XDG_SESSION_TYPE = systemEnv.value(QStringLiteral("XDG_SESSION_TYPE"));
-    QString WAYLAND_DISPLAY = systemEnv.value(QStringLiteral("WAYLAND_DISPLAY"));
-
-    if (XDG_SESSION_TYPE == QLatin1String("wayland") ||
-            WAYLAND_DISPLAY.contains(QLatin1String("wayland"), Qt::CaseInsensitive)) {
+    if (utils::check_wayland_env()) {
         m_bThumbnailmode = false;
-    }
-
-    bool composited = CompositingManager::get().composited();
-    if (!composited) {
-        setWindowFlags(Qt::FramelessWindowHint | Qt::BypassWindowManagerHint);
-        setContentsMargins(0, 0, 0, 0);
-        setAttribute(Qt::WA_NativeWindow);
     }
 
     m_pPreviewer = new ThumbnailPreview;
@@ -937,15 +925,15 @@ void ToolboxProxy::finishLoadSlot(QSize size)
     }
     m_pViewProgBar->setViewProgBar(m_pEngine, m_pmList, m_pmBlackList);
 
-#if defined(__x86_64__)
-    if (m_pEngine->state() != PlayerEngine::CoreState::Idle) {
-        PlayItemInfo info = m_pEngine->playlist().currentInfo();
-        if (!info.url.isLocalFile()) {
-            return;
+    if(CompositingManager::get().platform() == Platform::X86) {
+        if (m_pEngine->state() != PlayerEngine::CoreState::Idle) {
+            PlayItemInfo info = m_pEngine->playlist().currentInfo();
+            if (!info.url.isLocalFile()) {
+                return;
+            }
+            m_pProgBar_Widget->setCurrentIndex(2);
         }
-        m_pProgBar_Widget->setCurrentIndex(2);
     }
-#endif
 }
 
 void ToolboxProxy::setthumbnailmode()
@@ -954,20 +942,20 @@ void ToolboxProxy::setthumbnailmode()
         return;
     }
 
-#if defined (__x86_64__ )
-    if (Settings::get().isSet(Settings::ShowThumbnailMode)) {
-        m_bThumbnailmode = true;
-        updateThumbnail();
+    if(CompositingManager::get().platform() == Platform::X86) {
+        if (Settings::get().isSet(Settings::ShowThumbnailMode)) {
+            m_bThumbnailmode = true;
+            updateThumbnail();
+        } else {
+            m_bThumbnailmode = false;
+            updateMovieProgress();
+            m_pProgBar_Widget->setCurrentIndex(1);   //恢复进度条模式 by zhuyuliang
+        }
     } else {
+        //no thunbnail progress bar is loaded except amd plantform
         m_bThumbnailmode = false;
         updateMovieProgress();
-        m_pProgBar_Widget->setCurrentIndex(1);   //恢复进度条模式 by zhuyuliang
     }
-#else
-    //no thunbnail progress bar is loaded except amd plantform
-    m_bThumbnailmode = false;
-    updateMovieProgress();
-#endif
 
 }
 
@@ -997,15 +985,7 @@ void ToolboxProxy::setup()
     bot_widget->setBlurRectXRadius(18);
     bot_widget->setBlurRectYRadius(18);
     bot_widget->setRadius(30);
-#if defined (__arrch64__) || defined (__mips__)
-    bot_widget->setBlurEnabled(false);
-#else
-    if (!CompositingManager::get().composited()) {
-        bot_widget->setBlurEnabled(false);
-    } else {
-        bot_widget->setBlurEnabled(true);
-    }
-#endif
+    bot_widget->setBlurEnabled(true);
     bot_widget->setMode(DBlurEffectWidget::GaussianBlur);
     auto type = DGuiApplicationHelper::instance()->themeType();
     THEME_TYPE(type);
@@ -1295,13 +1275,7 @@ void ToolboxProxy::setup()
     updateFullState();
     updateButtonStates();
 
-    if (CompositingManager::get().composited()) {
-        connect(qApp, &QGuiApplication::applicationStateChanged, this, &ToolboxProxy::slotApplicationStateChanged);
-    } else {
-#if !defined (__x86_64__)
-        connect(qApp, &QGuiApplication::applicationStateChanged, this, &ToolboxProxy::slotApplicationStateChanged);
-#endif
-    }
+    connect(qApp, &QGuiApplication::applicationStateChanged, this, &ToolboxProxy::slotApplicationStateChanged);
 }
 
 void ToolboxProxy::updateThumbnail()
@@ -1649,26 +1623,12 @@ void ToolboxProxy::slotVolumeButtonClicked()
      * -1为初始化数值
      * 大于等于零表示为已完成初始化
      */
-    if (CompositingManager::get().composited() && !utils::check_wayland_env()) {
-        if (!m_pVolSlider->isVisible()) {
-            m_pVolSlider->show(m_pMainWindow->width() - m_pVolBtn->width() / 2 - m_pPlayBtn->width() - 40,
-                               m_pMainWindow->height() - TOOLBOX_HEIGHT - 2);
-            m_pVolSlider->popup();
-        } else {
-            m_pVolSlider->popup();
-        }
+    if (!m_pVolSlider->isVisible()) {
+        m_pVolSlider->show(m_pMainWindow->width() - m_pVolBtn->width() / 2 - m_pPlayBtn->width() - 40,
+                           m_pMainWindow->height() - TOOLBOX_HEIGHT - 2);
+        m_pVolSlider->popup();
     } else {
-        if (!m_pVolSlider->isVisible()) {
-            auto pPoint = mapToGlobal(QPoint(this->rect().width(), this->rect().height()));
-            m_pVolSlider->adjustSize();
-
-            pPoint.setX(pPoint.x() - m_pVolBtn->width() / 2 - m_pPlayBtn->width() - 43);
-            pPoint.setY(pPoint.y() - TOOLBOX_HEIGHT - 5);
-            m_pVolSlider->show(pPoint.x(), pPoint.y());
-            m_pVolSlider->popup();
-        } else {
-            m_pVolSlider->popup();
-        }
+        m_pVolSlider->popup();
     }
 }
 
@@ -1710,61 +1670,61 @@ void ToolboxProxy::slotPlayListStateChange(bool isShortcut)
     closeAnyPopup();
     if (m_pPlaylist->state() == PlaylistWidget::State::Opened) {
         //非x86平台播放列表切换不展示动画,故按键状态不做限制
-#ifdef __x86_64__
-        if (isShortcut && m_pListBtn->isChecked()) {
-            m_pListBtn->setIcon(QIcon(":/icons/deepin/builtin/light/checked/episodes_checked.svg"));
+        if(CompositingManager::get().platform() == Platform::X86) {
+            if (isShortcut && m_pListBtn->isChecked()) {
+                m_pListBtn->setIcon(QIcon(":/icons/deepin/builtin/light/checked/episodes_checked.svg"));
+            } else {
+                m_pListBtn->setChecked(true);
+                m_pListBtn->setIcon(QIcon(":/icons/deepin/builtin/light/checked/episodes_checked.svg"));
+            }
+            QRect rcBegin = this->geometry();
+            QRect rcEnd = rcBegin;
+            rcEnd.setY(rcBegin.y() - TOOLBOX_SPACE_HEIGHT - 7);
+            m_bAnimationFinash = false;
+            m_pPaOpen = new QPropertyAnimation(this, "geometry");
+            m_pPaOpen->setEasingCurve(QEasingCurve::Linear);
+            m_pPaOpen->setDuration(POPUP_DURATION) ;
+            m_pPaOpen->setStartValue(rcBegin);
+            m_pPaOpen->setEndValue(rcEnd);
+            m_pPaOpen->start();
+            connect(m_pPaOpen, &QPropertyAnimation::finished, this, &ToolboxProxy::slotProAnimationFinished);
         } else {
+            Q_UNUSED(isShortcut);
+            QRect rcBegin = this->geometry();
+            QRect rcEnd = rcBegin;
+            rcEnd.setY(rcBegin.y() - TOOLBOX_SPACE_HEIGHT - 7);
+            setGeometry(rcEnd);
             m_pListBtn->setChecked(true);
-            m_pListBtn->setIcon(QIcon(":/icons/deepin/builtin/light/checked/episodes_checked.svg"));
         }
-        QRect rcBegin = this->geometry();
-        QRect rcEnd = rcBegin;
-        rcEnd.setY(rcBegin.y() - TOOLBOX_SPACE_HEIGHT - 7);
-        m_bAnimationFinash = false;
-        m_pPaOpen = new QPropertyAnimation(this, "geometry");
-        m_pPaOpen->setEasingCurve(QEasingCurve::Linear);
-        m_pPaOpen->setDuration(POPUP_DURATION) ;
-        m_pPaOpen->setStartValue(rcBegin);
-        m_pPaOpen->setEndValue(rcEnd);
-        m_pPaOpen->start();
-        connect(m_pPaOpen, &QPropertyAnimation::finished, this, &ToolboxProxy::slotProAnimationFinished);
-#else
-        Q_UNUSED(isShortcut);
-        QRect rcBegin = this->geometry();
-        QRect rcEnd = rcBegin;
-        rcEnd.setY(rcBegin.y() - TOOLBOX_SPACE_HEIGHT - 7);
-        setGeometry(rcEnd);
-        m_pListBtn->setChecked(true);
-#endif
     } else {
-#ifdef __x86_64__
-        m_bAnimationFinash = false;
+        if(CompositingManager::get().platform() == Platform::X86) {
+            m_bAnimationFinash = false;
 
-        if (isShortcut && !m_pListBtn->isChecked()) {
-            m_pListBtn->setIcon(QIcon::fromTheme("dcc_episodes"));
+            if (isShortcut && !m_pListBtn->isChecked()) {
+                m_pListBtn->setIcon(QIcon::fromTheme("dcc_episodes"));
+            } else {
+                m_pListBtn->setChecked(false);
+                m_pListBtn->setIcon(QIcon::fromTheme("dcc_episodes"));
+            }
+
+            QRect rcBegin = this->geometry();
+            QRect rcEnd = rcBegin;
+            rcEnd.setY(rcBegin.y() + TOOLBOX_SPACE_HEIGHT + 7);
+            m_pPaClose = new QPropertyAnimation(this, "geometry");
+            m_pPaClose->setEasingCurve(QEasingCurve::Linear);
+            m_pPaClose->setDuration(POPUP_DURATION);
+            m_pPaClose->setStartValue(rcBegin);
+            m_pPaClose->setEndValue(rcEnd);
+            m_pPaClose->start();
+            connect(m_pPaClose, &QPropertyAnimation::finished, this, &ToolboxProxy::slotProAnimationFinished);
         } else {
+            Q_UNUSED(isShortcut);
+            QRect rcBegin = this->geometry();
+            QRect rcEnd = rcBegin;
+            rcEnd.setY(rcBegin.y() + TOOLBOX_SPACE_HEIGHT + 7);
+            setGeometry(rcEnd);
             m_pListBtn->setChecked(false);
-            m_pListBtn->setIcon(QIcon::fromTheme("dcc_episodes"));
         }
-
-        QRect rcBegin = this->geometry();
-        QRect rcEnd = rcBegin;
-        rcEnd.setY(rcBegin.y() + TOOLBOX_SPACE_HEIGHT + 7);
-        m_pPaClose = new QPropertyAnimation(this, "geometry");
-        m_pPaClose->setEasingCurve(QEasingCurve::Linear);
-        m_pPaClose->setDuration(POPUP_DURATION);
-        m_pPaClose->setStartValue(rcBegin);
-        m_pPaClose->setEndValue(rcEnd);
-        m_pPaClose->start();
-        connect(m_pPaClose, &QPropertyAnimation::finished, this, &ToolboxProxy::slotProAnimationFinished);
-#else
-        Q_UNUSED(isShortcut);
-        QRect rcBegin = this->geometry();
-        QRect rcEnd = rcBegin;
-        rcEnd.setY(rcBegin.y() + TOOLBOX_SPACE_HEIGHT + 7);
-        setGeometry(rcEnd);
-        m_pListBtn->setChecked(false);
-#endif
     }
 }
 
@@ -2304,43 +2264,23 @@ void ToolboxProxy::buttonLeave()
 
 void ToolboxProxy::showEvent(QShowEvent *event)
 {
-    updateTimeLabel();
-
     DFloatingWidget::showEvent(event);
 }
 
 void ToolboxProxy::paintEvent(QPaintEvent *event)
 {
-#if defined (__mips__) || defined (__aarch64__)
-    QPainter painter(this);
-
-    setFixedWidth(m_pMainWindow->width());
-    move(0, m_pMainWindow->height() - this->height());
-    if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
-        painter.fillRect(rect(), QBrush(QColor(31, 31, 31)));
-    } else {
-        painter.fillRect(rect(), this->palette().background());
-    }
-#else
-    if (!CompositingManager::get().composited()) {
+    if(CompositingManager::get().platform() != X86) {
         QPainter painter(this);
-
-        setFixedWidth(m_pMainWindow->width());
-        //使偏移位置与初始化偏移的位置相同
-        int widthOffset = 0;
-#ifdef __x86_64
-        widthOffset = 5;
-#endif
-        move(widthOffset, m_pMainWindow->height() - this->height());
-        if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
-            painter.fillRect(rect(), QBrush(QColor(31, 31, 31)));
-        } else {
-            painter.fillRect(rect(), this->palette().background());
-        }
+            setFixedWidth(m_pMainWindow->width());
+            move(0, m_pMainWindow->height() - this->height());
+            if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType()) {
+                painter.fillRect(rect(), QBrush(QColor(31, 31, 31)));
+            } else {
+                painter.fillRect(rect(), this->palette().background());
+            }
     } else {
         DFloatingWidget::paintEvent(event);
     }
-#endif
 }
 
 void ToolboxProxy::resizeEvent(QResizeEvent *event)
@@ -2348,39 +2288,14 @@ void ToolboxProxy::resizeEvent(QResizeEvent *event)
     if (event->oldSize().width() != event->size().width()) {
         if (m_pEngine->state() != PlayerEngine::CoreState::Idle) {
             if (m_bThumbnailmode) {  //如果进度条为胶片模式，重新加载缩略图并显示
-#if defined (__x86_64__ )
-                updateThumbnail();
-#endif
+                if(CompositingManager::get().platform() == Platform::X86) {
+                    updateThumbnail();
+                }
                 updateMovieProgress();
             }
             m_pProgBar_Widget->setCurrentIndex(1);
         }
     }
-#ifndef __sw_64__
-    if (!utils::check_wayland_env()) {
-        if (m_bAnimationFinash ==  false && m_pPaOpen != nullptr && m_pPaClose != nullptr) {
-            m_pPlaylist->endAnimation();
-            m_pPaOpen->setDuration(0);
-            m_pPaClose->setDuration(0);
-        }
-        //使偏移位置与初始化偏移的位置相同
-        int widthOffset = 0;
-#ifdef __x86_64
-        widthOffset = 5;
-#endif
-        if (m_pPlaylist && m_pPlaylist->state() == PlaylistWidget::State::Opened && m_bAnimationFinash == true) {
-            QRect r(widthOffset, m_pMainWindow->height() - (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT + 7) - m_pMainWindow->rect().top() - widthOffset,
-                    m_pMainWindow->rect().width() - 10, (TOOLBOX_SPACE_HEIGHT + TOOLBOX_HEIGHT + 7));
-            this->setGeometry(r);
-        } else if (m_pPlaylist && m_pPlaylist->state() == PlaylistWidget::State::Closed && m_bAnimationFinash == true) {
-            QRect r(widthOffset, m_pMainWindow->height() - TOOLBOX_HEIGHT - m_pMainWindow->rect().top() - widthOffset,
-                    m_pMainWindow->rect().width() - 10, TOOLBOX_HEIGHT);
-            this->setGeometry(r);
-        }
-
-        updateTimeLabel();
-    }
-#endif
 
     DFloatingWidget::resizeEvent(event);
 }
@@ -2408,34 +2323,20 @@ bool ToolboxProxy::eventFilter(QObject *obj, QEvent *ev)
         }
     }
 
-#ifdef __x86_64
-    if (obj == m_pListBtn) {
-        if (ev->type() == QEvent::MouseButtonRelease) {
-            if (m_pPlaylist->state() == PlaylistWidget::State::Opened && m_pListBtn->isChecked()) {
-                m_pListBtn->setChecked(!m_pListBtn->isChecked());
-            }
-            if (m_pPlaylist->state() == PlaylistWidget::State::Closed && !m_pListBtn->isChecked()) {
-                m_pListBtn->setChecked(!m_pListBtn->isChecked());
+    if(CompositingManager::get().platform() == Platform::X86) {
+        if (obj == m_pListBtn) {
+            if (ev->type() == QEvent::MouseButtonRelease) {
+                if (m_pPlaylist->state() == PlaylistWidget::State::Opened && m_pListBtn->isChecked()) {
+                    m_pListBtn->setChecked(!m_pListBtn->isChecked());
+                }
+                if (m_pPlaylist->state() == PlaylistWidget::State::Closed && !m_pListBtn->isChecked()) {
+                    m_pListBtn->setChecked(!m_pListBtn->isChecked());
+                }
             }
         }
     }
-#endif
 
     return QObject::eventFilter(obj, ev);
-}
-/**
- * @brief updateTimeLabel 界面显示或大小变化时更新控件显示状态
- */
-void ToolboxProxy::updateTimeLabel()
-{
-#ifndef __sw_64__
-    if (!utils::check_wayland_env()) {
-        // to keep left and right of the same width. which makes play button centered
-        m_pListBtn->setVisible(width() > 300);
-        m_pTimeLabel->setVisible(width() > 450);
-        m_pTimeLabelend->setVisible(width() > 450);
-    }
-#endif
 }
 
 void ToolboxProxy::updateToolTipTheme(ToolButton *btn)

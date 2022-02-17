@@ -43,6 +43,7 @@
 
 #include "animationlabel.h"
 #include "mainwindow.h"
+#include "utils.h"
 
 #define ANIMATION_TIME 250  ///动画时长
 #define DELAY_TIME 2000 ///显示动画与隐藏动画间隔
@@ -51,29 +52,14 @@ using namespace dmr;
  * @brief AnimationLabel构造函数
  * @param parent 父窗口
  * @param pMainWindow 主窗口
- * @param bComposited 是否为opengl渲染
  */
-AnimationLabel::AnimationLabel(QWidget *parent, QWidget *pMainWindow, bool bComposited)
+AnimationLabel::AnimationLabel(QWidget *parent, QWidget *pMainWindow)
     : QFrame(parent)
 {
-    initMember(pMainWindow, bComposited);
+    initMember(pMainWindow);
     setAttribute(Qt::WA_TransparentForMouseEvents);
-    if (!bComposited) {
-        setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
-        setAttribute(Qt::WA_TranslucentBackground, true);
-        hide();
-    }
 
-#ifdef __x86_64__
-    if(!CompositingManager::get().composited())
-        resize(100, 100);
-#else
-    if(m_bIsWM){
-        resize(200, 200);
-    } else {
-        resize(100, 100);
-    }
-#endif
+    resize(200, 200);
 }
 
 /**
@@ -83,13 +69,6 @@ void AnimationLabel::pauseAnimation()
 {
     if (m_pPauseAnimationGroup && m_pPauseAnimationGroup->state() == QAbstractAnimation::Running)
         m_pPauseAnimationGroup->stop();
-
-#ifndef __x86_64__
-    if (m_bIsWM)
-        setFixedSize(200, 200);
-    else
-        setFixedSize(100, 100);
-#endif
     m_pPlayAnimationGroup->start();
     if(!isVisible()) {
         show();
@@ -103,13 +82,6 @@ void AnimationLabel::playAnimation()
 {
     if (m_pPlayAnimationGroup && m_pPlayAnimationGroup->state() == QAbstractAnimation::Running)
         m_pPlayAnimationGroup->stop();
-
-#ifndef __x86_64__
-    if (m_bIsWM)
-        setFixedSize(200, 200);
-    else
-        setFixedSize(100, 100);
-#endif
     m_pPauseAnimationGroup->start();
     if(!isVisible()) {
         show();
@@ -124,9 +96,8 @@ void AnimationLabel::setWM(bool isWM)
 /**
  * @brief 初始化成员变量
  * @param mainwindow 主窗口指针
- * @param composited 是否为opengl渲染
  */
-void AnimationLabel::initMember(QWidget *pMainwindow, bool bComposited)
+void AnimationLabel::initMember(QWidget *pMainwindow)
 {
     initPlayAnimation();
     initPauseAnimation();
@@ -158,10 +129,6 @@ void AnimationLabel::initPauseAnimation()
     m_pPauseHideAnimation->setEndValue(nHideAnimationNum);
     connect(m_pPauseHideAnimation, &QPropertyAnimation::valueChanged, this,
             &AnimationLabel::onPauseAnimationChanged);
-    if(!CompositingManager::get().composited()) {//MPV绑定wid方式动画停止后隐藏
-        connect(m_pPauseHideAnimation, &QSequentialAnimationGroup::finished, this, &AnimationLabel::onHideAnimation);
-        connect(m_pPlayAnimationGroup, &QSequentialAnimationGroup::finished, this, &AnimationLabel::onHideAnimation);
-    }
 
     m_pPauseAnimationGroup->addAnimation(m_pPauseShowAnimation);
     m_pPauseAnimationGroup->addPause(DELAY_TIME);
@@ -199,38 +166,20 @@ void AnimationLabel::initPlayAnimation()
 }
 
 /**
- * @brief 设置此窗口在主窗口的位置
- * @param pMainWindow 主窗口
- */
-void AnimationLabel::setGeometryByMainWindow(QWidget *pMainWindow)
-{
-    if(pMainWindow) {
-        QRect rect = pMainWindow->rect();
-        int nWidth = width(), nHeight = height();
-        QPoint pt = pMainWindow->mapToGlobal(rect.center())- QPoint(nWidth/2, nHeight/2);
-        setGeometry(pt.x(), pt.y(), nWidth, nHeight);
-    }
-}
-
-/**
  * @brief 具体实现播放动画的每一帧图像显示
  * @param 当前显示图像的序号
  */
 void AnimationLabel::onPlayAnimationChanged(const QVariant &value)
 {
 #if defined (__aarch64__) || defined (__mips__)
-    if (m_bIsWM) {
+    if (m_bIsWM || utils::check_wayland_env()) {
         m_sFileName = QString(":/resources/icons/stop/%1.png").arg(value.toInt());
     } else {
         m_sFileName = QString(":/resources/icons/stop_new/%1.png").arg(value.toInt());
     }
 
 #else
-    if(!CompositingManager::get().composited()) {
-        m_sFileName = QString(":/resources/icons/stop_new/%1.png").arg(value.toInt());
-    } else {
-        m_sFileName = QString(":/resources/icons/stop/%1.png").arg(value.toInt());
-}
+    m_sFileName = QString(":/resources/icons/stop/%1.png").arg(value.toInt());
 #endif
     m_pixmap = QPixmap(m_sFileName);
     update();
@@ -243,18 +192,14 @@ void AnimationLabel::onPlayAnimationChanged(const QVariant &value)
 void AnimationLabel::onPauseAnimationChanged(const QVariant &value)
 {
 #if defined (__aarch64__) || defined (__mips__)
-    if (m_bIsWM) {
+    if (m_bIsWM || utils::check_wayland_env()) {
         m_sFileName = QString(":/resources/icons/start/%1.png").arg(value.toInt());
     } else {
         m_sFileName = QString(":/resources/icons/start_new/%1.png").arg(value.toInt());
     }
 
 #else
-    if(!CompositingManager::get().composited()) {
-        m_sFileName = QString(":/resources/icons/start_new/%1.png").arg(value.toInt());
-    } else {
-        m_sFileName = QString(":/resources/icons/start/%1.png").arg(value.toInt());
-    }
+    m_sFileName = QString(":/resources/icons/start/%1.png").arg(value.toInt());
 #endif
     m_pixmap = QPixmap(m_sFileName);
     update();
@@ -287,9 +232,6 @@ void AnimationLabel::paintEvent(QPaintEvent *e)
  */
 void AnimationLabel::showEvent(QShowEvent *e)
 {
-    if(!CompositingManager::get().composited()) { //MPV绑定wid方式通过mainwindow获取显示坐标
-        setGeometryByMainWindow(m_pMainWindow);
-    }
     QFrame::showEvent(e);
 }
 
@@ -299,26 +241,6 @@ void AnimationLabel::showEvent(QShowEvent *e)
  */
 void AnimationLabel::moveEvent(QMoveEvent *e)
 {
-    if(!CompositingManager::get().composited()) {//MPV绑定wid方式通过mainwindow获取显示坐标
-        setGeometryByMainWindow(m_pMainWindow);
-    }
     return QFrame::moveEvent(e);
 }
 
-/**
- * @brief 重载鼠标释放事件函数
- * @param event:qt鼠标事件
- */
-//修改为鼠标事件穿透，暂时注释掉鼠标事件重载
-//void AnimationLabel::mouseReleaseEvent(QMouseEvent *ev)
-//{
-//    if(!m_bComposited)
-//    {
-//        if (ev->button() == Qt::LeftButton) {
-//            if(m_pMainWindow){//鼠标左键释放时暂停与恢复
-//                (static_cast<MainWindow *>(m_pMainWindow))->requestAction(ActionFactory::TogglePause);
-//            }
-//        }
-//    }
-//    return QWidget::mouseReleaseEvent(ev);
-//}

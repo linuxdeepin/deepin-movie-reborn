@@ -31,7 +31,9 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 include_directories(../../src)
 include_directories(../../src/common)
+include_directories(../../src/common/platform)
 include_directories(../../src/widgets)
+include_directories(../../src/widgets/platform)
 include_directories(../../src/libdmr)
 include_directories(../../src/vendor)
 include_directories(../../src/backends)
@@ -42,7 +44,9 @@ include_directories(../../src/backends/mpv)
 # 定义 source 文件
 FILE (GLOB allSource
     ../../src/common/*.cpp
+    ../../src/common/platform/*.cpp
     ../../src/widgets/*.cpp
+    ../../src/widgets/platform/*.cpp
     ../../src/libdmr/*.cpp
     ../../src/vendor/*.cpp
     ../../src/backends/mpv/*.cpp

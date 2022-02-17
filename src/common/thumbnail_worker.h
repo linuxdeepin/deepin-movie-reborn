@@ -32,6 +32,9 @@
 
 #include <QtWidgets>
 #include <libffmpegthumbnailer/videothumbnailerc.h>
+#include <atomic>
+#include <mutex>
+
 
 typedef video_thumbnailer *(*mvideo_thumbnailer)();
 typedef void (*mvideo_thumbnailer_destroy)(video_thumbnailer *thumbnailer);
@@ -89,11 +92,15 @@ private:
     ThumbnailWorker();
     void initThumb();
     void run() override;
-#ifdef __mips__
     void runSingle(QPair<QUrl, int> w);
-#endif
     QPixmap genThumb(const QUrl &url, int secs);
     QString libPath(const QString &strlib);
+
+private:
+    static std::atomic<ThumbnailWorker *> m_instance;
+    static QMutex m_instLock;
+    static QMutex m_thumbLock;
+    static QWaitCondition m_cond;
 };
 
 }

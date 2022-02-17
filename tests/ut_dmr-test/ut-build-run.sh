@@ -1,6 +1,9 @@
 #!/bin/bash
 executable=ut_dmr-test #可执行程序的文件名
 
+platform=`uname -m`
+echo ${platform}
+
 cd ./tests/ut_dmr-test/
 
 mkdir -p html

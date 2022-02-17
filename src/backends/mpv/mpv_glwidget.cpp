@@ -83,7 +83,9 @@ void main() {
 )";
 
 static const char* fs_blend_wayland = R"(
+#ifdef GL_ES
 precision mediump float;
+#endif
 varying vec2 texCoord;
 
 uniform sampler2D movie;
@@ -121,7 +123,9 @@ void main() {
 )";
 
 static const char* fs_blend_corner_wayland = R"(
+#ifdef GL_ES
 precision mediump float;
+#endif
 varying vec2 maskCoord;
 varying vec2 texCoord;
 
@@ -158,7 +162,9 @@ void main() {
 )";
 
 static const char* fs_code_wayland = R"(
+#ifdef GL_ES
 precision mediump float;
+#endif
 varying vec2 texCoord;
 
 uniform sampler2D sampler;
@@ -183,7 +189,9 @@ void main() {
 )";
 
 static const char* fs_corner_code_wayland = R"(
+#ifdef GL_ES
 precision mediump float;
+#endif
 varying vec2 texCoord;
 
 uniform sampler2D corner;

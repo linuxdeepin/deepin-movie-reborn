@@ -32,23 +32,20 @@
  * files in the program, then also delete it here.
  */
 #include "thumbnail_worker.h"
-#include <atomic>
-#include <mutex>
 #include "player_engine.h"
 #include <QLibrary>
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <dlfcn.h>
+#include "compositing_manager.h"
 
 #define SIZE_THRESHOLD (10 * 1<<20)
 
 namespace dmr {
-static std::atomic<ThumbnailWorker *> _instance { nullptr };
-static QMutex _instLock;
-
-static QMutex _thumbLock;
-static QWaitCondition cond;
+std::atomic<ThumbnailWorker *> ThumbnailWorker::m_instance(nullptr);
+QMutex ThumbnailWorker::m_instLock;
+QMutex ThumbnailWorker::m_thumbLock;
+QWaitCondition ThumbnailWorker::m_cond;
 
 ThumbnailWorker::~ThumbnailWorker()
 {
@@ -60,19 +57,19 @@ ThumbnailWorker::~ThumbnailWorker()
 
 ThumbnailWorker &ThumbnailWorker::get()
 {
-    if (_instance == nullptr) {
-        QMutexLocker lock(&_instLock);
-        _instance = new ThumbnailWorker;
-#ifndef __mips__
-        (*_instance).start();
-#endif
+    if (m_instance == nullptr) {
+        QMutexLocker lock(&m_instLock);
+        m_instance = new ThumbnailWorker;
+        if(CompositingManager::get().platform() != Platform::Mips) {
+            (*m_instance).start();
+        }
     }
-    return *_instance;
+    return *m_instance;
 }
 
 bool ThumbnailWorker::isThumbGenerated(const QUrl &url, int secs)
 {
-    QMutexLocker lock(&_thumbLock);
+    QMutexLocker lock(&m_thumbLock);
     if (!_cache.contains(url)) return false;
 
     const auto &l = _cache[url];
@@ -81,7 +78,7 @@ bool ThumbnailWorker::isThumbGenerated(const QUrl &url, int secs)
 
 QPixmap ThumbnailWorker::getThumb(const QUrl &url, int secs)
 {
-    QMutexLocker lock(&_thumbLock);
+    QMutexLocker lock(&m_thumbLock);
     QPixmap pm;
 
     if (_cache.contains(url)) {
@@ -98,15 +95,15 @@ void ThumbnailWorker::setPlayerEngine(PlayerEngine *pPlayerEngline)
 
 void ThumbnailWorker::requestThumb(const QUrl &url, int secs)
 {
-#ifndef __mips__
-    if (_thumbLock.tryLock()) {
-        _wq.push_front(qMakePair(url, secs));
-        cond.wakeOne();
-        _thumbLock.unlock();
+    if(CompositingManager::get().platform() != Platform::Mips) {
+        if (m_thumbLock.tryLock()) {
+            _wq.push_front(qMakePair(url, secs));
+            m_cond.wakeOne();
+            m_thumbLock.unlock();
+        }
+    } else {
+        runSingle(qMakePair(url, secs));
     }
-#else
-    runSingle(qMakePair(url, secs));
-#endif
 }
 
 ThumbnailWorker::ThumbnailWorker()
@@ -189,9 +186,9 @@ void ThumbnailWorker::run()
 
         QPair<QUrl, int> w;
         {
-            QMutexLocker lock(&_thumbLock);
+            QMutexLocker lock(&m_thumbLock);
             while (_wq.isEmpty() && !_quit.load()) {
-                cond.wait(lock.mutex(), 40);
+                m_cond.wait(lock.mutex(), 40);
             }
 
             if (!_wq.isEmpty()) {
@@ -203,7 +200,7 @@ void ThumbnailWorker::run()
         if (_quit.load()) break;
 
         {
-            QMutexLocker lock(&_thumbLock);
+            QMutexLocker lock(&m_thumbLock);
             //TODO: optimize: need a lru map
             if (_cacheSize > SIZE_THRESHOLD) {
                 qInfo() << "thumb cache size exceeds maximum, clean up";
@@ -215,7 +212,7 @@ void ThumbnailWorker::run()
         if (!isThumbGenerated(w.first, w.second)) {
             auto pm = genThumb(w.first, w.second);
 
-            QMutexLocker lock(&_thumbLock);
+            QMutexLocker lock(&m_thumbLock);
             _cache[w.first].insert(w.second, pm);
             _cacheSize += pm.width() * pm.height() * (pm.hasAlpha() ? 4 : 3);
 
@@ -230,7 +227,6 @@ void ThumbnailWorker::run()
     _wq.clear();
 }
 
-#ifdef __mips__
 void ThumbnailWorker::runSingle(QPair<QUrl, int> w)
 {
     if (_cacheSize > SIZE_THRESHOLD) {
@@ -242,7 +238,7 @@ void ThumbnailWorker::runSingle(QPair<QUrl, int> w)
     if (!isThumbGenerated(w.first, w.second)) {
         auto pm = genThumb(w.first, w.second);
 
-        QMutexLocker lock(&_thumbLock);
+        QMutexLocker lock(&m_thumbLock);
         _cache[w.first].insert(w.second, pm);
         _cacheSize += pm.width() * pm.height() * (pm.hasAlpha() ? 4 : 3);
 
@@ -253,6 +249,6 @@ void ThumbnailWorker::runSingle(QPair<QUrl, int> w)
 
     emit thumbGenerated(w.first, w.second);
 }
-#endif
 }
+
 
