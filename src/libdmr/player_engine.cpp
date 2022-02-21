@@ -200,7 +200,7 @@ void PlayerEngine::onBackendStateChanged()
 {
     if (!_current) return;
 
-    auto old = _state;
+    CoreState old = _state;
     switch (_current->state()) {
     case Backend::PlayState::Playing:
         _state = CoreState::Playing;
@@ -208,7 +208,8 @@ void PlayerEngine::onBackendStateChanged()
             m_bAudio = isAudioFile(_playlist->currentInfo().mi.filePath);
         }
         //playing . emit thumbnail progress mode signal with setting file
-        emit siginitthumbnailseting();
+        if (old == CoreState::Idle)
+            emit siginitthumbnailseting();
         break;
     case Backend::PlayState::Paused:
         _state = CoreState::Paused;

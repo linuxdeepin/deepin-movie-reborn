@@ -377,8 +377,7 @@ mpv_handle *MpvProxy::mpv_init()
         QFileInfo fi("/dev/mwv206_0");
         if (fi.exists()) { //2.1.1景嘉微
             QDir sdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv206"); //判断是否安装核外驱动
-            if(sdir.exists())
-            {
+            if(sdir.exists()) {
                  my_set_property(m_handle, "hwdec", "vdpau");
             } else {
                  my_set_property(m_handle, "hwdec", "auto");
@@ -411,7 +410,7 @@ mpv_handle *MpvProxy::mpv_init()
         my_set_property(m_handle, "vo", "vdpau,gpu,x11");
         m_sInitVo = "vdpau,gpu,x11";
 #elif defined (__aarch64__)
-        if (!fi.exists()) { //2.1.1景嘉微 
+        if (!fi.exists()) { //2.1.1景嘉微
             my_set_property(m_handle, "vo", "gpu,xv,x11");
             m_sInitVo = "gpu,xv,x11";
         }
