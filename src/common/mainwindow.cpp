@@ -1495,7 +1495,9 @@ void MainWindow::loadPlayList()
     m_pEngine->getplaylist()->loadPlaylist();
     m_pToolbox->initThumbThread();
 
-    play(m_listOpenFiles);
+    if (!m_listOpenFiles.isEmpty()) {
+        play(m_listOpenFiles);
+    }
 }
 
 void MainWindow::setOpenFiles(QStringList &list)
