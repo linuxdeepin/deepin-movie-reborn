@@ -1806,6 +1806,13 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
                 QVariant panscan = m_pEngine->getBackendProperty("panscan");
                 if (panscan.isNull() && Settings::get().isSet(Settings::ResumeFromLast)) {
                     int restore_pos = Settings::get().internalOption("playlist_pos").toInt();
+                    //Playback when the playlist is not loaded, this will result in the 
+                    //last exit item without playing, because the playlist has not been 
+                    //loaded into that file, so adding a thread waiting here.  
+                    //TODO(xxxxp):It will cause direct opening of the cartoon? May need to optimize Model View
+                    while (m_pEngine->getplaylist()->getThumanbilRunning()) {
+                        QCoreApplication::processEvents();
+                    }
                     restore_pos = qMax(qMin(restore_pos, m_pEngine->playlist().count() - 1), 0);
                     requestAction(ActionFactory::ActionKind::GotoPlaylistSelected, false, {restore_pos});
                 } else {
