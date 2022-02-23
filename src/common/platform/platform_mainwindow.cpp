@@ -1783,10 +1783,8 @@ void Platform_MainWindow::requestAction(ActionFactory::ActionKind actionKind, bo
         QFileInfo fi(name);
         if (fi.isDir() && fi.exists()) {
             Platform_Settings::get().setGeneralOption("last_open_path", fi.path());
-
-            m_pEngine->blockSignals(true);
+          
             play({name});
-            m_pEngine->blockSignals(false);
         }
         break;
     }
@@ -2702,6 +2700,8 @@ DSettingsDialog *Platform_MainWindow::initSettings()
 void Platform_MainWindow::play(const QList<QString> &listFiles)
 {
     QList<QUrl> lstValid;
+    QList<QString> lstDir;
+    QList<QString> lstFile;
 
     if (listFiles.isEmpty())
         m_pEngine->play();
@@ -2722,7 +2722,19 @@ void Platform_MainWindow::play(const QList<QString> &listFiles)
         return;
     }
 
-    lstValid = m_pEngine->addPlayFiles(listFiles);  // 先添加到播放列表再播放
+    for (QString strFile : listFiles) {
+        if(QFileInfo(QUrl(strFile).toString()).isDir()){
+            lstDir << strFile;
+        } else {
+            lstFile << strFile;
+        }
+    }
+
+    lstValid = m_pEngine->addPlayFiles(lstFile);  // 先添加到播放列表再播放
+
+    m_pEngine->blockSignals(true);
+    lstValid << m_pEngine->addPlayFiles(lstDir);
+    m_pEngine->blockSignals(false);
 
     if(lstValid.count() > 0) {
         if (!isHidden()) {
@@ -4057,17 +4069,12 @@ void Platform_MainWindow::dropEvent(QDropEvent *pEvent)
     if (!pEvent->mimeData()->hasUrls()) {
         return;
     }
-    QList<QString> lstUrl;
+
     QList<QString> lstFile;
     QList<QUrl> urls = pEvent->mimeData()->urls();
 
-    for (QUrl strUrl : urls)
-    {
-        if(QFileInfo(strUrl.toLocalFile()).isDir()){
-            lstUrl << strUrl.toString();
-        } else {
-            lstFile << strUrl.toString();
-        }
+    for (QUrl strUrl : urls) {
+        lstFile << strUrl.path();
     }
 
     if (urls.count() == 1) {
@@ -4091,10 +4098,6 @@ void Platform_MainWindow::dropEvent(QDropEvent *pEvent)
     }
 
     play(lstFile);
-
-    m_pEngine->blockSignals(true);      // 打开文件夹时不提示
-    play(lstUrl);
-    m_pEngine->blockSignals(false);
 
     pEvent->acceptProposedAction();
 }
