@@ -4,6 +4,7 @@ set(CMAKE_AUTOMOC ON)
 set(CMD_NAME dmr)
 
 add_definitions(-D_LIBDMR_)
+remove_definitions(-D_MOVIE_USE_)
 
 pkg_check_modules(FFTHUMB REQUIRED libffmpegthumbnailer)
 pkg_check_modules(AV REQUIRED IMPORTED_TARGET libavformat libavutil libavcodec)
