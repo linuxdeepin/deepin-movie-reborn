@@ -1331,16 +1331,9 @@ void MainWindow::reflectActionToUI(ActionFactory::ActionKind actionKind)
         break;
     }
 
-    //迷你模式下判断是否全屏，恢复菜单状态 by zhuyuliang
     case ActionFactory::ActionKind::ToggleMiniMode: {
         listActs = ActionFactory::get().findActionsByKind(actionKind);
         auto p = listActs[0];
-
-        QAction *pAct = ActionFactory::get().findActionsByKind(ActionFactory::ActionKind::ToggleFullscreen)[0];
-        bool bFlag = pAct->isChecked();
-        if (bFlag) {
-            pAct->setChecked(false);
-        }
 
         p->setEnabled(false);
         p->setChecked(!p->isChecked());
@@ -1860,21 +1853,6 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
     }
 
     case ActionFactory::ActionKind::ToggleMiniMode: {
-        //Когда вы быстро переключаете мини-режим, переключение полноэкранной
-        //задержки не до тех пор, пока есть случай, когда размер окна ненормальный.
-        //
-        //Обратите внимание, что это приведет к переключению на мини-режим,
-        //быстро нажмите кнопку Mini Mode, не снимая мини-режима
-        //Когда возникает эта проблема, вы можете попытаться сократить
-        //время задержки (пожалуйста, синхронизируйте мини-режим и полную задержку операции экрана)
-        //Но будьте осторожны, эта операция может вызвать другие проблемы.
-        //Поддерживается xxxxp.
-        if (QDateTime::currentMSecsSinceEpoch() - m_nFullscreenTime < 600 || m_bMouseMoved) {
-            return;
-        } else {
-            m_nFullscreenTime = QDateTime::currentMSecsSinceEpoch();
-        }
-
         int nDelayTime = 0;
         if (m_pPlaylist->state() == PlaylistWidget::Opened) {
             requestAction(ActionFactory::TogglePlaylist);
@@ -2007,13 +1985,6 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
         if (!bFromUI) {
             reflectActionToUI(actionKind);
         }
-//        if (isFullScreen()) {
-//            m_pAnimationlable->move(QPoint(QApplication::desktop()->availableGeometry().width() / 2 - m_pAnimationlable->width() / 2
-//                                           , QApplication::desktop()->availableGeometry().height() / 2 - m_pAnimationlable->height() / 2));
-//        } else {
-//            m_pAnimationlable->move(QPoint((width() - m_pAnimationlable->width()) / 2,
-//                                           (height() - m_pAnimationlable->height()) / 2));
-//        }
 
         activateWindow();
         //Set focus back to main window after full screen, Prevent focus from going to the toolbar
@@ -3848,6 +3819,9 @@ void MainWindow::paintEvent(QPaintEvent *pEvent)
 
 void MainWindow::toggleUIMode()
 {
+    //迷你模式关闭动画及控件
+    m_pAnimationlable->hide();
+    m_pToolbox->closeAnyPopup();
     //判断窗口是否靠边停靠（靠边停靠不支持MINI模式）thx
     QRect deskrect = QApplication::desktop()->availableGeometry();
     QPoint windowPos = pos();
@@ -3932,8 +3906,15 @@ void MainWindow::toggleUIMode()
 
         if (isFullScreen()) {
             m_nStateBeforeMiniMode |= SBEM_Fullscreen;
-            requestAction(ActionFactory::ToggleFullscreen);
+//            requestAction(ActionFactory::ToggleFullscreen);
             this->setWindowState(Qt::WindowNoState);
+            setFocus();
+            if (m_pFullScreenTimeLable) {
+                m_pFullScreenTimeLable->close();
+            }
+            if (utils::check_wayland_env()) {
+                m_pToolbox->updateFullState();
+            }
         } else if (isMaximized()) {
             m_nStateBeforeMiniMode |= SBEM_Maximized;
             showNormal();
@@ -3990,7 +3971,21 @@ void MainWindow::toggleUIMode()
         if (m_nStateBeforeMiniMode & SBEM_Maximized) {
             showMaximized();
         } else if (m_nStateBeforeMiniMode & SBEM_Fullscreen) {
-            requestAction(ActionFactory::ToggleFullscreen);
+//            requestAction(ActionFactory::ToggleFullscreen);
+            setWindowState(windowState() | Qt::WindowFullScreen);
+            if (CompositingManager::get().platform() == Platform::Arm64 || CompositingManager::get().platform() == Platform::Alpha) {
+                if (m_pEngine->state() != PlayerEngine::CoreState::Idle) {
+                    int pixelsWidth = m_pToolbox->getfullscreentimeLabel()->width() + m_pToolbox->getfullscreentimeLabelend()->width();
+                    QRect deskRect = QApplication::desktop()->availableGeometry();
+                    pixelsWidth = qMax(117, pixelsWidth);
+                    m_pFullScreenTimeLable->setGeometry(deskRect.width() - pixelsWidth - 60, 40, pixelsWidth + 60, 36);
+                    m_pFullScreenTimeLable->show();
+                }
+            }
+            setFocus();
+            if (utils::check_wayland_env()) {
+                m_pToolbox->updateFullState();
+            }
         } else {
             if (m_pToolbox->listBtn()->isChecked()) {
                 m_pToolbox->listBtn()->setChecked(false);
