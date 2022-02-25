@@ -1705,7 +1705,7 @@ bool Platform_MainWindow::isActionAllowed(ActionFactory::ActionKind actionKind, 
                 bRet = bRet && m_pEngine->playlist().count();
                 if (bRet) {
                     auto pif = m_pEngine->playlist().currentInfo();
-                    bRet = bRet && pif.loaded && pif.url.isLocalFile();
+                    bRet = bRet && pif.loaded;
                 }
             }
             break;
