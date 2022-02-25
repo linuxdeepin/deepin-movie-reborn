@@ -1739,6 +1739,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
 #ifndef USE_TEST
         DFileDialog fileDialog;
         QStringList filenames;
+        fileDialog.setParent(this);
         fileDialog.setNameFilters({tr("All (*)"), QString("Video (%1)").arg(m_pEngine->video_filetypes.join(" ")),
                                    QString("Audio (%1)").arg(m_pEngine->audio_filetypes.join(" "))});
         fileDialog.selectNameFilter(QString("Video (%1)").arg(m_pEngine->video_filetypes.join(" ")));
