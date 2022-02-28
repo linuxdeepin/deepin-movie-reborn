@@ -794,12 +794,6 @@ void MpvProxy::processPropertyChange(mpv_event_property *pEvent)
     } else if (sName == "aid") {
         emit aidChanged();
     } else if (sName == "sid") {
-        if (m_bExternalSubJustLoaded) {
-#ifndef _LIBDMR_
-            MovieConfiguration::get().updateUrl(this->_file, ConfigKnownKey::SubId, sid());
-#endif
-            m_bExternalSubJustLoaded = false;
-        }
         emit sidChanged();
     } else if (sName == "mute") {
         emit muteChanged();
@@ -838,9 +832,10 @@ bool MpvProxy::loadSubtitle(const QFileInfo &fileInfo)
         return false;
     }
 
+    updatePlayingMovieInfo();
+
     // by settings this flag, we can match the corresponding sid change and save it
     // in the movie database
-    m_bExternalSubJustLoaded = true;
     return true;
 }
 
@@ -1173,7 +1168,6 @@ void MpvProxy::initMember()
     m_posBeforeBurst = false;
     m_bPendingSeek = false;
     m_bPolling = false;
-    m_bExternalSubJustLoaded = false;
     m_bConnectStateChange = false;
     m_bPauseOnStart = false;
     m_bIsJingJia = false;

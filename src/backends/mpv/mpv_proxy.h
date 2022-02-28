@@ -464,7 +464,6 @@ private:
     bool m_bInBurstShotting;               //是否停止连拍截图
 
     bool m_bPolling;
-    bool m_bExternalSubJustLoaded;         //是否加载在线字幕
     bool m_bConnectStateChange;
     bool m_bPauseOnStart;                  //mpv是否在暂停中
     bool m_bIsJingJia;                     //是否在景嘉微平台上
