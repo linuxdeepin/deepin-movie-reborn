@@ -3928,7 +3928,7 @@ void MainWindow::toggleUIMode()
 
         if (isFullScreen()) {
             m_nStateBeforeMiniMode |= SBEM_Fullscreen;
-//            requestAction(ActionFactory::ToggleFullscreen);
+            setWindowState(windowState() & ~Qt::WindowFullScreen);
             this->setWindowState(Qt::WindowNoState);
             setFocus();
             if (m_pFullScreenTimeLable) {
