@@ -1768,7 +1768,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
     }
 
     case ActionFactory::ActionKind::OpenFile: {
-        DFileDialog fileDialog;
+        DFileDialog fileDialog(this);
         QStringList filename;
         fileDialog.setNameFilters({tr("All (*)"), QString("Video (%1)").arg(m_pEngine->video_filetypes.join(" ")),
                                    QString("Audio (%1)").arg(m_pEngine->audio_filetypes.join(" "))});
@@ -2310,7 +2310,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
     case ActionFactory::ActionKind::LoadSubtitle: {
         QStringList filename;
 #ifndef USE_TEST
-        DFileDialog fileDialog;
+        DFileDialog fileDialog(this);
         fileDialog.setNameFilter(tr("Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)","All (*)"));
         fileDialog.setDirectory(lastOpenedPath());
 
