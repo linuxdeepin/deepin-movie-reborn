@@ -98,8 +98,8 @@ Platform_VolumeSlider::Platform_VolumeSlider(Platform_MainWindow *mw, QWidget *p
 void Platform_VolumeSlider::initVolume()
 {
     QTimer::singleShot(100, this, [ = ] { //延迟加载等待信号槽连接
-        int nVolume = Platform_Settings::get().internalOption("global_volume").toInt();
-        bool bMute = Platform_Settings::get().internalOption("mute").toBool();
+        int nVolume = Settings::get().internalOption("global_volume").toInt();
+        bool bMute = Settings::get().internalOption("mute").toBool();
 
         changeVolume(nVolume);
         changeMuteState(bMute);
@@ -285,7 +285,7 @@ void Platform_VolumeSlider::changeMuteState(bool bMute)
 
     m_bIsMute = bMute;
     refreshIcon();
-    Platform_Settings::get().setInternalOption("mute", m_bIsMute);
+    Settings::get().setInternalOption("mute", m_bIsMute);
     emit sigMuteStateChanged(bMute);
 }
 
@@ -300,7 +300,7 @@ void Platform_VolumeSlider::volumeChanged(int nVolume)
     }
 
     refreshIcon();
-    Platform_Settings::get().setInternalOption("global_volume", m_nVolume > 100 ? 100 : m_nVolume);
+    Settings::get().setInternalOption("global_volume", m_nVolume > 100 ? 100 : m_nVolume);
 
     emit sigVolumeChanged(nVolume);
 }

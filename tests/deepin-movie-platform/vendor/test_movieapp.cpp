@@ -57,7 +57,7 @@ TEST(MovieApp, testMprisapp)
     w->show();
 
 //    QTest::qWait(500);
-    Platform_Settings::get().settings()->setOption("base.play.emptylist", true); //退出时清空播放列表
+    Settings::get().settings()->setOption("base.play.emptylist", true); //退出时清空播放列表
 
     MovieApp *movieapp = new MovieApp(w);
     movieapp->initMpris("movie");

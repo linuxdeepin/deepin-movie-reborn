@@ -45,7 +45,7 @@
 #include "threadpool.h"
 #include "platform/platform_mainwindow.h"
 #include "compositing_manager.h"
-#include "platform/platform_dmr_settings.h"
+#include "dmr_settings.h"
 #include "dbus_adpator.h"
 #include "../accessibility/ac-deepin-movie-define.h"
 

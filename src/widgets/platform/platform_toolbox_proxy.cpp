@@ -38,7 +38,7 @@
 #include "compositing_manager.h"
 #include "player_engine.h"
 #include "toolbutton.h"
-#include "platform/platform_dmr_settings.h"
+#include "dmr_settings.h"
 #include "actions.h"
 #include "slider.h"
 #include "platform/platform_thumbnail_worker.h"
@@ -988,7 +988,7 @@ void Platform_ToolboxProxy::setup()
 
     connect(m_pProgBar, &DMRSlider::sigUnsupported, this, &Platform_ToolboxProxy::sigUnsupported);
     connect(m_pPreviewer, &Platform_ThumbnailPreview::leavePreview, this, &Platform_ToolboxProxy::slotLeavePreview);
-    connect(&Platform_Settings::get(), &Platform_Settings::baseChanged, this, &Platform_ToolboxProxy::setthumbnailmode);
+    connect(&Settings::get(), &Settings::baseChanged, this, &Platform_ToolboxProxy::setthumbnailmode);
     connect(m_pEngine, &PlayerEngine::siginitthumbnailseting, this, &Platform_ToolboxProxy::setthumbnailmode);
 
     //刷新显示预览当前时间的label
@@ -998,7 +998,7 @@ void Platform_ToolboxProxy::setup()
 
     connect(m_pProgBar, &DMRSlider::sliderPressed, this, &Platform_ToolboxProxy::slotSliderPressed);
     connect(m_pProgBar, &DMRSlider::sliderReleased, this, &Platform_ToolboxProxy::slotSliderReleased);
-    connect(&Platform_Settings::get(), &Platform_Settings::baseMuteChanged, this, &Platform_ToolboxProxy::slotBaseMuteChanged);
+    connect(&Settings::get(), &Settings::baseMuteChanged, this, &Platform_ToolboxProxy::slotBaseMuteChanged);
 
     m_pViewProgBar = new Platform_ViewProgBar(m_pProgBar, m_pBotToolWgt);
 
@@ -1322,7 +1322,7 @@ void Platform_ToolboxProxy::updateHoverPreview(const QUrl &url, int secs)
     if (m_pEngine->playlist().currentInfo().url != url)
         return;
 
-    if (!Platform_Settings::get().isSet(Platform_Settings::PreviewOnMouseover))
+    if (!Settings::get().isSet(Settings::PreviewOnMouseover))
         return;
 
     if (m_pVolSlider->isVisible())
@@ -1784,7 +1784,7 @@ void Platform_ToolboxProxy::progressHoverChanged(int nValue)
     }
 
     bool bIsAudio = m_pEngine->isAudioFile(pif.info.absoluteFilePath());
-    if (!Platform_Settings::get().isSet(Platform_Settings::PreviewOnMouseover) || bIsAudio) {
+    if (!Settings::get().isSet(Settings::PreviewOnMouseover) || bIsAudio) {
         updatePreviewTime(nValue, point);
         return;
     }
@@ -1793,7 +1793,7 @@ void Platform_ToolboxProxy::progressHoverChanged(int nValue)
 
 void Platform_ToolboxProxy::updateTimeVisible(bool visible)
 {
-    if (Platform_Settings::get().isSet(Platform_Settings::PreviewOnMouseover))
+    if (Settings::get().isSet(Settings::PreviewOnMouseover))
         return;
 
     if (m_pPreviewTime) {

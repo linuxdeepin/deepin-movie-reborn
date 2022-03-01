@@ -280,7 +280,7 @@ TEST(requestAction, settings)
 {
     Platform_MainWindow* w = dApp->getMainWindow();
 
-    Platform_Settings::get().settings()->setOption("base.screenshot.location",
+    Settings::get().settings()->setOption("base.screenshot.location",
                                           "/data/source/deepin-movie-reborn/movie/DMovie");
     QTest::qWait(200);
     w->requestAction(ActionFactory::ActionKind::Settings);

@@ -43,7 +43,7 @@
 #include <gtest/gtest.h>
 
 #include "application.h"
-#include "platform/platform_dmr_settings.h"
+#include "dmr_settings.h"
 #include "utils.h"
 #include "movie_configuration.h"
 #include "dbus_adpator.h"
@@ -51,26 +51,26 @@
 using namespace dmr;
 using namespace utils;
 
-TEST(Platform_Settings, Platform_Settings)
+TEST(Settings, Settings)
 {
-    Platform_Settings::get().isSet(Platform_Settings::Flag::ClearWhenQuit);
-    Platform_Settings::get().isSet(Platform_Settings::Flag::ShowThumbnailMode);
-    Platform_Settings::get().isSet(Platform_Settings::Flag::AutoSearchSimilar);
-    Platform_Settings::get().isSet(Platform_Settings::Flag::PreviewOnMouseover);
-    Platform_Settings::get().isSet(Platform_Settings::Flag::MultipleInstance);
-    Platform_Settings::get().isSet(Platform_Settings::Flag::PauseOnMinimize);
-    Platform_Settings::get().settings()->sync();
+    Settings::get().isSet(Settings::Flag::ClearWhenQuit);
+    Settings::get().isSet(Settings::Flag::ShowThumbnailMode);
+    Settings::get().isSet(Settings::Flag::AutoSearchSimilar);
+    Settings::get().isSet(Settings::Flag::PreviewOnMouseover);
+    Settings::get().isSet(Settings::Flag::MultipleInstance);
+    Settings::get().isSet(Settings::Flag::PauseOnMinimize);
+    Settings::get().settings()->sync();
 
-    Platform_Settings::get().commonPlayableProtocols();
-    Platform_Settings::get().commonPlayableProtocols();
-    Platform_Settings::get().iscommonPlayableProtocol("dvb");
-    Platform_Settings::get().screenshotLocation();
-    Platform_Settings::get().screenshotNameTemplate();
-    Platform_Settings::get().screenshotNameSeqTemplate();
+    Settings::get().commonPlayableProtocols();
+    Settings::get().commonPlayableProtocols();
+    Settings::get().iscommonPlayableProtocol("dvb");
+    Settings::get().screenshotLocation();
+    Settings::get().screenshotNameTemplate();
+    Settings::get().screenshotNameSeqTemplate();
 
     QString path("/usr/share/dde-introduction");
-    Platform_Settings::get().setGeneralOption("last_open_path", path);
-    QVariant v = Platform_Settings::get().generalOption("last_open_path");
+    Settings::get().setGeneralOption("last_open_path", path);
+    QVariant v = Settings::get().generalOption("last_open_path");
 
     DSettingsOption settingsOption;
     emit settingsOption.valueChanged(v);
@@ -79,23 +79,23 @@ TEST(Platform_Settings, Platform_Settings)
     emit edit.editingFinished();
 }
 
-TEST(Platform_Settings, shortcut)
+TEST(Settings, shortcut)
 {
-    Platform_Settings::get().settings()->setOption("shortcuts.play.enable", false);
-    Platform_Settings::get().settings()->setOption("shortcuts.play.enable", true);
-    Platform_Settings::get().settings()->setOption("shortcuts.play.playlist", "Shift+Return");
-    Platform_Settings::get().settings()->setOption("shortcuts.play.movie_info", "Shift+Num+Enter");
-    Platform_Settings::get().settings()->setOption("subtitle.font.size", 20);
-    Platform_Settings::get().settings()->setOption("base.play.hwaccel", 1);
-    Platform_Settings::get().settings()->setOption("base.decode.select", DecodeMode::AUTO);
-    Platform_Settings::get().settings()->setOption("base.decode.select", DecodeMode::HARDWARE);
-    Platform_Settings::get().settings()->setOption("base.decode.select", DecodeMode::SOFTWARE);
-    emit Platform_Settings::get().hwaccelModeChanged("base.play.hwaccel", 1);
+    Settings::get().settings()->setOption("shortcuts.play.enable", false);
+    Settings::get().settings()->setOption("shortcuts.play.enable", true);
+    Settings::get().settings()->setOption("shortcuts.play.playlist", "Shift+Return");
+    Settings::get().settings()->setOption("shortcuts.play.movie_info", "Shift+Num+Enter");
+    Settings::get().settings()->setOption("subtitle.font.size", 20);
+    Settings::get().settings()->setOption("base.play.hwaccel", 1);
+    Settings::get().settings()->setOption("base.decode.select", DecodeMode::AUTO);
+    Settings::get().settings()->setOption("base.decode.select", DecodeMode::HARDWARE);
+    Settings::get().settings()->setOption("base.decode.select", DecodeMode::SOFTWARE);
+    emit Settings::get().hwaccelModeChanged("base.play.hwaccel", 1);
 
 //    Settings::get().settings()->setOption("play.global_volume", 120);
 }
 
-TEST(Platform_Settings, mwDeconstruction)
+TEST(Settings, mwDeconstruction)
 {
     Platform_MainWindow *w = dApp->getMainWindow();
     w->close();

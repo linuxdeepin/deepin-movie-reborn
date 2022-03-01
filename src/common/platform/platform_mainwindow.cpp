@@ -38,7 +38,7 @@
 #include "actions.h"
 #include "event_monitor.h"
 #include "shortcut_manager.h"
-#include "platform/platform_dmr_settings.h"
+#include "dmr_settings.h"
 #include "movieinfo_dialog.h"
 #include "burst_screenshots_dialog.h"
 #include "platform/platform_playlist_widget.h"
@@ -958,9 +958,9 @@ Platform_MainWindow::Platform_MainWindow(QWidget *parent)
     m_pPopupWid->hide();
     defaultplaymodeinit();
 
-    connect(&Platform_Settings::get(), &Platform_Settings::defaultplaymodechanged, this, &Platform_MainWindow::slotdefaultplaymodechanged);
-    connect(&Platform_Settings::get(), &Platform_Settings::setDecodeModel, this, &Platform_MainWindow::onSetDecodeModel,Qt::DirectConnection);
-    connect(&Platform_Settings::get(), &Platform_Settings::refreshDecode, this, &Platform_MainWindow::onRefreshDecode,Qt::DirectConnection);
+    connect(&Settings::get(), &Settings::defaultplaymodechanged, this, &Platform_MainWindow::slotdefaultplaymodechanged);
+    connect(&Settings::get(), &Settings::setDecodeModel, this, &Platform_MainWindow::onSetDecodeModel,Qt::DirectConnection);
+    connect(&Settings::get(), &Settings::refreshDecode, this, &Platform_MainWindow::onRefreshDecode,Qt::DirectConnection);
     connect(m_pEngine, &PlayerEngine::onlineStateChanged, this, &Platform_MainWindow::checkOnlineState);
     connect(&OnlineSubtitle::get(), &OnlineSubtitle::onlineSubtitleStateChanged, this, &Platform_MainWindow::checkOnlineSubtitle);
     connect(m_pEngine, &PlayerEngine::mpvErrorLogsChanged, this, &Platform_MainWindow::checkErrorMpvLogsChanged);
@@ -999,7 +999,7 @@ Platform_MainWindow::Platform_MainWindow(QWidget *parent)
                                          "org.freedesktop.DBus.Properties", "PropertiesChanged", this,
                                          SLOT(slotProperChanged(QString, QVariantMap, QStringList)));
     qInfo() << "session Path is :" << path;
-    connect(dynamic_cast<MpvProxy *>(m_pEngine->getMpvProxy()),&MpvProxy::crashCheck,&Platform_Settings::get(),&Platform_Settings::crashCheck);
+    connect(dynamic_cast<MpvProxy *>(m_pEngine->getMpvProxy()),&MpvProxy::crashCheck,&Settings::get(),&Settings::crashCheck);
     //解码初始化
     decodeInit();
 }
@@ -1087,7 +1087,7 @@ bool Platform_MainWindow::event(QEvent *pEvent)
         //NOTE: windowStateChanged won't be emitted if by dragging to restore. so we need to
         //check window state here.
         if (windowState() & Qt::WindowMinimized) {   //fix bug 53683
-            if (Platform_Settings::get().isSet(Platform_Settings::PauseOnMinimize)) {
+            if (Settings::get().isSet(Settings::PauseOnMinimize)) {
                 if (m_pEngine && m_pEngine->state() == PlayerEngine::Playing) {
                     requestAction(ActionFactory::TogglePause);
                     m_bQuitfullscreenflag = true;
@@ -1096,7 +1096,7 @@ bool Platform_MainWindow::event(QEvent *pEvent)
                 listActs.at(0)->setChecked(false);
             }
         } else if (m_lastWindowState & Qt::WindowMinimized /*&& windowState() == Qt::WindowNoState*/) {
-            if (Platform_Settings::get().isSet(Platform_Settings::PauseOnMinimize)) {
+            if (Settings::get().isSet(Settings::PauseOnMinimize)) {
                 if (m_bQuitfullscreenflag) {
                     requestAction(ActionFactory::TogglePause);
                     m_bQuitfullscreenflag = false;
@@ -1561,7 +1561,7 @@ void Platform_MainWindow::setOpenFiles(QStringList &list)
 
 QString Platform_MainWindow::padLoadPath()
 {
-    QString sLoadPath = Platform_Settings::get().generalOption("pad_load_path").toString();
+    QString sLoadPath = Settings::get().generalOption("pad_load_path").toString();
     QDir lastDir(sLoadPath);
     if (sLoadPath.isEmpty() || !lastDir.exists()) {
         sLoadPath = QStandardPaths::writableLocation(QStandardPaths::MoviesLocation);
@@ -1782,7 +1782,7 @@ void Platform_MainWindow::requestAction(ActionFactory::ActionKind actionKind, bo
 
         QFileInfo fi(name);
         if (fi.isDir() && fi.exists()) {
-            Platform_Settings::get().setGeneralOption("last_open_path", fi.path());
+            Settings::get().setGeneralOption("last_open_path", fi.path());
           
             play({name});
         }
@@ -1820,7 +1820,7 @@ void Platform_MainWindow::requestAction(ActionFactory::ActionKind actionKind, bo
         if (filenames.size()) {
             QFileInfo fileInfo(filenames[0]);
             if (fileInfo.exists()) {
-                Platform_Settings::get().setGeneralOption("last_open_path", fileInfo.path());
+                Settings::get().setGeneralOption("last_open_path", fileInfo.path());
             }
             play(filenames);
         }
@@ -1843,7 +1843,7 @@ void Platform_MainWindow::requestAction(ActionFactory::ActionKind actionKind, bo
         }
         QFileInfo fileInfo(filename[0]);
         if (fileInfo.exists()) {
-            Platform_Settings::get().setGeneralOption("last_open_path", fileInfo.path());
+            Settings::get().setGeneralOption("last_open_path", fileInfo.path());
 
             play({filename[0]});
         }
@@ -1864,8 +1864,8 @@ void Platform_MainWindow::requestAction(ActionFactory::ActionKind actionKind, bo
                     }
                 });
                 QVariant panscan = m_pEngine->getBackendProperty("panscan");
-                if (panscan.isNull() && Platform_Settings::get().isSet(Platform_Settings::ResumeFromLast)) {
-                    int restore_pos = Platform_Settings::get().internalOption("playlist_pos").toInt();
+                if (panscan.isNull() && Settings::get().isSet(Settings::ResumeFromLast)) {
+                    int restore_pos = Settings::get().internalOption("playlist_pos").toInt();
                     //Playback when the playlist is not loaded, this will result in the
                     //last exit item without playing, because the playlist has not been
                     //loaded into that file, so adding a thread waiting here.
@@ -2098,27 +2098,27 @@ void Platform_MainWindow::requestAction(ActionFactory::ActionKind actionKind, bo
     }
 
     case ActionFactory::ActionKind::OrderPlay: {
-        Platform_Settings::get().setInternalOption("playmode", 0);
+        Settings::get().setInternalOption("playmode", 0);
         m_pEngine->playlist().setPlayMode(PlaylistModel::PlayMode::OrderPlay);
         break;
     }
     case ActionFactory::ActionKind::ShufflePlay: {
-        Platform_Settings::get().setInternalOption("playmode", 1);
+        Settings::get().setInternalOption("playmode", 1);
         m_pEngine->playlist().setPlayMode(PlaylistModel::PlayMode::ShufflePlay);
         break;
     }
     case ActionFactory::ActionKind::SinglePlay: {
-        Platform_Settings::get().setInternalOption("playmode", 2);
+        Settings::get().setInternalOption("playmode", 2);
         m_pEngine->playlist().setPlayMode(PlaylistModel::PlayMode::SinglePlay);
         break;
     }
     case ActionFactory::ActionKind::SingleLoop: {
-        Platform_Settings::get().setInternalOption("playmode", 3);
+        Settings::get().setInternalOption("playmode", 3);
         m_pEngine->playlist().setPlayMode(PlaylistModel::PlayMode::SingleLoop);
         break;
     }
     case ActionFactory::ActionKind::ListLoop: {
-        Platform_Settings::get().setInternalOption("playmode", 4);
+        Settings::get().setInternalOption("playmode", 4);
         m_pEngine->playlist().setPlayMode(PlaylistModel::PlayMode::ListLoop);
         break;
     }
@@ -2470,7 +2470,7 @@ void Platform_MainWindow::requestAction(ActionFactory::ActionKind actionKind, bo
     case ActionFactory::ActionKind::Screenshot: {
         QImage img = m_pEngine->takeScreenshot();
 
-        QString filePath = Platform_Settings::get().screenshotNameTemplate();
+        QString filePath = Settings::get().screenshotNameTemplate();
         bool bSuccess = false;   //条件编译产生误报(cppcheck)
         if (img.isNull())
             qInfo() << __func__ << "pixmap is null";
@@ -2531,7 +2531,7 @@ void Platform_MainWindow::requestAction(ActionFactory::ActionKind actionKind, bo
     }
 
     case ActionFactory::ActionKind::GoToScreenshotSolder: {
-        QString filePath = Platform_Settings::get().screenshotLocation();
+        QString filePath = Settings::get().screenshotLocation();
         qInfo() << __func__ << filePath;
         QProcess *pProcess = new QProcess();
         QObject::connect(pProcess, SIGNAL(finished(int)), pProcess, SLOT(deleteLater()));
@@ -2679,7 +2679,7 @@ void Platform_MainWindow::handleSettings(DSettingsDialog *dsd)
     dsd ->show();
 #endif
 
-    Platform_Settings::get().settings()->sync();
+    Settings::get().settings()->sync();
 }
 
 DSettingsDialog *Platform_MainWindow::initSettings()
@@ -2689,7 +2689,7 @@ DSettingsDialog *Platform_MainWindow::initSettings()
 
     pDSettingDilog->setProperty("_d_QSSThemename", "dark");
     pDSettingDilog->setProperty("_d_QSSFilename", "DSettingsDialog");
-    pDSettingDilog->updateSettings(Platform_Settings::get().settings());
+    pDSettingDilog->updateSettings(Settings::get().settings());
 
     //hack:
     QSpinBox *pSpinBox = pDSettingDilog->findChild<QSpinBox *>("OptionDSpinBox");
@@ -2944,7 +2944,7 @@ void Platform_MainWindow::slotdefaultplaymodechanged(const QString &sKey, const 
         qInfo() << "Settings key error";
         return;
     }
-    QPointer<DSettingsOption> modeOpt = Platform_Settings::get().settings()->option("base.play.playmode");
+    QPointer<DSettingsOption> modeOpt = Settings::get().settings()->option("base.play.playmode");
     QString sMode = modeOpt->data("items").toStringList()[value.toInt()];
     if (sMode == tr("Order play")) {
         m_pEngine->playlist().setPlayMode(PlaylistModel::OrderPlay);
@@ -3206,11 +3206,11 @@ void Platform_MainWindow::closeEvent(QCloseEvent *pEvent)
         m_nLastCookie = 0;
     }
 
-    if (Platform_Settings::get().isSet(Platform_Settings::ResumeFromLast)) {
+    if (Settings::get().isSet(Settings::ResumeFromLast)) {
         int nCur = 0;
         nCur = m_pEngine->playlist().current();
         if (nCur >= 0) {
-            Platform_Settings::get().setInternalOption("playlist_pos", nCur);
+            Settings::get().setInternalOption("playlist_pos", nCur);
         }
     }
 
@@ -3769,7 +3769,7 @@ void Platform_MainWindow::subtitleMatchVideo(const QString &sFileName)
 
     QFileInfo vfileInfo(sVideoName);
     if (vfileInfo.exists()) {
-        Platform_Settings::get().setGeneralOption("last_open_path", vfileInfo.path());
+        Settings::get().setGeneralOption("last_open_path", vfileInfo.path());
 
         play({sVideoName});
 
@@ -3791,7 +3791,7 @@ void Platform_MainWindow::subtitleMatchVideo(const QString &sFileName)
 
 void Platform_MainWindow::defaultplaymodeinit()
 {
-    QPointer<DSettingsOption> modeOpt = Platform_Settings::get().settings()->option("base.play.playmode");
+    QPointer<DSettingsOption> modeOpt = Settings::get().settings()->option("base.play.playmode");
     int nModeId = modeOpt->value().toInt();
     QString sMode = modeOpt->data("items").toStringList()[nModeId];
     if (sMode == tr("Order play")) {
@@ -3815,12 +3815,12 @@ void Platform_MainWindow::defaultplaymodeinit()
 void Platform_MainWindow::decodeInit()
 {
     //崩溃检测
-    bool bcatch = Platform_Settings::get().settings()->getOption(QString("set.start.crash")).toBool();
+    bool bcatch = Settings::get().settings()->getOption(QString("set.start.crash")).toBool();
     if (bcatch) {
         dynamic_cast<MpvProxy*>(m_pEngine->getMpvProxy())->setDecodeModel(DecodeMode::AUTO);
-        Platform_Settings::get().settings()->setOption(QString("base.decode.select"),DecodeMode::AUTO);
+        Settings::get().settings()->setOption(QString("base.decode.select"),DecodeMode::AUTO);
     } else {
-        int value = Platform_Settings::get().settings()->getOption(QString("base.decode.select")).toInt();
+        int value = Settings::get().settings()->getOption(QString("base.decode.select")).toInt();
         dynamic_cast<MpvProxy*>(m_pEngine->getMpvProxy())->setDecodeModel(value);
     }
 }
@@ -3841,7 +3841,7 @@ void Platform_MainWindow::popupAdapter(QIcon icon, QString sText)
 
 QString Platform_MainWindow::lastOpenedPath()
 {
-    QString lastPath = Platform_Settings::get().generalOption("last_open_path").toString();
+    QString lastPath = Settings::get().generalOption("last_open_path").toString();
     QDir lastDir(lastPath);
     if (lastPath.isEmpty() || !lastDir.exists()) {
         lastPath = QStandardPaths::writableLocation(QStandardPaths::MoviesLocation);
@@ -4510,11 +4510,11 @@ Platform_MainWindow::~Platform_MainWindow()
     qInfo() << __func__;
     //Do not enter CloseEvent when exiting from the title bar menu, so add the save function here
     //powered by xxxxp
-    if (Platform_Settings::get().isSet(Platform_Settings::ResumeFromLast)) {
+    if (Settings::get().isSet(Settings::ResumeFromLast)) {
         int nCur = 0;
         nCur = m_pEngine->playlist().current();
         if (nCur >= 0) {
-            Platform_Settings::get().setInternalOption("playlist_pos", nCur);
+            Settings::get().setInternalOption("playlist_pos", nCur);
         }
     }
     m_pEngine->savePlaybackPosition();
