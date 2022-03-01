@@ -23,6 +23,7 @@ project(deepin-movie-test)
 
 # 查找Qt相关的库链接
 find_package(Qt5 REQUIRED ${QtModule})
+find_package(gui-private)
 
 
 # 包含源码文件夹
@@ -135,7 +136,7 @@ pkg_check_modules(3rd_lib REQUIRED
 target_include_directories(${PROJECT_NAME} PUBLIC ${3rd_lib_INCLUDE_DIRS} )
 
 # 将第三方库链接进来(注意 *_LIBRARIES)
-target_link_libraries(${PROJECT_NAME} ${3rd_lib_LIBRARIES} )
+target_link_libraries(${PROJECT_NAME} ${3rd_lib_LIBRARIES}  Qt5::GuiPrivate)
 #------------------------------添加第三方库end-------------------------------------
 
 target_link_libraries(${PROJECT_NAME} gmock gmock_main gtest gtest_main)
