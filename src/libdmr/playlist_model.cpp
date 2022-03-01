@@ -1194,18 +1194,16 @@ void PlaylistModel::onAsyncUpdate(PlayItemInfo fil)
 {
     QList<PlayItemInfo> fils;
     fils.append(fil);
-    if (!_firstLoad) {
-        //since _infos are modified only at the same thread, the lock is not necessary
-        auto last = std::remove_if(fils.begin(), fils.end(), [](const PlayItemInfo & pif) {
-            return !pif.mi.valid;
-        });
-        fils.erase(last, fils.end());
-    }
+    //since _infos are modified only at the same thread, the lock is not necessary
+    auto last = std::remove_if(fils.begin(), fils.end(), [](const PlayItemInfo & pif) {
+        return !pif.mi.valid;
+    });
+    fils.erase(last, fils.end());
 
     if (!_firstLoad)
         _infos += SortSimilarFiles(fils);
     else
-        _infos += fil;
+        _infos += fils;
     reshuffle();
     _firstLoad = false;
     emit itemsAppended();
@@ -1225,13 +1223,11 @@ void PlaylistModel::handleAsyncAppendResults(QList<PlayItemInfo> &fil)
     qInfo() << __func__ << fil.size();
     if (!fil.size())
         return;
-    if (!_firstLoad) {
-        //since _infos are modified only at the same thread, the lock is not necessary
-        auto last = std::remove_if(fil.begin(), fil.end(), [](const PlayItemInfo & pif) {
-            return !pif.mi.valid;
-        });
-        fil.erase(last, fil.end());
-    }
+    //since _infos are modified only at the same thread, the lock is not necessary
+    auto last = std::remove_if(fil.begin(), fil.end(), [](const PlayItemInfo & pif) {
+        return !pif.mi.valid;
+    });
+    fil.erase(last, fil.end());
 
     qInfo() << "collected items" << fil.count();
     if (fil.size()) {
