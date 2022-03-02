@@ -537,7 +537,6 @@ private:
     double m_dPlaySpeed;                            ///当前播放速度
 
     bool m_bQuitfullscreenflag;                     ///记录最小化前是否为播放状态
-    bool m_bMaxfornormalflag;                       ///is the window maximized
     QPoint m_posMouseOrigin;                        ///记录前一次鼠标移动点
     QPoint m_pressPoint;                            ///记录当前鼠标按下时的点
     bool m_bStartMini;                              ///开始进入迷你模式

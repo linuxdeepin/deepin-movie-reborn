@@ -1095,37 +1095,20 @@ void MainWindow::onWindowStateChanged()
                 resizeByConstraints(true);
             }
         }
+
+        if (m_lastRectInNormalMode.isValid() && !m_bMiniMode) {
+            setGeometry(m_lastRectInNormalMode);
+        }
+
         m_bMovieSwitchedInFsOrMaxed = false;
     }
     update();
-
-    if (!isMaximized() && !isFullScreen() && !m_bMiniMode) {
-        if (m_bMaxfornormalflag) {
-            setWindowState(windowState() & ~Qt::WindowFullScreen);
-            if (m_lastRectInNormalMode.isValid() && !m_bMiniMode && !isMaximized()) {
-                setGeometry(m_lastRectInNormalMode);
-                move(m_lastRectInNormalMode.x(), m_lastRectInNormalMode.y());
-                resize(m_lastRectInNormalMode.width(), m_lastRectInNormalMode.height());
-            }
-            m_bMaxfornormalflag = false;
-        } else {
-            m_bMaxfornormalflag = false;
-        }
-    }
 
     if (isMinimized()) {
         if (m_pPlaylist->state() == PlaylistWidget::Opened) {
             m_pPlaylist->togglePopup(false);
         }
     }
-//    if (isMaximized()) {
-//        m_pAnimationlable->move(QPoint(QApplication::desktop()->availableGeometry().width() / 2 - 100
-//                                       , QApplication::desktop()->availableGeometry().height() / 2 - 100));
-//    }
-//    if (!isFullScreen() && !isMaximized() && !m_bMiniMode) {
-//        m_pAnimationlable->move(QPoint((m_lastRectInNormalMode.width() - m_pAnimationlable->width()) / 2,
-//                                       (m_lastRectInNormalMode.height() - m_pAnimationlable->height()) / 2));
-//    }
 }
 
 #ifdef USE_DXCB
@@ -1953,7 +1936,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
         if (isFullScreen()) {
             setWindowState(windowState() & ~Qt::WindowFullScreen);
             if (m_bMaximized) {
-                m_bMaxfornormalflag = true;
+                showMaximized();
             } else {
                 if (m_lastRectInNormalMode.isValid() && !m_bMiniMode && !isMaximized()) {
                     setGeometry(m_lastRectInNormalMode);
@@ -1977,7 +1960,6 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
             m_bMaximized = isMaximized();  // 记录全屏前是否是最大化窗口
             mipsShowFullScreen();
             if (isFullScreen()) {
-                m_bMaxfornormalflag = false;
                 //The X86 platform draws on GiWidget, and the MIPS platform does not need to draw
                 if (CompositingManager::get().platform() == Platform::Arm64 || CompositingManager::get().platform() == Platform::Alpha) {
                     if (m_pEngine->state() != PlayerEngine::CoreState::Idle) {
@@ -3203,17 +3185,11 @@ void MainWindow::focusInEvent(QFocusEvent *pEvent)
 
 void MainWindow::hideEvent(QHideEvent *pEvent)
 {
-    if (m_bMaxfornormalflag)
-        return;
+    QMainWindow::hideEvent(pEvent);
 }
 
 void MainWindow::showEvent(QShowEvent *pEvent)
 {
-    qInfo() << __func__;
-    /*最大化，全屏，取消全屏，会先调用hideevent,再调用showevent，此时播放状态尚未切换，导致逻辑出错*/
-    if (m_bMaxfornormalflag)
-        return;
-
     m_pAnimationlable->raise();
     m_pTitlebar->raise();
     m_pToolbox->raise();
@@ -3227,6 +3203,8 @@ void MainWindow::showEvent(QShowEvent *pEvent)
         if (m_pPlaylist->isVisible())
             updateProxyGeometry();
     }
+
+    QMainWindow::showEvent(pEvent);
 }
 
 void MainWindow::resizeByConstraints(bool bForceCentered)
@@ -3294,29 +3272,6 @@ void MainWindow::updateSizeConstraints()
     if (m_bMiniMode) {
         size = QSize(40, 40);
     } else {
-        //This function seems to be mentally and weak, and it is unknown.
-        //powered by xxxxp
-//        if (m_pEngine->state() != PlayerEngine::CoreState::Idle) {
-//            QRect dRect = DApplication::desktop()->availableGeometry();
-//            QSize sz = m_pEngine->videoSize();
-//            if (sz.width() == 0 || sz.height() == 0) {
-//                size = QSize(614, 500);
-//            } else {
-//                qreal ratio = static_cast<qreal>(sz.width()) / sz.height();
-//                if (sz.width() > sz.height()) {
-//                    int w = static_cast<int>(500 * ratio);
-//                    size = QSize(w, 500);
-//                } else {
-//                    int h = static_cast<int>(614 * ratio);
-//                    if (h > dRect.height()) {
-//                        h = dRect.height();
-//                    }
-//                    size = QSize(614, h);
-//                }
-//            }
-//        } else {
-//            size = QSize(614, 500);
-//        }
         size = QSize(614, 500);
     }
     this->setMinimumSize(size);
@@ -3993,7 +3948,6 @@ void MainWindow::toggleUIMode()
         if (m_nStateBeforeMiniMode & SBEM_Maximized) {
             showMaximized();
         } else if (m_nStateBeforeMiniMode & SBEM_Fullscreen) {
-//            requestAction(ActionFactory::ToggleFullscreen);
             setWindowState(windowState() | Qt::WindowFullScreen);
             if (CompositingManager::get().platform() == Platform::Arm64 || CompositingManager::get().platform() == Platform::Alpha) {
                 if (m_pEngine->state() != PlayerEngine::CoreState::Idle) {
@@ -4012,14 +3966,11 @@ void MainWindow::toggleUIMode()
             if (m_pToolbox->listBtn()->isChecked()) {
                 m_pToolbox->listBtn()->setChecked(false);
             }
-            if (m_pEngine->state() == PlayerEngine::Idle && windowState() == Qt::WindowNoState) {
-                this->resize(850, 600);
+
+            if (m_lastRectInNormalMode.isValid()) {
+                setGeometry(m_lastRectInNormalMode);
             } else {
-                if (m_lastRectInNormalMode.isValid()) {
-                    resize(m_lastRectInNormalMode.size());
-                } else {
-                    resizeByConstraints();
-                }
+                resizeByConstraints();
             }
         }
 
@@ -4224,7 +4175,6 @@ void MainWindow::initMember()
     m_bMouseMoved = false;
     m_bMousePressed = false;
     m_bQuitfullscreenflag = false;
-    m_bMaxfornormalflag = false;
     m_bStartMini = false;
     m_bProgressChanged = false;
     m_bLastIsTouch = false;

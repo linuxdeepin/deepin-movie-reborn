@@ -1140,23 +1140,14 @@ void Platform_MainWindow::onWindowStateChanged()
                 resizeByConstraints(true);
             }
         }
+
+        if (m_lastRectInNormalMode.isValid() && !m_bMiniMode) {
+            setGeometry(m_lastRectInNormalMode);
+        }
+
         m_bMovieSwitchedInFsOrMaxed = false;
     }
     update();
-
-    if (!isMaximized() && !isFullScreen() && !m_bMiniMode) {
-        if (m_bMaxfornormalflag) {
-            setWindowState(windowState() & ~Qt::WindowFullScreen);
-            if (m_lastRectInNormalMode.isValid() && !m_bMiniMode && !isMaximized()) {
-                setGeometry(m_lastRectInNormalMode);
-                move(m_lastRectInNormalMode.x(), m_lastRectInNormalMode.y());
-                resize(m_lastRectInNormalMode.width(), m_lastRectInNormalMode.height());
-            }
-            m_bMaxfornormalflag = false;
-        } else {
-            m_bMaxfornormalflag = false;
-        }
-    }
 
     if (isMinimized()) {
         if (m_pPlaylist->state() == Platform_PlaylistWidget::Opened) {
@@ -2021,7 +2012,6 @@ void Platform_MainWindow::requestAction(ActionFactory::ActionKind actionKind, bo
 
         if (isFullScreen()) {
             if (m_bMaximized) {
-                m_bMaxfornormalflag = true;
                 showNormal();           //直接最大化会失败
                 showMaximized();
             } else {
@@ -2042,7 +2032,6 @@ void Platform_MainWindow::requestAction(ActionFactory::ActionKind actionKind, bo
             m_bMaximized = isMaximized();  // 记录全屏前是否是最大化窗口
             mipsShowFullScreen();
             if (isFullScreen()) {
-                m_bMaxfornormalflag = false;
                 if (CompositingManager::get().platform() != Platform::Mips) {
                     if (m_pEngine->state() != PlayerEngine::CoreState::Idle) {
                         int pixelsWidth = m_pToolbox->getfullscreentimeLabel()->width() + m_pToolbox->getfullscreentimeLabelend()->width();
@@ -3242,16 +3231,13 @@ void Platform_MainWindow::focusInEvent(QFocusEvent *pEvent)
 
 void Platform_MainWindow::hideEvent(QHideEvent *pEvent)
 {
-    if (m_bMaxfornormalflag)
-        return;
+    QMainWindow::hideEvent(pEvent);
 }
 
 void Platform_MainWindow::showEvent(QShowEvent *pEvent)
 {
     qInfo() << __func__;
     /*最大化，全屏，取消全屏，会先调用hideevent,再调用showevent，此时播放状态尚未切换，导致逻辑出错*/
-    if (m_bMaxfornormalflag)
-        return;
 
     m_pAnimationlable->raise();
     m_pTitlebar->raise();
@@ -3266,6 +3252,8 @@ void Platform_MainWindow::showEvent(QShowEvent *pEvent)
         if (m_pPlaylist->isVisible())
             updateProxyGeometry();
     }
+
+    QMainWindow::showEvent(pEvent);
 }
 
 void Platform_MainWindow::resizeByConstraints(bool bForceCentered)
@@ -4003,19 +3991,16 @@ void Platform_MainWindow::toggleUIMode()
         if (m_nStateBeforeMiniMode & SBEM_Maximized) {
             showMaximized();
         } else if (m_nStateBeforeMiniMode & SBEM_Fullscreen) {
-            requestAction(ActionFactory::ToggleFullscreen);
+            setWindowState(windowState() | Qt::WindowFullScreen);
         } else {
             if (m_pToolbox->listBtn()->isChecked()) {
                 m_pToolbox->listBtn()->setChecked(false);
             }
-            if (m_pEngine->state() == PlayerEngine::Idle && windowState() == Qt::WindowNoState) {
-                this->resize(850, 600);
+
+            if (m_lastRectInNormalMode.isValid()) {
+                setGeometry(m_lastRectInNormalMode);
             } else {
-                if (m_lastRectInNormalMode.isValid()) {
-                    resize(m_lastRectInNormalMode.size());
-                } else {
-                    resizeByConstraints();
-                }
+                resizeByConstraints();
             }
         }
 
@@ -4220,7 +4205,6 @@ void Platform_MainWindow::initMember()
     m_bMouseMoved = false;
     m_bMousePressed = false;
     m_bQuitfullscreenflag = false;
-    m_bMaxfornormalflag = false;
     m_bStartMini = false;
     m_bProgressChanged = false;
     m_bLastIsTouch = false;
