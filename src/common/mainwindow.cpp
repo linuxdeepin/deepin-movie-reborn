@@ -1843,6 +1843,10 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
     }
 
     case ActionFactory::ActionKind::ToggleMiniMode: {
+        if (m_bMouseMoved) { // can't toggle minimode,when window is moving
+            break;
+        }
+
         int nDelayTime = 0;
         if (m_pPlaylist->state() == PlaylistWidget::Opened) {
             requestAction(ActionFactory::TogglePlaylist);
