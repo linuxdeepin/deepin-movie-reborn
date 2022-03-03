@@ -1641,10 +1641,8 @@ void Platform_MainWindow::menuItemInvoked(QAction *pAction)
             }
         }
     }
-
-    if (!bIsShortcut) {
-        suspendToolsWindow();
-    }
+    //菜单操作完成后，标题栏获取焦点
+    m_pTitlebar->setFocus();
 }
 
 bool Platform_MainWindow::isActionAllowed(ActionFactory::ActionKind actionKind, bool fromUI, bool isShortcut)
