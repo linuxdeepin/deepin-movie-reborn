@@ -3695,10 +3695,10 @@ void Platform_MainWindow::contextMenuEvent(QContextMenuEvent *pEvent)
 bool Platform_MainWindow::insideToolsArea(const QPoint &p)
 {
     if (CompositingManager::get().platform() == Platform::X86) {
-        return m_pTitlebar->geometry().contains(p) || m_pToolbox->geometry().contains(p) || m_pToolbox->volumeSlider()->geometry().contains(p) ||
+        return (m_pTitlebar->geometry().contains(p) && !isFullScreen()) || m_pToolbox->geometry().contains(p) || m_pToolbox->volumeSlider()->geometry().contains(p) ||
                 m_pMiniPlayBtn->geometry().contains(p)|| m_pMiniCloseBtn->geometry().contains(p) || m_pMiniQuitMiniBtn->geometry().contains(p);
     } else {
-        return m_pTitlebar->geometry().contains(p) || m_pToolbox->rect().contains(p) || m_pToolbox->geometry().contains(p) || m_pToolbox->volumeSlider()->geometry().contains(p) ||
+        return (m_pTitlebar->geometry().contains(p) && !isFullScreen()) || m_pToolbox->rect().contains(p) || m_pToolbox->geometry().contains(p) || m_pToolbox->volumeSlider()->geometry().contains(p) ||
                 m_pMiniPlayBtn->geometry().contains(p)|| m_pMiniCloseBtn->geometry().contains(p) || m_pMiniQuitMiniBtn->geometry().contains(p);
     }
 }

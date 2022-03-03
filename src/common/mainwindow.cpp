@@ -3620,10 +3620,10 @@ bool MainWindow::insideToolsArea(const QPoint &p)
 {
     //XTL:这里测一下看看非x86平台否合并代码
     if (CompositingManager::get().platform() == Platform::X86) {
-        return m_pTitlebar->geometry().contains(p) || m_pToolbox->geometry().contains(p) || m_pToolbox->volumeSlider()->geometry().contains(p) ||
+        return (m_pTitlebar->geometry().contains(p) && !isFullScreen()) || m_pToolbox->geometry().contains(p) || m_pToolbox->volumeSlider()->geometry().contains(p) ||
                 m_pMiniPlayBtn->geometry().contains(p)|| m_pMiniCloseBtn->geometry().contains(p) || m_pMiniQuitMiniBtn->geometry().contains(p);
     } else {
-        return m_pTitlebar->geometry().contains(p) || m_pToolbox->rect().contains(p) || m_pToolbox->geometry().contains(p) || m_pToolbox->volumeSlider()->geometry().contains(p) ||
+        return (m_pTitlebar->geometry().contains(p) && !isFullScreen()) || m_pToolbox->rect().contains(p) || m_pToolbox->geometry().contains(p) || m_pToolbox->volumeSlider()->geometry().contains(p) ||
                 m_pMiniPlayBtn->geometry().contains(p)|| m_pMiniCloseBtn->geometry().contains(p) || m_pMiniQuitMiniBtn->geometry().contains(p);
     }
 }
