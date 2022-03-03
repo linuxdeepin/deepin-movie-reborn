@@ -2402,7 +2402,6 @@ void ToolboxProxy::initToolTip()
         connect(m_pPlayBtn, &ButtonBoxButton::entered, [ = ]() {
             m_pPlayBtnTip->move(80, m_pMainWindow->height() - TOOLBOX_HEIGHT - 5);
             m_pPlayBtnTip->show();
-            m_pPlayBtnTip->QWidget::activateWindow();
             m_pPlayBtnTip->update();
             m_pPlayBtnTip->releaseMouse();
 
@@ -2419,7 +2418,6 @@ void ToolboxProxy::initToolTip()
             m_pPrevBtnTip->move(40,
                                 m_pMainWindow->height() - TOOLBOX_HEIGHT - 5);
             m_pPrevBtnTip->show();
-            m_pPrevBtnTip->QWidget::activateWindow();
             m_pPrevBtnTip->update();
             m_pPrevBtnTip->releaseMouse();
 
@@ -2437,7 +2435,6 @@ void ToolboxProxy::initToolTip()
             m_pNextBtnTip->move(120,
                                 m_pMainWindow->height() - TOOLBOX_HEIGHT - 5);
             m_pNextBtnTip->show();
-            m_pNextBtnTip->QWidget::activateWindow();
             m_pNextBtnTip->update();
             m_pNextBtnTip->releaseMouse();
 
@@ -2455,7 +2452,6 @@ void ToolboxProxy::initToolTip()
         m_pFullScreenBtnTip->move(m_pMainWindow->width() - m_pFullScreenBtn->width() / 2 /*- m_pPlayBtn->width()*/ - 140,
                                   m_pMainWindow->height() - TOOLBOX_HEIGHT - 5);
         m_pFullScreenBtnTip->show();
-        m_pFullScreenBtnTip->QWidget::activateWindow();
         m_pFullScreenBtnTip->update();
         m_pFullScreenBtnTip->releaseMouse();
 
@@ -2472,7 +2468,6 @@ void ToolboxProxy::initToolTip()
         m_pListBtnTip->move(m_pMainWindow->width() - m_pListBtn->width() / 2 /*- m_pPlayBtn->width()*/ - 20,
                             m_pMainWindow->height() - TOOLBOX_HEIGHT - 5);
         m_pListBtnTip->show();
-        m_pListBtnTip->QWidget::activateWindow();
         m_pListBtnTip->update();
         m_pListBtnTip->releaseMouse();
 
