@@ -397,7 +397,7 @@ mpv_handle *MpvProxy::mpv_init()
             my_set_property(m_handle, "hwdec", "auto");
         }
 
-#if defined (__mips__)
+#if defined (__mips__) || defined(_loongarch) || defined(__loongarch__) || defined(__loongarch64)
         if (!CompositingManager::get().hascard()) {
             qInfo() << "修改音视频同步模式";
             my_set_property(m_handle, "video-sync", "desync");
