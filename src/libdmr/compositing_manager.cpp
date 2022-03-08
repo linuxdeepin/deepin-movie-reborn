@@ -93,7 +93,8 @@ public:
                     qInfo() << "match shenwei";
                     _pf = Platform::Alpha;
 
-                } else if (machine.find("mips") != string::npos) { // loongson
+                } else if (machine.find("mips") != string::npos
+                           || machine.find("loongarch64") != string::npos) { // loongson
                     qInfo() << "match loongson";
                     _pf = Platform::Mips;
                 } else if (machine.find("aarch64") != string::npos) { // ARM64
