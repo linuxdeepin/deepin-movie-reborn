@@ -1115,6 +1115,8 @@ void MpvProxy::refreshDecode()
         // 鲲鹏920 || 曙光+英伟达 || 浪潮
         if (!CompositingManager::get().hascard() || CompositingManager::get().isOnlySoftDecode()) {
             my_set_property(m_handle, "hwdec", "no");
+        } else {
+            my_set_property(m_handle, "hwdec","auto");
         }
 #else
         if(CompositingManager::get().isOnlySoftDecode()) {
