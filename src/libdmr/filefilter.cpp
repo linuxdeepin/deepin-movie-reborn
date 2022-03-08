@@ -95,6 +95,12 @@ bool FileFilter::isMediaFile(QUrl url)
     {
         return false;
     }
+
+    if(av_ctx->probe_score <= AVPROBE_SCORE_RETRY)  // format 匹配度不高
+    {
+        return false;
+    }
+
     if(g_mvideo_avformat_find_stream_info(av_ctx, nullptr) < 0)
     {
         return false;
