@@ -315,7 +315,7 @@ public:
     }
     bool getIsBlockSignals()
     {
-        return  m_bIsBlockSignals;
+        return  m_bPress ? true: m_bIsBlockSignals;
     }
     void setValue(int v)
     {
@@ -401,6 +401,10 @@ public:
         m_pSliderTime->setVisible(false);
         m_pSliderArrowDown->setVisible(false);
         m_pSliderArrowUp->setVisible(false);
+        // 清除状态时还原初始显示状态
+        m_bPress = false;
+        m_pIndicator->setPressed(m_bPress);
+        m_pIndicator->resize(6, 60);
     }
 
     int getViewLength()
@@ -454,11 +458,11 @@ protected:
             if (e->buttons() & Qt::LeftButton) {
                 int distance = (e->pos() -  m_startPos).manhattanLength();
                 if (distance >= QApplication::startDragDistance()) {
-                    m_pEngine->seekAbsolute(v);
                     emit sliderMoved(v);
                     emit hoverChanged(v);
                     emit mousePressed(true);
                     setValue(e->pos().x());
+                    setTime(v);
                     repaint();
                 }
             } else {
@@ -474,9 +478,7 @@ protected:
     {
         if (!m_bPress && e->buttons() == Qt::LeftButton && isEnabled()) {
             m_startPos = e->pos();
-
             int v = position2progress(e->pos());
-            m_pEngine->seekAbsolute(v);
             emit sliderMoved(v);
             emit hoverChanged(v);
             emit mousePressed(true);
@@ -491,6 +493,9 @@ protected:
         if (m_bPress && isEnabled()) {
             changeStyle(!m_bPress);
             m_bPress = !m_bPress;
+            //鼠标释放时seek视频位置。
+            int v = position2progress(e->pos());
+            m_pEngine->seekAbsolute(v);
         }
 
         m_pSliderArrowUp->setVisible(m_bPress);
@@ -1788,6 +1793,17 @@ void Platform_ToolboxProxy::progressHoverChanged(int nValue)
         updatePreviewTime(nValue, point);
         return;
     }
+    //鼠标移动时同步缩略图显示位置
+    int nPosition = 0;
+    qint64 nDuration = m_pEngine->duration();
+    if (m_pProgBar->isVisible()) {
+        nPosition = (nValue * m_pProgBar->slider()->width()) / nDuration;
+        point = m_pProgBar->mapToGlobal(QPoint(nPosition, TOOLBOX_TOP_EXTENT - 10));
+    } else {
+        nPosition = nValue * m_pViewProgBar->getViewLength() / nDuration + m_pViewProgBar->getStartPoint();
+        point = m_pViewProgBar->mapToGlobal(QPoint(nPosition, TOOLBOX_TOP_EXTENT - 10));
+    }
+    m_pPreviewer->updateWithPreview(point);
     Platform_ThumbnailWorker::get().requestThumb(pif.url, nValue);
 }
 

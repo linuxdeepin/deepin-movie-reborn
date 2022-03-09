@@ -40,6 +40,7 @@
 #include <QLibrary>
 #include <QLibraryInfo>
 #include <QFileInfo>
+#include <QMap>
 
 extern "C" {
 #include <libavformat/avformat.h>
@@ -102,6 +103,7 @@ private:
 
 private:
     static FileFilter* m_pFileFilter;
+    QMap<QUrl, bool> m_mapCheckAudio;//检测播放文件中的音视频信息
     mvideo_avformat_open_input g_mvideo_avformat_open_input = nullptr;
     mvideo_avformat_find_stream_info g_mvideo_avformat_find_stream_info = nullptr;
     mvideo_avformat_close_input g_mvideo_avformat_close_input = nullptr;

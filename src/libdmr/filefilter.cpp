@@ -162,9 +162,15 @@ QUrl FileFilter::fileTransfer(QString strFile)
 
 bool FileFilter::isAudio(QUrl url)
 {
+    if(m_mapCheckAudio.contains(url)) {
+        return m_mapCheckAudio.value(url);
+    } else {
+        m_mapCheckAudio.clear();
+    }
     int nRet;
     QString strFormatName;
     bool bAudio = false;
+    m_mapCheckAudio[url] = bAudio;
 
     AVFormatContext *av_ctx = nullptr;
 
@@ -201,7 +207,7 @@ bool FileFilter::isAudio(QUrl url)
     }
 
     g_mvideo_avformat_close_input(&av_ctx);
-
+    m_mapCheckAudio[url] = bAudio;
     return bAudio;
 }
 
