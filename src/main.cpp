@@ -256,7 +256,7 @@ int main(int argc, char *argv[])
             mw.showMaximized();
         } else {
             mw.resize(850, 600);
-            utils::MoveToCenter(&mw);
+            Dtk::Widget::moveToCenter(&mw);
             mw.show();
         }
 
@@ -281,7 +281,7 @@ int main(int argc, char *argv[])
             platform_mw.showMaximized();
         } else {
             platform_mw.resize(850, 600);
-            utils::MoveToCenter(&platform_mw);
+            Dtk::Widget::moveToCenter(&platform_mw);
             platform_mw.show();
         }
 
