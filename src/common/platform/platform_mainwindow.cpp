@@ -3987,6 +3987,12 @@ void Platform_MainWindow::toggleUIMode()
         m_pCommHintWid->setAnchorPoint(QPoint(30, 58));
         setEnableSystemResize(true);
         if (m_nStateBeforeMiniMode & SBEM_Maximized) {
+            //迷你模式切换最大化时，先恢复原来窗口大小
+            if (m_lastRectInNormalMode.isValid()) {
+                setGeometry(m_lastRectInNormalMode);
+            } else {
+                resizeByConstraints();
+            }
             showMaximized();
         } else if (m_nStateBeforeMiniMode & SBEM_Fullscreen) {
             setWindowState(windowState() | Qt::WindowFullScreen);
