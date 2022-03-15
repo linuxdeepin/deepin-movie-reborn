@@ -275,6 +275,8 @@ QPixmap MakeRoundedPixmap(QPixmap pm, qreal rx, qreal ry, int rotation)
 
 QPixmap MakeRoundedPixmap(QSize sz, QPixmap pm, qreal rx, qreal ry, qint64 time)
 {
+    int nX = 0;
+    int nY = 0;
     auto dpr = pm.devicePixelRatio();
     QPixmap dest(sz);
     dest.setDevicePixelRatio(dpr);
@@ -292,7 +294,9 @@ QPixmap MakeRoundedPixmap(QSize sz, QPixmap pm, qreal rx, qreal ry, qint64 time)
     auto r = scaled_rect.marginsRemoved({1, 1, 1, 1});
     path.addRoundedRect(r, rx, ry);
     p.setClipPath(path);
-    p.drawPixmap(1, 1, pm);
+    nX = (sz.width() - pm.width()) / 2;
+    nY = (sz.height() - pm.height()) / 2;
+    p.drawPixmap(nX, nY, pm);
 
 
     p.setCompositionMode(QPainter::CompositionMode_SourceOver);

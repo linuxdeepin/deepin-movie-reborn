@@ -130,17 +130,19 @@ void BurstScreenshotsDialog::updateWithFrames(const QList<QPair<QImage, qint64>>
     QSize size(static_cast<int>(178 * devicePixelRatio), static_cast<int>(100 * devicePixelRatio));
 
     int nCount = 0;
+    QImage scaled;
     for (auto frame : frames) {
-        auto scaled = frame.first.scaled(size.width() - 2, size.height() - 2,
-                                         Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+        QImage image = frame.first;
         ThumbnailFrame *pThumbnailFrame = new ThumbnailFrame(this);
 
         int nRowCount = nCount / 3;
         int nColumn = nCount % 3;
 
-        QPixmap pixmap = QPixmap::fromImage(scaled);
+        QPixmap pixmap = QPixmap::fromImage(image);
+        pixmap = pixmap.scaled(size.width() - 2, size.height() - 2, Qt::KeepAspectRatio, Qt::SmoothTransformation);
         pixmap.setDevicePixelRatio(devicePixelRatio);
         pixmap = utils::MakeRoundedPixmap(size, pixmap, 2, 2, frame.second);
+        pThumbnailFrame->setAlignment(Qt::AlignCenter);
         pThumbnailFrame->setPixmap(pixmap);
         m_pGrid->addWidget(pThumbnailFrame, nRowCount, nColumn);
         nCount++;
