@@ -1423,6 +1423,11 @@ void ToolboxProxy::updateHoverPreview(const QUrl &url, int secs)
     qint64 nDuration = m_pEngine->duration();
     QPoint showPoint;
 
+    if(nDuration<=0)
+    {
+        return;
+    }
+
     if (m_pProgBar->isVisible()) {
         nPosition = (secs * m_pProgBar->slider()->width()) / nDuration;
         showPoint = m_pProgBar->mapToGlobal(QPoint(nPosition, TOOLBOX_TOP_EXTENT - 10));
@@ -1906,6 +1911,12 @@ void ToolboxProxy::progressHoverChanged(int nValue)
     //鼠标移动时同步缩略图显示位置
     int nPosition = 0;
     qint64 nDuration = m_pEngine->duration();
+
+    if(nDuration<=0)
+    {
+        return;
+    }
+
     if (m_pProgBar->isVisible()) {
         nPosition = (nValue * m_pProgBar->slider()->width()) / nDuration;
         point = m_pProgBar->mapToGlobal(QPoint(nPosition, TOOLBOX_TOP_EXTENT - 10));
