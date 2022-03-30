@@ -16,7 +16,7 @@ option (USE_TEST "Use TESTS" ON)
 add_definitions( -DUSE_TEST )
 
 # 设置Qt模块
-set(QtModule Core Gui Widgets Network X11Extras PrintSupport DBus Sql Svg Concurrent LinguistTools Test)
+set(QtModule Core Gui Widgets Network X11Extras PrintSupport DBus Sql Svg Multimedia MultimediaWidgets Concurrent LinguistTools Test)
 
 # 设置工程名字
 project(deepin-movie-test)
@@ -39,6 +39,7 @@ include_directories(../../src/libdmr)
 include_directories(../../src/vendor)
 include_directories(../../src/backends)
 include_directories(../../src/backends/mpv)
+include_directories(../../src/backends/mediaplayer)
 
 #add_subdirectory(googletest)
 
@@ -51,6 +52,7 @@ FILE (GLOB allSource
     ../../src/libdmr/*.cpp
     ../../src/vendor/*.cpp
     ../../src/backends/mpv/*.cpp
+    ../../src/backends/mediaplayer/*.cpp
     ../../src/backends/*.cpp
     )
 
@@ -130,10 +132,11 @@ pkg_check_modules(3rd_lib REQUIRED
         libpulse dvdnav gsettings-qt  mpv x11 xext xtst xcb gl
         libavformat libavcodec libavutil
         xcb-aux xcb-proto xcb-ewmh xcb-shape mpris-qt5 dbusextended-qt5 libva libva-x11
+        gstreamer-1.0 glib-2.0 gstreamer-pbutils-1.0
         )
     #libpulse-simple xcb-aux gtest
 # 添加第三方库的所有文件夹路径到工程中来(注意 *_INCLUDE_DIRS)
-target_include_directories(${PROJECT_NAME} PUBLIC ${3rd_lib_INCLUDE_DIRS} )
+target_include_directories(${PROJECT_NAME} PUBLIC ${3rd_lib_INCLUDE_DIRS})
 
 # 将第三方库链接进来(注意 *_LIBRARIES)
 target_link_libraries(${PROJECT_NAME} ${3rd_lib_LIBRARIES}  Qt5::GuiPrivate)

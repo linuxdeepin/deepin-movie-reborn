@@ -18,6 +18,7 @@ find_package(Qt5Svg)
 
 pkg_check_modules(Dtk REQUIRED IMPORTED_TARGET dtkwidget)
 pkg_check_modules(AV REQUIRED IMPORTED_TARGET libavformat libavutil libavcodec)
+pkg_check_modules(Gst REQUIRED IMPORTED_TARGET gstreamer-1.0 glib-2.0)
 
 # 定义 source 文件
 FILE (GLOB SRCS
@@ -27,11 +28,12 @@ FILE (GLOB SRCS
 add_executable(${CMD_NAME} ${SRCS})
 
 target_link_libraries(${CMD_NAME} PkgConfig::Dtk Qt5::Widgets Qt5::Concurrent
-    Qt5::Network Qt5::X11Extras Qt5::Sql Qt5::DBus PkgConfig::AV
+    Qt5::Network Qt5::X11Extras Qt5::Sql Qt5::DBus PkgConfig::AV PkgConfig::Gst
     ${FFTHUMB_LIBRARIES} GL)
 target_include_directories(${CMD_NAME} PUBLIC 
     ${PROJECT_SOURCE_DIR}/../../src/libdmr
-    ${PROJECT_SOURCE_DIR})
+    ${PROJECT_SOURCE_DIR}
+    /usr/include/glib-2.0 /usr/include/gstreamer-1.0)
 
 target_link_libraries(${CMD_NAME} Qt5::Widgets dmr)
 

@@ -74,8 +74,10 @@ static QString libPath(const QString &sLib)
         list.sort();
     }
 
-    Q_ASSERT(list.size() > 0);
-    return list.last();
+    if(list.size() > 0)
+        return list.last();
+    else
+        return QString();
 }
 
 class MpvHandle

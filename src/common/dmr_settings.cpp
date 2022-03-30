@@ -59,11 +59,15 @@ Settings::Settings()
     m_sConfigPath = DStandardPaths::writableLocation(QStandardPaths::AppConfigLocation);
     qInfo() << "configPath" << m_sConfigPath;
     QSettingBackend *pBackend = new QSettingBackend(m_sConfigPath);
+    if(!CompositingManager::isMpvExists()) {
+        m_pSettings = DSettings::fromJsonFile(":/resources/data/GstSettings.json");
+    } else {
 #if defined (__mips__) || defined (__sw_64__) || defined ( __aarch64__)
     m_pSettings = DSettings::fromJsonFile(":/resources/data/lowEffectSettings.json");
 #else
     m_pSettings = DSettings::fromJsonFile(":/resources/data/settings.json");
 #endif
+    }
     m_pSettings->setBackend(pBackend);
 
     connect(m_pSettings, &DSettings::valueChanged,
@@ -270,4 +274,3 @@ bool Settings::disableInterop()
 }
 
 }
-

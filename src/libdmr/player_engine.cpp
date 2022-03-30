@@ -41,6 +41,7 @@
 #include "compositing_manager.h"
 #include "dguiapplicationhelper.h"
 #include "filefilter.h"
+#include "qtplayer_proxy.h"
 
 #include <QPainterPath>
 
@@ -73,7 +74,11 @@ PlayerEngine::PlayerEngine(QWidget *parent)
     auto *l = new QVBoxLayout(this);
     l->setContentsMargins(0, 0, 0, 0);
 
-    _current = new MpvProxy(this);
+    if(CompositingManager::isMpvExists()){
+        _current = new MpvProxy(this);
+    } else {
+        _current = new QtPlayerProxy(this);
+    }
     if (_current) {
         connect(_current, &Backend::stateChanged, this, &PlayerEngine::onBackendStateChanged);
         connect(_current, &Backend::tracksChanged, this, &PlayerEngine::tracksChanged);
@@ -191,8 +196,10 @@ void PlayerEngine::updateSubStyles()
 
 void PlayerEngine::waitLastEnd()
 {
-    if (auto *mpv = dynamic_cast<MpvProxy *>(_current)) {
+    if (MpvProxy *mpv = dynamic_cast<MpvProxy *>(_current)) {
         mpv->pollingEndOfPlayback();
+    }else if (QtPlayerProxy *qtPlayer = dynamic_cast<QtPlayerProxy *>(_current)) {
+        qtPlayer->pollingEndOfPlayback();
     }
 }
 
@@ -788,6 +795,7 @@ QList<QUrl> PlayerEngine::addPlayFiles(const QList<QUrl> &urls)
     }
 
     _playlist->appendAsync(valids);
+
     return valids;
 }
 
@@ -906,7 +914,14 @@ QVariant PlayerEngine::getBackendProperty(const QString &name)
 
 void PlayerEngine::toggleRoundedClip(bool roundClip)
 {
-    dynamic_cast<MpvProxy *>(_current)->updateRoundClip(roundClip);
+    MpvProxy* pMpvProxy = nullptr;
+
+    pMpvProxy = dynamic_cast<MpvProxy *>(_current);
+    if(!pMpvProxy) {
+        dynamic_cast<QtPlayerProxy *>(_current)->updateRoundClip(roundClip);
+    } else {
+        pMpvProxy->updateRoundClip(roundClip);
+    }
 }
 
 /*void PlayerEngine::setVideoZoom(float val)

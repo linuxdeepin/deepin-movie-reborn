@@ -947,7 +947,7 @@ void ToolboxProxy::setthumbnailmode()
         return;
     }
 
-    if(CompositingManager::get().platform() == Platform::X86) {
+    if(CompositingManager::get().platform() == Platform::X86  && CompositingManager::isMpvExists()) {
         if (Settings::get().isSet(Settings::ShowThumbnailMode)) {
             m_bThumbnailmode = true;
             updateThumbnail();
@@ -1925,7 +1925,9 @@ void ToolboxProxy::progressHoverChanged(int nValue)
         point = m_pViewProgBar->mapToGlobal(QPoint(nPosition, TOOLBOX_TOP_EXTENT - 10));
     }
     m_pPreviewer->updateWithPreview(point);
-    ThumbnailWorker::get().requestThumb(pif.url, nValue);
+    if(CompositingManager::isMpvExists()) {
+        ThumbnailWorker::get().requestThumb(pif.url, nValue);
+    }
 }
 
 void ToolboxProxy::updateTimeVisible(bool visible)
@@ -2178,6 +2180,8 @@ void ToolboxProxy::updatePlayState()
     }
 
     if (m_pEngine->state() == PlayerEngine::CoreState::Idle) {
+        m_pTimeLabel->setText("");
+        m_pTimeLabelend->setText("");
 
         if (m_pPreviewer->isVisible()) {
             m_pPreviewer->hide();
@@ -2315,7 +2319,7 @@ void ToolboxProxy::resizeEvent(QResizeEvent *event)
     if (event->oldSize().width() != event->size().width()) {
         if (m_pEngine->state() != PlayerEngine::CoreState::Idle) {
             if (m_bThumbnailmode) {  //如果进度条为胶片模式，重新加载缩略图并显示
-                if(CompositingManager::get().platform() == Platform::X86) {
+                if(CompositingManager::get().platform() == Platform::X86 && CompositingManager::isMpvExists()) {
                     updateThumbnail();
                 }
                 updateMovieProgress();
@@ -2574,7 +2578,9 @@ void ToolboxProxy::updateSliderPoint(QPoint &point)
  */
 ToolboxProxy::~ToolboxProxy()
 {
-    ThumbnailWorker::get().stop();
+    if(CompositingManager::isMpvExists()) {
+        ThumbnailWorker::get().stop();
+    }
     delete m_pPreviewer;
     delete m_pPreviewTime;
 

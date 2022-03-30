@@ -699,6 +699,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ActionFactory::get().mainContextMenu(), &DMenu::triggered, this, &MainWindow::menuItemInvoked);
     connect(ActionFactory::get().playlistContextMenu(), &DMenu::triggered, this, &MainWindow::menuItemInvoked);
     connect(this, &MainWindow::frameMenuEnable, &ActionFactory::get(), &ActionFactory::frameMenuEnable);
+    connect(this, &MainWindow::screenShotMenuEnable, &ActionFactory::get(), &ActionFactory::screenShotMenuEnable);
     connect(this, &MainWindow::playSpeedMenuEnable, &ActionFactory::get(), &ActionFactory::playSpeedMenuEnable);
     connect(this, &MainWindow::subtitleMenuEnable, &ActionFactory::get(), &ActionFactory::subtitleMenuEnable);
     connect(qApp, &QGuiApplication::focusWindowChanged, this, &MainWindow::slotFocusWindowChanged);
@@ -766,6 +767,7 @@ MainWindow::MainWindow(QWidget *parent)
                 m_pProgIndicator->setVisible(false);
             }
             emit frameMenuEnable(false);
+            emit screenShotMenuEnable(false);
             emit playSpeedMenuEnable(false);
         }
 
@@ -775,9 +777,11 @@ MainWindow::MainWindow(QWidget *parent)
 
             if (m_pEngine->playlist().count() > 0 && !m_pEngine->isAudioFile(m_pEngine->playlist().currentInfo().mi.filePath)) {
                 emit frameMenuEnable(true);
+                emit screenShotMenuEnable(true);
                 setMusicShortKeyState(true);
             } else {
                 emit frameMenuEnable(false);
+                emit screenShotMenuEnable(false);
                 setMusicShortKeyState(false);
             }
             emit playSpeedMenuEnable(true);
@@ -805,6 +809,11 @@ MainWindow::MainWindow(QWidget *parent)
                 utils::UnInhibitPower(m_nPowerCookie);
                 m_nPowerCookie = 0;
             }
+        }
+
+        if (!CompositingManager::isMpvExists()) {
+            emit frameMenuEnable(false);
+            emit subtitleMenuEnable(false);
         }
     });
 
@@ -1237,7 +1246,11 @@ void MainWindow::updateActionsState()
             bRet = m_pEngine->state() != PlayerEngine::Idle;
             break;
         case ActionFactory::ActionKind::BurstScreenshot:
-            bRet = m_pEngine->duration() > 40;
+            if(!CompositingManager::isMpvExists()) {
+                bRet = false;
+            } else {
+                bRet = m_pEngine->duration() > 40;
+            }
             break;
         case ActionFactory::ActionKind::MovieInfo:
             bRet = m_pEngine->state() != PlayerEngine::Idle;
@@ -1470,7 +1483,10 @@ void MainWindow::loadPlayList()
     m_pPlaylist->hide();
     m_pToolbox->setPlaylist(m_pPlaylist);
     m_pEngine->getplaylist()->loadPlaylist();
-    m_pToolbox->initThumbThread();
+
+    if(CompositingManager::isMpvExists()) {
+        m_pToolbox->initThumbThread();
+    }
 
     if (!m_listOpenFiles.isEmpty()) {
         play(m_listOpenFiles);
@@ -1617,7 +1633,11 @@ bool MainWindow::isActionAllowed(ActionFactory::ActionKind actionKind, bool from
         case ActionFactory::ToggleMiniMode:
         case ActionFactory::MatchOnlineSubtitle:
         case ActionFactory::BurstScreenshot:
-            bRet = m_pEngine->state() != PlayerEngine::Idle;
+            if(!CompositingManager::isMpvExists()){
+                bRet = false;
+            } else {
+                bRet = m_pEngine->state() != PlayerEngine::Idle;
+            }
             break;
 
         case ActionFactory::MovieInfo:
@@ -2873,12 +2893,18 @@ void MainWindow::slotdefaultplaymodechanged(const QString &sKey, const QVariant 
 void MainWindow::onSetDecodeModel(const QString &key, const QVariant &value)
 {
     Q_UNUSED(key);
-    dynamic_cast<MpvProxy*>(m_pEngine->getMpvProxy())->setDecodeModel(value);
+    MpvProxy* pMpvProxy = nullptr;
+    pMpvProxy = dynamic_cast<MpvProxy*>(m_pEngine->getMpvProxy());
+    if(pMpvProxy)
+        pMpvProxy->setDecodeModel(value);
 }
 
 void MainWindow::onRefreshDecode()
 {
-    dynamic_cast<MpvProxy*>(m_pEngine->getMpvProxy())->refreshDecode();
+    MpvProxy* pMpvProxy = nullptr;
+    pMpvProxy =  dynamic_cast<MpvProxy*>(m_pEngine->getMpvProxy());
+    if(pMpvProxy)
+        pMpvProxy->refreshDecode();
 }
 
 void MainWindow::my_setStayOnTop(const QWidget *pWidget, bool bOn)
@@ -3721,14 +3747,20 @@ void MainWindow::defaultplaymodeinit()
 
 void MainWindow::decodeInit()
 {
+    MpvProxy* pMpvProxy = nullptr;
+    pMpvProxy = dynamic_cast<MpvProxy*>(m_pEngine->getMpvProxy());
+
+    if(!pMpvProxy)
+        return;
+
     //崩溃检测
     bool bcatch = Settings::get().settings()->getOption(QString("set.start.crash")).toBool();
     if (bcatch) {
-        dynamic_cast<MpvProxy*>(m_pEngine->getMpvProxy())->setDecodeModel(DecodeMode::AUTO);
+        pMpvProxy->setDecodeModel(DecodeMode::AUTO);
         Settings::get().settings()->setOption(QString("base.decode.select"),DecodeMode::AUTO);
     } else {
         int value = Settings::get().settings()->getOption(QString("base.decode.select")).toInt();
-        dynamic_cast<MpvProxy*>(m_pEngine->getMpvProxy())->setDecodeModel(value);
+        pMpvProxy->setDecodeModel(value);
     }
 }
 

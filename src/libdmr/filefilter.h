@@ -41,6 +41,8 @@
 #include <QLibraryInfo>
 #include <QFileInfo>
 #include <QMap>
+#include <QMimeDatabase>
+#include <QMimeType>
 
 extern "C" {
 #include <libavformat/avformat.h>
@@ -57,6 +59,14 @@ typedef void (*mvideo_avformat_close_input)(AVFormatContext **s);
 class FileFilter:public QObject
 {
     Q_OBJECT
+
+    enum MediaType
+    {
+        Audio = 0,
+        Video,
+        Subtitle,
+        Other
+    };
 
 public:
     static FileFilter* instance();
@@ -95,6 +105,18 @@ public:
      * @return 是否是视频
      */
     bool isVideo(QUrl url);
+    /**
+     * @brief 通过ffmpeg库判断文件类型
+     * @param 文件路径
+     * @return 类型
+     */
+    MediaType typeJudgeByFFmpeg(const QUrl& url);
+    /**
+     * @brief 通过Qt判断文件类型
+     * @param 文件路径
+     * @return 类型
+     */
+    MediaType typeJudgeByQt(const QUrl& url);
 
 private:
     FileFilter();
@@ -107,6 +129,8 @@ private:
     mvideo_avformat_open_input g_mvideo_avformat_open_input = nullptr;
     mvideo_avformat_find_stream_info g_mvideo_avformat_find_stream_info = nullptr;
     mvideo_avformat_close_input g_mvideo_avformat_close_input = nullptr;
+    QMimeDatabase m_mimeDB;
+    bool m_bMpvExists;
 };
 
 #endif // FILEFILTER_H

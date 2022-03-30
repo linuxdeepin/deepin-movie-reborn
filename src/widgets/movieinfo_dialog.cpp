@@ -290,9 +290,39 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
     DEnhancedWidget *hanceedWidget = new DEnhancedWidget(film, this);
     connect(hanceedWidget, &DEnhancedWidget::heightChanged, this, &MovieInfoDialog::changedHeight);
 
+    QString strDuration = strMovieInfo.durationStr();
+    if(strDuration == "00:00:00") {
+        strDuration = "-";
+    }
+    QString strVCodecName = strMovieInfo.videoCodec();
+    if(strVCodecName == "none" || strVCodecName.isEmpty()) {
+        strVCodecName = "-";
+    }
+    QString strVCodecRate = "-";
+    if(strMovieInfo.vCodeRate > 0) {
+        strVCodecRate = strMovieInfo.vCodeRate > 1000 ? QString(tr("%1 kbps")).arg(strMovieInfo.vCodeRate / 1000)
+                  : QString(tr("%1 bps")).arg(strMovieInfo.vCodeRate);
+    }
+    QString strFps = strMovieInfo.fps > 0 ? QString(tr("%1 fps")).arg(strMovieInfo.fps) : "-";
+    QString strProportion = strMovieInfo.proportion > 0.0f ? QString(tr("%1")).arg(static_cast<double>(strMovieInfo.proportion)) : "-";
+    QString strResolution = strMovieInfo.resolution.isEmpty() ? "-" : strMovieInfo.resolution;
+
+    QString strACodecName = strMovieInfo.audioCodec();
+    if(strACodecName.isEmpty()) {
+        strACodecName = "-";
+    }
+    QString strACodecRate = "-";
+    if(strMovieInfo.aCodeRate > 1000) {
+        strACodecRate = strMovieInfo.aCodeRate > 1000 ? QString(tr("%1 kbps")).arg(strMovieInfo.aCodeRate / 1000)
+                 : QString(tr("%1 bps")).arg(strMovieInfo.aCodeRate);
+    }
+    QString strBits = strMovieInfo.aDigit > 0 ? QString(tr("%1 bits").arg(strMovieInfo.aDigit)) : "-";
+    QString strChannels = strMovieInfo.channels > 0 ? QString(tr("%1 channels")).arg(strMovieInfo.channels) : "-";
+    QString strSamp = strMovieInfo.sampling > 0 ? QString(tr("%1hz")).arg(strMovieInfo.sampling) : "-";
+
     addRow(tr("Type"), strMovieInfo.fileType, pFormLayout, tipLst);
     addRow(tr("Size"), strMovieInfo.sizeStr(), pFormLayout, tipLst);
-    addRow(tr("Duration"), strMovieInfo.durationStr(), pFormLayout, tipLst);
+    addRow(tr("Duration"), strDuration, pFormLayout, tipLst);
     DLabel *tmp = new DLabel;
     DFontSizeManager::instance()->bind(tmp, DFontSizeManager::T8);
     tmp->setText(strMovieInfo.filePath);
@@ -323,13 +353,11 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
     DEnhancedWidget *videoWidget = new DEnhancedWidget(video, this);
     connect(videoWidget, &DEnhancedWidget::heightChanged, this, &MovieInfoDialog::changedHeight);
 
-    addRow(tr("Video CodecID"), strMovieInfo.videoCodec(), pVideoFormLayout, tipLst);
-    addRow(tr("Video CodeRate"), strMovieInfo.vCodeRate > 1000 ?
-               QString(tr("%1 kbps")).arg(strMovieInfo.vCodeRate / 1000)
-             : QString(tr("%1 bps")).arg(strMovieInfo.vCodeRate), pVideoFormLayout, tipLst);
-    addRow(tr("FPS"), QString(tr("%1 fps")).arg(strMovieInfo.fps), pVideoFormLayout, tipLst);
-    addRow(tr("Proportion"), QString(tr("%1")).arg(static_cast<double>(strMovieInfo.proportion)), pVideoFormLayout, tipLst);
-    addRow(tr("Resolution"), strMovieInfo.resolution, pVideoFormLayout, tipLst);
+    addRow(tr("Video CodecID"), strVCodecName, pVideoFormLayout, tipLst);
+    addRow(tr("Video CodeRate"), strVCodecRate, pVideoFormLayout, tipLst);
+    addRow(tr("FPS"), strFps, pVideoFormLayout, tipLst);
+    addRow(tr("Proportion"), strProportion, pVideoFormLayout, tipLst);
+    addRow(tr("Resolution"), strResolution, pVideoFormLayout, tipLst);
 
     //添加音频信息
     ArrowLine *audio = new ArrowLine;
@@ -355,13 +383,11 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
     DEnhancedWidget *audioWidget = new DEnhancedWidget(audio, this);
     connect(audioWidget, &DEnhancedWidget::heightChanged, this, &MovieInfoDialog::changedHeight);
 
-    addRow(tr("Audio CodecID"), strMovieInfo.audioCodec(), audioForm, tipLst);
-    addRow(tr("Audio CodeRate"), strMovieInfo.aCodeRate > 1000 ?
-               QString(tr("%1 kbps")).arg(strMovieInfo.aCodeRate / 1000)
-             : QString(tr("%1 bps")).arg(strMovieInfo.aCodeRate), audioForm, tipLst);
-    addRow(tr("Audio digit"), QString(tr("%1 bits").arg(strMovieInfo.aDigit)), audioForm, tipLst);
-    addRow(tr("Channels"), QString(tr("%1 channels")).arg(strMovieInfo.channels), audioForm, tipLst);
-    addRow(tr("Sampling"), QString(tr("%1hz")).arg(strMovieInfo.sampling), audioForm, tipLst);
+    addRow(tr("Audio CodecID"), strACodecName, audioForm, tipLst);
+    addRow(tr("Audio CodeRate"), strACodecRate, audioForm, tipLst);
+    addRow(tr("Audio digit"), strBits, audioForm, tipLst);
+    addRow(tr("Channels"), strChannels, audioForm, tipLst);
+    addRow(tr("Sampling"), strSamp, audioForm, tipLst);
 
     setFixedSize(300, 642);
 

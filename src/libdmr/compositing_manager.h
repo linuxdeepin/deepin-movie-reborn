@@ -78,6 +78,10 @@ public:
     static bool isPadSystem();   //是否是平板设备
     static bool isCanHwdec();
     static void setCanHwdec(bool bCanHwdec);
+    /**
+     * @brief 判断是否可以使用mpv
+     */
+    static bool isMpvExists();
 
 #if !defined (__x86_64__)
     bool hascard();

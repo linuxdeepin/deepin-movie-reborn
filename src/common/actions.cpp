@@ -321,7 +321,7 @@ DMenu *ActionFactory::mainContextMenu()
             DEF_ACTION_GROUP(tr("Open screenshot folder"), ActionKind::GoToScreenshotSolder, pActionGroup);
             pMenu->setEnabled(false);
             parent->addMenu(pMenu);
-            connect(this, &ActionFactory::frameMenuEnable, this, [ = ](bool statu) {
+            connect(this, &ActionFactory::screenShotMenuEnable, this, [ = ](bool statu) {
                 pMenu->setEnabled(statu);
             });
         }
@@ -378,7 +378,7 @@ void ActionFactory::updateMainActionsForMovie(const PlayingMovieInfo &pmf)
         }
         m_pSubtitleMenu->setEnabled(pmf.subs.size() > 0);
     }
-    if (m_pSubtitleMenu) {
+    if (m_pSound) {
         DMenu *pMenu = m_pTracksMenu;
         pMenu->clear();
         if (!m_pAudiosgroup) {

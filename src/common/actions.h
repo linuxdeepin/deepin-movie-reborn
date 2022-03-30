@@ -48,6 +48,10 @@ signals:
      */
     void frameMenuEnable(bool);
     /**
+     * @brief 截图菜单状态改变信号
+     */
+    void screenShotMenuEnable(bool);
+    /**
      * @brief 播放速度菜单状态改变信号
      */
     void playSpeedMenuEnable(bool);

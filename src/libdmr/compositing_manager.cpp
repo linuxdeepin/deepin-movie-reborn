@@ -190,6 +190,10 @@ CompositingManager::CompositingManager()
         }
     }
 #endif
+    if(!isMpvExists())
+    {
+        _composited = true;
+    }
     qInfo() << __func__ << "Composited is " << _composited;
 }
 
@@ -263,6 +267,18 @@ bool CompositingManager::isCanHwdec()
 void CompositingManager::setCanHwdec(bool bCanHwdec)
 {
     m_bCanHwdec = bCanHwdec;
+}
+
+bool CompositingManager::isMpvExists()
+{
+    QDir dir;
+    QString path  = QLibraryInfo::location(QLibraryInfo::LibrariesPath);
+    dir.setPath(path);
+    QStringList list = dir.entryList(QStringList() << (QString("libmpv.so.1") + "*"), QDir::NoDotAndDotDot | QDir::Files);
+    if (list.contains("libmpv.so.1")) {
+        return true;
+    }
+    return false;
 }
 
 bool CompositingManager::isZXIntgraphics() const

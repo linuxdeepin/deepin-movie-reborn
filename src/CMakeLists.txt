@@ -19,12 +19,15 @@ find_package(Qt5Concurrent)
 find_package(Qt5Sql)
 find_package(Qt5Svg)
 find_package(gui-private)
+find_package(Qt5Multimedia)
+find_package(Qt5MultimediaWidgets)
 
 pkg_check_modules(Dtk REQUIRED IMPORTED_TARGET dtkwidget)
 pkg_check_modules(Dtk REQUIRED IMPORTED_TARGET dtkcore)
 pkg_check_modules(Xcb REQUIRED IMPORTED_TARGET xcb xcb-shape)
 pkg_check_modules(MPRIS REQUIRED IMPORTED_TARGET mpris-qt5)
 pkg_check_modules(DBusextended REQUIRED IMPORTED_TARGET dbusextended-qt5)
+pkg_check_modules(Gst REQUIRED IMPORTED_TARGET gstreamer-1.0 glib-2.0 gstreamer-pbutils-1.0)
 # IMPORTED_TARGET failed to work for some of libs under flatpak env
 pkg_check_modules(Other REQUIRED  gsettings-qt)
 
@@ -40,8 +43,11 @@ list(APPEND SRCS main.cpp)
 
 # mpv backend
 file(GLOB_RECURSE MPV_SRCS LIST_DIRECTORIES false backends/mpv/*.cpp)
-list(APPEND SRCS ${MPV_SRCS})
+file(GLOB_RECURSE MEDIAPLAYER_SRCS LIST_DIRECTORIES false backends/mediaplayer/*.cpp)
+list(APPEND SRCS ${MPV_SRCS} ${MEDIAPLAYER_SRCS})
 list(APPEND PROJECT_INCLUDE ${PROJECT_SOURCE_DIR}/src/backends/mpv)
+list(APPEND PROJECT_INCLUDE ${PROJECT_SOURCE_DIR}/src/backends/mediaplayer)
+list(APPEND PROJECT_INCLUDE /usr/include/glib-2.0 /usr/include/gstreamer-1.0)
 #~
 
 set (DTK_SETTINGS_TOOLS_EXECUTABLE ${DTKCORE_TOOL_DIR}/dtk-settings)
@@ -70,7 +76,7 @@ add_executable(${CMD_NAME} ${SRCS} ${RCS} ${QM})
 target_include_directories(${CMD_NAME} PUBLIC ${PROJECT_INCLUDE})
 
 set(TARGET_LIBS X11 Xtst PkgConfig::Xcb Qt5::Widgets Qt5::X11Extras Qt5::Network Qt5::GuiPrivate
-    Qt5::DBus Qt5::Sql Qt5::Svg PkgConfig::Dtk PkgConfig::MPRIS PkgConfig::DBusextended GL va va-x11)
+    Qt5::DBus Qt5::Sql Qt5::Svg Qt5::Multimedia Qt5::MultimediaWidgets PkgConfig::Dtk PkgConfig::MPRIS PkgConfig::DBusextended PkgConfig::Gst GL va va-x11)
 
 target_link_libraries(${CMD_NAME} ${TARGET_LIBS} ${Other_LIBRARIES})
 

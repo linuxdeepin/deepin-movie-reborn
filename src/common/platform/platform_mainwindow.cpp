@@ -2954,12 +2954,18 @@ void Platform_MainWindow::slotdefaultplaymodechanged(const QString &sKey, const 
 void Platform_MainWindow::onSetDecodeModel(const QString &key, const QVariant &value)
 {
     Q_UNUSED(key);
-    dynamic_cast<MpvProxy*>(m_pEngine->getMpvProxy())->setDecodeModel(value);
+    MpvProxy* pMpvProxy = nullptr;
+    pMpvProxy = dynamic_cast<MpvProxy*>(m_pEngine->getMpvProxy());
+    if(pMpvProxy)
+        pMpvProxy->setDecodeModel(value);
 }
 
 void Platform_MainWindow::onRefreshDecode()
 {
-    dynamic_cast<MpvProxy*>(m_pEngine->getMpvProxy())->refreshDecode();
+    MpvProxy* pMpvProxy = nullptr;
+    pMpvProxy =  dynamic_cast<MpvProxy*>(m_pEngine->getMpvProxy());
+    if(pMpvProxy)
+        pMpvProxy->refreshDecode();
 }
 
 void Platform_MainWindow::syncPostion()
@@ -3800,14 +3806,20 @@ void Platform_MainWindow::defaultplaymodeinit()
 
 void Platform_MainWindow::decodeInit()
 {
+    MpvProxy* pMpvProxy = nullptr;
+    pMpvProxy = dynamic_cast<MpvProxy*>(m_pEngine->getMpvProxy());
+
+    if(!pMpvProxy)
+        return;
+
     //崩溃检测
     bool bcatch = Settings::get().settings()->getOption(QString("set.start.crash")).toBool();
     if (bcatch) {
-        dynamic_cast<MpvProxy*>(m_pEngine->getMpvProxy())->setDecodeModel(DecodeMode::AUTO);
+        pMpvProxy->setDecodeModel(DecodeMode::AUTO);
         Settings::get().settings()->setOption(QString("base.decode.select"),DecodeMode::AUTO);
     } else {
         int value = Settings::get().settings()->getOption(QString("base.decode.select")).toInt();
-        dynamic_cast<MpvProxy*>(m_pEngine->getMpvProxy())->setDecodeModel(value);
+        pMpvProxy->setDecodeModel(value);
     }
 }
 

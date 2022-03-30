@@ -253,5 +253,6 @@
         <file>resources/icons/stop_new/18.png</file>
         <file>resources/icons/short_fail.svg</file>
         <file>resources/icons/short_ok.svg</file>
+        <file>resources/data/GstSettings.json</file>
     </qresource>
 </RCC>

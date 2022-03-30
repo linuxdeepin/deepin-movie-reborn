@@ -38,6 +38,8 @@
 #include "dmr_settings.h"
 #endif
 #include "dvd_utils.h"
+#include "compositing_manager.h"
+#include "gstutils.h"
 
 #include <QSvgRenderer>
 
@@ -258,6 +260,10 @@ struct MovieInfo PlaylistModel::parseFromFile(const QFileInfo &fi, bool *ok)
     AVCodecParameters *video_dec_ctx = nullptr;
     AVCodecParameters *audio_dec_ctx = nullptr;
 
+    if (!CompositingManager::isMpvExists()) {
+        return parseFromFileByQt(fi, ok);
+    }
+
     if (!fi.exists()) {
         if (ok) *ok = false;
         return mi;
@@ -366,6 +372,19 @@ struct MovieInfo PlaylistModel::parseFromFile(const QFileInfo &fi, bool *ok)
     return mi;
 }
 
+MovieInfo PlaylistModel::parseFromFileByQt(const QFileInfo &fi, bool *ok)
+{
+    struct MovieInfo mi;
+
+    mi = GstUtils::get()->parseFileByGst(fi);
+
+    if (fi.exists()) {
+        *ok = true;
+    }
+
+    return mi;
+}
+
 bool PlayItemInfo::refresh()
 {
     if (url.isLocalFile()) {
@@ -449,9 +468,10 @@ QString PlaylistModel::libPath(const QString &strlib)
     } else {
         list.sort();
     }
-
-    Q_ASSERT(list.size() > 0);
-    return list.last();
+    if (list.size()>0)
+        return list.last();
+    else
+        return QString();
 }
 
 void PlaylistModel::initThumb()
@@ -462,16 +482,16 @@ void PlaylistModel::initThumb()
     m_mvideo_thumbnailer_create_image_data = (mvideo_thumbnailer_create_image_data) library.resolve("video_thumbnailer_create_image_data");
     m_mvideo_thumbnailer_destroy_image_data = (mvideo_thumbnailer_destroy_image_data) library.resolve("video_thumbnailer_destroy_image_data");
     m_mvideo_thumbnailer_generate_thumbnail_to_buffer = (mvideo_thumbnailer_generate_thumbnail_to_buffer) library.resolve("video_thumbnailer_generate_thumbnail_to_buffer");
-    m_video_thumbnailer = m_mvideo_thumbnailer();
 
     if (m_mvideo_thumbnailer == nullptr
             || m_mvideo_thumbnailer_destroy == nullptr
             || m_mvideo_thumbnailer_create_image_data == nullptr
             || m_mvideo_thumbnailer_destroy_image_data == nullptr
-            || m_mvideo_thumbnailer_generate_thumbnail_to_buffer == nullptr
-            || m_video_thumbnailer == nullptr) {
+            || m_mvideo_thumbnailer_generate_thumbnail_to_buffer == nullptr) {
         return;
     }
+
+    m_video_thumbnailer = m_mvideo_thumbnailer();
 
     m_image_data = m_mvideo_thumbnailer_create_image_data();
     m_video_thumbnailer->thumbnail_size = 400 * qApp->devicePixelRatio();
@@ -1106,7 +1126,7 @@ void PlaylistModel::delayedAppendAsync(const QList<QUrl> &urls)
     };
 
     qInfo() << "not wayland";
-    if (QThread::idealThreadCount() > 1) {
+    if (QThread::idealThreadCount() > 1 && CompositingManager::isMpvExists()) {
         if (!m_getThumanbil) {
             m_getThumanbil = new GetThumanbil(this, t_urls);
             connect(m_getThumanbil, &GetThumanbil::finished, this, &PlaylistModel::onAsyncFinished);
@@ -1451,7 +1471,7 @@ struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl &url, const QFil
                 isMusic = true;
             }
 
-            if (isMusic == false) {
+            if (isMusic == false && m_mvideo_thumbnailer_generate_thumbnail_to_buffer) {
                 m_mvideo_thumbnailer_generate_thumbnail_to_buffer(m_video_thumbnailer, fi.canonicalFilePath().toUtf8().data(),  m_image_data);
                 auto img = QImage::fromData(m_image_data->image_data_ptr, static_cast<int>(m_image_data->image_data_size), "png");
                 pm = QPixmap::fromImage(img);

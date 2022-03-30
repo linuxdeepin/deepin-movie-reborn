@@ -32,14 +32,14 @@
  * files in the program, then also delete it here.
  */
 #include "filefilter.h"
-
-#include <QMimeDatabase>
-#include <QMimeType>
+#include "compositing_manager.h"
 
 FileFilter* FileFilter::m_pFileFilter = nullptr;
 
 FileFilter::FileFilter()
 {
+    m_bMpvExists = dmr::CompositingManager::isMpvExists();
+
     QLibrary avformatLibrary(libPath("libavformat.so"));
 
     g_mvideo_avformat_open_input = (mvideo_avformat_open_input) avformatLibrary.resolve("avformat_open_input");
@@ -59,8 +59,10 @@ QString FileFilter::libPath(const QString &strlib)
         list.sort();
     }
 
-    Q_ASSERT(list.size() > 0);
-    return list.last();
+    if(list.size() > 0)
+        return list.last();
+    else
+        return QString();
 }
 
 FileFilter *FileFilter::instance()
@@ -74,46 +76,22 @@ FileFilter *FileFilter::instance()
 
 bool FileFilter::isMediaFile(QUrl url)
 {
-    int nRet;
-    QString strFormatName;
-    int nStreamNum = 0;
+    MediaType miType;
     bool bMedia = false;
-    QMimeDatabase db;
-    QString strMimeType;
-
-    strMimeType = db.mimeTypeForUrl(url).name();
-
-    AVFormatContext *av_ctx = nullptr;
 
     if(!url.isLocalFile()) {   // url 文件不做判断,默认可以播放
         return true;
     }
 
-    nRet = g_mvideo_avformat_open_input(&av_ctx, url.toString().toUtf8().constData(), nullptr, nullptr);
-
-    if(nRet < 0)
-    {
-        return false;
+    if (m_bMpvExists) {
+        miType = typeJudgeByFFmpeg(url);
+    } else {
+        miType = typeJudgeByQt(url);
     }
 
-    if(av_ctx->probe_score <= AVPROBE_SCORE_RETRY)  // format 匹配度不高
-    {
-        return false;
-    }
-
-    if(g_mvideo_avformat_find_stream_info(av_ctx, nullptr) < 0)
-    {
-        return false;
-    }
-
-    nStreamNum = static_cast<int>(av_ctx->nb_streams);
-    strFormatName = av_ctx->iformat->long_name;
-
-    if(nStreamNum > 0 && !strFormatName.contains("Tele-typewriter") && !strFormatName.contains("subtitle")
-            && !strMimeType.startsWith("image/"))       // 排除文本文件，如果只用mimetype判断会遗漏部分原始格式文件如：h264裸流
+    if (miType == MediaType::Audio || miType == MediaType::Video) {
         bMedia = true;
-
-    g_mvideo_avformat_close_input(&av_ctx);
+    }
 
     return bMedia;
 }
@@ -162,91 +140,53 @@ QUrl FileFilter::fileTransfer(QString strFile)
 
 bool FileFilter::isAudio(QUrl url)
 {
+    bool bAudio = false;
+
     if(m_mapCheckAudio.contains(url)) {
         return m_mapCheckAudio.value(url);
     } else {
         m_mapCheckAudio.clear();
     }
-    int nRet;
-    QString strFormatName;
-    bool bAudio = false;
+
+    if (m_bMpvExists) {
+        bAudio = typeJudgeByFFmpeg(url) == MediaType::Audio ? true : false;
+    } else {
+        bAudio = typeJudgeByQt(url) == MediaType::Audio ? true : false;
+    }
+
     m_mapCheckAudio[url] = bAudio;
 
-    AVFormatContext *av_ctx = nullptr;
-
-    if(!url.isLocalFile()) {   // url 文件不做判断
-        return false;
-    }
-
-    nRet = g_mvideo_avformat_open_input(&av_ctx, url.toString().toUtf8().constData(), nullptr, nullptr);
-
-    if(nRet < 0)
-    {
-        return false;
-    }
-    if(g_mvideo_avformat_find_stream_info(av_ctx, nullptr) < 0)
-    {
-        return false;
-    }
-
-    strFormatName = av_ctx->iformat->long_name;
-
-    if (av_ctx->nb_streams == 1)
-    {
-         AVStream *in_stream = av_ctx->streams[0];
-
-         if (in_stream->codec->codec_type == AVMEDIA_TYPE_AUDIO)
-         {
-             bAudio = true;
-         }
-    }
-    else
-    {
-        if (strFormatName.contains("audio"))
-            bAudio = true;
-    }
-
-    g_mvideo_avformat_close_input(&av_ctx);
-    m_mapCheckAudio[url] = bAudio;
     return bAudio;
 }
 
 bool FileFilter::isSubtitle(QUrl url)
 {
-    int nRet;
-    QString strFormatName;
-    bool bSubtitle = false;
-
-    AVFormatContext *av_ctx = nullptr;
-
-    nRet = g_mvideo_avformat_open_input(&av_ctx, url.toString().toUtf8().constData(), nullptr, nullptr);
-
-    if(nRet < 0)
-    {
-        return false;
+    if (m_bMpvExists) {
+        return typeJudgeByFFmpeg(url) == MediaType::Subtitle ? true : false;
+    } else {
+        return typeJudgeByQt(url) == MediaType::Subtitle ? true : false;
     }
-    if(g_mvideo_avformat_find_stream_info(av_ctx, nullptr) < 0)
-    {
-        return false;
-    }
-
-    strFormatName = av_ctx->iformat->long_name;
-
-    if(strFormatName.contains("subtitle"))
-        bSubtitle = true;
-
-    g_mvideo_avformat_close_input(&av_ctx);
-
-    return bSubtitle;
 }
 
 bool FileFilter::isVideo(QUrl url)
 {
+    if (m_bMpvExists) {
+        return typeJudgeByFFmpeg(url) == MediaType::Video ? true : false;
+    } else {
+        return typeJudgeByQt(url) == MediaType::Video ? true : false;
+    }
+}
+
+FileFilter::MediaType FileFilter::typeJudgeByFFmpeg(const QUrl &url)
+{
     int nRet;
     QString strFormatName;
-    bool bVideo = false;
-    int nWidth = 0;
-    int nHeight = 0;
+    bool bVCodec = false;
+    bool bACodec = false;
+    bool bSCodec = false;
+    MediaType miType = MediaType::Other;
+
+    QString strMimeType = m_mimeDB.mimeTypeForUrl(url).name();
 
     AVFormatContext *av_ctx = nullptr;
 
@@ -254,11 +194,11 @@ bool FileFilter::isVideo(QUrl url)
 
     if(nRet < 0)
     {
-        return false;
+        return MediaType::Other;
     }
     if(g_mvideo_avformat_find_stream_info(av_ctx, nullptr) < 0)
     {
-        return false;
+        return MediaType::Other;
     }
 
     strFormatName = av_ctx->iformat->long_name;
@@ -267,18 +207,50 @@ bool FileFilter::isVideo(QUrl url)
      {
          AVStream *in_stream = av_ctx->streams[i];
 
-         if (in_stream->codec->codec_type == AVMEDIA_TYPE_VIDEO)
-        {
-             nWidth = in_stream->codec->width;
-             nHeight = in_stream->codec->height;
+         if (in_stream->codecpar->codec_type == AVMEDIA_TYPE_VIDEO) {
+             bVCodec = true;
+         } else if (in_stream->codecpar->codec_type == AVMEDIA_TYPE_AUDIO) {
+             bACodec = true;
+         } else if (in_stream->codecpar->codec_type == AVMEDIA_TYPE_SUBTITLE) {
+             bSCodec = true;
          }
     }
 
-    if(!strFormatName.contains("audio") && nWidth > 0 && nHeight > 0)
-           bVideo = true;
+    if (bVCodec) {
+        miType = MediaType::Video;
+    } else if (bACodec) {
+        miType = MediaType::Audio;
+    } else if (bSCodec) {
+        miType = MediaType::Subtitle;
+    } else {
+        miType = MediaType::Other;
+    }
+
+    if(strFormatName.contains("Tele-typewriter") || strMimeType.startsWith("image/"))       // 排除文本文件，如果只用mimetype判断会遗漏部分原始格式文件如：h264裸流
+        miType = MediaType::Other;
 
     g_mvideo_avformat_close_input(&av_ctx);
 
-    return bVideo;
+    return  miType;
+}
+
+FileFilter::MediaType FileFilter::typeJudgeByQt(const QUrl &url)
+{
+    MediaType miType;
+
+    QString strMimeType = m_mimeDB.mimeTypeForUrl(url).name();
+
+    if (strMimeType.startsWith("audio/")) {
+        miType = MediaType::Audio;
+    }
+    else if (strMimeType.startsWith("video/")) {
+        miType = MediaType::Video;
+    } else if (strMimeType.startsWith("text/")) {
+        miType = MediaType::Subtitle;
+    } else {
+      miType = MediaType::Other;
+    }
+
+    return miType;
 }
 
