@@ -34,6 +34,8 @@
 #include <QtCore>
 #include <QtGui>
 
+#include <DStandardPaths>
+
 #include "dmr_settings.h"
 #include "compositing_manager.h"
 #include "utils.h"
@@ -52,12 +54,9 @@ Settings &Settings::get()
 }
 
 Settings::Settings()
-    : QObject(nullptr), m_sConfigPath("%1/%2/%3/config.conf")
+    : QObject(nullptr)
 {
-    m_sConfigPath = m_sConfigPath
-                    .arg(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation))
-                    .arg(qApp->organizationName())
-                    .arg(qApp->applicationName());
+    m_sConfigPath = DStandardPaths::writableLocation(QStandardPaths::AppConfigLocation);
     qInfo() << "configPath" << m_sConfigPath;
     QSettingBackend *pBackend = new QSettingBackend(m_sConfigPath);
 #if defined (__mips__) || defined (__sw_64__) || defined ( __aarch64__)

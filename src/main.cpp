@@ -57,6 +57,7 @@
 #include "vendor/presenter.h"
 #include <QSettings>
 
+#include <DStandardPaths>
 
 #include <stdio.h>
 #include <unistd.h>
@@ -71,16 +72,16 @@ bool runSingleInstance()
     std::string path;
     QString userName = QDir::homePath().section("/", -1, -1);
     if (userName == "root") {
-        path = "/tmp/deepin-movie/";
+        path = "/tmp/deepin-movie";
     } else {
-        path = ("/home/" + userName + "/.cache/deepin/deepin-movie/").toStdString();
+        path = DStandardPaths::writableLocation(QStandardPaths::AppConfigLocation).toStdString();
     }
     QDir tdir(path.c_str());
     if (!tdir.exists()) {
         tdir.mkpath(path.c_str());
     }
 
-    path += "single";
+    path += "/single";
     int fd = open(path.c_str(), O_WRONLY | O_CREAT, 0644);
     int flock = lockf(fd, F_TLOCK, 0);
 
