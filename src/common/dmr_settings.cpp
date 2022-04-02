@@ -113,9 +113,11 @@ Settings::Settings()
     hwaccelFamily->setData("items", hwaccelDatabase);
 
     QFontDatabase fontDatabase;
-    auto fontFamliy = m_pSettings->option("subtitle.font.family");
-    fontFamliy->setData("items", fontDatabase.families());
-    //fontFamliy->setValue(0);
+    QPointer<DSettingsOption> fontFamliy = m_pSettings->option("subtitle.font.family");
+    if(fontFamliy) {
+        fontFamliy->setData("items", fontDatabase.families());
+    }
+
     QFileInfo fi("/dev/mwv206_0");      //景嘉微显卡默认不勾选预览
     if (fi.exists() && utils::check_wayland_env()) {
         setInternalOption("mousepreview", false);

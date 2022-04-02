@@ -314,18 +314,6 @@
                             "name": "Mute",
                             "type": "shortcut",
                             "default": "M"
-                        },
-                        {
-                            "key": "previous_frame",
-                            "name": "Previous frame",
-                            "type": "shortcut",
-                            "default": "Ctrl+shift+Left"
-                        },
-                        {
-                            "key": "next_frame",
-                            "name": "Next frame",
-                            "type": "shortcut",
-                            "default": "Ctrl+shift+Right"
                         }
                     ]
                 },
@@ -344,36 +332,6 @@
                             "name": "Film screenshot",
                             "type": "shortcut",
                             "default": "Alt+A"
-                        },
-                        {
-                            "key": "burst_screenshot",
-                            "name": "Burst shooting",
-                            "type": "shortcut",
-                            "default": "Alt+S"
-                        }
-                    ]
-                },
-                {
-                    "key": "sub",
-                    "name": "Subtitle",
-                    "options": [
-                        {
-                            "key": "enable",
-                            "type": "checkbox",
-                            "hide": true,
-                            "default": "true"
-                        },
-                        {
-                            "key": "sub_forward",
-                            "name": "0.5s forward",
-                            "type": "shortcut",
-                            "default": "Shift+Right"
-                        },
-                        {
-                            "key": "sub_backward",
-                            "name": "0.5s backward",
-                            "type": "shortcut",
-                            "default": "Shift+Left"
                         }
                     ]
                 },
@@ -404,30 +362,6 @@
                             "name": "Open next",
                             "type": "shortcut",
                             "default": "PgDown"
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "key": "subtitle",
-            "name": "Subtitle",
-            "groups": [
-                {
-                    "key": "font",
-                    "name": "Font Style",
-                    "options": [
-                        {
-                            "key": "family",
-                            "name": "Font",
-                            "type": "combobox",
-                            "default": 0
-                        },
-                        {
-                            "key": "size",
-                            "name": "Size",
-                            "type": "spinbutton",
-                            "default": 19
                         }
                     ]
                 }

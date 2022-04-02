@@ -513,17 +513,12 @@ void QtPlayerProxy::seekAbsolute(int nPos)
 
 QSize QtPlayerProxy::videoSize() const
 {
-//    if (state() == PlayState::Stopped) return QSize(-1, -1);
-//    QSize size = QSize(my_get_property(m_handle, "dwidth").toInt(),
-//                       my_get_property(m_handle, "dheight").toInt());
+    PlayItemInfo currentInfo;
+    if (0 < dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist()->size()) {
+         currentInfo = dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist()->currentInfo();
+    }
 
-//    auto r = my_get_property(m_handle, "video-out-params/rotate").toInt();
-//    if (r == 90 || r == 270) {
-//        size.transpose();
-//    }
-
-//    return size;
-    return QSize(800,600);
+    return QSize(currentInfo.mi.width, currentInfo.mi.height);
 }
 
 qint64 QtPlayerProxy::duration() const

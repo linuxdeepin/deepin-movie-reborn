@@ -305,7 +305,7 @@ MovieInfoDialog::MovieInfoDialog(const struct PlayItemInfo &pif ,QWidget *parent
     }
     QString strFps = strMovieInfo.fps > 0 ? QString(tr("%1 fps")).arg(strMovieInfo.fps) : "-";
     QString strProportion = strMovieInfo.proportion > 0.0f ? QString(tr("%1")).arg(static_cast<double>(strMovieInfo.proportion)) : "-";
-    QString strResolution = strMovieInfo.resolution.isEmpty() ? "-" : strMovieInfo.resolution;
+    QString strResolution = strMovieInfo.width > 0 ? strMovieInfo.resolution : "-" ;
 
     QString strACodecName = strMovieInfo.audioCodec();
     if(strACodecName.isEmpty()) {

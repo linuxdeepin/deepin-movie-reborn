@@ -245,10 +245,6 @@ signals:
      */
     void frameMenuEnable(bool);
     /**
-     * @brief 画面菜单是否可用信号
-     */
-    void screenShotMenuEnable(bool);
-    /**
      * @brief 播放速度菜单是否可用信号
      */
     void playSpeedMenuEnable(bool);

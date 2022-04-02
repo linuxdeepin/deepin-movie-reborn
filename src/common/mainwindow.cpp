@@ -699,7 +699,6 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ActionFactory::get().mainContextMenu(), &DMenu::triggered, this, &MainWindow::menuItemInvoked);
     connect(ActionFactory::get().playlistContextMenu(), &DMenu::triggered, this, &MainWindow::menuItemInvoked);
     connect(this, &MainWindow::frameMenuEnable, &ActionFactory::get(), &ActionFactory::frameMenuEnable);
-    connect(this, &MainWindow::screenShotMenuEnable, &ActionFactory::get(), &ActionFactory::screenShotMenuEnable);
     connect(this, &MainWindow::playSpeedMenuEnable, &ActionFactory::get(), &ActionFactory::playSpeedMenuEnable);
     connect(this, &MainWindow::subtitleMenuEnable, &ActionFactory::get(), &ActionFactory::subtitleMenuEnable);
     connect(qApp, &QGuiApplication::focusWindowChanged, this, &MainWindow::slotFocusWindowChanged);
@@ -767,7 +766,6 @@ MainWindow::MainWindow(QWidget *parent)
                 m_pProgIndicator->setVisible(false);
             }
             emit frameMenuEnable(false);
-            emit screenShotMenuEnable(false);
             emit playSpeedMenuEnable(false);
         }
 
@@ -777,11 +775,9 @@ MainWindow::MainWindow(QWidget *parent)
 
             if (m_pEngine->playlist().count() > 0 && !m_pEngine->isAudioFile(m_pEngine->playlist().currentInfo().mi.filePath)) {
                 emit frameMenuEnable(true);
-                emit screenShotMenuEnable(true);
                 setMusicShortKeyState(true);
             } else {
                 emit frameMenuEnable(false);
-                emit screenShotMenuEnable(false);
                 setMusicShortKeyState(false);
             }
             emit playSpeedMenuEnable(true);
@@ -809,11 +805,6 @@ MainWindow::MainWindow(QWidget *parent)
                 utils::UnInhibitPower(m_nPowerCookie);
                 m_nPowerCookie = 0;
             }
-        }
-
-        if (!CompositingManager::isMpvExists()) {
-            emit frameMenuEnable(false);
-            emit subtitleMenuEnable(false);
         }
     });
 
@@ -1301,13 +1292,17 @@ void MainWindow::updateActionsState()
 void MainWindow::reflectActionToUI(ActionFactory::ActionKind actionKind)
 {
     QList<QAction *> listActs;
+    listActs = ActionFactory::get().findActionsByKind(actionKind);
+    if(listActs.size()<=0) {
+        return;
+    }
+
     switch (actionKind) {
     case ActionFactory::ActionKind::WindowAbove:
     case ActionFactory::ActionKind::ToggleFullscreen:
     case ActionFactory::ActionKind::TogglePlaylist:
     case ActionFactory::ActionKind::HideSubtitle: {
         qInfo() << __func__ << actionKind;
-        listActs = ActionFactory::get().findActionsByKind(actionKind);
         auto p = listActs.begin();
         while (p != listActs.end()) {
             bool bOld = (*p)->isEnabled();
@@ -1329,7 +1324,6 @@ void MainWindow::reflectActionToUI(ActionFactory::ActionKind actionKind)
     }
 
     case ActionFactory::ActionKind::ToggleMiniMode: {
-        listActs = ActionFactory::get().findActionsByKind(actionKind);
         auto p = listActs[0];
 
         p->setEnabled(false);
@@ -1343,7 +1337,6 @@ void MainWindow::reflectActionToUI(ActionFactory::ActionKind actionKind)
         QString sCodePage;
         sCodePage = m_pEngine->subCodepage();
         qInfo() << "codepage" << sCodePage;
-        listActs = ActionFactory::get().findActionsByKind(actionKind);
         auto p = listActs.begin();
         while (p != listActs.end()) {
             auto args = ActionFactory::actionArgs(*p);
@@ -1384,7 +1377,6 @@ void MainWindow::reflectActionToUI(ActionFactory::ActionKind actionKind)
         }
 
         qInfo() << __func__ << actionKind << "idx = " << nIdx;
-        listActs = ActionFactory::get().findActionsByKind(actionKind);
         auto p = listActs.begin();
         while (p != listActs.end()) {
             auto args = ActionFactory::actionArgs(*p);
@@ -1403,14 +1395,12 @@ void MainWindow::reflectActionToUI(ActionFactory::ActionKind actionKind)
 
     case ActionFactory::ActionKind::Stereo:
     case ActionFactory::ActionKind::OneTimes: {
-        listActs = ActionFactory::get().findActionsByKind(actionKind);
         auto p = listActs.begin();
         (*p)->setChecked(true);
         break;
     }
     case ActionFactory::ActionKind::DefaultFrame: {
         qInfo() << __func__ << actionKind;
-        listActs = ActionFactory::get().findActionsByKind(actionKind);
         auto p = listActs.begin();
         bool bOld = (*p)->isEnabled();
         (*p)->setEnabled(false);
@@ -1424,7 +1414,6 @@ void MainWindow::reflectActionToUI(ActionFactory::ActionKind actionKind)
     case ActionFactory::ActionKind::SingleLoop:
     case ActionFactory::ActionKind::ListLoop: {
         qInfo() << __func__ << actionKind;
-        listActs = ActionFactory::get().findActionsByKind(actionKind);
         auto p = listActs.begin();
         (*p)->setChecked(true);
         break;
@@ -1633,11 +1622,7 @@ bool MainWindow::isActionAllowed(ActionFactory::ActionKind actionKind, bool from
         case ActionFactory::ToggleMiniMode:
         case ActionFactory::MatchOnlineSubtitle:
         case ActionFactory::BurstScreenshot:
-            if(!CompositingManager::isMpvExists()){
-                bRet = false;
-            } else {
-                bRet = m_pEngine->state() != PlayerEngine::Idle;
-            }
+            bRet = m_pEngine->state() != PlayerEngine::Idle;
             break;
 
         case ActionFactory::MovieInfo:
@@ -1741,10 +1726,18 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
 #ifndef USE_TEST
         DFileDialog fileDialog;
         QStringList filenames;
+
+        QString strVideoTypes = m_pEngine->video_filetypes.join(" ");
+        QString strAudioTypes = m_pEngine->audio_filetypes.join(" ");
+        if(!CompositingManager::isMpvExists()) {
+            strVideoTypes = QString("*.ogg *.dv *.avi *.webm");
+            strAudioTypes = QString("*.wv *.flac *.mp3");
+        }
+
         fileDialog.setParent(this);
-        fileDialog.setNameFilters({tr("All (*)"), QString("Video (%1)").arg(m_pEngine->video_filetypes.join(" ")),
-                                   QString("Audio (%1)").arg(m_pEngine->audio_filetypes.join(" "))});
-        fileDialog.selectNameFilter(QString("Video (%1)").arg(m_pEngine->video_filetypes.join(" ")));
+        fileDialog.setNameFilters({tr("All (*)"), QString("Video (%1)").arg(strVideoTypes),
+                                   QString("Audio (%1)").arg(strAudioTypes)});
+        fileDialog.selectNameFilter(QString("Video (%1)").arg(strVideoTypes));
         fileDialog.setDirectory(lastOpenedPath());
         fileDialog.setFileMode(QFileDialog::ExistingFiles);
 
@@ -1771,9 +1764,17 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
     case ActionFactory::ActionKind::OpenFile: {
         DFileDialog fileDialog(this);
         QStringList filename;
-        fileDialog.setNameFilters({tr("All (*)"), QString("Video (%1)").arg(m_pEngine->video_filetypes.join(" ")),
-                                   QString("Audio (%1)").arg(m_pEngine->audio_filetypes.join(" "))});
-        fileDialog.selectNameFilter(QString("Video (%1)").arg(m_pEngine->video_filetypes.join(" ")));
+        QString strVideoTypes = m_pEngine->video_filetypes.join(" ");
+        QString strAudioTypes = m_pEngine->audio_filetypes.join(" ");
+        if(!CompositingManager::isMpvExists()) {
+            strVideoTypes = QString("ogg dv avi webm");
+            strAudioTypes = QString("wv flac mp3");
+        }
+
+        fileDialog.setParent(this);
+        fileDialog.setNameFilters({tr("All (*)"), QString("Video (%1)").arg(strVideoTypes),
+                                   QString("Audio (%1)").arg(strAudioTypes)});
+        fileDialog.selectNameFilter(QString("Video (%1)").arg(strVideoTypes));
         fileDialog.setDirectory(lastOpenedPath());
         fileDialog.setFileMode(QFileDialog::ExistingFiles);
 

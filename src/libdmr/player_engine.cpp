@@ -172,10 +172,16 @@ bool PlayerEngine::isSubtitle(const QString &name)
 void PlayerEngine::updateSubStyles()
 {
 #ifndef _LIBDMR_
-    auto font_opt = Settings::get().settings()->option("subtitle.font.family");
-    auto font_id = font_opt->value().toInt();
-    auto font = font_opt->data("items").toStringList()[font_id];
-    auto sz = Settings::get().settings()->option("subtitle.font.size")->value().toInt();
+    QPointer<DSettingsOption> pFontOpt = Settings::get().settings()->option("subtitle.font.family");
+    QPointer<DSettingsOption> pSizeOpt = Settings::get().settings()->option("subtitle.font.size");
+    if(!pFontOpt || !pSizeOpt)
+    {
+        return;
+    }
+
+    int fontId = pFontOpt->value().toInt();
+    int size = pSizeOpt->value().toInt();
+    QString font = pFontOpt->data("items").toStringList()[fontId];
 
     if (_state != CoreState::Idle) {
         if (_playlist->current() < 0) return;
@@ -185,11 +191,10 @@ void PlayerEngine::updateSubStyles()
             vh = _playlist->currentInfo().mi.height;
         }
         double scale = vh / 720.0;
-        sz /= scale;
+        size /= scale;
         /* magic scale number 2.0 comes from my mind, test with my eyes... */
-        sz *= 2.0;
-        qInfo() << "update sub " << font << sz;
-        updateSubStyle(font, sz);
+        size *= 2.0;
+        updateSubStyle(font, size);
     }
 #endif
 }
