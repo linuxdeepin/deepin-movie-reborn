@@ -69,9 +69,8 @@ set(OBJECT_DIR ${CMAKE_BINARY_DIR}/CMakeFiles/objects)
 # 使用第三方库需要用到的一个包
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(3rd_lib REQUIRED
-        dtkwidget dtkgui libffmpegthumbnailer
-        libpulse dvdnav gsettings-qt  mpv x11 xext xtst xcb gl
-        libavformat libavcodec libavutil
+        dtkwidget dtkgui
+        libpulse dvdnav gsettings-qt x11 xext xtst xcb gl
         xcb-aux xcb-proto xcb-ewmh xcb-shape mpris-qt5 dbusextended-qt5 libva libva-x11
         )
     #libpulse-simple xcb-aux gtest

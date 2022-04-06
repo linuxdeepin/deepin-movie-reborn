@@ -127,9 +127,8 @@ find_package(PkgConfig REQUIRED)
 #    PkgConfig::AV pthread GL)
 # 检查第三方库(这里检查了名字为dtkwidget的库和名字为dtkgui的库)，然后取名3rd_lib
 pkg_check_modules(3rd_lib REQUIRED
-        dtkwidget dtkgui libffmpegthumbnailer
-        libpulse dvdnav gsettings-qt  mpv x11 xext xtst xcb gl
-        libavformat libavcodec libavutil
+        dtkwidget dtkgui
+        libpulse dvdnav gsettings-qt x11 xext xtst xcb gl
         xcb-aux xcb-proto xcb-ewmh xcb-shape mpris-qt5 dbusextended-qt5 libva libva-x11
         gstreamer-1.0 glib-2.0 gstreamer-pbutils-1.0
         )

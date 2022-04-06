@@ -55,6 +55,11 @@ typedef int (*mvideo_avformat_find_stream_info)(AVFormatContext *ic, AVDictionar
 typedef int (*mvideo_av_find_best_stream)(AVFormatContext *ic, enum AVMediaType type, int wanted_stream_nb, int related_stream, AVCodec **decoder_ret, int flags);
 typedef void (*mvideo_avformat_close_input)(AVFormatContext **s);
 typedef AVDictionaryEntry *(*mvideo_av_dict_get)(const AVDictionary *m, const char *key, const AVDictionaryEntry *prev, int flags);
+typedef void (*mvideo_av_dump_format)(AVFormatContext *ic,int index, const char *url, int is_output);
+typedef AVCodec *(*mvideo_avcodec_find_decoder)(enum AVCodecID id);
+typedef const char *(*mvideo_av_get_media_type_string)(enum AVMediaType media_type);
+typedef AVCodecContext *(*mvideo_avcodec_alloc_context3)(const AVCodec *codec);
+typedef int (*mvideo_avcodec_parameters_to_context)(AVCodecContext *codec, const AVCodecParameters *par);
 
 
 mvideo_avformat_open_input g_mvideo_avformat_open_input = nullptr;
@@ -62,6 +67,11 @@ mvideo_avformat_find_stream_info g_mvideo_avformat_find_stream_info = nullptr;
 mvideo_av_find_best_stream g_mvideo_av_find_best_stream = nullptr;
 mvideo_avformat_close_input g_mvideo_avformat_close_input = nullptr;
 mvideo_av_dict_get g_mvideo_av_dict_get = nullptr;
+mvideo_av_dump_format g_mvideo_av_dump_format = nullptr;
+mvideo_avcodec_find_decoder g_mvideo_avcodec_find_decoder = nullptr;
+mvideo_av_get_media_type_string g_mvideo_av_get_media_type_string = nullptr;
+mvideo_avcodec_alloc_context3 g_mvideo_avcodec_alloc_context3 = nullptr;
+mvideo_avcodec_parameters_to_context g_mvideo_avcodec_parameters_to_context = nullptr;
 
 namespace dmr {
 QDataStream &operator<< (QDataStream &st, const MovieInfo &mi)
@@ -509,6 +519,11 @@ void PlaylistModel::initFFmpeg()
     g_mvideo_av_find_best_stream = (mvideo_av_find_best_stream) avformatLibrary.resolve("av_find_best_stream");
     g_mvideo_avformat_close_input = (mvideo_avformat_close_input) avformatLibrary.resolve("avformat_close_input");
     g_mvideo_av_dict_get = (mvideo_av_dict_get) avutilLibrary.resolve("av_dict_get");
+    g_mvideo_av_dump_format = (mvideo_av_dump_format) avformatLibrary.resolve("av_dump_format");
+    g_mvideo_avcodec_find_decoder = (mvideo_avcodec_find_decoder) avcodecLibrary.resolve("avcodec_find_decoder");
+    g_mvideo_av_get_media_type_string = (mvideo_av_get_media_type_string) avutilLibrary.resolve("av_get_media_type_string");
+    g_mvideo_avcodec_alloc_context3 = (mvideo_avcodec_alloc_context3) avcodecLibrary.resolve("avcodec_alloc_context3");
+    g_mvideo_avcodec_parameters_to_context = (mvideo_avcodec_parameters_to_context) avcodecLibrary.resolve("avcodec_parameters_to_context");
 
     m_initFFmpeg = true;
 }
@@ -632,7 +647,6 @@ QImage PlaylistModel::getMovieCover(const QUrl &url)
 {
     if (!m_bInitThumb) {
         initThumb();
-        m_mvideo_thumbnailer_destroy_image_data(m_image_data);
         m_image_data = nullptr;
     }
 
@@ -1570,9 +1584,9 @@ static int open_codec_context(int *stream_idx,
     AVStream *st;
     AVCodec *dec = NULL;
     AVDictionary *opts = NULL;
-    ret = av_find_best_stream(fmt_ctx, type, -1, -1, NULL, 0);
+    ret = g_mvideo_av_find_best_stream(fmt_ctx, type, -1, -1, NULL, 0);
     if (ret < 0) {
-        qWarning() << "Could not find " << av_get_media_type_string(type)
+        qWarning() << "Could not find " << g_mvideo_av_get_media_type_string(type)
                    << " stream in input file";
         return ret;
     }
@@ -1581,26 +1595,26 @@ static int open_codec_context(int *stream_idx,
     st = fmt_ctx->streams[stream_index];
 #if LIBAVFORMAT_VERSION_MAJOR >= 57
     *dec_ctx = st->codecpar;
-    dec = avcodec_find_decoder((*dec_ctx)->codec_id);
+    dec = g_mvideo_avcodec_find_decoder((*dec_ctx)->codec_id);
 #else
     /* find decoder for the stream */
-    dec = avcodec_find_decoder(st->codecpar->codec_id);
+    dec = g_mvideo_avcodec_find_decoder(st->codecpar->codec_id);
     if (!dec) {
         fprintf(stderr, "Failed to find %s codec\n",
-                av_get_media_type_string(type));
+                g_mvideo_av_get_media_type_string(type));
         return AVERROR(EINVAL);
     }
     /* Allocate a codec context for the decoder */
-    *dec_ctx = avcodec_alloc_context3(dec);
+    *dec_ctx = g_mvideo_avcodec_alloc_context3(dec);
     if (!*dec_ctx) {
         fprintf(stderr, "Failed to allocate the %s codec context\n",
-                av_get_media_type_string(type));
+                g_mvideo_av_get_media_type_string(type));
         return AVERROR(ENOMEM);
     }
     /* Copy codec parameters from input stream to output codec context */
-    if ((ret = avcodec_parameters_to_context(*dec_ctx, st->codecpar)) < 0) {
+    if ((ret = g_mvideo_avcodec_parameters_to_context(*dec_ctx, st->codecpar)) < 0) {
         fprintf(stderr, "Failed to copy %s codec parameters to decoder context\n",
-                av_get_media_type_string(type));
+                g_mvideo_av_get_media_type_string(type));
         return ret;
     }
 #endif
@@ -1622,14 +1636,14 @@ MovieInfo MovieInfo::parseFromFile(const QFileInfo &fi, bool *ok)
         return mi;
     }
 
-    auto ret = avformat_open_input(&av_ctx, fi.filePath().toUtf8().constData(), NULL, NULL);
+    auto ret = g_mvideo_avformat_open_input(&av_ctx, fi.filePath().toUtf8().constData(), NULL, NULL);
     if (ret < 0) {
         qWarning() << "avformat: could not open input";
         if (ok) *ok = false;
         return mi;
     }
 
-    if (avformat_find_stream_info(av_ctx, NULL) < 0) {
+    if (g_mvideo_avformat_find_stream_info(av_ctx, NULL) < 0) {
         qWarning() << "av_find_stream_info failed";
         if (ok) *ok = false;
         return mi;
@@ -1653,7 +1667,7 @@ MovieInfo MovieInfo::parseFromFile(const QFileInfo &fi, bool *ok)
         }
     }
 
-    av_dump_format(av_ctx, 0, fi.fileName().toUtf8().constData(), 0);
+    g_mvideo_av_dump_format(av_ctx, 0, fi.fileName().toUtf8().constData(), 0);
 
     mi.width = dec_ctx->width;
     mi.height = dec_ctx->height;
@@ -1698,7 +1712,7 @@ MovieInfo MovieInfo::parseFromFile(const QFileInfo &fi, bool *ok)
     mi.sampling = dec_ctx->sample_rate;
 
     AVDictionaryEntry *tag = NULL;
-    while ((tag = av_dict_get(av_ctx->metadata, "", tag, AV_DICT_IGNORE_SUFFIX)) != NULL) {
+    while ((tag = g_mvideo_av_dict_get(av_ctx->metadata, "", tag, AV_DICT_IGNORE_SUFFIX)) != NULL) {
         if (tag->key && strcmp(tag->key, "creation_time") == 0) {
             auto dt = QDateTime::fromString(tag->value, Qt::ISODate);
             mi.creation = dt.toString();
@@ -1710,7 +1724,7 @@ MovieInfo MovieInfo::parseFromFile(const QFileInfo &fi, bool *ok)
 
     tag = NULL;
     AVStream *st = av_ctx->streams[stream_id];
-    while ((tag = av_dict_get(st->metadata, "", tag, AV_DICT_IGNORE_SUFFIX)) != NULL) {
+    while ((tag = g_mvideo_av_dict_get(st->metadata, "", tag, AV_DICT_IGNORE_SUFFIX)) != NULL) {
         if (tag->key && strcmp(tag->key, "rotate") == 0) {
             mi.raw_rotate = QString(tag->value).toInt();
             auto vr = (mi.raw_rotate + 360) % 360;
@@ -1725,7 +1739,7 @@ MovieInfo MovieInfo::parseFromFile(const QFileInfo &fi, bool *ok)
     }
 
 
-    avformat_close_input(&av_ctx);
+    g_mvideo_avformat_close_input(&av_ctx);
     mi.valid = true;
 
     if (ok) *ok = true;
