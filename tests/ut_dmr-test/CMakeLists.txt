@@ -24,7 +24,6 @@ set(QtModule Core Gui Widgets Network X11Extras PrintSupport DBus Sql Svg Concur
 find_package(Qt5 REQUIRED ${QtModule})
 
 pkg_check_modules(Dtk REQUIRED IMPORTED_TARGET dtkwidget)
-pkg_check_modules(AV REQUIRED IMPORTED_TARGET libavformat libavutil libavcodec)
 
 include_directories(../../examples/test)
 include_directories(../../src)

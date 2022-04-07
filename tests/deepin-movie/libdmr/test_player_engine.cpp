@@ -62,3 +62,14 @@ TEST(PlayerEngine, playerEngine)
     engine->volumeDown();
     engine->toggleMute();
 }
+
+TEST(PlayerEngine, movieInfo)
+{
+#ifdef _LIBDMR_
+    MovieInfo mi;
+    bool bFlag = false;
+
+    mi = MovieInfo::parseFromFile(QFileInfo("/data/source/deepin-movie-reborn/movie/demo.mp4"), &bFlag);
+#endif
+}
+

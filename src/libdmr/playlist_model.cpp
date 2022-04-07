@@ -1635,6 +1635,13 @@ MovieInfo MovieInfo::parseFromFile(const QFileInfo &fi, bool *ok)
         if (ok) *ok = false;
         return mi;
     }
+    if (!CompositingManager::isMpvExists()) {
+        mi = GstUtils::get()->parseFileByGst(fi);
+        if(mi.valid){
+            *ok = true;
+        }
+        return mi;
+    }
 
     auto ret = g_mvideo_avformat_open_input(&av_ctx, fi.filePath().toUtf8().constData(), NULL, NULL);
     if (ret < 0) {
