@@ -116,14 +116,16 @@ PlayerEngine::PlayerEngine(QWidget *parent)
 
 PlayerEngine::~PlayerEngine()
 {
-    disconnect(_playlist, nullptr, nullptr, nullptr);
-    delete _playlist;
-    _playlist = nullptr;
-
     if (_current) {
         disconnect(_current, nullptr, nullptr, nullptr);
         delete _current;
         _current = nullptr;
+    }
+    
+    if (_playlist) {
+        disconnect(_playlist, nullptr, nullptr, nullptr);
+        delete _playlist;
+        _playlist = nullptr;
     }
     qInfo() << __func__;
 }

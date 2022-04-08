@@ -61,6 +61,12 @@ public:
 
     void setVideoTex(QImage image);
 
+#ifdef __x86_64__
+    //更新全屏时影院播放进度
+    void updateMovieProgress(qint64 duration, qint64 pos);
+#endif
+    void setRawFormatFlag(bool bRawFormat);
+
 protected:
     /**
      * @brief opengl初始化 cppcheck误报
@@ -115,6 +121,11 @@ private:
     QOpenGLTexture* m_pVideoTex;
     int m_currWidth;
     int m_currHeight;
+#ifdef __x86_64__
+    qreal m_pert; // 影院播放进度
+    QString m_strPlayTime; // 播放时间显示；
+#endif
+    bool m_bRawFormat;
 };
 
 }

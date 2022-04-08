@@ -79,6 +79,12 @@ QtPlayerProxy::QtPlayerProxy(QWidget *parent)
     connect(m_pPlayer,&QMediaPlayer::mediaStatusChanged,this,&QtPlayerProxy::slotMediaStatusChanged);
     connect(m_pPlayer,&QMediaPlayer::positionChanged,this,&QtPlayerProxy::slotPositionChanged);
     connect(m_pVideoSurface, &VideoSurface::frameAvailable, this, &QtPlayerProxy::processFrame);
+#ifdef __x86_64__
+            connect(this, &QtPlayerProxy::elapsedChanged, [ this ]() {//更新opengl显示进度
+                m_pGLWidget->updateMovieProgress(duration(), elapsed());
+                m_pGLWidget->update();
+            });
+#endif
 }
 
 
@@ -103,6 +109,13 @@ void QtPlayerProxy::updateRoundClip(bool roundClip)
 
 void QtPlayerProxy::setState(PlayState state)
 {
+    bool bRawFormat = false;
+
+    if (0 < dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist()->size()) {
+        PlayItemInfo currentInfo = dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist()->currentInfo();
+        bRawFormat = currentInfo.mi.isRawFormat();
+    }
+
     if (_state != state) {
         _state = state;
         if (m_pGLWidget) {
@@ -110,6 +123,10 @@ void QtPlayerProxy::setState(PlayState state)
             m_pGLWidget->update();
         }
         emit stateChanged();
+    }
+
+    if (m_pGLWidget) {
+        m_pGLWidget->setRawFormatFlag(bRawFormat);
     }
 }
 
