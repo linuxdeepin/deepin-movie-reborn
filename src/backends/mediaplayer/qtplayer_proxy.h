@@ -190,6 +190,7 @@ protected slots:
     void slotStateChanged(QMediaPlayer::State newState);
     void slotMediaStatusChanged(QMediaPlayer::MediaStatus status);
     void slotPositionChanged(qint64 position);
+    void slotMediaError(QMediaPlayer::Error error);
     void processFrame(QVideoFrame& frame);
 
 private:

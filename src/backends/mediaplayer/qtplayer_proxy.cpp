@@ -78,6 +78,7 @@ QtPlayerProxy::QtPlayerProxy(QWidget *parent)
     connect(m_pPlayer,&QMediaPlayer::stateChanged,this,&QtPlayerProxy::slotStateChanged);
     connect(m_pPlayer,&QMediaPlayer::mediaStatusChanged,this,&QtPlayerProxy::slotMediaStatusChanged);
     connect(m_pPlayer,&QMediaPlayer::positionChanged,this,&QtPlayerProxy::slotPositionChanged);
+    connect(m_pPlayer,SIGNAL(error(QMediaPlayer::Error)),this,SLOT(slotMediaError(QMediaPlayer::Error)));
     connect(m_pVideoSurface, &VideoSurface::frameAvailable, this, &QtPlayerProxy::processFrame);
 #ifdef __x86_64__
             connect(this, &QtPlayerProxy::elapsedChanged, [ this ]() {//更新opengl显示进度
@@ -175,6 +176,21 @@ void QtPlayerProxy::slotPositionChanged(qint64 position)
 {
     Q_UNUSED(position);
     emit elapsedChanged();
+}
+
+void QtPlayerProxy::slotMediaError(QMediaPlayer::Error error)
+{
+    switch (error) {
+    case QMediaPlayer::ResourceError:
+    case QMediaPlayer::FormatError:
+    case QMediaPlayer::NetworkError:
+    case QMediaPlayer::AccessDeniedError:
+    case QMediaPlayer::ServiceMissingError:
+        emit sigMediaError();
+        break;
+    default:
+        break;
+    }
 }
 
 void QtPlayerProxy::processFrame(QVideoFrame &frame)

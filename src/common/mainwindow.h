@@ -414,6 +414,7 @@ public slots:
      */
     void slotVolumeChanged(int nVolume);
     void slotWMChanged(QString msg);
+    void slotMediaError();
 
 protected:
     void showEvent(QShowEvent *pEvent) override;

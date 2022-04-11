@@ -213,6 +213,8 @@ signals:
     void updateDuration();
     void sigInvalidFile(QString strFileName);
 
+    void sigMediaError();
+
 public slots:
     void play();
     void pauseResume();

@@ -93,6 +93,7 @@ PlayerEngine::PlayerEngine(QWidget *parent)
         connect(_current, &Backend::mpvErrorLogsChanged, this, &PlayerEngine::mpvErrorLogsChanged);
         connect(_current, &Backend::mpvWarningLogsChanged, this, &PlayerEngine::mpvWarningLogsChanged);
         connect(_current, &Backend::urlpause, this, &PlayerEngine::urlpause);
+        connect(_current, &Backend::sigMediaError, this, &PlayerEngine::sigMediaError);
         l->addWidget(_current);
     }
 

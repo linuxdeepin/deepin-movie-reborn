@@ -705,6 +705,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(m_pToolbox, &ToolboxProxy::sigVolumeChanged, this, &MainWindow::slotVolumeChanged);
     connect(m_pToolbox, &ToolboxProxy::sigMuteStateChanged, this, &MainWindow::slotMuteChanged);
+    connect(m_pEngine, &PlayerEngine::sigMediaError, this, &MainWindow::slotMediaError);
 
     //Initialization is performed at normal conditions
     if (CompositingManager::get().platform() != Platform::Mips) {
@@ -3103,6 +3104,12 @@ void MainWindow::slotWMChanged(QString msg)
 
     m_pAnimationlable->setWM(m_bIsWM);
     m_pCommHintWid->setWM(m_bIsWM);
+}
+
+void MainWindow::slotMediaError()
+{
+    m_pCommHintWid->updateWithMessage(tr("Cannot open file or stream"));
+    m_pEngine->playlist().remove(m_pEngine->playlist().current());
 }
 
 void MainWindow::checkErrorMpvLogsChanged(const QString sPrefix, const QString sText)
