@@ -27,7 +27,7 @@ DWIDGET_USE_NAMESPACE
 namespace dmr {
 
 VolumeSlider::VolumeSlider(MainWindow *mw, QWidget *parent)
-    : DArrowRectangle(DArrowRectangle::ArrowBottom, DArrowRectangle::FloatWidget, parent), _mw(mw)
+    : QWidget(parent), _mw(mw)
 {
     if (CompositingManager::get().platform() != Platform::X86)
         setWindowFlags(Qt::ToolTip | Qt::FramelessWindowHint);
@@ -412,7 +412,7 @@ void VolumeSlider::paintEvent(QPaintEvent *)
 
 void VolumeSlider::keyPressEvent(QKeyEvent *pEvent)
 {
-    DArrowRectangle::keyPressEvent(pEvent);
+    QWidget::keyPressEvent(pEvent);
 }
 
 bool VolumeSlider::eventFilter(QObject *obj, QEvent *e)

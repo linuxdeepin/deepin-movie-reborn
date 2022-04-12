@@ -53,7 +53,7 @@ DWIDGET_USE_NAMESPACE
 
 namespace dmr {
 
-class VolumeSlider: public DArrowRectangle
+class VolumeSlider: public QWidget
 {
     Q_OBJECT
 

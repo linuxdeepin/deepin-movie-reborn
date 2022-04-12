@@ -1634,8 +1634,9 @@ void ToolboxProxy::slotVolumeButtonClicked()
      * 大于等于零表示为已完成初始化
      */
     if (!m_pVolSlider->isVisible()) {
-        m_pVolSlider->show(m_pMainWindow->width() - m_pVolBtn->width() / 2 - m_pPlayBtn->width() - 40,
+        m_pVolSlider->move(m_pMainWindow->width() - m_pVolBtn->width() / 2 - m_pPlayBtn->width() - 40,
                            m_pMainWindow->height() - TOOLBOX_HEIGHT - 2);
+        m_pVolSlider->show();
         m_pVolSlider->popup();
     } else {
         m_pVolSlider->popup();
