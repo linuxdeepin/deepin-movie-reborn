@@ -71,12 +71,14 @@ varying vec2 texCoord;
 uniform sampler2D movie;
 
 void main() {
-     gl_FragColor = texture2D(movie, texCoord); 
+     gl_FragColor = texture2D(movie, texCoord);
 }
 )";
 
 static const char* fs_blend_wayland = R"(
+#ifdef GL_ES
 precision mediump float;
+#endif
 varying vec2 texCoord;
 
 uniform sampler2D movie;
@@ -109,12 +111,14 @@ uniform sampler2D movie;
 uniform sampler2D mask;
 
 void main() {
-     gl_FragColor = texture2D(movie, texCoord) * texture2D(mask, maskCoord).a; 
+     gl_FragColor = texture2D(movie, texCoord) * texture2D(mask, maskCoord).a;
 }
 )";
 
 static const char* fs_blend_corner_wayland = R"(
+#ifdef GL_ES
 precision mediump float;
+#endif
 varying vec2 maskCoord;
 varying vec2 texCoord;
 
@@ -151,7 +155,9 @@ void main() {
 )";
 
 static const char* fs_code_wayland = R"(
+#ifdef GL_ES
 precision mediump float;
+#endif
 varying vec2 texCoord;
 
 uniform sampler2D sampler;
@@ -176,7 +182,9 @@ void main() {
 )";
 
 static const char* fs_corner_code_wayland = R"(
+#ifdef GL_ES
 precision mediump float;
+#endif
 varying vec2 texCoord;
 
 uniform sampler2D corner;
