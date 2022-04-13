@@ -27,7 +27,7 @@ DWIDGET_USE_NAMESPACE
 namespace dmr {
 
 Platform_VolumeSlider::Platform_VolumeSlider(Platform_MainWindow *mw, QWidget *parent)
-    : DArrowRectangle(DArrowRectangle::ArrowBottom, DArrowRectangle::FloatWidget, parent), _mw(mw)
+    : QWidget(parent), _mw(mw)
 {
     if (CompositingManager::get().platform() != Platform::X86) {
         setWindowFlags(Qt::ToolTip | Qt::FramelessWindowHint);
@@ -372,7 +372,7 @@ void Platform_VolumeSlider::keyPressEvent(QKeyEvent *pEvent)
     } else if (pEvent->key() == Qt::Key_Down) {
         changeVolume(qMax(nCurVolume - 5, 0));
     }
-    DArrowRectangle::keyPressEvent(pEvent);
+    QWidget::keyPressEvent(pEvent);
 }
 
 bool Platform_VolumeSlider::eventFilter(QObject *obj, QEvent *e)
