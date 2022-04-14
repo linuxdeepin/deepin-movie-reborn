@@ -661,11 +661,13 @@ void MpvProxy::handle_mpv_events()
             // caused by seek or just playing
             break;
 
+#if MPV_CLIENT_API_VERSION < MPV_MAKE_VERSION(2,0)
         case MPV_EVENT_TRACKS_CHANGED:
             qInfo() << m_eventName(pEvent->event_id);
             updatePlayingMovieInfo();
             emit tracksChanged();
             break;
+#endif
 
         case MPV_EVENT_FILE_LOADED: {
             qInfo() << m_eventName(pEvent->event_id);
