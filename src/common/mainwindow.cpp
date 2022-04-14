@@ -3578,7 +3578,7 @@ void MainWindow::contextMenuEvent(QContextMenuEvent *pEvent)
         return;
 
     if (utils::check_wayland_env()) {
-        if (windowHandle()->flags().testFlag(Qt::WindowStaysOnTopHint) != m_bWindowAbove) {
+        if (windowHandle()->property("_d_dwayland_staysontop").toBool() != m_bWindowAbove) {
             m_bWindowAbove = !m_bWindowAbove;
             reflectActionToUI(ActionFactory::WindowAbove);
         }
