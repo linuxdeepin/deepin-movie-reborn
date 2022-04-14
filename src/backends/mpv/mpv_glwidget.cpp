@@ -503,7 +503,11 @@ namespace dmr {
 #endif
 #endif
 
+#if MPV_CLIENT_API_VERSION < MPV_MAKE_VERSION(2,0)
         mpv_opengl_init_params gl_init_params = { get_proc_address, nullptr, nullptr };
+#else
+        mpv_opengl_init_params gl_init_params = { get_proc_address, nullptr };
+#endif
         //int adv_control = 1;
         mpv_render_param params[] = {
             {MPV_RENDER_PARAM_API_TYPE, const_cast<char*>(MPV_RENDER_API_TYPE_OPENGL)},
