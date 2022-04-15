@@ -142,6 +142,25 @@ TEST(MainWindow, nakedstream)
     engine->addPlayFiles(listPlayFiles);
     engine->playByName(QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/test.264"));
 
+    // drop is playing video
+    QMimeData mimeData;
+    QList<QUrl> urls;
+    urls << QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/test.264");
+    mimeData.setUrls(urls);
+
+    QDragEnterEvent dragEnter(QPoint(0, 0), Qt::CopyAction, &mimeData, Qt::LeftButton, {});
+    QApplication::sendEvent(w, &dragEnter);
+    QVERIFY(dragEnter.isAccepted());
+    QCOMPARE(dragEnter.dropAction(), Qt::CopyAction);
+
+    QDragMoveEvent dragMove(QPoint(0, 0), Qt::CopyAction, &mimeData, Qt::LeftButton, Qt::NoModifier);
+    qApp->sendEvent(w, &dragMove);
+
+    QDropEvent drop(QPoint(0, 0), Qt::CopyAction, &mimeData, Qt::NoButton, {});
+    QApplication::sendEvent(w, &drop);
+    QVERIFY(drop.isAccepted());
+    QCOMPARE(drop.dropAction(), Qt::CopyAction);
+
     QTest::mousePress(dmrSlider, Qt::LeftButton, Qt::NoModifier, QPoint(), 100);
     QTest::mouseMove(dmrSlider, QPoint(), 100);
     QTest::mouseRelease(dmrSlider, Qt::LeftButton, Qt::NoModifier, QPoint(), 100);
@@ -934,6 +953,8 @@ TEST(ToolBox, volBtn)
 
     QTest::mouseMove(volBtn, QPoint(), 200);
     QTest::mouseClick(volBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 500);
+    QTest::qWait(300);
+    QVERIFY(toolboxProxy->volumeSlider()->isVisible());
 
     QWheelEvent wheelUpEvent(volBtn->rect().center(), 20, Qt::NoButton, Qt::NoModifier);
     QWheelEvent wheelDownEvent(volBtn->rect().center(), -20, Qt::NoButton, Qt::NoModifier);
