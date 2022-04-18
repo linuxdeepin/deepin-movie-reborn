@@ -773,7 +773,7 @@ MainWindow::MainWindow(QWidget *parent)
             m_pMiniPlayBtn->setIcon(QIcon(":/resources/icons/light/mini/pause-normal-mini.svg"));
             m_pMiniPlayBtn->setObjectName("MiniPauseBtn");
 
-            if (m_pEngine->playlist().count() > 0 && !m_pEngine->isAudioFile(m_pEngine->playlist().currentInfo().mi.filePath)) {
+            if (m_pEngine->playlist().count() > 0 && !m_pEngine->playlist().currentInfo().thumbnail.isNull()) {
                 emit frameMenuEnable(true);
                 setMusicShortKeyState(true);
             } else {
@@ -2950,7 +2950,7 @@ void MainWindow::slotPlayerStateChanged()
     });
 
     if (m_pEngine->playlist().count() > 0) {
-        bAudio = m_pEngine->isAudioFile(m_pEngine->playlist().currentInfo().mi.filePath);
+        bAudio = m_pEngine->playlist().currentInfo().thumbnail.isNull();
     }
     if (m_pEngine->state() == PlayerEngine::CoreState::Playing && bAudio) {
         m_pMovieWidget->startPlaying();

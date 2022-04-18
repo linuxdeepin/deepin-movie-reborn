@@ -1219,7 +1219,7 @@ void Platform_ToolboxProxy::updateThumbnail()
     //如果打开的是音乐
     QString suffix = m_pEngine->playlist().currentInfo().info.suffix();
 
-    if (m_pEngine->isAudioFile(m_pEngine->playlist().currentInfo().info.absoluteFilePath())) {
+    if (m_pEngine->playlist().currentInfo().thumbnail.isNull()) {
         return;
     }
 
@@ -1794,7 +1794,7 @@ void Platform_ToolboxProxy::progressHoverChanged(int nValue)
         point.setX(endPoint.x());
     }
 
-    bool bIsAudio = m_pEngine->isAudioFile(pif.info.absoluteFilePath());
+    bool bIsAudio = pif.thumbnail.isNull();
     if (!Settings::get().isSet(Settings::PreviewOnMouseover) || bIsAudio) {
         updatePreviewTime(nValue, point);
         return;
