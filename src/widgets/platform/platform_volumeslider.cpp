@@ -214,7 +214,7 @@ void Platform_VolumeSlider::popup()
 void Platform_VolumeSlider::delayedHide()
 {
     m_mouseIn = false;
-    DUtil::TimerSingleShot(100, [this]() {
+    DUtil::TimerSingleShot(500, [this]() {
         if (!m_mouseIn)
             popup();
     });
