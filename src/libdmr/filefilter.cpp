@@ -39,6 +39,7 @@ FileFilter* FileFilter::m_pFileFilter = nullptr;
 FileFilter::FileFilter()
 {
     m_bMpvExists = dmr::CompositingManager::isMpvExists();
+    m_stopRunningThread = false;
 
     QLibrary avformatLibrary(libPath("libavformat.so"));
 
@@ -107,6 +108,8 @@ QList<QUrl> FileFilter::filterDir(QDir dir)
         if (fileInfo.isFile()) {
             lstUrl.append(fileTransfer(fileInfo.filePath()));
         } else if (fileInfo.isDir()) {
+            if (m_stopRunningThread)
+                return QList<QUrl>();
             lstUrl << filterDir(fileInfo.absoluteFilePath());
         }
     }
@@ -252,5 +255,10 @@ FileFilter::MediaType FileFilter::typeJudgeByQt(const QUrl &url)
     }
 
     return miType;
+}
+
+void FileFilter::stopThread()
+{
+    m_stopRunningThread = true;
 }
 

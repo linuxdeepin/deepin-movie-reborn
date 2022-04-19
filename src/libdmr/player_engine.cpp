@@ -71,6 +71,7 @@ PlayerEngine::PlayerEngine(QWidget *parent)
     : QWidget(parent)
 {
     m_bAudio = false;
+    m_stopRunningThread = false;
     auto *l = new QVBoxLayout(this);
     l->setContentsMargins(0, 0, 0, 0);
 
@@ -117,6 +118,8 @@ PlayerEngine::PlayerEngine(QWidget *parent)
 
 PlayerEngine::~PlayerEngine()
 {
+    m_stopRunningThread = true;
+    FileFilter::instance()->stopThread();
     if (_current) {
         disconnect(_current, nullptr, nullptr, nullptr);
         delete _current;
@@ -798,6 +801,8 @@ QList<QUrl> PlayerEngine::addPlayFiles(const QList<QUrl> &urls)
     QList<QUrl> valids;
 
     for (QUrl url : urls) {
+        if (m_stopRunningThread)
+            break;
         if (isPlayableFile(url))
             valids << url;
     }
@@ -824,6 +829,28 @@ QList<QUrl> PlayerEngine::addPlayFiles(const QList<QString> &lstFile)
     }
 
     return addPlayFiles(valids);
+}
+
+void PlayerEngine::addPlayFs(const QList<QString> &lstFile)
+{
+    qInfo() << __func__;
+    QList<QUrl> valids;
+    QUrl realUrl;
+
+    for (QString strFile : lstFile) {
+          realUrl = FileFilter::instance()->fileTransfer(strFile);
+          if (QFileInfo(realUrl.path()).isDir()) {
+              if (realUrl.isLocalFile())          // 保证不是网络路径
+                  valids << FileFilter::instance()->filterDir(QDir(realUrl.path()));
+          } else {
+              valids << realUrl;
+          }
+    }
+
+    if (valids.isEmpty()) return;
+    QList<QUrl> addFiles = addPlayFiles(valids);
+    blockSignals(false);
+    emit finishedAddFiles(addFiles);
 }
 
 qint64 PlayerEngine::duration() const

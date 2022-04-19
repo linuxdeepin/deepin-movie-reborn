@@ -368,6 +368,7 @@ TEST(MainWindow, touch)
     engine->stop();
     engine->playByName(QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/demo.mp4"));
 
+    QTest::qWait(500);
     if (!w->isFullScreen()) {
         qDebug() << __func__ << "进入全屏";
         QTest::mouseDClick(w, Qt::LeftButton, Qt::NoModifier, QPoint(), 500); //fullscreen

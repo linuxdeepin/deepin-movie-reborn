@@ -118,6 +118,7 @@ public:
      */
     MediaType typeJudgeByQt(const QUrl& url);
 
+    void stopThread();
 private:
     FileFilter();
 
@@ -131,6 +132,7 @@ private:
     mvideo_avformat_close_input g_mvideo_avformat_close_input = nullptr;
     QMimeDatabase m_mimeDB;
     bool m_bMpvExists;
+    bool m_stopRunningThread;
 };
 
 #endif // FILEFILTER_H

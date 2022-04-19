@@ -359,6 +359,7 @@ public slots:
      * @param 影片路径
      */
     void play(const QList<QString> &listFiles);
+    void slotFinishedAddFiles(QList<QUrl>);
     void updateProxyGeometry();
     void suspendToolsWindow();
     void resumeToolsWindow();

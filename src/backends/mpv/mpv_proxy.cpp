@@ -1533,6 +1533,9 @@ QImage MpvProxy::takeOneScreenshot()
 
 void MpvProxy::stepBurstScreenshot()
 {
+    if (m_nBurstStart >= m_listBurstPoints.size() - 1) {
+        stopBurstScreenshot();
+    }
     if (!m_bInBurstShotting) {
         return;
     }
@@ -1563,7 +1566,6 @@ void MpvProxy::stepBurstScreenshot()
         return;
     }
     emit notifyScreenshot(img, elapsed());
-
     QTimer::singleShot(0, this, &MpvProxy::stepBurstScreenshot);
 }
 
