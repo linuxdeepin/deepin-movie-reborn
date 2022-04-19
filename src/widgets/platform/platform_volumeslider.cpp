@@ -213,11 +213,21 @@ void Platform_VolumeSlider::popup()
 }
 void Platform_VolumeSlider::delayedHide()
 {
+    const int nGap = 18;   // 音量条和音量按钮之间的间距
+    QRect adRect = QRect(m_point + QPoint(6, VOLSLIDER_HEIGHT), m_point + QPoint(6 + VOLSLIDER_WIDTH, VOLSLIDER_HEIGHT + nGap));
+
     m_mouseIn = false;
-    DUtil::TimerSingleShot(100, [this]() {
-        if (!m_mouseIn)
-            popup();
-    });
+    if(adRect.contains(QCursor::pos())){
+        DUtil::TimerSingleShot(2000, [=]() {
+            if (!m_mouseIn)
+                popup();
+        });
+    } else {
+        DUtil::TimerSingleShot(100, [=]() {
+            if (!m_mouseIn)
+                popup();
+        });
+    }
 }
 void Platform_VolumeSlider::changeVolume(int nVolume)
 {
