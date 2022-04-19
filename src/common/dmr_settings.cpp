@@ -57,6 +57,7 @@ Settings::Settings()
     : QObject(nullptr)
 {
     m_sConfigPath = DStandardPaths::writableLocation(QStandardPaths::AppConfigLocation);
+    m_sConfigPath += "/config.conf";
     qInfo() << "configPath" << m_sConfigPath;
     QSettingBackend *pBackend = new QSettingBackend(m_sConfigPath);
 #if defined (__mips__) || defined (__sw_64__) || defined ( __aarch64__)
