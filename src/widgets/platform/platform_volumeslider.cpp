@@ -97,7 +97,7 @@ Platform_VolumeSlider::Platform_VolumeSlider(Platform_MainWindow *mw, QWidget *p
 
 void Platform_VolumeSlider::initVolume()
 {
-    QTimer::singleShot(100, this, [ = ] { //延迟加载等待信号槽连接
+    QTimer::singleShot(500, this, [ = ] { //延迟加载等待信号槽连接
         int nVolume = Settings::get().internalOption("global_volume").toInt();
         bool bMute = Settings::get().internalOption("mute").toBool();
 
@@ -214,7 +214,7 @@ void Platform_VolumeSlider::popup()
 void Platform_VolumeSlider::delayedHide()
 {
     m_mouseIn = false;
-    DUtil::TimerSingleShot(500, [this]() {
+    DUtil::TimerSingleShot(100, [this]() {
         if (!m_mouseIn)
             popup();
     });
