@@ -2195,7 +2195,7 @@ void Platform_MainWindow::requestAction(ActionFactory::ActionKind actionKind, bo
     case ActionFactory::ActionKind::ToggleMute: {
         if(m_pEngine->state() != PlayerEngine::CoreState::Idle
                 && m_pEngine->playlist().currentInfo().mi.isRawFormat()
-                && !FileFilter::instance()->isAudio(m_pEngine->playlist().currentInfo().url)) {
+                && !m_pEngine->playlist().currentInfo().thumbnail.isNull()) {
             slotUnsupported();
         } else {
             m_pToolbox->changeMuteState();
@@ -2206,7 +2206,7 @@ void Platform_MainWindow::requestAction(ActionFactory::ActionKind actionKind, bo
     case ActionFactory::ActionKind::VolumeUp: {
         if(m_pEngine->state() != PlayerEngine::CoreState::Idle
                 && m_pEngine->playlist().currentInfo().mi.isRawFormat()
-                && !FileFilter::instance()->isAudio(m_pEngine->playlist().currentInfo().url)) {
+                && !m_pEngine->playlist().currentInfo().thumbnail.isNull()) {
             slotUnsupported();
         } else {
             //使用鼠标滚轮调节音量时会执行此步骤
@@ -2220,7 +2220,7 @@ void Platform_MainWindow::requestAction(ActionFactory::ActionKind actionKind, bo
     case ActionFactory::ActionKind::VolumeDown: {
         if(m_pEngine->state() != PlayerEngine::CoreState::Idle
                 && m_pEngine->playlist().currentInfo().mi.isRawFormat()
-                && !FileFilter::instance()->isAudio(m_pEngine->playlist().currentInfo().url)) {
+                && !m_pEngine->playlist().currentInfo().thumbnail.isNull()) {
             slotUnsupported();
         } else {
             //使用鼠标滚轮调节音量时会执行此步骤

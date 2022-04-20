@@ -1204,6 +1204,7 @@ void MpvProxy::play()
     bool bRawFormat = false;
     QList<QVariant> listArgs = { "loadfile" };
     QStringList listOpts = { };
+    bool bAudio = false;
 
     if (!m_bInited) {
         firstInit();
@@ -1212,9 +1213,10 @@ void MpvProxy::play()
     if (0 < dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist()->size()) {
         PlayItemInfo currentInfo = dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist()->currentInfo();
         bRawFormat = currentInfo.mi.isRawFormat();
+        bAudio = currentInfo.thumbnail.isNull();
     }
 
-    if (PlayerEngine::isAudioFile(_file.toString())) {
+    if (bAudio) {
         my_set_property(m_handle, "vo", "null");
     } else {
         my_set_property(m_handle, "vo", m_sInitVo);

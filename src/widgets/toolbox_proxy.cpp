@@ -1549,7 +1549,7 @@ void ToolboxProxy::slotThemeTypeChanged()
 
     if(m_pEngine->state() != PlayerEngine::CoreState::Idle) {
         bRawFormat = m_pEngine->getplaylist()->currentInfo().mi.isRawFormat();
-        if(bRawFormat && !FileFilter::instance()->isAudio(m_pEngine->playlist().currentInfo().url)) {
+        if(bRawFormat && !m_pEngine->playlist().currentInfo().thumbnail.isNull()) {
             m_pTimeLabel->setPalette(textPalette);
             m_pTimeLabelend->setPalette(textPalette);
             m_pFullscreentimelable->setPalette(textPalette);
@@ -1976,7 +1976,7 @@ void ToolboxProxy::updateButtonStates()
 
     if(m_pEngine->state() != PlayerEngine::CoreState::Idle) {
         bRawFormat = m_pEngine->getplaylist()->currentInfo().mi.isRawFormat();
-        if(bRawFormat && !FileFilter::instance()->isAudio(m_pEngine->playlist().currentInfo().url)){                                             // 如果正在播放的视频是裸流不支持音量调节和进度调节
+        if(bRawFormat && m_pEngine->playlist().currentInfo().thumbnail.isNull()){                                             // 如果正在播放的视频是裸流不支持音量调节和进度调节
             m_pProgBar->setEnabled(false);
             m_pProgBar->setEnableIndication(false);
             m_pVolSlider->setEnabled(false);
