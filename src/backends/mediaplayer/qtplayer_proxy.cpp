@@ -231,6 +231,8 @@ void QtPlayerProxy::savePlaybackPosition()
 void QtPlayerProxy::setPlaySpeed(double dTimes)
 {
     m_pPlayer->setPlaybackRate(dTimes);
+
+    m_pPlayer->setPosition(m_pPlayer->position());   // 某些格式音频需要重新seek后才生效
 }
 
 void QtPlayerProxy::volumeUp()
