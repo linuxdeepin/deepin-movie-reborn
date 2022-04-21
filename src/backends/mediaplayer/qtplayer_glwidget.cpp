@@ -516,39 +516,21 @@ namespace dmr {
         GLfloat s2 = 1.0f;
         GLfloat t2 = 0.0f;
 
-        if(nImgWidth < rectSize.width() && nImgHeigth < rectSize.height())
+        float wRate = float(rectSize.width()) / nImgWidth;
+        float hRate = float(rectSize.height()) / nImgHeigth;
+
+        if(wRate < hRate)
         {
-            x1 = float(rectSize.width() - nImgWidth) / rectSize.width() - 1.0f;
-            x2 = 1.0f - float(rectSize.width() - nImgWidth) / rectSize.width();
-            y2 = float(rectSize.height() - nImgHeigth) / rectSize.height() - 1.0f;
-            y1 = 1.0f - float(rectSize.height() - nImgHeigth) / rectSize.height();
+            x1 = -1.0f;
+            x2 = 1.0f;
+            y2 = float(rectSize.height() - nImgHeigth * wRate) / rectSize.height() - 1.0f;
+            y1 = 1.0f - float(rectSize.height() - nImgHeigth * wRate) / rectSize.height();
         }else {
-            float wRate = float(rectSize.width()) / nImgWidth;
-            float hRate = float(rectSize.height()) / nImgHeigth;
-
-            if(wRate < hRate)
-            {
-                x1 = -1.0f;
-                x2 = 1.0f;
-                y2 = float(rectSize.height() - nImgHeigth * wRate) / rectSize.height() - 1.0f;
-                y1 = 1.0f - float(rectSize.height() - nImgHeigth * wRate) / rectSize.height();
-            }else {
-                x1 = float(rectSize.width() - nImgWidth * hRate) / rectSize.width() - 1.0f;
-                x2 = 1.0f - float(rectSize.width() - nImgWidth * hRate) / rectSize.width();
-                y2 = -1.0f;
-                y1 = 1.0f ;
-            }
+            x1 = float(rectSize.width() - nImgWidth * hRate) / rectSize.width() - 1.0f;
+            x2 = 1.0f - float(rectSize.width() - nImgWidth * hRate) / rectSize.width();
+            y2 = -1.0f;
+            y1 = 1.0f ;
         }
-
-//        GLfloat vdata[] = {
-//            x1, y1, s1, t1, 0.0f, 1.0f,
-//            x2, y1, s2, t1, 1.0f, 1.0f,
-//            x2, y2, s2, t2, 1.0f, 0.0f,
-                                        
-//            x1, y1, s1, t1, 0.0f, 1.0f,
-//            x2, y2, s2, t2, 1.0f, 0.0f,
-//            x1, y2, s1, t2, 0.0f, 0.0f
-//        };
 
         GLfloat vdata[] = {
             x1, y1, s1, t2, 0.0f, 1.0f,
@@ -858,7 +840,7 @@ namespace dmr {
             m_pVideoTex->setData(image);
         }
 
-        if(m_currWidth != image.width()||m_currHeight != image.height())
+        if(m_currWidth != image.width() || m_currHeight != image.height())
         {
             m_currWidth = image.width();
             m_currHeight = image.height();
