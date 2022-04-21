@@ -1502,7 +1502,7 @@ struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl &url, const QFil
     if (ok && url.isLocalFile() && (!ci.mi_valid || !ci.thumb_valid)) {
         PersistentManager::get().save(pif);
     }
-    if (!url.isLocalFile() && !url.scheme().startsWith("dvd")) {
+    if (!url.isLocalFile() && !url.scheme().startsWith("dvd") && CompositingManager::isMpvExists()) {
         pif.mi.filePath = pif.url.path();
 
         pif.mi.width = _engine->_current->width();

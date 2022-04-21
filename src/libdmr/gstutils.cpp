@@ -57,6 +57,7 @@ void GstUtils::discovered(GstDiscoverer *discoverer, GstDiscovererInfo *info, GE
     result = gst_discoverer_info_get_result (info);
 
     m_movieInfo.valid = false;
+    m_movieInfo.duration = 0;
 
     switch (result) {
       case GST_DISCOVERER_URI_INVALID:
