@@ -179,6 +179,11 @@ int main(int argc, char *argv[])
     app->setAttribute(Qt::AA_ForceRasterWidgets, false);
 #endif
 
+    QFileInfo fi("/dev/mwv206_0");
+    if (fi.exists()) {
+        qputenv("QT_XCB_GL_INTEGRATION", "xcb_egl");
+    }
+
     app->setOrganizationName("deepin");
     app->setApplicationName("deepin-movie");
     app->setApplicationVersion(DMR_VERSION);
