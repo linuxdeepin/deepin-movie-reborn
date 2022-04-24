@@ -587,7 +587,8 @@ private:
     bool m_bIsWM {true};                              ///是否开启窗口特效
     bool m_isSettingMiniMode{false};                  ///mini mode setting status
     Qt::WindowStates m_preMiniWindowState {Qt::WindowNoState};  ///window state before mini mode
-    bool m_bMaximized;                                ///全屏前最大化窗口记录        
+    bool m_bMaximized;                                ///全屏前最大化窗口记录
+    bool m_bHaveFile;                                 ///导入是否包含文件（用于导入文件或文件夹）
 };
 };
 

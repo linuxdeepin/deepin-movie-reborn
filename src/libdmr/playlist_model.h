@@ -311,7 +311,6 @@ private:
     bool m_brunning;
     QList<QUrl> m_tempList;
     QList<QUrl> m_loadFile;
-    bool m_isLoadRunning {false};
     bool m_initFFmpeg {false};
     bool m_bInitThumb {false};
 

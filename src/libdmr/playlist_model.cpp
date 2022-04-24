@@ -1145,10 +1145,9 @@ void PlaylistModel::delayedAppendAsync(const QList<QUrl> &urls)
             m_getThumanbil = new GetThumanbil(this, t_urls);
             connect(m_getThumanbil, &GetThumanbil::finished, this, &PlaylistModel::onAsyncFinished);
             connect(m_getThumanbil, &GetThumanbil::updateItem, this, &PlaylistModel::onAsyncUpdate, Qt::BlockingQueuedConnection);
-            m_isLoadRunning = true;
             m_getThumanbil->start();
         } else {
-            if (m_isLoadRunning) {
+            if (m_getThumanbil->isRunning()) {
                 m_tempList.append(t_urls);
             } else {
                 m_getThumanbil->setUrls(t_urls);
@@ -1212,14 +1211,12 @@ static QList<PlayItemInfo> &SortSimilarFiles(QList<PlayItemInfo> &fil)
 
 void PlaylistModel::onAsyncFinished()
 {
-    m_isLoadRunning = false;
     //qInfo() << fil.size();
     m_getThumanbil->clearItem();
     //handleAsyncAppendResults(fil);
     if (!m_tempList.isEmpty()) {
         m_getThumanbil->setUrls(m_tempList);
         m_tempList.clear();
-        m_isLoadRunning = true;
         m_getThumanbil->start();
     }
 }
