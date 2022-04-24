@@ -87,7 +87,7 @@ bool FileFilter::isMediaFile(QUrl url)
     if (m_bMpvExists) {
         miType = typeJudgeByFFmpeg(url);
     } else {
-        miType = typeJudgeByQt(url);
+        miType = typeJudgeByGst(url);
     }
 
     if (miType == MediaType::Audio || miType == MediaType::Video) {
@@ -154,7 +154,7 @@ bool FileFilter::isAudio(QUrl url)
     if (m_bMpvExists) {
         bAudio = typeJudgeByFFmpeg(url) == MediaType::Audio ? true : false;
     } else {
-        bAudio = typeJudgeByQt(url) == MediaType::Audio ? true : false;
+        bAudio = typeJudgeByGst(url) == MediaType::Audio ? true : false;
     }
 
     m_mapCheckAudio[url] = bAudio;
@@ -167,7 +167,7 @@ bool FileFilter::isSubtitle(QUrl url)
     if (m_bMpvExists) {
         return typeJudgeByFFmpeg(url) == MediaType::Subtitle ? true : false;
     } else {
-        return typeJudgeByQt(url) == MediaType::Subtitle ? true : false;
+        return typeJudgeByGst(url) == MediaType::Subtitle ? true : false;
     }
 }
 
@@ -176,7 +176,7 @@ bool FileFilter::isVideo(QUrl url)
     if (m_bMpvExists) {
         return typeJudgeByFFmpeg(url) == MediaType::Video ? true : false;
     } else {
-        return typeJudgeByQt(url) == MediaType::Video ? true : false;
+        return typeJudgeByGst(url) == MediaType::Video ? true : false;
     }
 }
 
@@ -237,22 +237,44 @@ FileFilter::MediaType FileFilter::typeJudgeByFFmpeg(const QUrl &url)
     return  miType;
 }
 
-FileFilter::MediaType FileFilter::typeJudgeByQt(const QUrl &url)
+FileFilter::MediaType FileFilter::typeJudgeByGst(const QUrl &url)
 {
-    MediaType miType;
+    GError *err = nullptr;
+    GstDiscoverer* discoverer = nullptr;
+    GMainLoop* loop = nullptr;
+    MediaType miType = MediaType::Other;
 
-    QString strMimeType = m_mimeDB.mimeTypeForUrl(url).name();
+    char *uri = nullptr;
+    uri = new char[200];
 
-    if (strMimeType.startsWith("audio/")) {
-        miType = MediaType::Audio;
+    uri = strcpy(uri, url.toString().toUtf8().constData());
+
+    gst_init(nullptr, nullptr);
+
+    discoverer = gst_discoverer_new(5 * GST_SECOND, &err);
+    loop = g_main_loop_new(nullptr, FALSE);
+
+    if (!discoverer) {
+        qInfo() << "Error creating discoverer instance: " << err->message;
+        g_clear_error (&err);
     }
-    else if (strMimeType.startsWith("video/")) {
-        miType = MediaType::Video;
-    } else if (strMimeType.startsWith("text/")) {
-        miType = MediaType::Subtitle;
-    } else {
-      miType = MediaType::Other;
+
+    g_signal_connect_data(discoverer, "discovered", (GCallback)discovered, &miType, nullptr, GConnectFlags(0));
+    g_signal_connect_data(discoverer, "finished",  (GCallback)(finished), loop, nullptr, GConnectFlags(0));
+
+    gst_discoverer_start(discoverer);
+
+    if (!gst_discoverer_discover_uri_async (discoverer, uri)) {
+      qInfo() << "Failed to start discovering URI " << uri;
+      g_object_unref (discoverer);
     }
+
+    g_main_loop_run(loop);
+
+    gst_discoverer_stop(discoverer);
+
+    g_object_unref(discoverer);
+    g_main_loop_unref(loop);
 
     return miType;
 }
@@ -260,5 +282,84 @@ FileFilter::MediaType FileFilter::typeJudgeByQt(const QUrl &url)
 void FileFilter::stopThread()
 {
     m_stopRunningThread = true;
+}
+
+void FileFilter::discovered(GstDiscoverer *discoverer, GstDiscovererInfo *info, GError *err, MediaType *miType)
+{
+    Q_UNUSED(discoverer);
+
+    GstDiscovererResult result;
+    const gchar *uri;
+    bool bVideo = false;
+    bool bAudio = false;
+    bool bSubtitle = false;
+
+    uri = gst_discoverer_info_get_uri (info);
+    result = gst_discoverer_info_get_result (info);
+
+    switch (result) {
+      case GST_DISCOVERER_URI_INVALID:
+        qInfo() << "Invalid URI " << uri;
+        break;
+      case GST_DISCOVERER_ERROR:
+        qInfo() << "Discoverer error: " << err->message;
+        break;
+      case GST_DISCOVERER_TIMEOUT:
+        qInfo() << "Timeout";
+        break;
+      case GST_DISCOVERER_BUSY:
+        qInfo() << "Busy";
+        break;
+      case GST_DISCOVERER_MISSING_PLUGINS:{
+        const GstStructure *s;
+        gchar *str;
+
+        s = gst_discoverer_info_get_misc (info);
+        str = gst_structure_to_string (s);
+
+        qInfo() << "Missing plugins: " << str;
+        g_free (str);
+        break;
+      }
+      case GST_DISCOVERER_OK:
+        qInfo() << "Discovered " << uri;
+        break;
+    }
+
+    if (result != GST_DISCOVERER_OK) {
+      qInfo() << "This URI cannot be played";
+      return;
+    }
+
+    GList *list;
+    list = gst_discoverer_info_get_video_streams(info);
+    if (list) {
+       bVideo = true;
+    }
+    list = gst_discoverer_info_get_audio_streams(info);
+    if (list) {
+        bAudio = true;
+    }
+    list = gst_discoverer_info_get_subtitle_streams(info);
+    if(list) {
+        bSubtitle = true;
+    }
+
+    if (bVideo) {
+        *miType = MediaType::Video;
+    } else if (bAudio) {
+        *miType = MediaType::Audio;
+    } else if (bSubtitle) {
+        *miType = MediaType::Subtitle;
+    } else {
+        *miType = MediaType::Other;
+    }
+}
+
+void FileFilter::finished(GstDiscoverer *discoverer, GMainLoop *loop)
+{
+    Q_UNUSED(discoverer);
+
+    g_main_loop_quit(loop);
 }
 

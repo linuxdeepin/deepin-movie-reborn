@@ -48,6 +48,12 @@ extern "C" {
 #include <libavformat/avformat.h>
 }
 
+extern "C" {
+#include <string.h>
+#include <gst/gst.h>
+#include <gst/pbutils/pbutils.h>
+}
+
 typedef int (*mvideo_avformat_open_input)(AVFormatContext **ps, const char *url, AVInputFormat *fmt, AVDictionary **options);
 typedef int (*mvideo_avformat_find_stream_info)(AVFormatContext *ic, AVDictionary **options);
 typedef void (*mvideo_avformat_close_input)(AVFormatContext **s);
@@ -116,7 +122,11 @@ public:
      * @param 文件路径
      * @return 类型
      */
-    MediaType typeJudgeByQt(const QUrl& url);
+    MediaType typeJudgeByGst(const QUrl& url);
+
+    static void discovered(GstDiscoverer *discoverer, GstDiscovererInfo *info, GError *err, MediaType *miType);
+
+    static void finished(GstDiscoverer *discoverer, GMainLoop *loop);
 
     void stopThread();
 private:
