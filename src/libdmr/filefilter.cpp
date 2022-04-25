@@ -40,6 +40,7 @@ FileFilter* FileFilter::m_pFileFilter = nullptr;
 
 FileFilter::FileFilter()
 {
+    m_stopRunningThread = false;
     QLibrary avformatLibrary(libPath("libavformat.so"));
 
     g_mvideo_avformat_open_input = (mvideo_avformat_open_input) avformatLibrary.resolve("avformat_open_input");
@@ -129,6 +130,8 @@ QList<QUrl> FileFilter::filterDir(QDir dir)
         if (fileInfo.isFile()) {
             lstUrl.append(fileTransfer(fileInfo.filePath()));
         } else if (fileInfo.isDir()) {
+            if (m_stopRunningThread)
+                return QList<QUrl>();
             lstUrl << filterDir(fileInfo.absoluteFilePath());
         }
     }
@@ -280,5 +283,11 @@ bool FileFilter::isVideo(QUrl url)
     g_mvideo_avformat_close_input(&av_ctx);
 
     return bVideo;
+}
+
+
+void FileFilter::stopThread()
+{
+    m_stopRunningThread = true;
 }
 

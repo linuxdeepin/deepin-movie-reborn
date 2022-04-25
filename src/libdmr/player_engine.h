@@ -100,6 +100,11 @@ public:
      */
     QList<QUrl> addPlayFiles(const QList<QString> &lstFile);
     /**
+     * @brief addPlayFs 在线程中运行添加文件
+     * @param 文件集合
+     */
+    void addPlayFs(const QList<QString> &lstFile);
+    /**
      * @brief isPlayableFile 判断一个文件是否可以播放
      * @param url 文件url
      * @return 是否可以播放
@@ -212,6 +217,7 @@ signals:
     void siginitthumbnailseting();
     void updateDuration();
     void sigInvalidFile(QString strFileName);
+    void finishedAddFiles(QList<QUrl>);
 
 public slots:
     void play();
@@ -261,6 +267,7 @@ protected:
 private:
     QNetworkConfigurationManager _networkConfigMng;
     bool m_bAudio;
+    bool m_stopRunningThread;
 };
 }
 

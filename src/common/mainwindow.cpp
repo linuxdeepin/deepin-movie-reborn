@@ -76,6 +76,7 @@
 #include <X11/Xlib.h>
 #include "moviewidget.h"
 #include <qpa/qplatformnativeinterface.h>
+#include <QtConcurrent>
 
 #include "../accessibility/ac-deepin-movie-define.h"
 
@@ -681,6 +682,7 @@ MainWindow::MainWindow(QWidget *parent)
     } else if (commanLineManager.verbose()) {
         Backend::setDebugLevel(Backend::DebugLevel::Verbose);
     }
+    qRegisterMetaType<QList<QUrl>>("QList<QUrl>");
     m_pEngine = new PlayerEngine(this);
 
 #ifndef USE_DXCB
@@ -705,6 +707,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(m_pToolbox, &ToolboxProxy::sigVolumeChanged, this, &MainWindow::slotVolumeChanged);
     connect(m_pToolbox, &ToolboxProxy::sigMuteStateChanged, this, &MainWindow::slotMuteChanged);
+    connect(m_pEngine, &PlayerEngine::finishedAddFiles, this, &MainWindow::slotFinishedAddFiles);
 
     //Initialization is performed at normal conditions
     if (CompositingManager::get().platform() != Platform::Mips) {
@@ -2651,16 +2654,30 @@ void MainWindow::play(const QList<QString> &listFiles)
 
     lstValid = m_pEngine->addPlayFiles(lstFile);  // 先添加到播放列表再播放
 
-    m_pEngine->blockSignals(true);
-    lstValid << m_pEngine->addPlayFiles(lstDir);
-    m_pEngine->blockSignals(false);
+    m_bHaveFile = !lstFile.isEmpty();
+    if (m_bHaveFile) {
+        //The disposal is false here to prevent the introduction of the folder from blocking
+        m_pEngine->playByName(lstValid[0]);
+    }
+  
+    if (!lstDir.isEmpty()) {
+        m_pEngine->blockSignals(true);
+        QtConcurrent::run(m_pEngine, &PlayerEngine::addPlayFs, lstDir);
+    } else {
+        m_bHaveFile = false;
+    }
+}
 
-    if(lstValid.count() > 0) {
+void MainWindow::slotFinishedAddFiles(QList<QUrl> lstValid)
+{
+    if(lstValid.count() > 0 && !m_bHaveFile) {
         if (!isHidden()) {
             activateWindow();
         }
         m_pEngine->playByName(lstValid[0]);
     }
+    //The disposal is false here to prevent the introduction of the folder from blocking
+    m_bHaveFile = false;
 }
 
 void MainWindow::updateProxyGeometry()
@@ -4198,6 +4215,7 @@ void MainWindow::initMember()
     m_bStateInLock = false;
     m_bStartSleep = false;
     m_bMaximized = false;
+    m_bHaveFile = false;
 
     m_nDisplayVolume = 100;
     m_nLastPressX = 0;

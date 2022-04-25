@@ -95,6 +95,10 @@ public:
      * @return 是否是视频
      */
     bool isVideo(QUrl url);
+    /**
+     * @brief stopThread 停止线程中搜索文件
+     */
+    void stopThread();
 
 private:
     FileFilter();
@@ -107,6 +111,7 @@ private:
     mvideo_avformat_open_input g_mvideo_avformat_open_input = nullptr;
     mvideo_avformat_find_stream_info g_mvideo_avformat_find_stream_info = nullptr;
     mvideo_avformat_close_input g_mvideo_avformat_close_input = nullptr;
+    bool m_stopRunningThread;
 };
 
 #endif // FILEFILTER_H
