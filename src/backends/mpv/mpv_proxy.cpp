@@ -1136,6 +1136,10 @@ void MpvProxy::refreshDecode()
 #endif
         QFileInfo fi("/dev/mwv206_0"); //2.2.1.1 景嘉微
         if (fi.exists()) {
+            PlayItemInfo currentInfo = dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist()->currentInfo();
+            auto codec = currentInfo.mi.videoCodec();
+            isSurportHardWareDecode(codec, currentInfo.mi.width, currentInfo.mi.height);
+
             QDir sdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv206"); //判断是否安装核外驱动
             if(sdir.exists())
             {
