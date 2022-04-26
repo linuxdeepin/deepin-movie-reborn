@@ -1541,9 +1541,6 @@ QImage MpvProxy::takeOneScreenshot()
 
 void MpvProxy::stepBurstScreenshot()
 {
-    if (m_nBurstStart >= m_listBurstPoints.size() - 1) {
-        stopBurstScreenshot();
-    }
     if (!m_bInBurstShotting) {
         return;
     }

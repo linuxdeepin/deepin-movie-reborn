@@ -468,6 +468,8 @@ TEST(MainWindow, shortCutVolumeAndFrame)
     MainWindow *w = dApp->getMainWindow();
     QTestEventList testEventList;
 
+    QVERIFY(w->toolbox()->getSlider()->isEnabled());
+
     //volume
     testEventList.addKeyClick(Qt::Key_Down, Qt::ControlModifier | Qt::AltModifier, 20);    //volume down
     for (int i = 0; i < 11; i++) {
