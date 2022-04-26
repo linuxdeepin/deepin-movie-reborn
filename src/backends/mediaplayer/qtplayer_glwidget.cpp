@@ -823,9 +823,9 @@ namespace dmr {
     {
         if (m_bPlaying != bFalse) {
             m_bPlaying = bFalse;
+            delete m_pVideoTex;
+            m_pVideoTex = nullptr;
         }
-        delete m_pVideoTex;
-        m_pVideoTex = nullptr;
         updateVbo();
         updateVboCorners();
         updateMovieFbo();
