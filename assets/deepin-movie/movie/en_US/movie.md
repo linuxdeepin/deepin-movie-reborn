@@ -56,6 +56,10 @@ On the Movie interface, press **Ctrl + Shift + ?** to view shortcuts. Proficienc
 
 ## Basic Operations
 
+You can add, delete, view the information of the film or perform other operations in Movie.
+
+> ![notes](../common/notes.svg) Notes: The actual functions supported may differ according to the decoding method adopted. Please refer to the interface.
+
 ### Play Films
 
 You can play films in the following ways:
@@ -231,20 +235,20 @@ You can set the font and font size for subtitles.
 
 The window theme provides three theme types, namely Light Theme, Dark Theme, and System Theme.
 
-1. On the Movie interface, click ![icon_menu](../common/icon_menu.svg).
+1. Click ![icon_menu](../common/icon_menu.svg) on the Movie interface.
 2. Click **Theme** to select one theme.
 
 ### Help
 
-1. On the Movie interface, click ![icon_menu](../common/icon_menu.svg).
+1. Click ![icon_menu](../common/icon_menu.svg) on the Movie interface.
 2. Select **Help** to view the manual of Movie.
 
 ### About
 
-1. On the Movie interface, click ![icon_menu](../common/icon_menu.svg).
+1. Click ![icon_menu](../common/icon_menu.svg) on the Movie interface.
 2. Click **About** to view the version and introduction of Movie.
 
 ### Exit
 
-1. On the Movie interface, click ![icon_menu](../common/icon_menu.svg).
+1. Click ![icon_menu](../common/icon_menu.svg) on the Movie interface.
 2. Click **Exit** to exit Movie.
