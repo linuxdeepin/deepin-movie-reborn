@@ -1290,7 +1290,7 @@ void ToolboxProxy::updateThumbnail()
     //如果打开的是音乐
     QString suffix = m_pEngine->playlist().currentInfo().info.suffix();
 
-    if (m_pEngine->playlist().currentInfo().thumbnail.isNull()) {
+    if (m_pEngine->playlist().currentInfo().thumbnail.isNull() && m_pEngine->playlist().currentInfo().url.isLocalFile()) {
         return;
     }
 

@@ -1219,7 +1219,7 @@ void MpvProxy::play()
     if (0 < dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist()->size()) {
         PlayItemInfo currentInfo = dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist()->currentInfo();
         bRawFormat = currentInfo.mi.isRawFormat();
-        bAudio = currentInfo.thumbnail.isNull();
+        bAudio = currentInfo.thumbnail.isNull() && currentInfo.url.isLocalFile();
     }
 
     if (bAudio) {
