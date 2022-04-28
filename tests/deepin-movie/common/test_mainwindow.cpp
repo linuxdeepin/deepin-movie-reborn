@@ -257,6 +257,9 @@ TEST(MainWindow, loadFile)
 {
     MainWindow *w = dApp->getMainWindow();
     w->show();
+    QList<QString> wrongPath;
+    wrongPath << "/data/source/deepin-movie-reborn/movie/wrong.mp4";
+    w->play(wrongPath);
     PlayerEngine *engine =  w->engine();
     QList<QUrl> listPlayFiles;
     listPlayFiles << QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/demo.mp4")

@@ -2676,7 +2676,7 @@ void MainWindow::play(const QList<QString> &listFiles)
 
     lstValid = m_pEngine->addPlayFiles(lstFile);  // 先添加到播放列表再播放
 
-    m_bHaveFile = !lstFile.isEmpty();
+    m_bHaveFile = !lstValid.isEmpty();
     if (m_bHaveFile) {
         //The disposal is false here to prevent the introduction of the folder from blocking
         m_pEngine->playByName(lstValid[0]);
