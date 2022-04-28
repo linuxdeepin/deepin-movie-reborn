@@ -148,6 +148,10 @@ int main(int argc, char *argv[])
 #if defined(STATIC_LIB)
     DWIDGET_INIT_RESOURCE();
 #endif
+    QFileInfo fi("/dev/mwv206_0");
+    if (fi.exists() && !CompositingManager::isMpvExists()) {
+        qputenv("QT_XCB_GL_INTEGRATION", "xcb_egl");
+    }
     /**
       *This function dtk is obsolete and has no
       * impact after testing on x86 platform.
@@ -178,11 +182,6 @@ int main(int argc, char *argv[])
     // overwrite DApplication default value
     app->setAttribute(Qt::AA_ForceRasterWidgets, false);
 #endif
-
-    QFileInfo fi("/dev/mwv206_0");
-    if (fi.exists()) {
-        qputenv("QT_XCB_GL_INTEGRATION", "xcb_egl");
-    }
 
     app->setOrganizationName("deepin");
     app->setApplicationName("deepin-movie");
