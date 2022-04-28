@@ -1140,7 +1140,7 @@ void PlaylistModel::delayedAppendAsync(const QList<QUrl> &urls)
     };
 
     qInfo() << "not wayland";
-    if (QThread::idealThreadCount() > 1 && CompositingManager::isMpvExists()) {
+    if (QThread::idealThreadCount() > 1) {
         if (!m_getThumanbil) {
             m_getThumanbil = new GetThumanbil(this, t_urls);
             connect(m_getThumanbil, &GetThumanbil::finished, this, &PlaylistModel::onAsyncFinished);

@@ -847,7 +847,10 @@ void PlayerEngine::addPlayFs(const QList<QString> &lstFile)
           }
     }
 
-    if (valids.isEmpty()) return;
+    if (valids.isEmpty()) {
+        blockSignals(false);
+        return;
+    }
     QList<QUrl> addFiles = addPlayFiles(valids);
     blockSignals(false);
     emit finishedAddFiles(addFiles);

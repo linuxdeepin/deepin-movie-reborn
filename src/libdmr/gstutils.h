@@ -55,6 +55,8 @@ class GstUtils
 {
 
 public:
+    ~GstUtils();
+
     static GstUtils* get();
 
     static void discovered(GstDiscoverer *discoverer, GstDiscovererInfo *info, GError *err, CustomData *data);
@@ -73,6 +75,7 @@ private:
 private:
     static MovieInfo m_movieInfo;
     static GstUtils* m_pGstUtils;
+    CustomData m_gstData;
 };
 }
 

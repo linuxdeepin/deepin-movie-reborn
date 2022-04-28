@@ -34,18 +34,37 @@
 #include "filefilter.h"
 #include "compositing_manager.h"
 
-FileFilter* FileFilter::m_pFileFilter = nullptr;
+FileFilter* FileFilter::m_pFileFilter = new FileFilter;
 
 FileFilter::FileFilter()
 {
     m_bMpvExists = dmr::CompositingManager::isMpvExists();
     m_stopRunningThread = false;
+    m_pDiscoverer = nullptr;
+    m_pLoop = nullptr;
+    m_miType = MediaType::Other;
 
     QLibrary avformatLibrary(libPath("libavformat.so"));
 
     g_mvideo_avformat_open_input = (mvideo_avformat_open_input) avformatLibrary.resolve("avformat_open_input");
     g_mvideo_avformat_find_stream_info = (mvideo_avformat_find_stream_info) avformatLibrary.resolve("avformat_find_stream_info");
     g_mvideo_avformat_close_input = (mvideo_avformat_close_input) avformatLibrary.resolve("avformat_close_input");
+
+    gst_init(nullptr, nullptr);
+
+    GError *pGErr = nullptr;
+    m_pDiscoverer = gst_discoverer_new(5 * GST_SECOND, &pGErr);
+    m_pLoop = g_main_loop_new(nullptr, FALSE);
+
+    if (!m_pDiscoverer) {
+        qInfo() << "Error creating discoverer instance: " << pGErr->message;
+        g_clear_error (&pGErr);
+    }
+
+    g_signal_connect_data(m_pDiscoverer, "discovered", (GCallback)discovered, &m_miType, nullptr, GConnectFlags(0));
+    g_signal_connect_data(m_pDiscoverer, "finished",  (GCallback)(finished), m_pLoop, nullptr, GConnectFlags(0));
+
+    gst_discoverer_start(m_pDiscoverer);
 }
 
 QString FileFilter::libPath(const QString &strlib)
@@ -64,6 +83,13 @@ QString FileFilter::libPath(const QString &strlib)
         return list.last();
     else
         return QString();
+}
+
+FileFilter::~FileFilter()
+{
+    gst_discoverer_stop(m_pDiscoverer);
+    g_object_unref(m_pDiscoverer);
+    g_main_loop_unref(m_pLoop);
 }
 
 FileFilter *FileFilter::instance()
@@ -239,44 +265,30 @@ FileFilter::MediaType FileFilter::typeJudgeByFFmpeg(const QUrl &url)
 
 FileFilter::MediaType FileFilter::typeJudgeByGst(const QUrl &url)
 {
-    GError *err = nullptr;
-    GstDiscoverer* discoverer = nullptr;
-    GMainLoop* loop = nullptr;
-    MediaType miType = MediaType::Other;
-
     char *uri = nullptr;
     uri = new char[200];
 
+    m_miType = MediaType::Other;
+
+    QString strMimeType = m_mimeDB.mimeTypeForUrl(url).name();
+
+    if (!strMimeType.startsWith("audio/") && !strMimeType.startsWith("video/")) {
+        delete []uri;
+        return MediaType::Other;
+    }
+
     uri = strcpy(uri, url.toString().toUtf8().constData());
 
-    gst_init(nullptr, nullptr);
-
-    discoverer = gst_discoverer_new(5 * GST_SECOND, &err);
-    loop = g_main_loop_new(nullptr, FALSE);
-
-    if (!discoverer) {
-        qInfo() << "Error creating discoverer instance: " << err->message;
-        g_clear_error (&err);
-    }
-
-    g_signal_connect_data(discoverer, "discovered", (GCallback)discovered, &miType, nullptr, GConnectFlags(0));
-    g_signal_connect_data(discoverer, "finished",  (GCallback)(finished), loop, nullptr, GConnectFlags(0));
-
-    gst_discoverer_start(discoverer);
-
-    if (!gst_discoverer_discover_uri_async (discoverer, uri)) {
+    if (!gst_discoverer_discover_uri_async (m_pDiscoverer, uri)) {
       qInfo() << "Failed to start discovering URI " << uri;
-      g_object_unref (discoverer);
+      g_object_unref (m_pDiscoverer);
     }
 
-    g_main_loop_run(loop);
+    g_main_loop_run(m_pLoop);
 
-    gst_discoverer_stop(discoverer);
+    delete []uri;
 
-    g_object_unref(discoverer);
-    g_main_loop_unref(loop);
-
-    return miType;
+    return m_miType;
 }
 
 void FileFilter::stopThread()

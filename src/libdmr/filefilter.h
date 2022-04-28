@@ -75,6 +75,8 @@ class FileFilter:public QObject
     };
 
 public:
+    ~FileFilter();
+
     static FileFilter* instance();
     /**
      * @brief 判断是否是多媒体文件
@@ -143,6 +145,9 @@ private:
     QMimeDatabase m_mimeDB;
     bool m_bMpvExists;
     bool m_stopRunningThread;
+    GstDiscoverer* m_pDiscoverer;
+    GMainLoop* m_pLoop;
+    MediaType m_miType;
 };
 
 #endif // FILEFILTER_H
