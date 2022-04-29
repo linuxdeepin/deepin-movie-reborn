@@ -1210,16 +1210,17 @@ void MpvProxy::play()
     bool bRawFormat = false;
     QList<QVariant> listArgs = { "loadfile" };
     QStringList listOpts = { };
+    PlayerEngine* pEngine = nullptr;
     bool bAudio = false;
 
     if (!m_bInited) {
         firstInit();
     }
 
-    if (0 < dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist()->size()) {
-        PlayItemInfo currentInfo = dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist()->currentInfo();
-        bRawFormat = currentInfo.mi.isRawFormat();
-        bAudio = currentInfo.thumbnail.isNull() && currentInfo.url.isLocalFile();
+    pEngine = dynamic_cast<PlayerEngine *>(m_pParentWidget);
+    if (pEngine && pEngine->getplaylist()->size() > 0) {
+        bRawFormat = pEngine->getplaylist()->currentInfo().mi.isRawFormat();
+        bAudio =  pEngine->currFileIsAudio();
     }
 
     if (bAudio) {

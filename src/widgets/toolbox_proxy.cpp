@@ -1290,7 +1290,7 @@ void ToolboxProxy::updateThumbnail()
     //如果打开的是音乐
     QString suffix = m_pEngine->playlist().currentInfo().info.suffix();
 
-    if (m_pEngine->playlist().currentInfo().thumbnail.isNull() && m_pEngine->playlist().currentInfo().url.isLocalFile()) {
+    if (m_pEngine->currFileIsAudio()) {
         return;
     }
 
@@ -1549,7 +1549,7 @@ void ToolboxProxy::slotThemeTypeChanged()
 
     if(m_pEngine->state() != PlayerEngine::CoreState::Idle) {
         bRawFormat = m_pEngine->getplaylist()->currentInfo().mi.isRawFormat();
-        if(bRawFormat && !m_pEngine->playlist().currentInfo().thumbnail.isNull()) {
+        if(bRawFormat && !m_pEngine->currFileIsAudio()) {
             m_pTimeLabel->setPalette(textPalette);
             m_pTimeLabelend->setPalette(textPalette);
             m_pFullscreentimelable->setPalette(textPalette);
@@ -1898,7 +1898,7 @@ void ToolboxProxy::progressHoverChanged(int nValue)
         point.setX(endPoint.x());
     }
 
-    bool bIsAudio = pif.thumbnail.isNull();
+    bool bIsAudio = m_pEngine->currFileIsAudio();
     if (!Settings::get().isSet(Settings::PreviewOnMouseover) || bIsAudio) {
         updatePreviewTime(nValue, point);
         return;
@@ -1976,7 +1976,7 @@ void ToolboxProxy::updateButtonStates()
 
     if(m_pEngine->state() != PlayerEngine::CoreState::Idle) {
         bRawFormat = m_pEngine->getplaylist()->currentInfo().mi.isRawFormat();
-        if(bRawFormat && m_pEngine->playlist().currentInfo().thumbnail.isNull()){                                             // 如果正在播放的视频是裸流不支持音量调节和进度调节
+        if(bRawFormat && !m_pEngine->currFileIsAudio()){                                             // 如果正在播放的视频是裸流不支持音量调节和进度调节
             m_pProgBar->setEnabled(false);
             m_pProgBar->setEnableIndication(false);
             m_pVolSlider->setEnabled(false);

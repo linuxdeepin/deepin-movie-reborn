@@ -793,8 +793,7 @@ Platform_MainWindow::Platform_MainWindow(QWidget *parent)
             m_pMiniPlayBtn->setIcon(QIcon(":/resources/icons/light/mini/pause-normal-mini.svg"));
             m_pMiniPlayBtn->setObjectName("MiniPauseBtn");
 
-            if (m_pEngine->playlist().count() > 0 && (!m_pEngine->playlist().currentInfo().thumbnail.isNull()
-                                                      || !m_pEngine->playlist().currentInfo().url.isLocalFile())) {
+            if (m_pEngine->playlist().count() > 0 && !m_pEngine->currFileIsAudio()) {
                 emit frameMenuEnable(true);
                 setMusicShortKeyState(true);
             } else {
@@ -2196,7 +2195,7 @@ void Platform_MainWindow::requestAction(ActionFactory::ActionKind actionKind, bo
     case ActionFactory::ActionKind::ToggleMute: {
         if(m_pEngine->state() != PlayerEngine::CoreState::Idle
                 && m_pEngine->playlist().currentInfo().mi.isRawFormat()
-                && !m_pEngine->playlist().currentInfo().thumbnail.isNull()) {
+                && !m_pEngine->currFileIsAudio()) {
             slotUnsupported();
         } else {
             m_pToolbox->changeMuteState();
@@ -2207,7 +2206,7 @@ void Platform_MainWindow::requestAction(ActionFactory::ActionKind actionKind, bo
     case ActionFactory::ActionKind::VolumeUp: {
         if(m_pEngine->state() != PlayerEngine::CoreState::Idle
                 && m_pEngine->playlist().currentInfo().mi.isRawFormat()
-                && !m_pEngine->playlist().currentInfo().thumbnail.isNull()) {
+                && !m_pEngine->currFileIsAudio()) {
             slotUnsupported();
         } else {
             //使用鼠标滚轮调节音量时会执行此步骤
@@ -2221,7 +2220,7 @@ void Platform_MainWindow::requestAction(ActionFactory::ActionKind actionKind, bo
     case ActionFactory::ActionKind::VolumeDown: {
         if(m_pEngine->state() != PlayerEngine::CoreState::Idle
                 && m_pEngine->playlist().currentInfo().mi.isRawFormat()
-                && !m_pEngine->playlist().currentInfo().thumbnail.isNull()) {
+                && !m_pEngine->currFileIsAudio()) {
             slotUnsupported();
         } else {
             //使用鼠标滚轮调节音量时会执行此步骤
@@ -3037,7 +3036,7 @@ void Platform_MainWindow::slotPlayerStateChanged()
     });
 
     if (m_pEngine->playlist().count() > 0) {
-        bAudio = m_pEngine->playlist().currentInfo().thumbnail.isNull() && m_pEngine->playlist().currentInfo().url.isLocalFile();
+        bAudio = m_pEngine->currFileIsAudio();
     }
     if (m_pEngine->state() == PlayerEngine::CoreState::Playing && bAudio) {
         m_pMovieWidget->startPlaying();

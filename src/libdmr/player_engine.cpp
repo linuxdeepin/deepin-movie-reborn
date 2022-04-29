@@ -209,7 +209,7 @@ void PlayerEngine::onBackendStateChanged()
     case Backend::PlayState::Playing:
         _state = CoreState::Playing;
         if (_playlist->count() > 0) {
-            m_bAudio = _playlist->currentInfo().thumbnail.isNull();
+            m_bAudio = currFileIsAudio();
         }
         //playing . emit thumbnail progress mode signal with setting file
         if (old == CoreState::Idle)
@@ -935,6 +935,17 @@ QVariant PlayerEngine::getBackendProperty(const QString &name)
 void PlayerEngine::toggleRoundedClip(bool roundClip)
 {
     dynamic_cast<MpvProxy *>(_current)->updateRoundClip(roundClip);
+}
+
+bool PlayerEngine::currFileIsAudio()
+{
+    bool bAudio = false;
+
+    if (_playlist->count() > 0) {
+        bAudio = _playlist->currentInfo().thumbnail.isNull() && _playlist->currentInfo().url.isLocalFile();
+    }
+
+    return bAudio;
 }
 
 /*void PlayerEngine::setVideoZoom(float val)
