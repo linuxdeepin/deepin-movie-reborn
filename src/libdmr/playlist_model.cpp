@@ -1458,8 +1458,8 @@ struct PlayItemInfo PlaylistModel::calculatePlayInfo(const QUrl &url, const QFil
         mi.title = fi.fileName();
     }
 
-    QPixmap pm;
-    QPixmap dark_pm;
+    QPixmap pm = QPixmap();
+    QPixmap dark_pm = QPixmap();
     if (ci.thumb_valid) {
         pm = ci.thumb;
         dark_pm = ci.thumb_dark;

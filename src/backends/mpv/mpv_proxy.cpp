@@ -1077,10 +1077,7 @@ void MpvProxy::refreshDecode()
             PlayItemInfo currentInfo = dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist()->currentInfo();
             auto codec = currentInfo.mi.videoCodec();
             auto name = _file.fileName();
-            isSoftCodec = codec.toLower().contains("wmv") || name.toLower().contains("wmv");
-#if !defined (__x86_64__)
-            isSoftCodec = isSoftCodec || codec.toLower().contains("mpeg2video");
-#endif
+            isSoftCodec = codec.toLower().contains("mpeg2video") || codec.toLower().contains("wmv") || name.toLower().contains("wmv");
             //探测硬解码
             if(!isSoftCodec) {
                 isSoftCodec = !isSurportHardWareDecode(codec, currentInfo.mi.width, currentInfo.mi.height);
@@ -1204,17 +1201,20 @@ void MpvProxy::play()
     bool bRawFormat = false;
     QList<QVariant> listArgs = { "loadfile" };
     QStringList listOpts = { };
+    PlayerEngine* pEngine = nullptr;
+    bool bAudio = false;
 
     if (!m_bInited) {
         firstInit();
     }
 
-    if (0 < dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist()->size()) {
-        PlayItemInfo currentInfo = dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist()->currentInfo();
-        bRawFormat = currentInfo.mi.isRawFormat();
+    pEngine = dynamic_cast<PlayerEngine *>(m_pParentWidget);
+    if (pEngine && pEngine->getplaylist()->size() > 0) {
+        bRawFormat = pEngine->getplaylist()->currentInfo().mi.isRawFormat();
+        bAudio =  pEngine->currFileIsAudio();
     }
 
-    if (PlayerEngine::isAudioFile(_file.toString())) {
+    if (bAudio) {
         my_set_property(m_handle, "vo", "null");
     } else {
         my_set_property(m_handle, "vo", m_sInitVo);

@@ -186,7 +186,7 @@ public:
     QVariant getBackendProperty(const QString &);
 
     void toggleRoundedClip(bool roundClip);
-//    void setVideoZoom(float);
+    bool currFileIsAudio();
 
 signals:
     void tracksChanged();
