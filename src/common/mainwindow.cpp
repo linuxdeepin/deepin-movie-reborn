@@ -1810,7 +1810,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
                     }
                 });
                 QVariant panscan = m_pEngine->getBackendProperty("panscan");
-                if (panscan.isNull() && Settings::get().isSet(Settings::ResumeFromLast)) {
+                if ((panscan.isNull() || !CompositingManager::isMpvExists()) && Settings::get().isSet(Settings::ResumeFromLast)) {
                     int restore_pos = Settings::get().internalOption("playlist_pos").toInt();
                     //Playback when the playlist is not loaded, this will result in the 
                     //last exit item without playing, because the playlist has not been 
