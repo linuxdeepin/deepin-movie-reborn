@@ -133,12 +133,7 @@ public:
         QWidget(parent)
     {
         setWindowFlags(Qt::FramelessWindowHint);
-        if (!CompositingManager::get().composited()) {
-            setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
-        }
-#if defined (__aarch64__) || defined (__mips__)
-        setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
-#endif
+
         m_pTimer = new QTimer(this);
 
         setFixedHeight(40);
