@@ -119,11 +119,11 @@ void GstUtils::discovered(GstDiscoverer *discoverer, GstDiscovererInfo *info, GE
 #endif
     }
 
-    GList *list, *iterator;
-    iterator = list = gst_discoverer_info_get_video_streams(info);
-    while (iterator)
+    GList *list;
+    list = gst_discoverer_info_get_video_streams(info);
+    if (list)
     {
-        GstDiscovererVideoInfo *vInfo = (GstDiscovererVideoInfo *)iterator->data;
+        GstDiscovererVideoInfo *vInfo = (GstDiscovererVideoInfo *)list->data;
 
         m_movieInfo.width = static_cast<int>(gst_discoverer_video_info_get_width(vInfo));
         m_movieInfo.height = static_cast<int>(gst_discoverer_video_info_get_height(vInfo));
@@ -131,21 +131,17 @@ void GstUtils::discovered(GstDiscoverer *discoverer, GstDiscovererInfo *info, GE
         m_movieInfo.vCodeRate = gst_discoverer_video_info_get_bitrate(vInfo);
         m_movieInfo.proportion = m_movieInfo.height == 0 ? 0 : (float)m_movieInfo.width / m_movieInfo.height;
         m_movieInfo.resolution = QString::number(m_movieInfo.width) + "x" + QString::number(m_movieInfo.height);
-
-        iterator = iterator->next;
     }
 
-    iterator = list = gst_discoverer_info_get_audio_streams(info);
-    while (iterator)
+    list = gst_discoverer_info_get_audio_streams(info);
+    if (list)
     {
-        GstDiscovererAudioInfo *aInfo = (GstDiscovererAudioInfo *)iterator->data;
+        GstDiscovererAudioInfo *aInfo = (GstDiscovererAudioInfo *)list->data;
 
         m_movieInfo.sampling = static_cast<int>(gst_discoverer_audio_info_get_sample_rate(aInfo));
         m_movieInfo.aCodeRate = gst_discoverer_audio_info_get_bitrate(aInfo);
         m_movieInfo.channels = static_cast<int>(gst_discoverer_audio_info_get_channels(aInfo));
         m_movieInfo.aDigit = static_cast<int>(gst_discoverer_audio_info_get_depth(aInfo));
-
-        iterator = iterator->next;
     }
 }
 
