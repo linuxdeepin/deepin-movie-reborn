@@ -198,8 +198,6 @@ void QtPlayerProxy::processFrame(QVideoFrame &frame)
     frame.map(QAbstractVideoBuffer::ReadOnly);
     QImage recvImage(frame.bits(), frame.width(), frame.height(), QVideoFrame::imageFormatFromPixelFormat(frame.pixelFormat()));
     m_currentImage = recvImage;
-    QImage tempImage = recvImage.rgbSwapped();
-    //m_pGLWidget->setImageData(tempImage.bits(), tempImage.width(), tempImage.height());
     m_pGLWidget->setVideoTex(recvImage);
     m_pGLWidget->repaint();
     frame.unmap();
@@ -262,27 +260,6 @@ int QtPlayerProxy::volume() const
     int nDispalyVol = static_cast<int>((nActualVol - 40) / 60.0 * 200.0);
     return nDispalyVol;
 }
-
-//int QtPlayerProxy::videoRotation() const
-//{
-//    int nRotate = my_get_property(m_handle, "video-rotate").toInt();
-//    return (nRotate + 360) % 360;
-//}
-
-//void QtPlayerProxy::setVideoRotation(int nDegree)
-//{
-//    my_set_property(m_handle, "video-rotate", nDegree);
-//}
-
-//void QtPlayerProxy::setVideoAspect(double dValue)
-//{
-//    my_set_property(m_handle, "video-aspect", dValue);
-//}
-
-//double QtPlayerProxy::videoAspect() const
-//{
-//    return my_get_property(m_handle, "video-aspect").toDouble();
-//}
 
 bool QtPlayerProxy::muted() const
 {
@@ -577,54 +554,6 @@ qint64 QtPlayerProxy::elapsed() const
 
 void QtPlayerProxy::updatePlayingMovieInfo()
 {
-//    m_movieInfo.subs.clear();
-//    m_movieInfo.audios.clear();
-
-//    QList<QVariant> listInfo = my_get_property(m_handle, "track-list").toList();
-//    auto p = listInfo.begin();
-//    while (p != listInfo.end()) {
-//        const auto &t = p->toMap();
-//        if (t["type"] == "audio") {
-//            AudioInfo audioInfo;
-//            audioInfo["type"] = t["type"];
-//            audioInfo["id"] = t["id"];
-//            audioInfo["lang"] = t["lang"];
-//            audioInfo["external"] = t["external"];
-//            audioInfo["external-filename"] = t["external-filename"];
-//            audioInfo["selected"] = t["selected"];
-//            audioInfo["title"] = t["title"];
-
-//            if (t["title"].toString().size() == 0) {
-//                if (t["lang"].isValid() && t["lang"].toString().size() && t["lang"].toString() != "und")
-//                    audioInfo["title"] = t["lang"];
-//                else if (!t["external"].toBool())
-//                    audioInfo["title"] = "[internal]";
-//            }
-
-
-//            m_movieInfo.audios.append(audioInfo);
-//        } else if (t["type"] == "sub") {
-//            SubtitleInfo titleInfo;
-//            titleInfo["type"] = t["type"];
-//            titleInfo["id"] = t["id"];
-//            titleInfo["lang"] = t["lang"];
-//            titleInfo["external"] = t["external"];
-//            titleInfo["external-filename"] = t["external-filename"];
-//            titleInfo["selected"] = t["selected"];
-//            titleInfo["title"] = t["title"];
-//            if (t["title"].toString().size() == 0) {
-//                if (t["lang"].isValid() && t["lang"].toString().size() && t["lang"].toString() != "und")
-//                    titleInfo["title"] = t["lang"];
-//                else if (!t["external"].toBool())
-//                    titleInfo["title"] = tr("Internal");
-//            }
-//            m_movieInfo.subs.append(titleInfo);
-//        }
-//        ++p;
-//    }
-
-//    qInfo() << m_movieInfo.subs;
-//    qInfo() << m_movieInfo.audios;
 }
 
 
