@@ -965,19 +965,19 @@ void PlayerEngine::toggleRoundedClip(bool roundClip)
 bool PlayerEngine::currFileIsAudio()
 {
     bool bAudio = false;
+    PlayItemInfo pif;
 
     if (_playlist->count() > 0) {
-        bAudio = _playlist->currentInfo().thumbnail.isNull() && _playlist->currentInfo().url.isLocalFile();
+        pif = _playlist->currentInfo();
+    }
+
+    if (CompositingManager::isMpvExists()) {
+        bAudio = pif.thumbnail.isNull() && pif.url.isLocalFile();
+    } else {
+        bAudio = isAudioFile(pif.url.toString());
     }
 
     return bAudio;
 }
-
-/*void PlayerEngine::setVideoZoom(float val)
-{
-    if (_current) {
-        _current->setProperty("video-zoom", val);
-    }
-}*/
 
 } // end of namespace dmr
