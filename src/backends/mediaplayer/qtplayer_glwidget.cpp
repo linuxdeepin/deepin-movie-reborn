@@ -835,7 +835,12 @@ namespace dmr {
     void QtPlayerGLWidget::setVideoTex(QImage image)
     {
         if(!m_pVideoTex){
-            m_pVideoTex = new QOpenGLTexture(image, QOpenGLTexture::GenerateMipMaps);
+            QFileInfo fi("/dev/mwv206_0");
+            if (fi.exists()) {
+                m_pVideoTex = new QOpenGLTexture(image, QOpenGLTexture::DontGenerateMipMaps);
+            } else {
+                m_pVideoTex = new QOpenGLTexture(image, QOpenGLTexture::GenerateMipMaps);
+            }
         } else {
             m_pVideoTex->setData(image);
         }
