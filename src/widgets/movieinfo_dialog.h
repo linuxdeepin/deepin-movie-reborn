@@ -182,6 +182,8 @@ protected:
      */
     void paintEvent(QPaintEvent *pPaintEvent);
 
+    void showEvent(QShowEvent *pEvent);
+
 private slots:
     /**
      * @brief onFontChanged 字体变化槽函数（跟随系统变化）
