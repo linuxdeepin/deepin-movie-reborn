@@ -446,6 +446,13 @@ void MovieInfoDialog::paintEvent(QPaintEvent *ev)
 
     QDialog::paintEvent(ev);
 }
+
+void MovieInfoDialog::showEvent(QShowEvent *pEvent)
+{
+    moveToCenter();
+
+    return QDialog::showEvent(pEvent);
+}
 /**
  * @brief onFontChanged 字体变化槽函数（跟随系统变化）
  * @param font 变化后的字体
