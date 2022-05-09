@@ -3507,19 +3507,10 @@ void Platform_MainWindow::capturedMouseReleaseEvent(QMouseEvent *pEvent)
         return;
 
     m_bMousePressed = false;
-
-    // dtk has a bug, DImageButton propagates mouseReleaseEvent event when it responded to.
-    if (!insideResizeArea(pEvent->globalPos()) && !m_bMouseMoved && (m_pPlaylist->state() != Platform_PlaylistWidget::Opened)) {
-        if (!insideToolsArea(pEvent->pos())) {
-            m_delayedMouseReleaseTimer.start(120);
-        } else {
-            if (m_pEngine->state() == PlayerEngine::CoreState::Idle && !insideToolsArea(pEvent->pos())) {
-                m_delayedMouseReleaseTimer.start(120);
-            }
-        }
-    }
-
-    m_bMouseMoved = false;
+    //NOTE: If the mouseMoveEvent of the titlebar is triggered
+    // reset the status here, otherwise it cannot respond to the mini mode shortcut
+    if (m_pTitlebar->geometry().contains(pEvent->pos()))
+        m_bMouseMoved = false;
 }
 
 void Platform_MainWindow::capturedKeyEvent(QKeyEvent *pEvent)
@@ -3570,6 +3561,16 @@ void Platform_MainWindow::mouseReleaseEvent(QMouseEvent *ev)
     if (bFlags) {
         repaint();
         bFlags = false;
+    }
+
+    if (!insideResizeArea(ev->globalPos()) && !m_bMouseMoved && (m_pPlaylist->state() != Platform_PlaylistWidget::Opened)) {
+        if (!insideToolsArea(ev->pos())) {
+            m_delayedMouseReleaseTimer.start(120);
+        } else {
+            if (m_pEngine->state() == PlayerEngine::CoreState::Idle && !insideToolsArea(ev->pos())) {
+                m_delayedMouseReleaseTimer.start(120);
+            }
+        }
     }
 
     qInfo() << __func__ << "进入mouseReleaseEvent";
