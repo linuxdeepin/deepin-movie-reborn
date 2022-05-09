@@ -537,15 +537,14 @@ void PlayerEngine::paintEvent(QPaintEvent *e)
         } else {
             QImage icon = utils::LoadHiDPIImage(":/resources/icons/light/init-splash.svg");
             QPixmap pix = QPixmap::fromImage(icon);
-            int x = this->rect().center().x() - pix.width() / 2;
-            int y = this->rect().center().y() - pix.height() / 2;
+            QPointF pos = rect.center() - QPoint(pix.width() / 2, pix.height() / 2) / devicePixelRatioF();
 
             if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
                 p.fillRect(rect, QBrush(QColor(255, 255, 255)));
-                p.drawPixmap(x, y, pix);
+                p.drawPixmap(pos, pix);
             } else {
                 p.fillRect(rect, QBrush(QColor(0, 0, 0)));
-                p.drawPixmap(x, y, pix);
+                p.drawPixmap(pos, pix);
             }
         }
     }
