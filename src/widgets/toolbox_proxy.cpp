@@ -2564,6 +2564,13 @@ void ToolboxProxy::initThumbThread()
 void ToolboxProxy::updateSliderPoint(QPoint &point)
 {
     m_pVolSlider->updatePoint(point);
+
+    // move to the final position
+    QRect mainRect = m_pMainWindow->rect();
+    QRect viewRect = mainRect.marginsRemoved(QMargins(1, 1, 1, 1));
+    QPoint volPoint = point + QPoint(viewRect.width() - (TOOLBOX_BUTTON_WIDTH * 2 + 30 + (VOLSLIDER_WIDTH - TOOLBOX_BUTTON_WIDTH) / 2),
+                             viewRect.height() - TOOLBOX_HEIGHT - VOLSLIDER_HEIGHT) + QPoint(6, 0);
+    m_pVolSlider->move(volPoint);
 }
 
 /**
