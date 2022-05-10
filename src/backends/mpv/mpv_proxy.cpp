@@ -403,7 +403,6 @@ mpv_handle *MpvProxy::mpv_init()
             my_set_property(m_handle, "video-sync", "desync");
         }
         my_set_property(m_handle, "vo", "vdpau,gpu,x11");
-        my_set_property(m_handle, "ao", "alsa");
         m_sInitVo = "vdpau,gpu,x11";
 #elif defined (__sw_64__)
         //Synchronously modify the video output of the SW platform vdpau(powered by zhangfl)
