@@ -48,4 +48,10 @@ void createSelectableLineEditOptionHandle_lambda_stub(void *obj)
 {
     qDebug() << "shortcut save path btn clicked.";
 }
+
+bool isMpvExists_stub()
+{
+    return false;
+}
+
 }

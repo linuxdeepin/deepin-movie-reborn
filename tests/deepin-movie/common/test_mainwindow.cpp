@@ -100,6 +100,33 @@ TEST(PadMode, mainWindow)
 }
 #endif
 
+TEST(GStreamer, mainWindow)
+{
+    Stub stub;
+    stub.set(ADDR(CompositingManager, isMpvExists), StubFunc::isMpvExists_stub);
+    QTest::qWait(1000);
+    MainWindow *mw = new MainWindow;
+    QTest::qWait(100);
+    mw->show();
+
+    QTest::qWait(800);
+
+    PlayerEngine *engine =  mw->engine();
+    QList<QUrl> listPlayFiles;
+    listPlayFiles << QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/demo.mp4");
+
+    engine->playlist().loadPlaylist();
+    engine->addPlayFiles(listPlayFiles);
+    engine->playByName(QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/demo.mp4"));
+    QTest::qWait(2000);
+
+    stub.reset(ADDR(CompositingManager, isMpvExists));
+    mw->close();
+    delete mw;
+
+    QTest::qWait(500);
+}
+
 TEST(MainWindow, init)
 {
     MainWindow *w = dApp->getMainWindow();

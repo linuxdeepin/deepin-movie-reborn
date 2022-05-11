@@ -37,6 +37,7 @@ namespace StubFunc{
 bool isPadSystemTrue_stub();
 bool isCompositedTrue_stub();
 bool isCompositedFalse_stub();
+bool isMpvExists_stub();
 
 PlayerEngine::CoreState playerEngineState_Paused_stub(void* obj);
 
