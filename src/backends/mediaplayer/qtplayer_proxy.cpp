@@ -91,7 +91,6 @@ QtPlayerProxy::QtPlayerProxy(QWidget *parent)
 
 QtPlayerProxy::~QtPlayerProxy()
 {
-    //disconnect(window()->windowHandle(), &QWindow::windowStateChanged, nullptr, nullptr);
     if (CompositingManager::get().composited()) {
         disconnect(this, &QtPlayerProxy::stateChanged, nullptr, nullptr);
     }
@@ -224,6 +223,14 @@ void QtPlayerProxy::savePlaybackPosition()
     if (state() == PlayState::Stopped) {
         return;
     }
+
+#ifndef _LIBDMR_
+    if (duration() - elapsed() >= 5) {
+        MovieConfiguration::get().updateUrl(this->_file, ConfigKnownKey::StartPos, elapsed());
+    } else {
+        MovieConfiguration::get().updateUrl(this->_file, ConfigKnownKey::StartPos, elapsed() - 1);
+    }
+#endif
 }
 
 void QtPlayerProxy::setPlaySpeed(double dTimes)
@@ -458,6 +465,13 @@ void QtPlayerProxy::initMember()
 
 void QtPlayerProxy::play()
 {
+    bool bRawFormat = false;
+
+    if (0 < dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist()->size()) {
+        PlayItemInfo currentInfo = dynamic_cast<PlayerEngine *>(m_pParentWidget)->getplaylist()->currentInfo();
+        bRawFormat = currentInfo.mi.isRawFormat();
+    }
+  
     if (_file.isLocalFile()) {
         QString strFilePath = QFileInfo(_file.toLocalFile()).absoluteFilePath();
         m_pPlayer->setMedia(QMediaContent(QUrl::fromLocalFile(strFilePath)));
@@ -465,6 +479,14 @@ void QtPlayerProxy::play()
         m_pPlayer->setMedia(QMediaContent(_file));
     }
     m_pPlayer->play();
+
+#ifndef _LIBDMR_
+    QMap<QString, QVariant> cfg = MovieConfiguration::get().queryByUrl(_file);
+    QString key = MovieConfiguration::knownKey2String(ConfigKnownKey::StartPos);
+    if (Settings::get().isSet(Settings::ResumeFromLast) && !bRawFormat) {
+       seekAbsolute(cfg[key].toInt());
+    }
+#endif
 }
 
 void QtPlayerProxy::pauseResume()
@@ -555,7 +577,6 @@ qint64 QtPlayerProxy::elapsed() const
 void QtPlayerProxy::updatePlayingMovieInfo()
 {
 }
-
 
 } // end of namespace dmr
 
