@@ -126,7 +126,7 @@ QString VolumeSlider::readSinkInputPath()
         QVariant nameV = ApplicationAdaptor::redDBusProperty("com.deepin.daemon.Audio", curPath.path(),
                                                              "com.deepin.daemon.Audio.SinkInput", "Name");
         QString strMovie = QObject::tr("Movie");
-        if (!nameV.isValid() || (!nameV.toString().contains(strMovie, Qt::CaseInsensitive) && !nameV.toString().contains("deepin-movie", Qt::CaseInsensitive)))
+        if (!nameV.isValid() || (!nameV.toString().contains(strMovie, Qt::CaseInsensitive) && !nameV.toString().contains("deepin movie", Qt::CaseInsensitive)))
             continue;
 
         strPath = curPath.path();
@@ -324,7 +324,10 @@ void VolumeSlider::refreshIcon()
 
 void VolumeSlider::muteButtnClicked()
 {
-    changeMuteState(!m_bIsMute);
+    bool bMute = m_bIsMute;
+
+    changeMuteState(!bMute);
+    setMute(!bMute);
 }
 
 bool VolumeSlider::getsliderstate()
