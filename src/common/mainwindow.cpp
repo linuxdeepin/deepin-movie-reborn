@@ -1098,11 +1098,6 @@ void MainWindow::onWindowStateChanged()
                 resizeByConstraints(true);
             }
         }
-
-        if (m_lastRectInNormalMode.isValid() && !m_bMiniMode) {
-            setGeometry(m_lastRectInNormalMode);
-        }
-
         m_bMovieSwitchedInFsOrMaxed = false;
     }
     update();
