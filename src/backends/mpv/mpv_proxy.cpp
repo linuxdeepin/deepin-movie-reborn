@@ -1245,31 +1245,20 @@ void MpvProxy::play()
     if (!_dvdDevice.isEmpty()) {
         listOpts << QString("dvd-device=%1").arg(_dvdDevice);
     }
-
-//注：m_bHwaccelAuto 好像是废弃了,初始化为false,此处未执行
-//    if (m_bHwaccelAuto && m_bLastIsSpecficFormat) {
-//        if (!m_bIsJingJia || !utils::check_wayland_env()) {
-//            // hwdec could be disabled by some codecs, so we need to re-enable it
-//            my_set_property(m_handle, "hwdec", "auto");
-//#if defined (__mips__) || defined (__aarch64__) || defined (__sw_64__)
-//            if (!CompositingManager::get().hascard() || CompositingManager::get().isOnlySoftDecode()) {
-//                my_set_property(m_handle, "hwdec", "no");
-//            }
-//#endif
-//        }
-//    }
-//#else
-//    if (m_bHwaccelAuto) {
-//        if (CompositingManager::get().isOnlySoftDecode()) {
-//            my_set_property(m_handle, "hwdec", "no");
-//        } else {
-//            my_set_property(m_handle, "hwdec", "auto");
-//        }
-//    }
 #endif
 
     //刷新解码模式
     refreshDecode();
+
+    QFileInfo fi("/dev/mwv206_0");  // 景美驱动硬解avs2有崩溃问题
+    if (fi.exists()) {
+        QDir sdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv206");
+        QString sCodec = pEngine->playlist().currentInfo().mi.videoCodec();
+        if(sdir.exists() && sCodec.contains("avs2", Qt::CaseInsensitive)) {
+             my_set_property(m_handle, "hwdec", "no");
+             my_set_property(m_handle, "vo", "gpu,x11,xv");
+        }
+    }
 
     if (listOpts.size()) {
         listArgs << "replace" << listOpts.join(',');
