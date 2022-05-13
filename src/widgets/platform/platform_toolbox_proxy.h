@@ -638,6 +638,7 @@ private:
     QMutex m_listPixmapMutex;       ///缩略图list的锁
 
     qint64 m_nClickTime;            ///鼠标点击时间
+    float m_processAdd;             ///触摸屏进度条滑动累加
 
     bool m_bMouseFlag;
     bool m_bMousePree;              ///

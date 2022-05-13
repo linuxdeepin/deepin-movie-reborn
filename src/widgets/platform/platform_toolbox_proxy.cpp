@@ -1281,6 +1281,7 @@ void Platform_ToolboxProxy::initMember()
     m_pPaClose = nullptr;
 
     m_nClickTime = 0;
+    m_processAdd = 0.0;
 
     m_bMouseFlag = false;
     m_bMousePree = false;
@@ -2372,9 +2373,20 @@ void Platform_ToolboxProxy::updateProgress(int nValue)
 
     if (m_pProgBar_Widget->currentIndex() == 1) {              //进度条模式
 
-        int nCurrPos = m_pProgBar->value() + nValue * nDuration / m_pProgBar->width();
-        if (!m_pProgBar->signalsBlocked()) {
-            m_pProgBar->blockSignals(true);
+        float value = nValue * nDuration / m_pProgBar->width();
+        int nCurrPos;
+        if (value > 1 || value < -1) {
+            nCurrPos = m_pProgBar->value() + value;
+        } else {
+            if (m_processAdd < 1.0 && m_processAdd > -1.0) {
+                m_processAdd += (float)(nValue * nDuration) / m_pProgBar->width();
+                qInfo() << m_processAdd;
+                return;
+            }
+            else {
+                nCurrPos = m_pProgBar->value() + m_processAdd;
+                m_processAdd = .0;
+            }
         }
 
         m_pProgBar->slider()->setSliderPosition(nCurrPos);
