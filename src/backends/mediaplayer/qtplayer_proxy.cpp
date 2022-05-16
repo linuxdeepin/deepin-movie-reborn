@@ -94,6 +94,9 @@ QtPlayerProxy::~QtPlayerProxy()
     if (CompositingManager::get().composited()) {
         disconnect(this, &QtPlayerProxy::stateChanged, nullptr, nullptr);
     }
+
+    m_pVideoSurface->deleteLater();
+    m_pVideoSurface = nullptr;
 }
 
 
