@@ -191,7 +191,7 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *pObj)
     pMainWid->setLayout(pLayout);
     DPushButton *pPushButton = new DPushButton;
     pPushButton->setAutoDefault(false);
-    pLineEdit->setFixedHeight(21);
+    pLineEdit->setFixedHeight(40);
     pLineEdit->setObjectName("OptionSelectableLineEdit");
     pLineEdit->setText(pSettingOption->value().toString());
     QFontMetrics fontMetrics = pLineEdit->fontMetrics();
@@ -205,7 +205,8 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *pObj)
     pLineEdit->setText(sElideText);
     sNameLast = sElideText;
     pPushButton->setIcon(QIcon(":resources/icons/select-normal.svg"));
-    pPushButton->setFixedHeight(21);
+    pPushButton->setFixedHeight(40);
+    pLayout->setContentsMargins(0, 0, 0, 0);
     pLayout->addWidget(pLineEdit);
     pLayout->addWidget(pPushButton);
 
@@ -217,7 +218,10 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *pObj)
     pOptionLayout->setSpacing(0);
 
     pMainWid->setMinimumWidth(240);
-    pOptionLayout->addRow(new DLabel(QObject::tr(pSettingOption->name().toStdString().c_str())), pMainWid);
+    QLabel *title = new DLabel(QObject::tr(pSettingOption->name().toStdString().c_str()));
+    title->setFixedHeight(40);
+    title->setContentsMargins(0, 0, 16, 0);
+    pOptionLayout->addRow(title, pMainWid);
 
     //auto optionWidget = settingWidget->createWidget(option);
     workaround_updateStyle(pOptionWidget, "light");
