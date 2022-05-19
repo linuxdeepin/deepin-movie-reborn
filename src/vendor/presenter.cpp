@@ -123,10 +123,14 @@ void Presenter::initMpris(MprisPlayer *mprisPlayer)
 
 void Presenter::slotplay()
 {
-    if (_mw)
-        _mw->requestAction(ActionFactory::StartPlay);
-    else
-        _platform_mw->requestAction(ActionFactory::StartPlay);
+    if (m_mprisplayer->playbackStatus() == Mpris::Paused) {
+        slotpause();
+    } else {
+        if (_mw)
+            _mw->requestAction(ActionFactory::StartPlay);
+        else
+            _platform_mw->requestAction(ActionFactory::StartPlay);
+    }
 }
 
 void Presenter::slotpause()
