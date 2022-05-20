@@ -218,7 +218,7 @@ int main(int argc, char *argv[])
     if (clm.debug()) {
         Dtk::Core::DLogManager::registerConsoleAppender();
     }
-    Dtk::Core::DLogManager::registerFileAppender();
+//    Dtk::Core::DLogManager::registerFileAppender();
 
     bool singleton = !dmr::Settings::get().isSet(dmr::Settings::MultipleInstance);
 

@@ -75,7 +75,9 @@
 #include <X11/cursorfont.h>
 #include <X11/Xlib.h>
 #include "moviewidget.h"
+#ifndef _COMMUNITY_
 #include <qpa/qplatformnativeinterface.h>
+#endif
 #include <QtConcurrent>
 
 #include "../accessibility/ac-deepin-movie-define.h"
@@ -1911,12 +1913,14 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
             my_setStayOnTop(this, m_bWindowAbove);
             show();
         } else {
+#ifndef _COMMUNITY_
             //wayland 置顶实现
             if (m_bWindowAbove) { //置顶
                 QGuiApplication::platformNativeInterface()->setWindowProperty(windowHandle()->handle(), "_d_dwayland_staysontop", "true");
             } else {//取消置顶
                 QGuiApplication::platformNativeInterface()->setWindowProperty(windowHandle()->handle(), "_d_dwayland_staysontop", "false");
             }
+#endif
         }
         if (!bFromUI) {
             reflectActionToUI(actionKind);

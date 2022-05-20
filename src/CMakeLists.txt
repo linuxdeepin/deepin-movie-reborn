@@ -18,7 +18,6 @@ find_package(Qt5Network)
 find_package(Qt5Concurrent)
 find_package(Qt5Sql)
 find_package(Qt5Svg)
-find_package(gui-private)
 find_package(Qt5Multimedia)
 find_package(Qt5MultimediaWidgets)
 
@@ -75,9 +74,19 @@ add_executable(${CMD_NAME} ${SRCS} ${RCS} ${QM})
 
 target_include_directories(${CMD_NAME} PUBLIC ${PROJECT_INCLUDE})
 
-set(TARGET_LIBS X11 Xtst PkgConfig::Xcb Qt5::Widgets Qt5::X11Extras Qt5::Network Qt5::GuiPrivate
+set(TARGET_LIBS X11 Xtst PkgConfig::Xcb Qt5::Widgets Qt5::X11Extras Qt5::Network
     Qt5::DBus Qt5::Sql Qt5::Svg Qt5::Multimedia Qt5::MultimediaWidgets PkgConfig::Dtk PkgConfig::MPRIS PkgConfig::DBusextended PkgConfig::Gst GL va va-x11
     Qt5::Concurrent)
+
+#匹配mpris差异
+execute_process(COMMAND cat /etc/os-version COMMAND grep Community OUTPUT_VARIABLE CommunityVersion)
+message("version:" ${CommunityVersion})
+if( ${CommunityVersion} MATCHES "Community" )
+    add_definitions(-D_COMMUNITY_)
+else()
+    find_package(gui-private)
+    set(TARGET_LIBS Qt5::GuiPrivate)
+endif()
 
 target_link_libraries(${CMD_NAME} ${TARGET_LIBS} ${Other_LIBRARIES})
 
