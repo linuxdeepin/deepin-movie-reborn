@@ -224,7 +224,6 @@ static QWidget *createSelectableLineEditOptionHandle(QObject *pObj)
 
     DDialog *pPrompt = new DDialog(pMainWid);
     pPrompt->setIcon(QIcon(":/resources/icons/warning.svg"));
-    //pPrompt->setTitle(QObject::tr("Permissions pPrompt"));
     pPrompt->setMessage(QObject::tr("You don't have permission to operate this folder"));
     pPrompt->setWindowFlags(pPrompt->windowFlags() | Qt::WindowStaysOnTopHint);
     pPrompt->addButton(QObject::tr("OK"), true, DDialog::ButtonRecommend);
