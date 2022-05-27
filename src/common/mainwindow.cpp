@@ -75,7 +75,6 @@
 #include <X11/cursorfont.h>
 #include <X11/Xlib.h>
 #include "moviewidget.h"
-#include <qpa/qplatformnativeinterface.h>
 #include <QtConcurrent>
 
 #include "../accessibility/ac-deepin-movie-define.h"
@@ -1915,10 +1914,12 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
             show();
         } else {
             //wayland 置顶实现
+            QFunctionPointer setWindowProperty = qApp->platformFunction("_d_setWindowProperty");
             if (m_bWindowAbove) { //置顶
-                QGuiApplication::platformNativeInterface()->setWindowProperty(windowHandle()->handle(), "_d_dwayland_staysontop", "true");
+                reinterpret_cast<void(*)(QWindow *, const char *, const QVariant &)>(setWindowProperty)(windowHandle(), "_d_dwayland_staysontop", true);
+
             } else {//取消置顶
-                QGuiApplication::platformNativeInterface()->setWindowProperty(windowHandle()->handle(), "_d_dwayland_staysontop", "false");
+                reinterpret_cast<void(*)(QWindow *, const char *, const QVariant &)>(setWindowProperty)(windowHandle(), "_d_dwayland_staysontop", false);
             }
         }
         if (!bFromUI) {
@@ -3909,7 +3910,6 @@ void MainWindow::toggleUIMode()
             } else if (m_preMiniWindowState & Qt::WindowFullScreen) {
                 move(0, 0);
                 showFullScreen();
-                reflectActionToUI(ActionFactory::ToggleFullscreen);
             } else {
                 showNormal();
             }
