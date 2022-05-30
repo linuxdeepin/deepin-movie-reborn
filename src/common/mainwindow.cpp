@@ -1802,7 +1802,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
         if (m_pEngine->playlist().count() == 0) {
             requestAction(ActionFactory::ActionKind::OpenFileList);
         } else {
-            if (m_pEngine->state() == PlayerEngine::CoreState::Idle) {
+            if (m_pEngine->state() == PlayerEngine::CoreState::Idle  && m_bIsFree) {
                 //先显示分辨率，再显示静音
                 QSize sz = geometry().size();
                 auto msg = QString("%1x%2").arg(sz.width()).arg(sz.height());
