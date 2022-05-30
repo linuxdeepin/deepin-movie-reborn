@@ -2555,7 +2555,8 @@ void MainWindow::onBurstScreenshot(const QImage &frame, qint64 timestamp)
         m_pEngine->stopBurstScreenshot();
         m_bInBurstShootMode = false;
         m_pToolbox->setEnabled(true);
-        m_pTitlebar->titlebar()->setEnabled(true);
+        //fix bug:129205
+//        m_pTitlebar->titlebar()->setEnabled(true);
         if (m_pEventListener) m_pEventListener->setEnabled(!m_bMiniMode);
 
         if (frame.isNull()) {
@@ -2600,7 +2601,7 @@ void MainWindow::startBurstShooting()
     if (m_pEngine->duration() <= 40) return;
     m_bInBurstShootMode = true;
     m_pToolbox->setEnabled(false);
-    m_pTitlebar->titlebar()->setEnabled(false);
+//    m_pTitlebar->titlebar()->setEnabled(false);
     if (m_pEventListener) m_pEventListener->setEnabled(false);
 
     m_bPausedBeforeBurst = m_pEngine->paused();
@@ -3177,6 +3178,11 @@ void MainWindow::checkErrorMpvLogsChanged(const QString sPrefix, const QString s
 void MainWindow::closeEvent(QCloseEvent *pEvent)
 {
     qInfo() << __func__;
+    if (m_bInBurstShootMode) {
+        pEvent->ignore();
+        return;
+    }
+
     if (m_nLastCookie > 0) {
         utils::UnInhibitStandby(m_nLastCookie);
         qInfo() << "uninhibit cookie" << m_nLastCookie;
