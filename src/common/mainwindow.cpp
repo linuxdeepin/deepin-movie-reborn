@@ -1802,7 +1802,7 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
         if (m_pEngine->playlist().count() == 0) {
             requestAction(ActionFactory::ActionKind::OpenFileList);
         } else {
-            if (m_pEngine->state() == PlayerEngine::CoreState::Idle) {
+            if (m_pEngine->state() == PlayerEngine::CoreState::Idle && m_bIsFree) {
                 //先显示分辨率，再显示静音
                 QSize sz = geometry().size();
                 auto msg = QString("%1x%2").arg(sz.width()).arg(sz.height());
@@ -2555,7 +2555,7 @@ void MainWindow::onBurstScreenshot(const QImage &frame, qint64 timestamp)
         m_pEngine->stopBurstScreenshot();
         m_bInBurstShootMode = false;
         m_pToolbox->setEnabled(true);
-        m_pTitlebar->titlebar()->setEnabled(true);
+//        m_pTitlebar->titlebar()->setEnabled(true);
         if (m_pEventListener) m_pEventListener->setEnabled(!m_bMiniMode);
 
         if (frame.isNull()) {
@@ -2600,7 +2600,7 @@ void MainWindow::startBurstShooting()
     if (m_pEngine->duration() <= 40) return;
     m_bInBurstShootMode = true;
     m_pToolbox->setEnabled(false);
-    m_pTitlebar->titlebar()->setEnabled(false);
+//    m_pTitlebar->titlebar()->setEnabled(false);
     if (m_pEventListener) m_pEventListener->setEnabled(false);
 
     m_bPausedBeforeBurst = m_pEngine->paused();
@@ -3177,6 +3177,10 @@ void MainWindow::checkErrorMpvLogsChanged(const QString sPrefix, const QString s
 void MainWindow::closeEvent(QCloseEvent *pEvent)
 {
     qInfo() << __func__;
+    if (m_bInBurstShootMode) {
+        pEvent->ignore();
+        return;
+    }
     if (m_nLastCookie > 0) {
         utils::UnInhibitStandby(m_nLastCookie);
         qInfo() << "uninhibit cookie" << m_nLastCookie;
