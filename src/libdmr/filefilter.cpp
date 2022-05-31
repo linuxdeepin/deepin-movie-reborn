@@ -222,7 +222,7 @@ bool FileFilter::isSubtitle(QUrl url)
 
     AVFormatContext *av_ctx = nullptr;
 
-    nRet = g_mvideo_avformat_open_input(&av_ctx, url.toString().toUtf8().constData(), nullptr, nullptr);
+    nRet = g_mvideo_avformat_open_input(&av_ctx, url.toLocalFile().toUtf8().constData(), nullptr, nullptr);
 
     if(nRet < 0)
     {
