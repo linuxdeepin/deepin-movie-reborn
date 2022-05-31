@@ -26,7 +26,7 @@ pkg_check_modules(Dtk REQUIRED IMPORTED_TARGET dtkcore)
 pkg_check_modules(Xcb REQUIRED IMPORTED_TARGET xcb xcb-shape)
 pkg_check_modules(MPRIS REQUIRED IMPORTED_TARGET mpris-qt5)
 pkg_check_modules(DBusextended REQUIRED IMPORTED_TARGET dbusextended-qt5)
-pkg_check_modules(Gst REQUIRED IMPORTED_TARGET gstreamer-1.0 glib-2.0 gstreamer-pbutils-1.0)
+pkg_check_modules(Gst REQUIRED IMPORTED_TARGET gobject-2.0)
 # IMPORTED_TARGET failed to work for some of libs under flatpak env
 pkg_check_modules(Other REQUIRED  gsettings-qt)
 

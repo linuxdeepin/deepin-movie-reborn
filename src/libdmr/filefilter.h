@@ -58,6 +58,19 @@ typedef int (*mvideo_avformat_open_input)(AVFormatContext **ps, const char *url,
 typedef int (*mvideo_avformat_find_stream_info)(AVFormatContext *ic, AVDictionary **options);
 typedef void (*mvideo_avformat_close_input)(AVFormatContext **s);
 
+typedef void (*mvideo_gst_init)(int *argc, char **argv[]);
+typedef GstDiscoverer* (*mvideo_gst_discoverer_new)(GstClockTime timeout, GError **err);
+typedef void (*mvideo_gst_discoverer_start) (GstDiscoverer *discoverer);
+typedef void (*mvideo_gst_discoverer_stop) (GstDiscoverer *discoverer);
+typedef gboolean (*mvideo_gst_discoverer_discover_uri_async) (GstDiscoverer *discoverer, const gchar *uri);
+typedef gchar* (*mvideo_gst_discoverer_info_get_uri) (const GstDiscovererInfo* info);
+typedef GstDiscovererResult (*mvideo_gst_discoverer_info_get_result) (const GstDiscovererInfo* info);
+typedef const GstStructure* (*mvideo_gst_discoverer_info_get_misc) (const GstDiscovererInfo* info);
+typedef gchar* (*mvideo_gst_structure_to_string) (const GstStructure * structure);
+typedef GList* (*mvideo_gst_discoverer_info_get_video_streams) (GstDiscovererInfo *info);
+typedef GList* (*mvideo_gst_discoverer_info_get_audio_streams) (GstDiscovererInfo *info);
+typedef GList* (*mvideo_gst_discoverer_info_get_subtitle_streams) (GstDiscovererInfo *info);
+
 /**
  * @file 处理输入文件的公共类，对输入文件的路径做转换
  * 避免文件路径出现多钟形式如：软连接、本地url、网络url等
@@ -142,6 +155,13 @@ private:
     mvideo_avformat_open_input g_mvideo_avformat_open_input = nullptr;
     mvideo_avformat_find_stream_info g_mvideo_avformat_find_stream_info = nullptr;
     mvideo_avformat_close_input g_mvideo_avformat_close_input = nullptr;
+
+    mvideo_gst_init g_mvideo_gst_init = nullptr;
+    mvideo_gst_discoverer_new g_mvideo_gst_discoverer_new = nullptr;
+    mvideo_gst_discoverer_start g_mvideo_gst_discoverer_start = nullptr;
+    mvideo_gst_discoverer_stop g_mvideo_gst_discoverer_stop = nullptr;
+    mvideo_gst_discoverer_discover_uri_async g_mvideo_gst_discoverer_discover_uri_async = nullptr;
+
     QMimeDatabase m_mimeDB;
     bool m_bMpvExists;
     bool m_stopRunningThread;
