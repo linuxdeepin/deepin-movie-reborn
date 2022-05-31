@@ -280,6 +280,33 @@ TEST(MainWindow, tabInteraction)
 }
 #endif
 
+TEST(MainWindow, loadSpecialFile)
+{
+    MainWindow *w = dApp->getMainWindow();
+    w->show();
+    PlayerEngine *engine =  w->engine();
+    QList<QUrl> listPlayFiles;
+    listPlayFiles << QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/{}demo.mp4");
+    engine->playlist().loadPlaylist();
+    engine->playlist().clear();
+    const QList<QUrl> &valids = engine->addPlayFiles(listPlayFiles);
+    QCOMPARE(engine->isPlayableFile(valids[0]), true);
+    if (!valids.empty()) {
+        engine->playByName(valids[0]);
+    }
+
+    qDebug() << __func__ << "MainWindow.loadSpecialFile:" << engine->state();
+    w->checkOnlineState(false);
+    QTest::qWait(200);
+    w->resize(900, 700);
+    QTest::qWait(200);
+    w->resize(300, 300);
+    QTest::qWait(200);
+
+    // video judge
+    EXPECT_TRUE(FileFilter::instance()->isVideo(listPlayFiles[0]));
+}
+
 TEST(MainWindow, loadFile)
 {
     MainWindow *w = dApp->getMainWindow();
