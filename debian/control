@@ -12,7 +12,7 @@ Build-Depends: debhelper, cmake, pkg-config, qttools5-dev-tools,
                 x11proto-record-dev, libxtst-dev,
                 libavcodec-dev, libavformat-dev,libavutil-dev,
                 libpulse-dev, libdvdnav-dev, libgsettings-qt-dev,
-                libmpris-qt5-dev, libdbusextended-qt5-dev, libva-dev, qtbase5-private-dev,
+                libmpris-qt5-dev, libdbusextended-qt5-dev, libva-dev,
                 libgstreamer-plugins-base1.0-dev, libgstreamer1.0-dev
 Standards-Version: 3.9.8
 Homepage: https://www.deepin.org/
