@@ -34,7 +34,19 @@
 #include "filefilter.h"
 #include "compositing_manager.h"
 
+#include <iostream>
+#include <functional>
+using namespace std;
+
 FileFilter* FileFilter::m_pFileFilter = new FileFilter;
+
+static mvideo_gst_discoverer_info_get_uri g_mvideo_gst_discoverer_info_get_uri = nullptr;
+static mvideo_gst_discoverer_info_get_result g_mvideo_gst_discoverer_info_get_result = nullptr;
+static mvideo_gst_discoverer_info_get_misc g_mvideo_gst_discoverer_info_get_misc = nullptr;
+static mvideo_gst_structure_to_string g_mvideo_gst_structure_to_string = nullptr;
+static mvideo_gst_discoverer_info_get_video_streams g_mvideo_gst_discoverer_info_get_video_streams = nullptr;
+static mvideo_gst_discoverer_info_get_audio_streams g_mvideo_gst_discoverer_info_get_audio_streams = nullptr;
+static mvideo_gst_discoverer_info_get_subtitle_streams g_mvideo_gst_discoverer_info_get_subtitle_streams = nullptr;
 
 FileFilter::FileFilter()
 {
@@ -50,10 +62,27 @@ FileFilter::FileFilter()
     g_mvideo_avformat_find_stream_info = (mvideo_avformat_find_stream_info) avformatLibrary.resolve("avformat_find_stream_info");
     g_mvideo_avformat_close_input = (mvideo_avformat_close_input) avformatLibrary.resolve("avformat_close_input");
 
-    gst_init(nullptr, nullptr);
+    QLibrary gstreamerLibrary(libPath("libgstreamer-1.0.so"));
+    QLibrary gstpbutilsLibrary(libPath("libgstpbutils-1.0.so"));
+
+    g_mvideo_gst_init = (mvideo_gst_init) gstreamerLibrary.resolve("gst_init");
+    g_mvideo_gst_discoverer_new = (mvideo_gst_discoverer_new) gstpbutilsLibrary.resolve("gst_discoverer_new");
+    g_mvideo_gst_discoverer_start = (mvideo_gst_discoverer_start) gstpbutilsLibrary.resolve("gst_discoverer_start");
+    g_mvideo_gst_discoverer_stop = (mvideo_gst_discoverer_stop) gstpbutilsLibrary.resolve("gst_discoverer_stop");
+    g_mvideo_gst_discoverer_discover_uri_async = (mvideo_gst_discoverer_discover_uri_async) gstpbutilsLibrary.resolve("gst_discoverer_discover_uri_async");
+
+    g_mvideo_gst_discoverer_info_get_uri = (mvideo_gst_discoverer_info_get_uri) gstpbutilsLibrary.resolve("gst_discoverer_info_get_uri");
+    g_mvideo_gst_discoverer_info_get_result = (mvideo_gst_discoverer_info_get_result) gstpbutilsLibrary.resolve("gst_discoverer_info_get_result");
+    g_mvideo_gst_discoverer_info_get_misc = (mvideo_gst_discoverer_info_get_misc) gstpbutilsLibrary.resolve("gst_discoverer_info_get_misc");
+    g_mvideo_gst_structure_to_string = (mvideo_gst_structure_to_string) gstreamerLibrary.resolve("gst_structure_to_string");
+    g_mvideo_gst_discoverer_info_get_video_streams = (mvideo_gst_discoverer_info_get_video_streams) gstpbutilsLibrary.resolve("gst_discoverer_info_get_video_streams");
+    g_mvideo_gst_discoverer_info_get_audio_streams = (mvideo_gst_discoverer_info_get_audio_streams) gstpbutilsLibrary.resolve("gst_discoverer_info_get_audio_streams");
+    g_mvideo_gst_discoverer_info_get_subtitle_streams = (mvideo_gst_discoverer_info_get_subtitle_streams) gstpbutilsLibrary.resolve("gst_discoverer_info_get_subtitle_streams");
+
+    g_mvideo_gst_init(nullptr, nullptr);
 
     GError *pGErr = nullptr;
-    m_pDiscoverer = gst_discoverer_new(5 * GST_SECOND, &pGErr);
+    m_pDiscoverer = g_mvideo_gst_discoverer_new(5 * GST_SECOND, &pGErr);
     m_pLoop = g_main_loop_new(nullptr, FALSE);
 
     if (!m_pDiscoverer) {
@@ -61,10 +90,10 @@ FileFilter::FileFilter()
         g_clear_error (&pGErr);
     }
 
-    g_signal_connect_data(m_pDiscoverer, "discovered", (GCallback)discovered, &m_miType, nullptr, GConnectFlags(0));
+    g_signal_connect_data(m_pDiscoverer, "discovered", (GCallback)(discovered), &m_miType, nullptr, GConnectFlags(0));
     g_signal_connect_data(m_pDiscoverer, "finished",  (GCallback)(finished), m_pLoop, nullptr, GConnectFlags(0));
 
-    gst_discoverer_start(m_pDiscoverer);
+    g_mvideo_gst_discoverer_start(m_pDiscoverer);
 }
 
 QString FileFilter::libPath(const QString &strlib)
@@ -87,7 +116,7 @@ QString FileFilter::libPath(const QString &strlib)
 
 FileFilter::~FileFilter()
 {
-    gst_discoverer_stop(m_pDiscoverer);
+    g_mvideo_gst_discoverer_stop(m_pDiscoverer);
     g_object_unref(m_pDiscoverer);
     g_main_loop_unref(m_pLoop);
 }
@@ -279,7 +308,7 @@ FileFilter::MediaType FileFilter::typeJudgeByGst(const QUrl &url)
 
     uri = strcpy(uri, url.toString().toUtf8().constData());
 
-    if (!gst_discoverer_discover_uri_async (m_pDiscoverer, uri)) {
+    if (!g_mvideo_gst_discoverer_discover_uri_async (m_pDiscoverer, uri)) {
       qInfo() << "Failed to start discovering URI " << uri;
       g_object_unref (m_pDiscoverer);
     }
@@ -306,8 +335,8 @@ void FileFilter::discovered(GstDiscoverer *discoverer, GstDiscovererInfo *info, 
     bool bAudio = false;
     bool bSubtitle = false;
 
-    uri = gst_discoverer_info_get_uri (info);
-    result = gst_discoverer_info_get_result (info);
+    uri = g_mvideo_gst_discoverer_info_get_uri (info);
+    result = g_mvideo_gst_discoverer_info_get_result (info);
 
     switch (result) {
       case GST_DISCOVERER_URI_INVALID:
@@ -326,8 +355,8 @@ void FileFilter::discovered(GstDiscoverer *discoverer, GstDiscovererInfo *info, 
         const GstStructure *s;
         gchar *str;
 
-        s = gst_discoverer_info_get_misc (info);
-        str = gst_structure_to_string (s);
+        s = g_mvideo_gst_discoverer_info_get_misc (info);
+        str = g_mvideo_gst_structure_to_string (s);
 
         qInfo() << "Missing plugins: " << str;
         g_free (str);
@@ -344,15 +373,15 @@ void FileFilter::discovered(GstDiscoverer *discoverer, GstDiscovererInfo *info, 
     }
 
     GList *list;
-    list = gst_discoverer_info_get_video_streams(info);
+    list = g_mvideo_gst_discoverer_info_get_video_streams(info);
     if (list) {
        bVideo = true;
     }
-    list = gst_discoverer_info_get_audio_streams(info);
+    list = g_mvideo_gst_discoverer_info_get_audio_streams(info);
     if (list) {
         bAudio = true;
     }
-    list = gst_discoverer_info_get_subtitle_streams(info);
+    list = g_mvideo_gst_discoverer_info_get_subtitle_streams(info);
     if(list) {
         bSubtitle = true;
     }
