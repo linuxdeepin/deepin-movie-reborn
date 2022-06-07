@@ -139,7 +139,9 @@ bool PlayerEngine::isPlayableFile(const QUrl &url)
     if (FileFilter::instance()->isMediaFile(url)) {
         return true;
     } else {    // 网络文件不提示
-        emit sigInvalidFile(QFileInfo(url.toString()).fileName());
+        if(url.isLocalFile()) {
+            emit sigInvalidFile(QFileInfo(url.toLocalFile()).fileName());
+        }
         return false;
     }
 }
@@ -156,7 +158,7 @@ bool PlayerEngine::isPlayableFile(const QString &name)
     }
 
     if (url.isLocalFile()) {   // 网络文件不提示
-        emit sigInvalidFile(QFileInfo(url.toString()).fileName());
+        emit sigInvalidFile(QFileInfo(url.toLocalFile()).fileName());
         return false;
     }
 }
