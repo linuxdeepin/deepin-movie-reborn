@@ -57,16 +57,8 @@ void ShowInFileManager(const QString &path)
     qInfo() << __func__ << url.toString();
 
     // Try dde-file-manager
-    QProcess *fp = new QProcess();
-    QObject::connect(fp, SIGNAL(finished(int)), fp, SLOT(deleteLater()));
-#ifndef USE_TEST
-    fp->start("dde-file-manager", QStringList(url.toString()));
-#else
-    fp->start("wrong-name-for-test", QStringList(url.toString()));
-#endif
-    fp->waitForStarted(3000);
 
-    if (fp->error() == QProcess::FailedToStart) {
+    if (url.isLocalFile()) {
         // Start dde-file-manager failed, try nautilus
         QDBusInterface iface("org.freedesktop.FileManager1",
                              "/org/freedesktop/FileManager1",
@@ -85,7 +77,6 @@ void ShowInFileManager(const QString &path)
             qInfo() << "desktopService::openUrl";
             QDesktopServices::openUrl(QUrl::fromLocalFile(QFileInfo(path).dir().absolutePath()));
         }
-        fp->deleteLater();
     }
 }
 
