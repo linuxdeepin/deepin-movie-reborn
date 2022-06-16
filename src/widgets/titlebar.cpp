@@ -87,23 +87,24 @@ Titlebar::Titlebar(QWidget *parent) : DBlurEffectWidget(parent), d_ptr(new Title
     d->m_titlebar->setBackgroundTransparent(false);
     d->m_titlebar->setBlurBackground(true);
 
-    qreal dpr = qApp->devicePixelRatio();
-    int w = static_cast<int>(32 * dpr);
+//    qreal dpr = qApp->devicePixelRatio();
+//    int w = static_cast<int>(32 * dpr);
 
-    QIcon icon = QIcon::fromTheme("deepin-movie");
-    QPixmap logo = icon.pixmap(QSize(32, 32))
-            .scaled(w, w, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+//    QIcon icon = QIcon::fromTheme("deepin-movie");
+//    QPixmap logo = icon.pixmap(QSize(32, 32))
+//            .scaled(w, w, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 
-    logo.setDevicePixelRatio(dpr);
-    QPixmap pm(w, w);
-    pm.setDevicePixelRatio(dpr);
-    pm.fill(Qt::transparent);
-    QPainter p(&pm);
-    p.drawPixmap(0, 0, logo);
-    p.end();
+//    logo.setDevicePixelRatio(dpr);
+//    QPixmap pm(w, w);
+//    pm.setDevicePixelRatio(dpr);
+//    pm.fill(Qt::transparent);
+//    QPainter p(&pm);
+//    p.drawPixmap(0, 0, logo);
+//    p.end();
 
-    this->setIcon(pm);
-
+//    this->setIcon(pm);
+    //使用dtk接口后，图标跟随控制中心的图标主题动态变化。
+    d->m_titlebar->setIcon(QIcon::fromTheme("deepin-movie"));
     d->m_titlebar->setTitle("");
     d->m_titletxt = new DLabel(this);
     d->m_titletxt->setText("");
