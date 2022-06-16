@@ -283,7 +283,9 @@ FileFilter::MediaType FileFilter::typeJudgeByFFmpeg(const QUrl &url)
     } else {
         miType = MediaType::Other;
     }
-
+    if (strMimeType.contains("x-7z")) { //7z压缩包中会检测出音频流
+        miType = MediaType::Other;
+    }
     if(strFormatName.contains("Tele-typewriter") || strMimeType.startsWith("image/"))       // 排除文本文件，如果只用mimetype判断会遗漏部分原始格式文件如：h264裸流
         miType = MediaType::Other;
 
