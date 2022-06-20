@@ -375,6 +375,7 @@ protected:
             pa.setColor(QPalette::Text, Qt::white);
             _name->setPalette(pa);
             _index->setPalette(pa);
+            update();
         } else {
             if (state() == ItemState::Playing) {
                 _name->setForegroundRole(DPalette::Highlight);
