@@ -645,6 +645,8 @@ private:
     bool m_bAnimationFinash;        ///动画是否完成
     bool m_bCanPlay;                ///判断是否能进行曲目切换的标志位
     bool m_bSetListBtnFocus;        ///设置播放列表按钮焦点标志位
+
+    float m_processAdd;
 };
 /**
  * @brief The viewProgBarLoad class
