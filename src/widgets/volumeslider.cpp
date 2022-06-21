@@ -300,7 +300,6 @@ void VolumeSlider::volumeChanged(int nVolume)
     }
 
     refreshIcon();
-    Settings::get().setInternalOption("global_volume", m_nVolume > 100 ? 100 : m_nVolume);
 
     emit sigVolumeChanged(nVolume);
 }
