@@ -3196,7 +3196,8 @@ void MainWindow::closeEvent(QCloseEvent *pEvent)
             Settings::get().setInternalOption("playlist_pos", nCur);
         }
     }
-
+    //关闭窗口时保存音量值
+    Settings::get().setInternalOption("global_volume", m_nDisplayVolume > 100 ? 100 : m_nDisplayVolume);
     m_pEngine->savePlaybackPosition();
 
     pEvent->accept();
