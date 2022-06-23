@@ -24,7 +24,6 @@ find_package(Qt5MultimediaWidgets)
 pkg_check_modules(Dtk REQUIRED IMPORTED_TARGET dtkwidget)
 pkg_check_modules(Dtk REQUIRED IMPORTED_TARGET dtkcore)
 pkg_check_modules(Xcb REQUIRED IMPORTED_TARGET xcb xcb-shape)
-pkg_check_modules(MPRIS REQUIRED IMPORTED_TARGET mpris-qt5)
 pkg_check_modules(DBusextended REQUIRED IMPORTED_TARGET dbusextended-qt5)
 pkg_check_modules(Gst REQUIRED IMPORTED_TARGET gobject-2.0)
 # IMPORTED_TARGET failed to work for some of libs under flatpak env
@@ -93,13 +92,6 @@ install(FILES ${PROJECT_SOURCE_DIR}/assets/resources/icons/logo-big.svg
     DESTINATION share/icons/hicolor/scalable/apps
     RENAME deepin-movie.svg)
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/assets/deepin-movie DESTINATION /usr/share/deepin-manual/manual-assets/application/)
-
-#匹配mpris差异
-execute_process(COMMAND dpkg -s libmpris-qt5-1 COMMAND grep -i version COMMAND cut -d\  -f2 OUTPUT_VARIABLE libmprisVersion)
-message(${libmprisVersion})
-if( ${libmprisVersion} MATCHES "0.1.0-" )
-    add_definitions(-D_LIBMPR_)
-endif()
 
 # 加速编译优化参数
 if (CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "mips64")
