@@ -46,7 +46,7 @@ namespace dmr {
                    << QApplication::translate("UrlDialog", "OK"));
         setOnButtonClickedClose(false);
         setDefaultButton(1);
-        setIcon(QIcon(":/resources/icons/logo-big.svg"));
+        setIcon(QIcon::fromTheme("deepin-movie"));
         setMessage(QApplication::translate("UrlDialog", "Please enter the URL:"));
 
         m_lineEdit = new LineEdit(this);
