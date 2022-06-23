@@ -45,8 +45,8 @@ namespace dmr {
 LineEdit::LineEdit(QWidget *parent)
     : QLineEdit(parent)
 {
-    //参考设计图
-    setFixedHeight(30);
+    //参考设计图,dtk默认最大36
+    setMaximumHeight(36);
 
     QIcon icon;
     icon.addFile(":/resources/icons/input_clear_normal.svg", QSize(), QIcon::Normal);
@@ -81,9 +81,9 @@ void LineEdit::resizeEvent(QResizeEvent *pResizeEvent)
 void LineEdit::slotTextChanged(const QString &sText)
 {
     if (sText.isEmpty()) {
-        removeAction(m_pClearAct);
+        setClearButtonEnabled(false);
     } else {
-        addAction(m_pClearAct, QLineEdit::TrailingPosition);
+        setClearButtonEnabled(true);
     }
 }
 

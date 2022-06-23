@@ -537,7 +537,7 @@ void PlayerEngine::paintEvent(QPaintEvent *e)
         if (_state != Idle && m_bAudio) {
             p.fillRect(rect, QBrush(QColor(0, 0, 0)));
         } else {
-            QImage icon = utils::LoadHiDPIImage(":/resources/icons/light/init-splash.svg");
+            QImage icon = QIcon::fromTheme("deepin-movie").pixmap(130, 130).toImage();;
             QPixmap pix = QPixmap::fromImage(icon);
             QPointF pos = rect.center() - QPoint(pix.width() / 2, pix.height() / 2) / devicePixelRatioF();
 
