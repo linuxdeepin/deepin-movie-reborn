@@ -444,7 +444,7 @@ namespace dmr {
         pixmap=pixmap.fromImage(img);
 
         QPixmap pixmap2;
-        QImage img1=utils::LoadHiDPIImage(":/resources/icons/dark/init-splash.svg");
+        QImage img1=QIcon::fromTheme("deepin-movie").pixmap(130, 130).toImage();
         pixmap2=pixmap2.fromImage(img1);
 
         QPainter painter(&pixmap);
@@ -459,7 +459,7 @@ namespace dmr {
         pixmap3=pixmap3.fromImage(image);
 
         QPixmap pixmap4;
-        QImage img2=utils::LoadHiDPIImage(":/resources/icons/dark/init-splash.svg");
+        QImage img2=QIcon::fromTheme("deepin-movie").pixmap(130, 130).toImage();
         pixmap4=pixmap4.fromImage(img2);
 
         QPainter painter1(&pixmap3);
@@ -940,13 +940,16 @@ namespace dmr {
                     m_vbo.bind();
                     m_pGlProg->bind();
                     m_pGlProg->setUniformValue("bg", color);
-
-                    QOpenGLTexture *pGLTexture = m_pLightTex;
-                    DGuiApplicationHelper::ColorType themeType = DGuiApplicationHelper::instance()->themeType();
-                    //                if (qApp->theme() == "dark") {
-                    if (themeType == DGuiApplicationHelper::DarkType) {
-                        pGLTexture = m_pDarkTex;
-                    }
+                    prepareSplashImages();
+                    QOpenGLTexture *pGLTexture;
+                    QOpenGLTexture BgLight(m_imgBgLight, QOpenGLTexture::DontGenerateMipMaps);
+                    pGLTexture = &BgLight;
+                    //和产品、ui商议深色主题下去除深色背景效果
+//                    DGuiApplicationHelper::ColorType themeType = DGuiApplicationHelper::instance()->themeType();
+//                    //                if (qApp->theme() == "dark") {
+//                    if (themeType == DGuiApplicationHelper::DarkType) {
+//                        pGLTexture = m_pDarkTex;
+//                    }
                     pGLTexture->bind();
                     pGLFunction->glActiveTexture(GL_TEXTURE0);
                     pGLFunction->glDrawArrays(GL_TRIANGLES, 0, 6);

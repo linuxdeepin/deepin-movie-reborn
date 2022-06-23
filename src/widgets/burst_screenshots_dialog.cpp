@@ -55,7 +55,7 @@ BurstScreenshotsDialog::BurstScreenshotsDialog(const PlayItemInfo &PlayItemInfo)
     m_pTitlebar->setFixedHeight(50);
     m_pTitlebar->layout()->setContentsMargins(0, 0, 0, 0);
     m_pTitlebar->setMenuVisible(false);
-    m_pTitlebar->setIcon(QIcon::fromTheme(":/resources/icons/logo-big.svg"));
+    m_pTitlebar->setIcon(QIcon::fromTheme("deepin-movie"));
     //参考设计图
     m_pTitlebar->setFixedWidth(590);
     m_pTitlebar->setTitle(strMovieInfo.title);
