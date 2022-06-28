@@ -86,6 +86,23 @@ struct MovieInfo {
 #ifdef _MOVIE_USE_
     QString strFmtName; // 文件封装名
 #endif
+    MovieInfo() {
+        valid = false;
+        raw_rotate = -1;
+        fileSize = -1;
+        duration = -1;
+        width = -1;
+        height = -1;
+        vCodecID = -1;
+        aCodeRate = -1;
+        fps = -1;
+        proportion = -1.0;
+        aCodeID = -1;
+        aCodeRate = -1;
+        aDigit = -1;
+        channels = -1;
+        sampling = -1;
+    }
 
     static struct MovieInfo parseFromFile(const QFileInfo &fi, bool *ok = nullptr);
     QString durationStr() const
