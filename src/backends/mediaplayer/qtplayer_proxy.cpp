@@ -343,7 +343,7 @@ void QtPlayerProxy::setSubDelay(double secs)
 
 double QtPlayerProxy::subDelay() const
 {
-
+    return .0;
 }
 
 int QtPlayerProxy::aid() const

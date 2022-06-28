@@ -157,6 +157,12 @@ public:
         bool mi_valid {false};
         bool thumb_valid {false};
 //        char m_padding [6];//占位符
+        CacheInfo() {
+            thumb = QPixmap();
+            thumb_dark = QPixmap();
+            mi_valid = false;
+            thumb_valid = false;
+        }
     };
 
     CacheInfo loadFromCache(const QUrl &url)
