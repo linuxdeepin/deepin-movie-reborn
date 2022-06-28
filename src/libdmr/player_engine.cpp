@@ -161,6 +161,7 @@ bool PlayerEngine::isPlayableFile(const QString &name)
         emit sigInvalidFile(QFileInfo(url.toLocalFile()).fileName());
         return false;
     }
+    return  false;
 }
 
 bool PlayerEngine::isAudioFile(const QString &name)
