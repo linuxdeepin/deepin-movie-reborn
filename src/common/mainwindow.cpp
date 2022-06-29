@@ -3391,6 +3391,11 @@ void MainWindow::resizeEvent(QResizeEvent *pEvent)
 //    if (!isFullScreen()) {
 //        my_setStayOnTop(this, false);
 //    }
+    if (CompositingManager::get().platform() != Platform::X86) {
+        QPoint relativePoint = mapToGlobal(QPoint(0, 0));
+        m_pToolbox->updateSliderPoint(relativePoint);
+    }
+
     m_pMovieWidget->resize(rect().size());
     m_pMovieWidget->move(0, 0);
 
