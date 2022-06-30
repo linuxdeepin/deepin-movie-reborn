@@ -365,15 +365,12 @@ public:
 //        m_model = model;
 //        m_urls = urls;
         m_mutex = new QMutex;
-        m_itemMutex = new QMutex;
     };
     ~GetThumanbil()
     {
         m_stop = true;
         delete m_mutex;
         m_mutex = nullptr;
-        delete m_itemMutex;
-        m_itemMutex = nullptr;
     };
     //QList<PlayItemInfo> getInfoList() {return m_itemInfo;}
     void stop()
@@ -388,10 +385,10 @@ public:
     };
     void clearItem()
     {
-        m_itemMutex->lock();
+        m_mutex->lock();
         //m_itemInfo.clear();
         m_urls.clear();
-        m_itemMutex->unlock();
+        m_mutex->unlock();
     };
 
     void run()
@@ -401,11 +398,8 @@ public:
         m_mutex->unlock();
         foreach (QUrl url, urls) {
             QFileInfo info(url.path());
-            m_itemMutex->lock();
             //m_itemInfo.append();
             emit updateItem(m_model->calculatePlayInfo(url, info, false));
-            m_itemMutex->unlock();
-            m_isFinished = true;
             if (m_stop)
                 break;
         }
@@ -418,8 +412,6 @@ private:
     QList<QUrl> m_urls;
     //QList<PlayItemInfo> m_itemInfo;
     QMutex *m_mutex;
-    QMutex *m_itemMutex;
-    bool m_isFinished {true};
     bool m_stop {false};
 };
 
