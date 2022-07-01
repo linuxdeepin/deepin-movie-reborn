@@ -126,6 +126,9 @@ CompositingManager &CompositingManager::get()
 CompositingManager::CompositingManager()
 {
     initMember();
+    bool isDriverLoaded = isDriverLoadedCorrectly();
+    softDecodeCheck();   //检测是否是kunpeng920（是否走软解码）
+
     if (dmr::utils::check_wayland_env()) {
         _composited = true;
         //读取配置
@@ -137,10 +140,11 @@ CompositingManager::CompositingManager()
                 _composited = true;//libmpv只能走opengl
             }
         }
+        if (_platform == Platform::Arm64 && isDriverLoaded)
+            m_bHasCard = true;
         qInfo() << __func__ << "Composited is " << _composited;
         return;
     }
-    softDecodeCheck();   //检测是否是kunpeng920（是否走软解码）
 
     _composited = false;
     QGSettings gsettings("com.deepin.deepin-movie", "/com/deepin/deepin-movie/");
@@ -155,7 +159,6 @@ CompositingManager::CompositingManager()
             }
         }
     } else {
-        bool isDriverLoaded = isDriverLoadedCorrectly();
         if (_platform == Platform::X86) {
             if (m_bZXIntgraphics) {
                 _composited = false;
@@ -337,6 +340,9 @@ void CompositingManager::softDecodeCheck()
     if ((runningOnNvidia() && m_boardVendor.contains("Sugon"))
             || m_cpuModelName.contains("Kunpeng 920")) {
         m_bOnlySoftDecode = true;
+    }
+    if(m_boardVendor.toLower().contains("huawei")) {
+        m_bHasCard = true;
     }
 
     m_setSpecialControls = m_boardVendor.contains("Ruijie");
