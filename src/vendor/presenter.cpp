@@ -56,7 +56,7 @@ Presenter::Presenter(MainWindow *mw, QObject *parent)
     mprisPlayer->setCanPause(true);
     mprisPlayer->setCanSeek(true);
 #ifdef USE_FORK_MPRIS
-    mprisPlayer->setCkanShowInUI(false);
+    mprisPlayer->setCanShowInUI(false);
 #endif
     initMpris(mprisPlayer);
 }
