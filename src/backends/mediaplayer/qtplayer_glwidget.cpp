@@ -773,8 +773,8 @@ namespace dmr {
                     m_pGlProg->setUniformValue("bg", color);
                     prepareSplashImages();
                     QOpenGLTexture *pGLTexture;
-                    QOpenGLTexture BgLight(m_imgBgLight, QOpenGLTexture::DontGenerateMipMaps);
-                    pGLTexture = &BgLight;
+                    m_pLightTex->setData(m_imgBgLight);
+                    pGLTexture = m_pLightTex;
                     //和产品、ui商议深色主题下去除深色背景效果
 //                    DGuiApplicationHelper::ColorType themeType = DGuiApplicationHelper::instance()->themeType();
 //                    if (themeType == DGuiApplicationHelper::DarkType) {
