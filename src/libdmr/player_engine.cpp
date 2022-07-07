@@ -42,6 +42,7 @@
 #include "dguiapplicationhelper.h"
 #include "filefilter.h"
 #include "qtplayer_proxy.h"
+#include "eventlogutils.h"
 
 #include <QPainterPath>
 
@@ -573,6 +574,17 @@ void PlayerEngine::requestPlay(int id)
     } else {
         // TODO: delete and try next backend?
     }
+
+    QJsonObject obj{
+        {"tid", EventLogUtils::StartPlaying},
+        {"successful", true},
+        {"type", currFileIsAudio() ? "audio" : "video"},
+        {"origin", item.url.isLocalFile() ? "local" : "http"},
+        {"encapsulation_format", item.mi.fileType},
+        {"coding_format",  utils::videoIndex2str(item.mi.vCodecID)}
+    };
+
+    EventLogUtils::get().writeLogs(obj);
 }
 
 void PlayerEngine::savePlaybackPosition()
