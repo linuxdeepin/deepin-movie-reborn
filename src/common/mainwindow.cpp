@@ -55,6 +55,7 @@
 #include "vendor/movieapp.h"
 #include "vendor/presenter.h"
 #include "filefilter.h"
+#include "eventlogutils.h"
 
 //#include <QtWidgets>
 #include <QtDBus>
@@ -642,6 +643,12 @@ MainWindow::MainWindow(QWidget *parent)
     : DMainWindow(nullptr)
 {
     initMember();
+
+    QJsonObject obj{
+        {"tid", EventLogUtils::Start},
+        {"mode", 1} //冷启动
+    };
+    EventLogUtils::get().writeLogs(obj);
 
     //add bu heyi
     this->setAttribute(Qt::WA_AcceptTouchEvents);
