@@ -1108,10 +1108,10 @@ void MainWindow::onWindowStateChanged()
                 resizeByConstraints(true);
             }
         }
-
-        if (m_lastRectInNormalMode.isValid() && !m_bMiniMode) {
-            setGeometry(m_lastRectInNormalMode);
-        }
+        //去除状态切换设置窗口大小代码，由窗管统一管理
+//        if (m_lastRectInNormalMode.isValid() && !m_bMiniMode) {
+//            setGeometry(m_lastRectInNormalMode);
+//        }
 
         m_bMovieSwitchedInFsOrMaxed = false;
     }
