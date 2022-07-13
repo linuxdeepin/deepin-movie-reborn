@@ -1101,10 +1101,10 @@ void MainWindow::onWindowStateChanged()
                 resizeByConstraints(true);
             }
         }
-
-        if (m_lastRectInNormalMode.isValid() && !m_bMiniMode) {
-            setGeometry(m_lastRectInNormalMode);
-        }
+        //去除状态切换设置窗口大小代码，由窗管统一管理
+//        if (m_lastRectInNormalMode.isValid() && !m_bMiniMode) {
+//            setGeometry(m_lastRectInNormalMode);
+//        }
 
         m_bMovieSwitchedInFsOrMaxed = false;
     }
@@ -3260,6 +3260,13 @@ void MainWindow::showEvent(QShowEvent *pEvent)
     if (m_pPlaylist) {
         m_pPlaylist->raise();
     }
+    //判断屏幕可用坐标与应用的geometry是否有交集，没有就设置到可用屏幕坐标中
+    QRect geoRect = geometry();
+    QRect deskRect = QApplication::desktop()->availableGeometry(geoRect.topLeft());
+
+    if(!deskRect.intersects(geoRect)) {
+        setGeometry(QRect(deskRect.x(), deskRect.y(), geoRect.width(), geoRect.width()));
+    }
     resumeToolsWindow();
 
     if (!qgetenv("FLATPAK_APPID").isEmpty()) {
@@ -4054,7 +4061,12 @@ void MainWindow::toggleUIMode()
             }
 
             if (m_lastRectInNormalMode.isValid()) {
-                setGeometry(m_lastRectInNormalMode);
+                QRect deskRect = QApplication::desktop()->availableGeometry(m_lastRectInNormalMode.topLeft());
+                if(m_lastRectInNormalMode.intersects(deskRect)) {
+                    setGeometry(m_lastRectInNormalMode);
+                } else {
+                    setGeometry(QRect(deskRect.x(), deskRect.y(), m_lastRectInNormalMode.width(), m_lastRectInNormalMode.height()));
+                }
             } else {
                 resizeByConstraints();
             }
