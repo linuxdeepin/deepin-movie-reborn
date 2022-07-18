@@ -1087,12 +1087,13 @@ void MpvProxy::refreshDecode()
             auto codec = currentInfo.mi.videoCodec();
             auto name = _file.fileName();
             isSoftCodec = codec.toLower().contains("mpeg2video") || codec.toLower().contains("wmv") || name.toLower().contains("wmv");
+#if !defined(_loongarch) && !defined(__loongarch__) && !defined(__loongarch64)
             //探测硬解码
             if(!isSoftCodec) {
                 isSoftCodec = !isSurportHardWareDecode(codec, currentInfo.mi.width, currentInfo.mi.height);
             }
+#endif
         }
-
         if (isSoftCodec) {
             qInfo() << "my_set_property hwdec no";
             my_set_property(m_handle, "hwdec", "no");
