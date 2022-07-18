@@ -646,7 +646,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     QJsonObject obj{
         {"tid", EventLogUtils::Start},
-        {"mode", 1} //冷启动
+        {"mode", 1}, //冷启动
+        {"version", VERSION}
     };
     EventLogUtils::get().writeLogs(obj);
 

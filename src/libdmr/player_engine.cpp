@@ -577,6 +577,7 @@ void PlayerEngine::requestPlay(int id)
 
     QJsonObject obj{
         {"tid", EventLogUtils::StartPlaying},
+        {"version", VERSION},
         {"successful", true},
         {"type", currFileIsAudio() ? "audio" : "video"},
         {"origin", item.url.isLocalFile() ? "local" : "http"},
