@@ -431,6 +431,7 @@ void PlaylistModel::slotStateChanged()
             pif.loaded = true;
             emit itemInfoUpdated(_current);
         }
+        _userRequestingItem = false;
         break;
     }
     case PlayerEngine::Paused:
@@ -826,7 +827,7 @@ void PlaylistModel::playNext(bool fromUser)
     qInfo() << "playmode" << _playMode << "fromUser" << fromUser
             << "last" << _last << "current" << _current;
 
-    _userRequestingItem = fromUser;
+    _userRequestingItem = true;
 
     switch (_playMode) {
     case SinglePlay:
@@ -910,8 +911,6 @@ void PlaylistModel::playNext(bool fromUser)
         tryPlayCurrent(true);
         break;
     }
-
-    _userRequestingItem = false;
 }
 
 void PlaylistModel::playPrev(bool fromUser)
@@ -920,7 +919,7 @@ void PlaylistModel::playPrev(bool fromUser)
     qInfo() << "playmode" << _playMode << "fromUser" << fromUser
             << "last" << _last << "current" << _current;
 
-    _userRequestingItem = fromUser;
+    _userRequestingItem = true;
 
     switch (_playMode) {
     case SinglePlay:
@@ -998,9 +997,6 @@ void PlaylistModel::playPrev(bool fromUser)
         tryPlayCurrent(false);
         break;
     }
-
-    _userRequestingItem = false;
-
 }
 
 static QDebug operator<<(QDebug s, const QFileInfoList &v)
@@ -1329,7 +1325,6 @@ void PlaylistModel::changeCurrent(int pos)
     _current = pos;
     _last = _current;
     tryPlayCurrent(true);
-    _userRequestingItem = false;
     emit currentChanged();
 }
 
