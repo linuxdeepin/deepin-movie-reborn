@@ -472,7 +472,7 @@ mpv_handle *MpvProxy::mpv_init()
     //my_set_property(pHandle, "correct-pts", false);
     //my_set_property(pHandle, "fps", 30);
     my_set_property(pHandle, "panscan", 0);
-    my_set_property(pHandle, "volume-max", 100.0);
+    my_set_property(pHandle, "volume-max", 200.0);
     my_set_property(pHandle, "input-cursor", "no");
     my_set_property(pHandle, "cursor-autohide", "no");
     my_set_property(pHandle, "sub-auto", "fuzzy");
@@ -1024,8 +1024,8 @@ void MpvProxy::volumeDown()
 int MpvProxy::volume() const
 {
     int nActualVol = my_get_property(m_handle, "volume").toInt();
-    int nDispalyVol = static_cast<int>((nActualVol - 40) / 60.0 * 200.0);
-    return nDispalyVol;
+    int nDispalyVol = static_cast<int>((nActualVol - 40) / 60.0 * 100.0);
+    return nDispalyVol > 100 ? nActualVol : nDispalyVol;
 }
 
 int MpvProxy::videoRotation() const
@@ -1380,7 +1380,9 @@ qint64 MpvProxy::nextBurstShootPoint()
 int MpvProxy::volumeCorrection(int displayVol)
 {
     int realVol = 0;
-    realVol = static_cast<int>((displayVol / 200.0) * 60.0 + 40);
+    if (displayVol > 100)
+        return displayVol;
+    realVol = static_cast<int>((displayVol / 100.0) * 60.0 + 40);
     return (realVol == 40 ? 0 : realVol);
 }
 
