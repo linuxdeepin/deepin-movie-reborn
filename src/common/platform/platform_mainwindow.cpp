@@ -786,8 +786,10 @@ Platform_MainWindow::Platform_MainWindow(QWidget *parent)
                 if (isFullScreen()) {
                     m_pFullScreenTimeLable->show();
                     m_pProgIndicator->setVisible(true);
-                    activateWindow();    // show other window make mainwindow deactivate
-                    setFocus();
+                    QTimer::singleShot(200, [ = ]() {
+                        activateWindow();    // show other window make mainwindow deactivate
+                        setFocus();
+                    });
                 }
             }
             m_pMiniPlayBtn->setIcon(QIcon(":/resources/icons/light/mini/pause-normal-mini.svg"));
@@ -1582,12 +1584,12 @@ void Platform_MainWindow::setCurrentHwdec(QString str)
 
 void Platform_MainWindow::mipsShowFullScreen()
 {
-    QPropertyAnimation *pAn = new QPropertyAnimation(this, "windowOpacity");
-    pAn->setDuration(100);
-    pAn->setEasingCurve(QEasingCurve::Linear);
-    pAn->setEndValue(1);
-    pAn->setStartValue(0);
-    pAn->start(QAbstractAnimation::DeleteWhenStopped);
+//    QPropertyAnimation *pAn = new QPropertyAnimation(this, "windowOpacity");
+//    pAn->setDuration(100);
+//    pAn->setEasingCurve(QEasingCurve::Linear);
+//    pAn->setEndValue(1);
+//    pAn->setStartValue(0);
+//    pAn->start(QAbstractAnimation::DeleteWhenStopped);
 
     showFullScreen();
 }
@@ -2052,9 +2054,11 @@ void Platform_MainWindow::requestAction(ActionFactory::ActionKind actionKind, bo
                                            (height() - m_pAnimationlable->height()) / 2));
         }
 
-        activateWindow();
-        //Set focus back to main window after full screen, Prevent focus from going to the toolbar
-        setFocus();
+        QTimer::singleShot(200, [ = ]() {
+            activateWindow();
+            //Set focus back to main window after full screen, Prevent focus from going to the toolbar
+            setFocus();
+        });
         break;
     }
 
