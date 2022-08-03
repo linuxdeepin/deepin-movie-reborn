@@ -575,17 +575,17 @@ void PlayerEngine::requestPlay(int id)
         // TODO: delete and try next backend?
     }
 
-//    QJsonObject obj{
-//        {"tid", EventLogUtils::StartPlaying},
-//        {"version", VERSION},
-//        {"successful", true},
-//        {"type", currFileIsAudio() ? "audio" : "video"},
-//        {"origin", item.url.isLocalFile() ? "local" : "http"},
-//        {"encapsulation_format", item.mi.fileType},
-//        {"coding_format",  utils::videoIndex2str(item.mi.vCodecID)}
-//    };
+    QJsonObject obj{
+        {"tid", EventLogUtils::StartPlaying},
+        {"version", VERSION},
+        {"successful", true},
+        {"type", currFileIsAudio() ? "audio" : "video"},
+        {"origin", item.url.isLocalFile() ? "local" : "http"},
+        {"encapsulation_format", item.mi.fileType},
+        {"coding_format",  utils::videoIndex2str(item.mi.vCodecID)}
+    };
 
-//    EventLogUtils::get().writeLogs(obj);
+    EventLogUtils::get().writeLogs(obj);
 }
 
 void PlayerEngine::savePlaybackPosition()
