@@ -1089,7 +1089,7 @@ void MpvProxy::refreshDecode()
             isSoftCodec = codec.toLower().contains("mpeg2video") || codec.toLower().contains("wmv") || name.toLower().contains("wmv");
 #if !defined(_loongarch) && !defined(__loongarch__) && !defined(__loongarch64)
             //探测硬解码
-            if(!isSoftCodec) {
+            if(!isSoftCodec && !CompositingManager::get().isZXIntgraphics()) {
                 isSoftCodec = !isSurportHardWareDecode(codec, currentInfo.mi.width, currentInfo.mi.height);
             }
 #endif
