@@ -55,6 +55,7 @@
 #include "vendor/movieapp.h"
 #include "vendor/presenter.h"
 #include "filefilter.h"
+#include "eventlogutils.h"
 
 //#include <QtWidgets>
 #include <QtDBus>
@@ -75,6 +76,7 @@
 #include <X11/cursorfont.h>
 #include <X11/Xlib.h>
 #include "moviewidget.h"
+#include <QJsonObject>
 
 #include "../accessibility/ac-deepin-movie-define.h"
 
@@ -641,6 +643,13 @@ Platform_MainWindow::Platform_MainWindow(QWidget *parent)
     : DMainWindow(nullptr)
 {
     initMember();
+
+    QJsonObject obj{
+        {"tid", EventLogUtils::Start},
+        {"mode", 1}, //冷启动
+        {"version", VERSION}
+    };
+    EventLogUtils::get().writeLogs(obj);
 
     //add bu heyi
     this->setAttribute(Qt::WA_AcceptTouchEvents);
