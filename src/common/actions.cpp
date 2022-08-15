@@ -232,6 +232,9 @@ DMenu *ActionFactory::mainContextMenu()
                 parent_track->addMenu(pMenutemp);
             }
             pParent->addMenu(pMenu);
+            connect(this, &ActionFactory::soundMenuEnable, this, [ = ](bool statu) {
+                pMenu->setEnabled(statu);
+            });
         }
         {
             //sub pMenu

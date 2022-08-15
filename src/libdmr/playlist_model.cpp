@@ -678,10 +678,10 @@ QImage PlaylistModel::getMovieCover(const QUrl &url)
 }
 
 
-/*PlaylistModel::PlayMode PlaylistModel::playMode() const
+PlaylistModel::PlayMode PlaylistModel::playMode() const
 {
     return _playMode;
-}*/
+}
 
 void PlaylistModel::setPlayMode(PlaylistModel::PlayMode pm)
 {

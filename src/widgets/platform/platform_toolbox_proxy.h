@@ -55,6 +55,7 @@
 #include "platform/platform_thumbnail_worker.h"
 #include "slider.h"
 #include "platform_volumeslider.h"
+#include "mircastwidget.h"
 
 namespace Dtk {
 namespace Widget {
@@ -373,6 +374,21 @@ public:
      */
     void setBtnFocusSign(bool);
 
+    bool isInMircastWidget(const QPoint &);
+
+    /**
+     * @brief updateMircastWidget 更新投屏窗口位置
+     * @param p 移动位置点
+     */
+    void updateMircastWidget(QPoint p);
+
+    void hideMircastWidget();
+
+    MircastWidget *getMircast()
+    {
+        return m_mircastWidget;
+    }
+
     Platform_VolumeSlider *volumeSlider()
     {
         return m_pVolSlider;
@@ -407,6 +423,7 @@ public slots:
      */
     void updateFullState();
 
+    void slotUpdateMircast(int, QString);
 signals:
     /**
      * @brief sigVolumeChanged 音量变化返回主窗口信号
@@ -422,6 +439,8 @@ signals:
       * @brief 功能不支持信号
       */
     void sigUnsupported();
+
+    void sigMircastState(int, QString);
 
 protected slots:
     /**
@@ -561,6 +580,9 @@ protected:
      */
     bool eventFilter(QObject *obj, QEvent *ev) override;
 
+private slots:
+    void updateMircastTime(int);
+
 private:
     /**
      * @brief setup 初始化工具栏布局
@@ -612,6 +634,7 @@ private:
     DMRSlider *m_pProgBar;               ///滑动条模式进度条窗口
     Platform_ThumbnailPreview *m_pPreviewer;      ///鼠标悬停时进度条预览胶片控件
     Platform_SliderTime *m_pPreviewTime;          ///鼠标悬停时进度条预览时间控件
+    MircastWidget *m_mircastWidget;      ///投屏选项窗口
 
     ButtonBoxButton *m_pPlayBtn;        ///播放按钮
     ButtonBoxButton *m_pPrevBtn;        ///上一个按钮
@@ -620,6 +643,7 @@ private:
     VolumeButton *m_pVolBtn;             ///音量按钮
     ToolButton *m_pListBtn;              ///播放列表按钮
     ToolButton *m_pFullScreenBtn;        ///全屏按钮
+    ToolButton *m_pMircastBtn;           ///投屏按钮
 
     //lmh0910DButtonBoxButton替换到ButtonBoxButton
     ButtonToolTip *m_pPlayBtnTip;        ///播放按钮的悬浮提示

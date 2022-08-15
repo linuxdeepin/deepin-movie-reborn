@@ -55,6 +55,10 @@ signals:
       * @brief 字幕菜单状态改变信号
       */
     void subtitleMenuEnable(bool);
+    /**
+     * @brief mircastMenuEnable 声音菜单状态改变信号
+     */
+    void soundMenuEnable(bool);
 public:
     enum ActionKind {
         Invalid = 0,
