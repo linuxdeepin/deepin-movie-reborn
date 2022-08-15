@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 3.10)
 
 # 设置cmake参数
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
@@ -16,7 +16,7 @@ option (USE_TEST "Use TESTS" ON)
 add_definitions( -DUSE_TEST )
 
 # 设置Qt模块
-set(QtModule Core Gui Widgets Network X11Extras PrintSupport DBus Sql Svg Multimedia MultimediaWidgets Concurrent LinguistTools Test)
+set(QtModule Core Gui Widgets Network X11Extras PrintSupport DBus Sql Svg Multimedia MultimediaWidgets Concurrent LinguistTools Test Xml)
 
 # 设置工程名字
 project(deepin-movie-platform-test)
@@ -40,6 +40,8 @@ include_directories(../../src/vendor)
 include_directories(../../src/backends)
 include_directories(../../src/backends/mpv)
 include_directories(../../src/backends/mediaplayer)
+include_directories(../../src/dlna)
+include_directories(../../src/dlna/dlnaHttpServer)
 
 #add_subdirectory(googletest)
 
@@ -54,6 +56,9 @@ FILE (GLOB allSource
     ../../src/backends/mpv/*.cpp
     ../../src/backends/mediaplayer/*.cpp
     ../../src/backends/*.cpp
+    ../../src/dlna/*.cpp
+    ../../src/dlna/dlnaHttpServer/*.cpp
+    ../../src/dlna/dlnaHttpServer/*.c
     )
 
 FILE (GLOB allTestSource

@@ -28,6 +28,7 @@
 
 #define FS_BUTTON QObject::tr("fullscreenButtion") // 全屏
 #define VOLUME_BUTTON QObject::tr("volumeButton") // 音量
+#define MIRVAST_BUTTON QObject::tr("mircastButton") // 投屏
 #define PLAYLIST_BUTTON QObject::tr("playlistButton") // 播放列表按钮
 
 //音量条
@@ -87,6 +88,12 @@
 //#define SUNTITLE_ENCODING_MENU QObject::tr("subtitleEncodingMenu")
 
 //#define SCREENSHOT_MENU_MENU QObject::tr("screenshotMenu")
+
+////投屏界面
+#define MIRCAST_SUCCESSED          0
+#define MIRCAST_EXIT              -1
+#define MIRCAST_CONNECTION_FAILED -3
+#define MIRCAST_DISCONNECTIONED   -4
 
 
 

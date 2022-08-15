@@ -713,6 +713,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(this, &MainWindow::frameMenuEnable, &ActionFactory::get(), &ActionFactory::frameMenuEnable);
     connect(this, &MainWindow::playSpeedMenuEnable, &ActionFactory::get(), &ActionFactory::playSpeedMenuEnable);
     connect(this, &MainWindow::subtitleMenuEnable, &ActionFactory::get(), &ActionFactory::subtitleMenuEnable);
+    connect(this, &MainWindow::soundMenuEnable, &ActionFactory::get(), &ActionFactory::soundMenuEnable);
     connect(qApp, &QGuiApplication::focusWindowChanged, this, &MainWindow::slotFocusWindowChanged);
 
     connect(m_pToolbox, &ToolboxProxy::sigVolumeChanged, this, &MainWindow::slotVolumeChanged);
@@ -807,6 +808,8 @@ MainWindow::MainWindow(QWidget *parent)
             m_nLastCookie = utils::InhibitStandby();
             m_nPowerCookie = utils::InhibitPower();
         } else {
+            if (m_pMircastShowWidget->isVisible())
+                return;
             m_pMiniPlayBtn->setIcon(QIcon(":/resources/icons/light/mini/play-normal-mini.svg"));
             m_pMiniPlayBtn->setObjectName("MiniPlayBtn");
 
@@ -959,6 +962,11 @@ MainWindow::MainWindow(QWidget *parent)
 
     m_pMovieWidget = new MovieWidget(this);
     m_pMovieWidget->hide();
+
+    m_pMircastShowWidget = new MircastShowWidget(this);
+    m_pMircastShowWidget->hide();
+    connect(m_pToolbox, &ToolboxProxy::sigMircastState, this, &MainWindow::slotUpdateMircastState);
+    connect(m_pMircastShowWidget, &MircastShowWidget::exitMircast, this, &MainWindow::slotExitMircast);
 
     qDBusRegisterMetaType<SessionInfo>();
     qDBusRegisterMetaType<SessionInfoList>();
@@ -1208,10 +1216,9 @@ void MainWindow::animatePlayState()
         return;
     }
 
-    if (!m_bInBurstShootMode && m_pEngine->state() == PlayerEngine::CoreState::Paused) {
-        if (!m_bMiniMode) {
-            m_pAnimationlable->pauseAnimation();
-        }
+    if (!m_bInBurstShootMode && m_pEngine->state() == PlayerEngine::CoreState::Paused
+            && !m_bMiniMode && !m_pMircastShowWidget->isVisible()) {
+        m_pAnimationlable->pauseAnimation();
     }
 }
 
@@ -1231,6 +1238,29 @@ void MainWindow::onBindingsChanged()
     for (auto *pAct : vecActions) {
         this->addAction(pAct);
         connect(pAct, &QAction::triggered, [ = ]() {
+            ActionFactory::ActionKind actionKind = ActionFactory::actionKind(pAct);
+            //正在投屏时，某些快捷键设置为不能用
+            if(m_pMircastShowWidget && m_pMircastShowWidget->isVisible() ){
+                if(actionKind == ActionFactory::ToggleFullscreen  //全屏 alt+enter
+                        || actionKind == ActionFactory::QuitFullscreen //退出全屏/迷你模式esc
+                        || actionKind == ActionFactory::AccelPlayback //加速播放 ctrl+right
+                        || actionKind == ActionFactory::DecelPlayback //减速播放 ctrl+left
+                        || actionKind == ActionFactory::ResetPlayback //还原播放 R
+                        || actionKind == ActionFactory::ToggleMiniMode //迷你模式 F2
+                        || actionKind == ActionFactory::VolumeUp //增大音量 ctrl+alt+up
+                        || actionKind == ActionFactory::VolumeDown //减少音量 ctrl+alt+down
+                        || actionKind == ActionFactory::ToggleMute //静音 M
+                        || actionKind == ActionFactory::PreviousFrame //上一帧 ctrl+shift+left
+                        || actionKind == ActionFactory::NextFrame //下一帧 ctrl+shift+right
+                        || actionKind == ActionFactory::Screenshot //影片截图 alt+a
+                        || actionKind == ActionFactory::BurstScreenshot //连拍截图 alt+s
+                        || actionKind == ActionFactory::SubForward //字幕提前0.5s shift+right
+                        || actionKind == ActionFactory::SubDelay //字幕延迟0.5s shift+left
+                        || actionKind == ActionFactory::ViewShortcut //显示快捷键 ctrl + shift + ?
+                  ){
+                    return;
+                }
+            }
             this->menuItemInvoked(pAct);
         });
     }
@@ -1238,6 +1268,8 @@ void MainWindow::onBindingsChanged()
 
 void MainWindow::updateActionsState()
 {
+    //投屏时不处理播放状态切换菜单项是否可用，由右键菜单入口统一处理。
+    if(m_pMircastShowWidget && m_pMircastShowWidget->isVisible()) return;
     PlayingMovieInfo movieInfo = m_pEngine->playingMovieInfo();
     auto update = [ = ](QAction * pAct) {
         ActionFactory::ActionKind actionKind = ActionFactory::actionKind(pAct);
@@ -2357,6 +2389,10 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
     }
 
     case ActionFactory::ActionKind::TogglePause: {
+        if(m_pMircastShowWidget && m_pMircastShowWidget->isVisible() ) {
+            m_pToolbox->getMircast()->slotPauseDlnaTp();
+            break;
+        }
         if (windowState() == Qt::WindowFullScreen && QDateTime::currentMSecsSinceEpoch() - m_nFullscreenTime < 500) {
             return;
         } else if(windowState() == Qt::WindowFullScreen) {
@@ -2385,6 +2421,10 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
     }
 
     case ActionFactory::ActionKind::SeekBackward: {
+        if(m_pMircastShowWidget && m_pMircastShowWidget->isVisible() ) {
+            m_pToolbox->getMircast()->seekMircast(-5);
+            break;
+        }
         if(m_pEngine->state() != PlayerEngine::CoreState::Idle
                 && m_pEngine->playlist().currentInfo().mi.isRawFormat()) {
             slotUnsupported();
@@ -2395,6 +2435,10 @@ void MainWindow::requestAction(ActionFactory::ActionKind actionKind, bool bFromU
     }
 
     case ActionFactory::ActionKind::SeekForward: {
+        if(m_pMircastShowWidget && m_pMircastShowWidget->isVisible() ) {
+            m_pToolbox->getMircast()->seekMircast(5);
+            break;
+        }
         if(m_pEngine->state() != PlayerEngine::CoreState::Idle
                 && m_pEngine->playlist().currentInfo().mi.isRawFormat()) {
             slotUnsupported();
@@ -2736,6 +2780,7 @@ void MainWindow::updateProxyGeometry()
                             rect().width() - 10, TOOLBOX_HEIGHT);
             }
             m_pToolbox->setGeometry(rfs);
+            m_pToolbox->updateMircastWidget(rfs.topRight());
         }
 
         if (m_pPlaylist && !m_pPlaylist->toggling()) {
@@ -2799,6 +2844,9 @@ void MainWindow::suspendToolsWindow()
 
         if (m_pToolbox->getbAnimationFinash()) {
             m_pToolbox->hide();
+
+            if (m_pToolbox->getMircast()->isVisible())
+                m_pToolbox->hideMircastWidget();
         }
         //reset focus to mainWindow when the titlebar and toolbox is hedden
         //the tab focus will be re-executed in the order set
@@ -3142,6 +3190,30 @@ void MainWindow::slotMediaError()
     m_pEngine->playlist().remove(m_pEngine->playlist().current());
 }
 
+void MainWindow::mircastSuccess(QString name)
+{
+    if (m_pEngine->state() == PlayerEngine::Playing)
+        m_pEngine->pauseResume();
+    updateActionsState();
+    m_pMircastShowWidget->setDeviceName(name);
+    m_pMircastShowWidget->show();
+    m_pToolbox->hideMircastWidget();
+}
+
+void MainWindow::exitMircast()
+{
+    if (m_pEngine->state() == PlayerEngine::Paused)
+        m_pEngine->pauseResume();
+    updateActionsState();
+    m_pToolbox->getMircast()->slotExitMircast();
+    m_pMircastShowWidget->hide();
+}
+
+void MainWindow::updateMircastContextMenu(bool mircast)
+{
+
+}
+
 void MainWindow::checkErrorMpvLogsChanged(const QString sPrefix, const QString sText)
 {
     QString sErrorMessage(sText);
@@ -3186,6 +3258,9 @@ void MainWindow::checkErrorMpvLogsChanged(const QString sPrefix, const QString s
 void MainWindow::closeEvent(QCloseEvent *pEvent)
 {
     qInfo() << __func__;
+    if(m_pMircastShowWidget&&m_pMircastShowWidget->isVisible()) {
+        slotExitMircast();
+    }
     if (m_bInBurstShootMode) {
         pEvent->ignore();
         return;
@@ -3237,6 +3312,9 @@ void MainWindow::closeEvent(QCloseEvent *pEvent)
 void MainWindow::wheelEvent(QWheelEvent *pEvent)
 {
     if (insideToolsArea(pEvent->pos()) || insideResizeArea(pEvent->globalPos()))
+        return;
+
+    if (m_pToolbox->isInMircastWidget(pEvent->pos()))
         return;
 
     if (m_pPlaylist && m_pPlaylist->state() == PlaylistWidget::Opened) {
@@ -3413,6 +3491,9 @@ void MainWindow::resizeEvent(QResizeEvent *pEvent)
     m_pMovieWidget->resize(rect().size());
     m_pMovieWidget->move(0, 0);
 
+    m_pMircastShowWidget->resize(rect().size());
+    m_pMircastShowWidget->move(0, 0);
+
     m_pAnimationlable->move(QPoint((width() - m_pAnimationlable->width()) / 2,
                                    (height() - m_pAnimationlable->height()) / 2));
 }
@@ -3567,13 +3648,6 @@ void MainWindow::mouseReleaseEvent(QMouseEvent *ev)
     /// NOTE: 为了其它控件的鼠标操作与MainWindow一致，统一使用capturedMouseReleaseEvent()捕获鼠标释放
     /// 事件，若无特殊要求，请尽量在capturedMouseReleaseEvent()进行处理。
 
-    // 以下代码貌似没什么用，可以考虑去掉
-    static bool bFlags = true;
-    if (bFlags) {
-        repaint();
-        bFlags = false;
-    }
-
     qInfo() << __func__ << "进入mouseReleaseEvent";
 
     if (!insideResizeArea(ev->globalPos()) && !m_bMouseMoved && (m_pPlaylist->state() != PlaylistWidget::Opened)) {
@@ -3598,6 +3672,8 @@ void MainWindow::mouseDoubleClickEvent(QMouseEvent *pEvent)
         qInfo() << "playlist loadthread is running";
         return;
     }
+    //投屏时双击操作不做处理
+    if(m_pMircastShowWidget && m_pMircastShowWidget->isVisible()) return;
     if (!m_bMiniMode && !m_bInBurstShootMode) {
         m_delayedMouseReleaseTimer.stop();
         if (m_pEngine->state() == PlayerEngine::Idle) {
@@ -3677,6 +3753,26 @@ void MainWindow::contextMenuEvent(QContextMenuEvent *pEvent)
                 reflectActionToUI(ActionFactory::WindowAbove);
             }
         }
+    }
+
+    if(m_pMircastShowWidget->isVisible() ) {//投屏中屏蔽全屏、迷你模式，置顶菜单
+        QList<ActionFactory::ActionKind> lstActId;
+        lstActId << ActionFactory::ToggleFullscreen << ActionFactory::ToggleMiniMode << ActionFactory::WindowAbove;
+        for(ActionFactory::ActionKind id: lstActId) {
+            QList<QAction *> listActs;
+            listActs = ActionFactory::get().findActionsByKind(id);
+            if(listActs.size()<=0) {
+                continue;
+            }
+            for(QAction *act: listActs) {
+                act->setEnabled(false);
+            }
+        }
+        //倍速播放、画面、声音、字幕、截图
+        emit frameMenuEnable(false);
+        emit playSpeedMenuEnable(false);
+        emit subtitleMenuEnable(false);
+        emit soundMenuEnable(false);
     }
 
     resumeToolsWindow();
@@ -4215,6 +4311,10 @@ void MainWindow::sleepStateChanged(bool bSleep)
      //   m_pEngine->seekAbsolute(static_cast<int>(m_pEngine->elapsed()));
     //    return;
     //}
+    //休眠退出投屏
+    if(bSleep && m_pMircastShowWidget && m_pMircastShowWidget->isVisible()) {
+        slotExitMircast();
+    }
     if (bSleep && m_pEngine->state() == PlayerEngine::CoreState::Playing) {
         m_bStartSleep = true;
         requestAction(ActionFactory::ActionKind::TogglePause);
@@ -4227,6 +4327,10 @@ void MainWindow::sleepStateChanged(bool bSleep)
 void MainWindow::lockStateChanged(bool bLock)
 {
     qInfo() << __func__ << bLock;
+    //锁屏退出投屏
+    if(bLock && m_pMircastShowWidget && m_pMircastShowWidget->isVisible()) {
+        slotExitMircast();
+    }
     if (bLock && m_pEngine->state() == PlayerEngine::CoreState::Playing && !m_bStateInLock) {
         m_bStateInLock = true;
         requestAction(ActionFactory::ActionKind::TogglePause);
@@ -4259,6 +4363,7 @@ void MainWindow::initMember()
     m_pDBus = nullptr;
     m_pPresenter = nullptr;
     m_pMovieWidget = nullptr;
+    m_pMircastShowWidget = nullptr;
     m_bInBurstShootMode = false;
     m_bPausedBeforeBurst = false;
 
@@ -4447,6 +4552,36 @@ void MainWindow::slotInvalidFile(QString strFileName)
        showTime = showTime - 1000;
        m_pCommHintWid->updateWithMessage(QString(tr("Invalid file: %1").arg(strFileName)));
     });
+}
+
+void MainWindow::slotUpdateMircastState(int state, QString msg)
+{
+    if (state == MIRCAST_SUCCESSED) {
+        mircastSuccess(msg);
+        emit frameMenuEnable(false);
+        emit playSpeedMenuEnable(false);
+        emit subtitleMenuEnable(false);
+        emit soundMenuEnable(false);
+    } else if (state == MIRCAST_EXIT) {
+        slotExitMircast();
+    } else if (state == MIRCAST_CONNECTION_FAILED) {
+        const QIcon icon = QIcon(":/resources/icons/short_fail.svg");
+        QString sText = QString(tr("Connection failed"));
+        popupAdapter(icon, sText);
+        slotExitMircast();
+    } else if (state == MIRCAST_DISCONNECTIONED) {
+        m_pCommHintWid->updateWithMessage(tr("Mircast disconnected"));
+        slotExitMircast();
+    }
+}
+
+void MainWindow::slotExitMircast()
+{
+    exitMircast();
+    emit frameMenuEnable(true);
+    emit playSpeedMenuEnable(true);
+    emit subtitleMenuEnable(true);
+    emit soundMenuEnable(true);
 }
 
 void MainWindow::updateGeometry(CornerEdge edge, QPoint pos)

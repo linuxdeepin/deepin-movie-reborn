@@ -3,7 +3,8 @@ set(CMD_NAME deepin-movie)
 
 set(PROJECT_INCLUDE ${PROJECT_SOURCE_DIR}/src/widgets
     ${PROJECT_SOURCE_DIR}/src/common
-    ${PROJECT_SOURCE_DIR}/src/libdmr)
+    ${PROJECT_SOURCE_DIR}/src/libdmr
+    ${PROJECT_SOURCE_DIR}/src/dlna)
 
 add_definitions(-D_MOVIE_USE_)
 
@@ -20,6 +21,7 @@ find_package(Qt5Sql)
 find_package(Qt5Svg)
 find_package(Qt5Multimedia)
 find_package(Qt5MultimediaWidgets)
+find_package(Qt5Xml)
 
 pkg_check_modules(Dtk REQUIRED IMPORTED_TARGET dtkwidget)
 pkg_check_modules(Dtk REQUIRED IMPORTED_TARGET dtkcore)
@@ -36,7 +38,7 @@ if (${Dtk_VERSION} LESS 2.0.6.1)
 endif()
 
 
-file(GLOB_RECURSE SRCS LIST_DIRECTORIES false common/*.cpp widgets/*.cpp libdmr/*.cpp vendor/*.cpp)
+file(GLOB_RECURSE SRCS LIST_DIRECTORIES false common/*.cpp widgets/*.cpp libdmr/*.cpp vendor/*.cpp dlna/*.cpp dlna/*.c)
 list(APPEND SRCS main.cpp)
 
 # mpv backend
@@ -75,7 +77,7 @@ target_include_directories(${CMD_NAME} PUBLIC ${PROJECT_INCLUDE})
 
 set(TARGET_LIBS X11 Xtst PkgConfig::Xcb Qt5::Widgets Qt5::X11Extras Qt5::Network Qt5::DBus Qt5::Sql Qt5::Svg Qt5::Multimedia
     Qt5::MultimediaWidgets PkgConfig::Dtk PkgConfig::MPRIS PkgConfig::DBusextended PkgConfig::Gst GL va va-x11
-    Qt5::Concurrent)
+    Qt5::Concurrent Qt5::Xml)
 
 target_link_libraries(${CMD_NAME} ${TARGET_LIBS} ${Other_LIBRARIES})
 

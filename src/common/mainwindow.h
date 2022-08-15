@@ -48,6 +48,7 @@
 #include "actions.h"
 #include "online_sub.h"
 #include "compositing_manager.h"
+#include "mircastshowwidget.h"
 
 class Presenter;
 
@@ -248,6 +249,10 @@ signals:
      */
     void subtitleMenuEnable(bool);
     /**
+     * @brief soundMenuEnable 声音字幕是否可用信号
+     */
+    void soundMenuEnable(bool);
+    /**
      * @brief 窗口特效变化信号
      */
     void WMChanged(bool isWM);
@@ -411,6 +416,15 @@ public slots:
     void slotVolumeChanged(int nVolume);
     void slotWMChanged(QString msg);
     void slotMediaError();
+    /**
+     * @brief slotUpdateMircastState 更新投屏状态槽函数
+     * @param state 投屏状态
+     */
+    void slotUpdateMircastState(int state, QString msg);
+    /**
+     * @brief slotExitMircast 退出投屏槽函数
+     */
+    void slotExitMircast();
 
 protected:
     void showEvent(QShowEvent *pEvent) override;
@@ -502,6 +516,12 @@ private:
     void setPlaySpeedMenuChecked(ActionFactory::ActionKind);
     void setPlaySpeedMenuUnchecked();
     void setMusicShortKeyState(bool bState);
+    /**
+     * @brief mircastSuccess 投屏成功更新界面
+     */
+    void mircastSuccess(QString name);
+    void exitMircast();
+    void updateMircastContextMenu(bool mircast);
 
 private:
     MessageWindow *m_pPopupWid;                     ///截图提示窗口
@@ -577,6 +597,7 @@ private:
     QDBusInterface *m_pDBus;
     Presenter *m_pPresenter;
     MovieWidget *m_pMovieWidget;
+    MircastShowWidget *m_pMircastShowWidget;          ///投屏展示界面
     qint64 m_nFullscreenTime;                         ///全屏操作间隔时间
     QDBusInterface *m_pWMDBus {nullptr};              ///窗口特效dbus接口
     bool m_bIsWM {true};                              ///是否开启窗口特效

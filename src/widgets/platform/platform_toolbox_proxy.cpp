@@ -863,6 +863,8 @@ Platform_ToolboxProxy::Platform_ToolboxProxy(QWidget *mainWindow, PlayerEngine *
     m_pPreviewer = new Platform_ThumbnailPreview;
     m_pPreviewTime = new Platform_SliderTime;
     m_pPreviewTime->hide();
+    m_mircastWidget = new MircastWidget(mainWindow, proxy);
+    m_mircastWidget->hide();
     setup();
     slotThemeTypeChanged();
 
@@ -870,6 +872,8 @@ Platform_ToolboxProxy::Platform_ToolboxProxy(QWidget *mainWindow, PlayerEngine *
             this, &Platform_ToolboxProxy::updatePlayState);
     connect(DApplicationHelper::instance(), &DApplicationHelper::themeTypeChanged,
             this, &Platform_ToolboxProxy::updateplaylisticon);
+    connect(m_mircastWidget, &MircastWidget::updatePlayStatus, this, &Platform_ToolboxProxy::updatePlayState);
+    connect(m_mircastWidget, &MircastWidget::updateTime, this, &Platform_ToolboxProxy::updateMircastTime, Qt::QueuedConnection);
 }
 void Platform_ToolboxProxy::finishLoadSlot(QSize size)
 {
@@ -909,6 +913,12 @@ void Platform_ToolboxProxy::updateplaylisticon()
         m_pListBtn->setIcon(QIcon(":/icons/deepin/builtin/light/checked/episodes_checked.svg"));
     } else {
         m_pListBtn->setIcon(QIcon::fromTheme("dcc_episodes"));
+    }
+
+    if (m_pMircastBtn->isChecked() && DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
+        m_pMircastBtn->setIcon(QIcon(":/icons/deepin/builtin/light/checked/mircast_chenked.svg"));
+    } else {
+        m_pMircastBtn->setIcon(QIcon::fromTheme("dcc_mircast"));
     }
 }
 
@@ -1142,6 +1152,23 @@ void Platform_ToolboxProxy::setup()
     _right->addWidget(m_pVolBtn);
     _right->addSpacing(10);
 
+    m_pMircastBtn = new ToolButton(m_pBotToolWgt);
+    m_pMircastBtn->setIcon(QIcon::fromTheme("dcc_mircast", QIcon(":/resources/icons/mircast/mircast.svg")));
+    m_pMircastBtn->setIconSize(QSize(24, 24));
+    m_pMircastBtn->installEventFilter(this);
+    m_pMircastBtn->setCheckable(true);
+    m_pMircastBtn->setFixedSize(50, 50);
+    m_pMircastBtn->setFocusPolicy(Qt::TabFocus);
+    m_pMircastBtn->initToolTip();
+    m_pMircastBtn->setObjectName(MIRVAST_BUTTON);
+    m_pMircastBtn->setAccessibleName(MIRVAST_BUTTON);
+    connect(m_pMircastBtn, SIGNAL(clicked()), signalMapper, SLOT(map()));
+    signalMapper->setMapping(m_pMircastBtn, "mircast");
+    connect(m_mircastWidget, &MircastWidget::mircastState, this, &Platform_ToolboxProxy::slotUpdateMircast);
+
+    _right->addWidget(m_pMircastBtn);
+    _right->addSpacing(10);
+
     m_pListBtn = new ToolButton(m_pBotToolWgt);
     m_pListBtn->setIcon(QIcon::fromTheme("dcc_episodes"));
     m_pListBtn->setIconSize(QSize(36, 36));
@@ -1164,15 +1191,15 @@ void Platform_ToolboxProxy::setup()
     //lmh0910wayland下用这一套tooltip
     Platform_TooltipHandler *th = new Platform_TooltipHandler(this);
     QWidget *btns[] = {
-        m_pPlayBtn, m_pPrevBtn, m_pNextBtn, m_pFullScreenBtn, m_pListBtn
+        m_pPlayBtn, m_pPrevBtn, m_pNextBtn, m_pFullScreenBtn, m_pMircastBtn, m_pListBtn
     };
     QString hints[] = {
         tr("Play/Pause"), tr("Previous"), tr("Next"),
-        tr("Fullscreen"), tr("Playlist")
+        tr("Fullscreen"), tr("Mircast"), tr("Playlist")
     };
     QString attrs[] = {
         tr("play"), tr("prev"), tr("next"),
-        tr("fs"), tr("list")
+        tr("fs"), tr("mir"), tr("list")
     };
 
     for (unsigned int i = 0; i < sizeof(btns) / sizeof(btns[0]); i++) {
@@ -1261,6 +1288,7 @@ void Platform_ToolboxProxy::initMember()
     m_pProgBar = nullptr;
     m_pPreviewer = nullptr;
     m_pPreviewTime = nullptr;
+    m_mircastWidget = nullptr;
 
     m_pPlayBtn = nullptr;
     m_pPrevBtn = nullptr;
@@ -1541,7 +1569,10 @@ void Platform_ToolboxProxy::slotSliderPressed()
 void Platform_ToolboxProxy::slotSliderReleased()
 {
     m_bMousePree = false;
-    m_pEngine->seekAbsolute(m_pProgBar->slider()->sliderPosition());
+    if (m_mircastWidget->getMircastState() == MircastWidget::Screening)
+        m_mircastWidget->slotSeekMircast(m_pProgBar->slider()->sliderPosition());
+    else
+        m_pEngine->seekAbsolute(m_pProgBar->slider()->sliderPosition());
 }
 
 void Platform_ToolboxProxy::slotBaseMuteChanged(QString sk, const QVariant &/*val*/)
@@ -1576,10 +1607,68 @@ void Platform_ToolboxProxy::slotFileLoaded()
     m_pProgBar->slider()->setRange(0, static_cast<int>(m_pEngine->duration()));
     m_pProgBar_Widget->setCurrentIndex(1);
     update();
+    //正在投屏时如果当前播放为音频直接播放下一首。
+    if(m_pEngine->currFileIsAudio()&&m_mircastWidget->getMircastState() != MircastWidget::Idel) {
+        //如果全是音频文件则退出投屏
+        bool isAllAudio = true;
+        QString sNextVideoName;
+        int nNextIndex = -1;
+        QList<PlayItemInfo> lstItemInfo = m_pEngine->getplaylist()->items();
+        for(int i = 0; i < lstItemInfo.count(); i++) {
+            PlayItemInfo iteminfo = lstItemInfo.at(i);
+            if(iteminfo.mi.vCodecID != -1) {
+                isAllAudio = false;
+                if(sNextVideoName.isNull()) {
+                    sNextVideoName = iteminfo.mi.filePath;
+                    nNextIndex = i;
+                    break;
+                }
+            }
+        }
+        if(isAllAudio) {
+            m_pMainWindow->slotExitMircast();
+            return;
+        }
+        QString sCurPath = m_pEngine->getplaylist()->currentInfo().mi.filePath;
+        int nIndex = -1;
+        for(int i = 0; i < lstItemInfo.count(); i++) {
+            PlayItemInfo iteminfo = lstItemInfo.at(i);
+            if(iteminfo.mi.filePath == sCurPath) {
+                nIndex = i;
+                break;
+            }
+        }
+        if(nIndex == -1) return;
+        if(nIndex < nNextIndex && !sNextVideoName.isNull()) {
+            m_pMainWindow->play({sNextVideoName});
+        } else{
+            bool isNext = true;
+            for(int i = nIndex; i < lstItemInfo.count(); i++) {
+                PlayItemInfo iteminfo = lstItemInfo.at(i);
+                if(iteminfo.mi.vCodecID != -1) {
+                    isNext = false;
+                    m_pMainWindow->play({iteminfo.mi.filePath});
+                    break;
+                }
+            }
+            if(m_pEngine->getplaylist()->playMode() == PlaylistModel::OrderPlay) {
+                if(isNext)
+                    m_pMainWindow->slotExitMircast();
+                return;
+            }
+            if(isNext && !sNextVideoName.isNull()){
+                m_pMainWindow->play({sNextVideoName});
+            }
+        }
+        return;
+    }
+    m_mircastWidget->playNext();
 }
 
 void Platform_ToolboxProxy::slotElapsedChanged()
 {
+    if(m_mircastWidget->getMircastState() != MircastWidget::Idel)
+        return;
     quint64 url = static_cast<quint64>(-1);
     if (m_pEngine->playlist().current() != -1) {
         url = static_cast<quint64>(m_pEngine->duration());
@@ -1698,6 +1787,25 @@ void Platform_ToolboxProxy::clearPlayListFocus()
 void Platform_ToolboxProxy::setBtnFocusSign(bool sign)
 {
     m_bSetListBtnFocus = sign;
+}
+
+bool Platform_ToolboxProxy::isInMircastWidget(const QPoint &p)
+{
+    if (!m_mircastWidget->isVisible())
+        return false;
+    return m_mircastWidget->geometry().contains(p);
+}
+
+void Platform_ToolboxProxy::updateMircastWidget(QPoint p)
+{
+    m_mircastWidget->move(p.x() - m_mircastWidget->width(), p.y() - m_mircastWidget->height() - 10);
+}
+
+void Platform_ToolboxProxy::hideMircastWidget()
+{
+    m_mircastWidget->hide();
+    m_pMircastBtn->setChecked(false);
+    updateplaylisticon();
 }
 /**
  * @brief volumeUp 鼠标滚轮增加音量
@@ -1868,6 +1976,9 @@ void Platform_ToolboxProxy::updateButtonStates()
 
     if(m_pEngine->state() != PlayerEngine::CoreState::Idle) {
         bRawFormat = m_pEngine->getplaylist()->currentInfo().mi.isRawFormat();
+        m_pMircastBtn->setEnabled(!m_pEngine->currFileIsAudio());
+        if(m_pEngine->currFileIsAudio())
+            m_mircastWidget->setVisible(false);
         if(bRawFormat && !m_pEngine->currFileIsAudio()){                                             // 如果正在播放的视频是裸流不支持音量调节和进度调节
             m_pProgBar->setEnabled(false);
             m_pProgBar->setEnableIndication(false);
@@ -1944,9 +2055,24 @@ void Platform_ToolboxProxy::updateFullState()
     }
 }
 
+void Platform_ToolboxProxy::slotUpdateMircast(int state, QString msg)
+{
+    emit sigMircastState(state, msg);
+    if (state == 0) {
+        m_pVolBtn->setButtonEnable(false);
+        m_pVolBtn->setProperty("mircast", state);
+        m_pFullScreenBtn->setEnabled(false);
+    } else {
+        m_pVolBtn->setButtonEnable(true);
+        m_pVolBtn->setProperty("mircast", state);
+        m_pFullScreenBtn->setEnabled(true);
+    }
+}
+
 void Platform_ToolboxProxy::updatePlayState()
 {
-    if (m_pEngine->state() == PlayerEngine::CoreState::Playing) {
+    if (((m_mircastWidget->getMircastState() != MircastWidget::Idel) && (m_mircastWidget->getMircastPlayState() == MircastWidget::Play))
+            || m_pEngine->state() == PlayerEngine::CoreState::Playing) {
         if (DGuiApplicationHelper::LightType == DGuiApplicationHelper::instance()->themeType()) {
             DPalette pa;
             pa = m_pPalyBox->palette();
@@ -1970,6 +2096,10 @@ void Platform_ToolboxProxy::updatePlayState()
             pa.setColor(DPalette::Dark, QColor(255, 255, 255, 255));
             m_pListBtn->setPalette(pa);
 
+            pa = m_pMircastBtn->palette();
+            pa.setColor(DPalette::Light, QColor(255, 255, 255, 255));
+            pa.setColor(DPalette::Dark, QColor(255, 255, 255, 255));
+            m_pMircastBtn->setPalette(pa);
         } else {
             DPalette pa;
             pa = m_pPalyBox->palette();
@@ -1992,6 +2122,11 @@ void Platform_ToolboxProxy::updatePlayState()
             pa.setColor(DPalette::Light, QColor(0, 0, 0, 255));
             pa.setColor(DPalette::Dark, QColor(0, 0, 0, 255));
             m_pListBtn->setPalette(pa);
+
+            pa = m_pMircastBtn->palette();
+            pa.setColor(DPalette::Light, QColor(0, 0, 0, 255));
+            pa.setColor(DPalette::Dark, QColor(0, 0, 0, 255));
+            m_pMircastBtn->setPalette(pa);
         }
         m_pPlayBtn->setIcon(QIcon::fromTheme("dcc_suspend", QIcon(":/icons/deepin/builtin/light/normal/suspend_normal.svg")));
         //lmh0910wayland下用这一套tooltip
@@ -2021,6 +2156,10 @@ void Platform_ToolboxProxy::updatePlayState()
             pa.setColor(DPalette::Dark, QColor(255, 255, 255, 255));
             m_pListBtn->setPalette(pa);
 
+            pa = m_pMircastBtn->palette();
+            pa.setColor(DPalette::Light, QColor(255, 255, 255, 255));
+            pa.setColor(DPalette::Dark, QColor(255, 255, 255, 255));
+            m_pMircastBtn->setPalette(pa);
         } else {
             DPalette pa;
             pa = m_pPalyBox->palette();
@@ -2043,6 +2182,11 @@ void Platform_ToolboxProxy::updatePlayState()
             pa.setColor(DPalette::Light, QColor(0, 0, 0, 255));
             pa.setColor(DPalette::Dark, QColor(0, 0, 0, 255));
             m_pListBtn->setPalette(pa);
+
+            pa = m_pMircastBtn->palette();
+            pa.setColor(DPalette::Light, QColor(0, 0, 0, 255));
+            pa.setColor(DPalette::Dark, QColor(0, 0, 0, 255));
+            m_pMircastBtn->setPalette(pa);
 
         }
         //lmh0910wayland下用这一套tooltip
@@ -2134,6 +2278,14 @@ void Platform_ToolboxProxy::buttonClicked(QString id)
         m_nClickTime = QDateTime::currentMSecsSinceEpoch();
         m_pMainWindow->requestAction(ActionFactory::ActionKind::TogglePlaylist);
         m_pListBtn->hideToolTip();
+    } else if (id == "mircast") {
+        m_mircastWidget->togglePopup();
+        m_pMircastBtn->hideToolTip();
+        m_pMircastBtn->setChecked(m_mircastWidget->isVisible());
+        if (m_pMircastBtn->isChecked())
+            m_pMircastBtn->setIcon(QIcon(":/icons/deepin/builtin/light/checked/mircast_chenked.svg"));
+        else
+            m_pMircastBtn->setIcon(QIcon::fromTheme("dcc_mircast"));
     }
 }
 
@@ -2144,7 +2296,7 @@ void Platform_ToolboxProxy::buttonEnter()
     ToolButton *btn = qobject_cast<ToolButton *>(sender());
     QString id = btn->property("TipId").toString();
 
-    if (id == tr("sub") || id == tr("fs") || id == tr("list")) {
+    if (id == tr("sub") || id == tr("fs") || id == tr("list") || id == tr("mir")) {
         updateToolTipTheme(btn);
         btn->showToolTip();
     }
@@ -2157,7 +2309,7 @@ void Platform_ToolboxProxy::buttonLeave()
     ToolButton *btn = qobject_cast<ToolButton *>(sender());
     QString id = btn->property("TipId").toString();
 
-    if (id == tr("sub") || id == tr("fs") || id == tr("list")) {
+    if (id == tr("sub") || id == tr("fs") || id == tr("list") || id == tr("mir")) {
         btn->hideToolTip();
     }
 }
@@ -2269,6 +2421,29 @@ void Platform_ToolboxProxy::updateTimeLabel()
         m_pTimeLabel->setVisible(width() > 450);
         m_pTimeLabelend->setVisible(width() > 450);
     }
+}
+
+void Platform_ToolboxProxy::updateMircastTime(int time)
+{
+    if (m_pProgBar_Widget->currentIndex() == 1) {              //进度条模式
+
+        if (!m_pProgBar->signalsBlocked()) {
+            m_pProgBar->blockSignals(true);
+        }
+
+        m_pProgBar->slider()->setSliderPosition(time);
+        m_pProgBar->slider()->setValue(time);
+        m_pProgBar->blockSignals(false);
+    } else {
+        m_pViewProgBar->setIsBlockSignals(true);
+        m_pViewProgBar->setValue(time);
+        m_pViewProgBar->setIsBlockSignals(false);
+    }
+    quint64 url = static_cast<quint64>(-1);
+    if (m_pEngine->playlist().current() != -1) {
+        url = static_cast<quint64>(m_pEngine->duration());
+    }
+    updateTimeInfo(url, time, m_pTimeLabel, m_pTimeLabelend, true);
 }
 
 void Platform_ToolboxProxy::updateToolTipTheme(ToolButton *btn)
