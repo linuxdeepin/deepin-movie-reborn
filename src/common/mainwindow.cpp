@@ -4556,22 +4556,37 @@ void MainWindow::slotInvalidFile(QString strFileName)
 
 void MainWindow::slotUpdateMircastState(int state, QString msg)
 {
-    if (state == MIRCAST_SUCCESSED) {
+    switch (state) {
+    case MIRCAST_SUCCESSED: //投屏成功
+    {
         mircastSuccess(msg);
         emit frameMenuEnable(false);
         emit playSpeedMenuEnable(false);
         emit subtitleMenuEnable(false);
         emit soundMenuEnable(false);
-    } else if (state == MIRCAST_EXIT) {
+    }
+        break;
+    case MIRCAST_EXIT://投屏退出
+    {
         slotExitMircast();
-    } else if (state == MIRCAST_CONNECTION_FAILED) {
+    }
+        break;
+    case MIRCAST_CONNECTION_FAILED://投屏连接失败
+    {
         const QIcon icon = QIcon(":/resources/icons/short_fail.svg");
         QString sText = QString(tr("Connection failed"));
         popupAdapter(icon, sText);
         slotExitMircast();
-    } else if (state == MIRCAST_DISCONNECTIONED) {
+    }
+        break;
+    case MIRCAST_DISCONNECTIONED://投屏丢失连接
+    {
         m_pCommHintWid->updateWithMessage(tr("Mircast disconnected"));
         slotExitMircast();
+    }
+        break;
+    default:
+        break;
     }
 }
 

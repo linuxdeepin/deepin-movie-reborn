@@ -52,6 +52,8 @@
 #define REFRESHTIME 20000
 #define MAXMIRCAST 5
 #define MIRCASTTIMEOUT 1000
+#define ROTATE_VALUE 14.4
+#define TEXT_WIDTH 170
 
 using namespace dmr;
 
@@ -71,6 +73,9 @@ MircastWidget::MircastWidget(QWidget *mainWindow, void *pEngine)
     m_connectTimeout = 0;
     m_nCurDuration = -1;
     m_nCurAbsTime = -1;
+    m_ControlURLPro = "";
+    m_URLAddrPro = "";
+    m_sLocalUrl = "";
 
     m_searchTime.setSingleShot(true);
     connect(&m_searchTime, &QTimer::timeout, this, &MircastWidget::slotSearchTimeout);
@@ -132,17 +137,23 @@ MircastWidget::MircastWidget(QWidget *mainWindow, void *pEngine)
     mainLayout->addStretch();
     m_dlnaContentServer = nullptr;
 }
-
+/**
+ * @brief getMircastState 获取投屏连接状态
+ */
 MircastWidget::MircastState MircastWidget::getMircastState()
 {
     return m_mircastState;
 }
-
+/**
+ * @brief getMircastPlayState 获取投屏播放状态
+ */
 MircastWidget::MircastPlayState MircastWidget::getMircastPlayState()
 {
     return m_nPlayStatus;
 }
-
+/**
+ * @brief playNext 开始投屏
+ */
 void MircastWidget::playNext()
 {
     if (m_mircastState != MircastState::Idel) {
@@ -156,7 +167,10 @@ void MircastWidget::playNext()
         startDlnaTp();
     }
 }
-
+/**
+ * @brief seekMircast 投屏seek
+ * @param nSec seek时间 单位秒
+ */
 void MircastWidget::seekMircast(int nSec)
 {
     if(m_mircastState != MircastWidget::Screening) return;
@@ -169,8 +183,9 @@ void MircastWidget::seekMircast(int nSec)
         slotSeekMircast(nSeek);
     }
 }
-
-
+/**
+ * @brief togglePopup 工具栏投屏窗口显示与隐藏
+ */
 void MircastWidget::togglePopup()
 {
     if (m_bIsToggling) return;
@@ -183,14 +198,18 @@ void MircastWidget::togglePopup()
         m_bIsToggling = false;
     }
 }
-
+/**
+ * @brief slotRefreshBtnClicked 投屏窗口刷新按钮
+ */
 void MircastWidget::slotRefreshBtnClicked()
 {
     initializeHttpServer();
     searchDevices();
     update();
 }
-
+/**
+ * @brief slotSearchTimeout 投屏设备搜索超时
+ */
 void MircastWidget::slotSearchTimeout()
 {
     qInfo() << "search timeout!!";
@@ -202,7 +221,9 @@ void MircastWidget::slotSearchTimeout()
     m_refreshBtn->refershTimeout();
     update();
 }
-
+/**
+ * @brief slotMircastTimeout 投屏连接超时
+ */
 void MircastWidget::slotMircastTimeout()
 {
     m_pDlnaSoapPost->SoapOperPost(DLNA_GetPositionInfo, m_ControlURLPro, m_URLAddrPro, m_sLocalUrl);
@@ -215,7 +236,9 @@ void MircastWidget::slotMircastTimeout()
             emit mircastState(MIRCAST_CONNECTION_FAILED);
     }
 }
-
+/**
+ * @brief slotGetPositionInfo 获取投屏播放视频信息
+ */
 void MircastWidget::slotGetPositionInfo(DlnaPositionInfo info)
 {
     if (m_mircastState == MircastState::Idel)
@@ -286,7 +309,9 @@ void MircastWidget::slotGetPositionInfo(DlnaPositionInfo info)
         }
     }
 }
-
+/**
+ * @brief slotConnectDevice 连接投屏设备
+ */
 void MircastWidget::slotConnectDevice(ItemWidget *item)
 {
     QString newURLAddrPro = item->property(urlAddrPro).toString();
@@ -301,7 +326,9 @@ void MircastWidget::slotConnectDevice(ItemWidget *item)
     stopDlnaTP();
     startDlnaTp(item);
 }
-
+/**
+ * @brief searchDevices 刷新查找设备
+ */
 void MircastWidget::searchDevices()
 {
     qInfo() << __func__ << "start search Devices!";
@@ -311,7 +338,9 @@ void MircastWidget::searchDevices()
     m_search->SsdpSearch();
     updateMircastState(SearchState::Searching);
 }
-
+/**
+ * @brief updateMircastState 更新投屏窗口状态
+ */
 void MircastWidget::updateMircastState(MircastWidget::SearchState state)
 {
     switch (state) {
@@ -332,20 +361,26 @@ void MircastWidget::updateMircastState(MircastWidget::SearchState state)
         break;
     }
 }
-
-void MircastWidget::createListeItem(QString name, const QByteArray &data, const QNetworkReply *reply)
+/**
+ * @brief createListeItem 投屏seek
+ * @param data 投屏设备信息
+ */
+ItemWidget * MircastWidget::createListeItem(QString name, const QByteArray &data, const QNetworkReply *reply)
 {
     ItemWidget *item = m_listWidget->createListeItem(name, data, reply);
     QString itemAdd = item->property(urlAddrPro).toString();
     if (itemAdd == m_URLAddrPro && m_mircastState == MircastState::Screening)
         item->setState(ItemWidget::Checked);
+    return item;
 }
-
+/**
+ * @brief slotReadyRead 读取投屏设备信息
+ */
 void MircastWidget::slotReadyRead()
 {
     QNetworkReply *reply = (QNetworkReply *)sender();
+    if(!reply) return;
     if(reply->error() != QNetworkReply::NoError) {
-//        QMessageBox::warning(this,"Error", QString::number(reply->error()));
         qInfo() << "Error:" << QString::number(reply->error());
         return;
     }
@@ -354,31 +389,12 @@ void MircastWidget::slotReadyRead()
     GetDlnaXmlValue dlnaxml(data);
     QString sName = dlnaxml.getValueByPath("device/friendlyName");
     m_devicesList.append(sName);
-
-
-//    int nNum = reply->property(replayShowNum).toInt();
-//    if(nNum >= 20) return;
-//    QPushButton *btn = m_listBtn.at(nNum);
-//    btn->setText(sName);
-//    btn->setToolTip(reply->property(urlAddrPro).toString());
-//    btn->show();
-////    QPushButton *btn = new QPushButton("荣耀智慧屏");
-//    btn->setProperty(urlAddrPro, reply->property(urlAddrPro).toString());
-//    QString strControlURL = dlnaxml.getValueByPathValue("device/serviceList", "serviceType=urn:schemas-upnp-org:service:AVTransport:1", "controlURL");
-//    if(!strControlURL.startsWith("/")) {
-//        btn->setProperty(controlURLPro, reply->property(urlAddrPro).toString() + "/" +strControlURL);
-//    } else {
-//        btn->setProperty(controlURLPro, reply->property(urlAddrPro).toString() +strControlURL);
-//    }
-//    btn->setProperty(friendlyNamePro, sName);
-
-
-//    ui->textEdit->append(btn->property(controlURLPro).toString());
-
     createListeItem(sName, data, reply);
     updateMircastState(SearchState::ListExhibit);
 }
-
+/**
+ * @brief slotExitMircast 退出投屏
+ */
 void MircastWidget::slotExitMircast()
 {
     qInfo() << __func__ << "Exit Mircast.";
@@ -393,12 +409,16 @@ void MircastWidget::slotExitMircast()
     emit mircastState(1, "normal");
     //    emit closeServer();
 }
-
+/**
+ * @brief slotExitMircast 退出投屏
+ */
 void MircastWidget::slotSeekMircast(int seek)
 {
     seekDlnaTp(seek);
 }
-
+/**
+ * @brief slotPauseDlnaTp 投屏视频暂停与恢复播放
+ */
 void MircastWidget::slotPauseDlnaTp()
 {
     if(m_mircastState != MircastWidget::Screening) return;
@@ -408,7 +428,9 @@ void MircastWidget::slotPauseDlnaTp()
         playDlnaTp();
     }
 }
-
+/**
+ * @brief initializeHttpServer 初始化http Sever
+ */
 void MircastWidget::initializeHttpServer(int port)
 {
     if(!m_dlnaContentServer) {
@@ -433,7 +455,9 @@ void MircastWidget::initializeHttpServer(int port)
         m_dlnaContentServer->setBaseUrl(QString("http://%1:%2/").arg(sLocalIp, QString::number(port)));
     }
 }
-
+/**
+ * @brief startDlnaTp 初始化http Sever
+ */
 void MircastWidget::startDlnaTp(ItemWidget *item)
 {
     if (item != nullptr) {
@@ -475,7 +499,9 @@ void MircastWidget::startDlnaTp(ItemWidget *item)
     m_nCurAbsTime = -1;
     emit updatePlayStatus();
 }
-
+/**
+ * @brief startDlnaTp 时间字符串装换为int秒 时间格式"00:00:00"
+ */
 int MircastWidget::timeConversion(QString time)
 {
     QStringList timeList = time.split(":");
@@ -489,32 +515,42 @@ int MircastWidget::timeConversion(QString time)
     }
     return 0;
 }
-
+/**
+ * @brief slotConnectDevice 投屏播放视频暂停
+ */
 void MircastWidget::pauseDlnaTp()
 {
     m_nPlayStatus = MircastWidget::Pause;
     m_pDlnaSoapPost->SoapOperPost(DLNA_Pause, m_ControlURLPro, m_URLAddrPro, m_sLocalUrl);
     emit updatePlayStatus();
 }
-
+/**
+ * @brief slotConnectDevice 投屏播放视频播放
+ */
 void MircastWidget::playDlnaTp()
 {
     m_nPlayStatus = MircastWidget::Play;
     m_pDlnaSoapPost->SoapOperPost(DLNA_Play, m_ControlURLPro, m_URLAddrPro, m_sLocalUrl);
     emit updatePlayStatus();
 }
-
+/**
+ * @brief slotConnectDevice 投屏播放视频seek
+ */
 void MircastWidget::seekDlnaTp(int nSeek)
 {
     m_pDlnaSoapPost->SoapOperPost(DLNA_Seek, m_ControlURLPro, m_URLAddrPro, m_sLocalUrl, nSeek);
 }
-
+/**
+ * @brief stopDlnaTP 停止投屏播放视频
+ */
 void MircastWidget::stopDlnaTP()
 {
     m_nPlayStatus = MircastWidget::Stop;
     m_pDlnaSoapPost->SoapOperPost(DLNA_Stop, m_ControlURLPro, m_URLAddrPro, m_sLocalUrl);
 }
-
+/**
+ * @brief getPosInfoDlnaTp 获取投屏播放视频信息
+ */
 void MircastWidget::getPosInfoDlnaTp()
 {
     m_pDlnaSoapPost->SoapOperPost(DLNA_GetPositionInfo, m_ControlURLPro, m_URLAddrPro, m_sLocalUrl);
@@ -528,7 +564,7 @@ RefreButtonWidget::RefreButtonWidget(QIcon refreIcon, QIcon loadingIcon, QWidget
     m_rotate = 0.0;
 
     connect(&m_rotateTime, &QTimer::timeout, [=](){
-        m_rotate += 14.4;
+        m_rotate += ROTATE_VALUE;
     });
 }
 
@@ -567,19 +603,12 @@ void RefreButtonWidget::mouseReleaseEvent(QMouseEvent *pEvent)
 ListWidget::ListWidget(QWidget *parent)
     :QWidget (parent)
 {
-//    QPalette pal(palette());
-//    //设置背景黑色
-//    pal.setColor(QPalette::Background, Qt::red);
-//    setAutoFillBackground(true);
-//    setPalette(pal);
-
     setContentsMargins(0, 0, 0, 0);
     setFixedWidth(MIRCASTWIDTH);
     QVBoxLayout *listLayout = new QVBoxLayout(this);
     setLayout(listLayout);
     listLayout->setContentsMargins(0, 0, 0, 0);
     listLayout->setSpacing(0);
-
     m_currentWidget = nullptr;
     m_lastSelectedWidget = nullptr;
 }
@@ -595,7 +624,7 @@ void ListWidget::clear()
     foreach (ItemWidget *item, m_items) {
         m_items.removeOne(item);
         disconnect(item, &ItemWidget::selected, this, &ListWidget::slotSelectItem);
-        delete item;
+        item->deleteLater();
         item = nullptr;
     }
 }
@@ -673,24 +702,24 @@ ItemWidget::ItemWidget(QString deviceName, const QByteArray &data, const QNetwor
     m_rotate = 0.0;
     m_normalLoadIcon = QIcon(":/resources/icons/mircast/spinner.svg");
     m_selectLoadIcon = QIcon(":/resources/icons/mircast/spinner_White.svg");
-
     connect(&m_rotateTime, &QTimer::timeout, [=](){
-        m_rotate += 14.4;
+        m_rotate += ROTATE_VALUE;
     });
-
     setToolTip(m_deviceName);
     setFixedSize(MIRCASTWIDTH, 34);
     setAttribute(Qt::WA_TranslucentBackground, true);
     m_displayName = convertDisplay();
-
     GetDlnaXmlValue dlnaxml(m_data);
     QString sName = dlnaxml.getValueByPath("device/friendlyName");
-    setProperty(urlAddrPro, reply->property(urlAddrPro).toString());
+    QString urlAddrProValue = "";
+    if(reply)
+        urlAddrProValue = reply->property(urlAddrPro).toString();
+    setProperty(urlAddrPro, urlAddrProValue);
     QString strControlURL = dlnaxml.getValueByPathValue("device/serviceList", "serviceType=urn:schemas-upnp-org:service:AVTransport:1", "controlURL");
     if(!strControlURL.startsWith("/")) {
-        setProperty(controlURLPro, reply->property(urlAddrPro).toString() + "/" +strControlURL);
+        setProperty(controlURLPro, urlAddrProValue + "/" +strControlURL);
     } else {
-        setProperty(controlURLPro, reply->property(urlAddrPro).toString() +strControlURL);
+        setProperty(controlURLPro, urlAddrProValue +strControlURL);
     }
     setProperty(friendlyNamePro, sName);
 }
@@ -703,9 +732,11 @@ void ItemWidget::clearSelect()
 void ItemWidget::setState(ItemWidget::ConnectState state)
 {
     m_state = state;
-    if (m_state == Loading) m_rotateTime.start(40);
-    else {
-        m_rotateTime.stop();
+    if (m_state == Loading) {
+            m_rotateTime.start(40);
+    } else {
+        if(m_rotateTime.isActive())
+            m_rotateTime.stop();
         m_rotate = 0.0;
     }
 }
@@ -723,7 +754,6 @@ void ItemWidget::mousePressEvent(QMouseEvent *pEvent)
     m_hover = false;
     emit selected();
     update();
-//    pEvent->accept();//鼠标事件处理后不进入父窗口，单个事件的开关
 }
 
 void ItemWidget::paintEvent(QPaintEvent *pEvent)
@@ -734,7 +764,6 @@ void ItemWidget::paintEvent(QPaintEvent *pEvent)
     paint.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
     QPainterPath path;
     path.addRect(rect());
-//    QRect rect = rect();
     QColor TextColor(Qt::black);
     if (m_selected) {
         paint.fillPath(path, QBrush(QColor(0,129,255)));
@@ -796,16 +825,18 @@ void ItemWidget::mouseDoubleClickEvent(QMouseEvent *event)
 
     emit connecting();
 }
-
+/**
+ * @brief convertDisplay 设备名称操作170个字符转换
+ */
 QString ItemWidget::convertDisplay()
 {
     QFontMetrics fm = fontMetrics();
     double textWidth = fm.width(m_deviceName);
-    if (textWidth > 170) {
+    if (textWidth > TEXT_WIDTH) {
         QString displayName;
         for (int i = 0; i < m_deviceName.size(); i++) {
             displayName += m_deviceName.at(i);
-            if (fm.width(displayName) > 170) {
+            if (fm.width(displayName) > TEXT_WIDTH) {
                 displayName.chop(1);
                 displayName += "...";
                 break;

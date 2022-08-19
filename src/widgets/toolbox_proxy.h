@@ -402,6 +402,7 @@ public:
     ToolButton *fsBtn() {return m_pFullScreenBtn;}
     VolumeButton *volBtn() {return m_pVolBtn;}
     void setThumbnailmode(bool is_thumbnailmode) {m_bThumbnailmode = is_thumbnailmode;}
+    MircastWidget *getMircastWidget() {return m_mircastWidget;}
 
 public slots:
     /**

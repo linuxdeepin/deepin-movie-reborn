@@ -45,8 +45,9 @@ CSSDPSearch::~CSSDPSearch()
         m_udpSocket = NULL;
     }
 }
-
-
+/**
+ * @brief readMsg 读取设备的单播消息
+ */
 void CSSDPSearch::readMsg()
 {
     while(m_udpSocket->hasPendingDatagrams()) {
@@ -57,11 +58,14 @@ void CSSDPSearch::readMsg()
     }
 
 }
-
+/**
+ * @brief SsdpSearch 广播请求发现dlna设备
+ */
 void CSSDPSearch::SsdpSearch()
 {
     m_lstStrLocationUrlAddr.clear();
     m_nFindReplyCount = 0;
+    //UNPN 广播发现投屏设备请求消息
     QByteArray msg("M-SEARCH * HTTP /1.1\r\n" \
                    "Host:239.255.255.250:1900\r\n" \
                    "ST: ssdp:all\r\n" \
@@ -73,7 +77,10 @@ void CSSDPSearch::SsdpSearch()
         qInfo() << "writeDatagram failed";
     }
 }
-
+/**
+ * @brief showDlnaCastAddr 识别投屏设备消息
+ * @param replyData 应答数据
+ */
 void CSSDPSearch::showDlnaCastAddr(QByteArray replyData)
 {
     if(replyData.contains("AVTransport")) {

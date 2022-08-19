@@ -103,10 +103,12 @@ MircastShowWidget::~MircastShowWidget()
 {
 
 }
-
+/**
+ * @brief setDeviceName 设置投屏设备名称
+ */
 void MircastShowWidget::setDeviceName(QString name)
 {
-    QString display = QString("Display device:%1").arg(customizeText(name));
+    QString display = QString(tr("Display device"))+QString(":%1").arg(customizeText(name));
     m_deviceName->setPlainText(display);
     QTextBlockFormat format;
     format.setAlignment(Qt::AlignCenter);
@@ -120,7 +122,10 @@ void MircastShowWidget::mouseMoveEvent(QMouseEvent *pEvent)
     pEvent->ignore();
     QGraphicsView::mouseMoveEvent(pEvent);
 }
-
+/**
+ * @brief customizeText 设置投屏设备显示名称
+ * @param name 设备名
+ */
 QString MircastShowWidget::customizeText(QString name)
 {
     return name.length() > 20 ? name.left(20) + QString("...") : name;

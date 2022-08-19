@@ -104,14 +104,15 @@ TEST(ToolBox, tip)
     tip->deleteLater();
 }
 
-TEST(ToolBox, animationLabel)
-{
-    MainWindow *mw = new MainWindow();
-    AnimationLabel *aLabel = new AnimationLabel(mw, mw);
-    aLabel->show();
+//TEST(ToolBox, animationLabel)
+//{
+//    MainWindow *mw = new MainWindow();
+//    AnimationLabel *aLabel = new AnimationLabel(mw, mw);
+//    aLabel->show();
 
-    QEvent moveEvent(QEvent::Move);
-    QMouseEvent releaseEvent(QEvent::MouseButtonRelease, QPoint(0,0), Qt::LeftButton, Qt::NoButton, Qt::NoModifier);
-    QApplication::sendEvent(aLabel, &moveEvent);
-    QApplication::sendEvent(aLabel, &releaseEvent);
-}
+//    QEvent moveEvent(QEvent::Move);
+//    QMouseEvent releaseEvent(QEvent::MouseButtonRelease, QPoint(0,0), Qt::LeftButton, Qt::NoButton, Qt::NoModifier);
+//    QApplication::sendEvent(aLabel, &moveEvent);
+//    QApplication::sendEvent(aLabel, &releaseEvent);
+//}
+

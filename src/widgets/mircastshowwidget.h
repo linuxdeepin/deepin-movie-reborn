@@ -63,8 +63,8 @@ protected:
     void mouseReleaseEvent(QMouseEvent *pEvent) override;
     void paintEvent(QPaintEvent *pEvent) override;
 private:
-    QSvgWidget *m_svgWidget;
-    ButtonState m_state;
+    QSvgWidget *m_svgWidget;//投屏退出图标窗口
+    ButtonState m_state; //按钮状态
 };
 
 class MircastShowWidget: public QGraphicsView
@@ -73,7 +73,9 @@ class MircastShowWidget: public QGraphicsView
 public:
     explicit MircastShowWidget(QWidget *parent = nullptr);
     ~MircastShowWidget();
-
+    /**
+     * @brief setDeviceName 设置投屏设备名称
+     */
     void setDeviceName(QString);
 
 protected:
@@ -83,6 +85,10 @@ signals:
     void exitMircast();
 
 private:
+    /**
+     * @brief customizeText 设置投屏设备显示名称
+     * @param name 设备名
+     */
     QString customizeText(QString name);
 
 private:

@@ -38,7 +38,12 @@ QString GetDlnaXmlValue::getValueByPath(QString sPath)
     QDomElement elm = getElmByPath(sList);
     return getElmText(elm).trimmed();
 }
-
+/**
+ * @brief getValueByPathValue 根据xml节点的值查找当前节点下的指定节点的值
+ * @param sPath 查找xml节点路径
+ * @param sValue 查找xml节点值
+ * @param sElm 函数需要返回节点的值需要
+ */
 QString GetDlnaXmlValue::getValueByPathValue(QString sPath, QString sValue, QString sElm)
 {
     QStringList sList = sPath.split("/");
@@ -46,7 +51,10 @@ QString GetDlnaXmlValue::getValueByPathValue(QString sPath, QString sValue, QStr
     QDomElement childElm = getElmByPath(elm, sValue, sElm);
     return getElmText(childElm).trimmed();
 }
-
+/**
+ * @brief getElmByPath 获取路径的节点
+ * @param sList 查找xml节点路径
+ */
 QDomElement GetDlnaXmlValue::getElmByPath(QStringList sList)
 {
     QDomNode node = doc->firstChild();
@@ -67,7 +75,12 @@ QDomElement GetDlnaXmlValue::getElmByPath(QStringList sList)
     }
     return elm;
 }
-
+/**
+ * @brief getElmByPath 获取路径的节点
+ * @param elm 查找xml节点路径
+ * @param sValue 查找xml节点路径
+ * @param sElm 查找xml节点路径
+ */
 QDomElement GetDlnaXmlValue::getElmByPath(QDomElement childElm, QString sValue, QString sElmText)
 {
     if(childElm.isNull()) return QDomElement();
@@ -84,7 +97,10 @@ QDomElement GetDlnaXmlValue::getElmByPath(QDomElement childElm, QString sValue, 
     }
     return QDomElement();
 }
-
+/**
+ * @brief getElmText 获取节点的值
+ * @param elm 查找xml节点路径
+ */
 QString GetDlnaXmlValue::getElmText(QDomElement elm)
 {
     if(!elm.isNull()) {
