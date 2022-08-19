@@ -44,7 +44,6 @@ public:
         inline bool operator==(const Range &rv) const {
             return start == rv.start && end == rv.end;
         }
-        void updateLength(const int length);
         static std::optional<DlnaContentServer::Range> fromRange(const QString &rangeHeader,
                                               qint64 length = -1);
     };
@@ -67,39 +66,105 @@ public:
 
     DlnaContentServer(QObject *parent = nullptr, int nPort = 8080);
     ~DlnaContentServer();
+    /**
+     * @brief slotBaseMuteChanged 请求传输文件数据
+     * @param req Http请求
+     * @param resp Http应答
+     */
     void requestHandler(QHttpRequest *req, QHttpResponse *resp);
+    /**
+     * @brief streamFile 传输文件流数据
+     * @param file Http传输文件
+     * @param mime 视频格式
+     * @param req Http请求
+     * @param resp Http应答
+     */
     void streamFile(const QString &path, const QString &mime,
                                          QHttpRequest *req, QHttpResponse *resp);
+    /**
+     * @brief streamFileRange 断点续传流
+     * @param file Http传输文件
+     * @param req Http请求
+     * @param resp Http应答
+     */
     void streamFileRange(std::shared_ptr<QFile> file, QHttpRequest *req,
                          QHttpResponse *resp);
+    /**
+     * @brief streamFileNoRange 全部流
+     * @param file Http传输文件
+     * @param req Http请求
+     * @param resp Http应答
+     */
     void streamFileNoRange(std::shared_ptr<QFile> file, QHttpRequest *req,
                            QHttpResponse *resp);
-
+    /**
+     * @brief sendEmptyResponse 发送空应答
+     * @param resp Http应答
+     * @param code Http应答码
+     */
     void sendEmptyResponse(QHttpResponse *resp, int code);
+    /**
+     * @brief dlnaContentFeaturesHeader 填充dlna传输头
+     * @param seek 是否seek传输
+     * @param flags 文件或流标志
+     */
     QString dlnaContentFeaturesHeader(const QString& mime,
                                       bool seek = true,
                                       bool flags = true);
+    /**
+     * @brief dlnaOrgPnFlags 视频格式转换为upnp标准
+     * @param mime 视频格式
+     */
     QString dlnaOrgPnFlags(const QString &mime);
+    /**
+     * @brief dlnaOrgFlagsForFile dlna文件传输协议
+     */
     QString dlnaOrgFlagsForFile();
+    /**
+     * @brief dlnaOrgFlagsForStreaming dlna流传输协议
+     */
     QString dlnaOrgFlagsForStreaming();
+    /**
+     * @brief setBaseUrl 设置Http视频连接地址
+     * @param baseUrl Http视频连接地址
+     */
     void setBaseUrl(const QString &baseUrl);
+    /**
+     * @brief setDlnaFileName 设置传输文件名
+     * @param fileName 传输文件名
+     */
     void setDlnaFileName(const QString &fileName);
+    /**
+     * @brief getBaseUrl 获取Http视频连接地址
+     */
     QString getBaseUrl() const;
+    /**
+     * @brief getIsStartHttpServer Http服务是否启动
+     */
     bool getIsStartHttpServer();
 private:
-    QString m_sDlnaFileName;
-    QHttpServer *m_httpServer;
-    QString m_sBaseUrl;
-    int m_nNum;
-    bool m_bStartHttpServer = false;
-    QThread *m_pThread;
+    QString m_sDlnaFileName; // http传输文件
+    QHttpServer *m_httpServer; // http服务
+    QString m_sBaseUrl; // http url
+    bool m_bStartHttpServer = false; // http 服务是否启动
+    QThread *m_pThread; // http 服务线程
 signals:
     void contSeqWriteData(std::shared_ptr<QFile> file, qint64 size,
                           QHttpResponse *resp);
     void closeServer();
 public slots:
+    /**
+     * @brief seqWriteData 请求传输文件数据
+     * @param file Http请求文件
+     * @param size Http请求文件大小
+     * @param resp Http应答
+     */
     void seqWriteData(std::shared_ptr<QFile> file, qint64 size,
                       QHttpResponse *resp);
+    /**
+     * @brief initializeHttpServer 初始化HttpServer
+     * @param port Http服务端口
+     */
     bool initializeHttpServer(int port);
 };
 

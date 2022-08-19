@@ -30,7 +30,6 @@ DlnaContentServer::DlnaContentServer(QObject *parent, int nPort) : QObject(paren
 {
     qRegisterMetaType<std::shared_ptr<QFile>>("std::shared_ptr<QFile>");
     m_httpServer = NULL;
-    m_nNum = 0;
     m_pThread = new QThread;
     moveToThread(m_pThread);
     qInfo() << "main thread:" << QThread::currentThreadId();
@@ -53,7 +52,10 @@ DlnaContentServer::~DlnaContentServer()
         m_pThread = NULL;
     }
 }
-
+/**
+ * @brief initializeHttpServer 初始化HttpServer
+ * @param port Http服务端口
+ */
 bool DlnaContentServer::initializeHttpServer(int port)
 {
     qInfo() << "Worker()" << "thread:" << QThread::currentThreadId();
@@ -78,7 +80,11 @@ bool DlnaContentServer::initializeHttpServer(int port)
     }
     return bServer;
 }
-
+/**
+ * @brief slotBaseMuteChanged 请求传输文件数据
+ * @param req Http请求
+ * @param resp Http应答
+ */
 void DlnaContentServer::requestHandler(QHttpRequest *req, QHttpResponse *resp)
 {
     streamFile(m_sDlnaFileName, "", req, resp);
@@ -86,8 +92,16 @@ void DlnaContentServer::requestHandler(QHttpRequest *req, QHttpResponse *resp)
         req->end();
     });
 }
+/**
+ * @brief streamFile 传输文件流数据
+ * @param file Http传输文件
+ * @param mime 视频格式
+ * @param req Http请求
+ * @param resp Http应答
+ */
 void DlnaContentServer::streamFile(const QString &path, const QString &mime,
                                      QHttpRequest *req, QHttpResponse *resp) {
+    if(!req || !resp) return;
     auto file = std::make_shared<QFile>(path);
 
     if (!file->open(QFile::ReadOnly)) {
@@ -112,9 +126,16 @@ void DlnaContentServer::streamFile(const QString &path, const QString &mime,
         streamFileNoRange(file, req, resp);
     }
 }
+/**
+ * @brief streamFileRange 断点续传流
+ * @param file Http传输文件
+ * @param req Http请求
+ * @param resp Http应答
+ */
 void DlnaContentServer::streamFileRange(std::shared_ptr<QFile> file,
                                           QHttpRequest *req,
                                           QHttpResponse *resp) {
+    if(!req || !resp) return;
     const auto length = file->bytesAvailable();
     const auto range = Range::fromRange(req->headers().value("range"), length);
     if (!range) {
@@ -131,10 +152,16 @@ void DlnaContentServer::streamFileRange(std::shared_ptr<QFile> file,
     file->seek(range->start);
     seqWriteData(file, range->rangeLength(), resp);
 }
-
+/**
+ * @brief streamFileNoRange 全部流
+ * @param file Http传输文件
+ * @param req Http请求
+ * @param resp Http应答
+ */
 void DlnaContentServer::streamFileNoRange(std::shared_ptr<QFile> file,
-                                            QHttpRequest *,
+                                            QHttpRequest *req,
                                             QHttpResponse *resp) {
+    if(!req || !resp) return;
     const auto length = file->bytesAvailable();
 
     resp->setHeader("Content-Length", QString::number(length));
@@ -169,9 +196,16 @@ std::optional<DlnaContentServer::Range> DlnaContentServer::Range::fromRange(
     qWarning() << "Invalid Range:" << rangeHeader;
     return std::nullopt;
 }
+/**
+ * @brief seqWriteData 请求传输文件数据
+ * @param file Http请求文件
+ * @param size Http请求文件大小
+ * @param resp Http应答
+ */
 void DlnaContentServer::seqWriteData(std::shared_ptr<QFile> file, qint64 size,
                                        QHttpResponse *resp) {
 //    qInfo() << "Worker()" << "thread:" << QThread::currentThreadId();
+    if(!resp) return;
     if (resp->isFinished()) {
         qWarning() << "Connection closed by server, so skiping data sending";
     } else {
@@ -201,7 +235,11 @@ void DlnaContentServer::seqWriteData(std::shared_ptr<QFile> file, qint64 size,
 
     resp->end();
 }
-
+/**
+ * @brief dlnaContentFeaturesHeader 填充dlna传输头
+ * @param seek 是否seek传输
+ * @param flags 文件或流标志
+ */
 QString DlnaContentServer::dlnaContentFeaturesHeader(const QString& mime, bool seek, bool flags)
 {
     QString pnFlags = dlnaOrgPnFlags(mime);
@@ -227,6 +265,9 @@ QString DlnaContentServer::dlnaContentFeaturesHeader(const QString& mime, bool s
                         dlnaOrgCiFlags);
     }
 }
+/**
+ * @brief dlnaOrgFlagsForFile dlna文件传输协议
+ */
 QString DlnaContentServer::dlnaOrgFlagsForFile()
 {
     char flags[448];
@@ -240,6 +281,9 @@ QString DlnaContentServer::dlnaOrgFlagsForFile()
     qDebug() << f;
     return f;
 }
+/**
+ * @brief dlnaOrgFlagsForStreaming dlna流传输协议
+ */
 QString DlnaContentServer::dlnaOrgFlagsForStreaming()
 {
     char flags[448];
@@ -253,28 +297,40 @@ QString DlnaContentServer::dlnaOrgFlagsForStreaming()
     qDebug() << f;
     return f;
 }
-
+/**
+ * @brief setBaseUrl 设置Http视频连接地址
+ * @param baseUrl Http视频连接地址
+ */
 void DlnaContentServer::setBaseUrl(const QString &baseUrl)
 {
     m_sBaseUrl = baseUrl;
 }
-
+/**
+ * @brief setDlnaFileName 设置传输文件名
+ * @param fileName 传输文件名
+ */
 void DlnaContentServer::setDlnaFileName(const QString &fileName)
 {
     m_sDlnaFileName = fileName;
 }
-
+/**
+ * @brief getBaseUrl 获取Http视频连接地址
+ */
 QString DlnaContentServer::getBaseUrl() const
 {
     return m_sBaseUrl;
 }
-
-
+/**
+ * @brief getIsStartHttpServer Http服务是否启动
+ */
 bool DlnaContentServer::getIsStartHttpServer()
 {
     return m_bStartHttpServer;
 }
-
+/**
+ * @brief dlnaOrgPnFlags 视频格式转换为upnp标准
+ * @param mime 视频格式
+ */
 QString DlnaContentServer::dlnaOrgPnFlags(const QString &mime)
 {
     if (mime.contains("video/x-msvideo", Qt::CaseInsensitive))
@@ -294,8 +350,13 @@ QString DlnaContentServer::dlnaOrgPnFlags(const QString &mime)
         return "DLNA.ORG_PN=MKV";
     return QString();
 }
-
+/**
+ * @brief sendEmptyResponse 发送空应答
+ * @param resp Http应答
+ * @param code Http应答码
+ */
 void DlnaContentServer::sendEmptyResponse(QHttpResponse *resp, int code) {
+    if(!resp) return;
     qDebug() << "sendEmptyResponse:" << resp << code;
     resp->setHeader("Content-Length", "0");
     resp->writeHead(code);

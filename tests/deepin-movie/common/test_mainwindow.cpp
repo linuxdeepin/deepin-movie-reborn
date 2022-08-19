@@ -46,6 +46,7 @@
 
 #include <unistd.h>
 #include <gtest/gtest.h>
+#include "cssdpsearch.h"
 
 #define protected public
 #define private public
@@ -53,6 +54,7 @@
 #undef protected
 #undef private
 #include "application.h"
+#include <DFileDialog>
 #include "src/libdmr/filefilter.h"
 #include "src/libdmr/player_engine.h"
 #include "src/widgets/toolbox_proxy.h"
@@ -99,6 +101,21 @@ TEST(PadMode, mainWindow)
     QTest::qWait(2000);
 }
 #endif
+bool check_wayland_env_stub()
+{
+    return true;
+}
+
+void stub_check_wayland_env(Stub &stub)
+{
+    stub.set(ADDR(utils, check_wayland_env), check_wayland_env_stub);
+}
+
+int fileDialog_exec_stub()
+{
+    return QFileDialog::Rejected;
+}
+
 
 TEST(GStreamer, mainWindow)
 {
@@ -152,6 +169,62 @@ TEST(MainWindow, init)
     QVERIFY(drop.isAccepted());
     QCOMPARE(drop.dropAction(), Qt::CopyAction);
     QTest::qWait(100);
+}
+
+TEST(MainWindow, openFile)
+{
+    Stub stub;
+    typedef int (*fptr)(DFileDialog *);
+    fptr A_foo = (fptr)(&DFileDialog::exec);   //获取虚函数地址
+    stub.set(A_foo, fileDialog_exec_stub);
+//    stub.set(ADDR(DFileDialog, exec), fileDialog_exec_stub);
+//    stub_fileDialog_exec(stub);
+    MainWindow *w = dApp->getMainWindow();
+
+    w->requestAction(ActionFactory::ActionKind::OpenFile);
+    QTest::keyClick(w, Qt::Key_Escape, Qt::NoModifier, 1000);
+}
+
+TEST(MainWindow, toolbox_initToolTip)
+{
+    Stub stub;
+    stub_check_wayland_env(stub);
+    MainWindow *w = dApp->getMainWindow();
+    PlayerEngine *engine =  w->engine();
+    ToolboxProxy *toolboxProxy = new ToolboxProxy(w, engine);
+    toolboxProxy->show();
+    QTest::qWait(200);
+    DButtonBoxButton *playBtn = toolboxProxy->playBtn();
+    DButtonBoxButton *nextBtn = toolboxProxy->nextBtn();
+    DButtonBoxButton *prevBtn = toolboxProxy->prevBtn();
+
+    QEvent enterEvent(QEvent::Enter);
+    QEvent leaveEvent(QEvent::Leave);
+    QMouseEvent mouseMove(QEvent::MouseMove, QPoint(0, 0), Qt::LeftButton, Qt::NoButton, Qt::NoModifier);
+    QApplication::sendEvent(playBtn, &enterEvent);
+    QApplication::sendEvent(playBtn, &mouseMove);
+    QApplication::sendEvent(playBtn, &leaveEvent);
+
+    QApplication::sendEvent(nextBtn, &enterEvent);
+    QApplication::sendEvent(nextBtn, &mouseMove);
+    QApplication::sendEvent(nextBtn, &leaveEvent);
+
+    QApplication::sendEvent(prevBtn, &enterEvent);
+    QApplication::sendEvent(prevBtn, &mouseMove);
+    QApplication::sendEvent(prevBtn, &leaveEvent);
+
+    QTest::mouseMove(playBtn, QPoint(), 200);
+    QTest::mouseClick(playBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 500); //pause
+    QTest::mouseMove(w, QPoint(200, 300), 200);
+    QTest::mouseMove(playBtn, QPoint(), 200);
+    QTest::mouseClick(playBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 500); //play
+    QTest::mouseMove(nextBtn, QPoint(), 200);
+    QTest::mouseClick(nextBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 600);
+    QTest::mouseMove(prevBtn, QPoint(), 200);
+    QTest::mouseClick(prevBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 600);
+    toolboxProxy->setButtonTooltipHide();
+    QTest::qWait(100);
+    toolboxProxy->deleteLater();
 }
 
 TEST(MainWindow, nakedstream)
@@ -537,6 +610,12 @@ TEST(MainWindow, shortCutPlay)
 
     qDebug() << __func__ << "playerEngineState:" << engine->state();
     testEventList.simulate(w);
+    QTest::qWait(200);
+    w->m_pMircastShowWidget->show();
+    QTest::qWait(200);
+    testEventList.simulate(w);
+    QTest::qWait(200);
+    w->exitMircast();
 }
 
 TEST(MainWindow, shortCutVolumeAndFrame)
@@ -842,6 +921,32 @@ TEST(MainWindow, reloadFile)
     engine->addPlayFiles(listPlayFiles);
 }
 
+TEST(MainWindow, mircastShowWidget)
+{
+    MainWindow *w = dApp->getMainWindow();
+    PlayerEngine *engine =  w->engine();
+    w->m_pMircastShowWidget->show();
+    QTest::mouseMove(w->m_pMircastShowWidget, QPoint(), 200);
+    QTest::qWait(100);
+    ExitButton *extBtn = new ExitButton(w->m_pMircastShowWidget);
+    extBtn->show();
+    QTest::qWait(100);
+    QEnterEvent enterEvent(QPoint(0, 0), extBtn->pos(), QPoint(0, 0));
+    QEvent leaveEvent(QEvent::Leave);
+    QApplication::sendEvent(extBtn, &enterEvent);
+    QApplication::sendEvent(extBtn, &leaveEvent);
+    QTest::qWait(100);
+    QTest::mouseMove(extBtn, QPoint(), 200);
+    QTest::qWait(100);
+    QTest::mouseClick(extBtn, Qt::LeftButton, Qt::NoModifier, QPoint(), 300);
+    QTest::qWait(100);
+    w->mircastSuccess("1234");
+    QTest::qWait(200);
+    w->exitMircast();
+    QTest::qWait(200);
+    w->lastOpenedPath();
+}
+
 TEST(ToolBox, playListWidget)
 {
     MainWindow *w = dApp->getMainWindow();
@@ -1083,6 +1188,156 @@ TEST(ToolBox, mainWindowEvent)
 
     //delete cme;
     //cme = nullptr;
+}
+
+TEST(ToolBox, mircastWidget)
+{
+    MainWindow* w = dApp->getMainWindow();
+    PlayerEngine *engine =  w->engine();
+    ToolboxProxy *toolbox = w->toolbox();
+    MircastWidget *mircastWgt = toolbox->getMircastWidget();
+    QByteArray data = " \
+        <root xmlns:dlna=\"urn:schemas-dlna-org:device-1-0\" xmlns=\"urn:schemas-upnp-org:device-1-0\"> \
+        <specVersion> \
+        <major>1</major> \
+        <minor>0</minor> \
+        </specVersion> \
+        <device> \
+        <deviceType>urn:schemas-upnp-org:device:MediaRenderer:1</deviceType> \
+        <UDN>uuid:3391800f-5753-4b50-b6a2-633a711bd2bf</UDN> \
+        <friendlyName>Macast(myk-PC)</friendlyName> \
+        <manufacturer>xfangfang</manufacturer> \
+        <manufacturerURL>https://github.com/xfangfang</manufacturerURL> \
+        <modelDescription>AVTransport Media Renderer</modelDescription> \
+        <modelName>Macast</modelName> \
+        <modelNumber>0.7</modelNumber> \
+        <modelURL>https://xfangfang.github.io/Macast</modelURL> \
+        <serialNumber>1024</serialNumber> \
+        <dlna:X_DLNADOC xmlns:dlna=\"urn:schemas-dlna-org:device-1-0\">DMR-1.50</dlna:X_DLNADOC> \
+        <serviceList> \
+        <service> \
+        <serviceType>urn:schemas-upnp-org:service:AVTransport:1</serviceType> \
+        <serviceId>urn:upnp-org:serviceId:AVTransport</serviceId> \
+        <controlURL>AVTransport/action1</controlURL> \
+        <eventSubURL>AVTransport/event1</eventSubURL> \
+        <SCPDURL>dlna/AVTransport.xml</SCPDURL> \
+        </service> \
+        <service> \
+        <serviceType>urn:schemas-upnp-org:service:RenderingControl:1</serviceType> \
+        <serviceId>urn:upnp-org:serviceId:RenderingControl</serviceId> \
+        <controlURL>RenderingControl/action1</controlURL> \
+        <eventSubURL>RenderingControl/event1</eventSubURL> \
+        <SCPDURL>dlna/RenderingControl.xml</SCPDURL> \
+        </service> \
+        <service> \
+        <serviceType>urn:schemas-upnp-org:service:ConnectionManager:1</serviceType> \
+        <serviceId>urn:upnp-org:serviceId:ConnectionManager</serviceId> \
+        <controlURL>ConnectionManager/action</controlURL> \
+        <eventSubURL>ConnectionManager/event</eventSubURL> \
+        <SCPDURL>dlna/ConnectionManager.xml</SCPDURL> \
+        </service> \
+        </serviceList> \
+        </device> \
+        </root>";
+    mircastWgt->togglePopup();
+    mircastWgt->show();
+    RefreButtonWidget *btn = mircastWgt->getRefreshBtn();
+    QTest::mouseClick(btn, Qt::LeftButton, Qt::NoModifier, QPoint(), 300);
+    QTest::qWait(200);
+    ItemWidget *item = mircastWgt->createListeItem("test1111111111111111111111111111111111111111111111111111", data, nullptr);
+    item->show();
+    item->setState(ItemWidget::Normal);
+    item->update();
+    QTest::qWait(100);
+    item->setState(ItemWidget::Loading);
+    item->update();
+    QTest::qWait(100);
+    item->setState(ItemWidget::Checked);
+    item->update();
+    QTest::qWait(100);
+    item->clearSelect();
+    QTest::mouseClick(item, Qt::LeftButton, Qt::NoModifier, QPoint(), 300);
+    mircastWgt->show();
+    QEvent leaveEvent(QEvent::Leave);
+    QEvent enterEvent(QEvent::Enter);
+    QApplication::sendEvent(item, &leaveEvent);
+    QApplication::sendEvent(item, &enterEvent);
+    QTest::qWait(100);
+    mircastWgt->show();
+    mircastWgt->updateMircastState(MircastWidget::SearchState::Searching);
+    QTest::qWait(100);
+    mircastWgt->updateMircastState(MircastWidget::SearchState::ListExhibit);
+    QTest::qWait(100);
+    mircastWgt->updateMircastState(MircastWidget::SearchState::NoDevices);
+    QTest::qWait(100);
+    mircastWgt->getMircastPlayState();
+    mircastWgt->seekMircast(0);
+    QTest::qWait(100);
+    mircastWgt->slotSeekMircast(0);
+    //
+    mircastWgt->setMircastState(MircastWidget::Idel);
+    mircastWgt->playNext();
+    mircastWgt->playDlnaTp();
+    mircastWgt->stopDlnaTP();
+    mircastWgt->slotReadyRead();
+    mircastWgt->pauseDlnaTp();
+    mircastWgt->stopDlnaTP();
+    mircastWgt->getPosInfoDlnaTp();
+    DlnaPositionInfo info;
+    info.nTrack  = 0;
+    info.sTrackDuration  = "00:00:00";
+    info.sTrackMetaData  = "";
+    info.sTrackURI  = "00:00:00";
+    info.sRelTime  = "00:00:00";
+    info.sAbsTime  = "00:00:00";
+    info.nRelCount  = 0;
+    info.nAbsCount  = 0;
+    mircastWgt->slotGetPositionInfo(info);
+    mircastWgt->slotExitMircast();
+    QTest::qWait(100);
+    mircastWgt->setMircastState(MircastWidget::Connecting);
+    mircastWgt->slotGetPositionInfo(info);
+    mircastWgt->slotPauseDlnaTp();
+    QTest::qWait(100);
+    mircastWgt->setMircastState(MircastWidget::Screening);
+    mircastWgt->slotGetPositionInfo(info);
+    mircastWgt->playNext();
+    mircastWgt->seekMircast(1);
+    mircastWgt->slotMircastTimeout();
+    mircastWgt->slotExitMircast();
+    mircastWgt->setMircastPlayState(MircastWidget::Play);
+    mircastWgt->slotPauseDlnaTp();
+    QTest::qWait(100);
+    mircastWgt->setMircastPlayState(MircastWidget::Pause);
+    mircastWgt->slotPauseDlnaTp();
+    QTest::qWait(100);
+}
+
+TEST(ToolBox, slotUpdateMircast)
+{
+    MainWindow *w = dApp->getMainWindow();
+    ToolboxProxy *toolboxProxy = w->toolbox();
+    PlayerEngine *engine = w->engine();
+    w->m_pMircastShowWidget->show();
+    toolboxProxy->slotUpdateMircast(MIRCAST_SUCCESSED, "test");
+    QTest::qWait(100);
+    w->m_pMircastShowWidget->show();
+    toolboxProxy->slotUpdateMircast(MIRCAST_EXIT, "test");
+    w->m_pMircastShowWidget->show();
+    QTest::qWait(100);
+    toolboxProxy->slotUpdateMircast(MIRCAST_CONNECTION_FAILED, "test");
+    w->m_pMircastShowWidget->show();
+    QTest::qWait(100);
+    toolboxProxy->slotUpdateMircast(MIRCAST_DISCONNECTIONED, "test");
+    QTest::qWait(100);
+    w->m_pMircastShowWidget->hide();
+    //投屏加载音乐
+    MircastWidget *mircastWgt = toolboxProxy->getMircastWidget();
+    mircastWgt->setMircastState(MircastWidget::Connecting);
+    mircastWgt->show();
+    engine->playByName(QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/bensound-sunny.mp3"));
+    QTest::qWait(500);
+    mircastWgt->hide();
 }
 
 TEST(ToolBox, clearPlayList)

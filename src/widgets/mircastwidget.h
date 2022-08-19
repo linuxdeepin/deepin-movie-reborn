@@ -84,6 +84,9 @@ signals:
     void connecting();
 
 private:
+    /**
+     * @brief convertDisplay 设备名称操作170个字符转换
+     */
     QString convertDisplay();
 
 private:
@@ -175,29 +178,98 @@ public:
 public:
     MircastWidget(QWidget *mainWindow = nullptr, void *pEngine = nullptr);
 //    virtual ~MircastWidget() override;
-
+    /**
+     * @brief getMircastState 获取投屏连接状态
+     */
     MircastState getMircastState();
+    /**
+     * @brief getMircastPlayState 获取投屏播放状态
+     */
     MircastPlayState getMircastPlayState();
+    /**
+     * @brief playNext 开始投屏
+     */
     void playNext();
+    /**
+     * @brief seekMircast 投屏seek
+     * @param nSec seek时间 单位秒
+     */
     void seekMircast(int nSec);
-
+    /**
+     * @brief createListeItem 投屏seek
+     * @param data 投屏设备信息
+     */
+    ItemWidget * createListeItem(QString, const QByteArray &data, const QNetworkReply*);
+    /**
+     * @brief updateMircastState 更新投屏窗口状态
+     */
+    void updateMircastState(SearchState state);
+    //ADD UT TEST BTN
+    RefreButtonWidget *getRefreshBtn() {return m_refreshBtn;}
+    void setMircastState(MircastState state) {m_mircastState = state;}
+    void setMircastPlayState(MircastPlayState state) {m_nPlayStatus = state;}
 public slots:
+    /**
+     * @brief togglePopup 工具栏投屏窗口显示与隐藏
+     */
     void togglePopup();
+    /**
+     * @brief slotReadyRead 读取投屏设备信息
+     */
     void slotReadyRead();
+    /**
+     * @brief slotExitMircast 退出投屏
+     */
     void slotExitMircast();
+    /**
+     * @brief slotExitMircast 退出投屏
+     */
     void slotSeekMircast(int);
+    /**
+     * @brief slotPauseDlnaTp 投屏视频暂停与恢复播放
+     */
     void slotPauseDlnaTp();
 
-private slots:
+public slots:
+    /**
+     * @brief slotRefreshBtnClicked 投屏窗口刷新按钮
+     */
     void slotRefreshBtnClicked();
+    /**
+     * @brief slotSearchTimeout 投屏设备搜索超时
+     */
     void slotSearchTimeout();
+    /**
+     * @brief slotMircastTimeout 投屏连接超时
+     */
     void slotMircastTimeout();
+    /**
+     * @brief slotGetPositionInfo 获取投屏播放视频信息
+     */
     void slotGetPositionInfo(DlnaPositionInfo info);
+    /**
+     * @brief slotConnectDevice 连接投屏设备
+     */
     void slotConnectDevice(ItemWidget*);
+    /**
+     * @brief slotConnectDevice 投屏播放视频暂停
+     */
     void pauseDlnaTp();
+    /**
+     * @brief slotConnectDevice 投屏播放视频播放
+     */
     void playDlnaTp();
+    /**
+     * @brief slotConnectDevice 投屏播放视频seek
+     */
     void seekDlnaTp(int nSeek);
+    /**
+     * @brief stopDlnaTP 停止投屏播放视频
+     */
     void stopDlnaTP();
+    /**
+     * @brief getPosInfoDlnaTp 获取投屏播放视频信息
+     */
     void getPosInfoDlnaTp();
 signals:
     void closeServer();
@@ -210,17 +282,18 @@ private:
      * @brief searchDevices 刷新查找设备
      */
     void searchDevices();
+
     /**
-     * @brief updateMircastState 更新投屏窗口状态
+     * @brief initializeHttpServer 初始化http Sever
      */
-    void updateMircastState(SearchState state);
-
-    void createListeItem(QString, const QByteArray &data, const QNetworkReply*);
-    //初始化http Sever
     void initializeHttpServer(int port = 9999);
-
+    /**
+     * @brief startDlnaTp 初始化http Sever
+     */
     void startDlnaTp(ItemWidget *item = nullptr);
-
+    /**
+     * @brief startDlnaTp 时间字符串装换为int秒 时间格式"00:00:00"
+     */
     int timeConversion(QString);
 
 private:
@@ -228,8 +301,6 @@ private:
     DLabel      *m_hintLabel;
     QScrollArea *m_mircastArea;
     bool        m_bIsToggling;
-//    MircastDevidesModel *m_mircastModel;
-//    QListWidget *m_listWidget;
     CSSDPSearch *m_search;
     RefreButtonWidget *m_refreshBtn;
     MircastState m_mircastState;
