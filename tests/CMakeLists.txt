@@ -11,4 +11,4 @@ set(CMAKE_AUTOUIC ON)
 
 add_subdirectory(deepin-movie)
 add_subdirectory(ut_dmr-test)
-#add_subdirectory(deepin-movie-platform)
+add_subdirectory(deepin-movie-platform)
