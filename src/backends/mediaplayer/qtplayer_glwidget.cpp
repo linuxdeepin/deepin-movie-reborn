@@ -839,7 +839,8 @@ namespace dmr {
     {
         if(!m_pVideoTex){
             QFileInfo fi("/dev/mwv206_0");
-            if (fi.exists()) {
+            QFileInfo jmfi("/dev/jmgpu");
+            if (fi.exists() || jmfi.exists()) {
                 m_pVideoTex = new QOpenGLTexture(image, QOpenGLTexture::DontGenerateMipMaps);
             } else {
                 m_pVideoTex = new QOpenGLTexture(image, QOpenGLTexture::GenerateMipMaps);
