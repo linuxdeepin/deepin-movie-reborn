@@ -120,7 +120,8 @@ Settings::Settings()
     }
 
     QFileInfo fi("/dev/mwv206_0");      //景嘉微显卡默认不勾选预览
-    if (fi.exists() && utils::check_wayland_env()) {
+    QFileInfo jmfi("/dev/jmgpu");
+    if ((fi.exists() || jmfi.exists()) && utils::check_wayland_env()) {
         setInternalOption("mousepreview", false);
     }
 }

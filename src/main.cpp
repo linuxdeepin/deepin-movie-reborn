@@ -149,7 +149,8 @@ int main(int argc, char *argv[])
     DWIDGET_INIT_RESOURCE();
 #endif
     QFileInfo fi("/dev/mwv206_0");
-    if (fi.exists() && !CompositingManager::isMpvExists()) {
+    QFileInfo jmfi("/dev/jmgpu");
+    if ((fi.exists() || jmfi.exists()) && !CompositingManager::isMpvExists()) {
         qputenv("QT_XCB_GL_INTEGRATION", "xcb_egl");
     }
     /**
