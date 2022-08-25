@@ -54,6 +54,7 @@
 #include <QX11Info>
 #include <QLibrary>
 #include <va/va_x11.h>
+#include <dmr_settings.h>
 
 namespace dmr {
 using namespace mpv::qt;
@@ -261,7 +262,9 @@ void MpvProxy::initSetting()
     while (vecItor.hasNext()) {
         my_command(m_handle, vecItor.peekNext());
         vecItor.next();
-    }
+    }    
+    int nVolume = Settings::get().internalOption("global_volume").toInt();
+    changeVolume(nVolume);
 }
 
 void MpvProxy::updateRoundClip(bool roundClip)
