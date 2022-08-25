@@ -103,8 +103,8 @@ void Platform_VolumeSlider::initVolume()
 
         changeVolume(nVolume);
         changeMuteState(bMute);
-
-        setMute(bMute);
+        if(bMute)
+            setMute(bMute);
     });
 }
 
