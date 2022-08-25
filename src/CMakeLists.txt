@@ -86,18 +86,18 @@ set(TARGET_LIBS X11 Xtst PkgConfig::Xcb Qt5::Widgets Qt5::X11Extras Qt5::Network
 target_link_libraries(${CMD_NAME} ${TARGET_LIBS} ${Other_LIBRARIES})
 
 
-install(TARGETS ${CMD_NAME} DESTINATION bin)
+install(TARGETS ${CMD_NAME} DESTINATION ${CMAKE_INSTALL_BINDIR})
 install(DIRECTORY ${PROJECT_SOURCE_DIR}/translations
-    DESTINATION share/${CMD_NAME}
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/${CMD_NAME}
     FILES_MATCHING PATTERN "*.qm")
 install(FILES ${PROJECT_SOURCE_DIR}/deepin-movie.desktop
-    DESTINATION share/applications)
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
 install(FILES ${CMAKE_SOURCE_DIR}/src/libdmr/com.deepin.deepin-movie.gschema.xml
-    DESTINATION /usr/share/glib-2.0/schemas)
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/glib-2.0/schemas)
 install(FILES ${PROJECT_SOURCE_DIR}/assets/resources/icons/logo-big.svg
-    DESTINATION share/icons/hicolor/scalable/apps
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/scalable/apps
     RENAME deepin-movie.svg)
-install(DIRECTORY ${CMAKE_SOURCE_DIR}/assets/deepin-movie DESTINATION /usr/share/deepin-manual/manual-assets/application/)
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/assets/deepin-movie DESTINATION ${CMAKE_INSTALL_DATADIR}/deepin-manual/manual-assets/application/)
 
 # 加速编译优化参数
 if (CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "mips64")
