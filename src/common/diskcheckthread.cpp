@@ -7,7 +7,7 @@
 
 #include <sys/ioctl.h>
 #include <fcntl.h>
-#include </usr/include/linux/cdrom.h>
+#include <linux/cdrom.h>
 #include <QFile>
 #include <unistd.h>
 
