@@ -767,7 +767,7 @@ bool PlayerEngine::addPlayFile(const QUrl &url)
     if (!isPlayableFile(realUrl))
         return false;
 
-    _playlist->append({realUrl});
+    _playlist->append(realUrl);
     return true;
 }
 
