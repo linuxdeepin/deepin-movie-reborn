@@ -32,6 +32,7 @@
  * files in the program, then also delete it here.
  */
 #include "player_widget.h"
+#include "filefilter.h"
 #include <player_engine.h>
 
 namespace dmr {
@@ -58,12 +59,9 @@ PlayerEngine &PlayerWidget::engine()
 
 void PlayerWidget::play(const QUrl &url)
 {
-    QUrl realUrl = url;;
+    QUrl realUrl;
+    realUrl = FileFilter::instance()->fileTransfer(url.toString());
 
-    if(QFileInfo(url.path()).isFile())
-    {
-        realUrl = QUrl::fromLocalFile(url.path());
-    }
     if (!realUrl.isValid())
         return;
 
