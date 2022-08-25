@@ -100,8 +100,8 @@ void VolumeSlider::initVolume()
 
         changeVolume(nVolume);
         changeMuteState(bMute);
-
-        setMute(bMute);
+        if(bMute)
+            setMute(bMute);
     });
 }
 
