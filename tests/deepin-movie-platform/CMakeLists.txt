@@ -23,7 +23,6 @@ project(deepin-movie-platform-test)
 
 # 查找Qt相关的库链接
 find_package(Qt5 REQUIRED ${QtModule})
-find_package(gui-private)
 
 
 # 包含源码文件夹
