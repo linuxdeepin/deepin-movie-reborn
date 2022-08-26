@@ -61,12 +61,6 @@ void VolumeButton::setMute(bool bMute)
 void VolumeButton::setButtonEnable(bool bFlag)
 {
     QIcon icon = QIcon::fromTheme("dcc_volumedisable");
-    //投屏时音量按钮不可使用
-    QVariant pro = property("mircast");
-    if(!pro.isNull()) {
-        setEnabled(pro.toInt() != 0);
-        return;
-    }
     if (bFlag) {
         setEnabled(true);
         changeStyle();

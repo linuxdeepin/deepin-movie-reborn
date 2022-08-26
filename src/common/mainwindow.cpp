@@ -3209,11 +3209,6 @@ void MainWindow::exitMircast()
     m_pMircastShowWidget->hide();
 }
 
-void MainWindow::updateMircastContextMenu(bool mircast)
-{
-
-}
-
 void MainWindow::checkErrorMpvLogsChanged(const QString sPrefix, const QString sText)
 {
     QString sErrorMessage(sText);

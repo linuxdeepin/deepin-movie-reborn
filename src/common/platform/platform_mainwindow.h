@@ -526,7 +526,6 @@ private:
      */
     void mircastSuccess(QString name);
     void exitMircast();
-    void updateMircastContextMenu(bool mircast);
 
 private:
     Platform_MessageWindow *m_pPopupWid;                     ///截图提示窗口

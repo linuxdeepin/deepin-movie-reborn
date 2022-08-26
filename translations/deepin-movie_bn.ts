@@ -2,10 +2,30 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="bn">
 <context>
-    <name>Presenter</name>
+    <name>MircastShowWidget</name>
     <message>
-        <source>Volume: %1%</source>
-        <translation type="vanished">শব্দ: %1%</translation>
+        <source>Projecting... 
+Please do not exit the Movie app during the process.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Display device</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>MircastWidget</name>
+    <message>
+        <source>Project to</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Searching for devices...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No Mircast display devices were found. Please connect the device and your computer to the same WLAN network.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -491,16 +511,8 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>No device found</source>
-        <translation type="vanished">কোনো ডিভাইস পাওয়া যায়নি</translation>
-    </message>
-    <message>
         <source>Open folder</source>
         <translation>ফোল্ডার খুলুন</translation>
-    </message>
-    <message>
-        <source>All videos (%1)</source>
-        <translation type="vanished">সকল ভিডিওসমূহ(%1)</translation>
     </message>
     <message>
         <source>Stereo</source>
@@ -547,10 +559,6 @@
         <translation>গতি: %1x</translation>
     </message>
     <message>
-        <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</source>
-        <translation>সাবটাইটেল (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</translation>
-    </message>
-    <message>
         <source>View</source>
         <translation>দেখুন</translation>
     </message>
@@ -587,10 +595,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Open File</source>
-        <translation type="vanished">ফাইল খুলুন</translation>
-    </message>
-    <message>
         <source>Film screenshot</source>
         <translation>ফিল্ম স্ক্রিনশট</translation>
     </message>
@@ -609,10 +613,6 @@
     <message>
         <source>Reading DVD files...</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>All videos (%2 %1)</source>
-        <translation type="obsolete">সকল ভিডিওসমূহ(%1) {2 %1)?}</translation>
     </message>
     <message>
         <source>4K video may be stuck</source>
@@ -667,11 +667,16 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Audio (%1)</source>
+        <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</source>
+        <comment>All (*)</comment>
+        <translation type="unfinished">সাবটাইটেল (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</translation>
+    </message>
+    <message>
+        <source>Connection failed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Video (%1)</source>
+        <source>Mircast disconnected</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -801,6 +806,275 @@
     </message>
 </context>
 <context>
+    <name>dmr::Platform_MainWindow</name>
+    <message>
+        <source>Load successfully</source>
+        <translation type="unfinished">সফলভাবে লোড হয়েছে</translation>
+    </message>
+    <message>
+        <source>Load failed</source>
+        <translation type="unfinished">লোড করতে বার্থ হয়েছে</translation>
+    </message>
+    <message>
+        <source>Cannot play the disc</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Parse failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open folder</source>
+        <translation type="unfinished">ফোল্ডার খুলুন</translation>
+    </message>
+    <message>
+        <source>All (*)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Speed: %1x</source>
+        <translation type="unfinished">গতি: %1x</translation>
+    </message>
+    <message>
+        <source>Stereo</source>
+        <translation type="unfinished">স্টেরিও</translation>
+    </message>
+    <message>
+        <source>Left channel</source>
+        <translation type="unfinished">বামদিকের চ্যানেল</translation>
+    </message>
+    <message>
+        <source>Right channel</source>
+        <translation type="unfinished">ডানদিকের চ্যানেল</translation>
+    </message>
+    <message>
+        <source>Track: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to adjust the subtitle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Subtitle %1: %2s</source>
+        <translation type="unfinished">সাবটাইটেল %1: %2s</translation>
+    </message>
+    <message>
+        <source>delayed</source>
+        <translation type="unfinished">বিলম্ব করা হয়েছে</translation>
+    </message>
+    <message>
+        <source>advanced</source>
+        <translation type="unfinished">অ্যাডভান্সড</translation>
+    </message>
+    <message>
+        <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</source>
+        <comment>All (*)</comment>
+        <translation type="unfinished">সাবটাইটেল (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</translation>
+    </message>
+    <message>
+        <source>View</source>
+        <translation type="unfinished">দেখুন</translation>
+    </message>
+    <message>
+        <source>Film screenshot</source>
+        <translation type="unfinished">ফিল্ম স্ক্রিনশট</translation>
+    </message>
+    <message>
+        <source>Saved to</source>
+        <translation type="unfinished">এখানে সংরক্ষণ করুন</translation>
+    </message>
+    <message>
+        <source>The screenshot is saved</source>
+        <translation type="unfinished">স্ক্রিনশটটি সংরক্ষণ করা হয়েছে</translation>
+    </message>
+    <message>
+        <source>Failed to save the screenshot</source>
+        <translation type="unfinished">স্ক্রিনশট সংরক্ষণ করতে বার্থ হয়েছে</translation>
+    </message>
+    <message>
+        <source>Taking the screenshots, please wait...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reading DVD files...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No matching online subtitles</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>4K video may be stuck</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OK</source>
+        <translation type="unfinished">ঠিক আছে</translation>
+    </message>
+    <message>
+        <source>Order play</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shuffle play</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Single play</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Single loop</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>List loop</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Buffering...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mute</source>
+        <translation type="unfinished">নীরব</translation>
+    </message>
+    <message>
+        <source>Volume: %1%</source>
+        <translation type="unfinished">শব্দ: %1%</translation>
+    </message>
+    <message>
+        <source>Cannot open file or stream</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please insert a CD/DVD</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No video file found</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please load the video first</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please exit smart dock</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The CD/DVD has been ejected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The action is not supported in this video</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid file: %1</source>
+        <translation type="unfinished">অবধৈ ফাইল: %1</translation>
+    </message>
+    <message>
+        <source>Connection failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mircast disconnected</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>dmr::Platform_PlayItemWidget</name>
+    <message>
+        <source>The file does not exist</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>dmr::Platform_PlaylistWidget</name>
+    <message>
+        <source>Playlist</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Empty</source>
+        <translation type="unfinished">খালি করুন</translation>
+    </message>
+    <message>
+        <source>%1 videos</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>dmr::Platform_ToolboxProxy</name>
+    <message>
+        <source>Play/Pause</source>
+        <translation type="unfinished">চালান/থামুন</translation>
+    </message>
+    <message>
+        <source>Previous</source>
+        <translation type="unfinished">পূর্ববর্তী</translation>
+    </message>
+    <message>
+        <source>Next</source>
+        <translation type="unfinished">পরবর্তী</translation>
+    </message>
+    <message>
+        <source>Fullscreen</source>
+        <translation type="unfinished">সম্পূর্ণ পর্দা</translation>
+    </message>
+    <message>
+        <source>Mircast</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Playlist</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>play</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>prev</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>next</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>fs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Exit fullscreen</source>
+        <translation type="unfinished">সম্পূর্ণ পর্দা থেকে বের হয়ে যান</translation>
+    </message>
+    <message>
+        <source>Pause</source>
+        <translation type="unfinished">থামুন</translation>
+    </message>
+    <message>
+        <source>Play</source>
+        <translation type="unfinished">চালু করুন</translation>
+    </message>
+    <message>
+        <source>sub</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>dmr::PlayItemWidget</name>
     <message>
         <source>The file does not exist</source>
@@ -876,10 +1150,6 @@
         <translation>পরবর্তী</translation>
     </message>
     <message>
-        <source>Subtitles</source>
-        <translation type="vanished">সাবটাইটেল সমূহ</translation>
-    </message>
-    <message>
         <source>Playlist</source>
         <translation>চলার তালিকা</translation>
     </message>
@@ -920,11 +1190,11 @@
         <translation>থামুন</translation>
     </message>
     <message>
-        <source>Mute</source>
-        <translation type="obsolete">নীরব</translation>
+        <source>sub</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>sub</source>
+        <source>Mircast</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

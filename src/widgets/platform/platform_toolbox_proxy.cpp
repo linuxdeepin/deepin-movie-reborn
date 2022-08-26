@@ -1199,7 +1199,7 @@ void Platform_ToolboxProxy::setup()
     };
     QString attrs[] = {
         tr("play"), tr("prev"), tr("next"),
-        tr("fs"), tr("mir"), tr("list")
+        tr("fs"), "mir", tr("list")
     };
 
     for (unsigned int i = 0; i < sizeof(btns) / sizeof(btns[0]); i++) {
@@ -2060,11 +2060,14 @@ void Platform_ToolboxProxy::slotUpdateMircast(int state, QString msg)
     emit sigMircastState(state, msg);
     if (state == 0) {
         m_pVolBtn->setButtonEnable(false);
-        m_pVolBtn->setProperty("mircast", state);
         m_pFullScreenBtn->setEnabled(false);
     } else {
-        m_pVolBtn->setButtonEnable(true);
-        m_pVolBtn->setProperty("mircast", state);
+        bool bRawFormat = m_pEngine->getplaylist()->currentInfo().mi.isRawFormat();
+        if(bRawFormat && !m_pEngine->currFileIsAudio()) {
+            m_pVolBtn->setButtonEnable(false);
+        } else {
+            m_pVolBtn->setButtonEnable(true);
+        }
         m_pFullScreenBtn->setEnabled(true);
     }
 }
@@ -2296,7 +2299,7 @@ void Platform_ToolboxProxy::buttonEnter()
     ToolButton *btn = qobject_cast<ToolButton *>(sender());
     QString id = btn->property("TipId").toString();
 
-    if (id == tr("sub") || id == tr("fs") || id == tr("list") || id == tr("mir")) {
+    if (id == tr("sub") || id == tr("fs") || id == tr("list") || id == "mir") {
         updateToolTipTheme(btn);
         btn->showToolTip();
     }
@@ -2309,7 +2312,7 @@ void Platform_ToolboxProxy::buttonLeave()
     ToolButton *btn = qobject_cast<ToolButton *>(sender());
     QString id = btn->property("TipId").toString();
 
-    if (id == tr("sub") || id == tr("fs") || id == tr("list") || id == tr("mir")) {
+    if (id == tr("sub") || id == tr("fs") || id == tr("list") || id == "mir") {
         btn->hideToolTip();
     }
 }

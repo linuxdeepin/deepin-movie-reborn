@@ -621,6 +621,7 @@ int ListWidget::count()
 void ListWidget::clear()
 {
     m_currentWidget = nullptr;
+    m_lastSelectedWidget = nullptr;
     foreach (ItemWidget *item, m_items) {
         m_items.removeOne(item);
         disconnect(item, &ItemWidget::selected, this, &ListWidget::slotSelectItem);
