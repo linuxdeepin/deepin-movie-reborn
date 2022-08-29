@@ -3220,8 +3220,9 @@ void Platform_MainWindow::mircastSuccess(QString name)
 
 void Platform_MainWindow::exitMircast()
 {
-    if (m_pEngine->state() == PlayerEngine::Paused)
+    if (m_pEngine->state() == PlayerEngine::Playing)
         m_pEngine->pauseResume();
+    m_pEngine->seekAbsolute(m_pToolbox->getSlider()->value());
     updateActionsState();
     m_pToolbox->getMircast()->slotExitMircast();
     m_pMircastShowWidget->hide();

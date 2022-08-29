@@ -137,6 +137,7 @@ public:
     RefreButtonWidget(QIcon refreIcon, QIcon loadingIcon, QWidget *parent = nullptr);
 
     void refershTimeout();
+    void refershStart();
 
 protected:
     void paintEvent(QPaintEvent *pEvent) override;

@@ -195,6 +195,7 @@ void MircastWidget::togglePopup()
         m_bIsToggling = true;
         show();
         raise();
+        m_refreshBtn->refershStart();
         m_bIsToggling = false;
     }
 }
@@ -280,7 +281,9 @@ void MircastWidget::slotGetPositionInfo(DlnaPositionInfo info)
     if (duration > 0 && absTime > 0) {
         emit mircastState(0, m_devicesList.at(0));
         m_mircastState = MircastState::Screening;
-        m_listWidget->currentItemWidget()->setState(ItemWidget::Checked);
+        ItemWidget *item = m_listWidget->currentItemWidget();
+        if(item)
+            item->setState(ItemWidget::Checked);
         m_attempts = 0;
     } else {
         if (duration > 0)
@@ -473,7 +476,7 @@ void MircastWidget::startDlnaTp(ItemWidget *item)
         dmr::PlayerEngine *pEngine = static_cast<dmr::PlayerEngine *>(m_pEngine);
         if(pEngine && pEngine->playlist().currentInfo().url.isLocalFile()) {
             m_dlnaContentServer->setDlnaFileName(pEngine->playlist().currentInfo().url.toLocalFile());
-            m_sLocalUrl = m_dlnaContentServer->getBaseUrl()  + QFileInfo(pEngine->playlist().currentInfo().url.toLocalFile()).fileName();
+            m_sLocalUrl = m_dlnaContentServer->getBaseUrl()  + QFileInfo(pEngine->playlist().currentInfo().url.toLocalFile()).fileName().toLatin1();
         } else {
             m_sLocalUrl = pEngine->playlist().currentInfo().url.toString();
         }
@@ -575,6 +578,13 @@ void RefreButtonWidget::refershTimeout()
     m_rotate = 0.0;
 }
 
+void RefreButtonWidget::refershStart()
+{
+    m_refreState = false;
+    m_rotateTime.start(40);
+    emit buttonClicked();
+}
+
 void RefreButtonWidget::paintEvent(QPaintEvent *pEvent)
 {
     Q_UNUSED(pEvent);
@@ -595,9 +605,7 @@ void RefreButtonWidget::paintEvent(QPaintEvent *pEvent)
 
 void RefreButtonWidget::mouseReleaseEvent(QMouseEvent *pEvent)
 {
-    m_refreState = false;
-    m_rotateTime.start(40);
-    emit buttonClicked();
+    refershStart();
 }
 
 ListWidget::ListWidget(QWidget *parent)
