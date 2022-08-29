@@ -12,6 +12,10 @@ Please do not exit the Movie app during the process.</source>
         <source>Display device</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Exit Mircast</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>MircastWidget</name>
@@ -684,19 +688,19 @@ Please do not exit the Movie app during the process.</source>
     <name>dmr::MovieInfo</name>
     <message>
         <source>%1G</source>
-        <translation type="vanished">%1G</translation>
+        <translation>%1G</translation>
     </message>
     <message>
         <source>%1M</source>
-        <translation type="vanished">%1M</translation>
+        <translation>%1M</translation>
     </message>
     <message>
         <source>%1K</source>
-        <translation type="vanished">%1K</translation>
+        <translation>%1K</translation>
     </message>
     <message>
         <source>%1</source>
-        <translation type="vanished">%1</translation>
+        <translation>%1</translation>
     </message>
 </context>
 <context>

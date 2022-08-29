@@ -1,16 +1,20 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="it">
+<?xml version="1.0" ?><!DOCTYPE TS><TS version="2.1" language="it">
 <context>
     <name>MircastShowWidget</name>
     <message>
-        <location filename="../src/widgets/mircastshowwidget.cpp" line="91"/>
-        <source>Projecting... 
-Please do not exit the Movie app during the process.</source>
-        <translation type="unfinished"></translation>
+        <location filename="../src/widgets/mircastshowwidget.cpp" line="75"/>
+        <source>Exit Mircast</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../src/widgets/mircastshowwidget.cpp" line="111"/>
+        <location filename="../src/widgets/mircastshowwidget.cpp" line="92"/>
+        <source>Projecting... 
+Please do not exit the Movie app during the process.</source>
+        <translation>Proiezione...
+Non uscire dall&apos;app durante il processo.</translation>
+    </message>
+    <message>
+        <location filename="../src/widgets/mircastshowwidget.cpp" line="112"/>
         <source>Display device</source>
         <translation>Dispositivo di visualizzazione</translation>
     </message>
@@ -23,12 +27,12 @@ Please do not exit the Movie app during the process.</source>
         <translation>Proietta su</translation>
     </message>
     <message>
-        <location filename="../src/widgets/mircastwidget.cpp" line="350"/>
+        <location filename="../src/widgets/mircastwidget.cpp" line="353"/>
         <source>Searching for devices...</source>
         <translation>Ricerca dispositivi...</translation>
     </message>
     <message>
-        <location filename="../src/widgets/mircastwidget.cpp" line="359"/>
+        <location filename="../src/widgets/mircastwidget.cpp" line="362"/>
         <source>No Mircast display devices were found. Please connect the device and your computer to the same WLAN network.</source>
         <translation>Non sono stati trovati dispositivi di visualizzazione Mircast. Collegare il dispositivo e il computer alla stessa rete WLAN.</translation>
     </message>
@@ -37,12 +41,12 @@ Please do not exit the Movie app during the process.</source>
     <name>QObject</name>
     <message>
         <location filename="../src/backends/mpv/mpv_proxy.cpp" line="484"/>
+        <location filename="../src/common/dmr_settings.cpp" line="220"/>
+        <location filename="../src/common/volumemonitoring.cpp" line="84"/>
         <location filename="../src/main.cpp" line="209"/>
         <location filename="../src/main.cpp" line="247"/>
-        <location filename="../src/widgets/volumeslider.cpp" line="128"/>
         <location filename="../src/widgets/platform/platform_volumeslider.cpp" line="131"/>
-        <location filename="../src/common/volumemonitoring.cpp" line="84"/>
-        <location filename="../src/common/dmr_settings.cpp" line="220"/>
+        <location filename="../src/widgets/volumeslider.cpp" line="128"/>
         <source>Movie</source>
         <translation>Video</translation>
     </message>
@@ -53,20 +57,20 @@ Please do not exit the Movie app during the process.</source>
 Localizzazione italiana a cura di Carofano Massimo Antonio.</translation>
     </message>
     <message>
-        <location filename="../src/common/shortcut_manager.cpp" line="214"/>
         <location filename="../src/common/settings_translation.cpp" line="87"/>
+        <location filename="../src/common/shortcut_manager.cpp" line="214"/>
         <source>Settings</source>
         <translation>Impostazioni</translation>
     </message>
     <message>
-        <location filename="../src/common/shortcut_manager.cpp" line="217"/>
         <location filename="../src/common/settings_translation.cpp" line="85"/>
+        <location filename="../src/common/shortcut_manager.cpp" line="217"/>
         <source>Help</source>
         <translation>Aiuto</translation>
     </message>
     <message>
-        <location filename="../src/common/shortcut_manager.cpp" line="222"/>
         <location filename="../src/common/settings_translation.cpp" line="86"/>
+        <location filename="../src/common/shortcut_manager.cpp" line="222"/>
         <source>Display shortcuts</source>
         <translation>Visualizza scorciatoie</translation>
     </message>
@@ -318,32 +322,32 @@ Localizzazione italiana a cura di Carofano Massimo Antonio.</translation>
         <translation>Decodifica software</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="228"/>
         <location filename="../src/common/mainwindow.cpp" line="231"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="228"/>
         <source>You don&apos;t have permission to operate this folder</source>
         <translation>Non hai i permessi per utilizzare questa cartella</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="230"/>
         <location filename="../src/common/mainwindow.cpp" line="233"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="230"/>
         <source>OK</source>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="246"/>
         <location filename="../src/common/mainwindow.cpp" line="249"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="246"/>
         <source>Invalid folder</source>
         <translation>Cartella non valida</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="266"/>
         <location filename="../src/common/mainwindow.cpp" line="269"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="266"/>
         <source>Open folder</source>
         <translation>Apri cartella</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2930"/>
         <location filename="../src/common/mainwindow.cpp" line="2899"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="2930"/>
         <source>Network disconnected</source>
         <translation>Rete disconnessa</translation>
     </message>
@@ -684,7 +688,7 @@ Localizzazione italiana a cura di Carofano Massimo Antonio.</translation>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="880"/>
         <location filename="../src/common/mainwindow.cpp" line="2383"/>
-        <location filename="../src/common/mainwindow.cpp" line="4252"/>
+        <location filename="../src/common/mainwindow.cpp" line="4253"/>
         <source>Load successfully</source>
         <translation>Caricamento riuscito</translation>
     </message>
@@ -692,7 +696,7 @@ Localizzazione italiana a cura di Carofano Massimo Antonio.</translation>
         <location filename="../src/common/mainwindow.cpp" line="880"/>
         <location filename="../src/common/mainwindow.cpp" line="2383"/>
         <location filename="../src/common/mainwindow.cpp" line="2386"/>
-        <location filename="../src/common/mainwindow.cpp" line="4252"/>
+        <location filename="../src/common/mainwindow.cpp" line="4253"/>
         <source>Load failed</source>
         <translation>Caricamento fallito</translation>
     </message>
@@ -704,7 +708,7 @@ Localizzazione italiana a cura di Carofano Massimo Antonio.</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="1740"/>
-        <location filename="../src/common/mainwindow.cpp" line="3229"/>
+        <location filename="../src/common/mainwindow.cpp" line="3230"/>
         <source>Parse failed</source>
         <translation>Parse fallito</translation>
     </message>
@@ -720,7 +724,7 @@ Localizzazione italiana a cura di Carofano Massimo Antonio.</translation>
         <location filename="../src/common/mainwindow.cpp" line="2144"/>
         <location filename="../src/common/mainwindow.cpp" line="2152"/>
         <location filename="../src/common/mainwindow.cpp" line="2358"/>
-        <location filename="../src/common/mainwindow.cpp" line="4436"/>
+        <location filename="../src/common/mainwindow.cpp" line="4437"/>
         <source>Speed: %1x</source>
         <translation>Velocità: %1x</translation>
     </message>
@@ -806,7 +810,7 @@ Localizzazione italiana a cura di Carofano Massimo Antonio.</translation>
         <translation>Lettura file DVD in corso...</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="4548"/>
+        <location filename="../src/common/mainwindow.cpp" line="4549"/>
         <source>Invalid file: %1</source>
         <translation>File non valido: %1</translation>
     </message>
@@ -833,31 +837,31 @@ Localizzazione italiana a cura di Carofano Massimo Antonio.</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2955"/>
-        <location filename="../src/common/mainwindow.cpp" line="3881"/>
+        <location filename="../src/common/mainwindow.cpp" line="3882"/>
         <source>Order play</source>
         <translation>Ordine di play</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2958"/>
-        <location filename="../src/common/mainwindow.cpp" line="3884"/>
+        <location filename="../src/common/mainwindow.cpp" line="3885"/>
         <source>Shuffle play</source>
         <translation>Riproduzione casuale</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2961"/>
-        <location filename="../src/common/mainwindow.cpp" line="3887"/>
+        <location filename="../src/common/mainwindow.cpp" line="3888"/>
         <source>Single play</source>
         <translation>Riproduzione singola</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2964"/>
-        <location filename="../src/common/mainwindow.cpp" line="3890"/>
+        <location filename="../src/common/mainwindow.cpp" line="3891"/>
         <source>Single loop</source>
         <translation>Ripetizione singola</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2967"/>
-        <location filename="../src/common/mainwindow.cpp" line="3893"/>
+        <location filename="../src/common/mainwindow.cpp" line="3894"/>
         <source>List loop</source>
         <translation>Ripetizione di Gruppo</translation>
     </message>
@@ -880,28 +884,28 @@ Localizzazione italiana a cura di Carofano Massimo Antonio.</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3189"/>
-        <location filename="../src/common/mainwindow.cpp" line="3220"/>
+        <location filename="../src/common/mainwindow.cpp" line="3221"/>
         <source>Cannot open file or stream</source>
         <translation>Impossibile aprire file o stream</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="4537"/>
+        <location filename="../src/common/mainwindow.cpp" line="4538"/>
         <source>The action is not supported in this video</source>
         <translation>L&apos;azione non è supportata in questo video</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="4572"/>
+        <location filename="../src/common/mainwindow.cpp" line="4573"/>
         <source>Connection failed</source>
         <translation>Connessione fallita</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="4579"/>
+        <location filename="../src/common/mainwindow.cpp" line="4580"/>
         <source>Mircast disconnected</source>
         <translation>Mircast disconnesso</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3237"/>
-        <location filename="../src/common/mainwindow.cpp" line="3242"/>
+        <location filename="../src/common/mainwindow.cpp" line="3238"/>
+        <location filename="../src/common/mainwindow.cpp" line="3243"/>
         <source>Invalid file</source>
         <translation>File invalido</translation>
     </message>
@@ -912,28 +916,28 @@ Localizzazione italiana a cura di Carofano Massimo Antonio.</translation>
         <translation>Sottotitoli (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3244"/>
+        <location filename="../src/common/mainwindow.cpp" line="3245"/>
         <source>Please insert a CD/DVD</source>
         <translation>Inserisci un CD/DVD</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3249"/>
+        <location filename="../src/common/mainwindow.cpp" line="3250"/>
         <source>No video file found</source>
         <translation>Nessun file video trovato</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3872"/>
+        <location filename="../src/common/mainwindow.cpp" line="3873"/>
         <source>Please load the video first</source>
         <translation>Carica prima il video</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="3995"/>
-        <location filename="../src/common/mainwindow.cpp" line="4003"/>
+        <location filename="../src/common/mainwindow.cpp" line="3996"/>
+        <location filename="../src/common/mainwindow.cpp" line="4004"/>
         <source>Please exit smart dock</source>
         <translation>Please exit smart dock</translation>
     </message>
     <message>
-        <location filename="../src/common/mainwindow.cpp" line="4297"/>
+        <location filename="../src/common/mainwindow.cpp" line="4298"/>
         <source>The CD/DVD has been ejected</source>
         <translation>Il CD/DVD è stato rimosso</translation>
     </message>
@@ -941,20 +945,24 @@ Localizzazione italiana a cura di Carofano Massimo Antonio.</translation>
 <context>
     <name>dmr::MovieInfo</name>
     <message>
+        <location filename="../src/libdmr/playlist_model.h" line="135"/>
         <source>%1G</source>
-        <translation type="vanished">%1G</translation>
+        <translation>%1G</translation>
     </message>
     <message>
+        <location filename="../src/libdmr/playlist_model.h" line="137"/>
         <source>%1M</source>
-        <translation type="vanished">%1M</translation>
+        <translation>%1M</translation>
     </message>
     <message>
+        <location filename="../src/libdmr/playlist_model.h" line="139"/>
         <source>%1K</source>
-        <translation type="vanished">%1K</translation>
+        <translation>%1K</translation>
     </message>
     <message>
+        <location filename="../src/libdmr/playlist_model.h" line="141"/>
         <source>%1</source>
-        <translation type="vanished">%1</translation>
+        <translation>%1</translation>
     </message>
 </context>
 <context>
@@ -1095,7 +1103,7 @@ Localizzazione italiana a cura di Carofano Massimo Antonio.</translation>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="901"/>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2425"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4213"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4214"/>
         <source>Load successfully</source>
         <translation>Caricamento riuscito</translation>
     </message>
@@ -1103,7 +1111,7 @@ Localizzazione italiana a cura di Carofano Massimo Antonio.</translation>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="901"/>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2425"/>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2428"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4213"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4214"/>
         <source>Load failed</source>
         <translation>Caricamento fallito</translation>
     </message>
@@ -1115,7 +1123,7 @@ Localizzazione italiana a cura di Carofano Massimo Antonio.</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="1800"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3247"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3248"/>
         <source>Parse failed</source>
         <translation>Parse fallito</translation>
     </message>
@@ -1137,7 +1145,7 @@ Localizzazione italiana a cura di Carofano Massimo Antonio.</translation>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2186"/>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2194"/>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2400"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4397"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4398"/>
         <source>Speed: %1x</source>
         <translation>Velocità: %1x</translation>
     </message>
@@ -1245,31 +1253,31 @@ Localizzazione italiana a cura di Carofano Massimo Antonio.</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2995"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3899"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3900"/>
         <source>Order play</source>
         <translation>Ordine di play</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2998"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3902"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3903"/>
         <source>Shuffle play</source>
         <translation>Riproduzione casuale</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3001"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3905"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3906"/>
         <source>Single play</source>
         <translation>Riproduzione singola</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3004"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3908"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3909"/>
         <source>Single loop</source>
         <translation>Ripetizione singola</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3007"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3911"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3912"/>
         <source>List loop</source>
         <translation>Ripetizione di Gruppo</translation>
     </message>
@@ -1291,59 +1299,59 @@ Localizzazione italiana a cura di Carofano Massimo Antonio.</translation>
         <translation>Volume: %1%</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3238"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3239"/>
         <source>Cannot open file or stream</source>
         <translation>Impossibile aprire file o stream</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3255"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3260"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3256"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3261"/>
         <source>Invalid file</source>
         <translation>File invalido</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3262"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3263"/>
         <source>Please insert a CD/DVD</source>
         <translation>Inserisci un CD/DVD</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3267"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3268"/>
         <source>No video file found</source>
         <translation>Nessun file video trovato</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3890"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="3891"/>
         <source>Please load the video first</source>
         <translation>Carica prima il video</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4010"/>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4017"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4011"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4018"/>
         <source>Please exit smart dock</source>
         <translation>Please exit smart dock</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4258"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4259"/>
         <source>The CD/DVD has been ejected</source>
         <translation>Il CD/DVD è stato rimosso</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4498"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4499"/>
         <source>The action is not supported in this video</source>
         <translation>L&apos;azione non è supportata in questo video</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4509"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4510"/>
         <source>Invalid file: %1</source>
         <translation>File non valido: %1</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4533"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4534"/>
         <source>Connection failed</source>
         <translation>Connessione fallita</translation>
     </message>
     <message>
-        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4540"/>
+        <location filename="../src/common/platform/platform_mainwindow.cpp" line="4541"/>
         <source>Mircast disconnected</source>
         <translation>Mircast disconnesso</translation>
     </message>
@@ -1400,7 +1408,7 @@ Localizzazione italiana a cura di Carofano Massimo Antonio.</translation>
     <message>
         <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="1198"/>
         <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="2054"/>
-        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="2498"/>
+        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="2501"/>
         <source>Fullscreen</source>
         <translation>Schermo intero</translation>
     </message>
@@ -1411,7 +1419,7 @@ Localizzazione italiana a cura di Carofano Massimo Antonio.</translation>
     </message>
     <message>
         <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="1198"/>
-        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="2515"/>
+        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="2518"/>
         <source>Playlist</source>
         <translation>Playlist</translation>
     </message>
@@ -1432,15 +1440,15 @@ Localizzazione italiana a cura di Carofano Massimo Antonio.</translation>
     </message>
     <message>
         <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="1202"/>
-        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="2299"/>
-        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="2312"/>
+        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="2302"/>
+        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="2315"/>
         <source>fs</source>
         <translation>fs</translation>
     </message>
     <message>
         <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="1202"/>
-        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="2299"/>
-        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="2312"/>
+        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="2302"/>
+        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="2315"/>
         <source>list</source>
         <translation>lista</translation>
     </message>
@@ -1450,18 +1458,18 @@ Localizzazione italiana a cura di Carofano Massimo Antonio.</translation>
         <translation>Esci dalla modalità fullscreen</translation>
     </message>
     <message>
-        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="2133"/>
+        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="2136"/>
         <source>Pause</source>
         <translation>Pausa</translation>
     </message>
     <message>
-        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="2193"/>
+        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="2196"/>
         <source>Play</source>
         <translation>Play</translation>
     </message>
     <message>
-        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="2299"/>
-        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="2312"/>
+        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="2302"/>
+        <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="2315"/>
         <source>sub</source>
         <translation>sottotitoli</translation>
     </message>
@@ -1555,13 +1563,13 @@ Localizzazione italiana a cura di Carofano Massimo Antonio.</translation>
     </message>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="1269"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2619"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2622"/>
         <source>Previous</source>
         <translation>Precedente</translation>
     </message>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="1269"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2636"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2639"/>
         <source>Next</source>
         <translation>Avanti</translation>
     </message>
@@ -1569,13 +1577,13 @@ Localizzazione italiana a cura di Carofano Massimo Antonio.</translation>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="1270"/>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="2168"/>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="2170"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2653"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2656"/>
         <source>Fullscreen</source>
         <translation>Schermo intero</translation>
     </message>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="1270"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2669"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2672"/>
         <source>Playlist</source>
         <translation>Playlist</translation>
     </message>
@@ -1601,15 +1609,15 @@ Localizzazione italiana a cura di Carofano Massimo Antonio.</translation>
     </message>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="1274"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2427"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2440"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2430"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2443"/>
         <source>fs</source>
         <translation>fs</translation>
     </message>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="1274"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2427"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2440"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2430"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2443"/>
         <source>list</source>
         <translation>lista</translation>
     </message>
@@ -1620,21 +1628,21 @@ Localizzazione italiana a cura di Carofano Massimo Antonio.</translation>
         <translation>Esci dalla modalità fullscreen</translation>
     </message>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2251"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2253"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2254"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2256"/>
         <source>Pause</source>
         <translation>Pausa</translation>
     </message>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2316"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2318"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2604"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2319"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2321"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2607"/>
         <source>Play</source>
         <translation>Play</translation>
     </message>
     <message>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2427"/>
-        <location filename="../src/widgets/toolbox_proxy.cpp" line="2440"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2430"/>
+        <location filename="../src/widgets/toolbox_proxy.cpp" line="2443"/>
         <source>sub</source>
         <translation>sottotitoli</translation>
     </message>
