@@ -414,20 +414,27 @@ mpv_handle *MpvProxy::mpv_init()
             qInfo() << "修改音视频同步模式";
             my_set_property(m_handle, "video-sync", "desync");
         }
-        my_set_property(m_handle, "vo", "vdpau,gpu,x11");
-        my_set_property(m_handle, "ao", "alsa");
-        m_sInitVo = "vdpau,gpu,x11";
+        if (!jmfi.exists()) { //景嘉微9200显卡不用再次设置参数
+              my_set_property(m_handle, "vo", "vdpau,gpu,x11");
+              my_set_property(m_handle, "ao", "alsa");
+              m_sInitVo = "vdpau,gpu,x11";
+        }
 #elif defined(_loongarch) || defined(__loongarch__) || defined(__loongarch64)
         if (!CompositingManager::get().hascard()) {
             qInfo() << "修改音视频同步模式";
             my_set_property(m_handle, "video-sync", "desync");
         }
-        my_set_property(m_handle, "vo", "gpu,x11");
-        m_sInitVo = "gpu,x11";
+        if (!jmfi.exists()) { //景嘉微9200显卡不用再次设置参数
+            my_set_property(m_handle, "vo", "gpu,x11");
+            m_sInitVo = "gpu,x11";
+        }
+
 #elif defined (__sw_64__)
         //Synchronously modify the video output of the SW platform vdpau(powered by zhangfl)
-        my_set_property(m_handle, "vo", "vdpau,gpu,x11");
-        m_sInitVo = "vdpau,gpu,x11";
+        if (!jmfi.exists()) { //景嘉微9200显卡不用再次设置参数
+           my_set_property(m_handle, "vo", "vdpau,gpu,x11");
+           m_sInitVo = "vdpau,gpu,x11";
+        }
 #elif defined (__aarch64__)
         if (!fi.exists() && !jmfi.exists()) { //2.1.1景嘉微
             my_set_property(m_handle, "vo", "gpu,xv,x11");
