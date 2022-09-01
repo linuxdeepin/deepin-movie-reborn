@@ -657,21 +657,11 @@ public:
         QDBusReply<QString> reply = m_pWMDBus->call("CurrentWM");
         m_bIsWM = reply.value().contains("deepin wm");
         connect(m_pWMDBus, SIGNAL(WMChanged(QString)), this, SLOT(slotWMChanged(QString)));
-
-        auto *l = new QVBoxLayout;
-        l->setContentsMargins(0, 0, 0, 0);
-
-        _thumb = new DFrame(this);
         if (m_bIsWM) {
-            DStyle::setFrameRadius(_thumb, 8);
+            DStyle::setFrameRadius(this, 8);
         } else {
-            DStyle::setFrameRadius(_thumb, 0);
+            DStyle::setFrameRadius(this, 0);
         }
-
-        //_thumb->setFixedSize(ThumbnailWorker::thumbSize());
-        l->addWidget(_thumb/*,Qt::AlignTop*/);
-        setLayout(l);
-//        winId(); // force backed window to be created
         m_shadow_effect = new QGraphicsDropShadowEffect(this);
     }
 
@@ -705,12 +695,8 @@ public:
         QImage image;
         QPalette palette;
         image = rounded.toImage();
-        palette.setBrush(_thumb->backgroundRole(),
-                         QBrush(image.scaled(// 缩放背景图.
-                                    QSize(_thumb->width(), _thumb->height()),
-                                    Qt::IgnoreAspectRatio,
-                                    Qt::SmoothTransformation)));
-        _thumb->setPalette(palette);
+        m_thumbImg = image;
+        update();
     }
 
     void updateWithPreview(const QPoint &pos)
@@ -724,10 +710,10 @@ public slots:
     {
         if (msg.contains("deepin metacity")) {
             m_bIsWM = false;
-            DStyle::setFrameRadius(_thumb, 0);
+            DStyle::setFrameRadius(this, 0);
         } else {
             m_bIsWM = true;
-            DStyle::setFrameRadius(_thumb, 8);
+            DStyle::setFrameRadius(this, 8);
         }
     }
 
@@ -740,14 +726,20 @@ protected:
         m_shadow_effect->setColor(Qt::gray);
         m_shadow_effect->setBlurRadius(8);
         setGraphicsEffect(m_shadow_effect);
+        QPainter painter(this);
+        QPainterPath path;
+        QRect rt = rect().marginsRemoved(QMargins(1, 1, 1, 1));
         if (!m_bIsWM)
         {
-            QPainter painter(this);
-            QPainterPath path;
             path.addRect(rect());
             painter.fillPath(path, QColor(230, 230, 230));
+        } else {
+            path.addRoundRect(rt, 20, 20);
+            painter.setRenderHints(QPainter::Antialiasing, true);
         }
-
+        painter.setClipPath(path);
+        if(!m_thumbImg.isNull())
+            painter.drawImage(rt, m_thumbImg, QRect(0, 0, m_thumbImg.width(), m_thumbImg.height()));
         QWidget::paintEvent(e);
     }
     void leaveEvent(QEvent *e) override
@@ -767,17 +759,16 @@ private:
         pixmap.setDevicePixelRatio(dpr);
         pixmap = pixmap.scaled(size * dpr, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
         pixmap.setDevicePixelRatio(dpr);
-        _thumb->setFixedSize(size);
         int offect = 2;
         if (!m_bIsWM) {
             offect = 0;
         }
-        this->setFixedWidth(_thumb->width() + offect);
-        this->setFixedHeight(_thumb->height() + offect);
+        this->setFixedWidth(size.width() + offect);
+        this->setFixedHeight(size.height() + offect);
     }
 
 private:
-    DFrame *_thumb {nullptr};
+    QImage m_thumbImg;
     int m_thumbnailFixed = 106;
     QGraphicsDropShadowEffect *m_shadow_effect{nullptr};
     QDBusInterface *m_pWMDBus{nullptr};
