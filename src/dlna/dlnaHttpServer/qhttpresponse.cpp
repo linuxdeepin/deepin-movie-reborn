@@ -178,7 +178,7 @@ void QHttpResponse::write(const QByteArray &data)
 
 bool QHttpResponse::flush()
 {
-    m_connection->flush();
+    return m_connection->flush();
 }
 
 void QHttpResponse::waitForBytesWritten(int msecs)
