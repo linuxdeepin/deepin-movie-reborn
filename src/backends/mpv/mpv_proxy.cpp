@@ -263,8 +263,10 @@ void MpvProxy::initSetting()
         my_command(m_handle, vecItor.peekNext());
         vecItor.next();
     }    
+#ifndef _LIBDMR_
     if(!m_mapWaitSet.contains("volume")) //如果声音未初始化值设置初始值为10
         changeVolume(10);
+#endif
 }
 
 void MpvProxy::updateRoundClip(bool roundClip)
