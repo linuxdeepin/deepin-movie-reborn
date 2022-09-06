@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 project(libdmr VERSION 0.1.0)
 
 set(CMAKE_AUTOMOC ON)
