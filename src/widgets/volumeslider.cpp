@@ -297,6 +297,7 @@ void VolumeSlider::volumeChanged(int nVolume)
 
     if (m_nVolume > 0 && m_bIsMute) {      //音量改变时改变静音状态
         changeMuteState(false);
+        setMute(false);
     }
 
     refreshIcon();
