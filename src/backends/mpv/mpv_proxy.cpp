@@ -426,7 +426,7 @@ mpv_handle *MpvProxy::mpv_init()
             qInfo() << "修改音视频同步模式";
             my_set_property(m_handle, "video-sync", "desync");
         }
-        if (!jmfi.exists()) { //景嘉微9200显卡不用再次设置参数
+        if (!fi.exists() && !jmfi.exists()) { //景嘉微9200显卡不用再次设置参数
             my_set_property(m_handle, "vo", "gpu,x11");
             m_sInitVo = "gpu,x11";
         }
