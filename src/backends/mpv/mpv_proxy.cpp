@@ -391,8 +391,10 @@ mpv_handle *MpvProxy::mpv_init()
             qInfo() << "修改音视频同步模式";
             my_set_property(m_handle, "video-sync", "desync");
         }
-        my_set_property(m_handle, "vo", "gpu,x11");
-        m_sInitVo = "gpu,x11";
+        if (!fi.exists() && !jmfi.exists()) {
+            my_set_property(m_handle, "vo", "gpu,x11");
+            m_sInitVo = "gpu,x11";
+        }
 #elif defined (__sw_64__)
         //Synchronously modify the video output of the SW platform vdpau(powered by zhangfl)
         my_set_property(m_handle, "vo", "vdpau,gpu,x11");
