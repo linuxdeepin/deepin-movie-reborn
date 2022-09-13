@@ -4,18 +4,19 @@
     <message>
         <location filename="../src/widgets/mircastshowwidget.cpp" line="75"/>
         <source>Exit Mircast</source>
-        <translation type="unfinished"/>
+        <translation>Dil nga Mircast</translation>
     </message>
     <message>
         <location filename="../src/widgets/mircastshowwidget.cpp" line="92"/>
         <source>Projecting... 
 Please do not exit the Movie app during the process.</source>
-        <translation type="unfinished"/>
+        <translation>Po projektohet… 
+Ju lutemi, mos e mbyllni aplikacionin Film gjatë procesit.</translation>
     </message>
     <message>
         <location filename="../src/widgets/mircastshowwidget.cpp" line="112"/>
         <source>Display device</source>
-        <translation type="unfinished"/>
+        <translation>Pajisje shfaqjeje</translation>
     </message>
 </context>
 <context>
@@ -23,17 +24,17 @@ Please do not exit the Movie app during the process.</source>
     <message>
         <location filename="../src/widgets/mircastwidget.cpp" line="95"/>
         <source>Project to</source>
-        <translation type="unfinished"/>
+        <translation>Projektoje në</translation>
     </message>
     <message>
         <location filename="../src/widgets/mircastwidget.cpp" line="353"/>
         <source>Searching for devices...</source>
-        <translation type="unfinished"/>
+        <translation>Po kërkohet për pajisje…</translation>
     </message>
     <message>
         <location filename="../src/widgets/mircastwidget.cpp" line="362"/>
         <source>No Mircast display devices were found. Please connect the device and your computer to the same WLAN network.</source>
-        <translation type="unfinished"/>
+        <translation>S’u gjetën pajisje shfaqjeje Mircast. Ju lutemi, lidheni pajisjen dhe kompjuterin tuaj në të njëjtin rrjet WLAN.</translation>
     </message>
 </context>
 <context>
@@ -1183,13 +1184,13 @@ Please do not exit the Movie app during the process.</source>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2364"/>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2381"/>
         <source>delayed</source>
-        <translation>e vonuar</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2364"/>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2381"/>
         <source>advanced</source>
-        <translation>e avancuar</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2409"/>
@@ -1222,7 +1223,7 @@ Please do not exit the Movie app during the process.</source>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2567"/>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2694"/>
         <source>Failed to save the screenshot</source>
-        <translation>S’u arrit të ruhet foto ekrani</translation>
+        <translation>S’u arrit të ruhej foto ekrani</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2651"/>
@@ -1253,13 +1254,13 @@ Please do not exit the Movie app during the process.</source>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2995"/>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3900"/>
         <source>Order play</source>
-        <translation>Luaji të renditura</translation>
+        <translation>Luajtje sipas radhës</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2998"/>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3903"/>
         <source>Shuffle play</source>
-        <translation>Luaji kuturu</translation>
+        <translation>Luajtje kuturu</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3001"/>
@@ -1401,7 +1402,7 @@ Please do not exit the Movie app during the process.</source>
     <message>
         <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="1197"/>
         <source>Next</source>
-        <translation>Pasuesi</translation>
+        <translation>Pasuesja</translation>
     </message>
     <message>
         <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="1198"/>
@@ -1413,7 +1414,7 @@ Please do not exit the Movie app during the process.</source>
     <message>
         <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="1198"/>
         <source>Mircast</source>
-        <translation type="unfinished"/>
+        <translation>Mircast</translation>
     </message>
     <message>
         <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="1198"/>
@@ -1588,7 +1589,7 @@ Please do not exit the Movie app during the process.</source>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="1270"/>
         <source>Mircast</source>
-        <translation type="unfinished"/>
+        <translation>Mircast</translation>
     </message>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="1273"/>

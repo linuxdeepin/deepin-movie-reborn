@@ -4,13 +4,14 @@
     <message>
         <location filename="../src/widgets/mircastshowwidget.cpp" line="75"/>
         <source>Exit Mircast</source>
-        <translation type="unfinished"/>
+        <translation>Miracast afsluiten</translation>
     </message>
     <message>
         <location filename="../src/widgets/mircastshowwidget.cpp" line="92"/>
         <source>Projecting... 
 Please do not exit the Movie app during the process.</source>
-        <translation type="unfinished"/>
+        <translation>Bezig met projecteren…
+Sluit het programma niet af.</translation>
     </message>
     <message>
         <location filename="../src/widgets/mircastshowwidget.cpp" line="112"/>

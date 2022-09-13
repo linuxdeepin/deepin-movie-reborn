@@ -4,7 +4,7 @@
     <message>
         <location filename="../src/widgets/mircastshowwidget.cpp" line="75"/>
         <source>Exit Mircast</source>
-        <translation type="unfinished"/>
+        <translation>Mircast beenden</translation>
     </message>
     <message>
         <location filename="../src/widgets/mircastshowwidget.cpp" line="92"/>
@@ -15,7 +15,7 @@ Please do not exit the Movie app during the process.</source>
     <message>
         <location filename="../src/widgets/mircastshowwidget.cpp" line="112"/>
         <source>Display device</source>
-        <translation type="unfinished"/>
+        <translation>Anzeigegerät</translation>
     </message>
 </context>
 <context>
@@ -28,12 +28,12 @@ Please do not exit the Movie app during the process.</source>
     <message>
         <location filename="../src/widgets/mircastwidget.cpp" line="353"/>
         <source>Searching for devices...</source>
-        <translation type="unfinished"/>
+        <translation>Suche nach Geräten ...</translation>
     </message>
     <message>
         <location filename="../src/widgets/mircastwidget.cpp" line="362"/>
         <source>No Mircast display devices were found. Please connect the device and your computer to the same WLAN network.</source>
-        <translation type="unfinished"/>
+        <translation>Es wurden keine Mircast-Anzeigegeräte gefunden. Bitte verbinden Sie das Gerät und Ihren Computer mit demselben WLAN-Netzwerk.</translation>
     </message>
 </context>
 <context>
@@ -750,7 +750,7 @@ Please do not exit the Movie app during the process.</source>
         <location filename="../src/common/mainwindow.cpp" line="2316"/>
         <location filename="../src/common/mainwindow.cpp" line="2333"/>
         <source>Unable to adjust the subtitle</source>
-        <translation type="unfinished"/>
+        <translation>Untertitel können nicht angepasst werden</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2321"/>
@@ -821,7 +821,7 @@ Please do not exit the Movie app during the process.</source>
         <location filename="../src/common/mainwindow.cpp" line="1784"/>
         <location filename="../src/common/mainwindow.cpp" line="1821"/>
         <source>All (*)</source>
-        <translation type="unfinished"/>
+        <translation>Alle (*)</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="2922"/>
@@ -889,7 +889,7 @@ Please do not exit the Movie app during the process.</source>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="4538"/>
         <source>The action is not supported in this video</source>
-        <translation type="unfinished"/>
+        <translation>Die Aktion wird in diesem Video nicht unterstützt</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="4573"/>
@@ -899,7 +899,7 @@ Please do not exit the Movie app during the process.</source>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="4580"/>
         <source>Mircast disconnected</source>
-        <translation type="unfinished"/>
+        <translation>Mircast getrennt</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3238"/>
@@ -1134,7 +1134,7 @@ Please do not exit the Movie app during the process.</source>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="1836"/>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="1865"/>
         <source>All (*)</source>
-        <translation type="unfinished"/>
+        <translation>Alle (*)</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2162"/>
@@ -1171,7 +1171,7 @@ Please do not exit the Movie app during the process.</source>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2358"/>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2375"/>
         <source>Unable to adjust the subtitle</source>
-        <translation type="unfinished"/>
+        <translation>Untertitel können nicht angepasst werden</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2363"/>
@@ -1336,7 +1336,7 @@ Please do not exit the Movie app during the process.</source>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="4499"/>
         <source>The action is not supported in this video</source>
-        <translation type="unfinished"/>
+        <translation>Die Aktion wird in diesem Video nicht unterstützt</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="4510"/>
@@ -1351,7 +1351,7 @@ Please do not exit the Movie app during the process.</source>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="4541"/>
         <source>Mircast disconnected</source>
-        <translation type="unfinished"/>
+        <translation>Mircast getrennt</translation>
     </message>
 </context>
 <context>
@@ -1413,7 +1413,7 @@ Please do not exit the Movie app during the process.</source>
     <message>
         <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="1198"/>
         <source>Mircast</source>
-        <translation type="unfinished"/>
+        <translation>Mircast</translation>
     </message>
     <message>
         <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="1198"/>
@@ -1588,7 +1588,7 @@ Please do not exit the Movie app during the process.</source>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="1270"/>
         <source>Mircast</source>
-        <translation type="unfinished"/>
+        <translation>Mircast</translation>
     </message>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="1273"/>
