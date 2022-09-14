@@ -4,18 +4,19 @@
     <message>
         <location filename="../src/widgets/mircastshowwidget.cpp" line="75"/>
         <source>Exit Mircast</source>
-        <translation type="unfinished"/>
+        <translation>Salir de Miracast</translation>
     </message>
     <message>
         <location filename="../src/widgets/mircastshowwidget.cpp" line="92"/>
         <source>Projecting... 
 Please do not exit the Movie app during the process.</source>
-        <translation type="unfinished"/>
+        <translation>Proyectando...
+No salga de la aplicación durante el proceso.</translation>
     </message>
     <message>
         <location filename="../src/widgets/mircastshowwidget.cpp" line="112"/>
         <source>Display device</source>
-        <translation type="unfinished"/>
+        <translation>Mostrar dispositivo</translation>
     </message>
 </context>
 <context>
@@ -23,17 +24,17 @@ Please do not exit the Movie app during the process.</source>
     <message>
         <location filename="../src/widgets/mircastwidget.cpp" line="95"/>
         <source>Project to</source>
-        <translation type="unfinished"/>
+        <translation>Proyectar a</translation>
     </message>
     <message>
         <location filename="../src/widgets/mircastwidget.cpp" line="353"/>
         <source>Searching for devices...</source>
-        <translation type="unfinished"/>
+        <translation>Buscando dispositivos... </translation>
     </message>
     <message>
         <location filename="../src/widgets/mircastwidget.cpp" line="362"/>
         <source>No Mircast display devices were found. Please connect the device and your computer to the same WLAN network.</source>
-        <translation type="unfinished"/>
+        <translation>No se encontraron dispositivos Miracast. Por favor conecte el dispositivo y su computadora a la misma red WLAN</translation>
     </message>
 </context>
 <context>
@@ -899,7 +900,7 @@ Please do not exit the Movie app during the process.</source>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="4580"/>
         <source>Mircast disconnected</source>
-        <translation type="unfinished"/>
+        <translation>Miracast desconectado</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3238"/>
@@ -1210,7 +1211,7 @@ Please do not exit the Movie app during the process.</source>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2542"/>
         <source>Saved to</source>
-        <translation>Guardado a</translation>
+        <translation>Guardar en</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2563"/>
@@ -1242,7 +1243,7 @@ Please do not exit the Movie app during the process.</source>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2953"/>
         <source>4K video may be stuck</source>
-        <translation>El video 4K estaría ralentizado</translation>
+        <translation>El video 4K podría estar ralentizado</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2954"/>
@@ -1253,7 +1254,7 @@ Please do not exit the Movie app during the process.</source>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2995"/>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3900"/>
         <source>Order play</source>
-        <translation>Reproducción en orden</translation>
+        <translation>Reproducción ordenada</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="2998"/>
@@ -1320,13 +1321,13 @@ Please do not exit the Movie app during the process.</source>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="3891"/>
         <source>Please load the video first</source>
-        <translation>Por favor cargue el video primero</translation>
+        <translation>Por favor primero cargue el video</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="4011"/>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="4018"/>
         <source>Please exit smart dock</source>
-        <translation>Por favor, salga de dock inteligente</translation>
+        <translation>Por favor salga de dock inteligente</translation>
     </message>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="4259"/>
@@ -1351,7 +1352,7 @@ Please do not exit the Movie app during the process.</source>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="4541"/>
         <source>Mircast disconnected</source>
-        <translation type="unfinished"/>
+        <translation>Miracast desconectado</translation>
     </message>
 </context>
 <context>
@@ -1413,7 +1414,7 @@ Please do not exit the Movie app during the process.</source>
     <message>
         <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="1198"/>
         <source>Mircast</source>
-        <translation type="unfinished"/>
+        <translation>Miracast</translation>
     </message>
     <message>
         <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="1198"/>
@@ -1429,7 +1430,7 @@ Please do not exit the Movie app during the process.</source>
     <message>
         <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="1201"/>
         <source>prev</source>
-        <translation>prev</translation>
+        <translation>anterior</translation>
     </message>
     <message>
         <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="1201"/>
@@ -1588,7 +1589,7 @@ Please do not exit the Movie app during the process.</source>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="1270"/>
         <source>Mircast</source>
-        <translation type="unfinished"/>
+        <translation>Miracast</translation>
     </message>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="1273"/>

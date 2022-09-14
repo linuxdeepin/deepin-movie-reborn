@@ -4,7 +4,7 @@
     <message>
         <location filename="../src/widgets/mircastshowwidget.cpp" line="75"/>
         <source>Exit Mircast</source>
-        <translation type="unfinished"/>
+        <translation>Esci da Mircast</translation>
     </message>
     <message>
         <location filename="../src/widgets/mircastshowwidget.cpp" line="92"/>

@@ -4,18 +4,19 @@
     <message>
         <location filename="../src/widgets/mircastshowwidget.cpp" line="75"/>
         <source>Exit Mircast</source>
-        <translation type="unfinished"/>
+        <translation>Surt del Miracast</translation>
     </message>
     <message>
         <location filename="../src/widgets/mircastshowwidget.cpp" line="92"/>
         <source>Projecting... 
 Please do not exit the Movie app during the process.</source>
-        <translation type="unfinished"/>
+        <translation>Es projecta...
+No sortiu de l&apos;aplicació Pel·lícula durant el procés.</translation>
     </message>
     <message>
         <location filename="../src/widgets/mircastshowwidget.cpp" line="112"/>
         <source>Display device</source>
-        <translation type="unfinished"/>
+        <translation>Dispositiu de visualització</translation>
     </message>
 </context>
 <context>
@@ -23,17 +24,17 @@ Please do not exit the Movie app during the process.</source>
     <message>
         <location filename="../src/widgets/mircastwidget.cpp" line="95"/>
         <source>Project to</source>
-        <translation type="unfinished"/>
+        <translation>Projecta a</translation>
     </message>
     <message>
         <location filename="../src/widgets/mircastwidget.cpp" line="353"/>
         <source>Searching for devices...</source>
-        <translation type="unfinished"/>
+        <translation>Se cerquen dispositius...</translation>
     </message>
     <message>
         <location filename="../src/widgets/mircastwidget.cpp" line="362"/>
         <source>No Mircast display devices were found. Please connect the device and your computer to the same WLAN network.</source>
-        <translation type="unfinished"/>
+        <translation>No s&apos;ha trobat cap dispositiu de visualització de Mircast. Connecteu el dispositiu i l&apos;ordinador a la mateixa xarxa WLAN.</translation>
     </message>
 </context>
 <context>
@@ -899,7 +900,7 @@ Please do not exit the Movie app during the process.</source>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="4580"/>
         <source>Mircast disconnected</source>
-        <translation type="unfinished"/>
+        <translation>Mircast desconnectat</translation>
     </message>
     <message>
         <location filename="../src/common/mainwindow.cpp" line="3238"/>
@@ -1351,7 +1352,7 @@ Please do not exit the Movie app during the process.</source>
     <message>
         <location filename="../src/common/platform/platform_mainwindow.cpp" line="4541"/>
         <source>Mircast disconnected</source>
-        <translation type="unfinished"/>
+        <translation>Mircast desconnectat</translation>
     </message>
 </context>
 <context>
@@ -1413,7 +1414,7 @@ Please do not exit the Movie app during the process.</source>
     <message>
         <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="1198"/>
         <source>Mircast</source>
-        <translation type="unfinished"/>
+        <translation>Mircast</translation>
     </message>
     <message>
         <location filename="../src/widgets/platform/platform_toolbox_proxy.cpp" line="1198"/>
@@ -1588,7 +1589,7 @@ Please do not exit the Movie app during the process.</source>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="1270"/>
         <source>Mircast</source>
-        <translation type="unfinished"/>
+        <translation>Mircast</translation>
     </message>
     <message>
         <location filename="../src/widgets/toolbox_proxy.cpp" line="1273"/>
