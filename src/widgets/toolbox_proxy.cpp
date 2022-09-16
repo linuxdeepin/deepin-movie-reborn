@@ -1230,7 +1230,7 @@ void ToolboxProxy::setup()
         };
         QString hints[] = {
             tr("Play/Pause"), tr("Previous"), tr("Next"),
-            tr("Fullscreen"), tr("Mircast"), tr("Playlist")
+            tr("Fullscreen"), tr("Miracast"), tr("Playlist")
         };
         QString attrs[] = {
             tr("play"), tr("prev"), tr("next"),

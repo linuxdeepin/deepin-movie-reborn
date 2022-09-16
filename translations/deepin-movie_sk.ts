@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="sk">
+<TS version="2.0" language="sk">
 <context>
     <name>MircastShowWidget</name>
     <message>
@@ -13,7 +13,7 @@ Please do not exit the Movie app during the process.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Exit Mircast</source>
+        <source>Exit Miracast</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -28,7 +28,7 @@ Please do not exit the Movie app during the process.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>No Mircast display devices were found. Please connect the device and your computer to the same WLAN network.</source>
+        <source>No Miracast display devices were found. Please connect the device and your computer to the same WLAN network.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -680,7 +680,7 @@ Please do not exit the Movie app during the process.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Mircast disconnected</source>
+        <source>Miracast disconnected</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -989,7 +989,7 @@ Please do not exit the Movie app during the process.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Mircast disconnected</source>
+        <source>Miracast disconnected</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1034,10 +1034,6 @@ Please do not exit the Movie app during the process.</source>
         <translation type="unfinished">Celá obrazovka</translation>
     </message>
     <message>
-        <source>Mircast</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Playlist</source>
         <translation type="unfinished">Zoznam skladieb</translation>
     </message>
@@ -1075,6 +1071,10 @@ Please do not exit the Movie app during the process.</source>
     </message>
     <message>
         <source>sub</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Miracast</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1198,7 +1198,7 @@ Please do not exit the Movie app during the process.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Mircast</source>
+        <source>Miracast</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

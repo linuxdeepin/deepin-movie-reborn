@@ -260,7 +260,7 @@ void MircastWidget::slotGetPositionInfo(DlnaPositionInfo info)
     } else {
         if (duration > 0)
             emit mircastState(0, m_devicesList.at(0));
-        qWarning() << "mircast failed!";
+        qWarning() << "miracast failed!";
         if (m_attempts >= MAXMIRCAST) {
             qWarning() << "attempts time out! try next.";
             m_attempts = 0;
@@ -278,7 +278,7 @@ void MircastWidget::slotGetPositionInfo(DlnaPositionInfo info)
                 m_mircastState = Connecting;
             }
         } else {
-            qInfo() << "mircast failed! curret attempts:" << m_attempts << "Max:" << MAXMIRCAST;
+            qInfo() << "miracast failed! curret attempts:" << m_attempts << "Max:" << MAXMIRCAST;
             m_attempts++;
             m_mircastState = Connecting;
         }
@@ -331,7 +331,7 @@ void MircastWidget::updateMircastState(MircastWidget::SearchState state)
         m_mircastArea->show();
         break;
     case NoDevices:
-        m_hintLabel->setText(tr("No Mircast display devices were found. Please connect the device and your computer to the same WLAN network."));
+        m_hintLabel->setText(tr("No Miracast display devices were found. Please connect the device and your computer to the same WLAN network."));
         m_mircastArea->hide();
         break;
     }
