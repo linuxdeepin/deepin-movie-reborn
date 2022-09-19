@@ -137,6 +137,10 @@ QString VolumeSlider::readSinkInputPath()
 
 void VolumeSlider::setMute(bool muted)
 {
+    if (m_bIsMute == muted || m_nVolume == 0) {
+        return;
+    }
+
     QString sinkInputPath = readSinkInputPath();
 
     if (!sinkInputPath.isEmpty()) {
