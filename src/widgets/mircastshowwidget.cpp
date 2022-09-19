@@ -44,7 +44,7 @@ MircastShowWidget::MircastShowWidget(QWidget *parent)
     m_pBgSvgItem->setPos((m_pScene->width() - DEFAULT_BGWIDTH) / 2, (m_pScene->height() - DEFAULT_BGHEIGHT) / 2);
 
     ExitButton *exitBtn = new ExitButton();
-    exitBtn->setToolTip(tr("Exit Mircast"));
+    exitBtn->setToolTip(tr("Exit Miracast"));
     exitBtn->move((m_pScene->width() - exitBtn->width()) / 2, (m_pScene->height() - exitBtn->height()) / 2);
     exitBtn->show();
     connect(exitBtn, &ExitButton::exitMircast, this, &MircastShowWidget::exitMircast);
