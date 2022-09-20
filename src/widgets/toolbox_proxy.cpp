@@ -2141,14 +2141,18 @@ void ToolboxProxy::slotUpdateMircast(int state, QString msg)
         m_pVolBtn->setButtonEnable(false);
         m_pFullScreenBtn->setEnabled(false);
     } else {
-        bool bRawFormat = m_pEngine->getplaylist()->currentInfo().mi.isRawFormat();
-        if(bRawFormat && !m_pEngine->currFileIsAudio()) {
-            m_pVolBtn->setButtonEnable(false);
-        } else {
+        if(m_pEngine->getplaylist()->items().size() == 0) {
             m_pVolBtn->setButtonEnable(true);
+        } else {
+            bool bRawFormat = m_pEngine->getplaylist()->currentInfo().mi.isRawFormat();
+            if(bRawFormat && !m_pEngine->currFileIsAudio()) {
+                m_pVolBtn->setButtonEnable(false);
+            } else {
+                m_pVolBtn->setButtonEnable(true);
+            }
         }
-        m_pFullScreenBtn->setEnabled(true);
     }
+    m_pFullScreenBtn->setEnabled(true);
 }
 
 void ToolboxProxy::updatePlayState()
