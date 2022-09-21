@@ -1310,6 +1310,15 @@ TEST(ToolBox, slotUpdateMircast)
     engine->playByName(QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/bensound-sunny.mp3"));
     QTest::qWait(500);
     mircastWgt->hide();
+
+    //投屏清空列表
+    mircastWgt->setMircastState(MircastWidget::Screening);
+    mircastWgt->show();
+    engine->playByName(QUrl::fromLocalFile("/data/source/deepin-movie-reborn/movie/demo.mp4"));
+    toolboxProxy->slotUpdateMircast(MIRCAST_SUCCESSED, "test");
+    QTest::qWait(500);
+    mircastWgt->hide();
+    engine->clearPlaylist();
 }
 
 TEST(ToolBox, clearPlayList)
