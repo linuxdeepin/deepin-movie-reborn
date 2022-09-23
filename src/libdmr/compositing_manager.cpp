@@ -176,6 +176,8 @@ CompositingManager::CompositingManager()
                 _composited = false;
             } else {
                 _composited = true;
+                if (m_cpuModelName.contains("Hygon") && runningOnNvidia())
+                    _composited = false;
             }
         } else {
             if (_platform == Platform::Arm64 && isDriverLoaded)
