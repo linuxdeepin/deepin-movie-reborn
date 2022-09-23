@@ -443,8 +443,18 @@ mpv_handle *MpvProxy::mpv_init()
             m_sInitVo = "gpu,xv,x11";
         }
 #else
+        //去除9200显卡适配
+        QFileInfo sjmfi("/dev/jmgpu");
+        bool jmflag = false;
+        if (sjmfi.exists()) {
+            QDir jmdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv207");
+            if(jmdir.exists())
+            {
+                jmflag=true;
+            }
+        }
         //TODO(xxxxpengfei)：暂未处理intel集显情况
-        if (CompositingManager::get().isZXIntgraphics()) {
+        if (CompositingManager::get().isZXIntgraphics() && !jmflag) {
             my_set_property(m_handle, "vo", "gpu");
         }
 #endif
@@ -1118,8 +1128,18 @@ void MpvProxy::refreshDecode()
             auto name = _file.fileName();
             isSoftCodec = codec.toLower().contains("mpeg2video") || codec.toLower().contains("wmv") || name.toLower().contains("wmv");
 #if !defined(_loongarch) && !defined(__loongarch__) && !defined(__loongarch64)
+            //去除9200显卡适配
+            QFileInfo jmfi("/dev/jmgpu");
+            bool jmflag =false;
+            if (jmfi.exists()) {
+                QDir jmdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv207");
+                if(jmdir.exists())
+                {
+                    jmflag=true;
+                }
+            }
             //探测硬解码
-            if(!isSoftCodec && !CompositingManager::get().isZXIntgraphics()) {
+            if(!isSoftCodec && !CompositingManager::get().isZXIntgraphics() && !jmflag) {
                 isSoftCodec = !isSurportHardWareDecode(codec, currentInfo.mi.width, currentInfo.mi.height);
             }
 #endif

@@ -184,6 +184,16 @@ CompositingManager::CompositingManager()
         }
     }
 
+    //针对9200显卡适配
+    QFileInfo jmfi("/dev/jmgpu");
+    if (jmfi.exists()) {
+        //判断是否安装核外驱动  因为9200 不能通过opengl渲染
+        QDir jmdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv207");
+        if ( jmdir.exists()) {
+           _composited = false;
+        }
+    }
+
     //读取配置
     m_pMpvConfig = new QMap<QString, QString>;
     utils::getPlayProperty("/etc/mpv/play.conf", m_pMpvConfig);
