@@ -2787,11 +2787,15 @@ void MainWindow::suspendToolsWindow()
                 ActionFactory::get().titlebarMenu()->isVisible())
             return;
 
+        QPoint cursor = mapFromGlobal(QCursor::pos());
         if (m_pToolbox->isVisible()) {
-            if (insideToolsArea(mapFromGlobal(QCursor::pos())) && !m_bLastIsTouch)
+            if (m_pToolbox->getMircast()->isVisible() &&
+                    m_pToolbox->getMircast()->geometry().contains(cursor) && !m_bLastIsTouch)
+                return;
+            if (insideToolsArea(cursor) && !m_bLastIsTouch)
                 return;
         } else {
-            if (m_pToolbox->geometry().contains(mapFromGlobal(QCursor::pos()))) {
+            if (m_pToolbox->geometry().contains(cursor)) {
                 return;
             }
         }

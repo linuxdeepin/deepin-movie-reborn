@@ -28,6 +28,11 @@ class DlnaContentServer;
 class CDlnaSoapPost;
 class QListWidgetItem;
 
+struct MiracastDevice {
+    QString name;
+    QString uuid;
+};
+
 class ItemWidget: public QWidget
 {
     Q_OBJECT
@@ -38,11 +43,12 @@ public:
         Checked,
     };
 
-    ItemWidget(QString deviceName, const QByteArray &data, const QNetworkReply *reply, QWidget *parent = nullptr);
+    ItemWidget(MiracastDevice device, const QByteArray &data, const QNetworkReply *reply, QWidget *parent = nullptr);
 
     void clearSelect();
     void setState(ConnectState state);
     ConnectState state();
+    MiracastDevice getDevice();
 
 protected:
     void mousePressEvent(QMouseEvent *pEvent) override;
@@ -62,7 +68,7 @@ private:
     QString convertDisplay();
 
 private:
-    QString     m_deviceName;
+    MiracastDevice   m_device;
     QString     m_displayName;
     QByteArray  m_data;
     bool        m_selected;
@@ -82,7 +88,7 @@ public:
 
     int count();
     void clear();
-    ItemWidget* createListeItem(QString deviceName, const QByteArray &data, const QNetworkReply *reply);
+    ItemWidget* createListeItem(MiracastDevice device, const QByteArray &data, const QNetworkReply *reply);
 
     int currentItemIndex();
     ItemWidget* currentItemWidget();
@@ -147,6 +153,10 @@ public:
         Pause,
         Stop,
     };
+    struct ConnectDevice {
+        MiracastDevice miracastDevice;
+        MircastState deviceState{MircastState::Idel};
+    };
 
 public:
     MircastWidget(QWidget *mainWindow = nullptr, void *pEngine = nullptr);
@@ -172,7 +182,7 @@ public:
      * @brief createListeItem 投屏seek
      * @param data 投屏设备信息
      */
-    ItemWidget * createListeItem(QString, const QByteArray &data, const QNetworkReply*);
+    ItemWidget * createListeItem(MiracastDevice, const QByteArray &data, const QNetworkReply*);
     /**
      * @brief updateMircastState 更新投屏窗口状态
      */
@@ -269,6 +279,8 @@ private:
      */
     int timeConversion(QString);
 
+    int getConnectionDevice(MiracastDevice);
+
 private:
     QWidget     *m_hintWidget;
     DLabel      *m_hintLabel;
@@ -285,7 +297,8 @@ private:
 
     QTimer          m_searchTime;
     QTimer          m_mircastTimeOut;
-    QList<QString>  m_devicesList;
+    QList<MiracastDevice>  m_devicesList;
+    ConnectDevice   m_connectDevice;
     //投屏http服务，支持http断点续传请求
     DlnaContentServer *m_dlnaContentServer;
     //投屏控制

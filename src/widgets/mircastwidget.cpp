@@ -251,15 +251,19 @@ void MircastWidget::slotGetPositionInfo(DlnaPositionInfo info)
     int duration = timeConversion(info.sTrackDuration);
     int absTime = timeConversion(info.sAbsTime);
     if (duration > 0 && absTime > 0) {
-        emit mircastState(0, m_devicesList.at(0));
         m_mircastState = MircastState::Screening;
+        if (m_connectDevice.deviceState == Connecting) {
+            m_connectDevice.deviceState = MircastState::Screening;
+            emit mircastState(MIRCAST_SUCCESSED, m_connectDevice.miracastDevice.name);
+        }
         ItemWidget *item = m_listWidget->currentItemWidget();
         if(item)
             item->setState(ItemWidget::Checked);
         m_attempts = 0;
     } else {
-        if (duration > 0)
-            emit mircastState(0, m_devicesList.at(0));
+        if (duration > 0 && m_connectDevice.deviceState == Connecting) {
+            emit mircastState(MIRCAST_SUCCESSED, m_connectDevice.miracastDevice.name);
+        }
         qWarning() << "miracast failed!";
         if (m_attempts >= MAXMIRCAST) {
             qWarning() << "attempts time out! try next.";
@@ -296,6 +300,8 @@ void MircastWidget::slotConnectDevice(ItemWidget *item)
     if (engine->state() == PlayerEngine::CoreState::Idle) {
         return;
     }
+    m_connectDevice.miracastDevice = item->getDevice();
+    m_connectDevice.deviceState = MircastState::Connecting;
     m_mircastState = Connecting;
     item->setState(ItemWidget::Loading);
     stopDlnaTP();
@@ -340,9 +346,9 @@ void MircastWidget::updateMircastState(MircastWidget::SearchState state)
  * @brief createListeItem 投屏seek
  * @param data 投屏设备信息
  */
-ItemWidget * MircastWidget::createListeItem(QString name, const QByteArray &data, const QNetworkReply *reply)
+ItemWidget * MircastWidget::createListeItem(MiracastDevice device, const QByteArray &data, const QNetworkReply *reply)
 {
-    ItemWidget *item = m_listWidget->createListeItem(name, data, reply);
+    ItemWidget *item = m_listWidget->createListeItem(device, data, reply);
     QString itemAdd = item->property(urlAddrPro).toString();
     if (itemAdd == m_URLAddrPro && m_mircastState == MircastState::Screening)
         item->setState(ItemWidget::Checked);
@@ -363,8 +369,17 @@ void MircastWidget::slotReadyRead()
     qInfo() << "xml data:" << data;
     GetDlnaXmlValue dlnaxml(data);
     QString sName = dlnaxml.getValueByPath("device/friendlyName");
-    m_devicesList.append(sName);
-    createListeItem(sName, data, reply);
+    QString uuid = dlnaxml.getValueByPath("device/UDN");
+    QStringList uuidList = uuid.split(":");
+    MiracastDevice device;
+    device.name = sName;
+    device.uuid = uuidList.last();
+    foreach (MiracastDevice mirDevice, m_devicesList) {
+        if (device.uuid == mirDevice.uuid)
+            return;
+    }
+    m_devicesList.append(device);
+    createListeItem(device, data, reply);
     updateMircastState(SearchState::ListExhibit);
 }
 /**
@@ -376,6 +391,7 @@ void MircastWidget::slotExitMircast()
     if (m_mircastState == Idel)
         return;
     m_mircastState = Idel;
+    m_connectDevice.deviceState = Idel;
     m_mircastTimeOut.stop();
     m_connectTimeout = 0;
     m_listWidget->setItemWidgetStatus(m_listWidget->selectedItemWidget(), ItemWidget::Normal);
@@ -385,7 +401,7 @@ void MircastWidget::slotExitMircast()
     //    emit closeServer();
 }
 /**
- * @brief slotExitMircast 退出投屏
+ * @brief slotSeekMircast 跳转投屏进度
  */
 void MircastWidget::slotSeekMircast(int seek)
 {
@@ -610,9 +626,9 @@ void ListWidget::clear()
     }
 }
 
-ItemWidget* ListWidget::createListeItem(QString deviceName, const QByteArray &data, const QNetworkReply *reply)
+ItemWidget* ListWidget::createListeItem(MiracastDevice device, const QByteArray &data, const QNetworkReply *reply)
 {
-    ItemWidget *itemWidget = new ItemWidget(deviceName, data, reply);
+    ItemWidget *itemWidget = new ItemWidget(device, data, reply);
     connect(itemWidget, &ItemWidget::selected, this, &ListWidget::slotSelectItem);
     connect(itemWidget, &ItemWidget::connecting, this, &ListWidget::slotsConnectingDevice);
     m_items.append(itemWidget);
@@ -675,8 +691,8 @@ void ListWidget::slotsConnectingDevice()
     emit connectDevice(connectItem);
 }
 
-ItemWidget::ItemWidget(QString deviceName, const QByteArray &data, const QNetworkReply *reply, QWidget *parent)
-    :m_deviceName(deviceName), m_data(data), QWidget (parent)
+ItemWidget::ItemWidget(MiracastDevice device, const QByteArray &data, const QNetworkReply *reply, QWidget *parent)
+    :m_device(device), m_data(data), QWidget (parent)
 {
     m_selected = false;
     m_hover = false;
@@ -686,7 +702,7 @@ ItemWidget::ItemWidget(QString deviceName, const QByteArray &data, const QNetwor
     connect(&m_rotateTime, &QTimer::timeout, [=](){
         m_rotate += ROTATE_VALUE;
     });
-    setToolTip(m_deviceName);
+    setToolTip(m_device.name);
     setFixedSize(MIRCASTWIDTH, 34);
     setAttribute(Qt::WA_TranslucentBackground, true);
     m_displayName = convertDisplay();
@@ -725,6 +741,11 @@ void ItemWidget::setState(ItemWidget::ConnectState state)
 ItemWidget::ConnectState ItemWidget::state()
 {
     return m_state;
+}
+
+MiracastDevice ItemWidget::getDevice()
+{
+    return m_device;
 }
 
 void ItemWidget::mousePressEvent(QMouseEvent *pEvent)
@@ -812,11 +833,11 @@ void ItemWidget::mouseDoubleClickEvent(QMouseEvent *event)
 QString ItemWidget::convertDisplay()
 {
     QFontMetrics fm = fontMetrics();
-    double textWidth = fm.width(m_deviceName);
+    double textWidth = fm.width(m_device.name);
     if (textWidth > TEXT_WIDTH) {
         QString displayName;
-        for (int i = 0; i < m_deviceName.size(); i++) {
-            displayName += m_deviceName.at(i);
+        for (int i = 0; i < m_device.name.size(); i++) {
+            displayName += m_device.name.at(i);
             if (fm.width(displayName) > TEXT_WIDTH) {
                 displayName.chop(1);
                 displayName += "...";
@@ -825,6 +846,6 @@ QString ItemWidget::convertDisplay()
         }
         return displayName;
     } else {
-        return m_deviceName;
+        return m_device.name;
     }
 }
