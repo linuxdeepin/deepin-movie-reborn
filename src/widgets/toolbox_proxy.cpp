@@ -1,36 +1,8 @@
-/*
- * Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
- *
- * Author:     fengli <fengli@uniontech.com>
- *
- * Maintainer: xiepengfei <xiepengfei@uniontech.com>
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but
- * is provided AS IS, WITHOUT ANY WARRANTY; without even the implied
- * warranty of MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, and
- * NON-INFRINGEMENT.  See the GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, see <http://www.gnu.org/licenses/>.
- *
- * In addition, as a special exception, the copyright holders give
- * permission to link the code of portions of this program with the
- * OpenSSL library under certain conditions as described in each
- * individual source file, and distribute linked combinations
- * including the two.
- * You must obey the GNU General Public License in all respects
- * for all of the code used other than OpenSSL.  If you modify
- * file(s) with this exception, you may extend this exception to your
- * version of the file(s), but you are not obligated to do so.  If you
- * do not wish to do so, delete this exception statement from your
- * version.  If you delete this exception statement from all source
- * files in the program, then also delete it here.
- */
+// Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
+// SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 #include "config.h"
 
 #include "toolbox_proxy.h"
@@ -657,21 +629,11 @@ public:
         QDBusReply<QString> reply = m_pWMDBus->call("CurrentWM");
         m_bIsWM = reply.value().contains("deepin wm");
         connect(m_pWMDBus, SIGNAL(WMChanged(QString)), this, SLOT(slotWMChanged(QString)));
-
-        auto *l = new QVBoxLayout;
-        l->setContentsMargins(0, 0, 0, 0);
-
-        _thumb = new DFrame(this);
         if (m_bIsWM) {
-            DStyle::setFrameRadius(_thumb, 8);
+            DStyle::setFrameRadius(this, 8);
         } else {
-            DStyle::setFrameRadius(_thumb, 0);
+            DStyle::setFrameRadius(this, 0);
         }
-
-        //_thumb->setFixedSize(ThumbnailWorker::thumbSize());
-        l->addWidget(_thumb/*,Qt::AlignTop*/);
-        setLayout(l);
-//        winId(); // force backed window to be created
         m_shadow_effect = new QGraphicsDropShadowEffect(this);
     }
 
@@ -705,12 +667,8 @@ public:
         QImage image;
         QPalette palette;
         image = rounded.toImage();
-        palette.setBrush(_thumb->backgroundRole(),
-                         QBrush(image.scaled(// 缩放背景图.
-                                    QSize(_thumb->width(), _thumb->height()),
-                                    Qt::IgnoreAspectRatio,
-                                    Qt::SmoothTransformation)));
-        _thumb->setPalette(palette);
+        m_thumbImg = image;
+        update();
     }
 
     void updateWithPreview(const QPoint &pos)
@@ -724,10 +682,10 @@ public slots:
     {
         if (msg.contains("deepin metacity")) {
             m_bIsWM = false;
-            DStyle::setFrameRadius(_thumb, 0);
+            DStyle::setFrameRadius(this, 0);
         } else {
             m_bIsWM = true;
-            DStyle::setFrameRadius(_thumb, 8);
+            DStyle::setFrameRadius(this, 8);
         }
     }
 
@@ -740,14 +698,20 @@ protected:
         m_shadow_effect->setColor(Qt::gray);
         m_shadow_effect->setBlurRadius(8);
         setGraphicsEffect(m_shadow_effect);
+        QPainter painter(this);
+        QPainterPath path;
+        QRect rt = rect().marginsRemoved(QMargins(1, 1, 1, 1));
         if (!m_bIsWM)
         {
-            QPainter painter(this);
-            QPainterPath path;
             path.addRect(rect());
             painter.fillPath(path, QColor(230, 230, 230));
+        } else {
+            path.addRoundRect(rt, 20, 20);
+            painter.setRenderHints(QPainter::Antialiasing, true);
         }
-
+        painter.setClipPath(path);
+        if(!m_thumbImg.isNull())
+            painter.drawImage(rt, m_thumbImg, QRect(0, 0, m_thumbImg.width(), m_thumbImg.height()));
         QWidget::paintEvent(e);
     }
     void leaveEvent(QEvent *e) override
@@ -767,17 +731,16 @@ private:
         pixmap.setDevicePixelRatio(dpr);
         pixmap = pixmap.scaled(size * dpr, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
         pixmap.setDevicePixelRatio(dpr);
-        _thumb->setFixedSize(size);
         int offect = 2;
         if (!m_bIsWM) {
             offect = 0;
         }
-        this->setFixedWidth(_thumb->width() + offect);
-        this->setFixedHeight(_thumb->height() + offect);
+        this->setFixedWidth(size.width() + offect);
+        this->setFixedHeight(size.height() + offect);
     }
 
 private:
-    DFrame *_thumb {nullptr};
+    QImage m_thumbImg;
     int m_thumbnailFixed = 106;
     QGraphicsDropShadowEffect *m_shadow_effect{nullptr};
     QDBusInterface *m_pWMDBus{nullptr};
@@ -1267,7 +1230,7 @@ void ToolboxProxy::setup()
         };
         QString hints[] = {
             tr("Play/Pause"), tr("Previous"), tr("Next"),
-            tr("Fullscreen"), tr("Mircast"), tr("Playlist")
+            tr("Fullscreen"), tr("Miracast"), tr("Playlist")
         };
         QString attrs[] = {
             tr("play"), tr("prev"), tr("next"),
@@ -2178,14 +2141,18 @@ void ToolboxProxy::slotUpdateMircast(int state, QString msg)
         m_pVolBtn->setButtonEnable(false);
         m_pFullScreenBtn->setEnabled(false);
     } else {
-        bool bRawFormat = m_pEngine->getplaylist()->currentInfo().mi.isRawFormat();
-        if(bRawFormat && !m_pEngine->currFileIsAudio()) {
-            m_pVolBtn->setButtonEnable(false);
-        } else {
+        if(m_pEngine->getplaylist()->items().size() == 0) {
             m_pVolBtn->setButtonEnable(true);
+        } else {
+            bool bRawFormat = m_pEngine->getplaylist()->currentInfo().mi.isRawFormat();
+            if(bRawFormat && !m_pEngine->currFileIsAudio()) {
+                m_pVolBtn->setButtonEnable(false);
+            } else {
+                m_pVolBtn->setButtonEnable(true);
+            }
         }
-        m_pFullScreenBtn->setEnabled(true);
     }
+    m_pFullScreenBtn->setEnabled(true);
 }
 
 void ToolboxProxy::updatePlayState()

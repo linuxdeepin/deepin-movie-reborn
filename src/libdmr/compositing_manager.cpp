@@ -1,36 +1,7 @@
-/*
- * Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
- *
- * Author:     xiepengfei <xiepengfei@uniontech.com>
- *
- * Maintainer: liuzheng <liuzheng@uniontech.com>
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but
- * is provided AS IS, WITHOUT ANY WARRANTY; without even the implied
- * warranty of MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, and
- * NON-INFRINGEMENT.  See the GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, see <http://www.gnu.org/licenses/>.
- *
- * In addition, as a special exception, the copyright holders give
- * permission to link the code of portions of this program with the
- * OpenSSL library under certain conditions as described in each
- * individual source file, and distribute linked combinations
- * including the two.
- * You must obey the GNU General Public License in all respects
- * for all of the code used other than OpenSSL.  If you modify
- * file(s) with this exception, you may extend this exception to your
- * version of the file(s), but you are not obligated to do so.  If you
- * do not wish to do so, delete this exception statement from your
- * version.  If you delete this exception statement from all source
- * files in the program, then also delete it here.
- */
+// Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
+// SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "config.h"
 #include "compositing_manager.h"
@@ -183,7 +154,15 @@ CompositingManager::CompositingManager()
             _composited = false;
         }
     }
-
+    //针对9200显卡适配
+    QFileInfo jmfi("/dev/jmgpu");
+    if (jmfi.exists()) {
+        //判断是否安装核外驱动  因为9200 不能通过opengl渲染
+        QDir jmdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv207");
+        if ( jmdir.exists()) {
+           _composited = false;
+        }
+    }
     //读取配置
     m_pMpvConfig = new QMap<QString, QString>;
     utils::getPlayProperty("/etc/mpv/play.conf", m_pMpvConfig);

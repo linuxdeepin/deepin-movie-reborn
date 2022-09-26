@@ -1,36 +1,8 @@
-/*
- * Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
- *
- * Author:     xiepengfei <xiepengfei@uniontech.com>
- *
- * Maintainer: xiepengfei <xiepengfei@uniontech.com>
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but
- * is provided AS IS, WITHOUT ANY WARRANTY; without even the implied
- * warranty of MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, and
- * NON-INFRINGEMENT.  See the GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, see <http://www.gnu.org/licenses/>.
- *
- * In addition, as a special exception, the copyright holders give
- * permission to link the code of portions of this program with the
- * OpenSSL library under certain conditions as described in each
- * individual source file, and distribute linked combinations
- * including the two.
- * You must obey the GNU General Public License in all respects
- * for all of the code used other than OpenSSL.  If you modify
- * file(s) with this exception, you may extend this exception to your
- * version of the file(s), but you are not obligated to do so.  If you
- * do not wish to do so, delete this exception statement from your
- * version.  If you delete this exception statement from all source
- * files in the program, then also delete it here.
- */
+// Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
+// SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 #include "config.h"
 
 #include "mpv_proxy.h"
@@ -419,8 +391,10 @@ mpv_handle *MpvProxy::mpv_init()
             qInfo() << "修改音视频同步模式";
             my_set_property(m_handle, "video-sync", "desync");
         }
-        my_set_property(m_handle, "vo", "gpu,x11");
-        m_sInitVo = "gpu,x11";
+        if (!fi.exists() && !jmfi.exists()) {
+            my_set_property(m_handle, "vo", "gpu,x11");
+            m_sInitVo = "gpu,x11";
+        }
 #elif defined (__sw_64__)
         //Synchronously modify the video output of the SW platform vdpau(powered by zhangfl)
         my_set_property(m_handle, "vo", "vdpau,gpu,x11");
@@ -431,8 +405,18 @@ mpv_handle *MpvProxy::mpv_init()
             m_sInitVo = "gpu,xv,x11";
         }
 #else
+        //去除9200显卡适配
+        QFileInfo sjmfi("/dev/jmgpu");
+        bool jmflag = false;
+        if (sjmfi.exists()) {
+            QDir jmdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv207");
+            if(jmdir.exists())
+            {
+                jmflag=true;
+            }
+        }
         //TODO(xxxxpengfei)：暂未处理intel集显情况
-        if (CompositingManager::get().isZXIntgraphics()) {
+        if (CompositingManager::get().isZXIntgraphics() && !jmflag) {
             my_set_property(m_handle, "vo", "gpu");
         }
 #endif
@@ -1106,8 +1090,18 @@ void MpvProxy::refreshDecode()
             auto name = _file.fileName();
             isSoftCodec = codec.toLower().contains("mpeg2video") || codec.toLower().contains("wmv") || name.toLower().contains("wmv");
 #if !defined(_loongarch) && !defined(__loongarch__) && !defined(__loongarch64)
+            //去除9200显卡适配
+            QFileInfo jmfi("/dev/jmgpu");
+            bool jmflag =false;
+            if (jmfi.exists()) {
+                QDir jmdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv207");
+                if(jmdir.exists())
+                {
+                    jmflag=true;
+                }
+            }
             //探测硬解码
-            if(!isSoftCodec && !CompositingManager::get().isZXIntgraphics()) {
+            if(!isSoftCodec && !CompositingManager::get().isZXIntgraphics() && !jmflag) {
                 isSoftCodec = !isSurportHardWareDecode(codec, currentInfo.mi.width, currentInfo.mi.height);
             }
 #endif

@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 #workdir=$(cd ../$(dirname $0)/deepin-movie/build-ut; pwd)
 executable=deepin-movie-test #可执行程序的文件名
 

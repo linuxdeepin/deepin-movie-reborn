@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # 定义需要的cmake版本
 cmake_minimum_required(VERSION 3.10)
 
@@ -23,7 +27,6 @@ project(deepin-movie-test)
 
 # 查找Qt相关的库链接
 find_package(Qt5 REQUIRED ${QtModule})
-find_package(gui-private)
 find_package(Qt5Xml)
 find_package(Qt5Test)
 

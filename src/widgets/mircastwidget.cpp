@@ -1,36 +1,8 @@
-/*
- * Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
- *
- * Author:     xiepengfei <xiepengfei@uniontech.com>
- *
- * Maintainer: xiepengfei <xiepengfei@uniontech.com>
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but
- * is provided AS IS, WITHOUT ANY WARRANTY; without even the implied
- * warranty of MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, and
- * NON-INFRINGEMENT.  See the GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, see <http://www.gnu.org/licenses/>.
- *
- * In addition, as a special exception, the copyright holders give
- * permission to link the code of portions of this program with the
- * OpenSSL library under certain conditions as described in each
- * individual source file, and distribute linked combinations
- * including the two.
- * You must obey the GNU General Public License in all respects
- * for all of the code used other than OpenSSL.  If you modify
- * file(s) with this exception, you may extend this exception to your
- * version of the file(s), but you are not obligated to do so.  If you
- * do not wish to do so, delete this exception statement from your
- * version.  If you delete this exception statement from all source
- * files in the program, then also delete it here.
- */
+// Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
+// SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 #include "mircastwidget.h"
 #include "player_engine.h"
 #include "dlna/cssdpsearch.h"
@@ -288,7 +260,7 @@ void MircastWidget::slotGetPositionInfo(DlnaPositionInfo info)
     } else {
         if (duration > 0)
             emit mircastState(0, m_devicesList.at(0));
-        qWarning() << "mircast failed!";
+        qWarning() << "miracast failed!";
         if (m_attempts >= MAXMIRCAST) {
             qWarning() << "attempts time out! try next.";
             m_attempts = 0;
@@ -306,7 +278,7 @@ void MircastWidget::slotGetPositionInfo(DlnaPositionInfo info)
                 m_mircastState = Connecting;
             }
         } else {
-            qInfo() << "mircast failed! curret attempts:" << m_attempts << "Max:" << MAXMIRCAST;
+            qInfo() << "miracast failed! curret attempts:" << m_attempts << "Max:" << MAXMIRCAST;
             m_attempts++;
             m_mircastState = Connecting;
         }
@@ -359,7 +331,7 @@ void MircastWidget::updateMircastState(MircastWidget::SearchState state)
         m_mircastArea->show();
         break;
     case NoDevices:
-        m_hintLabel->setText(tr("No Mircast display devices were found. Please connect the device and your computer to the same WLAN network."));
+        m_hintLabel->setText(tr("No Miracast display devices were found. Please connect the device and your computer to the same WLAN network."));
         m_mircastArea->hide();
         break;
     }

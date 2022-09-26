@@ -1,8 +1,6 @@
-/**
- * Copyright (C) 2020 UOS Technology Co., Ltd.
- *
- * to mark the desktop UI
- **/
+// SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 #ifndef DESKTOP_ACCESSIBLE_OBJECT_LIST_H
 #define DESKTOP_ACCESSIBLE_OBJECT_LIST_H
