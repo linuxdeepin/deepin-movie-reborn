@@ -147,7 +147,7 @@ void VolumeSlider::updatePoint(QPoint point)
 {
     QRect main_rect = _mw->rect();
     QRect view_rect = main_rect.marginsRemoved(QMargins(1, 1, 1, 1));
-    m_point = point + QPoint(view_rect.width() - (TOOLBOX_BUTTON_WIDTH * 2 + 30 + (VOLSLIDER_WIDTH - TOOLBOX_BUTTON_WIDTH) / 2),
+    m_point = point + QPoint(view_rect.width() - (TOOLBOX_BUTTON_WIDTH * 3 + 40 + (VOLSLIDER_WIDTH - TOOLBOX_BUTTON_WIDTH) / 2),
                              view_rect.height() - TOOLBOX_HEIGHT - VOLSLIDER_HEIGHT);
 }
 void VolumeSlider::popup()
@@ -155,7 +155,7 @@ void VolumeSlider::popup()
     QRect main_rect = _mw->rect();
     QRect view_rect = main_rect.marginsRemoved(QMargins(1, 1, 1, 1));
 
-    int x = view_rect.width() - (TOOLBOX_BUTTON_WIDTH * 2 + 30 + (VOLSLIDER_WIDTH - TOOLBOX_BUTTON_WIDTH) / 2);
+    int x = view_rect.width() - (TOOLBOX_BUTTON_WIDTH * 3 + 40 + (VOLSLIDER_WIDTH - TOOLBOX_BUTTON_WIDTH) / 2);
     int y = view_rect.height() - TOOLBOX_HEIGHT - VOLSLIDER_HEIGHT;
     QRect end(x, y, VOLSLIDER_WIDTH, VOLSLIDER_HEIGHT);
     QRect start = end;

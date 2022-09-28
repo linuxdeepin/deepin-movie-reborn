@@ -138,6 +138,8 @@ bool CompareNames(const QString &fileName1, const QString &fileName2)
 
 bool first_check_wayland_env()
 {
+    isWayland = true;
+    return true;
     auto e = QProcessEnvironment::systemEnvironment();
     QString XDG_SESSION_TYPE = e.value(QStringLiteral("XDG_SESSION_TYPE"));
     QString WAYLAND_DISPLAY = e.value(QStringLiteral("WAYLAND_DISPLAY"));
