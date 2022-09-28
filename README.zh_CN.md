@@ -100,4 +100,4 @@ Execute `deepin-movie`
 
 ## 开源许可证
 
-Deepin Movie根据[GPL-3.0-or-later]（许可证）获得许可，但[OpenSSL exception](https://lists.debian.org/debian-legal/2004/05/msg00595.html).
+Deepin Movie 根据 [GPL-3.0-or-later]（许可证）获得许可.
