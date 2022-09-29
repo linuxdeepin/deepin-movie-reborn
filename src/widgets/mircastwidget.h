@@ -12,6 +12,7 @@
 #include <DWidget>
 #include <DFloatingWidget>
 #include <DLabel>
+#include <DSpinner>
 
 #include <QTimer>
 #include <QScrollArea>
@@ -112,24 +113,20 @@ class RefreButtonWidget: public QWidget
 {
     Q_OBJECT
 public:
-    RefreButtonWidget(QIcon refreIcon, QIcon loadingIcon, QWidget *parent = nullptr);
+    RefreButtonWidget(QWidget *parent = nullptr);
 
     void refershTimeout();
     void refershStart();
 
 protected:
-    void paintEvent(QPaintEvent *pEvent) override;
     void mouseReleaseEvent(QMouseEvent *pEvent) override;
 
 signals:
     void buttonClicked();
 
 private:
-    QTimer m_rotateTime;
-    QIcon m_refreIcon;
-    QIcon m_loadingIcon;
-    bool  m_refreState;
-    double m_rotate;
+    DSpinner *m_spinner;
+    DLabel   *m_refreBtn;
 };
 
 class MircastWidget: public DFloatingWidget
