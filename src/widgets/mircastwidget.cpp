@@ -229,9 +229,10 @@ void MircastWidget::slotGetPositionInfo(DlnaPositionInfo info)
 
     if (m_mircastState == MircastState::Screening) {
         int absTime = timeConversion(info.sAbsTime);
+        int duration = timeConversion(info.sTrackDuration);
         updateTime(absTime);
         if (info.sAbsTime == info.sTrackDuration ||
-                info.sAbsTime.toUpper() == "NOT_IMPLEMENTED" && timeConversion(info.sTrackDuration) != 0) {
+                (info.sAbsTime.toUpper() == "NOT_IMPLEMENTED" && duration != 0)) {
             if (playMode == PlaylistModel::SinglePlay ||
                     (playMode == PlaylistModel::OrderPlay && model->current() == (model->count() - 1))) {
                 emit mircastState(MIRCAST_EXIT);
@@ -243,6 +244,9 @@ void MircastWidget::slotGetPositionInfo(DlnaPositionInfo info)
                 m_mircastState = Connecting;
             }
             m_attempts = 0;
+        } else if (info.sAbsTime.toUpper() == "NOT_IMPLEMENTED" && duration == 0) {
+            emit mircastState(MIRCAST_EXIT);
+            slotExitMircast();
         }
         m_nCurAbsTime = absTime;
         m_nCurDuration = timeConversion(info.sTrackDuration);
@@ -537,7 +541,11 @@ void MircastWidget::seekDlnaTp(int nSeek)
 void MircastWidget::stopDlnaTP()
 {
     m_nPlayStatus = MircastWidget::Stop;
+    if (m_ControlURLPro.isNull() || m_ControlURLPro.isEmpty()) return;
     m_pDlnaSoapPost->SoapOperPost(DLNA_Stop, m_ControlURLPro, m_URLAddrPro, m_sLocalUrl);
+    m_ControlURLPro.clear();
+    m_URLAddrPro.clear();
+    m_sLocalUrl.clear();
 }
 /**
  * @brief getPosInfoDlnaTp 获取投屏播放视频信息
