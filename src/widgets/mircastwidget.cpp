@@ -775,9 +775,11 @@ void ItemWidget::paintEvent(QPaintEvent *pEvent)
     QPainterPath path;
     path.addRect(rect());
     QColor TextColor(Qt::black);
+    if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType())
+        TextColor = QColor(198, 207, 205);
     if (m_selected) {
         paint.fillPath(path, QBrush(QColor(0,129,255)));
-        TextColor.setRgb(255, 255, 255);
+        TextColor = Qt::white;
     } else if (m_hover) {
         paint.fillPath(path, QBrush(QColor(0, 0, 0, 0.05 * 255)));
     }
