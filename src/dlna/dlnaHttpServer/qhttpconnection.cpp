@@ -99,7 +99,7 @@ void QHttpConnection::write(const QByteArray &data)
 
 bool QHttpConnection::flush()
 {
-    m_socket->flush();
+    return m_socket->flush();
 }
 
 void QHttpConnection::waitForBytesWritten(int msecs)
