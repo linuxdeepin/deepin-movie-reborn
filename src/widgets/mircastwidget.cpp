@@ -84,12 +84,14 @@ MircastWidget::MircastWidget(QWidget *mainWindow, void *pEngine)
     QVBoxLayout *hintLayout = new QVBoxLayout(m_hintWidget);
     hintLayout->setContentsMargins(0, 0, 0, 0);
     hintLayout->setSpacing(0);
+    hintLayout->setAlignment(Qt::AlignCenter);
     m_hintWidget->setLayout(hintLayout);
     m_hintWidget->hide();
 
     m_hintLabel = new DLabel(this);
     m_hintLabel->setAlignment(Qt::AlignCenter);
     m_hintLabel->setFixedSize(MIRCASTWIDTH, MIRCASTHEIGHT - 42);
+    m_hintLabel->setContentsMargins(20, 0, 20, 0);
     m_hintLabel->setWordWrap(true);
     hintLayout->addWidget(m_hintLabel);
     m_hintLabel->show();
