@@ -594,6 +594,8 @@ void RefreButtonWidget::refershStart()
 
 void RefreButtonWidget::mouseReleaseEvent(QMouseEvent *pEvent)
 {
+    if (m_spinner->isVisible())
+        return;
     refershStart();
 }
 
