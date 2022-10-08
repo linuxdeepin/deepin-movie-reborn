@@ -62,7 +62,10 @@ MircastShowWidget::MircastShowWidget(QWidget *parent)
     QGraphicsTextItem *promptInformation = new QGraphicsTextItem;
     promptInformation->setDefaultTextColor(QColor(255, 255, 255, 153));
     promptInformation->setPlainText(tr("Projecting... \nPlease do not exit the Movie app during the process."));
-    promptInformation->setTextWidth(224);
+    promptInformation->setTextWidth(DEFAULT_BGWIDTH);
+    QFont font = m_deviceName->font();
+    font.setPointSize(9);
+    promptInformation->setFont(font);
     promptInformation->setTextCursor(cursor);
     promptInformation->setPos(m_pBgSvgItem->pos().x() + 93, m_pBgSvgItem->pos().y() + 297);
 
@@ -81,7 +84,7 @@ MircastShowWidget::~MircastShowWidget()
  */
 void MircastShowWidget::setDeviceName(QString name)
 {
-    QString display = QString(tr("Display device"))+QString(":%1").arg(customizeText(name));
+    QString display = QString(tr("Display device"))+QString(":  %1").arg(customizeText(name));
     m_deviceName->setPlainText(display);
     QTextBlockFormat format;
     format.setAlignment(Qt::AlignCenter);

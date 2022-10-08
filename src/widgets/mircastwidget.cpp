@@ -67,8 +67,7 @@ MircastWidget::MircastWidget(QWidget *mainWindow, void *pEngine)
     projet->setText(tr("Project to"));
     projet->move(20, 8);
 
-    m_refreshBtn = new RefreButtonWidget(QIcon::fromTheme("dcc_update", QIcon(":/resources/icons/mircast/mircast.svg"))
-                                                          , QIcon(":/resources/icons/mircast/spinner.svg"), topWdiget);
+    m_refreshBtn = new RefreButtonWidget(topWdiget);
     m_refreshBtn->move(206, 8);
     connect(m_refreshBtn, &RefreButtonWidget::buttonClicked, this, &MircastWidget::slotRefreshBtnClicked);
 
@@ -85,12 +84,14 @@ MircastWidget::MircastWidget(QWidget *mainWindow, void *pEngine)
     QVBoxLayout *hintLayout = new QVBoxLayout(m_hintWidget);
     hintLayout->setContentsMargins(0, 0, 0, 0);
     hintLayout->setSpacing(0);
+    hintLayout->setAlignment(Qt::AlignCenter);
     m_hintWidget->setLayout(hintLayout);
     m_hintWidget->hide();
 
     m_hintLabel = new DLabel(this);
     m_hintLabel->setAlignment(Qt::AlignCenter);
     m_hintLabel->setFixedSize(MIRCASTWIDTH, MIRCASTHEIGHT - 42);
+    m_hintLabel->setContentsMargins(20, 0, 20, 0);
     m_hintLabel->setWordWrap(true);
     hintLayout->addWidget(m_hintLabel);
     m_hintLabel->show();
@@ -555,52 +556,46 @@ void MircastWidget::getPosInfoDlnaTp()
     m_pDlnaSoapPost->SoapOperPost(DLNA_GetPositionInfo, m_ControlURLPro, m_URLAddrPro, m_sLocalUrl);
 }
 
-RefreButtonWidget::RefreButtonWidget(QIcon refreIcon, QIcon loadingIcon, QWidget *parent)
-    : QWidget(parent), m_refreIcon(refreIcon), m_loadingIcon(loadingIcon)
+RefreButtonWidget::RefreButtonWidget(QWidget *parent)
+    : QWidget(parent)
 {
     setFixedSize(24, 24);
-    m_refreState = true;
-    m_rotate = 0.0;
 
-    connect(&m_rotateTime, &QTimer::timeout, [=](){
-        m_rotate += ROTATE_VALUE;
-    });
+    QHBoxLayout *mainLayout = new QHBoxLayout(this);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
+    setLayout(mainLayout);
+
+    m_spinner = new DSpinner;
+    m_spinner->setFixedSize(size());
+    mainLayout->addWidget(m_spinner);
+
+    m_refreBtn = new DLabel;
+    m_refreBtn->setPixmap(QIcon::fromTheme("dcc_update").pixmap(size()));
+    m_refreBtn->setFixedSize(size());
+    m_refreBtn->hide();
+    mainLayout->addWidget(m_refreBtn);
 }
 
 void RefreButtonWidget::refershTimeout()
 {
-    m_refreState = true;
-    m_rotateTime.stop();
-    m_rotate = 0.0;
+    m_spinner->stop();
+    m_spinner->hide();
+    m_refreBtn->show();
 }
 
 void RefreButtonWidget::refershStart()
 {
-    m_refreState = false;
-    m_rotateTime.start(40);
+    m_spinner->start();
+    m_spinner->show();
+    m_refreBtn->hide();
+
     emit buttonClicked();
-}
-
-void RefreButtonWidget::paintEvent(QPaintEvent *pEvent)
-{
-    Q_UNUSED(pEvent);
-    QPainter painter(this);
-    QPoint centerPos = rect().center();
-
-    if (m_refreState) {
-        painter.drawPixmap(rect(), QPixmap(m_refreIcon.pixmap(rect().size())));
-    } else {
-        painter.save();
-        painter.translate(centerPos);
-        painter.rotate(m_rotate);
-        painter.drawPixmap(-12, -12, QPixmap(m_loadingIcon.pixmap(rect().size())));
-        painter.restore();
-        update();
-    }
 }
 
 void RefreButtonWidget::mouseReleaseEvent(QMouseEvent *pEvent)
 {
+    if (m_spinner->isVisible())
+        return;
     refershStart();
 }
 
@@ -775,9 +770,11 @@ void ItemWidget::paintEvent(QPaintEvent *pEvent)
     QPainterPath path;
     path.addRect(rect());
     QColor TextColor(Qt::black);
+    if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType())
+        TextColor = QColor(198, 207, 205);
     if (m_selected) {
         paint.fillPath(path, QBrush(QColor(0,129,255)));
-        TextColor.setRgb(255, 255, 255);
+        TextColor = Qt::white;
     } else if (m_hover) {
         paint.fillPath(path, QBrush(QColor(0, 0, 0, 0.05 * 255)));
     }
