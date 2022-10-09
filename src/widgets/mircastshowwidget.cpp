@@ -16,9 +16,12 @@
 #include <QTextBlockFormat>
 #include <QTextCursor>
 #include <QMouseEvent>
+#include <QApplication>
+#include <QDesktopWidget>
 
 #define DEFAULT_BGWIDTH 410
 #define DEFAULT_BGHEIGHT 287
+#define DEFAULT_RATION (1.0f*680/1070)
 
 MircastShowWidget::MircastShowWidget(QWidget *parent)
 : QGraphicsView(parent)
@@ -51,27 +54,31 @@ MircastShowWidget::MircastShowWidget(QWidget *parent)
 
     m_deviceName = new QGraphicsTextItem;
     m_deviceName->setDefaultTextColor(Qt::white);
-    m_deviceName->setTextWidth(390);
+    m_deviceName->setTextWidth(DEFAULT_BGWIDTH);
     QTextBlockFormat format;
     format.setAlignment(Qt::AlignCenter);
     QTextCursor cursor = m_deviceName->textCursor();
     cursor.mergeBlockFormat(format);
     m_deviceName->setTextCursor(cursor);
-    m_deviceName->setPos(m_pBgSvgItem->pos().x() + 10, m_pBgSvgItem->pos().y() - 20);
+    m_deviceName->setPos(m_pBgSvgItem->pos().x(), m_pBgSvgItem->pos().y() - 20);
 
-    QGraphicsTextItem *promptInformation = new QGraphicsTextItem;
-    promptInformation->setDefaultTextColor(QColor(255, 255, 255, 153));
-    promptInformation->setPlainText(tr("Projecting... \nPlease do not exit the Movie app during the process."));
-    promptInformation->setTextWidth(DEFAULT_BGWIDTH);
+    m_promptInformation = new QGraphicsTextItem;
+    m_promptInformation->setDefaultTextColor(QColor(255, 255, 255, 153));
+    m_promptInformation->setPlainText(tr("Projecting... \nPlease do not exit the Movie app during the process."));
+    m_promptInformation->setTextWidth(DEFAULT_BGWIDTH);
     QFont font = m_deviceName->font();
-    font.setPointSize(9);
-    promptInformation->setFont(font);
-    promptInformation->setTextCursor(cursor);
-    promptInformation->setPos(m_pBgSvgItem->pos().x() + 93, m_pBgSvgItem->pos().y() + 297);
+    font.setPointSize(10);
+    QTextBlockFormat infoFormat;
+    infoFormat.setAlignment(Qt::AlignCenter);
+    QTextCursor infoCursor = m_promptInformation->textCursor();
+    infoCursor.mergeBlockFormat(infoFormat);
+    m_promptInformation->setFont(font);
+    m_promptInformation->setTextCursor(infoCursor);
+    m_promptInformation->setPos(m_pBgSvgItem->pos().x(), m_pBgSvgItem->pos().y() + DEFAULT_BGHEIGHT + 10);
 
     m_pScene->addItem(m_pBgSvgItem);
     m_pScene->addItem(m_deviceName);
-    m_pScene->addItem(promptInformation);
+    m_pScene->addItem(m_promptInformation);
     m_pScene->addWidget(exitBtn);
 }
 
@@ -91,6 +98,36 @@ void MircastShowWidget::setDeviceName(QString name)
     QTextCursor cursor = m_deviceName->textCursor();
     cursor.mergeBlockFormat(format);
     m_deviceName->setTextCursor(cursor);
+}
+
+void MircastShowWidget::updateView()
+{
+    qreal fRatio = 1.0;
+    QRect rectDesktop;
+    int nWidth = 0;
+    int nHeight = 0;
+
+    nWidth = rect().width();
+    nHeight = rect().height();
+    rectDesktop = qApp->desktop()->availableGeometry(this);
+
+    //根据比例缩放背景
+    if (1.0f * nHeight / nWidth < DEFAULT_RATION) {
+        nWidth = static_cast<int>(nHeight / DEFAULT_RATION);
+        fRatio = nWidth * 2.0 / rectDesktop.width();
+    } else {
+        nHeight = static_cast<int>(nWidth * DEFAULT_RATION);
+        fRatio = nHeight * 2.0 / rectDesktop.height();
+    }
+
+    m_pBgSvgItem->setScale(fRatio);
+
+    m_pBgSvgItem->setPos((m_pScene->width() - DEFAULT_BGWIDTH * fRatio) / 2, (m_pScene->height() - DEFAULT_BGHEIGHT * fRatio) / 2);
+    m_deviceName->setTextWidth(DEFAULT_BGWIDTH * fRatio);
+    m_deviceName->setPos(m_pBgSvgItem->pos().x(), m_pBgSvgItem->pos().y() - 20);
+    m_promptInformation->setTextWidth(DEFAULT_BGWIDTH * fRatio);
+    m_promptInformation->setPos(m_pBgSvgItem->pos().x(), (DEFAULT_BGHEIGHT + 10) * fRatio + m_pBgSvgItem->pos().y());
+    viewport()->update();
 }
 
 void MircastShowWidget::mouseMoveEvent(QMouseEvent *pEvent)
