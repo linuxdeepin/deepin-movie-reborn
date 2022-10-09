@@ -3464,6 +3464,7 @@ void MainWindow::resizeEvent(QResizeEvent *pEvent)
     m_pMovieWidget->move(0, 0);
 
     m_pMircastShowWidget->resize(rect().size());
+    m_pMircastShowWidget->updateView();
     m_pMircastShowWidget->move(0, 0);
 
     m_pAnimationlable->move(QPoint((width() - m_pAnimationlable->width()) / 2,
