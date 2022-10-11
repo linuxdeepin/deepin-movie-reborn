@@ -2826,6 +2826,8 @@ void Platform_MainWindow::suspendToolsWindow()
             if (m_pToolbox->getMircast()->isVisible() &&
                     m_pToolbox->getMircast()->geometry().contains(cursor) && !m_bLastIsTouch)
                 return;
+            if (insideToolsArea(cursor) && !m_bLastIsTouch)
+                return;
         } else {
             if (m_pToolbox->geometry().contains(mapFromGlobal(QCursor::pos()))) {
                 return;
