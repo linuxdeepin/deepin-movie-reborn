@@ -81,6 +81,10 @@ public:
      * @brief setDeviceName 设置投屏设备名称
      */
     void setDeviceName(QString);
+    /**
+     * @brief updateView 更新图元位置
+     */
+    void updateView();
 
 protected:
     void mouseMoveEvent(QMouseEvent* pEvent) override;
@@ -99,6 +103,7 @@ private:
     QGraphicsSvgItem *m_pBgSvgItem;
     QGraphicsScene *m_pScene;
     QGraphicsTextItem *m_deviceName;
+    QGraphicsTextItem *m_promptInformation;
     QSvgRenderer *m_pBgRender;    ///背景render
 };
 

@@ -67,8 +67,7 @@ MircastWidget::MircastWidget(QWidget *mainWindow, void *pEngine)
     projet->setText(tr("Project to"));
     projet->move(20, 8);
 
-    m_refreshBtn = new RefreButtonWidget(QIcon::fromTheme("dcc_update", QIcon(":/resources/icons/mircast/mircast.svg"))
-                                                          , QIcon(":/resources/icons/mircast/spinner.svg"), topWdiget);
+    m_refreshBtn = new RefreButtonWidget(topWdiget);
     m_refreshBtn->move(206, 8);
     connect(m_refreshBtn, &RefreButtonWidget::buttonClicked, this, &MircastWidget::slotRefreshBtnClicked);
 
@@ -85,12 +84,14 @@ MircastWidget::MircastWidget(QWidget *mainWindow, void *pEngine)
     QVBoxLayout *hintLayout = new QVBoxLayout(m_hintWidget);
     hintLayout->setContentsMargins(0, 0, 0, 0);
     hintLayout->setSpacing(0);
+    hintLayout->setAlignment(Qt::AlignCenter);
     m_hintWidget->setLayout(hintLayout);
     m_hintWidget->hide();
 
     m_hintLabel = new DLabel(this);
     m_hintLabel->setAlignment(Qt::AlignCenter);
     m_hintLabel->setFixedSize(MIRCASTWIDTH, MIRCASTHEIGHT - 42);
+    m_hintLabel->setContentsMargins(20, 0, 20, 0);
     m_hintLabel->setWordWrap(true);
     hintLayout->addWidget(m_hintLabel);
     m_hintLabel->show();
@@ -229,9 +230,10 @@ void MircastWidget::slotGetPositionInfo(DlnaPositionInfo info)
 
     if (m_mircastState == MircastState::Screening) {
         int absTime = timeConversion(info.sAbsTime);
+        int duration = timeConversion(info.sTrackDuration);
         updateTime(absTime);
         if (info.sAbsTime == info.sTrackDuration ||
-                info.sAbsTime.toUpper() == "NOT_IMPLEMENTED" && timeConversion(info.sTrackDuration) != 0) {
+                (info.sAbsTime.toUpper() == "NOT_IMPLEMENTED" && duration != 0)) {
             if (playMode == PlaylistModel::SinglePlay ||
                     (playMode == PlaylistModel::OrderPlay && model->current() == (model->count() - 1))) {
                 emit mircastState(MIRCAST_EXIT);
@@ -243,6 +245,9 @@ void MircastWidget::slotGetPositionInfo(DlnaPositionInfo info)
                 m_mircastState = Connecting;
             }
             m_attempts = 0;
+        } else if (info.sAbsTime.toUpper() == "NOT_IMPLEMENTED" && duration == 0) {
+            emit mircastState(MIRCAST_EXIT);
+            slotExitMircast();
         }
         m_nCurAbsTime = absTime;
         m_nCurDuration = timeConversion(info.sTrackDuration);
@@ -251,15 +256,19 @@ void MircastWidget::slotGetPositionInfo(DlnaPositionInfo info)
     int duration = timeConversion(info.sTrackDuration);
     int absTime = timeConversion(info.sAbsTime);
     if (duration > 0 && absTime > 0) {
-        emit mircastState(0, m_devicesList.at(0));
         m_mircastState = MircastState::Screening;
+        if (m_connectDevice.deviceState == Connecting) {
+            m_connectDevice.deviceState = MircastState::Screening;
+            emit mircastState(MIRCAST_SUCCESSED, m_connectDevice.miracastDevice.name);
+        }
         ItemWidget *item = m_listWidget->currentItemWidget();
         if(item)
             item->setState(ItemWidget::Checked);
         m_attempts = 0;
     } else {
-        if (duration > 0)
-            emit mircastState(0, m_devicesList.at(0));
+        if (duration > 0 && m_connectDevice.deviceState == Connecting) {
+            emit mircastState(MIRCAST_SUCCESSED, m_connectDevice.miracastDevice.name);
+        }
         qWarning() << "miracast failed!";
         if (m_attempts >= MAXMIRCAST) {
             qWarning() << "attempts time out! try next.";
@@ -296,6 +305,8 @@ void MircastWidget::slotConnectDevice(ItemWidget *item)
     if (engine->state() == PlayerEngine::CoreState::Idle) {
         return;
     }
+    m_connectDevice.miracastDevice = item->getDevice();
+    m_connectDevice.deviceState = MircastState::Connecting;
     m_mircastState = Connecting;
     item->setState(ItemWidget::Loading);
     stopDlnaTP();
@@ -340,9 +351,9 @@ void MircastWidget::updateMircastState(MircastWidget::SearchState state)
  * @brief createListeItem 投屏seek
  * @param data 投屏设备信息
  */
-ItemWidget * MircastWidget::createListeItem(QString name, const QByteArray &data, const QNetworkReply *reply)
+ItemWidget * MircastWidget::createListeItem(MiracastDevice device, const QByteArray &data, const QNetworkReply *reply)
 {
-    ItemWidget *item = m_listWidget->createListeItem(name, data, reply);
+    ItemWidget *item = m_listWidget->createListeItem(device, data, reply);
     QString itemAdd = item->property(urlAddrPro).toString();
     if (itemAdd == m_URLAddrPro && m_mircastState == MircastState::Screening)
         item->setState(ItemWidget::Checked);
@@ -363,8 +374,17 @@ void MircastWidget::slotReadyRead()
     qInfo() << "xml data:" << data;
     GetDlnaXmlValue dlnaxml(data);
     QString sName = dlnaxml.getValueByPath("device/friendlyName");
-    m_devicesList.append(sName);
-    createListeItem(sName, data, reply);
+    QString uuid = dlnaxml.getValueByPath("device/UDN");
+    QStringList uuidList = uuid.split(":");
+    MiracastDevice device;
+    device.name = sName;
+    device.uuid = uuidList.last();
+    foreach (MiracastDevice mirDevice, m_devicesList) {
+        if (device.uuid == mirDevice.uuid)
+            return;
+    }
+    m_devicesList.append(device);
+    createListeItem(device, data, reply);
     updateMircastState(SearchState::ListExhibit);
 }
 /**
@@ -376,6 +396,7 @@ void MircastWidget::slotExitMircast()
     if (m_mircastState == Idel)
         return;
     m_mircastState = Idel;
+    m_connectDevice.deviceState = Idel;
     m_mircastTimeOut.stop();
     m_connectTimeout = 0;
     m_listWidget->setItemWidgetStatus(m_listWidget->selectedItemWidget(), ItemWidget::Normal);
@@ -385,7 +406,7 @@ void MircastWidget::slotExitMircast()
     //    emit closeServer();
 }
 /**
- * @brief slotExitMircast 退出投屏
+ * @brief slotSeekMircast 跳转投屏进度
  */
 void MircastWidget::slotSeekMircast(int seek)
 {
@@ -521,7 +542,11 @@ void MircastWidget::seekDlnaTp(int nSeek)
 void MircastWidget::stopDlnaTP()
 {
     m_nPlayStatus = MircastWidget::Stop;
+    if (m_ControlURLPro.isNull() || m_ControlURLPro.isEmpty()) return;
     m_pDlnaSoapPost->SoapOperPost(DLNA_Stop, m_ControlURLPro, m_URLAddrPro, m_sLocalUrl);
+    m_ControlURLPro.clear();
+    m_URLAddrPro.clear();
+    m_sLocalUrl.clear();
 }
 /**
  * @brief getPosInfoDlnaTp 获取投屏播放视频信息
@@ -531,52 +556,46 @@ void MircastWidget::getPosInfoDlnaTp()
     m_pDlnaSoapPost->SoapOperPost(DLNA_GetPositionInfo, m_ControlURLPro, m_URLAddrPro, m_sLocalUrl);
 }
 
-RefreButtonWidget::RefreButtonWidget(QIcon refreIcon, QIcon loadingIcon, QWidget *parent)
-    : QWidget(parent), m_refreIcon(refreIcon), m_loadingIcon(loadingIcon)
+RefreButtonWidget::RefreButtonWidget(QWidget *parent)
+    : QWidget(parent)
 {
     setFixedSize(24, 24);
-    m_refreState = true;
-    m_rotate = 0.0;
 
-    connect(&m_rotateTime, &QTimer::timeout, [=](){
-        m_rotate += ROTATE_VALUE;
-    });
+    QHBoxLayout *mainLayout = new QHBoxLayout(this);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
+    setLayout(mainLayout);
+
+    m_spinner = new DSpinner;
+    m_spinner->setFixedSize(size());
+    mainLayout->addWidget(m_spinner);
+
+    m_refreBtn = new DLabel;
+    m_refreBtn->setPixmap(QIcon::fromTheme("dcc_update").pixmap(size()));
+    m_refreBtn->setFixedSize(size());
+    m_refreBtn->hide();
+    mainLayout->addWidget(m_refreBtn);
 }
 
 void RefreButtonWidget::refershTimeout()
 {
-    m_refreState = true;
-    m_rotateTime.stop();
-    m_rotate = 0.0;
+    m_spinner->stop();
+    m_spinner->hide();
+    m_refreBtn->show();
 }
 
 void RefreButtonWidget::refershStart()
 {
-    m_refreState = false;
-    m_rotateTime.start(40);
+    m_spinner->start();
+    m_spinner->show();
+    m_refreBtn->hide();
+
     emit buttonClicked();
-}
-
-void RefreButtonWidget::paintEvent(QPaintEvent *pEvent)
-{
-    Q_UNUSED(pEvent);
-    QPainter painter(this);
-    QPoint centerPos = rect().center();
-
-    if (m_refreState) {
-        painter.drawPixmap(rect(), QPixmap(m_refreIcon.pixmap(rect().size())));
-    } else {
-        painter.save();
-        painter.translate(centerPos);
-        painter.rotate(m_rotate);
-        painter.drawPixmap(-12, -12, QPixmap(m_loadingIcon.pixmap(rect().size())));
-        painter.restore();
-        update();
-    }
 }
 
 void RefreButtonWidget::mouseReleaseEvent(QMouseEvent *pEvent)
 {
+    if (m_spinner->isVisible())
+        return;
     refershStart();
 }
 
@@ -610,9 +629,9 @@ void ListWidget::clear()
     }
 }
 
-ItemWidget* ListWidget::createListeItem(QString deviceName, const QByteArray &data, const QNetworkReply *reply)
+ItemWidget* ListWidget::createListeItem(MiracastDevice device, const QByteArray &data, const QNetworkReply *reply)
 {
-    ItemWidget *itemWidget = new ItemWidget(deviceName, data, reply);
+    ItemWidget *itemWidget = new ItemWidget(device, data, reply);
     connect(itemWidget, &ItemWidget::selected, this, &ListWidget::slotSelectItem);
     connect(itemWidget, &ItemWidget::connecting, this, &ListWidget::slotsConnectingDevice);
     m_items.append(itemWidget);
@@ -675,8 +694,8 @@ void ListWidget::slotsConnectingDevice()
     emit connectDevice(connectItem);
 }
 
-ItemWidget::ItemWidget(QString deviceName, const QByteArray &data, const QNetworkReply *reply, QWidget *parent)
-    :m_deviceName(deviceName), m_data(data), QWidget (parent)
+ItemWidget::ItemWidget(MiracastDevice device, const QByteArray &data, const QNetworkReply *reply, QWidget *parent)
+    :m_device(device), m_data(data), QWidget (parent)
 {
     m_selected = false;
     m_hover = false;
@@ -686,7 +705,7 @@ ItemWidget::ItemWidget(QString deviceName, const QByteArray &data, const QNetwor
     connect(&m_rotateTime, &QTimer::timeout, [=](){
         m_rotate += ROTATE_VALUE;
     });
-    setToolTip(m_deviceName);
+    setToolTip(m_device.name);
     setFixedSize(MIRCASTWIDTH, 34);
     setAttribute(Qt::WA_TranslucentBackground, true);
     m_displayName = convertDisplay();
@@ -727,6 +746,11 @@ ItemWidget::ConnectState ItemWidget::state()
     return m_state;
 }
 
+MiracastDevice ItemWidget::getDevice()
+{
+    return m_device;
+}
+
 void ItemWidget::mousePressEvent(QMouseEvent *pEvent)
 {
     Q_UNUSED(pEvent);
@@ -746,9 +770,11 @@ void ItemWidget::paintEvent(QPaintEvent *pEvent)
     QPainterPath path;
     path.addRect(rect());
     QColor TextColor(Qt::black);
+    if (DGuiApplicationHelper::DarkType == DGuiApplicationHelper::instance()->themeType())
+        TextColor = QColor(198, 207, 205);
     if (m_selected) {
         paint.fillPath(path, QBrush(QColor(0,129,255)));
-        TextColor.setRgb(255, 255, 255);
+        TextColor = Qt::white;
     } else if (m_hover) {
         paint.fillPath(path, QBrush(QColor(0, 0, 0, 0.05 * 255)));
     }
@@ -812,11 +838,11 @@ void ItemWidget::mouseDoubleClickEvent(QMouseEvent *event)
 QString ItemWidget::convertDisplay()
 {
     QFontMetrics fm = fontMetrics();
-    double textWidth = fm.width(m_deviceName);
+    double textWidth = fm.width(m_device.name);
     if (textWidth > TEXT_WIDTH) {
         QString displayName;
-        for (int i = 0; i < m_deviceName.size(); i++) {
-            displayName += m_deviceName.at(i);
+        for (int i = 0; i < m_device.name.size(); i++) {
+            displayName += m_device.name.at(i);
             if (fm.width(displayName) > TEXT_WIDTH) {
                 displayName.chop(1);
                 displayName += "...";
@@ -825,6 +851,6 @@ QString ItemWidget::convertDisplay()
         }
         return displayName;
     } else {
-        return m_deviceName;
+        return m_device.name;
     }
 }
