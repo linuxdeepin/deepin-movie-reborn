@@ -624,6 +624,7 @@ public:
         setWindowFlags(Qt::ToolTip | Qt::FramelessWindowHint);
         setAttribute(Qt::WA_TranslucentBackground);
         setObjectName("ThumbnailPreview");
+        resize(0, 0);
 
         m_pWMDBus = new QDBusInterface("com.deepin.WMSwitcher", "/com/deepin/WMSwitcher", "com.deepin.WMSwitcher", QDBusConnection::sessionBus());
         QDBusReply<QString> reply = m_pWMDBus->call("CurrentWM");
