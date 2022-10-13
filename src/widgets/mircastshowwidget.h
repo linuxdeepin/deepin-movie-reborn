@@ -101,6 +101,7 @@ private:
 
 private:
     QGraphicsSvgItem *m_pBgSvgItem;
+    QGraphicsPixmapItem *m_pProSvgItem;
     QGraphicsScene *m_pScene;
     QGraphicsTextItem *m_deviceName;
     QGraphicsTextItem *m_promptInformation;

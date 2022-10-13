@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="410px" height="287px" viewBox="0 0 410 287" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>编组 7</title>
+    <defs>
+        <rect id="path-1" x="7" y="7" width="395" height="243" rx="10"></rect>
+    </defs>
+    <g id="浅色主题" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="6影院-投屏成功页面" transform="translate(-765.000000, -407.000000)">
+            <g id="Group-4" transform="translate(425.000000, 200.000000)">
+                <g id="default" transform="translate(309.000000, 197.000000)">
+                    <g id="编组-6" transform="translate(0.000000, 10.000000)">
+                        <path d="M233.222222,240 L233.222,252.971 L291,261.443229 L287.186234,264.139255 C284.213349,266.240846 280.577593,267.18948 276.956901,266.808273 L226,261.443229 L177.416346,266.907165 C174.557226,267.228715 171.66595,266.721208 169.087257,265.445158 L161,261.443229 L218.777,252.971 L218.777778,240 L233.222222,240 Z" id="形状结合" fill="#3F4245"></path>
+                        <g id="编组-7" transform="translate(31.000000, 0.000000)">
+                            <rect id="矩形" stroke-opacity="0.0761787041" stroke="#FFFFFF" fill="#3F4245" x="0.5" y="0.5" width="389" height="239" rx="18"></rect>
+                            <mask id="mask-2" fill="white">
+                                <use xlink:href="#path-1"></use>
+                            </mask>
+                            <use id="蒙版" fill="#1C1C1C" xlink:href="#path-1"></use>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

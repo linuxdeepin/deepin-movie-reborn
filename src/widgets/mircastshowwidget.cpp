@@ -21,6 +21,8 @@
 
 #define DEFAULT_BGWIDTH 410
 #define DEFAULT_BGHEIGHT 287
+#define X_OFFSET 17
+#define Y_OFFSET 143
 #define DEFAULT_RATION (1.0f*680/1070)
 
 MircastShowWidget::MircastShowWidget(QWidget *parent)
@@ -38,13 +40,18 @@ MircastShowWidget::MircastShowWidget(QWidget *parent)
     m_pScene->setBackgroundBrush(QBrush(QColor(0, 0, 0)));
     this->setScene(m_pScene);
 
-    m_pBgRender = new QSvgRenderer(QString(":/resources/icons/mircast/default.svg"));
+    m_pBgRender = new QSvgRenderer(QString(":/resources/icons/mircast/default_Back.svg"));
 
     m_pBgSvgItem = new QGraphicsSvgItem;
     m_pBgSvgItem->setSharedRenderer(m_pBgRender);
     m_pBgSvgItem->setCacheMode(QGraphicsItem::NoCache);
     m_pScene->setSceneRect(m_pBgSvgItem->boundingRect());   //要在设置位置之前，不然动画会跳动
     m_pBgSvgItem->setPos((m_pScene->width() - DEFAULT_BGWIDTH) / 2, (m_pScene->height() - DEFAULT_BGHEIGHT) / 2);
+
+    m_pProSvgItem = new QGraphicsPixmapItem;
+    QPixmap pixmap(QString(":/resources/icons/mircast/prospect.png"));
+    m_pProSvgItem->setPixmap(pixmap.scaled(376, 100));
+    m_pProSvgItem->setPos(m_pBgSvgItem->pos().x() + X_OFFSET, m_pBgSvgItem->pos().y() + Y_OFFSET);
 
     ExitButton *exitBtn = new ExitButton();
     exitBtn->setToolTip(tr("Exit Miracast"));
@@ -77,6 +84,7 @@ MircastShowWidget::MircastShowWidget(QWidget *parent)
     m_promptInformation->setPos(m_pBgSvgItem->pos().x(), m_pBgSvgItem->pos().y() + DEFAULT_BGHEIGHT + 10);
 
     m_pScene->addItem(m_pBgSvgItem);
+    m_pScene->addItem(m_pProSvgItem);
     m_pScene->addItem(m_deviceName);
     m_pScene->addItem(m_promptInformation);
     m_pScene->addWidget(exitBtn);
@@ -121,8 +129,10 @@ void MircastShowWidget::updateView()
     }
 
     m_pBgSvgItem->setScale(fRatio);
+    m_pProSvgItem->setScale(fRatio);
 
     m_pBgSvgItem->setPos((m_pScene->width() - DEFAULT_BGWIDTH * fRatio) / 2, (m_pScene->height() - DEFAULT_BGHEIGHT * fRatio) / 2);
+    m_pProSvgItem->setPos(m_pBgSvgItem->pos().x() + (X_OFFSET * fRatio), m_pBgSvgItem->pos().y() + (Y_OFFSET * fRatio));
     m_deviceName->setTextWidth(DEFAULT_BGWIDTH * fRatio);
     m_deviceName->setPos(m_pBgSvgItem->pos().x(), m_pBgSvgItem->pos().y() - 20);
     m_promptInformation->setTextWidth(DEFAULT_BGWIDTH * fRatio);
