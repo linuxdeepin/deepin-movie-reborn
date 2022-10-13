@@ -254,12 +254,13 @@
         <file>resources/icons/short_fail.svg</file>
         <file>resources/icons/short_ok.svg</file>
         <file>resources/data/GstSettings.json</file>
-        <file>resources/icons/mircast/default.svg</file>
         <file>resources/icons/mircast/icon-exit normal.svg</file>
         <file>resources/icons/mircast/icon-exit pressed.svg</file>
         <file>resources/icons/mircast/icon-update.svg</file>
         <file>resources/icons/mircast/mircast.svg</file>
         <file>resources/icons/mircast/spinner.svg</file>
         <file>resources/icons/mircast/spinner_White.svg</file>
+        <file>resources/icons/mircast/default_Back.svg</file>
+        <file>resources/icons/mircast/prospect.png</file>
     </qresource>
 </RCC>
