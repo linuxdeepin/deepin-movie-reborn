@@ -1216,7 +1216,10 @@ TEST(ToolBox, mircastWidget)
     RefreButtonWidget *btn = mircastWgt->getRefreshBtn();
     QTest::mouseClick(btn, Qt::LeftButton, Qt::NoModifier, QPoint(), 300);
     QTest::qWait(200);
-    ItemWidget *item = mircastWgt->createListeItem("test1111111111111111111111111111111111111111111111111111", data, nullptr);
+    struct MiracastDevice md;
+    md.name = "test";
+    md.uuid = "test1111111111111111111111111111111111111111111111111111";
+    ItemWidget *item = mircastWgt->createListeItem(md, data, nullptr);
     item->show();
     item->setState(ItemWidget::Normal);
     item->update();
