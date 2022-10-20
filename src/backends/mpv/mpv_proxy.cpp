@@ -1139,7 +1139,7 @@ void MpvProxy::refreshDecode()
                 }
             }
             //探测硬解码
-            if(!isSoftCodec && !CompositingManager::get().isZXIntgraphics() && !jmflag) {
+            if(!isSoftCodec /*&& !CompositingManager::get().isZXIntgraphics() */&& !jmflag) {
                 isSoftCodec = !isSurportHardWareDecode(codec, currentInfo.mi.width, currentInfo.mi.height);
             }
 #endif
