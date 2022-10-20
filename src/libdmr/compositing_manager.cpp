@@ -129,17 +129,17 @@ CompositingManager::CompositingManager()
     bool isDriverLoaded = isDriverLoadedCorrectly();
     softDecodeCheck();   //检测是否是kunpeng920（是否走软解码）
 
-    bool isI915 = false;
-    for (int id = 0; id <= 10; id++) {
-        if (!QFile::exists(QString("/sys/class/drm/card%1").arg(id))) break;
-        if (is_device_viable(id)) {
-            vector<string> drivers = {"i915"};
-            isI915 = is_card_exists(id, drivers);
-            break;
-        }
-    }
-    if (isI915) qInfo() << "is i915!";
-    m_bZXIntgraphics = isI915 ? isI915 : m_bZXIntgraphics;
+//    bool isI915 = false;
+//    for (int id = 0; id <= 10; id++) {
+//        if (!QFile::exists(QString("/sys/class/drm/card%1").arg(id))) break;
+//        if (is_device_viable(id)) {
+//            vector<string> drivers = {"i915"};
+//            isI915 = is_card_exists(id, drivers);
+//            break;
+//        }
+//    }
+//    if (isI915) qInfo() << "is i915!";
+//    m_bZXIntgraphics = isI915 ? isI915 : m_bZXIntgraphics;
 
     if (dmr::utils::check_wayland_env()) {
         _composited = true;
