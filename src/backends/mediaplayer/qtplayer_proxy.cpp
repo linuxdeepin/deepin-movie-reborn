@@ -123,6 +123,9 @@ void QtPlayerProxy::slotStateChanged(QMediaPlayer::State newState)
 {
     switch (newState) {
     case QMediaPlayer::StoppedState:
+#ifndef _LIBDMR_
+        MovieConfiguration::get().updateUrl(this->_file, ConfigKnownKey::StartPos, 0);
+#endif
         setState(PlayState::Stopped);
         break;
      case QMediaPlayer::PlayingState:
@@ -172,7 +175,10 @@ void QtPlayerProxy::processFrame(QVideoFrame &frame)
     frame.map(QAbstractVideoBuffer::ReadOnly);
     QImage recvImage(frame.bits(), frame.width(), frame.height(), QVideoFrame::imageFormatFromPixelFormat(frame.pixelFormat()));
     m_currentImage = recvImage;
-    m_pGLWidget->setVideoTex(recvImage);
+    if(!recvImage.isNull())
+    {
+        m_pGLWidget->setVideoTex(recvImage);
+    }
     m_pGLWidget->repaint();
     frame.unmap();
 }
