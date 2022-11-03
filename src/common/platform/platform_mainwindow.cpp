@@ -703,7 +703,7 @@ Platform_MainWindow::Platform_MainWindow(QWidget *parent)
         m_pFullScreenTimeLable->setAttribute(Qt::WA_TranslucentBackground);
         m_pFullScreenTimeLable->setWindowFlags(Qt::FramelessWindowHint);
         m_pFullScreenTimeLable->setParent(this);
-        m_pFullScreenTimeLable->setWindowFlags(m_pFullScreenTimeLable->windowFlags() | Qt::Dialog);
+        m_pFullScreenTimeLable->setWindowFlags(m_pFullScreenTimeLable->windowFlags() | Qt::ToolTip);
         m_pFullScreenTimeLayout = new QHBoxLayout;
         m_pFullScreenTimeLayout->addStretch();
         m_pFullScreenTimeLayout->addWidget(m_pToolbox->getfullscreentimeLabel());

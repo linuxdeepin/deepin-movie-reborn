@@ -28,7 +28,7 @@ Platform_MovieProgressIndicator::Platform_MovieProgressIndicator(QWidget *parent
     this->setFixedSize(m_fixedSize);
     this->setAttribute(Qt::WA_TranslucentBackground);
     this->setWindowFlags(Qt::FramelessWindowHint);
-    setWindowFlags(this->windowFlags() | Qt::Dialog);
+    setWindowFlags(this->windowFlags() | Qt::ToolTip);
 }
 /**
  * @brief paintEvent 重载绘制事件函数
