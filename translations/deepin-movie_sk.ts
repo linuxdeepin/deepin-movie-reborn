@@ -1,6 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="sk">
+<TS version="2.0" language="sk">
+<context>
+    <name>MircastShowWidget</name>
+    <message>
+        <source>Projecting... 
+Please do not exit the Movie app during the process.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Display device</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Exit Miracast</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>MircastWidget</name>
+    <message>
+        <source>Project to</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Searching for devices...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No Miracast display devices were found. Please connect the device and your computer to the same WLAN network.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
 <context>
     <name>QObject</name>
     <message>
@@ -484,16 +515,8 @@
         <translation>Ukladá sa do vyrovnávacej pamäte...</translation>
     </message>
     <message>
-        <source>No device found</source>
-        <translation type="vanished">Nebolo nájdené žiadne zariadenie</translation>
-    </message>
-    <message>
         <source>Open folder</source>
         <translation>Otvoriť priečinok</translation>
-    </message>
-    <message>
-        <source>All videos (%1)</source>
-        <translation type="vanished">Všetky videá (%1)</translation>
     </message>
     <message>
         <source>Stereo</source>
@@ -540,10 +563,6 @@
         <translation>Rýchlosť: %1x</translation>
     </message>
     <message>
-        <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</source>
-        <translation>Titulky (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</translation>
-    </message>
-    <message>
         <source>View</source>
         <translation>Náhľad</translation>
     </message>
@@ -580,10 +599,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Open File</source>
-        <translation type="vanished">Otvoriť súbor</translation>
-    </message>
-    <message>
         <source>Film screenshot</source>
         <translation>Snímka filmu</translation>
     </message>
@@ -610,10 +625,6 @@
     <message>
         <source>Please load the video first</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>All videos (%2 %1)</source>
-        <translation type="obsolete">Všetky videá (%1) {2 %1)?}</translation>
     </message>
     <message>
         <source>Order play</source>
@@ -660,11 +671,16 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Audio (%1)</source>
+        <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</source>
+        <comment>All (*)</comment>
+        <translation type="unfinished">Titulky (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</translation>
+    </message>
+    <message>
+        <source>Connection failed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Video (%1)</source>
+        <source>Miracast disconnected</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -672,19 +688,19 @@
     <name>dmr::MovieInfo</name>
     <message>
         <source>%1G</source>
-        <translation type="vanished">%1G</translation>
+        <translation>%1G</translation>
     </message>
     <message>
         <source>%1M</source>
-        <translation type="vanished">%1M</translation>
+        <translation>%1M</translation>
     </message>
     <message>
         <source>%1K</source>
-        <translation type="vanished">%1K</translation>
+        <translation>%1K</translation>
     </message>
     <message>
         <source>%1</source>
-        <translation type="vanished">%1</translation>
+        <translation>%1</translation>
     </message>
 </context>
 <context>
@@ -794,6 +810,275 @@
     </message>
 </context>
 <context>
+    <name>dmr::Platform_MainWindow</name>
+    <message>
+        <source>Load successfully</source>
+        <translation type="unfinished">Nahrávanie úspešné</translation>
+    </message>
+    <message>
+        <source>Load failed</source>
+        <translation type="unfinished">Nahrávanie zlyhalo</translation>
+    </message>
+    <message>
+        <source>Cannot play the disc</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Parse failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open folder</source>
+        <translation type="unfinished">Otvoriť priečinok</translation>
+    </message>
+    <message>
+        <source>All (*)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Speed: %1x</source>
+        <translation type="unfinished">Rýchlosť: %1x</translation>
+    </message>
+    <message>
+        <source>Stereo</source>
+        <translation type="unfinished">Stereo</translation>
+    </message>
+    <message>
+        <source>Left channel</source>
+        <translation type="unfinished">Ľavý kanál</translation>
+    </message>
+    <message>
+        <source>Right channel</source>
+        <translation type="unfinished">Pravý kanál</translation>
+    </message>
+    <message>
+        <source>Track: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to adjust the subtitle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Subtitle %1: %2s</source>
+        <translation type="unfinished">Titulky %1: %2s</translation>
+    </message>
+    <message>
+        <source>delayed</source>
+        <translation type="unfinished">oneskorené</translation>
+    </message>
+    <message>
+        <source>advanced</source>
+        <translation type="unfinished">pokročilé</translation>
+    </message>
+    <message>
+        <source>Subtitle (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</source>
+        <comment>All (*)</comment>
+        <translation type="unfinished">Titulky (*.ass *.aqt *.jss *.gsub *.ssf *.srt *.sub *.ssa *.smi *.usf *.idx)</translation>
+    </message>
+    <message>
+        <source>View</source>
+        <translation type="unfinished">Náhľad</translation>
+    </message>
+    <message>
+        <source>Film screenshot</source>
+        <translation type="unfinished">Snímka filmu</translation>
+    </message>
+    <message>
+        <source>Saved to</source>
+        <translation type="unfinished">Uložené na</translation>
+    </message>
+    <message>
+        <source>The screenshot is saved</source>
+        <translation type="unfinished">Snímok obrazovky sa uložil</translation>
+    </message>
+    <message>
+        <source>Failed to save the screenshot</source>
+        <translation type="unfinished">Nepodarilo sa uložiť snímku obrazovky</translation>
+    </message>
+    <message>
+        <source>Taking the screenshots, please wait...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reading DVD files...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No matching online subtitles</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>4K video may be stuck</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OK</source>
+        <translation type="unfinished">OK</translation>
+    </message>
+    <message>
+        <source>Order play</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shuffle play</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Single play</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Single loop</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>List loop</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Buffering...</source>
+        <translation type="unfinished">Ukladá sa do vyrovnávacej pamäte...</translation>
+    </message>
+    <message>
+        <source>Mute</source>
+        <translation type="unfinished">Stlmiť</translation>
+    </message>
+    <message>
+        <source>Volume: %1%</source>
+        <translation type="unfinished">Hlasitosť: %1%</translation>
+    </message>
+    <message>
+        <source>Cannot open file or stream</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid file</source>
+        <translation type="unfinished">Neplatný súbor</translation>
+    </message>
+    <message>
+        <source>Please insert a CD/DVD</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No video file found</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please load the video first</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please exit smart dock</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The CD/DVD has been ejected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The action is not supported in this video</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid file: %1</source>
+        <translation type="unfinished">Neplatný súbor: %1</translation>
+    </message>
+    <message>
+        <source>Connection failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Miracast disconnected</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>dmr::Platform_PlayItemWidget</name>
+    <message>
+        <source>The file does not exist</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>dmr::Platform_PlaylistWidget</name>
+    <message>
+        <source>Playlist</source>
+        <translation type="unfinished">Zoznam skladieb</translation>
+    </message>
+    <message>
+        <source>Empty</source>
+        <translation type="unfinished">Vysypať</translation>
+    </message>
+    <message>
+        <source>%1 videos</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>dmr::Platform_ToolboxProxy</name>
+    <message>
+        <source>Play/Pause</source>
+        <translation type="unfinished">Prehrať/pozastaviť</translation>
+    </message>
+    <message>
+        <source>Previous</source>
+        <translation type="unfinished">Predchádzajúce</translation>
+    </message>
+    <message>
+        <source>Next</source>
+        <translation type="unfinished">Ďalšie</translation>
+    </message>
+    <message>
+        <source>Fullscreen</source>
+        <translation type="unfinished">Celá obrazovka</translation>
+    </message>
+    <message>
+        <source>Playlist</source>
+        <translation type="unfinished">Zoznam skladieb</translation>
+    </message>
+    <message>
+        <source>play</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>prev</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>next</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>fs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Exit fullscreen</source>
+        <translation type="unfinished">Zrušiť celú obrazovku</translation>
+    </message>
+    <message>
+        <source>Pause</source>
+        <translation type="unfinished">Pozastaviť</translation>
+    </message>
+    <message>
+        <source>Play</source>
+        <translation type="unfinished">Spustiť</translation>
+    </message>
+    <message>
+        <source>sub</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Miracast</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>dmr::PlayItemWidget</name>
     <message>
         <source>The file does not exist</source>
@@ -869,10 +1154,6 @@
         <translation>Ďalšie</translation>
     </message>
     <message>
-        <source>Subtitles</source>
-        <translation type="vanished">Titulky</translation>
-    </message>
-    <message>
         <source>Playlist</source>
         <translation>Zoznam skladieb</translation>
     </message>
@@ -913,11 +1194,11 @@
         <translation>Pozastaviť</translation>
     </message>
     <message>
-        <source>Mute</source>
-        <translation type="obsolete">Stlmiť</translation>
+        <source>sub</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>sub</source>
+        <source>Miracast</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

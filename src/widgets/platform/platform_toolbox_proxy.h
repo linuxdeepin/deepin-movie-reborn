@@ -1,32 +1,7 @@
-/*
- * (c) 2017, Deepin Technology Co., Ltd. <support@deepin.org>
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but
- * is provided AS IS, WITHOUT ANY WARRANTY; without even the implied
- * warranty of MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, and
- * NON-INFRINGEMENT.  See the GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, see <http://www.gnu.org/licenses/>.
- *
- * In addition, as a special exception, the copyright holders give
- * permission to link the code of portions of this program with the
- * OpenSSL library under certain conditions as described in each
- * individual source file, and distribute linked combinations
- * including the two.
- * You must obey the GNU General Public License in all respects
- * for all of the code used other than OpenSSL.  If you modify
- * file(s) with this exception, you may extend this exception to your
- * version of the file(s), but you are not obligated to do so.  If you
- * do not wish to do so, delete this exception statement from your
- * version.  If you delete this exception statement from all source
- * files in the program, then also delete it here.
- */
+// SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 /**
  * @file 此文件中实现播放窗口工具栏相关内容
  */
@@ -55,6 +30,7 @@
 #include "platform/platform_thumbnail_worker.h"
 #include "slider.h"
 #include "platform_volumeslider.h"
+#include "mircastwidget.h"
 
 namespace Dtk {
 namespace Widget {
@@ -373,6 +349,21 @@ public:
      */
     void setBtnFocusSign(bool);
 
+    bool isInMircastWidget(const QPoint &);
+
+    /**
+     * @brief updateMircastWidget 更新投屏窗口位置
+     * @param p 移动位置点
+     */
+    void updateMircastWidget(QPoint p);
+
+    void hideMircastWidget();
+
+    MircastWidget *getMircast()
+    {
+        return m_mircastWidget;
+    }
+
     Platform_VolumeSlider *volumeSlider()
     {
         return m_pVolSlider;
@@ -407,6 +398,7 @@ public slots:
      */
     void updateFullState();
 
+    void slotUpdateMircast(int, QString);
 signals:
     /**
      * @brief sigVolumeChanged 音量变化返回主窗口信号
@@ -422,6 +414,8 @@ signals:
       * @brief 功能不支持信号
       */
     void sigUnsupported();
+
+    void sigMircastState(int, QString);
 
 protected slots:
     /**
@@ -561,6 +555,9 @@ protected:
      */
     bool eventFilter(QObject *obj, QEvent *ev) override;
 
+private slots:
+    void updateMircastTime(int);
+
 private:
     /**
      * @brief setup 初始化工具栏布局
@@ -612,6 +609,7 @@ private:
     DMRSlider *m_pProgBar;               ///滑动条模式进度条窗口
     Platform_ThumbnailPreview *m_pPreviewer;      ///鼠标悬停时进度条预览胶片控件
     Platform_SliderTime *m_pPreviewTime;          ///鼠标悬停时进度条预览时间控件
+    MircastWidget *m_mircastWidget;      ///投屏选项窗口
 
     ButtonBoxButton *m_pPlayBtn;        ///播放按钮
     ButtonBoxButton *m_pPrevBtn;        ///上一个按钮
@@ -620,6 +618,7 @@ private:
     VolumeButton *m_pVolBtn;             ///音量按钮
     ToolButton *m_pListBtn;              ///播放列表按钮
     ToolButton *m_pFullScreenBtn;        ///全屏按钮
+    ToolButton *m_pMircastBtn;           ///投屏按钮
 
     //lmh0910DButtonBoxButton替换到ButtonBoxButton
     ButtonToolTip *m_pPlayBtnTip;        ///播放按钮的悬浮提示

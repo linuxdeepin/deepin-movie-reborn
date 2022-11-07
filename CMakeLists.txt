@@ -18,6 +18,8 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 endif()
 
+set(CMAKE_CXX_STANDARD 17)
+
 set(CMAKE_EXPORT_COMPILE_COMMANDS on)
 
 find_package(PkgConfig REQUIRED)
@@ -46,11 +48,16 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 include_directories(${PROJECT_BINARY_DIR})
 include_directories(${PROJECT_SOURCE_DIR})
 
+include(GNUInstallDirs)
+if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+   set(CMAKE_INSTALL_PREFIX /usr)
+endif()
+
 configure_file(${PROJECT_SOURCE_DIR}/config.h.in ${PROJECT_BINARY_DIR}/config.h @ONLY)
 
 add_subdirectory(src)
-add_subdirectory(examples/test)
+#add_subdirectory(examples/test)
 
-if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-    add_subdirectory(tests)
-endif()
+#if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+#    add_subdirectory(tests)
+#endif()

@@ -1,36 +1,7 @@
-/*
- * Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
- *
- * Author:     xiepengfei <xiepengfei@uniontech.com>
- *
- * Maintainer: liuzheng <liuzheng@uniontech.com>
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but
- * is provided AS IS, WITHOUT ANY WARRANTY; without even the implied
- * warranty of MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, and
- * NON-INFRINGEMENT.  See the GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, see <http://www.gnu.org/licenses/>.
- *
- * In addition, as a special exception, the copyright holders give
- * permission to link the code of portions of this program with the
- * OpenSSL library under certain conditions as described in each
- * individual source file, and distribute linked combinations
- * including the two.
- * You must obey the GNU General Public License in all respects
- * for all of the code used other than OpenSSL.  If you modify
- * file(s) with this exception, you may extend this exception to your
- * version of the file(s), but you are not obligated to do so.  If you
- * do not wish to do so, delete this exception statement from your
- * version.  If you delete this exception statement from all source
- * files in the program, then also delete it here.
- */
+// Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
+// SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "config.h"
 #include "compositing_manager.h"
@@ -129,17 +100,17 @@ CompositingManager::CompositingManager()
     bool isDriverLoaded = isDriverLoadedCorrectly();
     softDecodeCheck();   //检测是否是kunpeng920（是否走软解码）
 
-//    bool isI915 = false;
-//    for (int id = 0; id <= 10; id++) {
-//        if (!QFile::exists(QString("/sys/class/drm/card%1").arg(id))) break;
-//        if (is_device_viable(id)) {
-//            vector<string> drivers = {"i915"};
-//            isI915 = is_card_exists(id, drivers);
-//            break;
-//        }
-//    }
-//    if (isI915) qInfo() << "is i915!";
-//    m_bZXIntgraphics = isI915 ? isI915 : m_bZXIntgraphics;
+    bool isI915 = false;
+    for (int id = 0; id <= 10; id++) {
+        if (!QFile::exists(QString("/sys/class/drm/card%1").arg(id))) break;
+        if (is_device_viable(id)) {
+            vector<string> drivers = {"i915"};
+            isI915 = is_card_exists(id, drivers);
+            break;
+        }
+    }
+    if (isI915) qInfo() << "is i915!";
+    m_bZXIntgraphics = isI915 ? isI915 : m_bZXIntgraphics;
 
     if (dmr::utils::check_wayland_env()) {
         _composited = true;
@@ -158,8 +129,7 @@ CompositingManager::CompositingManager()
         return;
     }
 
-    _composited = true;
-#if defined (_MOVIE_USE_)
+    _composited = false;
     QGSettings gsettings("com.deepin.deepin-movie", "/com/deepin/deepin-movie/");
     QString aa = gsettings.get("composited").toString();
     if ((gsettings.get("composited").toString() == "DisableComposited"
@@ -177,8 +147,6 @@ CompositingManager::CompositingManager()
                 _composited = false;
             } else {
                 _composited = true;
-                if (m_cpuModelName.contains("Hygon") && runningOnNvidia())
-                    _composited = false;
             }
         } else {
             if (_platform == Platform::Arm64 && isDriverLoaded)
@@ -186,8 +154,6 @@ CompositingManager::CompositingManager()
             _composited = false;
         }
     }
-#endif
-
     //针对9200显卡适配
     QFileInfo jmfi("/dev/jmgpu");
     if (jmfi.exists()) {
@@ -197,7 +163,6 @@ CompositingManager::CompositingManager()
            _composited = false;
         }
     }
-
     //读取配置
     m_pMpvConfig = new QMap<QString, QString>;
     utils::getPlayProperty("/etc/mpv/play.conf", m_pMpvConfig);
@@ -501,6 +466,7 @@ bool CompositingManager::isDriverLoadedCorrectly()
     static QRegExp dri_ok("direct rendering: DRI\\d+ enabled");
     static QRegExp swrast("GLX: Initialized DRISWRAST");
     static QRegExp regZX("loading driver: zx");
+    static QRegExp controller("1ec8");
 
     QString xorglog = QString("/var/log/Xorg.%1.log").arg(QX11Info::appScreen());
     qInfo() << "check " << xorglog;
@@ -530,6 +496,11 @@ bool CompositingManager::isDriverLoadedCorrectly()
 
         if (regZX.indexIn(ln) != -1) {
             m_bZXIntgraphics = true;
+        }
+
+        if (controller.indexIn(ln) != -1) {
+            qInfo() << ln;
+            return true;
         }
     }
     f.close();

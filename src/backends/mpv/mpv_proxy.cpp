@@ -1,36 +1,8 @@
-/*
- * Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
- *
- * Author:     xiepengfei <xiepengfei@uniontech.com>
- *
- * Maintainer: xiepengfei <xiepengfei@uniontech.com>
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but
- * is provided AS IS, WITHOUT ANY WARRANTY; without even the implied
- * warranty of MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, and
- * NON-INFRINGEMENT.  See the GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, see <http://www.gnu.org/licenses/>.
- *
- * In addition, as a special exception, the copyright holders give
- * permission to link the code of portions of this program with the
- * OpenSSL library under certain conditions as described in each
- * individual source file, and distribute linked combinations
- * including the two.
- * You must obey the GNU General Public License in all respects
- * for all of the code used other than OpenSSL.  If you modify
- * file(s) with this exception, you may extend this exception to your
- * version of the file(s), but you are not obligated to do so.  If you
- * do not wish to do so, delete this exception statement from your
- * version.  If you delete this exception statement from all source
- * files in the program, then also delete it here.
- */
+// Copyright (C) 2020 ~ 2021, Deepin Technology Co., Ltd. <support@deepin.org>
+// SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 #include "config.h"
 
 #include "mpv_proxy.h"
@@ -54,7 +26,6 @@
 #include <QX11Info>
 #include <QLibrary>
 #include <va/va_x11.h>
-#include <dmr_settings.h>
 
 namespace dmr {
 using namespace mpv::qt;
@@ -262,11 +233,7 @@ void MpvProxy::initSetting()
     while (vecItor.hasNext()) {
         my_command(m_handle, vecItor.peekNext());
         vecItor.next();
-    }    
-#ifndef _LIBDMR_
-    if(!m_mapWaitSet.contains("volume")) //如果声音未初始化值设置初始值为10
-        changeVolume(10);
-#endif
+    }
 }
 
 void MpvProxy::updateRoundClip(bool roundClip)
@@ -381,6 +348,8 @@ mpv_handle *MpvProxy::mpv_init()
         //景嘉微显卡目前只支持vo=xv，等日后升级代码需要酌情修改。
         QFileInfo fi("/dev/mwv206_0");
         QFileInfo jmfi("/dev/jmgpu"); //jmgpu
+        QFileInfo X100GPU("/dev/x100gpu");
+        QFileInfo X100VPU("/dev/vxd0");
         if (fi.exists() || jmfi.exists()) { //2.1.1景嘉微
             QDir sdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv206"); //判断是否安装核外驱动
             QDir jmdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv207");
@@ -405,6 +374,9 @@ mpv_handle *MpvProxy::mpv_init()
                 my_set_property(pHandle, "wid", m_pParentWidget->winId());
             }
             m_sInitVo = "xv,x11";
+        } else if (X100GPU.exists() && X100VPU.exists()) {
+            my_set_property(m_handle, "hwdec", "ftomx-copy");
+            my_set_property(m_handle, "vo", "gpu");
         } else if (CompositingManager::get().isOnlySoftDecode()) {//2.1.3 鲲鹏920 || 曙光+英伟达 || 浪潮
             my_set_property(m_handle, "hwdec", "no");
         } else { //2.2非特殊硬件
@@ -416,27 +388,22 @@ mpv_handle *MpvProxy::mpv_init()
             qInfo() << "修改音视频同步模式";
             my_set_property(m_handle, "video-sync", "desync");
         }
-        if (!jmfi.exists()) { //景嘉微9200显卡不用再次设置参数
-              my_set_property(m_handle, "vo", "vdpau,gpu,x11");
-              my_set_property(m_handle, "ao", "alsa");
-              m_sInitVo = "vdpau,gpu,x11";
-        }
+        my_set_property(m_handle, "vo", "vdpau,gpu,x11");
+        my_set_property(m_handle, "ao", "alsa");
+        m_sInitVo = "vdpau,gpu,x11";
 #elif defined(_loongarch) || defined(__loongarch__) || defined(__loongarch64)
         if (!CompositingManager::get().hascard()) {
             qInfo() << "修改音视频同步模式";
             my_set_property(m_handle, "video-sync", "desync");
         }
-        if (!fi.exists() && !jmfi.exists()) { //景嘉微9200显卡不用再次设置参数
+        if (!fi.exists() && !jmfi.exists()) {
             my_set_property(m_handle, "vo", "gpu,x11");
             m_sInitVo = "gpu,x11";
         }
-
 #elif defined (__sw_64__)
         //Synchronously modify the video output of the SW platform vdpau(powered by zhangfl)
-        if (!jmfi.exists()) { //景嘉微9200显卡不用再次设置参数
-           my_set_property(m_handle, "vo", "vdpau,gpu,x11");
-           m_sInitVo = "vdpau,gpu,x11";
-        }
+        my_set_property(m_handle, "vo", "vdpau,gpu,x11");
+        m_sInitVo = "vdpau,gpu,x11";
 #elif defined (__aarch64__)
         if (!fi.exists() && !jmfi.exists()) { //2.1.1景嘉微
             my_set_property(m_handle, "vo", "gpu,xv,x11");
@@ -461,6 +428,8 @@ mpv_handle *MpvProxy::mpv_init()
     } else { //3.设置硬解
         QFileInfo fi("/dev/mwv206_0");
         QFileInfo jmfi("/dev/jmgpu");
+        QFileInfo X100GPU("/dev/x100gpu");
+        QFileInfo X100VPU("/dev/vxd0");
         if (fi.exists() || jmfi.exists()) { //2.1.1景嘉微
             QDir sdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv206"); //判断是否安装核外驱动
             QDir jmdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv207");
@@ -477,6 +446,9 @@ mpv_handle *MpvProxy::mpv_init()
                 my_set_property(m_handle, "vo", "vdpau,xv,x11");
                 m_sInitVo = "vdpau,xv,x11";
             }
+        } else if (X100GPU.exists() && X100VPU.exists()) {
+            my_set_property(m_handle, "hwdec", "ftomx-copy");
+            my_set_property(m_handle, "vo", "gpu");
         } else {
             my_set_property(m_handle, "hwdec", "auto");
         }
@@ -1138,8 +1110,13 @@ void MpvProxy::refreshDecode()
                     jmflag=true;
                 }
             }
+            QFileInfo X100GPU("/dev/x100gpu");
+            bool x100flag =false;
+            if (X100GPU.exists()) {
+                x100flag = true;
+            }
             //探测硬解码
-            if(!isSoftCodec /*&& !CompositingManager::get().isZXIntgraphics() */&& !jmflag) {
+            if(!isSoftCodec && !CompositingManager::get().isZXIntgraphics() && !jmflag && !x100flag) {
                 isSoftCodec = !isSurportHardWareDecode(codec, currentInfo.mi.width, currentInfo.mi.height);
             }
 #endif
@@ -1151,6 +1128,8 @@ void MpvProxy::refreshDecode()
             //2.2.1 特殊硬件
             QFileInfo fi("/dev/mwv206_0"); //2.2.1.1 景嘉微
             QFileInfo jmfi("/dev/jmgpu");
+            QFileInfo X100GPU("/dev/x100gpu");
+            QFileInfo X100VPU("/dev/vxd0");
             if (fi.exists() || jmfi.exists()) {
                 QDir sdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv206"); //判断是否安装核外驱动
                 QDir jmdir(QLibraryInfo::location(QLibraryInfo::LibrariesPath) +QDir::separator() +"mwv207");
@@ -1163,6 +1142,9 @@ void MpvProxy::refreshDecode()
                 if (!sdir.exists() && jmdir.exists()) {
                     my_set_property(m_handle, "hwdec", "vaapi");
                 }
+            } else if (X100GPU.exists() && X100VPU.exists()) {
+                my_set_property(m_handle, "hwdec", "ftomx-copy");
+                my_set_property(m_handle, "vo", "gpu");
             } else if (CompositingManager::get().isOnlySoftDecode()) { //2.2.1.2 鲲鹏920 || 曙光+英伟达 || 浪潮
                 my_set_property(m_handle, "hwdec", "no");
             } else { //2.2.2 非特殊硬件 + 非特殊格式

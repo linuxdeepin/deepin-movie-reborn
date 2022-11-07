@@ -1,9 +1,14 @@
+# SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 set(CMAKE_AUTOMOC ON)
 set(CMD_NAME deepin-movie)
 
 set(PROJECT_INCLUDE ${PROJECT_SOURCE_DIR}/src/widgets
     ${PROJECT_SOURCE_DIR}/src/common
-    ${PROJECT_SOURCE_DIR}/src/libdmr)
+    ${PROJECT_SOURCE_DIR}/src/libdmr
+    ${PROJECT_SOURCE_DIR}/src/dlna)
 
 add_definitions(-D_MOVIE_USE_)
 
@@ -20,6 +25,7 @@ find_package(Qt5Sql)
 find_package(Qt5Svg)
 find_package(Qt5Multimedia)
 find_package(Qt5MultimediaWidgets)
+find_package(Qt5Xml)
 
 pkg_check_modules(Dtk REQUIRED IMPORTED_TARGET dtkwidget)
 pkg_check_modules(Dtk REQUIRED IMPORTED_TARGET dtkcore)
@@ -36,7 +42,7 @@ if (${Dtk_VERSION} LESS 2.0.6.1)
 endif()
 
 
-file(GLOB_RECURSE SRCS LIST_DIRECTORIES false common/*.cpp widgets/*.cpp libdmr/*.cpp vendor/*.cpp)
+file(GLOB_RECURSE SRCS LIST_DIRECTORIES false common/*.cpp widgets/*.cpp libdmr/*.cpp vendor/*.cpp dlna/*.cpp dlna/*.c)
 list(APPEND SRCS main.cpp)
 
 # mpv backend
@@ -75,31 +81,31 @@ target_include_directories(${CMD_NAME} PUBLIC ${PROJECT_INCLUDE})
 
 set(TARGET_LIBS X11 Xtst PkgConfig::Xcb Qt5::Widgets Qt5::X11Extras Qt5::Network Qt5::DBus Qt5::Sql Qt5::Svg Qt5::Multimedia
     Qt5::MultimediaWidgets PkgConfig::Dtk PkgConfig::MPRIS PkgConfig::DBusextended PkgConfig::Gst GL va va-x11
-    Qt5::Concurrent)
+    Qt5::Concurrent Qt5::Xml)
 
 target_link_libraries(${CMD_NAME} ${TARGET_LIBS} ${Other_LIBRARIES})
 
 
-install(TARGETS ${CMD_NAME} DESTINATION bin)
+install(TARGETS ${CMD_NAME} DESTINATION ${CMAKE_INSTALL_BINDIR})
 install(DIRECTORY ${PROJECT_SOURCE_DIR}/translations
-    DESTINATION share/${CMD_NAME}
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/${CMD_NAME}
     FILES_MATCHING PATTERN "*.qm")
 install(FILES ${PROJECT_SOURCE_DIR}/deepin-movie.desktop
-    DESTINATION share/applications)
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
 install(FILES ${CMAKE_SOURCE_DIR}/src/libdmr/com.deepin.deepin-movie.gschema.xml
-    DESTINATION /usr/share/glib-2.0/schemas)
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/glib-2.0/schemas)
 install(FILES ${PROJECT_SOURCE_DIR}/assets/resources/icons/logo-big.svg
-    DESTINATION share/icons/hicolor/scalable/apps
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/scalable/apps
     RENAME deepin-movie.svg)
-install(DIRECTORY ${CMAKE_SOURCE_DIR}/assets/deepin-movie DESTINATION /usr/share/deepin-manual/manual-assets/application/)
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/assets/deepin-movie DESTINATION ${CMAKE_INSTALL_DATADIR}/deepin-manual/manual-assets/application/)
 
 # 加速编译优化参数
 if (CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "mips64")
-    SET(CMAKE_CXX_FLAGS "$ENV{CXXFLAGS} -O3 -ftree-vectorize -march=loongson3a -mhard-float -mno-micromips -mno-mips16 -flax-vector-conversions -mloongson-ext2 -mloongson-mmi -Wl,--as-need -fPIE -z noexecstack")
+    SET(CMAKE_CXX_FLAGS "$ENV{CXXFLAGS} -O3 -ftree-vectorize -march=loongson3a -mhard-float -mno-micromips -mno-mips16 -flax-vector-conversions -mloongson-ext2 -mloongson-mmi -Wl,--as-needed -fPIE -z noexecstack")
     SET(CMAKE_C_FLAGS "$ENV{CFLAGS} -O3 -ftree-vectorize -march=loongson3a -mhard-float -mno-micromips -mno-mips16 -flax-vector-conversions -mloongson-ext2 -mloongson-mmi -z noexecstack")
     SET(CMAKE_EXE_LINKER_FLAGS "-pie")
 else()
-    SET(CMAKE_CXX_FLAGS "$ENV{CXXFLAGS} -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -std=c++14 -O3 -DNDEBUG -fPIC -Wl,--as-need -fPIE")
+    SET(CMAKE_CXX_FLAGS "$ENV{CXXFLAGS} -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -std=c++14 -O3 -DNDEBUG -fPIC -Wl,--as-needed -fPIE")
     SET(CMAKE_C_FLAGS "$ENV{CFLAGS} -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -std=c++14 -O3 -DNDEBUG -fPIC")
     SET(CMAKE_EXE_LINKER_FLAGS "-pie")
 endif()

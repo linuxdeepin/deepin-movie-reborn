@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2022 UnionTech Software Technology Co., Ltd.
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 /* Copyright (C) 2017 the mpv developers	
  *	
  * Permission to use, copy, modify, and/or distribute this software for any	

@@ -54,7 +54,13 @@
         <file>light/actions/volume_mid_checked.svg</file>
         <file>light/actions/dcc_volumedisable_36px.svg</file>
         <file>dark/texts/dcc_volumedisable_36px.svg</file>
+        <file>dark/texts/dcc_mircast_36px.svg</file>
+        <file>light/actions/dcc_mircast_36px.svg</file>
+        <file>light/checked/mircast_chenked.svg</file>
+        <file>dark/texts/dcc_update_36px.svg</file>
+        <file>light/actions/dcc_update_36px.svg</file>
     </qresource>
     <qresource prefix="/icons/deepin/builtin/light"/>
     <qresource prefix="/icons/deepin/builtin/dark"/>
+    <qresource prefix="/"/>
 </RCC>
